@@ -1,5 +1,5 @@
 ---
-next_project_number: 159
+next_project_number: 160
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -87,6 +87,13 @@ technical_debt:
 
 ## Tasks
 
+### 159. Refactor Formula to remove all_past and all_future as primitive constructors
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Refactor Formula inductive type to remove all_past (H) and all_future (G) as primitive constructors, making them derived operators defined as G := ¬F¬ and H := ¬P¬, where F := U(φ, ¬⊥) and P := S(φ, ¬⊥). Currently the Lean source has 7 primitive constructors (bot, imp, box, all_past, all_future, untl, snce) but the README and the intended mathematical presentation treats only 5 as primitive (bot, imp, box, untl, snce). This requires updating the Formula inductive type, redefining G/H/F/P as defs, updating all pattern matches on Formula throughout the codebase (Syntax/, ProofSystem/, Semantics/, Metalogic/, Theorems/, Automation/, Examples/, Tests/), updating the axiom system to use the new derived definitions, and verifying that soundness/completeness/decidability proofs still compile. This is a large structural refactor touching most files in the codebase.
+
 ### 158. Update README.md to reflect metalogic progress and improve organization
 - **Effort**: small
 - **Status**: [COMPLETED]
@@ -99,7 +106,7 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155

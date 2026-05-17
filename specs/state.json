@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 159,
+      "project_name": "refactor_formula_remove_all_past_all_future",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-17T19:21:01Z",
+      "last_updated": "2026-05-17T19:21:01Z"
+    },
+    {
       "project_number": 158,
       "project_name": "update_readme_metalogic_progress",
       "status": "completed",
@@ -46,7 +54,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "planned",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -55,8 +63,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T18:39:07Z",
-      "session_id": "sess_1779042857_963167",
+      "last_updated": "2026-05-17T19:20:22Z",
+      "session_id": "sess_1779045605_6410ff",
       "researched": "2026-05-17T18:30:37Z",
       "artifacts": [
         {
@@ -1367,7 +1375,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 159,
+  "next_project_number": 160,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
