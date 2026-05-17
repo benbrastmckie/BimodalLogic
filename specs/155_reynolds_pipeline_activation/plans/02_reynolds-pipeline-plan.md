@@ -181,27 +181,49 @@ All phases are strictly sequential. Each phase builds on the previous.
 
 ---
 
-### Phase 3: Rewrite no_gaps_discrete (Reynolds Theorem 14 -- Gap Elimination) [BLOCKED]
+### Phase 3: Expressive Completeness + Gap Elimination [NOT STARTED]
 
-**BLOCKER** (Phase 3):
-- **What failed**: Attempted to formalize Reynolds Theorem 14 (gap elimination for ~M classes in Prior structures). The argument requires a 6-page, 8-lemma chain (Lemmas 6-13) involving temporal logic model transformation.
-- **What was tried**:
-  1. Direct Prior-UZ application with φ = "in class C": U(φ, ¬φ) is satisfied trivially (s = succ(t) works vacuously in discrete orders)
-  2. Prior-UZ with φ = "not in class C": also satisfied trivially (s = succ(t) where succ(t) IS in C)
-  3. Z1 semantic validity approach: Z1 IS equivalent to IsSuccArchimedean, but expressing "s >= b" as a temporal formula requires the predicates to distinguish these points, which isn't guaranteed for arbitrary monadic structures
-  4. Analysis of Reynolds's actual argument: it's an INDIRECT contradiction via model surgery (replace bad interval by one class, show R still holds in modified structure, derive contradiction from Prior-U in modified structure)
-- **Why it's stuck**: Reynolds Theorem 14 requires:
-  (a) Constructing temporal formula R detecting "class ends at gap on right" (via table_correctness in reverse)
-  (b) Proving R-intervals have excluded endpoints (Lemma 7, uses Prior-UZ)
-  (c) Proving classes in R-interval are elementarily equivalent (Lemma 9)
-  (d) Bad interval structure replacement preserving temporal truth (Lemma 12, ~60 lines of case analysis on U/S operators)
-  (e) Deriving contradiction from R holding in modified Prior structure (Lemma 13)
-  Each of (a)-(e) is a substantial formalization sub-task.
-- **What is needed**:
-  - OPTION A (faithful Reynolds): Formalize Lemmas 6-13 step by step. Requires defining ρ(x), constructing its temporal equivalent via table_correctness, proving the model-surgery lemma (Lemma 12). Estimated 6-8 hours additional work.
-  - OPTION B (Z1 shortcut for chronicle only): Prove that Z1 semantic validity in the specific chronicle monadic structure implies IsSuccArchimedean. This sidesteps the full Theorem 14 but only works for the chronicle (not general Prior structures). Key challenge: showing that the k-type assignment in the chronicle is "rich enough" to distinguish all points needed for the Z1 backward induction.
-  - OPTION C (direct succ_cofinal from Z1): Prove succ_cofinal for the chronicle domain using Z1 ∈ MCS + backward induction on truth values. This is essentially the converse of the Z1 soundness proof.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**Revised scope** (after research reports 06a-d, 08, 08b): Phase 3 is now split into two sub-phases:
+
+**Phase 3A: Expressive Completeness of {S,U} over Integer Time**
+
+Formalize the separation theorem from GHR94 Chapter 10, Section 10.2 (Theorem 10.2.9). This is the FO → temporal direction: every monadic FO sentence over integer time has a temporal {U,S} equivalent. Reynolds cites this as his Theorem 5 (references [5],[6]).
+
+**Why needed**: Reynolds Theorem 14 (gap elimination) uses expressive completeness 6 times (Lemmas 6, 7, 8, 9(i), 9(ii), 11) to convert monadic FO formulas describing gap properties into temporal formulas for feeding into Prior-U. Without this, Prior-U cannot be applied to the gap-defining formulas.
+
+**Literature sources** (all in `literature/`, with markdown conversions):
+- GHR94 Ch 9: `Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch9.md` — Framework: separation = expressive completeness (Thm 9.3.1, 9.3.4)
+- GHR94 Ch 10: `Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch10.md` — Section 10.2: Separation for {S,U} over integer time (Lemmas 10.2.1-10.2.10)
+- GHR93: `Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps.md` — Alternative game-theoretic proof (reference only)
+
+**Proof structure** (from GHR94 §10.2):
+- 8 elimination cases showing how to pull U out of S (and vice versa) in discrete time
+- Nested 4-level induction: junction depth → nesting depth → number of U-subformulas → single elimination
+- Key lemmas: 10.2.1 (distributivity), 10.2.2 (integer-specific equivalences), 10.2.3-10.2.4 (elimination cases), 10.2.5-10.2.8 (inductive assembly), 10.2.9-10.2.10 (separation + expressive completeness)
+
+**Estimated effort**: ~2500 lines of Lean, 3-4 weeks
+**Research reports**: 08_gap-elimination-detailed.md, 08b_gap-elimination-second-opinion.md
+
+**Phase 3B: Gap Elimination (Reynolds Theorem 14)**
+
+With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and Theorem 14.
+
+**Proof structure** (from Reynolds 1994 lines 470-816):
+- Lemma 6: Define ρ(x) = "x's ~-class ends in a gap on the right." Convert to temporal R via expressive completeness.
+- Lemma 7: R-intervals have excluded endpoints (uses Prior-U on R).
+- Lemma 8: Further structural properties of R-intervals.
+- Lemma 9: Classes within R-intervals are elementarily equivalent.
+- Lemma 10-11: Preparation for model surgery.
+- Lemma 12: Model surgery — replace "bad interval" by one of its classes, show temporal truth is preserved. THE HARDEST SUB-PROOF (~200-300 lines, 14+ case splits for Until alone).
+- Lemma 13: Derive contradiction from R in the surgically modified Prior structure.
+- Theorem 14: Assembly — ~M classes do not end at gaps.
+
+**Estimated effort**: ~600-800 lines of Lean, 1-2 weeks (after Phase 3A)
+**Depends on**: Phase 3A (expressive completeness)
+
+**Combined Phase 3 effort**: ~3000-3500 lines, 4-6 weeks
+
+**Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder. Do NOT add `IsSuccArchimedean` as hypothesis. Do NOT use `orderIsoIntOfLinearSuccPredArch`.
 
 **Goal**: Rewrite the gap elimination theorem WITHOUT `IsSuccArchimedean`. This is THE HARD PHASE. Reynolds Theorem 14 proves that ~M classes cannot end at gaps in Prior structures, using expressive completeness of {U,S} (= `table_correctness`) combined with Prior-UZ axiom validity. The argument constructs explicit formulas that distinguish between "being in the same class" and "not being in the same class" and shows that a gap boundary leads to contradiction.
 

@@ -100,6 +100,16 @@ Papers on Jónsson-Tarski representation for Boolean algebras with operators (BA
 | `Venema_1997_Atom_Structures_Sahlqvist` | Venema, Y. (1997). "Atom Structures and Sahlqvist Equations." *Algebra Universalis* 38, 185--199. | HIGH -- studies atom-canonicity of BAO varieties. S/U representation depends on canonical extensions being well-behaved. | Good (author preprint) |
 | `deRijke_Venema_1995_Sahlqvist_BAOs` | de Rijke, M. & Venema, Y. (1995). "Sahlqvist's Theorem for Boolean Algebras with Operators with an Application to Cylindric Algebras." *Studia Logica* 54, 61--78. | HIGH -- extends Sahlqvist correspondence to BAOs, applicable to polymodal (including binary S/U) operators. | Good (author preprint) |
 
+### Expressive Completeness Theory
+
+The FO → temporal direction ("separation property"): every monadic first-order sentence over a linear order is equivalent to a temporal formula using {U,S}. Required for Reynolds Theorem 14 (gap elimination).
+
+| File | Citation | Relevance | Quality |
+|------|----------|-----------|---------|
+| `Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1` (.pdf, chapter .md files) | Gabbay, D. M., Hodkinson, I. & Reynolds, M. A. (1994). *Temporal Logic: Mathematical Foundations and Computational Aspects*, Vol. 1. OUP. ISBN 0-19-853769-7. | **HIGHEST** -- definitive reference monograph. Ch. 9: separation = expressive completeness framework. Ch. 10.2: separation for {S,U} over integer time (THE core result needed). Ch. 12: expressive completeness in the presence of gaps. | Full book PDF + OCR'd chapters 9, 10, 12 |
+| `Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps` (.pdf, .md) | Gabbay, D. M., Hodkinson, I. & Reynolds, M. A. (1993). "Temporal expressive completeness in the presence of gaps." In *Proc. ASL European Meeting 1990*, LNLI, Springer-Verlag. | **HIGH** -- Reynolds's reference [5] for expressive completeness used in Theorem 14 gap elimination. | PDF (3.2 MB) + extracted markdown |
+| `Gabbay_Reynolds_2000_Temporal_Logic_Foundations_Vol2` | Gabbay, D. M. & Reynolds, M. A. (2000). *Temporal Logic: Mathematical Foundations and Computational Aspects*, Vol. 2. OUP. | MEDIUM -- computational aspects; may contain additional expressive completeness results. | Full book PDF |
+
 ### Surveys
 
 | File | Citation | Relevance | Quality |
@@ -115,7 +125,7 @@ Papers on Jónsson-Tarski representation for Boolean algebras with operators (BA
 
 | Citation | Relevance | Access |
 |----------|-----------|--------|
-| Gabbay, D., Hodkinson, I., Reynolds, M. (1994). *Temporal Logic: Mathematical Foundations and Computational Aspects*, Vol. 1. OUP. ISBN 978-0-19-853769-4. | HIGH -- definitive reference monograph with full completeness proofs for Since/Until. Chapters 10--11 on expressive completeness of S/U over integers and reals. | OUP book (~$200) |
+| ~~Gabbay et al. 1994, Vol. 1~~ | **OBTAINED** -- see Expressive Completeness Theory section above. | ~~OUP book~~ |
 | Blackburn, P., de Rijke, M. & Venema, Y. (2001). *Modal Logic*. Cambridge University Press. | **HIGH** -- Chapter 5 ("Algebras and General Frames") gives the most accessible treatment of Jónsson-Tarski for polymodal logic including binary operators. The definitive textbook for understanding BAO representation for S/U. | ~$45 paperback |
 | Jónsson, B. & Tarski, A. (1951/1952). "Boolean Algebras with Operators." Parts I & II. *AJM* 73:891--939, 74:127--162. | **HIGH** -- the foundational representation theorem. Every BAO embeds into the complex algebra of its atom structure. Extends to n-ary operators (including binary S/U). | JSTOR paywall |
 | Goldblatt, R. (1989). "Varieties of Complex Algebras." *Ann. Pure Applied Logic* 44, 173--242. | HIGH -- general theory of BAO representation; foundational for the algebraic approach. | ScienceDirect paywall |

@@ -1,5 +1,5 @@
 ---
-next_project_number: 157
+next_project_number: 158
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -87,6 +87,17 @@ technical_debt:
 
 ## Tasks
 
+### 157. Formalize expressive completeness of {S,U} over integer time
+- **Effort**: 3-4 weeks (~2500 lines)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 155
+
+**Description**: Formalize expressive completeness of {S,U} over integer time (GHR94 Ch 10.2 separation theorem). Prove that every monadic first-order sentence over integer time has a temporal {U,S} equivalent (Theorem 10.2.9-10.2.10). This is Reynolds's Theorem 5, required as prerequisite for Phase 3B of task 155 (gap elimination, Reynolds Theorem 14). Literature: GHR94 Chapters 9-10 (in literature/ with markdown conversions). Proof structure: 8 elimination cases (pulling U out of S and vice versa), nested 4-level induction (junction depth -> nesting depth -> number of U-subformulas -> single case).
+
+---
+
 ### 156. Improve formal/lean/math/logic research agents with multi-angle team research strategy
 - **Effort**: 4-8 hours
 - **Status**: [NOT STARTED]
@@ -99,7 +110,7 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
