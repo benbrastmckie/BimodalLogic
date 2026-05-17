@@ -1,7 +1,7 @@
 # Implementation Plan: Expressive Completeness of {S,U} over Integer Time
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 36 hours
 - **Dependencies**: Task 155
 - **Research Inputs**: specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Formalize the expressive completeness theorem for {Since, Until} over integer time (GHR94 Theorem 10.2.9-10.2.10, Reynolds' Theorem 5). The proof proceeds in two stages: (A) prove every {U,S}-formula is equivalent to a syntactically separated formula over Z via a 4-level nested induction (Lemmas 10.2.1-10.2.8), and (B) show separation implies expressive completeness via Theorem 9.3.1. The formalization builds ~2570 lines across 14 new Lean files under `Theories/Bimodal/Metalogic/WeakCanonical/Separation/` and `ExpressiveCompleteness.lean`. Definition of done: `lake build` passes with no errors and all theorems stated (sorries acceptable in the hardest elimination cases during initial phases, with progressive closure).
+Formalize the expressive completeness theorem for {Since, Until} over integer time (GHR94 Theorem 10.2.9-10.2.10, Reynolds' Theorem 5). The proof proceeds in two stages: (A) prove every {U,S}-formula is equivalent to a syntactically separated formula over Z via a 4-level nested induction (Lemmas 10.2.1-10.2.8), and (B) show separation implies expressive completeness via Theorem 9.3.1. The formalization builds ~1690 lines across 11 Lean files under `Theories/Bimodal/Metalogic/WeakCanonical/Separation/` and `ExpressiveCompleteness.lean`. The planned 17-file structure was consolidated during implementation: Lemmas 10.2.4-10.2.8 share `SeparationThm.lean`; FO infrastructure lives in `ExpressiveCompleteness.lean`. Definition of done: `lake build` passes with zero sorries and all theorems fully proved.
 
 ### Research Integration
 
@@ -150,9 +150,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula Operations and Integer Helpers [COMPLETED]
+### Phase 2: Formula Operations and Integer Helpers [PARTIAL]
 
 **Goal**: Create `Separation/FormulaOps.lean` with substitution, DNF/CNF signatures, and freshness; create `Separation/IntHelpers.lean` with integer-specific lemmas.
+
+**Current state**: IntHelpers.lean fully proved (0 sorry). FormulaOps.lean has 7 sorries: `to_DNF`, `to_CNF`, `dnf_equiv`, `cnf_equiv`, `subst_correctness`, and two related helpers.
 
 **Tasks**:
 - [ ] Define `Formula.subst` (substitute formula for atom)
@@ -267,9 +269,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Elimination Cases 1 and 5 (Core Direct Cases) [COMPLETED]
+### Phase 6: Elimination Cases 1 and 5 (Core Direct Cases) [PARTIAL]
 
 **Goal**: Prove the two "direct semantic" elimination cases that form the foundation for all others.
+
+**Current state**: All 8 elimination cases stated in `Eliminations.lean` (168 LOC) but all 8 proofs are `sorry`. These are the core semantic arguments requiring GHR94 Section 10.2 case-by-case analysis.
 
 **Tasks**:
 - [ ] State and prove `elim_case_1`: S(a ^ U(A,B), q) equivalence (3 disjuncts based on U-witness location)
@@ -295,9 +299,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [COMPLETED]
+### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [PARTIAL]
 
 **Goal**: Prove Cases 2 and 4 which involve not U(A,B) in the event or guard position.
+
+**Current state**: Merged into Phase 6 — all 8 cases are in `Eliminations.lean`. Cases 2 and 4 have `sorry` proofs.
 
 **Tasks**:
 - [ ] Prove `elim_case_2`: S(a ^ not U(A,B), q)
@@ -321,9 +327,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [COMPLETED]
+### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [PARTIAL]
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
+
+**Current state**: Merged into Phase 6 — all 8 cases are in `Eliminations.lean`. Cases 3, 6, 7, 8 have `sorry` proofs.
 
 **Tasks**:
 - [ ] Prove `elim_case_3`: S(a, q v U(A,B)) -- negate, use 10.2.2, apply Case 2
@@ -347,9 +355,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [COMPLETED]
+### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [PARTIAL]
 
 **Goal**: Derive the 8 dual cases (pulling S out from under U) automatically via swap_temporal.
+
+**Current state**: All 8 dual cases stated in `DualEliminations.lean` (116 LOC) but all 8 have `sorry` proofs. These are blocked on Phase 6-8: once `Eliminations.lean` proofs are complete, duals follow mechanically via `dual_equiv`.
 
 **Tasks**:
 - [ ] State `elim_case_1_dual` through `elim_case_8_dual` for U(a ^ S(A,B), q) patterns
@@ -373,9 +383,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [COMPLETED]
+### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [PARTIAL]
 
 **Goal**: Prove that S(C,F) where U appears only as U(A,B) at top level can be separated into 8 canonical forms.
+
+**Current state**: Consolidated into `SeparationThm.lean` (114 LOC total for Phases 10-12, 14). The lemma is stated but proof is `sorry`. Planned file `SingleSWithU.lean` was not created separately.
 
 **Tasks**:
 - [ ] Define `u_appearances_top_level_only` predicate (U(A,B) not under any S in C, F)
@@ -403,9 +415,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [COMPLETED]
+### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [PARTIAL]
 
 **Goal**: Prove that if the only U in D is U(A,B) with A,B atomic, then D is separable.
+
+**Current state**: Consolidated into `SeparationThm.lean`. Stated but proof is `sorry`. Planned file `SingleU.lean` was not created separately.
 
 **Tasks**:
 - [ ] Define `u_appears_only_as` predicate (formula D contains U only as U(A,B))
@@ -430,9 +444,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [COMPLETED]
+### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [PARTIAL]
 
 **Goal**: Prove that if all U in D are U(A_i, B_i) with atomic arguments, D is separable.
+
+**Current state**: Consolidated into `SeparationThm.lean`. Stated but proof is `sorry`. Planned file `MultiU.lean` was not created separately.
 
 **Tasks**:
 - [ ] Define `all_U_in_D_are_from_Us` predicate (all U subformulas come from a given list)
@@ -459,9 +475,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [COMPLETED]
+### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [PARTIAL]
 
 **Goal**: Build the first-order logic infrastructure needed for Theorem 9.3.1, independent of the separation proof.
+
+**Current state**: Consolidated into `ExpressiveCompleteness.lean` (120 LOC total for Phases 13+15). Planned file `FOToTemporal.lean` was not created separately. Infrastructure is stated but key proofs are `sorry`.
 
 **Tasks**:
 - [ ] Define `IntStructureFromSig` (monadic FO structure over Z)
@@ -488,9 +506,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 14: Lemmas 10.2.7-10.2.8 and Separation Theorem [COMPLETED]
+### Phase 14: Lemmas 10.2.7-10.2.8 and Separation Theorem [PARTIAL]
 
 **Goal**: Prove the top two levels of the nested induction and state the final Separation Theorem 10.2.9.
+
+**Current state**: All in `SeparationThm.lean`. `separation_theorem_int` is stated and chains through 10.2.4-10.2.8 but the individual lemma proofs are `sorry`. Planned files `NoSWithinU.lean` and `JunctionDepth.lean` were not created separately.
 
 **Tasks**:
 - [ ] Define `no_S_nested_in_U` predicate
@@ -521,9 +541,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 15: Theorem 9.3.1 + 10.2.10 (Expressive Completeness) [COMPLETED]
+### Phase 15: Theorem 9.3.1 + 10.2.10 (Expressive Completeness) [PARTIAL]
 
 **Goal**: Prove separation implies expressive completeness and combine with the Separation Theorem for the final result.
+
+**Current state**: `ExpressiveCompleteness.lean` (120 LOC). `separation_implies_expressiveness` and `US_expressively_complete_over_Z` are stated and type-check but have 2 `sorry` proofs (the inductive step of 9.3.1, and the final composition).
 
 **Tasks**:
 - [ ] State `separation_implies_expressiveness` (Theorem 9.3.1)
@@ -566,27 +588,25 @@ Phases within the same wave can execute in parallel.
 - [ ] Final theorem: `US_expressively_complete_over_Z` type-checks against MonadicFormula infrastructure
 - [ ] Count sorry occurrences across all files; target: zero by project completion
 
-## Artifacts & Outputs
+## Artifacts & Outputs (Actual)
 
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/FormulaOps.lean` (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/IntHelpers.lean` (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Duality.lean` (~120 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Distributivity.lean` (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NegationEquiv.lean` (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` (~800 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DualEliminations.lean` (~150 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SingleSWithU.lean` (~150 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SingleU.lean` (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/MultiU.lean` (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NoSWithinU.lean` (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/JunctionDepth.lean` (~150 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` (~20 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/FOToTemporal.lean` (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` (hub file)
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` (~700 LOC)
+| File | LOC | Sorry | Status |
+|------|-----|-------|--------|
+| `Separation/Defs.lean` | 274 | 0 | Complete |
+| `Separation/FormulaOps.lean` | 170 | 7 | DNF/CNF + subst |
+| `Separation/IntHelpers.lean` | 157 | 0 | Complete |
+| `Separation/Duality.lean` | 196 | 0 | Complete |
+| `Separation/Distributivity.lean` | 188 | 0 | Complete |
+| `Separation/NegationEquiv.lean` | 155 | 0 | Complete |
+| `Separation/Eliminations.lean` | 168 | 8 | All 8 cases sorry |
+| `Separation/DualEliminations.lean` | 116 | 8 | Blocked on Eliminations |
+| `Separation/SeparationThm.lean` | 114 | 5 | Lemmas 10.2.4-10.2.8 |
+| `Separation.lean` | 32 | 0 | Hub file |
+| `ExpressiveCompleteness.lean` | 120 | 2 | Thm 9.3.1 + 10.2.10 |
 
-Total: ~3490 LOC across 17 files (higher than research estimate due to duality module and hub file).
+**Total**: 1690 LOC across 11 files. 30 sorries remain (down from 32 at first pass).
+
+**Consolidation note**: The plan originally specified 17 files. During implementation, Phases 10-12 and 14 (Lemmas 10.2.4-10.2.8) were consolidated into `SeparationThm.lean`, and Phase 13 (FO infrastructure) was merged into `ExpressiveCompleteness.lean`. Files `SingleSWithU.lean`, `SingleU.lean`, `MultiU.lean`, `NoSWithinU.lean`, `JunctionDepth.lean`, and `FOToTemporal.lean` were never created as separate files.
 
 ## Rollback/Contingency
 

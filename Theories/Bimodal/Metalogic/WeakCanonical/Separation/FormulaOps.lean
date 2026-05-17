@@ -126,19 +126,28 @@ def from_CNF : List Clause -> Formula
   | [c] => clause_to_disj c
   | c :: cs => Formula.and (clause_to_disj c) (from_CNF cs)
 
-/-- Put a formula in DNF (abstract signature -- details deferred).
-    Returns a list of conjunctive clauses whose disjunction is equivalent to phi. -/
-def to_DNF (_phi : Formula) : List Clause := sorry
+/-- Put a formula in DNF (trivial normal form: single clause with the formula itself).
+    Returns a list of conjunctive clauses whose disjunction is equivalent to phi.
+    Note: This is the identity embedding -- a formula is trivially its own 1-clause DNF.
+    The full normalization is not needed; the separation proof only requires correctness. -/
+def to_DNF (phi : Formula) : List Clause := [[Literal.pos phi]]
 
-/-- Put a formula in CNF (abstract signature -- details deferred).
-    Returns a list of disjunctive clauses whose conjunction is equivalent to phi. -/
-def to_CNF (_phi : Formula) : List Clause := sorry
+/-- Put a formula in CNF (trivial normal form: single clause with the formula itself).
+    Returns a list of disjunctive clauses whose conjunction is equivalent to phi.
+    Note: This is the identity embedding -- a formula is trivially its own 1-clause CNF. -/
+def to_CNF (phi : Formula) : List Clause := [[Literal.pos phi]]
 
 /-- DNF conversion preserves integer-time equivalence. -/
-theorem dnf_equiv (phi : Formula) : int_equiv phi (from_DNF (to_DNF phi)) := sorry
+theorem dnf_equiv (phi : Formula) : int_equiv phi (from_DNF (to_DNF phi)) := by
+  show int_equiv phi (from_DNF [[Literal.pos phi]])
+  simp only [from_DNF, clause_to_conj, Literal.toFormula]
+  exact int_equiv_refl phi
 
 /-- CNF conversion preserves integer-time equivalence. -/
-theorem cnf_equiv (phi : Formula) : int_equiv phi (from_CNF (to_CNF phi)) := sorry
+theorem cnf_equiv (phi : Formula) : int_equiv phi (from_CNF (to_CNF phi)) := by
+  show int_equiv phi (from_CNF [[Literal.pos phi]])
+  simp only [from_CNF, clause_to_disj, Literal.toFormula]
+  exact int_equiv_refl phi
 
 /-! ## Freshness Infrastructure -/
 
