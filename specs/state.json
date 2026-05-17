@@ -8,16 +8,18 @@
     {
       "project_number": 158,
       "project_name": "update_readme_metalogic_progress",
-      "status": "researching",
+      "status": "researched",
       "task_type": "markdown",
       "created": "2026-05-17T18:20:49Z",
-      "last_updated": "2026-05-17T18:28:33Z",
-      "session_id": "sess_1779042494_b8cb4a"
+      "last_updated": "2026-05-17T18:35:00Z",
+      "session_id": "sess_1779042494_b8cb4a",
+      "researched": "2026-05-17T18:35:00Z",
+      "next_artifact_number": 2
     },
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -26,8 +28,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T18:30:37Z",
-      "session_id": "sess_1779042202_561806",
+      "last_updated": "2026-05-17T18:34:34Z",
+      "session_id": "sess_1779042857_963167",
       "researched": "2026-05-17T18:30:37Z",
       "artifacts": [
         {
