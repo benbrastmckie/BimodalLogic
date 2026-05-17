@@ -119,21 +119,25 @@ The metalogic is organized around a hierarchy of temporal frame classes. All sou
 
 ```mermaid
 graph TD
-    B("<b>Base Frame</b><br/>Serial linear order<br/>Sound ✓ · Complete ✓")
+    B("<b>Base Frame</b><br/>Serial linear order<br/>Sound ✓ · Complete ✓ · Decidable ✓")
     D("<b>Dense Frame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓")
     Z("<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Sound ✓ · Complete ⧖")
 
     B --> D
     B --> Z
+
+    style B min-width:350px
+    style D min-width:350px
+    style Z min-width:350px
 ```
 
 ### Result Details
 
 | Frame Class | Axioms Added | Soundness | Completeness | Decidability |
 |-------------|-------------|-----------|--------------|--------------|
-| **Base** | DN absent, DF absent | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
-| **Dense** | DN = `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | — |
-| **Discrete** | DF, Prior-UZ/SZ, Z1 | sorry-free | active sorries (see below) | — |
+| **Base** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
+| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | — |
+| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — |
 | **Mixed** | (any non-pure case) | sorry-free | 1 active sorry (`dd_countermodel_chronicle_mixed_sorry`) | — |
 
 **Active sorry obligations**:
