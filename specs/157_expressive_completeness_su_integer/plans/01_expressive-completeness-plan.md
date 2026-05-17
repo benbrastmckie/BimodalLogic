@@ -117,7 +117,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Core Definitions and Integer Semantics [NOT STARTED]
+### Phase 1: Core Definitions and Integer Semantics [COMPLETED]
 
 **Goal**: Create `Separation/Defs.lean` with IntStructure, int_truth, purity predicates, separation predicates, and structural measures.
 
