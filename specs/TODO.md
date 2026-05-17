@@ -1,5 +1,5 @@
 ---
-next_project_number: 160
+next_project_number: 161
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 160. Fix failing CI badge in README.md
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+
+**Description**: Fix the CI badge on line 3 of README.md which currently shows as failing on GitHub. Investigate the GitHub Actions workflow at .github/workflows/ci.yml, determine why CI is failing (likely due to the example file deletions from task 158 or other recent changes), fix the build or workflow configuration, and ensure the badge shows as passing.
 
 ### 159. Refactor Formula to remove all_past and all_future as primitive constructors
 - **Effort**: large

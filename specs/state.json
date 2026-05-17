@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 160,
+      "project_name": "fix_ci_badge_failing",
+      "status": "not_started",
+      "task_type": "general",
+      "created": "2026-05-17T19:23:22Z",
+      "last_updated": "2026-05-17T19:23:22Z"
+    },
+    {
       "project_number": 159,
       "project_name": "refactor_formula_remove_all_past_all_future",
       "status": "not_started",
@@ -1375,7 +1383,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 160,
+  "next_project_number": 161,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
