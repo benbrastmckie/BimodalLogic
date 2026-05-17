@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.IntHelpers
 import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
+import Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv
+import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 
 /-!
 # Separation Module Hub

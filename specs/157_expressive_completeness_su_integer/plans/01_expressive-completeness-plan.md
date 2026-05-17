@@ -240,7 +240,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Negation Equivalences (Lemma 10.2.2) [NOT STARTED]
+### Phase 5: Negation Equivalences (Lemma 10.2.2) [COMPLETED]
 
 **Goal**: Prove the integer-specific negation of U and S. This is the key Z-dependent step.
 
@@ -267,7 +267,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Elimination Cases 1 and 5 (Core Direct Cases) [NOT STARTED]
+### Phase 6: Elimination Cases 1 and 5 (Core Direct Cases) [COMPLETED]
 
 **Goal**: Prove the two "direct semantic" elimination cases that form the foundation for all others.
 
