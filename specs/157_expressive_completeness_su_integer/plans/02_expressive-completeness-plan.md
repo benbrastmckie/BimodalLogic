@@ -1,10 +1,10 @@
-# Implementation Plan: Task #157 (v3) -- Axiom Elimination
+# Implementation Plan: Task #157 (v4) -- Full Axiom Elimination
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [IN PROGRESS]
-- **Effort**: 20 hours
+- **Status**: [NOT STARTED]
+- **Effort**: 28 hours
 - **Dependencies**: Task 155 (completed phases provide infrastructure)
-- **Research Inputs**: reports/01_expressive-completeness-proof.md, reports/02_case5-blocker-research.md, reports/03_implementation-audit.md
+- **Research Inputs**: reports/01_expressive-completeness-proof.md, reports/02_case5-blocker-research.md, reports/03_implementation-audit.md, reports/04_axiom-elimination-strategies.md, reports/05_ghr94-ch10-deep-analysis.md, reports/06_alternative-separation-approaches.md, reports/07_purity-predicate-audit.md
 - **Artifacts**: plans/02_expressive-completeness-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,30 +12,43 @@
 
 ## Overview
 
-This is plan v3 (revision of v2). The v2 plan's 4 phases were attempted by implementation agents. Phase 1 (Theorem 9.3.1) is still in progress with a separate agent. Phases 2-4 encountered fundamental mathematical blockers and fell back to axiom-based closures. The build passes with 0 errors, but 8 axioms in Eliminations.lean and SeparationThm.lean replace what should be proofs, plus 1 sorry remains in ExpressiveCompleteness.lean.
+This is plan v4, a comprehensive revision integrating findings from four team research reports (04-07). The v3 plan identified 8 axioms and 1 sorry as targets but lacked a viable strategy for Case 5 and the purity predicate mismatch. The new research resolves both blockers: (1) Report 05 identifies a Case 3 reduction strategy for Case 5 following GHR94's Dedekind-complete proof (Lemma 10.3.11.5), making Case 5 provable rather than axiomatized; (2) Report 07 identifies a critical purity predicate mismatch where `is_U_free` permits `all_future` (GHR94 treats G as derived from U), which blocks Theorem 9.3.1 and corrupts Cases 2-4 outputs; (3) Reports 04/05 confirm Cases 6-8 reduce to Cases 1-5 via iterated elimination and the multi-U induction of Lemma 10.2.6; (4) Report 06 confirms no alternative approach is cost-effective (all require 2500-6200+ LOC of new infrastructure vs ~500 LOC to fix the current approach).
 
-This plan targets **axiom elimination**: replacing the 8 axioms and 1 sorry with genuine proofs. The primary blockers are (1) GHR94's Case 5 formula is incorrect on integer time and no published correction exists, (2) Cases 6-8 reductions via neg_until_equiv introduce two distinct U-formulas that GHR94's single-U framework cannot handle, (3) the temporal closure axioms in SeparationThm.lean depend on the elimination axioms, and (4) Theorem 9.3.1 requires n-variable FO generalization. Each phase addresses a specific blocker with a new strategy informed by the failure analysis.
+The plan implements the full GHR94 Lemma hierarchy (Levels 1-5) that v3 was missing: 8 elimination cases, single-U wrapper (10.2.5), multi-U induction (10.2.6), no-S-in-U (10.2.7), and junction-depth induction (10.2.8). The purity fix comes first since everything depends on correct predicate semantics.
 
 Definition of done: `lake build` passes with zero axioms in Eliminations.lean and SeparationThm.lean, zero sorry in ExpressiveCompleteness.lean, and zero sorry in all Separation/ files (excluding DualEliminations.lean which is dead code).
 
 ### Research Integration
 
-Three research reports from v2 inform this plan:
+Seven research reports inform this plan:
 - **Report 01** (1165 lines): Complete pseudo-Lean proof map covering all GHR94 lemmas 10.2.1-10.2.8 and Theorem 9.3.1.
-- **Report 02** (769 lines): Confirms GHR94 Case 5 formula is wrong for integer time. Counterexample documented. No published correction found.
+- **Report 02** (769 lines): Confirms GHR94 Case 5 formula is wrong for integer time. Counterexample documented.
 - **Report 03** (429 lines): Complete implementation audit. Inventories all sorries with exact goal states.
+- **Report 04** (660 lines): Analyzes 5 elimination strategies. Confirms iterated single-U elimination is viable for Cases 6-8. Shows Cases 6-8 all ultimately depend on Case 5.
+- **Report 05** (503 lines): Deep analysis of GHR94 Ch 10. Identifies Case 3 reduction strategy for Case 5 from the Dedekind-complete proof. Confirms the 5-level lemma hierarchy needed. Documents the purity mismatch.
+- **Report 06** (361 lines): Surveys all alternative approaches (EF games, Reynolds, Venema, BAO, automata). All cost 2500-6200+ LOC. Confirms GHR94 Ch 10 syntactic approach is optimal.
+- **Report 07** (640 lines): Detailed purity predicate audit. Documents exact mismatch between `is_U_free` and GHR94's definition. Recommends Option D: new `is_future_only`/`is_past_only`/`is_properly_separated` predicates. Shows Cases 2-4 output formulas need adjustment.
 
-### Lessons from v2 Implementation Attempt
+### reports_integrated
 
-Four critical lessons shape this plan:
+- 04_axiom-elimination-strategies.md
+- 05_ghr94-ch10-deep-analysis.md
+- 06_alternative-separation-approaches.md
+- 07_purity-predicate-audit.md
 
-1. **Case 5 -- no explicit Formula witness on Z**: The well-founded cascade argument terminates logically but cannot produce a concrete `Formula` value. On integers, open intervals `(n, n+1)_Z` are empty, so B-intervals from different U-witnesses do not chain into contiguous coverage. The cascade depth depends on the model, making a fixed-size formula impossible. Five candidate formulas were tried; all failed.
+### Lessons from v3 and Prior Implementation Attempts
 
-2. **Cases 6-8 -- two-U-formula problem**: Applying `neg_until_equiv` to rewrite `neg U(A,B)` produces `G(neg A) v U(neg A ^ neg B, neg A)`, introducing a NEW U-formula alongside the existing `U(A,B)`. GHR94's 8-case framework handles S-expressions with a SINGLE U-subformula. With two distinct U-formulas, the single-U reduction does not apply. This is a structural limitation of the lemma-by-lemma approach.
+Five critical lessons shape this plan:
 
-3. **SeparationThm closure axioms**: The 4 temporal closure axioms (`all_past_separable`, `all_future_separable`, `untl_separable`, `snce_separable`) encapsulate the GHR94 Lemmas 10.2.4-10.2.8 substitution bridge. They were axiomatized because the bridge depends on the elimination cases (which were themselves axiomatized). Once elimination cases are proved, these can be proved too.
+1. **Purity predicates are wrong** (Report 07): `is_U_free` permits `all_future`, but GHR94 treats G = neg U(neg phi, top) as containing U. This means our `is_syntactically_separated` is weaker than GHR94's definition. Cases 2-4 produce output formulas with `all_future(neg A)` inside `snce` arguments, which is NOT separated in GHR94's sense. Theorem 9.3.1 REQUIRES semantic purity (pure-past parts must not look at the future), which the weak predicate cannot guarantee.
 
-4. **Theorem 9.3.1 -- n-variable generalization**: The statement is specialized to `MonadicFormula sig 1` but the quantifier case `ex alpha` has `alpha : MonadicFormula sig 2`, requiring ~200-400 LOC of infrastructure for arbitrary variable count.
+2. **Case 5 IS solvable** (Report 05): The Dedekind-complete proof (Lemma 10.3.11.5) shows: apply Case 3 treating `a ^ U(A,B)` as the event parameter, producing a result with U in structurally simpler positions. After expanding `neg U(A,B)` via `neg_until_equiv` and distributing, each disjunct has at most one U under S, handleable by Cases 1-4. This generalizes to Z.
+
+3. **Cases 6-8 reduce to Cases 1-5** (Reports 04, 05): GHR94's Lemma 10.2.6 handles multiple U-formulas by induction on the count of distinct U-subformulas. The two-U problem from `neg_until_equiv` is handled naturally: treat one U as an atom, eliminate the other, substitute back, re-separate. All three cases ultimately depend on Case 5.
+
+4. **The full lemma hierarchy is needed** (Report 05): The correct architecture is 5 levels: (1) 8 elimination cases (Lemma 10.2.3), (2) single-U-under-S wrapper (Lemma 10.2.5), (3) multi-U induction (Lemma 10.2.6), (4) no-S-in-U (Lemma 10.2.7), (5) junction-depth induction (Lemma 10.2.8). The v3 plan jumped from level 1 to level 5.
+
+5. **Phase 1 (Theorem 9.3.1) is blocked by the purity issue** (Report 07): The substitution step requires that "past" parts of a separated formula evaluate ONLY at times <= t, and "future" parts ONLY at times >= t. With `all_future` permitted inside `snce` arguments, this semantic guarantee fails. The purity fix unblocks Phase 1.
 
 ### Codebase State at Time of Revision
 
@@ -44,235 +57,368 @@ Four critical lessons shape this plan:
 - 4 axioms in `SeparationThm.lean`: `all_past_separable`, `all_future_separable`, `untl_separable`, `snce_separable`
 - 1 sorry in `ExpressiveCompleteness.lean`: `separation_implies_expressiveness`
 - 8 sorries in `DualEliminations.lean` (dead code, not on critical path)
+- Cases 1-4 proved but Cases 2-4 output formulas use `all_future`/`all_past` inside S/U arguments (incorrect under strict purity)
+- Phase 1 infrastructure built but uncommitted: ExtPred, extSignature, reduce, reduce_correct, extStructure, inst, helper lemmas
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Replace all 4 axioms in `Eliminations.lean` with proofs (Cases 5-8)
-- Replace all 4 axioms in `SeparationThm.lean` with proofs (temporal closure)
-- Close the 1 sorry in `ExpressiveCompleteness.lean` (Theorem 9.3.1)
+- Fix purity predicates to correctly model GHR94's semantic separation (no future operators under S, no past operators under U)
+- Adjust Cases 2-4 output formulas to satisfy the corrected purity predicates
+- Prove Case 5 via the Case 3 reduction strategy from GHR94's Dedekind-complete proof
+- Prove Cases 6-8 via iterated single-U elimination reducing to Cases 1-5
+- Implement Lemmas 10.2.5-10.2.7 (single-U wrapper, multi-U induction, no-S-in-U)
+- Prove `all_separable` via junction-depth induction (Lemma 10.2.8), replacing 4 temporal closure axioms
+- Complete Theorem 9.3.1 (`separation_implies_expressiveness`) using proper semantic purity
 - Achieve zero-axiom, zero-sorry `lake build` for all Separation/ files + ExpressiveCompleteness.lean
-- Document the mathematical strategy deviations from GHR94 in code comments
 
 **Non-Goals**:
 - Proving DualEliminations.lean (8 sorries -- dead code, not on critical path)
-- Finding GHR94's intended explicit formula for Case 5 (we use an alternative proof strategy)
+- Implementing alternative proof approaches (Reynolds, EF games, BAO)
 - Extending to dense or continuous time flows
 - Optimizing proof terms for performance
-- Publishing the alternative proof strategy
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Research Phase 2 finds no viable strategy for Case 5 on Z | H | M | Fall back to FO-translation approach: translate S(a^U(A,B), q v U(A,B)) to FO, apply known FO-to-temporal back-translation. This is indirect but mathematically sound. If that also fails, Case 5 axiom remains documented as an open problem. |
-| Iterated elimination for Cases 6-8 does not reduce to single-U cases | H | M | Alternative: prove Cases 6-8 directly via semantic argument on Z (bypass the neg_until_equiv expansion entirely). Each case has a finite number of temporal patterns that can be case-split. |
-| Junction-depth induction for SeparationThm requires infrastructure not yet built | M | M | The substitution bridge (extract maximal U-subterms, replace by atoms, re-substitute) needs ~200 LOC. If stuck, the structural induction approach with temporal closure lemmas works once elimination is proved. |
-| Theorem 9.3.1 n-variable generalization requires more than 400 LOC | M | L | The generalization is straightforward but tedious. If effort exceeds budget, prove for n=1 with an axiom for the general case, documented as a known extension. |
-| Research blocker: no viable proof strategy exists for the integer case | H | L | The separation theorem for Z IS true (Kamp 1968, Reynolds 1994). If no constructive proof path is found through GHR94's framework, consider Reynolds' alternative axiomatization approach. |
+| Purity predicate change cascades through many proofs beyond Cases 2-4 | H | M | Use Option D from Report 07: define NEW predicates (`is_future_only`, `is_past_only`, `is_properly_separated`) alongside existing ones. Migrate incrementally. Old predicates remain for any intermediate steps that need them. |
+| Cases 2-4 output formula rewrite is more complex than estimated | M | M | Report 07 identifies the exact formulas. GHR94 Case 2 formula avoids G inside S entirely. If rewrite proves difficult, use the bridge lemma approach (Report 07 alternative): prove `is_syntactically_separated -> exists properly_separated equiv`. Estimated ~200 LOC. |
+| Case 5 reduction via Case 3 fails because Case 3 preconditions require `is_U_free a = true` but `a ^ U(A,B)` is not U-free | H | M | Report 05 Section 7.2 addresses this: either generalize Case 3 to allow U in the event parameter (the semantic proof is identical), or apply Case 3's semantic equivalence directly without going through the typed theorem. The semantic argument only requires the event's non-U part to be U-free. |
+| Junction-depth induction measure does not strictly decrease through the elimination process | M | L | Report 04 Section 8.3 provides a fallback: prove the 4 temporal closure axioms individually using the substitution bridge. Each step is straightforward once the elimination cases are available. |
+| Theorem 9.3.1 quantifier case requires more infrastructure than budgeted | M | M | The infrastructure (ExtPred, reduce, reduce_correct) is already built. With proper purity predicates, the substitution step becomes feasible. If still blocked, prove for n=1 with the general case as a documented extension point. |
+| Re-separation after atom substitution in Cases 6-8 requires the full `all_separable` (circular dependency) | H | L | The re-separation only needs single-U elimination (Cases 1-5), not the full hierarchy. Structure the proof to invoke Cases 1-5 directly, avoiding circular dependency with `all_separable`. |
 
 ## Implementation Phases
 
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 2 | -- |
-| 2 | 3 | 2 |
-| 3 | 4 | 3 |
-| 4 | 5 | 1, 4 |
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
+| 5 | 5 | 4 |
+| 6 | 6 | 1, 5 |
+| 7 | 7 | 5, 6 |
 
-Phases within the same wave can execute in parallel.
+Phases are sequential because each builds on the prior phase's infrastructure.
 
 ---
 
-### Phase 1: Complete separation_implies_expressiveness (Theorem 9.3.1) [BLOCKED]
+### Phase 1: Fix Purity Predicates and Adjust Cases 2-4 [NOT STARTED]
 
-**Goal**: Close the 1 sorry in `ExpressiveCompleteness.lean` by proving that separation implies expressive completeness via induction on FO formulas generalized to n free variables.
+**Goal**: Define correct purity predicates matching GHR94's semantic separation, update `is_syntactically_separated` to use them, and adjust the output formulas of Cases 2-4 so they satisfy the strengthened predicate. This phase is the prerequisite for all subsequent work.
 
-**BLOCKER** (Phase 1):
-- **What failed**: The substitution step (Task 1.4) in the quantifier case requires that "past" parts of a separated formula evaluate ONLY at times <= the current point, and "future" parts ONLY at times >= the current point. This is needed so that R-atoms (encoding z's position relative to t) can be replaced by True/False constants in the correct temporal region.
-- **What was tried**:
-  1. **reduce + q_exists + context-dependent substitution**: Defined `reduce` (MonadicFormula sig (n+1) -> MonadicFormula extSig n) replacing the parameter variable with auxiliary predicates. Proved `reduce_correct` and `reduce_preserves_depth`. Applied IH to get temporal formula B. Formed q_exists(B). Attempted to substitute R-atoms by True/False in each temporal region (past/present/future) of the separated formula. FAILED because the substitution is incorrect when U-free subformulas contain `all_future` (which looks at future times).
-  2. **inst (direct instantiation)**: Defined `inst` that replaces the parameter variable with concrete True/False values based on region and truth assignment. Works for quantifier-free formulas but FAILS for nested quantifiers because inner quantified variables' comparisons to t can't be resolved by region alone.
-  3. **eliminate_HG conversion**: Attempted to convert all_past/all_future to S/U equivalents before separation. FAILED because the conversion introduces `untl` inside previously U-free arguments, breaking syntactic separation.
-  4. **Conditional split for frozen predicates**: For predicates p(t) (constant in z), split formula into cases based on p(t) = True/False at the top level. This step IS correct and works. But it doesn't resolve the R-atom substitution issue.
-- **Why it's stuck**: The `is_syntactically_separated` predicate in Defs.lean defines "U-free" as "no untl" and "S-free" as "no snce". This allows `all_future` inside S-arguments and `all_past` inside U-arguments. In GHR94, "pure past" means no U AND no G(=all_future); "pure future" means no S AND no H(=all_past). Our weaker definition means a "U-free" formula like `snce(all_future(atom a), bot)` is syntactically separated but NOT semantically pure-past -- it evaluates `all_future(atom a)` at z < t, which looks at ALL future times including times > t where R-atoms have different values. This makes the R-atom substitution incorrect.
-- **What is needed**: One of:
-  1. **Strengthen `is_syntactically_separated`**: Redefine "U-free" to also exclude `all_future`, and "S-free" to also exclude `all_past`. This matches GHR94's definition. Then re-verify that the separation theorem (currently axiomatized) still holds with the stronger definition, and use the stronger purity property in the substitution proof.
-  2. **Prove separation produces strongly-separated formulas**: Show that `all_separable` (via the temporal closure axioms) actually produces formulas where S-arguments contain no `all_future` and U-arguments contain no `all_past`, even though `is_syntactically_separated` doesn't require this. Then use this additional property in the substitution proof.
-  3. **Alternative proof of Theorem 9.3.1**: Use a proof strategy that doesn't rely on the purity of separated formula parts. E.g., a model-theoretic argument or a direct inductive construction that avoids the reduce+substitute pattern.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+**Strategy (Option D from Report 07)**:
 
-**Infrastructure built during investigation** (available for future use):
-- `ExtPred`, `extSignature`: Extended signature with auxiliary predicates (orig, frozen, r_eq, r_gt, r_lt)
-- `reduce`: MonadicFormula sig (n+1) -> MonadicFormula extSig n (replaces last variable with aux predicates)
-- `extStructure`: Extended IntStructureFromSig with correct aux predicate interpretations
-- `reduce_correct`: Semantic correctness of reduce (fully proved)
-- `reduce_preserves_depth`: Depth preservation of reduce (fully proved)
-- `inst`: Direct instantiation with region and truth assignment (works for quantifier-free case)
-- `separated_R_subst`: Context-aware R-atom substitution on separated formulas (syntactically defined but semantically incorrect with current separation definition)
-- `subst_R_present/past/future`: Region-specific R-atom substitutions via subst_formula
-- Helper lemmas: `int_truth_neg`, `int_truth_and`, `int_truth_atom_inj`, `injAtomMap`, `injAtomMap_injective`
-- All helper lemmas and proofs tested via lean_run_code; not yet committed to the file
+1. Define new predicates in Defs.lean:
+   - `is_future_only`: no `all_past`, no `snce` (permits `all_future`, `untl`, atoms, boolean)
+   - `is_past_only`: no `all_future`, no `untl` (permits `all_past`, `snce`, atoms, boolean)
+   - `is_properly_separated`: uses `is_future_only`/`is_past_only` instead of `is_U_free`/`is_S_free`
+   - `is_properly_separable`: exists properly_separated equivalent
 
-**Status Note**: A separate implementation agent was working on this phase. Preserve its progress.
+2. Prove basic properties:
+   - `is_future_only` and `is_past_only` are closed under boolean connectives
+   - Duality: `is_future_only(swap phi) = is_past_only(phi)` and vice versa
+   - `is_properly_separated(swap phi) = is_properly_separated(phi)` (via duality)
 
-**Strategy**: Generalize `separation_implies_expressiveness` to work with `MonadicFormula sig n` for arbitrary `n`. The base cases (atom, lt, not, and) translate directly to temporal atoms and Boolean connectives. The quantifier case `ex alpha` (where `alpha : MonadicFormula sig (n+1)`) requires:
-1. A generalized translation lemma for n-variable formulas
-2. An environment-to-temporal encoding scheme (map variable assignments to temporal positions using order comparisons)
-3. Quantifier elimination via `q_exists` + separation decomposition + substitution
+3. Adjust Cases 2-4 output formulas:
+   - **Case 2**: Currently produces `snce(and a (all_future(neg A))) q`. GHR94's actual Case 2 formula (from the literature) avoids G inside S: `[S(a, q ^ not A) ^ not A ^ not U(A,B)] v [not A ^ not B ^ S(a, not A ^ q)] v S(not A ^ not B ^ q ^ S(a, not A ^ q), q)`. Rewrite the proof to produce this formula (or the bridge lemma approach).
+   - **Case 3**: Symmetric adjustment for `all_past(neg a)` inside `untl` arguments.
+   - **Case 4**: Symmetric adjustment.
+   - **Case 1**: No change needed (output contains no `all_future`/`all_past`).
+
+4. Alternatively (if Case 2-4 rewrite is too complex): Prove a bridge lemma showing that every weakly-separated formula can be converted to a properly-separated equivalent by replacing `all_future(phi)` with the semantically equivalent `neg(untl(neg phi)(bot)).neg` encoding in problematic positions. This avoids touching the Case 2-4 proofs. Estimated ~200 LOC.
+
+5. Update `is_separable` references throughout:
+   - If using new predicates directly: update all_separable's conclusion to use `is_properly_separable`
+   - If using bridge lemma: keep `is_separable` and add a separate `all_properly_separable` that composes `all_separable` with the bridge
 
 **Tasks**:
-- [x] **Task 1.1**: Generalize the theorem statement to `MonadicFormula sig n` for arbitrary `n` *(completed -- reduce function handles n+1 -> n variable reduction)*
-- [x] **Task 1.2**: Implement environment encoding: translate variable assignments `{0..n-1} -> Z` into temporal formulas using atoms `r_=`, `r_<`, `r_>` for position comparisons *(completed -- ExtPred, extSignature, reduce, extStructure, reduce_correct all proved)*
-- [x] **Task 1.3**: Prove base cases: atom, lt, not, and (translate FO connectives to temporal connectives) *(completed -- all base cases proved with fixed injective atomMap)*
-- [ ] **Task 1.4**: Prove the quantifier case: given IH for `MonadicFormula sig (n+1)`, construct the temporal equivalent for `exists x, phi(x, x_1, ..., x_n)` using `q_exists`, separation, and substitution *(deviation: blocked -- the substitution step requires stronger separation purity than is_syntactically_separated provides; see BLOCKER above)*
-- [ ] **Task 1.5**: Specialize back to `n = 1` and prove the original `separation_implies_expressiveness` *(deviation: deferred -- blocked by Task 1.4)*
-- [ ] **Task 1.6**: Verify `lake build` passes with no sorry in ExpressiveCompleteness.lean *(deviation: deferred -- blocked by Task 1.4)*
+- [ ] **Task 1.1**: Define `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_separable` in Defs.lean (~30 LOC)
+- [ ] **Task 1.2**: Prove closure and duality properties for new predicates (~80 LOC)
+- [ ] **Task 1.3**: Decide between Case 2-4 rewrite vs bridge lemma approach (investigate GHR94's exact formulas, estimate effort)
+- [ ] **Task 1.4**: Implement the chosen approach for Cases 2-4 purity compliance (~200-500 LOC depending on approach)
+- [ ] **Task 1.5**: Update separation predicate usage in SeparationThm.lean and ExpressiveCompleteness.lean to reference the proper purity notion
+- [ ] **Task 1.6**: Verify `lake build` passes with updated predicates, all existing proofs compile
 
-**Timing**: 4 hours
+**Timing**: 5 hours
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` -- generalize and prove (~200-400 LOC)
-- Possibly `Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean` -- extend with n-variable infrastructure if needed
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` -- add new predicates (~30 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Duality.lean` -- add duality lemmas for new predicates (~50 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- adjust Cases 2-4 output formulas or add bridge lemma (~200-500 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- update axiom types
+- Possibly new helper file for the bridge lemma
+
+**Verification**:
+- `lake build` passes with 0 errors
+- New predicates correctly reject `snce(all_future(p))(q)` as not properly separated
+- New predicates correctly accept `all_future(neg A)` as future-only at top level of separated formula
+- Cases 1-4 all produce `is_properly_separated` outputs (either directly or via bridge)
 
 ---
 
-### Phase 2: Research alternative proof strategies for Cases 5-8 [NOT STARTED]
+### Phase 2: Prove Case 5 via Case 3 Reduction [NOT STARTED]
 
-**Goal**: Identify a viable proof strategy for the elimination cases that avoids the two known blockers (no explicit formula for Case 5 on Z; two-U-formula problem for Cases 6-8). This phase produces a research report, not code.
+**Goal**: Replace `elim_case_5_axiom` with a genuine proof using the reduction strategy from GHR94's Dedekind-complete proof (Lemma 10.3.11.5), as identified by Report 05.
 
-**Motivation**: The v2 implementation attempt exhaustively demonstrated that GHR94's approach to Cases 5-8 does not work on integer time as written. Before attempting new code, we need a mathematically sound alternative strategy. This requires targeted research.
+**Strategy**: Apply Case 3's semantic equivalence to `S(a ^ U(A,B), q v U(A,B))` by treating `a' = a ^ U(A,B)` as the event parameter. The result still contains U(A,B) in positions derived from `neg a'`, but after expanding via `neg_until_equiv` and distributing, each disjunct has at most one U under S, handleable by Cases 1-4.
 
-**Research Questions** (in priority order):
-1. **FO-translation approach for Case 5**: Can we translate `S(a ^ U(A,B), q v U(A,B))` to a monadic FO sentence over Z, then apply the Theorem 9.3.1 back-translation to obtain a separated temporal formula? This avoids needing an explicit formula by leveraging the FO-to-temporal correspondence. What are the obstacles to making this circular-free (since Theorem 9.3.1 uses separation)?
-2. **Direct Finset construction for Case 5**: Since Z is discrete, any U-witness chain is finite. Can we enumerate witness configurations as a finite disjunction, then show each disjunct is separated? The key question is whether the disjunction can be expressed as a fixed-size Formula.
-3. **Iterated single-U elimination for Cases 6-8**: After neg_until_equiv expansion produces two U-formulas U1 and U2, can we treat U1 as a "macro atom" and apply the 8-case framework to eliminate U2 first, then eliminate U1 in a second pass? What are the well-foundedness conditions for this iteration?
-4. **Reynolds' alternative axiomatization**: Reynolds (1994) proved the separation theorem for Z using a different approach than GHR94. Does Reynolds' proof avoid the Case 5 formula entirely? Can we adapt Reynolds' strategy?
-5. **Multi-U generalization of Lemma 10.2.3**: Can the 8-case framework be extended to handle S-expressions with k distinct U-subformulas (k >= 2)? What changes to the case analysis?
+**Detailed Steps**:
+
+1. **Generalize Case 3 or use direct semantic argument**: Case 3's theorem requires `is_U_free a = true`, but `a ^ U(A,B)` is not U-free. Two options:
+   - (a) Prove a generalized Case 3 that relaxes the U-free precondition on the event to allow the specific `U(A,B)` that also appears in the guard. The semantic proof is identical.
+   - (b) Re-derive Case 3's semantic equivalence directly for the specific `a' = a ^ U(A,B)` case, without going through the typed theorem.
+
+2. **Apply the Case 3 equivalence**: `S(a ^ U(A,B), q v U(A,B))` is equivalent to the Case 3 formula with `a' = a ^ U(A,B)`.
+
+3. **Simplify the result**: The Case 3 output contains `neg(a ^ U(A,B))` = `neg a v neg U(A,B)` in various positions under S. Expand `neg U(A,B)` via `neg_until_equiv` to get `G(neg A) v U(neg A ^ neg B, neg A)`.
+
+4. **Distribute and case-split**: After distributing disjunctions, each resulting S-formula has at most one U-formula (either U(A,B) from the original, or U(neg A ^ neg B, neg A) from the negation), but NOT both simultaneously under the same S. These are all Cases 1-4 patterns.
+
+5. **Apply Cases 1-4**: Each disjunct falls into one of the proved Cases 1-4, producing a properly separated result.
+
+6. **Combine via `or_separable`**: The final result is a disjunction of separated formulas.
 
 **Tasks**:
-- [ ] **Task 2.1**: Research the FO-translation approach: check whether `int_equiv` between temporal and FO formulas gives a non-circular path to Case 5
-- [ ] **Task 2.2**: Research iterated elimination: formalize the conditions under which eliminating one U at a time terminates and preserves separation
-- [ ] **Task 2.3**: Research Reynolds 1994 and other alternative proofs of the Z separation theorem
-- [ ] **Task 2.4**: Research direct semantic proofs: for each case, can we construct the separated formula by analyzing the finite set of temporal patterns on Z intervals?
-- [ ] **Task 2.5**: Write research report with recommended strategy, proof sketches, and effort estimates
+- [ ] **Task 2.1**: Establish the generalized Case 3 equivalence (or direct semantic argument) for `a' = a ^ U(A,B)` (~150-250 LOC)
+- [ ] **Task 2.2**: Prove the `neg(a ^ U(A,B))` expansion and distribution lemmas (~80 LOC)
+- [ ] **Task 2.3**: Show each resulting disjunct matches a Case 1-4 pattern and apply the corresponding theorem (~150-200 LOC)
+- [ ] **Task 2.4**: Assemble the full Case 5 proof combining all disjuncts (~50 LOC)
+- [ ] **Task 2.5**: Replace `elim_case_5_axiom` with the proved `elim_case_5` theorem
+- [ ] **Task 2.6**: Verify `lake build` passes with Case 5 axiom replaced by proof
 
 **Timing**: 4 hours
 
-**Depends on**: none
+**Depends on**: 1 (purity predicates must be correct for the output formula to satisfy the separation check)
 
 **Files to modify**:
-- `specs/157_expressive_completeness_su_integer/reports/04_axiom-elimination-strategies.md` -- new research report
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- replace axiom with proof (~400-600 LOC net)
+- Possibly `Theories/Bimodal/Metalogic/WeakCanonical/Separation/IntHelpers.lean` -- additional semantic lemmas
+
+**Verification**:
+- `lake build` passes
+- `grep -rn "axiom elim_case_5" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` returns empty
+- Case 5 theorem compiles with the same type signature as the former axiom
 
 ---
 
-### Phase 3: Prove Cases 5-8 in Eliminations.lean [NOT STARTED]
+### Phase 3: Prove Cases 6-8 via Iterated Elimination [NOT STARTED]
 
-**Goal**: Replace the 4 axioms (`elim_case_5_axiom`, `elim_case_6_axiom`, `elim_case_7_axiom`, `elim_case_8_axiom`) in `Eliminations.lean` with genuine proofs using the strategy identified in Phase 2.
+**Goal**: Replace the 3 axioms (`elim_case_6_axiom`, `elim_case_7_axiom`, `elim_case_8_axiom`) with genuine proofs using iterated single-U elimination reducing to Cases 1-5, as confirmed by Reports 04 and 05.
 
-**Strategy** (to be refined by Phase 2 research; candidate approaches listed):
+**Strategy**: Each case applies `neg_until_equiv` to expand `neg U(A,B)`, distributes via `since_distrib_or_left`, then handles each disjunct by applying the appropriate earlier case. The two-U disjuncts are resolved by treating one U as a fresh atom, applying a Case 1-4 to eliminate the other, substituting back, and re-separating via Cases 1-5.
 
-**Candidate A -- Iterated Elimination**:
-- For Case 5: Prove existence by induction on the number of temporal alternations in the formula. At each step, use Cases 1-4 to handle the base and the well-ordering of temporal complexity to ensure termination. The key insight is that even though we cannot give an explicit formula, we can show `exists psi` by constructing it via the induction.
-- For Cases 6-8: After neg_until_equiv expansion, treat the resulting two-U expression as having strictly smaller temporal complexity than the original. Apply the full elimination framework recursively: first eliminate U2 (treating U1 as an atom), then eliminate U1. Each step reduces the number of non-eliminated U-subformulas.
+**Concrete reductions** (from Report 04 Section 1.7 and Report 05 Section 4):
 
-**Candidate B -- Direct Semantic Argument**:
-- For each case, prove `exists psi : Formula, int_equiv original psi ^ is_syntactically_separated psi` by a direct semantic argument. Construct the separated formula by case-splitting on the positions of U-witnesses relative to t, using `Finset`-based reasoning on Z intervals. The result is a finite disjunction of pure-past/pure-future/present formulas.
+**Case 8** (simplest, do first):
+- `S(a ^ neg U(A,B), q v neg U(A,B))`
+- Use GHR94's explicit negation reduction (Lemma 10.2.3.8): negate the formula, apply `neg_since_equiv` with `y = z = neg U(A,B)`, yielding `H(neg a v U(A,B)) v S(neg q ^ U(A,B) ^ neg a, neg a v U(A,B))`.
+- The second S-formula has U(A,B) in both event and guard: this is Case 5 (with primed parameters).
+- The H-term has U under H (= under S in the hierarchy): handle by Case 1 or the hierarchy.
+- Result: `D <-> neg [Case_5_result v Case_1_result]`, which is separated.
+- **Depends on**: Cases 3, 5.
 
-**Candidate C -- FO Translation Round-Trip**:
-- Translate the Since-expression to FO over Z. Apply the known FO-to-temporal back-translation. Show the result is separated. This approach is indirect but avoids the need for an explicit Case 5 formula.
+**Case 6**:
+- `S(a ^ neg U(A,B), q v U(A,B))`
+- Expand `neg U(A,B)` in event: `a ^ [G(neg A) v U(A', B')]` where `A' = neg A ^ neg B`, `B' = neg A`
+- Distribute: `S(a ^ G(neg A), q v U(A,B))` v `S(a ^ U(A',B'), q v U(A,B))`
+- Disjunct 1: Case 3 (event U-free, guard has single U). Directly apply `elim_case_3`.
+- Disjunct 2: Two U-formulas. Substitute `p := U(A,B)` to get `S(a ^ U(A',B'), q v p)`. This is Case 1 with atom p. Apply Case 1, substitute back, re-separate via Cases 1-5.
+- **Depends on**: Cases 1, 3, 5.
+
+**Case 7**:
+- `S(a ^ U(A,B), q v neg U(A,B))`
+- Expand `neg U(A,B)` in guard: `q v G(neg A) v U(A',B')`
+- Substitute `p := U(A,B)` in event: `S(a ^ p, (q v G(neg A)) v U(A',B'))`. Event `a ^ p` is U-free. Guard has single U(A',B'). This is Case 3 with atom p.
+- Apply Case 3, substitute back, re-separate via Cases 1-5.
+- **Depends on**: Cases 1-5.
 
 **Tasks**:
-- [ ] **Task 3.1**: Implement the chosen strategy for Case 5 (`elim_case_5_axiom` -> theorem)
-- [ ] **Task 3.2**: Implement the chosen strategy for Case 6 (`elim_case_6_axiom` -> theorem)
-- [ ] **Task 3.3**: Implement the chosen strategy for Case 7 (`elim_case_7_axiom` -> theorem)
-- [ ] **Task 3.4**: Implement the chosen strategy for Case 8 (`elim_case_8_axiom` -> theorem)
-- [ ] **Task 3.5**: Remove all 4 axiom declarations from Eliminations.lean
-- [ ] **Task 3.6**: Verify `lake build` passes with no axioms and no sorry in Eliminations.lean
+- [ ] **Task 3.1**: Implement Case 8 proof via negation reduction to Cases 3 + 5 (~100-200 LOC)
+- [ ] **Task 3.2**: Implement Case 6 proof via event expansion, distribution, Case 3 + iterated Case 1 + re-separation (~200-300 LOC)
+- [ ] **Task 3.3**: Implement Case 7 proof via guard expansion, fresh-atom substitution, Case 3 + re-separation (~200-300 LOC)
+- [ ] **Task 3.4**: Make necessary private helpers public in Eliminations.lean (or_separable, is_separable_of_equiv, etc.)
+- [ ] **Task 3.5**: Add missing infrastructure lemmas: `neg_U_free`, `and_U_free`, `or_U_free`, `all_future_U_free`, `since_distrib_event_or`, `or_equiv_congr` (~50-80 LOC)
+- [ ] **Task 3.6**: Remove all 3 axiom declarations, verify `lake build` passes with 0 axioms in Eliminations.lean
 
-**Timing**: 6 hours
+**Timing**: 5 hours
 
-**Depends on**: 2 (research must identify viable strategy before implementation)
+**Depends on**: 2 (Case 5 must be proved since Cases 6-8 all depend on it)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- replace axioms with proofs (~300-500 LOC)
-- Possibly new helper file if infrastructure is substantial
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- replace 3 axioms with proofs (~500-800 LOC net)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/FormulaOps.lean` -- possibly add substitution helpers
 
 **Verification**:
 - `lake build` passes
 - `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` returns empty
-- `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` returns empty
+- All 8 elimination cases are theorems with proofs
 
 ---
 
-### Phase 4: Prove temporal closure in SeparationThm.lean [NOT STARTED]
+### Phase 4: Implement Lemmas 10.2.5-10.2.7 (Hierarchy Levels 2-4) [NOT STARTED]
 
-**Goal**: Replace the 4 axioms (`all_past_separable`, `all_future_separable`, `untl_separable`, `snce_separable`) in `SeparationThm.lean` with genuine proofs implementing the GHR94 Lemmas 10.2.4-10.2.8 substitution bridge.
+**Goal**: Build the intermediate hierarchy levels between the 8 elimination cases (Level 1) and the full junction-depth induction (Level 5). These are:
+- **Lemma 10.2.5** (single-U-under-S): Given a formula with a single U(A,B) subformula where A, B are S-free, produce a separated equivalent. Uses normal form reduction to the 8 cases.
+- **Lemma 10.2.6** (multi-U induction): Given a formula with n distinct U-subformulas (all with S-free arguments) under S, produce a separated equivalent by induction on n. Replace n-1 U-subformulas by fresh atoms, apply Lemma 10.2.5 for the remaining one, substitute back, re-separate.
+- **Lemma 10.2.7** (no-S-in-U): Given a formula where no S appears inside U-arguments (but U may appear inside S-arguments), produce a separated equivalent. Identify maximal U-subformulas, apply Lemma 10.2.6, compose results.
 
-**Strategy**: With elimination Cases 1-8 now proved (Phase 3), the substitution bridge becomes tractable. The approach is junction-depth induction:
+**Strategy**:
 
-1. Define `junction_depth : Formula -> Nat` measuring the maximum nesting of U-within-S or S-within-U alternation.
-2. For `all_past phi` where `phi` is separable with separated equivalent `phi'`:
-   - If `phi'` is U-free: `all_past phi'` is directly separated (pure past).
-   - If `phi'` has U-subterms: extract maximal U-subterms `U(A_i, B_i)` (where `A_i, B_i` are S-free because `phi'` is separated). Replace each by a fresh atom `p_i`. The resulting `all_past phi''` is separated (U-free). Now substitute back: this is exactly Lemma 10.2.4 (single S with top-level U). Apply the proved elimination cases to obtain a separated result.
-3. Symmetric arguments for `all_future`, `untl`, `snce`.
-4. The junction_depth decreases at each substitution step because the elimination removes one level of S-U alternation.
+For **Lemma 10.2.5**: The formula has the form `S(C, F)` with a single U(A,B) in C or F (or both). Use Lemma 10.2.1 (distribution) to reduce to normal form: `S(c_j ^ U(A,B)^ej, q_k v U(A,B)^fk)` where `e_j, f_k in {0, 1}`. Each such S-formula falls into one of the 8 cases. The result is a boolean combination of separated formulas.
+
+For **Lemma 10.2.6**: Induction on the number n of distinct U-subformula types.
+- Base case n=0: formula is already U-free under S (hence separated).
+- Base case n=1: apply Lemma 10.2.5.
+- Inductive step: pick any U_i, replace all other U_j (j != i) by fresh atoms p_j. Apply Lemma 10.2.5 for U_i. The result is separated but contains atoms p_j. Substitute p_j := U_j back. The result has fewer distinct U-types under each S (because U_i has been eliminated). Apply the induction hypothesis.
+
+For **Lemma 10.2.7**: The formula has no S inside U-arguments. Identify the set of maximal U-subformulas `{U(A_1,B_1), ..., U(A_n,B_n)}` whose arguments are S-free (guaranteed by the "no S in U" precondition). Replace each by a fresh atom. The resulting formula has no U at all, so it's U-free. If it also has no problematic S-nesting, it's separated. If it has S, apply the temporal closure argument. After substitution back, apply Lemma 10.2.6.
 
 **Tasks**:
-- [ ] **Task 4.1**: Define `junction_depth` as a computable function on Formula
-- [ ] **Task 4.2**: Implement `extract_maximal_U_subterms`: given a separated formula, identify the maximal U-subformulas whose arguments are S-free
-- [ ] **Task 4.3**: Implement `subst_U_by_atoms`: replace maximal U-subterms by fresh atoms, returning the substituted formula and a mapping
-- [ ] **Task 4.4**: Prove `subst_U_by_atoms_equiv`: the substitution preserves equivalence when atoms are interpreted as the U-subterms they replace
-- [ ] **Task 4.5**: Prove `elimination_reduces_junction_depth`: applying elimination cases to a substituted formula yields a result with strictly lower junction_depth
-- [ ] **Task 4.6**: Prove `all_past_separable` using junction_depth induction + substitution bridge
-- [ ] **Task 4.7**: Prove `all_future_separable` (symmetric to 4.6)
-- [ ] **Task 4.8**: Prove `untl_separable` using the proved elimination cases directly (untl arguments already separated, so the snce-to-separated reduction from elimination applies after `swap_temporal`)
-- [ ] **Task 4.9**: Prove `snce_separable` using elimination cases 1-8 on the maximal U-subformula
-- [ ] **Task 4.10**: Remove all 4 axiom declarations from SeparationThm.lean
-- [ ] **Task 4.11**: Verify `lake build` passes with no axioms and no sorry in SeparationThm.lean
+- [ ] **Task 4.1**: Define `count_U_subformulas_under_S` as a computable measure for Lemma 10.2.6 induction (~30 LOC)
+- [ ] **Task 4.2**: Define `has_S_in_U` predicate for Lemma 10.2.7's precondition (~20 LOC)
+- [ ] **Task 4.3**: Implement the normal form reduction for Lemma 10.2.5: distribute S over boolean combinations to extract U(A,B) position (~150-200 LOC)
+- [ ] **Task 4.4**: Prove Lemma 10.2.5 (single-U-under-S) using normal form + 8 cases (~100-150 LOC)
+- [ ] **Task 4.5**: Prove Lemma 10.2.6 (multi-U induction on n) using fresh-atom substitution + Lemma 10.2.5 + induction (~200-300 LOC)
+- [ ] **Task 4.6**: Prove Lemma 10.2.7 (no-S-in-U) using maximal U-subformula extraction + Lemma 10.2.6 (~150-200 LOC)
+- [ ] **Task 4.7**: Verify `lake build` passes, all new lemmas compile
+
+**Timing**: 5 hours
+
+**Depends on**: 3 (all 8 elimination cases must be proved theorems)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Helpers.lean` -- new file for hierarchy infrastructure (~200 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- add Lemmas 10.2.5-10.2.7 (~400-600 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/FormulaOps.lean` -- multi-substitution, U-subformula extraction
+
+**Verification**:
+- `lake build` passes
+- `Lemma_10_2_5`, `Lemma_10_2_6`, `Lemma_10_2_7` (or equivalent named theorems) compile without sorry
+
+---
+
+### Phase 5: Prove all_separable via Junction-Depth Induction (Lemma 10.2.8) [NOT STARTED]
+
+**Goal**: Replace the 4 temporal closure axioms (`all_past_separable`, `all_future_separable`, `untl_separable`, `snce_separable`) with a single well-founded induction proof on junction depth, implementing GHR94's Lemma 10.2.8.
+
+**Strategy**:
+
+1. **Define `junction_depth`**: A computable function measuring the maximum nesting depth of U-within-S or S-within-U alternation. Junction depth 0 means no U/S alternation (already separated or trivially separable). Junction depth k+1 means at least one U-under-S or S-under-U at depth k+1.
+
+2. **Prove `all_separable` by well-founded induction on `junction_depth`**:
+   - Base case (junction_depth = 0): The formula has no U/S alternation. It is either a boolean combination of atoms, or contains only U (S-free) or only S (U-free), or has `all_future`/`all_past` of appropriately pure arguments. Show it is properly separated.
+   - Inductive step (junction_depth = k+1): The formula has some U under S (or S under U).
+     - For `snce phi psi` where phi or psi contains U: Extract maximal U-subformulas (whose arguments are S-free by the structure). Replace by fresh atoms. Apply Lemma 10.2.7 to the simplified formula (which has no S in U). Substitute back. The result has strictly lower junction depth (the extracted U-under-S has been eliminated). Apply IH.
+     - For `untl phi psi` where phi or psi contains S: Dual of above.
+     - For `all_past phi` where phi contains U: Similar extraction and re-separation.
+     - For `all_future phi` where phi contains S: Dual.
+   - Boolean cases propagate separation through `imp`.
+
+3. **Remove the 4 temporal closure axioms**: The `all_separable` proof by junction-depth induction subsumes them entirely.
+
+**Tasks**:
+- [ ] **Task 5.1**: Define `junction_depth : Formula -> Nat` as a computable function (~40-60 LOC)
+- [ ] **Task 5.2**: Prove `junction_depth` strictly decreases through the extraction-substitution-re-separation process (~100-150 LOC)
+- [ ] **Task 5.3**: Prove the base case: junction_depth 0 implies properly separable (~50-80 LOC)
+- [ ] **Task 5.4**: Prove the inductive step for S-cases (`snce`, `all_past`): extract maximal U, apply Lemma 10.2.7, substitute, invoke IH (~150-200 LOC)
+- [ ] **Task 5.5**: Prove the inductive step for U-cases (`untl`, `all_future`): dual of S-cases (~100-150 LOC)
+- [ ] **Task 5.6**: Assemble `all_separable` using Nat.strongRecOn on junction_depth (~50 LOC)
+- [ ] **Task 5.7**: Remove the 4 temporal closure axioms from SeparationThm.lean
+- [ ] **Task 5.8**: Verify `lake build` passes with 0 axioms in SeparationThm.lean
 
 **Timing**: 4 hours
 
-**Depends on**: 3 (all 8 elimination cases must be proved)
+**Depends on**: 4 (Lemmas 10.2.5-10.2.7 must be proved)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- replace axioms with proofs (~200-400 LOC)
-- Possibly `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Helpers.lean` -- add junction_depth, extraction helpers
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- replace axioms + structural induction with junction-depth induction (~400-600 LOC net change)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` -- add `junction_depth` definition
 
 **Verification**:
 - `lake build` passes
 - `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` returns empty
-- `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` returns empty
-- `all_separable` follows from structural induction + temporal closure lemmas (no axioms in dependency chain)
+- `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` returns empty
+- `all_separable` compiles with no sorry and no axioms in its transitive dependency chain (except Lean/Mathlib axioms)
 
 ---
 
-### Phase 5: Integration and final verification [NOT STARTED]
+### Phase 6: Complete Theorem 9.3.1 (separation_implies_expressiveness) [NOT STARTED]
 
-**Goal**: Verify the complete proof chain from elimination cases through separation theorem to expressive completeness, with zero axioms and zero sorry in the critical path.
+**Goal**: Close the 1 sorry in `ExpressiveCompleteness.lean` by proving that separation implies expressive completeness, using the properly-separated formulas that guarantee semantic purity.
+
+**Strategy**: With the purity predicates fixed (Phase 1), the blocked Task 1.4 from v3 becomes unblocked. The substitution step now works because `is_properly_separated` guarantees that S-arguments are `is_past_only` (no future operators), so the R-atom substitution is correct in each temporal region.
+
+**Infrastructure already built** (from v3 Phase 1 investigation):
+- `ExtPred`, `extSignature`: Extended signature with auxiliary predicates (orig, frozen, r_eq, r_gt, r_lt)
+- `reduce`: MonadicFormula sig (n+1) -> MonadicFormula extSig n
+- `extStructure`: Extended IntStructureFromSig with correct aux predicate interpretations
+- `reduce_correct`: Semantic correctness of reduce (fully proved)
+- `reduce_preserves_depth`: Depth preservation of reduce (fully proved)
+- Helper lemmas: `int_truth_neg`, `int_truth_and`, `int_truth_atom_inj`, etc.
+
+**Remaining work**:
+1. Commit the infrastructure built during v3 Phase 1 investigation (currently tested via lean_run_code but not in files)
+2. With proper purity (`is_properly_separated`), prove the R-atom substitution correctness:
+   - In `is_past_only` subformulas: r_> can be set to False (past doesn't look at future)
+   - In `is_future_only` subformulas: r_< can be set to False (future doesn't look at past)
+   - In present subformulas: r_= can be set based on the current point
+3. Prove the quantifier case: `ex alpha` where `alpha : MonadicFormula sig (n+1)`. Apply reduce, get MonadicFormula extSig n, apply IH to get temporal formula B, form q_exists(B), separate it, substitute R-atoms.
+4. Specialize back to n=1 and prove `separation_implies_expressiveness`.
 
 **Tasks**:
-- [ ] **Task 5.1**: Run `lake build` and verify 0 errors
-- [ ] **Task 5.2**: Run `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- must return empty
-- [ ] **Task 5.3**: Run `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- must return empty
-- [ ] **Task 5.4**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` -- must return empty
-- [ ] **Task 5.5**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/` -- only DualEliminations.lean acceptable
-- [ ] **Task 5.6**: Verify the proof chain: `US_expressively_complete_over_Z` -> `separation_implies_expressiveness` -> `separation_theorem_int` -> `all_separable` -> elimination cases 1-8 (all proved)
-- [ ] **Task 5.7**: Document the complete proof structure in module docstrings
+- [ ] **Task 6.1**: Commit and integrate the v3 Phase 1 infrastructure (ExtPred, reduce, reduce_correct, etc.) into ExpressiveCompleteness.lean (~100-200 LOC of file integration)
+- [ ] **Task 6.2**: Prove `is_past_only_pure_past`: if `is_past_only phi = true`, then `int_truth M t phi` depends only on the structure at times <= t (~80-120 LOC)
+- [ ] **Task 6.3**: Prove `is_future_only_pure_future`: dual property (~80-120 LOC)
+- [ ] **Task 6.4**: Prove R-atom substitution correctness using the purity lemmas (~150-200 LOC)
+- [ ] **Task 6.5**: Prove the quantifier case using reduce + IH + q_exists + separation + R-atom substitution (~200-300 LOC)
+- [ ] **Task 6.6**: Specialize to n=1 and close `separation_implies_expressiveness` (~30-50 LOC)
+- [ ] **Task 6.7**: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
+
+**Timing**: 3 hours
+
+**Depends on**: 1 (purity predicates), 5 (all_separable with proper predicates)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` -- complete the proof (~500-800 LOC)
+- Possibly `Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean` -- extend with n-variable infrastructure if needed
+
+**Verification**:
+- `lake build` passes
+- `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` returns empty
+- `US_expressively_complete_over_Z` compiles with no sorry in dependency chain
+
+---
+
+### Phase 7: Integration and Final Verification [NOT STARTED]
+
+**Goal**: Verify the complete proof chain from elimination cases through separation theorem to expressive completeness, with zero axioms and zero sorry in the critical path. Clean up documentation and dead code.
+
+**Tasks**:
+- [ ] **Task 7.1**: Run `lake build` and verify 0 errors
+- [ ] **Task 7.2**: Run `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` -- must return empty
+- [ ] **Task 7.3**: Run `grep -rn "axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` -- must return empty
+- [ ] **Task 7.4**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` -- must return empty
+- [ ] **Task 7.5**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/` -- only DualEliminations.lean acceptable
+- [ ] **Task 7.6**: Verify the proof chain: `US_expressively_complete_over_Z` -> `separation_implies_expressiveness` -> `separation_theorem_int` -> `all_separable` -> elimination cases 1-8 (all proved)
+- [ ] **Task 7.7**: Update module docstrings documenting the complete proof structure and the deviation from GHR94 (purity predicate adaptation, Case 5 reduction strategy)
+- [ ] **Task 7.8**: Document the GHR94 lemma hierarchy mapping in code comments: which Lean theorem corresponds to which GHR94 lemma
 
 **Timing**: 2 hours
 
-**Depends on**: 1 (Theorem 9.3.1), 4 (temporal closure)
+**Depends on**: 5 (all_separable proved), 6 (Theorem 9.3.1 proved)
 
 **Files to modify**:
 - Various files -- docstring updates only
 - No logic changes expected
 
 **Verification**:
-- All checks from Tasks 5.1-5.6 pass
+- All checks from Tasks 7.1-7.6 pass
 - `US_expressively_complete_over_Z` compiles with no sorry, no axiom in its transitive dependencies (except Lean/Mathlib axioms)
 
 ---
@@ -287,20 +433,35 @@ Phases within the same wave can execute in parallel.
 - [ ] No regressions in existing `Theories/Bimodal/` code
 - [ ] `separation_theorem_int` has type `(phi : Formula) -> is_separable phi` with no axioms in dependency chain
 - [ ] `US_expressively_complete_over_Z` type-checks as composition of Theorem 9.3.1 + separation theorem
+- [ ] New `is_properly_separated` predicate correctly rejects G-under-S and H-under-U patterns
+- [ ] New `is_future_only` / `is_past_only` predicates match GHR94's semantic purity requirements
 
 ## Artifacts & Outputs
 
-- `specs/157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md` (this file, v3)
-- `specs/157_expressive_completeness_su_integer/reports/04_axiom-elimination-strategies.md` (Phase 2 output)
-- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` (axioms replaced with proofs)
-- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` (axioms replaced with proofs)
-- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` (sorry replaced with proof)
+- `specs/157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md` (this file, v4)
+- `specs/157_expressive_completeness_su_integer/reports/04_axiom-elimination-strategies.md` (integrated)
+- `specs/157_expressive_completeness_su_integer/reports/05_ghr94-ch10-deep-analysis.md` (integrated)
+- `specs/157_expressive_completeness_su_integer/reports/06_alternative-separation-approaches.md` (integrated)
+- `specs/157_expressive_completeness_su_integer/reports/07_purity-predicate-audit.md` (integrated)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` (new predicates + junction_depth)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Duality.lean` (new duality lemmas)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` (8 axioms -> 8 theorems)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` (4 axioms -> junction-depth induction + hierarchy)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` (sorry -> proof)
+- New: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Helpers.lean` (hierarchy infrastructure)
 
 ## Rollback/Contingency
 
-- All axioms remain in the codebase until their replacement proofs are verified. The replacement is done by changing `axiom` to `theorem` and providing a proof body. If a phase fails, the axiom version is preserved in git history.
-- If Phase 2 research finds no viable strategy for Case 5: the axiom remains with full documentation. The task would be marked [PARTIAL] with a note that Case 5 on integers is an open problem requiring novel mathematical work beyond GHR94.
-- If Cases 6-8 iterated elimination fails: each case can remain axiomatized independently. The axioms are mathematically sound (the separation theorem for Z is established by multiple independent proofs).
-- If Phase 4 (temporal closure) proves intractable: the 4 temporal closure axioms are a clean abstraction boundary. They can remain as axioms documented as depending on the (proved or axiomatized) elimination cases.
-- If Phase 1 agent completes before Phase 5: incorporate its results. If it blocks: Phase 5 can verify everything except the ExpressiveCompleteness.lean sorry.
-- Priority ordering if time-constrained: Phase 2 (research) > Phase 3 (elimination proofs) > Phase 4 (closure proofs) > Phase 1 (Theorem 9.3.1) > Phase 5 (integration).
+- **Phase 1 fallback (bridge lemma)**: If rewriting Cases 2-4 output formulas is too costly, use the bridge lemma approach (~200 LOC) that converts weakly-separated to properly-separated post-hoc. This avoids touching the existing Case 2-4 proofs.
+
+- **Phase 2 fallback (Case 5 axiom)**: If the Case 3 reduction strategy fails for Case 5 on Z (e.g., the generalized Case 3 preconditions cannot be satisfied), retain the Case 5 axiom. The axiom is mathematically sound. Cases 6-8 can still be proved via iterated elimination with the axiom. Final axiom count: 1 instead of 0.
+
+- **Phase 3 fallback (individual axioms)**: If any of Cases 6-8 proves intractable, its axiom can remain independently. Each axiom is mathematically sound and does not affect the others.
+
+- **Phase 4-5 fallback (temporal closure axioms)**: If the full hierarchy (Lemmas 10.2.5-10.2.7) or junction-depth induction proves too complex, retain the 4 temporal closure axioms. They are a clean abstraction boundary. The build still passes. Final axiom count: 4 (temporal closure) + 0-1 (Case 5) = 4-5 instead of 0.
+
+- **Phase 6 fallback (Theorem 9.3.1 sorry)**: If the quantifier case remains intractable even with proper purity, the sorry in ExpressiveCompleteness.lean can remain with full documentation. The separation theorem itself (the harder part) would still be fully proved.
+
+- **Priority ordering if time-constrained**: Phase 1 (purity fix) > Phase 2 (Case 5) > Phase 3 (Cases 6-8) > Phase 4 (hierarchy) > Phase 5 (junction-depth) > Phase 6 (Theorem 9.3.1) > Phase 7 (integration). Each phase delivers incremental value.
+
+- **Git safety**: All axioms remain in the codebase until their replacement proofs compile. The replacement is done by changing `axiom` to `theorem` and providing a proof body. If a phase fails, the axiom version is preserved in git history.

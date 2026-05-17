@@ -24,7 +24,7 @@
         {
           "path": "specs/157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md",
           "type": "plan",
-          "summary": "Revised plan v3 targeting axiom elimination: 5 phases to replace 8 axioms and 1 sorry with proofs"
+          "summary": "Revised plan v4: 7 phases, 28 hours. Purity fix, Case 5 via Case 3 reduction, iterated elimination, full GHR94 hierarchy, Theorem 9.3.1."
         }
       ],
       "started": "2026-05-17T03:25:26Z"
