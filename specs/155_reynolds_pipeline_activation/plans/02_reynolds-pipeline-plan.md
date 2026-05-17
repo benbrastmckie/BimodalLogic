@@ -1,8 +1,8 @@
 # Implementation Plan: Reynolds Pipeline Activation (v2)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
-- **Effort**: 22 hours
+- **Status**: [IN PROGRESS] (Phases 1-2 COMPLETED; Phase 3A delegated to task 157; Phases 4-6 can proceed)
+- **Effort**: 22 hours (original) + task 157 (~2500 lines, 3-4 weeks for expressive completeness)
 - **Dependencies**: Task 154 (sum_preservation/doets_lemma_1_4, COMPLETED), Tasks 147-148 (table_correctness, COMPLETED)
 - **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/02_team-research.md
 - **Artifacts**: plans/02_reynolds-pipeline-plan.md (this file)
@@ -101,17 +101,20 @@ v1 plan (01_reynolds-pipeline-plan.md): Phase 1 validated (COMPLETED, correct ap
 
 ## Implementation Phases
 
-**Dependency Analysis**:
-| Wave | Phases | Blocked by |
-|------|--------|------------|
-| 1 | 1 | -- |
-| 2 | 2 | 1 |
-| 3 | 3 | 2 |
-| 4 | 4 | 3 |
-| 5 | 5 | 4 |
-| 6 | 6 | 5 |
+**Dependency Analysis** (revised after task 157 creation):
+| Wave | Phases | Blocked by | Notes |
+|------|--------|------------|-------|
+| 1 | 1 | -- | COMPLETED |
+| 2 | 2 | 1 | COMPLETED |
+| 3 | 3A (expressive completeness) | 2 | **Delegated to task 157** |
+| 3 | 4 (very_good_implies_good) | 2 | **Can proceed NOW** (independent of 3A/3B) |
+| 3 | 5 (truth transfer infrastructure) | 2 | **Can proceed NOW** (takes chronicle_is_good as hypothesis) |
+| 3 | 6 (TaskFrame bridge) | 2 | **Can proceed NOW** (pure infrastructure) |
+| 4 | 3B (gap elimination → one_class) | 3A (= task 157) | Blocked on task 157 |
+| 5 | 4b (chronicle_is_good rewrite) | 3B, 4 | Wires one_class + very_good_implies_good |
+| 6 | 6b (final wiring) | 4b, 5, 6 | Replaces fallback in Transfer.lean |
 
-All phases are strictly sequential. Each phase builds on the previous.
+**Parallelism**: Phases 4, 5, 6 can proceed in parallel with task 157. They develop infrastructure that takes upstream results as hypotheses (sorry'd initially, filled when task 157 + Phase 3B complete). Phase 3B and the final wiring (4b, 6b) wait for task 157.
 
 ---
 
@@ -202,6 +205,7 @@ Formalize the separation theorem from GHR94 Chapter 10, Section 10.2 (Theorem 10
 - Key lemmas: 10.2.1 (distributivity), 10.2.2 (integer-specific equivalences), 10.2.3-10.2.4 (elimination cases), 10.2.5-10.2.8 (inductive assembly), 10.2.9-10.2.10 (separation + expressive completeness)
 
 **Estimated effort**: ~2500 lines of Lean, 3-4 weeks
+**Status**: DELEGATED TO TASK 157. Do not work on this within task 155.
 **Research reports**: 08_gap-elimination-detailed.md, 08b_gap-elimination-second-opinion.md
 
 **Phase 3B: Gap Elimination (Reynolds Theorem 14)**
@@ -259,7 +263,9 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 
 ---
 
-### Phase 4: Rewrite very_good_implies_good and chronicle_is_good (Reynolds Lemma 16) [NOT STARTED]
+### Phase 4: Rewrite very_good_implies_good (Reynolds Lemma 16) [NOT STARTED]
+
+**CAN PROCEED NOW** — independent of task 157. This phase rewrites `very_good_implies_good` only; the `chronicle_is_good` rewrite (Task 4.8) is deferred to Phase 4b (after Phase 3B provides `one_class`).
 
 **Goal**: Rewrite `very_good_implies_good` WITHOUT `IsSuccArchimedean` or `orderIsoIntOfLinearSuccPredArch`. Reynolds Lemma 16 proves: given a countable linear order without endpoints where every subinterval is good (very_good), the whole structure is good. The proof constructs a cofinal sequence, decomposes the structure into an ordered sum of good pieces indexed by Z, and applies `doets_lemma_1_4` + Z-interval concatenation.
 
@@ -275,13 +281,16 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 - [ ] **Task 4.5**: Apply `doets_lemma_1_4` to the ordered sum: the ordered sum of good subintervals is k-equiv to the ordered sum of their Z-interval witnesses
 - [ ] **Task 4.6**: Prove Z-interval concatenation: an ordered sum of Z-intervals (each with lo=some a, hi=some b) indexed by Z is k-equivalent to a single Z-interval with lo=none, hi=none. This is the "shift and glue" construction.
 - [ ] **Task 4.7**: Assemble: M ≃ ordered_sum ≈_k ordered_sum_of_Z_intervals ≈_k single_Z_interval
-- [ ] **Task 4.8**: Rewrite `chronicle_is_good` to use `one_class` (Phase 3) + `very_good_implies_good` (this phase) instead of `orderIsoIntOfLinearSuccPredArch`. The chronicle satisfies Countable, NoMaxOrder, NoMinOrder, Nonempty; one_class gives very_good; then very_good_implies_good gives good.
-- [ ] **Task 4.9**: REMOVE `domain_succ_archimedean` field from `ChronicleAsPriorModel` (or mark as unused/deprecated) and remove `limitDomSubtype_isSuccArchimedean` from `extract_chronicle_as_prior`
-- [ ] **Task 4.10**: Verify `lake build` passes
+- [ ] **Task 4.8**: Verify `lake build` passes with rewritten `very_good_implies_good`
 
-**Timing**: 6 hours
+**Timing**: 4 hours
 
-**Depends on**: 3
+**Depends on**: 2 (NOT 3 — this phase is independent of gap elimination)
+
+**Deferred to Phase 4b** (after Phase 3B provides one_class):
+- Task 4b.1: Rewrite `chronicle_is_good` to use `one_class` + `very_good_implies_good` instead of `orderIsoIntOfLinearSuccPredArch`
+- Task 4b.2: REMOVE `domain_succ_archimedean` field from `ChronicleAsPriorModel`
+- Task 4b.3: Remove `limitDomSubtype_isSuccArchimedean` from `extract_chronicle_as_prior`
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Rewrite `very_good_implies_good`, `chronicle_is_good`, add cofinal sequence + concatenation helpers
@@ -298,7 +307,9 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 
 ### Phase 5: Truth Transfer via Existential Closure [NOT STARTED]
 
-**Goal**: Prove truth transfer from the chronicle's Z-model to temporal truth, using existential closure of the table formula. Given `chronicle_is_good` (now sorry-free from Phase 4) provides k-equivalence between the chronicle and a Z-interval structure, transfer the truth of `neg phi` from the chronicle to the Z-interval.
+**CAN PROCEED NOW** — takes `chronicle_is_good` as a hypothesis (sorry'd until Phase 4b fills it). The transfer mechanism is pure infrastructure.
+
+**Goal**: Prove truth transfer from the chronicle's Z-model to temporal truth, using existential closure of the table formula. Given `chronicle_is_good` provides k-equivalence between the chronicle and a Z-interval structure, transfer the truth of `neg phi` from the chronicle to the Z-interval.
 
 **Reynolds Reference**: The transfer argument uses the fact that k-equivalence preserves all sentences of quantifier depth <= k. The table formula (Reynolds Section 6, Doets Section 1) translates temporal truth into monadic FO truth. `table_correctness` (sorry-free) provides this bridge.
 
@@ -315,7 +326,7 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 
 **Timing**: 3 hours
 
-**Depends on**: 4
+**Depends on**: 2 (infrastructure only; final wiring needs 4b)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` or new `TruthTransfer.lean` - Truth transfer lemma
@@ -327,6 +338,8 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 ---
 
 ### Phase 6: TaskFrame Int Construction and Pipeline Wiring [NOT STARTED]
+
+**CAN PROCEED NOW** — the ZIntervalStructure → TaskFrame bridge is pure infrastructure independent of how chronicle_is_good is proved. Final wiring (replacing the fallback) waits for all upstream phases.
 
 **Goal**: Construct a TaskFrame Int countermodel from the Z-interval structure and wire the full Reynolds pipeline into `doets_countermodel_discrete`, eliminating the chronicle fallback.
 
