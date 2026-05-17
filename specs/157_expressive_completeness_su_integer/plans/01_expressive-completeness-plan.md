@@ -1,14 +1,14 @@
 # Implementation Plan: Expressive Completeness of {S,U} over Integer Time
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [IN PROGRESS]
-- **Effort**: 36 hours
+- **Status**: [IN PROGRESS] (Phases 1-5, 7 COMPLETED; Phase 6, 8 PARTIAL; Phases 10-13 SUPERSEDED)
+- **Effort**: 36 hours (estimated); ~18 hours spent
 - **Dependencies**: Task 155
 - **Research Inputs**: specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md
 - **Artifacts**: plans/01_expressive-completeness-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
-- **Lean Intent**: false
+- **Lean Intent**: true
 
 ## Overview
 
@@ -327,7 +327,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [PARTIAL]
+### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [PARTIAL: Case 3 proved, Cases 6-8 sorry]
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
 
@@ -355,7 +355,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [PARTIAL]
+### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [NOT STARTED]
 
 **Goal**: Derive the 8 dual cases (pulling S out from under U) automatically via swap_temporal.
 
