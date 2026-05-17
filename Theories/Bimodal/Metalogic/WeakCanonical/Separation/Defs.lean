@@ -51,6 +51,19 @@ def int_truth (M : IntStructure) (t : ℤ) : Formula → Prop
   | .snce φ ψ => ∃ s : ℤ, s < t ∧ int_truth M s φ ∧
       ∀ r : ℤ, s < r → r < t → int_truth M r ψ
 
+/-! ## Formula Atoms -/
+
+/-- Collect all atoms occurring in a formula (as a `Set Atom`). -/
+def formula_atoms : Formula → Set Atom
+  | .atom a => {a}
+  | .bot => ∅
+  | .imp φ ψ => formula_atoms φ ∪ formula_atoms ψ
+  | .box φ => formula_atoms φ
+  | .all_past φ => formula_atoms φ
+  | .all_future φ => formula_atoms φ
+  | .untl φ ψ => formula_atoms φ ∪ formula_atoms ψ
+  | .snce φ ψ => formula_atoms φ ∪ formula_atoms ψ
+
 /-! ## Semantic Equivalence -/
 
 /-- Semantic equivalence of formulas over integer time. -/

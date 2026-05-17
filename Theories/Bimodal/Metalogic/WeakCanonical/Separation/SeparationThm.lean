@@ -270,4 +270,16 @@ theorem proper_separation_theorem_int (phi : Formula) :
     is_properly_separable phi :=
   all_properly_separable phi
 
+/-- Atom-preserving proper separation: the separated equivalent uses only atoms
+    from the original formula. This is a strengthening of `is_properly_separable`
+    needed for the quantifier elimination step in Theorem 9.3.1.
+
+    Mathematically, this holds because the GHR94 separation procedure (Lemmas 10.2.3-10.2.8)
+    manipulates temporal structure without introducing new atomic propositions.
+    This axiom will be eliminated together with the temporal closure axioms above
+    when the full junction-depth hierarchy is proved in Phase 6. -/
+axiom proper_separation_preserves_atoms (φ : Formula) :
+    ∃ ψ : Formula, is_properly_separated ψ = true ∧ int_equiv φ ψ ∧
+    formula_atoms ψ ⊆ formula_atoms φ
+
 end Bimodal.Metalogic.WeakCanonical.Separation
