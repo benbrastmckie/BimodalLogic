@@ -8,10 +8,45 @@
     {
       "project_number": 160,
       "project_name": "fix_ci_badge_failing",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "created": "2026-05-17T19:23:22Z",
-      "last_updated": "2026-05-17T19:23:22Z"
+      "last_updated": "2026-05-17T19:34:08Z",
+      "session_id": "sess_1747520400_research160",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/160_fix_ci_badge_failing/reports/01_ci-badge-research.md",
+          "type": "research",
+          "summary": "Three root causes identified: (1) ci.yml has test:true but lakefile.lean missing testDriver; (2) --wfail incompatible with sorry statements; (3) push-to-main runs skipped due to if: condition."
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "lean-action test:true requires testDriver in lakefile.lean. Without testDriver := FooTest in the package block, lean-action fails immediately with lake check-test failed. Use auto-config:true to avoid hard failure when testDriver is not yet set up.",
+          "category": "CONFIG",
+          "source_artifact": "specs/160_fix_ci_badge_failing/reports/01_ci-badge-research.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "lean-action",
+            "testDriver",
+            "lake test",
+            "CI"
+          ]
+        },
+        {
+          "content": "build-args: --wfail in lean-action causes CI failure for any Lean project with sorry statements. Inappropriate for in-progress formalizations. Remove --wfail until the project is sorry-free.",
+          "category": "CONFIG",
+          "source_artifact": "specs/160_fix_ci_badge_failing/reports/01_ci-badge-research.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "wfail",
+            "sorry",
+            "CI failure",
+            "lean-action"
+          ]
+        }
+      ]
     },
     {
       "project_number": 159,
