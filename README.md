@@ -126,7 +126,7 @@ graph TD
     B --> D
     B --> Z
 
-    style B min-width:350px
+    style B min-width:550px
     style D min-width:350px
     style Z min-width:350px
 ```
