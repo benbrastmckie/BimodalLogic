@@ -162,7 +162,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -171,8 +171,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T20:46:56Z",
-      "session_id": "sess_1779050716_7a0566",
+      "last_updated": "2026-05-17T22:55:21Z",
+      "session_id": "sess_1779058176_49c1c8",
       "researched": "2026-05-17T20:33:36Z",
       "artifacts": [
         {
@@ -196,9 +196,9 @@
           "summary": "Team research: correct mathematical approach for Phase 6 (junction-depth hierarchy) and Phase 7 (freshAM offset fix)"
         },
         {
-          "path": "specs/157_expressive_completeness_su_integer/plans/06_phase7-first-plan.md",
+          "path": "specs/157_expressive_completeness_su_integer/plans/07_complete-remaining-plan.md",
           "type": "plan",
-          "summary": "v9 plan: Phase 7 first (freshAM fix), Phase 6 (junction-depth hierarchy)"
+          "summary": "v10: complete remaining (Phase 7A/7B + Phase 6A/6B/6C + Phase 8), strict GHR94 compliance"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
