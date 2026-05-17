@@ -20,7 +20,10 @@ one-class theorem, and the main `chronicle_is_good` result.
 ## Status
 Phase 2: `contemp_equiv_is_equiv` proved WITHOUT `IsSuccArchimedean`
 using Reynolds Lemma 17 (ordered sum decomposition at b + doets_lemma_1_4).
-Phases 3-6 still use `IsSuccArchimedean` (to be removed in subsequent phases).
+Phase 4: `very_good_implies_good` rewritten WITHOUT `IsSuccArchimedean`/`SuccOrder`/`PredOrder`
+using Reynolds Lemma 16 (cofinal decomposition + doets_lemma_1_4 + shift-and-glue).
+Two helper lemmas remain sorry'd: cofinal_decomposition_k_equiv, ordered_sum_of_good_bounded_is_good (k≥2).
+Phases 3, 5-6 still use `IsSuccArchimedean` (to be removed in subsequent phases).
 
 ## References
 - Reynolds 1994, Theorem 15: `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
@@ -863,35 +866,320 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
     Subtype.fintype _
   exact finite_structures_good sig k _
 
-/-! ## Very Good → Good -/
+/-! ## Very Good → Good (Reynolds Lemma 16) -/
 
 /--
-Reynolds Lemma 16: If M is a succ-Archimedean discrete linear order without
-endpoints (hence order-isomorphic to ℤ), then M is good at any depth.
+Helper: Choose Z-interval witnesses for a family of good structures.
+-/
+private noncomputable def choose_good_witness (sig : MonadicSignature) (k : Nat)
+    (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
+    (i : ℤ) → ZIntervalStructure sig :=
+  fun i => (h i).choose
+
+private theorem choose_good_witness_spec (sig : MonadicSignature) (k : Nat)
+    (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
+    ∀ i, k_equiv sig k (ms i) ((choose_good_witness sig k ms h i).toOrdered sig) :=
+  fun i => (h i).choose_spec
+
+/-- Positive half of cofinal sequence: strictly increasing, above all enumerated elements. -/
+private noncomputable def cofinal_pos_seq {α : Type} [LinearOrder α] [NoMaxOrder α]
+    (enum : ℕ → α) : ℕ → α :=
+  Nat.rec (enum 0) (fun n prev => (exists_gt (max prev (enum n))).choose)
+
+/-- Negative half of cofinal sequence: strictly decreasing, below all enumerated elements. -/
+private noncomputable def cofinal_neg_seq {α : Type} [LinearOrder α] [NoMinOrder α]
+    (start : α) (enum : ℕ → α) : ℕ → α :=
+  Nat.rec (exists_lt (min start (enum 0))).choose
+    (fun n prev => (exists_lt (min prev (enum (n + 1)))).choose)
+
+/-- Combined cofinal sequence: positive indices use pos_seq, negative use neg_seq. -/
+private noncomputable def mk_cofinal_seq {α : Type} [LinearOrder α]
+    [NoMaxOrder α] [NoMinOrder α] (enum : ℕ → α) : ℤ → α := fun i =>
+  if i ≥ 0 then cofinal_pos_seq enum i.toNat
+  else cofinal_neg_seq (enum 0) enum (-i - 1).toNat
+
+private theorem cofinal_pos_seq_lt_succ {α : Type} [LinearOrder α] [NoMaxOrder α]
+    (enum : ℕ → α) (n : ℕ) : cofinal_pos_seq enum n < cofinal_pos_seq enum (n + 1) := by
+  show cofinal_pos_seq enum n < (exists_gt (max (cofinal_pos_seq enum n) (enum n))).choose
+  exact lt_of_le_of_lt (le_max_left _ _)
+    (exists_gt (max (cofinal_pos_seq enum n) (enum n))).choose_spec
+
+private theorem cofinal_pos_seq_above_enum {α : Type} [LinearOrder α] [NoMaxOrder α]
+    (enum : ℕ → α) (m : ℕ) : enum m < cofinal_pos_seq enum (m + 1) := by
+  show enum m < (exists_gt (max (cofinal_pos_seq enum m) (enum m))).choose
+  exact lt_of_le_of_lt (le_max_right _ _)
+    (exists_gt (max (cofinal_pos_seq enum m) (enum m))).choose_spec
+
+private theorem cofinal_neg_seq_succ_lt {α : Type} [LinearOrder α] [NoMinOrder α]
+    (start : α) (enum : ℕ → α) (n : ℕ) :
+    cofinal_neg_seq start enum (n + 1) < cofinal_neg_seq start enum n := by
+  show (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose <
+    cofinal_neg_seq start enum n
+  exact lt_of_lt_of_le
+    (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose_spec
+    (min_le_left _ _)
+
+private theorem cofinal_neg_seq_below_enum {α : Type} [LinearOrder α] [NoMinOrder α]
+    (start : α) (enum : ℕ → α) (m : ℕ) :
+    cofinal_neg_seq start enum m < enum m := by
+  induction m with
+  | zero =>
+    show (exists_lt (min start (enum 0))).choose < enum 0
+    exact lt_of_lt_of_le (exists_lt (min start (enum 0))).choose_spec (min_le_right _ _)
+  | succ n _ =>
+    show (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose < enum (n + 1)
+    exact lt_of_lt_of_le
+      (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose_spec
+      (min_le_right _ _)
+
+private theorem cofinal_neg_seq_below_start {α : Type} [LinearOrder α] [NoMinOrder α]
+    (start : α) (enum : ℕ → α) : cofinal_neg_seq start enum 0 < start := by
+  show (exists_lt (min start (enum 0))).choose < start
+  exact lt_of_lt_of_le (exists_lt (min start (enum 0))).choose_spec (min_le_left _ _)
+
+/-- Helper: find the last index in a finite range where the sequence is ≤ x. -/
+private theorem find_last_index_below {α : Type} [LinearOrder α] (a : ℤ → α)
+    (h_mono : StrictMono a) (x : α) (lo hi : ℤ) (h_lo : a lo ≤ x) (h_hi : x < a hi) :
+    ∃ i : ℤ, lo ≤ i ∧ a i ≤ x ∧ x < a (i + 1) := by
+  classical
+  have h_lt : lo < hi := by
+    by_contra h; push_neg at h
+    exact absurd (lt_of_lt_of_le h_hi (h_mono.monotone h)) (not_lt.mpr h_lo)
+  let S := (Finset.Icc lo (hi - 1)).filter (fun i => decide (a i ≤ x) = true)
+  have hS_ne : S.Nonempty :=
+    ⟨lo, Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨le_refl _, by omega⟩, by simp [h_lo]⟩⟩
+  let j := S.max' hS_ne
+  have hj_mem : j ∈ S := Finset.max'_mem S hS_ne
+  have hj_le_x : a j ≤ x := by
+    have := (Finset.mem_filter.mp hj_mem).2; simp at this; exact this
+  have hj_lo : lo ≤ j := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).1
+  have hj_hi : j ≤ hi - 1 := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).2
+  have hj_next : x < a (j + 1) := by
+    by_contra h_not_lt; push_neg at h_not_lt
+    rcases le_or_gt (j + 1) (hi - 1) with h1 | h2
+    · have hj1_in : j + 1 ∈ S := Finset.mem_filter.mpr
+        ⟨Finset.mem_Icc.mpr ⟨by omega, h1⟩, by simp [h_not_lt]⟩
+      exact absurd (Finset.le_max' S (j + 1) hj1_in) (by omega)
+    · exact absurd (lt_of_lt_of_le h_hi ((show j + 1 = hi from by omega) ▸ h_not_lt))
+        (lt_irrefl x)
+  exact ⟨j, hj_lo, hj_le_x, hj_next⟩
+
+/--
+In a countable linear order without endpoints, there exists a strictly increasing
+cofinal sequence indexed by ℤ.
+
+Given Countable α + NoMaxOrder + NoMinOrder + Nonempty, we construct a : ℤ → α
+that is strictly monotone and cofinal: for every x, there exists i with
+a(i) ≤ x ≤ a(i+1).
+
+Construction: Enumerate all elements via Countable. Build positive/negative halves
+using NoMaxOrder/NoMinOrder to extend beyond each enumerated element. Combine into
+a bi-infinite sequence and prove cofinality via the find-last-index argument on
+finite ℤ-intervals.
+-/
+private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable α]
+    [NoMaxOrder α] [NoMinOrder α] [Nonempty α] :
+    ∃ (a : ℤ → α), StrictMono a ∧ ∀ x : α, ∃ i : ℤ, a i ≤ x ∧ x ≤ a (i + 1) := by
+  classical
+  haveI : Infinite α := NoMaxOrder.infinite
+  haveI : Encodable α := (nonempty_encodable α).some
+  haveI : Inhabited α := Classical.inhabited_of_nonempty inferInstance
+  let enum : ℕ → α := fun n => (Encodable.decode (α := α) n).iget
+  have h_surj : Function.Surjective enum := Encodable.surjective_decode_iget α
+  let a := mk_cofinal_seq enum
+  refine ⟨a, ?_, ?_⟩
+  · -- StrictMono: prove a(i) < a(i+1) for all i, then use strictMono_int_of_lt_succ
+    apply strictMono_int_of_lt_succ
+    intro i
+    simp only [a, mk_cofinal_seq]
+    by_cases h0 : i ≥ 0
+    · -- i ≥ 0: both i and i+1 use cofinal_pos_seq
+      have h1 : i + 1 ≥ 0 := by omega
+      simp only [show (i ≥ 0) = True from eq_true h0, show (i + 1 ≥ 0) = True from eq_true h1,
+        ↓reduceDIte]
+      have h_eq : (i + 1).toNat = i.toNat + 1 := by omega
+      rw [h_eq]
+      exact cofinal_pos_seq_lt_succ enum i.toNat
+    · by_cases h1 : i + 1 ≥ 0
+      · -- i = -1: transition from neg to pos
+        have hi_eq : i = -1 := by omega
+        simp only [show ¬(i ≥ 0) from h0, show (i + 1 ≥ 0) = True from eq_true h1,
+          ↓reduceDIte]
+        have h_tonat1 : (i + 1).toNat = 0 := by omega
+        have h_tonat2 : (-i - 1).toNat = 0 := by omega
+        rw [h_tonat1, h_tonat2]
+        -- Need: cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
+        -- cofinal_pos_seq enum 0 = enum 0
+        -- cofinal_neg_seq (enum 0) enum 0 < enum 0
+        show cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
+        exact cofinal_neg_seq_below_start (enum 0) enum
+      · -- i ≤ -2: both use cofinal_neg_seq, strict anti gives the result
+        simp only [show ¬(i ≥ 0) from h0, show ¬(i + 1 ≥ 0) from h1, ↓reduceDIte]
+        have h_eq : (-i - 1).toNat = (-(i + 1) - 1).toNat + 1 := by omega
+        rw [h_eq]
+        exact cofinal_neg_seq_succ_lt (enum 0) enum (-(i + 1) - 1).toNat
+  · -- Cofinality: for any x, there exists i with a(i) ≤ x ≤ a(i+1)
+    intro x
+    obtain ⟨m, hm⟩ := h_surj x
+    -- x = enum(m). We have:
+    -- a(m+1) = cofinal_pos_seq enum (m+1) > enum(m) = x  (from cofinal_pos_seq_above_enum)
+    -- a(-(m+1)) = cofinal_neg_seq (enum 0) enum m < enum(m) = x (from cofinal_neg_seq_below_enum)
+    have h_above : x < a (↑(m + 1)) := by
+      rw [← hm]
+      simp only [a, mk_cofinal_seq, show (↑(m + 1) : ℤ) ≥ 0 from by omega, ↓reduceDIte,
+        show (↑(m + 1) : ℤ).toNat = m + 1 from by omega]
+      exact cofinal_pos_seq_above_enum enum m
+    have h_below : a (-(↑m + 1)) ≤ x := by
+      rw [← hm]
+      simp only [a, mk_cofinal_seq, show ¬((-(↑m + 1) : ℤ) ≥ 0) from by omega, ↓reduceDIte,
+        show (-(-(↑m + 1) : ℤ) - 1).toNat = m from by omega]
+      exact le_of_lt (cofinal_neg_seq_below_enum (enum 0) enum m)
+    -- Apply find_last_index_below on the finite interval [-(m+1), m+1]
+    obtain ⟨i, _, hi_le, hi_next⟩ :=
+      find_last_index_below a (strictMono_int_of_lt_succ (fun j => by
+        simp only [a, mk_cofinal_seq]
+        by_cases h0 : j ≥ 0
+        · have h1 : j + 1 ≥ 0 := by omega
+          simp only [show (j ≥ 0) = True from eq_true h0, show (j + 1 ≥ 0) = True from eq_true h1,
+            ↓reduceDIte]
+          have h_eq : (j + 1).toNat = j.toNat + 1 := by omega
+          rw [h_eq]; exact cofinal_pos_seq_lt_succ enum j.toNat
+        · by_cases h1 : j + 1 ≥ 0
+          · simp only [show ¬(j ≥ 0) from h0, show (j + 1 ≥ 0) = True from eq_true h1, ↓reduceDIte]
+            have h_tonat1 : (j + 1).toNat = 0 := by omega
+            have h_tonat2 : (-j - 1).toNat = 0 := by omega
+            rw [h_tonat1, h_tonat2]
+            exact cofinal_neg_seq_below_start (enum 0) enum
+          · simp only [show ¬(j ≥ 0) from h0, show ¬(j + 1 ≥ 0) from h1, ↓reduceDIte]
+            have h_eq : (-j - 1).toNat = (-(j + 1) - 1).toNat + 1 := by omega
+            rw [h_eq]; exact cofinal_neg_seq_succ_lt (enum 0) enum (-(j + 1) - 1).toNat))
+        x (-(↑m + 1)) (↑(m + 1)) h_below h_above
+    exact ⟨i, hi_le, le_of_lt hi_next⟩
+
+/--
+M is k-equivalent to the ordered sum of its subintervals along a cofinal sequence.
+
+Given a strictly increasing cofinal sequence a : ℤ → M.carrier (every x lies in
+some [a(i), a(i+1)]), M is k-equivalent to orderedSum ℤ (fun i => M.subinterval a(i) a(i+1)).
+
+The ordered sum may have MORE elements than M (endpoints a(i+1) = a(i+1) appear in
+both piece i and piece i+1). However, the k-types agree because:
+- There is a natural embedding from M into the ordered sum (send x to piece i where
+  a(i) ≤ x ≤ a(i+1), choosing the leftmost such i)
+- The ordered sum has "duplicated" boundary points but these don't affect k-types:
+  the duplicate points satisfy the same predicates and are adjacent in the order.
+
+This is Reynolds's "cofinal decomposition" from Lemma 16.
+-/
+private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) (a : ℤ → M.carrier)
+    (h_mono : StrictMono a)
+    (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x ≤ a (i + 1)) :
+    k_equiv sig k M (orderedSum sig ℤ (fun i => M.subinterval sig (a i) (a (i + 1)))) := by
+  sorry
+
+/--
+An ordered sum of good structures indexed by ℤ, where each component has both
+a maximum and minimum element, is itself good.
+
+This is the "shift-and-glue" step from Reynolds Lemma 16. Each good component
+ms(i) has a Z-interval witness Z_i. By doets_lemma_1_4, orderedSum ms ~k
+orderedSum (Z_i.toOrdered). Since each Z_i inherits boundedness from ms(i)
+(at k ≥ 2 via "has max/min" expressibility; at k ≤ 1 via good_one), the
+concatenation of bounded Z-intervals indexed by ℤ is order-isomorphic to a
+single unbounded Z-interval (the "shift-and-glue" construction), hence good.
+-/
+private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) (k : Nat)
+    (ms : ℤ → OrderedMonadicStructure sig)
+    (h_good : ∀ i : ℤ, good sig k (ms i))
+    (h_has_max : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, x ≤ m)
+    (h_has_min : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, m ≤ x) :
+    good sig k (orderedSum sig ℤ ms) := by
+  cases k with
+  | zero =>
+    -- At depth 0, all structures have the same 0-type (AtomKind sig 0 is empty)
+    refine ⟨⟨some 0, some 0, fun _ _ => True⟩, ?_⟩
+    unfold k_equiv k_type_of; funext nf; simp only [decide_eq_decide]
+    have h_empty : IsEmpty (AtomKind sig 0) :=
+      ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
+    constructor <;> intro _ a <;> exact h_empty.elim a
+  | succ k' =>
+    cases k' with
+    | zero =>
+      -- At depth 1, all structures are good (good_one)
+      exact good_one sig (orderedSum sig ℤ ms)
+    | succ k'' =>
+      -- At depth k''+2 ≥ 2: use doets_lemma_1_4 + shift-and-glue on witnesses.
+      -- Each ms(i) has max and min. The witnesses Z_i inherit boundedness via
+      -- doets_lemma_1_1 (transferring "has max/min" sentences at depth 2 ≤ k).
+      -- The concatenation of bounded Z-intervals indexed by ℤ is order-isomorphic
+      -- to ℤ via cumulative-offset shift-and-glue, hence good.
+      -- NOTE: The SuccOrder/PredOrder/IsSuccArchimedean instances on the witness
+      -- side (needed for orderIsoIntOfLinearSuccPredArch) are safe: the concatenated
+      -- Z-intervals are explicitly integer-like by construction.
+      -- Get Z-interval witnesses
+      let witnesses := choose_good_witness sig (k'' + 2) ms h_good
+      have h_equiv := choose_good_witness_spec sig (k'' + 2) ms h_good
+      -- orderedSum ms ~k orderedSum witnesses via doets_lemma_1_4
+      let wit_structs := fun i => (witnesses i).toOrdered sig
+      have h_sum_equiv : k_equiv sig (k'' + 2) (orderedSum sig ℤ ms)
+          (orderedSum sig ℤ wit_structs) :=
+        doets_lemma_1_4 sig (k'' + 2) ℤ ms wit_structs h_equiv
+      -- The ordered sum of bounded Z-interval witnesses is good
+      -- (shift-and-glue: concatenation of bounded ℤ-intervals indexed by ℤ ≃o ℤ)
+      have h_wit_good : good sig (k'' + 2) (orderedSum sig ℤ wit_structs) := by
+        -- This is the shift-and-glue construction. Each Z_i is bounded because:
+        -- ms(i) has max/min → Z_i has max/min (transferred by doets_lemma_1_1 at depth ≥ 2)
+        -- → Z_i.lo = some _ and Z_i.hi = some _ → Z_i.intervalCarrier is Fintype.
+        -- The concatenation has: NoMaxOrder, NoMinOrder (from ℤ index),
+        -- SuccOrder, PredOrder, IsSuccArchimedean (from bounded pieces).
+        -- Hence orderIsoIntOfLinearSuccPredArch gives an iso to ℤ, and
+        -- k_equiv_of_iso yields goodness.
+        sorry
+      obtain ⟨Z_final, hZ_final⟩ := h_wit_good
+      exact ⟨Z_final, h_sum_equiv.trans hZ_final⟩
+
+/--
+Reynolds Lemma 16: If M is a countable linear order without endpoints and
+every subinterval of M is good (very_good), then M itself is good.
+
+The proof constructs a cofinal decomposition of M along a bi-infinite strictly
+increasing sequence, applies Doets Lemma 1.4 (sum preservation) to transfer
+k-equivalence component-wise to Z-interval witnesses, then uses the shift-and-glue
+construction to collapse the ordered sum of bounded Z-intervals into a single
+unbounded Z-interval.
+
+NO IsSuccArchimedean, SuccOrder, or PredOrder is assumed on M.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    [IsSuccArchimedean M.carrier] [Nonempty M.carrier]
-    (_h_countable : Countable M.carrier) (_h_very_good : very_good sig k M) :
+    [Nonempty M.carrier]
+    (_h_countable : Countable M.carrier) (h_very_good : very_good sig k M) :
     good sig k M := by
-  let f : M.carrier ≃o ℤ := orderIsoIntOfLinearSuccPredArch
-  let Z : ZIntervalStructure sig := {
-    lo := none
-    hi := none
-    interp := fun p z => M.interp p (f.symm z)
-  }
-  refine ⟨Z, ?_⟩
-  let val_iso : Z.intervalCarrier ≃o ℤ :=
-    Equiv.toOrderIso
-      { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
-        left_inv := by intro ⟨_, _⟩; rfl, right_inv := by intro _; rfl }
-      (fun _ _ h => h) (fun _ _ h => h)
-  let g : M.carrier ≃o (Z.toOrdered sig).carrier := f.trans val_iso.symm
-  apply k_equiv_of_iso sig k M (Z.toOrdered sig) g
-  intro p x
-  show M.interp p x ↔ M.interp p (f.symm (f x))
-  simp [OrderIso.symm_apply_apply]
+  -- Step 1: Construct cofinal sequence
+  obtain ⟨a, h_mono, h_cofinal⟩ := @exists_cofinal_sequence M.carrier M.carrier_order
+    _h_countable inferInstance inferInstance inferInstance
+  -- Step 2: Define the pieces (subintervals along cofinal sequence)
+  let pieces := fun i : ℤ => M.subinterval sig (a i) (a (i + 1))
+  -- Step 3: Each piece is good by very_good
+  have h_pieces_good : ∀ i : ℤ, good sig k (pieces i) := fun i =>
+    h_very_good (a i) (a (i + 1)) (le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl)))
+  -- Step 4: M ~k orderedSum ℤ pieces (cofinal decomposition)
+  have h_decomp : k_equiv sig k M (orderedSum sig ℤ pieces) :=
+    cofinal_decomposition_k_equiv sig k M a h_mono h_cofinal
+  -- Step 5: Each piece has max and min (since M.subinterval(a_i, a_{i+1}) is bounded)
+  have h_has_max : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, x ≤ m :=
+    fun i => ⟨⟨a (i + 1), le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl)), le_refl _⟩,
+              fun x => x.property.2⟩
+  have h_has_min : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, m ≤ x :=
+    fun i => ⟨⟨a i, le_refl _, le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl))⟩,
+              fun x => x.property.1⟩
+  -- Step 6: orderedSum pieces is good (shift-and-glue)
+  have h_sum_good : good sig k (orderedSum sig ℤ pieces) :=
+    ordered_sum_of_good_bounded_is_good sig k pieces h_pieces_good h_has_max h_has_min
+  -- Step 7: Compose by transitivity of k-equiv
+  obtain ⟨Z_final, hZ_final⟩ := h_sum_good
+  exact ⟨Z_final, h_decomp.trans hZ_final⟩
 
 /-! ## Chronicle is Good -/
 
