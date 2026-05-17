@@ -751,14 +751,14 @@ private theorem applySubsts_past_correct {φ : Formula}
   | cons ar rest ih =>
     simp only [applySubsts]
     have hmem_ar : (ar.1, ar.2) ∈ (ar :: rest) := by
-      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons_self
+      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons.mpr (Or.inl rfl)
     have h_sub_po := subst_preserves_past_only φ ar.1 ar.2 hpo (h_reps_po ar.1 ar.2 hmem_ar)
     have h_step : Separation.int_truth M t (Separation.subst_formula φ ar.1 ar.2) ↔
         Separation.int_truth M t φ :=
       past_only_subst_correct hpo ar.1 ar.2 M t (h_match ar.1 ar.2 hmem_ar)
     exact (ih h_sub_po
-      (fun a r hmem => h_reps_po a r (List.mem_cons_of_mem ar hmem))
-      (fun a r hmem => h_match a r (List.mem_cons_of_mem ar hmem))).trans h_step
+      (fun a r hmem => h_reps_po a r (List.mem_cons.mpr (Or.inr hmem)))
+      (fun a r hmem => h_match a r (List.mem_cons.mpr (Or.inr hmem)))).trans h_step
 
 /-- Correctness of applySubsts for a future-only formula. -/
 private theorem applySubsts_future_correct {φ : Formula}
@@ -773,14 +773,14 @@ private theorem applySubsts_future_correct {φ : Formula}
   | cons ar rest ih =>
     simp only [applySubsts]
     have hmem_ar : (ar.1, ar.2) ∈ (ar :: rest) := by
-      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons_self
+      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons.mpr (Or.inl rfl)
     have h_sub_fo := subst_preserves_future_only φ ar.1 ar.2 hfo (h_reps_fo ar.1 ar.2 hmem_ar)
     have h_step : Separation.int_truth M t (Separation.subst_formula φ ar.1 ar.2) ↔
         Separation.int_truth M t φ :=
       future_only_subst_correct hfo ar.1 ar.2 M t (h_match ar.1 ar.2 hmem_ar)
     exact (ih h_sub_fo
-      (fun a r hmem => h_reps_fo a r (List.mem_cons_of_mem ar hmem))
-      (fun a r hmem => h_match a r (List.mem_cons_of_mem ar hmem))).trans h_step
+      (fun a r hmem => h_reps_fo a r (List.mem_cons.mpr (Or.inr hmem)))
+      (fun a r hmem => h_match a r (List.mem_cons.mpr (Or.inr hmem)))).trans h_step
 
 /-! ### Atom Membership in Extended Model
 
@@ -835,8 +835,8 @@ private theorem int_truth_foldl_and (M : Separation.IntStructure) (t : Int)
         · exact hf
         · exact hrest g hmem⟩
     · rintro ⟨hi, hall⟩
-      exact ⟨⟨hi, hall f (List.mem_cons_self f rest)⟩,
-             fun g hg => hall g (List.mem_cons_of_mem f hg)⟩
+      exact ⟨⟨hi, hall f (List.mem_cons.mpr (Or.inl rfl))⟩,
+             fun g hg => hall g (List.mem_cons.mpr (Or.inr hg))⟩
 
 /-- The guard formula correctly captures assignment matching (requires atomMap injective). -/
 private theorem guardFormula_correct {sig : MonadicSignature}
@@ -856,7 +856,7 @@ private theorem guardFormula_correct {sig : MonadicSignature}
         ((Finset.univ : Finset sig.preds).toList.map fun p =>
           if σ p then Formula.atom (atomMap p)
           else Formula.neg (Formula.atom (atomMap p))) :=
-      List.mem_map_of_mem _ (Finset.mem_toList.mpr (Finset.mem_univ p))
+      List.mem_map.mpr ⟨p, Finset.mem_toList.mpr (Finset.mem_univ p), rfl⟩
     have hf := hall _ hmem
     by_cases hσ : σ p = true
     · simp only [hσ, ite_true, Separation.int_truth] at hf
@@ -906,7 +906,7 @@ private theorem int_truth_depends_on_atoms (φ : Formula)
       (ihα t (fun a ha' z => h a (Set.mem_union_left _ ha') z))
       (ihβ t (fun a ha' z => h a (Set.mem_union_right _ ha') z))
   | box _ _ =>
-    simp only [Separation.int_truth]; exact Iff.rfl
+    simp only [Separation.int_truth]
   | all_past α ih =>
     simp only [Separation.int_truth]
     exact ⟨fun ha s hs => (ih s h).mp (ha s hs),
@@ -1274,7 +1274,7 @@ theorem separation_implies_expressiveness
       Bimodal.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds p).val :=
     fun _ => rfl
   have h_base_ne : "p" ≠ "e" ++ toString (Fintype.card sig.preds) := by
-    intro h; exact absurd (congrArg (fun s => s.get ⟨0, by omega⟩) h) (by native_decide)
+    exact fun h => by have := congrArg (fun s => s.toList.head!) h; simp at this; exact absurd this (by decide)
   exact ⟨(expressiveness_fixed_atomMap h_sep sig atomMap "p" h_am_form h_base_ne psi).val,
          atomMap,
          (expressiveness_fixed_atomMap h_sep sig atomMap "p" h_am_form h_base_ne psi).property.1⟩
