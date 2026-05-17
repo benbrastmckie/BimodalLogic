@@ -150,11 +150,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula Operations and Integer Helpers [PARTIAL]
+### Phase 2: Formula Operations and Integer Helpers [COMPLETED]
 
 **Goal**: Create `Separation/FormulaOps.lean` with substitution, DNF/CNF signatures, and freshness; create `Separation/IntHelpers.lean` with integer-specific lemmas.
 
-**Current state**: IntHelpers.lean fully proved (0 sorry). FormulaOps.lean has 7 sorries: `to_DNF`, `to_CNF`, `dnf_equiv`, `cnf_equiv`, `subst_correctness`, and two related helpers.
+**Current state**: Both files fully proved (0 sorry). FormulaOps.lean: 223 LOC. IntHelpers.lean: 157 LOC.
 
 **Tasks**:
 - [ ] Define `Formula.subst` (substitute formula for atom)
@@ -273,7 +273,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove the two "direct semantic" elimination cases that form the foundation for all others.
 
-**Current state**: Case 1 PROVED (sorry-free). Case 5 and Cases 2-8 remain sorry. The file was restructured with helper lemmas (int_truth_and_iff, int_truth_or_iff, u_free_s_free_imp_separated) and Case 1 uses explicit GHR94 trichotomy on U-witness position.
+**Current state**: `Eliminations.lean` (734 LOC). Cases 1-4 fully proved (sorry-free). Cases 5-8 have 4 remaining `sorry` proofs — these require direct semantic constructions with witness formulas and are mutually recursive via negation rewriting.
 
 **Tasks**:
 - [x] State and prove `elim_case_1`: S(a ^ U(A,B), q) equivalence (3 disjuncts based on U-witness location) *(completed — full semantic proof with lt_trichotomy)*
@@ -303,7 +303,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove Cases 2 and 4 which involve not U(A,B) in the event or guard position.
 
-**Current state**: Merged into Phase 6 — all 8 cases are in `Eliminations.lean`. Cases 2 and 4 have `sorry` proofs.
+**Current state**: Merged into Phase 6. Cases 2 and 4 now PROVED (sorry-free). Remaining: Cases 5-8.
 
 **Tasks**:
 - [ ] Prove `elim_case_2`: S(a ^ not U(A,B), q)
@@ -331,7 +331,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
 
-**Current state**: Merged into Phase 6 — all 8 cases are in `Eliminations.lean`. Cases 3, 6, 7, 8 have `sorry` proofs.
+**Current state**: Merged into Phase 6. Case 3 now PROVED (sorry-free). Remaining: Cases 5-8 (4 sorries total in Eliminations.lean).
 
 **Tasks**:
 - [ ] Prove `elim_case_3`: S(a, q v U(A,B)) -- negate, use 10.2.2, apply Case 2
@@ -359,7 +359,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Derive the 8 dual cases (pulling S out from under U) automatically via swap_temporal.
 
-**Current state**: All 8 dual cases stated in `DualEliminations.lean` (116 LOC) but all 8 have `sorry` proofs. These are blocked on Phase 6-8: once `Eliminations.lean` proofs are complete, duals follow mechanically via `dual_equiv`.
+**Current state**: `DualEliminations.lean` (150 LOC). All 8 dual cases have `sorry` proofs. Agent found these require explicit S-free witness constructions rather than purely mechanical duality application — the duality infrastructure transforms formulas but the witness (is_S_free proof) must be constructed directly.
 
 **Tasks**:
 - [ ] State `elim_case_1_dual` through `elim_case_8_dual` for U(a ^ S(A,B), q) patterns
@@ -387,7 +387,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove that S(C,F) where U appears only as U(A,B) at top level can be separated into 8 canonical forms.
 
-**Current state**: Consolidated into `SeparationThm.lean` (114 LOC total for Phases 10-12, 14). The lemma is stated but proof is `sorry`. Planned file `SingleSWithU.lean` was not created separately.
+**Current state**: `SeparationThm.lean` (165 LOC). Defines `all_separable` theorem with base cases proved (atom, bot, imp, box). 4 sorries remain in temporal operator cases (untl, snce, all_past, all_future) — these require substitution-based junction-depth argument. Planned file `SingleSWithU.lean` was not created separately.
 
 **Tasks**:
 - [ ] Define `u_appearances_top_level_only` predicate (U(A,B) not under any S in C, F)
@@ -538,7 +538,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove separation implies expressive completeness and combine with the Separation Theorem for the final result.
 
-**Current state**: `ExpressiveCompleteness.lean` (120 LOC). `separation_implies_expressiveness` and `US_expressively_complete_over_Z` are stated and type-check but have 2 `sorry` proofs (the inductive step of 9.3.1, and the final composition).
+**Current state**: `ExpressiveCompleteness.lean` (206 LOC). `q_exists_correct` forward direction proved. 1 sorry remains: `separation_implies_expressiveness` inductive step (requires FO induction on quantifier depth with predicate-to-atom substitution).
 
 **Tasks**:
 - [ ] State `separation_implies_expressiveness` (Theorem 9.3.1)
@@ -580,23 +580,25 @@ Phases within the same wave can execute in parallel.
 - [ ] Final theorem: `US_expressively_complete_over_Z` type-checks against MonadicFormula infrastructure
 - [ ] Count sorry occurrences across all files; target: zero by project completion
 
-## Artifacts & Outputs (Actual)
+## Artifacts & Outputs (Actual, updated 2026-05-16)
 
 | File | LOC | Sorry | Status |
 |------|-----|-------|--------|
 | `Separation/Defs.lean` | 274 | 0 | Complete |
-| `Separation/FormulaOps.lean` | 170 | 7 | DNF/CNF + subst |
+| `Separation/FormulaOps.lean` | 223 | 0 | Complete |
 | `Separation/IntHelpers.lean` | 157 | 0 | Complete |
 | `Separation/Duality.lean` | 196 | 0 | Complete |
 | `Separation/Distributivity.lean` | 188 | 0 | Complete |
 | `Separation/NegationEquiv.lean` | 155 | 0 | Complete |
-| `Separation/Eliminations.lean` | 168 | 8 | All 8 cases sorry |
-| `Separation/DualEliminations.lean` | 116 | 8 | Blocked on Eliminations |
-| `Separation/SeparationThm.lean` | 114 | 5 | Lemmas 10.2.4-10.2.8 |
+| `Separation/Eliminations.lean` | 734 | 4 | Cases 1-4 proved; Cases 5-8 sorry |
+| `Separation/DualEliminations.lean` | 150 | 8 | Need S-free witness constructions |
+| `Separation/SeparationThm.lean` | 165 | 4 | `all_separable` temporal operator cases |
 | `Separation.lean` | 32 | 0 | Hub file |
-| `ExpressiveCompleteness.lean` | 120 | 2 | Thm 9.3.1 + 10.2.10 |
+| `ExpressiveCompleteness.lean` | 206 | 1 | Thm 9.3.1 inductive step |
 
-**Total**: 1690 LOC across 11 files. 30 sorries remain (down from 32 at first pass).
+**Total**: 2480 LOC across 11 files. **17 sorries remain**.
+
+**Proved theorems**: Cases 1-4 (Eliminations), all distributivity, all duality, negation equivalences, DNF/CNF, freshness, integer well-ordering, `q_exists_correct`.
 
 **Consolidation note**: The plan originally specified 17 files. During implementation, Phases 10-12 and 14 (Lemmas 10.2.4-10.2.8) were consolidated into `SeparationThm.lean`, and Phase 13 (FO infrastructure) was merged into `ExpressiveCompleteness.lean`. Files `SingleSWithU.lean`, `SingleU.lean`, `MultiU.lean`, `NoSWithinU.lean`, `JunctionDepth.lean`, and `FOToTemporal.lean` were never created as separate files.
 
