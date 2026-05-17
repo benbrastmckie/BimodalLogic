@@ -222,6 +222,13 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 **Note**: Independent of Phase 6. Can execute in parallel. Worked on by previous agents (6 sessions total); Tasks 7.1-7.5b completed, reducing from 2 sorry-pairs to 3 focused sorries all requiring the same biconditional.
 
+**BLOCKER** (Phase 7):
+- **What failed**: `atom_elim_correct` proof requires showing that `applySubsts` in `elimExtFromSep` produces semantically correct results. The `applySubsts` function applies substitutions sequentially (left-to-right), so after replacing `freshAM (.orig p)` with `atom (atomMap p)`, the subsequent const/lt/gt substitutions may FURTHER modify `atom (atomMap p)` if `atomMap p` collides with some `freshAM ep'`.
+- **What was tried**: (1) Bridge model approach (combinedModel) — requires disjointness. (2) Direct use of applySubsts_past_correct — requires h_match in a single model where both freshAM and atomMap atoms are meaningful. (3) Direct structural induction — still needs disjointness for atom case.
+- **Why it's stuck**: The `freshAM` construction in `.ex` case uses `Atom.mk_fresh "e" (Fintype.equivFin ... ep).val`. At recursive levels, the previous level's freshAM (also base "e") becomes the new atomMap. Both use base "e" with potentially overlapping Nat indices, so `atomMap p = freshAM ep'` can occur.
+- **What is needed**: Fix the freshAM construction to guarantee disjointness with atomMap at ALL recursion levels. Simplest fix: change freshAM to `Atom.mk_fresh "e" (offset + idx)` where `offset = Fintype.card sig.preds * 2 + 2 + 1` (exceeds all indices that the outer level's freshAM could have used). Alternatively, use a different string prefix per level.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Strategy**: The 3 sorries (lines 893, 940, 947) all reduce to a single biconditional `atom_elim_correct`:
 ```
 int_truth (to_int_struct (extIntStruct M t) freshAM) t B_sep
