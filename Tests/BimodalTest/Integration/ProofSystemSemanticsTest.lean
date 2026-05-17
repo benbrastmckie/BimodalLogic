@@ -252,13 +252,13 @@ Test 21: Temporal duality is sound.
 
 From ⊢ φ, we get ⊨ swap_temporal φ.
 -/
-example : [] ⊨ ((Formula.all_future (Formula.atom "p")).imp 
-              (Formula.all_future (Formula.all_future (Formula.atom "p")))).swap_temporal := by
-  let deriv : [] ⊢ ((Formula.all_future (Formula.atom "p")).imp 
-                    (Formula.all_future (Formula.all_future (Formula.atom "p")))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom "p"))
-  let deriv_swap : [] ⊢ ((Formula.all_future (Formula.atom "p")).imp 
-                         (Formula.all_future (Formula.all_future (Formula.atom "p")))).swap_temporal :=
+example : [] ⊨ ((Formula.all_future (Formula.atom_s "p")).imp 
+              (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal := by
+  let deriv : [] ⊢ ((Formula.all_future (Formula.atom_s "p")).imp 
+                    (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "p"))
+  let deriv_swap : [] ⊢ ((Formula.all_future (Formula.atom_s "p")).imp 
+                         (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal :=
     DerivationTree.temporal_duality _ deriv
   exact soundness [] _ deriv_swap
 
@@ -292,16 +292,16 @@ Demonstrates: Derivation → Soundness → Validity verification.
 -/
 example : True := by
   -- Step 1: Syntactic derivation
-  let proof : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  let proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
   
   -- Step 2: Apply soundness
-  let valid_from_soundness : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
+  let valid_from_soundness : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
     soundness [] _ proof
   
   -- Step 3: Direct semantic validity
-  let valid_direct : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    modal_t_valid (Formula.atom "p")
+  let valid_direct : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+    modal_t_valid (Formula.atom_s "p")
   
   -- Both paths give the same result
   trivial
@@ -312,14 +312,14 @@ Test 24: Complete workflow - Modal 4.
 Demonstrates: Derivation → Soundness → Validity for transitivity axiom.
 -/
 example : True := by
-  let proof : ⊢ ((Formula.atom "q").box.imp (Formula.atom "q").box.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "q"))
+  let proof : ⊢ ((Formula.atom_s "q").box.imp (Formula.atom_s "q").box.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "q"))
   
-  let valid_from_soundness : [] ⊨ ((Formula.atom "q").box.imp (Formula.atom "q").box.box) :=
+  let valid_from_soundness : [] ⊨ ((Formula.atom_s "q").box.imp (Formula.atom_s "q").box.box) :=
     soundness [] _ proof
   
-  let valid_direct : [] ⊨ ((Formula.atom "q").box.imp (Formula.atom "q").box.box) :=
-    modal_4_valid (Formula.atom "q")
+  let valid_direct : [] ⊨ ((Formula.atom_s "q").box.imp (Formula.atom_s "q").box.box) :=
+    modal_4_valid (Formula.atom_s "q")
   
   trivial
 
@@ -329,16 +329,16 @@ Test 25: Complete workflow - Temporal 4.
 Demonstrates: Derivation → Soundness → Validity for temporal transitivity.
 -/
 example : True := by
-  let proof : ⊢ ((Formula.atom "r").all_future.imp (Formula.atom "r").all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom "r"))
+  let proof : ⊢ ((Formula.atom_s "r").all_future.imp (Formula.atom_s "r").all_future.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "r"))
   
-  let valid_from_soundness : [] ⊨ ((Formula.atom "r").all_future.imp 
-                                    (Formula.atom "r").all_future.all_future) :=
+  let valid_from_soundness : [] ⊨ ((Formula.atom_s "r").all_future.imp 
+                                    (Formula.atom_s "r").all_future.all_future) :=
     soundness [] _ proof
   
-  let valid_direct : [] ⊨ ((Formula.atom "r").all_future.imp 
-                        (Formula.atom "r").all_future.all_future) :=
-    temp_4_valid (Formula.atom "r")
+  let valid_direct : [] ⊨ ((Formula.atom_s "r").all_future.imp 
+                        (Formula.atom_s "r").all_future.all_future) :=
+    temp_4_valid (Formula.atom_s "r")
   
   trivial
 
@@ -349,25 +349,25 @@ Demonstrates: Complex derivation → Soundness → Validity.
 -/
 example : True := by
   -- Derive: from [□p, □p → p], derive p
-  let ax : [Formula.box (Formula.atom "p")] ⊢ 
-           (Formula.box (Formula.atom "p")).imp (Formula.atom "p") :=
-    DerivationTree.axiom [Formula.box (Formula.atom "p")] _ 
-                        (Axiom.modal_t (Formula.atom "p"))
+  let ax : [Formula.box (Formula.atom_s "p")] ⊢ 
+           (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") :=
+    DerivationTree.axiom [Formula.box (Formula.atom_s "p")] _ 
+                        (Axiom.modal_t (Formula.atom_s "p"))
   
-  let ass : [Formula.box (Formula.atom "p")] ⊢ Formula.box (Formula.atom "p") :=
-    DerivationTree.assumption [Formula.box (Formula.atom "p")] 
-                             (Formula.box (Formula.atom "p")) 
+  let ass : [Formula.box (Formula.atom_s "p")] ⊢ Formula.box (Formula.atom_s "p") :=
+    DerivationTree.assumption [Formula.box (Formula.atom_s "p")] 
+                             (Formula.box (Formula.atom_s "p")) 
                              (List.Mem.head _)
   
-  let proof : [Formula.box (Formula.atom "p")] ⊢ Formula.atom "p" :=
-    DerivationTree.modus_ponens [Formula.box (Formula.atom "p")] 
-                                (Formula.box (Formula.atom "p")) 
-                                (Formula.atom "p") 
+  let proof : [Formula.box (Formula.atom_s "p")] ⊢ Formula.atom_s "p" :=
+    DerivationTree.modus_ponens [Formula.box (Formula.atom_s "p")] 
+                                (Formula.box (Formula.atom_s "p")) 
+                                (Formula.atom_s "p") 
                                 ax ass
   
   -- Apply soundness
-  let valid : [Formula.box (Formula.atom "p")] ⊨ Formula.atom "p" :=
-    soundness [Formula.box (Formula.atom "p")] (Formula.atom "p") proof
+  let valid : [Formula.box (Formula.atom_s "p")] ⊨ Formula.atom_s "p" :=
+    soundness [Formula.box (Formula.atom_s "p")] (Formula.atom_s "p") proof
   
   trivial
 
@@ -451,9 +451,9 @@ Test 31: Empty context semantic consequence.
 
 If ⊢ φ, then [] ⊨ φ (theorems are valid).
 -/
-example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
-  let deriv : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
+  let deriv : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
   exact soundness [] _ deriv
 
 /--
@@ -521,10 +521,10 @@ Test 36: Modal K distribution soundness with concrete formulas.
 
 Verify □(p → q) → (□p → □q) is sound.
 -/
-example : [] ⊨ (((Formula.atom "p").imp (Formula.atom "q")).box.imp 
-             ((Formula.atom "p").box.imp (Formula.atom "q").box)) := by
+example : [] ⊨ (((Formula.atom_s "p").imp (Formula.atom_s "q")).box.imp 
+             ((Formula.atom_s "p").box.imp (Formula.atom_s "q").box)) := by
   let deriv := DerivationTree.axiom [] _ 
-    (Axiom.modal_k_dist (Formula.atom "p") (Formula.atom "q"))
+    (Axiom.modal_k_dist (Formula.atom_s "p") (Formula.atom_s "q"))
   exact soundness [] _ deriv
 
 /--
@@ -532,10 +532,10 @@ Test 37: Temporal K distribution soundness with concrete formulas.
 
 Verify F(p → q) → (Fp → Fq) is sound.
 -/
-example : [] ⊨ (((Formula.atom "p").imp (Formula.atom "q")).all_future.imp 
-             ((Formula.atom "p").all_future.imp (Formula.atom "q").all_future)) := by
+example : [] ⊨ (((Formula.atom_s "p").imp (Formula.atom_s "q")).all_future.imp 
+             ((Formula.atom_s "p").all_future.imp (Formula.atom_s "q").all_future)) := by
   let deriv := DerivationTree.axiom [] _ 
-    (Axiom.temp_k_dist (Formula.atom "p") (Formula.atom "q"))
+    (Axiom.temp_k_dist (Formula.atom_s "p") (Formula.atom_s "q"))
   exact soundness [] _ deriv
 
 /--
@@ -543,8 +543,8 @@ Test 38: Modal B soundness with concrete formula.
 
 Verify p → □◇p is sound.
 -/
-example : [] ⊨ ((Formula.atom "p").imp ((Formula.atom "p").diamond.box)) := by
-  let deriv := DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "p"))
+example : [] ⊨ ((Formula.atom_s "p").imp ((Formula.atom_s "p").diamond.box)) := by
+  let deriv := DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom_s "p"))
   exact soundness [] _ deriv
 
 /--
@@ -552,9 +552,9 @@ Test 39: Temporal A soundness with concrete formula.
 
 Verify p → F(some_past p) is sound.
 -/
-example : [] ⊨ ((Formula.atom "p").imp 
-             (Formula.all_future (Formula.atom "p").some_past)) := by
-  let deriv := DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom "p"))
+example : [] ⊨ ((Formula.atom_s "p").imp 
+             (Formula.all_future (Formula.atom_s "p").some_past)) := by
+  let deriv := DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom_s "p"))
   exact soundness [] _ deriv
 
 /--
@@ -562,9 +562,9 @@ Test 40: Modal-Future soundness with concrete formula.
 
 Verify □p → □Fp is sound.
 -/
-example : [] ⊨ ((Formula.box (Formula.atom "p")).imp 
-             (Formula.box (Formula.all_future (Formula.atom "p")))) := by
-  let deriv := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.atom "p"))
+example : [] ⊨ ((Formula.box (Formula.atom_s "p")).imp 
+             (Formula.box (Formula.all_future (Formula.atom_s "p")))) := by
+  let deriv := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.atom_s "p"))
   exact soundness [] _ deriv
 
 end AxiomSpecificSoundnessTests

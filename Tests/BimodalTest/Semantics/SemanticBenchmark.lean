@@ -120,11 +120,11 @@ def runAtomicBenchmarks : IO (List SemanticBenchmarkResult) := do
   IO.println "=== Atomic Formula Benchmarks ==="
   let mut results := []
 
-  let r1 ← runBenchmark "Atom p (true)" (Formula.atom "p") true
+  let r1 ← runBenchmark "Atom p (true)" (Formula.atom_s "p") true
   printResult r1
   results := results ++ [r1]
 
-  let r2 ← runBenchmark "Atom q (false)" (Formula.atom "q") false
+  let r2 ← runBenchmark "Atom q (false)" (Formula.atom_s "q") false
   printResult r2
   results := results ++ [r2]
 
@@ -143,7 +143,7 @@ Benchmarks for modal formulas of varying nesting depth.
 /-- Build nested box formula: □□...□p with given depth -/
 def nestedBox (depth : Nat) : Formula :=
   match depth with
-  | 0 => Formula.atom "p"
+  | 0 => Formula.atom_s "p"
   | n + 1 => Formula.box (nestedBox n)
 
 def runModalDepthBenchmarks : IO (List SemanticBenchmarkResult) := do
@@ -176,12 +176,12 @@ def runTemporalBenchmarks : IO (List SemanticBenchmarkResult) := do
   let mut results := []
 
   -- G p (all future): at trivial frame, true
-  let r1 ← runBenchmark "Gp (all future)" (Formula.all_future (Formula.atom "p")) true
+  let r1 ← runBenchmark "Gp (all future)" (Formula.all_future (Formula.atom_s "p")) true
   printResult r1
   results := results ++ [r1]
 
   -- H p (all past): at time 0, vacuously true
-  let r2 ← runBenchmark "Hp (all past)" (Formula.all_past (Formula.atom "p")) true
+  let r2 ← runBenchmark "Hp (all past)" (Formula.all_past (Formula.atom_s "p")) true
   printResult r2
   results := results ++ [r2]
 
@@ -198,12 +198,12 @@ def runComplexBenchmarks : IO (List SemanticBenchmarkResult) := do
   let mut results := []
 
   -- p → p is always true
-  let r1 ← runBenchmark "p → p (true)" ((Formula.atom "p").imp (Formula.atom "p")) true
+  let r1 ← runBenchmark "p → p (true)" ((Formula.atom_s "p").imp (Formula.atom_s "p")) true
   printResult r1
   results := results ++ [r1]
 
   -- p → q: p is true, q is false, so p → q is false
-  let r2 ← runBenchmark "p → q (false)" ((Formula.atom "p").imp (Formula.atom "q")) false
+  let r2 ← runBenchmark "p → q (false)" ((Formula.atom_s "p").imp (Formula.atom_s "q")) false
   printResult r2
   results := results ++ [r2]
 
@@ -213,12 +213,12 @@ def runComplexBenchmarks : IO (List SemanticBenchmarkResult) := do
   results := results ++ [r3]
 
   -- q → p: q is false, so q → p is true (false implies anything)
-  let r4 ← runBenchmark "q → p (true)" ((Formula.atom "q").imp (Formula.atom "p")) true
+  let r4 ← runBenchmark "q → p (true)" ((Formula.atom_s "q").imp (Formula.atom_s "p")) true
   printResult r4
   results := results ++ [r4]
 
   -- Implication chain: (p → (q → p)) is true (weakening)
-  let r5 ← runBenchmark "p → (q → p) (true)" ((Formula.atom "p").imp ((Formula.atom "q").imp (Formula.atom "p"))) true
+  let r5 ← runBenchmark "p → (q → p) (true)" ((Formula.atom_s "p").imp ((Formula.atom_s "q").imp (Formula.atom_s "p"))) true
   printResult r5
   results := results ++ [r5]
 
@@ -235,18 +235,18 @@ def runMixedBenchmarks : IO (List SemanticBenchmarkResult) := do
   let mut results := []
 
   -- □p → p (Modal T): box true implies p true
-  let r1 ← runBenchmark "□p → p (true)" ((Formula.box (Formula.atom "p")).imp (Formula.atom "p")) true
+  let r1 ← runBenchmark "□p → p (true)" ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) true
   printResult r1
   results := results ++ [r1]
 
   -- p → □p (converse of T): p true, □p true at trivial frame
-  let r2 ← runBenchmark "p → □p (true)" ((Formula.atom "p").imp (Formula.box (Formula.atom "p"))) true
+  let r2 ← runBenchmark "p → □p (true)" ((Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p"))) true
   printResult r2
   results := results ++ [r2]
 
   -- □(p → q) → (□p → □q) (K distribution): both sides true at trivial frame
-  let k_dist := (Formula.box ((Formula.atom "p").imp (Formula.atom "q"))).imp
-    ((Formula.box (Formula.atom "p")).imp (Formula.box (Formula.atom "q")))
+  let k_dist := (Formula.box ((Formula.atom_s "p").imp (Formula.atom_s "q"))).imp
+    ((Formula.box (Formula.atom_s "p")).imp (Formula.box (Formula.atom_s "q")))
   let r3 ← runBenchmark "K distribution (true)" k_dist true
   printResult r3
   results := results ++ [r3]

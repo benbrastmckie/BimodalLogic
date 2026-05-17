@@ -31,43 +31,43 @@ noncomputable section
 -- ============================================================
 
 -- Test: Modal T is derivable from empty context
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.atom "p") := by
+example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") := by
   apply DerivationTree.axiom
   apply Axiom.modal_t
 
 -- Test: Modal 4 is derivable from any context
-example : [Formula.atom "q"] ⊢ (Formula.box (Formula.atom "p")).imp (Formula.box (Formula.box (Formula.atom "p"))) := by
+example : [Formula.atom_s "q"] ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.box (Formula.box (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   apply Axiom.modal_4
 
 -- Test: Modal B is derivable
-example : ⊢ (Formula.atom "p").imp (Formula.box (Formula.atom "p").diamond) := by
+example : ⊢ (Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p").diamond) := by
   apply DerivationTree.axiom
   apply Axiom.modal_b
 
 -- Test: Temporal 4 is derivable
-example : ⊢ (Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_future (Formula.atom "p"))) := by
+example : ⊢ (Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   apply Axiom.temp_4
 
 -- Test: Temporal A is derivable (φ → F(some_past φ))
-example : ⊢ (Formula.atom "p").imp (Formula.all_future (Formula.atom "p").some_past) := by
+example : ⊢ (Formula.atom_s "p").imp (Formula.all_future (Formula.atom_s "p").some_past) := by
   apply DerivationTree.axiom
   apply Axiom.temp_a
 
 -- Test: Temporal L is derivable (△φ → FHφ)
-example : ⊢ (Formula.atom "p").always.imp (Formula.all_future (Formula.all_past (Formula.atom "p"))) := by
+example : ⊢ (Formula.atom_s "p").always.imp (Formula.all_future (Formula.all_past (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   apply Axiom.temp_l
 
 -- Test: Modal-Future is derivable
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.box (Formula.all_future (Formula.atom "p"))) := by
+example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.box (Formula.all_future (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   apply Axiom.modal_future
 
 -- Test: Temporal-Future is derivable (derived from MF + T + Modal 4)
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.all_future (Formula.box (Formula.atom "p"))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom "p")
+example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.all_future (Formula.box (Formula.atom_s "p"))) :=
+  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom_s "p")
 
 -- ============================================================
 -- Assumption Rule Tests
@@ -125,9 +125,9 @@ example (p q r : Formula) : [p.imp q, q.imp r, p] ⊢ r := by
 
 -- Test: Necessitation with axiom (from empty context)
 -- If ⊢ φ then ⊢ □φ (standard necessitation rule)
-example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).box := by
-  have d : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : ([] : Context) ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")).box := by
+  have d : [] ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
   exact DerivationTree.necessitation _ d
 
 -- Test: Necessitation preserves theorem status
@@ -141,9 +141,9 @@ example (φ : Formula) (d : ⊢ φ) : ⊢ φ.box := by
 
 -- Test: Temporal necessitation with axiom (from empty context)
 -- If ⊢ φ then ⊢ Fφ (standard temporal necessitation rule)
-example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future := by
-  have d : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : ([] : Context) ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")).all_future := by
+  have d : [] ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
   exact DerivationTree.temporal_necessitation _ d
 
 -- Test: Temporal necessitation preserves theorem status
@@ -156,13 +156,13 @@ example (φ : Formula) (d : ⊢ φ) : ⊢ φ.all_future := by
 -- ============================================================
 
 -- Test: Temporal duality on Modal T
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.atom "p") := by
+example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") := by
   apply DerivationTree.axiom
   apply Axiom.modal_t
 
 -- Test: Temporal duality swaps all_past/all_future
 -- If ⊢ φ then ⊢ swap_temporal φ
-example : ⊢ ((Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_future (Formula.atom "p")))).swap_temporal := by
+example : ⊢ ((Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal := by
   apply DerivationTree.temporal_duality
   apply DerivationTree.axiom
   apply Axiom.temp_4
@@ -174,7 +174,7 @@ example : ⊢ ((Formula.all_future (Formula.atom "p")).imp (Formula.all_future (
 -- ============================================================
 
 -- Test: Weaken empty context to singleton
-example (p : Formula) : [p] ⊢ (Formula.box (Formula.atom "q")).imp (Formula.atom "q") := by
+example (p : Formula) : [p] ⊢ (Formula.box (Formula.atom_s "q")).imp (Formula.atom_s "q") := by
   apply DerivationTree.weakening (Γ := [])
   · apply DerivationTree.axiom
     apply Axiom.modal_t
@@ -228,26 +228,26 @@ def modal_4_theorem (φ : Formula) : ⊢ ((φ.box).imp (φ.box.box)) := by
 
 -- Test: Generalized Modal K (derived theorem)
 -- If Γ ⊢ φ then □Γ ⊢ □φ
-example (p : Formula) : [(Formula.atom "p").box] ⊢ (Formula.atom "p").box := by
+example (p : Formula) : [(Formula.atom_s "p").box] ⊢ (Formula.atom_s "p").box := by
   -- We start with [p] ⊢ p (assumption)
-  have d : [Formula.atom "p"] ⊢ Formula.atom "p" := by
+  have d : [Formula.atom_s "p"] ⊢ Formula.atom_s "p" := by
     apply DerivationTree.assumption
     simp
   -- Apply generalized modal K
-  have d_gen := Bimodal.Theorems.generalized_modal_k [Formula.atom "p"] (Formula.atom "p") d
+  have d_gen := Bimodal.Theorems.generalized_modal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
   -- Result should be [□p] ⊢ □p
   simp at d_gen
   exact d_gen
 
 -- Test: Generalized Temporal K (derived theorem)
 -- If Γ ⊢ φ then FΓ ⊢ Fφ
-example (p : Formula) : [(Formula.atom "p").all_future] ⊢ (Formula.atom "p").all_future := by
+example (p : Formula) : [(Formula.atom_s "p").all_future] ⊢ (Formula.atom_s "p").all_future := by
   -- We start with [p] ⊢ p (assumption)
-  have d : [Formula.atom "p"] ⊢ Formula.atom "p" := by
+  have d : [Formula.atom_s "p"] ⊢ Formula.atom_s "p" := by
     apply DerivationTree.assumption
     simp
   -- Apply generalized temporal K
-  have d_gen := Bimodal.Theorems.generalized_temporal_k [Formula.atom "p"] (Formula.atom "p") d
+  have d_gen := Bimodal.Theorems.generalized_temporal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
   -- Result should be [Fp] ⊢ Fp
   simp at d_gen
   exact d_gen

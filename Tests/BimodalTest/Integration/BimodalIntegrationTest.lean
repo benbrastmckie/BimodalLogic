@@ -55,7 +55,7 @@ Test 1: Modal-Future axiom derivation and soundness.
 Verifies □p → □Fp is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let φ := p.box.imp (p.all_future.box)
   
   -- Derive using Modal-Future axiom
@@ -75,7 +75,7 @@ Test 2: Modal-Future with modus ponens.
 From [□p], derive □Fp.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- □p → □Fp
@@ -102,7 +102,7 @@ Test 3: Chained Modal-Future applications.
 From [□p], derive □FFp through repeated application.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Step 1: □p → □Fp, □p ⊢ □Fp
@@ -134,7 +134,7 @@ Test 4: Modal-Future with nested boxes.
 From [□□p], derive □□Fp.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box.box]
   
   -- Step 1: □□p → □p using Modal T
@@ -178,7 +178,7 @@ Test 5: Temporal-Future axiom derivation and soundness.
 Verifies □p → F□p is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let φ := p.box.imp (p.box.all_future)
   
   -- Derive using Temporal-Future axiom
@@ -198,7 +198,7 @@ Test 6: Temporal-Future with modus ponens.
 From [□p], derive F□p.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- □p → F□p (derived from MF + T + Modal 4)
@@ -225,7 +225,7 @@ Test 7: Chained Temporal-Future applications.
 From [□p], derive FF□p through repeated application.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Step 1: □p → F□p, □p ⊢ F□p
@@ -265,7 +265,7 @@ Test 8: Combining MF and TF axioms.
 From [□p], derive both □Fp and F□p.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Path 1: □p → □Fp (Modal-Future)
@@ -296,7 +296,7 @@ Test 9: Complex bimodal derivation chain.
 Multi-step proof combining modal and temporal axioms.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Step 1: □p → □Fp (Modal-Future)
@@ -338,7 +338,7 @@ Test 10: Bimodal workflow with necessitation.
 Combine modal and temporal necessitation.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Start with Modal T axiom
   let d1 : ⊢ (p.box.imp p) :=
@@ -374,8 +374,8 @@ Test 11: Box-Future combination properties.
 Test derivations involving □Fp formulas.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   
   -- Derive Modal K for Fp: □(Fp → Fq) → (□Fp → □Fq)
   let φ := (p.all_future.imp q.all_future).box.imp
@@ -394,8 +394,8 @@ Test 12: Future-Box combination properties.
 Test derivations involving F□p formulas.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   
   -- Derive Temporal K for □p: F(□p → □q) → (F□p → F□q)
   let φ := (p.box.imp q.box).all_future.imp
@@ -414,7 +414,7 @@ Test 13: Nested bimodal operators.
 Test deeply nested □F combinations.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Build □F□Fp from □p
@@ -461,7 +461,7 @@ Test 14: Time-shift with Modal-Future axiom.
 Verify that Modal-Future axiom respects time-shift invariance.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Modal-Future axiom is valid (time-shift invariant)
   let d : ⊢ (p.box.imp (p.all_future.box)) :=
@@ -481,7 +481,7 @@ Test 15: Time-shift with Temporal-Future axiom.
 Verify that Temporal-Future axiom respects time-shift invariance.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Temporal-Future axiom is valid (time-shift invariant)
   let d : ⊢ (p.box.imp (p.box.all_future)) :=

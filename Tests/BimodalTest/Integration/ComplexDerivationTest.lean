@@ -53,11 +53,11 @@ Test 1: 5-step modus ponens chain.
 Chain: p → q, q → r, r → s, s → t, p ⊢ t
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
-  let r := Formula.atom "r"
-  let s := Formula.atom "s"
-  let t := Formula.atom "t"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
+  let r := Formula.atom_s "r"
+  let s := Formula.atom_s "s"
+  let t := Formula.atom_s "t"
   
   let Γ := [p.imp q, q.imp r, r.imp s, s.imp t, p]
   
@@ -99,8 +99,8 @@ Test 2: 6-step derivation chain with mixed rules.
 Combines modus ponens, weakening, and axiom application.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   
   -- Step 1: Derive Modal T axiom
   let d1 : ⊢ (p.box.imp p) :=
@@ -151,7 +151,7 @@ Test 3: Triple nested box (□□□p → p).
 Uses repeated application of Modal T.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive □□□p → □□p using Modal T
   let d1 : ⊢ (p.box.box.box.imp p.box.box) :=
@@ -178,7 +178,7 @@ Test 4: Nested box with modus ponens.
 From [□□□p], derive p through repeated application.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box.box.box]
   
   -- Step 1: □□□p → □□p, □□□p ⊢ □□p
@@ -212,7 +212,7 @@ Test 5: Modal 4 with nested boxes (□p → □□□p).
 Uses repeated application of Modal 4.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Step 1: □p → □□p using Modal 4
@@ -248,7 +248,7 @@ Test 6: Triple nested future (FFFp → FFp).
 Uses Temporal 4 axiom.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive FFFp → FFFFp using Temporal 4
   let d1 : ⊢ (p.all_future.all_future.all_future.imp
@@ -280,7 +280,7 @@ Test 7: Nested future with modus ponens.
 From [FFFp], derive FFFFp through application.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.all_future.all_future.all_future]
   
   -- FFFp → FFFFp, FFFp ⊢ FFFFp
@@ -313,7 +313,7 @@ Test 8: Mixed modal and temporal operators.
 Derive □Fp from □p using Modal-Future axiom.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- □p → □Fp using Modal-Future axiom
@@ -335,7 +335,7 @@ Test 9: Complex bimodal derivation chain.
 Combines modal and temporal operators in multi-step proof.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.box]
   
   -- Step 1: □p → □Fp
@@ -373,9 +373,9 @@ Test 10: Multi-step weakening chain.
 Demonstrates soundness preservation through context expansion.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
-  let r := Formula.atom "r"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
+  let r := Formula.atom_s "r"
   
   -- Start with [p] ⊢ p
   let Γ1 := [p]

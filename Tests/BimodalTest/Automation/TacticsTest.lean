@@ -59,54 +59,54 @@ Tests for basic axiom application tactics.
 -/
 
 /-- Test 1: prop_s axiom via DerivationTree.axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.imp (Formula.atom "q") (Formula.atom "p"))) :=
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) :=
   DerivationTree.axiom [] _ (Axiom.prop_s _ _)
 
 /-- Test 2: prop_k axiom for distribution -/
 example : DerivationTree [] (Formula.imp
-  (Formula.imp (Formula.atom "p") (Formula.imp (Formula.atom "q") (Formula.atom "r")))
-  (Formula.imp (Formula.imp (Formula.atom "p") (Formula.atom "q")) (Formula.imp (Formula.atom "p") (Formula.atom "r")))) :=
+  (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
+  (Formula.imp (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) (Formula.imp (Formula.atom_s "p") (Formula.atom_s "r")))) :=
   DerivationTree.axiom [] _ (Axiom.prop_k _ _ _)
 
 /-- Test 3: modal_t axiom (□p → p) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "p")) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) :=
   DerivationTree.axiom [] _ (Axiom.modal_t _)
 
 /-- Test 4: modal_4 axiom (□p → □□p) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.box (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.modal_4 _)
 
 /-- Test 5: modal_b axiom (p → □◇p) -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.box (Formula.diamond (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.modal_b _)
 
 /-- Test 6: temp_4 axiom (Gp → GGp) -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.temp_4 _)
 
 /-- Test 7: temp_a axiom (p → GPp) -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.all_future (Formula.some_past (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.temp_a _)
 
 /-- Test 8: temp_l axiom (△p → F(Hp)) -/
-example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom "p")) (Formula.all_future (Formula.all_past (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.temp_l _)
 
 /-- Test 9: modal_future axiom (□p → □Fp) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.all_future (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) :=
   DerivationTree.axiom [] _ (Axiom.modal_future _)
 
 /-- Test 10: temp_future derived (□p → G□p, from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 11: apply_axiom tactic unifies with modal_t -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "q")) (Formula.atom "q")) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "q")) (Formula.atom_s "q")) := by
   apply DerivationTree.axiom
   exact Axiom.modal_t _
 
 /-- Test 12: modal_t tactic (convenience wrapper) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "r")) (Formula.atom "r")) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "r")) (Formula.atom_s "r")) := by
   apply DerivationTree.axiom
   exact Axiom.modal_t _
 
@@ -117,32 +117,32 @@ Tests for native TM automation (no Aesop dependency).
 -/
 
 /-- Test 13: tm_auto finds modal_t axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "p")) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) := by
   apply DerivationTree.axiom
   exact Axiom.modal_t _
 
 /-- Test 14: tm_auto finds modal_4 axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.box (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_4 _
 
 /-- Test 15: tm_auto finds temp_4 axiom -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_4 _
 
 /-- Test 16: tm_auto finds temp_a axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.all_future (Formula.some_past (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
 /-- Test 17: tm_auto finds modal_future axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.all_future (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_future _
 
 /-- Test 18: tm_auto finds temp_future (now derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
@@ -153,23 +153,23 @@ Tests for remaining axioms not covered in Phase 5.
 
 /-- Test 32: tm_auto finds prop_k axiom -/
 example : DerivationTree [] (Formula.imp
-  (Formula.imp (Formula.atom "p") (Formula.imp (Formula.atom "q") (Formula.atom "r")))
-  (Formula.imp (Formula.imp (Formula.atom "p") (Formula.atom "q")) (Formula.imp (Formula.atom "p") (Formula.atom "r")))) := by
+  (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
+  (Formula.imp (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) (Formula.imp (Formula.atom_s "p") (Formula.atom_s "r")))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_k _ _ _
 
 /-- Test 33: tm_auto finds prop_s axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.imp (Formula.atom "q") (Formula.atom "p"))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_s _ _
 
 /-- Test 34: tm_auto finds modal_b axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.box (Formula.diamond (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_b _
 
 /-- Test 35: tm_auto finds temp_l axiom -/
-example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom "p")) (Formula.all_future (Formula.all_past (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_l _
 
@@ -184,12 +184,12 @@ example (h : Nat) : Nat := by
   assumption_search
 
 /-- Test 20: assumption_search with propositional type -/
-example (h1 : Formula.atom "p" = Formula.atom "p") : Formula.atom "p" = Formula.atom "p" := by
+example (h1 : Formula.atom_s "p" = Formula.atom_s "p") : Formula.atom_s "p" = Formula.atom_s "p" := by
   assumption_search
 
 /-- Test 21: assumption_search with implication -/
-example (h : Formula.imp (Formula.atom "p") (Formula.atom "q") = Formula.imp (Formula.atom "p") (Formula.atom "q")) :
-    Formula.imp (Formula.atom "p") (Formula.atom "q") = Formula.imp (Formula.atom "p") (Formula.atom "q") := by
+example (h : Formula.imp (Formula.atom_s "p") (Formula.atom_s "q") = Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) :
+    Formula.imp (Formula.atom_s "p") (Formula.atom_s "q") = Formula.imp (Formula.atom_s "p") (Formula.atom_s "q") := by
   assumption_search
 
 /-- Test 22: assumption_search with multiple assumptions -/
@@ -207,28 +207,28 @@ Tests for formula pattern matching utilities.
 -/
 
 /-- Test 24: is_box_formula recognizes box formulas -/
-example : is_box_formula (Formula.box (Formula.atom "p")) = true := rfl
+example : is_box_formula (Formula.box (Formula.atom_s "p")) = true := rfl
 
 /-- Test 25: is_box_formula rejects non-box formulas -/
-example : is_box_formula (Formula.atom "p") = false := rfl
+example : is_box_formula (Formula.atom_s "p") = false := rfl
 
 /-- Test 26: is_future_formula recognizes all_future formulas -/
-example : is_future_formula (Formula.all_future (Formula.atom "p")) = true := rfl
+example : is_future_formula (Formula.all_future (Formula.atom_s "p")) = true := rfl
 
 /-- Test 27: is_future_formula rejects non-all_future formulas -/
-example : is_future_formula (Formula.atom "p") = false := rfl
+example : is_future_formula (Formula.atom_s "p") = false := rfl
 
 /-- Test 28: extract_from_box extracts inner formula -/
-example : extract_from_box (Formula.box (Formula.atom "p")) = some (Formula.atom "p") := rfl
+example : extract_from_box (Formula.box (Formula.atom_s "p")) = some (Formula.atom_s "p") := rfl
 
 /-- Test 29: extract_from_box returns none for non-box -/
-example : extract_from_box (Formula.atom "p") = none := rfl
+example : extract_from_box (Formula.atom_s "p") = none := rfl
 
 /-- Test 30: extract_from_future extracts inner formula -/
-example : extract_from_future (Formula.all_future (Formula.atom "p")) = some (Formula.atom "p") := rfl
+example : extract_from_future (Formula.all_future (Formula.atom_s "p")) = some (Formula.atom_s "p") := rfl
 
 /-- Test 31: extract_from_future returns none for non-all_future -/
-example : extract_from_future (Formula.atom "p") = none := rfl
+example : extract_from_future (Formula.atom_s "p") = none := rfl
 
 /-!
 ## Phase 8: Negative and Edge Case Tests
@@ -251,22 +251,22 @@ This is documented as expected behavior.
 -/
 
 /-- Test 38: is_box_formula recognizes nested box -/
-example : is_box_formula (Formula.box (Formula.box (Formula.atom "p"))) = true := rfl
+example : is_box_formula (Formula.box (Formula.box (Formula.atom_s "p"))) = true := rfl
 
 /-- Test 39: is_future_formula recognizes nested all_future -/
-example : is_future_formula (Formula.all_future (Formula.all_future (Formula.atom "p"))) = true := rfl
+example : is_future_formula (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) = true := rfl
 
 /-- Test 40: extract_from_box extracts outer box content from nested -/
-example : extract_from_box (Formula.box (Formula.box (Formula.atom "p"))) = some (Formula.box (Formula.atom "p")) := rfl
+example : extract_from_box (Formula.box (Formula.box (Formula.atom_s "p"))) = some (Formula.box (Formula.atom_s "p")) := rfl
 
 /-- Test 41: extract_from_future extracts outer all_future content from nested -/
-example : extract_from_future (Formula.all_future (Formula.all_future (Formula.atom "p"))) = some (Formula.all_future (Formula.atom "p")) := rfl
+example : extract_from_future (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) = some (Formula.all_future (Formula.atom_s "p")) := rfl
 
 /-- Test 42: is_box_formula rejects implication -/
-example : is_box_formula (Formula.imp (Formula.atom "p") (Formula.atom "q")) = false := rfl
+example : is_box_formula (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) = false := rfl
 
 /-- Test 43: is_future_formula rejects some_past -/
-example : is_future_formula (Formula.some_past (Formula.atom "p")) = false := rfl
+example : is_future_formula (Formula.some_past (Formula.atom_s "p")) = false := rfl
 
 /-!
 ## Phase 9: Context Variation Tests
@@ -279,7 +279,7 @@ example (h1 : Nat) (h2 : Nat) : Nat := by
   assumption_search
 
 /-- Test 45: assumption_search with DerivationTree type -/
-example (h : DerivationTree [] (Formula.atom "p")) : DerivationTree [] (Formula.atom "p") := by
+example (h : DerivationTree [] (Formula.atom_s "p")) : DerivationTree [] (Formula.atom_s "p") := by
   assumption_search
 
 /-- Test 46: assumption_search with nested parameterized type -/
@@ -297,10 +297,10 @@ Tests for deep nesting and complex formulas.
 -/
 
 /-- Test 48: Deep nesting of box formulas -/
-example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom "p")))) = true := rfl
+example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom_s "p")))) = true := rfl
 
 /-- Test 49: Complex bimodal formula (TF derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 50: assumption_search with long context -/
@@ -318,48 +318,48 @@ The generalized rules are now in Bimodal.Theorems.GeneralizedNecessitation.
 
 open Bimodal.Theorems in
 /-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
-noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
-    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.atom "p")) :=
+noncomputable example (h : DerivationTree [] (Formula.atom_s "p")) :
+    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k [] _ h
 
 open Bimodal.Theorems in
 /-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
-noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
-    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.atom "p")) :=
+noncomputable example (h : DerivationTree [] (Formula.atom_s "p")) :
+    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.atom_s "p")) :=
   generalized_temporal_k [] _ h
 
 /-- Test 53: temporal_duality swaps past and future -/
-example (h : DerivationTree [] (Formula.all_past (Formula.atom "p"))) :
-    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.atom "p"))) :=
+example (h : DerivationTree [] (Formula.all_past (Formula.atom_s "p"))) :
+    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.atom_s "p"))) :=
   DerivationTree.temporal_duality _ h
 
 open Bimodal.Theorems in
 /-- Test 54: generalized_modal_k with axiom derivation -/
 noncomputable example :
-    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "p"))) :=
+    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p"))) :=
   generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _))
 
 open Bimodal.Theorems in
 /-- Test 55: generalized_temporal_k with axiom derivation -/
 noncomputable example :
-    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p"))))) :=
+    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p"))))) :=
   generalized_temporal_k [] _ (DerivationTree.axiom [] _ (Axiom.temp_4 _))
 
 open Bimodal.Theorems in
 /-- Test 56: generalized_modal_k with non-empty context -/
-noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
-    DerivationTree (Context.map Formula.box [Formula.atom "p"]) (Formula.box (Formula.atom "p")) :=
+noncomputable example (h : DerivationTree [Formula.atom_s "p"] (Formula.atom_s "p")) :
+    DerivationTree (Context.map Formula.box [Formula.atom_s "p"]) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k _ _ h
 
 open Bimodal.Theorems in
 /-- Test 57: generalized_temporal_k with non-empty context -/
-noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
-    DerivationTree (Context.map Formula.all_future [Formula.atom "p"]) (Formula.all_future (Formula.atom "p")) :=
+noncomputable example (h : DerivationTree [Formula.atom_s "p"] (Formula.atom_s "p")) :
+    DerivationTree (Context.map Formula.all_future [Formula.atom_s "p"]) (Formula.all_future (Formula.atom_s "p")) :=
   generalized_temporal_k _ _ h
 
 /-- Test 58: temporal_duality with implication -/
-example (h : DerivationTree [] (Formula.all_past (Formula.imp (Formula.atom "p") (Formula.atom "q")))) :
-    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.imp (Formula.atom "p") (Formula.atom "q")))) :=
+example (h : DerivationTree [] (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :
+    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :=
   DerivationTree.temporal_duality _ h
 
 /-!
@@ -369,51 +369,51 @@ Tests for various derivation combinations and edge cases.
 -/
 
 /-- Test 59: Weakening with empty addition -/
-example (h : DerivationTree [] (Formula.atom "p")) : DerivationTree [] (Formula.atom "p") :=
+example (h : DerivationTree [] (Formula.atom_s "p")) : DerivationTree [] (Formula.atom_s "p") :=
   DerivationTree.weakening [] [] _ h (List.nil_subset _)
 
 /-- Test 60: Weakening adds unused assumption -/
-example (h : DerivationTree [] (Formula.atom "p")) :
-    DerivationTree [Formula.atom "q"] (Formula.atom "p") :=
-  DerivationTree.weakening [] [Formula.atom "q"] _ h (List.nil_subset _)
+example (h : DerivationTree [] (Formula.atom_s "p")) :
+    DerivationTree [Formula.atom_s "q"] (Formula.atom_s "p") :=
+  DerivationTree.weakening [] [Formula.atom_s "q"] _ h (List.nil_subset _)
 
 /-- Test 61: Modal T with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "x")) (Formula.atom "x")) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "x")) (Formula.atom_s "x")) := by
   apply DerivationTree.axiom
   exact Axiom.modal_t _
 
 /-- Test 62: Temporal A with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.atom "y") (Formula.all_future (Formula.some_past (Formula.atom "y")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "y") (Formula.all_future (Formula.some_past (Formula.atom_s "y")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
 /-- Test 63: Modal 4 applied to compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.box (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_4 _
 
 /-- Test 64: Temporal 4 applied to compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.all_future (Formula.all_future (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) := by
+example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_4 _
 
 /-- Test 65: Modal B with atomic formula -/
-example : DerivationTree [] (Formula.imp (Formula.atom "q") (Formula.box (Formula.diamond (Formula.atom "q")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.diamond (Formula.atom_s "q")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_b _
 
 /-- Test 66: Temp A with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.atom "r") (Formula.all_future (Formula.some_past (Formula.atom "r")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "r") (Formula.all_future (Formula.some_past (Formula.atom_s "r")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
 /-- Test 67: Modal future with compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.box (Formula.all_future (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_future _
 
 /-- Test 68: Temp future with compound formula (derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) :=
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
@@ -423,26 +423,26 @@ Tests for prop_k and prop_s axiom chaining.
 -/
 
 /-- Test 69: Nested prop_s application (p → (q → (r → p))) -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.imp (Formula.imp (Formula.atom "q") (Formula.atom "r")) (Formula.atom "p"))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")) (Formula.atom_s "p"))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_s _ _
 
 /-- Test 70: prop_k with complex antecedents -/
 example : DerivationTree [] (Formula.imp
-  (Formula.imp (Formula.box (Formula.atom "p")) (Formula.imp (Formula.atom "q") (Formula.atom "r")))
-  (Formula.imp (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "q")) (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "r")))) := by
+  (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
+  (Formula.imp (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "r")))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_k _ _ _
 
 /-- Test 71: prop_s with modal formulas -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.imp (Formula.atom "q") (Formula.box (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_s _ _
 
 /-- Test 72: prop_k with temporal formulas -/
 example : DerivationTree [] (Formula.imp
-  (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.imp (Formula.atom "q") (Formula.atom "r")))
-  (Formula.imp (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.atom "q")) (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.atom "r")))) := by
+  (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
+  (Formula.imp (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "r")))) := by
   apply DerivationTree.axiom
   exact Axiom.prop_k _ _ _
 
@@ -453,27 +453,27 @@ Tests for Aesop-based tm_auto on complex TM proofs.
 -/
 
 /-- Test 73: apply_axiom finds modal_t -/
-example : DerivationTree [] ((Formula.box (Formula.atom "p")).imp (Formula.atom "p")) := by
+example : DerivationTree [] ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) := by
   apply DerivationTree.axiom
   exact Axiom.modal_t _
 
 /-- Test 74: apply_axiom finds modal_4 -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.box (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_4 _
 
 /-- Test 75: apply_axiom finds modal_b -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.box (Formula.diamond (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.modal_b _
 
 /-- Test 76: apply_axiom finds temp_4 -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_4 _
 
 /-- Test 77: apply_axiom finds temp_a -/
-example : DerivationTree [] (Formula.imp (Formula.atom "p") (Formula.all_future (Formula.some_past (Formula.atom "p")))) := by
+example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
@@ -530,7 +530,7 @@ example (p q : Formula) : DerivationTree [] ((p.imp q).box.imp (p.imp q).box.box
   exact Axiom.modal_4 _
 
 /-- Test 86: modal_4_tactic with atom -/
-example : DerivationTree [] ((Formula.atom "p").box.imp (Formula.atom "p").box.box) := by
+example : DerivationTree [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
   apply DerivationTree.axiom
   exact Axiom.modal_4 _
 
@@ -545,7 +545,7 @@ example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).diamond.box
   exact Axiom.modal_b _
 
 /-- Test 89: modal_b_tactic with atom -/
-example : DerivationTree [] ((Formula.atom "p").imp (Formula.atom "p").diamond.box) := by
+example : DerivationTree [] ((Formula.atom_s "p").imp (Formula.atom_s "p").diamond.box) := by
   apply DerivationTree.axiom
   exact Axiom.modal_b _
 
@@ -560,7 +560,7 @@ example (p q : Formula) : DerivationTree [] ((p.imp q).all_future.imp (p.imp q).
   exact Axiom.temp_4 _
 
 /-- Test 92: temp_4_tactic with atom -/
-example : DerivationTree [] ((Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future) := by
+example : DerivationTree [] ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_4 _
 
@@ -575,7 +575,7 @@ example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).some_past.a
   exact Axiom.temp_a _
 
 /-- Test 95: temp_a_tactic with atom -/
-example : DerivationTree [] ((Formula.atom "p").imp (Formula.atom "p").some_past.all_future) := by
+example : DerivationTree [] ((Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 

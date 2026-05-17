@@ -35,11 +35,11 @@ open Bimodal.Theorems.Propositional
 example (A : Formula) : ⊢ A.or A.neg := lem A
 
 /-- Test LEM with atomic formula -/
-example : ⊢ (Formula.atom "p").or (Formula.atom "p").neg := lem (Formula.atom "p")
+example : ⊢ (Formula.atom_s "p").or (Formula.atom_s "p").neg := lem (Formula.atom_s "p")
 
 /-- Test LEM with complex formula -/
-example : ⊢ ((Formula.atom "p").imp (Formula.atom "q")).or ((Formula.atom "p").imp (Formula.atom "q")).neg :=
-  lem ((Formula.atom "p").imp (Formula.atom "q"))
+example : ⊢ ((Formula.atom_s "p").imp (Formula.atom_s "q")).or ((Formula.atom_s "p").imp (Formula.atom_s "q")).neg :=
+  lem ((Formula.atom_s "p").imp (Formula.atom_s "q"))
 
 /-!
 ## Ex Contradictione Quodlibet Tests
@@ -49,12 +49,12 @@ example : ⊢ ((Formula.atom "p").imp (Formula.atom "q")).or ((Formula.atom "p")
 example (A B : Formula) : [A, A.neg] ⊢ B := ecq A B
 
 /-- Test ECQ with atomic formulas -/
-example : [Formula.atom "p", (Formula.atom "p").neg] ⊢ Formula.atom "q" :=
-  ecq (Formula.atom "p") (Formula.atom "q")
+example : [Formula.atom_s "p", (Formula.atom_s "p").neg] ⊢ Formula.atom_s "q" :=
+  ecq (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test ECQ deriving complex formula from contradiction -/
-example : [Formula.atom "p", (Formula.atom "p").neg] ⊢ (Formula.atom "q").imp (Formula.atom "r") :=
-  ecq (Formula.atom "p") ((Formula.atom "q").imp (Formula.atom "r"))
+example : [Formula.atom_s "p", (Formula.atom_s "p").neg] ⊢ (Formula.atom_s "q").imp (Formula.atom_s "r") :=
+  ecq (Formula.atom_s "p") ((Formula.atom_s "q").imp (Formula.atom_s "r"))
 
 /-!
 ## Reductio ad Absurdum Tests
@@ -64,12 +64,12 @@ example : [Formula.atom "p", (Formula.atom "p").neg] ⊢ (Formula.atom "q").imp 
 example (A B : Formula) : ⊢ A.imp (A.neg.imp B) := raa A B
 
 /-- Test RAA with atomic formulas -/
-example : ⊢ (Formula.atom "p").imp ((Formula.atom "p").neg.imp (Formula.atom "q")) :=
-  raa (Formula.atom "p") (Formula.atom "q")
+example : ⊢ (Formula.atom_s "p").imp ((Formula.atom_s "p").neg.imp (Formula.atom_s "q")) :=
+  raa (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test RAA with nested formula -/
-example : ⊢ ((Formula.atom "p").box).imp (((Formula.atom "p").box).neg.imp (Formula.atom "q")) :=
-  raa (Formula.atom "p").box (Formula.atom "q")
+example : ⊢ ((Formula.atom_s "p").box).imp (((Formula.atom_s "p").box).neg.imp (Formula.atom_s "q")) :=
+  raa (Formula.atom_s "p").box (Formula.atom_s "q")
 
 /-!
 ## Ex Falso Quodlibet Tests
@@ -79,12 +79,12 @@ example : ⊢ ((Formula.atom "p").box).imp (((Formula.atom "p").box).neg.imp (Fo
 example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq A B
 
 /-- Test EFQ with atomic formulas -/
-example : ⊢ (Formula.atom "p").neg.imp ((Formula.atom "p").imp (Formula.atom "q")) :=
-  efq (Formula.atom "p") (Formula.atom "q")
+example : ⊢ (Formula.atom_s "p").neg.imp ((Formula.atom_s "p").imp (Formula.atom_s "q")) :=
+  efq (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test EFQ with complex formula -/
-example : ⊢ ((Formula.atom "p").diamond).neg.imp (((Formula.atom "p").diamond).imp (Formula.atom "q")) :=
-  efq (Formula.atom "p").diamond (Formula.atom "q")
+example : ⊢ ((Formula.atom_s "p").diamond).neg.imp (((Formula.atom_s "p").diamond).imp (Formula.atom_s "q")) :=
+  efq (Formula.atom_s "p").diamond (Formula.atom_s "q")
 
 /-!
 ## Left Disjunction Introduction Tests
@@ -94,13 +94,13 @@ example : ⊢ ((Formula.atom "p").diamond).neg.imp (((Formula.atom "p").diamond)
 example (A B : Formula) : [A] ⊢ A.or B := ldi A B
 
 /-- Test LDI with atomic formulas -/
-example : [Formula.atom "p"] ⊢ (Formula.atom "p").or (Formula.atom "q") :=
-  ldi (Formula.atom "p") (Formula.atom "q")
+example : [Formula.atom_s "p"] ⊢ (Formula.atom_s "p").or (Formula.atom_s "q") :=
+  ldi (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test LDI with nested formula -/
-example : [(Formula.atom "p").imp (Formula.atom "q")] ⊢
-          ((Formula.atom "p").imp (Formula.atom "q")).or (Formula.atom "r") :=
-  ldi ((Formula.atom "p").imp (Formula.atom "q")) (Formula.atom "r")
+example : [(Formula.atom_s "p").imp (Formula.atom_s "q")] ⊢
+          ((Formula.atom_s "p").imp (Formula.atom_s "q")).or (Formula.atom_s "r") :=
+  ldi ((Formula.atom_s "p").imp (Formula.atom_s "q")) (Formula.atom_s "r")
 
 /-!
 ## Right Disjunction Introduction Tests
@@ -110,13 +110,13 @@ example : [(Formula.atom "p").imp (Formula.atom "q")] ⊢
 example (A B : Formula) : [B] ⊢ A.or B := rdi A B
 
 /-- Test RDI with atomic formulas -/
-example : [Formula.atom "q"] ⊢ (Formula.atom "p").or (Formula.atom "q") :=
-  rdi (Formula.atom "p") (Formula.atom "q")
+example : [Formula.atom_s "q"] ⊢ (Formula.atom_s "p").or (Formula.atom_s "q") :=
+  rdi (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test RDI with nested formula -/
-example : [(Formula.atom "r").box] ⊢
-          (Formula.atom "p").or ((Formula.atom "r").box) :=
-  rdi (Formula.atom "p") ((Formula.atom "r").box)
+example : [(Formula.atom_s "r").box] ⊢
+          (Formula.atom_s "p").or ((Formula.atom_s "r").box) :=
+  rdi (Formula.atom_s "p") ((Formula.atom_s "r").box)
 
 /-!
 ## Reverse Contraposition Tests
@@ -129,14 +129,14 @@ example (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.i
 example (A B : Formula) (h : ⊢ A.neg.imp B.neg) : ⊢ B.imp A := rcp [] A B h
 
 /-- Test RCP with concrete formulas -/
-example (h : ⊢ (Formula.atom "p").neg.imp (Formula.atom "q").neg) :
-        ⊢ (Formula.atom "q").imp (Formula.atom "p") :=
-  rcp [] (Formula.atom "p") (Formula.atom "q") h
+example (h : ⊢ (Formula.atom_s "p").neg.imp (Formula.atom_s "q").neg) :
+        ⊢ (Formula.atom_s "q").imp (Formula.atom_s "p") :=
+  rcp [] (Formula.atom_s "p") (Formula.atom_s "q") h
 
 /-- Test RCP with complex formulas -/
-example (h : ⊢ ((Formula.atom "p").box).neg.imp ((Formula.atom "q").diamond).neg) :
-        ⊢ ((Formula.atom "q").diamond).imp ((Formula.atom "p").box) :=
-  rcp [] ((Formula.atom "p").box) ((Formula.atom "q").diamond) h
+example (h : ⊢ ((Formula.atom_s "p").box).neg.imp ((Formula.atom_s "q").diamond).neg) :
+        ⊢ ((Formula.atom_s "q").diamond).imp ((Formula.atom_s "p").box) :=
+  rcp [] ((Formula.atom_s "p").box) ((Formula.atom_s "q").diamond) h
 
 /-!
 ## Left Conjunction Elimination Tests
@@ -146,13 +146,13 @@ example (h : ⊢ ((Formula.atom "p").box).neg.imp ((Formula.atom "q").diamond).n
 example (A B : Formula) : [A.and B] ⊢ A := lce A B
 
 /-- Test LCE with atomic formulas -/
-example : [(Formula.atom "p").and (Formula.atom "q")] ⊢ Formula.atom "p" :=
-  lce (Formula.atom "p") (Formula.atom "q")
+example : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢ Formula.atom_s "p" :=
+  lce (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test LCE with nested formula -/
-example : [((Formula.atom "p").imp (Formula.atom "q")).and (Formula.atom "r")] ⊢
-          (Formula.atom "p").imp (Formula.atom "q") :=
-  lce ((Formula.atom "p").imp (Formula.atom "q")) (Formula.atom "r")
+example : [((Formula.atom_s "p").imp (Formula.atom_s "q")).and (Formula.atom_s "r")] ⊢
+          (Formula.atom_s "p").imp (Formula.atom_s "q") :=
+  lce ((Formula.atom_s "p").imp (Formula.atom_s "q")) (Formula.atom_s "r")
 
 /-!
 ## Right Conjunction Elimination Tests
@@ -162,12 +162,12 @@ example : [((Formula.atom "p").imp (Formula.atom "q")).and (Formula.atom "r")] �
 example (A B : Formula) : [A.and B] ⊢ B := rce A B
 
 /-- Test RCE with atomic formulas -/
-example : [(Formula.atom "p").and (Formula.atom "q")] ⊢ Formula.atom "q" :=
-  rce (Formula.atom "p") (Formula.atom "q")
+example : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢ Formula.atom_s "q" :=
+  rce (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test RCE with nested formula -/
-example : [(Formula.atom "p").and ((Formula.atom "q").box)] ⊢ (Formula.atom "q").box :=
-  rce (Formula.atom "p") ((Formula.atom "q").box)
+example : [(Formula.atom_s "p").and ((Formula.atom_s "q").box)] ⊢ (Formula.atom_s "q").box :=
+  rce (Formula.atom_s "p") ((Formula.atom_s "q").box)
 
 /-!
 ## Integration Tests: Combining Multiple Theorems
@@ -183,33 +183,33 @@ Test: Conjunction elimination combined with disjunction introduction.
 Demonstrates composing context-based derivations using the deduction theorem.
 Strategy: Use deduction theorem to lift ldi to an implication, then apply modus ponens.
 -/
-noncomputable example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
-          (Formula.atom "p").or (Formula.atom "r") := by
+noncomputable example : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢
+          (Formula.atom_s "p").or (Formula.atom_s "r") := by
   -- Step 1: Get [p ∧ q] ⊢ p from lce
-  have h_p : [(Formula.atom "p").and (Formula.atom "q")] ⊢ (Formula.atom "p") :=
-    lce (Formula.atom "p") (Formula.atom "q")
+  have h_p : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢ (Formula.atom_s "p") :=
+    lce (Formula.atom_s "p") (Formula.atom_s "q")
 
   -- Step 2: Get [p] ⊢ p ∨ r from ldi
-  have h_ldi : [Formula.atom "p"] ⊢ (Formula.atom "p").or (Formula.atom "r") :=
-    ldi (Formula.atom "p") (Formula.atom "r")
+  have h_ldi : [Formula.atom_s "p"] ⊢ (Formula.atom_s "p").or (Formula.atom_s "r") :=
+    ldi (Formula.atom_s "p") (Formula.atom_s "r")
 
   -- Step 3: Apply deduction theorem: [p] ⊢ p ∨ r implies ⊢ p → (p ∨ r)
-  have h_imp : [] ⊢ (Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")) :=
-    Bimodal.Metalogic.deduction_theorem [] (Formula.atom "p")
-      ((Formula.atom "p").or (Formula.atom "r")) h_ldi
+  have h_imp : [] ⊢ (Formula.atom_s "p").imp ((Formula.atom_s "p").or (Formula.atom_s "r")) :=
+    Bimodal.Metalogic.deduction_theorem [] (Formula.atom_s "p")
+      ((Formula.atom_s "p").or (Formula.atom_s "r")) h_ldi
 
   -- Step 4: Weaken to the context [p ∧ q]
-  have h_imp_ctx : [(Formula.atom "p").and (Formula.atom "q")] ⊢
-      (Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")) :=
-    DerivationTree.weakening [] [(Formula.atom "p").and (Formula.atom "q")]
-      ((Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")))
+  have h_imp_ctx : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢
+      (Formula.atom_s "p").imp ((Formula.atom_s "p").or (Formula.atom_s "r")) :=
+    DerivationTree.weakening [] [(Formula.atom_s "p").and (Formula.atom_s "q")]
+      ((Formula.atom_s "p").imp ((Formula.atom_s "p").or (Formula.atom_s "r")))
       h_imp (List.nil_subset _)
 
   -- Step 5: Apply modus ponens: [p ∧ q] ⊢ p and [p ∧ q] ⊢ p → (p ∨ r) gives [p ∧ q] ⊢ p ∨ r
   exact DerivationTree.modus_ponens
-    [(Formula.atom "p").and (Formula.atom "q")]
-    (Formula.atom "p")
-    ((Formula.atom "p").or (Formula.atom "r"))
+    [(Formula.atom_s "p").and (Formula.atom_s "q")]
+    (Formula.atom_s "p")
+    ((Formula.atom_s "p").or (Formula.atom_s "r"))
     h_imp_ctx h_p
 
 /-- Test: LEM is theorem (not axiom) -/

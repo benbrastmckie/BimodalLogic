@@ -77,7 +77,7 @@ example : matches_axiom (Formula.box (Formula.all_future p)) = false := rfl  -- 
   IO.println "=== Visit Limit Enforcement Tests ==="
 
   -- Test that search terminates early with low visit limit
-  let formula := Formula.atom "x"  -- Non-derivable
+  let formula := Formula.atom_s "x"  -- Non-derivable
 
   let limits := [1, 3, 5, 10, 20]
   let mut allWithinLimit := true
@@ -159,7 +159,7 @@ example : matches_axiom (Formula.box (Formula.all_future p)) = false := rfl  -- 
     IO.println "✗ Axiom NOT found"
 
   -- Search for non-axiom should exhaust or hit limit
-  let nonAxiom := Formula.atom "x"
+  let nonAxiom := Formula.atom_s "x"
   let (foundNA, _, _, statsNA, visitsNA) := iddfs_search [] nonAxiom 5 50
 
   IO.println s!"\nNon-axiom search: found={foundNA}, visits={visitsNA}"
@@ -175,7 +175,7 @@ example : heuristic_score {} [] ((Formula.box p).imp p) = 0 := by decide
 example : heuristic_score {} [p] p = 1 := by decide
 example : heuristic_score {} [p.imp q] q = 2 + p.complexity := by decide
 example : heuristic_score {} [] (Formula.box p) = 5 := by decide
-example : heuristic_score {} [] (Formula.atom "x") = 100 := by decide
+example : heuristic_score {} [] (Formula.atom_s "x") = 100 := by decide
 
 /-- Heuristic scoring respects custom weights. -/
 def weightedHeuristics : HeuristicWeights :=
@@ -265,7 +265,7 @@ example : (SearchStrategy.BestFirst 50 : SearchStrategy) = .BestFirst 50 := rfl
 -- With a very low visit limit, search should terminate early.
 #eval do
   -- Use a formula that would require many visits if it existed
-  let formula := Formula.atom "nonexistent"
+  let formula := Formula.atom_s "nonexistent"
   let (found, _, _, _, visits) := iddfs_search [] formula 10 5
   if !found && visits ≤ 5 then
     IO.println s!"✓ IDDFS respected visit limit (visits={visits}, limit=5)"
@@ -275,7 +275,7 @@ example : (SearchStrategy.BestFirst 50 : SearchStrategy) = .BestFirst 50 := rfl
 -- Test: IDDFS respects maxDepth limit.
 -- IDDFS should stop at maxDepth even if no proof found.
 #eval do
-  let formula := Formula.atom "nonexistent"
+  let formula := Formula.atom_s "nonexistent"
   let (found, _, _, _, _) := iddfs_search [] formula 3 10000
   if !found then
     IO.println s!"✓ IDDFS correctly reports no proof for non-axiom formula (maxDepth=3)"
@@ -355,7 +355,7 @@ Performance comparison for various proof depths.
 -- Benchmark: Visit limit behavior
 #eval do
   IO.println "=== Benchmark: Visit Limit Behavior ==="
-  let nonAxiom := Formula.atom "x"
+  let nonAxiom := Formula.atom_s "x"
   for limit in [10, 50, 100, 500] do
     let (_, _, _, stats, visits) := iddfs_search [] nonAxiom 50 limit
     IO.println s!"Limit={limit}: visits={visits}, visited={stats.visited}"
@@ -407,7 +407,7 @@ example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
 -- Test: Structure heuristic (uses complexity metrics from Formula.lean)
 #eval do
   IO.println "=== Structure Heuristic Tests ==="
-  let simple := Formula.atom "p"
+  let simple := Formula.atom_s "p"
   let modal := Formula.box p
   let nested := Formula.box (Formula.box p)
   let complex := (p.imp q).imp (Formula.box (Formula.all_future r))
@@ -430,7 +430,7 @@ example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
 #eval do
   IO.println "=== Advanced Ordering Test ==="
   let targets := [
-    Formula.atom "x",  -- High penalty (dead end for non-axiom atom)
+    Formula.atom_s "x",  -- High penalty (dead end for non-axiom atom)
     (Formula.box p).imp p,  -- Low (axiom)
     Formula.box q,  -- Medium (modal goal, gets bonus)
     p.imp (q.imp r)  -- Higher (complex implication)
@@ -445,7 +445,7 @@ example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
 #eval do
   IO.println "=== Modal/Temporal Priority Test ==="
   let modalGoal := Formula.box p
-  let atomGoal := Formula.atom "x"
+  let atomGoal := Formula.atom_s "x"
   let modalScore := advanced_heuristic_score {} [] modalGoal
   let atomScore := advanced_heuristic_score {} [] atomGoal
   if modalScore < atomScore then

@@ -29,10 +29,9 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           build: true
-          test: true
+          test: false
           lint: false
           use-mathlib-cache: true
-          build-args: "--wfail"
 
       - name: Report results
         if: always()

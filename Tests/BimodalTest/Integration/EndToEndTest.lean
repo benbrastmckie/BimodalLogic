@@ -18,16 +18,16 @@ Integration Test 1: Derive Modal T theorem.
 
 We derive `□p → p` using the Modal T axiom.
 -/
-example : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
 
 /--
 Integration Test 2: Apply soundness to get validity.
 
 From the derivation of Modal T, we obtain its semantic validity.
 -/
-example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
-  let deriv := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
+  let deriv := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
   exact soundness [] _ deriv
 
 /--
@@ -35,8 +35,8 @@ Integration Test 3: Verify validity directly.
 
 We can also prove Modal T validity directly from semantics.
 -/
-example : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-  modal_t_valid (Formula.atom "p")
+example : ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+  modal_t_valid (Formula.atom_s "p")
 
 /--
 Integration Test 4: End-to-end workflow verification.
@@ -48,16 +48,16 @@ This test demonstrates the complete metalogical pathway:
 -/
 example : True := by
   -- Step 1: Syntactic derivation
-  let proof : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  let proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
 
   -- Step 2: Apply soundness
-  let valid_from_soundness : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
+  let valid_from_soundness : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
     soundness [] _ proof
 
   -- Step 3: Direct semantic validity
-  let valid_direct : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    modal_t_valid (Formula.atom "p")
+  let valid_direct : ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+    modal_t_valid (Formula.atom_s "p")
 
   -- Both paths give the same result (validity)
   trivial

@@ -203,7 +203,7 @@ Verify search respects depth limits.
   IO.println s!"Modal T at depth 1: found={found1}"
 
   -- Non-axiom should not be found at any reasonable depth
-  let nonAxiom := Formula.atom "nonexistent"
+  let nonAxiom := Formula.atom_s "nonexistent"
   let (foundNA1, _, _, _, _) := search [] nonAxiom (.BoundedDFS 1) 100
   let (foundNA5, _, _, _, _) := search [] nonAxiom (.BoundedDFS 5) 100
 
@@ -225,7 +225,7 @@ Verify search respects visit limits.
   IO.println "=== Visit Limit Tests ==="
 
   -- Search for non-axiom with various visit limits
-  let nonAxiom := Formula.atom "x"
+  let nonAxiom := Formula.atom_s "x"
 
   let limits := [1, 5, 10, 50, 100]
   for limit in limits do
@@ -284,10 +284,10 @@ Test with various atom names including longer names.
   IO.println "=== Atom Name Variation Tests ==="
 
   let atoms := [
-    Formula.atom "x",
-    Formula.atom "variable",
-    Formula.atom "longAtomName123",
-    Formula.atom "special_chars_allowed"
+    Formula.atom_s "x",
+    Formula.atom_s "variable",
+    Formula.atom_s "longAtomName123",
+    Formula.atom_s "special_chars_allowed"
   ]
 
   let mut passed := 0

@@ -56,7 +56,7 @@ Test 1: Temporal 4 axiom derivation and soundness.
 Verifies Fp → FFp is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let φ := p.all_future.imp p.all_future.all_future
   
   -- Derive using Temporal 4 axiom
@@ -76,7 +76,7 @@ Test 2: Temporal 4 with modus ponens.
 From [Fp], derive FFp.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.all_future]
   
   -- Fp → FFp
@@ -103,7 +103,7 @@ Test 3: Chained Temporal 4 applications.
 From [Fp], derive FFFp through repeated application.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.all_future]
   
   -- Step 1: Fp → FFp, Fp ⊢ FFp
@@ -143,7 +143,7 @@ Test 4: Temporal A axiom derivation and soundness.
 Verifies p → F(some_past p) is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let φ := p.imp (Formula.all_future p.some_past)
   
   -- Derive using Temporal A axiom
@@ -163,7 +163,7 @@ Test 5: Temporal A with modus ponens.
 From [p], derive F(some_past p).
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p]
   
   -- p → F(some_past p)
@@ -198,7 +198,7 @@ Test 6: Temporal L axiom derivation and soundness.
 Verifies △p → F(Pp) is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let φ := p.always.imp (Formula.all_future (Formula.all_past p))
   
   -- Derive using Temporal L axiom
@@ -218,7 +218,7 @@ Test 7: Temporal L with modus ponens.
 From [△p], derive F(Pp).
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p.always]
   
   -- △p → F(Pp)
@@ -254,8 +254,8 @@ Test 8: Temporal K distribution axiom.
 Verifies F(p → q) → (Fp → Fq) is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   let φ := (p.imp q).all_future.imp (p.all_future.imp q.all_future)
   
   -- Derive using Temporal K distribution axiom
@@ -275,8 +275,8 @@ Test 9: Temporal K with modus ponens chain.
 From [F(p → q), Fp], derive Fq.
 -/
 example : True := by
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   let Γ := [(p.imp q).all_future, p.all_future]
   
   -- F(p → q) → (Fp → Fq)
@@ -319,7 +319,7 @@ Test 10: Temporal necessitation rule.
 From ⊢ φ, derive ⊢ Fφ.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive p → p (propositional tautology)
   let d1 : ⊢ (p.imp p) := by tm_auto
@@ -340,7 +340,7 @@ Test 11: Chained temporal necessitation.
 Apply temporal necessitation multiple times.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Start with Modal T axiom
   let d1 : ⊢ (p.box.imp p) :=
@@ -377,7 +377,7 @@ Test 12: Temporal duality rule.
 From ⊢ φ, derive ⊢ swap_temporal φ.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive Fp → FFp
   let d1 : ⊢ (p.all_future.imp p.all_future.all_future) :=
@@ -399,7 +399,7 @@ Test 13: Temporal duality with complex formula.
 Apply temporal duality to formula with mixed operators.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive Temporal A axiom
   let d1 : ⊢ (p.imp (Formula.all_future p.some_past)) :=
@@ -429,7 +429,7 @@ Test 14: Combining past and future operators.
 Derive properties involving both past and future.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   
   -- Derive Temporal A: p → F(some_past p)
   let d1 : ⊢ (p.imp (Formula.all_future p.some_past)) :=
@@ -453,7 +453,7 @@ Test 15: Complex temporal workflow.
 Multi-step derivation with past and future operators.
 -/
 example : True := by
-  let p := Formula.atom "p"
+  let p := Formula.atom_s "p"
   let Γ := [p]
   
   -- Step 1: p → F(some_past p)

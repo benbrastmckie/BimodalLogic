@@ -23,19 +23,19 @@ open Bimodal.Syntax
 example : ([] : Context) = [] := rfl
 
 -- Test: Single formula context
-example : [Formula.atom "p"] = [Formula.atom "p"] := rfl
+example : [Formula.atom_s "p"] = [Formula.atom_s "p"] := rfl
 
 -- Test: Multiple formulas context
 example :
-  [Formula.atom "p", Formula.atom "q", Formula.bot] =
-  [Formula.atom "p", Formula.atom "q", Formula.bot] := rfl
+  [Formula.atom_s "p", Formula.atom_s "q", Formula.bot] =
+  [Formula.atom_s "p", Formula.atom_s "q", Formula.bot] := rfl
 
 -- Test: Membership - element present
-example : Formula.atom "p" ∈ [Formula.atom "p", Formula.atom "q"] := by
+example : Formula.atom_s "p" ∈ [Formula.atom_s "p", Formula.atom_s "q"] := by
   simp
 
 -- Test: Membership - element not present
-example : Formula.atom "r" ∉ [Formula.atom "p", Formula.atom "q"] := by
+example : Formula.atom_s "r" ∉ [Formula.atom_s "p", Formula.atom_s "q"] := by
   simp
 
 -- Test: Subset - empty is subset of any
@@ -67,13 +67,13 @@ example (f : Formula → Formula) (p q r : Formula) :
 
 -- Test: Map with box operator
 example :
-  Context.map Formula.box [Formula.atom "p", Formula.atom "q"] =
-  [Formula.box (Formula.atom "p"), Formula.box (Formula.atom "q")] := rfl
+  Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] =
+  [Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")] := rfl
 
 -- Test: Map with all_future operator
 example :
-  Context.map Formula.all_future [Formula.atom "p", Formula.atom "q"] =
-  [Formula.all_future (Formula.atom "p"), Formula.all_future (Formula.atom "q")] := rfl
+  Context.map Formula.all_future [Formula.atom_s "p", Formula.atom_s "q"] =
+  [Formula.all_future (Formula.atom_s "p"), Formula.all_future (Formula.atom_s "q")] := rfl
 
 -- Test: Map composition theorem
 example (f g : Formula → Formula) (Γ : Context) :
@@ -98,10 +98,10 @@ example (f : Formula → Formula) (Γ Δ : Context) :
 example : Context.isEmpty [] = true := rfl
 
 -- Test: isEmpty - non-empty context
-example : Context.isEmpty [Formula.atom "p"] = false := rfl
+example : Context.isEmpty [Formula.atom_s "p"] = false := rfl
 
 -- Test: singleton creates single-element context
-example : Context.singleton (Formula.atom "p") = [Formula.atom "p"] := rfl
+example : Context.singleton (Formula.atom_s "p") = [Formula.atom_s "p"] := rfl
 
 -- Test: mem_singleton_iff
 example (φ ψ : Formula) :
@@ -138,8 +138,8 @@ example (Γ : Context) (h : Γ ≠ []) : ∃ φ, φ ∈ Γ := by
 
 -- Integration test: Map box over context and check membership
 example :
-  Formula.box (Formula.atom "p") ∈
-    Context.map Formula.box [Formula.atom "p", Formula.atom "q"] := by
+  Formula.box (Formula.atom_s "p") ∈
+    Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] := by
   apply Context.mem_map_of_mem
   simp
 

@@ -21,7 +21,7 @@ namespace BimodalTest.Syntax
 open Bimodal.Syntax
 
 -- Test: Formula atom construction
-example : Formula.atom "p" = Formula.atom "p" := rfl
+example : Formula.atom_s "p" = Formula.atom_s "p" := rfl
 
 -- Test: Formula bot construction
 example : Formula.bot = Formula.bot := rfl
@@ -39,10 +39,10 @@ example (p : Formula) : (Formula.all_past p) = (Formula.all_past p) := rfl
 example (p : Formula) : (Formula.all_future p) = (Formula.all_future p) := rfl
 
 -- Test: Decidable equality - same atoms
-example : (Formula.atom "p") = (Formula.atom "p") := rfl
+example : (Formula.atom_s "p") = (Formula.atom_s "p") := rfl
 
 -- Test: Decidable equality - different atoms
-example : (Formula.atom "p") ≠ (Formula.atom "q") := by
+example : (Formula.atom_s "p") ≠ (Formula.atom_s "q") := by
   intro h
   injection h with h'
   contradiction
@@ -52,23 +52,23 @@ example : Formula.bot = Formula.bot := rfl
 
 -- Test: Decidable equality - complex formulas
 example :
-  (Formula.imp (Formula.atom "p") (Formula.atom "q")) =
-  (Formula.imp (Formula.atom "p") (Formula.atom "q")) := rfl
+  (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) =
+  (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) := rfl
 
 -- Test: Complexity of atom
-example : (Formula.atom "p").complexity = 1 := rfl
+example : (Formula.atom_s "p").complexity = 1 := rfl
 
 -- Test: Complexity of bot
 example : Formula.bot.complexity = 1 := rfl
 
 -- Test: Complexity of implication
-example : ((Formula.atom "p").imp (Formula.atom "q")).complexity = 3 := rfl
+example : ((Formula.atom_s "p").imp (Formula.atom_s "q")).complexity = 3 := rfl
 
 -- Test: Complexity of box
-example : ((Formula.atom "p").box).complexity = 2 := rfl
+example : ((Formula.atom_s "p").box).complexity = 2 := rfl
 
 -- Test: Complexity of nested formula
-example : ((Formula.atom "p").box.imp (Formula.atom "q").box).complexity = 5 := rfl
+example : ((Formula.atom_s "p").box.imp (Formula.atom_s "q").box).complexity = 5 := rfl
 
 -- Test: Derived negation operator
 example (p : Formula) : p.neg = (p.imp Formula.bot) := rfl
@@ -133,7 +133,7 @@ example (p : Formula) : p.always = p.all_past.and (p.and p.all_future) := rfl
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
 -- Test: swap_temporal on atom (unchanged)
-example : (Formula.atom "p").swap_temporal = Formula.atom "p" := rfl
+example : (Formula.atom_s "p").swap_temporal = Formula.atom_s "p" := rfl
 
 -- Test: swap_temporal on bot (unchanged)
 example : Formula.bot.swap_temporal = Formula.bot := rfl
@@ -164,13 +164,13 @@ example (p : Formula) : p.swap_temporal.swap_temporal = p := by
 /-! ## Formula Complexity Metrics Tests -/
 
 -- Define test formulas
-def p : Formula := Formula.atom "p"
-def q : Formula := Formula.atom "q"
-def r : Formula := Formula.atom "r"
-def s : Formula := Formula.atom "s"
+def p : Formula := Formula.atom_s "p"
+def q : Formula := Formula.atom_s "q"
+def r : Formula := Formula.atom_s "r"
+def s : Formula := Formula.atom_s "s"
 
 -- modalDepth tests: atoms and bot have depth 0
-example : (Formula.atom "p").modalDepth = 0 := rfl
+example : (Formula.atom_s "p").modalDepth = 0 := rfl
 example : Formula.bot.modalDepth = 0 := rfl
 
 -- modalDepth tests: box increases depth
@@ -186,7 +186,7 @@ example : p.box.all_future.modalDepth = 1 := rfl
 example : p.all_future.box.modalDepth = 1 := rfl
 
 -- temporalDepth tests: atoms and bot have depth 0
-example : (Formula.atom "p").temporalDepth = 0 := rfl
+example : (Formula.atom_s "p").temporalDepth = 0 := rfl
 example : Formula.bot.temporalDepth = 0 := rfl
 
 -- temporalDepth tests: temporal operators increase depth
@@ -204,7 +204,7 @@ example : p.all_future.box.temporalDepth = 1 := rfl
 example : p.box.all_future.temporalDepth = 1 := rfl
 
 -- countImplications tests: atoms and bot have 0 implications
-example : (Formula.atom "p").countImplications = 0 := rfl
+example : (Formula.atom_s "p").countImplications = 0 := rfl
 example : Formula.bot.countImplications = 0 := rfl
 
 -- countImplications tests: count implications recursively

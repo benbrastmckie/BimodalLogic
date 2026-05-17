@@ -37,34 +37,34 @@ example (A B : Formula) : ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) 
   s4_diamond_box_conj A B
 
 /-- Test s4_diamond_box_conj with atomic formulas -/
-example : ⊢ ((Formula.atom "p").diamond.and (Formula.atom "q").box).imp
-             (((Formula.atom "p").and (Formula.atom "q").box).diamond) :=
-  s4_diamond_box_conj (Formula.atom "p") (Formula.atom "q")
+example : ⊢ ((Formula.atom_s "p").diamond.and (Formula.atom_s "q").box).imp
+             (((Formula.atom_s "p").and (Formula.atom_s "q").box).diamond) :=
+  s4_diamond_box_conj (Formula.atom_s "p") (Formula.atom_s "q")
 
 /-- Test s4_box_diamond_box type signature -/
 example (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) :=
   s4_box_diamond_box A
 
 /-- Test s4_box_diamond_box with atomic formula -/
-example : ⊢ (Formula.atom "p").box.imp (((Formula.atom "p").box.diamond).box) :=
-  s4_box_diamond_box (Formula.atom "p")
+example : ⊢ (Formula.atom_s "p").box.imp (((Formula.atom_s "p").box.diamond).box) :=
+  s4_box_diamond_box (Formula.atom_s "p")
 
 /-- Test s4_diamond_box_diamond type signature -/
 example (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.diamond :=
   s4_diamond_box_diamond A
 
 /-- Test s4_diamond_box_diamond with atomic formula -/
-example : ⊢ iff ((Formula.atom "p").diamond.box.diamond) (Formula.atom "p").diamond :=
-  s4_diamond_box_diamond (Formula.atom "p")
+example : ⊢ iff ((Formula.atom_s "p").diamond.box.diamond) (Formula.atom_s "p").diamond :=
+  s4_diamond_box_diamond (Formula.atom_s "p")
 
 /-- Test s5_diamond_conj_diamond type signature -/
 example (A B : Formula) : ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) :=
   s5_diamond_conj_diamond A B
 
 /-- Test s5_diamond_conj_diamond with atomic formulas -/
-example : ⊢ iff (((Formula.atom "p").and (Formula.atom "q").diamond).diamond)
-                 ((Formula.atom "p").diamond.and (Formula.atom "q").diamond) :=
-  s5_diamond_conj_diamond (Formula.atom "p") (Formula.atom "q")
+example : ⊢ iff (((Formula.atom_s "p").and (Formula.atom_s "q").diamond).diamond)
+                 ((Formula.atom_s "p").diamond.and (Formula.atom_s "q").diamond) :=
+  s5_diamond_conj_diamond (Formula.atom_s "p") (Formula.atom_s "q")
 
 end
 

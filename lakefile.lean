@@ -1,7 +1,8 @@
 import Lake
 open Lake DSL
 
-package Logos
+package Logos where
+  testDriver := "BimodalTest"
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "v4.27.0-rc1"

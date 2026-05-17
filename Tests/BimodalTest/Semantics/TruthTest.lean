@@ -34,18 +34,18 @@ example : ¬(truth_at testModel testHistory (0 : Int) trivial Formula.bot) := by
   exact Truth.bot_false
 
 -- Test: Atom truth depends on valuation (p is true)
-example : (truth_at testModel testHistory (0 : Int) trivial (Formula.atom "p")) := by
+example : (truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "p")) := by
   unfold truth_at testModel testHistory WorldHistory.trivial
   simp
 
 -- Test: Atom truth depends on valuation (q is false)
-example : ¬(truth_at testModel testHistory (0 : Int) trivial (Formula.atom "q")) := by
+example : ¬(truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "q")) := by
   unfold truth_at testModel testHistory WorldHistory.trivial
   simp
 
 -- Test: Implication basic behavior
 -- p → p is true
-example : (truth_at testModel testHistory (0 : Int) trivial ((Formula.atom "p").imp (Formula.atom "p"))) := by
+example : (truth_at testModel testHistory (0 : Int) trivial ((Formula.atom_s "p").imp (Formula.atom_s "p"))) := by
   intro h
   exact h
 
@@ -59,7 +59,7 @@ example : (truth_at testModel testHistory (0 : Int) trivial Formula.bot.neg) := 
 
 -- Test: truth_at works with explicit Int type
 theorem truth_at_int_example :
-    truth_at testModel testHistory (0 : Int) trivial (Formula.atom "p") := by
+    truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "p") := by
   unfold truth_at testModel testHistory WorldHistory.trivial
   simp
 
