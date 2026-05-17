@@ -79,64 +79,42 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
   --   = ¬(∀ s < t, ¬A(s)) = ∃ s < t, A(s) (classically)
   -- int_truth of some_future A at t = (∀ s, t < s → int_truth M s A → False) → False
   --   = ¬(∀ s > t, ¬A(s)) = ∃ s > t, A(s) (classically)
-  simp only [q_exists, Formula.or, Formula.neg, Formula.some_past, Formula.some_future,
-             Separation.int_truth]
+  -- q_exists A = or(or(some_past A, A), some_future A)
+  -- Unfold at the semantic level and reason directly.
   constructor
   · -- (→): q_exists A at t → ∃ s, A(s)
     intro h
-    -- Use classical logic: if no s satisfies A, derive contradiction from h
     by_contra h_none
     push_neg at h_none
     -- h_none : ∀ s, ¬ Separation.int_truth M s A
-    -- h is the truth of q_exists A at t, which after simp is a complex Prop.
-    -- We derive False by applying h to appropriate arguments.
-    -- After simp, the goal type of h is:
-    -- ((... → ...) → ...) i.e., the propositional encoding of or(or(sp,A), sf)
-    -- or(or(sp,A), sf) = ((or(sp,A) → ⊥) → sf)
-    -- or(sp,A) = ((sp → ⊥) → A)
-    -- sp = ((∀ s < t, A(s) → ⊥) → ⊥)
-    -- sf = ((∀ s, t < s → A(s) → ⊥) → ⊥)
-    -- So q_exists A at t = ((((sp → ⊥) → A) → ⊥) → sf) → ⊥  -- NO
-    -- Actually or X Y = neg X → Y = (X → ⊥) → Y
-    -- or(or(sp, A), sf) = (or(sp, A) → ⊥) → sf
-    -- But wait, or(or(sp,A), sf) should mean: or(sp,A) ∨ sf
-    -- Encoded as: (¬or(sp,A)) → sf = ((or(sp,A) → ⊥)) → sf
-    -- The full chain: h says this holds. Under h_none (A never holds):
-    -- sp = (∀ s < t, ¬A(s)) → ⊥. Since ∀ s < t, ¬A(s) is true (from h_none), sp = True → ⊥ = ⊥.
-    -- Actually sp = ((∀ s < t, A(s) → ⊥) → ⊥). Since ∀ s < t, A(s) → ⊥ is true (from h_none),
-    -- sp = (True → ⊥) = ⊥.
-    -- or(sp, A) = (sp → ⊥) → A = (⊥ → ⊥) → A = True → A = A.
-    -- Since A at t is ⊥ (from h_none), or(sp, A) = ⊥.
-    -- (or(sp, A) → ⊥) = (⊥ → ⊥) = True.
-    -- sf = ((∀ s, t < s → A(s) → ⊥) → ⊥) = (True → ⊥) = ⊥.
-    -- So q_exists = True → ⊥ = ⊥.
-    -- Therefore h : ⊥, contradiction.
-    -- In Lean, we need to derive this step by step.
-    apply h
-    intro h_or_neg
-    -- h_or_neg : (sp → ⊥) → A(t) → ⊥ → ⊥  -- i.e., or(sp, A) → ⊥
-    -- Actually after simp, or(sp, A) = ((sp → ⊥) → A)
-    -- So (or(sp,A) → ⊥) = (((sp → ⊥) → A) → ⊥)
-    -- h_or_neg : ((sp → ⊥) → A(t)) → ⊥
-    -- We need sf: ((∀ s > t, A(s) → ⊥) → ⊥)
-    -- i.e., we need to show ¬(∀ s > t, ¬A(s)).
-    -- But ∀ s > t, ¬A(s) IS true from h_none. So sf is ⊥. Contradiction.
-    -- Actually we need to PROVIDE sf, i.e., ((∀ s > t, A(s) → ⊥) → ⊥).
-    -- But (∀ s > t, A(s) → ⊥) is true. So we can't provide sf.
-    -- This means we need to use h_or_neg differently.
-    -- Actually: the full type should be:
-    -- h : (h_or_neg → sf) where sf = ((∀ s > t, A(s) → ⊥) → ⊥)
-    -- Wait no. Let me think about the unfolding more carefully.
-    -- After the simp, we need to see what type h actually has.
-    -- Let me instead use a different proof strategy: show the result using
-    -- intermediate classical lemmas.
-    -- CLEAN APPROACH: Don't use simp to unfold. Instead, reason about
-    -- int_truth directly.
-    exact h_or_neg (fun hsp_neg => absurd (h_none t) (by
-      intro hnt
-      exact hsp_neg (fun h_all => h_all t (lt_irrefl t) (absurd (h_none t) hnt))))
-    -- This is getting circular. Let me try yet another approach.
-    -- Actually, the cleanest fix: don't simp at all. Prove directly.
+    -- q_exists A at t is: or(or(some_past A, A), some_future A)
+    -- At the int_truth level (after encoding through imp/neg):
+    -- int_truth of or X Y = (int_truth X → False) → int_truth Y
+    -- int_truth of some_past A = (∀s<t, int_truth s A → False) → False
+    -- int_truth of some_future A = (∀s, t<s → int_truth s A → False) → False
+    -- We show the q_exists formula is False under h_none.
+    -- or(or(sp, A), sf) where sp = some_past A, sf = some_future A
+    -- Unfolding: ((sp → ⊥) → A(t)) → ⊥) → ((∀s>t, A(s) → ⊥) → ⊥)
+    -- Under h_none: A(t) = False, A(s) = False for all s.
+    -- sp = ((∀s<t, A(s)→⊥) → ⊥) = (True → ⊥) = ⊥  [since ∀s<t, ¬A(s) is true]
+    -- or(sp, A) = (sp→⊥) → A(t) = (⊥→⊥) → ⊥ = True → ⊥ = ⊥
+    -- ¬or(sp,A) = (⊥→⊥) = True
+    -- sf = (∀s>t, A(s)→⊥) → ⊥ = True → ⊥ = ⊥
+    -- q_exists = (¬or(sp,A)) → sf = True → ⊥ = ⊥
+    -- So h : ⊥.
+    -- Lean proof: step through the encoding.
+    have hA_never : ∀ s : ℤ, ¬ Separation.int_truth M s A := h_none
+    -- h has type: int_truth M t (q_exists A)
+    -- After unfolding q_exists, or, neg, some_past, some_future in int_truth:
+    show False
+    simp only [q_exists, Formula.or, Formula.neg, Formula.some_past, Formula.some_future,
+               Separation.int_truth] at h
+    -- After simp, h should be of a propositional type we can refute.
+    -- h : (((((∀ s, s < t → Separation.int_truth M s A → False) → False) → False) →
+    --       Separation.int_truth M t A) → False) →
+    --      (∀ s, t < s → Separation.int_truth M s A → False) → False
+    exact h (fun f => hA_never t (f (fun hdn => hdn (fun s _ hAs => hA_never s hAs))))
+             (fun s _ hAs => hA_never s hAs)
 
   · -- (←): ∃ s, A(s) → q_exists A at t
     intro ⟨s, hs⟩
