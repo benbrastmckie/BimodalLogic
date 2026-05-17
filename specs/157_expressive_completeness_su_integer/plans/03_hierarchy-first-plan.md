@@ -162,15 +162,15 @@ Replaced 4 axioms in Eliminations.lean with proofs via `all_separable` in Normal
 **Strategy**: Use well-founded induction on `qdepth` (quantifier depth). The quantifier case recurses at `extSignature sig` (different type) with `reduceElimLast` reducing qdepth by 1. Then apply the atom-elimination pipeline: case-split over `Fintype (sig.preds -> Bool)` for const_at_ref, level-aware substitution for lt_ref/gt_ref using purity lemmas.
 
 **Tasks**:
-- [ ] Task 7.1: Restructure `expressiveness_fixed_atomMap` to use WF induction on qdepth via `Nat.strongRecOn` or `termination_by` with explicit measure (~80 LOC refactoring)
-- [ ] Task 7.2: Prove `reduceElimLast_correct` -- semantic correctness relating eval at (z,t) in sig to eval at z in extSignature with extIntStruct (~100 LOC, Fin arithmetic for env management)
-- [ ] Task 7.3: Prove `extAtomMap_injective` -- injectivity of the extended atom map (~40 LOC, using distinctness of atom name encoding)
-- [ ] Task 7.4: Define `elimExtAtoms` -- level-aware substitution function that walks a properly separated formula and substitutes differently at present/past/future levels (~50 LOC)
-- [ ] Task 7.5: Prove `elimExtAtoms_correct` -- for each level (present, past-only, future-only), the substitution preserves truth using `past_only_subst_correct`/`future_only_subst_correct` at time s (~150 LOC)
-- [ ] Task 7.6: Implement case-split assembly -- iterate over `Fintype (sig.preds -> Bool)`, build guard formulas, prove exactly one guard is True for each (M, t), prove the selected branch gives correct answer (~100 LOC)
-- [ ] Task 7.7: Close `.ex` case by assembling: reduceElimLast_correct + IH at extSignature + q_exists + proper_separation + elimExtAtoms + case-split (~80 LOC)
-- [ ] Task 7.8: Close `.all` case by deriving from `.ex` via negation: `forall z. phi(z) <-> not (exists z. not phi(z))` (~40 LOC)
-- [ ] Task 7.9: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
+- [x] **Task 7.1**: Restructure `expressiveness_fixed_atomMap` to use WF induction on qdepth via `Nat.strongRecOn` or `termination_by` with explicit measure (~80 LOC refactoring) *(completed: used Nat.strongRecOn with inner structural recursion)*
+- [x] **Task 7.2**: Prove `reduceElimLast_correct` -- semantic correctness relating eval at (z,t) in sig to eval at z in extSignature with extIntStruct *(completed in prior sessions)*
+- [x] **Task 7.3**: Prove `extAtomMap_injective` -- injectivity of the extended atom map *(deviation: altered -- used freshAM (canonical atomMap with base "e") instead of extAtomMap to avoid collision issues; proved freshAM_inj inline)*
+- [x] **Task 7.4**: Define `elimExtAtoms` -- level-aware substitution function that walks a properly separated formula and substitutes differently at present/past/future levels *(completed: defined elimExtFromSep, applySubsts, origSubsList, constSubsList, guardFormula, quantElimFormula)*
+- [ ] **Task 7.5**: Prove `elimExtAtoms_correct` -- for each level (present, past-only, future-only), the substitution preserves truth using `past_only_subst_correct`/`future_only_subst_correct` at time s (~150 LOC) *(in progress -- proof strategy verified but not formalized; 5 sorries remain)*
+- [ ] **Task 7.6**: Implement case-split assembly -- iterate over `Fintype (sig.preds -> Bool)`, build guard formulas, prove exactly one guard is True for each (M, t), prove the selected branch gives correct answer (~100 LOC) *(partially done: formula built, guard uniqueness not proved)*
+- [ ] **Task 7.7**: Close `.ex` case by assembling: reduceElimLast_correct + IH at extSignature + q_exists + proper_separation + elimExtAtoms + case-split (~80 LOC) *(formula construction complete, proof body sorry)*
+- [ ] **Task 7.8**: Close `.all` case by deriving from `.ex` via negation: `forall z. phi(z) <-> not (exists z. not phi(z))` (~40 LOC) *(formula construction complete, proof body sorry)*
+- [ ] **Task 7.9**: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
 
 **Timing**: 5 hours
 
