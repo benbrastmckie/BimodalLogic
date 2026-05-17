@@ -19,7 +19,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -28,7 +28,7 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T18:34:34Z",
+      "last_updated": "2026-05-17T18:39:07Z",
       "session_id": "sess_1779042857_963167",
       "researched": "2026-05-17T18:30:37Z",
       "artifacts": [
@@ -38,14 +38,14 @@
           "summary": "Team research: expand_temporal fix for Phase 6, WF induction for Phase 7"
         },
         {
-          "path": "specs/157_expressive_completeness_su_integer/plans/03_hierarchy-first-plan.md",
-          "type": "plan",
-          "summary": "Plan v6: expand_temporal for Phase 6, WF induction for Phase 7"
-        },
-        {
           "path": "specs/157_expressive_completeness_su_integer/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research: Phase 6 blocker resolution via junction-depth induction"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/plans/04_junction-depth-plan.md",
+          "type": "plan",
+          "summary": "Plan v7: junction-depth induction for axiom elimination, quantifier cases, final integration"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
