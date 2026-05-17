@@ -145,16 +145,21 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 **Strategy**: Restructured from structural recursion with sorry-pairs to well-founded induction on quantifier depth via `Nat.strongRecOn`. Inner structural recursion (`expressiveness_inner`) + outer WF recursion (`expressiveness_wf`). Used `freshAM` (canonical atomMap with base "e") instead of `extAtomMap atomMap` to avoid collision issues across recursion levels.
 
-**Progress**: The original 2 sorry-pairs (which gave up on both formula AND proof) are replaced by 5 focused sorries that all reduce to a single correctness lemma: `atom_elim_correct` proving that `elimExtFromSep` correctly translates truth between the extended model and the original model for properly separated formulas.
+**Progress**: The original 2 sorry-pairs (which gave up on both formula AND proof) are now 3 focused sorries (lines 893, 940, 947) that all reduce to a single correctness lemma: `atom_elim_correct` proving that `elimExtFromSep` correctly translates truth between the extended model and the original model for properly separated formulas. Multiple agent sessions (6 attempts total) progressively reduced the sorry count from the original 2 pairs to the current 3.
 
 **Tasks**:
 - [x] Task 7.1: Restructure `expressiveness_fixed_atomMap` for WF induction on qdepth -- restructured to `expressiveness_inner` (structural) + `expressiveness_wf` (Nat.strongRecOn)
-- [x] Task 7.2: Build quantifier elimination infrastructure -- `quantElimFormula`, `elimExtFromSep`, `applySubsts`, `origSubsList` all defined
-- [x] Task 7.3: Prove purity lemmas and quantifier-free cases -- completed
+- [x] Task 7.2: Build quantifier elimination infrastructure -- `quantElimFormula`, `elimExtFromSep`, `applySubsts`, `origSubsList`, `constSubsList`, `guardFormula` all defined
+- [x] Task 7.3: Prove purity lemmas and quantifier-free cases -- completed; `subst_preserves_past_only`, `subst_preserves_future_only` proved
 - [x] Task 7.4: Define `elimExtAtoms` level-aware substitution -- implemented as `elimExtFromSep` with 4 atom types (orig, const_at_ref, lt_ref, gt_ref)
-- [x] Task 7.5: Implement case-split assembly over `Fintype (sig.preds -> Bool)` -- completed with sigma-matching
-- [ ] Task 7.6: Prove `atom_elim_correct` (~150 LOC) -- THE remaining blocker. Proves `int_truth M_orig t (elimExtFromSep subs lt_atom gt_atom B) <-> int_truth M_ext t B` by structural induction on properly separated B. Temporal cases use `past_only_is_pure_past` / `future_only_is_pure_future`.
-- [ ] Task 7.7: Close 5 remaining sorries using `atom_elim_correct` -- `applySubsts_past_correct`, `applySubsts_future_correct`, `.ex` forward/backward, `.all` case
+- [x] Task 7.5: Implement case-split assembly over `Fintype (sig.preds -> Bool)` -- completed with sigma-matching and guard uniqueness
+- [x] Task 7.5b: Prove `applySubsts_past_correct` and `applySubsts_future_correct` -- sequential substitution for past/future-only formulas
+- [ ] Task 7.6a: Prove atom membership simp lemmas (~30 LOC, easy) -- `z ∈ (to_int_struct (extIntStruct M t) freshAM).val (freshAM ep)` reduces to correct semantic condition for each of the 4 atom types (.orig p, .const_at_ref p, .lt_ref, .gt_ref). Requires `freshAM_inj`.
+- [ ] Task 7.6b: Prove `guardFormula_correct` (~30 LOC, medium) -- `int_truth M_orig t (guardFormula atomMap sigma) <-> forall p, sigma p = true <-> M.interp p t`
+- [ ] Task 7.6c: Prove `elimExtFromSep_correct` (~100 LOC, hard -- core structural induction) -- by induction on properly separated B_sep. Atom/bot cases: direct. Imp: by IH on both sides. all_past/all_future: use `applySubsts_past_correct`/`applySubsts_future_correct` (already proved) + past_only_is_pure_past/future_only_is_pure_future. snce/untl: similar to all_past/all_future. Key insight: for s < t, freshAM(.lt_ref) is TRUE (matched by neg bot substitution), freshAM(.gt_ref) is FALSE (matched by bot substitution), freshAM(.const_at_ref p) matches sigma (from guard).
+- [ ] Task 7.6d: Prove `quantElimFormula_correct_iff` (~40 LOC, medium) -- unfolds disjunction over Finset.univ assignments, extracts unique matching sigma via classical reasoning
+- [ ] Task 7.6e: Prove `atom_elim_correct` (~15 LOC, easy glue) -- combines guardFormula_correct + elimExtFromSep_correct + quantElimFormula_correct_iff
+- [ ] Task 7.7: Close 3 remaining sorries (lines 893, 940, 947) using `atom_elim_correct` (~5 LOC)
 - [ ] Task 7.8: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
 
 **Timing**: 5 hours
