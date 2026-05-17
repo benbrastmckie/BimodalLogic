@@ -482,6 +482,124 @@ noncomputable def extAtomMap {sig : MonadicSignature}
   | .lt_ref => Atom.mk_fresh "lt_ref" 0
   | .gt_ref => Atom.mk_fresh "gt_ref" 0
 
+/-! ### Semantic Correctness of reduceElimLast
+
+The `reduceElimLast_correct` family proves that reducing the last variable from a
+formula preserves its semantics: evaluating the original formula with the last env
+slot set to `t` equals evaluating the reduced formula in the extended model
+`extIntStruct M t`. This is the key lemma for the quantifier elimination step. -/
+
+/-- Append a value at the last position of an environment.
+    `appendLast env t : Fin (n+1) → Int` maps `i ↦ env i` if `i < n`, and `n ↦ t`. -/
+private def appendLast {n : Nat} (env : Fin n → Int) (t : Int) : Fin (n + 1) → Int :=
+  fun i => if h : i.val < n then env ⟨i.val, h⟩ else t
+
+/-- Fin.cons commutes with appendLast: putting x first and t last is
+    the same as appendLast with the extended env. -/
+private theorem cons_appendLast {n : Nat} (x t : Int) (env : Fin n → Int) :
+    Fin.cons x (appendLast env t) = appendLast (Fin.cons x env) t := by
+  funext ⟨i, hi⟩
+  cases i with
+  | zero => simp [Fin.cons, appendLast]
+  | succ j =>
+    simp only [Fin.cons, appendLast]
+    split
+    · simp [appendLast, show j < n from by omega]
+    · rename_i h1; simp [appendLast, show ¬(j < n) from by omega]
+
+/-- appendLast for a singleton env equals Fin.cons. -/
+private theorem appendLast_singleton (z t : Int) :
+    appendLast (fun _ : Fin 1 => z) t = Fin.cons z (fun _ => t) := by
+  funext ⟨i, hi⟩
+  simp only [appendLast, Fin.cons]
+  cases i with
+  | zero => simp
+  | succ j => simp [show ¬(j + 1 < 1) from by omega]
+
+/-- Semantic correctness of `reduceElimLast` for n = m+1 ≥ 1.
+    Evaluating `alpha : MonadicFormula sig (m+1+1)` with the last env slot
+    holding `t` equals evaluating `reduceElimLast (m+1) alpha` in the extended
+    model `extIntStruct M t`. -/
+private noncomputable def reduceElimLast_correct_succ {sig : MonadicSignature} :
+    (m : Nat) → (alpha : MonadicFormula sig (m + 1 + 1)) →
+    ∀ (M : IntStructureFromSig sig) (env : Fin (m+1) → Int) (t : Int),
+    eval (int_to_ordered sig M) (appendLast env t) alpha ↔
+    eval (int_to_ordered (extSignature sig) (extIntStruct M t)) env (reduceElimLast (m+1) alpha)
+  | m, .not beta => fun M env t => by
+    simp only [eval, reduceElimLast]
+    exact not_congr (reduceElimLast_correct_succ m beta M env t)
+  | m, .and a b => fun M env t => by
+    simp only [eval, reduceElimLast]
+    exact and_congr (reduceElimLast_correct_succ m a M env t)
+                    (reduceElimLast_correct_succ m b M env t)
+  | m, .all beta => fun M env t => by
+    simp only [eval, reduceElimLast]
+    constructor
+    · intro h x
+      have ih := reduceElimLast_correct_succ (m+1) beta M (Fin.cons x env) t
+      rw [← cons_appendLast] at ih
+      exact ih.mp (h x)
+    · intro h x
+      have ih := reduceElimLast_correct_succ (m+1) beta M (Fin.cons x env) t
+      rw [← cons_appendLast] at ih
+      exact ih.mpr (h x)
+  | m, .ex beta => fun M env t => by
+    simp only [eval, reduceElimLast]
+    constructor
+    · rintro ⟨x, hx⟩
+      have ih := reduceElimLast_correct_succ (m+1) beta M (Fin.cons x env) t
+      rw [← cons_appendLast] at ih
+      exact ⟨x, ih.mp hx⟩
+    · rintro ⟨x, hx⟩
+      have ih := reduceElimLast_correct_succ (m+1) beta M (Fin.cons x env) t
+      rw [← cons_appendLast] at ih
+      exact ⟨x, ih.mpr hx⟩
+  | m, .atom p i => fun M env t => by
+    simp only [eval, reduceElimLast]
+    split
+    · rename_i h
+      simp only [eval, int_to_ordered, extIntStruct]
+      show M.interp p (appendLast env t i) ↔ M.interp p (env ⟨i.val, h⟩)
+      simp [appendLast, h]
+    · rename_i h
+      simp only [eval, int_to_ordered, extIntStruct]
+      show M.interp p (appendLast env t i) ↔ M.interp p t
+      simp [appendLast, h]
+  | m, .lt i j => fun M env t => by
+    simp only [eval, reduceElimLast]
+    split
+    · rename_i hi
+      split
+      · rename_i hj
+        simp only [eval, int_to_ordered]
+        show appendLast env t i < appendLast env t j ↔ env ⟨i.val, hi⟩ < env ⟨j.val, hj⟩
+        simp [appendLast, hi, hj]
+      · rename_i hj
+        simp only [eval, int_to_ordered, extIntStruct]
+        show appendLast env t i < appendLast env t j ↔ env ⟨i.val, by omega⟩ < t
+        simp [appendLast, hi, hj]
+    · rename_i hi
+      split
+      · rename_i hj
+        simp only [eval, int_to_ordered, extIntStruct]
+        show appendLast env t i < appendLast env t j ↔ t < env ⟨j.val, by omega⟩
+        simp [appendLast, hi, hj]
+      · rename_i hj
+        simp only [int_to_ordered]
+        constructor
+        · intro hlt; simp [appendLast, hi, hj] at hlt
+        · intro hlt; exact absurd hlt (lt_irrefl _)
+
+/-- Specialized correctness for the main use case: `alpha : MonadicFormula sig 2`,
+    env = `Fin.cons z (fun _ => t)`, result in `MonadicFormula (extSignature sig) 1`. -/
+private theorem reduceElimLast_correct_at_one {sig : MonadicSignature}
+    (alpha : MonadicFormula sig 2) (M : IntStructureFromSig sig) (z t : Int) :
+    eval (int_to_ordered sig M) (Fin.cons z (fun _ => t)) alpha ↔
+    eval (int_to_ordered (extSignature sig) (extIntStruct M t))
+      (fun _ => z) (reduceElimLast 1 alpha) := by
+  have h := reduceElimLast_correct_succ 0 alpha M (fun _ => z) t
+  rwa [appendLast_singleton] at h
+
 /-! ### Core Expressiveness Lemma -/
 
 /-- Core lemma: for a FIXED injective atomMap, every MonadicFormula sig 1 has a
