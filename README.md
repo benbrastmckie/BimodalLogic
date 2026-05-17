@@ -134,12 +134,11 @@ graph TD
 | **Base** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
 | **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | — |
 | **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — |
-| **Mixed** | (any non-pure case) | sorry-free | 1 active sorry (`dd_countermodel_chronicle_mixed_sorry`) | — |
 
 **Active sorry obligations**:
 
 - *Dense completeness path* (`ChronicleToCountermodel.lean`): 1 sorry in the Cantor isomorphism step of the chronicle construction (density elimination in `lemma_2_6_splitting`). The BX chronicle approach requires `DenselyOrdered` on the limit domain; Task 117 will rebuild the construction to eliminate this.
-- *Discrete/mixed completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
+- *Discrete completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
 
 The Deduction Theorem, Finite Model Property (with `2^|closure(φ)|` bound), and the six Perpetuity Principles (P1–P6) are all fully proven.
 
