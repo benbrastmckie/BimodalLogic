@@ -153,7 +153,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -162,9 +162,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T19:52:41Z",
-      "session_id": "sess_1779047546_46f440",
-      "researched": "2026-05-17T19:41:42Z",
+      "last_updated": "2026-05-17T20:33:36Z",
+      "session_id": "sess_1779049267_cbfd32",
+      "researched": "2026-05-17T20:33:36Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -185,10 +185,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/05_dedekind-approach-plan.md",
           "type": "plan",
           "summary": "Plan v8: Dedekind + generalized Case 1, mandatory approach, ~380 LOC Phase 6"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research: correct mathematical approach for Phase 6 (junction-depth hierarchy) and Phase 7 (freshAM offset fix)"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 6
+      "next_artifact_number": 7
     },
     {
       "project_number": 156,
