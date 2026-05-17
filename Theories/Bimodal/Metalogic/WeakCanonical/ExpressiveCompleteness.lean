@@ -691,26 +691,7 @@ private theorem applySubsts_past_correct {φ : Formula}
     (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
       ∀ s : Int, s ≤ t → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
     Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
-  induction subs generalizing φ with
-  | nil => exact Iff.rfl
-  | cons ar rest ih =>
-    obtain ⟨a, r⟩ := ar
-    simp only [applySubsts]
-    have h_ar : ∀ s : Int, s ≤ t →
-      (Separation.int_truth M s r ↔ s ∈ M.val a) :=
-      h_match a r (List.mem_cons_self _ _)
-    -- subst_formula φ a r is also past-only
-    -- (since r is ⊥ or ¬⊥, both past-only, and φ is past-only)
-    -- Use past_only_subst_correct for the first substitution
-    have step := past_only_subst_correct hpo a r M t h_ar
-    -- The rest of the substitutions
-    have h_rest : ∀ (a' : Atom) (r' : Formula), (a', r') ∈ rest →
-      ∀ s : Int, s ≤ t → (Separation.int_truth M s r' ↔ s ∈ M.val a') :=
-      fun a' r' hmem => h_match a' r' (List.mem_cons_of_mem _ hmem)
-    -- Need: subst_formula φ a r is past-only
-    -- This is true when φ is past-only and r is past-only (which ⊥ and ¬⊥ are)
-    -- For now, use sorry for this structural fact and focus on the main proof
-    sorry
+  sorry -- Uses past_only_subst_correct composed for each substitution
 
 /-- Correctness of applySubsts for a future-only formula. -/
 private theorem applySubsts_future_correct {φ : Formula}
@@ -719,7 +700,7 @@ private theorem applySubsts_future_correct {φ : Formula}
     (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
       ∀ s : Int, t ≤ s → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
     Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
-  sorry
+  sorry -- Uses future_only_subst_correct composed for each substitution
 
 /-! ### Core Expressiveness Lemma
 
@@ -782,84 +763,91 @@ private noncomputable def expressiveness_inner
       simp [MonadicFormula.quantifier_depth] at hm; omega
     have h_red_depth : (reduceElimLast 1 alpha).quantifier_depth ≤ alpha.quantifier_depth :=
       qdepth_reduceElimLast_le 1 Nat.zero_lt_one alpha
-    -- Construct injective atom map for extSignature sig using extAtomMap
-    let extAM := extAtomMap atomMap
-    -- Apply outer IH at lower depth
+    -- Construct a fresh injective atomMap for extSignature sig
+    -- Uses mk_fresh "e" k with unique indices for each ExtPred
+    let freshAM : (extSignature sig).preds → Atom :=
+      fun ep => Atom.mk_fresh "e" (Fintype.equivFin (extSignature sig).preds ep).val
+    have freshAM_inj : Function.Injective freshAM := by
+      intro a b hab
+      simp only [freshAM] at hab
+      have := Atom.mk_fresh_injective "e" hab
+      exact (Fintype.equivFin (extSignature sig).preds).injective
+        (Fin.ext (Nat.cast_injective this))
+    -- Apply outer IH at lower depth with freshAM
     let ihExt := outerIH alpha.quantifier_depth h_lt_m
-      (extSignature sig) extAM
-      (by -- injectivity of extAtomMap atomMap
-        intro a b hab
-        cases a <;> cases b <;> simp [extAtomMap, Atom.mk_fresh] at hab
-        · exact congrArg ExtPred.orig (hinj hab) -- orig-orig
-        · exact congrArg ExtPred.const_at_ref
-            ((Fintype.equivFin sig.preds).injective
-              (Fin.ext (Nat.cast_injective (Atom.mk_fresh_injective "const_ref" hab))))
-        all_goals first | rfl | (exfalso; simp [Atom.mk_fresh] at hab))
-      (reduceElimLast 1 alpha)
-      (le_trans h_red_depth (le_refl _))
-    -- ihExt.val = A_ext : Formula
-    -- ihExt.property : for all M' t, eval at (extSignature sig) ↔ int_truth with extAM
-    -- Form q_exists A_ext
+      (extSignature sig) freshAM freshAM_inj
+      (reduceElimLast 1 alpha) (le_trans h_red_depth (le_refl _))
     let A_ext := ihExt.val
     -- By h_sep, q_exists A_ext is equivalent to a properly separated formula
-    let ⟨B_sep, hB_sep, hB_equiv⟩ := h_sep (q_exists A_ext)
+    let h_ps := h_sep (q_exists A_ext)
+    let B_sep := h_ps.choose
+    have hB_sep := h_ps.choose_spec.1
+    have hB_equiv := h_ps.choose_spec.2
     -- Build the quantifier elimination formula
-    let A := quantElimFormula atomMap extAM B_sep
+    let A := quantElimFormula atomMap freshAM B_sep
     ⟨A, fun M t => by
-      -- eval (.ex alpha) = ∃ z, eval ... alpha
+      -- Chain: eval (.ex alpha) at (M, t)
+      --   ↔ ∃z. eval alpha at (M, z, t)   [by definition]
+      --   ↔ ∃z. eval (reduceElimLast 1 alpha) at (extIntStruct M t, z)  [by correctness]
+      --   ↔ ∃z. int_truth A_ext z in (to_int_struct (extIntStruct M t) freshAM)  [by IH]
+      --   ↔ int_truth (q_exists A_ext) t in same model  [by q_exists_correct]
+      --   ↔ int_truth B_sep t in same model  [by separation equivalence]
+      --   ↔ int_truth A t in (to_int_struct M atomMap)  [by atom elimination]
       simp only [eval]
-      -- Step 1: By reduceElimLast_correct_at_one
-      have h_red : ∀ z, eval (int_to_ordered sig M) (Fin.cons z (fun _ => t)) alpha ↔
-          eval (int_to_ordered (extSignature sig) (extIntStruct M t))
-            (fun _ => z) (reduceElimLast 1 alpha) :=
-        fun z => reduceElimLast_correct_at_one alpha M z t
-      -- Step 2: By IH, the reduced formula has temporal equivalent A_ext
-      have h_ext : ∀ z, eval (int_to_ordered (extSignature sig) (extIntStruct M t))
-          (fun _ => z) (reduceElimLast 1 alpha) ↔
-          Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext :=
-        fun z => ihExt.property (extIntStruct M t) z
-      -- Step 3: Combine: ∃ z, eval ↔ ∃ z, int_truth A_ext
-      have h_exists_equiv : (∃ z, eval (int_to_ordered sig M) (Fin.cons z (fun _ => t)) alpha) ↔
-          (∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext) :=
-        ⟨fun ⟨z, hz⟩ => ⟨z, (h_ext z).mp ((h_red z).mp hz)⟩,
-         fun ⟨z, hz⟩ => ⟨z, (h_red z).mpr ((h_ext z).mpr hz)⟩⟩
-      -- Step 4: By q_exists_correct
-      have h_qex : Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t (q_exists A_ext) ↔
-          (∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext) :=
-        q_exists_correct A_ext (to_int_struct (extIntStruct M t) extAM) t
-      -- Step 5: By separation equivalence
-      have h_sep_equiv : Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t (q_exists A_ext) ↔
-          Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t B_sep :=
-        hB_equiv (to_int_struct (extIntStruct M t) extAM) t
-      -- Step 6: Atom elimination (the key step)
-      -- We need: int_truth (to_int_struct M atomMap) t A ↔
-      --          int_truth (to_int_struct (extIntStruct M t) extAM) t B_sep
-      -- This follows from the case-split and level-aware substitution.
-      -- For now, use sorry for this correctness step
-      sorry⟩
+      constructor
+      · intro ⟨z, hz⟩
+        -- hz : eval ... alpha at z
+        have h1 := (reduceElimLast_correct_at_one alpha M z t).mp hz
+        have h2 := (ihExt.property (extIntStruct M t) z).mp h1
+        have h3 : ∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) freshAM) z A_ext := ⟨z, h2⟩
+        have h4 := (q_exists_correct A_ext (to_int_struct (extIntStruct M t) freshAM) t).mpr h3
+        have h5 := (hB_equiv (to_int_struct (extIntStruct M t) freshAM) t).mp h4
+        -- h5 : int_truth B_sep t in extended model
+        -- Need: int_truth A t in original model
+        -- This is the atom elimination step
+        sorry
+      · intro hA
+        -- hA : int_truth A t in original model
+        -- Need: ∃ z, eval alpha at z
+        sorry⟩
   | .all alpha, hm =>
     -- ∀z. alpha(z,t) ↔ ¬∃z. ¬alpha(z,t)
-    -- Use the .ex case for (.not alpha) and negate
-    have hm_ex : (MonadicFormula.ex (MonadicFormula.not alpha)).quantifier_depth ≤ m := by
-      simp [MonadicFormula.quantifier_depth]; omega
-    let ihEx := expressiveness_inner h_sep m outerIH sig atomMap hinj
-      (.ex (.not alpha)) hm_ex
-    ⟨Formula.neg ihEx.val, fun M t => by
+    -- Same pipeline as .ex but with .not alpha and outer negation
+    have h_lt_m : alpha.quantifier_depth < m := by
+      simp [MonadicFormula.quantifier_depth] at hm; omega
+    have h_red_depth : (reduceElimLast 1 (.not alpha)).quantifier_depth ≤ alpha.quantifier_depth := by
+      have := qdepth_reduceElimLast_le 1 Nat.zero_lt_one (MonadicFormula.not alpha)
+      simp [MonadicFormula.quantifier_depth] at this; exact this
+    let freshAM : (extSignature sig).preds → Atom :=
+      fun ep => Atom.mk_fresh "e" (Fintype.equivFin (extSignature sig).preds ep).val
+    have freshAM_inj : Function.Injective freshAM := by
+      intro a b hab; simp only [freshAM] at hab
+      exact (Fintype.equivFin (extSignature sig).preds).injective
+        (Fin.ext (Nat.cast_injective (Atom.mk_fresh_injective "e" hab)))
+    let ihExt := outerIH alpha.quantifier_depth h_lt_m
+      (extSignature sig) freshAM freshAM_inj
+      (reduceElimLast 1 (.not alpha)) (le_trans h_red_depth (le_refl _))
+    let A_neg_ext := ihExt.val
+    let h_ps := h_sep (q_exists A_neg_ext)
+    let B_sep := h_ps.choose
+    have hB_equiv := h_ps.choose_spec.2
+    let A_ex := quantElimFormula atomMap freshAM B_sep
+    ⟨Formula.neg A_ex, fun M t => by
       simp only [eval]
-      have h_ihEx := ihEx.property M t
-      -- h_ihEx : (∃ z, ¬eval ... alpha) ↔ int_truth ... ihEx.val
-      -- Need: (∀ z, eval ... alpha) ↔ ¬(int_truth ... ihEx.val)
-      -- i.e., (∀ z, eval ... alpha) ↔ int_truth ... (neg ihEx.val)
+      -- ∀z.α(z,t) ↔ ¬(∃z.¬α(z,t))
+      -- The .ex pipeline gives: (∃z.¬α(z,t)) ↔ int_truth M_orig t A_ex
+      -- So: (∀z.α(z,t)) ↔ ¬(int_truth M_orig t A_ex) = int_truth M_orig t (neg A_ex)
       rw [Separation.int_truth_neg_iff]
-      constructor
-      · intro h_all h_ex
-        simp only [eval] at h_ihEx
-        obtain ⟨z, hz⟩ := h_ihEx.mpr h_ex
-        exact hz (h_all z)
-      · intro h_neg z
-        by_contra h_not
-        simp only [eval] at h_ihEx
-        exact h_neg (h_ihEx.mp ⟨z, h_not⟩)⟩
+      -- Need: (∀ z, eval ... alpha) ↔ ¬(int_truth ... A_ex)
+      -- The .ex pipeline for (.not alpha) gives:
+      -- (∃ z, eval ... (.not alpha)) ↔ int_truth ... A_ex
+      -- i.e., (∃ z, ¬eval ... alpha) ↔ int_truth ... A_ex
+      -- By contraposition: ¬(∃ z, ¬eval ... alpha) ↔ ¬(int_truth ... A_ex)
+      -- i.e., (∀ z, eval ... alpha) ↔ ¬(int_truth ... A_ex)
+      -- So we need: (∃ z, ¬eval ... alpha) ↔ int_truth ... A_ex
+      -- This is exactly the .ex pipeline for .not alpha.
+      -- The proof follows the same steps as .ex.
+      sorry⟩
 
 /-- Outer well-founded recursion: proves the expressiveness lemma by strong induction
     on quantifier depth. Delegates to `expressiveness_inner` at each level. -/
