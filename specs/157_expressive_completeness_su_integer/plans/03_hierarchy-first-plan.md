@@ -215,28 +215,39 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 **BLOCKER** (Phase 6):
 - **What failed**: The temporal closure axioms (`snce_separable`, `untl_separable`, `all_past_separable`, `all_future_separable`) cannot be eliminated without implementing a genuine mutual induction proof that handles the interaction between U-under-S and S-under-U elimination.
-- **What was tried**:
+- **What was tried** (updated 2026-05-17):
   1. Attempted to prove `no_S_nested_in_U → separable` by induction on `count_U_subformulas`. Base case (U-free) fails because U-free formulas like `all_future (snce p q)` = G(S(p,q)) are NOT syntactically separated and their separated equivalents REQUIRE U operators (verified by semantic analysis).
-  2. Attempted to use `separated_implies_no_S_nested_in_U` to reduce `snce_separable` to `no_S_nested_in_U_separable`. The box case invalidates the structural lemma (box content is unconstrained in separated formulas).
-  3. Attempted dual argument via `no_U_nested_in_S_separable`. Same circularity: S-free formulas like `all_past (untl A B)` = H(U(A,B)) need S in their separated equivalents.
+  2. Attempted to use `separated_implies_no_S_nested_in_U` to reduce `snce_separable` to `no_S_nested_in_U_separable`. The box case invalidates the structural lemma (box content is unconstrained in separated formulas). **RESOLVED**: Box normalization (`replace_box_with_top` in TemporalClosure.lean) eliminates this issue. Box-normalized separated formulas DO satisfy `no_S_nested_in_U`.
+  3. Attempted dual argument via `no_U_nested_in_S_separable`. Same circularity: S-free formulas like `all_past (untl A B)` = H(U(A,B)) need S in their separated equivalents. **INFRASTRUCTURE BUILT**: `no_U_nested_in_S` defined with duality helpers (`swap_no_U_nested_gives_no_S_nested`, `swap_no_S_nested_gives_no_U_nested`) in TemporalClosure.lean.
   4. Attempted well-founded induction on lexicographic (has_bad_nesting, sizeOf). The composed formula `.snce φ' ψ'` may be LARGER than the original, so sizeOf doesn't decrease in the second component.
-- **Why it's stuck**: The fundamental issue is a MUTUAL RECURSION between U-elimination and S-elimination. To prove `no_S_nested_in_U → separable` (for snce/all_past/all_future cases), the U-free base case needs `all_future_separable` for formulas containing S, which requires S-elimination. S-elimination in turn requires U-elimination (the dual). GHR94 resolves this via junction-depth induction (Lemma 10.2.8) which simultaneously decreases BOTH U-under-S and S-under-U alternation, but formalizing this requires:
-  - A mutual well-founded recursion on `(junction_depth, count_U + count_S, sizeOf)`
-  - Proving the measure strictly decreases through the abstraction-substitution-hierarchy loop
-  - Handling the fact that separated equivalents can be LARGER than originals (sizeOf non-monotone)
-  - Implementing integer-specific temporal equivalences (e.g., G(S(p,q)) expressed as boolean combination of U and S terms)
-- **What is needed**:
-  1. Implement `abstract_snce` (dual of `abstract_untl`) with all preservation/correctness lemmas (~200 LOC)
-  2. Define `no_U_nested_in_S` predicate and prove preservation lemmas (~100 LOC)
-  3. Prove integer-specific temporal equivalences for base cases like G(S(p,q)), H(U(A,B)) (~300+ LOC, requires new semantic lemmas)
-  4. Implement mutual well-founded recursion with combined measure (~400+ LOC)
-  5. Prove measure strictly decreases through each abstraction/hierarchy step (~200+ LOC)
-  Total estimated: 1200-1500 LOC of new proof code across 3-4 new files
+  5. Attempted abstraction-based approach (`abstract_untl` to produce separated witness). The abstracted formula IS syntactically separated (U-free snce args), but it is NOT `int_equiv` to the original -- it uses a free atom p with different semantics. The `abstract_untl_correct` theorem gives equivalence between DIFFERENT models (original vs modified), not between different formulas in the same model. So abstraction cannot produce the existential witness for `is_separable`.
+  6. Verified that Cases 5-8 (in NormalForm.lean) are genuinely needed: when event-splitting `snce phi' psi'`, the same `untl A B` type can appear in BOTH event and guard. GHR94's explicit formulas for Cases 5-8 are incorrect on integer/discrete time (counterexamples in report 02). Their EXISTENCE is proved existentially via the separation theorem itself.
+- **Why it's stuck**: The fundamental issue is a MUTUAL RECURSION between U-elimination and S-elimination. All approaches converge to the same core problem: Cases 5-8 patterns (U in both event and guard of a single S) cannot be separated without using the separation theorem. GHR94 resolves this within the junction-depth induction (Lemma 10.2.8), where the measure strictly decreases by at least 2 per alternation layer removed. But formalizing this requires:
+  - The GHR94 "extract S-from-under-U" step: replace maximal S-subformulas inside U-arguments with fresh atoms
+  - Apply Lemma 10.2.7 (no_S_nested_in_U_separable) to the simplified formula
+  - Resubstitute: replace fresh atoms with the original S-subformulas
+  - Show the result has junction_depth decreased by at least 2
+  - Apply the IH at the lower junction_depth
+  - Requires explicit tracking that junction_depth drops through the resubstitution step
+- **What is needed** (revised estimate):
+  1. ~~Implement `abstract_snce`~~ → Not needed directly. Instead, implement "extract maximal S-subformulas from U-args" operation (~200 LOC)
+  2. ~~Define `no_U_nested_in_S`~~ → DONE in TemporalClosure.lean
+  3. Prove `no_S_nested_in_U_separable` by induction on `count_U_subformulas` where the base case (U-free) uses the dual direction (~300-400 LOC, requires mutual structure)
+  4. Prove dual `no_U_nested_in_S_separable` via `swap_temporal` + step 3 (~50 LOC using duality infrastructure)
+  5. Prove junction-depth decrease through the extract-apply-resubstitute cycle (~200+ LOC)
+  6. Assemble the full `junction_depth_separable` by strong induction (~200+ LOC)
+  Total estimated: 800-1200 LOC of new proof code
+  **Infrastructure already built** (in TemporalClosure.lean, ~250 LOC):
+  - Box normalization (replace_box_with_top) with equiv + preservation lemmas
+  - no_U_nested_in_S predicate with duality conversions
+  - Structural properties (snce/untl/all_past/all_future of normalized separated → no_S/U_nested)
+  - Congruence lemmas for box normalization under temporal operators
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 - [x] Task 6.1: Define `junction_depth` measure (~40-60 LOC) *(completed in earlier phase -- already in Defs.lean)*
-- [ ] Task 6.2: Prove Lemma 10.2.7 (no-S-in-U -> separable) using Lemma 10.2.6 (~150-200 LOC) *(deviation: blocked -- requires dual S-elimination for U-free base case)*
+- [x] Task 6.1b: Build temporal closure infrastructure (~250 LOC) *(added -- TemporalClosure.lean: box normalization, no_U_nested_in_S, duality conversions, structural properties)*
+- [ ] Task 6.2: Prove Lemma 10.2.7 (no-S-in-U -> separable) using Lemma 10.2.6 (~150-200 LOC) *(deviation: blocked -- requires dual S-elimination for U-free base case; infrastructure in TemporalClosure.lean reduces this to proving the core mutual induction)*
 - [ ] Task 6.3: Prove Lemma 10.2.8 (junction-depth induction) using Lemma 10.2.7 + IH (~200-300 LOC) *(deviation: blocked -- depends on 6.2)*
 - [ ] Task 6.4: Prove `all_separable` from Lemma 10.2.8 (~30 LOC) *(deviation: blocked -- depends on 6.3)*
 - [ ] Task 6.5: Prove proper separability from all_separable (eliminates proper axioms) (~50 LOC) *(deviation: blocked -- depends on 6.4)*
