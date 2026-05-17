@@ -205,6 +205,15 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 ### Phase 6: Prove all_separable via Junction-Depth Induction [BLOCKED]
 
+**Updated 2026-05-17 (session sess_1779003456_c5b522)**: Added junction-depth helper lemmas
+(`junction_depth_S_zero_imp_U_free`, `junction_depth_U_zero_imp_S_free`,
+`s_free_junction_depth_zero`, `u_free_junction_depth_zero`,
+`snce_of_boxfree_sep_jd_le_one`) to TemporalClosure.lean. These establish
+that forming `.snce phi' psi'` with box-normalized separated phi', psi'
+yields a formula with junction_depth at most 1. This bounds the induction
+depth needed but does NOT eliminate the axioms (the full proof requires
+mutual WF induction on a compound measure, estimated at 600-800 LOC).
+
 **Goal**: Build Lemmas 10.2.7-10.2.8 and prove `all_separable`, replacing the 4 temporal closure axioms.
 
 **Strategy**:

@@ -398,4 +398,182 @@ theorem all_future_replace_box_equiv (phi : Formula) :
   · intro h s hs; exact (replace_box_equiv phi M s).mp (h s hs)
   · intro h s hs; exact (replace_box_equiv phi M s).mpr (h s hs)
 
+/-! ## Junction-Depth Helpers for Axiom Elimination
+
+These lemmas establish the connection between junction_depth components and
+syntactic predicates (is_U_free, is_S_free). They support the well-founded
+induction approach to proving temporal closure without axioms.
+
+Key facts:
+- `junction_depth_S phi = 0` implies `is_U_free phi = true`
+- `junction_depth_U phi = 0` implies `is_S_free phi = true`
+- In a separated formula, `junction_depth_S` of any subformula is at most 1
+  (and equals 1 only at untl nodes with S-free args)
+- Therefore `junction_depth (.snce phi' psi')` ≤ 1 for separated phi', psi'
+-/
+
+/-- junction_depth_S = 0 implies the formula is U-free (no untl subterms). -/
+theorem junction_depth_S_zero_imp_U_free (phi : Formula) (h : junction_depth_S phi = 0) :
+    is_U_free phi = true := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [junction_depth_S] at h; simp [is_U_free, ih1 (by omega), ih2 (by omega)]
+  | box a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
+  | all_past a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
+  | all_future a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
+  | untl _ _ => simp [junction_depth_S] at h
+  | snce a b ih1 ih2 =>
+    simp [junction_depth_S] at h; simp [is_U_free, ih1 (by omega), ih2 (by omega)]
+
+/-- junction_depth_U = 0 implies the formula is S-free (no snce subterms). -/
+theorem junction_depth_U_zero_imp_S_free (phi : Formula) (h : junction_depth_U phi = 0) :
+    is_S_free phi = true := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [junction_depth_U] at h; simp [is_S_free, ih1 (by omega), ih2 (by omega)]
+  | box a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
+  | all_past a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
+  | all_future a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
+  | untl a b ih1 ih2 =>
+    simp [junction_depth_U] at h; simp [is_S_free, ih1 (by omega), ih2 (by omega)]
+  | snce _ _ => simp [junction_depth_U] at h
+
+/-- S-free formulas have junction_depth = 0. -/
+theorem s_free_junction_depth_zero (phi : Formula) (h : is_S_free phi = true) :
+    junction_depth phi = 0 := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [is_S_free] at h; simp [junction_depth, ih1 h.1, ih2 h.2]
+  | box a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
+  | all_past a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
+  | all_future a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
+  | untl a b ih1 ih2 =>
+    simp [is_S_free] at h
+    simp [junction_depth, junction_depth_U]
+    -- S-free args of untl means no snce anywhere, so junction_depth_U = 0
+    have : junction_depth_U a = 0 := s_free_junction_depth_U_zero a h.1
+    have : junction_depth_U b = 0 := s_free_junction_depth_U_zero b h.2
+    omega
+  | snce _ _ => simp [is_S_free] at h
+where
+  s_free_junction_depth_U_zero (phi : Formula) (h : is_S_free phi = true) :
+      junction_depth_U phi = 0 := by
+    induction phi with
+    | atom _ => rfl
+    | bot => rfl
+    | imp a b ih1 ih2 =>
+      simp [is_S_free] at h; simp [junction_depth_U, ih1 h.1, ih2 h.2]
+    | box a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
+    | all_past a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
+    | all_future a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
+    | untl a b ih1 ih2 =>
+      simp [is_S_free] at h; simp [junction_depth_U, ih1 h.1, ih2 h.2]
+    | snce _ _ => simp [is_S_free] at h
+
+/-- U-free formulas have junction_depth = 0. -/
+theorem u_free_junction_depth_zero (phi : Formula) (h : is_U_free phi = true) :
+    junction_depth phi = 0 := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [is_U_free] at h; simp [junction_depth, ih1 h.1, ih2 h.2]
+  | box a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
+  | all_past a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
+  | all_future a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce a b ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [junction_depth, junction_depth_S]
+    have : junction_depth_S a = 0 := u_free_junction_depth_S_zero a h.1
+    have : junction_depth_S b = 0 := u_free_junction_depth_S_zero b h.2
+    omega
+where
+  u_free_junction_depth_S_zero (phi : Formula) (h : is_U_free phi = true) :
+      junction_depth_S phi = 0 := by
+    induction phi with
+    | atom _ => rfl
+    | bot => rfl
+    | imp a b ih1 ih2 =>
+      simp [is_U_free] at h; simp [junction_depth_S, ih1 h.1, ih2 h.2]
+    | box a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
+    | all_past a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
+    | all_future a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
+    | untl _ _ => simp [is_U_free] at h
+    | snce a b ih1 ih2 =>
+      simp [is_U_free] at h; simp [junction_depth_S, ih1 h.1, ih2 h.2]
+
+/-- The snce of two box-normalized separated formulas has junction_depth ≤ 1.
+    This is the key bound showing that temporal closure only needs to handle
+    junction_depth 1 (not arbitrary depth). -/
+theorem snce_of_boxfree_sep_jd_le_one (phi psi : Formula)
+    (h1 : is_syntactically_separated phi = true)
+    (h2 : is_syntactically_separated psi = true) :
+    junction_depth (.snce (replace_box_with_top phi) (replace_box_with_top psi)) ≤ 1 := by
+  simp [junction_depth]
+  constructor
+  · exact replace_box_jdS_le_one phi h1
+  · exact replace_box_jdS_le_one psi h2
+where
+  /-- Box-normalized separated formulas have junction_depth_S ≤ 1. -/
+  replace_box_jdS_le_one (phi : Formula) (h : is_syntactically_separated phi = true) :
+      junction_depth_S (replace_box_with_top phi) ≤ 1 := by
+    induction phi with
+    | atom _ => simp [replace_box_with_top, junction_depth_S]
+    | bot => simp [replace_box_with_top, junction_depth_S]
+    | imp a b ih1 ih2 =>
+      simp [is_syntactically_separated] at h
+      simp [replace_box_with_top, junction_depth_S]
+      exact ⟨ih1 h.1, ih2 h.2⟩
+    | box _ =>
+      simp [replace_box_with_top, junction_depth_S]
+    | all_past a _ih =>
+      simp [is_syntactically_separated] at h
+      simp [replace_box_with_top, junction_depth_S]
+      have := u_free_junction_depth_zero.u_free_junction_depth_S_zero
+        (replace_box_with_top a) (replace_box_preserves_U_free a h)
+      omega
+    | all_future a _ih =>
+      simp [is_syntactically_separated] at h
+      simp [replace_box_with_top, junction_depth_S]
+      exact s_free_jdS_le_one (replace_box_with_top a) (replace_box_preserves_S_free a h)
+    | untl a b _ih1 _ih2 =>
+      simp [is_syntactically_separated] at h
+      simp [replace_box_with_top, junction_depth_S]
+      have ha := s_free_junction_depth_zero (replace_box_with_top a) (replace_box_preserves_S_free a h.1)
+      have hb := s_free_junction_depth_zero (replace_box_with_top b) (replace_box_preserves_S_free b h.2)
+      omega
+    | snce a b _ih1 _ih2 =>
+      simp [is_syntactically_separated] at h
+      simp [replace_box_with_top, junction_depth_S]
+      have ha := u_free_junction_depth_zero.u_free_junction_depth_S_zero
+        (replace_box_with_top a) (replace_box_preserves_U_free a h.1)
+      have hb := u_free_junction_depth_zero.u_free_junction_depth_S_zero
+        (replace_box_with_top b) (replace_box_preserves_U_free b h.2)
+      omega
+  /-- S-free formulas have junction_depth_S ≤ 1. -/
+  s_free_jdS_le_one (phi : Formula) (h : is_S_free phi = true) :
+      junction_depth_S phi ≤ 1 := by
+    induction phi with
+    | atom _ => simp [junction_depth_S]
+    | bot => simp [junction_depth_S]
+    | imp a b ih1 ih2 =>
+      simp [is_S_free] at h; simp [junction_depth_S]; exact ⟨ih1 h.1, ih2 h.2⟩
+    | box a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
+    | all_past a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
+    | all_future a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
+    | untl a b _ih1 _ih2 =>
+      simp [is_S_free] at h
+      simp [junction_depth_S]
+      have ha := s_free_junction_depth_zero a h.1
+      have hb := s_free_junction_depth_zero b h.2
+      omega
+    | snce _ _ => simp [is_S_free] at h
+
 end Bimodal.Metalogic.WeakCanonical.Separation
