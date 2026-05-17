@@ -8,7 +8,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -17,8 +17,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T03:17:55Z",
-      "session_id": "sess_1778987527_324a5b",
+      "last_updated": "2026-05-17T03:25:26Z",
+      "session_id": "sess_1778988305_8a5119",
       "researched": "2026-05-17T03:05:36Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "type": "plan",
           "summary": "15-phase implementation plan for expressive completeness of {S,U} over integer time. Covers separation proof (Lemmas 10.2.1-10.2.8, Theorem 10.2.9) and Theorem 9.3.1. ~36 hours, ~3490 LOC across 17 files."
         }
-      ]
+      ],
+      "started": "2026-05-17T03:25:26Z"
     },
     {
       "project_number": 156,
