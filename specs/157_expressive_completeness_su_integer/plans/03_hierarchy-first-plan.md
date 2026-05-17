@@ -102,7 +102,7 @@ Replaced 4 axioms in Eliminations.lean with proofs via `all_separable` in Normal
 
 ---
 
-### Phase 6: Prove all_separable via expand_temporal + Junction-Depth Induction [NOT STARTED]
+### Phase 6: Prove all_separable via expand_temporal + Junction-Depth Induction [IN PROGRESS]
 
 **Goal**: Eliminate all 8 axioms from SeparationThm.lean by proving `all_separable` and `all_properly_separable` without axioms. The key strategy is `expand_temporal` preprocessing + junction-depth induction + duality.
 
