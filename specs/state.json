@@ -8,7 +8,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -17,7 +17,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T02:49:54Z"
+      "last_updated": "2026-05-17T03:05:36Z",
+      "session_id": "sess_1778986600_05f22d",
+      "researched": "2026-05-17T03:05:36Z"
     },
     {
       "project_number": 156,
