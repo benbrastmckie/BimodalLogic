@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 158,
+      "project_name": "update_readme_metalogic_progress",
+      "status": "not_started",
+      "task_type": "markdown",
+      "created": "2026-05-17T18:20:49Z",
+      "last_updated": "2026-05-17T18:20:49Z"
+    },
+    {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
       "status": "implementing",
@@ -17,8 +25,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T17:41:16Z",
-      "session_id": "sess_1779039662_bd5cd4",
+      "last_updated": "2026-05-17T18:01:44Z",
+      "session_id": "sess_1779040893_b6c1b2",
       "researched": "2026-05-17T17:29:23Z",
       "artifacts": [
         {
@@ -1324,7 +1332,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 158,
+  "next_project_number": 159,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

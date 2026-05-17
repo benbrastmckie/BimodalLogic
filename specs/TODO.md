@@ -1,5 +1,5 @@
 ---
-next_project_number: 158
+next_project_number: 159
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 158. Update README.md to reflect metalogic progress and improve organization
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+
+**Description**: Update README.md to reflect metalogic progress in BimodalLogic. Explain that this is the intensional bimodal fragment of the Logos developed by Logos Laboratories (link to https://logos-labs.ai/). Move codebase size to end of intro (not at end, not immediately). After introductions covering operators, task semantics, research paper, demo, and project structure, add sections for installation, core metalogical results (soundness and completeness for extensions of the base logic with a labeled mermaid diagram), documentation, related projects, and citation. README should be well-organized, clear, and concise.
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
@@ -551,4 +558,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
+
+
+## Recommended Order
 
