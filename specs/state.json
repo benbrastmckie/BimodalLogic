@@ -17,14 +17,14 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T06:02:03Z",
-      "session_id": "sess_1778997406_51a9c6",
+      "last_updated": "2026-05-17T07:12:07Z",
+      "session_id": "sess_1779001651_c41984",
       "researched": "2026-05-17T03:05:36Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md",
           "type": "plan",
-          "summary": "Fresh v2 plan: 4 phases, 14 hours. Case 5 via well-founded cascade, Thm 9.3.1 independent, junction-depth induction for all_separable."
+          "summary": "Revised plan v3 targeting axiom elimination: 5 phases to replace 8 axioms and 1 sorry with proofs"
         }
       ],
       "started": "2026-05-17T03:25:26Z"
