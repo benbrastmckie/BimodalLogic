@@ -652,6 +652,13 @@ private noncomputable def guardFormula {sig : MonadicSignature}
     if σ p then Formula.atom (atomMap p) else Formula.neg (Formula.atom (atomMap p))
   ).foldl Formula.and (Formula.neg Formula.bot)
 
+/-- Build the orig atom substitution list: maps each freshAM(.orig p) → Formula.atom(atomMap p). -/
+private noncomputable def origSubsList {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom) (extAM : (extSignature sig).preds → Atom) :
+    List (Atom × Formula) :=
+  (Finset.univ : Finset sig.preds).toList.map fun p =>
+    (extAM (.orig p), Formula.atom (atomMap p))
+
 /-- Build the const_at_ref substitution list for a given assignment σ. -/
 private noncomputable def constSubsList {sig : MonadicSignature}
     (extAM : (extSignature sig).preds → Atom) (σ : sig.preds → Bool) :
@@ -660,18 +667,20 @@ private noncomputable def constSubsList {sig : MonadicSignature}
     (extAM (.const_at_ref p), if σ p then Formula.neg .bot else .bot)
 
 /-- Build the full quantifier elimination formula:
-    ∨_σ (guard_σ ∧ elimExtFromSep_σ(B_sep)) -/
+    ∨_σ (guard_σ ∧ elimExtFromSep_σ(B_sep))
+    where elimExtFromSep handles orig + const + lt/gt substitutions. -/
 private noncomputable def quantElimFormula {sig : MonadicSignature}
     (atomMap : sig.preds → Atom) (extAM : (extSignature sig).preds → Atom)
     (B_sep : Formula) : Formula :=
   let lt_atom := extAM .lt_ref
   let gt_atom := extAM .gt_ref
+  let origSubs := origSubsList atomMap extAM
   let assignments := (Finset.univ : Finset (sig.preds → Bool)).toList
   let branches := assignments.map fun σ =>
     Formula.and (guardFormula atomMap σ)
-                (elimExtFromSep (constSubsList extAM σ) lt_atom gt_atom B_sep)
+                (elimExtFromSep (origSubs ++ constSubsList extAM σ) lt_atom gt_atom B_sep)
   match branches with
-  | [] => .bot  -- impossible: sig.preds → Bool always has at least one element
+  | [] => .bot
   | [b] => b
   | b :: bs => bs.foldl Formula.or b
 
