@@ -295,7 +295,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [NOT STARTED]
+### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [COMPLETED]
 
 **Goal**: Prove Cases 2 and 4 which involve not U(A,B) in the event or guard position.
 
@@ -321,7 +321,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [NOT STARTED]
+### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [COMPLETED]
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
 
@@ -347,7 +347,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [NOT STARTED]
+### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [COMPLETED]
 
 **Goal**: Derive the 8 dual cases (pulling S out from under U) automatically via swap_temporal.
 
@@ -373,7 +373,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [NOT STARTED]
+### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [COMPLETED]
 
 **Goal**: Prove that S(C,F) where U appears only as U(A,B) at top level can be separated into 8 canonical forms.
 
@@ -403,7 +403,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [NOT STARTED]
+### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [COMPLETED]
 
 **Goal**: Prove that if the only U in D is U(A,B) with A,B atomic, then D is separable.
 
@@ -430,7 +430,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [NOT STARTED]
+### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [COMPLETED]
 
 **Goal**: Prove that if all U in D are U(A_i, B_i) with atomic arguments, D is separable.
 
@@ -459,7 +459,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [NOT STARTED]
+### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [COMPLETED]
 
 **Goal**: Build the first-order logic infrastructure needed for Theorem 9.3.1, independent of the separation proof.
 
@@ -488,7 +488,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 14: Lemmas 10.2.7-10.2.8 and Separation Theorem [NOT STARTED]
+### Phase 14: Lemmas 10.2.7-10.2.8 and Separation Theorem [COMPLETED]
 
 **Goal**: Prove the top two levels of the nested induction and state the final Separation Theorem 10.2.9.
 
@@ -521,7 +521,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 15: Theorem 9.3.1 + 10.2.10 (Expressive Completeness) [NOT STARTED]
+### Phase 15: Theorem 9.3.1 + 10.2.10 (Expressive Completeness) [COMPLETED]
 
 **Goal**: Prove separation implies expressive completeness and combine with the Separation Theorem for the final result.
 

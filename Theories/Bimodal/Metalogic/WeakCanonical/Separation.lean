@@ -5,6 +5,8 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
+import Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations
+import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 
 /-!
 # Separation Module Hub
@@ -16,6 +18,12 @@ Imports all submodules of the separation theorem proof for {U,S} over integer ti
 - `Defs.lean`: IntStructure, int_truth, purity predicates, separation predicates, measures
 - `FormulaOps.lean`: Substitution, DNF/CNF signatures, freshness
 - `IntHelpers.lean`: Integer-specific lemmas (finite intervals, witness constructions)
+- `Duality.lean`: Temporal duality (swap_temporal preserves int_truth)
+- `Distributivity.lean`: Lemma 10.2.1 (U/S distribute over boolean ops)
+- `NegationEquiv.lean`: Lemma 10.2.2 (negation of U/S over Z)
+- `Eliminations.lean`: Lemma 10.2.3 (8 elimination cases)
+- `DualEliminations.lean`: Dual of Lemma 10.2.3 (S out of U)
+- `SeparationThm.lean`: Lemmas 10.2.4-10.2.8 and Theorem 10.2.9
 
 ## References
 
