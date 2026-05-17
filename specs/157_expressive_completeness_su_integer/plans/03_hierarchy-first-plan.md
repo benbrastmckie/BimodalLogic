@@ -277,19 +277,30 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 **Strategy**: With proper purity predicates (Phase 1) and all_separable proved (Phase 6), the substitution step in Theorem 9.3.1 is unblocked. The infrastructure (ExtPred, reduce, reduce_correct) is already built.
 
 **Tasks**:
-- [x] Task 7.1: Integrate ExtPred/reduce infrastructure into ExpressiveCompleteness.lean (~100-200 LOC) *(completed: ExtPred, extSignature, Fintype instance, reduceElimLast all defined)*
+- [x] Task 7.1: Integrate ExtPred/reduce infrastructure into ExpressiveCompleteness.lean (~100-200 LOC) *(completed: ExtPred, extSignature, Fintype instance, reduceElimLast, qdepth_reduceElimLast_le, extIntStruct, extAtomMap all defined)*
 - [x] Task 7.2: Prove purity semantic lemmas (is_past_only -> evaluates at times <= t) (~100-150 LOC) *(completed: past_only_is_pure_past, future_only_is_pure_future proved)*
 - [x] Task 7.3: Prove R-atom substitution correctness using purity (~150-200 LOC) *(completed: past_only_subst_correct, future_only_subst_correct proved)*
-- [ ] Task 7.4: Prove quantifier case (reduce + IH + separation + substitution) (~200-300 LOC) *(deviation: blocked -- requires reduceElimLast semantic correctness theorem + extended IntStructure construction + assembly, estimated 300+ additional LOC)*
+- [ ] Task 7.4: Prove quantifier case (reduce + IH + separation + substitution) (~200-300 LOC) *(deviation: blocked -- requires reduceElimLast_correct + extAtomMap_injective + level-aware substitution + case-split assembly, estimated 500 additional LOC. Mathematical argument fully identified: case-split on const_at_ref truth values + purity-based lt_ref/gt_ref elimination. See BLOCKER section.)*
 - [ ] Task 7.5: Close `separation_implies_expressiveness` (~30-50 LOC) *(deviation: blocked -- depends on 7.4; quantifier-free cases complete)*
 - [ ] Task 7.6: Final verification: 0 axioms in Separation/, 0 sorry in ExpressiveCompleteness.lean
 - [ ] Task 7.7: Update documentation
 
 **BLOCKER** (Phase 7):
-- **What failed**: The quantifier cases (.all, .ex) of `expressiveness_fixed_atomMap` require semantic correctness of `reduceElimLast` plus the full GHR94 quantifier elimination assembly.
-- **What was tried**: (1) Structural recursion on MonadicFormula sig 1 -- works for atom/lt/not/and but quantifier sub-formulas have type MonadicFormula sig 2, not covered by IH. (2) Well-founded induction on quantifier_depth -- correct approach but requires calling the theorem for extSignature sig with an injective atomMap, then wrapping with q_exists, applying separation, and substituting R-atoms using purity. (3) Direct `reduce2` functions with level-specific handlers -- encoding issues and mutual recursion complexity.
-- **Why it's stuck**: The quantifier case requires THREE new theorems that don't exist: (a) `reduceElimLast_correct`: eval M (Fin.cons z (fun _ => t)) alpha iff eval M' (fun _ => z) (reduceElimLast 1 alpha) for an appropriate extended structure M'; (b) Extended IntStructure construction linking the original sig structure to the extSignature structure; (c) Assembly of q_exists + separation + multi-atom substitution removing R-atoms from the separated form. Each is 80-150 LOC.
-- **What is needed**: Implement `reduceElimLast_correct` (~100 LOC induction on alpha), define `extIntStructure M t atomMap` (~30 LOC), prove connection lemma (~50 LOC), then assemble the quantifier case using q_exists_correct + h_sep + past_only_subst_correct/future_only_subst_correct (~100 LOC). Total estimated: 300 LOC.
+- **What failed**: The quantifier cases (.all, .ex) of `expressiveness_fixed_atomMap` require the full GHR94 quantifier elimination pipeline (reduce + IH at extSignature + q_exists + separation + extended atom elimination).
+- **What was tried** (updated 2026-05-17b):
+  1. Structural recursion on MonadicFormula sig 1 -- works for atom/lt/not/and but quantifier sub-formulas have type MonadicFormula sig 2, requiring a call at extSignature (different type) with lower quantifier depth.
+  2. Well-founded induction on quantifier_depth -- correct approach. Proved `qdepth_reduceElimLast_le` (reduceElimLast preserves depth for n>=1). Built `extIntStruct` (extended IntStructure construction) and `extAtomMap` (injective atom map for extSignature). However, the ASSEMBLY step (extended atom elimination) is blocked.
+  3. Direct global substitution of extended atoms -- INCORRECT. `const_at_ref p` at time s evaluates to M.interp p t (constant), but `atomMap(p)` at time s evaluates to M.interp p s. These differ for s != t, so global substitution of const_at_ref_p with atomMap(p) is unsound in past/future temporal contexts.
+  4. Level-aware R-atom substitution (lt_ref/gt_ref only) using purity lemmas -- PARTIALLY CORRECT. In past-only contexts at s < t: lt_ref is True, gt_ref is False (substitutable via `past_only_subst_correct` at time s). In future-only contexts at s > t: lt_ref is False, gt_ref is True. At present (time t): both are False. This eliminates lt_ref/gt_ref but NOT const_at_ref.
+  5. Case-split approach for const_at_ref -- IDENTIFIED CORRECT SOLUTION: iterate over all σ : sig.preds -> Bool (finitely many since Fintype). For each σ, substitute const_at_ref_p_atom with ⊤ (if σ(p)=true) or ⊥ (if σ(p)=false). Then apply level-aware R-atom substitution. Form disjunction `∨_σ (guard_σ ∧ elim_σ(B_sep))` where guard_σ checks σ matches M at time t. This is mathematically correct but requires ~500 LOC to formalize.
+- **Why it's stuck**: The case-split + level-aware substitution approach requires implementing:
+  (a) `reduceElimLast_correct` (~100 LOC): semantic correctness relating eval at (z,t) in sig to eval at z in extSignature with extIntStruct. Requires careful Fin arithmetic for env management (Fin.cons vs appendEnvLast).
+  (b) `extAtomMap_injective` (~80 LOC): injectivity assuming atomMap base = "p".
+  (c) Level-aware substitution function `elimExtAtoms` (~50 LOC): walks properly separated formula, substitutes differently at present/past/future levels.
+  (d) Level-aware substitution correctness (~150 LOC): for each level (present, past-only, future-only), prove the substitution preserves truth using `past_only_subst_correct`/`future_only_subst_correct` at the CORRECT time (s, not t). Key insight: purity lemmas apply at time s < t for past parts, where lt_ref IS True.
+  (e) Case-split assembly (~100 LOC): iterate over Fintype (sig.preds -> Bool), build guard formulas, prove exactly one guard is True for each (M, t), prove the selected branch gives correct answer.
+  Total: ~500 LOC of new proof code.
+- **What is needed**: Implement items (a)-(e) above. Infrastructure already built: `qdepth_reduceElimLast_le`, `extIntStruct`, `extAtomMap`, `q_exists_correct`, `past_only_subst_correct`, `future_only_subst_correct`. The mathematical argument is fully understood and correct; the gap is purely in formalization effort.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Timing**: 3 hours

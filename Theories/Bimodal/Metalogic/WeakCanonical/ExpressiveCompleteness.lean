@@ -414,14 +414,92 @@ noncomputable def reduceElimLast {sig : MonadicSignature} :
   | n, .all beta => .all (reduceElimLast (n + 1) beta)
   | n, .ex beta => .ex (reduceElimLast (n + 1) beta)
 
+/-! ### Quantifier Depth Preservation
+
+The `reduceElimLast` operation preserves quantifier depth (for n ≥ 1),
+which is needed for the well-founded induction in the quantifier case. -/
+
+/-- reduceElimLast preserves quantifier depth for n ≥ 1. -/
+private noncomputable def qdepth_reduceElimLast_le {sig : MonadicSignature} :
+    (n : Nat) → (hn : 0 < n) → (alpha : MonadicFormula sig (n + 1)) →
+    (reduceElimLast n alpha).quantifier_depth ≤ alpha.quantifier_depth
+  | _, _, .not beta => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    exact qdepth_reduceElimLast_le _ (by assumption) beta
+  | _, _, .and a b => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    exact Nat.max_le.mpr ⟨le_max_of_le_left (qdepth_reduceElimLast_le _ (by assumption) a),
+                           le_max_of_le_right (qdepth_reduceElimLast_le _ (by assumption) b)⟩
+  | _, _, .all beta => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    exact Nat.add_le_add_right (qdepth_reduceElimLast_le _ (by omega) beta) 1
+  | _, _, .ex beta => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    exact Nat.add_le_add_right (qdepth_reduceElimLast_le _ (by omega) beta) 1
+  | n, hn, .atom _ _ => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    split
+    · exact Nat.zero_le _
+    · match n, hn with
+      | Nat.succ _, _ => exact Nat.zero_le _
+  | n, hn, .lt _ _ => by
+    simp only [reduceElimLast, MonadicFormula.quantifier_depth]
+    split
+    · split
+      · exact Nat.zero_le _
+      · match n, hn with | Nat.succ _, _ => exact Nat.zero_le _
+    · split
+      · match n, hn with | Nat.succ _, _ => exact Nat.zero_le _
+      · match n, hn with | Nat.succ _, _ => exact Nat.zero_le _
+
+/-! ### Extended IntStructure
+
+Given a base model M over sig and a reference time t, we construct the
+extended model over extSignature sig that interprets the extended predicates. -/
+
+/-- The extended integer structure: interprets ExtPred based on a base model
+    and reference time. Used in the semantic correctness proof for reduceElimLast.
+    - `orig p` at time z = base model's P at z
+    - `const_at_ref p` at time z = base model's P at reference time t (constant in z)
+    - `lt_ref` at time z = (z < t)
+    - `gt_ref` at time z = (t < z) -/
+noncomputable def extIntStruct {sig : MonadicSignature}
+    (M : IntStructureFromSig sig) (t_ref : Int) :
+    IntStructureFromSig (extSignature sig) where
+  interp ep z := match ep with
+    | .orig p => M.interp p z
+    | .const_at_ref p => M.interp p t_ref
+    | .lt_ref => z < t_ref
+    | .gt_ref => t_ref < z
+
+/-- Atom map for the extended signature that extends the original atomMap.
+    Critical property: extAtomMap atomMap (.orig p) = atomMap p, so that
+    atoms for original predicates need no substitution after elimination. -/
+noncomputable def extAtomMap {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom) : (extSignature sig).preds → Atom
+  | .orig p => atomMap p
+  | .const_at_ref p => Atom.mk_fresh "const_ref" (Fintype.equivFin sig.preds p).val
+  | .lt_ref => Atom.mk_fresh "lt_ref" 0
+  | .gt_ref => Atom.mk_fresh "gt_ref" 0
+
+/-! ### Core Expressiveness Lemma -/
+
 /-- Core lemma: for a FIXED injective atomMap, every MonadicFormula sig 1 has a
     temporal equivalent. This is the form needed for the induction to go through,
     since the conjunction case requires a common atomMap.
 
-    The proof uses well-founded recursion on the formula structure. For the
-    quantifier cases, the sub-formula has 2 free variables and requires the
-    full GHR94 quantifier elimination machinery (reduce + q_exists + separation
-    + substitution). -/
+    The quantifier-free cases (atom, lt, not, and) are proved by structural recursion.
+    The quantifier cases (.all, .ex) require the full GHR94 quantifier elimination
+    machinery:
+    1. reduceElimLast converts the 2-variable formula to 1-variable over extSignature
+    2. The IH (at extSignature, lower quantifier depth) gives a temporal formula A_ext
+    3. q_exists A_ext captures the existential quantifier
+    4. h_sep gives a properly separated form
+    5. Case-split on const_at_ref truth values + purity substitution for lt_ref/gt_ref
+       eliminates extended atoms, yielding a formula over original atoms only
+
+    The quantifier cases are axiomatized pending implementation of the full
+    quantifier elimination pipeline (estimated 500+ LOC). -/
 private noncomputable def expressiveness_fixed_atomMap
     (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi)
     (sig : MonadicSignature)
@@ -459,12 +537,33 @@ private noncomputable def expressiveness_fixed_atomMap
       exact Iff.intro (fun ⟨ha, hb⟩ => ⟨hA.mp ha, hB.mp hb⟩)
                        (fun ⟨ha, hb⟩ => ⟨hA.mpr ha, hB.mpr hb⟩)⟩
   | .all alpha =>
-    -- ∀z. alpha(z, t) where alpha : MonadicFormula sig 2
-    -- Requires full GHR94 quantifier elimination machinery.
+    -- ∀z. alpha(z, t) ↔ ¬∃z. ¬alpha(z, t)
+    -- Proof outline:
+    --   1. reduceElimLast 1 alpha : MonadicFormula (extSignature sig) 1
+    --      has quantifier_depth ≤ alpha.quantifier_depth (by qdepth_reduceElimLast_le)
+    --   2. IH at extSignature gives A_ext : Formula (at lower depth)
+    --   3. q_exists (Formula.neg A_ext) captures ∃z.¬alpha(z,t)
+    --   4. Formula.neg (q_exists (Formula.neg A_ext)) captures ∀z.alpha(z,t)
+    --   5. Apply h_sep + case-split + purity substitution to eliminate extended atoms
+    -- Requires: reduceElimLast_correct, extAtomMap injectivity, atom elimination
     ⟨sorry, sorry⟩
   | .ex alpha =>
     -- ∃z. alpha(z, t) where alpha : MonadicFormula sig 2
-    -- Requires full GHR94 quantifier elimination machinery.
+    -- Proof outline:
+    --   1. reduceElimLast 1 alpha : MonadicFormula (extSignature sig) 1
+    --      has quantifier_depth ≤ alpha.quantifier_depth (by qdepth_reduceElimLast_le)
+    --   2. IH at extSignature with extAtomMap gives A_ext : Formula
+    --   3. q_exists A_ext captures ∃z.alpha(z,t) in the extended model
+    --   4. Apply h_sep to q_exists A_ext → properly separated B_sep
+    --   5. For each assignment σ : sig.preds → Bool (const_at_ref truth values):
+    --      a. Substitute const_at_ref_p atoms with ⊤/⊥ per σ
+    --      b. In past-only parts: substitute lt_ref→⊤, gt_ref→⊥
+    --      c. In future-only parts: substitute lt_ref→⊥, gt_ref→⊤
+    --      d. At present level: lt_ref→⊥, gt_ref→⊥
+    --   6. Form disjunction: ∨_σ (guard_σ ∧ elim_σ(B_sep))
+    --      where guard_σ = ∧_p (if σ(p) then atom(atomMap p) else ¬atom(atomMap p))
+    --   7. Correctness: guard_σ selects the unique matching assignment at time t
+    -- Requires: reduceElimLast_correct, extAtomMap injectivity, level-aware substitution
     ⟨sorry, sorry⟩
 
 theorem separation_implies_expressiveness
