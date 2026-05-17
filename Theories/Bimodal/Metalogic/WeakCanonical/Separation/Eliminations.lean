@@ -22,7 +22,7 @@ open Classical
 
 /-! ## Helper Lemmas -/
 
-private theorem int_truth_and_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula} :
+theorem int_truth_and_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula} :
     int_truth M t (Formula.and φ ψ) ↔ int_truth M t φ ∧ int_truth M t ψ := by
   show ((int_truth M t φ → int_truth M t ψ → False) → False) ↔ _
   constructor
@@ -30,14 +30,14 @@ private theorem int_truth_and_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula}
                     byContradiction (fun hq => h (fun _ q => hq q))⟩
   · rintro ⟨hp, hq⟩ h; exact h hp hq
 
-private theorem int_truth_or_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula} :
+theorem int_truth_or_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula} :
     int_truth M t (Formula.or φ ψ) ↔ int_truth M t φ ∨ int_truth M t ψ := by
   show ((int_truth M t φ → False) → int_truth M t ψ) ↔ _
   constructor
   · intro h; by_cases hp : int_truth M t φ; exact Or.inl hp; exact Or.inr (h hp)
   · rintro (hp | hq) hn; exact absurd hp hn; exact hq
 
-private theorem int_truth_neg_iff {M : IntStructure} {t : ℤ} {φ : Formula} :
+theorem int_truth_neg_iff {M : IntStructure} {t : ℤ} {φ : Formula} :
     int_truth M t (Formula.neg φ) ↔ ¬ int_truth M t φ := Iff.rfl
 
 private theorem u_free_s_free_imp_separated (φ : Formula)
@@ -382,12 +382,12 @@ theorem elim_case_5 (a q A B : Formula)
 
 /-! ## Separability Helpers -/
 
-private theorem is_separable_of_equiv {φ ψ : Formula} (h : int_equiv φ ψ)
+theorem is_separable_of_equiv {φ ψ : Formula} (h : int_equiv φ ψ)
     (hs : is_separable ψ) : is_separable φ := by
   obtain ⟨χ, hχ_sep, hχ_equiv⟩ := hs
   exact ⟨χ, hχ_sep, int_equiv_trans h hχ_equiv⟩
 
-private theorem or_separable {φ ψ : Formula}
+theorem or_separable {φ ψ : Formula}
     (h1 : is_separable φ) (h2 : is_separable ψ) : is_separable (Formula.or φ ψ) := by
   obtain ⟨φ', hφ', heφ⟩ := h1
   obtain ⟨ψ', hψ', heψ⟩ := h2
@@ -401,9 +401,38 @@ private theorem or_separable {φ ψ : Formula}
       · exact int_truth_or_iff.mpr (Or.inl ((heφ M t).mpr hp))
       · exact int_truth_or_iff.mpr (Or.inr ((heψ M t).mpr hq))
 
+theorem neg_separable {φ : Formula}
+    (h : is_separable φ) : is_separable (Formula.neg φ) := by
+  obtain ⟨φ', hφ', heφ⟩ := h
+  refine ⟨Formula.neg φ', neg_separated hφ', ?_⟩
+  intro M t; constructor
+  · intro hn hp; exact hn ((heφ M t).mpr hp)
+  · intro hn hp; exact hn ((heφ M t).mp hp)
+
+theorem and_separable {φ ψ : Formula}
+    (h1 : is_separable φ) (h2 : is_separable ψ) : is_separable (Formula.and φ ψ) := by
+  obtain ⟨φ', hφ', heφ⟩ := h1
+  obtain ⟨ψ', hψ', heψ⟩ := h2
+  refine ⟨Formula.and φ' ψ', and_separated hφ' hψ', ?_⟩
+  intro M t; constructor
+  · intro h; rw [int_truth_and_iff] at h ⊢
+    exact ⟨(heφ M t).mp h.1, (heψ M t).mp h.2⟩
+  · intro h; rw [int_truth_and_iff] at h ⊢
+    exact ⟨(heφ M t).mpr h.1, (heψ M t).mpr h.2⟩
+
+theorem imp_separable {φ ψ : Formula}
+    (h1 : is_separable φ) (h2 : is_separable ψ) : is_separable (Formula.imp φ ψ) := by
+  obtain ⟨φ', hφ', heφ⟩ := h1
+  obtain ⟨ψ', hψ', heψ⟩ := h2
+  refine ⟨Formula.imp φ' ψ', ?_, ?_⟩
+  · simp [is_syntactically_separated, hφ', hψ']
+  · intro M t; constructor
+    · intro h hp; exact (heψ M t).mp (h ((heφ M t).mpr hp))
+    · intro h hp; exact (heψ M t).mpr (h ((heφ M t).mp hp))
+
 /-- Since-event splitting by classical LEM on an arbitrary formula:
     S(a, guard) ↔ S(a ^ φ, guard) ∨ S(a ^ ¬φ, guard) -/
-private theorem since_event_split (a φ guard : Formula) :
+theorem since_event_split (a φ guard : Formula) :
     int_equiv (.snce a guard)
       (Formula.or (.snce (Formula.and a φ) guard)
                   (.snce (Formula.and a (Formula.neg φ)) guard)) := by
@@ -421,7 +450,7 @@ private theorem since_event_split (a φ guard : Formula) :
 
 /-- Guard weakening: S(event, stronger_guard) → S(event, weaker_guard) when
     stronger_guard implies weaker_guard pointwise. -/
-private theorem since_guard_weaken {event guard₁ guard₂ : Formula}
+theorem since_guard_weaken {event guard₁ guard₂ : Formula}
     (h : ∀ M : IntStructure, ∀ t : ℤ, int_truth M t guard₁ → int_truth M t guard₂)
     {M : IntStructure} {t : ℤ} :
     int_truth M t (.snce event guard₁) → int_truth M t (.snce event guard₂) := by

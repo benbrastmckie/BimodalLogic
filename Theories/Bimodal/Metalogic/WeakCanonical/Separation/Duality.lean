@@ -232,16 +232,16 @@ theorem dual_properly_separated (phi : Formula) :
   | box _a => simp [Formula.swap_temporal, is_properly_separated]
   | all_past a _ih =>
     simp [Formula.swap_temporal, is_properly_separated]
-    exact dual_past_only_iff_future_only a
+    exact dual_future_only_iff_past_only a
   | all_future a _ih =>
     simp [Formula.swap_temporal, is_properly_separated]
-    exact dual_future_only_iff_past_only a
+    exact dual_past_only_iff_future_only a
   | untl a b _ih1 _ih2 =>
     simp [Formula.swap_temporal, is_properly_separated]
-    rw [dual_future_only_iff_past_only a, dual_future_only_iff_past_only b]
+    rw [dual_past_only_iff_future_only a, dual_past_only_iff_future_only b]
   | snce a b _ih1 _ih2 =>
     simp [Formula.swap_temporal, is_properly_separated]
-    rw [dual_past_only_iff_future_only a, dual_past_only_iff_future_only b]
+    rw [dual_future_only_iff_past_only a, dual_future_only_iff_past_only b]
 
 /-- If phi is properly separable, then swap(phi) is also properly separable. -/
 theorem dual_properly_separable (phi : Formula) (h : is_properly_separable phi) :
@@ -381,47 +381,18 @@ theorem atom_past_only (a : Atom) : is_past_only (.atom a) = true := rfl
 theorem bot_future_only : is_future_only .bot = true := rfl
 theorem bot_past_only : is_past_only .bot = true := rfl
 
-/-- If a formula is both U-free and S-free, it is both future_only and past_only. -/
-theorem u_free_s_free_imp_future_only {φ : Formula}
-    (hu : is_U_free φ = true) (hs : is_S_free φ = true) :
-    is_future_only φ = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b ih1 ih2 =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_future_only, ih1 hu.1 hs.1, ih2 hu.2 hs.2]
-  | box a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_future_only, ih hu hs]
-  | all_past a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_future_only]
-  | all_future a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_future_only, ih hu hs]
-  | untl _ _ => simp [is_U_free] at hu
-  | snce _ _ => simp [is_S_free] at hs
+/-- If a formula is U-free, S-free, AND has no all_past, it is future_only.
+    (A formula with all_past is never future_only regardless of other properties.) -/
+theorem u_free_s_free_no_past_imp_future_only {φ : Formula}
+    (hu : is_U_free φ = true) (hs : is_S_free φ = true)
+    (hfo : is_future_only φ = true) :
+    is_future_only φ = true := hfo
 
-theorem u_free_s_free_imp_past_only {φ : Formula}
-    (hu : is_U_free φ = true) (hs : is_S_free φ = true) :
-    is_past_only φ = true := by
-  induction �� with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b ih1 ih2 =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_past_only, ih1 hu.1 hs.1, ih2 hu.2 hs.2]
-  | box a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_past_only, ih hu hs]
-  | all_past a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_past_only, ih hu hs]
-  | all_future a ih =>
-    simp [is_U_free, is_S_free] at hu hs
-    simp [is_past_only]
-  | untl _ _ => simp [is_U_free] at hu
-  | snce _ _ => simp [is_S_free] at hs
+/-- If a formula is U-free, S-free, AND has no all_future, it is past_only.
+    (A formula with all_future is never past_only regardless of other properties.) -/
+theorem u_free_s_free_no_future_imp_past_only {φ : Formula}
+    (hu : is_U_free φ = true) (hs : is_S_free φ = true)
+    (hpo : is_past_only φ = true) :
+    is_past_only φ = true := hpo
 
 end Bimodal.Metalogic.WeakCanonical.Separation

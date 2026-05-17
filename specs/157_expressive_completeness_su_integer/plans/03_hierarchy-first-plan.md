@@ -69,20 +69,20 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 ---
 
-### Phase 2: Lemma 10.2.4 -- Normal Form Reduction to 8 Cases [NOT STARTED]
+### Phase 2: Lemma 10.2.4 -- Normal Form Reduction to 8 Cases [COMPLETED]
 
 **Goal**: Prove that any formula `S(C, F)` where C and F contain a single U-formula type U(A,B) (with A, B S-free) can be reduced to a boolean combination of the 8 standard case patterns.
 
 **Strategy**: Use distributivity (already proved) to decompose C and F into disjunctive normal form, extracting U(A,B) positions. Each resulting S-term has U(A,B) in at most the event, the guard, or both, with possible negation -- matching exactly one of the 8 cases.
 
 **Tasks**:
-- [ ] Task 2.1: Make `or_separable`, `and_separable`, `neg_separable`, `is_separable_of_equiv` public in Eliminations.lean (~20 LOC changes)
-- [ ] Task 2.2: Prove generalized Case 3 semantic equivalence (no U-free precondition on event) (~150-200 LOC)
-- [ ] Task 2.3: Define `normal_form_single_U` that decomposes S(C,F) with single U(A,B) into 8-case instances (~100-150 LOC)
-- [ ] Task 2.4: Prove `normal_form_correct`: the normal form is semantically equivalent to the original (~100-150 LOC)
-- [ ] Task 2.5: Prove `normal_form_separable`: given Cases 1-8 all separable, the normal form result is separable (~80-100 LOC)
-- [ ] Task 2.6: Assemble Lemma 10.2.4 theorem (`single_S_with_single_U_separable`) (~50 LOC)
-- [ ] Task 2.7: Verify `lake build` passes
+- [x] Task 2.1: Make `or_separable`, `and_separable`, `neg_separable`, `is_separable_of_equiv` public in Eliminations.lean *(deviation: altered -- also added `neg_separable`, `and_separable`, `imp_separable` as new theorems, and made `int_truth_and_iff`, `int_truth_or_iff`, `int_truth_neg_iff`, `since_event_split`, `since_guard_weaken` public)*
+- [x] Task 2.2: Prove generalized Case 3 semantic equivalence (no U-free precondition on event) *(deviation: skipped -- existing Case 3 already suffices since the event-split guarantees U-free events for Lemma 10.2.5)*
+- [x] Task 2.3: Define `normal_form_single_U` that decomposes S(C,F) with single U(A,B) into 8-case instances *(deviation: altered -- implemented as `since_event_split_separable` + individual case wrappers rather than a single decomposition function)*
+- [x] Task 2.4: Prove `normal_form_correct`: the normal form is semantically equivalent to the original *(deviation: altered -- correctness is handled by `since_event_split` theorem from Eliminations + `guard_lem_equiv` in NormalForm)*
+- [x] Task 2.5: Prove `normal_form_separable`: given Cases 1-8 all separable, the normal form result is separable *(completed as `lemma_10_2_4` and individual case theorems)*
+- [x] Task 2.6: Assemble Lemma 10.2.4 theorem (`single_S_with_single_U_separable`) *(completed as `lemma_10_2_4`, `lemma_10_2_4_guard_with_U`, `lemma_10_2_4_guard_with_neg_U`)*
+- [x] Task 2.7: Verify `lake build` passes
 
 **Timing**: 4 hours
 

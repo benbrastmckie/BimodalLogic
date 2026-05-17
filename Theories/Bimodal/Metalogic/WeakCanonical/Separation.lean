@@ -5,6 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
+import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 
@@ -22,8 +23,9 @@ Imports all submodules of the separation theorem proof for {U,S} over integer ti
 - `Distributivity.lean`: Lemma 10.2.1 (U/S distribute over boolean ops)
 - `NegationEquiv.lean`: Lemma 10.2.2 (negation of U/S over Z)
 - `Eliminations.lean`: Lemma 10.2.3 (8 elimination cases)
+- `NormalForm.lean`: Lemma 10.2.4 (normal form reduction to 8 cases)
 - `DualEliminations.lean`: Dual of Lemma 10.2.3 (S out of U)
-- `SeparationThm.lean`: Lemmas 10.2.4-10.2.8 and Theorem 10.2.9
+- `SeparationThm.lean`: Lemmas 10.2.5-10.2.8 and Theorem 10.2.9
 
 ## References
 
