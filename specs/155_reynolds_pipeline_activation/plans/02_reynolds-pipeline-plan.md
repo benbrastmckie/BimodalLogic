@@ -181,7 +181,27 @@ All phases are strictly sequential. Each phase builds on the previous.
 
 ---
 
-### Phase 3: Rewrite no_gaps_discrete (Reynolds Theorem 14 -- Gap Elimination) [NOT STARTED]
+### Phase 3: Rewrite no_gaps_discrete (Reynolds Theorem 14 -- Gap Elimination) [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: Attempted to formalize Reynolds Theorem 14 (gap elimination for ~M classes in Prior structures). The argument requires a 6-page, 8-lemma chain (Lemmas 6-13) involving temporal logic model transformation.
+- **What was tried**:
+  1. Direct Prior-UZ application with φ = "in class C": U(φ, ¬φ) is satisfied trivially (s = succ(t) works vacuously in discrete orders)
+  2. Prior-UZ with φ = "not in class C": also satisfied trivially (s = succ(t) where succ(t) IS in C)
+  3. Z1 semantic validity approach: Z1 IS equivalent to IsSuccArchimedean, but expressing "s >= b" as a temporal formula requires the predicates to distinguish these points, which isn't guaranteed for arbitrary monadic structures
+  4. Analysis of Reynolds's actual argument: it's an INDIRECT contradiction via model surgery (replace bad interval by one class, show R still holds in modified structure, derive contradiction from Prior-U in modified structure)
+- **Why it's stuck**: Reynolds Theorem 14 requires:
+  (a) Constructing temporal formula R detecting "class ends at gap on right" (via table_correctness in reverse)
+  (b) Proving R-intervals have excluded endpoints (Lemma 7, uses Prior-UZ)
+  (c) Proving classes in R-interval are elementarily equivalent (Lemma 9)
+  (d) Bad interval structure replacement preserving temporal truth (Lemma 12, ~60 lines of case analysis on U/S operators)
+  (e) Deriving contradiction from R holding in modified Prior structure (Lemma 13)
+  Each of (a)-(e) is a substantial formalization sub-task.
+- **What is needed**:
+  - OPTION A (faithful Reynolds): Formalize Lemmas 6-13 step by step. Requires defining ρ(x), constructing its temporal equivalent via table_correctness, proving the model-surgery lemma (Lemma 12). Estimated 6-8 hours additional work.
+  - OPTION B (Z1 shortcut for chronicle only): Prove that Z1 semantic validity in the specific chronicle monadic structure implies IsSuccArchimedean. This sidesteps the full Theorem 14 but only works for the chronicle (not general Prior structures). Key challenge: showing that the k-type assignment in the chronicle is "rich enough" to distinguish all points needed for the Z1 backward induction.
+  - OPTION C (direct succ_cofinal from Z1): Prove succ_cofinal for the chronicle domain using Z1 ∈ MCS + backward induction on truth values. This is essentially the converse of the Z1 soundness proof.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Rewrite the gap elimination theorem WITHOUT `IsSuccArchimedean`. This is THE HARD PHASE. Reynolds Theorem 14 proves that ~M classes cannot end at gaps in Prior structures, using expressive completeness of {U,S} (= `table_correctness`) combined with Prior-UZ axiom validity. The argument constructs explicit formulas that distinguish between "being in the same class" and "not being in the same class" and shows that a gap boundary leads to contradiction.
 
