@@ -34,7 +34,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 21,60,95,112,114,116,122,126,127,130,131,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 21,60,95,112,116,122,126,127,130,131,162,163,164,165,619,949,953,992 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 125,128,155 | 116,122 | completeness, frame-extensions, algebraic-representation |
 
 **Grouped by Topic** (indented = must complete first):
@@ -61,16 +61,22 @@ technical_debt:
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
-998 [RESEARCHING] — Redesign the FMP filtration for strict temporal semantics. The 2 
+165 [NOT STARTED] — Establish semantic finite model property (filtration for all connectives)
 
 
 ### Algebraic Representation
 
-112 [RESEARCHED] — literature_study_representation_theorem
 125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
   └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H) a) (see above)
   └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z and complete d) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
+163 [NOT STARTED] — Rename misnamed "representation" theorems to "completeness"
+
+
+### Decidability
+
+164 [NOT STARTED] — Prove tableau correctness (connect decide to semantic validity)
+  └─ 165 [NOT STARTED] — (frame-extensions: Establish semantic FMP) (see above)
 
 
 ### Bilateral
@@ -80,7 +86,7 @@ technical_debt:
 
 ### Agent System
 
-114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
+162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 
@@ -146,13 +152,6 @@ Update docstrings/comments mentioning "representation theorem" to say "completen
 - **Summary**: [160_fix_ci_badge_failing/summaries/01_fix-ci-badge-summary.md]
 
 **Description**: Fix the CI badge on line 3 of README.md which currently shows as failing on GitHub. Investigate the GitHub Actions workflow at .github/workflows/ci.yml, determine why CI is failing (likely due to the example file deletions from task 158 or other recent changes), fix the build or workflow configuration, and ensure the badge shows as passing.
-
-### 159. Refactor Formula to remove all_past and all_future as primitive constructors
-- **Effort**: large
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-
-**Description**: Refactor Formula inductive type to remove all_past (H) and all_future (G) as primitive constructors, making them derived operators defined as G := ¬F¬ and H := ¬P¬, where F := U(φ, ¬⊥) and P := S(φ, ¬⊥). Currently the Lean source has 7 primitive constructors (bot, imp, box, all_past, all_future, untl, snce) but the README and the intended mathematical presentation treats only 5 as primitive (bot, imp, box, untl, snce). This requires updating the Formula inductive type, redefining G/H/F/P as defs, updating all pattern matches on Formula throughout the codebase (Syntax/, ProofSystem/, Semantics/, Metalogic/, Theorems/, Automation/, Examples/, Tests/), updating the axiom system to use the new derived definitions, and verifying that soundness/completeness/decidability proofs still compile. This is a large structural refactor touching most files in the codebase.
 
 ### 158. Update README.md to reflect metalogic progress and improve organization
 - **Effort**: small
@@ -488,16 +487,6 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ---
 
-### 114. Add plan-compliance rule for implementation agents
-- **Effort**: small
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Priority**: high
-
-**Description**: Add a `.claude/rules/` rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a "theorems-as-interval" shortcut for task 107 Phase 1 instead of following the planned Burgess D₀ seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan's specified approach. The rule must state: (1) agents MUST implement the plan's specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending `/revise` and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.
-
----
-
 ### 112. Systematic literature study for task 107 representation theorem
 - **Effort**: medium
 - **Status**: [ABANDONED]
@@ -576,18 +565,6 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 **Description**: Abandoned: broad umbrella task superseded by chronicle approach. `bx_completeness` already uses `truth_at` semantics. Dense+mixed cases sorry-free. Remaining discrete sorry (`succ_cofinal`) tracked by focused tasks 153-155.
 
 ---
-
-### 998. Redesign FMP filtration for strict temporal semantics
-- **Effort**: TBD (estimated 4-8 hours)
-- **Status**: [ABANDONED]
-- **Language**: lean4
-- **Priority**: high
-- **Related**: Tasks 74-77 (strict temporal extensions research track)
-
-**Description**: Redesign the FMP (Finite Model Property) filtration for strict temporal semantics. The 2 sorry'd theorems in `Decidability/FMP/TruthPreservation.lean` — `mcs_all_future_closure` (line 263) and `mcs_all_past_closure` (line 281) — are deprecated because the temporal T-axiom (`Gφ → φ`) is NOT valid under strict semantics. `filtration_all_future_forward` and `filtration_all_past_forward` depend on them. The FMP module is separate from the main decidability pipeline (`decide` is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: `mcs_finite_model_property` in `FMP.lean` does NOT directly use these sorry'd lemmas, so the impact is localized to `filtration_all_future_forward`/`backward`.
-
----
-
 
 ### 992. Implement Shift-Closed Tense S5 Algebra representation theorem
 - **Effort**: TBD

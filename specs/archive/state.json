@@ -588,6 +588,39 @@
   ],
   "completed_projects": [
     {
+      "project_number": 114,
+      "project_name": "plan_compliance_rule_for_implementation_agents",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "Add a .claude/rules/ rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a theorems-as-interval shortcut for task 107 Phase 1 instead of following the planned Burgess D0 seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan approach. The rule must state: (1) agents MUST implement the plan specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending /revise and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.",
+      "created": "2026-04-27T00:00:00Z",
+      "last_updated": "2026-04-27T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "topic": "agent-system",
+      "abandoned": "2026-05-18T18:09:36Z"
+    },
+    {
+      "project_number": 159,
+      "project_name": "refactor_formula_remove_all_past_all_future",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "created": "2026-05-17T19:21:01Z",
+      "last_updated": "2026-05-17T19:21:01Z",
+      "abandoned": "2026-05-18T18:09:36Z"
+    },
+    {
+      "project_number": 998,
+      "project_name": "fmp_redesign_strict_temporal",
+      "status": "abandoned",
+      "language": "lean4",
+      "created": "2026-03-19T17:05:39Z",
+      "last_updated": "2026-03-19T17:05:39Z",
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward.",
+      "topic": "frame-extensions",
+      "abandoned": "2026-05-18T18:09:36Z"
+    },
+    {
       "project_number": 153,
       "project_name": "prove_succ_cofinal_discrete",
       "status": "abandoned",
