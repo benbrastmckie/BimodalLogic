@@ -22,6 +22,9 @@ REFLEXIVE: `canonicalR_reflexive` is proven via T-axiom.
 |--------|---------|--------|
 | **Soundness** | `soundness` | SORRY-FREE, AXIOM-FREE |
 | **Base Completeness** | `base_truth_lemma` | SORRY-FREE, AXIOM-FREE |
+| **Completeness** | `completeness` | sorry (chronicle construction) |
+| **Dense Completeness** | `completeness_dense` | sorry (chronicle + frame-class theory) |
+| **Discrete Completeness** | `completeness_discrete` | sorry (discrete pipeline + frame-class theory) |
 | **Decidability** | `decide` | SORRY-FREE, AXIOM-FREE |
 
 ## Completeness Architecture

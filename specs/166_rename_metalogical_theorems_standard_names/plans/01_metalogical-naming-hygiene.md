@@ -197,21 +197,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update Documentation and Final Verification [NOT STARTED]
+### Phase 4: Update Documentation and Final Verification [COMPLETED]
 
 **Goal**: Ensure all documentation (README tables, docstrings, module docs) accurately reflect the renamed theorems and new theorems.
 
 **Tasks**:
-- [ ] Update README.md Result Details table to include `completeness_dense` and `completeness_discrete`
-- [ ] Update Theories/Bimodal/README.md:
-  - [ ] TM Dense section: add `completeness_dense` reference
-  - [ ] TM Discrete section: add `completeness_discrete` reference
-  - [ ] Update the Result Details table with all new names
-- [ ] Update Metalogic/Metalogic.lean Publication-Ready Results table to include new completeness theorems
-- [ ] Update ROADMAP.md if discrete completeness row references have changed
-- [ ] Verify that `FrameConditions/Soundness.lean` references are consistent (the wrapper `axiom_base_valid_linear` now calls `axiom_valid` -- ensure the docstring explains this)
-- [ ] Run full `lake build` to confirm zero errors
-- [ ] Run `grep -rn` for all old names to confirm no stale references remain (excluding Boneyard and dead code comments)
+- [x] Update README.md Result Details table to include `completeness_dense` and `completeness_discrete`
+- [x] Update Theories/Bimodal/README.md:
+  - [x] TM Dense section: add `completeness_dense` reference
+  - [x] TM Discrete section: add `completeness_discrete` reference
+  - [x] Update the Result Details table with all new names *(deviation: skipped -- no separate Result Details table in Bimodal README)*
+- [x] Update Metalogic/Metalogic.lean Publication-Ready Results table to include new completeness theorems
+- [x] Update ROADMAP.md if discrete completeness row references have changed *(deviation: skipped -- already updated in Phase 1)*
+- [x] Verify that `FrameConditions/Soundness.lean` references are consistent (the wrapper `axiom_base_valid_linear` now calls `axiom_valid` -- body confirmed correct)
+- [x] Run full `lake build` to confirm zero errors
+- [x] Run `grep -rn` for all old names to confirm no stale references remain (excluding Boneyard and dead code comments)
 
 **Timing**: 0.5 hours
 

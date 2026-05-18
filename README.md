@@ -145,7 +145,7 @@ graph TD
 | **Linear** | — | — | — |
 | **Serial** | `⊤ → F⊤`, `⊤ → P⊤` | `soundness` | `completeness` |
 | **Dense** | `Fφ → FFφ` | `soundness_dense` | `completeness_dense` |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | active sorries |
+| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | `completeness_discrete` |
 
 **Active sorry obligations**:
 

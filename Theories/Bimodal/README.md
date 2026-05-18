@@ -155,7 +155,7 @@ Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 
 - **Additional Axiom**: DN (`Fφ → FFφ`) - density
 - **Soundness**: `axiom_dense_valid` - dense-compatible axioms valid on DenselyOrdered
-- **Completeness**: Documented in [DenseCompleteness.lean](Metalogic/DenseCompleteness.lean)
+- **Completeness**: `completeness_dense` in [Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `DenselyOrdered D` - between any two times exists another
 
 ### TM Discrete (Base + 3 = 21 axioms)
@@ -164,7 +164,7 @@ Extension requiring discretely ordered temporal domains. See `FrameClass.Discret
 
 - **Additional Axioms**: DF (discreteness), SF/SP (seriality)
 - **Soundness**: `axiom_discrete_valid` - discrete-compatible axioms valid on SuccOrder
-- **Completeness**: Framework in [DiscreteCompleteness.lean](Metalogic/DiscreteCompleteness.lean)
+- **Completeness**: `completeness_discrete` in [Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
 
 ### Variant Incompatibility
