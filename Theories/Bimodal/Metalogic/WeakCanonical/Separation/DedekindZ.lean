@@ -1160,16 +1160,106 @@ theorem case7_separable_Z (a q A B : Formula)
   -- Deferred to next round.
   all_separable _
 
+/-! ## Case 8 Semantic Equivalence (GHR94 10.3.11.8 on Z)
+
+On Z, K⁻ = ⊥ and Γ⁺ = ⊥, so the 10.3.11.8 formula simplifies to:
+  S(a∧¬U, q∨¬U) ↔ S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U)
+
+This avoids the multi-U-type problem because:
+  - S(a∧¬U, ⊤) is Case 2 (guard ⊤ is U-free)
+  - S(¬q∧U, ¬a∨U) is Case 5 (event has U, guard has U)
+-/
+
+set_option maxHeartbeats 1600000 in
+/-- GHR94 10.3.11.8 on Z: S(a∧¬U, q∨¬U) ↔ S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U). -/
+private theorem case8_equiv_Z (a q A B : Formula) :
+    int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
+                     (Formula.or q (Formula.neg (.untl A B))))
+              (Formula.and
+                (.snce (Formula.and a (Formula.neg (.untl A B))) (Formula.neg .bot))
+                (Formula.neg (.snce (Formula.and (Formula.neg q) (.untl A B))
+                                    (Formula.or (Formula.neg a) (.untl A B))))) := by
+  intro M t; constructor
+  · -- Forward: S(a∧¬U, q∨¬U) → S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U)
+    intro ⟨s, hst, hevent, hguard⟩
+    have ⟨ha_s, hnotU_s⟩ := int_truth_and_iff.mp hevent
+    apply int_truth_and_iff.mpr
+    refine ⟨?_, ?_⟩
+    · -- S(a∧¬U, ⊤): weaken guard
+      exact ⟨s, hst, hevent, fun _ _ _ => id⟩
+    · -- ¬S(¬q∧U, ¬a∨U)
+      intro ⟨v, hvt, hevent_v, hguard_v⟩
+      have ⟨hnq_v, hU_v⟩ := int_truth_and_iff.mp hevent_v
+      -- Trichotomy on s vs v
+      rcases lt_trichotomy s v with hsv | hsv | hsv
+      · -- s < v: v ∈ (s,t), guard gives q(v)∨¬U(v). ¬q(v) → ¬U(v). But U(v). Contradiction.
+        have := hguard v hsv hvt
+        rcases int_truth_or_iff.mp this with hq | hnotU
+        · exact hnq_v hq
+        · exact hnotU hU_v
+      · -- s = v: ¬U(s) vs U(v). s=v → ¬U(v). But U(v). Contradiction.
+        exact (hsv ▸ hnotU_s) hU_v
+      · -- v < s: s ∈ (v,t), guard_v gives ¬a(s)∨U(s). But a(s) ∧ ¬U(s). Contradiction.
+        have := hguard_v s hsv hst
+        rcases int_truth_or_iff.mp this with hna | hU
+        · exact hna ha_s
+        · exact hnotU_s hU
+  · -- Backward: S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U) → S(a∧¬U, q∨¬U)
+    intro hand
+    have ⟨hS_top, hnotS_neg⟩ := int_truth_and_iff.mp hand
+    -- Find the GREATEST s₀ < t with a(s₀)∧¬U(s₀)
+    obtain ⟨s₀, hs₀t, hevent₀, _⟩ := hS_top
+    let P := fun s => int_truth M s (Formula.and a (Formula.neg (.untl A B)))
+    haveI : DecidablePred P := Classical.decPred _
+    have hex : ∃ n, n < t ∧ P n := ⟨s₀, hs₀t, hevent₀⟩
+    obtain ⟨s, hst, hevent_s, hmax⟩ := Int.exists_greatest_below hex
+    have ⟨ha_s, hnotU_s⟩ := int_truth_and_iff.mp hevent_s
+    refine ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hnotU_s⟩, fun r hsr hrt => ?_⟩
+    -- Need: q(r) ∨ ¬U(r) for r ∈ (s,t)
+    rw [int_truth_or_iff]
+    -- By maximality: ¬(a(r) ∧ ¬U(r)) for r ∈ (s,t)
+    have hmax_r : ¬ int_truth M r (Formula.and a (Formula.neg (.untl A B))) :=
+      hmax r hsr hrt
+    by_cases hU_r : int_truth M r (.untl A B)
+    · -- U(r) holds. Need q(r) ∨ ¬U(r). We have U(r).
+      by_cases hq_r : int_truth M r q
+      · exact Or.inl hq_r
+      · -- ¬q(r) ∧ U(r) → derive contradiction via ¬S(¬q∧U, ¬a∨U)
+        exfalso; apply hnotS_neg
+        refine ⟨r, hrt, int_truth_and_iff.mpr ⟨hq_r, hU_r⟩, fun r' hrr' hr't => ?_⟩
+        rw [int_truth_or_iff]
+        have hmax_r' : ¬ int_truth M r' (Formula.and a (Formula.neg (.untl A B))) :=
+          hmax r' (lt_trans hsr hrr') hr't
+        by_cases hU_r' : int_truth M r' (.untl A B)
+        · exact Or.inr hU_r'
+        · by_cases ha_r' : int_truth M r' a
+          · exfalso; exact hmax_r' (int_truth_and_iff.mpr ⟨ha_r', hU_r'⟩)
+          · exact Or.inl ha_r'
+    · -- ¬U(r) holds. q(r) ∨ ¬U(r) via ¬U(r).
+      exact Or.inr hU_r
+
 /-- Case 8 separability for Z: S(a ^ ~U(A,B), q v ~U(A,B)) is separable. -/
 theorem case8_separable_Z (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
-      (Formula.or q (Formula.neg (.untl A B)))) :=
-  -- Case 8: ¬U in both event and guard. Similar to Case 7 via neg_until_equiv.
-  -- Deferred to next round.
-  all_separable _
+      (Formula.or q (Formula.neg (.untl A B)))) := by
+  -- Apply case8_equiv_Z: S(a∧¬U, q∨¬U) ↔ S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U)
+  apply is_separable_of_equiv (case8_equiv_Z a q A B)
+  apply and_separable
+  · -- S(a∧¬U, ⊤): Case 2 with guard = ⊤ = neg bot (U-free)
+    have hg : is_U_free (Formula.neg .bot) = true := by simp [Formula.neg, is_U_free]
+    obtain ⟨psi, hequiv, hsep⟩ := elim_case_2_gen a (Formula.neg .bot) A B ha hg hA hB hA' hB'
+    exact ⟨psi, hsep, hequiv⟩
+  · -- ¬S(¬q∧U, ¬a∨U): neg_separable of Case 5
+    apply neg_separable
+    -- S(¬q∧U, ¬a∨U) = Case 5 with event_base = ¬q, guard_base = ¬a
+    have hnq_uf : is_U_free (Formula.neg q) = true := by simp [Formula.neg, is_U_free, hq]
+    have hna_uf : is_U_free (Formula.neg a) = true := by simp [Formula.neg, is_U_free, ha]
+    have hnq_sf : is_S_free (Formula.neg q) = true := by simp [Formula.neg, is_S_free, hq']
+    have hna_sf : is_S_free (Formula.neg a) = true := by simp [Formula.neg, is_S_free, ha']
+    exact case5_separable_Z (Formula.neg q) (Formula.neg a) A B hnq_uf hna_uf hA hB hnq_sf hna_sf hA' hB'
 
 end Bimodal.Metalogic.WeakCanonical.Separation
