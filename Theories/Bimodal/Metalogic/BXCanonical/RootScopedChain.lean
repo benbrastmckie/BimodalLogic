@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.BXCanonical.CanonicalModel
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 /-!
@@ -49,7 +49,7 @@ open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricRepresentation
+open Bimodal.Metalogic.Algebraic.ParametricCompleteness
 open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 open Bimodal.Semantics
 open Bimodal.Theorems.Propositional
@@ -217,7 +217,7 @@ theorem dd_countermodel (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ (shifted_bx_fmcs M h_mcs 0).mcs 0 := by
     rw [shifted_bx_fmcs_at_s]; exact h_neg_in
-  exact fully_restricted_parametric_representation_from_neg_membership
+  exact fully_restricted_parametric_completeness_from_neg_membership
     (bx_bfmcs M h_mcs) φ
     (bx_bfmcs_restricted_tc M h_mcs φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))

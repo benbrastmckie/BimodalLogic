@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
 import Bimodal.Metalogic.BXCanonical.CanonicalModel
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
@@ -57,7 +57,7 @@ open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricRepresentation
+open Bimodal.Metalogic.Algebraic.ParametricCompleteness
 open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 open Bimodal.Semantics
 open Bimodal.Theorems.Propositional
@@ -584,7 +584,7 @@ noncomputable def cantor_bfmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsis
 /-! ## Dense Restricted Coherence
 
 Restricted temporal and Until/Since coherence for `cantor_bfmcs_dense`.
-These are the three conditions needed by the parametric representation theorem.
+These are the three conditions needed by the parametric completeness theorem.
 -/
 
 /--
@@ -809,7 +809,7 @@ theorem countermodel_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ (rooted_cantor_fmcs_dense A h_mcs h_box_dense 0).mcs 0 := by
     rw [rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
-  exact fully_restricted_parametric_representation_from_neg_membership
+  exact fully_restricted_parametric_completeness_from_neg_membership
     (cantor_bfmcs_dense A h_mcs h_box_dense) φ
     (cantor_bfmcs_dense_restricted_tc A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
@@ -826,7 +826,7 @@ completeness. Requires constructing a BFMCS on ℤ (analogous to
 and `discrete_iso` to transport the chronicle coherence properties
 through the Z-isomorphism. Prior-UZ axioms and IsSuccArchimedean
 infrastructure are now in place; the remaining work is the BFMCS
-construction and parametric representation on ℤ.
+construction and parametric completeness on ℤ.
 -/
 theorem dd_countermodel_chronicle_nondense_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
@@ -3053,7 +3053,7 @@ noncomputable def cantor_bfmcs_discrete (A : Set Formula) (h_mcs : SetMaximalCon
 /-! ## Discrete Restricted Coherence
 
 Restricted temporal and Until/Since coherence for `cantor_bfmcs_discrete`.
-These are the three conditions needed by the parametric representation theorem.
+These are the three conditions needed by the parametric completeness theorem.
 
 The key technique: for backward coherence (BUC), the squeeze lemma maps C4
 counterexample witnesses back to integers. For forward coherence (TC, FUC),
@@ -3304,7 +3304,7 @@ theorem dd_countermodel_chronicle_discrete (A : Set Formula) (h_mcs : SetMaximal
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ (rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0).mcs 0 := by
     rw [rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
-  exact fully_restricted_parametric_representation_from_neg_membership
+  exact fully_restricted_parametric_completeness_from_neg_membership
     (cantor_bfmcs_discrete A h_mcs h_box_discrete) φ
     (cantor_bfmcs_discrete_restricted_tc A h_mcs h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))

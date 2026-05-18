@@ -3,15 +3,15 @@ import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.ModalSaturation
 
 /-!
-# D-Parametric Algebraic Representation Theorem
+# D-Parametric Algebraic Completeness Theorem
 
-This module proves the D-parametric algebraic representation theorem for TaskFrame semantics.
+This module proves the D-parametric algebraic completeness theorem for TaskFrame semantics.
 The key insight is that the duration type D is a **parameter**, not constructed from syntax.
 This avoids the "domain mismatch" problems that arise when trying to build D from syntax.
 
 ## Architectural Role
 
-This module provides the **PRIMARY** representation theorem for TM logic. The duration type
+This module provides the **PRIMARY** completeness theorem for TM logic. The duration type
 D is parametric: completeness holds for ALL totally ordered abelian groups D, not just
 a specific one constructed from syntax.
 
@@ -34,14 +34,14 @@ the group+order constraints. For specific extensions:
 The `DFromCantor.lean` module provides an **auxiliary** result: for dense TM logic,
 the canonical timeline (constructed from syntax) IS order-isomorphic to Q via
 Cantor's theorem. This is a CONSEQUENCE of the density axiom DN, not a requirement
-for the representation theorem.
+for the completeness theorem.
 
 For base TM logic, `DFromCantor.lean` is NOT applicable because the base axioms
 do not force density. Base completeness uses D = Int parametrically.
 
 ## Main Results
 
-- `parametric_algebraic_representation_conditional`: For any D with BFMCS construction,
+- `parametric_canonical_completeness_conditional`: For any D with BFMCS construction,
   if phi is not provable, then there exists a countermodel over D-parametric canonical frame
 - `countermodel_implies_not_provable`: The contrapositive form (soundness direction)
 
@@ -74,7 +74,7 @@ This module uses the D-parametric infrastructure from:
 - `ParametricHistory.lean`: D-parametric history conversion
 - `ParametricTruthLemma.lean`: D-parametric truth lemma
 
-The representation theorem is contingent on having a temporally coherent BFMCS over D.
+The completeness theorem is contingent on having a temporally coherent BFMCS over D.
 For specific instantiations (D = Int, D = Rat), this requires constructing such a BFMCS,
 which is done in the instantiation modules.
 
@@ -83,7 +83,7 @@ which is done in the instantiation modules.
 - Auxiliary: Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean
 -/
 
-namespace Bimodal.Metalogic.Algebraic.ParametricRepresentation
+namespace Bimodal.Metalogic.Algebraic.ParametricCompleteness
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
@@ -152,7 +152,7 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
     exact h_not_prov ⟨d_phi⟩
 
 /-!
-## The Representation Theorem
+## The Completeness Theorem
 
 The main theorem states that non-provability implies the existence of a countermodel.
 This is formulated as: given a temporally coherent BFMCS over D and a non-provable
@@ -160,7 +160,7 @@ formula, there exists a countermodel within that BFMCS.
 -/
 
 /--
-**D-Parametric Algebraic Representation Theorem (Relative Version)**
+**D-Parametric Algebraic Completeness Theorem (Relative Version)**
 
 Given:
 - A temporally coherent BFMCS B over D
@@ -181,7 +181,7 @@ in the instantiation modules.
 5. Since φ.neg ∈ M₀ (by Lindenbaum), we have truth_at ... φ.neg
 6. Therefore ¬(truth_at ... φ)
 -/
-theorem parametric_algebraic_representation_relative
+theorem parametric_canonical_completeness_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
@@ -201,7 +201,7 @@ then φ is false at that point in the canonical model.
 This is a more useful formulation that avoids needing to construct the BFMCS.
 The caller provides the BFMCS and the witness that φ.neg is in some family.
 -/
-theorem parametric_representation_from_neg_membership
+theorem parametric_completeness_from_neg_membership
     (B : BFMCS D) (h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
@@ -228,19 +228,19 @@ theorem not_provable_implies_neg_extends_to_mcs
   exact ⟨M, h_mcs, h_sub (Set.mem_singleton φ.neg)⟩
 
 /-!
-## Representation Theorem (Conditional Version)
+## Completeness Theorem (Conditional Version)
 
-The full D-parametric representation theorem requires constructing a temporally
+The full D-parametric completeness theorem requires constructing a temporally
 coherent BFMCS over D that contains the extended MCS. This construction depends
 on additional structure of D (e.g., witness existence for F/P formulas).
 
 Rather than introducing sorries, we formulate a conditional version that
-assumes the existence of such a BFMCS and proves the representation from it.
+assumes the existence of such a BFMCS and proves the completeness from it.
 The instantiation modules provide the concrete BFMCS construction.
 -/
 
 /--
-**D-Parametric Representation Theorem (Conditional Version)**
+**D-Parametric Completeness Theorem (Conditional Version)**
 
 Given:
 - A formula φ that is not provable
@@ -251,7 +251,7 @@ Then there exists a countermodel for φ in the D-parametric canonical frame.
 This conditional formulation avoids sorries by shifting the BFMCS construction
 to the caller. The instantiation modules provide the concrete construction.
 -/
-theorem parametric_algebraic_representation_conditional
+theorem parametric_canonical_completeness_conditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent M →
       Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
@@ -266,13 +266,13 @@ theorem parametric_algebraic_representation_conditional
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_implies_neg_extends_to_mcs φ h_not_prov
   obtain ⟨B, h_tc, h_buc, h_fuc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
-  exact ⟨B, h_tc, fam, hfam, t, parametric_representation_from_neg_membership B h_tc h_buc h_fuc φ fam hfam t h_neg_in_fam⟩
+  exact ⟨B, h_tc, fam, hfam, t, parametric_completeness_from_neg_membership B h_tc h_buc h_fuc φ fam hfam t h_neg_in_fam⟩
 
 /-!
 ## Completeness Corollary
 
 The completeness theorem states: if φ is valid in all D-parametric canonical models,
-then φ is provable. This is the contrapositive of representation.
+then φ is provable. This is the contrapositive of the completeness theorem.
 -/
 
 /--
@@ -297,4 +297,4 @@ theorem countermodel_implies_not_provable
   have h_true := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mp h_in
   exact h_false h_true
 
-end Bimodal.Metalogic.Algebraic.ParametricRepresentation
+end Bimodal.Metalogic.Algebraic.ParametricCompleteness

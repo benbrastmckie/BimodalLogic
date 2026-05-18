@@ -75,24 +75,24 @@ This task advances Roadmap Phase 4 (Algebraic representation):
 | 3 | 4 | 2, 3 |
 | 4 | 5 | 1, 2, 3, 4 |
 
-### Phase 1: Rename Theorem Definitions and File Names [NOT STARTED]
+### Phase 1: Rename Theorem Definitions and File Names [COMPLETED]
 
 **Goal**: Rename the 7 theorem definitions and 2 source files, updating namespaces and module docstrings.
 
 **Tasks**:
-- [ ] Rename `AlgebraicRepresentation.lean` to `AlgebraicCompleteness.lean`
-- [ ] Update namespace from `AlgebraicRepresentation` to `AlgebraicCompleteness` in the file
-- [ ] Rename `algebraic_representation_theorem` to `algebraic_completeness_theorem`
-- [ ] Rename `algebraic_representation_theorem'` to `algebraic_completeness_theorem'`
-- [ ] Update the internal reference (`algebraic_representation_theorem phi` at line 189)
-- [ ] Update docstrings/comments in AlgebraicCompleteness.lean to say "completeness" not "representation"
-- [ ] Rename `ParametricRepresentation.lean` to `ParametricCompleteness.lean`
-- [ ] Update namespace from `ParametricRepresentation` to `ParametricCompleteness`
-- [ ] Rename `parametric_algebraic_representation_relative` to `parametric_canonical_completeness_relative`
-- [ ] Rename `parametric_representation_from_neg_membership` to `parametric_completeness_from_neg_membership`
-- [ ] Rename `parametric_algebraic_representation_conditional` to `parametric_canonical_completeness_conditional`
-- [ ] Update internal reference at line 269 (`parametric_representation_from_neg_membership`)
-- [ ] Update module docstrings in ParametricCompleteness.lean
+- [x] Rename `AlgebraicRepresentation.lean` to `AlgebraicCompleteness.lean`
+- [x] Update namespace from `AlgebraicRepresentation` to `AlgebraicCompleteness` in the file
+- [x] Rename `algebraic_representation_theorem` to `algebraic_completeness_theorem`
+- [x] Rename `algebraic_representation_theorem'` to `algebraic_completeness_theorem'`
+- [x] Update the internal reference (`algebraic_representation_theorem phi` at line 189)
+- [x] Update docstrings/comments in AlgebraicCompleteness.lean to say "completeness" not "representation"
+- [x] Rename `ParametricRepresentation.lean` to `ParametricCompleteness.lean`
+- [x] Update namespace from `ParametricRepresentation` to `ParametricCompleteness`
+- [x] Rename `parametric_algebraic_representation_relative` to `parametric_canonical_completeness_relative`
+- [x] Rename `parametric_representation_from_neg_membership` to `parametric_completeness_from_neg_membership`
+- [x] Rename `parametric_algebraic_representation_conditional` to `parametric_canonical_completeness_conditional`
+- [x] Update internal reference at line 269 (`parametric_representation_from_neg_membership`)
+- [x] Update module docstrings in ParametricCompleteness.lean
 
 **Timing**: 1.5 hours
 
@@ -108,14 +108,14 @@ This task advances Roadmap Phase 4 (Algebraic representation):
 
 ---
 
-### Phase 2: Rename Restricted Representation Theorems [NOT STARTED]
+### Phase 2: Rename Restricted Representation Theorems [COMPLETED]
 
 **Goal**: Rename the 2 restricted representation theorems in RestrictedParametricTruthLemma.lean.
 
 **Tasks**:
-- [ ] Rename `restricted_parametric_representation_from_neg_membership` to `restricted_parametric_completeness_from_neg_membership`
-- [ ] Rename `fully_restricted_parametric_representation_from_neg_membership` to `fully_restricted_parametric_completeness_from_neg_membership`
-- [ ] Update docstrings/comments referencing "representation" in that file
+- [x] Rename `restricted_parametric_representation_from_neg_membership` to `restricted_parametric_completeness_from_neg_membership`
+- [x] Rename `fully_restricted_parametric_representation_from_neg_membership` to `fully_restricted_parametric_completeness_from_neg_membership`
+- [x] Update docstrings/comments referencing "representation" in that file
 
 **Timing**: 0.5 hours
 
@@ -130,20 +130,20 @@ This task advances Roadmap Phase 4 (Algebraic representation):
 
 ---
 
-### Phase 3: Update Call Sites and Module Root [NOT STARTED]
+### Phase 3: Update Call Sites and Module Root [COMPLETED]
 
 **Goal**: Update all call sites referencing old theorem names, and update the Algebraic.lean module root to import the renamed files.
 
 **Tasks**:
-- [ ] Update `Algebraic.lean` line 5: change `import ...AlgebraicRepresentation` to `import ...AlgebraicCompleteness`
-- [ ] Update `Algebraic.lean` line 11: change `import ...ParametricRepresentation` to `import ...ParametricCompleteness`
-- [ ] Update `Algebraic.lean` open statements (lines 89, 96) to use new namespace names
-- [ ] Update `Algebraic.lean` module docstring to say "Algebraic Completeness Theorem" instead of "Algebraic Representation Theorem"
-- [ ] Update `Algebraic.lean` architecture diagram comments to reflect new filenames
-- [ ] Update `RootScopedChain.lean` line 220: `fully_restricted_parametric_representation_from_neg_membership` to `fully_restricted_parametric_completeness_from_neg_membership`
-- [ ] Update `ChronicleToCountermodel.lean` line 812: same rename
-- [ ] Update `ChronicleToCountermodel.lean` line 3307: same rename
-- [ ] Run `lake build` and verify zero errors in active code
+- [x] Update `Algebraic.lean` line 5: change `import ...AlgebraicRepresentation` to `import ...AlgebraicCompleteness`
+- [x] Update `Algebraic.lean` line 11: change `import ...ParametricRepresentation` to `import ...ParametricCompleteness`
+- [x] Update `Algebraic.lean` open statements (lines 89, 96) to use new namespace names
+- [x] Update `Algebraic.lean` module docstring to say "Algebraic Completeness Theorem" instead of "Algebraic Representation Theorem"
+- [x] Update `Algebraic.lean` architecture diagram comments to reflect new filenames
+- [x] Update `RootScopedChain.lean` line 220: `fully_restricted_parametric_representation_from_neg_membership` to `fully_restricted_parametric_completeness_from_neg_membership`
+- [x] Update `ChronicleToCountermodel.lean` line 812: same rename
+- [x] Update `ChronicleToCountermodel.lean` line 3307: same rename
+- [x] Run `lake build` and verify zero errors in active code
 
 **Timing**: 1 hour
 

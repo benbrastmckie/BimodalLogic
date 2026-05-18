@@ -15,7 +15,7 @@ This module proves that the Lindenbaum-Tarski algebra is a `BooleanAlgebra`.
 
 ## Status
 
-Phase 3 of the algebraic representation theorem. Contains sorries pending propositional helper lemmas.
+Phase 3 of the algebraic completeness theorem. Contains sorries pending propositional helper lemmas.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.BooleanStructure

@@ -6,7 +6,7 @@ import Bimodal.Metalogic.Bundle.FMCSDef
 # BXCanonical Canonical Model Construction
 
 Constructs a BFMCS Int from BXCanonical witnesses, bridging to the parametric
-algebraic representation theorem for the BX completeness proof.
+algebraic completeness theorem for the BX completeness proof.
 
 Given an MCS M₀, build a chain of MCS indexed by Int. Forward steps use
 `forward_temporal_witness_seed` from WitnessSeed.lean, backward steps use

@@ -6,7 +6,7 @@ import Bimodal.Semantics.TaskFrame
 # D-Parametric Canonical TaskFrame
 
 This module defines a D-parametric canonical TaskFrame construction for the
-Lindenbaum-Tarski algebraic representation theorem.
+Lindenbaum-Tarski algebraic completeness theorem.
 
 ## Key Insight
 

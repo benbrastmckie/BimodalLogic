@@ -2,7 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.IntegerModel
 import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import Bimodal.Semantics.Validity

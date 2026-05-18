@@ -1,28 +1,28 @@
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 
 /-!
-# Algebraic Representation Theorem
+# Algebraic Completeness Theorem
 
-This module proves the representation theorem using the algebraic machinery
+This module proves the completeness theorem using the algebraic machinery
 developed in the previous modules.
 
 ## Main Results
 
-- `algebraic_representation_theorem`: The main theorem
+- `algebraic_completeness_theorem`: The main theorem
   `∀ φ, satisfiable φ ↔ ¬(⊢ ¬φ)`
 
 ## Proof Strategy
 
 1. Define the algebraic canonical model using ultrafilters
 2. Prove the algebraic truth lemma
-3. Derive the representation theorem
+3. Derive the completeness theorem
 
 ## Status
 
-Phase 6 of the algebraic representation theorem. Contains sorries pending earlier phases.
+Phase 6 of the algebraic completeness theorem. Contains sorries pending earlier phases.
 -/
 
-namespace Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+namespace Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
 
 open Bimodal.Syntax Bimodal.ProofSystem
 open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
@@ -170,22 +170,22 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
 -/
 
 /--
-**Algebraic Representation Theorem**
+**Algebraic Completeness Theorem**
 
 A formula is algebraically satisfiable if and only if its negation is not provable.
 
-This is the algebraic version of the representation theorem, using ultrafilters
+This is the algebraic version of the completeness theorem, using ultrafilters
 instead of maximal consistent sets.
 -/
-theorem algebraic_representation_theorem (φ : Formula) :
+theorem algebraic_completeness_theorem (φ : Formula) :
     AlgSatisfiable φ ↔ AlgConsistent φ :=
   ⟨satisfiable_implies_consistent, consistent_implies_satisfiable⟩
 
 /--
 Equivalent formulation: a formula is satisfiable iff not provably false.
 -/
-theorem algebraic_representation_theorem' (φ : Formula) :
+theorem algebraic_completeness_theorem' (φ : Formula) :
     AlgSatisfiable φ ↔ ¬Nonempty (⊢ φ.neg) :=
-  algebraic_representation_theorem φ
+  algebraic_completeness_theorem φ
 
-end Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+end Bimodal.Metalogic.Algebraic.AlgebraicCompleteness

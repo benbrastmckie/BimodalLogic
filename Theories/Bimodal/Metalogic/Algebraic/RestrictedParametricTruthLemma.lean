@@ -21,7 +21,7 @@ on `neg(psi)` where `psi` is a subformula of `root`, and `neg(psi) ∈ deferralC
 ## Main Results
 
 - `restricted_parametric_shifted_truth_lemma`: Truth lemma using restricted temporal coherence
-- `restricted_parametric_representation_from_neg_membership`: Representation using restricted truth lemma
+- `restricted_parametric_completeness_from_neg_membership`: Completeness using restricted truth lemma
 -/
 
 namespace Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
@@ -260,14 +260,14 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
         fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_sr h_rt)⟩
 
 /-!
-## Restricted Representation Theorem
+## Restricted Completeness Theorem
 -/
 
 /--
-Restricted representation: if φ.neg is in a family's MCS, then φ is false at the
+Restricted completeness: if φ.neg is in a family's MCS, then φ is false at the
 canonical model. Uses restricted temporal coherence for φ only.
 -/
-theorem restricted_parametric_representation_from_neg_membership
+theorem restricted_parametric_completeness_from_neg_membership
     (B : BFMCS D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
@@ -284,7 +284,7 @@ theorem restricted_parametric_representation_from_neg_membership
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 /-!
-## Fully Restricted Truth Lemma and Representation
+## Fully Restricted Truth Lemma and Completeness
 
 These variants weaken ALL three coherence hypotheses to their restricted forms:
 - `restricted_temporally_coherent root` (forward_F/backward_P for deferralClosure only)
@@ -452,11 +452,11 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
         fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_sr h_rt)⟩
 
 /--
-Fully restricted representation: if φ.neg is in a family's MCS, then φ is false at the
+Fully restricted completeness: if φ.neg is in a family's MCS, then φ is false at the
 canonical model. Uses restricted temporal coherence, restricted backward, and restricted
 forward Until/Since coherence — all scoped to root.
 -/
-theorem fully_restricted_parametric_representation_from_neg_membership
+theorem fully_restricted_parametric_completeness_from_neg_membership
     (B : BFMCS D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
