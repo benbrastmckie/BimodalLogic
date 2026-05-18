@@ -251,7 +251,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 ---
 
-### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [BLOCKED]
+### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [IN PROGRESS]
 
 **BLOCKER** (Phase 3):
 - **What failed**: The `.untl` and `.snce` cases of `all_formulas_separable_aux` still delegate to `all_separable` (which uses the axioms). Proving these without axioms requires the full GHR94 "constituent substitution" technique where, after abstracting temporal subformulas and separating, one substitutes back into the PAST (or FUTURE) constituents of the separated form independently and applies the IH to each. The IH is valid because each constituent has strictly lower junction depth (for 10.2.8) or fewer U-types (for 10.2.6).
@@ -270,11 +270,12 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
   - `subst_in_separated_separable`: THE CORE CONSTITUENT SUBSTITUTION LEMMA -- substituting `.untl A B` (S-free args) into a separated formula is separable, with callback for `.snce`/`.all_past` positions
   - `subst_formula_congr`: substitution preserves int_equiv
   - `extract_U_type` + `extract_U_type_S_free`: extracts U-type from non-U-free formula with no_S_nested_in_U
-- **Remaining blocker**: The multi-U count induction works but single-U case requires S-nesting depth induction (GHR94 10.2.5). This needs:
-  1. **Fix callback blocker** (~50 LOC): The callback in `subst_in_separated_separable` receives `.snce c' d'` where c', d' were U-free S-args of separated ψ with U(A,B) substituted at atom positions. KEY INSIGHT: U(A,B) appears ONLY under boolean connectives (not under S) because the original c, d were U-free. So `.snce c' d'` has exactly one U-type at top level — apply `lemma_10_2_4` DIRECTLY. No circularity.
-  2. **Wire `no_S_nested_in_U_separable_noax` callback** (~50 LOC): Replace `all_separable` in the callback with `lemma_10_2_4` application (using the insight above).
-  3. **Wire `.untl`/`.snce` cases of `all_formulas_separable_aux`** (~50 LOC): Use `no_S_nested_in_U_separable_noax` for formulas with `no_S_nested_in_U`, junction-depth induction for the general case.
-  4. **Axiom elimination** (~30 LOC): Replace 9 axioms in SeparationThm.lean with `all_formulas_separable`.
+- **Remaining blocker (RESOLVED by research round 10)**: The callback receives formulas that may contain `all_past`/`all_future` (Cases 1-2 produce separated witnesses using them). Research confirmed `is_syntactically_separated` allows `.all_past φ` (U-free φ) and `.all_future φ` (S-free φ). Resolution:
+  1. **Handle `all_future c'` in callback** (~5 LOC): `.all_future c'` where c' is S-free (preserved by `subst_S_free_preserves_S_free`). Already syntactically separated → `separated_imp_separable`. Trivial.
+  2. **Handle `all_past c'` in callback** (~30 LOC): `.all_past c'` ↔ `¬S(¬c', ⊤)` via `all_past_equiv`. Expand to `imp (snce (imp c' bot) (imp bot bot)) bot`. Apply `imp_separable`. The inner `.snce` has `no_S_nested_in_U` and `has_no_allpast_allfuture` → handled by `no_S_nested_in_U_separable_noax` IH.
+  3. **Handle `.snce c' d'` in callback** (~30 LOC): c', d' have single U-type at top level (U-free args + single U substituted). Apply `lemma_10_2_4`. If `has_no_allpast_allfuture` fails for c'/d', expand the `all_past`/`all_future` sub-formulas first (step 2 above).
+  4. **Wire `.untl`/`.snce` cases of `all_formulas_separable_aux`** (~50 LOC): Use `no_S_nested_in_U_separable_noax` with the fixed callback.
+  5. **Axiom elimination** (~30 LOC): Replace 9 axioms in SeparationThm.lean with `all_formulas_separable`.
 - Deep analysis of why each approach fails (documented in handoffs)
 
 **Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy with constructive witnesses, replacing the circular `all_separable` in Hierarchy.lean.
