@@ -254,11 +254,17 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 ### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [BLOCKED]
 
 **BLOCKER** (Phase 3):
-- **What failed**: The temporal closure axioms (`all_past_separable`, `all_future_separable`, `snce_separable`, `untl_separable`) cannot be proved without the full hierarchy. Structural induction and lexicographic induction on (junction_depth, formula_size) both fail because the separated equivalent of a formula can be LARGER than the original.
-- **What was tried**: (1) Structural induction on formula -- fails at `all_past`, `all_future`, `snce`, `untl` cases which need temporal closure. (2) Strong induction on junction_depth -- fails because `all_past` doesn't decrease junction_depth. (3) Lexicographic induction on (junction_depth, formula_size) -- fails because the separated equivalent psi can have larger formula_size than the original phi.
-- **Why it's stuck**: The GHR94 hierarchy requires "constituent substitution" (replacing atoms in past constituents of a separated formula). This is a complex operation that needs: (a) extracting the boolean structure of separated formulas, (b) substituting into S-terms while preserving the separated property, (c) applying the IH to each constituent individually. Formalizing this requires ~400-600 LOC of infrastructure that doesn't exist yet.
-- **What is needed**: Implement the constituent substitution infrastructure (Task 3.1 in the plan), then build the 4-layer hierarchy 10.2.5 -> 10.2.6 -> 10.2.7 -> 10.2.8. Estimated 6 hours of focused work in a fresh context.
+- **What failed**: The `.untl` and `.snce` cases of `all_formulas_separable_aux` still delegate to `all_separable` (which uses the axioms). Proving these without axioms requires the full GHR94 "constituent substitution" technique where, after abstracting temporal subformulas and separating, one substitutes back into the PAST (or FUTURE) constituents of the separated form independently and applies the IH to each. The IH is valid because each constituent has strictly lower junction depth (for 10.2.8) or fewer U-types (for 10.2.6).
+- **What was tried**: (1) Structural induction -- circular at `snce`/`untl` cases. (2) Strong induction on sizeOf -- same circularity. (3) Junction-depth induction -- `.imp` case doesn't decrease JD. (4) Lexicographic (JD, sizeOf) -- works for `.imp` but `.untl`/`.snce` still need the "substitute back into constituents" infrastructure. (5) Abstraction/roundtrip -- `abstract_subst_roundtrip` gives `subst(abstract(phi), p, U) = phi`, which is circular for separability.
+- **Why it's stuck**: The core issue is that `is_separable` is defined as `exists psi, is_syntactically_separated psi /\ int_equiv phi psi`. When we abstract U-types from `.snce C F` to get separated `.snce C' F'`, then substitute back, we get the ORIGINAL `.snce C F` (by the roundtrip), not a new formula with lower complexity. The GHR94 approach substitutes into the SEPARATED FORM (not the original), producing a formula with the STRUCTURE of the separated form but with temporal subformulas inserted. This new formula is NOT separated but HAS lower junction depth than the original. Formalizing this "substitute into separated form, bound JD of result" argument requires ~400 LOC.
+- **What is needed**: Implement `subst_in_separated_bounds_jd`: given separated psi and a substitution z -> S(E,F), show `junction_depth(subst psi z (S(E,F))) <= max(1, junction_depth(S(E,F)))`. Then use this in the `.snce` case of the induction.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Progress made in this session**:
+- Fixed pre-existing name collision (`u_free_s_free_is_separable` duplicate in Hierarchy.lean)
+- Proved 4 substitution preservation lemmas (Step 1 of strategy)
+- Built the `all_formulas_separable_aux` / `all_formulas_separable` framework (compiles, delegates to `all_separable` for `.untl`/`.snce`)
+- Deep analysis of why each approach fails (documented above)
 
 **Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy with constructive witnesses, replacing the circular `all_separable` in Hierarchy.lean.
 
@@ -274,7 +280,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 **Tasks**:
 
-- [ ] Task 3.1: Define constituent extraction infrastructure (~100 LOC) *(deviation: deferred -- blocked by hierarchy complexity)*
+- [ ] Task 3.1: Define constituent extraction infrastructure (~100 LOC) *(deviation: altered -- substitution preservation lemmas proved instead of SepDecomp structure; `subst_S_free_preserves_S_free`, `subst_U_free_preserves_U_free`, `subst_U_free_gives_no_S_nested`, `subst_preserves_no_allpast_allfuture` all proved; SepDecomp/subst_past_constituents still needed for the actual hierarchy)*
   - Location: `Hierarchy.lean`, after the existing infrastructure (after line 1054)
   - Define types for tracking separated structure:
     ```lean
