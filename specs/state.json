@@ -362,14 +362,14 @@
           "summary": "Comprehensive research on redefining G/H/F/P as abbreviations via Until/Since per Burgess 1982. ~1416 references across 70 files, 6-phase strategy, key risks identified."
         },
         {
-          "path": "specs/116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md",
-          "type": "plan",
-          "summary": "6-phase plan: redefine G/H/F/P via Until/Since, ~70 files, 18h estimated"
-        },
-        {
           "path": "specs/116_redefine_ghfp_via_until_since/reports/02_team-research.md",
           "type": "report",
           "summary": "Team research with 4 teammates: corrected scope (103 files/2398 refs), tier classification, WeakCanonical gap, @[match_pattern] proposal"
+        },
+        {
+          "path": "specs/116_redefine_ghfp_via_until_since/plans/02_redefine-ghfp-plan.md",
+          "type": "plan",
+          "summary": "Revised 12-phase plan (35h): 103 files/2398 refs, WeakCanonical coverage, @[match_pattern] prototyping, temp_k_dist/temp_4 pre-derivation, test suite phases"
         }
       ],
       "topic": "formula-refactor",

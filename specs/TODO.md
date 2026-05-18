@@ -520,7 +520,9 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Research**:
   - [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
   - [116_redefine_ghfp_via_until_since/reports/02_team-research.md]
-- **Plan**: [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
+- **Plan**:
+  - [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
+  - [116_redefine_ghfp_via_until_since/plans/02_redefine-ghfp-plan.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
 
@@ -545,6 +547,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Created**: 2026-04-10
 
 **Description**: Verification pass on `bx_completeness` sorry status. Updated scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case `sorryAx` chain: `dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal` (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
+
 ---
 
 ### 68. Prove dense_completeness_fc via Rat canonical model
@@ -552,6 +555,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Language**: lean4
 
 **Description**: Abandoned: target file (FrameConditions/Completeness.lean) moved to Boneyard. Dense completeness solved through `dd_countermodel_chronicle_dense`.
+
 ---
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
@@ -559,6 +563,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Language**: lean4
 
 **Description**: Abandoned: research-only task whose findings (Strategy C recommendations) were fully acted upon via the chronicle approach in tasks 107-142.
+
 ---
 
 ### 60. Clean up stale discrete_Icc_finite_axiom references
@@ -582,6 +587,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md)
 
 **Description**: Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned).
+
 ---
 
 ### 20. Audit and update parametric canonical infrastructure
