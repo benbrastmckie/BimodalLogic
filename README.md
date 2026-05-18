@@ -143,9 +143,11 @@ graph TD
 | Frame Class | Additional Axioms | Soundness | Completeness |
 |-------------|------------------|-----------|--------------|
 | **Linear** | — | `soundness` | — |
-| **Serial** | — | `soundness` | `bx_completeness` |
+| **Serial** | `⊤ → F⊤`, `⊤ → P⊤` | `soundness` | `bx_completeness` |
 | **Dense** | `Fφ → FFφ` | `soundness_dense` | `dd_countermodel_chronicle_dense` |
-| **Discrete** | `Fφ → U(φ,¬φ)`<br>`Pφ → S(φ,¬φ)`<br>`G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | active sorries |
+| **Discrete** | see below | `soundness_discrete` | active sorries |
+
+**Discrete axioms**: `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)`
 
 **Active sorry obligations**:
 
