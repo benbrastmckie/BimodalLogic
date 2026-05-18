@@ -1460,17 +1460,142 @@ theorem snce_depth_zero_single_U_separated (phi A B : Formula)
       simp [is_syntactically_separated, h.1, h.2]
     · omega
 
-/-! ### Step 5c: No-S-Nested-in-U Separability via Count Induction
+/-! ### Step 5c: Single-U-Type at Depth 0 — Direct Separability via Event-Guard Decomposition
 
-GHR94 Lemma 10.2.6: any formula with `no_S_nested_in_U` is separable.
-Proof by strong induction on `count_U_subformulas phi`:
-- count = 0: U-free, syntactically separated
-- count > 0: extract U-type, abstract it to get fewer U-subformulas, apply IH.
-  Then substitute back via `subst_in_separated_separable`.
+GHR94 Lemma 10.2.4: `.snce C F` where U(A,B) appears only at top level (not under
+any S within C or F) is separable. The proof decomposes into Cases 1-8 using:
+1. Event-splitting on U(A,B)
+2. CNF decomposition of the guard
+3. Generalized Cases 1-8 (no S-free requirement on a, q)
 
-The callback for `subst_in_separated_separable` currently uses `all_separable`
-(temporal closure axiom). This will be eliminated when the jd = 1 case is proved
-directly via event-guard decomposition + Lemma 10.2.4. -/
+Key technique: `C ∧ U(A,B) ≡ C[U:=⊤] ∧ U(A,B)` where C[U:=⊤] is U-free. -/
+
+/-- Replace all `.untl A B` with a constant formula `r` in `C`.
+    Simpler than abstract_untl + subst: directly replaces at formula level. -/
+def replace_untl (C A B r : Formula) : Formula :=
+  match C with
+  | .atom a => .atom a
+  | .bot => .bot
+  | .imp c d => .imp (replace_untl c A B r) (replace_untl d A B r)
+  | .box c => .box (replace_untl c A B r)
+  | .all_past c => .all_past (replace_untl c A B r)
+  | .all_future c => .all_future (replace_untl c A B r)
+  | .untl c d => if c = A ∧ d = B then r else .untl (replace_untl c A B r) (replace_untl d A B r)
+  | .snce c d => .snce (replace_untl c A B r) (replace_untl d A B r)
+
+/-- replace_untl with single U-type produces a U-free formula when r is U-free. -/
+theorem replace_untl_U_free (C A B r : Formula)
+    (hsingle : has_single_U_type C A B) (hr : is_U_free r = true) :
+    is_U_free (replace_untl C A B r) = true := by
+  induction C with
+  | atom _ => simp [replace_untl, is_U_free]
+  | bot => simp [replace_untl, is_U_free]
+  | imp c d ih1 ih2 =>
+    simp [replace_untl, is_U_free, ih1 hsingle.1, ih2 hsingle.2]
+  | box c ih =>
+    simp [replace_untl, is_U_free, ih hsingle]
+  | all_past c ih =>
+    simp [replace_untl, is_U_free, ih hsingle]
+  | all_future c ih =>
+    simp [replace_untl, is_U_free, ih hsingle]
+  | untl c d _ _ =>
+    have ⟨hc, hd⟩ := hsingle; subst hc; subst hd
+    simp [replace_untl, is_U_free, hr]
+  | snce c d ih1 ih2 =>
+    simp [replace_untl, is_U_free, ih1 hsingle.1, ih2 hsingle.2]
+
+/-- replace_untl is identity on U-free formulas. -/
+theorem replace_untl_identity_U_free (C A B r : Formula) (h : is_U_free C = true) :
+    replace_untl C A B r = C := by
+  induction C with
+  | atom _ => simp [replace_untl]
+  | bot => simp [replace_untl]
+  | imp c d ih1 ih2 => simp [is_U_free] at h; simp [replace_untl, ih1 h.1, ih2 h.2]
+  | box c ih => simp [is_U_free] at h; simp [replace_untl, ih h]
+  | all_past c ih => simp [is_U_free] at h; simp [replace_untl, ih h]
+  | all_future c ih => simp [is_U_free] at h; simp [replace_untl, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce c d ih1 ih2 => simp [is_U_free] at h; simp [replace_untl, ih1 h.1, ih2 h.2]
+
+/-- When U(A,B) holds at a point and C has single U-type with snce_depth_of_U = 0
+    and has_no_allpast_allfuture, C evaluates identically to replace_untl C A B (¬⊥).
+    This is because every .untl A B in C is evaluated at the SAME point t
+    (not shifted by .snce or .all_past/.all_future). -/
+theorem single_U_eval_when_U_true (C A B : Formula)
+    (hsingle : has_single_U_type C A B)
+    (hexp : has_no_allpast_allfuture C = true)
+    (hdepth : snce_depth_of_U C = 0) (M : IntStructure) (t : ℤ)
+    (hU : int_truth M t (.untl A B)) :
+    int_truth M t C ↔ int_truth M t (replace_untl C A B (Formula.neg .bot)) := by
+  induction C with
+  | atom _ => simp [replace_untl]
+  | bot => simp [replace_untl]
+  | imp c d ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at hexp
+    simp [snce_depth_of_U] at hdepth
+    simp only [replace_untl, int_truth]
+    exact Iff.imp (ih1 hsingle.1 hexp.1 (by omega)) (ih2 hsingle.2 hexp.2 (by omega))
+  | box _ => simp [replace_untl, int_truth]
+  | all_past _ => simp [has_no_allpast_allfuture] at hexp
+  | all_future _ => simp [has_no_allpast_allfuture] at hexp
+  | untl c d _ _ =>
+    have ⟨hc, hd⟩ := hsingle; subst hc; subst hd
+    simp [replace_untl, Formula.neg, int_truth]
+    exact hU
+  | snce c d ih1 ih2 =>
+    -- snce_depth_of_U (.snce c d) = 0 means both c and d are U-free
+    simp [snce_depth_of_U] at hdepth
+    split at hdepth
+    · next h =>
+      -- Both c, d are U-free. replace_untl is identity.
+      rw [replace_untl_identity_U_free c A B _ h.1,
+          replace_untl_identity_U_free d A B _ h.2]
+      simp [replace_untl]
+    · omega
+
+/-- Dual: when ¬U(A,B) holds at a point, C evaluates identically to replace_untl C A B ⊥. -/
+theorem single_U_eval_when_U_false (C A B : Formula)
+    (hsingle : has_single_U_type C A B)
+    (hexp : has_no_allpast_allfuture C = true)
+    (hdepth : snce_depth_of_U C = 0) (M : IntStructure) (t : ℤ)
+    (hnotU : ¬ int_truth M t (.untl A B)) :
+    int_truth M t C ↔ int_truth M t (replace_untl C A B .bot) := by
+  induction C with
+  | atom _ => simp [replace_untl]
+  | bot => simp [replace_untl]
+  | imp c d ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at hexp
+    simp [snce_depth_of_U] at hdepth
+    simp only [replace_untl, int_truth]
+    exact Iff.imp (ih1 hsingle.1 hexp.1 (by omega)) (ih2 hsingle.2 hexp.2 (by omega))
+  | box _ => simp [replace_untl, int_truth]
+  | all_past _ => simp [has_no_allpast_allfuture] at hexp
+  | all_future _ => simp [has_no_allpast_allfuture] at hexp
+  | untl c d _ _ =>
+    have ⟨hc, hd⟩ := hsingle; subst hc; subst hd
+    simp [replace_untl, int_truth]
+    exact hnotU
+  | snce c d ih1 ih2 =>
+    simp [snce_depth_of_U] at hdepth
+    split at hdepth
+    · next h =>
+      rw [replace_untl_identity_U_free c A B _ h.1,
+          replace_untl_identity_U_free d A B _ h.2]
+      simp [replace_untl]
+    · omega
+
+/-- Semantic equivalence: C ∧ U(A,B) ≡ C[U:=⊤] ∧ U(A,B) for single-U-type C. -/
+theorem single_U_and_conj_simplify (C A B : Formula)
+    (hsingle : has_single_U_type C A B) :
+    int_equiv (Formula.and C (.untl A B))
+              (Formula.and (subst_U_with_true C A B) (.untl A B)) := by
+  intro M t; constructor
+  · intro h
+    have ⟨hC, hU⟩ := int_truth_and_iff.mp h
+    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle M t hU).mp hC, hU⟩
+  · intro h
+    have ⟨hCt, hU⟩ := int_truth_and_iff.mp h
+    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle M t hU).mpr hCt, hU⟩
 
 /-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
     is separable. Proof by count induction with constituent substitution.
