@@ -70,7 +70,7 @@ technical_debt:
   └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H) a) (see above)
   └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z and complete d) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
-163 [NOT STARTED] — Rename misnamed "representation" theorems to "completeness"
+163 [RESEARCHED] — Rename misnamed "representation" theorems to "completeness"
 
 
 ### Decidability
@@ -117,8 +117,9 @@ technical_debt:
 
 ### 163. Rename representation theorems to completeness in Algebraic module
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**: [163_rename_representation_to_completeness/reports/01_team-research.md]
 
 **Description**: Rename misnamed "representation" theorems to "completeness" theorems throughout `Theories/Bimodal/Metalogic/Algebraic/`. The theorems currently named `*representation*` are completeness theorems (contrapositive form: not provable → countermodel exists), not representation theorems in the Jónsson-Tarski sense. A genuine representation theorem would embed the Lindenbaum-Tarski algebra into the complex algebra of a frame class — a purely algebraic structural result with no mention of provability.
 
