@@ -238,7 +238,7 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
 ---
 
-### Phase 2: Case 3 General Equivalence and Case 5 Separability (Phase 6B-2) [IN PROGRESS]
+### Phase 2: Case 3 General Equivalence and Case 5 Separability (Phase 6B-2) [PARTIAL]
 
 **Goal**: Prove the GHR94 Lemma 10.3.11 Case 3 general equivalence for ARBITRARY event `a` (not just U-free), specialized to integers. Then derive Case 5 separability from it.
 
