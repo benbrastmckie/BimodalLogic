@@ -171,7 +171,7 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-18T02:59:53Z",
+      "last_updated": "2026-05-18T04:44:57Z",
       "session_id": "sess_1779073142_344af2",
       "researched": "2026-05-17T20:33:36Z",
       "artifacts": [
@@ -199,6 +199,11 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/07_complete-remaining-plan.md",
           "type": "plan",
           "summary": "v10: complete remaining (Phase 7A/7B + Phase 6A/6B/6C + Phase 8), strict GHR94 compliance"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/summaries/06_implementation-summary.md",
+          "type": "summary",
+          "summary": "Partial team implementation: sorry-free ExpressiveCompleteness achieved, axiom elimination blocked by GHR94 Case 5-8 integer error"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
