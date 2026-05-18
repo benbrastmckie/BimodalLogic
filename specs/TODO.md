@@ -1,5 +1,5 @@
 ---
-next_project_number: 165
+next_project_number: 166
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 165. Establish semantic finite model property for TM bimodal logic
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Establish the semantic finite model property for TM bimodal logic. The existing FMP in `Decidability/FMP/` is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a (possibly infinite) canonical model where φ fails, quotient worlds by agreement on the subformula closure of φ. (2) Prove the filtration lemma: truth of all subformulas is preserved in the quotient. The existing `TruthPreservation.lean` handles bot, imp, and box, but temporal operators are absent — the G/H cases were archived (they assumed the T-axiom, invalid under strict semantics) and Until/Since cases were never attempted. Until/Since are known to be problematic for naive filtration since they quantify over intermediate points; selective filtration or alternative constructions may be needed (see Blackburn/de Rijke/Venema Ch 2.3, Reynolds 2003). (3) Prove the quotient model is a valid task frame (nullity, compositionality, reflection preserved under filtration). (4) Bound the model size by `2^|cl(φ)|`. The result should be stated as: if φ is satisfiable in a task model, then φ is satisfiable in a finite task model of bounded size. This is needed for each frame class (serial, dense, discrete) to establish decidability.
 
 ### 164. Prove tableau correctness theorem for decision procedure
 - **Effort**: large

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 165,
+      "project_name": "establish_semantic_finite_model_property",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Establish the semantic finite model property for TM bimodal logic. The existing FMP in Decidability/FMP/ is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a canonical model where phi fails, quotient worlds by agreement on the subformula closure. (2) Prove the filtration lemma for all formula constructors including Until/Since (known to be problematic for naive filtration). (3) Prove the quotient model is a valid task frame. (4) Bound the model size by 2^|cl(phi)|. The result should be stated as: if phi is satisfiable in a task model, then phi is satisfiable in a finite task model of bounded size.",
+      "created": "2026-05-18T18:06:02Z",
+      "last_updated": "2026-05-18T18:06:02Z"
+    },
+    {
       "project_number": 164,
       "project_name": "prove_tableau_correctness",
       "status": "not_started",
@@ -1526,7 +1535,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 165,
+  "next_project_number": 166,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

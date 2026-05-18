@@ -129,9 +129,9 @@ The metalogic is organized around a hierarchy of temporal frame classes, each ex
 ```mermaid
 graph TD
     L("<b>LinearTemporalFrame</b><br/>AddCommGroup<br/>LinearOrder")
-    S("<b>SerialFrame</b><br/>+ Nontrivial · NoMaxOrder<br/>+ NoMinOrder<br/>Sound ✓ · Complete ✓<br/>Decidable ✓")
-    D("<b>DenseTemporalFrame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓<br/>Decidable ✓")
-    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Sound ✓ · Complete ⧖<br/>Decidable ⧖")
+    S("<b>SerialFrame</b><br/>+ Nontrivial · NoMaxOrder<br/>+ NoMinOrder<br/>Sound ✓ · Complete ✓")
+    D("<b>DenseTemporalFrame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓")
+    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Sound ✓ · Complete ⧖")
 
     L --> S
     S --> D
@@ -140,20 +140,22 @@ graph TD
 
 ### Result Details
 
-| Frame Class | Additional Axioms | Soundness | Completeness | Decidability | Representation |
-|-------------|------------------|-----------|--------------|--------------|----------------|
-| **Linear** | — | sorry-free | — | — | — |
-| **Serial** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) | sorry-free |
-| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | sorry-free (FMP) | sorry-free |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — | active sorries |
+| Frame Class | Additional Axioms | Soundness | Completeness |
+|-------------|------------------|-----------|--------------|
+| **Linear** | — | sorry-free | — |
+| **Serial** | — | sorry-free | sorry-free (canonical model via BFMCS) |
+| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) |
+| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) |
 
 The standard instance of `DiscreteTemporalFrame` is `Int`; the standard instance of `DenseTemporalFrame` is the canonical quotient construction used in the completeness proof.
+
+The **finite model property**, **decidability** (via a verified tableau procedure), and a Jónsson-Tarski style **representation theorem** (embedding the Lindenbaum-Tarski algebra into the complex algebra of a class of task frames) have not yet been established for any frame class. Existing code in the `Decidability/` module provides proof-theoretic infrastructure (closure MCS finiteness, a tableau implementation) but does not yet connect to semantic validity.
 
 **Active sorry obligations**:
 
 - *Discrete completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
 
-The Deduction Theorem, Finite Model Property (with `2^|closure(φ)|` bound), and the six Perpetuity Principles (P1–P6) are all fully proven.
+The Deduction Theorem and the six Perpetuity Principles (P1–P6) are fully proven.
 
 ---
 
