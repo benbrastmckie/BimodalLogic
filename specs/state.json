@@ -8,12 +8,12 @@
     {
       "project_number": 166,
       "project_name": "rename_metalogical_theorems_standard_names",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Rename major metalogical theorems to standard uniform names. Soundness: soundness -> soundness_serial (requires Nontrivial D for seriality), add soundness_linear excluding seriality axioms. soundness_dense and soundness_discrete keep as-is. Completeness: bx_completeness -> completeness_serial, dd_countermodel_chronicle_dense -> completeness_dense, doets_countermodel_discrete -> completeness_discrete, dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove. Update all call sites, docstrings, and README.",
       "created": "2026-05-18T18:14:23Z",
-      "last_updated": "2026-05-18T20:47:45Z",
-      "session_id": "sess_1779136887_2711a9",
+      "last_updated": "2026-05-18T20:58:19Z",
+      "session_id": "sess_1779137883_6ac2b1",
       "researched": "2026-05-18T20:47:45Z",
       "artifacts": [
         {
@@ -46,9 +46,9 @@
       "project_name": "rename_representation_to_completeness",
       "status": "researched",
       "task_type": "lean4",
-      "description": "Rename misnamed representation theorems to completeness theorems throughout Theories/Bimodal/Metalogic/Algebraic/. The theorems currently named *representation* are completeness theorems (contrapositive form: not provable implies countermodel exists), not representation theorems in the Jonsson-Tarski sense. A genuine representation theorem would embed the Lindenbaum-Tarski algebra into the complex algebra of a frame class. Rename 7 theorem definitions, update 4 call sites, rename 2 files (AlgebraicRepresentation.lean to AlgebraicCompleteness.lean, ParametricRepresentation.lean to ParametricCompleteness.lean), and update docstrings/comments.",
+      "description": "Rename misnamed representation theorems to completeness and recover ultrafilter frame infrastructure from Boneyard. (A) RENAME: 7 theorem renames (*representation* → *completeness*), 4 call site updates, 2 file renames (AlgebraicRepresentation.lean → AlgebraicCompleteness.lean, ParametricRepresentation.lean → ParametricCompleteness.lean), docstring/comment updates. (B) RECOVER: Extract Phase 1 definitions from Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean (~lines 56-1519) into a new Algebraic/UltrafilterFrame.lean. Generalize R_G, R_H, R_Box from LindenbaumAlg to arbitrary STSA α. Include key properties: R_G_trans, R_Box_refl, R_Box_euclidean, R_Box_symm, R_Box_trans, R_G_R_H_converse, G_preimage/H_preimage filter properties. Leave Phase 2 (box-class BFMCS, line 1520+) in Boneyard. The recovered file provides the ultrafilter frame seed for the Jonsson-Tarski representation theorem (task 125). Note: UltrafilterChain.lean has 18 sorries (most from temp_4/temp_k_dist removed in BX); the recovery should preserve sorry annotations for later resolution.",
       "created": "2026-05-18T17:52:31Z",
-      "last_updated": "2026-05-18T20:54:41Z",
+      "last_updated": "2026-05-18T21:01:40Z",
       "session_id": "sess_1779137275_b5dec8",
       "researched": "2026-05-18T20:54:41Z",
       "next_artifact_number": 2,
@@ -294,16 +294,14 @@
       "project_name": "jonsson_tarski_representation_bimodal_sus",
       "status": "not_started",
       "task_type": "formal",
-      "description": "Research algebraic methods for establishing a Jónsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (□), plus material implication (→) and bottom (⊥) as the primitive Boolean operators. The goal is to determine whether the Lindenbaum-Tarski algebra of TM forms a variety of Boolean algebras with operators (BAOs) that admits a concrete representation into complex algebras of relational structures (task frames). Key questions: (1) Since S and U are binary normal operators, does the standard Jónsson-Tarski representation for n-ary BAOs apply directly, or does the interaction with the S5 modal operator □ introduce complications? (2) What role does orthodox axiomatizability (no IRR rule) play — per Venema 1993 (Anti-Axioms), orthodox systems ensure closure under ultraproducts, but TM uses the IRR rule in the ConservativeExtension module; does this affect the algebraic representation? (3) Can the existing TenseS5Algebra.lean structure be extended to a full BAO with S/U operators, and does the Lindenbaum quotient construction yield a representable algebra? (4) What is the relationship between the parametric representation theorem (ParametricRepresentation.lean) and a Jónsson-Tarski-style algebraic representation — are they equivalent, or does one subsume the other? (5) How do the Prior-UZ/SZ axioms (discrete well-ordering) and the uniformity axioms (ordered abelian group structure) interact with the algebraic representation? Literature base: Venema 1991 (dissertation Ch2 + App A), Venema 1993 (Anti-Axioms), Goldblatt-Hodkinson-Venema 2003, Venema 1997 (Atom Structures), de Rijke-Venema 1995 (Sahlqvist for BAOs), Blackburn-de Rijke-Venema 2001 Ch5 (not yet obtained). All papers are in literature/ with markdown conversions.",
+      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
       "dependencies": [
-        123,
-        124,
-        122,
         116,
-        115
+        122,
+        163
       ],
       "created": "2026-05-11T19:35:39Z",
-      "last_updated": "2026-05-11T19:35:39Z",
+      "last_updated": "2026-05-18T21:01:57Z",
       "topic": "algebraic-representation"
     },
     {

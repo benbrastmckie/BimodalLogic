@@ -66,11 +66,12 @@ technical_debt:
 
 ### Algebraic Representation
 
-125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
-  └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H) a) (see above)
-  └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z and complete d) (see above)
+163 [RESEARCHED] — Rename representation to completeness + recover UltrafilterFrame from Boneyard
+125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic (phased: Cm → Uf → η → S/U)
+  └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
+  └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z) (see above)
+  └─ 163 [RESEARCHED] — (algebraic-representation: Rename + recover UltrafilterFrame) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
-163 [RESEARCHED] — Rename misnamed "representation" theorems to "completeness"
 
 
 ### Decidability
@@ -95,7 +96,7 @@ technical_debt:
 
 ### 166. Rename metalogical theorems to standard uniform names
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Research**: [specs/166_rename_metalogical_theorems_standard_names/reports/01_metalogical-naming-hygiene.md]
 
@@ -115,15 +116,17 @@ technical_debt:
 
 **Description**: Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current `validity_decidable` theorem in `Theories/Bimodal/Metalogic/Decidability/Correctness.lean` is trivially `Classical.em (⊨ φ)` — it says nothing about the tableau. The `decide` function in `DecisionProcedure.lean` implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) `decide_sound`: if `decide φ = .valid proof` then `⊨ φ` (may follow from soundness + the proof term). (2) `decide_complete`: if `decide φ = .invalid counter` then `¬(⊨ φ)` (requires proving countermodel extraction produces a genuine semantic countermodel). (3) `decide_terminates`: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, "sorry-free (tableau)" in the README is misleading — the implementation exists but its correctness is unverified.
 
-### 163. Rename representation theorems to completeness in Algebraic module
-- **Effort**: small
+### 163. Rename representation to completeness and recover ultrafilter frame from Boneyard
+- **Effort**: medium
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
-- **Research**: [163_rename_representation_to_completeness/reports/01_team-research.md]
+- **Research**: [specs/163_rename_representation_to_completeness/reports/01_team-research.md]
 
-**Description**: Rename misnamed "representation" theorems to "completeness" theorems throughout `Theories/Bimodal/Metalogic/Algebraic/`. The theorems currently named `*representation*` are completeness theorems (contrapositive form: not provable → countermodel exists), not representation theorems in the Jónsson-Tarski sense. A genuine representation theorem would embed the Lindenbaum-Tarski algebra into the complex algebra of a frame class — a purely algebraic structural result with no mention of provability.
+**Description**: Two-part task: (A) rename misnamed "representation" theorems to "completeness" throughout `Theories/Bimodal/Metalogic/Algebraic/`, and (B) recover ultrafilter frame infrastructure from Boneyard as seed for future Jónsson-Tarski representation (task 125).
 
-**Theorems to rename** (7 definitions):
+**Part A — Rename** (original scope):
+
+*Theorems* (7 definitions):
 - `parametric_algebraic_representation_relative` → `parametric_canonical_completeness_relative`
 - `parametric_representation_from_neg_membership` → `parametric_completeness_from_neg_membership`
 - `parametric_algebraic_representation_conditional` → `parametric_canonical_completeness_conditional`
@@ -132,11 +135,15 @@ technical_debt:
 - `restricted_parametric_representation_from_neg_membership` → `restricted_parametric_completeness_from_neg_membership`
 - `fully_restricted_parametric_representation_from_neg_membership` → `fully_restricted_parametric_completeness_from_neg_membership`
 
-**Call sites** (4): `RootScopedChain.lean:220`, `ChronicleToCountermodel.lean:812,3307`, `ParametricRepresentation.lean:269`
+*Call sites* (4): `RootScopedChain.lean:220`, `ChronicleToCountermodel.lean:812,3307`, `ParametricRepresentation.lean:269`
 
-**Files to rename** (2): `AlgebraicRepresentation.lean` → `AlgebraicCompleteness.lean`, `ParametricRepresentation.lean` → `ParametricCompleteness.lean`
+*Files to rename* (2): `AlgebraicRepresentation.lean` → `AlgebraicCompleteness.lean`, `ParametricRepresentation.lean` → `ParametricCompleteness.lean`
 
 Update docstrings/comments mentioning "representation theorem" to say "completeness theorem" or "canonical completeness".
+
+**Part B — Recover UltrafilterFrame from Boneyard**:
+
+Extract Phase 1 definitions (~lines 56–1519) from `Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean` into a new `Algebraic/UltrafilterFrame.lean`. Generalize `R_G`, `R_H`, `R_Box` from `LindenbaumAlg` to arbitrary `[STSA α]`. Include key properties: `R_G_trans`, `R_Box_refl`, `R_Box_euclidean`, `R_Box_symm`, `R_Box_trans`, `R_G_R_H_converse`, `G_preimage`/`H_preimage` filter properties. Leave Phase 2 (box-class BFMCS construction, line 1520+) in Boneyard. The source file has 18 sorries (most from `temp_4`/`temp_k_dist` removed in BX) — preserve sorry annotations for later resolution.
 
 ### 162. Enforce strict plan compliance for formal implementation agents
 - **Effort**: small
@@ -451,13 +458,27 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ---
 
-### 125. Jónsson-Tarski representation theorem for bimodal S/U/□ logic
+### 125. Jónsson-Tarski representation theorem for TM logic
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
-- **Dependencies**: 123, 124, 122, 116, 115
+- **Dependencies**: 116, 122, 163
 
-**Description**: Research algebraic methods for establishing a Jónsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (□), plus material implication (→) and bottom (⊥). Key questions: (1) Does standard n-ary BAO representation apply directly to binary S/U + unary □, or does S5 interaction complicate things? (2) Role of orthodox axiomatizability (no IRR rule) per Venema 1993. (3) Can TenseS5Algebra.lean extend to a full BAO with S/U? (4) Relationship between parametric representation and Jónsson-Tarski. (5) Interaction of Prior-UZ/SZ and uniformity axioms with the algebraic representation. Literature: Venema 1991 Ch2+AppA, Venema 1993 Anti-Axioms, GHV 2003, Venema 1997, de Rijke-Venema 1995, BdRV 2001 Ch5.
+**Description**: Implement a Jónsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. This is a purely algebraic structural result with no mention of provability — distinct from the completeness theorems (renamed in task 163).
+
+**Phased approach**:
+- **Phase 1 — Complex algebra `Cm(F)`**: Define the powerset STSA for TaskFrames with `box`/`G`/`H`/`sigma` operators derived from frame relations. Prove `Cm(F)` satisfies all STSA axioms. Self-contained, depends only on Semantics and Mathlib.
+- **Phase 2 — Ultrafilter frame `Uf(A)`**: Given abstract STSA `A`, construct frame whose worlds are ultrafilters with canonical relations `R_G`, `R_H`, `R_Box` (seed infrastructure recovered in task 163 from Boneyard). Prove `Uf(A)` satisfies TaskFrame axioms. Duration type D may require parametric treatment.
+- **Phase 3 — Embedding theorem**: Prove `η(a) = {U | a ∈ U}` is an injective STSA homomorphism `A ↪ Cm(Uf(A))`. Core J-T result.
+- **Phase 4 — Since/Until extension**: Extend STSA typeclass with binary `untl`/`sinc` operators (additive in each argument, conjugated per Venema 1997). Prove representation for full operator signature. S/U induce ternary canonical relations in the BAO framework.
+
+**Start with basic `{□, G, H}` fragment** (Phases 1–3) before tackling S/U (Phase 4).
+
+**Prerequisites**: Resolve 6 algebraic sorries (`temp_k_dist`, `temp_a`, `temp_l` in TenseS5Algebra/InteriorOperators/LindenbaumQuotient). Obtain 3 missing papers: Jónsson-Tarski 1951/52 (AJM), BRV 2001 Ch. 5, Goldblatt 1989 (APAL). Task 992 research report maps ~80% of needed infrastructure.
+
+**Architecture**: Restructure `Algebraic/` into `Core/` (shared STSA, Boolean, ultrafilter), `Completeness/` (renamed existing), `Representation/` (new J-T work: ComplexAlgebra.lean, UltrafilterFrame.lean, RepresentationEmbedding.lean, FrameProperties.lean).
+
+**Key references**: Venema 1991 Ch. 2 + App. A (BAO duality for temporal), de Rijke-Venema 1995 Thm 3.5 (Sahlqvist canonicity), Venema 1997 Thm 1.4 (conjugated varieties), GHV 2003 (BAOs and modal logic), Venema 1993 Anti-Axioms (orthodox axiomatizability).
 
 ---
 
