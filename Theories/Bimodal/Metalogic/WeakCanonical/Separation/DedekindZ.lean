@@ -1017,47 +1017,33 @@ private theorem snce_combined_U_separable
 /-! ## Cases 5-8 Separability -/
 
 set_option maxHeartbeats 1600000 in
-/-- Case 5 separability for Z: S(a ^ U(A,B), q v U(A,B)) is separable.
-    Proof: Apply case3_equiv_Z_general to decompose into three disjuncts.
-    D1 = S(a∧U, q) → Case 1 directly.
-    D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U) → alpha factor + distribute + replace_untl + Case 1.
-    D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q) → event split on U, Case 1/2. -/
-theorem case5_separable_Z (a q A B : Formula)
+/-- Generalized Case 5: S(a ^ U(A,B), q v U(A,B)) is separable.
+    Drops S-free requirements on a and q (only A, B need S-freeness).
+    The proof only uses S-freeness of A and B. -/
+theorem case5_separable_Z_gen (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) := by
-  -- Apply case3_equiv_Z_general to decompose S(a∧U, q∨U)
+  -- Same proof as case5_separable_Z but without ha'/hq'
   apply is_separable_of_equiv (case3_equiv_Z_general (Formula.and a (.untl A B)) q A B)
   simp only [case3_rhs]
   apply or_separable
-  · -- (D1 ∨ D2)
-    apply or_separable
-    · -- D1 = S(a∧U, q): Case 1
-      obtain ⟨psi, hequiv_psi, hsep_psi⟩ := elim_case_1_gen a q A B ha hq hA hB hA' hB'
+  · apply or_separable
+    · obtain ⟨psi, hequiv_psi, hsep_psi⟩ := elim_case_1_gen a q A B ha hq hA hB hA' hB'
       exact ⟨psi, hsep_psi, hequiv_psi⟩
-    · -- D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U)
-      apply and_separable
-      · -- S(alpha, Q_Z) is separable
-        -- Step 1: alpha ↔ (a ∨ (¬q ∧ S(a∧U,q))) ∧ U by case3_alpha_aU_factor
-        apply is_separable_of_equiv (snce_event_congr (case3_alpha_aU_factor a q A B))
-        -- Goal: S((a ∨ (¬q ∧ S(a∧U,q))) ∧ U, Q_Z)
-        -- Step 2: Distribute → S(a∧U, Q_Z) ∨ S((¬q∧S(a∧U,q))∧U, Q_Z)
+    · apply and_separable
+      · apply is_separable_of_equiv (snce_event_congr (case3_alpha_aU_factor a q A B))
         apply is_separable_of_equiv (int_equiv_trans
           (snce_event_congr (and_or_distrib a
             (Formula.and (Formula.neg q) (.snce (Formula.and a (.untl A B)) q))
             (.untl A B)))
           (since_distrib_or_left _ _ (Q_Z A B (Formula.neg q))))
         apply or_separable
-        · -- S(a∧U, Q_Z): Case 1
-          exact snce_combined_U_separable a (Q_Z A B (Formula.neg q)) A B
+        · exact snce_combined_U_separable a (Q_Z A B (Formula.neg q)) A B
             hA hB hA' hB' (Q_Z_neg_q_U_free A B q hA hB hq)
             (u_free_untl_under_bool a A B ha)
-        · -- S((¬q ∧ S(a∧U,q)) ∧ U, Q_Z)
-          -- Step 3: Replace S(a∧U,q) with σ = case1_psi in the event
-          -- int_equiv S(a∧U,q) σ, so ¬q∧S(a∧U,q) ↔ ¬q∧σ
-          let σ := case1_psi a q A B
+        · let σ := case1_psi a q A B
           have hσ_equiv : int_equiv (.snce (Formula.and a (.untl A B)) q) σ :=
             (case1_psi_properties a q A B ha hq hA hB hA' hB').1
           have hY_congr : int_equiv
@@ -1068,27 +1054,20 @@ theorem case5_separable_Z (a q A B : Formula)
               exact int_truth_and_iff.mpr ⟨hnq, (hσ_equiv M t).mp hS⟩
             · intro h; have ⟨hnq, hσ'⟩ := int_truth_and_iff.mp h
               exact int_truth_and_iff.mpr ⟨hnq, (hσ_equiv M t).mpr hσ'⟩
-          -- S((¬q∧S(a∧U,q))∧U, Q_Z) ↔ S((¬q∧σ)∧U, Q_Z)
           apply is_separable_of_equiv (snce_event_congr (and_left_congr hY_congr))
-          -- Step 4: ¬q∧σ satisfies untl_under_bool_only → apply snce_combined_U_separable
           have h_nqσ_bool : untl_under_bool_only (Formula.and (Formula.neg q) σ) A B := by
-            -- Formula.and p q = .imp (.imp p (.imp q .bot)) .bot
             show untl_under_bool_only (.imp (.imp (Formula.neg q) (.imp σ .bot)) .bot) A B
             refine ⟨⟨?_, case1_psi_bool_only a q A B ha hq hA hB, trivial⟩, trivial⟩
-            -- Formula.neg q = .imp q .bot
             exact ⟨u_free_untl_under_bool q A B hq, trivial⟩
           exact snce_combined_U_separable (Formula.and (Formula.neg q) σ)
             (Q_Z A B (Formula.neg q)) A B hA hB hA' hB'
             (Q_Z_neg_q_U_free A B q hA hB hq) h_nqσ_bool
-      · -- A ∨ B∧U
-        apply or_separable
+      · apply or_separable
         · exact u_free_s_free_is_separable A hA hA'
         · exact and_separable
             (u_free_s_free_is_separable B hB hB')
             ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
-  · -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
-    -- Step 1: Replace S(alpha, Q_Z) with d21_sep (explicit separated equivalent)
-    have h_d21 := d21_sep_equiv a q A B ha hq hA hB hA' hB'
+  · have h_d21 := d21_sep_equiv a q A B ha hq hA hB hA' hB'
     have h_event_congr : int_equiv
       (Formula.and (Formula.and A (Formula.or q (.untl A B)))
         (.snce (case3_alpha (Formula.and a (.untl A B)) q A B) (Q_Z A B (Formula.neg q))))
@@ -1099,29 +1078,21 @@ theorem case5_separable_Z (a q A B : Formula)
       · intro h; have ⟨hAqU, hd⟩ := int_truth_and_iff.mp h
         exact int_truth_and_iff.mpr ⟨hAqU, (h_d21 M t).mpr hd⟩
     apply is_separable_of_equiv (snce_event_congr h_event_congr)
-    -- Goal: is_separable S(A ∧ (q∨U) ∧ d21_sep, q)
-    -- Step 2: Event-split on U
     apply is_separable_of_equiv (since_event_split _ (.untl A B) q)
     apply or_separable
-    · -- S((A ∧ (q∨U) ∧ d21_sep) ∧ U, q)
-      -- A ∧ (q∨U) ∧ d21_sep satisfies untl_under_bool_only
-      have h_event_bool : untl_under_bool_only
+    · have h_event_bool : untl_under_bool_only
           (Formula.and (Formula.and A (Formula.or q (.untl A B))) (d21_sep a q A B)) A B := by
-        -- Formula.and p q = .imp (.imp p (.imp q .bot)) .bot
         show untl_under_bool_only (.imp (.imp (Formula.and A (Formula.or q (.untl A B)))
           (.imp (d21_sep a q A B) .bot)) .bot) A B
         refine ⟨⟨?_, d21_sep_bool_only a q A B ha hq hA hB, trivial⟩, trivial⟩
-        -- Formula.and A (Formula.or q (.untl A B))
         show untl_under_bool_only (.imp (.imp A (.imp (Formula.or q (.untl A B)) .bot)) .bot) A B
         refine ⟨⟨u_free_untl_under_bool A A B hA, ?_, trivial⟩, trivial⟩
-        -- Formula.or q (.untl A B) = .imp (.imp q .bot) (.untl A B)
         show untl_under_bool_only (.imp (.imp q .bot) (.untl A B)) A B
         exact ⟨⟨u_free_untl_under_bool q A B hq, trivial⟩, Or.inl ⟨rfl, rfl⟩⟩
       exact snce_combined_U_separable
         (Formula.and (Formula.and A (Formula.or q (.untl A B))) (d21_sep a q A B))
         q A B hA hB hA' hB' hq h_event_bool
-    · -- S((A ∧ (q∨U) ∧ d21_sep) ∧ ¬U, q)
-      have h_event_bool : untl_under_bool_only
+    · have h_event_bool : untl_under_bool_only
           (Formula.and (Formula.and A (Formula.or q (.untl A B))) (d21_sep a q A B)) A B := by
         show untl_under_bool_only (.imp (.imp (Formula.and A (Formula.or q (.untl A B)))
           (.imp (d21_sep a q A B) .bot)) .bot) A B
@@ -1133,6 +1104,14 @@ theorem case5_separable_Z (a q A B : Formula)
       exact snce_combined_notU_separable
         (Formula.and (Formula.and A (Formula.or q (.untl A B))) (d21_sep a q A B))
         q A B hA hB hA' hB' hq h_event_bool
+
+theorem case5_separable_Z (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) :=
+  case5_separable_Z_gen a q A B ha hq hA hB hA' hB'
 
 /-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable. -/
 theorem case6_separable_Z (a q A B : Formula)
