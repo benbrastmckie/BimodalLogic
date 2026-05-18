@@ -238,9 +238,16 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
 ---
 
-### Phase 2: Case 5 Intermediate Equivalence for Z (Phase 6B-2) [COMPLETED]
+### Phase 2: Case 5 Intermediate Equivalence for Z (Phase 6B-2) [BLOCKED]
 
 **Goal**: Prove Case 5 from GHR94 Lemma 10.3.11.5, specialized to integers. This is the CORE BREAKTHROUGH -- the formula that was wrong in Section 10.2 is correct when derived from Section 10.3 with Dedekind specialization.
+
+**BLOCKER** (Phase 2):
+- **What failed**: The neg_since_equiv decomposition approach for Cases 5-8 creates a dependency cycle. Case 5 decomposes into `¬H(¬a∨¬U) ∧ ¬S(¬q∧¬U, ¬a∨¬U)`. The second term is Case 8 form (`S(a'∧¬U, q'∨¬U)` with a'=¬q, q'=¬a). Case 8 similarly decomposes into terms requiring Case 5. The abstraction/substitution approach (abstract_untl + subst_correctness) also fails because substituting back into a separated formula produces a non-separated formula that requires Cases 1-8 to re-separate.
+- **What was tried**: (1) neg_since_equiv decomposition -- circular between Cases 5 and 8. (2) abstract_untl + semantic chain -- roundtrip gives identity, no new separated formula. (3) Junction-depth induction -- JD=1 base case IS Cases 5-8. (4) Structural induction on formula -- snce case needs snce_separable axiom.
+- **Why it's stuck**: The ONLY non-circular approach is the Q-lemma based Case 3 general equivalence from GHR94 Section 10.3.11.3 (lines 488-529 of the literature file). This is a ~200-line semantic proof involving: definition of L={z∈(s,t) | q on (s,z)}, l=sup L, R={z∈(s,t) | q on (z,t)}, r=inf R; case analysis on l,r vs t; application of Q_lemma_Z_fwd/Q_lemma_Z_bwd. The proof must work for GENERAL event a (not just U-free a) to enable Case 5 instantiation with a=a'∧U(A,B).
+- **What is needed**: Prove `case3_equiv_Z_general` -- the three-disjunct equivalence from GHR94 10.3.11.3 specialized to Z, for arbitrary event `a`. Then instantiate with `a := a' ∧ U(A,B)` for Case 5, and similarly for Cases 6-8. The Q-lemma infrastructure (Q_lemma_Z_fwd, Q_lemma_Z_bwd) is already proved and ready to use. The separability of the RHS follows from Cases 1-4 + boolean closure.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **CRITICAL FORMULA** (GHR94 10.3.11.5 specialized to Z with K+/K-/Gamma = bot):
 
@@ -342,7 +349,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
 
 ---
 
-### Phase 3: Cases 6-8 via Reductions (Phase 6B-3) [COMPLETED]
+### Phase 3: Cases 6-8 via Reductions (Phase 6B-3) [PARTIAL]
 
 **Goal**: Prove Cases 6, 7, and 8 by reducing them to previously proved cases, following GHR94 Lemma 10.3.11 items 6-8.
 

@@ -306,16 +306,24 @@ def case5_rhs (a q A B : Formula) : Formula :=
 
 /-! ## Case 5 Separability
 
-Rather than proving the full intermediate equivalence (which is extremely complex),
-we prove Case 5 separability using the existing infrastructure. Each disjunct of
-the RHS formula is separable:
-- Disjunct (i) = Case 1: already proved as elim_case_1_gen
-- Disjunct (ii): S(alpha, Q_Z) where Q_Z is U-free. After applying Case 1 to the
-  inner S(a ^ U(A,B), q) in alpha, the formula is separable.
-- Disjunct (iii): S(event, q) where event is U-free after Case 1 expansion.
+Case 5: S(a ^ U(A,B), q v U(A,B)) is separable.
 
-For now, we use all_separable to establish the result (matching the plan's statement
-that Phase 2 may use axioms, to be replaced in Phase 4). -/
+The proof uses the negation decomposition from neg_since_equiv:
+  S(a^U, qvU) ↔ ¬H(¬a ∨ ¬U) ∧ ¬S(¬q ∧ ¬U, ¬a ∨ ¬U)
+
+The first conjunct reduces to Case 1 (S(a^U, top)) via all_past_equiv_neg_snce.
+The second conjunct requires Case 8, which creates a dependency cycle.
+
+To break the cycle: we note that ¬S(¬q ∧ ¬U, ¬a ∨ ¬U) can be decomposed
+further via neg_since_equiv:
+  ¬S(¬q∧¬U, ¬a∨¬U) ↔ H(q∨U) ∨ S(a∧U, q∨U)
+The second disjunct IS Case 5 itself. So the negation approach is circular.
+
+Instead, we observe that S(¬q ∧ ¬U, ¬a ∨ ¬U) is Case 8 form (S(a'∧¬U, q'∨¬U)
+with a'=¬q, q'=¬a). On integer time, Case 8 simplifies via K-/Gamma vanishing.
+
+For the current implementation, we use all_separable as a bootstrap,
+to be replaced in Phase 4 when the full hierarchy is proved. -/
 
 /-- Case 5 separability for Z: S(a ^ U(A,B), q v U(A,B)) is separable.
     This is the core Case 5 result needed by the hierarchy theorem. -/
