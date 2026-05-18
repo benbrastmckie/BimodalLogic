@@ -72,7 +72,9 @@ private theorem and_separated {φ ψ : Formula}
 
 /-! ## Case 1 -/
 
-private def case1_psi (a q A B : Formula) : Formula :=
+/-- The separated equivalent of S(a ∧ U(A,B), q) from Case 1.
+    Structure: (S(a,q) ∧ S(a,B) ∧ B ∧ U(A,B)) ∨ (A ∧ S(a,B) ∧ S(a,q)) ∨ S(A∧q∧S(a,B)∧S(a,q), q) -/
+def case1_psi (a q A B : Formula) : Formula :=
   Formula.or (Formula.or
     (Formula.and (Formula.and (Formula.and (.snce a q) (.snce a B)) B) (.untl A B))
     (Formula.and (Formula.and A (.snce a B)) (.snce a q)))
@@ -254,6 +256,92 @@ theorem elim_case_1_gen (a q A B : Formula)
           · exact hrw ▸ hqw
           · exact hq_rest r hrw hrt
   · simp [case1_psi, Formula.and, Formula.or, Formula.neg,
+          is_syntactically_separated, is_U_free, ha, hq, hA, hB, hA', hB']
+    exact ⟨u_free_s_free_imp_separated B hB hB',
+           u_free_s_free_imp_separated A hA hA'⟩
+
+set_option maxHeartbeats 800000 in
+/-- case1_psi is int_equiv to S(a∧U, q) and syntactically separated.
+    This is the non-existential form of elim_case_1_gen for direct formula access. -/
+theorem case1_psi_properties (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    int_equiv (.snce (Formula.and a (.untl A B)) q) (case1_psi a q A B) ∧
+    is_syntactically_separated (case1_psi a q A B) = true := by
+  refine ⟨?_, ?_⟩
+  · -- Equivalence: same proof as in elim_case_1_gen
+    intro M t
+    simp only [case1_psi]
+    constructor
+    · intro ⟨s, hst, hand, hq_guard⟩
+      have ⟨ha_s, huntl⟩ := int_truth_and_iff.mp hand
+      obtain ⟨u, hsu, hAu, hB_guard⟩ := huntl
+      rcases lt_trichotomy u t with hut | hut | hut
+      · apply int_truth_or_iff.mpr; right
+        refine ⟨u, hut, ?_, fun r hur hrt => hq_guard r (lt_trans hsu hur) hrt⟩
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_and_iff]
+        exact ⟨⟨⟨hAu, hq_guard u hsu hut⟩, ⟨s, hsu, ha_s, hB_guard⟩⟩,
+               ⟨s, hsu, ha_s, fun r hsr hru => hq_guard r hsr (lt_trans hru hut)⟩⟩
+      · subst hut
+        apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; right
+        rw [int_truth_and_iff, int_truth_and_iff]
+        exact ⟨⟨hAu, ⟨s, hst, ha_s, hB_guard⟩⟩, ⟨s, hst, ha_s, hq_guard⟩⟩
+      · apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; left
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_and_iff]
+        exact ⟨⟨⟨⟨s, hst, ha_s, hq_guard⟩,
+               ⟨s, hst, ha_s, fun r hsr hrt => hB_guard r hsr (lt_trans hrt hut)⟩⟩,
+               hB_guard t hst hut⟩,
+               ⟨u, hut, hAu, fun r htr hru => hB_guard r (lt_trans hst htr) hru⟩⟩
+    · intro hrhs
+      rcases int_truth_or_iff.mp hrhs with h12 | h3
+      · rcases int_truth_or_iff.mp h12 with hd1 | hd2
+        · rw [int_truth_and_iff, int_truth_and_iff, int_truth_and_iff] at hd1
+          obtain ⟨⟨⟨⟨s₁, hs₁t, ha₁, hq₁⟩, ⟨s₂, hs₂t, ha₂, hB₂⟩⟩, hBt⟩,
+                  ⟨u, htu, hAu, hBu⟩⟩ := hd1
+          by_cases hle : s₁ ≤ s₂
+          · refine ⟨s₂, hs₂t, int_truth_and_iff.mpr ⟨ha₂,
+              u, lt_trans hs₂t htu, hAu, fun r hrs hru => ?_⟩,
+              fun r hrs hrt => hq₁ r (lt_of_le_of_lt hle hrs) hrt⟩
+            rcases lt_trichotomy r t with hrt | hrt | hrt
+            · exact hB₂ r hrs hrt
+            · exact hrt ▸ hBt
+            · exact hBu r hrt hru
+          · push_neg at hle
+            refine ⟨s₁, hs₁t, int_truth_and_iff.mpr ⟨ha₁,
+              u, lt_trans hs₁t htu, hAu, fun r hrs hru => ?_⟩, hq₁⟩
+            rcases lt_trichotomy r t with hrt | hrt | hrt
+            · exact hB₂ r (lt_trans hle hrs) hrt
+            · exact hrt ▸ hBt
+            · exact hBu r hrt hru
+        · rw [int_truth_and_iff, int_truth_and_iff] at hd2
+          obtain ⟨⟨hAt, ⟨s₁, hs₁t, ha₁, hB₁⟩⟩, ⟨s₂, hs₂t, ha₂, hq₂⟩⟩ := hd2
+          by_cases hle : s₁ ≤ s₂
+          · exact ⟨s₂, hs₂t, int_truth_and_iff.mpr ⟨ha₂,
+              t, hs₂t, hAt, fun r hrs hrt => hB₁ r (lt_of_le_of_lt hle hrs) hrt⟩, hq₂⟩
+          · push_neg at hle
+            exact ⟨s₁, hs₁t, int_truth_and_iff.mpr ⟨ha₁, t, hs₁t, hAt, hB₁⟩,
+              fun r hr1 hr2 => hq₂ r (lt_trans hle hr1) hr2⟩
+      · obtain ⟨w, hwt, hw_and, hq_rest⟩ := h3
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_and_iff] at hw_and
+        obtain ⟨⟨⟨hAw, hqw⟩, ⟨s₁, hs₁w, ha₁, hB₁⟩⟩, ⟨s₂, hs₂w, ha₂, hq₂⟩⟩ := hw_and
+        by_cases hle : s₁ ≤ s₂
+        · refine ⟨s₂, lt_trans hs₂w hwt, int_truth_and_iff.mpr ⟨ha₂,
+            w, hs₂w, hAw, fun r hrs hrw => hB₁ r (lt_of_le_of_lt hle hrs) hrw⟩,
+            fun r hrs hrt => ?_⟩
+          rcases lt_trichotomy r w with hrw | hrw | hrw
+          · exact hq₂ r hrs hrw
+          · exact hrw ▸ hqw
+          · exact hq_rest r hrw hrt
+        · push_neg at hle
+          refine ⟨s₁, lt_trans hs₁w hwt, int_truth_and_iff.mpr ⟨ha₁,
+            w, hs₁w, hAw, hB₁⟩, fun r hrs hrt => ?_⟩
+          rcases lt_trichotomy r w with hrw | hrw | hrw
+          · exact hq₂ r (lt_trans hle hrs) hrw
+          · exact hrw ▸ hqw
+          · exact hq_rest r hrw hrt
+  · -- Separation
+    simp [case1_psi, Formula.and, Formula.or, Formula.neg,
           is_syntactically_separated, is_U_free, ha, hq, hA, hB, hA', hB']
     exact ⟨u_free_s_free_imp_separated B hB hB',
            u_free_s_free_imp_separated A hA hA'⟩

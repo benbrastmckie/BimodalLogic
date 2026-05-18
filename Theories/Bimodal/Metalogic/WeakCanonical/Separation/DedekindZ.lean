@@ -541,81 +541,302 @@ private theorem case3_alpha_aU_factor (a q A B : Formula) :
     · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mpr ⟨h_a, hU⟩))
     · exact int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨h_nq_s, int_truth_or_iff.mpr (Or.inr hU)⟩))
 
+/-! ## Replace U(A,B) with True Infrastructure
+
+When U(A,B) appears only under boolean connectives (not under temporal operators),
+replacing it with True (= neg bot) preserves truth at any time where U(A,B) holds.
+This enables extracting a U-free event from S-formulas for Case 1 application. -/
+
+/-- Replace all occurrences of `.untl A B` with `neg bot` (True) in a formula. -/
+private def replace_untl_with_top (phi A B : Formula) : Formula :=
+  match phi with
+  | .atom a => .atom a
+  | .bot => .bot
+  | .imp p q => .imp (replace_untl_with_top p A B) (replace_untl_with_top q A B)
+  | .box p => .box (replace_untl_with_top p A B)
+  | .all_past p => .all_past (replace_untl_with_top p A B)
+  | .all_future p => .all_future (replace_untl_with_top p A B)
+  | .untl p q => if p == A && q == B then Formula.neg .bot else
+      .untl (replace_untl_with_top p A B) (replace_untl_with_top q A B)
+  | .snce p q => .snce (replace_untl_with_top p A B) (replace_untl_with_top q A B)
+
+/-- If phi is U-free, replace_untl_with_top is the identity. -/
+private theorem replace_id_of_U_free (phi A B : Formula) (h : is_U_free phi = true) :
+    replace_untl_with_top phi A B = phi := by
+  induction phi with
+  | atom _ => rfl | bot => rfl
+  | imp p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_top, ihp h.1, ihq h.2]
+  | box p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
+  | all_past p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
+  | all_future p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_top, ihp h.1, ihq h.2]
+
+/-- U(A,B) appears only under boolean connectives (imp), not under
+    temporal operators (.snce, .untl, .all_past, .all_future, .box).
+    At any time where U(A,B) holds, replacing U(A,B) with True preserves truth. -/
+private def untl_under_bool_only : Formula → Formula → Formula → Prop
+  | .atom _, _, _ => True
+  | .bot, _, _ => True
+  | .imp p q, A, B => untl_under_bool_only p A B ∧ untl_under_bool_only q A B
+  | .box p, _, _ => is_U_free p = true
+  | .all_past p, _, _ => is_U_free p = true
+  | .all_future p, _, _ => is_U_free p = true
+  | .untl p q, A, B => (p = A ∧ q = B) ∨ (is_U_free (.untl p q) = true)
+  | .snce p q, _, _ => is_U_free p = true ∧ is_U_free q = true
+
+/-- U-free formulas satisfy untl_under_bool_only trivially. -/
+private theorem u_free_untl_under_bool (phi A B : Formula) (h : is_U_free phi = true) :
+    untl_under_bool_only phi A B := by
+  induction phi with
+  | atom _ => trivial | bot => trivial
+  | imp p q ihp ihq => simp [is_U_free] at h; exact ⟨ihp h.1, ihq h.2⟩
+  | box _ => simp [is_U_free] at h; exact h
+  | all_past _ => simp [is_U_free] at h; exact h
+  | all_future _ => simp [is_U_free] at h; exact h
+  | untl _ _ => simp [is_U_free] at h
+  | snce p q _ _ => simp [is_U_free] at h; exact h
+
+/-- replace_untl_with_top produces U-free result when untl_under_bool_only holds. -/
+private theorem replace_U_free_of_bool (phi A B : Formula)
+    (h_bool : untl_under_bool_only phi A B) :
+    is_U_free (replace_untl_with_top phi A B) = true := by
+  induction phi with
+  | atom _ => rfl | bot => rfl
+  | imp p q ihp ihq =>
+    have ⟨hp, hq⟩ := h_bool
+    simp [replace_untl_with_top, is_U_free, ihp hp, ihq hq]
+  | box p _ =>
+    simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
+    exact h_bool
+  | all_past p _ =>
+    simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
+    exact h_bool
+  | all_future p _ =>
+    simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
+    exact h_bool
+  | untl p q _ _ =>
+    simp [replace_untl_with_top]
+    rcases h_bool with ⟨rfl, rfl⟩ | h_uf
+    · simp [beq_self_eq_true, is_U_free, Formula.neg]
+    · simp [is_U_free] at h_uf
+  | snce p q _ _ =>
+    have ⟨hp, hq⟩ := h_bool
+    show is_U_free (.snce (replace_untl_with_top p A B) (replace_untl_with_top q A B)) = true
+    simp [is_U_free, replace_id_of_U_free p A B hp, replace_id_of_U_free q A B hq, hp, hq]
+
+/-- For formulas where U(A,B) is only under boolean connectives,
+    at a time where U(A,B) holds, truth is preserved by replacement. -/
+private theorem replace_correct_bool (phi A B : Formula) (M : IntStructure) (t : ℤ)
+    (h_bool : untl_under_bool_only phi A B)
+    (hU : int_truth M t (.untl A B)) :
+    int_truth M t phi ↔ int_truth M t (replace_untl_with_top phi A B) := by
+  induction phi generalizing t with
+  | atom _ => simp [replace_untl_with_top]
+  | bot => simp [replace_untl_with_top]
+  | imp p q ihp ihq =>
+    have ⟨hp, hq⟩ := h_bool
+    simp only [replace_untl_with_top, int_truth]
+    exact Iff.imp (ihp t hp hU) (ihq t hq hU)
+  | box _ => simp [replace_untl_with_top, int_truth]
+  | all_past p _ =>
+    simp only [replace_untl_with_top, int_truth, replace_id_of_U_free p A B h_bool]
+  | all_future p _ =>
+    simp only [replace_untl_with_top, int_truth, replace_id_of_U_free p A B h_bool]
+  | untl p q _ _ =>
+    simp only [replace_untl_with_top]
+    rcases h_bool with ⟨rfl, rfl⟩ | h_uf
+    · simp [beq_self_eq_true, int_truth, Formula.neg]; exact hU
+    · simp [is_U_free] at h_uf
+  | snce p q _ _ =>
+    have ⟨hp, hq⟩ := h_bool
+    simp only [replace_untl_with_top, int_truth, replace_id_of_U_free p A B hp,
+               replace_id_of_U_free q A B hq]
+
+/-- case1_psi satisfies untl_under_bool_only: its only .untl is .untl A B,
+    and all .snce args are U-free. -/
+private theorem case1_psi_bool_only (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true) :
+    untl_under_bool_only (case1_psi a q A B) A B := by
+  have h_and : ∀ p q, untl_under_bool_only p A B → untl_under_bool_only q A B →
+      untl_under_bool_only (Formula.and p q) A B := by
+    intro p q hp hq; show untl_under_bool_only (.imp (.imp p (.imp q .bot)) .bot) A B
+    exact ⟨⟨hp, hq, trivial⟩, trivial⟩
+  have h_or : ∀ p q, untl_under_bool_only p A B → untl_under_bool_only q A B →
+      untl_under_bool_only (Formula.or p q) A B := by
+    intro p q hp hq; show untl_under_bool_only (.imp (.imp p .bot) q) A B
+    exact ⟨⟨hp, trivial⟩, hq⟩
+  unfold case1_psi
+  apply h_or; apply h_or
+  · apply h_and; apply h_and; apply h_and
+    · exact (⟨ha, hq⟩ : untl_under_bool_only (.snce a q) A B)
+    · exact (⟨ha, hB⟩ : untl_under_bool_only (.snce a B) A B)
+    · exact u_free_untl_under_bool B A B hB
+    · exact Or.inl ⟨rfl, rfl⟩
+  · apply h_and; apply h_and
+    · exact u_free_untl_under_bool A A B hA
+    · exact (⟨ha, hB⟩ : untl_under_bool_only (.snce a B) A B)
+    · exact (⟨ha, hq⟩ : untl_under_bool_only (.snce a q) A B)
+  · have hev_uf : is_U_free (Formula.and (Formula.and (Formula.and A q) (.snce a B)) (.snce a q)) = true := by
+      simp [Formula.and, Formula.neg, is_U_free, hA, hq, ha, hB]
+    exact (⟨hev_uf, hq⟩ : untl_under_bool_only (.snce _ q) A B)
+
+/-! ## Congruence Lemmas -/
+
+/-- If at every time where U(A,B) holds, C₁ ↔ C₂, then
+    S(C₁ ∧ U, guard) ↔ S(C₂ ∧ U, guard). -/
+private theorem snce_event_congr_with_U (C₁ C₂ guard A B : Formula)
+    (h_eq : ∀ M : IntStructure, ∀ t : ℤ, int_truth M t (.untl A B) →
+      (int_truth M t C₁ ↔ int_truth M t C₂)) :
+    int_equiv (.snce (Formula.and C₁ (.untl A B)) guard)
+              (.snce (Formula.and C₂ (.untl A B)) guard) := by
+  intro M t; constructor
+  · rintro ⟨s, hst, h_event, h_guard⟩
+    have ⟨hC₁, hU⟩ := int_truth_and_iff.mp h_event
+    exact ⟨s, hst, int_truth_and_iff.mpr ⟨(h_eq M s hU).mp hC₁, hU⟩, h_guard⟩
+  · rintro ⟨s, hst, h_event, h_guard⟩
+    have ⟨hC₂, hU⟩ := int_truth_and_iff.mp h_event
+    exact ⟨s, hst, int_truth_and_iff.mpr ⟨(h_eq M s hU).mpr hC₂, hU⟩, h_guard⟩
+
+/-- snce congrence on event. -/
+private theorem snce_event_congr {φ₁ φ₂ ψ : Formula} (h : int_equiv φ₁ φ₂) :
+    int_equiv (.snce φ₁ ψ) (.snce φ₂ ψ) := by
+  intro M t; constructor
+  · rintro ⟨s, hst, hφ, hψ⟩; exact ⟨s, hst, (h M s).mp hφ, hψ⟩
+  · rintro ⟨s, hst, hφ, hψ⟩; exact ⟨s, hst, (h M s).mpr hφ, hψ⟩
+
+/-- and congrence on left. -/
+private theorem and_left_congr {φ₁ φ₂ ψ : Formula} (h : int_equiv φ₁ φ₂) :
+    int_equiv (Formula.and φ₁ ψ) (Formula.and φ₂ ψ) := by
+  intro M t; constructor
+  · intro h'; have ⟨hφ, hψ⟩ := int_truth_and_iff.mp h'
+    exact int_truth_and_iff.mpr ⟨(h M t).mp hφ, hψ⟩
+  · intro h'; have ⟨hφ, hψ⟩ := int_truth_and_iff.mp h'
+    exact int_truth_and_iff.mpr ⟨(h M t).mpr hφ, hψ⟩
+
+/-- Boolean distribution: (a ∨ b) ∧ c ↔ (a ∧ c) ∨ (b ∧ c). -/
+private theorem and_or_distrib (a b c : Formula) :
+    int_equiv (Formula.and (Formula.or a b) c)
+              (Formula.or (Formula.and a c) (Formula.and b c)) := by
+  intro M t; constructor
+  · intro h
+    have ⟨hab, hc⟩ := int_truth_and_iff.mp h
+    rcases int_truth_or_iff.mp hab with ha | hb
+    · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mpr ⟨ha, hc⟩))
+    · exact int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨hb, hc⟩))
+  · intro h
+    rcases int_truth_or_iff.mp h with h1 | h2
+    · have ⟨ha, hc⟩ := int_truth_and_iff.mp h1
+      exact int_truth_and_iff.mpr ⟨int_truth_or_iff.mpr (Or.inl ha), hc⟩
+    · have ⟨hb, hc⟩ := int_truth_and_iff.mp h2
+      exact int_truth_and_iff.mpr ⟨int_truth_or_iff.mpr (Or.inr hb), hc⟩
+
+/-- Q_Z with negated q argument is U-free. -/
+private theorem Q_Z_neg_q_U_free (A B q : Formula)
+    (hA : is_U_free A = true) (hB : is_U_free B = true) (hq : is_U_free q = true) :
+    is_U_free (Q_Z A B (Formula.neg q)) = true :=
+  Q_Z_U_free A B (Formula.neg q) hA hB (by simp [Formula.neg, is_U_free, hq])
+
+/-! ## Core Helper: S(COMBINED ∧ U, guard) Separable -/
+
+/-- S(COMBINED ∧ U(A,B), guard) is separable when COMBINED satisfies
+    untl_under_bool_only and guard is U-free with S-free A, B.
+    Works by replacing U with True in the event and applying Case 1. -/
+private theorem snce_combined_U_separable
+    (combined guard : Formula) (A B : Formula)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true)
+    (hg_uf : is_U_free guard = true)
+    (h_bool : untl_under_bool_only combined A B) :
+    is_separable (.snce (Formula.and combined (.untl A B)) guard) := by
+  let combined' := replace_untl_with_top combined A B
+  have h_uf : is_U_free combined' = true := replace_U_free_of_bool combined A B h_bool
+  have h_congr := snce_event_congr_with_U combined combined' guard A B
+    (fun M t hU => replace_correct_bool combined A B M t h_bool hU)
+  apply is_separable_of_equiv h_congr
+  obtain ⟨psi, hequiv, hsep⟩ := elim_case_1_gen combined' guard A B h_uf hg_uf hA hB hA' hB'
+  exact ⟨psi, hsep, hequiv⟩
+
+/-! ## Cases 5-8 Separability -/
+
+set_option maxHeartbeats 1600000 in
 /-- Case 5 separability for Z: S(a ^ U(A,B), q v U(A,B)) is separable.
-    Proof: Apply case3_equiv_Z_general to decompose. Each component of the RHS
-    is separable by Case 1, boolean closure, or direct separation. -/
+    Proof: Apply case3_equiv_Z_general to decompose into three disjuncts.
+    D1 = S(a∧U, q) → Case 1 directly.
+    D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U) → alpha factor + distribute + replace_untl + Case 1.
+    D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q) → event split on U, Case 1/2. -/
 theorem case5_separable_Z (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
     (ha' : is_S_free a = true) (hq' : is_S_free q = true)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) := by
-  -- Step 1: Apply case3_equiv_Z_general to decompose
-  -- S(a∧U, q∨U) ↔ case3_rhs(a∧U, q, A, B)
-  have hequiv := case3_equiv_Z_general (Formula.and a (.untl A B)) q A B
-  apply is_separable_of_equiv hequiv
-  -- Now need: is_separable (case3_rhs (Formula.and a (.untl A B)) q A B)
-  -- case3_rhs = disjunct1 ∨ disjunct2 ∨ disjunct3
-  -- Disjunct 1: S(a∧U, q) = Case 1
-  -- Disjunct 2: S(alpha, Q_Z) ∧ (A ∨ B∧U)
-  -- Disjunct 3: S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
+  -- Apply case3_equiv_Z_general to decompose S(a∧U, q∨U)
+  apply is_separable_of_equiv (case3_equiv_Z_general (Formula.and a (.untl A B)) q A B)
   simp only [case3_rhs]
-  -- The goal is: is_separable (D1 ∨ D2 ∨ D3) where
-  -- D1 = S(a∧U, q) -- Case 1
-  -- D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U)
-  -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
   apply or_separable
-  · -- D1 ∨ D2
+  · -- (D1 ∨ D2)
     apply or_separable
-    · -- D1 = S(a∧U, q): Case 1 with U-free a, q and S-free A, B
+    · -- D1 = S(a∧U, q): Case 1
       obtain ⟨psi, hequiv_psi, hsep_psi⟩ := elim_case_1_gen a q A B ha hq hA hB hA' hB'
       exact ⟨psi, hsep_psi, hequiv_psi⟩
     · -- D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U)
-      -- Step: show S(alpha, Q_Z) is separable, then A ∨ B∧U is separable, then and_separable
       apply and_separable
-      · -- S(alpha, Q_Z) where alpha = case3_alpha(a∧U, q, A, B), Q_Z = Q_Z(A,B,¬q)
-        -- Key insight: alpha implies U(A,B).
-        -- Proof: alpha = (a∧U) ∨ ((¬q ∧ S(a∧U, q)) ∧ (q∨U))
-        -- Case (a∧U): U holds trivially.
-        -- Case (¬q ∧ S(a∧U, q)) ∧ (q∨U): since ¬q, (q∨U) requires U. So U holds.
-        -- Therefore alpha ↔ alpha ∧ U.
-        --
-        -- Next: alpha ↔ (a ∨ (¬q ∧ S(a∧U, q))) ∧ U (factor out U)
-        -- Then: S(alpha, Q_Z) ↔ S((a ∨ (¬q ∧ S(a∧U,q))) ∧ U, Q_Z)
-        -- Using snce_congr to replace alpha in the event.
-        --
-        -- S(a∧U, q) is int_equiv to case1_psi(a,q,A,B) by elim_case_1.
-        -- case1_psi has U only in one disjunct (the B∧U part).
-        -- After substituting: (a ∨ (¬q ∧ case1_psi)) ∧ U = COMBINED_UF ∧ U
-        -- where COMBINED_UF is U-free (all S-subformulas have U-free args).
-        -- Then S(COMBINED_UF ∧ U, Q_Z) is Case 1 → separable by elim_case_1_gen.
-        --
-        -- The full proof requires:
-        -- 1. Use case3_alpha_aU_factor: alpha ↔ (a ∨ (¬q ∧ S(a∧U,q))) ∧ U
-        -- 2. Replace S(a∧U,q) with case1_psi via elim_case_1
-        -- 3. Expand case1_psi, factor U out of each disjunct
-        -- 4. Show the U-free remainder COMBINED_UF is U-free
-        -- 5. Apply elim_case_1_gen with COMBINED_UF and Q_Z
-        -- See handoff phase-6B-round6-handoff-20260518.md for the complete derivation.
-        -- TEMPORARY: use all_separable (will be replaced when COMBINED_UF construction is done)
-        exact all_separable _
-      · -- A ∨ B∧U: separable since A,B are U-free+S-free and U(A,B) has S-free args
+      · -- S(alpha, Q_Z) is separable
+        -- Step 1: alpha ↔ (a ∨ (¬q ∧ S(a∧U,q))) ∧ U by case3_alpha_aU_factor
+        apply is_separable_of_equiv (snce_event_congr (case3_alpha_aU_factor a q A B))
+        -- Goal: S((a ∨ (¬q ∧ S(a∧U,q))) ∧ U, Q_Z)
+        -- Step 2: Distribute → S(a∧U, Q_Z) ∨ S((¬q∧S(a∧U,q))∧U, Q_Z)
+        apply is_separable_of_equiv (int_equiv_trans
+          (snce_event_congr (and_or_distrib a
+            (Formula.and (Formula.neg q) (.snce (Formula.and a (.untl A B)) q))
+            (.untl A B)))
+          (since_distrib_or_left _ _ (Q_Z A B (Formula.neg q))))
+        apply or_separable
+        · -- S(a∧U, Q_Z): Case 1
+          exact snce_combined_U_separable a (Q_Z A B (Formula.neg q)) A B
+            hA hB hA' hB' (Q_Z_neg_q_U_free A B q hA hB hq)
+            (u_free_untl_under_bool a A B ha)
+        · -- S((¬q ∧ S(a∧U,q)) ∧ U, Q_Z)
+          -- Step 3: Replace S(a∧U,q) with σ = case1_psi in the event
+          -- int_equiv S(a∧U,q) σ, so ¬q∧S(a∧U,q) ↔ ¬q∧σ
+          let σ := case1_psi a q A B
+          have hσ_equiv : int_equiv (.snce (Formula.and a (.untl A B)) q) σ :=
+            (case1_psi_properties a q A B ha hq hA hB hA' hB').1
+          have hY_congr : int_equiv
+            (Formula.and (Formula.neg q) (.snce (Formula.and a (.untl A B)) q))
+            (Formula.and (Formula.neg q) σ) := by
+            intro M t; constructor
+            · intro h; have ⟨hnq, hS⟩ := int_truth_and_iff.mp h
+              exact int_truth_and_iff.mpr ⟨hnq, (hσ_equiv M t).mp hS⟩
+            · intro h; have ⟨hnq, hσ'⟩ := int_truth_and_iff.mp h
+              exact int_truth_and_iff.mpr ⟨hnq, (hσ_equiv M t).mpr hσ'⟩
+          -- S((¬q∧S(a∧U,q))∧U, Q_Z) ↔ S((¬q∧σ)∧U, Q_Z)
+          apply is_separable_of_equiv (snce_event_congr (and_left_congr hY_congr))
+          -- Step 4: ¬q∧σ satisfies untl_under_bool_only → apply snce_combined_U_separable
+          have h_nqσ_bool : untl_under_bool_only (Formula.and (Formula.neg q) σ) A B := by
+            -- Formula.and p q = .imp (.imp p (.imp q .bot)) .bot
+            show untl_under_bool_only (.imp (.imp (Formula.neg q) (.imp σ .bot)) .bot) A B
+            refine ⟨⟨?_, case1_psi_bool_only a q A B ha hq hA hB, trivial⟩, trivial⟩
+            -- Formula.neg q = .imp q .bot
+            exact ⟨u_free_untl_under_bool q A B hq, trivial⟩
+          exact snce_combined_U_separable (Formula.and (Formula.neg q) σ)
+            (Q_Z A B (Formula.neg q)) A B hA hB hA' hB'
+            (Q_Z_neg_q_U_free A B q hA hB hq) h_nqσ_bool
+      · -- A ∨ B∧U
         apply or_separable
         · exact u_free_s_free_is_separable A hA hA'
         · exact and_separable
             (u_free_s_free_is_separable B hB hB')
             ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
   · -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
-    -- Guard q is U-free. Event has A (prop), q∨U, S(alpha, Q_Z).
-    -- Using the same alpha-implies-U trick: the event has has_single_U_type A B.
-    -- After replacing S(alpha,Q_Z) with its separated equiv and factoring U,
-    -- the event becomes COMBINED_UF_D3 ∧ U with U-free COMBINED_UF_D3.
-    -- Then Case 1 applies.
-    -- TEMPORARY: use all_separable (will be replaced)
+    -- Guard q is U-free. Event contains U in (q∨U) and in alpha (via S(a∧U,q)).
+    -- The full proof requires event-split on U + replace_untl machinery for the
+    -- S(alpha, Q_Z) sub-expression. Deferred to next round.
     exact all_separable _
 
-/-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable.
-    Bootstrap via all_separable; will be replaced by hierarchy proof. -/
+/-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable. -/
 theorem case6_separable_Z (a q A B : Formula)
     (_ha : is_U_free a = true) (_hq : is_U_free q = true)
     (_hA : is_U_free A = true) (_hB : is_U_free B = true)
@@ -623,10 +844,12 @@ theorem case6_separable_Z (a q A B : Formula)
     (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
       (Formula.or q (.untl A B))) :=
+  -- Case 6 applies case3_equiv_Z_general with event = a∧¬U.
+  -- The decomposition produces sub-terms handled by Cases 1-2 + boolean closure.
+  -- Deferred to next round pending replace_untl_with_bot infrastructure.
   all_separable _
 
-/-- Case 7 separability for Z: S(a ^ U(A,B), q v ~U(A,B)) is separable.
-    Bootstrap via all_separable; will be replaced by hierarchy proof. -/
+/-- Case 7 separability for Z: S(a ^ U(A,B), q v ~U(A,B)) is separable. -/
 theorem case7_separable_Z (a q A B : Formula)
     (_ha : is_U_free a = true) (_hq : is_U_free q = true)
     (_hA : is_U_free A = true) (_hB : is_U_free B = true)
@@ -634,10 +857,12 @@ theorem case7_separable_Z (a q A B : Formula)
     (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (.untl A B))
       (Formula.or q (Formula.neg (.untl A B)))) :=
+  -- Case 7: ¬U in guard. Apply neg_until_equiv to rewrite ¬U as G(¬A) ∨ U(¬A∧¬B, ¬A).
+  -- This introduces a second U-type, reducing to Cases 3-4 + Case 5.
+  -- Deferred to next round.
   all_separable _
 
-/-- Case 8 separability for Z: S(a ^ ~U(A,B), q v ~U(A,B)) is separable.
-    Bootstrap via all_separable; will be replaced by hierarchy proof. -/
+/-- Case 8 separability for Z: S(a ^ ~U(A,B), q v ~U(A,B)) is separable. -/
 theorem case8_separable_Z (a q A B : Formula)
     (_ha : is_U_free a = true) (_hq : is_U_free q = true)
     (_hA : is_U_free A = true) (_hB : is_U_free B = true)
@@ -645,6 +870,8 @@ theorem case8_separable_Z (a q A B : Formula)
     (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
       (Formula.or q (Formula.neg (.untl A B)))) :=
+  -- Case 8: ¬U in both event and guard. Similar to Case 7 via neg_until_equiv.
+  -- Deferred to next round.
   all_separable _
 
 end Bimodal.Metalogic.WeakCanonical.Separation
