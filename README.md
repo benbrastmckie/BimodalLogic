@@ -131,7 +131,7 @@ graph TD
     L("<b>LinearTemporalFrame</b><br/>AddCommGroup<br/>LinearOrder")
     S("<b>SerialFrame</b><br/>+ Nontrivial · NoMaxOrder<br/>+ NoMinOrder<br/>Sound ✓ · Complete ✓<br/>Decidable ✓")
     D("<b>DenseTemporalFrame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓<br/>Decidable ✓")
-    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Sound ✓ · Complete ⧖")
+    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Sound ✓ · Complete ⧖<br/>Decidable ⧖")
 
     L --> S
     S --> D
@@ -140,12 +140,12 @@ graph TD
 
 ### Result Details
 
-| Frame Class | Additional Axioms | Soundness | Completeness | Decidability |
-|-------------|------------------|-----------|--------------|--------------|
-| **Linear** | — | sorry-free (base axioms) | — | — |
-| **Serial** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
-| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | sorry-free (FMP) |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — |
+| Frame Class | Additional Axioms | Soundness | Completeness | Decidability | Representation |
+|-------------|------------------|-----------|--------------|--------------|----------------|
+| **Linear** | — | sorry-free | — | — | — |
+| **Serial** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) | sorry-free |
+| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | sorry-free (FMP) | sorry-free |
+| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — | active sorries |
 
 The standard instance of `DiscreteTemporalFrame` is `Int`; the standard instance of `DenseTemporalFrame` is the canonical quotient construction used in the completeness proof.
 
