@@ -436,7 +436,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
     - Apply Case 8 (`case8_separable_Z`) and Case 4 (`case4_separable`) to the sub-terms.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [ ] Task 3.3: Prove Case 6 is separable (~80 LOC) *(deviation: altered -- reverted to all_separable bootstrap; snce_event_decomp_separable approach was unsound)*
+- [ ] Task 3.3: Prove Case 6 is separable (~80 LOC) *(deviation: altered -- partially proved via neg_until_equiv + U/U' contradiction approach; D3 of Branch B has 2 sorry remaining due to multi-U-type complexity)*
   - Location: After Case 7
   - Type:
     ```lean
@@ -468,36 +468,28 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 ---
 
-### Phase 4: Wire Cases 5-8 into Hierarchy and Prove junction_depth_separable (Phase 6B-4) [IN PROGRESS]
+### Phase 4: Hierarchy Theorem (GHR94 Lemmas 10.2.4-10.2.8) [IN PROGRESS]
 
-**Goal**: Replace the circular `all_separable` references in NormalForm.lean's Cases 5-8 with the new DedekindZ proofs, then prove the main hierarchy theorem `junction_depth_separable` via strong induction on `junction_depth`.
+**Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy, replacing all circular `all_separable` uses.
 
-**Mathematical structure** (GHR94 Lemmas 10.2.4-10.2.8):
-1. **Lemma 10.2.4**: S(C,F) with single U-type U(A,B) at top level -> separable (uses Cases 1-8)
-2. **Lemma 10.2.5**: Single U-type formula -> separable (already proved as `single_U_formula_separable`)
-3. **Lemma 10.2.6**: `no_S_nested_in_U phi -> is_separable phi` (currently `multi_U_formula_separable` using axiom)
-4. **Lemma 10.2.7**: `no_S_nested_in_U phi -> is_separable phi` by induction on `U_depth_under_S`
-5. **Lemma 10.2.8**: `forall phi, is_separable phi` by strong induction on `junction_depth`
+**CORRECTED Mathematical structure** (from GHR94 literature analysis, rounds 4-5):
+
+The hierarchy is a layered sequence where each lemma builds on previous ones WITHOUT circularity:
+1. **Lemma 10.2.4** (Cases 1-8 for atoms): S(C,F) with single U-type at top level → separable. Uses Cases 1-8 directly. Cases 5-8 use case3_equiv + iterative Case 1.
+2. **Lemma 10.2.5**: Single U-type → separable. By induction on k = max S-nesting above U(A,B). k>0: apply 10.2.4 to deepest S → k decreases → IH.
+3. **Lemma 10.2.6**: Multi U-type, no S in U → separable. By induction on n = #U-types. Abstract n-1 U-types to atoms → single U → 10.2.5 → separate → substitute back into PAST CONSTITUENTS of separated form → IH (n-1 U-types in each constituent).
+4. **Lemma 10.2.7**: no_S_nested_in_U → separable. By induction on U-nesting depth under S. Abstract inner U-subformulas → 10.2.6 → substitute back into PAST CONSTITUENTS → IH (lower U-nesting in each constituent).
+5. **Lemma 10.2.8**: All formulas → separable. By induction on junction_depth. JD≥2: abstract S from U-args → 10.2.7 → substitute back into CONSTITUENTS → IH (lower JD in each constituent).
+
+**KEY INSIGHT** (GHR94 lines 169, 185, 218): Substitution-back goes into CONSTITUENTS of the already-separated formula. A separated formula is a boolean combination of atoms, pure-future U-formulas, and pure-past S-formulas. Substituting into each constituent preserves its "pure past" or "pure future" nature while lowering the relevant complexity measure. IH applies to each constituent independently.
+
+**CRITICAL CORRECTION**: `subst_formula_preserves_separated` is FALSE (round 4 discovery). The correct approach substitutes into constituents, NOT into the whole formula.
 
 **Tasks**:
 
-- [x] Task 4.1: Update NormalForm.lean Cases 5-8 to use DedekindZ proofs (~20 LOC) *(completed)*
-  - Location: `NormalForm.lean` lines 153-194
-  - Replace the body of `case5_separable` through `case8_separable`:
-    ```lean
-    -- BEFORE (all four):
-    theorem caseN_separable ... := all_separable _
+- [x] Task 4.1: NormalForm.lean Cases 5-8 point to DedekindZ *(completed -- but DedekindZ cases currently bootstrap via all_separable; will become non-circular when hierarchy is proved)*
 
-    -- AFTER:
-    theorem case5_separable ... := case5_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
-    theorem case6_separable ... := case6_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
-    theorem case7_separable ... := case7_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
-    theorem case8_separable ... := case8_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
-    ```
-  - Add import of DedekindZ to NormalForm.lean
-  - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.NormalForm` passes
-
-- [ ] Task 4.2: Prove `no_S_nested_in_U_separable` subroutine (~150 LOC)
+- [ ] Task 4.2: Prove `no_S_nested_in_U_separable` (~200 LOC) *(IN PROGRESS round 5)*
   - Location: `Hierarchy.lean`, after the existing infrastructure (after line 1054)
   - Type:
     ```lean
@@ -506,20 +498,24 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
         (h : no_S_nested_in_U phi) :
         is_separable phi
     ```
-  - Proof by `Nat.strongRecOn` on `U_depth_under_S phi`:
-    - **Base (U_depth = 0)**: No U anywhere (since `no_S_nested_in_U` and U_depth_under_S counts U-nodes). Wait -- `U_depth_under_S` counts U-nodes WITH S-resets. When `no_S_nested_in_U`, all U-arguments are S-free. `U_depth_under_S` counts depth of U-nesting not under any S. If `U_depth_under_S = 0`, then the formula has no U-nodes at all (since there's no S to reset the counter either, given `no_S_nested_in_U`).
-    - Actually: `U_depth_under_S` resets at S-nodes. But `no_S_nested_in_U` means all S-args are U-free (actually no: `no_S_nested_in_U` means untl args are S-free, not that snce args are U-free). Let me re-examine.
-    - `no_S_nested_in_U`: untl args are S-free; snce args and other nodes recurse.
-    - `U_depth_under_S`: untl adds 1 + max of children; snce resets to 0.
-    - When `no_S_nested_in_U` holds and `U_depth_under_S = 0`: the formula has no `untl` nodes (since any untl would contribute >= 1). So the formula is U-free. Then it's syntactically separated (U-free + expanded => separated).
-    - **Inductive step (U_depth > 0)**: There exists a `untl` node. The top-level formula may be `imp`, `snce`, etc. Find a `untl A B` subformula with maximal depth. Use `abstract_untl` to replace it with fresh atom `p`. The abstracted formula:
-      - Still satisfies `no_S_nested_in_U` (by `abstract_untl_preserves_no_S_nested`)
-      - Has strictly lower `U_depth_under_S` (replacing a `untl` with an atom removes depth)
-      - By IH, the abstracted formula is separable
-      - The separated equivalent has `p` where `U(A,B)` was. Substitute back: `subst_formula result p (.untl A B)`.
-      - The result is a separated formula with `U(A,B)` at exactly the positions where `p` was. Since the separated formula has `p` only in S-free positions (by `abstract_untl_preserves_separated`), `U(A,B)` appears only in S-free positions. The result is still separated (U(A,B) has S-free args since `no_S_nested_in_U` applied to the original).
-    - **Key helper needed**: `abstract_untl` strictly decreases `U_depth_under_S` when the formula has a `untl` node. This should follow from the existing `abstract_untl_count_le` or need a new lemma.
-  - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy` passes
+  - **CORRECTED STRATEGY** (GHR94 Lemmas 10.2.5-10.2.7 combined):
+    The proof implements 10.2.5 → 10.2.6 → 10.2.7 as a combined argument.
+    **WARNING**: `subst_formula_preserves_separated` is FALSE (round 4 discovery). The correct approach substitutes into CONSTITUENTS of the separated form, not the whole formula.
+    
+    **10.2.5** (single U-type by S-nesting induction k):
+    - k=0: U at top level only → already separated
+    - k>0: Apply 10.2.4 (Cases 1-8) to deepest S containing U → k decreases → IH
+    
+    **10.2.6** (multi U-type by count induction n):
+    - n=1: 10.2.5
+    - n>1: Abstract U-types 1..n-1 with atoms qᵢ → single U → 10.2.5 → separated E'. Substitute U(Aᵢ,Bᵢ) for qᵢ in PAST CONSTITUENTS of E' → each has n-1 U-types → IH.
+    
+    **10.2.7** (no_S_nested by U-nesting depth):
+    - depth 1: 10.2.6
+    - depth >1: Abstract inner U-subformulas → 10.2.6 → separated E'. Substitute back into PAST CONSTITUENTS → lower U-nesting → IH.
+    
+    **Alternative implementation**: A single well-founded induction on junction_depth that handles all three layers. The round 5 agent is attempting this.
+  - Verification: `lake build` passes, no `all_separable` or axiom dependency
 
 - [ ] Task 4.3: Prove `junction_depth_separable_aux` (the hierarchy theorem) (~200 LOC)
   - Location: `Hierarchy.lean`, after `no_S_nested_in_U_separable`
