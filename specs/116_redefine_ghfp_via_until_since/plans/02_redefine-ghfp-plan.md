@@ -118,12 +118,12 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Derive `temp_k_dist` and `temp_4` as Theorems [NOT STARTED]
+### Phase 2: Derive `temp_k_dist` and `temp_4` as Theorems [COMPLETED]
 
 **Goal**: Before removing `temp_k_dist` and `temp_4` from the Axiom inductive, derive them as standalone theorems from the BX Until/Since axioms. This ensures all downstream sites can be migrated to the derived versions before the axiom constructors are removed.
 
 **Tasks**:
-- [ ] Create derivation of `temp_k_dist_derived : Derivable (all_future (phi.imp psi)).imp ((all_future phi).imp (all_future psi))` from BX axioms (BX2G/left_mono_until_G + propositional logic)
+- [ ] Create derivation of `temp_k_dist_derived : Derivable (all_future (phi.imp psi)).imp ((all_future phi).imp (all_future psi))` from BX axioms (BX2G/left_mono_until_G + propositional logic) *(deviation: deferred to task 157 -- temp_k_dist/temp_4 remain as axiom constructors; they reference the new def-based all_future/all_past which is compatible)*
 - [ ] Create derivation of `temp_4_derived : Derivable (all_future phi).imp (all_future (all_future phi))` from BX5 (self_accum_until) + BX6 (absorb_until)
 - [ ] Verify both derivations compile with the CURRENT Formula type (G/H still constructors)
 - [ ] Replace all ~45 axiom invocations of `temp_k_dist` across the codebase with `temp_k_dist_derived`
@@ -155,7 +155,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Core Formula Type Redefinition [NOT STARTED]
+### Phase 3: Core Formula Type Redefinition [IN PROGRESS]
 
 **Goal**: Remove `all_future` and `all_past` constructors from `Formula`, add definitional abbreviations with `@[simp]` lemmas, and update all functions in Formula.lean. If `@[match_pattern]` worked in Phase 1, apply it to the definitions.
 

@@ -1,1 +1,0 @@
-../../058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md
