@@ -327,7 +327,7 @@ Top element of the Lindenbaum algebra: the class of ⊤ (Truth).
 
 We use (⊥ → ⊥) as the representation of Truth.
 -/
-def top_quot : LindenbaumAlg := toQuot (Formula.bot.imp Formula.bot)
+def top_quot : LindenbaumAlg := toQuot Formula.top
 
 /--
 Bottom element of the Lindenbaum algebra: the class of ⊥.

@@ -167,8 +167,8 @@ All definitions in this section take the density hypothesis `h_dense` as a
 parameter, making density conditional rather than unconditional.
 -/
 
-/-- Top formula: `⊥ → ⊥` (a tautology). -/
-def top_formula : Formula := Formula.bot.imp Formula.bot
+/-- Top formula: uses canonical `Formula.top` from Formula.lean. -/
+def top_formula : Formula := Formula.top
 
 /-- `U(⊤, ⊥)` — "next top", true iff there is an immediate successor. -/
 def next_top : Formula := Formula.untl top_formula Formula.bot

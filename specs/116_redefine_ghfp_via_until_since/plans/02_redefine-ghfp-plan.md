@@ -82,7 +82,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: `@[match_pattern]` Prototype and `top` Consolidation [NOT STARTED]
+### Phase 1: `@[match_pattern]` Prototype and `top` Consolidation [COMPLETED]
 
 **Goal**: Determine whether `@[match_pattern]` allows existing pattern matches to survive the constructor-to-def transition. Consolidate the 4 inconsistent `top` definitions into a canonical `def Formula.top`. This phase is informational and shapes the effort in all subsequent phases.
 

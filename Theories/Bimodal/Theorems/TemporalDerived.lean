@@ -58,7 +58,7 @@ open Bimodal.ProofSystem
 open Bimodal.Theorems.Combinators
 
 -- Abbreviations for readability
-private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
+private abbrev top : Formula := Formula.top  -- ⊤ = ¬⊥ (canonical def in Formula.lean)
 
 /-!
 ## BX-Derivable Temporal Theorems

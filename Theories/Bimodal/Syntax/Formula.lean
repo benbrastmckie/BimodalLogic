@@ -296,6 +296,14 @@ Negation (¬φ) as derived operator: φ → ⊥
 def neg (φ : Formula) : Formula := φ.imp bot
 
 /--
+Top (⊤, verum, tautology) as derived operator: ⊥ → ⊥ (equivalently ¬⊥).
+
+This is the canonical definition of ⊤ used throughout the codebase.
+All local definitions of top should reference this instead.
+-/
+def top : Formula := Formula.bot.imp Formula.bot
+
+/--
 Conjunction (φ ∧ ψ) as derived operator: ¬(φ → ¬ψ)
 -/
 def and (φ ψ : Formula) : Formula := (φ.imp ψ.neg).neg

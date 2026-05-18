@@ -584,8 +584,8 @@ in the restricted fragment `{atom, bot, imp, snce, untl, box}`. In this fragment
 `no_S_nested_in_U` implies `is_syntactically_separated`, which enables proving temporal
 closure without axioms. -/
 
-/-- Top formula: ⊤ = ¬⊥ = imp bot bot. -/
-abbrev Formula.top : Formula := .imp .bot .bot
+/-- Top formula: uses canonical `Formula.top` from Formula.lean. -/
+-- NOTE: Formula.top is now defined in Formula.lean as `Formula.bot.imp Formula.bot`
 
 /-- Replace all `all_past φ` with `¬(snce (¬φ) ⊤)` and all `all_future φ` with
     `¬(untl (¬φ) ⊤)` throughout the formula. This is valid on integer time. -/
