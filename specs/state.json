@@ -162,7 +162,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -171,9 +171,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-18T04:44:57Z",
-      "session_id": "sess_1779073142_344af2",
-      "researched": "2026-05-17T20:33:36Z",
+      "last_updated": "2026-05-18T05:07:57Z",
+      "session_id": "sess_1779079919_6fc058",
+      "researched": "2026-05-18T05:07:57Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -204,10 +204,15 @@
           "path": "specs/157_expressive_completeness_su_integer/summaries/06_implementation-summary.md",
           "type": "summary",
           "summary": "Partial team implementation: sorry-free ExpressiveCompleteness achieved, axiom elimination blocked by GHR94 Case 5-8 integer error"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research: Dedekind specialization approach for Cases 5-8, Q-lemma for Z"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 7
+      "next_artifact_number": 8
     },
     {
       "project_number": 156,
