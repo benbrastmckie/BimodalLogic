@@ -170,3 +170,53 @@ Is there a case4_equiv_Z_general? Let me check.
    - Q_Z is U-free
 
 5. `u_free_s_free_imp_separated` is now public in Eliminations.lean.
+
+## Remaining Work Estimate
+
+### To Complete Case 5 (~100 LOC)
+
+The two remaining `all_separable _` calls in case5_separable_Z need to be replaced with direct proofs:
+
+**D2.1 (S(alpha, Q_Z))**: Requires constructing COMBINED_UF explicitly:
+```
+COMBINED_UF = a ∨ (¬q ∧ S(a,q) ∧ S(a,B) ∧ B) ∨ (¬q ∧ A ∧ S(a,B) ∧ S(a,q)) ∨ (¬q ∧ S(A∧q∧S(a,B)∧S(a,q), q))
+```
+where all S-formulas have U-free args. Then prove:
+1. `int_equiv alpha (Formula.and COMBINED_UF (.untl A B))` (compose case3_alpha_aU_factor + case1_equiv + boolean factoring)
+2. `is_U_free COMBINED_UF = true` (structural check)
+3. `is_U_free (Q_Z A B (Formula.neg q)) = true` (use Q_Z_U_free)
+4. Apply `elim_case_1_gen COMBINED_UF (Q_Z A B (Formula.neg q)) A B`
+
+**D3 (S(A∧(q∨U)∧S(alpha,Q_Z), q))**: Similar approach:
+1. Use same alpha → COMBINED_UF∧U equivalence
+2. S(alpha, Q_Z) ↔ case1_psi(COMBINED_UF, Q_Z, A, B) (separated equiv from Case 1)
+3. Event = A ∧ (q∨U) ∧ case1_psi(COMBINED_UF, Q_Z, A, B)
+4. This has single-U-type U(A,B). Factor U to get EVENT_UF_D3 ∧ U with U-free EVENT_UF_D3
+5. S(EVENT_UF_D3 ∧ U, q) is Case 1
+
+### To Complete Cases 6-8 (~150 LOC each, possibly less with shared infrastructure)
+
+**Case 6** (S(a∧¬U, q∨U)):
+- Apply case3_equiv_Z_general with event a∧¬U
+- D1 = S(a∧¬U, q) → Case 2 (elim_case_2_gen) 
+- D2.S: alpha' = (a∧¬U) ∨ (¬q∧S(a∧¬U,q)∧(q∨U)). alpha' does NOT imply U.
+  - Event-split: S(alpha'∧U, Q_Z) ∨ S(alpha'∧¬U, Q_Z)
+  - alpha'∧U = (¬q∧S(a∧¬U,q))∧U (since a∧¬U∧U = False). Replace S(a∧¬U,q) with case2_psi. Factor U.
+  - alpha'∧¬U = (a∧¬U) ∨ (¬q∧S(a∧¬U,q)∧q∧¬U). Since q∧¬q = False: alpha'∧¬U = a∧¬U. Case 2.
+
+**Cases 7-8** (guard has ¬U): Two approaches:
+a. Find/prove a case4_equiv_Z_general (dual of case3_equiv) for q∨¬U guard
+b. Use neg_until_equiv to replace ¬U with G(¬A) ∨ U(¬A∧¬B, ¬A), then use case3_equiv on each part
+
+### To Assemble Full Hierarchy (~200 LOC)
+
+Once Cases 5-8 are proved without all_separable:
+1. single_U_formula_separable no longer needs snce_separable axiom
+2. multi_U_formula_separable follows from U-count induction + single_U
+3. no_S_nested_in_U_separable follows from multi_U
+4. all_formulas_separable follows from JD induction (JD ≥ 2 handled by IH, JD ≤ 1 by no_S_nested_in_U)
+5. Replace 9 axioms in SeparationThm.lean with theorems
+
+### Total Remaining: ~500-700 LOC
+
+The mathematical approach is fully worked out. The implementation is mechanical but verbose.
