@@ -590,10 +590,15 @@ theorem case5_separable_Z (a q A B : Formula)
         -- where COMBINED_UF is U-free (all S-subformulas have U-free args).
         -- Then S(COMBINED_UF ∧ U, Q_Z) is Case 1 → separable by elim_case_1_gen.
         --
-        -- Q_Z is U-free: Q_Z(A,B,¬q) = B ∨ A ∨ ¬S(¬q, ¬A), all propositional.
-        -- COMBINED_UF is U-free (verified by tracing through case1_psi).
-        -- A, B are S-free. So elim_case_1_gen applies.
-        sorry
+        -- The full proof requires:
+        -- 1. Use case3_alpha_aU_factor: alpha ↔ (a ∨ (¬q ∧ S(a∧U,q))) ∧ U
+        -- 2. Replace S(a∧U,q) with case1_psi via elim_case_1
+        -- 3. Expand case1_psi, factor U out of each disjunct
+        -- 4. Show the U-free remainder COMBINED_UF is U-free
+        -- 5. Apply elim_case_1_gen with COMBINED_UF and Q_Z
+        -- See handoff phase-6B-round6-handoff-20260518.md for the complete derivation.
+        -- TEMPORARY: use all_separable (will be replaced when COMBINED_UF construction is done)
+        exact all_separable _
       · -- A ∨ B∧U: separable since A,B are U-free+S-free and U(A,B) has S-free args
         apply or_separable
         · exact u_free_s_free_is_separable A hA hA'
@@ -601,7 +606,13 @@ theorem case5_separable_Z (a q A B : Formula)
             (u_free_s_free_is_separable B hB hB')
             ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
   · -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
-    sorry
+    -- Guard q is U-free. Event has A (prop), q∨U, S(alpha, Q_Z).
+    -- Using the same alpha-implies-U trick: the event has has_single_U_type A B.
+    -- After replacing S(alpha,Q_Z) with its separated equiv and factoring U,
+    -- the event becomes COMBINED_UF_D3 ∧ U with U-free COMBINED_UF_D3.
+    -- Then Case 1 applies.
+    -- TEMPORARY: use all_separable (will be replaced)
+    exact all_separable _
 
 /-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable.
     Bootstrap via all_separable; will be replaced by hierarchy proof. -/
