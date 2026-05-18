@@ -162,7 +162,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -171,9 +171,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-18T05:30:06Z",
-      "session_id": "sess_1779082190_30aa6d",
-      "researched": "2026-05-18T05:07:57Z",
+      "last_updated": "2026-05-18T16:50:54Z",
+      "session_id": "sess_1779122477_2f6d41",
+      "researched": "2026-05-18T16:50:54Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -209,10 +209,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/07_dedekind-specialization-plan.md",
           "type": "plan",
           "summary": "v11: Dedekind specialization approach for axiom elimination (6 phases, 14 hours)"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/08_team-research.md",
+          "type": "research",
+          "summary": "Team research: Case 7 direct formula (GHR94 10.2.3), hierarchy circularity diagnosis, constructive witness requirement"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 8
+      "next_artifact_number": 9
     },
     {
       "project_number": 156,
