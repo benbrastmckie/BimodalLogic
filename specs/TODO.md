@@ -95,8 +95,9 @@ technical_debt:
 
 ### 166. Rename metalogical theorems to standard uniform names
 - **Effort**: small
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**: [specs/166_rename_metalogical_theorems_standard_names/reports/01_metalogical-naming-hygiene.md]
 
 **Description**: Rename major metalogical theorems to standard uniform names. Current names are ad hoc and reflect implementation history. Soundness renames: `soundness` → `soundness_serial` (it requires `Nontrivial D` for seriality axioms, so it is serial soundness, not linear), and add a new `soundness_linear` that excludes seriality axioms if one does not already exist. `soundness_dense` and `soundness_discrete` are already standard — keep as-is. Completeness renames: `bx_completeness` → `completeness_serial` (Completeness.lean), `dd_countermodel_chronicle_dense` → `completeness_dense` (ChronicleToCountermodel.lean), `doets_countermodel_discrete` → `completeness_discrete` (Transfer.lean), `dd_countermodel_chronicle_mixed_sorry` → `completeness_mixed` or remove if dead code, `dd_countermodel_chronicle_nondense_sorry` → remove or rename. Update all call sites, docstrings, and README Result Details table. The goal is that the top-level API for each frame class is simply `soundness_{class}` and `completeness_{class}`, mirroring how these results are cited in the literature.
 

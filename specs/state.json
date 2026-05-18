@@ -8,12 +8,20 @@
     {
       "project_number": 166,
       "project_name": "rename_metalogical_theorems_standard_names",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Rename major metalogical theorems to standard uniform names. Soundness: soundness -> soundness_serial (requires Nontrivial D for seriality), add soundness_linear excluding seriality axioms. soundness_dense and soundness_discrete keep as-is. Completeness: bx_completeness -> completeness_serial, dd_countermodel_chronicle_dense -> completeness_dense, doets_countermodel_discrete -> completeness_discrete, dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove. Update all call sites, docstrings, and README.",
       "created": "2026-05-18T18:14:23Z",
-      "last_updated": "2026-05-18T20:41:46Z",
-      "session_id": "sess_1779136887_2711a9"
+      "last_updated": "2026-05-18T20:47:45Z",
+      "session_id": "sess_1779136887_2711a9",
+      "researched": "2026-05-18T20:47:45Z",
+      "artifacts": [
+        {
+          "path": "specs/166_rename_metalogical_theorems_standard_names/reports/01_metalogical-naming-hygiene.md",
+          "type": "report",
+          "summary": "Comprehensive mapping of all soundness/completeness theorems, frame constraint hierarchy, call-site cross-references, and proposed naming convention"
+        }
+      ]
     },
     {
       "project_number": 165,
