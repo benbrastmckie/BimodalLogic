@@ -26,11 +26,11 @@ bimodal logic, bypassing the chronicle construction's `succ_cofinal` sorry.
 6. **OrderedSum**: Doets Lemma 1.4/1.5 (ordered sum preservation)
 7. **Table**: Temporal-to-monadic table translation (deferred)
 8. **IntegerModel**: Good/very good, contemp_equiv, one-class, chronicle_is_good
-9. **Transfer**: `doets_countermodel_discrete` — the main theorem
+9. **Transfer**: `countermodel_discrete` — the main theorem
 
 ## Main Export
 
-`doets_countermodel_discrete` — drop-in replacement for
+`countermodel_discrete` — drop-in replacement for
 `dd_countermodel_chronicle_discrete` in Completeness.lean.
 
 ## Status

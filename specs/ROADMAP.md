@@ -23,18 +23,18 @@ mathematically false under irreflexive semantics and cannot be proved.
 **Current state** (2026-05-14):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
-- **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
+- **Dense completeness** (`countermodel_dense`): Internally sorry-free
 - **Discrete completeness**: Reynolds pipeline structurally complete (task 129 COMPLETED). 5 sorries remain in FO satisfaction foundation (task 139) and truth transfer (task 140). Chronicle fallback retained pending truth transfer.
 - **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
 - **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142)
-- **Full `bx_completeness`**: Blocked by 5 sorries across 2 tasks (139, 140). Tasks 141, 142 resolved — not on critical path.
+- **Full `completeness`**: Blocked by 5 sorries across 2 tasks (139, 140). Tasks 141, 142 resolved — not on critical path.
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → sorry-free `bx_completeness`. Tasks 141 and 142 resolved (mixed case eliminated via structural axiom `discrete_box_necessity`).
+**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → sorry-free `completeness`. Tasks 141 and 142 resolved (mixed case eliminated via structural axiom `discrete_box_necessity`).
 
 **Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
 
-**Sorry summary (critical path to sorry-free `bx_completeness`)**:
+**Sorry summary (critical path to sorry-free `completeness`)**:
 
 *Discrete branch (Reynolds pipeline — tasks 139, 140)*:
 - 3 sorries in `NEquivalence.lean`: `ktype_finite`, `k_type_of`, `finite_types` (KEquivalenceFramework) — task 139
@@ -63,7 +63,7 @@ BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from Canonical
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| **Critical path** (blocking `bx_completeness`) | 5 | `RootScopedChain.lean` | **OPEN** (task 109) |
+| **Critical path** (blocking `completeness`) | 5 | `RootScopedChain.lean` | **OPEN** (task 109) |
 | **Irreflexive-consequence** (BX1 removal artifacts) | 14 | Frame, TruthLemma, CanonicalModel, Construction, Realization, SigmaOrdering | **OPEN** (task 109) |
 | **Total BXCanonical** | **19** | 7 files | |
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
@@ -237,7 +237,7 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | `discrete_propagate_bwd` | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
 | `discrete_box_necessity` | `U(⊤,⊥) → □(U(⊤,⊥))` | Discreteness propagates to all box-accessible worlds (task 142) |
 
-*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure. The `discrete_box_necessity` axiom is the key to eliminating the mixed case in `bx_completeness`: it ensures that if any world is discrete, all box-accessible worlds are discrete too.*
+*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure. The `discrete_box_necessity` axiom is the key to eliminating the mixed case in `completeness`: it ensures that if any world is discrete, all box-accessible worlds are discrete too.*
 
 ### Layer 6: Prior Axioms for Integers (2) — Task 119
 
@@ -523,7 +523,7 @@ which is invalid under irreflexive semantics.
 ### Completeness Theorem (Completeness.lean:124-154)
 
 ```lean
-theorem bx_completeness (φ : Formula) :
+theorem completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ)
 ```
 

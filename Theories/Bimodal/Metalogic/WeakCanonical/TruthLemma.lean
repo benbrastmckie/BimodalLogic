@@ -33,7 +33,7 @@ canonical model for the Doets/Reynolds completeness construction.
 - truth_lemma Until case (backward direction)
 - truth_lemma Since case (backward direction)
 
-Non-critical-path: these sorries do not block bx_completeness. The parametric truth
+Non-critical-path: these sorries do not block completeness. The parametric truth
 lemma (ParametricTruthLemma.lean) handles Until/Since via BFMCS coherence. Closing
 these requires ReflCanDomain restructuring with chronicle gap-content infrastructure.
 -/
@@ -396,7 +396,7 @@ and ψ₁ ∈ y.val.
 until_F_expansion (self-accumulation) to propagate ψ₂ through intermediate
 MCS. This needs infrastructure from BXCanonical/CanonicalChain.lean or
 BXCanonical/Filtration/DefectChain.lean, not yet ported to ReflCanDomain.
-This sorry does not block bx_completeness. The parametric truth lemma
+This sorry does not block completeness. The parametric truth lemma
 (ParametricTruthLemma.lean) handles Until/Since via BFMCS coherence.
 Closing this requires ReflCanDomain restructuring with chronicle
 gap-content infrastructure (see report 03_teammate-b-solutions.md).
@@ -427,7 +427,7 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   -- Build result
   refine ⟨y, h_g_sub, h_ψ₁_in_y, ?_⟩
   -- DOCUMENTED SORRY (non-critical-path): Intermediate guard condition.
-  -- This sorry does not block bx_completeness. The parametric truth lemma
+  -- This sorry does not block completeness. The parametric truth lemma
   -- handles Until/Since via BFMCS coherence. Closing this requires
   -- ReflCanDomain restructuring with chronicle gap-content infrastructure.
   sorry
@@ -437,7 +437,7 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   semantic Until condition (i.e., for any forward witness of ψ₁, there's an intermediate
   counter-witness where ψ₂ fails).
 
-  **Non-critical-path**: This lemma is NOT needed for bx_completeness. The
+  **Non-critical-path**: This lemma is NOT needed for completeness. The
   parametric truth lemma handles Until/Since via BFMCS coherence. Closing this
   requires chain construction / counter-witness propagation from
   BXCanonical/CanonicalChain.lean or BXCanonical/Filtration/DefectChain.lean
@@ -454,7 +454,7 @@ theorem until_backward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
 Mirror of Until forward using past (since_P) + past_temporal_witness_seed_consistent.
 
 **Documented sorry (non-critical-path)**: Same intermediate guard condition issue
-as until_forward_mcs. Does not block bx_completeness. -/
+as until_forward_mcs. Does not block completeness. -/
 theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
     (h_since : Formula.snce ψ₁ ψ₂ ∈ x.val) :
     ∃ (y : ReflCanDomain), tempR_bwd y x ∧ ψ₁ ∈ y.val ∧
@@ -481,7 +481,7 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   -- Build result
   refine ⟨y, h_h_sub, h_ψ₁_in_y, ?_⟩
   -- DOCUMENTED SORRY (non-critical-path): Intermediate guard condition.
-  -- Mirror of until_forward_mcs. Does not block bx_completeness.
+  -- Mirror of until_forward_mcs. Does not block completeness.
   sorry
 
 /--
@@ -489,7 +489,7 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   semantic Since condition (i.e., for any backward witness of ψ₁, there's an intermediate
   counter-witness where ψ₂ fails).
 
-  **Non-critical-path**: This lemma is NOT needed for bx_completeness.
+  **Non-critical-path**: This lemma is NOT needed for completeness.
   Mirror of until_backward_mcs. Same infrastructure blocker.
   -/
 theorem since_backward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
@@ -552,7 +552,7 @@ theorem truth_lemma : ∀ (x : ReflCanDomain) (ψ : Formula),
       -- This is the backward direction of Until truth: if ∃y>x with φ∈y and all
       -- intermediate points have ψ, then U(φ,ψ) ∈ x.
       -- DOCUMENTED SORRY (non-critical-path): Requires until_backward_mcs variant
-      -- / induction principle. Does not block bx_completeness.
+      -- / induction principle. Does not block completeness.
       sorry
     · -- untl φ ψ ∈ x.val → reflCanTruth x (untl φ ψ)
       intro h_until
@@ -568,7 +568,7 @@ theorem truth_lemma : ∀ (x : ReflCanDomain) (ψ : Formula),
       rcases h_truth with ⟨y, h_bwd, h_truth_y_φ, h_guard⟩
       have h_φ_y : φ ∈ y.val := (ih_φ y).mp h_truth_y_φ
       -- DOCUMENTED SORRY (non-critical-path): Requires since_backward_mcs variant
-      -- / induction principle. Does not block bx_completeness.
+      -- / induction principle. Does not block completeness.
       sorry
     · -- snce φ ψ ∈ x.val → reflCanTruth x (snce φ ψ)
       intro h_since

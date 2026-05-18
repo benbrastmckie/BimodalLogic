@@ -12,7 +12,7 @@ if a formula is valid (true in all models), then it is derivable.
 ## Statement
 
 ```
-theorem bx_completeness (φ : Formula) :
+theorem completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ)
 ```
 
@@ -27,7 +27,7 @@ theorem bx_completeness (φ : Formula) :
 
 ## Status
 
-The completeness proof is wired through `dd_countermodel_chronicle` from
+The completeness proof is wired through `countermodel_dense` from
 Chronicle/ChronicleToCountermodel.lean, which uses the Burgess 1982 chronicle
 construction over Rat instead of the schedule-based Int chain. This bypasses the
 3 sorry sites in RootScopedChain.lean (which remain as dead code).
@@ -109,7 +109,7 @@ theorem neg_consistent_of_not_derivable (φ : Formula)
 /-! ## BX Completeness Theorem -/
 
 /--
-BX Completeness Theorem: If a formula is valid, then it is derivable.
+Completeness Theorem: If a formula is valid, then it is derivable.
 
 The contrapositive: if φ is not derivable, then φ is not valid.
 
@@ -117,18 +117,18 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 1. Assume φ is not derivable
 2. By `neg_consistent_of_not_derivable`: {¬φ} is consistent
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
-4. Build canonical model via `dd_countermodel_chronicle` (Chronicle/ChronicleToCountermodel.lean)
+4. Build canonical model via `countermodel_dense` (Chronicle/ChronicleToCountermodel.lean)
 5. By parametric truth lemma: φ is false at the canonical evaluation point
 6. Instantiate `valid φ` at the canonical model to get truth, contradiction
 
-**Status**: Proof completed via `dd_countermodel_chronicle` (Burgess chronicle).
+**Status**: Proof completed via `countermodel_dense` (Burgess chronicle).
 The mixed case (¬□(F'T) ∧ ¬□(U(T,bot))) is eliminated by `mcs_mixed_case_absurd`
 using the structural axiom `discrete_box_necessity` (task 142).
 Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
 construction). The RootScopedChain.lean sorry sites are no longer on the critical
 path -- the chronicle bypasses them entirely.
 -/
-theorem bx_completeness (φ : Formula) :
+theorem completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ) := by
   -- Contrapositive: assume not derivable, show not valid
   by_contra h
@@ -152,14 +152,14 @@ theorem bx_completeness (φ : Formula) :
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
     obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-      Chronicle.dd_countermodel_chronicle_dense M hM_mcs φ h_neg_in h_box_dense
+      Chronicle.countermodel_dense M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        WeakCanonical.doets_countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
+        WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — some worlds dense, others discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
@@ -168,11 +168,11 @@ theorem bx_completeness (φ : Formula) :
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
 /--
-BX Completeness (alternate form): valid → derivable.
+Completeness (alternate form): valid → derivable.
 -/
-theorem bx_completeness' (φ : Formula) (h : valid φ) :
+theorem completeness' (φ : Formula) (h : valid φ) :
     Nonempty (DerivationTree [] φ) :=
-  bx_completeness φ h
+  completeness φ h
 
 /-! ## Axiom Audit (Phase 0 Results)
 
@@ -181,7 +181,7 @@ Captured during Phase 0 of task 109 (2026-04-20).
 ### Current State (as of Phase 0)
 
 ```
-#print axioms bx_completeness
+#print axioms completeness
 -- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]
 
 #print axioms dd_countermodel
@@ -222,7 +222,7 @@ rationals into the limit domain.
 
 ### Target State
 
-After task 117 (remove Cantor iso), `#print axioms bx_completeness` should show:
+After task 117 (remove Cantor iso), `#print axioms completeness` should show:
 `{propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
 
 Current state (task 107 complete):
@@ -233,8 +233,8 @@ Current state (task 107 complete):
 and are not removable without changing the decidability infrastructure.)
 -/
 
-#print axioms Bimodal.Metalogic.BXCanonical.bx_completeness
+#print axioms Bimodal.Metalogic.BXCanonical.completeness
 #print axioms Bimodal.Metalogic.BXCanonical.dd_countermodel
-#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_dense
+#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense
 
 end Bimodal.Metalogic.BXCanonical

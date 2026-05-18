@@ -790,7 +790,7 @@ Uses `cantor_bfmcs_dense` (sorry-free BFMCS) with the three restricted
 coherence conditions. The eval family is `rooted_cantor_fmcs_dense A h_mcs h_box_dense 0`
 which has `mcs 0 = A`, so `¬φ ∈ eval_family.mcs 0`.
 -/
-theorem dd_countermodel_chronicle_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem countermodel_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box next_top.neg ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
@@ -821,7 +821,7 @@ theorem dd_countermodel_chronicle_dense (A : Set Formula) (h_mcs : SetMaximalCon
 
 /--
 Sorry-backed discrete countermodel stub. Used in the non-dense branch of
-bx_completeness. Requires constructing a BFMCS on ℤ (analogous to
+completeness. Requires constructing a BFMCS on ℤ (analogous to
 `cantor_bfmcs_dense` for the dense case on ℚ), using `discrete_fmcs`
 and `discrete_iso` to transport the chronicle coherence properties
 through the Z-isomorphism. Prior-UZ axioms and IsSuccArchimedean

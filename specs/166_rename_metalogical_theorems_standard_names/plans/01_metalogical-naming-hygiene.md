@@ -74,34 +74,34 @@ No prior plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rename Completeness Theorems and Countermodels [NOT STARTED]
+### Phase 1: Rename Completeness Theorems and Countermodels [COMPLETED]
 
 **Goal**: Rename the completeness theorem and countermodel existence theorems to their standard names, updating all call sites.
 
 **Tasks**:
-- [ ] Rename `bx_completeness` to `completeness` in `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` (line 131)
-- [ ] Rename `bx_completeness'` to `completeness'` in the same file (line 173)
-- [ ] Update `bx_completeness` references in:
-  - [ ] Completeness.lean docstrings and comments (lines 15, 30, 124, 131, 175, 184, 225, 236)
-  - [ ] `#print axioms` statement (line 236): update fully-qualified name
-  - [ ] WeakCanonical/TruthLemma.lean comment references (lines 36, 399, 430, 440, 457, 484, 492, 555, 571)
-  - [ ] ChronicleToCountermodel.lean comment reference (line 824)
-  - [ ] WeakCanonical/WeakCanonical.lean docstrings (lines 29, 33)
-  - [ ] README.md table (line 146): `bx_completeness` to `completeness`
-  - [ ] Theories/Bimodal/README.md references
-  - [ ] Metalogic/Metalogic.lean docstring
-- [ ] Rename `dd_countermodel_chronicle_dense` to `countermodel_dense` in `ChronicleToCountermodel.lean` (line 793)
-- [ ] Update `dd_countermodel_chronicle_dense` references in:
-  - [ ] Completeness.lean line 155 (call site inside `completeness`)
-  - [ ] Completeness.lean `#print axioms` (line 238)
-  - [ ] README.md table (line 147)
-  - [ ] ROADMAP.md reference (line 26)
-- [ ] Rename `doets_countermodel_discrete` to `countermodel_discrete` in `WeakCanonical/Transfer.lean` (line 312)
-- [ ] Update `doets_countermodel_discrete` references in:
-  - [ ] Completeness.lean line 162 (call site inside `completeness`)
-  - [ ] WeakCanonical/WeakCanonical.lean docstrings (lines 29, 33)
-  - [ ] Transfer.lean docstring/comments (line 13, line 288)
-- [ ] Run `lake build` to verify no compilation errors
+- [x] Rename `bx_completeness` to `completeness` in `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` (line 131)
+- [x] Rename `bx_completeness'` to `completeness'` in the same file (line 173)
+- [x] Update `bx_completeness` references in:
+  - [x] Completeness.lean docstrings and comments (lines 15, 30, 124, 131, 175, 184, 225, 236)
+  - [x] `#print axioms` statement (line 236): update fully-qualified name
+  - [x] WeakCanonical/TruthLemma.lean comment references (lines 36, 399, 430, 440, 457, 484, 492, 555, 571)
+  - [x] ChronicleToCountermodel.lean comment reference (line 824)
+  - [x] WeakCanonical/WeakCanonical.lean docstrings (lines 29, 33)
+  - [x] README.md table (line 146): `bx_completeness` to `completeness`
+  - [x] Theories/Bimodal/README.md references *(deviation: skipped -- no references found)*
+  - [x] Metalogic/Metalogic.lean docstring *(deviation: skipped -- no references found)*
+- [x] Rename `dd_countermodel_chronicle_dense` to `countermodel_dense` in `ChronicleToCountermodel.lean` (line 793)
+- [x] Update `dd_countermodel_chronicle_dense` references in:
+  - [x] Completeness.lean line 155 (call site inside `completeness`)
+  - [x] Completeness.lean `#print axioms` (line 238)
+  - [x] README.md table (line 147)
+  - [x] ROADMAP.md reference (line 26)
+- [x] Rename `doets_countermodel_discrete` to `countermodel_discrete` in `WeakCanonical/Transfer.lean` (line 312)
+- [x] Update `doets_countermodel_discrete` references in:
+  - [x] Completeness.lean line 162 (call site inside `completeness`)
+  - [x] WeakCanonical/WeakCanonical.lean docstrings (lines 29, 33)
+  - [x] Transfer.lean docstring/comments (line 13, line 288)
+- [x] Run `lake build` to verify no compilation errors
 
 **Timing**: 1.5 hours
 

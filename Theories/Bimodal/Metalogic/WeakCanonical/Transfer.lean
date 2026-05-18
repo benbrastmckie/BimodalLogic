@@ -10,7 +10,7 @@ import Bimodal.Semantics.Validity
 /-!
 # Z-Model Transfer for the Reflexive Canonical Model
 
-The main theorem: `doets_countermodel_discrete` — uses the Reynolds/Doets
+The main theorem: `countermodel_discrete` — uses the Reynolds/Doets
 compression pipeline to construct a countermodel on ℤ.
 
 ## Architecture
@@ -285,7 +285,7 @@ theorem z_interval_countermodel {sig : MonadicSignature}
   -- the ℤ order matches the Z-interval's order through the iso.
   sorry
 
-/-! ## Main Theorem: doets_countermodel_discrete -/
+/-! ## Main Theorem: countermodel_discrete -/
 
 /--
 Doets/Reynolds discrete countermodel construction.
@@ -309,7 +309,7 @@ The full pipeline:
 Steps 1-5 are structurally complete. The pipeline propagates
 sorry from `chronicle_is_good` (upstream: task 157 / Phase 3B).
 -/
-theorem doets_countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
