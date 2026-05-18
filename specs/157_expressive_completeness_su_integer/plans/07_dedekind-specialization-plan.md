@@ -369,9 +369,9 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 ### Phase 3: Cases 6-8 via Reductions (Phase 6B-3) [PARTIAL]
 
-**Round 3 Status**: Cases 6 and 8 proved non-circularly. Case 7 retains all_separable bootstrap.
-- Case 5: via case3_equiv_Z_general + U-evaluation + Cases 1-2 (DONE)
-- Case 6: via case3_equiv_Z_general + U-evaluation + Cases 1-2 (DONE)
+**Round 4 Status**: The snce_event_eval_pos/neg approach from Round 3 was UNSOUND (replace_untl_with_top is not a valid equivalence when the formula contains temporal operators evaluating U(A,B) at different time points). All Cases 5-8 reverted to all_separable bootstrap. The correct non-circular approach requires Phase 4 (junction-depth hierarchy) first, then Cases 5-8 become trivial via all_formulas_separable.
+- Case 5: all_separable bootstrap (reverted)
+- Case 6: all_separable bootstrap (reverted)
 - Case 8: via neg_since_equiv decomposition + Case 5 + snce_event_decomp_separable (DONE)
 - Case 7: requires two-level U-type decomposition or full junction_depth hierarchy (BLOCKED)
 
@@ -386,7 +386,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 **Tasks**:
 
-- [x] Task 3.1: Prove Case 8 is separable (~100 LOC) *(completed -- via case8_decomp_Z + Case 5 + snce_event_decomp_separable)*
+- [ ] Task 3.1: Prove Case 8 is separable (~100 LOC) *(deviation: altered -- reverted to all_separable bootstrap; snce_event_decomp_separable approach was unsound)*
   - Location: `DedekindZ.lean` or `CasesDedekind.lean`
   - Type:
     ```lean
@@ -413,7 +413,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
     - After simplification with K-/Gamma vanishing: `S(~U ^ a, ~U v q) <-> S(~U ^ a, top) ^ ~S(U ^ ~q, U v ~a)`. Both parts are separable.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [ ] Task 3.2: Prove Case 7 is separable (~80 LOC) *(deviation: deferred -- requires two-level U-type decomposition or junction_depth hierarchy; neg_until_equiv introduces U(~A^~B, ~A) which is a different U-type)*
+- [ ] Task 3.2: Prove Case 7 is separable (~150 LOC) *(deviation: deferred to Phase 4 -- requires hierarchy; all_separable bootstrap in place)*
   - Location: After Case 8
   - Type:
     ```lean
@@ -436,7 +436,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
     - Apply Case 8 (`case8_separable_Z`) and Case 4 (`case4_separable`) to the sub-terms.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [x] Task 3.3: Prove Case 6 is separable (~80 LOC) *(completed -- via case3_equiv_Z_general + snce_event_decomp_separable)*
+- [ ] Task 3.3: Prove Case 6 is separable (~80 LOC) *(deviation: altered -- reverted to all_separable bootstrap; snce_event_decomp_separable approach was unsound)*
   - Location: After Case 7
   - Type:
     ```lean
