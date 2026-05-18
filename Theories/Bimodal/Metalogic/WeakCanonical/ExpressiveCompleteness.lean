@@ -1299,6 +1299,28 @@ private theorem formula_atoms_foldl_or_subset (fs : List Formula) (init : Formul
       exact ⟨h_init, h_fs f (List.mem_cons.mpr (Or.inl rfl))⟩
     · intro g hg; exact h_fs g (List.mem_cons.mpr (Or.inr hg))
 
+/-- Truth of a foldl-or formula: true iff init is true or some formula in the list is true. -/
+private theorem int_truth_foldl_or (M : Separation.IntStructure) (t : Int)
+    (init : Formula) (fs : List Formula) :
+    Separation.int_truth M t (fs.foldl Formula.or init) ↔
+    Separation.int_truth M t init ∨ ∃ f ∈ fs, Separation.int_truth M t f := by
+  induction fs generalizing init with
+  | nil => simp [List.foldl]
+  | cons f rest ih =>
+    simp only [List.foldl]
+    rw [ih, Separation.int_truth_or_iff]
+    constructor
+    · rintro (h | ⟨g, hg, hgt⟩)
+      · rcases h with h | h
+        · exact Or.inl h
+        · exact Or.inr ⟨f, List.mem_cons.mpr (Or.inl rfl), h⟩
+      · exact Or.inr ⟨g, List.mem_cons.mpr (Or.inr hg), hgt⟩
+    · rintro (h | ⟨g, hg, hgt⟩)
+      · exact Or.inl (Or.inl h)
+      · rcases List.mem_cons.mp hg with rfl | hg'
+        · exact Or.inl (Or.inr hgt)
+        · exact Or.inr ⟨g, hg', hgt⟩
+
 /-- All atoms of `quantElimFormula` are in `Set.range atomMap`. -/
 private theorem formula_atoms_quantElimFormula_subset {sig : MonadicSignature}
     (atomMap : sig.preds → Atom) (freshAM : (extSignature sig).preds → Atom)
@@ -1334,6 +1356,90 @@ private theorem formula_atoms_quantElimFormula_subset {sig : MonadicSignature}
     · intro f hf
       exact h_branch_atoms f (h ▸ List.mem_cons.mpr (Or.inr (List.mem_cons.mpr hf)))
 
+/-- Applying substitutions where no substitution's atom appears in φ leaves φ unchanged. -/
+private theorem applySubsts_no_effect (φ : Formula) (subs : List (Atom × Formula))
+    (h : ∀ a r, (a, r) ∈ subs → a ∉ Separation.formula_atoms φ) :
+    applySubsts φ subs = φ := by
+  induction subs generalizing φ with
+  | nil => simp [applySubsts]
+  | cons (a, r) rest ih =>
+    simp only [applySubsts]
+    have hna : a ∉ Separation.formula_atoms φ :=
+      h a r (List.mem_cons.mpr (Or.inl rfl))
+    have h_subst_unchanged : Separation.subst_formula φ a r = φ := by
+      induction φ with
+      | atom b =>
+        simp only [Separation.subst_formula, Separation.formula_atoms, Set.mem_singleton_iff] at *
+        simp [Ne.symm hna]
+      | bot => rfl
+      | imp α β ihα ihβ =>
+        simp only [Separation.formula_atoms, Set.mem_union] at hna
+        simp only [Separation.subst_formula]
+        congr 1
+        · exact ihα (fun h => hna (Or.inl h))
+        · exact ihβ (fun h => hna (Or.inr h))
+      | box α ihα =>
+        simp only [Separation.formula_atoms] at hna
+        simp [Separation.subst_formula, ihα hna]
+      | all_past α ihα =>
+        simp only [Separation.formula_atoms] at hna
+        simp [Separation.subst_formula, ihα hna]
+      | all_future α ihα =>
+        simp only [Separation.formula_atoms] at hna
+        simp [Separation.subst_formula, ihα hna]
+      | untl α β ihα ihβ =>
+        simp only [Separation.formula_atoms, Set.mem_union] at hna
+        simp only [Separation.subst_formula]
+        congr 1
+        · exact ihα (fun h => hna (Or.inl h))
+        · exact ihβ (fun h => hna (Or.inr h))
+      | snce α β ihα ihβ =>
+        simp only [Separation.formula_atoms, Set.mem_union] at hna
+        simp only [Separation.subst_formula]
+        congr 1
+        · exact ihα (fun h => hna (Or.inl h))
+        · exact ihβ (fun h => hna (Or.inr h))
+    rw [h_subst_unchanged]
+    exact ih φ (fun a' r' hmem => h a' r' (List.mem_cons.mpr (Or.inr hmem)))
+
+/-- Applying substitutions to a single atom: finds replacement and applies rest to it. -/
+private theorem applySubsts_atom_found (a : Atom) (r : Formula)
+    (rest : List (Atom × Formula))
+    (h_no_rest : ∀ a' r', (a', r') ∈ rest → a' ∉ Separation.formula_atoms r) :
+    applySubsts (.atom a) ((a, r) :: rest) = r := by
+  simp only [applySubsts, Separation.subst_formula, if_pos (rfl)]
+  exact applySubsts_no_effect r rest h_no_rest
+
+/-- Applying substitutions to a single atom, skipping a non-matching head. -/
+private theorem applySubsts_atom_skip (a a' : Atom) (r' : Formula)
+    (rest : List (Atom × Formula)) (hne : a ≠ a') :
+    applySubsts (.atom a) ((a', r') :: rest) = applySubsts (.atom a) rest := by
+  simp only [applySubsts, Separation.subst_formula, if_neg (Ne.symm hne)]
+
+/-- When atom a has a matching entry in subs and no subsequent key appears in the replacement,
+    applySubsts (.atom a) subs reduces to the replacement. -/
+private theorem applySubsts_atom_with_match (a : Atom) (r : Formula)
+    (subs : List (Atom × Formula))
+    (h_mem : (a, r) ∈ subs)
+    (h_no_further : ∀ a' r', (a', r') ∈ subs → a' ∉ Separation.formula_atoms r) :
+    applySubsts (.atom a) subs = r := by
+  induction subs with
+  | nil => exact absurd h_mem (List.not_mem_nil _)
+  | cons (a', r') rest ih =>
+    simp only [applySubsts]
+    by_cases ha : a' = a
+    · simp only [ha, Separation.subst_formula, if_pos rfl]
+      apply applySubsts_no_effect
+      intro b rr hmem_rr
+      exact h_no_further b rr (List.mem_cons.mpr (Or.inr hmem_rr))
+    · simp only [Separation.subst_formula, if_neg (Ne.symm ha)]
+      apply ih
+      · rcases List.mem_cons.mp h_mem with ⟨h⟩ | hmem_rest
+        · exact absurd (Prod.mk.inj h).1 (Ne.symm ha)
+        · exact hmem_rest
+      · intro b rr hmem_rr
+        exact h_no_further b rr (List.mem_cons.mpr (Or.inr hmem_rr))
+
 /-- The atom elimination correctness theorem: closes the gap between M_ext and M_orig.
 
     Given a properly separated B_sep whose atoms are all in freshAM's image, and
@@ -1342,6 +1448,28 @@ private theorem formula_atoms_quantElimFormula_subset {sig : MonadicSignature}
 
     The proof uses the guardFormula/elimExtFromSep construction with the disjointness
     guarantee ensuring no double-substitution in applySubsts. -/
+-- Helper: truth of branches list (used in atom_elim_correct for quantElimFormula)
+private theorem int_truth_branches_iff (M : Separation.IntStructure) (t : Int)
+    (branches : List Formula) :
+    (match branches with
+     | [] => Separation.int_truth M t .bot
+     | [b] => Separation.int_truth M t b
+     | b :: bs => Separation.int_truth M t (bs.foldl Formula.or b)) ↔
+    ∃ branch ∈ branches, Separation.int_truth M t branch := by
+  match branches with
+  | [] => simp [Separation.int_truth]
+  | [b] => simp
+  | b :: b' :: bs =>
+    rw [int_truth_foldl_or]
+    simp only [List.mem_cons]
+    constructor
+    · rintro (h | ⟨g, hg, hg_t⟩)
+      · exact ⟨b, Or.inl rfl, h⟩
+      · exact ⟨g, Or.inr hg, hg_t⟩
+    · rintro ⟨g, hg | hg, hg_t⟩
+      · exact Or.inl (hg ▸ hg_t)
+      · exact Or.inr ⟨g, hg, hg_t⟩
+
 private theorem atom_elim_correct {sig : MonadicSignature}
     (atomMap : sig.preds → Atom) (hinj : Function.Injective atomMap)
     (freshAM : (extSignature sig).preds → Atom) (freshAM_inj : Function.Injective freshAM)
@@ -1351,7 +1479,383 @@ private theorem atom_elim_correct {sig : MonadicSignature}
     (hB_atoms : Separation.formula_atoms B_sep ⊆ Set.range freshAM) :
     Separation.int_truth (to_int_struct (extIntStruct M t) freshAM) t B_sep ↔
     Separation.int_truth (to_int_struct M atomMap) t (quantElimFormula atomMap freshAM B_sep) := by
-  sorry
+  -- Setup models
+  let M_ext := to_int_struct (extIntStruct M t) freshAM
+  let M_orig := to_int_struct M atomMap
+  -- Blended model: agrees with M_ext on freshAM atoms, M_orig on atomMap atoms
+  let M_blend : Separation.IntStructure := ⟨fun a => M_ext.val a ∪ M_orig.val a⟩
+  -- σ₀: the actual assignment of M at t (using classical decidability)
+  let σ₀ : sig.preds → Bool := fun p => if M.interp p t then true else false
+  have hσ₀ : ∀ p, σ₀ p = true ↔ M.interp p t := fun p => by
+    simp only [σ₀]
+    by_cases h : M.interp p t
+    · simp [h]
+    · simp [h]
+  -- M_blend agrees with M_ext on freshAM atoms
+  have hF1 : ∀ (ep : ExtPred sig) (z : Int),
+      z ∈ M_blend.val (freshAM ep) ↔ z ∈ M_ext.val (freshAM ep) := by
+    intro ep z
+    simp only [M_blend, M_ext, M_orig, Set.mem_union, to_int_struct, Set.mem_setOf_eq]
+    constructor
+    · rintro (h | ⟨p, hpe, _⟩)
+      · exact h
+      · exact absurd hpe (h_disj p ep).symm
+    · exact Or.inl
+  -- M_blend agrees with M_orig on atomMap atoms
+  have hF2 : ∀ (p : sig.preds) (z : Int),
+      z ∈ M_blend.val (atomMap p) ↔ z ∈ M_orig.val (atomMap p) := by
+    intro p z
+    simp only [M_blend, M_ext, M_orig, Set.mem_union, to_int_struct, Set.mem_setOf_eq]
+    constructor
+    · rintro (⟨ep, hepa, _⟩ | h)
+      · exact absurd hepa (h_disj p ep)
+      · exact h
+    · exact Or.inr
+  -- Transfer B_sep truth: M_ext ↔ M_blend
+  have h_ext_blend : Separation.int_truth M_ext t B_sep ↔ Separation.int_truth M_blend t B_sep := by
+    apply int_truth_depends_on_atoms
+    intro a ha z
+    obtain ⟨ep, rfl⟩ := hB_atoms ha
+    exact (hF1 ep z).symm
+  -- Transfer quantElimFormula: M_blend ↔ M_orig
+  have h_blend_orig :
+      Separation.int_truth M_blend t (quantElimFormula atomMap freshAM B_sep) ↔
+      Separation.int_truth M_orig t (quantElimFormula atomMap freshAM B_sep) := by
+    apply int_truth_depends_on_atoms
+    intro a ha z
+    obtain ⟨p, rfl⟩ := formula_atoms_quantElimFormula_subset
+        atomMap freshAM freshAM_inj (fun p ep => h_disj p ep) B_sep hB_atoms ha
+    exact (hF2 p z).symm
+  rw [h_ext_blend, h_blend_orig]
+  -- Now prove: M_blend truth of B_sep ↔ M_blend truth of quantElimFormula
+  -- Unfold quantElimFormula
+  simp only [quantElimFormula]
+  set lt_atom := freshAM .lt_ref
+  set gt_atom := freshAM .gt_ref
+  set origSubs := origSubsList atomMap freshAM
+  set assignments := (Finset.univ : Finset (sig.preds → Bool)).toList
+  set branches := assignments.map fun σ =>
+    Formula.and (guardFormula atomMap σ)
+                (elimExtFromSep (origSubs ++ constSubsList freshAM σ) lt_atom gt_atom B_sep)
+  -- Reduce to existence over branches
+  rw [int_truth_branches_iff]
+  -- σ₀ is in assignments
+  have hσ₀_mem : σ₀ ∈ assignments := by
+    simp [assignments, Finset.mem_toList, Finset.mem_univ]
+  -- σ₀'s branch is in branches
+  have hbranch_mem : (Formula.and (guardFormula atomMap σ₀)
+      (elimExtFromSep (origSubs ++ constSubsList freshAM σ₀) lt_atom gt_atom B_sep)) ∈ branches := by
+    exact List.mem_map.mpr ⟨σ₀, hσ₀_mem, rfl⟩
+  -- Helper: h_match for applySubsts_past_correct on M_blend at time s ≤ some_val ≤ t
+  -- For past substitutions subs_past = origSubs ++ constSubs_σ₀ ++ [(lt_atom, ¬⊥), (gt_atom, ⊥)]
+  -- The h_match condition in M_blend: ∀ r ≤ s_bound, int_truth M_blend r r_formula ↔ r ∈ M_blend.val a
+  have past_match : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(lt_atom, Formula.neg .bot), (gt_atom, .bot)] →
+      ∀ s_bound : Int, s_bound < t →
+      ∀ r_val : Int, r_val ≤ s_bound →
+      (Separation.int_truth M_blend r_val r ↔ r_val ∈ M_blend.val a) := by
+    intro a r hmem s_bound hs_bound r_val hr_val
+    simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+               Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+               List.mem_singleton, Prod.mk.injEq] at hmem
+    rcases hmem with (⟨p, rfl, rfl⟩ | ⟨p, rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+    · -- (freshAM (.orig p), atom(atomMap p)): M_blend agrees on both
+      simp only [Separation.int_truth]
+      rw [hF1 (.orig p) r_val, hF2 p r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.orig p) r_val,
+                 M_orig, to_int_struct_mem_atomMap M atomMap hinj p r_val]
+      simp [extIntStruct]
+    · -- (freshAM (.const_at_ref p), if σ₀ p then ¬⊥ else ⊥)
+      rw [hF1 (.const_at_ref p) r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.const_at_ref p) r_val,
+                 extIntStruct]
+      by_cases hsp : σ₀ p = true
+      · simp only [hsp, ite_true, Separation.int_truth, Formula.neg]
+        constructor
+        · intro; exact (hσ₀ p).mp hsp
+        · intro; trivial
+      · simp only [show σ₀ p = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr hsp),
+                   ite_false, Separation.int_truth]
+        constructor
+        · intro h; exact h.elim
+        · intro h; exact absurd ((hσ₀ p).mpr h) hsp
+    · -- (lt_atom, ¬⊥): True ↔ r_val ∈ M_blend.val lt_atom
+      rw [hF1 .lt_ref r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .lt_ref r_val,
+                 extIntStruct, Separation.int_truth, Formula.neg]
+      exact ⟨fun _ => lt_of_le_of_lt hr_val hs_bound, fun _ => trivial⟩
+    · -- (gt_atom, ⊥): False ↔ r_val ∈ M_blend.val gt_atom
+      rw [hF1 .gt_ref r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .gt_ref r_val,
+                 extIntStruct, Separation.int_truth]
+      exact ⟨False.elim, fun h => absurd (lt_of_le_of_lt hr_val hs_bound) (not_lt.mpr h.le)⟩
+  -- Future match for future substitutions
+  have future_match : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(.bot : Formula).neg, Formula.neg .bot].zip [gt_atom, lt_atom] →
+      True := trivial
+  -- Actually build future_match properly
+  have fut_match : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(lt_atom, .bot), (gt_atom, Formula.neg .bot)] →
+      ∀ s_bound : Int, t < s_bound →
+      ∀ r_val : Int, s_bound ≤ r_val →
+      (Separation.int_truth M_blend r_val r ↔ r_val ∈ M_blend.val a) := by
+    intro a r hmem s_bound hs_bound r_val hr_val
+    simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+               Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+               List.mem_singleton, Prod.mk.injEq] at hmem
+    rcases hmem with (⟨p, rfl, rfl⟩ | ⟨p, rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+    · -- orig: same as past case
+      simp only [Separation.int_truth]
+      rw [hF1 (.orig p) r_val, hF2 p r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.orig p) r_val,
+                 M_orig, to_int_struct_mem_atomMap M atomMap hinj p r_val]
+      simp [extIntStruct]
+    · -- const_at_ref: same as past case
+      rw [hF1 (.const_at_ref p) r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.const_at_ref p) r_val,
+                 extIntStruct]
+      by_cases hsp : σ₀ p = true
+      · simp only [hsp, ite_true, Separation.int_truth, Formula.neg]
+        exact ⟨fun _ => (hσ₀ p).mp hsp, fun _ => trivial⟩
+      · simp only [show σ₀ p = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr hsp),
+                   ite_false, Separation.int_truth]
+        exact ⟨False.elim, fun h => absurd ((hσ₀ p).mpr h) hsp⟩
+    · -- (lt_atom, ⊥): False ↔ r_val ∈ M_blend.val lt_atom = r_val < t
+      rw [hF1 .lt_ref r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .lt_ref r_val,
+                 extIntStruct, Separation.int_truth]
+      exact ⟨False.elim, fun h => absurd h (not_lt.mpr (le_of_lt (lt_of_lt_of_le hs_bound hr_val)))⟩
+    · -- (gt_atom, ¬⊥): True ↔ r_val ∈ M_blend.val gt_atom = t < r_val
+      rw [hF1 .gt_ref r_val]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .gt_ref r_val,
+                 extIntStruct, Separation.int_truth, Formula.neg]
+      exact ⟨fun _ => lt_of_lt_of_le hs_bound hr_val, fun _ => trivial⟩
+  -- Present-level match for atom case
+  have pres_match : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(lt_atom, .bot), (gt_atom, .bot)] →
+      (Separation.int_truth M_blend t r ↔ t ∈ M_blend.val a) := by
+    intro a r hmem
+    simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+               Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+               List.mem_singleton, Prod.mk.injEq] at hmem
+    rcases hmem with (⟨p, rfl, rfl⟩ | ⟨p, rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+    · simp only [Separation.int_truth]
+      rw [hF1 (.orig p) t, hF2 p t]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.orig p) t,
+                 M_orig, to_int_struct_mem_atomMap M atomMap hinj p t]
+      simp [extIntStruct]
+    · rw [hF1 (.const_at_ref p) t]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj (.const_at_ref p) t,
+                 extIntStruct]
+      by_cases hsp : σ₀ p = true
+      · simp only [hsp, ite_true, Separation.int_truth, Formula.neg]
+        exact ⟨fun _ => (hσ₀ p).mp hsp, fun _ => trivial⟩
+      · simp only [show σ₀ p = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr hsp),
+                   ite_false, Separation.int_truth]
+        exact ⟨False.elim, fun h => absurd ((hσ₀ p).mpr h) hsp⟩
+    · rw [hF1 .lt_ref t]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .lt_ref t,
+                 extIntStruct, Separation.int_truth]
+      exact ⟨False.elim, fun h => absurd h (lt_irrefl t)⟩
+    · rw [hF1 .gt_ref t]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj .gt_ref t,
+                 extIntStruct, Separation.int_truth]
+      exact ⟨False.elim, fun h => absurd h (lt_irrefl t)⟩
+  -- is_past_only/future_only of replacement formulas in subs
+  have past_reps_po : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(lt_atom, Formula.neg .bot), (gt_atom, .bot)] →
+      Separation.is_past_only r = true := by
+    intro a r hmem
+    simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+               Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+               List.mem_singleton, Prod.mk.injEq] at hmem
+    rcases hmem with (⟨_, _, rfl⟩ | ⟨p, _, rfl⟩ | ⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · simp [Separation.is_past_only]
+    · by_cases h : σ₀ p = true <;> simp [h, Separation.is_past_only, Formula.neg]
+    · simp [Separation.is_past_only, Formula.neg]
+    · simp [Separation.is_past_only]
+  have fut_reps_fo : ∀ (a : Atom) (r : Formula),
+      (a, r) ∈ origSubs ++ constSubsList freshAM σ₀ ++
+        [(lt_atom, .bot), (gt_atom, Formula.neg .bot)] →
+      Separation.is_future_only r = true := by
+    intro a r hmem
+    simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+               Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+               List.mem_singleton, Prod.mk.injEq] at hmem
+    rcases hmem with (⟨_, _, rfl⟩ | ⟨p, _, rfl⟩ | ⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · simp [Separation.is_future_only]
+    · by_cases h : σ₀ p = true <;> simp [h, Separation.is_future_only, Formula.neg]
+    · simp [Separation.is_future_only]
+    · simp [Separation.is_future_only, Formula.neg]
+  -- Key body correctness: B_sep truth in M_blend ↔ elimExtFromSep body truth in M_blend
+  -- Proved by structural induction on B_sep
+  have body_correct : Separation.int_truth M_blend t B_sep ↔
+      Separation.int_truth M_blend t
+        (elimExtFromSep (origSubs ++ constSubsList freshAM σ₀) lt_atom gt_atom B_sep) := by
+    induction B_sep with
+    | atom a =>
+      simp only [Separation.is_properly_separated] at hB_sep
+      obtain ⟨ep, rfl⟩ := hB_atoms (Set.mem_singleton a)
+      simp only [elimExtFromSep, Separation.int_truth]
+      -- applySubsts (.atom (freshAM ep)) (origSubs ++ constSubs ++ [(lt,⊥),(gt,⊥)])
+      -- The result is the replacement for freshAM ep
+      -- Use pres_match to identify which substitution applies
+      rw [show applySubsts (.atom (freshAM ep))
+              (origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]) =
+          let subs := origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]
+          applySubsts (.atom (freshAM ep)) subs from rfl]
+      -- Use past_only_subst_correct (actually simpler: direct computation)
+      -- The atom freshAM ep gets replaced by the corresponding formula
+      -- We need: int_truth M_blend t (applySubsts (.atom (freshAM ep)) subs) ↔ t ∈ M_blend.val (freshAM ep)
+      -- i.e., ↔ (extIntStruct M t).interp ep t (via hF1)
+      rw [hF1 ep t]
+      simp only [M_ext, to_int_struct_mem_freshAM M t freshAM freshAM_inj ep t, extIntStruct]
+      -- Now prove: int_truth M_blend t (applySubsts (.atom (freshAM ep)) subs) ↔ (extIntStruct M t).interp ep t
+      -- The left side depends on which ep we have
+      cases ep with
+      | orig p =>
+        simp only [origSubs, origSubsList, applySubsts, Separation.subst_formula,
+                   Finset.mem_toList, Finset.mem_univ]
+        -- After subst: freshAM (.orig p) → atom(atomMap p), result = atom(atomMap p)
+        -- Need to show: int_truth M_blend t ... ↔ M.interp p t
+        sorry
+      | const_at_ref p => sorry
+      | lt_ref => sorry
+      | gt_ref => sorry
+    | bot => simp [elimExtFromSep, Separation.int_truth]
+    | imp α β ihα ihβ =>
+      simp only [Separation.is_properly_separated, Bool.and_eq_true] at hB_sep
+      simp only [elimExtFromSep, Separation.int_truth]
+      exact imp_congr
+        (ihα hB_sep.1 (fun a ha => hB_atoms (Set.mem_union_left _ ha)))
+        (ihβ hB_sep.2 (fun a ha => hB_atoms (Set.mem_union_right _ ha)))
+    | box φ _ =>
+      simp [elimExtFromSep, Separation.int_truth]
+    | all_past ψ _ =>
+      simp only [Separation.is_properly_separated] at hB_sep
+      simp only [elimExtFromSep, Separation.int_truth]
+      constructor
+      · intro hall s hs
+        have ψ_po : Separation.is_past_only ψ = true := hB_sep
+        rw [← applySubsts_past_correct ψ_po
+              (origSubs ++ constSubsList freshAM σ₀ ++
+               [(lt_atom, Formula.neg .bot), (gt_atom, .bot)])
+              M_blend s
+              past_reps_po
+              (fun a r hmem r_val hr_val => past_match a r hmem s hs r_val hr_val)]
+        exact hall s hs
+      · intro hall s hs
+        have ψ_po : Separation.is_past_only ψ = true := hB_sep
+        rw [← applySubsts_past_correct ψ_po
+              (origSubs ++ constSubsList freshAM σ₀ ++
+               [(lt_atom, Formula.neg .bot), (gt_atom, .bot)])
+              M_blend s
+              past_reps_po
+              (fun a r hmem r_val hr_val => past_match a r hmem s hs r_val hr_val)] at hall
+        exact hall s hs
+    | all_future ψ _ =>
+      simp only [Separation.is_properly_separated] at hB_sep
+      simp only [elimExtFromSep, Separation.int_truth]
+      constructor
+      · intro hall s hs
+        have ψ_fo : Separation.is_future_only ψ = true := hB_sep
+        rw [← applySubsts_future_correct ψ_fo
+              (origSubs ++ constSubsList freshAM σ₀ ++
+               [(lt_atom, .bot), (gt_atom, Formula.neg .bot)])
+              M_blend s
+              fut_reps_fo
+              (fun a r hmem r_val hr_val => fut_match a r hmem s hs r_val hr_val)]
+        exact hall s hs
+      · intro hall s hs
+        have ψ_fo : Separation.is_future_only ψ = true := hB_sep
+        rw [← applySubsts_future_correct ψ_fo
+              (origSubs ++ constSubsList freshAM σ₀ ++
+               [(lt_atom, .bot), (gt_atom, Formula.neg .bot)])
+              M_blend s
+              fut_reps_fo
+              (fun a r hmem r_val hr_val => fut_match a r hmem s hs r_val hr_val)] at hall
+        exact hall s hs
+    | snce α β ihα ihβ =>
+      simp only [Separation.is_properly_separated, Bool.and_eq_true] at hB_sep
+      simp only [elimExtFromSep, Separation.int_truth]
+      constructor
+      · rintro ⟨s, hs, hα, hβ⟩
+        have α_po : Separation.is_past_only α = true := hB_sep.1
+        have β_po : Separation.is_past_only β = true := hB_sep.2
+        refine ⟨s, hs, ?_, fun r hr1 hr2 => ?_⟩
+        · rw [← applySubsts_past_correct α_po _ M_blend s past_reps_po
+                (fun a r hmem r_val hr_val => past_match a r hmem s hs r_val hr_val)]
+          exact hα
+        · rw [← applySubsts_past_correct β_po _ M_blend r past_reps_po
+                (fun a r' hmem r_val hr_val => past_match a r' hmem r hr2 r_val hr_val)]
+          exact hβ r hr1 hr2
+      · rintro ⟨s, hs, hα, hβ⟩
+        have α_po : Separation.is_past_only α = true := hB_sep.1
+        have β_po : Separation.is_past_only β = true := hB_sep.2
+        refine ⟨s, hs, ?_, fun r hr1 hr2 => ?_⟩
+        · rw [← applySubsts_past_correct α_po _ M_blend s past_reps_po
+                (fun a r' hmem r_val hr_val => past_match a r' hmem s hs r_val hr_val)] at hα
+          exact hα
+        · rw [← applySubsts_past_correct β_po _ M_blend r past_reps_po
+                (fun a r' hmem r_val hr_val => past_match a r' hmem r hr2 r_val hr_val)] at hβ
+          exact hβ r hr1 hr2
+    | untl α β ihα ihβ =>
+      simp only [Separation.is_properly_separated, Bool.and_eq_true] at hB_sep
+      simp only [elimExtFromSep, Separation.int_truth]
+      constructor
+      · rintro ⟨s, hs, hα, hβ⟩
+        have α_fo : Separation.is_future_only α = true := hB_sep.1
+        have β_fo : Separation.is_future_only β = true := hB_sep.2
+        refine ⟨s, hs, ?_, fun r hr1 hr2 => ?_⟩
+        · rw [← applySubsts_future_correct α_fo _ M_blend s fut_reps_fo
+                (fun a r hmem r_val hr_val => fut_match a r hmem s hs r_val hr_val)]
+          exact hα
+        · rw [← applySubsts_future_correct β_fo _ M_blend r fut_reps_fo
+                (fun a r' hmem r_val hr_val => fut_match a r' hmem r hr1 r_val hr_val)]
+          exact hβ r hr1 hr2
+      · rintro ⟨s, hs, hα, hβ⟩
+        have α_fo : Separation.is_future_only α = true := hB_sep.1
+        have β_fo : Separation.is_future_only β = true := hB_sep.2
+        refine ⟨s, hs, ?_, fun r hr1 hr2 => ?_⟩
+        · rw [← applySubsts_future_correct α_fo _ M_blend s fut_reps_fo
+                (fun a r' hmem r_val hr_val => fut_match a r' hmem s hs r_val hr_val)] at hα
+          exact hα
+        · rw [← applySubsts_future_correct β_fo _ M_blend r fut_reps_fo
+                (fun a r' hmem r_val hr_val => fut_match a r' hmem r hr1 r_val hr_val)] at hβ
+          exact hβ r hr1 hr2
+  -- Main equivalence using body_correct and guardFormula_correct
+  constructor
+  · -- (→): B_sep true → quantElimFormula true
+    intro h_Bsep
+    refine ⟨_, hbranch_mem, ?_⟩
+    rw [Separation.int_truth_and_iff]
+    constructor
+    · -- guard σ₀ is true
+      rw [guardFormula_correct atomMap hinj σ₀ M t]
+      exact hσ₀
+    · -- body is true: use body_correct
+      exact body_correct.mp h_Bsep
+  · -- (←): quantElimFormula true → B_sep true
+    rintro ⟨branch, h_branch_mem, h_branch_true⟩
+    simp only [branches, List.mem_map] at h_branch_mem
+    obtain ⟨σ, _, rfl⟩ := h_branch_mem
+    rw [Separation.int_truth_and_iff] at h_branch_true
+    obtain ⟨h_guard, h_body⟩ := h_branch_true
+    -- guard true means σ = σ₀
+    rw [guardFormula_correct atomMap hinj σ M t] at h_guard
+    have hσ_eq : σ = σ₀ := by
+      funext p
+      have h1 := h_guard p
+      have h2 := hσ₀ p
+      rcases Bool.dichotomy (σ p) with hs | hs <;>
+        rcases Bool.dichotomy (σ₀ p) with hs0 | hs0 <;> simp_all
+    subst hσ_eq
+    exact body_correct.mpr h_body
 
 /-! ### Core Expressiveness Lemma
 
