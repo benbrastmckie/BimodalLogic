@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
+import Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure
 
 /-!
 # Hierarchy Lemmas (GHR94 Lemmas 10.2.5-10.2.8)
@@ -66,6 +67,43 @@ theorem u_free_has_single_U_type {φ A B : Formula} (h : is_U_free φ = true) :
   | untl _ _ => simp [is_U_free] at h
   | snce ψ₁ ψ₂ ih1 ih2 =>
     simp [is_U_free] at h
+    exact ⟨ih1 h.1, ih2 h.2⟩
+
+/-! ## Single-S-Type Predicate (dual of has_single_U_type) -/
+
+/-- A formula has single S-type: every `snce` node has exactly arguments (A, B). -/
+def has_single_S_type (φ A B : Formula) : Prop :=
+  match φ with
+  | .atom _ => True
+  | .bot => True
+  | .imp ψ₁ ψ₂ => has_single_S_type ψ₁ A B ∧ has_single_S_type ψ₂ A B
+  | .box ψ => has_single_S_type ψ A B
+  | .all_past ψ => has_single_S_type ψ A B
+  | .all_future ψ => has_single_S_type ψ A B
+  | .untl ψ₁ ψ₂ => has_single_S_type ψ₁ A B ∧ has_single_S_type ψ₂ A B
+  | .snce ψ₁ ψ₂ => ψ₁ = A ∧ ψ₂ = B
+
+/-- A formula is S-free implies it trivially has single S-type (vacuously). -/
+theorem s_free_has_single_S_type {φ A B : Formula} (h : is_S_free φ = true) :
+    has_single_S_type φ A B := by
+  induction φ with
+  | atom _ => trivial
+  | bot => trivial
+  | imp ψ₁ ψ₂ ih1 ih2 =>
+    simp [is_S_free] at h
+    exact ⟨ih1 h.1, ih2 h.2⟩
+  | box ψ ih =>
+    simp [is_S_free] at h
+    exact ih h
+  | all_past ψ ih =>
+    simp [is_S_free] at h
+    exact ih h
+  | all_future ψ ih =>
+    simp [is_S_free] at h
+    exact ih h
+  | snce _ _ => simp [is_S_free] at h
+  | untl ψ₁ ψ₂ ih1 ih2 =>
+    simp [is_S_free] at h
     exact ⟨ih1 h.1, ih2 h.2⟩
 
 /-! ## Lemma 10.2.5: Single-U Formula Separability
@@ -521,6 +559,231 @@ theorem abstract_untl_count_zero_of_single (phi A B : Formula) (p : Atom)
   rw [count_U_zero_iff_U_free]
   exact abstract_untl_makes_U_free phi A B p h
 
+/-! ### S-Formula Abstraction (dual of abstract_untl) -/
+
+/-- Replace all occurrences of `snce A B` in `phi` with atom `p`.
+    Dual of `abstract_untl`: picks one S(A,B) and replaces it everywhere with a fresh atom,
+    reducing the problem to fewer S-types or to single-S for the dual of Lemma 10.2.5. -/
+def abstract_snce (phi A B : Formula) (p : Atom) : Formula :=
+  match phi with
+  | .atom a => .atom a
+  | .bot => .bot
+  | .imp psi1 psi2 => .imp (abstract_snce psi1 A B p) (abstract_snce psi2 A B p)
+  | .box psi => .box (abstract_snce psi A B p)
+  | .all_past psi => .all_past (abstract_snce psi A B p)
+  | .all_future psi => .all_future (abstract_snce psi A B p)
+  | .untl psi1 psi2 => .untl (abstract_snce psi1 A B p) (abstract_snce psi2 A B p)
+  | .snce psi1 psi2 =>
+    if psi1 = A ∧ psi2 = B then .atom p
+    else .snce (abstract_snce psi1 A B p) (abstract_snce psi2 A B p)
+
+/-- Semantic correctness of abstract_snce: truth in M with p interpreted as the truth set
+    of S(A,B) is equivalent to truth of the original formula.
+    This is the dual of `abstract_untl_correct` for the S-operator. -/
+theorem abstract_snce_correct (phi A B : Formula) (p : Atom)
+    (M : IntStructure) (t : ℤ)
+    (h_eq : M.val p = {s | int_truth M s (.snce A B)}) :
+    int_truth M t (abstract_snce phi A B p) ↔ int_truth M t phi := by
+  induction phi generalizing t with
+  | atom a =>
+    simp only [abstract_snce, int_truth]
+  | bot => simp [abstract_snce, int_truth]
+  | imp c d ih1 ih2 =>
+    simp only [abstract_snce, int_truth]
+    exact Iff.imp (ih1 t) (ih2 t)
+  | box _ => simp [abstract_snce, int_truth]
+  | all_past c ih =>
+    simp only [abstract_snce, int_truth]
+    constructor
+    · intro h s hst; exact (ih s).mp (h s hst)
+    · intro h s hst; exact (ih s).mpr (h s hst)
+  | all_future c ih =>
+    simp only [abstract_snce, int_truth]
+    constructor
+    · intro h s hts; exact (ih s).mp (h s hts)
+    · intro h s hts; exact (ih s).mpr (h s hts)
+  | untl c d ih1 ih2 =>
+    simp only [abstract_snce, int_truth]
+    constructor
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s).mp hc,
+        fun r hr1 hr2 => (ih2 r).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s).mpr hc,
+        fun r hr1 hr2 => (ih2 r).mpr (hd r hr1 hr2)⟩
+  | snce c d ih1 ih2 =>
+    simp only [abstract_snce]
+    split
+    · next h =>
+      obtain ⟨hc, hd⟩ := h; subst hc; subst hd
+      simp [int_truth, Set.mem_setOf_eq, h_eq]
+    · next hne =>
+      simp only [int_truth]
+      constructor
+      · rintro ⟨s, hst, hc, hd⟩
+        exact ⟨s, hst, (ih1 s).mp hc,
+          fun r hr1 hr2 => (ih2 r).mp (hd r hr1 hr2)⟩
+      · rintro ⟨s, hst, hc, hd⟩
+        exact ⟨s, hst, (ih1 s).mpr hc,
+          fun r hr1 hr2 => (ih2 r).mpr (hd r hr1 hr2)⟩
+
+/-! ### Preservation Lemmas for abstract_snce -/
+
+/-- abstract_snce preserves is_U_free: if φ is U-free, so is the abstracted form. -/
+theorem abstract_snce_preserves_U_free (phi A B : Formula) (p : Atom)
+    (h : is_U_free phi = true) :
+    is_U_free (abstract_snce phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_snce, is_U_free]
+  | bot => simp [abstract_snce, is_U_free]
+  | imp c d ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [abstract_snce, is_U_free, ih1 h.1, ih2 h.2]
+  | box c ih =>
+    simp [is_U_free] at h
+    simp [abstract_snce, is_U_free, ih h]
+  | all_past c ih =>
+    simp [is_U_free] at h
+    simp [abstract_snce, is_U_free, ih h]
+  | all_future c ih =>
+    simp [is_U_free] at h
+    simp [abstract_snce, is_U_free, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce c d ih1 ih2 =>
+    simp [is_U_free] at h
+    simp only [abstract_snce]
+    split
+    · simp [is_U_free]
+    · simp [is_U_free, ih1 h.1, ih2 h.2]
+
+/-- abstract_snce preserves is_S_free: if φ is S-free, so is the abstracted form. -/
+theorem abstract_snce_preserves_S_free (phi A B : Formula) (p : Atom)
+    (h : is_S_free phi = true) :
+    is_S_free (abstract_snce phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_snce, is_S_free]
+  | bot => simp [abstract_snce, is_S_free]
+  | imp c d ih1 ih2 =>
+    simp [is_S_free] at h
+    simp [abstract_snce, is_S_free, ih1 h.1, ih2 h.2]
+  | box c ih =>
+    simp [is_S_free] at h
+    simp [abstract_snce, is_S_free, ih h]
+  | all_past c ih =>
+    simp [is_S_free] at h
+    simp [abstract_snce, is_S_free, ih h]
+  | all_future c ih =>
+    simp [is_S_free] at h
+    simp [abstract_snce, is_S_free, ih h]
+  | untl c d ih1 ih2 =>
+    simp [is_S_free] at h
+    simp [abstract_snce, is_S_free, ih1 h.1, ih2 h.2]
+  | snce _ _ => simp [is_S_free] at h
+
+/-- If φ has no U nested in S, abstracting S(A,B) preserves this property. -/
+theorem abstract_snce_preserves_no_U_nested (phi A B : Formula) (p : Atom)
+    (h : no_U_nested_in_S phi) :
+    no_U_nested_in_S (abstract_snce phi A B p) := by
+  induction phi with
+  | atom _ => trivial
+  | bot => trivial
+  | imp c d ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
+  | box c ih => exact ih h
+  | all_past c ih => exact ih h
+  | all_future c ih => exact ih h
+  | untl c d ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
+  | snce c d _ _ =>
+    simp only [abstract_snce]
+    split
+    · trivial
+    · have ⟨hc_uf, hd_uf⟩ := h
+      exact ⟨abstract_snce_preserves_U_free c A B p hc_uf,
+             abstract_snce_preserves_U_free d A B p hd_uf⟩
+
+/-- If φ has single S-type S(A,B), abstracting it gives a S-free formula. -/
+theorem abstract_snce_makes_S_free (phi A B : Formula) (p : Atom)
+    (h : has_single_S_type phi A B) :
+    is_S_free (abstract_snce phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_snce, is_S_free]
+  | bot => simp [abstract_snce, is_S_free]
+  | imp c d ih1 ih2 =>
+    simp [abstract_snce, is_S_free, ih1 h.1, ih2 h.2]
+  | box c ih =>
+    simp [abstract_snce, is_S_free, ih h]
+  | all_past c ih =>
+    simp [abstract_snce, is_S_free, ih h]
+  | all_future c ih =>
+    simp [abstract_snce, is_S_free, ih h]
+  | untl c d ih1 ih2 =>
+    simp [abstract_snce, is_S_free, ih1 h.1, ih2 h.2]
+  | snce c d _ _ =>
+    obtain ⟨hc, hd⟩ := h; subst hc; subst hd
+    simp [abstract_snce, is_S_free]
+
+/-! ### Junction-Depth Monotonicity Lemmas -/
+
+/-- joint 4-way bound relating junction_depth, junction_depth_U, junction_depth_S. -/
+private theorem junction_depth_bounds (φ : Formula) :
+    junction_depth φ ≤ junction_depth_U φ ∧
+    junction_depth φ ≤ junction_depth_S φ ∧
+    junction_depth_U φ ≤ 1 + junction_depth φ ∧
+    junction_depth_S φ ≤ 1 + junction_depth φ := by
+  induction φ with
+  | atom _ => simp [junction_depth, junction_depth_U, junction_depth_S]
+  | bot => simp [junction_depth, junction_depth_U, junction_depth_S]
+  | imp a b ih1 ih2 =>
+    simp only [junction_depth, junction_depth_U, junction_depth_S]
+    omega
+  | box a ih => simp [junction_depth, junction_depth_U, junction_depth_S, ih.1, ih.2.1, ih.2.2.1, ih.2.2.2]
+  | all_past a ih => simp [junction_depth, junction_depth_U, junction_depth_S, ih.1, ih.2.1, ih.2.2.1, ih.2.2.2]
+  | all_future a ih => simp [junction_depth, junction_depth_U, junction_depth_S, ih.1, ih.2.1, ih.2.2.1, ih.2.2.2]
+  | untl a b ih1 ih2 =>
+    simp only [junction_depth, junction_depth_U, junction_depth_S]
+    omega
+  | snce a b ih1 ih2 =>
+    simp only [junction_depth, junction_depth_U, junction_depth_S]
+    omega
+
+/-- junction_depth is bounded above by junction_depth_U. -/
+theorem junction_depth_le_jdU (φ : Formula) : junction_depth φ ≤ junction_depth_U φ :=
+  (junction_depth_bounds φ).1
+
+/-- junction_depth is bounded above by junction_depth_S. -/
+theorem junction_depth_le_jdS (φ : Formula) : junction_depth φ ≤ junction_depth_S φ :=
+  (junction_depth_bounds φ).2.1
+
+theorem jd_imp_le_left (φ ψ : Formula) : junction_depth φ ≤ junction_depth (.imp φ ψ) :=
+  Nat.le_max_left _ _
+
+theorem jd_imp_le_right (φ ψ : Formula) : junction_depth ψ ≤ junction_depth (.imp φ ψ) :=
+  Nat.le_max_right _ _
+
+theorem jd_box_le (φ : Formula) : junction_depth φ ≤ junction_depth (.box φ) :=
+  Nat.le_refl _
+
+theorem jd_all_past_le (φ : Formula) : junction_depth φ ≤ junction_depth (.all_past φ) :=
+  Nat.le_refl _
+
+theorem jd_all_future_le (φ : Formula) : junction_depth φ ≤ junction_depth (.all_future φ) :=
+  Nat.le_refl _
+
+theorem jd_untl_le_left (φ ψ : Formula) : junction_depth φ ≤ junction_depth (.untl φ ψ) := by
+  simp only [junction_depth]
+  exact Nat.le_trans (junction_depth_le_jdU φ) (Nat.le_max_left _ _)
+
+theorem jd_untl_le_right (φ ψ : Formula) : junction_depth ψ ≤ junction_depth (.untl φ ψ) := by
+  simp only [junction_depth]
+  exact Nat.le_trans (junction_depth_le_jdU ψ) (Nat.le_max_right _ _)
+
+theorem jd_snce_le_left (φ ψ : Formula) : junction_depth φ ≤ junction_depth (.snce φ ψ) := by
+  simp only [junction_depth]
+  exact Nat.le_trans (junction_depth_le_jdS φ) (Nat.le_max_left _ _)
+
+theorem jd_snce_le_right (φ ψ : Formula) : junction_depth ψ ≤ junction_depth (.snce φ ψ) := by
+  simp only [junction_depth]
+  exact Nat.le_trans (junction_depth_le_jdS ψ) (Nat.le_max_right _ _)
+
 /-! ### abstract_untl Identity and Preservation -/
 
 /-- abstract_untl is the identity on U-free formulas: when phi has no untl nodes,
@@ -632,5 +895,160 @@ theorem multi_U_all_past_separable (phi : Formula) (h : no_S_nested_in_U phi) :
 theorem multi_U_all_future_separable (phi : Formula) (h : no_S_nested_in_U phi) :
     is_separable (.all_future phi) :=
   all_future_separable phi (multi_U_formula_separable phi h)
+
+/-! ### junction_depth decrease lemmas for abstract_snce -/
+
+/-- abstract_snce does not increase junction_depth, junction_depth_U, or junction_depth_S.
+    Proved simultaneously by structural induction (they are mutually recursive). -/
+private theorem abstract_snce_jd_le_all (phi A B : Formula) (p : Atom) :
+    junction_depth (abstract_snce phi A B p) ≤ junction_depth phi ∧
+    junction_depth_U (abstract_snce phi A B p) ≤ junction_depth_U phi ∧
+    junction_depth_S (abstract_snce phi A B p) ≤ junction_depth_S phi := by
+  induction phi with
+  | atom _ => simp [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+  | bot => simp [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+  | imp a b ih1 ih2 =>
+    simp only [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+    omega
+  | box a ih =>
+    simp only [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+    exact ih
+  | all_past a ih =>
+    simp only [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+    exact ih
+  | all_future a ih =>
+    simp only [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+    exact ih
+  | untl a b ih1 ih2 =>
+    simp only [abstract_snce, junction_depth, junction_depth_U, junction_depth_S]
+    omega
+  | snce a b ih1 ih2 =>
+    simp only [abstract_snce]
+    split
+    · simp only [junction_depth, junction_depth_U, junction_depth_S]
+      omega
+    · simp only [junction_depth, junction_depth_U, junction_depth_S]
+      obtain ⟨h1a, h1b, h1c⟩ := ih1
+      obtain ⟨h2a, h2b, h2c⟩ := ih2
+      omega
+
+/-- abstract_snce does not increase junction_depth. -/
+theorem abstract_snce_jd_le (phi A B : Formula) (p : Atom) :
+    junction_depth (abstract_snce phi A B p) ≤ junction_depth phi :=
+  (abstract_snce_jd_le_all phi A B p).1
+
+/-- abstract_snce does not increase junction_depth_U. -/
+theorem abstract_snce_jdU_le (phi A B : Formula) (p : Atom) :
+    junction_depth_U (abstract_snce phi A B p) ≤ junction_depth_U phi :=
+  (abstract_snce_jd_le_all phi A B p).2.1
+
+/-- abstract_snce does not increase junction_depth_S. -/
+theorem abstract_snce_jdS_le (phi A B : Formula) (p : Atom) :
+    junction_depth_S (abstract_snce phi A B p) ≤ junction_depth_S phi :=
+  (abstract_snce_jd_le_all phi A B p).2.2
+
+/-- Abstracting S(A,B) when it occurs directly at the root as a snce node drops jdU. -/
+theorem jdU_abstract_snce_snce_lt (A B : Formula) (p : Atom) :
+    junction_depth_U (abstract_snce (.snce A B) A B p) < junction_depth_U (.snce A B) := by
+  simp only [abstract_snce]
+  split
+  · simp only [junction_depth_U]; omega
+  · next h => exact absurd ⟨trivial, trivial⟩ h
+
+/-- Predicate: S(A,B) appears directly in φ in a position reachable via junction_depth_U
+    tracking — meaning through U-nodes only (not through S), AND the path achieves
+    the current maximum (so abstracting it decreases jdU of the whole). -/
+def snce_achieves_max_jdU : Formula → Formula → Formula → Prop
+  | .untl a b, A, B =>
+      (a = .snce A B ∧ junction_depth_U (.snce A B) ≥ junction_depth_U b) ∨
+      (b = .snce A B ∧ junction_depth_U (.snce A B) ≥ junction_depth_U a) ∨
+      (snce_achieves_max_jdU a A B ∧ junction_depth_U a ≥ junction_depth_U b) ∨
+      (snce_achieves_max_jdU b A B ∧ junction_depth_U b ≥ junction_depth_U a)
+  | _, _, _ => False
+
+/-- Predicate: S(A,B) appears in the U-argument of a `.untl` node (directly or nested
+    within more `.untl` nodes, without passing through `.snce` or other temporal operators).
+    This predicate tracks ONLY paths through `untl` nodes (not imp/box/etc). -/
+def snce_inside_U_arg : Formula → Formula → Formula → Prop
+  | .untl a b, A, B =>
+      a = .snce A B ∨ b = .snce A B ∨
+      snce_inside_U_arg a A B ∨ snce_inside_U_arg b A B
+  | _, _, _ => False
+
+/-- Key lemma: abstracting S(A,B) from the LEFT U-argument when jdU a STRICTLY exceeds
+    jdU b strictly decreases junction_depth_U of `.untl a b`. -/
+theorem abstract_snce_untl_jdU_lt_left (a b A B : Formula) (p : Atom)
+    (h_a_dec : junction_depth_U (abstract_snce a A B p) < junction_depth_U a)
+    (h_max : junction_depth_U a > junction_depth_U b) :
+    junction_depth_U (abstract_snce (.untl a b) A B p) < junction_depth_U (.untl a b) := by
+  simp only [abstract_snce, junction_depth_U]
+  have hle_b := abstract_snce_jdU_le b A B p
+  apply Nat.max_lt.mpr; constructor
+  · exact Nat.lt_of_lt_of_le h_a_dec (Nat.le_max_left _ _)
+  · exact Nat.lt_of_le_of_lt hle_b (Nat.lt_of_lt_of_le h_max (Nat.le_max_left _ _))
+
+/-- Key lemma: abstracting S(A,B) from the RIGHT U-argument when jdU b STRICTLY exceeds
+    jdU a strictly decreases junction_depth_U of `.untl a b`. -/
+theorem abstract_snce_untl_jdU_lt_right (a b A B : Formula) (p : Atom)
+    (h_b_dec : junction_depth_U (abstract_snce b A B p) < junction_depth_U b)
+    (h_max : junction_depth_U b > junction_depth_U a) :
+    junction_depth_U (abstract_snce (.untl a b) A B p) < junction_depth_U (.untl a b) := by
+  simp only [abstract_snce, junction_depth_U]
+  have hle_a := abstract_snce_jdU_le a A B p
+  apply Nat.max_lt.mpr; constructor
+  · exact Nat.lt_of_le_of_lt hle_a (Nat.lt_of_lt_of_le h_max (Nat.le_max_right _ _))
+  · exact Nat.lt_of_lt_of_le h_b_dec (Nat.le_max_right _ _)
+
+/-- Version when jdU a = jdU b and BOTH branches decrease (e.g., when S(A,B) achieves max in both). -/
+theorem abstract_snce_untl_jdU_lt_both (a b A B : Formula) (p : Atom)
+    (h_a_dec : junction_depth_U (abstract_snce a A B p) < junction_depth_U a)
+    (h_b_dec : junction_depth_U (abstract_snce b A B p) < junction_depth_U b) :
+    junction_depth_U (abstract_snce (.untl a b) A B p) < junction_depth_U (.untl a b) := by
+  simp only [abstract_snce, junction_depth_U]
+  apply Nat.max_lt.mpr; constructor
+  · exact Nat.lt_of_lt_of_le h_a_dec (Nat.le_max_left _ _)
+  · exact Nat.lt_of_lt_of_le h_b_dec (Nat.le_max_right _ _)
+
+/-- Direct case: abstracting S(A,B) when it IS the left U-arg and strictly dominates. -/
+theorem abstract_snce_untl_left_snce_jdU_lt (b A B : Formula) (p : Atom)
+    (h_max : junction_depth_U (.snce A B) > junction_depth_U b) :
+    junction_depth_U (abstract_snce (.untl (.snce A B) b) A B p) <
+    junction_depth_U (.untl (.snce A B) b) :=
+  abstract_snce_untl_jdU_lt_left _ _ _ _ _ (jdU_abstract_snce_snce_lt A B p) h_max
+
+/-- Direct case: abstracting S(A,B) when it IS the right U-arg and strictly dominates. -/
+theorem abstract_snce_untl_right_snce_jdU_lt (a A B : Formula) (p : Atom)
+    (h_max : junction_depth_U (.snce A B) > junction_depth_U a) :
+    junction_depth_U (abstract_snce (.untl a (.snce A B)) A B p) <
+    junction_depth_U (.untl a (.snce A B)) :=
+  abstract_snce_untl_jdU_lt_right _ _ _ _ _ (jdU_abstract_snce_snce_lt A B p) h_max
+
+/-- Direct case: abstracting S(A,B) from both sides when they are equal. -/
+theorem abstract_snce_untl_both_snce_jdU_lt (A B : Formula) (p : Atom) :
+    junction_depth_U (abstract_snce (.untl (.snce A B) (.snce A B)) A B p) <
+    junction_depth_U (.untl (.snce A B) (.snce A B)) :=
+  abstract_snce_untl_jdU_lt_both _ _ _ _ _
+    (jdU_abstract_snce_snce_lt A B p) (jdU_abstract_snce_snce_lt A B p)
+
+/-- Key theorem for Phase 6B: abstracting S(A,B) from the U-argument that achieves
+    the maximum jdU decreases junction_depth of the whole `.untl` node.
+    Precondition: one branch's jdU strictly decreases AND that branch strictly dominates
+    the other (or both strictly decrease). -/
+theorem abstract_snce_inside_untl_jd_lt (a b A B : Formula) (p : Atom)
+    (h : (junction_depth_U (abstract_snce a A B p) < junction_depth_U a ∧
+          junction_depth_U a > junction_depth_U b)
+      ∨ (junction_depth_U (abstract_snce b A B p) < junction_depth_U b ∧
+          junction_depth_U b > junction_depth_U a)
+      ∨ (junction_depth_U (abstract_snce a A B p) < junction_depth_U a ∧
+          junction_depth_U (abstract_snce b A B p) < junction_depth_U b)) :
+    junction_depth (abstract_snce (.untl a b) A B p) < junction_depth (.untl a b) := by
+  simp only [abstract_snce, junction_depth]
+  rcases h with ⟨hlt_a, hgt⟩ | ⟨hlt_b, hgt⟩ | ⟨hlt_a, hlt_b⟩
+  · have := abstract_snce_untl_jdU_lt_left a b A B p hlt_a hgt
+    simp only [abstract_snce, junction_depth_U] at this; exact this
+  · have := abstract_snce_untl_jdU_lt_right a b A B p hlt_b hgt
+    simp only [abstract_snce, junction_depth_U] at this; exact this
+  · have := abstract_snce_untl_jdU_lt_both a b A B p hlt_a hlt_b
+    simp only [abstract_snce, junction_depth_U] at this; exact this
 
 end Bimodal.Metalogic.WeakCanonical.Separation

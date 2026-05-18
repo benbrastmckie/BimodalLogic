@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7A: Atom Containment and Helper Lemmas [NOT STARTED]
+### Phase 7A: Atom Containment and Helper Lemmas [COMPLETED]
 
 **Goal**: Close the 2 atom containment sorries (lines 1139, 1217) and add helper infrastructure needed by Phase 7B. These are INDEPENDENT of `atom_elim_correct`.
 
@@ -295,7 +295,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6A: Build Junction-Depth Hierarchy Infrastructure [NOT STARTED]
+### Phase 6A: Build Junction-Depth Hierarchy Infrastructure [COMPLETED]
 
 **Goal**: Implement `abstract_snce` (dual of `abstract_untl`) and junction-depth monotonicity lemmas needed for the main hierarchy theorem.
 
@@ -303,7 +303,7 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 
-- [ ] Task 6A.1: Implement `abstract_snce` definition (~15 LOC)
+- [x] Task 6A.1: Implement `abstract_snce` definition (~15 LOC)
   - Location: `Hierarchy.lean`, after `abstract_untl` (around line 290)
   - Type: `abstract_snce (φ : Formula) (A B : Formula) (p : Atom) : Formula`
   - Replaces `.snce A B` with `.atom p` throughout φ (same structural recursion pattern as `abstract_untl`)
