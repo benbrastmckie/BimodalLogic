@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured world-histories and times, supporting modality, tense, and their interaction.
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches which assign formulas to truth-values, or Kripke semantics which evaluates formulas for truth at primitive worlds, the **task semantics** presented below evaluates formulas at both a world-histories and time, where world-histories are appropriately constrained functions from times to world-states. This approach provides natural semantic clauses for tense, modality, and their interaction.
 
-This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the bimodal logic TM (Tense and Modality) which combines S5 modal operators with Until/Since temporal operators.
+The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until temporal operators.
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
@@ -52,7 +52,7 @@ The logic uses 5 primitive connectives. All other operators are derived.
 | `Pφ` | `S(φ, ¬⊥)` | "previously φ" |
 | `Gφ` | `¬F¬φ` | "it is always going to be φ" |
 | `Hφ` | `¬P¬φ` | "it always has been φ" |
-| `△φ` | `φ ∧ Gφ ∧ Hφ` | "always φ" |
+| `△φ` | `Hφ ∧ φ ∧ Gφ` | "always φ" |
 | `▽φ` | `¬△¬φ` | "sometimes φ" |
 | `Xφ` | `U(φ, ⊥)` | "at the next moment φ" |
 | `Yφ` | `S(φ, ⊥)` | "at the previous moment φ" |
@@ -74,9 +74,9 @@ A **task model** `M = (F, I)` extends a task frame `F` with an interpretation fu
 - `M, τ, x ⊨ U(φ,ψ)` iff there exists `y > x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `x < z < y`
 - `M, τ, x ⊨ S(φ,ψ)` iff there exists `y < x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `y < z < x`
 
-Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that history.
+Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that world-history.
 
-This semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through the space of world-states where any world-state in the trajectory can transition to another in the difference between their times.
+The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through the space of world-states where any world-state in the trajectory can transition to another in the difference between their times.
 
 ---
 
@@ -124,7 +124,7 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ## Metalogical Results
 
-The metalogic is organized around a hierarchy of temporal frame classes, each extending the base with additional order-theoretic structure. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for serial and dense frames; discrete completeness has remaining sorry obligations.
+The metalogic is organized around a hierarchy of task frame classes, each extending the base with additional order-theoretic structure. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Whereas completeness is established for serial and dense frames, discrete completeness has remaining sorry obligations.
 
 ```mermaid
 graph TD
