@@ -286,7 +286,7 @@ theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future 
   -- By NoMinOrder, pick r < t, then G(φ)(r) gives φ at all s > r, including s = t (if t > r). QED.
   have h_G := h D F M Omega h_sc τ h_mem
   obtain ⟨r, hrt⟩ := exists_lt t
-  exact h_G r t hrt
+  exact (Truth.future_iff Omega φ).mp (h_G r) t hrt
 
 /--
 If H(φ) is valid, then φ is valid.
@@ -297,7 +297,7 @@ theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ))
   -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.
   have h_H := h D F M Omega h_sc τ h_mem
   obtain ⟨s, hts⟩ := exists_gt t
-  exact h_H s t hts
+  exact (Truth.past_iff Omega φ).mp (h_H s) t hts
 
 /--
 If □φ is valid, then φ is valid.

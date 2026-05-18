@@ -67,7 +67,7 @@ noncomputable def past_necessitation (φ : Formula)
     DerivationTree.temporal_necessitation _ h_swap
   have final : ⊢ φ.swap_temporal.all_future.swap_temporal :=
     DerivationTree.temporal_duality _ g_swap
-  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at final
+  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_involution] at final
   exact final
 
 /--
@@ -88,8 +88,9 @@ noncomputable def past_k_dist (A B : Formula) :
   have td : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future.imp
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
     DerivationTree.temporal_duality _ fk
-  -- Simplify: swap(swap x) = x
-  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td
+  -- Simplify: swap(G(...)) = H(swap(...)) and swap(swap x) = x
+  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
+    Formula.swap_temporal_involution] at td
   exact td
 
 /--

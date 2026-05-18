@@ -34,14 +34,15 @@ Collect all subformulas of a formula (including the formula itself).
 This is used to bound the size of finite models and tableaux.
 The subformula property ensures that expansion only produces
 formulas from the subformula closure.
+
+Note: After the Burgess 1982 redefinition, G/H/F/P are definitional
+abbreviations, so their subformulas are those of their expanded forms.
 -/
 def subformulas : Formula → List Formula
   | φ@(.atom _) => [φ]
   | φ@.bot => [φ]
   | φ@(.imp ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.box ψ) => φ :: subformulas ψ
-  | φ@(.all_past ψ) => φ :: subformulas ψ
-  | φ@(.all_future ψ) => φ :: subformulas ψ
   | φ@(.untl ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.snce ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
 
@@ -72,16 +73,22 @@ theorem box_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.box ψ) 
   right
   exact self_mem_subformulas ψ
 
-/-- Subformulas of all_past include the inner formula. -/
+/-- Subformulas of all_past include the inner formula (via expanded form).
+    all_past ψ = imp (snce (imp ψ bot) (imp bot bot)) bot, so ψ appears
+    through the subformula chain. -/
 theorem all_past_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.all_past ψ) := by
-  simp only [subformulas, List.mem_cons]
-  right
+  -- Unfold: all_past ψ = imp (snce (imp ψ bot) top) bot
+  -- Direct membership path: imp -> snce(left) -> imp(left) -> ψ
+  simp only [all_past, some_past, neg, top, subformulas, List.mem_cons, List.mem_append,
+    List.mem_singleton, List.mem_nil_iff, or_false]
+  right; left; right; left; right; left
   exact self_mem_subformulas ψ
 
-/-- Subformulas of all_future include the inner formula. -/
+/-- Subformulas of all_future include the inner formula (via expanded form). -/
 theorem all_future_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.all_future ψ) := by
-  simp only [subformulas, List.mem_cons]
-  right
+  simp only [all_future, some_future, neg, top, subformulas, List.mem_cons, List.mem_append,
+    List.mem_singleton, List.mem_nil_iff, or_false]
+  right; left; right; left; right; left
   exact self_mem_subformulas ψ
 
 /--
@@ -113,20 +120,6 @@ theorem subformulas_trans {chi psi phi : Formula}
       right; right
       exact ihb hb
   | box a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_past a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_future a iha =>
     simp only [subformulas, List.mem_cons] at h2
     rcases h2 with rfl | h2
     · exact h1
