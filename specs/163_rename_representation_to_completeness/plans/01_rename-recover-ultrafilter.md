@@ -160,25 +160,25 @@ This task advances Roadmap Phase 4 (Algebraic representation):
 
 ---
 
-### Phase 4: Recover UltrafilterFrame.lean from Boneyard [NOT STARTED]
+### Phase 4: Recover UltrafilterFrame.lean from Boneyard [COMPLETED]
 
 **Goal**: Create `Theories/Bimodal/Metalogic/Algebraic/UltrafilterFrame.lean` by recovering Phase 1 (lines 56-1519) of the Boneyard UltrafilterChain.lean, generalizing definitions from `LindenbaumAlg` to abstract `[STSA alpha]` where possible.
 
 **Tasks**:
-- [ ] Create new file `UltrafilterFrame.lean` with appropriate module header and imports
-- [ ] Import only active modules: `TenseS5Algebra`, `UltrafilterMCS`, and needed Mathlib (no Boneyard imports)
-- [ ] Define generalized `R_G`, `R_H`, `R_Box` over `Ultrafilter alpha` for `[STSA alpha]`
-- [ ] Prove `R_Box_refl`, `R_Box_euclidean`, `R_Box_symm`, `R_Box_trans` generically (these only use `box_deflationary`, `box_s5`, `box_idempotent`)
-- [ ] Prove `R_G_R_H_converse` generically (uses `TA`, `sigma_G`, `sigma_H`, `sigma_involution`, `sigma_neg`, `sigma_sup`)
-- [ ] Keep `R_G_trans` and `R_H_trans` as LindenbaumAlg-specific with sorry annotations (require temp_4/temp_4_past which need derivation trees)
-- [ ] Recover `G_preimage`, `H_preimage` definitions and properties (generalizable: only use `G_monotone`, `H_monotone`, and temp_k_dist logic)
-- [ ] Recover `G_preimage_top`, `G_preimage_upward`, `G_preimage_inf` with generalization where possible
-- [ ] Recover `H_preimage_top`, `H_preimage_upward`, `H_preimage_inf` symmetrically
-- [ ] Recover `ultrafilter_F_resolution` and `ultrafilter_P_resolution` as LindenbaumAlg-specific (use formula-level Zorn argument)
-- [ ] Recover `UltrafilterChain` structure and its theorems (forward_G, backward_H, shift, etc.) as LindenbaumAlg-specific
-- [ ] Recover `UltrafilterChain_to_FMCS` conversion
-- [ ] Preserve all 2 sorry annotations with clear comments: `sorry /- temp_4: Gp -> GGp, derivable from BX1+K but removed during axiom cleanup -/`
-- [ ] Add module docstring explaining provenance from Boneyard and relationship to task 125
+- [x] Create new file `UltrafilterFrame.lean` with appropriate module header and imports
+- [x] Import only active modules: `TenseS5Algebra`, `UltrafilterMCS`, and needed Mathlib (no Boneyard imports)
+- [x] Define generalized `R_G`, `R_H`, `R_Box` over `Ultrafilter alpha` for `[STSA alpha]`
+- [x] Prove `R_Box_refl`, `R_Box_euclidean`, `R_Box_symm`, `R_Box_trans` generically (these only use `box_deflationary`, `box_s5`, `box_idempotent`)
+- [x] Prove `R_G_R_H_converse` generically (uses `TA`, `sigma_G`, `sigma_H`, `sigma_involution`, `sigma_neg`, `sigma_sup`)
+- [x] Keep `R_G_trans` and `R_H_trans` as LindenbaumAlg-specific with sorry annotations (require temp_4/temp_4_past which need derivation trees) *(deviation: altered -- R_H_trans uses temp_4_past which compiles without sorry; only R_G_trans has sorry)*
+- [x] Recover `G_preimage`, `H_preimage` definitions and properties (generalizable: only use `G_monotone`, `H_monotone`, and temp_k_dist logic) *(deviation: altered -- definitions and upward closure are generic; top/inf stay LindenbaumAlg-specific due to formula-level proofs)*
+- [x] Recover `G_preimage_top`, `G_preimage_upward`, `G_preimage_inf` with generalization where possible
+- [x] Recover `H_preimage_top`, `H_preimage_upward`, `H_preimage_inf` symmetrically
+- [x] Recover `ultrafilter_F_resolution` and `ultrafilter_P_resolution` as LindenbaumAlg-specific (use formula-level Zorn argument)
+- [x] Recover `UltrafilterChain` structure and its theorems (forward_G, backward_H, shift, etc.) as LindenbaumAlg-specific *(deviation: altered -- forward_G/backward_H now use strict inequality t < t' instead of t <= t' since temp_t_future/past axioms were removed in BX system)*
+- [x] Recover `UltrafilterChain_to_FMCS` conversion
+- [x] Preserve all 2 sorry annotations with clear comments: `sorry /- temp_4: Gp -> GGp, derivable from BX1+K but removed during axiom cleanup -/`
+- [x] Add module docstring explaining provenance from Boneyard and relationship to task 125
 
 **Timing**: 1.5 hours
 
