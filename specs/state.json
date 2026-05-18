@@ -344,7 +344,7 @@
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -352,9 +352,9 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-18T23:08:04Z",
+      "last_updated": "2026-05-18T23:20:13Z",
       "session_id": "sess_1779145651_81f10a",
-      "researched": "2026-05-11T17:10:37Z",
+      "researched": "2026-05-18T23:20:13Z",
       "artifacts": [
         {
           "path": "specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md",
@@ -365,9 +365,15 @@
           "path": "specs/116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md",
           "type": "plan",
           "summary": "6-phase plan: redefine G/H/F/P via Until/Since, ~70 files, 18h estimated"
+        },
+        {
+          "path": "specs/116_redefine_ghfp_via_until_since/reports/02_team-research.md",
+          "type": "report",
+          "summary": "Team research with 4 teammates: corrected scope (103 files/2398 refs), tier classification, WeakCanonical gap, @[match_pattern] proposal"
         }
       ],
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "next_artifact_number": 2
     },
     {
       "project_number": 112,
@@ -407,14 +413,15 @@
     {
       "project_number": 60,
       "project_name": "remove_discrete_icc_finite_axiom",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.",
       "effort": "1-2 hours",
       "dependencies": [],
       "created": "2026-03-24T19:43:21Z",
-      "last_updated": "2026-03-24T19:43:21Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-05-18T23:20:02Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1779146360_eab605"
     },
     {
       "project_number": 18,
@@ -863,7 +870,7 @@
     {
       "project_number": 130,
       "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
@@ -871,10 +878,11 @@
         129
       ],
       "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-13T08:44:55Z",
+      "last_updated": "2026-05-18T23:20:05Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "session_id": "sess_1779146360_eab605"
     },
     {
       "project_number": 142,

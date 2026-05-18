@@ -48,9 +48,9 @@ technical_debt:
 
 ### Formula Refactor
 
-60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
-116 [RESEARCHING] — Remove all_future (G) and all_past (H) as primitive constructors 
-130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
+60 [RESEARCHING] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
+116 [RESEARCHED] — Remove all_future (G) and all_past (H) as primitive constructors 
+130 [RESEARCHING] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 
 
@@ -68,7 +68,7 @@ technical_debt:
 
 163 [RESEARCHED] — Rename representation to completeness + recover UltrafilterFrame from Boneyard
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic (phased: Cm → Uf → η → S/U)
-  └─ 116 [RESEARCHING] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
+  └─ 116 [RESEARCHED] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
   └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z) (see above)
   └─ 163 [RESEARCHED] — (algebraic-representation: Rename + recover UltrafilterFrame) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
@@ -435,7 +435,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
@@ -516,7 +516,9 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 107
-- **Research**: [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
+- **Research**:
+  - [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
+  - [116_redefine_ghfp_via_until_since/reports/02_team-research.md]
 - **Plan**: [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
@@ -560,7 +562,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 60. Clean up stale discrete_Icc_finite_axiom references
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 
 **Description**: discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.
