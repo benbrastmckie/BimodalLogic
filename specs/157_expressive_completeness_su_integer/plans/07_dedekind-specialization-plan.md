@@ -103,13 +103,13 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
 ---
 
-### Phase 1: K+/K-/Gamma Triviality and Q-Lemma for Z (Phase 6B-1) [NOT STARTED]
+### Phase 1: K+/K-/Gamma Triviality and Q-Lemma for Z (Phase 6B-1) [COMPLETED]
 
 **Goal**: Prove that K+, K-, Gamma+, Gamma- are all trivially bottom on integer time, then prove the Q-lemma (GHR94 Lemma 10.3.6) specialized to Z. These are prerequisites for Cases 5-8.
 
 **Tasks**:
 
-- [ ] Task 1.1: Create `DedekindZ.lean` file with K+/K-/Gamma definitions and triviality proofs (~60 LOC)
+- [x] Task 1.1: Create `DedekindZ.lean` file with K+/K-/Gamma definitions and triviality proofs (~60 LOC) *(completed)*
   - Location: New file `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ.lean`
   - Import: `Bimodal.Metalogic.WeakCanonical.Separation.Defs`
   - Definitions (within the `Separation` namespace):
@@ -154,7 +154,7 @@ Phases are strictly sequential because each depends on the theorems proved in th
     Proof: Symmetric. `K_plus(neg B)` is false.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ` passes
 
-- [ ] Task 1.2: Define Q(A,B,C) and prove Q-lemma for Z (~100 LOC)
+- [x] Task 1.2: Define Q(A,B,C) and prove Q-lemma for Z (~100 LOC) *(completed -- hinit changed from A ∨ U(A,B) to just U(A,B) in fwd direction)*
   - Location: Same `DedekindZ.lean` file, after the K/Gamma triviality proofs
   - Definition:
     ```lean
@@ -201,7 +201,7 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ` passes
 
-- [ ] Task 1.3: Prove Q_Z properties for use in Case 5 (~30 LOC)
+- [x] Task 1.3: Prove Q_Z properties for use in Case 5 (~30 LOC) *(completed)*
   - Location: Same file
   - Theorems:
     ```lean
@@ -218,7 +218,7 @@ Phases are strictly sequential because each depends on the theorems proved in th
   - Proof: Unfold `Q_Z` and `Formula.or`/`Formula.neg`; verify each component satisfies the predicate.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ` passes
 
-- [ ] Task 1.4: Add `DedekindZ` to the project lakefile (~2 LOC)
+- [x] Task 1.4: Add `DedekindZ` to the project lakefile (~2 LOC) *(completed -- import added to Hierarchy.lean)*
   - Add `import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ` to `Hierarchy.lean` (which will use these results)
   - Alternatively if already transitively imported, just verify it builds
   - Verification: `lake build` passes (full build)
