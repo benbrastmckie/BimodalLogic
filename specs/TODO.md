@@ -27,54 +27,57 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-18. Generated from state.json dependency graph.*
+*Updated 2026-05-18. Revised after archival of 28 tasks. 15 active tasks remain.*
 
-**Goal**: Sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
+**Goal**: Sorry-free `bx_completeness` → formula refactor (G/H via U/S) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 21,95,116,127,130,131,162,164,165 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 125,128,155 | 116 | completeness, frame-extensions, algebraic-representation |
+| 1 | 155 | -- | completeness (in progress) |
+| 2 | 21, 95, 116, 130, 131, 156, 161, 162 | -- | cleanup, formula-refactor, meta (independent) |
+| 3 | 125, 127, 128, 157, 164, 165 | 116 | extensions, algebraic, decidability |
 
 **Grouped by Topic** (indented = must complete first):
 
 ### Completeness
 
-21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
-95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
-
+155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
+21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
 
 ### Formula Refactor
 
-116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
-130 [RESEARCHED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
+130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/
 
+### Expressive Completeness
+
+157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
+  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
 
 ### Frame Extensions
 
-127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
-128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
-165 [NOT STARTED] — Establish semantic finite model property (filtration for all connectives)
-
+127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
+128 [NOT STARTED] — Add topological open set (interior) operator
+165 [NOT STARTED] — Establish semantic finite model property (filtration)
 
 ### Algebraic Representation
 
-125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic (phased: Cm → Uf → η → S/U)
-  └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
-
+125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
+  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
 
 ### Decidability
 
 164 [NOT STARTED] — Prove tableau correctness (connect decide to semantic validity)
-  └─ 165 [NOT STARTED] — (frame-extensions: Establish semantic FMP) (see above)
-
+  └─ 165 [NOT STARTED] — (frame-extensions: establish semantic FMP) (see above)
 
 ### Agent System
 
 162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
+156 [NOT STARTED] — Multi-angle team research strategy for formal agents
 
 
 ## Tasks
