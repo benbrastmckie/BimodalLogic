@@ -145,7 +145,7 @@ graph TD
 | **Linear** | — | `soundness` | — |
 | **Serial** | — | `soundness` | `bx_completeness` |
 | **Dense** | `Fφ → FFφ` | `soundness_dense` | `dd_countermodel_chronicle_dense` |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | active sorries |
+| **Discrete** | `Fφ → U(φ,¬φ)`<br>`Pφ → S(φ,¬φ)`<br>`G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | active sorries |
 
 **Active sorry obligations**:
 
