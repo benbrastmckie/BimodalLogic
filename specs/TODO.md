@@ -49,7 +49,7 @@ technical_debt:
 ### Formula Refactor
 
 60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
-116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
+116 [RESEARCHING] — Remove all_future (G) and all_past (H) as primitive constructors 
 130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 
@@ -68,7 +68,7 @@ technical_debt:
 
 163 [RESEARCHED] — Rename representation to completeness + recover UltrafilterFrame from Boneyard
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic (phased: Cm → Uf → η → S/U)
-  └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
+  └─ 116 [RESEARCHING] — (formula-refactor: Remove all_future (G) and all_past (H)) (see above)
   └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z) (see above)
   └─ 163 [RESEARCHED] — (algebraic-representation: Rename + recover UltrafilterFrame) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
@@ -119,10 +119,11 @@ technical_debt:
 
 ### 163. Rename representation to completeness and recover ultrafilter frame from Boneyard
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**: [specs/163_rename_representation_to_completeness/reports/01_team-research.md]
-- **Plan**: [163_rename_representation_to_completeness/plans/01_rename-recover-ultrafilter.md]
+- **Plan**: [specs/163_rename_representation_to_completeness/plans/01_rename-recover-ultrafilter.md]
+- **Summary**: [163_rename_representation_to_completeness/summaries/01_rename-recover-ultrafilter-summary.md]
 
 **Description**: Two-part task: (A) rename misnamed "representation" theorems to "completeness" throughout `Theories/Bimodal/Metalogic/Algebraic/`, and (B) recover ultrafilter frame infrastructure from Boneyard as seed for future Jónsson-Tarski representation (task 125).
 
