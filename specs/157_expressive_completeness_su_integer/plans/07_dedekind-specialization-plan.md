@@ -238,101 +238,102 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
 ---
 
-### Phase 2: Case 5 Intermediate Equivalence for Z (Phase 6B-2) [BLOCKED]
+### Phase 2: Case 3 General Equivalence and Case 5 Separability (Phase 6B-2) [IN PROGRESS]
 
-**Goal**: Prove Case 5 from GHR94 Lemma 10.3.11.5, specialized to integers. This is the CORE BREAKTHROUGH -- the formula that was wrong in Section 10.2 is correct when derived from Section 10.3 with Dedekind specialization.
+**Goal**: Prove the GHR94 Lemma 10.3.11 Case 3 general equivalence for ARBITRARY event `a` (not just U-free), specialized to integers. Then derive Case 5 separability from it.
 
-**BLOCKER** (Phase 2):
-- **What failed**: The neg_since_equiv decomposition approach for Cases 5-8 creates a dependency cycle. Case 5 decomposes into `¬H(¬a∨¬U) ∧ ¬S(¬q∧¬U, ¬a∨¬U)`. The second term is Case 8 form (`S(a'∧¬U, q'∨¬U)` with a'=¬q, q'=¬a). Case 8 similarly decomposes into terms requiring Case 5. The abstraction/substitution approach (abstract_untl + subst_correctness) also fails because substituting back into a separated formula produces a non-separated formula that requires Cases 1-8 to re-separate.
-- **What was tried**: (1) neg_since_equiv decomposition -- circular between Cases 5 and 8. (2) abstract_untl + semantic chain -- roundtrip gives identity, no new separated formula. (3) Junction-depth induction -- JD=1 base case IS Cases 5-8. (4) Structural induction on formula -- snce case needs snce_separable axiom.
-- **Why it's stuck**: The ONLY non-circular approach is the Q-lemma based Case 3 general equivalence from GHR94 Section 10.3.11.3 (lines 488-529 of the literature file). This is a ~200-line semantic proof involving: definition of L={z∈(s,t) | q on (s,z)}, l=sup L, R={z∈(s,t) | q on (z,t)}, r=inf R; case analysis on l,r vs t; application of Q_lemma_Z_fwd/Q_lemma_Z_bwd. The proof must work for GENERAL event a (not just U-free a) to enable Case 5 instantiation with a=a'∧U(A,B).
-- **What is needed**: Prove `case3_equiv_Z_general` -- the three-disjunct equivalence from GHR94 10.3.11.3 specialized to Z, for arbitrary event `a`. Then instantiate with `a := a' ∧ U(A,B)` for Case 5, and similarly for Cases 6-8. The Q-lemma infrastructure (Q_lemma_Z_fwd, Q_lemma_Z_bwd) is already proved and ready to use. The separability of the RHS follows from Cases 1-4 + boolean closure.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**RESEARCH FINDINGS** (Round 2):
+- The neg_since_equiv decomposition is CIRCULAR between Cases 5 and 8.
+- The abstract_untl + substitution approach gives a trivial roundtrip.
+- The ONLY non-circular approach is the Q-lemma based Case 3 general equivalence.
+- Research confirmed: case3_equiv_Z_general for arbitrary `a` enables Cases 5-8 non-circularly.
+- Dependency chain: case3_equiv_Z_general -> Case 5 -> Case 8 -> Case 7 (Case 6 parallel via case3_equiv).
 
-**CRITICAL FORMULA** (GHR94 10.3.11.5 specialized to Z with K+/K-/Gamma = bot):
+**CRITICAL FORMULA** (GHR94 10.3.11.3 specialized to Z with K+/K-/Gamma = bot):
 
 ```
-S(a ^ U(A,B), q v U(A,B)) <->
-  S(a ^ U(A,B), q)                                          -- disjunct (i) = Case 1
+S(a, q v U(A,B)) <->
+  S(a, q)                                                    -- disjunct (i)
   v [S(alpha, Q_Z(A,B,~q)) ^ (A v (B ^ U(A,B)))]           -- disjunct (ii)
   v S(A ^ (q v U(A,B)) ^ S(alpha, Q_Z(A,B,~q)), q)         -- disjunct (iii)
 
 where:
-  alpha = (a ^ U(A,B)) v (~q ^ S(a ^ U(A,B), q) ^ (q v U(A,B)))
+  alpha(a, q, A, B) = a v (~q ^ S(a, q) ^ (q v U(A,B)))
   Q_Z(A,B,~q) = B v A v ~S(~q, ~A)
 ```
 
-Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanishes because Gamma+(q) = bot on Z.
-
-**SEPARATION STRATEGY**: This formula is INTERMEDIATE -- it still has U(A,B) under S. But every S-term with U(A,B) in it falls under Cases 1 or 2 (already proved). Apply Case 1 iteratively to fully separate.
+Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^ U(A,B).
 
 **Tasks**:
 
-- [ ] Task 2.1: Prove Case 5 intermediate equivalence (~200 LOC) *(deviation: deferred -- definitions provided but full equivalence proof deferred; case5_separable_Z uses all_separable temporarily)*
-  - Location: New section in `DedekindZ.lean` (or new file `CasesDedekind.lean` if DedekindZ.lean is getting large)
-  - Type:
+- [x] Task 2.1: Define general alpha and RHS, prove case3_equiv_Z_general (~230 LOC) *(completed -- ~300 LOC including forward and backward directions)*
+  - Location: `DedekindZ.lean`, after Q_Z properties
+  - **Split into two lemmas** to manage heartbeats:
     ```lean
-    theorem case5_dedekind_Z (a q A B : Formula)
-        (ha : is_U_free a = true) (hq : is_U_free q = true)
-        (hA : is_U_free A = true) (hB : is_U_free B = true)
-        (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-        (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-        int_equiv
-          (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B)))
-          (Formula.or (Formula.or
-            (.snce (Formula.and a (.untl A B)) q)
-            (Formula.and
-              (.snce (alpha a q A B) (Q_Z A B (Formula.neg q)))
-              (Formula.or A (Formula.and B (.untl A B)))))
-            (.snce (Formula.and (Formula.and A (Formula.or q (.untl A B)))
-                     (.snce (alpha a q A B) (Q_Z A B (Formula.neg q))))
-                   q))
-    ```
-    where `alpha a q A B` is defined as:
-    ```lean
-    def alpha (a q A B : Formula) : Formula :=
-      Formula.or
-        (Formula.and a (.untl A B))
-        (Formula.and (Formula.and (Formula.neg q)
-          (.snce (Formula.and a (.untl A B)) q))
+    def case3_alpha (a q A B : Formula) : Formula :=
+      Formula.or a
+        (Formula.and (Formula.and (Formula.neg q) (.snce a q))
           (Formula.or q (.untl A B)))
-    ```
-  - Proof strategy (follows GHR94 Section 10.3 proof outline, specialized to Z):
-    - **(=>)** Forward direction. Assume `S(a ^ U(A,B), q v U(A,B))(t)`. So exists `s < t` with `a(s)`, `U(A,B)(s)`, and `q v U(A,B)` on `(s,t)`.
-      - Define `L = {z in (s,t) | q holds on (s,z)}`, `l = sup L` (or `l = s` if L empty). On Z, `l` is a concrete integer: the last point before the first q-failure.
-      - Define `R = {z in (s,t) | q holds on (z,t)}`, `r = inf R` (or `r = t` if R empty). On Z, `r` is a concrete integer: the first point after which q holds till t.
-      - If `L = (s,t)` then `S(a, q)(t)` and disjunct (i) holds via `S(a ^ U(A,B), q)(t)` (strengthen the event).
-      - Otherwise `l < t`. Check: `alpha` holds at `l` (either `l = s` giving first disjunct of alpha, or `l > s` giving second). Q_Z holds on `(l, r)` by Q-lemma forward direction. `S(alpha, Q_Z)(r)` holds.
-      - Sub-cases on r: r = t gives disjunct (ii); r < t with U(A,B)(r) gives disjunct (iii) or (ii); r < t without U(A,B)(r) gives disjunct (iii) via q(r).
-    - **(<=)** Backward direction. Three disjuncts to verify:
-      - Disjunct (i): `S(a ^ U(A,B), q)(t)` implies `S(a ^ U(A,B), q v U(A,B))(t)` (weaken the guard).
-      - Disjunct (ii): `S(alpha, Q_Z) ^ beta` at t. Unpack alpha to find witness point v < t with `a(v)` and `U(A,B)(v)`. Q_Z holds on `(v, t)`. Use Q-lemma backward to get `C => U(A,B)` on `(v,t)`, which gives `q v U(A,B)` on `(v,t)`.
-      - Disjunct (iii): Similar structure. The since-witness `u < t` has `A(u)`, `(q v U(A,B))(u)`, `S(alpha, Q_Z)(u)`. From S(alpha, Q_Z)(u), find `v < u` with alpha(v). Use Q-lemma backward on (v, u). Then q holds on (u,t), so q v U(A,B) on (v,t).
-  - **Key implementation note**: On Z, `sup L` and `inf R` are computed via discrete case analysis. There is no need for Dedekind completeness or sup/inf axioms. Use `Int.lt_add_one` and similar for the discrete structure.
-  - Verification: `lake build` passes, theorem has no sorry
 
-- [x] Task 2.2: Prove Case 5 is separable by applying Cases 1 iteratively (~80 LOC) *(deviation: altered -- uses all_separable temporarily; will be replaced in Phase 4)*
-  - Location: After `case5_dedekind_Z`
-  - Strategy: The intermediate formula from Task 2.1 still has U(A,B) under S. But each S-term with U(A,B) is either:
-    - `S(a ^ U(A,B), q)` -- exactly Case 1 (already proved as `elim_case_1_gen`)
-    - `S(alpha, Q_Z)` where alpha contains `S(a ^ U(A,B), q)` and `U(A,B)` -- apply Case 1 to the inner S, then the result has U(A,B) only at top level (not under S in a problematic way)
-    - `S(A ^ (q v U(A,B)) ^ S(alpha, Q_Z), q)` -- after expanding alpha via Case 1, the only U(A,B) appearances in the event are at top level
-  - Type:
-    ```lean
-    theorem case5_separable_Z (a q A B : Formula)
-        (ha : is_U_free a = true) (hq : is_U_free q = true)
-        (hA : is_U_free A = true) (hB : is_U_free B = true)
-        (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-        (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-        is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B)))
+    def case3_rhs (a q A B : Formula) : Formula :=
+      let al := case3_alpha a q A B
+      let qz := Q_Z A B (Formula.neg q)
+      Formula.or (Formula.or
+        (.snce a q)
+        (Formula.and (.snce al qz)
+          (Formula.or A (Formula.and B (.untl A B)))))
+        (.snce (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+                 (.snce al qz))
+               q)
+
+    set_option maxHeartbeats 1600000 in
+    theorem case3_equiv_Z_fwd (a q A B : Formula) (M : IntStructure) (t : ℤ)
+        (hq : is_U_free q = true) (hA : is_U_free A = true) (hB : is_U_free B = true)
+        (hq' : is_S_free q = true) (hA' : is_S_free A = true) (hB' : is_S_free B = true)
+        (h : int_truth M t (.snce a (Formula.or q (.untl A B)))) :
+        int_truth M t (case3_rhs a q A B)
+
+    set_option maxHeartbeats 1600000 in
+    theorem case3_equiv_Z_bwd (a q A B : Formula) (M : IntStructure) (t : ℤ)
+        (hq : is_U_free q = true) (hA : is_U_free A = true) (hB : is_U_free B = true)
+        (hq' : is_S_free q = true) (hA' : is_S_free A = true) (hB' : is_S_free B = true)
+        (h : int_truth M t (case3_rhs a q A B)) :
+        int_truth M t (.snce a (Formula.or q (.untl A B)))
+
+    theorem case3_equiv_Z_general (a q A B : Formula)
+        (hq : is_U_free q = true) (hA : is_U_free A = true) (hB : is_U_free B = true)
+        (hq' : is_S_free q = true) (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+        int_equiv (.snce a (Formula.or q (.untl A B))) (case3_rhs a q A B)
     ```
-  - Proof: Compose `case5_dedekind_Z` (the int_equiv) with separability of the RHS. The RHS is a disjunction; each disjunct is separable:
-    - Disjunct (i): `S(a ^ U(A,B), q)` -- use `elim_case_1_gen` (Case 1 generalized)
-    - Disjunct (ii): `S(alpha, Q_Z) ^ beta` -- alpha contains Case 1 form S(a^U(A,B),q) which is separable, and the rest has `no_S_nested_in_U`. Use `is_separable_of_equiv` + boolean closure.
-    - Disjunct (iii): `S(event, q)` where event is U-free after Case 1 expansion -- directly separated or use `all_separable` result.
-  - **Alternative simpler proof**: Since `case5_dedekind_Z` gives `int_equiv LHS RHS`, and each subformula of RHS either satisfies `no_S_nested_in_U` or is a Case 1 instance (separable by `elim_case_1_gen`), the whole RHS is separable by boolean closure + `snce_separable` (which at this point still uses the axiom -- but that is fine because we only need this to compile now; it will be replaced in Phase 4).
-  - **IMPORTANT**: If direct separability of the RHS is complex, use this approach: show `int_equiv (.snce (a ^ U(A,B)) (q v U(A,B))) separated_formula` and then wrap with `is_separable_of_equiv`. The separated formula can be constructed explicitly by applying the Case 1 separated equivalent inside each disjunct.
-  - Verification: `lake build` passes, theorem has no sorry
+  - NOTE: `a` has NO freeness hypotheses (arbitrary event). q, A, B are U-free and S-free.
+  - **Forward proof strategy** (case3_equiv_Z_fwd):
+    1. Unpack S(a, q v U)(t): get witness s < t with a(s), guard q v U on (s,t)
+    2. If q holds on all of (s,t): disjunct (i) S(a,q)(t). DONE.
+    3. Otherwise: find l = greatest z in (s,t) where q fails on (s,z+1).
+       On Z: use `by_cases` on whether `∀ r, s < r → r < t → int_truth M r q`
+       If not: use `Int.exists_least_above` to find first failure point, then l = failure - 1
+    4. Find r = least z in (l+1, t) where q holds on (z,t).
+       On Z: use `Int.exists_least_above` on q-holding points near t, or r = t if q fails everywhere
+    5. Show alpha(l) holds: if l = s, first disjunct of alpha (a(s)); if l > s, second disjunct
+    6. Show Q_Z on (l, r) via Q_lemma_Z_fwd with:
+       - interval (l, r), guard C = neg q
+       - hinit = U(A,B)(l) (from q v U on (s,t) with neg q at l+1)
+    7. Therefore S(alpha, Q_Z)(r)
+    8. Case split r vs t: r=t -> disjunct (ii); r<t -> disjunct (iii) or (ii)
+  - **Backward proof strategy** (case3_equiv_Z_bwd):
+    1. Disjunct (i): S(a,q)(t) -> weaken guard to q v U
+    2. Disjunct (ii): S(alpha, Q_Z)(t) ^ (A v B^U)(t). Unpack S(alpha,Q_Z): get v < t with alpha(v), Q_Z on (v,t). Unpack alpha(v) to find original event point with a. Use Q_lemma_Z_bwd on (v,t) with hend from (A v B^U)(t) to get C -> U(A,B) on (v,t). Build q v U on (event_point, t).
+    3. Disjunct (iii): S(A ^ (q v U) ^ S(alpha, Q_Z), q)(t). Get u < t with event at u, q on (u,t). From S(alpha,Q_Z)(u), find v < u. Use Q_lemma_Z_bwd on (v,u) with hend from A(u). Build q v U on (v, t).
+  - **Helper lemma** (recommended): `int_truth_case3_alpha_iff` to unfold alpha semantics
+  - Verification: `lake build` passes, no sorry
+
+- [ ] Task 2.2: Prove Case 5 separability non-circularly (~50 LOC) *(deviation: deferred to task 4 -- analysis shows Cases 5-8 separability requires the junction_depth hierarchy theorem; the neg_since_equiv route is circular between Cases 5 and 8; the case3_equiv RHS has same junction_depth as LHS; Cases 5-8 separability is subsumed by the hierarchy)*
+  - Location: After case3_equiv_Z_general
+  - Strategy: Instantiate case3_equiv_Z_general with a := a' ^ U(A,B).
+    Then case3_rhs(a' ^ U(A,B), q, A, B) has three disjuncts where every S-term containing U(A,B) is Case 1 form S(a'^U(A,B), q) which is separable via elim_case_1_gen.
+  - The RHS is separable via: is_separable_of_equiv + or_separable + and_separable + Case 1 separability for each S-with-U subterm
+  - Replace `all_separable _` in case5_separable_Z with the real proof
+  - Verification: `lake build` passes, no sorry, no all_separable dependency
 
 **Timing**: 3 hours
 
@@ -362,7 +363,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
 
 **Tasks**:
 
-- [x] Task 3.1: Prove Case 8 is separable (~100 LOC) *(deviation: altered -- uses all_separable temporarily)*
+- [ ] Task 3.1: Prove Case 8 is separable (~100 LOC) *(was: uses all_separable; needs: neg_since_equiv + Cases 1,2,5)*
   - Location: `DedekindZ.lean` or `CasesDedekind.lean`
   - Type:
     ```lean
@@ -389,7 +390,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
     - After simplification with K-/Gamma vanishing: `S(~U ^ a, ~U v q) <-> S(~U ^ a, top) ^ ~S(U ^ ~q, U v ~a)`. Both parts are separable.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [x] Task 3.2: Prove Case 7 is separable (~80 LOC) *(deviation: altered -- uses all_separable temporarily)*
+- [ ] Task 3.2: Prove Case 7 is separable (~80 LOC) *(was: uses all_separable; needs: Cases 4,8)*
   - Location: After Case 8
   - Type:
     ```lean
@@ -412,7 +413,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
     - Apply Case 8 (`case8_separable_Z`) and Case 4 (`case4_separable`) to the sub-terms.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [x] Task 3.3: Prove Case 6 is separable (~80 LOC) *(deviation: altered -- uses all_separable temporarily)*
+- [ ] Task 3.3: Prove Case 6 is separable (~80 LOC) *(was: uses all_separable; needs: case3_equiv + Case 2)*
   - Location: After Case 7
   - Type:
     ```lean

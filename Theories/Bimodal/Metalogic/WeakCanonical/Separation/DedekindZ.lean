@@ -274,6 +274,406 @@ theorem Q_Z_no_S_nested (A B C : Formula)
   -- There are no untl nodes in Q_Z, so everything reduces to True and recursive props.
   repeat (first | constructor | exact hA | exact hB | exact hC | trivial)
 
+/-! ## Case 3 General Equivalence (GHR94 Lemma 10.3.11.3 for Z)
+
+The three-disjunct decomposition for S(a, q v U(A,B)) with ARBITRARY event `a`.
+This is the core theorem that enables non-circular proofs of Cases 5-8.
+
+  S(a, q v U(A,B)) <->
+    S(a, q)                                                    -- disjunct (i)
+    v [S(alpha, Q_Z(A,B,~q)) ^ (A v (B ^ U(A,B)))]           -- disjunct (ii)
+    v S(A ^ (q v U(A,B)) ^ S(alpha, Q_Z(A,B,~q)), q)         -- disjunct (iii)
+
+  where alpha = a v (~q ^ S(a, q) ^ (q v U(A,B)))
+-/
+
+/-- General alpha for Case 3: a v (~q ^ S(a, q) ^ (q v U(A,B))) -/
+def case3_alpha (a q A B : Formula) : Formula :=
+  Formula.or a
+    (Formula.and (Formula.and (Formula.neg q) (.snce a q))
+      (Formula.or q (.untl A B)))
+
+/-- Case 3 RHS for general event a:
+    S(a, q) v [S(alpha, Q_Z(A,B,~q)) ^ (A v B^U)] v S(A ^ (qvU) ^ S(alpha, Q_Z), q) -/
+def case3_rhs (a q A B : Formula) : Formula :=
+  let al := case3_alpha a q A B
+  let qz := Q_Z A B (Formula.neg q)
+  Formula.or (Formula.or
+    (.snce a q)
+    (Formula.and (.snce al qz)
+      (Formula.or A (Formula.and B (.untl A B)))))
+    (.snce (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+             (.snce al qz))
+           q)
+
+/-! ### Backward Direction: case3_rhs -> S(a, q v U(A,B)) -/
+
+set_option maxHeartbeats 1600000 in
+/-- Case 3 backward direction: any disjunct of the RHS implies S(a, q v U(A,B)). -/
+theorem case3_equiv_Z_bwd (a q A B : Formula) (M : IntStructure) (t : ℤ)
+    (h : int_truth M t (case3_rhs a q A B)) :
+    int_truth M t (.snce a (Formula.or q (.untl A B))) := by
+  simp only [case3_rhs] at h
+  rcases int_truth_or_iff.mp h with h12 | h3
+  · rcases int_truth_or_iff.mp h12 with h1 | h2
+    · -- Disjunct (i): S(a, q)(t) -> weaken guard to q v U
+      obtain ⟨s, hst, ha_s, hq_guard⟩ := h1
+      exact ⟨s, hst, ha_s, fun r hrs hrt =>
+        int_truth_or_iff.mpr (Or.inl (hq_guard r hrs hrt))⟩
+    · -- Disjunct (ii): S(alpha, Q_Z)(t) ^ (A v B^U)(t)
+      rw [int_truth_and_iff] at h2
+      obtain ⟨hSalpha, hABU⟩ := h2
+      obtain ⟨v, hvt, halpha_v, hQZ_guard⟩ := hSalpha
+      -- Unpack alpha(v): either a(v) or (~q(v) ^ S(a,q)(v) ^ (qvU)(v))
+      simp only [case3_alpha] at halpha_v
+      rcases int_truth_or_iff.mp halpha_v with ha_v | halpha2
+      · -- alpha first disjunct: a(v). Build S(a, qvU)(t) with witness v.
+        -- Need qvU on (v, t). Use Q_lemma_Z_bwd.
+        -- hend: at t, A v (B ^ U) holds. This gives A(t) v (B(t) ^ U(A,B)(t)).
+        have hend_for_Q : int_truth M t A ∨ int_truth M t (Formula.and B (.untl A B)) := by
+          rcases int_truth_or_iff.mp hABU with hA | hBU
+          · exact Or.inl hA
+          · exact Or.inr hBU
+        have hvt_lt : v < t := hvt
+        have hCimplU := Q_lemma_Z_bwd A B (Formula.neg q) M v t hvt_lt hQZ_guard hend_for_Q
+        -- hCimplU: for z in (v,t), ~q(z) -> U(A,B)(z)
+        -- So for z in (v,t): either q(z) or (if ~q(z) then U(A,B)(z))
+        refine ⟨v, hvt, ha_v, fun r hvr hrt => ?_⟩
+        rw [int_truth_or_iff]
+        by_cases hqr : int_truth M r q
+        · exact Or.inl hqr
+        · exact Or.inr (hCimplU r hvr hrt hqr)
+      · -- alpha second disjunct: ~q(v) ^ S(a,q)(v) ^ (qvU)(v)
+        rw [int_truth_and_iff] at halpha2
+        obtain ⟨hnq_and_Saq, hqU_v⟩ := halpha2
+        rw [int_truth_and_iff] at hnq_and_Saq
+        obtain ⟨_hnq_v, hSaq_v⟩ := hnq_and_Saq
+        -- S(a,q)(v): exists s < v with a(s) and q on (s,v)
+        obtain ⟨s, hsv, ha_s, hq_sv⟩ := hSaq_v
+        -- Build S(a, qvU)(t) with witness s.
+        -- q on (s,v), then qvU on (v,t) via Q_lemma_Z_bwd
+        have hend_for_Q : int_truth M t A ∨ int_truth M t (Formula.and B (.untl A B)) := by
+          rcases int_truth_or_iff.mp hABU with hA | hBU
+          · exact Or.inl hA
+          · exact Or.inr hBU
+        have hCimplU := Q_lemma_Z_bwd A B (Formula.neg q) M v t hvt hQZ_guard hend_for_Q
+        refine ⟨s, lt_trans hsv hvt, ha_s, fun r hsr hrt => ?_⟩
+        rw [int_truth_or_iff]
+        rcases lt_trichotomy r v with hrv | hrv | hrv
+        · exact Or.inl (hq_sv r hsr hrv)
+        · -- r = v: qvU(v) holds
+          subst hrv; exact int_truth_or_iff.mp hqU_v
+        · -- r > v: use Q_lemma_Z_bwd
+          by_cases hqr : int_truth M r q
+          · exact Or.inl hqr
+          · exact Or.inr (hCimplU r hrv hrt hqr)
+  · -- Disjunct (iii): S(A ^ (qvU) ^ S(alpha, Q_Z), q)(t)
+    obtain ⟨u, hut, hevent_u, hq_guard⟩ := h3
+    -- Unpack event at u: A(u) ^ (qvU)(u) ^ S(alpha, Q_Z)(u)
+    rw [int_truth_and_iff] at hevent_u
+    obtain ⟨hA_qU, hSalpha_u⟩ := hevent_u
+    rw [int_truth_and_iff] at hA_qU
+    obtain ⟨hA_u, hqU_u⟩ := hA_qU
+    -- S(alpha, Q_Z)(u): exists v < u with alpha(v), Q_Z on (v,u)
+    obtain ⟨v, hvu, halpha_v, hQZ_vu⟩ := hSalpha_u
+    -- Unpack alpha(v)
+    simp only [case3_alpha] at halpha_v
+    rcases int_truth_or_iff.mp halpha_v with ha_v | halpha2
+    · -- a(v): Build S(a, qvU)(t) with witness v
+      -- qvU on (v, u) via Q_lemma_Z_bwd with hend = A(u) or (A(u) as left of Or)
+      have hend_u : int_truth M u A ∨ int_truth M u (Formula.and B (.untl A B)) :=
+        Or.inl hA_u
+      have hCimplU := Q_lemma_Z_bwd A B (Formula.neg q) M v u hvu hQZ_vu hend_u
+      refine ⟨v, lt_trans hvu hut, ha_v, fun r hvr hrt => ?_⟩
+      rw [int_truth_or_iff]
+      rcases lt_trichotomy r u with hru | hru | hru
+      · -- r in (v, u): use Q_lemma_Z_bwd
+        by_cases hqr : int_truth M r q
+        · exact Or.inl hqr
+        · exact Or.inr (hCimplU r hvr hru hqr)
+      · -- r = u: qvU(u)
+        subst hru; exact int_truth_or_iff.mp hqU_u
+      · -- r in (u, t): q(r) from hq_guard
+        exact Or.inl (hq_guard r hru hrt)
+    · -- alpha second disjunct at v
+      rw [int_truth_and_iff] at halpha2
+      obtain ⟨hnq_and_Saq, _hqU_v⟩ := halpha2
+      rw [int_truth_and_iff] at hnq_and_Saq
+      obtain ⟨_hnq_v, hSaq_v⟩ := hnq_and_Saq
+      obtain ⟨s, hsv, ha_s, hq_sv⟩ := hSaq_v
+      -- Build S(a, qvU)(t) with witness s
+      have hend_u : int_truth M u A ∨ int_truth M u (Formula.and B (.untl A B)) :=
+        Or.inl hA_u
+      have hCimplU := Q_lemma_Z_bwd A B (Formula.neg q) M v u hvu hQZ_vu hend_u
+      refine ⟨s, lt_trans hsv (lt_trans hvu hut), ha_s, fun r hsr hrt => ?_⟩
+      rw [int_truth_or_iff]
+      rcases lt_trichotomy r v with hrv | hrv | hrv
+      · exact Or.inl (hq_sv r hsr hrv)
+      · subst hrv
+        -- r = v: we have ~q(v) and (qvU)(v). So not q, so must be U(A,B)(v).
+        -- Actually we need qvU at v.
+        rcases int_truth_or_iff.mp _hqU_v with hqv | hUv
+        · exact Or.inl hqv
+        · exact Or.inr hUv
+      · rcases lt_trichotomy r u with hru | hru | hru
+        · by_cases hqr : int_truth M r q
+          · exact Or.inl hqr
+          · exact Or.inr (hCimplU r hrv hru hqr)
+        · subst hru; exact int_truth_or_iff.mp hqU_u
+        · exact Or.inl (hq_guard r hru hrt)
+
+/-! ### Forward Direction: S(a, q v U(A,B)) -> case3_rhs -/
+
+set_option maxHeartbeats 3200000 in
+/-- Case 3 forward direction: S(a, q v U(A,B)) implies one of three disjuncts.
+    This is the harder direction, requiring interval analysis on Z. -/
+theorem case3_equiv_Z_fwd (a q A B : Formula) (M : IntStructure) (t : ℤ)
+    (h : int_truth M t (.snce a (Formula.or q (.untl A B)))) :
+    int_truth M t (case3_rhs a q A B) := by
+  -- Unpack S(a, q v U)(t): exists s < t with a(s) and q v U on (s, t)
+  obtain ⟨s, hst, ha_s, hguard⟩ := h
+  -- Case split: does q hold on all of (s, t)?
+  by_cases hq_all : ∀ r, s < r → r < t → int_truth M r q
+  · -- YES: disjunct (i) S(a, q)(t)
+    simp only [case3_rhs]
+    apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; left
+    exact ⟨s, hst, ha_s, hq_all⟩
+  · -- NO: there exists a point in (s, t) where q fails
+    push_neg at hq_all
+    obtain ⟨f, hsf, hft, hnqf⟩ := hq_all
+    -- f is a point in (s, t) where q fails.
+    -- Find the LEAST such point (first failure of q after s)
+    haveI : DecidablePred (fun r => ¬int_truth M r q) := Classical.decPred _
+    have hex_fail : ∃ n, s < n ∧ ¬int_truth M n q := ⟨f, hsf, hnqf⟩
+    obtain ⟨f₀, hsf₀, hnqf₀, hf₀_min⟩ := Int.exists_least_above hex_fail
+    -- f₀ is the first point > s where q fails.
+    -- q holds on (s, f₀) -- all integers strictly between s and f₀.
+    have hq_left : ∀ r, s < r → r < f₀ → int_truth M r q := by
+      intro r hsr hrf₀; by_contra hnq; exact hf₀_min r hsr hrf₀ hnq
+    -- f₀ < t (because f₀ is at most f, and f < t, actually f₀ ≤ f)
+    have hf₀t : f₀ < t := by
+      by_contra hle; push_neg at hle
+      -- If f₀ ≥ t, then since f < t and ~q(f), we have s < f and f < f₀, so
+      -- hf₀_min f hsf hff₀ should give ¬¬q(f), contradiction
+      have hff₀ : f < f₀ := lt_of_lt_of_le hft hle
+      exact hf₀_min f hsf hff₀ hnqf
+    -- Now consider the right side: find the greatest point where q fails before t
+    -- Actually, let's find the first point ≥ f₀ from which q holds continuously to t.
+    -- Equivalently, find the GREATEST point in [f₀, t-1] where q fails.
+    -- Strategy: define r₀ as the greatest point > f₀ (or = f₀) where ~q holds, then
+    -- q holds on (r₀, t).
+    -- Actually simpler: check if q holds on (f₀, t).
+    by_cases hq_right : ∀ r, f₀ < r → r < t → int_truth M r q
+    · -- q holds on (f₀, t). So the "gap" where q fails is just the single point f₀.
+      -- Since ~q(f₀) and q v U on (s, t), we have U(A,B)(f₀).
+      have hqU_f₀ := hguard f₀ hsf₀ hf₀t
+      have hU_f₀ : int_truth M f₀ (.untl A B) := by
+        rcases int_truth_or_iff.mp hqU_f₀ with hq | hU
+        · exact absurd hq hnqf₀
+        · exact hU
+      -- U(A,B)(f₀): exists w > f₀ with A(w) and B on (f₀, w)
+      have hU_f₀_copy := hU_f₀
+      obtain ⟨w, hf₀w, hAw, hBguard_w⟩ := hU_f₀_copy
+      -- Build alpha(f₀) and show S(alpha, Q_Z)(t)
+      -- alpha(f₀) = a(f₀) v (~q(f₀) ^ S(a,q)(f₀) ^ (qvU)(f₀))
+      -- Since f₀ > s and q on (s, f₀) and a(s), we have S(a, q)(f₀).
+      have hSaq_f₀ : int_truth M f₀ (.snce a q) :=
+        ⟨s, hsf₀, ha_s, hq_left⟩
+      have halpha_f₀ : int_truth M f₀ (case3_alpha a q A B) := by
+        simp only [case3_alpha]
+        apply int_truth_or_iff.mpr; right
+        rw [int_truth_and_iff]; constructor
+        · rw [int_truth_and_iff]; exact ⟨hnqf₀, hSaq_f₀⟩
+        · exact hqU_f₀
+      -- Q_Z holds on (f₀, t) because q holds on (f₀, t).
+      -- Q_Z(A,B,~q) = B v A v ~S(~q, ~A). Since q holds on (f₀, t),
+      -- at each z in (f₀, t): q(z) -> ~~q(z) -> hmm, Q_Z = B v A v ~S(~q, ~A).
+      -- Actually Q_Z is about B, A, and ~S(~q, ~A). We don't get Q_Z just from q.
+      -- We need to use Q_lemma_Z_fwd to establish Q_Z on (f₀, t).
+      -- Q_lemma_Z_fwd needs: guard (C -> U(A,B)) on (f₀, t) where C = ~q.
+      -- Since q holds on (f₀, t), the guard "~q(z) -> U(A,B)(z)" is vacuously true
+      -- (the hypothesis ~q(z) is never satisfied for z in (f₀, t)).
+      -- Also needs: hinit = U(A,B)(f₀). We have hU_f₀.
+      have hQ_on_interval : ∀ z, f₀ < z → z < t → int_truth M z (Q_Z A B (Formula.neg q)) := by
+        apply Q_lemma_Z_fwd A B (Formula.neg q) M f₀ t hf₀t
+        · intro z hz0 hz1 hC
+          -- hC: ~q(z), but q holds on (f₀, t), contradiction
+          exact absurd (hq_right z hz0 hz1) hC
+        · exact hU_f₀
+      -- S(alpha, Q_Z)(t) with witness f₀
+      have hSalpha_t : int_truth M t (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q))) :=
+        ⟨f₀, hf₀t, halpha_f₀, hQ_on_interval⟩
+      -- Now determine which disjunct: (ii) or (iii).
+      -- We need to check if we can produce (A v B^U) at t, or route to (iii).
+      -- Since q holds on (f₀, t), and f₀ < t, we know:
+      -- if t - 1 ≥ f₀ + 1 then q(t-1), and we can use q on (f₀, t) for guard
+      -- Actually we need either A(t) v B^U(t) for disjunct (ii), or to build (iii).
+      -- Since w > f₀ and A(w) and B on (f₀, w):
+      rcases le_or_gt w t with hwt | htw
+      · -- w ≤ t. Compare w and t.
+        rcases eq_or_lt_of_le hwt with rfl | hwt'
+        · -- w = t: A(t). Disjunct (ii).
+          simp only [case3_rhs]
+          apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; right
+          rw [int_truth_and_iff]; exact ⟨hSalpha_t, int_truth_or_iff.mpr (Or.inl hAw)⟩
+        · -- w < t: A(w), w > f₀, q holds on (w, t) (since f₀ < w from hf₀w; wait, we know q on (f₀,t), so q on (w,t))
+          -- Also (qvU)(w): q(w) if f₀ < w < t (yes, from hq_right).
+          -- Actually, w might equal f₀ + 1 or anything. Need w > f₀ (true from hf₀w)
+          -- and w < t (hwt'). So q(w) from hq_right.
+          -- Build disjunct (iii): S(A ^ (qvU) ^ S(alpha, Q_Z), q)(t)
+          -- event at w: A(w) ^ (qvU)(w) ^ S(alpha, Q_Z)(w)
+          have hqw : int_truth M w q := hq_right w hf₀w hwt'
+          have hqU_w : int_truth M w (Formula.or q (.untl A B)) :=
+            int_truth_or_iff.mpr (Or.inl hqw)
+          -- S(alpha, Q_Z)(w): witness f₀ < w, alpha(f₀), Q_Z on (f₀, w)
+          have hSalpha_w : int_truth M w (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q))) :=
+            ⟨f₀, hf₀w, halpha_f₀, fun z hz1 hz2 => hQ_on_interval z hz1 (lt_trans hz2 hwt')⟩
+          have hevent_w : int_truth M w (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+               (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q)))) := by
+            rw [int_truth_and_iff, int_truth_and_iff]
+            exact ⟨⟨hAw, hqU_w⟩, hSalpha_w⟩
+          simp only [case3_rhs]
+          apply int_truth_or_iff.mpr; right
+          exact ⟨w, hwt', hevent_w, fun r hwr hrt => hq_right r (lt_trans hf₀w hwr) hrt⟩
+      · -- w > t: B holds on (f₀, w), so B(t) (since f₀ < t < w).
+        -- Also U(A,B)(t) since w > t: witness w, A(w), B on (t, w).
+        have hBt : int_truth M t B := hBguard_w t hf₀t htw
+        have hUt : int_truth M t (.untl A B) :=
+          ⟨w, htw, hAw, fun r htr hrw => hBguard_w r (lt_trans hf₀t htr) hrw⟩
+        simp only [case3_rhs]
+        apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; right
+        rw [int_truth_and_iff]
+        exact ⟨hSalpha_t, int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨hBt, hUt⟩))⟩
+    · -- q does NOT hold on all of (f₀, t). There are more failures after f₀.
+      push_neg at hq_right
+      obtain ⟨f₁, hf₀f₁, hf₁t, hnqf₁⟩ := hq_right
+      -- Find the GREATEST point in (s, t) where q fails (call it g)
+      haveI : DecidablePred (fun r => ¬int_truth M r q) := Classical.decPred _
+      have hex_fail2 : ∃ n, n < t ∧ ¬int_truth M n q := ⟨f₁, hf₁t, hnqf₁⟩
+      obtain ⟨g, hgt, hnqg, hg_max⟩ := Int.exists_greatest_below hex_fail2
+      -- g is the GREATEST point < t where ~q. So q holds on (g, t).
+      have hq_after_g : ∀ r, g < r → r < t → int_truth M r q := by
+        intro r hgr hrt; by_contra hnq; exact hg_max r hgr hrt hnq
+      -- g ≥ f₀ (since f₀ < t and ~q(f₀))
+      have hf₀g : f₀ ≤ g := by
+        by_contra hlt; push_neg at hlt
+        -- g < f₀, but f₀ is the first failure after s, and g < t with ~q(g).
+        -- g < f₀ means s < g < f₀ (since g < t and g has ~q).
+        -- But wait, g < f₀ means g might be ≤ s.
+        -- Actually g is greatest below t with ~q. f₀ < t and ~q(f₀), so g ≥ f₀.
+        exact hg_max f₀ hlt hf₀t hnqf₀
+      -- Since ~q(g) and g in (s, t) (g < t, g ≥ f₀ > s), qvU(g) gives U(A,B)(g)
+      have hsg : s < g := lt_of_lt_of_le hsf₀ hf₀g
+      have hU_g : int_truth M g (.untl A B) := by
+        have := hguard g hsg hgt
+        rcases int_truth_or_iff.mp this with hq | hU
+        · exact absurd hq hnqg
+        · exact hU
+      obtain ⟨w, hgw, hAw, hBguard_w⟩ := hU_g
+      -- Build alpha at f₀: same as before since f₀ > s with ~q(f₀), S(a,q)(f₀), (qvU)(f₀)
+      have hSaq_f₀ : int_truth M f₀ (.snce a q) :=
+        ⟨s, hsf₀, ha_s, hq_left⟩
+      have hqU_f₀ := hguard f₀ hsf₀ hf₀t
+      have halpha_f₀ : int_truth M f₀ (case3_alpha a q A B) := by
+        simp only [case3_alpha]
+        apply int_truth_or_iff.mpr; right
+        rw [int_truth_and_iff]; constructor
+        · rw [int_truth_and_iff]; exact ⟨hnqf₀, hSaq_f₀⟩
+        · exact hqU_f₀
+      -- Show Q_Z on (f₀, g+1).
+      -- Actually, we need Q_Z on (f₀, r₀) where r₀ is the start of the q-run to t.
+      -- r₀ = g + 1: q holds on (g, t) = {g+1, ..., t-1} on Z, and ~q(g).
+      -- We need: Q_Z on (f₀, something) where we can build S(alpha, Q_Z).
+      -- The interval where Q_Z holds: (f₀, g+1).
+      -- Wait: we need Q_Z between the left q-run and right q-run.
+      -- The "gap" where q may fail is (f₀-1, g+1), i.e., {f₀, f₀+1, ..., g}.
+      -- Actually the guard for Q_lemma_Z_fwd is: C -> U(A,B) on (f₀, something).
+      -- C = ~q. On (f₀, g+1): for z in {f₀+1, ..., g}, if ~q(z) then (qvU)(z) gives U(A,B)(z).
+      -- For f₀ itself: ~q(f₀) and U(A,B)(f₀) from above.
+      -- Let's use interval (f₀, g+1) for Q_lemma_Z_fwd.
+      -- But we need g+1 > f₀, i.e., g ≥ f₀. We have hf₀g.
+      have hf₀_lt_g1 : f₀ < g + 1 := by omega
+      -- guard on (f₀, g+1): for z in (f₀, g+1), ~q(z) -> U(A,B)(z)
+      have hguard_gap : ∀ z, f₀ < z → z < g + 1 → (int_truth M z (Formula.neg q) → int_truth M z (.untl A B)) := by
+        intro z hf₀z hzg1 hnqz
+        -- z ∈ (f₀, g+1) means f₀ < z and z ≤ g, so z < t (since g < t)
+        have hzt : z < t := by omega
+        have hsz : s < z := lt_trans hsf₀ hf₀z
+        rcases int_truth_or_iff.mp (hguard z hsz hzt) with hq | hU
+        · exact absurd hq hnqz
+        · exact hU
+      -- hinit for Q_lemma_Z_fwd: U(A,B)(f₀)
+      have hU_f₀ : int_truth M f₀ (.untl A B) := by
+        rcases int_truth_or_iff.mp hqU_f₀ with hq | hU
+        · exact absurd hq hnqf₀
+        · exact hU
+      have hQ_gap : ∀ z, f₀ < z → z < g + 1 → int_truth M z (Q_Z A B (Formula.neg q)) :=
+        Q_lemma_Z_fwd A B (Formula.neg q) M f₀ (g + 1) hf₀_lt_g1 hguard_gap hU_f₀
+      -- Now build S(alpha, Q_Z) at g+1 if g+1 ≤ t.
+      -- Actually, we need to consider two subcases:
+      -- (a) g + 1 = t: then S(alpha, Q_Z)(t) with Q_Z on (f₀, t)
+      -- (b) g + 1 < t: q holds on (g, t), so q(g+1). We can extend Q_Z from (f₀, g+1) to (f₀, t).
+      -- Wait, Q_Z might not hold on (g+1, t). Let me reconsider.
+      -- For z in (g+1, t): z > g, z < t, so q(z) (from hq_after_g since g < z).
+      -- Q_Z(z) = B(z) v A(z) v ~S(~q, ~A)(z). Since q(z), ~q is false at z, so
+      -- S(~q, ~A)(z) needs a witness where ~q holds -- but ~q might hold somewhere < z.
+      -- Q_Z is not trivially true just from q(z).
+      -- But: we can use Q_lemma_Z_fwd on a LONGER interval.
+      -- Actually: let's use Q_lemma_Z_fwd on (f₀, t) directly.
+      -- guard: for z in (f₀, t), ~q(z) -> U(A,B)(z)
+      have hguard_full : ∀ z, f₀ < z → z < t → (int_truth M z (Formula.neg q) → int_truth M z (.untl A B)) := by
+        intro z hf₀z hzt hnqz
+        have hsz : s < z := lt_trans hsf₀ hf₀z
+        rcases int_truth_or_iff.mp (hguard z hsz hzt) with hq | hU
+        · exact absurd hq hnqz
+        · exact hU
+      have hQ_full : ∀ z, f₀ < z → z < t → int_truth M z (Q_Z A B (Formula.neg q)) :=
+        Q_lemma_Z_fwd A B (Formula.neg q) M f₀ t hf₀t hguard_full hU_f₀
+      -- S(alpha, Q_Z)(t) with witness f₀
+      have hSalpha_t : int_truth M t (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q))) :=
+        ⟨f₀, hf₀t, halpha_f₀, hQ_full⟩
+      -- Now route to disjunct (ii) or (iii) based on w vs t.
+      rcases le_or_gt w t with hwt | htw
+      · rcases eq_or_lt_of_le hwt with rfl | hwt'
+        · -- w = t: A(t). Disjunct (ii).
+          simp only [case3_rhs]
+          apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; right
+          rw [int_truth_and_iff]
+          exact ⟨hSalpha_t, int_truth_or_iff.mpr (Or.inl hAw)⟩
+        · -- w < t: A(w) with g < w (from hgw). q on (w, t) since w > g.
+          -- Wait: w > g. q holds on (g, t). So q(w) if g < w < t. Yes: hwt' and hgw.
+          -- But wait: we need w > g for q(w). hgw says w > g.
+          -- Actually hgw says g < w. And hwt' says w < t.
+          -- q(w) from hq_after_g.
+          have hqw : int_truth M w q := hq_after_g w hgw hwt'
+          have hqU_w : int_truth M w (Formula.or q (.untl A B)) :=
+            int_truth_or_iff.mpr (Or.inl hqw)
+          -- S(alpha, Q_Z)(w) with witness f₀
+          have hSalpha_w : int_truth M w (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q))) :=
+            ⟨f₀, lt_of_le_of_lt hf₀g hgw, halpha_f₀,
+              fun z hz1 hz2 => hQ_full z hz1 (lt_trans hz2 hwt')⟩
+          have hevent_w : int_truth M w (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+               (.snce (case3_alpha a q A B) (Q_Z A B (Formula.neg q)))) := by
+            rw [int_truth_and_iff, int_truth_and_iff]
+            exact ⟨⟨hAw, hqU_w⟩, hSalpha_w⟩
+          simp only [case3_rhs]
+          apply int_truth_or_iff.mpr; right
+          exact ⟨w, hwt', hevent_w, fun r hwr hrt => hq_after_g r (lt_trans hgw hwr) hrt⟩
+      · -- w > t: B(t) and U(A,B)(t). Disjunct (ii).
+        have hBt : int_truth M t B := hBguard_w t hgt htw
+        have hUt : int_truth M t (.untl A B) :=
+          ⟨w, htw, hAw, fun r htr hrw => hBguard_w r (lt_trans hgt htr) hrw⟩
+        simp only [case3_rhs]
+        apply int_truth_or_iff.mpr; left; apply int_truth_or_iff.mpr; right
+        rw [int_truth_and_iff]
+        exact ⟨hSalpha_t, int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨hBt, hUt⟩))⟩
+
+/-- Case 3 general equivalence for Z: S(a, q v U(A,B)) <-> case3_rhs(a, q, A, B).
+    This works for ARBITRARY event `a`. -/
+theorem case3_equiv_Z_general (a q A B : Formula) :
+    int_equiv (.snce a (Formula.or q (.untl A B))) (case3_rhs a q A B) :=
+  fun M t => ⟨case3_equiv_Z_fwd a q A B M t, case3_equiv_Z_bwd a q A B M t⟩
+
 /-! ## Case 5 Definitions -/
 
 /-- alpha(a, q, A, B) = (a ^ U(A,B)) v (~q ^ S(a ^ U(A,B), q) ^ (q v U(A,B)))
@@ -320,7 +720,7 @@ further via neg_since_equiv:
 The second disjunct IS Case 5 itself. So the negation approach is circular.
 
 Instead, we observe that S(¬q ∧ ¬U, ¬a ∨ ¬U) is Case 8 form (S(a'∧¬U, q'∨¬U)
-with a'=¬q, q'=¬a). On integer time, Case 8 simplifies via K-/Gamma vanishing.
+with a'=¬q, q'=¬a). On integer time, Case 8 simplifies since K⁻ and Gamma vanish.
 
 For the current implementation, we use all_separable as a bootstrap,
 to be replaced in Phase 4 when the full hierarchy is proved. -/
