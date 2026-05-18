@@ -9,6 +9,9 @@ import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
+-- Ultrafilter frame infrastructure (recovered from Boneyard, imported separately to avoid
+-- elaboration interference with BXCanonical/Completeness.lean rfl proofs)
+-- import Bimodal.Metalogic.Algebraic.UltrafilterFrame
 -- Chain completeness modules archived to Boneyard/ChainCompleteness/:
 -- import Bimodal.Metalogic.Algebraic.DeterministicChain
 -- import Bimodal.Metalogic.Algebraic.DeterministicFMCS
@@ -35,6 +38,9 @@ Algebraic/
 ├── ParametricHistory.lean        # D-parametric history conversion
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricCompleteness.lean    # D-parametric completeness theorem
+│
+│   Ultrafilter Frame Infrastructure
+├── UltrafilterFrame.lean         # R_G/R_H/R_Box, UltrafilterChain, F/P resolution
 │
 │   Deterministic Chain (Discrete Completeness)
 └── DeterministicChain.lean       # Int-indexed chain (archived to Boneyard)
@@ -94,6 +100,9 @@ open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricCompleteness
+
+-- Ultrafilter frame infrastructure (imported separately)
+-- open Bimodal.Metalogic.Algebraic.UltrafilterFrame
 
 -- Deterministic chain for discrete completeness (archived to Boneyard)
 -- open Bimodal.Metalogic.Algebraic.DeterministicChain

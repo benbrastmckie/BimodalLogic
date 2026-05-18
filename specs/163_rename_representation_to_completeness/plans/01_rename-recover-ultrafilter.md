@@ -195,17 +195,17 @@ This task advances Roadmap Phase 4 (Algebraic representation):
 
 ---
 
-### Phase 5: Integration and Build Verification [NOT STARTED]
+### Phase 5: Integration and Build Verification [COMPLETED]
 
 **Goal**: Register the new UltrafilterFrame.lean in the module root, run full build, and clean up.
 
 **Tasks**:
-- [ ] Add `import Bimodal.Metalogic.Algebraic.UltrafilterFrame` to `Algebraic.lean`
-- [ ] Add `open Bimodal.Metalogic.Algebraic.UltrafilterFrame` to the module root
-- [ ] Update the architecture diagram comment in `Algebraic.lean` to include UltrafilterFrame.lean
-- [ ] Run `lake build` for full project build
-- [ ] Verify no regressions (build should complete with same sorry count as before)
-- [ ] Verify sorry count: the new file adds 2 sorries (temp_4) which were already counted in Boneyard; net active sorry count changes by +2 relative to pre-task state
+- [x] Add `import Bimodal.Metalogic.Algebraic.UltrafilterFrame` to `Algebraic.lean` *(deviation: altered -- import commented out to avoid elaboration interference with BXCanonical/Completeness.lean rfl proofs; UltrafilterFrame.lean can be imported directly by dependent modules)*
+- [x] Add `open Bimodal.Metalogic.Algebraic.UltrafilterFrame` to the module root *(deviation: altered -- commented out per above)*
+- [x] Update the architecture diagram comment in `Algebraic.lean` to include UltrafilterFrame.lean
+- [x] Run `lake build` for full project build
+- [x] Verify no regressions (build should complete with same sorry count as before)
+- [x] Verify sorry count: the new file adds 2 sorries (temp_4) which were already counted in Boneyard; net active sorry count changes by +2 relative to pre-task state
 
 **Timing**: 0.5 hours
 
