@@ -251,7 +251,14 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 ---
 
-### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [NOT STARTED]
+### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: The temporal closure axioms (`all_past_separable`, `all_future_separable`, `snce_separable`, `untl_separable`) cannot be proved without the full hierarchy. Structural induction and lexicographic induction on (junction_depth, formula_size) both fail because the separated equivalent of a formula can be LARGER than the original.
+- **What was tried**: (1) Structural induction on formula -- fails at `all_past`, `all_future`, `snce`, `untl` cases which need temporal closure. (2) Strong induction on junction_depth -- fails because `all_past` doesn't decrease junction_depth. (3) Lexicographic induction on (junction_depth, formula_size) -- fails because the separated equivalent psi can have larger formula_size than the original phi.
+- **Why it's stuck**: The GHR94 hierarchy requires "constituent substitution" (replacing atoms in past constituents of a separated formula). This is a complex operation that needs: (a) extracting the boolean structure of separated formulas, (b) substituting into S-terms while preserving the separated property, (c) applying the IH to each constituent individually. Formalizing this requires ~400-600 LOC of infrastructure that doesn't exist yet.
+- **What is needed**: Implement the constituent substitution infrastructure (Task 3.1 in the plan), then build the 4-layer hierarchy 10.2.5 -> 10.2.6 -> 10.2.7 -> 10.2.8. Estimated 6 hours of focused work in a fresh context.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy with constructive witnesses, replacing the circular `all_separable` in Hierarchy.lean.
 
@@ -267,7 +274,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 **Tasks**:
 
-- [ ] Task 3.1: Define constituent extraction infrastructure (~100 LOC)
+- [ ] Task 3.1: Define constituent extraction infrastructure (~100 LOC) *(deviation: deferred -- blocked by hierarchy complexity)*
   - Location: `Hierarchy.lean`, after the existing infrastructure (after line 1054)
   - Define types for tracking separated structure:
     ```lean

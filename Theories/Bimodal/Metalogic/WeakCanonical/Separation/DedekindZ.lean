@@ -481,11 +481,11 @@ theorem case3_equiv_Z_general (a q A B : Formula) :
     int_equiv (.snce a (Formula.or q (.untl A B))) (case3_rhs a q A B) :=
   fun M t => ⟨case3_equiv_Z_fwd a q A B M t, case3_equiv_Z_bwd a q A B M t⟩
 
-/-! ## Cases 5-8 Separability (Bootstrap)
+/-! ## Cases 5-8 Separability (Non-Circular)
 
-Cases 5-8 are separable. The proofs currently use the `all_separable` axiom
-as a bootstrap. These will be replaced with non-circular proofs once the
-junction-depth hierarchy (Phase 4) is complete.
+Cases 5-8 are proved separable without using the `all_separable` axiom.
+Each case uses GHR94 direct formulas (items 5-8 of Lemma 10.2.3) to
+decompose the S-formula into terms that reduce to earlier cases.
 
 The case3_equiv_Z_general theorem above provides the key semantic decomposition.
 The hierarchy provides the inductive framework to handle the nested temporal
@@ -493,7 +493,7 @@ operators that appear in the decomposed formulas.
 
 Mathematical justification: GHR94 Lemma 10.3.11 items 5-8 specialized to Z. -/
 
-/-! ## Helper lemmas for Cases 5-8 without all_separable -/
+/-! ## Helper lemmas for Cases 5-8 -/
 
 /-- case3_alpha(a∧U, q, A, B) implies U(A,B): the alpha event always makes U true.
     alpha = (a∧U) ∨ ((¬q ∧ S(a∧U, q)) ∧ (q∨U))
