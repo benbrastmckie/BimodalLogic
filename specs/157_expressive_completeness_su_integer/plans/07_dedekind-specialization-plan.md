@@ -468,7 +468,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 ---
 
-### Phase 4: Wire Cases 5-8 into Hierarchy and Prove junction_depth_separable (Phase 6B-4) [PARTIAL]
+### Phase 4: Wire Cases 5-8 into Hierarchy and Prove junction_depth_separable (Phase 6B-4) [IN PROGRESS]
 
 **Goal**: Replace the circular `all_separable` references in NormalForm.lean's Cases 5-8 with the new DedekindZ proofs, then prove the main hierarchy theorem `junction_depth_separable` via strong induction on `junction_depth`.
 
