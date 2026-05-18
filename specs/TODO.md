@@ -1,5 +1,5 @@
 ---
-next_project_number: 164
+next_project_number: 165
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 164. Prove tableau correctness theorem for decision procedure
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current `validity_decidable` theorem in `Theories/Bimodal/Metalogic/Decidability/Correctness.lean` is trivially `Classical.em (⊨ φ)` — it says nothing about the tableau. The `decide` function in `DecisionProcedure.lean` implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) `decide_sound`: if `decide φ = .valid proof` then `⊨ φ` (may follow from soundness + the proof term). (2) `decide_complete`: if `decide φ = .invalid counter` then `¬(⊨ φ)` (requires proving countermodel extraction produces a genuine semantic countermodel). (3) `decide_terminates`: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, "sorry-free (tableau)" in the README is misleading — the implementation exists but its correctness is unverified.
 
 ### 163. Rename representation theorems to completeness in Algebraic module
 - **Effort**: small
