@@ -172,28 +172,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Create completeness_dense and completeness_discrete Theorems [NOT STARTED]
+### Phase 3: Create completeness_dense and completeness_discrete Theorems [COMPLETED]
 
 **Goal**: Create two new standalone completeness theorems that each duplicate the MCS preamble from `completeness` and call the appropriate countermodel builder for their frame class.
 
 **Tasks**:
-- [ ] Create `completeness_dense` in `BXCanonical/Completeness.lean`:
-  - Signature: `theorem completeness_dense (phi : Formula) : valid_dense phi -> Nonempty (DerivationTree [] phi)`
-  - Proof structure: contrapositive approach matching `completeness`:
-    1. `by_contra` + `push_neg` to get `h_valid : valid_dense phi` and `h_not_deriv : IsEmpty ...`
-    2. `neg_consistent_of_not_derivable` to get `{neg phi}` consistent
-    3. `set_lindenbaum` to extend to MCS M with `neg phi in M`
-    4. Call `countermodel_dense` (renamed from `dd_countermodel_chronicle_dense`) with M, phi, h_neg_in
-    5. The dense case requires `h_box_dense : box (Chronicle.next_top.neg) in M`. Since `valid_dense` restricts to dense models, and the MCS M is over the full axiom system, derive `h_box_dense` from the MCS properties or handle the case where it is not present by showing that `valid_dense` still yields the needed contradiction
-  - Will carry same sorry status as `countermodel_dense`
-- [ ] Create `completeness_discrete` in `BXCanonical/Completeness.lean`:
-  - Signature: `theorem completeness_discrete (phi : Formula) : valid_discrete phi -> Nonempty (DerivationTree [] phi)`
-  - Proof structure: same MCS preamble, then call `countermodel_discrete`
-  - The discrete case requires `h_box_discrete : box (Chronicle.next_top) in M`. Derive from MCS properties.
-  - Will carry same sorry status as `countermodel_discrete`
-- [ ] Add docstrings explaining these are frame-class-specific completeness theorems
-- [ ] Update `#print axioms` section in Completeness.lean to include the new theorems
-- [ ] Run `lake build` to verify compilation
+- [x] Create `completeness_dense` in `BXCanonical/Completeness.lean` *(deviation: altered -- used enriched helper `countermodel_dense_enriched` that inlines the Rat-based construction to preserve DenselyOrdered for valid_dense; non-dense MCS branch sorried pending frame-class-specific theory)*
+- [x] Create `completeness_discrete` in `BXCanonical/Completeness.lean` *(deviation: altered -- used enriched helper `countermodel_discrete_enriched` (sorried) for Int-based construction; dense/mixed branches sorried pending frame-class-specific theory)*
+- [x] Add docstrings explaining these are frame-class-specific completeness theorems
+- [x] Update `#print axioms` section in Completeness.lean to include the new theorems
+- [x] Run `lake build` to verify compilation
 
 **Timing**: 1 hour
 
