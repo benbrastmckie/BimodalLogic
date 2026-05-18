@@ -10,9 +10,9 @@
       "project_name": "rename_metalogical_theorems_standard_names",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Rename major metalogical theorems to standard uniform names. Current names are ad hoc and reflect implementation history rather than standard conventions. Rename: bx_completeness -> completeness (Completeness.lean), dd_countermodel_chronicle_dense -> completeness_dense (ChronicleToCountermodel.lean), doets_countermodel_discrete -> completeness_discrete (Transfer.lean), dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove if dead code, dd_countermodel_chronicle_nondense_sorry -> remove or rename. Soundness names (soundness, soundness_dense, soundness_discrete) are already standard. Update all call sites, docstrings, and README Result Details table. Goal: top-level API for each frame class is soundness_{class} and completeness_{class}.",
+      "description": "Rename major metalogical theorems to standard uniform names. Soundness: soundness -> soundness_serial (requires Nontrivial D for seriality), add soundness_linear excluding seriality axioms. soundness_dense and soundness_discrete keep as-is. Completeness: bx_completeness -> completeness_serial, dd_countermodel_chronicle_dense -> completeness_dense, doets_countermodel_discrete -> completeness_discrete, dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove. Update all call sites, docstrings, and README.",
       "created": "2026-05-18T18:14:23Z",
-      "last_updated": "2026-05-18T18:14:23Z"
+      "last_updated": "2026-05-18T18:56:23Z"
     },
     {
       "project_number": 165,
@@ -190,7 +190,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -199,8 +199,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-18T17:08:44Z",
-      "session_id": "sess_1779123638_a6b49d",
+      "last_updated": "2026-05-18T19:16:05Z",
+      "session_id": "sess_1779131735_a4b86a",
       "researched": "2026-05-18T16:50:54Z",
       "artifacts": [
         {
