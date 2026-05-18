@@ -290,7 +290,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 **Tasks**:
 
-- [ ] Task 3.1: Define constituent extraction infrastructure (~100 LOC) *(deviation: altered -- substitution preservation lemmas proved instead of SepDecomp structure; `subst_S_free_preserves_S_free`, `subst_U_free_preserves_U_free`, `subst_U_free_gives_no_S_nested`, `subst_preserves_no_allpast_allfuture` all proved; SepDecomp/subst_past_constituents still needed for the actual hierarchy)*
+- [x] Task 3.1: Define constituent extraction infrastructure (~100 LOC) *(deviation: altered -- substitution preservation lemmas proved instead of SepDecomp structure; `subst_S_free_preserves_S_free`, `subst_U_free_preserves_U_free`, `subst_U_free_gives_no_S_nested`, `subst_preserves_no_allpast_allfuture` all proved. Additionally: `snce_depth_of_U` measure, `snce_depth_zero_single_U_separated` base case, `no_S_nested_in_U_separable_noax` count induction framework. SepDecomp not needed; the direct count induction approach replaces it.)*
   - Location: `Hierarchy.lean`, after the existing infrastructure (after line 1054)
   - Define types for tracking separated structure:
     ```lean
