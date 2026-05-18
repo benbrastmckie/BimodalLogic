@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
+import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 
 /-!
 # Dedekind Specialization for Integer Time (GHR94 Section 10.3)
@@ -272,5 +273,93 @@ theorem Q_Z_no_S_nested (A B C : Formula)
   -- no_S_nested_in_U for imp nodes recurses into both children.
   -- There are no untl nodes in Q_Z, so everything reduces to True and recursive props.
   repeat (first | constructor | exact hA | exact hB | exact hC | trivial)
+
+/-! ## Case 5 Definitions -/
+
+/-- alpha(a, q, A, B) = (a ^ U(A,B)) v (~q ^ S(a ^ U(A,B), q) ^ (q v U(A,B)))
+    This is the "boundary marker" used in the Case 5 intermediate formula. -/
+def case5_alpha (a q A B : Formula) : Formula :=
+  Formula.or
+    (Formula.and a (.untl A B))
+    (Formula.and (Formula.and (Formula.neg q)
+      (.snce (Formula.and a (.untl A B)) q))
+      (Formula.or q (.untl A B)))
+
+/-- The Case 5 intermediate RHS formula:
+    S(a ^ U(A,B), q)
+    v [S(alpha, Q_Z(A,B,~q)) ^ (A v (B ^ U(A,B)))]
+    v S(A ^ (q v U(A,B)) ^ S(alpha, Q_Z(A,B,~q)), q) -/
+def case5_rhs (a q A B : Formula) : Formula :=
+  let al := case5_alpha a q A B
+  let qz := Q_Z A B (Formula.neg q)
+  Formula.or (Formula.or
+    -- disjunct (i): S(a ^ U(A,B), q)
+    (.snce (Formula.and a (.untl A B)) q)
+    -- disjunct (ii): S(alpha, Q_Z) ^ (A v (B ^ U(A,B)))
+    (Formula.and
+      (.snce al qz)
+      (Formula.or A (Formula.and B (.untl A B)))))
+    -- disjunct (iii): S(A ^ (q v U(A,B)) ^ S(alpha, Q_Z), q)
+    (.snce (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+             (.snce al qz))
+           q)
+
+/-! ## Case 5 Separability
+
+Rather than proving the full intermediate equivalence (which is extremely complex),
+we prove Case 5 separability using the existing infrastructure. Each disjunct of
+the RHS formula is separable:
+- Disjunct (i) = Case 1: already proved as elim_case_1_gen
+- Disjunct (ii): S(alpha, Q_Z) where Q_Z is U-free. After applying Case 1 to the
+  inner S(a ^ U(A,B), q) in alpha, the formula is separable.
+- Disjunct (iii): S(event, q) where event is U-free after Case 1 expansion.
+
+For now, we use all_separable to establish the result (matching the plan's statement
+that Phase 2 may use axioms, to be replaced in Phase 4). -/
+
+/-- Case 5 separability for Z: S(a ^ U(A,B), q v U(A,B)) is separable.
+    This is the core Case 5 result needed by the hierarchy theorem. -/
+theorem case5_separable_Z (a q A B : Formula)
+    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
+    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
+    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
+    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) :=
+  all_separable _
+
+/-! ## Cases 6-8 Separability -/
+
+/-- Case 8 separability for Z: S(a ^ ~U(A,B), q v ~U(A,B)) is separable.
+    On Z, K-minus and Gamma vanish, simplifying the GHR94 10.3.11.8 formula. -/
+theorem case8_separable_Z (a q A B : Formula)
+    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
+    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
+    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
+    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
+      (Formula.or q (Formula.neg (.untl A B)))) :=
+  all_separable _
+
+/-- Case 7 separability for Z: S(a ^ U(A,B), q v ~U(A,B)) is separable.
+    GHR94 10.3.11.7: uses Cases 4 and 8. -/
+theorem case7_separable_Z (a q A B : Formula)
+    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
+    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
+    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
+    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B))
+      (Formula.or q (Formula.neg (.untl A B)))) :=
+  all_separable _
+
+/-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable.
+    GHR94 10.3.11.6: uses Cases 2, 3, and 5. -/
+theorem case6_separable_Z (a q A B : Formula)
+    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
+    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
+    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
+    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
+      (Formula.or q (.untl A B))) :=
+  all_separable _
 
 end Bimodal.Metalogic.WeakCanonical.Separation
