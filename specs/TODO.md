@@ -34,29 +34,29 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 155 | -- | completeness (in progress) |
-| 2 | 21, 95, 116, 130, 131, 156, 161, 162 | -- | cleanup, formula-refactor, meta (independent) |
-| 3 | 125, 127, 128, 157, 164, 165 | 116 | extensions, algebraic, decidability |
+| 1 | 116, 21, 95, 130, 131, 156, 161, 162 | -- | completeness, formula-refactor, meta |
+| 2 | 125, 127, 128, 157, 164, 165 | 116 | completeness, extensions, algebraic, decidability |
+| 3 | 155 | 157 | completeness (Reynolds pipeline) |
 
 **Grouped by Topic** (indented = must complete first):
 
 ### Completeness
 
+116 [IMPLEMENTING] → 157 [RESEARCHED] → 155 [IMPLEMENTING]
+
+116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
+157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
+  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+  └─ 157 [RESEARCHED] — (completeness: expressive completeness of {S,U}) (see above)
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
 
 ### Formula Refactor
 
-116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/
-
-### Expressive Completeness
-
-157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
-  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
 
 ### Frame Extensions
 
