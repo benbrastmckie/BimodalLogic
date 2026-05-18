@@ -368,11 +368,18 @@ Phases within the same wave can execute in parallel.
 ### Phase 6B: Prove Main Hierarchy Theorem [BLOCKED]
 
 **BLOCKER** (Phase 6B):
-- **What failed**: Cannot prove `no_S_nested_in_U_separable` (GHR94 Lemma 10.2.7) without first resolving Cases 5-8 of Lemma 10.2.3.
-- **What was tried**: Thorough analysis of the entire proof chain: `no_S_nested_in_U → is_separable` requires Lemma 10.2.4 (single S with single U), which requires Cases 5-8. Cases 5-8 in `Eliminations.lean` are currently proved using `all_separable` (lines 155-194 of `NormalForm.lean`), which itself uses the 4 temporal closure axioms (snce_separable, untl_separable, etc.). The `all_separable` axiom-based proof is what Phase 6B is supposed to replace.
-- **Root cause**: GHR94's explicit formulas for Cases 5-8 on integer time are INCORRECT (documented in `Eliminations.lean` lines 460-494 and `specs/157_expressive_completeness_su_integer/reports/02_case5-blocker-research.md`). The GHR94 formula for Case 5 assumes U-chain B-coverage propagates to t, which fails on integers due to vacuous empty intervals. No correct explicit separated equivalent for Cases 5-8 on integers is known.
-- **Why it's stuck**: The junction_depth induction proof for `junction_depth_separable` reduces to `no_S_nested_in_U → is_separable` (base case), which reduces to Lemma 10.2.4, which reduces to Cases 5-8. Without correct separated equivalents for Cases 5-8, the chain cannot be completed.
-- **What is needed**: Either (a) find correct explicit separated equivalents for Cases 5-8 on integer time (fixing the GHR94 integer error), OR (b) find an alternative proof of `no_S_nested_in_U → is_separable` that bypasses Cases 5-8, OR (c) find a proof of the temporal closure axioms (snce_separable, etc.) that doesn't depend on Cases 5-8.
+- **What failed**: Cannot prove `snce_separable` (snce of separable formulas is separable) without circularity. This axiom is the linchpin: all other temporal closure axioms and the full hierarchy depend on it.
+- **What was tried** (Round 5, 2026-05-18): Seven distinct approaches analyzed in detail:
+  1. Junction depth induction: works for JD >= 2 but fails for JD = 1 (substitution-back creates same JD)
+  2. Structural induction for no_S_nested_in_U_separable: fails at snce case (snce(C',F') not a subformula)
+  3. U-count induction (Lemma 10.2.6): substitution-back needs snce_separable (circular)
+  4. case3_equiv_Z_general decomposition: RHS events have U in nested positions, elim_case_1_gen needs U-free event
+  5. Event-split + multi-U factoring: negated U terms (¬U) are not U-free, blocking Case 1/2 application
+  6. untl_in_snce_guard measure: base case (0 U in guards) still needs snce of separated = separable
+  7. Model modification (abstract_untl_correct): gives pointwise equivalence, not global int_equiv
+- **Root cause**: The circularity is fundamental: proving snce(C',F') separable (where C',F' are separated) requires handling untl nodes inside C',F'. Every abstraction/substitution approach eventually needs to prove a formula with untl-inside-snce is separable, which is the original problem.
+- **Why it's stuck**: `elim_case_1_gen` requires U-free event `a`. After event-splitting, the ¬U(A,B) terms in the event are NOT U-free (.imp (.untl A B) .bot contains untl). So Cases 1-2 cannot be applied to events with negated U terms.
+- **What is needed**: A generalized `elim_case_1_gen` that accepts SEPARABLE (not just U-free) events. This requires constructing a new explicit separated equivalent for S(separable_event ∧ U(A,B), U-free-guard). The construction must handle events containing ¬U terms and S-formulas. See `specs/157_expressive_completeness_su_integer/handoffs/phase-6B-analysis-20260518.md` for the full analysis.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Prove `junction_depth_separable` -- the main theorem that every formula is separable -- via strong induction on `junction_depth (expand_temporal φ)`, with a separate `U_depth_under_S` subroutine (GHR94 Lemma 10.2.7).
