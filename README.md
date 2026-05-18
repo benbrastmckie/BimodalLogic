@@ -142,20 +142,14 @@ graph TD
 
 | Frame Class | Additional Axioms | Soundness | Completeness |
 |-------------|------------------|-----------|--------------|
-| **Linear** | — | sorry-free | — |
-| **Serial** | — | sorry-free | sorry-free (canonical model via BFMCS) |
-| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) |
-
-The standard instance of `DiscreteTemporalFrame` is `Int`; the standard instance of `DenseTemporalFrame` is the canonical quotient construction used in the completeness proof.
-
-The **finite model property**, **decidability** (via a verified tableau procedure), and a Jónsson-Tarski style **representation theorem** (embedding the Lindenbaum-Tarski algebra into the complex algebra of a class of task frames) have not yet been established for any frame class. Existing code in the `Decidability/` module provides proof-theoretic infrastructure (closure MCS finiteness, a tableau implementation) but does not yet connect to semantic validity.
+| **Linear** | — | `soundness` | — |
+| **Serial** | — | `soundness` | `bx_completeness` |
+| **Dense** | `Fφ → FFφ` | `soundness_dense` | `dd_countermodel_chronicle_dense` |
+| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | active sorries |
 
 **Active sorry obligations**:
 
 - *Discrete completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
-
-The Deduction Theorem and the six Perpetuity Principles (P1–P6) are fully proven.
 
 ---
 
