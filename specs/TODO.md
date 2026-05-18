@@ -130,7 +130,7 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
@@ -147,6 +147,7 @@ technical_debt:
   - [157_expressive_completeness_su_integer/plans/07_complete-remaining-plan.md]
 - **Summary**: [specs/157_expressive_completeness_su_integer/summaries/06_implementation-summary.md]
   - [157_expressive_completeness_su_integer/plans/07_dedekind-specialization-plan.md]
+  - [157_expressive_completeness_su_integer/plans/08_axiom-elimination-plan.md]
 
 **Description**: Formalize expressive completeness of {S,U} over integer time (GHR94 Ch 10.2 separation theorem). Prove that every monadic first-order sentence over integer time has a temporal {U,S} equivalent (Theorem 10.2.9-10.2.10). This is Reynolds's Theorem 5, required as prerequisite for Phase 3B of task 155 (gap elimination, Reynolds Theorem 14). Literature: GHR94 Chapters 9-10 (in literature/ with markdown conversions). Proof structure: 8 elimination cases (pulling U out of S and vice versa), nested 4-level induction (junction depth -> nesting depth -> number of U-subformulas -> single case).
 
