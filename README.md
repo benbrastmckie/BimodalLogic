@@ -59,15 +59,24 @@ The logic uses 5 primitive connectives. All other operators are derived.
 
 ---
 
-## Task Frame Semantics
+## Task Semantics
 
-Formulas are evaluated at **world-history/time pairs** `(τ, t)` over a **task frame** `(W, T, R)`, where:
+A **task frame** `F = (W, D, R)` consists of a set `W` of world-states, a totally ordered commutative group `D` of durations, and a **task relation** `R : W → D → W → Prop` satisfying three constraints: *nullity* (each world-state transitions to itself in zero time), *compositionality* (accessibility composes forward across durations), and *reflection* (if `w ⇒_x u` then `u ⇒_{-x} w`).
 
-- `W` is a set of world-states,
-- `T` is a linearly ordered set of times,
-- `R : W → T → W → Prop` is the **task relation**, encoding which worlds are accessible at each time.
+A **world-history** `τ` in a task frame `F` is a function `τ : X → W` from a convex subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X` with `x ≤ y`, we have `τ(x) ⇒_{y-x} τ(y)`.
 
-The task relation satisfies two structural constraints: *nullity* (each world is accessible from itself at every time) and *compositionality* (accessibility composes forward across times). This semantics is developed in the companion paper (Brast-McKie 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through world-space, and the task relation specifies which trajectories share a given time-slice. The terminology "task frame" and "task relation" is specific to this framework; standard Kripke frames are a special case.
+A **task model** `M = (F, I)` extends a task frame `F` with an interpretation function `I : W → Atom → Prop` that assigns truth values to sentence letters `Atom := {p_i : i ∈ ℕ}` at each world state. Truth is evaluated relative to a model `M`, a world-history `τ`, and a time `x`:
+
+- `M, τ, x ⊨ p_i` iff `x ∈ dom(τ)` and `I(τ(x), p_i)`
+- `M, τ, x ⊨ ⊥` never
+- `M, τ, x ⊨ φ → ψ` iff `M, τ, x ⊭ φ` or `M, τ, x ⊨ ψ`
+- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all world-histories `σ`
+- `M, τ, x ⊨ U(φ,ψ)` iff there exists `y > x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `x < z < y`
+- `M, τ, x ⊨ S(φ,ψ)` iff there exists `y < x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `y < z < x`
+
+Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that history.
+
+This semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through the space of world-states where any world-state in the trajectory can transition to another in the difference between their times.
 
 ---
 
