@@ -115,7 +115,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix Case 6 Sorry (2 sorry -> 0) [NOT STARTED]
+### Phase 1: Fix Case 6 Sorry (2 sorry -> 0) [COMPLETED]
 
 **Goal**: Eliminate the 2 remaining `sorry` in `case6_branchB_separable` (DedekindZ.lean L1617, L1625), making Case 6 fully proved.
 
@@ -134,7 +134,7 @@ Then apply eliminations (3) and (5) per GHR94.
 
 **Tasks**:
 
-- [ ] Task 1.1: Fix sorry at L1617 (D3 U-branch of case6_branchB_separable) (~80 LOC)
+- [x] Task 1.1: Fix sorry at L1617 (D3 U-branch of case6_branchB_separable) (~80 LOC) *(deviation: altered -- replaced Strategy A with Strategy B (GHR94 direct formula). Entire case6_branchB_separable and its infrastructure replaced with case6_equiv_Z + clean separability proof. Strategy A was intractable due to multi-U-type barrier.)*
   - Location: `DedekindZ.lean` around line 1617
   - Strategy: Build the d21-equiv congruence chain:
     1. At event where U holds: `S(alpha_B, Q_Z)(s)` is equivalent to sigma_B(s)
@@ -143,7 +143,7 @@ Then apply eliminations (3) and (5) per GHR94.
     4. Apply `snce_combined_U_separable`
   - Verification: `lake build`, `grep -n "sorry" DedekindZ.lean` shows only L1625
 
-- [ ] Task 1.2: Fix sorry at L1625 (D3 not-U-branch of case6_branchB_separable) (~100 LOC)
+- [x] Task 1.2: Fix sorry at L1625 (D3 not-U-branch of case6_branchB_separable) (~100 LOC) *(deviation: altered -- eliminated by Strategy B approach; no separate fix needed)*
   - Location: `DedekindZ.lean` around line 1625
   - Strategy: Triple event-split on U and U':
     1. Sub-case U^U': contradicts U^U'=bot (already proved in D2)
@@ -151,7 +151,7 @@ Then apply eliminations (3) and (5) per GHR94.
     3. Sub-case not-U^not-U': all U-free after sigma_B reduction, separable trivially
   - Verification: `lake build`, `grep -n "sorry" DedekindZ.lean` returns empty
 
-- [ ] Task 1.3: Verify Case 6 is sorry-free and non-circular
+- [x] Task 1.3: Verify Case 6 is sorry-free and non-circular
   - Run: `lake build`
   - Run: `grep -n "sorry\|all_separable" DedekindZ.lean` -- should show only Case 7's `all_separable _`
   - Confirm `case6_separable_Z` compiles without sorry

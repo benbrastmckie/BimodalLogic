@@ -1354,277 +1354,267 @@ private theorem snce_Ufree_event_qU_guard_separable (ev q A B : Formula)
         (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_6A)
         q A B hA hB hA' hB' hq h_event_bool
 
-/-! ### Branch B: S(a∧U', q∨U) where U' = U(¬A∧¬B, ¬A)
+/-! ### Case 6 via GHR94 Direct Formula (10.2.3 item 6)
 
-This branch uses case3_equiv_Z_general to decompose the guard q∨U(A,B).
-The key insight is that U(A,B) and U' = U(¬A∧¬B, ¬A) are contradictory:
-they cannot both hold at the same time. When we event-split alpha_B on U(A,B),
-the U-branch has alpha_B∧U ↔ (¬q∧S(a∧U',q))∧U (since (a∧U')∧U = ⊥ by the
-contradiction and (q∨U)∧¬q = U). At event points where U holds, the separated
-equivalent of S(a∧U',q) simplifies to its U-free part (since the U'-containing
-disjunct of case1_psi vanishes). -/
+GHR94 approach: S(a∧¬U, q∨U). Consider the past time s indicated by S. At s,
+a(s) and ¬U(A,B)(s) hold, with q∨U on (s,t). The formula is equivalent to:
 
-/-- U' implies ¬U: if U(¬A∧¬B, ¬A) holds then ¬U(A,B). -/
-private theorem U'_implies_notU (A B : Formula) (M : IntStructure) (t : ℤ)
-    (hU' : int_truth M t (.untl (Formula.and (Formula.neg A) (Formula.neg B)) (Formula.neg A))) :
-    ¬ int_truth M t (.untl A B) :=
-  fun hU => untl_neguntl_contradictory A B M t hU hU'
+  [S(a, q∧¬A) ∧ ¬A ∧ ¬(B∧U)]
+  ∨ S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U)
 
-/-- The U-free part of case1_psi a q (¬A∧¬B) (¬A): disjuncts D2 and D3 which
-    don't contain U'. At a time where U(A,B) holds, U' must be false,
-    so case1_psi reduces to this U-free part. -/
-private def case1_psi_uf_part (a q A B : Formula) : Formula :=
-  let negA := Formula.neg A
-  let negAnegB := Formula.and (Formula.neg A) (Formula.neg B)
-  Formula.or
-    (Formula.and (Formula.and negAnegB (.snce a negA)) (.snce a q))
-    (.snce (Formula.and (Formula.and (Formula.and negAnegB q) (.snce a negA)) (.snce a q)) q)
-
-/-- The U-free part is indeed U-free. -/
-private theorem case1_psi_uf_part_U_free (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true) :
-    is_U_free (case1_psi_uf_part a q A B) = true := by
-  simp [case1_psi_uf_part, Formula.and, Formula.neg, Formula.or, is_U_free, ha, hq, hA, hB]
-
-/-- When U(A,B) holds at time t, case1_psi a q (¬A∧¬B) (¬A) ↔ case1_psi_uf_part.
-    This is because the D1 disjunct of case1_psi has U' ∧ ..., and U'(t) is false
-    when U(A,B)(t) holds (by the contradiction lemma). -/
-private theorem case1_psi_reduces_when_U (a q A B : Formula) (M : IntStructure) (t : ℤ)
-    (hU : int_truth M t (.untl A B)) :
-    int_truth M t (case1_psi a q (Formula.and (Formula.neg A) (Formula.neg B)) (Formula.neg A)) ↔
-    int_truth M t (case1_psi_uf_part a q A B) := by
-  have hnotU' : ¬ int_truth M t (.untl (Formula.and (Formula.neg A) (Formula.neg B)) (Formula.neg A)) :=
-    fun h => untl_neguntl_contradictory A B M t hU h
-  simp only [case1_psi, case1_psi_uf_part]
-  -- case1_psi = D1 ∨ D2 ∨ D3 where D1 = (...) ∧ U'
-  -- case1_psi_uf_part = D2 ∨ D3
-  -- Need: D1 ∨ D2 ∨ D3 ↔ D2 ∨ D3 when ¬U'
-  constructor
-  · intro h
-    rcases int_truth_or_iff.mp h with h12 | h3
-    · rcases int_truth_or_iff.mp h12 with h1 | h2
-      · -- D1 = (S(a,q)∧S(a,¬A)∧¬A) ∧ U', has U' as right conjunct
-        exfalso; exact hnotU' (int_truth_and_iff.mp h1).2
-      · exact int_truth_or_iff.mpr (Or.inl h2)
-    · exact int_truth_or_iff.mpr (Or.inr h3)
-  · intro h
-    rcases int_truth_or_iff.mp h with h2 | h3
-    · exact int_truth_or_iff.mpr (Or.inl (int_truth_or_iff.mpr (Or.inr h2)))
-    · exact int_truth_or_iff.mpr (Or.inr h3)
+D1 is separated: S(a,q∧¬A) is U-free, ¬A is U-free, ¬(B∧U) is boolean of atoms/U.
+D2 uses eliminations (3) and (5): factor (q∨U) in event, apply since_distrib. -/
 
 set_option maxHeartbeats 3200000 in
-/-- Branch B of Case 6: S(a∧U', q∨U) is separable where U' = U(¬A∧¬B, ¬A).
-    Uses case3_equiv_Z_general to decompose the guard, then the U∧U'=⊥
-    contradiction to simplify event sub-terms when U holds. -/
-private theorem case6_branchB_separable (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    is_separable (.snce (Formula.and a (.untl (Formula.and (Formula.neg A) (Formula.neg B))
-      (Formula.neg A))) (Formula.or q (.untl A B))) := by
-  let U' := Formula.and (Formula.neg A) (Formula.neg B)
-  let negA := Formula.neg A
-  -- a is U-free, ¬A∧¬B and ¬A are U-free and S-free
-  have hU'_uf : is_U_free U' = true := by simp [U', Formula.and, Formula.neg, is_U_free, hA, hB]
-  have hnA_uf : is_U_free negA = true := by simp [negA, Formula.neg, is_U_free, hA]
-  have hU'_sf : is_S_free U' = true := by simp [U', Formula.and, Formula.neg, is_S_free, hA', hB']
-  have hnA_sf : is_S_free negA = true := by simp [negA, Formula.neg, is_S_free, hA']
-  have hQ_uf : is_U_free (Q_Z A B (Formula.neg q)) = true :=
-    Q_Z_neg_q_U_free A B q hA hB hq
-  -- Apply case3_equiv_Z_general with event = a∧U'
-  apply is_separable_of_equiv (case3_equiv_Z_general (Formula.and a (.untl U' negA)) q A B)
-  simp only [case3_rhs]
-  apply or_separable
-  · apply or_separable
-    · -- D1: S(a∧U', q) -- Case 1 for U'
-      obtain ⟨psi, hequiv, hsep⟩ := elim_case_1_gen a q U' negA ha hq hU'_uf hnA_uf hU'_sf hnA_sf
-      exact ⟨psi, hsep, hequiv⟩
-    · -- D2: S(alpha_B, Q_Z) ∧ (A∨B∧U)
-      apply and_separable
-      · -- S(alpha_B, Q_Z) where alpha_B = case3_alpha(a∧U', q, A, B)
-        -- Distribute alpha_B = (a∧U') ∨ ((¬q∧S(a∧U',q))∧(q∨U))
-        apply is_separable_of_equiv (since_distrib_or_left _ _ (Q_Z A B (Formula.neg q)))
-        apply or_separable
-        · -- S(a∧U', Q_Z): Case 1 for U'
-          obtain ⟨psi, hequiv, hsep⟩ := elim_case_1_gen a (Q_Z A B (Formula.neg q)) U' negA
-            ha hQ_uf hU'_uf hnA_uf hU'_sf hnA_sf
-          exact ⟨psi, hsep, hequiv⟩
-        · -- S((¬q∧S(a∧U',q))∧(q∨U), Q_Z) -- event-split on U
-          apply is_separable_of_equiv (since_event_split _ (.untl A B) (Q_Z A B (Formula.neg q)))
-          apply or_separable
-          · -- U branch: S(((¬q∧S(a∧U',q))∧(q∨U))∧U, Q_Z)
-            -- When U holds at event: (q∨U) satisfied, simplify to (¬q∧S(a∧U',q))∧U
-            -- Then S(a∧U',q) ↔ σ₁. When U holds, σ₁ ↔ σ₁_uf (U-free part)
-            -- So event ↔ (¬q∧σ₁_uf)∧U → snce_combined_U_separable
-            let σ₁ := case1_psi a q U' negA
-            have hσ₁_equiv : int_equiv (.snce (Formula.and a (.untl U' negA)) q) σ₁ :=
-              (case1_psi_properties a q U' negA ha hq hU'_uf hnA_uf hU'_sf hnA_sf).1
-            let σ₁_uf := case1_psi_uf_part a q A B
-            have hσ₁_uf_Ufree : is_U_free σ₁_uf = true :=
-              case1_psi_uf_part_U_free a q A B ha hq hA hB
-            -- Congruence: when U holds, event simplifies
-            have h_congr : ∀ M : IntStructure, ∀ t : ℤ, int_truth M t (.untl A B) →
-                (int_truth M t (Formula.and
-                  (Formula.and (Formula.and (Formula.neg q) (.snce (Formula.and a (.untl U' negA)) q))
-                    (Formula.or q (.untl A B)))
-                  (.untl A B)) ↔
-                 int_truth M t (Formula.and (Formula.and (Formula.neg q) σ₁_uf) (.untl A B))) := by
-              intro M t hU; constructor
-              · intro h
-                have ⟨h_left, hU_t⟩ := int_truth_and_iff.mp h
-                have ⟨h_nqS, _⟩ := int_truth_and_iff.mp h_left
-                have ⟨h_nq, hS⟩ := int_truth_and_iff.mp h_nqS
-                -- S(a∧U', q) ↔ σ₁ ↔ σ₁_uf when U holds
-                have hσ := (hσ₁_equiv M t).mp hS
-                have hσ_uf := (case1_psi_reduces_when_U a q A B M t hU).mp hσ
-                exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h_nq, hσ_uf⟩, hU_t⟩
-              · intro h
-                have ⟨h_nquf, hU_t⟩ := int_truth_and_iff.mp h
-                have ⟨h_nq, huf⟩ := int_truth_and_iff.mp h_nquf
-                have hσ := (case1_psi_reduces_when_U a q A B M t hU).mpr huf
-                have hS := (hσ₁_equiv M t).mpr hσ
-                exact int_truth_and_iff.mpr
-                  ⟨int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h_nq, hS⟩,
-                    int_truth_or_iff.mpr (Or.inr hU)⟩, hU_t⟩
-            -- Use snce_event_congr_with_U to replace the combined event
-            -- The since_event_split on U gives S(EVENT ∧ U, Q_Z) where
-            -- EVENT = ((¬q∧S(a∧U',q))∧(q∨U))
-            -- When U holds: EVENT ↔ (¬q∧S(a∧U',q)) → via σ₁_equiv + case1_psi_reduces → (¬q∧σ₁_uf)
-            have h_full_congr : ∀ M : IntStructure, ∀ t : ℤ, int_truth M t (.untl A B) →
-                (int_truth M t (Formula.and (Formula.and (Formula.neg q)
-                    (.snce (Formula.and a (.untl U' negA)) q))
-                  (Formula.or q (.untl A B))) ↔
-                 int_truth M t (Formula.and (Formula.neg q) σ₁_uf)) := by
-              intro M t hU; constructor
-              · intro h
-                have ⟨h_nqS, _⟩ := int_truth_and_iff.mp h
-                have ⟨h_nq, hS⟩ := int_truth_and_iff.mp h_nqS
-                exact int_truth_and_iff.mpr ⟨h_nq,
-                  (case1_psi_reduces_when_U a q A B M t hU).mp ((hσ₁_equiv M t).mp hS)⟩
-              · intro h
-                have ⟨h_nq, huf⟩ := int_truth_and_iff.mp h
-                exact int_truth_and_iff.mpr
-                  ⟨int_truth_and_iff.mpr ⟨h_nq,
-                    (hσ₁_equiv M t).mpr ((case1_psi_reduces_when_U a q A B M t hU).mpr huf)⟩,
-                   int_truth_or_iff.mpr (Or.inr hU)⟩
-            apply is_separable_of_equiv (snce_event_congr_with_U _ _ _ A B h_full_congr)
-            -- Now: S((¬q∧σ₁_uf)∧U, Q_Z) with σ₁_uf U-free
-            exact snce_combined_U_separable (Formula.and (Formula.neg q) σ₁_uf)
-              (Q_Z A B (Formula.neg q)) A B hA hB hA' hB' hQ_uf
-              (u_free_untl_under_bool _ A B (by
-                simp [Formula.and, Formula.neg, is_U_free, hq, hσ₁_uf_Ufree]))
-          · -- ¬U branch: ¬q∧q = ⊥ → empty
-            apply is_separable_of_equiv (by
-              intro M t; constructor
-              · rintro ⟨s, _, h_event, _⟩
-                have ⟨h_left, h_notU⟩ := int_truth_and_iff.mp h_event
-                have ⟨h_nqS, h_qU⟩ := int_truth_and_iff.mp h_left
-                have h_nq := (int_truth_and_iff.mp h_nqS).1
-                rcases int_truth_or_iff.mp h_qU with hq' | hU
-                · exact h_nq hq'
-                · exact h_notU hU
-              · intro h; exact h.elim : int_equiv _ .bot)
-            exact ⟨.bot, by simp [is_syntactically_separated], int_equiv_refl _⟩
-      · apply or_separable
-        · exact u_free_s_free_is_separable A hA hA'
-        · exact and_separable (u_free_s_free_is_separable B hB hB')
-            ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
-  · -- D3: S(A∧(q∨U)∧S(alpha_B, Q_Z), q)
-    -- alpha_B has two U-types but both under booleans/S.
-    -- Build explicit equiv of S(alpha_B, Q_Z) with known structure.
-    -- S(alpha_B, Q_Z) ↔ S(a∧U', Q_Z) ∨ S((¬q∧S(a∧U',q))∧U, Q_Z)
-    -- (the ¬U branch of the second distribute is empty)
-    -- First has separated equiv ψ₁ from Case 1 for U' (has U' under booleans).
-    -- Second has sep. equiv ψ₂ from snce_combined_U_separable (has U(A,B) under booleans).
-    -- Combined: ψ₁ ∨ ψ₂.
-    -- At event where U holds: ψ₁'s U'-parts vanish → ψ₁ ↔ ψ₁_uf (U-free).
-    --   So σ_B ↔ ψ₁_uf ∨ ψ₂. ψ₂ has U under booleans, ψ₁_uf is U-free.
-    --   Combined with A: untl_under_bool_only holds for (A,B).
-    --   snce_combined_U_separable → separable.
-    -- At event where ¬U holds: ψ₂'s U(A,B)-parts vanish → ψ₂ ↔ ψ₂_uf (U-free).
-    --   ψ₁ has U' under booleans. Combined with ¬U: use snce_combined_notU.
-    --   But ψ₁ has U' not U(A,B)... need more care.
-    -- Actually, for D3, let me use the same approach as Case 5: event-split on U.
-    apply is_separable_of_equiv (since_event_split _ (.untl A B) q)
-    apply or_separable
-    · -- U branch: S(A∧(q∨U)∧S(alpha_B, Q_Z)∧U, q)
-      -- At event where U holds: (q∨U) = true, S(alpha_B, Q_Z) simplifies
-      -- S(alpha_B, Q_Z) at point where U holds: alpha_B evaluated at s, but
-      -- the event-split is about the OUTER S's event point, not alpha_B's.
-      -- The outer event is A∧(q∨U)∧S(alpha_B, Q_Z)∧U evaluated at the event point s.
-      -- At s: A(s), U(s), and S(alpha_B, Q_Z)(s). The S(alpha_B, Q_Z)(s) is a
-      -- statement about the past of s, independent of U(s).
-      -- So we can't simplify S(alpha_B, Q_Z) based on U(s).
-      -- Instead, replace S(alpha_B, Q_Z) with its separated equiv σ_B.
-      -- σ_B has both U' and U types. When U(s) holds, U'(s) is false, so
-      -- σ_B simplifies... but σ_B is evaluated at s where U(s) holds.
-      -- σ_B = ψ₁ ∨ ψ₂ where ψ₁ has U', ψ₂ has U.
-      -- Actually, ψ₁ is from Case 1 for U': case1_psi(a, Q_Z, ¬A∧¬B, ¬A). Has U' under booleans.
-      -- ψ₂ is from snce_combined_U_separable: case1_psi(¬q∧σ₁_uf, Q_Z, A, B). Has U under booleans.
-      -- When U(s) holds: ψ₁'s D1 (which has U') vanishes. ψ₁ ↔ ψ₁_uf.
-      -- So σ_B at event where U holds ↔ ψ₁_uf ∨ ψ₂.
-      -- ψ₁_uf is U-free. ψ₂ has U under booleans.
-      -- Combined event ↔ A ∧ (ψ₁_uf ∨ ψ₂) ∧ U (since (q∨U)∧U simplifies to true, or rather implied).
-      -- This needs: snce_event_congr_with_U to simplify, then snce_combined_U_separable.
-      -- For snce_combined_U_separable we need untl_under_bool_only of A ∧ (ψ₁_uf ∨ ψ₂).
-      -- ψ₂ = case1_psi(stuff, Q_Z, A, B) → case1_psi_bool_only → untl_under_bool_only for (A,B). ✓
-      -- ψ₁_uf is U-free → untl_under_bool_only for (A,B). ✓
-      -- A is U-free → untl_under_bool_only. ✓
-      -- This approach works but requires building σ_B explicitly.
-      -- For now, let me use the non-explicit approach: prove S(alpha_B, Q_Z) is separable
-      -- and that we can get an untl_under_bool_only equiv.
-      -- This is very similar to the d21_sep approach from Case 5.
-      -- Given the complexity, let me use a slightly different approach:
-      -- Factor out the explicit σ_B and use it.
-      -- D3 U-branch: S(A∧(q∨U)∧S(alpha_B, Q_Z)∧U, q)
-      -- Redefine local names for sigma_B components
-      let σ₁_uf' := case1_psi_uf_part a q A B
-      have hσ₁_uf'_Ufree : is_U_free σ₁_uf' = true :=
-        case1_psi_uf_part_U_free a q A B ha hq hA hB
-      -- Build congruence: when U holds at event, full EVENT simplifies
-      -- EVENT = A∧(q∨U)∧S(alpha_B, Q_Z)
-      -- When U holds: A∧(q∨U) ↔ A (since q∨U is true), S(alpha_B, Q_Z) is past-looking
-      -- Replace S(alpha_B, Q_Z) with σ_B then reduce when U holds
-      -- For now, use the simpler approach: the EVENT∧U has U in it.
-      -- Just show the combined formula (A∧(q∨U)∧S(alpha_B, Q_Z)) satisfies
-      -- untl_under_bool_only after replacing S(alpha_B, Q_Z) with its U-reduced form.
-      -- Actually, let me just prove this is separable using is_separable_of_equiv
-      -- and multiple applications of and_separable, or_separable.
-      -- S(A∧(q∨U)∧S(alpha_B, Q_Z)∧U, q): the event contains separable sub-terms.
-      -- A is separable, (q∨U) is separable, S(alpha_B, Q_Z) is separable, U is separable.
-      -- The conjunction is separable. But S of a separable event with U-free guard...
-      -- S(separable, U-free_guard) is NOT automatically separable (this is the hierarchy problem).
-      -- So I cannot use this shortcut. Need the explicit approach.
-      -- Given the extreme complexity, use the U-branch approach from D2:
-      -- We know S(alpha_B, Q_Z) is separable (h_Salpha_sep from D2).
-      -- Factor: S(alpha_B, Q_Z) ↔ S(a∧U', Q_Z) ∨ S((¬q∧σ₁_uf)∧U, Q_Z)
-      -- Each part was proved separable in D2. Their or is separable.
-      -- The event is: A∧(q∨U)∧(something_separable)∧U.
-      -- Use and_separable+or_separable for the event? No, event is inside S.
-      -- I genuinely need the d21-sep approach. Let me skip to the final approach:
-      -- EVENT∧U at event where U holds: (q∨U)=true, S(alpha_B,Q_Z)=σ_B(s).
-      -- σ_B(s) with U(s): ψ₁ reduces. So σ_B ↔ ψ₁_uf ∨ ψ₂.
-      -- Full event ↔ A ∧ (ψ₁_uf ∨ ψ₂) ∧ U.
-      -- A∧(ψ₁_uf∨ψ₂) has untl_under_bool_only for (A,B):
-      -- ψ₁_uf U-free → satisfies. ψ₂ satisfies (case1_psi_bool_only). A U-free → satisfies.
-      -- snce_combined_U_separable → separable.
-      -- The congruence: need to show at event where U holds,
-      -- the full event formula ↔ A ∧ (ψ₁_uf ∨ ψ₂) formula.
-      -- This requires building the d21 equiv of S(alpha_B, Q_Z) → σ_B,
-      -- then the reduce-when-U equiv σ_B → ψ₁_uf ∨ ψ₂.
-      -- This is ~80 lines. Let me defer to handoff for now.
-      sorry -- D3 U-branch: needs d21-style sigma_B equiv + U-reduction. See handoff.
-    · -- ¬U branch: S(A∧(q∨U)∧S(alpha_B, Q_Z)∧¬U, q)
-      -- Triple event-split: on U (done), on U' gives 3 sub-cases.
-      -- Sub-case 1 (U, handled above): single U-type.
-      -- Sub-case 2 (¬U∧U'): single U-type U'.
-      -- Sub-case 3 (¬U∧¬U'): all U-free after sigma_B reduction.
-      -- Each sub-case is tractable but requires explicit d21-equiv + congruences.
-      -- ~100 lines per sub-case. See handoff for strategy.
-      sorry -- D3 ¬U-branch: needs triple event-split. See handoff.
+/-- GHR94 10.2.3 item 6: S(a∧¬U, q∨U) ↔ [S(a,q∧¬A)∧¬A∧¬(B∧U)] ∨ S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U).
+    The decomposition considers when the first ¬B after the witness s occurs. -/
+private theorem case6_equiv_Z (a q A B : Formula) :
+    int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
+                     (Formula.or q (.untl A B)))
+              (Formula.or
+                (Formula.and (Formula.and (.snce a (Formula.and q (Formula.neg A)))
+                  (Formula.neg A))
+                  (Formula.neg (Formula.and B (.untl A B))))
+                (.snce (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+                  (Formula.or q (.untl A B)))
+                  (.snce a (Formula.and q (Formula.neg A))))
+                  (Formula.or q (.untl A B)))) := by
+  intro M t; constructor
+  · -- Forward: S(a∧¬U, q∨U)(t) → D1 ∨ D2
+    intro ⟨s, hst, hevent, hguard⟩
+    have ⟨ha_s, hnotU_s⟩ := int_truth_and_iff.mp hevent
+    -- ¬U(A,B)(s): for all w > s with A(w), ∃ r ∈ (s,w) with ¬B(r)
+    -- Consider all r in (s,t): does ¬B(r)∧¬A(r) occur?
+    -- More precisely, look for the FIRST point r > s where ¬B(r)
+    -- We use classical decidability on integers
+    by_cases h_allB : ∀ r, s < r → r < t → int_truth M r B
+    · -- Case: B holds on all of (s,t)
+      -- Then q∧¬A holds on (s,t): for each r ∈ (s,t), guard gives q(r)∨U(r).
+      -- From ¬U(s): for any w > s with A(w), ∃ r' ∈ (s,w) with ¬B(r').
+      -- If A(r) for some r ∈ (s,t), then ∃ r' ∈ (s,r) with ¬B(r'). But B on (s,t) ⊇ (s,r). Contradiction.
+      -- So ¬A(r) for all r ∈ (s,t).
+      have h_notA_interval : ∀ r, s < r → r < t → ¬ int_truth M r A := by
+        intro r hsr hrt hAr
+        -- U(A,B)(s) would require ∃ w > s, A(w) ∧ B on (s,w). We have A(r) and B on (s,r) ⊆ (s,t).
+        apply hnotU_s
+        exact ⟨r, hsr, hAr, fun z hsz hzr => h_allB z hsz (lt_trans hzr hrt)⟩
+      -- Now: q(r) for all r ∈ (s,t) (since ¬A(r) → if U(r) then ∃ w > r, A(w), but ¬A on (s,t)...
+      -- Actually: guard gives q(r) ∨ U(r). Need to show q(r).
+      -- If U(A,B)(r) held for some r ∈ (s,t), then ∃ w > r, A(w) ∧ B on (r,w).
+      -- But we only know ¬A on (s,t), not beyond t.
+      -- So U(r) is possible if A(w) for w ≥ t.
+      -- We need q∧¬A on (s,t). Guard gives q∨U.
+      -- S(a, q∧¬A)(t): need s < t, a(s), and q∧¬A on (s,t).
+      have h_qnA_interval : ∀ r, s < r → r < t → int_truth M r (Formula.and q (Formula.neg A)) := by
+        intro r hsr hrt
+        apply int_truth_and_iff.mpr
+        constructor
+        · -- q(r): from guard q∨U, and if U(r) we still need to show q(r)...
+          -- Actually, guard gives q(r) ∨ U(r). If U(r), then ∃ w > r, A(w)∧B(r,w).
+          -- We know ¬A on (s,t) for s < r. If A(w) with w > r:
+          --   If w ≤ t: w ∈ (s,t), contradicts ¬A(w). So w > t.
+          --   If w > t: B on (r,w). In particular B(t-1)... wait, r could equal t-1.
+          -- This doesn't directly give contradiction. But we do know ¬U(s).
+          -- ¬U(s): for all w > s with A(w), ∃ z ∈ (s,w) with ¬B(z).
+          -- If U(r): ∃ w > r, A(w) ∧ B on (r,w). Since r > s, w > s.
+          -- A(w) with w > s: ∃ z ∈ (s,w) with ¬B(z).
+          -- z ∈ (s,w). If z ∈ (s,r]: ¬B(z).
+          --   z ∈ (s,t): B(z) by h_allB, contradicts ¬B(z).
+          --   But z could equal r or z < r... z > s and z < w.
+          --   If z ≤ r: z ∈ (s,r] ⊆ (s,t), so B(z). Contradiction.
+          --   If z > r: z ∈ (r,w), B on (r,w) gives B(z). Contradiction.
+          -- So ¬U(r). Guard gives q(r).
+          rcases int_truth_or_iff.mp (hguard r hsr hrt) with hq | hU_r
+          · exact hq
+          · exfalso; apply hnotU_s
+            obtain ⟨w, hrw, hAw, hBrw⟩ := hU_r
+            exact ⟨w, lt_trans hsr hrw, hAw, fun z hsz hzw => by
+              rcases lt_or_ge z r with hzr | hrz
+              · exact h_allB z hsz (lt_trans hzr hrt)
+              · exact hBrw z (lt_of_lt_of_le hsr (le_of_lt_of_le hrt (by omega))) hzw⟩
+        · exact h_notA_interval r hsr hrt
+      -- D1: S(a, q∧¬A)(t) ∧ ¬A(t) ∧ ¬(B∧U)(t)
+      apply int_truth_or_iff.mpr; left
+      apply int_truth_and_iff.mpr; constructor
+      · apply int_truth_and_iff.mpr; constructor
+        · exact ⟨s, hst, ha_s, h_qnA_interval⟩
+        · -- ¬A(t): If A(t), then U(A,B)(s) via A(t), B on (s,t). Contradiction.
+          intro hAt; apply hnotU_s
+          exact ⟨t, hst, hAt, h_allB⟩
+      · -- ¬(B(t)∧U(t)): If B(t)∧U(t), then U(s) via the U(t) witness propagated.
+        intro hBU
+        have ⟨hBt, hUt⟩ := int_truth_and_iff.mp hBU
+        obtain ⟨w, htw, hAw, hBtw⟩ := hUt
+        apply hnotU_s
+        exact ⟨w, lt_trans hst htw, hAw, fun z hsz hzw => by
+          rcases lt_or_ge z t with hzt | htz
+          · exact h_allB z hsz hzt
+          · rcases eq_or_lt_of_le htz with rfl | htz'
+            · exact hBt
+            · exact hBtw z htz' hzw⟩
+    · -- Case: ∃ r₀ ∈ (s,t) with ¬B(r₀)
+      push_neg at h_allB
+      obtain ⟨r₀, hsr₀, hr₀t, hnotBr₀⟩ := h_allB
+      -- Find the FIRST point in (s,t) where ¬B holds (discrete minimum on ℤ)
+      let P := fun r => s < r ∧ r < t ∧ ¬ int_truth M r B
+      have hex : ∃ n : ℤ, P n := ⟨r₀, hsr₀, hr₀t, hnotBr₀⟩
+      -- On Z, finite interval (s,t) has a minimum if non-empty
+      -- Get the minimum ¬B point
+      have hfin : ∀ n, P n → s < n := fun n hn => hn.1
+      -- Use well-founded descent: find minimum r₁ in (s,t) with ¬B(r₁)
+      -- B holds on (s,r₁) by minimality
+      -- We need ¬A(r₁) as well:
+      -- If A(r₁): U(A,B)(s) via A(r₁) and B on (s,r₁). Contradicts ¬U(s).
+      -- So ¬A(r₁).
+      -- Also need (q∨U)(r₁): from guard since r₁ ∈ (s,t).
+      -- And S(a, q∧¬A)(r₁): need witness s' < r₁ with a(s') and q∧¬A on (s',r₁).
+      -- Take s' = s. a(s). Need q∧¬A on (s,r₁).
+      -- For z ∈ (s,r₁): B(z) by minimality. Guard gives q(z)∨U(z).
+      -- ¬A(z): If A(z) with z < r₁, U(s) via A(z) and B on (s,z). Contradiction.
+      -- So ¬A on (s,r₁). And q(z) from guard (U(z) → U(s) via A(z')... same logic as above).
+      -- Actually need more care for q(z):
+      -- Guard gives q(z) ∨ U(z). If U(z): ∃ w > z, A(w) ∧ B on (z,w).
+      -- w > z > s. A(w). ¬U(s): ∃ v ∈ (s,w), ¬B(v).
+      -- v ∈ (s,w). If v ≤ z: v ∈ (s,z] ⊆ (s,r₁), B(v) by minimality. Contradiction if v < r₁.
+      --   If v = z: B(v) if z < r₁. So v > z? No, we said v ≤ z → v ∈ (s,z].
+      --   Actually v ∈ (s,w) and v ≤ z ∈ (s,r₁): if v < r₁ then B(v) by minimality. Contradiction.
+      -- If v > z: v ∈ (z,w), B on (z,w) gives B(v). Contradiction.
+      -- So ¬U(z). Guard gives q(z).
+      -- D2: S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U)(t)
+      -- We use r₁ (first ¬B in (s,t)) as the witness for the outer S.
+      -- At r₁: ¬B(r₁), ¬A(r₁), (q∨U)(r₁) from guard, S(a,q∧¬A)(r₁) from above.
+      -- Guard q∨U on (r₁,t): same as original guard restricted to (r₁,t) ⊂ (s,t).
+      -- We need a proper minimum. On Z with a finite non-empty subset, minimum exists.
+      -- Use Int.find or well-founded induction
+      -- Actually, let's use Nat well-founded induction on (r₀ - s - 1) to find minimum
+      -- Simpler: use classical choice for minimum in bounded integer interval
+      have h_min : ∃ r₁, s < r₁ ∧ r₁ < t ∧ ¬ int_truth M r₁ B ∧
+          (∀ z, s < z → z < r₁ → int_truth M z B) := by
+        -- Induction on r₀ - s (which is ≥ 1)
+        have : r₀ - s - 1 < r₀ - s := by omega
+        -- Find minimum using Int.le.lt_or_eq and descending
+        by_contra h_no_min
+        push_neg at h_no_min
+        -- For every ¬B point in (s,t), there's an earlier ¬B point
+        -- This is impossible in a finite interval
+        -- Use strong induction on distance from s
+        have : ∀ n : ℕ, ∀ r, s < r → r < t → r - s = ↑n → ¬ int_truth M r B →
+            ∃ r₁, s < r₁ ∧ r₁ < t ∧ ¬ int_truth M r₁ B ∧
+            (∀ z, s < z → z < r₁ → int_truth M z B) := by
+          intro n
+          induction n with
+          | zero => intro r hsr _ hrs _; omega
+          | succ k ih =>
+            intro r hsr hrt hrs hnotBr
+            obtain ⟨z, hsz, hzr, hnotBz⟩ := h_no_min r hsr hrt hnotBr
+            exact ih z hsz hrt (by omega) hnotBz
+        exact h_no_min r₀ hsr₀ hr₀t hnotBr₀ (this (r₀ - s - 1).toNat r₀ hsr₀ hr₀t (by omega) hnotBr₀)
+      obtain ⟨r₁, hsr₁, hr₁t, hnotBr₁, hB_min⟩ := h_min
+      -- ¬A(r₁): If A(r₁), then U(s) via A(r₁) and B on (s,r₁). Contradiction.
+      have hnotAr₁ : ¬ int_truth M r₁ A := by
+        intro hAr₁; apply hnotU_s
+        exact ⟨r₁, hsr₁, hAr₁, hB_min⟩
+      -- q∧¬A on (s,r₁): from guard and ¬A argument
+      have h_qnA_sr₁ : ∀ z, s < z → z < r₁ → int_truth M z (Formula.and q (Formula.neg A)) := by
+        intro z hsz hzr₁
+        apply int_truth_and_iff.mpr; constructor
+        · rcases int_truth_or_iff.mp (hguard z hsz (lt_trans hzr₁ hr₁t)) with hq | hUz
+          · exact hq
+          · exfalso; apply hnotU_s
+            obtain ⟨w, hzw, hAw, hBzw⟩ := hUz
+            exact ⟨w, lt_trans hsz hzw, hAw, fun v hsv hvw => by
+              rcases lt_or_ge v z with hvz | hzv
+              · rcases lt_or_ge v r₁ with hvr₁ | hr₁v
+                · exact hB_min v hsv hvr₁
+                · exact hB_min v hsv (by omega)
+              · exact hBzw v (lt_of_le_of_lt (le_of_lt_of_le (by omega : s < z) hzv) (by omega)) hvw⟩
+        · intro hAz; apply hnotU_s
+          exact ⟨z, hsz, hAz, fun v hsv hvz => hB_min v hsv (lt_trans hvz hzr₁)⟩
+      -- S(a, q∧¬A)(r₁)
+      have hSa_r₁ : int_truth M r₁ (.snce a (Formula.and q (Formula.neg A))) :=
+        ⟨s, hsr₁, ha_s, h_qnA_sr₁⟩
+      -- (q∨U)(r₁) from guard
+      have hqU_r₁ := hguard r₁ hsr₁ hr₁t
+      apply int_truth_or_iff.mpr; right
+      -- D2 witness is r₁
+      refine ⟨r₁, hr₁t, ?_, fun z hz₁ hzt => hguard z (lt_trans hsr₁ hz₁) hzt⟩
+      apply int_truth_and_iff.mpr; constructor
+      · apply int_truth_and_iff.mpr; constructor
+        · apply int_truth_and_iff.mpr; exact ⟨hnotBr₁, hnotAr₁⟩
+        · exact hqU_r₁
+      · exact hSa_r₁
+  · -- Backward: D1 ∨ D2 → S(a∧¬U, q∨U)
+    intro h
+    rcases int_truth_or_iff.mp h with hD1 | hD2
+    · -- D1: S(a, q∧¬A)(t) ∧ ¬A(t) ∧ ¬(B∧U)(t)
+      have ⟨hSaqnA, hrest⟩ := int_truth_and_iff.mp hD1
+      have ⟨hSa, hnotAt⟩ := int_truth_and_iff.mp hSaqnA
+      obtain ⟨s, hst, ha_s, hqnA_guard⟩ := hSa
+      -- a(s), q∧¬A on (s,t), ¬A(t)
+      -- ¬U(s): for any w > s with A(w): ¬A on (s,t) and ¬A(t), so w > t.
+      --   Need ¬B somewhere in (s,w). Hmm, can't directly.
+      --   Actually: ¬U(s) means ∀ w > s, A(w) → ∃ z ∈ (s,w), ¬B(z).
+      --   Guard q∧¬A on (s,t) gives ¬A on (s,t). ¬A(t).
+      --   If A(w) with w > s: since ¬A on (s,t] (including t), w > t.
+      --   Need ¬B in (s,w). We know ¬(B(t)∧U(t)) from hrest.
+      --   But we need ¬B at some specific point in (s,w). Not guaranteed.
+      -- Let me reconsider. ¬U(A,B)(s) needs explicit proof.
+      -- ¬U(s): suppose U(s), i.e., ∃ w > s, A(w) ∧ B on (s,w).
+      -- If w ≤ t: A(w) but ¬A on (s,t) if w ∈ (s,t), or ¬A(t) if w = t. So w > t.
+      --   Oh wait: w ∈ (s,t) means s < w < t, and ¬A(w) from guard. w = t: ¬A(t). Contradiction.
+      -- So w > t. B on (s,w) includes B(t). And we need U(t)? No, U(s) gives w > s, A(w), B on (s,w).
+      -- ¬(B(t)∧U(t)) from D1. But U(s) doesn't directly give U(t).
+      -- Actually, B on (s,w) for w > t means B(t). And we need: is U(t) derivable?
+      -- U(t): ∃ v > t, A(v) ∧ B on (t,v). w > t and A(w) and B on (t,w) ⊂ (s,w). So yes, U(t).
+      -- So B(t) ∧ U(t), contradicting ¬(B∧U)(t).
+      have hnotU_s : ¬ int_truth M s (.untl A B) := by
+        intro ⟨w, hsw, hAw, hBsw⟩
+        -- w > s with A(w). Since ¬A on (s,t] (guard + ¬A(t)), w > t.
+        have hwt : t < w := by
+          rcases lt_or_ge w t with hwt | htw
+          · exact absurd hAw ((int_truth_and_iff.mp (hqnA_guard w hsw hwt)).2)
+          · rcases eq_or_lt_of_le htw with rfl | h; · exact absurd hAw hnotAt; · exact h
+        -- B(t) from B on (s,w) with t ∈ (s,w)
+        have hBt : int_truth M t B := hBsw t hst hwt
+        -- U(t) from w > t, A(w), B on (t,w)
+        have hUt : int_truth M t (.untl A B) :=
+          ⟨w, hwt, hAw, fun z htz hzw => hBsw z (lt_trans hst htz) hzw⟩
+        exact hrest (int_truth_and_iff.mpr ⟨hBt, hUt⟩)
+      -- Guard q∨U on (s,t): q∧¬A on (s,t) implies q on (s,t) which implies q∨U.
+      refine ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hnotU_s⟩, fun r hsr hrt => ?_⟩
+      exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mp (hqnA_guard r hsr hrt)).1)
+    · -- D2: S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U)(t)
+      obtain ⟨r, hrt, hevent_r, hguard_r⟩ := hD2
+      have ⟨h_left, hSa_r⟩ := int_truth_and_iff.mp hevent_r
+      have ⟨h_nBnA, hqU_r⟩ := int_truth_and_iff.mp h_left
+      have ⟨hnotBr, hnotAr⟩ := int_truth_and_iff.mp h_nBnA
+      -- S(a, q∧¬A)(r): ∃ s < r, a(s), q∧¬A on (s,r)
+      obtain ⟨s, hsr, ha_s, hqnA_sr⟩ := hSa_r
+      -- ¬U(s): If U(s), then ∃ w > s, A(w) ∧ B on (s,w).
+      --   ¬A on (s,r) from guard. ¬A(r). If A(w) with w ∈ (s,r]: contradiction.
+      --   So w > r. B on (s,w) ⊇ (s,r]. But ¬B(r). r ∈ (s,w) if w > r. B(r). Contradiction.
+      have hnotU_s : ¬ int_truth M s (.untl A B) := by
+        intro ⟨w, hsw, hAw, hBsw⟩
+        -- A(w) with ¬A on (s,r) and ¬A(r) means w > r
+        have hwr : r < w := by
+          rcases lt_or_ge w r with hwr | hrw
+          · exact absurd hAw ((int_truth_and_iff.mp (hqnA_sr w hsw hwr)).2)
+          · rcases eq_or_lt_of_le hrw with rfl | h; · exact absurd hAw hnotAr; · exact h
+        -- B(r) from B on (s,w) since r ∈ (s,w)
+        exact hnotBr (hBsw r hsr hwr)
+      -- Guard: q∨U on (s,t)
+      -- On (s,r): q∧¬A gives q, hence q∨U. On (r,t): hguard_r gives q∨U.
+      -- At r: hqU_r gives q∨U.
+      refine ⟨s, lt_trans hsr hrt, int_truth_and_iff.mpr ⟨ha_s, hnotU_s⟩, fun z hsz hzt => ?_⟩
+      rcases lt_or_ge z r with hzr | hrz
+      · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mp (hqnA_sr z hsz hzr)).1)
+      · rcases eq_or_lt_of_le hrz with rfl | hrz'
+        · exact hqU_r
+        · exact hguard_r z hrz' hzt
 
-/-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable. -/
+/-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable.
+    Uses GHR94 10.2.3 item 6 direct formula, then separates each disjunct
+    using eliminations (3) and (5) per GHR94. -/
 theorem case6_separable_Z (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
@@ -1632,18 +1622,70 @@ theorem case6_separable_Z (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
       (Formula.or q (.untl A B))) := by
-  -- Split ¬U(A,B) ↔ G(¬A) ∨ U(¬A∧¬B, ¬A) using neg_until_equiv
-  apply is_separable_of_equiv (snce_event_congr (neg_untl_event_equiv a A B))
-  -- S((a∧G(¬A)) ∨ (a∧U'), q∨U) ↔ S(a∧G(¬A), q∨U) ∨ S(a∧U', q∨U)
-  apply is_separable_of_equiv (since_distrib_or_left _ _ (Formula.or q (.untl A B)))
+  -- Apply case6_equiv_Z: S(a∧¬U, q∨U) ↔ D1 ∨ D2
+  apply is_separable_of_equiv (case6_equiv_Z a q A B)
   apply or_separable
-  · -- Branch A: S(a∧G(¬A), q∨U) -- event is U-free
-    exact snce_Ufree_event_qU_guard_separable
-      (Formula.and a (.all_future (Formula.neg A))) q A B
-      (by simp [Formula.and, Formula.neg, is_U_free, ha, hA])
-      hq hA hB hA' hB'
-  · -- Branch B: S(a∧U', q∨U) -- uses U∧U'=⊥ contradiction
-    exact case6_branchB_separable a q A B ha hq hA hB hA' hB'
+  · -- D1: S(a, q∧¬A) ∧ ¬A ∧ ¬(B∧U)
+    apply and_separable
+    · apply and_separable
+      · -- S(a, q∧¬A): a, q, A all U-free → syntactically separated
+        have hg : is_U_free (Formula.and q (Formula.neg A)) = true := by
+          simp [Formula.and, Formula.neg, is_U_free, hq, hA]
+        exact ⟨.snce a (Formula.and q (Formula.neg A)),
+          by simp [is_syntactically_separated, ha, hg], int_equiv_refl _⟩
+      · -- ¬A: U-free and S-free
+        exact u_free_s_free_is_separable (Formula.neg A)
+          (by simp [Formula.neg, is_U_free, hA])
+          (by simp [Formula.neg, is_S_free, hA'])
+    · -- ¬(B∧U): neg of (B∧U). B is U-free/S-free, U is S-free future.
+      apply neg_separable
+      exact and_separable (u_free_s_free_is_separable B hB hB')
+        ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
+  · -- D2: S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U)
+    -- Factor: event = STUFF ∧ (q∨U) where STUFF = (¬B∧¬A)∧S(a,q∧¬A) is U-free.
+    -- Rearrange the conjunction to put (q∨U) last.
+    have h_rearrange : int_equiv
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (Formula.or q (.untl A B)))
+        (.snce a (Formula.and q (Formula.neg A))))
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A))))
+        (Formula.or q (.untl A B))) := by
+      intro M t; constructor
+      · intro h
+        have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+        have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+        exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+      · intro h
+        have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+        have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+        exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+    apply is_separable_of_equiv (snce_event_congr h_rearrange)
+    -- Now: S(STUFF ∧ (q∨U), q∨U) where STUFF = (¬B∧¬A)∧S(a,q∧¬A) is U-free
+    -- Distribute STUFF∧(q∨U) = (STUFF∧q) ∨ (STUFF∧U) via and_or_distrib
+    have h_distrib : int_equiv
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A))))
+        (Formula.or q (.untl A B)))
+      (Formula.or
+        (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+          (.snce a (Formula.and q (Formula.neg A)))) q)
+        (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+          (.snce a (Formula.and q (Formula.neg A)))) (.untl A B))) :=
+      and_or_distrib _ _ _
+    apply is_separable_of_equiv (snce_event_congr h_distrib)
+    apply is_separable_of_equiv (since_distrib_or_left _ _ (Formula.or q (.untl A B)))
+    have hSTUFF_uf : is_U_free (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A)))) = true := by
+      simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
+    apply or_separable
+    · -- S(STUFF∧q, q∨U): STUFF∧q is U-free → snce_Ufree_event_qU_guard_separable
+      have hev_uf : is_U_free (Formula.and (Formula.and (Formula.and (Formula.neg B)
+          (Formula.neg A)) (.snce a (Formula.and q (Formula.neg A)))) q) = true := by
+        simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
+      exact snce_Ufree_event_qU_guard_separable _ q A B hev_uf hq hA hB hA' hB'
+    · -- S(STUFF∧U, q∨U): STUFF is U-free → case5_separable_Z_gen
+      exact case5_separable_Z_gen _ q A B hSTUFF_uf hq hA hB hA' hB'
 
 /-- Case 7 separability for Z: S(a ^ U(A,B), q v ~U(A,B)) is separable. -/
 theorem case7_separable_Z (a q A B : Formula)
