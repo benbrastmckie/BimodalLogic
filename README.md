@@ -1,4 +1,4 @@
-# Logos: Bimodal Logic (Tense and Modality)
+# A Bimodal Logic for Tense and Modality
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
