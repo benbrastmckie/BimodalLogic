@@ -8,12 +8,12 @@
     {
       "project_number": 166,
       "project_name": "rename_metalogical_theorems_standard_names",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Rename major metalogical theorems to standard uniform names. Soundness: soundness -> soundness_serial (requires Nontrivial D for seriality), add soundness_linear excluding seriality axioms. soundness_dense and soundness_discrete keep as-is. Completeness: bx_completeness -> completeness_serial, dd_countermodel_chronicle_dense -> completeness_dense, doets_countermodel_discrete -> completeness_discrete, dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove. Update all call sites, docstrings, and README.",
       "created": "2026-05-18T18:14:23Z",
-      "last_updated": "2026-05-18T21:03:10Z",
-      "session_id": "sess_1779137883_6ac2b1",
+      "last_updated": "2026-05-18T22:47:50Z",
+      "session_id": "sess_1779144450_cb7da5",
       "researched": "2026-05-18T20:47:45Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "type": "plan",
           "summary": "4-phase plan: rename completeness/countermodel theorems, normalize axiom validity naming, create new completeness_dense/completeness_discrete theorems, update documentation"
         }
-      ]
+      ],
+      "started": "2026-05-18T22:47:50Z"
     },
     {
       "project_number": 165,
@@ -49,12 +50,12 @@
     {
       "project_number": 163,
       "project_name": "rename_representation_to_completeness",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Rename misnamed representation theorems to completeness and recover ultrafilter frame infrastructure from Boneyard. (A) RENAME: 7 theorem renames (*representation* → *completeness*), 4 call site updates, 2 file renames (AlgebraicRepresentation.lean → AlgebraicCompleteness.lean, ParametricRepresentation.lean → ParametricCompleteness.lean), docstring/comment updates. (B) RECOVER: Extract Phase 1 definitions from Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean (~lines 56-1519) into a new Algebraic/UltrafilterFrame.lean. Generalize R_G, R_H, R_Box from LindenbaumAlg to arbitrary STSA α. Include key properties: R_G_trans, R_Box_refl, R_Box_euclidean, R_Box_symm, R_Box_trans, R_G_R_H_converse, G_preimage/H_preimage filter properties. Leave Phase 2 (box-class BFMCS, line 1520+) in Boneyard. The recovered file provides the ultrafilter frame seed for the Jonsson-Tarski representation theorem (task 125). Note: UltrafilterChain.lean has 18 sorries (most from temp_4/temp_k_dist removed in BX); the recovery should preserve sorry annotations for later resolution.",
       "created": "2026-05-18T17:52:31Z",
-      "last_updated": "2026-05-18T21:09:44Z",
-      "session_id": "sess_1779138246_21bf50",
+      "last_updated": "2026-05-18T22:47:49Z",
+      "session_id": "sess_1779144447_3121d0",
       "researched": "2026-05-18T20:54:41Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -68,7 +69,8 @@
           "type": "plan",
           "summary": "5-phase plan: rename representation->completeness theorems (Part A) and recover ultrafilter frame from Boneyard (Part B)"
         }
-      ]
+      ],
+      "started": "2026-05-18T22:47:49Z"
     },
     {
       "project_number": 162,
@@ -219,7 +221,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -228,9 +230,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-18T19:16:05Z",
-      "session_id": "sess_1779131735_a4b86a",
-      "researched": "2026-05-18T16:50:54Z",
+      "last_updated": "2026-05-18T22:59:11Z",
+      "session_id": "sess_1779144447_32fc24",
+      "researched": "2026-05-18T22:59:11Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -271,10 +273,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/08_axiom-elimination-plan.md",
           "type": "plan",
           "summary": "5-phase plan: fix Case 6 sorry, prove Case 7 via GHR94 direct formula, build hierarchy theorem, eliminate 9 axioms, verify"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/09_team-research.md",
+          "type": "research",
+          "summary": "Team research: root cause diagnosis (all_past/all_future in separated witnesses), GHR94-conformant fix path"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 9
+      "next_artifact_number": 10
     },
     {
       "project_number": 156,

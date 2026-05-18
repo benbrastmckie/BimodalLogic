@@ -96,7 +96,7 @@ technical_debt:
 
 ### 166. Rename metalogical theorems to standard uniform names
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Research**: [specs/166_rename_metalogical_theorems_standard_names/reports/01_metalogical-naming-hygiene.md]
 - **Plan**: [166_rename_metalogical_theorems_standard_names/plans/01_metalogical-naming-hygiene.md]
@@ -119,7 +119,7 @@ technical_debt:
 
 ### 163. Rename representation to completeness and recover ultrafilter frame from Boneyard
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Research**: [specs/163_rename_representation_to_completeness/reports/01_team-research.md]
 - **Plan**: [163_rename_representation_to_completeness/plans/01_rename-recover-ultrafilter.md]
@@ -183,7 +183,7 @@ Extract Phase 1 definitions (~lines 56–1519) from `Boneyard/StrictSemanticsLeg
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
@@ -194,6 +194,7 @@ Extract Phase 1 definitions (~lines 56–1519) from `Boneyard/StrictSemanticsLeg
   - [157_expressive_completeness_su_integer/reports/06_team-research.md]
   - [157_expressive_completeness_su_integer/reports/07_team-research.md]
   - [157_expressive_completeness_su_integer/reports/08_team-research.md]
+  - [157_expressive_completeness_su_integer/reports/09_team-research.md]
 - **Plan**:
   - [157_expressive_completeness_su_integer/plans/05_dedekind-approach-plan.md]
   - [157_expressive_completeness_su_integer/plans/06_phase7-first-plan.md]
