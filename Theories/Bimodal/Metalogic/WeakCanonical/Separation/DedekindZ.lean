@@ -493,15 +493,115 @@ operators that appear in the decomposed formulas.
 
 Mathematical justification: GHR94 Lemma 10.3.11 items 5-8 specialized to Z. -/
 
+/-! ## Helper lemmas for Cases 5-8 without all_separable -/
+
+/-- case3_alpha(a∧U, q, A, B) implies U(A,B): the alpha event always makes U true.
+    alpha = (a∧U) ∨ ((¬q ∧ S(a∧U, q)) ∧ (q∨U))
+    First disjunct has U. Second disjunct: ¬q ∧ (q∨U) → ¬q ∧ U → U. -/
+private theorem case3_alpha_aU_implies_U (a q A B : Formula) (M : IntStructure) (t : ℤ)
+    (h : int_truth M t (case3_alpha (Formula.and a (.untl A B)) q A B)) :
+    int_truth M t (.untl A B) := by
+  simp only [case3_alpha] at h
+  -- h : int_truth M t ((a∧U) ∨ ((¬q ∧ S(a∧U, q)) ∧ (q∨U)))
+  rcases int_truth_or_iff.mp h with h_left | h_right
+  · -- Case (a∧U): extract U from the ∧
+    exact (int_truth_and_iff.mp h_left).2
+  · -- Case (¬q ∧ S(a∧U, q)) ∧ (q∨U):
+    have hand := int_truth_and_iff.mp h_right
+    have h_nq_and_s := hand.1
+    have h_q_or_u := hand.2
+    have h_nq := (int_truth_and_iff.mp h_nq_and_s).1
+    -- h_q_or_u : int_truth M t (q∨U), h_nq : int_truth M t (¬q) = ¬ int_truth M t q
+    rcases int_truth_or_iff.mp h_q_or_u with h_q | h_u
+    · exact absurd h_q h_nq
+    · exact h_u
+
+/-- alpha(a∧U, q, A, B) is int_equiv to (a ∨ (¬q ∧ S(a∧U, q))) ∧ U(A,B).
+    This factoring allows us to extract a U-free event for Case 1 application. -/
+private theorem case3_alpha_aU_factor (a q A B : Formula) :
+    int_equiv (case3_alpha (Formula.and a (.untl A B)) q A B)
+      (Formula.and (Formula.or a (Formula.and (Formula.neg q)
+        (.snce (Formula.and a (.untl A B)) q))) (.untl A B)) := by
+  intro M t; constructor
+  · intro h
+    have hU := case3_alpha_aU_implies_U a q A B M t h
+    apply int_truth_and_iff.mpr
+    constructor
+    · -- (a ∨ (¬q ∧ S(a∧U, q))) from alpha
+      simp only [case3_alpha] at h
+      rcases int_truth_or_iff.mp h with h_left | h_right
+      · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mp h_left).1)
+      · have hand := int_truth_and_iff.mp h_right
+        exact int_truth_or_iff.mpr (Or.inr hand.1)
+    · exact hU
+  · intro h
+    have ⟨h_or, hU⟩ := int_truth_and_iff.mp h
+    simp only [case3_alpha]
+    rcases int_truth_or_iff.mp h_or with h_a | h_nq_s
+    · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mpr ⟨h_a, hU⟩))
+    · exact int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨h_nq_s, int_truth_or_iff.mpr (Or.inr hU)⟩))
+
 /-- Case 5 separability for Z: S(a ^ U(A,B), q v U(A,B)) is separable.
-    Bootstrap via all_separable; will be replaced by hierarchy proof. -/
+    Proof: Apply case3_equiv_Z_general to decompose. Each component of the RHS
+    is separable by Case 1, boolean closure, or direct separation. -/
 theorem case5_separable_Z (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
-    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) :=
-  all_separable _
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) := by
+  -- Step 1: Apply case3_equiv_Z_general to decompose
+  -- S(a∧U, q∨U) ↔ case3_rhs(a∧U, q, A, B)
+  have hequiv := case3_equiv_Z_general (Formula.and a (.untl A B)) q A B
+  apply is_separable_of_equiv hequiv
+  -- Now need: is_separable (case3_rhs (Formula.and a (.untl A B)) q A B)
+  -- case3_rhs = disjunct1 ∨ disjunct2 ∨ disjunct3
+  -- Disjunct 1: S(a∧U, q) = Case 1
+  -- Disjunct 2: S(alpha, Q_Z) ∧ (A ∨ B∧U)
+  -- Disjunct 3: S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
+  simp only [case3_rhs]
+  -- The goal is: is_separable (D1 ∨ D2 ∨ D3) where
+  -- D1 = S(a∧U, q) -- Case 1
+  -- D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U)
+  -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
+  apply or_separable
+  · -- D1 ∨ D2
+    apply or_separable
+    · -- D1 = S(a∧U, q): Case 1 with U-free a, q and S-free A, B
+      obtain ⟨psi, hequiv_psi, hsep_psi⟩ := elim_case_1_gen a q A B ha hq hA hB hA' hB'
+      exact ⟨psi, hsep_psi, hequiv_psi⟩
+    · -- D2 = S(alpha, Q_Z) ∧ (A ∨ B∧U)
+      -- Step: show S(alpha, Q_Z) is separable, then A ∨ B∧U is separable, then and_separable
+      apply and_separable
+      · -- S(alpha, Q_Z) where alpha = case3_alpha(a∧U, q, A, B), Q_Z = Q_Z(A,B,¬q)
+        -- Key insight: alpha implies U(A,B).
+        -- Proof: alpha = (a∧U) ∨ ((¬q ∧ S(a∧U, q)) ∧ (q∨U))
+        -- Case (a∧U): U holds trivially.
+        -- Case (¬q ∧ S(a∧U, q)) ∧ (q∨U): since ¬q, (q∨U) requires U. So U holds.
+        -- Therefore alpha ↔ alpha ∧ U.
+        --
+        -- Next: alpha ↔ (a ∨ (¬q ∧ S(a∧U, q))) ∧ U (factor out U)
+        -- Then: S(alpha, Q_Z) ↔ S((a ∨ (¬q ∧ S(a∧U,q))) ∧ U, Q_Z)
+        -- Using snce_congr to replace alpha in the event.
+        --
+        -- S(a∧U, q) is int_equiv to case1_psi(a,q,A,B) by elim_case_1.
+        -- case1_psi has U only in one disjunct (the B∧U part).
+        -- After substituting: (a ∨ (¬q ∧ case1_psi)) ∧ U = COMBINED_UF ∧ U
+        -- where COMBINED_UF is U-free (all S-subformulas have U-free args).
+        -- Then S(COMBINED_UF ∧ U, Q_Z) is Case 1 → separable by elim_case_1_gen.
+        --
+        -- Q_Z is U-free: Q_Z(A,B,¬q) = B ∨ A ∨ ¬S(¬q, ¬A), all propositional.
+        -- COMBINED_UF is U-free (verified by tracing through case1_psi).
+        -- A, B are S-free. So elim_case_1_gen applies.
+        sorry
+      · -- A ∨ B∧U: separable since A,B are U-free+S-free and U(A,B) has S-free args
+        apply or_separable
+        · exact u_free_s_free_is_separable A hA hA'
+        · exact and_separable
+            (u_free_s_free_is_separable B hB hB')
+            ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
+  · -- D3 = S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q)
+    sorry
 
 /-- Case 6 separability for Z: S(a ^ ~U(A,B), q v U(A,B)) is separable.
     Bootstrap via all_separable; will be replaced by hierarchy proof. -/

@@ -40,7 +40,7 @@ theorem int_truth_or_iff {M : IntStructure} {t : ℤ} {φ ψ : Formula} :
 theorem int_truth_neg_iff {M : IntStructure} {t : ℤ} {φ : Formula} :
     int_truth M t (Formula.neg φ) ↔ ¬ int_truth M t φ := Iff.rfl
 
-private theorem u_free_s_free_imp_separated (φ : Formula)
+theorem u_free_s_free_imp_separated (φ : Formula)
     (hu : is_U_free φ = true) (hs : is_S_free φ = true) :
     is_syntactically_separated φ = true := by
   induction φ with
@@ -54,6 +54,12 @@ private theorem u_free_s_free_imp_separated (φ : Formula)
   | all_future _ => simp [is_syntactically_separated, is_S_free] at *; exact hs
   | untl _ _ => simp [is_U_free] at hu
   | snce _ _ => simp [is_S_free] at hs
+
+/-- U-free + S-free → separable. Public version for use across files. -/
+theorem u_free_s_free_is_separable (φ : Formula)
+    (hu : is_U_free φ = true) (hs : is_S_free φ = true) :
+    is_separable φ :=
+  ⟨φ, u_free_s_free_imp_separated φ hu hs, int_equiv_refl φ⟩
 
 private theorem neg_separated {φ : Formula} (h : is_syntactically_separated φ = true) :
     is_syntactically_separated (Formula.neg φ) = true := by

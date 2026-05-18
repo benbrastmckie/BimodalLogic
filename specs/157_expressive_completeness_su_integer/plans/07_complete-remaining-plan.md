@@ -365,7 +365,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6B: Prove Main Hierarchy Theorem [BLOCKED]
+### Phase 6B: Prove Main Hierarchy Theorem [IN PROGRESS]
 
 **BLOCKER** (Phase 6B):
 - **What failed**: Cannot prove `snce_separable` (snce of separable formulas is separable) without circularity. This axiom is the linchpin: all other temporal closure axioms and the full hierarchy depend on it.
