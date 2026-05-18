@@ -251,7 +251,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 ---
 
-### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [BLOCKED]
+### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [IN PROGRESS]
 
 **BLOCKER** (Phase 3):
 - **What failed**: The `.untl` and `.snce` cases of `all_formulas_separable_aux` still delegate to `all_separable` (which uses the axioms). Proving these without axioms requires the full GHR94 "constituent substitution" technique where, after abstracting temporal subformulas and separating, one substitutes back into the PAST (or FUTURE) constituents of the separated form independently and applies the IH to each. The IH is valid because each constituent has strictly lower junction depth (for 10.2.8) or fewer U-types (for 10.2.6).
@@ -270,8 +270,11 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
   - `subst_in_separated_separable`: THE CORE CONSTITUENT SUBSTITUTION LEMMA -- substituting `.untl A B` (S-free args) into a separated formula is separable, with callback for `.snce`/`.all_past` positions
   - `subst_formula_congr`: substitution preserves int_equiv
   - `extract_U_type` + `extract_U_type_S_free`: extracts U-type from non-U-free formula with no_S_nested_in_U
-- **Remaining blocker**: The multi-U count induction works but single-U case requires S-nesting depth induction (GHR94 10.2.5). This needs a function to find/replace the innermost `.snce` containing a specific U-type and apply `lemma_10_2_4` to it (~300 LOC total)
-- Deep analysis of why each approach fails (documented in handoff)
+- **Remaining blocker**: The multi-U count induction works but single-U case requires S-nesting depth induction (GHR94 10.2.5). This needs:
+  1. `single_U_type_separable_noax` (~100 LOC): For formulas with only one U-type U(A,B) (S-free args), prove separable by S-nesting depth induction — find innermost `.snce` containing U(A,B), apply `lemma_10_2_4` to it, result has lower S-nesting depth, IH applies. At depth 0 (U only at top level under booleans), already separated.
+  2. `no_S_nested_in_U_separable_noax` (~100 LOC): Combines single-U (10.2.5) + multi-U (10.2.6, using `subst_in_separated_separable` + count induction) + U-nesting (10.2.7)
+  3. Wire `.untl`/`.snce` cases of `all_formulas_separable_aux` to use these (~50 LOC)
+- Deep analysis of why each approach fails (documented in handoffs)
 
 **Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy with constructive witnesses, replacing the circular `all_separable` in Hierarchy.lean.
 

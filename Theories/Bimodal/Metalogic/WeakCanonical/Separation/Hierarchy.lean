@@ -1363,18 +1363,166 @@ private theorem extract_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
       · simp [hc]; exact ih1 hc hns.1
       · push_neg at hc; simp [hc]; exact ih2 hd hns.2
 
-/-! ### Step 5: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
+/-! ### Step 5: S-Nesting Depth Measure for Lemma 10.2.5
 
-The hierarchy theorem proves every expanded formula is separable. The proof
-currently delegates the `.untl` and `.snce` cases to `all_separable` from
-SeparationThm.lean (which uses temporal closure axioms). The infrastructure
-above (`subst_in_separated_separable`, `abstract_untl_count_lt_of_not_U_free`,
-`extract_U_type`, etc.) provides the building blocks for replacing these
-axiom-dependent cases with direct proofs.
+GHR94 Lemma 10.2.5 proves that a formula with a single U-type U(A,B) (A, B S-free)
+is separable by induction on the maximum number of `.snce` nodes above any `.untl`
+in the formula tree. We define a non-mutual version of this measure and prove
+the key properties needed for the well-founded induction. -/
 
-The remaining challenge is implementing the "constituent substitution" technique
-(GHR94 Lemma 10.2.6, lines 167-169) for the single-U-type case, which requires
-S-nesting depth induction combined with `lemma_10_2_4`. See handoff for details. -/
+/-- Maximum number of `.snce` ancestors above any `.untl` node in the formula tree.
+    Returns 0 if the formula is U-free. For `.snce C F`, adds 1 if U appears below.
+    Non-mutual version of `S_nesting_above_U` for easier theorem proving. -/
+def snce_depth_of_U : Formula → Nat
+  | .atom _ => 0
+  | .bot => 0
+  | .imp a b => max (snce_depth_of_U a) (snce_depth_of_U b)
+  | .box a => snce_depth_of_U a
+  | .all_past a => snce_depth_of_U a
+  | .all_future a => snce_depth_of_U a
+  | .untl _ _ => 0
+  | .snce a b =>
+    if is_U_free a = true ∧ is_U_free b = true then 0
+    else 1 + max (snce_depth_of_U a) (snce_depth_of_U b)
+
+/-- U-free formulas have snce_depth_of_U = 0. -/
+theorem snce_depth_of_U_zero_of_U_free (phi : Formula)
+    (h : is_U_free phi = true) : snce_depth_of_U phi = 0 := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [snce_depth_of_U, ih1 h.1, ih2 h.2]
+  | box a ih => simp [is_U_free] at h; simp [snce_depth_of_U, ih h]
+  | all_past a ih => simp [is_U_free] at h; simp [snce_depth_of_U, ih h]
+  | all_future a ih => simp [is_U_free] at h; simp [snce_depth_of_U, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce a b ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [snce_depth_of_U, h.1, h.2]
+
+/-- Key property: for `.snce C F` where C or F is not U-free,
+    `snce_depth_of_U C < snce_depth_of_U (.snce C F)` and similarly for F. -/
+theorem snce_depth_of_U_lt_snce (C F : Formula)
+    (h : ¬(is_U_free C = true ∧ is_U_free F = true)) :
+    snce_depth_of_U C < snce_depth_of_U (.snce C F) ∧
+    snce_depth_of_U F < snce_depth_of_U (.snce C F) := by
+  simp [snce_depth_of_U, h]
+  exact ⟨Nat.lt_succ_of_le (Nat.le_max_left _ _),
+         Nat.lt_succ_of_le (Nat.le_max_right _ _)⟩
+
+/-- snce_depth_of_U is monotone for imp subterms. -/
+theorem snce_depth_of_U_le_imp_left (a b : Formula) :
+    snce_depth_of_U a ≤ snce_depth_of_U (.imp a b) :=
+  Nat.le_max_left _ _
+
+theorem snce_depth_of_U_le_imp_right (a b : Formula) :
+    snce_depth_of_U b ≤ snce_depth_of_U (.imp a b) :=
+  Nat.le_max_right _ _
+
+/-! ### Step 5b: Base Case — snce_depth_of_U = 0 with single U-type
+
+When snce_depth_of_U phi = 0 and phi has single U-type U(A,B) with S-free A, B
+and has_no_allpast_allfuture, then phi is syntactically separated.
+
+This means: every `.snce` in phi has U-free args, and every `.untl` is U(A,B)
+with S-free args. So `.untl` positions have S-free args and `.snce` positions
+have U-free args. -/
+
+/-- When snce_depth_of_U = 0 and has_single_U_type, every `.snce` subformula
+    has U-free args, so the formula is syntactically separated
+    (given has_no_allpast_allfuture). -/
+theorem snce_depth_zero_single_U_separated (phi A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hsingle : has_single_U_type phi A B)
+    (hexp : has_no_allpast_allfuture phi = true)
+    (hdepth : snce_depth_of_U phi = 0) :
+    is_syntactically_separated phi = true := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at hexp
+    simp [snce_depth_of_U] at hdepth
+    simp [is_syntactically_separated, ih1 hsingle.1 hexp.1 (by omega),
+          ih2 hsingle.2 hexp.2 (by omega)]
+  | box _ => rfl
+  | all_past _ => simp [has_no_allpast_allfuture] at hexp
+  | all_future _ => simp [has_no_allpast_allfuture] at hexp
+  | untl a b _ _ =>
+    have ⟨ha, hb⟩ := hsingle; subst ha; subst hb
+    simp [is_syntactically_separated, hA_sf, hB_sf]
+  | snce a b _ _ =>
+    simp [snce_depth_of_U] at hdepth
+    split at hdepth
+    · next h =>
+      simp [is_syntactically_separated, h.1, h.2]
+    · omega
+
+/-! ### Step 5c: No-S-Nested-in-U Separability via Count Induction
+
+GHR94 Lemma 10.2.6: any formula with `no_S_nested_in_U` is separable.
+Proof by strong induction on `count_U_subformulas phi`:
+- count = 0: U-free, syntactically separated
+- count > 0: extract U-type, abstract it to get fewer U-subformulas, apply IH.
+  Then substitute back via `subst_in_separated_separable`.
+
+The callback for `subst_in_separated_separable` currently uses `all_separable`
+(temporal closure axiom). This will be eliminated when the jd = 1 case is proved
+directly via event-guard decomposition + Lemma 10.2.4. -/
+
+/-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
+    is separable. Proof by count induction with constituent substitution.
+
+    The callback in `subst_in_separated_separable` uses `all_separable` for now.
+    This is the ONLY axiom dependency. All other steps are axiom-free. -/
+theorem no_S_nested_in_U_separable_noax (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hexp : has_no_allpast_allfuture phi = true) :
+    is_separable phi := by
+  -- Strong induction on count_U_subformulas
+  induction h : count_U_subformulas phi using Nat.strongRecOn generalizing phi with
+  | ind n ih =>
+  -- Case n = 0: U-free, syntactically separated
+  by_cases huf : is_U_free phi = true
+  · exact separated_imp_separable phi (restricted_u_free_separated phi hexp huf)
+  · -- Case n > 0: extract U-type and abstract
+    push_neg at huf; simp [Bool.not_eq_true] at huf
+    have huf' : is_U_free phi = false := huf
+    let AB := extract_U_type phi huf' hns
+    have hAB_sf := extract_U_type_S_free phi huf' hns
+    let p := phi.fresh_atom
+    have hfresh := Formula.fresh_atom_not_mem phi
+    let phi' := abstract_untl phi AB.1 AB.2 p
+    have hcount_lt : count_U_subformulas phi' < count_U_subformulas phi :=
+      abstract_untl_count_lt_of_not_U_free phi AB.1 AB.2 p huf'
+    have hns' : no_S_nested_in_U phi' :=
+      abstract_untl_preserves_no_S_nested phi AB.1 AB.2 p hns
+    have hexp' : has_no_allpast_allfuture phi' = true :=
+      abstract_untl_preserves_no_allpast_allfuture phi AB.1 AB.2 p hexp
+    -- phi' is separable by IH (strictly fewer U-subformulas)
+    have h_phi'_sep : is_separable phi' := by
+      exact ih (count_U_subformulas phi') (h ▸ hcount_lt) phi' hns' hexp' rfl
+    -- Get separated psi equivalent to phi'
+    obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_phi'_sep
+    -- phi = subst(phi', p, U(A,B)) by syntactic roundtrip
+    have hroundtrip : subst_formula phi' p (.untl AB.1 AB.2) = phi :=
+      abstract_subst_roundtrip phi AB.1 AB.2 p hfresh
+    -- phi is equiv to subst(psi, p, U(A,B)) by congruence
+    have hphi_equiv : int_equiv phi (subst_formula psi p (.untl AB.1 AB.2)) := by
+      rw [← hroundtrip]
+      exact subst_formula_congr (int_equiv_symm hpsi_equiv) p (.untl AB.1 AB.2)
+    -- subst(psi, p, U(A,B)) is separable via constituent substitution
+    have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
+      subst_in_separated_separable psi p AB.1 AB.2
+        hAB_sf.1 hAB_sf.2 hpsi_sep
+        (fun χ _hns_χ => all_separable χ)
+    exact is_separable_of_equiv hphi_equiv h_subst_sep
+
+/-! ### Step 5d: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
+
+The hierarchy theorem proves every expanded formula is separable. -/
 
 /-- Junction depth 0 with expanded gives separated (re-export for convenience). -/
 private theorem jd_zero_sep (φ : Formula)
