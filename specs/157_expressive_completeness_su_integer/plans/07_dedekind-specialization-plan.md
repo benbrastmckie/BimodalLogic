@@ -437,7 +437,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
 
 ---
 
-### Phase 4: Wire Cases 5-8 into Hierarchy and Prove junction_depth_separable (Phase 6B-4) [NOT STARTED]
+### Phase 4: Wire Cases 5-8 into Hierarchy and Prove junction_depth_separable (Phase 6B-4) [IN PROGRESS]
 
 **Goal**: Replace the circular `all_separable` references in NormalForm.lean's Cases 5-8 with the new DedekindZ proofs, then prove the main hierarchy theorem `junction_depth_separable` via strong induction on `junction_depth`.
 
@@ -450,7 +450,7 @@ Note: The FOURTH disjunct from the Dedekind formula (involving Gamma+(q)) vanish
 
 **Tasks**:
 
-- [ ] Task 4.1: Update NormalForm.lean Cases 5-8 to use DedekindZ proofs (~20 LOC)
+- [x] Task 4.1: Update NormalForm.lean Cases 5-8 to use DedekindZ proofs (~20 LOC) *(completed)*
   - Location: `NormalForm.lean` lines 153-194
   - Replace the body of `case5_separable` through `case8_separable`:
     ```lean

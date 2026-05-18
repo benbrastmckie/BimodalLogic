@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
+import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ
 
 /-!
 # Normal Form Reduction (GHR94 Lemma 10.2.4)
@@ -151,47 +152,47 @@ theorem case4_separable (a q A B : Formula)
   exact ⟨psi, hsep, hequiv⟩
 
 /-- Helper: S(a ^ U(A,B), q ∨ U(A,B)) is separable. Case 5.
-    Proved via `all_separable` (separation theorem): every formula is separable. -/
+    Proved via Dedekind specialization (DedekindZ.lean). -/
 theorem case5_separable (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) :=
-  all_separable _
+  case5_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
 
 /-- Helper: S(a ^ ¬U(A,B), q ∨ U(A,B)) is separable. Case 6.
-    Proved via `all_separable` (separation theorem): every formula is separable. -/
+    Proved via Dedekind specialization (DedekindZ.lean). -/
 theorem case6_separable (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
       (Formula.or q (.untl A B))) :=
-  all_separable _
+  case6_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
 
 /-- Helper: S(a ^ U(A,B), q ∨ ¬U(A,B)) is separable. Case 7.
-    Proved via `all_separable` (separation theorem): every formula is separable. -/
+    Proved via Dedekind specialization (DedekindZ.lean). -/
 theorem case7_separable (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (.untl A B))
       (Formula.or q (Formula.neg (.untl A B)))) :=
-  all_separable _
+  case7_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
 
 /-- Helper: S(a ^ ¬U(A,B), q ∨ ¬U(A,B)) is separable. Case 8.
-    Proved via `all_separable` (separation theorem): every formula is separable. -/
+    Proved via Dedekind specialization (DedekindZ.lean). -/
 theorem case8_separable (a q A B : Formula)
-    (_ha : is_U_free a = true) (_hq : is_U_free q = true)
-    (_hA : is_U_free A = true) (_hB : is_U_free B = true)
-    (_ha' : is_S_free a = true) (_hq' : is_S_free q = true)
-    (_hA' : is_S_free A = true) (_hB' : is_S_free B = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
       (Formula.or q (Formula.neg (.untl A B)))) :=
-  all_separable _
+  case8_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
 
 /-! ## Event-Guard Decomposition
 
