@@ -155,7 +155,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Core Formula Type Redefinition [IN PROGRESS]
+### Phase 3: Core Formula Type Redefinition [COMPLETED]
 
 **Goal**: Remove `all_future` and `all_past` constructors from `Formula`, add definitional abbreviations with `@[simp]` lemmas, and update all functions in Formula.lean. If `@[match_pattern]` worked in Phase 1, apply it to the definitions.
 
