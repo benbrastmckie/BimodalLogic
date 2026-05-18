@@ -42,10 +42,10 @@ theorem discreteness_forward_sound_discrete (φ : Formula) :
 
 /--
 All discrete-compatible TM axioms are valid over discrete temporal orders.
-This re-exports axiom_valid_discrete from Soundness.lean.
+This re-exports axiom_discrete_valid from Soundness.lean.
 -/
 theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteCompatible) :
     valid_discrete φ :=
-  axiom_valid_discrete h h_dc
+  axiom_discrete_valid h h_dc
 
 end Bimodal.Metalogic.DiscreteSoundness

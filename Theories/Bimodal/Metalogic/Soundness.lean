@@ -31,9 +31,9 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - `temp_a_valid`: Temporal A axiom is valid
 - `temp_l_valid`: TL axiom is valid (uses always definition)
 - `modal_future_valid`: MF axiom is valid (via time-shift invariance)
-- `axiom_base_valid`: Base axioms are universally valid
-- `axiom_valid_dense`: Dense-compatible axioms are valid on dense frames
-- `axiom_valid_discrete`: Discrete-compatible axioms are valid on discrete frames
+- `axiom_valid`: Base axioms are universally valid
+- `axiom_dense_valid`: Dense-compatible axioms are valid on dense frames
+- `axiom_discrete_valid`: Discrete-compatible axioms are valid on discrete frames
 
 ## Implementation Notes
 
@@ -41,7 +41,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - Base axiom validity lemmas: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, M5_collapse,
   MK_dist, TK_dist, T4, TA, TL, MF, TF, linearity (universally valid)
 - Frame-class axiom validity: density (valid_dense), discreteness_forward (valid_discrete)
-- axiom_base_valid, axiom_valid_dense, axiom_valid_discrete (combined validators)
+- axiom_valid, axiom_dense_valid, axiom_discrete_valid (combined validators)
 
 **Key Techniques**:
 - Time-shift invariance (MF, TF): Uses `WorldHistory.time_shift` and
@@ -58,7 +58,7 @@ a matching Omega.
 ## Full Derivation Soundness
 
 The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
-1. **Axiom validity**: `axiom_base_valid`, `axiom_valid_dense`, `axiom_valid_discrete`
+1. **Axiom validity**: `axiom_valid`, `axiom_dense_valid`, `axiom_discrete_valid`
 2. **Modus ponens**: If `Γ ⊨ φ → ψ` and `Γ ⊨ φ` then `Γ ⊨ ψ` (semantic by definition)
 3. **Necessitation**: If `⊨ φ` then `⊨ □φ` (follows from S5 universal accessibility)
 4. **Temporal necessitation**: If `⊨ φ` then `⊨ Gφ` (follows from temporal quantification)
@@ -890,7 +890,7 @@ theorem z1_valid (φ : Formula) : valid_discrete
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
-theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ := by
+theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ := by
   cases h with
   | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
   | prop_s φ ψ => exact prop_s_valid φ ψ
@@ -940,7 +940,7 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
 Note: Under strict semantics, seriality axioms require NoMaxOrder/NoMinOrder (via Nontrivial). -/
-theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompatible) : valid_dense φ := by
+theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompatible) : valid_dense φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_dense (prop_k_valid φ ψ χ)
   | prop_s φ ψ => exact Validity.valid_implies_valid_dense (prop_s_valid φ ψ)
@@ -990,7 +990,7 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
 Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder + Nontrivial). -/
-theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteCompatible) :
+theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteCompatible) :
     valid_discrete φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_discrete (prop_k_valid φ ψ χ)
@@ -1194,7 +1194,7 @@ theorem soundness_dense_valid {phi : Formula}
   match d with
   | .axiom _ _ h_ax =>
     -- All dense-compatible axioms are valid_dense
-    exact axiom_valid_dense h_ax h_dc
+    exact axiom_dense_valid h_ax h_dc
   | .assumption _ _ h_mem =>
     -- Empty context has no assumptions
     exact absurd h_mem (Syntax.Context.not_mem_nil _)
@@ -1365,7 +1365,7 @@ theorem soundness_discrete_valid {phi : Formula}
     (d : DerivationTree [] phi) (h_dc : d.isDiscreteCompatible) : valid_discrete phi := by
   match d with
   | .axiom _ _ h_ax =>
-    exact axiom_valid_discrete h_ax h_dc
+    exact axiom_discrete_valid h_ax h_dc
   | .assumption _ _ h_mem =>
     exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ psi' _ d1 d2 =>
@@ -1429,7 +1429,7 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     truth_at M Omega τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax =>
-    exact axiom_valid_discrete h_ax h_dc D F M Omega h_sc τ h_mem t
+    exact axiom_discrete_valid h_ax h_dc D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

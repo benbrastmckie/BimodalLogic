@@ -145,7 +145,7 @@ TM logic has three variants based on frame conditions, with soundness/completene
 
 The core logic valid on all linear orders. See `FrameClass.Base` in [Axioms.lean](ProofSystem/Axioms.lean).
 
-- **Soundness**: `axiom_base_valid` - all base axioms valid on linear orders
+- **Soundness**: `axiom_valid` - all base axioms valid on linear orders
 - **Completeness**: Documented in [BaseCompleteness.lean](Metalogic/BaseCompleteness.lean)
 - **Frame**: Linear temporal order (no additional constraints)
 
@@ -154,7 +154,7 @@ The core logic valid on all linear orders. See `FrameClass.Base` in [Axioms.lean
 Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 
 - **Additional Axiom**: DN (`Fφ → FFφ`) - density
-- **Soundness**: `axiom_valid_dense` - dense-compatible axioms valid on DenselyOrdered
+- **Soundness**: `axiom_dense_valid` - dense-compatible axioms valid on DenselyOrdered
 - **Completeness**: Documented in [DenseCompleteness.lean](Metalogic/DenseCompleteness.lean)
 - **Frame**: `DenselyOrdered D` - between any two times exists another
 
@@ -163,7 +163,7 @@ Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 Extension requiring discretely ordered temporal domains. See `FrameClass.Discrete`.
 
 - **Additional Axioms**: DF (discreteness), SF/SP (seriality)
-- **Soundness**: `axiom_valid_discrete` - discrete-compatible axioms valid on SuccOrder
+- **Soundness**: `axiom_discrete_valid` - discrete-compatible axioms valid on SuccOrder
 - **Completeness**: Framework in [DiscreteCompleteness.lean](Metalogic/DiscreteCompleteness.lean)
 - **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
 

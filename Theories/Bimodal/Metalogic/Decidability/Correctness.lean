@@ -18,8 +18,8 @@ With irreflexive temporal semantics, the universal soundness theorem
 `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` no longer holds because the derivation system
 includes both density (valid only on dense frames) and discreteness_forward
 (valid only on discrete frames). Soundness is now frame-class specific:
-- `axiom_valid_dense` for dense-compatible axioms
-- `axiom_valid_discrete` for discrete-compatible axioms
+- `axiom_dense_valid` for dense-compatible axioms
+- `axiom_discrete_valid` for discrete-compatible axioms
 
 The `decide_sound` theorem (relating derivability to universal validity) has been
 removed. Frame-class specific soundness should be used instead.

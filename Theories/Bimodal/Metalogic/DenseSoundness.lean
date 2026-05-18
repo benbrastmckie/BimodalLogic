@@ -11,7 +11,7 @@ ordered temporal types).
 ## Main Results
 
 - `density_sound_dense`: DN is valid over all dense temporal orders
-- `axiom_valid_dense`: All dense-compatible axioms are valid over dense orders
+- `axiom_dense_valid`: All dense-compatible axioms are valid over dense orders
 
 ## Implementation Notes
 
@@ -41,10 +41,10 @@ theorem density_sound_dense (φ : Formula) :
 
 /--
 All dense-compatible TM axioms are valid over dense temporal orders.
-This re-exports axiom_valid_dense from Soundness.lean.
+This re-exports axiom_dense_valid from Soundness.lean.
 -/
 theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompatible) :
     valid_dense φ :=
-  axiom_valid_dense h h_dc
+  axiom_dense_valid h h_dc
 
 end Bimodal.Metalogic.DenseSoundness

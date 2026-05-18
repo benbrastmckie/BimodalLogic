@@ -118,30 +118,30 @@ theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ) (h_base : ax.isBa
     [Nontrivial D] [LinearTemporalFrame D] :
     valid_over D φ := by
   intro F M Omega h_sc τ h_mem t
-  exact axiom_base_valid ax h_base D F M Omega h_sc τ h_mem t
+  exact axiom_valid ax h_base D F M Omega h_sc τ h_mem t
 
 /--
 Dense-compatible axioms are valid on dense temporal frames.
 -/
-theorem axiom_valid_dense_fc {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDenseCompatible)
+theorem axiom_dense_valid_fc {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDenseCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
     valid_over D φ := by
   intro F M Omega h_sc τ h_mem t
-  exact axiom_valid_dense ax h_dc D F M Omega h_sc τ h_mem t
+  exact axiom_dense_valid ax h_dc D F M Omega h_sc τ h_mem t
 
 /--
 Discrete-compatible axioms are valid on discrete temporal frames.
 -/
-theorem axiom_valid_discrete_fc {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDiscreteCompatible)
+theorem axiom_discrete_valid_fc {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDiscreteCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
     [DiscreteTemporalFrame D] :
     valid_over D φ := by
   intro F M Omega h_sc τ h_mem t
-  -- Use axiom_valid_discrete from Soundness.lean
-  have h := axiom_valid_discrete ax h_dc
+  -- Use axiom_discrete_valid from Soundness.lean
+  have h := axiom_discrete_valid ax h_dc
   exact h D F M Omega h_sc τ h_mem t
 
 /-! ## Soundness over Int -/

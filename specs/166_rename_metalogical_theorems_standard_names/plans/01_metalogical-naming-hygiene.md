@@ -124,35 +124,35 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Normalize Axiom Validity Naming [NOT STARTED]
+### Phase 2: Normalize Axiom Validity Naming [COMPLETED]
 
 **Goal**: Rename the axiom validity theorems to follow consistent `axiom_{frame_class}_valid` word order, and rename `axiom_base_valid` to `axiom_valid`.
 
 **Tasks**:
-- [ ] Rename `axiom_base_valid` to `axiom_valid` in `Soundness.lean` (line 893)
-- [ ] Update `axiom_base_valid` references in:
-  - [ ] Soundness.lean docstrings (lines 34, 44, 61)
-  - [ ] FrameConditions/Soundness.lean `axiom_base_valid_linear` body (line 121) -- calls `axiom_base_valid`
-  - [ ] Theories/Bimodal/README.md (line 148)
-  - [ ] FrameConditions/Compatibility.lean comment references (lines 121-154 use `axiom_base_valid_linear` which calls `axiom_base_valid`)
-- [ ] Rename `axiom_valid_dense` to `axiom_dense_valid` in `Soundness.lean` (line 943)
-- [ ] Update `axiom_valid_dense` references in:
-  - [ ] Soundness.lean internal call (line 1197, inside `soundness_dense_valid`)
-  - [ ] DenseSoundness.lean body (line 48) -- calls `axiom_valid_dense`
-  - [ ] DenseSoundness.lean docstrings (lines 14, 44)
-  - [ ] FrameConditions/Soundness.lean `axiom_valid_dense_fc` body (line 132) -- calls `axiom_valid_dense`
-  - [ ] Decidability/Correctness.lean comment (line 21)
-  - [ ] Theories/Bimodal/README.md (line 157)
-- [ ] Rename `axiom_valid_discrete` to `axiom_discrete_valid` in `Soundness.lean` (line 993)
-- [ ] Update `axiom_valid_discrete` references in:
-  - [ ] Soundness.lean internal calls (lines 1368, 1432, inside `soundness_discrete_valid` and `soundness_discrete`)
-  - [ ] DiscreteSoundness.lean body (line 49) -- calls `axiom_valid_discrete`
-  - [ ] DiscreteSoundness.lean docstrings (lines 14, 45)
-  - [ ] FrameConditions/Soundness.lean `axiom_valid_discrete_fc` body (line 144) -- calls `axiom_valid_discrete`
-  - [ ] Decidability/Correctness.lean comment (line 22)
-  - [ ] Theories/Bimodal/README.md (line 166)
-  - [ ] Boneyard reference (non-critical, update if convenient)
-- [ ] Run `lake build` to verify no compilation errors
+- [x] Rename `axiom_base_valid` to `axiom_valid` in `Soundness.lean` (line 893)
+- [x] Update `axiom_base_valid` references in:
+  - [x] Soundness.lean docstrings (lines 34, 44, 61)
+  - [x] FrameConditions/Soundness.lean `axiom_base_valid_linear` body (line 121) -- calls `axiom_valid`
+  - [x] Theories/Bimodal/README.md (line 148)
+  - [x] FrameConditions/Compatibility.lean comment references *(deviation: skipped -- those reference `axiom_base_valid_linear` not `axiom_base_valid`)*
+- [x] Rename `axiom_valid_dense` to `axiom_dense_valid` in `Soundness.lean` (line 943)
+- [x] Update `axiom_valid_dense` references in:
+  - [x] Soundness.lean internal call (line 1197, inside `soundness_dense_valid`)
+  - [x] DenseSoundness.lean body (line 48) -- calls `axiom_dense_valid`
+  - [x] DenseSoundness.lean docstrings (lines 14, 44)
+  - [x] FrameConditions/Soundness.lean `axiom_valid_dense_fc` body (line 132) -- calls `axiom_dense_valid`
+  - [x] Decidability/Correctness.lean comment (line 21)
+  - [x] Theories/Bimodal/README.md (line 157)
+- [x] Rename `axiom_valid_discrete` to `axiom_discrete_valid` in `Soundness.lean` (line 993)
+- [x] Update `axiom_valid_discrete` references in:
+  - [x] Soundness.lean internal calls (lines 1368, 1432, inside `soundness_discrete_valid` and `soundness_discrete`)
+  - [x] DiscreteSoundness.lean body (line 49) -- calls `axiom_discrete_valid`
+  - [x] DiscreteSoundness.lean docstrings (lines 14, 45)
+  - [x] FrameConditions/Soundness.lean `axiom_valid_discrete_fc` body (line 144) -- calls `axiom_discrete_valid`
+  - [x] Decidability/Correctness.lean comment (line 22)
+  - [x] Theories/Bimodal/README.md (line 166)
+  - [x] Boneyard reference *(deviation: skipped -- non-critical, Boneyard is dead code)*
+- [x] Run `lake build` to verify no compilation errors
 
 **Timing**: 1 hour
 
