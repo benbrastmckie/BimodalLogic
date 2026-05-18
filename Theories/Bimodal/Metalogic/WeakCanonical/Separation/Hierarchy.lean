@@ -1597,14 +1597,17 @@ theorem single_U_and_conj_simplify (C A B : Formula)
     have ⟨hCt, hU⟩ := int_truth_and_iff.mp h
     exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle M t hU).mpr hCt, hU⟩
 
-/-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
-    is separable. Proof by count induction with constituent substitution.
+/-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
+    `has_no_allpast_allfuture` is separable, given a callback for handling
+    the `.snce`/`.all_past` constituents produced by substitution.
 
-    The callback in `subst_in_separated_separable` uses `all_separable` for now.
-    This is the ONLY axiom dependency. All other steps are axiom-free. -/
-theorem no_S_nested_in_U_separable_noax (phi : Formula)
+    The callback receives formulas with `no_S_nested_in_U` that arise from
+    substituting `.untl A B` (S-free args) into U-free positions of a
+    separated formula. These callback formulas have single U-type U(A,B). -/
+theorem no_S_nested_in_U_separable_param (phi : Formula)
     (hns : no_S_nested_in_U phi)
-    (hexp : has_no_allpast_allfuture phi = true) :
+    (hexp : has_no_allpast_allfuture phi = true)
+    (callback : ∀ (χ : Formula), no_S_nested_in_U χ → is_separable χ) :
     is_separable phi := by
   -- Strong induction on count_U_subformulas
   induction h : count_U_subformulas phi using Nat.strongRecOn generalizing phi with
@@ -1641,9 +1644,16 @@ theorem no_S_nested_in_U_separable_noax (phi : Formula)
     -- subst(psi, p, U(A,B)) is separable via constituent substitution
     have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
       subst_in_separated_separable psi p AB.1 AB.2
-        hAB_sf.1 hAB_sf.2 hpsi_sep
-        (fun χ _hns_χ => all_separable χ)
+        hAB_sf.1 hAB_sf.2 hpsi_sep callback
     exact is_separable_of_equiv hphi_equiv h_subst_sep
+
+/-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
+    is separable. Uses `all_separable` as callback (temporary, will be replaced). -/
+theorem no_S_nested_in_U_separable_noax (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hexp : has_no_allpast_allfuture phi = true) :
+    is_separable phi :=
+  no_S_nested_in_U_separable_param phi hns hexp (fun χ _hns_χ => all_separable χ)
 
 /-! ### Step 5d: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
 

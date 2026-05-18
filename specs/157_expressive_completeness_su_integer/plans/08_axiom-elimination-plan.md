@@ -251,7 +251,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 ---
 
-### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [IN PROGRESS]
+### Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8) [BLOCKED]
 
 **BLOCKER** (Phase 3):
 - **What failed**: The `.untl` and `.snce` cases of `all_formulas_separable_aux` still delegate to `all_separable` (which uses the axioms). Proving these without axioms requires the full GHR94 "constituent substitution" technique where, after abstracting temporal subformulas and separating, one substitutes back into the PAST (or FUTURE) constituents of the separated form independently and applies the IH to each. The IH is valid because each constituent has strictly lower junction depth (for 10.2.8) or fewer U-types (for 10.2.6).
