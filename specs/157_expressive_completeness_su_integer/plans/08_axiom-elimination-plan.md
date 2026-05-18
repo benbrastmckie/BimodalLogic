@@ -170,7 +170,7 @@ Then apply eliminations (3) and (5) per GHR94.
 
 ---
 
-### Phase 2: Case 7 via GHR94 Direct Formula [NOT STARTED]
+### Phase 2: Case 7 via GHR94 Direct Formula [COMPLETED]
 
 **Goal**: Replace the circular `all_separable _` in `case7_separable_Z` (DedekindZ.lean L1659) with a real proof using GHR94 10.2.3 item 7's direct decomposition.
 
@@ -188,7 +188,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 
 **Tasks**:
 
-- [ ] Task 2.1: Prove the Case 7 semantic equivalence (~150 LOC)
+- [x] Task 2.1: Prove the Case 7 semantic equivalence (~150 LOC)
   - Location: `DedekindZ.lean`, replace the current `case7_separable_Z` proof body
   - Define the Case 7 RHS:
     ```lean
@@ -222,7 +222,7 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
     - D1: S(event, q v ~U)(t) where event = A ^ (q v ~U) ^ S(a, B^q). Get r < t with event(r), guard on (r,t). From S(a,B^q)(r): s < r, a(s), B^q on (s,r). From A(r) and B on (s,r): U(A,B)(s). Build S(a^U, q v ~U)(t).
   - Verification: `lake build`, `case7_equiv_Z` compiles without sorry
 
-- [ ] Task 2.2: Prove Case 7 separability from the equivalence (~80 LOC)
+- [x] Task 2.2: Prove Case 7 separability from the equivalence (~80 LOC) *(deviation: altered -- added case8_separable_Z_gen and snce_Ufree_event_qNotU_guard_separable as infrastructure for D1 handling)*
   - Location: `DedekindZ.lean`, replace `case7_separable_Z` body
   - Strategy: Apply `is_separable_of_equiv (case7_equiv_Z ...)` then show each disjunct is separable:
     - **D2** = `S(a, B^q) ^ A`: `S(a, B^q)` is U-free (a, B, q all U-free and S-free). `A` is an atom (S-free and U-free). Product is separable via `and_separable`.
