@@ -49,12 +49,12 @@
     {
       "project_number": 163,
       "project_name": "rename_representation_to_completeness",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Rename misnamed representation theorems to completeness and recover ultrafilter frame infrastructure from Boneyard. (A) RENAME: 7 theorem renames (*representation* → *completeness*), 4 call site updates, 2 file renames (AlgebraicRepresentation.lean → AlgebraicCompleteness.lean, ParametricRepresentation.lean → ParametricCompleteness.lean), docstring/comment updates. (B) RECOVER: Extract Phase 1 definitions from Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean (~lines 56-1519) into a new Algebraic/UltrafilterFrame.lean. Generalize R_G, R_H, R_Box from LindenbaumAlg to arbitrary STSA α. Include key properties: R_G_trans, R_Box_refl, R_Box_euclidean, R_Box_symm, R_Box_trans, R_G_R_H_converse, G_preimage/H_preimage filter properties. Leave Phase 2 (box-class BFMCS, line 1520+) in Boneyard. The recovered file provides the ultrafilter frame seed for the Jonsson-Tarski representation theorem (task 125). Note: UltrafilterChain.lean has 18 sorries (most from temp_4/temp_k_dist removed in BX); the recovery should preserve sorry annotations for later resolution.",
       "created": "2026-05-18T17:52:31Z",
-      "last_updated": "2026-05-18T21:01:40Z",
-      "session_id": "sess_1779137275_b5dec8",
+      "last_updated": "2026-05-18T21:09:44Z",
+      "session_id": "sess_1779138246_21bf50",
       "researched": "2026-05-18T20:54:41Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -62,6 +62,11 @@
           "path": "specs/163_rename_representation_to_completeness/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: J-T representation architecture, literature survey, critic analysis, strategic alignment"
+        },
+        {
+          "path": "specs/163_rename_representation_to_completeness/plans/01_rename-recover-ultrafilter.md",
+          "type": "plan",
+          "summary": "5-phase plan: rename representation->completeness theorems (Part A) and recover ultrafilter frame from Boneyard (Part B)"
         }
       ]
     },

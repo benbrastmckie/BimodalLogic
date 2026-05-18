@@ -119,9 +119,10 @@ technical_debt:
 
 ### 163. Rename representation to completeness and recover ultrafilter frame from Boneyard
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**: [specs/163_rename_representation_to_completeness/reports/01_team-research.md]
+- **Plan**: [163_rename_representation_to_completeness/plans/01_rename-recover-ultrafilter.md]
 
 **Description**: Two-part task: (A) rename misnamed "representation" theorems to "completeness" throughout `Theories/Bimodal/Metalogic/Algebraic/`, and (B) recover ultrafilter frame infrastructure from Boneyard as seed for future Jónsson-Tarski representation (task 125).
 
