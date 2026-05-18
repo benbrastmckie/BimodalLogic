@@ -365,7 +365,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6B: Prove Main Hierarchy Theorem [NOT STARTED]
+### Phase 6B: Prove Main Hierarchy Theorem [BLOCKED]
+
+**BLOCKER** (Phase 6B):
+- **What failed**: Cannot prove `no_S_nested_in_U_separable` (GHR94 Lemma 10.2.7) without first resolving Cases 5-8 of Lemma 10.2.3.
+- **What was tried**: Thorough analysis of the entire proof chain: `no_S_nested_in_U → is_separable` requires Lemma 10.2.4 (single S with single U), which requires Cases 5-8. Cases 5-8 in `Eliminations.lean` are currently proved using `all_separable` (lines 155-194 of `NormalForm.lean`), which itself uses the 4 temporal closure axioms (snce_separable, untl_separable, etc.). The `all_separable` axiom-based proof is what Phase 6B is supposed to replace.
+- **Root cause**: GHR94's explicit formulas for Cases 5-8 on integer time are INCORRECT (documented in `Eliminations.lean` lines 460-494 and `specs/157_expressive_completeness_su_integer/reports/02_case5-blocker-research.md`). The GHR94 formula for Case 5 assumes U-chain B-coverage propagates to t, which fails on integers due to vacuous empty intervals. No correct explicit separated equivalent for Cases 5-8 on integers is known.
+- **Why it's stuck**: The junction_depth induction proof for `junction_depth_separable` reduces to `no_S_nested_in_U → is_separable` (base case), which reduces to Lemma 10.2.4, which reduces to Cases 5-8. Without correct separated equivalents for Cases 5-8, the chain cannot be completed.
+- **What is needed**: Either (a) find correct explicit separated equivalents for Cases 5-8 on integer time (fixing the GHR94 integer error), OR (b) find an alternative proof of `no_S_nested_in_U → is_separable` that bypasses Cases 5-8, OR (c) find a proof of the temporal closure axioms (snce_separable, etc.) that doesn't depend on Cases 5-8.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Prove `junction_depth_separable` -- the main theorem that every formula is separable -- via strong induction on `junction_depth (expand_temporal φ)`, with a separate `U_depth_under_S` subroutine (GHR94 Lemma 10.2.7).
 
