@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-05-13T22:25:06Z",
+  "_last_updated": "2026-05-18T23:48:40Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -119,11 +119,25 @@
         138
       ],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-05-18",
+      "date": "2026-05-18",
+      "scope": "full codebase",
+      "report_path": "specs/reviews/review-2026-05-18.md",
+      "summary": {
+        "files_reviewed": 154,
+        "active_sorries": 74,
+        "publication_path_sorries": 1,
+        "custom_axioms": 0,
+        "dead_code_sorries": 15
+      },
+      "tasks_created": []
     }
   ],
   "statistics": {
-    "total_reviews": 6,
-    "last_review": "2026-05-13",
+    "total_reviews": 7,
+    "last_review": "2026-05-18",
     "total_issues_found": 44,
     "total_tasks_created": 13
   }
