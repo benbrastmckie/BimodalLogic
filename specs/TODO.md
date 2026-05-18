@@ -1,5 +1,5 @@
 ---
-next_project_number: 163
+next_project_number: 164
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,28 @@ technical_debt:
 
 
 ## Tasks
+
+### 163. Rename representation theorems to completeness in Algebraic module
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Rename misnamed "representation" theorems to "completeness" theorems throughout `Theories/Bimodal/Metalogic/Algebraic/`. The theorems currently named `*representation*` are completeness theorems (contrapositive form: not provable → countermodel exists), not representation theorems in the Jónsson-Tarski sense. A genuine representation theorem would embed the Lindenbaum-Tarski algebra into the complex algebra of a frame class — a purely algebraic structural result with no mention of provability.
+
+**Theorems to rename** (7 definitions):
+- `parametric_algebraic_representation_relative` → `parametric_canonical_completeness_relative`
+- `parametric_representation_from_neg_membership` → `parametric_completeness_from_neg_membership`
+- `parametric_algebraic_representation_conditional` → `parametric_canonical_completeness_conditional`
+- `algebraic_representation_theorem` → `algebraic_completeness_theorem`
+- `algebraic_representation_theorem'` → `algebraic_completeness_theorem'`
+- `restricted_parametric_representation_from_neg_membership` → `restricted_parametric_completeness_from_neg_membership`
+- `fully_restricted_parametric_representation_from_neg_membership` → `fully_restricted_parametric_completeness_from_neg_membership`
+
+**Call sites** (4): `RootScopedChain.lean:220`, `ChronicleToCountermodel.lean:812,3307`, `ParametricRepresentation.lean:269`
+
+**Files to rename** (2): `AlgebraicRepresentation.lean` → `AlgebraicCompleteness.lean`, `ParametricRepresentation.lean` → `ParametricCompleteness.lean`
+
+Update docstrings/comments mentioning "representation theorem" to say "completeness theorem" or "canonical completeness".
 
 ### 162. Enforce strict plan compliance for formal implementation agents
 - **Effort**: small

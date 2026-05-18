@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 163,
+      "project_name": "rename_representation_to_completeness",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Rename misnamed representation theorems to completeness theorems throughout Theories/Bimodal/Metalogic/Algebraic/. The theorems currently named *representation* are completeness theorems (contrapositive form: not provable implies countermodel exists), not representation theorems in the Jonsson-Tarski sense. A genuine representation theorem would embed the Lindenbaum-Tarski algebra into the complex algebra of a frame class. Rename 7 theorem definitions, update 4 call sites, rename 2 files (AlgebraicRepresentation.lean to AlgebraicCompleteness.lean, ParametricRepresentation.lean to ParametricCompleteness.lean), and update docstrings/comments.",
+      "created": "2026-05-18T17:52:31Z",
+      "last_updated": "2026-05-18T17:52:31Z"
+    },
+    {
       "project_number": 162,
       "project_name": "enforce_plan_compliance_rule",
       "status": "not_started",
@@ -1508,7 +1517,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 163,
+  "next_project_number": 164,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
