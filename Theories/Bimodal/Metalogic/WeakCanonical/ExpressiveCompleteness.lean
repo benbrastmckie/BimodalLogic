@@ -1719,14 +1719,74 @@ private theorem atom_elim_correct {sig : MonadicSignature}
       -- The left side depends on which ep we have
       cases ep with
       | orig p =>
-        simp only [origSubs, origSubsList, applySubsts, Separation.subst_formula,
-                   Finset.mem_toList, Finset.mem_univ]
-        -- After subst: freshAM (.orig p) → atom(atomMap p), result = atom(atomMap p)
-        -- Need to show: int_truth M_blend t ... ↔ M.interp p t
-        sorry
-      | const_at_ref p => sorry
-      | lt_ref => sorry
-      | gt_ref => sorry
+        have h_rw : applySubsts (.atom (freshAM (.orig p)))
+            (origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]) =
+            .atom (atomMap p) := by
+          apply applySubsts_atom_with_match
+          · apply List.mem_append.mpr; left; apply List.mem_append.mpr; left
+            simp only [origSubs, origSubsList, List.mem_map, Finset.mem_toList,
+                       Finset.mem_univ, true_and, Prod.mk.injEq]
+            exact ⟨p, rfl, rfl⟩
+          · intro a' _ hmem' ha'
+            simp only [Separation.formula_atoms, Set.mem_singleton_iff] at ha'
+            subst ha'
+            simp only [origSubs, origSubsList, constSubsList, List.mem_append, List.mem_map,
+                       Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons,
+                       List.mem_singleton, Prod.mk.injEq] at hmem'
+            rcases hmem' with (⟨q, rfl, _⟩ | ⟨q, rfl, _⟩ | ⟨rfl, _⟩ | ⟨rfl, _⟩)
+            · exact h_disj p (.orig q)
+            · exact h_disj p (.const_at_ref q)
+            · exact h_disj p .lt_ref
+            · exact h_disj p .gt_ref
+        rw [h_rw]
+        simp only [Separation.int_truth]
+        rw [hF2 p t]
+        simp only [M_orig, to_int_struct_mem_atomMap M atomMap hinj p t]
+      | const_at_ref p =>
+        have h_rw : applySubsts (.atom (freshAM (.const_at_ref p)))
+            (origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]) =
+            if σ₀ p then Formula.neg .bot else .bot := by
+          apply applySubsts_atom_with_match
+          · apply List.mem_append.mpr; left; apply List.mem_append.mpr; right
+            simp only [constSubsList, List.mem_map, Finset.mem_toList,
+                       Finset.mem_univ, true_and, Prod.mk.injEq]
+            exact ⟨p, rfl, rfl⟩
+          · intro a' r' _ ha'
+            by_cases hsp : σ₀ p = true
+            · simp only [hsp, ite_true, Separation.formula_atoms, Set.mem_empty_iff_false] at ha'
+            · simp only [show σ₀ p = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr hsp),
+                         ite_false, Separation.formula_atoms, Set.mem_empty_iff_false] at ha'
+        rw [h_rw]
+        by_cases hsp : σ₀ p = true
+        · simp only [hsp, ite_true, Separation.int_truth, Formula.neg]
+          exact ⟨fun _ => (hσ₀ p).mp hsp, fun _ => trivial⟩
+        · simp only [show σ₀ p = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr hsp),
+                     ite_false, Separation.int_truth]
+          exact ⟨False.elim, fun h => absurd ((hσ₀ p).mpr h) hsp⟩
+      | lt_ref =>
+        have h_rw : applySubsts (.atom (freshAM .lt_ref))
+            (origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]) =
+            .bot := by
+          apply applySubsts_atom_with_match
+          · apply List.mem_append.mpr; right
+            simp [lt_atom]
+          · intro _ _ _ ha'
+            simp [Separation.formula_atoms] at ha'
+        rw [h_rw]
+        simp only [Separation.int_truth]
+        exact ⟨False.elim, fun h => absurd h (lt_irrefl t)⟩
+      | gt_ref =>
+        have h_rw : applySubsts (.atom (freshAM .gt_ref))
+            (origSubs ++ constSubsList freshAM σ₀ ++ [(lt_atom, .bot), (gt_atom, .bot)]) =
+            .bot := by
+          apply applySubsts_atom_with_match
+          · apply List.mem_append.mpr; right
+            simp [gt_atom]
+          · intro _ _ _ ha'
+            simp [Separation.formula_atoms] at ha'
+        rw [h_rw]
+        simp only [Separation.int_truth]
+        exact ⟨False.elim, fun h => absurd h (lt_irrefl t)⟩
     | bot => simp [elimExtFromSep, Separation.int_truth]
     | imp α β ihα ihβ =>
       simp only [Separation.is_properly_separated, Bool.and_eq_true] at hB_sep

@@ -203,7 +203,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7B: Prove atom_elim_correct (Sorry-Free ExpressiveCompleteness) [IN PROGRESS]
+### Phase 7B: Prove atom_elim_correct (Sorry-Free ExpressiveCompleteness) [COMPLETED]
 
 **Goal**: Close the final sorry at line 958 (`atom_elim_correct`) by proving `elimExtFromSep_correct` via structural induction on the properly-separated formula, then composing with `quantElimFormula_correct_iff`.
 
