@@ -50,7 +50,7 @@ technical_debt:
 
 60 [RESEARCHED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
 116 [RESEARCHED] — Remove all_future (G) and all_past (H) as primitive constructors 
-130 [RESEARCHING] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
+130 [RESEARCHED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 
 
@@ -435,10 +435,11 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
+- **Research**: [specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md]
 
 **Description**: After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates — convergence approach superseded. (3) succ_cofinal gap analysis — entire convergence + Z1 gap section. (4) BXCanonical pipeline dead code (Quasimodel/Realization, Quasimodel/Construction, TruthLemma, RootScopedChain, Filtration/SigmaOrdering, Frame) — bypassed by Chronicle. (5) Bundle/SuccRelation and Bundle/SuccExistence sorries if no longer needed. Total: ~40 sorries to archive.
 
@@ -513,7 +514,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [PLANNED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**:
@@ -562,7 +563,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 60. Clean up stale discrete_Icc_finite_axiom references
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Research**: [specs/060_remove_discrete_icc_finite_axiom/reports/01_stale-axiom-refs.md]
 
