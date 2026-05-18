@@ -186,7 +186,7 @@ Extract Phase 1 definitions (~lines 56–1519) from `Boneyard/StrictSemanticsLeg
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
-- **Dependencies**: 155
+- **Dependencies**: 155, 116
 - **Research**:
   - [specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md]
   - [specs/157_expressive_completeness_su_integer/reports/04_team-research.md]
@@ -195,6 +195,7 @@ Extract Phase 1 definitions (~lines 56–1519) from `Boneyard/StrictSemanticsLeg
   - [157_expressive_completeness_su_integer/reports/07_team-research.md]
   - [157_expressive_completeness_su_integer/reports/08_team-research.md]
   - [157_expressive_completeness_su_integer/reports/09_team-research.md]
+  - [157_expressive_completeness_su_integer/reports/10_task116-dependency-analysis.md]
 - **Plan**:
   - [157_expressive_completeness_su_integer/plans/05_dedekind-approach-plan.md]
   - [157_expressive_completeness_su_integer/plans/06_phase7-first-plan.md]

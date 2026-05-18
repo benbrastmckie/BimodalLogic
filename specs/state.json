@@ -227,7 +227,8 @@
       "topic": "completeness",
       "description": "Formalize expressive completeness of {S,U} over integer time (GHR94 Ch 10.2 separation theorem). Prove that every monadic first-order sentence over integer time has a temporal {U,S} equivalent (Theorem 10.2.9-10.2.10). This is Reynolds Theorem 5, required as prerequisite for Phase 3B of task 155 (gap elimination, Reynolds Theorem 14). Literature: GHR94 Chapters 9-10 (in literature/ with markdown conversions). Proof structure: 8 elimination cases (pulling U out of S and vice versa), nested 4-level induction (junction depth -> nesting depth -> number of U-subformulas -> single case). Estimated ~2500 lines of Lean, 3-4 weeks.",
       "dependencies": [
-        155
+        155,
+        116
       ],
       "created": "2026-05-17T02:49:54Z",
       "last_updated": "2026-05-18T22:59:11Z",
@@ -278,6 +279,11 @@
           "path": "specs/157_expressive_completeness_su_integer/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research: root cause diagnosis (all_past/all_future in separated witnesses), GHR94-conformant fix path"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/10_task116-dependency-analysis.md",
+          "type": "research",
+          "summary": "Analysis: how task 116 (remove G/H/F/P primitives) resolves the Phase 3 hierarchy circularity"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
