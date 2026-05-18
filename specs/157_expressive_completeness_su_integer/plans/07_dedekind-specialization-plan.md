@@ -238,16 +238,18 @@ Phases are strictly sequential because each depends on the theorems proved in th
 
 ---
 
-### Phase 2: Case 3 General Equivalence and Case 5 Separability (Phase 6B-2) [PARTIAL]
+### Phase 2: Case 3 General Equivalence and Case 5 Separability (Phase 6B-2) [COMPLETED]
 
 **Goal**: Prove the GHR94 Lemma 10.3.11 Case 3 general equivalence for ARBITRARY event `a` (not just U-free), specialized to integers. Then derive Case 5 separability from it.
 
-**RESEARCH FINDINGS** (Round 2):
-- The neg_since_equiv decomposition is CIRCULAR between Cases 5 and 8.
-- The abstract_untl + substitution approach gives a trivial roundtrip.
-- The ONLY non-circular approach is the Q-lemma based Case 3 general equivalence.
-- Research confirmed: case3_equiv_Z_general for arbitrary `a` enables Cases 5-8 non-circularly.
-- Dependency chain: case3_equiv_Z_general -> Case 5 -> Case 8 -> Case 7 (Case 6 parallel via case3_equiv).
+**RESEARCH FINDINGS** (Rounds 1-3):
+- Round 1: The neg_since_equiv decomposition is CIRCULAR between Cases 5 and 8.
+- Round 1: The abstract_untl + substitution approach gives a trivial roundtrip.
+- Round 1: The ONLY non-circular approach is the Q-lemma based Case 3 general equivalence.
+- Round 2: case3_equiv_Z_general PROVED (~300 LOC, sorry-free). Arbitrary event `a` enables Cases 5-8.
+- Round 2: Cases 5-8 separability via case3_equiv RHS requires showing RHS is separable. The RHS has same junction_depth as LHS, and multi_U_formula_separable uses all_separable (axiom). Direct hierarchy approach blocked.
+- **Round 3 BREAKTHROUGH**: ALL S-terms in case3_rhs have U-FREE guards. This means we need ONLY Cases 1-2 (elim_case_1_gen/elim_case_2_gen which accept non-S-free a,q) plus a U-evaluation lemma for events. The U-evaluation lemma replaces U(A,B) with ⊤/⊥ in the event when U/¬U is conjoined, making the event U-free. This completely avoids the hierarchy and all axioms.
+- Dependency chain: case3_equiv_Z_general → Case 5 (via event eval + Cases 1-2) → Case 8 (via neg_since_equiv + Cases 1,2,5) → Case 7 (via Cases 4,8). Case 6 parallel via case3_equiv + event eval + Cases 1-2.
 
 **CRITICAL FORMULA** (GHR94 10.3.11.3 specialized to Z with K+/K-/Gamma = bot):
 
@@ -266,7 +268,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 **Tasks**:
 
-- [x] Task 2.1: Define general alpha and RHS, prove case3_equiv_Z_general (~230 LOC) *(completed -- ~300 LOC including forward and backward directions)*
+- [x] Task 2.1: Define general alpha and RHS, prove case3_equiv_Z_general (~300 LOC) *(COMPLETED round 2: case3_alpha, case3_rhs, case3_equiv_Z_fwd, case3_equiv_Z_bwd, case3_equiv_Z_general all sorry-free in DedekindZ.lean)*
   - Location: `DedekindZ.lean`, after Q_Z properties
   - **Split into two lemmas** to manage heartbeats:
     ```lean
@@ -327,11 +329,26 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
   - **Helper lemma** (recommended): `int_truth_case3_alpha_iff` to unfold alpha semantics
   - Verification: `lake build` passes, no sorry
 
-- [ ] Task 2.2: Prove Case 5 separability non-circularly (~50 LOC) *(deviation: deferred to task 4 -- analysis shows Cases 5-8 separability requires the junction_depth hierarchy theorem; the neg_since_equiv route is circular between Cases 5 and 8; the case3_equiv RHS has same junction_depth as LHS; Cases 5-8 separability is subsumed by the hierarchy)*
-  - Location: After case3_equiv_Z_general
-  - Strategy: Instantiate case3_equiv_Z_general with a := a' ^ U(A,B).
-    Then case3_rhs(a' ^ U(A,B), q, A, B) has three disjuncts where every S-term containing U(A,B) is Case 1 form S(a'^U(A,B), q) which is separable via elim_case_1_gen.
-  - The RHS is separable via: is_separable_of_equiv + or_separable + and_separable + Case 1 separability for each S-with-U subterm
+- [x] Task 2.2: Prove Case 5 separability non-circularly (~100 LOC) *(completed -- via U-evaluation infrastructure + snce_event_decomp_separable, ~400 LOC total for infrastructure + Cases 5,6,8)*
+  - Location: DedekindZ.lean, after case3_equiv_Z_general
+  - **REVISED STRATEGY** (from round 3 analysis):
+    ALL S-terms in case3_rhs have U-FREE guards. So we need only Cases 1-2 (elim_case_1_gen, elim_case_2_gen which don't require S-free a,q) plus event U-evaluation.
+  - **New infrastructure needed** (~60 LOC):
+    1. `replace_untl_with_top(C, A, B)`: replace .untl A B with ⊤ in C
+    2. `replace_untl_with_top_correct`: when U(A,B) holds, C ↔ C[U:=⊤]
+    3. `snce_event_eval_pos`: int_equiv S(C∧U, F) S(C[U:=⊤]∧U, F) (makes event U-free)
+    4. `snce_event_eval_neg`: similarly for ¬U, replace U with ⊥
+  - **Case 5 proof** (~40 LOC):
+    1. case3_equiv_Z_general with a := a'∧U(A,B)
+    2. D1 = S(a'∧U, q): elim_case_1_gen directly ✓
+    3. D2 = S(alpha, Q_Z) ∧ (A∨B∧U): 
+       - since_event_split on U → S(alpha∧U, Q_Z) ∨ S(alpha∧¬U, Q_Z)
+       - snce_event_eval_pos/neg → S(alpha_true∧U, Q_Z) ∨ S(alpha_false∧¬U, Q_Z)
+       - alpha_true/alpha_false are U-free → Cases 1, 2 ✓
+       - (A∨B∧U): syntactically separated ✓
+    4. D3 = S(event, q): same event decomposition → Cases 1, 2 ✓
+    5. is_separable_of_equiv + or_separable + and_separable ✓
+  - **NO axiom dependency**: uses only elim_case_1_gen, elim_case_2_gen, since_event_split, boolean closure
   - Replace `all_separable _` in case5_separable_Z with the real proof
   - Verification: `lake build` passes, no sorry, no all_separable dependency
 
@@ -352,6 +369,12 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 ### Phase 3: Cases 6-8 via Reductions (Phase 6B-3) [PARTIAL]
 
+**Round 3 Status**: Cases 6 and 8 proved non-circularly. Case 7 retains all_separable bootstrap.
+- Case 5: via case3_equiv_Z_general + U-evaluation + Cases 1-2 (DONE)
+- Case 6: via case3_equiv_Z_general + U-evaluation + Cases 1-2 (DONE)
+- Case 8: via neg_since_equiv decomposition + Case 5 + snce_event_decomp_separable (DONE)
+- Case 7: requires two-level U-type decomposition or full junction_depth hierarchy (BLOCKED)
+
 **Goal**: Prove Cases 6, 7, and 8 by reducing them to previously proved cases, following GHR94 Lemma 10.3.11 items 6-8.
 
 **Mathematical Structure** (from GHR94):
@@ -363,7 +386,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
 
 **Tasks**:
 
-- [ ] Task 3.1: Prove Case 8 is separable (~100 LOC) *(was: uses all_separable; needs: neg_since_equiv + Cases 1,2,5)*
+- [x] Task 3.1: Prove Case 8 is separable (~100 LOC) *(completed -- via case8_decomp_Z + Case 5 + snce_event_decomp_separable)*
   - Location: `DedekindZ.lean` or `CasesDedekind.lean`
   - Type:
     ```lean
@@ -390,7 +413,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
     - After simplification with K-/Gamma vanishing: `S(~U ^ a, ~U v q) <-> S(~U ^ a, top) ^ ~S(U ^ ~q, U v ~a)`. Both parts are separable.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [ ] Task 3.2: Prove Case 7 is separable (~80 LOC) *(was: uses all_separable; needs: Cases 4,8)*
+- [ ] Task 3.2: Prove Case 7 is separable (~80 LOC) *(deviation: deferred -- requires two-level U-type decomposition or junction_depth hierarchy; neg_until_equiv introduces U(~A^~B, ~A) which is a different U-type)*
   - Location: After Case 8
   - Type:
     ```lean
@@ -413,7 +436,7 @@ Note: This is the GENERAL form (arbitrary a). Case 5 instantiates with a := a' ^
     - Apply Case 8 (`case8_separable_Z`) and Case 4 (`case4_separable`) to the sub-terms.
   - Verification: `lake build` passes, theorem has no sorry
 
-- [ ] Task 3.3: Prove Case 6 is separable (~80 LOC) *(was: uses all_separable; needs: case3_equiv + Case 2)*
+- [x] Task 3.3: Prove Case 6 is separable (~80 LOC) *(completed -- via case3_equiv_Z_general + snce_event_decomp_separable)*
   - Location: After Case 7
   - Type:
     ```lean
