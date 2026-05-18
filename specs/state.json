@@ -8,11 +8,11 @@
     {
       "project_number": 166,
       "project_name": "rename_metalogical_theorems_standard_names",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Rename major metalogical theorems to standard uniform names. Soundness: soundness -> soundness_serial (requires Nontrivial D for seriality), add soundness_linear excluding seriality axioms. soundness_dense and soundness_discrete keep as-is. Completeness: bx_completeness -> completeness_serial, dd_countermodel_chronicle_dense -> completeness_dense, doets_countermodel_discrete -> completeness_discrete, dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove. Update all call sites, docstrings, and README.",
       "created": "2026-05-18T18:14:23Z",
-      "last_updated": "2026-05-18T22:47:50Z",
+      "last_updated": "2026-05-18T23:19:17Z",
       "session_id": "sess_1779144450_cb7da5",
       "researched": "2026-05-18T20:47:45Z",
       "artifacts": [
@@ -25,9 +25,16 @@
           "path": "specs/166_rename_metalogical_theorems_standard_names/plans/01_metalogical-naming-hygiene.md",
           "type": "plan",
           "summary": "4-phase plan: rename completeness/countermodel theorems, normalize axiom validity naming, create new completeness_dense/completeness_discrete theorems, update documentation"
+        },
+        {
+          "path": "specs/166_rename_metalogical_theorems_standard_names/summaries/01_metalogical-naming-hygiene-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 4 phases completed, all renames applied, new completeness theorems created"
         }
       ],
-      "started": "2026-05-18T22:47:50Z"
+      "started": "2026-05-18T22:47:50Z",
+      "completed": "2026-05-18T23:19:17Z",
+      "completion_summary": "Renamed bx_completeness→completeness, dd_countermodel_chronicle_dense→countermodel_dense, doets_countermodel_discrete→countermodel_discrete, axiom_base_valid→axiom_valid, axiom_valid_dense→axiom_dense_valid, axiom_valid_discrete→axiom_discrete_valid. Created new completeness_dense and completeness_discrete standalone theorems. Updated all call sites, docstrings, and README tables."
     },
     {
       "project_number": 165,
