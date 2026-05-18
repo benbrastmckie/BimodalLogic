@@ -48,7 +48,7 @@ technical_debt:
 
 ### Formula Refactor
 
-60 [RESEARCHED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
+60 [COMPLETED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
 116 [RESEARCHED] — Remove all_future (G) and all_past (H) as primitive constructors 
 130 [RESEARCHED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
@@ -514,7 +514,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**:
@@ -563,10 +563,11 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 60. Clean up stale discrete_Icc_finite_axiom references
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Research**: [specs/060_remove_discrete_icc_finite_axiom/reports/01_stale-axiom-refs.md]
 - **Plan**: [060_remove_discrete_icc_finite_axiom/plans/01_stale-axiom-refs.md]
+- **Summary**: [specs/060_remove_discrete_icc_finite_axiom/summaries/01_stale-axiom-refs-summary.md]
 
 **Description**: discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.
 
