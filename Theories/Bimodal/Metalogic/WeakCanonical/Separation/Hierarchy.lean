@@ -1187,28 +1187,194 @@ theorem subst_preserves_no_allpast_allfuture (ψ : Formula) (p : Atom) (r : Form
     simp [has_no_allpast_allfuture] at hψ
     simp [subst_formula, has_no_allpast_allfuture, ih1 hψ.1, ih2 hψ.2]
 
-/-! ### Step 2: The Hierarchy Theorem
+/-! ### Step 2: Strict Count Decrease for Abstraction -/
 
-The full hierarchy proof proceeds by well-founded induction on `sizeOf φ`
-for expanded formulas (no all_past/all_future). The key insight is that
-for expanded formulas, we can directly show separability without needing
-the temporal closure axioms, because:
+/-- Abstracting a U-type from a non-U-free formula strictly decreases count_U. -/
+theorem abstract_untl_count_lt_of_not_U_free (phi A B : Formula) (p : Atom)
+    (h_not_uf : is_U_free phi = false) :
+    count_U_subformulas (abstract_untl phi A B p) < count_U_subformulas phi := by
+  induction phi with
+  | atom _ => simp [is_U_free] at h_not_uf
+  | bot => simp [is_U_free] at h_not_uf
+  | imp c d ih1 ih2 =>
+    simp [is_U_free] at h_not_uf
+    simp only [abstract_untl, count_U_subformulas]
+    rcases h_not_uf with hc | hd
+    · have := ih1 hc; have := abstract_untl_count_le d A B p; omega
+    · have := ih2 hd; have := abstract_untl_count_le c A B p; omega
+  | box c ih =>
+    simp [is_U_free] at h_not_uf
+    simp only [abstract_untl, count_U_subformulas]; exact ih h_not_uf
+  | all_past c ih =>
+    simp [is_U_free] at h_not_uf
+    simp only [abstract_untl, count_U_subformulas]; exact ih h_not_uf
+  | all_future c ih =>
+    simp [is_U_free] at h_not_uf
+    simp only [abstract_untl, count_U_subformulas]; exact ih h_not_uf
+  | untl c d _ _ =>
+    simp only [abstract_untl, count_U_subformulas]
+    split
+    · simp [count_U_subformulas]; omega
+    · simp only [count_U_subformulas]
+      have := abstract_untl_count_le c A B p
+      have := abstract_untl_count_le d A B p; omega
+  | snce c d ih1 ih2 =>
+    simp [is_U_free] at h_not_uf
+    simp only [abstract_untl, count_U_subformulas]
+    rcases h_not_uf with hc | hd
+    · have := ih1 hc; have := abstract_untl_count_le d A B p; omega
+    · have := ih2 hd; have := abstract_untl_count_le c A B p; omega
 
-1. JD=0 formulas are already syntactically separated
-2. Boolean combinations (`.imp`) reduce to smaller subformulas
-3. `.untl a b` with S-free args (when no S under U) is already separated
-4. `.snce a b` with U-free args (when no U under S) is already separated
-5. For formulas with S-U interaction, the abstract/separate/substitute
-   technique reduces to formulas with lower junction depth
+/-- abstract_untl preserves has_no_allpast_allfuture. -/
+theorem abstract_untl_preserves_no_allpast_allfuture (phi A B : Formula) (p : Atom)
+    (h : has_no_allpast_allfuture phi = true) :
+    has_no_allpast_allfuture (abstract_untl phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_untl, has_no_allpast_allfuture]
+  | bot => simp [abstract_untl, has_no_allpast_allfuture]
+  | imp c d ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at h
+    simp [abstract_untl, has_no_allpast_allfuture, ih1 h.1, ih2 h.2]
+  | box _ => simp [abstract_untl, has_no_allpast_allfuture]
+  | all_past _ => simp [has_no_allpast_allfuture] at h
+  | all_future _ => simp [has_no_allpast_allfuture] at h
+  | untl c d ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at h
+    simp only [abstract_untl]
+    split
+    · simp [has_no_allpast_allfuture]
+    · simp [has_no_allpast_allfuture, ih1 h.1, ih2 h.2]
+  | snce c d ih1 ih2 =>
+    simp [has_no_allpast_allfuture] at h
+    simp [abstract_untl, has_no_allpast_allfuture, ih1 h.1, ih2 h.2]
 
-The proof uses the GHR94 hierarchy structure:
-- Lemma 10.2.4: Cases 1-8 (proved in Eliminations + DedekindZ)
-- Lemma 10.2.5-10.2.7: Single-U → Multi-U → no_S_nested_in_U
-- Lemma 10.2.8: Full junction-depth induction
+/-! ### Step 3: Substitution into Separated Formulas
 
-However, we collapse the hierarchy into a single well-founded induction
-on `(junction_depth φ, sizeOf φ)` for simplicity.
--/
+The "constituent substitution" technique from GHR94 Lemma 10.2.6.
+Given a separated formula ψ, substituting `.untl A B` (with S-free A, B)
+for atom p yields a separable formula, provided we have a callback
+for handling the `.snce` and `.all_past` constituents. -/
+
+/-- Substituting `.untl A B` (S-free args) for atom p in a separated formula
+    produces a separable formula, using `ih_snce` for constituents where
+    substitution breaks separation (`.snce` and `.all_past` positions). -/
+theorem subst_in_separated_separable (ψ : Formula) (p : Atom) (A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hsep : is_syntactically_separated ψ = true)
+    (ih_snce : ∀ (χ : Formula), no_S_nested_in_U χ → is_separable χ) :
+    is_separable (subst_formula ψ p (.untl A B)) := by
+  induction ψ with
+  | atom a =>
+    simp only [subst_formula]; split
+    · exact ⟨.untl A B, by simp [is_syntactically_separated, hA_sf, hB_sf], int_equiv_refl _⟩
+    · exact ⟨.atom a, rfl, int_equiv_refl _⟩
+  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
+  | box ψ => exact ⟨.box (subst_formula ψ p (.untl A B)), rfl, int_equiv_refl _⟩
+  | imp c d ih_c ih_d =>
+    simp [is_syntactically_separated] at hsep
+    exact imp_separable (ih_c hsep.1) (ih_d hsep.2)
+  | all_past c _ =>
+    simp [is_syntactically_separated] at hsep
+    exact ih_snce (.all_past (subst_formula c p (.untl A B)))
+      (subst_U_free_gives_no_S_nested c p A B hsep hA_sf hB_sf)
+  | all_future c _ =>
+    simp [is_syntactically_separated] at hsep
+    exact ⟨.all_future (subst_formula c p (.untl A B)),
+           by simp [is_syntactically_separated,
+                     subst_S_free_preserves_S_free c p _ hsep (by simp [is_S_free, hA_sf, hB_sf])],
+           int_equiv_refl _⟩
+  | untl c d _ _ =>
+    simp [is_syntactically_separated] at hsep
+    exact ⟨.untl (subst_formula c p (.untl A B)) (subst_formula d p (.untl A B)),
+           by simp [is_syntactically_separated,
+                     subst_S_free_preserves_S_free c p _ hsep.1 (by simp [is_S_free, hA_sf, hB_sf]),
+                     subst_S_free_preserves_S_free d p _ hsep.2 (by simp [is_S_free, hA_sf, hB_sf])],
+           int_equiv_refl _⟩
+  | snce c d _ _ =>
+    simp [is_syntactically_separated] at hsep
+    exact ih_snce (.snce (subst_formula c p (.untl A B)) (subst_formula d p (.untl A B)))
+      ⟨subst_U_free_gives_no_S_nested c p A B hsep.1 hA_sf hB_sf,
+       subst_U_free_gives_no_S_nested d p A B hsep.2 hA_sf hB_sf⟩
+
+/-! ### Step 4: Additional Infrastructure
+
+Substitution congruence and helper lemmas for the hierarchy theorem. -/
+
+/-- Substitution preserves int_equiv: if φ ≡ ψ then subst(φ, p, r) ≡ subst(ψ, p, r). -/
+theorem subst_formula_congr {φ ψ : Formula} (h : int_equiv φ ψ)
+    (p : Atom) (r : Formula) :
+    int_equiv (subst_formula φ p r) (subst_formula ψ p r) := by
+  intro M t; rw [subst_correctness, subst_correctness]; exact h _ t
+
+/-- Helper: `.untl` with S-free args is already separated. -/
+private theorem untl_sf_exp_separated (a b : Formula)
+    (ha_sf : is_S_free a = true) (hb_sf : is_S_free b = true) :
+    is_separable (.untl a b) :=
+  ⟨.untl a b, by simp [is_syntactically_separated, ha_sf, hb_sf], int_equiv_refl _⟩
+
+/-- Helper: `.snce` with U-free args is already separated. -/
+private theorem snce_uf_separated (a b : Formula)
+    (ha_uf : is_U_free a = true) (hb_uf : is_U_free b = true) :
+    is_separable (.snce a b) :=
+  ⟨.snce a b, by simp [is_syntactically_separated, ha_uf, hb_uf], int_equiv_refl _⟩
+
+/-- Extract a U-type (A, B) with S-free args from a non-U-free formula
+    that has `no_S_nested_in_U`. -/
+private noncomputable def extract_U_type : (φ : Formula) → (is_U_free φ = false) →
+    no_S_nested_in_U φ → (Formula × Formula)
+  | .atom _, h, _ => absurd rfl h
+  | .bot, h, _ => absurd rfl h
+  | .imp c d, h, hns => by
+    simp [is_U_free] at h; rcases h with hc | hd
+    · exact extract_U_type c hc hns.1
+    · exact extract_U_type d hd hns.2
+  | .box c, h, hns => by simp [is_U_free] at h; exact extract_U_type c h hns
+  | .all_past c, h, hns => by simp [is_U_free] at h; exact extract_U_type c h hns
+  | .all_future c, h, hns => by simp [is_U_free] at h; exact extract_U_type c h hns
+  | .untl a b, _, _ => (a, b)
+  | .snce c d, h, hns => by
+    simp [is_U_free] at h; rcases h with hc | hd
+    · exact extract_U_type c hc hns.1
+    · exact extract_U_type d hd hns.2
+
+private theorem extract_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) :
+    is_S_free (extract_U_type φ h hns).1 = true ∧
+    is_S_free (extract_U_type φ h hns).2 = true := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    simp [is_U_free] at h; unfold extract_U_type; simp
+    rcases h with hc | hd
+    · simp [hc]; exact ih1 hc hns.1
+    · simp [hd]; by_cases hc : is_U_free c = false
+      · simp [hc]; exact ih1 hc hns.1
+      · push_neg at hc; simp [hc]; exact ih2 hd hns.2
+  | box c ih => simp [is_U_free] at h; unfold extract_U_type; exact ih h hns
+  | all_past c ih => simp [is_U_free] at h; unfold extract_U_type; exact ih h hns
+  | all_future c ih => simp [is_U_free] at h; unfold extract_U_type; exact ih h hns
+  | untl a b => exact hns
+  | snce c d ih1 ih2 =>
+    simp [is_U_free] at h; unfold extract_U_type; simp
+    rcases h with hc | hd
+    · simp [hc]; exact ih1 hc hns.1
+    · simp [hd]; by_cases hc : is_U_free c = false
+      · simp [hc]; exact ih1 hc hns.1
+      · push_neg at hc; simp [hc]; exact ih2 hd hns.2
+
+/-! ### Step 5: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
+
+The hierarchy theorem proves every expanded formula is separable. The proof
+currently delegates the `.untl` and `.snce` cases to `all_separable` from
+SeparationThm.lean (which uses temporal closure axioms). The infrastructure
+above (`subst_in_separated_separable`, `abstract_untl_count_lt_of_not_U_free`,
+`extract_U_type`, etc.) provides the building blocks for replacing these
+axiom-dependent cases with direct proofs.
+
+The remaining challenge is implementing the "constituent substitution" technique
+(GHR94 Lemma 10.2.6, lines 167-169) for the single-U-type case, which requires
+S-nesting depth induction combined with `lemma_10_2_4`. See handoff for details. -/
 
 /-- Junction depth 0 with expanded gives separated (re-export for convenience). -/
 private theorem jd_zero_sep (φ : Formula)
@@ -1221,7 +1387,7 @@ private theorem jd_zero_sep (φ : Formula)
     immediate, imp uses boolean closure, and all_past/all_future are impossible
     for expanded formulas. The temporal cases (untl, snce) use all_separable
     from SeparationThm.lean (which uses temporal closure axioms). These will
-    be replaced in Phase 4 when the axioms are eliminated.
+    be replaced when the constituent substitution infrastructure is completed.
 
     GHR94 Lemma 10.2.8 + Theorem 10.2.9 (specialized to integer time). -/
 theorem all_formulas_separable_aux (φ : Formula)
@@ -1236,16 +1402,16 @@ theorem all_formulas_separable_aux (φ : Formula)
   | all_past _ _ => simp [has_no_allpast_allfuture] at hexp
   | all_future _ _ => simp [has_no_allpast_allfuture] at hexp
   | untl a b _ih_a _ih_b =>
-    -- GHR94 10.2.8: .untl a b is separable via junction-depth induction.
-    -- The key: a and b are separable by IH (smaller), then .untl a' b'
-    -- (with separated a', b') is separated by abstracting S-terms and
-    -- applying the IH to each S-constituent with lower junction depth.
-    -- Current: delegates to all_separable (uses axioms).
-    -- Phase 4 will replace this with the direct hierarchy proof.
+    -- GHR94 10.2.8: .untl a b via abstraction + substitution.
+    -- Currently delegates to all_separable (uses axioms).
+    -- Will be replaced by direct proof using extract_U_type +
+    -- abstract_snce + subst_in_separated_separable.
     exact all_separable (.untl a b)
   | snce a b _ih_a _ih_b =>
-    -- GHR94 10.2.8: .snce a b is separable via junction-depth induction.
-    -- Symmetric to the untl case.
+    -- GHR94 10.2.8: .snce a b via abstraction + substitution.
+    -- Currently delegates to all_separable (uses axioms).
+    -- Will be replaced by direct proof using extract_U_type +
+    -- abstract_untl + subst_in_separated_separable.
     exact all_separable (.snce a b)
 
 /-- Every formula is separable (GHR94 Theorem 10.2.9 for integer time).

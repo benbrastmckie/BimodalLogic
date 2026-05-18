@@ -260,11 +260,18 @@ GHR94 says: "By considering when A is true we deduce..." and "The first disjunct
 - **What is needed**: Implement `subst_in_separated_bounds_jd`: given separated psi and a substitution z -> S(E,F), show `junction_depth(subst psi z (S(E,F))) <= max(1, junction_depth(S(E,F)))`. Then use this in the `.snce` case of the induction.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-**Progress made in this session**:
+**Progress made across sessions**:
 - Fixed pre-existing name collision (`u_free_s_free_is_separable` duplicate in Hierarchy.lean)
 - Proved 4 substitution preservation lemmas (Step 1 of strategy)
 - Built the `all_formulas_separable_aux` / `all_formulas_separable` framework (compiles, delegates to `all_separable` for `.untl`/`.snce`)
-- Deep analysis of why each approach fails (documented above)
+- **Session 2 (2026-05-18)**: Proved 5 additional lemmas, all without sorry or axioms:
+  - `abstract_untl_count_lt_of_not_U_free`: strict count decrease for abstraction
+  - `abstract_untl_preserves_no_allpast_allfuture`: abstraction preserves expanded property
+  - `subst_in_separated_separable`: THE CORE CONSTITUENT SUBSTITUTION LEMMA -- substituting `.untl A B` (S-free args) into a separated formula is separable, with callback for `.snce`/`.all_past` positions
+  - `subst_formula_congr`: substitution preserves int_equiv
+  - `extract_U_type` + `extract_U_type_S_free`: extracts U-type from non-U-free formula with no_S_nested_in_U
+- **Remaining blocker**: The multi-U count induction works but single-U case requires S-nesting depth induction (GHR94 10.2.5). This needs a function to find/replace the innermost `.snce` containing a specific U-type and apply `lemma_10_2_4` to it (~300 LOC total)
+- Deep analysis of why each approach fails (documented in handoff)
 
 **Goal**: Prove `all_formulas_separable` by implementing the GHR94 hierarchy with constructive witnesses, replacing the circular `all_separable` in Hierarchy.lean.
 
