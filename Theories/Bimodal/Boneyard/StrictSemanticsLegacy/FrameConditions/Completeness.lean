@@ -139,11 +139,10 @@ theorem dense_completeness_fc {φ : Formula} :
 /-! ## Discrete Completeness -/
 
 /--
-Discrete completeness infrastructure status.
+Discrete soundness for the strict-semantics legacy formulation.
 
-This theorem documents the current state of discrete completeness:
-- **Proven**: Discrete soundness via axiom_valid_discrete_fc
-- **Blocked**: Full completeness requires `discrete_Icc_finite_axiom`
+Proves that every discrete-compatible axiom is valid over discrete temporal frames
+using `axiom_valid_discrete_fc`.
 -/
 theorem discrete_soundness_proven {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDiscreteCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]

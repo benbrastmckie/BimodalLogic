@@ -992,8 +992,8 @@ Successor existence theorem.
 
 For any MCS u with F(⊤) ∈ u, there exists an MCS v with Succ(u,v).
 
-This is the key theorem that bypasses the covering lemma and replaces
-discrete_Icc_finite_axiom for the discrete track.
+This is the key theorem that establishes successor existence for the discrete
+track without requiring the covering lemma.
 -/
 theorem successor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :

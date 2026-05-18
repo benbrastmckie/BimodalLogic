@@ -48,14 +48,14 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Edit Stale Docstrings [NOT STARTED]
+### Phase 1: Edit Stale Docstrings [COMPLETED]
 
 **Goal**: Remove or reword all three docstrings that reference the deleted axiom.
 
 **Tasks**:
-- [ ] Edit FrameClass.lean: delete the "Technical Debt" paragraph (lines 142-144)
-- [ ] Edit SuccExistence.lean: reword the `successor_exists` docstring (lines 995-996)
-- [ ] Edit Boneyard Completeness.lean: reword the `discrete_soundness_proven` docstring (lines 141-147)
+- [x] Edit FrameClass.lean: delete the "Technical Debt" paragraph (lines 142-144)
+- [x] Edit SuccExistence.lean: reword the `successor_exists` docstring (lines 995-996)
+- [x] Edit Boneyard Completeness.lean: reword the `discrete_soundness_proven` docstring (lines 141-147)
 
 **Timing**: 5 minutes
 
@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build Verification [NOT STARTED]
+### Phase 2: Build Verification [IN PROGRESS]
 
 **Goal**: Confirm the project builds cleanly after docstring edits.
 

@@ -138,10 +138,6 @@ This captures the frame conditions for the discreteness axioms:
 - `SuccOrder D`: Every element has an immediate successor
 - `PredOrder D`: Every element has an immediate predecessor
 - `IsSuccArchimedean D`: Successor iteration reaches all greater elements
-
-**Technical Debt**: The completeness proof for discrete frames relies on
-`discrete_Icc_finite_axiom`, which asserts finiteness of
-closed intervals. This axiom is documented technical debt.
 -/
 class DiscreteTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] : Prop where
