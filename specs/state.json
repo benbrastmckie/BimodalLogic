@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 166,
+      "project_name": "rename_metalogical_theorems_standard_names",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Rename major metalogical theorems to standard uniform names. Current names are ad hoc and reflect implementation history rather than standard conventions. Rename: bx_completeness -> completeness (Completeness.lean), dd_countermodel_chronicle_dense -> completeness_dense (ChronicleToCountermodel.lean), doets_countermodel_discrete -> completeness_discrete (Transfer.lean), dd_countermodel_chronicle_mixed_sorry -> completeness_mixed or remove if dead code, dd_countermodel_chronicle_nondense_sorry -> remove or rename. Soundness names (soundness, soundness_dense, soundness_discrete) are already standard. Update all call sites, docstrings, and README Result Details table. Goal: top-level API for each frame class is soundness_{class} and completeness_{class}.",
+      "created": "2026-05-18T18:14:23Z",
+      "last_updated": "2026-05-18T18:14:23Z"
+    },
+    {
       "project_number": 165,
       "project_name": "establish_semantic_finite_model_property",
       "status": "not_started",
@@ -1505,7 +1514,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 166,
+  "next_project_number": 167,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
