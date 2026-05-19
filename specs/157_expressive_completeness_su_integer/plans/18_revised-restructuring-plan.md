@@ -639,7 +639,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [NOT STARTED]
+### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [IN PROGRESS]
 
 **Goal**: Rewrite `all_formulas_separable_aux` to call `no_S_nested_in_U_separable_direct` directly. Remove the `SeparationThm` import from Hierarchy.lean. Then replace all 9 axioms in SeparationThm.lean with theorems.
 
