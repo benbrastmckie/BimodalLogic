@@ -757,8 +757,8 @@ theorem abstract_untl_preserves_separated (phi A B : Formula) (p : Atom)
 /-- Lemma 10.2.6 (GHR94): If no S is nested within any U-argument of φ
     (equivalently: all U-arguments are S-free), then φ is separable.
 
-    The proof uses `all_separable` from SeparationThm.lean, which establishes
-    separability via structural induction with temporal closure theorems. -/
+    Proved via `all_separable` (which is now a theorem, not an axiom,
+    once Phase 5 completes the SeparationThm axiom replacement). -/
 theorem multi_U_formula_separable (phi : Formula) (h : no_S_nested_in_U phi) :
     is_separable phi :=
   all_separable phi
@@ -2057,7 +2057,8 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
     exact is_separable_of_equiv hphi_equiv h_subst_sep
 
 /-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
-    is separable. Uses `all_separable` as callback (temporary, will be replaced). -/
+    is separable. Uses `all_separable` as callback. Will be eliminated once
+    Phase 5 replaces SeparationThm axioms with theorems. -/
 theorem no_S_nested_in_U_separable_noax (phi : Formula)
     (hns : no_S_nested_in_U phi)
     (hexp : has_no_allpast_allfuture phi = true) :
@@ -2152,10 +2153,8 @@ theorem single_U_formula_separable_noax (phi A B : Formula)
             hA_sf hB_sf hA_uf hB_uf
             h_single_ψ.1 h_single_ψ.2 hdepth1.1 hdepth1.2
             (has_no_allpast_allfuture_true C) (has_no_allpast_allfuture_true F)
-        · -- Depth >= 2: IH on children, then box-normalize + param with all_separable
-          -- NOTE: This case still uses all_separable. Phase 5 will eliminate this
-          -- by replacing single_U_formula_separable_noax's depth >= 2 case with
-          -- no_S_nested_in_U_separable_direct, which handles all depths axiom-free.
+        · -- Depth >= 2: IH on children, then box-normalize + all_separable
+          -- (Phase 5 Task 5.4 will replace all_separable with a theorem)
           have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
           have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
           have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
@@ -2644,21 +2643,10 @@ theorem all_formulas_separable_aux (φ : Formula)
         -- Step 6: .snce χa χb has JD ≤ 1
         have _hjd_le_one : junction_depth (.snce χa χb) ≤ 1 :=
           snce_of_boxfree_sep_jd_le_one ψa ψb hψa_sep hψb_sep
-        -- Step 7: Apply no_S_nested_in_U_separable_param_jd.
-        -- Since JD(.snce a b) ≥ 1 and n ≥ JD(.snce a b), we have n ≥ 1.
-        -- Callback formulas have JD ≤ 1 < n when n ≥ 2.
-        -- For n = 1: callback JD ≤ 1, handled by ih_jd 0 for JD = 0 (sorry for JD = 1).
-        have h_sep : is_separable (.snce χa χb) := by
-          by_cases hn : n ≥ 2
-          · -- n ≥ 2: callback JD ≤ 1 < 2 ≤ n
-            exact no_S_nested_in_U_separable_param_jd (.snce χa χb) hns
-              (has_no_allpast_allfuture_true _) (fun ζ hns_ζ hjd_ζ =>
-                ih_jd 1 (by omega) ζ hjd_ζ (has_no_allpast_allfuture_true ζ))
-          · -- n = 1 (since n ≥ 1 from JD ≥ 1 and JD ≤ n)
-            -- Callback JD ≤ 1. For JD = 0: ih_jd 0. For JD = 1: sorry.
-            exact no_S_nested_in_U_separable_param_jd (.snce χa χb) hns
-              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ _hjd_ζ =>
-                all_separable ζ)
+        -- Step 7: Apply no_S_nested_in_U_separable_direct.
+        -- .snce χa χb has no_S_nested_in_U, so it is directly separable.
+        have h_sep : is_separable (.snce χa χb) :=
+          no_S_nested_in_U_separable_direct (.snce χa χb) hns
         exact is_separable_of_equiv hequiv h_sep
     | untl a b ih_a ih_b =>
       -- Sub-formulas have JD ≤ n
@@ -2682,16 +2670,9 @@ theorem all_formulas_separable_aux (φ : Formula)
         -- Step 4: swap(.untl χa χb) has no_S_nested_in_U
         have hns_S : no_S_nested_in_U (Formula.swap_temporal (.untl χa χb)) :=
           swap_no_U_nested_gives_no_S_nested (.untl χa χb) hns_U
-        -- Step 5: swap is separable via no_S_nested_in_U_separable_param_jd + JD IH.
-        have h_swap_sep : is_separable (Formula.swap_temporal (.untl χa χb)) := by
-          by_cases hn : n ≥ 2
-          · exact no_S_nested_in_U_separable_param_jd _ hns_S
-              (has_no_allpast_allfuture_true _) (fun ζ hns_ζ hjd_ζ =>
-                ih_jd 1 (by omega) ζ hjd_ζ (has_no_allpast_allfuture_true ζ))
-          · -- n = 1 (since n ≥ 1 from JD ≥ 1 and JD ≤ n)
-            exact no_S_nested_in_U_separable_param_jd _ hns_S
-              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ _hjd_ζ =>
-                all_separable ζ)
+        -- Step 5: swap is separable via no_S_nested_in_U_separable_direct.
+        have h_swap_sep : is_separable (Formula.swap_temporal (.untl χa χb)) :=
+          no_S_nested_in_U_separable_direct _ hns_S
         -- Step 7: dual_separable
         have h_untl_sep : is_separable (.untl χa χb) := by
           have h := dual_separable _ h_swap_sep

@@ -365,13 +365,13 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [IN PROGRESS]
+### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [PARTIAL]
 
 **Goal**: Rewrite `all_formulas_separable_aux` to call `no_S_nested_in_U_separable_direct` directly. Remove the `SeparationThm` import from Hierarchy.lean. Then replace all 9 axioms in SeparationThm.lean with theorems.
 
 **Tasks**:
 
-- [ ] Task 5.1: Rewrite `all_formulas_separable_aux` JD=1 and JD>=2 cases (~50-80 LOC)
+- [x] Task 5.1: Rewrite `all_formulas_separable_aux` JD=1 and JD>=2 cases (~50-80 LOC) *(deviation: altered -- replaced by_cases/all_separable with direct call to no_S_nested_in_U_separable_direct, eliminating the n=1 fallback)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Change**: Both `by_cases hn : n >= 2` branches (around lines 2501-2511 and 2537-2544) currently use `all_separable` as fallback callback for the `n = 1` case. Replace BOTH with `no_S_nested_in_U_separable_direct`:
     ```lean
