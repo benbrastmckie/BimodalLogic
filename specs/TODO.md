@@ -45,7 +45,7 @@ technical_debt:
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
   └─ 157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
-    └─ 116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
+    └─ 116 [COMPLETED] — Remove G and H as primitive constructors; define via U and S
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
 
@@ -64,7 +64,7 @@ technical_debt:
 ### Algebraic Representation
 
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
-  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
+  └─ 116 [COMPLETED] — (formula-refactor: define G/H via U/S) (see above)
 
 ### Decidability
 
@@ -228,16 +228,18 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-18
+- **Summary**: Removed all_future/all_past as Formula constructors, redefined G/H/F/P as def abbreviations via Until/Since (Burgess 1982). Derived temp_k_dist/temp_4 from BX axioms, removed as axiom constructors. 40+ files modified, build passes (1647 jobs, 0 errors). Sorry delta: +7 (3 SuccExistence SubformulaClosure gap, 4 ConservativeExtension dead code).
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**:
   - [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
   - [116_redefine_ghfp_via_until_since/reports/02_team-research.md]
 - **Plan**:
-  - [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
-  - [116_redefine_ghfp_via_until_since/plans/02_redefine-ghfp-plan.md]
-  - [116_redefine_ghfp_via_until_since/plans/03_redefine-ghfp-plan.md]
+  - [116_redefine_ghfp_via_until_since/plans/04_redefine-ghfp-plan.md]
+- **Summary**:
+  - [specs/116_redefine_ghfp_via_until_since/summaries/04_redefine-ghfp-summary.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
 

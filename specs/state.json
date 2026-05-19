@@ -152,7 +152,7 @@
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -160,7 +160,7 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-19T03:02:55Z",
+      "last_updated": "2026-05-19T06:44:43Z",
       "session_id": "sess_1779159757_8a4784",
       "researched": "2026-05-18T23:20:13Z",
       "artifacts": [
@@ -182,7 +182,9 @@
       ],
       "topic": "formula-refactor",
       "next_artifact_number": 2,
-      "started": "2026-05-19T00:29:41Z"
+      "started": "2026-05-19T00:29:41Z",
+      "completed": "2026-05-19T06:44:43Z",
+      "completion_summary": "Removed all_future/all_past as Formula constructors, redefined G/H/F/P as def abbreviations via Until/Since (Burgess 1982). Derived temp_k_dist/temp_4 from BX axioms, removed as axiom constructors. 40+ files modified, build passes (1647 jobs, 0 errors). Sorry delta: +7 (3 SuccExistence SubformulaClosure gap, 4 ConservativeExtension dead code)."
     },
     {
       "project_number": 95,
