@@ -2112,11 +2112,21 @@ theorem replace_box_preserves_single_U_type (phi A B : Formula)
     A formula with single U-type U(A,B) (where A, B are S-free and U-free)
     is separable, given an oracle for `no_S_nested_in_U` formulas with JD ≤ 1.
 
-    The `.snce` case at depth >= 1 does: IH on children → box-normalize → oracle.
-    No depth-1 vs depth-≥2 split needed; the oracle handles all post-normalization
-    `.snce` nodes uniformly (they always have JD ≤ 1 after box-normalization).
+    The `.snce` case splits by snce_depth_of_U:
+    - **depth 0**: Both C, F are U-free. Already syntactically separated.
+    - **depth 1** (leaf case): C, F at depth 0 have `has_single_U_type` and are
+      already syntactically separated. Box-normalize preserves single-U-type.
+      Apply `snce_single_U_depth_one_separable` (Lemma 10.2.4) directly.
+      **The oracle is NOT invoked at depth 1.**
+    - **depth >= 2**: IH on C, F (strict depth decrease). Box-normalize.
+      Apply oracle on the normalized `.snce C'' F''` (which has JD ≤ 1).
 
-    The oracle is provided by `all_formulas_separable_aux` via JD induction. -/
+    GHR94 reference: Lemma 10.2.5, pp. 569. "By induction on the maximum
+    number k of nested Ss above any U(A,B)."
+
+    The oracle is provided by `all_formulas_separable_aux` via JD induction.
+    At n = 1, the oracle is never invoked (all paths terminate at depth ≤ 1
+    via the leaf case), breaking the circularity. -/
 theorem single_U_formula_separable_noax_param (phi A B : Formula)
     (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
     (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
@@ -2145,33 +2155,64 @@ theorem single_U_formula_separable_noax_param (phi A B : Formula)
     | snce C F ih_C ih_F =>
       by_cases huf : is_U_free C = true ∧ is_U_free F = true
       · exact ⟨.snce C F, by simp [is_syntactically_separated, huf.1, huf.2], int_equiv_refl _⟩
-      · -- snce_depth_of_U >= 1: unified case using oracle
+      · -- snce_depth_of_U >= 1
         have hlt_C := (snce_depth_of_U_lt_snce C F huf).1
         have hlt_F := (snce_depth_of_U_lt_snce C F huf).2
-        -- IH on C and F (strict snce_depth_of_U decrease)
         have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
         have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
-        have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
-        have hF_sep : is_separable F := ih_F hle_F h_single_ψ.2
-        -- Get separated witnesses
-        obtain ⟨C', hC'_sep, hC'_equiv⟩ := hC_sep
-        obtain ⟨F', hF'_sep, hF'_equiv⟩ := hF_sep
-        -- Box-normalize
-        let C'' := replace_box_with_top C'
-        let F'' := replace_box_with_top F'
-        -- Build equivalence chain: .snce C F ≡ .snce C'' F''
-        have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
-          int_equiv_trans (snce_congr hC'_equiv hF'_equiv)
-            (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
-        -- .snce C'' F'' has no_S_nested_in_U (from box-normalized separated forms)
-        have hns : no_S_nested_in_U (.snce C'' F'') :=
-          snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
-        -- .snce C'' F'' has JD ≤ 1 (from box-normalized separated forms)
-        have hjd : junction_depth (.snce C'' F'') ≤ 1 :=
-          snce_of_boxfree_sep_jd_le_one C' F' hC'_sep hF'_sep
-        -- Apply oracle
-        have h_sep : is_separable (.snce C'' F'') := oracle (.snce C'' F'') hns hjd
-        exact is_separable_of_equiv hequiv h_sep
+        -- Split: depth 1 (leaf, no oracle) vs depth >= 2 (uses oracle)
+        by_cases hn_le1 : n ≤ 1
+        · -- Depth 1 leaf case (n ≤ 1 means snce_depth_of_U C = 0, F = 0).
+          -- C, F at depth 0 with has_single_U_type are already syntactically separated.
+          -- Box-normalize preserves single-U-type. Apply Lemma 10.2.4 directly.
+          have hdC : snce_depth_of_U C = 0 := by omega
+          have hdF : snce_depth_of_U F = 0 := by omega
+          have hC_sep_raw : is_syntactically_separated C = true :=
+            snce_depth_zero_single_U_separated C A B hA_sf hB_sf h_single_ψ.1
+              (has_no_allpast_allfuture_true C) hdC
+          have hF_sep_raw : is_syntactically_separated F = true :=
+            snce_depth_zero_single_U_separated F A B hA_sf hB_sf h_single_ψ.2
+              (has_no_allpast_allfuture_true F) hdF
+          -- Box-normalize
+          let C'' := replace_box_with_top C
+          let F'' := replace_box_with_top F
+          let A'' := replace_box_with_top A
+          let B'' := replace_box_with_top B
+          have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
+            snce_congr (replace_box_equiv C) (replace_box_equiv F)
+          have hsingle_C'' : has_single_U_type C'' A'' B'' :=
+            replace_box_preserves_single_U_type C A B h_single_ψ.1
+          have hsingle_F'' : has_single_U_type F'' A'' B'' :=
+            replace_box_preserves_single_U_type F A B h_single_ψ.2
+          have hdC'' : snce_depth_of_U C'' = 0 := separated_boxnorm_snce_depth_zero C hC_sep_raw
+          have hdF'' : snce_depth_of_U F'' = 0 := separated_boxnorm_snce_depth_zero F hF_sep_raw
+          have hA''_sf : is_S_free A'' = true := replace_box_preserves_S_free A hA_sf
+          have hB''_sf : is_S_free B'' = true := replace_box_preserves_S_free B hB_sf
+          have hA''_uf : is_U_free A'' = true := replace_box_preserves_U_free A hA_uf
+          have hB''_uf : is_U_free B'' = true := replace_box_preserves_U_free B hB_uf
+          -- Apply snce_single_U_depth_one_separable (Lemma 10.2.4) -- no oracle needed
+          exact is_separable_of_equiv hequiv
+            (snce_single_U_depth_one_separable C'' F'' A'' B''
+              hA''_sf hB''_sf hA''_uf hB''_uf
+              hsingle_C'' hsingle_F'' hdC'' hdF''
+              (has_no_allpast_allfuture_true C'') (has_no_allpast_allfuture_true F''))
+        · -- Depth >= 2: IH on C, F, then apply oracle on .snce C'' F''
+          push_neg at hn_le1
+          have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
+          have hF_sep : is_separable F := ih_F hle_F h_single_ψ.2
+          obtain ⟨C', hC'_sep, hC'_equiv⟩ := hC_sep
+          obtain ⟨F', hF'_sep, hF'_equiv⟩ := hF_sep
+          let C'' := replace_box_with_top C'
+          let F'' := replace_box_with_top F'
+          have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
+            int_equiv_trans (snce_congr hC'_equiv hF'_equiv)
+              (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
+          have hns : no_S_nested_in_U (.snce C'' F'') :=
+            snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
+          have hjd : junction_depth (.snce C'' F'') ≤ 1 :=
+            snce_of_boxfree_sep_jd_le_one C' F' hC'_sep hF'_sep
+          -- Apply oracle (depth >= 2, so oracle invocation is safe)
+          exact is_separable_of_equiv hequiv (oracle (.snce C'' F'') hns hjd)
   exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
 
 /-- GHR94 Lemma 10.2.5 (backward-compatible wrapper):
