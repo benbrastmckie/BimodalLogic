@@ -3,74 +3,55 @@
 **Session**: sess_1779159757_8a4784
 **Timestamp**: 2026-05-18
 
-## Status
+## Current Build Status
 
-Phase 3 is partially complete. 4 of the original 4 failing files have been addressed:
+**10 errors across 3 files**:
+- `ParametricTruthLemma.lean` (4 errors): `| all_future` / `| all_past` induction arms in truth lemma proof
+- `SuccRelation.lean` (4 errors): `rfl`-based equalities `some_future = neg(all_future(neg _))`
+- `BXCanonical/Frame.lean` (2 errors): same `rfl` pattern
 
-| File | Status | Errors Before | Errors After |
-|------|--------|--------------|-------------|
-| Soundness.lean | FIXED | 42 | 0 |
-| Principles.lean | FIXED | 5 | 0 |
-| TemporalContent.lean | FIXED | 4 | 0 |
-| Bridge.lean | FIXED | 2 | 0 |
-| SubformulaClosure.lean | IN PROGRESS | 40+ | 26 |
+## Summary of Session Progress
 
-## What Was Done
+Fixed 13 files total (from 4-5 originally failing + cascading):
 
-### Soundness.lean (42 errors -> 0)
-- Added `Truth.future_iff`, `Truth.past_iff`, `Truth.some_future_iff`, `Truth.some_past_iff` to all `simp only [truth_at]` calls
-- Rewrote `serial_future_axiom_valid`, `serial_past_axiom_valid` to use existential form
-- Rewrote `temp_a_valid`, `temp_a_dual_valid` to use direct existential construction
-- Rewrote `temp_linearity_valid`, `temp_linearity_past_valid` completely for existential forms
-- Rewrote `F_until_equiv_valid`, `P_since_equiv_valid` with direct existential witnesses
-- Rewrote `discreteness_forward_valid` with characterization theorems
-- Rewrote `seriality_future_valid`, `seriality_past_valid` with characterization theorems
-- Rewrote `connect_future_valid`, `connect_past_valid`, `until_F_valid`, `since_P_valid`
-- Fixed `temp_l_valid` to add Truth lemmas to the inner simp
+| File | Fix Type | Errors Fixed |
+|------|----------|-------------|
+| Soundness.lean | simp + proof rewrites | 42 |
+| Principles.lean | swap_temporal simp additions | 5 |
+| Bridge.lean | swap_temporal simp additions | 2 |
+| TemporalContent.lean | DNI/DNE + BX3 duality proofs | 4 |
+| SubformulaClosure.lean | depth defs, extractors, decidable instances, noConfusion | 40+ |
+| SuccessPatterns.lean | remove match arms | 2 |
+| LindenbaumQuotient.lean | swap_temporal simp | 2 |
+| TemporalCoherence.lean | DNE-based duality | 2 |
+| WitnessSeed.lean | helper lemmas + 8 rfl replacements | 8 |
+| ProofSearch.lean | untl pattern match | 2 |
+| Total fixed | | ~110 |
 
-### Principles.lean (5 errors -> 0)
-- Added `Formula.swap_temporal_all_future`, `Formula.swap_temporal_all_past` to all `simp only [Formula.swap_temporal, ...]` calls
+## Remaining Work (10 errors, 3 files)
 
-### Bridge.lean (2 errors -> 0)
-- Same fix as Principles.lean
+### 1. ParametricTruthLemma.lean (4 errors)
+Lines 301, 319: `| all_future psi ih =>` and `| all_past psi ih =>` in induction proof of truth lemma. Since these are no longer constructors, the induction has 6 arms (atom, bot, imp, box, untl, snce), not 8. The G and H truth lemma needs to be proved through the `imp` arm (since `all_future phi` is structurally an `imp`). The `simp only [truth_at, Truth.future_iff, Truth.past_iff]` should handle the simplification.
 
-### TemporalContent.lean (4 errors -> 0)
-- Added import for `Bimodal.Theorems.GeneralizedNecessitation`
-- Rewrote `f_content_iff_not_neg_in_g_content` using DNI + BX3 + MCS closure
-- Rewrote `p_content_iff_not_neg_in_h_content` using DNE + BX3' + MCS closure
-- Key insight: `some_future phi != (all_future phi.neg).neg` syntactically, so duality requires deriving `some_future phi <-> some_future (phi.neg.neg)` via `Combinators.dni` / `double_negation` + `right_mono_until` / `right_mono_since`
+### 2. SuccRelation.lean (4 errors)
+Lines 123, 185, 290, 315: Same `some_future psi = neg(all_future(neg psi))` rfl pattern as WitnessSeed.lean. Fix with `some_future_all_future_neg_absurd` / `some_past_all_past_neg_absurd` helper lemmas (already defined in WitnessSeed.lean -- consider moving to a shared utility).
 
-### SubformulaClosure.lean (40+ errors -> 26)
-- Fixed `f_nesting_depth` pattern match: `.untl inner (.imp .bot .bot)` instead of `.imp (.all_future (.imp inner .bot)) .bot`
-- Fixed `p_nesting_depth` pattern match: `.snce inner (.imp .bot .bot)` instead of `.imp (.all_past (.imp inner .bot)) .bot`
-- Fixed `extractFutureInner` and `extractPastInner` patterns similarly
-- Fixed `f_nesting_depth_all_past/all_future` and `p_nesting_depth_all_past/all_future` (no longer `rfl`, need simp)
-- Fixed `some_past/some_future_in_closureWithNeg_inner_in_subformulaClosure` (use `closure_snce_left`/`closure_untl_left` instead of imp/all_past chains)
-- Fixed `IsUntilFormula`/`IsSinceFormula` decidable instances (removed `.all_past _` / `.all_future _` match arms)
-- Fixed `non_imp_in_deferralClosure_is_in_closureWithNeg` (added `h_not_untl`/`h_not_snce` hypotheses)
-- Fixed seriality case analysis with `all_goals` + `first | Or.inr | simp+cases`
-- Fixed deferral blocks with `injection hf_eq; exact Formula.noConfusion`
-- Fixed `deferralClosure_all_future/all_past` with proper injection chains
+### 3. BXCanonical/Frame.lean (2 errors)
+Lines 162, 195: Same pattern. Need the same helper lemmas.
 
-## Remaining Work in SubformulaClosure.lean (26 errors)
+## Key Design Decisions
 
-### Error patterns (lines 1380-1560):
-1. **Type mismatch at `closure_all_future`/`closure_all_past`** (lines 1382, 1408): These call `closure_all_future` on a hypothesis that after `cases h_g_eq` has `some_future (psi.neg)` instead of the expected form. Fix: replace `closure_all_future` with `closure_untl_left` + `closure_imp_left` chain (same pattern as the fix already applied to `deferralClosure_all_future/all_past`).
+1. **Truth characterization theorems**: All `simp only [truth_at]` calls that handle `all_future`/`all_past`/`some_future`/`some_past` formulas need `Truth.future_iff`, `Truth.past_iff`, `Truth.some_future_iff`, `Truth.some_past_iff`.
 
-2. **Injection failures** (lines 1457, 1489, 1547): `injection h_eq with h1 _` fails because `h_eq` equates terms where both sides have `imp` at the top, and injection gives more than expected. Fix: unfold the defs first, then inject with correct number of identifiers.
+2. **swap_temporal**: All `simp only [Formula.swap_temporal, Formula.swap_temporal_involution]` calls need `Formula.swap_temporal_all_future`, `Formula.swap_temporal_all_past`.
 
-3. **Unsolved goals from simp** (lines 1458, 1463, 1468, 1473, 1492, 1497, 1549, 1554, 1559): After replacing `Formula.noConfusion` with simp, some cases survive because both sides are `imp` after unfolding. Fix: after simp, use `injection` + `cases` on subterms.
+3. **MCS duality**: `some_future psi != neg(all_future(neg psi))` syntactically. Contradictions between `F(psi) in M` and `G(neg psi) in M` use the helper `some_future_all_future_neg_absurd` (bridges via BX3 + DNI).
 
-4. **Type mismatch** (lines 1480, 1463): Proof terms reference `all_future`/`all_past` as constructors. Fix: unfold defs and adjust proof terms.
-
-### Estimated remaining effort: 2-3 hours of mechanical rewriting
+4. **SubformulaClosure patterns**: `f_nesting_depth` matches `.untl inner (.imp .bot .bot)`, `extractFutureInner` matches `.untl inner (.imp .bot .bot)`, not the old `.imp (.all_future ...)` form.
 
 ## Immediate Next Action
 
-Continue fixing SubformulaClosure.lean errors starting at line 1382. The pattern is consistent: every proof that uses `Formula.noConfusion`, `injection`, or `closure_all_future`/`closure_all_past` on terms involving the old constructor forms needs to be rewritten to work with the `def` forms (`untl`/`snce` based). Use the already-applied fixes as templates.
-
-## Key Decisions
-- All `simp only [truth_at]` calls now include Truth characterization theorems
-- `Formula.swap_temporal_all_future/all_past` must be included in swap_temporal simp calls
-- TemporalContent duality proofs use derivation-based approach (DNI/DNE + BX3/BX3') instead of structural equality
-- SubformulaClosure depth/extractor functions pattern-match on `.untl inner (.imp .bot .bot)` / `.snce inner (.imp .bot .bot)` for the new structural forms
+1. Move `some_future_all_future_neg_absurd` / `some_past_all_past_neg_absurd` to a shared location (e.g., TemporalContent.lean or a new utility file)
+2. Fix SuccRelation.lean and Frame.lean using those helpers
+3. Fix ParametricTruthLemma.lean by removing `| all_future`/`| all_past` induction arms and handling through `imp` arm with Truth characterization theorems
+4. Run full build to check for further cascading
