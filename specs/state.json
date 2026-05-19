@@ -44,7 +44,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -53,8 +53,8 @@
         116
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-19T08:11:32Z",
-      "session_id": "sess_1779176810_27c2df",
+      "last_updated": "2026-05-19T08:31:00Z",
+      "session_id": "sess_1779178855_965920",
       "researched": "2026-05-19T08:11:32Z",
       "artifacts": [
         {
@@ -93,11 +93,6 @@
           "summary": "Team research: Case 7 direct formula (GHR94 10.2.3), hierarchy circularity diagnosis, constructive witness requirement"
         },
         {
-          "path": "specs/157_expressive_completeness_su_integer/plans/08_axiom-elimination-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan: fix Case 6 sorry, prove Case 7 via GHR94 direct formula, build hierarchy theorem, eliminate 9 axioms, verify"
-        },
-        {
           "path": "specs/157_expressive_completeness_su_integer/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research: root cause diagnosis (all_past/all_future in separated witnesses), GHR94-conformant fix path"
@@ -116,6 +111,11 @@
           "path": "specs/157_expressive_completeness_su_integer/reports/12_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): 248 mechanical repair sites, hierarchy proof unblocked, axiom/sorry distinction for task 155, 25-35h estimate"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/plans/12_separation-repair-plan.md",
+          "type": "plan",
+          "summary": "Publication-quality plan: repair Separation module, prove GHR94 hierarchy axiom-free, eliminate all 9 axioms. 6 phases, 30 hours."
         }
       ],
       "started": "2026-05-17T03:25:26Z",
