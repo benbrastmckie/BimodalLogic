@@ -342,9 +342,32 @@
       "session_id": "sess_1778968202_8779ea",
       "researched": "2026-05-16T21:36:38Z",
       "started": "2026-05-16T19:49:58Z"
+    },
+    {
+      "project_number": 167,
+      "project_name": "close_task116_sorries",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Close 7 sorries introduced by task 116 (G/H/F/P redefinition). 3 from SubformulaClosure temporal blocking set gap in SuccExistence/RestrictedMCS, 4 from ConservativeExtension dead Boneyard code with removed axiom constructors.",
+      "dependencies": [
+        116
+      ],
+      "created": "2026-05-19T06:50:33Z",
+      "last_updated": "2026-05-19T06:50:33Z",
+      "researched": "2026-05-19T06:50:33Z",
+      "artifacts": [
+        {
+          "path": "specs/167_close_task116_sorries/reports/01_subformula-closure-gap.md",
+          "type": "report",
+          "summary": "Research on SubformulaClosure design gap: temporalBlockingSet extension needed for U/S-based definitions"
+        }
+      ],
+      "topic": "formula-refactor",
+      "next_artifact_number": 2
     }
   ],
-  "next_project_number": 167,
+  "next_project_number": 168,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
