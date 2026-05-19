@@ -114,19 +114,19 @@ All prior infrastructure is in place.
 
 ---
 
-### Phase 4A: Create `_param` Variants with Oracle (Path B Fix) [NOT STARTED]
+### Phase 4A: Create `_param` Variants with Oracle (Path B Fix) [COMPLETED]
 
 **Goal**: Create parameterized versions of the three key theorems that take the oracle instead of using `all_separable`.
 
 **Tasks**:
 
-- [ ] Task 4A.1: Verify JD infrastructure exists (~10 min)
+- [x] Task 4A.1: Verify JD infrastructure exists (~10 min)
   - Check that `snce_of_boxfree_sep_jd_le_one` (or equivalent) exists in Hierarchy.lean
   - Check that `callback_jd_le_one` (or equivalent) exists
   - If not, prove them (estimated ~30 LOC each)
   - Verification: `lake build`
 
-- [ ] Task 4A.2: Create `single_U_formula_separable_noax_param` (~100 LOC)
+- [x] Task 4A.2: Create `single_U_formula_separable_noax_param` (~100 LOC)
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - Place BEFORE `single_U_formula_separable_noax` (which becomes a wrapper)
   - **Signature**:
@@ -153,7 +153,7 @@ All prior infrastructure is in place.
   - The wrapper still uses `all_separable` (for backward compat). Phase 5 eliminates it.
   - Verification: `lake build`
 
-- [ ] Task 4A.3: Create `lemma_10_2_6_self_contained_param` (~80 LOC)
+- [x] Task 4A.3: Create `lemma_10_2_6_self_contained_param` (~80 LOC)
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - Place BEFORE `lemma_10_2_6_self_contained`
   - **Signature**:
@@ -169,7 +169,7 @@ All prior infrastructure is in place.
   - Make old version a wrapper.
   - Verification: `lake build`
 
-- [ ] Task 4A.4: Verify `_param` variants compile and are logically correct
+- [x] Task 4A.4: Verify `_param` variants compile and are logically correct
   - `lake build` on Hierarchy module
   - Spot-check: `lean_verify single_U_formula_separable_noax_param` should NOT show `all_separable`
 

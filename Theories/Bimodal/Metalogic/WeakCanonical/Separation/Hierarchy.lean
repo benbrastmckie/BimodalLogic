@@ -2108,19 +2108,21 @@ theorem replace_box_preserves_single_U_type (phi A B : Formula)
   | snce a b ih1 ih2 =>
     exact ⟨ih1 h.1, ih2 h.2⟩
 
-/-- GHR94 Lemma 10.2.5 (partially axiom-free):
+/-- GHR94 Lemma 10.2.5 (oracle-parameterized):
     A formula with single U-type U(A,B) (where A, B are S-free and U-free)
-    is separable.
+    is separable, given an oracle for `no_S_nested_in_U` formulas with JD ≤ 1.
 
-    The depth-1 case (snce_depth_of_U = 1) is fully axiom-free via the
-    leaf case `snce_single_U_depth_one_separable`. The depth >= 2 case uses
-    `no_S_nested_in_U_separable_param_jd` with `all_separable` as callback.
-    Phase 5 will eliminate `all_separable` by replacing this callback with
-    the axiom-free `no_S_nested_in_U_separable_direct`. -/
-theorem single_U_formula_separable_noax (phi A B : Formula)
+    The `.snce` case at depth >= 1 does: IH on children → box-normalize → oracle.
+    No depth-1 vs depth-≥2 split needed; the oracle handles all post-normalization
+    `.snce` nodes uniformly (they always have JD ≤ 1 after box-normalization).
+
+    The oracle is provided by `all_formulas_separable_aux` via JD induction. -/
+theorem single_U_formula_separable_noax_param (phi A B : Formula)
     (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
     (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
-    (h_single : has_single_U_type phi A B) :
+    (h_single : has_single_U_type phi A B)
+    (oracle : ∀ (chi : Formula), no_S_nested_in_U chi →
+        junction_depth chi ≤ 1 → is_separable chi) :
     is_separable phi := by
   -- Strong induction on snce_depth_of_U
   have : ∀ (n : Nat) (ψ : Formula), snce_depth_of_U ψ ≤ n →
@@ -2143,37 +2145,45 @@ theorem single_U_formula_separable_noax (phi A B : Formula)
     | snce C F ih_C ih_F =>
       by_cases huf : is_U_free C = true ∧ is_U_free F = true
       · exact ⟨.snce C F, by simp [is_syntactically_separated, huf.1, huf.2], int_equiv_refl _⟩
-      · -- snce_depth_of_U >= 1
+      · -- snce_depth_of_U >= 1: unified case using oracle
         have hlt_C := (snce_depth_of_U_lt_snce C F huf).1
         have hlt_F := (snce_depth_of_U_lt_snce C F huf).2
-        -- Case split: depth 1 vs depth >= 2
-        by_cases hdepth1 : snce_depth_of_U C = 0 ∧ snce_depth_of_U F = 0
-        · -- Depth 1: apply leaf case directly (AXIOM-FREE)
-          exact snce_single_U_depth_one_separable C F A B
-            hA_sf hB_sf hA_uf hB_uf
-            h_single_ψ.1 h_single_ψ.2 hdepth1.1 hdepth1.2
-            (has_no_allpast_allfuture_true C) (has_no_allpast_allfuture_true F)
-        · -- Depth >= 2: IH on children, then box-normalize + all_separable
-          -- (Phase 5 Task 5.4 will replace all_separable with a theorem)
-          have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
-          have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
-          have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
-          have hF_sep : is_separable F := ih_F hle_F h_single_ψ.2
-          obtain ⟨C', hC'_sep, hC'_equiv⟩ := hC_sep
-          obtain ⟨F', hF'_sep, hF'_equiv⟩ := hF_sep
-          let C'' := replace_box_with_top C'
-          let F'' := replace_box_with_top F'
-          have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
-            int_equiv_trans (snce_congr hC'_equiv hF'_equiv)
-              (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
-          have hns : no_S_nested_in_U (.snce C'' F'') :=
-            snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
-          have h_sep : is_separable (.snce C'' F'') :=
-            no_S_nested_in_U_separable_param (.snce C'' F'') hns
-              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ =>
-                all_separable ζ)
-          exact is_separable_of_equiv hequiv h_sep
+        -- IH on C and F (strict snce_depth_of_U decrease)
+        have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
+        have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
+        have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
+        have hF_sep : is_separable F := ih_F hle_F h_single_ψ.2
+        -- Get separated witnesses
+        obtain ⟨C', hC'_sep, hC'_equiv⟩ := hC_sep
+        obtain ⟨F', hF'_sep, hF'_equiv⟩ := hF_sep
+        -- Box-normalize
+        let C'' := replace_box_with_top C'
+        let F'' := replace_box_with_top F'
+        -- Build equivalence chain: .snce C F ≡ .snce C'' F''
+        have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
+          int_equiv_trans (snce_congr hC'_equiv hF'_equiv)
+            (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
+        -- .snce C'' F'' has no_S_nested_in_U (from box-normalized separated forms)
+        have hns : no_S_nested_in_U (.snce C'' F'') :=
+          snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
+        -- .snce C'' F'' has JD ≤ 1 (from box-normalized separated forms)
+        have hjd : junction_depth (.snce C'' F'') ≤ 1 :=
+          snce_of_boxfree_sep_jd_le_one C' F' hC'_sep hF'_sep
+        -- Apply oracle
+        have h_sep : is_separable (.snce C'' F'') := oracle (.snce C'' F'') hns hjd
+        exact is_separable_of_equiv hequiv h_sep
   exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
+
+/-- GHR94 Lemma 10.2.5 (backward-compatible wrapper):
+    Uses `all_separable` as the oracle for backward compatibility.
+    Phase 5 will eliminate `all_separable` dependency. -/
+theorem single_U_formula_separable_noax (phi A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
+    (h_single : has_single_U_type phi A B) :
+    is_separable phi :=
+  single_U_formula_separable_noax_param phi A B hA_sf hB_sf hA_uf hB_uf h_single
+    (fun chi hns _hjd => all_separable chi)
 
 /-! ### Step 5d': GHR94 Lemma 10.2.6 (self-contained) and Lemma 10.2.7 (direct)
 
@@ -2222,27 +2232,25 @@ private theorem extract_U_type_U_free (φ : Formula) (h : is_U_free φ = false)
       have hle : U_nesting_depth d ≤ 1 := Nat.le_trans (U_nesting_depth_le_snce_right c d) hdepth
       exact ih2 hd hns.2 hle
 
-/-- GHR94 Lemma 10.2.6 (self-contained, axiom-free):
-    A formula with `no_S_nested_in_U` and `U_nesting_depth <= 1` is separable.
+/-- GHR94 Lemma 10.2.6 (oracle-parameterized):
+    A formula with `no_S_nested_in_U` and `U_nesting_depth <= 1` is separable,
+    given an oracle for `no_S_nested_in_U` formulas with JD ≤ 1.
 
     Proved by inlining the `no_S_nested_in_U_separable_param` logic with
-    `single_U_formula_separable_noax` as the callback for `.snce` nodes.
-    This is axiom-free because at depth <= 1, all callback formulas have
-    single U-type with U-free, S-free args. -/
-theorem lemma_10_2_6_self_contained (phi : Formula)
+    `single_U_formula_separable_noax_param` as the callback for `.snce` nodes.
+    The oracle is threaded through to `single_U_formula_separable_noax_param`. -/
+theorem lemma_10_2_6_self_contained_param (phi : Formula)
     (hns : no_S_nested_in_U phi)
-    (hd : U_nesting_depth phi ≤ 1) :
+    (hd : U_nesting_depth phi ≤ 1)
+    (oracle : ∀ (chi : Formula), no_S_nested_in_U chi →
+        junction_depth chi ≤ 1 → is_separable chi) :
     is_separable phi := by
-  -- Inline the count_U_subformulas induction from no_S_nested_in_U_separable_param,
-  -- but use single_U_formula_separable_noax for the callback instead of all_separable.
   induction h : count_U_subformulas phi using Nat.strongRecOn generalizing phi with
   | ind n ih =>
   have hexp : has_no_allpast_allfuture phi = true := has_no_allpast_allfuture_true phi
-  -- Case n = 0: U-free, syntactically separated
   by_cases huf : is_U_free phi = true
   · exact separated_imp_separable phi (restricted_u_free_separated phi hexp huf)
-  · -- Case n > 0: extract U-type and abstract
-    push_neg at huf; simp [Bool.not_eq_true] at huf
+  · push_neg at huf; simp [Bool.not_eq_true] at huf
     have huf' : is_U_free phi = false := huf
     let AB := extract_U_type phi huf' hns
     have hAB_sf := extract_U_type_S_free phi huf' hns
@@ -2255,30 +2263,32 @@ theorem lemma_10_2_6_self_contained (phi : Formula)
       abstract_untl_count_lt_of_contains_surface phi AB.1 AB.2 p hcontains
     have hns' : no_S_nested_in_U phi' :=
       abstract_untl_preserves_no_S_nested phi AB.1 AB.2 p hns
-    -- phi' is separable by IH (strictly fewer U-subformulas)
-    have hexp' : has_no_allpast_allfuture phi' = true :=
-      abstract_untl_preserves_no_allpast_allfuture phi AB.1 AB.2 p hexp
     have h_phi'_sep : is_separable phi' := by
       exact ih (count_U_subformulas phi') (h ▸ hcount_lt) phi' hns'
         (abstract_untl_U_nesting_depth_le_of_le phi AB.1 AB.2 p 1 hd) rfl
-    -- Get separated psi equivalent to phi'
     obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_phi'_sep
-    -- phi = subst(phi', p, U(A,B)) by syntactic roundtrip
     have hroundtrip : subst_formula phi' p (.untl AB.1 AB.2) = phi :=
       abstract_subst_roundtrip phi AB.1 AB.2 p hfresh
-    -- phi is equiv to subst(psi, p, U(A,B)) by congruence
     have hphi_equiv : int_equiv phi (subst_formula psi p (.untl AB.1 AB.2)) := by
       rw [← hroundtrip]
       exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
-    -- subst(psi, p, U(A,B)) is separable: use the typed variant that passes
-    -- has_single_U_type to the callback, enabling single_U_formula_separable_noax.
+    -- Use single_U_formula_separable_noax_param with oracle (NOT all_separable)
     have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
       subst_in_separated_separable_typed psi p AB.1 AB.2
         hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hpsi_sep
         (fun χ _hns_χ hsingle_χ =>
-          single_U_formula_separable_noax χ AB.1 AB.2
-            hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hsingle_χ)
+          single_U_formula_separable_noax_param χ AB.1 AB.2
+            hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hsingle_χ oracle)
     exact is_separable_of_equiv hphi_equiv h_subst_sep
+
+/-- GHR94 Lemma 10.2.6 (backward-compatible wrapper):
+    Uses `all_separable` as the oracle for backward compatibility. -/
+theorem lemma_10_2_6_self_contained (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hd : U_nesting_depth phi ≤ 1) :
+    is_separable phi :=
+  lemma_10_2_6_self_contained_param phi hns hd
+    (fun chi hns _hjd => all_separable chi)
 
 /-- Substituting `.untl A B` (with U-free A, B) into a U-free formula gives
     `U_nesting_depth <= 1`. Since the base formula has no `.untl` nodes, the only
