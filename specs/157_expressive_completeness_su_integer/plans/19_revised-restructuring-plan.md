@@ -168,7 +168,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: GHR94 Lemma 10.2.6/10.2.7 Direct Implementation [COMPLETED]
+### Phase 4: GHR94 Lemma 10.2.6/10.2.7 Direct Implementation [IN PROGRESS]
 
 **Goal**: Prove GHR94 Lemma 10.2.6 (depth <= 1 case, DONE) and Lemma 10.2.7 (the full "no S nested in U implies separable") using `U_nesting_depth` strong induction (MUST BE REWRITTEN).
 
@@ -179,7 +179,7 @@ Phases within the same wave can execute in parallel.
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean` (lines 2233-2282)
   - **Completed**: 2026-05-19
 
-- [x] **Task 4.2: REWRITE `no_S_nested_in_U_separable_direct` with `U_nesting_depth` strong induction (~150 LOC)** *(deviation: altered -- uses `U_nesting_depth` outer + `count_U_subformulas` inner double induction. At depth >= 2 with U-free extracted args, uses outer IH via `subst_in_separated_separable_depth`. At depth >= 2 with non-U-free extracted args, falls back to `all_separable`. At depth <= 1, uses `lemma_10_2_6_self_contained`. Full axiom elimination deferred to Phase 5 Tasks 5.1-5.4.)*
+- [ ] **Task 4.2: REWRITE `no_S_nested_in_U_separable_direct` with `U_nesting_depth` strong induction (~150 LOC)**
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean` (replace lines 2284-2300)
   - **THE DEVIATION**: The current implementation is:
     ```lean
@@ -365,7 +365,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [NOT STARTED]
+### Phase 5: Rewrite all_formulas_separable_aux and Eliminate Axioms [IN PROGRESS]
 
 **Goal**: Rewrite `all_formulas_separable_aux` to call `no_S_nested_in_U_separable_direct` directly. Remove the `SeparationThm` import from Hierarchy.lean. Then replace all 9 axioms in SeparationThm.lean with theorems.
 
