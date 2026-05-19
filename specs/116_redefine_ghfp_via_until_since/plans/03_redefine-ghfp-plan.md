@@ -12,7 +12,9 @@
 
 ## Overview
 
-This is a post-audit revision of plan v2. The first implementation attempt executed Phases 1-5 but with significant issues: Phase 2 was falsely marked complete (temp_k_dist/temp_4 still axiom constructors), Substitution.lean has compilation errors from @[match_pattern] conflicts, SubformulaClosure has 12 sorry markers (not 8), and SoundnessLemmas.lean has ~100 errors. This revised plan preserves genuinely completed work, corrects the Phase 2 omission, fixes broken files, and restructures remaining work. Definition of done: `lake build` succeeds with zero errors and zero sorries introduced by this task.
+**CRITICAL CORRECTION (2026-05-18)**: Prior plan versions falsely assumed the Formula type had been reduced to 6 constructors. As of HEAD, `Theories/Bimodal/Syntax/Formula.lean` still has **8 constructors** — `all_past` and `all_future` remain primitive. The commit `304fb6d02` ("core Formula type redefinition") exists in the git history but is NOT an ancestor of the current HEAD. All prior agent work was based on an incorrect premise.
+
+This revised plan starts from the actual codebase state: Formula has 8 constructors, the build currently passes (pending verification), and the core redefinition is the FIRST task. Definition of done: `lake build` succeeds with zero errors and zero new sorries, with Formula having exactly 6 constructors {atom, bot, imp, box, untl, snce}.
 
 ### Design Decision: `def` + `@[simp]` (Mathlib idiom)
 
@@ -99,8 +101,9 @@ Roadmap Phase 2 lists task 116 as part of "Frame hierarchy + axiom cleanup": "re
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 2 | -- |
-| 2 | 3 | 1, 2 |
+| 0 | 0 | -- |
+| 1 | 1, 2 | 0 |
+| 2 | 3 | 0, 1, 2 |
 | 3 | 4, 5 | 3 |
 | 4 | 6, 7 | 4, 5 |
 | 5 | 8 | 6, 7 |
@@ -111,7 +114,51 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix Substitution.lean and Rename Docstrings [COMPLETED]
+### Phase 0: Remove all_past and all_future from Formula [NOT STARTED]
+
+**Goal**: Remove `all_past` and `all_future` as constructors from the `Formula` inductive type. Redefine them as `def` abbreviations using `untl`/`snce` with `top`, following Burgess 1982 §1.1. Add `@[simp]` characterization theorems. This is the foundational change that everything else depends on.
+
+**CRITICAL**: This phase IS the core of task 116. As of HEAD, Formula has 8 constructors including `all_past` and `all_future` as primitives. They must be removed.
+
+**Tasks**:
+- [ ] Remove `| all_past : Formula → Formula` constructor from Formula inductive (line 76)
+- [ ] Remove `| all_future : Formula → Formula` constructor from Formula inductive (line 78)
+- [ ] Add `def` abbreviations following Burgess 1982:
+  - `def Formula.top := Formula.bot.imp Formula.bot`
+  - `def some_future (φ : Formula) := Formula.untl φ Formula.top` (F φ = ⊤ U φ)
+  - `def some_past (φ : Formula) := Formula.snce φ Formula.top` (P φ = ⊤ S φ)
+  - `def all_future (φ : Formula) := (some_future (φ.imp Formula.bot)).imp Formula.bot` (G φ = ¬F¬φ)
+  - `def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot` (H φ = ¬P¬φ)
+- [ ] Update all pattern matches on Formula in Formula.lean itself (complexity, beq, injection proofs)
+- [ ] Add `@[simp]` characterization theorems in Truth.lean:
+  - `Truth.future_iff`: `truth_at (all_future φ) ↔ ∀ s > t, truth_at s φ`
+  - `Truth.past_iff`: `truth_at (all_past φ) ↔ ∀ s < t, truth_at s φ`
+  - `Truth.some_future_iff`: `truth_at (some_future φ) ↔ ∃ s > t, truth_at s φ`
+  - `Truth.some_past_iff`: `truth_at (some_past φ) ↔ ∃ s < t, truth_at s φ`
+- [ ] Update `truth_at` in Truth.lean to handle only 6 constructors (remove all_past/all_future cases)
+- [ ] Add syntactic `@[simp]` lemmas for Formula properties (size, atoms, subst) on the abbreviations
+- [ ] Verify: `lake build Bimodal.Syntax.Formula` compiles
+- [ ] Verify: `lake build Bimodal.Semantics.Truth` compiles
+
+**Timing**: 4 hours
+
+**Depends on**: none
+
+**Files to modify**:
+- `Theories/Bimodal/Syntax/Formula.lean` — Remove constructors, add def abbreviations
+- `Theories/Bimodal/Semantics/Truth.lean` — Update truth_at, add @[simp] characterization theorems
+
+**Verification**:
+- Formula inductive has exactly 6 constructors: atom, bot, imp, box, untl, snce
+- all_future, all_past, some_future, some_past exist as `def` abbreviations
+- @[simp] characterization theorems are proved and tagged
+- Both files compile
+
+---
+
+### Phase 1: Fix Substitution.lean and Rename Docstrings [NOT STARTED]
+
+**Note**: Prior agent work on this phase was based on the incorrect assumption that Formula already had 6 constructors. After Phase 0 executes, this phase will need fresh work — the specific errors and fixes will differ.
 
 **Goal**: Fix the 3+ compilation errors in Substitution.lean caused by @[match_pattern] conflicts and invalid induction arms. Rename "bridge lemma" to "semantic characterization theorem" in Truth.lean docstrings.
 
@@ -181,7 +228,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix Currently-Failing Files [PARTIAL]
+### Phase 3: Fix Files Broken by Phase 0 Redefinition [NOT STARTED]
 
 **Goal**: Fix the 5 currently-failing files (excluding Substitution.lean, fixed in Phase 1): SoundnessLemmas.lean (~100 errors), TemporalContent.lean (4 errors), TemporalCoherence.lean (2 errors), Bridge.lean (3 errors), Table.lean (2 errors). All failures stem from truth_at expansion mismatches and type mismatches from all_past/all_future no longer being constructors.
 
