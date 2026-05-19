@@ -189,16 +189,6 @@ theorem past_only_is_pure_past {φ : Formula} (h : Separation.is_past_only φ = 
   | box _ =>
     intro _ _ _ _
     exact Iff.rfl
-  | all_past α ih =>
-    simp only [Separation.is_past_only] at h
-    intro M₁ M₂ t hagree
-    constructor
-    · intro hall s hst
-      exact (ih h M₁ M₂ s (fun a r hrt => hagree a r (le_trans hrt (le_of_lt hst)))).mp (hall s hst)
-    · intro hall s hst
-      exact (ih h M₁ M₂ s (fun a r hrt => hagree a r (le_trans hrt (le_of_lt hst)))).mpr (hall s hst)
-  | all_future _ =>
-    exact absurd h (by simp [Separation.is_past_only])
   | untl _ _ =>
     exact absurd h (by simp [Separation.is_past_only])
   | snce α β ihα ihβ =>
@@ -241,16 +231,6 @@ theorem future_only_is_pure_future {φ : Formula} (h : Separation.is_future_only
   | box _ =>
     intro _ _ _ _
     exact Iff.rfl
-  | all_past _ =>
-    exact absurd h (by simp [Separation.is_future_only])
-  | all_future α ih =>
-    simp only [Separation.is_future_only] at h
-    intro M₁ M₂ t hagree
-    constructor
-    · intro hall s hts
-      exact (ih h M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mp (hall s hts)
-    · intro hall s hts
-      exact (ih h M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mpr (hall s hts)
   | untl α β ihα ihβ =>
     simp only [Separation.is_future_only, Bool.and_eq_true] at h
     intro M₁ M₂ t hagree
@@ -630,12 +610,6 @@ private noncomputable def elimExtFromSep
   | .imp φ ψ => .imp (elimExtFromSep constSubs lt_atom gt_atom φ)
                       (elimExtFromSep constSubs lt_atom gt_atom ψ)
   | .box φ => .box φ
-  | .all_past φ =>
-    -- Past-only: lt_ref → ⊤ (True), gt_ref → ⊥
-    .all_past (applySubsts φ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
-  | .all_future φ =>
-    -- Future-only: lt_ref → ⊥, gt_ref → ⊤ (True)
-    .all_future (applySubsts φ (constSubs ++ [(lt_atom, .bot), (gt_atom, Formula.neg .bot)]))
   | .snce φ ψ =>
     -- Past-only args
     .snce (applySubsts φ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
@@ -705,10 +679,6 @@ private theorem subst_preserves_past_only (φ : Formula) (target : Atom) (r : Fo
   | box α ih =>
     simp only [Separation.is_past_only] at hφ
     simp only [Separation.subst_formula, Separation.is_past_only]; exact ih hφ
-  | all_past α ih =>
-    simp only [Separation.is_past_only] at hφ
-    simp only [Separation.subst_formula, Separation.is_past_only]; exact ih hφ
-  | all_future _ => simp [Separation.is_past_only] at hφ
   | untl _ _ => simp [Separation.is_past_only] at hφ
   | snce α β ihα ihβ =>
     simp only [Separation.is_past_only, Bool.and_eq_true] at hφ
@@ -727,10 +697,6 @@ private theorem subst_preserves_future_only (φ : Formula) (target : Atom) (r : 
     simp only [Separation.subst_formula, Separation.is_future_only, Bool.and_eq_true]
     exact ⟨ihα hφ.1, ihβ hφ.2⟩
   | box α ih =>
-    simp only [Separation.is_future_only] at hφ
-    simp only [Separation.subst_formula, Separation.is_future_only]; exact ih hφ
-  | all_past _ => simp [Separation.is_future_only] at hφ
-  | all_future α ih =>
     simp only [Separation.is_future_only] at hφ
     simp only [Separation.subst_formula, Separation.is_future_only]; exact ih hφ
   | untl α β ihα ihβ =>
@@ -907,14 +873,6 @@ private theorem int_truth_depends_on_atoms (φ : Formula)
       (ihβ t (fun a ha' z => h a (Set.mem_union_right _ ha') z))
   | box _ _ =>
     simp only [Separation.int_truth]
-  | all_past α ih =>
-    simp only [Separation.int_truth]
-    exact ⟨fun ha s hs => (ih s h).mp (ha s hs),
-           fun ha s hs => (ih s h).mpr (ha s hs)⟩
-  | all_future α ih =>
-    simp only [Separation.int_truth]
-    exact ⟨fun ha s hs => (ih s h).mp (ha s hs),
-           fun ha s hs => (ih s h).mpr (ha s hs)⟩
   | untl α β ihα ihβ =>
     simp only [Separation.int_truth]
     constructor
@@ -971,12 +929,6 @@ private theorem formula_atoms_subst_formula (φ : Formula) (target : Atom) (r : 
       · exact Set.mem_union_left _ ⟨Set.mem_union_right _ h.1, h.2⟩
       · exact Set.mem_union_right _ h
   | box α ihα =>
-    simp only [Separation.subst_formula, Separation.formula_atoms]
-    exact fun x hx => ihα hx
-  | all_past α ihα =>
-    simp only [Separation.subst_formula, Separation.formula_atoms]
-    exact fun x hx => ihα hx
-  | all_future α ihα =>
     simp only [Separation.subst_formula, Separation.formula_atoms]
     exact fun x hx => ihα hx
   | snce α β ihα ihβ =>
@@ -1113,64 +1065,6 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
   | box α _ =>
     simp only [elimExtFromSep, Separation.formula_atoms]
     exact fun x hx => hB_atoms hx
-  | all_past α _ =>
-    simp only [elimExtFromSep]
-    apply formula_atoms_applySubsts_subset
-    · intro x hx
-      have ha := hB_atoms hx
-      obtain ⟨ep, rfl⟩ := ha
-      cases ep with
-      | orig p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
-      | const_at_ref p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
-      | lt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inl rfl)))
-      | gt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl)))))
-    · intro a r hmem
-      simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hmem
-      rcases hmem with hmem | (rfl | rfl)
-      · exact h_subs_in_range a r (List.mem_append_left _ hmem)
-      · exact h_neg_bot_in_range
-      · exact h_lt_in_range
-  | all_future α _ =>
-    simp only [elimExtFromSep]
-    apply formula_atoms_applySubsts_subset
-    · intro x hx
-      have ha := hB_atoms hx
-      obtain ⟨ep, rfl⟩ := ha
-      cases ep with
-      | orig p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
-      | const_at_ref p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
-      | lt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inl rfl)))
-      | gt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl)))))
-    · intro a r hmem
-      simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hmem
-      rcases hmem with hmem | (rfl | rfl)
-      · exact h_subs_in_range a r (List.mem_append_left _ hmem)
-      · exact h_lt_in_range
-      · exact h_neg_bot_in_range
   | snce α β ihα ihβ =>
     simp only [elimExtFromSep, Separation.formula_atoms]
     have mk_covered_past : ∀ (φ : Formula), Separation.formula_atoms φ ⊆ Set.range freshAM →
@@ -1379,12 +1273,6 @@ private theorem applySubsts_no_effect (φ : Formula) (subs : List (Atom × Formu
         · exact ihα (fun h => hna (Or.inl h))
         · exact ihβ (fun h => hna (Or.inr h))
       | box α ihα =>
-        simp only [Separation.formula_atoms] at hna
-        simp [Separation.subst_formula, ihα hna]
-      | all_past α ihα =>
-        simp only [Separation.formula_atoms] at hna
-        simp [Separation.subst_formula, ihα hna]
-      | all_future α ihα =>
         simp only [Separation.formula_atoms] at hna
         simp [Separation.subst_formula, ihα hna]
       | untl α β ihα ihβ =>
@@ -1796,50 +1684,6 @@ private theorem atom_elim_correct {sig : MonadicSignature}
         (ihβ hB_sep.2 (fun a ha => hB_atoms (Set.mem_union_right _ ha)))
     | box φ _ =>
       simp [elimExtFromSep, Separation.int_truth]
-    | all_past ψ _ =>
-      simp only [Separation.is_properly_separated] at hB_sep
-      simp only [elimExtFromSep, Separation.int_truth]
-      constructor
-      · intro hall s hs
-        have ψ_po : Separation.is_past_only ψ = true := hB_sep
-        rw [← applySubsts_past_correct ψ_po
-              (origSubs ++ constSubsList freshAM σ₀ ++
-               [(lt_atom, Formula.neg .bot), (gt_atom, .bot)])
-              M_blend s
-              past_reps_po
-              (fun a r hmem r_val hr_val => past_match a r hmem s hs r_val hr_val)]
-        exact hall s hs
-      · intro hall s hs
-        have ψ_po : Separation.is_past_only ψ = true := hB_sep
-        rw [← applySubsts_past_correct ψ_po
-              (origSubs ++ constSubsList freshAM σ₀ ++
-               [(lt_atom, Formula.neg .bot), (gt_atom, .bot)])
-              M_blend s
-              past_reps_po
-              (fun a r hmem r_val hr_val => past_match a r hmem s hs r_val hr_val)] at hall
-        exact hall s hs
-    | all_future ψ _ =>
-      simp only [Separation.is_properly_separated] at hB_sep
-      simp only [elimExtFromSep, Separation.int_truth]
-      constructor
-      · intro hall s hs
-        have ψ_fo : Separation.is_future_only ψ = true := hB_sep
-        rw [← applySubsts_future_correct ψ_fo
-              (origSubs ++ constSubsList freshAM σ₀ ++
-               [(lt_atom, .bot), (gt_atom, Formula.neg .bot)])
-              M_blend s
-              fut_reps_fo
-              (fun a r hmem r_val hr_val => fut_match a r hmem s hs r_val hr_val)]
-        exact hall s hs
-      · intro hall s hs
-        have ψ_fo : Separation.is_future_only ψ = true := hB_sep
-        rw [← applySubsts_future_correct ψ_fo
-              (origSubs ++ constSubsList freshAM σ₀ ++
-               [(lt_atom, .bot), (gt_atom, Formula.neg .bot)])
-              M_blend s
-              fut_reps_fo
-              (fun a r hmem r_val hr_val => fut_match a r hmem s hs r_val hr_val)] at hall
-        exact hall s hs
     | snce α β ihα ihβ =>
       simp only [Separation.is_properly_separated, Bool.and_eq_true] at hB_sep
       simp only [elimExtFromSep, Separation.int_truth]
