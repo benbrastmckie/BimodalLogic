@@ -1410,6 +1410,95 @@ theorem snce_depth_zero_single_U_separated (phi A B : Formula)
     obtain ⟨ha_uf, hb_uf⟩ := hdepth
     simp [is_syntactically_separated, ha_uf, hb_uf]
 
+/-! ### U-Nesting Depth Measure for Lemma 10.2.7
+
+GHR94 Lemma 10.2.7 inducts on the maximum depth of U-nesting chains
+(the "maximum depth n of nesting of Us beneath an S"). This is different
+from `snce_depth_of_U` (which counts S-layers above U and stops at `.untl`
+nodes). `U_nesting_depth` counts `.untl` nesting levels throughout the
+formula, passing through `.snce` transparently. -/
+
+/-- Maximum depth of U-nesting chains in a formula.
+    Counts how many levels of `.untl` are nested (through U-args).
+    `.snce` passes through (takes max), `.untl` increments by 1.
+    This is GHR94's "depth of nesting of Us beneath an S" for 10.2.7. -/
+def U_nesting_depth : Formula → Nat
+  | .atom _ => 0
+  | .bot => 0
+  | .imp a b => max (U_nesting_depth a) (U_nesting_depth b)
+  | .box a => U_nesting_depth a
+  | .untl a b => 1 + max (U_nesting_depth a) (U_nesting_depth b)
+  | .snce a b => max (U_nesting_depth a) (U_nesting_depth b)
+
+/-- U_nesting_depth = 0 iff the formula is U-free. -/
+theorem U_nesting_depth_zero_iff_U_free (phi : Formula) :
+    U_nesting_depth phi = 0 ↔ is_U_free phi = true := by
+  induction phi with
+  | atom _ => simp only [U_nesting_depth, is_U_free]
+  | bot => simp only [U_nesting_depth, is_U_free]
+  | imp a b ih1 ih2 =>
+    simp only [U_nesting_depth, is_U_free, Nat.max_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
+  | box a ih =>
+    simp only [U_nesting_depth, is_U_free]
+    exact ih
+  | untl _ _ _ _ =>
+    simp only [U_nesting_depth, is_U_free]
+    exact iff_of_false (by omega) (by decide)
+  | snce a b ih1 ih2 =>
+    simp only [U_nesting_depth, is_U_free, Nat.max_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
+
+/-- U-free formulas have U_nesting_depth = 0. -/
+theorem U_nesting_depth_zero_of_U_free (phi : Formula)
+    (h : is_U_free phi = true) : U_nesting_depth phi = 0 :=
+  (U_nesting_depth_zero_iff_U_free phi).mpr h
+
+/-- When U_nesting_depth <= 1 and no_S_nested_in_U, all U-args are U-free.
+    This is the key property: at depth <= 1, U-args are boolean (U-free AND S-free). -/
+theorem U_nesting_depth_le_one_untl_args_U_free (a b : Formula)
+    (h : U_nesting_depth (.untl a b) ≤ 1) :
+    is_U_free a = true ∧ is_U_free b = true := by
+  simp only [U_nesting_depth] at h
+  have ha : U_nesting_depth a = 0 := by omega
+  have hb : U_nesting_depth b = 0 := by omega
+  exact ⟨(U_nesting_depth_zero_iff_U_free a).mp ha,
+         (U_nesting_depth_zero_iff_U_free b).mp hb⟩
+
+-- Monotonicity lemmas
+
+theorem U_nesting_depth_le_imp_left (a b : Formula) :
+    U_nesting_depth a ≤ U_nesting_depth (.imp a b) := by
+  simp only [U_nesting_depth]
+  exact Nat.le_max_left _ _
+
+theorem U_nesting_depth_le_imp_right (a b : Formula) :
+    U_nesting_depth b ≤ U_nesting_depth (.imp a b) := by
+  simp only [U_nesting_depth]
+  exact Nat.le_max_right _ _
+
+theorem U_nesting_depth_le_box (a : Formula) :
+    U_nesting_depth a ≤ U_nesting_depth (.box a) := by
+  simp only [U_nesting_depth, le_refl]
+
+theorem U_nesting_depth_le_snce_left (a b : Formula) :
+    U_nesting_depth a ≤ U_nesting_depth (.snce a b) := by
+  simp only [U_nesting_depth]
+  exact Nat.le_max_left _ _
+
+theorem U_nesting_depth_le_snce_right (a b : Formula) :
+    U_nesting_depth b ≤ U_nesting_depth (.snce a b) := by
+  simp only [U_nesting_depth]
+  exact Nat.le_max_right _ _
+
+theorem U_nesting_depth_lt_untl_left (a b : Formula) :
+    U_nesting_depth a < U_nesting_depth (.untl a b) := by
+  simp only [U_nesting_depth]
+  omega
+
+theorem U_nesting_depth_lt_untl_right (a b : Formula) :
+    U_nesting_depth b < U_nesting_depth (.untl a b) := by
+  simp only [U_nesting_depth]
+  omega
+
 /-! ### Step 5c: Single-U-Type at Depth 0 — Direct Separability via Event-Guard Decomposition
 
 GHR94 Lemma 10.2.4: `.snce C F` where U(A,B) appears only at top level (not under
