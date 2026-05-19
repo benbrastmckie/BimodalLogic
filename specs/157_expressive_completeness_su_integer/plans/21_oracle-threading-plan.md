@@ -222,11 +222,11 @@ All prior infrastructure is in place.
 
 ---
 
-### Phase 4C: Verify Axiom-Freeness [NOT STARTED]
+### Phase 4C: Verify Axiom-Freeness [COMPLETED]
 
-- [ ] Task 4C.1: `lean_verify single_U_formula_separable_noax_param` — NO `all_separable`, `snce_separable`, `untl_separable`
-- [ ] Task 4C.2: `lean_verify lemma_10_2_6_self_contained_param` — same
-- [ ] Task 4C.3: `lean_verify no_S_nested_in_U_separable_direct_param` — same
+- [x] Task 4C.1: `lean_verify single_U_formula_separable_noax_param` — NO `all_separable`, `snce_separable`, `untl_separable`
+- [x] Task 4C.2: `lean_verify lemma_10_2_6_self_contained_param` — same
+- [x] Task 4C.3: `lean_verify no_S_nested_in_U_separable_direct_param` — same
 
 **Timing**: 30 minutes
 
