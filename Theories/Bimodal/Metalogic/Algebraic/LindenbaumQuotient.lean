@@ -412,7 +412,7 @@ theorem sigma_quot_G_H (a : LindenbaumAlg) :
   induction a using Quotient.ind
   rename_i φ
   show toQuot (φ.all_future.swap_temporal) = H_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal]
+  simp only [Formula.swap_temporal_all_future]
   rfl
 
 /--
@@ -423,7 +423,7 @@ theorem sigma_quot_H_G (a : LindenbaumAlg) :
   induction a using Quotient.ind
   rename_i φ
   show toQuot (φ.all_past.swap_temporal) = G_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal]
+  simp only [Formula.swap_temporal_all_past]
   rfl
 
 /--
