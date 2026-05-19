@@ -170,10 +170,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/19_revised-restructuring-plan.md",
           "type": "plan",
           "summary": "Revised plan v19: fixes Phase 4 deviation (no_S_nested_in_U_separable_direct must use U_nesting_depth induction, not all_separable wrapper)"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/plans/20_ghr94-faithful-plan.md",
+          "type": "plan",
+          "summary": "Plan v20: GHR94-faithful restructuring synthesizing 4 research reports. Fixes both axiom leak paths (A and B), innermost U extraction, import reversal, 9 axiom replacements."
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 20
+      "next_artifact_number": 21
     },
     {
       "project_number": 156,
