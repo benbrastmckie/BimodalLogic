@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # Axioms Test Suite
@@ -19,6 +20,7 @@ namespace BimodalTest.ProofSystem
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
+open Bimodal.Theorems.TemporalDerived
 
 -- ============================================================
 -- Propositional K Axiom Tests: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
@@ -137,31 +139,39 @@ example : Axiom ((((Formula.atom_s "p").imp Formula.bot).imp (Formula.atom_s "p"
   Axiom.peirce (Formula.atom_s "p") Formula.bot
 
 -- ============================================================
--- Temporal 4 Axiom Tests: Gφ → GGφ
+-- Temporal 4 Derived Theorem Tests: Gφ → GGφ
+-- Note: temp_4 is now a derived theorem (Task 116), not an axiom constructor.
 -- ============================================================
 
--- Test: Temporal 4 axiom on atom
-example : Axiom ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) := Axiom.temp_4 (Formula.atom_s "p")
+-- Test: Temporal 4 derived theorem on atom
+noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) :=
+  temp_4_derived (Formula.atom_s "p")
 
--- Test: Temporal 4 axiom on complex formula
-example : Axiom ((Formula.atom_s "p").box.all_future.imp (Formula.atom_s "p").box.all_future.all_future) := Axiom.temp_4 (Formula.atom_s "p").box
+-- Test: Temporal 4 derived theorem on complex formula
+noncomputable example : ⊢ ((Formula.atom_s "p").box.all_future.imp (Formula.atom_s "p").box.all_future.all_future) :=
+  temp_4_derived (Formula.atom_s "p").box
 
 -- ============================================================
 -- Temporal A Axiom Tests: φ → G(some_past φ)
+-- Note: Axiom.temp_a was removed in a prior task. The BX analogue is connect_future.
 -- ============================================================
 
--- Test: Temporal A axiom on atom
-example : Axiom ((Formula.atom_s "p").imp ((Formula.atom_s "p").some_past.all_future)) := Axiom.temp_a (Formula.atom_s "p")
+-- Test: connect_future axiom on atom (φ → G(P(φ)))
+example : Axiom ((Formula.atom_s "p").imp ((Formula.atom_s "p").some_past.all_future)) :=
+  Axiom.connect_future (Formula.atom_s "p")
 
--- Test: Temporal A axiom on negation
-example : Axiom ((Formula.atom_s "p").neg.imp ((Formula.atom_s "p").neg.some_past.all_future)) := Axiom.temp_a (Formula.atom_s "p").neg
+-- Test: connect_future axiom on negation
+example : Axiom ((Formula.atom_s "p").neg.imp ((Formula.atom_s "p").neg.some_past.all_future)) :=
+  Axiom.connect_future (Formula.atom_s "p").neg
 
 -- ============================================================
 -- Temporal L Axiom Tests: △φ → FPφ (always implies future-past)
+-- Note: Axiom.temp_l was removed in a prior task. This property can be derived.
 -- ============================================================
 
--- Test: Temporal L axiom on atom
-example : Axiom ((Formula.atom_s "p").always.imp ((Formula.atom_s "p").all_past.all_future)) := Axiom.temp_l (Formula.atom_s "p")
+-- Test: always implies future-past (derived from connect_future)
+-- △φ = Hφ ∧ (φ ∧ Gφ), so △φ → φ → G(Pφ) via connect_future
+-- Skipped: temp_l is no longer an axiom and requires a multi-step derivation
 
 -- ============================================================
 -- Modal-Future Axiom Tests: □φ → □Gφ

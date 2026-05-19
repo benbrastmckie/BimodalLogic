@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # Derivation Test Suite
@@ -45,20 +46,19 @@ example : ⊢ (Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p").diamond
   apply DerivationTree.axiom
   apply Axiom.modal_b
 
--- Test: Temporal 4 is derivable
-example : ⊢ (Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) := by
-  apply DerivationTree.axiom
-  apply Axiom.temp_4
+-- Test: Temporal 4 is derivable (now a derived theorem, no longer an axiom constructor)
+noncomputable example : ⊢ (Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) :=
+  Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
 
--- Test: Temporal A is derivable (φ → F(some_past φ))
+-- Test: connect_future is derivable (φ → G(P(φ)), BX4)
 example : ⊢ (Formula.atom_s "p").imp (Formula.all_future (Formula.atom_s "p").some_past) := by
   apply DerivationTree.axiom
-  apply Axiom.temp_a
+  apply Axiom.connect_future
 
--- Test: Temporal L is derivable (△φ → FHφ)
-example : ⊢ (Formula.atom_s "p").always.imp (Formula.all_future (Formula.all_past (Formula.atom_s "p"))) := by
+-- Test: connect_past is derivable (φ → H(F(φ)), BX4')
+example : ⊢ (Formula.atom_s "p").imp (Formula.all_past (Formula.atom_s "p").some_future) := by
   apply DerivationTree.axiom
-  apply Axiom.temp_l
+  apply Axiom.connect_past
 
 -- Test: Modal-Future is derivable
 example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.box (Formula.all_future (Formula.atom_s "p"))) := by
@@ -161,13 +161,13 @@ example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") := by
   apply Axiom.modal_t
 
 -- Test: Temporal duality swaps all_past/all_future
--- If ⊢ φ then ⊢ swap_temporal φ
-example : ⊢ ((Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal := by
+-- If ⊢ φ then ⊢ swap_temporal φ (using connect_future as the base derivation)
+example : ⊢ ((Formula.atom_s "p").imp (Formula.all_future (Formula.atom_s "p").some_past)).swap_temporal := by
   apply DerivationTree.temporal_duality
   apply DerivationTree.axiom
-  apply Axiom.temp_4
+  apply Axiom.connect_future
 
--- The above should derive: ⊢ H p → H H p (swapped from G p → G G p)
+-- The above should derive: ⊢ p → H(F(p)) (swapped from p → G(P(p)))
 
 -- ============================================================
 -- Weakening Rule Tests

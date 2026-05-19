@@ -91,13 +91,15 @@ example (p : Formula) : p.always = p.all_past.and (p.and p.all_future) := rfl
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
 -- Test: Derived 'some_past' operator (at some past time)
--- Definition: some_past φ = ¬H¬φ = ¬(all_past ¬φ)
-example (p : Formula) : p.some_past = p.neg.all_past.neg := rfl
+-- Definition: some_past φ = S(φ, ⊤) (Task 116: direct def, not ¬H¬φ)
+-- The duality some_past φ ↔ ¬H¬φ is now a semantic equivalence via @[simp] theorems.
+example (p : Formula) : p.some_past = Formula.snce p Formula.top := rfl
 
 -- Test: Derived 'some_future' operator (at some future time)
--- Definition: some_future φ = ¬G¬φ = ¬(all_future ¬φ)
+-- Definition: some_future φ = U(φ, ⊤) (Task 116: direct def, not ¬G¬φ)
+-- The duality some_future φ ↔ ¬G¬φ is now a semantic equivalence via @[simp] theorems.
 -- Note: some_future ≠ sometimes (sometimes covers past, present, AND future)
-example (p : Formula) : p.some_future = p.neg.all_future.neg := rfl
+example (p : Formula) : p.some_future = Formula.untl p Formula.top := rfl
 
 -- Test: Triangle notation parsing - always (△)
 example (p : Formula) : △p = p.always := rfl
@@ -146,20 +148,26 @@ example (p q : Formula) :
 example (p : Formula) : (p.box).swap_temporal = p.swap_temporal.box := rfl
 
 -- Test: swap_temporal on all_past (becomes all_future)
-example (p : Formula) : (p.all_past).swap_temporal = p.swap_temporal.all_future := rfl
+-- Note: all_past/all_future are def abbreviations (Task 116), so equality
+-- requires unfolding through imp/untl/snce.
+example (p : Formula) : (p.all_past).swap_temporal = p.swap_temporal.all_future := by
+  simp only [Formula.all_past, Formula.all_future, Formula.some_past, Formula.some_future,
+    Formula.neg, Formula.top, Formula.swap_temporal]
 
 -- Test: swap_temporal on all_future (becomes all_past)
-example (p : Formula) : (p.all_future).swap_temporal = p.swap_temporal.all_past := rfl
+example (p : Formula) : (p.all_future).swap_temporal = p.swap_temporal.all_past := by
+  simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
+    Formula.neg, Formula.top, Formula.swap_temporal]
 
 -- Test: swap_temporal is involution (applying twice gives identity)
 example (p : Formula) : p.swap_temporal.swap_temporal = p := by
   induction p with
   | atom _ => rfl
   | bot => rfl
-  | imp p q ihp ihq => simp [Formula.swap_temporal, ihp, ihq]
-  | box p ih => simp [Formula.swap_temporal, ih]
-  | all_past p ih => simp [Formula.swap_temporal, ih]
-  | all_future p ih => simp [Formula.swap_temporal, ih]
+  | imp p q ihp ihq => simp only [Formula.swap_temporal, ihp, ihq]
+  | box p ih => simp only [Formula.swap_temporal, ih]
+  | untl p q ih1 ih2 => simp only [Formula.swap_temporal, ih1, ih2]
+  | snce p q ih1 ih2 => simp only [Formula.swap_temporal, ih1, ih2]
 
 /-! ## Formula Complexity Metrics Tests -/
 
@@ -215,11 +223,14 @@ example : ((p.imp q).imp (r.imp s)).countImplications = 3 := rfl
 
 -- countImplications tests: operators preserve implication count
 example : (p.imp q).box.countImplications = 1 := rfl
-example : (p.imp q).all_future.countImplications = 1 := rfl
+-- Note: all_future is now a def abbreviation (Task 116) involving neg/imp,
+-- so countImplications counts the structural implication constructors.
+example : (p.imp q).all_future.countImplications = 4 := rfl
 
 -- Mixed complexity tests: verify all metrics work together
 example : (p.all_future.box.imp q).modalDepth = 1 := rfl
 example : (p.all_future.box.imp q).temporalDepth = 1 := rfl
-example : (p.all_future.box.imp q).countImplications = 1 := rfl
+-- countImplications counts structural imp constructors in the expanded def
+example : (p.all_future.box.imp q).countImplications = 4 := rfl
 
 end BimodalTest.Syntax
