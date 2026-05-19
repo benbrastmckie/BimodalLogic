@@ -227,24 +227,10 @@ theorem p_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
   rw [mem_p_step_blocking_formulas_restricted_iff] at hψ
   obtain ⟨χ, h_P_in_dc, _, _, rfl⟩ := hψ
   -- Need: H(¬χ) ∈ deferralClosure phi when P(χ) ∈ deferralClosure phi.
-  -- Under the old definition P(χ) = ¬H(¬χ) = imp (H(¬χ)) bot, H(¬χ) was a structural
-  -- subformula of P(χ). Under the new definition P(χ) = snce χ top, this structural
-  -- containment no longer holds.
-  -- FIX NEEDED: Extend baseDeferralClosure in SubformulaClosure.lean with a
-  -- temporalBlockingSet that includes H(¬χ) for each P(χ) and G(¬χ) for each F(χ)
-  -- in closureWithNeg phi. Then this proof becomes:
-  --   exact temporalBlockingSet_mem h_P_in_dc
-  -- This design change has cascading effects on ~15 membership proofs in SubformulaClosure.lean
-  -- and is deferred to a follow-up task.
+  -- Via temporalBlockingSet: if P(χ) ∈ closureWithNeg, then H(¬χ) ∈ temporalBlockingSet ⊆ deferralClosure
   rcases some_past_in_deferralClosure_cases phi χ h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
-  · unfold closureWithNeg at h_P_in_cwn
-    simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
-    rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-    · -- P(χ) ∈ subformulaClosure: H(¬χ) ∉ subformulaClosure (design gap)
-      sorry
-    · -- P(χ) = g.neg: snce χ top = imp g bot, impossible (snce ≠ imp)
-      simp only [Formula.neg] at h_g_neg_eq
-      exact absurd h_g_neg_eq (by intro h'; exact Formula.noConfusion h')
+  · -- P(χ) ∈ closureWithNeg phi: use temporal blocking set
+    exact all_past_neg_mem_deferralClosure_of_some_past h_P_in_cwn
   · -- P(χ) = P_top: χ = top = bot.imp bot, H(¬χ) = H_neg_neg_bot ∈ deferralClosure
     simp only [P_top, Formula.some_past, Formula.top] at h_P_eq_P_top
     have h_chi_eq : χ = Formula.bot.imp Formula.bot := Formula.snce.inj h_P_eq_P_top |>.1

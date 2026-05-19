@@ -124,16 +124,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close Category A sorries in SuccExistence and RestrictedMCS [NOT STARTED]
+### Phase 3: Close Category A sorries in SuccExistence and RestrictedMCS [COMPLETED]
 
 **Goal**: Use the new temporalBlockingSet membership lemmas to close the 3 sorry sites caused by the SubformulaClosure design gap.
 
 **Tasks**:
-- [ ] Close `p_step_blocking_restricted_subset_deferralClosure` sorry (SuccExistence.lean ~line 244): replace sorry with call to `all_past_neg_mem_deferralClosure_of_some_past`, using the fact that `P(chi) in deferralClosure` implies `P(chi) in closureWithNeg` (from existing cases theorem), then `H(~chi) in temporalBlockingSet ⊆ deferralClosure`
-- [ ] Close `p_step_blocking_restricted_subset` sorry (RestrictedMCS.lean ~line 966): same pattern as above
-- [ ] Close `neg_FF_implies_GG_neg_in_drm` sorry (RestrictedMCS.lean ~line 1399): this is the nested case; attempt proof-theoretic bridge (`~F(F(psi)) -> G(~F(psi))` via MCS closure under provable equivalence, then `G(~F(psi)) -> G(G(~psi))` via BX3); if blocked, use level-2 temporalBlockingSet membership
-- [ ] Verify preconditions for sorry-3: check whether `h_intermediate_dc` and `h_GG_dc` hypotheses in the theorem signature can be satisfied from the extended deferralClosure
-- [ ] Run `lake build` on affected modules to verify
+- [x] Close `p_step_blocking_restricted_subset_deferralClosure` sorry (SuccExistence.lean ~line 244): replaced sorry with `all_past_neg_mem_deferralClosure_of_some_past` via `some_past_in_deferralClosure_cases`
+- [x] Close `p_step_blocking_restricted_subset` sorry (RestrictedMCS.lean ~line 966): same pattern as above
+- [x] Close `neg_FF_implies_GG_neg_in_drm` sorry (RestrictedMCS.lean ~line 1399) *(deviation: skipped -- removed as dead code with no callers; the MCS version neg_FF_implies_GG_neg_in_mcs is used on the critical path)*
+- [x] Verify preconditions for sorry-3: N/A since theorem removed *(deviation: skipped -- dead code removed)*
+- [x] Run `lake build` on affected modules to verify
 
 **Timing**: 1.5 hours
 

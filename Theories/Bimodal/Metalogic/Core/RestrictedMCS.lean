@@ -958,15 +958,8 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
   -- Get H(neg psi) in deferralClosure
   have h_H_in_dc : Formula.all_past (Formula.neg psi) ∈ deferralClosure phi := by
     rcases some_past_in_deferralClosure_cases phi psi h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
-    · -- P(psi) in closureWithNeg: design gap (P(psi) = snce psi top, H(¬psi) not subformula)
-      -- Requires temporalBlockingSet extension to baseDeferralClosure.
-      unfold closureWithNeg at h_P_in_cwn
-      simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
-      rcases h_P_in_cwn with h_sub | ⟨g, _, h_g_neg_eq⟩
-      · sorry  -- P(psi) ∈ subformulaClosure: H(¬psi) ∉ subformulaClosure (design gap)
-      · -- P(psi) = g.neg: snce psi top = imp g bot, impossible (snce ≠ imp)
-        simp only [Formula.neg] at h_g_neg_eq
-        exact absurd h_g_neg_eq (by intro h'; exact Formula.noConfusion h')
+    · -- P(psi) ∈ closureWithNeg phi: use temporal blocking set
+      exact all_past_neg_mem_deferralClosure_of_some_past h_P_in_cwn
     · -- P(psi) = P_top, so psi = top = bot.imp bot, H(¬psi) = H_neg_neg_bot
       simp only [P_top, Formula.some_past, Formula.top] at h_P_eq_P_top
       have h_psi_eq : psi = Formula.bot.imp Formula.bot := Formula.snce.inj h_P_eq_P_top |>.1
@@ -1368,35 +1361,11 @@ theorem theorem_in_drm {phi : Formula} {M : Set Formula}
     simp only [List.mem_nil_iff] at h
   exact drm_closed_under_derivation h_mcs [] h_sub h_thm h_ψ_dc
 
-/--
-neg(FF(phi)) in DeferralRestrictedMCS implies GG(neg(phi)) in DeferralRestrictedMCS,
-provided all intermediate formulas are in deferralClosure.
-
-This is the DRM version of `neg_FF_implies_GG_neg_in_mcs`. The key insight is that
-the derivation only uses DNE and modal K distribution, which are provable in the
-proof system. When all intermediate formulas are in deferralClosure, the DRM's
-closure under derivation applies.
-
-**Formula Structure**:
-- neg(FF(psi)) has structure: `psi.neg.all_future.neg.neg.all_future.neg.neg`
-- We want: `psi.neg.all_future.all_future` = GG(neg psi)
-
-**Intermediate formulas** (must be in deferralClosure for this to work):
-- `psi.neg.all_future.neg.neg.all_future` = G(G(neg psi).neg.neg)
-- `psi.neg.all_future.all_future` = GG(neg psi)
--/
-theorem neg_FF_implies_GG_neg_in_drm {phi : Formula} {M : Set Formula}
-    (h_mcs : DeferralRestrictedMCS phi M) (psi : Formula)
-    (h_neg_FF : (Formula.some_future (Formula.some_future psi)).neg ∈ M)
-    (h_intermediate_dc : (psi.neg.all_future.neg).neg.all_future ∈ deferralClosure phi)
-    (h_GG_dc : psi.neg.all_future.all_future ∈ deferralClosure phi) :
-    Formula.all_future (Formula.all_future psi.neg) ∈ M := by
-  -- Under new F/G definitions, ¬FF(psi) is no longer structurally ¬¬G(G(¬psi).neg.neg).
-  -- This theorem needs restructuring to use proof-theoretic bridges:
-  -- ¬FF(psi) → G(¬F(psi)) via neg_some_future_to_all_future_neg
-  -- G(¬F(psi)) → GG(¬psi) via G(¬F(psi) → G(¬psi))
-  -- Each step requires intermediate formulas in deferralClosure for DRM closure.
-  sorry
+-- NOTE: neg_FF_implies_GG_neg_in_drm was removed (Task 167) because:
+-- 1. It was dead code with no callers
+-- 2. The MCS version (neg_FF_implies_GG_neg_in_mcs) is used on the critical path
+-- 3. If a DRM version is needed in the future, the temporalBlockingSet provides
+--    the necessary H(¬chi)/G(¬chi) formulas in deferralClosure
 
 /--
 G(neg phi) in DeferralRestrictedMCS implies F(phi) not in DeferralRestrictedMCS.
