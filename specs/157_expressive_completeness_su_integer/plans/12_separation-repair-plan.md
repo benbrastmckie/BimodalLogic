@@ -265,17 +265,17 @@ Phases are strictly sequential because each phase's compilation depends on the p
   - Count sorry: should be exactly 8
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations`
 
-- [ ] Task 2.11: Fix Hierarchy.lean (14 repair sites) *(deviation: deferred -- blocked by DedekindZ)*
+- [x] Task 2.11: Fix Hierarchy.lean (14 repair sites) *(deviation: altered -- removed 162 dead lines, fixed 103 errors, 1 pre-existing sorry remains in abstract_untl_count_lt_of_not_U_free untl non-matching case)*
   - Remove dead `| .all_past`/`| .all_future` arms from `has_single_U_type`, `has_single_S_type`, `abstract_untl`, `abstract_snce`, and all related functions/proofs
   - The key infrastructure (substitution lemmas, `subst_in_separated_separable`, `no_S_nested_in_U_separable_param`, junction-depth decrease lemmas) should compile with dead arm removal
   - The `all_formulas_separable_aux` function's `| all_past`/`| all_future` cases become unreachable -- remove them
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 2.12: Fix ExpressiveCompleteness.lean *(deviation: altered -- has 10+ errors from dead arms and int_truth type changes, separate from DedekindZ)*
+- [ ] Task 2.12: Fix ExpressiveCompleteness.lean *(deviation: altered -- 59 errors remain from int_truth type changes, dead arms already removed by prior agent)*
   - Verify it compiles with the repaired Separation module
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness`
 
-- [ ] Task 2.13: Full build verification *(deviation: deferred -- blocked by 2.8, 2.11, 2.12)*
+- [ ] Task 2.13: Full build verification *(deviation: deferred -- blocked by 2.12; all 12 Separation files compile, ExpressiveCompleteness remains)*
   - Run `lake build` targeting all Separation module files
   - Verify no new sorry introduced (baseline: 8 in DualEliminations, 9 axioms in SeparationThm)
 
