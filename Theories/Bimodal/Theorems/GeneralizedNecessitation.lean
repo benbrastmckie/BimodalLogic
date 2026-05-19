@@ -3,6 +3,7 @@ import Bimodal.Syntax.Context
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Propositional
 
 /-!
 # Generalized Necessitation Rules
@@ -36,6 +37,31 @@ namespace Bimodal.Theorems
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
+open Bimodal.Theorems.Combinators
+open Bimodal.Theorems.Propositional
+
+/-! ### Local derivation of temp_k_dist from BX3
+
+G-distribution `G(φ→ψ) → (Gφ → Gψ)` derived from BX3 (right_mono_until)
+and propositional contraposition. Defined here to avoid circular imports with
+TemporalDerived.lean. -/
+
+private noncomputable def temp_k_dist_local (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
+  -- Step 1: ⊢ ¬(¬ψ→¬φ) → ¬(φ→ψ) (negated contrapositive)
+  let neg_contra := mp (contrapose_imp φ ψ) (contrapose_imp (φ.imp ψ) (ψ.neg.imp φ.neg))
+  -- Step 2: F(¬(¬ψ→¬φ)) → F(¬(φ→ψ)) via BX3
+  let F_step := mp (DerivationTree.temporal_necessitation _ neg_contra)
+    (DerivationTree.axiom [] _
+      (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top))
+  -- Step 3: G(φ→ψ) → G(¬ψ→¬φ) via contraposition
+  let G_contra := contraposition F_step
+  -- Step 4: G(¬ψ→¬φ) → (Gφ → Gψ) via BX3 + contraposition
+  let G_to_GK := imp_trans
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top))
+    (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
+  -- Compose
+  imp_trans G_contra G_to_GK
 
 /--
 The reverse of the deduction theorem. If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`.
@@ -81,10 +107,10 @@ to the future K distribution axiom.
 -/
 noncomputable def past_k_dist (A B : Formula) :
     ⊢ (A.imp B).all_past.imp (A.all_past.imp B.all_past) := by
-  -- Apply temp_k_dist to swapped formulas
+  -- Apply derived temp_k_dist to swapped formulas
   have fk : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future.imp
                (A.swap_temporal.all_future.imp B.swap_temporal.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist A.swap_temporal B.swap_temporal)
+    temp_k_dist_local A.swap_temporal B.swap_temporal
   -- Apply temporal duality
   have td : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future.imp
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
@@ -158,7 +184,7 @@ noncomputable def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
     let k_dist :
       ⊢ (Formula.all_future (A.imp φ)).imp
         ((Formula.all_future A).imp (Formula.all_future φ)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist A φ)
+      temp_k_dist_local A φ
     let k_dist_weak :
       (Context.map Formula.all_future Γ') ⊢
       (Formula.all_future (A.imp φ)).imp

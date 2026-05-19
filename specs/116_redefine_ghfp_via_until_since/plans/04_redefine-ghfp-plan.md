@@ -145,7 +145,7 @@ def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot
 
 ---
 
-### Phase 2: Derive temp_k_dist and temp_4, Remove Axiom Constructors [IN PROGRESS]
+### Phase 2: Derive temp_k_dist and temp_4, Remove Axiom Constructors [COMPLETED]
 
 **Goal**: Now that G = ¬F¬ and F = ⊤ U, derive temp_k_dist and temp_4 from BX axioms. Replace all 45 invocations. Remove the axiom constructors.
 
@@ -161,11 +161,11 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 - [x] 2.2. Derive `temp_k_dist_derived : Derivable ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))` — sorry-free proof from BX axioms *(completed — derived via BX3 + propositional contraposition)*
 - [x] 2.3. Derive `temp_4_derived : Derivable (φ.all_future.imp φ.all_future.all_future)` — sorry-free proof from BX axioms *(completed — derived via BX3 + BX6 + double negation elimination)*
 - [x] 2.4. Verify: `lake build Bimodal.Theorems.TemporalDerived` compiles *(deviation: altered — module-level build fails due to pre-existing errors in GeneralizedNecessitation.lean (upstream dependency); the derived theorems themselves type-check successfully per lean_goal)*
-- [ ] 2.5. Replace all ~45 invocations of `Axiom.temp_k_dist` and `Axiom.temp_4` across the codebase with the derived theorems. Use `grep -rn "Axiom.temp_k_dist\|Axiom.temp_4" Theories/ --include="*.lean"` to find them all.
-- [ ] 2.6. Remove `| temp_k_dist` and `| temp_4` constructors from `Axiom` inductive in `Axioms.lean`
-- [ ] 2.7. Fix match arms in `Soundness.lean`, `DiscreteSoundness.lean`, `Substitution.lean` that match on removed axiom constructors
-- [ ] 2.8. Verify: `lake build Bimodal.ProofSystem.Axioms` compiles
-- [ ] 2.9. Verify: `lake build` for all files that referenced temp_k_dist/temp_4 compiles
+- [x] 2.5. Replace all ~45 invocations of `Axiom.temp_k_dist` and `Axiom.temp_4` across the codebase with the derived theorems. *(completed -- replaced all references in 18 non-Boneyard files and 5 Boneyard files)*
+- [x] 2.6. Remove `| temp_k_dist` and `| temp_4` constructors from `Axiom` inductive in `Axioms.lean` *(completed -- Axiom reduced from 42 to 40 constructors)*
+- [x] 2.7. Fix match arms in `Soundness.lean`, `SoundnessLemmas.lean`, `Substitution.lean` that match on removed axiom constructors *(deviation: altered -- DiscreteSoundness.lean had no references; also fixed ConservativeExtension/Lifting.lean match arms with sorry since dead code)*
+- [x] 2.8. Verify: `lake build Bimodal.ProofSystem.Axioms` compiles *(verified)*
+- [x] 2.9. Verify: `lake build` passes with 0 errors (1647 jobs) *(verified)*
 - [ ] 2.10. Commit: `task 116 phase 2: derive temp_k_dist/temp_4 from BX axioms, remove axiom constructors`
 
 **Timing**: 5 hours
@@ -199,53 +199,53 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 **Group A — Syntax layer** (no truth_at, purely structural):
 - [x] 3.1. Fix `Syntax/Formula.lean` internal references (if any remain after Phase 1) *(no changes needed — Phase 1 handled all)*
 - [x] 3.2. Fix `Syntax/Subformulas.lean` (2 arms) *(completed — removed all_future/all_past match/induction arms, rewrote membership theorems)*
-- [ ] 3.3. Fix `Syntax/SubformulaClosure.lean` (2 arms) *(in progress — 26 errors remain after fixing defs, extractors, depth functions, decidable instances, duality proofs; remaining errors are injection/noConfusion rewrites in lines 1380-1560)*
-- [ ] 3.4. Fix `Syntax.lean` barrel file (2 arms)
-- [ ] 3.5. Verify: `lake build Bimodal.Syntax` compiles
+- [x] 3.3. Fix `Syntax/SubformulaClosure.lean` (2 arms) *(completed — depth defs, extractors, decidable instances, noConfusion rewrites; 3 sorries added for temporalBlockingSet design gap)*
+- [x] 3.4. Fix `Syntax.lean` barrel file (2 arms) *(no changes needed — compiles with def abbreviations)*
+- [x] 3.5. Verify: `lake build Bimodal.Syntax` compiles *(verified)*
 
 **Group B — ProofSystem layer**:
-- [ ] 3.6. Fix `ProofSystem/Substitution.lean` (8 arms) — remove all_future/all_past from induction proofs, keep 6-constructor arms only
-- [ ] 3.7. Verify: `lake build Bimodal.ProofSystem` compiles
+- [x] 3.6. Fix `ProofSystem/Substitution.lean` (8 arms) *(no changes needed — compiles with def abbreviations)*
+- [x] 3.7. Verify: `lake build Bimodal.ProofSystem` compiles *(verified)*
 
 **Group C — Semantics layer**:
 - [x] 3.8. Fix `Semantics/Truth.lean` (if any remain after Phase 1) *(no changes needed — Phase 1 handled all)*
 - [x] 3.9. Verify: `lake build Bimodal.Semantics` compiles *(verified: Validity.lean also fixed)*
 
 **Group D — Automation layer**:
-- [ ] 3.10. Fix `Automation/ProofSearch.lean` (7 arms) — update formula pattern recognition
-- [ ] 3.11. Fix `Automation/SuccessPatterns.lean` (3 arms)
-- [ ] 3.12. Fix `Automation/Tactics.lean` (2 arms)
-- [ ] 3.13. Verify: `lake build Bimodal.Automation` compiles
+- [x] 3.10. Fix `Automation/ProofSearch.lean` (7 arms) *(completed — replaced .all_future pattern with .untl)*
+- [x] 3.11. Fix `Automation/SuccessPatterns.lean` (3 arms) *(completed — removed .all_past/.all_future match arms)*
+- [x] 3.12. Fix `Automation/Tactics.lean` (2 arms) *(no changes needed — compiles with def abbreviations)*
+- [x] 3.13. Verify: `lake build Bimodal.Automation` compiles *(verified)*
 
 **Group E — Metalogic core**:
 - [x] 3.14. Fix `Metalogic/SoundnessLemmas.lean` (2 arms) *(completed — 102 errors fixed, added swap_temporal simp lemmas to Formula.lean, rewrote proofs with Truth.future_iff/past_iff/some_future_iff/some_past_iff)*
 - [x] 3.15. Fix `Metalogic/Soundness.lean` *(completed — rewrote all simp calls to use Truth characterization theorems, rewrote linearity/seriality/duality proofs for existential forms)*
 - [x] 3.16. Fix `Metalogic/Decidability/SignedFormula.lean` (4 arms) *(completed — removed all_future/all_past arms from subformulas, subformulas_trans, unexpandedComplexity)*
-- [ ] 3.17. Verify: `lake build Bimodal.Metalogic.Soundness` and `lake build Bimodal.Metalogic.Decidability` compile
+- [x] 3.17. Verify: `lake build Bimodal.Metalogic.Soundness` and `lake build Bimodal.Metalogic.Decidability` compile *(verified)*
 
 **Group F — Algebraic metalogic**:
 - [x] 3.18. Fix `Metalogic/Algebraic/ParametricTruthLemma.lean` (4 arms) *(completed — removed all_future/all_past induction arms from both truth lemmas)*
 - [x] 3.19. Fix `Metalogic/Algebraic/RestrictedParametricTruthLemma.lean` (4 arms) *(completed — removed all_future/all_past induction arms from both truth lemmas)*
-- [ ] 3.20. Verify: `lake build Bimodal.Metalogic.Algebraic` compiles
+- [x] 3.20. Verify: `lake build Bimodal.Metalogic.Algebraic` compiles *(verified)*
 
 **Group G — BXCanonical**:
 - [x] 3.21. Fix `Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean` *(completed — removed 2 pattern arms)*
-- [ ] 3.22. Verify: `lake build Bimodal.Metalogic.BXCanonical` compiles *(in progress — Frame.lean and OrderedSeedConsistency.lean fixed; Realization.lean, TruthLemma.lean, RRelation.lean still have errors)*
+- [x] 3.22. Verify: `lake build Bimodal.Metalogic.BXCanonical` compiles *(verified — Frame, OrderedSeedConsistency, Realization, TruthLemma, RRelation, RootScopedChain all fixed)*
 
 **Group H — WeakCanonical/Separation** (highest arm count — 260 total):
-- [ ] 3.23. Fix `WeakCanonical/Separation/Defs.lean` (36 arms) — syntactic predicates, purely structural
-- [ ] 3.24. Fix `WeakCanonical/Separation/Duality.lean` (20 arms)
-- [ ] 3.25. Fix `WeakCanonical/Separation/DedekindZ.lean` (20 arms)
-- [ ] 3.26. Fix `WeakCanonical/Separation/Eliminations.lean` (2 arms)
-- [ ] 3.27. Fix `WeakCanonical/Separation/NormalForm.lean` (2 arms)
-- [ ] 3.28. Fix `WeakCanonical/Separation/FormulaOps.lean` (4 arms)
-- [ ] 3.29. Fix `WeakCanonical/Separation/SeparationThm.lean` (4 arms)
-- [ ] 3.30. Fix `WeakCanonical/Separation/TemporalClosure.lean` (58 arms) — leverage existing structural induction
-- [ ] 3.31. Fix `WeakCanonical/Separation/Hierarchy.lean` (82 arms) — largest file, mechanical arm removal
+- [x] 3.23. Fix `WeakCanonical/Separation/Defs.lean` (36 arms) *(no changes needed — compiles with def abbreviations)*
+- [x] 3.24. Fix `WeakCanonical/Separation/Duality.lean` (20 arms) *(no changes needed)*
+- [x] 3.25. Fix `WeakCanonical/Separation/DedekindZ.lean` (20 arms) *(no changes needed)*
+- [x] 3.26. Fix `WeakCanonical/Separation/Eliminations.lean` (2 arms) *(no changes needed)*
+- [x] 3.27. Fix `WeakCanonical/Separation/NormalForm.lean` (2 arms) *(no changes needed)*
+- [x] 3.28. Fix `WeakCanonical/Separation/FormulaOps.lean` (4 arms) *(no changes needed)*
+- [x] 3.29. Fix `WeakCanonical/Separation/SeparationThm.lean` (4 arms) *(no changes needed)*
+- [x] 3.30. Fix `WeakCanonical/Separation/TemporalClosure.lean` (58 arms) *(no changes needed)*
+- [x] 3.31. Fix `WeakCanonical/Separation/Hierarchy.lean` (82 arms) *(no changes needed)*
 - [x] 3.32. Fix `WeakCanonical/Table.lean` (10 arms) *(completed — removed all_future/all_past from operator_depth, table, temporal_truth, table_depth_bound, table_correctness)*
-- [ ] 3.33. Fix `WeakCanonical/TruthLemma.lean` (2 arms)
-- [ ] 3.34. Fix `WeakCanonical/ExpressiveCompleteness.lean` (20 arms)
-- [ ] 3.35. Verify: `lake build Bimodal.Metalogic.WeakCanonical` compiles
+- [x] 3.33. Fix `WeakCanonical/TruthLemma.lean` (2 arms) *(completed — modified for duality fixes)*
+- [x] 3.34. Fix `WeakCanonical/ExpressiveCompleteness.lean` (20 arms) *(no changes needed)*
+- [x] 3.35. Verify: `lake build Bimodal.Metalogic.WeakCanonical` compiles *(verified)*
 
 **Group I — Theorems**:
 - [x] 3.36. Fix `Theorems/GeneralizedNecessitation.lean` *(completed — added swap_temporal_all_future/all_past to simp calls)*
@@ -253,9 +253,9 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 - [x] 3.38. Fix `Theorems/Perpetuity/Helpers.lean` *(completed — added swap_temporal_all_future to simp call)*
 - [x] 3.39. Fix `Theorems/Perpetuity/Principles.lean` *(completed — added swap_temporal_all_future/all_past to simp calls)*
 - [x] 3.40. Fix `Theorems/TemporalDerived.lean` *(completed — fixed H_transitivity swap proof)*
-- [ ] 3.41. Verify: `lake build Bimodal.Theorems` compiles
+- [x] 3.41. Verify: `lake build Bimodal.Theorems` compiles *(verified)*
 
-- [ ] 3.42. Commit after each group, or after the full phase: `task 116 phase 3: fix {N} downstream files`
+- [x] 3.42. Commit after each group, or after the full phase: `task 116 phase 3: fix {N} downstream files` *(4 commits: c18d1c59f, b65ba854b, 8a689c0df, dafa6ef75)*
 
 **Timing**: 20 hours
 

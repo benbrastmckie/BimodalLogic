@@ -645,7 +645,7 @@ theorem c4_hard_case_G_neg_delta {A : Set Formula}
     have h_G_ps := theorem_in_mcs h_mcs
       (DerivationTree.temporal_necessitation _ (DerivationTree.axiom [] _ (Axiom.prop_s γ top)))
     have h_dist := theorem_in_mcs h_mcs
-      (DerivationTree.axiom [] _ (Axiom.temp_k_dist γ (top.imp γ)))
+      (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived γ (top.imp γ))
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_dist h_G_ps) h_Gγ
   -- BX2G: G(top -> gamma) -> (delta U top -> delta U gamma)
@@ -1313,7 +1313,7 @@ private theorem some_future_H_neg_G_P_absurd {M : Set Formula}
   -- G(P(α)) → G(¬H(¬α)) by temp_k_dist
   have h_kd : [] ⊢ ((Formula.some_past α).imp (Formula.neg (Formula.all_past (Formula.neg α)))).all_future.imp
       ((Formula.some_past α).all_future.imp (Formula.neg (Formula.all_past (Formula.neg α))).all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.some_past α) (Formula.neg (Formula.all_past (Formula.neg α))))
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived (Formula.some_past α) (Formula.neg (Formula.all_past (Formula.neg α)))
   have h_G_P_imp_G_neg_H : [] ⊢ (Formula.some_past α).all_future.imp
       (Formula.neg (Formula.all_past (Formula.neg α))).all_future :=
     DerivationTree.modus_ponens [] _ _ h_kd h_G_imp

@@ -43,7 +43,7 @@ private theorem G_conj_strengthen {A : Set Formula}
   have d_conj := conj_intro_curried β φ
   exact SetMaximalConsistent.implication_property h_mcs_A
     (SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A (DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (β.imp (Formula.and β φ)))))
+      (theorem_in_mcs h_mcs_A (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ (β.imp (Formula.and β φ)))))
       (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_conj)))
     h_Gφ
 

@@ -3,6 +3,7 @@ import Bimodal.ProofSystem
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # Aesop Rules for TM Logic
@@ -95,11 +96,11 @@ def axiom_modal_b (Γ : Context) (φ : Formula) :
     DerivationTree Γ (φ.imp (Formula.box φ.diamond)) :=
   DerivationTree.axiom Γ _ (Axiom.modal_b φ)
 
-/-- Temporal 4 axiom: G(φ) → G(G(φ)). In BX axiom system. -/
+/-- Temporal 4 axiom: G(φ) → G(G(φ)). Derived from BX3 + BX6. -/
 @[aesop safe apply]
-def axiom_temp_4 (Γ : Context) (φ : Formula) :
+noncomputable def axiom_temp_4 (Γ : Context) (φ : Formula) :
     DerivationTree Γ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) :=
-  DerivationTree.axiom Γ _ (Axiom.temp_4 φ)
+  DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived φ) (List.nil_subset Γ)
 
 /-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
 @[aesop safe apply]
@@ -156,7 +157,7 @@ Forward chaining for Temporal 4 axiom: `Fφ → FFφ`.
 If we have `Fφ` derivable, we can derive `FFφ` using temporal 4 axiom and modus ponens.
 -/
 @[aesop safe forward]
-def temp_4_forward {Γ : Context} {φ : Formula} :
+noncomputable def temp_4_forward {Γ : Context} {φ : Formula} :
     DerivationTree Γ (Formula.all_future φ) →
     DerivationTree Γ (Formula.all_future (Formula.all_future φ)) := by
   intro d

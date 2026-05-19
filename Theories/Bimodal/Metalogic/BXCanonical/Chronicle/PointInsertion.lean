@@ -102,7 +102,7 @@ theorem F_neg_of_G_not {A : Set Formula}
       DerivationTree.temporal_necessitation _ h_dne
     have h_kd : DerivationTree [] ((φ.neg.neg.imp φ).all_future.imp
         (φ.neg.neg.all_future.imp φ.all_future)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist φ.neg.neg φ)
+      Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ.neg.neg φ
     have h1 := theorem_in_mcs h_mcs h_G_dne
     have h2 := theorem_in_mcs h_mcs h_kd
     have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
@@ -385,7 +385,7 @@ theorem G_implies_F_mcs {A : Set Formula}
   have h_G_top_α : Formula.all_future (Formula.imp top α) ∈ A := by
     have h1 := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_weak)
     have h2 := theorem_in_mcs h_mcs
-      (DerivationTree.axiom [] _ (Axiom.temp_k_dist α (Formula.imp top α)))
+      (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived α (Formula.imp top α))
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h2 h1) h_G
   have h_top_in : top ∈ A :=
@@ -719,8 +719,8 @@ theorem xu_lemma_2_3_since_top {A B C : Set Formula}
   have h_G_impl : (alpha.some_past.imp (Formula.snce alpha top)).all_future ∈ A :=
     theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_bx12')
   -- G(P(alpha)) → G(snce(alpha, top)) via temporal K distribution
-  have h_temp_k := DerivationTree.axiom [] _
-    (Axiom.temp_k_dist alpha.some_past (Formula.snce alpha top))
+  have h_temp_k :=
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived alpha.some_past (Formula.snce alpha top)
   have h_G_snce : (Formula.snce alpha top).all_future ∈ A :=
     SetMaximalConsistent.implication_property h_mcs_A
       (SetMaximalConsistent.implication_property h_mcs_A
@@ -741,8 +741,8 @@ theorem xu_lemma_2_3_since_top {A B C : Set Formula}
     -- G(snce → (beta → beta ∧ snce)) via temporal necessitation
     have h_G_flip := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_flip)
     -- G(snce) → G(beta → beta ∧ snce) via temporal K distribution
-    have h_temp_k2 := DerivationTree.axiom [] _
-      (Axiom.temp_k_dist (Formula.snce alpha top) (beta.imp (Formula.and beta (Formula.snce alpha top))))
+    have h_temp_k2 :=
+      Bimodal.Theorems.TemporalDerived.temp_k_dist_derived (Formula.snce alpha top) (beta.imp (Formula.and beta (Formula.snce alpha top)))
     have h_G_guard_str : (beta.imp (Formula.and beta (Formula.snce alpha top))).all_future ∈ A :=
       SetMaximalConsistent.implication_property h_mcs_A
         (SetMaximalConsistent.implication_property h_mcs_A
@@ -867,7 +867,7 @@ private theorem G_ex_falso_strengthen {A : Set Formula}
   have d_ef := ex_falso_from_assumption φ ψ
   exact SetMaximalConsistent.implication_property h_mcs_A
     (SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A (DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (φ.neg.imp ψ))))
+      (theorem_in_mcs h_mcs_A (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ (φ.neg.imp ψ)))
       (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_ef)))
     h_Gφ
 
@@ -1034,7 +1034,7 @@ private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
     DerivationTree.temporal_necessitation _ h_dni
   have h_G_dist : DerivationTree [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
       (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
   have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
     have h1 := theorem_in_mcs h_mcs_A h_G_dni
     have h2 := theorem_in_mcs h_mcs_A h_G_dist
@@ -1199,7 +1199,7 @@ private theorem F_mono_mcs {A : Set Formula}
   have h_G_contra := theorem_in_mcs h_mcs
     (DerivationTree.temporal_necessitation _ h_contra)
   have h_kd := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.temp_k_dist psi.neg phi.neg))
+    (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived psi.neg phi.neg)
   have h_G_neg_phi : Formula.all_future phi.neg ∈ A :=
     SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_kd h_G_contra) h_G_neg_psi

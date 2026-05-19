@@ -524,7 +524,7 @@ theorem f_preserving_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
           -- So G(phi → G(neg psi)) → (G(phi) → G(G(neg psi)))
           have h_K : [] ⊢ (Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))).imp
               ((Formula.all_future phi).imp (Formula.all_future (Formula.neg (Formula.some_future psi)))) :=
-            DerivationTree.axiom [] _ (Axiom.temp_k_dist phi _)
+            Bimodal.Theorems.TemporalDerived.temp_k_dist_derived phi _
 
           have h_G_phi_imp_GG : (Formula.all_future phi).imp (Formula.all_future (Formula.neg (Formula.some_future psi))) ∈ M :=
             SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_K) h_G_imp

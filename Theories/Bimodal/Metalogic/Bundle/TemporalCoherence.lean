@@ -65,7 +65,7 @@ noncomputable def G_dne_theorem (phi : Formula) :
     DerivationTree.temporal_necessitation _ h_dne
   have h_K : [] ⊢ (Formula.all_future ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.all_future (Formula.neg (Formula.neg phi))).imp (Formula.all_future phi)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.neg (Formula.neg phi)) phi)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived (Formula.neg (Formula.neg phi)) phi
   exact DerivationTree.modus_ponens [] _ _ h_K h_G_dne
 
 /--

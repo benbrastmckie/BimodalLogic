@@ -63,7 +63,7 @@ noncomputable def FF_imp_F (ψ : Formula) :
   -- Step 1: G(¬ψ) → G(G(¬ψ)) by temp_4
   have h1 : [] ⊢ (Formula.all_future (Formula.neg ψ)).imp
       (Formula.all_future (Formula.all_future (Formula.neg ψ))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.neg ψ))
+    Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.neg ψ)
   -- Step 2: G(¬ψ) → ¬¬G(¬ψ) by double negation intro
   have h2 : [] ⊢ (Formula.all_future (Formula.neg ψ)).imp
       (Formula.all_future (Formula.neg ψ)).neg.neg :=
@@ -1079,7 +1079,7 @@ private theorem fwd_chain_F_obligation_monotone (M₀ : Set Formula) (h₀ : Set
           (fwd_chain_of_sigma M₀ h₀ sigma_list m).val :=
         SetMaximalConsistent.implication_property h_mcs_m
           (theorem_in_mcs h_mcs_m
-            (DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.neg χ)))) h_G_neg
+            (Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.neg χ))) h_G_neg
       -- G(¬χ) ∈ g_content(chain(m)) ⊆ chain(m+1)
       have h_G_neg_succ : Formula.all_future (Formula.neg χ) ∈
           (fwd_chain_of_sigma M₀ h₀ sigma_list (m + 1)).val :=

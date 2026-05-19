@@ -328,10 +328,7 @@ def matches_axiom (φ : Formula) : Bool :=
       match lhs, rhs with
       | .box (.imp φ ψ), .imp (.box φ') (.box ψ') => eqf φ φ' && eqf ψ ψ'
       | _, _ => false
-    let temp_k_dist : Bool :=
-      match lhs, rhs with
-      | .all_future (.imp φ ψ), .imp (.all_future φ') (.all_future ψ') => eqf φ φ' && eqf ψ ψ'
-      | _, _ => false
+    -- NOTE: temp_k_dist removed as axiom constructor (Task 116)
     let modal_5_collapse : Bool :=
       match lhs, rhs with
       | .diamond (.box φ), .box φ' => eqf φ φ'
@@ -340,10 +337,7 @@ def matches_axiom (φ : Formula) : Bool :=
       match lhs, rhs with
       | φ, .box φ' => eqf φ' φ.diamond
       | _, _ => false
-    let temp_4 : Bool :=
-      match lhs, rhs with
-      | .all_future φ, .all_future (.all_future φ') => eqf φ φ'
-      | _, _ => false
+    -- NOTE: temp_4 removed as axiom constructor (Task 116)
     let temp_a : Bool :=
       match lhs, rhs with
       | φ, .all_future (.some_past φ') => eqf φ φ'
@@ -379,7 +373,7 @@ def matches_axiom (φ : Formula) : Bool :=
       | .imp (.all_past (.imp φ .bot)) .bot, .snce φ' (.imp φ'' .bot) => eqf φ φ' && eqf φ' φ''
       | _, _ => false
     prop_k || prop_s || ex_falso || peirce || modal_t || modal_4 || modal_b || modal_5_collapse ||
-    modal_k_dist || temp_k_dist || temp_4 || temp_a || temp_l || modal_future || temp_future ||
+    modal_k_dist || temp_a || temp_l || modal_future || temp_future ||
     prior_UZ || prior_SZ
 
 /--
@@ -472,21 +466,8 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_k_dist: G(φ → ψ) → (Gφ → Gψ) -- still in BX system
-      <|> (match lhs, rhs with
-           | .all_future (.imp phi psi), .imp (.all_future phi') (.all_future psi') =>
-               if phi = phi' ∧ psi = psi' then
-                 some ⟨_, Axiom.temp_k_dist phi psi⟩
-               else none
-           | _, _ => none)
-
-      -- temp_4: Gφ → GGφ -- still in BX system
-      <|> (match lhs, rhs with
-           | .all_future phi, .all_future (.all_future phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.temp_4 phi⟩
-               else none
-           | _, _ => none)
+      -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116).
+      -- G(φ→ψ)→(Gφ→Gψ) and Gφ→GGφ are now derived theorems in TemporalDerived.lean.
 
       -- connect_future (BX4): φ → G(Pφ) where P = some_past = ¬H¬φ = (φ.neg.all_past).neg
       <|> (match lhs, rhs with

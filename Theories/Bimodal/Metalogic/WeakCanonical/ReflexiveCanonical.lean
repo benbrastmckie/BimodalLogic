@@ -180,7 +180,7 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   have h_G_dni : [] ⊢ Formula.all_future (ψ.imp ψ.neg.neg) :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_kd : [] ⊢ (ψ.imp ψ.neg.neg).all_future.imp (ψ.all_future.imp ψ.neg.neg.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
   have h_Gψ_imp_Gnn : [] ⊢ ψ.all_future.imp ψ.neg.neg.all_future :=
     Combinators.mp h_G_dni h_kd
   -- G(¬¬ψ) ∈ y.val
@@ -588,7 +588,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
     DerivationTree.temporal_necessitation _ h_ef
   have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
     (Formula.bot.all_future.imp neg_top.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot neg_top)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
   have h1 := theorem_in_mcs h_mcs h_G_ef
   have h2 := theorem_in_mcs h_mcs h_kd
   have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1

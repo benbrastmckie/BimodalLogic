@@ -991,7 +991,7 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
     DerivationTree.temporal_necessitation _ h_dni
   have h_G_dist : DerivationTree [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
       (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
   have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
     have h1 := theorem_in_mcs h_mcs_A h_G_dni
     have h2 := theorem_in_mcs h_mcs_A h_G_dist
@@ -1042,7 +1042,7 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     DerivationTree.temporal_necessitation _ h_dni
   have h_G_dist : DerivationTree [] ((Formula.all_future (φ.imp φ.neg.neg)).imp
       (Formula.all_future φ |>.imp (Formula.all_future φ.neg.neg))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist φ φ.neg.neg)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg
   have h_G_nn : Formula.all_future φ.neg.neg ∈ limit_f A h_mcs x := by
     have h1 := theorem_in_mcs h_mcs_x h_G_dni
     have h2 := theorem_in_mcs h_mcs_x h_G_dist

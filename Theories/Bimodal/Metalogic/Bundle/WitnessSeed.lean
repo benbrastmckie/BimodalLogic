@@ -256,7 +256,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
     -- By temporal K distribution: ⊢ G(⊥ → ¬psi) → (G(⊥) → G(¬psi))
     have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi))) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg psi))
+      Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg psi)
 
     -- Modus ponens twice: G(¬psi) ∈ M
     have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi)) :=
@@ -485,7 +485,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
         DerivationTree.temporal_necessitation _ h_bot_imp_neg
       have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg ψ))).imp
                        ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ))) :=
-        DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg ψ))
+        Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg ψ)
       have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_G_ef
       exact SetMaximalConsistent.implication_property h_mcs

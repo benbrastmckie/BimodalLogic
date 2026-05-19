@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Decidability.FMP.FiniteModel
 import Bimodal.Semantics.Truth
 import Bimodal.Semantics.Validity
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # Truth Preservation (Filtration Lemma) - Infrastructure
@@ -260,7 +261,7 @@ theorem mcs_all_future_all_future {phi : Formula} {S : ClosureMCSBundle phi}
     ψ.all_future.all_future ∈ S.carrier := by
   -- Temporal 4 axiom: Gψ → GGψ
   have h_temp_4_thm : [] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+    Bimodal.Theorems.TemporalDerived.temp_4_derived ψ
   have h_deriv : [ψ.all_future] ⊢ ψ.all_future.all_future := by
     have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
       DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)

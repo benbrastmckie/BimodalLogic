@@ -40,7 +40,7 @@ theorem targeted_forward_chain_forward_G
       SetMaximalConsistent.implication_property
         (targeted_forward_chain_mcs M0 h_mcs targets (n + j))
         (theorem_in_mcs (targeted_forward_chain_mcs M0 h_mcs targets (n + j))
-          (DerivationTree.axiom _ _ (Axiom.temp_4 phi)))
+          (Bimodal.Theorems.TemporalDerived.temp_4_derived phi))
         ih
     show Formula.all_future phi ∈ targeted_forward_chain M0 h_mcs targets (n + (j + 1))
     have : n + (j + 1) = (n + j) + 1 := by omega
@@ -111,7 +111,7 @@ theorem targeted_fam_forward_G
       SetMaximalConsistent.implication_property
         (targeted_fam_mcs M0 h_mcs targets (t + j))
         (theorem_in_mcs (targeted_fam_mcs M0 h_mcs targets (t + j))
-          (DerivationTree.axiom _ _ (Axiom.temp_4 phi)))
+          (Bimodal.Theorems.TemporalDerived.temp_4_derived phi))
         ih
     show Formula.all_future phi ∈ targeted_fam M0 h_mcs targets (t + (↑(j + 1)))
     have : t + (↑(j + 1) : Int) = (t + ↑j) + 1 := by omega

@@ -501,18 +501,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
-  | temp_k_dist ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
-    simp only [truth_at, Truth.past_iff]
-    intro h_H_imp h_H_phi s hst
-    exact h_H_imp s hst (h_H_phi s hst)
-  | temp_4 ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
-    simp only [truth_at, Truth.past_iff]
-    intro h_H s hst r hrs
-    exact h_H r (lt_trans hrs hst)
+  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116)
   | serial_future =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal_some_future, Formula.swap_temporal, Formula.neg]
@@ -1106,8 +1095,6 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | ex_falso ψ => exact axiom_ex_falso_valid ψ
   | peirce φ ψ => exact axiom_peirce_valid φ ψ
   | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
-  | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
-  | temp_4 ψ => exact axiom_temp_4_valid ψ
   | serial_future =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.neg, truth_at, Truth.some_future_iff]
@@ -1549,18 +1536,6 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
     simp only [Formula.swap_temporal, truth_at]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
-  | temp_k_dist ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
-    simp only [truth_at, Truth.past_iff]
-    intro h_H_imp h_H_phi s hst
-    exact h_H_imp s hst (h_H_phi s hst)
-  | temp_4 ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
-    simp only [truth_at, Truth.past_iff]
-    intro h_H s hst r hrs
-    exact h_H r (lt_trans hrs hst)
   | serial_future =>
     -- swap of serial_future (⊤ → F⊤) is (⊤ → P⊤), need exists_lt
     intro F M Omega _h_sc τ _h_mem t
@@ -1854,8 +1829,6 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | ex_falso ψ => exact axiom_ex_falso_valid ψ
   | peirce φ ψ => exact axiom_peirce_valid φ ψ
   | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
-  | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
-  | temp_4 ψ => exact axiom_temp_4_valid ψ
   | serial_future =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.neg, truth_at, Truth.some_future_iff]

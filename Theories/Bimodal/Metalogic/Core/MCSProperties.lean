@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # MCS Properties for Canonical Model Construction
@@ -243,9 +244,9 @@ This is the future transitivity property: always future implies always always fu
 theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
-  -- Temporal 4 axiom: Gφ → GGφ
+  -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6)
   have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+    Bimodal.Theorems.TemporalDerived.temp_4_derived φ
   -- Weaken to context [Gφ]
   have h_temp_4 : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
@@ -264,14 +265,14 @@ Derivation of temporal 4 axiom for past: Hφ → HHφ.
 
 Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
 -/
-def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.all_past) := by
+noncomputable def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.all_past) := by
   -- We want: Hφ → HHφ
   -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
   -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
   let ψ := φ.swap_temporal
-  -- Step 1: Get T4 axiom for ψ: Gψ → GGψ
+  -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+    Bimodal.Theorems.TemporalDerived.temp_4_derived ψ
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
   have h2 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1

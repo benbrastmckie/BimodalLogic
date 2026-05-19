@@ -136,7 +136,7 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   -- temp_k_dist: [] ⊢ G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤))
   have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
     (Formula.bot.all_future.imp neg_top.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot neg_top)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
   -- G(⊥ → ¬⊤) ∈ S and G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤)) ∈ S
   have h1 := theorem_in_mcs h_mcs h_G_ef
   have h2 := theorem_in_mcs h_mcs h_kd

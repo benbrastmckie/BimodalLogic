@@ -17,7 +17,7 @@ requiring successor-chain constructions.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (24 = temp_k_dist + temp_4 + 11 schemas x 2 directions):
+3. **BX Temporal** (22 = 11 schemas x 2 directions):
    - BX1/BX1': serial_future/past (seriality, replaces reflexivity)
    - BX2/BX2': REMOVED (left_mono_until/since subsumed by BX2G/BX2H under open guard)
    - BX2G/BX2H: left_mono_until_G/since_H (left monotonicity under G/H)
@@ -34,7 +34,8 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 42 axiom constructors (34 base + 5 uniformity + 2 prior + 1 Z1)
+**Total**: 40 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1)
+Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean).
 
 ### Key Properties
 
@@ -58,15 +59,16 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-44 constructors organized into six layers:
+42 constructors organized into six layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (24): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
 - **Uniformity** (5): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 
-Base axioms (41) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
+Base axioms (39) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
+Note: temp_k_dist and temp_4 are now derived theorems (Task 116), reducing constructors by 2.
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -102,19 +104,9 @@ inductive Axiom : Formula → Type where
   | modal_k_dist (φ ψ : Formula) :
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
 
-  -- Layer 3: BX Temporal (22 = 12 future + 10 past-mirrors derived via duality)
-  -- Note: temp_k_dist and temp_4 are future-only axioms; their past versions
-  -- (H-distribution, H-transitivity) are derived via temporal_duality.
-
-  /-- Temporal K distribution (future): `G(φ → ψ) → (G(φ) → G(ψ))`.
-  Standard Hilbert axiom for the G modality. Essential for generalized temporal necessitation. -/
-  | temp_k_dist (φ ψ : Formula) :
-      Axiom ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))
-
-  /-- Temporal 4 (future transitivity): `G(φ) → G(G(φ))`.
-  What always holds will always always hold. Valid on reflexive+transitive orders. -/
-  | temp_4 (φ : Formula) :
-      Axiom (φ.all_future.imp φ.all_future.all_future)
+  -- Layer 3: BX Temporal (20 = 10 future + 10 past-mirrors derived via duality)
+  -- Note: temp_k_dist and temp_4 are now derived theorems (Task 116).
+  -- See Theorems/TemporalDerived.lean for temp_k_dist_derived and temp_4_derived.
 
   /-- Serial future: `⊤ → F(⊤)` (future seriality).
   Under irreflexive semantics, every time point has a strict future. -/

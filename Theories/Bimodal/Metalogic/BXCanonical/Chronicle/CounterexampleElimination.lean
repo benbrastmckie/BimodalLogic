@@ -206,7 +206,7 @@ theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
     DerivationTree.temporal_necessitation _ h_dni
   have h_kd : DerivationTree [] ((φ.imp φ.neg.neg).all_future.imp
       (φ.all_future.imp φ.neg.neg.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist φ φ.neg.neg)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg
   have h1 := theorem_in_mcs h_mcs_A h_G_dni
   have h2 := theorem_in_mcs h_mcs_A h_kd
   have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1

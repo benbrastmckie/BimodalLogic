@@ -36,8 +36,8 @@ Original proofs archived in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDeriv
 - `G_implies_topUntil`: Requires BX8 (removed)
 
 ### Still valid (sorry-free):
-- `G_distribution`: Direct axiom (temp_k_dist)
-- `G_transitivity`: Direct axiom (temp_4)
+- `G_distribution`: Derived from BX3 (temp_k_dist_derived)
+- `G_transitivity`: Derived from BX3 + BX6 (temp_4_derived)
 - `connect_future_thm`, `connect_past_thm`: Direct BX4/BX4'
 - `density_derivable`: From BX1
 - `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
@@ -233,11 +233,11 @@ noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot := by
   sorry
 
 /--
-`⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Direct axiom (temp_k_dist).
+`⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Derived from BX3 (right_mono_until).
 -/
-def G_distribution (φ ψ : Formula) :
+noncomputable def G_distribution (φ ψ : Formula) :
     ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
-  DerivationTree.axiom [] _ (Axiom.temp_k_dist φ ψ)
+  temp_k_dist_derived φ ψ
 
 /--
 `⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
@@ -247,11 +247,11 @@ noncomputable def H_distribution (φ ψ : Formula) :
   Bimodal.Theorems.past_k_dist φ ψ
 
 /--
-`⊢ G(φ) → G(G(φ))`: G-transitivity. Direct axiom (temp_4).
+`⊢ G(φ) → G(G(φ))`: G-transitivity. Derived from BX3 + BX6.
 -/
-def G_transitivity (φ : Formula) :
+noncomputable def G_transitivity (φ : Formula) :
     ⊢ φ.all_future.imp φ.all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  temp_4_derived φ
 
 /--
 `⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
@@ -261,7 +261,7 @@ noncomputable def H_transitivity (φ : Formula) :
   -- Derive by applying temporal duality to G-transitivity of swap_temporal φ
   let ψ := φ.swap_temporal
   have h1 : ⊢ ψ.all_future.imp ψ.all_future.all_future :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+    temp_4_derived ψ
   have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1
   simp only [Formula.swap_temporal_all_future, Formula.swap_temporal] at h2

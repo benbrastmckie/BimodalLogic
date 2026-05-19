@@ -1728,7 +1728,7 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       -- K-distribution: ⊢ G(ψ.neg.neg → ψ) → (G(ψ.neg.neg) → G(ψ))
       have h_dist : DerivationTree [] ((ψ.neg.neg.imp ψ).all_future.imp
           (ψ.neg.neg.all_future.imp ψ.all_future)) :=
-        DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ.neg.neg ψ)
+        Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ.neg.neg ψ
       -- Modus ponens: ⊢ G(ψ.neg.neg) → G(ψ)
       have h_G_impl : DerivationTree [] (ψ.neg.neg.all_future.imp ψ.all_future) :=
         DerivationTree.modus_ponens [] _ _ h_dist h_G_dne
