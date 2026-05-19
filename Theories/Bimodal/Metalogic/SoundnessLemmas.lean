@@ -138,20 +138,6 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · exact (ih σ t).mp (h σ h_σ_mem)
     · exact (ih σ t).mpr (h σ h_σ_mem)
 
-  | all_past φ ih =>
-    -- All_past case: all_past φ -> all_future φ.swap -> all_past φ.swap.swap
-    simp only [Formula.swap_temporal, truth_at]
-    constructor <;> intro h s h_ord
-    · exact (ih τ s).mp (h s h_ord)
-    · exact (ih τ s).mpr (h s h_ord)
-
-  | all_future φ ih =>
-    -- All_future case: all_future φ -> all_past φ.swap -> all_future φ.swap.swap
-    simp only [Formula.swap_temporal, truth_at]
-    constructor <;> intro h s h_ord
-    · exact (ih τ s).mp (h s h_ord)
-    · exact (ih τ s).mpr (h s h_ord)
-
   | untl φ ψ ih_φ ih_ψ =>
     -- Until swaps to Since and back (Burgess: untl(event=φ, guard=ψ))
     simp only [Formula.swap_temporal, truth_at]

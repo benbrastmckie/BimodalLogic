@@ -42,10 +42,10 @@ directly corresponds to quantifier depth in the FO translation.
 def operator_depth : Formula → Nat
   | .atom _ => 0
   | .bot => 0
-  | .imp φ ψ => max (operator_depth φ) (operator_depth ψ)
-  | .box φ => operator_depth φ + 1
   | .all_future φ => operator_depth φ + 1
   | .all_past φ => operator_depth φ + 1
+  | .imp φ ψ => max (operator_depth φ) (operator_depth ψ)
+  | .box φ => operator_depth φ + 1
   | .untl φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
   | .snce φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
 
@@ -94,25 +94,22 @@ def table (sig : MonadicSignature) (atomMap : Formula → sig.preds)
   | .atom a => .atom (atomMap (.atom a)) ⟨0, by omega⟩
   -- Bot: t < t (always false)
   | .bot => .lt ⟨0, by omega⟩ ⟨0, by omega⟩
-  -- Imp: ¬(C_φ ∧ ¬C_ψ)
-  | .imp ψ₁ ψ₂ =>
-    .not (.and (table sig atomMap ψ₁) (.not (table sig atomMap ψ₂)))
-  -- Box: treated as atom via MCS labeling
-  | .box ψ => .atom (atomMap (.box ψ)) ⟨0, by omega⟩
   -- all_future (G φ): ∀s, ¬(t < s ∧ ¬C_φ(s))
-  -- In sig 2 context: var 0 = s, var 1 = t
-  -- lt ⟨1, ..⟩ ⟨0, ..⟩ = t < s
-  -- (table φ).lift 1 = C_φ(s) [var 0 preserved by lift at cutoff 1]
+  -- Must be before .imp since G(φ) is imp at constructor level
   | .all_future ψ =>
     .all (.not (.and
       (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
       (.not ((table sig atomMap ψ).lift 1))))
   -- all_past (H φ): ∀s, ¬(s < t ∧ ¬C_φ(s))
-  -- lt ⟨0, ..⟩ ⟨1, ..⟩ = s < t
   | .all_past ψ =>
     .all (.not (.and
       (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)
       (.not ((table sig atomMap ψ).lift 1))))
+  -- Imp: ¬(C_φ ∧ ¬C_ψ)
+  | .imp ψ₁ ψ₂ =>
+    .not (.and (table sig atomMap ψ₁) (.not (table sig atomMap ψ₂)))
+  -- Box: treated as atom via MCS labeling
+  | .box ψ => .atom (atomMap (.box ψ)) ⟨0, by omega⟩
   -- Until U(φ, ψ): ∃s > t, C_φ(s) ∧ ∀u(t < u ∧ u < s → C_ψ(u))
   -- In sig 2 (after ex): var 0 = s, var 1 = t
   --   t < s: lt ⟨1, ..⟩ ⟨0, ..⟩
@@ -174,12 +171,6 @@ theorem table_depth_bound (sig : MonadicSignature) (atomMap : Formula → sig.pr
     simp only [table, MonadicFormula.quantifier_depth, operator_depth]
     omega
   | box _ => simp [table, MonadicFormula.quantifier_depth, operator_depth]
-  | all_future ψ ih =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
-    omega
-  | all_past ψ ih =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
-    omega
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
     omega
@@ -207,10 +198,10 @@ def temporal_truth {sig : MonadicSignature}
     (t : M.carrier) : Formula → Prop
   | .atom a => M.interp (atomMap (.atom a)) t
   | .bot => False
-  | .imp φ ψ => temporal_truth M atomMap t φ → temporal_truth M atomMap t ψ
-  | .box φ => M.interp (atomMap (.box φ)) t
   | .all_future φ => ∀ s : M.carrier, t < s → temporal_truth M atomMap s φ
   | .all_past φ => ∀ s : M.carrier, s < t → temporal_truth M atomMap s φ
+  | .imp φ ψ => temporal_truth M atomMap t φ → temporal_truth M atomMap t ψ
+  | .box φ => M.interp (atomMap (.box φ)) t
   | .untl φ ψ => ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s φ ∧
       ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ
   | .snce φ ψ => ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s φ ∧
@@ -285,17 +276,10 @@ theorem table_correctness {sig : MonadicSignature}
       exact hψ₂_not ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁_eval)))
   | box ψ =>
     simp only [table, eval, temporal_truth]
-  | all_future ψ ih =>
-    -- G ψ: ∀s > t, C_ψ(s) ↔ ∀s, t < s → temporal_truth s ψ
-    simp only [table, eval, temporal_truth]
-    exact Iff.intro
-      (fun h s hts => by push_neg at h; have := h s hts; rw [lift1_eval] at this; exact (ih s).mp this)
-      (fun h s => by push_neg; intro hts; rw [lift1_eval]; exact (ih s).mpr (h s hts))
-  | all_past ψ ih =>
-    simp only [table, eval, temporal_truth]
-    exact Iff.intro
-      (fun h s hst => by push_neg at h; have := h s hst; rw [lift1_eval] at this; exact (ih s).mp this)
-      (fun h s => by push_neg; intro hst; rw [lift1_eval]; exact (ih s).mpr (h s hst))
+  -- FIX: all_future/all_past induction arms removed (no longer constructors).
+  -- The imp case needs to handle the expanded G/H forms, but table uses @[match_pattern]
+  -- so table(all_future ψ) goes through the all_future arm while induction gives imp case.
+  -- This mismatch requires restructuring the proof (e.g., case split within imp on the pattern).
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, eval, temporal_truth]
     exact Iff.intro

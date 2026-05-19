@@ -114,9 +114,8 @@ noncomputable def H_transitivity (φ : Formula) :
     DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
   have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1
-  simp only [Formula.swap_temporal] at h2
-  have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
-  rw [h_inv] at h2
+  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
+    Formula.swap_temporal_involution] at h2
   exact h2
 
 /--
