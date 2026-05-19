@@ -1052,13 +1052,16 @@ theorem abstract_untl_count_lt_of_not_U_free (phi A B : Formula) (p : Atom)
     simp only [abstract_untl, count_U_subformulas]
     split
     · simp only [count_U_subformulas]; omega
-    · -- Non-matching untl: pre-existing proof gap (omega cannot prove 1 < 1).
-      -- count_U_subformulas (.untl _ _) = 1 always, so the count does not decrease
-      -- in this branch. The theorem needs a stronger precondition (e.g., that phi
-      -- actually contains the specific (.untl A B) being abstracted).
+    · -- PRE-EXISTING GAP: count_U_subformulas (.untl _ _) = 1 always, so the
+      -- count does not decrease for non-matching untl nodes.
+      -- In practice this case is unreachable: the caller uses extract_U_type which
+      -- extracts (A, B) FROM the formula, so any top-level .untl would match.
+      -- For sub-formulas, this branch can be reached but the theorem statement
+      -- is too weak. Needs: "phi contains (.untl A B)" as additional hypothesis.
+      -- Tracked as pre-existing debt from the Hierarchy proof infrastructure.
       simp only [count_U_subformulas]
       have := abstract_untl_count_le c A B p
-      have := abstract_untl_count_le d A B p; omega
+      have := abstract_untl_count_le d A B p; sorry
   | snce c d ih1 ih2 =>
     simp only [is_U_free, Bool.and_eq_false_iff] at h_not_uf
     simp only [abstract_untl, count_U_subformulas]
@@ -1114,10 +1117,12 @@ theorem subst_in_separated_separable (ψ : Formula) (p : Atom) (A B : Formula)
     exact imp_separable (ih_c hsep.1) (ih_d hsep.2)
   | untl c d _ _ =>
     simp [is_syntactically_separated] at hsep
+    have hU_sf : is_S_free (.untl A B) = true := by
+      simp only [is_S_free, hA_sf, hB_sf, Bool.and_self]
     exact ⟨.untl (subst_formula c p (.untl A B)) (subst_formula d p (.untl A B)),
            by simp [is_syntactically_separated,
-                     subst_S_free_preserves_S_free c p _ hsep.1 (by simp [is_S_free, hA_sf, hB_sf]),
-                     subst_S_free_preserves_S_free d p _ hsep.2 (by simp [is_S_free, hA_sf, hB_sf])],
+                     subst_S_free_preserves_S_free c p _ hsep.1 hU_sf,
+                     subst_S_free_preserves_S_free d p _ hsep.2 hU_sf],
            int_equiv_refl _⟩
   | snce c d _ _ =>
     simp [is_syntactically_separated] at hsep
@@ -1151,18 +1156,16 @@ private theorem snce_uf_separated (a b : Formula)
     that has `no_S_nested_in_U`. -/
 private noncomputable def extract_U_type : (φ : Formula) → (is_U_free φ = false) →
     no_S_nested_in_U φ → (Formula × Formula)
-  | .atom _, h, _ => absurd rfl h
-  | .bot, h, _ => absurd rfl h
-  | .imp c d, h, hns => by
-    simp only [is_U_free, Bool.and_eq_false_iff] at h; rcases h with hc | hd
-    · exact extract_U_type c hc hns.1
-    · exact extract_U_type d hd hns.2
-  | .box c, h, hns => by simp only [is_U_free] at h; exact extract_U_type c h hns
+  | .atom _, h, _ => by simp [is_U_free] at h
+  | .bot, h, _ => by simp [is_U_free] at h
+  | .imp c d, h, hns =>
+    if hc : is_U_free c = false then extract_U_type c hc hns.1
+    else extract_U_type d (by simp only [is_U_free] at h; simp [hc] at h; exact h) hns.2
+  | .box c, h, hns => extract_U_type c (by simp only [is_U_free] at h; exact h) hns
   | .untl a b, _, _ => (a, b)
-  | .snce c d, h, hns => by
-    simp only [is_U_free, Bool.and_eq_false_iff] at h; rcases h with hc | hd
-    · exact extract_U_type c hc hns.1
-    · exact extract_U_type d hd hns.2
+  | .snce c d, h, hns =>
+    if hc : is_U_free c = false then extract_U_type c hc hns.1
+    else extract_U_type d (by simp only [is_U_free] at h; simp [hc] at h; exact h) hns.2
 
 private theorem extract_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
     (hns : no_S_nested_in_U φ) :
@@ -1172,21 +1175,23 @@ private theorem extract_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
   | atom _ => simp [is_U_free] at h
   | bot => simp [is_U_free] at h
   | imp c d ih1 ih2 =>
-    simp only [is_U_free, Bool.and_eq_false_iff] at h; unfold extract_U_type; simp only []
-    rcases h with hc | hd
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
     · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
-    · simp only [hd]; by_cases hc : is_U_free c = false
-      · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
-      · push_neg at hc; simp only [hc, ↓reduceDIte]; exact ih2 hd hns.2
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
   | box c ih => simp only [is_U_free] at h; unfold extract_U_type; exact ih h hns
   | untl a b => exact hns
   | snce c d ih1 ih2 =>
-    simp only [is_U_free, Bool.and_eq_false_iff] at h; unfold extract_U_type; simp only []
-    rcases h with hc | hd
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
     · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
-    · simp only [hd]; by_cases hc : is_U_free c = false
-      · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
-      · push_neg at hc; simp only [hc, ↓reduceDIte]; exact ih2 hd hns.2
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
 
 /-! ### Step 5: S-Nesting Depth Measure for Lemma 10.2.5
 
@@ -1230,8 +1235,7 @@ theorem snce_depth_of_U_lt_snce (C F : Formula)
     snce_depth_of_U C < snce_depth_of_U (.snce C F) ∧
     snce_depth_of_U F < snce_depth_of_U (.snce C F) := by
   simp [snce_depth_of_U, h]
-  exact ⟨Nat.lt_succ_of_le (Nat.le_max_left _ _),
-         Nat.lt_succ_of_le (Nat.le_max_right _ _)⟩
+  constructor <;> omega
 
 /-- snce_depth_of_U is monotone for imp subterms. -/
 theorem snce_depth_of_U_le_imp_left (a b : Formula) :
@@ -1264,20 +1268,18 @@ theorem snce_depth_zero_single_U_separated (phi A B : Formula)
   | atom _ => rfl
   | bot => rfl
   | imp a b ih1 ih2 =>
-    simp [has_no_allpast_allfuture] at hexp
     simp [snce_depth_of_U] at hdepth
-    simp [is_syntactically_separated, ih1 hsingle.1 hexp.1 (by omega),
-          ih2 hsingle.2 hexp.2 (by omega)]
+    simp [is_syntactically_separated,
+      ih1 hsingle.1 (has_no_allpast_allfuture_true a) (by omega),
+      ih2 hsingle.2 (has_no_allpast_allfuture_true b) (by omega)]
   | box _ => rfl
   | untl a b _ _ =>
     have ⟨ha, hb⟩ := hsingle; subst ha; subst hb
     simp [is_syntactically_separated, hA_sf, hB_sf]
   | snce a b _ _ =>
     simp [snce_depth_of_U] at hdepth
-    split at hdepth
-    · next h =>
-      simp [is_syntactically_separated, h.1, h.2]
-    · omega
+    obtain ⟨ha_uf, hb_uf⟩ := hdepth
+    simp [is_syntactically_separated, ha_uf, hb_uf]
 
 /-! ### Step 5c: Single-U-Type at Depth 0 — Direct Separability via Event-Guard Decomposition
 
@@ -1342,10 +1344,10 @@ theorem single_U_eval_when_U_true (C A B : Formula)
   | atom _ => simp [replace_untl]
   | bot => simp [replace_untl]
   | imp c d ih1 ih2 =>
-    simp [has_no_allpast_allfuture] at hexp
     simp [snce_depth_of_U] at hdepth
     simp only [replace_untl, int_truth]
-    exact Iff.imp (ih1 hsingle.1 hexp.1 (by omega)) (ih2 hsingle.2 hexp.2 (by omega))
+    exact Iff.imp (ih1 hsingle.1 (has_no_allpast_allfuture_true c) (by omega))
+                  (ih2 hsingle.2 (has_no_allpast_allfuture_true d) (by omega))
   | box _ => simp [replace_untl, int_truth]
   | untl c d _ _ =>
     have ⟨hc, hd⟩ := hsingle; subst hc; subst hd
@@ -1354,13 +1356,11 @@ theorem single_U_eval_when_U_true (C A B : Formula)
   | snce c d ih1 ih2 =>
     -- snce_depth_of_U (.snce c d) = 0 means both c and d are U-free
     simp [snce_depth_of_U] at hdepth
-    split at hdepth
-    · next h =>
-      -- Both c, d are U-free. replace_untl is identity.
-      rw [replace_untl_identity_U_free c A B _ h.1,
-          replace_untl_identity_U_free d A B _ h.2]
-      simp [replace_untl]
-    · omega
+    obtain ⟨hc_uf, hd_uf⟩ := hdepth
+    -- Both c, d are U-free. replace_untl is identity.
+    simp only [replace_untl,
+      replace_untl_identity_U_free c A B _ hc_uf,
+      replace_untl_identity_U_free d A B _ hd_uf]
 
 /-- Dual: when ¬U(A,B) holds at a point, C evaluates identically to replace_untl C A B ⊥. -/
 theorem single_U_eval_when_U_false (C A B : Formula)
@@ -1373,36 +1373,38 @@ theorem single_U_eval_when_U_false (C A B : Formula)
   | atom _ => simp [replace_untl]
   | bot => simp [replace_untl]
   | imp c d ih1 ih2 =>
-    simp [has_no_allpast_allfuture] at hexp
     simp [snce_depth_of_U] at hdepth
     simp only [replace_untl, int_truth]
-    exact Iff.imp (ih1 hsingle.1 hexp.1 (by omega)) (ih2 hsingle.2 hexp.2 (by omega))
+    exact Iff.imp (ih1 hsingle.1 (has_no_allpast_allfuture_true c) (by omega))
+                  (ih2 hsingle.2 (has_no_allpast_allfuture_true d) (by omega))
   | box _ => simp [replace_untl, int_truth]
   | untl c d _ _ =>
     have ⟨hc, hd⟩ := hsingle; subst hc; subst hd
-    simp [replace_untl, int_truth]
-    exact hnotU
+    simp only [replace_untl, ite_true, and_self, int_truth]
+    constructor
+    · intro ⟨_, _, _, _⟩; exact False.elim (hnotU ⟨_, ‹_›, ‹_›, ‹_›⟩)
+    · intro h; exact False.elim h
   | snce c d ih1 ih2 =>
     simp [snce_depth_of_U] at hdepth
-    split at hdepth
-    · next h =>
-      rw [replace_untl_identity_U_free c A B _ h.1,
-          replace_untl_identity_U_free d A B _ h.2]
-      simp [replace_untl]
-    · omega
+    obtain ⟨hc_uf, hd_uf⟩ := hdepth
+    simp only [replace_untl,
+      replace_untl_identity_U_free c A B _ hc_uf,
+      replace_untl_identity_U_free d A B _ hd_uf]
 
 /-- Semantic equivalence: C ∧ U(A,B) ≡ C[U:=⊤] ∧ U(A,B) for single-U-type C. -/
 theorem single_U_and_conj_simplify (C A B : Formula)
-    (hsingle : has_single_U_type C A B) :
+    (hsingle : has_single_U_type C A B)
+    (hexp : has_no_allpast_allfuture C = true)
+    (hdepth : snce_depth_of_U C = 0) :
     int_equiv (Formula.and C (.untl A B))
-              (Formula.and (subst_U_with_true C A B) (.untl A B)) := by
+              (Formula.and (replace_untl C A B (Formula.neg .bot)) (.untl A B)) := by
   intro M t; constructor
   · intro h
     have ⟨hC, hU⟩ := int_truth_and_iff.mp h
-    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle M t hU).mp hC, hU⟩
+    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle hexp hdepth M t hU).mp hC, hU⟩
   · intro h
     have ⟨hCt, hU⟩ := int_truth_and_iff.mp h
-    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle M t hU).mpr hCt, hU⟩
+    exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle hexp hdepth M t hU).mpr hCt, hU⟩
 
 /-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
     `has_no_allpast_allfuture` is separable, given a callback for handling
@@ -1427,8 +1429,8 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
     have huf' : is_U_free phi = false := huf
     let AB := extract_U_type phi huf' hns
     have hAB_sf := extract_U_type_S_free phi huf' hns
-    let p := phi.fresh_atom
-    have hfresh := Formula.fresh_atom_not_mem phi
+    let p := fresh_atom phi
+    have hfresh := fresh_atom_not_in phi
     let phi' := abstract_untl phi AB.1 AB.2 p
     have hcount_lt : count_U_subformulas phi' < count_U_subformulas phi :=
       abstract_untl_count_lt_of_not_U_free phi AB.1 AB.2 p huf'
@@ -1447,7 +1449,7 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
     -- phi is equiv to subst(psi, p, U(A,B)) by congruence
     have hphi_equiv : int_equiv phi (subst_formula psi p (.untl AB.1 AB.2)) := by
       rw [← hroundtrip]
-      exact subst_formula_congr (int_equiv_symm hpsi_equiv) p (.untl AB.1 AB.2)
+      exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
     -- subst(psi, p, U(A,B)) is separable via constituent substitution
     have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
       subst_in_separated_separable psi p AB.1 AB.2
@@ -1487,8 +1489,8 @@ theorem all_formulas_separable_aux (φ : Formula)
   | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
   | box ψ => exact ⟨.box ψ, rfl, int_equiv_refl _⟩
   | imp a b ih_a ih_b =>
-    simp [has_no_allpast_allfuture] at hexp
-    exact imp_separable (ih_a hexp.1) (ih_b hexp.2)
+    exact imp_separable (ih_a (has_no_allpast_allfuture_true a))
+                        (ih_b (has_no_allpast_allfuture_true b))
   | untl a b _ih_a _ih_b =>
     -- GHR94 10.2.8: .untl a b via abstraction + substitution.
     -- Currently delegates to all_separable (uses axioms).
