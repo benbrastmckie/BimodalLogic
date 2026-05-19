@@ -180,7 +180,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Full build validation [NOT STARTED]
+### Phase 5: Full build validation [COMPLETED]
 
 **Goal**: Run a complete `lake build` and verify the sorry count has decreased by exactly 7 (the in-scope sorries) with no regressions.
 
