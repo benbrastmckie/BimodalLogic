@@ -177,24 +177,24 @@ All prior infrastructure is in place.
 
 ---
 
-### Phase 4B: Create `no_S_nested_in_U_separable_direct_param` (Path A Fix) [NOT STARTED]
+### Phase 4B: Create `no_S_nested_in_U_separable_direct_param` (Path A Fix) [COMPLETED]
 
 **Goal**: Parameterized version of 10.2.7 with the oracle. Also fix the depth >= 2 case to use `extract_innermost_U_type`.
 
 **Tasks**:
 
-- [ ] Task 4B.1: Create `extract_innermost_U_type` (~60 LOC)
+- [ ] Task 4B.1: Create `extract_innermost_U_type` (~60 LOC) *(deviation: skipped -- subst_in_separated_separable_jd handles both U-free and non-U-free args with oracle, making innermost extraction unnecessary)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - Recurses into `.untl` args when they are not U-free. Terminates because structural decrease.
   - Returns `(X, Y)` with `is_U_free X`, `is_U_free Y`, `is_S_free X`, `is_S_free Y`.
   - S-free guaranteed by `no_S_nested_in_U` (all U-args are S-free).
   - Also prove `contains_untl_anywhere phi X Y = true` (the extracted `.untl X Y` occurs in phi).
 
-- [ ] Task 4B.2: Prove strict decrease helper (~40 LOC)
+- [ ] Task 4B.2: Prove strict decrease helper (~40 LOC) *(deviation: skipped -- not needed without extract_innermost_U_type)*
   - `abstract_untl` on a contained `.untl X Y` strictly reduces `total_untl_count` (or `count_U_subformulas`)
   - This provides the inner induction measure for the depth >= 2 case
 
-- [ ] Task 4B.3: Create `no_S_nested_in_U_separable_direct_param` (~120 LOC)
+- [x] Task 4B.3: Create `no_S_nested_in_U_separable_direct_param` (~120 LOC) *(deviation: altered -- used subst_in_separated_separable_jd for both branches instead of extract_innermost_U_type for depth >= 2)*
   - **Signature**:
     ```lean
     theorem no_S_nested_in_U_separable_direct_param (phi : Formula)

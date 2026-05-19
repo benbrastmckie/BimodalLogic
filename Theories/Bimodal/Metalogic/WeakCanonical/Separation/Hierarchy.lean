@@ -2375,92 +2375,10 @@ theorem subst_in_separated_separable_depth (ψ : Formula) (p : Atom) (A B : Form
       callback_U_nesting_depth_le_one c d p A B hsep.1 hsep.2 hA_uf hB_uf
     exact ih_snce _ hns hdepth
 
-/-- GHR94 Lemma 10.2.7 (direct):
-    A formula with `no_S_nested_in_U` is separable.
+/-! ### JD Infrastructure for Oracle Threading
 
-    Proved by strong induction on `U_nesting_depth`.
-    - Depth ≤ 1: Apply `lemma_10_2_6_self_contained` (GHR94 Lemma 10.2.6).
-    - Depth ≥ 2: Abstract a surface `.untl A B`, prove the abstracted formula
-      separable by inner `count_U_subformulas` induction, then back-substitute.
-      At depth ≥ 2, the extracted U-type may have non-U-free args, so
-      `subst_in_separated_separable_depth` cannot be used directly.
-      Instead, we use `subst_in_separated_separable` with a callback that
-      dispatches: at depth ≤ 1, use outer IH; otherwise, use the inner
-      count IH (which always terminates since count decreases).
-
-    NOTE: At depth ≤ 1, `lemma_10_2_6_self_contained` routes through
-    `single_U_formula_separable_noax`, which currently uses `all_separable` for
-    its snce_depth_of_U ≥ 2 case. Phase 5 will close this loop by rewriting
-    `all_formulas_separable_aux` to use `no_S_nested_in_U_separable_direct`
-    directly, eliminating the transitive axiom dependency. -/
-theorem no_S_nested_in_U_separable_direct (phi : Formula)
-    (hns : no_S_nested_in_U phi) :
-    is_separable phi := by
-  -- Outer induction on U_nesting_depth
-  have outer : ∀ (d : Nat) (ψ : Formula), U_nesting_depth ψ ≤ d →
-      no_S_nested_in_U ψ → is_separable ψ := by
-    intro d
-    induction d using Nat.strongRecOn with
-    | ind d ih_depth =>
-    intro ψ hd_le hns_ψ
-    -- Base: depth ≤ 1 -- use lemma_10_2_6_self_contained
-    by_cases hd_le1 : d ≤ 1
-    · exact lemma_10_2_6_self_contained ψ hns_ψ (Nat.le_trans hd_le hd_le1)
-    · -- Depth ≥ 2: inner induction on count_U_subformulas
-      push_neg at hd_le1
-      induction hc : count_U_subformulas ψ using Nat.strongRecOn generalizing ψ with
-      | ind m ih_count =>
-      have hexp : has_no_allpast_allfuture ψ = true := has_no_allpast_allfuture_true ψ
-      -- Base case: U-free
-      by_cases huf : is_U_free ψ = true
-      · exact separated_imp_separable ψ (restricted_u_free_separated ψ hexp huf)
-      · -- Not U-free: extract surface U-type and abstract
-        push_neg at huf; simp only [Bool.not_eq_true] at huf
-        have huf' : is_U_free ψ = false := huf
-        let AB := extract_U_type ψ huf' hns_ψ
-        have hAB_sf := extract_U_type_S_free ψ huf' hns_ψ
-        let p := fresh_atom ψ
-        have hfresh := fresh_atom_not_in ψ
-        let ψ' := abstract_untl ψ AB.1 AB.2 p
-        have hcontains := extract_U_type_contains_surface ψ huf' hns_ψ
-        have hcount_lt : count_U_subformulas ψ' < count_U_subformulas ψ :=
-          abstract_untl_count_lt_of_contains_surface ψ AB.1 AB.2 p hcontains
-        have hns' := abstract_untl_preserves_no_S_nested ψ AB.1 AB.2 p hns_ψ
-        have hdepth_le' := abstract_untl_U_nesting_depth_le_of_le ψ AB.1 AB.2 p d hd_le
-        -- ψ' is separable by inner IH (fewer U-subformulas, same depth bound)
-        have h_psi'_sep : is_separable ψ' :=
-          ih_count (count_U_subformulas ψ') (hc ▸ hcount_lt) ψ' hdepth_le' hns' rfl
-        -- Get separated form
-        obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_psi'_sep
-        -- Roundtrip: subst(ψ', p, .untl AB.1 AB.2) = ψ
-        have hroundtrip := abstract_subst_roundtrip ψ AB.1 AB.2 p hfresh
-        -- ψ ≡ subst(psi, p, .untl AB.1 AB.2)
-        have hphi_equiv : int_equiv ψ (subst_formula psi p (.untl AB.1 AB.2)) := by
-          rw [← hroundtrip]; exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
-        -- Back-substitution: prove subst(psi, p, .untl AB.1 AB.2) is separable
-        -- Case split on whether extracted U-type has U-free args
-        by_cases hAB_uf : is_U_free AB.1 = true ∧ is_U_free AB.2 = true
-        · -- U-free args: use subst_in_separated_separable_depth with outer IH
-          -- Callback formulas have U_nesting_depth ≤ 1 < 2 ≤ d
-          have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
-            subst_in_separated_separable_depth psi p AB.1 AB.2
-              hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hpsi_sep
-              (fun χ hns_χ hdepth_χ =>
-                ih_depth 1 (by omega) χ hdepth_χ hns_χ)
-          exact is_separable_of_equiv hphi_equiv h_subst_sep
-        · -- Non-U-free args: use subst_in_separated_separable with all_separable
-          -- (Phase 5 will eliminate this path by ensuring extract_U_type
-          -- at depth ≥ 2 always finds U-free args via innermost extraction)
-          have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
-            subst_in_separated_separable psi p AB.1 AB.2
-              hAB_sf.1 hAB_sf.2 hpsi_sep
-              (fun χ hns_χ => all_separable χ)
-          exact is_separable_of_equiv hphi_equiv h_subst_sep
-  exact outer (U_nesting_depth phi) phi (Nat.le_refl _) hns
-
-/-! ### Step 5d: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
-
-The hierarchy theorem proves every expanded formula is separable. -/
+These helpers establish that callback formulas produced during separation have
+junction_depth ≤ 1, enabling the JD-bounded oracle pattern. -/
 
 /-- Junction depth 0 with expanded gives separated (re-export for convenience). -/
 private theorem jd_zero_sep (φ : Formula)
@@ -2550,6 +2468,78 @@ theorem subst_in_separated_separable_jd (ψ : Formula) (p : Atom) (A B : Formula
         (subst_formula d p (.untl A B))) ≤ 1 :=
       callback_jd_le_one c d p A B hsep.1 hsep.2 hA_sf hB_sf
     exact ih_snce _ hns hjd_bound
+
+/-- GHR94 Lemma 10.2.7 (oracle-parameterized):
+    A formula with `no_S_nested_in_U` is separable, given an oracle for
+    `no_S_nested_in_U` formulas with JD ≤ 1.
+
+    Proved by strong induction on `U_nesting_depth`.
+    - Depth ≤ 1: `lemma_10_2_6_self_contained_param` with oracle.
+    - Depth ≥ 2: Abstract a surface `.untl A B`, prove abstracted formula
+      separable by inner `count_U_subformulas` induction, then back-substitute
+      using `subst_in_separated_separable_jd` with the oracle (callback
+      formulas always have JD ≤ 1, regardless of whether A, B are U-free). -/
+theorem no_S_nested_in_U_separable_direct_param (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (oracle : ∀ (chi : Formula), no_S_nested_in_U chi →
+        junction_depth chi ≤ 1 → is_separable chi) :
+    is_separable phi := by
+  -- Outer induction on U_nesting_depth
+  have outer : ∀ (d : Nat) (ψ : Formula), U_nesting_depth ψ ≤ d →
+      no_S_nested_in_U ψ → is_separable ψ := by
+    intro d
+    induction d using Nat.strongRecOn with
+    | ind d ih_depth =>
+    intro ψ hd_le hns_ψ
+    -- Base: depth ≤ 1 -- use lemma_10_2_6_self_contained_param with oracle
+    by_cases hd_le1 : d ≤ 1
+    · exact lemma_10_2_6_self_contained_param ψ hns_ψ (Nat.le_trans hd_le hd_le1) oracle
+    · -- Depth ≥ 2: inner induction on count_U_subformulas
+      push_neg at hd_le1
+      induction hc : count_U_subformulas ψ using Nat.strongRecOn generalizing ψ with
+      | ind m ih_count =>
+      have hexp : has_no_allpast_allfuture ψ = true := has_no_allpast_allfuture_true ψ
+      -- Base case: U-free
+      by_cases huf : is_U_free ψ = true
+      · exact separated_imp_separable ψ (restricted_u_free_separated ψ hexp huf)
+      · -- Not U-free: extract surface U-type and abstract
+        push_neg at huf; simp only [Bool.not_eq_true] at huf
+        have huf' : is_U_free ψ = false := huf
+        let AB := extract_U_type ψ huf' hns_ψ
+        have hAB_sf := extract_U_type_S_free ψ huf' hns_ψ
+        let p := fresh_atom ψ
+        have hfresh := fresh_atom_not_in ψ
+        let ψ' := abstract_untl ψ AB.1 AB.2 p
+        have hcontains := extract_U_type_contains_surface ψ huf' hns_ψ
+        have hcount_lt : count_U_subformulas ψ' < count_U_subformulas ψ :=
+          abstract_untl_count_lt_of_contains_surface ψ AB.1 AB.2 p hcontains
+        have hns' := abstract_untl_preserves_no_S_nested ψ AB.1 AB.2 p hns_ψ
+        have hdepth_le' := abstract_untl_U_nesting_depth_le_of_le ψ AB.1 AB.2 p d hd_le
+        -- ψ' is separable by inner IH (fewer U-subformulas, same depth bound)
+        have h_psi'_sep : is_separable ψ' :=
+          ih_count (count_U_subformulas ψ') (hc ▸ hcount_lt) ψ' hdepth_le' hns' rfl
+        -- Get separated form
+        obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_psi'_sep
+        -- Roundtrip: subst(ψ', p, .untl AB.1 AB.2) = ψ
+        have hroundtrip := abstract_subst_roundtrip ψ AB.1 AB.2 p hfresh
+        -- ψ ≡ subst(psi, p, .untl AB.1 AB.2)
+        have hphi_equiv : int_equiv ψ (subst_formula psi p (.untl AB.1 AB.2)) := by
+          rw [← hroundtrip]; exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
+        -- Back-substitution via subst_in_separated_separable_jd with oracle
+        -- Callback formulas always have JD ≤ 1 (via callback_jd_le_one)
+        have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
+          subst_in_separated_separable_jd psi p AB.1 AB.2
+            hAB_sf.1 hAB_sf.2 hpsi_sep oracle
+        exact is_separable_of_equiv hphi_equiv h_subst_sep
+  exact outer (U_nesting_depth phi) phi (Nat.le_refl _) hns
+
+/-- GHR94 Lemma 10.2.7 (backward-compatible wrapper):
+    Uses `all_separable` as the oracle for backward compatibility. -/
+theorem no_S_nested_in_U_separable_direct (phi : Formula)
+    (hns : no_S_nested_in_U phi) :
+    is_separable phi :=
+  no_S_nested_in_U_separable_direct_param phi hns
+    (fun chi _hns _hjd => all_separable chi)
 
 /-- Version of `no_S_nested_in_U_separable_param` with JD-bounded callback. -/
 theorem no_S_nested_in_U_separable_param_jd (phi : Formula)
