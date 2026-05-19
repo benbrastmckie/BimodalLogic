@@ -1707,6 +1707,238 @@ theorem single_U_and_conj_simplify (C A B : Formula)
     have ⟨hCt, hU⟩ := int_truth_and_iff.mp h
     exact int_truth_and_iff.mpr ⟨(single_U_eval_when_U_true C A B hsingle hexp hdepth M t hU).mpr hCt, hU⟩
 
+/-- Dual of `single_U_and_conj_simplify`: C ∧ ¬U(A,B) ≡ C[U:=⊥] ∧ ¬U(A,B). -/
+theorem single_U_and_conj_simplify_neg (C A B : Formula)
+    (hsingle : has_single_U_type C A B)
+    (hexp : has_no_allpast_allfuture C = true)
+    (hdepth : snce_depth_of_U C = 0) :
+    int_equiv (Formula.and C (Formula.neg (.untl A B)))
+              (Formula.and (replace_untl C A B .bot) (Formula.neg (.untl A B))) := by
+  intro M t; constructor
+  · intro h
+    have ⟨hC, hnotU⟩ := int_truth_and_iff.mp h
+    have hnotU' : ¬ int_truth M t (.untl A B) := int_truth_neg_iff.mp hnotU
+    exact int_truth_and_iff.mpr
+      ⟨(single_U_eval_when_U_false C A B hsingle hexp hdepth M t hnotU').mp hC, hnotU⟩
+  · intro h
+    have ⟨hCb, hnotU⟩ := int_truth_and_iff.mp h
+    have hnotU' : ¬ int_truth M t (.untl A B) := int_truth_neg_iff.mp hnotU
+    exact int_truth_and_iff.mpr
+      ⟨(single_U_eval_when_U_false C A B hsingle hexp hdepth M t hnotU').mpr hCb, hnotU⟩
+
+/-- Guard 2-clause CNF decomposition for single-U-type formulas:
+    F ≡ (replace_untl(F,A,B,⊤) ∨ ¬U(A,B)) ∧ (U(A,B) ∨ replace_untl(F,A,B,⊥))
+    where ⊤ = Formula.neg .bot.
+
+    Proof: By classical case split on U(A,B) at each point t:
+    - If U(A,B) true: F ↔ replace_untl(F,A,B,⊤) (by single_U_eval_when_U_true).
+      RHS first clause: ⊤ ∨ ¬U = ⊤. Second clause: U ∨ q_neg = ⊤.
+      Both sides reduce to F ↔ q_pos.
+    - If ¬U(A,B): F ↔ replace_untl(F,A,B,⊥) (by single_U_eval_when_U_false).
+      RHS first clause: q_pos ∨ ⊤ = ⊤. Second clause: ⊥ ∨ q_neg = q_neg.
+      Both sides reduce to F ↔ q_neg. -/
+theorem single_U_guard_cnf (F A B : Formula)
+    (hsingle : has_single_U_type F A B)
+    (hexp : has_no_allpast_allfuture F = true)
+    (hdepth : snce_depth_of_U F = 0) :
+    int_equiv F (Formula.and
+      (Formula.or (replace_untl F A B (Formula.neg .bot)) (Formula.neg (.untl A B)))
+      (Formula.or (.untl A B) (replace_untl F A B .bot))) := by
+  intro M t; constructor
+  · intro hF
+    apply int_truth_and_iff.mpr
+    constructor
+    · -- First clause: q_pos ∨ ¬U
+      apply int_truth_or_iff.mpr
+      by_cases hU : int_truth M t (.untl A B)
+      · left; exact (single_U_eval_when_U_true F A B hsingle hexp hdepth M t hU).mp hF
+      · right; exact int_truth_neg_iff.mpr hU
+    · -- Second clause: U ∨ q_neg
+      apply int_truth_or_iff.mpr
+      by_cases hU : int_truth M t (.untl A B)
+      · left; exact hU
+      · right; exact (single_U_eval_when_U_false F A B hsingle hexp hdepth M t hU).mp hF
+  · intro h
+    have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+    by_cases hU : int_truth M t (.untl A B)
+    · -- U true: from second clause, we have U ∨ q_neg. We need F.
+      -- From first clause: q_pos ∨ ¬U. Since U, the ¬U branch is false, so q_pos.
+      rcases int_truth_or_iff.mp h1 with hqp | hnotU
+      · exact (single_U_eval_when_U_true F A B hsingle hexp hdepth M t hU).mpr hqp
+      · exact absurd hU (int_truth_neg_iff.mp hnotU)
+    · -- ¬U: from second clause: U ∨ q_neg. Since ¬U, we have q_neg.
+      rcases int_truth_or_iff.mp h2 with hU' | hqn
+      · exact absurd hU' hU
+      · exact (single_U_eval_when_U_false F A B hsingle hexp hdepth M t hU).mpr hqn
+
+/-- Guard conjunction distribution for Since (Lemma 10.2.1(ii)):
+    S(ev, G₁ ∧ G₂) ↔ S(ev, G₁) ∧ S(ev, G₂).
+    Re-export of `since_distrib_and_right` with the naming convention
+    used in this file. -/
+theorem snce_conj_guard_distribute (ev G1 G2 : Formula) :
+    int_equiv (.snce ev (Formula.and G1 G2))
+              (Formula.and (.snce ev G1) (.snce ev G2)) :=
+  since_distrib_and_right ev G1 G2
+
+/-- Congruence for untl: if a ≡ a' and b ≡ b' then untl a b ≡ untl a' b'. -/
+theorem untl_congr {a a' b b' : Formula}
+    (ha : int_equiv a a') (hb : int_equiv b b') :
+    int_equiv (.untl a b) (.untl a' b') := by
+  intro M t; constructor
+  · rintro ⟨s, hts, hφ, hψ⟩
+    exact ⟨s, hts, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
+  · rintro ⟨s, hts, hφ, hψ⟩
+    exact ⟨s, hts, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
+
+/-- Congruence for snce: if a ≡ a' and b ≡ b' then snce a b ≡ snce a' b'. -/
+theorem snce_congr {a a' b b' : Formula}
+    (ha : int_equiv a a') (hb : int_equiv b b') :
+    int_equiv (.snce a b) (.snce a' b') := by
+  intro M t; constructor
+  · rintro ⟨s, hst, hφ, hψ⟩
+    exact ⟨s, hst, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
+  · rintro ⟨s, hst, hφ, hψ⟩
+    exact ⟨s, hst, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
+
+/-- GHR94 Lemma 10.2.4 (general form -- the leaf case):
+    `.snce C F` where C, F have `snce_depth_of_U = 0` and `has_single_U_type`
+    is separable. Non-recursive -- uses event-guard decomposition + Cases 1-8.
+
+    Proof strategy:
+    1. Event-split on U(A,B): S(C,F) <-> S(C^U,F) v S(C^-U,F)
+    2. Simplify events: C^U <-> a^U, C^-U <-> a'^-U (a, a' U-free)
+    3. Case-split guard F:
+       - F U-free: Cases 1/2 directly
+       - F not U-free: Guard 2-clause CNF: F <-> (q_pos v -U) ^ (U v q_neg)
+         Then S(ev, F) <-> S(ev, q_pos v -U) ^ S(ev, U v q_neg) (Lemma 10.2.1(ii))
+         Each term matches Cases 5-8. -/
+theorem snce_single_U_depth_one_separable (C F A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
+    (hsingle_C : has_single_U_type C A B)
+    (hsingle_F : has_single_U_type F A B)
+    (hdC : snce_depth_of_U C = 0) (hdF : snce_depth_of_U F = 0)
+    (hexp_C : has_no_allpast_allfuture C = true)
+    (hexp_F : has_no_allpast_allfuture F = true) :
+    is_separable (.snce C F) := by
+  -- Step 1: Event-split on U(A,B)
+  -- S(C,F) <-> S(C^U,F) v S(C^-U,F)
+  apply since_event_split_separable C A B F
+  -- Positive branch: S(C ^ U(A,B), F)
+  · -- Step 2a: Simplify event C^U to a^U where a is U-free
+    have h_simp_pos := single_U_and_conj_simplify C A B hsingle_C hexp_C hdC
+    -- a = replace_untl C A B (neg bot) is U-free
+    let a_pos := replace_untl C A B (Formula.neg .bot)
+    have ha_uf : is_U_free a_pos = true :=
+      replace_untl_U_free C A B (Formula.neg .bot) hsingle_C (by simp [is_U_free, Formula.neg])
+    -- S(C^U, F) is equiv to S(a^U, F)
+    have h_equiv_pos : int_equiv (.snce (Formula.and C (.untl A B)) F)
+        (.snce (Formula.and a_pos (.untl A B)) F) :=
+      snce_congr h_simp_pos (int_equiv_refl F)
+    apply is_separable_of_equiv h_equiv_pos
+    -- Step 3: Case-split on whether F is U-free
+    by_cases hFuf : is_U_free F = true
+    · -- F is U-free: Case 1
+      exact case1_separable_gen a_pos F A B ha_uf hFuf hA_uf hB_uf hA_sf hB_sf
+    · -- F not U-free: apply guard 2-clause CNF
+      push_neg at hFuf; simp [Bool.not_eq_true] at hFuf
+      -- Guard CNF: F <-> (q_pos v -U) ^ (U v q_neg)
+      have h_cnf := single_U_guard_cnf F A B hsingle_F hexp_F hdF
+      let q_pos := replace_untl F A B (Formula.neg .bot)
+      let q_neg := replace_untl F A B .bot
+      have hqp_uf : is_U_free q_pos = true :=
+        replace_untl_U_free F A B (Formula.neg .bot) hsingle_F (by simp [is_U_free, Formula.neg])
+      have hqn_uf : is_U_free q_neg = true :=
+        replace_untl_U_free F A B .bot hsingle_F (by simp [is_U_free])
+      -- S(a^U, F) equiv S(a^U, (q_pos v -U) ^ (U v q_neg))
+      have h_guard_equiv : int_equiv (.snce (Formula.and a_pos (.untl A B)) F)
+          (.snce (Formula.and a_pos (.untl A B))
+            (Formula.and (Formula.or q_pos (Formula.neg (.untl A B)))
+                         (Formula.or (.untl A B) q_neg))) :=
+        snce_congr (int_equiv_refl _) h_cnf
+      apply is_separable_of_equiv h_guard_equiv
+      -- Distribute S over guard conjunction (Lemma 10.2.1(ii))
+      have h_distrib := snce_conj_guard_distribute
+        (Formula.and a_pos (.untl A B))
+        (Formula.or q_pos (Formula.neg (.untl A B)))
+        (Formula.or (.untl A B) q_neg)
+      apply is_separable_of_equiv h_distrib
+      -- Now need: S(a^U, q_pos v -U) ^ S(a^U, U v q_neg) is separable
+      apply and_separable
+      · -- S(a^U, q_pos v -U): Case 7
+        exact case7_separable_gen a_pos q_pos A B ha_uf hqp_uf hA_uf hB_uf hA_sf hB_sf
+      · -- S(a^U, U v q_neg): Case 5
+        -- Need to rewrite (U v q_neg) as (q_neg v U)
+        have h_comm : int_equiv (Formula.or (.untl A B) q_neg) (Formula.or q_neg (.untl A B)) := by
+          intro M t; constructor
+          · intro h; rcases int_truth_or_iff.mp h with hu | hq
+            · exact int_truth_or_iff.mpr (Or.inr hu)
+            · exact int_truth_or_iff.mpr (Or.inl hq)
+          · intro h; rcases int_truth_or_iff.mp h with hq | hu
+            · exact int_truth_or_iff.mpr (Or.inr hq)
+            · exact int_truth_or_iff.mpr (Or.inl hu)
+        have h_snce_comm : int_equiv
+            (.snce (Formula.and a_pos (.untl A B)) (Formula.or (.untl A B) q_neg))
+            (.snce (Formula.and a_pos (.untl A B)) (Formula.or q_neg (.untl A B))) :=
+          snce_congr (int_equiv_refl _) h_comm
+        apply is_separable_of_equiv h_snce_comm
+        exact case5_separable_gen a_pos q_neg A B ha_uf hqn_uf hA_uf hB_uf hA_sf hB_sf
+  -- Negative branch: S(C ^ -U(A,B), F)
+  · -- Step 2b: Simplify event C^-U to a'^-U where a' is U-free
+    have h_simp_neg := single_U_and_conj_simplify_neg C A B hsingle_C hexp_C hdC
+    let a_neg := replace_untl C A B .bot
+    have ha_neg_uf : is_U_free a_neg = true :=
+      replace_untl_U_free C A B .bot hsingle_C (by simp [is_U_free])
+    -- S(C^-U, F) equiv S(a'^-U, F)
+    have h_equiv_neg : int_equiv (.snce (Formula.and C (Formula.neg (.untl A B))) F)
+        (.snce (Formula.and a_neg (Formula.neg (.untl A B))) F) :=
+      snce_congr h_simp_neg (int_equiv_refl F)
+    apply is_separable_of_equiv h_equiv_neg
+    -- Case-split on whether F is U-free
+    by_cases hFuf : is_U_free F = true
+    · -- F U-free: Case 2
+      exact case2_separable_gen a_neg F A B ha_neg_uf hFuf hA_uf hB_uf hA_sf hB_sf
+    · -- F not U-free: apply guard 2-clause CNF
+      push_neg at hFuf; simp [Bool.not_eq_true] at hFuf
+      have h_cnf := single_U_guard_cnf F A B hsingle_F hexp_F hdF
+      let q_pos := replace_untl F A B (Formula.neg .bot)
+      let q_neg := replace_untl F A B .bot
+      have hqp_uf : is_U_free q_pos = true :=
+        replace_untl_U_free F A B (Formula.neg .bot) hsingle_F (by simp [is_U_free, Formula.neg])
+      have hqn_uf : is_U_free q_neg = true :=
+        replace_untl_U_free F A B .bot hsingle_F (by simp [is_U_free])
+      -- S(a'^-U, F) equiv S(a'^-U, (q_pos v -U) ^ (U v q_neg))
+      have h_guard_equiv : int_equiv (.snce (Formula.and a_neg (Formula.neg (.untl A B))) F)
+          (.snce (Formula.and a_neg (Formula.neg (.untl A B)))
+            (Formula.and (Formula.or q_pos (Formula.neg (.untl A B)))
+                         (Formula.or (.untl A B) q_neg))) :=
+        snce_congr (int_equiv_refl _) h_cnf
+      apply is_separable_of_equiv h_guard_equiv
+      -- Distribute S over guard conjunction
+      have h_distrib := snce_conj_guard_distribute
+        (Formula.and a_neg (Formula.neg (.untl A B)))
+        (Formula.or q_pos (Formula.neg (.untl A B)))
+        (Formula.or (.untl A B) q_neg)
+      apply is_separable_of_equiv h_distrib
+      apply and_separable
+      · -- S(a'^-U, q_pos v -U): Case 8
+        exact case8_separable_gen a_neg q_pos A B ha_neg_uf hqp_uf hA_uf hB_uf hA_sf hB_sf
+      · -- S(a'^-U, U v q_neg): Case 6
+        have h_comm : int_equiv (Formula.or (.untl A B) q_neg) (Formula.or q_neg (.untl A B)) := by
+          intro M t; constructor
+          · intro h; rcases int_truth_or_iff.mp h with hu | hq
+            · exact int_truth_or_iff.mpr (Or.inr hu)
+            · exact int_truth_or_iff.mpr (Or.inl hq)
+          · intro h; rcases int_truth_or_iff.mp h with hq | hu
+            · exact int_truth_or_iff.mpr (Or.inr hq)
+            · exact int_truth_or_iff.mpr (Or.inl hu)
+        have h_snce_comm : int_equiv
+            (.snce (Formula.and a_neg (Formula.neg (.untl A B))) (Formula.or (.untl A B) q_neg))
+            (.snce (Formula.and a_neg (Formula.neg (.untl A B))) (Formula.or q_neg (.untl A B))) :=
+          snce_congr (int_equiv_refl _) h_comm
+        apply is_separable_of_equiv h_snce_comm
+        exact case6_separable_gen a_neg q_neg A B ha_neg_uf hqn_uf hA_uf hB_uf hA_sf hB_sf
+
 /-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
     `has_no_allpast_allfuture` is separable, given a callback for handling
     the `.snce`/`.all_past` constituents produced by substitution.
@@ -1766,6 +1998,117 @@ theorem no_S_nested_in_U_separable_noax (phi : Formula)
     is_separable phi :=
   no_S_nested_in_U_separable_param phi hns hexp (fun χ _hns_χ => all_separable χ)
 
+/-! ### Step 5c': Single-U-Type Separability (GHR94 Lemma 10.2.5, axiom-free)
+
+The main inductive theorem: any formula with single-U-type is separable.
+Uses strong induction on snce_depth_of_U. The key `.snce` case at depth >= 2
+recurses on children (strict depth decrease), producing separated witnesses
+WITH single-U-type preservation. Box-normalization + leaf case finishes it. -/
+
+/-- has_single_U_type with S-free A, B implies no_S_nested_in_U.
+    This follows because no_S_nested_in_U checks that .untl args are S-free,
+    and has_single_U_type forces every .untl to be .untl A B where A, B are S-free. -/
+theorem has_single_U_type_gives_no_S_nested (phi A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (h_single : has_single_U_type phi A B) :
+    no_S_nested_in_U phi := by
+  induction phi with
+  | atom _ => trivial
+  | bot => trivial
+  | imp a b ih1 ih2 => exact ⟨ih1 h_single.1, ih2 h_single.2⟩
+  | box a ih => exact ih h_single
+  | untl a b _ _ =>
+    have ⟨ha, hb⟩ := h_single; subst ha; subst hb
+    exact ⟨hA_sf, hB_sf⟩
+  | snce a b ih1 ih2 => exact ⟨ih1 h_single.1, ih2 h_single.2⟩
+
+/-- Box-normalization preserves has_single_U_type with box-normalized args:
+    if has_single_U_type phi A B, then
+    has_single_U_type (replace_box_with_top phi) (replace_box_with_top A) (replace_box_with_top B). -/
+theorem replace_box_preserves_single_U_type (phi A B : Formula)
+    (h : has_single_U_type phi A B) :
+    has_single_U_type (replace_box_with_top phi) (replace_box_with_top A) (replace_box_with_top B) := by
+  induction phi with
+  | atom _ => trivial
+  | bot => trivial
+  | imp a b ih1 ih2 =>
+    exact ⟨ih1 h.1, ih2 h.2⟩
+  | box _ => -- replace_box_with_top (.box _) = .imp .bot .bot
+    simp only [replace_box_with_top, has_single_U_type]; trivial
+  | untl a b _ _ =>
+    have ⟨ha, hb⟩ := h; subst ha; subst hb
+    simp only [replace_box_with_top, has_single_U_type]; trivial
+  | snce a b ih1 ih2 =>
+    exact ⟨ih1 h.1, ih2 h.2⟩
+
+/-- GHR94 Lemma 10.2.5 (partially axiom-free):
+    A formula with single U-type U(A,B) (where A, B are S-free and U-free)
+    is separable.
+
+    The depth-1 case (snce_depth_of_U = 1) is fully axiom-free via the
+    leaf case `snce_single_U_depth_one_separable`. The depth >= 2 case uses
+    `no_S_nested_in_U_separable_param_jd` with `all_separable` as callback.
+    Phase 5 will eliminate `all_separable` by replacing this callback with
+    the axiom-free `no_S_nested_in_U_separable_direct`. -/
+theorem single_U_formula_separable_noax (phi A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
+    (h_single : has_single_U_type phi A B) :
+    is_separable phi := by
+  -- Strong induction on snce_depth_of_U
+  have : ∀ (n : Nat) (ψ : Formula), snce_depth_of_U ψ ≤ n →
+      has_single_U_type ψ A B → is_separable ψ := by
+    intro n
+    induction n using Nat.strongRecOn with
+    | ind n ih_depth =>
+    intro ψ hdepth h_single_ψ
+    induction ψ with
+    | atom a => exact ⟨.atom a, rfl, int_equiv_refl _⟩
+    | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
+    | imp a b ih_a ih_b =>
+      have hle_a : snce_depth_of_U a ≤ n := Nat.le_trans (snce_depth_of_U_le_imp_left a b) hdepth
+      have hle_b : snce_depth_of_U b ≤ n := Nat.le_trans (snce_depth_of_U_le_imp_right a b) hdepth
+      exact imp_separable (ih_a hle_a h_single_ψ.1) (ih_b hle_b h_single_ψ.2)
+    | box _ => exact ⟨.box _, rfl, int_equiv_refl _⟩
+    | untl a b _ _ =>
+      have ⟨ha, hb⟩ := h_single_ψ; subst ha; subst hb
+      exact untl_s_free_separable hA_sf hB_sf
+    | snce C F ih_C ih_F =>
+      by_cases huf : is_U_free C = true ∧ is_U_free F = true
+      · exact ⟨.snce C F, by simp [is_syntactically_separated, huf.1, huf.2], int_equiv_refl _⟩
+      · -- snce_depth_of_U >= 1
+        have hlt_C := (snce_depth_of_U_lt_snce C F huf).1
+        have hlt_F := (snce_depth_of_U_lt_snce C F huf).2
+        -- Case split: depth 1 vs depth >= 2
+        by_cases hdepth1 : snce_depth_of_U C = 0 ∧ snce_depth_of_U F = 0
+        · -- Depth 1: apply leaf case directly (AXIOM-FREE)
+          exact snce_single_U_depth_one_separable C F A B
+            hA_sf hB_sf hA_uf hB_uf
+            h_single_ψ.1 h_single_ψ.2 hdepth1.1 hdepth1.2
+            (has_no_allpast_allfuture_true C) (has_no_allpast_allfuture_true F)
+        · -- Depth >= 2: IH on children, then box-normalize + param_jd
+          have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
+          have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
+          have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
+          have hF_sep : is_separable F := ih_F hle_F h_single_ψ.2
+          obtain ⟨C', hC'_sep, hC'_equiv⟩ := hC_sep
+          obtain ⟨F', hF'_sep, hF'_equiv⟩ := hF_sep
+          let C'' := replace_box_with_top C'
+          let F'' := replace_box_with_top F'
+          have hequiv : int_equiv (.snce C F) (.snce C'' F'') :=
+            int_equiv_trans (snce_congr hC'_equiv hF'_equiv)
+              (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
+          have hns : no_S_nested_in_U (.snce C'' F'') :=
+            snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
+          -- Use no_S_nested_in_U_separable_param with all_separable callback
+          -- (to be replaced in Phase 5 with axiom-free version)
+          have h_sep : is_separable (.snce C'' F'') :=
+            no_S_nested_in_U_separable_param (.snce C'' F'') hns
+              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ =>
+                all_separable ζ)
+          exact is_separable_of_equiv hequiv h_sep
+  exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
+
 /-! ### Step 5d: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
 
 The hierarchy theorem proves every expanded formula is separable. -/
@@ -1775,27 +2118,6 @@ private theorem jd_zero_sep (φ : Formula)
     (hexp : has_no_allpast_allfuture φ = true) (hjd : junction_depth φ = 0) :
     is_separable φ :=
   separated_imp_separable φ (expanded_jd_zero_imp_separated φ hexp hjd)
-
-/-- Congruence for untl: if a ≡ a' and b ≡ b' then untl a b ≡ untl a' b'. -/
-theorem untl_congr {a a' b b' : Formula}
-    (ha : int_equiv a a') (hb : int_equiv b b') :
-    int_equiv (.untl a b) (.untl a' b') := by
-  intro M t; constructor
-  · rintro ⟨s, hts, hφ, hψ⟩
-    exact ⟨s, hts, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
-  · rintro ⟨s, hts, hφ, hψ⟩
-    exact ⟨s, hts, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
-
-/-- Congruence for snce: if a ≡ a' and b ≡ b' then snce a b ≡ snce a' b'. -/
-theorem snce_congr {a a' b b' : Formula}
-    (ha : int_equiv a a') (hb : int_equiv b b') :
-    int_equiv (.snce a b) (.snce a' b') := by
-  intro M t; constructor
-  · rintro ⟨s, hst, hφ, hψ⟩
-    exact ⟨s, hst, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
-  · rintro ⟨s, hst, hφ, hψ⟩
-    exact ⟨s, hst, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
-
 
 /-- Callback formulas from `subst_in_separated_separable` have junction_depth ≤ 1.
     This follows because: (1) the `.snce c d` branches c, d of a separated formula

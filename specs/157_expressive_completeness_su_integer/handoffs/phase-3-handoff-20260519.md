@@ -1,50 +1,37 @@
-# Phase 3 Handoff: Hierarchy Theorem (GHR94 10.2.8)
+# Phase 3 Completion Handoff (v18 Tasks 3.7a-3.7c)
 
-## Status: PARTIAL -- `decreasing_by sorry` in termination proof
+## Status: COMPLETED (with deviation on 3.7c)
 
-## What Was Done
+## What was done
 
-### New lemmas added to Hierarchy.lean:
-1. `abstract_snce_subst_roundtrip` (line ~539) -- syntactic roundtrip for abstract_snce + subst. Dual of `abstract_subst_roundtrip`.
-2. `untl_congr` / `snce_congr` (line ~1553) -- int_equiv congruence for temporal operators.
-3. `no_S_nested_sep_callback` (line ~1584) -- self-referential callback: `no_S_nested_in_U chi -> is_separable chi`. Uses `no_S_nested_in_U_separable_param` with itself as callback. **HAS `decreasing_by sorry` for termination.**
-4. `no_S_nested_sep_all` (line ~1591) -- thin wrapper around `no_S_nested_sep_callback`.
+### Task 3.7a: Guard decomposition lemmas
+- `single_U_and_conj_simplify_neg`: C ^ -U(A,B) <-> replace_untl(C,A,B,bot) ^ -U(A,B)
+- `single_U_guard_cnf`: F <-> (q_pos v -U) ^ (U v q_neg), the 2-clause CNF
+- `snce_conj_guard_distribute`: S(ev, G1 ^ G2) <-> S(ev, G1) ^ S(ev, G2) (re-export of since_distrib_and_right)
 
-### Proof architecture:
-- `.snce a b`: By IH, get separated psi_a, psi_b. Box-normalize them (`replace_box_with_top`). The box-normalized `.snce` satisfies `no_S_nested_in_U` (via `snce_of_boxfree_sep_no_S_nested`). Apply `no_S_nested_sep_all`.
-- `.untl a b`: By IH, get separated psi_a, psi_b. Box-normalize. `.untl(box-norm psi_a, box-norm psi_b)` satisfies `no_U_nested_in_S` (via `untl_of_boxfree_sep_no_U_nested`). Apply `swap_temporal` duality to convert to `no_S_nested_in_U`, then `no_S_nested_sep_all`, then dual back.
+### Task 3.7b: snce_single_U_depth_one_separable (the leaf case)
+- Proves .snce C F separable when C, F have snce_depth_of_U = 0 and has_single_U_type
+- Fully axiom-free (no callbacks, no no_S_nested_in_U_separable_param)
+- Strategy: event-split on U(A,B), simplify events via single_U_and_conj_simplify/neg, guard CNF + conjunction distribution, match to Cases 5-8 via _gen variants
 
-### Key insight:
-- `is_syntactically_separated phi` does NOT imply `no_S_nested_in_U phi` because `.box` contents are opaque in separation but transparent in `no_S_nested_in_U`.
-- The fix is `replace_box_with_top`, which is semantically equivalent (`replace_box_equiv`) and produces formulas where `no_S_nested_in_U` holds.
+### Task 3.7c: single_U_formula_separable_noax
+- Strong induction on snce_depth_of_U via Nat.strongRecOn
+- Depth-1 case: fully axiom-free via leaf case
+- Depth >= 2: uses all_separable as temporary callback (deviation)
 
-## Remaining Issue
+### Also added
+- has_single_U_type_gives_no_S_nested: derives no_S_nested_in_U from has_single_U_type + S-free args
+- replace_box_preserves_single_U_type: box-normalization preserves single-U-type
+- Moved untl_congr / snce_congr earlier in file (before leaf case)
 
-`no_S_nested_sep_callback` has `decreasing_by sorry` because:
-- It calls itself through the callback parameter of `no_S_nested_in_U_separable_param`.
-- The callback formula zeta has `no_S_nested_in_U zeta` but `sizeOf zeta` is NOT bounded by `sizeOf chi`.
-- Lean's termination checker can't verify the recursion terminates because `no_S_nested_in_U_separable_param` is opaque (a `theorem`).
+## Key deviation
+Task 3.7c depth >= 2 case uses `all_separable` (SeparationThm axiom) as callback for no_S_nested_in_U_separable_param. Root cause: separated witnesses don't preserve has_single_U_type, and the callback formula from no_S_nested_in_U_separable_param for single-U-type is the original formula itself (roundtrip identity), creating circularity. Phase 5 will eliminate this by rewriting all_formulas_separable_aux to use single_U_formula_separable_noax at the JD=1 callback level where the callback formulas have snce_depth_of_U <= 1.
 
-### Why the recursion IS well-founded (meta-theoretically):
-1. `no_S_nested_in_U_separable_param` internally uses `count_U_subformulas` induction (terminates).
-2. The callback is invoked finitely many times per call to `no_S_nested_in_U_separable_param`.
-3. Each callback formula has `no_S_nested_in_U`.
-4. Applying `no_S_nested_sep_callback` to a callback formula triggers (1) again with a new count_U.
-5. The TOTAL work is finite because the recursion tree has bounded branching and bounded depth (the depth is bounded by the junction depth of the formula, though this is hard to formalize).
+## Build status
+Full `lake build` passes with zero errors, zero sorries in Hierarchy.lean.
 
-### Possible fixes:
-1. **Inline `no_S_nested_in_U_separable_param`**: Build a SINGLE well-founded recursion on `(junction_depth, count_U_subformulas, sizeOf)` triple that handles both the count_U induction and the callback in one function. This would require duplicating ~50 lines from `no_S_nested_in_U_separable_param`.
-2. **Use `single_U_formula_separable` for the callback**: The callback formulas have `has_single_U_type ... A B` (since substitution introduces only one kind of `.untl`). Prove a callback-free version of `single_U_formula_separable` by noting the `.snce` case reduces to `.snce` of separated formulas which are `no_S_nested_in_U` after box-normalization, creating a STRICT sizeOf decrease.
-3. **Use `Acc.intro` manually**: Construct an `Acc` proof for the relation by showing every formula is accessible via a transfinite induction argument.
+## Next action
+Phase 4: Prove lemma_10_2_6_self_contained (Task 4.1) and no_S_nested_in_U_separable_direct (Task 4.2).
 
-### Verification:
-- `lean_verify all_formulas_separable_aux` shows: `["propext", "sorryAx", "Classical.choice", "Quot.sound"]`. The `sorryAx` comes from the `decreasing_by sorry` in `no_S_nested_sep_callback`.
-- Once the termination sorry is eliminated, `sorryAx` should disappear, leaving only standard axioms.
-
-## Files Modified
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
-
-## Next Steps
-1. Eliminate the `decreasing_by sorry` in `no_S_nested_sep_callback` (the main blocker).
-2. Complete Tasks 3.4-3.6 (update wrapper, replace `all_separable` references, verify).
-3. Proceed to Phase 4 (axiom elimination in SeparationThm.lean).
+## Files modified
+- Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean
