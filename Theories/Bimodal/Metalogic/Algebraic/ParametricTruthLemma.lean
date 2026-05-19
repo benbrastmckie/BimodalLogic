@@ -159,7 +159,8 @@ private def past_tf_deriv (φ : Formula) :
   have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
       (Formula.box (Formula.swap_temporal φ)).all_future) =
     (Formula.box φ).imp (Formula.box φ).all_past := by
-    simp [Formula.swap_temporal, Formula.swap_temporal_involution]
+    simp [Formula.swap_temporal, Formula.swap_temporal_involution, Formula.all_future,
+      Formula.all_past, Formula.some_future, Formula.some_past, Formula.neg, Formula.top]
   rw [h_eq] at h_dual
   exact h_dual
 
@@ -298,42 +299,9 @@ theorem parametric_canonical_truth_lemma
         have h_truth := h_all (parametric_to_history fam') h_in_omega
         exact (ih fam' hfam' t).mpr h_truth
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
-  | all_future psi ih =>
-    -- G case: Under strict semantics, G quantifies over s > t
-    simp only [truth_at]
-    constructor
-    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
-      intro h_G s hts
-      have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
-      exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
-      intro h_all
-      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
-      -- Build strict h_all_mcs from IH
-      have h_all_mcs : ∀ s : D, t < s → psi ∈ fam.mcs s := by
-        intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
-      -- Use temporal_backward_G_with_fwd_F which accepts strict quantifier
-      exact temporal_backward_G_with_fwd_F fam t psi
-        (fun h_F_neg => h_forward_F t (Formula.neg psi) h_F_neg) h_all_mcs
-  | all_past psi ih =>
-    -- H case: Under strict semantics, H quantifies over s < t
-    simp only [truth_at]
-    constructor
-    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
-      intro h_H s hst
-      have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
-      exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
-      intro h_all
-      obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
-      -- Build strict h_all_mcs from IH
-      have h_all_mcs : ∀ s : D, s < t → psi ∈ fam.mcs s := by
-        intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
-      -- Use temporal_backward_H_with_bwd_P which accepts strict quantifier
-      exact temporal_backward_H_with_bwd_P fam t psi
-        (fun h_P_neg => h_backward_P t (Formula.neg psi) h_P_neg) h_all_mcs
+  -- Note: all_future and all_past are no longer constructors (task 116).
+  -- They are handled by the imp case above since all_future φ = (some_future φ.neg).neg
+  -- which is an imp term, and all_past φ = (some_past φ.neg).neg similarly.
   | untl phi psi ih_phi ih_psi =>
     -- Until truth lemma (Burgess: untl(event=phi, guard=psi)):
     -- untl(phi,psi) ∈ mcs(t) ↔ ∃ s > t, truth(phi,s) ∧ ∀ r ∈ (t,s), truth(psi,r)
@@ -467,38 +435,7 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         have h_mem := parametricCanonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
         exact (ih fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
-  | all_future ψ ih =>
-    -- G case: Under strict semantics, G quantifies over s > t
-    simp only [truth_at]
-    constructor
-    · -- Forward: G ψ ∈ fam.mcs t → ∀ s > t, truth_at ... s ψ
-      intro h_G s hts
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
-      exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s > t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
-      intro h_all
-      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
-      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
-        intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
-      exact temporal_backward_G_with_fwd_F fam t ψ
-        (fun h_F_neg => h_forward_F t (Formula.neg ψ) h_F_neg) h_all_mcs
-  | all_past ψ ih =>
-    -- H case: Under strict semantics, H quantifies over s < t
-    simp only [truth_at]
-    constructor
-    · -- Forward: H ψ ∈ fam.mcs t → ∀ s < t, truth_at ... s ψ
-      intro h_H s hst
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
-      exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s < t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
-      intro h_all
-      obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
-      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
-        intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
-      exact temporal_backward_H_with_bwd_P fam t ψ
-        (fun h_P_neg => h_backward_P t (Formula.neg ψ) h_P_neg) h_all_mcs
+  -- Note: all_future and all_past arms removed (task 116) - handled by imp case
   | untl phi psi ih_phi ih_psi =>
     simp only [truth_at]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
