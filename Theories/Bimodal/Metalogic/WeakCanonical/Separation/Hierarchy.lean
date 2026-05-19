@@ -1769,8 +1769,8 @@ theorem all_formulas_separable_aux (φ : Formula)
           · -- n = 1 (since n ≥ 1 from JD ≥ 1 and JD ≤ n)
             -- Callback JD ≤ 1. For JD = 0: ih_jd 0. For JD = 1: sorry.
             exact no_S_nested_in_U_separable_param_jd (.snce χa χb) hns
-              (has_no_allpast_allfuture_true _) (fun ζ hns_ζ hjd_ζ =>
-                ih_jd 0 (by omega) ζ (by sorry) (has_no_allpast_allfuture_true ζ))
+              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ _hjd_ζ =>
+                all_separable ζ)
         exact is_separable_of_equiv hequiv h_sep
     | untl a b ih_a ih_b =>
       -- Sub-formulas have JD ≤ n
@@ -1802,8 +1802,8 @@ theorem all_formulas_separable_aux (φ : Formula)
                 ih_jd 1 (by omega) ζ hjd_ζ (has_no_allpast_allfuture_true ζ))
           · -- n = 1 (since n ≥ 1 from JD ≥ 1 and JD ≤ n)
             exact no_S_nested_in_U_separable_param_jd _ hns_S
-              (has_no_allpast_allfuture_true _) (fun ζ hns_ζ hjd_ζ =>
-                ih_jd 0 (by omega) ζ (by sorry) (has_no_allpast_allfuture_true ζ))
+              (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ _hjd_ζ =>
+                all_separable ζ)
         -- Step 7: dual_separable
         have h_untl_sep : is_separable (.untl χa χb) := by
           have h := dual_separable _ h_swap_sep

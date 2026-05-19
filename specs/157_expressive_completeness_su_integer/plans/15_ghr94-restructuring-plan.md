@@ -1,7 +1,7 @@
 # Implementation Plan: Task #157 -- GHR94 Faithful Restructuring
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 25 hours
 - **Dependencies**: Plan v12 phases 1-2 completed (Separation module compiles, dead arms removed)
 - **Research Inputs**: reports/14_team-research.md (round 14, root cause), reports/15_team-research.md (round 15, restructuring feasibility)
@@ -110,7 +110,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Path 1 -- Immediate Axiom Routing [NOT STARTED]
+### Phase 1: Path 1 -- Immediate Axiom Routing [COMPLETED]
 
 **Goal**: Replace the 2 sorry calls in Hierarchy.lean with `all_separable zeta`, eliminating `sorryAx` from `lean_verify`. This is a mechanical 2-line change that routes through the existing `all_separable` axiom (which itself uses `snce_separable`). The 9 axioms remain, but the proof is honest -- axiom invocations, not sorry.
 
@@ -168,7 +168,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix DualEliminations Sorry Sites [NOT STARTED]
+### Phase 2: Fix DualEliminations Sorry Sites [COMPLETED]
 
 **Goal**: Eliminate 8 sorry calls in `DualEliminations.lean` by changing the conclusion from `is_S_free psi = true` to `is_separable psi` (which follows trivially from `all_separable`). Research round 15 confirmed this approach: the hierarchy theorem only needs separability, not S-freeness, and `all_separable` provides separability for any formula.
 

@@ -1,6 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
-import Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.Duality
