@@ -265,7 +265,7 @@ theorem some_past_iff
 /--
 Truth of past (H φ = ¬P(¬φ)): formula true at all strictly past times (strict, excludes now).
 
-Bridge lemma: converts the expanded form ¬∃s<t.¬φ(s) to ∀s<t.φ(s).
+Semantic characterization theorem: converts the expanded form ¬∃s<t.¬φ(s) to ∀s<t.φ(s).
 -/
 theorem past_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -290,7 +290,7 @@ theorem past_iff
 /--
 Truth of future (G φ = ¬F(¬φ)): formula true at all strictly future times (strict, excludes now).
 
-Bridge lemma: converts the expanded form ¬∃s>t.¬φ(s) to ∀s>t.φ(s).
+Semantic characterization theorem: converts the expanded form ¬∃s>t.¬φ(s) to ∀s>t.φ(s).
 -/
 theorem future_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]

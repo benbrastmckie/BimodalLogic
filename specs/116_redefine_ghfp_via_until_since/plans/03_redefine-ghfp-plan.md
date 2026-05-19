@@ -94,7 +94,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix Substitution.lean and Rename Docstrings [NOT STARTED]
+### Phase 1: Fix Substitution.lean and Rename Docstrings [COMPLETED]
 
 **Goal**: Fix the 3+ compilation errors in Substitution.lean caused by @[match_pattern] conflicts and invalid induction arms. Rename "bridge lemma" to "semantic characterization theorem" in Truth.lean docstrings.
 
