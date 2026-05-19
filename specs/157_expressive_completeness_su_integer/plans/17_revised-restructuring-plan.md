@@ -195,7 +195,7 @@ Phases within the same wave can execute in parallel.
   - Includes: `U_nesting_depth` definition, `U_nesting_depth_zero_iff_U_free`, `U_nesting_depth_zero_of_U_free`, `U_nesting_depth_le_one_untl_args_U_free`, monotonicity lemmas for imp/box/snce
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy` -- passed
 
-- [ ] Task 3.4: Prove `callback_has_single_U_type` (~50 LOC)
+- [x] Task 3.4: Prove `callback_has_single_U_type` (~50 LOC) *(completed)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Purpose**: When U-args A, B are U-free (boolean), callback formulas from `subst_in_separated_separable` have `has_single_U_type`. This is the key lemma enabling the self-contained depth-1 case.
   - **Helper lemma**:
@@ -222,7 +222,7 @@ Phases within the same wave can execute in parallel.
   - Proof strategy: By structural induction on c (and d). Base cases: atom p maps to `.untl A B` (single U-type by construction), other atoms are U-free. Inductive cases: `.imp`, `.box`, `.snce` preserve single U-type. No `.untl` case because c is U-free.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 3.5: Prove `is_syntactically_separated_snce_depth_zero` (~20 LOC, NEW)
+- [x] Task 3.5: Prove `is_syntactically_separated_snce_depth_zero` (~20 LOC, NEW) *(deviation: altered — renamed to `separated_boxnorm_snce_depth_zero` and added box-normalization via `replace_box_with_top` because `is_syntactically_separated` treats `.box` as atomic while `snce_depth_of_U` passes through it, making the original theorem false for raw separated formulas)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Purpose**: Bridge lemma connecting syntactically separated formulas to `snce_depth_of_U = 0`. This is the KEY lemma enabling `single_U_formula_separable_noax`: when the IH produces separated C' and F', this lemma gives `snce_depth_of_U C' = 0` and `snce_depth_of_U F' = 0`, so `.snce C' F'` has depth exactly 1.
   - **Theorem**:
@@ -239,7 +239,7 @@ Phases within the same wave can execute in parallel.
   - Proof strategy: Structural induction on phi. At `.snce a b`: `is_syntactically_separated` gives `is_U_free a = true` and `is_U_free b = true`, so `snce_depth_of_U (.snce a b) = 0` (the if-branch). At `.imp a b`: `snce_depth_of_U = max(IH a, IH b) = 0`. At `.untl a b`: `snce_depth_of_U (.untl a b) = 0` (definition). At `.box a`: `snce_depth_of_U = IH a = 0`. At `.atom`, `.bot`: trivial.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 3.6: Create `_gen` variants for Cases 3, 4, 6, 7 (~80 LOC, NEW)
+- [x] Task 3.6: Create `_gen` variants for Cases 3, 4, 6, 7 (~80 LOC, NEW) *(completed — also made case8_separable_Z_gen public)*
   - **Files**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Eliminations.lean` (Cases 3, 4) and `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ.lean` (Cases 6, 7)
   - **Purpose**: Cases 1, 2, 5, 8 already have `_gen` variants that drop the `is_S_free a` and `is_S_free q` requirements. Cases 3, 4, 6, 7 still require S-free a, q. After event-splitting in Lemma 10.2.4, `a = replace_untl C' A B top` is U-free but NOT S-free (C' can contain `.snce` nodes). So `_gen` variants are needed.
   - **Verification approach**:
@@ -320,7 +320,7 @@ Phases within the same wave can execute in parallel.
   - BLOCKER ESCALATION: If step 2 (preserving single-U-type through IH) or step 7 (Lemma 10.2.4 application) fails after 2 hours, STOP and document the exact obstacle.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 3.8: Update NormalForm.lean wrappers for `_gen` variants (~20 LOC)
+- [x] Task 3.8: Update NormalForm.lean wrappers for `_gen` variants (~20 LOC) *(completed — added all 8 caseN_separable_gen wrappers and lemma_10_2_4_gen)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NormalForm.lean`
   - Add wrapper theorems `case3_separable_gen`, `case4_separable_gen`, `case6_separable_gen`, `case7_separable_gen` that call the corresponding `_gen` variants in Eliminations.lean and DedekindZ.lean.
   - Also update `lemma_10_2_4` (NormalForm.lean:346) to have a `_gen` variant that uses all `_gen` wrappers, requiring only U-free a, q (not S-free).

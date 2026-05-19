@@ -1673,6 +1673,78 @@ theorem case6_separable_Z (a q A B : Formula)
     · -- S(STUFF∧U, q∨U): STUFF is U-free → case5_separable_Z_gen
       exact case5_separable_Z_gen _ q A B hSTUFF_uf hq hA hB hA' hB'
 
+/-- Case 6 generalized: drops S-free requirements on a, q (they were unused
+    in the original proof). Only needs S-free A, B. -/
+theorem case6_separable_Z_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
+      (Formula.or q (.untl A B))) := by
+  apply is_separable_of_equiv (case6_equiv_Z a q A B)
+  apply or_separable
+  · apply and_separable
+    · apply and_separable
+      · have hg : is_U_free (Formula.and q (Formula.neg A)) = true := by
+          simp [Formula.and, Formula.neg, is_U_free, hq, hA]
+        exact ⟨.snce a (Formula.and q (Formula.neg A)),
+          by simp [is_syntactically_separated, ha, hg], int_equiv_refl _⟩
+      · exact u_free_s_free_is_separable (Formula.neg A)
+          (by simp [Formula.neg, is_U_free, hA])
+          (by simp [Formula.neg, is_S_free, hA'])
+    · apply neg_separable
+      exact and_separable (u_free_s_free_is_separable B hB hB')
+        ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
+  · have h_rearrange : int_equiv
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (Formula.or q (.untl A B)))
+        (.snce a (Formula.and q (Formula.neg A))))
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A))))
+        (Formula.or q (.untl A B))) := by
+      intro M t; constructor
+      · intro h
+        have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+        have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+        exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+      · intro h
+        have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+        have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+        exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+    apply is_separable_of_equiv (snce_event_congr h_rearrange)
+    have h_distrib : int_equiv
+      (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A))))
+        (Formula.or q (.untl A B)))
+      (Formula.or
+        (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+          (.snce a (Formula.and q (Formula.neg A)))) q)
+        (Formula.and (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+          (.snce a (Formula.and q (Formula.neg A)))) (.untl A B))) := by
+      intro M t; constructor
+      · intro h
+        have ⟨hc, hab⟩ := int_truth_and_iff.mp h
+        rcases int_truth_or_iff.mp hab with ha | hb
+        · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mpr ⟨hc, ha⟩))
+        · exact int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨hc, hb⟩))
+      · intro h
+        rcases int_truth_or_iff.mp h with h1 | h2
+        · have ⟨hc, ha⟩ := int_truth_and_iff.mp h1
+          exact int_truth_and_iff.mpr ⟨hc, int_truth_or_iff.mpr (Or.inl ha)⟩
+        · have ⟨hc, hb⟩ := int_truth_and_iff.mp h2
+          exact int_truth_and_iff.mpr ⟨hc, int_truth_or_iff.mpr (Or.inr hb)⟩
+    apply is_separable_of_equiv (snce_event_congr h_distrib)
+    apply is_separable_of_equiv (since_distrib_or_left _ _ (Formula.or q (.untl A B)))
+    have hSTUFF_uf : is_U_free (Formula.and (Formula.and (Formula.neg B) (Formula.neg A))
+        (.snce a (Formula.and q (Formula.neg A)))) = true := by
+      simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
+    apply or_separable
+    · have hev_uf : is_U_free (Formula.and (Formula.and (Formula.and (Formula.neg B)
+          (Formula.neg A)) (.snce a (Formula.and q (Formula.neg A)))) q) = true := by
+        simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
+      exact snce_Ufree_event_qU_guard_separable _ q A B hev_uf hq hA hB hA' hB'
+    · exact case5_separable_Z_gen _ q A B hSTUFF_uf hq hA hB hA' hB'
+
 /-! ## Case 7 via GHR94 Direct Formula (10.2.3 item 7)
 
 GHR94 approach: S(a∧U, q∨¬U). By considering when A is true we deduce:
@@ -1902,9 +1974,9 @@ private theorem case8_equiv_Z (a q A B : Formula) :
     · -- ¬U(r) holds. q(r) ∨ ¬U(r) via ¬U(r).
       exact Or.inr hU_r
 
-/-- Case 8 separability generalized: drops S-free requirements on a and q.
-    Only needs S-free A, B. Uses case5_separable_Z_gen and elim_case_2_gen. -/
-private theorem case8_separable_Z_gen (a q A B : Formula)
+/-- Case 8 generalized: drops S-free requirements on a, q. Only needs S-free A, B.
+    Uses case5_separable_Z_gen and elim_case_2_gen. -/
+theorem case8_separable_Z_gen (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
@@ -2061,6 +2133,77 @@ theorem case7_separable_Z (a q A B : Formula)
       · exact u_free_s_free_is_separable A hA hA'
   · -- D3: S(a,B∧q) ∧ B ∧ U -- past (U-free) and future (S-free)
     apply and_separable
+    · exact and_separable
+        ⟨.snce a (Formula.and B q),
+          by simp [is_syntactically_separated, ha, hBq_uf], int_equiv_refl _⟩
+        (u_free_s_free_is_separable B hB hB')
+    · exact ⟨.untl A B, by simp [is_syntactically_separated, hA', hB'], int_equiv_refl _⟩
+
+/-- Case 7 generalized: drops S-free requirements on a, q (they were unused
+    in the original proof). Only needs S-free A, B. -/
+theorem case7_separable_Z_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B))
+      (Formula.or q (Formula.neg (.untl A B)))) := by
+  apply is_separable_of_equiv (case7_equiv_Z a q A B)
+  have hBq_uf : is_U_free (Formula.and B q) = true := by
+    simp only [Formula.and, Formula.neg, is_U_free, hB, hq, Bool.true_and, Bool.and_self]
+  apply or_separable
+  · apply or_separable
+    · have h_rearrange : int_equiv
+        (Formula.and (Formula.and A (Formula.or q (Formula.neg (.untl A B))))
+          (.snce a (Formula.and B q)))
+        (Formula.and (Formula.and A (.snce a (Formula.and B q)))
+          (Formula.or q (Formula.neg (.untl A B)))) := by
+        intro M t; constructor
+        · intro h
+          have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+          have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+          exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+        · intro h
+          have ⟨h1, h2⟩ := int_truth_and_iff.mp h
+          have ⟨h3, h4⟩ := int_truth_and_iff.mp h1
+          exact int_truth_and_iff.mpr ⟨int_truth_and_iff.mpr ⟨h3, h2⟩, h4⟩
+      apply is_separable_of_equiv (snce_event_congr h_rearrange)
+      have h_distrib : int_equiv
+        (Formula.and (Formula.and A (.snce a (Formula.and B q)))
+          (Formula.or q (Formula.neg (.untl A B))))
+        (Formula.or
+          (Formula.and (Formula.and A (.snce a (Formula.and B q))) q)
+          (Formula.and (Formula.and A (.snce a (Formula.and B q)))
+            (Formula.neg (.untl A B)))) := by
+        intro M t; constructor
+        · intro h
+          have ⟨hc, hab⟩ := int_truth_and_iff.mp h
+          rcases int_truth_or_iff.mp hab with ha | hb
+          · exact int_truth_or_iff.mpr (Or.inl (int_truth_and_iff.mpr ⟨hc, ha⟩))
+          · exact int_truth_or_iff.mpr (Or.inr (int_truth_and_iff.mpr ⟨hc, hb⟩))
+        · intro h
+          rcases int_truth_or_iff.mp h with h1 | h2
+          · have ⟨hc, ha⟩ := int_truth_and_iff.mp h1
+            exact int_truth_and_iff.mpr ⟨hc, int_truth_or_iff.mpr (Or.inl ha)⟩
+          · have ⟨hc, hb⟩ := int_truth_and_iff.mp h2
+            exact int_truth_and_iff.mpr ⟨hc, int_truth_or_iff.mpr (Or.inr hb)⟩
+      apply is_separable_of_equiv (snce_event_congr h_distrib)
+      apply is_separable_of_equiv (since_distrib_or_left _ _
+        (Formula.or q (Formula.neg (.untl A B))))
+      have hSTUFF_uf : is_U_free (Formula.and A (.snce a (Formula.and B q))) = true := by
+        simp only [Formula.and, Formula.neg, is_U_free, hA, ha, hB, hq, Bool.and_self]
+      apply or_separable
+      · have hev_uf : is_U_free (Formula.and (Formula.and A
+            (.snce a (Formula.and B q))) q) = true := by
+          simp only [Formula.and, Formula.neg, is_U_free, hA, ha, hB, hq, Bool.and_self]
+        exact snce_Ufree_event_qNotU_guard_separable _ q A B hev_uf hq hA hB hA' hB'
+      · exact case8_separable_Z_gen
+          (Formula.and A (.snce a (Formula.and B q)))
+          q A B hSTUFF_uf hq hA hB hA' hB'
+    · apply and_separable
+      · exact ⟨.snce a (Formula.and B q),
+          by simp [is_syntactically_separated, ha, hBq_uf], int_equiv_refl _⟩
+      · exact u_free_s_free_is_separable A hA hA'
+  · apply and_separable
     · exact and_separable
         ⟨.snce a (Formula.and B q),
           by simp [is_syntactically_separated, ha, hBq_uf], int_equiv_refl _⟩

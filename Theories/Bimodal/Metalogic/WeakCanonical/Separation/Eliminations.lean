@@ -601,6 +601,115 @@ theorem elim_case_4 (a q A B : Formula)
           ⟨int_truth_and_iff.mpr ⟨hna_s, hnotQ_s⟩, hU_s⟩, hguard⟩
   · exact and_separated (neg_separated hsep_H) (neg_separated hsep1)
 
+/-- Case 3 generalized: drops S-free requirements on a, q. Only needs S-free A, B.
+    The proof replaces elim_case_2 with elim_case_2_gen. -/
+theorem elim_case_3_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    ∃ psi : Formula,
+      int_equiv (.snce a (Formula.or q (.untl A B))) psi ∧
+      is_syntactically_separated psi = true := by
+  have haq_Uf : is_U_free (Formula.and (Formula.neg a) (Formula.neg q)) = true := by
+    simp [Formula.and, Formula.neg, is_U_free, ha, hq]
+  have ha_neg_Uf : is_U_free (Formula.neg a) = true := by simp [Formula.neg, is_U_free, ha]
+  obtain ⟨psi2, hequiv2, hsep2⟩ := elim_case_2_gen
+    (Formula.and (Formula.neg a) (Formula.neg q)) (Formula.neg a) A B
+    haq_Uf ha_neg_Uf hA hB hA' hB'
+  have hsep_H : is_syntactically_separated (.all_past (Formula.neg a)) = true := by
+    simp only [is_syntactically_separated_all_past, Formula.neg, is_U_free, ha, Bool.and_true]
+  refine ⟨Formula.and (Formula.neg (.all_past (Formula.neg a))) (Formula.neg psi2), ?_, ?_⟩
+  · intro M t; constructor
+    · intro hS
+      rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff]
+      obtain ⟨s, hst, ha_s, hqU_guard⟩ := hS
+      simp only [int_truth_all_past] at *
+      refine ⟨fun hall => hall s hst ha_s, ?_⟩
+      intro hpsi2
+      obtain ⟨s2, hs2t, hand2, hguard2⟩ := (hequiv2 M t).mpr hpsi2
+      have ⟨haq2, hnotU2⟩ := int_truth_and_iff.mp hand2
+      have hna2 := (int_truth_and_iff.mp haq2).1
+      have hnq2 := (int_truth_and_iff.mp haq2).2
+      have hs_le : s ≤ s2 := by by_contra h; push_neg at h; exact hguard2 s h hst ha_s
+      rcases eq_or_lt_of_le hs_le with heq | hlt
+      · exact hna2 (heq ▸ ha_s)
+      · rcases int_truth_or_iff.mp (hqU_guard s2 hlt hs2t) with hq2 | hU2
+        · exact hnq2 hq2
+        · exact hnotU2 hU2
+    · intro hand
+      rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff] at hand
+      obtain ⟨hnotH, hnotPsi2⟩ := hand
+      have hnotS2 : ¬ int_truth M t (.snce (Formula.and (Formula.and (Formula.neg a) (Formula.neg q)) (Formula.neg (.untl A B))) (Formula.neg a)) :=
+        fun hS2 => hnotPsi2 ((hequiv2 M t).mp hS2)
+      by_contra hnotS
+      rcases int_truth_or_iff.mp ((neg_since_equiv a (Formula.or q (.untl A B)) M t).mp hnotS) with hH | hS_neg
+      · exact hnotH hH
+      · obtain ⟨s, hst, hevent, hguard⟩ := hS_neg
+        have ⟨hna_s, hnotQU_s⟩ := int_truth_and_iff.mp hevent
+        have hnotQ_s : ¬ int_truth M s q :=
+          fun h => (int_truth_neg_iff.mp hnotQU_s) (int_truth_or_iff.mpr (Or.inl h))
+        have hnotU_s : ¬ int_truth M s (.untl A B) :=
+          fun h => (int_truth_neg_iff.mp hnotQU_s) (int_truth_or_iff.mpr (Or.inr h))
+        exact hnotS2 ⟨s, hst, int_truth_and_iff.mpr
+          ⟨int_truth_and_iff.mpr ⟨hna_s, hnotQ_s⟩, hnotU_s⟩, hguard⟩
+  · exact and_separated (neg_separated hsep_H) (neg_separated hsep2)
+
+set_option maxHeartbeats 1200000 in
+/-- Case 4 generalized: drops S-free requirements on a, q. Only needs S-free A, B.
+    The proof replaces elim_case_1 with elim_case_1_gen. -/
+theorem elim_case_4_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    ∃ psi : Formula,
+      int_equiv (.snce a (Formula.or q (Formula.neg (.untl A B)))) psi ∧
+      is_syntactically_separated psi = true := by
+  have haq_Uf : is_U_free (Formula.and (Formula.neg a) (Formula.neg q)) = true := by
+    simp [Formula.and, Formula.neg, is_U_free, ha, hq]
+  have ha_neg_Uf : is_U_free (Formula.neg a) = true := by simp [Formula.neg, is_U_free, ha]
+  obtain ⟨psi1, hequiv1, hsep1⟩ := elim_case_1_gen
+    (Formula.and (Formula.neg a) (Formula.neg q)) (Formula.neg a) A B
+    haq_Uf ha_neg_Uf hA hB hA' hB'
+  have hsep_H : is_syntactically_separated (.all_past (Formula.neg a)) = true := by
+    simp only [is_syntactically_separated_all_past, Formula.neg, is_U_free, ha, Bool.and_true]
+  refine ⟨Formula.and (Formula.neg (.all_past (Formula.neg a))) (Formula.neg psi1), ?_, ?_⟩
+  · intro M t; constructor
+    · intro hS
+      rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff]
+      obtain ⟨s, hst, ha_s, hguard_S⟩ := hS
+      simp only [int_truth_all_past] at *
+      refine ⟨fun hall => hall s hst ha_s, ?_⟩
+      intro hpsi1
+      obtain ⟨s1, hs1t, hevent1, hguard1⟩ := (hequiv1 M t).mpr hpsi1
+      have ⟨haq1, hU1⟩ := int_truth_and_iff.mp hevent1
+      have hna1 := (int_truth_and_iff.mp haq1).1
+      have hnq1 := (int_truth_and_iff.mp haq1).2
+      have hs_le : s ≤ s1 := by by_contra h; push_neg at h; exact hguard1 s h hst ha_s
+      rcases eq_or_lt_of_le hs_le with heq | hlt
+      · exact hna1 (heq ▸ ha_s)
+      · rcases int_truth_or_iff.mp (hguard_S s1 hlt hs1t) with hq1 | hnotU1
+        · exact hnq1 hq1
+        · exact (int_truth_neg_iff.mp hnotU1) hU1
+    · intro hand
+      rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff] at hand
+      obtain ⟨hnotH, hnotPsi1⟩ := hand
+      have hnotS1 : ¬ int_truth M t (.snce (Formula.and (Formula.and (Formula.neg a) (Formula.neg q)) (.untl A B)) (Formula.neg a)) :=
+        fun hS1 => hnotPsi1 ((hequiv1 M t).mp hS1)
+      by_contra hnotS
+      rcases int_truth_or_iff.mp ((neg_since_equiv a (Formula.or q (Formula.neg (.untl A B))) M t).mp hnotS) with hH | hS_neg
+      · exact hnotH hH
+      · obtain ⟨s, hst, hevent, hguard⟩ := hS_neg
+        have ⟨hna_s, hnotG⟩ := int_truth_and_iff.mp hevent
+        have hnotQ_s : ¬ int_truth M s q :=
+          fun h => (int_truth_neg_iff.mp hnotG) (int_truth_or_iff.mpr (Or.inl h))
+        have hU_s : int_truth M s (.untl A B) := by
+          by_contra hnotU
+          exact (int_truth_neg_iff.mp hnotG)
+            (int_truth_or_iff.mpr (Or.inr (int_truth_neg_iff.mpr hnotU)))
+        exact hnotS1 ⟨s, hst, int_truth_and_iff.mpr
+          ⟨int_truth_and_iff.mpr ⟨hna_s, hnotQ_s⟩, hU_s⟩, hguard⟩
+  · exact and_separated (neg_separated hsep_H) (neg_separated hsep1)
+
 /-! ## Case 5: S(a ^ U(A,B), q v U(A,B))
 
   Case 5 eliminates U(A,B) from a Since formula where U(A,B) appears

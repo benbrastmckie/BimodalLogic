@@ -1499,6 +1499,89 @@ theorem U_nesting_depth_lt_untl_right (a b : Formula) :
   simp only [U_nesting_depth]
   omega
 
+/-! ### Callback Single-U-Type Infrastructure (Task 3.4)
+
+Substituting U(A,B) (with U-free A, B) for an atom in a U-free formula yields
+a formula with single U-type U(A,B). This is the key property enabling the
+self-contained depth-1 case in Lemma 10.2.5 (axiom-free). -/
+
+/-- Substituting U(A,B) (with U-free A, B) for an atom in a U-free formula
+    yields a formula with single U-type U(A,B). -/
+theorem subst_U_free_gives_single_U_type (c : Formula) (p : Atom)
+    (A B : Formula)
+    (hc_U_free : is_U_free c = true)
+    (hA_U_free : is_U_free A = true)
+    (hB_U_free : is_U_free B = true) :
+    has_single_U_type (subst_formula c p (.untl A B)) A B := by
+  induction c with
+  | atom a =>
+    simp only [subst_formula]
+    split
+    · -- a = p: result is .untl A B
+      exact ⟨rfl, rfl⟩
+    · -- a ≠ p: result is .atom a
+      trivial
+  | bot => simp only [subst_formula, has_single_U_type]
+  | imp c d ih1 ih2 =>
+    simp only [is_U_free, Bool.and_eq_true] at hc_U_free
+    simp only [subst_formula, has_single_U_type]
+    exact ⟨ih1 hc_U_free.1, ih2 hc_U_free.2⟩
+  | box c ih =>
+    simp only [is_U_free] at hc_U_free
+    simp only [subst_formula, has_single_U_type]
+    exact ih hc_U_free
+  | untl _ _ => simp only [is_U_free, Bool.false_eq_true] at hc_U_free
+  | snce c d ih1 ih2 =>
+    simp only [is_U_free, Bool.and_eq_true] at hc_U_free
+    simp only [subst_formula, has_single_U_type]
+    exact ⟨ih1 hc_U_free.1, ih2 hc_U_free.2⟩
+
+/-- Callback formulas from subst_in_separated_separable have single U-type
+    when the separated formula's snce-args are U-free (which they are by
+    definition of is_syntactically_separated). -/
+theorem callback_has_single_U_type (c d : Formula) (p : Atom) (A B : Formula)
+    (hc_U_free : is_U_free c = true) (hd_U_free : is_U_free d = true)
+    (hA_U_free : is_U_free A = true) (hB_U_free : is_U_free B = true) :
+    has_single_U_type (.snce (subst_formula c p (.untl A B))
+                             (subst_formula d p (.untl A B))) A B :=
+  ⟨subst_U_free_gives_single_U_type c p A B hc_U_free hA_U_free hB_U_free,
+   subst_U_free_gives_single_U_type d p A B hd_U_free hA_U_free hB_U_free⟩
+
+/-! ### Syntactically Separated implies snce_depth_of_U = 0 (Task 3.5)
+
+A syntactically separated formula has snce_depth_of_U = 0. This is the KEY
+bridge lemma for single_U_formula_separable_noax: when the IH produces
+separated C' and F', this lemma gives snce_depth_of_U C' = 0 and
+snce_depth_of_U F' = 0, so .snce C' F' has depth exactly 1. -/
+
+/-- After box-normalization, a syntactically separated formula has snce_depth_of_U = 0.
+    The raw theorem without box-normalization fails because is_syntactically_separated
+    treats .box as atomic while snce_depth_of_U passes through it. But after
+    replace_box_with_top, all .box nodes become .imp .bot .bot (which has depth 0),
+    so the induction goes through.
+
+    This is the KEY bridge lemma for single_U_formula_separable_noax: when the IH
+    produces separated C' and F', applying replace_box_with_top gives C'' and F''
+    with snce_depth_of_U = 0, so .snce C'' F'' has depth exactly 1. -/
+theorem separated_boxnorm_snce_depth_zero (phi : Formula)
+    (hsep : is_syntactically_separated phi = true) :
+    snce_depth_of_U (replace_box_with_top phi) = 0 := by
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp only [is_syntactically_separated, Bool.and_eq_true] at hsep
+    simp only [replace_box_with_top, snce_depth_of_U, ih1 hsep.1, ih2 hsep.2, Nat.max_self]
+  | box _ =>
+    simp only [replace_box_with_top, snce_depth_of_U, Nat.max_self]
+  | untl _ _ =>
+    simp only [replace_box_with_top, snce_depth_of_U]
+  | snce a b _ _ =>
+    simp only [is_syntactically_separated, Bool.and_eq_true] at hsep
+    have ha_uf := replace_box_preserves_U_free a hsep.1
+    have hb_uf := replace_box_preserves_U_free b hsep.2
+    simp only [replace_box_with_top, snce_depth_of_U, ha_uf, hb_uf, and_self, ↓reduceIte]
+
 /-! ### Step 5c: Single-U-Type at Depth 0 — Direct Separability via Event-Guard Decomposition
 
 GHR94 Lemma 10.2.4: `.snce C F` where U(A,B) appears only at top level (not under

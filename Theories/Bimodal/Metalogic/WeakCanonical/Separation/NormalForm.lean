@@ -192,6 +192,108 @@ theorem case8_separable (a q A B : Formula)
       (Formula.or q (Formula.neg (.untl A B)))) :=
   case8_separable_Z a q A B ha hq hA hB ha' hq' hA' hB'
 
+/-! ## Generalized Case Wrappers (dropping S-free a, q)
+
+These wrappers call the `_gen` variants from Eliminations.lean and DedekindZ.lean,
+which only require S-free A, B (not S-free a, q). This is needed by
+single_U_formula_separable_noax where the event/guard a, q may not be S-free. -/
+
+/-- Case 1 generalized: S(a ^ U(A,B), q) is separable with U-free a, q and S-free A, B. -/
+theorem case1_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) q) := by
+  obtain ⟨psi, hequiv, hsep⟩ := elim_case_1_gen a q A B ha hq hA hB hA' hB'
+  exact ⟨psi, hsep, hequiv⟩
+
+/-- Case 2 generalized: S(a ^ ¬U(A,B), q) is separable. -/
+theorem case2_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B))) q) := by
+  obtain ⟨psi, hequiv, hsep⟩ := elim_case_2_gen a q A B ha hq hA hB hA' hB'
+  exact ⟨psi, hsep, hequiv⟩
+
+/-- Case 3 generalized: S(a, q ∨ U(A,B)) is separable. -/
+theorem case3_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce a (Formula.or q (.untl A B))) := by
+  obtain ⟨psi, hequiv, hsep⟩ := elim_case_3_gen a q A B ha hq hA hB hA' hB'
+  exact ⟨psi, hsep, hequiv⟩
+
+/-- Case 4 generalized: S(a, q ∨ ¬U(A,B)) is separable. -/
+theorem case4_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce a (Formula.or q (Formula.neg (.untl A B)))) := by
+  obtain ⟨psi, hequiv, hsep⟩ := elim_case_4_gen a q A B ha hq hA hB hA' hB'
+  exact ⟨psi, hsep, hequiv⟩
+
+/-- Case 5 generalized: S(a ^ U(A,B), q ∨ U(A,B)) is separable. -/
+theorem case5_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) :=
+  case5_separable_Z_gen a q A B ha hq hA hB hA' hB'
+
+/-- Case 6 generalized: S(a ^ ¬U(A,B), q ∨ U(A,B)) is separable. -/
+theorem case6_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
+      (Formula.or q (.untl A B))) :=
+  case6_separable_Z_gen a q A B ha hq hA hB hA' hB'
+
+/-- Case 7 generalized: S(a ^ U(A,B), q ∨ ¬U(A,B)) is separable. -/
+theorem case7_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B))
+      (Formula.or q (Formula.neg (.untl A B)))) :=
+  case7_separable_Z_gen a q A B ha hq hA hB hA' hB'
+
+/-- Case 8 generalized: S(a ^ ¬U(A,B), q ∨ ¬U(A,B)) is separable. -/
+theorem case8_separable_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B)))
+      (Formula.or q (Formula.neg (.untl A B)))) :=
+  case8_separable_Z_gen a q A B ha hq hA hB hA' hB'
+
+/-- Lemma 10.2.4 generalized (all 8 cases): only requires U-free a, q and S-free A, B.
+    Drops the S-free requirements on a and q. This is the version used by
+    single_U_formula_separable_noax where a, q come from replace_untl and may
+    contain S-operators (i.e., not S-free). -/
+theorem lemma_10_2_4_gen (a q A B : Formula)
+    (ha_uf : is_U_free a = true) (hq_uf : is_U_free q = true)
+    (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true) :
+    is_separable (.snce (Formula.and a (.untl A B)) q) ∧
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B))) q) ∧
+    is_separable (.snce a (Formula.or q (.untl A B))) ∧
+    is_separable (.snce a (Formula.or q (Formula.neg (.untl A B)))) ∧
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) ∧
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B))) (Formula.or q (.untl A B))) ∧
+    is_separable (.snce (Formula.and a (.untl A B)) (Formula.or q (Formula.neg (.untl A B)))) ∧
+    is_separable (.snce (Formula.and a (Formula.neg (.untl A B))) (Formula.or q (Formula.neg (.untl A B)))) :=
+  ⟨case1_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case2_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case3_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case4_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case5_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case6_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case7_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf,
+   case8_separable_gen a q A B ha_uf hq_uf hA_uf hB_uf hA_sf hB_sf⟩
+
 /-! ## Event-Guard Decomposition
 
 The core decomposition: S(C, F) where C and F contain at most U(A,B) as
