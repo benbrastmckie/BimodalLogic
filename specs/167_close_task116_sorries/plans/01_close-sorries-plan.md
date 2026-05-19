@@ -69,7 +69,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Define temporalBlockingSet and extend baseDeferralClosure [NOT STARTED]
+### Phase 1: Define temporalBlockingSet and extend baseDeferralClosure [COMPLETED]
 
 **Goal**: Add the temporal blocking set to the deferral closure infrastructure in SubformulaClosure.lean, providing the formulas needed for temporal duality.
 
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix cascading membership proofs in SubformulaClosure.lean [NOT STARTED]
+### Phase 2: Fix cascading membership proofs in SubformulaClosure.lean [COMPLETED]
 
 **Goal**: Update all proofs in SubformulaClosure.lean that pattern-match on the `baseDeferralClosure` union structure, adding cases for the new `temporalBlockingSet` component.
 

@@ -770,9 +770,76 @@ def serialityFormulas : Finset Formula :=
   {F_top, P_top, Formula.neg Formula.bot, neg_neg_bot, G_neg_neg_bot, H_neg_neg_bot,
    neg_G_neg_neg_bot, neg_H_neg_neg_bot, F_top_deferral, P_top_deferral}
 
+/-!
+## Temporal Blocking Set
+
+Under the new definitions where F(chi) = U(chi, top) and P(chi) = S(chi, top),
+the temporal dual G(neg chi) is no longer a structural subformula of F(chi).
+The temporalBlockingSet adds these blocking formulas explicitly:
+- For each F(chi) in closureWithNeg(phi), add G(neg chi) = all_future(chi.neg)
+- For each P(chi) in closureWithNeg(phi), add H(neg chi) = all_past(chi.neg)
+
+This enables the completeness proof to use H(neg chi) in deferralClosure
+when P(chi) is known to be in deferralClosure.
+-/
+
+/-- Convert an F-formula F(chi) to its blocking formula G(neg chi).
+For non-F-formulas, returns bot (placeholder, will be filtered). -/
+def toFutureBlocking (f : Formula) : Formula :=
+  match extractFutureInner f with
+  | some chi => Formula.all_future chi.neg
+  | none => Formula.bot
+
+/-- Convert a P-formula P(chi) to its blocking formula H(neg chi).
+For non-P-formulas, returns bot (placeholder, will be filtered). -/
+def toPastBlocking (f : Formula) : Formula :=
+  match extractPastInner f with
+  | some chi => Formula.all_past chi.neg
+  | none => Formula.bot
+
 /--
-The base deferral closure (F/P deferrals + seriality). The full deferralClosure extends
-this with Until/Since deferral sets.
+The temporal blocking set: {G(neg chi) | F(chi) in closureWithNeg(phi)}
+                         ∪ {H(neg chi) | P(chi) in closureWithNeg(phi)}.
+-/
+def temporalBlockingSet (phi : Formula) : Finset Formula :=
+  ((closureWithNeg phi).filter IsFutureFormula).image toFutureBlocking ∪
+  ((closureWithNeg phi).filter IsPastFormula).image toPastBlocking
+
+/-- toFutureBlocking correctly transforms some_future. -/
+theorem toFutureBlocking_some_future (chi : Formula) :
+    toFutureBlocking (Formula.some_future chi) = Formula.all_future chi.neg := by
+  simp only [toFutureBlocking, extractFutureInner_some_future]
+
+/-- toPastBlocking correctly transforms some_past. -/
+theorem toPastBlocking_some_past (chi : Formula) :
+    toPastBlocking (Formula.some_past chi) = Formula.all_past chi.neg := by
+  simp only [toPastBlocking, extractPastInner_some_past]
+
+/-- If F(chi) is in closureWithNeg(phi), then G(neg chi) is in temporalBlockingSet(phi). -/
+theorem all_future_neg_mem_temporalBlockingSet_of_some_future {phi chi : Formula}
+    (h : Formula.some_future chi ∈ closureWithNeg phi) :
+    Formula.all_future chi.neg ∈ temporalBlockingSet phi := by
+  unfold temporalBlockingSet
+  apply Finset.mem_union_left
+  rw [Finset.mem_image]
+  refine ⟨Formula.some_future chi, ?_, toFutureBlocking_some_future chi⟩
+  rw [Finset.mem_filter]
+  exact ⟨h, by simp [IsFutureFormula, extractFutureInner_some_future]⟩
+
+/-- If P(chi) is in closureWithNeg(phi), then H(neg chi) is in temporalBlockingSet(phi). -/
+theorem all_past_neg_mem_temporalBlockingSet_of_some_past {phi chi : Formula}
+    (h : Formula.some_past chi ∈ closureWithNeg phi) :
+    Formula.all_past chi.neg ∈ temporalBlockingSet phi := by
+  unfold temporalBlockingSet
+  apply Finset.mem_union_right
+  rw [Finset.mem_image]
+  refine ⟨Formula.some_past chi, ?_, toPastBlocking_some_past chi⟩
+  rw [Finset.mem_filter]
+  exact ⟨h, by simp [IsPastFormula, extractPastInner_some_past]⟩
+
+/--
+The base deferral closure (F/P deferrals + seriality + temporal blocking).
+The full deferralClosure extends this with Until/Since deferral sets.
 
 This closure is used for the restricted MCS construction in the completeness proof.
 It ensures that:
@@ -780,9 +847,11 @@ It ensures that:
 2. The F/P-nesting depth is bounded (deferral disjunctions have depth 0)
 3. The closure is still finite
 4. F_top and P_top are always available (for seriality/chain construction)
+5. H(neg chi) is available when P(chi) is (temporal blocking)
 -/
 def baseDeferralClosure (phi : Formula) : Finset Formula :=
-  closureWithNeg phi ∪ deferralDisjunctionSet phi ∪ backwardDeferralSet phi ∪ serialityFormulas
+  closureWithNeg phi ∪ deferralDisjunctionSet phi ∪ backwardDeferralSet phi
+  ∪ serialityFormulas ∪ temporalBlockingSet phi
 
 def deferralClosure (phi : Formula) : Finset Formula :=
   baseDeferralClosure phi
@@ -812,7 +881,7 @@ theorem closureWithNeg_subset_deferralClosure (phi : Formula) :
     closureWithNeg phi ⊆ deferralClosure phi := by
   intro psi h
   unfold deferralClosure baseDeferralClosure
-  exact Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _ h))
+  exact Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _ h)))
 
 /-- The formula itself is in deferralClosure. -/
 theorem self_mem_deferralClosure (phi : Formula) : phi ∈ deferralClosure phi :=
@@ -862,62 +931,76 @@ theorem neg_H_neg_neg_bot_mem_serialityFormulas : neg_H_neg_neg_bot ∈ serialit
   simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton]
   right; right; right; right; right; right; right; left; trivial
 
+/-- serialityFormulas is a subset of deferralClosure. -/
+theorem serialityFormulas_subset_deferralClosure (phi : Formula) :
+    (serialityFormulas : Finset Formula) ⊆ deferralClosure phi := by
+  intro psi h
+  unfold deferralClosure baseDeferralClosure
+  exact Finset.mem_union_left _ (Finset.mem_union_right _ h)
+
+/-- temporalBlockingSet is a subset of deferralClosure. -/
+theorem temporalBlockingSet_subset_deferralClosure (phi : Formula) :
+    temporalBlockingSet phi ⊆ deferralClosure phi := by
+  intro psi h
+  unfold deferralClosure baseDeferralClosure
+  exact Finset.mem_union_right _ h
+
+/-- If F(chi) is in closureWithNeg(phi), then G(neg chi) is in deferralClosure(phi). -/
+theorem all_future_neg_mem_deferralClosure_of_some_future {phi chi : Formula}
+    (h : Formula.some_future chi ∈ closureWithNeg phi) :
+    Formula.all_future chi.neg ∈ deferralClosure phi :=
+  temporalBlockingSet_subset_deferralClosure phi
+    (all_future_neg_mem_temporalBlockingSet_of_some_future h)
+
+/-- If P(chi) is in closureWithNeg(phi), then H(neg chi) is in deferralClosure(phi). -/
+theorem all_past_neg_mem_deferralClosure_of_some_past {phi chi : Formula}
+    (h : Formula.some_past chi ∈ closureWithNeg phi) :
+    Formula.all_past chi.neg ∈ deferralClosure phi :=
+  temporalBlockingSet_subset_deferralClosure phi
+    (all_past_neg_mem_temporalBlockingSet_of_some_past h)
+
 /-- F_top is in baseDeferralClosure for any phi. -/
 theorem F_top_mem_baseDeferralClosure (phi : Formula) : F_top ∈ baseDeferralClosure phi := by
   unfold baseDeferralClosure
-  exact Finset.mem_union_right _ F_top_mem_serialityFormulas
+  exact Finset.mem_union_left _ (Finset.mem_union_right _ F_top_mem_serialityFormulas)
 
 /-- F_top is in deferralClosure for any phi. -/
 theorem F_top_mem_deferralClosure (phi : Formula) : F_top ∈ deferralClosure phi :=
   baseDeferralClosure_subset_deferralClosure phi (F_top_mem_baseDeferralClosure phi)
 
 /-- P_top is in deferralClosure for any phi. -/
-theorem P_top_mem_deferralClosure (phi : Formula) : P_top ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact P_top_mem_serialityFormulas
+theorem P_top_mem_deferralClosure (phi : Formula) : P_top ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi P_top_mem_serialityFormulas
 
 /-- neg bot is in deferralClosure for any phi. -/
 theorem neg_bot_mem_deferralClosure (phi : Formula) :
-    Formula.neg Formula.bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact neg_bot_mem_serialityFormulas
+    Formula.neg Formula.bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi neg_bot_mem_serialityFormulas
 
 /-- neg neg bot is in deferralClosure for any phi. -/
 theorem neg_neg_bot_mem_deferralClosure (phi : Formula) :
-    neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact neg_neg_bot_mem_serialityFormulas
+    neg_neg_bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi neg_neg_bot_mem_serialityFormulas
 
 /-- G(neg neg bot) is in deferralClosure for any phi. -/
 theorem G_neg_neg_bot_mem_deferralClosure (phi : Formula) :
-    G_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact G_neg_neg_bot_mem_serialityFormulas
+    G_neg_neg_bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi G_neg_neg_bot_mem_serialityFormulas
 
 /-- H(neg neg bot) is in deferralClosure for any phi. -/
 theorem H_neg_neg_bot_mem_deferralClosure (phi : Formula) :
-    H_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact H_neg_neg_bot_mem_serialityFormulas
+    H_neg_neg_bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi H_neg_neg_bot_mem_serialityFormulas
 
 /-- neg(G_neg_neg_bot) is in deferralClosure for any phi. -/
 theorem neg_G_neg_neg_bot_mem_deferralClosure (phi : Formula) :
-    neg_G_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact neg_G_neg_neg_bot_mem_serialityFormulas
+    neg_G_neg_neg_bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi neg_G_neg_neg_bot_mem_serialityFormulas
 
 /-- neg(H_neg_neg_bot) is in deferralClosure for any phi. -/
 theorem neg_H_neg_neg_bot_mem_deferralClosure (phi : Formula) :
-    neg_H_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact neg_H_neg_neg_bot_mem_serialityFormulas
+    neg_H_neg_neg_bot ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi neg_H_neg_neg_bot_mem_serialityFormulas
 
 /-- F_top_deferral is in serialityFormulas. -/
 theorem F_top_deferral_mem_serialityFormulas : F_top_deferral ∈ serialityFormulas := by
@@ -931,17 +1014,13 @@ theorem P_top_deferral_mem_serialityFormulas : P_top_deferral ∈ serialityFormu
 
 /-- F_top_deferral is in deferralClosure for any phi. -/
 theorem F_top_deferral_mem_deferralClosure (phi : Formula) :
-    F_top_deferral ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact F_top_deferral_mem_serialityFormulas
+    F_top_deferral ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi F_top_deferral_mem_serialityFormulas
 
 /-- P_top_deferral is in deferralClosure for any phi. -/
 theorem P_top_deferral_mem_deferralClosure (phi : Formula) :
-    P_top_deferral ∈ deferralClosure phi := by
-  unfold deferralClosure baseDeferralClosure
-  apply Finset.mem_union_right
-  exact P_top_deferral_mem_serialityFormulas
+    P_top_deferral ∈ deferralClosure phi :=
+  serialityFormulas_subset_deferralClosure phi P_top_deferral_mem_serialityFormulas
 
 /-- F_top deferral is the correct deferral formula for F_top. -/
 theorem F_top_deferral_eq : F_top_deferral = Formula.or (Formula.neg Formula.bot) F_top := rfl
@@ -966,6 +1045,7 @@ theorem deferral_of_F_in_closure (phi chi : Formula)
   unfold deferralClosure baseDeferralClosure deferralDisjunctionSet
   apply Finset.mem_union_left
   apply Finset.mem_union_left
+  apply Finset.mem_union_left
   apply Finset.mem_union_right
   rw [← toFutureDeferral_some_future chi]
   apply Finset.mem_image_of_mem
@@ -979,6 +1059,7 @@ theorem deferral_of_P_in_closure (phi chi : Formula)
     (h : Formula.some_past chi ∈ closureWithNeg phi) :
     Formula.or chi (Formula.some_past chi) ∈ deferralClosure phi := by
   unfold deferralClosure baseDeferralClosure backwardDeferralSet
+  apply Finset.mem_union_left
   apply Finset.mem_union_left
   apply Finset.mem_union_right
   rw [← toPastDeferral_some_past chi]
@@ -1046,68 +1127,63 @@ theorem max_F_depth_deferralClosure_eq (phi : Formula) :
     intro f hf
     unfold deferralClosure baseDeferralClosure at hf
     simp only [Finset.mem_union] at hf
-    rcases hf with ((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial
+    rcases hf with (((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial) | hf_blocking
     · -- f ∈ closureWithNeg phi
       exact le_max_of_le_left (f_depth_le_max hf_orig)
     · -- f ∈ deferralDisjunctionSet phi
       unfold deferralDisjunctionSet at hf_defer_F
       simp only [Finset.mem_image, Finset.mem_filter] at hf_defer_F
       obtain ⟨g, ⟨_, hg_F⟩, hf_eq⟩ := hf_defer_F
-      -- g is an F-formula, f = toFutureDeferral g
       simp only [IsFutureFormula] at hg_F
       cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
-      -- g = F(chi) for some chi, f = chi ∨ F(chi)
       simp only [toFutureDeferral, h_ext] at hf_eq
       subst hf_eq
-      -- f_nesting_depth (chi ∨ F(chi)) = 0 ≤ max
       simp only [f_nesting_depth_F_deferral, Nat.zero_le]
     · -- f ∈ backwardDeferralSet phi
       unfold backwardDeferralSet at hf_defer_P
       simp only [Finset.mem_image, Finset.mem_filter] at hf_defer_P
       obtain ⟨g, ⟨_, hg_P⟩, hf_eq⟩ := hf_defer_P
-      -- g is a P-formula, f = toPastDeferral g
       simp only [IsPastFormula] at hg_P
       cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
-      -- g = P(chi) for some chi, f = chi ∨ P(chi)
       simp only [toPastDeferral, h_ext] at hf_eq
       subst hf_eq
-      -- f_nesting_depth (chi ∨ P(chi)) = 0 ≤ max
       simp only [f_nesting_depth_or, Nat.zero_le]
     · -- f ∈ serialityFormulas
       simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at hf_serial
       rcases hf_serial with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
-      · -- f = F_top: f_nesting_depth = 1
-        simp only [F_top, f_nesting_depth_some_future]
+      · simp only [F_top, f_nesting_depth_some_future]
         exact le_max_of_le_right (by native_decide)
-      · -- f = P_top: f_nesting_depth = 0
-        simp only [P_top, Formula.some_past, Formula.neg, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = neg bot: f_nesting_depth = 0
-        simp only [Formula.neg, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = neg neg bot: f_nesting_depth = 0
-        simp only [neg_neg_bot, Formula.neg, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = G(neg neg bot): f_nesting_depth = 0 (it's an all_future, not some_future)
-        simp only [G_neg_neg_bot, Formula.all_future, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = H(neg neg bot): f_nesting_depth = 0
-        simp only [H_neg_neg_bot, Formula.all_past, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = neg_G_neg_neg_bot = F(neg_neg_neg_bot): f_nesting_depth = 1
-        -- neg_G_neg_neg_bot matches the some_future pattern: (all_future (neg_neg_bot)).imp bot
-        -- where neg_neg_bot = (bot.imp bot).imp bot matches inner.imp bot
-        simp only [neg_G_neg_neg_bot, Formula.neg, f_nesting_depth]
+      · simp only [P_top, Formula.some_past, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [Formula.neg, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [G_neg_neg_bot, Formula.all_future, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [H_neg_neg_bot, Formula.all_past, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [neg_G_neg_neg_bot, Formula.neg, f_nesting_depth]
         exact le_max_of_le_right (by native_decide)
-      · -- f = neg_H_neg_neg_bot: p_nesting_depth = 1 but f_nesting_depth = 0
-        -- neg_H_neg_neg_bot = (all_past neg_neg_bot).imp bot - all_past not all_future
-        simp only [neg_H_neg_neg_bot, Formula.neg, f_nesting_depth]
-        exact Nat.zero_le _
-      · -- f = F_top_deferral: f_nesting_depth = 0 (it's an or/imp)
-        simp only [F_top_deferral, Formula.or, Formula.neg, f_nesting_depth]
+      · simp only [neg_H_neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [F_top_deferral, Formula.or, Formula.neg, f_nesting_depth]
         exact Nat.zero_le _
       · -- f = P_top_deferral: f_nesting_depth = 0 (it's an or/imp)
         simp only [P_top_deferral, Formula.or, Formula.neg, f_nesting_depth]
+        exact Nat.zero_le _
+    · -- f ∈ temporalBlockingSet phi: blocking formulas are all_future/all_past of negations
+      -- These unfold to imp at top level, so f_nesting_depth = 0
+      unfold temporalBlockingSet at hf_blocking
+      simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at hf_blocking
+      rcases hf_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+      · -- g is an F-formula, f = toFutureBlocking g = all_future(chi.neg)
+        simp only [IsFutureFormula] at hg_F
+        cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+        simp only [toFutureBlocking, h_ext] at hf_eq
+        subst hf_eq
+        -- all_future(chi.neg) = (some_future(chi.neg.neg)).neg = imp ... bot
+        simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top, f_nesting_depth]
+        exact Nat.zero_le _
+      · simp only [IsPastFormula] at hg_P
+        cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
+        simp only [toPastBlocking, h_ext] at hf_eq
+        subst hf_eq
+        simp only [Formula.all_past, Formula.some_past, Formula.neg, Formula.top, f_nesting_depth]
         exact Nat.zero_le _
   · -- ≥ direction: max from closureWithNeg and from F_top
     apply max_le
@@ -1128,7 +1204,7 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
     intro f hf
     unfold deferralClosure baseDeferralClosure at hf
     simp only [Finset.mem_union] at hf
-    rcases hf with ((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial
+    rcases hf with (((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial) | hf_blocking
     · exact le_max_of_le_left (p_depth_le_max hf_orig)
     · unfold deferralDisjunctionSet at hf_defer_F
       simp only [Finset.mem_image, Finset.mem_filter] at hf_defer_F
@@ -1180,6 +1256,22 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
       · -- f = P_top_deferral: p_nesting_depth = 0 (it's an or/imp)
         simp only [P_top_deferral, Formula.or, Formula.neg, p_nesting_depth]
         exact Nat.zero_le _
+    · -- f ∈ temporalBlockingSet phi: blocking formulas have p_nesting_depth 0
+      unfold temporalBlockingSet at hf_blocking
+      simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at hf_blocking
+      rcases hf_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+      · simp only [IsFutureFormula] at hg_F
+        cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+        simp only [toFutureBlocking, h_ext] at hf_eq
+        subst hf_eq
+        simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top, p_nesting_depth]
+        exact Nat.zero_le _
+      · simp only [IsPastFormula] at hg_P
+        cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
+        simp only [toPastBlocking, h_ext] at hf_eq
+        subst hf_eq
+        simp only [Formula.all_past, Formula.some_past, Formula.neg, Formula.top, p_nesting_depth]
+        exact Nat.zero_le _
   · -- ≥ direction: max from closureWithNeg and from P_top
     apply max_le
     · apply Finset.sup_mono; exact closureWithNeg_subset_deferralClosure phi
@@ -1214,7 +1306,7 @@ private theorem non_imp_in_deferralClosure_is_in_closureWithNeg (phi : Formula)
     f ∈ closureWithNeg phi := by
   unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
-  rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
+  rcases h with (((h_orig | h_defer_F) | h_defer_P) | h_serial) | h_blocking
   · exact h_orig
   · unfold deferralDisjunctionSet at h_defer_F
     simp only [Finset.mem_image, Finset.mem_filter] at h_defer_F
@@ -1247,16 +1339,32 @@ private theorem non_imp_in_deferralClosure_is_in_closureWithNeg (phi : Formula)
     · exfalso; exact h_not_imp _ _ rfl   -- neg_H_neg_neg_bot is imp
     · exfalso; exact h_not_imp _ _ rfl   -- F_top_deferral is imp (or = neg.imp)
     · exfalso; exact h_not_imp _ _ rfl   -- P_top_deferral is imp (or = neg.imp)
+  · -- temporalBlockingSet: all blocking formulas are all_future/all_past = imp at top level
+    unfold temporalBlockingSet at h_blocking
+    simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at h_blocking
+    rcases h_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+    · simp only [IsFutureFormula] at hg_F
+      cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+      simp only [toFutureBlocking, h_ext] at hf_eq
+      -- f = all_future(chi.neg) = imp (untl ...) bot, so f is an imp formula
+      exfalso; exact h_not_imp _ _ hf_eq.symm
+    · simp only [IsPastFormula] at hg_P
+      cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
+      simp only [toPastBlocking, h_ext] at hf_eq
+      -- f = all_past(chi.neg) = imp (snce ...) bot, so f is an imp formula
+      exfalso; exact h_not_imp _ _ hf_eq.symm
 
 /--
-Any all_future formula in deferralClosure is either in closureWithNeg or is G_neg_neg_bot.
+Any all_future formula in deferralClosure is either in closureWithNeg, is G_neg_neg_bot,
+or is a temporal blocking formula (G(neg chi) for some chi).
 -/
 theorem all_future_in_deferralClosure_cases (phi psi : Formula)
     (h : Formula.all_future psi ∈ deferralClosure phi) :
-    Formula.all_future psi ∈ closureWithNeg phi ∨ Formula.all_future psi = G_neg_neg_bot := by
+    Formula.all_future psi ∈ closureWithNeg phi ∨ Formula.all_future psi = G_neg_neg_bot
+    ∨ (∃ chi, psi = chi.neg ∧ Formula.some_future chi ∈ closureWithNeg phi) := by
   unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
-  rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
+  rcases h with (((h_orig | h_defer_F) | h_defer_P) | h_serial) | h_blocking
   · exact Or.inl h_orig
   · -- deferralDisjunctionSet: all_future is not an or formula
     unfold deferralDisjunctionSet at h_defer_F
@@ -1284,11 +1392,50 @@ theorem all_future_in_deferralClosure_cases (phi psi : Formula)
     simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at h_serial
     rcases h_serial with h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq
     all_goals (first
-      | exact Or.inr h_eq
+      | exact Or.inr (Or.inl h_eq)
       | (simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
           Formula.neg, Formula.top, Formula.or, Formula.and, F_top, P_top, G_neg_neg_bot,
           H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot, neg_neg_bot,
           F_top_deferral, P_top_deferral] at h_eq; cases h_eq))
+  · -- temporalBlockingSet: G(neg chi) for some chi with F(chi) in closureWithNeg
+    unfold temporalBlockingSet at h_blocking
+    simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at h_blocking
+    rcases h_blocking with ⟨g, ⟨hg_cwn, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+    · simp only [IsFutureFormula] at hg_F
+      cases h_ext : extractFutureInner g
+      · simp [h_ext] at hg_F
+      · next chi =>
+        simp only [toFutureBlocking, h_ext] at hf_eq
+        -- hf_eq : Formula.all_future psi = Formula.all_future chi.neg
+        simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top] at hf_eq
+        -- Extract chi from the equation
+        have h_psi_eq : psi = chi.neg := by
+          injection hf_eq with h1 h2
+          injection h1 with h3 h4
+          injection h3 with h5 h6
+          exact h5.symm
+        -- F(chi) in closureWithNeg
+        have h_F_chi : Formula.some_future chi ∈ closureWithNeg phi := by
+          have h_g_eq : g = Formula.some_future chi := by
+            cases g with
+            | untl a b =>
+              simp only [extractFutureInner] at h_ext
+              split at h_ext
+              · next h_eq => injection h_ext with h_a; subst h_a; exact h_eq
+              · exact absurd h_ext (by simp)
+            | _ => simp [extractFutureInner] at h_ext
+          rw [h_g_eq] at hg_cwn; exact hg_cwn
+        exact Or.inr (Or.inr ⟨chi, h_psi_eq, h_F_chi⟩)
+    · -- Past blocking: all_past(chi.neg) ≠ all_future(psi)
+      simp only [IsPastFormula] at hg_P
+      cases h_ext : extractPastInner g
+      · simp [h_ext] at hg_P
+      · next chi =>
+        simp only [toPastBlocking, h_ext] at hf_eq
+        -- hf_eq : Formula.all_future psi = Formula.all_past chi.neg, impossible
+        simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
+          Formula.neg, Formula.top] at hf_eq
+        injection hf_eq with h1 _; exact Formula.noConfusion h1
 
 /--
 For backward compatibility: all_future in deferralClosure excluding G_neg_neg_bot.
@@ -1296,23 +1443,25 @@ For backward compatibility: all_future in deferralClosure excluding G_neg_neg_bo
 theorem all_future_in_deferralClosure_is_in_closureWithNeg (phi psi : Formula)
     (h : Formula.all_future psi ∈ deferralClosure phi)
     (h_not_G : Formula.all_future psi ≠ G_neg_neg_bot) :
-    Formula.all_future psi ∈ closureWithNeg phi := by
-  rcases all_future_in_deferralClosure_cases phi psi h with h_cwn | h_eq
-  · exact h_cwn
+    Formula.all_future psi ∈ closureWithNeg phi ∨
+    (∃ chi, psi = chi.neg ∧ Formula.some_future chi ∈ closureWithNeg phi) := by
+  rcases all_future_in_deferralClosure_cases phi psi h with h_cwn | h_eq | h_block
+  · exact Or.inl h_cwn
   · exact absurd h_eq h_not_G
+  · exact Or.inr h_block
 
 /--
 Any all_past formula in deferralClosure is either in closureWithNeg or is H_neg_neg_bot.
 -/
 theorem all_past_in_deferralClosure_cases (phi psi : Formula)
     (h : Formula.all_past psi ∈ deferralClosure phi) :
-    Formula.all_past psi ∈ closureWithNeg phi ∨ Formula.all_past psi = H_neg_neg_bot := by
+    Formula.all_past psi ∈ closureWithNeg phi ∨ Formula.all_past psi = H_neg_neg_bot
+    ∨ (∃ chi, psi = chi.neg ∧ Formula.some_past chi ∈ closureWithNeg phi) := by
   unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
-  rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
+  rcases h with (((h_orig | h_defer_F) | h_defer_P) | h_serial) | h_blocking
   · exact Or.inl h_orig
-  · -- deferralDisjunctionSet
-    unfold deferralDisjunctionSet at h_defer_F
+  · unfold deferralDisjunctionSet at h_defer_F
     simp only [Finset.mem_image, Finset.mem_filter] at h_defer_F
     obtain ⟨g, ⟨_, hg_F⟩, hf_eq⟩ := h_defer_F
     simp only [IsFutureFormula] at hg_F
@@ -1322,8 +1471,7 @@ theorem all_past_in_deferralClosure_cases (phi psi : Formula)
       simp only [toFutureDeferral, h_ext, Formula.all_past, Formula.some_past,
         Formula.neg, Formula.top, Formula.or] at hf_eq
       injection hf_eq with h1 _; exact Formula.noConfusion h1
-  · -- backwardDeferralSet
-    unfold backwardDeferralSet at h_defer_P
+  · unfold backwardDeferralSet at h_defer_P
     simp only [Finset.mem_image, Finset.mem_filter] at h_defer_P
     obtain ⟨g, ⟨_, hg_P⟩, hf_eq⟩ := h_defer_P
     simp only [IsPastFormula] at hg_P
@@ -1333,15 +1481,48 @@ theorem all_past_in_deferralClosure_cases (phi psi : Formula)
       simp only [toPastDeferral, h_ext, Formula.all_past, Formula.some_past,
         Formula.neg, Formula.top, Formula.or] at hf_eq
       injection hf_eq with h1 _; exact Formula.noConfusion h1
-  · -- serialityFormulas
-    simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at h_serial
+  · simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at h_serial
     rcases h_serial with h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq
     all_goals (first
-      | exact Or.inr h_eq
+      | exact Or.inr (Or.inl h_eq)
       | (simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
           Formula.neg, Formula.top, Formula.or, Formula.and, F_top, P_top, G_neg_neg_bot,
           H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot, neg_neg_bot,
           F_top_deferral, P_top_deferral] at h_eq; cases h_eq))
+  · -- temporalBlockingSet
+    unfold temporalBlockingSet at h_blocking
+    simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at h_blocking
+    rcases h_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨hg_cwn, hg_P⟩, hf_eq⟩
+    · -- Future blocking: all_future(chi.neg) ≠ all_past(psi)
+      simp only [IsFutureFormula] at hg_F
+      cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+      simp only [toFutureBlocking, h_ext] at hf_eq
+      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
+        Formula.neg, Formula.top] at hf_eq
+      injection hf_eq with h1 _; exact Formula.noConfusion h1
+    · -- Past blocking: H(neg chi) for some P(chi) in closureWithNeg
+      simp only [IsPastFormula] at hg_P
+      cases h_ext : extractPastInner g
+      · simp [h_ext] at hg_P
+      · next chi =>
+        simp only [toPastBlocking, h_ext] at hf_eq
+        simp only [Formula.all_past, Formula.some_past, Formula.neg, Formula.top] at hf_eq
+        have h_psi_eq : psi = chi.neg := by
+          injection hf_eq with h1 h2
+          injection h1 with h3 h4
+          injection h3 with h5 h6
+          exact h5.symm
+        have h_P_chi : Formula.some_past chi ∈ closureWithNeg phi := by
+          have h_g_eq : g = Formula.some_past chi := by
+            cases g with
+            | snce a b =>
+              simp only [extractPastInner] at h_ext
+              split at h_ext
+              · next h_eq => injection h_ext with h_a; subst h_a; exact h_eq
+              · exact absurd h_ext (by simp)
+            | _ => simp [extractPastInner] at h_ext
+          rw [h_g_eq] at hg_cwn; exact hg_cwn
+        exact Or.inr (Or.inr ⟨chi, h_psi_eq, h_P_chi⟩)
 
 /--
 For backward compatibility: all_past in deferralClosure excluding H_neg_neg_bot.
@@ -1349,10 +1530,12 @@ For backward compatibility: all_past in deferralClosure excluding H_neg_neg_bot.
 theorem all_past_in_deferralClosure_is_in_closureWithNeg (phi psi : Formula)
     (h : Formula.all_past psi ∈ deferralClosure phi)
     (h_not_H : Formula.all_past psi ≠ H_neg_neg_bot) :
-    Formula.all_past psi ∈ closureWithNeg phi := by
-  rcases all_past_in_deferralClosure_cases phi psi h with h_cwn | h_eq
-  · exact h_cwn
+    Formula.all_past psi ∈ closureWithNeg phi ∨
+    (∃ chi, psi = chi.neg ∧ Formula.some_past chi ∈ closureWithNeg phi) := by
+  rcases all_past_in_deferralClosure_cases phi psi h with h_cwn | h_eq | h_block
+  · exact Or.inl h_cwn
   · exact absurd h_eq h_not_H
+  · exact Or.inr h_block
 
 /--
 If G(psi) is in deferralClosure, then psi is in deferralClosure.
@@ -1360,7 +1543,7 @@ If G(psi) is in deferralClosure, then psi is in deferralClosure.
 theorem deferralClosure_all_future (phi psi : Formula)
     (h : Formula.all_future psi ∈ deferralClosure phi) :
     psi ∈ deferralClosure phi := by
-  rcases all_future_in_deferralClosure_cases phi psi h with h_cwn | h_eq_G
+  rcases all_future_in_deferralClosure_cases phi psi h with h_cwn | h_eq_G | ⟨chi, h_psi_eq, h_F_chi⟩
   · -- G(psi) ∈ closureWithNeg phi
     unfold closureWithNeg at h_cwn
     simp only [Finset.mem_union, Finset.mem_image] at h_cwn
@@ -1382,6 +1565,18 @@ theorem deferralClosure_all_future (phi psi : Formula)
       injection h_eq_G with h1 _; injection h1 with h2 _; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
+  · -- G(psi) is a temporal blocking formula: psi = chi.neg, F(chi) in closureWithNeg
+    subst h_psi_eq
+    -- F(chi) ∈ closureWithNeg. F(chi) = untl chi top, which is not imp, so it must be in subformulaClosure
+    unfold closureWithNeg at h_F_chi
+    simp only [Finset.mem_union, Finset.mem_image] at h_F_chi
+    rcases h_F_chi with h_sub | ⟨g, _, h_g_eq⟩
+    · -- F(chi) ∈ subformulaClosure, so chi ∈ subformulaClosure
+      have h_chi : chi ∈ subformulaClosure phi := closure_untl_left phi _ _ h_sub
+      exact closureWithNeg_subset_deferralClosure phi (neg_mem_closureWithNeg phi chi h_chi)
+    · -- F(chi) = g.neg = imp g bot, but F(chi) = untl chi top: impossible
+      simp only [Formula.neg, Formula.some_future, Formula.top] at h_g_eq
+      exact absurd h_g_eq (by intro h'; exact Formula.noConfusion h')
 
 /--
 If H(psi) is in deferralClosure, then psi is in deferralClosure.
@@ -1389,7 +1584,7 @@ If H(psi) is in deferralClosure, then psi is in deferralClosure.
 theorem deferralClosure_all_past (phi psi : Formula)
     (h : Formula.all_past psi ∈ deferralClosure phi) :
     psi ∈ deferralClosure phi := by
-  rcases all_past_in_deferralClosure_cases phi psi h with h_cwn | h_eq_H
+  rcases all_past_in_deferralClosure_cases phi psi h with h_cwn | h_eq_H | ⟨chi, h_psi_eq, h_P_chi⟩
   · -- H(psi) ∈ closureWithNeg phi
     unfold closureWithNeg at h_cwn
     simp only [Finset.mem_union, Finset.mem_image] at h_cwn
@@ -1408,6 +1603,15 @@ theorem deferralClosure_all_past (phi psi : Formula)
       injection h_eq_H with h1 _; injection h1 with h2 _; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
+  · -- H(psi) is a temporal blocking formula: psi = chi.neg, P(chi) in closureWithNeg
+    subst h_psi_eq
+    unfold closureWithNeg at h_P_chi
+    simp only [Finset.mem_union, Finset.mem_image] at h_P_chi
+    rcases h_P_chi with h_sub | ⟨g, _, h_g_eq⟩
+    · have h_chi : chi ∈ subformulaClosure phi := closure_snce_left phi _ _ h_sub
+      exact closureWithNeg_subset_deferralClosure phi (neg_mem_closureWithNeg phi chi h_chi)
+    · simp only [Formula.neg, Formula.some_past, Formula.top] at h_g_eq
+      exact absurd h_g_eq (by intro h'; exact Formula.noConfusion h')
 
 /--
 Any F-formula (some_future) in deferralClosure is either:
@@ -1421,7 +1625,7 @@ theorem some_future_in_deferralClosure_cases (phi chi : Formula)
     Formula.some_future chi ∈ closureWithNeg phi ∨ Formula.some_future chi = F_top := by
   unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
-  rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
+  rcases h with (((h_orig | h_defer_F) | h_defer_P) | h_serial) | h_blocking
   · exact Or.inl h_orig
   · unfold deferralDisjunctionSet at h_defer_F
     simp only [Finset.mem_image, Finset.mem_filter] at h_defer_F
@@ -1455,6 +1659,22 @@ theorem some_future_in_deferralClosure_cases (phi chi : Formula)
         neg_neg_bot, G_neg_neg_bot, H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot,
         F_top_deferral, P_top_deferral, Formula.neg, Formula.or,
         Formula.all_future, Formula.all_past] at h_eq; cases h_eq)
+  · -- temporalBlockingSet: blocking formulas are all_future/all_past (= imp at top), not untl
+    unfold temporalBlockingSet at h_blocking
+    simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at h_blocking
+    rcases h_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+    · simp only [IsFutureFormula] at hg_F
+      cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+      simp only [toFutureBlocking, h_ext] at hf_eq
+      -- hf_eq : some_future chi = all_future(inner.neg) = imp ... bot
+      -- some_future chi = untl chi top, all_future = imp ... bot: untl ≠ imp
+      simp only [Formula.some_future, Formula.top, Formula.all_future, Formula.neg] at hf_eq
+      exact absurd hf_eq (by intro h'; exact Formula.noConfusion h')
+    · simp only [IsPastFormula] at hg_P
+      cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
+      simp only [toPastBlocking, h_ext] at hf_eq
+      simp only [Formula.some_future, Formula.top, Formula.all_past, Formula.neg] at hf_eq
+      exact absurd hf_eq (by intro h'; exact Formula.noConfusion h')
 
 /--
 Any P-formula (some_past) in deferralClosure is either:
@@ -1468,7 +1688,7 @@ theorem some_past_in_deferralClosure_cases (phi chi : Formula)
     Formula.some_past chi ∈ closureWithNeg phi ∨ Formula.some_past chi = P_top := by
   unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
-  rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
+  rcases h with (((h_orig | h_defer_F) | h_defer_P) | h_serial) | h_blocking
   · exact Or.inl h_orig
   · unfold deferralDisjunctionSet at h_defer_F
     simp only [Finset.mem_image, Finset.mem_filter] at h_defer_F
@@ -1505,6 +1725,20 @@ theorem some_past_in_deferralClosure_cases (phi chi : Formula)
         neg_neg_bot, G_neg_neg_bot, H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot,
         F_top_deferral, P_top_deferral, Formula.neg, Formula.or,
         Formula.all_future, Formula.all_past] at h_eq; cases h_eq)
+  · -- temporalBlockingSet: blocking formulas are all_future/all_past (= imp), not snce
+    unfold temporalBlockingSet at h_blocking
+    simp only [Finset.mem_union, Finset.mem_image, Finset.mem_filter] at h_blocking
+    rcases h_blocking with ⟨g, ⟨_, hg_F⟩, hf_eq⟩ | ⟨g, ⟨_, hg_P⟩, hf_eq⟩
+    · simp only [IsFutureFormula] at hg_F
+      cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
+      simp only [toFutureBlocking, h_ext] at hf_eq
+      simp only [Formula.some_past, Formula.top, Formula.all_future, Formula.neg] at hf_eq
+      exact absurd hf_eq (by intro h'; exact Formula.noConfusion h')
+    · simp only [IsPastFormula] at hg_P
+      cases h_ext : extractPastInner g <;> simp [h_ext] at hg_P
+      simp only [toPastBlocking, h_ext] at hf_eq
+      simp only [Formula.some_past, Formula.top, Formula.all_past, Formula.neg] at hf_eq
+      exact absurd hf_eq (by intro h'; exact Formula.noConfusion h')
 
 /--
 If F(chi) is in deferralClosure, then chi is in deferralClosure.
