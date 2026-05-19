@@ -232,15 +232,15 @@ All prior infrastructure is in place.
 
 ---
 
-### Phase 5: Rewrite `all_formulas_separable_aux` and Replace Axioms [IN PROGRESS]
+### Phase 5: Rewrite `all_formulas_separable_aux` and Replace Axioms [BLOCKED]
 
 **Tasks**:
 
-- [ ] Task 5.1: Rewrite `all_formulas_separable_aux` to use `_param` variants
-  - At JD >= 2, `.snce C F` case: define oracle from JD IH
-  - Call `no_S_nested_in_U_separable_direct_param (.snce C'' F'') hns oracle`
-  - At JD >= 2, `.untl a b` case: similar
-  - Remove all `all_separable` calls from `all_formulas_separable_aux`
+- [ ] Task 5.1: Rewrite `all_formulas_separable_aux` to use `_param` variants *(deviation: altered -- n >= 2 case uses _param with oracle from ih_jd; n = 1 case still uses no_S_nested_in_U_separable_direct with all_separable fallback)*
+  - At JD >= 2, `.snce C F` case: define oracle from JD IH -- DONE
+  - Call `no_S_nested_in_U_separable_direct_param (.snce C'' F'') hns oracle` -- DONE for n >= 2
+  - At JD >= 2, `.untl a b` case: similar -- DONE for n >= 2
+  - Remove all `all_separable` calls from `all_formulas_separable_aux` -- BLOCKED at n = 1
 
 - [ ] Task 5.2: Verify `all_formulas_separable` is axiom-free
   - `lean_verify all_formulas_separable` — only standard Lean axioms

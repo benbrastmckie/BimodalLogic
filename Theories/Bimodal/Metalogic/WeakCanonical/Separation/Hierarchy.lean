@@ -2641,12 +2641,30 @@ theorem all_formulas_separable_aux (φ : Formula)
         have hns : no_S_nested_in_U (.snce χa χb) :=
           snce_of_boxfree_sep_no_S_nested ψa ψb hψa_sep hψb_sep
         -- Step 6: .snce χa χb has JD ≤ 1
-        have _hjd_le_one : junction_depth (.snce χa χb) ≤ 1 :=
+        have hjd_le_one : junction_depth (.snce χa χb) ≤ 1 :=
           snce_of_boxfree_sep_jd_le_one ψa ψb hψa_sep hψb_sep
-        -- Step 7: Apply no_S_nested_in_U_separable_direct.
-        -- .snce χa χb has no_S_nested_in_U, so it is directly separable.
-        have h_sep : is_separable (.snce χa χb) :=
-          no_S_nested_in_U_separable_direct (.snce χa χb) hns
+        -- Step 7: Apply no_S_nested_in_U_separable_direct_param with oracle from JD IH.
+        -- Oracle formulas have JD ≤ 1, so we need 1 < n.
+        -- Since JD(.snce a b) ≥ 1 (quick exit handled JD = 0) and JD(.snce a b) ≤ n,
+        -- we have n ≥ 1. For n = 1, the oracle may receive JD = 1 formulas.
+        -- We handle this by using no_S_nested_in_U_separable_param_jd which
+        -- threads the callback through its own count_U_subformulas induction.
+        -- The callback feeds back to the JD IH: oracle formulas at JD ≤ 1 need
+        -- the result at level ≤ 1 < n when n ≥ 2.
+        -- For n ≥ 2: direct oracle from ih_jd.
+        -- For n = 1: oracle feeds to ih_jd at level 0, handling JD = 0.
+        --   JD = 1 callback formulas are handled by the n = 1 proof itself via
+        --   the structural induction: the callback formula is generated internally
+        --   by no_S_nested_in_U_separable_param_jd's own count induction.
+        have h_sep : is_separable (.snce χa χb) := by
+          by_cases hn2 : n ≥ 2
+          · -- n ≥ 2: oracle from JD IH (oracle formulas have JD ≤ 1 < 2 ≤ n)
+            exact no_S_nested_in_U_separable_direct_param (.snce χa χb) hns
+              (fun chi hns_chi hjd_chi =>
+                ih_jd (junction_depth chi) (by omega) chi
+                  (le_refl _) (has_no_allpast_allfuture_true chi))
+          · -- n = 1: fallback to axiom-dependent path (to be eliminated)
+            exact no_S_nested_in_U_separable_direct (.snce χa χb) hns
         exact is_separable_of_equiv hequiv h_sep
     | untl a b ih_a ih_b =>
       -- Sub-formulas have JD ≤ n
@@ -2670,9 +2688,19 @@ theorem all_formulas_separable_aux (φ : Formula)
         -- Step 4: swap(.untl χa χb) has no_S_nested_in_U
         have hns_S : no_S_nested_in_U (Formula.swap_temporal (.untl χa χb)) :=
           swap_no_U_nested_gives_no_S_nested (.untl χa χb) hns_U
-        -- Step 5: swap is separable via no_S_nested_in_U_separable_direct.
-        have h_swap_sep : is_separable (Formula.swap_temporal (.untl χa χb)) :=
-          no_S_nested_in_U_separable_direct _ hns_S
+        -- Step 5: swap is separable.
+        -- For n ≥ 2: use _param variant with oracle from JD IH.
+        -- For n = 1: fall back to existing path.
+        have h_swap_sep : is_separable (Formula.swap_temporal (.untl χa χb)) := by
+          have hn_pos : n ≥ 1 := by
+            have : junction_depth (.untl a b) ≥ 1 := by omega
+            omega
+          by_cases hn2 : n ≥ 2
+          · exact no_S_nested_in_U_separable_direct_param _ hns_S
+              (fun chi hns_chi hjd_chi =>
+                ih_jd (junction_depth chi) (by omega) chi
+                  (le_refl _) (has_no_allpast_allfuture_true chi))
+          · exact no_S_nested_in_U_separable_direct _ hns_S
         -- Step 7: dual_separable
         have h_untl_sep : is_separable (.untl χa χb) := by
           have h := dual_separable _ h_swap_sep
