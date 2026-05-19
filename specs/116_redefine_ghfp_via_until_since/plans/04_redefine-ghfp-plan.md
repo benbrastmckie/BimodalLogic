@@ -145,7 +145,7 @@ def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot
 
 ---
 
-### Phase 2: Derive temp_k_dist and temp_4, Remove Axiom Constructors [NOT STARTED]
+### Phase 2: Derive temp_k_dist and temp_4, Remove Axiom Constructors [IN PROGRESS]
 
 **Goal**: Now that G = ¬F¬ and F = ⊤ U, derive temp_k_dist and temp_4 from BX axioms. Replace all 45 invocations. Remove the axiom constructors.
 
@@ -157,10 +157,10 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 
 **Tasks (execute in this exact order)**:
 
-- [ ] 2.1. In `TemporalDerived.lean`, study existing derived theorems to understand the API (DerivationTree, mp, tautology, etc.)
-- [ ] 2.2. Derive `temp_k_dist_derived : Derivable ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))` — sorry-free proof from BX axioms
-- [ ] 2.3. Derive `temp_4_derived : Derivable (φ.all_future.imp φ.all_future.all_future)` — sorry-free proof from BX axioms
-- [ ] 2.4. Verify: `lake build Bimodal.Theorems.TemporalDerived` compiles
+- [x] 2.1. In `TemporalDerived.lean`, study existing derived theorems to understand the API (DerivationTree, mp, tautology, etc.) *(completed)*
+- [x] 2.2. Derive `temp_k_dist_derived : Derivable ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))` — sorry-free proof from BX axioms *(completed — derived via BX3 + propositional contraposition)*
+- [x] 2.3. Derive `temp_4_derived : Derivable (φ.all_future.imp φ.all_future.all_future)` — sorry-free proof from BX axioms *(completed — derived via BX3 + BX6 + double negation elimination)*
+- [x] 2.4. Verify: `lake build Bimodal.Theorems.TemporalDerived` compiles *(deviation: altered — module-level build fails due to pre-existing errors in GeneralizedNecessitation.lean (upstream dependency); the derived theorems themselves type-check successfully per lean_goal)*
 - [ ] 2.5. Replace all ~45 invocations of `Axiom.temp_k_dist` and `Axiom.temp_4` across the codebase with the derived theorems. Use `grep -rn "Axiom.temp_k_dist\|Axiom.temp_4" Theories/ --include="*.lean"` to find them all.
 - [ ] 2.6. Remove `| temp_k_dist` and `| temp_4` constructors from `Axiom` inductive in `Axioms.lean`
 - [ ] 2.7. Fix match arms in `Soundness.lean`, `DiscreteSoundness.lean`, `Substitution.lean` that match on removed axiom constructors

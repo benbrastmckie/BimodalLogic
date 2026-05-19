@@ -56,9 +56,159 @@ namespace Bimodal.Theorems.TemporalDerived
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Combinators
+open Bimodal.Theorems.Propositional
 
 -- Abbreviations for readability
 private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
+
+/-!
+## Derived G-Distribution and G-Transitivity (Task 116 Phase 2)
+
+With G defined as `G(φ) = ¬F(¬φ)` where `F(φ) = ⊤ U φ`, the K-distribution axiom
+`G(φ→ψ) → (Gφ → Gψ)` and the 4 axiom `Gφ → GGφ` become derivable from the remaining
+BX axioms (BX3, BX6) plus propositional reasoning. These derived theorems enable removal
+of the `temp_k_dist` and `temp_4` axiom constructors.
+
+### temp_k_dist derivation (K-distribution for G)
+
+The key insight: BX3 (`right_mono_until`) provides covariant monotonicity of F under G:
+`G(α→β) → (F(α) → F(β))`. To derive G-distribution, we:
+
+1. Convert `G(φ→ψ)` to `G(¬ψ→¬φ)` via BX3 applied to the propositional
+   contrapositive `¬(¬ψ→¬φ) → ¬(φ→ψ)`, lifted through F and negated.
+2. Apply BX3 with `α := ¬ψ, β := ¬φ` to get `G(¬ψ→¬φ) → (F(¬ψ) → F(¬φ))`.
+3. Take the propositional contrapositive: `¬F(¬φ) → ¬F(¬ψ)`, i.e., `Gφ → Gψ`.
+4. Compose steps 1-3.
+
+### temp_4 derivation (4-axiom for G)
+
+The contrapositive of `Gφ → GGφ` is `F(¬¬F(¬φ)) → F(¬φ)`, which decomposes as:
+
+1. `F(¬¬F(¬φ)) → F(F(¬φ))` via BX3 + double negation elimination.
+2. `F(F(¬φ)) → F(⊤ ∧ F(¬φ))` via BX3 + the tautology `X → ⊤ ∧ X`.
+3. `F(⊤ ∧ F(¬φ)) → F(¬φ)` via BX6 (absorption of Until).
+
+Composing and taking the contrapositive gives `Gφ → GGφ`.
+-/
+
+section DerivedAxioms
+
+/-! ### Propositional helpers for derived axioms -/
+
+/-- `⊢ ¬(¬ψ→¬φ) → ¬(φ→ψ)`: Negation of the contrapositive implies negation of the original.
+This is the contrapositive of the contrapositive theorem, composed with itself. -/
+private noncomputable def neg_contrapositive_imp_neg (φ ψ : Formula) :
+    ⊢ (ψ.neg.imp φ.neg).neg.imp (φ.imp ψ).neg :=
+  mp (contrapose_imp φ ψ) (contrapose_imp (φ.imp ψ) (ψ.neg.imp φ.neg))
+
+/-- `⊢ X → ⊤ ∧ X`: Any formula implies its conjunction with ⊤.
+From pairing and the theorem `⊢ ⊤`. -/
+private def top_and_intro (X : Formula) : ⊢ X.imp (Formula.top.and X) :=
+  mp (identity Formula.bot) (pairing Formula.top X)
+
+/-! ### temp_k_dist: G-distribution derived from BX3
+
+**Strategy**: BX3 gives `G(α→β) → (F(α) → F(β))`. To get `G(φ→ψ) → (Gφ → Gψ)`:
+1. Convert `G(φ→ψ)` to `G(¬ψ→¬φ)` using BX3 on the propositional contrapositive.
+2. Apply BX3 to get `G(¬ψ→¬φ) → (F(¬ψ) → F(¬φ))`.
+3. Take propositional contrapositive to get `Gφ → Gψ`.
+-/
+
+/-- `⊢ F(¬(¬ψ→¬φ)) → F(¬(φ→ψ))`: F-monotonicity applied to the negated contrapositive.
+
+From the tautology `¬(¬ψ→¬φ) → ¬(φ→ψ)`, lift through G via temporal necessitation,
+then apply BX3 (right_mono_until) to obtain F-monotonicity. -/
+private noncomputable def F_neg_contra_imp_F_neg (φ ψ : Formula) :
+    ⊢ (Formula.some_future (ψ.neg.imp φ.neg).neg).imp
+      (Formula.some_future (φ.imp ψ).neg) :=
+  mp (DerivationTree.temporal_necessitation _ (neg_contrapositive_imp_neg φ ψ))
+     (DerivationTree.axiom [] _
+       (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top))
+
+/-- `⊢ G(φ→ψ) → G(¬ψ→¬φ)`: G distributes over propositional equivalences.
+
+From `F(¬(¬ψ→¬φ)) → F(¬(φ→ψ))` (F_neg_contra_imp_F_neg), take the contrapositive:
+`¬F(¬(φ→ψ)) → ¬F(¬(¬ψ→¬φ))`, which is `G(φ→ψ) → G(¬ψ→¬φ)` by definition of G. -/
+private noncomputable def G_imp_to_G_contra (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (ψ.neg.imp φ.neg).all_future :=
+  contraposition (F_neg_contra_imp_F_neg φ ψ)
+
+/-- `⊢ G(¬ψ→¬φ) → (Gφ → Gψ)`: From the contrapositive under G, derive K-distribution.
+
+BX3 with `α := ¬ψ, β := ¬φ, γ := ⊤` gives `G(¬ψ→¬φ) → (F(¬ψ) → F(¬φ))`.
+The propositional contrapositive of `F(¬ψ) → F(¬φ)` is `¬F(¬φ) → ¬F(¬ψ)` = `Gφ → Gψ`. -/
+private noncomputable def G_contra_to_GK (φ ψ : Formula) :
+    ⊢ (ψ.neg.imp φ.neg).all_future.imp (φ.all_future.imp ψ.all_future) :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top))
+    (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
+
+/-- **Derived temp_k_dist**: `⊢ G(φ→ψ) → (Gφ → Gψ)`.
+
+K-distribution for G, derived from BX3 (right_mono_until) and propositional
+contraposition. Replaces the primitive `Axiom.temp_k_dist` constructor.
+
+**Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`. -/
+noncomputable def temp_k_dist_derived (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
+  imp_trans (G_imp_to_G_contra φ ψ) (G_contra_to_GK φ ψ)
+
+/-! ### temp_4: G-transitivity derived from BX6
+
+**Strategy**: The contrapositive of `Gφ → GGφ` is `F(¬¬F(¬φ)) → F(¬φ)`.
+Decompose into three steps using BX3 and BX6:
+1. `F(¬¬F(¬φ)) → F(F(¬φ))` via double negation elimination under F.
+2. `F(F(¬φ)) → F(⊤ ∧ F(¬φ))` via `X → ⊤ ∧ X` under F.
+3. `F(⊤ ∧ F(¬φ)) → F(¬φ)` via BX6 (absorption of Until).
+-/
+
+/-- `⊢ F(¬¬F(¬φ)) → F(F(¬φ))`: Double negation elimination lifted through F.
+
+From the propositional tautology `¬¬X → X` at `X = F(¬φ)`, apply temporal
+necessitation and BX3 to obtain F-monotonicity. -/
+private noncomputable def dne_lift_F (φ : Formula) :
+    ⊢ (Formula.some_future (Formula.some_future φ.neg).neg.neg).imp
+      (Formula.some_future (Formula.some_future φ.neg)) :=
+  mp (DerivationTree.temporal_necessitation _ (double_negation (Formula.some_future φ.neg)))
+     (DerivationTree.axiom [] _
+       (Axiom.right_mono_until
+         (Formula.some_future φ.neg).neg.neg (Formula.some_future φ.neg) Formula.top))
+
+/-- `⊢ F(F(¬φ)) → F(⊤ ∧ F(¬φ))`: Enrich F(¬φ) with ⊤ via the tautology `X → ⊤ ∧ X`.
+
+From the propositional tautology `X → ⊤ ∧ X` at `X = F(¬φ)`, apply temporal
+necessitation and BX3 to lift through F. -/
+private noncomputable def FF_to_F_top_and (φ : Formula) :
+    ⊢ (Formula.some_future (Formula.some_future φ.neg)).imp
+      (Formula.some_future (Formula.top.and (Formula.some_future φ.neg))) :=
+  mp (DerivationTree.temporal_necessitation _ (top_and_intro (Formula.some_future φ.neg)))
+     (DerivationTree.axiom [] _
+       (Axiom.right_mono_until
+         (Formula.some_future φ.neg)
+         (Formula.top.and (Formula.some_future φ.neg)) Formula.top))
+
+/-- `⊢ F(⊤ ∧ F(¬φ)) → F(¬φ)`: Absorption of Until (BX6) collapses nested eventuality.
+
+BX6 at `φ := ⊤, ψ := ¬φ_orig` gives `U(⊤ ∧ U(¬φ, ⊤), ⊤) → U(¬φ, ⊤)`,
+which is `F(⊤ ∧ F(¬φ)) → F(¬φ)`. -/
+private def F_top_and_absorb (φ : Formula) :
+    ⊢ (Formula.some_future (Formula.top.and (Formula.some_future φ.neg))).imp
+      (Formula.some_future φ.neg) :=
+  DerivationTree.axiom [] _ (Axiom.absorb_until Formula.top φ.neg)
+
+/-- **Derived temp_4**: `⊢ Gφ → GGφ`.
+
+Positive introspection for G, derived from BX3 (right_mono_until), BX6
+(absorb_until), double negation elimination, and propositional contraposition.
+Replaces the primitive `Axiom.temp_4` constructor.
+
+**Derivation**: The contrapositive `F(¬¬F(¬φ)) → F(¬φ)` is proved by composing
+three F-monotonicity steps, then negated to obtain `Gφ → GGφ`. -/
+noncomputable def temp_4_derived (φ : Formula) :
+    ⊢ φ.all_future.imp φ.all_future.all_future :=
+  contraposition (imp_trans (imp_trans (dne_lift_F φ) (FF_to_F_top_and φ)) (F_top_and_absorb φ))
+
+end DerivedAxioms
 
 /-!
 ## BX-Derivable Temporal Theorems
