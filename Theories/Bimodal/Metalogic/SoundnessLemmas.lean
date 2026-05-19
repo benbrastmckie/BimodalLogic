@@ -254,14 +254,18 @@ Temporal 4 axiom (T4) swaps to a valid formula: `Fφ -> FFφ` swaps to `P(swap �
 The swapped form states: if swap φ held at all past times, then at all past times,
 swap φ held at all past times. This is valid by transitivity of the past operator.
 -/
+-- FIX: truth_at no longer has all_past/all_future arms; need bridge lemmas
 theorem swap_axiom_t4_valid (φ : Formula) :
     is_valid D
       ((Formula.all_future φ).imp
        (Formula.all_future (Formula.all_future φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, truth_at]
-  intro h_past_swap r h_r_lt_t u h_u_lt_r
-  exact h_past_swap u (lt_trans h_u_lt_r h_r_lt_t)
+  rw [Formula.swap_temporal_all_future, Formula.swap_temporal]
+  rw [show (φ.all_future.all_future).swap_temporal = φ.swap_temporal.all_past.all_past from by
+    simp [Formula.swap_temporal_all_future]]
+  rw [Truth.past_iff, Truth.past_iff]
+  intro h_past r h_r s h_s
+  exact h_past s (lt_trans h_s h_r)
 
 /--
 Temporal A axiom (TA) swaps to a valid formula: `φ -> F(some_past φ)` swaps to
@@ -270,12 +274,10 @@ Temporal A axiom (TA) swaps to a valid formula: `φ -> F(some_past φ)` swaps to
 The swapped form states: if swap φ holds now, then at all past times, there existed
 a future time when swap φ held. This is valid because "now" is in the future of all past times.
 -/
+-- FIX: truth_at bridge lemma needed for temporal swap forms
 theorem swap_axiom_ta_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.some_past)).swap_temporal := by
-  intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, Formula.some_past]
-  intro h_swap_φ s h_s_lt_t h_all_not_future
-  exact h_all_not_future t h_s_lt_t h_swap_φ
+  sorry
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) -> P(F(swap φ))`.

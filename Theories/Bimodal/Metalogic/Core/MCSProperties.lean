@@ -284,6 +284,8 @@ def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.
       φ.all_past.imp φ.all_past.all_past := by
     simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
       Formula.swap_temporal_involution]
+    show ψ.swap_temporal.all_past.imp ψ.swap_temporal.all_past.all_past = _
+    rw [Formula.swap_temporal_involution]
   rw [h3] at h2
   exact h2
 
