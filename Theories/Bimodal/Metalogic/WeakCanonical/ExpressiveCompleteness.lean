@@ -107,14 +107,10 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
     -- h has type: int_truth M t (q_exists A)
     -- After unfolding q_exists, or, neg, some_past, some_future in int_truth:
     show False
-    simp only [q_exists, Formula.or, Formula.neg, Formula.some_past, Formula.some_future,
-               Separation.int_truth] at h
-    -- After simp, h should be of a propositional type we can refute.
-    -- h : (((((∀ s, s < t → Separation.int_truth M s A → False) → False) → False) →
-    --       Separation.int_truth M t A) → False) →
-    --      (∀ s, t < s → Separation.int_truth M s A → False) → False
-    exact h (fun f => hA_never t (f (fun hdn => hdn (fun s _ hAs => hA_never s hAs))))
-             (fun s _ hAs => hA_never s hAs)
+    simp only [q_exists, Formula.or, Formula.neg, Separation.int_truth_some_past,
+               Separation.int_truth_some_future, Separation.int_truth] at h
+    obtain ⟨s, _, hs⟩ := h (fun f => (hA_never t (f (fun ⟨s, _, hs⟩ => (hA_never s hs).elim))).elim)
+    exact hA_never s hs
 
   · -- (←): ∃ s, A(s) → q_exists A at t
     intro ⟨s, hs⟩
@@ -143,8 +139,8 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
       -- But we have A(s) with s < t. Contradiction!
       exfalso
       apply h_neg_sp
-      intro h_all
-      exact h_all s hst hs
+      simp only [Separation.int_truth_some_past]
+      exact ⟨s, hst, hs⟩
     · -- s = t: A at t holds
       subst hst
       intro h_neg
@@ -154,9 +150,9 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
       exact hs
     · -- s > t: some_future A holds
       intro _h_neg
-      -- Need: some_future A = ((∀ s' > t, A(s') → ⊥) → ⊥)
-      intro h_all
-      exact h_all s hst hs
+      -- Need: some_future A at t
+      simp only [Separation.int_truth_some_future]
+      exact ⟨s, hst, hs⟩
 
 /-! ## Purity Semantic Lemmas
 
@@ -609,7 +605,7 @@ private noncomputable def elimExtFromSep
   | .bot => .bot
   | .imp φ ψ => .imp (elimExtFromSep constSubs lt_atom gt_atom φ)
                       (elimExtFromSep constSubs lt_atom gt_atom ψ)
-  | .box φ => .box φ
+  | .box φ => .box (elimExtFromSep constSubs lt_atom gt_atom φ)
   | .snce φ ψ =>
     -- Past-only args
     .snce (applySubsts φ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
@@ -1008,7 +1004,6 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
     · obtain ⟨_, hrfl⟩ := Prod.mk.inj heq
       rw [← hrfl]
       simp [Separation.formula_atoms]
-      intro x hx; exact ⟨p, hx.symm⟩
     · obtain ⟨_, hrfl⟩ := Prod.mk.inj heq
       rw [← hrfl]
       by_cases h : σ p = true
@@ -1029,31 +1024,37 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
       obtain ⟨ep, rfl⟩ := ha
       cases ep with
       | orig p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_append,
-                   List.mem_map, Finset.mem_toList, Finset.mem_univ, true_and,
-                   List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+        apply Set.mem_union_left
+        refine ⟨Formula.atom (atomMap p), ?_⟩
+        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inl ⟨p, rfl⟩)
       | const_at_ref p =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_append,
-                   List.mem_map, Finset.mem_toList, Finset.mem_univ, true_and,
-                   List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+        apply Set.mem_union_left
+        refine ⟨if σ p = true then Formula.bot.neg else Formula.bot, ?_⟩
+        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inr ⟨p, rfl⟩)
       | lt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_append,
-                   List.mem_map, Finset.mem_toList, Finset.mem_univ, true_and,
-                   List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inl rfl)))
+        apply Set.mem_union_left
+        refine ⟨Formula.bot, ?_⟩
+        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inl trivial)
       | gt_ref =>
-        simp only [origSubsList, constSubsList, List.mem_append, List.mem_append,
-                   List.mem_map, Finset.mem_toList, Finset.mem_univ, true_and,
-                   List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl)))))
+        apply Set.mem_union_left
+        refine ⟨Formula.bot, ?_⟩
+        simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inr (Or.inl trivial))
     · intro b s hmem
-      simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hmem
-      rcases hmem with hmem | (rfl | rfl)
+      simp only [List.mem_append, List.mem_cons, List.mem_nil_iff] at hmem
+      rcases hmem with (hmem | hmem) | (heq | heq | hmem)
       · exact h_subs_in_range b s (List.mem_append_left _ hmem)
-      · exact h_lt_in_range
-      · exact h_neg_bot_in_range
+      · exact h_subs_in_range b s (List.mem_append_right _ hmem)
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_lt_in_range
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_lt_in_range
+      · exact absurd hmem (by simp)
   | bot => simp [elimExtFromSep, Separation.formula_atoms]
   | imp α β ihα ihβ =>
     simp only [elimExtFromSep, Separation.formula_atoms]
@@ -1062,9 +1063,9 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
     rcases hx with hx | hx
     · exact ihα (fun a ha => hB_atoms (Set.mem_union_left _ ha)) hx
     · exact ihβ (fun a ha => hB_atoms (Set.mem_union_right _ ha)) hx
-  | box α _ =>
+  | box α ihα =>
     simp only [elimExtFromSep, Separation.formula_atoms]
-    exact fun x hx => hB_atoms hx
+    exact ihα (by simp only [Separation.formula_atoms] at hB_atoms; exact hB_atoms)
   | snce α β ihα ihβ =>
     simp only [elimExtFromSep, Separation.formula_atoms]
     have mk_covered_past : ∀ (φ : Formula), Separation.formula_atoms φ ⊆ Set.range freshAM →
@@ -1075,30 +1076,40 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
       obtain ⟨ep, rfl⟩ := hφ hx
       cases ep with
       | orig p =>
+        apply Set.mem_union_left
+        refine ⟨Formula.atom (atomMap p), ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inl ⟨p, rfl⟩)
       | const_at_ref p =>
+        apply Set.mem_union_left
+        refine ⟨if σ p = true then Formula.bot.neg else Formula.bot, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inr ⟨p, rfl⟩)
       | lt_ref =>
+        apply Set.mem_union_left
+        refine ⟨Formula.bot.neg, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inl rfl)))
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inl trivial)
       | gt_ref =>
+        apply Set.mem_union_left
+        refine ⟨Formula.bot, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl)))))
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inr (Or.inl trivial))
     have h_neg_bot_rpl : ∀ a r, (a, r) ∈ origSubsList atomMap freshAM ++ constSubsList freshAM σ ++
         [(freshAM .lt_ref, Formula.neg .bot), (freshAM .gt_ref, .bot)] →
         Separation.formula_atoms r ⊆ Set.range atomMap := by
       intro a r hmem
       simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hmem
-      rcases hmem with hmem | (rfl | rfl)
-      · exact h_subs_in_range a r hmem
-      · exact h_neg_bot_in_range
-      · exact h_lt_in_range
+      rcases hmem with (hmem | hmem) | (heq | heq | hmem)
+      · exact h_subs_in_range a r (List.mem_append_left _ hmem)
+      · exact h_subs_in_range a r (List.mem_append_right _ hmem)
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_neg_bot_in_range
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_lt_in_range
+      · simp at hmem
     intro x hx
     simp only [Set.mem_union] at hx
     rcases hx with hx | hx
@@ -1114,30 +1125,40 @@ private theorem formula_atoms_elimExtFromSep_subset {sig : MonadicSignature}
       obtain ⟨ep, rfl⟩ := hφ hx
       cases ep with
       | orig p =>
+        apply Set.mem_union_left
+        refine ⟨Formula.atom (atomMap p), ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inl ⟨p, rfl⟩)
       | const_at_ref p =>
+        apply Set.mem_union_left
+        refine ⟨if σ p = true then Formula.bot.neg else Formula.bot, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ ⟨p, rfl⟩
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inl (Or.inr ⟨p, rfl⟩)
       | lt_ref =>
+        apply Set.mem_union_left
+        refine ⟨Formula.bot, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inl rfl)))
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inl trivial)
       | gt_ref =>
+        apply Set.mem_union_left
+        refine ⟨Formula.bot.neg, ?_⟩
         simp only [origSubsList, constSubsList, List.mem_append, List.mem_map,
-                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_singleton]
-        exact Set.mem_union_left _ (Or.inr (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl)))))
+                   Finset.mem_toList, Finset.mem_univ, true_and, List.mem_cons, List.mem_nil_iff]
+        exact Or.inr (Or.inr (Or.inl trivial))
     have h_bot_rpl : ∀ a r, (a, r) ∈ origSubsList atomMap freshAM ++ constSubsList freshAM σ ++
         [(freshAM .lt_ref, .bot), (freshAM .gt_ref, Formula.neg .bot)] →
         Separation.formula_atoms r ⊆ Set.range atomMap := by
       intro a r hmem
       simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hmem
-      rcases hmem with hmem | (rfl | rfl)
-      · exact h_subs_in_range a r hmem
-      · exact h_lt_in_range
-      · exact h_neg_bot_in_range
+      rcases hmem with (hmem | hmem) | (heq | heq | hmem)
+      · exact h_subs_in_range a r (List.mem_append_left _ hmem)
+      · exact h_subs_in_range a r (List.mem_append_right _ hmem)
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_lt_in_range
+      · obtain ⟨-, rfl⟩ := Prod.mk.inj heq; exact h_neg_bot_in_range
+      · simp at hmem
     intro x hx
     simp only [Set.mem_union] at hx
     rcases hx with hx | hx
@@ -1161,22 +1182,25 @@ private theorem formula_atoms_guardFormula_subset {sig : MonadicSignature}
       by_cases h : σ p
       · simp only [h, ite_true, Separation.formula_atoms, Set.mem_singleton_iff] at hx
         exact ⟨p, hx.symm⟩
-      · simp only [show (σ p) = false from Bool.not_eq_true.mp (Bool.eq_false_iff.mpr h),
-                   ite_false, Formula.neg, Separation.formula_atoms,
-                   Set.mem_union, Set.mem_empty_iff_false, or_false, Set.mem_singleton_iff] at hx
-        exact ⟨p, hx.symm⟩
+      · simp only [h, Formula.neg, Separation.formula_atoms] at hx
+        rcases hx with hx | hx
+        · exact ⟨p, hx.symm⟩
+        · exact absurd hx (Set.notMem_empty _)
   intro fs
   induction fs with
   | nil => simp [List.foldl]
   | cons f rest ih =>
     intro init h_init h_fs x hx
-    simp only [List.foldl, Formula.and, Separation.formula_atoms, Set.mem_union] at hx
-    rcases hx with hx | hx
-    · exact h_init x hx
-    · apply ih
-      · exact fun y hy => h_fs f (List.mem_cons.mpr (Or.inl rfl)) y hy
-      · exact fun g hg y hy => h_fs g (List.mem_cons.mpr (Or.inr hg)) y hy
-      · exact hx
+    simp only [List.foldl] at hx
+    apply ih (init.and f)
+    · intro y hy
+      simp only [Formula.and, Formula.neg, Separation.formula_atoms, Set.mem_union,
+                 Set.mem_empty_iff_false, or_false] at hy
+      rcases hy with hy | hy
+      · exact h_init y hy
+      · exact h_fs f (List.mem_cons.mpr (Or.inl rfl)) y hy
+    · exact fun g hg y hy => h_fs g (List.mem_cons.mpr (Or.inr hg)) y hy
+    · exact hx
 
 /-- Helper: atoms of a foldl-or are contained in union of branch atoms. -/
 private theorem formula_atoms_foldl_or_subset (fs : List Formula) (init : Formula)
@@ -1189,7 +1213,8 @@ private theorem formula_atoms_foldl_or_subset (fs : List Formula) (init : Formul
   | cons f rest ih =>
     simp only [List.foldl]
     apply ih
-    · simp only [Formula.or, Separation.formula_atoms, Set.union_subset_iff]
+    · simp only [Formula.or, Formula.neg, Separation.formula_atoms, Set.union_subset_iff,
+                 Set.empty_subset, and_true]
       exact ⟨h_init, h_fs f (List.mem_cons.mpr (Or.inl rfl))⟩
     · intro g hg; exact h_fs g (List.mem_cons.mpr (Or.inr hg))
 
@@ -1235,20 +1260,23 @@ private theorem formula_atoms_quantElimFormula_subset {sig : MonadicSignature}
     intro b hb
     simp only [branches, List.mem_map] at hb
     obtain ⟨σ, _, rfl⟩ := hb
-    simp only [Formula.and, Separation.formula_atoms, Set.union_subset_iff]
+    simp only [Formula.and, Formula.neg, Separation.formula_atoms, Set.union_subset_iff,
+               Set.empty_subset, and_true]
     refine ⟨formula_atoms_guardFormula_subset atomMap σ, ?_⟩
     have : origSubs = origSubsList atomMap freshAM := rfl
     rw [this]
     exact formula_atoms_elimExtFromSep_subset atomMap freshAM freshAM_inj h_disj σ B_sep hB_atoms
   match h : branches with
   | [] => simp [Separation.formula_atoms]
-  | [b] => exact h_branch_atoms b (h ▸ List.mem_singleton.mpr rfl)
+  | [b] =>
+    show Separation.formula_atoms b ⊆ Set.range atomMap
+    exact h_branch_atoms b (by simp)
   | b :: b' :: bs =>
     show Separation.formula_atoms (List.foldl Formula.or b (b' :: bs)) ⊆ Set.range atomMap
     apply formula_atoms_foldl_or_subset
-    · exact h_branch_atoms b (h ▸ List.mem_cons.mpr (Or.inl rfl))
+    · exact h_branch_atoms b (List.mem_cons.mpr (Or.inl rfl))
     · intro f hf
-      exact h_branch_atoms f (h ▸ List.mem_cons.mpr (Or.inr (List.mem_cons.mpr hf)))
+      exact h_branch_atoms f (List.mem_cons.mpr (Or.inr hf))
 
 /-- Applying substitutions where no substitution's atom appears in φ leaves φ unchanged. -/
 private theorem applySubsts_no_effect (φ : Formula) (subs : List (Atom × Formula))
@@ -1348,6 +1376,8 @@ private theorem int_truth_branches_iff (M : Separation.IntStructure) (t : Int)
   | [] => simp [Separation.int_truth]
   | [b] => simp
   | b :: b' :: bs =>
+    show Separation.int_truth M t ((b' :: bs).foldl Formula.or b) ↔
+      ∃ branch ∈ b :: b' :: bs, Separation.int_truth M t branch
     rw [int_truth_foldl_or]
     simp only [List.mem_cons]
     constructor
@@ -1373,12 +1403,9 @@ private theorem atom_elim_correct {sig : MonadicSignature}
   -- Blended model: agrees with M_ext on freshAM atoms, M_orig on atomMap atoms
   let M_blend : Separation.IntStructure := ⟨fun a => M_ext.val a ∪ M_orig.val a⟩
   -- σ₀: the actual assignment of M at t (using classical decidability)
-  let σ₀ : sig.preds → Bool := fun p => if M.interp p t then true else false
+  let σ₀ : sig.preds → Bool := fun p => @decide (M.interp p t) (Classical.dec _)
   have hσ₀ : ∀ p, σ₀ p = true ↔ M.interp p t := fun p => by
-    simp only [σ₀]
-    by_cases h : M.interp p t
-    · simp [h]
-    · simp [h]
+    simp only [σ₀, @decide_eq_true_eq _ (Classical.dec _)]
   -- M_blend agrees with M_ext on freshAM atoms
   have hF1 : ∀ (ep : ExtPred sig) (z : Int),
       z ∈ M_blend.val (freshAM ep) ↔ z ∈ M_ext.val (freshAM ep) := by
@@ -1387,7 +1414,7 @@ private theorem atom_elim_correct {sig : MonadicSignature}
     constructor
     · rintro (h | ⟨p, hpe, _⟩)
       · exact h
-      · exact absurd hpe (h_disj p ep).symm
+      · exact absurd hpe (h_disj p ep)
     · exact Or.inl
   -- M_blend agrees with M_orig on atomMap atoms
   have hF2 : ∀ (p : sig.preds) (z : Int),
@@ -1396,7 +1423,7 @@ private theorem atom_elim_correct {sig : MonadicSignature}
     simp only [M_blend, M_ext, M_orig, Set.mem_union, to_int_struct, Set.mem_setOf_eq]
     constructor
     · rintro (⟨ep, hepa, _⟩ | h)
-      · exact absurd hepa (h_disj p ep)
+      · exact absurd hepa.symm (h_disj p ep)
       · exact h
     · exact Or.inr
   -- Transfer B_sep truth: M_ext ↔ M_blend
@@ -1413,8 +1440,11 @@ private theorem atom_elim_correct {sig : MonadicSignature}
     intro a ha z
     obtain ⟨p, rfl⟩ := formula_atoms_quantElimFormula_subset
         atomMap freshAM freshAM_inj (fun p ep => h_disj p ep) B_sep hB_atoms ha
-    exact (hF2 p z).symm
-  rw [h_ext_blend, h_blend_orig]
+    exact hF2 p z
+  rw [h_ext_blend]
+  change Separation.int_truth M_blend t B_sep ↔
+    Separation.int_truth M_orig t (quantElimFormula atomMap freshAM B_sep)
+  rw [← h_blend_orig]
   -- Now prove: M_blend truth of B_sep ↔ M_blend truth of quantElimFormula
   -- Unfold quantElimFormula
   simp only [quantElimFormula]
