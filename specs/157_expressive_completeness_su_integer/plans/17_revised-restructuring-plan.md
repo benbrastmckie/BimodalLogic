@@ -110,6 +110,22 @@ Plan v16 established the Phase 3-7 structure for GHR94-faithful restructuring. K
 | `callback_has_single_U_type` may not compose correctly with `single_U_formula_separable_noax` API | M | M | The callback formula from `no_S_nested_in_U_separable_param` is `.snce (subst c p (.untl A B)) (subst d p (.untl A B))`. If `single_U_formula_separable_noax` requires `is_U_free A = true`, this must be proved from `U_nesting_depth phi <= 1`. Task 3.4 handles this. |
 | `proper_separation_preserves_atoms` is harder than other axioms | H | M | This requires atom-tracking through the entire separation construction. Phase 5 fallback: leave as sole remaining axiom if too complex. All other 8 axioms should be eliminable. |
 
+**BLOCKER** (Phase 3, Task 3.7):
+- **What failed**: Cannot prove `single_U_formula_separable_noax` (axiom-free Lemma 10.2.5) or the equivalent axiom-free `n = 1` callback in `all_formulas_separable_aux`.
+- **What was tried**:
+  1. Strong induction on `snce_depth_of_U`: At the `.snce C F` case, IH gives separable C and F. Box-normalizing gives C'', F'' with sdoU = 0. But applying `no_S_nested_in_U_separable_param_jd` to `.snce C'' F''` produces callbacks with JD ≤ 1 that are NOT structurally smaller and whose sdoU is NOT bounded by the original.
+  2. Structural induction with self-referential callback: Callback formulas are NOT structurally sub-formulas of the original `.snce C F`. They come from substituting U(A,B) into separated forms.
+  3. Nat induction on `count_U_subformulas`: Callback formulas can have MORE U-subformulas than the input (substitution expands atoms into `.untl A B` subterms).
+  4. Fuel-based approach (Nat.rec on explicit bound): No obvious bound on the callback nesting depth that can be proved statically.
+  5. `is_syntactically_separated_snce_depth_zero` turned out FALSE for raw separated formulas (`.box` is treated as atomic in separation but transparent in `snce_depth_of_U`). Fixed as `separated_boxnorm_snce_depth_zero` using box-normalization, but `replace_box_with_top` does NOT preserve `has_single_U_type` at `.untl` nodes when A, B contain `.box`.
+- **Why it's stuck**: The callback chain from `no_S_nested_in_U_separable_param_jd` creates formulas that are NOT smaller by any standard measure (sizeOf, snce_depth_of_U, count_U_subformulas, junction_depth). The mathematical termination argument relies on the COMBINED effect of count_U decreasing INSIDE `no_S_nested_in_U_separable_param_jd` and the finite branching of `.snce` nodes in separated forms. This combined termination is hard to express as a single well-founded relation in Lean.
+- **What is needed**: One of:
+  (a) A new version of `no_S_nested_in_U_separable_param` that EXPOSES the count_U decrease to the callback (adding `count_U < original` to the callback signature), OR
+  (b) A single inlined well-founded recursion on `(junction_depth, count_U_subformulas, sizeOf)` that handles U-abstraction, separation, substitution, and callback processing in one function without a callback parameter, OR
+  (c) A proof that callback formulas from `subst_in_separated_separable_jd` have `count_U_subformulas` strictly less than the input formula (this would make the Nat induction approach work), OR
+  (d) Research into whether GHR94's proof structure can be encoded differently to avoid the callback circularity entirely.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 ## Implementation Phases
 
 **Dependency Analysis**:
@@ -175,7 +191,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Axiom-Free Infrastructure for GHR94 10.2.4-10.2.5 [IN PROGRESS]
+### Phase 3: Axiom-Free Infrastructure for GHR94 10.2.4-10.2.5 [BLOCKED]
 
 **Goal**: Build the axiom-free mathematical infrastructure required by GHR94 Lemmas 10.2.4 and 10.2.5. This replaces the complex `abstract_inner_U` approach (plan v16 Tasks 3.6-3.11) with targeted lemmas that enable `single_U_formula_separable_noax` -- the axiom-free version of Lemma 10.2.5 using `snce_depth_of_U` strong induction. Completed tasks include monotonicity lemmas, the depth-zero base case, and `U_nesting_depth` definition with properties.
 
@@ -281,7 +297,7 @@ Phases within the same wave can execute in parallel.
   - BLOCKER ESCALATION: If Cases 3 or 4 structurally need S-free a/q in ways that cannot be bypassed, document the exact usage and request `/research` to find an alternative decomposition.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Eliminations` and `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ`
 
-- [ ] Task 3.7: Prove `single_U_formula_separable_noax` (~120 LOC, NEW -- replaces v16 Tasks 3.5-3.11)
+- [ ] Task 3.7: Prove `single_U_formula_separable_noax` (~120 LOC, NEW -- replaces v16 Tasks 3.5-3.11) *(deviation: deferred — blocked by callback termination, see BLOCKER below)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Purpose**: Axiom-free version of GHR94 Lemma 10.2.5 -- the CORE theorem that eliminates the circularity. Uses `snce_depth_of_U` strong induction instead of structural induction.
   - **Theorem**:
