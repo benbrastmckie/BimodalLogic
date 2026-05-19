@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches which assign formulas to truth-values, or Kripke semantics which evaluates formulas for truth at primitive worlds, the **task semantics** presented below evaluates formulas at both a world-histories and time, where world-histories are appropriately constrained functions from times to world-states. This approach provides natural semantic clauses for tense, modality, and their interaction.
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches which directly assign truth-values to formulas, or Kripke semantics which evaluates formulas for truth at primitive worlds, the **task semantics** presented below evaluates formulas at both a world-history and time, where world-histories are appropriately constrained functions from times to world-states. This approach provides natural semantic clauses for tense, modality, and their interaction which are essential for planning by reasoning about past and future contingency.
 
 The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until temporal operators.
 
@@ -124,28 +124,30 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ## Metalogical Results
 
-The metalogic is organized around a hierarchy of task frame classes, each extending the base with additional order-theoretic structure. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Whereas completeness is established for serial and dense frames, discrete completeness has remaining sorry obligations.
+The metalogic is organized around a base axiom system with three extensions: Dense, Continuous, and Discrete. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for the base and dense systems; continuous and discrete completeness have remaining obligations.
 
 ```mermaid
 graph TD
-    L("<b>LinearTemporalFrame</b><br/>AddCommGroup<br/>LinearOrder")
-    S("<b>SerialFrame</b><br/>+ Nontrivial · NoMaxOrder<br/>+ NoMinOrder<br/>Sound ✓ · Complete ✓")
-    D("<b>DenseTemporalFrame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓")
-    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Sound ✓ · Complete ⧖")
+    B("<b>Base</b><br/>AddCommGroup · LinearOrder<br/>Nontrivial · NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
+    D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 1 axiom<br/>Sound ✓ · Complete ✓")
+    C("<b>Continuous</b><br/>+ ConditionallyCompleteLinearOrder<br/>Dense + 1 axiom<br/>Sound ✗ · Complete ✗")
+    Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ⧖")
 
-    L --> S
-    S --> D
-    S --> Z
+    B --> D
+    D --> C
+    B --> Z
 ```
 
-### Result Details
+### Axiom Systems
 
-| Frame Class | Additional Axioms | Soundness | Completeness |
-|-------------|------------------|-----------|--------------|
-| **Linear** | — | — | — |
-| **Serial** | `⊤ → F⊤`, `⊤ → P⊤` | `soundness` | `completeness` |
-| **Dense** | `Fφ → FFφ` | `soundness_dense` | `completeness_dense` |
-| **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | `soundness_discrete` | `completeness_discrete` |
+| System | Axioms | Additional Axioms | Standard Model | Soundness | Completeness |
+|--------|--------|-------------------|----------------|-----------|--------------|
+| **Base** | 37 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
+| **Dense** | 38 | `Fφ → FFφ` (density) | ℚ | `soundness_dense` | `completeness_dense` |
+| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` (Dedekind completeness) | ℝ | — | — |
+| **Discrete** | 40 | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | ℤ | `soundness_discrete` | `completeness_discrete` |
+
+The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (22), modal-temporal interaction (1), and uniformity (5) axioms. Dense and Discrete are independent extensions — neither subsumes the other. Continuous extends Dense with the completeness axiom CO, which characterizes Dedekind-complete ordered groups (every nonempty bounded-above set has a least upper bound). Since every Archimedean discrete order is conditionally complete, CO is already valid on discrete frames; it only adds content over dense frames, distinguishing ℚ-like from ℝ-like time.
 
 **Active sorry obligations**:
 
