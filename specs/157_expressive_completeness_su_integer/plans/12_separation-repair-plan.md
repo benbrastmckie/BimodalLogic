@@ -210,7 +210,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 ---
 
-### Phase 2: Repair Downstream Files (Dependency-Ordered) [IN PROGRESS]
+### Phase 2: Repair Downstream Files (Dependency-Ordered) [PARTIAL]
 
 **Goal**: Fix all remaining Separation module files that pattern-match on 8 constructors. Work in strict import-dependency order so each file compiles before the next.
 
@@ -252,7 +252,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 - [x] Task 2.7: Fix IntHelpers.lean (verify only) *(completed)*
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.IntHelpers`
 
-- [ ] Task 2.8: Fix DedekindZ.lean (6 repair sites) *(deviation: altered -- removed 20 dead arms, fixed 4 proof issues, but ~15 deeper proof errors remain from all_past/all_future semantics changes in Case 6-8 proofs)*
+- [x] Task 2.8: Fix DedekindZ.lean (6 repair sites) *(deviation: altered -- fixed 17 proof errors: omega induction on ≤ instead of =, subst variable scoping, and_or_distrib for right-factor, projection on expanded neg/and types, simp with Formula.neg for is_U_free, moved case8_equiv_Z before forward ref)*
   - Remove dead `| .all_past`/`| .all_future` arms
   - Cases 5-8 proofs (completed in plan v8) should compile since they don't use `all_past`/`all_future`
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ`
