@@ -229,11 +229,12 @@ technical_debt:
 
 ### 167. Close 7 sorries from task 116 (SubformulaClosure gap + ConservativeExtension dead code)
 - **Effort**: 5-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 116
 - **Research**:
   - [specs/167_close_task116_sorries/reports/01_subformula-closure-gap.md]
+- **Plan**: [167_close_task116_sorries/plans/01_close-sorries-plan.md]
 
 **Description**: Close 7 sorries introduced by task 116 (G/H/F/P redefinition via U/S). Three sorries in SuccExistence.lean and RestrictedMCS.lean are caused by the SubformulaClosure design gap: under new definitions P(χ) = S(χ,⊤), the formula H(¬χ) is no longer a structural subformula of P(χ). Fix: extend `baseDeferralClosure` with a `temporalBlockingSet` that includes H(¬χ) for each P(χ) and G(¬χ) for each F(χ) in the closure. Four sorries in ConservativeExtension/Lifting.lean are dead Boneyard code with removed temp_k_dist/temp_4 axiom match arms. Research identifies 3 additional SuccExistence sorries (lines 460, 763, 837) as a separate BX1 issue, not closure-related.
 
