@@ -1032,40 +1032,50 @@ theorem subst_preserves_no_allpast_allfuture (ψ : Formula) (p : Atom) (r : Form
 
 /-! ### Step 2: Strict Count Decrease for Abstraction -/
 
-/-- Abstracting a U-type from a non-U-free formula strictly decreases count_U. -/
-theorem abstract_untl_count_lt_of_not_U_free (phi A B : Formula) (p : Atom)
-    (h_not_uf : is_U_free phi = false) :
+/-- Surface-level containment of `.untl A B`: the formula has a `.untl A B` node
+    reachable from the root without passing through another `.untl` node.
+    This mirrors the structure of `count_U_subformulas`, which counts `.untl` nodes
+    at the surface level (not recursing into `.untl` children). -/
+def contains_untl_surface : Formula → Formula → Formula → Prop
+  | .atom _, _, _ => False
+  | .bot, _, _ => False
+  | .imp c d, A, B => contains_untl_surface c A B ∨ contains_untl_surface d A B
+  | .box c, A, B => contains_untl_surface c A B
+  | .untl c d, A, B => c = A ∧ d = B
+  | .snce c d, A, B => contains_untl_surface c A B ∨ contains_untl_surface d A B
+
+/-- Abstracting a formula that contains `.untl A B` at the surface level strictly
+    decreases count_U_subformulas. This is the corrected version of the count
+    decrease lemma: the hypothesis `contains_untl_surface` ensures the non-matching
+    `.untl` case is vacuously true (since `count_U_subformulas` does not recurse
+    into `.untl` children). -/
+theorem abstract_untl_count_lt_of_contains_surface (phi A B : Formula) (p : Atom)
+    (h_contains : contains_untl_surface phi A B) :
     count_U_subformulas (abstract_untl phi A B p) < count_U_subformulas phi := by
   induction phi with
-  | atom _ => simp [is_U_free] at h_not_uf
-  | bot => simp [is_U_free] at h_not_uf
+  | atom _ => exact absurd h_contains id
+  | bot => exact absurd h_contains id
   | imp c d ih1 ih2 =>
-    simp only [is_U_free, Bool.and_eq_false_iff] at h_not_uf
+    simp only [contains_untl_surface] at h_contains
     simp only [abstract_untl, count_U_subformulas]
-    rcases h_not_uf with hc | hd
+    rcases h_contains with hc | hd
     · have := ih1 hc; have := abstract_untl_count_le d A B p; omega
     · have := ih2 hd; have := abstract_untl_count_le c A B p; omega
   | box c ih =>
-    simp only [is_U_free] at h_not_uf
-    simp only [abstract_untl, count_U_subformulas]; exact ih h_not_uf
+    simp only [contains_untl_surface] at h_contains
+    simp only [abstract_untl, count_U_subformulas]; exact ih h_contains
   | untl c d _ _ =>
     simp only [abstract_untl, count_U_subformulas]
     split
     · simp only [count_U_subformulas]; omega
-    · -- PRE-EXISTING GAP: count_U_subformulas (.untl _ _) = 1 always, so the
-      -- count does not decrease for non-matching untl nodes.
-      -- In practice this case is unreachable: the caller uses extract_U_type which
-      -- extracts (A, B) FROM the formula, so any top-level .untl would match.
-      -- For sub-formulas, this branch can be reached but the theorem statement
-      -- is too weak. Needs: "phi contains (.untl A B)" as additional hypothesis.
-      -- Tracked as pre-existing debt from the Hierarchy proof infrastructure.
-      simp only [count_U_subformulas]
-      have := abstract_untl_count_le c A B p
-      have := abstract_untl_count_le d A B p; sorry
+    · next hne =>
+      -- h_contains : contains_untl_surface (.untl c d) A B = (c = A ∧ d = B)
+      -- hne : ¬(c = A ∧ d = B), so this case is vacuously true
+      exact absurd h_contains hne
   | snce c d ih1 ih2 =>
-    simp only [is_U_free, Bool.and_eq_false_iff] at h_not_uf
+    simp only [contains_untl_surface] at h_contains
     simp only [abstract_untl, count_U_subformulas]
-    rcases h_not_uf with hc | hd
+    rcases h_contains with hc | hd
     · have := ih1 hc; have := abstract_untl_count_le d A B p; omega
     · have := ih2 hd; have := abstract_untl_count_le c A B p; omega
 
@@ -1192,6 +1202,40 @@ private theorem extract_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
       have hd : is_U_free d = false := by
         simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
       exact ih2 hd hns.2
+
+/-- `extract_U_type` returns a pair `(A, B)` such that `contains_untl_surface φ A B`.
+    This is the bridge between `extract_U_type` (which finds the first `.untl` by
+    descending through `imp`, `box`, `snce`) and the count decrease lemma
+    `abstract_untl_count_lt_of_contains_surface`. -/
+private theorem extract_U_type_contains_surface (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) :
+    contains_untl_surface φ (extract_U_type φ h hns).1 (extract_U_type φ h hns).2 := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte, contains_untl_surface]
+      exact Or.inl (ih1 hc hns.1)
+    · simp only [hc, contains_untl_surface]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact Or.inr (ih2 hd hns.2)
+  | box c ih =>
+    simp only [is_U_free] at h
+    unfold extract_U_type; simp only [contains_untl_surface]; exact ih h hns
+  | untl a b =>
+    unfold extract_U_type; exact ⟨rfl, rfl⟩
+  | snce c d ih1 ih2 =>
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte, contains_untl_surface]
+      exact Or.inl (ih1 hc hns.1)
+    · simp only [hc, contains_untl_surface]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact Or.inr (ih2 hd hns.2)
 
 /-! ### Step 5: S-Nesting Depth Measure for Lemma 10.2.5
 
@@ -1432,8 +1476,9 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
     let p := fresh_atom phi
     have hfresh := fresh_atom_not_in phi
     let phi' := abstract_untl phi AB.1 AB.2 p
+    have hcontains := extract_U_type_contains_surface phi huf' hns
     have hcount_lt : count_U_subformulas phi' < count_U_subformulas phi :=
-      abstract_untl_count_lt_of_not_U_free phi AB.1 AB.2 p huf'
+      abstract_untl_count_lt_of_contains_surface phi AB.1 AB.2 p hcontains
     have hns' : no_S_nested_in_U phi' :=
       abstract_untl_preserves_no_S_nested phi AB.1 AB.2 p hns
     have hexp' : has_no_allpast_allfuture phi' = true :=
