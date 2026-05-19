@@ -1,14 +1,14 @@
 ---
-next_project_number: 169
+next_project_number: 171
 repository_health:
   overall_score: 95
   production_readiness: near-publication
   last_assessed: 2026-05-18T23:45:00Z
 task_counts:
-  active: 16
+  active: 18
   completed: 124
   in_progress: 2
-  not_started: 12
+  not_started: 14
   abandoned: 0
   total: 139
 technical_debt:
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-19. 16 active tasks.*
+*Updated 2026-05-19. 18 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → formula refactor (G/H via U/S) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
 
@@ -35,8 +35,8 @@ technical_debt:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 116, 21, 95, 130, 131, 156, 161, 162, 168 | -- | completeness, formula-refactor, meta, proof-system |
-| 2 | 125, 127, 128, 157, 164, 165 | 116 | completeness, extensions, algebraic, decidability |
-| 3 | 155 | 157 | completeness (Reynolds pipeline) |
+| 2 | 125, 127, 128, 157, 164, 165, 169 | 116, 168 | completeness, extensions, algebraic, decidability |
+| 3 | 155, 170 | 157, 169 | completeness (Reynolds pipeline, Complete extension) |
 
 **Grouped by Topic** (indented = must complete first):
 
@@ -62,6 +62,10 @@ technical_debt:
 
 ### Frame Extensions
 
+169 [NOT STARTED] — Complete frame extension: axiom, typeclass, soundness, correspondence
+  └─ 168 [NOT STARTED] — (proof-system: FrameClass refactor) (see above)
+170 [NOT STARTED] — Completeness theorem for TM^dc (dense + complete)
+  └─ 169 [NOT STARTED] — (Complete frame extension setup)
 127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
 128 [NOT STARTED] — Add topological open set (interior) operator
 165 [NOT STARTED] — Establish semantic finite model property (filtration)
@@ -83,6 +87,26 @@ technical_debt:
 
 
 ## Tasks
+
+### 170. Establish completeness theorem for TM^dc (dense + complete extension)
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 169
+
+**Description**: Prove proof-theoretic completeness for TM^dc, the dense + complete extension of the base TM logic. TM^dc extends TM with the density axiom DN (Fφ → FFφ) and the completeness axiom CO (G(Pφ → FPφ) → (Pφ → Fφ)). The standard model is ℝ (the reals as a conditionally complete densely ordered abelian group). This requires constructing a canonical model for TM^dc and proving a truth lemma showing that every TM^dc-consistent formula is satisfiable in a task model over a conditionally complete dense linear order. The existing dense completeness proof (BXCanonical chronicle construction) produces models over quotient types that are dense but not necessarily complete; this task must either extend that construction to produce complete models, or develop a new completeness argument. This is a research-level formalization — the paper "The Construction of Possible Worlds" (Brast-McKie 2025) proves the CO correspondence theorem but does not establish TM^dc completeness. Literature: Burgess 1982/84, Xu 1988, Reynolds 1994 for the base completeness pipeline; the CO correspondence proof in the paper's Appendix provides the semantic characterization.
+
+---
+
+### 169. Add Complete frame extension with axiom, typeclass, and soundness
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 168
+
+**Description**: Add the Complete frame class as an extension of Dense to the TM logic formalization, following the paper "The Construction of Possible Worlds" (Brast-McKie 2025). The Complete frame condition (Dedekind completeness) requires every nonempty bounded-above subset of the temporal domain to have a least upper bound. Key changes: (1) Add FrameClass.Complete to the FrameClass enum with Dense ≤ Complete in the partial order (from task 168). (2) Add the CO axiom constructor to Axiom: G(Pφ → FPφ) → (Pφ → Fφ), mapped to minFrameClass = .Complete. (3) Add CompleteTemporalFrame typeclass extending DenseTemporalFrame with ConditionallyCompleteLinearOrder from Mathlib. (4) Add ℝ instance for CompleteTemporalFrame. (5) Prove CO soundness on complete frames (paper Appendix, ~50 lines, uses sInf on the set of counterexamples). (6) Prove CO correspondence: CO is valid over a frame iff the frame is Complete (paper Theorem at line 2453, both directions). (7) Prove CO is valid on Archimedean discrete frames (paper footnote: since every Archimedean discrete ordered group is conditionally complete, CO holds vacuously). (8) Update soundness wrappers in FrameConditions/Soundness.lean. (9) Update README to document the Complete extension and the full frame class hierarchy: Base ≤ Dense ≤ Complete, Base ≤ Discrete.
+
+---
 
 ### 168. Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
 - **Effort**: large
