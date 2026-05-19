@@ -60,28 +60,6 @@ theorem swap_temporal_int_truth (M : IntStructure) (t : Int) (phi : Formula) :
     rw [ih1, ih2]
   | box phi _ih =>
     simp [Formula.swap_temporal, int_truth]
-  | all_past phi ih =>
-    simp only [Formula.swap_temporal, int_truth]
-    constructor
-    · intro h s hts
-      have := h (-s) (by omega)
-      rw [ih] at this
-      simpa [neg_neg] using this
-    · intro h s hts
-      rw [ih]
-      have := h (-s) (by omega)
-      simpa [neg_neg] using this
-  | all_future phi ih =>
-    simp only [Formula.swap_temporal, int_truth]
-    constructor
-    · intro h s hts
-      have := h (-s) (by omega)
-      rw [ih] at this
-      simpa [neg_neg] using this
-    · intro h s hts
-      rw [ih]
-      have := h (-s) (by omega)
-      simpa [neg_neg] using this
   | untl phi psi ih1 ih2 =>
     -- swap_temporal (untl phi psi) = snce (swap phi) (swap psi)
     -- int_truth M t (snce (swap phi) (swap psi)) = exists s < t, ...
@@ -145,8 +123,6 @@ theorem dual_U_free_iff_S_free (phi : Formula) :
   | bot => rfl
   | imp a b ih1 ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free, ih1, ih2]
   | box a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
-  | all_past a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
-  | all_future a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
   | untl a b ih1 ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free, ih1, ih2]
   | snce a b _ih1 _ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free]
 
@@ -158,8 +134,6 @@ theorem dual_S_free_iff_U_free (phi : Formula) :
   | bot => rfl
   | imp a b ih1 ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free, ih1, ih2]
   | box a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
-  | all_past a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
-  | all_future a ih => simp [Formula.swap_temporal, is_U_free, is_S_free, ih]
   | untl a b _ih1 _ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free]
   | snce a b ih1 ih2 => simp [Formula.swap_temporal, is_U_free, is_S_free, ih1, ih2]
 
@@ -172,12 +146,6 @@ theorem dual_separated (phi : Formula) :
   | imp a b ih1 ih2 =>
     simp [Formula.swap_temporal, is_syntactically_separated, ih1, ih2]
   | box _a => simp [Formula.swap_temporal, is_syntactically_separated]
-  | all_past a _ih =>
-    simp [Formula.swap_temporal, is_syntactically_separated]
-    exact dual_S_free_iff_U_free a
-  | all_future a _ih =>
-    simp [Formula.swap_temporal, is_syntactically_separated]
-    exact dual_U_free_iff_S_free a
   | untl a b _ih1 _ih2 =>
     simp [Formula.swap_temporal, is_syntactically_separated]
     rw [dual_U_free_iff_S_free a, dual_U_free_iff_S_free b]
@@ -203,8 +171,6 @@ theorem dual_future_only_iff_past_only (phi : Formula) :
   | bot => rfl
   | imp a b ih1 ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only, ih1, ih2]
   | box a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
-  | all_past a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
-  | all_future a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
   | untl a b _ih1 _ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only]
   | snce a b ih1 ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only, ih1, ih2]
 
@@ -216,8 +182,6 @@ theorem dual_past_only_iff_future_only (phi : Formula) :
   | bot => rfl
   | imp a b ih1 ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only, ih1, ih2]
   | box a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
-  | all_past a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
-  | all_future a ih => simp [Formula.swap_temporal, is_future_only, is_past_only, ih]
   | untl a b ih1 ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only, ih1, ih2]
   | snce a b _ih1 _ih2 => simp [Formula.swap_temporal, is_future_only, is_past_only]
 
@@ -230,12 +194,6 @@ theorem dual_properly_separated (phi : Formula) :
   | imp a b ih1 ih2 =>
     simp [Formula.swap_temporal, is_properly_separated, ih1, ih2]
   | box _a => simp [Formula.swap_temporal, is_properly_separated]
-  | all_past a _ih =>
-    simp [Formula.swap_temporal, is_properly_separated]
-    exact dual_future_only_iff_past_only a
-  | all_future a _ih =>
-    simp [Formula.swap_temporal, is_properly_separated]
-    exact dual_past_only_iff_future_only a
   | untl a b _ih1 _ih2 =>
     simp [Formula.swap_temporal, is_properly_separated]
     rw [dual_past_only_iff_future_only a, dual_past_only_iff_future_only b]
@@ -265,10 +223,6 @@ theorem future_only_imp_S_free {φ : Formula} (h : is_future_only φ = true) :
   | box a ih =>
     simp [is_future_only] at h
     simp [is_S_free, ih h]
-  | all_past _ => simp [is_future_only] at h
-  | all_future a ih =>
-    simp [is_future_only] at h
-    simp [is_S_free, ih h]
   | untl a b ih1 ih2 =>
     simp [is_future_only] at h
     simp [is_S_free, ih1 h.1, ih2 h.2]
@@ -286,10 +240,6 @@ theorem past_only_imp_U_free {φ : Formula} (h : is_past_only φ = true) :
   | box a ih =>
     simp [is_past_only] at h
     simp [is_U_free, ih h]
-  | all_past a ih =>
-    simp [is_past_only] at h
-    simp [is_U_free, ih h]
-  | all_future _ => simp [is_past_only] at h
   | untl _ _ => simp [is_past_only] at h
   | snce a b ih1 ih2 =>
     simp [is_past_only] at h
@@ -306,12 +256,6 @@ theorem properly_separated_imp_syntactically_separated {φ : Formula}
     simp [is_properly_separated] at h
     simp [is_syntactically_separated, ih1 h.1, ih2 h.2]
   | box _ => rfl
-  | all_past a _ih =>
-    simp [is_properly_separated] at h
-    simp [is_syntactically_separated, past_only_imp_U_free h]
-  | all_future a _ih =>
-    simp [is_properly_separated] at h
-    simp [is_syntactically_separated, future_only_imp_S_free h]
   | untl a b _ih1 _ih2 =>
     simp [is_properly_separated] at h
     simp [is_syntactically_separated, future_only_imp_S_free h.1, future_only_imp_S_free h.2]

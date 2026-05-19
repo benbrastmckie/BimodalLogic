@@ -113,45 +113,19 @@ theorem neg_bot_true (M : IntStructure) (t : Int) :
   simp [int_truth]
 
 /-- In Z, S(a, neg bot) iff some_past a.
-    S(a, True) means: there exists s < t with a(s), and True holds trivially on (s,t). -/
+    S(a, True) means: there exists s < t with a(s), and True holds trivially on (s,t).
+    Note: With 6-constructor Formula, neg bot = imp bot bot = top, so
+    snce a (neg bot) is definitionally equal to some_past a. -/
 theorem since_top_is_past (a : Formula) :
-    int_equiv (.snce a (Formula.neg .bot)) (Formula.some_past a) := by
-  intro M t
-  constructor
-  · rintro ⟨s, hst, ha, _⟩
-    show ((∀ s' : ℤ, s' < t → int_truth M s' a → False) → False)
-    intro hall
-    exact hall s hst ha
-  · intro hsp
-    show ∃ s, s < t ∧ int_truth M s a ∧ ∀ r, s < r → r < t → (int_truth M r (.imp .bot .bot))
-    by_contra hno
-    push_neg at hno
-    apply hsp
-    show (∀ s : ℤ, s < t → int_truth M s a → False)
-    intro s hst ha
-    have := hno s hst ha
-    obtain ⟨r, hr1, hr2, habs⟩ := this
-    exact habs id
+    int_equiv (.snce a (Formula.neg .bot)) (Formula.some_past a) :=
+  int_equiv_refl _
 
 /-- In Z, U(a, neg bot) iff some_future a.
-    U(a, True) means: there exists s > t with a(s), and True holds trivially on (t,s). -/
+    U(a, True) means: there exists s > t with a(s), and True holds trivially on (t,s).
+    Note: With 6-constructor Formula, neg bot = imp bot bot = top, so
+    untl a (neg bot) is definitionally equal to some_future a. -/
 theorem until_top_is_future (a : Formula) :
-    int_equiv (.untl a (Formula.neg .bot)) (Formula.some_future a) := by
-  intro M t
-  constructor
-  · rintro ⟨s, hts, ha, _⟩
-    show ((∀ s' : ℤ, t < s' → int_truth M s' a → False) → False)
-    intro hall
-    exact hall s hts ha
-  · intro hsp
-    show ∃ s, t < s ∧ int_truth M s a ∧ ∀ r, t < r → r < s → (int_truth M r (.imp .bot .bot))
-    by_contra hno
-    push_neg at hno
-    apply hsp
-    show (∀ s : ℤ, t < s → int_truth M s a → False)
-    intro s hts ha
-    have := hno s hts ha
-    obtain ⟨r, hr1, hr2, habs⟩ := this
-    exact habs id
+    int_equiv (.untl a (Formula.neg .bot)) (Formula.some_future a) :=
+  int_equiv_refl _
 
 end Bimodal.Metalogic.WeakCanonical.Separation

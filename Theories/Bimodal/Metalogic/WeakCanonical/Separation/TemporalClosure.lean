@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
-import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 
 /-!
@@ -59,8 +58,6 @@ def replace_box_with_top : Formula -> Formula
   | .bot => .bot
   | .imp phi psi => .imp (replace_box_with_top phi) (replace_box_with_top psi)
   | .box _ => .imp .bot .bot  -- top
-  | .all_past phi => .all_past (replace_box_with_top phi)
-  | .all_future phi => .all_future (replace_box_with_top phi)
   | .untl phi psi => .untl (replace_box_with_top phi) (replace_box_with_top psi)
   | .snce phi psi => .snce (replace_box_with_top phi) (replace_box_with_top psi)
 
@@ -75,12 +72,6 @@ theorem replace_box_equiv (phi : Formula) : int_equiv phi (replace_box_with_top 
     exact ⟨fun h hp => (ih2 t).mp (h ((ih1 t).mpr hp)),
            fun h hp => (ih2 t).mpr (h ((ih1 t).mp hp))⟩
   | box _ => simp [replace_box_with_top, int_truth]
-  | all_past a ih =>
-    simp [replace_box_with_top, int_truth]
-    exact ⟨fun h s hs => (ih s).mp (h s hs), fun h s hs => (ih s).mpr (h s hs)⟩
-  | all_future a ih =>
-    simp [replace_box_with_top, int_truth]
-    exact ⟨fun h s hs => (ih s).mp (h s hs), fun h s hs => (ih s).mpr (h s hs)⟩
   | untl a b ih1 ih2 =>
     simp [replace_box_with_top, int_truth]
     constructor
@@ -104,8 +95,6 @@ theorem replace_box_preserves_U_free (phi : Formula) (h : is_U_free phi = true) 
   | bot => rfl
   | imp a b ih1 ih2 => simp [is_U_free] at h; simp [replace_box_with_top, is_U_free, ih1 h.1, ih2 h.2]
   | box _ => simp [replace_box_with_top, is_U_free]
-  | all_past a ih => simp [is_U_free] at h; simp [replace_box_with_top, is_U_free, ih h]
-  | all_future a ih => simp [is_U_free] at h; simp [replace_box_with_top, is_U_free, ih h]
   | untl _ _ => simp [is_U_free] at h
   | snce a b ih1 ih2 => simp [is_U_free] at h; simp [replace_box_with_top, is_U_free, ih1 h.1, ih2 h.2]
 
@@ -117,8 +106,6 @@ theorem replace_box_preserves_S_free (phi : Formula) (h : is_S_free phi = true) 
   | bot => rfl
   | imp a b ih1 ih2 => simp [is_S_free] at h; simp [replace_box_with_top, is_S_free, ih1 h.1, ih2 h.2]
   | box _ => simp [replace_box_with_top, is_S_free]
-  | all_past a ih => simp [is_S_free] at h; simp [replace_box_with_top, is_S_free, ih h]
-  | all_future a ih => simp [is_S_free] at h; simp [replace_box_with_top, is_S_free, ih h]
   | untl a b ih1 ih2 => simp [is_S_free] at h; simp [replace_box_with_top, is_S_free, ih1 h.1, ih2 h.2]
   | snce _ _ => simp [is_S_free] at h
 
@@ -133,12 +120,6 @@ theorem replace_box_preserves_separated (phi : Formula)
     simp [is_syntactically_separated] at h
     simp [replace_box_with_top, is_syntactically_separated, ih1 h.1, ih2 h.2]
   | box _ => simp [replace_box_with_top, is_syntactically_separated]
-  | all_past a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, is_syntactically_separated, replace_box_preserves_U_free a h]
-  | all_future a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, is_syntactically_separated, replace_box_preserves_S_free a h]
   | untl a b _ih1 _ih2 =>
     simp [is_syntactically_separated] at h
     simp [replace_box_with_top, is_syntactically_separated,
@@ -158,8 +139,6 @@ private theorem u_free_no_S_nested (phi : Formula) (h : is_U_free phi = true) :
   | bot => trivial
   | imp a b ih1 ih2 => simp [is_U_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
   | box a ih => simp [is_U_free] at h; exact ih h
-  | all_past a ih => simp [is_U_free] at h; exact ih h
-  | all_future a ih => simp [is_U_free] at h; exact ih h
   | untl _ _ => simp [is_U_free] at h
   | snce a b ih1 ih2 => simp [is_U_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
 
@@ -171,8 +150,6 @@ private theorem s_free_no_S_nested (phi : Formula) (h : is_S_free phi = true) :
   | bot => trivial
   | imp a b ih1 ih2 => simp [is_S_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
   | box a ih => simp [is_S_free] at h; exact ih h
-  | all_past a ih => simp [is_S_free] at h; exact ih h
-  | all_future a ih => simp [is_S_free] at h; exact ih h
   | untl a b _ih1 _ih2 => simp [is_S_free] at h; exact h
   | snce _ _ => simp [is_S_free] at h
 
@@ -190,14 +167,6 @@ theorem replace_box_separated_no_S_nested (phi : Formula)
     exact ⟨ih1 h.1, ih2 h.2⟩
   | box _ =>
     simp [replace_box_with_top, no_S_nested_in_U]
-  | all_past a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, no_S_nested_in_U]
-    exact u_free_no_S_nested (replace_box_with_top a) (replace_box_preserves_U_free a h)
-  | all_future a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, no_S_nested_in_U]
-    exact s_free_no_S_nested (replace_box_with_top a) (replace_box_preserves_S_free a h)
   | untl a b _ih1 _ih2 =>
     simp [is_syntactically_separated] at h
     simp [replace_box_with_top, no_S_nested_in_U]
@@ -217,8 +186,6 @@ def no_U_nested_in_S : Formula -> Prop
   | .bot => True
   | .imp phi psi => no_U_nested_in_S phi ∧ no_U_nested_in_S psi
   | .box phi => no_U_nested_in_S phi
-  | .all_past phi => no_U_nested_in_S phi
-  | .all_future phi => no_U_nested_in_S phi
   | .untl phi psi => no_U_nested_in_S phi ∧ no_U_nested_in_S psi
   | .snce phi psi => is_U_free phi = true ∧ is_U_free psi = true
 
@@ -230,8 +197,6 @@ theorem swap_no_U_nested_gives_no_S_nested (phi : Formula)
   | bot => trivial
   | imp a b ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
   | box a ih => exact ih h
-  | all_past a ih => exact ih h
-  | all_future a ih => exact ih h
   | untl a b ih1 ih2 =>
     -- swap(.untl a b) = .snce (swap a) (swap b)
     -- no_S_nested_in_U (.snce ..) = no_S_nested_in_U (swap a) ∧ no_S_nested_in_U (swap b)
@@ -252,8 +217,6 @@ theorem swap_no_S_nested_gives_no_U_nested (phi : Formula)
   | bot => trivial
   | imp a b ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
   | box a ih => exact ih h
-  | all_past a ih => exact ih h
-  | all_future a ih => exact ih h
   | untl a b _ih1 _ih2 =>
     -- swap(.untl a b) = .snce (swap a) (swap b)
     -- no_U_nested_in_S (.snce ..) = is_U_free (swap a) ∧ is_U_free (swap b)
@@ -279,14 +242,6 @@ theorem replace_box_separated_no_U_nested (phi : Formula)
     exact ⟨ih1 h.1, ih2 h.2⟩
   | box _ =>
     simp [replace_box_with_top, no_U_nested_in_S]
-  | all_past a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, no_U_nested_in_S]
-    exact u_free_no_U_nested (replace_box_with_top a) (replace_box_preserves_U_free a h)
-  | all_future a _ih =>
-    simp [is_syntactically_separated] at h
-    simp [replace_box_with_top, no_U_nested_in_S]
-    exact s_free_no_U_nested (replace_box_with_top a) (replace_box_preserves_S_free a h)
   | untl a b _ih1 _ih2 =>
     simp [is_syntactically_separated] at h
     simp [replace_box_with_top, no_U_nested_in_S]
@@ -303,8 +258,6 @@ where
     | bot => trivial
     | imp a b ih1 ih2 => simp [is_U_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
     | box a ih => simp [is_U_free] at h; exact ih h
-    | all_past a ih => simp [is_U_free] at h; exact ih h
-    | all_future a ih => simp [is_U_free] at h; exact ih h
     | untl _ _ => simp [is_U_free] at h
     | snce a b _ih1 _ih2 => simp [is_U_free] at h; exact h
   s_free_no_U_nested (phi : Formula) (h : is_S_free phi = true) : no_U_nested_in_S phi := by
@@ -313,8 +266,6 @@ where
     | bot => trivial
     | imp a b ih1 ih2 => simp [is_S_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
     | box a ih => simp [is_S_free] at h; exact ih h
-    | all_past a ih => simp [is_S_free] at h; exact ih h
-    | all_future a ih => simp [is_S_free] at h; exact ih h
     | untl a b ih1 ih2 => simp [is_S_free] at h; exact ⟨ih1 h.1, ih2 h.2⟩
     | snce _ _ => simp [is_S_free] at h
 
@@ -339,7 +290,7 @@ theorem snce_of_boxfree_sep_no_S_nested (phi psi : Formula)
 theorem all_past_of_boxfree_sep_no_S_nested (phi : Formula)
     (h : is_syntactically_separated phi = true) :
     no_S_nested_in_U (.all_past (replace_box_with_top phi)) := by
-  simp [no_S_nested_in_U]
+  simp only [no_S_nested_in_U_all_past]
   exact replace_box_separated_no_S_nested phi h
 
 /-- untl of box-normalized separated formulas satisfies no_U_nested_in_S. -/
@@ -355,7 +306,8 @@ theorem untl_of_boxfree_sep_no_U_nested (phi psi : Formula)
 theorem all_future_of_boxfree_sep_no_U_nested (phi : Formula)
     (h : is_syntactically_separated phi = true) :
     no_U_nested_in_S (.all_future (replace_box_with_top phi)) := by
-  simp [no_U_nested_in_S]
+  simp only [Formula.all_future, Formula.neg, Formula.some_future, Formula.top,
+    no_U_nested_in_S, and_true]
   exact replace_box_separated_no_U_nested phi h
 
 /-! ## Congruence Lemmas for Box Normalization -/
@@ -375,7 +327,7 @@ theorem snce_replace_box_equiv (phi psi : Formula) :
 /-- all_past preserves int_equiv under box normalization. -/
 theorem all_past_replace_box_equiv (phi : Formula) :
     int_equiv (.all_past phi) (.all_past (replace_box_with_top phi)) := by
-  intro M t; constructor
+  intro M t; simp only [int_truth_all_past]; constructor
   · intro h s hs; exact (replace_box_equiv phi M s).mp (h s hs)
   · intro h s hs; exact (replace_box_equiv phi M s).mpr (h s hs)
 
@@ -394,7 +346,7 @@ theorem untl_replace_box_equiv (phi psi : Formula) :
 /-- all_future preserves int_equiv under box normalization. -/
 theorem all_future_replace_box_equiv (phi : Formula) :
     int_equiv (.all_future phi) (.all_future (replace_box_with_top phi)) := by
-  intro M t; constructor
+  intro M t; simp only [int_truth_all_future]; constructor
   · intro h s hs; exact (replace_box_equiv phi M s).mp (h s hs)
   · intro h s hs; exact (replace_box_equiv phi M s).mpr (h s hs)
 
@@ -421,8 +373,6 @@ theorem junction_depth_S_zero_imp_U_free (phi : Formula) (h : junction_depth_S p
   | imp a b ih1 ih2 =>
     simp [junction_depth_S] at h; simp [is_U_free, ih1 (by omega), ih2 (by omega)]
   | box a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
-  | all_past a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
-  | all_future a ih => simp [junction_depth_S] at h; simp [is_U_free, ih h]
   | untl _ _ => simp [junction_depth_S] at h
   | snce a b ih1 ih2 =>
     simp [junction_depth_S] at h; simp [is_U_free, ih1 (by omega), ih2 (by omega)]
@@ -436,8 +386,6 @@ theorem junction_depth_U_zero_imp_S_free (phi : Formula) (h : junction_depth_U p
   | imp a b ih1 ih2 =>
     simp [junction_depth_U] at h; simp [is_S_free, ih1 (by omega), ih2 (by omega)]
   | box a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
-  | all_past a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
-  | all_future a ih => simp [junction_depth_U] at h; simp [is_S_free, ih h]
   | untl a b ih1 ih2 =>
     simp [junction_depth_U] at h; simp [is_S_free, ih1 (by omega), ih2 (by omega)]
   | snce _ _ => simp [junction_depth_U] at h
@@ -451,8 +399,6 @@ theorem s_free_junction_depth_zero (phi : Formula) (h : is_S_free phi = true) :
   | imp a b ih1 ih2 =>
     simp [is_S_free] at h; simp [junction_depth, ih1 h.1, ih2 h.2]
   | box a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
-  | all_past a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
-  | all_future a ih => simp [is_S_free] at h; simp [junction_depth, ih h]
   | untl a b ih1 ih2 =>
     simp [is_S_free] at h
     simp [junction_depth, junction_depth_U]
@@ -470,8 +416,6 @@ where
     | imp a b ih1 ih2 =>
       simp [is_S_free] at h; simp [junction_depth_U, ih1 h.1, ih2 h.2]
     | box a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
-    | all_past a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
-    | all_future a ih => simp [is_S_free] at h; simp [junction_depth_U, ih h]
     | untl a b ih1 ih2 =>
       simp [is_S_free] at h; simp [junction_depth_U, ih1 h.1, ih2 h.2]
     | snce _ _ => simp [is_S_free] at h
@@ -485,8 +429,6 @@ theorem u_free_junction_depth_zero (phi : Formula) (h : is_U_free phi = true) :
   | imp a b ih1 ih2 =>
     simp [is_U_free] at h; simp [junction_depth, ih1 h.1, ih2 h.2]
   | box a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
-  | all_past a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
-  | all_future a ih => simp [is_U_free] at h; simp [junction_depth, ih h]
   | untl _ _ => simp [is_U_free] at h
   | snce a b ih1 ih2 =>
     simp [is_U_free] at h
@@ -503,8 +445,6 @@ where
     | imp a b ih1 ih2 =>
       simp [is_U_free] at h; simp [junction_depth_S, ih1 h.1, ih2 h.2]
     | box a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
-    | all_past a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
-    | all_future a ih => simp [is_U_free] at h; simp [junction_depth_S, ih h]
     | untl _ _ => simp [is_U_free] at h
     | snce a b ih1 ih2 =>
       simp [is_U_free] at h; simp [junction_depth_S, ih1 h.1, ih2 h.2]
@@ -533,16 +473,6 @@ where
       exact ⟨ih1 h.1, ih2 h.2⟩
     | box _ =>
       simp [replace_box_with_top, junction_depth_S]
-    | all_past a _ih =>
-      simp [is_syntactically_separated] at h
-      simp [replace_box_with_top, junction_depth_S]
-      have := u_free_junction_depth_zero.u_free_junction_depth_S_zero
-        (replace_box_with_top a) (replace_box_preserves_U_free a h)
-      omega
-    | all_future a _ih =>
-      simp [is_syntactically_separated] at h
-      simp [replace_box_with_top, junction_depth_S]
-      exact s_free_jdS_le_one (replace_box_with_top a) (replace_box_preserves_S_free a h)
     | untl a b _ih1 _ih2 =>
       simp [is_syntactically_separated] at h
       simp [replace_box_with_top, junction_depth_S]
@@ -566,8 +496,6 @@ where
     | imp a b ih1 ih2 =>
       simp [is_S_free] at h; simp [junction_depth_S]; exact ⟨ih1 h.1, ih2 h.2⟩
     | box a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
-    | all_past a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
-    | all_future a ih => simp [is_S_free] at h; simp [junction_depth_S]; exact ih h
     | untl a b _ih1 _ih2 =>
       simp [is_S_free] at h
       simp [junction_depth_S]
@@ -594,8 +522,6 @@ def expand_temporal : Formula → Formula
   | .bot => .bot
   | .imp φ ψ => .imp (expand_temporal φ) (expand_temporal ψ)
   | .box φ => .box φ  -- box is degenerate, leave as-is
-  | .all_past φ => Formula.neg (.snce (Formula.neg (expand_temporal φ)) Formula.top)
-  | .all_future φ => Formula.neg (.untl (Formula.neg (expand_temporal φ)) Formula.top)
   | .untl φ ψ => .untl (expand_temporal φ) (expand_temporal ψ)
   | .snce φ ψ => .snce (expand_temporal φ) (expand_temporal ψ)
 
@@ -604,71 +530,33 @@ private theorem top_true (M : IntStructure) (t : ℤ) : int_truth M t Formula.to
   fun h => h
 
 /-- Semantic equivalence of all_past with ¬(snce (¬φ) ⊤) on integer time.
-    all_past φ at t ↔ ¬∃s<t.(¬φ(s) ∧ ∀r∈(s,t).⊤) ↔ ∀s<t.φ(s) -/
+    With 6-constructor Formula, all_past φ is definitionally neg (snce (neg φ) top),
+    so this is just reflexivity. -/
 theorem all_past_equiv_neg_snce (φ : Formula) :
-    int_equiv (.all_past φ) (Formula.neg (.snce (Formula.neg φ) Formula.top)) := by
-  intro M t; constructor
-  · -- (→): all_past φ → ¬(snce (¬φ) ⊤)
-    intro hall hsnce
-    obtain ⟨s, hst, hneg, _⟩ := hsnce
-    exact hneg (hall s hst)
-  · -- (←): ¬(snce (¬φ) ⊤) → all_past φ
-    intro hnotsnce s hst
-    by_contra hnotphi
-    exact hnotsnce ⟨s, hst, hnotphi, fun _ _ _ => top_true M _⟩
+    int_equiv (.all_past φ) (Formula.neg (.snce (Formula.neg φ) Formula.top)) :=
+  int_equiv_refl _
 
-/-- Semantic equivalence of all_future with ¬(untl (¬φ) ⊤) on integer time. -/
+/-- Semantic equivalence of all_future with ¬(untl (¬φ) ⊤) on integer time.
+    With 6-constructor Formula, all_future φ is definitionally neg (untl (neg φ) top),
+    so this is just reflexivity. -/
 theorem all_future_equiv_neg_untl (φ : Formula) :
-    int_equiv (.all_future φ) (Formula.neg (.untl (Formula.neg φ) Formula.top)) := by
-  intro M t; constructor
-  · intro hall huntl
-    obtain ⟨s, hts, hneg, _⟩ := huntl
-    exact hneg (hall s hts)
-  · intro hnotuntl s hts
-    by_contra hnotphi
-    exact hnotuntl ⟨s, hts, hnotphi, fun _ _ _ => top_true M _⟩
+    int_equiv (.all_future φ) (Formula.neg (.untl (Formula.neg φ) Formula.top)) :=
+  int_equiv_refl _
 
-/-- expand_temporal preserves semantic equivalence on integer time. -/
-theorem expand_temporal_equiv (φ : Formula) : int_equiv φ (expand_temporal φ) := by
+/-- With 6-constructor Formula, expand_temporal is the identity function. -/
+@[simp] theorem expand_temporal_id (φ : Formula) : expand_temporal φ = φ := by
   induction φ with
-  | atom _ => exact int_equiv_refl _
-  | bot => exact int_equiv_refl _
-  | imp a b iha ihb =>
-    intro M t; simp only [expand_temporal, int_truth]; constructor
-    · intro h hp; exact (ihb M t).mp (h ((iha M t).mpr hp))
-    · intro h hp; exact (ihb M t).mpr (h ((iha M t).mp hp))
-  | box _ => exact int_equiv_refl _
-  | all_past a ih =>
-    -- all_past a ≡ all_past (expand_temporal a) ≡ ¬(snce (¬(expand_temporal a)) ⊤)
-    intro M t; constructor
-    · intro hall hsnce
-      obtain ⟨s, hst, hneg, _⟩ := hsnce
-      exact hneg ((ih M s).mp (hall s hst))
-    · intro hnotsnce s hst
-      by_contra hnotphi
-      exact hnotsnce ⟨s, hst, fun h => hnotphi ((ih M s).mpr h),
-        fun _ _ _ => top_true M _⟩
-  | all_future a ih =>
-    intro M t; constructor
-    · intro hall huntl
-      obtain ⟨s, hts, hneg, _⟩ := huntl
-      exact hneg ((ih M s).mp (hall s hts))
-    · intro hnotuntl s hts
-      by_contra hnotphi
-      exact hnotuntl ⟨s, hts, fun h => hnotphi ((ih M s).mpr h),
-        fun _ _ _ => top_true M _⟩
-  | untl a b iha ihb =>
-    intro M t; simp only [expand_temporal, int_truth]; constructor
-    · rintro ⟨s, hts, ha, hb⟩
-      exact ⟨s, hts, (iha M s).mp ha, fun r hr1 hr2 => (ihb M r).mp (hb r hr1 hr2)⟩
-    · rintro ⟨s, hts, ha, hb⟩
-      exact ⟨s, hts, (iha M s).mpr ha, fun r hr1 hr2 => (ihb M r).mpr (hb r hr1 hr2)⟩
-  | snce a b iha ihb =>
-    intro M t; simp only [expand_temporal, int_truth]; constructor
-    · rintro ⟨s, hst, ha, hb⟩
-      exact ⟨s, hst, (iha M s).mp ha, fun r hr1 hr2 => (ihb M r).mp (hb r hr1 hr2)⟩
-    · rintro ⟨s, hst, ha, hb⟩
-      exact ⟨s, hst, (iha M s).mpr ha, fun r hr1 hr2 => (ihb M r).mpr (hb r hr1 hr2)⟩
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 => simp only [expand_temporal, ih1, ih2]
+  | box _ => simp only [expand_temporal]
+  | untl a b ih1 ih2 => simp only [expand_temporal, ih1, ih2]
+  | snce a b ih1 ih2 => simp only [expand_temporal, ih1, ih2]
+
+/-- expand_temporal preserves semantic equivalence on integer time.
+    With 6-constructor Formula, this is trivially reflexivity. -/
+theorem expand_temporal_equiv (φ : Formula) : int_equiv φ (expand_temporal φ) := by
+  rw [expand_temporal_id]; exact int_equiv_refl _
 
 /-! ## Expanded formulas have no all_past/all_future -/
 
@@ -678,25 +566,26 @@ def has_no_allpast_allfuture : Formula → Bool
   | .bot => true
   | .imp φ ψ => has_no_allpast_allfuture φ && has_no_allpast_allfuture ψ
   | .box _ => true  -- box body not relevant (degenerate)
-  | .all_past _ => false
-  | .all_future _ => false
   | .untl φ ψ => has_no_allpast_allfuture φ && has_no_allpast_allfuture ψ
   | .snce φ ψ => has_no_allpast_allfuture φ && has_no_allpast_allfuture ψ
 
-/-- expand_temporal produces formulas with no all_past/all_future. -/
-theorem expand_has_no_allpast_allfuture (φ : Formula) :
-    has_no_allpast_allfuture (expand_temporal φ) = true := by
+/-- With 6-constructor Formula, has_no_allpast_allfuture is trivially true for all formulas,
+    since all_past and all_future are def abbreviations, not constructors. -/
+@[simp] theorem has_no_allpast_allfuture_true (φ : Formula) :
+    has_no_allpast_allfuture φ = true := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp a b iha ihb => simp [expand_temporal, has_no_allpast_allfuture, iha, ihb]
+  | imp a b ih1 ih2 => simp only [has_no_allpast_allfuture, ih1, ih2, Bool.and_self]
   | box _ => rfl
-  | all_past a ih =>
-    simp [expand_temporal, Formula.neg, Formula.top, has_no_allpast_allfuture, ih]
-  | all_future a ih =>
-    simp [expand_temporal, Formula.neg, Formula.top, has_no_allpast_allfuture, ih]
-  | untl a b iha ihb => simp [expand_temporal, has_no_allpast_allfuture, iha, ihb]
-  | snce a b iha ihb => simp [expand_temporal, has_no_allpast_allfuture, iha, ihb]
+  | untl a b ih1 ih2 => simp only [has_no_allpast_allfuture, ih1, ih2, Bool.and_self]
+  | snce a b ih1 ih2 => simp only [has_no_allpast_allfuture, ih1, ih2, Bool.and_self]
+
+/-- expand_temporal produces formulas with no all_past/all_future.
+    With 6-constructor Formula, this is trivially true for all formulas. -/
+theorem expand_has_no_allpast_allfuture (φ : Formula) :
+    has_no_allpast_allfuture (expand_temporal φ) = true := by
+  simp only [expand_temporal_id, has_no_allpast_allfuture_true]
 
 /-! ## In the restricted fragment (no all_past/all_future), JD=0 implies separated
 
@@ -716,12 +605,11 @@ theorem expanded_jd_zero_imp_separated (φ : Formula)
   | atom _ => rfl
   | bot => rfl
   | imp a b iha ihb =>
-    simp [has_no_allpast_allfuture] at hexp
-    simp [junction_depth] at hjd
-    simp [is_syntactically_separated, iha hexp.1 (by omega), ihb hexp.2 (by omega)]
+    simp only [junction_depth] at hjd
+    simp only [is_syntactically_separated,
+      iha (has_no_allpast_allfuture_true a) (by omega),
+      ihb (has_no_allpast_allfuture_true b) (by omega), Bool.and_self]
   | box _ => rfl
-  | all_past _ => simp [has_no_allpast_allfuture] at hexp
-  | all_future _ => simp [has_no_allpast_allfuture] at hexp
   | untl a b _iha _ihb =>
     -- JD of untl = max (JD_U a) (JD_U b). JD = 0 means JD_U a = 0 and JD_U b = 0.
     -- JD_U = 0 means S-free.
@@ -754,45 +642,19 @@ Actually, the precise statement is: S-free formulas CAN contain all_past
 (since `is_S_free (.all_past a) = is_S_free a`), but expanding all_past
 introduces snce, breaking S-freeness. So we need a restricted version. -/
 
-/-- expand_temporal preserves is_U_free for formulas with no all_future.
-    Since U-free formulas have no untl but CAN have all_future (which
-    expand_temporal would replace with untl), we need to exclude all_future. -/
+/-- expand_temporal preserves is_U_free.
+    With 6-constructor Formula, expand_temporal is the identity, so this is trivial. -/
 private theorem expand_preserves_U_free_no_allf (φ : Formula)
-    (hu : is_U_free φ = true) (hnaf : has_no_allpast_allfuture φ = true) :
+    (hu : is_U_free φ = true) (_hnaf : has_no_allpast_allfuture φ = true) :
     is_U_free (expand_temporal φ) = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b iha ihb =>
-    simp [is_U_free] at hu; simp [has_no_allpast_allfuture] at hnaf
-    simp [expand_temporal, is_U_free, iha hu.1 hnaf.1, ihb hu.2 hnaf.2]
-  | box _ => simp [expand_temporal, is_U_free] at hu ⊢; exact hu
-  | all_past _ => simp [has_no_allpast_allfuture] at hnaf
-  | all_future _ => simp [has_no_allpast_allfuture] at hnaf
-  | untl _ _ => simp [is_U_free] at hu
-  | snce a b iha ihb =>
-    simp [is_U_free] at hu; simp [has_no_allpast_allfuture] at hnaf
-    simp [expand_temporal, is_U_free, iha hu.1 hnaf.1, ihb hu.2 hnaf.2]
+  simp only [expand_temporal_id]; exact hu
 
-/-- expand_temporal preserves is_S_free for formulas with no all_past.
-    Since S-free formulas have no snce but CAN have all_past (which
-    expand_temporal would replace with snce), we need to exclude all_past. -/
+/-- expand_temporal preserves is_S_free.
+    With 6-constructor Formula, expand_temporal is the identity, so this is trivial. -/
 private theorem expand_preserves_S_free_no_allp (φ : Formula)
-    (hs : is_S_free φ = true) (hnap : has_no_allpast_allfuture φ = true) :
+    (hs : is_S_free φ = true) (_hnap : has_no_allpast_allfuture φ = true) :
     is_S_free (expand_temporal φ) = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b iha ihb =>
-    simp [is_S_free] at hs; simp [has_no_allpast_allfuture] at hnap
-    simp [expand_temporal, is_S_free, iha hs.1 hnap.1, ihb hs.2 hnap.2]
-  | box _ => simp [expand_temporal, is_S_free] at hs ⊢; exact hs
-  | all_past _ => simp [has_no_allpast_allfuture] at hnap
-  | all_future _ => simp [has_no_allpast_allfuture] at hnap
-  | untl a b iha ihb =>
-    simp [is_S_free] at hs; simp [has_no_allpast_allfuture] at hnap
-    simp [expand_temporal, is_S_free, iha hs.1 hnap.1, ihb hs.2 hnap.2]
-  | snce _ _ => simp [is_S_free] at hs
+  simp only [expand_temporal_id]; exact hs
 
 /-! ## Restricted Fragment: no_S_nested_in_U and U-free implies separated
 

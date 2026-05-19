@@ -50,8 +50,6 @@ theorem u_free_s_free_imp_separated (φ : Formula)
     simp [is_syntactically_separated, is_U_free, is_S_free] at *
     exact ⟨ih1 hu.1 hs.1, ih2 hu.2 hs.2⟩
   | box _ => rfl
-  | all_past _ => simp [is_syntactically_separated, is_U_free] at *; exact hu
-  | all_future _ => simp [is_syntactically_separated, is_S_free] at *; exact hs
   | untl _ _ => simp [is_U_free] at hu
   | snce _ _ => simp [is_S_free] at hs
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #157 -- Separation Module Repair and Axiom Elimination (v12)
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 30 hours
 - **Dependencies**: Task 116 (completed -- removed all_past/all_future constructors)
 - **Research Inputs**: reports/12_team-research.md
@@ -116,7 +116,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 ---
 
-### Phase 1: Repair Defs.lean -- Foundation Layer [NOT STARTED]
+### Phase 1: Repair Defs.lean -- Foundation Layer [COMPLETED]
 
 **Goal**: Fix the foundational definitions file so all predicates and measures compute correctly for the 6-constructor Formula type. Add `@[simp]` lemmas for `int_truth`, `is_U_free`, `is_S_free`, `is_syntactically_separated`, `junction_depth`, and other functions at `all_past`/`all_future` applications.
 
@@ -141,7 +141,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 **Tasks**:
 
-- [ ] Task 1.1: Add `int_truth` simp lemmas to Defs.lean (~40 LOC)
+- [x] Task 1.1: Add `int_truth` simp lemmas to Defs.lean (~40 LOC) *(completed)*
   - After the `int_truth` definition, add:
     ```lean
     @[simp] theorem int_truth_all_past (M : IntStructure) (t : ℤ) (φ : Formula) :
@@ -156,7 +156,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
   - Proof strategy: Unfold `all_past`/`all_future`/`some_past`/`some_future` defs, then unfold `int_truth` for the resulting `imp`/`snce`/`untl`/`bot` structure. Use `constructor` + `intro` + `push_neg` to establish the quantifier equivalences. The key step is showing `¬∃ s, s < t ∧ ¬(int_truth M s φ) ∧ ... ↔ ∀ s, s < t → int_truth M s φ`.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Defs`
 
-- [ ] Task 1.2: Remove dead match arms from function definitions in Defs.lean (~-36 lines, +52 simp lemmas)
+- [x] Task 1.2: Remove dead match arms from function definitions in Defs.lean (~-36 lines, +52 simp lemmas) *(completed — removed 36 dead arms from 18 functions, added 22 simp lemmas)*
   - Remove `| .all_past` and `| .all_future` arms from: `int_truth`, `formula_atoms`, `is_U_free`, `is_S_free`, `is_syntactically_separated`, `is_future_only`, `is_past_only`, `is_properly_separated`, `junction_depth`, `junction_depth_U`, `junction_depth_S`, `U_depth_under_S`, `count_U_subformulas`, `S_nesting_above_U`, `S_nesting_above_U_inner`, `u_appearances_top_level_only`, `u_appears_only_as_top_level`, `no_S_nested_in_U`
   - For each function, add `@[simp]` lemmas establishing the value at `all_past φ` and `all_future φ`:
     ```lean
@@ -173,7 +173,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
   - Update docstrings to reflect 6-constructor semantics
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Defs`
 
-- [ ] Task 1.3: Fix `has_no_allpast_allfuture` and `expand_temporal` in TemporalClosure.lean
+- [x] Task 1.3: Fix `has_no_allpast_allfuture` and `expand_temporal` in TemporalClosure.lean *(completed — also fixed Duality.lean, IntHelpers.lean, NegationEquiv.lean as prerequisites)*
   - Since `has_no_allpast_allfuture` is trivially `true` for all formulas, add:
     ```lean
     @[simp] theorem has_no_allpast_allfuture_true (φ : Formula) :
@@ -189,7 +189,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
   - Mark dead code sections with removal comments (do not yet delete large blocks -- that is Phase 5)
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure`
 
-- [ ] Task 1.4: Verify Defs.lean and TemporalClosure.lean compile cleanly
+- [x] Task 1.4: Verify Defs.lean and TemporalClosure.lean compile cleanly *(completed — both compile with zero errors, zero sorry, zero axioms)*
   - Run `lake build` targeting both modules
   - Verify no dead match arm warnings
   - Run `#check @is_S_free_all_past` and `#check @int_truth_all_past` to confirm simp lemmas exist

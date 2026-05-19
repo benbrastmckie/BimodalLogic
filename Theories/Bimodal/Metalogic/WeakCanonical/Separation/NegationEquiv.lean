@@ -46,6 +46,7 @@ theorem neg_until_equiv (A B : Formula) :
   constructor
   · -- (→): not U(A,B) -> G(not A) v U(not A ^ not B, not A)
     intro hnotU hnotG
+    simp only [int_truth_all_future, Formula.neg, int_truth] at hnotG
     -- hnotU : (∃ s > t, A(s) ∧ B on (t,s)) → False
     -- hnotG : (∀ s > t, A(s) → False) → False
     have hexA : ∃ s, t < s ∧ int_truth M s A := by
@@ -75,6 +76,7 @@ theorem neg_until_equiv (A B : Formula) :
       exact hminA r htr (lt_trans hrm hmu) hAr
   · -- (←): G(not A) v U(not A ^ not B, not A) -> not U(A,B)
     intro hrhs huntl
+    simp only [Formula.or, Formula.neg, int_truth, int_truth_all_future] at hrhs
     obtain ⟨u, htu, hAu, hBguard⟩ := huntl
     have hnotGnotA : (∀ s, t < s → int_truth M s A → False) → False :=
       fun h => h u htu hAu
@@ -104,6 +106,7 @@ theorem neg_since_equiv (A B : Formula) :
   constructor
   · -- (→): not S(A,B) -> H(not A) v S(not A ^ not B, not A)
     intro hnotS hnotH
+    simp only [int_truth_all_past, Formula.neg, int_truth] at hnotH
     have hexA : ∃ s, s < t ∧ int_truth M s A := by
       by_contra hall; push_neg at hall
       exact hnotH (fun s hst => hall s hst)
@@ -135,6 +138,7 @@ theorem neg_since_equiv (A B : Formula) :
     · intro r hmr hrt hAr; exact hminA r (lt_trans hum hmr) hrt hAr
   · -- (←): H(not A) v S(not A ^ not B, not A) -> not S(A,B)
     intro hrhs hsnce
+    simp only [Formula.or, Formula.neg, int_truth, int_truth_all_past] at hrhs
     obtain ⟨u, hut, hAu, hBguard⟩ := hsnce
     have hnotHnotA : (∀ s, s < t → int_truth M s A → False) → False :=
       fun h => h u hut hAu
