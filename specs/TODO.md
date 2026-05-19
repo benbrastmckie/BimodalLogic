@@ -42,13 +42,10 @@ technical_debt:
 
 ### Completeness
 
-116 [IMPLEMENTING] → 157 [RESEARCHED] → 155 [IMPLEMENTING]
 
-116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
-157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
-  └─ 116 [IMPLEMENTING] — (formula-refactor: define G/H via U/S) (see above)
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-  └─ 157 [RESEARCHED] — (completeness: expressive completeness of {S,U}) (see above)
+  └─ 157 [RESEARCHED] — Formalize expressive completeness of {S,U} over integer time
+    └─ 116 [IMPLEMENTING] — Remove G and H as primitive constructors; define via U and S
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
 
