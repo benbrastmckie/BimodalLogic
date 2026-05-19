@@ -128,7 +128,7 @@ The metalogic is organized around a base axiom system with three extensions: Den
 
 ```mermaid
 graph TD
-    B("<b>Base</b><br/>AddCommGroup · LinearOrder<br/>Nontrivial · NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
+    B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
     D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 1 axiom<br/>Sound ✓ · Complete ✓")
     C("<b>Continuous</b><br/>+ ConditionallyCompleteLinearOrder<br/>Dense + 1 axiom<br/>Sound ✗ · Complete ✗")
     Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ⧖")
