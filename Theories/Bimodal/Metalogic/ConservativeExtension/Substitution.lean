@@ -23,15 +23,15 @@ namespace Bimodal.Metalogic.ConservativeExtension
 open Bimodal.Syntax
 
 /-- Substitution sigma[q -> bot]: replace the fresh atom `Sum.inr ()` with `bot`.
-All other atoms (of the form `Sum.inl s`) are unchanged. -/
+All other atoms (of the form `Sum.inl a`) are unchanged. -/
 def substFormula : ExtFormula → ExtFormula
-  | ExtFormula.atom (Sum.inl s) => ExtFormula.atom (Sum.inl s)
+  | ExtFormula.atom (Sum.inl a) => ExtFormula.atom (Sum.inl a)
   | ExtFormula.atom (Sum.inr ()) => ExtFormula.bot
   | ExtFormula.bot => ExtFormula.bot
   | ExtFormula.imp φ ψ => ExtFormula.imp (substFormula φ) (substFormula ψ)
   | ExtFormula.box φ => ExtFormula.box (substFormula φ)
-  | ExtFormula.all_past φ => ExtFormula.all_past (substFormula φ)
-  | ExtFormula.all_future φ => ExtFormula.all_future (substFormula φ)
+  | ExtFormula.untl φ ψ => ExtFormula.untl (substFormula φ) (substFormula ψ)
+  | ExtFormula.snce φ ψ => ExtFormula.snce (substFormula φ) (substFormula ψ)
 
 /-!
 ## Structural Lemmas
@@ -41,8 +41,8 @@ def substFormula : ExtFormula → ExtFormula
 theorem substFormula_bot : substFormula ExtFormula.bot = ExtFormula.bot := rfl
 
 @[simp]
-theorem substFormula_atom_inl (s : String) :
-    substFormula (ExtFormula.atom (Sum.inl s)) = ExtFormula.atom (Sum.inl s) := rfl
+theorem substFormula_atom_inl (a : Atom) :
+    substFormula (ExtFormula.atom (Sum.inl a)) = ExtFormula.atom (Sum.inl a) := rfl
 
 @[simp]
 theorem substFormula_atom_fresh :
@@ -57,12 +57,12 @@ theorem substFormula_box (φ : ExtFormula) :
     substFormula (φ.box) = (substFormula φ).box := rfl
 
 @[simp]
-theorem substFormula_all_past (φ : ExtFormula) :
-    substFormula (φ.all_past) = (substFormula φ).all_past := rfl
+theorem substFormula_untl (φ ψ : ExtFormula) :
+    substFormula (ExtFormula.untl φ ψ) = ExtFormula.untl (substFormula φ) (substFormula ψ) := rfl
 
 @[simp]
-theorem substFormula_all_future (φ : ExtFormula) :
-    substFormula (φ.all_future) = (substFormula φ).all_future := rfl
+theorem substFormula_snce (φ ψ : ExtFormula) :
+    substFormula (ExtFormula.snce φ ψ) = ExtFormula.snce (substFormula φ) (substFormula ψ) := rfl
 
 /-!
 ## Derived Operator Preservation
@@ -85,12 +85,23 @@ theorem substFormula_diamond (φ : ExtFormula) :
     substFormula φ.diamond = (substFormula φ).diamond := rfl
 
 @[simp]
-theorem substFormula_some_past (φ : ExtFormula) :
-    substFormula φ.some_past = (substFormula φ).some_past := rfl
+theorem substFormula_top : substFormula ExtFormula.top = ExtFormula.top := rfl
 
 @[simp]
 theorem substFormula_some_future (φ : ExtFormula) :
     substFormula φ.some_future = (substFormula φ).some_future := rfl
+
+@[simp]
+theorem substFormula_some_past (φ : ExtFormula) :
+    substFormula φ.some_past = (substFormula φ).some_past := rfl
+
+@[simp]
+theorem substFormula_all_future (φ : ExtFormula) :
+    substFormula φ.all_future = (substFormula φ).all_future := rfl
+
+@[simp]
+theorem substFormula_all_past (φ : ExtFormula) :
+    substFormula φ.all_past = (substFormula φ).all_past := rfl
 
 @[simp]
 theorem substFormula_always (φ : ExtFormula) :
@@ -112,10 +123,10 @@ theorem substFormula_swap_temporal (φ : ExtFormula) :
     simp [ExtFormula.swap_temporal, substFormula, ih1, ih2]
   | box _ ih =>
     simp [ExtFormula.swap_temporal, substFormula, ih]
-  | all_past _ ih =>
-    simp [ExtFormula.swap_temporal, substFormula, ih]
-  | all_future _ ih =>
-    simp [ExtFormula.swap_temporal, substFormula, ih]
+  | untl _ _ ih1 ih2 =>
+    simp [ExtFormula.swap_temporal, substFormula, ih1, ih2]
+  | snce _ _ ih1 ih2 =>
+    simp [ExtFormula.swap_temporal, substFormula, ih1, ih2]
 
 /-!
 ## Key Preservation Lemma: q-free formulas are fixed points
@@ -138,12 +149,12 @@ theorem substFormula_preserves_qfree (φ : ExtFormula) (h : freshAtom ∉ φ.ato
   | box a ih =>
     simp [ExtFormula.atoms] at h
     simp [substFormula, ih h]
-  | all_past a ih =>
-    simp [ExtFormula.atoms] at h
-    simp [substFormula, ih h]
-  | all_future a ih =>
-    simp [ExtFormula.atoms] at h
-    simp [substFormula, ih h]
+  | untl a b iha ihb =>
+    simp only [ExtFormula.atoms, Finset.mem_union, not_or] at h
+    simp [substFormula, iha h.1, ihb h.2]
+  | snce a b iha ihb =>
+    simp only [ExtFormula.atoms, Finset.mem_union, not_or] at h
+    simp [substFormula, iha h.1, ihb h.2]
 
 /-- Embedded formulas are unchanged by substitution. -/
 theorem substFormula_of_embedded (φ : Formula) :
@@ -167,8 +178,12 @@ theorem freshAtom_not_in_substFormula_atoms (φ : ExtFormula) :
     simp [substFormula, ExtFormula.atoms, Finset.mem_union]
     exact ⟨iha, ihb⟩
   | box a ih => simp [substFormula, ExtFormula.atoms]; exact ih
-  | all_past a ih => simp [substFormula, ExtFormula.atoms]; exact ih
-  | all_future a ih => simp [substFormula, ExtFormula.atoms]; exact ih
+  | untl a b iha ihb =>
+    simp [substFormula, ExtFormula.atoms, Finset.mem_union]
+    exact ⟨iha, ihb⟩
+  | snce a b iha ihb =>
+    simp [substFormula, ExtFormula.atoms, Finset.mem_union]
+    exact ⟨iha, ihb⟩
 
 /-- Substitution is idempotent: applying it twice gives the same result. -/
 theorem substFormula_idempotent (φ : ExtFormula) :
@@ -189,23 +204,44 @@ def substAxiom {φ : ExtFormula} (h : ExtAxiom φ) : ExtAxiom (substFormula φ) 
   cases h with
   | prop_k a b c => exact ExtAxiom.prop_k (substFormula a) (substFormula b) (substFormula c)
   | prop_s a b => exact ExtAxiom.prop_s (substFormula a) (substFormula b)
+  | ex_falso a => exact ExtAxiom.ex_falso (substFormula a)
+  | peirce a b => exact ExtAxiom.peirce (substFormula a) (substFormula b)
   | modal_t a => exact ExtAxiom.modal_t (substFormula a)
   | modal_4 a => exact ExtAxiom.modal_4 (substFormula a)
   | modal_b a => exact ExtAxiom.modal_b (substFormula a)
   | modal_5_collapse a => exact ExtAxiom.modal_5_collapse (substFormula a)
-  | ex_falso a => exact ExtAxiom.ex_falso (substFormula a)
-  | peirce a b => exact ExtAxiom.peirce (substFormula a) (substFormula b)
   | modal_k_dist a b => exact ExtAxiom.modal_k_dist (substFormula a) (substFormula b)
-  | temp_k_dist a b => exact Extsorry /- temp_k_dist removed in BX -/ (substFormula a) (substFormula b)
-  | temp_4 a => exact Extsorry /- temp_4 removed in BX -/ (substFormula a)
-  | temp_a a => exact Extsorry /- temp_a removed in BX -/ (substFormula a)
-  | temp_l a => exact Extsorry /- temp_l removed in BX -/ (substFormula a)
+  | serial_future => exact ExtAxiom.serial_future
+  | serial_past => exact ExtAxiom.serial_past
+  | left_mono_until_G a b c => exact ExtAxiom.left_mono_until_G (substFormula a) (substFormula b) (substFormula c)
+  | left_mono_since_H a b c => exact ExtAxiom.left_mono_since_H (substFormula a) (substFormula b) (substFormula c)
+  | right_mono_until a b c => exact ExtAxiom.right_mono_until (substFormula a) (substFormula b) (substFormula c)
+  | right_mono_since a b c => exact ExtAxiom.right_mono_since (substFormula a) (substFormula b) (substFormula c)
+  | connect_future a => exact ExtAxiom.connect_future (substFormula a)
+  | connect_past a => exact ExtAxiom.connect_past (substFormula a)
+  | enrichment_until a b c => exact ExtAxiom.enrichment_until (substFormula a) (substFormula b) (substFormula c)
+  | enrichment_since a b c => exact ExtAxiom.enrichment_since (substFormula a) (substFormula b) (substFormula c)
+  | self_accum_until a b => exact ExtAxiom.self_accum_until (substFormula a) (substFormula b)
+  | self_accum_since a b => exact ExtAxiom.self_accum_since (substFormula a) (substFormula b)
+  | absorb_until a b => exact ExtAxiom.absorb_until (substFormula a) (substFormula b)
+  | absorb_since a b => exact ExtAxiom.absorb_since (substFormula a) (substFormula b)
+  | linear_until a b c d => exact ExtAxiom.linear_until (substFormula a) (substFormula b) (substFormula c) (substFormula d)
+  | linear_since a b c d => exact ExtAxiom.linear_since (substFormula a) (substFormula b) (substFormula c) (substFormula d)
+  | until_F a b => exact ExtAxiom.until_F (substFormula a) (substFormula b)
+  | since_P a b => exact ExtAxiom.since_P (substFormula a) (substFormula b)
+  | temp_linearity a b => exact ExtAxiom.temp_linearity (substFormula a) (substFormula b)
+  | temp_linearity_past a b => exact ExtAxiom.temp_linearity_past (substFormula a) (substFormula b)
+  | F_until_equiv a => exact ExtAxiom.F_until_equiv (substFormula a)
+  | P_since_equiv a => exact ExtAxiom.P_since_equiv (substFormula a)
   | modal_future a => exact ExtAxiom.modal_future (substFormula a)
-  | temp_linearity a b => exact Extsorry /- temp_linearity removed in BX -/ (substFormula a) (substFormula b)
-  | density a => exact Extsorry /- density removed in BX -/ (substFormula a)
-  | discreteness_forward a => exact Extsorry /- discreteness_forward removed in BX -/ (substFormula a)
-  | seriality_future => exact Extsorry /- seriality_future removed in BX -/
-  | seriality_past => exact Extsorry /- seriality_past removed in BX -/
+  | discrete_symm_fwd => exact ExtAxiom.discrete_symm_fwd
+  | discrete_symm_bwd => exact ExtAxiom.discrete_symm_bwd
+  | discrete_propagate_fwd => exact ExtAxiom.discrete_propagate_fwd
+  | discrete_propagate_bwd => exact ExtAxiom.discrete_propagate_bwd
+  | discrete_box_necessity => exact ExtAxiom.discrete_box_necessity
+  | prior_UZ a => exact ExtAxiom.prior_UZ (substFormula a)
+  | prior_SZ a => exact ExtAxiom.prior_SZ (substFormula a)
+  | z1 a => exact ExtAxiom.z1 (substFormula a)
 
 /-!
 ## List Substitution

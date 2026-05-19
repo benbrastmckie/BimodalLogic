@@ -1,7 +1,7 @@
 # Implementation Plan: Close Task 116 Sorries
 
 - **Task**: 167 - Close 7 sorries from task 116 (SubformulaClosure gap + ConservativeExtension dead code)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: 116
 - **Research Inputs**: specs/167_close_task116_sorries/reports/01_subformula-closure-gap.md
@@ -150,19 +150,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Remove dead ExtAxiom constructors and ConservativeExtension sorry arms [NOT STARTED]
+### Phase 4: Remove dead ExtAxiom constructors and ConservativeExtension sorry arms [COMPLETED]
 
 **Goal**: Eliminate all Category C sorries by removing the 8 dead `ExtAxiom` constructors that have no corresponding base `Axiom` counterpart, then cleaning up all affected match arms.
 
 **Tasks**:
-- [ ] Remove 8 dead constructors from `ExtAxiom` in ExtDerivation.lean (~lines 51-76): `temp_k_dist`, `temp_4`, `temp_l`, `temp_linearity`, `density`, `discreteness_forward`, `seriality_future`, `seriality_past`
-- [ ] Remove corresponding dead match arms from `embedAxiom` in ExtDerivation.lean (~lines 117-126)
-- [ ] Remove dead match arms from `substAxiom` in Substitution.lean (~lines 199-208)
-- [ ] Remove dead match arms from `substAxiomFresh` in Lifting.lean (~lines 202-211)
-- [ ] Remove dead match arms from `unembedAxiom` in Lifting.lean (~lines 229-239)
-- [ ] Remove dead match arms from `liftAxiom` in Lifting.lean (~lines 469-479)
-- [ ] Fix `temp_a` match arm in `substAxiomFresh` and `substAxiom`: change from `Extsorry` to `ExtAxiom.temp_a _` (temp_a is valid, was incorrectly sorry'd)
-- [ ] Run `lake build` on ConservativeExtension modules to verify no remaining sorry or compile errors
+- [x] Remove 8 dead constructors from `ExtAxiom` in ExtDerivation.lean (~lines 51-76): `temp_k_dist`, `temp_4`, `temp_l`, `temp_linearity`, `density`, `discreteness_forward`, `seriality_future`, `seriality_past` *(deviation: altered -- rewrote ExtAxiom to mirror base Axiom exactly with all 40 constructors, which also required updating ExtFormula to use untl/snce primitives and Atom instead of String)*
+- [x] Remove corresponding dead match arms from `embedAxiom` in ExtDerivation.lean (~lines 117-126)
+- [x] Remove dead match arms from `substAxiom` in Substitution.lean (~lines 199-208)
+- [x] Remove dead match arms from `substAxiomFresh` in Lifting.lean (~lines 202-211)
+- [x] Remove dead match arms from `unembedAxiom` in Lifting.lean (~lines 229-239)
+- [x] Remove dead match arms from `liftAxiom` in Lifting.lean (~lines 469-479)
+- [x] Fix `temp_a` match arm in `substAxiomFresh` and `substAxiom`: change from `Extsorry` to `ExtAxiom.temp_a _` (temp_a is valid, was incorrectly sorry'd) *(deviation: altered -- temp_a replaced by connect_future in new ExtAxiom mirroring base Axiom)*
+- [x] Run `lake build` on ConservativeExtension modules to verify no remaining sorry or compile errors
 
 **Timing**: 1 hour
 
