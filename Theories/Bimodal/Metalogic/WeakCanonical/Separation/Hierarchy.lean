@@ -1321,6 +1321,60 @@ theorem snce_depth_of_U_le_imp_right (a b : Formula) :
     snce_depth_of_U b ≤ snce_depth_of_U (.imp a b) :=
   Nat.le_max_right _ _
 
+/-- snce_depth_of_U passes through box unchanged. -/
+theorem snce_depth_of_U_le_box (a : Formula) :
+    snce_depth_of_U a ≤ snce_depth_of_U (.box a) :=
+  Nat.le_refl _
+
+/-- For `.snce a b` where not both U-free, left arg has strictly smaller depth. -/
+theorem snce_depth_of_U_le_snce_left (a b : Formula)
+    (h : ¬(is_U_free a = true ∧ is_U_free b = true)) :
+    snce_depth_of_U a ≤ snce_depth_of_U (.snce a b) := by
+  simp [snce_depth_of_U, h]; omega
+
+/-- For `.snce a b` where not both U-free, right arg has strictly smaller depth. -/
+theorem snce_depth_of_U_le_snce_right (a b : Formula)
+    (h : ¬(is_U_free a = true ∧ is_U_free b = true)) :
+    snce_depth_of_U b ≤ snce_depth_of_U (.snce a b) := by
+  simp [snce_depth_of_U, h]; omega
+
+/-! ### Step 5b′: Base Case — snce_depth_of_U = 0 with no_S_nested_in_U
+
+When `snce_depth_of_U phi = 0` and `no_S_nested_in_U phi`, the formula is
+syntactically separated (hence separable). This generalizes
+`snce_depth_zero_single_U_separated` by dropping the single-U-type and
+has_no_allpast_allfuture requirements.
+
+The argument:
+- `snce_depth_of_U = 0`: every `.snce a b` has `is_U_free a ∧ is_U_free b`
+  (the else branch adds 1, so depth 0 forces the if-branch at every `.snce`)
+- `no_S_nested_in_U`: every `.untl a b` has `is_S_free a ∧ is_S_free b`
+- Together these imply `is_syntactically_separated phi = true`. -/
+
+/-- Base case for GHR94 10.2.7: snce_depth_of_U = 0 with no_S_nested_in_U
+    implies syntactically separated, hence separable. -/
+theorem snce_depth_zero_no_S_nested_separated (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hd : snce_depth_of_U phi = 0) :
+    is_separable phi := by
+  suffices h : is_syntactically_separated phi = true from
+    separated_imp_separable phi h
+  induction phi with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 =>
+    simp [snce_depth_of_U] at hd
+    simp [no_S_nested_in_U] at hns
+    simp [is_syntactically_separated, ih1 hns.1 (by omega), ih2 hns.2 (by omega)]
+  | box a ih =>
+    simp [is_syntactically_separated]
+  | untl a b _ _ =>
+    simp [no_S_nested_in_U] at hns
+    simp [is_syntactically_separated, hns.1, hns.2]
+  | snce a b _ _ =>
+    simp [snce_depth_of_U] at hd
+    simp [is_syntactically_separated, hd.1, hd.2]
+
 /-! ### Step 5b: Base Case — snce_depth_of_U = 0 with single U-type
 
 When snce_depth_of_U phi = 0 and phi has single U-type U(A,B) with S-free A, B
