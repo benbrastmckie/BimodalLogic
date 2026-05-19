@@ -127,7 +127,7 @@ def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot
   - `Truth.some_future_iff`: `truth_at M Omega τ t (some_future φ) ↔ ∃ s, t < s ∧ truth_at M Omega τ s φ`
   - `Truth.some_past_iff`: `truth_at M Omega τ t (some_past φ) ↔ ∃ s, s < t ∧ truth_at M Omega τ s φ`
 - [x] 1.9. Verify: `lake build Bimodal.Semantics.Truth` compiles with zero errors
-- [ ] 1.10. Commit: `task 116 phase 1: remove all_future/all_past constructors, add def + @[simp]`
+- [x] 1.10. Commit: `task 116 phase 1: remove all_future/all_past constructors, add def + @[simp]` *(committed as aa1b5af0f)*
 
 **Timing**: 4 hours
 
@@ -199,7 +199,7 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 **Group A — Syntax layer** (no truth_at, purely structural):
 - [x] 3.1. Fix `Syntax/Formula.lean` internal references (if any remain after Phase 1) *(no changes needed — Phase 1 handled all)*
 - [x] 3.2. Fix `Syntax/Subformulas.lean` (2 arms) *(completed — removed all_future/all_past match/induction arms, rewrote membership theorems)*
-- [ ] 3.3. Fix `Syntax/SubformulaClosure.lean` (2 arms) *(63 errors remain — extensive injection/noConfusion rewrites needed)*
+- [ ] 3.3. Fix `Syntax/SubformulaClosure.lean` (2 arms) *(in progress — 26 errors remain after fixing defs, extractors, depth functions, decidable instances, duality proofs; remaining errors are injection/noConfusion rewrites in lines 1380-1560)*
 - [ ] 3.4. Fix `Syntax.lean` barrel file (2 arms)
 - [ ] 3.5. Verify: `lake build Bimodal.Syntax` compiles
 
@@ -219,7 +219,7 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 
 **Group E — Metalogic core**:
 - [x] 3.14. Fix `Metalogic/SoundnessLemmas.lean` (2 arms) *(completed — 102 errors fixed, added swap_temporal simp lemmas to Formula.lean, rewrote proofs with Truth.future_iff/past_iff/some_future_iff/some_past_iff)*
-- [ ] 3.15. Fix `Metalogic/Soundness.lean` *(42 errors remain — same patterns as SoundnessLemmas)*
+- [x] 3.15. Fix `Metalogic/Soundness.lean` *(completed — rewrote all simp calls to use Truth characterization theorems, rewrote linearity/seriality/duality proofs for existential forms)*
 - [x] 3.16. Fix `Metalogic/Decidability/SignedFormula.lean` (4 arms) *(completed — removed all_future/all_past arms from subformulas, subformulas_trans, unexpandedComplexity)*
 - [ ] 3.17. Verify: `lake build Bimodal.Metalogic.Soundness` and `lake build Bimodal.Metalogic.Decidability` compile
 
@@ -249,9 +249,9 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 
 **Group I — Theorems**:
 - [x] 3.36. Fix `Theorems/GeneralizedNecessitation.lean` *(completed — added swap_temporal_all_future/all_past to simp calls)*
-- [ ] 3.37. Fix `Theorems/Perpetuity/Bridge.lean`
+- [x] 3.37. Fix `Theorems/Perpetuity/Bridge.lean` *(completed — added swap_temporal_all_future/all_past to simp calls)*
 - [x] 3.38. Fix `Theorems/Perpetuity/Helpers.lean` *(completed — added swap_temporal_all_future to simp call)*
-- [ ] 3.39. Fix `Theorems/Perpetuity/Principles.lean` *(5 errors remain)*
+- [x] 3.39. Fix `Theorems/Perpetuity/Principles.lean` *(completed — added swap_temporal_all_future/all_past to simp calls)*
 - [x] 3.40. Fix `Theorems/TemporalDerived.lean` *(completed — fixed H_transitivity swap proof)*
 - [ ] 3.41. Verify: `lake build Bimodal.Theorems` compiles
 
