@@ -34,8 +34,8 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 40 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1)
-Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean).
+**Total**: 40 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1).
+Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean, Task 116).
 
 ### Key Properties
 
@@ -59,16 +59,17 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-42 constructors organized into six layers:
+40 constructors organized into seven layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (24): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
 - **Uniformity** (5): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
+- **Z1** (1): IsSuccArchimedean characteristic axiom (discrete-only)
 
-Base axioms (39) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
-Note: temp_k_dist and temp_4 are now derived theorems (Task 116), reducing constructors by 2.
+Base axioms (37) are valid on all linear temporal orders. Prior/Z1 axioms (3) are discrete-only.
+Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean, Task 116).
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)

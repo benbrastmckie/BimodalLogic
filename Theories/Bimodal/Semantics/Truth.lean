@@ -42,10 +42,10 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
 ✓ Imp: Standard material conditional matches paper
 ✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → truth_at M Ω σ t φ`
   matches paper's quantification over σ ∈ Ω (admissible histories)
-✓ Past: `∀ (s : D), s ≤ t → truth_at M τ s φ`
-  uses reflexive ordering (all past times, including now)
-✓ Future: `∀ (s : D), t ≤ s → truth_at M τ s φ`
-  uses reflexive ordering (all future times, including now)
+✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → truth_at M τ s φ`
+  uses strict ordering (all past times, excluding now); derived via def + Until/Since
+✓ Future (G): via `@[simp] future_iff`: `∀ s, t < s → truth_at M τ s φ`
+  uses strict ordering (all future times, excluding now); derived via def + Until/Since
 
 ## Main Definitions
 
@@ -66,10 +66,10 @@ See SoundnessLemmas.lean for details on the module hierarchy restructuring.
 
 ## Implementation Notes
 
-- Truth is defined recursively on formula structure
+- Truth is defined recursively on 6 formula constructors (atom, bot, imp, box, untl, snce)
 - Modal box quantifies over all world histories at current time
-- Temporal past/future quantify over ALL strictly past/future times in D excluding now (irreflexive)
 - Until/Since use strict witness (s > t / s < t) with open guards (t,s) / (s,t)
+- G/H/F/P are `def` abbreviations with `@[simp]` characterization theorems
 - Atoms are false at times outside the history's domain
 
 ## References
@@ -99,14 +99,17 @@ Given:
 
 Returns whether `φ` is true at this semantic configuration.
 
-The evaluation is defined recursively on formula structure:
+The evaluation is defined recursively on formula structure (6 constructors):
 - Atoms: true iff there exists a proof that t is in the history's domain
   AND valuation says so at current state (atoms are false at times outside domain)
 - Bot (⊥): always false
 - Implication: standard material conditional
 - Box (□): true iff φ true at all world histories in Ω at time t
-- Past (H): true iff φ true at all strictly past times in D (irreflexive, excludes now)
-- Future (G): true iff φ true at all strictly future times in D (irreflexive, excludes now)
+- Until U(φ,ψ): ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r) (strict witness, open guard)
+- Since S(φ,ψ): ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r) (strict witness, open guard)
+
+G (all_future), H (all_past), F (some_future), P (some_past) are `def` abbreviations
+with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
 
 The `Omega` parameter restricts which histories the box modality quantifies over.
 When `Omega = Set.univ`, this recovers the original universal quantification.
