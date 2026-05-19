@@ -27,8 +27,9 @@ combining S5 modal logic with linear temporal logic.
 - This enables freshness: for any finite set of atoms, there exists an atom not in the set
 - Bot (⊥) is primitive; negation is derived via implication
 - Box (□) is primitive; diamond (◇) is derived via De Morgan duality
-- `all_past` and `all_future` are primitive temporal operators
-- `always`, `sometimes` are derived from primitives
+- `untl` and `snce` are primitive temporal operators
+- `all_past`, `all_future`, `some_past`, `some_future` are derived via `def` abbreviations
+- `always`, `sometimes` are derived from these
 
 ## Naming Convention
 
@@ -50,18 +51,21 @@ namespace Bimodal.Syntax
 /--
 Formula type for bimodal logic TM.
 
-A formula is built from:
+A formula is built from 6 primitive constructors:
 - Propositional atoms (strings)
 - Bottom (⊥, falsum)
 - Implication (→)
 - Modal necessity (□)
-- Universal past (H, "for all past times")
-- Universal future (G, "for all future times")
+- Until (U, "ψ holds until φ")
+- Since (S, "ψ has held since φ")
 
-All other connectives and operators are derived from these primitives.
+All other connectives and operators are derived from these primitives:
+- G (all_future) = ¬F(¬φ) where F(φ) = U(φ, ⊤)
+- H (all_past) = ¬P(¬φ) where P(φ) = S(φ, ⊤)
+- F (some_future) = U(φ, ⊤)
+- P (some_past) = S(φ, ⊤)
 
-**Naming Convention**: Follows the `box`/`□` pattern with descriptive function
-names (`all_past`, `all_future`) and concise DSL notation (`H`, `G`).
+**Reference**: Burgess 1982 §1.1 — G, H, F, P defined in terms of U and S.
 -/
 inductive Formula : Type where
   /-- Propositional atom (variable) -/
@@ -72,10 +76,6 @@ inductive Formula : Type where
   | imp : Formula → Formula → Formula
   /-- Modal necessity (□φ, "necessarily φ") -/
   | box : Formula → Formula
-  /-- Universal past (Hφ, "φ has always been true") -/
-  | all_past : Formula → Formula
-  /-- Universal future (Gφ, "φ will always be true") -/
-  | all_future : Formula → Formula
   /-- Until U(φ, ψ) — Burgess convention: φ = event (eventually true), ψ = guard (holds in between).
       "ψ holds until φ becomes true": ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r). -/
   | untl : Formula → Formula → Formula
@@ -108,6 +108,52 @@ namespace Formula
     Uses `Atom.mk_base` to create a base atom with no fresh index. -/
 def atom_s (s : String) : Formula := atom (Atom.mk_base s)
 
+/-- Top (⊤, verum, tautology): ⊥ → ⊥ -/
+def top : Formula := Formula.bot.imp Formula.bot
+
+/-- Negation (¬φ) as derived operator: φ → ⊥ -/
+def neg (φ : Formula) : Formula := φ.imp bot
+
+/--
+Existential future operator (Fφ, "φ will be true at some future time").
+
+Derived as: F(φ) = U(φ, ⊤) — "φ eventually, with ⊤ holding until then".
+This means: there exists a future time where φ is true.
+
+**DSL Notation**: `F φ` for "Future" / "Finally"
+-/
+def some_future (φ : Formula) : Formula := Formula.untl φ Formula.top
+
+/--
+Existential past operator (Pφ, "φ was true at some past time").
+
+Derived as: P(φ) = S(φ, ⊤) — "φ occurred, with ⊤ holding since then".
+This means: there exists a past time where φ is true.
+
+**DSL Notation**: `P φ` for "Past" / "Previously"
+-/
+def some_past (φ : Formula) : Formula := Formula.snce φ Formula.top
+
+/--
+Universal future operator (Gφ, "φ will always be true").
+
+Derived as: G(φ) = ¬F(¬φ) = ¬(U(¬φ, ⊤)) — "it is not the case that ¬φ eventually".
+This means: φ holds at all strictly future times.
+
+**DSL Notation**: `G φ` for "Globally" / "Generally"
+-/
+def all_future (φ : Formula) : Formula := (some_future φ.neg).neg
+
+/--
+Universal past operator (Hφ, "φ has always been true").
+
+Derived as: H(φ) = ¬P(¬φ) = ¬(S(¬φ, ⊤)) — "it is not the case that ¬φ occurred".
+This means: φ holds at all strictly past times.
+
+**DSL Notation**: `H φ` for "Historically"
+-/
+def all_past (φ : Formula) : Formula := (some_past φ.neg).neg
+
 /--
 Structural complexity of a formula (number of connectives + 1).
 
@@ -118,8 +164,6 @@ def complexity : Formula → Nat
   | bot => 1
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
-  | all_past φ => 1 + φ.complexity
-  | all_future φ => 1 + φ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
@@ -138,12 +182,6 @@ private theorem beq_imp_eq (a b c d : Formula) :
 private theorem beq_box_eq (a b : Formula) :
     (box a == box b) = (a == b) := rfl
 
-private theorem beq_all_past_eq (a b : Formula) :
-    (all_past a == all_past b) = (a == b) := rfl
-
-private theorem beq_all_future_eq (a b : Formula) :
-    (all_future a == all_future b) = (a == b) := rfl
-
 private theorem beq_untl_eq (a b c d : Formula) :
     (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
 
@@ -157,8 +195,6 @@ theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   | bot => native_decide
   | imp a b iha ihb => rw [beq_imp_eq, iha, ihb]; rfl
   | box a ih => rw [beq_box_eq, ih]
-  | all_past a ih => rw [beq_all_past_eq, ih]
-  | all_future a ih => rw [beq_all_future_eq, ih]
   | untl a b iha ihb => rw [beq_untl_eq, iha, ihb]; rfl
   | snce a b iha ihb => rw [beq_snce_eq, iha, ihb]; rfl
 
@@ -173,50 +209,38 @@ theorem eq_of_beq {φ ψ : Formula} (h : (φ == ψ) = true) : φ = ψ := by
     | atom q =>
       have heq : (atom p == atom q) = (p == q) := rfl
       rw [heq] at h; exact congrArg atom (beq_iff_eq.mp h)
-    | bot | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
+    | bot | imp _ _ | box _ | untl _ _ | snce _ _ => exact nomatch h
   | bot =>
     match ψ with
     | bot => rfl
-    | atom _ | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
+    | atom _ | imp _ _ | box _ | untl _ _ | snce _ _ => exact nomatch h
   | imp a b iha ihb =>
     match ψ with
     | imp c d =>
       have heq : (imp a b == imp c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
       exact congrArg₂ imp (iha h.1) (ihb h.2)
-    | atom _ | bot | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
+    | atom _ | bot | box _ | untl _ _ | snce _ _ => exact nomatch h
   | box a ih =>
     match ψ with
     | box c =>
       have heq : (box a == box c) = (a == c) := rfl
       rw [heq] at h; exact congrArg box (ih h)
-    | atom _ | bot | imp _ _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
-  | all_past a ih =>
-    match ψ with
-    | all_past c =>
-      have heq : (all_past a == all_past c) = (a == c) := rfl
-      rw [heq] at h; exact congrArg all_past (ih h)
-    | atom _ | bot | imp _ _ | box _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
-  | all_future a ih =>
-    match ψ with
-    | all_future c =>
-      have heq : (all_future a == all_future c) = (a == c) := rfl
-      rw [heq] at h; exact congrArg all_future (ih h)
-    | atom _ | bot | imp _ _ | box _ | all_past _ | untl _ _ | snce _ _ => exact nomatch h
+    | atom _ | bot | imp _ _ | untl _ _ | snce _ _ => exact nomatch h
   | untl a b iha ihb =>
     match ψ with
     | untl c d =>
       have heq : (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
       exact congrArg₂ untl (iha h.1) (ihb h.2)
-    | atom _ | bot | imp _ _ | box _ | all_past _ | all_future _ | snce _ _ => exact nomatch h
+    | atom _ | bot | imp _ _ | box _ | snce _ _ => exact nomatch h
   | snce a b iha ihb =>
     match ψ with
     | snce c d =>
       have heq : (snce a b == snce c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
       exact congrArg₂ snce (iha h.1) (ihb h.2)
-    | atom _ | bot | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ => exact nomatch h
+    | atom _ | bot | imp _ _ | box _ | untl _ _ => exact nomatch h
 
 instance : LawfulBEq Formula where
   eq_of_beq := eq_of_beq
@@ -240,8 +264,6 @@ def modalDepth : Formula → Nat
   | bot => 0
   | imp φ ψ => max φ.modalDepth ψ.modalDepth
   | box φ => 1 + φ.modalDepth
-  | all_past φ => φ.modalDepth
-  | all_future φ => φ.modalDepth
   | untl φ ψ => max φ.modalDepth ψ.modalDepth
   | snce φ ψ => max φ.modalDepth ψ.modalDepth
 
@@ -263,8 +285,6 @@ def temporalDepth : Formula → Nat
   | bot => 0
   | imp φ ψ => max φ.temporalDepth ψ.temporalDepth
   | box φ => φ.temporalDepth
-  | all_past φ => 1 + φ.temporalDepth
-  | all_future φ => 1 + φ.temporalDepth
   | untl φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
   | snce φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
 
@@ -285,15 +305,8 @@ def countImplications : Formula → Nat
   | bot => 0
   | imp φ ψ => 1 + φ.countImplications + ψ.countImplications
   | box φ => φ.countImplications
-  | all_past φ => φ.countImplications
-  | all_future φ => φ.countImplications
   | untl φ ψ => φ.countImplications + ψ.countImplications
   | snce φ ψ => φ.countImplications + ψ.countImplications
-
-/--
-Negation (¬φ) as derived operator: φ → ⊥
--/
-def neg (φ : Formula) : Formula := φ.imp bot
 
 /--
 Conjunction (φ ∧ ψ) as derived operator: ¬(φ → ¬ψ)
@@ -384,32 +397,6 @@ prefix:80 "△" => Formula.always
 prefix:80 "▽" => Formula.sometimes
 
 /--
-Existential past operator (Pφ, "φ was true at some past time").
-
-Derived as: ¬H¬φ = ¬(all_past (¬φ)) (not for-all-past not φ).
-This means: there exists a past time where φ is true.
-
-**DSL Notation**: `P φ` for "Past" / "Previously"
-
-Note: H (always in past) is our `all_past`, and P (sometime past) is this operator.
--/
-def some_past (φ : Formula) : Formula := φ.neg.all_past.neg
-
-/--
-Existential future operator (Fφ, "φ will be true at some future time").
-
-Derived as: ¬G¬φ = ¬(all_future (¬φ)) (not for-all-future not φ).
-This means: there exists a future time where φ is true.
-
-**DSL Notation**: `F φ` for "Future" / "Finally"
-
-Note: G (always in future) is our `all_future`, and F (sometime future) is this operator.
--/
-def some_future (φ : Formula) : Formula := φ.neg.all_future.neg
-
-
-
-/--
 Swap temporal operators (past ↔ future) in a formula.
 
 This transformation is used in the temporal duality inference rule (TD),
@@ -424,8 +411,6 @@ def swap_temporal : Formula → Formula
   | bot => bot
   | imp φ ψ => imp φ.swap_temporal ψ.swap_temporal
   | box φ => box φ.swap_temporal
-  | all_past φ => all_future φ.swap_temporal
-  | all_future φ => all_past φ.swap_temporal
   | untl φ ψ => snce φ.swap_temporal ψ.swap_temporal
   | snce φ ψ => untl φ.swap_temporal ψ.swap_temporal
 
@@ -440,12 +425,10 @@ theorem swap_temporal_involution (φ : Formula) :
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ihp ihq => simp [swap_temporal, ihp, ihq]
-  | box _ ih => simp [swap_temporal, ih]
-  | all_past _ ih => simp [swap_temporal, ih]
-  | all_future _ ih => simp [swap_temporal, ih]
-  | untl _ _ ih1 ih2 => simp [swap_temporal, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp [swap_temporal, ih1, ih2]
+  | imp _ _ ihp ihq => simp only [swap_temporal, ihp, ihq]
+  | box _ ih => simp only [swap_temporal, ih]
+  | untl _ _ ih1 ih2 => simp only [swap_temporal, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp only [swap_temporal, ih1, ih2]
 
 
 /--
@@ -502,12 +485,6 @@ def needsPositiveHypotheses : Formula → Bool
 @[simp] lemma needsPositiveHypotheses_box (psi : Formula) :
     (Formula.box psi).needsPositiveHypotheses = true := rfl
 
-@[simp] lemma needsPositiveHypotheses_all_future (psi : Formula) :
-    (Formula.all_future psi).needsPositiveHypotheses = true := rfl
-
-@[simp] lemma needsPositiveHypotheses_all_past (psi : Formula) :
-    (Formula.all_past psi).needsPositiveHypotheses = true := rfl
-
 @[simp] lemma needsPositiveHypotheses_untl (p q : Formula) :
     (Formula.untl p q).needsPositiveHypotheses = true := rfl
 
@@ -530,8 +507,6 @@ def atoms : Formula → Finset Atom
   | bot => ∅
   | imp φ ψ => φ.atoms ∪ ψ.atoms
   | box φ => φ.atoms
-  | all_past φ => φ.atoms
-  | all_future φ => φ.atoms
   | untl φ ψ => φ.atoms ∪ ψ.atoms
   | snce φ ψ => φ.atoms ∪ ψ.atoms
 
@@ -540,12 +515,10 @@ theorem atoms_swap_temporal (φ : Formula) : φ.swap_temporal.atoms = φ.atoms :
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
-  | box _ ih => simp [swap_temporal, atoms, ih]
-  | all_past _ ih => simp [swap_temporal, atoms, ih]
-  | all_future _ ih => simp [swap_temporal, atoms, ih]
-  | untl _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
+  | imp _ _ ih1 ih2 => simp only [swap_temporal, atoms, ih1, ih2]
+  | box _ ih => simp only [swap_temporal, atoms, ih]
+  | untl _ _ ih1 ih2 => simp only [swap_temporal, atoms, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp only [swap_temporal, atoms, ih1, ih2]
 
 /-!
 ### Predicate Formulas (for Standard Translation)
@@ -561,8 +534,6 @@ def predFormulas : Formula → Finset Formula
   | bot => ∅
   | imp φ ψ => φ.predFormulas ∪ ψ.predFormulas
   | box φ => {box φ} ∪ φ.predFormulas
-  | all_future φ => φ.predFormulas
-  | all_past φ => φ.predFormulas
   | untl φ ψ => φ.predFormulas ∪ ψ.predFormulas
   | snce φ ψ => φ.predFormulas ∪ ψ.predFormulas
 

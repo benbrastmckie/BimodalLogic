@@ -122,8 +122,6 @@ def truth_at (M : TaskModel F) (Omega : Set (WorldHistory F))
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M Omega τ t φ → truth_at M Omega τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), σ ∈ Omega → truth_at M Omega σ t φ
-  | Formula.all_past φ => ∀ (s : D), s < t → truth_at M Omega τ s φ
-  | Formula.all_future φ => ∀ (s : D), t < s → truth_at M Omega τ s φ
   | Formula.untl φ ψ => ∃ s : D, t < s ∧ truth_at M Omega τ s φ ∧
       ∀ r : D, t < r → r < s → truth_at M Omega τ r ψ
   | Formula.snce φ ψ => ∃ s : D, s < t ∧ truth_at M Omega τ s φ ∧
@@ -207,30 +205,82 @@ theorem box_iff
   rfl
 
 /--
-Truth of past: formula true at all strictly past times (strict, excludes now).
+Truth of some_future: existential future operator.
+F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ holds.
 -/
-theorem past_iff
+@[simp] theorem some_future_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    (truth_at M Omega τ t φ.all_past) ↔
-      ∀ (s : D), s < t → (truth_at M Omega τ s φ) := by
-  rfl
+    truth_at M Omega τ t (Formula.some_future φ) ↔
+      ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+  simp only [Formula.some_future, Formula.top, truth_at]
+  constructor
+  · rintro ⟨s, hlt, hevent, _⟩
+    exact ⟨s, hlt, hevent⟩
+  · rintro ⟨s, hlt, hs⟩
+    exact ⟨s, hlt, hs, fun _ _ _ => id⟩
 
 /--
-Truth of future: formula true at all strictly future times (strict, excludes now).
+Truth of some_past: existential past operator.
+P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
 -/
-theorem future_iff
+@[simp] theorem some_past_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    (truth_at M Omega τ t φ.all_future) ↔
-      ∀ (s : D), t < s → (truth_at M Omega τ s φ) := by
-  rfl
+    truth_at M Omega τ t (Formula.some_past φ) ↔
+      ∃ s, s < t ∧ truth_at M Omega τ s φ := by
+  simp only [Formula.some_past, Formula.top, truth_at]
+  constructor
+  · rintro ⟨s, hlt, hevent, _⟩
+    exact ⟨s, hlt, hevent⟩
+  · rintro ⟨s, hlt, hs⟩
+    exact ⟨s, hlt, hs, fun _ _ _ => id⟩
+
+/--
+Truth of all_future: universal future operator.
+G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
+-/
+@[simp] theorem future_iff
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
+    (Omega : Set (WorldHistory F))
+    (φ : Formula) :
+    truth_at M Omega τ t φ.all_future ↔
+      ∀ (s : D), t < s → truth_at M Omega τ s φ := by
+  simp only [Formula.all_future, Formula.neg, Formula.some_future, Formula.top, truth_at]
+  constructor
+  · intro h s hlt
+    by_contra hns
+    exact h ⟨s, hlt, fun hs => hns hs, fun _ _ _ => id⟩
+  · intro h ⟨s, hlt, hevent, _⟩
+    exact hevent (h s hlt)
+
+/--
+Truth of all_past: universal past operator.
+H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
+-/
+@[simp] theorem past_iff
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
+    (Omega : Set (WorldHistory F))
+    (φ : Formula) :
+    truth_at M Omega τ t φ.all_past ↔
+      ∀ (s : D), s < t → truth_at M Omega τ s φ := by
+  simp only [Formula.all_past, Formula.neg, Formula.some_past, Formula.top, truth_at]
+  constructor
+  · intro h s hlt
+    by_contra hns
+    exact h ⟨s, hlt, fun hs => hns hs, fun _ _ _ => id⟩
+  · intro h ⟨s, hlt, hevent, _⟩
+    exact hevent (h s hlt)
 
 end Truth
 
@@ -318,20 +368,6 @@ theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F
     simp only [truth_at]
     -- Box quantifies over sigma in Omega at time t, independent of current history
     -- Both sides quantify over the same Omega, so definitionally equal
-  | all_past ψ ih =>
-    simp only [truth_at]
-    constructor
-    · intro h s h_lt
-      exact (ih s).mp (h s h_lt)
-    · intro h s h_lt
-      exact (ih s).mpr (h s h_lt)
-  | all_future ψ ih =>
-    simp only [truth_at]
-    constructor
-    · intro h s h_lt
-      exact (ih s).mp (h s h_lt)
-    · intro h s h_lt
-      exact (ih s).mpr (h s h_lt)
   | untl φ ψ ih_φ ih_ψ =>
     simp only [truth_at]
     constructor
@@ -435,86 +471,6 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           (WorldHistory.time_shift ρ (x - y)) (y - x) (-(x - y)) h_cancel
       have h2' := (truth_history_eq M Omega _ _ x h_hist_eq ψ).mp h2
       exact (truth_double_shift_cancel M Omega ρ (x - y) x ψ).mp h2'
-
-  | all_past ψ ih =>
-    -- Past quantifies over strictly past times (irreflexive)
-    -- Times shift together: s < y in σ corresponds to s-(y-x) < x in shifted history
-    simp only [truth_at]
-    constructor
-    · intro h_past s h_s_lt_y
-      -- s < y in σ, need to show truth at s in σ
-      -- Use shifted time: s' = s - (y - x) < x
-      have h_s_shifted_lt_x : s - (y - x) < x := by
-        have h := sub_lt_sub_right h_s_lt_y (y - x)
-        simp only [sub_sub_cancel] at h
-        exact h
-      have h_truth_shifted := h_past (s - (y - x)) h_s_shifted_lt_x
-      have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
-      have h_hist_eq :
-        WorldHistory.time_shift σ (s - (s - (y - x))) =
-        WorldHistory.time_shift σ (y - x) := by
-        exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-      have h_truth_ih := (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq.symm ψ).mp h_truth_shifted
-      exact (ih σ (s - (y - x)) s).mp h_truth_ih
-    · intro h_past s' h_s'_lt_x
-      -- s' < x in shifted σ, need to show truth at s' in shifted σ
-      -- s' corresponds to time s = s' + (y - x) in σ
-      have h_s_lt_y : s' + (y - x) < y := by
-        have h := add_lt_add_right h_s'_lt_x (y - x)
-        calc s' + (y - x) = (y - x) + s' := add_comm s' (y - x)
-          _ < (y - x) + x := h
-          _ = x + (y - x) := add_comm (y - x) x
-          _ = y := by rw [add_sub, add_sub_cancel_left]
-      have h_truth_orig := h_past (s' + (y - x)) h_s_lt_y
-      have h_shift_eq : (s' + (y - x)) - s' = y - x :=
-        add_sub_cancel_left s' (y - x)
-      have h_hist_eq :
-        WorldHistory.time_shift σ ((s' + (y - x)) - s') =
-        WorldHistory.time_shift σ (y - x) := by
-        exact WorldHistory.time_shift_congr σ ((s' + (y - x)) - s')
-          (y - x) h_shift_eq
-      have h_ih := (ih σ s' (s' + (y - x))).mpr h_truth_orig
-      exact (truth_history_eq M Omega _ _ s' h_hist_eq ψ).mp h_ih
-
-  | all_future ψ ih =>
-    -- Future case (irreflexive): s > y in σ corresponds to s-(y-x) > x in shifted history
-    simp only [truth_at]
-    constructor
-    · intro h_future s h_y_lt_s
-      -- y < s in σ, need to show truth at s in σ
-      -- Use shifted time: s' = s - (y - x) and x < s'
-      have h_x_lt_s_shifted : x < s - (y - x) := by
-        have h := sub_lt_sub_right h_y_lt_s (y - x)
-        simp only [sub_sub_cancel] at h
-        exact h
-      have h_truth_shifted := h_future (s - (y - x)) h_x_lt_s_shifted
-      have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
-      have h_hist_eq :
-        WorldHistory.time_shift σ (s - (s - (y - x))) =
-        WorldHistory.time_shift σ (y - x) := by
-        exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-      have h_truth_ih := (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq.symm ψ).mp h_truth_shifted
-      exact (ih σ (s - (y - x)) s).mp h_truth_ih
-    · intro h_future s' h_x_lt_s'
-      -- x < s' in shifted σ, need to show truth at s' in shifted σ
-      -- s' corresponds to time s = s' + (y - x) in σ
-      have h_y_lt_s : y < s' + (y - x) := by
-        have h := add_lt_add_right h_x_lt_s' (y - x)
-        have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
-        calc y = x + (y - x) := h_eq.symm
-          _ = (y - x) + x := add_comm x (y - x)
-          _ < (y - x) + s' := h
-          _ = s' + (y - x) := add_comm (y - x) s'
-      have h_truth_orig := h_future (s' + (y - x)) h_y_lt_s
-      have h_shift_eq : (s' + (y - x)) - s' = y - x :=
-        add_sub_cancel_left s' (y - x)
-      have h_hist_eq :
-        WorldHistory.time_shift σ ((s' + (y - x)) - s') =
-        WorldHistory.time_shift σ (y - x) := by
-        exact WorldHistory.time_shift_congr σ ((s' + (y - x)) - s')
-          (y - x) h_shift_eq
-      have h_ih := (ih σ s' (s' + (y - x))).mpr h_truth_orig
-      exact (truth_history_eq M Omega _ _ s' h_hist_eq ψ).mp h_ih
 
   | untl φ ψ ih_φ ih_ψ =>
     -- Until (Burgess convention): untl(event=φ, guard=ψ)

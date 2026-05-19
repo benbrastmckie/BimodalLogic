@@ -99,14 +99,14 @@ def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot
 
 ---
 
-### Phase 1: Core Redefinition — Formula.lean and Truth.lean [NOT STARTED]
+### Phase 1: Core Redefinition — Formula.lean and Truth.lean [COMPLETED]
 
 **Goal**: Remove `all_future` and `all_past` as constructors. Add `def` abbreviations. Prove `@[simp]` characterization theorems.
 
 **Tasks (execute in this exact order)**:
 
-- [ ] 1.1. In `Formula.lean`, remove `| all_past : Formula → Formula` (line 76) and `| all_future : Formula → Formula` (line 78) from the `inductive Formula` block
-- [ ] 1.2. In `Formula.lean`, add `def` abbreviations AFTER the `Formula` namespace opens (~line 105):
+- [x] 1.1. In `Formula.lean`, remove `| all_past : Formula → Formula` (line 76) and `| all_future : Formula → Formula` (line 78) from the `inductive Formula` block
+- [x] 1.2. In `Formula.lean`, add `def` abbreviations AFTER the `Formula` namespace opens (~line 105):
   ```lean
   def top : Formula := Formula.bot.imp Formula.bot
   def neg (φ : Formula) : Formula := φ.imp Formula.bot
@@ -116,17 +116,17 @@ def all_past (φ : Formula) := (some_past (φ.imp Formula.bot)).imp Formula.bot
   def all_past (φ : Formula) : Formula := (some_past φ.neg).neg
   ```
   NOTE: Check if `top`, `neg`, `some_future`, `some_past` already exist as definitions. If so, update them to use the new forms. Do NOT create duplicates.
-- [ ] 1.3. In `Formula.lean`, update `complexity` to remove `| all_past` and `| all_future` arms. Add `@[simp]` lemmas: `complexity_all_future`, `complexity_all_past`, etc. if needed.
-- [ ] 1.4. In `Formula.lean`, update `beq_refl` to remove `| all_past` and `| all_future` induction arms
-- [ ] 1.5. In `Formula.lean`, update ALL other functions and proofs that pattern-match on `all_past`/`all_future` (beq helpers, injection proofs, etc.) — there are 34 arm references in this file
-- [ ] 1.6. Verify: `lake build Bimodal.Syntax.Formula` compiles with zero errors
-- [ ] 1.7. In `Truth.lean`, update `truth_at` to remove `| all_past` and `| all_future` cases (currently 4 arm references)
-- [ ] 1.8. In `Truth.lean`, prove and add `@[simp]` to the 4 characterization theorems:
+- [x] 1.3. In `Formula.lean`, update `complexity` to remove `| all_past` and `| all_future` arms. Add `@[simp]` lemmas: `complexity_all_future`, `complexity_all_past`, etc. if needed. *(deviation: altered -- @[simp] complexity lemmas not needed since all_future/all_past are now defs that unfold structurally)*
+- [x] 1.4. In `Formula.lean`, update `beq_refl` to remove `| all_past` and `| all_future` induction arms
+- [x] 1.5. In `Formula.lean`, update ALL other functions and proofs that pattern-match on `all_past`/`all_future` (beq helpers, injection proofs, etc.) — there are 34 arm references in this file
+- [x] 1.6. Verify: `lake build Bimodal.Syntax.Formula` compiles with zero errors
+- [x] 1.7. In `Truth.lean`, update `truth_at` to remove `| all_past` and `| all_future` cases (currently 4 arm references)
+- [x] 1.8. In `Truth.lean`, prove and add `@[simp]` to the 4 characterization theorems:
   - `Truth.future_iff`: `truth_at M Omega τ t φ.all_future ↔ ∀ s, t < s → truth_at M Omega τ s φ`
   - `Truth.past_iff`: `truth_at M Omega τ t φ.all_past ↔ ∀ s, s < t → truth_at M Omega τ s φ`
   - `Truth.some_future_iff`: `truth_at M Omega τ t (some_future φ) ↔ ∃ s, t < s ∧ truth_at M Omega τ s φ`
   - `Truth.some_past_iff`: `truth_at M Omega τ t (some_past φ) ↔ ∃ s, s < t ∧ truth_at M Omega τ s φ`
-- [ ] 1.9. Verify: `lake build Bimodal.Semantics.Truth` compiles with zero errors
+- [x] 1.9. Verify: `lake build Bimodal.Semantics.Truth` compiles with zero errors
 - [ ] 1.10. Commit: `task 116 phase 1: remove all_future/all_past constructors, add def + @[simp]`
 
 **Timing**: 4 hours
