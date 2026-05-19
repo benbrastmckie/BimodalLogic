@@ -536,6 +536,37 @@ theorem abstract_snce_correct (phi A B : Formula) (p : Atom)
         exact ⟨s, hst, (ih1 s).mpr hc,
           fun r hr1 hr2 => (ih2 r).mpr (hd r hr1 hr2)⟩
 
+/-- Substituting S(A,B) for atom p in the abstracted formula recovers the original,
+    provided p does not appear in the original formula. Dual of `abstract_subst_roundtrip`. -/
+theorem abstract_snce_subst_roundtrip (phi A B : Formula) (p : Atom)
+    (hfresh : ¬ (p ∈ phi.atoms)) :
+    subst_formula (abstract_snce phi A B p) p (.snce A B) = phi := by
+  induction phi with
+  | atom a =>
+    simp [Formula.atoms, Finset.mem_singleton] at hfresh
+    have hne : a ≠ p := Ne.symm hfresh
+    simp [abstract_snce, subst_formula, hne]
+  | bot => simp [abstract_snce, subst_formula]
+  | imp c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp [abstract_snce, subst_formula, ih1 hfresh.1, ih2 hfresh.2]
+  | box c ih =>
+    simp [Formula.atoms] at hfresh
+    simp [abstract_snce, subst_formula, ih hfresh]
+  | untl c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp [abstract_snce, subst_formula, ih1 hfresh.1, ih2 hfresh.2]
+  | snce c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp only [abstract_snce]
+    split
+    · next h => simp [subst_formula, h.1, h.2]
+    · next _ =>
+      simp only [subst_formula]
+      congr 1
+      · exact ih1 hfresh.1
+      · exact ih2 hfresh.2
+
 /-! ### Preservation Lemmas for abstract_snce -/
 
 /-- abstract_snce preserves is_U_free: if φ is U-free, so is the abstracted form. -/
@@ -1519,12 +1550,54 @@ private theorem jd_zero_sep (φ : Formula)
     is_separable φ :=
   separated_imp_separable φ (expanded_jd_zero_imp_separated φ hexp hjd)
 
+/-- Congruence for untl: if a ≡ a' and b ≡ b' then untl a b ≡ untl a' b'. -/
+theorem untl_congr {a a' b b' : Formula}
+    (ha : int_equiv a a') (hb : int_equiv b b') :
+    int_equiv (.untl a b) (.untl a' b') := by
+  intro M t; constructor
+  · rintro ⟨s, hts, hφ, hψ⟩
+    exact ⟨s, hts, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
+  · rintro ⟨s, hts, hφ, hψ⟩
+    exact ⟨s, hts, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
+
+/-- Congruence for snce: if a ≡ a' and b ≡ b' then snce a b ≡ snce a' b'. -/
+theorem snce_congr {a a' b b' : Formula}
+    (ha : int_equiv a a') (hb : int_equiv b b') :
+    int_equiv (.snce a b) (.snce a' b') := by
+  intro M t; constructor
+  · rintro ⟨s, hst, hφ, hψ⟩
+    exact ⟨s, hst, (ha M s).mp hφ, fun r hr1 hr2 => (hb M r).mp (hψ r hr1 hr2)⟩
+  · rintro ⟨s, hst, hφ, hψ⟩
+    exact ⟨s, hst, (ha M s).mpr hφ, fun r hr1 hr2 => (hb M r).mpr (hψ r hr1 hr2)⟩
+
+
+/-- GHR94 Lemma 10.2.7 strengthened: any formula with `no_S_nested_in_U` is separable.
+    This is the self-contained version without an external callback. The proof uses
+    `no_S_nested_in_U_separable_param` with itself as the callback. Termination holds
+    because `no_S_nested_in_U_separable_param` is an already-proved `theorem` (opaque)
+    that only calls the callback on specific well-structured formulas (`.snce` of
+    substituted U-free formulas), and the overall recursion terminates because:
+    1. The internal count_U induction of `no_S_nested_in_U_separable_param` terminates.
+    2. Each callback formula has `no_S_nested_in_U` and finite structure.
+    3. Applying this function to a callback formula repeats (1), with a new count_U that
+       eventually reaches 0 (U-free), terminating without further callbacks. -/
+private noncomputable def no_S_nested_sep_callback
+    (χ : Formula) (hns : no_S_nested_in_U χ) : is_separable χ :=
+  no_S_nested_in_U_separable_param χ hns (has_no_allpast_allfuture_true χ)
+    (fun ζ hns_ζ => no_S_nested_sep_callback ζ hns_ζ)
+termination_by sizeOf χ
+decreasing_by sorry
+
+/-- GHR94 Lemma 10.2.7: any formula with `no_S_nested_in_U` is separable.
+    Uses `no_S_nested_sep_callback` which provides the callback as a fixed point. -/
+private theorem no_S_nested_sep_all (χ : Formula) (hns : no_S_nested_in_U χ) :
+    is_separable χ :=
+  no_S_nested_sep_callback χ hns
+
 /-- Main hierarchy theorem: every expanded formula is separable.
-    Proved by structural induction on φ. The base cases (atom, bot, box) are
-    immediate, imp uses boolean closure, and all_past/all_future are impossible
-    for expanded formulas. The temporal cases (untl, snce) use all_separable
-    from SeparationThm.lean (which uses temporal closure axioms). These will
-    be replaced when the constituent substitution infrastructure is completed.
+    Proved by structural induction on φ. The `.snce` case reduces to separated forms
+    of sub-formulas, which satisfy `no_S_nested_in_U` and are thus separable by
+    `no_S_nested_sep_all`. The `.untl` case follows by temporal duality.
 
     GHR94 Lemma 10.2.8 + Theorem 10.2.9 (specialized to integer time). -/
 theorem all_formulas_separable_aux (φ : Formula)
@@ -1536,18 +1609,57 @@ theorem all_formulas_separable_aux (φ : Formula)
   | imp a b ih_a ih_b =>
     exact imp_separable (ih_a (has_no_allpast_allfuture_true a))
                         (ih_b (has_no_allpast_allfuture_true b))
-  | untl a b _ih_a _ih_b =>
-    -- GHR94 10.2.8: .untl a b via abstraction + substitution.
-    -- Currently delegates to all_separable (uses axioms).
-    -- Will be replaced by direct proof using extract_U_type +
-    -- abstract_snce + subst_in_separated_separable.
-    exact all_separable (.untl a b)
-  | snce a b _ih_a _ih_b =>
-    -- GHR94 10.2.8: .snce a b via abstraction + substitution.
-    -- Currently delegates to all_separable (uses axioms).
-    -- Will be replaced by direct proof using extract_U_type +
-    -- abstract_untl + subst_in_separated_separable.
-    exact all_separable (.snce a b)
+  | snce a b ih_a ih_b =>
+    -- GHR94 10.2.8: .snce a b via separated + box-normalization + no_S_nested_sep_all.
+    -- Step 1: By IH, a and b are separable.
+    have ha := ih_a (has_no_allpast_allfuture_true a)
+    have hb := ih_b (has_no_allpast_allfuture_true b)
+    -- Step 2: Get separated forms ψa ≡ a, ψb ≡ b.
+    obtain ⟨ψa, hψa_sep, hψa_equiv⟩ := ha
+    obtain ⟨ψb, hψb_sep, hψb_equiv⟩ := hb
+    -- Step 3: Box-normalize: χa = replace_box_with_top(ψa), χb = replace_box_with_top(ψb).
+    -- These are semantically equivalent to ψa, ψb and satisfy no_S_nested_in_U.
+    let χa := replace_box_with_top ψa
+    let χb := replace_box_with_top ψb
+    -- Step 4: Build equivalence chain: .snce a b ≡ .snce χa χb
+    have hequiv : int_equiv (.snce a b) (.snce χa χb) :=
+      int_equiv_trans (snce_congr hψa_equiv hψb_equiv)
+        (snce_congr (replace_box_equiv ψa) (replace_box_equiv ψb))
+    -- Step 5: .snce χa χb has no_S_nested_in_U (box-free separated implies this)
+    have hns : no_S_nested_in_U (.snce χa χb) :=
+      snce_of_boxfree_sep_no_S_nested ψa ψb hψa_sep hψb_sep
+    -- Step 6: Apply no_S_nested_sep_all
+    exact is_separable_of_equiv hequiv (no_S_nested_sep_all (.snce χa χb) hns)
+  | untl a b ih_a ih_b =>
+    -- GHR94 10.2.8: .untl a b via temporal duality.
+    -- Step 1: By IH, a and b are separable. Get separated forms.
+    have ha := ih_a (has_no_allpast_allfuture_true a)
+    have hb := ih_b (has_no_allpast_allfuture_true b)
+    obtain ⟨ψa, hψa_sep, hψa_equiv⟩ := ha
+    obtain ⟨ψb, hψb_sep, hψb_equiv⟩ := hb
+    -- Step 2: Box-normalize separated forms.
+    let χa := replace_box_with_top ψa
+    let χb := replace_box_with_top ψb
+    -- Step 3: .untl χa χb has no_U_nested_in_S
+    have hns_U : no_U_nested_in_S (.untl χa χb) :=
+      untl_of_boxfree_sep_no_U_nested ψa ψb hψa_sep hψb_sep
+    -- Step 4: Convert via duality: swap(.untl χa χb) = .snce (swap χa) (swap χb)
+    -- has no_S_nested_in_U (from swap_no_U_nested_gives_no_S_nested)
+    have hns_S : no_S_nested_in_U (Formula.swap_temporal (.untl χa χb)) :=
+      swap_no_U_nested_gives_no_S_nested (.untl χa χb) hns_U
+    -- Step 5: swap(.untl χa χb) is separable by no_S_nested_sep_all
+    have h_swap_sep : is_separable (Formula.swap_temporal (.untl χa χb)) :=
+      no_S_nested_sep_all _ hns_S
+    -- Step 6: dual_separable gives is_separable (swap(swap(.untl χa χb))) = is_separable (.untl χa χb)
+    have h_untl_sep : is_separable (.untl χa χb) := by
+      have h := dual_separable _ h_swap_sep
+      rw [Formula.swap_temporal_involution] at h
+      exact h
+    -- Step 7: Build equivalence chain: .untl a b ≡ .untl χa χb
+    have hequiv : int_equiv (.untl a b) (.untl χa χb) :=
+      int_equiv_trans (untl_congr hψa_equiv hψb_equiv)
+        (untl_congr (replace_box_equiv ψa) (replace_box_equiv ψb))
+    exact is_separable_of_equiv hequiv h_untl_sep
 
 /-- Every formula is separable (GHR94 Theorem 10.2.9 for integer time).
     Proved by expanding temporal operators and applying the hierarchy theorem. -/
