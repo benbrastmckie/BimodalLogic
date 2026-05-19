@@ -28,16 +28,14 @@ namespace Bimodal.Syntax
 
 open Bimodal.Syntax.Formula
 
-/-- Substitute atom `q` with atom `r` in a formula.
-
-Note: Since all_future/all_past/some_future/some_past are defined abbreviations
-(not constructors), substitution handles them via the underlying imp/untl/snce arms.
-The simp lemmas below (subst_all_future, etc.) confirm the expected behavior. -/
+/-- Substitute atom `q` with atom `r` in a formula. -/
 def Formula.subst (q r : Atom) : Formula → Formula
   | atom s => if s = q then atom r else atom s
   | bot => bot
   | imp φ ψ => imp (φ.subst q r) (ψ.subst q r)
   | box φ => box (φ.subst q r)
+  | all_past φ => all_past (φ.subst q r)
+  | all_future φ => all_future (φ.subst q r)
   | untl φ ψ => untl (φ.subst q r) (ψ.subst q r)
   | snce φ ψ => snce (φ.subst q r) (ψ.subst q r)
 
@@ -108,11 +106,13 @@ theorem subst_diamond (q r : Atom) (φ : Formula) :
 
 @[simp]
 theorem subst_some_past (q r : Atom) (φ : Formula) :
-    (some_past φ).subst q r = some_past (φ.subst q r) := rfl
+    (some_past φ).subst q r = some_past (φ.subst q r) := by
+  simp only [some_past, neg, subst_imp, subst_bot, subst_all_past]
 
 @[simp]
 theorem subst_some_future (q r : Atom) (φ : Formula) :
-    (some_future φ).subst q r = some_future (φ.subst q r) := rfl
+    (some_future φ).subst q r = some_future (φ.subst q r) := by
+  simp only [some_future, neg, subst_imp, subst_bot, subst_all_future]
 
 /-!
 ## Freshness and substitution
@@ -131,6 +131,12 @@ theorem subst_fresh_eq (q r : Atom) (φ : Formula) (h : q ∉ φ.atoms) :
     simp only [atoms, Finset.mem_union, not_or] at h
     simp [subst, ih1 h.1, ih2 h.2]
   | box φ ih =>
+    simp only [atoms] at h
+    simp [subst, ih h]
+  | all_past φ ih =>
+    simp only [atoms] at h
+    simp [subst, ih h]
+  | all_future φ ih =>
     simp only [atoms] at h
     simp [subst, ih h]
   | untl φ ψ ih1 ih2 =>
@@ -154,6 +160,10 @@ theorem subst_atoms (q r : Atom) (φ : Formula) :
   | imp φ ψ ih1 ih2 =>
     simp only [subst, atoms, Finset.image_union, ih1, ih2]
   | box φ ih =>
+    simp only [subst, atoms, ih]
+  | all_past φ ih =>
+    simp only [subst, atoms, ih]
+  | all_future φ ih =>
     simp only [subst, atoms, ih]
   | untl φ ψ ih1 ih2 =>
     simp only [subst, atoms, Finset.image_union, ih1, ih2]
@@ -386,6 +396,8 @@ theorem swap_temporal_subst (q r : Atom) (φ : Formula) :
   | bot => simp [swap_temporal, subst]
   | imp a b iha ihb => simp [swap_temporal, subst, iha, ihb]
   | box a ih => simp [swap_temporal, subst, ih]
+  | all_past a ih => simp [swap_temporal, subst, ih]
+  | all_future a ih => simp [swap_temporal, subst, ih]
   | untl a b iha ihb => simp [swap_temporal, subst, iha, ihb]
   | snce a b iha ihb => simp [swap_temporal, subst, iha, ihb]
 

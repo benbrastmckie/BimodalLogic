@@ -392,9 +392,7 @@ def box_to_box_past (φ : Formula) : ⊢ φ.box.imp (φ.all_past.box) := by
     DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal)
   have mf_swap : ⊢ (φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box)).swap_temporal :=
     DerivationTree.temporal_duality _ mf
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_all_past,
-    Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-    Formula.swap_temporal, Formula.swap_temporal_involution] at mf_swap
+  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at mf_swap
   exact mf_swap
 
 /--
@@ -659,9 +657,7 @@ def box_diamond_to_past_box_diamond (φ : Formula) :
                 φ.diamond.box.swap_temporal.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ tf_swap
   -- Simplify: swap(swap x) = x
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_all_past,
-    Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-    Formula.swap_temporal, Formula.swap_temporal_involution] at td
+  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td
   exact td
 
 /--
@@ -737,9 +733,7 @@ noncomputable def past_k_dist (A B : Formula) :
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
     DerivationTree.temporal_duality _ fk
   -- Simplify: swap(swap x) = x
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_all_past,
-    Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-    Formula.swap_temporal, Formula.swap_temporal_involution] at td
+  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td
   exact td
 
 /--
@@ -804,9 +798,7 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
                           φ.diamond.box.swap_temporal.all_future).swap_temporal :=
       DerivationTree.temporal_duality _ tf_swap
     -- Simplify: swap(swap x) = x
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_all_past,
-    Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-    Formula.swap_temporal, Formula.swap_temporal_involution] at td_result
+    simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td_result
     exact td_result
 
   -- Now build the components of △◇φ = H◇φ ∧ ◇φ ∧ G◇φ
@@ -841,9 +833,7 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
         ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal =
         (φ.diamond.box.imp φ.diamond).all_past := by
         -- Expand definitions and apply involution/commutation lemmas
-        simp only [Formula.swap_temporal_all_future, Formula.swap_temporal_all_past,
-    Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-    Formula.swap_temporal, Formula.swap_temporal_involution]
+        simp only [Formula.swap_temporal, Formula.swap_temporal_involution]
       rw [← eq1]
       exact past_mt_raw
     -- Use past K distribution: H(□◇φ → ◇φ) → (H□◇φ → H◇φ)

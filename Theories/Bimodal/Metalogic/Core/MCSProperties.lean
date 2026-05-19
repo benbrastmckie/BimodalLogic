@@ -256,10 +256,7 @@ theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formu
   have h_deriv : [Formula.all_future φ] ⊢ (Formula.all_future φ).all_future :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
   -- By closure: GGφ ∈ S
-  -- FIX: simp partially unfolds all_future in the goal, creating a mismatch.
-  -- Need to use change or exact with explicit form.
-  have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by
-    intro χ hχ; simp only [List.mem_singleton] at hχ; rw [hχ]; exact h_all_future
+  have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
   exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
 
 /--
@@ -282,10 +279,12 @@ def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.
   -- since swap(swap φ) = φ by involution
   have h3 : (ψ.all_future.imp ψ.all_future.all_future).swap_temporal =
       φ.all_past.imp φ.all_past.all_past := by
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
-      Formula.swap_temporal_involution]
-    show ψ.swap_temporal.all_past.imp ψ.swap_temporal.all_past.all_past = _
-    rw [Formula.swap_temporal_involution]
+    -- ψ = φ.swap_temporal, so ψ.swap_temporal = φ.swap_temporal.swap_temporal = φ
+    simp only [Formula.swap_temporal]
+    -- Now we need to show: ψ.swap_temporal.all_past.imp ... = φ.all_past.imp ...
+    -- where ψ.swap_temporal = φ by involution
+    have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
+    rw [h_inv]
   rw [h3] at h2
   exact h2
 
@@ -317,8 +316,7 @@ theorem SetMaximalConsistent.all_past_all_past {S : Set Formula} {φ : Formula}
   have h_deriv : [Formula.all_past φ] ⊢ (Formula.all_past φ).all_past :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
   -- By closure: HHφ ∈ S
-  have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by
-    intro χ hχ; simp only [List.mem_singleton] at hχ; rw [hχ]; exact h_all_past
+  have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
   exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
 
 /-! ## Consistency Properties -/

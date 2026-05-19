@@ -188,9 +188,44 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
         have h_mem := parametricCanonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
         exact (ih h_ψ_sub fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
-  -- Note: all_future and all_past are no longer constructors (task 116).
-  -- They are handled by the imp case above since all_future φ = (some_future φ.neg).neg
-  -- which is an imp term, and all_past φ = (some_past φ.neg).neg similarly.
+  | all_future ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_future root ψ h_sub
+    simp only [truth_at]
+    constructor
+    · intro h_G s hts
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · -- Backward: use restricted temporal coherence (strict version)
+      intro h_all
+      obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam
+      -- neg(ψ) ∈ deferralClosure root since ψ ∈ subformulaClosure root
+      have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+        closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
+        intro s hts
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hts)
+      -- Use restricted_temporal_backward_G_strict with strict forward_F
+      exact restricted_temporal_backward_G_strict fam root h_forward_F
+        t ψ h_neg_ψ_dc h_all_mcs
+  | all_past ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_past root ψ h_sub
+    simp only [truth_at]
+    constructor
+    · intro h_H s hst
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · -- Backward: use restricted temporal coherence (strict version)
+      intro h_all
+      obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam
+      -- neg(ψ) ∈ deferralClosure root since ψ ∈ subformulaClosure root
+      have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+        closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
+        intro s hst
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
+      -- Use restricted_temporal_backward_H_strict with strict backward_P
+      exact restricted_temporal_backward_H_strict fam root h_backward_P
+        t ψ h_neg_ψ_dc h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     have h_phi_sub : phi ∈ subformulaClosure root := closure_untl_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_untl_right root phi psi h_sub
@@ -351,9 +386,38 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
         have h_mem := parametricCanonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
         exact (ih h_ψ_sub fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
-  -- Note: all_future and all_past are no longer constructors (task 116).
-  -- They are handled by the imp case above since all_future φ = (some_future φ.neg).neg
-  -- which is an imp term, and all_past φ = (some_past φ.neg).neg similarly.
+  | all_future ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_future root ψ h_sub
+    simp only [truth_at]
+    constructor
+    · intro h_G s hts
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · intro h_all
+      obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam
+      have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+        closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
+        intro s hts
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hts)
+      exact restricted_temporal_backward_G_strict fam root h_forward_F
+        t ψ h_neg_ψ_dc h_all_mcs
+  | all_past ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_past root ψ h_sub
+    simp only [truth_at]
+    constructor
+    · intro h_H s hst
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · intro h_all
+      obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam
+      have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+        closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
+        intro s hst
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
+      exact restricted_temporal_backward_H_strict fam root h_backward_P
+        t ψ h_neg_ψ_dc h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     have h_phi_sub : phi ∈ subformulaClosure root := closure_untl_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_untl_right root phi psi h_sub

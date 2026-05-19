@@ -327,7 +327,7 @@ Top element of the Lindenbaum algebra: the class of ⊤ (Truth).
 
 We use (⊥ → ⊥) as the representation of Truth.
 -/
-def top_quot : LindenbaumAlg := toQuot Formula.top
+def top_quot : LindenbaumAlg := toQuot (Formula.bot.imp Formula.bot)
 
 /--
 Bottom element of the Lindenbaum algebra: the class of ⊥.
@@ -412,7 +412,7 @@ theorem sigma_quot_G_H (a : LindenbaumAlg) :
   induction a using Quotient.ind
   rename_i φ
   show toQuot (φ.all_future.swap_temporal) = H_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal_all_future]
+  simp only [Formula.swap_temporal]
   rfl
 
 /--
@@ -423,7 +423,7 @@ theorem sigma_quot_H_G (a : LindenbaumAlg) :
   induction a using Quotient.ind
   rename_i φ
   show toQuot (φ.all_past.swap_temporal) = G_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal_all_past]
+  simp only [Formula.swap_temporal]
   rfl
 
 /--

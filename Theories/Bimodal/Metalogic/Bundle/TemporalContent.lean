@@ -149,11 +149,15 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
     (h_mcs : SetMaximalConsistent M) (phi : Formula) :
     phi ∈ f_content M ↔ phi.neg ∉ g_content M := by
   simp only [mem_f_content_iff, mem_g_content_iff]
-  -- FIX: After G/H/F/P redefinition (task 116), F(phi) and ¬G(¬phi) are no longer
-  -- definitionally equal. F(phi) = untl phi top, while ¬G(¬phi) = ¬¬F(¬¬phi).
-  -- This duality requires a derivation: F(phi) ↔ F(phi.neg.neg) (via double negation
-  -- + right_mono_until). Needs helper lemma `mcs_some_future_iff_neg_all_future_neg`.
-  sorry
+  unfold Formula.some_future
+  constructor
+  · intro h_neg_G_neg_in
+    intro h_G_neg_in
+    exact set_consistent_not_both h_mcs.1 (phi.neg.all_future) h_G_neg_in h_neg_G_neg_in
+  · intro h_G_neg_not_in
+    cases SetMaximalConsistent.negation_complete h_mcs (phi.neg.all_future) with
+    | inl h_in => exact absurd h_in h_G_neg_not_in
+    | inr h_neg_in => exact h_neg_in
 
 open Bimodal.Metalogic.Core in
 /--
@@ -169,9 +173,13 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
     (h_mcs : SetMaximalConsistent M) (phi : Formula) :
     phi ∈ p_content M ↔ phi.neg ∉ h_content M := by
   simp only [mem_p_content_iff, mem_h_content_iff]
-  -- FIX: Same issue as f_content_iff_not_neg_in_g_content. P(phi) and ¬H(¬phi) are
-  -- no longer definitionally equal after task 116 redefinition.
-  -- Needs helper lemma `mcs_some_past_iff_neg_all_past_neg`.
-  sorry
+  unfold Formula.some_past
+  constructor
+  · intro h_neg_H_neg_in h_H_neg_in
+    exact set_consistent_not_both h_mcs.1 (phi.neg.all_past) h_H_neg_in h_neg_H_neg_in
+  · intro h_H_neg_not_in
+    cases SetMaximalConsistent.negation_complete h_mcs (phi.neg.all_past) with
+    | inl h_in => exact absurd h_in h_H_neg_not_in
+    | inr h_neg_in => exact h_neg_in
 
 end Bimodal.Metalogic.Bundle

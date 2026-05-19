@@ -95,11 +95,10 @@ lemma neg_all_future_to_some_future_neg (M : Set Formula) (h_mcs : SetMaximalCon
   have h_G_dne := G_dne_theorem phi
   have h_neg_G_dne : Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) ∈ M :=
     SetMaximalConsistent.contrapositive h_mcs h_G_dne h_neg_G
-  -- FIX: After task 116 redefinition, some_future(¬phi) ≠ ¬(all_future(¬¬phi)) by rfl.
-  -- F(¬phi) = untl (¬phi) ⊤, while ¬G(¬¬phi) = ¬¬F(¬¬¬phi).
-  -- These are propositionally equivalent but structurally different.
-  -- Needs MCS-level equivalence lemma for F(ψ) ↔ ¬G(¬ψ).
-  sorry
+  have h_eq : Formula.some_future (Formula.neg phi) =
+              Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) := rfl
+  rw [h_eq]
+  exact h_neg_G_dne
 
 /--
 Transform neg(H phi) membership to P(neg phi) membership in an MCS.
@@ -113,9 +112,10 @@ lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsist
   have h_H_dne := H_dne_theorem phi
   have h_neg_H_dne : Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) ∈ M :=
     SetMaximalConsistent.contrapositive h_mcs h_H_dne h_neg_H
-  -- FIX: Same issue as neg_all_future_to_some_future_neg above.
-  -- P(¬phi) ≠ ¬H(¬¬phi) by rfl after task 116 redefinition.
-  sorry
+  have h_eq : Formula.some_past (Formula.neg phi) =
+              Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) := rfl
+  rw [h_eq]
+  exact h_neg_H_dne
 
 /--
 Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.

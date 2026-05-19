@@ -123,8 +123,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
         h_G_context_in_M d_G_neg
 
     -- Contradiction - F psi = neg(G(neg psi)) is also in M
-    -- FIX: F(ψ) = ¬G(¬ψ) no longer rfl after task 116 redefinition
-    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := by sorry
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
     rw [h_F_eq] at h_F
     exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_in_M h_F
 
@@ -175,8 +174,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
 
     -- Contradiction: F(psi) = ¬G(¬psi) ∈ M
-    -- FIX: F(ψ) = ¬G(¬ψ) no longer rfl after task 116 redefinition
-    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := by sorry
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
     rw [h_F_eq] at h_F
     exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_psi h_F
 
@@ -249,8 +247,7 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
         h_H_context_in_M d_H_neg
 
     -- Contradiction - P psi = neg(H(neg psi)) is also in M
-    -- FIX: P(ψ) = ¬H(¬ψ) no longer rfl after task 116 redefinition
-    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := by sorry
+    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
     rw [h_P_eq] at h_P
     exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg psi)) h_H_neg_in_M h_P
 
@@ -300,8 +297,7 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M
 
     -- Contradiction: P(psi) = ¬H(¬psi) ∈ M
-    -- FIX: P(ψ) = ¬H(¬ψ) no longer rfl after task 116 redefinition
-    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := by sorry
+    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
     rw [h_P_eq] at h_P
     exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg psi)) h_H_neg_psi h_P
 
@@ -414,8 +410,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_F_psi : ψ.some_future ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.until_imp_F φ ψ)) h_U
-  -- FIX: F(ψ) = ¬G(¬ψ) no longer rfl after task 116 redefinition
-  have h_F_eq : ψ.some_future = (ψ.neg.all_future).neg := by sorry
+  have h_F_eq : ψ.some_future = (ψ.neg.all_future).neg := rfl
   rw [h_F_eq] at h_F_psi
   exact set_consistent_not_both h_mcs.1 (ψ.neg.all_future) h_G_neg_psi h_F_psi
 
@@ -493,8 +488,7 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_P_psi : ψ.some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.since_imp_P φ ψ)) h_S
-  -- FIX: P(ψ) = ¬H(¬ψ) no longer rfl after task 116 redefinition
-  have h_P_eq : ψ.some_past = (ψ.neg.all_past).neg := by sorry
+  have h_P_eq : ψ.some_past = (ψ.neg.all_past).neg := rfl
   rw [h_P_eq] at h_P_psi
   exact set_consistent_not_both h_mcs.1 (ψ.neg.all_past) h_H_neg_psi h_P_psi
 
@@ -538,8 +532,7 @@ theorem g_content_subset_implies_h_content_reverse
     DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
   have h_H_nn : phi.neg.neg.all_past ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
-  -- FIX: P(¬φ) = ¬H(¬¬φ) no longer rfl after task 116 redefinition
-  have h_eq : (Formula.neg phi).some_past = Formula.neg (phi.neg.neg.all_past) := by sorry
+  have h_eq : (Formula.neg phi).some_past = Formula.neg (phi.neg.neg.all_past) := rfl
   rw [h_eq] at h_P_neg_M'
   exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_past) h_H_nn h_P_neg_M'
 
@@ -570,8 +563,7 @@ theorem h_content_subset_implies_g_content_reverse
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.all_future ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
-  -- FIX: F(¬φ) = ¬G(¬¬φ) no longer rfl after task 116 redefinition
-  have h_eq : (Formula.neg phi).some_future = Formula.neg (phi.neg.neg.all_future) := by sorry
+  have h_eq : (Formula.neg phi).some_future = Formula.neg (phi.neg.neg.all_future) := rfl
   rw [h_eq] at h_F_neg_M'
   exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_future) h_G_nn h_F_neg_M'
 

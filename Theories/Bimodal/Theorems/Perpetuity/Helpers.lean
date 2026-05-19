@@ -71,8 +71,7 @@ def box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
   have h1 : ⊢ φ.swap_temporal.box.imp φ.swap_temporal.all_future := box_to_future φ.swap_temporal
   have h2 : ⊢ (φ.swap_temporal.box.imp φ.swap_temporal.all_future).swap_temporal :=
     DerivationTree.temporal_duality (φ.swap_temporal.box.imp φ.swap_temporal.all_future) h1
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
-    Formula.swap_temporal_involution] at h2
+  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
   exact h2
 
 /--

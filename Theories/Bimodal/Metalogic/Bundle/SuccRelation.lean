@@ -118,29 +118,11 @@ would mean having both `G(neg phi)` and `neg(G(neg phi))` in M, contradicting co
 lemma G_neg_implies_not_F (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
     (h_G_neg : Formula.all_future phi.neg ∈ M) :
     Formula.some_future phi ∉ M := by
-  -- all_future (phi.neg) = neg (some_future (phi.neg.neg))
-  -- so h_G_neg : neg (some_future (phi.neg.neg)) ∈ M
-  -- If some_future phi ∈ M, derive some_future (phi.neg.neg) ∈ M to get contradiction.
-  -- Use BX3 (right_mono_until): G(phi → phi.neg.neg) → (U(phi, ⊤) → U(phi.neg.neg, ⊤))
+  -- F(phi) = neg(G(neg phi)) by definition
   intro h_F
-  -- Step 1: phi → phi.neg.neg is derivable (DN intro)
-  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
-  -- Step 2: G(phi → phi.neg.neg) by temporal necessitation
-  have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
-    Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dni
-  -- Step 3: BX3: G(phi → phi.neg.neg) → (U(phi, ⊤) → U(phi.neg.neg, ⊤))
-  have h_bx3 : [] ⊢ (phi.imp phi.neg.neg).all_future.imp
-      ((Formula.untl phi Formula.top).imp (Formula.untl phi.neg.neg Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_until phi phi.neg.neg Formula.top)
-  -- Step 4: U(phi, ⊤) → U(phi.neg.neg, ⊤) ∈ M
-  have h_mono_in := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni))
-    h_F
-  -- h_mono_in : Formula.untl phi.neg.neg Formula.top ∈ M
-  -- which is: some_future (phi.neg.neg) ∈ M
-  -- But h_G_neg : neg (some_future (phi.neg.neg)) ∈ M
-  exact set_consistent_not_both h_mcs.1 (Formula.some_future phi.neg.neg) h_mono_in h_G_neg
+  have h_eq : Formula.some_future phi = (Formula.all_future phi.neg).neg := rfl
+  rw [h_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future phi.neg) h_G_neg h_F
 
 /--
 neg(FF(phi)) in MCS implies GG(neg(phi)) in MCS.
@@ -159,81 +141,70 @@ So neg(FF(phi)) contains a double negation that can be eliminated.
 lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
     (h_neg_FF : (Formula.some_future (Formula.some_future phi)).neg ∈ M) :
     Formula.all_future (Formula.all_future phi.neg) ∈ M := by
-  -- Strategy: derive ⊢ neg(F(F(phi))) → G(G(neg(phi))) and apply to MCS.
-  -- Key definitional equalities:
-  --   all_future X = (some_future (X.neg)).neg  [def]
-  --   some_future X = untl X top               [def]
-  -- So: all_future (phi.neg) = (some_future (phi.neg.neg)).neg
-  --     all_future (all_future (phi.neg)) = (some_future ((all_future (phi.neg)).neg)).neg
-  --       = (some_future ((some_future (phi.neg.neg)).neg.neg)).neg
+  -- neg(FF(phi)) has structure: (phi.neg.all_future.neg).neg.all_future.neg.neg
+  -- We want: phi.neg.all_future.all_future
   --
-  -- Step 1: Derive some_future (phi.neg.neg) → some_future phi  (event mono with DNE)
-  have h_dne_phi : [] ⊢ phi.neg.neg.imp phi :=
-    Bimodal.Theorems.Propositional.double_negation phi
-  have h_G_dne_phi : [] ⊢ (phi.neg.neg.imp phi).all_future :=
-    Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_phi
-  -- BX3: G(phi.neg.neg → phi) → (F(phi.neg.neg) → F(phi))
-  -- i.e., (phi.neg.neg.imp phi).all_future → (untl phi.neg.neg top → untl phi top)
-  have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_future.imp
-      ((Formula.untl phi.neg.neg Formula.top).imp (Formula.untl phi Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top)
-  -- F(phi.neg.neg) → F(phi)
-  have h_F_dne : [] ⊢ (Formula.some_future phi.neg.neg).imp (Formula.some_future phi) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne_phi
-  -- Step 2: From F(phi.neg.neg) → F(phi), derive ¬F(phi) → ¬F(phi.neg.neg)
-  -- i.e., (some_future phi).neg → (some_future (phi.neg.neg)).neg
-  -- This is: (some_future phi).neg → all_future (phi.neg)  [by def!]
-  have h_contra1 : [] ⊢ (Formula.some_future phi).neg.imp (Formula.some_future phi.neg.neg).neg :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _
-      (Bimodal.Theorems.TemporalDerived.contrapositive _ _) h_F_dne
-  -- Step 3: Apply step 2 inside G to get G(F(phi).neg) → G(G(neg phi))
-  -- i.e., (some_future phi).neg.all_future → (some_future phi.neg.neg).neg.all_future
-  -- Since (some_future phi.neg.neg).neg = all_future (phi.neg), this is:
-  -- all_future ((some_future phi).neg) → all_future (all_future (phi.neg))
-  -- Use future_mono: ⊢ (A → B) implies ⊢ G(A) → G(B)
-  have h_G_mono : [] ⊢ (Formula.some_future phi).neg.all_future.imp
-      (Formula.some_future phi.neg.neg).neg.all_future :=
-    Bimodal.Theorems.Perpetuity.future_mono h_contra1
-  -- Step 4: Get all_future ((some_future phi).neg) ∈ M from h_neg_FF
-  -- h_neg_FF : (some_future (some_future phi)).neg ∈ M
-  -- We need: all_future ((some_future phi).neg) ∈ M
-  -- i.e., (some_future ((some_future phi).neg.neg)).neg ∈ M
-  -- Use G_neg_implies_not_F-like reasoning: from ¬F(F(phi)) derive G(¬F(phi))
-  -- all_future ((some_future phi).neg) = neg (some_future ((some_future phi).neg.neg))
-  -- and (some_future (some_future phi)).neg = neg (some_future (some_future phi))
-  -- These are NOT the same. We need to derive G(¬F(phi)) from ¬F(F(phi)).
+  -- Step 1: Expand neg(F(F(phi)))
+  -- F(psi) = psi.neg.all_future.neg, so F(F(phi)) = (phi.neg.all_future.neg).neg.all_future.neg
+  -- neg(F(F(phi))) = (phi.neg.all_future.neg).neg.all_future.neg.neg
   --
-  -- Use BX3 again: F((some_future phi).neg.neg) → F(some_future phi) by DNE
-  -- So ¬F(some_future phi) → ¬F((some_future phi).neg.neg) (contrapositive)
-  -- i.e., (some_future (some_future phi)).neg → (some_future ((some_future phi).neg.neg)).neg
-  -- = (some_future (some_future phi)).neg → all_future ((some_future phi).neg)
-  have h_dne_Fphi : [] ⊢ (Formula.some_future phi).neg.neg.imp (Formula.some_future phi) :=
-    Bimodal.Theorems.Propositional.double_negation _
-  have h_G_dne_Fphi : [] ⊢ ((Formula.some_future phi).neg.neg.imp (Formula.some_future phi)).all_future :=
-    Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_Fphi
-  have h_bx3_2 : [] ⊢ ((Formula.some_future phi).neg.neg.imp (Formula.some_future phi)).all_future.imp
-      ((Formula.untl (Formula.some_future phi).neg.neg Formula.top).imp
-       (Formula.untl (Formula.some_future phi) Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_until (Formula.some_future phi).neg.neg
-        (Formula.some_future phi) Formula.top)
-  have h_F_dne_2 : [] ⊢ (Formula.some_future (Formula.some_future phi).neg.neg).imp
-      (Formula.some_future (Formula.some_future phi)) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3_2 h_G_dne_Fphi
-  have h_contra2 : [] ⊢ (Formula.some_future (Formula.some_future phi)).neg.imp
-      (Formula.some_future (Formula.some_future phi).neg.neg).neg :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _
-      (Bimodal.Theorems.TemporalDerived.contrapositive _ _) h_F_dne_2
-  -- Now: (some_future (some_future phi)).neg → all_future ((some_future phi).neg)
-  -- Apply to h_neg_FF to get all_future ((some_future phi).neg) ∈ M
-  have h_G_neg_F : (Formula.some_future (Formula.some_future phi).neg.neg).neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_contra2) h_neg_FF
-  -- h_G_neg_F : all_future ((some_future phi).neg) ∈ M  [by def]
-  -- Step 5: Apply h_G_mono to get all_future (all_future (phi.neg)) ∈ M
-  -- h_G_mono : (some_future phi).neg.all_future → (some_future phi.neg.neg).neg.all_future
-  -- = all_future ((some_future phi).neg) → all_future (all_future (phi.neg))
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_mono) h_G_neg_F
+  -- Step 2: Use the provable implication:
+  -- We can derive: G(neg(F(phi))) -> G(G(neg(phi)))
+  -- Because neg(F(phi)) = G(neg(phi)).neg.neg, and we have G(x.neg.neg) -> G(x) provable
+  --
+  -- Let's work out the structure:
+  -- Let psi = phi.neg.all_future  (this is G(neg(phi)))
+  -- Then F(phi) = psi.neg = G(neg(phi)).neg
+  -- So neg(F(phi)) = psi.neg.neg = G(neg(phi)).neg.neg
+  -- F(F(phi)) = (psi.neg).neg.all_future.neg = psi.neg.neg.all_future.neg
+  -- neg(F(F(phi))) = psi.neg.neg.all_future.neg.neg = G(neg(phi)).neg.neg.all_future.neg.neg
+  --
+  -- What we have: G(neg(phi)).neg.neg.all_future.neg.neg ∈ M
+  -- What we want: G(neg(phi)).all_future ∈ M
+  --
+  -- Provable implications:
+  -- 1. x.neg.neg -> x (DNE)
+  -- 2. G(A -> B) -> (G(A) -> G(B)) (K axiom)
+  -- 3. A -> G(A) if A is a theorem (necessitation)
+  --
+  -- From x.neg.neg.all_future.neg.neg, we can derive:
+  -- x.neg.neg.all_future (by DNE on the outer neg.neg)
+  -- Then from G(x.neg.neg), we need G(x). This requires G_dne: ⊢ G(x.neg.neg) -> G(x)
+  --
+  -- Let's prove it via the chain:
+  -- h_neg_FF : G(neg(phi)).neg.neg.all_future.neg.neg ∈ M
+  --
+  -- Step A: Apply DNE to get G(neg(phi)).neg.neg.all_future ∈ M
+  have h_inner : (phi.neg.all_future.neg).neg.all_future ∈ M := by
+    -- The current formula is: G(neg(phi)).neg.neg.all_future.neg.neg
+    -- We have: ⊢ x.neg.neg -> x (DNE)
+    -- Apply to x = G(neg(phi)).neg.neg.all_future
+    have h_dne : [] ⊢ ((phi.neg.all_future.neg).neg.all_future.neg).neg.imp
+                      (phi.neg.all_future.neg).neg.all_future :=
+      Bimodal.Theorems.Propositional.double_negation _
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_FF
+
+  -- Step B: Now we have G(G(neg(phi)).neg.neg) ∈ M
+  -- Note: (phi.neg.all_future.neg).neg.all_future = G((phi.neg.all_future).neg.neg) = G(G(neg(phi)).neg.neg)
+  -- We need G(G(neg(phi))) = phi.neg.all_future.all_future
+  --
+  -- Use: ⊢ G(x.neg.neg) -> G(x) (G_dne)
+  -- This is: ⊢ G(x.neg.neg -> x) (by necessitation of DNE)
+  --         then: ⊢ G(x.neg.neg -> x) -> (G(x.neg.neg) -> G(x)) (by K)
+  --         so: ⊢ G(x.neg.neg) -> G(x)
+  have h_G_dne : [] ⊢ (phi.neg.all_future.neg).neg.all_future.imp (phi.neg.all_future.all_future) := by
+    -- Prove: G(G(neg(phi)).neg.neg) -> G(G(neg(phi)))
+    -- i.e., G(x.neg.neg) -> G(x) where x = phi.neg.all_future
+    have h_dne_inner : [] ⊢ (phi.neg.all_future).neg.neg.imp (phi.neg.all_future) :=
+      Bimodal.Theorems.Propositional.double_negation _
+    have h_nec : [] ⊢ ((phi.neg.all_future).neg.neg.imp (phi.neg.all_future)).all_future :=
+      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_inner
+    have h_k : [] ⊢ ((phi.neg.all_future).neg.neg.imp (phi.neg.all_future)).all_future.imp
+                    ((phi.neg.all_future).neg.neg.all_future.imp (phi.neg.all_future).all_future) :=
+      Bimodal.Theorems.Perpetuity.future_k_dist _ _
+    exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_k h_nec
+
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_dne) h_inner
 
 /-!
 ## Single-Step Forcing Theorem
@@ -314,21 +285,11 @@ Symmetric to `G_neg_implies_not_F`.
 lemma H_neg_implies_not_P (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
     (h_H_neg : Formula.all_past phi.neg ∈ M) :
     Formula.some_past phi ∉ M := by
-  -- all_past (phi.neg) = (some_past (phi.neg.neg)).neg by definition.
-  -- If some_past phi ∈ M, derive some_past (phi.neg.neg) ∈ M to get contradiction.
-  -- Use BX3' (right_mono_since): H(phi → phi.neg.neg) → (S(phi, ⊤) → S(phi.neg.neg, ⊤))
+  -- P(phi) = neg(H(neg phi)) by definition
   intro h_P
-  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
-  have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_dni
-  have h_bx3p : [] ⊢ (phi.imp phi.neg.neg).all_past.imp
-      ((Formula.snce phi Formula.top).imp (Formula.snce phi.neg.neg Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_since phi phi.neg.neg Formula.top)
-  have h_mono_in := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dni))
-    h_P
-  exact set_consistent_not_both h_mcs.1 (Formula.some_past phi.neg.neg) h_mono_in h_H_neg
+  have h_eq : Formula.some_past phi = (Formula.all_past phi.neg).neg := rfl
+  rw [h_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past phi.neg) h_H_neg h_P
 
 /--
 neg(PP(phi)) in MCS implies HH(neg(phi)) in MCS.
@@ -346,52 +307,26 @@ So neg(PP(phi)) contains a double negation that can be eliminated.
 lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
     (h_neg_PP : (Formula.some_past (Formula.some_past phi)).neg ∈ M) :
     Formula.all_past (Formula.all_past phi.neg) ∈ M := by
-  -- Mirror of neg_FF_implies_GG_neg_in_mcs for past direction.
-  -- Key definitional equalities:
-  --   all_past X = (some_past (X.neg)).neg  [def]
-  --   some_past X = snce X top              [def]
-  -- Step 1: Derive some_past (phi.neg.neg) → some_past phi (event mono with DNE)
-  have h_dne_phi : [] ⊢ phi.neg.neg.imp phi :=
-    Bimodal.Theorems.Propositional.double_negation phi
-  have h_H_dne_phi : [] ⊢ (phi.neg.neg.imp phi).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_dne_phi
-  have h_bx3p : [] ⊢ (phi.neg.neg.imp phi).all_past.imp
-      ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top)
-  have h_P_dne : [] ⊢ (Formula.some_past phi.neg.neg).imp (Formula.some_past phi) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dne_phi
-  -- Step 2: ¬P(phi) → ¬P(phi.neg.neg) = ¬P(phi) → H(phi.neg)
-  have h_contra1 : [] ⊢ (Formula.some_past phi).neg.imp (Formula.some_past phi.neg.neg).neg :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _
-      (Bimodal.Theorems.TemporalDerived.contrapositive _ _) h_P_dne
-  -- Step 3: past_mono to lift inside H
-  have h_H_mono : [] ⊢ (Formula.some_past phi).neg.all_past.imp
-      (Formula.some_past phi.neg.neg).neg.all_past :=
-    Bimodal.Theorems.Perpetuity.past_mono h_contra1
-  -- Step 4: Derive all_past ((some_past phi).neg) ∈ M from h_neg_PP
-  -- ¬P(P(phi)) → H(¬P(phi)) by DNE + BX3'
-  have h_dne_Pphi : [] ⊢ (Formula.some_past phi).neg.neg.imp (Formula.some_past phi) :=
-    Bimodal.Theorems.Propositional.double_negation _
-  have h_H_dne_Pphi : [] ⊢ ((Formula.some_past phi).neg.neg.imp (Formula.some_past phi)).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_dne_Pphi
-  have h_bx3_2 : [] ⊢ ((Formula.some_past phi).neg.neg.imp (Formula.some_past phi)).all_past.imp
-      ((Formula.snce (Formula.some_past phi).neg.neg Formula.top).imp
-       (Formula.snce (Formula.some_past phi) Formula.top)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.right_mono_since (Formula.some_past phi).neg.neg
-        (Formula.some_past phi) Formula.top)
-  have h_P_dne_2 : [] ⊢ (Formula.some_past (Formula.some_past phi).neg.neg).imp
-      (Formula.some_past (Formula.some_past phi)) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_bx3_2 h_H_dne_Pphi
-  have h_contra2 : [] ⊢ (Formula.some_past (Formula.some_past phi)).neg.imp
-      (Formula.some_past (Formula.some_past phi).neg.neg).neg :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _
-      (Bimodal.Theorems.TemporalDerived.contrapositive _ _) h_P_dne_2
-  have h_H_neg_P : (Formula.some_past (Formula.some_past phi).neg.neg).neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_contra2) h_neg_PP
-  -- Step 5: Apply h_H_mono
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_mono) h_H_neg_P
+  -- Step A: Apply DNE to get H(neg(phi)).neg.neg.all_past ∈ M
+  have h_inner : (phi.neg.all_past.neg).neg.all_past ∈ M := by
+    have h_dne : [] ⊢ ((phi.neg.all_past.neg).neg.all_past.neg).neg.imp
+                      (phi.neg.all_past.neg).neg.all_past :=
+      Bimodal.Theorems.Propositional.double_negation _
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_PP
+
+  -- Step B: Now we have H(H(neg(phi)).neg.neg) ∈ M
+  -- Use: ⊢ H(x.neg.neg) -> H(x) (H_dne)
+  have h_H_dne : [] ⊢ (phi.neg.all_past.neg).neg.all_past.imp (phi.neg.all_past.all_past) := by
+    have h_dne_inner : [] ⊢ (phi.neg.all_past).neg.neg.imp (phi.neg.all_past) :=
+      Bimodal.Theorems.Propositional.double_negation _
+    have h_nec : [] ⊢ ((phi.neg.all_past).neg.neg.imp (phi.neg.all_past)).all_past :=
+      Bimodal.Theorems.past_necessitation _ h_dne_inner
+    have h_K : [] ⊢ ((phi.neg.all_past).neg.neg.imp (phi.neg.all_past)).all_past.imp
+                    ((phi.neg.all_past).neg.neg.all_past.imp (phi.neg.all_past).all_past) :=
+      Bimodal.Theorems.past_k_dist _ _
+    exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_K h_nec
+
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_dne) h_inner
 
 /--
 Single-step forcing in the past direction: If P(phi) ∈ v and PP(phi) ∉ v,

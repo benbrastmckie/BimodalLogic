@@ -125,9 +125,27 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   -- From L ⊆ g_content(S) and L ⊢ ⊥, get G(⊥) ∈ S
   have h_G_bot : Formula.all_future Formula.bot ∈ S :=
     g_content_closed_derivation h_mcs L hL d
-  -- G(⊥) = ¬F(⊤) definitionally since:
-  --   all_future ⊥ = neg (some_future (neg ⊥)) = neg (some_future ⊤)
-  -- Seriality: ⊤ → F(⊤) is derivable
+  -- From G(⊥), derive G(φ) for ANY φ using ex_falso + temp_k_dist
+  -- ex_falso: [] ⊢ ⊥ → ¬⊤ where ¬⊤ = (⊥→⊥)→⊥
+  let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
+  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+  -- temporal_necessitation: [] ⊢ G(⊥ → ¬⊤)
+  have h_G_ef : DerivationTree [] (Formula.all_future (Formula.bot.imp neg_top)) :=
+    DerivationTree.temporal_necessitation _ h_ef
+  -- temp_k_dist: [] ⊢ G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤))
+  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
+    (Formula.bot.all_future.imp neg_top.all_future)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot neg_top)
+  -- G(⊥ → ¬⊤) ∈ S and G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤)) ∈ S
+  have h1 := theorem_in_mcs h_mcs h_G_ef
+  have h2 := theorem_in_mcs h_mcs h_kd
+  -- G(⊥) → G(¬⊤) ∈ S
+  have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
+  -- G(¬⊤) ∈ S
+  have h_G_neg_top : neg_top.all_future ∈ S :=
+    SetMaximalConsistent.implication_property h_mcs h3 h_G_bot
+  -- Seriality: ⊤ → F(⊤) is derivable, where F(⊤) = ¬G(¬⊤)
   have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_future (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ Axiom.serial_future
@@ -139,8 +157,9 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   -- F(⊤) ∈ S by modus ponens
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ S :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  -- G(⊥) = ¬F(⊤) by def, so F(⊤) and ¬F(⊤) both in S contradicts consistency
-  exact set_consistent_not_both h_mcs.1 (Formula.some_future (Formula.bot.imp Formula.bot)) h_F_top h_G_bot
+  -- F(⊤) = ¬G(¬⊤), so ¬G(¬⊤) ∈ S
+  -- But G(¬⊤) ∈ S from above, contradicting consistency
+  exact set_consistent_not_both h_mcs.1 neg_top.all_future h_G_neg_top h_F_top
 
 /--
 h_content of an MCS is consistent.
@@ -149,25 +168,31 @@ Mirror of g_content_set_consistent using serial_past.
 theorem h_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
     SetConsistent (h_content S) := by
   intro L hL ⟨d⟩
-  -- From L ⊆ h_content(S) and L ⊢ ⊥, get H(⊥) ∈ S
   have h_H_bot : Formula.all_past Formula.bot ∈ S :=
     h_content_closed_derivation h_mcs L hL d
-  -- H(⊥) = ¬P(⊤) definitionally since:
-  --   all_past ⊥ = neg (some_past (neg ⊥)) = neg (some_past ⊤)
-  -- Seriality: ⊤ → P(⊤) is derivable
+  let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
+  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+  have h_H_ef : DerivationTree [] (Formula.all_past (Formula.bot.imp neg_top)) :=
+    past_necessitation _ h_ef
+  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_past.imp
+    (Formula.bot.all_past.imp neg_top.all_past)) :=
+    past_k_dist Formula.bot neg_top
+  have h1 := theorem_in_mcs h_mcs h_H_ef
+  have h2 := theorem_in_mcs h_mcs h_kd
+  have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
+  have h_H_neg_top : neg_top.all_past ∈ S :=
+    SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
   have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_past (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ Axiom.serial_past
   have h_serial_in := theorem_in_mcs h_mcs h_serial
-  -- ⊤ = ⊥→⊥ is derivable, hence in S
   have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
   have h_top_in := theorem_in_mcs h_mcs h_top
-  -- P(⊤) ∈ S by modus ponens
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ S :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  -- H(⊥) = ¬P(⊤) by def, so P(⊤) and ¬P(⊤) both in S contradicts consistency
-  exact set_consistent_not_both h_mcs.1 (Formula.some_past (Formula.bot.imp Formula.bot)) h_P_top h_H_bot
+  exact set_consistent_not_both h_mcs.1 neg_top.all_past h_H_neg_top h_P_top
 
 /-! ## Reflexivity (from BX1: G(φ) → φ) -/
 

@@ -138,6 +138,20 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · exact (ih σ t).mp (h σ h_σ_mem)
     · exact (ih σ t).mpr (h σ h_σ_mem)
 
+  | all_past φ ih =>
+    -- All_past case: all_past φ -> all_future φ.swap -> all_past φ.swap.swap
+    simp only [Formula.swap_temporal, truth_at]
+    constructor <;> intro h s h_ord
+    · exact (ih τ s).mp (h s h_ord)
+    · exact (ih τ s).mpr (h s h_ord)
+
+  | all_future φ ih =>
+    -- All_future case: all_future φ -> all_past φ.swap -> all_future φ.swap.swap
+    simp only [Formula.swap_temporal, truth_at]
+    constructor <;> intro h s h_ord
+    · exact (ih τ s).mp (h s h_ord)
+    · exact (ih τ s).mpr (h s h_ord)
+
   | untl φ ψ ih_φ ih_ψ =>
     -- Until swaps to Since and back (Burgess: untl(event=φ, guard=ψ))
     simp only [Formula.swap_temporal, truth_at]
@@ -254,46 +268,101 @@ Temporal 4 axiom (T4) swaps to a valid formula: `Fφ -> FFφ` swaps to `P(swap �
 The swapped form states: if swap φ held at all past times, then at all past times,
 swap φ held at all past times. This is valid by transitivity of the past operator.
 -/
--- FIX: truth_at no longer has all_past/all_future arms; need bridge lemmas
 theorem swap_axiom_t4_valid (φ : Formula) :
     is_valid D
       ((Formula.all_future φ).imp
        (Formula.all_future (Formula.all_future φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, Formula.swap_temporal_all_future]
-  -- Goal: truth_at ... (all_past φ' |>.imp (all_past (all_past φ')))
-  -- = (∀ s < t, truth_at s φ') → (∀ s < t, ∀ r < s, truth_at r φ')
-  rw [show truth_at M Omega τ t (φ.swap_temporal.all_past.imp φ.swap_temporal.all_past.all_past) =
-    (truth_at M Omega τ t φ.swap_temporal.all_past →
-     truth_at M Omega τ t φ.swap_temporal.all_past.all_past) from rfl]
-  intro h_past
-  rw [Truth.past_iff Omega] at h_past ⊢
-  intro s h_s
-  rw [Truth.past_iff Omega]
-  intro r h_r
-  exact h_past r (lt_trans h_r h_s)
+  simp only [Formula.swap_temporal, truth_at]
+  intro h_past_swap r h_r_lt_t u h_u_lt_r
+  exact h_past_swap u (lt_trans h_u_lt_r h_r_lt_t)
+
+/--
+Temporal A axiom (TA) swaps to a valid formula: `φ -> F(some_past φ)` swaps to
+`swap φ -> P(some_future (swap φ))`.
+
+The swapped form states: if swap φ holds now, then at all past times, there existed
+a future time when swap φ held. This is valid because "now" is in the future of all past times.
+-/
+theorem swap_axiom_ta_valid (φ : Formula) :
+    is_valid D (φ.imp (Formula.all_future φ.some_past)).swap_temporal := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.swap_temporal, Formula.some_past]
+  intro h_swap_φ s h_s_lt_t h_all_not_future
+  exact h_all_not_future t h_s_lt_t h_swap_φ
+
+/--
+Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) -> P(F(swap φ))`.
+
+Note: always is self-dual: φ.always.swap_temporal = φ.swap_temporal.always
+because always = Pφ & φ & Fφ, and swap exchanges P and F.
+
+The swapped form states: if swap φ holds at all times, then at all past times s < t,
+for all future times u > s, swap φ holds at u.
+
+**Proof Strategy**: The `always` encoding via derived `and` uses nested negations.
+We use case analysis on the time `u` relative to `t`:
+- If u < t: extract from the "past" component of always
+- If u = t: extract from the "present" component of always
+- If u > t: extract from the "future" component of always
+
+Each case uses classical logic (`Classical.byContradiction`) to extract truth from the
+double-negation encoding of conjunction.
+-/
+theorem swap_axiom_tl_valid (φ : Formula) :
+    is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_temporal := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.always, Formula.and, Formula.swap_temporal, Formula.neg, truth_at]
+  intro h_always s h_s_lt_t u h_s_lt_u
+  -- h_always encodes: ¬¬(Gφ' ∧ ¬¬(φ'(t) ∧ Hφ'))
+  -- Extract the three components
+  have h_future : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, htr, h_neg⟩ := h_not
+    exact h_always fun h_G => absurd (h_G r htr) h_neg
+  have h_present : truth_at M Omega τ t φ.swap_temporal := by
+    by_contra h_not
+    exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
+  have h_past : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, hrt, h_neg⟩ := h_not
+    exact h_always fun _ h_inner => h_inner (fun _ h_H => h_neg (h_H r hrt))
+  rcases lt_trichotomy u t with h_lt | h_eq | h_gt
+  · exact h_past u h_lt
+  · exact h_eq ▸ h_present
+  · exact h_future u h_gt
 
 /--
 Swap of F_until_equiv: `F(φ) → ⊤ U φ` swaps to `P(φ') → ⊤ S φ'`. -/
 theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_future φ).imp
       (Formula.untl φ (Formula.bot.imp Formula.bot))).swap_temporal := by
-  -- After swap: (some_past φ').imp (snce φ' top) where φ' = φ.swap_temporal
-  -- But some_past φ' = snce φ' top by def, so this is A → A, trivially valid.
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, Formula.some_future, Formula.top, truth_at]
-  exact id
+  simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
+    Formula.neg, Formula.imp, Formula.untl, Formula.snce]
+  intro h_P
+  by_contra h_not_S
+  push_neg at h_not_S
+  apply h_P
+  intro s hst h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_S s hst h_φs
+  exact hf
 
 /--
 Swap of P_since_equiv: `P(φ) → ⊤ S φ` swaps to `F(φ') → ⊤ U φ'`. -/
 theorem swap_axiom_P_since_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_past φ).imp
       (Formula.snce φ (Formula.bot.imp Formula.bot))).swap_temporal := by
-  -- After swap: (some_future φ').imp (untl φ' top) where φ' = φ.swap_temporal
-  -- But some_future φ' = untl φ' top by def, so this is A → A, trivially valid.
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, Formula.some_past, Formula.top, truth_at]
-  exact id
+  simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
+    Formula.neg, Formula.imp, Formula.untl, Formula.snce]
+  intro h_F
+  by_contra h_not_U
+  push_neg at h_not_U
+  apply h_F
+  intro s hts h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
+  exact hf
 
 /--
 Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box P(swap φ)`.
@@ -306,22 +375,11 @@ Uses `ShiftClosed Omega` to ensure shifted histories remain in Omega.
 -/
 theorem swap_axiom_mf_valid (φ : Formula) :
     is_valid D ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_temporal := by
-  -- After swap: box(φ') → box(H(φ')) where φ' = φ.swap_temporal
-  -- Semantics: (∀ σ ∈ Ω, φ'(σ,t)) → (∀ σ ∈ Ω, ∀ s < t, φ'(σ,s))
   intro F M Omega h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, Formula.swap_temporal_all_future, truth_at]
-  intro h_box σ h_σ_mem
-  -- Need: truth_at ... (all_past φ.swap_temporal) at σ at t
-  rw [Truth.past_iff]
-  intro s h_st
-  -- Use time_shift_preserves_truth: truth_at (time_shift σ (s-t)) t φ' ↔ truth_at σ s φ'
-  have h_shift := TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal
-  -- time_shift σ (s - t) ∈ Omega by shift-closure
-  have h_σ_shifted_mem : WorldHistory.time_shift σ (s - t) ∈ Omega := h_sc σ h_σ_mem (s - t)
-  -- truth_at (time_shift σ (s-t)) t φ' by hypothesis
-  have h_truth_shifted := h_box (WorldHistory.time_shift σ (s - t)) h_σ_shifted_mem
-  -- Shift back: truth_at (time_shift σ (s-t)) t φ' ↔ truth_at σ s φ'
-  exact h_shift.mp h_truth_shifted
+  simp only [Formula.swap_temporal, truth_at]
+  intro h_box_swap σ h_σ_mem s h_s_lt_t
+  have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
+  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
 
 -- Note: swap_axiom_tf_valid removed -- TF is now derived from MF + T + Modal 4.
 
@@ -377,12 +435,9 @@ at all times s ≤ t, `φ.swap` is true at (M, τ, s). This is exactly `P(φ.swa
 theorem temporal_k_preserves_swap_valid (φ : Formula)
     (h : is_valid D φ.swap_temporal) :
     is_valid D (Formula.all_future φ).swap_temporal := by
-  -- (all_future φ).swap = all_past (φ.swap). If φ.swap is valid (true everywhere),
-  -- then H(φ.swap) is trivially valid (∀ s < t, φ.swap is true at s).
   intro F M Omega h_sc τ h_mem t
-  simp only [Formula.swap_temporal_all_future]
-  rw [Truth.past_iff]
-  intro s _h_st
+  simp only [Formula.swap_temporal, truth_at]
+  intro s _h_s_le_t
   exact h F M Omega h_sc τ h_mem s
 
 /--
@@ -464,77 +519,63 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
   | temp_k_dist ψ χ =>
-    -- Swap: H(ψ'→χ') → (H(ψ') → H(χ'))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_future, truth_at]
-    intro h_H_imp h_H_phi
-    rw [Truth.past_iff] at h_H_imp h_H_phi ⊢
-    intro s hst
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H_imp h_H_phi s hst
     exact h_H_imp s hst (h_H_phi s hst)
-  | temp_4 ψ => exact swap_axiom_t4_valid ψ
+  | temp_4 ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H s hst r hrs
+    exact h_H r (lt_trans hrs hst)
   | serial_future =>
-    -- Swap: ⊤ → P(⊤). Just need ∃ s < t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg,
-      Formula.top, Formula.some_future, Formula.all_past, Formula.all_future]
-    intro _
+    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
+    intro _ h_all_neg
     obtain ⟨s, hst⟩ := exists_lt t
-    exact ⟨s, hst, fun h => h, fun _ _ _ h => h⟩
+    exact h_all_neg s hst (fun h => h)
   | serial_past =>
-    -- Swap: ⊤ → F(⊤). Just need ∃ s > t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.neg,
-      Formula.top, Formula.some_past, Formula.all_future, Formula.all_past]
-    intro _
+    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.neg]
+    intro _ h_all_neg
     obtain ⟨s, hts⟩ := exists_gt t
-    exact ⟨s, hts, fun h => h, fun _ _ _ h => h⟩
+    exact h_all_neg s hts (fun h => h)
   | left_mono_until_G φ χ ψ =>
     -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     intro h_H ⟨s, hst, h_ψs, h_guard⟩
-    have h_H' := (Truth.past_iff Omega (φ.swap_temporal.imp χ.swap_temporal)).mp h_H
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H' r hrt (h_guard r hsr hrt)⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | left_mono_since_H φ χ ψ =>
     -- Swap of left_mono_since_H: G(φ'→χ') → untl(φ',ψ') → untl(χ',ψ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_past, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     intro h_G ⟨s, hts, h_ψs, h_guard⟩
-    have h_G' := (Truth.future_iff Omega (φ.swap_temporal.imp χ.swap_temporal)).mp h_G
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G' r htr (h_guard r htr hrs)⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | right_mono_until φ ψ χ =>
-    -- swap: H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
+    -- swap: G(φ'→χ') → (φ' S ψ') → (χ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     intro h_H ⟨s, hst, h_φs, h_guard⟩
-    have h_H' := (Truth.past_iff Omega (φ.swap_temporal.imp ψ.swap_temporal)).mp h_H
-    exact ⟨s, hst, h_H' s hst h_φs, h_guard⟩
+    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
   | right_mono_since φ ψ χ =>
-    -- swap: G(φ'→χ') → (φ' U ψ') → (χ' U ψ')
+    -- swap: H(φ'→χ') → (φ' U ψ') → (χ' U ψ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_past, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     intro h_G ⟨s, hts, h_φs, h_guard⟩
-    have h_G' := (Truth.future_iff Omega (φ.swap_temporal.imp ψ.swap_temporal)).mp h_G
-    exact ⟨s, hts, h_G' s hts h_φs, h_guard⟩
+    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
   | connect_future φ =>
-    -- swap: φ' → H(F(φ')), i.e., φ' → all_past (some_future φ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.some_past, Formula.some_future,
-      Formula.all_future, Formula.all_past, Formula.neg, Formula.top, truth_at]
-    -- Goal: truth φ' t → ¬(∃ s < t, ¬(∃ r > s, truth r φ' ∧ guard) ∧ guard')
-    intro h_φt h_neg
-    obtain ⟨s, hst, h_neg_F, _⟩ := h_neg
-    exact h_neg_F ⟨t, hst, h_φt, fun _ _ _ h => h⟩
+    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.neg]
+    intro h_φt s hst h_G_neg
+    exact h_G_neg t hst h_φt
   | connect_past φ =>
-    -- swap: φ' → G(P(φ')), i.e., φ' → all_future (some_past φ')
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.some_past, Formula.some_future,
-      Formula.all_future, Formula.all_past, Formula.neg, Formula.top, truth_at]
-    -- Goal: truth φ' t → ¬(∃ s > t, ¬(∃ r < s, truth r φ' ∧ guard) ∧ guard')
-    intro h_φt h_neg
-    obtain ⟨s, hts, h_neg_P, _⟩ := h_neg
-    exact h_neg_P ⟨t, hts, h_φt, fun _ _ _ h => h⟩
+    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
+    intro h_φt s hts h_H_neg
+    exact h_H_neg t hts h_φt
   | enrichment_until φ ψ p =>
+    -- Swap of enrichment_until: p ∧ snce(φ', ψ') → snce(φ', ψ' ∧ untl(φ', p))
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro h_conj
@@ -548,6 +589,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro h_imp
     exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
   | enrichment_since φ ψ p =>
+    -- Swap of enrichment_since: p ∧ untl(φ', ψ') → untl(φ', ψ' ∧ snce(φ', p))
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro h_conj
@@ -561,18 +603,21 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro h_imp
     exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
   | self_accum_until φ ψ =>
+    -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
     exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
   | self_accum_since φ ψ =>
+    -- Swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
     exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs => h_guard q (lt_trans htr hrq) hqs⟩
   | absorb_until φ ψ =>
+    -- Swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
@@ -589,6 +634,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     · exact h_eq ▸ h_φs₁
     · exact h_guard₁ q h_gt hqt
   | absorb_since φ ψ =>
+    -- Swap: (φ' U (φ' ∧ (φ' U ψ'))) → (φ' U ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
@@ -605,6 +651,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     · exact h_eq ▸ h_φs₁
     · exact h_guard₂ q h_gt hqs₂
   | linear_until φ ψ χ θ =>
+    -- Swap: Since-based linearity with swapped subformulas
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
     intro h_conj
@@ -617,19 +664,23 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · intro _
+    · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
+      intro _
       refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
       · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
-    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
+      intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · intro h_neg; exfalso; apply h_neg; intro _
+    · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
+      intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
   | linear_since φ ψ χ θ =>
+    -- Swap: Until-based linearity with swapped subformulas
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
     intro h_conj
@@ -642,87 +693,91 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · intro h_neg; exfalso; apply h_neg; intro _
+    · -- s₁ < s₂: second disjunct (φ∧χ) U (ψ∧χ) with witness s₁
+      intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
-    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    · -- s₁ = s₂: first disjunct (φ∧χ) U (ψ∧θ) with witness s₁
+      intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · intro _
+    · -- s₂ < s₁: third disjunct (φ∧χ) U (φ∧θ) with witness s₂
+      intro _
       refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
       · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+  -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
-    -- swap: snce(ψ', φ') → snce(ψ', ⊤') (weaken guard to top)
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
-      Formula.neg, Formula.top]
+    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
     intro ⟨s, hst, h_ψs, _⟩
-    exact ⟨s, hst, h_ψs, fun _ _ _ h => h⟩
+    intro h_H_neg
+    exact h_H_neg s hst h_ψs
   | since_P φ ψ =>
-    -- swap: untl(ψ', φ') → untl(ψ', ⊤') (weaken guard to top)
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.some_past,
-      Formula.neg, Formula.top]
+    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.neg]
     intro ⟨s, hts, h_ψs, _⟩
-    exact ⟨s, hts, h_ψs, fun _ _ _ h => h⟩
+    intro h_G_neg
+    exact h_G_neg s hts h_ψs
   | temp_linearity φ ψ =>
     -- swap of future linearity is past linearity with swapped subformulas
-    -- P(φ') ∧ P(ψ') → P(φ'∧ψ') ∨ P(φ'∧P(ψ')) ∨ P(P(φ')∧ψ')
     intro F M Omega _h_sc τ _h_mem t
-    -- Work at the semantic level using characterization theorems
-    show truth_at M Omega τ t ((φ.some_future.and ψ.some_future).imp
-        ((φ.and ψ).some_future.or ((φ.and ψ.some_future).some_future.or (φ.some_future.and ψ).some_future))).swap_temporal
-    simp only [Formula.swap_temporal_some_future, Formula.swap_temporal_some_past,
-      Formula.swap_temporal, Formula.and, Formula.neg, Formula.or, truth_at]
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
+      Formula.some_past, Formula.neg, truth_at]
     intro h_conj
-    -- Extract P(φ') and P(ψ') using classical logic
-    have h_both : (∃ s, s < t ∧ truth_at M Omega τ s φ.swap_temporal ∧ ∀ r, s < r → r < t → (False → False)) ∧
-      (∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧ ∀ r, s < r → r < t → (False → False)) :=
-      ⟨Classical.byContradiction fun h => h_conj (fun h1 _ => h h1),
-       Classical.byContradiction fun h => h_conj (fun _ h2 => h h2)⟩
-    obtain ⟨⟨s1, hs1t, h_φs1, _⟩, s2, hs2t, h_ψs2, _⟩ := h_both
+    have ⟨s1, hs1t, h_φs1⟩ : ∃ s, s < t ∧ truth_at M Omega τ s φ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun h_P _ => h_P fun s hst h_phi => (h_no s hst h_phi).elim)
+    have ⟨s2, hs2t, h_ψs2⟩ : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun _ h_P => h_P fun s hst h_psi => (h_no s hst h_psi).elim)
     rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-    · -- s1 < s2: P(P(φ') ∧ ψ')
+    · -- s1 < s2: take r = s2, giving P(P(φ') ∧ ψ')
       intro _; intro _
-      exact ⟨s2, hs2t, (fun h => h ⟨s1, h_lt, h_φs1, fun _ _ _ h => h⟩ h_ψs2), fun _ _ _ h => h⟩
-    · -- s1 = s2: P(φ' ∧ ψ')
+      intro h_all; exact h_all s2 hs2t (fun h_imp => h_imp
+        (fun h_neg => h_neg s1 h_lt h_φs1) h_ψs2)
+    · -- s1 = s2: giving P(φ' ∧ ψ')
       subst h_eq
       intro h_neg_first; exfalso; apply h_neg_first
-      exact ⟨s1, hs1t, (fun h => h h_φs1 h_ψs2), fun _ _ _ h => h⟩
-    · -- s2 < s1: P(φ' ∧ P(ψ'))
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_φs1 h_ψs2)
+    · -- s2 < s1: take r = s1, giving P(φ' ∧ P(ψ'))
       intro _; intro h_neg_second; exfalso; apply h_neg_second
-      exact ⟨s1, hs1t, (fun h => h h_φs1 ⟨s2, h_gt, h_ψs2, fun _ _ _ h => h⟩), fun _ _ _ h => h⟩
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_φs1
+        (fun h_neg => h_neg s2 h_gt h_ψs2))
   | temp_linearity_past φ ψ =>
     -- swap of past linearity is future linearity with swapped subformulas
     intro F M Omega _h_sc τ _h_mem t
-    show truth_at M Omega τ t ((φ.some_past.and ψ.some_past).imp
-        ((φ.and ψ).some_past.or ((φ.and ψ.some_past).some_past.or (φ.some_past.and ψ).some_past))).swap_temporal
-    simp only [Formula.swap_temporal_some_past, Formula.swap_temporal_some_future,
-      Formula.swap_temporal, Formula.and, Formula.neg, Formula.or, truth_at]
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
+      Formula.some_past, Formula.neg, truth_at]
     intro h_conj
-    have h_both : (∃ s, t < s ∧ truth_at M Omega τ s φ.swap_temporal ∧ ∀ r, t < r → r < s → (False → False)) ∧
-      (∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧ ∀ r, t < r → r < s → (False → False)) :=
-      ⟨Classical.byContradiction fun h => h_conj (fun h1 _ => h h1),
-       Classical.byContradiction fun h => h_conj (fun _ h2 => h h2)⟩
-    obtain ⟨⟨s1, hts1, h_φs1, _⟩, s2, hts2, h_ψs2, _⟩ := h_both
+    have ⟨s1, hts1, h_φs1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun h_F _ => h_F fun s hts h_phi => (h_no s hts h_phi).elim)
+    have ⟨s2, hts2, h_ψs2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun _ h_F => h_F fun s hts h_psi => (h_no s hts h_psi).elim)
     rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-    · -- s1 < s2: F(φ' ∧ F(ψ'))
+    · -- s1 < s2: take r = s1, giving F(φ' ∧ F(ψ'))
       intro _; intro h_neg_second; exfalso; apply h_neg_second
-      exact ⟨s1, hts1, (fun h => h h_φs1 ⟨s2, h_lt, h_ψs2, fun _ _ _ h => h⟩), fun _ _ _ h => h⟩
-    · -- s1 = s2: F(φ' ∧ ψ')
+      intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1
+        (fun h_neg => h_neg s2 h_lt h_ψs2))
+    · -- s1 = s2: giving F(φ' ∧ ψ')
       subst h_eq
       intro h_neg_first; exfalso; apply h_neg_first
-      exact ⟨s1, hts1, (fun h => h h_φs1 h_ψs2), fun _ _ _ h => h⟩
-    · -- s2 < s1: F(F(φ') ∧ ψ')
+      intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1 h_ψs2)
+    · -- s2 < s1: take r = s2, giving F(F(φ') ∧ ψ')
       intro _; intro _
-      exact ⟨s2, hts2, (fun h => h ⟨s1, h_gt, h_φs1, fun _ _ _ h => h⟩ h_ψs2), fun _ _ _ h => h⟩
+      intro h_all; exact h_all s2 hts2 (fun h_imp => h_imp
+        (fun h_neg => h_neg s1 h_gt h_φs1) h_ψs2)
   | F_until_equiv φ => exact swap_axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact swap_axiom_P_since_equiv_valid φ
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | discrete_symm_fwd =>
+    -- swap(U(T,bot) -> S(T,bot)) = S(T,bot) -> U(T,bot)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro ⟨r, hrt, _h_top_r, h_guard⟩
@@ -735,6 +790,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (t - r)) h1 h2
   | discrete_symm_bwd =>
+    -- swap(S(T,bot) -> U(T,bot)) = U(T,bot) -> S(T,bot)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro ⟨s, hts, _h_top_s, h_guard⟩
@@ -749,12 +805,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | discrete_propagate_fwd =>
     -- swap(U(T,bot) -> G(U(T,bot))) = S(T,bot) -> H(S(T,bot))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_future, truth_at]
-    intro h_S
-    rw [Truth.past_iff]
-    intro u hut
-    -- h_S : ∃ r < t, ... , so shift to get ∃ r' < u, ...
-    obtain ⟨r, hrt, _h_top_r, h_guard⟩ := h_S
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
       conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
@@ -766,11 +818,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | discrete_propagate_bwd =>
     -- swap(U(T,bot) -> H(U(T,bot))) = S(T,bot) -> G(S(T,bot))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.swap_temporal_all_past, truth_at]
-    intro h_S
-    rw [Truth.future_iff]
-    intro u htu
-    obtain ⟨r, hrt, _h_top_r, h_guard⟩ := h_S
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
       conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
@@ -780,6 +829,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
   | discrete_box_necessity =>
+    -- swap(U(T,bot) -> □(U(T,bot))) = S(T,bot) -> □(S(T,bot))
+    -- S(T,bot) depends only on D's order structure, not the history
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
@@ -881,10 +932,8 @@ private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
 /-- Temporal K distribution axiom is locally valid. -/
 private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
     is_valid D ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
-  -- FIX: truth_at no longer unfolds all_future directly (task 116). Use Truth.future_iff.
   intro F M Omega _h_sc τ _h_mem t
-  show truth_at M Omega τ t (φ.imp ψ).all_future → truth_at M Omega τ t φ.all_future → truth_at M Omega τ t ψ.all_future
-  rw [Truth.future_iff Omega, Truth.future_iff Omega, Truth.future_iff Omega]
+  simp only [truth_at]
   intro h_future_imp h_future_phi s hts
   exact h_future_imp s hts (h_future_phi s hts)
 
@@ -892,22 +941,17 @@ private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
 private theorem axiom_temp_4_valid (φ : Formula) :
     is_valid D ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro F M Omega _h_sc τ _h_mem t
-  show truth_at M Omega τ t φ.all_future → truth_at M Omega τ t φ.all_future.all_future
-  rw [Truth.future_iff Omega, Truth.future_iff Omega]
-  intro h_future s hts
-  rw [Truth.future_iff Omega]
-  intro r hsr
+  simp only [truth_at]
+  intro h_future s hts r hsr
   exact h_future r (lt_trans hts hsr)
 
 /-- Helper for temporal A axiom (strict semantics). -/
 private theorem axiom_temp_a_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.some_past)) := by
   intro F M Omega _h_sc τ _h_mem t
-  show truth_at M Omega τ t φ → truth_at M Omega τ t (Formula.all_future φ.some_past)
-  rw [Truth.future_iff Omega]
-  intro h_phi s hts
-  rw [Truth.some_past_iff Omega]
-  exact ⟨t, hts, h_phi⟩
+  simp only [truth_at]
+  intro h_phi s hts h_all_neg
+  exact h_all_neg t hts h_phi
 
 /-- Helper lemma for extracting conjunction from negated implication encoding. -/
 private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
@@ -919,31 +963,33 @@ private theorem axiom_temp_l_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.always, Formula.and, Formula.neg, truth_at]
-  intro h_always
-  have h_ext := and_of_not_imp_not h_always
-  obtain ⟨h_H, h_rest⟩ := h_ext
-  have h_ext2 := and_of_not_imp_not h_rest
-  obtain ⟨h_now, h_G⟩ := h_ext2
-  rw [Truth.future_iff]
-  intro s hts
-  rw [Truth.past_iff]
-  intro r hrs
-  rcases lt_trichotomy r t with h_rt | h_rt | h_rt
-  · rw [Truth.past_iff] at h_H; exact h_H r h_rt
-  · subst h_rt; exact h_now
-  · rw [Truth.future_iff] at h_G; exact h_G r h_rt
+  intro h_always s hts u hus
+  -- h_always encodes: ¬¬(Hφ ∧ ¬¬(φ(t) ∧ Gφ))
+  -- Extract past component
+  have h_past : ∀ r, r < t → truth_at M Omega τ r φ := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, hrt, h_neg⟩ := h_not
+    exact h_always fun h_H => absurd (h_H r hrt) h_neg
+  have h_present : truth_at M Omega τ t φ := by
+    by_contra h_not
+    exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
+  have h_future : ∀ r, t < r → truth_at M Omega τ r φ := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, htr, h_neg⟩ := h_not
+    exact h_always fun _ h_inner => h_inner (fun _ h_G => h_neg (h_G r htr))
+  rcases lt_trichotomy u t with h_lt | h_eq | h_gt
+  · exact h_past u h_lt
+  · exact h_eq ▸ h_present
+  · exact h_future u h_gt
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :
     is_valid D ((φ.box).imp ((φ.all_future).box)) := by
   intro F M Omega h_sc τ _h_mem t
   simp only [truth_at]
-  intro h_box σ h_σ_mem
-  rw [Truth.future_iff]
-  intro s hts
-  have h_σ_shifted_mem : WorldHistory.time_shift σ (s - t) ∈ Omega := h_sc σ h_σ_mem (s - t)
-  have h_truth_shifted := h_box (WorldHistory.time_shift σ (s - t)) h_σ_shifted_mem
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_truth_shifted
+  intro h_box_phi σ h_σ_mem s hts
+  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
+  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
 -- Note: axiom_temp_future_valid removed -- TF is now derived from MF + T + Modal 4.
 
@@ -961,25 +1007,29 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
         (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
           (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.some_future, Formula.some_past,
-    Formula.neg, Formula.top, truth_at]
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj
-  have h_both : (∃ s, t < s ∧ truth_at M Omega τ s φ ∧ ∀ r, t < r → r < s → (False → False)) ∧
-    (∃ s, t < s ∧ truth_at M Omega τ s ψ ∧ ∀ r, t < r → r < s → (False → False)) :=
-    ⟨Classical.byContradiction fun h => h_conj (fun h1 _ => h h1),
-     Classical.byContradiction fun h => h_conj (fun _ h2 => h h2)⟩
-  obtain ⟨⟨s1, hts1, h_φs1, _⟩, s2, hts2, h_ψs2, _⟩ := h_both
+  -- Extract Fφ witness
+  have ⟨s1, hts1, h_φs1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun h_F _ => h_F fun s hts h_phi => (h_no s hts h_phi).elim)
+  -- Extract Fψ witness
+  have ⟨s2, hts2, h_ψs2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun _ h_F => h_F fun s hts h_psi => (h_no s hts h_psi).elim)
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-  · -- s1 < s2: F(φ ∧ F(ψ))
+  · -- s1 < s2: take r = s1, giving F(φ ∧ F(ψ))
     intro _; intro h_neg_second; exfalso; apply h_neg_second
-    exact ⟨s1, hts1, (fun h => h h_φs1 ⟨s2, h_lt, h_ψs2, fun _ _ _ h => h⟩), fun _ _ _ h => h⟩
-  · -- s1 = s2: F(φ ∧ ψ)
+    intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1
+      (fun h_neg => h_neg s2 h_lt h_ψs2))
+  · -- s1 = s2: giving F(φ ∧ ψ)
     subst h_eq
     intro h_neg_first; exfalso; apply h_neg_first
-    exact ⟨s1, hts1, (fun h => h h_φs1 h_ψs2), fun _ _ _ h => h⟩
-  · -- s2 < s1: F(F(φ) ∧ ψ)
+    intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1 h_ψs2)
+  · -- s2 < s1: take r = s2, giving F(F(φ) ∧ ψ)
     intro _; intro _
-    exact ⟨s2, hts2, (fun h => h ⟨s1, h_gt, h_φs1, fun _ _ _ h => h⟩ h_ψs2), fun _ _ _ h => h⟩
+    intro h_all; exact h_all s2 hts2 (fun h_imp => h_imp
+      (fun h_neg => h_neg s1 h_gt h_φs1) h_ψs2)
 
 /-- Past temporal linearity axiom validity (BX11'):
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
@@ -989,27 +1039,6 @@ private theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
       (Formula.or (Formula.some_past (Formula.and φ ψ))
         (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
           (Formula.some_past (Formula.and (Formula.some_past φ) ψ))))) := by
-  intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.some_past, Formula.some_future,
-    Formula.neg, Formula.top, truth_at]
-  intro h_conj
-  have h_both : (∃ s, s < t ∧ truth_at M Omega τ s φ ∧ ∀ r, s < r → r < t → (False → False)) ∧
-    (∃ s, s < t ∧ truth_at M Omega τ s ψ ∧ ∀ r, s < r → r < t → (False → False)) :=
-    ⟨Classical.byContradiction fun h => h_conj (fun h1 _ => h h1),
-     Classical.byContradiction fun h => h_conj (fun _ h2 => h h2)⟩
-  obtain ⟨⟨s1, hs1t, h_φs1, _⟩, s2, hs2t, h_ψs2, _⟩ := h_both
-  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-  · -- s1 < s2: P(P(φ) ∧ ψ)
-    intro _; intro _
-    exact ⟨s2, hs2t, (fun h => h ⟨s1, h_lt, h_φs1, fun _ _ _ h => h⟩ h_ψs2), fun _ _ _ h => h⟩
-  · -- s1 = s2: P(φ ∧ ψ)
-    subst h_eq
-    intro h_neg_first; exfalso; apply h_neg_first
-    exact ⟨s1, hs1t, (fun h => h h_φs1 h_ψs2), fun _ _ _ h => h⟩
-  · -- s2 < s1: P(φ ∧ P(ψ))
-    intro _; intro h_neg_second; exfalso; apply h_neg_second
-    exact ⟨s1, hs1t, (fun h => h h_φs1 ⟨s2, h_gt, h_ψs2, fun _ _ _ h => h⟩), fun _ _ _ h => h⟩
-/- Original proof:
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_past, Formula.neg, truth_at]
   intro h_conj
@@ -1034,7 +1063,6 @@ private theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
     intro _; intro h_neg_second; exfalso; apply h_neg_second
     intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_φs1
       (fun h_neg => h_neg s2 h_gt h_ψs2))
--/
 
 /-- F-Until equivalence axiom validity (BX12):
 `F(φ) → (⊤ U φ)` is locally valid.
@@ -1042,20 +1070,31 @@ If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, gu
 private theorem axiom_F_until_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_future φ).imp
       (Formula.untl φ (Formula.bot.imp Formula.bot))) := by
-  -- F(φ) = U(φ,⊤) and ⊤ = ⊥→⊥, so this is A → A, trivially valid.
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.some_future, Formula.top, truth_at]
-  exact id
+  simp only [truth_at, Formula.some_future, Formula.neg]
+  intro h_F
+  by_contra h_not_U
+  push_neg at h_not_U
+  -- h_not_U : ∀ s, t < s → truth_at s φ → ∃ r, t < r ∧ r < s ∧ False ∧ True
+  apply h_F
+  intro s hts h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
+  exact hf
 
 /-- P-Since equivalence axiom validity (BX12'):
 `P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
 private theorem axiom_P_since_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_past φ).imp
       (Formula.snce φ (Formula.bot.imp Formula.bot))) := by
-  -- P(φ) = S(φ,⊤) and ⊤ = ⊥→⊥, so this is A → A, trivially valid.
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.some_past, Formula.top, truth_at]
-  exact id
+  simp only [truth_at, Formula.some_past, Formula.neg]
+  intro h_P
+  by_contra h_not_S
+  push_neg at h_not_S
+  apply h_P
+  intro s hst h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_S s hst h_φs
+  exact hf
 
 /-- Density axiom (DN) is locally valid on dense orders: `GGφ → Gφ` (Sahlqvist form).
 Under reflexive semantics, trivially valid via r = t. -/
@@ -1063,16 +1102,10 @@ private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
     is_valid D (φ.all_future.all_future.imp φ.all_future) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
-  rw [Truth.future_iff]
-  intro h_GG
-  rw [Truth.future_iff]
-  intro s hts
-  -- By density, ∃ r with t < r < s
-  obtain ⟨r, htr, hrs⟩ := DenselyOrdered.dense t s hts
-  -- From h_GG: G(φ) at r, i.e., ∀ u > r, φ(u)
-  have h_G_at_r := h_GG r htr
-  rw [Truth.future_iff] at h_G_at_r
-  exact h_G_at_r s hrs
+  intro h_GG s hts
+  -- Under strict semantics, need r with t < r < s (density), then h_GG r _ s _
+  obtain ⟨r, htr, hrs⟩ := exists_between hts
+  exact h_GG r htr s hrs
 
 /-- All dense-compatible axioms are locally valid on dense orders. -/
 private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
@@ -1090,63 +1123,49 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
   | temp_4 ψ => exact axiom_temp_4_valid ψ
   | serial_future =>
-    -- ⊤ → F(⊤): Just need ∃ s > t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_future, Formula.neg, Formula.top, truth_at]
-    intro _
+    simp only [Formula.some_future, Formula.neg, truth_at]
+    intro _ h_all_neg
     obtain ⟨s, hts⟩ := exists_gt t
-    exact ⟨s, hts, fun h => h, fun _ _ _ h => h⟩
+    exact h_all_neg s hts (fun h => h)
   | serial_past =>
-    -- ⊤ → P(⊤): Just need ∃ s < t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_past, Formula.neg, Formula.top, truth_at]
-    intro _
+    simp only [Formula.some_past, Formula.neg, truth_at]
+    intro _ h_all_neg
     obtain ⟨s, hst⟩ := exists_lt t
-    exact ⟨s, hst, fun h => h, fun _ _ _ h => h⟩
+    exact h_all_neg s hst (fun h => h)
   | left_mono_until_G φ χ ψ =>
-    -- Direct: G(φ→χ) → untl(ψ,φ) → untl(ψ,χ)
+    -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_G ⟨s, hts, h_ψs, h_guard⟩
-    have h_G' := (Truth.future_iff Omega (φ.imp χ)).mp h_G
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G' r htr (h_guard r htr hrs)⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | left_mono_since_H φ χ ψ =>
-    -- Direct: H(φ→χ) → snce(ψ,φ) → snce(ψ,χ)
+    -- Direct: H(φ→χ) → snce(φ,ψ) → snce(χ,ψ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_H ⟨s, hst, h_ψs, h_guard⟩
-    have h_H' := (Truth.past_iff Omega (φ.imp χ)).mp h_H
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H' r hrt (h_guard r hsr hrt)⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_G ⟨s, hts, h_φs, h_guard⟩
-    have h_G' := (Truth.future_iff Omega (φ.imp ψ)).mp h_G
-    exact ⟨s, hts, h_G' s hts h_φs, h_guard⟩
+    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
   | right_mono_since φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_H ⟨s, hst, h_φs, h_guard⟩
-    have h_H' := (Truth.past_iff Omega (φ.imp ψ)).mp h_H
-    exact ⟨s, hst, h_H' s hst h_φs, h_guard⟩
+    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
   | connect_future φ =>
-    -- φ → G(P(φ))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro h_φt
-    rw [Truth.future_iff]
-    intro s hts
-    rw [Truth.some_past_iff]
-    exact ⟨t, hts, h_φt⟩
+    simp only [truth_at, Formula.some_past, Formula.neg]
+    intro h_φt s hts h_H_neg
+    exact h_H_neg t hts h_φt
   | connect_past φ =>
-    -- φ → H(F(φ))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro h_φt
-    rw [Truth.past_iff]
-    intro s hst
-    rw [Truth.some_future_iff]
-    exact ⟨t, hst, h_φt⟩
+    simp only [truth_at, Formula.some_future, Formula.neg]
+    intro h_φt s hst h_G_neg
+    exact h_G_neg t hst h_φt
   | enrichment_until φ ψ p =>
     -- Direct: p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))
     intro F M Omega _h_sc τ _h_mem t
@@ -1284,19 +1303,15 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
-    -- untl(ψ,φ) → F(ψ): just weaken guard to ⊤
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_future, Formula.some_past,
-      Formula.neg, Formula.top]
-    intro ⟨s, hts, h_ψs, _⟩
-    exact ⟨s, hts, h_ψs, fun _ _ _ h => h⟩
+    simp only [truth_at, Formula.some_future, Formula.neg]
+    intro ⟨s, hts, h_ψs, _⟩ h_G_neg
+    exact h_G_neg s hts h_ψs
   | since_P φ ψ =>
-    -- snce(ψ,φ) → P(ψ): just weaken guard to ⊤
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_past, Formula.some_future,
-      Formula.neg, Formula.top]
-    intro ⟨s, hst, h_ψs, _⟩
-    exact ⟨s, hst, h_ψs, fun _ _ _ h => h⟩
+    simp only [truth_at, Formula.some_past, Formula.neg]
+    intro ⟨s, hst, h_ψs, _⟩ h_H_neg
+    exact h_H_neg s hst h_ψs
   | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
@@ -1329,13 +1344,9 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (t - r)) h1 h2
   | discrete_propagate_fwd =>
-    -- U(T,bot) → G(U(T,bot)): propagate discrete step
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro h_U
-    rw [Truth.future_iff]
-    intro u htu
-    obtain ⟨s, hts, _h_top_s, h_guard⟩ := h_U
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
     refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
     have h1 : t < c - (u - t) := by
       conv_lhs => rw [(sub_sub_cancel u t).symm]
@@ -1345,13 +1356,9 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_propagate_bwd =>
-    -- U(T,bot) → H(U(T,bot)): propagate discrete step backward
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro h_U
-    rw [Truth.past_iff]
-    intro u hut
-    obtain ⟨s, hts, _h_top_s, h_guard⟩ := h_U
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
     refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
     have h1 : t < c - (u - t) := by
       conv_lhs => rw [(sub_sub_cancel u t).symm]
@@ -1369,7 +1376,6 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
-
 /-! ## Rule Preservation for Local Validity
 
 Helper lemmas proving that inference rules preserve local validity.
@@ -1401,7 +1407,7 @@ private theorem temporal_necessitation_preserves_local_valid {φ : Formula}
     (h : is_valid D φ) :
     is_valid D (Formula.all_future φ) := by
   intro F M Omega h_sc τ h_mem t
-  rw [Truth.future_iff Omega]
+  simp only [truth_at]
   intro s _hts
   exact h F M Omega h_sc τ h_mem s
 
@@ -1510,10 +1516,6 @@ This resolves the 3 `temporal_duality` sorries in Soundness.lean:
 Identical proof to `axiom_swap_valid` but without `[DenselyOrdered D] [Nontrivial D]`. -/
 theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDenseCompatible)
     [Nontrivial D] : is_valid D φ.swap_temporal := by
-  -- FIX: Same as axiom_swap_valid. Multiple cases fail because truth_at no longer
-  -- unfolds all_future/all_past directly (task 116 redefinition).
-  sorry
-/- Original proof commented out. See git history at commit 08db71682.
   cases h with
   | prop_k ψ χ ρ =>
     intro F M Omega _h_sc τ _h_mem t
@@ -1836,14 +1838,10 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
--/
 
 /-- All dense-compatible BX axioms are locally valid without frame-class constraints. -/
 private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ)
     (h_dc : h.isDenseCompatible) : is_valid D φ := by
-  -- FIX: Same as axiom_locally_valid. Multiple cases fail (task 116).
-  sorry
-/- Original proof:
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
   | prop_s φ ψ => exact axiom_prop_s_valid φ ψ
@@ -2109,8 +2107,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     exact ⟨s, hts, fun h => h, h_guard⟩
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
-   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
--/
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
 /-- Combined soundness for dense-compatible derivations without frame-class constraints:
 derivability implies both validity and swap-validity. Identical to
@@ -2178,9 +2175,6 @@ Uses Nat.find for well-founded descent on the succ chain. -/
 theorem prior_UZ_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (φ : Formula) : is_valid D (φ.some_future.imp (Formula.untl φ φ.neg)) := by
-  -- FIX: truth_at no longer unfolds some_future directly after task 116.
-  -- Need Truth.some_future_iff rewrite before intro, then adapt Nat.find descent.
-  sorry /- Original proof preserved below in prior_SZ_is_valid comment block.
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro hF
@@ -2217,16 +2211,12 @@ theorem prior_UZ_is_valid
       exact absurd hrs (not_lt.mpr h_le)
     rw [← hj1]
     exact hk₀_min j hj_lt
--/
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
 theorem prior_SZ_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (φ : Formula) : is_valid D (φ.some_past.imp (Formula.snce φ φ.neg)) := by
-  -- FIX: truth_at no longer unfolds some_past (task 116). Needs Truth.some_past_iff.
-  sorry
-/- Original proof:
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_past, Formula.neg, truth_at]
   intro hP
@@ -2262,7 +2252,6 @@ theorem prior_SZ_is_valid
       exact absurd hrs (not_lt.mpr h_le)
     rw [← hj1]
     exact hk₀_min j hj_lt
--/
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
@@ -2270,9 +2259,6 @@ theorem z1_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (φ : Formula) : is_valid D ((φ.all_future.imp φ).all_future.imp
         (φ.all_future.some_future.imp φ.all_future)) := by
-  -- FIX: truth_at no longer unfolds all_future/some_future (task 116).
-  sorry
-/- Original proof:
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_GGpIp h_FGp
@@ -2335,7 +2321,6 @@ theorem z1_is_valid
   obtain ⟨m, hm⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
   have hm_eq : Order.succ^[m] (Order.succ t) = s := hm
   exact (show Order.succ^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
--/
 
 /-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
 Backward induction using IsPredArchimedean. -/
@@ -2343,9 +2328,6 @@ theorem z1_past_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (φ : Formula) : is_valid D ((φ.all_past.imp φ).all_past.imp
         (φ.all_past.some_past.imp φ.all_past)) := by
-  -- FIX: truth_at no longer unfolds all_past/some_past (task 116).
-  sorry
-/- Original proof:
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_past, Formula.neg, truth_at]
   intro h_HHpIp h_PHp
@@ -2396,7 +2378,6 @@ theorem z1_past_is_valid
   obtain ⟨m, hm⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
   have hm_eq : Order.pred^[m] (Order.pred t) = s := hm
   exact (show Order.pred^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
--/
 
 /-- All axiom swaps are valid on discrete orders. For dense-compatible axioms,
 delegates to `axiom_swap_valid_general`. For Prior-UZ/SZ, proves directly. -/

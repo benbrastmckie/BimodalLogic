@@ -77,10 +77,10 @@ def goalCategory (φ : Formula) : GoalCategory :=
   match φ with
   | .atom _ => .Atom
   | .bot => .Bottom
-  | .all_past _ => .AllPast
-  | .all_future _ => .AllFuture
   | .imp _ _ => .Implication
   | .box _ => .Box
+  | .all_past _ => .AllPast
+  | .all_future _ => .AllFuture
   | .untl _ _ => .Until
   | .snce _ _ => .Since
 
