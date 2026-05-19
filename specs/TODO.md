@@ -228,7 +228,7 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**:
@@ -237,6 +237,7 @@ technical_debt:
 - **Plan**:
   - [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
   - [116_redefine_ghfp_via_until_since/plans/02_redefine-ghfp-plan.md]
+  - [116_redefine_ghfp_via_until_since/plans/03_redefine-ghfp-plan.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
 
