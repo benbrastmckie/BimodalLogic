@@ -1,7 +1,7 @@
 # Implementation Plan: Close Task 116 Sorries
 
 - **Task**: 167 - Close 7 sorries from task 116 (SubformulaClosure gap + ConservativeExtension dead code)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: 116
 - **Research Inputs**: specs/167_close_task116_sorries/reports/01_subformula-closure-gap.md
