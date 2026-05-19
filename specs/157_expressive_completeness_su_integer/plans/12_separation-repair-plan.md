@@ -210,7 +210,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 ---
 
-### Phase 2: Repair Downstream Files (Dependency-Ordered) [COMPLETED]
+### Phase 2: Repair Downstream Files (Dependency-Ordered) [COMPLETED — Separation module; ExpressiveCompleteness has 23 pre-existing errors]
 
 **Goal**: Fix all remaining Separation module files that pattern-match on 8 constructors. Work in strict import-dependency order so each file compiles before the next.
 
@@ -271,13 +271,17 @@ Phases are strictly sequential because each phase's compilation depends on the p
   - The `all_formulas_separable_aux` function's `| all_past`/`| all_future` cases become unreachable -- remove them
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 2.12: Fix ExpressiveCompleteness.lean *(deviation: altered -- 59 errors remain from int_truth type changes, dead arms already removed by prior agent)*
-  - Verify it compiles with the repaired Separation module
-  - Verification: `lake build Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness`
+- [ ] Task 2.12: Fix ExpressiveCompleteness.lean [BLOCKED — pre-existing errors]
+  - 20 dead `all_past`/`all_future` arms removed. 36 of 59 `int_truth` type errors fixed.
+  - **23 errors remain, all pre-existing** (confirmed: same 23 errors exist on the commit before task 157). These include: `String.append_left_cancel` missing constant, `cons (a, r)` induction issues, `freshAM` termination failures.
+  - Not caused by the `all_past`/`all_future` change; out of scope for Phase 2.
 
-- [ ] Task 2.13: Full build verification *(deviation: deferred -- blocked by 2.12; all 12 Separation files compile, ExpressiveCompleteness remains)*
-  - Run `lake build` targeting all Separation module files
-  - Verify no new sorry introduced (baseline: 8 in DualEliminations, 9 axioms in SeparationThm)
+- [x] Task 2.13: Full Separation module build verification
+  - All 12 Separation module files compile individually ✓
+  - Zero dead `| .all_past`/`| .all_future` match arms ✓
+  - Sorry count: 8 (DualEliminations only, baseline) ✓
+  - Axiom count: 9 (SeparationThm, baseline) ✓
+  - ExpressiveCompleteness.lean has 23 pre-existing errors unrelated to Phase 2 scope
 
 **Timing**: 8 hours
 
@@ -296,105 +300,79 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 ---
 
-### Phase 3: Prove the Hierarchy Theorem (GHR94 10.2.8) [IN PROGRESS]
+### Phase 3: Prove the Hierarchy Theorem (GHR94 10.2.8) [BLOCKED]
 
 **Goal**: Close the `.untl` and `.snce` cases of `all_formulas_separable_aux`, making it axiom-free. This is the mathematical core of the task.
 
-**Why this works now**: With 6 constructors, `has_no_allpast_allfuture` is trivially true. The `all_formulas_separable_aux` function's induction has only 6 cases. The `.untl` and `.snce` cases currently delegate to `all_separable` (axiom-dependent). We replace these with direct proofs using the existing infrastructure:
+**Actual proof architecture** (deviated significantly from original plan):
 
-**Proof architecture for `.untl a b` case**:
-1. `(.untl a b)` has `has_no_allpast_allfuture (.untl a b) = true` (trivially)
-2. Check `no_S_nested_in_U (.untl a b)`:
-   - If YES: `is_S_free a = true ∧ is_S_free b = true`. Use `no_S_nested_in_U_separable_param` with the junction-depth IH as callback.
-   - If NO: Some S-node is inside the U-args. Abstract it: `abstract_snce (.untl a b) C D p` for the offending `snce C D`. This produces a formula with strictly lower `junction_depth` (proved by `abstract_snce_inside_untl_jd_lt` and related lemmas). Apply the junction-depth IH. Then substitute back using `subst_formula_congr` and `subst_in_separated_separable`.
-3. The callback for `no_S_nested_in_U_separable_param` receives formulas with `no_S_nested_in_U`. Since `has_no_allpast_allfuture` is trivially true, we can call `all_formulas_separable_aux` on these with the junction-depth IH. We need `junction_depth(callback_formula) < junction_depth(original_formula)`. This is guaranteed because the callback formula comes from substituting into a separated formula of an abstracted formula, and abstraction reduces junction_depth.
+The proof uses a two-layer approach instead of pure junction-depth induction:
 
-**Proof architecture for `.snce a b` case** (symmetric to `.untl`):
-1. Check `no_U_nested_in_S (.snce a b)` (dual of `no_S_nested_in_U`):
-   - If YES: Use the dual version of `no_S_nested_in_U_separable_param`
-   - If NO: Abstract the offending `untl` from S-args. Apply junction-depth IH.
-2. Alternatively, use the Duality module to reduce `.snce` to `.untl` via duality transformations and apply the `.untl` case.
+1. **Outer layer**: `all_formulas_separable_aux` uses `Nat.strongRecOn` on `junction_depth`, with structural case-split inside each JD level. The `.snce a b` case gets separated forms of `a` and `b` via the structural IH, box-normalizes them, proves `no_S_nested_in_U (.snce χa χb)`, then delegates to `no_S_nested_in_U_separable_param_jd`. The `.untl a b` case uses temporal duality (`swap_temporal`) to convert to the `.snce` case.
 
-**Critical technical requirement**: The junction-depth IH must be available within the callback. This requires `all_formulas_separable_aux` to be proved by `Nat.strongRecOn` on `junction_depth` (or an equivalent well-founded recursion), NOT by structural induction on Formula.
+2. **Inner layer**: `no_S_nested_in_U_separable_param_jd` uses `count_U_subformulas` induction with a JD-bounded callback. It abstracts `.untl` nodes one at a time, separates, substitutes back. The callback receives `.snce` formulas with `no_S_nested_in_U` and `junction_depth ≤ 1` (proved by `callback_jd_le_one`).
 
-**APPROACH DECISION**: Convert `all_formulas_separable_aux` from structural induction to `Nat.strongRecOn` on `junction_depth`.
+3. **The JD=1 gap**: For JD level n ≥ 2, callback formulas have JD ≤ 1 < n, so the JD IH handles them. For JD level n = 1, callback formulas have JD ≤ 1 = n, and the IH requires JD < 1 = 0 — creating a gap. This is the remaining blocker.
+
+**New infrastructure created** (all proved, no sorry):
+- `subst_u_free_jdS_le_one` + `callback_jd_le_one`: callback formulas always have JD ≤ 1
+- `subst_in_separated_separable_jd`: JD-bounded version of `subst_in_separated_separable`
+- `no_S_nested_in_U_separable_param_jd`: JD-bounded version of `no_S_nested_in_U_separable_param`
+- `abstract_snce_subst_roundtrip`, `untl_congr`, `snce_congr`: supporting lemmas
+
+**Removed**:
+- `no_S_nested_sep_callback` (self-referential callback, had `decreasing_by sorry`)
+- `no_S_nested_sep_all` (wrapper for the above)
+
+**Current status**: `lean_verify all_formulas_separable` shows `sorryAx` (from 2 sorry calls at the JD=1 gap). Also shows `Classical.choice`, `propext`, `Quot.sound` (standard Lean axioms). 4 references to `all_separable` (axiom) remain in Hierarchy.lean — 2 in old code (`multi_U_formula_separable`, `no_S_nested_in_U_separable_noax`) and 2 in comments.
 
 **Tasks**:
 
-- [x] Task 3.1: Convert `all_formulas_separable_aux` to junction-depth induction (~100 LOC) *(deviation: altered -- used structural induction + box-normalization + duality instead of junction-depth induction; `no_S_nested_sep_callback` has `decreasing_by sorry` for termination)*
-  - Location: `Hierarchy.lean`, replace the current `all_formulas_separable_aux` proof
-  - New type:
-    ```lean
-    theorem all_formulas_separable_aux (φ : Formula) :
-        is_separable φ := by
-      -- Strong induction on junction_depth
-      induction h : junction_depth φ using Nat.strongRecOn generalizing φ with
-      | ind n ih =>
-      -- Base cases: atom, bot, box (JD=0, syntactically separated)
-      -- imp case: IH on sub-formulas (JD does not increase through imp)
-      -- untl case: see Task 3.2
-      -- snce case: see Task 3.3
-    ```
-  - Drop `has_no_allpast_allfuture` precondition (trivially true, no longer needed as explicit hypothesis)
-  - Handle base cases (atom, bot, box, imp) -- these are identical to the current proof
-  - Leave `.untl` and `.snce` with `sorry` as placeholder for Tasks 3.2-3.3
-  - Verification: `lake build` (with sorry in two places)
+- [ ] Task 3.1: Restructure `all_formulas_separable_aux` with JD induction [PARTIAL]
+  - Replaced structural induction + self-referential callback with `Nat.strongRecOn` on `junction_depth`
+  - Base cases (atom, bot, box, imp) handled within each JD level
+  - `.snce` case: structural IH → separated forms → box-normalize → `no_S_nested_in_U` → delegate to `no_S_nested_in_U_separable_param_jd`
+  - `.untl` case: same as `.snce` but via temporal duality (`swap_temporal`)
+  - JD ≥ 2 case: PROVED (callback JD ≤ 1 < 2 ≤ n)
+  - JD = 0 case: PROVED (separated directly)
+  - **JD = 1 case: 2 sorry calls remain** (Hierarchy.lean lines ~1773 and ~1806)
 
-- [x] Task 3.2: Prove the `.untl a b` case (~200 LOC) *(deviation: altered -- used temporal duality via swap_temporal + box-normalization instead of direct abstraction/substitution)*
-  - Location: `Hierarchy.lean`, within `all_formulas_separable_aux`
-  - Strategy:
-    1. If `no_S_nested_in_U (.untl a b)`: Use `no_S_nested_in_U_separable_param` with callback `fun χ _ => ih (junction_depth χ) ... χ rfl`
-    2. If NOT `no_S_nested_in_U (.untl a b)`: Find `snce C D` nested in U-args via `extract_S_type` or equivalent. Abstract it to get `phi' = abstract_snce (.untl a b) C D p`. Show `junction_depth phi' < junction_depth (.untl a b)` (via existing lemmas). Apply IH to get `is_separable phi'`. Get separated `psi` equivalent to `phi'`. Substitute `snce C D` back for `p` in `psi`. Show result is separable via `subst_in_separated_separable`. Compose equivalences.
-  - For case (1), need to verify that the callback formula's junction_depth is bounded. The callback formula from `subst_in_separated_separable` has:
-    - `no_S_nested_in_U` (proved by `subst_U_free_gives_no_S_nested`)
-    - Junction depth bounded by the abstract-then-separate result
-    - The abstracted formula had `count_U_subformulas` strictly less than the original
-    - After separation and substitution, the JD of the callback formula is at most 1 + max(JD of U-args). Since U-args are S-free (from `no_S_nested_in_U`), the separated form has JD at most 1. Substitution of `.untl A B` (S-free args) into U-free positions adds at most 1 to JD. So callback JD is bounded.
-    - If JD bound is hard to establish, use a lexicographic measure `(junction_depth, count_U_subformulas)` via `WellFoundedRelation` instance.
-  - Verification: `lean_verify all_formulas_separable_aux` shows no SeparationThm axioms for the `.untl` case
+- [ ] Task 3.2: Close the JD=1 gap (2 sorry calls) *(deviation: blocked — see BLOCKER below)*
 
-- [x] Task 3.3: Prove the `.snce a b` case (~200 LOC) *(deviation: altered -- used box-normalization + snce_of_boxfree_sep_no_S_nested + no_S_nested_sep_callback)*
-  - Location: `Hierarchy.lean`, within `all_formulas_separable_aux`
-  - Strategy: Symmetric to `.untl` case. Use `no_U_nested_in_S` (dual of `no_S_nested_in_U`).
-    1. If all U-args under S are U-free: use the dual of `no_S_nested_in_U_separable_param`
-    2. If some S-arg has U: abstract the `.untl` from S-args, reduce JD, apply IH
-  - Alternative: Define `no_U_nested_in_S` if not already available, or use the existing duality infrastructure from Duality.lean
-  - If the dual infrastructure is insufficient, implement the `.snce` case directly by structural symmetry with the `.untl` case, swapping U/S roles throughout
-  - Verification: `lean_verify all_formulas_separable_aux` shows no SeparationThm axioms
+**BLOCKER** (Phase 3, Task 3.2):
+- **What failed**: The 2 sorry calls at lines ~1773 and ~1806 of Hierarchy.lean need `junction_depth ζ ≤ 0` but only have `junction_depth ζ ≤ 1`. The n=1 branch of the JD strong induction passes the callback to `no_S_nested_in_U_separable_param_jd` which calls `subst_in_separated_separable_jd`, whose `.snce c d` case invokes the callback on `.snce (subst c p (.untl A B)) (subst d p (.untl A B))`.
+- **What was tried**: (A) Prove callback JD = 0 — DISPROVED: concrete example `.snce (.untl A B) q` shows callback = original formula (JD=1). (B) Use `(count_U, sizeOf)` lexicographic induction — DISPROVED: callback count_U = original count_U and sizeOf = original sizeOf in the identity roundtrip case. (C) Use `snce_depth_of_U` as decreasing measure — DISPROVED: callback can have GREATER snce_depth_of_U than original. (D) Self-recursive callback — non-terminating (callback returns exact same formula). (E) Process χa, χb separately instead of `.snce χa χb` — works but gives `is_separable χa` and `is_separable χb`, still need `is_separable (.snce χa χb)` = `snce_separable`. (F) Event-guard decomposition via Cases 1-8 — requires U-free A, B; at JD=1 A, B are S-free but NOT necessarily U-free. (G) Change junction_depth definition with +1 — just shifts the problem to a higher JD level.
+- **Why it's stuck**: The 2 sorry calls are EQUIVALENT to `snce_separable` (temporal closure axiom). The structural IH gives `is_separable a` and `is_separable b`. From these, we need `is_separable (.snce a b)`. This IS `snce_separable`. The current proof architecture tries to prove this via abstraction/substitution, but the callback can return the exact same formula at JD=1, creating a genuine non-terminating cycle. No measure on a single formula decreases across the callback.
+- **What is needed**: One of three fundamental restructurings: (1) Change junction_depth to include +1 for .snce/.untl AND prove that at JD=2 (the new JD=1), the .untl args A, B are both S-free and U-free so Cases 1-8 apply directly. This requires re-proving ~20 JD-related lemmas. (2) Replace count_U induction with a different induction that does not produce callbacks, e.g., a direct structural decomposition using Cases 1-8 for each .untl node. (3) Use a global ordinal measure (e.g., omega^2 * snce_depth + omega * count_U + sizeOf) that accounts for the ENTIRE callback chain, not just one level. All three require 8-16 hours of new infrastructure.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+  - Handoff file: `specs/157_expressive_completeness_su_integer/handoffs/jd1-circularity-analysis-20260519.md`
 
-- [ ] Task 3.4: Update `all_formulas_separable` wrapper (~5 LOC) *(deviation: deferred -- wrapper still uses expand_temporal chain, works but could be simplified)*
-  - Since `expand_temporal` is now a no-op (Task 1.3), simplify:
-    ```lean
-    theorem all_formulas_separable (φ : Formula) : is_separable φ :=
-      all_formulas_separable_aux φ
-    ```
-  - Remove the `expand_temporal_equiv` + `expand_has_no_allpast_allfuture` chain
-  - Verification: `lean_verify all_formulas_separable` shows no SeparationThm axioms
-
-- [ ] Task 3.5: Replace `all_separable` references in Hierarchy.lean (~10 LOC)
+- [ ] Task 3.3: Replace remaining `all_separable` references in Hierarchy.lean
   - Replace `multi_U_formula_separable` body: `all_formulas_separable phi` instead of `all_separable phi`
-  - Replace all other `all_separable` references in Hierarchy.lean with `all_formulas_separable`
-  - Replace `no_S_nested_in_U_separable_noax` callback: `fun χ _ => all_formulas_separable χ` (temporary, will be properly wired in Task 3.2)
+  - Replace `no_S_nested_in_U_separable_noax` callback with JD-based version
   - Verification: `grep -n "all_separable" Hierarchy.lean` returns only comments
 
-- [ ] Task 3.6: Full hierarchy verification
-  - Run `lake build` targeting Hierarchy.lean
-  - `lean_verify all_formulas_separable` -- must show NO SeparationThm axioms
-  - `lean_verify all_formulas_separable_aux` -- must show NO SeparationThm axioms
-  - `grep -n "sorry" Hierarchy.lean` -- must return empty
+- [ ] Task 3.4: Update `all_formulas_separable` wrapper
+  - Simplify: `all_formulas_separable φ := all_formulas_separable_aux φ (has_no_allpast_allfuture_true φ)`
+  - Remove `expand_temporal_equiv` + `expand_has_no_allpast_allfuture` chain (expand_temporal is now a no-op)
 
-**Timing**: 8 hours
+- [ ] Task 3.5: Full hierarchy verification
+  - `lake build` passes with zero sorry in Hierarchy.lean
+  - `lean_verify all_formulas_separable` shows NO `sorryAx` and NO SeparationThm axioms
+  - `grep -n "sorry\|all_separable" Hierarchy.lean` returns only comments
+
+**Timing**: 8 hours estimated, ~6 hours spent, ~4-8 hours remaining (JD=1 gap is hard)
 
 **Depends on**: Phase 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean` -- rewrite hierarchy proof
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
 
-**Verification**:
+**Verification** (Phase 3 complete when ALL of these pass):
 - `lake build` passes
-- `lean_verify all_formulas_separable` shows NO SeparationThm axioms
-- `grep -n "sorry\|all_separable" Hierarchy.lean` returns only comments
-- The proof uses only Cases 1-8 (Eliminations + DedekindZ), substitution infrastructure, and junction-depth decrease lemmas
+- `lean_verify all_formulas_separable` shows only `[propext, Classical.choice, Quot.sound]`
+- `grep -rn "sorry" Hierarchy.lean` returns empty
+- `grep -n "all_separable" Hierarchy.lean` returns only comments
 
 ---
 
