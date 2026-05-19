@@ -34,8 +34,6 @@ def subst_formula (phi : Formula) (target : Atom) (replacement : Formula) : Form
   | .imp psi1 psi2 => .imp (subst_formula psi1 target replacement)
       (subst_formula psi2 target replacement)
   | .box psi => .box (subst_formula psi target replacement)
-  | .all_past psi => .all_past (subst_formula psi target replacement)
-  | .all_future psi => .all_future (subst_formula psi target replacement)
   | .untl psi1 psi2 => .untl (subst_formula psi1 target replacement)
       (subst_formula psi2 target replacement)
   | .snce psi1 psi2 => .snce (subst_formula psi1 target replacement)
@@ -64,14 +62,6 @@ theorem subst_correctness (phi : Formula) (target : Atom) (replacement : Formula
     · intro h hp; exact (ihq t).mp (h ((ihp t).mpr hp))
     · intro h hp; exact (ihq t).mpr (h ((ihp t).mp hp))
   | box p _ih => exact Iff.rfl
-  | all_past p ih =>
-    constructor
-    · intro h s hst; exact (ih s).mp (h s hst)
-    · intro h s hst; exact (ih s).mpr (h s hst)
-  | all_future p ih =>
-    constructor
-    · intro h s hts; exact (ih s).mp (h s hts)
-    · intro h s hts; exact (ih s).mpr (h s hts)
   | untl p q ihp ihq =>
     constructor
     · rintro ⟨s, hts, hp, hq⟩

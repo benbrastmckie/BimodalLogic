@@ -554,8 +554,6 @@ private def replace_untl_with_top (phi A B : Formula) : Formula :=
   | .bot => .bot
   | .imp p q => .imp (replace_untl_with_top p A B) (replace_untl_with_top q A B)
   | .box p => .box (replace_untl_with_top p A B)
-  | .all_past p => .all_past (replace_untl_with_top p A B)
-  | .all_future p => .all_future (replace_untl_with_top p A B)
   | .untl p q => if p == A && q == B then Formula.neg .bot else
       .untl (replace_untl_with_top p A B) (replace_untl_with_top q A B)
   | .snce p q => .snce (replace_untl_with_top p A B) (replace_untl_with_top q A B)
@@ -567,8 +565,6 @@ private theorem replace_id_of_U_free (phi A B : Formula) (h : is_U_free phi = tr
   | atom _ => rfl | bot => rfl
   | imp p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_top, ihp h.1, ihq h.2]
   | box p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
-  | all_past p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
-  | all_future p ih => simp [is_U_free] at h; simp [replace_untl_with_top, ih h]
   | untl _ _ => simp [is_U_free] at h
   | snce p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_top, ihp h.1, ihq h.2]
 
@@ -580,8 +576,6 @@ private def untl_under_bool_only : Formula → Formula → Formula → Prop
   | .bot, _, _ => True
   | .imp p q, A, B => untl_under_bool_only p A B ∧ untl_under_bool_only q A B
   | .box p, _, _ => is_U_free p = true
-  | .all_past p, _, _ => is_U_free p = true
-  | .all_future p, _, _ => is_U_free p = true
   | .untl p q, A, B => (p = A ∧ q = B) ∨ (is_U_free (.untl p q) = true)
   | .snce p q, _, _ => is_U_free p = true ∧ is_U_free q = true
 
@@ -592,8 +586,6 @@ private theorem u_free_untl_under_bool (phi A B : Formula) (h : is_U_free phi = 
   | atom _ => trivial | bot => trivial
   | imp p q ihp ihq => simp [is_U_free] at h; exact ⟨ihp h.1, ihq h.2⟩
   | box _ => simp [is_U_free] at h; exact h
-  | all_past _ => simp [is_U_free] at h; exact h
-  | all_future _ => simp [is_U_free] at h; exact h
   | untl _ _ => simp [is_U_free] at h
   | snce p q _ _ => simp [is_U_free] at h; exact h
 
@@ -607,12 +599,6 @@ private theorem replace_U_free_of_bool (phi A B : Formula)
     have ⟨hp, hq⟩ := h_bool
     simp [replace_untl_with_top, is_U_free, ihp hp, ihq hq]
   | box p _ =>
-    simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
-    exact h_bool
-  | all_past p _ =>
-    simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
-    exact h_bool
-  | all_future p _ =>
     simp only [replace_untl_with_top]; simp only [is_U_free, replace_id_of_U_free p A B h_bool]
     exact h_bool
   | untl p q _ _ =>
@@ -639,10 +625,6 @@ private theorem replace_correct_bool (phi A B : Formula) (M : IntStructure) (t :
     simp only [replace_untl_with_top, int_truth]
     exact Iff.imp (ihp t hp hU) (ihq t hq hU)
   | box _ => simp [replace_untl_with_top, int_truth]
-  | all_past p _ =>
-    simp only [replace_untl_with_top, int_truth, replace_id_of_U_free p A B h_bool]
-  | all_future p _ =>
-    simp only [replace_untl_with_top, int_truth, replace_id_of_U_free p A B h_bool]
   | untl p q _ _ =>
     simp only [replace_untl_with_top]
     rcases h_bool with ⟨rfl, rfl⟩ | h_uf
@@ -751,8 +733,6 @@ private def replace_untl_with_bot (phi A B : Formula) : Formula :=
   | .bot => .bot
   | .imp p q => .imp (replace_untl_with_bot p A B) (replace_untl_with_bot q A B)
   | .box p => .box (replace_untl_with_bot p A B)
-  | .all_past p => .all_past (replace_untl_with_bot p A B)
-  | .all_future p => .all_future (replace_untl_with_bot p A B)
   | .untl p q => if p == A && q == B then .bot else
       .untl (replace_untl_with_bot p A B) (replace_untl_with_bot q A B)
   | .snce p q => .snce (replace_untl_with_bot p A B) (replace_untl_with_bot q A B)
@@ -764,8 +744,6 @@ private theorem replace_bot_id_of_U_free (phi A B : Formula) (h : is_U_free phi 
   | atom _ => rfl | bot => rfl
   | imp p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_bot, ihp h.1, ihq h.2]
   | box p ih => simp [is_U_free] at h; simp [replace_untl_with_bot, ih h]
-  | all_past p ih => simp [is_U_free] at h; simp [replace_untl_with_bot, ih h]
-  | all_future p ih => simp [is_U_free] at h; simp [replace_untl_with_bot, ih h]
   | untl _ _ => simp [is_U_free] at h
   | snce p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_bot, ihp h.1, ihq h.2]
 
@@ -779,12 +757,6 @@ private theorem replace_bot_U_free_of_bool (phi A B : Formula)
     have ⟨hp, hq⟩ := h_bool
     simp [replace_untl_with_bot, is_U_free, ihp hp, ihq hq]
   | box p _ =>
-    simp only [replace_untl_with_bot]; simp only [is_U_free, replace_bot_id_of_U_free p A B h_bool]
-    exact h_bool
-  | all_past p _ =>
-    simp only [replace_untl_with_bot]; simp only [is_U_free, replace_bot_id_of_U_free p A B h_bool]
-    exact h_bool
-  | all_future p _ =>
     simp only [replace_untl_with_bot]; simp only [is_U_free, replace_bot_id_of_U_free p A B h_bool]
     exact h_bool
   | untl p q _ _ =>
@@ -811,10 +783,6 @@ private theorem replace_correct_bot (phi A B : Formula) (M : IntStructure) (t : 
     simp only [replace_untl_with_bot, int_truth]
     exact Iff.imp (ihp t hp hnotU) (ihq t hq hnotU)
   | box _ => simp [replace_untl_with_bot, int_truth]
-  | all_past p _ =>
-    simp only [replace_untl_with_bot, int_truth, replace_bot_id_of_U_free p A B h_bool]
-  | all_future p _ =>
-    simp only [replace_untl_with_bot, int_truth, replace_bot_id_of_U_free p A B h_bool]
   | untl p q _ _ =>
     simp only [replace_untl_with_bot]
     rcases h_bool with ⟨rfl, rfl⟩ | h_uf
@@ -1431,7 +1399,9 @@ private theorem case6_equiv_Z (a q A B : Formula) :
             exact ⟨w, lt_trans hsr hrw, hAw, fun z hsz hzw => by
               rcases lt_or_ge z r with hzr | hrz
               · exact h_allB z hsz (lt_trans hzr hrt)
-              · exact hBrw z (lt_of_lt_of_le hsr (le_of_lt_of_le hrt (by omega))) hzw⟩
+              · rcases lt_or_eq_of_le hrz with hrz_lt | hrz_eq
+                · exact hBrw z hrz_lt hzw
+                · exact h_allB z hsz (by omega)⟩
         · exact h_notA_interval r hsr hrt
       -- D1: S(a, q∧¬A)(t) ∧ ¬A(t) ∧ ¬(B∧U)(t)
       apply int_truth_or_iff.mpr; left
@@ -1507,7 +1477,7 @@ private theorem case6_equiv_Z (a q A B : Formula) :
           | succ k ih =>
             intro r hsr hrt hrs hnotBr
             obtain ⟨z, hsz, hzr, hnotBz⟩ := h_no_min r hsr hrt hnotBr
-            exact ih z hsz hrt (by omega) hnotBz
+            exact ih z hsz (lt_trans hzr hrt) (by omega) hnotBz
         exact h_no_min r₀ hsr₀ hr₀t hnotBr₀ (this (r₀ - s - 1).toNat r₀ hsr₀ hr₀t (by omega) hnotBr₀)
       obtain ⟨r₁, hsr₁, hr₁t, hnotBr₁, hB_min⟩ := h_min
       -- ¬A(r₁): If A(r₁), then U(s) via A(r₁) and B on (s,r₁). Contradiction.
@@ -1527,7 +1497,9 @@ private theorem case6_equiv_Z (a q A B : Formula) :
               · rcases lt_or_ge v r₁ with hvr₁ | hr₁v
                 · exact hB_min v hsv hvr₁
                 · exact hB_min v hsv (by omega)
-              · exact hBzw v (lt_of_le_of_lt (le_of_lt_of_le (by omega : s < z) hzv) (by omega)) hvw⟩
+              · rcases lt_or_eq_of_le hzv with hzv_lt | hzv_eq
+                · exact hBzw v hzv_lt hvw
+                · exact hB_min v hsv (by omega)⟩
         · intro hAz; apply hnotU_s
           exact ⟨z, hsz, hAz, fun v hsv hvz => hB_min v hsv (lt_trans hvz hzr₁)⟩
       -- S(a, q∧¬A)(r₁)
@@ -1573,7 +1545,7 @@ private theorem case6_equiv_Z (a q A B : Formula) :
         have hwt : t < w := by
           rcases lt_or_ge w t with hwt | htw
           · exact absurd hAw ((int_truth_and_iff.mp (hqnA_guard w hsw hwt)).2)
-          · rcases eq_or_lt_of_le htw with rfl | h; · exact absurd hAw hnotAt; · exact h
+          · exact lt_of_le_of_ne htw (fun h => hnotAt (h ▸ hAw))
         -- B(t) from B on (s,w) with t ∈ (s,w)
         have hBt : int_truth M t B := hBsw t hst hwt
         -- U(t) from w > t, A(w), B on (t,w)
@@ -1599,7 +1571,7 @@ private theorem case6_equiv_Z (a q A B : Formula) :
         have hwr : r < w := by
           rcases lt_or_ge w r with hwr | hrw
           · exact absurd hAw ((int_truth_and_iff.mp (hqnA_sr w hsw hwr)).2)
-          · rcases eq_or_lt_of_le hrw with rfl | h; · exact absurd hAw hnotAr; · exact h
+          · exact lt_of_le_of_ne hrw (fun h => hnotAr (h ▸ hAw))
         -- B(r) from B on (s,w) since r ∈ (s,w)
         exact hnotBr (hBsw r hsr hwr)
       -- Guard: q∨U on (s,t)

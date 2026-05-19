@@ -350,7 +350,7 @@ theorem case1_psi_properties (a q A B : Formula)
   `elim_case_1_gen` which only needs S-freeness for A and B.
 -/
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 1600000 in
 theorem elim_case_2_gen (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
@@ -367,23 +367,52 @@ theorem elim_case_2_gen (a q A B : Formula)
   obtain ⟨psi1, hequiv1, hsep1⟩ := elim_case_1_gen a q
     (Formula.and (Formula.neg A) (Formula.neg B)) (Formula.neg A)
     ha hq hAB_Uf hAneg_Uf hAB_Sf hAneg_Sf
-  let psi_l := Formula.snce (Formula.and a (.all_future (Formula.neg A))) q
+  -- psi_l = S(a, q ∧ ¬A) ∧ ¬A ∧ G(¬A)
+  -- This is the separated equivalent of the "G(¬A) at event" branch.
+  -- In the 6-constructor language, all_future(¬A) is not U-free (it contains untl),
+  -- so we cannot put it inside snce args. Instead we factor:
+  --   S(a ∧ G_s(¬A), q) ↔ S(a, q ∧ ¬A) ∧ ¬A(t) ∧ G_t(¬A)
+  have hsep_A : is_syntactically_separated A = true := u_free_s_free_imp_separated A hA hA'
+  let psi_l := Formula.and (Formula.and (.snce a (Formula.and q (Formula.neg A)))
+    (Formula.neg A)) (.all_future (Formula.neg A))
   have hsep_l : is_syntactically_separated psi_l = true := by
-    simp [psi_l, Formula.and, Formula.neg, is_syntactically_separated, is_U_free, ha, hq, hA]
+    simp only [psi_l, Formula.and, Formula.neg, is_syntactically_separated,
+      is_syntactically_separated_all_future, is_U_free, is_S_free, ha, hq, hA, hA',
+      Bool.true_and, Bool.and_true, hsep_A]
   refine ⟨Formula.or psi_l psi1, ?_, ?_⟩
   · intro M t; constructor
     · intro ⟨s, hst, hand, hqg⟩
       have ⟨ha_s, hnotU⟩ := int_truth_and_iff.mp hand
       rcases int_truth_or_iff.mp ((neg_until_equiv A B M s).mp hnotU) with hGA | hU'
-      · exact int_truth_or_iff.mpr (Or.inl ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hGA⟩, hqg⟩)
+      · -- Case: G_s(¬A) holds at event point s
+        have hGA_unf := (int_truth_all_future M s (Formula.neg A)).mp hGA
+        -- Split G_s(¬A) = (∀ r ∈ (s,t), ¬A(r)) ∧ ¬A(t) ∧ G_t(¬A)
+        have hA_t : ¬ int_truth M t A := hGA_unf t hst
+        have hGA_t : ∀ u : ℤ, t < u → int_truth M u (Formula.neg A) :=
+          fun u hu => hGA_unf u (lt_trans hst hu)
+        apply int_truth_or_iff.mpr; left
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_all_future]
+        exact ⟨⟨⟨s, hst, ha_s, fun r hr1 hr2 =>
+          int_truth_and_iff.mpr ⟨hqg r hr1 hr2, hGA_unf r hr1⟩⟩,
+          hA_t⟩, hGA_t⟩
       · exact int_truth_or_iff.mpr (Or.inr ((hequiv1 M t).mp
           ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hU'⟩, hqg⟩))
     · intro h
       rcases int_truth_or_iff.mp h with hl | hr
-      · obtain ⟨s, hst, hand, hqg⟩ := hl
-        have ⟨ha_s, hGA⟩ := int_truth_and_iff.mp hand
+      · -- Backward from psi_l: reconstruct G_s(¬A) from the components
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_all_future] at hl
+        obtain ⟨⟨⟨s, hst, ha_s, hguard⟩, hA_t⟩, hGA_t⟩ := hl
+        have hGA_s : int_truth M s (.all_future (Formula.neg A)) := by
+          rw [int_truth_all_future]
+          intro u hu
+          rcases lt_trichotomy u t with hut | rfl | htu
+          · have hqnA := hguard u hu hut
+            exact (int_truth_and_iff.mp hqnA).2
+          · exact hA_t
+          · exact hGA_t u htu
         exact ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s,
-          (neg_until_equiv A B M s).mpr (int_truth_or_iff.mpr (Or.inl hGA))⟩, hqg⟩
+          (neg_until_equiv A B M s).mpr (int_truth_or_iff.mpr (Or.inl hGA_s))⟩,
+          fun r hr1 hr2 => (int_truth_and_iff.mp (hguard r hr1 hr2)).1⟩
       · obtain ⟨s, hst, hand, hqg⟩ := (hequiv1 M t).mpr hr
         have ⟨ha_s, hU'⟩ := int_truth_and_iff.mp hand
         exact ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s,
@@ -392,7 +421,7 @@ theorem elim_case_2_gen (a q A B : Formula)
 
 /-! ## Case 2: S(a ^ not U(A,B), q) -/
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 1600000 in
 theorem elim_case_2 (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
@@ -410,23 +439,44 @@ theorem elim_case_2 (a q A B : Formula)
   obtain ⟨psi1, hequiv1, hsep1⟩ := elim_case_1 a q
     (Formula.and (Formula.neg A) (Formula.neg B)) (Formula.neg A)
     ha hq hAB_Uf hAneg_Uf ha' hq' hAB_Sf hAneg_Sf
-  let psi_l := Formula.snce (Formula.and a (.all_future (Formula.neg A))) q
+  -- psi_l = S(a, q ∧ ¬A) ∧ ¬A ∧ G(¬A) -- restructured for 6-constructor separation
+  have hsep_A : is_syntactically_separated A = true := u_free_s_free_imp_separated A hA hA'
+  let psi_l := Formula.and (Formula.and (.snce a (Formula.and q (Formula.neg A)))
+    (Formula.neg A)) (.all_future (Formula.neg A))
   have hsep_l : is_syntactically_separated psi_l = true := by
-    simp [psi_l, Formula.and, Formula.neg, is_syntactically_separated, is_U_free, ha, hq, hA]
+    simp only [psi_l, Formula.and, Formula.neg, is_syntactically_separated,
+      is_syntactically_separated_all_future, is_U_free, is_S_free, ha, hq, hA, hA',
+      Bool.true_and, Bool.and_true, hsep_A]
   refine ⟨Formula.or psi_l psi1, ?_, ?_⟩
   · intro M t; constructor
     · intro ⟨s, hst, hand, hqg⟩
       have ⟨ha_s, hnotU⟩ := int_truth_and_iff.mp hand
       rcases int_truth_or_iff.mp ((neg_until_equiv A B M s).mp hnotU) with hGA | hU'
-      · exact int_truth_or_iff.mpr (Or.inl ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hGA⟩, hqg⟩)
+      · have hGA_unf := (int_truth_all_future M s (Formula.neg A)).mp hGA
+        have hA_t : ¬ int_truth M t A := hGA_unf t hst
+        have hGA_t : ∀ u : ℤ, t < u → int_truth M u (Formula.neg A) :=
+          fun u hu => hGA_unf u (lt_trans hst hu)
+        apply int_truth_or_iff.mpr; left
+        rw [int_truth_and_iff, int_truth_and_iff, int_truth_all_future]
+        exact ⟨⟨⟨s, hst, ha_s, fun r hr1 hr2 =>
+          int_truth_and_iff.mpr ⟨hqg r hr1 hr2, hGA_unf r hr1⟩⟩,
+          hA_t⟩, hGA_t⟩
       · exact int_truth_or_iff.mpr (Or.inr ((hequiv1 M t).mp
           ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s, hU'⟩, hqg⟩))
     · intro h
       rcases int_truth_or_iff.mp h with hl | hr
-      · obtain ⟨s, hst, hand, hqg⟩ := hl
-        have ⟨ha_s, hGA⟩ := int_truth_and_iff.mp hand
+      · rw [int_truth_and_iff, int_truth_and_iff, int_truth_all_future] at hl
+        obtain ⟨⟨⟨s, hst, ha_s, hguard⟩, hA_t⟩, hGA_t⟩ := hl
+        have hGA_s : int_truth M s (.all_future (Formula.neg A)) := by
+          rw [int_truth_all_future]
+          intro u hu
+          rcases lt_trichotomy u t with hut | rfl | htu
+          · exact (int_truth_and_iff.mp (hguard u hu hut)).2
+          · exact hA_t
+          · exact hGA_t u htu
         exact ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s,
-          (neg_until_equiv A B M s).mpr (int_truth_or_iff.mpr (Or.inl hGA))⟩, hqg⟩
+          (neg_until_equiv A B M s).mpr (int_truth_or_iff.mpr (Or.inl hGA_s))⟩,
+          fun r hr1 hr2 => (int_truth_and_iff.mp (hguard r hr1 hr2)).1⟩
       · obtain ⟨s, hst, hand, hqg⟩ := (hequiv1 M t).mpr hr
         have ⟨ha_s, hU'⟩ := int_truth_and_iff.mp hand
         exact ⟨s, hst, int_truth_and_iff.mpr ⟨ha_s,
@@ -454,12 +504,13 @@ theorem elim_case_3 (a q A B : Formula)
     (Formula.and (Formula.neg a) (Formula.neg q)) (Formula.neg a) A B
     haq_Uf ha_neg_Uf hA hB haq_Sf ha_neg_Sf hA' hB'
   have hsep_H : is_syntactically_separated (.all_past (Formula.neg a)) = true := by
-    simp [is_syntactically_separated, Formula.neg, is_U_free, ha]
+    simp only [is_syntactically_separated_all_past, Formula.neg, is_U_free, ha, Bool.and_true]
   refine ⟨Formula.and (Formula.neg (.all_past (Formula.neg a))) (Formula.neg psi2), ?_, ?_⟩
   · intro M t; constructor
     · intro hS
       rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff]
       obtain ⟨s, hst, ha_s, hqU_guard⟩ := hS
+      simp only [int_truth_all_past] at *
       refine ⟨fun hall => hall s hst ha_s, ?_⟩
       intro hpsi2
       obtain ⟨s2, hs2t, hand2, hguard2⟩ := (hequiv2 M t).mpr hpsi2
@@ -511,12 +562,13 @@ theorem elim_case_4 (a q A B : Formula)
     (Formula.and (Formula.neg a) (Formula.neg q)) (Formula.neg a) A B
     haq_Uf ha_neg_Uf hA hB haq_Sf ha_neg_Sf hA' hB'
   have hsep_H : is_syntactically_separated (.all_past (Formula.neg a)) = true := by
-    simp [is_syntactically_separated, Formula.neg, is_U_free, ha]
+    simp only [is_syntactically_separated_all_past, Formula.neg, is_U_free, ha, Bool.and_true]
   refine ⟨Formula.and (Formula.neg (.all_past (Formula.neg a))) (Formula.neg psi1), ?_, ?_⟩
   · intro M t; constructor
     · intro hS
       rw [int_truth_and_iff, int_truth_neg_iff, int_truth_neg_iff]
       obtain ⟨s, hst, ha_s, hguard_S⟩ := hS
+      simp only [int_truth_all_past] at *
       refine ⟨fun hall => hall s hst ha_s, ?_⟩
       intro hpsi1
       obtain ⟨s1, hs1t, hevent1, hguard1⟩ := (hequiv1 M t).mpr hpsi1

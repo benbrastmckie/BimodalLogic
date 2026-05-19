@@ -210,7 +210,7 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 ---
 
-### Phase 2: Repair Downstream Files (Dependency-Ordered) [NOT STARTED]
+### Phase 2: Repair Downstream Files (Dependency-Ordered) [IN PROGRESS]
 
 **Goal**: Fix all remaining Separation module files that pattern-match on 8 constructors. Work in strict import-dependency order so each file compiles before the next.
 
@@ -224,58 +224,58 @@ Phases are strictly sequential because each phase's compilation depends on the p
 
 **Tasks**:
 
-- [ ] Task 2.1: Fix FormulaOps.lean (2 repair sites)
+- [x] Task 2.1: Fix FormulaOps.lean (2 repair sites) *(completed -- removed 4 dead arms from subst_formula and subst_correctness)*
   - Remove dead arms from `subst_formula` and `abstract_untl` / `abstract_snce` if applicable
   - Add simp lemmas: `subst_formula_all_past`, `subst_formula_all_future`
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps`
 
-- [ ] Task 2.2: Fix NormalForm.lean (0 repair sites expected, but verify)
+- [x] Task 2.2: Fix NormalForm.lean (0 repair sites expected, but verify) *(completed -- removed 2 dead induction arms from u_free_s_free_separated)*
   - Check if any proofs reference `all_past`/`all_future` induction cases
   - Verify: `lake build Bimodal.Metalogic.WeakCanonical.Separation.NormalForm`
 
-- [ ] Task 2.3: Fix Eliminations.lean (0 repair sites expected, but verify)
+- [x] Task 2.3: Fix Eliminations.lean (0 repair sites expected, but verify) *(deviation: altered -- had 4 compile errors requiring proof restructuring for elim_case_2, elim_case_2_gen, elim_case_3, elim_case_4; restructured psi_l to S(a, q AND NOT A) AND NOT A AND G(NOT A) since all_future is no longer U-free)*
   - Cases 1-8 are already proved. Verify they compile under 6-constructor type.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Eliminations`
 
-- [ ] Task 2.4: Fix SeparationThm.lean (critical -- 9 axioms + induction proofs)
+- [x] Task 2.4: Fix SeparationThm.lean (critical -- 9 axioms + induction proofs) *(completed -- removed 4 dead induction arms from all_separable and all_properly_separable, fixed all_past_congr and all_future_congr with simp only [int_truth_all_past/all_future])*
   - Remove `| all_past`/`| all_future` induction cases from `all_separable` and `all_properly_separable`. These cases called the temporal closure axioms. With 6 constructors, they never fire.
   - The proofs now have 6 cases: `atom`, `bot`, `imp`, `box`, `untl`, `snce`. The `untl` and `snce` cases currently call `untl_separable`/`snce_separable` axioms. These axiom calls remain for now (will be eliminated in Phase 4).
   - IMPORTANT: The `all_past_separable`, `all_future_separable`, `all_past_properly_separable`, `all_future_properly_separable` axioms are now UNUSED. Mark them for removal but do not delete yet.
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm`
 
-- [ ] Task 2.5: Fix Distributivity.lean (verify only)
+- [x] Task 2.5: Fix Distributivity.lean (verify only) *(completed)*
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Distributivity`
 
-- [ ] Task 2.6: Fix NegationEquiv.lean (verify only)
+- [x] Task 2.6: Fix NegationEquiv.lean (verify only) *(completed)*
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv`
 
-- [ ] Task 2.7: Fix IntHelpers.lean (verify only)
+- [x] Task 2.7: Fix IntHelpers.lean (verify only) *(completed)*
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.IntHelpers`
 
-- [ ] Task 2.8: Fix DedekindZ.lean (6 repair sites)
+- [ ] Task 2.8: Fix DedekindZ.lean (6 repair sites) *(deviation: altered -- removed 20 dead arms, fixed 4 proof issues, but ~15 deeper proof errors remain from all_past/all_future semantics changes in Case 6-8 proofs)*
   - Remove dead `| .all_past`/`| .all_future` arms
   - Cases 5-8 proofs (completed in plan v8) should compile since they don't use `all_past`/`all_future`
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ`
 
-- [ ] Task 2.9: Fix Duality.lean (0 expected, verify)
+- [x] Task 2.9: Fix Duality.lean (0 expected, verify) *(completed)*
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Duality`
 
-- [ ] Task 2.10: Fix DualEliminations.lean (0 match arm repair, 8 sorry remain)
+- [x] Task 2.10: Fix DualEliminations.lean (0 match arm repair, 8 sorry remain) *(completed -- builds with exactly 8 sorry as expected)*
   - Verify it compiles (sorry is allowed for now)
   - Count sorry: should be exactly 8
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations`
 
-- [ ] Task 2.11: Fix Hierarchy.lean (14 repair sites)
+- [ ] Task 2.11: Fix Hierarchy.lean (14 repair sites) *(deviation: deferred -- blocked by DedekindZ)*
   - Remove dead `| .all_past`/`| .all_future` arms from `has_single_U_type`, `has_single_S_type`, `abstract_untl`, `abstract_snce`, and all related functions/proofs
   - The key infrastructure (substitution lemmas, `subst_in_separated_separable`, `no_S_nested_in_U_separable_param`, junction-depth decrease lemmas) should compile with dead arm removal
   - The `all_formulas_separable_aux` function's `| all_past`/`| all_future` cases become unreachable -- remove them
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
 
-- [ ] Task 2.12: Fix ExpressiveCompleteness.lean
+- [ ] Task 2.12: Fix ExpressiveCompleteness.lean *(deviation: altered -- has 10+ errors from dead arms and int_truth type changes, separate from DedekindZ)*
   - Verify it compiles with the repaired Separation module
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness`
 
-- [ ] Task 2.13: Full build verification
+- [ ] Task 2.13: Full build verification *(deviation: deferred -- blocked by 2.8, 2.11, 2.12)*
   - Run `lake build` targeting all Separation module files
   - Verify no new sorry introduced (baseline: 8 in DualEliminations, 9 axioms in SeparationThm)
 

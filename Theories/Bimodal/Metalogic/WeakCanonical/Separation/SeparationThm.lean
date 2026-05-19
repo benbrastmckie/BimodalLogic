@@ -31,13 +31,13 @@ open Bimodal.Syntax
 
 private theorem all_past_congr {φ ψ : Formula} (h : int_equiv φ ψ) :
     int_equiv (.all_past φ) (.all_past ψ) := by
-  intro M t; constructor
+  intro M t; simp only [int_truth_all_past]; constructor
   · intro hall s hst; exact (h M s).mp (hall s hst)
   · intro hall s hst; exact (h M s).mpr (hall s hst)
 
 private theorem all_future_congr {φ ψ : Formula} (h : int_equiv φ ψ) :
     int_equiv (.all_future φ) (.all_future ψ) := by
-  intro M t; constructor
+  intro M t; simp only [int_truth_all_future]; constructor
   · intro hall s hts; exact (h M s).mp (hall s hts)
   · intro hall s hts; exact (h M s).mpr (hall s hts)
 
@@ -135,8 +135,6 @@ theorem all_separable (phi : Formula) : is_separable phi := by
       exact ⟨fun h hp => (heψ M t).mp (h ((heφ M t).mpr hp)),
              fun h hp => (heψ M t).mpr (h ((heφ M t).mp hp))⟩
   | box φ _ih => exact ⟨.box φ, rfl, int_equiv_refl _⟩
-  | all_past φ ih => exact all_past_separable φ ih
-  | all_future φ ih => exact all_future_separable φ ih
   | untl φ ψ ih1 ih2 => exact untl_separable φ ψ ih1 ih2
   | snce φ ψ ih1 ih2 => exact snce_separable φ ψ ih1 ih2
 
@@ -258,8 +256,6 @@ theorem all_properly_separable (phi : Formula) : is_properly_separable phi := by
       exact ⟨fun h hp => (heψ M t).mp (h ((heφ M t).mpr hp)),
              fun h hp => (heψ M t).mpr (h ((heφ M t).mp hp))⟩
   | box φ _ih => exact ⟨.box φ, rfl, int_equiv_refl _⟩
-  | all_past φ ih => exact all_past_properly_separable φ ih
-  | all_future φ ih => exact all_future_properly_separable φ ih
   | untl φ ψ ih1 ih2 => exact untl_properly_separable φ ψ ih1 ih2
   | snce φ ψ ih1 ih2 => exact snce_properly_separable φ ψ ih1 ih2
 
