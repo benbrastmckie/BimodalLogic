@@ -150,10 +150,20 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/15_ghr94-restructuring-plan.md",
           "type": "plan",
           "summary": "GHR94-faithful restructuring plan: 7 phases, 25h, abstract_inner_U + axiom elimination"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/16_blocker-research.md",
+          "type": "research",
+          "summary": "Blocker: snce_depth_of_U wrong measure, U_nesting_depth needed, self-contained depth-1 via single_U_formula_separable"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/plans/16_revised-restructuring-plan.md",
+          "type": "plan",
+          "summary": "Revised plan: U_nesting_depth measure, self-contained depth-1 via single_U_formula_separable, abstract_inner_U for depth >= 2"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 16
+      "next_artifact_number": 17
     },
     {
       "project_number": 156,
