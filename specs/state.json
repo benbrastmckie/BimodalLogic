@@ -68,7 +68,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -77,9 +77,9 @@
         116
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-19T17:12:55Z",
-      "session_id": "sess_1779208345_b7c496",
-      "researched": "2026-05-19T16:11:31Z",
+      "last_updated": "2026-05-19T18:04:16Z",
+      "session_id": "sess_1779212907_599a65",
+      "researched": "2026-05-19T18:04:16Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -160,10 +160,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/16_revised-restructuring-plan.md",
           "type": "plan",
           "summary": "Revised plan: U_nesting_depth measure, self-contained depth-1 via single_U_formula_separable, abstract_inner_U for depth >= 2"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/17_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): circularity fix via single_U_formula_separable_noax, iterative single-U abstraction, _gen variants needed"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 17
+      "next_artifact_number": 18
     },
     {
       "project_number": 156,
