@@ -160,10 +160,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/17_revised-restructuring-plan.md",
           "type": "plan",
           "summary": "Revised plan v17: fixes circularity, iterative abstraction, _gen variants"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/plans/18_revised-restructuring-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v18: replaces blocked Task 3.7 with self-contained leaf case approach (b) from Report 18"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 18
+      "next_artifact_number": 19
     },
     {
       "project_number": 156,
