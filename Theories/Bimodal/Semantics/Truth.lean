@@ -226,7 +226,7 @@ theorem neg_iff
   exact Iff.rfl
 
 /-- Truth of some_future (F φ = U(φ, ⊤)): there exists a strictly future time where φ holds. -/
-theorem some_future_iff
+@[simp] theorem some_future_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
@@ -246,7 +246,7 @@ theorem some_future_iff
     exact ⟨s, hts, hφ, fun _ _ _ => id⟩
 
 /-- Truth of some_past (P φ = S(φ, ⊤)): there exists a strictly past time where φ holds. -/
-theorem some_past_iff
+@[simp] theorem some_past_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
@@ -267,7 +267,7 @@ Truth of past (H φ = ¬P(¬φ)): formula true at all strictly past times (stric
 
 Semantic characterization theorem: converts the expanded form ¬∃s<t.¬φ(s) to ∀s<t.φ(s).
 -/
-theorem past_iff
+@[simp] theorem past_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
@@ -292,7 +292,7 @@ Truth of future (G φ = ¬F(¬φ)): formula true at all strictly future times (s
 
 Semantic characterization theorem: converts the expanded form ¬∃s>t.¬φ(s) to ∀s>t.φ(s).
 -/
-theorem future_iff
+@[simp] theorem future_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
