@@ -130,7 +130,7 @@ The metalogic is organized around a base axiom system with three extensions: Den
 graph TD
     B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
     D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 1 axiom<br/>Sound ✓ · Complete ✓")
-    C("<b>Continuous</b><br/>+ ConditionallyCompleteLinearOrder<br/>Dense + 1 axiom<br/>Sound ✗ · Complete ✗")
+    C("<b>Continuous</b><br/>+ DedekindComplete<br/>Dense + 1 axiom<br/>Sound ✗ · Complete ✗")
     Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ⧖")
 
     B --> D
@@ -143,11 +143,11 @@ graph TD
 | System | Axioms | Additional Axioms | Standard Model | Soundness | Completeness |
 |--------|--------|-------------------|----------------|-----------|--------------|
 | **Base** | 37 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
-| **Dense** | 38 | `Fφ → FFφ` (density) | ℚ | `soundness_dense` | `completeness_dense` |
-| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` (Dedekind completeness) | ℝ | — | — |
 | **Discrete** | 40 | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | ℤ | `soundness_discrete` | `completeness_discrete` |
+| **Dense** | 38 | `Fφ → FFφ` | ℚ | `soundness_dense` | `completeness_dense` |
+| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` | ℝ | — | — |
 
-The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (22), modal-temporal interaction (1), and uniformity (5) axioms. Dense and Discrete are independent extensions — neither subsumes the other. Continuous extends Dense with the completeness axiom CO, which characterizes Dedekind-complete ordered groups (every nonempty bounded-above set has a least upper bound). Since every Archimedean discrete order is conditionally complete, CO is already valid on discrete frames; it only adds content over dense frames, distinguishing ℚ-like from ℝ-like time.
+The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (22), modal-temporal interaction (1), and uniformity (5) axioms. The Dense and Discrete logics are independent extensions — neither subsumes the other. The Continuous logic extends the Dense logic with the completeness axiom CO, which characterizes Dedekind-complete ordered groups. Since every Archimedean discrete order is conditionally complete, CO is already valid on discrete frames; it only adds content over dense frames, distinguishing ℚ-like from ℝ-like time.
 
 **Active sorry obligations**:
 
