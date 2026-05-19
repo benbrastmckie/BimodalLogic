@@ -184,7 +184,7 @@ Phases within the same wave can execute in parallel.
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - Verification: `lake build Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy` -- passed
 
-- [ ] Task 3.3: Define `U_nesting_depth` and basic properties (~65 LOC)
+- [x] Task 3.3: Define `U_nesting_depth` and basic properties (~89 LOC, completed)
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean` (after `snce_depth_of_U` definition and its lemmas)
   - **Definition**:
     ```lean
