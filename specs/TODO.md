@@ -228,7 +228,7 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**:

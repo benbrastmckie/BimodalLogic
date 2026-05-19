@@ -152,7 +152,7 @@
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -160,8 +160,8 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-19T00:10:00Z",
-      "session_id": "sess_1779147423_788df8",
+      "last_updated": "2026-05-19T00:29:41Z",
+      "session_id": "sess_1779150566_0009bb",
       "researched": "2026-05-18T23:20:13Z",
       "artifacts": [
         {
@@ -181,7 +181,8 @@
         }
       ],
       "topic": "formula-refactor",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "started": "2026-05-19T00:29:41Z"
     },
     {
       "project_number": 95,

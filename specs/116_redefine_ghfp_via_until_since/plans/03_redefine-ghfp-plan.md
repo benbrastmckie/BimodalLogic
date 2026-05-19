@@ -1,7 +1,7 @@
 # Implementation Plan: Task #116 (Revised v3)
 
 - **Task**: 116 - Redefine G, H, F, P in terms of U and S following Burgess 1982
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 30 hours
 - **Dependencies**: Task 107 (completed)
 - **Research Inputs**: specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md, specs/116_redefine_ghfp_via_until_since/reports/02_team-research.md
@@ -12,7 +12,25 @@
 
 ## Overview
 
-This is a post-audit revision of plan v2. The first implementation attempt executed Phases 1-5 but with significant issues: Phase 2 was falsely marked complete (temp_k_dist/temp_4 still axiom constructors), Substitution.lean has compilation errors from @[match_pattern] conflicts, SubformulaClosure has 12 sorry markers (not 8), and SoundnessLemmas.lean has ~100 errors. The build currently has 114 errors across 6 files. This revised plan preserves genuinely completed work (Phase 1 and parts of Phases 3-5), corrects the falsely completed Phase 2, fixes broken files, and restructures remaining work around the discovered @[match_pattern] limitations. Definition of done: `lake build` succeeds with zero errors and all sorry markers documented.
+This is a post-audit revision of plan v2. The first implementation attempt executed Phases 1-5 but with significant issues: Phase 2 was falsely marked complete (temp_k_dist/temp_4 still axiom constructors), Substitution.lean has compilation errors from @[match_pattern] conflicts, SubformulaClosure has 12 sorry markers (not 8), and SoundnessLemmas.lean has ~100 errors. This revised plan preserves genuinely completed work, corrects the Phase 2 omission, fixes broken files, and restructures remaining work. Definition of done: `lake build` succeeds with zero errors and zero sorries introduced by this task.
+
+### Design Decision: `def` + `@[simp]` (Mathlib idiom)
+
+G, H, F, P are retained as `def` abbreviations (not `abbrev`, not removed). This follows the standard Mathlib pattern: define a concept with `def`, then provide `@[simp]` characterization lemmas that teach the simplifier its semantics. This is how `Finset`, `List.map`, `Set.image`, etc. work throughout Mathlib — you never unfold the definition; you reason through simp lemmas.
+
+**The 4 characterization theorems** in Truth.lean must be marked `@[simp]`:
+- `Truth.future_iff`: `truth_at (all_future φ) ↔ ∀ s > t, truth_at s φ`
+- `Truth.past_iff`: `truth_at (all_past φ) ↔ ∀ s < t, truth_at s φ`
+- `Truth.some_future_iff`: `truth_at (some_future φ) ↔ ∃ s > t, truth_at s φ`
+- `Truth.some_past_iff`: `truth_at (some_past φ) ↔ ∃ s < t, truth_at s φ`
+
+These are not patches — they are the fundamental semantic facts about these operators. With `@[simp]`, proofs that use `simp` automatically "see through" the abbreviations to their quantified meanings.
+
+**Why not `abbrev`**: Even with transparent unfolding, `truth_at (all_future φ)` reduces to a negated existential with a vacuous guard — not the clean `∀ s > t` form. The characterization theorems do real logical work (classical reasoning, guard elimination). They are needed regardless of transparency. `def` keeps terms folded in the Infoview and avoids unpredictable unification behavior.
+
+**F/G duality**: `F(φ) = ¬G(¬φ)` is NO LONGER a syntactic identity (`rfl`) since the structural expansions differ. Proofs that relied on syntactic duality must use semantic equivalence via the characterization theorems or derivability in the proof system.
+
+**Induction**: All induction/recursion on Formula uses exactly 6 constructors: `atom`, `bot`, `imp`, `box`, `untl`, `snce`. No G/H/F/P arms anywhere.
 
 ### Research Integration
 
@@ -49,22 +67,21 @@ Roadmap Phase 2 lists task 116 as part of "Frame hierarchy + axiom cleanup": "re
 ## Goals & Non-Goals
 
 **Goals**:
-- Fix the 114 build errors across 6 currently-failing files
+- Add `@[simp]` to the 4 characterization theorems in Truth.lean (design decision above)
+- Fix all build errors (currently 14 across 3 files: SuccRelation, BXCanonical/Frame, RestrictedParametricTruthLemma)
+- Eliminate ALL sorries introduced by this task (currently 47 across 6 files) — every proof must be real
 - Complete the skipped Phase 2: derive temp_k_dist/temp_4 as theorems and remove axiom constructors
-- Fix Substitution.lean @[match_pattern] conflicts and induction errors
-- Resolve the fixable SubformulaClosure sorry markers (some_future/some_past cases where injection works)
-- Complete Phases 6-12 from the original plan (Soundness, Decidability, Algebraic, Completeness, WeakCanonical, Theorems/Automation, Tests, Validation)
-- Rename "bridge lemma" to "semantic characterization theorem" in Truth.lean docstrings
-- Ensure `lake build` passes with zero errors
-- Audit and document all sorry markers with FIX: comments
+- Complete remaining phases (6-10) for untouched modules
+- Ensure `lake build` passes with zero errors and zero new sorries
+- All proofs should read naturally, as if G/H/F/P were always abbreviations — no patches or workarounds
 
 **Non-Goals**:
-- Adding bridge lemmas or compatibility wrappers (the semantic characterization theorems in Truth.lean are legitimate and stay, but no new shims)
+- Adding bridge lemmas, compatibility wrappers, or shims of any kind
+- Using sorry as a placeholder (every sorry must be replaced with a real proof)
 - Changing the semantic treatment of untl/snce (remain primitive constructors)
 - Modifying box or any modal operators
 - Optimizing SubformulaClosure for smaller closure size (Strategy B deferred)
 - Repairing ConservativeExtension/ExtFormula (dead code; separate task)
-- Papering over issues with sorry -- fix properly where possible
 
 ## Risks & Mitigations
 
@@ -99,12 +116,12 @@ Phases within the same wave can execute in parallel.
 **Goal**: Fix the 3+ compilation errors in Substitution.lean caused by @[match_pattern] conflicts and invalid induction arms. Rename "bridge lemma" to "semantic characterization theorem" in Truth.lean docstrings.
 
 **Tasks**:
-- [ ] Fix @[match_pattern] arm ordering in Substitution.lean: remove redundant all_past/all_future arms that conflict with .imp arms (lines 37-38), or reorder so they precede .imp
-- [ ] Fix subst_some_past unsolved goal (line 109): the proof likely needs updating since some_past now expands to snce
-- [ ] Fix swap_temporal_subst (lines 399-400): replace invalid all_past/all_future induction arms with proofs using the 6 real constructors plus simp lemmas for the abbreviation cases
-- [ ] Rename all "bridge lemma" references to "semantic characterization theorem" in Truth.lean docstrings
-- [ ] Verify: `lake build Bimodal.ProofSystem.Substitution` compiles with zero errors
-- [ ] Verify: `lake build Bimodal.Semantics.Truth` compiles
+- [x] Fix @[match_pattern] arm ordering in Substitution.lean: remove redundant all_past/all_future arms that conflict with .imp arms (lines 37-38), or reorder so they precede .imp
+- [x] Fix subst_some_past unsolved goal (line 109): the proof likely needs updating since some_past now expands to snce
+- [x] Fix swap_temporal_subst (lines 399-400): replace invalid all_past/all_future induction arms with proofs using the 6 real constructors plus simp lemmas for the abbreviation cases
+- [x] Rename all "bridge lemma" references to "semantic characterization theorem" in Truth.lean docstrings
+- [x] Verify: `lake build Bimodal.ProofSystem.Substitution` compiles with zero errors
+- [x] Verify: `lake build Bimodal.Semantics.Truth` compiles
 
 **Timing**: 2 hours
 
@@ -169,12 +186,24 @@ Phases within the same wave can execute in parallel.
 **Goal**: Fix the 5 currently-failing files (excluding Substitution.lean, fixed in Phase 1): SoundnessLemmas.lean (~100 errors), TemporalContent.lean (4 errors), TemporalCoherence.lean (2 errors), Bridge.lean (3 errors), Table.lean (2 errors). All failures stem from truth_at expansion mismatches and type mismatches from all_past/all_future no longer being constructors.
 
 **Tasks**:
-- [ ] Fix SoundnessLemmas.lean (~100 errors): systematically rewrite proofs using semantic characterization theorems (truth_at_all_future_iff, truth_at_all_past_iff, truth_at_some_future_iff, truth_at_some_past_iff, truth_at_top) instead of direct truth_at unfolding for G/H/F/P formulas
-- [ ] Fix TemporalContent.lean (4 errors): update type mismatches where code treats all_past/all_future as constructors
-- [ ] Fix TemporalCoherence.lean (2 errors): update type mismatches
-- [ ] Fix Bridge.lean (3 errors): fix swap_temporal simp issues (likely @[match_pattern] arm ordering)
-- [ ] Fix Table.lean (2 errors): fix simp failures (likely need to add semantic characterization theorems to simp set)
-- [ ] Verify: `lake build` for all 5 files compiles with zero errors
+- [x] Fix SoundnessLemmas.lean (~100 errors): errors reduced from ~100 to 0 hard errors, but 21 sorry markers inserted for proofs where truth_at no longer unfolds temporal abbreviations. Compiles with sorry warnings.
+- [x] Fix TemporalContent.lean (4 errors): compiles, 2 sorry markers for duality proofs (F/G duality broken by redefinition)
+- [x] Fix TemporalCoherence.lean (2 errors): compiles, 2 sorry markers (some_future/all_future rfl broken)
+- [x] Fix Bridge.lean (3 errors): sorry-free fix — added swap_temporal_all_future/swap_temporal_all_past to simp sets
+- [x] Fix Table.lean (2 errors): compiles, 2 sorry markers (overlapping @[match_pattern] arms block simp)
+- [x] Verify: all 5 originally-planned files compile (with sorry warnings)
+- [x] **NEW**: Fix Soundness.lean — 40 errors fixed sorry-free. Used Truth.future_iff/past_iff for semantic characterization. All introN/apply/simp failures resolved.
+- [ ] **NEW**: Fix SuccRelation.lean — 6 errors (type mismatches treating all_future/all_past as constructors)
+- [ ] **NEW**: Fix BXCanonical/Frame.lean — 4 errors (application type mismatches)
+- [x] **NEW**: Fix ParametricTruthLemma.lean — 7 errors fixed. Removed invalid all_future/all_past alternative names from induction.
+- [ ] **NEW**: Fix RestrictedParametricTruthLemma.lean — errors (same pattern as ParametricTruthLemma)
+- [x] **NEW**: Fix LindenbaumQuotient.lean — fixed sorry-free (simp set additions)
+- [ ] **NEW**: Fix WitnessSeed.lean — compiles but 8 sorry markers need real proofs
+- [ ] **SORRY**: Eliminate 21 sorries in SoundnessLemmas.lean with real proofs using @[simp] characterization theorems
+- [ ] **SORRY**: Eliminate 2 sorries in TemporalContent.lean (F/G duality — use semantic equivalence, not syntactic rfl)
+- [ ] **SORRY**: Eliminate 2 sorries in TemporalCoherence.lean (use characterization theorems)
+- [ ] **SORRY**: Eliminate 2 sorries in Table.lean (use characterization theorems in simp set)
+- [ ] **SORRY**: Eliminate 8 sorries in WitnessSeed.lean (closure membership + duality proofs)
 
 **Timing**: 4 hours
 
@@ -188,23 +217,23 @@ Phases within the same wave can execute in parallel.
 - `Theories/Bimodal/Metalogic/WeakCanonical/Table.lean` - Fix simp failures (2 errors)
 
 **Verification**:
-- All 5 files compile with zero errors
-- No new sorry markers introduced (fix properly or document why sorry is necessary)
-- `lake build` error count drops from 114 to 0 for these files
+- All 5 originally-planned files compile (with sorry warnings, not hard errors)
+- ~27 new sorry markers introduced across the 5 files (truth_at unfolding pattern)
+- `lake build` error count dropped from 114 to 57 (4 newly-revealed downstream files still failing)
+- Downstream files not in original plan: Soundness.lean (40 errors), SuccRelation.lean (6), BXCanonical/Frame.lean (4), ParametricTruthLemma.lean (7)
 
 ---
 
 ### Phase 4: Fix SubformulaClosure Sorry Markers [NOT STARTED]
 
-**Goal**: Resolve the fixable sorry markers in SubformulaClosure.lean. Of the 12 sorry markers, 4-6 involve some_future/some_past which expand to untl/snce (distinct constructors), so injection/noConfusion works. The remaining all_future/all_past cases expand to imp and genuinely hit the noConfusion problem -- these get documented FIX: comments but may remain as sorry.
+**Goal**: Eliminate ALL 12 sorry markers in SubformulaClosure.lean. Every proof must be real — no sorry allowed.
 
 **Tasks**:
-- [ ] Identify which of the 12 sorry markers involve some_future/some_past (fixable) vs all_future/all_past (hard)
-- [ ] Fix the some_future/some_past sorry markers: since these expand to .untl/.snce (distinct constructors), noConfusion/injection should work -- write proper proofs
-- [ ] For all_future/all_past sorry markers that hit the .imp noConfusion problem: attempt structural proofs using deeper pattern analysis (e.g., proving that all_future phi = imp (untl (imp phi bot) (imp bot bot)) (imp phi bot) is injective by analyzing subterms)
-- [ ] For any remaining intractable sorry markers: add detailed FIX: comments explaining the structural reason (all_future/all_past expand to .imp, so noConfusion cannot distinguish them from other .imp terms)
-- [ ] Fix the deferralClosure sorry markers (lines 1303, 1307, 1311, 1315, 1320) -- assess whether these are fixable or require deeper rework
-- [ ] Verify: `lake build Bimodal.Syntax.SubformulaClosure` compiles
+- [ ] Identify which of the 12 sorry markers involve some_future/some_past (fixable via injection) vs all_future/all_past (require structural analysis)
+- [ ] Fix the some_future/some_past sorry markers: since these expand to .untl/.snce (distinct constructors), noConfusion/injection works — write proper proofs
+- [ ] Fix the all_future/all_past sorry markers: although they expand to .imp, the composite term `imp (untl (imp φ bot) (imp bot bot)) (imp φ bot)` has a unique subterm structure distinguishable from arbitrary .imp terms — prove injectivity by analyzing subterms
+- [ ] Fix the deferralClosure sorry markers (lines 1303, 1307, 1311, 1315, 1320) — write real proofs
+- [ ] Verify: `lake build Bimodal.Syntax.SubformulaClosure` compiles with ZERO sorries
 
 **Timing**: 3 hours
 
@@ -214,10 +243,10 @@ Phases within the same wave can execute in parallel.
 - `Theories/Bimodal/Syntax/SubformulaClosure.lean` - Fix fixable sorry markers, document remaining ones
 
 **Verification**:
-- Sorry count reduced (target: 6 or fewer remaining, all documented with FIX: comments)
-- Some_future/some_past cases fully proved (no sorry)
-- All remaining sorry markers have FIX: comments explaining why they cannot be resolved without deeper structural changes
-- File compiles
+- ZERO sorries in SubformulaClosure.lean — all 12 replaced with real proofs
+- Some_future/some_past cases proved via injection on untl/snce constructors
+- All_future/all_past cases proved via structural subterm analysis
+- File compiles with no sorry warnings
 
 ---
 
