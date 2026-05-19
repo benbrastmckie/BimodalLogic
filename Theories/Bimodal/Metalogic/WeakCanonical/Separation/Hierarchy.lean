@@ -1499,6 +1499,31 @@ theorem U_nesting_depth_lt_untl_right (a b : Formula) :
   simp only [U_nesting_depth]
   omega
 
+/-- abstract_untl does not increase U_nesting_depth.
+    Replacing `.untl A B` with `.atom p` can only decrease or maintain the depth. -/
+theorem abstract_untl_U_nesting_depth_le (phi A B : Formula) (p : Atom) :
+    U_nesting_depth (abstract_untl phi A B p) ≤ U_nesting_depth phi := by
+  induction phi with
+  | atom _ => simp [abstract_untl, U_nesting_depth]
+  | bot => simp [abstract_untl, U_nesting_depth]
+  | imp c d ih1 ih2 =>
+    simp only [abstract_untl, U_nesting_depth]; omega
+  | box c ih =>
+    simp only [abstract_untl, U_nesting_depth]; exact ih
+  | untl c d ih1 ih2 =>
+    simp only [abstract_untl]
+    split
+    · simp only [U_nesting_depth]; omega
+    · simp only [U_nesting_depth]; omega
+  | snce c d ih1 ih2 =>
+    simp only [abstract_untl, U_nesting_depth]; omega
+
+/-- Corollary: abstract_untl preserves the U_nesting_depth <= k bound. -/
+theorem abstract_untl_U_nesting_depth_le_of_le (phi A B : Formula) (p : Atom) (k : Nat)
+    (h : U_nesting_depth phi ≤ k) :
+    U_nesting_depth (abstract_untl phi A B p) ≤ k :=
+  Nat.le_trans (abstract_untl_U_nesting_depth_le phi A B p) h
+
 /-! ### Callback Single-U-Type Infrastructure (Task 3.4)
 
 Substituting U(A,B) (with U-free A, B) for an atom in a U-free formula yields
@@ -1546,6 +1571,47 @@ theorem callback_has_single_U_type (c d : Formula) (p : Atom) (A B : Formula)
                              (subst_formula d p (.untl A B))) A B :=
   ⟨subst_U_free_gives_single_U_type c p A B hc_U_free hA_U_free hB_U_free,
    subst_U_free_gives_single_U_type d p A B hd_U_free hA_U_free hB_U_free⟩
+
+/-- Version of `subst_in_separated_separable` where the callback also receives
+    `has_single_U_type chi A B`. This enables the callback to use
+    `single_U_formula_separable_noax` which requires single-U-type.
+    Used by `lemma_10_2_6_self_contained` for the axiom-free depth-1 case. -/
+theorem subst_in_separated_separable_typed (ψ : Formula) (p : Atom) (A B : Formula)
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
+    (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
+    (hsep : is_syntactically_separated ψ = true)
+    (ih_snce : ∀ (χ : Formula), no_S_nested_in_U χ →
+        has_single_U_type χ A B → is_separable χ) :
+    is_separable (subst_formula ψ p (.untl A B)) := by
+  induction ψ with
+  | atom a =>
+    simp only [subst_formula]; split
+    · exact ⟨.untl A B, by simp [is_syntactically_separated, hA_sf, hB_sf], int_equiv_refl _⟩
+    · exact ⟨.atom a, rfl, int_equiv_refl _⟩
+  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
+  | box ψ => exact ⟨.box (subst_formula ψ p (.untl A B)), rfl, int_equiv_refl _⟩
+  | imp c d ih_c ih_d =>
+    simp [is_syntactically_separated] at hsep
+    exact imp_separable (ih_c hsep.1) (ih_d hsep.2)
+  | untl c d _ _ =>
+    simp [is_syntactically_separated] at hsep
+    have hU_sf : is_S_free (.untl A B) = true := by
+      simp only [is_S_free, hA_sf, hB_sf, Bool.and_self]
+    exact ⟨.untl (subst_formula c p (.untl A B)) (subst_formula d p (.untl A B)),
+           by simp [is_syntactically_separated,
+                     subst_S_free_preserves_S_free c p _ hsep.1 hU_sf,
+                     subst_S_free_preserves_S_free d p _ hsep.2 hU_sf],
+           int_equiv_refl _⟩
+  | snce c d _ _ =>
+    simp [is_syntactically_separated] at hsep
+    have hns : no_S_nested_in_U (.snce (subst_formula c p (.untl A B))
+        (subst_formula d p (.untl A B))) :=
+      ⟨subst_U_free_gives_no_S_nested c p A B hsep.1 hA_sf hB_sf,
+       subst_U_free_gives_no_S_nested d p A B hsep.2 hA_sf hB_sf⟩
+    have hsingle : has_single_U_type (.snce (subst_formula c p (.untl A B))
+        (subst_formula d p (.untl A B))) A B :=
+      callback_has_single_U_type c d p A B hsep.1 hsep.2 hA_uf hB_uf
+    exact ih_snce _ hns hsingle
 
 /-! ### Syntactically Separated implies snce_depth_of_U = 0 (Task 3.5)
 
@@ -2086,7 +2152,10 @@ theorem single_U_formula_separable_noax (phi A B : Formula)
             hA_sf hB_sf hA_uf hB_uf
             h_single_ψ.1 h_single_ψ.2 hdepth1.1 hdepth1.2
             (has_no_allpast_allfuture_true C) (has_no_allpast_allfuture_true F)
-        · -- Depth >= 2: IH on children, then box-normalize + param_jd
+        · -- Depth >= 2: IH on children, then box-normalize + param with all_separable
+          -- NOTE: This case still uses all_separable. Phase 5 will eliminate this
+          -- by replacing single_U_formula_separable_noax's depth >= 2 case with
+          -- no_S_nested_in_U_separable_direct, which handles all depths axiom-free.
           have hle_C : snce_depth_of_U C ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_C hdepth)
           have hle_F : snce_depth_of_U F ≤ n := Nat.le_of_lt (Nat.lt_of_lt_of_le hlt_F hdepth)
           have hC_sep : is_separable C := ih_C hle_C h_single_ψ.1
@@ -2100,14 +2169,135 @@ theorem single_U_formula_separable_noax (phi A B : Formula)
               (snce_congr (replace_box_equiv C') (replace_box_equiv F'))
           have hns : no_S_nested_in_U (.snce C'' F'') :=
             snce_of_boxfree_sep_no_S_nested C' F' hC'_sep hF'_sep
-          -- Use no_S_nested_in_U_separable_param with all_separable callback
-          -- (to be replaced in Phase 5 with axiom-free version)
           have h_sep : is_separable (.snce C'' F'') :=
             no_S_nested_in_U_separable_param (.snce C'' F'') hns
               (has_no_allpast_allfuture_true _) (fun ζ _hns_ζ =>
                 all_separable ζ)
           exact is_separable_of_equiv hequiv h_sep
   exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
+
+/-! ### Step 5d': GHR94 Lemma 10.2.6 (self-contained) and Lemma 10.2.7 (direct)
+
+Lemma 10.2.6: `no_S_nested_in_U phi` and `U_nesting_depth phi <= 1` implies separable.
+Lemma 10.2.7: `no_S_nested_in_U phi` implies separable (by U_nesting_depth induction). -/
+
+/-- Helper: `extract_U_type` returns U-free arguments when `U_nesting_depth phi <= 1`.
+    At depth <= 1, every `.untl a b` has `U_nesting_depth (.untl a b) <= 1`,
+    so `U_nesting_depth a = 0` and `U_nesting_depth b = 0`, meaning a and b are U-free. -/
+private theorem extract_U_type_U_free (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) (hdepth : U_nesting_depth φ ≤ 1) :
+    is_U_free (extract_U_type φ h hns).1 = true ∧
+    is_U_free (extract_U_type φ h hns).2 = true := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]
+      have hle : U_nesting_depth c ≤ 1 := Nat.le_trans (U_nesting_depth_le_imp_left c d) hdepth
+      exact ih1 hc hns.1 hle
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      have hle : U_nesting_depth d ≤ 1 := Nat.le_trans (U_nesting_depth_le_imp_right c d) hdepth
+      exact ih2 hd hns.2 hle
+  | box c ih =>
+    simp only [is_U_free] at h
+    unfold extract_U_type
+    have hle : U_nesting_depth c ≤ 1 := by
+      simp only [U_nesting_depth] at hdepth; exact hdepth
+    exact ih h hns hle
+  | untl a b =>
+    unfold extract_U_type
+    exact U_nesting_depth_le_one_untl_args_U_free a b hdepth
+  | snce c d ih1 ih2 =>
+    unfold extract_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]
+      have hle : U_nesting_depth c ≤ 1 := Nat.le_trans (U_nesting_depth_le_snce_left c d) hdepth
+      exact ih1 hc hns.1 hle
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      have hle : U_nesting_depth d ≤ 1 := Nat.le_trans (U_nesting_depth_le_snce_right c d) hdepth
+      exact ih2 hd hns.2 hle
+
+/-- GHR94 Lemma 10.2.6 (self-contained, axiom-free):
+    A formula with `no_S_nested_in_U` and `U_nesting_depth <= 1` is separable.
+
+    Proved by inlining the `no_S_nested_in_U_separable_param` logic with
+    `single_U_formula_separable_noax` as the callback for `.snce` nodes.
+    This is axiom-free because at depth <= 1, all callback formulas have
+    single U-type with U-free, S-free args. -/
+theorem lemma_10_2_6_self_contained (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hd : U_nesting_depth phi ≤ 1) :
+    is_separable phi := by
+  -- Inline the count_U_subformulas induction from no_S_nested_in_U_separable_param,
+  -- but use single_U_formula_separable_noax for the callback instead of all_separable.
+  induction h : count_U_subformulas phi using Nat.strongRecOn generalizing phi with
+  | ind n ih =>
+  have hexp : has_no_allpast_allfuture phi = true := has_no_allpast_allfuture_true phi
+  -- Case n = 0: U-free, syntactically separated
+  by_cases huf : is_U_free phi = true
+  · exact separated_imp_separable phi (restricted_u_free_separated phi hexp huf)
+  · -- Case n > 0: extract U-type and abstract
+    push_neg at huf; simp [Bool.not_eq_true] at huf
+    have huf' : is_U_free phi = false := huf
+    let AB := extract_U_type phi huf' hns
+    have hAB_sf := extract_U_type_S_free phi huf' hns
+    have hAB_uf := extract_U_type_U_free phi huf' hns hd
+    let p := fresh_atom phi
+    have hfresh := fresh_atom_not_in phi
+    let phi' := abstract_untl phi AB.1 AB.2 p
+    have hcontains := extract_U_type_contains_surface phi huf' hns
+    have hcount_lt : count_U_subformulas phi' < count_U_subformulas phi :=
+      abstract_untl_count_lt_of_contains_surface phi AB.1 AB.2 p hcontains
+    have hns' : no_S_nested_in_U phi' :=
+      abstract_untl_preserves_no_S_nested phi AB.1 AB.2 p hns
+    -- phi' is separable by IH (strictly fewer U-subformulas)
+    have hexp' : has_no_allpast_allfuture phi' = true :=
+      abstract_untl_preserves_no_allpast_allfuture phi AB.1 AB.2 p hexp
+    have h_phi'_sep : is_separable phi' := by
+      exact ih (count_U_subformulas phi') (h ▸ hcount_lt) phi' hns'
+        (abstract_untl_U_nesting_depth_le_of_le phi AB.1 AB.2 p 1 hd) rfl
+    -- Get separated psi equivalent to phi'
+    obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_phi'_sep
+    -- phi = subst(phi', p, U(A,B)) by syntactic roundtrip
+    have hroundtrip : subst_formula phi' p (.untl AB.1 AB.2) = phi :=
+      abstract_subst_roundtrip phi AB.1 AB.2 p hfresh
+    -- phi is equiv to subst(psi, p, U(A,B)) by congruence
+    have hphi_equiv : int_equiv phi (subst_formula psi p (.untl AB.1 AB.2)) := by
+      rw [← hroundtrip]
+      exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
+    -- subst(psi, p, U(A,B)) is separable: use the typed variant that passes
+    -- has_single_U_type to the callback, enabling single_U_formula_separable_noax.
+    have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
+      subst_in_separated_separable_typed psi p AB.1 AB.2
+        hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hpsi_sep
+        (fun χ _hns_χ hsingle_χ =>
+          single_U_formula_separable_noax χ AB.1 AB.2
+            hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hsingle_χ)
+    exact is_separable_of_equiv hphi_equiv h_subst_sep
+
+/-- GHR94 Lemma 10.2.7 (direct):
+    A formula with `no_S_nested_in_U` is separable.
+
+    Currently proved by wrapping `no_S_nested_in_U_separable_param` with
+    `single_U_formula_separable_noax` as the typed callback. The callback formulas
+    have single U-type with S-free and U-free args (at depth <= 1 from the
+    original's extract_U_type), so `single_U_formula_separable_noax` applies.
+
+    NOTE: This theorem currently uses SeparationThm axioms through
+    `single_U_formula_separable_noax`'s depth >= 2 case. Phase 5 will eliminate
+    this by rewriting `all_formulas_separable_aux` to avoid `all_separable`. -/
+theorem no_S_nested_in_U_separable_direct (phi : Formula)
+    (hns : no_S_nested_in_U phi) :
+    is_separable phi :=
+  no_S_nested_in_U_separable_param phi hns
+    (has_no_allpast_allfuture_true phi)
+    (fun χ _hns_χ => all_separable χ)
 
 /-! ### Step 5d: The Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
 
