@@ -279,10 +279,7 @@ def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.
   -- since swap(swap φ) = φ by involution
   have h3 : (ψ.all_future.imp ψ.all_future.all_future).swap_temporal =
       φ.all_past.imp φ.all_past.all_past := by
-    -- ψ = φ.swap_temporal, so ψ.swap_temporal = φ.swap_temporal.swap_temporal = φ
-    simp only [Formula.swap_temporal]
-    -- Now we need to show: ψ.swap_temporal.all_past.imp ... = φ.all_past.imp ...
-    -- where ψ.swap_temporal = φ by involution
+    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
     have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
     rw [h_inv]
   rw [h3] at h2

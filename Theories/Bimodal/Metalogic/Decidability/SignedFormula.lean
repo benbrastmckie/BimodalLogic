@@ -247,8 +247,6 @@ def subformulas : Formula → List Formula
   | φ@.bot => [φ]
   | φ@(.imp ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.box ψ) => φ :: subformulas ψ
-  | φ@(.all_past ψ) => φ :: subformulas ψ
-  | φ@(.all_future ψ) => φ :: subformulas ψ
   | φ@(.untl ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.snce ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
 
@@ -301,20 +299,6 @@ theorem subformulas_trans {chi psi phi : Formula}
       right; right
       exact ihb hb
   | box a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_past a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_future a iha =>
     simp only [subformulas, List.mem_cons] at h2
     rcases h2 with rfl | h2
     · exact h1
@@ -378,8 +362,6 @@ def unexpandedComplexity (sf : SignedFormula) : Nat :=
   | .bot => 0
   | .imp _ _ => sf.formula.complexity
   | .box _ => sf.formula.complexity
-  | .all_past _ => sf.formula.complexity
-  | .all_future _ => sf.formula.complexity
   | .untl _ _ => sf.formula.complexity
   | .snce _ _ => sf.formula.complexity
 

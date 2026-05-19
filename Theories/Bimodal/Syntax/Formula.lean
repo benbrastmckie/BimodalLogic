@@ -456,6 +456,30 @@ theorem swap_temporal_neg (φ : Formula) :
     φ.neg.swap_temporal = φ.swap_temporal.neg := by
   simp only [neg, swap_temporal]
 
+/-- swap_temporal exchanges some_future and some_past: swap(F(φ)) = P(swap(φ)). -/
+@[simp]
+theorem swap_temporal_some_future (φ : Formula) :
+    (some_future φ).swap_temporal = some_past φ.swap_temporal := by
+  simp only [some_future, some_past, top, swap_temporal]
+
+/-- swap_temporal exchanges some_past and some_future: swap(P(φ)) = F(swap(φ)). -/
+@[simp]
+theorem swap_temporal_some_past (φ : Formula) :
+    (some_past φ).swap_temporal = some_future φ.swap_temporal := by
+  simp only [some_past, some_future, top, swap_temporal]
+
+/-- swap_temporal exchanges all_future and all_past: swap(G(φ)) = H(swap(φ)). -/
+@[simp]
+theorem swap_temporal_all_future (φ : Formula) :
+    (all_future φ).swap_temporal = all_past φ.swap_temporal := by
+  simp only [all_future, all_past, some_future, some_past, neg, top, swap_temporal]
+
+/-- swap_temporal exchanges all_past and all_future: swap(H(φ)) = G(swap(φ)). -/
+@[simp]
+theorem swap_temporal_all_past (φ : Formula) :
+    (all_past φ).swap_temporal = all_future φ.swap_temporal := by
+  simp only [all_past, all_future, some_past, some_future, neg, top, swap_temporal]
+
 /-- swap_temporal distributes over next/prev: swap(X(phi)) = Y(swap(phi)). -/
 theorem swap_temporal_next (φ : Formula) :
     φ.next.swap_temporal = φ.swap_temporal.prev := by

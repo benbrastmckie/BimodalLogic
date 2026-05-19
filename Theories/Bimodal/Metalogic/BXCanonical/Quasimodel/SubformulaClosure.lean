@@ -32,8 +32,6 @@ def subformulas : Formula → Finset Formula
   | f@Formula.bot => {f}
   | f@(Formula.imp φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
   | f@(Formula.box φ) => insert f (subformulas φ)
-  | f@(Formula.all_past φ) => insert f (subformulas φ)
-  | f@(Formula.all_future φ) => insert f (subformulas φ)
   | f@(Formula.untl φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
   | f@(Formula.snce φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
 

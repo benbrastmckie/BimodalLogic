@@ -279,14 +279,12 @@ this gives truth_at φ at t.
 theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future φ)) :
     valid φ := by
   intro D _ _ _ _ F M Omega h_sc τ h_mem t
-  -- With Nontrivial D, we have NoMaxOrder D. Get s > t, then G(φ) at s gives φ at all r > s.
-  -- But G(φ) at t gives φ at all s > t. We need φ at t itself.
-  -- Actually under strict G: G(φ)(t) = ∀ s > t, φ(s). This does NOT give φ(t).
-  -- We need a different approach. G(φ) valid means ∀ t, ∀ s > t, φ(s).
-  -- By NoMinOrder, pick r < t, then G(φ)(r) gives φ at all s > r, including s = t (if t > r). QED.
+  -- G(φ) valid means ∀ t, ∀ s > t, φ(s). Pick r < t, then G(φ)(r) gives φ(t).
   have h_G := h D F M Omega h_sc τ h_mem
   obtain ⟨r, hrt⟩ := exists_lt t
-  exact h_G r t hrt
+  have := h_G r
+  simp only [Truth.future_iff] at this
+  exact this t hrt
 
 /--
 If H(φ) is valid, then φ is valid.
@@ -297,7 +295,9 @@ theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ))
   -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.
   have h_H := h D F M Omega h_sc τ h_mem
   obtain ⟨s, hts⟩ := exists_gt t
-  exact h_H s t hts
+  have := h_H s
+  simp only [Truth.past_iff] at this
+  exact this t hts
 
 /--
 If □φ is valid, then φ is valid.

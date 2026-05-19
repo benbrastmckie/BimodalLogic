@@ -40,8 +40,6 @@ def subformulas : Formula → List Formula
   | φ@.bot => [φ]
   | φ@(.imp ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.box ψ) => φ :: subformulas ψ
-  | φ@(.all_past ψ) => φ :: subformulas ψ
-  | φ@(.all_future ψ) => φ :: subformulas ψ
   | φ@(.untl ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.snce ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
 
@@ -73,15 +71,15 @@ theorem box_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.box ψ) 
   exact self_mem_subformulas ψ
 
 /-- Subformulas of all_past include the inner formula. -/
-theorem all_past_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.all_past ψ) := by
-  simp only [subformulas, List.mem_cons]
-  right
+theorem all_past_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (all_past ψ) := by
+  simp only [all_past, some_past, neg, top, subformulas, List.mem_cons, List.mem_append]
+  right; left; right; left; right; left
   exact self_mem_subformulas ψ
 
 /-- Subformulas of all_future include the inner formula. -/
-theorem all_future_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.all_future ψ) := by
-  simp only [subformulas, List.mem_cons]
-  right
+theorem all_future_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (all_future ψ) := by
+  simp only [all_future, some_future, neg, top, subformulas, List.mem_cons, List.mem_append]
+  right; left; right; left; right; left
   exact self_mem_subformulas ψ
 
 /--
@@ -113,20 +111,6 @@ theorem subformulas_trans {chi psi phi : Formula}
       right; right
       exact ihb hb
   | box a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_past a iha =>
-    simp only [subformulas, List.mem_cons] at h2
-    rcases h2 with rfl | h2
-    · exact h1
-    · simp only [subformulas, List.mem_cons]
-      right
-      exact iha h2
-  | all_future a iha =>
     simp only [subformulas, List.mem_cons] at h2
     rcases h2 with rfl | h2
     · exact h1
@@ -184,16 +168,16 @@ theorem mem_subformulas_of_box {ψ phi : Formula}
 Direct membership: inner formula of all_past is in subformulas.
 -/
 theorem mem_subformulas_of_all_past {ψ phi : Formula}
-    (h : Formula.all_past ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
-  have h_inner : ψ ∈ subformulas (Formula.all_past ψ) := all_past_inner_mem_subformulas ψ
+    (h : (all_past ψ) ∈ subformulas phi) : ψ ∈ subformulas phi := by
+  have h_inner : ψ ∈ subformulas (all_past ψ) := all_past_inner_mem_subformulas ψ
   exact subformulas_trans h_inner h
 
 /--
 Direct membership: inner formula of all_future is in subformulas.
 -/
 theorem mem_subformulas_of_all_future {ψ phi : Formula}
-    (h : Formula.all_future ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
-  have h_inner : ψ ∈ subformulas (Formula.all_future ψ) := all_future_inner_mem_subformulas ψ
+    (h : (all_future ψ) ∈ subformulas phi) : ψ ∈ subformulas phi := by
+  have h_inner : ψ ∈ subformulas (all_future ψ) := all_future_inner_mem_subformulas ψ
   exact subformulas_trans h_inner h
 
 /-- Subformulas of untl include the left component. -/
