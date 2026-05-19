@@ -139,6 +139,7 @@ technical_debt:
   - [157_expressive_completeness_su_integer/reports/11_post-task116-assessment.md]
   - [157_expressive_completeness_su_integer/reports/12_team-research.md]
   - [specs/157_expressive_completeness_su_integer/reports/14_team-research.md]
+  - [specs/157_expressive_completeness_su_integer/reports/15_team-research.md]
 - **Plan**:
   - [157_expressive_completeness_su_integer/plans/05_dedekind-approach-plan.md]
   - [157_expressive_completeness_su_integer/plans/06_phase7-first-plan.md]

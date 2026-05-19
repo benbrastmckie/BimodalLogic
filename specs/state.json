@@ -61,9 +61,9 @@
         116
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-19T15:59:51Z",
-      "session_id": "sess_1779205467_c8785d",
-      "researched": "2026-05-19T15:59:51Z",
+      "last_updated": "2026-05-19T16:11:31Z",
+      "session_id": "sess_1779206505_915d3f",
+      "researched": "2026-05-19T16:11:31Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -129,10 +129,15 @@
           "path": "specs/157_expressive_completeness_su_integer/reports/14_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): JD=1 root cause (Lean JD off by 1 from GHR94), sorry asserts false prop, GHR94 acyclic (implementation diverges), +1 JD destroys callback bounds, 3-path fix plan"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/15_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): GHR94 faithful restructuring feasibility — abstract_inner_U as key missing operation, Path 1 (axiom routing) trivial, Path 2 (480-600 LOC)"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 15
+      "next_artifact_number": 16
     },
     {
       "project_number": 156,
