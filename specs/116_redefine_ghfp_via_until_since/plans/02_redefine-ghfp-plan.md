@@ -197,7 +197,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Syntax Layer - Subformulas, Context, Substitution [NOT STARTED]
+### Phase 4: Syntax Layer - Subformulas, Context, Substitution [COMPLETED]
 
 **Goal**: Update the remaining syntax files and the proof system layer that depends on formula structure. Remove pattern-match arms, update induction proofs, add replacement lemmas.
 
@@ -232,7 +232,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Semantics Layer and SubformulaClosure [NOT STARTED]
+### Phase 5: Semantics Layer and SubformulaClosure [COMPLETED]
 
 **Goal**: Remove `all_future`/`all_past` cases from `truth_at`, add semantic bridge lemmas, and update SubformulaClosure for Strategy A (transparent expansion). SubformulaClosure is the highest-risk file.
 
@@ -269,7 +269,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Soundness and Core Metalogic [NOT STARTED]
+### Phase 6: Soundness and Core Metalogic [PARTIAL]
 
 **Goal**: Update Soundness, SoundnessLemmas, DiscreteSoundness, and Core metalogic files (DeductionTheorem, MCSProperties, RestrictedMCS). Remove temp_k_dist/temp_4 soundness proof arms (axioms no longer exist).
 
