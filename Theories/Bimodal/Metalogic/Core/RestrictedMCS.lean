@@ -958,25 +958,19 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
   -- Get H(neg psi) in deferralClosure
   have h_H_in_dc : Formula.all_past (Formula.neg psi) ∈ deferralClosure phi := by
     rcases some_past_in_deferralClosure_cases phi psi h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
-    · -- P(psi) in closureWithNeg
+    · -- P(psi) in closureWithNeg: design gap (P(psi) = snce psi top, H(¬psi) not subformula)
+      -- Requires temporalBlockingSet extension to baseDeferralClosure.
       unfold closureWithNeg at h_P_in_cwn
       simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
-      rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-      · -- P(psi) in subformulaClosure, so H(neg psi) = subformula of P(psi)
-        apply closureWithNeg_subset_deferralClosure
-        apply subformulaClosure_subset_closureWithNeg
-        exact closure_imp_left phi _ _ h_sub
-      · -- P(psi) = g.neg for g in subformulaClosure
-        -- g.neg = P(psi) = neg(H(neg psi)) implies g = H(neg psi)
-        unfold Formula.some_past Formula.neg at h_g_neg_eq
-        have h_eq : g = Formula.all_past (Formula.neg psi) := by cases h_g_neg_eq; rfl
-        rw [h_eq] at h_g_sub
-        exact closureWithNeg_subset_deferralClosure phi
-          (subformulaClosure_subset_closureWithNeg phi h_g_sub)
-    · -- P(psi) = P_top, so psi = neg bot and H(neg psi) = H_neg_neg_bot
-      simp only [P_top, Formula.some_past, Formula.neg] at h_P_eq_P_top
-      injection h_P_eq_P_top with h1 _; injection h1 with h2; injection h2 with h3
-      subst h3
+      rcases h_P_in_cwn with h_sub | ⟨g, _, h_g_neg_eq⟩
+      · sorry  -- P(psi) ∈ subformulaClosure: H(¬psi) ∉ subformulaClosure (design gap)
+      · -- P(psi) = g.neg: snce psi top = imp g bot, impossible (snce ≠ imp)
+        simp only [Formula.neg] at h_g_neg_eq
+        exact absurd h_g_neg_eq (by intro h'; exact Formula.noConfusion h')
+    · -- P(psi) = P_top, so psi = top = bot.imp bot, H(¬psi) = H_neg_neg_bot
+      simp only [P_top, Formula.some_past, Formula.top] at h_P_eq_P_top
+      have h_psi_eq : psi = Formula.bot.imp Formula.bot := Formula.snce.inj h_P_eq_P_top |>.1
+      subst h_psi_eq
       simp only [Formula.neg]
       exact H_neg_neg_bot_mem_deferralClosure phi
   -- Now use maximality: P(psi) not in u, P(psi) in deferralClosure => insert inconsistent
@@ -1031,12 +1025,22 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
   have d_bot''' := DerivationTree.weakening L' _ Formula.bot d_bot'' h_L'_sub'
   have d_neg_H : Δ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
     deduction_theorem Δ _ Formula.bot d_bot'''
-  -- Now we have: Γ ⊢ neg(neg(H(neg psi))) and Δ ⊢ neg(H(neg psi))
-  -- Combine to get contradiction (since both Γ, Δ ⊆ u and u is consistent)
-  have h_eq : Formula.neg (Formula.some_past psi) =
-      Formula.neg (Formula.neg (Formula.all_past (Formula.neg psi))) := by
-    unfold Formula.some_past Formula.neg; rfl
-  rw [h_eq] at d_neg_P
+  -- Derive H(¬psi) from ¬P(psi): via contrapositive of ⊢ P(¬¬psi) → P(psi)
+  -- ¬P(¬¬psi) = neg (snce (neg (neg psi)) top) = all_past (neg psi) = H(¬psi) definitionally
+  have h_dne : [] ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
+  have h_H_dne : [] ⊢ (psi.neg.neg.imp psi).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_dne
+  have h_bx3' : [] ⊢ (psi.neg.neg.imp psi).all_past.imp
+      ((Formula.snce psi.neg.neg Formula.top).imp (Formula.snce psi Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_since psi.neg.neg psi Formula.top)
+  have h_P_mono : [] ⊢ (Formula.some_past psi.neg.neg).imp (Formula.some_past psi) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dne
+  have h_contra : [] ⊢ (Formula.some_past psi).neg.imp (Formula.some_past psi.neg.neg).neg :=
+    Bimodal.Theorems.Propositional.contraposition h_P_mono
+  -- Γ ⊢ ¬P(psi), so Γ ⊢ ¬P(¬¬psi) = H(¬psi)
+  have d_H : Γ ⊢ Formula.all_past (Formula.neg psi) :=
+    DerivationTree.modus_ponens Γ _ _ (DerivationTree.weakening [] Γ _ h_contra (by intro; simp)) d_neg_P
+  -- Combine Γ ⊢ H(¬psi) with Δ ⊢ ¬H(¬psi) for contradiction
   let ΓΔ := Γ ++ Δ
   have h_ΓΔ_in_u : ∀ χ ∈ ΓΔ, χ ∈ u := by
     intro χ hχ
@@ -1044,11 +1048,11 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
     rcases hχ with hχΓ | hχΔ
     · exact h_Γ_in_u χ hχΓ
     · exact h_Δ_in_u χ hχΔ
-  have d_neg_neg_H' : ΓΔ ⊢ Formula.neg (Formula.neg (Formula.all_past (Formula.neg psi))) :=
-    DerivationTree.weakening Γ ΓΔ _ d_neg_P (List.subset_append_left Γ Δ)
+  have d_H' : ΓΔ ⊢ Formula.all_past (Formula.neg psi) :=
+    DerivationTree.weakening Γ ΓΔ _ d_H (List.subset_append_left Γ Δ)
   have d_neg_H' : ΓΔ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
     DerivationTree.weakening Δ ΓΔ _ d_neg_H (List.subset_append_right Γ Δ)
-  have d_bot_final := derives_bot_from_phi_neg_phi d_neg_H' d_neg_neg_H'
+  have d_bot_final := derives_bot_from_phi_neg_phi d_H' d_neg_H'
   exact h_mcs.1.2 ΓΔ h_ΓΔ_in_u ⟨d_bot_final⟩
 
 /-!
@@ -1387,53 +1391,12 @@ theorem neg_FF_implies_GG_neg_in_drm {phi : Formula} {M : Set Formula}
     (h_intermediate_dc : (psi.neg.all_future.neg).neg.all_future ∈ deferralClosure phi)
     (h_GG_dc : psi.neg.all_future.all_future ∈ deferralClosure phi) :
     Formula.all_future (Formula.all_future psi.neg) ∈ M := by
-  -- Step A: Apply DNE to get G(G(neg(psi)).neg.neg) ∈ M
-  -- Directly derive: [neg(FF(psi))] ⊢ G(G(neg(psi)).neg.neg)
-  have h_inner : (psi.neg.all_future.neg).neg.all_future ∈ M := by
-    -- Build derivation: [h_neg_FF_formula] ⊢ h_intermediate_formula
-    let premise := (psi.neg.all_future.neg).neg.all_future.neg.neg
-    let conclusion := (psi.neg.all_future.neg).neg.all_future
-    have h_dne : [] ⊢ premise.imp conclusion :=
-      Bimodal.Theorems.Propositional.double_negation conclusion
-    -- Weaken to context with premise
-    have h_dne' : [premise] ⊢ premise.imp conclusion :=
-      DerivationTree.weakening [] [premise] _ h_dne (List.nil_subset _)
-    have h_assume : [premise] ⊢ premise :=
-      DerivationTree.assumption [premise] premise (List.mem_singleton.mpr rfl)
-    have h_deriv : [premise] ⊢ conclusion :=
-      DerivationTree.modus_ponens [premise] premise conclusion h_dne' h_assume
-    -- h_neg_FF has exactly the type of premise
-    have h_sub : ∀ χ ∈ [premise], χ ∈ M := by
-      intro χ hχ
-      simp only [List.mem_singleton] at hχ
-      exact hχ ▸ h_neg_FF
-    exact drm_closed_under_derivation h_mcs [premise] h_sub h_deriv h_intermediate_dc
-
-  -- Step B: Apply G(DNE) to get GG(neg(psi)) ∈ M
-  -- Derive: [G(G(neg psi).neg.neg)] ⊢ GG(neg psi)
-  have h_G_dne : [] ⊢ (psi.neg.all_future.neg).neg.all_future.imp (psi.neg.all_future.all_future) := by
-    have h_dne_inner : [] ⊢ (psi.neg.all_future).neg.neg.imp (psi.neg.all_future) :=
-      Bimodal.Theorems.Propositional.double_negation _
-    have h_nec : [] ⊢ ((psi.neg.all_future).neg.neg.imp (psi.neg.all_future)).all_future :=
-      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_inner
-    have h_k : [] ⊢ ((psi.neg.all_future).neg.neg.imp (psi.neg.all_future)).all_future.imp
-                    ((psi.neg.all_future).neg.neg.all_future.imp (psi.neg.all_future).all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist (psi.neg.all_future).neg.neg (psi.neg.all_future))
-    exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_k h_nec
-
-  let premise2 := (psi.neg.all_future.neg).neg.all_future
-  let conclusion2 := psi.neg.all_future.all_future
-  have h_deriv2 : [premise2] ⊢ conclusion2 := by
-    have h_imp' : [premise2] ⊢ premise2.imp conclusion2 :=
-      DerivationTree.weakening [] [premise2] _ h_G_dne (List.nil_subset _)
-    have h_assume2 : [premise2] ⊢ premise2 :=
-      DerivationTree.assumption [premise2] premise2 (List.mem_singleton.mpr rfl)
-    exact DerivationTree.modus_ponens [premise2] premise2 conclusion2 h_imp' h_assume2
-  have h_sub2 : ∀ χ ∈ [premise2], χ ∈ M := by
-    intro χ hχ
-    simp only [List.mem_singleton] at hχ
-    exact hχ ▸ h_inner
-  exact drm_closed_under_derivation h_mcs [premise2] h_sub2 h_deriv2 h_GG_dc
+  -- Under new F/G definitions, ¬FF(psi) is no longer structurally ¬¬G(G(¬psi).neg.neg).
+  -- This theorem needs restructuring to use proof-theoretic bridges:
+  -- ¬FF(psi) → G(¬F(psi)) via neg_some_future_to_all_future_neg
+  -- G(¬F(psi)) → GG(¬psi) via G(¬F(psi) → G(¬psi))
+  -- Each step requires intermediate formulas in deferralClosure for DRM closure.
+  sorry
 
 /--
 G(neg phi) in DeferralRestrictedMCS implies F(phi) not in DeferralRestrictedMCS.
@@ -1446,8 +1409,36 @@ theorem drm_G_neg_implies_not_F {phi : Formula} {M : Set Formula}
     (h_G_neg : Formula.all_future psi.neg ∈ M) :
     Formula.some_future psi ∉ M := by
   intro h_F
-  have h_eq : Formula.some_future psi = (Formula.all_future psi.neg).neg := rfl
-  rw [h_eq] at h_F
-  exact set_consistent_not_both h_mcs.1.2 (Formula.all_future psi.neg) h_G_neg h_F
+  -- Derive ⊥ from {F(psi), G(¬psi)} ⊆ M:
+  -- ⊢ F(psi) → F(¬¬psi) (from DNI + BX3)
+  -- G(¬psi) = ¬F(¬¬psi) (definitional: all_future X = neg (some_future (neg X)))
+  -- So {F(psi), G(¬psi)} ⊢ ⊥ via modus ponens
+  have h_dni : [] ⊢ psi.imp psi.neg.neg := Bimodal.Theorems.Combinators.dni psi
+  have h_G_dni : [] ⊢ (psi.imp psi.neg.neg).all_future :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).all_future.imp
+      ((Formula.untl psi Formula.top).imp (Formula.untl psi.neg.neg Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_until psi psi.neg.neg Formula.top)
+  have h_F_mono : [] ⊢ (Formula.some_future psi).imp (Formula.some_future psi.neg.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
+  -- Build: [F(psi), G(¬psi)] ⊢ ⊥
+  let L := [Formula.some_future psi, Formula.all_future psi.neg]
+  have h_L_sub : ∀ χ ∈ L, χ ∈ M := by
+    intro χ hχ; simp only [L, List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hχ
+    rcases hχ with rfl | rfl <;> assumption
+  have d_F : L ⊢ Formula.some_future psi :=
+    DerivationTree.assumption L _ (by simp [L])
+  have d_F_mono_w : L ⊢ (Formula.some_future psi).imp (Formula.some_future psi.neg.neg) :=
+    DerivationTree.weakening [] L _ h_F_mono (List.nil_subset _)
+  have d_Fnn : L ⊢ Formula.some_future psi.neg.neg :=
+    DerivationTree.modus_ponens L _ _ d_F_mono_w d_F
+  -- G(¬psi) = neg (some_future psi.neg.neg) definitionally (via all_future = neg ∘ some_future ∘ neg)
+  -- d_G : L ⊢ (some_future psi.neg.neg).imp bot (since all_future X = neg(some_future(neg X)))
+  have d_G : L ⊢ Formula.all_future psi.neg :=
+    DerivationTree.assumption L _ (by simp [L])
+  -- modus_ponens: d_G : L ⊢ (some_future psi.neg.neg) → ⊥ and d_Fnn : L ⊢ some_future psi.neg.neg
+  have d_bot : L ⊢ Formula.bot :=
+    DerivationTree.modus_ponens L (Formula.some_future psi.neg.neg) Formula.bot d_G d_Fnn
+  exact h_mcs.1.2 L h_L_sub ⟨d_bot⟩
 
 end Bimodal.Metalogic.Core

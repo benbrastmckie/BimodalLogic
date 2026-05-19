@@ -1740,10 +1740,19 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
         exact DerivationTree.modus_ponens [] _ _ h_cp h_G_impl
       -- Apply in MCS: F(ψ.neg) ∈ limit_f(x)
       -- F(ψ.neg) = ψ.neg.some_future = ψ.neg.neg.all_future.neg  (by definition)
-      have h_F_neg : Formula.some_future ψ.neg ∈ limit_f A h_mcs x.val := by
-        show ψ.neg.neg.all_future.neg ∈ limit_f A h_mcs x.val
-        exact SetMaximalConsistent.implication_property h_mcs_x
+      -- ¬G(¬¬ψ) = neg(all_future ψ.neg.neg) ∈ limit_f(x) from h_contra and h_neg
+      have h_neg_G : (Formula.all_future ψ.neg.neg).neg ∈ limit_f A h_mcs x.val :=
+        SetMaximalConsistent.implication_property h_mcs_x
           (theorem_in_mcs h_mcs_x h_contra) h_neg
+      -- Derive F(¬ψ) from ¬G(¬¬ψ) via duality
+      -- ¬G(¬¬ψ) means G(¬¬ψ) ∉ x, then by negation completeness + bridge, F(¬ψ) ∈ x
+      have h_G_nn_not : Formula.all_future ψ.neg.neg ∉ limit_f A h_mcs x.val :=
+        SetMaximalConsistent.neg_excludes h_mcs_x _ h_neg_G
+      have h_F_neg : Formula.some_future ψ.neg ∈ limit_f A h_mcs x.val := by
+        rcases SetMaximalConsistent.negation_complete h_mcs_x (Formula.some_future ψ.neg) with h | h
+        · exact h
+        · have h_G := Bundle.neg_some_future_to_all_future_neg h_mcs_x ψ.neg h
+          exact absurd h_G h_G_nn_not
       -- By limit_F_resolution: ∃ y > x with ψ.neg ∈ limit_f(y)
       obtain ⟨y, hy_dom, hxy, h_neg_y⟩ :=
         limit_F_resolution A h_mcs x.val x.property ψ.neg h_F_neg
@@ -1768,15 +1777,10 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       -- ¬F(φ) ∈ limit_f(x), meaning G(φ.neg) ∈ limit_f(x)
       -- show: G(φ.neg) = φ.neg.all_future ∈ limit_f(x)
       have h_G_neg : φ.neg.all_future ∈ limit_f A h_mcs x.val := by
-        -- ¬(F(φ)) means ¬(φ.neg.all_future.neg), which is φ.neg.all_future.neg.neg
-        -- By negation_complete: either F(φ) or ¬F(φ) in MCS
-        -- ¬F(φ) in MCS. F(φ) = φ.neg.all_future.neg.
-        -- So φ.neg.all_future.neg ∉ limit_f(x), hence φ.neg.all_future ∈ limit_f(x)
-        -- (by negation_complete in reverse)
-        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_future) with h | h
-        · exact h
-        · -- h : φ.neg.all_future.neg ∈ limit_f, but this IS F(φ)
-          exact absurd h h_not_F
+        -- ¬F(φ) ∈ limit_f(x), derive G(¬φ) via duality bridge
+        have h_neg_F : (Formula.some_future φ).neg ∈ limit_f A h_mcs x.val :=
+          (SetMaximalConsistent.negation_complete h_mcs_x _).resolve_left h_not_F
+        exact Bundle.neg_some_future_to_all_future_neg h_mcs_x φ h_neg_F
       -- By forward_G: φ.neg ∈ limit_f(y)
       have h_neg_y := limit_forward_G A h_mcs x.val y.val x.property y.property hxy
         φ.neg h_G_neg
@@ -1837,9 +1841,9 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       have h_mcs_x := limit_c0 A h_mcs x.val x.property
       by_contra h_not_P
       have h_H_neg : φ.neg.all_past ∈ limit_f A h_mcs x.val := by
-        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_past) with h | h
-        · exact h
-        · exact absurd h h_not_P
+        have h_neg_P : (Formula.some_past φ).neg ∈ limit_f A h_mcs x.val :=
+          (SetMaximalConsistent.negation_complete h_mcs_x _).resolve_left h_not_P
+        exact Bundle.neg_some_past_to_all_past_neg h_mcs_x φ h_neg_P
       have h_neg_y := limit_backward_H A h_mcs x.val y.val x.property y.property hyx
         φ.neg h_H_neg
       exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y

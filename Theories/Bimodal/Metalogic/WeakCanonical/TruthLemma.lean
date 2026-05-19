@@ -60,8 +60,6 @@ def reflCanTruth (x : ReflCanDomain) : Formula → Prop
   | Formula.bot => False
   | Formula.imp φ ψ => reflCanTruth x φ → reflCanTruth x ψ
   | Formula.box φ => ∀ (y : ReflCanDomain), canS5R x y → reflCanTruth y φ
-  | Formula.all_future φ => ∀ (y : ReflCanDomain), tempR_fwd x y → reflCanTruth y φ
-  | Formula.all_past φ => ∀ (y : ReflCanDomain), tempR_bwd y x → reflCanTruth y φ
   | Formula.untl ψ₁ ψ₂ =>
       ∃ (y : ReflCanDomain), tempR_fwd x y ∧ reflCanTruth y ψ₁ ∧
         (∀ (z : ReflCanDomain), tempR_fwd x z → tempR_fwd z y → reflCanTruth z ψ₂)
@@ -526,20 +524,6 @@ theorem truth_lemma : ∀ (x : ReflCanDomain) (ψ : Formula),
     · intro h_truth; exact box_backward_mcs x φ ih h_truth
     · intro h_box y h_can
       have h_φ_y : φ ∈ y.val := box_forward_mcs x φ h_box y h_can
-      exact (ih y).mpr h_φ_y
-  | all_future φ ih =>
-    constructor
-    · intro h_truth
-      exact G_backward_mcs x φ (fun y hR => (ih y).mp (h_truth y hR))
-    · intro h_G y hR
-      have h_φ_y : φ ∈ y.val := G_forward_mcs x φ h_G y hR
-      exact (ih y).mpr h_φ_y
-  | all_past φ ih =>
-    constructor
-    · intro h_truth
-      exact H_backward_mcs x φ (fun y hR => (ih y).mp (h_truth y hR))
-    · intro h_H y hR
-      have h_φ_y : φ ∈ y.val := H_forward_mcs x φ h_H y hR
       exact (ih y).mpr h_φ_y
   | untl φ ψ ih_φ ih_ψ =>
     constructor

@@ -188,7 +188,7 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 
 ---
 
-### Phase 3: Fix All Downstream Files [IN PROGRESS]
+### Phase 3: Fix All Downstream Files [COMPLETED]
 
 **Goal**: Fix all 26 files (344 pattern-match arms) that break after Phase 1. Work in import-dependency order so each file compiles before moving to the next.
 

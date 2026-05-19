@@ -1240,6 +1240,120 @@ interchangeable, which is essential for the maximality argument in
 Xu's Lemma 3.2.1.
 -/
 
+/-! ### Duality helpers for Burgess Lemma 2.3
+
+Since `some_future`/`some_past` are no longer definitionally `neg(all_future/all_past(neg _))`,
+we need proof-theoretic bridges for the structural identities used in the Burgess lemma. -/
+
+/-- In an MCS, `neg (all_past (neg α)) ∈ M` implies `some_past α ∈ M`.
+    Derives `P(α)` from `¬H(¬α)` via BX3' (right_mono_since) + DNE. -/
+private theorem neg_all_past_neg_to_some_past {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (α : Formula)
+    (h : Formula.neg (Formula.all_past (Formula.neg α)) ∈ M) :
+    Formula.some_past α ∈ M := by
+  -- ¬H(¬α) = (some_past α.neg.neg).neg.neg (by def of all_past)
+  -- DNE: (some_past α.neg.neg).neg.neg → some_past α.neg.neg = P(¬¬α)
+  have h_dne_P : Formula.some_past (α.neg.neg) ∈ M := by
+    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.some_past α.neg.neg)
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h
+  -- BX3' (right_mono_since): ⊢ H(¬¬α → α) → (P(¬¬α) → P(α))
+  have h_dne_ax : [] ⊢ α.neg.neg.imp α := Bimodal.Theorems.Propositional.double_negation α
+  have h_H_dne : [] ⊢ (α.neg.neg.imp α).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_dne_ax
+  have h_bx3' : [] ⊢ (α.neg.neg.imp α).all_past.imp
+      ((Formula.snce α.neg.neg Formula.top).imp (Formula.snce α Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_since α.neg.neg α Formula.top)
+  have h_P_mono : [] ⊢ (Formula.some_past α.neg.neg).imp (Formula.some_past α) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dne
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_P_mono) h_dne_P
+
+/-- In an MCS, `neg (all_future (neg γ)) ∈ M` implies `some_future γ ∈ M`.
+    Derives `F(γ)` from `¬G(¬γ)` via BX3 (right_mono_until) + DNE. -/
+private theorem neg_all_future_neg_to_some_future {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (γ : Formula)
+    (h : Formula.neg (Formula.all_future (Formula.neg γ)) ∈ M) :
+    Formula.some_future γ ∈ M := by
+  have h_dne_F : Formula.some_future (γ.neg.neg) ∈ M := by
+    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.some_future γ.neg.neg)
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h
+  have h_dne_ax : [] ⊢ γ.neg.neg.imp γ := Bimodal.Theorems.Propositional.double_negation γ
+  have h_G_dne : [] ⊢ (γ.neg.neg.imp γ).all_future :=
+    DerivationTree.temporal_necessitation _ h_dne_ax
+  have h_bx3 : [] ⊢ (γ.neg.neg.imp γ).all_future.imp
+      ((Formula.untl γ.neg.neg Formula.top).imp (Formula.untl γ Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_until γ.neg.neg γ Formula.top)
+  have h_F_mono : [] ⊢ (Formula.some_future γ.neg.neg).imp (Formula.some_future γ) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_F_mono) h_dne_F
+
+/-- F(H(¬α)) ∈ M and G(P(α)) ∈ M are contradictory in an MCS.
+    Derives `G(¬H(¬α))` from `G(P(α))` via `⊢ P(α) → ¬H(¬α)`. -/
+private theorem some_future_H_neg_G_P_absurd {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (α : Formula)
+    (h_F : Formula.some_future (Formula.all_past (Formula.neg α)) ∈ M)
+    (h_GP : Formula.all_future (Formula.some_past α) ∈ M) : False := by
+  -- ⊢ P(α) → ¬H(¬α): from P(α) → P(¬¬α) and DNI
+  have h_dni_ax : [] ⊢ α.imp α.neg.neg := Bimodal.Theorems.Combinators.dni α
+  have h_H_dni : [] ⊢ (α.imp α.neg.neg).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_dni_ax
+  have h_bx3' : [] ⊢ (α.imp α.neg.neg).all_past.imp
+      ((Formula.snce α Formula.top).imp (Formula.snce α.neg.neg Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_since α α.neg.neg Formula.top)
+  have h_P_to_Pnn : [] ⊢ (Formula.some_past α).imp (Formula.some_past α.neg.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dni
+  -- P(¬¬α) → P(¬¬α).neg.neg = ¬H(¬α) by DNI
+  have h_dni_P : [] ⊢ (Formula.some_past α.neg.neg).imp (Formula.some_past α.neg.neg).neg.neg :=
+    Bimodal.Theorems.Combinators.dni (Formula.some_past α.neg.neg)
+  -- Compose: P(α) → ¬H(¬α)
+  have h_P_to_neg_H : [] ⊢ (Formula.some_past α).imp (Formula.neg (Formula.all_past (Formula.neg α))) :=
+    Bimodal.Theorems.Combinators.imp_trans h_P_to_Pnn h_dni_P
+  -- G(P(α) → ¬H(¬α)) by temporal necessitation
+  have h_G_imp : [] ⊢ Formula.all_future ((Formula.some_past α).imp (Formula.neg (Formula.all_past (Formula.neg α)))) :=
+    DerivationTree.temporal_necessitation _ h_P_to_neg_H
+  -- G(P(α)) → G(¬H(¬α)) by temp_k_dist
+  have h_kd : [] ⊢ ((Formula.some_past α).imp (Formula.neg (Formula.all_past (Formula.neg α)))).all_future.imp
+      ((Formula.some_past α).all_future.imp (Formula.neg (Formula.all_past (Formula.neg α))).all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.some_past α) (Formula.neg (Formula.all_past (Formula.neg α))))
+  have h_G_P_imp_G_neg_H : [] ⊢ (Formula.some_past α).all_future.imp
+      (Formula.neg (Formula.all_past (Formula.neg α))).all_future :=
+    DerivationTree.modus_ponens [] _ _ h_kd h_G_imp
+  have h_G_neg_H : (Formula.neg (Formula.all_past (Formula.neg α))).all_future ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_P_imp_G_neg_H) h_GP
+  exact Bundle.some_future_all_future_neg_absurd h_mcs (Formula.all_past (Formula.neg α)) h_F h_G_neg_H
+
+/-- P(G(¬γ)) ∈ M and H(F(γ)) ∈ M are contradictory in an MCS.
+    Derives `H(¬G(¬γ))` from `H(F(γ))` via `⊢ F(γ) → ¬G(¬γ)`. -/
+private theorem some_past_G_neg_H_F_absurd {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (γ : Formula)
+    (h_P : Formula.some_past (Formula.all_future (Formula.neg γ)) ∈ M)
+    (h_HF : Formula.all_past (Formula.some_future γ) ∈ M) : False := by
+  -- ⊢ F(γ) → ¬G(¬γ): from F(γ) → F(¬¬γ) and DNI
+  have h_dni_ax : [] ⊢ γ.imp γ.neg.neg := Bimodal.Theorems.Combinators.dni γ
+  have h_G_dni : [] ⊢ (γ.imp γ.neg.neg).all_future :=
+    DerivationTree.temporal_necessitation _ h_dni_ax
+  have h_bx3 : [] ⊢ (γ.imp γ.neg.neg).all_future.imp
+      ((Formula.untl γ Formula.top).imp (Formula.untl γ.neg.neg Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_until γ γ.neg.neg Formula.top)
+  have h_F_to_Fnn : [] ⊢ (Formula.some_future γ).imp (Formula.some_future γ.neg.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
+  have h_dni_F : [] ⊢ (Formula.some_future γ.neg.neg).imp (Formula.some_future γ.neg.neg).neg.neg :=
+    Bimodal.Theorems.Combinators.dni (Formula.some_future γ.neg.neg)
+  have h_F_to_neg_G : [] ⊢ (Formula.some_future γ).imp (Formula.neg (Formula.all_future (Formula.neg γ))) :=
+    Bimodal.Theorems.Combinators.imp_trans h_F_to_Fnn h_dni_F
+  -- H(F(γ) → ¬G(¬γ)) by past necessitation
+  have h_H_imp : [] ⊢ Formula.all_past ((Formula.some_future γ).imp (Formula.neg (Formula.all_future (Formula.neg γ)))) :=
+    Bimodal.Theorems.past_necessitation _ h_F_to_neg_G
+  -- H(F(γ)) → H(¬G(¬γ)) by past_k_dist
+  have h_kd : [] ⊢ ((Formula.some_future γ).imp (Formula.neg (Formula.all_future (Formula.neg γ)))).all_past.imp
+      ((Formula.some_future γ).all_past.imp (Formula.neg (Formula.all_future (Formula.neg γ))).all_past) :=
+    Bimodal.Theorems.past_k_dist (Formula.some_future γ) (Formula.neg (Formula.all_future (Formula.neg γ)))
+  have h_H_F_imp_H_neg_G : [] ⊢ (Formula.some_future γ).all_past.imp
+      (Formula.neg (Formula.all_future (Formula.neg γ))).all_past :=
+    DerivationTree.modus_ponens [] _ _ h_kd h_H_imp
+  have h_H_neg_G : (Formula.neg (Formula.all_future (Formula.neg γ))).all_past ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_F_imp_H_neg_G) h_HF
+  exact Bundle.some_past_all_past_neg_absurd h_mcs (Formula.all_future (Formula.neg γ)) h_P h_H_neg_G
+
 /--
 **Burgess Lemma 2.3 (forward)**: burgessR(A, β, C) implies burgessRSince(C, β, A).
 
@@ -1265,10 +1379,10 @@ theorem burgessR_implies_burgessRSince {A C : Set Formula}
       have h_bx4 := DerivationTree.axiom [] _ (Axiom.connect_future α)
       have h_GP : Formula.all_future (Formula.some_past α) ∈ A :=
         SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx4) hα
-      -- F(H(¬α)) = ¬G(P(α)) definitionally, contradicting G(P(α)) ∈ A
-      exact absurd h_GP (SetMaximalConsistent.neg_excludes h_mcs_A _ h_F)
-    · -- ¬H(¬α) = P(α) ∈ C
-      exact h_notH
+      -- F(H(¬α)) and G(P(α)) are contradictory in MCS A
+      exact False.elim (some_future_H_neg_G_P_absurd h_mcs_A α h_F h_GP)
+    · -- ¬H(¬α) ∈ C: derive P(α) ∈ C via duality bridge
+      exact neg_all_past_neg_to_some_past h_mcs_C α h_notH
   -- Step 2: From P(α) ∈ C, derive snce(β, α) ∈ C using enrichment_until (A3a)
   -- By contradiction: if snce(β, α) ∉ C, then ¬snce(β, α) ∈ C
   by_contra h_not
@@ -1295,8 +1409,8 @@ theorem burgessR_implies_burgessRSince {A C : Set Formula}
     exact mp h2 (mp h1 h3)
   -- G(¬(¬snce(β,α) ∧ snce(β,α))) ∈ A by temporal necessitation
   have h_G_neg := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_neg_event)
-  -- F(X) = ¬G(¬X), contradicting G(¬X) ∈ A
-  exact absurd h_G_neg (SetMaximalConsistent.neg_excludes h_mcs_A _ h_F)
+  -- F(X) and G(¬X) are contradictory in MCS A
+  exact Bundle.some_future_all_future_neg_absurd h_mcs_A _ h_F h_G_neg
 
 /--
 **Burgess Lemma 2.3 (backward)**: burgessRSince(C, β, A) implies burgessR(A, β, C).
@@ -1324,10 +1438,10 @@ theorem burgessRSince_implies_burgessR {A C : Set Formula}
       have h_bx4' := DerivationTree.axiom [] _ (Axiom.connect_past γ)
       have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
         SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_bx4') hγ
-      -- P(G(¬γ)) = ¬H(F(γ)) definitionally, contradicting H(F(γ)) ∈ C
-      exact absurd h_HF (SetMaximalConsistent.neg_excludes h_mcs_C _ h_P)
-    · -- ¬G(¬γ) = F(γ) ∈ A
-      exact h_notG
+      -- P(G(¬γ)) and H(F(γ)) are contradictory in MCS C
+      exact False.elim (some_past_G_neg_H_F_absurd h_mcs_C γ h_P h_HF)
+    · -- ¬G(¬γ) ∈ A: derive F(γ) ∈ A via duality bridge
+      exact neg_all_future_neg_to_some_future h_mcs_A γ h_notG
   -- Step 2: From F(γ) ∈ A, derive untl(β, γ) ∈ A using enrichment_since (A3b)
   -- By contradiction: if untl(β, γ) ∉ A, then ¬untl(β, γ) ∈ A
   by_contra h_not
@@ -1354,8 +1468,8 @@ theorem burgessRSince_implies_burgessR {A C : Set Formula}
     exact mp h2 (mp h1 h3)
   -- H(¬(¬untl(β,γ) ∧ untl(β,γ))) ∈ C by past necessitation
   have h_H_neg := theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_neg_event)
-  -- P(X) = ¬H(¬X), contradicting H(¬X) ∈ C
-  exact absurd h_H_neg (SetMaximalConsistent.neg_excludes h_mcs_C _ h_P')
+  -- P(X) and H(¬X) are contradictory in MCS C
+  exact Bundle.some_past_all_past_neg_absurd h_mcs_C _ h_P' h_H_neg
 
 /--
 **Corollary**: burgessRSet and burgessRSetSince are equivalent.
@@ -1499,12 +1613,11 @@ theorem F_mem_of_g_content_sub {A C : Set Formula}
     Formula.some_future γ ∈ A := by
   -- If G(¬γ) ∈ A, then ¬γ ∈ g_content(A) ⊆ C, contradicting γ ∈ C (MCS)
   by_contra h_not_F
-  -- ¬F(γ) ∈ A means F(γ) ∉ A, so G(¬γ) ∈ A (since F(γ) = ¬G(¬γ))
-  have h_G_neg : Formula.all_future γ.neg ∈ A := by
-    rcases SetMaximalConsistent.negation_complete h_mcs_A (Formula.all_future γ.neg) with h | h
-    · exact h
-    · -- ¬G(¬γ) ∈ A means F(γ) ∈ A, contradiction
-      exact absurd h h_not_F
+  -- ¬F(γ) ∈ A, then G(¬γ) ∈ A via duality bridge
+  have h_neg_F : (Formula.some_future γ).neg ∈ A :=
+    (SetMaximalConsistent.negation_complete h_mcs_A _).resolve_left h_not_F
+  have h_G_neg : Formula.all_future γ.neg ∈ A :=
+    Bundle.neg_some_future_to_all_future_neg h_mcs_A γ h_neg_F
   -- G(¬γ) ∈ A gives ¬γ ∈ g_content(A) ⊆ C
   have h_neg_C : γ.neg ∈ C := h_gc h_G_neg
   -- γ ∈ C and ¬γ ∈ C contradicts C being MCS (consistent)

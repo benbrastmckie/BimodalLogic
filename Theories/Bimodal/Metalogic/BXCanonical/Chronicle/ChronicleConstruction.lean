@@ -940,12 +940,7 @@ theorem g_content_sub_imp_h_content_sub {A B : Set Formula}
     connect_future_mcs h_mcs_A ψ.neg h_neg_ψ
   -- P(¬ψ) ∈ g_content(A) ⊆ B
   have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
-  -- P(¬ψ) = ¬H(ψ.neg.neg), so H(ψ.neg.neg) ∉ B
-  -- P(α) = some_past α = (all_past α.neg).neg
-  -- so P(¬ψ) = (all_past (ψ.neg).neg).neg = (H(ψ.neg.neg)).neg
-  have h_H_nn_not : Formula.all_past ψ.neg.neg ∉ B :=
-    SetMaximalConsistent.neg_excludes h_mcs_B _ h_P_neg_ψ_B
-  -- But H(ψ) → H(ψ.neg.neg) by: ⊢ ψ → ψ.neg.neg (dni) + past necessitation + past K
+  -- H(¬¬ψ) ∈ B from H(ψ) via DNI under H, then contradiction with P(¬ψ)
   have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
   have h_H_dni : DerivationTree [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
@@ -958,7 +953,7 @@ theorem g_content_sub_imp_h_content_sub {A B : Set Formula}
     have h2 := theorem_in_mcs h_mcs_B h_H_dist
     have h3 := SetMaximalConsistent.implication_property h_mcs_B h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_B h3 hψ
-  exact h_H_nn_not h_H_nn
+  exact Bundle.some_past_all_past_neg_absurd h_mcs_B ψ.neg h_P_neg_ψ_B h_H_nn
 
 /--
 Backward duality: h_content(B) ⊆ A implies g_content(A) ⊆ B for MCS A, B.
@@ -989,10 +984,7 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
       (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
   -- F(¬ψ) ∈ h_content(B) ⊆ A
   have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
-  -- F(¬ψ) = ¬G(ψ.neg.neg), so G(ψ.neg.neg) ∉ A
-  have h_G_nn_not : Formula.all_future ψ.neg.neg ∉ A :=
-    SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_neg_ψ_A
-  -- But G(ψ) → G(ψ.neg.neg) by DNI + temporal necessitation + temporal K
+  -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G, then contradiction with F(¬ψ)
   have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
   have h_G_dni : DerivationTree [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
@@ -1005,7 +997,7 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
     have h2 := theorem_in_mcs h_mcs_A h_G_dist
     have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_A h3 hψ
-  exact h_G_nn_not h_G_nn
+  exact Bundle.some_future_all_future_neg_absurd h_mcs_A ψ.neg h_F_neg_ψ_A h_G_nn
 
 /-! ## Forward_G / Backward_H for Domain Points
 
@@ -1057,9 +1049,8 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     have h3 := SetMaximalConsistent.implication_property h_mcs_x h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_x h3 h_G
   have h_F_not : Formula.some_future φ.neg ∉ limit_f A h_mcs x := by
-    show φ.neg.neg.all_future.neg ∉ limit_f A h_mcs x
     intro h_abs
-    exact set_consistent_not_both h_mcs_x.1 (φ.neg.neg.all_future) h_G_nn h_abs
+    exact Bundle.some_future_all_future_neg_absurd h_mcs_x φ.neg h_abs h_G_nn
   set top := Formula.bot.imp Formula.bot with htop_def
   have h_bx10 : DerivationTree [] ((Formula.untl φ.neg top).imp (Formula.some_future φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.until_F top φ.neg)
@@ -1111,9 +1102,8 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     have h3 := SetMaximalConsistent.implication_property h_mcs_x h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_x h3 h_H
   have h_P_not : Formula.some_past φ.neg ∉ limit_f A h_mcs x := by
-    show φ.neg.neg.all_past.neg ∉ limit_f A h_mcs x
     intro h_abs
-    exact set_consistent_not_both h_mcs_x.1 (φ.neg.neg.all_past) h_H_nn h_abs
+    exact Bundle.some_past_all_past_neg_absurd h_mcs_x φ.neg h_abs h_H_nn
   set top := Formula.bot.imp Formula.bot with htop_def
   have h_bx10' : DerivationTree [] ((Formula.snce φ.neg top).imp (Formula.some_past φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.since_P top φ.neg)

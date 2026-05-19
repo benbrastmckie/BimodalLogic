@@ -126,21 +126,17 @@ theorem fwd_chain_F_not_return (M₀ : Set Formula) (h₀ : SetMaximalConsistent
         rcases SetMaximalConsistent.negation_complete h_mcs_m (Formula.some_future φ) with h | h
         · exact absurd h h_not_m
         · exact h
+      -- G(¬φ) ∈ chain(m) via duality bridge from ¬F(φ)
       have h_G_neg : Formula.all_future (Formula.neg φ) ∈ (fwd_chain M₀ h₀ m).val :=
-        SetMaximalConsistent.implication_property h_mcs_m
-          (theorem_in_mcs h_mcs_m (dne (Formula.all_future (Formula.neg φ)))) h_neg_F
+        Bundle.neg_some_future_to_all_future_neg h_mcs_m φ h_neg_F
       -- G(G(¬φ)) ∈ chain(m) by temp_4, so G(¬φ) ∈ chain(m+1) via g_content
       have h_GG_neg := SetMaximalConsistent.all_future_all_future h_mcs_m h_G_neg
       have h_G_neg_succ : Formula.all_future (Formula.neg φ) ∈ (fwd_chain M₀ h₀ (m + 1)).val :=
         fwd_chain_g_content_step M₀ h₀ m h_GG_neg
-      -- ¬F(φ) ∈ chain(m+1) follows from G(¬φ) ∈ chain(m+1)
+      -- F(φ) and G(¬φ) are contradictory in chain(m+1)
       intro h_F_succ
-      have h_neg_F_succ : (Formula.some_future φ).neg ∈ (fwd_chain M₀ h₀ (m + 1)).val :=
-        SetMaximalConsistent.implication_property (fwd_chain M₀ h₀ (m + 1)).property
-          (theorem_in_mcs (fwd_chain M₀ h₀ (m + 1)).property
-            (dni (Formula.all_future (Formula.neg φ)))) h_G_neg_succ
-      exact set_consistent_not_both (fwd_chain M₀ h₀ (m + 1)).property.1
-        (Formula.some_future φ) h_F_succ h_neg_F_succ
+      exact Bundle.some_future_all_future_neg_absurd (fwd_chain M₀ h₀ (m + 1)).property
+        φ h_F_succ h_G_neg_succ
 
 /-- P-obligation monotonicity: once P(φ) leaves the backward chain, it never returns. -/
 theorem bwd_chain_P_not_return (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -158,19 +154,16 @@ theorem bwd_chain_P_not_return (M₀ : Set Formula) (h₀ : SetMaximalConsistent
         rcases SetMaximalConsistent.negation_complete h_mcs_m (Formula.some_past φ) with h | h
         · exact absurd h h_not_m
         · exact h
+      -- H(¬φ) ∈ chain(m) via duality bridge from ¬P(φ)
       have h_H_neg : Formula.all_past (Formula.neg φ) ∈ (bwd_chain M₀ h₀ m).val :=
-        SetMaximalConsistent.implication_property h_mcs_m
-          (theorem_in_mcs h_mcs_m (dne (Formula.all_past (Formula.neg φ)))) h_neg_P
+        Bundle.neg_some_past_to_all_past_neg h_mcs_m φ h_neg_P
       have h_HH_neg := SetMaximalConsistent.all_past_all_past h_mcs_m h_H_neg
       have h_H_neg_succ : Formula.all_past (Formula.neg φ) ∈ (bwd_chain M₀ h₀ (m + 1)).val :=
         bwd_chain_h_content_step M₀ h₀ m h_HH_neg
+      -- P(φ) and H(¬φ) are contradictory in chain(m+1)
       intro h_P_succ
-      have h_neg_P_succ : (Formula.some_past φ).neg ∈ (bwd_chain M₀ h₀ (m + 1)).val :=
-        SetMaximalConsistent.implication_property (bwd_chain M₀ h₀ (m + 1)).property
-          (theorem_in_mcs (bwd_chain M₀ h₀ (m + 1)).property
-            (dni (Formula.all_past (Formula.neg φ)))) h_H_neg_succ
-      exact set_consistent_not_both (bwd_chain M₀ h₀ (m + 1)).property.1
-        (Formula.some_past φ) h_P_succ h_neg_P_succ
+      exact Bundle.some_past_all_past_neg_absurd (bwd_chain M₀ h₀ (m + 1)).property
+        φ h_P_succ h_H_neg_succ
 
 /-! ## Restricted Temporal Coherence -/
 

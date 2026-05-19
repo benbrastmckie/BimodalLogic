@@ -89,8 +89,13 @@ theorem F_neg_of_G_not {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (φ : Formula)
     (h_Gφ_not : Formula.all_future φ ∉ A) :
     Formula.some_future φ.neg ∈ A := by
-  have h_G_nnφ_not : Formula.all_future φ.neg.neg ∉ A := by
-    intro h_G_nnφ
+  -- Case split on F(¬φ) directly
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future φ.neg) with h | h
+  · exact h
+  · -- ¬F(¬φ) ∈ A: derive G(¬¬φ) via duality bridge
+    have h_G_nnφ : Formula.all_future φ.neg.neg ∈ A :=
+      Bundle.neg_some_future_to_all_future_neg h_mcs φ.neg h
+    -- G(¬¬φ) → G(φ) via DNE under G
     have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
       Bimodal.Theorems.Propositional.double_negation φ
     have h_G_dne : DerivationTree [] (Formula.all_future (φ.neg.neg.imp φ)) :=
@@ -102,19 +107,17 @@ theorem F_neg_of_G_not {A : Set Formula}
     have h2 := theorem_in_mcs h_mcs h_kd
     have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
     have h_Gφ := SetMaximalConsistent.implication_property h_mcs h3 h_G_nnφ
-    exact h_Gφ_not h_Gφ
-  rcases SetMaximalConsistent.negation_complete h_mcs
-      (Formula.all_future φ.neg.neg) with h | h
-  · exact absurd h h_G_nnφ_not
-  · exact h
+    exact absurd h_Gφ h_Gφ_not
 
 /-- If H(φ) ∉ MCS A, then P(¬φ) ∈ A. Dual of `F_neg_of_G_not`. -/
 theorem P_neg_of_H_not {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (φ : Formula)
     (h_Hφ_not : Formula.all_past φ ∉ A) :
     Formula.some_past φ.neg ∈ A := by
-  have h_H_nnφ_not : Formula.all_past φ.neg.neg ∉ A := by
-    intro h_H_nnφ
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ.neg) with h | h
+  · exact h
+  · have h_H_nnφ : Formula.all_past φ.neg.neg ∈ A :=
+      Bundle.neg_some_past_to_all_past_neg h_mcs φ.neg h
     have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
       Bimodal.Theorems.Propositional.double_negation φ
     have h_H_dne : DerivationTree [] (Formula.all_past (φ.neg.neg.imp φ)) :=
@@ -126,11 +129,7 @@ theorem P_neg_of_H_not {A : Set Formula}
     have h2 := theorem_in_mcs h_mcs h_kd
     have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
     have h_Hφ := SetMaximalConsistent.implication_property h_mcs h3 h_H_nnφ
-    exact h_Hφ_not h_Hφ
-  rcases SetMaximalConsistent.negation_complete h_mcs
-      (Formula.all_past φ.neg.neg) with h | h
-  · exact absurd h h_H_nnφ_not
-  · exact h
+    exact absurd h_Hφ h_Hφ_not
 
 /-! ## Lemma 2.4: Until Witness Endpoint Construction -/
 
@@ -1028,8 +1027,7 @@ private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
     SetMaximalConsistent.implication_property h_mcs_B
       (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
   have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
-  have h_G_nn_not : Formula.all_future ψ.neg.neg ∉ A :=
-    SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_neg_ψ_A
+  -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G
   have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
   have h_G_dni : DerivationTree [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
@@ -1042,7 +1040,8 @@ private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
     have h2 := theorem_in_mcs h_mcs_A h_G_dist
     have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_A h3 hψ
-  exact h_G_nn_not h_G_nn
+  -- F(¬ψ) and G(¬¬ψ) = G(neg(ψ.neg)) are contradictory
+  exact Bundle.some_future_all_future_neg_absurd h_mcs_A ψ.neg h_F_neg_ψ_A h_G_nn
 
 /-- g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B. Dual of above. -/
 private theorem g_content_sub_imp_h_content_sub' {A B : Set Formula}
@@ -1058,8 +1057,7 @@ private theorem g_content_sub_imp_h_content_sub' {A B : Set Formula}
   have h_GP : Formula.all_future (Formula.some_past ψ.neg) ∈ A :=
     connect_future_mcs h_mcs_A ψ.neg h_neg_ψ
   have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
-  have h_H_nn_not : Formula.all_past ψ.neg.neg ∉ B :=
-    SetMaximalConsistent.neg_excludes h_mcs_B _ h_P_neg_ψ_B
+  -- H(¬¬ψ) ∈ B from H(ψ) via DNI under H
   have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
   have h_H_dni : DerivationTree [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
@@ -1072,7 +1070,7 @@ private theorem g_content_sub_imp_h_content_sub' {A B : Set Formula}
     have h2 := theorem_in_mcs h_mcs_B h_H_dist
     have h3 := SetMaximalConsistent.implication_property h_mcs_B h2 h1
     exact SetMaximalConsistent.implication_property h_mcs_B h3 hψ
-  exact h_H_nn_not h_H_nn
+  exact Bundle.some_past_all_past_neg_absurd h_mcs_B ψ.neg h_P_neg_ψ_B h_H_nn
 
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 
@@ -1180,11 +1178,11 @@ private theorem F_mono_mcs {A : Set Formula}
     Formula.some_future psi ∈ A := by
   -- F(phi) = ¬G(¬phi). Suppose G(¬psi) ∈ A for contradiction.
   by_contra h_not_F
-  -- ¬F(psi) ∈ A means G(psi.neg) ∈ A (since F(psi) = ¬G(psi.neg) = (G(psi.neg)).neg)
-  have h_G_neg_psi : Formula.all_future psi.neg ∈ A := by
-    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future psi.neg) with h | h
-    · exact h
-    · exact absurd h h_not_F
+  -- ¬F(psi) ∈ A, derive G(¬psi) ∈ A via duality bridge
+  have h_neg_F : (Formula.some_future psi).neg ∈ A :=
+    (SetMaximalConsistent.negation_complete h_mcs _).resolve_left h_not_F
+  have h_G_neg_psi : Formula.all_future psi.neg ∈ A :=
+    Bundle.neg_some_future_to_all_future_neg h_mcs psi h_neg_F
   -- From ⊢ phi → psi: ⊢ ¬psi → ¬phi (contrapositive)
   -- G(¬psi → ¬phi) is a theorem
   -- G(¬psi) → G(¬phi) by K-distribution
@@ -1205,10 +1203,8 @@ private theorem F_mono_mcs {A : Set Formula}
   have h_G_neg_phi : Formula.all_future phi.neg ∈ A :=
     SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_kd h_G_contra) h_G_neg_psi
-  -- G(¬phi) ∈ A = ¬F(phi) ∈ A contradicts F(phi) ∈ A
-  -- F(phi) = (G(phi.neg)).neg = some_future phi
-  -- so G(phi.neg) and F(phi) = (G(phi.neg)).neg are contradictory
-  exact absurd h_G_neg_phi (SetMaximalConsistent.neg_excludes h_mcs _ h_F)
+  -- F(phi) and G(¬phi) are contradictory in MCS A
+  exact Bundle.some_future_all_future_neg_absurd h_mcs phi h_F h_G_neg_phi
 
 /-- Helper: ⊢ (a ∧ b) → a (left conjunction elimination). -/
 private noncomputable def and_left_impl (a b : Formula) :
@@ -1401,10 +1397,10 @@ private theorem P_mono_mcs {C : Set Formula}
     (h_P : Formula.some_past phi ∈ C) :
     Formula.some_past psi ∈ C := by
   by_contra h_not_P
-  have h_H_neg_psi : Formula.all_past psi.neg ∈ C := by
-    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past psi.neg) with h | h
-    · exact h
-    · exact absurd h h_not_P
+  have h_neg_P : (Formula.some_past psi).neg ∈ C :=
+    (SetMaximalConsistent.negation_complete h_mcs _).resolve_left h_not_P
+  have h_H_neg_psi : Formula.all_past psi.neg ∈ C :=
+    Bundle.neg_some_past_to_all_past_neg h_mcs psi h_neg_P
   have h_contra : DerivationTree [] (psi.neg.imp phi.neg) := by
     have h1 : DerivationTree [phi, psi.neg] psi :=
       DerivationTree.modus_ponens _ _ _
@@ -1422,7 +1418,7 @@ private theorem P_mono_mcs {C : Set Formula}
   have h_H_neg_phi : Formula.all_past phi.neg ∈ C :=
     SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_kd h_H_contra) h_H_neg_psi
-  exact absurd h_H_neg_phi (SetMaximalConsistent.neg_excludes h_mcs _ h_P)
+  exact Bundle.some_past_all_past_neg_absurd h_mcs phi h_P h_H_neg_phi
 
 /-- Structure to hold the result of iterated BX13 enrichment. -/
 structure EnrichedEvent (A : Set Formula) (guard event : Formula) (alphas : List Formula) where
@@ -2444,7 +2440,7 @@ private theorem lemma_2_8_seed_consistent {A B C : Set Formula}
       have h_G_top : Formula.all_future (Formula.bot.imp Formula.bot) ∈ A :=
         theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _
           (identity Formula.bot))
-      exact SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_bot h_G_top
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_A Formula.bot h_F_bot h_G_top
     · exfalso
       have h_event_to_bot : DerivationTree [] ((Formula.and γ_hat χ_gen).imp Formula.bot) := by
         have h1 : DerivationTree [] ((Formula.and γ_hat χ_gen).imp χ_gen.neg) :=
@@ -2463,7 +2459,7 @@ private theorem lemma_2_8_seed_consistent {A B C : Set Formula}
       have h_G_top : Formula.all_future (Formula.bot.imp Formula.bot) ∈ A :=
         theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _
           (identity Formula.bot))
-      exact SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_bot h_G_top
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_A Formula.bot h_F_bot h_G_top
     · exact h_D3
   let guard := Formula.and φ_gen χ_gen
   let base_event := Formula.and φ_gen eta
@@ -3114,7 +3110,7 @@ private theorem lemma_2_8_since_seed_consistent {A B C : Set Formula}
       have h_H_top : Formula.all_past (Formula.bot.imp Formula.bot) ∈ C :=
         theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _
           (identity Formula.bot))
-      exact SetMaximalConsistent.neg_excludes h_mcs_C _ h_P_bot h_H_top
+      exact Bundle.some_past_all_past_neg_absurd h_mcs_C Formula.bot h_P_bot h_H_top
     · exfalso
       have h_event_to_bot : DerivationTree [] ((Formula.and α_hat χ_gen).imp Formula.bot) := by
         have h1 : DerivationTree [] ((Formula.and α_hat χ_gen).imp χ_gen.neg) :=
@@ -3133,7 +3129,7 @@ private theorem lemma_2_8_since_seed_consistent {A B C : Set Formula}
       have h_H_top : Formula.all_past (Formula.bot.imp Formula.bot) ∈ C :=
         theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _
           (identity Formula.bot))
-      exact SetMaximalConsistent.neg_excludes h_mcs_C _ h_P_bot h_H_top
+      exact Bundle.some_past_all_past_neg_absurd h_mcs_C Formula.bot h_P_bot h_H_top
     · exact h_D3
   let guard := Formula.and φ_gen χ_gen
   let base_event := Formula.and φ_gen eta

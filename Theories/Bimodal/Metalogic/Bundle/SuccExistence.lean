@@ -226,34 +226,29 @@ theorem p_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
   intro ψ hψ
   rw [mem_p_step_blocking_formulas_restricted_iff] at hψ
   obtain ⟨χ, h_P_in_dc, _, _, rfl⟩ := hψ
-  -- P(χ) ∈ deferralClosure implies H(¬χ) ∈ deferralClosure
-  -- Use the new theorem that handles both closureWithNeg and P_top cases
+  -- Need: H(¬χ) ∈ deferralClosure phi when P(χ) ∈ deferralClosure phi.
+  -- Under the old definition P(χ) = ¬H(¬χ) = imp (H(¬χ)) bot, H(¬χ) was a structural
+  -- subformula of P(χ). Under the new definition P(χ) = snce χ top, this structural
+  -- containment no longer holds.
+  -- FIX NEEDED: Extend baseDeferralClosure in SubformulaClosure.lean with a
+  -- temporalBlockingSet that includes H(¬χ) for each P(χ) and G(¬χ) for each F(χ)
+  -- in closureWithNeg phi. Then this proof becomes:
+  --   exact temporalBlockingSet_mem h_P_in_dc
+  -- This design change has cascading effects on ~15 membership proofs in SubformulaClosure.lean
+  -- and is deferred to a follow-up task.
   rcases some_past_in_deferralClosure_cases phi χ h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
-  · -- P(χ) ∈ closureWithNeg phi
-    -- P(χ) in closureWithNeg means P(χ) in subformulaClosure OR P(χ) = g.neg for g in subformulaClosure
-    unfold closureWithNeg at h_P_in_cwn
+  · unfold closureWithNeg at h_P_in_cwn
     simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
     rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-    · -- P(χ) in subformulaClosure, so H(¬χ) = subformula of P(χ)
-      apply closureWithNeg_subset_deferralClosure
-      apply subformulaClosure_subset_closureWithNeg
-      exact closure_imp_left phi _ _ h_sub
-    · -- P(χ) = g.neg for g in subformulaClosure
-      -- g.neg = P(χ) = neg(H(neg χ)) implies g = H(neg χ)
-      unfold Formula.some_past Formula.neg at h_g_neg_eq
-      have h_eq : g = Formula.all_past (Formula.neg χ) := by cases h_g_neg_eq; rfl
-      rw [h_eq] at h_g_sub
-      exact closureWithNeg_subset_deferralClosure phi
-        (subformulaClosure_subset_closureWithNeg phi h_g_sub)
-  · -- P(χ) = P_top = P(neg bot), so χ = neg bot
-    -- We need to prove H(neg χ) = H(neg (neg bot)) = H_neg_neg_bot ∈ deferralClosure
-    simp only [P_top, Formula.some_past, Formula.neg] at h_P_eq_P_top
-    injection h_P_eq_P_top with h_inner _
-    injection h_inner with h_all
-    injection h_all with h_inner2
-    subst h_inner2
-    -- Goal: H(neg (neg bot)) = H_neg_neg_bot ∈ deferralClosure phi
-    -- H_neg_neg_bot is now in serialityFormulas, so it's in deferralClosure
+    · -- P(χ) ∈ subformulaClosure: H(¬χ) ∉ subformulaClosure (design gap)
+      sorry
+    · -- P(χ) = g.neg: snce χ top = imp g bot, impossible (snce ≠ imp)
+      simp only [Formula.neg] at h_g_neg_eq
+      exact absurd h_g_neg_eq (by intro h'; exact Formula.noConfusion h')
+  · -- P(χ) = P_top: χ = top = bot.imp bot, H(¬χ) = H_neg_neg_bot ∈ deferralClosure
+    simp only [P_top, Formula.some_past, Formula.top] at h_P_eq_P_top
+    have h_chi_eq : χ = Formula.bot.imp Formula.bot := Formula.snce.inj h_P_eq_P_top |>.1
+    subst h_chi_eq
     simp only [Formula.neg]
     exact H_neg_neg_bot_mem_deferralClosure phi
 

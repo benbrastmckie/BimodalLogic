@@ -212,9 +212,8 @@ theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
   have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
   have h_G_nn : Formula.all_future φ.neg.neg ∈ A :=
     SetMaximalConsistent.implication_property h_mcs_A h3 hφ
-  -- all_future(φ.neg.neg) ∈ A and some_future(φ.neg) = (all_future(φ.neg.neg)).neg ∈ A
-  -- contradicts MCS consistency
-  exact absurd h_G_nn (SetMaximalConsistent.neg_excludes h_mcs_A (Formula.all_future φ.neg.neg) h_F_neg)
+  -- F(¬φ) and G(¬¬φ) = G(neg(φ.neg)) are contradictory in MCS A
+  exact Bundle.some_future_all_future_neg_absurd h_mcs_A φ.neg h_F_neg h_G_nn
 
 /--
 **BurgessR3Maximal implies SetDeductivelyClosed** when some formula is not in B.
@@ -311,10 +310,10 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
     -- If H(α.neg) ∈ C, then α.neg ∈ h_content(C) ⊆ A, contradicting α ∈ A
     have h_P : Formula.some_past α ∈ C := by
       by_contra h_not_P
-      have h_H_neg : Formula.all_past α.neg ∈ C := by
-        rcases SetMaximalConsistent.negation_complete h_mcs_C (Formula.all_past α.neg) with h | h
-        · exact h
-        · exact absurd h h_not_P
+      have h_neg_P : (Formula.some_past α).neg ∈ C :=
+        (SetMaximalConsistent.negation_complete h_mcs_C _).resolve_left h_not_P
+      have h_H_neg : Formula.all_past α.neg ∈ C :=
+        Bundle.neg_some_past_to_all_past_neg h_mcs_C α h_neg_P
       have h_neg_A : α.neg ∈ A := h_hc h_H_neg
       exact SetMaximalConsistent.neg_excludes h_mcs_A α h_neg_A hα
     -- P(α) → S(⊤, α) by P_since_equiv

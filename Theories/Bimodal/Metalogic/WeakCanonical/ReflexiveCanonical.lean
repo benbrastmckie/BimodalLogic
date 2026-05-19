@@ -136,14 +136,9 @@ theorem tempR_fwd_mem_some_future {x y : ReflCanDomain}
   -- ¬F(β) = F(β).neg = β.neg.all_future.neg.neg
   have h_neg_Fβ : (Formula.some_future β).neg ∈ x.val :=
     (SetMaximalConsistent.negation_complete h_mcs_x (Formula.some_future β)).resolve_left h_Fβ_nx
-  -- F(β).neg = β.neg.all_future.neg.neg (a double negation of G(¬β))
-  -- Apply DNE theorem: ¬¬A → A with A = β.neg.all_future = G(¬β)
-  -- ⊢ β.neg.all_future.neg.neg → β.neg.all_future
-  have h_dne : [] ⊢ (Formula.neg β).all_future.neg.neg.imp (Formula.neg β).all_future :=
-    Bimodal.Theorems.Propositional.double_negation (Formula.neg β).all_future
-  -- G(¬β) ∈ x.val
+  -- G(¬β) ∈ x.val from ¬F(β) via duality bridge
   have h_G_neg_β : (Formula.neg β).all_future ∈ x.val :=
-    h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_dne) h_neg_Fβ
+    Bundle.neg_some_future_to_all_future_neg h_mcs_x β h_neg_Fβ
   -- ¬β ∈ g_content(x)
   have h_neg_β_gc : Formula.neg β ∈ g_content x := by
     simp [g_content, Bundle.g_content, h_G_neg_β]
@@ -191,31 +186,24 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   -- G(¬¬ψ) ∈ y.val
   have h_Gnn_y : ψ.neg.neg.all_future ∈ y.val :=
     h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_Gψ_imp_Gnn) h_Gψ_y
-  -- F(¬ψ) = ψ.neg.neg.all_future.neg and G(¬¬ψ) = ψ.neg.neg.all_future
-  -- These are contradictory in y.val
-  exact set_consistent_not_both h_mcs_y.1 ψ.neg.neg.all_future h_Gnn_y h_F_neg_ψ_y
+  -- F(¬ψ) and G(¬¬ψ) = G(¬(¬ψ).neg) are contradictory in MCS y
+  exact Bundle.some_future_all_future_neg_absurd h_mcs_y (Formula.neg ψ) h_F_neg_ψ_y h_Gnn_y
 
 /--
 Helper: From `⊢ A → B`, derive `⊢ F(A) → F(B)` (F-monotonicity).
-F(A) = ¬G(¬A). From A → B, derive ¬B → ¬A, then G(¬B) → G(¬A) (by temp_k_dist),
-then ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B).
+Uses BX3 (right_mono_until): G(A → B) → (U(A, ⊤) → U(B, ⊤)), i.e., G(A → B) → (F(A) → F(B)).
 -/
 noncomputable def some_future_mono {A B : Formula}
     (h : [] ⊢ A.imp B) : [] ⊢ (Formula.some_future A).imp (Formula.some_future B) := by
-  -- Contrapositive: ¬B → ¬A
-  have h_contra : [] ⊢ B.neg.imp A.neg :=
-    Bimodal.Theorems.Propositional.contraposition h
-  -- G(¬B → ¬A) via temporal necessitation
-  have h_G_contra : [] ⊢ Formula.all_future (B.neg.imp A.neg) :=
-    DerivationTree.temporal_necessitation _ h_contra
-  -- temp_k_dist: G(¬B → ¬A) → (G(¬B) → G(¬A))
-  have h_kd : [] ⊢ (B.neg.imp A.neg).all_future.imp (B.neg.all_future.imp A.neg.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist B.neg A.neg)
-  -- G(¬B) → G(¬A)
-  have h_G_neg_B_imp : [] ⊢ B.neg.all_future.imp A.neg.all_future :=
-    Combinators.mp h_G_contra h_kd
-  -- Contrapositive: ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B)
-  exact Bimodal.Theorems.Propositional.contraposition h_G_neg_B_imp
+  -- G(A → B) via temporal necessitation
+  have h_G : [] ⊢ Formula.all_future (A.imp B) :=
+    DerivationTree.temporal_necessitation _ h
+  -- BX3: G(A → B) → (U(A, ⊤) → U(B, ⊤)) = G(A → B) → (F(A) → F(B))
+  have h_bx3 : [] ⊢ (A.imp B).all_future.imp
+      ((Formula.untl A Formula.top).imp (Formula.untl B Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_until A B Formula.top)
+  -- F(A) → F(B) by MP
+  exact DerivationTree.modus_ponens [] _ _ h_bx3 h_G
 
 /--
 Forward linearity of the canonical temporal cone (Burgess 1984, Section 2.2).
@@ -310,8 +298,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
         exact Combinators.mp h1 (Combinators.mp h2 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (β.and γ).neg.all_future (theorem_in_mcs h_mcs_x hG) h_c1
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
+        (theorem_in_mcs h_mcs_x hG)
     · -- Case 2: F(β ∧ F(γ)) ∈ x.val. F(γ)→F(γ₀) (mono), β→¬F(γ₀) → inconsistent.
       have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
         Combinators.imp_trans (lce_imp _ δ.neg) (lce_imp γ₀ _)
@@ -328,9 +316,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
           (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (Formula.and β (Formula.some_future γ)).neg.all_future
-        (theorem_in_mcs h_mcs_x hG) h_c2
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x
+        (Formula.and β (Formula.some_future γ)) h_c2 (theorem_in_mcs h_mcs_x hG)
     · -- Case 3: F(F(β) ∧ γ) ∈ x.val. F(β)→F(β₀) (mono), γ→¬F(β₀) → inconsistent.
       have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
         Combinators.imp_trans (lce_imp _ δ) (lce_imp β₀ _)
@@ -347,9 +334,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
           (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (Formula.and (Formula.some_future β) γ).neg.all_future
-        (theorem_in_mcs h_mcs_x hG) h_c3
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x
+        (Formula.and (Formula.some_future β) γ) h_c3 (theorem_in_mcs h_mcs_x hG)
   · -- Case: z.val ⊄ y.val. Symmetric: δ ∈ z.val with δ ∉ y.val.
     obtain ⟨δ, h_δ_z, h_δ_ny⟩ := Set.not_subset.mp h_z_nsub
     have h_nFγ₀_y : (Formula.some_future γ₀).neg ∈ y.val :=
@@ -394,8 +380,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
         exact Combinators.mp h2 (Combinators.mp h1 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (β.and γ).neg.all_future (theorem_in_mcs h_mcs_x hG) h_c1
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
+        (theorem_in_mcs h_mcs_x hG)
     · -- F(β∧Fγ): Fγ→Fγ₀, β→¬Fγ₀ → inconsistent
       have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
         Combinators.imp_trans (lce_imp _ δ) (lce_imp γ₀ _)
@@ -411,9 +397,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
           (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (Formula.and β (Formula.some_future γ)).neg.all_future
-        (theorem_in_mcs h_mcs_x hG) h_c2
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x
+        (Formula.and β (Formula.some_future γ)) h_c2 (theorem_in_mcs h_mcs_x hG)
     · -- F(Fβ∧γ): Fβ→Fβ₀, γ→¬Fβ₀ → inconsistent
       have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
         Combinators.imp_trans (lce_imp _ δ.neg) (lce_imp β₀ _)
@@ -429,9 +414,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
           (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
-      exact set_consistent_not_both h_mcs_x.1
-        (Formula.and (Formula.some_future β) γ).neg.all_future
-        (theorem_in_mcs h_mcs_x hG) h_c3
+      exact Bundle.some_future_all_future_neg_absurd h_mcs_x
+        (Formula.and (Formula.some_future β) γ) h_c3 (theorem_in_mcs h_mcs_x hG)
 
 /--
 Backward bridge lemma: if `tempR_bwd y x`, then `h_w_content x ⊆ y.val`.
@@ -620,9 +604,9 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  -- F(⊤) = ¬G(⊤ → ⊥) = ¬G(neg_top)
-  -- But G(neg_top) ∈ x.val. Contradiction.
-  exact set_consistent_not_both h_mcs.1 neg_top.all_future h_G_neg_top h_F_top
+  -- F(⊤) and G(¬⊤) are contradictory in MCS
+  exact Bundle.some_future_all_future_neg_absurd h_mcs (Formula.bot.imp Formula.bot)
+    h_F_top h_G_neg_top
 
 /--
 If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.val.
@@ -675,7 +659,8 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  exact set_consistent_not_both h_mcs.1 neg_top.all_past h_H_neg_top h_P_top
+  exact Bundle.some_past_all_past_neg_absurd h_mcs (Formula.bot.imp Formula.bot)
+    h_P_top h_H_neg_top
 
 /-! ## Valuation -/
 
