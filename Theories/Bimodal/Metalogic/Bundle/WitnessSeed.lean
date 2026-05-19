@@ -42,6 +42,51 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
+/-! ## Duality Helpers
+
+Since `some_future`/`some_past` are no longer definitionally `neg(all_future/all_past(neg _))`,
+we need helpers that derive contradictions between `some_future psi ∈ M` and
+`all_future (neg psi) ∈ M` in an MCS. -/
+
+open Bimodal.ProofSystem Bimodal.Theorems in
+/-- In an MCS, `some_future psi ∈ M` and `all_future (neg psi) ∈ M` is contradictory. -/
+private lemma some_future_all_future_neg_absurd {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ M)
+    (h_G_neg : Formula.all_future (Formula.neg psi) ∈ M) : False := by
+  -- all_future (neg psi) = (some_future psi.neg.neg).neg
+  -- From h_F and BX3 + DNI: some_future psi.neg.neg ∈ M
+  -- Contradiction with (some_future psi.neg.neg).neg = all_future (neg psi) ∈ M
+  have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.dni psi
+  have h_G_dni : [] ⊢ (psi.imp psi.neg.neg).all_future :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).all_future.imp
+      ((Formula.untl psi Formula.top).imp (Formula.untl psi.neg.neg Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_until psi psi.neg.neg Formula.top)
+  have h_impl : [] ⊢ (Formula.some_future psi).imp (Formula.some_future psi.neg.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
+  have h_sf_nn : Formula.some_future psi.neg.neg ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_impl) h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.some_future psi.neg.neg) h_sf_nn h_G_neg
+
+open Bimodal.ProofSystem Bimodal.Theorems in
+/-- In an MCS, `some_past psi ∈ M` and `all_past (neg psi) ∈ M` is contradictory. -/
+private lemma some_past_all_past_neg_absurd {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ M)
+    (h_H_neg : Formula.all_past (Formula.neg psi) ∈ M) : False := by
+  have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.dni psi
+  have h_H_dni : [] ⊢ (psi.imp psi.neg.neg).all_past :=
+    past_necessitation _ h_dni
+  have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).all_past.imp
+      ((Formula.snce psi Formula.top).imp (Formula.snce psi.neg.neg Formula.top)) :=
+    DerivationTree.axiom [] _ (Axiom.right_mono_since psi psi.neg.neg Formula.top)
+  have h_impl : [] ⊢ (Formula.some_past psi).imp (Formula.some_past psi.neg.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_bx3 h_H_dni
+  have h_sp_nn : Formula.some_past psi.neg.neg ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_impl) h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.some_past psi.neg.neg) h_sp_nn h_H_neg
+
 /-!
 ## Forward Temporal Witness Seed
 -/
@@ -122,10 +167,8 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
       SetMaximalConsistent.closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
         h_G_context_in_M d_G_neg
 
-    -- Contradiction - F psi = neg(G(neg psi)) is also in M
-    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
-    rw [h_F_eq] at h_F
-    exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_in_M h_F
+    -- Contradiction: F(psi) and G(neg psi) cannot both be in MCS
+    exact some_future_all_future_neg_absurd h_mcs psi h_F h_G_neg_in_M
 
   · -- Case: psi ∉ L, so L ⊆ g_content M
     -- All elements of L are in g_content(M), meaning G chi ∈ M for each chi
@@ -173,10 +216,8 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
     have h_G_neg_psi : Formula.all_future (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
 
-    -- Contradiction: F(psi) = ¬G(¬psi) ∈ M
-    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
-    rw [h_F_eq] at h_F
-    exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_psi h_F
+    -- Contradiction: F(psi) and G(neg psi) cannot both be in MCS
+    exact some_future_all_future_neg_absurd h_mcs psi h_F h_G_neg_psi
 
 /-!
 ## Past Temporal Witness Seed
@@ -246,10 +287,8 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       SetMaximalConsistent.closed_under_derivation h_mcs (Context.map Formula.all_past L_filt)
         h_H_context_in_M d_H_neg
 
-    -- Contradiction - P psi = neg(H(neg psi)) is also in M
-    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
-    rw [h_P_eq] at h_P
-    exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg psi)) h_H_neg_in_M h_P
+    -- Contradiction: P(psi) and H(neg psi) cannot both be in MCS
+    exact some_past_all_past_neg_absurd h_mcs psi h_P h_H_neg_in_M
 
   · -- Case: psi ∉ L, so L ⊆ h_content M
     have h_H_all_in_M : ∀ chi ∈ L, Formula.all_past chi ∈ M := by
@@ -296,10 +335,8 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
     have h_H_neg_psi : Formula.all_past (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M
 
-    -- Contradiction: P(psi) = ¬H(¬psi) ∈ M
-    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
-    rw [h_P_eq] at h_P
-    exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg psi)) h_H_neg_psi h_P
+    -- Contradiction: P(psi) and H(neg psi) cannot both be in MCS
+    exact some_past_all_past_neg_absurd h_mcs psi h_P h_H_neg_psi
 
 /-!
 ## Until Temporal Witness Seed
@@ -410,9 +447,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_F_psi : ψ.some_future ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.until_imp_F φ ψ)) h_U
-  have h_F_eq : ψ.some_future = (ψ.neg.all_future).neg := rfl
-  rw [h_F_eq] at h_F_psi
-  exact set_consistent_not_both h_mcs.1 (ψ.neg.all_future) h_G_neg_psi h_F_psi
+  exact some_future_all_future_neg_absurd h_mcs ψ h_F_psi h_G_neg_psi
 
 /--
 Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
@@ -488,9 +523,7 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_P_psi : ψ.some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.since_imp_P φ ψ)) h_S
-  have h_P_eq : ψ.some_past = (ψ.neg.all_past).neg := rfl
-  rw [h_P_eq] at h_P_psi
-  exact set_consistent_not_both h_mcs.1 (ψ.neg.all_past) h_H_neg_psi h_P_psi
+  exact some_past_all_past_neg_absurd h_mcs ψ h_P_psi h_H_neg_psi
 
 /-!
 ## g_content/h_content Duality
@@ -532,9 +565,7 @@ theorem g_content_subset_implies_h_content_reverse
     DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
   have h_H_nn : phi.neg.neg.all_past ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
-  have h_eq : (Formula.neg phi).some_past = Formula.neg (phi.neg.neg.all_past) := rfl
-  rw [h_eq] at h_P_neg_M'
-  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_past) h_H_nn h_P_neg_M'
+  exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
 /-- If h_content(M) ⊆ M', then g_content(M') ⊆ M.
 Uses past_temp_a: φ → H(F(φ)). -/
@@ -563,8 +594,6 @@ theorem h_content_subset_implies_g_content_reverse
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.all_future ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
-  have h_eq : (Formula.neg phi).some_future = Formula.neg (phi.neg.neg.all_future) := rfl
-  rw [h_eq] at h_F_neg_M'
-  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_future) h_G_nn h_F_neg_M'
+  exact some_future_all_future_neg_absurd h_mcs' (Formula.neg phi) h_F_neg_M' h_G_nn
 
 end Bimodal.Metalogic.Bundle

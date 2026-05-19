@@ -92,13 +92,18 @@ Since F(neg phi) = neg(G(neg(neg phi))), we use G_dne_theorem contrapositively:
 lemma neg_all_future_to_some_future_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_neg_G : Formula.neg (Formula.all_future phi) ∈ M) :
     Formula.some_future (Formula.neg phi) ∈ M := by
-  have h_G_dne := G_dne_theorem phi
-  have h_neg_G_dne : Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) ∈ M :=
-    SetMaximalConsistent.contrapositive h_mcs h_G_dne h_neg_G
-  have h_eq : Formula.some_future (Formula.neg phi) =
-              Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) := rfl
-  rw [h_eq]
-  exact h_neg_G_dne
+  -- neg(G phi) = neg((some_future phi.neg).neg) = (some_future phi.neg).neg.neg
+  -- By DNE on some_future phi.neg: (some_future phi.neg).neg.neg → some_future phi.neg
+  -- some_future phi.neg = some_future (neg phi) = F(neg phi)
+  have h_eq : Formula.neg (Formula.all_future phi) =
+              Formula.neg (Formula.neg (Formula.some_future (Formula.neg phi))) := rfl
+  rw [h_eq] at h_neg_G
+  -- h_neg_G : (some_future (neg phi)).neg.neg ∈ M
+  -- By DNE: (some_future (neg phi)).neg.neg → some_future (neg phi)
+  have h_dne : [] ⊢ (Formula.neg (Formula.neg (Formula.some_future (Formula.neg phi)))).imp
+                     (Formula.some_future (Formula.neg phi)) :=
+    dne_theorem (Formula.some_future (Formula.neg phi))
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_G
 
 /--
 Transform neg(H phi) membership to P(neg phi) membership in an MCS.
@@ -109,13 +114,13 @@ Past analog of neg_all_future_to_some_future_neg.
 lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_neg_H : Formula.neg (Formula.all_past phi) ∈ M) :
     Formula.some_past (Formula.neg phi) ∈ M := by
-  have h_H_dne := H_dne_theorem phi
-  have h_neg_H_dne : Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) ∈ M :=
-    SetMaximalConsistent.contrapositive h_mcs h_H_dne h_neg_H
-  have h_eq : Formula.some_past (Formula.neg phi) =
-              Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) := rfl
-  rw [h_eq]
-  exact h_neg_H_dne
+  have h_eq : Formula.neg (Formula.all_past phi) =
+              Formula.neg (Formula.neg (Formula.some_past (Formula.neg phi))) := rfl
+  rw [h_eq] at h_neg_H
+  have h_dne : [] ⊢ (Formula.neg (Formula.neg (Formula.some_past (Formula.neg phi)))).imp
+                     (Formula.some_past (Formula.neg phi)) :=
+    dne_theorem (Formula.some_past (Formula.neg phi))
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_H
 
 /--
 Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.

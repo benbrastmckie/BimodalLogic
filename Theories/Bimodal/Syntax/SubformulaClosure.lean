@@ -1377,9 +1377,9 @@ theorem deferralClosure_all_future (phi psi : Formula)
         (subformulaClosure_subset_closureWithNeg phi (closure_imp_left phi _ _ h_neg))
   · -- G(psi) = G_neg_neg_bot, so psi = neg_neg_bot
     have h_psi_eq : psi = neg_neg_bot := by
-      simp only [G_neg_neg_bot, Formula.all_future, Formula.some_future,
-        Formula.neg, Formula.top] at h_eq_G
-      injection h_eq_G with h1 _; injection h1 with h2 _; exact h2
+      unfold G_neg_neg_bot Formula.all_future Formula.some_future
+        Formula.neg Formula.top at h_eq_G
+      injection h_eq_G with h1 _; injection h1 with h2 _; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
 
@@ -1403,9 +1403,9 @@ theorem deferralClosure_all_past (phi psi : Formula)
         (subformulaClosure_subset_closureWithNeg phi (closure_imp_left phi _ _ h_neg))
   · -- H(psi) = H_neg_neg_bot, so psi = neg_neg_bot
     have h_psi_eq : psi = neg_neg_bot := by
-      simp only [H_neg_neg_bot, Formula.all_past, Formula.some_past,
-        Formula.neg, Formula.top] at h_eq_H
-      injection h_eq_H with h1 _; injection h1 with h2 _; exact h2
+      unfold H_neg_neg_bot Formula.all_past Formula.some_past
+        Formula.neg Formula.top at h_eq_H
+      injection h_eq_H with h1 _; injection h1 with h2 _; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
 
@@ -1451,54 +1451,10 @@ theorem some_future_in_deferralClosure_cases (phi chi : Formula)
     simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at h_serial
     rcases h_serial with h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq
     · exact Or.inr h_eq  -- F_top
-    · -- P_top is not an F-formula (some_future has all_future, P_top has all_past)
-      exfalso
-      simp only [P_top, Formula.some_past, Formula.some_future, Formula.neg] at h_eq
-      injection h_eq with h1 _; injection h1
-    · -- neg bot is not an F-formula (some_future is imp (all_future _) _, neg bot is imp bot _)
-      exfalso
-      simp only [Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- neg neg bot is not an F-formula
-      exfalso
-      simp only [neg_neg_bot, Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- G_neg_neg_bot is all_future, not some_future (imp _ _ vs all_future _)
-      exfalso
-      simp only [G_neg_neg_bot, Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- H_neg_neg_bot is all_past, not some_future (imp _ _ vs all_past _)
-      exfalso
-      simp only [H_neg_neg_bot, Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- neg_G_neg_neg_bot = F_top (both are Formula.neg G_neg_neg_bot)
-      -- So some_future chi = neg_G_neg_neg_bot = F_top
-      have h_F_top_eq : neg_G_neg_neg_bot = F_top := rfl
-      rw [h_F_top_eq] at h_eq
-      exact Or.inr h_eq
-    · -- neg_H_neg_neg_bot is imp (H_neg_neg_bot.imp bot), not some_future
-      -- some_future chi = neg(G(neg chi)) = (G(neg chi)).imp bot = (all_future (neg chi)).imp bot
-      -- neg_H_neg_neg_bot = H_neg_neg_bot.imp bot = (all_past neg_neg_bot).imp bot
-      -- So this would need all_future = all_past, which is impossible
-      exfalso
-      simp only [neg_H_neg_neg_bot, Formula.neg, Formula.some_future, H_neg_neg_bot] at h_eq
-      injection h_eq with h1 _
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h1
-    · -- F_top_deferral is a disjunction, not an F-formula
-      exfalso
-      simp only [F_top_deferral, Formula.or, Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- P_top_deferral is a disjunction, not an F-formula
-      exfalso
-      simp only [P_top_deferral, Formula.or, Formula.some_future, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
+    all_goals (exfalso; simp only [Formula.some_future, Formula.top, P_top, Formula.some_past,
+        neg_neg_bot, G_neg_neg_bot, H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot,
+        F_top_deferral, P_top_deferral, Formula.neg, Formula.or,
+        Formula.all_future, Formula.all_past] at h_eq; cases h_eq)
 
 /--
 Any P-formula (some_past) in deferralClosure is either:
@@ -1541,55 +1497,14 @@ theorem some_past_in_deferralClosure_cases (phi chi : Formula)
   · -- serialityFormulas case
     simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at h_serial
     rcases h_serial with h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq | h_eq
-    · -- F_top is not a P-formula (some_past has all_past, F_top has all_future)
-      exfalso
-      simp only [F_top, Formula.some_past, Formula.some_future, Formula.neg] at h_eq
-      injection h_eq with h1 _; injection h1
+    -- F_top | P_top | neg_bot | neg_neg_bot | G | H | neg_G | neg_H | F_def | P_def
+    · -- F_top: some_past chi = F_top (untl vs snce mismatch)
+      exfalso; simp only [Formula.some_past, Formula.top, F_top, Formula.some_future] at h_eq; cases h_eq
     · exact Or.inr h_eq  -- P_top
-    · -- neg bot is not a P-formula (some_past is imp (all_past _) _, neg bot is imp bot _)
-      exfalso
-      simp only [Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- neg neg bot is not a P-formula
-      exfalso
-      simp only [neg_neg_bot, Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- G_neg_neg_bot is all_future, not some_past (imp _ _ vs all_future _)
-      exfalso
-      simp only [G_neg_neg_bot, Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- H_neg_neg_bot is all_past, not some_past (imp _ _ vs all_past _)
-      exfalso
-      simp only [H_neg_neg_bot, Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- neg_G_neg_neg_bot is imp (G_neg_neg_bot.imp bot), not some_past
-      -- some_past chi = neg(H(neg chi)) = (all_past (neg chi)).imp bot
-      -- neg_G_neg_neg_bot = G_neg_neg_bot.imp bot = (all_future neg_neg_bot).imp bot
-      -- So this would need all_past = all_future, which is impossible
-      exfalso
-      simp only [neg_G_neg_neg_bot, Formula.neg, Formula.some_past, G_neg_neg_bot] at h_eq
-      injection h_eq with h1 _
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h1
-    · -- neg_H_neg_neg_bot = P_top (both are Formula.neg H_neg_neg_bot)
-      -- So some_past chi = neg_H_neg_neg_bot = P_top
-      have h_P_top_eq : neg_H_neg_neg_bot = P_top := rfl
-      rw [h_P_top_eq] at h_eq
-      exact Or.inr h_eq
-    · -- F_top_deferral is a disjunction, not a P-formula
-      exfalso
-      simp only [F_top_deferral, Formula.or, Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
-    · -- P_top_deferral is a disjunction, not a P-formula
-      exfalso
-      simp only [P_top_deferral, Formula.or, Formula.some_past, Formula.neg] at h_eq
-      simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-        Formula.neg, Formula.top, Formula.or, Formula.and] at h_eq
+    all_goals (exfalso; simp only [Formula.some_past, Formula.top, F_top, Formula.some_future,
+        neg_neg_bot, G_neg_neg_bot, H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot,
+        F_top_deferral, P_top_deferral, Formula.neg, Formula.or,
+        Formula.all_future, Formula.all_past] at h_eq; cases h_eq)
 
 /--
 If F(chi) is in deferralClosure, then chi is in deferralClosure.
@@ -1608,11 +1523,8 @@ theorem F_inner_in_deferralClosure (phi chi : Formula)
       (subformulaClosure_subset_closureWithNeg phi h_chi_sub)
   · -- F(chi) = F_top = F(neg bot), so chi = neg bot
     have h_chi_eq : chi = Formula.neg Formula.bot := by
-      simp only [F_top, Formula.some_future, Formula.neg] at h_eq_F_top
-      -- h_eq_F_top : (chi.imp bot).all_future.imp bot = ((bot.imp bot).imp bot).all_future.imp bot
-      injection h_eq_F_top with h_inner _
-      injection h_inner with h_all
-      injection h_all
+      simp only [F_top, Formula.some_future, Formula.top] at h_eq_F_top
+      injection h_eq_F_top
     rw [h_chi_eq]
     exact neg_bot_mem_deferralClosure phi
 
@@ -1631,11 +1543,8 @@ theorem P_inner_in_deferralClosure (phi chi : Formula)
       (subformulaClosure_subset_closureWithNeg phi h_chi_sub)
   · -- P(chi) = P_top = P(neg bot), so chi = neg bot
     have h_chi_eq : chi = Formula.neg Formula.bot := by
-      simp only [P_top, Formula.some_past, Formula.neg] at h_eq_P_top
-      -- h_eq_P_top : (chi.imp bot).all_past.imp bot = ((bot.imp bot).imp bot).all_past.imp bot
-      injection h_eq_P_top with h_inner _
-      injection h_inner with h_all
-      injection h_all
+      simp only [P_top, Formula.some_past, Formula.top] at h_eq_P_top
+      injection h_eq_P_top
     rw [h_chi_eq]
     exact neg_bot_mem_deferralClosure phi
 
@@ -1654,12 +1563,9 @@ theorem deferral_of_F_in_deferralClosure (phi chi : Formula)
     exact deferral_of_F_in_closure phi chi h_cwn
   · -- F(chi) = F_top = F(neg bot), so chi = neg bot
     have h_chi_eq : chi = Formula.neg Formula.bot := by
-      simp only [F_top, Formula.some_future, Formula.neg] at h_eq_F_top
-      injection h_eq_F_top with h_inner _
-      injection h_inner with h_all
-      injection h_all
+      simp only [F_top, Formula.some_future, Formula.top] at h_eq_F_top
+      injection h_eq_F_top
     rw [h_chi_eq]
-    -- Formula.or (neg bot) F_top = F_top_deferral
     exact F_top_deferral_mem_deferralClosure phi
 
 /--
@@ -1675,10 +1581,8 @@ theorem deferral_of_P_in_deferralClosure (phi chi : Formula)
     exact deferral_of_P_in_closure phi chi h_cwn
   · -- P(chi) = P_top = P(neg bot), so chi = neg bot
     have h_chi_eq : chi = Formula.neg Formula.bot := by
-      simp only [P_top, Formula.some_past, Formula.neg] at h_eq_P_top
-      injection h_eq_P_top with h_inner _
-      injection h_inner with h_all
-      injection h_all
+      simp only [P_top, Formula.some_past, Formula.top] at h_eq_P_top
+      injection h_eq_P_top
     rw [h_chi_eq]
     -- Formula.or (neg bot) P_top = P_top_deferral
     exact P_top_deferral_mem_deferralClosure phi

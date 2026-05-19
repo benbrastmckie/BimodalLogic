@@ -79,8 +79,6 @@ def goalCategory (φ : Formula) : GoalCategory :=
   | .bot => .Bottom
   | .imp _ _ => .Implication
   | .box _ => .Box
-  | .all_past _ => .AllPast
-  | .all_future _ => .AllFuture
   | .untl _ _ => .Until
   | .snce _ _ => .Since
 

@@ -677,7 +677,7 @@ def heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Form
       match φ with
       | Formula.box _ =>
           weights.modalBase + weights.contextPenaltyWeight * Γ.length
-      | Formula.all_future _ =>
+      | Formula.untl _ _ =>
           weights.temporalBase + weights.contextPenaltyWeight * Γ.length
       | _ => weights.deadEnd
     else
@@ -846,7 +846,7 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
                   let (found, cache', visited', stats', visits') :=
                     bounded_search (box_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
-              | Formula.all_future ψ =>
+              | Formula.untl ψ _ =>
                   let (found, cache', visited', stats', visits') :=
                     bounded_search (future_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
