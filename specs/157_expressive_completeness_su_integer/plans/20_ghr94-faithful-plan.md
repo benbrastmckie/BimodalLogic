@@ -168,7 +168,15 @@ Phases 1, 2, 3 are already completed and can be considered Wave 1. Phase 4A and 
 
 ---
 
-### Phase 4A: Fix Path B -- Make `single_U_formula_separable_noax` Self-Contained (GHR94 10.2.5) [NOT STARTED]
+### Phase 4A: Fix Path B -- Make `single_U_formula_separable_noax` Self-Contained (GHR94 10.2.5) [BLOCKED]
+
+**BLOCKER** (Phase 4A):
+- **What failed**: The proposed `boxfree_sep_U_nesting_depth_le_one` helper is FALSE. A box-normalized separated formula can have arbitrarily high `U_nesting_depth` (e.g., `.untl (.untl p q) r` is syntactically separated with `U_nesting_depth = 2`). Therefore `lemma_10_2_6_self_contained` cannot be applied to `.snce C'' F''`.
+- **What was tried**: (1) Proving `U_nesting_depth <= 1` -- impossible, counterexample exists. (2) Using `no_S_nested_in_U_separable_param_jd` with JD IH callback -- works at JD >= 2 but fails at JD = 1 (callback formulas have JD <= 1 = current level). (3) Combined induction on `(U_nesting_depth, count_U_subformulas)` -- no decreasing measure for callback formulas. (4) Self-referential callback -- Lean prohibits circular theorem definitions. (5) Strengthening IH to `is_separable_with_U_type` (preserving `has_single_U_type` in the separated witness) -- most promising but requires proving `snce_single_U_depth_one_separable` output has `has_single_U_type`.
+- **Why it's stuck**: Paths A and B are MUTUALLY RECURSIVE. `single_U_formula_separable_noax` at depth >= 2 needs `no_S_nested_in_U → is_separable` (Path A), and `no_S_nested_in_U_separable_direct` at depth <= 1 needs `single_U_formula_separable_noax` (Path B). Lean cannot encode this without a well-founded combined measure or a strengthened IH.
+- **What is needed**: Research Solution A from the handoff: prove that `snce_single_U_depth_one_separable` output preserves `has_single_U_type`, then strengthen `single_U_formula_separable_noax` to prove `is_separable_preserving_U_type` (exists separated witness WITH single-U-type). This makes the theorem entirely self-contained.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+- **Handoff**: See `handoffs/phase-4A-blocker-20260519.md` for full analysis
 
 **Goal**: Eliminate the `all_separable` callback at line 2174 of `single_U_formula_separable_noax`. Make the depth >= 2 `.snce` case use the SAME approach as depth 1: IH on children, box-normalize, apply leaf case.
 
