@@ -241,10 +241,9 @@ theorem no_new_f_defects {M M' : Set Formula}
   have h_G_neg_in_g : Formula.all_future (Formula.neg α) ∈ g_content M := h_GG
   -- G(¬α) ∈ M'
   have h_G_neg_in' : Formula.all_future (Formula.neg α) ∈ M' := h_g_sub h_G_neg_in_g
-  -- F(α) = ¬G(¬α), so F(α) and G(¬α) cannot both be in M'
+  -- F(α) and G(¬α) cannot both be in an MCS
   intro h_F
-  exact set_consistent_not_both h_mcs'.1 (Formula.all_future (Formula.neg α))
-    h_G_neg_in' h_F
+  exact some_future_all_future_neg_absurd h_mcs' α h_F h_G_neg_in'
 
 /-- The resolved target is in M' (since it was included in the seed). -/
 theorem resolved_target_in_successor {M M' : Set Formula}

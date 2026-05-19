@@ -659,9 +659,8 @@ theorem c4_hard_case_G_neg_delta {A : Set Formula}
   have h_bx12 := theorem_in_mcs h_mcs
     (DerivationTree.axiom [] _ (Axiom.F_until_equiv δ))
   have h_neg_F := mcs_contrapositive_mem h_mcs h_bx12 h_neg_top_until
-  -- DNE: neg(neg(G(neg(delta)))) -> G(neg(delta))
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.Theorems.Perpetuity.dne δ.neg.all_future)) h_neg_F
+  -- ¬F(δ) → G(¬δ) via duality conversion
+  exact Bimodal.Metalogic.Bundle.neg_some_future_to_all_future_neg h_mcs δ h_neg_F
 
 /--
 Mirror of `c4_hard_case_G_neg_delta` for the Since direction (C4' hard case):
@@ -694,8 +693,8 @@ theorem c4'_hard_case_H_neg_delta {A : Set Formula}
   have h_bx12' := theorem_in_mcs h_mcs
     (DerivationTree.axiom [] _ (Axiom.P_since_equiv δ))
   have h_neg_P := mcs_contrapositive_mem h_mcs h_bx12' h_neg_top_since
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.Theorems.Perpetuity.dne δ.neg.all_past)) h_neg_P
+  -- ¬P(δ) → H(¬δ) via duality conversion
+  exact Bimodal.Metalogic.Bundle.neg_some_past_to_all_past_neg h_mcs δ h_neg_P
 
 /-! ## BurgessR3Maximal Existence and Properties
 

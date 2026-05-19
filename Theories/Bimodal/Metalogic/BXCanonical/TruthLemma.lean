@@ -232,17 +232,13 @@ theorem F_from_witness {w v : BXPoint} {ψ : Formula}
   -- By negation completeness: either G(¬ψ) ∈ w or ¬G(¬ψ) ∈ w
   -- If G(¬ψ) ∈ w: since bx_le w v, ¬ψ ∈ v. But ψ ∈ v, contradiction.
   by_contra h_not_F
-  have h_G_neg_psi : ψ.neg.all_future ∈ w.formulas := by
-    -- F(ψ) = ψ.neg.all_future.neg. ¬F(ψ) ∈ w means F(ψ).neg ∈ w.
-    -- F(ψ).neg = ψ.neg.all_future.neg.neg.
-    -- By DNE: ψ.neg.all_future.neg.neg → ψ.neg.all_future.
-    -- So ψ.neg.all_future ∈ w.
-    -- Actually: by negation completeness on ψ.neg.all_future:
-    cases SetMaximalConsistent.negation_complete w.is_mcs ψ.neg.all_future with
-    | inl h => exact h
-    | inr h =>
-      -- ψ.neg.all_future.neg ∈ w, which IS F(ψ) = ψ.some_future
-      exact absurd h h_not_F
+  -- ¬F(ψ) ∈ w → G(¬ψ) ∈ w via duality conversion
+  have h_neg_F : Formula.neg (Formula.some_future ψ) ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.some_future ψ) with
+    | inl h => exact absurd h h_not_F
+    | inr h => exact h
+  have h_G_neg_psi : ψ.neg.all_future ∈ w.formulas :=
+    Bimodal.Metalogic.Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
   -- G(¬ψ) ∈ w and bx_le w v: ¬ψ ∈ v
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_G_forward h_wv h_G_neg_psi
   -- But ψ ∈ v and ¬ψ ∈ v contradicts consistency
@@ -257,10 +253,13 @@ theorem P_from_witness {w v : BXPoint} {ψ : Formula}
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas) :
     Formula.some_past ψ ∈ w.formulas := by
   by_contra h_not_P
-  have h_H_neg_psi : ψ.neg.all_past ∈ w.formulas := by
-    cases SetMaximalConsistent.negation_complete w.is_mcs ψ.neg.all_past with
-    | inl h => exact h
-    | inr h => exact absurd h h_not_P
+  -- ¬P(ψ) ∈ w → H(¬ψ) ∈ w via duality conversion
+  have h_neg_P : Formula.neg (Formula.some_past ψ) ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.some_past ψ) with
+    | inl h => exact absurd h h_not_P
+    | inr h => exact h
+  have h_H_neg_psi : ψ.neg.all_past ∈ w.formulas :=
+    Bimodal.Metalogic.Bundle.neg_some_past_to_all_past_neg w.is_mcs ψ h_neg_P
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_H_forward h_vw h_H_neg_psi
   exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
 

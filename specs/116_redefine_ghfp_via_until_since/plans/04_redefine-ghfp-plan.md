@@ -224,13 +224,13 @@ And temp_4 (Gφ → GGφ) follows from F(F(¬φ)) → F(¬φ) via BX5/BX6.
 - [ ] 3.17. Verify: `lake build Bimodal.Metalogic.Soundness` and `lake build Bimodal.Metalogic.Decidability` compile
 
 **Group F — Algebraic metalogic**:
-- [ ] 3.18. Fix `Metalogic/Algebraic/ParametricTruthLemma.lean` (4 arms)
-- [ ] 3.19. Fix `Metalogic/Algebraic/RestrictedParametricTruthLemma.lean` (4 arms)
+- [x] 3.18. Fix `Metalogic/Algebraic/ParametricTruthLemma.lean` (4 arms) *(completed — removed all_future/all_past induction arms from both truth lemmas)*
+- [x] 3.19. Fix `Metalogic/Algebraic/RestrictedParametricTruthLemma.lean` (4 arms) *(completed — removed all_future/all_past induction arms from both truth lemmas)*
 - [ ] 3.20. Verify: `lake build Bimodal.Metalogic.Algebraic` compiles
 
 **Group G — BXCanonical**:
 - [x] 3.21. Fix `Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean` *(completed — removed 2 pattern arms)*
-- [ ] 3.22. Verify: `lake build Bimodal.Metalogic.BXCanonical` compiles
+- [ ] 3.22. Verify: `lake build Bimodal.Metalogic.BXCanonical` compiles *(in progress — Frame.lean and OrderedSeedConsistency.lean fixed; Realization.lean, TruthLemma.lean, RRelation.lean still have errors)*
 
 **Group H — WeakCanonical/Separation** (highest arm count — 260 total):
 - [ ] 3.23. Fix `WeakCanonical/Separation/Defs.lean` (36 arms) — syntactic predicates, purely structural

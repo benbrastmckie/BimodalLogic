@@ -164,11 +164,10 @@ theorem p_step_blocking_formulas_subset_u (u : Set Formula)
     p_step_blocking_formulas u ⊆ u := by
   intro χ h_block
   obtain ⟨φ, h_P_not, _, rfl⟩ := h_block
-  -- P(φ) ∉ u means ¬H(¬φ) ∉ u. By negation completeness, ¬¬H(¬φ) ∈ u.
-  -- By double negation elimination: H(¬φ) ∈ u.
+  -- P(φ) ∉ u → ¬P(φ) ∈ u → H(¬φ) ∈ u
   rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ) with h_in | h_neg_in
   · exact absurd h_in h_P_not
-  · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+  · exact neg_some_past_to_all_past_neg h_mcs φ h_neg_in
 
 /-!
 ## Restricted P-Step Blocking Formulas
@@ -615,11 +614,9 @@ theorem successor_p_step
       -- P(φ) ∈ constrained_successor (from h_φ_in_p_content, unfolding p_content)
       have h_P_in_succ : Formula.some_past φ ∈
           constrained_successor_from_seed u h_mcs h_F_top := h_φ_in_p_content
-      -- P(φ) = ¬H(¬φ) by definition (some_past φ = neg (all_past (neg φ)))
-      -- So we have both H(¬φ) and ¬H(¬φ) in constrained_successor, contradicting MCS consistency
+      -- P(φ) and H(¬φ) cannot both be in an MCS
       have h_mcs_succ := constrained_successor_from_seed_mcs u h_mcs h_F_top
-      exact False.elim (set_consistent_not_both h_mcs_succ.1
-        (Formula.all_past (Formula.neg φ)) h_in_succ h_P_in_succ)
+      exact False.elim (some_past_all_past_neg_absurd h_mcs_succ φ h_P_in_succ h_in_succ)
 
 /-!
 ## Phase 1: Predecessor Deferral Seed Definition
@@ -862,11 +859,10 @@ theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
   have h_blocking_in_u : f_step_blocking_formulas u ⊆ u := by
     intro χ h_block
     obtain ⟨φ, h_F_not, _, rfl⟩ := h_block
-    -- F(φ) ∉ u means ¬G(¬φ) ∉ u. By negation completeness, ¬¬G(¬φ) ∈ u.
-    -- By double negation elimination: G(¬φ) ∈ u.
+    -- F(φ) ∉ u → ¬F(φ) ∈ u → G(¬φ) ∈ u
     rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future φ) with h_in | h_neg_in
     · exact absurd h_in h_F_not
-    · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+    · exact neg_some_future_to_all_future_neg h_mcs φ h_neg_in
 
   -- Step 3: Combine to show predecessor_deferral_seed u ⊆ u
   have h_seed_subset_u : predecessor_deferral_seed u ⊆ u := by
@@ -1110,11 +1106,9 @@ theorem predecessor_f_step
       -- F(φ) ∈ predecessor (from h_φ_in_f_content, unfolding f_content)
       have h_F_in_pred : Formula.some_future φ ∈
           predecessor_from_deferral_seed u h_mcs h_P_top := h_φ_in_f_content
-      -- F(φ) = ¬G(¬φ) by definition (some_future φ = neg (all_future (neg φ)))
-      -- So we have both G(¬φ) and ¬G(¬φ) in predecessor, contradicting MCS consistency
+      -- F(φ) and G(¬φ) cannot both be in an MCS
       have h_mcs_pred := predecessor_from_deferral_seed_mcs u h_mcs h_P_top
-      exact False.elim (set_consistent_not_both h_mcs_pred.1
-        (Formula.all_future (Formula.neg φ)) h_in_pred h_F_in_pred)
+      exact False.elim (some_future_all_future_neg_absurd h_mcs_pred φ h_F_in_pred h_in_pred)
 
 /--
 The predecessor satisfies the Succ relation: Succ (predecessor) u.

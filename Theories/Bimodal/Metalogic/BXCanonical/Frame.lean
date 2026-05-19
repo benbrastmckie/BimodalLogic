@@ -157,9 +157,8 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   -- F(⊤) ∈ S by modus ponens
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ S :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  -- F(⊤) = ¬G(¬⊤), so ¬G(¬⊤) ∈ S
-  -- But G(¬⊤) ∈ S from above, contradicting consistency
-  exact set_consistent_not_both h_mcs.1 neg_top.all_future h_G_neg_top h_F_top
+  -- F(⊤) ∈ S and G(¬⊤) ∈ S contradict each other in an MCS
+  exact some_future_all_future_neg_absurd h_mcs (Formula.bot.imp Formula.bot) h_F_top h_G_neg_top
 
 /--
 h_content of an MCS is consistent.
@@ -192,7 +191,8 @@ theorem h_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ S :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
-  exact set_consistent_not_both h_mcs.1 neg_top.all_past h_H_neg_top h_P_top
+  -- P(⊤) ∈ S and H(¬⊤) ∈ S contradict each other in an MCS
+  exact some_past_all_past_neg_absurd h_mcs (Formula.bot.imp Formula.bot) h_P_top h_H_neg_top
 
 /-! ## Reflexivity (from BX1: G(φ) → φ) -/
 
