@@ -164,7 +164,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix Currently-Failing Files [NOT STARTED]
+### Phase 3: Fix Currently-Failing Files [PARTIAL]
 
 **Goal**: Fix the 5 currently-failing files (excluding Substitution.lean, fixed in Phase 1): SoundnessLemmas.lean (~100 errors), TemporalContent.lean (4 errors), TemporalCoherence.lean (2 errors), Bridge.lean (3 errors), Table.lean (2 errors). All failures stem from truth_at expansion mismatches and type mismatches from all_past/all_future no longer being constructors.
 

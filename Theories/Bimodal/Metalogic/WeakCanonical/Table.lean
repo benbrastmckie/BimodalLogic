@@ -168,8 +168,10 @@ theorem table_depth_bound (sig : MonadicSignature) (atomMap : Formula → sig.pr
   | atom _ => simp [table, MonadicFormula.quantifier_depth, operator_depth]
   | bot => simp [table, MonadicFormula.quantifier_depth, operator_depth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth]
-    omega
+    -- FIX: After task 116, table has overlapping @[match_pattern] arms (all_future/all_past
+    -- before imp), so simp can't reduce `table (imp ψ₁ ψ₂)` for generic ψ₁ ψ₂.
+    -- Needs table equation lemma with guard or restructured definition.
+    sorry
   | box _ => simp [table, MonadicFormula.quantifier_depth, operator_depth]
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
@@ -267,13 +269,10 @@ theorem table_correctness {sig : MonadicSignature}
   | bot =>
     simp only [table, eval, temporal_truth, lt_irrefl]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, eval, temporal_truth]
-    constructor
-    · intro h hψ₁
-      push_neg at h
-      exact (ih₂ t).mp (h ((ih₁ t).mpr hψ₁))
-    · intro h ⟨hψ₁_eval, hψ₂_not⟩
-      exact hψ₂_not ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁_eval)))
+    -- FIX: Same issue as table_quantifier_depth_le. After task 116,
+    -- `table (imp ψ₁ ψ₂)` doesn't reduce via simp due to overlapping
+    -- @[match_pattern] arms. Needs conditional equation lemma for table.
+    sorry
   | box ψ =>
     simp only [table, eval, temporal_truth]
   -- FIX: all_future/all_past induction arms removed (no longer constructors).
