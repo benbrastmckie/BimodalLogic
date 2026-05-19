@@ -1077,11 +1077,6 @@ private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
 /-- All dense-compatible axioms are locally valid on dense orders. -/
 private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
     (h_dc : h.isDenseCompatible) : is_valid D φ := by
-  -- FIX: Several cases (serial_future, serial_past, connect_future, connect_past,
-  -- temp_linearity, temp_linearity_past, F_until_equiv, P_since_equiv, modal_future,
-  -- density) fail because truth_at no longer unfolds temporal abbreviations (task 116).
-  sorry
-/- Original proof:
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
   | prop_s φ ψ => exact axiom_prop_s_valid φ ψ
@@ -1095,49 +1090,63 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
   | temp_4 ψ => exact axiom_temp_4_valid ψ
   | serial_future =>
+    -- ⊤ → F(⊤): Just need ∃ s > t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_future, Formula.neg, truth_at]
-    intro _ h_all_neg
+    simp only [Formula.some_future, Formula.neg, Formula.top, truth_at]
+    intro _
     obtain ⟨s, hts⟩ := exists_gt t
-    exact h_all_neg s hts (fun h => h)
+    exact ⟨s, hts, fun h => h, fun _ _ _ h => h⟩
   | serial_past =>
+    -- ⊤ → P(⊤): Just need ∃ s < t, ⊤.
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_past, Formula.neg, truth_at]
-    intro _ h_all_neg
+    simp only [Formula.some_past, Formula.neg, Formula.top, truth_at]
+    intro _
     obtain ⟨s, hst⟩ := exists_lt t
-    exact h_all_neg s hst (fun h => h)
+    exact ⟨s, hst, fun h => h, fun _ _ _ h => h⟩
   | left_mono_until_G φ χ ψ =>
-    -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
+    -- Direct: G(φ→χ) → untl(ψ,φ) → untl(ψ,χ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_G ⟨s, hts, h_ψs, h_guard⟩
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+    have h_G' := (Truth.future_iff Omega (φ.imp χ)).mp h_G
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G' r htr (h_guard r htr hrs)⟩
   | left_mono_since_H φ χ ψ =>
-    -- Direct: H(φ→χ) → snce(φ,ψ) → snce(χ,ψ)
+    -- Direct: H(φ→χ) → snce(ψ,φ) → snce(ψ,χ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_H ⟨s, hst, h_ψs, h_guard⟩
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+    have h_H' := (Truth.past_iff Omega (φ.imp χ)).mp h_H
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H' r hrt (h_guard r hsr hrt)⟩
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_G ⟨s, hts, h_φs, h_guard⟩
-    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
+    have h_G' := (Truth.future_iff Omega (φ.imp ψ)).mp h_G
+    exact ⟨s, hts, h_G' s hts h_φs, h_guard⟩
   | right_mono_since φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_H ⟨s, hst, h_φs, h_guard⟩
-    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
+    have h_H' := (Truth.past_iff Omega (φ.imp ψ)).mp h_H
+    exact ⟨s, hst, h_H' s hst h_φs, h_guard⟩
   | connect_future φ =>
+    -- φ → G(P(φ))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_past, Formula.neg]
-    intro h_φt s hts h_H_neg
-    exact h_H_neg t hts h_φt
+    simp only [truth_at]
+    intro h_φt
+    rw [Truth.future_iff]
+    intro s hts
+    rw [Truth.some_past_iff]
+    exact ⟨t, hts, h_φt⟩
   | connect_past φ =>
+    -- φ → H(F(φ))
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_future, Formula.neg]
-    intro h_φt s hst h_G_neg
-    exact h_G_neg t hst h_φt
+    simp only [truth_at]
+    intro h_φt
+    rw [Truth.past_iff]
+    intro s hst
+    rw [Truth.some_future_iff]
+    exact ⟨t, hst, h_φt⟩
   | enrichment_until φ ψ p =>
     -- Direct: p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))
     intro F M Omega _h_sc τ _h_mem t
@@ -1275,15 +1284,19 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
+    -- untl(ψ,φ) → F(ψ): just weaken guard to ⊤
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_future, Formula.neg]
-    intro ⟨s, hts, h_ψs, _⟩ h_G_neg
-    exact h_G_neg s hts h_ψs
+    simp only [truth_at, Formula.some_future, Formula.some_past,
+      Formula.neg, Formula.top]
+    intro ⟨s, hts, h_ψs, _⟩
+    exact ⟨s, hts, h_ψs, fun _ _ _ h => h⟩
   | since_P φ ψ =>
+    -- snce(ψ,φ) → P(ψ): just weaken guard to ⊤
     intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.some_past, Formula.neg]
-    intro ⟨s, hst, h_ψs, _⟩ h_H_neg
-    exact h_H_neg s hst h_ψs
+    simp only [truth_at, Formula.some_past, Formula.some_future,
+      Formula.neg, Formula.top]
+    intro ⟨s, hst, h_ψs, _⟩
+    exact ⟨s, hst, h_ψs, fun _ _ _ h => h⟩
   | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
@@ -1316,9 +1329,13 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (t - r)) h1 h2
   | discrete_propagate_fwd =>
+    -- U(T,bot) → G(U(T,bot)): propagate discrete step
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
+    intro h_U
+    rw [Truth.future_iff]
+    intro u htu
+    obtain ⟨s, hts, _h_top_s, h_guard⟩ := h_U
     refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
     have h1 : t < c - (u - t) := by
       conv_lhs => rw [(sub_sub_cancel u t).symm]
@@ -1328,9 +1345,13 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_propagate_bwd =>
+    -- U(T,bot) → H(U(T,bot)): propagate discrete step backward
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
+    intro h_U
+    rw [Truth.past_iff]
+    intro u hut
+    obtain ⟨s, hts, _h_top_s, h_guard⟩ := h_U
     refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
     have h1 : t < c - (u - t) := by
       conv_lhs => rw [(sub_sub_cancel u t).symm]
@@ -1348,7 +1369,7 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
--/
+
 /-! ## Rule Preservation for Local Validity
 
 Helper lemmas proving that inference rules preserve local validity.
