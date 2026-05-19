@@ -1,14 +1,14 @@
 ---
-next_project_number: 167
+next_project_number: 169
 repository_health:
   overall_score: 95
   production_readiness: near-publication
   last_assessed: 2026-05-18T23:45:00Z
 task_counts:
-  active: 15
+  active: 16
   completed: 124
   in_progress: 2
-  not_started: 11
+  not_started: 12
   abandoned: 0
   total: 139
 technical_debt:
@@ -27,14 +27,14 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-18. Revised after archival of 28 tasks. 15 active tasks remain.*
+*Updated 2026-05-19. 16 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → formula refactor (G/H via U/S) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 116, 21, 95, 130, 131, 156, 161, 162 | -- | completeness, formula-refactor, meta |
+| 1 | 116, 21, 95, 130, 131, 156, 161, 162, 168 | -- | completeness, formula-refactor, meta, proof-system |
 | 2 | 125, 127, 128, 157, 164, 165 | 116 | completeness, extensions, algebraic, decidability |
 | 3 | 155 | 157 | completeness (Reynolds pipeline) |
 
@@ -48,6 +48,10 @@ technical_debt:
     └─ 116 [COMPLETED] — Remove G and H as primitive constructors; define via U and S
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
+
+### Proof System Architecture
+
+168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
 
 ### Formula Refactor
 
@@ -79,6 +83,15 @@ technical_debt:
 
 
 ## Tasks
+
+### 168. Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.
+
+---
 
 ### 165. Establish semantic finite model property for TM bimodal logic
 - **Effort**: large
