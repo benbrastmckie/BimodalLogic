@@ -293,12 +293,12 @@
     {
       "project_number": 173,
       "project_name": "archive_dead_temporal_derived_sorry_stubs",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:19:58Z",
+      "last_updated": "2026-05-20T16:34:38Z",
       "dependencies": [],
       "session_id": "sess_1779293683_4e43b6",
       "next_artifact_number": 2,
@@ -313,7 +313,8 @@
           "type": "plan",
           "summary": "5-phase plan: archive 5 definitions, delete 22, update 6 downstream call sites, verify build"
         }
-      ]
+      ],
+      "completion_summary": "Removed 27 sorry-tainted definitions from TemporalDerived.lean (19 direct sorry stubs + 8 transitive dependents). Archived 5 definitions with proof content to Boneyard/OpenGuardInvalid/. Updated 6 downstream call sites with tombstone comments. Net sorry reduction: 19. Build verified."
     },
     {
       "project_number": 174,

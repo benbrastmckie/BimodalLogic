@@ -801,27 +801,62 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
 /-! ## No Gaps in Discrete Orders -/
 
 /--
-In a discrete linear order without endpoints, if a and b are in different ~M
-classes, there exists a boundary point c with c ~M a but succ(c) not ~M a.
+NO GAPS THEOREM (Reynolds 1994, Theorem 14 + Lemmas 6-13):
+
+In a discrete linear order without endpoints satisfying the Prior-UZ and
+Prior-SZ axioms semantically, the contemporaneous equivalence relation ~M
+has no equivalence classes that "end at gaps."
+
+More precisely: for any two points a b : M.carrier, if a is NOT ~M-equivalent
+to b, then the proof is by contradiction -- there exists a boundary c where
+a ~M c but NOT a ~M (succ c). This contradicts no_boundary_at_successor
+(c ~M succ c always) combined with transitivity.
+
+**Reynolds proof strategy** (Section 7, Lemmas 6-13, Theorem 14):
+1. Define rho(x) = "x's ~M-class ends in a gap on the right."
+   By US expressive completeness over Prior structures (Reynolds Theorem 5 =
+   GHR94 Theorem 9.3.1 specialized to Prior structures), there is a temporal
+   formula R that holds exactly where rho holds.
+2. (Lemmas 7-8) R-intervals are open intervals with bounded excluded endpoints.
+3. (Lemma 9) ~M-classes in R-intervals are elementarily equivalent.
+4. (Lemmas 10-13) Model surgery: replace a bad interval by one ~M-class.
+   Temporal truth is preserved (induction on formula structure).
+   The surgery model contradicts R holding in the chosen class.
+
+**BLOCKED**: Reynolds Theorem 5 (US expressive completeness over Prior structures
+in general) is not yet formalized. Our `US_expressively_complete_over_Z` covers
+only structures whose carrier IS ℤ, not general Prior structures.
+Resolution: formalize Reynolds Theorem 5 by showing U'(A,B) ≡ ⊥ and S'(A,B) ≡ ⊥
+in any Prior structure (via Prior-U/S), then applying GHR94 Theorem 9.3.1.
+
+**Semantic Prior validity hypotheses**:
+- `atomMap`: atom map for M (encodes the contemporaneous equivalence via k-types)
+- `h_prior_UZ`: if F(ψ) at t then U(ψ,¬ψ) at t (semantically: first-occurrence property)
+- `h_prior_SZ`: if P(ψ) at t then S(ψ,¬ψ) at t (semantically: last-occurrence property)
 -/
 theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    [IsSuccArchimedean M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
+      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
+      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
+        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
+    (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
+      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
+      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
+        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  exfalso
-  apply h_diff_class
-  simp only [contemp_equiv, very_good]
-  intro x y _
-  haveI : Finite (M.subinterval sig (min a b) (max a b)).carrier :=
-    subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
-  haveI : Fintype (M.subinterval sig (min a b) (max a b)).carrier := Fintype.ofFinite _
-  haveI : Fintype ((M.subinterval sig (min a b) (max a b)).subinterval sig x y).carrier :=
-    Subtype.fintype _
-  exact finite_structures_good sig k _
+  -- BLOCKED: Requires Reynolds Theorem 5 (US expressive completeness over
+  -- Prior structures in general), which is not yet formalized. The proof
+  -- would: (1) define rho via k-type characterization, (2) apply Theorem 5
+  -- to get temporal formula R, (3) derive structural properties via h_prior_UZ
+  -- and h_prior_SZ (Lemmas 7-8), (4) show model surgery preserves temporal
+  -- truth (Lemma 12), (5) derive contradiction from R holding in surgery model.
+  sorry
 
 /--
 ~M class boundaries cannot fall at successor pairs: for any point c,

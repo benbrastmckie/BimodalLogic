@@ -45,31 +45,8 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical
 
-/-! ## Helper: F(ψ) from ψ ∈ w
-
-Any formula in an MCS has its F (some_future) also in the MCS.
-Proof: if G(¬ψ) ∈ w, then ¬ψ ∈ w (BX1), contradicting ψ ∈ w.
-So G(¬ψ) ∉ w, hence F(ψ) = ¬G(¬ψ) ∈ w. -/
-
-theorem F_of_mem {w : BXPoint} {ψ : Formula}
-    (h : ψ ∈ w.formulas) : Formula.some_future ψ ∈ w.formulas := by
-  -- F(ψ) from ψ ∈ w. Show G(¬ψ) ∉ w, then derive contradiction.
-  by_contra h_not_F
-  -- ¬F(ψ) ∈ w by negation completeness
-  have h_neg_F : (Formula.some_future ψ).neg ∈ w.formulas :=
-    (SetMaximalConsistent.negation_complete w.is_mcs _).resolve_left h_not_F
-  -- G(¬ψ) ∈ w from ¬F(ψ) via duality bridge
-  have h_G_neg : Formula.all_future (Formula.neg ψ) ∈ w.formulas :=
-    Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
-  -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
-  -- F_of_mem no longer follows from BX1. Sorry'd (non-critical Quasimodel path).
-  sorry
-
-/-- P(ψ) ∈ w when ψ ∈ w. Dual of F_of_mem.
-Under irreflexive semantics, BX1' (H(φ) → φ) is removed. Sorry'd (non-critical). -/
-theorem P_of_mem {w : BXPoint} {ψ : Formula}
-    (h : ψ ∈ w.formulas) : Formula.some_past ψ ∈ w.formulas := by
-  sorry
+-- F_of_mem, P_of_mem: archived to Boneyard/BX1DependentCode/ (task 130).
+-- These required BX1 (G(phi)->phi), removed under irreflexive semantics (task 113).
 
 /-! ## Helper: F(ψ) from bx_le w v and ψ ∈ v
 

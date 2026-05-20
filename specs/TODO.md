@@ -158,7 +158,7 @@ After 155 completes:
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Research**: [173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md]

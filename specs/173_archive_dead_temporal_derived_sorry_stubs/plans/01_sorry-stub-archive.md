@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Dead Sorry Stubs from TemporalDerived.lean
 
 - **Task**: 173 - Archive 19 dead sorry stubs from TemporalDerived.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_sorry-stub-audit.md
