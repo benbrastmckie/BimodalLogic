@@ -251,16 +251,145 @@ theorem proper_separation_theorem_int (phi : Formula) :
     is_properly_separable phi :=
   all_properly_separable phi
 
+/-! ## Atom-Preserving Separation via Atom Restriction
+
+The key insight: rather than tracking `formula_atoms` through the entire separation
+hierarchy, we take any separated witness and restrict its atoms to those of the
+original formula. Atoms outside `formula_atoms φ` cannot affect the truth of φ
+(by `int_truth_depends_only_on_atoms`), so replacing them with ⊤ preserves the
+equivalence while ensuring atom containment. -/
+
+/-- Replace all atoms NOT in the allowed set with ⊤ (imp bot bot).
+    This removes "extra" atoms from a formula while preserving its structure. -/
+def restrict_atoms (φ : Formula) (allowed : Set Atom) : Formula :=
+  match φ with
+  | .atom b => if b ∈ allowed then .atom b else .imp .bot .bot
+  | .bot => .bot
+  | .imp ψ₁ ψ₂ => .imp (restrict_atoms ψ₁ allowed) (restrict_atoms ψ₂ allowed)
+  | .box ψ => .box (restrict_atoms ψ allowed)
+  | .untl ψ₁ ψ₂ => .untl (restrict_atoms ψ₁ allowed) (restrict_atoms ψ₂ allowed)
+  | .snce ψ₁ ψ₂ => .snce (restrict_atoms ψ₁ allowed) (restrict_atoms ψ₂ allowed)
+
+/-- Atoms of `restrict_atoms` are contained in the allowed set. -/
+theorem formula_atoms_restrict_subset (φ : Formula) (allowed : Set Atom) :
+    formula_atoms (restrict_atoms φ allowed) ⊆ allowed := by
+  induction φ with
+  | atom b =>
+    simp only [restrict_atoms]; split
+    · next h => intro x hx; simp only [formula_atoms, Set.mem_singleton_iff] at hx; subst hx; exact h
+    · exact Set.empty_subset _
+  | bot => exact Set.empty_subset _
+  | imp ψ₁ ψ₂ ih1 ih2 => simp only [restrict_atoms, formula_atoms]; exact Set.union_subset ih1 ih2
+  | box ψ ih => exact ih
+  | untl ψ₁ ψ₂ ih1 ih2 => simp only [restrict_atoms, formula_atoms]; exact Set.union_subset ih1 ih2
+  | snce ψ₁ ψ₂ ih1 ih2 => simp only [restrict_atoms, formula_atoms]; exact Set.union_subset ih1 ih2
+
+private theorem restrict_atoms_S_free (φ : Formula) (allowed : Set Atom)
+    (h : is_S_free φ = true) : is_S_free (restrict_atoms φ allowed) = true := by
+  induction φ with
+  | atom _ => simp only [restrict_atoms]; split <;> simp [is_S_free]
+  | bot => rfl
+  | imp ψ₁ ψ₂ ih1 ih2 => simp [is_S_free] at h ⊢; exact ⟨ih1 h.1, ih2 h.2⟩
+  | box ψ ih => simp [is_S_free] at h ⊢; exact ih h
+  | untl ψ₁ ψ₂ ih1 ih2 => simp [is_S_free] at h ⊢; exact ⟨ih1 h.1, ih2 h.2⟩
+  | snce _ _ => simp [is_S_free] at h
+
+private theorem restrict_atoms_U_free (φ : Formula) (allowed : Set Atom)
+    (h : is_U_free φ = true) : is_U_free (restrict_atoms φ allowed) = true := by
+  induction φ with
+  | atom _ => simp only [restrict_atoms]; split <;> simp [is_U_free]
+  | bot => rfl
+  | imp ψ₁ ψ₂ ih1 ih2 => simp [is_U_free] at h ⊢; exact ⟨ih1 h.1, ih2 h.2⟩
+  | box ψ ih => simp [is_U_free] at h ⊢; exact ih h
+  | untl _ _ => simp [is_U_free] at h
+  | snce ψ₁ ψ₂ ih1 ih2 => simp [is_U_free] at h ⊢; exact ⟨ih1 h.1, ih2 h.2⟩
+
+/-- `restrict_atoms` preserves `is_properly_separated`. -/
+theorem restrict_atoms_preserves_properly_separated (φ : Formula) (allowed : Set Atom)
+    (h : is_properly_separated φ = true) :
+    is_properly_separated (restrict_atoms φ allowed) = true := by
+  induction φ with
+  | atom _ => simp only [restrict_atoms]; split <;> simp [is_properly_separated]
+  | bot => exact h
+  | imp ψ₁ ψ₂ ih1 ih2 =>
+    simp [is_properly_separated] at h ⊢; exact ⟨ih1 h.1, ih2 h.2⟩
+  | box _ => simp only [restrict_atoms, is_properly_separated]
+  | untl ψ₁ ψ₂ _ _ =>
+    simp [is_properly_separated] at h ⊢
+    rw [← s_free_eq_future_only] at h ⊢
+    exact ⟨restrict_atoms_S_free ψ₁ allowed h.1, restrict_atoms_S_free ψ₂ allowed h.2⟩
+  | snce ψ₁ ψ₂ _ _ =>
+    simp [is_properly_separated] at h ⊢
+    rw [← u_free_eq_past_only] at h ⊢
+    exact ⟨restrict_atoms_U_free ψ₁ allowed h.1, restrict_atoms_U_free ψ₂ allowed h.2⟩
+
+/-- In a model where all non-allowed atoms are universally true,
+    `restrict_atoms` agrees semantically with the original formula. -/
+private theorem restrict_atoms_truth (ψ : Formula) (allowed : Set Atom)
+    (M : IntStructure) (t : ℤ) (h_true : ∀ a, a ∉ allowed → M.val a = Set.univ) :
+    int_truth M t (restrict_atoms ψ allowed) ↔ int_truth M t ψ := by
+  induction ψ generalizing t with
+  | atom b =>
+    simp only [restrict_atoms]; split
+    · rfl
+    · next h => simp [int_truth, h_true b h]
+  | bot => rfl
+  | imp c d ih1 ih2 =>
+    simp only [restrict_atoms, int_truth]; exact Iff.imp (ih1 t) (ih2 t)
+  | box _ => rfl
+  | untl c d ih1 ih2 =>
+    simp only [restrict_atoms, int_truth]; constructor
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s).mp hc, fun r hr1 hr2 => (ih2 r).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s).mpr hc, fun r hr1 hr2 => (ih2 r).mpr (hd r hr1 hr2)⟩
+  | snce c d ih1 ih2 =>
+    simp only [restrict_atoms, int_truth]; constructor
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 s).mp hc, fun r hr1 hr2 => (ih2 r).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 s).mpr hc, fun r hr1 hr2 => (ih2 r).mpr (hd r hr1 hr2)⟩
+
+/-- Restricting atoms of ψ to the allowed set preserves `int_equiv` with φ,
+    provided φ's atoms are contained in the allowed set.
+
+    The proof constructs a model M' where non-allowed atoms are universally true.
+    Since φ's atoms are all allowed, φ has the same truth in M and M'. Since
+    `restrict_atoms ψ` has atoms ⊆ allowed, it also has the same truth in M and M'.
+    In M', `restrict_atoms ψ` agrees with ψ (non-allowed atoms are true in both).
+    Composing these equivalences gives the result. -/
+theorem int_equiv_restrict_atoms {φ ψ : Formula} (hequiv : int_equiv φ ψ)
+    (allowed : Set Atom) (h_covers : formula_atoms φ ⊆ allowed) :
+    int_equiv φ (restrict_atoms ψ allowed) := by
+  intro M t
+  let M' : IntStructure := ⟨fun b => if b ∈ allowed then M.val b else Set.univ⟩
+  have h_true : ∀ a, a ∉ allowed → M'.val a = Set.univ := fun a ha => by simp [M', ha]
+  have h_phi : int_truth M t φ ↔ int_truth M' t φ :=
+    int_truth_depends_only_on_atoms φ M M' t (fun b hb => by simp [M', h_covers hb])
+  have h_restrict_models : int_truth M t (restrict_atoms ψ allowed) ↔
+      int_truth M' t (restrict_atoms ψ allowed) :=
+    int_truth_depends_only_on_atoms (restrict_atoms ψ allowed) M M' t
+      (fun b hb => by simp [M', formula_atoms_restrict_subset ψ allowed hb])
+  have h_restrict : int_truth M' t (restrict_atoms ψ allowed) ↔ int_truth M' t ψ :=
+    restrict_atoms_truth ψ allowed M' t h_true
+  exact h_phi.trans ((hequiv M' t).trans (h_restrict.symm.trans h_restrict_models.symm))
+
 /-- Atom-preserving proper separation: the separated equivalent uses only atoms
     from the original formula. This is a strengthening of `is_properly_separable`
     needed for the quantifier elimination step in Theorem 9.3.1.
 
-    Mathematically, this holds because the GHR94 separation procedure (Lemmas 10.2.3-10.2.8)
-    manipulates temporal structure without introducing new atomic propositions.
-    This axiom will be eliminated by strengthening the hierarchy to track
-    `formula_atoms` through the separation procedure. -/
-axiom proper_separation_preserves_atoms (φ : Formula) :
+    The proof takes any separated witness from `all_formulas_separable` and
+    restricts its atoms to `formula_atoms φ` via `restrict_atoms`. Since atoms
+    outside `formula_atoms φ` cannot affect φ's truth (by `int_truth_depends_only_on_atoms`),
+    replacing them with ⊤ preserves the equivalence. -/
+theorem proper_separation_preserves_atoms (φ : Formula) :
     ∃ ψ : Formula, is_properly_separated ψ = true ∧ int_equiv φ ψ ∧
-    formula_atoms ψ ⊆ formula_atoms φ
+    formula_atoms ψ ⊆ formula_atoms φ := by
+  obtain ⟨ψ₀, hψ₀_sep, hψ₀_equiv⟩ := all_formulas_separable φ
+  exact ⟨restrict_atoms ψ₀ (formula_atoms φ),
+    restrict_atoms_preserves_properly_separated ψ₀ (formula_atoms φ)
+      ((syn_sep_eq_proper_sep ψ₀) ▸ hψ₀_sep),
+    int_equiv_restrict_atoms hψ₀_equiv (formula_atoms φ) Set.Subset.rfl,
+    formula_atoms_restrict_subset ψ₀ (formula_atoms φ)⟩
 
 end Bimodal.Metalogic.WeakCanonical.Separation

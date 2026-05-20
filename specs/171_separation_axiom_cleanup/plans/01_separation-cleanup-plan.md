@@ -120,22 +120,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Atom Preservation (Group B) [NOT STARTED]
+### Phase 3: Prove Atom Preservation (Group B) [COMPLETED]
 
 **Goal**: Prove `proper_separation_preserves_atoms` as a theorem by strengthening the hierarchy to track `formula_atoms` through the separation procedure.
 
 **Tasks**:
-- [ ] Prove `formula_atoms_replace_box_with_top_subset`: `formula_atoms (replace_box_with_top phi) ⊆ formula_atoms phi` (structural induction in TemporalClosure.lean or FormulaOps.lean)
-- [ ] Prove `formula_atoms_expand_temporal_eq`: `formula_atoms (expand_temporal phi) = formula_atoms phi` (structural induction in TemporalClosure.lean)
-- [ ] Prove `formula_atoms_subst_formula_subset`: `formula_atoms (subst_formula psi p r) ⊆ (formula_atoms psi \ {p}) ∪ formula_atoms r` (structural induction in FormulaOps.lean)
-- [ ] Prove `formula_atoms_abstract_untl_subset`: `formula_atoms (abstract_untl phi A B p) ⊆ formula_atoms phi ∪ {p}` (structural induction in Hierarchy.lean)
-- [ ] Prove case output atom containment for case1_psi through case8_psi elimination cases (in Eliminations.lean or NormalForm.lean)
-- [ ] Strengthen `subst_in_separated_separable` (or create `subst_in_separated_separable_atoms` variant) to return atom-preserving witnesses
-- [ ] Strengthen `no_S_nested_sep` (or create atom-tracking variant) to return `formula_atoms psi ⊆ formula_atoms phi`
-- [ ] Strengthen `all_formulas_separable_aux` (or create `all_formulas_separable_aux_atoms` variant) to thread atom tracking through the JD/structural double induction
-- [ ] Create `all_formulas_separable_atoms`: `∃ psi, is_syntactically_separated psi ∧ int_equiv phi psi ∧ formula_atoms psi ⊆ formula_atoms phi`
-- [ ] Replace `axiom proper_separation_preserves_atoms` with theorem using `all_formulas_separable_atoms` + `syn_sep_eq_proper_sep`
-- [ ] Run `lake build` to verify
+- [ ] Prove `formula_atoms_replace_box_with_top_subset` *(deviation: skipped -- not needed with atom restriction approach)*
+- [ ] Prove `formula_atoms_expand_temporal_eq` *(deviation: skipped -- not needed with atom restriction approach)*
+- [ ] Prove `formula_atoms_subst_formula_subset` *(deviation: skipped -- not needed with atom restriction approach)*
+- [ ] Prove `formula_atoms_abstract_untl_subset` *(deviation: skipped -- not needed with atom restriction approach)*
+- [ ] Prove case output atom containment *(deviation: skipped -- not needed with atom restriction approach)*
+- [ ] Strengthen `subst_in_separated_separable` *(deviation: skipped -- used atom restriction instead of hierarchy strengthening)*
+- [ ] Strengthen `no_S_nested_sep` *(deviation: skipped -- used atom restriction instead of hierarchy strengthening)*
+- [ ] Strengthen `all_formulas_separable_aux` *(deviation: skipped -- used atom restriction instead of hierarchy strengthening)*
+- [ ] Create `all_formulas_separable_atoms` *(deviation: altered -- proved via restrict_atoms post-hoc approach instead of hierarchy strengthening)*
+- [x] Replace `axiom proper_separation_preserves_atoms` with theorem using atom restriction approach
+- [x] Run `lake build` to verify
+- [x] *(added)* Prove `int_truth_depends_only_on_atoms` in Defs.lean
+- [x] *(added)* Define `restrict_atoms` and prove `formula_atoms_restrict_subset`, `restrict_atoms_preserves_properly_separated`, `restrict_atoms_truth`, `int_equiv_restrict_atoms`
 
 **Timing**: 9 hours
 

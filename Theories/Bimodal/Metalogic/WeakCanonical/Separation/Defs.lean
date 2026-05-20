@@ -465,6 +465,40 @@ def no_S_nested_in_U : Formula -> Prop
   simp only [Formula.all_future, Formula.neg, Formula.some_future, Formula.top,
     no_S_nested_in_U, is_S_free, Bool.and_true, and_true]
 
+/-! ## Semantic Atom Dependence -/
+
+/-- Truth of a formula depends only on atoms in `formula_atoms`.
+    If two models agree on all atoms appearing in φ, then φ has the same truth value. -/
+theorem int_truth_depends_only_on_atoms (φ : Formula) (M₁ M₂ : IntStructure) (t : ℤ)
+    (h : ∀ a ∈ formula_atoms φ, M₁.val a = M₂.val a) :
+    int_truth M₁ t φ ↔ int_truth M₂ t φ := by
+  induction φ generalizing t with
+  | atom a =>
+    simp only [formula_atoms, Set.mem_singleton_iff] at h
+    simp only [int_truth]; rw [h a rfl]
+  | bot => rfl
+  | imp c d ih1 ih2 =>
+    simp only [int_truth]; exact Iff.imp
+      (ih1 t (fun a ha => h a (Set.mem_union_left _ ha)))
+      (ih2 t (fun a ha => h a (Set.mem_union_right _ ha)))
+  | box _ => rfl
+  | untl c d ih1 ih2 =>
+    simp only [int_truth]; constructor
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mp hc,
+        fun r hr1 hr2 => (ih2 r (fun a ha => h a (Set.mem_union_right _ ha))).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hts, hc, hd⟩
+      exact ⟨s, hts, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mpr hc,
+        fun r hr1 hr2 => (ih2 r (fun a ha => h a (Set.mem_union_right _ ha))).mpr (hd r hr1 hr2)⟩
+  | snce c d ih1 ih2 =>
+    simp only [int_truth]; constructor
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mp hc,
+        fun r hr1 hr2 => (ih2 r (fun a ha => h a (Set.mem_union_right _ ha))).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mpr hc,
+        fun r hr1 hr2 => (ih2 r (fun a ha => h a (Set.mem_union_right _ ha))).mpr (hd r hr1 hr2)⟩
+
 /-! ## Predicate Equivalence: Syntactic vs. Proper Separation
 
 At the 6-constructor Formula level, `is_S_free = is_future_only` and
