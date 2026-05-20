@@ -102,6 +102,259 @@ private theorem base_case_N_eq {sig : MonadicSignature}
       simp [hk2, show ¬(2 : Nat) = 0 from by omega,
             show ¬(2 : Nat) = 1 from by omega]
 
+/-! ## GHR93 Theorem 6: Inductive Step Infrastructure
+
+The inductive step of Theorem 6 converts a forward (4+3n)-round strategy
+into a backward (n+1)-round strategy. The proof introduces key quantities
+from the GHR93 argument:
+
+- **d**: A "split point" in N_r that separates the interval [x',y'] based on
+  where the forward strategy's type pattern changes. Formally, d is defined
+  using the interval type A = X_{(a_{n-1}, a_n)} and a continuation formula C.
+
+- **c**: The corresponding split point in M_r, obtained by applying the
+  forward strategy to d.
+
+- **σ, τ**: Backward strategies on sub-intervals [x',d]/[x,c] and
+  [d,y']/[c,y], obtained by restricting the master forward strategy and
+  applying the inductive hypothesis (*)_n.
+
+The proof then splits into four cases based on the nature of a_n (Spoiler's
+last selection in the backward game). -/
+
+/-- Properties of the split points c, d that are needed for the case analysis.
+
+    These encapsulate the key facts established in the GHR93 proof about
+    the relationship between c, d, the forward strategy, and the IH.
+    All properties are sorry'd pending the full infimum/strategy-restriction
+    infrastructure.
+
+    The record bundles:
+    - Interval containment: d ∈ [x',y'], c ∈ [x,y]
+    - Position bound: d ≤ a_n (Spoiler's last pick is past the split)
+    - Sub-interval backward strategies σ, τ from the IH -/
+structure SplitPointProps {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (n : Nat)
+    (x y : ExtendedCarrier M atomMap r)
+    (x' y' : ExtendedCarrier N atomMap r)
+    (c : ExtendedCarrier M atomMap r)
+    (d : ExtendedCarrier N atomMap r)
+    (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r) where
+  /-- c is in [x, y] -/
+  hc_interval : inClosedInterval x y c
+  /-- d is in [x', y'] -/
+  hd_interval : inClosedInterval x' y' d
+  /-- The split point d is at or below a_n -/
+  hd_le_an : d ≤ a_bwd ⟨n, by omega⟩
+  /-- x ≤ c (for sub-interval well-formedness) -/
+  hxc : x ≤ c
+  /-- c ≤ y (for sub-interval well-formedness) -/
+  hcy : c ≤ y
+  /-- x' ≤ d (for sub-interval well-formedness) -/
+  hx'd : x' ≤ d
+  /-- d ≤ y' (for sub-interval well-formedness) -/
+  hdy' : d ≤ y'
+  /-- Backward strategy σ on the left sub-interval:
+      Duplicator wins G_{n;r}(N, x'd; M, xc) -/
+  sigma : ghr93_duplicator_wins N M atomMap n r x' d x c
+  /-- Backward strategy τ on the right sub-interval:
+      Duplicator wins G_{n;r}(N, dy'; M, cy) -/
+  tau : ghr93_duplicator_wins N M atomMap n r d y' c y
+
+/-- Obtain the split point properties. This is the core setup lemma for
+    the inductive step, combining infimum computation, strategy restriction,
+    and IH application.
+
+    Sorry'd: requires infimum infrastructure on ExtendedCarrier and
+    strategy restriction lemmas (restricting a forward G_{4+3n;r} strategy
+    to sub-intervals and applying the IH to get backward strategies). -/
+private theorem obtain_split_point_props {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (_h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (_ih : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' →
+           ghr93_duplicator_wins N M atomMap n r x' y' x y)
+    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
+    (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r)
+    (_ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
+    ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
+      SplitPointProps n x y x' y' c d a_bwd := by
+  -- The full construction:
+  -- 1. Compute A = X_{(a_{n-1}, a_n)} (interval type before a_n)
+  -- 2. Define C from A (continuation formula)
+  -- 3. d = inf{t ∈ [x',y'] : C holds on (t,y') in N_r}
+  -- 4. c = the point in M_r that the forward strategy maps d to
+  -- 5. Restrict the forward strategy to [x,c] and [c,y]
+  -- 6. Apply IH to get σ and τ
+  --
+  -- Requires: infimum computation on ExtendedCarrier, strategy restriction,
+  -- and the IH for sub-interval strategies.
+  --
+  -- For now, use x and x' as trivial split points to establish the
+  -- type-level structure. The properties are sorry'd.
+  refine ⟨x, x', ?_⟩
+  exact {
+    hc_interval := ⟨le_refl x, hxy⟩
+    hd_interval := ⟨le_refl x', hx'y'⟩
+    hd_le_an := by sorry
+    hxc := le_refl x
+    hcy := hxy
+    hx'd := le_refl x'
+    hdy' := hx'y'
+    sigma := by sorry
+    tau := by sorry
+  }
+
+/-! ### Case I: The Split Case
+
+When at least one of Spoiler's backward selections a_0,...,a_n lies below
+the split point d, Duplicator uses a "split" strategy: she applies the
+backward strategy σ (on [x',d]/[x,c]) to selections below d, and the
+backward strategy τ (on [d,y']/[c,y]) to selections above d. The responses
+are combined into a single (n+1)-element response.
+
+This is the simplest case because it doesn't construct new StaviFormulas.
+It reduces to combining two backward strategies, each of which was obtained
+from the IH.
+
+Note: In Case I, the "split" means we partition the n+1 selections into
+those ≤ d (at most n of them) and those > d (at most n of them). Since
+σ and τ each handle n-round backward games, and at most n elements fall
+on each side, round monotonicity (Lemma 10) allows the sub-strategies to
+handle their portions. -/
+
+/-- **Case I helper**: Given backward strategies σ on [x',d]/[x,c] and
+    τ on [d,y']/[c,y], if Spoiler's n+1 selections split across d
+    (at least one below d and at least one at or above d), construct
+    Duplicator's combined response.
+
+    The key insight is that among n+1 selections, if some are below d
+    and some are at or above d, then each side has at most n selections.
+    Since σ and τ handle n-round games, round monotonicity applies.
+
+    Sorry'd: The combination of σ and τ responses requires careful index
+    manipulation to merge two partial responses into a single (n+1)-element
+    response while preserving order type, gap/point agreement, and formula
+    agreement. This is the content of Phase 4C.3. -/
+private theorem ghr93_case_I {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
+    (props : SplitPointProps n x y x' y' c d a_bwd)
+    (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
+    (h_split : ∃ i : Fin (n + 1), a_bwd i < d) :
+    ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a'_resp i)) ∧
+      ∀ (b_sp : M.carrier),
+        inClosedInterval x y (extendPoint b_sp) →
+        ∃ (b_resp : N.carrier),
+          inClosedInterval x' y' (extendPoint b_resp) ∧
+          ghr93_winning_condition (n + 1)
+            (game_tuple x' y' a_bwd b_resp)
+            (game_tuple x y a'_resp b_sp) := by
+  -- Case I proof sketch (GHR93):
+  -- 1. Partition a_bwd into L = {i : a_bwd i < d} and R = {i : a_bwd i ≥ d}
+  -- 2. |L| ≤ n and |R| ≤ n (since |L| + |R| = n+1 and both are non-empty)
+  -- 3. Apply σ to the L-elements (padded to n elements) to get responses in [x,c]
+  -- 4. Apply τ to the R-elements (padded to n elements) to get responses in [c,y]
+  -- 5. Merge the responses preserving order
+  -- 6. For Round 2: if b_sp ∈ [x,c], use σ's Round 2 handler;
+  --                  if b_sp ∈ [c,y], use τ's Round 2 handler
+  -- 7. Verify the combined winning condition
+  --
+  -- The main technical challenge is the index manipulation for merging
+  -- two partial selections into one (n+1)-element response, and showing
+  -- that the merged response satisfies the winning condition by combining
+  -- the individual winning conditions from σ and τ.
+  sorry
+
+/-! ### Cases II-IV: Tail Cases
+
+When ALL of Spoiler's backward selections a_0,...,a_n lie in (d,y'),
+the proof depends on the nature of a_n (the last selection):
+
+- **Case II** (a_n is a point): Use standard Until U(B, A) where
+  B = X_{a_n} is the type at a_n. Duplicator finds a matching point
+  in M via the Until witness.
+
+- **Case III** (a_n is a left-defined gap): Use Stavi Until U'(B, A)
+  via the gap detection formula left(B, D). Duplicator finds a matching
+  gap in M via Lemma 9.
+
+- **Case IV** (a_n is a gap not left-defined): Use right(B, D) gap
+  detection. Duplicator finds a matching gap in M defined on the right.
+
+These cases are sorry'd for Phase 4C.4-4C.6. -/
+
+/-- **Cases II-IV helper**: When all selections lie in (d,y'), construct
+    Duplicator's response based on the nature of a_n.
+
+    Sorry'd for Phase 4C.4-4C.6. -/
+private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
+    (props : SplitPointProps n x y x' y' c d a_bwd)
+    (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
+    (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i) :
+    ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a'_resp i)) ∧
+      ∀ (b_sp : M.carrier),
+        inClosedInterval x y (extendPoint b_sp) →
+        ∃ (b_resp : N.carrier),
+          inClosedInterval x' y' (extendPoint b_resp) ∧
+          ghr93_winning_condition (n + 1)
+            (game_tuple x' y' a_bwd b_resp)
+            (game_tuple x y a'_resp b_sp) := by
+  -- Case II:  IsPoint (a_bwd ⟨n, by omega⟩) → use Until U(B, A)
+  -- Case III: IsGap (a_bwd ⟨n, by omega⟩) ∧ (left-defined) → use left(B, D)
+  -- Case IV:  IsGap (a_bwd ⟨n, by omega⟩) ∧ (not left-defined) → use right(B, D)
+  sorry
+
+/-! ### Assembly: The Inductive Step -/
+
+/-- **GHR93 Theorem 6, inductive step**: combines the setup (split points
+    c, d and sub-interval strategies σ, τ) with the 4-case analysis.
+
+    This theorem is factored out of `ghr93_forward_to_backward` to keep
+    the main proof clean and allow each case to be addressed independently. -/
+private theorem ghr93_inductive_step {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n r : Nat)
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (ih : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' →
+          ghr93_duplicator_wins N M atomMap n r x' y' x y)
+    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y') :
+    ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
+  -- Unfold the backward game
+  unfold ghr93_duplicator_wins
+  intro a_bwd ha_bwd
+  -- Obtain split points c, d and their properties
+  obtain ⟨c, d, props⟩ :=
+    obtain_split_point_props hxy hx'y' h_pt ih h_fwd a_bwd ha_bwd
+  -- Case split: does any selection fall strictly below d?
+  by_cases h_split : ∃ i : Fin (n + 1), a_bwd i < d
+  · -- Case I: at least one selection below d (the "split" case)
+    exact ghr93_case_I props ha_bwd h_split
+  · -- Cases II-IV: all selections are at or above d
+    push_neg at h_split
+    exact ghr93_cases_II_III_IV props ha_bwd h_split
+
 /-! ## GHR93 Theorem 6: Forward-to-Backward Transfer -/
 
 /-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
@@ -115,8 +368,14 @@ private theorem base_case_N_eq {sig : MonadicSignature}
     The proof is by induction on n. The base case (n=0) uses the 1-round
     forward strategy with the Spoiler's point as the selection, extracts
     a matching point via gap_point_agreement, and transfers the winning
-    condition via the base_case embedding. The inductive step is sorry'd
-    for Phase 4C.2-4C.7. -/
+    condition via the base_case embedding. The inductive step delegates to
+    `ghr93_inductive_step`, which establishes split points c (in M_r) and
+    d (in N_r), obtains sub-interval backward strategies σ and τ via the
+    IH, and splits into four cases:
+      Case I:   ∃ i, a_i < d (split case — sorry'd, Phase 4C.3)
+      Case II:  all a_i ≥ d, a_n is a point (sorry'd, Phase 4C.4)
+      Case III: all a_i ≥ d, a_n is a left-defined gap (sorry'd, Phase 4C.5)
+      Case IV:  all a_i ≥ d, a_n is a gap not left-defined (sorry'd, Phase 4C.6) -/
 theorem ghr93_forward_to_backward {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
@@ -179,13 +438,21 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     -- Inductive step: (*)_n → (*)_{n+1}
     -- Given: Duplicator wins G_{4+3n; r}(M, xy; N, x'y')
     -- Goal: Duplicator wins G_{n+1; r}(N, x'y'; M, xy)
-    -- This is the heart of the GHR93 proof with 4 cases:
-    --   Case I: a_0 < d (the "split" case)
-    --   Case II: a_n is a point
-    --   Case III: a_n is a left-defined gap
-    --   Case IV: a_n is a gap, not left-defined
-    -- Sorry'd for Phase 4C.2-4C.7.
-    sorry
+    --
+    -- GHR93 Theorem 6 proof structure:
+    --   Setup: Define A (interval type), C (continuation formula),
+    --          c (infimum in M), d (infimum in N),
+    --          σ (backward strategy on [x,c]), τ (backward strategy on [c,y])
+    --   Case I:   ∃ i, a_i < d (the "split" case)
+    --   Case II:  all a_i in [d,y'], a_n is a point
+    --   Case III: all a_i in [d,y'], a_n is a left-defined gap
+    --   Case IV:  all a_i in [d,y'], a_n is a gap not left-defined
+    --
+    -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
+    have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
+    rw [h_rounds] at h
+    -- Apply the inductive step helper to keep the proof organized
+    exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt _ih h
 
 /-! ## Rank-Varying Theorem 6
 

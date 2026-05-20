@@ -352,9 +352,10 @@ Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward str
   Round 2 challenge using the 1-round forward strategy. (~100-150 lines)
   *(deviation: altered -- (1) Theorem 6 stated at uniform rank r instead of rank r+4n forward / r backward, to avoid rank coercion infrastructure between ExtendedCarrier types; uniform-rank version suffices with Lemma 10; (2) Added h_pt hypothesis for nonemptiness of N-points in [x',y'] needed for base case Round 2 trigger; (3) Also closed Lemma 10 sorry in EFGames.lean as prerequisite; (4) Added winning condition symmetry lemmas and base case game_tuple embedding helpers)*
 
-- [ ] **Task 4C.2**: Theorem 6 setup for the inductive step. Given forward G_{4+3n; r+4(n+1)},
+- [x] **Task 4C.2**: Theorem 6 setup for the inductive step. Given forward G_{4+3n; r+4(n+1)},
   define A, C, c, d and the backward strategies σ, τ on sub-intervals [x,c] and [c,y]
   (obtained from the IH). State the four-case exhaustion. (~100-150 lines)
+  *(deviation: altered -- (1) Factored inductive step into ghr93_inductive_step helper theorem for clean separation; (2) Split point properties bundled in SplitPointProps structure with sorry'd construction via obtain_split_point_props, since full infimum/strategy-restriction infrastructure not yet available; (3) Case I and Cases II-IV factored into separate sorry'd theorems ghr93_case_I and ghr93_cases_II_III_IV; (4) Case split is on ∃ i, a_bwd i < d vs ∀ i, d ≤ a_bwd i rather than specific position of a_0; ~175 lines added)*
 
 - [ ] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
   (d,y'). Combine using Lemma 10. Handle Round 2 challenge. (~150-250 lines)
