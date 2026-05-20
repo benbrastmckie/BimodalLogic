@@ -43,7 +43,7 @@ technical_debt:
 ### Completeness
 
 
-155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+155 [RESEARCHED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
   └─ 157 [COMPLETED] — Formalize expressive completeness of {S,U} over integer time
     └─ 116 [COMPLETED] — Remove G and H as primitive constructors; define via U and S
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
@@ -90,7 +90,7 @@ technical_debt:
 
 ### 171. Eliminate remaining separation axioms and clean up post-157 artifacts
 - **Effort**: medium (15-22 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 157
@@ -206,13 +206,14 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
 - **Research**:
   - [specs/155_reynolds_pipeline_activation/reports/01_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/02_team-research.md]
+  - [specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
