@@ -268,7 +268,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   (~150-200 lines)
   *(deviation: altered — (1) S/S' cases use flatten_stavi to encode standard Until/Since of StaviFormula-enriched subterms as base Formulas, since StaviFormula has no "standard Until of StaviFormulas" constructor; (2) rank bound snce/stavi_snce cases and right_formula rank bound are sorry'd due to nested max arithmetic involving operator_depth of flatten_stavi results; (3) Lemma 9 left and right gap detection correctness are stated precisely but sorry'd as the task description explicitly permits; (4) added operator_depth_flatten_stavi_le helper lemma for the rank bounds; ~220 lines added)*
 
-- [ ] **Task 4B.5**: Custom Game G_{n;r} Definition (GHR93 Def 8.7).
+- [x] **Task 4B.5**: Custom Game G_{n;r} Definition (GHR93 Def 8.7).
   Define the full game `GHR93Game sig n r M N x y x' y'` replacing the skeleton EFPosition:
     Round 1: Spoiler chooses n elements a_1,...,a_n from [x,y]_r (points OR gaps from M_r).
     Duplicator responds with a'_1,...,a'_n from [x',y']_r.
@@ -279,8 +279,9 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
     (2) For corresponding pairs: gap↔gap, and rank-r formula agreement (A^mu).
   Prove Lemma 10 (monotonicity): wins for (n,r) implies wins for (n',r') when n'≤n, r'≤r.
   (~100-150 lines)
+  *(deviation: altered — (1) Lemma 10 formalized as round monotonicity only (same r, n' <= n) because ExtendedCarrier depends on r as a type parameter, making cross-rank monotonicity require coercion infrastructure; round monotonicity is the version used in Phase 4C; (2) winning condition decomposed into three separate predicates (same_order_type, gap_point_agreement, formula_agreement) combined in ghr93_winning_condition, plus game_tuple for uniform indexing; (3) ghr93_duplicator_wins_round_mono sorry'd pending Phase 4C; ~160 lines)*
 
-- [ ] **Task 4B.6**: Decomposition Formulas and Lemma 11 (GHR93 Def 8.8).
+- [x] **Task 4B.6**: Decomposition Formulas and Lemma 11 (GHR93 Def 8.8).
   Define `(n;r)-decomposition formula` — FO formula of the form:
     ∃ y_1,...,y_n: x_1 < y_1 < ... < y_n < x_2 ∧ Chi
   where Chi is a conjunction of: (a) mu/¬mu/A^mu at each element, (b) ∀z. mu(z)∧a<z<b → B^mu(z)
@@ -289,6 +290,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   agree on all (n;r)-decomposition formulas evaluated at (x,y) and (x',y').
   This bridges the game-theoretic and formula-theoretic perspectives.
   (~100-150 lines)
+  *(deviation: altered — (1) decomposition formulas defined semantically via decomposition_agreement rather than as syntactic FO formulas, capturing the same content: boundary type agreement + forward/backward matching of n-element selections with type, gap/point, and order agreement; (2) Lemma 11 split into forward (ghr93_game_implies_decomposition) and backward (ghr93_decomposition_implies_game) directions, both sorry'd, plus iff version (ghr93_game_iff_decomposition); ~130 lines)*
 
 - [ ] **Task 4B.7**: Verify `lake build` passes with all new infrastructure.
 

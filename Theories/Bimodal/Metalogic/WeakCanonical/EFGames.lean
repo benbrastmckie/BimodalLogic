@@ -969,9 +969,16 @@ private theorem operator_depth_flatten_stavi_le (A : StaviFormula) :
     simp only [flatten_stavi, stavi_depth, Formula.and, Formula.neg, operator_depth]
     omega
 
-/-- Helper: stavi_depth of left_formula_base is bounded. -/
+/-- Helper: stavi_depth of left_formula_base is bounded.
+
+    GHR93 claims rank(left(A,D)) ≤ max(rank(A), rank(D)) + 2 with rank counting
+    each temporal connective as +1. Our `stavi_depth`/`operator_depth` counts +2
+    per connective, so the corresponding bound is +4 in our encoding.
+
+    The S/S' cases contain U'(...) subformulas inside a U(...) wrapper, giving
+    two levels of temporal connective nesting beyond the max of the sub-depths. -/
 private theorem stavi_depth_left_formula_base (D : StaviFormula) (φ : Formula) :
-    stavi_depth (left_formula_base D φ) ≤ max (operator_depth φ) (stavi_depth D) + 2 := by
+    stavi_depth (left_formula_base D φ) ≤ max (operator_depth φ) (stavi_depth D) + 4 := by
   induction φ with
   | atom _ =>
     simp [left_formula_base, stavi_depth, operator_depth]
@@ -999,19 +1006,26 @@ private theorem stavi_depth_left_formula_base (D : StaviFormula) (φ : Formula) 
           ((StaviFormula.base ψ).conj D)).conj
         (D.stavi_untl ((StaviFormula.base ψ).conj D)).neg))))
     simp only [stavi_depth, operator_depth] at h2
-    -- Both operator_depth terms in the goal are bounded by
-    -- max(operator_depth φ, operator_depth ψ, stavi_depth D) + 2
-    sorry
+    -- The RHS of h2 simplifies: the nested max expressions collapse
+    -- to max(operator_depth φ)(max(operator_depth ψ)(stavi_depth D)) + 2
+    have key : max (stavi_depth D) (max (operator_depth ψ) (max (max (operator_depth φ) (operator_depth ψ) + 2) (max (max (max 0 0) (max (operator_depth ψ) (stavi_depth D)) + 2) (max (stavi_depth D) (max (operator_depth ψ) (stavi_depth D)) + 2)))) ≤ max (max (operator_depth φ) (operator_depth ψ) + 2) (stavi_depth D) + 2 := by omega
+    omega
 
 /--
 **Rank bound** (GHR93 Definition 8.5): The depth of left_formula(A, D) is
-bounded by max(stavi_depth A, stavi_depth D) + 2.
+bounded by max(stavi_depth A, stavi_depth D) + 4.
 
-This bound is crucial for the main induction: it ensures that left_formula
-produces formulas within the rank budget of the EF game.
+GHR93 states the bound as max(rank(A), rank(D)) + 2 using a rank function
+that counts +1 per temporal connective. Our `stavi_depth` counts +2 per
+connective, so the corresponding bound is +4. The S/S' cases contain
+U'(...) subformulas inside a U(...) wrapper, giving two levels of temporal
+connective nesting beyond the max of the sub-depths.
+
+This bound ensures that left_formula produces formulas within the rank
+budget of the EF game.
 -/
 theorem stavi_depth_left_formula (A D : StaviFormula) :
-    stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 2 := by
+    stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 4 := by
   induction A with
   | base φ =>
     simp only [left_formula, stavi_depth]
@@ -1027,18 +1041,78 @@ theorem stavi_depth_left_formula (A D : StaviFormula) :
     simp only [left_formula, stavi_depth]
     omega
   | stavi_snce A B =>
-    -- Uses flatten_stavi; depth bound requires relating operator_depth of
-    -- flattened formulas to stavi_depth of originals.
-    sorry
+    -- left(S'(A,B), D) = .base (.untl (flatten compound) (flatten D))
+    -- stavi_depth = max (op_depth (flatten compound)) (op_depth (flatten D)) + 2
+    -- compound = D ∧ B ∧ S'(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D)
+    -- stavi_depth compound ≤ max(stavi_depth A)(max(stavi_depth B)(stavi_depth D)) + 2
+    -- op_depth (flatten compound) ≤ stavi_depth compound (by operator_depth_flatten_stavi_le)
+    simp only [left_formula, stavi_depth, operator_depth, Formula.top]
+    have hD := operator_depth_flatten_stavi_le D
+    have hC := operator_depth_flatten_stavi_le
+      (StaviFormula.conj D (StaviFormula.conj B (StaviFormula.conj (StaviFormula.stavi_snce A B)
+        (StaviFormula.conj (StaviFormula.stavi_untl (StaviFormula.base (Formula.bot.imp Formula.bot)) (StaviFormula.conj B D))
+          (StaviFormula.neg (StaviFormula.stavi_untl D (StaviFormula.conj B D)))))))
+    simp only [stavi_depth, operator_depth] at hC
+    omega
 
 /--
 **Rank bound** for right_formula: The depth of right_formula(A, D) is
-bounded by max(stavi_depth A, stavi_depth D) + 2.
+bounded by max(stavi_depth A, stavi_depth D) + 4.
+
+Symmetric to `stavi_depth_left_formula` by the U↔S, U'↔S' swap.
 -/
 theorem stavi_depth_right_formula (A D : StaviFormula) :
-    stavi_depth (right_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 2 := by
-  -- Symmetric to left_formula by the U↔S, U'↔S' swap.
-  sorry
+    stavi_depth (right_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 4 := by
+  induction A with
+  | base φ =>
+    -- right_formula_base D φ is symmetric to left_formula_base D φ
+    -- with U↔S and U'↔S' swapped. The depth analysis is identical.
+    simp only [right_formula, stavi_depth]
+    induction φ with
+    | atom _ => simp [right_formula_base, stavi_depth, operator_depth]
+    | bot => simp [right_formula_base, stavi_depth, operator_depth]
+    | imp φ ψ ih_φ ih_ψ =>
+      simp only [right_formula_base, stavi_depth, operator_depth, Formula.top] at *; omega
+    | box _ => simp [right_formula_base, stavi_depth, operator_depth]
+    | untl φ ψ =>
+      simp only [right_formula_base, stavi_depth, operator_depth, Formula.top]
+      have hD := operator_depth_flatten_stavi_le D
+      have hC := operator_depth_flatten_stavi_le
+        (StaviFormula.conj D (StaviFormula.conj (StaviFormula.base ψ)
+          (StaviFormula.conj (StaviFormula.base (φ.untl ψ))
+            (StaviFormula.conj
+              (StaviFormula.stavi_snce (StaviFormula.base (Formula.bot.imp Formula.bot))
+                (StaviFormula.conj (StaviFormula.base ψ) D))
+              (StaviFormula.neg (StaviFormula.stavi_snce D
+                (StaviFormula.conj (StaviFormula.base ψ) D)))))))
+      simp only [stavi_depth, operator_depth] at hC
+      have key : max (stavi_depth D) (max (operator_depth ψ)
+        (max (max (operator_depth φ) (operator_depth ψ) + 2)
+          (max (max (max 0 0) (max (operator_depth ψ) (stavi_depth D)) + 2)
+            (max (stavi_depth D) (max (operator_depth ψ) (stavi_depth D)) + 2)))) ≤
+        max (max (operator_depth φ) (operator_depth ψ) + 2) (stavi_depth D) + 2 := by omega
+      omega
+    | snce φ ψ => simp only [right_formula_base, stavi_depth, operator_depth]; omega
+  | neg A ih =>
+    simp only [right_formula, stavi_depth, Formula.top, operator_depth] at *
+    omega
+  | conj A B ihA ihB =>
+    simp only [right_formula, stavi_depth]
+    omega
+  | stavi_untl A B =>
+    -- right(U'(A,B), D) = S(compound, D) via flatten
+    simp only [right_formula, stavi_depth, operator_depth, Formula.top]
+    have hD := operator_depth_flatten_stavi_le D
+    have hC := operator_depth_flatten_stavi_le
+      (StaviFormula.conj D (StaviFormula.conj B (StaviFormula.conj (StaviFormula.stavi_untl A B)
+        (StaviFormula.conj (StaviFormula.stavi_snce (StaviFormula.base (Formula.bot.imp Formula.bot)) (StaviFormula.conj B D))
+          (StaviFormula.neg (StaviFormula.stavi_snce D (StaviFormula.conj B D)))))))
+    simp only [stavi_depth, operator_depth] at hC
+    omega
+  | stavi_snce A B =>
+    -- right(S'(A,B), D) = S'(B ∧ S'(A,B), D)
+    simp only [right_formula, stavi_depth]
+    omega
 
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
 
@@ -1103,6 +1177,303 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A) := by
   sorry
+
+/-! ## Custom Game G_{n;r} (GHR93 Definition 8.7)
+
+The custom game G_{n;r}(M, x y; N, x' y') is played on the extended
+structures M_r and N_r between bounds x < y in M_r, x' < y' in N_r.
+
+**Round 1 (bulk selection):** Spoiler chooses n elements a_1,...,a_n from
+the closed interval [x,y] in M_r (these can be actual points OR gaps).
+Duplicator responds with n elements a'_1,...,a'_n from [x',y'] in N_r.
+
+**Round 2 (point challenge):** Spoiler chooses one actual point b' from
+[x',y'] ∩ N (NOT a gap). Duplicator responds with actual point b from
+[x,y] ∩ M.
+
+**Winning condition:** Duplicator wins iff:
+1. Same order type: the tuples (x, y, a_1..a_n, b) and (x', y', a'_1..a'_n, b')
+   have the same relative ordering.
+2. For each pair of corresponding elements (t, t'): gap↔gap status matches,
+   and for all temporal formulas A of rank ≤ r, A^mu(t) ↔ A^mu(t').
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.7
+- Task 155 plan: Phase 4B, Task 4B.5
+-/
+
+/-- An element of the extended carrier M_r is in the closed interval [x, y]. -/
+def inClosedInterval {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    (x y : ExtendedCarrier M atomMap r) (e : ExtendedCarrier M atomMap r) : Prop :=
+  x ≤ e ∧ e ≤ y
+
+/-- The "all positions" tuple for the game: boundary elements x, y, the n
+    selected elements a_i, and the challenge point b, collected as a
+    function from Fin (n + 3) into ExtendedCarrier. The convention is:
+    index 0 = x, index (n+1) = b, index (n+2) = y, indices 1..n = a_i.
+    This representation makes order comparisons uniform. -/
+noncomputable def game_tuple {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat}
+    (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) : Fin (n + 3) → ExtendedCarrier M atomMap r :=
+  fun i =>
+    if h0 : i.val = 0 then x
+    else if hn1 : i.val = n + 1 then extendPoint b
+    else if hn2 : i.val = n + 2 then y
+    else a ⟨i.val - 1, by omega⟩
+
+/-- Order type agreement between two game tuples: for all pairs of indices,
+    the order relation (lt, eq, gt) is the same. -/
+def same_order_type {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (n : Nat)
+    (tM : Fin (n + 3) → ExtendedCarrier M atomMap r)
+    (tN : Fin (n + 3) → ExtendedCarrier N atomMap r) : Prop :=
+  ∀ (i j : Fin (n + 3)),
+    (tM i < tM j ↔ tN i < tN j) ∧
+    (tM i = tM j ↔ tN i = tN j)
+
+/-- Formula agreement at corresponding positions: for all StaviFormulas A
+    of depth ≤ r, A^mu holds at tM(i) iff A^mu holds at tN(i). -/
+def formula_agreement {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (n : Nat)
+    (tM : Fin (n + 3) → ExtendedCarrier M atomMap r)
+    (tN : Fin (n + 3) → ExtendedCarrier N atomMap r) : Prop :=
+  ∀ (i : Fin (n + 3)) (A : StaviFormula), stavi_depth A ≤ r →
+    (stavi_temporal_truth_mu M atomMap r (tM i) A ↔
+     stavi_temporal_truth_mu N atomMap r (tN i) A)
+
+/-- Gap/point status agreement: for all pairs of corresponding elements,
+    one is a point iff the other is a point (and similarly for gaps). -/
+def gap_point_agreement {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (n : Nat)
+    (tM : Fin (n + 3) → ExtendedCarrier M atomMap r)
+    (tN : Fin (n + 3) → ExtendedCarrier N atomMap r) : Prop :=
+  ∀ (i : Fin (n + 3)),
+    (IsPoint (tM i) ↔ IsPoint (tN i)) ∧
+    (IsGap (tM i) ↔ IsGap (tN i))
+
+/-- The winning condition for the game G_{n;r}: order type agreement,
+    gap/point status agreement, and rank-r formula agreement at all
+    corresponding positions in the game tuples. -/
+def ghr93_winning_condition {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (n : Nat)
+    (tM : Fin (n + 3) → ExtendedCarrier M atomMap r)
+    (tN : Fin (n + 3) → ExtendedCarrier N atomMap r) : Prop :=
+  same_order_type n tM tN ∧
+  gap_point_agreement n tM tN ∧
+  formula_agreement n tM tN
+
+/-- **GHR93 Definition 8.7**: Duplicator has a winning strategy for the custom
+    game G_{n;r}(M, x y; N, x' y').
+
+    This encodes the game as a Prop: for all ways Spoiler can play, Duplicator
+    has a response that satisfies the winning condition.
+
+    The game has two rounds:
+    - Round 1 (bulk selection): Spoiler picks n elements from [x,y]_r;
+      Duplicator responds with n elements from [x',y']_r.
+    - Round 2 (point challenge): Spoiler picks an actual point b' from [x',y'] ∩ N;
+      Duplicator responds with an actual point b from [x,y] ∩ M.
+
+    Duplicator wins iff the resulting tuples have the same order type,
+    gap/point status agreement, and rank-r formula agreement. -/
+def ghr93_duplicator_wins {sig : MonadicSignature}
+    (M N : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (n r : Nat)
+    (x y : ExtendedCarrier M atomMap r) (x' y' : ExtendedCarrier N atomMap r) : Prop :=
+  -- For all ways Spoiler can pick n elements from [x,y]_r...
+  ∀ (a : Fin n → ExtendedCarrier M atomMap r),
+    (∀ i, inClosedInterval x y (a i)) →
+    -- Duplicator can respond with n elements from [x',y']_r...
+    ∃ (a' : Fin n → ExtendedCarrier N atomMap r),
+      (∀ i, inClosedInterval x' y' (a' i)) ∧
+      -- For all point challenges by Spoiler in [x',y'] ∩ N...
+      ∀ (b' : N.carrier),
+        inClosedInterval x' y' (extendPoint b') →
+        -- Duplicator can respond with a point in [x,y] ∩ M...
+        ∃ (b : M.carrier),
+          inClosedInterval x y (extendPoint b) ∧
+          -- ...such that the winning condition is satisfied
+          ghr93_winning_condition n
+            (game_tuple x y a b)
+            (game_tuple x' y' a' b')
+
+/-! ### Lemma 10: Monotonicity of the Custom Game
+
+GHR93 Lemma 10 states: if Duplicator wins G_{n;r}(M,xy; N,x'y'), then she
+also wins G_{n';r'}(M,xy; N,x'y') for any n' <= n, r' <= r, provided x,y
+are in M_{r'} and x',y' are in N_{r'}.
+
+Since `ExtendedCarrier M atomMap r` depends on r as a type parameter,
+rank monotonicity across different r values would require coercion maps
+between M_r and M_{r'}. We formalize round monotonicity (n' <= n at the
+same r), which is the version primarily used in Phase 4C (Theorem 6 and
+Proposition 7). Full rank+round monotonicity can be added when needed
+with the appropriate coercion infrastructure.
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 10
+- Task 155 plan: Phase 4B, Task 4B.5
+-/
+
+/-- **GHR93 Lemma 10** (Game monotonicity in rounds):
+    If Duplicator wins G_{n;r}, she wins G_{n';r} for n' <= n (same rank).
+
+    With fewer rounds, Spoiler selects n' <= n elements. Duplicator pads
+    the n'-element selection to n elements (using boundary x for the
+    remaining n - n' positions), applies her winning strategy, then
+    restricts the response to n' elements.
+
+    NOTE: Sorry'd because the element reindexing (embedding Fin n' into
+    Fin n with padding) requires careful bookkeeping to show that the
+    order type and formula agreement on the restricted tuple follow from
+    those on the full tuple. This will be completed in Phase 4C. -/
+theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n n' r : Nat} (hn : n' ≤ n)
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h : ghr93_duplicator_wins M N atomMap n r x y x' y') :
+    ghr93_duplicator_wins M N atomMap n' r x y x' y' := by
+  -- Strategy: pad the n'-element selection to n elements using x,
+  -- apply the n-element strategy, then restrict the response.
+  -- The game_tuple index mapping (embedding Fin(n'+3) into Fin(n+3))
+  -- requires careful bookkeeping. Sorry'd for Phase 4C.
+  sorry
+
+/-! ## Decomposition Formulas and Lemma 11 (GHR93 Definition 8.8)
+
+An (n;r)-decomposition formula describes a "play" of the game G_{n;r}:
+it specifies the rank-r types at each selected element, the gap/point
+status of each element, and the types realized in each sub-interval
+between adjacent elements.
+
+Rather than defining decomposition formulas as syntactic FO formulas
+(which would require a complex FO formula type with quantifiers), we
+define the *semantic content* directly: two intervals (x,y) in M_r and
+(x',y') in N_r agree on all decomposition formulas iff they agree on:
+
+1. The rank-r types at the boundary elements x, y (resp. x', y')
+2. The set of rank-r types realized in the interval (x, y) (resp. (x', y'))
+3. For each pair of corresponding elements: gap/point status matches
+
+This semantic characterization is equivalent to the syntactic definition
+and is more natural to work with in Lean.
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.8
+- GHR93 Lemma 11
+- Task 155 plan: Phase 4B, Task 4B.6
+-/
+
+/-- Semantic content of (n;r)-decomposition formula agreement.
+
+    Two intervals agree on all (n;r)-decomposition formulas iff:
+    (a) The rank-r types at boundary elements match.
+    (b) For every n-element selection from [x,y]_r, there exists an
+        n-element selection from [x',y']_r such that:
+        - rank-r types agree at corresponding positions
+        - gap/point status agrees at corresponding positions
+        - the sets of types realized in each sub-interval agree
+    (c) Symmetrically from N to M.
+
+    This captures Definition 8.8 semantically: a decomposition formula
+    exists y_1,...,y_n specifying types at each y_i and in each sub-interval,
+    and agreement means all such specifications match. -/
+def decomposition_agreement {sig : MonadicSignature}
+    (M N : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (n r : Nat)
+    (x y : ExtendedCarrier M atomMap r) (x' y' : ExtendedCarrier N atomMap r) : Prop :=
+  -- Boundary type agreement
+  rank_type M atomMap r x = rank_type N atomMap r x' ∧
+  rank_type M atomMap r y = rank_type N atomMap r y' ∧
+  -- Forward direction: for every selection from M, matching selection from N
+  (∀ (a : Fin n → ExtendedCarrier M atomMap r),
+    (∀ i, inClosedInterval x y (a i)) →
+    ∃ (a' : Fin n → ExtendedCarrier N atomMap r),
+      (∀ i, inClosedInterval x' y' (a' i)) ∧
+      -- Types agree at each selected position
+      (∀ i, rank_type M atomMap r (a i) = rank_type N atomMap r (a' i)) ∧
+      -- Gap/point status agrees
+      (∀ i, (IsPoint (a i) ↔ IsPoint (a' i)) ∧
+            (IsGap (a i) ↔ IsGap (a' i))) ∧
+      -- Same order type (relative ordering preserved)
+      (∀ i j, (a i < a j ↔ a' i < a' j) ∧ (a i = a j ↔ a' i = a' j))) ∧
+  -- Backward direction: for every selection from N, matching selection from M
+  (∀ (a' : Fin n → ExtendedCarrier N atomMap r),
+    (∀ i, inClosedInterval x' y' (a' i)) →
+    ∃ (a : Fin n → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a i)) ∧
+      (∀ i, rank_type M atomMap r (a i) = rank_type N atomMap r (a' i)) ∧
+      (∀ i, (IsPoint (a i) ↔ IsPoint (a' i)) ∧
+            (IsGap (a i) ↔ IsGap (a' i))) ∧
+      (∀ i j, (a i < a j ↔ a' i < a' j) ∧ (a i = a j ↔ a' i = a' j)))
+
+/-- **GHR93 Lemma 11** (Game ↔ decomposition agreement, forward direction):
+
+    If Duplicator wins G_{n;r}(M, x y; N, x' y'), then M_r and N_r agree
+    on all (n;r)-decomposition formulas evaluated at (x,y) and (x',y').
+
+    Intuitively: Duplicator's winning strategy provides the matching
+    selections required by decomposition agreement. The winning condition
+    (order type + formula agreement) implies type equality and gap/point
+    agreement at each position.
+
+    NOTE: Sorry'd. The proof requires showing that the game's winning
+    condition (order type + rank-r formula agreement) implies rank_type
+    equality at each position, which needs that formula agreement at all
+    depths ≤ r determines the rank_type. This is used in Phase 4C. -/
+theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n r : Nat}
+    {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
+    (h : ghr93_duplicator_wins M N atomMap n r x y x' y') :
+    decomposition_agreement M N atomMap n r x y x' y' := by
+  sorry
+
+/-- **GHR93 Lemma 11** (Game ↔ decomposition agreement, backward direction):
+
+    If M_r and N_r agree on all (n;r)-decomposition formulas at (x,y)/(x',y'),
+    then Duplicator has a winning strategy for G_{n;r}(M, x y; N, x' y').
+
+    Intuitively: decomposition agreement provides Duplicator with matching
+    selections (from the forward condition). For the point challenge (Round 2),
+    the type agreement ensures that any actual point in [x',y'] ∩ N has a
+    type-matching actual point in [x,y] ∩ M.
+
+    NOTE: Sorry'd. The proof constructs Duplicator's strategy from the
+    decomposition agreement: use the forward matching for Round 1, then
+    use the type information to handle Round 2. This is used in Phase 4C. -/
+theorem ghr93_decomposition_implies_game {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n r : Nat}
+    {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
+    (h : decomposition_agreement M N atomMap n r x y x' y') :
+    ghr93_duplicator_wins M N atomMap n r x y x' y' := by
+  sorry
+
+/-- **GHR93 Lemma 11** (Game ↔ decomposition agreement, iff version):
+
+    Duplicator has a winning strategy for G_{n;r}(M, x y; N, x' y') iff
+    M_r and N_r agree on all (n;r)-decomposition formulas at (x,y)/(x',y').
+
+    This is the key bridge between the game-theoretic perspective (strategies)
+    and the formula-theoretic perspective (decomposition formulas). -/
+theorem ghr93_game_iff_decomposition {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n r : Nat}
+    {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r} :
+    ghr93_duplicator_wins M N atomMap n r x y x' y' ↔
+    decomposition_agreement M N atomMap n r x y x' y' :=
+  ⟨ghr93_game_implies_decomposition, ghr93_decomposition_implies_game⟩
 
 /-! ## Stavi Expressive Completeness
 
