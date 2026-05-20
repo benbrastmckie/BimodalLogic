@@ -51,10 +51,10 @@ After 155 completes:
 
 ### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
 
-173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
+173 [RESEARCHED] — Archive 19 dead sorry stubs from TemporalDerived.lean
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
 21 [RESEARCHED] — Clean up technical debt: stale docstrings, 81 tombstone comments
-172 [NOT STARTED] — Fix stale Metalogic.lean docstring
+172 [RESEARCHED] — Fix stale Metalogic.lean docstring
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
@@ -158,7 +158,7 @@ After 155 completes:
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Research**: [173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md]
@@ -169,7 +169,7 @@ After 155 completes:
 
 ### 172. Fix stale Metalogic.lean docstring
 - **Effort**: small (1-2 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Research**: [172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md]
@@ -248,7 +248,7 @@ After 155 completes:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -260,6 +260,7 @@ After 155 completes:
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
+  - [155_reynolds_pipeline_activation/plans/03_reynolds-pipeline-plan.md]
 
 **Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
 
@@ -276,7 +277,7 @@ After 155 completes:
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
@@ -348,7 +349,7 @@ After 155 completes:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**:
