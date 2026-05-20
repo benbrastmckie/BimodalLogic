@@ -47,7 +47,7 @@ After 155 completes:
 
 ### Completeness (in progress)
 
-155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+155 [PLANNED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
 ### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
 
@@ -249,8 +249,8 @@ After 155 completes:
 ---
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
-- **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 60 hours
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154

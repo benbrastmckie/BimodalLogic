@@ -213,7 +213,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -222,7 +222,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T16:17:20Z",
+      "last_updated": "2026-05-20T18:11:22Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -256,11 +256,6 @@
           "summary": "Team research round 3 (4 teammates): sorry chain verification, blocker assessment, infrastructure inventory, strategic direction"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/03_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "v4 plan: 7 phases (28h), corrected ordering, h_box_correct for box case, Reynolds Lemma 16 bypass"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/04_phase4-blocker.md",
           "type": "research",
           "summary": "Phase 4 blocker analysis: Path B (NormalForm Realization Transfer) recommended, 250-430 lines, transfers Z-expressiveness to Prior structures via EF game argument"
@@ -274,6 +269,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/06_path-b-feasibility.md",
           "type": "research",
           "summary": "Path B feasibility: known model theory but ~2x harder than claimed (540-990 lines), recommends axiomatize Theorem 4 + prove Theorem 5 + Reynolds direct (~400-700 lines)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/06_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "v5: Full Reynolds, 10 phases, 60h est."
         }
       ],
       "session_id": "sess_1779293806_635cb2",
