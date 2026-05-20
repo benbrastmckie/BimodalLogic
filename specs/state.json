@@ -235,7 +235,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T15:24:19Z",
+      "last_updated": "2026-05-20T15:48:06Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -257,6 +257,16 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "v3 plan: 6 phases (18h), fix valuation bug, close IntegerModel sorries, implement Reynolds Theorem 14 gap elimination, rewrite chronicle_is_good without IsSuccArchimedean, achieve sorry-free bx_completeness"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/summaries/02_reynolds-pipeline-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: architectural blockers in Phase 1 (box modality mismatch) and Phase 2 (EF game framework needed)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-0-handoff-20260520.md",
+          "type": "handoff",
+          "summary": "Technical handoff: sorry chain analysis and recommended fixes for Phase 1/2 blockers"
         }
       ],
       "session_id": "sess_1779290650_45e3c8",
