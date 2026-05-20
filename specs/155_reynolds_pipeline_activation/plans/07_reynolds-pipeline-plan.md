@@ -450,7 +450,7 @@ This yields the "US_expressively_complete_over_prior" result that Phase 6 needs.
 
 ---
 
-### Phase 10: Discharge h_truth_corr [COMPLETED]
+### Phase 10: Discharge h_truth_corr [BLOCKED]
 
 **Goal**: Discharge the h_truth_corr sorry at Transfer.lean:574. This is the ONLY direct sorry in `countermodel_discrete` (the other sorry comes from `chronicle_is_good` via `orderIsoIntOfLinearSuccPredArch`). This phase is INDEPENDENT of the expressive completeness chain (Phases 4B-4C, 5', 6, 8) and can proceed in parallel.
 
