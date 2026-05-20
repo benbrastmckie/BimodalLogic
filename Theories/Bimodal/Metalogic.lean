@@ -14,17 +14,18 @@ procedures.
 
 | Component | Status | Key Theorem |
 |-----------|--------|-------------|
-| Soundness | COMPLETE | `soundness : Gamma derives phi -> Gamma valid phi` |
-| Completeness | IN PROGRESS | BXCanonical architecture |
-| Decidability | COMPLETE | `decide : Formula -> DecisionResult` |
+| Soundness | SORRY-FREE | `soundness`, `soundness_dense`, `soundness_discrete` |
+| Completeness | SORRY (chronicle) | `completeness` (BXCanonical/Completeness.lean) |
+| Decidability | SORRY-FREE | `decide` (Decidability/DecisionProcedure.lean) |
 
 ## Publication-Ready Theorems
 
 The following theorems are sorry-free with zero custom axioms:
 
-- `soundness`: If Gamma derives phi, then phi is valid (Soundness.lean)
-- `bmcs_truth_lemma`: Truth lemma for BFMCS (Bundle/TruthLemma.lean)
-
+- `soundness`: If Gamma derives phi (dense-compatible), then phi is valid
+- `soundness_dense`: Dense-frame-specific soundness
+- `soundness_discrete`: Discrete-frame-specific soundness
+- `decide`: Tableau-based decision procedure with proof/countermodel extraction
 
 ## Axiom Dependencies
 
@@ -32,34 +33,21 @@ Standard Lean axioms only (no custom axioms on publication path):
 - `propext`: Propositional extensionality
 - `Classical.choice`: Classical choice
 - `Quot.sound`: Quotient soundness
-- `Lean.ofReduceBool`: Compiler primitives
-- `Lean.trustCompiler`: Compiler trust
+- `Lean.ofReduceBool`, `Lean.trustCompiler`: Compiler primitives (from `native_decide`)
 
 ## Submodules
 
 - `SoundnessLemmas`: Bridge theorems connecting syntax and semantics
-- `Soundness`: Main soundness theorem with proofs for all 21 axioms and 7 rules
-- `Completeness`: Completeness infrastructure (MCS theory, canonical constructions)
+- `Soundness`: Main soundness theorem with proofs for all axioms and rules
+- `Completeness`: MCS properties (disjunction, conjunction, modal closure)
 - `Decidability`: Tableau-based decision procedure with proof/countermodel extraction
-- `Bundle/`: BFMCS infrastructure and truth lemma
-- `BXCanonical/`: Reflexive BX completeness architecture (active)
-
-## Usage
-
-```lean
-import Bimodal.Metalogic
-
--- Soundness theorem
-#check Bimodal.Metalogic.soundness
-
--- Decision procedure
-#check Bimodal.Metalogic.Decidability.decide
-```
+- `BXCanonical/`: Completeness architecture (Chronicle/Burgess construction)
+- `WeakCanonical/`: Reynolds/Doets discrete completeness path
+- `Algebraic/`: D-parametric algebraic completeness and truth lemma
 
 ## References
 
-* [Bundle/TruthLemma.lean](Metalogic/Bundle/TruthLemma.lean) - Truth lemma
 * [Soundness.lean](Metalogic/Soundness.lean) - Soundness proof
+* [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean) - Completeness theorem
 * [Decidability.lean](Metalogic/Decidability.lean) - Decision procedure
-* [SuccChain/](Metalogic/SuccChain/) - Successor chain completeness (active development)
 -/

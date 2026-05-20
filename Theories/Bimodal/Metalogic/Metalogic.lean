@@ -7,33 +7,47 @@ import Bimodal.Metalogic.WeakCanonical
 /-!
 # Bimodal Metalogic
 
-This module provides the metalogical foundations for bimodal logic TM:
+This module re-exports the metalogical foundations for bimodal logic TM:
 soundness, completeness, and decidability.
 
-## Reflexive G/H Semantics
+## Irreflexive Temporal Semantics
 
-Under reflexive semantics, G and H quantify over `s ≥ t` and `s ≤ t` respectively
-(including the current time). This makes the canonical accessibility relation
-REFLEXIVE: `canonicalR_reflexive` is proven via T-axiom.
+Under irreflexive semantics (task 93), G and H quantify over strictly future/past
+times (s > t and s < t respectively, excluding the current time). Until uses strict
+witness (s > t) with open guard (t, s). Since uses strict witness (s < t) with open
+guard (s, t).
+
+The modal T-axiom (Box phi -> phi) is valid (S5 universal accessibility), but the
+temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive semantics.
 
 ## Publication-Ready Results
 
 | Result | Theorem | Status |
 |--------|---------|--------|
-| **Soundness** | `soundness` | SORRY-FREE, AXIOM-FREE |
-| **Base Completeness** | `base_truth_lemma` | SORRY-FREE, AXIOM-FREE |
-| **Completeness** | `completeness` | sorry (chronicle construction) |
-| **Dense Completeness** | `completeness_dense` | sorry (chronicle + frame-class theory) |
-| **Discrete Completeness** | `completeness_discrete` | sorry (discrete pipeline + frame-class theory) |
-| **Decidability** | `decide` | SORRY-FREE, AXIOM-FREE |
+| **Soundness** | `soundness` | SORRY-FREE |
+| **Soundness (dense)** | `soundness_dense` | SORRY-FREE |
+| **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
+| **Completeness** | `completeness` | SORRY (chronicle construction) |
+| **Completeness (dense)** | `completeness_dense` | SORRY (chronicle + frame-class theory) |
+| **Completeness (discrete)** | `completeness_discrete` | SORRY (discrete pipeline + frame-class theory) |
+| **Decidability** | `decide` | SORRY-FREE |
 
 ## Completeness Architecture
 
-The completeness proof uses the SuccChain architecture:
+The completeness proof uses a three-way case split based on MCS membership:
 
-1. **Bundle/SuccChain***: Successor chain construction for completeness
-2. **Bundle/**: BFMCS infrastructure with truth lemma
-3. **Completeness/**: Completeness theorem wiring
+1. **Dense case** (Box(F'T) in M): Countermodel on Rat via Cantor isomorphism
+   (Chronicle/ChronicleToCountermodel.lean, Algebraic/ParametricCompleteness.lean)
+2. **Discrete case** (Box(U(T,bot)) in M): Countermodel on Int
+   (WeakCanonical/Transfer.lean)
+3. **Mixed case**: Eliminated by `mcs_mixed_case_absurd` (task 142)
+
+### Key Components
+
+- **Algebraic/ParametricTruthLemma**: D-parametric truth lemma (core of countermodel)
+- **BXCanonical/Chronicle/**: Burgess 1982 chronicle construction for dense case
+- **WeakCanonical/**: Reynolds/Doets pipeline for discrete case
+- **Bundle/**: BFMCS infrastructure (shared by all paths)
 
 ## Axiom Dependencies
 
@@ -45,44 +59,22 @@ Standard Lean axioms only on publication path:
 ```
 Metalogic/
 ├── Core/                        # MCS theory, deduction theorem
-│   ├── MaximalConsistent.lean       # MCS definition and construction
-│   ├── MCSProperties.lean           # MCS properties
-│   ├── DeductionTheorem.lean        # Deduction theorem
-│   └── RestrictedMCS.lean           # Restricted MCS
 ├── Bundle/                      # BFMCS infrastructure
-│   ├── FMCS.lean                    # FMCS definition
-│   ├── FMCSDef.lean                 # FMCS helpers
-│   ├── BFMCS.lean                   # Bundled FMCS
-│   ├── Construction.lean            # Bundle construction
-│   ├── CanonicalConstruction.lean   # Shifted truth lemma
-│   ├── CanonicalFrame.lean          # Canonical frame
-│   ├── CanonicalTaskRelation.lean   # Canonical task relation
-│   ├── CanonicalIrreflexivity.lean  # Reflexive/irreflexive theorems
-│   ├── TemporalCoherence.lean       # Temporal coherence
-│   ├── TemporalContent.lean         # Temporal content
-│   ├── ModalSaturation.lean         # Modal saturation
-│   ├── WitnessSeed.lean             # Witness seeds
-│   ├── SuccRelation.lean            # Successor relation
-│   ├── SuccExistence.lean           # Successor existence
-│   ├── SuccChainFMCS.lean           # SuccChain FMCS construction
-│   ├── SuccChainTaskFrame.lean      # SuccChain task frame
-│   ├── SuccChainTruth.lean          # SuccChain truth lemma
-│   └── SuccChainWorldHistory.lean   # SuccChain world/history
-├── Algebraic/                   # Algebraic completeness approach
-├── Completeness/                # Completeness theorem
-│   └── SuccChainCompleteness.lean   # SuccChain completeness wiring
+├── Algebraic/                   # D-parametric algebraic completeness
+├── BXCanonical/                 # Completeness theorem
+│   ├── Chronicle/               # Burgess chronicle (dense path)
+│   ├── Filtration/              # Sigma ordering
+│   └── Quasimodel/             # Hintikka points, enriched closure
+├── WeakCanonical/               # Reynolds/Doets discrete completeness
+│   └── Separation/             # Separation theorem
 ├── ConservativeExtension/       # Conservative extension results
 ├── Decidability/                # Tableau decision procedure
-│   ├── FMP/                         # Finite model property
-│   └── ...                          # Tableau, saturation, etc.
-├── Soundness.lean               # Soundness theorem
-├── SoundnessLemmas.lean         # Soundness helper lemmas
-├── DenseSoundness.lean          # Dense soundness
-├── DiscreteSoundness.lean       # Discrete soundness
-├── BaseCompleteness.lean        # Base completeness interface
-├── DenseCompleteness.lean       # Dense completeness
-├── DiscreteCompleteness.lean    # Discrete completeness
-├── Representation.lean          # Representation results
+│   └── FMP/                     # Finite model property
+├── Soundness.lean               # Soundness (sorry-free)
+├── SoundnessLemmas.lean         # Soundness helpers
+├── DenseSoundness.lean          # Dense soundness (sorry-free)
+├── DiscreteSoundness.lean       # Discrete soundness (sorry-free)
+├── Completeness.lean            # MCS properties for completeness
 └── Decidability.lean            # Decidability interface
 ```
 -/

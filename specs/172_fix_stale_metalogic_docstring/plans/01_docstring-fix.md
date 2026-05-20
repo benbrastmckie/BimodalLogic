@@ -60,14 +60,14 @@ No ROADMAP.md consulted.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Replace Both Docstrings [IN PROGRESS]
+### Phase 1: Replace Both Docstrings [COMPLETED]
 
 **Goal**: Replace stale docstrings in both Metalogic files with the research-provided replacement text.
 
 **Tasks**:
-- [ ] Replace docstring in `Theories/Bimodal/Metalogic.lean` (lines 6-65) with the proposed replacement from the research report
-- [ ] Replace docstring in `Theories/Bimodal/Metalogic/Metalogic.lean` (lines 7-88) with the proposed replacement from the research report
-- [ ] Spot-check that no import statements were accidentally modified
+- [x] Replace docstring in `Theories/Bimodal/Metalogic.lean` (lines 6-65) with the proposed replacement from the research report
+- [x] Replace docstring in `Theories/Bimodal/Metalogic/Metalogic.lean` (lines 7-88) with the proposed replacement from the research report
+- [x] Spot-check that no import statements were accidentally modified
 
 **Timing**: 15 minutes
 
