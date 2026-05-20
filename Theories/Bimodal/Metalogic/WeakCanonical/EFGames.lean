@@ -120,6 +120,110 @@ theorem game_depth_succ_ge_two (sig : MonadicSignature) (n : Nat) :
     2 ≤ game_depth sig (n + 1) := by
   simp only [game_depth]; omega
 
+/-- NormalForm is nonempty for any signature, depth, and variable count. -/
+private theorem normalForm_nonempty (sig : MonadicSignature) (k n : Nat) :
+    Nonempty (NormalForm sig k n) := by
+  induction k generalizing n with
+  | zero =>
+    -- NormalForm sig 0 n = AtomKind sig n → Bool
+    exact ⟨fun _ => false⟩
+  | succ k ih =>
+    -- NormalForm sig (k+1) n = (AtomKind sig n → Bool) × (NormalForm sig k (n+1) → Bool)
+    exact ⟨(fun _ => false, fun _ => false)⟩
+
+/--
+game_depth is strictly monotone: f(n) < f(n+1).
+This follows from the recurrence f(n+1) = (1 + 3*f(n))*(2*k_n) + 2 ≥ f(n) + 2.
+-/
+theorem game_depth_strict_mono (sig : MonadicSignature) (n : Nat) :
+    game_depth sig n < game_depth sig (n + 1) := by
+  simp only [game_depth]
+  haveI : Nonempty (NormalForm sig (game_depth sig n) 1) :=
+    normalForm_nonempty sig _ _
+  set kn := Fintype.card (NormalForm sig (game_depth sig n) 1)
+  have h_k : 0 < kn := Fintype.card_pos
+  set fn := game_depth sig n
+  -- Goal: fn < (1 + 3 * fn) * (2 * kn) + 2
+  -- Since kn ≥ 1: (1+3*fn)*(2*kn) ≥ (1+3*fn)*2 = 2+6*fn, so RHS ≥ 4+6*fn > fn
+  have h1 : (1 + 3 * fn) * 2 ≤ (1 + 3 * fn) * (2 * kn) :=
+    Nat.mul_le_mul_left _ (by omega)
+  -- Need: fn < (1 + 3 * fn) * (2 * kn) + 2
+  -- From h1: (1 + 3 * fn) * (2 * kn) ≥ (1 + 3 * fn) * 2 = 2 + 6 * fn
+  -- So it suffices to show fn < 2 + 6 * fn + 2, i.e., 0 < 4 + 5 * fn, which holds
+  -- omega needs the expanded form
+  have h2 : 2 + 6 * fn = (1 + 3 * fn) * 2 := by omega
+  omega
+
+/--
+game_depth is monotone: n ≤ m → f(n) ≤ f(m).
+-/
+theorem game_depth_mono (sig : MonadicSignature) {n m : Nat} (h : n ≤ m) :
+    game_depth sig n ≤ game_depth sig m := by
+  suffices ∀ d, game_depth sig n ≤ game_depth sig (n + d) by
+    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
+    exact this d
+  intro d; induction d with
+  | zero => simp
+  | succ d ih =>
+    have h2 : game_depth sig (n + d) < game_depth sig (n + d + 1) :=
+      game_depth_strict_mono sig _
+    have h3 : n + d + 1 = n + (d + 1) := by omega
+    rw [h3] at h2
+    exact le_of_lt (lt_of_le_of_lt ih h2)
+
+/-! ## n-Equivalence: StaviFormula Agreement at Bounded Depth
+
+Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
+on all StaviFormulas of depth ≤ game_depth(n). This is the key semantic
+relation connecting EF games to expressive completeness. -/
+
+/--
+Depth of a StaviFormula: counts nesting of temporal connectives.
+For base formulas, uses `operator_depth`. For Stavi connectives (U'/S'),
+adds 2 per nesting level (matching Until/Since depth).
+-/
+def stavi_depth : StaviFormula → Nat
+  | .base φ => operator_depth φ
+  | .stavi_untl A B => max (stavi_depth A) (stavi_depth B) + 2
+  | .stavi_snce A B => max (stavi_depth A) (stavi_depth B) + 2
+  | .neg φ => stavi_depth φ
+  | .conj φ ψ => max (stavi_depth φ) (stavi_depth ψ)
+
+/--
+Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
+on all StaviFormulas of depth ≤ game_depth(n).
+
+This is the key relation in the GHR93 proof: the main theorem shows that
+n-equivalence is equivalent to Duplicator winning the n-round EF game.
+-/
+def stavi_n_equiv {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (n : Nat) (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (N : OrderedMonadicStructure sig) (s : N.carrier) : Prop :=
+  ∀ (A : StaviFormula), stavi_depth A ≤ game_depth sig n →
+    (stavi_temporal_truth M atomMap t A ↔ stavi_temporal_truth N atomMap s A)
+
+/--
+n-equivalence is symmetric.
+-/
+theorem stavi_n_equiv_symm {sig : MonadicSignature} {atomMap : Formula → sig.preds}
+    {n : Nat} {M : OrderedMonadicStructure sig} {t : M.carrier}
+    {N : OrderedMonadicStructure sig} {s : N.carrier}
+    (h : stavi_n_equiv atomMap n M t N s) :
+    stavi_n_equiv atomMap n N s M t :=
+  fun A hd => (h A hd).symm
+
+/--
+n-equivalence is monotone in n: if (M,t) and (N,s) are (n+1)-equivalent,
+they are also n-equivalent.
+-/
+theorem stavi_n_equiv_mono {sig : MonadicSignature} {atomMap : Formula → sig.preds}
+    {n m : Nat} (h_le : n ≤ m)
+    {M : OrderedMonadicStructure sig} {t : M.carrier}
+    {N : OrderedMonadicStructure sig} {s : N.carrier}
+    (h : stavi_n_equiv atomMap m M t N s) :
+    stavi_n_equiv atomMap n M t N s :=
+  fun A hd => h A (le_trans hd (game_depth_mono sig h_le))
+
 /-! ## Stavi Expressive Completeness
 
 The main theorem: {U, S, U', S'} is expressively complete for ALL linear

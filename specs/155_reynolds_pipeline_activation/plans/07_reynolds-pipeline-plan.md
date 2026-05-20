@@ -209,7 +209,7 @@ Phases 1-3, 4A, and 5 are completed. Wave 3 contains three independent tracks: (
 
 ---
 
-### Phase 4B: EF Game Infrastructure Expansion [NOT STARTED]
+### Phase 4B: EF Game Infrastructure Expansion [IN PROGRESS]
 
 **Goal**: Expand the existing EFGames.lean skeleton (~170 lines) into the full EF game infrastructure needed for the GHR93 proof. This includes the custom G_{n;r} game type, game composition/restriction/extension lemmas, the depth function with recurrence bounds, and the "left" and "right" formula constructions for gap detection.
 
