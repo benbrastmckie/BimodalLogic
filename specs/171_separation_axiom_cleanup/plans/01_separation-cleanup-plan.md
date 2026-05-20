@@ -92,18 +92,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Eliminate Group A Axioms (1-4) [NOT STARTED]
+### Phase 2: Eliminate Group A Axioms (1-4) [COMPLETED]
 
 **Goal**: Replace all 4 proper separation temporal closure axioms with theorems, simplify `all_properly_separable`, and delete dead code.
 
 **Tasks**:
-- [ ] Add `all_formulas_properly_separable` theorem to SeparationThm.lean using `all_formulas_separable` + `syn_sep_eq_proper_sep`
-- [ ] Delete dead axiom `all_past_properly_separable` (line 212-213)
-- [ ] Delete dead axiom `all_future_properly_separable` (line 217-218)
-- [ ] Replace `axiom untl_properly_separable` (lines 222-224) with `theorem` proved via `all_formulas_properly_separable _`
-- [ ] Replace `axiom snce_properly_separable` (lines 228-230) with `theorem` proved via `all_formulas_properly_separable _`
-- [ ] Simplify `all_properly_separable` body to use `all_formulas_properly_separable phi` directly (removing structural induction)
-- [ ] Run `lake build` to verify zero axiom regressions
+- [x] Add `all_formulas_properly_separable` theorem to SeparationThm.lean using `all_formulas_separable` + `syn_sep_eq_proper_sep`
+- [x] Delete dead axiom `all_past_properly_separable` *(deviation: altered -- converted to theorem with unused arg instead of deleting, to preserve API)*
+- [x] Delete dead axiom `all_future_properly_separable` *(deviation: altered -- converted to theorem with unused arg instead of deleting, to preserve API)*
+- [x] Replace `axiom untl_properly_separable` (lines 222-224) with `theorem` proved via `all_formulas_properly_separable _`
+- [x] Replace `axiom snce_properly_separable` (lines 228-230) with `theorem` proved via `all_formulas_properly_separable _`
+- [x] Simplify `all_properly_separable` body to use `all_formulas_properly_separable phi` directly (removing structural induction)
+- [x] Run `lake build` to verify zero axiom regressions
 
 **Timing**: 1 hour
 

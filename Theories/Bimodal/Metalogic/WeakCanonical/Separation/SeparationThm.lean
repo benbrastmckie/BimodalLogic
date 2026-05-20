@@ -202,53 +202,47 @@ version required by Theorem 9.3.1, since the substitution step needs semantic
 purity: past parts must not reference the future, future parts must not
 reference the past.
 
-The axioms below parallel the temporal closure axioms above, but for the
-stronger `is_properly_separable` predicate. They will be eliminated in
-later phases when the full GHR94 hierarchy (Lemmas 10.2.4-10.2.8) is
-implemented with proper purity predicates. -/
+Since `is_syntactically_separated = is_properly_separated` for all formulas
+(proved in Defs.lean via `syn_sep_eq_proper_sep`), proper separability follows
+directly from `all_formulas_separable`. The temporal closure lemmas below are
+corollaries, not axioms. -/
+
+/-- Every formula is properly separable, via predicate equivalence with
+    syntactic separation (`syn_sep_eq_proper_sep`). -/
+theorem all_formulas_properly_separable (φ : Formula) : is_properly_separable φ :=
+  (separable_iff_properly_separable φ).mp (all_formulas_separable φ)
 
 /-- Temporal closure for proper separability: all_past of a properly separable
     formula is properly separable. -/
-axiom all_past_properly_separable (φ : Formula) (h : is_properly_separable φ) :
-    is_properly_separable (.all_past φ)
+theorem all_past_properly_separable (φ : Formula) (_h : is_properly_separable φ) :
+    is_properly_separable (.all_past φ) :=
+  all_formulas_properly_separable _
 
 /-- Temporal closure for proper separability: all_future of a properly separable
     formula is properly separable. -/
-axiom all_future_properly_separable (φ : Formula) (h : is_properly_separable φ) :
-    is_properly_separable (.all_future φ)
+theorem all_future_properly_separable (φ : Formula) (_h : is_properly_separable φ) :
+    is_properly_separable (.all_future φ) :=
+  all_formulas_properly_separable _
 
 /-- Temporal closure for proper separability: untl of properly separable
     formulas is properly separable. -/
-axiom untl_properly_separable (φ ψ : Formula)
-    (h1 : is_properly_separable φ) (h2 : is_properly_separable ψ) :
-    is_properly_separable (.untl φ ψ)
+theorem untl_properly_separable (φ ψ : Formula)
+    (_h1 : is_properly_separable φ) (_h2 : is_properly_separable ψ) :
+    is_properly_separable (.untl φ ψ) :=
+  all_formulas_properly_separable _
 
 /-- Temporal closure for proper separability: snce of properly separable
     formulas is properly separable. -/
-axiom snce_properly_separable (φ ψ : Formula)
-    (h1 : is_properly_separable φ) (h2 : is_properly_separable ψ) :
-    is_properly_separable (.snce φ ψ)
+theorem snce_properly_separable (φ ψ : Formula)
+    (_h1 : is_properly_separable φ) (_h2 : is_properly_separable ψ) :
+    is_properly_separable (.snce φ ψ) :=
+  all_formulas_properly_separable _
 
 /-- Every {U,S}-formula over integer time is properly separable (equivalent to a
     properly separated formula). This is the strong version of Theorem 10.2.9
-    required by Theorem 9.3.1.
-
-    The proof uses structural induction with proper temporal closure axioms. -/
-theorem all_properly_separable (phi : Formula) : is_properly_separable phi := by
-  induction phi with
-  | atom a => exact ⟨.atom a, rfl, int_equiv_refl _⟩
-  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
-  | imp φ ψ ih1 ih2 =>
-    obtain ⟨φ', hφ', heφ⟩ := ih1
-    obtain ⟨ψ', hψ', heψ⟩ := ih2
-    refine ⟨.imp φ' ψ', ?_, ?_⟩
-    · simp [is_properly_separated, hφ', hψ']
-    · intro M t
-      exact ⟨fun h hp => (heψ M t).mp (h ((heφ M t).mpr hp)),
-             fun h hp => (heψ M t).mpr (h ((heφ M t).mp hp))⟩
-  | box φ _ih => exact ⟨.box φ, rfl, int_equiv_refl _⟩
-  | untl φ ψ ih1 ih2 => exact untl_properly_separable φ ψ ih1 ih2
-  | snce φ ψ ih1 ih2 => exact snce_properly_separable φ ψ ih1 ih2
+    required by Theorem 9.3.1. -/
+theorem all_properly_separable (phi : Formula) : is_properly_separable phi :=
+  all_formulas_properly_separable phi
 
 /-- Theorem 10.2.9 (Strong form): Each wff in the language with {U, S}
     is equivalent, over the integer flow of time, to a properly separated wff.
@@ -263,8 +257,8 @@ theorem proper_separation_theorem_int (phi : Formula) :
 
     Mathematically, this holds because the GHR94 separation procedure (Lemmas 10.2.3-10.2.8)
     manipulates temporal structure without introducing new atomic propositions.
-    This axiom will be eliminated together with the temporal closure axioms above
-    when the full junction-depth hierarchy is proved in Phase 6. -/
+    This axiom will be eliminated by strengthening the hierarchy to track
+    `formula_atoms` through the separation procedure. -/
 axiom proper_separation_preserves_atoms (φ : Formula) :
     ∃ ψ : Formula, is_properly_separated ψ = true ∧ int_equiv φ ψ ∧
     formula_atoms ψ ⊆ formula_atoms φ
