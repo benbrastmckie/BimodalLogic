@@ -201,17 +201,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Final Verification and Axiom Audit [NOT STARTED]
+### Phase 5: Final Verification and Axiom Audit [COMPLETED]
 
 **Goal**: Comprehensive verification that all axioms are eliminated and the build is clean.
 
 **Tasks**:
-- [ ] Run `lake build` for full project build
-- [ ] Run `grep -rn "^axiom" Theories/Bimodal/Metalogic/WeakCanonical/Separation/` to verify zero axioms in Separation module
-- [ ] Run `#print axioms Bimodal.Metalogic.WeakCanonical.Separation.proper_separation_theorem_int` to confirm only Lean/Mathlib axioms
-- [ ] Run `#print axioms Bimodal.Metalogic.WeakCanonical.Separation.proper_separation_preserves_atoms` to confirm only Lean/Mathlib axioms
-- [ ] Verify `ExpressiveCompleteness.lean` type-checks if it imports the separation module (not in build target, but should still work)
-- [ ] Run final `grep -rn "Phase 6\|axiom.*separable\|temporal closure axiom" Separation/` for stale references
+- [x] Run `lake build` for full project build -- passes (1647 jobs)
+- [x] Run `grep -rn "^axiom" Separation/` -- zero results, all axioms eliminated
+- [x] Run `lean_verify` on `proper_separation_theorem_int` -- zero custom axioms
+- [x] Run `lean_verify` on `proper_separation_preserves_atoms` -- zero custom axioms
+- [x] Run `lean_verify` on `all_formulas_properly_separable` -- zero custom axioms
+- [x] Run `lean_verify` on `all_properly_separable` -- zero custom axioms
+- [ ] Verify `ExpressiveCompleteness.lean` *(deviation: skipped -- pre-existing build issue in Hierarchy.lean import chain; not caused by this task)*
+- [x] Run `grep` sweep for stale references -- zero "Phase 6", zero "temporal closure axiom"
 
 **Timing**: 0.5 hours
 
