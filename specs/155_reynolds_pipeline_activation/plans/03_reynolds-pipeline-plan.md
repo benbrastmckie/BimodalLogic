@@ -188,7 +188,7 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 4: Gap Elimination (Reynolds Theorem 14) [PARTIAL]
+### Phase 4: Gap Elimination (Reynolds Theorem 14) [BLOCKED]
 
 **BLOCKER** (Phase 4):
 - **What failed**: Tasks 4.2-4.6 (Reynolds Lemmas 6-13, `no_gaps_discrete` proof) cannot be completed yet.
