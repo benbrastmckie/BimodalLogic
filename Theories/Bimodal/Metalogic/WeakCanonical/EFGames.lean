@@ -1323,18 +1323,70 @@ with the appropriate coercion infrastructure.
 - Task 155 plan: Phase 4B, Task 4B.5
 -/
 
-/-- **GHR93 Lemma 10** (Game monotonicity in rounds):
-    If Duplicator wins G_{n;r}, she wins G_{n';r} for n' <= n (same rank).
+/-- Helper: embedding from Fin (n'+3) to Fin (n+3) for round monotonicity.
+    Maps 0 -> 0, i (1..n') -> i, n'+1 -> n+1, n'+2 -> n+2.
+    This preserves game_tuple values between the n'-game and the padded n-game. -/
+private def round_mono_emb (n n' : Nat) (hn : n' ≤ n) :
+    Fin (n' + 3) → Fin (n + 3) := fun j =>
+  if j.val = 0 then ⟨0, by omega⟩
+  else if j.val ≤ n' then ⟨j.val, by omega⟩
+  else if j.val = n' + 1 then ⟨n + 1, by omega⟩
+  else ⟨n + 2, by omega⟩
 
-    With fewer rounds, Spoiler selects n' <= n elements. Duplicator pads
-    the n'-element selection to n elements (using boundary x for the
-    remaining n - n' positions), applies her winning strategy, then
-    restricts the response to n' elements.
+/-- The game_tuple for the n'-game at index j equals the game_tuple for the
+    padded n-game at the embedded index, for the M-side elements. -/
+private theorem game_tuple_emb_eq_M {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n n' : Nat} (hn : n' ≤ n)
+    (x y : ExtendedCarrier M atomMap r) (a : Fin n' → ExtendedCarrier M atomMap r)
+    (b : M.carrier) (j : Fin (n' + 3)) :
+    game_tuple x y a b j =
+    game_tuple x y (fun i => if hi : i.val < n' then a ⟨i.val, hi⟩ else x) b
+      (round_mono_emb n n' hn j) := by
+  simp only [game_tuple, round_mono_emb]
+  -- 4 cases for j: j=0, 1≤j≤n', j=n'+1, j=n'+2
+  have hj_bound := j.isLt  -- j.val < n' + 3
+  by_cases h0 : j.val = 0
+  · -- j = 0: LHS = x (via dif_pos h0), RHS = x (emb gives ⟨0,_⟩, dif_pos)
+    simp [h0]
+  · by_cases h_n1 : j.val = n' + 1
+    · -- j = n'+1: LHS = extendPoint b, RHS: emb gives ⟨n+1,_⟩ -> extendPoint b
+      simp [h_n1]
+    · by_cases h_n2 : j.val = n' + 2
+      · -- j = n'+2: LHS = y, RHS: emb gives ⟨n+2,_⟩ -> y
+        simp [h_n2]
+      · -- 1 ≤ j ≤ n': LHS = a ⟨j-1,_⟩, RHS: emb gives ⟨j,_⟩ -> a_pad(j-1) = a(j-1)
+        have hle : j.val ≤ n' := by omega
+        simp [h0, hle, h_n1, h_n2]
+        have : ¬(j.val = n + 1) := by omega
+        have : ¬(j.val = n + 2) := by omega
+        simp [*]
+        have hlt : j.val - 1 < n' := by omega
+        simp [hlt]
 
-    NOTE: Sorry'd because the element reindexing (embedding Fin n' into
-    Fin n with padding) requires careful bookkeeping to show that the
-    order type and formula agreement on the restricted tuple follow from
-    those on the full tuple. This will be completed in Phase 4C. -/
+/-- The game_tuple for the n'-game at index j equals the game_tuple for the
+    restricted n-game at the embedded index, for the N-side elements. -/
+private theorem game_tuple_emb_eq_N {sig : MonadicSignature}
+    {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n n' : Nat} (hn : n' ≤ n)
+    (x' y' : ExtendedCarrier N atomMap r) (a'_full : Fin n → ExtendedCarrier N atomMap r)
+    (b' : N.carrier) (j : Fin (n' + 3)) :
+    game_tuple x' y' (fun i : Fin n' => a'_full ⟨i.val, Nat.lt_of_lt_of_le i.isLt hn⟩) b' j =
+    game_tuple x' y' a'_full b' (round_mono_emb n n' hn j) := by
+  simp only [game_tuple, round_mono_emb]
+  have hj_bound := j.isLt
+  by_cases h0 : j.val = 0
+  · simp [h0]
+  · by_cases h_n1 : j.val = n' + 1
+    · simp [h_n1]
+    · by_cases h_n2 : j.val = n' + 2
+      · simp [h_n2]
+      · have hle : j.val ≤ n' := by omega
+        simp [h0, hle, h_n1, h_n2]
+        have : ¬(j.val = n + 1) := by omega
+        have : ¬(j.val = n + 2) := by omega
+        simp [*]
+
 theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n n' r : Nat} (hn : n' ≤ n)
@@ -1345,9 +1397,48 @@ theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
     ghr93_duplicator_wins M N atomMap n' r x y x' y' := by
   -- Strategy: pad the n'-element selection to n elements using x,
   -- apply the n-element strategy, then restrict the response.
-  -- The game_tuple index mapping (embedding Fin(n'+3) into Fin(n+3))
-  -- requires careful bookkeeping. Sorry'd for Phase 4C.
-  sorry
+  unfold ghr93_duplicator_wins at h ⊢
+  intro a ha
+  -- Pad: embed n' elements into n positions, fill remaining with x
+  let a_pad : Fin n → ExtendedCarrier M atomMap r := fun i =>
+    if hi : i.val < n' then a ⟨i.val, hi⟩ else x
+  have ha_pad : ∀ i, inClosedInterval x y (a_pad i) := by
+    intro i; simp only [a_pad]; split
+    · exact ha ⟨i.val, ‹_›⟩
+    · exact ⟨le_refl x, hxy⟩
+  -- Apply the n-round winning strategy
+  obtain ⟨a'_full, ha'_full, hwin⟩ := h a_pad ha_pad
+  -- Restrict the response to the first n' elements
+  let a'_res : Fin n' → ExtendedCarrier N atomMap r := fun i =>
+    a'_full ⟨i.val, Nat.lt_of_lt_of_le i.isLt hn⟩
+  refine ⟨a'_res, ?_, ?_⟩
+  -- Goal 1: a'_res elements are in [x', y']
+  · intro i; exact ha'_full ⟨i.val, Nat.lt_of_lt_of_le i.isLt hn⟩
+  -- Goal 2: winning condition transfers from n to n'
+  · intro b' hb'
+    obtain ⟨b, hb, hcond⟩ := hwin b' hb'
+    refine ⟨b, hb, ?_⟩
+    -- Transfer via the embedding: game_tuple values at embedded indices agree
+    have h_eq_M := game_tuple_emb_eq_M hn x y a b
+    have h_eq_N := game_tuple_emb_eq_N hn x' y' a'_full b'
+    unfold ghr93_winning_condition at hcond ⊢
+    obtain ⟨hord, hgp, hform⟩ := hcond
+    refine ⟨?_, ?_, ?_⟩
+    -- same_order_type: transfer via embedding
+    · unfold same_order_type at hord ⊢
+      intro i j
+      rw [h_eq_M i, h_eq_M j, h_eq_N i, h_eq_N j]
+      exact hord (round_mono_emb n n' hn i) (round_mono_emb n n' hn j)
+    -- gap_point_agreement: transfer via embedding
+    · unfold gap_point_agreement at hgp ⊢
+      intro i
+      rw [h_eq_M i, h_eq_N i]
+      exact hgp (round_mono_emb n n' hn i)
+    -- formula_agreement: transfer via embedding
+    · unfold formula_agreement at hform ⊢
+      intro i A hA
+      rw [h_eq_M i, h_eq_N i]
+      exact hform (round_mono_emb n n' hn i) A hA
 
 /-! ## Decomposition Formulas and Lemma 11 (GHR93 Definition 8.8)
 

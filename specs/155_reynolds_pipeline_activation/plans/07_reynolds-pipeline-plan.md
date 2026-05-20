@@ -309,7 +309,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
 
 ---
 
-### Phase 4C: GHR93 Theorem 6 + Assembly -- Main Proof [NOT STARTED]
+### Phase 4C: GHR93 Theorem 6 + Assembly -- Main Proof [IN PROGRESS]
 
 **Goal**: Prove `stavi_expressive_completeness` (GHR93 Theorem 9.3.1 / Corollary 5) via the complete game-theoretic argument: Theorem 6 (forward-to-backward, 4 cases), Proposition 6 (formula agreement → games), Proposition 7 (composition using Theorem 6), and final assembly.
 
@@ -347,9 +347,10 @@ Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward str
 
 **Tasks** (sequential, in dependency order):
 
-- [ ] **Task 4C.1**: Create `ExpressivenessGeneral.lean`. State Theorem 6: (*)_n for all n.
+- [x] **Task 4C.1**: Create `ExpressivenessGeneral.lean`. State Theorem 6: (*)_n for all n.
   Set up the induction framework on n. Prove the base case (n=0): Duplicator responds to
   Round 2 challenge using the 1-round forward strategy. (~100-150 lines)
+  *(deviation: altered -- (1) Theorem 6 stated at uniform rank r instead of rank r+4n forward / r backward, to avoid rank coercion infrastructure between ExtendedCarrier types; uniform-rank version suffices with Lemma 10; (2) Added h_pt hypothesis for nonemptiness of N-points in [x',y'] needed for base case Round 2 trigger; (3) Also closed Lemma 10 sorry in EFGames.lean as prerequisite; (4) Added winning condition symmetry lemmas and base case game_tuple embedding helpers)*
 
 - [ ] **Task 4C.2**: Theorem 6 setup for the inductive step. Given forward G_{4+3n; r+4(n+1)},
   define A, C, c, d and the backward strategies σ, τ on sub-intervals [x,c] and [c,y]

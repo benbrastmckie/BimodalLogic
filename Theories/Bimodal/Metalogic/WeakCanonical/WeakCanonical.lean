@@ -10,6 +10,7 @@ import Bimodal.Metalogic.WeakCanonical.Table
 import Bimodal.Metalogic.WeakCanonical.IntegerModel
 import Bimodal.Metalogic.WeakCanonical.StaviConnectives
 import Bimodal.Metalogic.WeakCanonical.EFGames
+import Bimodal.Metalogic.WeakCanonical.ExpressivenessGeneral
 import Bimodal.Metalogic.WeakCanonical.Transfer
 
 /-!
