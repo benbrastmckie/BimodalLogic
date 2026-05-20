@@ -1,7 +1,7 @@
 # Implementation Plan: Task #157 -- GHR94-Aligned Oracle Elimination (v25)
 
 - **Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 6 hours
 - **Dependencies**: Phase A completed (plan v22)
 - **Research Inputs**: reports/24_blocker-research.md, literature/Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch10.md
