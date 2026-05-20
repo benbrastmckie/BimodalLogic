@@ -1,5 +1,5 @@
 ---
-next_project_number: 179
+next_project_number: 180
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -49,13 +49,6 @@ After 155 completes:
 
 155 [PLANNED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
-### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
-
-173 [RESEARCHED] — Archive 19 dead sorry stubs from TemporalDerived.lean
-130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
-21 [RESEARCHED] — Clean up technical debt: stale docstrings, 81 tombstone comments
-172 [RESEARCHED] — Fix stale Metalogic.lean docstring
-
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
 176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
@@ -100,6 +93,15 @@ After 155 completes:
 
 
 ## Tasks
+
+### 179. Research Lean 4 best practices and infrastructure for tactics and derived theorems
+- **Effort**: large (20-30 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Research best practices for Lean 4 in 2026 online and in Mathlib to design a systematic library of tactics, derived theorems in the proof theory, semantic lemmas, and other general results that streamline codebase refactoring and raise overall code quality. In anticipation of completing task 155, cleaning up tasks 176 and 95, and beginning a deep refactor of completed theorems, investigate appropriate metaprogramming, custom tactics, derivation infrastructure, and organizational patterns to achieve the best structure throughout the implementation.
+
+---
 
 ### 178. Publication examples and demo
 - **Effort**: small (4-6 hours)
@@ -368,3 +370,6 @@ After 155 completes:
 **Description**: Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned).
 
 ---
+
+## Recommended Order
+
