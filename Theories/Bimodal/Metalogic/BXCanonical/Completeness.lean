@@ -1,4 +1,6 @@
-import Bimodal.Metalogic.BXCanonical.RootScopedChain
+-- Archived to Boneyard/ScheduleBasedBFMCS/ (task 130): schedule-based BFMCS
+-- construction. 3 sorry sites (restricted_tc/buc/fuc) bypassed by Chronicle
+-- approach. See Boneyard/ScheduleBasedBFMCS/README.md.
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import Bimodal.Metalogic.WeakCanonical
 import Bimodal.Semantics.Validity
@@ -350,7 +352,7 @@ and are not removable without changing the decidability infrastructure.)
 -/
 
 #print axioms Bimodal.Metalogic.BXCanonical.completeness
-#print axioms Bimodal.Metalogic.BXCanonical.dd_countermodel
+-- dd_countermodel archived to Boneyard/ScheduleBasedBFMCS/ (task 130)
 #print axioms Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense
 
 end Bimodal.Metalogic.BXCanonical

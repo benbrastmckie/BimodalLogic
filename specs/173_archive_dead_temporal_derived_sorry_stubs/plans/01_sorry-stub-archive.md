@@ -100,7 +100,7 @@ Phases are fully sequential because downstream updates (Phase 2) must precede de
 
 ---
 
-### Phase 2: Update Downstream Call Sites [NOT STARTED]
+### Phase 2: Update Downstream Call Sites [IN PROGRESS]
 
 **Goal**: Replace 6 downstream references to sorry-tainted definitions with direct `sorry` and tombstone comments, preserving compilation.
 

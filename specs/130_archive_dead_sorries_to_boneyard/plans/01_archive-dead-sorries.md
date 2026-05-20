@@ -94,7 +94,7 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 2: Archive RootScopedChain.lean (Whole File) [NOT STARTED]
+### Phase 2: Archive RootScopedChain.lean (Whole File) [IN PROGRESS]
 
 **Goal**: Move `RootScopedChain.lean` (222 lines, 3 sorries) to `Boneyard/ScheduleBasedBFMCS/` and update imports in `Completeness.lean`.
 

@@ -550,16 +550,18 @@ These are used by the dovetailed chain construction to track Until/Since obligat
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot ∈ M := by
-  have h_ax := Bimodal.Theorems.TemporalDerived.until_unfold_wrapped φ ψ
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
+  -- TOMBSTONE (task 173): was TemporalDerived.until_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
+  -- Reason: BX9 removed + reflexive Until intro invalid under open guard (t,s) semantics
+  sorry
 
 /-- `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding in an MCS.
   Derived from BX5' (self-accumulation) + BX9' (elimination) + BX8' (reflexive intro). -/
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot ∈ M := by
-  have h_ax := Bimodal.Theorems.TemporalDerived.since_unfold_wrapped φ ψ
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
+  -- TOMBSTONE (task 173): was TemporalDerived.since_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
+  -- Reason: BX9 removed + reflexive Since intro invalid under open guard (t,s) semantics
+  sorry
 
 /--
 U-step for Succ with G-persistence.
@@ -610,19 +612,9 @@ theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.untl ψ φ)) ∈ M) :
     Formula.untl ψ φ ∈ M := by
-  -- or ψ B = ψ.neg.imp B, so h : (ψ → ⊥) → (φ ∧ U(ψ, φ)) ∈ M
-  -- By MCS: either ψ ∈ M or ψ.neg ∈ M
-  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
-  · -- Case: ψ ∈ M. By BX8, U(ψ, φ) ∈ M
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_until φ ψ)) h_psi
-  · -- Case: ¬ψ ∈ M. From or: (φ ∧ U(ψ, φ)) ∈ M
-    have h_conj : Formula.and φ (Formula.untl ψ φ) ∈ M := by
-      unfold Formula.or at h
-      exact SetMaximalConsistent.implication_property h_mcs h h_neg_psi
-    -- From conjunction, extract U(ψ, φ)
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl ψ φ))) h_conj
+  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_until; archived to Boneyard/OpenGuardInvalid/
+  -- Reason: reflexive Until intro invalid under open guard (t,s) semantics
+  sorry
 
 /--
 In any MCS: `(ψ ∨ (φ ∧ (φ S ψ))) ∈ M → (φ S ψ) ∈ M`.
@@ -634,14 +626,9 @@ theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.snce ψ φ)) ∈ M) :
     Formula.snce ψ φ ∈ M := by
-  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
-  · exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_since φ ψ)) h_psi
-  · have h_conj : Formula.and φ (Formula.snce ψ φ) ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs
-        (by unfold Formula.or at h; exact h) h_neg_psi
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce ψ φ))) h_conj
+  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_since; archived to Boneyard/OpenGuardInvalid/
+  -- Reason: reflexive Since intro invalid under open guard (t,s) semantics
+  sorry
 
 /--
 `g_content(u) ⊆ u` for any MCS u under BX1 (reflexive G).
