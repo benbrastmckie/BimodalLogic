@@ -158,7 +158,7 @@ After 155 completes:
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Research**: [173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md]
@@ -170,7 +170,7 @@ After 155 completes:
 
 ### 172. Fix stale Metalogic.lean docstring
 - **Effort**: small (1-2 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Research**: [172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md]
@@ -279,7 +279,7 @@ After 155 completes:
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
@@ -352,7 +352,7 @@ After 155 completes:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**:

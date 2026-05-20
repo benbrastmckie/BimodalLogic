@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Stale Metalogic.lean Docstrings
 
 - **Task**: 172 - Fix stale Metalogic.lean docstring
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_docstring-audit.md

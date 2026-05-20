@@ -123,10 +123,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-05-20T16:19:05Z",
+      "last_updated": "2026-05-20T16:19:58Z",
       "dependencies": [],
       "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
       "artifacts": [
@@ -179,13 +179,13 @@
     {
       "project_number": 130,
       "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "medium",
       "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
       "dependencies": [],
       "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-20T16:19:00Z",
+      "last_updated": "2026-05-20T16:19:58Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -266,12 +266,12 @@
     {
       "project_number": 172,
       "project_name": "fix_stale_metalogic_docstring",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Rewrite Metalogic.lean docstring which is severely stale. Currently says \"Reflexive G/H Semantics\" but the project uses irreflexive semantics (task 93). References \"SuccChain architecture\" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:18:33Z",
+      "last_updated": "2026-05-20T16:22:05Z",
       "dependencies": [],
       "session_id": "sess_1779293683_4e43b6",
       "next_artifact_number": 2,
@@ -286,17 +286,18 @@
           "type": "plan",
           "summary": "2-phase plan to replace stale docstrings in both Metalogic.lean files and verify build"
         }
-      ]
+      ],
+      "completion_summary": "Replaced stale docstrings in both Metalogic.lean files with accurate content reflecting irreflexive semantics, Chronicle/WeakCanonical architecture, and current sorry status. Build verified."
     },
     {
       "project_number": 173,
       "project_name": "archive_dead_temporal_derived_sorry_stubs",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:19:36Z",
+      "last_updated": "2026-05-20T16:19:58Z",
       "dependencies": [],
       "session_id": "sess_1779293683_4e43b6",
       "next_artifact_number": 2,
