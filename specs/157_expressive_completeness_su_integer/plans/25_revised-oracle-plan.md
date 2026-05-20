@@ -474,7 +474,19 @@ OK, I've spent enough time analyzing. Let me write the final plan.
 
 ---
 
-### Phase 2: Oracle-Free `no_S_nested_sep` [NOT STARTED]
+### Phase 2: Oracle-Free `no_S_nested_sep` [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: The double strong induction on `(U_nesting_depth, count_U_total)` works for UND >= 2 (callbacks have UND <= 1, outer IH handles them) but FAILS at UND <= 1. The oracle from `single_U_formula_separable_noax_param` at `snce_depth_of_U >= 2` produces formulas with `no_S_nested_in_U` + `JD <= 1` but with UNCONTROLLED `U_nesting_depth` and `count_U_total`. No lexicographic combination of `(UND, count_U_total)` decreases across the oracle chain.
+- **What was tried**: 
+  1. Double strong induction on `(UND, count_U_total)` -- fails at UND <= 1 (oracle UND uncontrolled)
+  2. Using `subst_in_separated_separable_depth` (gives UND <= 1 callbacks) -- but count_U_total of callback not bounded by original
+  3. Nesting `no_S_nested_in_U_separable_direct_param` two levels -- doesn't terminate (oracle chain has unbounded depth)
+  4. Using `snce_depth_zero_no_S_nested_separated` for leaf -- only handles `snce_depth_of_U = 0`, not `snce_depth_of_U = 1`
+  5. Triple induction `(JD, UND, count_U_total)` -- same fundamental issue at UND <= 1
+- **Why it's stuck**: Substitution into a separated form creates callback formulas whose `count_U_total` is determined by the SEPARATED FORM (existential, non-constructive), not the original formula. Since `is_separable` is existential (`∃ ψ, ...`), the witness ψ can have arbitrarily many atoms at any position, making callback formula measures uncontrollable.
+- **What is needed**: Either (a) a CONSTRUCTIVE separation procedure that preserves atom counts (making callback count_U_total bounded), or (b) a fundamentally different proof architecture that avoids substitution-based callbacks entirely, or (c) a custom well-founded relation capturing the FINITE oracle chain depth across `lemma_10_2_6 -> single_U -> oracle -> lemma_10_2_6 -> single_U -> leaf` pattern.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Create a single oracle-free theorem `no_S_nested_sep` that proves any formula with `no_S_nested_in_U` is separable, using nested well-founded inductions on `(U_nesting_depth, count_U_total)`.
 

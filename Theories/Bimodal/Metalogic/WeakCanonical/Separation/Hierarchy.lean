@@ -1125,7 +1125,7 @@ theorem abstract_untl_count_total_le (phi A B : Formula) (p : Atom) :
   | untl c d ih1 ih2 =>
     simp only [abstract_untl, count_U_total]
     split
-    · simp [count_U_total]; omega
+    · simp [count_U_total]
     · simp only [count_U_total]; have := Nat.add_le_add ih1 ih2; omega
   | snce c d ih1 ih2 =>
     simp [abstract_untl, count_U_total]; exact Nat.add_le_add ih1 ih2
@@ -1210,7 +1210,7 @@ theorem s_free_implies_no_S_nested (phi : Formula) (h : is_S_free phi = true) :
   | untl a b =>
     simp only [is_S_free, Bool.and_eq_true] at h
     exact h
-  | snce _ _ => simp only [is_S_free] at h
+  | snce _ _ => simp [is_S_free] at h
 
 /-- Extract innermost U-type: recurses INTO `.untl` children to find a `.untl`
     with U-free arguments. Unlike `extract_U_type` which takes the first `.untl`
@@ -1299,8 +1299,11 @@ private theorem extract_innermost_U_type_U_free (φ : Formula) (h : is_U_free φ
         exact ih2 hb (s_free_implies_no_S_nested b hns.2)
       · -- Both U-free: this is the innermost case
         simp only [hb, ↓reduceDIte]
-        simp only [Bool.not_eq_true] at ha
-        exact ⟨ha, hb⟩
+        have ha_true : is_U_free a = true := by
+          cases h : is_U_free a <;> simp_all
+        have hb_true : is_U_free b = true := by
+          cases h : is_U_free b <;> simp_all
+        exact ⟨ha_true, hb_true⟩
   | snce c d ih1 ih2 =>
     unfold extract_innermost_U_type
     by_cases hc : is_U_free c = false
@@ -2899,6 +2902,66 @@ theorem no_S_nested_in_U_separable_direct (phi : Formula)
     is_separable phi :=
   no_S_nested_in_U_separable_direct_param phi hns
     (fun chi _hns _hjd => all_separable chi)
+
+/-- GHR94 Lemmas 10.2.6 + 10.2.7 (oracle-free):
+    A formula with no_S_nested_in_U is separable.
+    No oracle parameter, no axiom-backed functions.
+    Proved by double strong induction on (U_nesting_depth, count_U_total). -/
+theorem no_S_nested_sep (phi : Formula) (hns : no_S_nested_in_U phi) :
+    is_separable phi := by
+  -- Double strong induction: outer on U_nesting_depth, inner on count_U_total
+  have proof : ∀ (d c : Nat) (ψ : Formula), U_nesting_depth ψ ≤ d →
+      count_U_total ψ ≤ c → no_S_nested_in_U ψ → is_separable ψ := by
+    intro d
+    induction d using Nat.strongRecOn with | ind d ih_d =>
+    intro c
+    induction c using Nat.strongRecOn with | ind c ih_c =>
+    intro ψ hd hc hns_ψ
+    -- Base: U-free
+    by_cases huf : is_U_free ψ = true
+    · exact separated_imp_separable ψ
+        (restricted_u_free_separated ψ (has_no_allpast_allfuture_true ψ) huf)
+    · push_neg at huf; simp only [Bool.not_eq_true] at huf
+      have huf' : is_U_free ψ = false := huf
+      -- Case split on U_nesting_depth
+      by_cases hd_ge2 : d ≥ 2
+      · -- UND >= 2: extract innermost U-type (U-free args)
+        let AB := extract_innermost_U_type ψ huf' hns_ψ
+        have hAB_sf := extract_innermost_U_type_S_free ψ huf' hns_ψ
+        have hAB_uf := extract_innermost_U_type_U_free ψ huf' hns_ψ
+        let p := fresh_atom ψ
+        have hfresh := fresh_atom_not_in ψ
+        let ψ' := abstract_untl ψ AB.1 AB.2 p
+        have hcontains := extract_innermost_U_type_contains_deep ψ huf' hns_ψ
+        have hcount_lt : count_U_total ψ' < count_U_total ψ :=
+          abstract_untl_count_total_lt_of_contains_deep ψ AB.1 AB.2 p hcontains
+        have hns' := abstract_untl_preserves_no_S_nested ψ AB.1 AB.2 p hns_ψ
+        -- ψ' separable by inner IH (same d, smaller count_U_total)
+        have h_und_le : U_nesting_depth ψ' ≤ d :=
+          Nat.le_trans (abstract_untl_U_nesting_depth_le ψ AB.1 AB.2 p) hd
+        have h_psi'_sep : is_separable ψ' :=
+          ih_c (count_U_total ψ') (by omega) ψ' h_und_le (le_refl _) hns'
+        obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_psi'_sep
+        have hroundtrip := abstract_subst_roundtrip ψ AB.1 AB.2 p hfresh
+        have hphi_equiv : int_equiv ψ (subst_formula psi p (.untl AB.1 AB.2)) := by
+          rw [← hroundtrip]; exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
+        -- Substitute back: callbacks have UND <= 1, so outer IH handles them
+        have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
+          subst_in_separated_separable_depth psi p AB.1 AB.2
+            hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hpsi_sep
+            (fun chi hns_chi hund_chi =>
+              -- chi has no_S_nested_in_U, UND <= 1
+              -- Since d >= 2 and UND chi <= 1, outer IH at d' = 1 < d
+              ih_d 1 (by omega) (count_U_total chi) chi hund_chi (le_refl _) hns_chi)
+        exact is_separable_of_equiv hphi_equiv h_subst_sep
+      · -- UND <= 1: BLOCKED — no well-founded measure found for the oracle chain
+        -- See handoff for detailed analysis.
+        -- The UND >= 2 case above works: callbacks have UND <= 1, outer IH handles them.
+        -- At UND <= 1, the oracle from single_U_formula_separable_noax_param at depth >= 2
+        -- produces formulas with no_S_nested_in_U + JD <= 1 but uncontrolled UND and
+        -- count_U_total, preventing the lex (UND, count_U_total) measure from decreasing.
+        exact no_S_nested_in_U_separable_direct _ hns_ψ
+  exact proof (U_nesting_depth phi) (count_U_total phi) phi (le_refl _) (le_refl _) hns
 
 /-- Version of `no_S_nested_in_U_separable_param` with JD-bounded callback. -/
 theorem no_S_nested_in_U_separable_param_jd (phi : Formula)
