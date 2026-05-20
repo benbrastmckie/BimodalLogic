@@ -100,24 +100,22 @@ Phases are fully sequential because downstream updates (Phase 2) must precede de
 
 ---
 
-### Phase 2: Update Downstream Call Sites [IN PROGRESS]
+### Phase 2: Update Downstream Call Sites [COMPLETED]
 
 **Goal**: Replace 6 downstream references to sorry-tainted definitions with direct `sorry` and tombstone comments, preserving compilation.
 
 **Tasks**:
-- [ ] Update `Theories/Bimodal/Metalogic/Algebraic/UltrafilterFrame.lean`:
-  - Line 543: Replace `exact ⟨Bimodal.Theorems.TemporalDerived.G_bot_absurd⟩` with tombstone comment + `sorry`
-  - Line 779: Replace `exact ⟨Bimodal.Theorems.TemporalDerived.H_bot_absurd⟩` with tombstone comment + `sorry`
-- [ ] Update `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean`:
+- [x] Update `Theories/Bimodal/Metalogic/Algebraic/UltrafilterFrame.lean` *(deviation: skipped -- file already archived to Boneyard/UltrafilterFrame/ before task 173; references only in Boneyard)*
+- [x] Update `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean`:
   - Line 84: Replace `psi_imp_until` reference with tombstone comment + `sorry`
   - Line 94: Replace `psi_imp_since` reference with tombstone comment + `sorry`
-- [ ] Update `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean`:
+- [x] Update `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean`:
   - Line 553: Replace `until_unfold_wrapped` reference with tombstone comment + `sorry`
   - Line 561: Replace `since_unfold_wrapped` reference with tombstone comment + `sorry`
   - Line 618: Replace `psi_imp_until` reference with tombstone comment + `sorry`
   - Line 639: Replace `psi_imp_since` reference with tombstone comment + `sorry`
-- [ ] Use consistent tombstone format: `-- TOMBSTONE (task 173): was TemporalDerived.{name}; archived to Boneyard/OpenGuardInvalid/`
-- [ ] Run `lake build` to verify downstream files still compile (sorry count at call sites unchanged since they were already in sorry-bearing code paths)
+- [x] Use consistent tombstone format: `-- TOMBSTONE (task 173): was TemporalDerived.{name}; archived to Boneyard/OpenGuardInvalid/`
+- [x] Run `lake build` to verify downstream files still compile (sorry count at call sites unchanged since they were already in sorry-bearing code paths)
 
 **Timing**: 30 minutes
 
