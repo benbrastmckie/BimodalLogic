@@ -99,7 +99,7 @@ The oracle chain that blocked plans v25 and v26 is eliminated at its source: the
 
 ---
 
-### Phase 1: Rewrite Case 2 to Match GHR94 [NOT STARTED]
+### Phase 1: Rewrite Case 2 to Match GHR94 [COMPLETED]
 
 **Goal**: Rewrite `elim_case_2_gen` and `elim_case_2` to output GHR94's formula where `neg U(A,B)` is kept as `.imp (.untl A B) .bot` instead of being decomposed.
 
@@ -127,18 +127,18 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 **Tasks**:
 
-- [ ] Task 1.1: Define `case2_psi` output formula
+- [x] Task 1.1: Define `case2_psi` output formula *(completed)*
   - **File**: `Eliminations.lean`
   - **Location**: Before `elim_case_2_gen`
   - Define the concrete output formula matching GHR94's Case 2
 
-- [ ] Task 1.2: Prove `case2_psi` is syntactically separated
+- [x] Task 1.2: Prove `case2_psi` is syntactically separated *(completed — inline in elim_case_2_gen)*
   - By `simp` with `is_syntactically_separated` + input hypotheses
 
-- [ ] Task 1.3: Prove `case2_psi` has `has_single_U_type _ A B`
+- [x] Task 1.3: Prove `case2_psi` has `has_single_U_type _ A B` *(deviation: deferred to Phase 2 — structural property of case2_psi is used there)*
   - Structural: only `.untl` in d1 has args `(A, B)`. d2, d3 are U-free.
 
-- [ ] Task 1.4: Rewrite `elim_case_2_gen` to produce `case2_psi`
+- [x] Task 1.4: Rewrite `elim_case_2_gen` to produce `case2_psi` *(completed)*
   - **Proof strategy** (following GHR94):
     - Forward: Given `S(a ∧ ¬U(A,B), q)` at time t, there exists s < t with a(s), ¬U(A,B)(s), q on (s,t).
     - Apply `neg_until_equiv` at s: either G_s(¬A) or U'_s(¬A∧¬B, ¬A)
@@ -147,13 +147,11 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
     - Backward: Each disjunct implies the original.
   - **Estimated**: 50-80 lines (semantic argument)
 
-- [ ] Task 1.5: Update `elim_case_2` (non-gen version) similarly
+- [x] Task 1.5: Update `elim_case_2` (non-gen version) similarly *(completed — now delegates to elim_case_2_gen)*
 
-- [ ] Task 1.6: Verify Cases 3, 4 still compile
-  - Case 3 calls `elim_case_2` — output type unchanged (`is_separable`), should compile
-  - Case 4 calls `elim_case_1` — unaffected
+- [x] Task 1.6: Verify Cases 3, 4 still compile *(completed — lake build succeeds)*
 
-- [ ] Task 1.7: Verify `lake build` succeeds
+- [x] Task 1.7: Verify `lake build` succeeds *(completed)*
 
 **Timing**: 3 hours
 **Depends on**: none
