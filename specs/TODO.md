@@ -47,7 +47,7 @@ After 155 completes:
 
 ### Completeness (in progress)
 
-155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+155 [RESEARCHED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
 ### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
 
@@ -158,7 +158,7 @@ After 155 completes:
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 
@@ -168,7 +168,7 @@ After 155 completes:
 
 ### 172. Fix stale Metalogic.lean docstring
 - **Effort**: small (1-2 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 
@@ -246,7 +246,7 @@ After 155 completes:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -254,6 +254,7 @@ After 155 completes:
   - [specs/155_reynolds_pipeline_activation/reports/01_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/02_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md]
+  - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
@@ -273,7 +274,7 @@ After 155 completes:
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
@@ -343,7 +344,7 @@ After 155 completes:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**:

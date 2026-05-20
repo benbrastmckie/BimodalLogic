@@ -123,10 +123,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-05-15T21:30:00Z",
+      "last_updated": "2026-05-20T16:03:13Z",
       "dependencies": [],
       "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
       "artifacts": [
@@ -166,7 +166,7 @@
           "summary": "6-phase implementation plan for technical debt cleanup focusing on axiom elimination"
         }
       ],
-      "session_id": "sess_1774121152_2f49cc",
+      "session_id": "sess_1779292958_9c8d94",
       "researched": "2026-03-21T19:21:35Z",
       "planned": "2026-03-21T19:28:53Z",
       "topic": "completeness"
@@ -204,13 +204,13 @@
     {
       "project_number": 130,
       "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "researched",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
       "dependencies": [],
       "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-18T23:27:40Z",
+      "last_updated": "2026-05-20T16:03:14Z",
       "next_artifact_number": 1,
       "artifacts": [
         {
@@ -220,13 +220,13 @@
         }
       ],
       "topic": "formula-refactor",
-      "session_id": "sess_1779146360_eab605",
+      "session_id": "sess_1779292958_9c8d94",
       "researched": "2026-05-18T23:27:40Z"
     },
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -235,8 +235,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T15:52:15Z",
-      "next_artifact_number": 3,
+      "last_updated": "2026-05-20T16:07:27Z",
+      "next_artifact_number": 4,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -267,33 +267,40 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-0-handoff-20260520.md",
           "type": "handoff",
           "summary": "Technical handoff: sorry chain analysis and recommended fixes for Phase 1/2 blockers"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research round 3 (4 teammates): sorry chain verification, blocker assessment, infrastructure inventory, strategic direction"
         }
       ],
       "session_id": "sess_1779292320_2adf4b",
-      "researched": "2026-05-20T07:26:05Z",
+      "researched": "2026-05-20T16:07:27Z",
       "started": "2026-05-16T19:49:58Z"
     },
     {
       "project_number": 172,
       "project_name": "fix_stale_metalogic_docstring",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Rewrite Metalogic.lean docstring which is severely stale. Currently says \"Reflexive G/H Semantics\" but the project uses irreflexive semantics (task 93). References \"SuccChain architecture\" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T15:36:06Z",
-      "dependencies": []
+      "last_updated": "2026-05-20T16:03:15Z",
+      "dependencies": [],
+      "session_id": "sess_1779292958_9c8d94"
     },
     {
       "project_number": 173,
       "project_name": "archive_dead_temporal_derived_sorry_stubs",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T15:36:06Z",
-      "dependencies": []
+      "last_updated": "2026-05-20T16:03:16Z",
+      "dependencies": [],
+      "session_id": "sess_1779292958_9c8d94"
     },
     {
       "project_number": 174,
