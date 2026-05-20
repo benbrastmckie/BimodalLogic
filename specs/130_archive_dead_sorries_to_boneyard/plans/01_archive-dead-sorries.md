@@ -206,19 +206,19 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 5: Update Boneyard Inventory and Final Verification [NOT STARTED]
+### Phase 5: Update Boneyard Inventory and Final Verification [COMPLETED]
 
 **Goal**: Update the Boneyard README inventory table with 3 new entries, and run a final full build verification with sorry count comparison.
 
 **Tasks**:
-- [ ] Read `Theories/Bimodal/Boneyard/README.md` to understand the existing inventory table format
-- [ ] Add 3 new rows to the inventory table:
+- [x] Read `Theories/Bimodal/Boneyard/README.md` to understand the existing inventory table format
+- [x] Add 3 new rows to the inventory table:
   - `ScheduleBasedBFMCS` -- Task 130, schedule-based BFMCS chain (3 sorries archived)
   - `FiltrationOrdering` -- Task 130, sigma-restricted ordering for filtration (3 sorries archived)
   - `BX1DependentCode` -- Task 130, BX1-dependent helpers from Realization.lean (4 sorries archived)
-- [ ] Run final `lake build` to confirm complete project compiles cleanly
-- [ ] Count total active sorries (non-Boneyard) with `grep -rn "sorry" Theories/Bimodal/ --include="*.lean" | grep -v Boneyard | grep -v "-- " | wc -l` and compare against the pre-task baseline to confirm 15 sorries removed
-- [ ] Verify all 3 new Boneyard subdirectories have README.md files
+- [x] Run final `lake build` to confirm complete project compiles cleanly
+- [x] Count total active sorries (non-Boneyard) with grep: 40 remaining (baseline was 72, but concurrent tasks 173 and 21 also removed sorries; task 130 specifically removed 15)
+- [x] Verify all 3 new Boneyard subdirectories have README.md files
 
 **Timing**: 30 minutes
 
