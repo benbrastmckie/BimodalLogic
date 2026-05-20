@@ -92,7 +92,14 @@ Phases 1, 2, and 4 can execute in parallel (Wave 1). Phase 3 requires Phase 1 (W
 
 ---
 
-### Phase 1: Fix Transfer.lean Bridging Sorries (Trivial + Valuation Bug) [NOT STARTED]
+### Phase 1: Fix Transfer.lean Bridging Sorries (Trivial + Valuation Bug) [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The `z_interval_countermodel` truth correspondence (truth_at ↔ temporal_truth) cannot be proved by structural induction because the `box` case has a fundamental semantic mismatch: `temporal_truth` treats `box ψ` as a predicate lookup, while `truth_at` interprets `box ψ` as universal quantification over all histories in Omega.
+- **What was tried**: (1) WorldState = Unit with constant valuation (valuation bug, can't vary with time), (2) WorldState = ℤ with task_rel w d u := w + d = u and Set.univ Omega (different shifted histories give different atom values at same time, breaking box), (3) Singleton Omega (not shift-closed), (4) Direct truth_at → temporal_truth direction (box case still fails because temporal_truth (.box ψ) is a predicate lookup, not temporal_truth ψ).
+- **Why it's stuck**: The task frame semantics gives `box` a structural interpretation (universal over histories) while the monadic FO framework treats `box` as an opaque predicate symbol. Bridging between these requires either (a) routing through the parametric canonical model construction, or (b) proving IsSuccArchimedean for the chronicle domain (which is the sorry we're trying to bypass).
+- **What is needed**: Architectural redesign of the Transfer.lean bridge. Best approach: make `countermodel_discrete` delegate to a modified version of `dd_countermodel_chronicle_discrete` that proves temporal coherence without `succ_embed_surjective`, using the Reynolds pipeline's `chronicle_is_good` result instead.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Close the `Nonempty sig.preds` sorry and fix the valuation bug in `z_interval_countermodel` by refactoring `zIntervalTaskFrame` to use `WorldState = Int`.
 
@@ -118,7 +125,14 @@ Phases 1, 2, and 4 can execute in parallel (Wave 1). Phase 3 requires Phase 1 (W
 
 ---
 
-### Phase 2: IntegerModel.lean Helper Sorries [NOT STARTED]
+### Phase 2: IntegerModel.lean Helper Sorries [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: `cofinal_decomposition_k_equiv` requires proving that M and orderedSum(subintervals) have the same k-type despite the ordered sum having duplicated boundary points. The ordered sum carrier is `Σ (i : ℤ), M.subinterval(a(i), a(i+1)).carrier`, and boundary point a(i+1) appears in BOTH piece i (as maximum) and piece i+1 (as minimum). The lexicographic order makes these copies distinct and non-adjacent in order relative to some environments.
+- **What was tried**: (1) Direct `k_equiv_of_iso` (impossible: not an isomorphism due to duplicated points), (2) Back-and-forth via projection p and embedding e (fails: order condition breaks at boundary points where p(env_S j) = a(i+1) but env_S j could be in piece i or piece i+1 with different lex ordering), (3) Normal form transfer via `nf_agreement_from_shared_nf` (requires showing same characteristic nf, which reduces to the back-and-forth problem).
+- **Why it's stuck**: The proof requires a formal Ehrenfeucht-Fraïssé game argument or equivalent showing that "adjacent duplicate" elements don't change k-types. The codebase lacks an EF game framework, and building one from scratch is a substantial effort (~200+ lines). The `ordered_sum_of_good_bounded_is_good` sorry at line 1138 is also blocked pending the shift-and-glue construction (requires `orderIsoIntOfLinearSuccPredArch` on the concatenated Z-intervals, which is safe since the concatenation is explicitly integer-like by construction, but the proof is still ~100+ lines).
+- **What is needed**: Either (a) add an EF game framework for monadic FO, or (b) prove cofinal_decomposition_k_equiv using a modified ordered sum with half-open intervals `[a(i), a(i+1))` to avoid boundary duplication (requires new ordered sum infrastructure), or (c) bypass `very_good_implies_good` entirely by proving `chronicle_is_good` through a direct construction (which is what the current code does via `orderIsoIntOfLinearSuccPredArch`).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Close the 2 non-critical-path sorries in IntegerModel.lean that are needed for `very_good_implies_good` to be fully sorry-free: `cofinal_decomposition_k_equiv` (line 1079) and `ordered_sum_of_good_bounded_is_good` (line 1138, k>=2 case).
 
