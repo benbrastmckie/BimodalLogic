@@ -94,22 +94,22 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 2: Archive RootScopedChain.lean (Whole File) [IN PROGRESS]
+### Phase 2: Archive RootScopedChain.lean (Whole File) [COMPLETED]
 
 **Goal**: Move `RootScopedChain.lean` (222 lines, 3 sorries) to `Boneyard/ScheduleBasedBFMCS/` and update imports in `Completeness.lean`.
 
 **Tasks**:
-- [ ] Create directory `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/`
-- [ ] Move `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` to `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean`
-- [ ] Remove `import Bimodal.Metalogic.BXCanonical.RootScopedChain` from `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
-- [ ] Add tombstone comment in Completeness.lean at the removed import location:
+- [x] Create directory `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/`
+- [x] Move `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` to `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean`
+- [x] Remove `import Bimodal.Metalogic.BXCanonical.RootScopedChain` from `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
+- [x] Add tombstone comment in Completeness.lean at the removed import location:
   ```
   -- Archived to Boneyard/ScheduleBasedBFMCS/ (task 130): schedule-based BFMCS
   -- construction. 3 sorry sites (restricted_tc/buc/fuc) bypassed by Chronicle
   -- approach. See Boneyard/ScheduleBasedBFMCS/README.md.
   ```
-- [ ] Create `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/README.md` following the template from research report section "Proposed Boneyard Subdirectory Organization"
-- [ ] Run `lake build` and verify zero new errors. If transitive import issues arise, add explicit imports for transitively-needed modules.
+- [x] Create `Theories/Bimodal/Boneyard/ScheduleBasedBFMCS/README.md` following the template from research report section "Proposed Boneyard Subdirectory Organization"
+- [x] Run `lake build` and verify zero new errors. If transitive import issues arise, add explicit imports for transitively-needed modules. *(deviation: altered -- also removed `#print axioms dd_countermodel` since dd_countermodel was defined in RootScopedChain.lean)*
 
 **Timing**: 45 minutes
 
