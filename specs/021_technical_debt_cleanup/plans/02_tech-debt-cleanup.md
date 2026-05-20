@@ -99,17 +99,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Stale Docstrings in Bundle/ Files [NOT STARTED]
+### Phase 2: Fix Stale Docstrings in Bundle/ Files [COMPLETED]
 
 **Goal**: Update 6 Bundle/ files that reference superseded approaches (SuccChain, DenseTask, TemporalCoherentConstruction, DovetailingChain) to accurately describe the current architecture.
 
 **Tasks**:
-- [ ] `Bundle/FMCSDef.lean` (lines 17-31): Replace `TimelineQuot` domain example with `Rat` (Cantor dense domain); replace SuccChainFMCS.lean reference with `BXCanonical/CanonicalChain.lean` as the discrete implementation
-- [ ] `Bundle/TemporalContent.lean` (lines 33-82): Remove references to `TemporalCoherentConstruction.lean`, `DovetailingChain.lean`, and `DenseTask` relation. Update `f_content`/`p_content` usage comments to reference actual callers: `SuccExistence.lean`, `SuccRelation.lean`, `UntilSinceCoherence.lean`
-- [ ] `Bundle/TemporalCoherence.lean` (line 287): Replace comparison to `SuccChainFMCS` with explanation based on the BXCanonical chain construction's bounded subformula closure
-- [ ] `Bundle/Construction.lean` (lines 23, 90): Replace `TemporalCoherentConstruction.lean` reference with `BXCanonical/CanonicalModel.lean` and `BXCanonical/Chronicle/`
-- [ ] `Bundle/WitnessSeed.lean` (line 14): Update provenance comment -- remove reference to `DovetailingChain.lean`, describe actual extraction history
-- [ ] `Bundle/SuccRelation.lean` (line 25): Remove stale task number references (tasks 10-15); describe role in terms of current architecture (used by SuccExistence.lean for predecessor/successor construction underpinning BXCanonical/CanonicalModel.lean)
+- [x] `Bundle/FMCSDef.lean` (lines 17-31): Replaced TimelineQuot/SuccChainFMCS references with current implementations (BXCanonical, Chronicle, Algebraic/Parametric)
+- [x] `Bundle/TemporalContent.lean` (lines 33-82): Removed references to TemporalCoherentConstruction.lean, DovetailingChain.lean, and DenseTask. Updated usage comments.
+- [x] `Bundle/TemporalCoherence.lean` (line 287): Replaced SuccChainFMCS comparison with BXCanonical chain construction explanation
+- [x] `Bundle/Construction.lean` (lines 23, 90): Replaced TemporalCoherentConstruction.lean references with BXCanonical paths
+- [x] `Bundle/WitnessSeed.lean` (line 14): Removed DovetailingChain.lean reference
+- [x] `Bundle/SuccRelation.lean` (line 25): Removed stale task number references; described role in current architecture
 
 **Timing**: 45 minutes
 
@@ -129,15 +129,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix Ghost File References in Algebraic/ [NOT STARTED]
+### Phase 3: Fix Ghost File References in Algebraic/ [COMPLETED]
 
 **Goal**: Replace all references to the non-existent `CanonicalConstruction.lean` in parametric Algebraic/ files with the correct current file paths.
 
 **Tasks**:
-- [ ] `Algebraic/ParametricCanonical.lean` (lines 33, 38): Replace `CanonicalConstruction.lean` references with `Bundle/CanonicalFrame.lean` and `Bundle/CanonicalTaskRelation.lean`
-- [ ] `Algebraic/ParametricTruthLemma.lean` (line 62): Replace `"follows the same structure as CanonicalConstruction.lean"` with reference to `Bundle/FMCS.lean` and `Bundle/CanonicalFrame.lean`
-- [ ] `Algebraic/ParametricTruthLemma.lean` (line 77): Replace `CanonicalConstruction.lean` in the "Existing" references list with `Bundle/CanonicalFrame.lean`
-- [ ] `Algebraic/ParametricHistory.lean` (line 30): Replace `CanonicalConstruction.lean (to_history)` with `Bundle/CanonicalFrame.lean`
+- [x] `Algebraic/ParametricCanonical.lean` (lines 33, 38): Replaced CanonicalConstruction.lean references with Bundle/CanonicalFrame.lean and Bundle/CanonicalTaskRelation.lean
+- [x] `Algebraic/ParametricTruthLemma.lean` (line 62): Replaced CanonicalConstruction.lean reference with Bundle/FMCS.lean and Bundle/CanonicalFrame.lean
+- [x] `Algebraic/ParametricTruthLemma.lean` (line 77): Replaced CanonicalConstruction.lean in references with Bundle/CanonicalFrame.lean
+- [x] `Algebraic/ParametricHistory.lean` (line 30): Replaced CanonicalConstruction.lean (to_history) with Bundle/CanonicalFrame.lean
 
 **Timing**: 30 minutes
 
@@ -154,16 +154,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update README Files [NOT STARTED]
+### Phase 4: Update README Files [COMPLETED]
 
 **Goal**: Bring `Metalogic/README.md` and `Bundle/README.md` in line with the actual directory structure and module inventory.
 
 **Tasks**:
-- [ ] `Metalogic/README.md` (lines 52-83): Update module structure table -- remove `CanonicalConstruction.lean` from Bundle/ tree; rename `AlgebraicRepresentation.lean` to `AlgebraicCompleteness.lean`; note UltrafilterFrame/TenseS5Algebra archived to Boneyard
-- [ ] `Metalogic/README.md` (lines 260-266): Remove phantom subdirectory entries (`Soundness/`, `Canonical/`, `Domain/`, `StagedConstruction/`, `Representation/`, `Compactness/`). Replace with actual subdirectories: `Core/`, `Bundle/`, `Algebraic/`, `BXCanonical/`, `WeakCanonical/`, `ConservativeExtension/`, `Decidability/`, `Relational/`
-- [ ] `Bundle/README.md` (lines 51-53): Remove `ChainFMCS.lean`, `CanonicalFMCS.lean`, `CanonicalConstruction.lean` from architecture tree
-- [ ] `Bundle/README.md` (line 64): Remove `CanonicalConstruction.lean` from theorem table
-- [ ] `Bundle/README.md` (lines 152-153): Remove stale import comments referencing `CanonicalFMCS` and `SuccChainFMCS`
+- [x] `Metalogic/README.md` (lines 52-83): Updated module structure -- replaced with actual Bundle/ files, renamed AlgebraicRepresentation to AlgebraicCompleteness, added BXCanonical/WeakCanonical/Algebraic parametric modules
+- [x] `Metalogic/README.md` (lines 260-266): Replaced phantom subdirectory entries with actual directories (Core, Bundle, BXCanonical, WeakCanonical, Decidability, Algebraic, ConservativeExtension, Relational)
+- [x] `Bundle/README.md` (lines 51-53): Replaced architecture tree with actual file inventory
+- [x] `Bundle/README.md` (line 64): Replaced CanonicalConstruction.lean in theorem table with CanonicalFrame.lean and CanonicalTaskRelation.lean
+- [x] `Bundle/README.md` (lines 152-153): Replaced stale import comments with current imports
 
 **Timing**: 45 minutes
 

@@ -13,7 +13,7 @@ transitive preorder**.
 ### Axiom-Free Reflexive Semantics
 
 - All BFMCS completeness infrastructure is axiom-free
-- CanonicalConstruction, CanonicalFMCS, TruthLemma proven without axioms
+- CanonicalFrame, CanonicalTaskRelation, Construction proven without axioms
 - `canonicalR_reflexive` proven via T-axiom (reflexive preorder)
 - Per-construction strictness pattern for local irreflexivity proofs
 - Task 44: Removed inconsistent `existsTask_irreflexive_axiom`
@@ -44,15 +44,15 @@ Bundle/
   FMCS.lean                  # Temporal MCS families with coherence
   BFMCS.lean                 # Bundle structure with modal coherence
   TemporalCoherence.lean     # Temporal coherence conditions
-  TemporalContent.lean       # Temporal content tracking
+  TemporalContent.lean       # Temporal content tracking (g/h/f/p/u/s content)
   ModalSaturation.lean       # Modal saturation for multi-family construction
-  ChainFMCS.lean             # Chain-based FMCS construction
   WitnessSeed.lean           # Witness seed infrastructure
-  CanonicalFMCS.lean         # Canonical FMCS construction
   CanonicalFrame.lean        # Canonical frame definition
-  CanonicalConstruction.lean # Canonical model construction
+  CanonicalTaskRelation.lean # Canonical task relation
   CanonicalIrreflexivity.lean# Irreflexivity proofs
-  DirectIrreflexivity.lean   # Direct irreflexivity approach
+  SuccRelation.lean          # Immediate successor relation (Succ)
+  SuccExistence.lean         # Successor existence construction
+  UntilSinceCoherence.lean   # Until/Since coherence conditions
   Construction.lean          # Building BFMCS from consistent context
   README.md                  # This file
 ```
@@ -61,8 +61,8 @@ Bundle/
 
 | Theorem | Type | Status | File |
 |---------|------|--------|------|
-| BFMCS construction | consistent -> BFMCS | **SORRY-FREE** | CanonicalConstruction.lean |
-| Canonical FMCS | FMCS for CanonicalMCS | **SORRY-FREE** | CanonicalFMCS.lean |
+| Canonical frame | Canonical frame definition | **SORRY-FREE** | CanonicalFrame.lean |
+| Canonical task relation | Task relation on canonical frame | **SORRY-FREE** | CanonicalTaskRelation.lean |
 | Modal coherence | Box phi -> phi at all families | **SORRY-FREE** | Construction.lean |
 
 ### Sorry Status
@@ -139,7 +139,7 @@ Any derivable formula is valid in all models (standard or BFMCS).
 
 ```lean
 import Bimodal.Metalogic.Bundle.Construction
-import Bimodal.Metalogic.Bundle.CanonicalConstruction
+import Bimodal.Metalogic.Bundle.CanonicalFrame
 
 -- Main infrastructure for BFMCS completeness
 ```
@@ -149,8 +149,7 @@ import Bimodal.Metalogic.Bundle.CanonicalConstruction
 ```lean
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.FMCS
--- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
--- Use SuccChainFMCS for D=Int approach instead
+import Bimodal.Metalogic.Bundle.CanonicalFrame
 
 -- For working with BFMCS structures directly
 ```

@@ -14,21 +14,17 @@ coherence conditions ensuring proper formula propagation.
 The type parameter `D` in `FMCS D` is the **indexing type** for the family. For
 proper temporal model construction, `D` should be a temporal domain such as:
 - `Int` or `Nat` for discrete time
-- `TimelineQuot` or `Rat` for dense time (Cantor domain)
+- `Rat` for dense time (Cantor domain via BXCanonical/Chronicle/)
 - Any type with `AddCommGroup + LinearOrder` for duration arithmetic
 
-**Correct Approach**: The SuccChain construction (SuccChainFMCS.lean) uses D=Int
-with proper temporal coherence. This is the canonical implementation for discrete
-completeness.
-
-**Archived Pattern**: The D=CanonicalMCS pattern (former CanonicalFMCS.lean)
-has been removed. It was architecturally confused: using all MCS as the indexing type
-created an identity mapping `mcs(w) = w.world` that trivialized F/P witness obligations
-rather than proving them.
+**Active Implementations**:
+- `BXCanonical/CanonicalModel.lean` uses D=Int for discrete completeness
+- `BXCanonical/Chronicle/` uses D=Rat for dense completeness (Burgess 1982)
+- `Algebraic/ParametricCanonical.lean` provides D-parametric infrastructure
 
 **WARNING: W=D Conflation Error**: Never conflate world states (MCS)
 with time indices. World states describe WHAT is true; time indices describe WHEN.
-D must be a proper timeline type (Int, Rat, TimelineQuot), not CanonicalMCS.
+D must be a proper timeline type (Int, Rat), not CanonicalMCS.
 
 ## Terminology
 

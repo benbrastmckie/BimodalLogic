@@ -1,4 +1,5 @@
-import Bimodal.Metalogic.BXCanonical.Filtration.SigmaOrdering
+-- SigmaOrdering archived to Boneyard/FiltrationOrdering/ (task 130)
+import Bimodal.Metalogic.BXCanonical.Frame
 import Bimodal.Metalogic.BXCanonical.Quasimodel.Construction
 
 /-!

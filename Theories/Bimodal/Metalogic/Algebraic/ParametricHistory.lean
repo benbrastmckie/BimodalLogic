@@ -27,7 +27,7 @@ Since domain = True for all times, we sidestep domain-related complexity.
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean (to_history)
+- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean (to_history)
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricHistory

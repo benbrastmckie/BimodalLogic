@@ -53,12 +53,20 @@ Metalogic/
 │   └── MCSProperties.lean
 │
 ├── Bundle/                # BFMCS completeness (primary approach)
+│   ├── FMCSDef.lean
 │   ├── FMCS.lean
 │   ├── BFMCS.lean
 │   ├── TemporalCoherence.lean
+│   ├── TemporalContent.lean
 │   ├── ModalSaturation.lean
-│   ├── Construction.lean
-│   └── CanonicalConstruction.lean
+│   ├── WitnessSeed.lean
+│   ├── CanonicalFrame.lean
+│   ├── CanonicalTaskRelation.lean
+│   ├── CanonicalIrreflexivity.lean
+│   ├── SuccRelation.lean
+│   ├── SuccExistence.lean
+│   ├── UntilSinceCoherence.lean
+│   └── Construction.lean
 │
 ├── Decidability/          # Tableau decision procedure
 │   ├── SignedFormula.lean
@@ -75,11 +83,28 @@ Metalogic/
 │   ├── BooleanStructure.lean
 │   ├── InteriorOperators.lean
 │   ├── UltrafilterMCS.lean
-│   └── AlgebraicRepresentation.lean
+│   ├── AlgebraicCompleteness.lean
+│   ├── ParametricCanonical.lean
+│   ├── ParametricHistory.lean
+│   ├── ParametricTruthLemma.lean
+│   ├── ParametricCompleteness.lean
+│   └── RestrictedParametricTruthLemma.lean
 │
-├── Soundness/             # Soundness conceptual grouping (files at top-level)
-├── Representation/        # Archived
-└── Compactness/           # Archived
+├── BXCanonical/           # Burgess 1982 chronicle completeness
+│   ├── Chronicle/         # Dense countermodel construction
+│   └── Completeness.lean  # Main completeness wiring
+│
+├── WeakCanonical/         # Weak/reflexive completeness (Henkin canonical model)
+│
+├── ConservativeExtension/ # Conservative extension results
+│
+├── Relational/            # Relational semantics (placeholder)
+│
+└── (Top-level files)
+    ├── Soundness.lean         # Main soundness theorem
+    ├── SoundnessLemmas.lean   # Supporting lemmas
+    ├── Completeness.lean      # MCS closure properties
+    └── Decidability.lean      # Re-export for decidability
 ```
 
 ## Module Dependency Flowchart
@@ -198,7 +223,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Algebraic/AlgebraicRepresentation.lean                   │
+│                    Algebraic/AlgebraicCompleteness.lean                   │
 │                      (algebraic_representation_theorem)                     │
 └─────────────────────────────────────────────────────────────────────────────┘
                                          │
@@ -254,17 +279,13 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 | Directory | Purpose | Status | README |
 |-----------|---------|--------|--------|
 | [Core/](Core/README.md) | MCS theory, Lindenbaum's lemma | Sorry-free | Yes |
-| [Bundle/](Bundle/README.md) | BFMCS completeness | Sorry-free (main theorems) | Yes |
+| [Bundle/](Bundle/README.md) | BFMCS completeness infrastructure | Sorry-free (main theorems) | Yes |
+| [BXCanonical/](BXCanonical/) | Burgess 1982 chronicle completeness | Active | No |
+| [WeakCanonical/](WeakCanonical/) | Weak/reflexive completeness (Henkin) | Active | No |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
-| [Soundness/](Soundness/README.md) | Conceptual grouping (files at top-level) | N/A | Yes |
-| [Canonical/](Canonical/) | Canonical model support | Active | No |
-| [Domain/](Domain/) | Domain-related constructions | Active | No |
-| [StagedConstruction/](StagedConstruction/) | Staged BFMCS construction | Active | No |
-| [Relational/](Relational/) | Relational semantics | Active | No |
 | [ConservativeExtension/](ConservativeExtension/) | Conservative extension | Active | No |
-| [Representation/](Representation/README.md) | Archived | Archived | Yes |
-| [Compactness/](Compactness/README.md) | Archived | Archived | Yes |
+| [Relational/](Relational/) | Relational semantics (placeholder) | Empty | No |
 
 ## Sorry Status
 

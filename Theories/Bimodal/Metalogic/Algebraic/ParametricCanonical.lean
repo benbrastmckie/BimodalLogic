@@ -30,12 +30,13 @@ The task relation is defined as:
 - **d = 0**: `M = N` (zero displacement = same world-state)
 - **d < 0**: `ExistsTask N.val M.val` (converse for backward direction)
 
-This matches the existing `canonical_task_rel` in CanonicalConstruction.lean but
-generalized to arbitrary D instead of hardcoded Int.
+This matches the existing `canonical_task_rel` in Bundle/CanonicalFrame.lean and
+Bundle/CanonicalTaskRelation.lean but generalized to arbitrary D instead of hardcoded Int.
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean
+- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean
+- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricCanonical

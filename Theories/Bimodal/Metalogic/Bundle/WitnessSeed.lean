@@ -11,7 +11,7 @@ import Bimodal.Theorems.TemporalDerived
 # Witness Seed Definitions and Consistency
 
 This module contains the temporal witness seed definitions and their consistency
-proofs, extracted from DovetailingChain.lean for use by CanonicalFrame.lean.
+proofs, used by CanonicalFrame.lean for temporal witness construction.
 
 Also contains the g_content/h_content duality theorems (g_content ⊆ implies h_content
 reverse, and vice versa).

@@ -59,8 +59,8 @@ a different history and would not produce the needed contradiction.
 
 ## Design
 
-The proof follows the same structure as CanonicalConstruction.lean, but generalized
-to arbitrary D. The key cases are:
+The proof follows the same structure as Bundle/FMCS.lean and Bundle/CanonicalFrame.lean,
+but generalized to arbitrary D. The key cases are:
 - atom: valuation = MCS membership (by definition)
 - bot: both sides are False
 - imp: by induction and MCS closure under derivation (BOTH directions use BOTH IH directions)
@@ -74,7 +74,7 @@ theorems `Truth.future_iff` and `Truth.past_iff`.
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean
+- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricTruthLemma

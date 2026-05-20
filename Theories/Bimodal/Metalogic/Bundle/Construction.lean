@@ -20,7 +20,7 @@ This module provides primitive building blocks for BFMCS construction:
 ## References
 
 - Modal saturation theory: Bimodal.Metalogic.Bundle.ModalSaturation
-- Active completeness chain: Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+- Active completeness chain: BXCanonical/CanonicalModel.lean and BXCanonical/Chronicle/
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -86,8 +86,8 @@ WHY: Single-family modal backward (phi in MCS -> Box phi in MCS) is NOT provable
 from first principles and the FALSE axiom was already removed. The sorry-backed
 definition was only used by construct_temporal_bfmcs (also archived).
 
-The active completeness chain uses construct_saturated_bfmcs_int from
-TemporalCoherentConstruction.lean, which uses multi-family modal saturation.
+The active completeness chain uses BXCanonical/CanonicalModel.lean and
+BXCanonical/Chronicle/ with multi-family modal saturation.
 
 DO NOT reintroduce single-family BFMCS constructions.
 See archived analysis for details.

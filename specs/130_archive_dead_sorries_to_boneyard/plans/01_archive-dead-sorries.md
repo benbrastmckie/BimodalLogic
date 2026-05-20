@@ -129,17 +129,17 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 3: Archive SigmaOrdering.lean (Whole File) and Update Imports [NOT STARTED]
+### Phase 3: Archive SigmaOrdering.lean (Whole File) and Update Imports [COMPLETED]
 
 **Goal**: Move `SigmaOrdering.lean` (167 lines, 3 sorries) to `Boneyard/FiltrationOrdering/` and fix the import chain in `DefectChain.lean`.
 
 **Tasks**:
-- [ ] Create directory `Theories/Bimodal/Boneyard/FiltrationOrdering/`
-- [ ] Move `Theories/Bimodal/Metalogic/BXCanonical/Filtration/SigmaOrdering.lean` to `Theories/Bimodal/Boneyard/FiltrationOrdering/SigmaOrdering.lean`
-- [ ] Update `Theories/Bimodal/Metalogic/BXCanonical/Filtration/DefectChain.lean` to replace the SigmaOrdering import with direct imports of Frame.lean and/or Construction.lean (whatever SigmaOrdering was providing transitively)
-- [ ] Verify CanonicalChain.lean still compiles (it imports DefectChain.lean)
-- [ ] Create `Theories/Bimodal/Boneyard/FiltrationOrdering/README.md` following the template from research report
-- [ ] Run `lake build` and verify zero new errors
+- [x] Create directory `Theories/Bimodal/Boneyard/FiltrationOrdering/`
+- [x] Move `Theories/Bimodal/Metalogic/BXCanonical/Filtration/SigmaOrdering.lean` to `Theories/Bimodal/Boneyard/FiltrationOrdering/SigmaOrdering.lean`
+- [x] Update `Theories/Bimodal/Metalogic/BXCanonical/Filtration/DefectChain.lean` to replace the SigmaOrdering import with direct imports of Frame.lean and/or Construction.lean (whatever SigmaOrdering was providing transitively)
+- [x] Verify CanonicalChain.lean still compiles (it imports DefectChain.lean)
+- [x] Create `Theories/Bimodal/Boneyard/FiltrationOrdering/README.md` following the template from research report
+- [x] Run `lake build` and verify zero new errors
 
 **Timing**: 45 minutes
 

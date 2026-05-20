@@ -284,10 +284,11 @@ of root, and `neg(psi) ∈ closureWithNeg(root) ⊆ deferralClosure(root)`.
 ### Key Insight
 
 The existing `TemporalCoherentFamily` quantifies forward_F/backward_P over ALL formulas.
-This is impossible to prove for the SuccChainFMCS because F-nesting is unbounded in
-full MCS chains. The restricted variant only quantifies over `deferralClosure(root)`,
-where F-nesting IS bounded (by `max_F_depth_in_closure`), making the coherence proof
-achievable via the restricted chain construction.
+Proving this for a chain construction requires bounding F-nesting depth, which is
+unbounded in full MCS chains. The restricted variant only quantifies over
+`deferralClosure(root)`, where F-nesting IS bounded (by `max_F_depth_in_closure`),
+making the coherence proof achievable via the BXCanonical chain construction's
+bounded subformula closure.
 -/
 
 /--

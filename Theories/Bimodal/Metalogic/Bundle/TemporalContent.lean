@@ -30,10 +30,10 @@ This induces a relationship between the content extractors via MCS properties:
 - φ ∈ p_content(M) ↔ ¬φ ∉ h_content(M)
 
 ## Usage
-- g_content and h_content: used in `TemporalCoherentConstruction.lean` and `DovetailingChain.lean`
-- f_content: foundation for Succ relation
-- p_content: foundation for DenseTask relation
-- u_content and s_content: Until/Since step conditions in canonical constructions
+- g_content and h_content: used in `CanonicalFrame.lean`, `WitnessSeed.lean`, and `SuccExistence.lean`
+- f_content: foundation for Succ relation (`SuccRelation.lean`)
+- p_content: symmetric past counterpart of f_content
+- u_content and s_content: Until/Since step conditions in `UntilSinceCoherence.lean`
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -46,8 +46,8 @@ g_content of an MCS: the set of all formulas phi where G phi appears in the MCS.
 **Important**: g_content strips F-formulas. If F(psi) is in M, psi will NOT
 appear in g_content(M) unless G(psi) is also in M. This means F-formulas do NOT
 persist through g_content seeds in chain constructions. Resolution of F-obligations
-requires a non-linear construction (e.g., omega-squared) rather than relying on
-linear g_content propagation. See DovetailingChain.lean for details.
+requires separate handling (see SuccRelation.lean's F-step condition and
+BXCanonical/CanonicalChain.lean's chain construction).
 -/
 def g_content (M : Set Formula) : Set Formula :=
   {phi | Formula.all_future phi ∈ M}
@@ -66,7 +66,8 @@ def h_content (M : Set Formula) : Set Formula :=
 f_content of an MCS: the set of all formulas phi where F phi (some_future phi) appears in the MCS.
 
 This extracts formulas under the existential future operator F.
-Used in the Succ relation construction (tasks 10-15) for discrete temporal frames.
+Used in the Succ relation construction (SuccRelation.lean, SuccExistence.lean)
+for discrete temporal frames.
 
 **Duality**: f_content relates to g_content via `Fφ = ¬G¬φ`.
 See `f_content_iff_not_neg_in_g_content` for the formal relationship.
@@ -78,7 +79,7 @@ def f_content (M : Set Formula) : Set Formula :=
 p_content of an MCS: the set of all formulas phi where P phi (some_past phi) appears in the MCS.
 
 This extracts formulas under the existential past operator P.
-Used in the DenseTask relation construction (tasks 16-18) for dense temporal frames.
+Symmetric past counterpart of f_content.
 
 **Duality**: p_content relates to h_content via `Pφ = ¬H¬φ`.
 See `p_content_iff_not_neg_in_h_content` for the formal relationship.

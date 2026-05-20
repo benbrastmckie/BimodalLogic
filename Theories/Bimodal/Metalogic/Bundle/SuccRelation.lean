@@ -22,9 +22,11 @@ Succ(u,v) captures when v is the "next" state after u, requiring both G-persiste
 
 ## Design
 
-The Succ relation is foundational infrastructure for the discrete track (tasks 10-15).
-It captures the notion of an "immediate next step" in a discrete temporal frame where
-each F-obligation is either satisfied at the next state or properly deferred.
+The Succ relation is foundational infrastructure for the discrete completeness path.
+Used by SuccExistence.lean for predecessor/successor construction, which underpins
+BXCanonical/CanonicalModel.lean. It captures the notion of an "immediate next step"
+in a discrete temporal frame where each F-obligation is either satisfied at the next
+state or properly deferred.
 
 **Condition (1)**: G-persistence - `g_content u ⊆ v`
   All universal future commitments propagate to the successor.
