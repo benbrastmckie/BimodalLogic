@@ -2287,7 +2287,9 @@ theorem imp_separable_with_type {a b A B : Formula}
   obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
   obtain ⟨ψb, hsepb, hequivb, hsingleb⟩ := hb
   exact ⟨.imp ψa ψb, by simp [is_syntactically_separated, hsepa, hsepb],
-         imp_congr hequiva hequivb, ⟨hsinglea, hsingleb⟩⟩
+         fun M t => ⟨fun h hp => (hequivb M t).mp (h ((hequiva M t).mpr hp)),
+                     fun h hp => (hequivb M t).mpr (h ((hequiva M t).mp hp))⟩,
+         ⟨hsinglea, hsingleb⟩⟩
 
 /-- U-free formulas are separable_with_U_type (vacuously). -/
 theorem u_free_separable_with_type {φ A B : Formula} (h : is_U_free φ = true) :
@@ -2312,19 +2314,47 @@ theorem untl_s_free_separable_with_type {A B : Formula}
   exact ⟨.untl A B, by simp [is_syntactically_separated, hA_sf, hB_sf],
          int_equiv_refl _, has_single_U_type_untl A B⟩
 
-/-- has_single_U_type for case1_psi when a, q are U-free. -/
+/-- has_single_U_type for case1_psi when a, q, A, B are U-free. -/
 private theorem case1_psi_has_single_U_type (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true) :
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true) :
     has_single_U_type (case1_psi a q A B) A B := by
-  simp only [case1_psi, Formula.or, Formula.and, Formula.neg]
+  simp only [case1_psi, Formula.or, Formula.and, Formula.neg, has_single_U_type]
   refine ⟨⟨⟨⟨⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩
-  all_goals first
-    | exact u_free_has_single_U_type ha
-    | exact u_free_has_single_U_type hq
-    | exact ⟨rfl, rfl⟩
-    | exact u_free_has_single_U_type (by simp [is_U_free, ha, hq])
-    | trivial
-    | (simp only [has_single_U_type]; trivial)
+  all_goals (try exact u_free_has_single_U_type ha)
+  all_goals (try exact u_free_has_single_U_type hq)
+  all_goals (try exact u_free_has_single_U_type hA)
+  all_goals (try exact u_free_has_single_U_type hB)
+  all_goals (try trivial)
+  all_goals (try exact ⟨rfl, rfl⟩)
+  all_goals (try exact ⟨trivial, trivial⟩)
+  all_goals simp_all [has_single_U_type, is_U_free,
+    u_free_has_single_U_type ha, u_free_has_single_U_type hq,
+    u_free_has_single_U_type hA, u_free_has_single_U_type hB]
+
+/-- has_single_U_type for case2_psi when a, q, A, B are U-free.
+    The only `.untl` in case2_psi is `(.untl A B)` inside `¬U(A,B) = .imp (.untl A B) .bot`
+    in disjunct d1. Disjuncts d2 and d3 are completely U-free. -/
+private theorem case2_psi_has_single_U_type (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true) :
+    has_single_U_type (case2_psi a q A B) A B := by
+  delta case2_psi
+  simp only [Formula.or, Formula.and, Formula.neg, has_single_U_type]
+  refine ⟨⟨⟨⟨⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+  all_goals (try exact u_free_has_single_U_type ha)
+  all_goals (try exact u_free_has_single_U_type hq)
+  all_goals (try exact u_free_has_single_U_type hA)
+  all_goals (try exact u_free_has_single_U_type hB)
+  all_goals (try trivial)
+  all_goals (try exact ⟨trivial, trivial⟩)
+  all_goals (try exact ⟨⟨trivial, trivial⟩, trivial⟩)
+  all_goals (try exact ⟨u_free_has_single_U_type hA, trivial⟩)
+  all_goals (try exact ⟨u_free_has_single_U_type hq, trivial⟩)
+  all_goals (try exact ⟨u_free_has_single_U_type hB, trivial⟩)
+  all_goals simp_all [has_single_U_type, is_U_free,
+    u_free_has_single_U_type ha, u_free_has_single_U_type hq,
+    u_free_has_single_U_type hA, u_free_has_single_U_type hB]
 
 /-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
     `has_no_allpast_allfuture` is separable, given a callback for handling
