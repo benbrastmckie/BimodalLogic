@@ -100,7 +100,14 @@ Phases are strictly sequential because each builds on the previous.
 
 ---
 
-### Phase B: Make Lemma 10.2.7 Oracle-Free [NOT STARTED]
+### Phase B: Make Lemma 10.2.7 Oracle-Free [BLOCKED]
+
+**BLOCKER** (Phase B):
+- **What failed**: Task B.1's `extract_innermost_U_type_contains_surface` lemma cannot be proved because `contains_untl_surface` does NOT descend into `.untl` children, but `extract_innermost_U_type` DOES. At depth >= 2, `extract_innermost_U_type` always enters `.untl` children (because at depth >= 2, the first surface `.untl a b` has at least one non-U-free arg), so the found `(A, B)` pair is never on the surface. More critically: Task B.2's inner `count_U_subformulas` induction cannot work because `count_U_subformulas (.untl _ _) = 1` (flat, does not recurse into children), so abstracting a non-surface `.untl A B` does NOT decrease `count_U_subformulas`.
+- **What was tried**: (1) Implementing `extract_innermost_U_type` and companion lemmas. The function and `_S_free`/`_U_free` lemmas compile correctly. (2) Attempting `_contains_surface` with `contains_untl_surface` -- fails because the predicate doesn't descend into `.untl` children. (3) Analyzing whether a `contains_untl_deep` variant would work -- it would, but `abstract_untl_count_lt_of_contains_surface` relies on `count_U_subformulas` which is flat at `.untl`. (4) Analyzing whether the OUTER `U_nesting_depth` IH could be used instead of inner count IH -- `abstract_untl_U_nesting_depth_le_of_le` only gives `<=`, not `<`.
+- **Why it's stuck**: The plan's approach combines `extract_innermost_U_type` (finds non-surface `.untl`) with `count_U_subformulas` induction (which only tracks surface `.untl` via the flat `count_U_subformulas (.untl _ _) = 1` definition). These are fundamentally incompatible. The plan internally acknowledges this tension (see lines 930-972 analyzing the measure problem) but does not resolve it.
+- **What is needed**: Either (a) a new count measure that also counts `.untl` nodes inside `.untl` children (e.g., total `.untl` count recursing everywhere), with proof that `abstract_untl` decreases it; or (b) a proof that `U_nesting_depth` STRICTLY decreases when abstracting the innermost `.untl` (requires showing the abstracted node was on the maximum-depth path); or (c) using `extract_U_type` (surface) at depth >= 2 with `subst_in_separated_separable_jd` (the current code, which the plan prohibits); or (d) a combined theorem approach (Phase C's `no_S_nested_sep_selfcontained`) that doesn't need the inner count IH at depth >= 2 of 10.2.7.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **GHR94 Reference**: Lemma 10.2.7 (pp. 572). "By induction on the maximum depth n of nesting of Us beneath an S."
 
@@ -108,7 +115,7 @@ Phases are strictly sequential because each builds on the previous.
 
 **Tasks**:
 
-- [ ] Task B.1: Create `extract_innermost_U_type` (~30 LOC)
+- [ ] Task B.1: Create `extract_innermost_U_type` (~30 LOC) *(deviation: blocked — `count_U_subformulas` measure incompatible with non-surface `.untl` extraction; see BLOCKER above)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Location**: Insert immediately BEFORE `no_S_nested_in_U_separable_direct_param` (before line 2589)
   - **What to create**: A function and three lemmas:
@@ -172,7 +179,7 @@ Phases are strictly sequential because each builds on the previous.
 
   **Verification gate**: `lake build` succeeds. The new function and lemmas are well-typed.
 
-- [ ] Task B.2: Rewrite `no_S_nested_in_U_separable_direct_param` depth >= 2 case (~20 LOC changed)
+- [ ] Task B.2: Rewrite `no_S_nested_in_U_separable_direct_param` depth >= 2 case (~20 LOC changed) *(deviation: blocked — depends on B.1 which is blocked)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **Location**: Lines 2599-2651 (the `no_S_nested_in_U_separable_direct_param` theorem)
   - **Exact change**: Remove the `oracle` parameter from the function signature. In the depth >= 2 case (the `else` branch starting around line 2614), make three specific changes:
