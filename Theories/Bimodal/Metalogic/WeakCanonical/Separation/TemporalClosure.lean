@@ -20,7 +20,7 @@ operators preserve separability) without axioms.
 
 ## Strategy
 
-The temporal closure axioms state that temporal operators preserve separability:
+The temporal closure theorems show that temporal operators preserve separability:
 - `snce_separable`: `is_separable φ → is_separable ψ → is_separable (snce φ ψ)`
 - `untl_separable`: `is_separable φ → is_separable ψ → is_separable (untl φ ψ)`
 - `all_past_separable`: `is_separable φ → is_separable (all_past φ)`
@@ -29,10 +29,9 @@ The temporal closure axioms state that temporal operators preserve separability:
 All four reduce to proving: given separated phi', psi' (from witnesses of `is_separable`),
 the recomposed temporal formula is separable. After box-normalization, these formulas
 satisfy `no_S_nested_in_U` (for snce/all_past) or `no_U_nested_in_S` (for untl/all_future).
-The two directions are connected by `swap_temporal` duality.
-
-The remaining challenge (Phase 6 blocker) is proving `no_S_nested_in_U → is_separable`
-without axioms, which requires the full GHR94 junction-depth induction machinery.
+The two directions are connected by `swap_temporal` duality. The key theorem
+`no_S_nested_in_U → is_separable` is proved in Hierarchy.lean via the full GHR94
+junction-depth induction machinery.
 
 ## References
 
@@ -273,8 +272,8 @@ where
 
 These lemmas show that wrapping separated formulas in temporal operators
 produces formulas with the no_S_nested_in_U (or dual) property. Combined
-with a proof of `no_S_nested_in_U → is_separable` (the Phase 6 goal),
-they would immediately yield the temporal closure theorems. -/
+with the theorem `no_S_nested_in_U → is_separable` (proved in Hierarchy.lean),
+they yield the temporal closure theorems. -/
 
 /-- snce of box-normalized separated formulas satisfies no_S_nested_in_U.
     This is the key structural reduction for `snce_separable`. -/

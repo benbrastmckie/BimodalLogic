@@ -784,15 +784,15 @@ theorem elim_case_4_gen (a q A B : Formula)
   valid in dense time.
 
   **Resolution**: Cases 5-8 are proved using the separation theorem
-  (`all_separable` from SeparationThm.lean), which establishes that
-  every formula is separable via structural induction + temporal closure.
+  (`all_formulas_separable` from Hierarchy.lean), which establishes that
+  every formula is separable via junction-depth induction (oracle-free).
   The explicit separated formula for Case 5 on integers remains an open
   problem, but its EXISTENCE is guaranteed by the theorem.
 
   See: specs/157_expressive_completeness_su_integer/reports/02_case5-blocker-research.md
 -/
 
--- Note: Cases 5-8 are now proved in NormalForm.lean using `all_separable` from SeparationThm.lean.
+-- Note: Cases 5-8 are now proved in NormalForm.lean using `all_formulas_separable` from Hierarchy.lean.
 -- The theorems `elim_case_5/6/7/8` have been moved there to resolve the import dependency
 -- (Eliminations.lean cannot import SeparationThm.lean without creating a cycle).
 
@@ -890,13 +890,13 @@ theorem since_guard_weaken {event guard₁ guard₂ : Formula}
 
   Cases 6-8 involve ¬U(A,B) in the event and/or guard. Like Case 5,
   the explicit formulas are affected by the GHR94 discrete-time error.
-  Their existence is proved via `all_separable` in NormalForm.lean.
+  Their existence is proved via `all_formulas_separable` in NormalForm.lean.
 
   Case 6: S(a ^ ¬U(A,B), q ∨ U(A,B))
   Case 7: S(a ^ U(A,B), q ∨ ¬U(A,B))
   Case 8: S(a ^ ¬U(A,B), q ∨ ¬U(A,B))
 -/
 
--- Note: Cases 6-8 theorems are now in NormalForm.lean (proved via all_separable).
+-- Note: Cases 6-8 theorems are now in NormalForm.lean (proved via all_formulas_separable).
 
 end Bimodal.Metalogic.WeakCanonical.Separation

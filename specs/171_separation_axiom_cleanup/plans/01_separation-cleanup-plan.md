@@ -156,32 +156,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Cleanup Stale Comments and Dead Wrappers (Group C) [NOT STARTED]
+### Phase 4: Cleanup Stale Comments and Dead Wrappers (Group C) [COMPLETED]
 
 **Goal**: Update all stale comments referencing Phase 6, axiom status, or outdated architecture. Delete dead backward-compat wrappers.
 
 **Tasks**:
-- [ ] **Hierarchy.lean** -- Update header comment (lines 19-20): "temporal closure axioms" -> "temporal closure theorems, proved in task 157"
-- [ ] **Hierarchy.lean** -- Update line 102-104: "`snce_separable` (temporal closure axiom)" -> "`snce_separable` (temporal closure theorem)"
-- [ ] **Hierarchy.lean** -- Update line 160-161: "These used the `snce_separable` axiom" -> clarify these were replaced by oracle-free versions
-- [ ] **Hierarchy.lean** -- Update line 177-179: remove "In Phase 6..." text
-- [ ] **Hierarchy.lean** -- Update line 673: simplify comment about current state
-- [ ] **Hierarchy.lean** -- Update line 803: remove "Key theorem for Phase 6B" reference
-- [ ] **Hierarchy.lean** -- Delete dead wrapper `no_S_nested_in_U_separable_noax` (lines 2946-2951)
-- [ ] **Hierarchy.lean** -- Delete dead wrapper `no_S_nested_in_U_separable_direct` (lines 3624-3627)
-- [ ] **SeparationThm.lean** -- Update header comment (lines 15-16): correct "consolidated in Eliminations.lean" to "now in Hierarchy.lean as all_formulas_separable"
-- [ ] **SeparationThm.lean** -- Rewrite comment block lines 64-83: temporal closure is now fully proved, not axiomatized
-- [ ] **SeparationThm.lean** -- Remove or rewrite comment lines 109-122: axiom soundness no longer relevant
-- [ ] **SeparationThm.lean** -- Rewrite proper separation section comment (lines 197-208): axioms are now theorems
-- [ ] **SeparationThm.lean** -- Update atom preservation comment (lines 260-267): now a theorem, not axiom
-- [ ] **TemporalClosure.lean** -- Update lines 23-27: "temporal closure axioms state that" -> "temporal closure theorems show that"
-- [ ] **TemporalClosure.lean** -- Remove "Phase 6 blocker" text at line 34-35
-- [ ] **TemporalClosure.lean** -- Remove "Phase 6 goal" at line 276
-- [ ] **Eliminations.lean** -- Update lines 786-795: clarify Cases 5-8 architecture
-- [ ] **Eliminations.lean** -- Update lines 893-900: update `all_separable` reference
-- [ ] **DualEliminations.lean** -- Update line 9: clarify `all_separable` location
-- [ ] Run `grep -rn "Phase 6\|axiom.*separable\|temporal closure axiom" Separation/` to catch any remaining stale references
-- [ ] Run `lake build` to verify no breakage
+- [x] **Hierarchy.lean** -- Update header comment: "temporal closure axioms" -> "temporal closure theorems"
+- [x] **Hierarchy.lean** -- Update snce_separable reference: "axiom" -> "theorem"
+- [x] **Hierarchy.lean** -- Update "These used the `snce_separable` axiom" text
+- [x] **Hierarchy.lean** -- Remove "In Phase 6..." text
+- [x] **Hierarchy.lean** -- Update "Phase 3:" header and "without temporal closure axioms" text
+- [x] **Hierarchy.lean** -- Remove "Key theorem for Phase 6B" reference
+- [x] **Hierarchy.lean** -- Delete dead wrapper `no_S_nested_in_U_separable_noax`
+- [x] **Hierarchy.lean** -- Delete dead wrapper `no_S_nested_in_U_separable_direct`
+- [x] **SeparationThm.lean** -- Update header comment to reference Hierarchy.lean
+- [x] **SeparationThm.lean** -- Rewrite temporal closure comment block (was axioms, now theorems)
+- [x] **SeparationThm.lean** -- Rewrite main separation comment (was axiom soundness, now clean)
+- [x] **SeparationThm.lean** -- Proper separation section already updated in Phase 2
+- [x] **SeparationThm.lean** -- Atom preservation already updated in Phase 3
+- [x] **TemporalClosure.lean** -- Update "temporal closure axioms state" -> "theorems show"
+- [x] **TemporalClosure.lean** -- Remove "Phase 6 blocker" text
+- [x] **TemporalClosure.lean** -- Update "Phase 6 goal" reference
+- [x] **Eliminations.lean** -- Update Cases 5-8 reference to `all_formulas_separable`
+- [x] **Eliminations.lean** -- Update `all_separable` references
+- [x] **DualEliminations.lean** -- Update `all_separable` -> `all_formulas_separable`
+- [x] Run `grep` sweep: zero "Phase 6" and zero "temporal closure axiom" references
+- [x] Run `lake build` to verify no breakage
 
 **Timing**: 1.5 hours
 

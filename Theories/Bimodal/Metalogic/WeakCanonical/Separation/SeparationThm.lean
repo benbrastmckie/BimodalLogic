@@ -13,9 +13,10 @@ syntactically separated formula over integer time.
 
 ## Structure
 
-The proof is consolidated in `Eliminations.lean` as `all_separable`.
+The full proof is in Hierarchy.lean as `all_formulas_separable`.
 This file provides the individual lemma statements from GHR94's
-hierarchical proof structure (Lemmas 10.2.4-10.2.8) as corollaries.
+hierarchical proof structure (Lemmas 10.2.4-10.2.8) as corollaries,
+plus the proper separation theorem and atom-preserving separation.
 
 ## References
 
@@ -61,26 +62,11 @@ private theorem snce_congr {φ₁ ψ₁ φ₂ ψ₂ : Formula}
 
 -- is_separable_of_equiv is now public in Eliminations.lean
 
-/-! ## Temporal Closure Axiom
+/-! ## Temporal Closure Theorems
 
-The temporal cases of `all_separable` require the GHR94 substitution bridge
-(Lemmas 10.2.4-10.2.8): given a separated formula φ' with U-subterms,
-show that `all_past φ'`, `all_future φ'`, `untl φ' ψ'`, `snce φ' ψ'` are
-separable by:
-1. Extracting maximal U-subterms (which have S-free args by separation)
-2. Replacing them by fresh atoms
-3. Showing the simpler formula has lower junction_depth
-4. Applying elimination cases (Lemma 10.2.3) to handle the S-U interaction
-5. Re-substituting via the separation decomposition
-
-Note: Cases 5-8 of Lemma 10.2.3 are now proved (via `all_separable` itself,
-which depends only on these temporal closure axioms, not on Cases 5-8).
-The remaining axioms below encapsulate the substitution bridge (Lemmas
-10.2.4-10.2.8) for the temporal closure step. They will be eliminated in
-Phase 6 when the full junction-depth induction is implemented.
-
-The axioms are sound because the separation theorem for integer time is
-independently established (Kamp 1968 for Z, Reynolds 1994). -/
+The temporal closure theorems state that temporal operators preserve separability.
+These are corollaries of `all_formulas_separable` (proved in Hierarchy.lean via
+the full GHR94 junction-depth induction). -/
 
 /-- Temporal closure: all_past of a separable formula is separable.
     When the separated equivalent φ' is U-free, all_past φ' is directly
@@ -108,24 +94,12 @@ theorem snce_separable (φ ψ : Formula) (_h1 : is_separable φ) (_h2 : is_separ
 
 /-! ## Main Separation Theorem (all formulas are separable)
 
-The proof proceeds by structural induction on the formula. The base cases
-(atoms, bot, imp, box) are immediate. The temporal cases (all_past,
-all_future, untl, snce) use the temporal closure axioms above, which
-encapsulate the GHR94 Lemmas 10.2.4-10.2.8 substitution bridge.
-
-The temporal closure axioms are sound because:
-1. The elimination cases (Lemma 10.2.3, all 8 cases now proved) provide
-   the core mechanism
-2. The substitution bridge (Lemmas 10.2.4-10.2.8) is a standard
-   mechanical construction on top of the elimination cases
-3. The separation theorem for Z is independently established by
-   Kamp's theorem and Reynolds' axiomatization -/
+Every formula is separable, proved via `all_formulas_separable` in Hierarchy.lean.
+The full proof uses junction-depth induction with the GHR94 Lemmas 10.2.4-10.2.8
+substitution bridge. -/
 
 /-- Every {U,S}-formula over integer time is separable (equivalent to a
-    syntactically separated formula). GHR94 Theorem 10.2.9.
-
-    The proof uses structural induction with temporal closure axioms
-    for the inductive temporal cases. -/
+    syntactically separated formula). GHR94 Theorem 10.2.9. -/
 theorem all_separable (phi : Formula) : is_separable phi :=
   all_formulas_separable phi
 

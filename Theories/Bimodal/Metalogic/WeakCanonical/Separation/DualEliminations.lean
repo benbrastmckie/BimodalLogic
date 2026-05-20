@@ -6,10 +6,11 @@ import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 # Dual Elimination Cases (S out of U)
 
 The 8 dual cases (pulling S out from under U) follow from the master
-separability theorem `all_separable` combined with the duality principle.
+separability theorem `all_formulas_separable` (in Hierarchy.lean)
+combined with the duality principle.
 
 Each theorem concludes `is_separable`, which follows directly from
-`all_separable` (every formula is separable over integer time).
+`all_formulas_separable` (every formula is separable over integer time).
 
 ## References
 

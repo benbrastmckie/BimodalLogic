@@ -13,12 +13,11 @@ the inductive backbone for the full separation theorem.
 If a formula has exactly one U-formula type U(A,B) (with A, B S-free),
 then it is separable. The proof uses structural induction with:
 - Boolean closure (imp_separable, etc.) for boolean cases
-- Temporal closure axioms for all_past, all_future, untl
+- Temporal closure theorems for all_past, all_future, untl
 - Lemma 10.2.4 for the snce case (where U(A,B) is in S-arguments)
 
-The temporal closure axioms will be eliminated in Phase 6 when the full
-hierarchy is assembled. For now, they provide the termination guarantee
-for the cases where U(A,B) appears under non-S temporal operators.
+The full hierarchy (Lemmas 10.2.5-10.2.8) is assembled oracle-free,
+culminating in `all_formulas_separable` at the bottom of this file.
 
 ## References
 
@@ -99,9 +98,8 @@ The proof is by structural induction on φ. The key insight is that
 every subformula also has single U-type U(A,B), so the IH applies
 recursively.
 
-For the `snce` case, we use `snce_separable` (temporal closure axiom)
-applied to the inductively separable arguments. This axiom will be
-eliminated in Phase 6 when the full junction-depth induction is built.
+For the `snce` case, we use `snce_separable` (temporal closure theorem)
+applied to the inductively separable arguments.
 -/
 
 /-- Helper: Formula.neg preserves has_single_U_type. -/
@@ -157,7 +155,7 @@ theorem untl_s_free_separable {A B : Formula}
 
 -- [Removed: single_U_formula_separable, snce_single_U_top_level_separable,
 --  single_U_neg_separable, single_U_or_separable, single_U_and_separable
---  These used the `snce_separable` axiom from SeparationThm.lean.
+--  These originally used the `snce_separable` axiom.
 --  Replaced by single_U_formula_separable_no_oracle (oracle-free, later in file).]
 
 /-! ## Lemma 10.2.6: Multi-U Induction on Count (GHR94)
@@ -174,9 +172,8 @@ The proof strategy (GHR94, p. 581):
 3. Apply Lemma 10.2.5 after abstraction reduces to single U-type.
 4. Use `subst_correctness` to relate the abstracted formula back to the original.
 
-At this stage, the main theorem `multi_U_formula_separable` uses the temporal
-closure axioms (via `all_separable`). In Phase 6, this will be strengthened
-to a self-contained proof using junction-depth induction.
+The full hierarchy is now proved oracle-free, culminating in
+`all_formulas_separable` which uses junction-depth induction.
 
 ## References
 
@@ -800,7 +797,7 @@ theorem abstract_snce_untl_both_snce_jdU_lt (A B : Formula) (p : Atom) :
   abstract_snce_untl_jdU_lt_both _ _ _ _ _
     (jdU_abstract_snce_snce_lt A B p) (jdU_abstract_snce_snce_lt A B p)
 
-/-- Key theorem for Phase 6B: abstracting S(A,B) from the U-argument that achieves
+/-- Key theorem: abstracting S(A,B) from the U-argument that achieves
     the maximum jdU decreases junction_depth of the whole `.untl` node.
     Precondition: one branch's jdU strictly decreases AND that branch strictly dominates
     the other (or both strictly decrease). -/
@@ -821,11 +818,11 @@ theorem abstract_snce_inside_untl_jd_lt (a b A B : Formula) (p : Atom)
   · have := abstract_snce_untl_jdU_lt_both a b A B p hlt_a hlt_b
     simp only [abstract_snce, junction_depth_U] at this; exact this
 
-/-! ## Phase 3: Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
+/-! ## Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
 
-This section proves the full hierarchy without temporal closure axioms.
-The chain is: Cases 1-8 → no_S_nested_in_U_separable → junction_depth_separable
-→ all_formulas_separable. No circular dependencies.
+This section proves the full hierarchy as theorems (no axioms).
+The chain is: Cases 1-8 -> no_S_nested_in_U_separable -> junction_depth_separable
+-> all_formulas_separable. No circular dependencies.
 
 ### Key Technique: Constituent Substitution
 
@@ -2942,14 +2939,6 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
         hAB_sf.1 hAB_sf.2 hpsi_sep callback
     exact is_separable_of_equiv hphi_equiv h_subst_sep
 
-/-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
-    is separable. Oracle-free version using `no_S_nested_sep`. -/
-theorem no_S_nested_in_U_separable_noax (phi : Formula)
-    (hns : no_S_nested_in_U phi)
-    (hexp : has_no_allpast_allfuture phi = true) :
-    is_separable phi :=
-  no_S_nested_sep phi hns
-
 /-! ### Step 5c': Single-U-Type Separability (GHR94 Lemma 10.2.5, axiom-free)
 
 The main inductive theorem: any formula with single-U-type is separable.
@@ -3421,9 +3410,9 @@ private theorem callback_U_nesting_depth_le_one (c d : Formula) (p : Atom) (A B 
   omega
 
 /-- Version of `subst_in_separated_separable` where the callback also receives
-    `U_nesting_depth χ ≤ 1`. Used by `no_S_nested_in_U_separable_direct` to
-    thread the `U_nesting_depth` IH through back-substitution at depth ≥ 2.
-    Requires U-free A, B (so callback formulas have depth ≤ 1). -/
+    `U_nesting_depth χ ≤ 1`. Used by `no_S_nested_sep` to thread the
+    `U_nesting_depth` IH through back-substitution at depth >= 2.
+    Requires U-free A, B (so callback formulas have depth <= 1). -/
 theorem subst_in_separated_separable_depth (ψ : Formula) (p : Atom) (A B : Formula)
     (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
     (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
@@ -3618,13 +3607,6 @@ theorem no_S_nested_in_U_separable_direct_param (phi : Formula)
             hAB_sf.1 hAB_sf.2 hpsi_sep oracle
         exact is_separable_of_equiv hphi_equiv h_subst_sep
   exact outer (U_nesting_depth phi) phi (Nat.le_refl _) hns
-
-/-- GHR94 Lemma 10.2.7 (backward-compatible wrapper):
-    Now delegates to the oracle-free version. -/
-theorem no_S_nested_in_U_separable_direct (phi : Formula)
-    (hns : no_S_nested_in_U phi) :
-    is_separable phi :=
-  no_S_nested_sep phi hns
 
 /-- GHR94 Lemmas 10.2.6 + 10.2.7 (oracle-free):
     A formula with no_S_nested_in_U is separable.
