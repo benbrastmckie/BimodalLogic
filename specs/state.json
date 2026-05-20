@@ -213,7 +213,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -222,7 +222,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T18:54:12Z",
+      "last_updated": "2026-05-20T19:06:53Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -271,11 +271,6 @@
           "summary": "Path B feasibility: known model theory but ~2x harder than claimed (540-990 lines), recommends axiomatize Theorem 4 + prove Theorem 5 + Reynolds direct (~400-700 lines)"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/06_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "v5: Full Reynolds, 10 phases, 60h est."
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-4-handoff-20260520c.md",
           "type": "handoff",
           "summary": "Phase 4-5 progress: StaviConnectives complete, EFGames skeleton, flatten_stavi_correct (Theorem 5) sorry-free"
@@ -284,9 +279,14 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md",
           "type": "research",
           "summary": "GHR93 strategy review: dependency chain analysis, three alternative approaches, revised phase recommendations with effort estimates"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/07_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Reynolds Pipeline v6 plan: full GHR93 Theorem 9.3.1 game-theoretic proof with 12 phases (5 completed, 7 remaining), 55 hours estimated"
         }
       ],
-      "session_id": "sess_1779302773_0a17f1",
+      "session_id": "sess_1779303459_ec1b84",
       "researched": "2026-05-20T18:54:12Z",
       "started": "2026-05-16T19:49:58Z"
     },
