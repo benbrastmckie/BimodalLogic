@@ -223,7 +223,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-20T19:08:25Z",
-      "next_artifact_number": 7,
+      "next_artifact_number": 10,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -284,6 +284,16 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/07_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Reynolds Pipeline v6 plan: full GHR93 Theorem 9.3.1 game-theoretic proof with 12 phases (5 completed, 7 remaining), 55 hours estimated"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/08_ghr93-game-theory.md",
+          "type": "research",
+          "summary": "GHR93 Section 8 game-theoretic proof extraction: G_{n;r} game, 4 cases, left/right gap detection, composition lemma, dependency chain"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/09_lean-infrastructure-inventory.md",
+          "type": "research",
+          "summary": "Lean infrastructure inventory: solid foundations (NormalForm, k_equiv, StaviFormula), missing game strategies/Fraisse/composition/gap detection"
         }
       ],
       "session_id": "sess_1779304083_f28ee0",
