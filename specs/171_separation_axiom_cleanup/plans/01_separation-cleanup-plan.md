@@ -1,7 +1,7 @@
 # Implementation Plan: Separation Axiom Cleanup
 
 - **Task**: 171 - Eliminate remaining separation axioms and clean up post-task-157 artifacts
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: Task 157 (completed)
 - **Research Inputs**: reports/02_post-157-analysis.md

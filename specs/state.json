@@ -477,7 +477,7 @@
     {
       "project_number": 171,
       "project_name": "separation_axiom_cleanup",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "completeness",
@@ -486,7 +486,7 @@
         157
       ],
       "created": "2026-05-20T07:11:01Z",
-      "last_updated": "2026-05-20T07:39:22Z",
+      "last_updated": "2026-05-20T08:09:47Z",
       "researched": "2026-05-20T07:28:10Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -504,9 +504,15 @@
           "path": "specs/171_separation_axiom_cleanup/plans/01_separation-cleanup-plan.md",
           "type": "plan",
           "summary": "5-phase plan: predicate equivalence (Group A), hierarchy atom tracking (Group B), stale comment cleanup (Group C). 13 hours estimated."
+        },
+        {
+          "path": "specs/171_separation_axiom_cleanup/summaries/01_separation-cleanup-summary.md",
+          "type": "summary",
+          "summary": "Eliminated all 5 axioms via predicate equivalence and atom restriction. Cleaned stale comments and dead wrappers."
         }
       ],
-      "session_id": "sess_1779262392_5cd576"
+      "session_id": "sess_1779262392_5cd576",
+      "completion_summary": "Eliminated all 5 axioms from SeparationThm.lean: 4 proper separation axioms replaced via predicate equivalence (is_syntactically_separated = is_properly_separated), atom preservation proved via restrict_atoms approach. Cleaned 22+ stale comments, deleted 2 dead wrappers. Zero axioms, zero sorries in Separation module."
     }
   ],
   "next_project_number": 172,
