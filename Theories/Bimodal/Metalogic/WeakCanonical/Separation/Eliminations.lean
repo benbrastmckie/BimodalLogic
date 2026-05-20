@@ -59,11 +59,11 @@ theorem u_free_s_free_is_separable (φ : Formula)
     is_separable φ :=
   ⟨φ, u_free_s_free_imp_separated φ hu hs, int_equiv_refl φ⟩
 
-private theorem neg_separated {φ : Formula} (h : is_syntactically_separated φ = true) :
+theorem neg_separated {φ : Formula} (h : is_syntactically_separated φ = true) :
     is_syntactically_separated (Formula.neg φ) = true := by
   simp [Formula.neg, is_syntactically_separated, h]
 
-private theorem and_separated {φ ψ : Formula}
+theorem and_separated {φ ψ : Formula}
     (h1 : is_syntactically_separated φ = true) (h2 : is_syntactically_separated ψ = true) :
     is_syntactically_separated (Formula.and φ ψ) = true := by
   simp [Formula.and, Formula.neg, is_syntactically_separated, h1, h2]

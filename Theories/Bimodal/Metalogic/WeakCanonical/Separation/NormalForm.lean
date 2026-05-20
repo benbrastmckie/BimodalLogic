@@ -1,6 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
-import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ
 
 /-!

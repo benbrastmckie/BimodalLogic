@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv
-import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 
 /-!
 # Dedekind Specialization for Integer Time (GHR94 Section 10.3)
@@ -715,7 +714,7 @@ theorem and_or_distrib (a b c : Formula) :
       exact int_truth_and_iff.mpr ⟨int_truth_or_iff.mpr (Or.inr hb), hc⟩
 
 /-- Q_Z with negated q argument is U-free. -/
-private theorem Q_Z_neg_q_U_free (A B q : Formula)
+theorem Q_Z_neg_q_U_free (A B q : Formula)
     (hA : is_U_free A = true) (hB : is_U_free B = true) (hq : is_U_free q = true) :
     is_U_free (Q_Z A B (Formula.neg q)) = true :=
   Q_Z_U_free A B (Formula.neg q) hA hB (by simp [Formula.neg, is_U_free, hq])
@@ -1336,7 +1335,7 @@ D2 uses eliminations (3) and (5): factor (q∨U) in event, apply since_distrib. 
 set_option maxHeartbeats 3200000 in
 /-- GHR94 10.2.3 item 6: S(a∧¬U, q∨U) ↔ [S(a,q∧¬A)∧¬A∧¬(B∧U)] ∨ S(¬B∧¬A∧(q∨U)∧S(a,q∧¬A), q∨U).
     The decomposition considers when the first ¬B after the witness s occurs. -/
-private theorem case6_equiv_Z (a q A B : Formula) :
+theorem case6_equiv_Z (a q A B : Formula) :
     int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
                      (Formula.or q (.untl A B)))
               (Formula.or
@@ -1763,7 +1762,7 @@ The first disjunct can be further eliminated by eliminations (8) and (4). -/
 set_option maxHeartbeats 3200000 in
 /-- GHR94 10.2.3 item 7: S(a∧U, q∨¬U) ↔ D1 ∨ D2 ∨ D3.
     The decomposition considers when the A from U(A,B) first occurs. -/
-private theorem case7_equiv_Z (a q A B : Formula) :
+theorem case7_equiv_Z (a q A B : Formula) :
     int_equiv (.snce (Formula.and a (.untl A B))
                      (Formula.or q (Formula.neg (.untl A B))))
               (Formula.or (Formula.or
@@ -1908,7 +1907,7 @@ This avoids the multi-U-type problem because:
 
 set_option maxHeartbeats 1600000 in
 /-- GHR94 10.3.11.8 on Z: S(a∧¬U, q∨¬U) ↔ S(a∧¬U, ⊤) ∧ ¬S(¬q∧U, ¬a∨U). -/
-private theorem case8_equiv_Z (a q A B : Formula) :
+theorem case8_equiv_Z (a q A B : Formula) :
     int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
                      (Formula.or q (Formula.neg (.untl A B))))
               (Formula.and

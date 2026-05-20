@@ -254,7 +254,7 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 ---
 
-### Phase 5: Fix n=1, Import Reversal, Axiom Replacement [NOT STARTED]
+### Phase 5: Fix n=1, Import Reversal, Axiom Replacement [COMPLETED]
 
 **Goal**: Replace n=1 fallback with `no_S_nested_sep`, reverse import, replace axioms.
 

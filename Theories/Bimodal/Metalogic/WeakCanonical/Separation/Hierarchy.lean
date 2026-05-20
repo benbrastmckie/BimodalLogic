@@ -156,93 +156,10 @@ theorem untl_s_free_separable {A B : Formula}
     is_separable (.untl A B) :=
   ⟨.untl A B, untl_s_free_separated hA hB, int_equiv_refl _⟩
 
-/-- Lemma 10.2.5 (GHR94): If φ has single U-type U(A,B) with A, B S-free,
-    then φ is separable.
-
-    The proof uses structural induction. The `snce` case leverages the
-    temporal closure axiom `snce_separable` applied to inductively separable
-    arguments. This axiom encapsulates the S-nesting induction argument:
-    the inner S-subformulas with U(A,B) are separable by IH, and
-    `snce_separable` propagates separability through the S-operator.
-
-    In later phases, `snce_separable` will be proved from the full hierarchy
-    (Lemmas 10.2.6-10.2.8), eliminating the axiom. -/
-theorem single_U_formula_separable (φ A B : Formula)
-    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-    (h_single : has_single_U_type φ A B) :
-    is_separable φ := by
-  induction φ with
-  | atom a => exact ⟨.atom a, rfl, int_equiv_refl _⟩
-  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
-  | imp ψ₁ ψ₂ ih1 ih2 =>
-    exact imp_separable (ih1 h_single.1) (ih2 h_single.2)
-  | box ψ _ih => exact ⟨.box ψ, rfl, int_equiv_refl _⟩
-  | untl ψ₁ ψ₂ _ih1 _ih2 =>
-    -- This IS U(A,B) since has_single_U_type forces ψ₁ = A, ψ₂ = B
-    have ⟨heq1, heq2⟩ := h_single
-    subst heq1; subst heq2
-    exact untl_s_free_separable hA_sf hB_sf
-  | snce ψ₁ ψ₂ ih1 ih2 =>
-    -- Apply snce_separable (temporal closure axiom) to the IH results
-    exact snce_separable ψ₁ ψ₂ (ih1 h_single.1) (ih2 h_single.2)
-
-/-! ## Direct S-Case: Lemma 10.2.4 Application
-
-For the specific case where U(A,B) appears at top level within a single
-S formula (not under nested S), Lemma 10.2.4 gives a direct proof without
-needing temporal closure. This is the "base case" of the S-nesting argument.
-
-This provides a stronger result for Phase 5: when we know U(A,B) is at
-top level in the S-arguments, we can use Lemma 10.2.4 directly without
-invoking `snce_separable`. -/
-
-/-- A Since formula S(C, F) where C and F have U(A,B) at top level only
-    (not under nested S) is separable by Lemma 10.2.4.
-
-    This handles the base case of S-nesting induction: when U(A,B) appears
-    directly in S-arguments without additional S-nesting below. -/
-theorem snce_single_U_top_level_separable (C F A B : Formula)
-    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-    (hC_single : has_single_U_type C A B)
-    (hF_single : has_single_U_type F A B)
-    (hC_uf : is_U_free C = true ∨ ¬(is_U_free C = true))
-    (hF_uf : is_U_free F = true ∨ ¬(is_U_free F = true)) :
-    is_separable (.snce C F) := by
-  -- Use snce_separable with IH from single_U_formula_separable
-  exact snce_separable C F
-    (single_U_formula_separable C A B hA_sf hB_sf hC_single)
-    (single_U_formula_separable F A B hA_sf hB_sf hF_single)
-
-/-! ## Corollaries for Phase 5
-
-These corollaries package Lemma 10.2.5 in the forms needed for proving
-Cases 5-8 in Phase 5. -/
-
-/-- If a formula has single U-type U(A,B) with S-free A, B, and is wrapped
-    in negation, it is still separable. -/
-theorem single_U_neg_separable (φ A B : Formula)
-    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-    (h_single : has_single_U_type φ A B) :
-    is_separable (Formula.neg φ) :=
-  neg_separable (single_U_formula_separable φ A B hA_sf hB_sf h_single)
-
-/-- Disjunction of two single-U-type separable formulas is separable. -/
-theorem single_U_or_separable (φ ψ A B : Formula)
-    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-    (h1 : has_single_U_type φ A B) (h2 : has_single_U_type ψ A B) :
-    is_separable (Formula.or φ ψ) :=
-  or_separable
-    (single_U_formula_separable φ A B hA_sf hB_sf h1)
-    (single_U_formula_separable ψ A B hA_sf hB_sf h2)
-
-/-- Conjunction of two single-U-type separable formulas is separable. -/
-theorem single_U_and_separable (φ ψ A B : Formula)
-    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-    (h1 : has_single_U_type φ A B) (h2 : has_single_U_type ψ A B) :
-    is_separable (Formula.and φ ψ) :=
-  and_separable
-    (single_U_formula_separable φ A B hA_sf hB_sf h1)
-    (single_U_formula_separable ψ A B hA_sf hB_sf h2)
+-- [Removed: single_U_formula_separable, snce_single_U_top_level_separable,
+--  single_U_neg_separable, single_U_or_separable, single_U_and_separable
+--  These used the `snce_separable` axiom from SeparationThm.lean.
+--  Replaced by single_U_formula_separable_no_oracle (oracle-free, later in file).]
 
 /-! ## Lemma 10.2.6: Multi-U Induction on Count (GHR94)
 
@@ -752,44 +669,9 @@ theorem abstract_untl_preserves_separated (phi A B : Formula) (p : Atom)
     exact ⟨by rw [abstract_untl_identity_on_U_free a A B p hsep.1]; exact hsep.1,
            by rw [abstract_untl_identity_on_U_free b A B p hsep.2]; exact hsep.2⟩
 
-/-! ### Lemma 10.2.6: Multi-U Formula Separability -/
-
-/-- Lemma 10.2.6 (GHR94): If no S is nested within any U-argument of φ
-    (equivalently: all U-arguments are S-free), then φ is separable.
-
-    Proved via `all_separable` (which is now a theorem, not an axiom,
-    once Phase 5 completes the SeparationThm axiom replacement). -/
-theorem multi_U_formula_separable (phi : Formula) (h : no_S_nested_in_U phi) :
-    is_separable phi :=
-  all_separable phi
-
-/-- Corollary: A formula with exactly two U-types (both S-free args) is separable.
-    This is the form most directly used in Phase 5 for Cases 5 and 6. -/
-theorem two_U_types_separable (phi : Formula) (h : no_S_nested_in_U phi) :
-    is_separable phi :=
-  multi_U_formula_separable phi h
-
-/-! ### Additional Corollaries for Phase 5
-
-These package multi_U_formula_separable in forms convenient for the
-Case 5-8 proofs. -/
-
-/-- If a formula has no_S_nested_in_U and is wrapped in negation, it's separable. -/
-theorem multi_U_neg_separable (phi : Formula) (h : no_S_nested_in_U phi) :
-    is_separable (Formula.neg phi) :=
-  neg_separable (multi_U_formula_separable phi h)
-
-/-- Disjunction of two no_S_nested_in_U formulas is separable. -/
-theorem multi_U_or_separable (phi psi : Formula)
-    (h1 : no_S_nested_in_U phi) (h2 : no_S_nested_in_U psi) :
-    is_separable (Formula.or phi psi) :=
-  or_separable (multi_U_formula_separable phi h1) (multi_U_formula_separable psi h2)
-
-/-- Conjunction of two no_S_nested_in_U formulas is separable. -/
-theorem multi_U_and_separable (phi psi : Formula)
-    (h1 : no_S_nested_in_U phi) (h2 : no_S_nested_in_U psi) :
-    is_separable (Formula.and phi psi) :=
-  and_separable (multi_U_formula_separable phi h1) (multi_U_formula_separable psi h2)
+-- [Removed: multi_U_formula_separable, two_U_types_separable, multi_U_neg_separable,
+--  multi_U_or_separable, multi_U_and_separable
+--  These used all_separable/snce_separable. Replaced by no_S_nested_sep (later in file).]
 
 /-! ### junction_depth decrease lemmas for abstract_snce -/
 
@@ -3221,15 +3103,13 @@ theorem single_U_formula_separable_noax_param (phi A B : Formula)
   exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
 
 /-- GHR94 Lemma 10.2.5 (backward-compatible wrapper):
-    Uses `all_separable` as the oracle for backward compatibility.
-    Phase 5 will eliminate `all_separable` dependency. -/
+    Now delegates to the oracle-free version. -/
 theorem single_U_formula_separable_noax (phi A B : Formula)
     (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
     (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
     (h_single : has_single_U_type phi A B) :
     is_separable phi :=
-  single_U_formula_separable_noax_param phi A B hA_sf hB_sf hA_uf hB_uf h_single
-    (fun chi hns _hjd => all_separable chi)
+  single_U_formula_separable_no_oracle phi A B hA_sf hB_sf hA_uf hB_uf h_single
 
 /-- GHR94 Lemma 10.2.5 (oracle-free, returning is_separable_with_U_type):
     A formula with single U-type U(A,B) (where A, B are S-free and U-free)
@@ -3449,13 +3329,12 @@ theorem lemma_10_2_6_self_contained_param (phi : Formula)
     exact is_separable_of_equiv hphi_equiv h_subst_sep
 
 /-- GHR94 Lemma 10.2.6 (backward-compatible wrapper):
-    Uses `all_separable` as the oracle for backward compatibility. -/
+    Now delegates to the oracle-free version. -/
 theorem lemma_10_2_6_self_contained (phi : Formula)
     (hns : no_S_nested_in_U phi)
     (hd : U_nesting_depth phi ≤ 1) :
     is_separable phi :=
-  lemma_10_2_6_self_contained_param phi hns hd
-    (fun chi hns _hjd => all_separable chi)
+  lemma_10_2_6_no_oracle phi hns hd
 
 /-- GHR94 Lemma 10.2.6 (oracle-free):
     Uses `single_U_formula_separable_no_oracle` directly instead of an oracle. -/
@@ -3743,12 +3622,11 @@ theorem no_S_nested_in_U_separable_direct_param (phi : Formula)
   exact outer (U_nesting_depth phi) phi (Nat.le_refl _) hns
 
 /-- GHR94 Lemma 10.2.7 (backward-compatible wrapper):
-    Uses `all_separable` as the oracle for backward compatibility. -/
+    Now delegates to the oracle-free version. -/
 theorem no_S_nested_in_U_separable_direct (phi : Formula)
     (hns : no_S_nested_in_U phi) :
     is_separable phi :=
-  no_S_nested_in_U_separable_direct_param phi hns
-    (fun chi _hns _hjd => all_separable chi)
+  no_S_nested_sep phi hns
 
 /-- GHR94 Lemmas 10.2.6 + 10.2.7 (oracle-free):
     A formula with no_S_nested_in_U is separable.
@@ -3928,8 +3806,8 @@ theorem all_formulas_separable_aux (φ : Formula)
               (fun chi hns_chi hjd_chi =>
                 ih_jd (junction_depth chi) (by omega) chi
                   (le_refl _) (has_no_allpast_allfuture_true chi))
-          · -- n = 1: fallback to axiom-dependent path (to be eliminated)
-            exact no_S_nested_in_U_separable_direct (.snce χa χb) hns
+          · -- n = 1: use oracle-free no_S_nested_sep
+            exact no_S_nested_sep (.snce χa χb) hns
         exact is_separable_of_equiv hequiv h_sep
     | untl a b ih_a ih_b =>
       -- Sub-formulas have JD ≤ n
@@ -3965,7 +3843,7 @@ theorem all_formulas_separable_aux (φ : Formula)
               (fun chi hns_chi hjd_chi =>
                 ih_jd (junction_depth chi) (by omega) chi
                   (le_refl _) (has_no_allpast_allfuture_true chi))
-          · exact no_S_nested_in_U_separable_direct _ hns_S
+          · exact no_S_nested_sep _ hns_S
         -- Step 7: dual_separable
         have h_untl_sep : is_separable (.untl χa χb) := by
           have h := dual_separable _ h_swap_sep
