@@ -1,11 +1,11 @@
 ---
-next_project_number: 174
+next_project_number: 179
 repository_health:
   overall_score: 95
   production_readiness: near-publication
   last_assessed: 2026-05-20T00:00:00Z
 task_counts:
-  active: 18
+  active: 23
   completed: 128
   in_progress: 1
   not_started: 13
@@ -27,63 +27,132 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-20. 18 active tasks. Archived 4 completed tasks (116, 157, 167, 171). Created 2 review tasks (172, 173).*
+*Updated 2026-05-20. 23 active tasks. Created 5 refactoring tasks (174-178).*
 
-**Goal**: Sorry-free `bx_completeness` (Reynolds pipeline) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
+**Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
 
-**Dependency Waves**:
-| Wave | Tasks | Blocked by | Topics |
-|------|-------|------------|--------|
-| 1 | 21, 95, 130, 131, 155, 156, 161, 162, 168 | -- | completeness, formula-refactor, meta, proof-system |
-| 2 | 125, 127, 128, 164, 165, 169 | 168 | extensions, algebraic, decidability |
-| 3 | 170 | 169 | completeness (Complete extension) |
+**Refactoring Pipeline** (post-155 execution order):
 
-**Grouped by Topic** (indented = must complete first):
+```
+Wave 1: Quick wins — purge dead code (2-3 days)
+  173 → 130 → 176 → 21 → 172
 
-### Completeness
+Wave 2: Verification (1 day)
+  95
+
+Wave 3: Deep architectural refactor (3-4 weeks)
+  168 → 174 → 175 → 131 → 161
+
+Wave 4: Final polish
+  177 → 178
+```
+
+### Wave 1 — Purge Dead Code
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
-21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
-
-### Proof System Architecture
-
-168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
-
-### Formula Refactor
-
-130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard
 173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
-172 [NOT STARTED] — Fix stale Metalogic.lean docstring (wrong semantics, wrong architecture)
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/
+130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
+176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
+  └─ 155 — (must complete first to confirm Chronicle dependency)
+21 [NOT STARTED] — Clean up technical debt: stale docstrings, 81 tombstone comments
+172 [NOT STARTED] — Fix stale Metalogic.lean docstring
 
-### Frame Extensions
+### Wave 2 — Verification
+
+95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
+
+### Wave 3 — Deep Refactor
+
+168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
+174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
+  └─ 168 — (SoundnessLemmas dedup depends on FrameClass parameterization)
+175 [NOT STARTED] — Naming conventions + bridge/wrapper cleanup
+  └─ 168, 174
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
+161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
+
+### Wave 4 — Final Polish
+
+177 [NOT STARTED] — Update README and all module docstrings
+  └─ 131, 175
+178 [NOT STARTED] — Publication examples and demo
+  └─ 131
+
+### Deferred — New Features (post-publication)
 
 169 [NOT STARTED] — Complete frame extension: axiom, typeclass, soundness, correspondence
-  └─ 168 [NOT STARTED] — (proof-system: FrameClass refactor) (see above)
+  └─ 168
 170 [NOT STARTED] — Completeness theorem for TM^dc (dense + complete)
-  └─ 169 [NOT STARTED] — (Complete frame extension setup)
+  └─ 169
 127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
 128 [NOT STARTED] — Add topological open set (interior) operator
 165 [NOT STARTED] — Establish semantic finite model property (filtration)
-
-### Algebraic Representation
-
+164 [NOT STARTED] — Prove tableau correctness (connect decide to semantic validity)
+  └─ 165
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
 
-### Decidability
-
-164 [NOT STARTED] — Prove tableau correctness (connect decide to semantic validity)
-  └─ 165 [NOT STARTED] — (frame-extensions: establish semantic FMP) (see above)
-
-### Agent System
+### Meta/Tooling
 
 162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
 156 [NOT STARTED] — Multi-angle team research strategy for formal agents
 
 
 ## Tasks
+
+### 178. Publication examples and demo
+- **Effort**: small (4-6 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: low
+- **Dependencies**: 131
+
+**Description**: Expand `Examples/` with publication-quality demonstrations of the full verified pipeline. Add a complete worked example showing soundness-completeness-decidability on a concrete formula. Add examples exercising each frame class (Base, Dense, Discrete) with the FrameClass-parameterized `DerivationTree` from task 168. Add examples of the expressive completeness result (separation theorem). Update `BimodalProofs.lean` and `TemporalStructures.lean` to use current API conventions. All examples sorry-free.
+
+---
+
+### 177. Update README and all module docstrings
+- **Effort**: small (3-5 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 131, 175
+
+**Description**: Final documentation pass after all structural refactoring is complete. Update `README.md` axiom counts, architecture diagram, and sorry obligations section. Ensure every file in the final structure has an accurate `/-! ... -/` module docstring reflecting its role. Update `ROADMAP.md` to reflect completed refactoring. Verify Axiom Reference doc against actual constructors.
+
+---
+
+### 176. Relocate Chronicle and archive dead BXCanonical subtree
+- **Effort**: medium (4-6 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 155
+
+**Description**: Resolve architectural confusion where `Chronicle/` lives under `BXCanonical/` but is only consumed by `WeakCanonical/`. Move 6 Chronicle files (14,331 lines) to `Metalogic/Chronicle/` or `WeakCanonical/Chronicle/`. Archive entire non-Chronicle BXCanonical subtree (16 files, 4,615 lines, 19 mathematically false sorries under irreflexive semantics) to `Boneyard/BXCanonical/`. Verify `OrderedSeedConsistency.lean` dependency from `WeakCanonical/ReflexiveCanonical.lean` before archiving. Update aggregator imports. Subsumes part of task 130 scope (the BXCanonical dead-code sorries).
+
+---
+
+### 175. Naming convention and bridge/wrapper cleanup
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 168, 174
+
+**Description**: Normalize naming conventions and eliminate bridge/wrapper indirection for publication quality. Expand opaque abbreviations (`bfmcs`, `drm`, `cud`, `sdc`, `dd_`, `tc_`, `fuc_`, `buc_`). Inline or remove `Bridge.lean` wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize `z1_valid` to `axiom_z1_valid` for consistency. Purge 81 removed/archived/superseded tombstone comments. Consider renaming `temp_` prefix to `temporal_` for clarity.
+
+---
+
+### 174. Split oversized files (> 1500 lines)
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 168
+
+**Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
+
+---
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
@@ -175,7 +244,7 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154

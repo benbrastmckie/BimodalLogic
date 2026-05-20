@@ -226,7 +226,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -235,7 +235,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T15:48:06Z",
+      "last_updated": "2026-05-20T15:52:15Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -269,7 +269,7 @@
           "summary": "Technical handoff: sorry chain analysis and recommended fixes for Phase 1/2 blockers"
         }
       ],
-      "session_id": "sess_1779290650_45e3c8",
+      "session_id": "sess_1779292320_2adf4b",
       "researched": "2026-05-20T07:26:05Z",
       "started": "2026-05-16T19:49:58Z"
     },
@@ -292,9 +292,81 @@
       "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
       "created": "2026-05-20T15:36:06Z",
       "last_updated": "2026-05-20T15:36:06Z"
+    },
+    {
+      "project_number": 174,
+      "project_name": "split_oversized_files",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: Hierarchy.lean (3845), SoundnessLemmas.lean (2422), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889), Propositional.lean (1712), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring. SoundnessLemmas should be split after task 168 collapses its 4 near-duplicate frame-class blocks.",
+      "dependencies": [
+        168
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-20T15:55:54Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 175,
+      "project_name": "naming_convention_and_bridge_cleanup",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Normalize naming conventions and eliminate bridge/wrapper indirection for publication quality. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid. Purge 81 removed/archived/superseded tombstone comments. Consider renaming temp_ prefix to temporal_ for clarity.",
+      "dependencies": [
+        168,
+        174
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-20T15:55:54Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 176,
+      "project_name": "relocate_chronicle_and_archive_dead_bxcanonical",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Resolve architectural confusion where Chronicle/ lives under BXCanonical/ but is only consumed by WeakCanonical/. Move 6 Chronicle files (14331 lines) to Metalogic/Chronicle/ or WeakCanonical/Chronicle/. Archive entire non-Chronicle BXCanonical subtree (16 files, 4615 lines, 19 false sorries) to Boneyard/BXCanonical/. Verify OrderedSeedConsistency.lean dependency from WeakCanonical/ReflexiveCanonical.lean before archiving. Update aggregator imports. Subsumes part of task 130 scope.",
+      "dependencies": [
+        155
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-20T15:55:54Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 177,
+      "project_name": "update_readme_and_module_docstrings",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.",
+      "dependencies": [
+        131,
+        175
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-20T15:55:54Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 178,
+      "project_name": "publication_examples_and_demo",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "low",
+      "description": "Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness-completeness-decidability on a concrete formula. Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.",
+      "dependencies": [
+        131
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-20T15:55:54Z",
+      "topic": "formula-refactor"
     }
   ],
-  "next_project_number": 174,
+  "next_project_number": 179,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
