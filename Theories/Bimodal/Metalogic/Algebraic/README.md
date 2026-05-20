@@ -27,19 +27,23 @@ supplementary infrastructure, not required for the current proof architecture.
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
 | `BooleanStructure.lean` | Boolean algebra instance | **Sorry-free** |
 | `InteriorOperators.lean` | G/H as interior operators | **Sorry-free** |
-| `TenseS5Algebra.lean` | Tense S5 algebra structure | **Sorry-free** |
+| `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to Boneyard/UltrafilterFrame/, task 21) |
 | `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Sorry-free** |
-| `AlgebraicRepresentation.lean` | Main representation theorem | **Sorry-free** |
+| `AlgebraicCompleteness.lean` | Main completeness theorem | **Sorry-free** |
+
+### Ultrafilter Frame Infrastructure (Archived to Boneyard/UltrafilterFrame/, task 21)
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `UltrafilterFrame.lean` | R_G/R_H/R_Box, UltrafilterChain, F/P resolution | **Archived** (2 sorries for temp_4) |
 
 ### Parametric Infrastructure
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `UltrafilterChain.lean` | Ultrafilter chain construction | **Sorry-free** |
 | `ParametricHistory.lean` | Parametric history infrastructure | **Sorry-free** |
 | `ParametricTruthLemma.lean` | Parametric truth lemma | **Sorry-free** |
-| `ParametricRepresentation.lean` | Parametric representation theorem | **Sorry-free** |
 | `ParametricCanonical.lean` | Parametric canonical model | **Sorry-free** |
-| `RestrictedTruthLemma.lean` | Restricted truth lemma | **Sorry-free** |
+| `ParametricCompleteness.lean` | Parametric completeness theorem | **Sorry-free** |
+| `RestrictedParametricTruthLemma.lean` | Restricted parametric truth lemma | **Sorry-free** |
 
 ### Chain Constructions (Archived to Boneyard/ChainCompleteness)
 | Module | Purpose | Status |

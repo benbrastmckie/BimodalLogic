@@ -1,3 +1,6 @@
+-- ARCHIVED (Task 21, 2026-05-20): Jonsson-Tarski ultrafilter frame and chain infrastructure.
+-- UltrafilterFrame commented out from Algebraic.lean due to elaboration conflicts;
+-- has 2 sorries for temp_4 (Gφ -> GGφ). Recoverable via git history for task 125.
 import Bimodal.Metalogic.Algebraic.TenseS5Algebra
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma

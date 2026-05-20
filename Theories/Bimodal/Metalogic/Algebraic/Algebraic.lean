@@ -3,15 +3,14 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
-import Bimodal.Metalogic.Algebraic.TenseS5Algebra
 -- D-parametric modules
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
--- Ultrafilter frame infrastructure (recovered from Boneyard, imported separately to avoid
--- elaboration interference with BXCanonical/Completeness.lean rfl proofs)
--- import Bimodal.Metalogic.Algebraic.UltrafilterFrame
+-- Ultrafilter frame infrastructure archived to Boneyard/UltrafilterFrame/ (task 21):
+-- TenseS5Algebra.lean (3 sorries for removed axioms) and UltrafilterFrame.lean (2 sorries
+-- for temp_4, elaboration conflicts with BXCanonical/Completeness.lean rfl proofs)
 -- Chain completeness modules archived to Boneyard/ChainCompleteness/:
 -- import Bimodal.Metalogic.Algebraic.DeterministicChain
 -- import Bimodal.Metalogic.Algebraic.DeterministicFMCS
@@ -39,11 +38,12 @@ Algebraic/
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricCompleteness.lean    # D-parametric completeness theorem
 │
-│   Ultrafilter Frame Infrastructure
-├── UltrafilterFrame.lean         # R_G/R_H/R_Box, UltrafilterChain, F/P resolution
+│   Archived to Boneyard/UltrafilterFrame/ (task 21)
+├── TenseS5Algebra.lean           # STSA typeclass (3 sorries for removed axioms)
+├── UltrafilterFrame.lean         # R_G/R_H/R_Box, UltrafilterChain, F/P resolution (2 sorries)
 │
-│   Deterministic Chain (Discrete Completeness)
-└── DeterministicChain.lean       # Int-indexed chain (archived to Boneyard)
+│   Archived to Boneyard/ChainCompleteness/ (task 93)
+└── DeterministicChain.lean       # Int-indexed chain
 ```
 
 ## Mathematical Overview
@@ -93,7 +93,6 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
-open Bimodal.Metalogic.Algebraic.TenseS5Algebra
 
 -- D-parametric modules
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
@@ -101,8 +100,7 @@ open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricCompleteness
 
--- Ultrafilter frame infrastructure (imported separately)
--- open Bimodal.Metalogic.Algebraic.UltrafilterFrame
+-- Ultrafilter frame infrastructure archived to Boneyard/UltrafilterFrame/ (task 21)
 
 -- Deterministic chain for discrete completeness (archived to Boneyard)
 -- open Bimodal.Metalogic.Algebraic.DeterministicChain

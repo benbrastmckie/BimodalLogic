@@ -1,7 +1,7 @@
 # Implementation Plan: Task #21
 
 - **Task**: 21 - Clean up technical debt from tasks 9-20
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/03_archive-delete-audit.md
@@ -66,20 +66,20 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Archive Algebraic Dead Code to Boneyard [NOT STARTED]
+### Phase 1: Archive Algebraic Dead Code to Boneyard [COMPLETED]
 
 **Goal**: Move UltrafilterFrame.lean and TenseS5Algebra.lean to Boneyard, removing 5 sorries from the live build path.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Boneyard/UltrafilterFrame/` directory
-- [ ] Move `Theories/Bimodal/Metalogic/Algebraic/UltrafilterFrame.lean` to `Theories/Bimodal/Boneyard/UltrafilterFrame/UltrafilterFrame.lean`
-- [ ] Move `Theories/Bimodal/Metalogic/Algebraic/TenseS5Algebra.lean` to `Theories/Bimodal/Boneyard/UltrafilterFrame/TenseS5Algebra.lean`
-- [ ] Add tombstone comment at top of each archived file: `-- ARCHIVED (Task 21, 2026-05-20): Jonsson-Tarski ultrafilter frame and tense S5 algebra. UltrafilterFrame commented out from Algebraic.lean due to elaboration conflicts; TenseS5Algebra has 3 sorries for removed axioms (temp_a, temp_l). Recoverable via git history for task 125.`
-- [ ] Remove import of TenseS5Algebra from `Algebraic/Algebraic.lean` (line 6: `import Bimodal.Metalogic.Algebraic.TenseS5Algebra`)
-- [ ] Remove commented-out import of UltrafilterFrame from `Algebraic/Algebraic.lean` (lines 13-14)
-- [ ] Add entry to `Theories/Bimodal/Boneyard/README.md` for UltrafilterFrame subdirectory
-- [ ] Update `Algebraic/README.md` line 30: change TenseS5Algebra from "Sorry-free" to accurate sorry status, and note both files archived
-- [ ] Run `lake build` to verify no errors
+- [x] Create `Theories/Bimodal/Boneyard/UltrafilterFrame/` directory
+- [x] Move `Theories/Bimodal/Metalogic/Algebraic/UltrafilterFrame.lean` to `Theories/Bimodal/Boneyard/UltrafilterFrame/UltrafilterFrame.lean`
+- [x] Move `Theories/Bimodal/Metalogic/Algebraic/TenseS5Algebra.lean` to `Theories/Bimodal/Boneyard/UltrafilterFrame/TenseS5Algebra.lean`
+- [x] Add tombstone comment at top of each archived file *(deviation: altered -- used file-specific tombstone comments instead of identical text for both)*
+- [x] Remove import of TenseS5Algebra from `Algebraic/Algebraic.lean`
+- [x] Remove commented-out import of UltrafilterFrame from `Algebraic/Algebraic.lean`
+- [x] Add entry to `Theories/Bimodal/Boneyard/README.md` for UltrafilterFrame subdirectory
+- [x] Update `Algebraic/README.md`: change TenseS5Algebra from "Sorry-free" to "Archived", note both files archived, also fixed AlgebraicRepresentation->AlgebraicCompleteness rename and ParametricRepresentation->ParametricCompleteness
+- [x] Run `lake build` to verify no errors (1647 jobs, build succeeded)
 
 **Timing**: 1 hour
 

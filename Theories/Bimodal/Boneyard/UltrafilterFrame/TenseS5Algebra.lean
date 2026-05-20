@@ -1,3 +1,6 @@
+-- ARCHIVED (Task 21, 2026-05-20): Tense S5 algebra typeclass and Lindenbaum instance.
+-- TenseS5Algebra has 3 sorries for removed axioms (temp_a, temp_l). Only consumer was
+-- UltrafilterFrame.lean (also archived). Recoverable via git history for task 125.
 import Bimodal.Metalogic.Algebraic.LindenbaumQuotient
 import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators

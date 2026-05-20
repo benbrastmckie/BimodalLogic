@@ -46,8 +46,9 @@ The Boneyard serves three roles:
 | [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,330 | Metalogic/ | Completeness under strict semantics (107 sorries); architectural incompatibility with current open-guard semantics | 94 |
 | [TAxiomDependentCode](#taxiomdependentcode) | 3 | 316 | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
 | [UltrafilterDeadCode](#ultrafilterdeadcode) | 4 | 1,064 | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
+| [UltrafilterFrame](#ultrafilterframe) | 2 | 1,547 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4, elaboration conflicts); Jonsson-Tarski prerequisite | 21 |
 | [XuLemma321Legacy](#xulemma321legacy) | 1 | 75 | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics; task 115 proved via different method | 115 |
-| **Total** | **47** | **26,579** | | | |
+| **Total** | **49** | **28,126** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -161,6 +162,17 @@ task 69), bidirectional seed (H(a)->G(H(a)) not derivable), Z-chain (circular
 dependencies), and CoherentZChain. Files contain documentation headers only, not
 compilable code. See subdirectory README for detailed removal summary.
 
+### UltrafilterFrame
+Two files from Algebraic/: TenseS5Algebra.lean (365 lines, 3 sorries for removed
+axioms temp_a and temp_l) and UltrafilterFrame.lean (1,182 lines, 2 sorries for
+temp_4). TenseS5Algebra defines the STSA typeclass and proves the Lindenbaum algebra
+instance. UltrafilterFrame defines R_G/R_H/R_Box accessibility relations,
+UltrafilterChain structure, and F/P resolution theorems. UltrafilterFrame was
+commented out from Algebraic.lean due to elaboration interference with
+BXCanonical/Completeness.lean rfl proofs; TenseS5Algebra's only consumer was
+UltrafilterFrame. Both are prerequisites for the Jonsson-Tarski representation
+theorem (task 125). Recoverable via git history.
+
 ### XuLemma321Legacy
 Blocked proof-by-contradiction attempt for Xu's Lemma 3.2.1(i)/(ii). The
 inconsistent case requires BX9, which was removed as unsound under open guard
@@ -199,6 +211,7 @@ See subdirectory README for recovery options.
 | 115 | Made XuLemma321Legacy doubly obsolete | 2026-05-13 |
 | 123 | StageInductionGapAnalysis | 2026-05-13 |
 | 132 | Consolidated root Boneyard/ into this location | 2026-05-13 |
+| 21 | UltrafilterFrame (TenseS5Algebra + UltrafilterFrame from Algebraic/) | 2026-05-20 |
 
 ## Git Retrieval
 
