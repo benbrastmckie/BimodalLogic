@@ -31,25 +31,24 @@ technical_debt:
 
 **Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
 
-**Refactoring Pipeline** (post-155 execution order):
+**Execution Pipeline**:
 
 ```
-Wave 1: Quick wins — purge dead code (2-3 days)
-  173 → 130 → 176 → 21 → 172
+Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
 
-Wave 2: Verification (1 day)
-  95
-
-Wave 3: Deep architectural refactor (3-4 weeks)
-  168 → 174 → 175 → 131 → 161
-
-Wave 4: Final polish
-  177 → 178
+Post-155 refactoring waves:
+  Wave 1: 173 → 130 → 176 → 21 → 172      (purge dead code)
+  Wave 2: 95                                 (verification)
+  Wave 3: 168 → 174 → 175 → 131 → 161      (deep refactor)
+  Wave 4: 177 → 178                          (final polish)
 ```
 
-### Wave 1 — Purge Dead Code
+### Completeness (in progress)
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+
+### Wave 1 — Purge Dead Code (post-155)
+
 173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
 176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
