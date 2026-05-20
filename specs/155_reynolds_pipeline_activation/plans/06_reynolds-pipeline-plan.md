@@ -189,7 +189,7 @@ Phases 1-3 are completed. Phase 4 (Stavi + GHR93 Theorem 4) is the critical path
 
 ---
 
-### Phase 4: Stavi Connectives and GHR93 Theorem 4 [IN PROGRESS]
+### Phase 4: Stavi Connectives and GHR93 Theorem 4 [PARTIAL]
 
 **Goal**: Define Stavi connective semantics U'(A,B) and S'(A,B), then prove the full GHR93 Theorem 4: {U,S,U',S'} is expressively complete for ALL linear temporal structures. This is the largest single formalization effort in the plan.
 
