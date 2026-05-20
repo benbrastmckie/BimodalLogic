@@ -99,20 +99,24 @@ The v5 plan (06_reynolds-pipeline-plan.md) had 10 phases. Phases 1-3 COMPLETED, 
 
 ## Implementation Phases
 
-**Dependency Analysis**:
-| Wave | Phases | Blocked by |
-|------|--------|------------|
-| 1 | 1, 2, 3 | -- (COMPLETED) |
-| 2 | 4A, 5 | -- (COMPLETED) |
-| 3 | 4B, 7, 10 | -- |
-| 4 | 4C | 4B |
-| 5 | 5' | 4C |
-| 6 | 6 | 5' |
-| 7 | 8 | 6 |
-| 8 | 9 | 7, 8 |
-| 9 | 11 | 9, 10 |
+**Dependency Analysis** (revised based on research reports 08, 09):
+| Wave | Phases | Blocked by | Status |
+|------|--------|------------|--------|
+| 1 | 1, 2, 3 | -- | COMPLETED |
+| 2 | 4A, 5 | -- | COMPLETED |
+| 3 | 4B (Tasks 4B.2-4B.7) | -- | IN PROGRESS (4B.1 done) |
+| 4 | 4C (Tasks 4C.1-4C.12) | 4B | NOT STARTED |
+| 5 | 5' | 4C | NOT STARTED |
+| 6 | 6 | 5' | NOT STARTED |
+| 7 | 7, 8 | 6 (for 8), none (for 7) | NOT STARTED |
+| 8 | 9 | 7, 8 | NOT STARTED |
+| 9 | 10 | -- | BLOCKED (WorldState=Unit issue) |
+| 10 | 11 | 9, 10 | NOT STARTED |
 
-Phases 1-3, 4A, and 5 are completed. Wave 3 contains three independent tracks: (4B) expanding EF game infrastructure, (7) IntegerModel helpers, and (10) h_truth_corr discharge. Phase 4C (the main GHR93 proof) depends only on 4B. Phase 5' (Theorem 5 from Theorem 4) follows 4C. Phase 6 (gap elimination) follows 5'. Phase 8 wires no_gaps_discrete. Phase 9 rewires chronicle_is_good. Phase 11 is final verification, depending on both the gap elimination chain (via 9) and h_truth_corr (10).
+**Execution order** (STRICT SEQUENTIAL within main chain):
+4B.2 → 4B.3 → 4B.4 → 4B.5 → 4B.6 → 4B.7 → 4C.1 → 4C.2 → ... → 4C.12 → 5' → 6 → 8 → 9 → 11.
+Phase 7 (IntegerModel helpers) can proceed in parallel with the 4B-4C chain.
+Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit architectural issue — the zIntervalTaskFrame uses WorldState=Unit which cannot support position-dependent atom truth. A prior implementation attempt tried to bypass this by delegating to dd_countermodel_chronicle_discrete; this was reverted because it contradicts the task goal.
 
 ---
 
@@ -209,78 +213,185 @@ Phases 1-3, 4A, and 5 are completed. Wave 3 contains three independent tracks: (
 
 ---
 
-### Phase 4B: EF Game Infrastructure Expansion [PARTIAL]
+### Phase 4B: GHR93 Infrastructure -- Definitions and Lemmas [PARTIAL]
 
-**Goal**: Expand the existing EFGames.lean skeleton (~170 lines) into the full EF game infrastructure needed for the GHR93 proof. This includes the custom G_{n;r} game type, game composition/restriction/extension lemmas, the depth function with recurrence bounds, and the "left" and "right" formula constructions for gap detection.
+**Goal**: Build the complete GHR93 Section 8 infrastructure needed for the main proof (Theorem 6). This follows the exact dependency chain from the paper: gap definitions → relativized formulas → type formulas → gap detection → game definition → decomposition formulas.
 
-**BEFORE CODING**: Read GHR93 Section 8 (pages 172-185) IN FULL. The game definition has specific structural requirements: two-round structure (first n elements via standard EF protocol, then one additional element), the depth function f(n) with recurrence f(n+1) > (1+3f(n))(2k_n)+1, and four case splits. Understanding the complete argument before coding is essential.
+**Research Inputs**: reports/08_ghr93-game-theory.md, reports/09_lean-infrastructure-inventory.md
 
-**Mathematical Content**: The GHR93 custom EF game G_{n;r} differs from the standard EF game:
-- Spoiler picks n+1 elements total: n by standard moves, then one final element
-- The last element must be in a specific interval determined by the first n elements
-- Duplicator's response must preserve predicate and order agreement
-- Game depth f(n) determines the quantifier rank of formulas distinguishable by n-round games
-- "Left" formulas L_k and "right" formulas R_k detect where gaps occur relative to selected elements
+**BEFORE CODING**: Read GHR93 Section 8 (Definitions 8.1-8.9, Lemmas 9-11) and the corresponding literature markdown. Follow the paper step-by-step. Each sub-task depends on the previous one — complete them IN ORDER, escalating blockers rather than skipping ahead.
 
-**Tasks**:
-- [ ] **Task 4B.1**: Define the full G_{n;r} game structure with Spoiler/Duplicator moves, replacing the skeleton EFPosition. The game state tracks: (a) the two ordered monadic structures M and N, (b) the correspondence of selected elements, (c) the current round number, (d) bounds for the final element selection. (~150-200 lines)
-- [x] **Task 4B.2**: Define the depth function f(n) with the exact GHR93 recurrence: f(0) = 0, f(n+1) = (1 + 3*f(n)) * (2*k_n) + 2, where k_n = |NF(sig, f(n), 1)|. Prove monotonicity (f(n) < f(n+1)), lower bound (2 <= f(n+1)), and the key bound used in the main induction. *(completed: game_depth, game_depth_succ_ge_two, game_depth_strict_mono, game_depth_mono, normalForm_nonempty, stavi_depth, stavi_n_equiv, stavi_n_equiv_symm, stavi_n_equiv_mono)*
-- [ ] **Task 4B.3**: Prove game composition lemma: if Duplicator wins n-round games on subintervals, she wins the composed game on the full structure. This is the EF analogue of Feferman-Vaught. (~150-250 lines)
-- [ ] **Task 4B.4**: Prove game restriction lemma: winning strategy on M restricts to winning strategy on a substructure of M. (~60-100 lines)
-- [ ] **Task 4B.5**: Prove game extension lemma: winning strategy on substructures extends when the surrounding context is indistinguishable. (~100-150 lines)
-- [ ] **Task 4B.6**: Define "left" and "right" formulas L_k(x) and R_k(x) that detect gap positions. L_k(x) says "the k-type on the left of x matches a specific NF pattern". R_k(x) is the mirror. These are StaviFormulas built from normal-form enumeration. (~100-150 lines)
-- [ ] **Task 4B.7**: Prove that L_k and R_k correctly characterize gap positions: if (M,t) and (N,s) agree on all L_k and R_k formulas, then Duplicator can respond to the (n+1)-th element selection in G_{n;r}. (~100-200 lines)
-- [ ] **Task 4B.8**: Verify `lake build` passes with all new game infrastructure.
+**Existing infrastructure** (sorry-free, reusable):
+- `game_depth`, `game_depth_strict_mono`, `game_depth_mono` — depth function ✓
+- `stavi_depth`, `stavi_n_equiv`, `stavi_n_equiv_symm`, `stavi_n_equiv_mono` — n-equivalence ✓
+- `EFPosition`, `ef_duplicator_wins` — basic skeleton (will be replaced by G_{n;r})
+- `NormalForm` with Fintype/DecidableEq, `doets_lemma_1_1` — NF infrastructure ✓
+- `OrderedMonadicStructure` with `subinterval` — structure restriction ✓
+- `StaviFormula`, `stavi_temporal_truth` — Stavi connective semantics ✓
 
-**Timing**: 10-15 hours
+**Tasks** (sequential, in GHR93 dependency order):
 
-**Depends on**: none (uses existing NormalForm, OrderedMonadicStructure, StaviConnectives infrastructure)
+- [x] **Task 4B.1** (DONE): Depth function and n-equivalence.
+  game_depth, game_depth_succ_ge_two, game_depth_strict_mono, game_depth_mono,
+  normalForm_nonempty, stavi_depth, stavi_n_equiv, stavi_n_equiv_symm, stavi_n_equiv_mono.
+
+- [ ] **Task 4B.2**: Gap and Extended Structure Definitions (GHR93 Def 8.3).
+  Define `Gap M` — a Dedekind cut in M.carrier with no supremum: a non-empty downward-closed
+  proper subset whose complement has no minimum. Define `r_definable_gap M r atomMap` — a gap
+  definable by a temporal formula of rank ≤ r on the left or right. Define `M_r sig r M atomMap`
+  as the type `M.carrier ⊕ (r-definable gaps of M)` with an induced LinearOrder that
+  interleaves gaps among points. Define `IsPoint` and `IsGap` predicates on M_r.
+  Key fact: on discrete orders (SuccOrder + PredOrder + NoMaxOrder + NoMinOrder), Gap M = ∅,
+  so M_r ≃o M.carrier. (~100-150 lines)
+
+- [ ] **Task 4B.3**: Relativized Formulas and Type Formulas (GHR93 Def 8.4, 8.8).
+  Define `mu` — a distinguished atom marking actual points (h'(mu) = M in M_r).
+  Define `relativize_mu A` — formula A^mu with all temporal connectives (U, S, U', S')
+  relativized to quantify only over mu-points. Define `eval_at_r M_r t A^mu` — evaluation
+  of A^mu at position t in M_r. Prove key fact: for actual point t ∈ M, A(t) ↔ A^mu(t).
+  Define `X_t` — conjunction of all temporal formulas of rank ≤ r satisfied at t (effectively
+  finite via NormalForm). Define `X_{(t,u)}` — disjunction of X_v for all points v in (t,u).
+  (~80-120 lines)
+
+- [ ] **Task 4B.4**: Gap Detection Formulas — left() and right() (GHR93 Def 8.5 + Lemma 9).
+  Define `left_formula (A D : StaviFormula) : StaviFormula` by structural induction on A:
+    left(p, D) = bot; left(¬A, D) = U'(⊤,D) ∧ ¬left(A,D);
+    left(A∧B, D) = left(A,D) ∧ left(B,D);
+    left(U(A,B), D) = U'(B∧U(A,B), D);
+    left(U'(A,B), D) = U'(B∧U'(A,B), D);
+    left(S(A,B), D) = U(D∧B∧S(A,B)∧U'(⊤,B∧D)∧¬U'(D,B∧D), D);
+    left(S'(A,B), D) = U(D∧B∧S'(A,B)∧U'(⊤,B∧D)∧¬U'(D,B∧D), D).
+  Define `right_formula` by duality (swap U↔S, U'↔S').
+  Prove rank bound: stavi_depth(left(A,D)) ≤ max(stavi_depth(A), stavi_depth(D)) + 2.
+  Prove Lemma 9: left(A,D)(m) ↔ ∃ gap γ > m, γ defined by D on left, D holds in (m,γ),
+  and A^mu(γ) holds. This is the crucial bridge: temporal formula detects gap property.
+  (~150-200 lines)
+
+- [ ] **Task 4B.5**: Custom Game G_{n;r} Definition (GHR93 Def 8.7).
+  Define the full game `GHR93Game sig n r M N x y x' y'` replacing the skeleton EFPosition:
+    Round 1: Spoiler chooses n elements a_1,...,a_n from [x,y]_r (points OR gaps from M_r).
+    Duplicator responds with a'_1,...,a'_n from [x',y']_r.
+    Round 2: Spoiler chooses one actual point b' from [x',y'] (NOT a gap).
+    Duplicator responds with actual point b from [x,y].
+  Define `ghr93_duplicator_wins` — winning condition:
+    (1) Same order type on x,y,a,b and x',y',a',b'.
+    (2) For corresponding pairs: gap↔gap, and rank-r formula agreement (A^mu).
+  Prove Lemma 10 (monotonicity): wins for (n,r) implies wins for (n',r') when n'≤n, r'≤r.
+  (~100-150 lines)
+
+- [ ] **Task 4B.6**: Decomposition Formulas and Lemma 11 (GHR93 Def 8.8).
+  Define `(n;r)-decomposition formula` — FO formula of the form:
+    ∃ y_1,...,y_n: x_1 < y_1 < ... < y_n < x_2 ∧ Chi
+  where Chi is a conjunction of: (a) mu/¬mu/A^mu at each element, (b) ∀z. mu(z)∧a<z<b → B^mu(z)
+  for adjacent elements a,b.
+  Prove Lemma 11: Duplicator has winning strategy for G_{n;r}(M,xy; N,x'y') iff M_r and N_r
+  agree on all (n;r)-decomposition formulas evaluated at (x,y) and (x',y').
+  This bridges the game-theoretic and formula-theoretic perspectives.
+  (~100-150 lines)
+
+- [ ] **Task 4B.7**: Verify `lake build` passes with all new infrastructure.
+
+**Timing**: 12-18 hours
+
+**Depends on**: none (uses existing NormalForm, OrderedMonadicStructure, StaviConnectives)
 
 **Files to modify/create**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- substantial expansion from ~170 to ~900-1200 lines
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` — substantial expansion (~500-800 lines added)
+- May factor into `Theories/Bimodal/Metalogic/WeakCanonical/GHR93Defs.lean` if EFGames.lean grows too large
 
 **Verification**:
-- All game lemmas sorry-free
+- All definitions and lemmas sorry-free
 - No `axiom` declarations
 - `lake build` passes
 
 ---
 
-### Phase 4C: GHR93 Theorem 4 -- Main Proof [NOT STARTED]
+### Phase 4C: GHR93 Theorem 6 + Assembly -- Main Proof [NOT STARTED]
 
-**Goal**: Prove `stavi_expressive_completeness`: for any monadic FO formula psi with one free variable, there exists a StaviFormula A such that stavi_temporal_truth M atomMap t A <-> eval M (fun _ => t) psi for ALL ordered monadic structures M and points t. This is GHR93 Theorem 9.3.1, the single largest formalization effort.
+**Goal**: Prove `stavi_expressive_completeness` (GHR93 Theorem 9.3.1 / Corollary 5) via the complete game-theoretic argument: Theorem 6 (forward-to-backward, 4 cases), Proposition 6 (formula agreement → games), Proposition 7 (composition using Theorem 6), and final assembly.
 
-**BEFORE CODING**: Re-read GHR93 Section 8, particularly the four cases (I-IV) of the main induction. Each case spans approximately one page of dense argument. The proof structure is:
+**Research Inputs**: reports/08_ghr93-game-theory.md (Sections 4-7)
 
-**Proof by induction on quantifier depth n**:
-- Base case (n=0): Quantifier-free FO formulas translate to Boolean combinations of atomic predicates, which are directly expressible as temporal formulas.
-- Inductive step: Given a formula psi of quantifier depth n+1, we must construct a StaviFormula A equivalent to psi on all linear structures. The argument uses the f(n+1)-round game. If Duplicator wins, (M,t) and (N,s) satisfy the same StaviFormulas of depth <= f(n+1), hence the same FO formulas of depth n+1.
+**BEFORE CODING**: Re-read GHR93 Section 8 Theorem 6 proof. The four cases arise from the position of the (n+1)-th element a_n chosen by Spoiler in Round 1. The proof is by induction on n, with the inductive step constructing a backward strategy from a forward strategy with extra rounds.
 
-**The four cases for the (n+1)-th element**:
-- **Case I**: The new element is distinguishable by atoms/order at the existing n selected points. Then a Boolean formula over atomic predicates and the existing StaviFormulas (by IH) suffices.
-- **Case II**: The new element witnesses an Until formula. There is a point s > t where the formula holds, and the interval (t,s) is homogeneous. Use U(A,B) where A and B are obtained by IH applied to the interval.
-- **Case III**: Mirror of Case II for Since. Use S(A,B).
-- **Case IV**: The new element falls in a "gap" -- the formula holds cofinally above t but there is no standard witness. Use U'(A,B) or S'(A,B) depending on the direction.
+**Proof structure (GHR93 Theorem 6)**:
+Statement: (*)_n: If Duplicator wins G_{1+3n; r+4n}(M,xy; N,x'y'), then she wins G_{n;r}(N,x'y'; M,xy).
 
-**Tasks**:
-- [ ] **Task 4C.1**: Create ExpressivenessGeneral.lean. Set up the main induction framework: the statement of stavi_expressive_completeness, the induction on quantifier depth, and the case split structure. Define helper types for the case analysis. (~100-150 lines)
-- [ ] **Task 4C.2**: Prove Case I (atom/order distinguishability). When the (n+1)-th element can be located relative to existing elements by predicates and order, construct a Boolean combination of StaviFormulas from the IH. This is the simplest case. (~150-250 lines)
-- [ ] **Task 4C.3**: Prove Case II (Until witness). When there exists a standard Until witness, construct U(A,B) where A characterizes the witness point and B characterizes the interval, using the IH on the subintervals. Uses game composition and restriction lemmas from Phase 4B. (~200-350 lines)
-- [ ] **Task 4C.4**: Prove Case III (Since witness). Mirror of Case II for the past direction. Construct S(A,B) analogously. (~150-250 lines, benefits from symmetry with Case II)
-- [ ] **Task 4C.5**: Prove Case IV (gap detection via U'/S'). The hardest case. When the new element falls in a gap -- the formula is cofinal but has no standard witness -- construct U'(A,B) or S'(A,B). Uses the game extension lemma and the L_k/R_k formulas from Phase 4B to characterize the gap structure. (~250-400 lines)
-- [ ] **Task 4C.6**: Assemble the four cases into the complete induction step. Verify that the case split is exhaustive and the StaviFormula constructions are well-typed. (~50-100 lines)
-- [ ] **Task 4C.7**: Close `stavi_expressive_completeness` in EFGames.lean by calling the proof from ExpressivenessGeneral.lean. Remove the sorry. (~10-20 lines)
-- [ ] **Task 4C.8**: Verify `lean_verify stavi_expressive_completeness` shows no `sorryAx`.
-- [ ] **Task 4C.9**: Run `lake build` to confirm compilation.
+Base case (n=0): Round 1 is empty. Spoiler plays Round 2 by choosing actual point α in (x,y).
+  Use the 1-round forward strategy to find matching point.
 
-**Timing**: 15-20 hours
+Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward strategy.
+  Setup: Compute formula A = X_{(a_{n-1},a_n)}, define c = inf{t: C holds on (t,y)}, split.
 
-**Depends on**: 4B (EF game infrastructure, depth function, game composition/restriction/extension lemmas, L_k/R_k formulas)
+  Case I (a_0 < d, "split"): Some selected points lie in (x',d). Apply backward strategy
+    σ to points in (x',d) and τ to points in (d,y'). Combine via Lemma 10.
+    No new StaviFormula constructed — reduces to two backward strategies.
+
+  Case II (all in (d,y'), a_n is POINT): a_n is an actual point (not a gap).
+    Construct B = X_{a_n}. Use τ for a_0,...,a_{n-1}. Find z > e_{n-1} where B holds
+    and A holds on (e_{n-1}, z). Duplicator responds with e_n = z.
+    Uses standard **Until** U(B, A). (~200-300 lines)
+
+  Case III (all in (d,y'), a_n is LEFT-DEFINED gap): a_n is a gap defined on the left by D.
+    Construct B = X_{a_n}, δ = left(B, D). Use τ for earlier points.
+    Find t < g with δ(t) and A on (e_{n-1}, t). By Lemma 9, find matching gap e_n.
+    Uses **Stavi Until U'** via left(B,D). (~250-400 lines)
+
+  Case IV (all in (d,y'), a_n is gap NOT left-defined): a_n is a gap defined on the RIGHT by D.
+    Construct B = X_{a_n}, δ = A ∧ ¬D ∧ U(right(B,D), A). Use τ for earlier points.
+    Find t < g with δ(t) and matching gap via right(B,D). By Lemma 9, find matching gap e_n.
+    Uses **Stavi Until U'** via right(B,D). (~250-400 lines)
+
+**Tasks** (sequential, in dependency order):
+
+- [ ] **Task 4C.1**: Create `ExpressivenessGeneral.lean`. State Theorem 6: (*)_n for all n.
+  Set up the induction framework on n. Prove the base case (n=0): Duplicator responds to
+  Round 2 challenge using the 1-round forward strategy. (~100-150 lines)
+
+- [ ] **Task 4C.2**: Theorem 6 setup for the inductive step. Given forward G_{4+3n; r+4(n+1)},
+  define A, C, c, d and the backward strategies σ, τ on sub-intervals [x,c] and [c,y]
+  (obtained from the IH). State the four-case exhaustion. (~100-150 lines)
+
+- [ ] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
+  (d,y'). Combine using Lemma 10. Handle Round 2 challenge. (~150-250 lines)
+
+- [ ] **Task 4C.4**: Prove Case II (a_n is a point). Construct B = X_{a_n}. Use τ for
+  a_0,...,a_{n-1}. Find z with B(z) and A on (e_{n-1},z). Verify Round 2.
+  Uses standard Until. (~200-300 lines)
+
+- [ ] **Task 4C.5**: Prove Case III (a_n is left-defined gap). Construct δ = left(B,D).
+  Apply Lemma 9 to find matching gap in M. Verify formula agreement. (~250-350 lines)
+
+- [ ] **Task 4C.6**: Prove Case IV (a_n is gap, not left-defined). Construct
+  δ = A ∧ ¬D ∧ U(right(B,D), A). Apply Lemma 9 to find matching gap. (~250-350 lines)
+
+- [ ] **Task 4C.7**: Assemble Theorem 6 from the four cases. Verify exhaustiveness. (~30-50 lines)
+
+- [ ] **Task 4C.8**: Prove Proposition 6 (GHR93). If M and N agree on all temporal formulas
+  of rank r + 4n + 1, Duplicator has winning strategies for G_{n;r} on both future and past
+  intervals. Uses X_t type formulas and decomposition formulas. (~100-150 lines)
+
+- [ ] **Task 4C.9**: Prove Proposition 7 (Composition, GHR93). If Duplicator wins
+  G_{f(n);g(n)+4f(n)} on all sub-intervals between corresponding selected points (both
+  forward and backward), she wins the standard EF game G_n. Proof by induction on n,
+  using Theorem 6 at level n to convert forward to backward. (~150-250 lines)
+
+- [ ] **Task 4C.10**: Prove Corollary 5 = `stavi_expressive_completeness`. Assembly:
+  Given MonadicFormula ψ of depth n, choose temporal formulas of rank 1+g(n+1) partitioning
+  complete types. The type consistent with ψ gives the StaviFormula A. Uses Props 5, 6, 7.
+  Close the sorry in EFGames.lean. (~80-120 lines)
+
+- [ ] **Task 4C.11**: Verify `lean_verify stavi_expressive_completeness` shows no `sorryAx`.
+- [ ] **Task 4C.12**: Run `lake build`.
+
+**Timing**: 18-25 hours
+
+**Depends on**: 4B (all GHR93 definitions, Lemmas 9-11, game infrastructure)
 
 **Files to modify/create**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` (NEW, ~1000-1500 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- remove sorry from stavi_expressive_completeness
-- `Theories/Bimodal/Metalogic/WeakCanonical.lean` -- add import
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` — close stavi_expressive_completeness sorry
+- `Theories/Bimodal/Metalogic/WeakCanonical.lean` — add import
 
 **Verification**:
 - `lean_verify stavi_expressive_completeness` shows no `sorryAx`
