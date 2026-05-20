@@ -1,22 +1,22 @@
 ---
-next_project_number: 171
+next_project_number: 172
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-05-18T23:45:00Z
+  last_assessed: 2026-05-20T00:00:00Z
 task_counts:
-  active: 18
-  completed: 124
-  in_progress: 2
-  not_started: 14
+  active: 16
+  completed: 128
+  in_progress: 1
+  not_started: 13
   abandoned: 0
-  total: 139
+  total: 143
 technical_debt:
   sorry_count: 1
-  sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Two paths to eliminate succ_cofinal: direct proof (task 153) or Reynolds pipeline bypass (tasks 154-155). ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
   publication_path_sorries: 1
   axiom_count: 0
-  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ and discrete_box_necessity are standard axiom constructors with sorry-free soundness proofs."
+  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ and discrete_box_necessity are standard axiom constructors with sorry-free soundness proofs. Separation module has zero axioms (tasks 157, 171 eliminated all 9)."
   build_errors: 0
   status: excellent
 ---
@@ -27,25 +27,22 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-19. 18 active tasks.*
+*Updated 2026-05-20. 16 active tasks.*
 
-**Goal**: Sorry-free `bx_completeness` → formula refactor (G/H via U/S) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
+**Goal**: Sorry-free `bx_completeness` (Reynolds pipeline) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 116, 21, 95, 130, 131, 156, 161, 162, 168 | -- | completeness, formula-refactor, meta, proof-system |
-| 2 | 125, 127, 128, 157, 164, 165, 169 | 116, 168 | completeness, extensions, algebraic, decidability |
-| 3 | 155, 170 | 157, 169 | completeness (Reynolds pipeline, Complete extension) |
+| 1 | 21, 95, 130, 131, 155, 156, 161, 162, 168 | -- | completeness, formula-refactor, meta, proof-system |
+| 2 | 125, 127, 128, 164, 165, 169 | 168 | extensions, algebraic, decidability |
+| 3 | 170 | 169 | completeness (Complete extension) |
 
 **Grouped by Topic** (indented = must complete first):
 
 ### Completeness
 
-
-155 [RESEARCHED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-  └─ 157 [COMPLETED] — Formalize expressive completeness of {S,U} over integer time
-    └─ 116 [COMPLETED] — Remove G and H as primitive constructors; define via U and S
+155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
 
@@ -55,7 +52,6 @@ technical_debt:
 
 ### Formula Refactor
 
-167 [RESEARCHED] — Close 7 sorries from task 116 (SubformulaClosure gap + ConservativeExtension dead code)
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/
@@ -73,7 +69,6 @@ technical_debt:
 ### Algebraic Representation
 
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
-  └─ 116 [COMPLETED] — (formula-refactor: define G/H via U/S) (see above)
 
 ### Decidability
 
@@ -87,21 +82,6 @@ technical_debt:
 
 
 ## Tasks
-
-### 171. Eliminate remaining separation axioms and clean up post-157 artifacts
-- **Effort**: medium (15-22 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: medium
-- **Dependencies**: 157
-- **Research**:
-  - [specs/171_separation_axiom_cleanup/reports/01_remaining-work.md]
-  - [specs/171_separation_axiom_cleanup/reports/02_post-157-analysis.md]
-- **Plan**: [171_separation_axiom_cleanup/plans/01_separation-cleanup-plan.md]
-- **Summary**: [171_separation_axiom_cleanup/summaries/01_separation-cleanup-summary.md]
-- **Description**: Eliminate 5 remaining axioms from SeparationThm.lean: (A) replace 4 proper separation temporal closure axioms with theorems by mirroring task 157 oracle-free hierarchy for `is_properly_separable`, (B) prove `proper_separation_preserves_atoms` by tracking `formula_atoms` through the separation procedure, (C) clean stale comments, dead wrappers, and outdated documentation.
-
----
 
 ### 170. Establish completeness theorem for TM^dc (dense + complete extension)
 - **Effort**: large
@@ -160,43 +140,6 @@ technical_debt:
 
 **Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
 
-### 157. Formalize expressive completeness of {S,U} over integer time
-- **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [COMPLETED]
-- **Summary**: Eliminated 4 temporal closure axioms via oracle-free separation hierarchy (GHR94 10.2.4-10.2.8). Case 2 rewritten to match GHR94. 5 axioms remain (4 proper separation + proper_separation_preserves_atoms).
-- **Task Type**: lean4
-- **Priority**: high
-- **Dependencies**: 155, 116
-- **Research**:
-  - [specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md]
-  - [specs/157_expressive_completeness_su_integer/reports/04_team-research.md]
-  - [specs/157_expressive_completeness_su_integer/reports/05_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/06_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/07_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/08_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/09_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/10_task116-dependency-analysis.md]
-  - [157_expressive_completeness_su_integer/reports/11_post-task116-assessment.md]
-  - [157_expressive_completeness_su_integer/reports/12_team-research.md]
-  - [specs/157_expressive_completeness_su_integer/reports/14_team-research.md]
-  - [specs/157_expressive_completeness_su_integer/reports/15_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/17_team-research.md]
-  - [157_expressive_completeness_su_integer/reports/23_team-research.md]
-- **Plan**:
-  - [157_expressive_completeness_su_integer/plans/05_dedekind-approach-plan.md]
-  - [157_expressive_completeness_su_integer/plans/06_phase7-first-plan.md]
-  - [157_expressive_completeness_su_integer/plans/07_complete-remaining-plan.md]
-- **Summary**: [specs/157_expressive_completeness_su_integer/summaries/06_implementation-summary.md]
-  - [157_expressive_completeness_su_integer/plans/07_dedekind-specialization-plan.md]
-  - [157_expressive_completeness_su_integer/plans/08_axiom-elimination-plan.md]
-  - [157_expressive_completeness_su_integer/plans/12_separation-repair-plan.md]
-  - [157_expressive_completeness_su_integer/plans/15_ghr94-restructuring-plan.md]
-  - [157_expressive_completeness_su_integer/plans/17_revised-restructuring-plan.md]
-  - [157_expressive_completeness_su_integer/plans/23_oracle-free-plan.md]
-
-**Description**: Formalize expressive completeness of {S,U} over integer time (GHR94 Ch 10.2 separation theorem). Prove that every monadic first-order sentence over integer time has a temporal {U,S} equivalent (Theorem 10.2.9-10.2.10). This is Reynolds's Theorem 5, required as prerequisite for Phase 3B of task 155 (gap elimination, Reynolds Theorem 14). Literature: GHR94 Chapters 9-10 (in literature/ with markdown conversions). Proof structure: 8 elimination cases (pulling U out of S and vice versa), nested 4-level induction (junction depth -> nesting depth -> number of U-subformulas -> single case).
-
----
 
 ### 156. Improve formal/lean/math/logic research agents with multi-angle team research strategy
 - **Effort**: 4-8 hours
@@ -210,7 +153,7 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -291,38 +234,7 @@ technical_debt:
 
 ---
 
-### 167. Close 7 sorries from task 116 (SubformulaClosure gap + ConservativeExtension dead code)
-- **Effort**: 5-10 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 116
-- **Research**:
-  - [specs/167_close_task116_sorries/reports/01_subformula-closure-gap.md]
-- **Plan**: [167_close_task116_sorries/plans/01_close-sorries-plan.md]
-- **Summary**: [167_close_task116_sorries/summaries/01_close-sorries-summary.md]
 
-**Description**: Close 7 sorries introduced by task 116 (G/H/F/P redefinition via U/S). Three sorries in SuccExistence.lean and RestrictedMCS.lean are caused by the SubformulaClosure design gap: under new definitions P(χ) = S(χ,⊤), the formula H(¬χ) is no longer a structural subformula of P(χ). Fix: extend `baseDeferralClosure` with a `temporalBlockingSet` that includes H(¬χ) for each P(χ) and G(¬χ) for each F(χ) in the closure. Four sorries in ConservativeExtension/Lifting.lean are dead Boneyard code with removed temp_k_dist/temp_4 axiom match arms. Research identifies 3 additional SuccExistence sorries (lines 460, 763, 837) as a separate BX1 issue, not closure-related.
-
----
-
-### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
-- **Effort**: 15-25 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-18
-- **Summary**: Removed all_future/all_past as Formula constructors, redefined G/H/F/P as def abbreviations via Until/Since (Burgess 1982). Derived temp_k_dist/temp_4 from BX axioms, removed as axiom constructors. 40+ files modified, build passes (1647 jobs, 0 errors). Sorry delta: +7 (3 SuccExistence SubformulaClosure gap, 4 ConservativeExtension dead code).
-- **Task Type**: lean4
-- **Dependencies**: 107
-- **Research**:
-  - [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
-  - [116_redefine_ghfp_via_until_since/reports/02_team-research.md]
-- **Plan**:
-  - [116_redefine_ghfp_via_until_since/plans/04_redefine-ghfp-plan.md]
-- **Summary**:
-  - [specs/116_redefine_ghfp_via_until_since/summaries/04_redefine-ghfp-summary.md]
-
-**Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
-
----
 
 ### 95. Verification audit: #print axioms + sorry classification pass
 - **Effort**: 2-4 hours
