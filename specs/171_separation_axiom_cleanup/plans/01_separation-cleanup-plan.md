@@ -1,7 +1,7 @@
 # Implementation Plan: Separation Axiom Cleanup
 
 - **Task**: 171 - Eliminate remaining separation axioms and clean up post-task-157 artifacts
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: Task 157 (completed)
 - **Research Inputs**: reports/02_post-157-analysis.md
@@ -68,16 +68,16 @@ No ROADMAP.md consultation requested for this task.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Predicate Equivalence Lemmas [NOT STARTED]
+### Phase 1: Predicate Equivalence Lemmas [COMPLETED]
 
 **Goal**: Prove `is_S_free = is_future_only`, `is_U_free = is_past_only`, and `is_syntactically_separated = is_properly_separated` as theorems.
 
 **Tasks**:
-- [ ] Add `s_free_eq_future_only` theorem to Defs.lean (structural induction on Formula)
-- [ ] Add `u_free_eq_past_only` theorem to Defs.lean (structural induction on Formula)
-- [ ] Add `syn_sep_eq_proper_sep` theorem to Defs.lean (uses the two lemmas above at `.untl` and `.snce` cases)
-- [ ] Add `separable_iff_properly_separable` corollary connecting `is_separable` and `is_properly_separable`
-- [ ] Run `lake build` to verify
+- [x] Add `s_free_eq_future_only` theorem to Defs.lean (structural induction on Formula)
+- [x] Add `u_free_eq_past_only` theorem to Defs.lean (structural induction on Formula)
+- [x] Add `syn_sep_eq_proper_sep` theorem to Defs.lean (uses the two lemmas above at `.untl` and `.snce` cases)
+- [x] Add `separable_iff_properly_separable` corollary connecting `is_separable` and `is_properly_separable`
+- [x] Run `lake build` to verify
 
 **Timing**: 1 hour
 

@@ -465,4 +465,55 @@ def no_S_nested_in_U : Formula -> Prop
   simp only [Formula.all_future, Formula.neg, Formula.some_future, Formula.top,
     no_S_nested_in_U, is_S_free, Bool.and_true, and_true]
 
+/-! ## Predicate Equivalence: Syntactic vs. Proper Separation
+
+At the 6-constructor Formula level, `is_S_free = is_future_only` and
+`is_U_free = is_past_only`. This makes `is_syntactically_separated` and
+`is_properly_separated` identical predicates, so `is_separable` and
+`is_properly_separable` are equivalent. -/
+
+/-- `is_S_free` and `is_future_only` are identical predicates on the 6-constructor Formula type.
+    Both forbid `snce` and permit `untl`, `box`, `imp`, `atom`, `bot`. -/
+theorem s_free_eq_future_only (φ : Formula) : is_S_free φ = is_future_only φ := by
+  induction φ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 => simp [is_S_free, is_future_only, ih1, ih2]
+  | box a ih => simp [is_S_free, is_future_only, ih]
+  | untl a b ih1 ih2 => simp [is_S_free, is_future_only, ih1, ih2]
+  | snce _ _ => rfl
+
+/-- `is_U_free` and `is_past_only` are identical predicates on the 6-constructor Formula type.
+    Both forbid `untl` and permit `snce`, `box`, `imp`, `atom`, `bot`. -/
+theorem u_free_eq_past_only (φ : Formula) : is_U_free φ = is_past_only φ := by
+  induction φ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 => simp [is_U_free, is_past_only, ih1, ih2]
+  | box a ih => simp [is_U_free, is_past_only, ih]
+  | untl _ _ => rfl
+  | snce a b ih1 ih2 => simp [is_U_free, is_past_only, ih1, ih2]
+
+/-- `is_syntactically_separated` and `is_properly_separated` are identical predicates.
+    At the `.untl` case, both require S-free/future-only arguments (equal by `s_free_eq_future_only`).
+    At the `.snce` case, both require U-free/past-only arguments (equal by `u_free_eq_past_only`). -/
+theorem syn_sep_eq_proper_sep (φ : Formula) :
+    is_syntactically_separated φ = is_properly_separated φ := by
+  induction φ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp a b ih1 ih2 => simp [is_syntactically_separated, is_properly_separated, ih1, ih2]
+  | box _ => rfl
+  | untl a b _ _ => simp [is_syntactically_separated, is_properly_separated, s_free_eq_future_only]
+  | snce a b _ _ => simp [is_syntactically_separated, is_properly_separated, u_free_eq_past_only]
+
+/-- Corollary: a formula is separable iff it is properly separable. -/
+theorem separable_iff_properly_separable (φ : Formula) :
+    is_separable φ ↔ is_properly_separable φ := by
+  constructor
+  · rintro ⟨ψ, hsep, hequiv⟩
+    exact ⟨ψ, (syn_sep_eq_proper_sep ψ) ▸ hsep, hequiv⟩
+  · rintro ⟨ψ, hpsep, hequiv⟩
+    exact ⟨ψ, (syn_sep_eq_proper_sep ψ).symm ▸ hpsep, hequiv⟩
+
 end Bimodal.Metalogic.WeakCanonical.Separation
