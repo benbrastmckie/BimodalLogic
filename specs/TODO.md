@@ -44,7 +44,7 @@ technical_debt:
 
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-  └─ 157 [IMPLEMENTING] — Formalize expressive completeness of {S,U} over integer time
+  └─ 157 [COMPLETED] — Formalize expressive completeness of {S,U} over integer time
     └─ 116 [COMPLETED] — Remove G and H as primitive constructors; define via U and S
 95 [NOT STARTED] — Verification audit: #print axioms + sorry classification pass
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track
@@ -147,7 +147,8 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Summary**: Eliminated 4 temporal closure axioms via oracle-free separation hierarchy (GHR94 10.2.4-10.2.8). Case 2 rewritten to match GHR94. 5 axioms remain (4 proper separation + proper_separation_preserves_atoms).
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155, 116

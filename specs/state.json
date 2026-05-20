@@ -68,7 +68,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -77,8 +77,8 @@
         116
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-20T05:47:08Z",
-      "session_id": "sess_1779254268_6ebef4",
+      "last_updated": "2026-05-20T06:55:14Z",
+      "session_id": "sess_1779257006_07598e",
       "researched": "2026-05-20T04:36:15Z",
       "artifacts": [
         {
@@ -198,7 +198,9 @@
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 27
+      "next_artifact_number": 27,
+      "completed": "2026-05-20T06:55:14Z",
+      "completion_summary": "Eliminated 4 temporal closure axioms from SeparationThm.lean via oracle-free separation hierarchy (GHR94 Lemmas 10.2.4-10.2.8). Case 2 rewritten to match GHR94 (neg U(A,B) kept as unit). Import reversed: Hierarchy no longer imports SeparationThm. 5 axioms remain (4 proper separation + proper_separation_preserves_atoms)."
     },
     {
       "project_number": 156,
