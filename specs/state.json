@@ -123,48 +123,14 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
       "last_updated": "2026-05-20T16:03:13Z",
       "dependencies": [],
       "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
       "artifacts": [
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/01_tech-debt-audit.md",
-          "type": "report",
-          "summary": "Comprehensive 4-agent audit of tasks 9-20: dead code, bridges, axioms, sorries, deprecation candidates, and cleanup action plan"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
-          "type": "research",
-          "summary": "Team research (3 teammates): axiom semantic validity, proof dependencies, frame condition theory"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
-          "type": "report",
-          "summary": "Synthesized team research: axiom classification, derivation priorities, reconciled action plan"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-a-findings.md",
-          "type": "report",
-          "summary": "Axiom semantic validity analysis (11 axioms classified: 2 derivable, 2 unjustified, 5 valid-semantic, 2 valid-frame)"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-b-findings.md",
-          "type": "report",
-          "summary": "Axiom proof dependencies and derivation paths with priority matrix"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-c-findings.md",
-          "type": "report",
-          "summary": "Frame condition theory analysis of 19 proof system axioms + 11 Lean axiom declarations"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for technical debt cleanup focusing on axiom elimination"
-        }
+        "specs/021_technical_debt_cleanup/reports/03_archive-delete-audit.md"
       ],
       "session_id": "sess_1779292958_9c8d94",
       "researched": "2026-03-21T19:21:35Z",
@@ -204,19 +170,24 @@
     {
       "project_number": 130,
       "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
       "dependencies": [],
       "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-20T16:03:14Z",
-      "next_artifact_number": 1,
+      "last_updated": "2026-05-20T16:08:28Z",
+      "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md",
           "type": "research_report",
           "summary": "Full sorry inventory: 73 active sorries across 18 files. 15 confirmed dead-code sorries archivable (BXCanonical non-Chronicle pipeline), 4 dead-approach sorries to annotate in ChronicleToCountermodel, 6 Bundle sorries NOT archivable (still active), 48 sorries on active paths. Revised total: 19 actionable (vs ~40 estimated)."
+        },
+        {
+          "path": "specs/130_archive_dead_sorries_to_boneyard/reports/02_archive-vs-delete.md",
+          "type": "research",
+          "summary": "Archive-vs-delete classification for 19 dead-code sorries: 10 ARCHIVE, 5 DELETE, 4 ANNOTATE. Proposes 3 Boneyard subdirectories with tombstone templates."
         }
       ],
       "topic": "formula-refactor",
@@ -226,7 +197,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -235,7 +206,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T16:07:27Z",
+      "last_updated": "2026-05-20T16:08:53Z",
       "next_artifact_number": 4,
       "artifacts": [
         {
@@ -274,33 +245,49 @@
           "summary": "Team research round 3 (4 teammates): sorry chain verification, blocker assessment, infrastructure inventory, strategic direction"
         }
       ],
-      "session_id": "sess_1779292320_2adf4b",
+      "session_id": "sess_1779293321_44b6c8",
       "researched": "2026-05-20T16:07:27Z",
       "started": "2026-05-16T19:49:58Z"
     },
     {
       "project_number": 172,
       "project_name": "fix_stale_metalogic_docstring",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Rewrite Metalogic.lean docstring which is severely stale. Currently says \"Reflexive G/H Semantics\" but the project uses irreflexive semantics (task 93). References \"SuccChain architecture\" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:03:15Z",
+      "last_updated": "2026-05-20T16:08:50Z",
       "dependencies": [],
-      "session_id": "sess_1779292958_9c8d94"
+      "session_id": "sess_1779292958_9c8d94",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md",
+          "type": "research",
+          "summary": "Audit of stale docstrings in both Metalogic.lean files with full replacement text. References to Reflexive semantics, SuccChain, and 11 nonexistent files identified."
+        }
+      ]
     },
     {
       "project_number": 173,
       "project_name": "archive_dead_temporal_derived_sorry_stubs",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
       "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:03:16Z",
+      "last_updated": "2026-05-20T16:08:24Z",
       "dependencies": [],
-      "session_id": "sess_1779292958_9c8d94"
+      "session_id": "sess_1779292958_9c8d94",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md",
+          "type": "research",
+          "summary": "Complete audit of 19 sorry stubs: DELETE 22 definitions (pure stubs), ARCHIVE 5 (G_bot_absurd, H_bot_absurd, until_F_expansion, since_P_expansion, past_density_derivable). Net sorry reduction: 19."
+        }
+      ]
     },
     {
       "project_number": 174,

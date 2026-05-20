@@ -53,7 +53,7 @@ After 155 completes:
 
 173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
-21 [NOT STARTED] — Clean up technical debt: stale docstrings, 81 tombstone comments
+21 [RESEARCHED] — Clean up technical debt: stale docstrings, 81 tombstone comments
 172 [NOT STARTED] — Fix stale Metalogic.lean docstring
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
@@ -158,9 +158,10 @@ After 155 completes:
 
 ### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
 - **Effort**: small (1-2 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
+- **Research**: [173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md]
 
 **Description**: Archive or remove 19 sorry-stubbed theorems in `TemporalDerived.lean` that are explicitly documented as "NOT VALID under open guard semantics" (task 113). Includes `psi_imp_until`, `until_imp_or`, `refl_F`, `bot_until_bot_absurd`, and 15 others. These theorems are semantically invalid under the current open-guard `(t,s)` semantics and will never be provable. Move to `Boneyard/ClosedGuardDerived/` or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.
 
@@ -168,9 +169,10 @@ After 155 completes:
 
 ### 172. Fix stale Metalogic.lean docstring
 - **Effort**: small (1-2 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
+- **Research**: [172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md]
 
 **Description**: Rewrite `Metalogic.lean` docstring which is severely stale. Currently says "Reflexive G/H Semantics" but the project uses irreflexive semantics (task 93). References "SuccChain architecture" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.
 
@@ -246,7 +248,7 @@ After 155 completes:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -274,11 +276,13 @@ After 155 completes:
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129
-- **Research**: [specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md]
+- **Research**:
+  - [specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md]
+  - [130_archive_dead_sorries_to_boneyard/reports/02_archive-vs-delete.md]
 
 **Description**: After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates — convergence approach superseded. (3) succ_cofinal gap analysis — entire convergence + Z1 gap section. (4) BXCanonical pipeline dead code (Quasimodel/Realization, Quasimodel/Construction, TruthLemma, RootScopedChain, Filtration/SigmaOrdering, Frame) — bypassed by Chronicle. (5) Bundle/SuccRelation and Bundle/SuccExistence sorries if no longer needed. Total: ~40 sorries to archive.
 
@@ -344,12 +348,13 @@ After 155 completes:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**:
   - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md)
   - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md)
+  - [03_archive-delete-audit.md](021_technical_debt_cleanup/reports/03_archive-delete-audit.md)
 - **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md)
 
 **Description**: Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned).
