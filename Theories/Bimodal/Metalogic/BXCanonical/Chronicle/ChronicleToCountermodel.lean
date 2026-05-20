@@ -819,25 +819,6 @@ theorem countermodel_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (rooted_cantor_fmcs_dense A h_mcs h_box_dense 0)
     ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
-/--
-Sorry-backed discrete countermodel stub. Used in the non-dense branch of
-completeness. Requires constructing a BFMCS on ℤ (analogous to
-`cantor_bfmcs_dense` for the dense case on ℚ), using `discrete_fmcs`
-and `discrete_iso` to transport the chronicle coherence properties
-through the Z-isomorphism. Prior-UZ axioms and IsSuccArchimedean
-infrastructure are now in place; the remaining work is the BFMCS
-construction and parametric completeness on ℤ.
--/
-theorem dd_countermodel_chronicle_nondense_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A) :
-    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
-  sorry
-
 /-! ## Discrete Case: Z-Isomorphism from U(⊤,⊥)
 
 When `U(⊤,⊥)` (= `next_top`) is present in all domain MCS's, the limit domain

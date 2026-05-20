@@ -285,16 +285,6 @@ theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
   · exact Or.inr (bx_until_eventuality_resolution w ψ φ h_until h_φ)
 
 /--
-Until backward (reflexive case): ψ ∈ w implies φ U ψ ∈ w.
-Under irreflexive semantics, ψ → (φ U ψ) is NOT axiomatically valid (no
-reflexive witness). This lemma is sorry'd pending redesign.
--/
-theorem until_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
-    (h_ψ : ψ ∈ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas := by
-  sorry
-
-/--
 Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
 with ψ ∈ v.
 
@@ -308,15 +298,5 @@ theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
   by_cases h_φ : φ ∈ w.formulas
   · exact Or.inl h_φ
   · exact Or.inr (bx_since_eventuality_resolution w ψ φ h_since h_φ)
-
-/--
-Since backward (reflexive case): ψ ∈ w implies φ S ψ ∈ w.
-Under irreflexive semantics, ψ → (φ S ψ) is NOT axiomatically valid (no
-reflexive witness). This lemma is sorry'd pending redesign.
--/
-theorem since_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
-    (h_ψ : ψ ∈ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas := by
-  sorry
 
 end Bimodal.Metalogic.BXCanonical

@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Dead Sorries to Boneyard
 
 - **Task**: 130 - Archive dead sorries to Boneyard
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_sorry-inventory.md, reports/02_archive-vs-delete.md
@@ -68,15 +68,15 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 1: Delete Trivial Stubs [NOT STARTED]
+### Phase 1: Delete Trivial Stubs [COMPLETED]
 
 **Goal**: Remove 5 sorry stubs from 3 files (Construction.lean, TruthLemma.lean, ChronicleToCountermodel.lean) and verify the build.
 
 **Tasks**:
-- [ ] Delete `refl_intro_until_mcs` and `refl_intro_since_mcs` stubs from `Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Construction.lean` (lines ~147-186, 2 sorries)
-- [ ] Delete `until_backward_refl_mcs` and `since_backward_refl_mcs` stubs from `Theories/Bimodal/Metalogic/BXCanonical/TruthLemma.lean` (lines ~292-320, 2 sorries)
-- [ ] Delete `dd_countermodel_chronicle_nondense_sorry` stub from `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (lines ~831-839, 1 sorry). Preserve the nearby doc comment about the discrete case pipeline (lines 841+)
-- [ ] Run `lake build` and verify zero new errors
+- [x] Delete `refl_intro_until_mcs` and `refl_intro_since_mcs` stubs from `Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Construction.lean` (lines ~147-186, 2 sorries)
+- [x] Delete `until_backward_refl_mcs` and `since_backward_refl_mcs` stubs from `Theories/Bimodal/Metalogic/BXCanonical/TruthLemma.lean` (lines ~292-320, 2 sorries)
+- [x] Delete `dd_countermodel_chronicle_nondense_sorry` stub from `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (lines ~831-839, 1 sorry). Preserve the nearby doc comment about the discrete case pipeline (lines 841+)
+- [x] Run `lake build` and verify zero new errors
 
 **Timing**: 30 minutes
 

@@ -141,14 +141,6 @@ theorem connect_future_mcs {w : BXPoint} {φ : Formula}
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
-/-- Key lemma: reflexive introduction at MCS level.
-    If ψ ∈ w.formulas, then φ U ψ ∈ w.formulas.
-    Under irreflexive semantics, refl_intro_until is removed. Sorry'd (non-critical path). -/
-theorem refl_intro_until_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : ψ ∈ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas := by
-  sorry
-
 /-! ## Since-direction MCS lemmas -/
 
 -- NOTE: `since_elim_mcs` (BX9' at MCS level) removed — unsound under open guard (task 113).
@@ -177,13 +169,6 @@ theorem connect_past_mcs {w : BXPoint} {φ : Formula}
   have h_ax := DerivationTree.axiom [] _ (Axiom.connect_past φ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
-
-/-- Reflexive introduction for Since at MCS level.
-    Under irreflexive semantics, refl_intro_since is removed. Sorry'd (non-critical path). -/
-theorem refl_intro_since_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : ψ ∈ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas := by
-  sorry
 
 /-! ## Until-Defect Set and Strict-Decrease Infrastructure
 
