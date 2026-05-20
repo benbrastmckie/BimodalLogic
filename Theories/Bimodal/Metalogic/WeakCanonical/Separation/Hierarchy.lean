@@ -1110,6 +1110,248 @@ theorem abstract_untl_count_lt_of_contains_surface (phi A B : Formula) (p : Atom
     · have := ih1 hc; have := abstract_untl_count_le d A B p; omega
     · have := ih2 hd; have := abstract_untl_count_le c A B p; omega
 
+/-! ### count_U_total lemmas for oracle-free separation -/
+
+/-- `abstract_untl` never increases `count_U_total`. -/
+theorem abstract_untl_count_total_le (phi A B : Formula) (p : Atom) :
+    count_U_total (abstract_untl phi A B p) ≤ count_U_total phi := by
+  induction phi with
+  | atom _ => simp [abstract_untl, count_U_total]
+  | bot => simp [abstract_untl, count_U_total]
+  | imp c d ih1 ih2 =>
+    simp [abstract_untl, count_U_total]; exact Nat.add_le_add ih1 ih2
+  | box c ih =>
+    simp [abstract_untl, count_U_total]; exact ih
+  | untl c d ih1 ih2 =>
+    simp only [abstract_untl, count_U_total]
+    split
+    · simp [count_U_total]; omega
+    · simp only [count_U_total]; have := Nat.add_le_add ih1 ih2; omega
+  | snce c d ih1 ih2 =>
+    simp [abstract_untl, count_U_total]; exact Nat.add_le_add ih1 ih2
+
+/-- `contains_untl_deep phi A B`: there exists an `.untl A B` node at any depth in phi. -/
+def contains_untl_deep : Formula → Formula → Formula → Prop
+  | .atom _, _, _ => False
+  | .bot, _, _ => False
+  | .imp c d, A, B => contains_untl_deep c A B ∨ contains_untl_deep d A B
+  | .box c, A, B => contains_untl_deep c A B
+  | .untl c d, A, B => (c = A ∧ d = B) ∨
+      contains_untl_deep c A B ∨ contains_untl_deep d A B
+  | .snce c d, A, B => contains_untl_deep c A B ∨ contains_untl_deep d A B
+
+/-- Surface containment implies deep containment. -/
+theorem contains_untl_surface_implies_deep (phi A B : Formula) :
+    contains_untl_surface phi A B → contains_untl_deep phi A B := by
+  induction phi with
+  | atom _ => exact id
+  | bot => exact id
+  | imp c d ih1 ih2 =>
+    simp only [contains_untl_surface, contains_untl_deep]
+    intro h; rcases h with hc | hd
+    · exact Or.inl (ih1 hc)
+    · exact Or.inr (ih2 hd)
+  | box c ih =>
+    simp only [contains_untl_surface, contains_untl_deep]; exact ih
+  | untl c d _ _ =>
+    simp only [contains_untl_surface, contains_untl_deep]
+    exact Or.inl
+  | snce c d ih1 ih2 =>
+    simp only [contains_untl_surface, contains_untl_deep]
+    intro h; rcases h with hc | hd
+    · exact Or.inl (ih1 hc)
+    · exact Or.inr (ih2 hd)
+
+/-- Abstracting a formula that contains `.untl A B` at any depth strictly
+    decreases `count_U_total`. -/
+theorem abstract_untl_count_total_lt_of_contains_deep (phi A B : Formula) (p : Atom)
+    (h_contains : contains_untl_deep phi A B) :
+    count_U_total (abstract_untl phi A B p) < count_U_total phi := by
+  induction phi with
+  | atom _ => exact absurd h_contains id
+  | bot => exact absurd h_contains id
+  | imp c d ih1 ih2 =>
+    simp only [contains_untl_deep] at h_contains
+    simp only [abstract_untl, count_U_total]
+    rcases h_contains with hc | hd
+    · have := ih1 hc; have := abstract_untl_count_total_le d A B p; omega
+    · have := ih2 hd; have := abstract_untl_count_total_le c A B p; omega
+  | box c ih =>
+    simp only [contains_untl_deep] at h_contains
+    simp only [abstract_untl, count_U_total]; exact ih h_contains
+  | untl c d ih1 ih2 =>
+    simp only [contains_untl_deep] at h_contains
+    simp only [abstract_untl, count_U_total]
+    split
+    · simp only [count_U_total]; omega
+    · next hne =>
+      simp only [count_U_total]
+      rcases h_contains with ⟨hc, hd⟩ | hc | hd
+      · exact absurd ⟨hc, hd⟩ hne
+      · have := ih1 hc; have := abstract_untl_count_total_le d A B p; omega
+      · have := ih2 hd; have := abstract_untl_count_total_le c A B p; omega
+  | snce c d ih1 ih2 =>
+    simp only [contains_untl_deep] at h_contains
+    simp only [abstract_untl, count_U_total]
+    rcases h_contains with hc | hd
+    · have := ih1 hc; have := abstract_untl_count_total_le d A B p; omega
+    · have := ih2 hd; have := abstract_untl_count_total_le c A B p; omega
+
+/-- S-free formulas have no_S_nested_in_U (vacuously: no `.snce` nodes at all). -/
+theorem s_free_implies_no_S_nested (phi : Formula) (h : is_S_free phi = true) :
+    no_S_nested_in_U phi := by
+  induction phi with
+  | atom _ => trivial
+  | bot => trivial
+  | imp a b ih1 ih2 =>
+    simp only [is_S_free, Bool.and_eq_true] at h
+    exact ⟨ih1 h.1, ih2 h.2⟩
+  | box a ih => simp only [is_S_free] at h; exact ih h
+  | untl a b =>
+    simp only [is_S_free, Bool.and_eq_true] at h
+    exact h
+  | snce _ _ => simp only [is_S_free] at h
+
+/-- Extract innermost U-type: recurses INTO `.untl` children to find a `.untl`
+    with U-free arguments. Unlike `extract_U_type` which takes the first `.untl`
+    it finds, this descends into `.untl` children when they're not U-free. -/
+private noncomputable def extract_innermost_U_type :
+    (φ : Formula) → (is_U_free φ = false) → no_S_nested_in_U φ → (Formula × Formula)
+  | .atom _, h, _ => by simp [is_U_free] at h
+  | .bot, h, _ => by simp [is_U_free] at h
+  | .imp c d, h, hns =>
+    if hc : is_U_free c = false then extract_innermost_U_type c hc hns.1
+    else extract_innermost_U_type d (by simp only [is_U_free] at h; simp [hc] at h; exact h) hns.2
+  | .box c, h, hns => extract_innermost_U_type c (by simp only [is_U_free] at h; exact h) hns
+  | .untl a b, _, hns =>
+    -- Key difference from extract_U_type: recurse into children if they're not U-free
+    if ha : is_U_free a = false then
+      extract_innermost_U_type a ha (s_free_implies_no_S_nested a hns.1)
+    else if hb : is_U_free b = false then
+      extract_innermost_U_type b hb (s_free_implies_no_S_nested b hns.2)
+    else (a, b)  -- Both U-free: this is an innermost U-type
+  | .snce c d, h, hns =>
+    if hc : is_U_free c = false then extract_innermost_U_type c hc hns.1
+    else extract_innermost_U_type d (by simp only [is_U_free] at h; simp [hc] at h; exact h) hns.2
+
+/-- `extract_innermost_U_type` returns S-free arguments. -/
+private theorem extract_innermost_U_type_S_free (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) :
+    is_S_free (extract_innermost_U_type φ h hns).1 = true ∧
+    is_S_free (extract_innermost_U_type φ h hns).2 = true := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
+  | box c ih => simp only [is_U_free] at h; unfold extract_innermost_U_type; exact ih h hns
+  | untl a b ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases ha : is_U_free a = false
+    · simp only [ha, ↓reduceDIte]
+      exact ih1 ha (s_free_implies_no_S_nested a hns.1)
+    · simp only [ha, ↓reduceDIte]
+      by_cases hb : is_U_free b = false
+      · simp only [hb, ↓reduceDIte]
+        exact ih2 hb (s_free_implies_no_S_nested b hns.2)
+      · simp only [hb, ↓reduceDIte]; exact hns
+  | snce c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
+
+/-- `extract_innermost_U_type` returns U-free arguments (KEY property).
+    At the innermost level, both arguments are U-free by construction. -/
+private theorem extract_innermost_U_type_U_free (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) :
+    is_U_free (extract_innermost_U_type φ h hns).1 = true ∧
+    is_U_free (extract_innermost_U_type φ h hns).2 = true := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
+  | box c ih => simp only [is_U_free] at h; unfold extract_innermost_U_type; exact ih h hns
+  | untl a b ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases ha : is_U_free a = false
+    · simp only [ha, ↓reduceDIte]
+      exact ih1 ha (s_free_implies_no_S_nested a hns.1)
+    · simp only [ha, ↓reduceDIte]
+      by_cases hb : is_U_free b = false
+      · simp only [hb, ↓reduceDIte]
+        exact ih2 hb (s_free_implies_no_S_nested b hns.2)
+      · -- Both U-free: this is the innermost case
+        simp only [hb, ↓reduceDIte]
+        simp only [Bool.not_eq_true] at ha
+        exact ⟨ha, hb⟩
+  | snce c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte]; exact ih1 hc hns.1
+    · simp only [hc, ↓reduceDIte]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact ih2 hd hns.2
+
+/-- `extract_innermost_U_type` returns a pair `(A, B)` such that
+    `contains_untl_deep φ A B`. -/
+private theorem extract_innermost_U_type_contains_deep (φ : Formula) (h : is_U_free φ = false)
+    (hns : no_S_nested_in_U φ) :
+    contains_untl_deep φ
+      (extract_innermost_U_type φ h hns).1 (extract_innermost_U_type φ h hns).2 := by
+  induction φ with
+  | atom _ => simp [is_U_free] at h
+  | bot => simp [is_U_free] at h
+  | imp c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte, contains_untl_deep]
+      exact Or.inl (ih1 hc hns.1)
+    · simp only [hc, ↓reduceDIte, contains_untl_deep]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact Or.inr (ih2 hd hns.2)
+  | box c ih =>
+    simp only [is_U_free] at h
+    unfold extract_innermost_U_type; simp only [contains_untl_deep]; exact ih h hns
+  | untl a b ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases ha : is_U_free a = false
+    · simp only [ha, ↓reduceDIte, contains_untl_deep]
+      exact Or.inr (Or.inl (ih1 ha (s_free_implies_no_S_nested a hns.1)))
+    · simp only [ha, ↓reduceDIte]
+      by_cases hb : is_U_free b = false
+      · simp only [hb, ↓reduceDIte, contains_untl_deep]
+        exact Or.inr (Or.inr (ih2 hb (s_free_implies_no_S_nested b hns.2)))
+      · simp only [hb, ↓reduceDIte, contains_untl_deep]
+        exact Or.inl ⟨rfl, rfl⟩
+  | snce c d ih1 ih2 =>
+    unfold extract_innermost_U_type
+    by_cases hc : is_U_free c = false
+    · simp only [hc, ↓reduceDIte, contains_untl_deep]
+      exact Or.inl (ih1 hc hns.1)
+    · simp only [hc, ↓reduceDIte, contains_untl_deep]
+      have hd : is_U_free d = false := by
+        simp only [is_U_free] at h; cases huf : is_U_free c <;> simp_all
+      exact Or.inr (ih2 hd hns.2)
+
 /-- abstract_untl preserves has_no_allpast_allfuture. -/
 theorem abstract_untl_preserves_no_allpast_allfuture (phi A B : Formula) (p : Atom)
     (h : has_no_allpast_allfuture phi = true) :

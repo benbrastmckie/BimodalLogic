@@ -370,6 +370,33 @@ def count_U_subformulas : Formula → Nat
   | .untl _ _ => 1  -- count the U itself, not sub-U's
   | .snce φ ψ => count_U_subformulas φ + count_U_subformulas ψ
 
+/-- Total count of ALL `.untl` nodes at ALL depths in a formula.
+    Unlike `count_U_subformulas` (which counts surface-level `.untl` nodes as 1 each),
+    this recurses into `.untl` children. Used for oracle-free separation proofs
+    where innermost U-types are abstracted. -/
+def count_U_total : Formula → Nat
+  | .atom _ => 0
+  | .bot => 0
+  | .imp φ ψ => count_U_total φ + count_U_total ψ
+  | .box φ => count_U_total φ
+  | .untl φ ψ => 1 + count_U_total φ + count_U_total ψ
+  | .snce φ ψ => count_U_total φ + count_U_total ψ
+
+/-- `count_U_total phi = 0` iff the formula is U-free. -/
+theorem count_U_total_zero_iff_U_free (phi : Formula) :
+    count_U_total phi = 0 ↔ is_U_free phi = true := by
+  induction phi with
+  | atom _ => simp [count_U_total, is_U_free]
+  | bot => simp [count_U_total, is_U_free]
+  | imp a b ih1 ih2 =>
+    simp only [count_U_total, is_U_free, Nat.add_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
+  | box a ih => simp only [count_U_total, is_U_free]; exact ih
+  | untl _ _ =>
+    simp only [count_U_total, is_U_free]
+    exact iff_of_false (by omega) (by decide)
+  | snce a b ih1 ih2 =>
+    simp only [count_U_total, is_U_free, Nat.add_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
+
 /-- S-nesting depth above U occurrences. Used for Lemma 10.2.5 induction.
     Counts the maximum number of S's between the root and any U. -/
 def S_nesting_above_U : Formula → Nat

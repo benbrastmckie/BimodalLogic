@@ -414,7 +414,7 @@ OK, I've spent enough time analyzing. Let me write the final plan.
 
 ---
 
-### Phase 1: Measure Infrastructure [NOT STARTED]
+### Phase 1: Measure Infrastructure [COMPLETED]
 
 **Goal**: Define `count_U_total`, `extract_innermost_U_type`, and companion lemmas needed for the oracle-free `no_S_nested_sep`.
 
