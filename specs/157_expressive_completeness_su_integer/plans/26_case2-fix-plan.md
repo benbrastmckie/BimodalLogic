@@ -232,7 +232,7 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 ---
 
-### Phase 4: Oracle-Free `no_S_nested_sep` [NOT STARTED]
+### Phase 4: Oracle-Free `no_S_nested_sep` [COMPLETED]
 
 **Goal**: Create `no_S_nested_sep` combining 10.2.6 + 10.2.7, using the oracle-free 10.2.5.
 

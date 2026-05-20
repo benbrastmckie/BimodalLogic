@@ -3457,6 +3457,48 @@ theorem lemma_10_2_6_self_contained (phi : Formula)
   lemma_10_2_6_self_contained_param phi hns hd
     (fun chi hns _hjd => all_separable chi)
 
+/-- GHR94 Lemma 10.2.6 (oracle-free):
+    Uses `single_U_formula_separable_no_oracle` directly instead of an oracle. -/
+theorem lemma_10_2_6_no_oracle (phi : Formula)
+    (hns : no_S_nested_in_U phi)
+    (hd : U_nesting_depth phi ≤ 1) :
+    is_separable phi := by
+  induction h : count_U_subformulas phi using Nat.strongRecOn generalizing phi with
+  | ind n ih =>
+  have hexp : has_no_allpast_allfuture phi = true := has_no_allpast_allfuture_true phi
+  by_cases huf : is_U_free phi = true
+  · exact separated_imp_separable phi (restricted_u_free_separated phi hexp huf)
+  · push_neg at huf; simp [Bool.not_eq_true] at huf
+    have huf' : is_U_free phi = false := huf
+    let AB := extract_U_type phi huf' hns
+    have hAB_sf := extract_U_type_S_free phi huf' hns
+    have hAB_uf := extract_U_type_U_free phi huf' hns hd
+    let p := fresh_atom phi
+    have hfresh := fresh_atom_not_in phi
+    let phi' := abstract_untl phi AB.1 AB.2 p
+    have hcontains := extract_U_type_contains_surface phi huf' hns
+    have hcount_lt : count_U_subformulas phi' < count_U_subformulas phi :=
+      abstract_untl_count_lt_of_contains_surface phi AB.1 AB.2 p hcontains
+    have hns' : no_S_nested_in_U phi' :=
+      abstract_untl_preserves_no_S_nested phi AB.1 AB.2 p hns
+    have h_phi'_sep : is_separable phi' := by
+      exact ih (count_U_subformulas phi') (h ▸ hcount_lt) phi' hns'
+        (abstract_untl_U_nesting_depth_le_of_le phi AB.1 AB.2 p 1 hd) rfl
+    obtain ⟨psi, hpsi_sep, hpsi_equiv⟩ := h_phi'_sep
+    have hroundtrip : subst_formula phi' p (.untl AB.1 AB.2) = phi :=
+      abstract_subst_roundtrip phi AB.1 AB.2 p hfresh
+    have hphi_equiv : int_equiv phi (subst_formula psi p (.untl AB.1 AB.2)) := by
+      rw [← hroundtrip]
+      exact subst_formula_congr hpsi_equiv p (.untl AB.1 AB.2)
+    -- Use single_U_formula_separable_no_oracle (NO ORACLE)
+    have h_subst_sep : is_separable (subst_formula psi p (.untl AB.1 AB.2)) :=
+      subst_in_separated_separable_typed psi p AB.1 AB.2
+        hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hpsi_sep
+        (fun χ _hns_χ hsingle_χ =>
+          single_U_formula_separable_no_oracle χ AB.1 AB.2
+            hAB_sf.1 hAB_sf.2 hAB_uf.1 hAB_uf.2 hsingle_χ)
+    exact is_separable_of_equiv hphi_equiv h_subst_sep
+
 /-- Substituting `.untl A B` (with U-free A, B) into a U-free formula gives
     `U_nesting_depth <= 1`. Since the base formula has no `.untl` nodes, the only
     `.untl` in the result comes from substituting `.untl A B` for atoms. Each such
@@ -3759,13 +3801,9 @@ theorem no_S_nested_sep (phi : Formula) (hns : no_S_nested_in_U phi) :
               -- Since d >= 2 and UND chi <= 1, outer IH at d' = 1 < d
               ih_d 1 (by omega) (count_U_total chi) chi hund_chi (le_refl _) hns_chi)
         exact is_separable_of_equiv hphi_equiv h_subst_sep
-      · -- UND <= 1: BLOCKED — no well-founded measure found for the oracle chain
-        -- See handoff for detailed analysis.
-        -- The UND >= 2 case above works: callbacks have UND <= 1, outer IH handles them.
-        -- At UND <= 1, the oracle from single_U_formula_separable_noax_param at depth >= 2
-        -- produces formulas with no_S_nested_in_U + JD <= 1 but uncontrolled UND and
-        -- count_U_total, preventing the lex (UND, count_U_total) measure from decreasing.
-        exact no_S_nested_in_U_separable_direct _ hns_ψ
+      · -- UND <= 1: use oracle-free lemma_10_2_6_no_oracle
+        push_neg at hd_ge2
+        exact lemma_10_2_6_no_oracle ψ hns_ψ (by omega)
   exact proof (U_nesting_depth phi) (count_U_total phi) phi (le_refl _) (le_refl _) hns
 
 /-- Version of `no_S_nested_in_U_separable_param` with JD-bounded callback. -/
