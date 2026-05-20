@@ -223,7 +223,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-20T16:17:20Z",
-      "next_artifact_number": 6,
+      "next_artifact_number": 7,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -269,6 +269,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/05_full-reynolds-impl.md",
           "type": "research",
           "summary": "Full Reynolds implementation plan: Stavi connectives + Theorem 4 (axiom) + Theorem 5 + Lemmas 6-13, ~1280 new lines"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/06_path-b-feasibility.md",
+          "type": "research",
+          "summary": "Path B feasibility: known model theory but ~2x harder than claimed (540-990 lines), recommends axiomatize Theorem 4 + prove Theorem 5 + Reynolds direct (~400-700 lines)"
         }
       ],
       "session_id": "sess_1779293806_635cb2",
