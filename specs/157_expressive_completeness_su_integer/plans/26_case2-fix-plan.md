@@ -159,30 +159,24 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 ---
 
-### Phase 2: Strengthen 10.2.4 to `is_separable_with_U_type` [BLOCKED]
+### Phase 2: Strengthen 10.2.4 to `is_separable_with_U_type` [IN PROGRESS]
 
 **Goal**: Prove that `snce_single_U_depth_one_separable` produces separated forms preserving `has_single_U_type`.
 
-**BLOCKER** (Phase 2):
-- **What failed**: Task 2.4 (`snce_single_U_depth_one_sep_with_U_type`) requires Cases 5-8 to produce separated output with `has_single_U_type`. Cases 5-8 use `all_separable` (axiom) which provides no control over the U-type structure of the output.
-- **What was tried**: Analyzed the proof structure of `snce_single_U_depth_one_separable`. Cases 5-8 are invoked when both event AND guard have U-content. They delegate to `case5_separable_Z_gen`...`case8_separable_Z_gen` in DedekindZ.lean which use `all_separable`.
-- **Why it's stuck**: `all_separable` is an axiom backed by no proof. The existentially quantified separated formula it provides has unknown U-type structure. There is no way to prove `has_single_U_type psi A B` for the `psi` from `all_separable`.
-- **What is needed**: Either (a) rewrite Cases 5-8 with explicit formulas that preserve single U-type (requires finding correct integer-time formulas, a significant open problem), or (b) find an alternative approach that avoids needing `is_separable_with_U_type` from 10.2.4.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
-
+**CORRECTION** (previous blocker was wrong): Research confirmed Cases 5-8 do NOT use `all_separable`. DedekindZ.lean line 486: "Cases 5-8 are proved separable without using the `all_separable` axiom." They reduce to Cases 1-2 through equivalence transformations (Case 8→5→1,2; Case 7→8; Case 6→5). Since Case 2 now preserves single U-type (Phase 1), all case outputs preserve it. The remaining work is mechanical `has_single_U_type` tracking through boolean operations.
 **Tasks**:
 
 - [x] Task 2.1: Prove `case2_psi_has_single_U_type` *(completed in Hierarchy.lean)*
 
 - [x] Task 2.2: Fix `case1_psi_has_single_U_type` *(completed — was broken, added hA/hB hypotheses)*
 
-- [ ] Task 2.3: Prove `has_single_U_type` for each case used in `snce_single_U_depth_one_separable` *(deviation: blocked — Cases 5-8 use all_separable axiom)*
-  - Case 1: `case1_psi_has_single_U_type` (fixed)
-  - Case 2: `case2_psi_has_single_U_type` (proved)
-  - Cases 3, 4: inherit from Cases 2, 1 respectively (wrapped in `neg`/`and` which preserve `has_single_U_type`)
-  - Cases 5-8: BLOCKED — use `all_separable`, cannot guarantee single U-type.
+- [ ] Task 2.3: Prove `has_single_U_type` for each case used in `snce_single_U_depth_one_separable`
+  - Case 1: `case1_psi_has_single_U_type` (done)
+  - Case 2: `case2_psi_has_single_U_type` (done)
+  - Cases 3, 4: inherit from Cases 2, 1 (wrapped in `neg`/`and` — track `has_single_U_type` through boolean ops)
+  - Cases 5-8: reduce to Cases 1-2 via DedekindZ.lean equivalences (Case 8→5→1,2; Case 7→8; Case 6→5). Track `has_single_U_type` through boolean combinations of case1_psi/case2_psi outputs.
 
-- [ ] Task 2.4: Create `snce_single_U_depth_one_sep_with_U_type` *(deviation: blocked — depends on Task 2.3 Cases 5-8)*
+- [ ] Task 2.4: Create `snce_single_U_depth_one_sep_with_U_type`
   - **File**: `Hierarchy.lean`
   - **Statement**:
     ```lean
