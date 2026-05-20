@@ -188,7 +188,7 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 ---
 
-### Phase 3: Oracle-Free 10.2.5 [NOT STARTED]
+### Phase 3: Oracle-Free 10.2.5 [COMPLETED]
 
 **Goal**: Rewrite `single_U_formula_separable_noax_param` to be self-contained (no oracle parameter).
 
@@ -221,8 +221,10 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
     - `.snce C F` at depth <= 1: `snce_single_U_depth_one_sep_with_U_type` (10.2.4)
     - `.snce C F` at depth >= 2: IH on C, F (returns `is_separable_with_U_type`). Box-normalize. `snce_depth_of_U = 0`. Apply 10.2.4. **No oracle.**
 
-- [ ] Task 3.3: Verify `lake build` succeeds
-- [ ] Task 3.4: Verify NO oracle parameter in `single_U_formula_separable_no_oracle`
+- [x] Task 3.1: (deviation: skipped — used existing `separated_boxnorm_snce_depth_zero` instead of creating new `sep_boxfree_depth_zero`)
+- [x] Task 3.2: Created `single_U_formula_sep_with_U_type_no_oracle` (returns `is_separable_with_U_type`) and `single_U_formula_separable_no_oracle` (corollary returning `is_separable`) *(completed)*
+- [x] Task 3.3: Verify `lake build` succeeds *(completed — zero sorry, zero errors)*
+- [x] Task 3.4: Verify NO oracle parameter in `single_U_formula_separable_no_oracle` *(completed — no oracle/callback parameter)*
 
 **Timing**: 2 hours
 **Depends on**: Phase 2
