@@ -223,7 +223,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-20T16:17:20Z",
-      "next_artifact_number": 5,
+      "next_artifact_number": 6,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -264,6 +264,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/04_phase4-blocker.md",
           "type": "research",
           "summary": "Phase 4 blocker analysis: Path B (NormalForm Realization Transfer) recommended, 250-430 lines, transfers Z-expressiveness to Prior structures via EF game argument"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/05_full-reynolds-impl.md",
+          "type": "research",
+          "summary": "Full Reynolds implementation plan: Stavi connectives + Theorem 4 (axiom) + Theorem 5 + Lemmas 6-13, ~1280 new lines"
         }
       ],
       "session_id": "sess_1779293806_635cb2",
