@@ -313,7 +313,22 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
 
 **Goal**: Prove `stavi_expressive_completeness` (GHR93 Theorem 9.3.1 / Corollary 5) via the complete game-theoretic argument: Theorem 6 (forward-to-backward, 4 cases), Proposition 6 (formula agreement → games), Proposition 7 (composition using Theorem 6), and final assembly.
 
-**Research Inputs**: reports/08_ghr93-game-theory.md (Sections 4-7)
+**Research Inputs**: reports/08_ghr93-game-theory.md (Sections 4-7), reports/11-14 (sorry closure analysis)
+
+**Revised proof order** (from research reports 11-14, strict sequential):
+1. Strategy restriction lemma (~200-300 lines) — BLOCKS everything
+2. obtain_split_point_props using d=a_bwd(n) (~100-150 lines) — blocks all cases
+3. Case I split (~125-195 lines) — no Lemma 9 dependency
+4. Shared infra for II-IV: init extraction, rank_type_formula (~125 lines)
+5. Case II point/Until (~100 lines) — no Lemma 9 dependency
+6. Lemma 9 gap detection (~400-500 lines) — blocks Cases III/IV only
+7. Cases III+IV gap/U' (~230 lines) — uses Lemma 9
+8. Theorem 6 assembly (~30-50 lines)
+9. Lemma 11 game↔decomposition (~100-200 lines) — for Prop 7 only
+10. Proposition 6 (~100-150 lines)
+11. Proposition 7 composition (~150-250 lines) — uses Lemma 11
+12. Corollary 5 = stavi_expressive_completeness (~80-120 lines)
+Total: ~1600-2500 lines remaining.
 
 **BEFORE CODING**: Re-read GHR93 Section 8 Theorem 6 proof. The four cases arise from the position of the (n+1)-th element a_n chosen by Spoiler in Round 1. The proof is by induction on n, with the inductive step constructing a backward strategy from a forward strategy with extra rounds.
 
@@ -355,7 +370,7 @@ Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward str
 - [x] **Task 4C.2**: Theorem 6 setup for the inductive step. Given forward G_{4+3n; r+4(n+1)},
   define A, C, c, d and the backward strategies σ, τ on sub-intervals [x,c] and [c,y]
   (obtained from the IH). State the four-case exhaustion. (~100-150 lines)
-  *(deviation: altered -- (1) Factored inductive step into ghr93_inductive_step helper theorem for clean separation; (2) Split point properties bundled in SplitPointProps structure with sorry'd construction via obtain_split_point_props, since full infimum/strategy-restriction infrastructure not yet available; (3) Case I and Cases II-IV factored into separate sorry'd theorems ghr93_case_I and ghr93_cases_II_III_IV; (4) Case split is on ∃ i, a_bwd i < d vs ∀ i, d ≤ a_bwd i rather than specific position of a_0; ~175 lines added)*
+  *(deviation: altered -- (1) Factored inductive step into ghr93_inductive_step helper theorem for clean separation; (2) Split point properties bundled in SplitPointProps structure with sorry'd construction via obtain_split_point_props, since full infimum/strategy-restriction infrastructure not yet available; (3) Case I and Cases II-IV factored into separate sorry'd theorems ghr93_case_I and ghr93_cases_II_III_IV; (4) Case split is on ∃ i, a_bwd i < d vs ∀ i, d ≤ a_bwd i rather than specific position of a_0; (5) Strategy restriction lemmas (ghr93_strategy_restrict_left/right) added to EFGames.lean with response_containment_left sorry; (6) obtain_split_point_props revised: d=a_bwd(n), c obtained from forward strategy Round 2 (point case fully structured, gap case sorry'd), IH generalized to work on sub-intervals via revert/intro refactoring of ghr93_forward_to_backward; (7) IH in ghr93_inductive_step changed from bound-endpoint to universally-quantified-endpoint version; ~350 lines added across both files)*
 
 - [ ] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
   (d,y'). Combine using Lemma 10. Handle Round 2 challenge. (~150-250 lines)

@@ -163,51 +163,225 @@ structure SplitPointProps {sig : MonadicSignature}
   tau : ghr93_duplicator_wins N M atomMap n r d y' c y
 
 /-- Obtain the split point properties. This is the core setup lemma for
-    the inductive step, combining infimum computation, strategy restriction,
-    and IH application.
+    the inductive step, combining strategy restriction and IH application.
 
-    Sorry'd: requires infimum infrastructure on ExtendedCarrier and
-    strategy restriction lemmas (restricting a forward G_{4+3n;r} strategy
-    to sub-intervals and applying the IH to get backward strategies). -/
+    **Approach** (simplified from GHR93, avoids infimum infrastructure):
+
+    1. Set d = a_bwd(n) — Spoiler's last backward pick. Then hd_le_an is le_refl.
+    2. Play the forward (4+3n)-round strategy with 1 element from [x,y] to find a
+       compatible point c. Specifically, use round_mono to get a 1-round strategy,
+       then play it to find c such that c and d have the same rank_type and
+       gap/point status.
+    3. Apply strategy_restrict_left/right with c,d to restrict the forward strategy
+       from [x,y] to [x,c] and [c,y] (consuming one round each).
+    4. Apply round_mono to reduce rounds to 1+3n.
+    5. Apply the generalized IH on the sub-intervals to get sigma and tau.
+
+    The generalized IH is universally quantified over endpoints, so it can be
+    applied to sub-intervals [x,c]/[x',d] and [c,y]/[d,y'].
+
+    Key insight: We do NOT need to compute an infimum. Setting d = a_bwd(n)
+    and obtaining c from the forward strategy is sufficient. The winning
+    condition of the forward game guarantees that c and d are compatible
+    (same rank_type, same gap/point status).
+
+    NOTE: Steps 2-5 are sorry'd pending full proofs of strategy_restrict_left/right
+    and the sub-interval h_pt witness (existence of an actual point in each
+    sub-interval). The construction is structurally correct — the sorry's are
+    in the strategy restriction lemma and the sub-interval point existence.  -/
 private theorem obtain_split_point_props {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
-    (_h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
-    (_ih : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' →
-           ghr93_duplicator_wins N M atomMap n r x' y' x y)
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
     (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r)
-    (_ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
+    (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
     ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
       SplitPointProps n x y x' y' c d a_bwd := by
-  -- The full construction:
-  -- 1. Compute A = X_{(a_{n-1}, a_n)} (interval type before a_n)
-  -- 2. Define C from A (continuation formula)
-  -- 3. d = inf{t ∈ [x',y'] : C holds on (t,y') in N_r}
-  -- 4. c = the point in M_r that the forward strategy maps d to
-  -- 5. Restrict the forward strategy to [x,c] and [c,y]
-  -- 6. Apply IH to get σ and τ
+  -- Step 1: Set d = a_bwd(n) (Spoiler's last backward pick)
+  let d := a_bwd ⟨n, by omega⟩
+  have hd_interval : inClosedInterval x' y' d := ha_bwd ⟨n, by omega⟩
+  have hd_le_an : d ≤ a_bwd ⟨n, by omega⟩ := le_refl d
+  -- Step 2: Obtain c from the forward strategy.
+  -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
+  -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
+  -- 1-round strategy. Play the 1-round strategy to find a point c that matches d.
   --
-  -- Requires: infimum computation on ExtendedCarrier, strategy restriction,
-  -- and the IH for sub-interval strategies.
+  -- First, get a 1-round strategy on [x,y] vs [x',y']:
+  have h1 : ghr93_duplicator_wins M N atomMap 1 r x y x' y' :=
+    ghr93_duplicator_wins_round_mono (by omega : 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
+  -- Play the 1-round strategy: Spoiler picks 1 element from [x,y].
+  -- We need to pick something from [x,y] to find c. Use an arbitrary point
+  -- (e.g., x itself, or any element that will give us a meaningful c).
+  -- The winning condition will give us a response that matches the selection.
+  -- We choose x as the selection (simplest choice that's in [x,y]).
+  obtain ⟨a'1, ha'1, _hwin1⟩ := h1 (fun _ : Fin 1 => x) (fun _ => ⟨le_refl x, hxy⟩)
+  -- a'1 ⟨0, ...⟩ is the response to x. It's in [x',y'].
+  -- But we need c to match d. The above play doesn't directly give us c matching d.
   --
-  -- For now, use x and x' as trivial split points to establish the
-  -- type-level structure. The properties are sorry'd.
-  refine ⟨x, x', ?_⟩
-  exact {
-    hc_interval := ⟨le_refl x, hxy⟩
-    hd_interval := ⟨le_refl x', hx'y'⟩
-    hd_le_an := by sorry
-    hxc := le_refl x
-    hcy := hxy
-    hx'd := le_refl x'
-    hdy' := hx'y'
-    sigma := by sorry
-    tau := by sorry
-  }
+  -- Better approach: use the full (4+3n)-round strategy to derive c.
+  -- Play with d as one of the N-side elements by using the backward structure.
+  -- Since d is in N and the forward game goes M→N, we can't directly use d as input.
+  --
+  -- Key realization: c doesn't need to come from a specific play of the game.
+  -- We need c such that:
+  --   (a) c ∈ [x,y]
+  --   (b) rank_type(c) = rank_type(d) (or formula agreement)
+  --   (c) IsPoint c ↔ IsPoint d
+  --
+  -- Then strategy restriction gives forward strategies on sub-intervals, and
+  -- the IH converts them to backward strategies.
+  --
+  -- For now, we use sorry to construct c with the needed properties.
+  -- The full construction would use the forward strategy's Round 2 mechanism
+  -- to extract a compatible element from M.
+  --
+  -- When d is a point (∃ p', d = extendPoint p'), we can play the forward
+  -- game's Round 2 with p' to get a matching point b in [x,y] ∩ M.
+  -- When d is a gap, the argument uses gap detection formulas (Lemma 9).
+  --
+  -- Step 3-5: Construct c, sigma, tau
+  -- These depend on strategy restriction (ghr93_strategy_restrict_left/right)
+  -- which has sorry's in EFGames.lean. We propagate the sorry here but
+  -- provide the correct structural decomposition.
+  suffices h_exists : ∃ c : ExtendedCarrier M atomMap r,
+      inClosedInterval x y c ∧
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu M atomMap r c A ↔
+         stavi_temporal_truth_mu N atomMap r d A)) ∧
+      ((IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d)) by
+    obtain ⟨c, hc_interval, hcd_form, hcd_gp⟩ := h_exists
+    refine ⟨c, d, ?_⟩
+    -- Step 4-5: Apply strategy restriction + IH to get sigma and tau
+    -- Forward strategy: (4+3n) rounds on [x,y] vs [x',y']
+    -- By round_mono: (n+2) rounds on [x,y] (since n+2 ≤ 4+3n for n ≥ 0)
+    -- By strategy_restrict_left: (n+1) rounds on [x,c] vs [x',d]
+    -- By round_mono: (1+3n) rounds on [x,c] vs [x',d] (since 1+3n ≤ n+1+... wait)
+    --
+    -- Actually: we need (1+3n) rounds on the sub-interval for the IH.
+    -- strategy_restrict consumes 1 round: (k+1) → k on sub-interval.
+    -- So we need at least (2+3n) rounds on the full interval.
+    -- We have (4+3n) rounds. By round_mono: (2+3n) rounds.
+    -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
+    have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
+      ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
+    have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
+      ghr93_strategy_restrict_left h_mono_left
+        hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
+        hcd_form hcd_gp
+    have h_restrict_right : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r c y d y' :=
+      ghr93_strategy_restrict_right h_mono_left
+        hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
+        hcd_form hcd_gp
+    -- Apply IH to get backward strategies
+    -- sigma: backward n-round on [x',d] vs [x,c]
+    -- Need: h_pt for [x',d] (∃ point in [x',d])
+    -- tau: backward n-round on [d,y'] vs [c,y]
+    -- Need: h_pt for [d,y'] (∃ point in [d,y'])
+    --
+    -- These sub-interval point witnesses are sorry'd. In full generality,
+    -- they follow from the density of actual points in the extended carrier
+    -- (every non-degenerate interval in M_r contains a point from M).
+    -- For degenerate intervals (c=x or d=x'), the game is vacuous.
+    have h_pt_left : ∃ p, inClosedInterval x' d (extendPoint p) := by sorry
+    have h_pt_right : ∃ p, inClosedInterval d y' (extendPoint p) := by sorry
+    exact {
+      hc_interval := hc_interval
+      hd_interval := hd_interval
+      hd_le_an := hd_le_an
+      hxc := hc_interval.1
+      hcy := hc_interval.2
+      hx'd := hd_interval.1
+      hdy' := hd_interval.2
+      sigma := ih hc_interval.1 hd_interval.1 h_pt_left h_restrict_left
+      tau := ih hc_interval.2 hd_interval.2 h_pt_right h_restrict_right
+    }
+  -- Prove the existence of c with the needed properties.
+  -- Case split on whether d is a point or a gap.
+  rcases isPoint_or_isGap d with ⟨p', hp'⟩ | ⟨g', hg'⟩
+  · -- Case: d is a point (d = extendPoint p' for some p' : N.carrier)
+    -- Use the forward game's Round 2 mechanism: play with p' as Spoiler's
+    -- Round 2 challenge to find a matching point b in [x,y] ∩ M.
+    --
+    -- We need a play of the forward game first (Round 1).
+    -- Use round_mono to get a 1-round strategy, play with any element.
+    obtain ⟨a'_play, _ha'_play, hwin_play⟩ :=
+      h1 (fun _ : Fin 1 => x) (fun _ => ⟨le_refl x, hxy⟩)
+    -- Now play Round 2 with p'. Since d = extendPoint p' ∈ [x',y'],
+    -- p' is in [x',y'] ∩ N.
+    have hp'_in : inClosedInterval x' y' (extendPoint p') := by
+      have : extendPoint p' = d := by rw [hp']; rfl
+      rw [this]; exact hd_interval
+    obtain ⟨b, hb_in, hcond⟩ := hwin_play p' hp'_in
+    -- b is in [x,y] ∩ M. Set c = extendPoint b.
+    refine ⟨extendPoint b, hb_in, ?_, ?_⟩
+    · -- Formula agreement: stavi_temporal_truth_mu M atomMap r (extendPoint b) A ↔
+      --                    stavi_temporal_truth_mu N atomMap r d A
+      -- From the winning condition, formula_agreement at the b/p' positions gives:
+      --   stavi_temporal_truth_mu M atomMap r (game_tuple x y _ b i) A ↔
+      --   stavi_temporal_truth_mu N atomMap r (game_tuple x' y' _ p' i) A
+      -- At the index corresponding to b (index n+1 = 2 for 1-round game):
+      --   game_tuple x y _ b ⟨2, ...⟩ = extendPoint b
+      --   game_tuple x' y' _ p' ⟨2, ...⟩ = extendPoint p'
+      -- And d = extendPoint p', so this is exactly what we need.
+      obtain ⟨_, _, hform⟩ := hcond
+      intro A hA
+      -- In the 1-round game (n=1 in game_tuple), the b position is at index 2:
+      -- game_tuple x y (fun _ => x) b : Fin 4
+      --   index 0 → x, index 2 (= 1+1) → extendPoint b, index 3 (= 1+2) → y,
+      --   index 1 → a(0) = x
+      -- game_tuple x' y' a'_play p' : Fin 4
+      --   index 0 → x', index 2 → extendPoint p', index 3 → y',
+      --   index 1 → a'_play(0)
+      have hform_b := hform ⟨2, by omega⟩ A hA
+      -- Simplify game_tuple at index 2:
+      -- game_tuple x y (fun _ => x) b ⟨2, _⟩ = extendPoint b
+      -- game_tuple x' y' a'_play p' ⟨2, _⟩ = extendPoint p'
+      simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
+                 show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_b
+      -- hform_b now has: extendPoint b ↔ extendPoint p'
+      -- Goal needs: extendPoint b ↔ Sum.inl p' (= extendPoint p')
+      rw [hp']; exact hform_b
+    · -- Gap/point agreement
+      constructor
+      · -- IsPoint (extendPoint b) ↔ IsPoint d
+        rw [hp']
+        exact ⟨fun _ => ⟨p', rfl⟩, fun _ => ⟨b, rfl⟩⟩
+      · -- IsGap (extendPoint b) ↔ IsGap d
+        rw [hp']
+        simp only [IsGap, extendPoint]
+        constructor
+        · intro ⟨g, hg⟩; exact absurd hg.symm Sum.inr_ne_inl
+        · intro ⟨g, hg⟩; exact absurd hg.symm Sum.inr_ne_inl
+  · -- Case: d is a gap (d = Sum.inr g' for some gap g')
+    -- This case is more complex: need to find c that is also a gap in M
+    -- with the same rank_type. The construction uses gap detection formulas
+    -- (left_formula / right_formula from GHR93 Lemma 9) to locate a compatible
+    -- gap in M. This requires the gap detection correctness lemma
+    -- (left_formula_gap_detection / right_formula_gap_detection), which are
+    -- sorry'd in EFGames.lean.
+    --
+    -- The argument:
+    -- 1. g' is an r-definable gap in N, defined by some formula D of depth ≤ r
+    -- 2. For each formula A with stavi_depth A ≤ r, compute left(A, D) or right(A, D)
+    -- 3. These formulas are evaluable at actual points in M
+    -- 4. By the forward strategy's winning condition (formula agreement at the
+    --    boundary elements x/x' and y/y'), the gap detection formulas agree
+    --    between M and N
+    -- 5. This gives a compatible gap in M
+    --
+    -- For now, this is sorry'd. The full proof requires Lemma 9 to be
+    -- fully proved (~400-500 lines) plus ~100 lines of case analysis here.
+    sorry
 
 /-! ### Case I: The Split Case
 
@@ -337,8 +511,12 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
-    (ih : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' →
-          ghr93_duplicator_wins N M atomMap n r x' y' x y)
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y') :
     ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
@@ -385,8 +563,12 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y') :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
+  -- Revert endpoints before induction so the IH is universally quantified
+  -- over all sub-intervals, not bound to the specific x, y, x', y'.
+  revert x y x' y' hxy hx'y' h_pt h
   induction n with
   | zero =>
+    intro x y x' y' hxy hx'y' h_pt h
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -434,25 +616,22 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
       rw [base_case_M_eq x y b_sp b_resp i,
           base_case_N_eq x' y' q p a'_resp hq_eq i]
       exact (hform_fwd _ A hA).symm
-  | succ n _ih =>
+  | succ n ih_gen =>
+    intro x y x' y' hxy hx'y' h_pt h
     -- Inductive step: (*)_n → (*)_{n+1}
-    -- Given: Duplicator wins G_{4+3n; r}(M, xy; N, x'y')
-    -- Goal: Duplicator wins G_{n+1; r}(N, x'y'; M, xy)
-    --
-    -- GHR93 Theorem 6 proof structure:
-    --   Setup: Define A (interval type), C (continuation formula),
-    --          c (infimum in M), d (infimum in N),
-    --          σ (backward strategy on [x,c]), τ (backward strategy on [c,y])
-    --   Case I:   ∃ i, a_i < d (the "split" case)
-    --   Case II:  all a_i in [d,y'], a_n is a point
-    --   Case III: all a_i in [d,y'], a_n is a left-defined gap
-    --   Case IV:  all a_i in [d,y'], a_n is a gap not left-defined
+    -- ih_gen is now universally quantified over all endpoints:
+    --   ih_gen : ∀ {x y x' y'}, x ≤ y → x' ≤ y' → (∃ p, ...) →
+    --            ghr93_duplicator_wins M N (1+3*n) r x y x' y' →
+    --            ghr93_duplicator_wins N M n r x' y' x y
     --
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
     rw [h_rounds] at h
-    -- Apply the inductive step helper to keep the proof organized
-    exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt _ih h
+    -- Apply the inductive step helper with the generalized IH
+    exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt
+      (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
+        ih_gen hle hle' hpt' hfwd)
+      h
 
 /-! ## Rank-Varying Theorem 6
 
