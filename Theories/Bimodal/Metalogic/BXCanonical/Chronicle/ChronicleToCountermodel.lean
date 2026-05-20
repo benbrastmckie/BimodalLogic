@@ -1279,6 +1279,9 @@ private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsiste
           -- Not necessarily! succ(max_N_sub) might enter at a later stage.
           -- So this approach has a gap for the boundary case.
           -- Let me just use sorry for now and handle this case separately.
+          -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
+          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
         · -- b.val ≤ max_N. So b is at or below max(dom(N)).
           -- Since b ∉ dom(N), b ∈ dom(N+1) \ dom(N).
@@ -1432,6 +1435,9 @@ private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsiste
           rw [hj_eq] at this; rw [this, hm]
         · -- a.val < min_N. Boundary case: a below min(dom(N)).
           -- This is the hard boundary case (below-min).
+          -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
+          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
       · -- Case 4: both new at stage N+1.
         -- omega_chain_dom_new_unique gives a.val = b.val, hence a = b.
@@ -1496,6 +1502,9 @@ private theorem limit_dom_points_are_succ_iterates
   -- This is infinite descent on z → pred(z) → pred^2(z) → ...
   -- But z can decrease indefinitely (NoMinOrder), so we need another argument.
   -- Use the real analysis approach instead.
+  -- DEAD APPROACH: convergence/stage-induction for limit_dom_points_are_succ_iterates.
+  -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+  -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
   sorry
 
 /-! ## Z1 Derivation and Gap Elimination Helpers
@@ -1870,6 +1879,9 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     --     extension, which provides IsSuccArchimedean via a Henkin model
     --     that avoids the gap entirely, OR
     -- (c) The Reynolds pipeline (tasks 154-155) which bypasses this sorry.
+    -- DEAD APPROACH: convergence/stage-induction gap analysis for succ_cofinal.
+    -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+    -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
     sorry
     -- (End of succ_cofinal proof — resolution: task 129 or Reynolds pipeline.)
 /--

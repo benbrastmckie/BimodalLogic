@@ -123,10 +123,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-05-20T16:19:58Z",
+      "last_updated": "2026-05-20T16:33:48Z",
       "dependencies": [],
       "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
       "artifacts": [
@@ -144,7 +144,8 @@
       "session_id": "sess_1779293683_4e43b6",
       "researched": "2026-03-21T19:21:35Z",
       "planned": "2026-03-21T19:28:53Z",
-      "topic": "completeness"
+      "topic": "completeness",
+      "completion_summary": "Archived UltrafilterFrame.lean and TenseS5Algebra.lean to Boneyard (removing 5 sorries from build path). Fixed stale docstrings in 6 Bundle/ files. Corrected 5 ghost references to CanonicalConstruction.lean. Updated Metalogic, Bundle, and Algebraic READMEs. Build verified."
     },
     {
       "project_number": 127,
