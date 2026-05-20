@@ -518,7 +518,7 @@ private theorem case3_alpha_aU_implies_U (a q A B : Formula) (M : IntStructure) 
 
 /-- alpha(a∧U, q, A, B) is int_equiv to (a ∨ (¬q ∧ S(a∧U, q))) ∧ U(A,B).
     This factoring allows us to extract a U-free event for Case 1 application. -/
-private theorem case3_alpha_aU_factor (a q A B : Formula) :
+theorem case3_alpha_aU_factor (a q A B : Formula) :
     int_equiv (case3_alpha (Formula.and a (.untl A B)) q A B)
       (Formula.and (Formula.or a (Formula.and (Formula.neg q)
         (.snce (Formula.and a (.untl A B)) q))) (.untl A B)) := by
@@ -548,7 +548,7 @@ replacing it with True (= neg bot) preserves truth at any time where U(A,B) hold
 This enables extracting a U-free event from S-formulas for Case 1 application. -/
 
 /-- Replace all occurrences of `.untl A B` with `neg bot` (True) in a formula. -/
-private def replace_untl_with_top (phi A B : Formula) : Formula :=
+def replace_untl_with_top (phi A B : Formula) : Formula :=
   match phi with
   | .atom a => .atom a
   | .bot => .bot
@@ -559,7 +559,7 @@ private def replace_untl_with_top (phi A B : Formula) : Formula :=
   | .snce p q => .snce (replace_untl_with_top p A B) (replace_untl_with_top q A B)
 
 /-- If phi is U-free, replace_untl_with_top is the identity. -/
-private theorem replace_id_of_U_free (phi A B : Formula) (h : is_U_free phi = true) :
+theorem replace_id_of_U_free (phi A B : Formula) (h : is_U_free phi = true) :
     replace_untl_with_top phi A B = phi := by
   induction phi with
   | atom _ => rfl | bot => rfl
@@ -571,7 +571,7 @@ private theorem replace_id_of_U_free (phi A B : Formula) (h : is_U_free phi = tr
 /-- U(A,B) appears only under boolean connectives (imp), not under
     temporal operators (.snce, .untl, .all_past, .all_future, .box).
     At any time where U(A,B) holds, replacing U(A,B) with True preserves truth. -/
-private def untl_under_bool_only : Formula → Formula → Formula → Prop
+def untl_under_bool_only : Formula → Formula → Formula → Prop
   | .atom _, _, _ => True
   | .bot, _, _ => True
   | .imp p q, A, B => untl_under_bool_only p A B ∧ untl_under_bool_only q A B
@@ -580,7 +580,7 @@ private def untl_under_bool_only : Formula → Formula → Formula → Prop
   | .snce p q, _, _ => is_U_free p = true ∧ is_U_free q = true
 
 /-- U-free formulas satisfy untl_under_bool_only trivially. -/
-private theorem u_free_untl_under_bool (phi A B : Formula) (h : is_U_free phi = true) :
+theorem u_free_untl_under_bool (phi A B : Formula) (h : is_U_free phi = true) :
     untl_under_bool_only phi A B := by
   induction phi with
   | atom _ => trivial | bot => trivial
@@ -590,7 +590,7 @@ private theorem u_free_untl_under_bool (phi A B : Formula) (h : is_U_free phi = 
   | snce p q _ _ => simp [is_U_free] at h; exact h
 
 /-- replace_untl_with_top produces U-free result when untl_under_bool_only holds. -/
-private theorem replace_U_free_of_bool (phi A B : Formula)
+theorem replace_U_free_of_bool (phi A B : Formula)
     (h_bool : untl_under_bool_only phi A B) :
     is_U_free (replace_untl_with_top phi A B) = true := by
   induction phi with
@@ -613,7 +613,7 @@ private theorem replace_U_free_of_bool (phi A B : Formula)
 
 /-- For formulas where U(A,B) is only under boolean connectives,
     at a time where U(A,B) holds, truth is preserved by replacement. -/
-private theorem replace_correct_bool (phi A B : Formula) (M : IntStructure) (t : ℤ)
+theorem replace_correct_bool (phi A B : Formula) (M : IntStructure) (t : ℤ)
     (h_bool : untl_under_bool_only phi A B)
     (hU : int_truth M t (.untl A B)) :
     int_truth M t phi ↔ int_truth M t (replace_untl_with_top phi A B) := by
@@ -637,7 +637,7 @@ private theorem replace_correct_bool (phi A B : Formula) (M : IntStructure) (t :
 
 /-- case1_psi satisfies untl_under_bool_only: its only .untl is .untl A B,
     and all .snce args are U-free. -/
-private theorem case1_psi_bool_only (a q A B : Formula)
+theorem case1_psi_bool_only (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true) :
     untl_under_bool_only (case1_psi a q A B) A B := by
@@ -668,7 +668,7 @@ private theorem case1_psi_bool_only (a q A B : Formula)
 
 /-- If at every time where U(A,B) holds, C₁ ↔ C₂, then
     S(C₁ ∧ U, guard) ↔ S(C₂ ∧ U, guard). -/
-private theorem snce_event_congr_with_U (C₁ C₂ guard A B : Formula)
+theorem snce_event_congr_with_U (C₁ C₂ guard A B : Formula)
     (h_eq : ∀ M : IntStructure, ∀ t : ℤ, int_truth M t (.untl A B) →
       (int_truth M t C₁ ↔ int_truth M t C₂)) :
     int_equiv (.snce (Formula.and C₁ (.untl A B)) guard)
@@ -698,7 +698,7 @@ private theorem and_left_congr {φ₁ φ₂ ψ : Formula} (h : int_equiv φ₁ �
     exact int_truth_and_iff.mpr ⟨(h M t).mpr hφ, hψ⟩
 
 /-- Boolean distribution: (a ∨ b) ∧ c ↔ (a ∧ c) ∨ (b ∧ c). -/
-private theorem and_or_distrib (a b c : Formula) :
+theorem and_or_distrib (a b c : Formula) :
     int_equiv (Formula.and (Formula.or a b) c)
               (Formula.or (Formula.and a c) (Formula.and b c)) := by
   intro M t; constructor
@@ -727,7 +727,7 @@ replacing U(A,B) with False (bot) preserves truth.
 This enables extracting a U-free event for Case 2 application. -/
 
 /-- Replace all occurrences of `.untl A B` with `bot` (False) in a formula. -/
-private def replace_untl_with_bot (phi A B : Formula) : Formula :=
+def replace_untl_with_bot (phi A B : Formula) : Formula :=
   match phi with
   | .atom a => .atom a
   | .bot => .bot
@@ -738,7 +738,7 @@ private def replace_untl_with_bot (phi A B : Formula) : Formula :=
   | .snce p q => .snce (replace_untl_with_bot p A B) (replace_untl_with_bot q A B)
 
 /-- If phi is U-free, replace_untl_with_bot is the identity. -/
-private theorem replace_bot_id_of_U_free (phi A B : Formula) (h : is_U_free phi = true) :
+theorem replace_bot_id_of_U_free (phi A B : Formula) (h : is_U_free phi = true) :
     replace_untl_with_bot phi A B = phi := by
   induction phi with
   | atom _ => rfl | bot => rfl
@@ -748,7 +748,7 @@ private theorem replace_bot_id_of_U_free (phi A B : Formula) (h : is_U_free phi 
   | snce p q ihp ihq => simp [is_U_free] at h; simp [replace_untl_with_bot, ihp h.1, ihq h.2]
 
 /-- replace_untl_with_bot produces U-free result when untl_under_bool_only holds. -/
-private theorem replace_bot_U_free_of_bool (phi A B : Formula)
+theorem replace_bot_U_free_of_bool (phi A B : Formula)
     (h_bool : untl_under_bool_only phi A B) :
     is_U_free (replace_untl_with_bot phi A B) = true := by
   induction phi with
@@ -771,7 +771,7 @@ private theorem replace_bot_U_free_of_bool (phi A B : Formula)
 
 /-- For formulas where U(A,B) is only under boolean connectives,
     at a time where ¬U(A,B) holds, truth is preserved by replacing U with bot. -/
-private theorem replace_correct_bot (phi A B : Formula) (M : IntStructure) (t : ℤ)
+theorem replace_correct_bot (phi A B : Formula) (M : IntStructure) (t : ℤ)
     (h_bool : untl_under_bool_only phi A B)
     (hnotU : ¬ int_truth M t (.untl A B)) :
     int_truth M t phi ↔ int_truth M t (replace_untl_with_bot phi A B) := by
@@ -798,7 +798,7 @@ private theorem replace_correct_bot (phi A B : Formula) (M : IntStructure) (t : 
 
 /-- If at every time where ¬U(A,B) holds, C₁ ↔ C₂, then
     S(C₁ ∧ ¬U, guard) ↔ S(C₂ ∧ ¬U, guard). -/
-private theorem snce_event_congr_with_notU (C₁ C₂ guard A B : Formula)
+theorem snce_event_congr_with_notU (C₁ C₂ guard A B : Formula)
     (h_eq : ∀ M : IntStructure, ∀ t : ℤ, ¬ int_truth M t (.untl A B) →
       (int_truth M t C₁ ↔ int_truth M t C₂)) :
     int_equiv (.snce (Formula.and C₁ (Formula.neg (.untl A B))) guard)
@@ -840,7 +840,7 @@ This is needed for the D3 proof where S(alpha, Q_Z) appears inside the event. -/
 /-- The explicit separated equivalent of S(alpha, Q_Z) from D2.1.
     = or (case1_psi a Q_Z_nq A B) (case1_psi (replace_untl_with_top (¬q ∧ σ) A B) Q_Z_nq A B)
     where σ = case1_psi a q A B and Q_Z_nq = Q_Z A B (neg q). -/
-private def d21_sep (a q A B : Formula) : Formula :=
+def d21_sep (a q A B : Formula) : Formula :=
   let σ := case1_psi a q A B
   let Q_Z_nq := Q_Z A B (Formula.neg q)
   Formula.or
@@ -848,7 +848,7 @@ private def d21_sep (a q A B : Formula) : Formula :=
     (case1_psi (replace_untl_with_top (Formula.and (Formula.neg q) σ) A B) Q_Z_nq A B)
 
 /-- d21_sep satisfies untl_under_bool_only. -/
-private theorem d21_sep_bool_only (a q A B : Formula)
+theorem d21_sep_bool_only (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true) :
     untl_under_bool_only (d21_sep a q A B) A B := by
@@ -874,7 +874,7 @@ private theorem d21_sep_bool_only (a q A B : Formula)
 set_option maxHeartbeats 3200000 in
 /-- d21_sep is int_equiv to S(alpha, Q_Z) where alpha = case3_alpha(a∧U, q, A, B).
     This non-existential form allows using d21_sep in D3's event. -/
-private theorem d21_sep_equiv (a q A B : Formula)
+theorem d21_sep_equiv (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :

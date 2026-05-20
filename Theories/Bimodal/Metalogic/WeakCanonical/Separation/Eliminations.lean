@@ -378,17 +378,15 @@ def case2_psi (a q A B : Formula) : Formula :=
   Formula.or (Formula.or d1 d2) d3
 
 set_option maxHeartbeats 3200000 in
-theorem elim_case_2_gen (a q A B : Formula)
+/-- case2_psi is int_equiv to S(a∧¬U, q) and syntactically separated.
+    This is the non-existential form of elim_case_2_gen for direct formula access. -/
+theorem case2_psi_properties (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
     (hA : is_U_free A = true) (hB : is_U_free B = true)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B))) q) psi ∧
-      is_syntactically_separated psi = true := by
-  -- The GHR94-faithful output formula (d1 ∨ d2 ∨ d3):
-  -- d1 = S(a, q∧¬A) ∧ ¬A ∧ ¬U(A,B)
-  -- d2 = ¬A ∧ ¬B ∧ S(a, ¬A∧q)
-  -- d3 = S(¬A∧¬B∧q∧S(a,¬A∧q), q)
+    int_equiv (.snce (Formula.and a (Formula.neg (.untl A B))) q) (case2_psi a q A B) ∧
+    is_syntactically_separated (case2_psi a q A B) = true := by
+  simp only [case2_psi]
   let d1 := Formula.and (Formula.and
     (.snce a (Formula.and q (Formula.neg A)))
     (Formula.neg A))
@@ -398,7 +396,7 @@ theorem elim_case_2_gen (a q A B : Formula)
   let d3 := Formula.snce (Formula.and (Formula.and (Formula.and
     (Formula.neg A) (Formula.neg B)) q)
     (.snce a (Formula.and (Formula.neg A) q))) q
-  refine ⟨Formula.or (Formula.or d1 d2) d3, ?_, ?_⟩
+  refine ⟨?_, ?_⟩
   · -- Equivalence proof
     intro M t; constructor
     · -- Forward: S(a ∧ ¬U(A,B), q) at t → d1 ∨ d2 ∨ d3
@@ -504,6 +502,18 @@ theorem elim_case_2_gen (a q A B : Formula)
     simp only [d1, d2, d3, Formula.or, Formula.and, Formula.neg,
       is_syntactically_separated, is_U_free, is_S_free, ha, hq, hA, hB, hA', hB',
       Bool.true_and, Bool.and_true, hsep_A, hsep_B]
+
+set_option maxHeartbeats 3200000 in
+/-- Case 2 generalized: S(a ∧ ¬U(A,B), q) → separated equivalent.
+    Delegates to `case2_psi_properties` (non-existential form). -/
+theorem elim_case_2_gen (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    ∃ psi : Formula,
+      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B))) q) psi ∧
+      is_syntactically_separated psi = true :=
+  ⟨case2_psi a q A B, case2_psi_properties a q A B ha hq hA hB hA' hB'⟩
 
 /-! ## Case 2: S(a ^ not U(A,B), q) -/
 

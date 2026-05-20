@@ -159,7 +159,7 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 ---
 
-### Phase 2: Strengthen 10.2.4 to `is_separable_with_U_type` [IN PROGRESS]
+### Phase 2: Strengthen 10.2.4 to `is_separable_with_U_type` [COMPLETED]
 
 **Goal**: Prove that `snce_single_U_depth_one_separable` produces separated forms preserving `has_single_U_type`.
 
@@ -170,29 +170,17 @@ let d3 := .snce (Formula.and (Formula.and (Formula.and
 
 - [x] Task 2.2: Fix `case1_psi_has_single_U_type` *(completed — was broken, added hA/hB hypotheses)*
 
-- [ ] Task 2.3: Prove `has_single_U_type` for each case used in `snce_single_U_depth_one_separable`
-  - Case 1: `case1_psi_has_single_U_type` (done)
-  - Case 2: `case2_psi_has_single_U_type` (done)
-  - Cases 3, 4: inherit from Cases 2, 1 (wrapped in `neg`/`and` — track `has_single_U_type` through boolean ops)
-  - Cases 5-8: reduce to Cases 1-2 via DedekindZ.lean equivalences (Case 8→5→1,2; Case 7→8; Case 6→5). Track `has_single_U_type` through boolean combinations of case1_psi/case2_psi outputs.
+- [x] Task 2.3: Prove `has_single_U_type` for each case used in `snce_single_U_depth_one_separable` *(completed — created _with_U_type versions of all 8 cases)*
+  - Case 1: `case1_sep_with_U_type_gen` (uses case1_psi_properties + case1_psi_has_single_U_type)
+  - Case 2: `case2_sep_with_U_type_gen` (uses case2_psi_properties + case2_psi_has_single_U_type)
+  - Cases 5-8: `case5/6/7/8_sep_with_U_type_Z_gen` (replicated DedekindZ proof structure with _with_U_type combinators)
+  - Combined helpers: `snce_combined_U_sep_with_U_type`, `snce_combined_notU_sep_with_U_type`
+  - Combinators: `or/and/neg_separable_with_U_type`
+  - Infrastructure: refactored `elim_case_2_gen` to use `case2_psi_properties`; made key DedekindZ helpers public
 
-- [ ] Task 2.4: Create `snce_single_U_depth_one_sep_with_U_type`
-  - **File**: `Hierarchy.lean`
-  - **Statement**:
-    ```lean
-    theorem snce_single_U_depth_one_sep_with_U_type (C F A B : Formula)
-        (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true)
-        (hA_uf : is_U_free A = true) (hB_uf : is_U_free B = true)
-        (hsingle_C : has_single_U_type C A B)
-        (hsingle_F : has_single_U_type F A B)
-        (hdC : snce_depth_of_U C = 0) (hdF : snce_depth_of_U F = 0)
-        (hexp_C : has_no_allpast_allfuture C = true)
-        (hexp_F : has_no_allpast_allfuture F = true) :
-        is_separable_with_U_type (.snce C F) A B
-    ```
-  - **Proof**: Follow `snce_single_U_depth_one_separable` but track `has_single_U_type` through each case branch using the lemmas from Tasks 2.1-2.3.
+- [x] Task 2.4: Create `snce_single_U_depth_one_sep_with_U_type` *(completed)*
 
-- [ ] Task 2.5: Verify `lake build` succeeds
+- [x] Task 2.5: Verify `lake build` succeeds *(completed — zero sorry, zero errors)*
 
 **Timing**: 2 hours
 **Depends on**: Phase 1
