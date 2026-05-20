@@ -209,7 +209,7 @@ Phases 1-3, 4A, and 5 are completed. Wave 3 contains three independent tracks: (
 
 ---
 
-### Phase 4B: EF Game Infrastructure Expansion [IN PROGRESS]
+### Phase 4B: EF Game Infrastructure Expansion [PARTIAL]
 
 **Goal**: Expand the existing EFGames.lean skeleton (~170 lines) into the full EF game infrastructure needed for the GHR93 proof. This includes the custom G_{n;r} game type, game composition/restriction/extension lemmas, the depth function with recurrence bounds, and the "left" and "right" formula constructions for gap detection.
 
@@ -224,7 +224,7 @@ Phases 1-3, 4A, and 5 are completed. Wave 3 contains three independent tracks: (
 
 **Tasks**:
 - [ ] **Task 4B.1**: Define the full G_{n;r} game structure with Spoiler/Duplicator moves, replacing the skeleton EFPosition. The game state tracks: (a) the two ordered monadic structures M and N, (b) the correspondence of selected elements, (c) the current round number, (d) bounds for the final element selection. (~150-200 lines)
-- [ ] **Task 4B.2**: Define the depth function f(n) with the exact GHR93 recurrence: f(0) = 0, f(n+1) = (1 + 3*f(n)) * (2*k_n) + 2, where k_n = |NF(sig, f(n), 1)|. Prove monotonicity (f(n) < f(n+1)), lower bound (2 <= f(n+1)), and the key bound used in the main induction. (~80-120 lines)
+- [x] **Task 4B.2**: Define the depth function f(n) with the exact GHR93 recurrence: f(0) = 0, f(n+1) = (1 + 3*f(n)) * (2*k_n) + 2, where k_n = |NF(sig, f(n), 1)|. Prove monotonicity (f(n) < f(n+1)), lower bound (2 <= f(n+1)), and the key bound used in the main induction. *(completed: game_depth, game_depth_succ_ge_two, game_depth_strict_mono, game_depth_mono, normalForm_nonempty, stavi_depth, stavi_n_equiv, stavi_n_equiv_symm, stavi_n_equiv_mono)*
 - [ ] **Task 4B.3**: Prove game composition lemma: if Duplicator wins n-round games on subintervals, she wins the composed game on the full structure. This is the EF analogue of Feferman-Vaught. (~150-250 lines)
 - [ ] **Task 4B.4**: Prove game restriction lemma: winning strategy on M restricts to winning strategy on a substructure of M. (~60-100 lines)
 - [ ] **Task 4B.5**: Prove game extension lemma: winning strategy on substructures extends when the surrounding context is indistinguishable. (~100-150 lines)
