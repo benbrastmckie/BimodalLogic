@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Dead Sorries to Boneyard
 
 - **Task**: 130 - Archive dead sorries to Boneyard
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_sorry-inventory.md, reports/02_archive-vs-delete.md

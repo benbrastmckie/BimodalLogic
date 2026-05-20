@@ -279,7 +279,7 @@ After 155 completes:
 
 ### 130. Archive dead sorries to Boneyard
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 129

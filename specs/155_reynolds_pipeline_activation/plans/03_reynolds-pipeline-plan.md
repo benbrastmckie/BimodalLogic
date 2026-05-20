@@ -187,7 +187,7 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 4: Gap Elimination (Reynolds Theorem 14) [NOT STARTED]
+### Phase 4: Gap Elimination (Reynolds Theorem 14) [IN PROGRESS]
 
 **Goal**: Rewrite `no_gaps_discrete` WITHOUT `IsSuccArchimedean`, following Reynolds 1994 Section 7 (Lemmas 6-13, Theorem 14). Then rewrite `one_class` to use the genuine `no_gaps_discrete` + `no_boundary_at_successor` argument.
 

@@ -180,13 +180,13 @@
     {
       "project_number": 130,
       "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
       "dependencies": [],
       "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-20T16:19:58Z",
+      "last_updated": "2026-05-20T16:38:57Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -207,7 +207,8 @@
       ],
       "topic": "formula-refactor",
       "session_id": "sess_1779293683_4e43b6",
-      "researched": "2026-05-18T23:27:40Z"
+      "researched": "2026-05-18T23:27:40Z",
+      "completion_summary": "Archived 10 dead-code sorries to 3 Boneyard subdirectories (ScheduleBasedBFMCS, FiltrationOrdering, BX1DependentCode). Deleted 5 trivial sorry stubs. Annotated 4 convergence sorries with DEAD APPROACH markers. Net sorry reduction: 15. Build verified after each phase."
     },
     {
       "project_number": 155,
