@@ -213,7 +213,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -222,7 +222,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T18:42:18Z",
+      "last_updated": "2026-05-20T18:54:12Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -279,10 +279,15 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-4-handoff-20260520c.md",
           "type": "handoff",
           "summary": "Phase 4-5 progress: StaviConnectives complete, EFGames skeleton, flatten_stavi_correct (Theorem 5) sorry-free"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md",
+          "type": "research",
+          "summary": "GHR93 strategy review: dependency chain analysis, three alternative approaches, revised phase recommendations with effort estimates"
         }
       ],
-      "session_id": "sess_1779300854_c2b338",
-      "researched": "2026-05-20T16:07:27Z",
+      "session_id": "sess_1779302773_0a17f1",
+      "researched": "2026-05-20T18:54:12Z",
       "started": "2026-05-16T19:49:58Z"
     },
     {

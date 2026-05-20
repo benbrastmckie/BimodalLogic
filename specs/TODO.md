@@ -250,7 +250,7 @@ After 155 completes:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -259,6 +259,7 @@ After 155 completes:
   - [specs/155_reynolds_pipeline_activation/reports/02_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md]
   - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
+  - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
