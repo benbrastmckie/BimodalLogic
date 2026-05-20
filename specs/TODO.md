@@ -96,8 +96,9 @@ After 155 completes:
 
 ### 179. Research Lean 4 best practices and infrastructure for tactics and derived theorems
 - **Effort**: large (20-30 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**: [specs/179_research_lean4_tactics_infrastructure/reports/01_team-research.md]
 
 **Description**: Research best practices for Lean 4 in 2026 online and in Mathlib to design a systematic library of tactics, derived theorems in the proof theory, semantic lemmas, and other general results that streamline codebase refactoring and raise overall code quality. In anticipation of completing task 155, cleaning up tasks 176 and 95, and beginning a deep refactor of completed theorems, investigate appropriate metaprogramming, custom tactics, derivation infrastructure, and organizational patterns to achieve the best structure throughout the implementation.
 
