@@ -52,23 +52,48 @@ open Bimodal.Semantics
 /-! ## Signature and Atom Map Construction -/
 
 /--
-Build a `MonadicSignature` from a formula φ. The predicate symbols
-are the atoms appearing in φ (represented as `Fin n` where `n` is
-the number of distinct atoms).
+`Formula.bot` is never a member of `φ.predFormulas` for any formula φ.
+This is because `predFormulas` only collects `Formula.atom a` and
+`Formula.box ψ` subformulas, and `Formula.bot` is neither.
+-/
+theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormulas := by
+  induction φ with
+  | bot => simp [Formula.predFormulas]
+  | atom _ => simp [Formula.predFormulas]
+  | imp _ _ ih1 ih2 =>
+    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
+  | box _ ih => simp [Formula.predFormulas]; exact ih
+  | untl _ _ ih1 ih2 =>
+    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
+  | snce _ _ ih1 ih2 =>
+    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
 
-For the Reynolds pipeline, this signature provides the finite set of
-predicates needed for the table translation of φ.
+/--
+Build a `MonadicSignature` from a formula φ. The predicate symbols
+are the atoms and box-subformulas appearing in φ, augmented with
+`Formula.bot` as a dummy element to ensure the signature is always
+nonempty. This guarantees `Nonempty sig.preds` for any φ, which is
+needed for the forward atom map fallback case.
+
+The extra `bot` predicate is harmless: it is never in any formula's
+`predFormulas` (by `bot_not_mem_predFormulas`), so it acts as a
+"don't care" default that does not affect the section property or
+truth transfer.
 -/
 noncomputable def mkSigFrom (φ : Formula) : MonadicSignature where
-  preds := φ.predFormulas
+  preds := Finset.cons Formula.bot φ.predFormulas (bot_not_mem_predFormulas φ)
   fintypePreds := inferInstance
   decEqPreds := inferInstance
 
+/-- The signature `mkSigFrom φ` is always nonempty (contains `Formula.bot`). -/
+theorem mkSigFrom_nonempty (φ : Formula) : Nonempty (mkSigFrom φ).preds :=
+  ⟨⟨Formula.bot, Finset.mem_cons_self _ _⟩⟩
+
 /--
 Build an atom map from the signature's predicates to temporal formulas.
-Each predicate symbol is a member of `φ.predFormulas` (i.e., either
-`Formula.atom a` or `Formula.box ψ`), so the map simply extracts
-the underlying formula.
+Each predicate symbol is a member of `cons bot φ.predFormulas` (i.e.,
+`Formula.bot` or `Formula.atom a` or `Formula.box ψ`), so the map
+simply extracts the underlying formula.
 
 For the Reynolds pipeline, this map connects the monadic structure's
 predicate interpretations to the temporal truth of formulas in the MCS.
@@ -433,16 +458,11 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   let atomMap_rev : sig.preds → Formula := mkAtomMap φ
   -- Forward atom map: maps formulas to their predicate symbol
   -- Uses Classical.choice for formulas not in φ.predFormulas
-  haveI h_nonempty : Nonempty sig.preds := by
-    -- sig.preds = φ.predFormulas. If empty, φ has no atoms/box subformulas,
-    -- meaning it's a purely propositional (bot/imp) formula. This case is
-    -- handled by the chronicle fallback below as a degenerate case.
-    -- For non-trivial formulas (which is the typical case), predFormulas is nonempty.
-    sorry
+  haveI h_nonempty : Nonempty sig.preds := mkSigFrom_nonempty φ
   let atomMap_fwd : Formula → sig.preds := fun f =>
     if h : f ∈ (φ.predFormulas : Finset Formula)
-    then ⟨f, h⟩
-    else Classical.arbitrary sig.preds
+    then ⟨f, Finset.mem_cons.mpr (Or.inr h)⟩
+    else ⟨Formula.bot, Finset.mem_cons_self _ _⟩
   -- Step 3: Chronicle as ordered monadic structure
   let M_chron := chronicleAsMonadicStructure chron sig atomMap_rev
   -- Step 4: Prove chronicle is good at depth k, with explicit bounds

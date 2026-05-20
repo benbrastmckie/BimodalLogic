@@ -132,13 +132,13 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 2: Fix Nonempty sig.preds [NOT STARTED]
+### Phase 2: Fix Nonempty sig.preds [COMPLETED]
 
 **Goal**: Close the trivial `Nonempty sig.preds` sorry at Transfer.lean:332. This is the easiest win.
 
 **Tasks**:
-- [ ] **Task 2.1**: Fix `Nonempty sig.preds` (Transfer.lean:332). Case-split on whether `phi.predFormulas` is empty. If empty, phi is purely propositional (only `bot`/`imp`) and a simpler propositional countermodel suffices (or the predicate machinery is vacuously satisfied). If nonempty, `Nonempty sig.preds` is immediate from the nonemptiness of `predFormulas`.
-- [ ] **Task 2.2**: Verify `lake build` passes.
+- [x] **Task 2.1**: Fix `Nonempty sig.preds` (Transfer.lean:332). *(deviation: altered -- instead of case-splitting on predFormulas emptiness, augmented mkSigFrom to include Formula.bot as a dummy predicate via Finset.cons, guaranteeing Nonempty sig.preds for all formulas. Added bot_not_mem_predFormulas helper lemma. Replaced Classical.arbitrary fallback with explicit bot default.)*
+- [x] **Task 2.2**: Verify `lake build` passes. *(completed -- build successful with 1644 jobs, no errors)*
 
 **Timing**: 1 hour
 
