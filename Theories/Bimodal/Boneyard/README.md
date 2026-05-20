@@ -40,6 +40,7 @@ The Boneyard serves three roles:
 | [DenseChronicle](#densechronicle) | 3 | 281 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
 | [DiscreteXY](#discretexy) | 1 | 72 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
 | [NonBurgessSeed](#nonburgessseed) | 1 | 141 | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
+| [OpenGuardInvalid](#openguardinvalid) | 1 | 215 | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s); seriality-dependent sorry stubs | 173 |
 | [QuasimodelOracle](#quasimodeloracle) | 3 | 1,467 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,522 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 1 | 53 | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
@@ -48,7 +49,7 @@ The Boneyard serves three roles:
 | [UltrafilterDeadCode](#ultrafilterdeadcode) | 4 | 1,064 | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
 | [UltrafilterFrame](#ultrafilterframe) | 2 | 1,547 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4, elaboration conflicts); Jonsson-Tarski prerequisite | 21 |
 | [XuLemma321Legacy](#xulemma321legacy) | 1 | 75 | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics; task 115 proved via different method | 115 |
-| **Total** | **49** | **28,126** | | | |
+| **Total** | **50** | **28,341** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -57,7 +58,7 @@ Code that relied on axioms later found to be unsound under the project's semanti
 foundation. Examples: BX9 (unsound under open guard semantics), T-axiom
 (`G(phi)->phi`, invalid under strict temporal semantics), closed guard interval
 semantics.
-- Directories: TAxiomDependentCode, ClosedGuardLegacy, XuLemma321Legacy
+- Directories: TAxiomDependentCode, ClosedGuardLegacy, XuLemma321Legacy, OpenGuardInvalid
 
 ### Superseded Approaches
 Working code replaced by fundamentally different (usually simpler or more
@@ -123,6 +124,14 @@ splitting. Replaced by the direct open guard semantics approach.
 Legacy g_content/h_content functions from PointInsertion.lean (task 107 Phase 3).
 The consistent case was proved, but the inconsistent case hits the same density
 gap as DenseChronicle. All code is commented out and non-compilable.
+
+### OpenGuardInvalid
+27 sorry-tainted definitions from TemporalDerived.lean (1 file, 215 lines). These
+relied on BX8 (reflexive Until/Since intro), BX9 (Until/Since elimination to
+disjunction), reflexive temporal order (alpha -> F(alpha)), seriality, or density
+axioms -- all invalid or unavailable under the current open guard (t,s) semantics.
+5 definitions with proof content or downstream users are archived with full bodies;
+22 are documented as type signatures only. Net active sorry reduction: 19.
 
 ### QuasimodelOracle
 Oracle-based approach to constructing forward/backward MCS chains (3 files, 44
@@ -212,6 +221,7 @@ See subdirectory README for recovery options.
 | 123 | StageInductionGapAnalysis | 2026-05-13 |
 | 132 | Consolidated root Boneyard/ into this location | 2026-05-13 |
 | 21 | UltrafilterFrame (TenseS5Algebra + UltrafilterFrame from Algebraic/) | 2026-05-20 |
+| 173 | OpenGuardInvalid (27 sorry-tainted definitions from TemporalDerived.lean) | 2026-05-20 |
 
 ## Git Retrieval
 
