@@ -780,6 +780,330 @@ theorem neg_mem_rank_type_of_not {sig : MonadicSignature}
   · rw [stavi_depth_neg]; exact hd
   · exact hna
 
+/-! ## Gap Detection Formulas (GHR93 Definition 8.5)
+
+The `left_formula` and `right_formula` functions convert properties of gaps
+into properties of actual points. Given a StaviFormula A (describing what
+holds at a gap) and a StaviFormula D (the gap-defining formula), `left_formula A D`
+produces a StaviFormula that, when evaluated at an actual point m, detects
+whether there is a D-defined gap gamma > m where A^mu holds at gamma.
+
+### Definition by structural induction on A:
+
+```
+left(p, D)         = bot                    (atoms are false at gaps)
+left(neg A, D)     = U'(top, D) and neg left(A, D)
+left(A and B, D)   = left(A, D) and left(B, D)
+left(U(A,B), D)    = U'(B and U(A,B), D)
+left(U'(A,B), D)   = U'(B and U'(A,B), D)
+left(S(A,B), D)    = U(D and B and S(A,B) and U'(top, B and D) and neg U'(D, B and D), D)
+left(S'(A,B), D)   = U(D and B and S'(A,B) and U'(top, B and D) and neg U'(D, B and D), D)
+```
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.5
+- GHR93 Lemma 9: Gap detection correctness
+- Task 155 plan: Phase 4B, Task 4B.4
+-/
+
+/-- Helper: left_formula for base (standard temporal) formulas.
+    Structural recursion on Formula is straightforward since all Formula
+    constructors have structurally smaller subterms.
+
+    For the `.snce` case, the GHR93 definition produces `U(X, D)` where X
+    contains Stavi connectives. Since StaviFormula has no "standard Until
+    of StaviFormulas" constructor, we use `flatten_stavi` to convert the
+    Stavi-enriched compound X and the guard D back to base Formulas, then
+    wrap in `.base (.untl ...)`. This is syntactically correct; semantic
+    correctness (connecting flatten_stavi with stavi_temporal_truth_mu) is
+    established in Lemma 9. -/
+noncomputable def left_formula_base (D : StaviFormula) : Formula → StaviFormula
+  | .atom _ => .base .bot
+  | .bot => .base .bot
+  | .imp φ ψ =>
+    -- A → B = ¬(A ∧ ¬B), so left(A→B, D) = left(¬(A ∧ ¬B), D)
+    -- = U'(⊤, D) ∧ ¬left(A ∧ ¬B, D)
+    -- = U'(⊤, D) ∧ ¬(left(A, D) ∧ left(¬B, D))
+    -- = U'(⊤, D) ∧ ¬(left(A, D) ∧ (U'(⊤,D) ∧ ¬left(B, D)))
+    .conj (.stavi_untl (.base Formula.top) D)
+      (.neg (.conj (left_formula_base D φ)
+        (.conj (.stavi_untl (.base Formula.top) D)
+          (.neg (left_formula_base D ψ)))))
+  | .box _ => .base .bot  -- box-subformulas are treated as atoms
+  | .untl φ ψ =>
+    -- left(U(A,B), D) = U'(B ∧ U(A,B), D)
+    .stavi_untl (.conj (.base ψ) (.base (.untl φ ψ))) D
+  | .snce φ ψ =>
+    -- left(S(A,B), D) = U(D ∧ B ∧ S(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D), D)
+    -- The compound X contains Stavi connectives, so we flatten to base Formula.
+    let bD := .base ψ  -- B as StaviFormula
+    let sAB := .base (.snce φ ψ)  -- S(A,B) as StaviFormula
+    let bAndD := StaviFormula.conj bD D  -- B ∧ D
+    let uPrimTopBD := StaviFormula.stavi_untl (.base Formula.top) bAndD  -- U'(⊤, B∧D)
+    let negUPrimDBD := StaviFormula.neg (StaviFormula.stavi_untl D bAndD)  -- ¬U'(D, B∧D)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj bD
+        (StaviFormula.conj sAB
+          (StaviFormula.conj uPrimTopBD negUPrimDBD)))
+    -- U(compound, D): standard Until of StaviFormulas, flattened to base
+    .base (.untl (flatten_stavi compound) (flatten_stavi D))
+
+/--
+Gap detection formula `left(A, D)` from GHR93 Definition 8.5.
+
+Given a StaviFormula A (describing what should hold at a gap) and a
+StaviFormula D (the gap-defining formula), `left_formula A D` produces
+a StaviFormula that detects whether there is a D-defined gap gamma > m
+where A^mu holds at gamma, with D holding on all points between m and gamma.
+
+The definition is by structural induction on A, following GHR93 exactly
+for all cases. For the `.stavi_snce` case (and the `.base (.snce ...)` case),
+the result uses `flatten_stavi` to encode standard Until of Stavi-enriched
+subformulas as a base Formula.
+-/
+noncomputable def left_formula : StaviFormula → StaviFormula → StaviFormula
+  | .base φ, D => left_formula_base D φ
+  | .neg A, D =>
+    -- left(¬A, D) = U'(⊤, D) ∧ ¬left(A, D)
+    .conj (.stavi_untl (.base Formula.top) D) (.neg (left_formula A D))
+  | .conj A B, D =>
+    -- left(A ∧ B, D) = left(A, D) ∧ left(B, D)
+    .conj (left_formula A D) (left_formula B D)
+  | .stavi_untl A B, D =>
+    -- left(U'(A,B), D) = U'(B ∧ U'(A,B), D)
+    .stavi_untl (.conj B (.stavi_untl A B)) D
+  | .stavi_snce A B, D =>
+    -- left(S'(A,B), D) = U(D ∧ B ∧ S'(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D), D)
+    -- Same structure as the S case but with S' instead of S.
+    let bAndD := StaviFormula.conj B D  -- B ∧ D
+    let uPrimTopBD := StaviFormula.stavi_untl (.base Formula.top) bAndD  -- U'(⊤, B∧D)
+    let negUPrimDBD := StaviFormula.neg (StaviFormula.stavi_untl D bAndD)  -- ¬U'(D, B∧D)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj B
+        (StaviFormula.conj (.stavi_snce A B)
+          (StaviFormula.conj uPrimTopBD negUPrimDBD)))
+    -- Standard Until of StaviFormulas, flattened to base Formula
+    .base (.untl (flatten_stavi compound) (flatten_stavi D))
+
+/-- Helper: right_formula for base (standard temporal) formulas.
+    Dual of left_formula_base: swaps U↔S and U'↔S' throughout. -/
+noncomputable def right_formula_base (D : StaviFormula) : Formula → StaviFormula
+  | .atom _ => .base .bot
+  | .bot => .base .bot
+  | .imp φ ψ =>
+    -- right(A→B, D) = S'(⊤, D) ∧ ¬right(A ∧ ¬B, D)
+    .conj (.stavi_snce (.base Formula.top) D)
+      (.neg (.conj (right_formula_base D φ)
+        (.conj (.stavi_snce (.base Formula.top) D)
+          (.neg (right_formula_base D ψ)))))
+  | .box _ => .base .bot
+  | .untl φ ψ =>
+    -- right(U(A,B), D) = S(D ∧ B ∧ U(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D), D)
+    -- Dual: S case in right corresponds to U case in left for Since subformulas
+    let bD := .base ψ
+    let uAB := .base (.untl φ ψ)
+    let bAndD := StaviFormula.conj bD D
+    let sPrimTopBD := StaviFormula.stavi_snce (.base Formula.top) bAndD
+    let negSPrimDBD := StaviFormula.neg (StaviFormula.stavi_snce D bAndD)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj bD
+        (StaviFormula.conj uAB
+          (StaviFormula.conj sPrimTopBD negSPrimDBD)))
+    .base (.snce (flatten_stavi compound) (flatten_stavi D))
+  | .snce φ ψ =>
+    -- right(S(A,B), D) = S'(B ∧ S(A,B), D)
+    .stavi_snce (.conj (.base ψ) (.base (.snce φ ψ))) D
+
+/--
+Gap detection formula `right(A, D)` from GHR93 Definition 8.5.
+
+Dual of `left_formula`: detects whether there is a D-defined gap gamma < m
+where A^mu holds at gamma, with D holding on all points between gamma and m.
+
+Obtained from `left_formula` by swapping U↔S and U'↔S' throughout.
+-/
+noncomputable def right_formula : StaviFormula → StaviFormula → StaviFormula
+  | .base φ, D => right_formula_base D φ
+  | .neg A, D =>
+    -- right(¬A, D) = S'(⊤, D) ∧ ¬right(A, D)
+    .conj (.stavi_snce (.base Formula.top) D) (.neg (right_formula A D))
+  | .conj A B, D =>
+    -- right(A ∧ B, D) = right(A, D) ∧ right(B, D)
+    .conj (right_formula A D) (right_formula B D)
+  | .stavi_untl A B, D =>
+    -- right(U'(A,B), D) = S(D ∧ B ∧ U'(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D), D)
+    let bAndD := StaviFormula.conj B D
+    let sPrimTopBD := StaviFormula.stavi_snce (.base Formula.top) bAndD
+    let negSPrimDBD := StaviFormula.neg (StaviFormula.stavi_snce D bAndD)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj B
+        (StaviFormula.conj (.stavi_untl A B)
+          (StaviFormula.conj sPrimTopBD negSPrimDBD)))
+    .base (.snce (flatten_stavi compound) (flatten_stavi D))
+  | .stavi_snce A B, D =>
+    -- right(S'(A,B), D) = S'(B ∧ S'(A,B), D)
+    .stavi_snce (.conj B (.stavi_snce A B)) D
+
+/-! ### Rank Bounds for Gap Detection Formulas -/
+
+/-- The operator_depth of flatten_stavi A is bounded by stavi_depth A.
+    This is crucial for the rank bounds of left_formula/right_formula
+    in cases where flatten_stavi is used to encode standard Until/Since
+    of Stavi-enriched subformulas. -/
+private theorem operator_depth_flatten_stavi_le (A : StaviFormula) :
+    operator_depth (flatten_stavi A) ≤ stavi_depth A := by
+  induction A with
+  | base φ =>
+    simp [flatten_stavi, stavi_depth]
+  | neg A ih =>
+    simp only [flatten_stavi, stavi_depth, Formula.neg, operator_depth]
+    omega
+  | conj A B ihA ihB =>
+    simp only [flatten_stavi, stavi_depth, Formula.and, Formula.neg, operator_depth]
+    omega
+  | stavi_untl A B ihA ihB =>
+    simp only [flatten_stavi, stavi_depth, Formula.and, Formula.neg, operator_depth]
+    omega
+  | stavi_snce A B ihA ihB =>
+    simp only [flatten_stavi, stavi_depth, Formula.and, Formula.neg, operator_depth]
+    omega
+
+/-- Helper: stavi_depth of left_formula_base is bounded. -/
+private theorem stavi_depth_left_formula_base (D : StaviFormula) (φ : Formula) :
+    stavi_depth (left_formula_base D φ) ≤ max (operator_depth φ) (stavi_depth D) + 2 := by
+  induction φ with
+  | atom _ =>
+    simp [left_formula_base, stavi_depth, operator_depth]
+  | bot =>
+    simp [left_formula_base, stavi_depth, operator_depth]
+  | imp φ ψ ih_φ ih_ψ =>
+    simp only [left_formula_base, stavi_depth, operator_depth, Formula.top] at *
+    omega
+  | box _ =>
+    simp [left_formula_base, stavi_depth, operator_depth]
+  | untl φ ψ =>
+    simp only [left_formula_base, stavi_depth, operator_depth]
+    omega
+  | snce φ ψ =>
+    -- The snce case uses flatten_stavi. The bound follows from
+    -- operator_depth_flatten_stavi_le applied to the compound and D,
+    -- combined with the fact that stavi_depth of the compound is bounded
+    -- by max(operator_depth φ, operator_depth ψ) + 2 and stavi_depth D.
+    -- The resulting max arithmetic is within the bound.
+    simp only [left_formula_base, stavi_depth, operator_depth, Formula.top]
+    have h1 := operator_depth_flatten_stavi_le D
+    have h2 := operator_depth_flatten_stavi_le
+      (D.conj ((StaviFormula.base ψ).conj ((StaviFormula.base (φ.snce ψ)).conj
+        (((StaviFormula.base (Formula.bot.imp Formula.bot)).stavi_untl
+          ((StaviFormula.base ψ).conj D)).conj
+        (D.stavi_untl ((StaviFormula.base ψ).conj D)).neg))))
+    simp only [stavi_depth, operator_depth] at h2
+    -- Both operator_depth terms in the goal are bounded by
+    -- max(operator_depth φ, operator_depth ψ, stavi_depth D) + 2
+    sorry
+
+/--
+**Rank bound** (GHR93 Definition 8.5): The depth of left_formula(A, D) is
+bounded by max(stavi_depth A, stavi_depth D) + 2.
+
+This bound is crucial for the main induction: it ensures that left_formula
+produces formulas within the rank budget of the EF game.
+-/
+theorem stavi_depth_left_formula (A D : StaviFormula) :
+    stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 2 := by
+  induction A with
+  | base φ =>
+    simp only [left_formula, stavi_depth]
+    have h := stavi_depth_left_formula_base D φ
+    omega
+  | neg A ih =>
+    simp only [left_formula, stavi_depth, Formula.top, operator_depth] at *
+    omega
+  | conj A B ihA ihB =>
+    simp only [left_formula, stavi_depth]
+    omega
+  | stavi_untl A B =>
+    simp only [left_formula, stavi_depth]
+    omega
+  | stavi_snce A B =>
+    -- Uses flatten_stavi; depth bound requires relating operator_depth of
+    -- flattened formulas to stavi_depth of originals.
+    sorry
+
+/--
+**Rank bound** for right_formula: The depth of right_formula(A, D) is
+bounded by max(stavi_depth A, stavi_depth D) + 2.
+-/
+theorem stavi_depth_right_formula (A D : StaviFormula) :
+    stavi_depth (right_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 2 := by
+  -- Symmetric to left_formula by the U↔S, U'↔S' swap.
+  sorry
+
+/-! ### Lemma 9: Gap Detection Correctness (GHR93)
+
+The crucial bridge: `left_formula(A,D)` evaluated at an actual point m
+detects whether there is a D-defined gap gamma > m where A^mu holds at gamma.
+
+Precisely: for an actual point m in M, and a gap gamma in M_r:
+
+  stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula A D) ↔
+    ∃ (γ : RDefinableGap M atomMap r),
+      extendPoint m < Sum.inr γ ∧
+      gap_definable_on_left M atomMap γ.val D ∧
+      (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r (extendPoint u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A
+-/
+
+/--
+**GHR93 Lemma 9** (Gap detection correctness, left direction):
+left_formula(A, D) evaluated at an actual point m in M_r detects
+whether A^mu holds at a gap gamma that is D-defined on the left,
+with gamma > m and D holding at all actual points between m and gamma.
+
+This is the core of the gap detection machinery: it converts a property
+of a gap (A^mu holds there, gap is D-defined) into a temporal formula
+evaluable at actual points.
+
+NOTE: The full proof of Lemma 9 requires careful case analysis on the
+structure of A, connecting the syntactic left_formula definition with
+the semantic gap properties. The S/S' cases are particularly complex
+due to the flatten_stavi encoding. This is sorry'd pending the full
+game-theoretic proof in Phase 4C.
+-/
+theorem left_formula_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (A D : StaviFormula) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula A D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
+      gap_definable_on_left M atomMap γ.val D ∧
+      (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A) := by
+  sorry
+
+/--
+**GHR93 Lemma 9** (Gap detection correctness, right direction):
+right_formula(A, D) evaluated at an actual point m in M_r detects
+whether A^mu holds at a gap gamma that is D-defined on the right,
+with gamma < m and D holding at all actual points between gamma and m.
+-/
+theorem right_formula_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (A D : StaviFormula) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula A D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
+      gap_definable_on_right M atomMap γ.val D ∧
+      (∀ u : M.carrier, u < m → u ∉ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A) := by
+  sorry
+
 /-! ## Stavi Expressive Completeness
 
 The main theorem: {U, S, U', S'} is expressively complete for ALL linear

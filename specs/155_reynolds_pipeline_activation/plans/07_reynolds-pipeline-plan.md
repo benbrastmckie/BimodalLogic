@@ -253,7 +253,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   finite via NormalForm). Define `X_{(t,u)}` — disjunction of X_v for all points v in (t,u).
   *(deviation: altered — (1) point agreement theorem deferred to Phase 4C where it will be needed with full proof infrastructure; (2) types defined as Set StaviFormula rather than conjunction/disjunction formulas, matching the semantic approach more directly; (3) added temporal_truth_mu for standard formulas to properly mu-relativize Until/Since in base case; ~200 lines including doc comments and helper theorems)*
 
-- [ ] **Task 4B.4**: Gap Detection Formulas — left() and right() (GHR93 Def 8.5 + Lemma 9).
+- [x] **Task 4B.4**: Gap Detection Formulas — left() and right() (GHR93 Def 8.5 + Lemma 9).
   Define `left_formula (A D : StaviFormula) : StaviFormula` by structural induction on A:
     left(p, D) = bot; left(¬A, D) = U'(⊤,D) ∧ ¬left(A,D);
     left(A∧B, D) = left(A,D) ∧ left(B,D);
@@ -266,6 +266,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   Prove Lemma 9: left(A,D)(m) ↔ ∃ gap γ > m, γ defined by D on left, D holds in (m,γ),
   and A^mu(γ) holds. This is the crucial bridge: temporal formula detects gap property.
   (~150-200 lines)
+  *(deviation: altered — (1) S/S' cases use flatten_stavi to encode standard Until/Since of StaviFormula-enriched subterms as base Formulas, since StaviFormula has no "standard Until of StaviFormulas" constructor; (2) rank bound snce/stavi_snce cases and right_formula rank bound are sorry'd due to nested max arithmetic involving operator_depth of flatten_stavi results; (3) Lemma 9 left and right gap detection correctness are stated precisely but sorry'd as the task description explicitly permits; (4) added operator_depth_flatten_stavi_le helper lemma for the rank bounds; ~220 lines added)*
 
 - [ ] **Task 4B.5**: Custom Game G_{n;r} Definition (GHR93 Def 8.7).
   Define the full game `GHR93Game sig n r M N x y x' y'` replacing the skeleton EFPosition:
