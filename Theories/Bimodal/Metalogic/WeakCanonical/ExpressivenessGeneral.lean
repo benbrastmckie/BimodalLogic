@@ -187,4 +187,44 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     -- Sorry'd for Phase 4C.2-4C.7.
     sorry
 
+/-! ## Rank-Varying Theorem 6
+
+The full GHR93 statement of Theorem 6 uses different ranks for the forward
+and backward games: the forward game uses rank r+4n, the backward game
+uses rank r. With rank_embed now available, we can state this version.
+
+The positions x, y, x', y' live at rank r (the backward game's rank).
+The forward game plays at rank r+4n, so we embed these positions via
+rank_embed (by omega : r ≤ r+4n).
+
+This version is derived from the uniform-rank version by pre-composing
+with round monotonicity (Lemma 10) and rank embedding. -/
+
+/-- **GHR93 Theorem 6** (Forward-to-backward transfer, rank-varying version):
+    If Duplicator wins G_{1+3n; r+4n}(M, xy; N, x'y') on the rank-(r+4n)
+    extended carriers, then she wins G_{n; r}(N, x'y'; M, xy) on the
+    rank-r extended carriers.
+
+    The positions are given at rank r and embedded to rank r+4n via
+    rank_embed for the forward game hypothesis. -/
+theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n r : Nat)
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 4 * n)
+           (rank_embed (by omega : r ≤ r + 4 * n) x)
+           (rank_embed (by omega : r ≤ r + 4 * n) y)
+           (rank_embed (by omega : r ≤ r + 4 * n) x')
+           (rank_embed (by omega : r ≤ r + 4 * n) y')) :
+    ghr93_duplicator_wins N M atomMap n r x' y' x y := by
+  -- Use the uniform-rank version at rank r+4n, then transport back to rank r.
+  -- Step 1: Apply the uniform-rank Theorem 6 at rank r+4n.
+  -- Step 2: The result gives a backward strategy at rank r+4n.
+  -- Step 3: Transport the backward strategy back to rank r using rank_embed properties.
+  -- For now, this is sorry'd pending the full inductive step proof.
+  sorry
+
 end Bimodal.Metalogic.WeakCanonical
