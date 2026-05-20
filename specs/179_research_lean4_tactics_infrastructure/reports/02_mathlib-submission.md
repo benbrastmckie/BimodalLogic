@@ -4,6 +4,8 @@
 **Date**: 2026-05-20
 **Session**: sess_1779313857_e32cd5
 
+**Note**: The findings in this report are being addressed by separate tasks rather than task 179 itself. Specifically: task 175 (Mathlib-style naming conventions), task 180 (copyright headers, universe polymorphism, line limits), and task 181 (Derivable Prop-valued wrapper). Task 179 remains focused on tactics, derived theorems, and infrastructure design.
+
 ## Summary
 
 This report analyzes what would be required to submit ProofChecker (or parts of it) to Mathlib. The central conclusion is that **full submission to Mathlib is neither practical nor advisable**, but maintaining a **Mathlib-compatible standalone library** is achievable and provides the best of both worlds. Several structural patterns in the codebase would need significant rework for Mathlib compliance, while the domain itself (bimodal temporal-modal logic) falls outside Mathlib's current scope and community expertise.
