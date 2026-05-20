@@ -209,7 +209,7 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
