@@ -104,7 +104,7 @@ The v5 plan (06_reynolds-pipeline-plan.md) had 10 phases. Phases 1-3 COMPLETED, 
 |------|--------|------------|--------|
 | 1 | 1, 2, 3 | -- | COMPLETED |
 | 2 | 4A, 5 | -- | COMPLETED |
-| 3 | 4B (Tasks 4B.2-4B.7) | -- | IN PROGRESS (4B.1 done) |
+| 3 | 4B (Tasks 4B.2-4B.7) | -- | COMPLETED |
 | 4 | 4C (Tasks 4C.1-4C.12) | 4B | NOT STARTED |
 | 5 | 5' | 4C | NOT STARTED |
 | 6 | 6 | 5' | NOT STARTED |
@@ -213,7 +213,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
 
 ---
 
-### Phase 4B: GHR93 Infrastructure -- Definitions and Lemmas [PARTIAL]
+### Phase 4B: GHR93 Infrastructure -- Definitions and Lemmas [COMPLETED]
 
 **Goal**: Build the complete GHR93 Section 8 infrastructure needed for the main proof (Theorem 6). This follows the exact dependency chain from the paper: gap definitions → relativized formulas → type formulas → gap detection → game definition → decomposition formulas.
 
@@ -292,7 +292,7 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   (~100-150 lines)
   *(deviation: altered — (1) decomposition formulas defined semantically via decomposition_agreement rather than as syntactic FO formulas, capturing the same content: boundary type agreement + forward/backward matching of n-element selections with type, gap/point, and order agreement; (2) Lemma 11 split into forward (ghr93_game_implies_decomposition) and backward (ghr93_decomposition_implies_game) directions, both sorry'd, plus iff version (ghr93_game_iff_decomposition); ~130 lines)*
 
-- [ ] **Task 4B.7**: Verify `lake build` passes with all new infrastructure.
+- [x] **Task 4B.7**: Verify `lake build` passes with all new infrastructure. *(completed — build passes with 1646 jobs, no errors)*
 
 **Timing**: 12-18 hours
 
