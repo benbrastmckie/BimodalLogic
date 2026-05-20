@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Dead Sorry Stubs from TemporalDerived.lean
 
 - **Task**: 173 - Archive 19 dead sorry stubs from TemporalDerived.lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_sorry-stub-audit.md
@@ -65,7 +65,7 @@ Phases are fully sequential because downstream updates (Phase 2) must precede de
 
 ---
 
-### Phase 1: Create Boneyard Archive [NOT STARTED]
+### Phase 1: Create Boneyard Archive [COMPLETED]
 
 **Goal**: Create the Boneyard archive file containing the 5 ARCHIVE definitions with their proof bodies and documentation header for all 27 removed definitions.
 
