@@ -244,14 +244,14 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   Key fact: on discrete orders (SuccOrder + PredOrder + NoMaxOrder + NoMinOrder), Gap M = ∅,
   so M_r ≃o M.carrier. *(deviation: altered — discrete_no_gaps requires IsSuccArchimedean in addition to the four basic discrete order conditions, because SuccOrder+PredOrder+NoMaxOrder+NoMinOrder alone does not exclude orders like Z ⊔ Z which have gaps; ~349 lines due to LinearOrder instance proofs)*
 
-- [ ] **Task 4B.3**: Relativized Formulas and Type Formulas (GHR93 Def 8.4, 8.8).
+- [x] **Task 4B.3**: Relativized Formulas and Type Formulas (GHR93 Def 8.4, 8.8).
   Define `mu` — a distinguished atom marking actual points (h'(mu) = M in M_r).
   Define `relativize_mu A` — formula A^mu with all temporal connectives (U, S, U', S')
   relativized to quantify only over mu-points. Define `eval_at_r M_r t A^mu` — evaluation
   of A^mu at position t in M_r. Prove key fact: for actual point t ∈ M, A(t) ↔ A^mu(t).
   Define `X_t` — conjunction of all temporal formulas of rank ≤ r satisfied at t (effectively
   finite via NormalForm). Define `X_{(t,u)}` — disjunction of X_v for all points v in (t,u).
-  (~80-120 lines)
+  *(deviation: altered — (1) point agreement theorem deferred to Phase 4C where it will be needed with full proof infrastructure; (2) types defined as Set StaviFormula rather than conjunction/disjunction formulas, matching the semantic approach more directly; (3) added temporal_truth_mu for standard formulas to properly mu-relativize Until/Since in base case; ~200 lines including doc comments and helper theorems)*
 
 - [ ] **Task 4B.4**: Gap Detection Formulas — left() and right() (GHR93 Def 8.5 + Lemma 9).
   Define `left_formula (A D : StaviFormula) : StaviFormula` by structural induction on A:

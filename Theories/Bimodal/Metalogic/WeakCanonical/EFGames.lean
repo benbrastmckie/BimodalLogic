@@ -574,6 +574,212 @@ theorem discrete_no_gaps {T : Type} [LinearOrder T]
   rw [← hn] at hb
   exact hb (h_all n)
 
+/-! ## Relativized Formulas and Type Formulas (GHR93 Definitions 8.4, 8.8)
+
+The extended structure M_r needs to become an OrderedMonadicStructure so that
+temporal formulas can be evaluated on it. We define:
+
+1. `extendedStructure` — M_r as an OrderedMonadicStructure (predicates at gaps are false)
+2. `mu_holds` — the mu predicate distinguishing actual points from gaps
+3. `stavi_temporal_truth_mu` — evaluation with temporal connectives relativized to mu-points
+4. `rank_type` — the complete rank-r type at a position (GHR93 Def 8.8)
+5. `interval_types` — types realized in an open interval (GHR93 Def 8.8)
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definitions 8.4, 8.8
+- Task 155 plan: Phase 4B, Task 4B.3
+-/
+
+/-- The extended structure M_r as an OrderedMonadicStructure.
+    Predicates at gap positions are defined to be false (gaps have no intrinsic
+    predicate values). Predicates at actual points inherit from M.
+    The linear order is the interleaved order from `extendedLinearOrder`. -/
+noncomputable def extendedStructure {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :
+    OrderedMonadicStructure sig where
+  carrier := ExtendedCarrier M atomMap r
+  interp := fun p e => match e with
+    | .inl x => M.interp p x
+    | .inr _ => False  -- gaps have no predicate values
+  carrier_order := extendedLinearOrder
+
+/-- The mu predicate: true at actual points, false at gaps.
+    In GHR93: h'(mu) = M (the set of actual points in M_r). -/
+def mu_holds {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    (e : ExtendedCarrier M atomMap r) : Prop :=
+  IsPoint e
+
+/-- A point of M is a mu-point in the extended structure. -/
+theorem mu_holds_point {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat} (x : M.carrier) :
+    mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) x) := by
+  exact ⟨x, rfl⟩
+
+/-- A gap is not a mu-point. -/
+theorem not_mu_holds_gap {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) :
+    ¬ mu_holds (Sum.inr g : ExtendedCarrier M atomMap r) := by
+  intro ⟨x, hx⟩
+  exact absurd hx Sum.inr_ne_inl
+
+/-! ### Mu-Relativized Temporal Truth (GHR93 Definition 8.4)
+
+For a StaviFormula A, the mu-relativized evaluation A^mu at a position t
+in M_r restricts all temporal quantification to mu-points (actual points
+from M). Concretely:
+
+- At atoms: use the extended structure's interpretation (true at points, false at gaps)
+- U^mu(A,B) at t: ∃ s > t with mu(s) ∧ A^mu(s), and ∀ u ∈ (t,s) with mu(u), B^mu(u)
+- S^mu(A,B): dual (past direction)
+- U'^mu(A,B) at t: B^mu cofinal above t restricted to mu-points, and ¬U^mu(A,B)
+- S'^mu(A,B): dual
+- neg, conj: standard
+-/
+
+/-- Mu-relativized temporal truth for standard temporal formulas (Formula).
+    This is the φ^mu evaluation: atoms use the extended structure's
+    interpretation (false at gaps), and temporal connectives (Until/Since)
+    quantify only over mu-points (actual points from M).
+
+    This function is used by `stavi_temporal_truth_mu` for the `.base φ`
+    case, ensuring that ALL temporal connectives in A^mu are properly
+    relativized to mu-points. -/
+noncomputable def temporal_truth_mu {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
+    (t : ExtendedCarrier M atomMap r) : Formula → Prop
+  | .atom a => (extendedStructure M atomMap r).interp (atomMap (.atom a)) t
+  | .bot => False
+  | .imp φ ψ => temporal_truth_mu M atomMap r t φ → temporal_truth_mu M atomMap r t ψ
+  | .box φ => (extendedStructure M atomMap r).interp (atomMap (.box φ)) t
+  | .untl φ ψ =>
+    -- U^mu: quantify only over mu-points
+    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
+      temporal_truth_mu M atomMap r s φ ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
+        temporal_truth_mu M atomMap r u ψ
+  | .snce φ ψ =>
+    -- S^mu: quantify only over mu-points
+    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
+      temporal_truth_mu M atomMap r s φ ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
+        temporal_truth_mu M atomMap r u ψ
+
+/-- Temporal truth in M_r with connectives relativized to mu-points.
+    This is the A^mu evaluation from GHR93 Definition 8.4.
+
+    All temporal connectives (Until, Since, Stavi Until, Stavi Since)
+    quantify only over actual points (mu-points), not gaps. Atoms at
+    actual points use M's interpretation; atoms at gaps evaluate to false
+    (via the extendedStructure).
+
+    For base formulas (.base φ), delegates to `temporal_truth_mu` which
+    handles the mu-relativization of standard Until/Since. -/
+noncomputable def stavi_temporal_truth_mu {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
+    (t : ExtendedCarrier M atomMap r) : StaviFormula → Prop
+  | .base φ => temporal_truth_mu M atomMap r t φ
+  | .stavi_untl A B =>
+    -- U'^mu(A,B)(t): B^mu cofinal above t among mu-points, standard Until fails among mu-points
+    (∀ s : ExtendedCarrier M atomMap r, t < s → mu_holds s →
+      ∃ u : ExtendedCarrier M atomMap r, t < u ∧ u ≤ s ∧ mu_holds u ∧
+        stavi_temporal_truth_mu M atomMap r u B) ∧
+    ¬(∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
+      stavi_temporal_truth_mu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
+        stavi_temporal_truth_mu M atomMap r u B)
+  | .stavi_snce A B =>
+    -- S'^mu(A,B)(t): dual (past direction)
+    (∀ s : ExtendedCarrier M atomMap r, s < t → mu_holds s →
+      ∃ u : ExtendedCarrier M atomMap r, s ≤ u ∧ u < t ∧ mu_holds u ∧
+        stavi_temporal_truth_mu M atomMap r u B) ∧
+    ¬(∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
+      stavi_temporal_truth_mu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
+        stavi_temporal_truth_mu M atomMap r u B)
+  | .neg φ => ¬ stavi_temporal_truth_mu M atomMap r t φ
+  | .conj φ ψ =>
+    stavi_temporal_truth_mu M atomMap r t φ ∧ stavi_temporal_truth_mu M atomMap r t ψ
+
+/-! ### Type Formulas (GHR93 Definition 8.8)
+
+The rank-r type at position t is the set of all StaviFormulas of depth ≤ r
+that are true at t in M_r under mu-relativization. Since there are finitely
+many inequivalent formulas of each rank (by NormalForm finiteness), two
+positions with the same rank_type satisfy exactly the same bounded-depth
+formulas.
+
+The interval type X_{(t,u)} describes the set of types realized by actual
+points in the open interval (t, u). -/
+
+/-- The rank-r type at position t: the set of all StaviFormulas of depth ≤ r
+    that are true at t in M_r (under mu-relativization).
+
+    This is X_t from GHR93 Definition 8.8. Two positions with the same
+    rank_type are indistinguishable by formulas of depth ≤ r. -/
+def rank_type {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds) (r : Nat)
+    (t : ExtendedCarrier M atomMap r) : Set StaviFormula :=
+  { A | stavi_depth A ≤ r ∧ stavi_temporal_truth_mu M atomMap r t A }
+
+/-- The set of rank-r types realized in the open interval (t, u) by actual
+    points. This is X_{(t,u)} from GHR93 Definition 8.8.
+
+    Each element of the returned set is a complete rank-r type (a set of
+    StaviFormulas) realized by some actual point v with t < v < u. -/
+def interval_types {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds) (r : Nat)
+    (t u : ExtendedCarrier M atomMap r) : Set (Set StaviFormula) :=
+  { τ | ∃ v : ExtendedCarrier M atomMap r,
+    mu_holds v ∧ t < v ∧ v < u ∧ rank_type M atomMap r v = τ }
+
+/-- Two extended carrier elements with the same rank_type agree on all
+    StaviFormulas of depth ≤ r. -/
+theorem rank_type_eq_iff {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    {t u : ExtendedCarrier M atomMap r}
+    (h : rank_type M atomMap r t = rank_type M atomMap r u)
+    (A : StaviFormula) (hd : stavi_depth A ≤ r) :
+    stavi_temporal_truth_mu M atomMap r t A ↔
+    stavi_temporal_truth_mu M atomMap r u A := by
+  constructor
+  · intro hA
+    have : A ∈ rank_type M atomMap r t := ⟨hd, hA⟩
+    rw [h] at this
+    exact this.2
+  · intro hA
+    have : A ∈ rank_type M atomMap r u := ⟨hd, hA⟩
+    rw [← h] at this
+    exact this.2
+
+/-- If A has depth ≤ r, then A ∈ rank_type iff A^mu holds at t. -/
+theorem mem_rank_type_iff {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    {t : ExtendedCarrier M atomMap r} {A : StaviFormula}
+    (hd : stavi_depth A ≤ r) :
+    A ∈ rank_type M atomMap r t ↔ stavi_temporal_truth_mu M atomMap r t A := by
+  simp only [rank_type, Set.mem_setOf_eq]
+  exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨hd, h⟩⟩
+
+/-- The negation of a StaviFormula has the same depth. -/
+theorem stavi_depth_neg (A : StaviFormula) :
+    stavi_depth (.neg A) = stavi_depth A := by
+  simp [stavi_depth]
+
+/-- If A has depth ≤ r and ¬A^mu(t), then (.neg A) ∈ rank_type M atomMap r t. -/
+theorem neg_mem_rank_type_of_not {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    {t : ExtendedCarrier M atomMap r} {A : StaviFormula}
+    (hd : stavi_depth A ≤ r)
+    (hna : ¬ stavi_temporal_truth_mu M atomMap r t A) :
+    StaviFormula.neg A ∈ rank_type M atomMap r t := by
+  refine ⟨?_, ?_⟩
+  · rw [stavi_depth_neg]; exact hd
+  · exact hna
+
 /-! ## Stavi Expressive Completeness
 
 The main theorem: {U, S, U', S'} is expressively complete for ALL linear
