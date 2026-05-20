@@ -119,6 +119,28 @@ structure ChronicleAsPriorModel where
   /-- Prior-SZ valid: for all ψ, Prior-SZ(ψ) ∈ MCS at every point -/
   prior_SZ_valid : ∀ t : domain, ∀ ψ : Formula,
     Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ fmcs t
+  /-- C5 forward for Until: if U(φ,ψ) ∈ fmcs(t), then there exists s > t
+      with φ ∈ fmcs(s) and ψ ∈ fmcs(r) for all r ∈ (t,s). -/
+  until_coherent_fwd : ∀ (t : domain) (φ ψ : Formula),
+    Formula.untl φ ψ ∈ fmcs t →
+    ∃ (s : domain), t < s ∧ φ ∈ fmcs s ∧
+      ∀ (r : domain), t < r → r < s → ψ ∈ fmcs r
+  /-- C5 forward for Since: if S(φ,ψ) ∈ fmcs(t), then there exists s < t
+      with φ ∈ fmcs(s) and ψ ∈ fmcs(r) for all r ∈ (s,t). -/
+  since_coherent_fwd : ∀ (t : domain) (φ ψ : Formula),
+    Formula.snce φ ψ ∈ fmcs t →
+    ∃ (s : domain), s < t ∧ φ ∈ fmcs s ∧
+      ∀ (r : domain), s < r → r < t → ψ ∈ fmcs r
+  /-- C4 backward for Until: if ¬U(φ,ψ) ∈ fmcs(t) and φ ∈ fmcs(s) with t < s,
+      there exists an intermediate z ∈ (t,s) with ¬ψ ∈ fmcs(z). -/
+  neg_until_coherent : ∀ (t s : domain), t < s → ∀ (φ ψ : Formula),
+    (Formula.untl φ ψ).neg ∈ fmcs t → φ ∈ fmcs s →
+    ∃ (z : domain), t < z ∧ z < s ∧ ψ.neg ∈ fmcs z
+  /-- C4 backward for Since: if ¬S(φ,ψ) ∈ fmcs(t) and φ ∈ fmcs(s) with s < t,
+      there exists an intermediate z ∈ (s,t) with ¬ψ ∈ fmcs(z). -/
+  neg_since_coherent : ∀ (t s : domain), s < t → ∀ (φ ψ : Formula),
+    (Formula.snce φ ψ).neg ∈ fmcs t → φ ∈ fmcs s →
+    ∃ (z : domain), s < z ∧ z < t ∧ ψ.neg ∈ fmcs z
 
 attribute [instance] ChronicleAsPriorModel.domain_lo
 attribute [instance] ChronicleAsPriorModel.domain_countable
@@ -160,6 +182,22 @@ noncomputable def extract_chronicle_as_prior (A : Set Formula) (h_mcs : SetMaxim
       prior_UZ_in_limit_domain A h_mcs t.val t.property ψ
     prior_SZ_valid := fun t ψ =>
       prior_SZ_in_limit_domain A h_mcs t.val t.property ψ
+    until_coherent_fwd := fun t φ ψ h_until => by
+      obtain ⟨y, hy, hty, hφy, h_guard⟩ :=
+        limit_satisfies_c5_strong A h_mcs t.val t.property ψ φ h_until
+      exact ⟨⟨y, hy⟩, hty, hφy, fun r htr hrs => h_guard r.val r.property htr hrs⟩
+    since_coherent_fwd := fun t φ ψ h_since => by
+      obtain ⟨y, hy, hyt, hφy, h_guard⟩ :=
+        limit_satisfies_c5'_strong A h_mcs t.val t.property ψ φ h_since
+      exact ⟨⟨y, hy⟩, hyt, hφy, fun r hry hrt => h_guard r.val r.property hry hrt⟩
+    neg_until_coherent := fun t s hts φ ψ h_neg_until hφs => by
+      obtain ⟨z, hz, htz, hzs, h_neg_ψ⟩ :=
+        limit_satisfies_c4 A h_mcs t.val s.val t.property s.property hts ψ φ h_neg_until hφs
+      exact ⟨⟨z, hz⟩, htz, hzs, h_neg_ψ⟩
+    neg_since_coherent := fun t s hst φ ψ h_neg_since hφs => by
+      obtain ⟨z, hz, hsz, hzt, h_neg_ψ⟩ :=
+        limit_satisfies_c4' A h_mcs t.val s.val t.property s.property hst ψ φ h_neg_since hφs
+      exact ⟨⟨z, hz⟩, hsz, hzt, h_neg_ψ⟩
   }
 
 /-! ## Derived Properties -/

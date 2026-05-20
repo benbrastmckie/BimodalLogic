@@ -171,19 +171,128 @@ This lemma connects the algebraic MCS construction to the model-theoretic
 `temporal_truth` predicate. The proof uses induction over formula structure,
 with the temporal cases (Until, Since) relying on Prior-UZ/SZ validity.
 
-NOTE: This is sorry'd pending the formal inductive proof. The result is
-standard (it is the "truth lemma" for the chronicle) and will be filled
-once the full Prior-UZ/SZ induction argument is formalized.
+The proof uses structural induction on ψ:
+- Atom/Box: section property `h_section` converts predicate lookup to MCS membership
+- Bot: both sides are False (MCS consistency)
+- Imp: MCS implication closure via `imp_iff_mcs`
+- Until/Since: forward direction uses C5 (`until_coherent_fwd`/`since_coherent_fwd`);
+  backward direction by contrapositive using C4 (`neg_until_coherent`/`neg_since_coherent`)
 -/
 theorem chronicle_temporal_truth (M : ChronicleAsPriorModel)
     (sig : MonadicSignature) (atomMap_rev : sig.preds → Formula)
     (atomMap_fwd : Formula → sig.preds)
-    (h_section : ∀ (f : Formula), f ∈ M.root → atomMap_rev (atomMap_fwd f) = f)
     (ψ : Formula) (t : M.domain)
-    (h_sub : ψ ∈ M.root ∨ ψ.neg ∈ M.root) :
+    (h_section : ∀ (f : Formula), f ∈ ψ.predFormulas → atomMap_rev (atomMap_fwd f) = f) :
     temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
       ψ ∈ M.fmcs t := by
-  sorry
+  -- Proof by structural induction on ψ.
+  -- For atoms and boxes: use h_section to convert predicate lookup to fmcs membership.
+  -- For bot: both sides are False (consistency of each MCS).
+  -- For imp: use imp_iff_mcs (MCS implication property).
+  -- For until/since: use until_coherent_fwd/since_coherent_fwd (C5 forward) and
+  --   neg_until_coherent/neg_since_coherent (C4 backward via contrapositive).
+  revert t h_section
+  induction ψ with
+  | atom a =>
+    intro t h_section
+    simp only [temporal_truth, chronicleAsMonadicStructure, Formula.predFormulas,
+               Finset.mem_singleton] at *
+    -- temporal_truth = M_chron.interp (atomMap_fwd (.atom a)) t
+    --                 = (atomMap_rev (atomMap_fwd (.atom a))) ∈ M.fmcs t
+    -- By h_section (.atom a) (mem_singleton .atom a): atomMap_rev (atomMap_fwd (.atom a)) = .atom a
+    constructor
+    · intro h
+      have h_eq := h_section (.atom a) rfl
+      rw [h_eq] at h
+      exact h
+    · intro h
+      have h_eq := h_section (.atom a) rfl
+      rw [h_eq]
+      exact h
+  | bot =>
+    intro t _h_section
+    simp only [temporal_truth]
+    exact ⟨False.elim, fun h => absurd h
+      (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))⟩
+  | imp φ₁ φ₂ ih₁ ih₂ =>
+    intro t h_section
+    simp only [temporal_truth, Formula.predFormulas] at *
+    -- h_section : ∀ f ∈ φ₁.predFormulas ∪ φ₂.predFormulas, ...
+    have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_left _ hf)
+    have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_right _ hf)
+    rw [ih₁ t h_sec1, ih₂ t h_sec2]
+    exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) φ₁ φ₂).symm
+  | box φ =>
+    intro t h_section
+    simp only [temporal_truth, chronicleAsMonadicStructure, Formula.predFormulas,
+               Finset.mem_union, Finset.mem_singleton] at *
+    -- temporal_truth = (atomMap_rev (atomMap_fwd (.box φ))) ∈ M.fmcs t
+    -- By h_section (.box φ) (by simp): atomMap_rev (atomMap_fwd (.box φ)) = .box φ
+    constructor
+    · intro h
+      have h_eq := h_section (.box φ) (Or.inl rfl)
+      rw [h_eq] at h
+      exact h
+    · intro h
+      have h_eq := h_section (.box φ) (Or.inl rfl)
+      rw [h_eq]
+      exact h
+  | untl φ₁ φ₂ ih₁ ih₂ =>
+    intro t h_section
+    simp only [temporal_truth, Formula.predFormulas] at *
+    have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_left _ hf)
+    have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_right _ hf)
+    constructor
+    · -- mp: temporal_truth (Until φ₁ φ₂) → U(φ₁,φ₂) ∈ fmcs(t)
+      -- By contrapositive using neg_until_coherent (C4 backward)
+      intro ⟨s, hts, h_tt_φ₁, h_guard_tt⟩
+      by_contra h_not_until
+      have h_mcs_t := M.fmcs_is_mcs t
+      have h_neg_until : (Formula.untl φ₁ φ₂).neg ∈ M.fmcs t :=
+        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.untl φ₁ φ₂)).resolve_left
+          h_not_until
+      have hφ₁s : φ₁ ∈ M.fmcs s := (ih₁ s h_sec1).mp h_tt_φ₁
+      obtain ⟨z, htz, hzs, h_neg_φ₂⟩ :=
+        M.neg_until_coherent t s hts φ₁ φ₂ h_neg_until hφ₁s
+      have hφ₂z : φ₂ ∈ M.fmcs z := (ih₂ z h_sec2).mp (h_guard_tt z htz hzs)
+      exact set_consistent_not_both (M.fmcs_is_mcs z).1 φ₂ hφ₂z h_neg_φ₂
+    · -- mpr: U(φ₁,φ₂) ∈ fmcs(t) → temporal_truth (Until φ₁ φ₂)
+      -- Use until_coherent_fwd (C5) to extract the witness
+      intro h_until
+      obtain ⟨s, hts, hφ₁s, h_guard⟩ := M.until_coherent_fwd t φ₁ φ₂ h_until
+      refine ⟨s, hts, (ih₁ s h_sec1).mpr hφ₁s, fun r htr hrs =>
+        (ih₂ r h_sec2).mpr (h_guard r htr hrs)⟩
+  | snce φ₁ φ₂ ih₁ ih₂ =>
+    intro t h_section
+    simp only [temporal_truth, Formula.predFormulas] at *
+    have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_left _ hf)
+    have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
+      fun f hf => h_section f (Finset.mem_union_right _ hf)
+    constructor
+    · -- mp: temporal_truth (Since φ₁ φ₂) → S(φ₁,φ₂) ∈ fmcs(t)
+      -- By contrapositive using neg_since_coherent (C4 backward)
+      intro ⟨s, hst, h_tt_φ₁, h_guard_tt⟩
+      by_contra h_not_since
+      have h_mcs_t := M.fmcs_is_mcs t
+      have h_neg_since : (Formula.snce φ₁ φ₂).neg ∈ M.fmcs t :=
+        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.snce φ₁ φ₂)).resolve_left
+          h_not_since
+      have hφ₁s : φ₁ ∈ M.fmcs s := (ih₁ s h_sec1).mp h_tt_φ₁
+      obtain ⟨z, hsz, hzt, h_neg_φ₂⟩ :=
+        M.neg_since_coherent t s hst φ₁ φ₂ h_neg_since hφ₁s
+      have hφ₂z : φ₂ ∈ M.fmcs z := (ih₂ z h_sec2).mp (h_guard_tt z hsz hzt)
+      exact set_consistent_not_both (M.fmcs_is_mcs z).1 φ₂ hφ₂z h_neg_φ₂
+    · -- mpr: S(φ₁,φ₂) ∈ fmcs(t) → temporal_truth (Since φ₁ φ₂)
+      -- Use since_coherent_fwd (C5) to extract the witness
+      intro h_since
+      obtain ⟨s, hst, hφ₁s, h_guard⟩ := M.since_coherent_fwd t φ₁ φ₂ h_since
+      refine ⟨s, hst, (ih₁ s h_sec1).mpr hφ₁s, fun r hsr hrt =>
+        (ih₂ r h_sec2).mpr (h_guard r hsr hrt)⟩
 
 /-! ## Z-Interval to TaskFrame Int Bridge -/
 
@@ -364,11 +473,18 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   -- Step 5: Establish temporal truth of ¬φ at root_point in chronicle
   -- The chronicle truth lemma connects MCS membership to temporal_truth
   have h_chronicle_truth : temporal_truth M_chron atomMap_fwd chron.root_point φ.neg := by
-    -- This requires the full inductive chronicle truth lemma
-    -- connecting formula membership in fmcs to temporal_truth
-    -- The key facts: atomMap_fwd is a section of atomMap_rev on predFormulas,
-    -- and the chronicle's Prior-UZ/SZ ensures temporal operator correctness
-    sorry
+    -- Apply the chronicle truth lemma: temporal_truth ↔ MCS membership
+    have h_sec : ∀ (f : Formula), f ∈ φ.neg.predFormulas →
+        atomMap_rev (atomMap_fwd f) = f := by
+      intro f hf
+      simp only [atomMap_fwd, atomMap_rev, mkAtomMap]
+      have : f ∈ φ.predFormulas := by
+        simp only [Formula.neg, Formula.predFormulas, Finset.mem_union,
+          Finset.notMem_empty, or_false] at hf
+        exact hf
+      simp [dif_pos this]
+    exact (chronicle_temporal_truth chron sig atomMap_rev atomMap_fwd φ.neg
+      chron.root_point h_sec).mpr (by rw [chron.root_point_mcs]; exact h_neg_in)
   -- Step 6: Transfer truth to Z-interval via existential closure
   have h_k_bound : operator_depth φ.neg + 1 ≤ k := by
     simp only [k, Formula.neg, operator_depth]

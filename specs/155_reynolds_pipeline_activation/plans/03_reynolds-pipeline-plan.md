@@ -100,22 +100,23 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 1: Chronicle Truth Lemma [IN PROGRESS]
+### Phase 1: Chronicle Truth Lemma [COMPLETED]
 
 **Goal**: Close the `chronicle_temporal_truth` sorry (Transfer.lean:186) and the inline sorry at Transfer.lean:371. This is the highest-value independent work item: it connects MCS membership in the chronicle to `temporal_truth` on the chronicle-as-monadic-structure.
 
 **BEFORE CODING**: Read the `chronicle_temporal_truth` signature and understand the `chronicleAsMonadicStructure` definition. The key property: `M_chron.interp p t = (atomMap_rev p) \in M.fmcs t`, combined with `h_section : atomMap_rev (atomMap_fwd f) = f` for relevant formulas f.
 
 **Tasks**:
-- [ ] **Task 1.1**: Prove `chronicle_temporal_truth` by structural induction on formula psi. Cases:
+- [x] **Task 1.1**: Prove `chronicle_temporal_truth` by structural induction on formula psi. Cases:
   - **Atom**: `temporal_truth M_chron atomMap_fwd t (atom a)` = `M_chron.interp (atomMap_fwd (atom a)) t` = `(atomMap_rev (atomMap_fwd (atom a))) \in M.fmcs t` = `(atom a) \in M.fmcs t` via section property `h_section`.
   - **Bot**: `temporal_truth` for bot is False; bot is never in a consistent MCS.
   - **Imp**: Standard MCS properties (implication closure, maximality, deduction).
   - **Box**: `temporal_truth M_chron atomMap_fwd t (box psi)` = `M_chron.interp (atomMap_fwd (box psi)) t` = `(box psi) \in M.fmcs t` via section property. This case is clean because `temporal_truth` for box IS a predicate lookup (not universal quantification) -- the section property directly applies.
   - **Until**: Use Prior-UZ validity (`M.prior_UZ_valid`). If `Until(psi1, psi2) \in fmcs t`, extract witness s > t with `psi2 \in fmcs s` and guard at intermediates. If `temporal_truth ... Until(psi1, psi2)`, use the existence of the future witness to show membership.
   - **Since**: Symmetric to Until, using Prior-SZ validity (`M.prior_SZ_valid`).
-- [ ] **Task 1.2**: Wire `chronicle_temporal_truth` into `countermodel_discrete` at Transfer.lean:366-371, replacing the inline sorry for `h_chronicle_truth`.
-- [ ] **Task 1.3**: Verify `lake build` passes.
+  *(deviation: altered -- the proof already existed but had bugs: imp case needed `.symm` on `imp_iff_mcs`, and Until/Since cases had `.mp`/`.mpr` directions swapped after `simp only [temporal_truth]` unfolding. Fixed all three issues.)*
+- [x] **Task 1.2**: Wire `chronicle_temporal_truth` into `countermodel_discrete` at Transfer.lean:470-475, replacing the inline sorry for `h_chronicle_truth`. *(completed -- used section property on phi.neg.predFormulas = phi.predFormulas, then applied chronicle_temporal_truth.mpr with root_point_mcs + h_neg_in)*
+- [x] **Task 1.3**: Verify `lake build` passes. *(completed -- build successful with 1644 jobs, no errors)*
 
 **Timing**: 4 hours
 
