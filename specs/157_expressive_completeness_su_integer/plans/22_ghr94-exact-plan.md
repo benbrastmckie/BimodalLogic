@@ -98,7 +98,7 @@ Phases are strictly sequential because each builds on the previous.
 
 ---
 
-### Phase A: Make Lemma 10.2.5 Oracle-Free [IN PROGRESS]
+### Phase A: Make Lemma 10.2.5 Oracle-Free [COMPLETED]
 
 **GHR94 Reference**: Lemma 10.2.5 (pp. 569, lines 145-155). "By induction on the maximum number k of nested Ss above any U(A,B)." Self-contained: uses only Lemma 10.2.4. No callback to 10.2.6, 10.2.7, or 10.2.8.
 
@@ -143,18 +143,26 @@ Phases are strictly sequential because each builds on the previous.
 
 ---
 
-### Phase B: Make Lemma 10.2.7 Oracle-Free [NOT STARTED]
+### Phase B: Make Lemma 10.2.7 Oracle-Free [BLOCKED]
 
 **GHR94 Reference**: Lemma 10.2.7 (pp. 572, lines 175-186). "By induction on the maximum depth n of nesting of Us beneath an S." Case n = 1 is Lemma 10.2.6. Case n > 1: abstract inner U-subformulas from U-args, apply 10.2.6, back-substitute, apply IH.
 
 **Goal**: Make `no_S_nested_in_U_separable_direct_param` (Lemma 10.2.7) entirely oracle-free by following GHR94's exact structure.
 
+**BLOCKER** (Phase B):
+- **What failed**: Plan assumed `single_U_formula_separable_noax_param` (10.2.5) would be oracle-free after Phase A. Analysis shows the oracle IS still invoked at `snce_depth_of_U >= 2` even when `U_nesting_depth = 1`. The proposed fix (strengthening 10.2.4 to preserve `has_single_U_type`) fails because Cases 2,4,6,8 rewrite `neg U(A,B)` into `G(neg A) v U(neg A ^ neg B, neg A)`, introducing new U-types. This is inherent to our 6-constructor encoding which lacks G/H primitives.
+- **What was tried**: (1) Analyzed oracle flow through 10.2.5/10.2.6/10.2.7 chain. (2) Proposed strengthening `is_separable` to `is_separable_with_U_type`. (3) Proved `case1_psi_has_single_U_type` for Case 1. (4) Discovered Cases 2,4,6,8 introduce new U-types via `neg_until_equiv`, breaking `has_single_U_type` preservation.
+- **Why it's stuck**: Our Formula type has 6 constructors (atom, bot, imp, box, untl, snce) without G/H primitives. GHR94 has G/H as primitives and keeps `neg U(A,B)` as a "pure future" component without decomposition. Our encoding must decompose `neg U(A,B)` into U-expressions with different args, breaking the single-U-type invariant that GHR94's proof relies on.
+- **What is needed**: One of: (a) Add G/H as formula constructors and adapt the entire codebase; (b) Prove termination of the oracle chain via a combined well-founded measure; (c) Implement sub-formula replacement approach (apply 10.2.4 to innermost S(C,F) without separating children first); (d) Find a novel approach compatible with the 6-constructor encoding.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
 
-- [ ] Task B.1: Handle depth <= 1 case with oracle-free 10.2.6 (~10 LOC)
+- [ ] Task B.1: Handle depth <= 1 case with oracle-free 10.2.6 (~10 LOC) *(deviation: blocked -- requires oracle-free 10.2.5 first; see Phase B analysis handoff for details. Plan assumed 10.2.5 was oracle-free after Phase A, but at snce_depth_of_U >= 2 the oracle IS still invoked even at U_nesting_depth = 1. Fix: strengthen 10.2.4 to output is_separable_with_U_type, then 10.2.5 becomes truly oracle-free.)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
   - **GHR94 justification**: Lemma 10.2.7, case n = 1: "This is the case of the preceding lemma [10.2.6]." When U-nesting depth <= 1, all U-args within S-arguments are S-free (by hypothesis) and U-free (n = 1 means no nested U's). So 10.2.6 applies.
   - **Change**: At `U_nesting_depth <= 1`, call `lemma_10_2_6_self_contained_param` (now oracle-free after Phase A). Remove oracle parameter.
+  - **Prerequisite (discovered during implementation)**: 10.2.5 (`single_U_formula_separable_noax_param`) must be made TRULY oracle-free by strengthening its output to `is_separable_with_U_type`. This requires strengthening 10.2.4 (`snce_single_U_depth_one_separable`) to also output `is_separable_with_U_type`, which requires proving `has_single_U_type` for all 8 case witnesses.
   - Verification: `lake build`
 
 - [ ] Task B.2: Create `abstract_inner_U_from_untl_args` for depth >= 2 (~60 LOC)

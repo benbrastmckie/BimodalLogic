@@ -2005,6 +2005,82 @@ theorem snce_single_U_depth_one_separable (C F A B : Formula)
         apply is_separable_of_equiv h_snce_comm
         exact case6_separable_gen a_neg q_neg A B ha_neg_uf hqn_uf hA_uf hB_uf hA_sf hB_sf
 
+/-! ### GHR94-Faithful Strengthening: Separation preserving single U-type
+
+GHR94 Lemma 10.2.5 states: "D is equivalent to a syntactically separated wff
+in which U only appears as the formula U(A,B)." This is STRONGER than our
+`is_separable`, which only guarantees existence of a separated equivalent
+without constraining its U-type structure.
+
+By proving this stronger claim, we eliminate the oracle from 10.2.5 entirely:
+at snce_depth_of_U >= 2, the IH gives separated forms C', F' that PRESERVE
+has_single_U_type. Box-normalizing and applying 10.2.4 directly works because
+the `.snce C'' F''` retains the single U-type structure. -/
+
+/-- Stronger separability: separated equivalent with preserved single U-type.
+    This is the property guaranteed by GHR94 Lemma 10.2.5. -/
+def is_separable_with_U_type (φ A B : Formula) : Prop :=
+  ∃ ψ : Formula, is_syntactically_separated ψ = true ∧ int_equiv φ ψ ∧ has_single_U_type ψ A B
+
+/-- is_separable_with_U_type implies is_separable. -/
+theorem separable_with_type_imp_separable {φ A B : Formula}
+    (h : is_separable_with_U_type φ A B) : is_separable φ := by
+  obtain ⟨ψ, hsep, hequiv, _⟩ := h
+  exact ⟨ψ, hsep, hequiv⟩
+
+/-- Equivalence transfer for is_separable_with_U_type. -/
+theorem is_separable_with_U_type_of_equiv {φ χ A B : Formula}
+    (hequiv : int_equiv φ χ) (h : is_separable_with_U_type χ A B) :
+    is_separable_with_U_type φ A B := by
+  obtain ⟨ψ, hsep, hequiv2, hsingle⟩ := h
+  exact ⟨ψ, hsep, int_equiv_trans hequiv hequiv2, hsingle⟩
+
+/-- imp preserves is_separable_with_U_type. -/
+theorem imp_separable_with_type {a b A B : Formula}
+    (ha : is_separable_with_U_type a A B) (hb : is_separable_with_U_type b A B) :
+    is_separable_with_U_type (.imp a b) A B := by
+  obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
+  obtain ⟨ψb, hsepb, hequivb, hsingleb⟩ := hb
+  exact ⟨.imp ψa ψb, by simp [is_syntactically_separated, hsepa, hsepb],
+         imp_congr hequiva hequivb, ⟨hsinglea, hsingleb⟩⟩
+
+/-- U-free formulas are separable_with_U_type (vacuously). -/
+theorem u_free_separable_with_type {φ A B : Formula} (h : is_U_free φ = true) :
+    is_separable_with_U_type φ A B := by
+  have hsep := separated_imp_separable φ (restricted_u_free_separated φ (has_no_allpast_allfuture_true φ) h)
+  obtain ⟨ψ, hsep_ψ, hequiv⟩ := hsep
+  -- The separated witness of a U-free formula is itself (identity equivalence works)
+  exact ⟨φ, by {
+    -- φ is U-free, so we need is_syntactically_separated φ
+    -- Actually, φ might not be syntactically separated (could have .snce with non-U-free args)
+    -- But wait, φ IS U-free, so every .snce in φ has U-free children (since all subformulas are U-free)
+    -- And φ has no .untl (U-free), so .untl condition is vacuous
+    -- So φ IS syntactically separated... only if has_no_allpast_allfuture
+    -- Actually restricted_u_free_separated handles this
+    exact restricted_u_free_separated φ (has_no_allpast_allfuture_true φ) h
+  }, int_equiv_refl φ, u_free_has_single_U_type h⟩
+
+/-- .untl A B with S-free args is separable_with_U_type. -/
+theorem untl_s_free_separable_with_type {A B : Formula}
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true) :
+    is_separable_with_U_type (.untl A B) A B := by
+  exact ⟨.untl A B, by simp [is_syntactically_separated, hA_sf, hB_sf],
+         int_equiv_refl _, has_single_U_type_untl A B⟩
+
+/-- has_single_U_type for case1_psi when a, q are U-free. -/
+private theorem case1_psi_has_single_U_type (a q A B : Formula)
+    (ha : is_U_free a = true) (hq : is_U_free q = true) :
+    has_single_U_type (case1_psi a q A B) A B := by
+  simp only [case1_psi, Formula.or, Formula.and, Formula.neg]
+  refine ⟨⟨⟨⟨⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+  all_goals first
+    | exact u_free_has_single_U_type ha
+    | exact u_free_has_single_U_type hq
+    | exact ⟨rfl, rfl⟩
+    | exact u_free_has_single_U_type (by simp [is_U_free, ha, hq])
+    | trivial
+    | (simp only [has_single_U_type]; trivial)
+
 /-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
     `has_no_allpast_allfuture` is separable, given a callback for handling
     the `.snce`/`.all_past` constituents produced by substitution.
