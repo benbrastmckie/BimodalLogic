@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 180,
+      "project_name": "copyright_headers_universe_polymorphism_line_limits",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-20T22:25:13Z",
+      "last_updated": "2026-05-20T22:25:13Z"
+    },
+    {
+      "project_number": 181,
+      "project_name": "derivable_prop_wrapper",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-20T22:25:13Z",
+      "last_updated": "2026-05-20T22:25:13Z"
+    },
+    {
       "project_number": 179,
       "project_name": "research_lean4_tactics_infrastructure",
       "status": "researched",
@@ -395,7 +411,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "priority": "medium",
-      "description": "Normalize naming conventions and eliminate bridge/wrapper indirection for publication quality. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid. Purge 81 removed/archived/superseded tombstone comments. Consider renaming temp_ prefix to temporal_ for clarity.",
+      "description": "Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.",
       "dependencies": [
         168,
         174
@@ -448,7 +464,7 @@
       "topic": "formula-refactor"
     }
   ],
-  "next_project_number": 180,
+  "next_project_number": 182,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
