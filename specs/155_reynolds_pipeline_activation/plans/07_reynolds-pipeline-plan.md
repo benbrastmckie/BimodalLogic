@@ -450,7 +450,7 @@ This yields the "US_expressively_complete_over_prior" result that Phase 6 needs.
 
 ---
 
-### Phase 10: Discharge h_truth_corr [NOT STARTED]
+### Phase 10: Discharge h_truth_corr [COMPLETED]
 
 **Goal**: Discharge the h_truth_corr sorry at Transfer.lean:574. This is the ONLY direct sorry in `countermodel_discrete` (the other sorry comes from `chronicle_is_good` via `orderIsoIntOfLinearSuccPredArch`). This phase is INDEPENDENT of the expressive completeness chain (Phases 4B-4C, 5', 6, 8) and can proceed in parallel.
 
@@ -468,24 +468,18 @@ forall (psi : Formula) (t : Z_wit.intervalCarrier),
 ```
 
 **Tasks**:
-- [ ] **Task 10.1**: Construct the correct `TM_wit : TaskModel zIntervalTaskFrame`. The valuation must map atoms and box-subformulas to their temporal_truth values. Replace the placeholder `{ valuation := fun _ _ => False }` with a valuation derived from atomMap and the Z-interval interpretation. (~40-60 lines)
-- [ ] **Task 10.2**: Prove the truth correspondence by structural induction on psi. Cases:
-  - `atom a`: By definition of valuation and atomMap section property
-  - `bot`: Both sides are False
-  - `imp phi psi`: By IH on phi and psi
-  - `box phi`: Box transparency -- singleton Omega means truth_at for box reduces to truth_at for phi at all times, while temporal_truth treats box as predicate lookup. The key: atomMap maps box(phi) to a predicate whose interpretation IS temporal_truth of phi at all points. (~60-100 lines)
-  - `untl phi psi`: By IH + the Z-interval's linear order matching Int's order via unboundedZIntervalEquiv. (~40-60 lines)
-  - `snce phi psi`: Symmetric to Until case. (~30-40 lines)
-- [ ] **Task 10.3**: Replace the sorry at Transfer.lean:574 with the proved h_truth_corr. (~5-10 lines)
-- [ ] **Task 10.4**: Verify `lean_verify countermodel_discrete` -- should now have fewer sorryAx (only from chronicle_is_good/orderIsoIntOfLinearSuccPredArch). After Phase 9, should show no sorryAx at all.
-- [ ] **Task 10.5**: Run `lake build`.
+- [ ] **Task 10.1**: Construct the correct `TM_wit : TaskModel zIntervalTaskFrame`. *(deviation: skipped -- zIntervalTaskFrame (WorldState = Unit) fundamentally cannot support position-dependent atom truth, making the h_truth_corr approach via z_interval_countermodel infeasible)*
+- [ ] **Task 10.2**: Prove the truth correspondence by structural induction on psi. *(deviation: skipped -- see Task 10.1)*
+- [x] **Task 10.3**: Replace the sorry at Transfer.lean:574 with the proved h_truth_corr. *(deviation: altered -- instead of proving h_truth_corr on zIntervalTaskFrame, the entire countermodel_discrete proof body was replaced with a delegation to dd_countermodel_chronicle_discrete, which uses ParametricCanonicalTaskFrame with MCS-based world states. This eliminates the h_truth_corr sorry entirely. The Reynolds pipeline infrastructure (chronicle_temporal_truth, truth_transfer, k_equiv_preserves_sentence, table_correctness) remains available for Phase 9's restructuring.)*
+- [x] **Task 10.4**: Verify `lean_verify countermodel_discrete` -- sorryAx remains from succ_cofinal (shared by both approaches). Transfer.lean has zero source-level sorries.
+- [x] **Task 10.5**: Run `lake build` -- passes.
 
-**Timing**: 3-5 hours
+**Timing**: 3-5 hours (actual: ~4 hours including architectural analysis)
 
 **Depends on**: none (uses chronicle_temporal_truth from Phase 1, z_interval_countermodel from Phase 3, existing Transfer.lean infrastructure)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- construct TM_wit, prove h_truth_corr, remove sorry
+- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- replaced countermodel_discrete proof body with delegation to dd_countermodel_chronicle_discrete
 
 **Verification**:
 - After this phase: countermodel_discrete has sorryAx only from chronicle_is_good (upstream)
