@@ -13,33 +13,32 @@ under open guard semantics `(t,s)` (task 113).
 ## Status After Open Guard Refactoring (Task 113)
 
 BX8/BX8' (until_step/since_step) and BX9/BX9' (until_elim/since_elim) were removed
-because they are not sound under open guard semantics. Several theorems that depended
-on these axioms are now sorry-stubbed pending replacement derivations:
+because they are not sound under open guard semantics.
 
-### NOT VALID under open guard (sorry-stubbed, may be unprovable):
-- `psi_imp_until`, `psi_imp_since`: ψ → (φ U ψ) requires reflexive witness
-- `until_imp_or`, `since_imp_or`: Direct BX9 (removed)
-- `until_unfold_thm`, `since_unfold_thm`: Used BX5 + BX9
-- `until_unfold_wrapped`, `since_unfold_wrapped`: Depends on above
-- `refl_F`, `refl_P`: α → F(α) requires reflexive future/past
-- `until_F_expansion`, `since_P_expansion`: Depends on above
-- `bot_until_bot_absurd`, `bot_since_bot_absurd`: Used BX9
-- `bot_until_elim`, `bot_since_elim`: Used BX9
-- `bot_until_id`, `bot_since_id`: Used BX9
-- `or_until_imp`, `or_since_imp`: Depends on psi_imp_until (invalid)
-- `until_intro`, `since_intro`: Depends on bot_until_id + or_until_imp
+### Removed (Task 173)
 
-Original proofs archived in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`.
+27 definitions not valid under open guard semantics have been archived to
+`Boneyard/OpenGuardInvalid/OpenGuardTemporalDerived.lean`. See that file
+for the complete list, type signatures, and original proof attempts. Closed-guard
+originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`.
 
-### Pre-existing sorry (NOT related to guard change):
-- `G_bot_absurd`, `H_bot_absurd`: Requires seriality under irreflexive G/H
-- `G_implies_topUntil`: Requires BX8 (removed)
+Definitions removed (19 direct sorry stubs + 8 transitive dependents):
+- BX9-dependent: bot_until_bot_absurd, bot_since_bot_absurd, bot_until_elim,
+  bot_since_elim, until_imp_or, since_imp_or, bot_until_id, bot_since_id,
+  until_unfold_thm, since_unfold_thm
+- BX8-dependent: psi_imp_until, psi_imp_since, G_implies_topUntil
+- Reflexive order: refl_F, refl_P
+- Seriality: G_bot_absurd, H_bot_absurd
+- Density: density_derivable, past_density_derivable
+- Transitive dependents: or_until_imp, or_since_imp, until_unfold_wrapped,
+  since_unfold_wrapped, until_intro, since_intro, until_F_expansion,
+  since_P_expansion
 
-### Still valid (sorry-free):
+### Sorry-free (remaining in this file):
 - `G_distribution`: Derived from BX3 (temp_k_dist_derived)
 - `G_transitivity`: Derived from BX3 + BX6 (temp_4_derived)
 - `connect_future_thm`, `connect_past_thm`: Direct BX4/BX4'
-- `density_derivable`: From BX1
+- `G_implies_G_id`: Propositional
 - `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
 - `until_imp_F`, `since_imp_P`: Direct BX10/BX10'
 - `contrapositive`, `formula_or_comm`: Pure propositional
@@ -49,6 +48,7 @@ Original proofs archived in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDeriv
 - Burgess 1982/84: Until-Since temporal logic axiomatization
 - Task 83: BX axiom system refactor
 - Task 113: Open guard refactoring
+- Task 173: Archive of 27 sorry-tainted definitions
 -/
 
 namespace Bimodal.Theorems.TemporalDerived
@@ -214,23 +214,8 @@ end DerivedAxioms
 ## BX-Derivable Temporal Theorems
 
 These theorems are directly derivable from the remaining BX axiom system.
-Some require seriality (G_bot_absurd, H_bot_absurd) which is pre-existing.
+All definitions below are sorry-free.
 -/
-
-/--
-`⊢ G(⊥) → ⊥`: G(⊥) is absurd because BX1 gives G(φ) → φ, instantiated at φ = ⊥.
--/
-def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot := by
-  -- Under irreflexive semantics, G(⊥) → ⊥ requires seriality: G(⊥) means ∀s>t, ⊥.
-  -- If ∃s>t (seriality), then ⊥ at s, contradiction. So G(⊥) → ⊥.
-  -- Derivable from serial_future + contrapositive.
-  sorry
-
-/--
-`⊢ H(⊥) → ⊥`: H(⊥) is absurd because BX1' gives H(φ) → φ, instantiated at φ = ⊥.
--/
-noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot := by
-  sorry
 
 /--
 `⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Derived from BX3 (right_mono_until).
@@ -286,24 +271,6 @@ def connect_past_thm (φ : Formula) :
   DerivationTree.axiom [] _ (Axiom.connect_past φ)
 
 /--
-`⊢ G(G(φ)) → G(φ)`: Density (derivable from BX1).
-Under reflexive semantics, BX1 gives G(ψ) → ψ for any ψ.
-Instantiate ψ = G(φ): G(G(φ)) → G(φ).
--/
-def density_derivable (φ : Formula) :
-    ⊢ φ.all_future.all_future.imp φ.all_future := by
-  -- Under irreflexive semantics, GGφ → Gφ requires density, not just BX1.
-  sorry
-
-/--
-`⊢ H(H(φ)) → H(φ)`: Past density (derivable from BX1').
-Instantiate BX1' with ψ = H(φ).
--/
-def past_density_derivable (φ : Formula) :
-    ⊢ φ.all_past.all_past.imp φ.all_past := by
-  sorry
-
-/--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
 -/
 def G_implies_G_id (a : Formula) :
@@ -314,33 +281,9 @@ def G_implies_G_id (a : Formula) :
 /-!
 ## BX10-Derived Theorems
 
-Under open guard semantics, only BX10/BX10' (eventuality extraction) remain.
-BX8/BX9 theorems below are sorry-stubbed (not valid under open guard).
+Under open guard semantics, BX10/BX10' (eventuality extraction) provide
+the basic Until/Since eventuality lemmas.
 -/
-
-/--
-`⊢ G(a) → ⊤ U a`: From BX1 (G(a) → a) and BX8 (a → ⊤ U a), compose.
--/
-def G_implies_topUntil (a : Formula) :
-    ⊢ a.all_future.imp (Formula.untl a top) := by
-  sorry
-
-/--
-`⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd.
-From BX9: `(⊥ U ⊥) → (⊥ ∨ ⊥)` where `⊥ ∨ ⊥ = (⊥ → ⊥) → ⊥`.
-Then apply identity `⊥ → ⊥` to get ⊥.
--/
-def bot_until_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
-  -- Was: BX9 (until_elim) + app1. BX9 removed under open guard (task 113).
-  -- Need alternative derivation without BX9.
-  sorry
-
-/--
-`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Mirror of bot_until_bot_absurd.
--/
-def bot_since_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
-  -- Was: BX9' (since_elim) + app1. BX9' removed under open guard (task 113).
-  sorry
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
@@ -357,63 +300,6 @@ Direct from BX10' axiom.
 def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce ψ φ).imp (Formula.some_past ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
-
-/-- `(⊥ U a) → a`: Under open guard, X(a) = ⊥ U a implies a.
-Was: BX9 + app1. BX9 removed under open guard (task 113). -/
-private def bot_until_elim (a : Formula) :
-    ⊢ (Formula.untl a Formula.bot).imp a := by
-  sorry
-
-/-- `(⊥ S a) → a`: Mirror of bot_until_elim. -/
-private def bot_since_elim (a : Formula) :
-    ⊢ (Formula.snce a Formula.bot).imp a := by
-  sorry
-
-/-!
-## Key BX-Derived Lemmas for Canonical Completeness
-
-These lemmas are the critical prerequisites for the Until/Since truth lemma
-in the BXCanonical completeness proof (Phase 1 of plan v34).
--/
-
-/--
-`⊢ ψ → (φ U ψ)`: Reflexive Until introduction.
-Under reflexive Until semantics, ψ at current time gives a reflexive witness.
-Direct from BX8 axiom.
--/
-def psi_imp_until (φ ψ : Formula) :
-    ⊢ ψ.imp (Formula.untl ψ φ) := by
-  -- Under irreflexive semantics, ψ → U(ψ, φ) is NOT valid.
-  -- Need strict future witness s > t with ψ(s); just having ψ(t) is insufficient.
-  sorry
-
-/--
-`⊢ ψ → S(ψ, φ)`: Reflexive Since introduction.
-Mirror of psi_imp_until for the past direction.
--/
-def psi_imp_since (φ ψ : Formula) :
-    ⊢ ψ.imp (Formula.snce ψ φ) := by
-  sorry
-
-/--
-`⊢ (φ U ψ) → (φ ∨ ψ)`: Until implies disjunction at current time.
-At any time where φ U ψ holds, either the witness is now (giving ψ)
-or it is strictly in the future (giving φ from the guard).
-Direct from BX9 axiom.
--/
-def until_imp_or (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.or φ ψ) := by
-  -- Was: direct BX9. BX9 removed under open guard (task 113).
-  sorry
-
-/--
-`⊢ S(ψ, φ) → (φ ∨ ψ)`: Since implies disjunction at current time.
-Mirror of until_imp_or.
--/
-def since_imp_or (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.or φ ψ) := by
-  -- Was: direct BX9'. BX9' removed under open guard (task 113).
-  sorry
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
@@ -460,198 +346,6 @@ noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) :=
   have h2 : [B.neg, A.neg.imp B] ⊢ B.neg := DerivationTree.assumption _ _ (by simp)
   have h3 : [B.neg, A.neg.imp B] ⊢ A.neg.neg := ctx_mp (ctx_mp (ctx_thm b_combinator) h2) h1
   exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.double_negation A)) h3
-
-/-!
-## X/Y Identity (X(α) → α, Y(α) → α)
-
-Under reflexive Until/Since semantics, `X(α) = ⊥ U α` and `Y(α) = ⊥ S α` are
-equivalent to `α` in any MCS. These public versions of the private bot_until_elim/bot_since_elim
-are needed by downstream modules (SuccRelation, canonical constructions).
--/
-
-/-- `⊢ X(α) → α`: X(α) = ⊥ U α implies α.
-Was: BX9 + app1. BX9 removed under open guard (task 113). -/
-noncomputable def bot_until_id (a : Formula) :
-    ⊢ (Formula.untl a Formula.bot).imp a := by
-  sorry
-
-/-- `⊢ Y(α) → α`: Mirror of bot_until_id for past direction. -/
-noncomputable def bot_since_id (a : Formula) :
-    ⊢ (Formula.snce a Formula.bot).imp a := by
-  sorry
-
-/-!
-## Until/Since Unfolding and Introduction Theorems
-
-These are the key derived theorems for backward Until/Since in the
-canonical completeness construction.
--/
-
-/-- `⊢ (ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`: Or-Until introduction.
-The ψ branch uses BX8 (reflexive intro), the conjunction branch uses
-right conjunction elimination. Classical case split via Peirce + contrapositive. -/
-noncomputable def or_until_imp (φ ψ : Formula) :
-    ⊢ (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))).imp (Formula.untl ψ φ) := by
-  unfold Formula.or
-  let Γ₁ : Context := [ψ.neg.imp (φ.and (Formula.untl ψ φ))]
-  let Γ₂ : Context := [(Formula.untl ψ φ).neg, ψ.neg.imp (φ.and (Formula.untl ψ φ))]
-  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
-  apply ctx_mp (ctx_thm (show ⊢ _ from DerivationTree.axiom [] _ (Axiom.peirce (Formula.untl ψ φ) Formula.bot)))
-  apply Bimodal.Metalogic.Core.deduction_theorem Γ₁ _ _
-  have h_contra : Γ₂ ⊢ (Formula.untl ψ φ).neg.imp ψ.neg :=
-    ctx_mp (ctx_thm (contrapositive ψ (Formula.untl ψ φ))) (ctx_thm (psi_imp_until φ ψ))
-  have h_neg_until : Γ₂ ⊢ (Formula.untl ψ φ).neg := DerivationTree.assumption _ _ (List.Mem.head _)
-  have h_hyp : Γ₂ ⊢ ψ.neg.imp (φ.and (Formula.untl ψ φ)) :=
-    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
-  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl ψ φ)))
-    (ctx_mp h_hyp (ctx_mp h_contra h_neg_until))
-
-/-- `⊢ (ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`: Or-Since introduction. Mirror of or_until_imp. -/
-noncomputable def or_since_imp (φ ψ : Formula) :
-    ⊢ (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))).imp (Formula.snce ψ φ) := by
-  unfold Formula.or
-  let Γ₁ : Context := [ψ.neg.imp (φ.and (Formula.snce ψ φ))]
-  let Γ₂ : Context := [(Formula.snce ψ φ).neg, ψ.neg.imp (φ.and (Formula.snce ψ φ))]
-  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
-  apply ctx_mp (ctx_thm (show ⊢ _ from DerivationTree.axiom [] _ (Axiom.peirce (Formula.snce ψ φ) Formula.bot)))
-  apply Bimodal.Metalogic.Core.deduction_theorem Γ₁ _ _
-  have h_contra : Γ₂ ⊢ (Formula.snce ψ φ).neg.imp ψ.neg :=
-    ctx_mp (ctx_thm (contrapositive ψ (Formula.snce ψ φ))) (ctx_thm (psi_imp_since φ ψ))
-  have h_neg_since : Γ₂ ⊢ (Formula.snce ψ φ).neg := DerivationTree.assumption _ _ (List.Mem.head _)
-  have h_hyp : Γ₂ ⊢ ψ.neg.imp (φ.and (Formula.snce ψ φ)) :=
-    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
-  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce ψ φ)))
-    (ctx_mp h_hyp (ctx_mp h_contra h_neg_since))
-
-/-- `⊢ (φ U ψ) → (ψ ∨ (φ ∧ (φ U ψ)))`: Until unfolding at current time.
-From BX5 (self-accumulation) + BX9 (elimination) + or-commutativity. -/
-noncomputable def until_unfold_thm (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) := by
-  -- Was: BX5 + BX9. BX9 removed under open guard (task 113).
-  sorry
-
-/-- `⊢ S(ψ, φ) → (ψ ∨ (φ ∧ S(ψ, φ)))`: Since unfolding at current time. Mirror. -/
-noncomputable def since_unfold_thm (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) := by
-  -- Was: BX5' + BX9'. BX9' removed under open guard (task 113).
-  sorry
-
-/-- `⊢ (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding.
-Compose until_unfold_thm with BX8 (reflexive intro at ⊥). -/
-noncomputable def until_unfold_wrapped (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp
-      (Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot) :=
-  imp_trans (until_unfold_thm φ ψ) (psi_imp_until Formula.bot _)
-
-/-- `⊢ S(ψ, φ) → Y(ψ ∨ (φ ∧ S(ψ, φ)))`: Y-wrapped Since unfolding. Mirror. -/
-noncomputable def since_unfold_wrapped (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp
-      (Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot) :=
-  imp_trans (since_unfold_thm φ ψ) (psi_imp_since Formula.bot _)
-
-/-- `⊢ X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`: Until introduction rule.
-Compose bot_until_id with or_until_imp. This is the key rule for backward
-Until induction in the canonical completeness construction. -/
-noncomputable def until_intro (φ ψ : Formula) :
-    ⊢ (Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot).imp
-      (Formula.untl ψ φ) :=
-  imp_trans (bot_until_id _) (or_until_imp φ ψ)
-
-/-- `⊢ Y(ψ ∨ (φ ∧ S(ψ, φ))) → S(ψ, φ)`: Since introduction rule. Mirror. -/
-noncomputable def since_intro (φ ψ : Formula) :
-    ⊢ (Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot).imp
-      (Formula.snce ψ φ) :=
-  imp_trans (bot_since_id _) (or_since_imp φ ψ)
-
-/-!
-## Reflexivity of F and P
-
-Under BX reflexive semantics (BX1: G(α) → α), we derive α → F(α).
-The dual gives α → P(α).
--/
-
-/-- `⊢ α → F(α)`: Any formula implies its own future eventuality.
-Under reflexive semantics, the current time witnesses F(α).
-Proof: BX1 gives G(¬α) → ¬α. Contrapositive: ¬¬α → ¬G(¬α) = F(α).
-Compose with DNI: α → ¬¬α → F(α). -/
-noncomputable def refl_F (α : Formula) :
-    ⊢ α.imp α.some_future := by
-  -- Under irreflexive semantics, α → F(α) is NOT valid.
-  -- The current time does not witness F(α) since F requires strict future.
-  sorry
-
-/-- `⊢ α → P(α)`: Any formula implies its own past eventuality.
-Under reflexive semantics, the current time witnesses P(α).
-Dual of refl_F. -/
-noncomputable def refl_P (α : Formula) :
-    ⊢ α.imp α.some_past := by
-  sorry
-
-/-!
-## Until F-Expansion
-
-The key derived theorem for backward Until coherence:
-`(φ U ψ) → ψ ∨ (φ ∧ F(φ U ψ))`
-
-This strengthens `until_unfold_thm` by replacing the bare `(φ U ψ)` in the
-conjunction with `F(φ U ψ)`. The F-wrapped version enables the contrapositive
-argument: `¬(φ U ψ) ∧ φ → G(¬(φ U ψ))`.
--/
-
-/-- `⊢ (φ U ψ) → ψ ∨ (φ ∧ F(φ U ψ))`: Until F-expansion.
-From `until_unfold_thm`: `(φ U ψ) → ψ ∨ (φ ∧ (φ U ψ))`.
-From `refl_F`: `(φ U ψ) → F(φ U ψ)`.
-In the `φ ∧ (φ U ψ)` branch, replace `(φ U ψ)` with `F(φ U ψ)` (weaker). -/
-noncomputable def until_F_expansion (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp
-      (Formula.or ψ (Formula.and φ (Formula.untl ψ φ).some_future)) := by
-  -- until_unfold_thm: U(ψ, φ) → ψ ∨ (φ ∧ U(ψ, φ))
-  -- We want: U(ψ, φ) → ψ ∨ (φ ∧ F(U(ψ, φ)))
-  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
-  let Γ := [Formula.untl ψ φ]
-  have h_until : Γ ⊢ Formula.untl ψ φ := DerivationTree.assumption _ _ (by simp [Γ])
-  have h_unfold : Γ ⊢ Formula.or ψ (Formula.and φ (Formula.untl ψ φ)) :=
-    ctx_mp (ctx_thm (until_unfold_thm φ ψ)) h_until
-  have h_F : Γ ⊢ (Formula.untl ψ φ).some_future :=
-    ctx_mp (ctx_thm (refl_F (Formula.untl ψ φ))) h_until
-  unfold Formula.or at h_unfold ⊢
-  apply Bimodal.Metalogic.Core.deduction_theorem Γ _ _
-  have h_neg_psi : (ψ.neg :: Γ) ⊢ ψ.neg :=
-    DerivationTree.assumption _ _ (by simp [Γ])
-  have h_unfold' : (ψ.neg :: Γ) ⊢ ψ.neg.imp (Formula.and φ (Formula.untl ψ φ)) :=
-    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_unfold (by intro x hx; simp [Γ, hx])
-  have h_conj : (ψ.neg :: Γ) ⊢ Formula.and φ (Formula.untl ψ φ) :=
-    ctx_mp h_unfold' h_neg_psi
-  have h_phi : (ψ.neg :: Γ) ⊢ φ :=
-    ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.lce_imp φ (Formula.untl ψ φ))) h_conj
-  have h_F' : (ψ.neg :: Γ) ⊢ (Formula.untl ψ φ).some_future :=
-    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_F (by intro x hx; simp [Γ, hx])
-  exact ctx_mp (ctx_mp (ctx_thm (pairing φ (Formula.untl ψ φ).some_future)) h_phi) h_F'
-
-/-- `⊢ (φ S ψ) → ψ ∨ (φ ∧ P(φ S ψ))`: Since P-expansion. Dual of until_F_expansion. -/
-noncomputable def since_P_expansion (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp
-      (Formula.or ψ (Formula.and φ (Formula.snce ψ φ).some_past)) := by
-  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
-  let Γ := [Formula.snce ψ φ]
-  have h_since : Γ ⊢ Formula.snce ψ φ := DerivationTree.assumption _ _ (by simp [Γ])
-  have h_unfold : Γ ⊢ Formula.or ψ (Formula.and φ (Formula.snce ψ φ)) :=
-    ctx_mp (ctx_thm (since_unfold_thm φ ψ)) h_since
-  have h_P : Γ ⊢ (Formula.snce ψ φ).some_past :=
-    ctx_mp (ctx_thm (refl_P (Formula.snce ψ φ))) h_since
-  unfold Formula.or at h_unfold ⊢
-  apply Bimodal.Metalogic.Core.deduction_theorem Γ _ _
-  have h_neg_psi : (ψ.neg :: Γ) ⊢ ψ.neg :=
-    DerivationTree.assumption _ _ (by simp [Γ])
-  have h_unfold' : (ψ.neg :: Γ) ⊢ ψ.neg.imp (Formula.and φ (Formula.snce ψ φ)) :=
-    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_unfold (by intro x hx; simp [Γ, hx])
-  have h_conj : (ψ.neg :: Γ) ⊢ Formula.and φ (Formula.snce ψ φ) :=
-    ctx_mp h_unfold' h_neg_psi
-  have h_phi : (ψ.neg :: Γ) ⊢ φ :=
-    ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.lce_imp φ (Formula.snce ψ φ))) h_conj
-  have h_P' : (ψ.neg :: Γ) ⊢ (Formula.snce ψ φ).some_past :=
-    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_P (by intro x hx; simp [Γ, hx])
-  exact ctx_mp (ctx_mp (ctx_thm (pairing φ (Formula.snce ψ φ).some_past)) h_phi) h_P'
 
 /-!
 ## A3a/A3b: Valid Under Open Guard Semantics

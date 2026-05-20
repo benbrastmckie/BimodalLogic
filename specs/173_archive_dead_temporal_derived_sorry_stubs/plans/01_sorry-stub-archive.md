@@ -132,7 +132,7 @@ Phases are fully sequential because downstream updates (Phase 2) must precede de
 
 ---
 
-### Phase 3: Remove Sorry Stubs from TemporalDerived.lean [NOT STARTED]
+### Phase 3: Remove Sorry Stubs from TemporalDerived.lean [COMPLETED]
 
 **Goal**: Delete all 27 sorry-tainted definitions from TemporalDerived.lean, update the file header, and add a tombstone summary block.
 
