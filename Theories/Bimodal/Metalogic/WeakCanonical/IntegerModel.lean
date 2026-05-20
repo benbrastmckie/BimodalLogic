@@ -882,24 +882,45 @@ theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
 /-! ## One-Class Theorem -/
 
 /--
-ONE-CLASS THEOREM (Reynolds, discrete case):
-All points are contemporaneously equivalent in any discrete succ-Archimedean
-linear order without endpoints.
+ONE-CLASS THEOREM (Reynolds, Theorem 15 discrete case):
+All points are contemporaneously equivalent in any discrete Prior structure
+without endpoints.
+
+The proof follows Reynolds 1994 Section 8 (page 131):
+1. Suppose ¬(a ~M b) for some a, b.
+2. By `no_gaps_discrete`, ∃c: a ~M c ∧ ¬(a ~M succ c).
+3. By `no_boundary_at_successor`: c ~M succ(c).
+4. By transitivity of ~M: a ~M succ(c). Contradicts step 2.
+
+NO `IsSuccArchimedean` needed. The proof uses only:
+- `no_gaps_discrete` (Reynolds Theorem 14, currently sorry'd pending Theorem 5 formalization)
+- `no_boundary_at_successor` (sorry-free)
+- `contemp_equiv_is_equiv` (sorry-free, no IsSuccArchimedean)
 -/
 theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    [IsSuccArchimedean M.carrier] :
+    (atomMap : Formula → sig.preds)
+    (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
+      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
+      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
+        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
+    (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
+      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
+      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
+        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg) :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
   intro a b
-  simp only [contemp_equiv, very_good]
-  intro x y _
-  haveI : Finite (M.subinterval sig (min a b) (max a b)).carrier :=
-    subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
-  haveI : Fintype (M.subinterval sig (min a b) (max a b)).carrier := Fintype.ofFinite _
-  haveI : Fintype ((M.subinterval sig (min a b) (max a b)).subinterval sig x y).carrier :=
-    Subtype.fintype _
-  exact finite_structures_good sig k _
+  by_contra h_diff
+  -- By no_gaps_discrete: ∃c with a ~M c but ¬(a ~M succ c)
+  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_prior_UZ h_prior_SZ a b h_diff
+  -- By no_boundary_at_successor: c ~M succ(c)
+  have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
+    no_boundary_at_successor sig k M c
+  -- By transitivity of ~M: a ~M succ(c). Contradiction.
+  have hac_succ : contemp_equiv sig k M a (Order.succ c) :=
+    (contemp_equiv_is_equiv sig k M).trans hac hc_succ
+  exact h_not_succ hac_succ
 
 /-! ## Very Good → Good (Reynolds Lemma 16) -/
 

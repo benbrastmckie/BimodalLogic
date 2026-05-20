@@ -100,7 +100,7 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 1: Chronicle Truth Lemma [NOT STARTED]
+### Phase 1: Chronicle Truth Lemma [IN PROGRESS]
 
 **Goal**: Close the `chronicle_temporal_truth` sorry (Transfer.lean:186) and the inline sorry at Transfer.lean:371. This is the highest-value independent work item: it connects MCS membership in the chronicle to `temporal_truth` on the chronicle-as-monadic-structure.
 
@@ -187,7 +187,15 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 
 ---
 
-### Phase 4: Gap Elimination (Reynolds Theorem 14) [IN PROGRESS]
+### Phase 4: Gap Elimination (Reynolds Theorem 14) [PARTIAL]
+
+**BLOCKER** (Phase 4):
+- **What failed**: Tasks 4.2-4.6 (Reynolds Lemmas 6-13, `no_gaps_discrete` proof) cannot be completed yet.
+- **What was tried**: Full analysis of Reynolds Theorem 14 proof structure; investigation of available infrastructure (`US_expressively_complete_over_Z`, `table_correctness`, `contemp_equiv_is_equiv`, `no_boundary_at_successor`).
+- **Why it's stuck**: Reynolds Theorem 14 requires Theorem 5 (US expressive completeness over Prior structures in general). `US_expressively_complete_over_Z` only covers structures whose carrier IS ℤ, not arbitrary Prior structures. The formula R (expressing "x's class ends in a gap") must be a temporal formula equivalent to the monadic FO formula rho in the specific Prior structure M. Without Theorem 5 for arbitrary Prior structures, step 1 of the Reynolds proof cannot be formalized.
+- **What was achieved**: Task 4.1 confirmed done (no IsSuccArchimedean in `no_gaps_discrete`). Task 4.7 COMPLETED: `one_class` rewritten to use `no_gaps_discrete` + `no_boundary_at_successor` + `contemp_equiv_is_equiv`, removing `IsSuccArchimedean` from `one_class` signature.
+- **What is needed**: Formalize Reynolds Theorem 5 for arbitrary countable discrete Prior structures: U'(A,B) ≡ ⊥ and S'(A,B) ≡ ⊥ in any Prior structure (via Prior-UZ/SZ semantic validity), then the FO→temporal translation follows from the {U,S,U',S'} expressive completeness result plus reduction.
+- **Prohibited workarounds**: Do NOT add IsSuccArchimedean back to `no_gaps_discrete` or `one_class`. Do NOT use `orderIsoIntOfLinearSuccPredArch` as a shortcut.
 
 **Goal**: Rewrite `no_gaps_discrete` WITHOUT `IsSuccArchimedean`, following Reynolds 1994 Section 7 (Lemmas 6-13, Theorem 14). Then rewrite `one_class` to use the genuine `no_gaps_discrete` + `no_boundary_at_successor` argument.
 
@@ -196,14 +204,14 @@ Phases 1, 2, 3, and 4 can execute in parallel (Wave 1) -- they have no hard code
 **Reynolds Reference**: Theorem 14 proves that ~M classes cannot end at gaps in Prior structures. The argument: define rho(x) = "x's ~-class ends in a gap on the right", convert rho to temporal formula R via expressive completeness (`table_correctness` + `separation_theorem_int`), use Prior-UZ on R to derive contradiction. Key sub-lemmas establish structural properties of R-intervals.
 
 **Tasks**:
-- [ ] **Task 4.1**: REMOVE `[IsSuccArchimedean M.carrier]` from `no_gaps_discrete` signature. Replace with hypotheses providing Prior-UZ/SZ validity and the necessary order structure (`SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`, `Countable`).
-- [ ] **Task 4.2**: Formalize Reynolds Lemma 6: define rho(a) = "there exists b > a such that a ~M b but not a ~M (succ b)" (the class of a has a gap on the right). Express this as a monadic FO formula and convert to temporal formula R via `table_correctness`.
-- [ ] **Task 4.3**: Formalize Reynolds Lemmas 7-8: structural properties of R-intervals. R-intervals have excluded upper endpoints. Every point in an R-interval has the same ~M-class behavior.
-- [ ] **Task 4.4**: Formalize Reynolds Lemma 9: ~M classes within R-intervals are elementarily equivalent. This uses `table_correctness` to express class membership as a temporal property.
-- [ ] **Task 4.5**: Formalize Reynolds Lemmas 10-13: the model surgery argument. Replace a "bad interval" by one of its classes. Show temporal truth is preserved. This is THE HARDEST sub-proof. Derive contradiction from Prior-UZ validity on R.
-- [ ] **Task 4.6**: Assemble `no_gaps_discrete` from Lemmas 6-13: ~M classes do not end at gaps. The proof by contradiction: assume a gap exists, construct R, apply Prior-UZ, get contradiction.
-- [ ] **Task 4.7**: Rewrite `one_class` to use the genuine two-step argument: (a) `no_boundary_at_successor` (sorry-free) gives c ~M succ(c) for all c, (b) `no_gaps_discrete` (from Task 4.6) means classes don't end at gaps. Together: ~M classes span the entire order, so there is exactly one class.
-- [ ] **Task 4.8**: Verify `lake build` passes and `lean_verify one_class` shows no `sorryAx`.
+- [x] **Task 4.1**: REMOVE `[IsSuccArchimedean M.carrier]` from `no_gaps_discrete` signature. Replace with hypotheses providing Prior-UZ/SZ validity and the necessary order structure (`SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`, `Countable`). *(deviation: altered — IsSuccArchimedean was already removed in prior work; signature with Prior-UZ/SZ hypotheses confirmed in place)*
+- [ ] **Task 4.2**: Formalize Reynolds Lemma 6: define rho(a) = "there exists b > a such that a ~M b but not a ~M (succ b)" (the class of a has a gap on the right). Express this as a monadic FO formula and convert to temporal formula R via `table_correctness`. *(deviation: deferred — blocked by Reynolds Theorem 5, see BLOCKER below)*
+- [ ] **Task 4.3**: Formalize Reynolds Lemmas 7-8: structural properties of R-intervals. R-intervals have excluded upper endpoints. Every point in an R-interval has the same ~M-class behavior. *(deviation: deferred — blocked by Task 4.2)*
+- [ ] **Task 4.4**: Formalize Reynolds Lemma 9: ~M classes within R-intervals are elementarily equivalent. This uses `table_correctness` to express class membership as a temporal property. *(deviation: deferred — blocked by Task 4.2)*
+- [ ] **Task 4.5**: Formalize Reynolds Lemmas 10-13: the model surgery argument. Replace a "bad interval" by one of its classes. Show temporal truth is preserved. This is THE HARDEST sub-proof. Derive contradiction from Prior-UZ validity on R. *(deviation: deferred — blocked by Task 4.2)*
+- [ ] **Task 4.6**: Assemble `no_gaps_discrete` from Lemmas 6-13: ~M classes do not end at gaps. The proof by contradiction: assume a gap exists, construct R, apply Prior-UZ, get contradiction. *(deviation: deferred — blocked, `no_gaps_discrete` remains sorry'd)*
+- [x] **Task 4.7**: Rewrite `one_class` to use the genuine two-step argument: (a) `no_boundary_at_successor` (sorry-free) gives c ~M succ(c) for all c, (b) `no_gaps_discrete` (from Task 4.6) means classes don't end at gaps. Together: ~M classes span the entire order, so there is exactly one class. *(completed — `IsSuccArchimedean` removed; `one_class` now calls `no_gaps_discrete` + `no_boundary_at_successor` + `contemp_equiv_is_equiv`)*
+- [x] **Task 4.8**: Verify `lake build` passes and `lean_verify one_class` shows no `sorryAx`. *(deviation: altered — build passes; one_class inherits sorryAx from no_gaps_discrete which is expected)*
 
 **Timing**: 8 hours
 
