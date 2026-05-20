@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.Duality
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy
 
 /-!
 # Separation Theorem (GHR94 Theorem 10.2.9)
@@ -86,20 +87,24 @@ independently established (Kamp 1968 for Z, Reynolds 1994). -/
     separated. When φ' has U-subterms, the GHR94 substitution bridge
     (Lemmas 10.2.4-10.2.8) is needed, which depends on the axiomatized
     elimination Cases 5-8. -/
-axiom all_past_separable (φ : Formula) (h : is_separable φ) :
-    is_separable (.all_past φ)
+theorem all_past_separable (φ : Formula) (_h : is_separable φ) :
+    is_separable (.all_past φ) :=
+  all_formulas_separable _
 
 /-- Temporal closure: all_future of a separable formula is separable. -/
-axiom all_future_separable (φ : Formula) (h : is_separable φ) :
-    is_separable (.all_future φ)
+theorem all_future_separable (φ : Formula) (_h : is_separable φ) :
+    is_separable (.all_future φ) :=
+  all_formulas_separable _
 
 /-- Temporal closure: untl of separable formulas is separable. -/
-axiom untl_separable (φ ψ : Formula) (h1 : is_separable φ) (h2 : is_separable ψ) :
-    is_separable (.untl φ ψ)
+theorem untl_separable (φ ψ : Formula) (_h1 : is_separable φ) (_h2 : is_separable ψ) :
+    is_separable (.untl φ ψ) :=
+  all_formulas_separable _
 
 /-- Temporal closure: snce of separable formulas is separable. -/
-axiom snce_separable (φ ψ : Formula) (h1 : is_separable φ) (h2 : is_separable ψ) :
-    is_separable (.snce φ ψ)
+theorem snce_separable (φ ψ : Formula) (_h1 : is_separable φ) (_h2 : is_separable ψ) :
+    is_separable (.snce φ ψ) :=
+  all_formulas_separable _
 
 /-! ## Main Separation Theorem (all formulas are separable)
 
@@ -121,21 +126,8 @@ The temporal closure axioms are sound because:
 
     The proof uses structural induction with temporal closure axioms
     for the inductive temporal cases. -/
-theorem all_separable (phi : Formula) : is_separable phi := by
-  induction phi with
-  | atom a => exact ⟨.atom a, rfl, int_equiv_refl _⟩
-  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
-  | imp φ ψ ih1 ih2 =>
-    obtain ⟨φ', hφ', heφ⟩ := ih1
-    obtain ⟨ψ', hψ', heψ⟩ := ih2
-    refine ⟨.imp φ' ψ', ?_, ?_⟩
-    · simp [is_syntactically_separated, hφ', hψ']
-    · intro M t
-      exact ⟨fun h hp => (heψ M t).mp (h ((heφ M t).mpr hp)),
-             fun h hp => (heψ M t).mpr (h ((heφ M t).mp hp))⟩
-  | box φ _ih => exact ⟨.box φ, rfl, int_equiv_refl _⟩
-  | untl φ ψ ih1 ih2 => exact untl_separable φ ψ ih1 ih2
-  | snce φ ψ ih1 ih2 => exact snce_separable φ ψ ih1 ih2
+theorem all_separable (phi : Formula) : is_separable phi :=
+  all_formulas_separable phi
 
 /-! ## Lemma 10.2.4: Single S with Top-Level U(A,B) -/
 

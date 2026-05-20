@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
-import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 import Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure
 import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ
 
@@ -2944,13 +2943,12 @@ theorem no_S_nested_in_U_separable_param (phi : Formula)
     exact is_separable_of_equiv hphi_equiv h_subst_sep
 
 /-- GHR94 Lemma 10.2.6: A formula with `no_S_nested_in_U` and `has_no_allpast_allfuture`
-    is separable. Uses `all_separable` as callback. Will be eliminated once
-    Phase 5 replaces SeparationThm axioms with theorems. -/
+    is separable. Oracle-free version using `no_S_nested_sep`. -/
 theorem no_S_nested_in_U_separable_noax (phi : Formula)
     (hns : no_S_nested_in_U phi)
     (hexp : has_no_allpast_allfuture phi = true) :
     is_separable phi :=
-  no_S_nested_in_U_separable_param phi hns hexp (fun χ _hns_χ => all_separable χ)
+  no_S_nested_sep phi hns
 
 /-! ### Step 5c': Single-U-Type Separability (GHR94 Lemma 10.2.5, axiom-free)
 
