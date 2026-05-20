@@ -90,11 +90,13 @@ technical_debt:
 
 ### 171. Eliminate remaining separation axioms and clean up post-157 artifacts
 - **Effort**: medium (15-22 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 157
-- **Research**: [specs/171_separation_axiom_cleanup/reports/01_remaining-work.md]
+- **Research**:
+  - [specs/171_separation_axiom_cleanup/reports/01_remaining-work.md]
+  - [specs/171_separation_axiom_cleanup/reports/02_post-157-analysis.md]
 - **Description**: Eliminate 5 remaining axioms from SeparationThm.lean: (A) replace 4 proper separation temporal closure axioms with theorems by mirroring task 157 oracle-free hierarchy for `is_properly_separable`, (B) prove `proper_separation_preserves_atoms` by tracking `formula_atoms` through the separation procedure, (C) clean stale comments, dead wrappers, and outdated documentation.
 
 ---

@@ -477,7 +477,7 @@
     {
       "project_number": 171,
       "project_name": "separation_axiom_cleanup",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "completeness",
@@ -486,14 +486,19 @@
         157
       ],
       "created": "2026-05-20T07:11:01Z",
-      "last_updated": "2026-05-20T07:15:03Z",
-      "researched": "2026-05-20T07:11:01Z",
+      "last_updated": "2026-05-20T07:28:10Z",
+      "researched": "2026-05-20T07:28:10Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/171_separation_axiom_cleanup/reports/01_remaining-work.md",
           "type": "research",
           "summary": "Full inventory: 5 axioms (4 proper separation + atom preservation), stale comments, dead wrappers, effort estimates"
+        },
+        {
+          "path": "specs/171_separation_axiom_cleanup/reports/02_post-157-analysis.md",
+          "type": "research",
+          "summary": "Post-task-157: is_syntactically_separated = is_properly_separated (verified), 2 axioms are dead code, 2 become trivial one-liners, atom preservation needs 8-10 hours, 22+ stale comments"
         }
       ],
       "session_id": "sess_1779261283_7c358c"
