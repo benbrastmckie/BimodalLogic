@@ -468,9 +468,32 @@
       "next_artifact_number": 2,
       "session_id": "sess_1779174559_020d2b",
       "completion_summary": "Closed 30 sorry/Extsorry across 7 files. Added temporalBlockingSet to baseDeferralClosure for temporal duality. Rewrote ConservativeExtension with full ExtAxiom/ExtFormula alignment. lake build passes (1647 jobs)."
+    },
+    {
+      "project_number": 171,
+      "project_name": "separation_axiom_cleanup",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "completeness",
+      "description": "Eliminate 5 remaining axioms from SeparationThm.lean and clean up post-task-157 artifacts. Group A: replace 4 proper separation temporal closure axioms (all_past_properly_separable, all_future_properly_separable, untl_properly_separable, snce_properly_separable) with theorems by mirroring task 157 oracle-free hierarchy for is_properly_separable. Group B: prove proper_separation_preserves_atoms by tracking formula_atoms through the separation procedure. Group C: clean stale comments, dead wrappers, and outdated documentation across Hierarchy.lean, SeparationThm.lean, Eliminations.lean, DualEliminations.lean.",
+      "dependencies": [
+        157
+      ],
+      "created": "2026-05-20T07:11:01Z",
+      "last_updated": "2026-05-20T07:11:01Z",
+      "researched": "2026-05-20T07:11:01Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/171_separation_axiom_cleanup/reports/01_remaining-work.md",
+          "type": "research",
+          "summary": "Full inventory: 5 axioms (4 proper separation + atom preservation), stale comments, dead wrappers, effort estimates"
+        }
+      ]
     }
   ],
-  "next_project_number": 171,
+  "next_project_number": 172,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
