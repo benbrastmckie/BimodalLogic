@@ -235,14 +235,14 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
   game_depth, game_depth_succ_ge_two, game_depth_strict_mono, game_depth_mono,
   normalForm_nonempty, stavi_depth, stavi_n_equiv, stavi_n_equiv_symm, stavi_n_equiv_mono.
 
-- [ ] **Task 4B.2**: Gap and Extended Structure Definitions (GHR93 Def 8.3).
+- [x] **Task 4B.2**: Gap and Extended Structure Definitions (GHR93 Def 8.3).
   Define `Gap M` — a Dedekind cut in M.carrier with no supremum: a non-empty downward-closed
   proper subset whose complement has no minimum. Define `r_definable_gap M r atomMap` — a gap
   definable by a temporal formula of rank ≤ r on the left or right. Define `M_r sig r M atomMap`
   as the type `M.carrier ⊕ (r-definable gaps of M)` with an induced LinearOrder that
   interleaves gaps among points. Define `IsPoint` and `IsGap` predicates on M_r.
   Key fact: on discrete orders (SuccOrder + PredOrder + NoMaxOrder + NoMinOrder), Gap M = ∅,
-  so M_r ≃o M.carrier. (~100-150 lines)
+  so M_r ≃o M.carrier. *(deviation: altered — discrete_no_gaps requires IsSuccArchimedean in addition to the four basic discrete order conditions, because SuccOrder+PredOrder+NoMaxOrder+NoMinOrder alone does not exclude orders like Z ⊔ Z which have gaps; ~349 lines due to LinearOrder instance proofs)*
 
 - [ ] **Task 4B.3**: Relativized Formulas and Type Formulas (GHR93 Def 8.4, 8.8).
   Define `mu` — a distinguished atom marking actual points (h'(mu) = M in M_r).
