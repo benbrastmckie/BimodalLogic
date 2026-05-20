@@ -213,7 +213,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -222,7 +222,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T18:11:22Z",
+      "last_updated": "2026-05-20T18:42:18Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -274,9 +274,14 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/06_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "v5: Full Reynolds, 10 phases, 60h est."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-4-handoff-20260520c.md",
+          "type": "handoff",
+          "summary": "Phase 4-5 progress: StaviConnectives complete, EFGames skeleton, flatten_stavi_correct (Theorem 5) sorry-free"
         }
       ],
-      "session_id": "sess_1779293806_635cb2",
+      "session_id": "sess_1779300854_c2b338",
       "researched": "2026-05-20T16:07:27Z",
       "started": "2026-05-16T19:49:58Z"
     },
