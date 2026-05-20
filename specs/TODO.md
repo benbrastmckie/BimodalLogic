@@ -36,29 +36,32 @@ technical_debt:
 ```
 Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
 
-Post-155 refactoring waves:
-  Wave 1: 173 → 130 → 176 → 21 → 172      (purge dead code)
-  Wave 2: 95                                 (verification)
-  Wave 3: 168 → 174 → 175 → 131 → 161      (deep refactor)
-  Wave 4: 177 → 178                          (final polish)
+Parallel with 155:
+  Wave 1a: 173, 130, 21, 172                (purge dead code — no 155 overlap)
+
+After 155 completes:
+  Wave 1b: 176, 95                           (Chronicle relocation, verification)
+  Wave 3:  168 → 174 → 175 → 131 → 161     (deep refactor)
+  Wave 4:  177 → 178                         (final polish)
 ```
 
 ### Completeness (in progress)
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
-### Wave 1 — Purge Dead Code (post-155)
+### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
 
 173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
-176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
-  └─ 155 — (must complete first to confirm Chronicle dependency)
 21 [NOT STARTED] — Clean up technical debt: stale docstrings, 81 tombstone comments
 172 [NOT STARTED] — Fix stale Metalogic.lean docstring
 
-### Wave 2 — Verification
+### Wave 1b — Post-155 Cleanup (blocked on 155)
 
+176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
+  └─ 155
 95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
+  └─ 155
 
 ### Wave 3 — Deep Refactor
 
