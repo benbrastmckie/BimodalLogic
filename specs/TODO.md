@@ -51,10 +51,10 @@ After 155 completes:
 
 ### Wave 1a — Purge Dead Code (safe to start now, parallel with 155)
 
-173 [RESEARCHED] — Archive 19 dead sorry stubs from TemporalDerived.lean
-130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
-21 [RESEARCHED] — Clean up technical debt: stale docstrings, 81 tombstone comments
-172 [RESEARCHED] — Fix stale Metalogic.lean docstring
+173 [COMPLETED] — Archive 19 dead sorry stubs from TemporalDerived.lean
+130 [COMPLETED] — Archive ~19 dead-code sorries to Boneyard (+ orphaned ConservativeExtension/)
+21 [COMPLETED] — Clean up technical debt: stale docstrings, 81 tombstone comments
+172 [COMPLETED] — Fix stale Metalogic.lean docstring
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
