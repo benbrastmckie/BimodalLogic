@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-05-18T23:48:40Z",
+  "_last_updated": "2026-05-20T15:37:17Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -133,12 +133,32 @@
         "dead_code_sorries": 15
       },
       "tasks_created": []
+    },
+    {
+      "review_id": "review-2026-05-20",
+      "date": "2026-05-20",
+      "scope": "full codebase",
+      "report_path": "specs/reviews/review-20260520.md",
+      "summary": {
+        "files_reviewed": 153,
+        "critical_issues": 0,
+        "high_issues": 2,
+        "medium_issues": 4,
+        "low_issues": 1,
+        "active_sorries": 64,
+        "dead_code_sorries": 38,
+        "custom_axioms": 0
+      },
+      "tasks_created": [
+        172,
+        173
+      ]
     }
   ],
   "statistics": {
-    "total_reviews": 7,
-    "last_review": "2026-05-18",
-    "total_issues_found": 44,
-    "total_tasks_created": 13
+    "total_reviews": 8,
+    "last_review": "2026-05-20",
+    "total_issues_found": 51,
+    "total_tasks_created": 15
   }
 }

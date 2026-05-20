@@ -1,11 +1,11 @@
 ---
-next_project_number: 172
+next_project_number: 174
 repository_health:
   overall_score: 95
   production_readiness: near-publication
   last_assessed: 2026-05-20T00:00:00Z
 task_counts:
-  active: 16
+  active: 18
   completed: 128
   in_progress: 1
   not_started: 13
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-20. 16 active tasks.*
+*Updated 2026-05-20. 18 active tasks. Archived 4 completed tasks (116, 157, 167, 171). Created 2 review tasks (172, 173).*
 
 **Goal**: Sorry-free `bx_completeness` (Reynolds pipeline) → dead code cleanup → module reorganization → expressive extensions → algebraic representation.
 
@@ -53,6 +53,8 @@ technical_debt:
 ### Formula Refactor
 
 130 [RESEARCHED] — Archive ~19 dead-code sorries to Boneyard
+173 [NOT STARTED] — Archive 19 dead sorry stubs from TemporalDerived.lean
+172 [NOT STARTED] — Fix stale Metalogic.lean docstring (wrong semantics, wrong architecture)
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/
 
@@ -82,6 +84,26 @@ technical_debt:
 
 
 ## Tasks
+
+### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+
+**Description**: Archive or remove 19 sorry-stubbed theorems in `TemporalDerived.lean` that are explicitly documented as "NOT VALID under open guard semantics" (task 113). Includes `psi_imp_until`, `until_imp_or`, `refl_F`, `bot_until_bot_absurd`, and 15 others. These theorems are semantically invalid under the current open-guard `(t,s)` semantics and will never be provable. Move to `Boneyard/ClosedGuardDerived/` or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.
+
+---
+
+### 172. Fix stale Metalogic.lean docstring
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+
+**Description**: Rewrite `Metalogic.lean` docstring which is severely stale. Currently says "Reflexive G/H Semantics" but the project uses irreflexive semantics (task 93). References "SuccChain architecture" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.
+
+---
 
 ### 170. Establish completeness theorem for TM^dc (dense + complete extension)
 - **Effort**: large

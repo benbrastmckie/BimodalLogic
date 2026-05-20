@@ -262,9 +262,29 @@
       "session_id": "sess_1779290650_45e3c8",
       "researched": "2026-05-20T07:26:05Z",
       "started": "2026-05-16T19:49:58Z"
+    },
+    {
+      "project_number": 172,
+      "project_name": "fix_stale_metalogic_docstring",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Rewrite Metalogic.lean docstring which is severely stale. Currently says \"Reflexive G/H Semantics\" but the project uses irreflexive semantics (task 93). References \"SuccChain architecture\" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.",
+      "created": "2026-05-20T15:36:06Z",
+      "last_updated": "2026-05-20T15:36:06Z"
+    },
+    {
+      "project_number": 173,
+      "project_name": "archive_dead_temporal_derived_sorry_stubs",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
+      "created": "2026-05-20T15:36:06Z",
+      "last_updated": "2026-05-20T15:36:06Z"
     }
   ],
-  "next_project_number": 172,
+  "next_project_number": 174,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
