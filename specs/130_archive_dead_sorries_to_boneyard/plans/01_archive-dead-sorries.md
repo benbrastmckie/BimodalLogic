@@ -159,34 +159,34 @@ Phases are strictly sequential because each phase modifies shared compilation st
 
 ---
 
-### Phase 4: Surgical Extraction from Realization.lean and Annotations [NOT STARTED]
+### Phase 4: Surgical Extraction from Realization.lean and Annotations [COMPLETED]
 
 **Goal**: Extract 4 sorry-bearing definitions from `Realization.lean` to Boneyard, and annotate 4 convergence sorries in `ChronicleToCountermodel.lean` with dead-approach markers.
 
 **Tasks**:
-- [ ] Create directory `Theories/Bimodal/Boneyard/BX1DependentCode/`
-- [ ] Read `Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Realization.lean` carefully to identify exact boundaries of: `F_of_mem` (~line 66), `P_of_mem` (~line 72), and the sorry-bearing branches within `enriched_seed_consistent_until` (~line 196) and `enriched_seed_consistent_since` (~line 248)
-- [ ] Create `Theories/Bimodal/Boneyard/BX1DependentCode/RealizationSorries.lean` with the extracted sorry-bearing definitions (as documentation, not as compilable Lean -- use comment blocks or `sorry`-marked stubs)
-- [ ] Remove or comment out `F_of_mem` and `P_of_mem` from Realization.lean; replace the sorry-bearing inner branches of `enriched_seed_consistent_until/since` with simplified sorry-only stubs
-- [ ] Add tombstone comments in Realization.lean:
+- [x] Create directory `Theories/Bimodal/Boneyard/BX1DependentCode/`
+- [x] Read `Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Realization.lean` carefully to identify exact boundaries of: `F_of_mem` (~line 66), `P_of_mem` (~line 72), and the sorry-bearing branches within `enriched_seed_consistent_until` (~line 196) and `enriched_seed_consistent_since` (~line 248)
+- [x] Create `Theories/Bimodal/Boneyard/BX1DependentCode/RealizationSorries.lean` with the extracted sorry-bearing definitions (as documentation, not as compilable Lean -- use comment blocks or `sorry`-marked stubs)
+- [x] Remove or comment out `F_of_mem` and `P_of_mem` from Realization.lean; replace the sorry-bearing inner branches of `enriched_seed_consistent_until/since` with simplified sorry-only stubs *(deviation: altered -- removed entire enriched_seed_consistent_until/since definitions since they were unreferenced)*
+- [x] Add tombstone comments in Realization.lean:
   ```
   -- F_of_mem, P_of_mem: archived to Boneyard/BX1DependentCode/ (task 130).
   -- These required BX1 (G(phi)->phi), removed under irreflexive semantics (task 113).
   ```
-- [ ] Create `Theories/Bimodal/Boneyard/BX1DependentCode/README.md` following the template from research report
-- [ ] Run `lake build` and verify zero new errors
-- [ ] Add dead-approach annotations to 4 convergence sorries in `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`:
-  - `succ_reaches_dom_N` boundary case above max(dom(N)) (~line 1301)
-  - `succ_reaches_dom_N` boundary case below min(dom(N)) (~line 1454)
-  - `limit_dom_points_are_succ_iterates` (~line 1518)
-  - `succ_cofinal` gap elimination (~line 1892)
-- [ ] Use annotation template:
+- [x] Create `Theories/Bimodal/Boneyard/BX1DependentCode/README.md` following the template from research report
+- [x] Run `lake build` and verify zero new errors
+- [x] Add dead-approach annotations to 4 convergence sorries in `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`:
+  - `succ_reaches_dom_N` boundary case above max(dom(N)) (~line 1282)
+  - `succ_reaches_dom_N` boundary case below min(dom(N)) (~line 1435)
+  - `limit_dom_points_are_succ_iterates` (~line 1499)
+  - `succ_cofinal` gap elimination (~line 1873)
+- [x] Use annotation template:
   ```
   -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
   -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
   -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
   ```
-- [ ] Run `lake build` and verify annotations (comment-only) do not break compilation
+- [x] Run `lake build` and verify annotations (comment-only) do not break compilation
 
 **Timing**: 1.5 hours
 
