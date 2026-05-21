@@ -3662,6 +3662,113 @@ def muAll {sig : MonadicSignature} {n : Nat}
     (φ : MonadicFormula (muSig sig) (n + 1)) : MonadicFormula (muSig sig) n :=
   .all (.not (.and (muPred ⟨0, by omega⟩) (.not φ)))
 
+/-- GHR93 FO table for U'(A,B), mu-relativized, taking pre-lifted arguments.
+    Arguments are the sub-formula translations at various De Bruijn depths.
+    ∃s. t < s ∧ [body] ∧ [fail] ∧ [init] -/
+private def stavi_untl_fo {sig : MonadicSignature}
+    (cA4 : MonadicFormula (muSig sig) 4)
+    (cB3 : MonadicFormula (muSig sig) 3)
+    (cB4 : MonadicFormula (muSig sig) 4)
+    (cB5 : MonadicFormula (muSig sig) 5) : MonadicFormula (muSig sig) 1 :=
+  -- After ex: var 0 = s, var 1 = t
+  MonadicFormula.ex (MonadicFormula.and
+    (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- t < s
+    (MonadicFormula.and
+      -- (1) Body
+      (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+        (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨2, by omega⟩ ⟨0, by omega⟩)
+                (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))
+        (MonadicFormula.not (MonadicFormula.and
+          (MonadicFormula.not (MonadicFormula.ex (MonadicFormula.and
+            (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+              (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+                (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                  (MonadicFormula.and (MonadicFormula.lt ⟨4, by omega⟩ ⟨0, by omega⟩)
+                        (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))
+                (MonadicFormula.not cB5))))))))
+          (MonadicFormula.not (MonadicFormula.and
+            (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+              (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+                      (MonadicFormula.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))
+              (MonadicFormula.not cA4))))
+            (MonadicFormula.ex (MonadicFormula.and
+              (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+              (MonadicFormula.and (MonadicFormula.lt ⟨3, by omega⟩ ⟨0, by omega⟩)
+                (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)
+                  (MonadicFormula.not cB4))))))))))))
+      (MonadicFormula.and
+        -- (2) Fail
+        (MonadicFormula.ex (MonadicFormula.and
+          (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨2, by omega⟩ ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)
+              (MonadicFormula.not cB3)))))
+        -- (3) Init
+        (MonadicFormula.ex (MonadicFormula.and
+          (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨2, by omega⟩ ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)
+              (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+                (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                  (MonadicFormula.and (MonadicFormula.lt ⟨3, by omega⟩ ⟨0, by omega⟩)
+                        (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))
+                (MonadicFormula.not cB4)))))))))))
+
+/-- Past dual of stavi_untl_fo: S'(A,B), mu-relativized. -/
+private def stavi_snce_fo {sig : MonadicSignature}
+    (cA4 : MonadicFormula (muSig sig) 4)
+    (cB3 : MonadicFormula (muSig sig) 3)
+    (cB4 : MonadicFormula (muSig sig) 4)
+    (cB5 : MonadicFormula (muSig sig) 5) : MonadicFormula (muSig sig) 1 :=
+  MonadicFormula.ex (MonadicFormula.and
+    (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)  -- s < t
+    (MonadicFormula.and
+      -- (1) Body
+      (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+        (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+                (MonadicFormula.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))
+        (MonadicFormula.not (MonadicFormula.and
+          (MonadicFormula.not (MonadicFormula.ex (MonadicFormula.and
+            (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)
+              (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+                (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                  (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+                        (MonadicFormula.lt ⟨0, by omega⟩ ⟨4, by omega⟩)))
+                (MonadicFormula.not cB5))))))))
+          (MonadicFormula.not (MonadicFormula.and
+            (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+              (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                (MonadicFormula.and (MonadicFormula.lt ⟨2, by omega⟩ ⟨0, by omega⟩)
+                      (MonadicFormula.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))
+              (MonadicFormula.not cA4))))
+            (MonadicFormula.ex (MonadicFormula.and
+              (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+              (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+                (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨3, by omega⟩)
+                  (MonadicFormula.not cB4))))))))))))
+      (MonadicFormula.and
+        -- (2) Fail
+        (MonadicFormula.ex (MonadicFormula.and
+          (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨2, by omega⟩)
+              (MonadicFormula.not cB3)))))
+        -- (3) Init
+        (MonadicFormula.ex (MonadicFormula.and
+          (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+          (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+            (MonadicFormula.and (MonadicFormula.lt ⟨0, by omega⟩ ⟨2, by omega⟩)
+              (MonadicFormula.all (MonadicFormula.not (MonadicFormula.and
+                (MonadicFormula.and (MonadicFormula.atom (.inr ()) ⟨0, by omega⟩)
+                  (MonadicFormula.and (MonadicFormula.lt ⟨1, by omega⟩ ⟨0, by omega⟩)
+                        (MonadicFormula.lt ⟨0, by omega⟩ ⟨3, by omega⟩)))
+                (MonadicFormula.not cB4)))))))))))
+
 /-- Standard translation of StaviFormula to monadic FO formula over muSig.
     Mu-relativized quantifiers use the mu predicate from muSig.
 
@@ -3703,13 +3810,15 @@ noncomputable def stavi_table_mu {sig : MonadicSignature}
                     (.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))  -- u < t
             (.not cB3)))))))
   | .stavi_untl A B =>
-    -- GHR93 FO table for U'(A,B)(t), mu-relativized — sorry'd.
-    -- The full FO encoding is very deep (5 quantifier levels) and will be
-    -- filled in once the infrastructure is validated via the simpler cases.
-    sorry
+    let cA := stavi_table_mu atomMap A
+    let cB := stavi_table_mu atomMap B
+    stavi_untl_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
+      (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
   | .stavi_snce A B =>
-    -- Past dual of stavi_untl — sorry'd.
-    sorry
+    let cA := stavi_table_mu atomMap A
+    let cB := stavi_table_mu atomMap B
+    stavi_snce_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
+      (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
 
 /-- The quantifier depth of stavi_table_mu is bounded by stavi_depth. -/
 theorem stavi_table_mu_depth {sig : MonadicSignature}
