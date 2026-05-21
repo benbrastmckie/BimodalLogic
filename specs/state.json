@@ -353,7 +353,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-21T21:52:52Z",
+      "last_updated": "2026-05-21T22:38:45Z",
       "next_artifact_number": 16,
       "artifacts": [
         {
@@ -445,9 +445,14 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/12_degenerate-interval-blocker.md",
           "type": "research",
           "summary": "Degenerate interval: d=x both gaps makes [d,d] unwinnable. Fix: vacuous game lemma (~20 lines), degenerate intervals are vacuously winnable."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/21_muSig-blocker-resolution.md",
+          "type": "research",
+          "summary": "Root cause analysis and solution for stavi_untl/snce sorry-closing blocker in stavi_table_mu_correct"
         }
       ],
-      "session_id": "sess_1779399037_77fabb",
+      "session_id": "sess_1779402190_f77b09",
       "researched": "2026-05-20T18:54:12Z",
       "started": "2026-05-16T19:49:58Z"
     },
