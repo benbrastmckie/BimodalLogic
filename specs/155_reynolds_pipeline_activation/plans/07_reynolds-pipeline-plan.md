@@ -319,9 +319,8 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
 
 Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd | [SORRY] sorry'd | [TODO] not started
 
-1. Strategy restriction lemma — [STRUCT] ghr93_strategy_restrict_left/right defined with
-   h_d_consistent hypothesis. 5/6 sub-proofs closed. 1 sorry remains (response ordering at
-   line 1900, needs h_pt instantiation). +2 sorry'd d-consistency conditions at call site.
+1. Strategy restriction lemma — [DONE] ghr93_strategy_restrict_left/right fully proved with
+   h_d_consistent + h_pt hypotheses. All sub-proofs closed including response containment.
 2. obtain_split_point_props — [STRUCT] d=a_bwd(n) approach. Point case structured. Gap case
    sorry'd (line 410, needs Lemma 9 ~400-500 lines).
 3. Case I split — [STRUCT] outer structure proved (partition, Round 1 play, Round 2 delegation,
@@ -337,12 +336,12 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 11. Proposition 7 composition — [TODO] (~150-250 lines, uses Lemma 11)
 12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line 2324, ~80-120 lines)
 
-**Sorry inventory** (11 total across 2 files, verified grep count):
-- EFGames.lean [6]: Lemma 9 left (1423), Lemma 9 right (1442), strategy restrict ordering (1900),
-  Lemma 11 fwd (2236), Lemma 11 bwd (2257), stavi_expressive_completeness (2324)
+**Sorry inventory** (10 total across 2 files, verified grep count):
+- EFGames.lean [5]: Lemma 9 left (1423), Lemma 9 right (1442),
+  Lemma 11 fwd (2277), Lemma 11 bwd (2298), stavi_expressive_completeness (2365)
 - ExpressivenessGeneral.lean [5]: split props gap case (411),
-  Case I win-cond left (583), Case I win-cond right (592),
-  Cases II-IV (639), rank-varying Thm 6 (815)
+  Case I win-cond left (579), Case I win-cond right (592),
+  Cases II-IV (639), rank-varying Thm 6 (834)
 
 **Completed infrastructure** (sorry-free, ~3000 lines):
 - Gap/M_r/ExtendedCarrier/LinearOrder (4B.2) ✓
