@@ -730,6 +730,23 @@ noncomputable def extendedStructure {sig : MonadicSignature}
     | .inr _ => False  -- gaps have no predicate values
   carrier_order := extendedLinearOrder
 
+/-- Extended signature adding a mu predicate (GHR93 p.111: "h'(mu) = M").
+    The new predicate `Sum.inr ()` distinguishes actual points from gaps. -/
+def muSig (sig : MonadicSignature) : MonadicSignature where
+  preds := sig.preds ⊕ Unit
+
+/-- Extended structure with mu as an explicit predicate over `muSig sig`.
+    At actual points (Sum.inl x): mu = true, sig predicates inherit from M.
+    At gaps (Sum.inr g): mu = false, sig predicates = false. -/
+noncomputable def extendedStructureWithMu {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :
+    OrderedMonadicStructure (muSig sig) where
+  carrier := ExtendedCarrier M atomMap r
+  interp := fun p e => match p with
+    | .inl p' => (extendedStructure M atomMap r).interp p' e
+    | .inr () => IsPoint e
+  carrier_order := extendedLinearOrder
+
 /-- The mu predicate: true at actual points, false at gaps.
     In GHR93: h'(mu) = M (the set of actual points in M_r). -/
 def mu_holds {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
@@ -3551,6 +3568,168 @@ The full proof is ~1000-1500 lines and requires the game infrastructure
 defined above. It is the single largest formalization effort in the
 Reynolds pipeline.
 -/
+
+/-! ## Standard Translation for Stavi Formulas over muSig (GHR93 p.111)
+
+The standard translation `stavi_table_mu` maps each `StaviFormula` to a
+monadic FO formula `MonadicFormula (muSig sig) 1` whose quantifiers are
+relativized to the mu predicate (`Sum.inr ()` in `muSig sig`). This is
+the key bridge between `stavi_temporal_truth_mu` (semantic evaluation on
+the extended structure) and the NormalForm finiteness theory.
+
+### Design
+
+- `liftSigFormula`: lifts `MonadicFormula sig n` to `MonadicFormula (muSig sig) n`
+  by mapping predicates via `Sum.inl`.
+- `muPred`: the mu predicate atom `atom (Sum.inr ()) i` in `muSig sig`.
+- `stavi_table_mu`: the main translation.
+- `stavi_table_mu_correct`: evaluating `stavi_table_mu` on `extendedStructureWithMu`
+  is equivalent to `stavi_temporal_truth_mu`.
+- `nf_determines_stavi_truth_via_mu`: the NF bridge used by `pigeonhole_definable_formula`.
+-/
+
+/-- Lift a monadic FO formula from signature `sig` to `muSig sig` by
+    mapping each predicate `p` to `Sum.inl p`. -/
+def liftSigFormula {sig : MonadicSignature} {n : Nat} :
+    MonadicFormula sig n → MonadicFormula (muSig sig) n
+  | .atom p i => .atom (.inl p) i
+  | .lt i j => .lt i j
+  | .not α => .not (liftSigFormula α)
+  | .and α β => .and (liftSigFormula α) (liftSigFormula β)
+  | .all α => .all (liftSigFormula α)
+  | .ex α => .ex (liftSigFormula α)
+
+/-- Lifting preserves quantifier depth. -/
+theorem liftSigFormula_depth {sig : MonadicSignature} {n : Nat}
+    (α : MonadicFormula sig n) :
+    (liftSigFormula α).quantifier_depth = α.quantifier_depth := by
+  induction α with
+  | atom _ _ => rfl
+  | lt _ _ => rfl
+  | not _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
+  | and _ _ ihα ihβ => simp [liftSigFormula, MonadicFormula.quantifier_depth, ihα, ihβ]
+  | all _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
+  | ex _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
+
+/-- Lifting preserves evaluation: evaluating a lifted formula on
+    `extendedStructureWithMu` equals evaluating the original on
+    `extendedStructure` (since `Sum.inl` predicates agree). -/
+theorem liftSigFormula_eval {sig : MonadicSignature} {n : Nat}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (env : Fin n → (extendedStructureWithMu M atomMap r).carrier)
+    (α : MonadicFormula sig n) :
+    eval (extendedStructureWithMu M atomMap r) env (liftSigFormula α) ↔
+    eval (extendedStructure M atomMap r) env α := by
+  induction α with
+  | atom p i => simp [liftSigFormula, eval, extendedStructureWithMu]
+  | lt i j => simp [liftSigFormula, eval]
+  | not α ih => simp only [liftSigFormula, eval]; exact (ih env).not
+  | and α β ihα ihβ => simp only [liftSigFormula, eval]; exact (ihα env).and (ihβ env)
+  | all α ih =>
+    simp only [liftSigFormula, eval]
+    exact forall_congr' fun x => ih (Fin.cons x env)
+  | ex α ih =>
+    simp only [liftSigFormula, eval]
+    exact exists_congr fun x => ih (Fin.cons x env)
+
+/-- Lifting preserves the lift (De Bruijn shift) operation. -/
+theorem liftSigFormula_lift_comm {sig : MonadicSignature} {n : Nat}
+    (α : MonadicFormula sig n) (c : Nat) :
+    liftSigFormula (α.lift c) = (liftSigFormula α).lift c := by
+  induction α generalizing c with
+  | atom p i => simp [liftSigFormula, MonadicFormula.lift]
+  | lt i j => simp [liftSigFormula, MonadicFormula.lift]
+  | not α ih => simp [liftSigFormula, MonadicFormula.lift, ih]
+  | and α β ihα ihβ => simp [liftSigFormula, MonadicFormula.lift, ihα, ihβ]
+  | all α ih => simp [liftSigFormula, MonadicFormula.lift, ih]
+  | ex α ih => simp [liftSigFormula, MonadicFormula.lift, ih]
+
+/-- The mu predicate as a monadic formula: `atom (Sum.inr ()) i`.
+    Applied to variable `i` in a formula with `n` free variables. -/
+def muPred {sig : MonadicSignature} {n : Nat} (i : Fin n) :
+    MonadicFormula (muSig sig) n :=
+  .atom (.inr ()) i
+
+/-- Mu-relativized existential: ∃x. mu(x) ∧ φ(x).
+    Variable 0 is the bound variable, others shift up. -/
+def muEx {sig : MonadicSignature} {n : Nat}
+    (φ : MonadicFormula (muSig sig) (n + 1)) : MonadicFormula (muSig sig) n :=
+  .ex (.and (muPred ⟨0, by omega⟩) φ)
+
+/-- Mu-relativized universal: ∀x. mu(x) → φ(x).
+    Encoded as ∀x. ¬(mu(x) ∧ ¬φ(x)). -/
+def muAll {sig : MonadicSignature} {n : Nat}
+    (φ : MonadicFormula (muSig sig) (n + 1)) : MonadicFormula (muSig sig) n :=
+  .all (.not (.and (muPred ⟨0, by omega⟩) (.not φ)))
+
+/-- Standard translation of StaviFormula to monadic FO formula over muSig.
+    Mu-relativized quantifiers use the mu predicate from muSig.
+
+    Variable conventions (De Bruijn):
+    - In MonadicFormula (muSig sig) 1: variable 0 = t (current time)
+    - After ex: variable 0 = bound, variable 1 = t
+    - After ex then all: variable 0 = inner, variable 1 = outer, variable 2 = t -/
+noncomputable def stavi_table_mu {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) : StaviFormula → MonadicFormula (muSig sig) 1
+  | .base φ => liftSigFormula (table sig atomMap φ)
+  | .neg A => .not (stavi_table_mu atomMap A)
+  | .conj A B => .and (stavi_table_mu atomMap A) (stavi_table_mu atomMap B)
+  | .std_untl A B =>
+    -- ∃s. mu(s) ∧ t < s ∧ C_A(s) ∧ ∀u. (mu(u) ∧ t < u ∧ u < s) → C_B(u)
+    let cA := stavi_table_mu atomMap A  -- MonadicFormula (muSig sig) 1
+    let cB := stavi_table_mu atomMap B
+    let cA2 := cA.lift 1                -- lifted to 2 vars: var 0 = s, var 1 = t
+    let cB3 := (cB.lift 1).lift 1       -- lifted to 3 vars: var 0 = u, var 1 = s, var 2 = t
+    .ex (.and (muPred ⟨0, by omega⟩)
+      (.and (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- t < s
+        (.and cA2                                -- C_A(s)
+          (.all (.not (.and
+            (.and (muPred ⟨0, by omega⟩)         -- mu(u)
+              (.and (.lt ⟨2, by omega⟩ ⟨0, by omega⟩)  -- t < u
+                    (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))  -- u < s
+            (.not cB3)))))))                     -- C_B(u)
+  | .std_snce A B =>
+    -- ∃s. mu(s) ∧ s < t ∧ C_A(s) ∧ ∀u. (mu(u) ∧ s < u ∧ u < t) → C_B(u)
+    let cA := stavi_table_mu atomMap A
+    let cB := stavi_table_mu atomMap B
+    let cA2 := cA.lift 1
+    let cB3 := (cB.lift 1).lift 1
+    .ex (.and (muPred ⟨0, by omega⟩)
+      (.and (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)  -- s < t
+        (.and cA2
+          (.all (.not (.and
+            (.and (muPred ⟨0, by omega⟩)
+              (.and (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- s < u
+                    (.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))  -- u < t
+            (.not cB3)))))))
+  | .stavi_untl A B =>
+    -- GHR93 FO table for U'(A,B)(t), mu-relativized — sorry'd.
+    -- The full FO encoding is very deep (5 quantifier levels) and will be
+    -- filled in once the infrastructure is validated via the simpler cases.
+    sorry
+  | .stavi_snce A B =>
+    -- Past dual of stavi_untl — sorry'd.
+    sorry
+
+/-- The quantifier depth of stavi_table_mu is bounded by stavi_depth. -/
+theorem stavi_table_mu_depth {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} (A : StaviFormula) :
+    (stavi_table_mu atomMap A).quantifier_depth ≤ stavi_depth A := by
+  sorry
+
+/-- **Table Correctness for Stavi Formulas**: evaluating `stavi_table_mu A`
+    on `extendedStructureWithMu` at a point t is equivalent to
+    `stavi_temporal_truth_mu` at t.
+
+    This is the key bridge: the FO translation faithfully represents the
+    mu-relativized temporal semantics. -/
+theorem stavi_table_mu_correct {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :
+    eval (extendedStructureWithMu M atomMap r) (fun _ => t)
+      (stavi_table_mu atomMap A) ↔
+    stavi_temporal_truth_mu M atomMap r t A := by
+  sorry
 
 /--
 **GHR93 Theorem 9.3.1 (Theorem 4)**: {U, S, U', S'} is expressively

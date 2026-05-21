@@ -504,32 +504,67 @@ private theorem cont_fails_below_gap {sig : MonadicSignature}
   exact ⟨p, h_in_cut, fun q hq => hq (extendPoint p) hp_in_sc⟩
 
 /-- NormalForm-to-StaviFormula bridge: carrier points with the same NormalForm
-    characteristic at depth r agree on all StaviFormula truth values at depth ≤ r.
+    characteristic at depth r (over `muSig sig` / `extendedStructureWithMu`)
+    agree on all StaviFormula truth values at depth ≤ r.
 
     This bridges the NormalForm finiteness theory (NormalForm.lean) with the
-    StaviFormula truth (EFGames.lean). The proof requires showing that
-    stavi_temporal_truth on the original structure corresponds to nf_eval_nf
-    on the extendedStructure. Since NormalForm sig r 1 is Fintype, two carrier
-    points p, q with the same nf_characteristic have the same truth on all
-    depth-≤-r StaviFormulas.
+    StaviFormula truth (EFGames.lean). The key is `stavi_table_mu`, which
+    translates StaviFormulas to `MonadicFormula (muSig sig) 1` whose truth
+    on `extendedStructureWithMu` equals `stavi_temporal_truth_mu`.
 
-    Proof path (not yet formalized):
-    1. Show stavi_temporal_truth_mu M atomMap r (extendPoint p) A corresponds
-       to a predicate expressible in the monadic theory of extendedStructure
-    2. Monadic theory at depth r is determined by nf_characteristic at depth r
-       (via nf_eval_unique and nf_exists_unique)
-    3. Same nf_characteristic → same monadic theory → same stavi truth -/
+    Proof path:
+    1. Same nf_characteristic on extendedStructureWithMu
+    2. → by nf_agreement_from_shared_nf, same nf_eval_nf on all NFs
+    3. → by doets_lemma_1_1, same eval on all depth-≤-r MonadicFormula (muSig sig) 1
+    4. → in particular on stavi_table_mu A (depth ≤ r by stavi_table_mu_depth)
+    5. → by stavi_table_mu_correct, same stavi_temporal_truth_mu
+    6. → by stavi_truth_mu_at_point, same stavi_temporal_truth -/
 private theorem nf_determines_stavi_truth {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
-    (h_same_nf : nf_characteristic (extendedStructure N atomMap r) r 1
+    (h_same_nf : nf_characteristic (extendedStructureWithMu N atomMap r) r 1
         (fun _ => extendPoint p) =
-      nf_characteristic (extendedStructure N atomMap r) r 1
+      nf_characteristic (extendedStructureWithMu N atomMap r) r 1
         (fun _ => extendPoint q))
     (A : StaviFormula) (hA : stavi_depth A ≤ r) :
     stavi_temporal_truth N atomMap p A ↔
     stavi_temporal_truth N atomMap q A := by
-  sorry
+  -- The proof uses the chain:
+  --   same nf_characteristic on extendedStructureWithMu
+  --   → same eval on all depth-≤-r MonadicFormula (muSig sig) 1
+  --   → same eval on stavi_table_mu A
+  --   → same stavi_temporal_truth_mu (by stavi_table_mu_correct)
+  --   → same stavi_temporal_truth (by stavi_truth_mu_at_point)
+  --
+  -- Step 1: From nf_characteristic equality, derive nf_eval_nf agreement
+  -- nf_characteristic_satisfies gives that each env satisfies its own characteristic.
+  -- Since the characteristics are equal (h_same_nf), both envs satisfy the same NF.
+  have h_p_nf := nf_characteristic_satisfies (extendedStructureWithMu N atomMap r) r 1
+    (fun _ => extendPoint p)
+  have h_q_nf := nf_characteristic_satisfies (extendedStructureWithMu N atomMap r) r 1
+    (fun _ => extendPoint q)
+  -- q satisfies q's characteristic, which equals p's characteristic
+  have h_q_nf_as_p : nf_eval_nf (extendedStructureWithMu N atomMap r) r 1
+      (fun _ => extendPoint q)
+      (nf_characteristic (extendedStructureWithMu N atomMap r) r 1 (fun _ => extendPoint p)) :=
+    h_same_nf ▸ h_q_nf
+  -- Step 2: Agreement on all NFs at depth r
+  have h_nf_agree := nf_agreement_from_shared_nf
+    (extendedStructureWithMu N atomMap r) (fun _ => extendPoint p)
+    (extendedStructureWithMu N atomMap r) (fun _ => extendPoint q)
+    _ h_p_nf h_q_nf_as_p
+  -- Step 3: By doets_lemma_1_1, agreement on stavi_table_mu A
+  have h_eval_agree := doets_lemma_1_1 r 1 (stavi_table_mu atomMap A)
+    (le_trans (stavi_table_mu_depth A) hA)
+    (extendedStructureWithMu N atomMap r) (extendedStructureWithMu N atomMap r)
+    (fun _ => extendPoint p) (fun _ => extendPoint q)
+    h_nf_agree
+  -- Step 4-5: Chain through stavi_table_mu_correct and stavi_truth_mu_at_point
+  exact (stavi_truth_mu_at_point p A).symm.trans
+    ((stavi_table_mu_correct (extendPoint p) A).symm.trans
+      (h_eval_agree.trans
+        ((stavi_table_mu_correct (extendPoint q) A).trans
+          (stavi_truth_mu_at_point q A))))
 
 /-- Pigeonhole extraction: from the fact that cont_holds fails cofinally
     below the gap, extract a SINGLE formula D of depth ≤ r that holds on
