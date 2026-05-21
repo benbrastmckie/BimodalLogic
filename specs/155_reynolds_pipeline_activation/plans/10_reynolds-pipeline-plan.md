@@ -370,7 +370,7 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 
 **Research Basis**: Report 15 (d-consistency blocker) establishes that GHR93 defines `d = inf{t in [x',y'] : C holds on (t,y')}` and proves d-consistency as "Claim 1". Report 12 (degenerate interval blocker) establishes that [d,d] games with gap endpoints are vacuously winnable.
 
-**Status**: PARTIAL. Task W1.1 (degenerate gap lemma) DONE. Task W1.3 (N-side degenerate sorries) DONE. Tasks W1.2, W1.4, W1.5 remain. Task W1.4 is now confirmed BLOCKED by W1.2 (see handoff phase-4CW1-w12w14-analysis-20260521.md). Build passes.
+**Status**: PARTIAL. Task W1.1 (degenerate gap lemma) DONE. Task W1.3 (N-side degenerate sorries) DONE. Tasks W1.2, W1.4, W1.5 remain. Task W1.2 BLOCKED: exhaustive analysis confirms Claim 1 infimum argument is the ONLY viable path; 5 alternative approaches all fail (see handoff phase-4CW1-dconsistency-analysis-20260521.md). Task W1.4 BLOCKED by W1.2 unless user approves Case I modifications (~50-100 lines). Build passes.
 
 **BEFORE CODING**: Re-read GHR93 Section 8, pages 27-28 (definition of c,d as infima; Claims 1-2). With the corrected U' semantics from Phase 0, the infimum-based approach becomes cleaner because U' now has the correct gap-based meaning, making the continuation formula C well-behaved.
 
@@ -383,11 +383,22 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
   - (b) Prove Claim 1 directly: define continuation formula C; show formula_agreement forces response = d at boundary; close 2 sorries (lines 306, 316)
   Both paths require Case II adjustments. This is the single hardest remaining architectural task.
   
-  **ANALYSIS UPDATE (sess_1779383375_6c61c3)**: rank_type is NOT injective on ExtendedCarrier (two actual points can share the same rank_type). Therefore, d-consistency CANNOT be proved via formula agreement alone -- the Claim 1 infimum argument is necessary. Also, W1.4 is COUPLED to W1.2: making `h_pt_xc`/`h_pt_cy` conditional requires providing a non-degeneracy proof at each call site, but Case I genuinely reaches the degenerate scenario `c = y, IsGap c` when `d = y'` and some `a_bwd i < d`. The only way to avoid the degenerate M-side sorries is to redefine `d` so that `c` never equals a boundary endpoint as a gap, which is part of the d-consistency fix (Claim 1 infimum or canonical response).
+  **ANALYSIS UPDATE (sess_1779383375_6c61c3)**: Exhaustive analysis of 5 approaches (formula agreement, same_order_type with point challenges, eq_of_forall_le_iff, uniqueness of response, and canonical response). ALL FAIL because:
+  - rank_type is NOT injective on ExtendedCarrier (two actual points can share rank_type)
+  - same_order_type compares a'_full(n) to extendPoint b' MEDIATED through M-side response b, not directly to d
+  - eq_of_forall_le_iff needs comparison with ALL ExtendedCarrier elements but winning condition only provides point challenges
+  - Uniqueness of response fails because ghr93_duplicator_wins is existentially quantified (non-deterministic)
+  - Canonical response (define d from forward strategy) moves the problem to proving d = a_bwd(n)
+  
+  **Conclusion**: The GHR93 Claim 1 INFIMUM argument (formula C + contradiction at Step 7) is the ONLY viable path. The contradiction step -- "if d < c', Spoiler challenges at d' in (d,c') where not-C holds; Duplicator responds with b in (c,y) where C holds; formula agreement gives C(b) <-> C(d'), contradiction" -- cannot be replicated without the formula C infrastructure.
+  
+  **Key blocker for Claim 1**: Infimum existence in ExtendedCarrier. The infimum of a C-definable set is either a carrier point or a gap. If a gap, it must be shown r-definable (gap_definable_on_right by C). This requires connecting the Prop-level C predicate to a SPECIFIC StaviFormula D of depth <= r, which requires formula enumeration/finiteness infrastructure that doesn't exist in the codebase (~200+ lines).
+  
+  **W1.4 is independently fixable** (3-4 hours): Making h_pt_xc/h_pt_cy conditional + updating Case I's degenerate branch (~50-100 lines of Case I changes). See handoff phase-4CW1-dconsistency-analysis-20260521.md for detailed implementation strategy. But the user directive to avoid modifying Cases I/II creates tension.
 
 - [x] **Task W1.3**: Close N-side degenerate interval sorries. *(completed -- 4 N-side sorries eliminated via boundary correspondence + ghr93_duplicator_wins_degenerate_gap. 2 new M-side degenerate sorries at lines 430, 447 from SplitPointProps requiring point witnesses. Net: 9 -> 7 sorries.)*
 
-- [ ] **Task W1.4**: Close M-side degenerate interval sorries (lines 430, 447). *(deviation: blocked — coupled to W1.2. Making `h_pt_xc`/`h_pt_cy` conditional in SplitPointProps was attempted but fails: Case I uses `h_pt_cy` even when `c = y` is a gap (to extract auxiliary winning condition data from tau's Round 2), and the non-degeneracy condition `¬(c = y ∧ IsGap c)` is NOT derivable from Case I's hypotheses. The degenerate scenario arises when `d = y'` and some backward selection `a_bwd i < d`. Fix requires redefining `d` (Task W1.2) so that boundary-gap degeneracy is avoided.)*
+- [ ] **Task W1.4**: Close M-side degenerate interval sorries (lines 430, 447). *(deviation: blocked — coupled to W1.2 unless user approves Case I modifications. The conditional approach was prototyped: SplitPointProps change compiles, but Case I at line 814 uses `props.h_pt_cy` unconditionally to extract tau Round 2 data (`hcond_R_aux`) for R-side gap_point/formula/ordering info. In the degenerate case (c=y, IsGap c), tau Round 2 is vacuous and `hcond_R_aux` is unavailable. The fix requires a ~50-100 line degenerate branch in Case I that derives R-side data from `hcd_form` and `hcd_gp` instead of from tau. Case II is trivially fixable (d is point -> c is point -> condition holds). See handoff phase-4CW1-dconsistency-analysis-20260521.md for the full 4-option implementation roadmap.)*
 
 - [ ] **Task W1.5**: Verify `lake build` passes. Cases I and II remain sorry-free.
 
