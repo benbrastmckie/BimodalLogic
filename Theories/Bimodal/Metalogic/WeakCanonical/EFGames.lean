@@ -2264,17 +2264,138 @@ def decomposition_agreement {sig : MonadicSignature}
     (order type + formula agreement) implies type equality and gap/point
     agreement at each position.
 
-    NOTE: Sorry'd. The proof requires showing that the game's winning
-    condition (order type + rank-r formula agreement) implies rank_type
-    equality at each position, which needs that formula agreement at all
-    depths ≤ r determines the rank_type. This is used in Phase 4C. -/
+    The h_pt hypothesis (existence of a point in [x',y']) is needed to
+    trigger Round 2 and extract the winning condition. The h_bwd hypothesis
+    provides the backward game (N→M) for the decomposition's backward
+    direction. -/
 theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
-    (h : ghr93_duplicator_wins M N atomMap n r x y x' y') :
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (h : ghr93_duplicator_wins M N atomMap n r x y x' y')
+    (h_bwd : ghr93_duplicator_wins N M atomMap n r x' y' x y) :
     decomposition_agreement M N atomMap n r x y x' y' := by
-  sorry
+  obtain ⟨p_N, hp_N⟩ := h_pt
+  obtain ⟨p_M, hp_M⟩ := h_pt_M
+  -- Helper: extract formula agreement from a game play
+  -- Given a selection a and its response a', the winning condition gives
+  -- formula_agreement at all indices. From this, we derive rank_type equality.
+  have rank_type_from_win : ∀ (t : ExtendedCarrier M atomMap r)
+      (t' : ExtendedCarrier N atomMap r),
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu M atomMap r t A ↔
+         stavi_temporal_truth_mu N atomMap r t' A)) →
+      rank_type M atomMap r t = rank_type N atomMap r t' := by
+    intro t t' hform
+    ext A
+    simp only [rank_type, Set.mem_setOf_eq]
+    constructor
+    · intro ⟨hd, hA⟩; exact ⟨hd, (hform A hd).mp hA⟩
+    · intro ⟨hd, hA⟩; exact ⟨hd, (hform A hd).mpr hA⟩
+  -- Extract winning condition from forward game with a trivial selection
+  -- and the point p_N as the Round 2 challenge.
+  obtain ⟨a'_triv, _ha'_triv, hwin_triv⟩ :=
+    h (fun _ : Fin n => x) (fun _ => ⟨le_refl _, le_trans hp_M.1 hp_M.2⟩)
+  obtain ⟨b_triv, _hb_triv, hcond_triv⟩ := hwin_triv p_N hp_N
+  obtain ⟨hord_triv, hgp_triv, hform_triv⟩ := hcond_triv
+  -- Boundary type agreement: x/x' (index 0 in game_tuple)
+  have htype_x : rank_type M atomMap r x = rank_type N atomMap r x' := by
+    apply rank_type_from_win
+    intro A hA
+    exact hform_triv ⟨0, by omega⟩ A hA
+  -- Boundary type agreement: y/y' (index n+2 in game_tuple)
+  have htype_y : rank_type M atomMap r y = rank_type N atomMap r y' := by
+    apply rank_type_from_win
+    intro A hA
+    have := hform_triv ⟨n + 2, by omega⟩ A hA
+    simp only [game_tuple, show (n + 2) ≠ 0 from by omega,
+      show ¬(n + 2 = n + 1) from by omega,
+      show (n + 2) = n + 2 from rfl, dite_false, dite_true] at this
+    exact this
+  refine ⟨htype_x, htype_y, ?_, ?_⟩
+  · -- Forward direction: for every selection from M, matching from N
+    intro a ha
+    obtain ⟨a', ha', hwin_fwd⟩ := h a ha
+    obtain ⟨b_fwd, _hb_fwd, hcond_fwd⟩ := hwin_fwd p_N hp_N
+    obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
+    refine ⟨a', ha', ?_, ?_, ?_⟩
+    · -- Type agreement at each selection
+      intro i
+      apply rank_type_from_win
+      intro A hA
+      -- Index in game_tuple: a(i) is at position 1+i.val
+      have := hform_fwd ⟨1 + i.val, by omega⟩ A hA
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega] at this
+      convert this using 2 <;> simp [Fin.ext_iff]
+    · -- Gap/point agreement at each selection
+      intro i
+      have := hgp_fwd ⟨1 + i.val, by omega⟩
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega] at this
+      convert this using 2 <;> simp [Fin.ext_iff]
+    · -- Order preservation at each pair of selections
+      intro i j
+      have := hord_fwd ⟨1 + i.val, by omega⟩ ⟨1 + j.val, by omega⟩
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega,
+        show 1 + j.val ≠ 0 from by omega,
+        show ¬(1 + j.val = n + 1) from by omega,
+        show ¬(1 + j.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega,
+        show 1 + j.val - 1 = j.val from by omega] at this
+      convert this using 2 <;> simp [Fin.ext_iff]
+  · -- Backward direction: for every selection from N, matching from M
+    intro a' ha'
+    obtain ⟨a, ha, hwin_bwd⟩ := h_bwd a' ha'
+    obtain ⟨b_bwd, _hb_bwd, hcond_bwd⟩ := hwin_bwd p_M hp_M
+    obtain ⟨hord_bwd, hgp_bwd, hform_bwd⟩ := hcond_bwd
+    refine ⟨a, ha, ?_, ?_, ?_⟩
+    · -- Type agreement at each selection
+      intro i
+      apply rank_type_from_win
+      intro A hA
+      -- In the backward game (N→M), the game_tuple for N is the first argument
+      -- and for M is the second. The formula_agreement gives:
+      -- stavi_temporal_truth_mu N ... (tN i) A ↔ stavi_temporal_truth_mu M ... (tM i) A
+      -- We need the reverse direction (M ↔ N), so swap the iff.
+      have := hform_bwd ⟨1 + i.val, by omega⟩ A hA
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega] at this
+      convert this.symm using 2 <;> simp [Fin.ext_iff]
+    · -- Gap/point agreement at each selection
+      intro i
+      have := hgp_bwd ⟨1 + i.val, by omega⟩
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega] at this
+      constructor
+      · convert this.1.symm using 2 <;> simp [Fin.ext_iff]
+      · convert this.2.symm using 2 <;> simp [Fin.ext_iff]
+    · -- Order preservation at each pair of selections
+      intro i j
+      have := hord_bwd ⟨1 + i.val, by omega⟩ ⟨1 + j.val, by omega⟩
+      simp only [game_tuple, show 1 + i.val ≠ 0 from by omega,
+        show ¬(1 + i.val = n + 1) from by omega,
+        show ¬(1 + i.val = n + 2) from by omega,
+        show 1 + j.val ≠ 0 from by omega,
+        show ¬(1 + j.val = n + 1) from by omega,
+        show ¬(1 + j.val = n + 2) from by omega, dite_false,
+        show 1 + i.val - 1 = i.val from by omega,
+        show 1 + j.val - 1 = j.val from by omega] at this
+      constructor
+      · convert this.1.symm using 2 <;> simp [Fin.ext_iff]
+      · convert this.2.symm using 2 <;> simp [Fin.ext_iff]
 
 /-- **GHR93 Lemma 11** (Game ↔ decomposition agreement, backward direction):
 
@@ -2286,13 +2407,17 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
     the type agreement ensures that any actual point in [x',y'] ∩ N has a
     type-matching actual point in [x,y] ∩ M.
 
-    NOTE: Sorry'd. The proof constructs Duplicator's strategy from the
-    decomposition agreement: use the forward matching for Round 1, then
-    use the type information to handle Round 2. This is used in Phase 4C. -/
+    Sorry'd. The proof constructs Duplicator's strategy from the decomposition
+    agreement. The Round 1 response uses the forward matching. For Round 2,
+    we need to show that for any point b' in [x',y']∩N, there exists a
+    type-matching point in [x,y]∩M. This uses the backward direction of
+    decomposition_agreement applied at n+1 elements (including extendPoint b'). -/
 theorem ghr93_decomposition_implies_game {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : decomposition_agreement M N atomMap n r x y x' y') :
     ghr93_duplicator_wins M N atomMap n r x y x' y' := by
   sorry
@@ -2302,15 +2427,20 @@ theorem ghr93_decomposition_implies_game {sig : MonadicSignature}
     Duplicator has a winning strategy for G_{n;r}(M, x y; N, x' y') iff
     M_r and N_r agree on all (n;r)-decomposition formulas at (x,y)/(x',y').
 
-    This is the key bridge between the game-theoretic perspective (strategies)
-    and the formula-theoretic perspective (decomposition formulas). -/
+    The h_pt hypotheses are needed for the game → decomposition direction
+    (to trigger Round 2) and for the decomposition → game direction
+    (to handle the point challenge). -/
 theorem ghr93_game_iff_decomposition {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
-    {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r} :
+    {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (h_bwd : ghr93_duplicator_wins N M atomMap n r x' y' x y) :
     ghr93_duplicator_wins M N atomMap n r x y x' y' ↔
     decomposition_agreement M N atomMap n r x y x' y' :=
-  ⟨ghr93_game_implies_decomposition, ghr93_decomposition_implies_game⟩
+  ⟨fun hg => ghr93_game_implies_decomposition h_pt h_pt_M hg h_bwd,
+   fun hd => ghr93_decomposition_implies_game h_pt h_pt_M hd⟩
 
 /-! ## Stavi Expressive Completeness
 
