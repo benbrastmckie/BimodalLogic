@@ -454,7 +454,7 @@ P to hold at every point in (s,t).
 -/
 private theorem fo_table_body_forces_P_past {α : Type*} [Preorder α]
     [PredOrder α] [NoMinOrder α] [IsPredArchimedean α]
-    {P : α → Prop} {s t : α} (hst : s < t)
+    {P : α → Prop} {s t : α} (_hst : s < t)
     (h_body : ∀ u : α, s < u → u < t →
       (∃ v : α, v < u ∧ ∀ w : α, v < w → w < t → P w) ∨
       (∃ v' : α, u < v' ∧ v' < t ∧ ¬ P v'))
@@ -466,11 +466,37 @@ private theorem fo_table_body_forces_P_past {α : Type*} [Preorder α]
   have hle : u ≤ Order.pred t := PredOrder.le_pred_of_lt hut
   obtain ⟨n, rfl⟩ := IsPredArchimedean.exists_pred_iterate_of_le hle
   clear hle hut
-  -- Proof is dual to fo_table_body_forces_P. Uses strong induction on pred-iterate.
-  -- The key step: at each pred^n(pred(t)), Disjunct 1 gives P directly,
-  -- and Disjunct 2 gives a witness v' > u with ¬P(v'), contradicting the IH
-  -- since v' = pred^j(pred(t)) for j < n (by antitone_iterate / IsPredArchimedean).
-  sorry
+  induction n using Nat.strongRecOn with
+  | _ n ih =>
+    have h_anti := Function.antitone_iterate_of_le_id (fun (x : α) => Order.pred_le x)
+    have hut : (Order.pred)^[n] (Order.pred t) < t := by
+      calc (Order.pred)^[n] (Order.pred t)
+        ≤ (Order.pred)^[0] (Order.pred t) := h_anti (Nat.zero_le n) (Order.pred t)
+        _ = Order.pred t := by simp
+        _ < t := Order.pred_lt t
+    have h_disj := h_body _ hsu hut
+    cases h_disj with
+    | inl h =>
+      -- Disjunct 1: ∃ v < u, P on (v, t). Since v < u < t, P(u).
+      obtain ⟨v, hvu, hPv⟩ := h
+      exact hPv _ hvu hut
+    | inr h =>
+      -- Disjunct 2: ∃ v' in (u, t) with ¬P(v'). Contradicts IH.
+      exfalso
+      obtain ⟨v', huv', hv't, hPv'⟩ := h
+      have hv'_le : v' ≤ Order.pred t := PredOrder.le_pred_of_lt hv't
+      obtain ⟨j, rfl⟩ := IsPredArchimedean.exists_pred_iterate_of_le hv'_le
+      have hjs : s < (Order.pred)^[j] (Order.pred t) := lt_trans hsu huv'
+      have hj_lt_n : j < n := by
+        by_contra h_ge
+        push_neg at h_ge
+        -- pred is antitone on iterates: n ≤ j implies pred^[j] ≤ pred^[n]
+        have h_le : (Order.pred)^[j] (Order.pred t) ≤
+            (Order.pred)^[n] (Order.pred t) :=
+          Function.antitone_iterate_of_le_id
+            (fun (x : α) => Order.pred_le x) h_ge (Order.pred t)
+        exact absurd (lt_of_lt_of_le huv' h_le) (lt_irrefl _)
+      exact hPv' (ih j hj_lt_n hjs)
 
 /--
 Convert a StaviFormula to a standard temporal Formula in a discrete order.
