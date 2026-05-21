@@ -8,12 +8,12 @@
     {
       "project_number": 184,
       "project_name": "dead_code_tombstone_sweep",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T06:40:03Z",
+      "last_updated": "2026-05-21T10:26:13Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779345175_6806d1",
+      "session_id": "sess_1779358978_e1c315",
       "researched": "2026-05-21T06:40:03Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -21,22 +21,27 @@
           "path": "specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md",
           "type": "research",
           "summary": "Complete catalog of tombstone comments, #check statements, stale TODOs, and dead tactics across 12 active Lean files, with classification, safe removal verdicts, and 6 ordered implementation batches"
+        },
+        {
+          "path": "specs/184_dead_code_tombstone_sweep/plans/01_tombstone-sweep.md",
+          "type": "plan",
+          "summary": "4-phase plan to remove ~120-140 lines of dead code across 12 files: tombstone comments, #check statements, dead tactic definitions"
         }
       ]
     },
     {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "dependencies": [
         131,
         175
       ],
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T06:44:32Z",
+      "last_updated": "2026-05-21T10:23:11Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779345175_6806d1",
+      "session_id": "sess_1779358978_e1c315",
       "researched": "2026-05-21T06:44:32Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -50,12 +55,12 @@
     {
       "project_number": 182,
       "project_name": "boneyard_deep_cleanup",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T06:40:30Z",
+      "last_updated": "2026-05-21T10:26:13Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779345175_6806d1",
+      "session_id": "sess_1779358978_e1c315",
       "researched": "2026-05-21T06:40:30Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -63,6 +68,11 @@
           "path": "specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md",
           "type": "research",
           "summary": "Comprehensive compilation audit of 56 Boneyard files: 24 doc-only (zero effort), 18 with valid imports, 14 with fixable broken paths; recommends separate lean_lib target + mechanical import rewrites"
+        },
+        {
+          "path": "specs/182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md",
+          "type": "plan",
+          "summary": "5-phase plan: BoneyardArchive lean_lib target, import fixes, README coverage, compilation verification, doc consolidation and maintenance standard"
         }
       ]
     },
