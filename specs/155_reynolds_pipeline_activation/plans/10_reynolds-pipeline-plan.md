@@ -1,8 +1,8 @@
-# Implementation Plan: Reynolds Pipeline Activation (v8 -- Revised from Research Reports 12, 15 + W2 Implementation Session)
+# Implementation Plan: Reynolds Pipeline Activation (v9 -- U' Semantics Fix + Full GHR93 Realignment)
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IN PROGRESS]
-- **Effort**: 55-75 hours (remaining: ~40-60 hours)
+- **Effort**: 60-85 hours (remaining: ~45-65 hours)
 - **Dependencies**: Task 154 (sum_preservation/doets_lemma_1_4, COMPLETED), Tasks 147-148 (table_correctness, COMPLETED), Task 157 (separation/expressive completeness, COMPLETED)
 - **Research Inputs**:
   - specs/155_reynolds_pipeline_activation/reports/03_team-research.md
@@ -15,10 +15,13 @@
   - specs/155_reynolds_pipeline_activation/reports/10_teammate-b-findings.md
   - specs/155_reynolds_pipeline_activation/reports/10_teammate-c-findings.md
   - specs/155_reynolds_pipeline_activation/reports/10_teammate-e-findings.md
-  - specs/155_reynolds_pipeline_activation/reports/12_degenerate-interval-blocker.md (NEW in v8)
-  - specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md (NEW in v8)
-  - specs/155_reynolds_pipeline_activation/handoffs/phase-4CW1-handoff-20260521.md (NEW in v8)
-  - specs/155_reynolds_pipeline_activation/handoffs/phase-4CW2-handoff-20260521.md (NEW in v8)
+  - specs/155_reynolds_pipeline_activation/reports/12_degenerate-interval-blocker.md
+  - specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md
+  - specs/155_reynolds_pipeline_activation/reports/16_ghr93-lemma9-deep-read.md (NEW in v9 -- U' semantics bug)
+  - specs/155_reynolds_pipeline_activation/reports/17_stavi-semantics-impact.md (NEW in v9 -- full ripple analysis)
+  - specs/155_reynolds_pipeline_activation/reports/17_discrete-equivalence-check.md (NEW in v9 -- Z counterexample)
+  - specs/155_reynolds_pipeline_activation/handoffs/phase-4CW1-handoff-20260521.md
+  - specs/155_reynolds_pipeline_activation/handoffs/phase-4CW2-handoff-20260521.md
 - **Artifacts**: plans/10_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -43,20 +46,17 @@ Agents MUST:
 
 ## Overview
 
-This plan (v8) revises v7 based on three new research findings and one implementation session. Phases 1-5, 4A, and 4B are COMPLETED. Phase 4C (GHR93 Theorem 6 main proof) is IN PROGRESS with Cases I and II sorry-free (~1720 lines). Phase 4C-W1 is PARTIAL (degenerate cases and d-consistency remain). Phase 4C-W2 is PARTIAL (4 infrastructure lemmas proved; gap existence lemma identified as core blocker).
+This plan (v9) is a MAJOR revision prompted by a breakthrough discovery: the Lean formalization's definition of U'(A,B) and S'(A,B) is semantically wrong. The current implementation uses "B cofinal AND NOT standard Until" but GHR93 uses a gap-based definition from the first-order translation table (GHR93 p. 95). These are NOT equivalent -- not even on discrete orders (report 17_discrete-equivalence-check.md). The GHR93 FO table is ALWAYS FALSE on Z (proved by minimality of the first not-q point), while "cofinal AND NOT U" can be TRUE on Z (counterexample: A = "x=5", B = "x!=3", t=0).
 
-The v8 revision restructures Phase 4C-W1 to address two critical discoveries:
-1. **D-consistency uses infimum, not a_bwd(n)**: GHR93 defines `d = inf{t in [x',y'] : C holds on (t,y')}` and PROVES d-consistency as Claim 1 (report 15). The current `d = a_bwd(n)` definition makes d-consistency unprovable. Fixing this requires redefining d, proving Claim 1, and rewriting ~30 locations in Case II.
-2. **Degenerate intervals are vacuously winnable**: When d=x' (both gaps), the [d,d] game is vacuously won because Spoiler cannot produce an actual point. A `ghr93_duplicator_wins_degenerate_gap` lemma (~20 lines) dispatches this before IH application (report 12).
-3. **Gap existence lemma is the Lemma 9 core blocker**: All non-trivial Lemma 9 cases depend on a single gap existence lemma connecting `U'^mu(top, D)(m)` at actual points to the existence of r-definable D-definable-on-left gaps (W2 handoff). Estimated at 150-250 lines.
+Phases 1-5, 4A, and 4B are COMPLETED. Cases I and II of Theorem 6 are sorry-free (~1720 lines) and SURVIVE the fix -- they work parametrically through formula_agreement without unfolding U' semantics. The v9 plan inserts a new Phase 0 (U'/S' Semantics Fix) as the highest-priority work before all remaining W1-W4 phases.
 
-The full critical-path sorry count is 17 (13 in Phase 4C + 1 in Transfer.lean + 3 in IntegerModel.lean).
+The v8 Phase 4C-W2 was BLOCKED because `left_formula_gap_detection` was mathematically false under the wrong U' semantics. With the corrected gap-based definition, Lemma 9 becomes provable -- GHR93 calls it "Clear".
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, no `axiom` declarations in the pipeline, `stavi_expressive_completeness` is sorry-free.
 
 ### Research Integration
 
-Integrated from 14 artifacts across 3 rounds:
+Integrated from 17 artifacts across 4 rounds:
 
 **Round 3** (integrated in v4-v6):
 - `reports/03_team-research.md`: Chronicle truth, box mismatch, succ_cofinal assessment, NF-evaluation approach
@@ -72,20 +72,23 @@ Integrated from 14 artifacts across 3 rounds:
 - `reports/10_teammate-c-findings.md`: Phase 10 revert discovery via git history, full 17-sorry critical-path count, d-consistency unprovability proof, Props 6-7 entirely unimplemented
 - `reports/10_teammate-e-findings.md`: Literature alignment verification (faithful with necessary Lean adaptations), Reynolds/GHR93 "Lemma 9" naming collision, rank-varying Theorem 6 analysis
 
-**Round 5** (NEW in v8):
+**Round 5** (integrated in v8):
 - `reports/12_degenerate-interval-blocker.md`: Degenerate [d,d] intervals are vacuously winnable; `ghr93_duplicator_wins_degenerate_gap` lemma construction; forward strategy boundary extraction needed
 - `reports/15_d-consistency-blocker.md`: GHR93 defines d as infimum; Claim 1 proves d-consistency; 5 solution options analyzed; Option E (infimum-based d + separate IsPoint field) recommended; Case II rewrite ~100-200 lines
-- `handoffs/phase-4CW1-handoff-20260521.md`: W1.1 d-consistency BLOCKED, W1.2 degenerate cases remain, W1.3 bridge lemma FALSE for non-discrete orders
-- `handoffs/phase-4CW2-handoff-20260521.md`: 4 infrastructure lemmas proved (extendPoint_lt_iff, temporal_truth_mu_at_point, stavi_truth_mu_at_point, gap_detection_unique); theorem signatures corrected (hD added); base cases proved; gap existence lemma is sole remaining blocker
+
+**Round 6** (NEW in v9 -- U' semantics fix):
+- `reports/16_ghr93-lemma9-deep-read.md`: The breakthrough -- U' semantics bug found. `left_formula` and `left_formula_gap_detection` match the paper exactly. The SOLE discrepancy is in `stavi_U_truth` / `stavi_temporal_truth` / `stavi_temporal_truth_mu` definitions. Counterexample on Q shows "cofinal AND NOT U" disagrees with gap-based definition. With corrected U', Lemma 9 is "Clear" per GHR93.
+- `reports/17_stavi-semantics-impact.md`: Full ripple analysis across 3 files. 7 theorems break (4 proofs only, 3 statements + proofs). Cases I, II, Lemma 10, Lemma 11 forward SURVIVE unchanged. Recommended encoding: GHR93 FO table for base definitions + optional `std_untl`/`std_snce` constructors for StaviFormula.
+- `reports/17_discrete-equivalence-check.md`: U' definitions are NOT equivalent on Z either. GHR93 FO table is ALWAYS FALSE on Z (minimality of first not-q point). "cofinal AND NOT U" can be TRUE on Z. `flatten_stavi` must map `stavi_untl` to `Formula.bot` on discrete orders.
 
 ### Prior Plan Reference
 
-The v7 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A, 4B: COMPLETED. Phase 4C-W1: PARTIAL (degenerate sorries + d-consistency). Phase 4C-W2: PARTIAL (infrastructure only). Lessons learned from v7:
-1. **D-consistency architecture is flawed**: v7 proposed inequality fix (hd_eq_an -> hd_le_an). Report 15 confirms this is the RIGHT direction but insufficient -- d must be redefined from infimum, and Claim 1 must be proved. Case II needs ~30 sites rewritten but the paper NEVER uses d=a_n (only d<=a_n).
-2. **flatten_stavi_correct_mu bridge lemma is FALSE**: v7 planned this as W1.3; confirmed false in W1 session. Lemma 9 proceeds by direct structural analysis.
-3. **Gap existence lemma was not in v7**: Discovered during W2 session as the single biggest blocker. All non-trivial Lemma 9 cases depend on it.
-4. **Infrastructure lemmas from W2 should not be re-planned**: extendPoint_lt_iff, temporal_truth_mu_at_point, stavi_truth_mu_at_point, gap_detection_unique are already proved.
-5. **Effort calibration**: W1 (4 hours) and W2 (partial) confirm that each wave takes a full session. Case II rewrite for d-consistency will be a standalone effort.
+The v8 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A, 4B: COMPLETED. Phase 4C-W1: PARTIAL (degenerate gap lemma + 4 N-side sorries done, d-consistency + M-side degenerate remain). Phase 4C-W2: BLOCKED (theorem statement mathematically false under wrong U' semantics). Lessons learned from v8:
+1. **The `left_formula_gap_detection` blocker is NOT a Lemma 9 problem -- it is a semantics problem.** The theorem statement matches GHR93 Lemma 9 exactly. The `left_formula` definition matches GHR93 Definition 8.5 exactly. Only the EVALUATION of U' is wrong.
+2. **The W2 counterexample analysis was correct but attributed to wrong root cause.** The counterexample (M = Q, sqrt(2) gap) fails because U' at the point gives FALSE under "cofinal AND NOT U" (since U(top,D) IS true via a segment before the gap), but should be TRUE under the gap-based definition. The fix is the U' semantics, not the theorem statement.
+3. **Cases I and II are parametric and survive.** The sorry-free proofs work through `formula_agreement` generically and never unfold `stavi_temporal_truth_mu` at the U'/S' cases.
+4. **D-consistency is still needed** (report 15) but becomes tractable after the semantics fix because the correct U' definition enables the infimum-based approach.
+5. **Effort calibration from v8**: Each wave takes a full session (4-8 hours). The semantics fix is estimated at 8-14 hours across 4 sub-phases.
 
 ### Roadmap Alignment
 
@@ -98,6 +101,8 @@ The v7 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A
 ## Goals & Non-Goals
 
 **Goals**:
+- Fix the U'/S' semantic definitions to match the GHR93 first-order table (gap-based)
+- Reprove all theorems broken by the semantics fix (4 proof-only breaks, 3 statement+proof breaks)
 - Prove GHR93 Theorem 4 (Theorem 9.3.1): {U,S,U',S'} is expressively complete for ALL linear temporal structures -- the FULL game-theoretic proof
 - Prove Theorem 5 (Reynolds): {U,S} expressively complete for Prior structures, derived from Theorem 4
 - Prove Reynolds Lemmas 6-13 (gap elimination machinery)
@@ -119,48 +124,77 @@ The v7 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Infimum infrastructure for ExtendedCarrier exceeds estimate | H | M | ExtendedCarrier inherits linear order. If full ConditionallyCompleteLattice is too heavy, use Classical.choice on the formula-defined set (which is nonempty, y' is in it) combined with WellFounded argument for the infimum. Budget 120 lines as ceiling. |
+| GHR93 FO table encoding in Lean is harder than estimated (complex nested quantifiers) | H | M | The FO table from GHR93 p. 95 has been transcribed term-by-term in report 17. Start with the base `stavi_temporal_truth` encoding, verify on simple examples before tackling the mu-relativized version. Budget 200 lines as ceiling. |
+| Reproving `rank_embed_stavi_truth_mu` for stavi_untl/snce with FO table is complex | H | M | The statement survives (rank_embed preserves order, mu-status, predicates). The proof needs to show the FO-table witnesses transfer across rank_embed. The key property is that rank_embed preserves all the structural relationships. Budget 100 lines per case. |
+| `stavi_truth_mu_at_point` reproof is non-trivial with FO table | M | M | At actual points, mu-restricted quantifiers reduce to unrestricted. The proof must show each FO-table clause transfers. Same structural argument as current proof but with more clauses. |
+| StaviFormula extension with `std_untl`/`std_snce` breaks existing pattern matches | M | L | Lean4 exhaustiveness checking will flag all incomplete matches. Add cases in every match: `stavi_depth`, `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `rank_embed_stavi_truth_mu`, `stavi_truth_mu_at_point`, `flatten_stavi`. Each new case is structurally identical to the existing `untl`/`snce` handlers. |
+| Infimum infrastructure for ExtendedCarrier exceeds estimate | H | M | ExtendedCarrier inherits linear order. If full ConditionallyCompleteLattice is too heavy, use Classical.choice on the formula-defined set (nonempty since y' is in it) combined with WellFounded argument. Budget 120 lines as ceiling. |
 | Case II rewrite (~30 sites) for hd_le_an introduces regressions | H | M | Case II never needs d=a_n per GHR93 paper. The 30 sites use hd_eq_an only to deduce IsPoint d from IsPoint a_n. Add separate h_pt_d field or prove IsPoint d from the infimum when a_n is a point. Regression test: lean_verify ghr93_case_II after each batch of changes. |
-| Gap existence lemma (150-250 lines) is harder than estimated | H | M | Start with backward direction (gap -> U') which is simpler. If forward direction stalls, decompose into sub-lemmas: (a) cut construction, (b) downward-closedness, (c) D-definability, (d) D-between. Mark [PARTIAL] with proved direction. |
-| Lemma 9 S/S' cases require >300 lines via direct analysis | H | M | Develop easy cases first (neg, conj, stavi_untl). S/S' cases use specific flatten_stavi outputs -- analyze each one individually. If one S/S' case exceeds 150 lines, mark [PARTIAL]. |
+| Gap existence lemma under correct U' semantics requires different proof structure | M | L | With correct U' semantics, the gap existence is built into the definition. U'(top, D)(m) directly asserts the existence of a gap-like structure. The proof should be more natural, not harder. |
 | Props 6-7 require unforeseen Lean infrastructure (~500+ lines) | M | M | Follow GHR93 paper step-by-step. If Prop 7 composition is too complex, try direct Corollary 5 route. |
 | Phase 10 (h_truth_corr) delegation fails at type level | L | L | Phase 10 is independent. If types don't match, mark [BLOCKED] with exact mismatch and proceed with other phases. |
-| Gap elimination Lemmas 6-13 (Reynolds Section 7) exceed 12 hours | M | M | Lemma 12 (model surgery, 14 cases) is the hardest. Budget 2-3 sessions. Modularize into one sub-lemma per case. |
-| Rank-varying Theorem 6 requires cross-rank coercion infrastructure | M | M | Budget 80-150 lines. rank_embed already preserves stavi_truth_mu. If ExtendedCarrier type-level issues arise, prove rank contraction via stavi_n_equiv_mono. |
 
-## Full Sorry Inventory (17 Critical-Path Sorries)
+## GHR93 First-Order Table for U' (Reference for Implementers)
 
-### Phase 4C Sorries (13 across 2 files)
+From GHR93 p. 95, the correct first-order translation of U'(p,q)(t):
 
-**EFGames.lean** (4 sorries):
-| Line | Identifier | Content | Difficulty | Blocks |
-|------|-----------|---------|------------|--------|
-| 1629 | `left_formula_gap_detection` | Lemma 9 left (gap detection correctness) | Hard (200+ lines) | Cases III/IV, line 496 |
-| 1648 | `right_formula_gap_detection` | Lemma 9 right (dual) | Medium (50+ lines after left) | Cases III/IV |
-| 2677 | `ghr93_decomposition_implies_game` | Lemma 11 backward direction | Medium (80-120 lines) | Prop 7 (verify if needed) |
-| 2749 | `stavi_expressive_completeness` | Corollary 5 / main theorem | Medium (80-120 lines) | Final assembly |
+```
+U'(p,q)(t) := exists s > t,
+  -- Main body: for all u in (t,s), either B-cofinal or A-takes-over
+  (forall u, t < u AND u < s ->
+    (exists v, u < v AND forall w, t < w AND w < v -> q(w))    -- Disjunct 1: q holds up to v
+    OR
+    (forall v, u < v AND v < s -> p(v)                          -- Disjunct 2: p holds on (u,s)
+     AND exists v, t < v AND v < u AND NOT q(v)))               --   AND q failed before u
+  AND
+  -- q fails somewhere in (t,s)
+  (exists u, t < u AND u < s AND NOT q(u))
+  AND
+  -- q holds on some initial segment
+  (exists u, t < u AND u < s AND forall v, t < v AND v < u -> q(v))
+```
 
-**ExpressivenessGeneral.lean** (9 sorries):
-| Line | Context | Content | Difficulty | Blocks |
-|------|---------|---------|------------|--------|
-| 298 | `obtain_split_point_props` | d-consistency left | UNPROVABLE as stated; requires infimum redesign | sigma/tau derivation |
-| 308 | `obtain_split_point_props` | d-consistency right | UNPROVABLE as stated; requires infimum redesign | sigma/tau derivation |
-| 347 | `obtain_split_point_props` | h_pt_left degenerate gap | Easy (~20 lines; vacuous game) | sigma |
-| 367 | `obtain_split_point_props` | h_pt_right degenerate gap | Easy (~20 lines; vacuous game) | tau |
-| 387 | `obtain_split_point_props` | h_pt_xc_w degenerate gap | Easy (~20 lines; vacuous game) | SplitPointProps |
-| 404 | `obtain_split_point_props` | h_pt_cy_w degenerate gap | Easy (~20 lines; vacuous game) | SplitPointProps |
-| 496 | `obtain_split_point_props` | c construction when d is gap | Hard (50-80 lines, needs Lemma 9) | sigma/tau |
-| 2400 | `ghr93_cases_III_IV` | Cases III-IV of Theorem 6 | Very Hard (230-350 lines) | main theorem |
-| 2621 | `ghr93_forward_to_backward_rank_varying` | Rank-varying Theorem 6 | Medium (80-150 lines) | Prop 7 |
+Key properties:
+- ALWAYS FALSE on discrete orders (Z) -- proved in report 17
+- On dense incomplete orders (Q), captures the gap-based behavior
+- The witness `s` in the mu-relativized version need NOT be mu-restricted (it is just a bound; the gap itself need not be an actual point)
 
-### Other Critical-Path Sorries (4 across 2 files)
+S'(p,q)(t) is the dual (swap < and >, swap future/past directions).
 
-| File | Line | Identifier | Phase | Status |
-|------|------|-----------|-------|--------|
-| Transfer.lean | 574 | `h_truth_corr` | 10 | UNBLOCKED (delegate to dd_countermodel_chronicle_discrete) |
-| IntegerModel.lean | 859 | `no_gaps_discrete` | 8 | Awaits Phase 6 |
-| IntegerModel.lean | 1135 | `cofinal_decomposition_k_equiv` | 7 | NOT STARTED |
-| IntegerModel.lean | 1194 | `ordered_sum_of_good_bounded_is_good` | 7 | NOT STARTED |
+## Full Sorry Inventory (Current State)
+
+### EFGames.lean (4 sorries)
+| Line | Identifier | Content | Phase |
+|------|-----------|---------|-------|
+| 1629 | `left_formula_gap_detection` | Lemma 9 left | 4C-W2 (UNBLOCKED by Phase 0) |
+| 1648 | `right_formula_gap_detection` | Lemma 9 right | 4C-W2 (UNBLOCKED by Phase 0) |
+| 2718 | `ghr93_decomposition_implies_game` | Lemma 11 backward | 4C-W4 |
+| 2790 | `stavi_expressive_completeness` | Corollary 5 / main theorem | 4C-W4 |
+
+### ExpressivenessGeneral.lean (8 sorries)
+| Line | Context | Content | Phase |
+|------|---------|---------|-------|
+| 306 | `obtain_split_point_props` | d-consistency left | 4C-W1 |
+| 316 | `obtain_split_point_props` | d-consistency right | 4C-W1 |
+| 430 | `obtain_split_point_props` | h_pt_xc M-side degenerate gap | 4C-W1 |
+| 447 | `obtain_split_point_props` | h_pt_cy M-side degenerate gap | 4C-W1 |
+| 551 | `obtain_split_point_props` | c construction when d is gap | 4C-W3 |
+| 2455 | `ghr93_cases_III_IV` | Cases III-IV of Theorem 6 | 4C-W3 |
+| 2676 | `ghr93_forward_to_backward_rank_varying` | Rank-varying Theorem 6 | 4C-W4 |
+
+### Transfer.lean (1 sorry)
+| Line | Identifier | Phase |
+|------|-----------|-------|
+| 574 | `h_truth_corr` | 10 |
+
+### IntegerModel.lean (3 sorries)
+| Line | Identifier | Phase |
+|------|-----------|-------|
+| 859 | `no_gaps_discrete` | 8 |
+| 1135 | `cofinal_decomposition_k_equiv` | 7 |
+| 1194 | `ordered_sum_of_good_bounded_is_good` | 7 |
+
+**Total critical-path sorries**: 16 (down from 17 in v8 due to N-side degenerate sorries closed)
 
 ## Implementation Phases
 
@@ -168,9 +202,9 @@ The v7 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A
 | Wave | Phases | Blocked by | Status |
 |------|--------|------------|--------|
 | -- | 1, 2, 3, 4A, 5, 4B | -- | COMPLETED |
-| 1 | 4C-W1 (d-consistency + degenerate intervals) | -- | IN PROGRESS |
-| 2 | 4C-W2 (Lemma 9: gap existence + all cases) | 4C-W1 (for c-gap-case integration) | IN PROGRESS |
-| 3 | 4C-W3 (c-gap-case + Cases III/IV) | 4C-W2 | NOT STARTED |
+| 1 | 0 (U'/S' Semantics Fix) | -- | NOT STARTED |
+| 2 | 4C-W1 (d-consistency + degenerate), 4C-W2 (Lemma 9) | 0 | 4C-W1 PARTIAL, 4C-W2 NOT STARTED |
+| 3 | 4C-W3 (c-gap-case + Cases III/IV) | 4C-W1, 4C-W2 | NOT STARTED |
 | 4 | 4C-W4 (Assembly: rank-varying Thm 6, Props 6-7, Cor 5) | 4C-W3 | NOT STARTED |
 | 5 | 5' (Theorem 5 from Theorem 4) | 4C-W4 | NOT STARTED |
 | 6 | 6 (Gap Elimination Lemmas 6-13, Theorem 14) | 5' | NOT STARTED |
@@ -180,10 +214,9 @@ The v7 plan had 12 phases (1-5, 4A, 4B, 4C-W1 through W4, 5'-11). Phases 1-5, 4A
 | 10 | 11 (Final wiring) | 9, 10 | NOT STARTED |
 
 **Execution order** (STRICT SEQUENTIAL within main chain):
-4C-W1 -> 4C-W2 -> 4C-W3 -> 4C-W4 -> 5' -> 6 -> 8 -> 9 -> 11.
+0 -> 4C-W1 -> 4C-W2 -> 4C-W3 -> 4C-W4 -> 5' -> 6 -> 8 -> 9 -> 11.
 Phase 7 (IntegerModel helpers) can proceed in parallel with the 4C chain.
 Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_countermodel_chronicle_discrete is ~5 lines.
-Lemma 11 backward (EFGames.lean:2677) can proceed in parallel -- verify first whether Proposition 7 actually needs it.
 
 ---
 
@@ -268,35 +301,89 @@ Lemma 11 backward (EFGames.lean:2677) can proceed in parallel -- verify first wh
 
 ---
 
-### Phase 4C-W1: Infimum-Based D + Degenerate Intervals + Case II Rewrite [IN PROGRESS]
+### Phase 0: U'/S' Semantics Fix [NOT STARTED]
 
-**Goal**: Restructure `obtain_split_point_props` to use the GHR93 infimum-based definition of d, handle degenerate intervals via vacuous game lemma, and update Case II for `hd_le_an`.
+**Goal**: Replace the incorrect "cofinal AND NOT U/S" definitions of U'(A,B) and S'(A,B) with the correct GHR93 FO-table-based definitions. Reprove all broken theorems. Verify Cases I/II/Lemma 10/Lemma 11 forward still compile unchanged.
 
-This phase resolves 6 of the 9 sorries in ExpressivenessGeneral.lean: the 2 d-consistency sorries (lines 298, 308) and the 4 degenerate interval sorries (lines 347, 367, 387, 404).
+**CRITICAL**: This is the highest-priority new phase. It unblocks Phase 4C-W2 (Lemma 9) which was BLOCKED in v8 due to the wrong semantics.
 
-**Research Basis**: Report 15 (d-consistency blocker) establishes that GHR93 defines `d = inf{t in [x',y'] : C holds on (t,y')}` and proves d-consistency as "Claim 1". Report 12 (degenerate interval blocker) establishes that [d,d] games with gap endpoints are vacuously winnable.
+**Root Cause** (from report 16): The "cofinal AND NOT U" formulation captures a GLOBAL condition on B's behavior, while the correct GHR93 definition is LOCAL -- it finds a specific gap where B transitions from true to false. Even when U(A,B) is true (via a segment before the gap), U'(A,B) can still be true under the gap-based definition. On Q with D(x) = (x < sqrt(2) OR x > sqrt(2)+1), gap-based U'(top,D)(0) = TRUE but "cofinal AND NOT U" U'(top,D)(0) = FALSE.
 
-**BEFORE CODING**: Re-read GHR93 Section 8, pages 27-28 (definition of c,d as infima; Claims 1-2). Understand that c and d are semantic properties of the structures, defined BEFORE any game is played. The paper then proves that any winning strategy's response to c must equal d.
+**Impact Summary** (from report 17):
+- 3 definitions MUST CHANGE: `stavi_U_truth`, `stavi_S_truth`, FO-table encodings
+- 4 definition sites MUST CHANGE: `stavi_temporal_truth` stavi_untl/snce cases, `stavi_temporal_truth_mu` stavi_untl/snce cases
+- 3 theorems have broken STATEMENTS + PROOFS: `flatten_stavi_correct` (stavi_untl/snce cases), `stavi_U_discrete_equiv`, `stavi_S_discrete_equiv`
+- 4 theorems have broken PROOFS only (statements survive): `rank_embed_stavi_truth_mu` (stavi_untl/snce cases), `stavi_truth_mu_at_point` (stavi_untl/snce cases)
+- SAFE (no changes needed): Cases I, II, Lemma 10, Lemma 11 forward, all gap infrastructure, `left_formula`/`right_formula` definitions, `gap_detection_unique`, all base/neg/conj cases of rank_embed and truth_mu_at_point
 
-**Implementation Strategy (REVISED after W1 v2 session)**: The inequality approach (hd_le_an) was attempted and REJECTED — changing `hd_eq_an` to inequality breaks Case II at 28 locations, and the inequality cannot be recovered to equality from the available hypotheses. The correct approach is to **prove d-consistency directly via GHR93 Claim 1**, keeping `hd_eq_an` as equality. This preserves all existing Case I and Case II code.
-
-GHR93 Claim 1 states: for any winning strategy response, the response at the boundary position must equal d (the infimum). The proof uses formula_agreement from the winning condition — since all rank-r formulas agree between c and any response, and formula C uniquely characterizes d's position (as the infimum of the C-satisfying set), the response must equal d. This is ~150-200 lines of new proof work.
-
-**Revised approach**:
-1. Keep `d = a_bwd(n)` and `hd_eq_an` unchanged
-2. Prove Claim 1: define continuation formula C from the backward selections; show any winning response at the boundary must satisfy C; derive d-consistency from C-uniqueness
-3. Degenerate intervals: once d-consistency is proved, the degenerate case follows (d-consistency gives `a'_full(n) = d`, so if `x' = d` then `x = c` follows from formula correspondence)
+**BEFORE CODING**: Re-read GHR93 Section 3 (p. 95) for the FO table, and BdRV 2002 Definition 7.11 for the gap-based picture. Understand that the witness `s` in the FO table is just a bound (not required to be an actual point in the mu-relativized version).
 
 **Tasks**:
 
-- [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean. *(completed — sorry-free, verified via lean_verify)*
+- [ ] **Task 0.1**: Replace `stavi_U_truth` (StaviConnectives.lean:67-76) with the GHR93 FO table definition. Replace `stavi_S_truth` (lines 89-98) with the dual. (~50 lines changed)
+
+- [ ] **Task 0.2**: Replace `stavi_temporal_truth` stavi_untl case (StaviConnectives.lean:134-140) with the GHR93 FO table using recursive `stavi_temporal_truth` calls. Replace stavi_snce case (lines 141-147) dually. (~40 lines changed)
+
+- [ ] **Task 0.3**: Replace `stavi_temporal_truth_mu` stavi_untl case (EFGames.lean:808-816) with the mu-relativized GHR93 FO table. The witness `s` should NOT be mu-restricted (it serves as a bound; the gap may not be an actual point). All other quantified points (u, v, w) ARE mu-restricted. Replace stavi_snce case (lines 817-825) dually. (~60 lines changed)
+
+- [ ] **Task 0.4**: Update `flatten_stavi` (StaviConnectives.lean:415-418) to map `stavi_untl A B` to `Formula.bot` and `stavi_snce A B` to `Formula.bot`. On discrete orders, U' is always false, so the flattening to bot is correct. (~10 lines changed)
+
+- [ ] **Task 0.5**: Reprove `flatten_stavi_correct` stavi_untl case (StaviConnectives.lean:477-528). With the FO table definition, U' is always false on discrete orders (report 17 proves this by minimality of first not-q point). The flattened formula is `bot`, so both sides are False. Proof strategy: assume the FO table holds, derive contradiction using discrete-order well-foundedness. (~30-50 lines)
+
+- [ ] **Task 0.6**: Reprove or replace `stavi_U_discrete_equiv` (StaviConnectives.lean:362-377) and `stavi_S_discrete_equiv` (lines 384-398). With the corrected definition, U' is always false on discrete orders, so the equivalence becomes `False <-> temporal_truth t bot = False <-> False`. May simplify to a `stavi_U_always_false_discrete` theorem. (~30 lines)
+
+- [ ] **Task 0.7**: Replace FO-table encoding definitions (`cofinal_above_fo`, `stavi_U_fo`, etc., StaviConnectives.lean:176-232) with the correct GHR93 FO table encodings. These are `MonadicFormula` encodings used for the FO-definability direction. (~80 lines)
+
+- [ ] **Task 0.8**: Reprove `rank_embed_stavi_truth_mu` stavi_untl/snce cases (EFGames.lean:1002-1045). Statement survives unchanged. Proof must show FO-table witnesses transfer through rank_embed. Key fact: rank_embed preserves order, mu-status, and predicate values. (~80-120 lines)
+
+- [ ] **Task 0.9**: Reprove `stavi_truth_mu_at_point` stavi_untl/snce cases (EFGames.lean:1461-1532). Statement survives unchanged. At actual points m, mu-restricted quantifiers reduce to unrestricted quantifiers over M.carrier. Must show each FO-table clause transfers. (~60-100 lines)
+
+- [ ] **Task 0.10**: Verify that Cases I and II (`ghr93_case_I`, `ghr93_case_II`), Lemma 10 (`ghr93_duplicator_wins_round_mono`), and Lemma 11 forward (`ghr93_game_implies_decomposition`) still compile with `lake build`. These should NOT need changes.
+
+- [ ] **Task 0.11**: Optionally, extend StaviFormula with `std_untl` and `std_snce` constructors for standard Until/Since of StaviFormula subformulas (needed if `left_formula` S/S' cases currently use `flatten_stavi`). Extend `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `stavi_depth` for the new constructors. (~80-120 lines additive)
+
+- [ ] **Task 0.12**: Run `lake build` and verify zero errors.
+
+**Timing**: 8-14 hours (across 2-3 sessions)
+
+**Depends on**: none
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean` -- definitions, flatten_stavi, discrete equivalences, FO tables
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- stavi_temporal_truth_mu, rank_embed, stavi_truth_mu_at_point
+
+**Verification**:
+- `lean_verify flatten_stavi_correct` shows no `sorryAx`
+- `lean_verify rank_embed_stavi_truth_mu` shows no `sorryAx`
+- `lean_verify stavi_truth_mu_at_point` shows no `sorryAx`
+- `lean_verify ghr93_case_I` shows no `sorryAx` (unchanged from before)
+- `lean_verify ghr93_case_II` shows no `sorryAx` (unchanged from before)
+- `lake build` passes with zero errors
+
+---
+
+### Phase 4C-W1: D-Consistency + Degenerate Intervals + Case II Rewrite [PARTIAL]
+
+**Goal**: Restructure `obtain_split_point_props` to use the GHR93 infimum-based definition of d, handle degenerate intervals via vacuous game lemma, and update Case II for `hd_le_an`.
+
+This phase resolves the 4 remaining sorries in `obtain_split_point_props` that are NOT dependent on Lemma 9: the 2 d-consistency sorries (lines 306, 316) and the 2 M-side degenerate interval sorries (lines 430, 447).
+
+**Research Basis**: Report 15 (d-consistency blocker) establishes that GHR93 defines `d = inf{t in [x',y'] : C holds on (t,y')}` and proves d-consistency as "Claim 1". Report 12 (degenerate interval blocker) establishes that [d,d] games with gap endpoints are vacuously winnable.
+
+**Status**: PARTIAL. Task W1.1 (degenerate gap lemma) DONE. Task W1.3 (N-side degenerate sorries) DONE. Tasks W1.2, W1.4, W1.5 remain.
+
+**BEFORE CODING**: Re-read GHR93 Section 8, pages 27-28 (definition of c,d as infima; Claims 1-2). With the corrected U' semantics from Phase 0, the infimum-based approach becomes cleaner because U' now has the correct gap-based meaning, making the continuation formula C well-behaved.
+
+**Tasks**:
+
+- [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean. *(completed -- sorry-free, verified via lean_verify)*
 
 - [ ] **Task W1.2**: Prove d-consistency via Claim 1 or architectural restructuring (~150-300 lines). D-consistency is confirmed genuinely unprovable when `d = a_bwd(n)` because strategies are non-deterministic. GHR93 defines d as an infimum. Two viable paths:
-  - (a) Redefine d as canonical forward strategy response (via Classical.choice), making d-consistency `rfl`, then prove `d ≤ a_bwd(n)` and rewrite Case II at 28 sites
+  - (a) Redefine d as canonical forward strategy response (via Classical.choice), making d-consistency `rfl`, then prove `d <= a_bwd(n)` and rewrite Case II at ~30 sites
   - (b) Prove Claim 1 directly: define continuation formula C; show formula_agreement forces response = d at boundary; close 2 sorries (lines 306, 316)
   Both paths require Case II adjustments. This is the single hardest remaining architectural task.
 
-- [x] **Task W1.3**: Close N-side degenerate interval sorries. *(completed — 4 N-side sorries eliminated via boundary correspondence + ghr93_duplicator_wins_degenerate_gap. 2 new M-side degenerate sorries at lines 430, 447 from SplitPointProps requiring point witnesses. Net: 9 → 7 sorries.)*
+- [x] **Task W1.3**: Close N-side degenerate interval sorries. *(completed -- 4 N-side sorries eliminated via boundary correspondence + ghr93_duplicator_wins_degenerate_gap. 2 new M-side degenerate sorries at lines 430, 447 from SplitPointProps requiring point witnesses. Net: 9 -> 7 sorries.)*
 
 - [ ] **Task W1.4**: Close M-side degenerate interval sorries (lines 430, 447). Make `h_pt_xc`/`h_pt_cy` optional in SplitPointProps (use `Option` or dispatch before construction). ~20-40 lines.
 
@@ -304,13 +391,13 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 **Timing**: 8-14 hours (dominated by d-consistency architectural work)
 
-**Depends on**: none
+**Depends on**: 0 (correct U' semantics needed for infimum-based continuation formula C)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (7 in ExpressivenessGeneral.lean):
+**Sorry inventory** (7 in ExpressivenessGeneral.lean after W1.3):
 - Lines 306, 316: d-consistency left/right (Task W1.2)
 - Lines 430, 447: M-side degenerate point witnesses (Task W1.4)
 - Line 551: c construction gap case (blocked by Lemma 9)
@@ -325,62 +412,36 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [BLOCKED]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [NOT STARTED]
 
-**Goal**: Prove `left_formula_gap_detection` and `right_formula_gap_detection` -- the GHR93 Lemma 9 that bridges temporal formulas to gap properties.
+**Goal**: Prove `left_formula_gap_detection` and `right_formula_gap_detection` -- the GHR93 Lemma 9 that bridges temporal formulas to gap properties. With the corrected U' semantics from Phase 0, the theorem is now PROVABLE (GHR93: "Clear").
 
-**Status**: BLOCKED. The theorem `left_formula_gap_detection` is **mathematically false in ALL three evaluation regimes** (mu-relativized in M_r, standard in M, and standard in M_r). The backward direction of the IFF fails for the `.neg` case. Infrastructure complete (4 lemmas proved). See BLOCKER below for extended analysis confirming that the proposed M_r fix also fails.
+**Status**: UNBLOCKED. The v8 blocker (theorem statement mathematically false) is resolved by fixing U' semantics. The theorem statement and `left_formula` definition both match GHR93 exactly -- only the evaluation was wrong.
 
-**BLOCKER** (Phase 4C-W2):
-- **What failed**: The theorem `left_formula_gap_detection` has a false backward direction for the `.neg A` case. **All three evaluation regimes** (mu-relativized in M_r, standard in M, and standard in M_r) produce the same counterexample.
-- **Counterexample**: Let M = Q (rationals), sig with one predicate a, atomMap mapping atom(a) to a, M.interp a x = (x < sqrt(2)), D = `.base (.atom a)`, m = 0, r = 0, A = `.neg (.base .bot)`. Then left_formula(.neg(.base .bot)) D = U'(top, D). The RHS has gap at sqrt(2) with (neg bot)^mu(gamma) = True, D-between holds, gap_definable_on_left holds. RHS = True.
-  - **In M (standard)**: U(top, D)(0) is True (witness s=1, D continuous on (0,1) since all q in (0,1) have q < sqrt(2)). So U'(top, D)(0) = False. LHS = False.
-  - **In M_r (mu-relativized)**: By stavi_truth_mu_at_point, equals M evaluation. LHS = False.
-  - **In M_r (standard)**: U(top, D)(0) is True (witness s = Sum.inr gap_at_sqrt2, D continuous on (extendPoint 0, Sum.inr gap) since this interval in M_0 contains only actual points from (0, sqrt(2)) where D = True; there are no intermediate gaps in M_0 because the only 0-definable gap is at sqrt(2) itself). So U'(top, D)(0) = False. LHS = False.
-  - All three: LHS = False, RHS = True. IFF is **FALSE**.
-- **Why the M_r fix fails**: The prior analysis (counterexample document) claimed M_r evaluation fixes the theorem because "gaps break D-continuity." This is INCORRECT: between m and the gap at sqrt(2), there are no intermediate gaps in M_0. The interval (extendPoint 0, Sum.inr gap) contains only actual points from (0, sqrt(2)), all satisfying D. So D IS continuous on this interval in M_r, making U(top, D)(0) True. The gap itself is the ENDPOINT of the interval, not a point WITHIN it.
-- **Root cause**: The fundamental issue is that U'(top, D)(m) requires U(top, D)(m) to be FALSE. But when D holds continuously at actual points between m and a D-defined gap (the D-between condition), U(top, D)(m) is True (witnessed by any interval staying within the region where D holds). The D-defined gap is at the BOUNDARY of D's domain, not inside an interval where D should fail. U' detects "D is cofinal but never continuously so" -- but between m and the gap, D IS continuously True (at actual points), so U is True and U' is False.
-- **Impact on main theorem**: GHR93 Case III (a_n is a left-defined gap) requires the backward direction: gap exists with B^mu at gap -> left(B, D) holds at a boundary point. For B = rank_type at a gap, left(B, D) contains U'(top, D) as a conjunct (since all left-formula neg cases and imp cases produce it). The counterexample applies with B = rank_type at the sqrt(2) gap. Case III CANNOT work as described.
-- **What was tried (comprehensive)**: (1) Mu-relativized evaluation (original statement): counterexample shows False. (2) Standard M evaluation: equivalent to mu-relativized at actual points by stavi_truth_mu_at_point; same counterexample. (3) Standard M_r evaluation (proposed fix): verified False with detailed analysis showing no intermediate gaps in M_0. (4) Analysis of game context: confirmed that the specific rank_type formula B at a gap also triggers the counterexample since left(B, D) contains U'(top, D) as a conjunct.
-- **Possible resolutions** (requiring user decision):
-  1. **Forward-only implication**: State `left_formula(A,D)(m) -> exists gap...` The forward direction may be vacuously true when left_formula is False. Useful if Case III only needs this direction (which requires a different Case III proof structure).
-  2. **Alternative gap detection formula**: Redesign left_formula to avoid U'(top, D) in the neg case. For example, use a formula that directly encodes "D-defined gap exists above m" without using Stavi Until. This deviates from GHR93.
-  3. **Enriched extended structure**: Add ALL Dedekind gaps (not just r-definable ones) so that every interval contains gaps where D fails. This changes the framework substantially.
-  4. **Re-examine GHR93 source text**: The GHR93 book (Chapter 9, Lemma 9) may have additional conditions, a different left_formula definition, or the proof may use a different argument than the one extracted in report 08/14. A careful re-reading of the actual published text is needed.
-  5. **Bypass Lemma 9**: Find an alternative proof for Cases III/IV that doesn't use left_formula_gap_detection at all.
-- **Prohibited workarounds**: Do NOT use sorry, def X := True, or any vacuous placeholder.
+**Research Basis**: Report 16 traces the paper's "Clear" argument case by case:
+- **Neg case**: left(not A, D) = U'(top, D) AND NOT left(A, D). With correct U', U'(top,D)(m) directly asserts a gap above m with D before it and NOT-D after it. Combined with NOT left(A,D) (by IH, no such gap has A^mu), this gives exactly the RHS.
+- **Key insight**: Uniqueness of the nearest D-gap above m follows from D-definability -- if two gaps existed, D would fail between them, contradicting the first gap's D-on-left property.
 
-**Research Basis**: W2 handoff identifies the gap existence lemma as the critical prerequisite for ALL non-trivial cases. NOTE: the gap existence approach is invalidated by the counterexample above -- the theorem statement itself is wrong.
-
-**BEFORE CODING**: Fix the theorem statement (see BLOCKER above). The LHS must use standard truth in M_r, not mu-relativized truth.
+**BEFORE CODING**: Read report 16 Section "Why the Paper Says 'Clear'" for the case-by-case argument. The proof is by structural induction on A.
 
 **Tasks**:
 
-- [x] **Task W2.0**: Infrastructure lemmas (completed in W2 session):
-  - `extendPoint_lt_iff` (strict order preservation for point embedding)
-  - `temporal_truth_mu_at_point` (mu-truth at actual points = standard truth)
-  - `stavi_truth_mu_at_point` (same for StaviFormula)
-  - `gap_detection_unique` (at most one gap per D per point m satisfying conditions)
-  - Theorem signature fix: added `hD : stavi_depth D <= r` to both gap detection theorems
+- [ ] **Task W2.1**: Prove a gap-equivalence lemma (~80-150 lines): the FO-table-based U'(top, D)(m) is equivalent to the existence of a gap gamma above m with D-defined-on-left, D on (m, gamma). This connects the first-order definition to the second-order gap conditions used in Lemma 9's RHS.
 
-- [x] **Task W2.base**: Base cases proved (atom, bot, box): both sides reduce to False at gaps.
+- [ ] **Task W2.2**: Prove Lemma 9 left easy cases (atom, bot, box, neg, conj) using the gap-equivalence lemma (~100-150 lines total). The neg case is the key one -- uses the uniqueness argument.
 
-- [ ] **Task W2.1**: Prove the gap existence lemma (~150-250 lines). *(deviation: blocked -- theorem statement is mathematically false, see BLOCKER above. The standalone gap existence from U'(top,D)(m) in M is impossible because the D-between condition combined with actual points between m and gamma implies U(top,D)(m), contradicting U'. The theorem LHS must be changed from stavi_temporal_truth_mu to stavi_temporal_truth on extendedStructure.)*
+- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (untl, snce, stavi_untl, stavi_snce) (~200-300 lines). For the S/S' cases, left_formula produces U(compound, D) where compound involves U' subexpressions. With the correct U' semantics, these subexpressions have the right gap-based meaning.
 
-- [ ] **Task W2.2**: Prove Lemma 9 left easy cases using gap existence (~100 lines total) *(deviation: blocked -- depends on W2.1 which requires theorem statement fix)*
-
-- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (~200-300 lines) *(deviation: blocked -- depends on W2.1)*
-
-- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`, ~50 lines) *(deviation: blocked -- same issue as left direction)*
+- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`, ~50-100 lines). Dual of left by symmetry. May be provable by a single dual-application lemma.
 
 - [ ] **Task W2.5**: Verify `lake build` passes.
 
-**Timing**: 8-14 hours
+**Timing**: 6-10 hours
 
-**Depends on**: 4C-W1 is NOT a strict dependency for Lemma 9 itself (Lemma 9 is about gap detection in a single structure, independent of the strategy restriction). However, the c-gap-case integration (line 496) needs both W1 and W2.
+**Depends on**: 0 (correct U' semantics)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close sorries at lines 1629, 1648; add gap_existence_from_stavi_untl_top
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close sorries at lines 1629, 1648; add gap_equivalence_from_fo_table
 
 **Verification**:
 - `lean_verify left_formula_gap_detection` shows no `sorryAx`
@@ -391,15 +452,15 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 ### Phase 4C-W3: c-Gap-Case + Cases III/IV [NOT STARTED]
 
-**Goal**: Close the c-gap-case sorry (line 496) using Lemma 9, then prove Cases III and IV of GHR93 Theorem 6. This completes the four-case exhaustion of the inductive step.
+**Goal**: Close the c-gap-case sorry (line 551) using Lemma 9, then prove Cases III and IV of GHR93 Theorem 6. This completes the four-case exhaustion of the inductive step.
 
-**Research Basis**: Cases III (left-defined gap) and IV (right-defined gap) require Lemma 9 for gap detection. The c-gap-case at line 496 requires Lemma 9 to locate a compatible gap in M when d is a gap in N.
+**Research Basis**: Cases III (left-defined gap) and IV (right-defined gap) require Lemma 9 for gap detection. The c-gap-case at line 551 requires Lemma 9 to locate a compatible gap in M when d is a gap in N.
 
 **BEFORE CODING**: Re-read GHR93 Section 8, Theorem 6 proof for Cases III and IV. Case III constructs delta = left(B, D) where B = X_{a_n} and D defines the gap a_n on the left. Case IV constructs delta = A and not D and U(right(B,D), A) for gaps defined on the right.
 
 **Tasks**:
 
-- [ ] **Task W3.1**: Close c-gap-case in `obtain_split_point_props` (line 496, ~50-80 lines). When d is a gap in N:
+- [ ] **Task W3.1**: Close c-gap-case in `obtain_split_point_props` (line 551, ~50-80 lines). When d is a gap in N:
   1. d is an r-definable gap, so it has a defining formula D with stavi_depth D <= r.
   2. For each formula A with stavi_depth A <= r, left_formula(A, D) or right_formula(A, D) evaluated at actual points in M detects compatible gaps.
   3. Use the forward strategy's formula agreement to transfer gap detection from N to M.
@@ -418,10 +479,10 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 **Depends on**: 4C-W1 (SplitPointProps restructured), 4C-W2 (Lemma 9 proved)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- close line 496, replace line 2400 sorry with Cases III/IV proofs
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- close line 551, replace line 2455 sorry with Cases III/IV proofs
 
 **Verification**:
-- `obtain_split_point_props` has 0 sorries
+- `obtain_split_point_props` has 0 sorries (except line 2676 rank-varying)
 - `lean_verify ghr93_inductive_step` shows no `sorryAx`
 - `lean_verify ghr93_forward_to_backward` shows no `sorryAx`
 - `lake build` passes
@@ -432,21 +493,21 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 **Goal**: Complete the assembly chain from Theorem 6 to `stavi_expressive_completeness` (GHR93 Corollary 5). This includes the rank-varying Theorem 6, Propositions 6 and 7 (entirely from scratch), and the final Corollary 5. Optionally prove Lemma 11 backward if Proposition 7 requires it.
 
-**Research Basis**: Teammate C confirmed Props 6-7 are entirely unimplemented (zero lines). Teammate E identified that Prop 7 requires the rank-varying Theorem 6 (sorry'd at line 2621). Teammate B noted Lemma 11 backward may be deferrable if Prop 7 uses only the forward direction -- verify this first.
+**Research Basis**: Teammate C confirmed Props 6-7 are entirely unimplemented (zero lines). Teammate E identified that Prop 7 requires the rank-varying Theorem 6 (sorry'd at line 2676). Teammate B noted Lemma 11 backward may be deferrable if Prop 7 uses only the forward direction -- verify this first.
 
 **BEFORE CODING**: Re-read GHR93 Section 8, Propositions 6-7 and Corollary 5 (pages 113-114 of the paper). Determine whether Proposition 7 needs the backward direction of Lemma 11 (ghr93_decomposition_implies_game) or only the forward direction (already proved).
 
 **Tasks**:
 
-- [ ] **Task W4.1**: Prove rank-varying Theorem 6 (`ghr93_forward_to_backward_rank_varying`, line 2621, ~80-150 lines). Apply the uniform-rank `ghr93_forward_to_backward` at rank r+4n, then transport backward strategy from rank r+4n to rank r using `rank_embed_stavi_truth_mu` (already proved, lines 985-1044). Handle ExtendedCarrier type changes between ranks via `stavi_n_equiv_mono`.
+- [ ] **Task W4.1**: Prove rank-varying Theorem 6 (`ghr93_forward_to_backward_rank_varying`, line 2676, ~80-150 lines). Apply the uniform-rank `ghr93_forward_to_backward` at rank r+4n, then transport backward strategy from rank r+4n to rank r using `rank_embed_stavi_truth_mu` (already proved, lines 985-1044). Handle ExtendedCarrier type changes between ranks via `stavi_n_equiv_mono`.
 
-- [ ] **Task W4.2**: Verify whether Proposition 7 needs Lemma 11 backward. Read GHR93 Proposition 7 proof structure. If backward direction IS needed, prove `ghr93_decomposition_implies_game` (line 2677, ~80-120 lines) by constructing Duplicator's strategy from decomposition agreement.
+- [ ] **Task W4.2**: Verify whether Proposition 7 needs Lemma 11 backward. Read GHR93 Proposition 7 proof structure. If backward direction IS needed, prove `ghr93_decomposition_implies_game` (line 2718, ~80-120 lines) by constructing Duplicator's strategy from decomposition agreement.
 
 - [ ] **Task W4.3**: Prove Proposition 6 (~100-150 lines, entirely new). Statement: If M and N agree on all temporal formulas of rank r + 4n + 1, Duplicator has winning strategies for G_{n;r} on both future and past intervals. Uses X_t type formulas and decomposition formulas. Define proposition signature and prove by constructing Duplicator's selections from type formula agreement.
 
 - [ ] **Task W4.4**: Prove Proposition 7 (~150-250 lines, entirely new). Composition theorem: If Duplicator wins G_{f(n);g(n)+4f(n)} on all sub-intervals between corresponding selected points (both forward and backward), she wins the standard EF game G_n. Proof by induction on n, using rank-varying Theorem 6 to convert forward to backward at each level.
 
-- [ ] **Task W4.5**: Prove Corollary 5 = close `stavi_expressive_completeness` (line 2749, ~80-120 lines). Assembly: Given MonadicFormula psi of depth n, choose temporal formulas of rank 1+g(n+1) partitioning complete types. The type consistent with psi gives the StaviFormula A. Uses Props 5, 6, 7. Close the sorry in EFGames.lean.
+- [ ] **Task W4.5**: Prove Corollary 5 = close `stavi_expressive_completeness` (line 2790, ~80-120 lines). Assembly: Given MonadicFormula psi of depth n, choose temporal formulas of rank 1+g(n+1) partitioning complete types. The type consistent with psi gives the StaviFormula A. Uses Props 5, 6, 7. Close the sorry in EFGames.lean.
 
 - [ ] **Task W4.6**: Verify `lean_verify stavi_expressive_completeness` shows no `sorryAx`.
 
@@ -457,8 +518,8 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 **Depends on**: 4C-W3 (Theorem 6 fully proved, all 4 cases)
 
 **Files to modify/create**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- rank-varying Thm 6 (line 2621), Propositions 6-7 (new)
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close stavi_expressive_completeness (line 2749), possibly Lemma 11 bwd (line 2677)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- rank-varying Thm 6 (line 2676), Propositions 6-7 (new)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close stavi_expressive_completeness (line 2790), possibly Lemma 11 bwd (line 2718)
 
 **Verification**:
 - `lean_verify stavi_expressive_completeness` shows no `sorryAx`
@@ -622,7 +683,7 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 **Timing**: 1-2 hours
 
-**Depends on**: none (can proceed immediately, independent of Phases 4C-9)
+**Depends on**: none (can proceed immediately, independent of Phases 0-9)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- replace countermodel_discrete body
@@ -675,31 +736,36 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 - [ ] `#print axioms one_class` shows no `sorryAx`
 - [ ] `#print axioms no_gaps_discrete` shows no `sorryAx`
 - [ ] `#print axioms very_good_implies_good` shows no `sorryAx`
+- [ ] `#print axioms flatten_stavi_correct` shows no `sorryAx`
+- [ ] `#print axioms rank_embed_stavi_truth_mu` shows no `sorryAx`
+- [ ] `#print axioms stavi_truth_mu_at_point` shows no `sorryAx`
 - [ ] `grep -rn "^axiom" Theories/Bimodal/Metalogic/WeakCanonical/` returns empty
 - [ ] No `IsSuccArchimedean` in `no_gaps_discrete`, `one_class`, or `chronicle_is_good` theorem statements
 - [ ] No `orderIsoIntOfLinearSuccPredArch` in Transfer.lean (except comments)
 - [ ] `domain_succ_archimedean` removed from `ChronicleAsPriorModel`
 - [ ] No new `sorry` introduced on the critical path
+- [ ] Cases I and II remain sorry-free after Phase 0 changes
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean` -- Stavi connective semantics, discrete equivalences, flatten_stavi_correct (Phases 4A + 5, COMPLETED)
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- Full EF game infrastructure + stavi_expressive_completeness + Lemma 9 gap detection (Phases 4B + 4C)
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- GHR93 Theorem 6 main proof, four cases (Phase 4C)
+- `Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean` -- CORRECTED Stavi connective semantics (GHR93 FO table), flatten_stavi (maps U'/S' to bot), discrete equivalences (Phase 0)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- CORRECTED stavi_temporal_truth_mu, reproved rank_embed + truth_mu_at_point, Lemma 9 gap detection, stavi_expressive_completeness (Phases 0, 4C-W2, 4C-W4)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- GHR93 Theorem 6 main proof, all four cases, d-consistency via infimum (Phases 4C-W1, 4C-W3)
 - `Theories/Bimodal/Metalogic/WeakCanonical/GapElimination.lean` -- Reynolds Lemmas 6-13, Theorem 14 (Phase 6, NEW)
 - `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- Chronicle truth, z_interval_countermodel, h_truth_corr, IsSuccArchimedean removal (Phases 1-3, 9-10)
 - `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` -- cofinal_decomposition, ordered_sum, no_gaps_discrete, chronicle_is_good (Phases 7-9)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean` -- domain_succ_archimedean removal (Phase 9)
 - `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean` -- IsSuccArchimedean cascade fix (Phase 9)
-- `specs/155_reynolds_pipeline_activation/plans/10_reynolds-pipeline-plan.md` -- This plan (v8)
+- `specs/155_reynolds_pipeline_activation/plans/10_reynolds-pipeline-plan.md` -- This plan (v9)
 
 ## Rollback/Contingency
 
-1. **Phase 4C-W1 (infimum-based d)**: If the infimum approach stalls, fall back to Option C (Classical.choice canonical strategy response). D-consistency becomes `rfl`, and `d <= a_n` is still needed but may be provable via a simpler formula-agreement argument. If Case II rewrite exceeds 200 lines, try the case split approach: `d = a_bwd(n)` (old proof works) vs `d < a_bwd(n)` (new argument needed for a smaller set of proof obligations).
-2. **Phase 4C-W1 (degenerate intervals)**: If establishing c=x when d=x' proves difficult from the forward strategy, weaken SplitPointProps to make sigma optional when x'=d (disjunctive field: either sigma exists, or interval is degenerate with boundary agreement).
-3. **Phase 4C-W2 (gap existence lemma)**: If the full gap existence lemma exceeds 250 lines, prove the forward and backward directions separately. The backward direction (gap -> U') is simpler and unblocks some Lemma 9 cases. Mark [PARTIAL] with the proved direction.
-4. **Phase 4C-W2 (Lemma 9 S/S' cases)**: If direct analysis of flatten_stavi output exceeds 200 lines per case, try per-constructor bridge lemmas for the specific S/S' patterns (not a universal bridge, which is false, but targeted ones for the specific flatten_stavi outputs appearing in left_formula).
-5. **Phase 4C-W3 (Cases III/IV)**: If stuck after 8 hours, write detailed handoff with goal states for each unfinished case. The four-case structure allows checkpointing.
-6. **Phase 4C-W4 (Assembly)**: If Proposition 7 composition is too complex, try Teammate B's direct Corollary 5 route. If Lemma 11 backward is needed but intractable, mark [PARTIAL].
-7. **Phase 6 (Lemmas 6-13)**: Lemma 12 (model surgery, 14 cases) can be modularized per case. Mark [PARTIAL] if stuck after 8 hours.
-8. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck, mark [BLOCKED] and request help. Do not introduce `axiom` declarations.
+1. **Phase 0 (U' semantics fix)**: If the FO table encoding is too complex for Lean, fall back to the gap-based (second-order) definition using `Gap` and `gap_definable_on_left`/`gap_definable_on_right` infrastructure already in EFGames.lean. This is more intuitive and directly usable for Lemma 9, at the cost of being second-order. For the mu-relativized version, gaps in ExtendedCarrier are explicit Sum.inr elements.
+2. **Phase 0 (flatten_stavi_correct reproof)**: If proving "FO table always false on discrete orders" is harder than expected, inline the proof from report 17 (minimality of first not-q point, ~30 lines).
+3. **Phase 0 (StaviFormula extension)**: If adding `std_untl`/`std_snce` constructors causes excessive pattern-match cascade, defer the extension and instead modify `left_formula` S/S' cases to keep using `flatten_stavi` (which now maps U' to bot). This works if the S/S' cases of left_formula only use U' at discrete-order evaluations (verify).
+4. **Phase 4C-W1 (infimum-based d)**: If the infimum approach stalls, fall back to Option C (Classical.choice canonical strategy response). D-consistency becomes `rfl`, and `d <= a_n` is still needed but may be provable via a simpler formula-agreement argument.
+5. **Phase 4C-W2 (Lemma 9)**: With correct U' semantics, Lemma 9 should be "Clear" per GHR93. If any case exceeds 150 lines, decompose into sub-lemmas for each constructor. Mark [PARTIAL] with proved cases.
+6. **Phase 4C-W3 (Cases III/IV)**: If stuck after 8 hours, write detailed handoff with goal states for each unfinished case.
+7. **Phase 4C-W4 (Assembly)**: If Proposition 7 composition is too complex, try Teammate B's direct Corollary 5 route.
+8. **Phase 6 (Lemmas 6-13)**: Lemma 12 (model surgery, 14 cases) can be modularized per case. Mark [PARTIAL] if stuck after 8 hours.
+9. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck, mark [BLOCKED] and request help. Do not introduce `axiom` declarations.
