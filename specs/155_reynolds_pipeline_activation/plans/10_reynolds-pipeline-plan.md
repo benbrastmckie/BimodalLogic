@@ -278,47 +278,28 @@ This phase resolves 6 of the 9 sorries in ExpressivenessGeneral.lean: the 2 d-co
 
 **BEFORE CODING**: Re-read GHR93 Section 8, pages 27-28 (definition of c,d as infima; Claims 1-2). Understand that c and d are semantic properties of the structures, defined BEFORE any game is played. The paper then proves that any winning strategy's response to c must equal d.
 
-**Implementation Strategy**: The most practical approach combines report 15's Option B (strategy-response d) with report 15's Claim 1 argument:
+**Implementation Strategy (REVISED after W1 v2 session)**: The inequality approach (hd_le_an) was attempted and REJECTED — changing `hd_eq_an` to inequality breaks Case II at 28 locations, and the inequality cannot be recovered to equality from the available hypotheses. The correct approach is to **prove d-consistency directly via GHR93 Claim 1**, keeping `hd_eq_an` as equality. This preserves all existing Case I and Case II code.
 
-1. Define `d` from the forward strategy's canonical response to `c` (using Classical.choice to select a deterministic strategy). This makes d-consistency definitional (`rfl`).
-2. Prove `d <= a_bwd(n)` using the Claim 1 argument: the winning condition forces formula agreement, and formula C characterizes a_bwd(n)'s position, so the response d must satisfy d <= a_bwd(n).
-3. For degenerate cases: dispatch x'=d (both gaps) BEFORE constructing sigma by applying the vacuous game lemma.
+GHR93 Claim 1 states: for any winning strategy response, the response at the boundary position must equal d (the infimum). The proof uses formula_agreement from the winning condition — since all rank-r formulas agree between c and any response, and formula C uniquely characterizes d's position (as the infimum of the C-satisfying set), the response must equal d. This is ~150-200 lines of new proof work.
+
+**Revised approach**:
+1. Keep `d = a_bwd(n)` and `hd_eq_an` unchanged
+2. Prove Claim 1: define continuation formula C from the backward selections; show any winning response at the boundary must satisfy C; derive d-consistency from C-uniqueness
+3. Degenerate intervals: once d-consistency is proved, the degenerate case follows (d-consistency gives `a'_full(n) = d`, so if `x' = d` then `x = c` follows from formula correspondence)
 
 **Tasks**:
 
-- [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean (~20 lines). Proof: Round 2 requires Spoiler to pick an actual M-point from [c,c] where c is a gap, which is impossible. The universal quantifier over the empty domain is vacuously true. *(completed — sorry-free, verified via lean_verify)*
+- [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean. *(completed — sorry-free, verified via lean_verify)*
 
-- [ ] **Task W1.2**: Restructure `SplitPointProps` (~30 lines changed). Replace `hd_eq_an : d = a_bwd n` with `hd_le_an : d <= a_bwd n`. Optionally add `hd_point_or_gap : IsPoint d \/ IsGap d` (always true by definition but useful for pattern matching). *(deviation: deferred — analysis shows Case II derives hd_eq_an back from hd_le_an + h_no_split but this gives only d <= a_bwd(n), not equality. Changing to hd_le_an REQUIRES full Case II rewrite since 28 sites use d = a_bwd(n). See phase-4CW1-handoff for detailed coupling analysis.)*
+- [ ] **Task W1.2**: Prove GHR93 Claim 1 (~150-200 lines). Define continuation formula C from the backward game's selections. Show: for any winning play where M-side has c at position n, the N-side response at position n satisfies formula C, and C uniquely characterizes d = a_bwd(n). This gives d-consistency: `a'_full(n) = d`. Add as a helper theorem in ExpressivenessGeneral.lean. Eliminates 2 d-consistency sorries (lines 303, 313).
 
-- [ ] **Task W1.3**: Redefine d in `obtain_split_point_props` (~80-120 lines). Use one of:
-  - (a) Play the forward strategy with c as input; define d := canonical response. D-consistency is `rfl`. Prove d <= a_bwd(n) via Claim 1 argument (formula C at a_bwd(n) implies the set has a_bwd(n), so infimum <= a_bwd(n)).
-  - (b) Define d as `sInf` of formula-defined set in ExtendedCarrier, prove d-consistency via Claim 1.
-  - The agent should choose based on which approach requires less infrastructure. Option (a) avoids infimum infrastructure entirely. Option (b) is mathematically cleaner.
-  - **Key**: The formula C is defined from the backward selections: C holds at t iff the "continuation type" past a_n matches. Specifically, C is the conjunction of rank-r formulas that hold throughout (a_bwd(n), y') in N.
+- [ ] **Task W1.3**: Close degenerate interval sorries (~40-60 lines). With d-consistency proved (Task W1.2), derive `x = c` when `x' = d` from same_order_type. Apply `ghr93_duplicator_wins_degenerate_gap` for the degenerate sub-game. Eliminates 4 sorries (lines 352, 372, 392, 409).
 
-- [ ] **Task W1.4**: Handle degenerate intervals in `obtain_split_point_props` (~40-60 lines). At the 4 degenerate sorry sites (lines 347, 367, 387, 404):
-  - When x'=d (both gaps): establish c=x from forward strategy boundary correspondence. Apply `ghr93_duplicator_wins_degenerate_gap` for sigma. Bypass IH entirely.
-  - When d=y' (both gaps): establish c=y similarly. Apply degenerate lemma for tau.
-  - When x=c (both gaps): symmetric M-side handling.
-  - When c=y (both gaps): symmetric M-side handling.
-  - Extract forward strategy boundary info (formula/gap/point agreement at x/x' and y/y') from the forward game. This info is already used in the base case (lines 2509-2524); factor it out as a reusable helper if needed.
+- [ ] **Task W1.4**: Verify `lake build` passes. Cases I and II remain sorry-free (no changes to their code).
 
-- [ ] **Task W1.5**: Update Case I for `hd_le_an` (~10 lines). Replace 2 uses of `hd_eq_an`:
-  - Line ~653: `exact absurd (props.hd_eq_an ▸ le_refl _) (not_le.mpr hi_split)` becomes `exact absurd (le_antisymm props.hd_le_an (le_of_lt hi_split).le) ...` or similar contradiction from `a_bwd(0) < d` and `d <= a_bwd(0)`.
-  - Line ~663: `exact not_lt.mpr (props.hd_eq_an ▸ le_refl _)` becomes `exact not_lt.mpr props.hd_le_an`.
-  - Verify: `lean_verify ghr93_case_I` shows no sorryAx.
+**Timing**: 6-10 hours (dominated by Claim 1 proof)
 
-- [ ] **Task W1.6**: Rewrite Case II for `hd_le_an` (~100-200 lines changed). This is the largest sub-task.
-  - Identify all ~30 uses of `props.hd_eq_an` in lines 1572-2357.
-  - The dominant pattern is `rw [props.hd_eq_an]` to deduce `IsPoint d` from `IsPoint a_bwd(n)`. With infimum-based d:
-    - When a_n is a point and d < a_n: d could be a gap. But GHR93 Case II has "all a_i in (d,y')" so d is strictly below all selections. The paper never assumes d is a point in Case II.
-    - When d = a_n: d IS a point (since a_n is). This case may still arise with the infimum approach.
-  - Strategy: Add a case split `d = a_bwd(n)` vs `d < a_bwd(n)` at the top of Case II. When d = a_bwd(n), the old proof works. When d < a_bwd(n), d's properties come from the infimum construction (d is in the carrier of M_r, and the paper's argument applies).
-  - Alternative: If the case split is too complex, prove `IsPoint d` directly from the infimum when a_bwd(n) is a point (since the infimum of a set containing a point must be <= that point, and if d < a_n then d is in the cut of a gap definable by C, hence d is in ExtendedCarrier as a gap -- but Case II needs a_n to be a point, and d can be a gap).
-  - **Critical realization from report 15**: GHR93 Case II never needs d to be a point. It only needs a_n to be a point. The current Lean implementation incorrectly fuses d and a_n. The rewrite should separate these roles.
-  - Verify: `lean_verify ghr93_case_II` shows no sorryAx after rewrite.
-
-- [ ] **Task W1.7**: Verify `lake build` passes. Run regression checks on Cases I, II.
+**Depends on**: none
 
 **Timing**: 6-10 hours
 
