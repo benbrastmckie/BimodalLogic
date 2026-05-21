@@ -132,7 +132,8 @@ After 155 completes:
 
 ### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
 - **Effort**: large (15-20 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md]
 - **Task Type**: lean4
 
 **Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Four objectives:

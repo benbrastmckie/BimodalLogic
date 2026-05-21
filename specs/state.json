@@ -41,12 +41,21 @@
     {
       "project_number": 182,
       "project_name": "boneyard_deep_cleanup",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T06:33:12Z",
+      "last_updated": "2026-05-21T06:40:30Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779345175_6806d1"
+      "session_id": "sess_1779345175_6806d1",
+      "researched": "2026-05-21T06:40:30Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md",
+          "type": "research",
+          "summary": "Comprehensive compilation audit of 56 Boneyard files: 24 doc-only (zero effort), 18 with valid imports, 14 with fixable broken paths; recommends separate lean_lib target + mechanical import rewrites"
+        }
+      ]
     },
     {
       "project_number": 180,
