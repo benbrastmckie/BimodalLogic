@@ -3860,6 +3860,75 @@ noncomputable def stavi_table_mu {sig : MonadicSignature}
     stavi_snce_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
       (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
 
+/-- Correctness of table_mu: evaluating the mu-relativized table translation
+    on extendedStructureWithMu gives temporal_truth_mu. -/
+theorem table_mu_correct {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (t : ExtendedCarrier M atomMap r) (φ : Formula) :
+    eval (extendedStructureWithMu M atomMap r) (fun _ => t)
+      (table_mu atomMap φ) ↔
+    temporal_truth_mu M atomMap r t φ := by
+  induction φ generalizing t with
+  | atom a =>
+    simp [table_mu, eval, extendedStructureWithMu, temporal_truth_mu, extendedStructure]
+  | bot =>
+    simp [table_mu, eval, temporal_truth_mu, lt_irrefl]
+  | imp ψ₁ ψ₂ ih₁ ih₂ =>
+    simp only [table_mu, eval, temporal_truth_mu]
+    constructor
+    · intro h hψ₁; push_neg at h; exact (ih₂ t).mp (h ((ih₁ t).mpr hψ₁))
+    · intro h ⟨hψ₁, hψ₂⟩; exact hψ₂ ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁)))
+  | box ψ =>
+    simp [table_mu, eval, extendedStructureWithMu, temporal_truth_mu, extendedStructure]
+  | untl ψ₁ ψ₂ ih₁ ih₂ =>
+    -- table_mu (.untl ψ₁ ψ₂) = .ex (.and mu(s) (.and (t < s) (.and C_ψ₁(s) (∀u...))))
+    -- temporal_truth_mu (.untl ψ₁ ψ₂) = ∃ s, t < s ∧ mu(s) ∧ T_ψ₁(s) ∧ ∀ u, t<u→u<s→mu(u)→T_ψ₂(u)
+    -- The key lift lemma: evaluating a lifted formula under Fin.cons
+    -- Key lift lemma: (α.lift 1) in env (Fin.cons s (fun _ => t)) = α in env (fun _ => s)
+    have lift1_eq : ∀ (s : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons s fun _ => t) (α.lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => s) α := by
+      intro s α
+      have h1 : Fin.cons s (fun (_ : Fin 1) => t) =
+          insertEnv ⟨1, by omega⟩ t (fun (_ : Fin 1) => s) := by
+        funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]
+      rw [h1]
+      exact lift_eval (extendedStructureWithMu M atomMap r)
+        (fun (_ : Fin 1) => s) ⟨1, by omega⟩ t α
+    -- Double lift: ((α.lift 1).lift 1) in env (Fin.cons u (Fin.cons s (fun _ => t))) = α at (fun _ => u)
+    have lift2_eq : ∀ (s u : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t)) ((α.lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => u) α := by
+      intro s u α
+      have h1 : Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)) =
+          insertEnv ⟨1, by omega⟩ s (Fin.cons u (fun (_ : Fin 1) => t)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv])
+        refine Fin.cases ?_ ?_ j <;> simp
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons u (fun (_ : Fin 1) => t)) ⟨1, by omega⟩ s (α.lift 1)]
+      exact lift1_eq u α
+    have lift1_iff : ∀ (s : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons s fun _ => t) ((table_mu atomMap ψ₁).lift 1) ↔
+        temporal_truth_mu M atomMap r s ψ₁ := by
+      intro s; rw [lift1_eq]; exact ih₁ s
+    have lift2_iff : ∀ (s u : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t))
+          (((table_mu atomMap ψ₂).lift 1).lift 1) ↔
+        temporal_truth_mu M atomMap r u ψ₂ := by
+      intro s u; rw [lift2_eq]; exact ih₂ u
+    -- Use sorry for now — the FO unfolding with Fin.cons requires careful
+    -- handling of De Bruijn indices. The lift lemmas are correct but
+    -- connecting them through the Fin.cons-heavy simp output is tedious.
+    sorry
+  | snce ψ₁ ψ₂ ih₁ ih₂ =>
+    sorry
+
 /-- The FO quantifier depth of the stavi_table_mu translation.
     This bounds `(stavi_table_mu atomMap A).quantifier_depth` and accounts
     for the fact that stavi_untl/snce FO encodings use more quantifiers
@@ -3928,13 +3997,8 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     stavi_temporal_truth_mu M atomMap r t A := by
   induction A generalizing t with
   | base φ =>
-    -- stavi_table_mu (.base φ) = table_mu atomMap φ
-    -- stavi_temporal_truth_mu (.base φ) = temporal_truth_mu M atomMap r t φ
     simp only [stavi_table_mu, stavi_temporal_truth_mu]
-    -- Need: eval extendedStructureWithMu (fun _ => t) (table_mu atomMap φ)
-    --       ↔ temporal_truth_mu M atomMap r t φ
-    -- This is table_mu_correct, proved by induction on φ.
-    sorry
+    exact table_mu_correct t φ
   | neg A ih =>
     simp only [stavi_table_mu, eval, stavi_temporal_truth_mu]
     exact (ih t).not
