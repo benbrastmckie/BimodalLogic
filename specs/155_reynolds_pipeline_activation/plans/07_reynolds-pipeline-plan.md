@@ -329,18 +329,19 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 4. Shared infra for II-IV — [DONE] init extraction, tau delegation, game_tuple helpers
 5. Case II point/Until — [DONE] ghr93_case_II sorry-free (~760 lines). Uses tau for init
    sub-sequence, c for a_n response (via hd_eq_an), full winning condition proved.
-6. Lemma 9 gap detection — [SORRY] (lines 1423+1442, ~400-500 lines, blocks Cases III/IV)
-7. Cases III+IV gap/U' — [SORRY within ghr93_cases_II_III_IV] (~230 lines, uses Lemma 9)
+6. Lemma 9 gap detection — [SORRY] (lines ~1423+~1442, ~400-500 lines, blocks Cases III/IV)
+7. Cases III+IV gap/U' — [SORRY within ghr93_cases_III_IV] (~230 lines, uses Lemma 9)
 8. Theorem 6 assembly — [DONE] ghr93_inductive_step wires case dispatch
-9. Lemma 11 game↔decomposition — [SORRY] (lines 2236+2257, ~100-200 lines, for Prop 7 only)
+9. Lemma 11 game↔decomposition — [PARTIAL] forward proved (~130 lines), backward sorry'd
 10. Proposition 6 — [TODO] (~100-150 lines)
 11. Proposition 7 composition — [TODO] (~150-250 lines, uses Lemma 11)
-12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line 2324, ~80-120 lines)
+12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line ~2480, ~80-120 lines)
 
-**Sorry inventory** (8 total across 2 files, verified grep count):
-- EFGames.lean [5]: Lemma 9 left (1423), Lemma 9 right (1442),
-  Lemma 11 fwd (2277), Lemma 11 bwd (2298), stavi_expressive_completeness (2365)
-- ExpressivenessGeneral.lean [3]: split props gap case (420),
+**Sorry inventory** (13 total across 2 files, verified grep count):
+- EFGames.lean [4]: Lemma 9 left (~1423), Lemma 9 right (~1442),
+  Lemma 11 bwd (~2415), stavi_expressive_completeness (~2480)
+- ExpressivenessGeneral.lean [9]: d-consistency left (297), d-consistency right (307),
+  4 sub-interval point witnesses (326-330), split props gap case (420),
   Cases III-IV (2324), rank-varying Thm 6 (2545)
 
 **Completed infrastructure** (sorry-free, ~3000 lines):
@@ -396,8 +397,9 @@ Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward str
   (obtained from the IH). State the four-case exhaustion. (~100-150 lines)
   *(deviation: altered -- (1) Factored inductive step into ghr93_inductive_step helper theorem for clean separation; (2) Split point properties bundled in SplitPointProps structure with sorry'd construction via obtain_split_point_props, since full infimum/strategy-restriction infrastructure not yet available; (3) Case I and Cases II-IV factored into separate sorry'd theorems ghr93_case_I and ghr93_cases_II_III_IV; (4) Case split is on ∃ i, a_bwd i < d vs ∀ i, d ≤ a_bwd i rather than specific position of a_0; (5) Strategy restriction lemmas (ghr93_strategy_restrict_left/right) added to EFGames.lean with response_containment_left sorry; (6) obtain_split_point_props revised: d=a_bwd(n), c obtained from forward strategy Round 2 (point case fully structured, gap case sorry'd), IH generalized to work on sub-intervals via revert/intro refactoring of ghr93_forward_to_backward; (7) IH in ghr93_inductive_step changed from bound-endpoint to universally-quantified-endpoint version; ~350 lines added across both files)*
 
-- [ ] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
+- [x] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
   (d,y'). Combine using Lemma 10. Handle Round 2 challenge. (~150-250 lines)
+  *(deviation: altered — sorry-free, ~623 lines. Uses partition of selections into left/right via Finset.filter on a_bwd < d. Response merges sigma and tau responses. Round 2 delegates to sigma or tau based on point position relative to c.)*
 
 - [x] **Task 4C.4**: Prove Case II (a_n is a point). Construct B = X_{a_n}. Use τ for
   a_0,...,a_{n-1}. Find z with B(z) and A on (e_{n-1},z). Verify Round 2.
