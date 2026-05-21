@@ -396,11 +396,6 @@
           "summary": "GHR93 strategy review: dependency chain analysis, three alternative approaches, revised phase recommendations with effort estimates"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/07_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Reynolds Pipeline v6 plan: full GHR93 Theorem 9.3.1 game-theoretic proof with 12 phases (5 completed, 7 remaining), 55 hours estimated"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/08_ghr93-game-theory.md",
           "type": "research",
           "summary": "GHR93 Section 8 game-theoretic proof extraction: G_{n;r} game, 4 cases, left/right gap detection, composition lemma, dependency chain"
@@ -414,6 +409,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/10_team-research.md",
           "type": "research",
           "summary": "Team research round 4 (5 teammates): sorry inventory, d-consistency analysis, flatten_stavi bridge lemma, literature alignment, strategic assessment"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/10_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Revised implementation plan (v7): wave-based Phase 4C decomposition, d-consistency restructuring, flatten_stavi bridge lemma, 15 phases (6 completed, 1 blocked, 8 remaining), 40-60 hours"
         }
       ],
       "session_id": "sess_1779304083_f28ee0",
