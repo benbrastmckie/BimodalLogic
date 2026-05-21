@@ -115,10 +115,11 @@ After 155 completes:
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Research**: [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
 - **Task Type**: lean4
 - **Dependencies**: 131, 175
+- **Plan**: [183_documentation_standards_readmes_comments/plans/01_documentation-standards.md]
 
 **Description**: Establish and apply a comprehensive documentation standard for the entire `Theories/Bimodal/` tree, then systematically update every README and docstring in the repository to be accurate and complete. This task defines the standard AND applies it after structural refactoring (tasks 131, 175) is complete. Four deliverables:
 
