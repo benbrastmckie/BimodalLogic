@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Dead Tactic Removal [NOT STARTED]
+### Phase 4: Dead Tactic Removal [COMPLETED]
 
 **Goal**: Remove the two dead tactic definitions (temp_4_tactic and temp_a_tactic) that always throw errors, eliminating ~80 lines of unreachable code.
 
