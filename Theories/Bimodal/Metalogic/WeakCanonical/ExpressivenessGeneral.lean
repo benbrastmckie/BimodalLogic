@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames
+import Mathlib.Data.Finset.Sort
 
 /-!
 # GHR93 Theorem 6: Forward-to-Backward Game Transfer
@@ -460,21 +461,135 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           ghr93_winning_condition (n + 1)
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
-  -- Case I proof sketch (GHR93):
-  -- 1. Partition a_bwd into L = {i : a_bwd i < d} and R = {i : a_bwd i ≥ d}
-  -- 2. |L| ≤ n and |R| ≤ n (since |L| + |R| = n+1 and both are non-empty)
-  -- 3. Apply σ to the L-elements (padded to n elements) to get responses in [x,c]
-  -- 4. Apply τ to the R-elements (padded to n elements) to get responses in [c,y]
-  -- 5. Merge the responses preserving order
-  -- 6. For Round 2: if b_sp ∈ [x,c], use σ's Round 2 handler;
-  --                  if b_sp ∈ [c,y], use τ's Round 2 handler
-  -- 7. Verify the combined winning condition
-  --
-  -- The main technical challenge is the index manipulation for merging
-  -- two partial selections into one (n+1)-element response, and showing
-  -- that the merged response satisfies the winning condition by combining
-  -- the individual winning conditions from σ and τ.
-  sorry
+  -- ---------------------------------------------------------------
+  -- Step 0: Handle n = 0 by contradiction
+  -- When n = 0, Fin 1 has one index ⟨0, _⟩. h_split says a_bwd ⟨0,_⟩ < d,
+  -- but hd_le_an says d ≤ a_bwd ⟨0,_⟩. Contradiction.
+  -- ---------------------------------------------------------------
+  obtain ⟨i_split, hi_split⟩ := h_split
+  by_cases hn : n = 0
+  · subst hn
+    have : i_split = ⟨0, by omega⟩ := by ext; omega
+    rw [this] at hi_split
+    exact absurd (le_trans props.hd_le_an (le_refl _)) (not_le.mpr hi_split)
+  -- ---------------------------------------------------------------
+  -- Step 1: Partition indices into L (below d) and R (at or above d)
+  -- ---------------------------------------------------------------
+  have hn_pos : 0 < n := Nat.pos_of_ne_zero hn
+  let L := Finset.univ.filter (fun i : Fin (n + 1) => a_bwd i < d)
+  let R := Finset.univ.filter (fun i : Fin (n + 1) => ¬ a_bwd i < d)
+  have hL_nonempty : L.Nonempty :=
+    ⟨i_split, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi_split⟩⟩
+  have hR_nonempty : R.Nonempty := by
+    refine ⟨⟨n, by omega⟩, Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩⟩
+    exact not_lt.mpr props.hd_le_an
+  have hLR_card : L.card + R.card = n + 1 := by
+    have := Finset.card_filter_add_card_filter_not (s := Finset.univ)
+      (p := fun i : Fin (n + 1) => a_bwd i < d)
+    simp only [Finset.card_univ, Fintype.card_fin] at this
+    exact this
+  have hL_pos : 0 < L.card := Finset.Nonempty.card_pos hL_nonempty
+  have hR_pos : 0 < R.card := Finset.Nonempty.card_pos hR_nonempty
+  have hL_le : L.card ≤ n := by omega
+  have hR_le : R.card ≤ n := by omega
+  -- ---------------------------------------------------------------
+  -- Step 2: Enumerate L and R, build sub-selections
+  -- ---------------------------------------------------------------
+  have hL_card_eq : L.card = L.card := rfl
+  have hR_card_eq : R.card = R.card := rfl
+  let eL := L.orderEmbOfFin hL_card_eq
+  let eR := R.orderEmbOfFin hR_card_eq
+  let a_sigma : Fin L.card → ExtendedCarrier N atomMap r :=
+    fun k => a_bwd (eL k)
+  have ha_sigma : ∀ k, inClosedInterval x' d (a_sigma k) := by
+    intro k
+    have hk_mem := Finset.orderEmbOfFin_mem L hL_card_eq k
+    have hlt := (Finset.mem_filter.mp hk_mem).2
+    exact ⟨(ha_bwd _).1, le_of_lt hlt⟩
+  let a_tau : Fin R.card → ExtendedCarrier N atomMap r :=
+    fun k => a_bwd (eR k)
+  have ha_tau : ∀ k, inClosedInterval d y' (a_tau k) := by
+    intro k
+    have hk_mem := Finset.orderEmbOfFin_mem R hR_card_eq k
+    have hge := not_lt.mp (Finset.mem_filter.mp hk_mem).2
+    exact ⟨hge, (ha_bwd _).2⟩
+  -- ---------------------------------------------------------------
+  -- Step 3: Apply round monotonicity and play sub-games
+  -- ---------------------------------------------------------------
+  have sigma_reduced : ghr93_duplicator_wins N M atomMap L.card r x' d x c :=
+    ghr93_duplicator_wins_round_mono hL_le props.hx'd props.hxc props.sigma
+  have tau_reduced : ghr93_duplicator_wins N M atomMap R.card r d y' c y :=
+    ghr93_duplicator_wins_round_mono hR_le props.hdy' props.hcy props.tau
+  obtain ⟨resp_L, hresp_L_in, hwin_L⟩ := sigma_reduced a_sigma ha_sigma
+  obtain ⟨resp_R, hresp_R_in, hwin_R⟩ := tau_reduced a_tau ha_tau
+  -- ---------------------------------------------------------------
+  -- Step 4: Build inverse maps using orderIsoOfFin
+  -- ---------------------------------------------------------------
+  let isoL := L.orderIsoOfFin hL_card_eq
+  let isoR := R.orderIsoOfFin hR_card_eq
+  -- ---------------------------------------------------------------
+  -- Step 5: Merge responses into a'_resp : Fin (n+1) → M
+  -- ---------------------------------------------------------------
+  let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
+    if h : a_bwd i < d then
+      resp_L (isoL.symm ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩⟩)
+    else
+      resp_R (isoR.symm ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩⟩)
+  have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
+    intro i; simp only [a'_resp]
+    split
+    case isTrue h =>
+      have hi_L : i ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩
+      have := hresp_L_in (isoL.symm ⟨i, hi_L⟩)
+      exact ⟨this.1, le_trans this.2 props.hcy⟩
+    case isFalse h =>
+      have hi_R : i ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩
+      have := hresp_R_in (isoR.symm ⟨i, hi_R⟩)
+      exact ⟨le_trans props.hxc this.1, this.2⟩
+  -- Key interval facts for cross-partition ordering:
+  -- L-responses are in [x, c], R-responses are in [c, y]
+  have hresp_L_le_c : ∀ k, resp_L k ≤ c := fun k => (hresp_L_in k).2
+  have hc_le_resp_R : ∀ k, c ≤ resp_R k := fun k => (hresp_R_in k).1
+  -- ---------------------------------------------------------------
+  -- Step 6: Provide a'_resp and handle Round 2
+  -- ---------------------------------------------------------------
+  refine ⟨a'_resp, ha'_resp_in, ?_⟩
+  intro b_sp hb_sp
+  by_cases hbc : extendPoint b_sp ≤ c
+  · -- b_sp in [x, c]: delegate to σ's Round 2
+    obtain ⟨b_resp_L, hb_resp_L_in, hcond_L⟩ :=
+      hwin_L b_sp ⟨hb_sp.1, hbc⟩
+    refine ⟨b_resp_L, ⟨hb_resp_L_in.1, le_trans hb_resp_L_in.2 props.hdy'⟩, ?_⟩
+    -- ---------------------------------------------------------------
+    -- Step 7: Transfer winning condition (b_sp ≤ c case)
+    -- Have: hcond_L : ghr93_winning_condition L.card
+    --         (game_tuple x' d a_sigma b_resp_L)
+    --         (game_tuple x c resp_L b_sp)
+    -- Need: ghr93_winning_condition (n+1)
+    --         (game_tuple x' y' a_bwd b_resp_L)
+    --         (game_tuple x y a'_resp b_sp)
+    -- ---------------------------------------------------------------
+    -- ---------------------------------------------------------------
+    -- Winning condition transfer (left case)
+    -- ---------------------------------------------------------------
+    -- The winning condition for the full (n+1)-round game requires
+    -- combining sigma's and tau's winning conditions. The same_order_type
+    -- and gap/point/formula agreement at L-indices comes from sigma
+    -- (hcond_L), at R-indices from tau, and cross-partition from interval
+    -- containment. Accessing tau's winning condition at R-selection indices
+    -- requires playing tau's Round 2, which needs a point in [c,y] ∩ M.
+    -- This is sorry'd: the winning condition transfer requires ~200 lines
+    -- of game_tuple index case analysis plus the tau Round 2 point issue.
+    sorry
+  · -- b_sp in (c, y]: delegate to τ's Round 2
+    push_neg at hbc
+    obtain ⟨b_resp_R, hb_resp_R_in, hcond_R⟩ :=
+      hwin_R b_sp ⟨le_of_lt hbc, hb_sp.2⟩
+    refine ⟨b_resp_R, ⟨le_trans props.hx'd hb_resp_R_in.1, hb_resp_R_in.2⟩, ?_⟩
+    -- ---------------------------------------------------------------
+    -- Winning condition transfer (right case): symmetric, sorry'd
+    -- ---------------------------------------------------------------
+    sorry
 
 /-! ### Cases II-IV: Tail Cases
 
