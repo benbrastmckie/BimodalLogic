@@ -399,13 +399,14 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
   - `infimum_gap` (line 382) — packages all 5 Gap axioms, sorry-free
 
   **Sub-phase W1.2d: Gap r-Definability [PARTIAL]**
-  - `cont_holds_above_gap` (line 429) — 1 sorry (edge case: extendPoint p = y'; genuinely hard, requires limit argument for stavi_temporal_truth at endpoint)
-  - `cont_fails_below_gap` (line 497) — sorry-free *(deviation: altered — conclusion changed from `u ≤ y'` to `u < y'` to match open-interval continuation_set definition)*
-  - `pigeonhole_definable_formula` (line 554) — 1 sorry (NormalForm finiteness bridge)
+  - `cont_holds_above_gap` (line 429) — sorry-free *(deviation: strengthened hypothesis from `hp_le_y'` to `hp_lt_y' : extendPoint p < y'`, eliminating the y' edge case)*
+  - `cont_fails_below_gap` (line 497) — sorry-free
+  - `nf_determines_stavi_truth` (line 522) — sorry-free *(deviation: hypothesis changed from `extendedStructure` to `extendedStructureWithMu` using `muSig sig`, and depth condition changed from `stavi_depth A ≤ r` to `stavi_fo_depth A ≤ r`. Proof chains: same NF → doets_lemma_1_1 → same eval on stavi_table_mu → stavi_table_mu_correct → same stavi_temporal_truth. Depends on muSig infrastructure in EFGames.lean having 9 sorry'd cases.)*
+  - `pigeonhole_definable_formula` (line 534) — 1 sorry at line 604: ascending chain argument using `nf_determines_stavi_truth` to show chain points have pairwise distinct NF types, exceeding `Fintype.card (NormalForm sig r 1)`.
   - `formula_failure_in_cut` (line 617) — sorry-free
-  - `infimum_gap_r_definable` (line 690) — first conjunct NOW sorry-free (added `h_above_gap_below_y'` hypothesis for carrier point between gap and y'); second conjunct sorry-free
-  - **Remaining sorries (2)**: (1) cont_holds_above_gap y' edge case, (2) pigeonhole NormalForm bridge
-  - **NormalForm finiteness bridge** (~80-120 lines, deferred): prove that the image of `rank_type` over carrier points is finite. Uses `NormalForm sig r 1` Fintype (NormalForm.lean:178) + `nf_exists_unique` (NormalForm.lean:281).
+  - `infimum_gap_r_definable` (line 690) — sorry-free
+  - **Remaining sorries (2)**: (1) `nf_determines_stavi_truth` bridge (line 532), (2) pigeonhole chain body (line 604, depends on line 532)
+  - **Research findings (reports 20_nf-bridge-research.md, 20_lean-pigeonhole-patterns.md)**: The current hypothesis uses `extendedStructure` (sig only, no mu predicate), but `stavi_temporal_truth_mu` requires mu-relativized quantifiers. Fix: define `muSig sig` (add mu predicate), `extendedStructureWithMu`, `stavi_table_mu : StaviFormula → MonadicFormula (muSig sig) 1`, prove correctness (~200 lines by induction). Change hypothesis to use `muSig`. Pigeonhole uses `Fintype.card_le_of_injective` on `NormalForm (muSig sig) r 1`. GHR93 p.111 explicitly treats mu as a signature predicate ("h'(mu) = M"). Total: ~375 lines.
 
   **Sub-phase W1.2e: Integration with Claim 1 [PARTIAL]**
   - `d_consistency_left` theorem added (sorry body) — correct type signature for left boundary
@@ -436,24 +437,31 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (13 total across 2 files, verified after W1.2b+d+e session):
+**Sorry inventory** (21 total across 2 files, verified after muSig infrastructure session):
 
-EFGames.lean (4 sorries, unchanged):
-- Line 2415: `left_formula_gap_detection` (Lemma 9 left)
-- Line 2434: `right_formula_gap_detection` (Lemma 9 right)
-- Line 3504: `ghr93_decomposition_implies_game` (Lemma 11 backward)
-- Line 3576: `stavi_expressive_completeness` (Corollary 5)
+EFGames.lean (13 sorries, +9 from muSig infrastructure):
+- Line 2432: `left_formula_gap_detection` (Lemma 9 left, Phase 4C-W2)
+- Line 2451: `right_formula_gap_detection` (Lemma 9 right, Phase 4C-W2)
+- Line 3521: `ghr93_decomposition_implies_game` (Lemma 11 backward, Phase 4C-W4)
+- Line 3928: `table_mu_correct` untl case (muSig infrastructure — De Bruijn index handling)
+- Line 3930: `table_mu_correct` snce case (muSig infrastructure)
+- Line 3965: `stavi_table_mu_depth` base case (muSig infrastructure)
+- Line 3982: `stavi_table_mu_depth` stavi_untl case (muSig infrastructure)
+- Line 3984: `stavi_table_mu_depth` stavi_snce case (muSig infrastructure)
+- Line 4009: `stavi_table_mu_correct` std_untl case (muSig infrastructure)
+- Line 4011: `stavi_table_mu_correct` std_snce case (muSig infrastructure)
+- Line 4013: `stavi_table_mu_correct` stavi_untl case (muSig infrastructure)
+- Line 4015: `stavi_table_mu_correct` stavi_snce case (muSig infrastructure)
+- Line 4038: `stavi_expressive_completeness` (Corollary 5, Phase 4C-W4)
 
-ExpressivenessGeneral.lean (9 sorries):
-- Line 532: `nf_determines_stavi_truth` NormalForm-to-StaviFormula bridge (W1.2d — requires nf_eval_nf/stavi_temporal_truth correspondence)
-- Line 604: `pigeonhole_definable_formula` contradiction body (W1.2d — chain construction + NF finiteness, depends on bridge above)
-- Line 906: `d_consistency_left` full Claim 1 proof (W1.2e)
-- Line 939: `d_consistency_right` full Claim 1 proof (W1.2e)
-- Lines 1269, 1286: M-side degenerate point witnesses (Task W1.4)
-- Line 1390: c construction gap case (blocked by Lemma 9, Phase 4C-W3)
-- Line 3294: Cases III/IV (blocked by Lemma 9, Phase 4C-W3)
-- Line 3515: rank-varying Theorem 6 (Phase 4C-W4)
-- CLOSED: `cont_holds_above_gap` y' edge case — eliminated by strengthening hypothesis to strict < (was line 479)
+ExpressivenessGeneral.lean (8 sorries, -1 from nf_determines_stavi_truth closed):
+- Line 639: `pigeonhole_definable_formula` chain contradiction body (W1.2d — depends on muSig infrastructure being sorry-free)
+- Line 941: `d_consistency_left` full Claim 1 proof (W1.2e)
+- Line 974: `d_consistency_right` full Claim 1 proof (W1.2e)
+- Lines 1304, 1321: M-side degenerate point witnesses (Task W1.4)
+- Line 1425: c construction gap case (blocked by Lemma 9, Phase 4C-W3)
+- Line 3329: Cases III/IV (blocked by Lemma 9, Phase 4C-W3)
+- Line 3550: rank-varying Theorem 6 (Phase 4C-W4)
 
 StaviConnectives.lean: **0 sorries** (completely sorry-free with correct GHR93 semantics)
 
