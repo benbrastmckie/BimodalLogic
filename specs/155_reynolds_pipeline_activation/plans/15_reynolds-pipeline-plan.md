@@ -270,22 +270,21 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel.
 
 **Remaining work** (7 sorries in this phase):
 
-**Sub-phase W1.muSig: Close stavi_table_mu_correct stavi_untl/snce [NOT STARTED]**
+**Sub-phase W1.muSig: Close stavi_table_mu_correct stavi_untl/snce [COMPLETED]**
 
-The 2 remaining muSig sorries (EFGames.lean lines 4188, 4191) are now unblocked by report 21. The fix uses a two-level conversion strategy:
+The 2 muSig sorries were closed. The root cause was a sign error in the FO encoding (`stavi_untl_fo` and `stavi_snce_fo`): an extra `MonadicFormula.not` wrapper around the disjunction conjunction `(¬D1 ∧ ¬D2)` caused the FO body to encode `guard → ¬(D1 ∨ D2)` instead of `guard → D1 ∨ D2`. After fixing the FO encoding (removing the spurious `not`), the proof strategy uses:
 
-- Define `not_not_and_not : forall (P Q : Prop), not (not P and not Q) -> P or Q` helper
-- Outer level: `simp only [not_and, Classical.not_not]` converts guard to implication (correct)
-- Inner level: `not_not_and_not _ _ h` converts FO disjunction `not (not disj1 and not disj2)` to `Or`
-- Forward direction (FO -> semantic): apply guard, then `not_not_and_not` for disjunction, `rcases` on `Or`
-- Backward direction (semantic -> FO): `intro (hn1, hn2); rcases hbody ...` proof-by-contradiction
+- `not_and_or.mp` + `Classical.not_not.mp` to convert `¬(¬D1_fo ∧ ¬D2_fo)` to `D1_fo ∨ D2_fo` (forward)
+- Direct contradiction via `fun ⟨hnd1, hnd2⟩ => hbody u ⟨guard, hnd1, hnd2⟩` (backward)
+- Lift lemmas (1-4) bridge eval terms to semantic equivalents at each quantifier depth
+- All Fin.cons terms handled via definitional equality (no simp [Fin.cons, Fin.cases] needed)
 
 **Tasks**:
 
-- [ ] **Task W1.muSig.1**: Define `not_not_and_not` helper lemma in EFGames.lean (3 lines)
-- [ ] **Task W1.muSig.2**: Close `stavi_table_mu_correct` stavi_untl case (EFGames.lean:4188) using the two-level conversion with lift lemmas from the block comment (lines 4196-4506). ~130 lines.
-- [ ] **Task W1.muSig.3**: Close `stavi_table_mu_correct` stavi_snce case (EFGames.lean:4191) -- past dual. ~130 lines.
-- [ ] **Task W1.muSig.4**: Verify `lean_verify stavi_table_mu_correct` shows no `sorryAx`.
+- [x] **Task W1.muSig.1**: Define `not_not_and_not` helper lemma in EFGames.lean (3 lines) *(deviation: skipped -- not needed; the fix was a sign error in stavi_untl_fo/stavi_snce_fo, not a propositional bridging issue)*
+- [x] **Task W1.muSig.2**: Close `stavi_table_mu_correct` stavi_untl case *(deviation: altered -- fixed FO encoding bug in stavi_untl_fo, then proved via not_and_or + Classical.not_not + lift lemmas)*
+- [x] **Task W1.muSig.3**: Close `stavi_table_mu_correct` stavi_snce case *(deviation: altered -- same FO encoding fix in stavi_snce_fo, dual proof)*
+- [x] **Task W1.muSig.4**: Verify `lean_verify stavi_table_mu_correct` shows no `sorryAx`. Confirmed: axioms = [propext, Classical.choice, Quot.sound].
 
 **Sub-phase W1.2d-remainder: Pigeonhole [NOT STARTED]**
 
