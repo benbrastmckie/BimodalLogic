@@ -6,6 +6,34 @@
   },
   "active_projects": [
     {
+      "project_number": 184,
+      "project_name": "dead_code_tombstone_sweep",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-20T23:00:00Z",
+      "last_updated": "2026-05-20T23:00:00Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 183,
+      "project_name": "documentation_standards_readmes_comments",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [131, 175],
+      "created": "2026-05-20T23:00:00Z",
+      "last_updated": "2026-05-20T23:00:00Z",
+      "topic": "formula-refactor"
+    },
+    {
+      "project_number": 182,
+      "project_name": "boneyard_deep_cleanup",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-20T23:00:00Z",
+      "last_updated": "2026-05-20T23:00:00Z",
+      "topic": "formula-refactor"
+    },
+    {
       "project_number": 180,
       "project_name": "copyright_headers_universe_polymorphism_line_limits",
       "status": "not_started",
@@ -464,7 +492,7 @@
       "topic": "formula-refactor"
     }
   ],
-  "next_project_number": 182,
+  "next_project_number": 185,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

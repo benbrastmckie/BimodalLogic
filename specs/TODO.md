@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-20. 23 active tasks. Created 5 refactoring tasks (174-178).*
+*Updated 2026-05-20. 26 active tasks. Created 3 cleanup/documentation tasks (182-184).*
 
 **Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
 
@@ -37,17 +37,23 @@ technical_debt:
 Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
 
 Parallel with 155:
-  Wave 1a: 173, 130, 21, 172                (purge dead code — no 155 overlap)
+  Wave 1a: 173, 130, 21, 172                (purge dead code — no 155 overlap) [DONE]
+  Wave 1a+: 182, 184                        (Boneyard cleanup + tombstone sweep)
 
 After 155 completes:
   Wave 1b: 176, 95                           (Chronicle relocation, verification)
   Wave 3:  168 → 174 → 175 → 131 → 161     (deep refactor)
-  Wave 4:  177 → 178                         (final polish)
+  Wave 4:  183 → 177 → 178                  (documentation standards + final polish)
 ```
 
 ### Completeness (in progress)
 
 155 [PLANNED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+
+### Wave 1a+ — Boneyard & Dead Code (parallel with 155)
+
+182 [NOT STARTED] — Boneyard deep cleanup: tombstones, READMEs, delete trash, establish standard
+184 [NOT STARTED] — Dead code tombstone sweep: prune removal comments, #check, stale TODOs
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
@@ -66,10 +72,12 @@ After 155 completes:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
 
-### Wave 4 — Final Polish
+### Wave 4 — Documentation & Final Polish
 
-177 [NOT STARTED] — Update README and all module docstrings
+183 [NOT STARTED] — Documentation standards: directory READMEs, module docstrings, comment conventions
   └─ 131, 175
+177 [NOT STARTED] — Update README and all module docstrings
+  └─ 183
 178 [NOT STARTED] — Publication examples and demo
   └─ 131
 
@@ -93,6 +101,46 @@ After 155 completes:
 
 
 ## Tasks
+
+### 184. Dead code tombstone sweep
+- **Effort**: small (3-5 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Sweep the active codebase (everything outside `Boneyard/`) for dead code artifacts that can be removed without affecting task 155 or any active proof work. Targets: (1) **54 tombstone "REMOVED/archived" comments** scattered across active files (Soundness.lean, Completeness.lean, ChronicleTypes.lean, CanonicalChain.lean, Realization.lean, DefectChain.lean, PointInsertion.lean, RestrictedMCS.lean) — these multi-line removal explanations belong in git history, not source code; replace with at most a single-line note or delete entirely. (2) **19 `#check` statements** in Theorems.lean (6), Decidability.lean (3), Semantics.lean (3), Bimodal.lean (1), Tactics.lean (3), FrameClass.lean (3) — keep only those in Examples/ or pedagogical files, remove from library code. (3) **2 stale TODO comments** in Automation/Tactics.lean (lines 498, 543) referencing "BX refactor - temp_4/temp_a axiom removed" — either fix the underlying issue or convert to a tracked task. (4) **Verbose removal explanation blocks** in Completeness.lean (lines 364-367, 525-526) that list removed duplicates. Verify `lake build` passes after each batch of changes. Avoid modifying any file in the `WeakCanonical/ExpressivenessGeneral.lean` or other files actively touched by task 155.
+
+---
+
+### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
+- **Effort**: large (15-25 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 131, 175
+
+**Description**: Establish and apply a comprehensive documentation standard for the entire `Theories/Bimodal/` tree. This task defines the standard AND applies it after structural refactoring (tasks 131, 175) is complete. Three deliverables:
+
+**A) Directory README standard**: Every directory under `Theories/Bimodal/` must have a `README.md` with: (1) one-paragraph purpose statement, (2) module inventory table (file | lines | status | description), (3) cross-links to related directories (dependencies and dependents), (4) key definitions/theorems exported. Currently missing READMEs: `FrameConditions/`, `Metalogic/BXCanonical/`, `Metalogic/WeakCanonical/`, `latex/build/`. Existing READMEs vary wildly in style — normalize all to the template.
+
+**B) Module docstring standard**: Every `.lean` file must have a `/-! ... -/` module docstring as its first non-import block containing: (1) one-line summary, (2) 2-3 sentence description of purpose and role, (3) key definitions/theorems listed, (4) cross-references to related modules. Currently 152 active files with inconsistent or missing docstrings. Audit all and bring to standard.
+
+**C) Comment convention standard**: Define and enforce: (1) No multi-line removal/archived/tombstone comments in active code (those go in git history). (2) `-- NOTE:` for non-obvious invariants or constraints. (3) `-- FIX:` for known issues requiring attention. (4) No `#check` in library code (only in Examples/). (5) No commented-out code blocks. (6) Docstrings on all public `theorem`/`def`/`structure` declarations that form the module's API. Write the standard as a reference document at `Theories/Bimodal/docs/reference/documentation-standard.md` and then apply it across the codebase.
+
+---
+
+### 182. Boneyard deep cleanup: tombstones, READMEs, delete trash, establish standard
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Three objectives:
+
+**A) README coverage**: 9 of 20 subdirectories lack READMEs: `ChainCompleteness/`, `ClosedGuardLegacy/`, `DeadCanonicalModel/`, `DefectDirectedChain/`, `DenseChronicle/`, `DiscreteXY/`, `NonBurgessSeed/`, `OpenGuardInvalid/`, `RoundRobinChain/`, `UltrafilterFrame/`. Add a README to each following the existing good examples (e.g., `BundleTemporalCoherence/README.md`, `StrictSemanticsLegacy/README.md`). Each README must include: (1) what the code attempted, (2) why it was archived (which archival reason taxonomy category), (3) the archiving task number, (4) whether code compiles or is documentation-only, (5) recovery instructions via git.
+
+**B) Delete trash, reduce bulk**: Audit all 56 files. Some Boneyard files contain only commented-out code or empty shells with documentation headers but no Lean content (e.g., UltrafilterDeadCode files are "documentation headers only"). Files that contain zero compilable Lean definitions should either be (a) consolidated into their subdirectory README as prose, or (b) deleted if the README already covers the information. Target: reduce file count by removing pure-documentation `.lean` files that duplicate README content. The `VacuousKEquiv.lean` at the Boneyard root should be moved into an appropriate subdirectory or deleted.
+
+**C) Establish Boneyard standard**: Add a "Boneyard Maintenance Standard" section to the top-level `Boneyard/README.md` specifying: (1) every subdirectory MUST have a README.md, (2) every `.lean` file MUST have a `/-! ... -/` module docstring with archival reason + task number + date, (3) files containing no compilable Lean code should be consolidated into README prose, (4) the archival reason taxonomy (already present) is the canonical classification, (5) the inventory table must be kept current when files are added or removed. Update the existing top-level README inventory table to be accurate after cleanup.
+
+---
 
 ### 181. Add Derivable Prop-valued wrapper alongside DerivationTree
 - **Effort**: small (3-5 hours)
