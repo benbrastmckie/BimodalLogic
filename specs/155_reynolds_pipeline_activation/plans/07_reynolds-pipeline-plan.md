@@ -315,20 +315,42 @@ Phase 10 (h_truth_corr) is BLOCKED pending research on the WorldState=Unit archi
 
 **Research Inputs**: reports/08_ghr93-game-theory.md (Sections 4-7), reports/11-14 (sorry closure analysis)
 
-**Revised proof order** (from research reports 11-14, strict sequential):
-1. Strategy restriction lemma (~200-300 lines) — BLOCKS everything
-2. obtain_split_point_props using d=a_bwd(n) (~100-150 lines) — blocks all cases
-3. Case I split (~125-195 lines) — no Lemma 9 dependency
-4. Shared infra for II-IV: init extraction, rank_type_formula (~125 lines)
-5. Case II point/Until (~100 lines) — no Lemma 9 dependency
-6. Lemma 9 gap detection (~400-500 lines) — blocks Cases III/IV only
-7. Cases III+IV gap/U' (~230 lines) — uses Lemma 9
-8. Theorem 6 assembly (~30-50 lines)
-9. Lemma 11 game↔decomposition (~100-200 lines) — for Prop 7 only
-10. Proposition 6 (~100-150 lines)
-11. Proposition 7 composition (~150-250 lines) — uses Lemma 11
-12. Corollary 5 = stavi_expressive_completeness (~80-120 lines)
-Total: ~1600-2500 lines remaining.
+**Revised proof order** (from research reports 11-14, updated with implementation progress):
+
+Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd | [SORRY] sorry'd | [TODO] not started
+
+1. Strategy restriction lemma — [STRUCT] ghr93_strategy_restrict_left/right defined with
+   h_d_consistent hypothesis. 5/6 sub-proofs closed. 1 sorry remains (response ordering at
+   line 1900, needs h_pt instantiation). +2 sorry'd d-consistency conditions at call site.
+2. obtain_split_point_props — [STRUCT] d=a_bwd(n) approach. Point case structured. Gap case
+   sorry'd (line 410, needs Lemma 9 ~400-500 lines).
+3. Case I split — [SORRY] (line 477, ~125-195 lines, no Lemma 9 dep)
+4. Shared infra for II-IV — [TODO] init extraction, rank_type_formula (~125 lines)
+5. Case II point/Until — [SORRY within ghr93_cases_II_III_IV] (line 524, ~100 lines, no Lemma 9 dep)
+6. Lemma 9 gap detection — [SORRY] (lines 1423+1442, ~400-500 lines, blocks Cases III/IV)
+7. Cases III+IV gap/U' — [SORRY within ghr93_cases_II_III_IV] (~230 lines, uses Lemma 9)
+8. Theorem 6 assembly — [DONE] ghr93_inductive_step wires case dispatch
+9. Lemma 11 game↔decomposition — [SORRY] (lines 2236+2257, ~100-200 lines, for Prop 7 only)
+10. Proposition 6 — [TODO] (~100-150 lines)
+11. Proposition 7 composition — [TODO] (~150-250 lines, uses Lemma 11)
+12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line 2324, ~80-120 lines)
+
+**Sorry inventory** (10 total across 2 files):
+- EFGames.lean: Lemma 9 left (1423), Lemma 9 right (1442), strategy restrict ordering (1900),
+  Lemma 11 fwd (2236), Lemma 11 bwd (2257), stavi_expressive_completeness (2324)
+- ExpressivenessGeneral.lean: split props gap case (410), Case I (477),
+  Cases II-IV (524), rank-varying Thm 6 (700)
+
+**Completed infrastructure** (sorry-free, ~3000 lines):
+- Gap/M_r/ExtendedCarrier/LinearOrder (4B.2) ✓
+- mu/A^mu/temporal_truth_mu/stavi_temporal_truth_mu (4B.3) ✓
+- left_formula/right_formula definitions (4B.4) ✓
+- ghr93_duplicator_wins/decomposition_agreement (4B.5-6) ✓
+- rank_embed + formula agreement transfer (rank infra) ✓
+- Theorem 6 base case (n=0) ✓
+- Lemma 10 round monotonicity ✓
+- Strategy restriction with index embedding infrastructure ✓
+- Inductive step skeleton with case dispatch ✓
 
 **BEFORE CODING**: Re-read GHR93 Section 8 Theorem 6 proof. The four cases arise from the position of the (n+1)-th element a_n chosen by Spoiler in Round 1. The proof is by induction on n, with the inductive step constructing a backward strategy from a forward strategy with extra rounds.
 
