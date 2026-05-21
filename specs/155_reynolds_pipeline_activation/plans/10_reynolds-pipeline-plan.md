@@ -301,7 +301,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 ---
 
-### Phase 0: U'/S' Semantics Fix [COMPLETED] (Tasks 0.7, 0.11 deferred — non-critical-path)
+### Phase 0: U'/S' Semantics Fix [COMPLETED]
 
 **Goal**: Replace the incorrect "cofinal AND NOT U/S" definitions of U'(A,B) and S'(A,B) with the correct GHR93 FO-table-based definitions. Reprove all broken theorems. Verify Cases I/II/Lemma 10/Lemma 11 forward still compile unchanged.
 
@@ -400,10 +400,10 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 **Sorry inventory** (11 total across 2 files, verified after Phase 0 completion):
 
 EFGames.lean (4 sorries):
-- Line 2317: `left_formula_gap_detection` (Lemma 9 left)
-- Line 2336: `right_formula_gap_detection` (Lemma 9 right)
-- Line 3406: `ghr93_decomposition_implies_game` (Lemma 11 backward)
-- Line 3478: `stavi_expressive_completeness` (Corollary 5)
+- Line 2415: `left_formula_gap_detection` (Lemma 9 left)
+- Line 2434: `right_formula_gap_detection` (Lemma 9 right)
+- Line 3504: `ghr93_decomposition_implies_game` (Lemma 11 backward)
+- Line 3576: `stavi_expressive_completeness` (Corollary 5)
 
 ExpressivenessGeneral.lean (7 sorries):
 - Lines 306, 316: d-consistency left/right (Task W1.2)
