@@ -193,7 +193,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Doc-Only Consolidation and Maintenance Standard [NOT STARTED]
+### Phase 5: Doc-Only Consolidation and Maintenance Standard [COMPLETED]
 
 **Goal**: Consolidate 18 doc-only .lean files into README prose (or expand existing READMEs), delete the emptied .lean files, and document the Boneyard maintenance standard for future archival.
 

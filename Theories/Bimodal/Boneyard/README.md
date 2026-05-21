@@ -32,27 +32,28 @@ The Boneyard serves three roles:
 
 | Directory | Files | Lines | Archived From | Why Archived | Task |
 |-----------|------:|------:|---------------|--------------|------|
-| [BX1DependentCode](#bx1dependentcode) | 2 | 85 | Quasimodel/Realization.lean | BX1-dependent helpers (F_of_mem, P_of_mem, enriched seed consistency); BX1 removed under irreflexive semantics | 130 |
-| [BundleTemporalCoherence](#bundletemporalcoherence) | 1 | 74 | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
+| [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
+| [BundleTemporalCoherence](#bundletemporalcoherence) | 0 | -- | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
 | [ChainCompleteness](#chaincompleteness) | 12 | 4,186 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
-| [ClosedGuardLegacy](#closedguardlegacy) | 4 | 352 | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
-| [DeadCanonicalModel](#deadcanonicalmodel) | 1 | 90 | BXCanonical/ | Dead enriched seed approach, structurally unfixable | 113 |
+| [ClosedGuardLegacy](#closedguardlegacy) | 0 | -- | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
+| [DeadCanonicalModel](#deadcanonicalmodel) | 0 | -- | BXCanonical/ | Dead enriched seed approach, structurally unfixable | 113 |
 | [DefectDirectedChain](#defectdirectedchain) | 1 | 1,556 | BXCanonical/ | Defect-directed root-scoped chain, abandoned after defect metric failed to decrease | 107 |
 | [DenseChronicle](#densechronicle) | 3 | 281 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
 | [DiscreteXY](#discretexy) | 1 | 72 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
-| [FiltrationOrdering](#filtrationordering) | 2 | 194 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
-| [NonBurgessSeed](#nonburgessseed) | 1 | 141 | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
-| [OpenGuardInvalid](#openguardinvalid) | 1 | 215 | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s); seriality-dependent sorry stubs | 173 |
+| [FiltrationOrdering](#filtrationordering) | 1 | 167 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
+| [NonBurgessSeed](#nonburgessseed) | 0 | -- | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
+| [OpenGuardInvalid](#openguardinvalid) | 0 | -- | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s) | 173 |
 | [QuasimodelOracle](#quasimodeloracle) | 3 | 1,467 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,522 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
-| [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 2 | 257 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
-| [StageInductionGapAnalysis](#stageinductiongapanalysis) | 1 | 53 | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
-| [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,330 | Metalogic/ | Completeness under strict semantics (107 sorries); architectural incompatibility with current open-guard semantics | 94 |
-| [TAxiomDependentCode](#taxiomdependentcode) | 3 | 316 | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
-| [UltrafilterDeadCode](#ultrafilterdeadcode) | 4 | 1,064 | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
-| [UltrafilterFrame](#ultrafilterframe) | 2 | 1,547 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4, elaboration conflicts); Jonsson-Tarski prerequisite | 21 |
-| [XuLemma321Legacy](#xulemma321legacy) | 1 | 75 | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics; task 115 proved via different method | 115 |
-| **Total** | **56** | **28,877** | | | |
+| [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 222 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
+| [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
+| [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,330 | Metalogic/ | Completeness under strict semantics; architectural incompatibility with current open-guard semantics | 94 |
+| [TAxiomDependentCode](#taxiomdependentcode) | 0 | -- | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
+| [UltrafilterDeadCode](#ultrafilterdeadcode) | 0 | -- | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
+| [UltrafilterFrame](#ultrafilterframe) | 2 | 1,553 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4); Jonsson-Tarski prerequisite | 21 |
+| [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
+| VacuousKEquiv.lean (root) | 1 | 96 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
+| **Total** | **36** | **~26,452** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -247,3 +248,51 @@ To find when a file was archived:
 # Check the commit that moved the file
 git log --diff-filter=A --oneline -- Theories/Bimodal/Boneyard/<subdir>/<file>.lean
 ```
+
+## Boneyard Maintenance Standard
+
+### How to Archive Files
+
+1. **Create a subdirectory** under `Theories/Bimodal/Boneyard/` with a descriptive name
+2. **Move the file** using Boneyard-qualified import paths:
+   - If the file imports other Boneyard files, use `import Bimodal.Boneyard.<subdir>.<file>`
+   - If the file imports active modules, keep those imports as-is
+3. **Move imports before doc comments**: In Lean 4, `/-! ... -/` doc comments are commands;
+   `import` statements must appear BEFORE any commands
+4. **Add `#exit` if needed**: For files with deep API drift (removed axioms, renamed types),
+   add `#exit` after imports to prevent compilation errors while preserving code for reference
+5. **Create a README.md** in the subdirectory explaining why the code was archived,
+   what it contained, and any relationship to active code
+6. **Update this README** with a new row in the Directory Inventory table
+
+### How to Verify Compilation
+
+```bash
+# Build only the Boneyard (not built by default)
+lake build BoneyardArchive
+
+# Build the default target (should not be affected by Boneyard changes)
+lake build
+```
+
+The `BoneyardArchive` target is defined in `lakefile.lean` as a non-default `lean_lib`
+using `globs := #[.submodules `Bimodal.Boneyard]` for recursive file discovery.
+
+### Expected File Structure
+
+Each Boneyard subdirectory should contain:
+- `README.md` -- Purpose, file inventory, why archived, relationship to active code
+- `.lean` files -- Archived code (may use `#exit` for non-compiling reference code)
+
+Doc-only `.lean` files (pure comments, no imports) should be consolidated into the
+README as prose or code blocks, then deleted. Code is always recoverable from git.
+
+### Directories with README Only (No .lean Files)
+
+After doc-only consolidation (task 182), these directories contain only a README:
+BX1DependentCode, BundleTemporalCoherence, ClosedGuardLegacy, DeadCanonicalModel,
+NonBurgessSeed, OpenGuardInvalid, StageInductionGapAnalysis, TAxiomDependentCode,
+UltrafilterDeadCode, XuLemma321Legacy.
+
+Their README preserves the essential documentation. The original `.lean` files are
+recoverable from git history (commits before task 182).
