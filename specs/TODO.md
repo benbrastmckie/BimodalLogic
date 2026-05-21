@@ -104,7 +104,8 @@ After 155 completes:
 
 ### 184. Dead code tombstone sweep
 - **Effort**: small (3-5 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md]
 - **Task Type**: lean4
 
 **Description**: Sweep the active codebase (everything outside `Boneyard/`) for dead code artifacts that can be removed without affecting task 155 or any active proof work. Targets: (1) **54 tombstone "REMOVED/archived" comments** scattered across active files (Soundness.lean, Completeness.lean, ChronicleTypes.lean, CanonicalChain.lean, Realization.lean, DefectChain.lean, PointInsertion.lean, RestrictedMCS.lean) — these multi-line removal explanations belong in git history, not source code; replace with at most a single-line note or delete entirely. (2) **19 `#check` statements** in Theorems.lean (6), Decidability.lean (3), Semantics.lean (3), Bimodal.lean (1), Tactics.lean (3), FrameClass.lean (3) — keep only those in Examples/ or pedagogical files, remove from library code. (3) **2 stale TODO comments** in Automation/Tactics.lean (lines 498, 543) referencing "BX refactor - temp_4/temp_a axiom removed" — either fix the underlying issue or convert to a tracked task. (4) **Verbose removal explanation blocks** in Completeness.lean (lines 364-367, 525-526) that list removed duplicates. Verify `lake build` passes after each batch of changes. Avoid modifying any file in the `WeakCanonical/ExpressivenessGeneral.lean` or other files actively touched by task 155.
@@ -113,7 +114,7 @@ After 155 completes:
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: 131, 175
 
@@ -131,7 +132,7 @@ After 155 completes:
 
 ### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
 - **Effort**: large (15-20 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 
 **Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Four objectives:

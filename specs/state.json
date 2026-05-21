@@ -8,12 +8,21 @@
     {
       "project_number": 184,
       "project_name": "dead_code_tombstone_sweep",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T06:33:12Z",
+      "last_updated": "2026-05-21T06:40:03Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779345175_6806d1"
+      "session_id": "sess_1779345175_6806d1",
+      "researched": "2026-05-21T06:40:03Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md",
+          "type": "research",
+          "summary": "Complete catalog of tombstone comments, #check statements, stale TODOs, and dead tactics across 12 active Lean files, with classification, safe removal verdicts, and 6 ordered implementation batches"
+        }
+      ]
     },
     {
       "project_number": 183,
