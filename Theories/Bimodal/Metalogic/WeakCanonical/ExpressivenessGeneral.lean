@@ -201,6 +201,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
             {x₀' y₀' : ExtendedCarrier N atomMap r},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
@@ -331,9 +332,23 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         rcases le_or_lt (extendPoint p_N) d with h | h
         · exact ⟨p_N, hp_N.1, h⟩
         · -- p_N > d (a gap). Need a point in [x',d].
-          -- The gap has nonempty cut, giving a point ≤ d,
-          -- but bounding below by x' requires density within [x',d].
-          sorry
+          -- Case split on whether x' is a point or a gap
+          rcases isPoint_or_isGap x' with ⟨x_pt, hx_pt⟩ | ⟨g_x, hg_x⟩
+          · -- x' is a point: x' itself is in [x', d]
+            rw [hx_pt] at hd_interval ⊢
+            exact ⟨x_pt, le_refl _, hd_interval.1⟩
+          · -- x' is a gap: x' < d (strict, since both gaps with x' ≤ d)
+            -- If x' = d, [x',d] is degenerate (no points). But we can
+            -- handle x' < d via point_between_strict_gaps.
+            rcases eq_or_lt_of_le hd_interval.1 with hx'd_eq | hx'd_lt
+            · -- x' = d (degenerate): [x',d] = [d,d] contains no actual points.
+              -- This case requires restructuring obtain_split_point_props to
+              -- handle x' = d specially (bypass sigma game on degenerate interval).
+              sorry
+            · -- x' < d: strict gap ordering, use point_between_strict_gaps
+              rw [hg_x] at hx'd_lt ⊢
+              rw [hg_d] at hx'd_lt ⊢
+              exact point_between_strict_gaps rfl rfl hx'd_lt
     have h_pt_right : ∃ p, inClosedInterval d y' (extendPoint p) := by
       rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
       · rw [hp_d] at hd_interval ⊢
@@ -342,18 +357,53 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         rcases le_or_lt d (extendPoint p_N) with h | h
         · exact ⟨p_N, h, hp_N.2⟩
         · -- p_N < d (a gap). Need a point in [d,y'].
-          sorry
+          rcases isPoint_or_isGap y' with ⟨y_pt, hy_pt⟩ | ⟨g_y, hg_y⟩
+          · -- y' is a point: y' itself is in [d, y']
+            rw [hy_pt] at hd_interval ⊢
+            exact ⟨y_pt, hd_interval.2, le_refl _⟩
+          · -- y' is a gap: d < y' (strict, or d = y')
+            rcases eq_or_lt_of_le hd_interval.2 with hdy_eq | hdy_lt
+            · -- d = y': degenerate [d,y']=[d,d], no points (same structural issue)
+              sorry
+            · -- d < y': strict gap ordering
+              rw [hg_d] at hdy_lt ⊢
+              rw [hg_y] at hdy_lt ⊢
+              exact point_between_strict_gaps rfl rfl hdy_lt
     -- M-side sub-interval point witnesses
     have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by
-      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, _⟩
+      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
       · rw [hp_c] at hc_interval ⊢
         exact ⟨p_c, hc_interval.1, le_refl _⟩
-      · sorry
+      · -- c is a gap. Use h_pt_M to find a point in [x, y].
+        obtain ⟨p_M, hp_M⟩ := h_pt_M
+        rcases le_or_lt (extendPoint p_M) c with h | h
+        · exact ⟨p_M, hp_M.1, h⟩
+        · -- p_M > c. Need point in [x, c].
+          rcases isPoint_or_isGap x with ⟨x_pt, hx_pt⟩ | ⟨g_x, hgx⟩
+          · rw [hx_pt] at hc_interval ⊢
+            exact ⟨x_pt, le_refl _, hc_interval.1⟩
+          · rcases eq_or_lt_of_le hc_interval.1 with hxc_eq | hxc_lt
+            · -- x = c (degenerate): same structural issue
+              sorry
+            · rw [hgx] at hxc_lt ⊢; rw [hg_c] at hxc_lt ⊢
+              exact point_between_strict_gaps rfl rfl hxc_lt
     have h_pt_cy_w : ∃ p, inClosedInterval c y (extendPoint p) := by
-      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, _⟩
+      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
       · rw [hp_c] at hc_interval ⊢
         exact ⟨p_c, le_refl _, hc_interval.2⟩
-      · sorry
+      · -- c is a gap. Use h_pt_M.
+        obtain ⟨p_M, hp_M⟩ := h_pt_M
+        rcases le_or_lt c (extendPoint p_M) with h | h
+        · exact ⟨p_M, h, hp_M.2⟩
+        · -- p_M < c. Need point in [c, y].
+          rcases isPoint_or_isGap y with ⟨y_pt, hy_pt⟩ | ⟨g_y, hgy⟩
+          · rw [hy_pt] at hc_interval ⊢
+            exact ⟨y_pt, hc_interval.2, le_refl _⟩
+          · rcases eq_or_lt_of_le hc_interval.2 with hcy_eq | hcy_lt
+            · -- c = y (degenerate): same structural issue
+              sorry
+            · rw [hg_c] at hcy_lt ⊢; rw [hgy] at hcy_lt ⊢
+              exact point_between_strict_gaps rfl rfl hcy_lt
     exact {
       hc_interval := hc_interval
       hd_interval := hd_interval
@@ -2403,7 +2453,7 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
   intro a_bwd ha_bwd
   -- Obtain split points c, d and their properties
   obtain ⟨c, d, props⟩ :=
-    obtain_split_point_props hxy hx'y' h_pt ih h_fwd a_bwd ha_bwd
+    obtain_split_point_props hxy hx'y' h_pt h_pt_M ih h_fwd a_bwd ha_bwd
   -- Case split: does any selection fall strictly below d?
   by_cases h_split : ∃ i : Fin (n + 1), a_bwd i < d
   · -- Case I: at least one selection below d (the "split" case)

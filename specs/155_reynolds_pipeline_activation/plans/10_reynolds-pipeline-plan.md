@@ -251,7 +251,7 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
 
 ---
 
-### Phase 4C-W1: Infrastructure Fixes [NOT STARTED]
+### Phase 4C-W1: Infrastructure Fixes [PARTIAL]
 
 **Goal**: Resolve the 3 categories of infrastructure sorries in `obtain_split_point_props` (6 sorries) and develop the bridge lemma that unlocks Lemma 9. This wave eliminates 6 existing sorries and creates 1 critical new theorem.
 
@@ -259,9 +259,9 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
 
 **Tasks**:
 
-- [ ] **Task W1.1**: Restructure d-consistency in `obtain_split_point_props` (lines 297, 307). Redefine `d` from the forward strategy's canonical response to a specific play (rather than `d = a_bwd(n)`). The consistency condition becomes `rfl` by construction. Adjust `hd_eq_an` to become `hd_le_an : d <= a_bwd(n)` (inequality instead of equality). Verify Cases I and II still compile -- they should only use the `<=` direction. (~30 lines restructuring + ~30 lines adjustment). Eliminates 2 sorries.
-- [ ] **Task W1.2**: Close sub-interval point witnesses (lines 336, 345, 351, 356). Use the Gap structure's `no_sup` property: `g.val.cut` is nonempty and has no supremum, so for any `q in g.cut` there exists `p in g.cut` with `p > q`. When `x' = extendPoint q` and `d = Sum.inr g`, witness is `extendPoint p` with `x' <= extendPoint p < d`. When `x'` is itself a gap, use `g'.cut c g.cut` (proper containment from gap ordering) to find `p in g.cut \ g'.cut`. Estimated 20-40 lines each, ~80-160 lines total. Eliminates 4 sorries.
-- [ ] **Task W1.3**: Develop `flatten_stavi_correct_mu` bridge lemma (~50-100 lines). Statement:
+- [ ] **Task W1.1**: Restructure d-consistency in `obtain_split_point_props` (lines 297, 307). *(deviation: blocked -- d-consistency is genuinely unprovable as stated; the plan's proposed inequality fix breaks Case II which requires full equality d = a_bwd(n); requires deeper architectural restructuring of how d is defined)*
+- [x] **Task W1.2**: Close sub-interval point witnesses (lines 336, 345, 351, 356). *(deviation: altered -- non-degenerate cases proved via point_between_strict_gaps helper; 4 degenerate endpoint=gap sorries remain, revealing structural issue where sigma game on [d,d] is unwinnable)*
+- [ ] **Task W1.3**: Develop `flatten_stavi_correct_mu` bridge lemma. *(deviation: skipped -- theorem is FALSE for non-discrete orders because U^mu(B,bot) requires a next mu-point which doesn't exist in dense carriers; Lemma 9 does not need this bridge)*. Original statement:
   ```
   theorem flatten_stavi_correct_mu (M : OrderedMonadicStructure sig)
       (atomMap : Formula -> sig.preds) (r : Nat) (m : M.carrier) (A : StaviFormula) :
