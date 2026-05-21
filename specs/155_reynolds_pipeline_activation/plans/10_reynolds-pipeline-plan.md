@@ -291,29 +291,36 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 - [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean. *(completed — sorry-free, verified via lean_verify)*
 
-- [ ] **Task W1.2**: Prove GHR93 Claim 1 (~150-200 lines). Define continuation formula C from the backward game's selections. Show: for any winning play where M-side has c at position n, the N-side response at position n satisfies formula C, and C uniquely characterizes d = a_bwd(n). This gives d-consistency: `a'_full(n) = d`. Add as a helper theorem in ExpressivenessGeneral.lean. Eliminates 2 d-consistency sorries (lines 303, 313).
+- [ ] **Task W1.2**: Prove d-consistency via Claim 1 or architectural restructuring (~150-300 lines). D-consistency is confirmed genuinely unprovable when `d = a_bwd(n)` because strategies are non-deterministic. GHR93 defines d as an infimum. Two viable paths:
+  - (a) Redefine d as canonical forward strategy response (via Classical.choice), making d-consistency `rfl`, then prove `d ≤ a_bwd(n)` and rewrite Case II at 28 sites
+  - (b) Prove Claim 1 directly: define continuation formula C; show formula_agreement forces response = d at boundary; close 2 sorries (lines 306, 316)
+  Both paths require Case II adjustments. This is the single hardest remaining architectural task.
 
-- [x] **Task W1.3**: Close degenerate interval sorries (~40-60 lines). *(deviation: altered -- closed 4 N-side degenerate sorries via boundary correspondence + degenerate_gap lemma, but 2 new M-side degenerate sorries arose from SplitPointProps requiring point witnesses in degenerate [x,c] and [c,y] intervals. Net: 9 -> 7 sorries. M-side fix requires making h_pt_xc/h_pt_cy optional in SplitPointProps.)*
+- [x] **Task W1.3**: Close N-side degenerate interval sorries. *(completed — 4 N-side sorries eliminated via boundary correspondence + ghr93_duplicator_wins_degenerate_gap. 2 new M-side degenerate sorries at lines 430, 447 from SplitPointProps requiring point witnesses. Net: 9 → 7 sorries.)*
 
-- [ ] **Task W1.4**: Verify `lake build` passes. Cases I and II remain sorry-free (no changes to their code). *(partial -- build passes, Cases I and II unchanged, but 2 new M-side degenerate sorries at lines 430, 447)*
+- [ ] **Task W1.4**: Close M-side degenerate interval sorries (lines 430, 447). Make `h_pt_xc`/`h_pt_cy` optional in SplitPointProps (use `Option` or dispatch before construction). ~20-40 lines.
 
-**Timing**: 6-10 hours (dominated by Claim 1 proof)
+- [ ] **Task W1.5**: Verify `lake build` passes. Cases I and II remain sorry-free.
 
-**Depends on**: none
-
-**Timing**: 6-10 hours
+**Timing**: 8-14 hours (dominated by d-consistency architectural work)
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- add ghr93_duplicator_wins_degenerate_gap
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- restructure SplitPointProps, obtain_split_point_props, Case I, Case II
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
+
+**Sorry inventory** (7 in ExpressivenessGeneral.lean):
+- Lines 306, 316: d-consistency left/right (Task W1.2)
+- Lines 430, 447: M-side degenerate point witnesses (Task W1.4)
+- Line 551: c construction gap case (blocked by Lemma 9)
+- Line 2455: Cases III/IV (blocked by Lemma 9)
+- Line 2676: rank-varying Theorem 6 (Phase 4C-W4)
 
 **Verification**:
-- Lines 298, 308 (d-consistency) sorry-free
-- Lines 347, 367, 387, 404 (degenerate intervals) sorry-free
-- `lean_verify ghr93_case_I` shows no `sorryAx`
-- `lean_verify ghr93_case_II` shows no `sorryAx`
+- D-consistency sorries (306, 316) closed
+- Degenerate interval sorries (430, 447) closed
+- `ghr93_case_I` and `ghr93_case_II` show no `sorryAx`
 - `lake build` passes
 
 ---
