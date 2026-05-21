@@ -378,23 +378,48 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 
 - [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean. *(completed -- sorry-free, verified via lean_verify)*
 
-- [ ] **Task W1.2**: Prove d-consistency via Claim 1 or architectural restructuring (~150-300 lines). D-consistency is confirmed genuinely unprovable when `d = a_bwd(n)` because strategies are non-deterministic. GHR93 defines d as an infimum. Two viable paths:
-  - (a) Redefine d as canonical forward strategy response (via Classical.choice), making d-consistency `rfl`, then prove `d <= a_bwd(n)` and rewrite Case II at ~30 sites
-  - (b) Prove Claim 1 directly: define continuation formula C; show formula_agreement forces response = d at boundary; close 2 sorries (lines 306, 316)
-  Both paths require Case II adjustments. This is the single hardest remaining architectural task.
-  
-  **ANALYSIS UPDATE (sess_1779383375_6c61c3)**: Exhaustive analysis of 5 approaches (formula agreement, same_order_type with point challenges, eq_of_forall_le_iff, uniqueness of response, and canonical response). ALL FAIL because:
-  - rank_type is NOT injective on ExtendedCarrier (two actual points can share rank_type)
-  - same_order_type compares a'_full(n) to extendPoint b' MEDIATED through M-side response b, not directly to d
-  - eq_of_forall_le_iff needs comparison with ALL ExtendedCarrier elements but winning condition only provides point challenges
-  - Uniqueness of response fails because ghr93_duplicator_wins is existentially quantified (non-deterministic)
-  - Canonical response (define d from forward strategy) moves the problem to proving d = a_bwd(n)
-  
-  **Conclusion**: The GHR93 Claim 1 INFIMUM argument (formula C + contradiction at Step 7) is the ONLY viable path. The contradiction step -- "if d < c', Spoiler challenges at d' in (d,c') where not-C holds; Duplicator responds with b in (c,y) where C holds; formula agreement gives C(b) <-> C(d'), contradiction" -- cannot be replicated without the formula C infrastructure.
-  
-  **Key blocker for Claim 1**: Infimum existence in ExtendedCarrier. The infimum of a C-definable set is either a carrier point or a gap. If a gap, it must be shown r-definable (gap_definable_on_right by C). This requires connecting the Prop-level C predicate to a SPECIFIC StaviFormula D of depth <= r, which requires formula enumeration/finiteness infrastructure that doesn't exist in the codebase (~200+ lines).
-  
-  **W1.4 is independently fixable** (3-4 hours): Making h_pt_xc/h_pt_cy conditional + updating Case I's degenerate branch (~50-100 lines of Case I changes). See handoff phase-4CW1-dconsistency-analysis-20260521.md for detailed implementation strategy. But the user directive to avoid modifying Cases I/II creates tension.
+- [ ] **Task W1.2**: Implement GHR93 Claim 1 (d-consistency via infimum argument). ~420-640 lines total across 5 sub-phases. Research complete (reports 18_claim1-literature.md, 18_lean-infra-audit.md, 18_alternative-strategies.md, 19_gap-definability-construction.md).
+
+  **Sub-phase W1.2a: Definitions [COMPLETED]**
+  - `cont_holds a_n y' t : Prop` (line 127) — sorry-free
+  - `continuation_set x' y' a_n : Set (ExtendedCarrier N atomMap r)` (line 139) — sorry-free
+  - `inf_carrier_cut S : Set N.carrier` (line 150) — sorry-free
+
+  **Sub-phase W1.2b: S_C Properties [PARTIAL]**
+  - `continuation_set_nonempty` (line 159) — sorry-free
+  - `continuation_set_upward_closed` (line 171) — sorry-free
+  - `a_n_in_continuation_set` (line 186) — 1 sorry at line 209 (edge case u = y'; may be unreachable in practice since the infimum d_bar < y' when S_C contains y')
+
+  **Sub-phase W1.2c: Gap Construction [COMPLETED]**
+  - `inf_carrier_cut_downward_closed` (line 215) — sorry-free
+  - `inf_carrier_cut_nonempty` (line 226) — sorry-free
+  - `inf_carrier_cut_proper` (line 242) — sorry-free
+  - `inf_carrier_cut_no_sup` (line 265) — sorry-free
+  - `inf_carrier_cut_complement_no_min` (line 292) — sorry-free
+  - `infimum_gap` (line 382) — packages all 5 Gap axioms, sorry-free
+
+  **Sub-phase W1.2d: Gap r-Definability [PARTIAL]**
+  - `cont_holds_above_gap` (line 429) — 1 sorry (edge case: extendPoint p = y')
+  - `cont_fails_below_gap` (line 497) — sorry-free
+  - `pigeonhole_definable_formula` (line 554) — 1 sorry (NormalForm finiteness bridge)
+  - `formula_failure_in_cut` (line 617) — sorry-free
+  - `infimum_gap_r_definable` (line 690) — 1 sorry (first conjunct of gap_definable_on_right, edge cases outside [x',y']); second conjunct sorry-free
+  - **Remaining sorries (3)**: (1) cont_holds_above_gap y' edge case, (2) pigeonhole NormalForm bridge, (3) first conjunct interval bounds
+  - **NormalForm finiteness bridge** (~80-120 lines, deferred): prove that the image of `rank_type` over carrier points is finite. Uses `NormalForm sig r 1` Fintype (NormalForm.lean:178) + `nf_exists_unique` (NormalForm.lean:281).
+
+  **Sub-phase W1.2e: Integration with Claim 1 (~120 lines)**
+  - Construct infimum as ExtendedCarrier element: case split on point vs gap
+  - Define c_bar = infimum of S_C in M, d_bar = infimum of S_C in N
+  - Prove Claim 1: for any winning play with c_bar at position n, response = d_bar
+    - Step 1: C'(c_bar) holds (C' = ¬C ∨ K⁻(¬C), rank r+1) by infimum property
+    - Step 2: formula transfer → C'(d) holds (depth r+1 ≤ r' = r+4(n+1))
+    - Step 3: C'(d) → d ≤ d_bar
+    - Step 4: contradiction if d < d_bar (Spoiler challenges at d' with ¬C, Duplicator stuck)
+    - Step 5: d = d_bar
+  - Close d-consistency sorries (lines 306, 316) by applying Claim 1
+
+  **Build order**: W1.2a → W1.2b → W1.2c → W1.2d → W1.2e. NormalForm bridge runs in parallel with W1.2a-c.
+  **Research references**: reports/18_claim1-literature.md, reports/19_gap-definability-construction.md
 
 - [x] **Task W1.3**: Close N-side degenerate interval sorries. *(completed -- 4 N-side sorries eliminated via boundary correspondence + ghr93_duplicator_wins_degenerate_gap. 2 new M-side degenerate sorries at lines 430, 447 from SplitPointProps requiring point witnesses. Net: 9 -> 7 sorries.)*
 
@@ -410,20 +435,21 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (11 total across 2 files, verified after Phase 0 completion):
+**Sorry inventory** (12 total across 2 files, verified after W1.2a-c completion):
 
-EFGames.lean (4 sorries):
+EFGames.lean (4 sorries, unchanged):
 - Line 2415: `left_formula_gap_detection` (Lemma 9 left)
 - Line 2434: `right_formula_gap_detection` (Lemma 9 right)
 - Line 3504: `ghr93_decomposition_implies_game` (Lemma 11 backward)
 - Line 3576: `stavi_expressive_completeness` (Corollary 5)
 
-ExpressivenessGeneral.lean (7 sorries):
-- Lines 306, 316: d-consistency left/right (Task W1.2)
-- Lines 430, 447: M-side degenerate point witnesses (Task W1.4)
-- Line 551: c construction gap case (blocked by Lemma 9)
-- Line 2455: Cases III/IV (blocked by Lemma 9)
-- Line 2676: rank-varying Theorem 6 (Phase 4C-W4)
+ExpressivenessGeneral.lean (8 sorries, +1 from W1.2b):
+- Line 209: `a_n_in_continuation_set` edge case u = y' (NEW, W1.2b — may be unreachable in application)
+- Lines 604, 614: d-consistency left/right (Task W1.2e)
+- Lines 728, 745: M-side degenerate point witnesses (Task W1.4)
+- Line 849: c construction gap case (blocked by Lemma 9)
+- Line 2753: Cases III/IV (blocked by Lemma 9)
+- Line 2974: rank-varying Theorem 6 (Phase 4C-W4)
 
 StaviConnectives.lean: **0 sorries** (completely sorry-free with correct GHR93 semantics)
 
