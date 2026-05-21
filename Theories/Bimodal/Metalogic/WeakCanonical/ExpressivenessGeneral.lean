@@ -566,16 +566,58 @@ private theorem nf_determines_stavi_truth {sig : MonadicSignature}
         ((stavi_table_mu_correct (extendPoint q) A).trans
           (stavi_truth_mu_at_point q A))))
 
+/-- Variant of nf_determines_stavi_truth using NF at depth 2*r to handle
+    formulas with stavi_depth ≤ r (whose stavi_fo_depth may be up to 2*r).
+    The key insight: stavi_fo_depth A ≤ 2 * stavi_depth A (by stavi_fo_depth_le_twice_depth),
+    so stavi_depth A ≤ r implies stavi_fo_depth A ≤ 2*r, and NF at depth 2*r
+    captures the truth of stavi_table_mu A via doets_lemma_1_1. -/
+private theorem nf_determines_stavi_truth_depth {sig : MonadicSignature}
+    {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {p q : N.carrier}
+    (h_same_nf : nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1
+        (fun _ => extendPoint p) =
+      nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1
+        (fun _ => extendPoint q))
+    (A : StaviFormula) (hA : stavi_depth A ≤ r) :
+    stavi_temporal_truth N atomMap p A ↔
+    stavi_temporal_truth N atomMap q A := by
+  -- stavi_fo_depth A ≤ 2 * stavi_depth A ≤ 2 * r
+  have hA_fo : stavi_fo_depth A ≤ 2 * r :=
+    le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hA)
+  -- Same proof structure as nf_determines_stavi_truth but at depth 2*r
+  have h_p_nf := nf_characteristic_satisfies (extendedStructureWithMu N atomMap r) (2 * r) 1
+    (fun _ => extendPoint p)
+  have h_q_nf := nf_characteristic_satisfies (extendedStructureWithMu N atomMap r) (2 * r) 1
+    (fun _ => extendPoint q)
+  have h_q_nf_as_p : nf_eval_nf (extendedStructureWithMu N atomMap r) (2 * r) 1
+      (fun _ => extendPoint q)
+      (nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1 (fun _ => extendPoint p)) :=
+    h_same_nf ▸ h_q_nf
+  have h_nf_agree := nf_agreement_from_shared_nf
+    (extendedStructureWithMu N atomMap r) (fun _ => extendPoint p)
+    (extendedStructureWithMu N atomMap r) (fun _ => extendPoint q)
+    _ h_p_nf h_q_nf_as_p
+  have h_eval_agree := doets_lemma_1_1 (2 * r) 1 (stavi_table_mu atomMap A)
+    (le_trans (stavi_table_mu_depth A) hA_fo)
+    (extendedStructureWithMu N atomMap r) (extendedStructureWithMu N atomMap r)
+    (fun _ => extendPoint p) (fun _ => extendPoint q)
+    h_nf_agree
+  exact (stavi_truth_mu_at_point p A).symm.trans
+    ((stavi_table_mu_correct (extendPoint p) A).symm.trans
+      (h_eval_agree.trans
+        ((stavi_table_mu_correct (extendPoint q) A).trans
+          (stavi_truth_mu_at_point q A))))
+
 /-- Pigeonhole extraction: from the fact that cont_holds fails cofinally
     below the gap, extract a SINGLE formula D of depth ≤ r that holds on
     the interval but fails cofinally in the cut.
 
     By contradiction: if every formula eventually holds, we build an ascending
-    chain of failure points with pairwise distinct NormalForm types. Since
-    NormalForm sig r 1 is Fintype (NormalForm.lean:178), the chain length
-    exceeds the cardinality, giving a contradiction.
+    chain of failure points with pairwise distinct NormalForm types (at depth
+    2*r over muSig sig). Since NormalForm (muSig sig) (2*r) 1 is Fintype,
+    the chain length exceeds the cardinality, giving a contradiction.
 
-    Uses nf_determines_stavi_truth (sorry'd bridge lemma) for the key step:
+    Uses nf_determines_stavi_truth_depth for the key step:
     same NF type → same truth → the "old" formula still holds → new failure
     must have a different NF type. -/
 private theorem pigeonhole_definable_formula {sig : MonadicSignature}
@@ -618,25 +660,140 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
   -- By contradiction: suppose no single formula fails cofinally.
   by_contra h_no_cofinal
   push_neg at h_no_cofinal
-  -- h_no_cofinal says: for every D with depth ≤ r that holds on the interval,
-  -- there exists a bound t in the cut above which D holds at all cut points.
-  -- Combined with h_cofinal_failure (each cut point has SOME formula failing
-  -- above it), this implies infinitely many distinct truth patterns — but
-  -- NormalForm sig r 1 is Fintype, giving at most finitely many. Contradiction.
-  --
-  -- The formal argument builds an ascending chain of failure points with
-  -- pairwise distinct NormalForm types, exceeding Fintype.card.
-  -- This requires nf_determines_stavi_truth (sorry'd bridge lemma).
-  --
-  -- Proof sketch:
-  -- 1. Get failure (u₀, A₀) above p₀. A₀ eventually holds (by h_no_cofinal),
-  --    giving bound b₀. Take q₀ = max(u₀, b₀).
-  -- 2. Get failure (u₁, A₁) above q₀. Since u₁ ≥ q₀ ≥ b₀, A₀ holds at u₁.
-  --    But A₀ fails at u₀. So nf(u₁) ≠ nf(u₀) (they differ on A₀).
-  -- 3. Continue: at step n, failure point uₙ has nf(uₙ) ≠ nf(uᵢ) for all i < n
-  --    (because Aᵢ holds at uₙ ≥ qᵢ ≥ bᵢ but fails at uᵢ).
-  -- 4. After Fintype.card + 1 steps, we have too many distinct NF types.
-  sorry
+  -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
+  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
+  let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
+  obtain ⟨p₀, hp₀_cut, hx'_p₀⟩ := h_cut_start
+  -- One-step: from a cut point with x' ≤ extendPoint, produce failure data + next floor
+  have one_step : ∀ (f : N.carrier),
+      f ∈ inf_carrier_cut (continuation_set x' y' a_n) →
+      x' ≤ (extendPoint f : ExtendedCarrier N atomMap r) →
+      ∃ (u : N.carrier) (A : StaviFormula) (t nf : N.carrier),
+        f ≤ u ∧ u ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+        stavi_depth A ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n < v → v < y' → mu_holds v → stavi_temporal_truth_mu N atomMap r v A) ∧
+        ¬ stavi_temporal_truth N atomMap u A ∧
+        (∀ w, t ≤ w → w ∈ inf_carrier_cut (continuation_set x' y' a_n) →
+          stavi_temporal_truth N atomMap w A) ∧
+        nf ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+        x' ≤ (extendPoint nf : ExtendedCarrier N atomMap r) ∧
+        u ≤ nf ∧ t ≤ nf := by
+    intro f hf_cut hx'f
+    obtain ⟨u, hfu, hu_cut, A, hA_depth, hA_interval, hA_fail⟩ :=
+      h_cofinal_failure f hf_cut hx'f (cut_le_y' f hf_cut)
+    obtain ⟨t, ht_cut, hx't, _, h_bound⟩ := h_no_cofinal A hA_depth hA_interval
+    rcases le_total u t with hut | htu
+    · exact ⟨u, A, t, t, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
+        ht_cut, hx't, hut, le_refl t⟩
+    · exact ⟨u, A, t, u, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
+        hu_cut, le_trans hx'f (extendPoint_le_extendPoint.mpr hfu),
+        le_refl u, htu⟩
+  -- Build chain by Nat.rec on a bundled floor state.
+  -- State = { f // f ∈ Cut ∧ x' ≤ extendPoint f }
+  -- At each step, one_step picks (u, A, t, next_floor) with properties.
+  -- We define the chain as a single Nat-indexed function returning all data.
+  -- Chain state type
+  let S := { f : N.carrier // f ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+      x' ≤ (extendPoint f : ExtendedCarrier N atomMap r) }
+  -- Chain output type (data at each step, bundled with properties)
+  -- We define the chain function using Classical.indefiniteDescription
+  -- to pick witnesses from the existential in one_step.
+  -- step : S → (u × A × t × S) with all properties
+  -- Actually, let's define sequences directly using Nat.rec
+  -- and use Classical.choice at each step.
+  -- Build the chain: at each Nat, produce (floor, u, A, t, next_floor)
+  -- Using a stream of states
+  -- chain : Nat → S defined by chain 0 = ⟨p₀, ...⟩, chain (n+1) = next_floor from one_step at chain n
+  -- u_seq, A_seq : Nat → ... defined from one_step applied to chain n
+  -- Since one_step is existential, we use Classical.choice to pick witnesses.
+  -- Package everything into a single recursive structure.
+  -- Define: chain_data n = (floor_n, u_n, A_n, t_n, next_floor_n) with all properties
+  -- Then chain_data (n+1).floor = chain_data n.next_floor
+  -- We use a recursive definition with Nat.rec on a Sigma type.
+  -- Actually, the simplest way: define a stream of "states" and "outputs" simultaneously.
+  -- state : Nat → S (the floor at each step)
+  -- output : Nat → (u, A, t, props) (the data from one_step at each step)
+  -- We define state by recursion and output as a function of state.
+  -- Since one_step gives an existential, we use Classical.indefiniteDescription.
+  -- First, wrap one_step into a choice function:
+  have choose_witness (f : N.carrier)
+      (hf : f ∈ inf_carrier_cut (continuation_set x' y' a_n))
+      (hx'f : x' ≤ (extendPoint f : ExtendedCarrier N atomMap r)) :
+      { w : N.carrier × StaviFormula × N.carrier × N.carrier //
+        f ≤ w.1 ∧ w.1 ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+        stavi_depth w.2.1 ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n < v → v < y' → mu_holds v → stavi_temporal_truth_mu N atomMap r v w.2.1) ∧
+        ¬ stavi_temporal_truth N atomMap w.1 w.2.1 ∧
+        (∀ w', w.2.2.1 ≤ w' → w' ∈ inf_carrier_cut (continuation_set x' y' a_n) →
+          stavi_temporal_truth N atomMap w' w.2.1) ∧
+        w.2.2.2 ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+        x' ≤ (extendPoint w.2.2.2 : ExtendedCarrier N atomMap r) ∧
+        w.1 ≤ w.2.2.2 ∧ w.2.2.1 ≤ w.2.2.2 } := by
+    have ⟨u, A, t, nf, h⟩ := one_step f hf hx'f
+    exact ⟨(u, A, t, nf), h⟩
+  -- Define state sequence (floors) by recursion
+  let state : Nat → S := Nat.rec ⟨p₀, hp₀_cut, hx'_p₀⟩ fun n prev =>
+    let w := choose_witness prev.1 prev.2.1 prev.2.2
+    ⟨w.1.2.2.2, w.2.2.2.2.2.2.2.1, w.2.2.2.2.2.2.2.2.1⟩
+  -- Define output at each step
+  let output (n : Nat) := choose_witness (state n).1 (state n).2.1 (state n).2.2
+  -- Extract individual sequences
+  let u_seq (n : Nat) : N.carrier := (output n).1.1
+  let A_seq (n : Nat) : StaviFormula := (output n).1.2.1
+  let t_seq (n : Nat) : N.carrier := (output n).1.2.2.1
+  -- Extract properties
+  have props (n : Nat) :
+      (state n).1 ≤ u_seq n ∧
+      u_seq n ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+      stavi_depth (A_seq n) ≤ r ∧
+      (∀ v : ExtendedCarrier N atomMap r,
+        a_n < v → v < y' → mu_holds v →
+        stavi_temporal_truth_mu N atomMap r v (A_seq n)) ∧
+      ¬ stavi_temporal_truth N atomMap (u_seq n) (A_seq n) ∧
+      (∀ w, t_seq n ≤ w → w ∈ inf_carrier_cut (continuation_set x' y' a_n) →
+        stavi_temporal_truth N atomMap w (A_seq n)) ∧
+      u_seq n ≤ (state (n + 1)).1 ∧
+      t_seq n ≤ (state (n + 1)).1 := by
+    have h := (output n).2
+    exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1,
+      h.2.2.2.2.2.2.2.2.1, h.2.2.2.2.2.2.2.2.2⟩
+  -- Monotonicity: u_seq is increasing
+  have u_mono : ∀ n, u_seq n ≤ u_seq (n + 1) := fun n =>
+    le_trans (props n).2.2.2.2.2.2.1 (props (n + 1)).1
+  -- Transitivity: for i ≤ j, u_seq i ≤ u_seq j
+  have u_mono_le : ∀ i j, i ≤ j → u_seq i ≤ u_seq j := by
+    intro i j hij
+    induction hij with
+    | refl => exact le_refl _
+    | step _ ih => exact le_trans ih (u_mono _)
+  -- Key bound: for j > i, t_seq i ≤ u_seq j (so A_i holds at u_j)
+  have bound_le : ∀ i j, i < j → t_seq i ≤ u_seq j := fun i j hij =>
+    le_trans (props i).2.2.2.2.2.2.2 (le_trans (props (i + 1)).1 (u_mono_le (i + 1) j hij))
+  -- A_i holds at u_j for j > i (via the bound property)
+  have holds_later : ∀ i j, i < j →
+      stavi_temporal_truth N atomMap (u_seq j) (A_seq i) := fun i j hij =>
+    (props i).2.2.2.2.2.1 (u_seq j) (bound_le i j hij) (props j).2.1
+  -- A_i fails at u_i
+  have fails_at : ∀ i, ¬ stavi_temporal_truth N atomMap (u_seq i) (A_seq i) := fun i =>
+    (props i).2.2.2.2.1
+  -- NF map: Fin (K+1) → NormalForm (muSig sig) (2*r) 1
+  let nf_map : Fin (K + 1) → NormalForm (muSig sig) (2 * r) 1 := fun i =>
+    nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1
+      (fun _ => extendPoint (u_seq i))
+  -- Pigeonhole: K+1 > K → two indices have same NF
+  have h_card : Fintype.card (NormalForm (muSig sig) (2 * r) 1) <
+      Fintype.card (Fin (K + 1)) := by simp [Fintype.card_fin]
+  obtain ⟨i, j, hij, h_same_nf⟩ := Fintype.exists_ne_map_eq_of_card_lt nf_map h_card
+  -- WLOG i < j (or j < i)
+  rcases lt_or_gt_of_ne hij with h_ij | h_ij
+  · -- i < j: A_i holds at u_j but fails at u_i
+    exact (fails_at i) ((nf_determines_stavi_truth_depth h_same_nf
+      (A_seq i) (props i).2.2.1).mpr (holds_later i j h_ij))
+  · -- j < i: A_j holds at u_i but fails at u_j
+    exact (fails_at j) ((nf_determines_stavi_truth_depth (Eq.symm h_same_nf)
+      (A_seq j) (props j).2.2.1).mpr (holds_later j i h_ij))
 
 /-- Bridge lemma: from cont_fails_below_gap (which gives an extended carrier
     mu-point where cont_holds fails) to a carrier-level formula failure

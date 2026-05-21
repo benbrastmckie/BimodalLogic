@@ -4012,6 +4012,20 @@ theorem stavi_depth_le_fo_depth (A : StaviFormula) :
   | stavi_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
   | stavi_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
 
+/-- stavi_fo_depth is at most twice stavi_depth. This is because the only
+    connectives where they differ are stavi_untl/stavi_snce, which add +4 to
+    fo_depth vs +2 to depth. By induction, the gap is at most a factor of 2. -/
+theorem stavi_fo_depth_le_twice_depth (A : StaviFormula) :
+    stavi_fo_depth A ≤ 2 * stavi_depth A := by
+  induction A with
+  | base φ => simp [stavi_depth, stavi_fo_depth]; omega
+  | neg A ih => simp [stavi_depth, stavi_fo_depth]; omega
+  | conj A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | std_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | std_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | stavi_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | stavi_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+
 /-- The quantifier depth of stavi_table_mu is bounded by stavi_fo_depth. -/
 theorem stavi_table_mu_depth {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} (A : StaviFormula) :

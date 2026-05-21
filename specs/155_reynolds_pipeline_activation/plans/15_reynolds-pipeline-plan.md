@@ -286,11 +286,11 @@ The 2 muSig sorries were closed. The root cause was a sign error in the FO encod
 - [x] **Task W1.muSig.3**: Close `stavi_table_mu_correct` stavi_snce case *(deviation: altered -- same FO encoding fix in stavi_snce_fo, dual proof)*
 - [x] **Task W1.muSig.4**: Verify `lean_verify stavi_table_mu_correct` shows no `sorryAx`. Confirmed: axioms = [propext, Classical.choice, Quot.sound].
 
-**Sub-phase W1.2d-remainder: Pigeonhole [NOT STARTED]**
+**Sub-phase W1.2d-remainder: Pigeonhole [COMPLETED]**
 
-With muSig sorry-free, the pigeonhole argument at ExpressivenessGeneral.lean:639 becomes closeable:
+Closed `pigeonhole_definable_formula` sorry. Key insight: `stavi_fo_depth` can exceed `stavi_depth` by up to a factor of 2 (stavi operators add +4 fo depth vs +2 depth), so the NF bridge requires depth `2*r` instead of `r`. Proved `stavi_fo_depth_le_twice_depth` in EFGames.lean, created `nf_determines_stavi_truth_depth` variant using NF at depth `2*r`, then built a monotone chain of failure points via `Classical.indefiniteDescription` with `Nat.rec` and applied `Fintype.exists_ne_map_eq_of_card_lt` for the pigeonhole contradiction.
 
-- [ ] **Task W1.2d.1**: Close `pigeonhole_definable_formula` (line 639) using `nf_determines_stavi_truth` (now sorry-free) + `Fintype.card_le_of_injective` on `NormalForm (muSig sig) r 1`. ~80-120 lines.
+- [x] **Task W1.2d.1**: Close `pigeonhole_definable_formula` (line ~681) *(deviation: altered -- used NormalForm at depth 2*r instead of r, added stavi_fo_depth_le_twice_depth helper lemma and nf_determines_stavi_truth_depth bridge variant)*
 
 **Sub-phase W1.2e-remainder: D-Consistency Claim 1 [NOT STARTED]**
 
