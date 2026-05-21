@@ -49,7 +49,7 @@ Agents MUST:
 
 This plan (v10) integrates the muSig blocker resolution from report 21 and updates the sorry inventory to reflect current codebase state. The key new finding is a `not_not_and_not` helper lemma that bridges the FO encoding's `not (not A and not B)` disjunction representation to Lean's native `Or` type, unblocking the `stavi_table_mu_correct` stavi_untl/snce cases.
 
-Phases 1-5, 4A, 4B, and 0 are COMPLETED. Phase 4C-W1 is PARTIAL with sub-phases W1.1, W1.2a-c, W1.3, and the first conjunct of W1.2d completed. The muSig infrastructure has 7 of 9 sorries closed; the remaining 2 (stavi_untl/snce in `stavi_table_mu_correct`) are now unblocked by the report 21 strategy. The plan maintains the same dependency chain as v9 but updates sorry counts, line numbers, and effort estimates.
+Phases 1-5, 4A, 4B, and 0 are COMPLETED. Phase 4C-W1 is PARTIAL with sub-phases W1.1, W1.2a-c, W1.3, W1.2d first conjunct, and W1.muSig completed. The muSig infrastructure is now fully sorry-free (9/9 closed): the root cause was a sign error in `stavi_untl_fo`/`stavi_snce_fo` (spurious `MonadicFormula.not` wrapper around disjunction conjunction). Remaining W1 sub-phases: pigeonhole (W1.2d-remainder), d-consistency (W1.2e), M-side degenerate (W1.4). The plan maintains the same dependency chain as v9.
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, no `axiom` declarations in the pipeline, `stavi_expressive_completeness` is sorry-free.
 
@@ -78,8 +78,8 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 ## Goals & Non-Goals
 
 **Goals**:
-- Close the 2 remaining muSig sorries (`stavi_table_mu_correct` stavi_untl/snce) using the `not_not_and_not` helper
-- Close the pigeonhole_definable_formula sorry (depends on muSig being sorry-free)
+- ~~Close the 2 remaining muSig sorries (`stavi_table_mu_correct` stavi_untl/snce)~~ **DONE** (FO encoding bug fix)
+- Close the pigeonhole_definable_formula sorry (now unblocked: muSig is sorry-free)
 - Complete d-consistency (GHR93 Claim 1) via infimum argument
 - Close M-side degenerate interval sorries (lines 1304, 1321)
 - Prove GHR93 Lemma 9 (gap detection correctness)
@@ -106,17 +106,17 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 
 ## Full Sorry Inventory (Current State)
 
-### EFGames.lean (6 sorries)
-| Line | Identifier | Phase |
-|------|-----------|-------|
-| 2432 | `left_formula_gap_detection` | 4C-W2 |
-| 2451 | `right_formula_gap_detection` | 4C-W2 |
-| 3521 | `ghr93_decomposition_implies_game` | 4C-W4 |
-| 4188 | `stavi_table_mu_correct` stavi_untl case | 4C-W1 (muSig) |
-| 4191 | `stavi_table_mu_correct` stavi_snce case | 4C-W1 (muSig) |
-| 4529 | `stavi_expressive_completeness` | 4C-W4 |
+### EFGames.lean (4 sorries, down from 6)
+| Line | Identifier | Phase | Status |
+|------|-----------|-------|--------|
+| 2432 | `left_formula_gap_detection` | 4C-W2 | open |
+| 2451 | `right_formula_gap_detection` | 4C-W2 | open |
+| 3521 | `ghr93_decomposition_implies_game` | 4C-W4 | open |
+| ~~4188~~ | ~~`stavi_table_mu_correct` stavi_untl case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
+| ~~4191~~ | ~~`stavi_table_mu_correct` stavi_snce case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
+| 4809 | `stavi_expressive_completeness` | 4C-W4 | open (line shifted from 4529) |
 
-### ExpressivenessGeneral.lean (7 sorries)
+### ExpressivenessGeneral.lean (8 sorries)
 | Line | Identifier | Phase |
 |------|-----------|-------|
 | 639 | `pigeonhole_definable_formula` chain body | 4C-W1 (depends on muSig) |
@@ -140,7 +140,7 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 |------|-----------|-------|
 | 574 | `h_truth_corr` | 10 |
 
-**Total critical-path sorries**: 17
+**Total critical-path sorries**: 16 (was 18; 2 muSig sorries closed, count corrected from 17)
 
 ## Implementation Phases
 
@@ -266,9 +266,9 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel.
 
 **Goal**: Close the muSig infrastructure sorries, complete the pigeonhole argument, restructure `obtain_split_point_props` with infimum-based d, handle degenerate intervals via vacuous game lemma, close M-side degenerate sorries.
 
-**Status**: PARTIAL. Completed: Task W1.1 (degenerate gap lemma), W1.2a-c (definitions, S_C properties, gap construction -- all sorry-free), W1.2d first conjunct (`cont_holds_above_gap` sorry-free), W1.3 (N-side degenerate sorries), muSig infrastructure 7/9 sorries closed, `nf_determines_stavi_truth` sorry-free.
+**Status**: PARTIAL. Completed: Task W1.1 (degenerate gap lemma), W1.2a-c (definitions, S_C properties, gap construction -- all sorry-free), W1.2d first conjunct (`cont_holds_above_gap` sorry-free), W1.3 (N-side degenerate sorries), muSig infrastructure 9/9 sorries closed (including stavi_untl/snce via FO encoding bug fix), `nf_determines_stavi_truth` sorry-free.
 
-**Remaining work** (7 sorries in this phase):
+**Remaining work** (5 sorries in this phase; 2 muSig sorries now closed):
 
 **Sub-phase W1.muSig: Close stavi_table_mu_correct stavi_untl/snce [COMPLETED]**
 
@@ -312,12 +312,12 @@ With muSig sorry-free, the pigeonhole argument at ExpressivenessGeneral.lean:639
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- pigeonhole (line 639), d-consistency (lines 941, 974), M-side degenerate (lines 1304, 1321)
 
 **Verification**:
-- `lean_verify stavi_table_mu_correct` shows no `sorryAx`
-- `lean_verify pigeonhole_definable_formula` shows no `sorryAx`
-- D-consistency sorries closed
-- M-side degenerate sorries closed
-- `ghr93_case_I` and `ghr93_case_II` show no `sorryAx`
-- `lake build` passes
+- [x] `lean_verify stavi_table_mu_correct` shows no `sorryAx` (verified 2026-05-21)
+- [ ] `lean_verify pigeonhole_definable_formula` shows no `sorryAx`
+- [ ] D-consistency sorries closed
+- [ ] M-side degenerate sorries closed
+- [ ] `ghr93_case_I` and `ghr93_case_II` show no `sorryAx`
+- [ ] `lake build` passes
 
 ---
 
