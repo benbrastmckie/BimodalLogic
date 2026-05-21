@@ -69,7 +69,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Infrastructure -- BoneyardArchive lean_lib Target [NOT STARTED]
+### Phase 1: Infrastructure -- BoneyardArchive lean_lib Target [COMPLETED]
 
 **Goal**: Add a non-default `lean_lib BoneyardArchive` target to lakefile.lean so the Boneyard can be built separately via `lake build BoneyardArchive` without affecting the default build.
 

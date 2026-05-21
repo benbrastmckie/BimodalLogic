@@ -21,6 +21,13 @@ lean_lib Bimodal where
   roots := #[`Bimodal]
   leanOptions := theoryLeanOptions
 
+/-- Archived dead code. Not built by default.
+    Build with: lake build BoneyardArchive -/
+lean_lib BoneyardArchive where
+  srcDir := "Theories"
+  globs := #[.submodules `Bimodal.Boneyard]
+  leanOptions := theoryLeanOptions
+
 lean_lib BimodalTest where
   srcDir := "Tests"
   roots := #[`BimodalTest]
