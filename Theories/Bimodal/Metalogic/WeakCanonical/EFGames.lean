@@ -1979,10 +1979,63 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
             fun v hmv hvu => (ihB v).mp (hB_init (extendPoint v)
               ((extendPoint_lt_iff m v).mpr hmv) ((extendPoint_lt_iff v ui).mpr hvu) ⟨v, rfl⟩)⟩
       · -- s = Sum.inr g (a gap)
-        -- The mu-version's bound s is a gap. All mu-witnesses (uf, ui) are actual points
-        -- below the gap (in g.cut). Find s' in g.cut above both uf and ui using no_sup.
-        -- The body transfers since (m, s') ⊆ g.cut.
-        sorry
+        -- uf, ui ∈ g.val.cut since extendPoint uf/ui < Sum.inr g
+        have huf_cut : uf ∈ g.val.cut := (extendPoint_le_gap_iff uf g).mp (le_of_lt hus_fail)
+        have hui_cut : ui ∈ g.val.cut := (extendPoint_le_gap_iff ui g).mp (le_of_lt hus_init)
+        -- gap cut cofinal: every element has a larger one in the cut
+        have gap_cut_cofinal : ∀ (x : M.carrier), x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
+          intro x hx; by_contra h_all; push_neg at h_all
+          exact g.val.no_sup ⟨x, ⟨h_all, fun b hb => hb hx⟩, hx⟩
+        -- max(uf, ui) ∈ cut
+        have hmax_cut : max uf ui ∈ g.val.cut := by
+          rcases le_or_lt uf ui with h | h
+          · simp [max_eq_right h]; exact hui_cut
+          · simp [max_eq_left (le_of_lt h)]; exact huf_cut
+        obtain ⟨y, hy_cut, hmax_y⟩ := gap_cut_cofinal (max uf ui) hmax_cut
+        have huf_y : uf < y := lt_of_le_of_lt (le_max_left uf ui) hmax_y
+        have hui_y : ui < y := lt_of_le_of_lt (le_max_right uf ui) hmax_y
+        -- Use y as the bound in M.carrier
+        have hm_y : m < y := lt_trans ((extendPoint_lt_iff m uf).mp hmu_fail) huf_y
+        refine ⟨y, hm_y, ?_, ?_, ?_⟩
+        · -- Body: ∀ u ∈ (m, y), disjunction
+          intro u hmu huy
+          -- u < y and y ∈ cut → u ∈ cut (downward_closed)
+          have hu_cut : u ∈ g.val.cut := g.val.downward_closed y u hy_cut (le_of_lt huy)
+          have hu_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) < Sum.inr g :=
+            lt_of_le_of_ne ((extendPoint_le_gap_iff u g).mpr hu_cut) (fun h => by cases h)
+          have h_disj := h_body (extendPoint u)
+            ((extendPoint_lt_iff m u).mpr hmu) hu_s (mu_holds_point u)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, huv, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨xv, (extendPoint_lt_iff u xv).mp huv,
+              fun w hmw hwv => (ihB w).mp (hBv (extendPoint w)
+                ((extendPoint_lt_iff m w).mpr hmw) ((extendPoint_lt_iff w xv).mpr hwv) ⟨w, rfl⟩)⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', hmv', hv'u, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            -- xv' < y because xv' < u < y... actually v' < u < s=gap.
+            -- For A quantifier: ∀ v ∈ (u, s=gap) with mu → A. At M.carrier: ∀ v ∈ (u, y).
+            -- v ∈ (u, y) → v ∈ cut → extendPoint v < Sum.inr g, so within (u, s).
+            exact ⟨fun v huv hvy => by
+                have hv_cut : v ∈ g.val.cut := g.val.downward_closed y v hy_cut (le_of_lt hvy)
+                have hv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) v) < Sum.inr g :=
+                  lt_of_le_of_ne ((extendPoint_le_gap_iff v g).mpr hv_cut) (fun h => by cases h)
+                exact (ihA v).mp (hA (extendPoint v)
+                  ((extendPoint_lt_iff u v).mpr huv) hv_s ⟨v, rfl⟩),
+              xv', (extendPoint_lt_iff m xv').mp hmv',
+                (extendPoint_lt_iff xv' u).mp hv'u,
+                fun h => hBv' ((ihB xv').mpr h)⟩
+        · -- Fail
+          exact ⟨uf, (extendPoint_lt_iff m uf).mp hmu_fail, huf_y,
+            fun h => hB_fail ((ihB uf).mpr h)⟩
+        · -- Init
+          exact ⟨ui, (extendPoint_lt_iff m ui).mp hmu_init, hui_y,
+            fun v hmv hvu => (ihB v).mp (hB_init (extendPoint v)
+              ((extendPoint_lt_iff m v).mpr hmv) ((extendPoint_lt_iff v ui).mpr hvu) ⟨v, rfl⟩)⟩
     · -- mpr: standard → mu-relativized
       intro ⟨s, hms, h_body, ⟨uf, hmuf, hufs, hBuf⟩, ⟨ui, hmui, huis, hBui⟩⟩
       -- Use extendPoint s as the witness (s is an actual point, NOT mu-restricted)
@@ -2062,7 +2115,73 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
             fun v huv hvm => (ihB v).mp (hB_init (extendPoint v)
               ((extendPoint_lt_iff ui v).mpr huv) ((extendPoint_lt_iff v m).mpr hvm) ⟨v, rfl⟩)⟩
       · -- s = Sum.inr g (gap) — find s' in complement below m
-        sorry
+        -- uf, ui ∉ g.val.cut since Sum.inr g < extendPoint uf/ui
+        have huf_not_cut : uf ∉ g.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff uf g).mpr h) hsu_fail
+        have hui_not_cut : ui ∉ g.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff ui g).mpr h) hsu_init
+        -- complement_no_min → ∃ z < uf/ui ∉ cut
+        have compl_no_min := g.val.complement_no_min
+        have ⟨z₁, hz₁_not_cut, hz₁_uf⟩ : ∃ z, z ∉ g.val.cut ∧ z < uf := by
+          by_contra h_all; push_neg at h_all
+          exact compl_no_min ⟨uf, huf_not_cut, fun y hy => h_all y hy⟩
+        have ⟨z₂, hz₂_not_cut, hz₂_ui⟩ : ∃ z, z ∉ g.val.cut ∧ z < ui := by
+          by_contra h_all; push_neg at h_all
+          exact compl_no_min ⟨ui, hui_not_cut, fun y hy => h_all y hy⟩
+        have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
+          rcases le_or_lt z₁ z₂ with h | h
+          · simp [min_eq_left h]; exact hz₁_not_cut
+          · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
+        -- Use s' = min z₁ z₂
+        have hs'm : min z₁ z₂ < m := by
+          calc min z₁ z₂ ≤ z₁ := min_le_left z₁ z₂
+            _ < uf := hz₁_uf
+            _ < m := (extendPoint_lt_iff uf m).mp hum_fail
+        refine ⟨min z₁ z₂, hs'm, ?_, ?_, ?_⟩
+        · -- Body: ∀ u ∈ (min z₁ z₂, m), disjunction
+          intro u hsu hum
+          -- u > min z₁ z₂, min ∉ cut → u ∉ cut → Sum.inr g < extendPoint u
+          have hu_not_cut : u ∉ g.val.cut := by
+            intro hu_in
+            exact hmin_not_cut (g.val.downward_closed u (min z₁ z₂) hu_in (le_of_lt hsu))
+          have hu_above_g : @LT.lt (ExtendedCarrier M atomMap r)
+              extendedLinearOrder.toLT (Sum.inr g) (Sum.inl u) :=
+            ⟨hu_not_cut, fun h => hu_not_cut h⟩
+          have h_disj := h_body (extendPoint u) hu_above_g
+            ((extendPoint_lt_iff u m).mpr hum) (mu_holds_point u)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, hvu, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨xv, (extendPoint_lt_iff xv u).mp hvu,
+              fun w hvw hwm => (ihB w).mp (hBv (extendPoint w)
+                ((extendPoint_lt_iff xv w).mpr hvw) ((extendPoint_lt_iff w m).mpr hwm) ⟨w, rfl⟩)⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', huv', hv'm, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            exact ⟨fun v hsv hvu => by
+                have hv_not_cut : v ∉ g.val.cut := by
+                  intro hv_in
+                  exact hmin_not_cut (g.val.downward_closed v (min z₁ z₂) hv_in (le_of_lt hsv))
+                have hv_above_g : @LT.lt (ExtendedCarrier M atomMap r)
+                    extendedLinearOrder.toLT (Sum.inr g) (Sum.inl v) :=
+                  ⟨hv_not_cut, fun h => hv_not_cut h⟩
+                exact (ihA v).mp (hA (extendPoint v) hv_above_g
+                  ((extendPoint_lt_iff v u).mpr hvu) ⟨v, rfl⟩),
+              xv', (extendPoint_lt_iff u xv').mp huv',
+                (extendPoint_lt_iff xv' m).mp hv'm,
+                fun h => hBv' ((ihB xv').mpr h)⟩
+        · -- Fail
+          exact ⟨uf, lt_of_le_of_lt (min_le_left z₁ z₂) hz₁_uf,
+            (extendPoint_lt_iff uf m).mp hum_fail,
+            fun h => hB_fail ((ihB uf).mpr h)⟩
+        · -- Init
+          exact ⟨ui, lt_of_le_of_lt (min_le_right z₁ z₂) hz₂_ui,
+            (extendPoint_lt_iff ui m).mp hum_init,
+            fun v hvu hvm => (ihB v).mp (hB_init (extendPoint v)
+              ((extendPoint_lt_iff ui v).mpr hvu) ((extendPoint_lt_iff v m).mpr hvm) ⟨v, rfl⟩)⟩
     · -- mpr: standard → mu-relativized
       intro ⟨s, hsm, h_body, ⟨uf, hsuf, hufm, hBuf⟩, ⟨ui, hsui, huim, hBui⟩⟩
       refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ?_, ?_, ?_⟩
