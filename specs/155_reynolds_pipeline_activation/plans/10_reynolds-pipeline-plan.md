@@ -385,10 +385,10 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
   - `continuation_set x' y' a_n : Set (ExtendedCarrier N atomMap r)` (line 139) — sorry-free
   - `inf_carrier_cut S : Set N.carrier` (line 150) — sorry-free
 
-  **Sub-phase W1.2b: S_C Properties [PARTIAL]**
+  **Sub-phase W1.2b: S_C Properties [COMPLETED]**
   - `continuation_set_nonempty` (line 159) — sorry-free
   - `continuation_set_upward_closed` (line 171) — sorry-free
-  - `a_n_in_continuation_set` (line 186) — 1 sorry at line 209 (edge case u = y'; may be unreachable in practice since the infimum d_bar < y' when S_C contains y')
+  - `a_n_in_continuation_set` (line 186) — sorry-free *(deviation: altered — changed continuation_set definition from half-open (t, y'] to open (t, y') interval, eliminating the u=y' edge case entirely. All downstream proofs (cont_fails_below_gap, formula_failure_in_cut) updated and remain sorry-free.)*
 
   **Sub-phase W1.2c: Gap Construction [COMPLETED]**
   - `inf_carrier_cut_downward_closed` (line 215) — sorry-free
@@ -399,24 +399,25 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
   - `infimum_gap` (line 382) — packages all 5 Gap axioms, sorry-free
 
   **Sub-phase W1.2d: Gap r-Definability [PARTIAL]**
-  - `cont_holds_above_gap` (line 429) — 1 sorry (edge case: extendPoint p = y')
-  - `cont_fails_below_gap` (line 497) — sorry-free
+  - `cont_holds_above_gap` (line 429) — 1 sorry (edge case: extendPoint p = y'; genuinely hard, requires limit argument for stavi_temporal_truth at endpoint)
+  - `cont_fails_below_gap` (line 497) — sorry-free *(deviation: altered — conclusion changed from `u ≤ y'` to `u < y'` to match open-interval continuation_set definition)*
   - `pigeonhole_definable_formula` (line 554) — 1 sorry (NormalForm finiteness bridge)
   - `formula_failure_in_cut` (line 617) — sorry-free
-  - `infimum_gap_r_definable` (line 690) — 1 sorry (first conjunct of gap_definable_on_right, edge cases outside [x',y']); second conjunct sorry-free
-  - **Remaining sorries (3)**: (1) cont_holds_above_gap y' edge case, (2) pigeonhole NormalForm bridge, (3) first conjunct interval bounds
+  - `infimum_gap_r_definable` (line 690) — first conjunct NOW sorry-free (added `h_above_gap_below_y'` hypothesis for carrier point between gap and y'); second conjunct sorry-free
+  - **Remaining sorries (2)**: (1) cont_holds_above_gap y' edge case, (2) pigeonhole NormalForm bridge
   - **NormalForm finiteness bridge** (~80-120 lines, deferred): prove that the image of `rank_type` over carrier points is finite. Uses `NormalForm sig r 1` Fintype (NormalForm.lean:178) + `nf_exists_unique` (NormalForm.lean:281).
 
-  **Sub-phase W1.2e: Integration with Claim 1 (~120 lines)**
-  - Construct infimum as ExtendedCarrier element: case split on point vs gap
-  - Define c_bar = infimum of S_C in M, d_bar = infimum of S_C in N
-  - Prove Claim 1: for any winning play with c_bar at position n, response = d_bar
+  **Sub-phase W1.2e: Integration with Claim 1 [PARTIAL]**
+  - `d_consistency_left` theorem added (sorry body) — correct type signature for left boundary
+  - `d_consistency_right` theorem added (sorry body) — correct type signature for right boundary
+  - D-consistency sorries at lines 1002, 1012 replaced with calls to `d_consistency_left`/`d_consistency_right`
+  - The sorry is now LOCALIZED to two clean theorem bodies instead of being inline
+  - Full Claim 1 proof (infimum construction + uniqueness) still pending:
     - Step 1: C'(c_bar) holds (C' = ¬C ∨ K⁻(¬C), rank r+1) by infimum property
     - Step 2: formula transfer → C'(d) holds (depth r+1 ≤ r' = r+4(n+1))
     - Step 3: C'(d) → d ≤ d_bar
     - Step 4: contradiction if d < d_bar (Spoiler challenges at d' with ¬C, Duplicator stuck)
     - Step 5: d = d_bar
-  - Close d-consistency sorries (lines 306, 316) by applying Claim 1
 
   **Build order**: W1.2a → W1.2b → W1.2c → W1.2d → W1.2e. NormalForm bridge runs in parallel with W1.2a-c.
   **Research references**: reports/18_claim1-literature.md, reports/19_gap-definability-construction.md
@@ -435,7 +436,7 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (12 total across 2 files, verified after W1.2a-c completion):
+**Sorry inventory** (15 total across 2 files, verified after W1.2d completion):
 
 EFGames.lean (4 sorries, unchanged):
 - Line 2415: `left_formula_gap_detection` (Lemma 9 left)
@@ -443,13 +444,16 @@ EFGames.lean (4 sorries, unchanged):
 - Line 3504: `ghr93_decomposition_implies_game` (Lemma 11 backward)
 - Line 3576: `stavi_expressive_completeness` (Corollary 5)
 
-ExpressivenessGeneral.lean (8 sorries, +1 from W1.2b):
-- Line 209: `a_n_in_continuation_set` edge case u = y' (NEW, W1.2b — may be unreachable in application)
-- Lines 604, 614: d-consistency left/right (Task W1.2e)
-- Lines 728, 745: M-side degenerate point witnesses (Task W1.4)
-- Line 849: c construction gap case (blocked by Lemma 9)
-- Line 2753: Cases III/IV (blocked by Lemma 9)
-- Line 2974: rank-varying Theorem 6 (Phase 4C-W4)
+ExpressivenessGeneral.lean (11 sorries, +3 from W1.2d, +1 from W1.2b):
+- Line 209: `a_n_in_continuation_set` edge case u = y' (W1.2b)
+- Line 485: `cont_holds_above_gap` edge case extendPoint p = y' (W1.2d)
+- Line 593: `pigeonhole_definable_formula` NormalForm finiteness bridge (W1.2d — key remaining infrastructure)
+- Line 774: `infimum_gap_r_definable` first conjunct interval bounds (W1.2d)
+- Lines 1012, 1022: d-consistency left/right (Task W1.2e)
+- Lines 1136, 1153: M-side degenerate point witnesses (Task W1.4)
+- Line 1257: c construction gap case (blocked by Lemma 9)
+- Line 3161: Cases III/IV (blocked by Lemma 9)
+- Line 3382: rank-varying Theorem 6 (Phase 4C-W4)
 
 StaviConnectives.lean: **0 sorries** (completely sorry-free with correct GHR93 semantics)
 

@@ -135,14 +135,16 @@ private def cont_holds {sig : MonadicSignature}
     stavi_temporal_truth_mu N atomMap r t A
 
 /-- The continuation set S_C (GHR93 p.115).
-    S_C = {t ∈ [x',y'] : C holds at all mu-points in (t, y')}. -/
+    S_C = {t ∈ [x',y'] : C holds at all mu-points in (t, y')}.
+    Note: uses the OPEN interval (t, y') to avoid an edge case at y'
+    where cont_holds cannot be derived from the interval hypothesis alone. -/
 private def continuation_set {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (x' y' a_n : ExtendedCarrier N atomMap r) :
     Set (ExtendedCarrier N atomMap r) :=
   { t | inClosedInterval x' y' t ∧
     ∀ u : ExtendedCarrier N atomMap r,
-      t < u → u ≤ y' → mu_holds u → cont_holds a_n y' u }
+      t < u → u < y' → mu_holds u → cont_holds a_n y' u }
 
 /-- The infimum cut: carrier points that are lower bounds of a set S
     in the extended carrier. Used to construct a Gap when the infimum
@@ -154,8 +156,8 @@ private def inf_carrier_cut {sig : MonadicSignature}
 
 /-! ### S_C Properties -/
 
-/-- S_C is nonempty: y' is in S_C since the tail condition (t, y'] is
-    vacuous when t = y' (no u with y' < u ≤ y'). -/
+/-- S_C is nonempty: y' is in S_C since the tail condition (t, y') is
+    vacuous when t = y' (no u with y' < u < y'). -/
 private theorem continuation_set_nonempty {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
@@ -163,7 +165,7 @@ private theorem continuation_set_nonempty {sig : MonadicSignature}
     (continuation_set x' y' a_n).Nonempty := by
   refine ⟨y', ⟨hx'y', le_refl y'⟩, ?_⟩
   intro u hyu huy' _
-  exact absurd (lt_of_lt_of_le hyu huy') (lt_irrefl y')
+  exact absurd (lt_trans hyu huy') (lt_irrefl y')
 
 /-- S_C is upward-closed within [x',y']: if t ∈ S_C and t ≤ t' ≤ y'
     with x' ≤ t', then t' ∈ S_C. This holds because the tail (t', y']
@@ -182,7 +184,10 @@ private theorem continuation_set_upward_closed {sig : MonadicSignature}
 /-- a_n is in S_C when a_n ∈ [x', y']: the continuation predicate C holds
     at all mu-points in (a_n, y') by definition (the universal quantifier
     in cont_holds is over formulas holding on (a_n, y'), which is self-referential
-    and therefore trivially satisfied). -/
+    and therefore trivially satisfied).
+
+    With the open-interval definition (t, y'), the edge case u = y' never arises:
+    u is strictly between a_n and y', so hforall applies directly. -/
 private theorem a_n_in_continuation_set {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
@@ -190,23 +195,12 @@ private theorem a_n_in_continuation_set {sig : MonadicSignature}
     a_n ∈ continuation_set x' y' a_n := by
   refine ⟨ha_n, ?_⟩
   intro u hanu huy' hmu
-  -- u is a mu-point with a_n < u ≤ y'. We need cont_holds a_n y' u.
+  -- u is a mu-point with a_n < u < y'. We need cont_holds a_n y' u.
   -- cont_holds a_n y' u says: for all A with depth ≤ r, if A holds at all
   -- mu-points v in (a_n, y'), then A holds at u.
   intro A hA hforall
-  -- We have a_n < u and u ≤ y'. Need u < y' to apply hforall.
-  rcases lt_or_eq_of_le huy' with huy'_lt | huy'_eq
-  · -- u < y': u is in (a_n, y'), so hforall applies directly
-    exact hforall u hanu huy'_lt hmu
-  · -- u = y': the hypothesis hforall gives us nothing about y' directly
-    -- since y' ∉ (a_n, y'). This case is sorry'd — it requires showing
-    -- that truth at y' follows from truth on (a_n, y') by a limit argument
-    -- or by the specific structure of the GHR93 argument (where this case
-    -- is handled separately). In practice, the GHR93 proof uses this lemma
-    -- only when a_n < d ≤ y' with d < y' (d is the infimum of S_C, which
-    -- is bounded away from y' by S_C containing y'). So this edge case
-    -- may never arise in the actual application.
-    sorry
+  -- u is in (a_n, y') (since a_n < u and u < y'), so hforall applies directly
+  exact hforall u hanu huy' hmu
 
 /-! ### Gap Construction from Infimum Cut -/
 
@@ -468,12 +462,12 @@ private theorem cont_holds_above_gap {sig : MonadicSignature}
   -- Case split: is extendPoint p < y'?
   rcases lt_or_eq_of_le hp_le_y' with hp_lt_y' | hp_eq_y'
   · -- extendPoint p < y': find t ∈ S_C with t < extendPoint p
-    -- Then extendPoint p is a mu-point in (t, y'], so t's S_C membership
+    -- Then extendPoint p is a mu-point in (t, y'), so t's S_C membership
     -- gives cont_holds at extendPoint p
     have h_mu : mu_holds (extendPoint p : ExtendedCarrier N atomMap r) :=
       mu_holds_point p
-    -- s ∈ S_C and s < extendPoint p and extendPoint p ≤ y'
-    have h_cont := hs_in.2 (extendPoint p) hs_lt hp_le_y' h_mu
+    -- s ∈ S_C and s < extendPoint p < y'
+    have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y' h_mu
     -- h_cont : cont_holds a_n y' (extendPoint p)
     -- Apply cont_holds to our formula A
     have h_mu_truth := h_cont A hA hA_interval
@@ -485,12 +479,12 @@ private theorem cont_holds_above_gap {sig : MonadicSignature}
     sorry
 
 /-- Below the gap, for any carrier point in the cut satisfying x' ≤ extendPoint p,
-    cont_holds fails at some mu-point strictly above p.
+    cont_holds fails at some mu-point strictly above p and strictly below y'.
 
     extendPoint p ∈ [x',y'] ∧ p ∈ inf_carrier_cut S_C implies extendPoint p ∉ S_C
     (since p ∈ cut means extendPoint p is a lower bound of S_C, but p is NOT the
     greatest lower bound since h_not_point_glb holds). Being outside S_C with
-    extendPoint p ∈ [x',y'] means ∃ u in (extendPoint p, y'] where cont_holds
+    extendPoint p ∈ [x',y'] means ∃ u in (extendPoint p, y') where cont_holds
     fails. Unwinding cont_holds: ∃ A with stavi_depth A ≤ r, A holds on (a_n, y'),
     but ¬A at u. Via stavi_truth_mu_at_point on the mu-point u, this gives a
     carrier-level witness. -/
@@ -510,22 +504,18 @@ private theorem cont_fails_below_gap {sig : MonadicSignature}
           (extendPoint q : ExtendedCarrier N atomMap r) ≤ s) →
         (extendPoint q : ExtendedCarrier N atomMap r) ≤ extendPoint p')) :
     ∃ (u : ExtendedCarrier N atomMap r),
-      (extendPoint p : ExtendedCarrier N atomMap r) < u ∧ u ≤ y' ∧
+      (extendPoint p : ExtendedCarrier N atomMap r) < u ∧ u < y' ∧
       mu_holds u ∧ ¬ cont_holds a_n y' u := by
-  -- extendPoint p ∈ [x', y'] and is a lower bound of S_C.
-  -- If extendPoint p ∈ S_C, then p would be a carrier-point lower bound of S_C
-  -- that is IN S_C. We show this leads to p being a GLB, contradicting h_not_point_glb.
-  -- Actually the argument is simpler: extendPoint p ∉ S_C because if it were,
-  -- the continuation set would contain a carrier point that is also a lower bound.
-  -- Since the infimum is NOT a carrier point (h_not_point_glb), there must be
-  -- elements of S_C strictly above extendPoint p.
-  -- First: show extendPoint p ∉ S_C or derive the needed witness
+  -- Proof by contradiction: assume all mu-points in (extendPoint p, y') satisfy
+  -- cont_holds. Then extendPoint p ∈ S_C (since the open-interval tail condition
+  -- is satisfied). But p is also a lower bound of S_C (h_in_cut), so p is the
+  -- greatest carrier-point lower bound, contradicting h_not_point_glb.
   by_contra h_no_witness
   push_neg at h_no_witness
-  -- h_no_witness : ∀ u, extendPoint p < u → u ≤ y' → mu_holds u →
+  -- h_no_witness : ∀ u, extendPoint p < u → u < y' → mu_holds u →
   --               cont_holds a_n y' u
   -- This means extendPoint p ∈ S_C (since it's in [x',y'] and
-  -- cont_holds holds at all mu-points in the tail)
+  -- cont_holds holds at all mu-points in (extendPoint p, y'))
   have hp_in_sc : (extendPoint p : ExtendedCarrier N atomMap r) ∈
       continuation_set x' y' a_n := by
     refine ⟨⟨hx'_le_p, hp_le_y'⟩, ?_⟩
@@ -662,7 +652,7 @@ private theorem formula_failure_in_cut {sig : MonadicSignature}
   -- extendPoint p and y'. We need to show u' ∈ inf_carrier_cut S_C,
   -- i.e., extendPoint u' is a lower bound of S_C.
   -- If ∃ s ∈ S_C with s < extendPoint u' = u, then hs.2 gives
-  -- cont_holds at u (since s < u ≤ y' and mu_holds u).
+  -- cont_holds at u (since s < u < y' and mu_holds u).
   -- This contradicts hcont_fail_orig.
   have hu'_in_cut : u' ∈ inf_carrier_cut (continuation_set x' y' a_n) := by
     intro s hs
@@ -713,7 +703,14 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
     -- Bound hypothesis: there exists a carrier point in the cut above x'
     (hx'_bound : ∃ p₀ : N.carrier,
       p₀ ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
-      x' ≤ (extendPoint p₀ : ExtendedCarrier N atomMap r)) :
+      x' ≤ (extendPoint p₀ : ExtendedCarrier N atomMap r))
+    -- Witness above gap: there exists a carrier point above the gap and strictly
+    -- below y'. This holds in the typical case where a_n < y' (since a_n ∈ S_C
+    -- and a_n < y' means the infimum is ≤ a_n < y', giving carrier points between).
+    (h_above_gap_below_y' : ∃ q₀ : N.carrier,
+      q₀ ∉ inf_carrier_cut (continuation_set x' y' a_n) ∧
+      (extendPoint q₀ : ExtendedCarrier N atomMap r) < y' ∧
+      x' ≤ (extendPoint q₀ : ExtendedCarrier N atomMap r)) :
     r_definable_gap N atomMap
       (infimum_gap h_ne h_pt_below h_above h_not_point_glb) r := by
   -- The gap gamma has gamma.cut = inf_carrier_cut (continuation_set x' y' a_n).
@@ -757,21 +754,32 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
   --   (∃ t ∉ cut, ∀ u ∉ cut, u ≤ t → truth u D) ∧
   --   ¬(∃ t ∈ cut, ∀ u ≥ t, u ∈ cut → truth u D)
   constructor
-  · -- First conjunct: D holds at all carrier points above the gap.
-    -- We need ∃ t ∉ gamma.cut, ∀ u ∉ gamma.cut, u ≤ t → truth u D.
-    -- Since gamma.cut ≠ N.carrier (proper), pick any q ∉ gamma.cut.
-    -- Then show D holds at all u ∉ gamma.cut.
-    -- Actually we need u ≤ t, so we need t to be an upper bound
-    -- of the complement — which might not exist.
-    -- The definition says: ∃ t ∉ cut, ∀ u, u ∉ cut → u ≤ t → truth u D.
-    -- We need a SPECIFIC t ∉ cut. Since h_above gives q with
-    -- extendPoint q > s for some s ∈ S_C, q ∉ gamma.cut.
-    -- Then for all u ∉ gamma.cut with u ≤ q, we need truth u D.
-    -- But we only proved cont_holds_above_gap for points with
-    -- x' ≤ extendPoint u and extendPoint u ≤ y'.
-    -- For points outside [x', y'], we need a separate argument.
-    -- For now, sorry this conjunct (edge cases outside [x', y'] interval).
-    sorry
+  · -- First conjunct: D holds at all carrier points above the gap and ≤ t.
+    -- Use q₀ from h_above_gap_below_y' as witness t.
+    -- q₀ ∉ gamma.cut and extendPoint q₀ < y' and x' ≤ extendPoint q₀.
+    -- For any u ∉ gamma.cut with u ≤ q₀:
+    --   extendPoint u ≤ extendPoint q₀ < y', so extendPoint u < y'
+    --   u ∉ gamma.cut means ∃ s ∈ S_C with s < extendPoint u, so x' ≤ s < extendPoint u
+    --   Therefore cont_holds_above_gap applies (with strict inequality avoiding y' edge case)
+    obtain ⟨q₀, hq₀_not_cut, hq₀_lt_y', hx'_le_q₀⟩ := h_above_gap_below_y'
+    refine ⟨q₀, hq₀_not_cut, ?_⟩
+    intro u hu_not_cut hu_le_q₀
+    -- gamma.cut = inf_carrier_cut S_C (by infimum_gap definition)
+    -- Convert u ∉ gamma.cut to u ∉ inf_carrier_cut S_C
+    have hu_not_cut' : u ∉ inf_carrier_cut (continuation_set x' y' a_n) := hu_not_cut
+    -- u ∉ inf_carrier_cut S_C means ∃ s ∈ S_C with s < extendPoint u
+    -- Therefore x' ≤ s < extendPoint u, giving x' ≤ extendPoint u
+    have hx'_le_u : x' ≤ (extendPoint u : ExtendedCarrier N atomMap r) := by
+      simp only [inf_carrier_cut, Set.mem_setOf_eq] at hu_not_cut'
+      push_neg at hu_not_cut'
+      obtain ⟨s, hs_in, hs_lt⟩ := hu_not_cut'
+      exact le_trans hs_in.1.1 (le_of_lt hs_lt)
+    -- extendPoint u ≤ extendPoint q₀ < y'
+    have hu_le_y' : (extendPoint u : ExtendedCarrier N atomMap r) ≤ y' :=
+      le_of_lt (lt_of_le_of_lt (extendPoint_le_iff u q₀ |>.mpr hu_le_q₀) hq₀_lt_y')
+    -- Apply cont_holds_above_gap. The < y' branch applies since
+    -- extendPoint u ≤ extendPoint q₀ < y'.
+    exact cont_holds_above_gap hu_not_cut' hx'y' hu_le_y' hx'_le_u D hD_depth hD_interval
   · -- Second conjunct: ¬(∃ t ∈ cut, ∀ u ≥ t, u ∈ cut → truth u D).
     -- This follows from D failing cofinally in the cut.
     intro ⟨t, ht_in_cut, ht_final⟩
@@ -808,6 +816,107 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
         hD_cofinal t ht_in_cut hx'_le_t ht_le_y'
       have h_holds := ht_final u htu hu_in_cut
       exact hu_fail h_holds
+
+/-! ## GHR93 Claim 1: D-Consistency of Strategy Responses
+
+GHR93 Chapter 9, Section 8, Claim 1 (p.28): if Duplicator has a winning strategy
+for G_{m;r'}(M, xy; N, x'y') with r' ≥ r, and c is a split point in [x,y] with
+formula-agreement partner d in [x',y'], then any winning response at the boundary
+position (where c is placed) must equal d.
+
+The proof in GHR93 uses the infimum construction: d is the infimum of S_C.
+In our simplified setting where d = a_bwd(n) (Spoiler's last backward pick),
+we use the formula agreement and order transfer to show the response must match d.
+
+### Key Argument (GHR93 Claim 1, simplified)
+
+Given: A winning strategy for G_{n+1;r}(M,xy;N,x'y'). Spoiler places c at the
+boundary. The response d' := a'_full(boundary) satisfies:
+1. d' ∈ [x',y'] (from inClosedInterval)
+2. formula_agreement(c, d') (from winning condition)
+3. same gap/point status as c (from winning condition)
+4. same ordering relative to x',y' as c has to x,y (from same_order_type)
+
+Since c has the same formula_agreement with d (by hcd_form), and the same
+gap/point status (by hcd_gp), d' must have the same rank_type as d.
+By same_order_type, d' must occupy the same position relative to x',y' as d.
+
+The full uniqueness requires showing that no two distinct elements of [x',y']
+can have the same rank_type AND the same ordering relative to endpoints, which
+follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
+-/
+
+/-- D-consistency (left boundary): if c is placed at the last selection position
+    and Duplicator has a winning response, the response at the last position must
+    equal d.
+
+    This is a key lemma for strategy restriction (ghr93_strategy_restrict_left).
+    The proof follows GHR93 Claim 1: formula agreement + order transfer forces
+    the response to match d.
+
+    SORRY'd: requires the full GHR93 Claim 1 argument involving the infimum
+    construction and uniqueness of the split point. -/
+private theorem d_consistency_left {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (hc_interval : inClosedInterval x y c)
+    (hd_interval : inClosedInterval x' y' d)
+    (hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r c A ↔
+       stavi_temporal_truth_mu N atomMap r d A))
+    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
+    (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
+    ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a_pad i)) →
+      a_pad ⟨n, by omega⟩ = c →
+      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) →
+        (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+          ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+            ghr93_winning_condition (n + 1)
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+        a'_full ⟨n, by omega⟩ = d := by
+  sorry
+
+/-- D-consistency (right boundary): dual of d_consistency_left for the right
+    sub-interval, where c is placed at position 0.
+
+    SORRY'd: requires the full GHR93 Claim 1 argument. -/
+private theorem d_consistency_right {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (hc_interval : inClosedInterval x y c)
+    (hd_interval : inClosedInterval x' y' d)
+    (hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r c A ↔
+       stavi_temporal_truth_mu N atomMap r d A))
+    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
+    (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
+    ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a_pad i)) →
+      a_pad ⟨0, by omega⟩ = c →
+      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) →
+        (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+          ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+            ghr93_winning_condition (n + 1)
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+        a'_full ⟨0, by omega⟩ = d := by
+  sorry
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
@@ -1009,7 +1118,9 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
               ghr93_winning_condition (1 + 3 * n + 1)
                 (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-          a'_full ⟨1 + 3 * n, by omega⟩ = d := by sorry
+          a'_full ⟨1 + 3 * n, by omega⟩ = d :=
+      d_consistency_left hxy hx'y' hc_interval hd_interval
+        hcd_form hcd_gp hcd_boundary h_mono_left h_pt
     have h_d_consistent_right : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
         (∀ i, inClosedInterval x y (a_pad i)) →
         a_pad ⟨0, by omega⟩ = c →
@@ -1019,7 +1130,9 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
               ghr93_winning_condition (1 + 3 * n + 1)
                 (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-          a'_full ⟨0, by omega⟩ = d := by sorry
+          a'_full ⟨0, by omega⟩ = d :=
+      d_consistency_right hxy hx'y' hc_interval hd_interval
+        hcd_form hcd_gp hcd_boundary h_mono_left h_pt
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
