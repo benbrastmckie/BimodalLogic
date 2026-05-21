@@ -8,12 +8,12 @@
     {
       "project_number": 184,
       "project_name": "dead_code_tombstone_sweep",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T10:26:13Z",
+      "last_updated": "2026-05-21T11:15:35Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779358978_e1c315",
+      "session_id": "sess_1779361463_4ea114",
       "researched": "2026-05-21T06:40:03Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -26,8 +26,16 @@
           "path": "specs/184_dead_code_tombstone_sweep/plans/01_tombstone-sweep.md",
           "type": "plan",
           "summary": "4-phase plan to remove ~120-140 lines of dead code across 12 files: tombstone comments, #check statements, dead tactic definitions"
+        },
+        {
+          "path": "specs/184_dead_code_tombstone_sweep/summaries/01_tombstone-sweep-summary.md",
+          "type": "summary",
+          "summary": "Removed 197 lines of dead code across 10 Lean files in 4 phases"
         }
-      ]
+      ],
+      "started": "2026-05-21T11:04:34Z",
+      "completed": "2026-05-21T11:15:35Z",
+      "completion_summary": "Removed 197 lines of dead code across 10 Lean files: tombstone comments (74 lines from Soundness/SoundnessLemmas/Completeness), BXCanonical removal notes (92 lines from 8 files), 6 #check statements, 2 dead tactic definitions (95 lines). Zero WeakCanonical files touched. Lake build clean."
     },
     {
       "project_number": 183,
@@ -60,12 +68,12 @@
     {
       "project_number": 182,
       "project_name": "boneyard_deep_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T10:26:13Z",
+      "last_updated": "2026-05-21T11:04:34Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779358978_e1c315",
+      "session_id": "sess_1779361463_4ea114",
       "researched": "2026-05-21T06:40:30Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -79,7 +87,8 @@
           "type": "plan",
           "summary": "5-phase plan: BoneyardArchive lean_lib target, import fixes, README coverage, compilation verification, doc consolidation and maintenance standard"
         }
-      ]
+      ],
+      "started": "2026-05-21T11:04:34Z"
     },
     {
       "project_number": 180,

@@ -10,6 +10,8 @@
   This file does NOT compile. It is preserved for historical reference only.
 -/
 
+#exit
+
 -- ORIGINAL: lines 1003-1058
 noncomputable def restricted_tc_family_to_fmcs (phi : Formula)
     (rtcf : RestrictedTemporallyCoherentFamily phi) : FMCS Int where

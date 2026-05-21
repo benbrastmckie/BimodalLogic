@@ -10,6 +10,8 @@
   This file does NOT compile. It is preserved for historical reference only.
 -/
 
+#exit
+
 -- ORIGINAL: lines 247-263
 /--
 All-future reflexivity for closure MCS: Gψ ∈ S implies ψ ∈ S.

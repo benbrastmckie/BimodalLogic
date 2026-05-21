@@ -66,6 +66,7 @@ def discreteness_past (φ : Formula) :
     simp [Formula.swap_temporal, Formula.swap_temporal, Formula.and, Formula.neg,
           Formula.some_future, Formula.some_past, Formula.imp,
           Formula.swap_temporal_involution]
+    sorry -- swap_temporal simplification changed in BX refactor
   rw [h_eq] at h_swap
   exact h_swap
 

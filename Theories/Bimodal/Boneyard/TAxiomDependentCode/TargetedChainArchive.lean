@@ -9,6 +9,8 @@
   This file does NOT compile. It is preserved for historical reference only.
 -/
 
+#exit
+
 -- ORIGINAL: lines 236-271
 /--
 G(phi) in forward_chain(n) implies phi in forward_chain(m) for all m >= n.

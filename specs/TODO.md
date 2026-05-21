@@ -104,7 +104,7 @@ After 155 completes:
 
 ### 184. Dead code tombstone sweep
 - **Effort**: small (3-5 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Research**: [specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md]
 - **Task Type**: lean4
 - **Plan**: [184_dead_code_tombstone_sweep/plans/01_tombstone-sweep.md]
@@ -135,7 +135,7 @@ After 155 completes:
 
 ### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
 - **Effort**: large (15-20 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md]
 - **Task Type**: lean4
 - **Plan**: [182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md]

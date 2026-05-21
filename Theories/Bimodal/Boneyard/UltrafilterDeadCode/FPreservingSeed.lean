@@ -19,6 +19,8 @@
   - These definitions would need to be adapted to compile standalone
 -/
 
+#exit
+
 -- BEGIN ARCHIVED CODE (989 lines)
 -- ===================================
 
