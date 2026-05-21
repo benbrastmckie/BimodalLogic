@@ -8,30 +8,36 @@
     {
       "project_number": 184,
       "project_name": "dead_code_tombstone_sweep",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-20T23:00:00Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-05-21T06:33:12Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1779345175_6806d1"
     },
     {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
-      "dependencies": [131, 175],
+      "dependencies": [
+        131,
+        175
+      ],
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-20T23:00:00Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-05-21T06:33:12Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1779345175_6806d1"
     },
     {
       "project_number": 182,
       "project_name": "boneyard_deep_cleanup",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-20T23:00:00Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-05-21T06:33:12Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1779345175_6806d1"
     },
     {
       "project_number": 180,
@@ -289,8 +295,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T19:08:25Z",
-      "next_artifact_number": 10,
+      "last_updated": "2026-05-20T20:30:00Z",
+      "next_artifact_number": 11,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -361,6 +367,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/09_lean-infrastructure-inventory.md",
           "type": "research",
           "summary": "Lean infrastructure inventory: solid foundations (NormalForm, k_equiv, StaviFormula), missing game strategies/Fraisse/composition/gap detection"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/10_team-research.md",
+          "type": "research",
+          "summary": "Team research round 4 (5 teammates): sorry inventory, d-consistency analysis, flatten_stavi bridge lemma, literature alignment, strategic assessment"
         }
       ],
       "session_id": "sess_1779304083_f28ee0",
