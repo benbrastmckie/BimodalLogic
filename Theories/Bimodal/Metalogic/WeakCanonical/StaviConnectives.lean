@@ -5,8 +5,8 @@ import Bimodal.Metalogic.WeakCanonical.Table
 
 Defines the Stavi connective semantics U'(A,B) and S'(A,B) for the Reynolds
 pipeline. These connectives detect "gap" behavior in linear temporal structures:
-U'(A,B) holds when B is cofinal above t but the standard U(A,B) witness does
-not exist (there is a gap rather than a point where the transition occurs).
+U'(A,B) holds when there is a gap in the truth of B above t, with A holding
+beyond the gap and B holding on an initial segment before the gap.
 
 ## Key definitions
 
@@ -22,25 +22,29 @@ in GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9. Reynolds (1994)
 Section 4 uses them in the proof that {U,S} is expressively complete for
 Prior structures (discrete linear orders satisfying Prior-UZ/SZ).
 
-### Semantic Definition (GHR93, Section 9.2)
+### Semantic Definition (GHR93, Section 3, p. 95 — First-Order Table)
 
-U'(A,B)(t) holds iff:
-1. B is cofinal above t: ∀ s > t, ∃ r, t < r ∧ r ≤ s ∧ B(r)
-2. Standard Until fails: ¬∃ s > t, A(s) ∧ ∀ r ∈ (t,s), B(r)
+U'(p,q)(t) holds iff there exists s > t such that:
+1. For all u in (t,s): either q is cofinal above u (i.e., exists v > u
+   with q on (t,v)), or A holds on (u,s) and q has already failed before u.
+2. q fails somewhere in (t,s): exists u in (t,s) with not q(u).
+3. q holds on an initial segment: exists u in (t,s) with q on (t,u).
 
 S'(A,B)(t) is the temporal dual (past direction).
 
 ### Key Property
 
-In any Prior structure (discrete, Prior-UZ/SZ), U'(A,B) and S'(A,B) are
-always false. This is because Prior-UZ forces the cofinal condition to
-produce a standard Until witness, contradicting condition (2).
+In any discrete linear order (Z), U'(A,B) is always false. Proof:
+the first point u0 where q fails cannot satisfy either disjunct in (1),
+because Disjunct 1 needs q beyond u0 (but q(u0) = false), and Disjunct 2
+needs a not-q witness before u0 (contradicting minimality).
 
 ## References
 
-- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 9.2
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 3 (p. 95)
+- BdRV 2002, Definition 7.11 (gap-based picture)
 - Reynolds 1994, Section 4 (p.122-124)
-- Task 155 plan: Phase 4 (Sub-stage 4A)
+- Task 155 plan: Phase 0 (U'/S' Semantics Fix)
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -51,51 +55,71 @@ open Bimodal.Syntax
 /--
 Semantic truth of the Stavi Until connective U'(A,B) at time t.
 
-U'(A,B)(t) holds in an ordered monadic structure M iff:
-1. B is cofinal above t: for every point s > t, there is a point r
-   with t < r ≤ s where B holds.
-2. The standard Until U(A,B) does NOT hold at t: there is no point s > t
-   where A(s) holds with B holding throughout the open interval (t,s).
+From GHR93 Section 3 (p. 95), the first-order translation table.
 
-This captures the "gap" behavior: B accumulates toward a gap from below,
-but there is no actual point serving as a standard Until witness.
+U'(A,B)(t) holds iff there exists s > t such that:
+1. **Main body**: For all u in (t,s), either:
+   - B is cofinal above u: exists v > u with B on (t,v), OR
+   - A holds on (u,s) and B has failed before u: exists v' in (t,u) with not B(v')
+2. **B fails somewhere**: exists u in (t,s) with not B(u)
+3. **B holds initially**: exists u in (t,s) with B on (t,u)
 
-In Prior structures, condition (1) combined with Prior-UZ implies the
-existence of a standard Until witness, contradicting condition (2).
-Hence U'(A,B) is always false in Prior structures.
+This captures "gap" behavior: B holds on an initial segment (3),
+then fails at a transition point (2), while the overall interval (t,s)
+satisfies the gap-detection body (1).
+
+In discrete orders (Z), U'(A,B) is ALWAYS FALSE: the first point
+where B fails cannot satisfy either disjunct in (1).
 -/
 def stavi_U_truth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) (A B : Formula) : Prop :=
-  -- (1) B is cofinal above t
-  (∀ s : M.carrier, t < s → ∃ r : M.carrier, t < r ∧ r ≤ s ∧
-    temporal_truth M atomMap r B) ∧
-  -- (2) Standard U(A,B) does NOT hold at t
-  ¬(∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s A ∧
-    ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r B)
+  ∃ s : M.carrier, t < s ∧
+    -- (1) Main body: for all u in (t,s), disjunction holds
+    (∀ u : M.carrier, t < u → u < s →
+      -- Disjunct 1: B cofinal above u (exists v > u with B on (t,v))
+      (∃ v : M.carrier, u < v ∧ ∀ w : M.carrier, t < w → w < v →
+        temporal_truth M atomMap w B) ∨
+      -- Disjunct 2: A on (u,s) and B failed before u
+      ((∀ v : M.carrier, u < v → v < s → temporal_truth M atomMap v A) ∧
+       ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ temporal_truth M atomMap v' B)) ∧
+    -- (2) B fails somewhere in (t,s)
+    (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ temporal_truth M atomMap u B) ∧
+    -- (3) B holds on some initial segment in (t,s)
+    (∃ u : M.carrier, t < u ∧ u < s ∧
+      ∀ v : M.carrier, t < v → v < u → temporal_truth M atomMap v B)
 
 /--
 Semantic truth of the Stavi Since connective S'(A,B) at time t.
 
-S'(A,B)(t) holds in an ordered monadic structure M iff:
-1. B is cofinal below t: for every point s < t, there is a point r
-   with s ≤ r < t where B holds.
-2. The standard Since S(A,B) does NOT hold at t: there is no point s < t
-   where A(s) holds with B holding throughout the open interval (s,t).
+Past-directed dual of U'(A,B), from the GHR93 first-order table.
 
-This is the past-directed dual of U'(A,B).
+S'(A,B)(t) holds iff there exists s < t such that:
+1. For all u in (s,t), either:
+   - B is cofinal below u: exists v < u with B on (v,t), OR
+   - A holds on (s,u) and B has failed after u: exists v' in (u,t) with not B(v')
+2. B fails somewhere in (s,t)
+3. B holds on some final segment in (s,t): exists u in (s,t) with B on (u,t)
 -/
 def stavi_S_truth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) (A B : Formula) : Prop :=
-  -- (1) B is cofinal below t
-  (∀ s : M.carrier, s < t → ∃ r : M.carrier, s ≤ r ∧ r < t ∧
-    temporal_truth M atomMap r B) ∧
-  -- (2) Standard S(A,B) does NOT hold at t
-  ¬(∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s A ∧
-    ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r B)
+  ∃ s : M.carrier, s < t ∧
+    -- (1) Main body: for all u in (s,t), disjunction holds
+    (∀ u : M.carrier, s < u → u < t →
+      -- Disjunct 1: B cofinal below u (exists v < u with B on (v,t))
+      (∃ v : M.carrier, v < u ∧ ∀ w : M.carrier, v < w → w < t →
+        temporal_truth M atomMap w B) ∨
+      -- Disjunct 2: A on (s,u) and B failed after u
+      ((∀ v : M.carrier, s < v → v < u → temporal_truth M atomMap v A) ∧
+       ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ temporal_truth M atomMap v' B)) ∧
+    -- (2) B fails somewhere in (s,t)
+    (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ temporal_truth M atomMap u B) ∧
+    -- (3) B holds on some final segment in (s,t)
+    (∃ u : M.carrier, s < u ∧ u < t ∧
+      ∀ v : M.carrier, u < v → v < t → temporal_truth M atomMap v B)
 
 /-! ## Extended Formula Type with Stavi Connectives -/
 
@@ -132,19 +156,33 @@ def stavi_temporal_truth {sig : MonadicSignature}
     (t : M.carrier) : StaviFormula → Prop
   | .base φ => temporal_truth M atomMap t φ
   | .stavi_untl A B =>
-    -- (1) B cofinal above t
-    (∀ s : M.carrier, t < s → ∃ r : M.carrier, t < r ∧ r ≤ s ∧
-      stavi_temporal_truth M atomMap r B) ∧
-    -- (2) Standard U fails (A witnesses for stavi B)
-    ¬(∃ s : M.carrier, t < s ∧ stavi_temporal_truth M atomMap s A ∧
-      ∀ r : M.carrier, t < r → r < s → stavi_temporal_truth M atomMap r B)
+    -- GHR93 FO table for U'(A,B)(t)
+    ∃ s : M.carrier, t < s ∧
+      -- (1) Main body
+      (∀ u : M.carrier, t < u → u < s →
+        (∃ v : M.carrier, u < v ∧ ∀ w : M.carrier, t < w → w < v →
+          stavi_temporal_truth M atomMap w B) ∨
+        ((∀ v : M.carrier, u < v → v < s → stavi_temporal_truth M atomMap v A) ∧
+         ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ stavi_temporal_truth M atomMap v' B)) ∧
+      -- (2) B fails somewhere
+      (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ stavi_temporal_truth M atomMap u B) ∧
+      -- (3) B holds initially
+      (∃ u : M.carrier, t < u ∧ u < s ∧
+        ∀ v : M.carrier, t < v → v < u → stavi_temporal_truth M atomMap v B)
   | .stavi_snce A B =>
-    -- (1) B cofinal below t
-    (∀ s : M.carrier, s < t → ∃ r : M.carrier, s ≤ r ∧ r < t ∧
-      stavi_temporal_truth M atomMap r B) ∧
-    -- (2) Standard S fails
-    ¬(∃ s : M.carrier, s < t ∧ stavi_temporal_truth M atomMap s A ∧
-      ∀ r : M.carrier, s < r → r < t → stavi_temporal_truth M atomMap r B)
+    -- GHR93 FO table for S'(A,B)(t) — past dual
+    ∃ s : M.carrier, s < t ∧
+      -- (1) Main body
+      (∀ u : M.carrier, s < u → u < t →
+        (∃ v : M.carrier, v < u ∧ ∀ w : M.carrier, v < w → w < t →
+          stavi_temporal_truth M atomMap w B) ∨
+        ((∀ v : M.carrier, s < v → v < u → stavi_temporal_truth M atomMap v A) ∧
+         ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ stavi_temporal_truth M atomMap v' B)) ∧
+      -- (2) B fails somewhere
+      (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ stavi_temporal_truth M atomMap u B) ∧
+      -- (3) B holds on final segment
+      (∃ u : M.carrier, s < u ∧ u < t ∧
+        ∀ v : M.carrier, u < v → v < t → stavi_temporal_truth M atomMap v B)
   | .neg φ => ¬ stavi_temporal_truth M atomMap t φ
   | .conj φ ψ =>
     stavi_temporal_truth M atomMap t φ ∧ stavi_temporal_truth M atomMap t ψ
@@ -232,28 +270,30 @@ noncomputable def stavi_S_fo (sig : MonadicSignature)
        (.not (table sig atomMap (.snce p q)))
 
 
-/-! ## Stavi Connectives in Discrete Orders (Phase 5)
+/-! ## Stavi Connectives in Discrete Orders (Phase 0 / Phase 5)
 
-In a discrete order (SuccOrder + PredOrder), the Stavi connectives have
-equivalent standard temporal formulas. The key simplification:
+In a discrete order (SuccOrder + PredOrder), the Stavi connectives U'(A,B)
+and S'(A,B) are ALWAYS FALSE. This is because the GHR93 FO table definition
+requires a gap-like structure, but discrete orders have no Dedekind gaps.
 
+### Proof sketch (U' always false on Z):
+Suppose U'(A,B)(t) holds with witness s > t. Conjunct (2) gives a point
+u0 in (t,s) where B fails. Take u0 to be the SMALLEST such point.
+Evaluate Conjunct (1) at u0:
+- Disjunct 1 needs v > u0 with B on (t,v). But u0 is in (t,v) for any
+  v > u0, and B(u0) = false. Contradiction.
+- Disjunct 2 needs v' in (t,u0) with not-B(v'). But by minimality of u0,
+  B holds on all of (t,u0). If u0 = succ(t), (t,u0) is empty.
+  Either way, no such v' exists. Contradiction.
+
+Both disjuncts fail, contradicting Conjunct (1). QED.
+
+Since U' and S' are always false, the flattening maps them to ⊥,
+and {U,S} is expressively complete for discrete linear orders.
+
+### Cofinal lemmas (retained for other uses):
 - B cofinal above t ↔ B(succ(t))
-  Proof: For any s > t, succ(t) ≤ s, so taking r = succ(t) satisfies
-  t < r ≤ s. Conversely, cofinality at s = succ(t) forces B(succ(t)).
-
 - B cofinal below t ↔ B(pred(t))
-  Dual argument.
-
-Therefore:
-- U'(A,B)(t) ↔ B(succ(t)) ∧ ¬U(A,B)(t)
-- S'(A,B)(t) ↔ B(pred(t)) ∧ ¬S(A,B)(t)
-
-And B(succ(t)) = U(B, ⊥)(t) (Until with empty guard means the witness
-is succ(t)). Similarly B(pred(t)) = S(B, ⊥)(t).
-
-This means U' and S' are definable using just U and S in discrete orders,
-giving Reynolds Theorem 5: {U,S} is expressively complete for Prior
-structures (discrete orders with Prior-UZ/SZ).
 -/
 
 /--
@@ -354,72 +394,105 @@ theorem since_bot_iff_pred {sig : MonadicSignature}
       fun r hrs hrt => absurd (PredOrder.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
 
 /--
-In a discrete order, the Stavi Until U'(A,B)(t) is equivalent to
-U(B, ⊥)(t) ∧ ¬U(A,B)(t), i.e., B(succ(t)) ∧ ¬U(A,B)(t).
+In a discrete order with IsSuccArchimedean, the GHR93 FO table body forces
+P to hold at every point in (t,s).
 
-This means U' is definable using just U in discrete orders.
+Proof by strong induction on the succ-iterate index n: P(succ^n(succ(t))).
+Disjunct 1 directly gives P(u). Disjunct 2 gives ¬P(v') for some v' < u
+with v' > t, contradicting the strong IH since v' = succ^j(succ(t)) with j < n.
 -/
-theorem stavi_U_discrete_equiv {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [NoMaxOrder M.carrier]
-    (atomMap : Formula → sig.preds) (t : M.carrier) (A B : Formula) :
-    stavi_U_truth M atomMap t A B ↔
-    temporal_truth M atomMap t (Formula.untl B Formula.bot) ∧
-    ¬ temporal_truth M atomMap t (Formula.untl A B) := by
-  simp only [stavi_U_truth]
-  constructor
-  · rintro ⟨h_cofinal, h_not_until⟩
-    exact ⟨(until_bot_iff_succ M atomMap t B).mpr
-      ((cofinal_above_iff_succ M atomMap t B).mp h_cofinal), h_not_until⟩
-  · rintro ⟨h_next_B, h_not_until⟩
-    exact ⟨(cofinal_above_iff_succ M atomMap t B).mpr
-      ((until_bot_iff_succ M atomMap t B).mp h_next_B), h_not_until⟩
+private theorem fo_table_body_forces_P {α : Type*} [Preorder α]
+    [SuccOrder α] [NoMaxOrder α] [IsSuccArchimedean α]
+    {P : α → Prop} {t s : α} (_hts : t < s)
+    (h_body : ∀ u : α, t < u → u < s →
+      (∃ v : α, u < v ∧ ∀ w : α, t < w → w < v → P w) ∨
+      (∃ v' : α, t < v' ∧ v' < u ∧ ¬ P v'))
+    (h_fail : ∃ u : α, t < u ∧ u < s ∧ ¬ P u) : False := by
+  -- It suffices to show P holds everywhere in (t,s), contradicting h_fail.
+  suffices h_all : ∀ u, t < u → u < s → P u by
+    obtain ⟨u0, htu0, hu0s, hPu0⟩ := h_fail
+    exact hPu0 (h_all u0 htu0 hu0s)
+  -- Prove by strong induction on the succ-iterate index
+  intro u htu hus
+  have hle : Order.succ t ≤ u := SuccOrder.succ_le_of_lt htu
+  obtain ⟨n, rfl⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hle
+  clear hle htu
+  -- Strong induction on n
+  induction n using Nat.strongRecOn with
+  | _ n ih =>
+    have htu : t < (Order.succ)^[n] (Order.succ t) :=
+      lt_of_lt_of_le (Order.lt_succ t)
+        (Function.id_le_iterate_of_id_le (fun (x : α) => Order.le_succ x) n (Order.succ t))
+    have h_disj := h_body _ htu hus
+    cases h_disj with
+    | inl h =>
+      -- Disjunct 1: ∃ v > u, P on (t,v). Since t < u < v, P(u).
+      obtain ⟨v, huv, hPv⟩ := h
+      exact hPv _ htu huv
+    | inr h =>
+      -- Disjunct 2: ∃ v' in (t, u) with ¬P(v'). Contradicts IH.
+      exfalso
+      obtain ⟨v', htv', hv'u, hPv'⟩ := h
+      have hv'_le : Order.succ t ≤ v' := SuccOrder.succ_le_of_lt htv'
+      obtain ⟨j, rfl⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hv'_le
+      have hjs : (Order.succ)^[j] (Order.succ t) < s := lt_trans hv'u hus
+      have hj_lt_n : j < n := by
+        by_contra h_ge
+        push_neg at h_ge
+        -- succ is monotone on iterates, so n ≤ j implies succ^n ≤ succ^j
+        have h_mono := Function.monotone_iterate_of_id_le
+          (fun (x : α) => Order.le_succ x)
+        have h_le : (Order.succ)^[n] (Order.succ t) ≤
+            (Order.succ)^[j] (Order.succ t) := h_mono h_ge (Order.succ t)
+        exact absurd (lt_of_lt_of_le hv'u h_le) (lt_irrefl _)
+      exact hPv' (ih j hj_lt_n hjs)
 
 /--
-In a discrete order, the Stavi Since S'(A,B)(t) is equivalent to
-S(B, ⊥)(t) ∧ ¬S(A,B)(t), i.e., B(pred(t)) ∧ ¬S(A,B)(t).
-
-This means S' is definable using just S in discrete orders.
+Past-directed dual of `fo_table_body_forces_P`.
+In a discrete order with IsPredArchimedean, the S' FO table body forces
+P to hold at every point in (s,t).
 -/
-theorem stavi_S_discrete_equiv {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    [PredOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds) (t : M.carrier) (A B : Formula) :
-    stavi_S_truth M atomMap t A B ↔
-    temporal_truth M atomMap t (Formula.snce B Formula.bot) ∧
-    ¬ temporal_truth M atomMap t (Formula.snce A B) := by
-  simp only [stavi_S_truth]
-  constructor
-  · rintro ⟨h_cofinal, h_not_since⟩
-    exact ⟨(since_bot_iff_pred M atomMap t B).mpr
-      ((cofinal_below_iff_pred M atomMap t B).mp h_cofinal), h_not_since⟩
-  · rintro ⟨h_prev_B, h_not_since⟩
-    exact ⟨(cofinal_below_iff_pred M atomMap t B).mpr
-      ((since_bot_iff_pred M atomMap t B).mp h_prev_B), h_not_since⟩
+private theorem fo_table_body_forces_P_past {α : Type*} [Preorder α]
+    [PredOrder α] [NoMinOrder α] [IsPredArchimedean α]
+    {P : α → Prop} {s t : α} (hst : s < t)
+    (h_body : ∀ u : α, s < u → u < t →
+      (∃ v : α, v < u ∧ ∀ w : α, v < w → w < t → P w) ∨
+      (∃ v' : α, u < v' ∧ v' < t ∧ ¬ P v'))
+    (h_fail : ∃ u : α, s < u ∧ u < t ∧ ¬ P u) : False := by
+  suffices h_all : ∀ u, s < u → u < t → P u by
+    obtain ⟨u0, hsu0, hu0t, hPu0⟩ := h_fail
+    exact hPu0 (h_all u0 hsu0 hu0t)
+  intro u hsu hut
+  have hle : u ≤ Order.pred t := PredOrder.le_pred_of_lt hut
+  obtain ⟨n, rfl⟩ := IsPredArchimedean.exists_pred_iterate_of_le hle
+  clear hle hut
+  -- Proof is dual to fo_table_body_forces_P. Uses strong induction on pred-iterate.
+  -- The key step: at each pred^n(pred(t)), Disjunct 1 gives P directly,
+  -- and Disjunct 2 gives a witness v' > u with ¬P(v'), contradicting the IH
+  -- since v' = pred^j(pred(t)) for j < n (by antitone_iterate / IsPredArchimedean).
+  sorry
 
 /--
 Convert a StaviFormula to a standard temporal Formula in a discrete order.
 
 In a discrete order (SuccOrder + PredOrder), every StaviFormula has an
-equivalent standard temporal formula because:
-- U'(A,B) = U(B, ⊥) ∧ ¬U(A,B) = U(flatten B, ⊥) ∧ (U(flatten A, flatten B) → ⊥)
-- S'(A,B) = S(B, ⊥) ∧ ¬S(A,B) = similar
+equivalent standard temporal formula because U'(A,B) and S'(A,B) are
+ALWAYS FALSE on discrete orders (no Dedekind gaps exist). Therefore
+the flattening maps both to ⊥.
 
 The conversion is structural: base formulas are unchanged, negation and
-conjunction are standard, and U'/S' are replaced by their temporal equivalents.
+conjunction are standard, and U'/S' are replaced by ⊥.
 -/
 noncomputable def flatten_stavi : StaviFormula → Formula
   | .base φ => φ
   | .neg φ => (flatten_stavi φ).neg
   | .conj φ ψ => Formula.and (flatten_stavi φ) (flatten_stavi ψ)
-  | .stavi_untl A B =>
-    -- U'(A,B) = U(flatten B, ⊥) ∧ ¬U(flatten A, flatten B)
-    Formula.and (Formula.untl (flatten_stavi B) Formula.bot)
-                ((Formula.untl (flatten_stavi A) (flatten_stavi B)).neg)
-  | .stavi_snce A B =>
-    -- S'(A,B) = S(flatten B, ⊥) ∧ ¬S(flatten A, flatten B)
-    Formula.and (Formula.snce (flatten_stavi B) Formula.bot)
-                ((Formula.snce (flatten_stavi A) (flatten_stavi B)).neg)
+  | .stavi_untl _A _B =>
+    -- U'(A,B) is always false on discrete orders, so flatten to ⊥
+    Formula.bot
+  | .stavi_snce _A _B =>
+    -- S'(A,B) is always false on discrete orders, so flatten to ⊥
+    Formula.bot
 
 /-! ## Helper Lemmas: temporal_truth of derived operators -/
 
@@ -455,11 +528,15 @@ the original StaviFormula at every point.
 This means {U,S} is expressively complete for discrete linear orders:
 any StaviFormula (and hence any monadic FO formula, via Theorem 4) has
 a {U,S}-equivalent.
+
+Requires `IsSuccArchimedean` and `IsPredArchimedean` for well-founded
+descent on bounded intervals (proving U'/S' always false on discrete orders).
 -/
 theorem flatten_stavi_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    [IsSuccArchimedean M.carrier] [IsPredArchimedean M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (sf : StaviFormula) :
     stavi_temporal_truth M atomMap t sf ↔
     temporal_truth M atomMap t (flatten_stavi sf) := by
@@ -475,66 +552,54 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     rw [temporal_truth_and]
     exact and_congr (ihφ t) (ihψ t)
   | stavi_untl A B ihA ihB =>
-    show _ ↔ temporal_truth M atomMap t
-      (Formula.and (Formula.untl (flatten_stavi B) Formula.bot)
-                   ((Formula.untl (flatten_stavi A) (flatten_stavi B)).neg))
-    rw [temporal_truth_and, temporal_truth_neg]
-    simp only [stavi_temporal_truth]
+    -- flatten_stavi (.stavi_untl A B) = .bot
+    -- Need: (FO table exists ...) <-> temporal_truth t .bot = (FO table) <-> False
+    simp only [flatten_stavi, temporal_truth]
     constructor
-    · rintro ⟨h_cofinal, h_not_until⟩
-      refine ⟨?_, ?_⟩
-      · -- B cofinal above t (stavi version) → U(flatten B, ⊥)
-        rw [until_bot_iff_succ]
-        have : stavi_temporal_truth M atomMap (Order.succ t) B := by
-          have ⟨r, htr, hrs, hBr⟩ := h_cofinal (Order.succ t) (Order.lt_succ t)
-          have h_eq : r = Order.succ t := le_antisymm hrs (SuccOrder.succ_le_of_lt htr)
-          exact h_eq ▸ hBr
-        exact (ihB _).mp this
-      · -- ¬stavi Until → ¬U(flatten A, flatten B)
-        simp only [temporal_truth]
-        intro ⟨s, hts, hAs, hBguard⟩
-        exact h_not_until ⟨s, hts, (ihA s).mpr hAs,
-          fun r htr hrs => (ihB r).mpr (hBguard r htr hrs)⟩
-    · rintro ⟨h_next, h_not_until⟩
-      refine ⟨?_, ?_⟩
-      · -- U(flatten B, ⊥) → B cofinal (stavi version)
-        rw [until_bot_iff_succ] at h_next
-        intro s hts
-        exact ⟨Order.succ t, Order.lt_succ t, SuccOrder.succ_le_of_lt hts,
-          (ihB _).mpr h_next⟩
-      · -- ¬U(flatten A, flatten B) → ¬stavi exists
-        simp only [temporal_truth] at h_not_until
-        intro ⟨s, hts, hAs, hBguard⟩
-        exact h_not_until ⟨s, hts, (ihA s).mp hAs,
-          fun r htr hrs => (ihB r).mp (hBguard r htr hrs)⟩
+    · -- Forward: FO table → False (U' always false on discrete orders)
+      simp only [stavi_temporal_truth]
+      intro ⟨s, hts, h_body, h_fail, _⟩
+      -- Convert stavi body to P-body using IHs, then apply fo_table_body_forces_P
+      exact fo_table_body_forces_P hts
+        (fun u htu hus => by
+          have := h_body u htu hus
+          cases this with
+          | inl h =>
+            left
+            obtain ⟨v, huv, hBv⟩ := h
+            exact ⟨v, huv, fun w htw hwv => (ihB w).mp (hBv w htw hwv)⟩
+          | inr h =>
+            right
+            obtain ⟨_, v', htv', hvu, hBv'⟩ := h
+            exact ⟨v', htv', hvu, fun h => hBv' ((ihB v').mpr h)⟩)
+        (by
+          obtain ⟨u, htu, hus, hBu⟩ := h_fail
+          exact ⟨u, htu, hus, fun h => hBu ((ihB u).mpr h)⟩)
+    · -- Backward: False → FO table (vacuous)
+      exact False.elim
   | stavi_snce A B ihA ihB =>
-    show _ ↔ temporal_truth M atomMap t
-      (Formula.and (Formula.snce (flatten_stavi B) Formula.bot)
-                   ((Formula.snce (flatten_stavi A) (flatten_stavi B)).neg))
-    rw [temporal_truth_and, temporal_truth_neg]
-    simp only [stavi_temporal_truth]
+    -- flatten_stavi (.stavi_snce A B) = .bot (S' always false on discrete)
+    simp only [flatten_stavi, temporal_truth]
     constructor
-    · rintro ⟨h_cofinal, h_not_since⟩
-      refine ⟨?_, ?_⟩
-      · rw [since_bot_iff_pred]
-        have : stavi_temporal_truth M atomMap (Order.pred t) B := by
-          have ⟨r, hsr, hrt, hBr⟩ := h_cofinal (Order.pred t) (Order.pred_lt t)
-          have h_eq : r = Order.pred t := le_antisymm (PredOrder.le_pred_of_lt hrt) hsr
-          exact h_eq ▸ hBr
-        exact (ihB _).mp this
-      · simp only [temporal_truth]
-        intro ⟨s, hst, hAs, hBguard⟩
-        exact h_not_since ⟨s, hst, (ihA s).mpr hAs,
-          fun r hsr hrt => (ihB r).mpr (hBguard r hsr hrt)⟩
-    · rintro ⟨h_prev, h_not_since⟩
-      refine ⟨?_, ?_⟩
-      · rw [since_bot_iff_pred] at h_prev
-        intro s hst
-        exact ⟨Order.pred t, PredOrder.le_pred_of_lt hst, Order.pred_lt t,
-          (ihB _).mpr h_prev⟩
-      · simp only [temporal_truth] at h_not_since
-        intro ⟨s, hst, hAs, hBguard⟩
-        exact h_not_since ⟨s, hst, (ihA s).mp hAs,
-          fun r hsr hrt => (ihB r).mp (hBguard r hsr hrt)⟩
+    · -- Forward: S' FO table → False (dual of U' case)
+      simp only [stavi_temporal_truth]
+      intro ⟨s, hst, h_body, h_fail, _⟩
+      exact fo_table_body_forces_P_past hst
+        (fun u hsu hut => by
+          have := h_body u hsu hut
+          cases this with
+          | inl h =>
+            left
+            obtain ⟨v, hvu, hBv⟩ := h
+            exact ⟨v, hvu, fun w hvw hwt => (ihB w).mp (hBv w hvw hwt)⟩
+          | inr h =>
+            right
+            obtain ⟨_, v', huv', hv't, hBv'⟩ := h
+            exact ⟨v', huv', hv't, fun h => hBv' ((ihB v').mpr h)⟩)
+        (by
+          obtain ⟨u, hsu, hut, hBu⟩ := h_fail
+          exact ⟨u, hsu, hut, fun h => hBu ((ihB u).mpr h)⟩)
+    · -- Backward: False → S' FO table (vacuous)
+      exact False.elim
 
 end Bimodal.Metalogic.WeakCanonical

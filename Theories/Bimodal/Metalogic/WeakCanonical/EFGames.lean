@@ -806,23 +806,46 @@ noncomputable def stavi_temporal_truth_mu {sig : MonadicSignature}
     (t : ExtendedCarrier M atomMap r) : StaviFormula → Prop
   | .base φ => temporal_truth_mu M atomMap r t φ
   | .stavi_untl A B =>
-    -- U'^mu(A,B)(t): B^mu cofinal above t among mu-points, standard Until fails among mu-points
-    (∀ s : ExtendedCarrier M atomMap r, t < s → mu_holds s →
-      ∃ u : ExtendedCarrier M atomMap r, t < u ∧ u ≤ s ∧ mu_holds u ∧
-        stavi_temporal_truth_mu M atomMap r u B) ∧
-    ¬(∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
-      stavi_temporal_truth_mu M atomMap r s A ∧
-      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
-        stavi_temporal_truth_mu M atomMap r u B)
+    -- U'^mu(A,B)(t): GHR93 FO table, mu-relativized.
+    -- The witness s is NOT mu-restricted (it is a bound; the gap may not be a point).
+    -- All other quantified points (u, v, w, v') ARE mu-restricted.
+    ∃ s : ExtendedCarrier M atomMap r, t < s ∧
+      -- (1) Main body
+      (∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
+        (∃ v : ExtendedCarrier M atomMap r, u < v ∧ mu_holds v ∧
+          ∀ w : ExtendedCarrier M atomMap r, t < w → w < v → mu_holds w →
+            stavi_temporal_truth_mu M atomMap r w B) ∨
+        ((∀ v : ExtendedCarrier M atomMap r, u < v → v < s → mu_holds v →
+            stavi_temporal_truth_mu M atomMap r v A) ∧
+         ∃ v' : ExtendedCarrier M atomMap r, t < v' ∧ v' < u ∧ mu_holds v' ∧
+            ¬ stavi_temporal_truth_mu M atomMap r v' B)) ∧
+      -- (2) B fails somewhere (mu-restricted)
+      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ mu_holds u ∧
+        ¬ stavi_temporal_truth_mu M atomMap r u B) ∧
+      -- (3) B holds initially (mu-restricted)
+      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ mu_holds u ∧
+        ∀ v : ExtendedCarrier M atomMap r, t < v → v < u → mu_holds v →
+          stavi_temporal_truth_mu M atomMap r v B)
   | .stavi_snce A B =>
-    -- S'^mu(A,B)(t): dual (past direction)
-    (∀ s : ExtendedCarrier M atomMap r, s < t → mu_holds s →
-      ∃ u : ExtendedCarrier M atomMap r, s ≤ u ∧ u < t ∧ mu_holds u ∧
-        stavi_temporal_truth_mu M atomMap r u B) ∧
-    ¬(∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
-      stavi_temporal_truth_mu M atomMap r s A ∧
-      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
-        stavi_temporal_truth_mu M atomMap r u B)
+    -- S'^mu(A,B)(t): past dual of U'^mu, mu-relativized.
+    -- The witness s is NOT mu-restricted.
+    ∃ s : ExtendedCarrier M atomMap r, s < t ∧
+      -- (1) Main body
+      (∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
+        (∃ v : ExtendedCarrier M atomMap r, v < u ∧ mu_holds v ∧
+          ∀ w : ExtendedCarrier M atomMap r, v < w → w < t → mu_holds w →
+            stavi_temporal_truth_mu M atomMap r w B) ∨
+        ((∀ v : ExtendedCarrier M atomMap r, s < v → v < u → mu_holds v →
+            stavi_temporal_truth_mu M atomMap r v A) ∧
+         ∃ v' : ExtendedCarrier M atomMap r, u < v' ∧ v' < t ∧ mu_holds v' ∧
+            ¬ stavi_temporal_truth_mu M atomMap r v' B)) ∧
+      -- (2) B fails somewhere (mu-restricted)
+      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ mu_holds u ∧
+        ¬ stavi_temporal_truth_mu M atomMap r u B) ∧
+      -- (3) B holds on final segment (mu-restricted)
+      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ mu_holds u ∧
+        ∀ v : ExtendedCarrier M atomMap r, u < v → v < t → mu_holds v →
+          stavi_temporal_truth_mu M atomMap r v B)
   | .neg φ => ¬ stavi_temporal_truth_mu M atomMap r t φ
   | .conj φ ψ =>
     stavi_temporal_truth_mu M atomMap r t φ ∧ stavi_temporal_truth_mu M atomMap r t ψ
@@ -1000,49 +1023,31 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
     simp only [stavi_temporal_truth_mu]
     exact and_congr (ihA e) (ihB e)
   | stavi_untl A B ihA ihB =>
+    -- GHR93 FO table: ∃ s, t < s ∧ (body) ∧ (fail) ∧ (init)
+    -- rank_embed preserves order, mu-status, predicates → witnesses transfer
     simp only [stavi_temporal_truth_mu]; constructor
-    · intro ⟨hcof, hnU⟩; refine ⟨?_, ?_⟩
-      · intro s hes ⟨x, hx⟩; subst hx
-        obtain ⟨u, heu, hus, ⟨y, hy⟩, hB⟩ :=
-          hcof (Sum.inl x) ((rank_embed_lt h _ _).mpr hes) ⟨x, rfl⟩; subst hy
-        exact ⟨Sum.inl y, (rank_embed_lt h _ _).mp heu,
-               (rank_embed_le h _ _).mp hus, ⟨y, rfl⟩, (ihB _).mp hB⟩
-      · intro ⟨s, hes, ⟨x, hx⟩, hA, hψ⟩; subst hx
-        exact hnU ⟨Sum.inl x, (rank_embed_lt h _ _).mpr hes, ⟨x, rfl⟩,
-          (ihA _).mpr hA, fun u heu hux ⟨y, hy⟩ => by subst hy; exact (ihB _).mpr (hψ (Sum.inl y)
-              ((rank_embed_lt h _ _).mp heu) ((rank_embed_lt h _ _).mp hux) ⟨y, rfl⟩)⟩
-    · intro ⟨hcof, hnU⟩; refine ⟨?_, ?_⟩
-      · intro s hes ⟨x, hx⟩; subst hx
-        obtain ⟨u, heu, hus, ⟨y, hy⟩, hB⟩ :=
-          hcof (Sum.inl x) ((rank_embed_lt h _ _).mp hes) ⟨x, rfl⟩; subst hy
-        exact ⟨Sum.inl y, (rank_embed_lt h _ _).mpr heu,
-               (rank_embed_le h _ _).mpr hus, ⟨y, rfl⟩, (ihB _).mpr hB⟩
-      · intro ⟨s, hes, ⟨x, hx⟩, hA, hψ⟩; subst hx
-        exact hnU ⟨Sum.inl x, (rank_embed_lt h _ _).mp hes, ⟨x, rfl⟩,
-          (ihA _).mp hA, fun u hsu hux ⟨y, hy⟩ => by subst hy; exact (ihB _).mp (hψ (Sum.inl y)
-              ((rank_embed_lt h _ _).mpr hsu) ((rank_embed_lt h _ _).mpr hux) ⟨y, rfl⟩)⟩
+    · -- mp: r' → r. Transfer witness s and all quantified points through rank_embed.
+      intro ⟨s, hts, h_body, ⟨u_fail, htu_fail, hus_fail, hmu_fail, hB_fail⟩,
+             ⟨u_init, htu_init, hus_init, hmu_init, hB_init⟩⟩
+      -- The witness s in r' may not be a rank_embed of an r-element.
+      -- But s is in ExtendedCarrier r', which includes all r-elements via rank_embed.
+      -- For the FO table, s just serves as a bound (not mu-restricted).
+      -- We need to find a corresponding bound in r.
+      -- Actually, rank_embed is an order embedding from r to r', so
+      -- we can work with the inverse image. But rank_embed may not be surjective.
+      -- The key insight: the witness s in r' might be a gap that doesn't exist in r.
+      -- But ALL mu-points in r' are exactly rank_embed of mu-points in r.
+      -- Since s is just a bound, we can choose s = the r'-element itself,
+      -- and then restrict all mu-witnesses to their r-preimages.
+      sorry
+    · -- mpr: r → r'. Dual direction.
+      sorry
   | stavi_snce A B ihA ihB =>
     simp only [stavi_temporal_truth_mu]; constructor
-    · intro ⟨hcof, hnS⟩; refine ⟨?_, ?_⟩
-      · intro s hse ⟨x, hx⟩; subst hx
-        obtain ⟨u, hsu, hue, ⟨y, hy⟩, hB⟩ :=
-          hcof (Sum.inl x) ((rank_embed_lt h _ _).mpr hse) ⟨x, rfl⟩; subst hy
-        exact ⟨Sum.inl y, (rank_embed_le h _ _).mp hsu,
-               (rank_embed_lt h _ _).mp hue, ⟨y, rfl⟩, (ihB _).mp hB⟩
-      · intro ⟨s, hse, ⟨x, hx⟩, hA, hψ⟩; subst hx
-        exact hnS ⟨Sum.inl x, (rank_embed_lt h _ _).mpr hse, ⟨x, rfl⟩,
-          (ihA _).mpr hA, fun u hsu hue ⟨y, hy⟩ => by subst hy; exact (ihB _).mpr (hψ (Sum.inl y)
-              ((rank_embed_lt h _ _).mp hsu) ((rank_embed_lt h _ _).mp hue) ⟨y, rfl⟩)⟩
-    · intro ⟨hcof, hnS⟩; refine ⟨?_, ?_⟩
-      · intro s hse ⟨x, hx⟩; subst hx
-        obtain ⟨u, hsu, hue, ⟨y, hy⟩, hB⟩ :=
-          hcof (Sum.inl x) ((rank_embed_lt h _ _).mp hse) ⟨x, rfl⟩; subst hy
-        exact ⟨Sum.inl y, (rank_embed_le h _ _).mpr hsu,
-               (rank_embed_lt h _ _).mpr hue, ⟨y, rfl⟩, (ihB _).mpr hB⟩
-      · intro ⟨s, hse, ⟨x, hx⟩, hA, hψ⟩; subst hx
-        exact hnS ⟨Sum.inl x, (rank_embed_lt h _ _).mp hse, ⟨x, rfl⟩,
-          (ihA _).mp hA, fun u hsu hue ⟨y, hy⟩ => by subst hy; exact (ihB _).mp (hψ (Sum.inl y)
-              ((rank_embed_lt h _ _).mpr hsu) ((rank_embed_lt h _ _).mpr hue) ⟨y, rfl⟩)⟩
+    · intro ⟨s, hst, h_body, h_fail, h_init⟩
+      sorry
+    · intro ⟨s, hst, h_body, h_fail, h_init⟩
+      sorry
 
 /-! ## Gap Detection Formulas (GHR93 Definition 8.5)
 
@@ -1459,77 +1464,29 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     exact Iff.and (ihA m) (ihB m)
   | stavi_untl A B ihA ihB =>
+    -- GHR93 FO table: ∃ s, m < s ∧ (body) ∧ (fail) ∧ (init)
+    -- At actual point m, mu-restricted quantifiers reduce to unrestricted.
+    -- The witness s maps between extendPoint and M.carrier.
+    -- Since s is NOT mu-restricted, we need to handle both directions.
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     constructor
     · -- mp: mu-relativized → standard
-      rintro ⟨hcof, hnU⟩
-      constructor
-      · intro s hms
-        have ⟨u, hmu, hus, hmu_holds, hB⟩ :=
-          hcof (extendPoint s) ((extendPoint_lt_iff m s).mpr hms) ⟨s, rfl⟩
-        obtain ⟨u', rfl⟩ := hmu_holds
-        exact ⟨u', (extendPoint_lt_iff m u').mp hmu,
-          (extendPoint_le_iff u' s).mp hus, (ihB u').mp hB⟩
-      · intro ⟨s, hms, hA, hB⟩
-        apply hnU
-        refine ⟨extendPoint s, (extendPoint_lt_iff m s).mpr hms, ⟨s, rfl⟩,
-          (ihA s).mpr hA, fun u hmu hus hmu_holds => ?_⟩
-        obtain ⟨u', rfl⟩ := hmu_holds
-        exact (ihB u').mpr (hB u' ((extendPoint_lt_iff m u').mp hmu)
-          ((extendPoint_lt_iff u' s).mp hus))
+      -- The mu-version has ∃ s (not mu-restricted), so s can be a gap or point.
+      -- All other quantified variables ARE mu-restricted (and hence actual points).
+      -- At an actual point m, extendPoint provides the embedding.
+      intro ⟨s, hms, h_body, ⟨u_fail, hmu_fail, hus_fail, hmu_fail_mu, hB_fail⟩,
+             ⟨u_init, hmu_init, hus_init, hmu_init_mu, hB_init⟩⟩
+      sorry
     · -- mpr: standard → mu-relativized
-      rintro ⟨hcof, hnU⟩
-      constructor
-      · intro s hms hs_mu
-        obtain ⟨s', rfl⟩ := hs_mu
-        have hms' : m < s' := (extendPoint_lt_iff m s').mp hms
-        obtain ⟨u', hmu, hus, hB⟩ := hcof s' hms'
-        exact ⟨extendPoint u', (extendPoint_lt_iff m u').mpr hmu,
-          (extendPoint_le_iff u' s').mpr hus, ⟨u', rfl⟩, (ihB u').mpr hB⟩
-      · rintro ⟨s, hms, hs_mu, hA, hB⟩
-        obtain ⟨s', rfl⟩ := hs_mu
-        apply hnU
-        refine ⟨s', (extendPoint_lt_iff m s').mp hms, (ihA s').mp hA,
-          fun u' hmu hus => ?_⟩
-        exact (ihB u').mp (hB (extendPoint u')
-          ((extendPoint_lt_iff m u').mpr hmu) ((extendPoint_lt_iff u' s').mpr hus)
-          ⟨u', rfl⟩)
+      intro ⟨s, hms, h_body, h_fail, h_init⟩
+      sorry
   | stavi_snce A B ihA ihB =>
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     constructor
-    · -- mp: mu-relativized → standard
-      rintro ⟨hcof, hnS⟩
-      constructor
-      · intro s hsm
-        have ⟨u, hsu, hum, hmu_holds, hB⟩ :=
-          hcof (extendPoint s) ((extendPoint_lt_iff s m).mpr hsm) ⟨s, rfl⟩
-        obtain ⟨u', rfl⟩ := hmu_holds
-        exact ⟨u', (extendPoint_le_iff s u').mp hsu,
-          (extendPoint_lt_iff u' m).mp hum, (ihB u').mp hB⟩
-      · intro ⟨s, hsm, hA, hB⟩
-        apply hnS
-        refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ⟨s, rfl⟩,
-          (ihA s).mpr hA, fun u hsu hum hmu_holds => ?_⟩
-        obtain ⟨u', rfl⟩ := hmu_holds
-        exact (ihB u').mpr (hB u' ((extendPoint_lt_iff s u').mp hsu)
-          ((extendPoint_lt_iff u' m).mp hum))
-    · -- mpr: standard → mu-relativized
-      rintro ⟨hcof, hnS⟩
-      constructor
-      · intro s hsm hs_mu
-        obtain ⟨s', rfl⟩ := hs_mu
-        have hsm' : s' < m := (extendPoint_lt_iff s' m).mp hsm
-        obtain ⟨u', hsu, hum, hB⟩ := hcof s' hsm'
-        exact ⟨extendPoint u', (extendPoint_le_iff s' u').mpr hsu,
-          (extendPoint_lt_iff u' m).mpr hum, ⟨u', rfl⟩, (ihB u').mpr hB⟩
-      · rintro ⟨s, hsm, hs_mu, hA, hB⟩
-        obtain ⟨s', rfl⟩ := hs_mu
-        apply hnS
-        refine ⟨s', (extendPoint_lt_iff s' m).mp hsm, (ihA s').mp hA,
-          fun u' hsu hum => ?_⟩
-        exact (ihB u').mp (hB (extendPoint u')
-          ((extendPoint_lt_iff s' u').mpr hsu) ((extendPoint_lt_iff u' m).mpr hum)
-          ⟨u', rfl⟩)
+    · intro ⟨s, hsm, h_body, h_fail, h_init⟩
+      sorry
+    · intro ⟨s, hsm, h_body, h_fail, h_init⟩
+      sorry
 
 /-! ### Gap Uniqueness for Lemma 9
 
