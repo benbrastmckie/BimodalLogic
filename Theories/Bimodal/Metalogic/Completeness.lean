@@ -361,11 +361,6 @@ theorem SetMaximalConsistent.box_box {S : Set Formula} {φ : Formula}
   have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
   exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
--- Duplicate theorems removed (canonical versions in MCSProperties.lean):
--- - SetMaximalConsistent.all_future_all_future: canonical version in MCSProperties.lean
--- - temp_4_past: canonical version in MCSProperties.lean
--- - SetMaximalConsistent.all_past_all_past: canonical version in MCSProperties.lean
-
 /--
 Set-based MCS: diamond-box duality (forward direction).
 
@@ -521,8 +516,5 @@ theorem SetMaximalConsistent.diamond_box_duality {S : Set Formula} {φ : Formula
 Modal saturation (forward direction) is proven below. Full saturation theorems
 requiring canonical frame and history constructions have been archived.
 -/
-
--- SetMaximalConsistent.modal_saturation_forward removed (thin alias for SetMaximalConsistent.box_closure)
--- CanonicalWorldState was removed (duplicate of CanonicalMCS in CanonicalFMCS.lean)
 
 end Bimodal.Metalogic

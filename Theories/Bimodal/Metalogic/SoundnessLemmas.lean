@@ -156,37 +156,6 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
 
-/-!
-## NOTE: Unprovable Theorem Removed
-
-The theorem `is_valid_swap_involution` as originally stated is **UNPROVABLE**.
-
-**Original claim**: `is_valid D φ.swap -> is_valid D φ`
-
-**Why it's false**: The `swap_temporal` operation exchanges `all_past` <-> `all_future`,
-which quantify over different time ranges (past s<t vs future s>t). These are not
-equivalent in general temporal models.
-
-**Counterexample**: Consider φ = all_past(atom "p") in a model where p is true at all
-future times but false at all past times. Then φ.swap = all_future(atom "p") is valid,
-but φ = all_past(atom "p") is not valid.
-
-**Semantic analysis**: Under strict semantics, swap creates an asymmetry:
-- `all_past φ` quantifies over s < t (strict past times)
-- `all_future φ` quantifies over s > t (strict future times)
-- Swapping exchanges these ranges, which are not equivalent in arbitrary models
-
-**The theorem IS true for derivable formulas** (see `derivable_valid_swap_involution` at end of file),
-because the temporal_duality inference rule guarantees swap preservation for provable formulas.
-
-**Research**: See research report for detailed semantic analysis and proof of
-unprovability.
-
-**Lesson learned**: Always verify semantic validity before attempting formal proof.
-Syntactic properties (derivations) and semantic properties (validity) have different
-characteristics - involution applies to syntax but not necessarily to semantics.
--/
-
 /-! ## Axiom Swap Validity (Approach D: Derivation-Indexed Proof)
 
 This section proves validity of swapped axioms to enable temporal duality soundness
@@ -362,8 +331,6 @@ theorem swap_axiom_mf_valid (φ : Formula) :
   intro h_box_swap σ h_σ_mem s h_s_lt_t
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
-
--- Note: swap_axiom_tf_valid removed -- TF is now derived from MF + T + Modal 4.
 
 /-! ## Rule Preservation (Phase 3)
 

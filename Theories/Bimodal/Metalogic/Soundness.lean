@@ -256,9 +256,6 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).b
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
--- Note: temp_future_valid (TF axiom) removed -- TF is now derived from MF + T + Modal 4.
--- Soundness of TF follows from soundness of its component axioms.
-
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/
 theorem temp_a_dual_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_past φ.some_future)) := by
@@ -683,15 +680,6 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
     · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
     · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
 
--- BX7a/BX7a' (linear_until_a7a_valid/linear_since_a7a_valid) REMOVED.
--- Unsound under open guard semantics. See Axioms.lean note.
-
--- BX8/BX8' (until_step_valid/since_step_valid) REMOVED.
--- BX9/BX9' (until_elim_valid/since_elim_valid) REMOVED.
--- until_guard_valid/since_guard_valid REMOVED.
--- These axioms/theorems are not sound under open guard (t,s).
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardSoundness.lean (task 113).
-
 /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
 theorem until_F_valid (φ ψ : Formula) :
@@ -805,20 +793,6 @@ theorem discrete_box_necessity_valid :
   intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
   exact ⟨s, hts, fun h => h, h_guard⟩
 
-/-! ## Legacy Discrete Axiom Validity Theorems (Removed)
-
-The following discrete axiom validity theorems were removed in the BX refactor:
-- disc_next_valid, disc_prev_valid
-- until_unfold_valid, until_intro_valid, until_induction_valid, until_linearity_valid
-- since_unfold_valid, since_intro_valid, since_induction_valid, since_linearity_valid
-- until_connectedness_valid, since_connectedness_valid
-- F_until_equiv_valid, P_since_equiv_valid
-- Discrete operator axioms (bot-Until K-distribution, determinism, identity)
-
-These proved validity for discrete axioms that no longer exist in the BX axiom system.
-The BX system uses self-accumulation (BX5/BX6) and linearity (BX7) instead.
--/
-
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/
 theorem prior_UZ_valid (φ : Formula) : valid_discrete (φ.some_future.imp (Formula.untl φ φ.neg)) := by
@@ -869,8 +843,6 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ :
   | absorb_since φ ψ => exact absorb_since_valid φ ψ
   | linear_until _ _ _ _ => exact linear_until_valid _ _ _ _
   | linear_since _ _ _ _ => exact linear_since_valid _ _ _ _
-  -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
-  -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact until_F_valid φ ψ
   | since_P φ ψ => exact since_P_valid φ ψ
   | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
@@ -918,7 +890,6 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | absorb_since φ ψ => exact Validity.valid_implies_valid_dense (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_valid _ _ _ _)
-  -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
@@ -967,7 +938,6 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | absorb_since φ ψ => exact Validity.valid_implies_valid_discrete (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_valid _ _ _ _)
-  -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
@@ -1070,7 +1040,6 @@ theorem soundness (Γ : Context) (φ : Formula)
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
     | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1243,7 +1212,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
     | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t

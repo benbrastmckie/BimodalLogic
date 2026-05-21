@@ -66,7 +66,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Soundness and SoundnessLemmas Cleanup [NOT STARTED]
+### Phase 1: Soundness and SoundnessLemmas Cleanup [COMPLETED]
 
 **Goal**: Remove all tombstone comments from Soundness.lean and SoundnessLemmas.lean -- the two files with the highest concentration of removal targets.
 
