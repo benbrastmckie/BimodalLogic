@@ -301,7 +301,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 ---
 
-### Phase 0: U'/S' Semantics Fix [COMPLETED]
+### Phase 0: U'/S' Semantics Fix [COMPLETED] (Tasks 0.7, 0.11 deferred — non-critical-path)
 
 **Goal**: Replace the incorrect "cofinal AND NOT U/S" definitions of U'(A,B) and S'(A,B) with the correct GHR93 FO-table-based definitions. Reprove all broken theorems. Verify Cases I/II/Lemma 10/Lemma 11 forward still compile unchanged.
 
