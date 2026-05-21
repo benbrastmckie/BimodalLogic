@@ -319,15 +319,41 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- tau: backward n-round on [d,y'] vs [c,y]
     -- Need: h_pt for [d,y'] (∃ point in [d,y'])
     --
-    -- These sub-interval point witnesses are sorry'd. In full generality,
-    -- they follow from the density of actual points in the extended carrier
-    -- (every non-degenerate interval in M_r contains a point from M).
-    -- For degenerate intervals (c=x or d=x'), the game is vacuous.
-    have h_pt_left : ∃ p, inClosedInterval x' d (extendPoint p) := by sorry
-    have h_pt_right : ∃ p, inClosedInterval d y' (extendPoint p) := by sorry
-    -- M-side sub-interval point witnesses (sorry'd, same density issue as N-side)
-    have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by sorry
-    have h_pt_cy_w : ∃ p, inClosedInterval c y (extendPoint p) := by sorry
+    -- Sub-interval point witnesses: when d (resp. c) is a point, the point
+    -- itself witnesses both sub-intervals. When d (resp. c) is a gap, we need
+    -- a density argument (gap cut/complement within interval bounds).
+    -- N-side: need points in [x',d] and [d,y']
+    have h_pt_left : ∃ p, inClosedInterval x' d (extendPoint p) := by
+      rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+      · rw [hp_d] at hd_interval ⊢
+        exact ⟨p_d, hd_interval.1, le_refl _⟩
+      · obtain ⟨p_N, hp_N⟩ := h_pt
+        rcases le_or_lt (extendPoint p_N) d with h | h
+        · exact ⟨p_N, hp_N.1, h⟩
+        · -- p_N > d (a gap). Need a point in [x',d].
+          -- The gap has nonempty cut, giving a point ≤ d,
+          -- but bounding below by x' requires density within [x',d].
+          sorry
+    have h_pt_right : ∃ p, inClosedInterval d y' (extendPoint p) := by
+      rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+      · rw [hp_d] at hd_interval ⊢
+        exact ⟨p_d, le_refl _, hd_interval.2⟩
+      · obtain ⟨p_N, hp_N⟩ := h_pt
+        rcases le_or_lt d (extendPoint p_N) with h | h
+        · exact ⟨p_N, h, hp_N.2⟩
+        · -- p_N < d (a gap). Need a point in [d,y'].
+          sorry
+    -- M-side sub-interval point witnesses
+    have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by
+      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, _⟩
+      · rw [hp_c] at hc_interval ⊢
+        exact ⟨p_c, hc_interval.1, le_refl _⟩
+      · sorry
+    have h_pt_cy_w : ∃ p, inClosedInterval c y (extendPoint p) := by
+      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, _⟩
+      · rw [hp_c] at hc_interval ⊢
+        exact ⟨p_c, le_refl _, hc_interval.2⟩
+      · sorry
     exact {
       hc_interval := hc_interval
       hd_interval := hd_interval
