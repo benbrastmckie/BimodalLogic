@@ -419,6 +419,98 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- fully proved (~400-500 lines) plus ~100 lines of case analysis here.
     sorry
 
+/-! ### Order Preservation Helpers for Merged Game Tuples -/
+
+/-- Pivot chain: if a ≤ p ≤ b in one linear order, and a' ≤ q ≤ b' in another,
+    with (a < p ↔ a' < q), (a = p ↔ a' = q), (p < b ↔ q < b'), (p = b ↔ q = b'),
+    then (a < b ↔ a' < b') and (a = b ↔ a' = b'). -/
+private theorem pivot_chain_order {α β : Type*} [LinearOrder α] [LinearOrder β]
+    {a p b : α} {a' q b' : β}
+    (hap : a ≤ p) (hpb : p ≤ b) (ha'q : a' ≤ q) (hqb' : q ≤ b')
+    (hlt_l : a < p ↔ a' < q) (heq_l : a = p ↔ a' = q)
+    (hlt_r : p < b ↔ q < b') (heq_r : p = b ↔ q = b') :
+    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') := by
+  constructor
+  · constructor
+    · intro hab
+      rcases lt_or_eq_of_le hap with hlt | heq
+      · exact lt_of_lt_of_le (hlt_l.mp hlt) hqb'
+      · rw [heq_l.mp heq]; exact hlt_r.mp (heq ▸ hab)
+    · intro ha'b'
+      rcases lt_or_eq_of_le ha'q with hlt | heq
+      · exact lt_of_lt_of_le (hlt_l.mpr hlt) hpb
+      · rw [heq_l.mpr heq]; exact hlt_r.mpr (heq ▸ ha'b')
+  · constructor
+    · intro hab
+      have h1 : a = p := le_antisymm hap (hab ▸ hpb)
+      have h2 : p = b := le_antisymm hpb (hab ▸ hap)
+      exact (heq_l.mp h1).trans (heq_r.mp h2)
+    · intro ha'b'
+      have h1 : a' = q := le_antisymm ha'q (ha'b' ▸ hqb')
+      have h2 : q = b' := le_antisymm hqb' (ha'b' ▸ ha'q)
+      exact (heq_l.mpr h1).trans (heq_r.mpr h2)
+
+/-- Reverse pivot chain: if a ≥ p ≥ b, transfer ordering through the pivot. -/
+private theorem pivot_chain_order_rev {α β : Type*} [LinearOrder α] [LinearOrder β]
+    {a p b : α} {a' q b' : β}
+    (hpa : p ≤ a) (hbp : b ≤ p) (hqa' : q ≤ a') (hb'q : b' ≤ q)
+    (hlt_l : p < a ↔ q < a') (heq_l : p = a ↔ q = a')
+    (hlt_r : b < p ↔ b' < q) (heq_r : b = p ↔ b' = q) :
+    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') := by
+  -- a ≥ p ≥ b, a' ≥ q ≥ b': if a < b then a ≤ p ∧ b ≤ p but a < b ≤ p ≤ a, contradiction
+  -- So a < b is impossible on both sides (since a ≥ p ≥ b).
+  -- Similarly a' < b' is impossible.
+  -- And a = b iff a = p = b, iff a' = q = b'.
+  constructor
+  · constructor
+    · intro hab; exact absurd hab (not_lt.mpr (le_trans hbp hpa))
+    · intro ha'b'; exact absurd ha'b' (not_lt.mpr (le_trans hb'q hqa'))
+  · constructor
+    · intro hab
+      have h1 : b = p := le_antisymm hbp (hab ▸ hpa)
+      have h2 : p = a := le_antisymm hpa (hab ▸ hbp)
+      exact ((heq_r.mp h1).trans (heq_l.mp h2)).symm
+    · intro ha'b'
+      have h1 : b' = q := le_antisymm hb'q (ha'b' ▸ hqa')
+      have h2 : q = a' := le_antisymm hqa' (ha'b' ▸ hb'q)
+      exact ((heq_r.mpr h1).trans (heq_l.mpr h2)).symm
+
+/-- Extract ordering from same_order_type at specific game_tuple indices.
+    This helper simplifies game_tuple at a selection index. -/
+private theorem game_tuple_sel_eq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) (k : Fin n) :
+    game_tuple x y a b ⟨1 + k.val, by omega⟩ = a k := by
+  simp only [game_tuple]
+  simp [show (1 + k.val : Nat) ≠ 0 from by omega,
+    show ¬((1 + ↑k : Nat) = n + 1) from by { have := k.isLt; omega },
+    show ¬((1 + ↑k : Nat) = n + 2) from by { have := k.isLt; omega },
+    show 1 + ↑k - 1 = k.val from by omega]
+
+private theorem game_tuple_zero_eq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) :
+    game_tuple x y a b ⟨0, by omega⟩ = x := by
+  simp only [game_tuple, dite_true]
+
+private theorem game_tuple_b_eq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) :
+    game_tuple x y a b ⟨n + 1, by omega⟩ = extendPoint b := by
+  simp only [game_tuple]
+  simp [show (n + 1 : Nat) ≠ 0 from by omega]
+
+private theorem game_tuple_y_eq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) :
+    game_tuple x y a b ⟨n + 2, by omega⟩ = y := by
+  simp only [game_tuple]
+  simp [show (n + 2 : Nat) ≠ 0 from by omega, show ¬((n + 2 : Nat) = n + 1) from by omega]
+
 /-! ### Case I: The Split Case
 
 When at least one of Spoiler's backward selections a_0,...,a_n lies below
@@ -436,6 +528,8 @@ those ≤ d (at most n of them) and those > d (at most n of them). Since
 σ and τ each handle n-round backward games, and at most n elements fall
 on each side, round monotonicity (Lemma 10) allows the sub-strategies to
 handle their portions. -/
+
+set_option maxHeartbeats 800000
 
 /-- **Case I helper**: Given backward strategies σ on [x',d]/[x,c] and
     τ on [d,y']/[c,y], if Spoiler's n+1 selections split across d
@@ -724,14 +818,271 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     -- between full-game and sub-game game_tuples via boundary-pivot argument.
     -- ----- Assemble the winning condition -----
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (n+1)
-      -- The proof uses the sub-game ordering through the boundary d/c pivot.
-      -- Two sorries remain: the full index-pair case analysis for same_order_type
-      -- requires mapping each full-game index to a sub-game index and using
-      -- the sub-game ordering. This is 200+ lines of pure index arithmetic.
-      -- Since gap_point and formula components ARE proved, we sorry just this
-      -- ordering component.
-      sorry
+    · -- same_order_type (n+1): ordering via pivot chain through d/c
+      -- Extract value-level ordering from sigma's same_order_type
+      -- sigma maps: 0→x'/x, 1+k→a_sigma(k)/resp_L(k), L.card+1→b_resp_L/b_sp, L.card+2→d/c
+      have sig_ord := fun a₁ a₂ : Fin (L.card + 3) => hord_L a₁ a₂
+      -- Extract value-level ordering from tau's same_order_type
+      -- tau maps: 0→d/c, 1+k→a_tau(k)/resp_R(k), R.card+1→b_tau_resp/p_cy, R.card+2→y'/y
+      have tau_ord := fun a₁ a₂ : Fin (R.card + 3) => hord_R_aux a₁ a₂
+      -- Pre-extract sigma boundary orderings (as value-level facts)
+      have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
+        have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      have sig_b_d : (extendPoint b_resp_L < d ↔ extendPoint b_sp < c) ∧
+                     (extendPoint b_resp_L = d ↔ extendPoint b_sp = c) := by
+        have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_y_eq] at h; exact h
+      have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
+        have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      -- Extract sigma ordering for L-selection k vs other sigma values
+      have sig_x_sel : ∀ (k : Fin L.card),
+          (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
+        intro k; have h := sig_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+      have sig_sel_d : ∀ (k : Fin L.card),
+          (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) := by
+        intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+      have sig_b_sel : ∀ (k : Fin L.card),
+          (extendPoint b_resp_L < a_sigma k ↔ extendPoint b_sp < resp_L k) ∧
+          (extendPoint b_resp_L = a_sigma k ↔ extendPoint b_sp = resp_L k) := by
+        intro k; have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_sel_eq] at h; exact h
+      have sig_sel_b : ∀ (k : Fin L.card),
+          (a_sigma k < extendPoint b_resp_L ↔ resp_L k < extendPoint b_sp) ∧
+          (a_sigma k = extendPoint b_resp_L ↔ resp_L k = extendPoint b_sp) := by
+        intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 1, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_b_eq] at h; exact h
+      have sig_sel_sel : ∀ (k k' : Fin L.card),
+          (a_sigma k < a_sigma k' ↔ resp_L k < resp_L k') ∧
+          (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') := by
+        intro k k'; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_sel_eq] at h; exact h
+      have sig_x_b : (x' < extendPoint b_resp_L ↔ x < extendPoint b_sp) ∧
+                     (x' = extendPoint b_resp_L ↔ x = extendPoint b_sp) := by
+        have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 1, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_b_eq] at h; exact h
+      -- Extract tau ordering for R-selection k vs other tau values
+      have tau_d_sel : ∀ (k : Fin R.card),
+          (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
+        intro k; have h := tau_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+      have tau_sel_y : ∀ (k : Fin R.card),
+          (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) := by
+        intro k; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+      have tau_sel_sel : ∀ (k k' : Fin R.card),
+          (a_tau k < a_tau k' ↔ resp_R k < resp_R k') ∧
+          (a_tau k = a_tau k' ↔ resp_R k = resp_R k') := by
+        intro k k'; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_sel_eq] at h; exact h
+      -- Interval bounds needed for pivot_chain_order
+      -- a_sigma(k) ≤ d (since a_sigma(k) = a_bwd(eL(k)) and eL(k) ∈ L means a_bwd < d)
+      have ha_sig_le_d : ∀ (k : Fin L.card), a_sigma k ≤ d :=
+        fun k => le_of_lt ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem L hL_card_eq k)).2)
+      have hresp_L_le_c : ∀ (k : Fin L.card), resp_L k ≤ c := fun k => (hresp_L_in k).2
+      have hd_le_a_tau : ∀ (k : Fin R.card), d ≤ a_tau k :=
+        fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
+      have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
+      -- Now prove same_order_type by intro + split_ifs on game_tuple
+      intro i j; simp only [game_tuple]; split_ifs with
+        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0 _ _ _ hjb _ hjy _ hjd _ _
+        hiy hj0 _ _ _ hjb _ hjy _ hjd _ _ _ hid hj0 _ _ _ hjb _ hjy _ hjd _ _
+      -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
+      -- index categories: {x=0, b=n+2, y=n+3, sel} × {x=0, b=n+2, y=n+3, sel}
+      -- Goal 1: x vs x
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 2: x vs b
+      · exact sig_x_b
+      -- Goal 3: x vs y
+      · exact pivot_chain_order props.hx'd props.hdy' props.hxc props.hcy
+          sig_x_d.1 sig_x_d.2 tau_d_y.1 tau_d_y.2
+      -- Goal 4: x vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]; exact sig_x_sel k
+        · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order props.hx'd (hd_le_a_tau k)
+            props.hxc (hc_le_rR k) sig_x_d.1 sig_x_d.2
+            (tau_d_sel k).1 (tau_d_sel k).2
+      -- Goal 5: b vs x
+      · have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨0, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_zero_eq] at h; exact h
+      -- Goal 6: b vs b
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 7: b vs y
+      · exact pivot_chain_order hb_resp_L_in.2 props.hdy' hbc props.hcy
+          sig_b_d.1 sig_b_d.2 tau_d_y.1 tau_d_y.2
+      -- Goal 8: b vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]; exact sig_b_sel k
+        · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order hb_resp_L_in.2 (hd_le_a_tau k)
+            hbc (hc_le_rR k) sig_b_d.1 sig_b_d.2
+            (tau_d_sel k).1 (tau_d_sel k).2
+      -- Goal 9: y vs x
+      · exact pivot_chain_order_rev props.hdy' props.hx'd props.hcy props.hxc
+          tau_d_y.1 tau_d_y.2 sig_x_d.1 sig_x_d.2
+      -- Goal 10: y vs b
+      · exact pivot_chain_order_rev props.hdy' hb_resp_L_in.2 props.hcy hbc
+          tau_d_y.1 tau_d_y.2 sig_b_d.1 sig_b_d.2
+      -- Goal 11: y vs y
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 12: y vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev props.hdy' (ha_sig_le_d k)
+            props.hcy (hresp_L_le_c k) tau_d_y.1 tau_d_y.2
+            (sig_sel_d k).1 (sig_sel_d k).2
+        · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]
+          have htsy := tau_sel_y k
+          exact ⟨⟨fun h => absurd h (not_lt.mpr (ha_tau k).2),
+                  fun h => absurd h (not_lt.mpr (hresp_R_in k).2)⟩,
+                 ⟨fun h => (htsy.2.mp h.symm).symm,
+                  fun h => (htsy.2.mpr h.symm).symm⟩⟩
+      -- Goal 13: sel(i) vs x
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]
+          have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨0, by omega⟩
+          simp only [game_tuple_sel_eq, game_tuple_zero_eq] at h; exact h
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev (hd_le_a_tau k) props.hx'd
+            (hc_le_rR k) props.hxc
+            (tau_d_sel k).1 (tau_d_sel k).2 sig_x_d.1 sig_x_d.2
+      -- Goal 14: sel(i) vs b
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]; exact sig_sel_b k
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev (hd_le_a_tau k) hb_resp_L_in.2
+            (hc_le_rR k) hbc
+            (tau_d_sel k).1 (tau_d_sel k).2 sig_b_d.1 sig_b_d.2
+      -- Goal 15: sel(i) vs y
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order (ha_sig_le_d k) props.hdy'
+            (hresp_L_le_c k) props.hcy
+            (sig_sel_d k).1 (sig_sel_d k).2 tau_d_y.1 tau_d_y.2
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]; exact tau_sel_y k
+      -- Goal 16: sel(i) vs sel(j)
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set ki := isoL.symm ⟨i', hi_mem⟩
+          have hi_eq : a_bwd i' = a_sigma ki := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [hi_eq]
+          by_cases hjd' : a_bwd j' < d
+          · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_true]
+            set kj := isoL.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_sigma kj := by
+              simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+            rw [hj_eq]; exact sig_sel_sel ki kj
+          · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_false]
+            set kj := isoR.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_tau kj := by
+              simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+            rw [hj_eq]
+            exact pivot_chain_order (ha_sig_le_d ki) (hd_le_a_tau kj)
+              (hresp_L_le_c ki) (hc_le_rR kj)
+              (sig_sel_d ki).1 (sig_sel_d ki).2
+              (tau_d_sel kj).1 (tau_d_sel kj).2
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set ki := isoR.symm ⟨i', hi_mem⟩
+          have hi_eq : a_bwd i' = a_tau ki := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [hi_eq]
+          by_cases hjd' : a_bwd j' < d
+          · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_true]
+            set kj := isoL.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_sigma kj := by
+              simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+            rw [hj_eq]
+            exact pivot_chain_order_rev (hd_le_a_tau ki) (ha_sig_le_d kj)
+              (hc_le_rR ki) (hresp_L_le_c kj)
+              (tau_d_sel ki).1 (tau_d_sel ki).2
+              (sig_sel_d kj).1 (sig_sel_d kj).2
+          · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_false]
+            set kj := isoR.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_tau kj := by
+              simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+            rw [hj_eq]; exact tau_sel_sel ki kj
     · -- gap_point_agreement (n+1)
       intro i
       simp only [game_tuple]
@@ -874,11 +1225,270 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       exact this
     -- ----- Assemble the winning condition (right case) -----
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (n+1)
-      -- Sorry'd: same index-pair case analysis as left case.
-      -- The proof requires mapping each full-game index to a sub-game index
-      -- and chaining through the boundary d/c pivot for cross-partition pairs.
-      sorry
+    · -- same_order_type (n+1): symmetric to left case, with b in tau's sub-game
+      -- Extract value-level orderings from sub-game same_order_types
+      have sig_ord := fun a₁ a₂ : Fin (L.card + 3) => hord_L_aux a₁ a₂
+      have tau_ord := fun a₁ a₂ : Fin (R.card + 3) => hord_R a₁ a₂
+      -- Sigma boundary orderings
+      have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
+        have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      -- Tau boundary orderings
+      have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
+        have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      -- Tau: b_resp_R vs d ↔ b_sp vs c (b is in tau at index R.card+1 vs index 0)
+      have tau_d_b : (d < extendPoint b_resp_R ↔ c < extendPoint b_sp) ∧
+                     (d = extendPoint b_resp_R ↔ c = extendPoint b_sp) := by
+        have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 1, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_b_eq] at h; exact h
+      -- Sigma: L-selection orderings
+      have sig_x_sel : ∀ (k : Fin L.card),
+          (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
+        intro k; have h := sig_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+      have sig_sel_d : ∀ (k : Fin L.card),
+          (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) := by
+        intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+      have sig_sel_sel : ∀ (k k' : Fin L.card),
+          (a_sigma k < a_sigma k' ↔ resp_L k < resp_L k') ∧
+          (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') := by
+        intro k k'; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp only [game_tuple_sel_eq] at h; exact h
+      -- Tau: R-selection orderings
+      have tau_d_sel : ∀ (k : Fin R.card),
+          (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
+        intro k; have h := tau_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+      have tau_sel_y : ∀ (k : Fin R.card),
+          (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) := by
+        intro k; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+      have tau_sel_sel : ∀ (k k' : Fin R.card),
+          (a_tau k < a_tau k' ↔ resp_R k < resp_R k') ∧
+          (a_tau k = a_tau k' ↔ resp_R k = resp_R k') := by
+        intro k k'; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp only [game_tuple_sel_eq] at h; exact h
+      -- Tau: b vs selection
+      have tau_b_sel : ∀ (k : Fin R.card),
+          (extendPoint b_resp_R < a_tau k ↔ extendPoint b_sp < resp_R k) ∧
+          (extendPoint b_resp_R = a_tau k ↔ extendPoint b_sp = resp_R k) := by
+        intro k; have h := tau_ord ⟨R.card + 1, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_sel_eq] at h; exact h
+      have tau_sel_b : ∀ (k : Fin R.card),
+          (a_tau k < extendPoint b_resp_R ↔ resp_R k < extendPoint b_sp) ∧
+          (a_tau k = extendPoint b_resp_R ↔ resp_R k = extendPoint b_sp) := by
+        intro k; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨R.card + 1, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_b_eq] at h; exact h
+      have tau_b_y : (extendPoint b_resp_R < y' ↔ extendPoint b_sp < y) ∧
+                     (extendPoint b_resp_R = y' ↔ extendPoint b_sp = y) := by
+        have h := tau_ord ⟨R.card + 1, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_y_eq] at h; exact h
+      -- Interval bounds
+      have ha_sig_le_d : ∀ (k : Fin L.card), a_sigma k ≤ d :=
+        fun k => le_of_lt ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem L hL_card_eq k)).2)
+      have hresp_L_le_c' : ∀ (k : Fin L.card), resp_L k ≤ c := fun k => (hresp_L_in k).2
+      have hd_le_a_tau : ∀ (k : Fin R.card), d ≤ a_tau k :=
+        fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
+      have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
+      -- Prove same_order_type by split_ifs
+      intro i j; simp only [game_tuple]; split_ifs with
+        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0 _ _ _ hjb _ hjy _ hjd _ _
+        hiy hj0 _ _ _ hjb _ hjy _ hjd _ _ _ hid hj0 _ _ _ hjb _ hjy _ hjd _ _
+      -- Goal 1: x vs x
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 2: x vs b — pivot chain through d/c
+      · exact pivot_chain_order props.hx'd hb_resp_R_in.1 props.hxc (le_of_lt hbc)
+          sig_x_d.1 sig_x_d.2 tau_d_b.1 tau_d_b.2
+      -- Goal 3: x vs y
+      · exact pivot_chain_order props.hx'd props.hdy' props.hxc props.hcy
+          sig_x_d.1 sig_x_d.2 tau_d_y.1 tau_d_y.2
+      -- Goal 4: x vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]; exact sig_x_sel k
+        · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order props.hx'd (hd_le_a_tau k)
+            props.hxc (hc_le_rR k) sig_x_d.1 sig_x_d.2
+            (tau_d_sel k).1 (tau_d_sel k).2
+      -- Goal 5: b vs x — pivot chain reversed
+      · exact pivot_chain_order_rev hb_resp_R_in.1 props.hx'd (le_of_lt hbc) props.hxc
+          tau_d_b.1 tau_d_b.2 sig_x_d.1 sig_x_d.2
+      -- Goal 6: b vs b
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 7: b vs y — from tau (b is in tau)
+      · exact tau_b_y
+      -- Goal 8: b vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · -- j' ∈ L: b > c > resp_L, b_resp > d > a_sigma
+          have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev hb_resp_R_in.1 (ha_sig_le_d k)
+            (le_of_lt hbc) (hresp_L_le_c' k)
+            tau_d_b.1 tau_d_b.2 (sig_sel_d k).1 (sig_sel_d k).2
+        · -- j' ∈ R: direct from tau
+          have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]; exact tau_b_sel k
+      -- Goal 9: y vs x
+      · exact pivot_chain_order_rev props.hdy' props.hx'd props.hcy props.hxc
+          tau_d_y.1 tau_d_y.2 sig_x_d.1 sig_x_d.2
+      -- Goal 10: y vs b — from tau reversed
+      · have h := tau_ord ⟨R.card + 2, by omega⟩ ⟨R.card + 1, by omega⟩
+        simp only [game_tuple_y_eq, game_tuple_b_eq] at h; exact h
+      -- Goal 11: y vs y
+      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- Goal 12: y vs sel(j)
+      · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hjd' : a_bwd j' < d
+        · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_true]
+          set k := isoL.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev props.hdy' (ha_sig_le_d k)
+            props.hcy (hresp_L_le_c' k) tau_d_y.1 tau_d_y.2
+            (sig_sel_d k).1 (sig_sel_d k).2
+        · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+          simp only [a'_resp, hjd', dite_false]
+          set k := isoR.symm ⟨j', hj_mem⟩
+          have : a_bwd j' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+          rw [this]
+          have htsy := tau_sel_y k
+          exact ⟨⟨fun h => absurd h (not_lt.mpr (ha_tau k).2),
+                  fun h => absurd h (not_lt.mpr (hresp_R_in k).2)⟩,
+                 ⟨fun h => (htsy.2.mp h.symm).symm,
+                  fun h => (htsy.2.mpr h.symm).symm⟩⟩
+      -- Goal 13: sel(i) vs x
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]
+          have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨0, by omega⟩
+          simp only [game_tuple_sel_eq, game_tuple_zero_eq] at h; exact h
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order_rev (hd_le_a_tau k) props.hx'd
+            (hc_le_rR k) props.hxc
+            (tau_d_sel k).1 (tau_d_sel k).2 sig_x_d.1 sig_x_d.2
+      -- Goal 14: sel(i) vs b
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order (ha_sig_le_d k) hb_resp_R_in.1
+            (hresp_L_le_c' k) (le_of_lt hbc)
+            (sig_sel_d k).1 (sig_sel_d k).2 tau_d_b.1 tau_d_b.2
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]; exact tau_sel_b k
+      -- Goal 15: sel(i) vs y
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set k := isoL.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_sigma k := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [this]
+          exact pivot_chain_order (ha_sig_le_d k) props.hdy'
+            (hresp_L_le_c' k) props.hcy
+            (sig_sel_d k).1 (sig_sel_d k).2 tau_d_y.1 tau_d_y.2
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set k := isoR.symm ⟨i', hi_mem⟩
+          have : a_bwd i' = a_tau k := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [this]; exact tau_sel_y k
+      -- Goal 16: sel(i) vs sel(j)
+      · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
+        set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
+        by_cases hid' : a_bwd i' < d
+        · have hi_mem : i' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_true]
+          set ki := isoL.symm ⟨i', hi_mem⟩
+          have hi_eq : a_bwd i' = a_sigma ki := by
+            simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
+          rw [hi_eq]
+          by_cases hjd' : a_bwd j' < d
+          · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_true]
+            set kj := isoL.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_sigma kj := by
+              simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+            rw [hj_eq]; exact sig_sel_sel ki kj
+          · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_false]
+            set kj := isoR.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_tau kj := by
+              simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+            rw [hj_eq]
+            exact pivot_chain_order (ha_sig_le_d ki) (hd_le_a_tau kj)
+              (hresp_L_le_c' ki) (hc_le_rR kj)
+              (sig_sel_d ki).1 (sig_sel_d ki).2
+              (tau_d_sel kj).1 (tau_d_sel kj).2
+        · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
+          simp only [a'_resp, hid', dite_false]
+          set ki := isoR.symm ⟨i', hi_mem⟩
+          have hi_eq : a_bwd i' = a_tau ki := by
+            simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
+          rw [hi_eq]
+          by_cases hjd' : a_bwd j' < d
+          · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_true]
+            set kj := isoL.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_sigma kj := by
+              simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
+            rw [hj_eq]
+            exact pivot_chain_order_rev (hd_le_a_tau ki) (ha_sig_le_d kj)
+              (hc_le_rR ki) (hresp_L_le_c' kj)
+              (tau_d_sel ki).1 (tau_d_sel ki).2
+              (sig_sel_d kj).1 (sig_sel_d kj).2
+          · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
+            simp only [a'_resp, hjd', dite_false]
+            set kj := isoR.symm ⟨j', hj_mem⟩
+            have hj_eq : a_bwd j' = a_tau kj := by
+              simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
+            rw [hj_eq]; exact tau_sel_sel ki kj
     · -- gap_point_agreement (n+1)
       intro i
       simp only [game_tuple]
