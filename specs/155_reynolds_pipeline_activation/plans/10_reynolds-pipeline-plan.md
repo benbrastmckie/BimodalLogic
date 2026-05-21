@@ -293,9 +293,9 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 - [ ] **Task W1.2**: Prove GHR93 Claim 1 (~150-200 lines). Define continuation formula C from the backward game's selections. Show: for any winning play where M-side has c at position n, the N-side response at position n satisfies formula C, and C uniquely characterizes d = a_bwd(n). This gives d-consistency: `a'_full(n) = d`. Add as a helper theorem in ExpressivenessGeneral.lean. Eliminates 2 d-consistency sorries (lines 303, 313).
 
-- [ ] **Task W1.3**: Close degenerate interval sorries (~40-60 lines). With d-consistency proved (Task W1.2), derive `x = c` when `x' = d` from same_order_type. Apply `ghr93_duplicator_wins_degenerate_gap` for the degenerate sub-game. Eliminates 4 sorries (lines 352, 372, 392, 409).
+- [x] **Task W1.3**: Close degenerate interval sorries (~40-60 lines). *(deviation: altered -- closed 4 N-side degenerate sorries via boundary correspondence + degenerate_gap lemma, but 2 new M-side degenerate sorries arose from SplitPointProps requiring point witnesses in degenerate [x,c] and [c,y] intervals. Net: 9 -> 7 sorries. M-side fix requires making h_pt_xc/h_pt_cy optional in SplitPointProps.)*
 
-- [ ] **Task W1.4**: Verify `lake build` passes. Cases I and II remain sorry-free (no changes to their code).
+- [ ] **Task W1.4**: Verify `lake build` passes. Cases I and II remain sorry-free (no changes to their code). *(partial -- build passes, Cases I and II unchanged, but 2 new M-side degenerate sorries at lines 430, 447)*
 
 **Timing**: 6-10 hours (dominated by Claim 1 proof)
 

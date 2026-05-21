@@ -269,8 +269,13 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       (∀ (A : StaviFormula), stavi_depth A ≤ r →
         (stavi_temporal_truth_mu M atomMap r c A ↔
          stavi_temporal_truth_mu N atomMap r d A)) ∧
-      ((IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d)) by
-    obtain ⟨c, hc_interval, hcd_form, hcd_gp⟩ := h_exists
+      ((IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d)) ∧
+      -- Boundary order correspondence: c's position relative to x,y
+      -- mirrors d's position relative to x',y'. This is essential for
+      -- the degenerate interval cases (x'=d or d=y') where we need to
+      -- derive x=c or c=y to apply ghr93_duplicator_wins_degenerate_gap.
+      ((x = c ↔ x' = d) ∧ (c = y ↔ d = y')) by
+    obtain ⟨c, hc_interval, hcd_form, hcd_gp, hcd_boundary⟩ := h_exists
     refine ⟨c, d, ?_⟩
     -- Step 4-5: Apply strategy restriction + IH to get sigma and tau
     -- Forward strategy: (4+3n) rounds on [x,y] vs [x',y']
@@ -285,12 +290,10 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
     have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
-    -- The d-consistency hypothesis requires that d equals the strategy's response
-    -- to c for every padded selection. This is the key structural condition that
-    -- in GHR93 follows from defining d as an infimum.
-    -- For the left restriction: d = response at position n (last position)
-    -- For the right restriction: d = response at position 0 (first position)
-    -- These are sorry'd pending the infimum/consistency infrastructure.
+    -- D-consistency and strategy restriction.
+    -- These are sorry'd pending the full Claim 1 (GHR93 p.28) infrastructure.
+    -- Claim 1 proves that for any winning play where M-side places c at the
+    -- boundary, the N-side response at the boundary must equal d (the infimum).
     have h_d_consistent_left : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
         (∀ i, inClosedInterval x y (a_pad i)) →
         a_pad ⟨1 + 3 * n, by omega⟩ = c →
@@ -319,95 +322,140 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       ghr93_strategy_restrict_right h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
         hcd_form hcd_gp h_d_consistent_right h_pt
-    -- Apply IH to get backward strategies
-    -- sigma: backward n-round on [x',d] vs [x,c]
-    -- Need: h_pt for [x',d] (∃ point in [x',d])
-    -- tau: backward n-round on [d,y'] vs [c,y]
-    -- Need: h_pt for [d,y'] (∃ point in [d,y'])
-    --
-    -- Sub-interval point witnesses: when d (resp. c) is a point, the point
-    -- itself witnesses both sub-intervals. When d (resp. c) is a gap, we need
-    -- a density argument (gap cut/complement within interval bounds).
-    -- N-side: need points in [x',d] and [d,y']
-    have h_pt_left : ∃ p, inClosedInterval x' d (extendPoint p) := by
-      rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
-      · rw [hp_d] at hd_interval ⊢
-        exact ⟨p_d, hd_interval.1, le_refl _⟩
-      · obtain ⟨p_N, hp_N⟩ := h_pt
-        rcases le_or_lt (extendPoint p_N) d with h | h
-        · exact ⟨p_N, hp_N.1, h⟩
-        · -- p_N > d (a gap). Need a point in [x',d].
-          -- Case split on whether x' is a point or a gap
-          rcases isPoint_or_isGap x' with ⟨x_pt, hx_pt⟩ | ⟨g_x, hg_x⟩
-          · -- x' is a point: x' itself is in [x', d]
-            rw [hx_pt] at hd_interval ⊢
-            exact ⟨x_pt, le_refl _, hd_interval.1⟩
-          · -- x' is a gap: x' < d (strict, since both gaps with x' ≤ d)
-            -- If x' = d, [x',d] is degenerate (no points). But we can
-            -- handle x' < d via point_between_strict_gaps.
-            rcases eq_or_lt_of_le hd_interval.1 with hx'd_eq | hx'd_lt
-            · -- x' = d (degenerate): [x',d] = [d,d] contains no actual points.
-              -- This case requires restructuring obtain_split_point_props to
-              -- handle x' = d specially (bypass sigma game on degenerate interval).
-              sorry
-            · -- x' < d: strict gap ordering, use point_between_strict_gaps
-              rw [hg_x] at hx'd_lt ⊢
-              rw [hg_d] at hx'd_lt ⊢
+    -- Construct sigma: backward n-round on [x',d] vs [x,c]
+    -- Two cases: degenerate (x' = d, both gaps) or non-degenerate (∃ point in [x',d])
+    have sigma : ghr93_duplicator_wins N M atomMap n r x' d x c := by
+      by_cases hx'd_eq : x' = d
+      · -- Degenerate: x' = d. By boundary correspondence, x = c.
+        have hxc_eq : x = c := hcd_boundary.1.mpr hx'd_eq
+        -- Both d and c must be gaps (if x' = d, x' is a gap or point;
+        -- if x' is a point, then x' itself witnesses [x',d], contradiction
+        -- with the degenerate case needing special handling. Actually:
+        -- x' = d means the interval is degenerate. d could be a point or gap.
+        -- If d is a point, then d itself is in [x',d], so the sub-interval
+        -- has a witness and the IH works. So degenerate = x'=d AND d is a gap.
+        rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+        · -- d is a point: [x',d] = [d,d] with d a point, so d witnesses itself
+          have h_pt_sub : ∃ p, inClosedInterval x' d (extendPoint p) := by
+            rw [hx'd_eq, hp_d]; exact ⟨p_d, le_refl _, le_refl _⟩
+          exact ih hc_interval.1 hd_interval.1 h_pt_sub h_restrict_left
+        · -- d is a gap, x' = d: fully degenerate. By gap agreement, c is a gap.
+          have hc_gap : IsGap c := hcd_gp.2.mpr ⟨g_d, hg_d⟩
+          obtain ⟨g_c, hg_c⟩ := hc_gap
+          -- Use degenerate gap lemma with d and c, then rewrite endpoints.
+          have h_degen : ghr93_duplicator_wins N M atomMap n r d d c c :=
+            ghr93_duplicator_wins_degenerate_gap (n := n)
+              ⟨g_d, hg_d⟩ ⟨g_c, hg_c⟩
+              (fun A hA => (hcd_form A hA).symm) ⟨hcd_gp.1.symm, hcd_gp.2.symm⟩
+          rwa [hx'd_eq, hxc_eq]
+      · -- Non-degenerate: x' ≠ d, so x' < d (strict).
+        have hx'd_lt : x' < d := lt_of_le_of_ne hd_interval.1 hx'd_eq
+        -- Find a point witness in [x', d]
+        have h_pt_sub : ∃ p, inClosedInterval x' d (extendPoint p) := by
+          rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+          · rw [hp_d] at hd_interval ⊢
+            exact ⟨p_d, hd_interval.1, le_refl _⟩
+          · rcases isPoint_or_isGap x' with ⟨x_pt, hx_pt⟩ | ⟨g_x, hg_x⟩
+            · rw [hx_pt] at hd_interval ⊢
+              exact ⟨x_pt, le_refl _, hd_interval.1⟩
+            · rw [hg_x] at hx'd_lt ⊢; rw [hg_d] at hx'd_lt ⊢
               exact point_between_strict_gaps rfl rfl hx'd_lt
-    have h_pt_right : ∃ p, inClosedInterval d y' (extendPoint p) := by
-      rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
-      · rw [hp_d] at hd_interval ⊢
-        exact ⟨p_d, le_refl _, hd_interval.2⟩
-      · obtain ⟨p_N, hp_N⟩ := h_pt
-        rcases le_or_lt d (extendPoint p_N) with h | h
-        · exact ⟨p_N, h, hp_N.2⟩
-        · -- p_N < d (a gap). Need a point in [d,y'].
-          rcases isPoint_or_isGap y' with ⟨y_pt, hy_pt⟩ | ⟨g_y, hg_y⟩
-          · -- y' is a point: y' itself is in [d, y']
-            rw [hy_pt] at hd_interval ⊢
-            exact ⟨y_pt, hd_interval.2, le_refl _⟩
-          · -- y' is a gap: d < y' (strict, or d = y')
-            rcases eq_or_lt_of_le hd_interval.2 with hdy_eq | hdy_lt
-            · -- d = y': degenerate [d,y']=[d,d], no points (same structural issue)
-              sorry
-            · -- d < y': strict gap ordering
-              rw [hg_d] at hdy_lt ⊢
-              rw [hg_y] at hdy_lt ⊢
-              exact point_between_strict_gaps rfl rfl hdy_lt
-    -- M-side sub-interval point witnesses
+        exact ih hc_interval.1 hd_interval.1 h_pt_sub h_restrict_left
+    -- Construct tau: backward n-round on [d,y'] vs [c,y]
+    have tau : ghr93_duplicator_wins N M atomMap n r d y' c y := by
+      by_cases hdy'_eq : d = y'
+      · -- Degenerate: d = y'. By boundary correspondence, c = y.
+        have hcy_eq : c = y := hcd_boundary.2.mpr hdy'_eq
+        rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+        · have h_pt_sub : ∃ p, inClosedInterval d y' (extendPoint p) :=
+            ⟨p_d, le_of_eq hp_d, le_of_eq (show extendPoint p_d = y' from hp_d.symm.trans hdy'_eq)⟩
+          exact ih hc_interval.2 hd_interval.2 h_pt_sub h_restrict_right
+        · have hc_gap : IsGap c := hcd_gp.2.mpr ⟨g_d, hg_d⟩
+          obtain ⟨g_c, hg_c⟩ := hc_gap
+          -- d = y' and c = y, both are gaps.
+          -- Goal: ghr93_duplicator_wins N M atomMap n r d y' c y
+          -- Use ghr93_duplicator_wins_degenerate_gap with d and c
+          -- Goal: ghr93_duplicator_wins N M atomMap n r d y' c y
+          -- Since d = y' and c = y, convert to ghr93_duplicator_wins N M atomMap n r d d c c
+          have h1 : d = y' := hdy'_eq
+          have h2 : c = y := hcy_eq
+          rw [h1, h2]
+          exact ghr93_duplicator_wins_degenerate_gap (n := n)
+            ⟨g_d, h1 ▸ hg_d⟩ ⟨g_c, h2 ▸ hg_c⟩
+            (fun A hA => by rw [← h1, ← h2]; exact (hcd_form A hA).symm)
+            ⟨by rw [← h1, ← h2]; exact hcd_gp.1.symm,
+             by rw [← h1, ← h2]; exact hcd_gp.2.symm⟩
+      · have hdy'_lt : d < y' := lt_of_le_of_ne hd_interval.2 hdy'_eq
+        have h_pt_sub : ∃ p, inClosedInterval d y' (extendPoint p) := by
+          rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+          · exact ⟨p_d, le_of_eq hp_d,
+              le_of_lt (show extendPoint p_d < y' by rw [show extendPoint p_d = d from hp_d.symm]; exact hdy'_lt)⟩
+          · rcases isPoint_or_isGap y' with ⟨y_pt, hy_pt⟩ | ⟨g_y, hg_y⟩
+            · exact ⟨y_pt,
+                le_of_lt (show d < extendPoint y_pt by rw [show extendPoint y_pt = y' from hy_pt.symm]; exact hdy'_lt),
+                le_of_eq (show extendPoint y_pt = y' from hy_pt.symm)⟩
+            · rw [hg_d] at hdy'_lt ⊢; rw [hg_y] at hdy'_lt ⊢
+              exact point_between_strict_gaps rfl rfl hdy'_lt
+        exact ih hc_interval.2 hd_interval.2 h_pt_sub h_restrict_right
+    -- M-side sub-interval point witnesses (for SplitPointProps)
     have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by
-      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
-      · rw [hp_c] at hc_interval ⊢
-        exact ⟨p_c, hc_interval.1, le_refl _⟩
-      · -- c is a gap. Use h_pt_M to find a point in [x, y].
-        obtain ⟨p_M, hp_M⟩ := h_pt_M
-        rcases le_or_lt (extendPoint p_M) c with h | h
-        · exact ⟨p_M, hp_M.1, h⟩
-        · -- p_M > c. Need point in [x, c].
-          rcases isPoint_or_isGap x with ⟨x_pt, hx_pt⟩ | ⟨g_x, hgx⟩
-          · rw [hx_pt] at hc_interval ⊢
-            exact ⟨x_pt, le_refl _, hc_interval.1⟩
-          · rcases eq_or_lt_of_le hc_interval.1 with hxc_eq | hxc_lt
-            · -- x = c (degenerate): same structural issue
-              sorry
-            · rw [hgx] at hxc_lt ⊢; rw [hg_c] at hxc_lt ⊢
+      by_cases hxc_eq : x = c
+      · -- Degenerate: x = c. From boundary: x' = d.
+        -- If c is a point, c witnesses. If c is a gap, need to show
+        -- this never arises (since h_pt_M says [x,y] has a point,
+        -- and x = c = gap would need points above c in [c,y]).
+        rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · rw [hxc_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
+        · -- x = c is a gap. From h_pt_M, there exists p in [x, y].
+          -- Since x = c (a gap), extendPoint p > x = c, so p ∉ [x, c].
+          -- But we need a point in [x, c] = [c, c]. There is none.
+          -- This means the M-side is also degenerate. sigma handles this.
+          -- h_pt_xc is used for SplitPointProps, but the degenerate case
+          -- should still provide something. Since x = c (both gaps), any
+          -- point in [x, c] would satisfy extendPoint p = c = gap,
+          -- contradiction. So [x, c] has no points.
+          -- We assert this exists vacuously by noting that the degenerate
+          -- sigma (via ghr93_duplicator_wins_degenerate_gap) doesn't
+          -- actually use h_pt_xc. But SplitPointProps demands it.
+          -- For now, get a dummy witness from h_pt_M by relaxing the bound.
+          obtain ⟨p_M, hp_M⟩ := h_pt_M
+          -- p_M is in [x, y]. Since x = c is a gap, p_M > c.
+          -- So p_M is NOT in [x, c]. We are stuck.
+          -- Actually: when x = c (degenerate), h_pt_xc is used downstream
+          -- only in the context where sigma is from degenerate_gap, which
+          -- doesn't use it. But SplitPointProps requires the field.
+          -- FIX: We need to accept that h_pt_xc can't be provided when x = c
+          -- and both are gaps. This means SplitPointProps needs restructuring
+          -- (make h_pt_xc optional). For now, sorry this sub-case.
+          sorry
+      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · rw [hp_c] at hc_interval ⊢
+          exact ⟨p_c, hc_interval.1, le_refl _⟩
+        · obtain ⟨p_M, hp_M⟩ := h_pt_M
+          rcases le_or_lt (extendPoint p_M) c with h | h
+          · exact ⟨p_M, hp_M.1, h⟩
+          · rcases isPoint_or_isGap x with ⟨x_pt, hx_pt⟩ | ⟨g_x, hgx⟩
+            · rw [hx_pt] at hc_interval ⊢
+              exact ⟨x_pt, le_refl _, hc_interval.1⟩
+            · have hxc_lt : x < c := lt_of_le_of_ne hc_interval.1 hxc_eq
+              rw [hgx] at hxc_lt ⊢; rw [hg_c] at hxc_lt ⊢
               exact point_between_strict_gaps rfl rfl hxc_lt
     have h_pt_cy_w : ∃ p, inClosedInterval c y (extendPoint p) := by
-      rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
-      · rw [hp_c] at hc_interval ⊢
-        exact ⟨p_c, le_refl _, hc_interval.2⟩
-      · -- c is a gap. Use h_pt_M.
-        obtain ⟨p_M, hp_M⟩ := h_pt_M
-        rcases le_or_lt c (extendPoint p_M) with h | h
-        · exact ⟨p_M, h, hp_M.2⟩
-        · -- p_M < c. Need point in [c, y].
-          rcases isPoint_or_isGap y with ⟨y_pt, hy_pt⟩ | ⟨g_y, hgy⟩
-          · rw [hy_pt] at hc_interval ⊢
-            exact ⟨y_pt, hc_interval.2, le_refl _⟩
-          · rcases eq_or_lt_of_le hc_interval.2 with hcy_eq | hcy_lt
-            · -- c = y (degenerate): same structural issue
-              sorry
-            · rw [hg_c] at hcy_lt ⊢; rw [hgy] at hcy_lt ⊢
+      by_cases hcy_eq : c = y
+      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · rw [← hcy_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
+        · sorry -- Same degenerate case: c = y, both gaps. See h_pt_xc_w comment.
+      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · rw [hp_c] at hc_interval ⊢
+          exact ⟨p_c, le_refl _, hc_interval.2⟩
+        · obtain ⟨p_M, hp_M⟩ := h_pt_M
+          rcases le_or_lt c (extendPoint p_M) with h | h
+          · exact ⟨p_M, h, hp_M.2⟩
+          · rcases isPoint_or_isGap y with ⟨y_pt, hy_pt⟩ | ⟨g_y, hgy⟩
+            · rw [hy_pt] at hc_interval ⊢
+              exact ⟨y_pt, hc_interval.2, le_refl _⟩
+            · have hcy_lt : c < y := lt_of_le_of_ne hc_interval.2 hcy_eq
+              rw [hg_c] at hcy_lt ⊢; rw [hgy] at hcy_lt ⊢
               exact point_between_strict_gaps rfl rfl hcy_lt
     exact {
       hc_interval := hc_interval
@@ -419,8 +467,8 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       hdy' := hd_interval.2
       h_pt_xc := h_pt_xc_w
       h_pt_cy := h_pt_cy_w
-      sigma := ih hc_interval.1 hd_interval.1 h_pt_left h_restrict_left
-      tau := ih hc_interval.2 hd_interval.2 h_pt_right h_restrict_right
+      sigma := sigma
+      tau := tau
     }
   -- Prove the existence of c with the needed properties.
   -- Case split on whether d is a point or a gap.
@@ -440,45 +488,47 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       rw [this]; exact hd_interval
     obtain ⟨b, hb_in, hcond⟩ := hwin_play p' hp'_in
     -- b is in [x,y] ∩ M. Set c = extendPoint b.
-    refine ⟨extendPoint b, hb_in, ?_, ?_⟩
-    · -- Formula agreement: stavi_temporal_truth_mu M atomMap r (extendPoint b) A ↔
-      --                    stavi_temporal_truth_mu N atomMap r d A
-      -- From the winning condition, formula_agreement at the b/p' positions gives:
-      --   stavi_temporal_truth_mu M atomMap r (game_tuple x y _ b i) A ↔
-      --   stavi_temporal_truth_mu N atomMap r (game_tuple x' y' _ p' i) A
-      -- At the index corresponding to b (index n+1 = 2 for 1-round game):
-      --   game_tuple x y _ b ⟨2, ...⟩ = extendPoint b
-      --   game_tuple x' y' _ p' ⟨2, ...⟩ = extendPoint p'
-      -- And d = extendPoint p', so this is exactly what we need.
+    refine ⟨extendPoint b, hb_in, ?_, ?_, ?_⟩
+    · -- Formula agreement
       obtain ⟨_, _, hform⟩ := hcond
       intro A hA
-      -- In the 1-round game (n=1 in game_tuple), the b position is at index 2:
-      -- game_tuple x y (fun _ => x) b : Fin 4
-      --   index 0 → x, index 2 (= 1+1) → extendPoint b, index 3 (= 1+2) → y,
-      --   index 1 → a(0) = x
-      -- game_tuple x' y' a'_play p' : Fin 4
-      --   index 0 → x', index 2 → extendPoint p', index 3 → y',
-      --   index 1 → a'_play(0)
       have hform_b := hform ⟨2, by omega⟩ A hA
-      -- Simplify game_tuple at index 2:
-      -- game_tuple x y (fun _ => x) b ⟨2, _⟩ = extendPoint b
-      -- game_tuple x' y' a'_play p' ⟨2, _⟩ = extendPoint p'
       simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
                  show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_b
-      -- hform_b now has: extendPoint b ↔ extendPoint p'
-      -- Goal needs: extendPoint b ↔ Sum.inl p' (= extendPoint p')
       rw [hp']; exact hform_b
     · -- Gap/point agreement
       constructor
-      · -- IsPoint (extendPoint b) ↔ IsPoint d
-        rw [hp']
-        exact ⟨fun _ => ⟨p', rfl⟩, fun _ => ⟨b, rfl⟩⟩
-      · -- IsGap (extendPoint b) ↔ IsGap d
-        rw [hp']
-        simp only [IsGap, extendPoint]
-        constructor
-        · intro ⟨g, hg⟩; exact absurd hg.symm Sum.inr_ne_inl
-        · intro ⟨g, hg⟩; exact absurd hg.symm Sum.inr_ne_inl
+      · rw [hp']; exact ⟨fun _ => ⟨p', rfl⟩, fun _ => ⟨b, rfl⟩⟩
+      · rw [hp']; simp only [IsGap, extendPoint]
+        exact ⟨fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl,
+               fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl⟩
+    · -- Boundary order correspondence: x = extendPoint b ↔ x' = d, and
+      -- extendPoint b = y ↔ d = y'. From same_order_type in the 1-round game:
+      -- game_tuple indices: 0 = x/x', 1 = x/a'_play(0), 2 = b/p', 3 = y/y'
+      obtain ⟨hord, _, _⟩ := hcond
+      constructor
+      · -- x = extendPoint b ↔ x' = d
+        have hcmp_02 := hord ⟨0, by omega⟩ ⟨2, by omega⟩
+        simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+                   show (2 : Nat) ≠ 0 from by omega, dite_false,
+                   show (2 : Nat) = 1 + 1 from by omega, dite_true] at hcmp_02
+        -- hcmp_02.2 : x = extendPoint b ↔ x' = extendPoint p'
+        -- Need: x = extendPoint b ↔ x' = d
+        -- extendPoint p' = d (since hp' : d = Sum.inl p' and extendPoint = Sum.inl)
+        have hep'_eq : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p' = d := hp'.symm
+        rw [show (x' = extendPoint p') = (x' = d) from by rw [hep'_eq]] at hcmp_02
+        exact hcmp_02.2
+      · -- extendPoint b = y ↔ d = y'
+        have hcmp_23 := hord ⟨2, by omega⟩ ⟨3, by omega⟩
+        simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
+                   show (2 : Nat) = 1 + 1 from by omega, dite_true,
+                   show (3 : Nat) ≠ 0 from by omega,
+                   show ¬((3 : Nat) = 1 + 1) from by omega,
+                   show (3 : Nat) = 1 + 2 from by omega] at hcmp_23
+        -- hcmp_23.2 : extendPoint b = y ↔ extendPoint p' = y'
+        have hep'_eq : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p' = d := hp'.symm
+        rw [show (extendPoint p' = y') = (d = y') from by rw [hep'_eq]] at hcmp_23
+        exact hcmp_23.2
   · -- Case: d is a gap (d = Sum.inr g' for some gap g')
     -- This case is more complex: need to find c that is also a gap in M
     -- with the same rank_type. The construction uses gap detection formulas
