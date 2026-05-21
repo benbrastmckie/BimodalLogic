@@ -11,7 +11,6 @@ and delegation bridges from Realization.lean to Frame.lean.
 ## Key BX Axiom Lemmas
 
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
-- (Removed: `left_mono_until_mcs`/`left_mono_since_mcs` — unused dead code, task 135)
 
 ## Eventuality Resolution Status (Task 113 open guard refactor)
 
@@ -36,9 +35,6 @@ open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical.Filtration
-
--- NOTE: psi_imp_until_mcs / psi_imp_since_mcs REMOVED (task 113).
--- These corresponded to BX8/BX8' which are invalid under open guard (t,s).
 
 /-! ## BX12 at MCS level: F(ψ) → ⊤ U ψ -/
 

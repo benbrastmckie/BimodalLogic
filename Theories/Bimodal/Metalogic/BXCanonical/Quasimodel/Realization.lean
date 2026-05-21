@@ -45,9 +45,6 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical
 
--- F_of_mem, P_of_mem: archived to Boneyard/BX1DependentCode/ (task 130).
--- These required BX1 (G(phi)->phi), removed under irreflexive semantics (task 113).
-
 /-! ## Helper: F(ψ) from bx_le w v and ψ ∈ v
 
 If bx_le w v and ψ ∈ v, then F(ψ) ∈ w.
@@ -143,11 +140,6 @@ noncomputable def bigconj_mem_iff :
             [Formula.and a (bigconj (b :: rest))] ⊢ (bigconj (b :: rest)).imp φ :=
           DerivationTree.weakening [] _ _ h_imp (by intro; simp)
         exact DerivationTree.modus_ponens _ _ _ h_imp_w h_rce
-
--- enriched_seed_consistent_until, enriched_seed_consistent_since:
--- archived to Boneyard/BX1DependentCode/ (task 130).
--- g_content/h_content subset branches required BX1/BX1', removed under
--- irreflexive semantics (task 113).
 
 /-! ## Phase 4a: Chain-step seed consistency (enriched with g_content)
 

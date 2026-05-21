@@ -69,15 +69,6 @@ r-relation machinery and BX10 instead.
 Withdrawn in Phase 1 of the revised plan (task 107).
 -/
 
--- until_disjunction_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
--- until_guard_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
--- since_guard_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
 /--
 `gamma U delta in A` implies `F(delta) in A` (by BX10).
 -/
@@ -103,9 +94,6 @@ theorem until_self_accum_in_mcs {A : Set Formula}
     DerivationTree.axiom [] _ (Axiom.self_accum_until γ δ)
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_sa) h_until
-
--- since_disjunction_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /--
 `gamma S delta in A` implies `P(delta) in A` (by BX10').
@@ -134,9 +122,6 @@ theorem rRelation_guard_continues' {A B : Set Formula}
   rcases h_r γ δ h_until with h_delta | h_guard
   · exact absurd h_delta h_not_delta
   · exact h_guard
-
--- rRelation_of_subset_mcs: REMOVED (task 113 Phase 3). Depended on invalid
--- rRelation_of_superset_mcs. Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /-! ## Deductive Closure -/
 
@@ -432,9 +417,6 @@ theorem r3MaximalSince_extension_exists {A C : Set Formula}
   have hD_in : D ∈ {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ r3RelationSince A B C} :=
     ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
   exact hBD.2 (hB_max hD_in hBD.1)
-
--- r3Relation_of_superset_mcs: REMOVED (task 113 Phase 3). Depended on invalid
--- rRelation_of_superset_mcs / rRelationSince_of_superset_mcs.
 
 /--
 A deductive closure seed for r3-relation: given rRelation and rRelationSince,
@@ -1215,18 +1197,6 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
   -- Apply Zorn extension
   obtain ⟨B, _, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_cud h_dc_r3
   exact ⟨B, h_B3M⟩
-
--- untl_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
--- snce_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Both archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
--- burgessR3_gamma_not_in_B_nested: DELETED (task 107 Phase 2).
--- INVALID under open guard (task 113). Depended on untl_absorb_nested.
--- The C4 hard case is restructured in Phase 4 to use induction + BX6 instead.
-
--- burgessR3_gamma_not_in_B_since_nested: DELETED (task 107 Phase 2).
--- INVALID under open guard (task 113). Mirror of above.
--- The C4' hard case is restructured in Phase 4 to use induction + BX6' instead.
 
 /-! ## Burgess Lemma 2.3 Equivalence
 

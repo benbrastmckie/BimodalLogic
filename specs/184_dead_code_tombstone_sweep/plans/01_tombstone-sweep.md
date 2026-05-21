@@ -100,7 +100,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: BXCanonical Tombstone Cleanup [NOT STARTED]
+### Phase 2: BXCanonical Tombstone Cleanup [COMPLETED]
 
 **Goal**: Remove all tombstone comments across the BXCanonical/ subdirectory files (Chronicle, Filtration, Quasimodel areas) and RestrictedMCS.lean.
 

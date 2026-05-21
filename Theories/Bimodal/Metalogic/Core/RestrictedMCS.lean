@@ -1361,12 +1361,6 @@ theorem theorem_in_drm {phi : Formula} {M : Set Formula}
     simp only [List.mem_nil_iff] at h
   exact drm_closed_under_derivation h_mcs [] h_sub h_thm h_ψ_dc
 
--- NOTE: neg_FF_implies_GG_neg_in_drm was removed (Task 167) because:
--- 1. It was dead code with no callers
--- 2. The MCS version (neg_FF_implies_GG_neg_in_mcs) is used on the critical path
--- 3. If a DRM version is needed in the future, the temporalBlockingSet provides
---    the necessary H(¬chi)/G(¬chi) formulas in deferralClosure
-
 /--
 G(neg phi) in DeferralRestrictedMCS implies F(phi) not in DeferralRestrictedMCS.
 

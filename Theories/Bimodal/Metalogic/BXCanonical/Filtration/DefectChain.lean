@@ -61,10 +61,6 @@ theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
 
 /-! ## Defect Step Properties -/
 
--- NOTE: `defect_step_phi` (BX9 at BXPoint level) removed — unsound under open guard (task 113).
--- Under open guard (t,s), φ U ψ ∈ w and ψ ∉ w does NOT imply φ ∈ w.
--- Use `defect_step_F_psi` (BX10) for eventuality extraction instead.
-
 /-- If φ U ψ ∈ w, then F(ψ) ∈ w (from BX10: eventuality extraction). -/
 theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
@@ -96,9 +92,6 @@ noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula
   (Sigma.filter (fun f =>
     f ∈ w.formulas ∧
     ∃ φ ψ : Formula, f = Formula.snce ψ φ ∧ ψ ∉ w.formulas)).card
-
--- NOTE: `since_defect_step_phi` (BX9' at BXPoint level) removed — unsound under open guard (task 113).
--- Mirror of defect_step_phi removal. Use `since_defect_step_P_psi` (BX10') instead.
 
 /-- If φ S ψ ∈ w, then P(ψ) ∈ w (from BX10': eventuality extraction). -/
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}

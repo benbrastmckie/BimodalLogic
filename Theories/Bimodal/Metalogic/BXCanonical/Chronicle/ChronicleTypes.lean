@@ -598,10 +598,6 @@ theorem rRelationSince_subset {A B C : Set Formula}
   · exact Or.inl (h_sub h_delta)
   · exact Or.inr ⟨h_sub h_gamma, h_sub h_s⟩
 
--- rRelation_of_superset_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- rRelationSince_of_superset_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Both archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
 /-! ## Three-Argument r-Relation Properties -/
 
 /-- Bridge lemma: r3Relation implies rRelation (weakening, drops the C constraint). -/

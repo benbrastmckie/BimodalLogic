@@ -176,9 +176,6 @@ noncomputable def lemma_2_4 {A : Set Formula}
   obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_B⟩
 
--- until_elim_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Use until_F_mcs (BX10) instead.
-
 /-- BX10 at MCS level: U(γ,β) ∈ A implies F(β) ∈ A. -/
 theorem until_F_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (γ β : Formula)
@@ -349,10 +346,6 @@ noncomputable def lemma_2_6 {A C : Set Formula}
 - `lemma_2_8`: May also be recoverable with BX13, but Lemma 2.7 suffices
   for the C5 n>0 sub-case 3 (Burgess Lemma 2.10). Not needed if 2.7 works.
 -/
-
--- lemma_2_7_guard: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Depended on removed until_elim_mcs. (This was the old "D2 branch" approach,
--- NOT Burgess's original proof which uses BX5+BX7+BX13.)
 
 /-- Conjunction membership gives left component in MCS. -/
 theorem conj_left_mcs {A : Set Formula}
@@ -555,16 +548,6 @@ theorem mcs_no_proper_dcs_extension {B D : Set Formula}
   apply h_incons
   intro L hL ⟨d⟩
   exact h_dcs.1 L (fun ψ hψ => (Set.insert_subset h_φ_D hBD.1) (hL ψ hψ)) ⟨d⟩
-
--- rRelation_self_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Depended on removed until_disjunction_in_mcs.
-
--- rRelationSince_self_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Depended on removed since_disjunction_in_mcs.
-
--- lemma_2_6_full: REMOVED (task 113 Phase 3). Dead code (no callers).
--- Depended on removed rRelation_self_mcs / rRelationSince_self_mcs.
--- The codebase now uses BurgessR3Maximal (content-based) instead.
 
 /-! ## Burgess Lemma 2.6 for BurgessR3Maximal (Content-Based)
 
@@ -1493,13 +1476,6 @@ private noncomputable def iterated_enrichment_since {C : Set Formula}
             · exact absurd rfl h_eq
             · exact h
           exact evt.h_untl γ' h)
-
--- REMOVED (Task 115): burgess_zeta_consistent, d0_guard, d0_c_event_list,
--- d0_a_event_list, collect_guards (D0 variant), burgess_D0_finite_subset_consistent,
--- burgess_D0_finite_subset_consistent_incons, burgess_D0_seed_consistent.
--- These used BX14 (separation_until) for Burgess's original D₀ seed consistency proof.
--- Replaced by Xu 3.2.2 trivial seed {β.neg} ∪ B + Xu 3.2.1 guard strengthening.
--- Approximately 1300 lines of dead code removed.
 
 /-! ## Xu Lemma 3.2.1: Full Guard Strengthening for Transitive Frames
 
