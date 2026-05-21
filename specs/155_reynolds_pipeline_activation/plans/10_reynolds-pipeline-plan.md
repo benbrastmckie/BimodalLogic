@@ -166,12 +166,12 @@ S'(p,q)(t) is the dual (swap < and >, swap future/past directions).
 ### EFGames.lean (4 sorries)
 | Line | Identifier | Content | Phase |
 |------|-----------|---------|-------|
-| 1629 | `left_formula_gap_detection` | Lemma 9 left | 4C-W2 (UNBLOCKED by Phase 0) |
-| 1648 | `right_formula_gap_detection` | Lemma 9 right | 4C-W2 (UNBLOCKED by Phase 0) |
-| 2718 | `ghr93_decomposition_implies_game` | Lemma 11 backward | 4C-W4 |
-| 2790 | `stavi_expressive_completeness` | Corollary 5 / main theorem | 4C-W4 |
+| 2317 | `left_formula_gap_detection` | Lemma 9 left | 4C-W2 (UNBLOCKED by Phase 0) |
+| 2336 | `right_formula_gap_detection` | Lemma 9 right | 4C-W2 (UNBLOCKED by Phase 0) |
+| 3406 | `ghr93_decomposition_implies_game` | Lemma 11 backward | 4C-W4 |
+| 3478 | `stavi_expressive_completeness` | Corollary 5 / main theorem | 4C-W4 |
 
-### ExpressivenessGeneral.lean (8 sorries)
+### ExpressivenessGeneral.lean (7 sorries)
 | Line | Context | Content | Phase |
 |------|---------|---------|-------|
 | 306 | `obtain_split_point_props` | d-consistency left | 4C-W1 |
@@ -301,7 +301,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 ---
 
-### Phase 0: U'/S' Semantics Fix [IN PROGRESS]
+### Phase 0: U'/S' Semantics Fix [COMPLETED]
 
 **Goal**: Replace the incorrect "cofinal AND NOT U/S" definitions of U'(A,B) and S'(A,B) with the correct GHR93 FO-table-based definitions. Reprove all broken theorems. Verify Cases I/II/Lemma 10/Lemma 11 forward still compile unchanged.
 
@@ -397,16 +397,33 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (7 in ExpressivenessGeneral.lean after W1.3):
+**Sorry inventory** (11 total across 2 files, verified after Phase 0 completion):
+
+EFGames.lean (4 sorries):
+- Line 2317: `left_formula_gap_detection` (Lemma 9 left)
+- Line 2336: `right_formula_gap_detection` (Lemma 9 right)
+- Line 3406: `ghr93_decomposition_implies_game` (Lemma 11 backward)
+- Line 3478: `stavi_expressive_completeness` (Corollary 5)
+
+ExpressivenessGeneral.lean (7 sorries):
 - Lines 306, 316: d-consistency left/right (Task W1.2)
 - Lines 430, 447: M-side degenerate point witnesses (Task W1.4)
 - Line 551: c construction gap case (blocked by Lemma 9)
 - Line 2455: Cases III/IV (blocked by Lemma 9)
 - Line 2676: rank-varying Theorem 6 (Phase 4C-W4)
 
+StaviConnectives.lean: **0 sorries** (completely sorry-free with correct GHR93 semantics)
+
+**Phase 0 achievements**:
+- `stavi_U_truth`/`stavi_S_truth` replaced with GHR93 FO table ✓
+- `flatten_stavi_correct` reproved (sorry-free) ✓
+- `rank_embed_stavi_truth_mu` reproved (sorry-free) ✓
+- `stavi_truth_mu_at_point` reproved (sorry-free) ✓
+- Cases I, II, Lemma 10, Lemma 11 forward unchanged ✓
+
 **Verification**:
-- D-consistency sorries (306, 316) closed
-- Degenerate interval sorries (430, 447) closed
+- D-consistency sorries (306, 316) — still open (Task W1.2)
+- Degenerate interval sorries (430, 447) — still open (Task W1.4)
 - `ghr93_case_I` and `ghr93_case_II` show no `sorryAx`
 - `lake build` passes
 
