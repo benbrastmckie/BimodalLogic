@@ -346,8 +346,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-20T20:30:00Z",
-      "next_artifact_number": 11,
+      "last_updated": "2026-05-21T01:00:00Z",
+      "next_artifact_number": 12,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -423,6 +423,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/10_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised implementation plan (v7): wave-based Phase 4C decomposition, d-consistency restructuring, flatten_stavi bridge lemma, 15 phases (6 completed, 1 blocked, 8 remaining), 40-60 hours"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
+          "type": "research",
+          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
         }
       ],
       "session_id": "sess_1779304083_f28ee0",
