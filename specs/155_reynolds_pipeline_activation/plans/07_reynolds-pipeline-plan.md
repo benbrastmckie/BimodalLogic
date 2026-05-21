@@ -326,8 +326,9 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 3. Case I split — [DONE] fully sorry-free. Partition, sub-game play, response merge,
    Round 2 delegation, and full winning condition transfer (same_order_type, gap_point_agreement,
    formula_agreement) all proved. ~623 lines of proof code.
-4. Shared infra for II-IV — [TODO] init extraction, rank_type_formula (~125 lines)
-5. Case II point/Until — [SORRY within ghr93_cases_II_III_IV] (line 524, ~100 lines, no Lemma 9 dep)
+4. Shared infra for II-IV — [DONE] init extraction, tau delegation, game_tuple helpers
+5. Case II point/Until — [DONE] ghr93_case_II sorry-free (~760 lines). Uses tau for init
+   sub-sequence, c for a_n response (via hd_eq_an), full winning condition proved.
 6. Lemma 9 gap detection — [SORRY] (lines 1423+1442, ~400-500 lines, blocks Cases III/IV)
 7. Cases III+IV gap/U' — [SORRY within ghr93_cases_II_III_IV] (~230 lines, uses Lemma 9)
 8. Theorem 6 assembly — [DONE] ghr93_inductive_step wires case dispatch
@@ -336,14 +337,11 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 11. Proposition 7 composition — [TODO] (~150-250 lines, uses Lemma 11)
 12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line 2324, ~80-120 lines)
 
-**Sorry inventory** (10 total across 2 files, verified grep count):
+**Sorry inventory** (8 total across 2 files, verified grep count):
 - EFGames.lean [5]: Lemma 9 left (1423), Lemma 9 right (1442),
   Lemma 11 fwd (2277), Lemma 11 bwd (2298), stavi_expressive_completeness (2365)
-- ExpressivenessGeneral.lean [5]: split props gap case (420),
-  Case I same_order_type left (734), Case I same_order_type right (881),
-  Cases II-IV (950), rank-varying Thm 6 (1145)
-  NOTE: Case I gap_point_agreement and formula_agreement are PROVED for both cases.
-  Only same_order_type remains (~200 lines index arithmetic per case).
+- ExpressivenessGeneral.lean [3]: split props gap case (420),
+  Cases III-IV (2324), rank-varying Thm 6 (2545)
 
 **Completed infrastructure** (sorry-free, ~3000 lines):
 - Gap/M_r/ExtendedCarrier/LinearOrder (4B.2) ✓
