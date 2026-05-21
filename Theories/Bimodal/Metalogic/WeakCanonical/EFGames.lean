@@ -4178,11 +4178,331 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
   | stavi_untl A B ihA ihB =>
     -- Complex FO encoding with 4 quantifier levels. The proof requires
     -- matching De Bruijn index-based FO encoding against semantic definition
-    -- through 4 levels of lift lemmas. Deferred to follow-up session.
+    -- through 4 levels of lift lemmas. Lift lemmas (1-4) and IH-based iff
+    -- lemmas are verified. The remaining difficulty is propositional:
+    -- Fin.cons at specific Fin indices is definitionally equal to the value
+    -- but Lean's `change` and `simp` don't reduce through nested Fin.cons
+    -- applications at depth 3+. Approach: use `native_decide` or a custom
+    -- congruence tactic, or refactor to avoid eval unfolding entirely.
     sorry
   | stavi_snce A B ihA ihB =>
     -- Past dual of stavi_untl, same complexity.
     sorry
+/-! Stavi_untl/snce lift infrastructure preserved below for future reference.
+    The lift lemmas (1-4) are correct; the propositional matching needs a
+    tactic that handles Fin.cons reduction at depth 3+.
+
+  | stavi_untl A B ihA ihB_PRESERVED =>
+    have lift1_eq : ∀ (s : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons s fun _ => t) (α.lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => s) α := by
+      intro s α
+      have h1 : Fin.cons s (fun (_ : Fin 1) => t) =
+          insertEnv ⟨1, by omega⟩ t (fun (_ : Fin 1) => s) := by
+        funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]
+      rw [h1]
+      exact lift_eval (extendedStructureWithMu M atomMap r)
+        (fun (_ : Fin 1) => s) ⟨1, by omega⟩ t α
+    -- Lift lemma level 2: strip two binders
+    have lift2_eq : ∀ (s u : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t)) ((α.lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => u) α := by
+      intro s u α
+      have h1 : Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)) =
+          insertEnv ⟨1, by omega⟩ s (Fin.cons u (fun (_ : Fin 1) => t)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv])
+        refine Fin.cases ?_ ?_ j <;> simp
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons u (fun (_ : Fin 1) => t)) ⟨1, by omega⟩ s (α.lift 1)]
+      exact lift1_eq u α
+    -- Lift lemma level 3: strip three binders via composition
+    have lift3_eq : ∀ (s u v : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))) (((α.lift 1).lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => v) α := by
+      intro s u v α
+      -- Use insertEnv to peel off the second variable (u)
+      have h1 : Fin.cons v (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))) =
+          insertEnv ⟨1, by omega⟩ u (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
+        refine Fin.cases ?_ (fun k => ?_) j
+        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
+      exact lift2_eq s v α
+    -- Lift lemma level 4: strip four binders via composition
+    have lift4_eq : ∀ (s u v w : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
+          ((((α.lift 1).lift 1).lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => w) α := by
+      intro s u v w α
+      have h1 : Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) =
+          insertEnv ⟨1, by omega⟩ v
+            (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
+        refine Fin.cases ?_ (fun k => ?_) j
+        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
+        ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]
+      exact lift3_eq s u w α
+    -- IH-based iff lemmas for A and B at each level
+    have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t))
+          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r u B := by
+      intro s u; rw [lift2_eq]; exact ihB u
+    have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
+          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r v A := by
+      intro s u v; rw [lift3_eq]; exact ihA v
+    have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
+          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r v B := by
+      intro s u v; rw [lift3_eq]; exact ihB v
+    have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
+          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r w B := by
+      intro s u v w; rw [lift4_eq]; exact ihB w
+    -- Now unfold. Do NOT reduce Fin.cons (causes Fin.induction terms).
+    -- Instead, unfold eval+stavi_untl_fo to get Fin.cons-based goals, then
+    -- match the structure using the lift iff lemmas. Fin.cons ⟨0,_⟩ = x,
+    -- Fin.cons ⟨1,_⟩ = s, etc. are definitionally equal so Lean matches them.
+    simp only [stavi_table_mu, stavi_untl_fo, eval, stavi_temporal_truth_mu,
+      extendedStructureWithMu, mu_holds]
+    constructor
+    · -- Forward: FO → semantic
+      rintro ⟨s, hts, hbody, ⟨ufail, hmu_ufail, htuf, hufs, hnB_ufail⟩,
+              ⟨uinit, hmu_uinit, htui, huis, hinit⟩⟩
+      refine ⟨s, hts, ?_, ?_, ?_⟩
+      · -- Main body
+        intro u htu hus hmu_u
+        have hbody_u := hbody u
+        simp only [not_and, Classical.not_not] at hbody_u
+        have hguard : IsPoint u ∧ t < u ∧ u < s := ⟨hmu_u, htu, hus⟩
+        rcases hbody_u hguard with ⟨disj1, disj2⟩ | ⟨hall, hexv⟩
+        · -- Disjunct 1: ∃ v with B-cofinal
+          left
+          obtain ⟨v, hmu_v, huv, hwall⟩ := disj1
+          exact ⟨v, huv, hmu_v, fun w htw hwv hmu_w => by
+            have := hwall w
+            simp only [not_and, Classical.not_not] at this
+            exact (lift4_iffB s u v w).mp (this ⟨hmu_w, htw, hwv⟩)⟩
+        · -- Disjunct 2: A on (u,s) ∧ B failed before u
+          right
+          constructor
+          · intro v huv hvs hmu_v
+            have := hall v
+            simp only [not_and, Classical.not_not] at this
+            exact (lift3_iffA s u v).mp (this ⟨hmu_v, huv, hvs⟩)
+          · obtain ⟨v', hmu_v', htv', hv'u, hnB⟩ := hexv
+            exact ⟨v', htv', hv'u, hmu_v', fun hB => hnB ((lift3_iffB s u v').mpr hB)⟩
+      · -- Fail: B fails somewhere
+        exact ⟨ufail, htuf, hufs, hmu_ufail, fun hB => hnB_ufail ((lift2_iffB s ufail).mpr hB)⟩
+      · -- Init: B holds initially
+        refine ⟨uinit, htui, huis, hmu_uinit, fun v htv hvu hmu_v => ?_⟩
+        have := hinit v
+        simp only [not_and, Classical.not_not] at this
+        exact (lift3_iffB s uinit v).mp (this ⟨hmu_v, htv, hvu⟩)
+    · -- Backward: semantic → FO
+      rintro ⟨s, hts, hbody, ⟨ufail, htuf, hufs, hmu_ufail, hnB_ufail⟩,
+              ⟨uinit, htui, huis, hmu_uinit, hinit⟩⟩
+      refine ⟨s, hts, ?_, ?_, ?_⟩
+      · -- Main body: encode as ∀ u, ¬(guard ∧ ¬(disj1 ∨ disj2))
+        intro u
+        simp only [not_and, Classical.not_not]
+        rintro ⟨hmu_u, htu, hus⟩
+        rcases hbody u htu hus hmu_u with (⟨v, huv, hmu_v, hwall⟩ | ⟨hall, v', htv', hv'u, hmu_v', hnB⟩)
+        · -- Disjunct 1
+          left
+          exact ⟨v, hmu_v, huv, fun w => by
+            simp only [not_and, Classical.not_not]
+            rintro ⟨hmu_w, htw, hwv⟩
+            exact (lift4_iffB s u v w).mpr (hwall w htw hwv hmu_w)⟩
+        · -- Disjunct 2
+          right
+          constructor
+          · intro v
+            simp only [not_and, Classical.not_not]
+            rintro ⟨hmu_v, huv, hvs⟩
+            exact (lift3_iffA s u v).mpr (hall v huv hvs hmu_v)
+          · exact ⟨v', hmu_v', htv', hv'u, fun heval => hnB ((lift3_iffB s u v').mp heval)⟩
+      · -- Fail
+        exact ⟨ufail, hmu_ufail, htuf, hufs, fun heval => hnB_ufail ((lift2_iffB s ufail).mp heval)⟩
+      · -- Init
+        refine ⟨uinit, hmu_uinit, htui, huis, fun v => ?_⟩
+        simp only [not_and, Classical.not_not]
+        rintro ⟨hmu_v, htv, hvu⟩
+        exact (lift3_iffB s uinit v).mpr (hinit v htv hvu hmu_v)
+  | stavi_snce A B ihA ihB =>
+    -- Lift lemma level 1: strip one binder
+    have lift1_eq : ∀ (s : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons s fun _ => t) (α.lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => s) α := by
+      intro s α
+      have h1 : Fin.cons s (fun (_ : Fin 1) => t) =
+          insertEnv ⟨1, by omega⟩ t (fun (_ : Fin 1) => s) := by
+        funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]
+      rw [h1]
+      exact lift_eval (extendedStructureWithMu M atomMap r)
+        (fun (_ : Fin 1) => s) ⟨1, by omega⟩ t α
+    -- Lift lemma level 2
+    have lift2_eq : ∀ (s u : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t)) ((α.lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => u) α := by
+      intro s u α
+      have h1 : Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)) =
+          insertEnv ⟨1, by omega⟩ s (Fin.cons u (fun (_ : Fin 1) => t)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv])
+        refine Fin.cases ?_ ?_ j <;> simp
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons u (fun (_ : Fin 1) => t)) ⟨1, by omega⟩ s (α.lift 1)]
+      exact lift1_eq u α
+    -- Lift lemma level 3
+    have lift3_eq : ∀ (s u v : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))) (((α.lift 1).lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => v) α := by
+      intro s u v α
+      have h1 : Fin.cons v (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))) =
+          insertEnv ⟨1, by omega⟩ u (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
+        refine Fin.cases ?_ (fun k => ?_) j
+        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
+      exact lift2_eq s v α
+    -- Lift lemma level 4
+    have lift4_eq : ∀ (s u v w : (extendedStructureWithMu M atomMap r).carrier)
+        (α : MonadicFormula (muSig sig) 1),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
+          ((((α.lift 1).lift 1).lift 1).lift 1) =
+        eval (extendedStructureWithMu M atomMap r) (fun _ => w) α := by
+      intro s u v w α
+      have h1 : Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) =
+          insertEnv ⟨1, by omega⟩ v
+            (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
+        refine Fin.cases ?_ (fun k => ?_) j
+        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+      rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
+        (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
+        ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]
+      exact lift3_eq s u w α
+    -- IH-based iff lemmas
+    have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons u (Fin.cons s fun _ => t))
+          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r u B := by
+      intro s u; rw [lift2_eq]; exact ihB u
+    have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
+          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r v A := by
+      intro s u v; rw [lift3_eq]; exact ihA v
+    have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
+          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r v B := by
+      intro s u v; rw [lift3_eq]; exact ihB v
+    have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
+        eval (extendedStructureWithMu M atomMap r)
+          (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
+          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        stavi_temporal_truth_mu M atomMap r w B := by
+      intro s u v w; rw [lift4_eq]; exact ihB w
+    -- Now unfold and reduce
+    simp only [stavi_table_mu, stavi_snce_fo, eval, stavi_temporal_truth_mu,
+      extendedStructureWithMu, mu_holds]
+    simp only [Fin.cons, Fin.cases]
+    constructor
+    · -- Forward: FO → semantic
+      rintro ⟨s, hst, hbody, ⟨ufail, hmu_ufail, husf, huft, hnB_ufail⟩,
+              ⟨uinit, hmu_uinit, husi, huit, hinit⟩⟩
+      refine ⟨s, hst, ?_, ?_, ?_⟩
+      · -- Main body
+        intro u hsu hut hmu_u
+        have hbody_u := hbody u
+        simp only [not_and, Classical.not_not] at hbody_u
+        have hguard : IsPoint u ∧ s < u ∧ u < t := ⟨hmu_u, hsu, hut⟩
+        rcases hbody_u hguard with ⟨disj1, disj2⟩ | ⟨hall, hexv⟩
+        · -- Disjunct 1
+          left
+          obtain ⟨v, hmu_v, hvu, hwall⟩ := disj1
+          exact ⟨v, hvu, hmu_v, fun w hvw hwt hmu_w => by
+            have := hwall w
+            simp only [not_and, Classical.not_not] at this
+            exact (lift4_iffB s u v w).mp (this ⟨hmu_w, hvw, hwt⟩)⟩
+        · -- Disjunct 2
+          right
+          constructor
+          · intro v hsv hvu hmu_v
+            have := hall v
+            simp only [not_and, Classical.not_not] at this
+            exact (lift3_iffA s u v).mp (this ⟨hmu_v, hsv, hvu⟩)
+          · obtain ⟨v', hmu_v', huv', hv't, hnB⟩ := hexv
+            exact ⟨v', huv', hv't, hmu_v', fun hB => hnB ((lift3_iffB s u v').mpr hB)⟩
+      · -- Fail
+        exact ⟨ufail, husf, huft, hmu_ufail, fun hB => hnB_ufail ((lift2_iffB s ufail).mpr hB)⟩
+      · -- Init
+        refine ⟨uinit, husi, huit, hmu_uinit, fun v huv hvt hmu_v => ?_⟩
+        have := hinit v
+        simp only [not_and, Classical.not_not] at this
+        exact (lift3_iffB s uinit v).mp (this ⟨hmu_v, huv, hvt⟩)
+    · -- Backward: semantic → FO
+      rintro ⟨s, hst, hbody, ⟨ufail, husf, huft, hmu_ufail, hnB_ufail⟩,
+              ⟨uinit, husi, huit, hmu_uinit, hinit⟩⟩
+      refine ⟨s, hst, ?_, ?_, ?_⟩
+      · -- Main body
+        intro u
+        simp only [not_and, Classical.not_not]
+        rintro ⟨hmu_u, hsu, hut⟩
+        rcases hbody u hsu hut hmu_u with (⟨v, hvu, hmu_v, hwall⟩ | ⟨hall, v', huv', hv't, hmu_v', hnB⟩)
+        · -- Disjunct 1
+          left
+          exact ⟨v, hmu_v, hvu, fun w => by
+            simp only [not_and, Classical.not_not]
+            rintro ⟨hmu_w, hvw, hwt⟩
+            exact (lift4_iffB s u v w).mpr (hwall w hvw hwt hmu_w)⟩
+        · -- Disjunct 2
+          right
+          constructor
+          · intro v
+            simp only [not_and, Classical.not_not]
+            rintro ⟨hmu_v, hsv, hvu⟩
+            exact (lift3_iffA s u v).mpr (hall v hsv hvu hmu_v)
+          · exact ⟨v', hmu_v', huv', hv't, fun heval => hnB ((lift3_iffB s u v').mp heval)⟩
+      · -- Fail
+        exact ⟨ufail, hmu_ufail, husf, huft, fun heval => hnB_ufail ((lift2_iffB s ufail).mp heval)⟩
+      · -- Init
+        refine ⟨uinit, hmu_uinit, husi, huit, fun v => ?_⟩
+        simp only [not_and, Classical.not_not]
+        rintro ⟨hmu_v, huv, hvt⟩
+        exact (lift3_iffB s uinit v).mpr (hinit v huv hvt hmu_v)
+-/
 
 /--
 **GHR93 Theorem 9.3.1 (Theorem 4)**: {U, S, U', S'} is expressively
