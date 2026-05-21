@@ -401,9 +401,10 @@ Inductive step (n → n+1): Assume Duplicator has G_{4+3n; r+4(n+1)}-forward str
 - [ ] **Task 4C.3**: Prove Case I (a_0 < d). Apply σ to points in (x',d) and τ to points in
   (d,y'). Combine using Lemma 10. Handle Round 2 challenge. (~150-250 lines)
 
-- [ ] **Task 4C.4**: Prove Case II (a_n is a point). Construct B = X_{a_n}. Use τ for
+- [x] **Task 4C.4**: Prove Case II (a_n is a point). Construct B = X_{a_n}. Use τ for
   a_0,...,a_{n-1}. Find z with B(z) and A on (e_{n-1},z). Verify Round 2.
   Uses standard Until. (~200-300 lines)
+  *(deviation: altered -- (1) SplitPointProps.hd_le_an changed to hd_eq_an (equality d = a_bwd(n)) since d is constructed as a_bwd(n) in obtain_split_point_props; equality needed for Case II proof; (2) Proof structure uses tau on init sub-sequence a_0..a_{n-1} with c as response for a_n=d, rather than constructing Until witness as sketched in plan — the tau+sigma approach is cleaner since it reuses existing backward strategies; (3) ghr93_cases_II_III_IV split into ghr93_case_II (proved, ~760 lines including both Round 2 branches) and ghr93_cases_III_IV (sorry'd); (4) Pre-extracted tau/sigma boundary gap/point data before Round 2 case split to establish IsPoint c and ~IsGap c from tau's winning condition; (5) Cases III/IV remain sorry'd pending Lemma 9 gap detection)*
 
 - [ ] **Task 4C.5**: Prove Case III (a_n is left-defined gap). Construct δ = left(B,D).
   Apply Lemma 9 to find matching gap in M. Verify formula agreement. (~250-350 lines)
