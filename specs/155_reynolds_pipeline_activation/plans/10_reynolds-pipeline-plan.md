@@ -281,7 +281,7 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave — 
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [NOT STARTED]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
 
 **Goal**: Prove `left_formula_gap_detection` and `right_formula_gap_detection` -- the GHR93 Lemma 9 that bridges temporal formulas to gap properties. This is the single biggest blocker for the entire Phase 4C completion.
 
@@ -293,13 +293,15 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave — 
 
 **Tasks**:
 
+- [ ] **Task W2.0**: Build infrastructure for Lemma 9. *(deviation: altered -- added as prerequisite task not in original plan. Proved `extendPoint_lt_iff`, `temporal_truth_mu_at_point`, `stavi_truth_mu_at_point`, `gap_detection_unique`. Also added `hD : stavi_depth D <= r` hypothesis to both theorem signatures.)*
 - [ ] **Task W2.1**: Prove Lemma 9 left easy cases (~70 lines). Structural induction on A with cases:
-  - `.base .atom _`: both sides false (left_formula = bot)
-  - `.base .bot`: both sides false
-  - `.base .box _`: both sides false (box = bot at gaps)
-  - `.neg A`: IH + negation, using `U'(top, D) and not left(A,D)`
-  - `.conj A B`: IH + conjunction
-  - `.stavi_untl A B`: unfold U'^mu definition, `U'(B and U'(A,B), D)`
+  - `.base .atom _`: both sides false (left_formula = bot) *(completed)*
+  - `.base .bot`: both sides false *(completed)*
+  - `.base .box _`: both sides false (box = bot at gaps) *(completed)*
+  - `.neg A`: IH + negation, using `U'(top, D) and not left(A,D)` *(needs gap existence lemma)*
+  - `.conj A B`: IH + conjunction *(needs gap existence lemma)*
+  - `.stavi_untl A B`: unfold U'^mu definition, `U'(B and U'(A,B), D)` *(needs gap existence lemma)*
+- [ ] **Task W2.1.5**: Prove gap existence lemma: `U'(top, D)(m) <-> exists gap gamma > m, gap_def_left D, D_between`. This is the CRITICAL prerequisite for all non-trivial cases. *(deviation: added -- not in original plan, discovered during implementation as essential infrastructure)*
 - [ ] **Task W2.2**: Prove Lemma 9 left hard cases (~200-300 lines). The S/S' cases use flatten_stavi. Proceed by direct analysis of the specific flatten_stavi output for each case (NOT via a universal bridge lemma):
   - `.base (.untl phi psi)`: `U'(B and U(A,B), D)` -- unfold U'^mu, analyze standard Until within mu-restricted context
   - `.base (.snce phi psi)`: left_formula produces `.base (.untl (flatten_stavi compound) (flatten_stavi D))` — directly analyze what `temporal_truth_mu` of this specific Until means at actual points, show it detects a gap defined on the left

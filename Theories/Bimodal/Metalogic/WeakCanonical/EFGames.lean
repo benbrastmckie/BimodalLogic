@@ -1378,6 +1378,211 @@ theorem stavi_depth_right_formula (A D : StaviFormula) :
     simp only [right_formula, stavi_depth]
     omega
 
+/-! ### Mu-Relativized Truth at Actual Points
+
+Key infrastructure lemma: at an actual point (extendPoint m), the mu-relativized
+temporal truth agrees with standard temporal truth. This is because mu-points in
+M_r are exactly the actual points from M, and the ordering among actual points in
+M_r is the same as in M. -/
+
+/-- extendPoint preserves strict order. -/
+theorem extendPoint_lt_iff {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat} (x y : M.carrier) :
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) x <
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) y ↔ x < y := by
+  simp only [extendPoint]
+  constructor
+  · intro ⟨hle, hne⟩; exact lt_of_le_of_ne (show x ≤ y from hle) (fun h => hne (h ▸ le_refl y))
+  · intro h; exact ⟨le_of_lt h, fun hyx => not_lt.mpr (show y ≤ x from hyx) h⟩
+
+/-- For standard temporal formulas, mu-relativized truth at an actual point equals
+    standard temporal truth. -/
+theorem temporal_truth_mu_at_point {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (m : M.carrier) (φ : Formula) :
+    temporal_truth_mu M atomMap r (extendPoint m) φ ↔
+    temporal_truth M atomMap m φ := by
+  induction φ generalizing m with
+  | atom a =>
+    simp only [temporal_truth_mu, temporal_truth, extendedStructure, extendPoint]
+  | bot =>
+    simp only [temporal_truth_mu, temporal_truth]
+  | imp φ ψ ihφ ihψ =>
+    simp only [temporal_truth_mu, temporal_truth]
+    exact Iff.imp (ihφ m) (ihψ m)
+  | box φ =>
+    simp only [temporal_truth_mu, temporal_truth, extendedStructure, extendPoint]
+  | untl φ ψ ihφ ihψ =>
+    constructor
+    · intro ⟨s, hms, hmu, hphi, hpsi⟩
+      obtain ⟨s', rfl⟩ := hmu
+      have hms' : m < s' := (extendPoint_lt_iff m s').mp hms
+      exact ⟨s', hms', (ihφ s').mp hphi, fun u hmu' hus =>
+        (ihψ u).mp (hpsi (extendPoint u) ((extendPoint_lt_iff m u).mpr hmu')
+          ((extendPoint_lt_iff u s').mpr hus) ⟨u, rfl⟩)⟩
+    · intro ⟨s, hms, hphi, hpsi⟩
+      refine ⟨extendPoint s, (extendPoint_lt_iff m s).mpr hms, ⟨s, rfl⟩,
+        (ihφ s).mpr hphi, fun u hmu hus hmu_holds => ?_⟩
+      obtain ⟨u', rfl⟩ := hmu_holds
+      exact (ihψ u').mpr (hpsi u' ((extendPoint_lt_iff m u').mp hmu)
+        ((extendPoint_lt_iff u' s).mp hus))
+  | snce φ ψ ihφ ihψ =>
+    constructor
+    · intro ⟨s, hsm, hmu, hphi, hpsi⟩
+      obtain ⟨s', rfl⟩ := hmu
+      have hsm' : s' < m := (extendPoint_lt_iff s' m).mp hsm
+      exact ⟨s', hsm', (ihφ s').mp hphi, fun u hsu hum =>
+        (ihψ u).mp (hpsi (extendPoint u) ((extendPoint_lt_iff s' u).mpr hsu)
+          ((extendPoint_lt_iff u m).mpr hum) ⟨u, rfl⟩)⟩
+    · intro ⟨s, hsm, hphi, hpsi⟩
+      refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ⟨s, rfl⟩,
+        (ihφ s).mpr hphi, fun u hsu hum hmu_holds => ?_⟩
+      obtain ⟨u', rfl⟩ := hmu_holds
+      exact (ihψ u').mpr (hpsi u' ((extendPoint_lt_iff s u').mp hsu)
+        ((extendPoint_lt_iff u' m).mp hum))
+
+/-- For Stavi formulas, mu-relativized truth at an actual point equals
+    standard temporal truth. -/
+theorem stavi_truth_mu_at_point {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (m : M.carrier) (A : StaviFormula) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) A ↔
+    stavi_temporal_truth M atomMap m A := by
+  induction A generalizing m with
+  | base φ =>
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    exact temporal_truth_mu_at_point m φ
+  | neg A ih =>
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    exact Iff.not (ih m)
+  | conj A B ihA ihB =>
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    exact Iff.and (ihA m) (ihB m)
+  | stavi_untl A B ihA ihB =>
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    constructor
+    · -- mp: mu-relativized → standard
+      rintro ⟨hcof, hnU⟩
+      constructor
+      · intro s hms
+        have ⟨u, hmu, hus, hmu_holds, hB⟩ :=
+          hcof (extendPoint s) ((extendPoint_lt_iff m s).mpr hms) ⟨s, rfl⟩
+        obtain ⟨u', rfl⟩ := hmu_holds
+        exact ⟨u', (extendPoint_lt_iff m u').mp hmu,
+          (extendPoint_le_iff u' s).mp hus, (ihB u').mp hB⟩
+      · intro ⟨s, hms, hA, hB⟩
+        apply hnU
+        refine ⟨extendPoint s, (extendPoint_lt_iff m s).mpr hms, ⟨s, rfl⟩,
+          (ihA s).mpr hA, fun u hmu hus hmu_holds => ?_⟩
+        obtain ⟨u', rfl⟩ := hmu_holds
+        exact (ihB u').mpr (hB u' ((extendPoint_lt_iff m u').mp hmu)
+          ((extendPoint_lt_iff u' s).mp hus))
+    · -- mpr: standard → mu-relativized
+      rintro ⟨hcof, hnU⟩
+      constructor
+      · intro s hms hs_mu
+        obtain ⟨s', rfl⟩ := hs_mu
+        have hms' : m < s' := (extendPoint_lt_iff m s').mp hms
+        obtain ⟨u', hmu, hus, hB⟩ := hcof s' hms'
+        exact ⟨extendPoint u', (extendPoint_lt_iff m u').mpr hmu,
+          (extendPoint_le_iff u' s').mpr hus, ⟨u', rfl⟩, (ihB u').mpr hB⟩
+      · rintro ⟨s, hms, hs_mu, hA, hB⟩
+        obtain ⟨s', rfl⟩ := hs_mu
+        apply hnU
+        refine ⟨s', (extendPoint_lt_iff m s').mp hms, (ihA s').mp hA,
+          fun u' hmu hus => ?_⟩
+        exact (ihB u').mp (hB (extendPoint u')
+          ((extendPoint_lt_iff m u').mpr hmu) ((extendPoint_lt_iff u' s').mpr hus)
+          ⟨u', rfl⟩)
+  | stavi_snce A B ihA ihB =>
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    constructor
+    · -- mp: mu-relativized → standard
+      rintro ⟨hcof, hnS⟩
+      constructor
+      · intro s hsm
+        have ⟨u, hsu, hum, hmu_holds, hB⟩ :=
+          hcof (extendPoint s) ((extendPoint_lt_iff s m).mpr hsm) ⟨s, rfl⟩
+        obtain ⟨u', rfl⟩ := hmu_holds
+        exact ⟨u', (extendPoint_le_iff s u').mp hsu,
+          (extendPoint_lt_iff u' m).mp hum, (ihB u').mp hB⟩
+      · intro ⟨s, hsm, hA, hB⟩
+        apply hnS
+        refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ⟨s, rfl⟩,
+          (ihA s).mpr hA, fun u hsu hum hmu_holds => ?_⟩
+        obtain ⟨u', rfl⟩ := hmu_holds
+        exact (ihB u').mpr (hB u' ((extendPoint_lt_iff s u').mp hsu)
+          ((extendPoint_lt_iff u' m).mp hum))
+    · -- mpr: standard → mu-relativized
+      rintro ⟨hcof, hnS⟩
+      constructor
+      · intro s hsm hs_mu
+        obtain ⟨s', rfl⟩ := hs_mu
+        have hsm' : s' < m := (extendPoint_lt_iff s' m).mp hsm
+        obtain ⟨u', hsu, hum, hB⟩ := hcof s' hsm'
+        exact ⟨extendPoint u', (extendPoint_le_iff s' u').mpr hsu,
+          (extendPoint_lt_iff u' m).mpr hum, ⟨u', rfl⟩, (ihB u').mpr hB⟩
+      · rintro ⟨s, hsm, hs_mu, hA, hB⟩
+        obtain ⟨s', rfl⟩ := hs_mu
+        apply hnS
+        refine ⟨s', (extendPoint_lt_iff s' m).mp hsm, (ihA s').mp hA,
+          fun u' hsu hum => ?_⟩
+        exact (ihB u').mp (hB (extendPoint u')
+          ((extendPoint_lt_iff s' u').mpr hsu) ((extendPoint_lt_iff u' m).mpr hum)
+          ⟨u', rfl⟩)
+
+/-! ### Gap Uniqueness for Lemma 9
+
+Infrastructure for the gap detection correctness theorem. The key fact:
+given D, m, there is at most one gap γ > m with gap_definable_on_left D
+and D holding at all actual points between m and γ. This uses the
+D-between condition to rule out multiple gaps.
+-/
+
+/-- Two gaps satisfying the Lemma 9 conditions for the same D and m must be equal.
+    The key property: D holds at all actual points u with m < u and u ∈ γ.cut.
+    If γ₁.cut ⊊ γ₂.cut, elements of γ₂.cut \ γ₁.cut are in γ₁.complement with D
+    holding (by γ₂'s D-between condition), giving an initial segment of γ₁.complement
+    where D holds, contradicting γ₁ being D-definable on the left. -/
+theorem gap_detection_unique {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {γ₁ γ₂ : Gap M.carrier} {D : StaviFormula} {m : M.carrier}
+    (h₁_def : gap_definable_on_left M atomMap γ₁ D)
+    (h₂_def : gap_definable_on_left M atomMap γ₂ D)
+    (h₁_bet : ∀ u : M.carrier, m < u → u ∈ γ₁.cut →
+      stavi_temporal_truth M atomMap u D)
+    (h₂_bet : ∀ u : M.carrier, m < u → u ∈ γ₂.cut →
+      stavi_temporal_truth M atomMap u D)
+    (hm₁ : m ∈ γ₁.cut)
+    (hm₂ : m ∈ γ₂.cut) :
+    γ₁ = γ₂ := by
+  apply gap_ext
+  by_contra hne
+  -- WLOG γ₁.cut ⊊ γ₂.cut
+  wlog h : ¬(γ₂.cut ⊆ γ₁.cut) with H
+  · push_neg at hne
+    rcases gap_cuts_total γ₁ γ₂ with hsub | hsub
+    · exact h fun h' => hne (Set.Subset.antisymm hsub h')
+    · exact H h₂_def h₁_def h₂_bet h₁_bet hm₂ hm₁ (Ne.symm hne)
+        (fun h' => hne (Set.Subset.antisymm hsub h').symm)
+  -- ∃ x ∈ γ₂.cut \ γ₁.cut
+  obtain ⟨x, hx₂, hx₁⟩ := Set.not_subset.mp h
+  -- γ₁ D-def-left: no initial segment of γ₁.complement has D
+  obtain ⟨_, h_no_init⟩ := h₁_def
+  -- Derive contradiction: D holds at an initial segment of γ₁.complement
+  apply h_no_init
+  -- Witness: x ∉ γ₁.cut, and D at all u ∉ γ₁.cut with u ≤ x
+  refine ⟨x, hx₁, fun u hu_not_in hu_le => ?_⟩
+  -- u ∉ γ₁.cut, so u > m (since m ∈ γ₁.cut and complement elements are above cut)
+  have hmu : m < u := by
+    by_contra h_not
+    push_neg at h_not
+    exact hu_not_in (γ₁.downward_closed m u hm₁ h_not)
+  -- u ≤ x ∈ γ₂.cut, so u ∈ γ₂.cut by downward-closure
+  have hu_in_2 : u ∈ γ₂.cut := γ₂.downward_closed x u hx₂ hu_le
+  -- D(u) by the D-between condition for γ₂
+  exact h₂_bet u hmu hu_in_2
+
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
 
 The crucial bridge: `left_formula(A,D)` evaluated at an actual point m
@@ -1412,7 +1617,7 @@ game-theoretic proof in Phase 4C.
 -/
 theorem left_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    (A D : StaviFormula) (m : M.carrier) :
+    (A D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
     stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula A D) ↔
     (∃ (γ : RDefinableGap M atomMap r),
       extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
@@ -1431,7 +1636,7 @@ with gamma < m and D holding at all actual points between gamma and m.
 -/
 theorem right_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    (A D : StaviFormula) (m : M.carrier) :
+    (A D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
     stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula A D) ↔
     (∃ (γ : RDefinableGap M atomMap r),
       extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
