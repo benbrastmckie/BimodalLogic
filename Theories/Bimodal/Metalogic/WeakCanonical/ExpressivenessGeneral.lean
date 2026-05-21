@@ -274,14 +274,40 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
     have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
+    -- The d-consistency hypothesis requires that d equals the strategy's response
+    -- to c for every padded selection. This is the key structural condition that
+    -- in GHR93 follows from defining d as an infimum.
+    -- For the left restriction: d = response at position n (last position)
+    -- For the right restriction: d = response at position 0 (first position)
+    -- These are sorry'd pending the infimum/consistency infrastructure.
+    have h_d_consistent_left : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
+        (∀ i, inClosedInterval x y (a_pad i)) →
+        a_pad ⟨1 + 3 * n, by omega⟩ = c →
+        ∀ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
+          (∀ i, inClosedInterval x' y' (a'_full i)) →
+          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+              ghr93_winning_condition (1 + 3 * n + 1)
+                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+          a'_full ⟨1 + 3 * n, by omega⟩ = d := by sorry
+    have h_d_consistent_right : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
+        (∀ i, inClosedInterval x y (a_pad i)) →
+        a_pad ⟨0, by omega⟩ = c →
+        ∀ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
+          (∀ i, inClosedInterval x' y' (a'_full i)) →
+          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+              ghr93_winning_condition (1 + 3 * n + 1)
+                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+          a'_full ⟨0, by omega⟩ = d := by sorry
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
-        hcd_form hcd_gp
+        hcd_form hcd_gp h_d_consistent_left
     have h_restrict_right : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r c y d y' :=
       ghr93_strategy_restrict_right h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
-        hcd_form hcd_gp
+        hcd_form hcd_gp h_d_consistent_right
     -- Apply IH to get backward strategies
     -- sigma: backward n-round on [x',d] vs [x,c]
     -- Need: h_pt for [x',d] (∃ point in [x',d])
