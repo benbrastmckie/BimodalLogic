@@ -44,6 +44,9 @@ or the algebraic path (Algebraic/ParametricRepresentation.lean).
 - MaximalConsistent.lean: Lindenbaum's lemma (set_lindenbaum)
 -/
 
+-- Deep API drift: SuccChainTruth behind #exit.
+#exit
+
 namespace Bimodal.Metalogic.Completeness
 
 open Bimodal.Syntax

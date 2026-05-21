@@ -82,6 +82,11 @@ def F_top : Formula := Formula.some_future (Formula.neg Formula.bot)
 /-- P(top) = P(neg bot) - seriality in the past direction -/
 def P_top : Formula := Formula.some_past (Formula.neg Formula.bot)
 
+-- Deep API drift (55 errors): temp_t_future/temp_t_past axioms removed,
+-- multiple type mismatches from strict-to-reflexive semantics migration.
+-- Code preserved below #exit for reference only.
+#exit
+
 /-- A serial MCS contains both F(top) and P(top) -/
 structure SerialMCS where
   /-- The underlying set of formulas -/

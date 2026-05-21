@@ -44,6 +44,9 @@ For formulas in deferralClosure, membership in the MCS equals membership in the 
 - SuccRelation.lean: Succ, f_step, g_step
 -/
 
+-- Deep API drift: SimplifiedChain behind #exit.
+#exit
+
 namespace Bimodal.Metalogic.Bundle.ResolvingChain
 
 open Bimodal.Syntax

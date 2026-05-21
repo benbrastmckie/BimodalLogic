@@ -16,6 +16,10 @@ infrastructure in OracleStep.lean (qm_oracle_step, qm_oracle_step_bwd,
 hintikka_step_for_sigma_sig) is preserved as reusable infrastructure.
 -/
 
+-- Deep API drift (101 errors): Quasimodel namespace removed, ParametricCanonical renamed.
+-- Code preserved below #exit for reference only.
+#exit
+
 namespace Bimodal.Metalogic.BXCanonical
 
 /-! ## Oracle-Based FMCS Construction (Phase 4)

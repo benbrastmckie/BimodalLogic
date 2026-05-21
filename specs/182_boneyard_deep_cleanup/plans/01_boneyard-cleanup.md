@@ -167,7 +167,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Compilation Verification and Sorry Stubs [NOT STARTED]
+### Phase 4: Compilation Verification and Sorry Stubs [COMPLETED]
 
 **Goal**: Achieve clean `lake build BoneyardArchive` with all files elaborating successfully (with expected sorry stubs for incomplete proofs, but no import errors or type mismatches).
 

@@ -42,6 +42,10 @@ The Succ-chain family satisfies CanonicalTask by construction:
 adjacent elements are Succ-related, so chains give CanonicalTask_forward/backward.
 -/
 
+-- Deep API drift: SerialMCS, succ_chain_fam, SuccChainFMCS from SuccChainFMCS.lean
+-- are now behind #exit. Code preserved below #exit for reference only.
+#exit
+
 /--
 Build CanonicalTask_forward from the Succ-chain.
 

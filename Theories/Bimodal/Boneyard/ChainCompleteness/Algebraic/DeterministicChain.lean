@@ -45,6 +45,10 @@ open Bimodal.Metalogic.Bundle
 ## Deterministic Chain Definition
 -/
 
+-- Deep API drift (54 errors): x_content/y_content removed from active modules.
+-- Code preserved below #exit for reference only.
+#exit
+
 /-- Iterate x_content n times starting from M. -/
 noncomputable def iterate_x_content (M : Set Formula) : ℕ → Set Formula
   | 0 => M

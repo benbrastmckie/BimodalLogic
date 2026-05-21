@@ -39,6 +39,10 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
+-- Deep API drift: UltrafilterChain partly behind #exit,
+-- box_class_agree/temporal_theory_witness_with_g_exists removed.
+#exit
+
 /-! ## Extending DRM to Full MCS -/
 
 /--

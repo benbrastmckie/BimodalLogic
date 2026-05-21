@@ -37,6 +37,9 @@ open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
+
+-- Deep API drift: MCSWitnessSuccessor behind #exit.
+#exit
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
 /-! ## Forward Chain -/

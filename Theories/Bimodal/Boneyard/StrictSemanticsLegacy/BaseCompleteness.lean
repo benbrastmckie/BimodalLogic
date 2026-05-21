@@ -3,6 +3,9 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem.Derivation
 
+-- Deep API drift: CanonicalConstruction behind #exit.
+#exit
+
 /-!
 # Base Completeness - Completeness for Base TM Logic
 

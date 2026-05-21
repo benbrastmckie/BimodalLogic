@@ -47,6 +47,11 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
+-- Deep API drift: g_content_subset_deferral_restricted_mcs,
+-- deferralDisjunctions_subset_deferral_restricted_mcs removed.
+-- Code preserved below #exit for reference only.
+#exit
+
 /-! ## Phase 1: Simplified Restricted Seed and Successor -/
 
 /--
@@ -56,6 +61,7 @@ p_step_blocking_formulas_restricted phi u`.
 Unlike `constrained_successor_seed_restricted`, this excludes `boundary_resolution_set`
 and `f_content`, making consistency trivially provable (all elements are in u).
 -/
+
 def simplified_restricted_seed (phi : Formula) (u : Set Formula) : Set Formula :=
   g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u
 

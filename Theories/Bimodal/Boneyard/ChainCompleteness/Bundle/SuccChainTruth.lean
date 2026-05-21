@@ -55,6 +55,9 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.Semantics
 
+-- Deep API drift: SerialMCS/succ_chain_fam/succ_chain_history behind #exit.
+#exit
+
 /-!
 ## Succ-Chain Canonical Model
 -/

@@ -191,11 +191,7 @@ theorem TA_quot (a : LindenbaumAlg) : a ≤ G_quot (neg_quot (H_quot (neg_quot a
   rename_i φ
   -- Need: Derives φ (G(¬H(¬φ)))
   -- temp_a: φ → G(some_past φ) = φ → G(¬H(¬φ))
-  show Derives φ (Formula.all_future (Formula.neg (Formula.all_past (Formula.neg φ))))
-  -- some_past φ = φ.neg.all_past.neg
-  have h : Formula.some_past φ = Formula.neg (Formula.all_past (Formula.neg φ)) := rfl
-  rw [← h]
-  exact ⟨sorry /- temp_a removed in BX -/⟩
+  exact sorry /- temp_a removed in BX; rfl no longer holds for some_past -/
 
 /--
 TL axiom on quotient: Ha ⊓ a ⊓ Ga ≤ GHa
@@ -313,14 +309,7 @@ theorem linearity_quot (a b : LindenbaumAlg) :
   -- The BooleanAlgebra sup is left-associated: (A ⊔ B) ⊔ C
   -- But temp_linearity produces right-associated: A ∨ (B ∨ C)
   -- Use sup_assoc to convert left to right association
-  rw [sup_assoc]
-  -- Now the goal matches the temp_linearity axiom after reduction
-  show Derives (Formula.and (Formula.some_future φ) (Formula.some_future ψ))
-    (Formula.or (Formula.some_future (φ.and ψ))
-      (Formula.or (Formula.some_future (φ.and (Formula.some_future ψ)))
-        (Formula.some_future ((Formula.some_future φ).and ψ))))
-  unfold Derives
-  exact ⟨sorry /- temp_l removed in BX -/⟩
+  exact sorry /- temp_l removed in BX; show pattern no longer matches goal -/
 
 /--
 The Lindenbaum algebra is a Shift-Closed Tense S5 Algebra.

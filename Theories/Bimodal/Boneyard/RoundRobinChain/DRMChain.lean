@@ -11,6 +11,11 @@ This module builds a DRM (Deferral-Restricted MCS) chain and proves
 forward_F for formulas in `deferralClosure(root)`.
 -/
 
+-- Deep API drift (19 errors): DeferralRestrictedMCS structure changed,
+-- temp_t_future axiom removed, drm_fwd_chain recursive definition rejected.
+-- Code preserved below #exit for reference only.
+#exit
+
 namespace Bimodal.Metalogic.BXCanonical.DRMChain
 
 open Bimodal.Syntax

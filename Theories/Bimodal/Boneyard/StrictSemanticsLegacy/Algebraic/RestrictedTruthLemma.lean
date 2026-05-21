@@ -63,6 +63,11 @@ These lemmas establish that G and H formulas in deferralClosure propagate
 correctly through the restricted chain.
 -/
 
+-- Deep API drift: RestrictedTemporallyCoherentFamily, restricted_succ_chain_fam,
+-- and related definitions from SuccChainFMCS are now behind #exit.
+-- Code preserved below #exit for reference only.
+#exit
+
 /--
 G-step for restricted chain: G(psi) in chain(n) implies psi in chain(n+1).
 

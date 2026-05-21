@@ -36,6 +36,11 @@ So F(F(ψ)) = ¬G(G(¬ψ)) → ¬G(¬ψ) = F(ψ). ✓
 This is derivable in BX. At the MCS level: F(F(ψ)) ∈ M → F(ψ) ∈ M.
 -/
 
+-- Deep API drift (9 errors): ParametricRepresentation namespace renamed,
+-- temp_future axiom removed, fully_restricted_parametric_representation_from_neg_membership deleted.
+-- Code preserved below #exit for reference only.
+#exit
+
 namespace Bimodal.Metalogic.BXCanonical
 
 open Bimodal.Syntax

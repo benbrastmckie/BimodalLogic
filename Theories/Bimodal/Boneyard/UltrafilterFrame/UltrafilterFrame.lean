@@ -543,7 +543,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     show G_quot (toQuot Formula.bot) ≤ bot_quot
     unfold G_quot bot_quot
     show Derives Formula.bot.all_future Formula.bot
-    exact ⟨Bimodal.Theorems.TemporalDerived.G_bot_absurd⟩
+    exact ⟨sorry /- G_bot_absurd moved to OpenGuardInvalid archive -/⟩
 
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
       List.foldl (fun acc χ => acc ⊓ toQuot χ) x M =
@@ -779,7 +779,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     show H_quot (toQuot Formula.bot) ≤ bot_quot
     unfold H_quot bot_quot
     show Derives Formula.bot.all_past Formula.bot
-    exact ⟨Bimodal.Theorems.TemporalDerived.H_bot_absurd⟩
+    exact ⟨sorry /- H_bot_absurd moved to OpenGuardInvalid archive -/⟩
 
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
       List.foldl (fun acc χ => acc ⊓ toQuot χ) x M =

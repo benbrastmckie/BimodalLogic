@@ -115,6 +115,10 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Semantics
 
+-- Deep API drift: temp_future axiom removed, Formula constructor pattern changes.
+-- Code preserved below #exit for reference only.
+#exit
+
 /-!
 ## Phase 1: Canonical Structures
 -/

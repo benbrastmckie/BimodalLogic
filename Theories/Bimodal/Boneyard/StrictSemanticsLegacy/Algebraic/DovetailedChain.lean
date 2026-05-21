@@ -61,6 +61,10 @@ Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
 - `construct_bfmcs_int`: The `construct_bfmcs` function for D = Int
 -/
 
+-- Deep API drift: temporal_theory_witness_with_g_exists, box_class_agree,
+-- UltrafilterChain forward_G behind #exit. Code preserved below for reference.
+#exit
+
 /-!
 ## Deprecation Notice
 

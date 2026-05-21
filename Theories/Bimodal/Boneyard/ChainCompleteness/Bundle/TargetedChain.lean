@@ -43,6 +43,9 @@ open Bimodal.Metalogic.Bundle
 open Classical
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
+-- Deep API drift: contains_F_top/contains_P_top removed from SetMaximalConsistent.
+#exit
+
 /-!
 ## Forward Targeted Successor
 

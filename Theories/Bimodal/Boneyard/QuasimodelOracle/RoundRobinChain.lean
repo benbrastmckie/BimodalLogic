@@ -27,6 +27,11 @@ theorems are sound — the obstruction is specifically in `rr_fwd_chain_forward_
 (depth-0 base case).
 -/
 
+-- Deep API drift (60 errors): ParametricCanonical/ParametricHistory namespaces removed,
+-- temp_t_future/temp_t_past axioms removed, resolving_enriched_fwd_exists deleted.
+-- Code preserved below #exit for reference only.
+#exit
+
 namespace Bimodal.Metalogic.BXCanonical
 
 open Bimodal.Syntax

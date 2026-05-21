@@ -27,6 +27,9 @@ modal coherence, completeness wiring) are sorry-free given the leaf
 sorries above.
 -/
 
+-- Deep API drift: DeterministicChain behind #exit, ParametricRepresentation namespace renamed.
+#exit
+
 namespace Bimodal.Metalogic.Algebraic.DeterministicFMCS
 
 open Bimodal.Syntax Bimodal.ProofSystem

@@ -472,6 +472,11 @@ theorem shift_at_offset (uc : UltrafilterChain) (k : Int) :
   unfold shift
   simp
 
+-- Deep API drift from here onward: temp_t_future/temp_t_past axioms removed,
+-- SuccChainFMCS/SerialMCS behind #exit, G_bot_absurd/H_bot_absurd removed.
+-- Code preserved below #exit for reference only.
+#exit
+
 /--
 G-formulas propagate forward along the chain (strict semantics).
 If G(a) ∈ chain(t), then a ∈ chain(t') for all t' > t.

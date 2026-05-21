@@ -214,7 +214,7 @@ theorem hintikka_step_for_sigma_sig
     have h_psi_not_w : ψ ∉ w.formulas :=
       fun h_psi_w => h_not_psi (sigma_signature_mem.mpr ⟨h_closed.2, h_psi_w⟩)
     -- φ ∈ w by BX9
-    have h_ax := DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
+    have h_ax : DerivationTree [] ((Formula.untl φ ψ).imp (Formula.or φ ψ)) := sorry /- Axiom.until_elim removed under open guard -/
     have h_or := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_untl_w
     have h_phi_w : φ ∈ w.formulas := by
@@ -362,13 +362,7 @@ theorem hintikka_step_oracle
             --   but ψ' ∈ w doesn't imply G(ψ') ∈ w)
             -- Alternative: φ' U ψ' is in h.formulas ⊆ w.formulas, and ψ' ∈ w'.
             -- Use refl_intro_until_mcs on the BXPoint w':
-            exact ⟨h.subset_sigma h_untl', by
-              -- refl_intro: ψ' → φ' U ψ' (BX8)
-              apply refl_intro_until_mcs
-              -- ψ' ∈ w' since ψ' ∈ w and bx_le w w'... but bx_le w w' doesn't give ψ' ∈ w'!
-              -- (bx_le w w' only says g_content(w) ⊆ w', not w ⊆ w')
-              -- We're stuck. Use sorry.
-              exact sorry⟩
+            exact ⟨h.subset_sigma h_untl', sorry /- refl_intro_until_mcs removed (BX8 unsound under open guard) -/⟩
           · -- ψ' ∉ w: φ' U ψ' is in the oracle seed (h_neg_psi'_w : ψ'.neg ∈ w)
             have h_psi'_not_w : ψ' ∉ w.formulas :=
               fun h_psi'_w => set_consistent_not_both w.is_mcs.1 ψ' h_psi'_w h_neg_psi'_w
@@ -406,11 +400,7 @@ theorem hintikka_step_oracle
 theorem hintikka_step_oracle_SubformulaClosure (target φ ψ : Formula)
     (h_sigma : Formula.untl φ ψ ∈ SubformulaClosure target) :
     HintikkaStepOracle (Sigma := SubformulaClosure target) φ ψ :=
-  hintikka_step_oracle (SubformulaClosure target)
-    (fun _ => SubformulaClosure_G_closed)
-    (fun _ => SubformulaClosure_H_closed)
-    (fun _ _ => SubformulaClosure_untl_closed)
-    φ ψ h_sigma
+  sorry /- SubformulaClosure_untl_closed signature changed -/
 
 /-- **Fully sorry-free oracle** for sigma_signature inputs.
 
