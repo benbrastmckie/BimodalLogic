@@ -353,8 +353,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-21T01:00:00Z",
-      "next_artifact_number": 12,
+      "last_updated": "2026-05-21T03:00:00Z",
+      "next_artifact_number": 16,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -435,6 +435,16 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
           "type": "research",
           "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md",
+          "type": "research",
+          "summary": "D-consistency blocker: GHR93 defines d as infimum, not game response. Claim 1 proves consistency. Fix: infimum infrastructure or Classical.choice canonical response."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/12_degenerate-interval-blocker.md",
+          "type": "research",
+          "summary": "Degenerate interval: d=x both gaps makes [d,d] unwinnable. Fix: vacuous game lemma (~20 lines), degenerate intervals are vacuously winnable."
         }
       ],
       "session_id": "sess_1779304083_f28ee0",
