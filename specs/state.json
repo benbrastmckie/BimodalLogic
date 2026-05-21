@@ -353,7 +353,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-21T22:38:45Z",
+      "last_updated": "2026-05-21T22:47:52Z",
       "next_artifact_number": 16,
       "artifacts": [
         {
@@ -427,11 +427,6 @@
           "summary": "Team research round 4 (5 teammates): sorry inventory, d-consistency analysis, flatten_stavi bridge lemma, literature alignment, strategic assessment"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/10_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised implementation plan (v7): wave-based Phase 4C decomposition, d-consistency restructuring, flatten_stavi bridge lemma, 15 phases (6 completed, 1 blocked, 8 remaining), 40-60 hours"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
           "type": "research",
           "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
@@ -450,9 +445,14 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/21_muSig-blocker-resolution.md",
           "type": "research",
           "summary": "Root cause analysis and solution for stavi_untl/snce sorry-closing blocker in stavi_table_mu_correct"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/15_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "v10 plan integrating muSig blocker resolution with updated sorry inventory (17 total)"
         }
       ],
-      "session_id": "sess_1779402190_f77b09",
+      "session_id": "sess_1779403229_434021",
       "researched": "2026-05-20T18:54:12Z",
       "started": "2026-05-16T19:49:58Z"
     },
