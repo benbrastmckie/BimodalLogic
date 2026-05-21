@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Algebraic.TenseS5Algebra
+import Bimodal.Boneyard.UltrafilterFrame.TenseS5Algebra
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence

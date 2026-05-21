@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.SuccChainTruth
+import Bimodal.Boneyard.ChainCompleteness.Bundle.SuccChainTruth
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Semantics.Validity

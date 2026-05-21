@@ -1,3 +1,10 @@
+import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
+import Bimodal.Metalogic.BXCanonical.CanonicalModel
+-- import Bimodal.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
+import Bimodal.Metalogic.Bundle.UntilSinceCoherence
+import Bimodal.Metalogic.Algebraic.ParametricCompleteness
+import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
+
 /-! # Oracle-Based FMCS Coherence (Archived)
 
 Unfinished oracle replacement for dd_bfmcs, abandoned at backward coherence
@@ -8,13 +15,6 @@ Built as Plan v40 Phases 3-4 deliverable (2026-04-18). The oracle chain
 infrastructure in OracleStep.lean (qm_oracle_step, qm_oracle_step_bwd,
 hintikka_step_for_sigma_sig) is preserved as reusable infrastructure.
 -/
-
-import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
-import Bimodal.Metalogic.BXCanonical.CanonicalModel
--- import Bimodal.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
-import Bimodal.Metalogic.Bundle.UntilSinceCoherence
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 namespace Bimodal.Metalogic.BXCanonical
 

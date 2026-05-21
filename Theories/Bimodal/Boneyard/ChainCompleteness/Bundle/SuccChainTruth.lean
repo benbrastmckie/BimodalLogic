@@ -1,6 +1,6 @@
 import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
-import Bimodal.Metalogic.Bundle.SuccChainTaskFrame
-import Bimodal.Metalogic.Bundle.SuccChainWorldHistory
+import Bimodal.Boneyard.ChainCompleteness.Bundle.SuccChainTaskFrame
+import Bimodal.Boneyard.ChainCompleteness.Bundle.SuccChainWorldHistory
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth

@@ -1,7 +1,7 @@
-import Bimodal.Metalogic.Algebraic.DeterministicChain
+import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicChain
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 

@@ -1,8 +1,8 @@
-import Bimodal.Metalogic.Bundle.SimplifiedChain
+import Bimodal.Boneyard.ChainCompleteness.Bundle.SimplifiedChain
 import Bimodal.Theorems.Propositional
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Bundle.SuccRelation
-import Bimodal.Metalogic.Bundle.TargetedChain
+import Bimodal.Boneyard.ChainCompleteness.Bundle.TargetedChain
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.BFMCS

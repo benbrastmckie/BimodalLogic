@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Algebraic.DeterministicChain
-import Bimodal.Metalogic.Algebraic.DeterministicFMCS
+import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicChain
+import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicFMCS
 import Bimodal.Syntax.SubformulaClosure
 import Mathlib.Data.Finset.Powerset
 

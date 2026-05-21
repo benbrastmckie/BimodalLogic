@@ -1,3 +1,6 @@
+import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
+import Bimodal.Metalogic.BXCanonical.CanonicalModel
+
 /-!
 # Boneyard: Round-Robin Chain (Dead Code Archive)
 
@@ -23,9 +26,6 @@ may be reusable. In particular, `enriched_fwd_step_preserves` and the BX11 fold
 theorems are sound — the obstruction is specifically in `rr_fwd_chain_forward_F`
 (depth-0 base case).
 -/
-
-import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
-import Bimodal.Metalogic.BXCanonical.CanonicalModel
 
 namespace Bimodal.Metalogic.BXCanonical
 
