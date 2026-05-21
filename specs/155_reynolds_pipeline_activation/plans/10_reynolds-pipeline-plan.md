@@ -328,7 +328,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 - [x] **Task 0.4**: Update `flatten_stavi` (StaviConnectives.lean:415-418) to map `stavi_untl A B` to `Formula.bot` and `stavi_snce A B` to `Formula.bot`. On discrete orders, U' is always false, so the flattening to bot is correct. *(completed)*
 
-- [x] **Task 0.5**: Reprove `flatten_stavi_correct` stavi_untl case (StaviConnectives.lean:477-528). *(completed — stavi_untl case sorry-free via fo_table_body_forces_P; stavi_snce case uses fo_table_body_forces_P_past which has 1 sorry for the dual iteration argument)* *(deviation: altered — added IsSuccArchimedean/IsPredArchimedean hypotheses to flatten_stavi_correct, required for well-founded descent on bounded intervals)*
+- [x] **Task 0.5**: Reprove `flatten_stavi_correct` stavi_untl case (StaviConnectives.lean:477-528). *(completed — both stavi_untl and stavi_snce cases fully sorry-free via fo_table_body_forces_P and fo_table_body_forces_P_past)* *(deviation: altered — added IsSuccArchimedean/IsPredArchimedean hypotheses to flatten_stavi_correct, required for well-founded descent on bounded intervals)*
 
 - [x] **Task 0.6**: Reprove or replace `stavi_U_discrete_equiv` (StaviConnectives.lean:362-377) and `stavi_S_discrete_equiv` (lines 384-398). *(completed — replaced with stavi_U_always_false_discrete/stavi_S_always_false_discrete stub; the actual always-false proof is now embedded in fo_table_body_forces_P/fo_table_body_forces_P_past)*
 
