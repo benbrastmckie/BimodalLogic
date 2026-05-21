@@ -1849,7 +1849,8 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-        a'_full ⟨n, by omega⟩ = d) :
+        a'_full ⟨n, by omega⟩ = d)
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ghr93_duplicator_wins M N atomMap n r x c x' d := by
   unfold ghr93_duplicator_wins at h ⊢
   intro a ha
@@ -1889,15 +1890,32 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
       -- a_pad(i) ≤ c so in the (n+1)-game order, position i+1 ≤ position n+1.
       -- By same_order_type, a'_full(i) ≤ a'_full(n) = d.
       rw [← hd_eq]
-      -- Now need: a'_full ⟨i.val, _⟩ ≤ a'_full ⟨n, _⟩
-      -- This follows from the full game's same_order_type for any b'.
-      -- We need to invoke hwin_full with some b' to get the ordering.
-      -- Use sorry here -- needs existence of a point in [x',y'] to instantiate.
-      -- The ordering a'_full(i) ≤ a'_full(n) would follow from:
-      --   same_order_type: a_pad(i) ≤ a_pad(n) iff a'_full(i) ≤ a'_full(n)
-      -- Since a_pad(i) ≤ c = a_pad(n), we'd get a'_full(i) ≤ a'_full(n).
-      -- But we need an actual b' to instantiate the winning condition.
-      sorry
+      -- Need: a'_full ⟨i.val, _⟩ ≤ a'_full ⟨n, _⟩
+      -- Use h_pt to get a witness point and instantiate the winning condition.
+      obtain ⟨p, hp⟩ := h_pt
+      obtain ⟨_, _, hcond_witness⟩ := hwin_full p hp
+      obtain ⟨hord_w, _, _⟩ := hcond_witness
+      -- same_order_type at game_tuple indices (i.val+1) and (n+1) in the (n+1)-game:
+      -- game_tuple x y a_pad p ⟨i.val+1, _⟩ = a_pad ⟨i.val, _⟩ = a(i) ∈ [x,c]
+      -- game_tuple x y a_pad p ⟨n+1, _⟩ = a_pad ⟨n, _⟩ = c
+      -- Since a(i) ∈ [x,c], a_pad(i) ≤ c = a_pad(n), so ¬(a_pad(n) < a_pad(i)).
+      -- By same_order_type: ¬(a'_full(n) < a'_full(i)), hence a'_full(i) ≤ a'_full(n).
+      have hcmp := hord_w ⟨n + 1, by omega⟩ ⟨i.val + 1, by omega⟩
+      simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+        show (i.val + 1 : Nat) ≠ 0 from by omega,
+        show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+        show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega,
+        show (i.val + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+        show (i.val + 1 : Nat) ≠ (n + 1) + 2 from by omega,
+        show n + 1 - 1 = n from by omega,
+        show i.val + 1 - 1 = i.val from by omega,
+        dite_true, dite_false] at hcmp
+      obtain ⟨hlt_iff, _⟩ := hcmp
+      -- hlt_iff : a_pad ⟨n, _⟩ < a_pad ⟨i.val, _⟩ ↔ a'_full ⟨n, _⟩ < a'_full ⟨i.val, _⟩
+      -- a_pad(i) = a(i) ∈ [x,c] so a_pad(i) ≤ c = a_pad(n), hence ¬(a_pad(n) < a_pad(i))
+      have ha_pad_i_le : a_pad ⟨i.val, by omega⟩ ≤ a_pad ⟨n, by omega⟩ := by
+        rw [hc_last]; rw [ha_pad_eq i]; exact (ha i).2
+      exact not_lt.mp (fun h_lt => absurd (hlt_iff.mpr h_lt) (not_lt.mpr ha_pad_i_le))
   · -- Show the winning condition for Round 2
     intro b' hb'
     -- b' is an actual point in [x',d] ⊆ [x',y']
@@ -2065,7 +2083,8 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-        a'_full ⟨0, by omega⟩ = d) :
+        a'_full ⟨0, by omega⟩ = d)
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ghr93_duplicator_wins M N atomMap n r c y d y' := by
   unfold ghr93_duplicator_wins at h ⊢
   intro a ha
@@ -2097,7 +2116,29 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
       -- a_pad(0) = c ≤ a_pad(i+1) = a(i) (since a(i) ∈ [c, y])
       -- So a'_full(0) ≤ a'_full(i+1), i.e., d ≤ a'_res(i).
       rw [← hd_eq]
-      sorry -- Needs instantiation of winning condition (same issue as left)
+      -- Use h_pt to get a witness point and instantiate the winning condition.
+      obtain ⟨p, hp⟩ := h_pt
+      obtain ⟨_, _, hcond_witness⟩ := hwin_full p hp
+      obtain ⟨hord_w, _, _⟩ := hcond_witness
+      -- same_order_type at game_tuple indices 1 (= a_pad(0) = c) and i+2 (= a_pad(i+1) = a(i))
+      -- in the (n+1)-round game. Since c ≤ a(i), ¬(a_pad(i+1) < a_pad(0)),
+      -- hence ¬(a'_full(i+1) < a'_full(0)), so a'_full(0) ≤ a'_full(i+1).
+      have hcmp := hord_w ⟨i.val + 2, by omega⟩ ⟨1, by omega⟩
+      simp only [game_tuple, show (i.val + 2 : Nat) ≠ 0 from by omega,
+        show (1 : Nat) ≠ 0 from by omega,
+        show (i.val + 2 : Nat) ≠ (n + 1) + 1 from by omega,
+        show (i.val + 2 : Nat) ≠ (n + 1) + 2 from by omega,
+        show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+        show (1 : Nat) ≠ (n + 1) + 2 from by omega,
+        show i.val + 2 - 1 = i.val + 1 from by omega,
+        show 1 - 1 = 0 from by omega,
+        dite_true, dite_false] at hcmp
+      obtain ⟨hlt_iff, _⟩ := hcmp
+      -- hlt_iff: a_pad ⟨i+1, _⟩ < a_pad ⟨0, _⟩ ↔ a'_full ⟨i+1, _⟩ < a'_full ⟨0, _⟩
+      -- Since a_pad(0) = c ≤ a(i) = a_pad(i+1), ¬(a_pad(i+1) < a_pad(0))
+      have ha_pad_0_le : a_pad ⟨0, by omega⟩ ≤ a_pad ⟨i.val + 1, by omega⟩ := by
+        rw [hc_first]; rw [ha_pad_eq i]; exact (ha i).1
+      exact not_lt.mp (fun h_lt => absurd (hlt_iff.mpr h_lt) (not_lt.mpr ha_pad_0_le))
     · exact (ha'_full ⟨i.val + 1, by omega⟩).2
   · intro b' hb'
     have hb'_full : inClosedInterval x' y' (extendPoint b') :=

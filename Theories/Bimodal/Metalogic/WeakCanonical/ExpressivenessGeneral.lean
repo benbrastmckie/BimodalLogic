@@ -304,11 +304,11 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
-        hcd_form hcd_gp h_d_consistent_left
+        hcd_form hcd_gp h_d_consistent_left h_pt
     have h_restrict_right : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r c y d y' :=
       ghr93_strategy_restrict_right h_mono_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
-        hcd_form hcd_gp h_d_consistent_right
+        hcd_form hcd_gp h_d_consistent_right h_pt
     -- Apply IH to get backward strategies
     -- sigma: backward n-round on [x',d] vs [x,c]
     -- Need: h_pt for [x',d] (∃ point in [x',d])
@@ -451,7 +451,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
     (props : SplitPointProps n x y x' y' c d a_bwd)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
-    (h_split : ∃ i : Fin (n + 1), a_bwd i < d) :
+    (h_split : ∃ i : Fin (n + 1), a_bwd i < d)
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p)) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -561,25 +562,20 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       hwin_L b_sp ⟨hb_sp.1, hbc⟩
     refine ⟨b_resp_L, ⟨hb_resp_L_in.1, le_trans hb_resp_L_in.2 props.hdy'⟩, ?_⟩
     -- ---------------------------------------------------------------
-    -- Step 7: Transfer winning condition (b_sp ≤ c case)
-    -- Have: hcond_L : ghr93_winning_condition L.card
-    --         (game_tuple x' d a_sigma b_resp_L)
-    --         (game_tuple x c resp_L b_sp)
-    -- Need: ghr93_winning_condition (n+1)
-    --         (game_tuple x' y' a_bwd b_resp_L)
-    --         (game_tuple x y a'_resp b_sp)
-    -- ---------------------------------------------------------------
-    -- ---------------------------------------------------------------
     -- Winning condition transfer (left case)
     -- ---------------------------------------------------------------
-    -- The winning condition for the full (n+1)-round game requires
-    -- combining sigma's and tau's winning conditions. The same_order_type
-    -- and gap/point/formula agreement at L-indices comes from sigma
-    -- (hcond_L), at R-indices from tau, and cross-partition from interval
-    -- containment. Accessing tau's winning condition at R-selection indices
-    -- requires playing tau's Round 2, which needs a point in [c,y] ∩ M.
-    -- This is sorry'd: the winning condition transfer requires ~200 lines
-    -- of game_tuple index case analysis plus the tau Round 2 point issue.
+    -- Need to combine sigma's and tau's winning conditions.
+    -- Sigma (hcond_L) covers L-selections and b_sp/b_resp_L.
+    -- Tau (hwin_R) covers R-selections.
+    -- Cross-partition ordering follows from interval containment:
+    --   L-responses ∈ [x,c], R-responses ∈ [c,y] on M-side
+    --   L-selections ∈ [x',d), R-selections ∈ [d,y'] on N-side
+    --
+    -- Tau's ordering data requires instantiating hwin_R with a point in
+    -- [c,y] ∩ M. This is a density assumption implicit in GHR93.
+    -- For now, this winning condition transfer is sorry'd pending:
+    -- (1) density hypothesis for sub-interval point existence
+    -- (2) ~200 lines of index case analysis mapping sub-game to full-game indices
     sorry
   · -- b_sp in (c, y]: delegate to τ's Round 2
     push_neg at hbc
@@ -587,8 +583,12 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       hwin_R b_sp ⟨le_of_lt hbc, hb_sp.2⟩
     refine ⟨b_resp_R, ⟨le_trans props.hx'd hb_resp_R_in.1, hb_resp_R_in.2⟩, ?_⟩
     -- ---------------------------------------------------------------
-    -- Winning condition transfer (right case): symmetric, sorry'd
-    -- ---------------------------------------------------------------
+    -- Winning condition transfer (right case): symmetric to left case.
+    -- Here b_sp ∈ (c,y], so we can directly use hcond_R from tau.
+    -- Sigma's ordering data requires instantiating hwin_L with a point
+    -- in [x,c] ∩ M. Since b_sp > c, b_sp is not in [x,c].
+    -- Same density issue as the left case: sorry'd pending density
+    -- hypothesis and index case analysis.
     sorry
 
 /-! ### Cases II-IV: Tail Cases
@@ -652,6 +652,7 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
             {x₀' y₀' : ExtendedCarrier N atomMap r},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
@@ -669,7 +670,7 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
   -- Case split: does any selection fall strictly below d?
   by_cases h_split : ∃ i : Fin (n + 1), a_bwd i < d
   · -- Case I: at least one selection below d (the "split" case)
-    exact ghr93_case_I props ha_bwd h_split
+    exact ghr93_case_I props ha_bwd h_split h_pt_M
   · -- Cases II-IV: all selections are at or above d
     push_neg at h_split
     exact ghr93_cases_II_III_IV props ha_bwd h_split
@@ -702,14 +703,15 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y') :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
   -- Revert endpoints before induction so the IH is universally quantified
   -- over all sub-intervals, not bound to the specific x, y, x', y'.
-  revert x y x' y' hxy hx'y' h_pt h
+  revert x y x' y' hxy hx'y' h_pt h_pt_M h
   induction n with
   | zero =>
-    intro x y x' y' hxy hx'y' h_pt h
+    intro x y x' y' hxy hx'y' h_pt h_pt_M h
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -758,10 +760,11 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
           base_case_N_eq x' y' q p a'_resp hq_eq i]
       exact (hform_fwd _ A hA).symm
   | succ n ih_gen =>
-    intro x y x' y' hxy hx'y' h_pt h
+    intro x y x' y' hxy hx'y' h_pt h_pt_M h
     -- Inductive step: (*)_n → (*)_{n+1}
     -- ih_gen is now universally quantified over all endpoints:
     --   ih_gen : ∀ {x y x' y'}, x ≤ y → x' ≤ y' → (∃ p, ...) →
+    --            (∃ p, ...) →
     --            ghr93_duplicator_wins M N (1+3*n) r x y x' y' →
     --            ghr93_duplicator_wins N M n r x' y' x y
     --
@@ -769,9 +772,25 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
     rw [h_rounds] at h
     -- Apply the inductive step helper with the generalized IH
-    exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt
+    -- ih_gen now takes h_pt_M, but the IH of ghr93_inductive_step does not.
+    -- We wrap ih_gen, providing a default h_pt_M argument derived from hfwd.
+    -- Since the IH is only used inside obtain_split_point_props, we need to
+    -- supply h_pt_M for each sub-interval. We use a sorry-free derivation:
+    -- the forward game on any sub-interval implies existence of points via
+    -- the game's Round 2 mechanism. For now, we use the forward game to get
+    -- a matching M-point for any N-point in the sub-interval.
+    exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
-        ih_gen hle hle' hpt' hfwd)
+        ih_gen hle hle' hpt' (by
+          -- Derive ∃ p_M, inClosedInterval x₀ y₀ (extendPoint p_M)
+          -- from the forward game hfwd and h_pt' for N-side
+          obtain ⟨p_N, hp_N⟩ := hpt'
+          -- Play the forward game's Round 1 with any element from [x₀, y₀]
+          obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
+            (fun _ => ⟨le_refl x₀, hle⟩)
+          -- Play Round 2 with p_N
+          obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
+          exact ⟨b_M, hb_M_in⟩) hfwd)
       h
 
 /-! ## Rank-Varying Theorem 6
