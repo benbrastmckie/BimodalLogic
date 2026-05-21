@@ -323,9 +323,9 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
    h_d_consistent + h_pt hypotheses. All sub-proofs closed including response containment.
 2. obtain_split_point_props — [STRUCT] d=a_bwd(n) approach. Point case structured. Gap case
    sorry'd (line 410, needs Lemma 9 ~400-500 lines).
-3. Case I split — [STRUCT] outer structure proved (partition, Round 1 play, Round 2 delegation,
-   interval containment). 2 sorry's remain for winning condition transfer (lines 583+592,
-   ~200 lines game_tuple index case analysis + tau Round 2 point issue). No Lemma 9 dep.
+3. Case I split — [DONE] fully sorry-free. Partition, sub-game play, response merge,
+   Round 2 delegation, and full winning condition transfer (same_order_type, gap_point_agreement,
+   formula_agreement) all proved. ~623 lines of proof code.
 4. Shared infra for II-IV — [TODO] init extraction, rank_type_formula (~125 lines)
 5. Case II point/Until — [SORRY within ghr93_cases_II_III_IV] (line 524, ~100 lines, no Lemma 9 dep)
 6. Lemma 9 gap detection — [SORRY] (lines 1423+1442, ~400-500 lines, blocks Cases III/IV)
