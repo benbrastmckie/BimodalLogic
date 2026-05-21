@@ -114,7 +114,8 @@ After 155 completes:
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
 - **Task Type**: lean4
 - **Dependencies**: 131, 175
 
