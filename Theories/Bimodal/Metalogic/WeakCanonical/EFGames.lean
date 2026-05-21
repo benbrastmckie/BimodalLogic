@@ -1004,6 +1004,16 @@ theorem rank_embed_temporal_truth_mu {sig : MonadicSignature}
       exact (ihψ _).mpr (hψ (Sum.inl y)
         ((rank_embed_lt h _ _).mp hsu) ((rank_embed_lt h _ _).mp hut) ⟨y, rfl⟩)
 
+/-- extendPoint preserves strict order. Moved here for use in rank_embed proofs. -/
+private theorem extendPoint_lt_iff' {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat} (x y : M.carrier) :
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) x <
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) y ↔ x < y := by
+  simp only [extendPoint]
+  constructor
+  · intro ⟨hle, hne⟩; exact lt_of_le_of_ne (show x ≤ y from hle) (fun h => hne (h ▸ le_refl y))
+  · intro h; exact ⟨le_of_lt h, fun hyx => not_lt.mpr (show y ≤ x from hyx) h⟩
+
 /-- Mu-relativized truth of StaviFormulas is preserved by rank_embed.
     The proof is by structural induction on the StaviFormula. -/
 theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
@@ -1026,28 +1036,475 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
     -- GHR93 FO table: ∃ s, t < s ∧ (body) ∧ (fail) ∧ (init)
     -- rank_embed preserves order, mu-status, predicates → witnesses transfer
     simp only [stavi_temporal_truth_mu]; constructor
-    · -- mp: r' → r. Transfer witness s and all quantified points through rank_embed.
+    · -- mp: r' → r. Mu-witnesses are extendPoints at both ranks. The bound s
+      -- may be a gap at rank r' not present at rank r; handle by finding a
+      -- point bound in the gap's cut.
       intro ⟨s, hts, h_body, ⟨u_fail, htu_fail, hus_fail, hmu_fail, hB_fail⟩,
              ⟨u_init, htu_init, hus_init, hmu_init, hB_init⟩⟩
-      -- The witness s in r' may not be a rank_embed of an r-element.
-      -- But s is in ExtendedCarrier r', which includes all r-elements via rank_embed.
-      -- For the FO table, s just serves as a bound (not mu-restricted).
-      -- We need to find a corresponding bound in r.
-      -- Actually, rank_embed is an order embedding from r to r', so
-      -- we can work with the inverse image. But rank_embed may not be surjective.
-      -- The key insight: the witness s in r' might be a gap that doesn't exist in r.
-      -- But ALL mu-points in r' are exactly rank_embed of mu-points in r.
-      -- Since s is just a bound, we can choose s = the r'-element itself,
-      -- and then restrict all mu-witnesses to their r-preimages.
-      sorry
-    · -- mpr: r → r'. Dual direction.
-      sorry
+      -- Extract the actual M.carrier points from mu-witnesses
+      obtain ⟨xf, rfl⟩ := hmu_fail
+      obtain ⟨xi, rfl⟩ := hmu_init
+      -- Helper: in a gap's cut, every element has a larger element in the cut
+      have gap_cut_cofinal : ∀ (g : RDefinableGap M atomMap r') (x : M.carrier),
+          x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
+        intro g x hx
+        by_contra h_all
+        push_neg at h_all
+        -- x is an upper bound of cut, and x ∈ cut → IsLUB cut x
+        have : IsLUB g.val.cut x := ⟨h_all, fun b hb => hb hx⟩
+        exact g.val.no_sup ⟨x, this, hx⟩
+      -- Choose the bound s_r at rank r
+      -- Case split: s is a point or a gap
+      rcases s with y | g
+      · -- s = extendPoint y: use extendPoint y at rank r
+        refine ⟨extendPoint y, (rank_embed_lt h e (extendPoint y)).mp hts, ?_, ?_, ?_⟩
+        · -- Body
+          intro u heu hus hmu_u
+          obtain ⟨xu, rfl⟩ := hmu_u
+          have h_disj := h_body (extendPoint xu)
+            ((rank_embed_lt h e (extendPoint xu)).mpr heu)
+            ((rank_embed_lt h (extendPoint xu) (extendPoint y)).mpr hus)
+            (mu_holds_point xu)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, huv, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨extendPoint xv, (rank_embed_lt h (extendPoint xu) (extendPoint xv)).mp huv,
+              mu_holds_point xv,
+              fun w hew hwv hmu_w => by
+                obtain ⟨xw, rfl⟩ := hmu_w
+                exact (ihB _).mp (hBv (extendPoint xw)
+                  ((rank_embed_lt h e (extendPoint xw)).mpr hew)
+                  ((rank_embed_lt h (extendPoint xw) (extendPoint xv)).mpr hwv)
+                  (mu_holds_point xw))⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', hev', hv'u, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            exact ⟨fun v huv hvs hmu_v => by
+                obtain ⟨xv, rfl⟩ := hmu_v
+                exact (ihA _).mp (hA (extendPoint xv)
+                  ((rank_embed_lt h (extendPoint xu) (extendPoint xv)).mpr huv)
+                  ((rank_embed_lt h (extendPoint xv) (extendPoint y)).mpr hvs)
+                  (mu_holds_point xv)),
+              extendPoint xv', (rank_embed_lt h e (extendPoint xv')).mp hev',
+                (rank_embed_lt h (extendPoint xv') (extendPoint xu)).mp hv'u,
+                mu_holds_point xv',
+                fun hBv'_r => hBv' ((ihB _).mpr hBv'_r)⟩
+        · -- Fail
+          exact ⟨extendPoint xf, (rank_embed_lt h e (extendPoint xf)).mp htu_fail,
+            (rank_embed_lt h (extendPoint xf) (extendPoint y)).mp hus_fail,
+            mu_holds_point xf,
+            fun hB => hB_fail ((ihB _).mpr hB)⟩
+        · -- Init
+          exact ⟨extendPoint xi, (rank_embed_lt h e (extendPoint xi)).mp htu_init,
+            (rank_embed_lt h (extendPoint xi) (extendPoint y)).mp hus_init,
+            mu_holds_point xi,
+            fun v hev hvu hmu_v => by
+              obtain ⟨xv, rfl⟩ := hmu_v
+              exact (ihB _).mp (hB_init (extendPoint xv)
+                ((rank_embed_lt h e (extendPoint xv)).mpr hev)
+                ((rank_embed_lt h (extendPoint xv) (extendPoint xi)).mpr hvu)
+                (mu_holds_point xv))⟩
+      · -- s = Sum.inr g (gap at rank r'): find a point bound in the gap's cut
+        -- xf, xi ∈ g.val.cut since extendPoint xf/xi < Sum.inr g
+        have hxf_cut : xf ∈ g.val.cut := (extendPoint_le_gap_iff xf g).mp (le_of_lt hus_fail)
+        have hxi_cut : xi ∈ g.val.cut := (extendPoint_le_gap_iff xi g).mp (le_of_lt hus_init)
+        -- max(xf, xi) ∈ cut
+        have hmax_cut : max xf xi ∈ g.val.cut := by
+          rcases le_or_lt xf xi with h | h
+          · simp [max_eq_right h]; exact hxi_cut
+          · simp [max_eq_left (le_of_lt h)]; exact hxf_cut
+        -- Find y > max(xf, xi) in cut
+        obtain ⟨y, hy_cut, hmax_y⟩ := gap_cut_cofinal g (max xf xi) hmax_cut
+        have hxf_y : xf < y := lt_of_le_of_lt (le_max_left xf xi) hmax_y
+        have hxi_y : xi < y := lt_of_le_of_lt (le_max_right xf xi) hmax_y
+        -- Use extendPoint y at rank r as the bound
+        -- e < extendPoint y: e < extendPoint xf < extendPoint y
+        have he_y : e < extendPoint (sig := sig) (atomMap := atomMap) (r := r) y := by
+          calc e < extendPoint xf := (rank_embed_lt h e (extendPoint xf)).mp htu_fail
+            _ < extendPoint y := (extendPoint_lt_iff' xf y).mpr hxf_y
+        refine ⟨extendPoint y, he_y, ?_, ?_, ?_⟩
+        · -- Body: ∀ mu u ∈ (e, extendPoint y), disjunction
+          intro u heu huy hmu_u
+          obtain ⟨xu, rfl⟩ := hmu_u
+          -- xu < y, so xu ∈ g.val.cut (downward-closed), so extendPoint xu < Sum.inr g at rank r'
+          have hxu_cut : xu ∈ g.val.cut :=
+            g.val.downward_closed y xu hy_cut (le_of_lt ((extendPoint_lt_iff' xu y).mp huy))
+          have hxu_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r') xu) < Sum.inr g :=
+            lt_of_le_of_ne ((extendPoint_le_gap_iff xu g).mpr hxu_cut)
+              (fun h => by cases h)
+          have h_disj := h_body (extendPoint xu)
+            ((rank_embed_lt h e (extendPoint xu)).mpr heu) hxu_s (mu_holds_point xu)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, huv, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨extendPoint xv, (rank_embed_lt h (extendPoint xu) (extendPoint xv)).mp huv,
+              mu_holds_point xv,
+              fun w hew hwv hmu_w => by
+                obtain ⟨xw, rfl⟩ := hmu_w
+                exact (ihB _).mp (hBv (extendPoint xw)
+                  ((rank_embed_lt h e (extendPoint xw)).mpr hew)
+                  ((rank_embed_lt h (extendPoint xw) (extendPoint xv)).mpr hwv)
+                  (mu_holds_point xw))⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', hev', hv'u, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            exact ⟨fun v huv hvs hmu_v => by
+                obtain ⟨xv, rfl⟩ := hmu_v
+                -- xv < y at rank r, so xv ∈ g.val.cut, so extendPoint xv < Sum.inr g at rank r'
+                have hxv_cut : xv ∈ g.val.cut :=
+                  g.val.downward_closed y xv hy_cut
+                    (le_of_lt ((extendPoint_lt_iff' xv y).mp hvs))
+                have hxv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r') xv) < Sum.inr g :=
+                  lt_of_le_of_ne ((extendPoint_le_gap_iff xv g).mpr hxv_cut)
+                    (fun h => by cases h)
+                exact (ihA _).mp (hA (extendPoint xv)
+                  ((rank_embed_lt h (extendPoint xu) (extendPoint xv)).mpr huv)
+                  hxv_s (mu_holds_point xv)),
+              extendPoint xv', (rank_embed_lt h e (extendPoint xv')).mp hev',
+                (rank_embed_lt h (extendPoint xv') (extendPoint xu)).mp hv'u,
+                mu_holds_point xv',
+                fun hBv'_r => hBv' ((ihB _).mpr hBv'_r)⟩
+        · -- Fail
+          exact ⟨extendPoint xf, (rank_embed_lt h e (extendPoint xf)).mp htu_fail,
+            (extendPoint_lt_iff' xf y).mpr hxf_y, mu_holds_point xf,
+            fun hB => hB_fail ((ihB _).mpr hB)⟩
+        · -- Init
+          exact ⟨extendPoint xi, (rank_embed_lt h e (extendPoint xi)).mp htu_init,
+            (extendPoint_lt_iff' xi y).mpr hxi_y, mu_holds_point xi,
+            fun v hev hvu hmu_v => by
+              obtain ⟨xv, rfl⟩ := hmu_v
+              exact (ihB _).mp (hB_init (extendPoint xv)
+                ((rank_embed_lt h e (extendPoint xv)).mpr hev)
+                ((rank_embed_lt h (extendPoint xv) (extendPoint xi)).mpr hvu)
+                (mu_holds_point xv))⟩
+    · -- mpr: r → r'. Push witnesses through rank_embed.
+      intro ⟨s, hes, h_body, ⟨u_fail, heu_fail, hus_fail, hmu_fail, hB_fail⟩,
+             ⟨u_init, heu_init, hus_init, hmu_init, hB_init⟩⟩
+      refine ⟨rank_embed h s, (rank_embed_lt h e s).mpr hes, ?_, ?_, ?_⟩
+      · -- Body: ∀ mu u ∈ (rank_embed e, rank_embed s), disjunction
+        intro u heu hus hmu_u
+        -- u is a mu-point at rank r', so u = extendPoint x for some x
+        obtain ⟨x, rfl⟩ := hmu_u
+        -- rank_embed (extendPoint x) = extendPoint x, so extendPoint x is in range
+        have heu_r : e < extendPoint x := (rank_embed_lt h e (extendPoint x)).mp heu
+        have hus_r : extendPoint x < s := (rank_embed_lt h (extendPoint x) s).mp hus
+        have h_disj := h_body (extendPoint x) heu_r hus_r (mu_holds_point x)
+        cases h_disj with
+        | inl h_cof =>
+          left
+          obtain ⟨v, huv, hmu_v, hBv⟩ := h_cof
+          exact ⟨rank_embed h v, (rank_embed_lt h (extendPoint x) v).mpr huv,
+            (rank_embed_mu_holds h v).mpr hmu_v,
+            fun w hew hwv hmu_w => by
+              obtain ⟨y, rfl⟩ := hmu_w
+              exact (ihB _).mpr (hBv (extendPoint y)
+                ((rank_embed_lt h e (extendPoint y)).mp hew)
+                ((rank_embed_lt h (extendPoint y) v).mp hwv)
+                (mu_holds_point y))⟩
+        | inr h_take =>
+          right
+          obtain ⟨hA, v', hev', hv'u, hmu_v', hBv'⟩ := h_take
+          exact ⟨fun v huv hvs hmu_v => by
+              obtain ⟨y, rfl⟩ := hmu_v
+              exact (ihA _).mpr (hA (extendPoint y)
+                ((rank_embed_lt h (extendPoint x) (extendPoint y)).mp huv)
+                ((rank_embed_lt h (extendPoint y) s).mp hvs)
+                (mu_holds_point y)),
+            rank_embed h v', (rank_embed_lt h e v').mpr hev',
+              (rank_embed_lt h v' (extendPoint x)).mpr hv'u,
+              (rank_embed_mu_holds h v').mpr hmu_v',
+              fun hBv'_r' => hBv' ((ihB _).mp hBv'_r')⟩
+      · -- Fail: ∃ mu u ∈ (rank_embed e, rank_embed s), ¬B(u)
+        exact ⟨rank_embed h u_fail, (rank_embed_lt h e u_fail).mpr heu_fail,
+          (rank_embed_lt h u_fail s).mpr hus_fail,
+          (rank_embed_mu_holds h u_fail).mpr hmu_fail,
+          fun hB => hB_fail ((ihB _).mp hB)⟩
+      · -- Init: ∃ mu u ∈ (rank_embed e, rank_embed s), B on (e, u)
+        exact ⟨rank_embed h u_init, (rank_embed_lt h e u_init).mpr heu_init,
+          (rank_embed_lt h u_init s).mpr hus_init,
+          (rank_embed_mu_holds h u_init).mpr hmu_init,
+          fun v hev hvu hmu_v => by
+            obtain ⟨y, rfl⟩ := hmu_v
+            exact (ihB _).mpr (hB_init (extendPoint y)
+              ((rank_embed_lt h e (extendPoint y)).mp hev)
+              ((rank_embed_lt h (extendPoint y) u_init).mp hvu)
+              (mu_holds_point y))⟩
   | stavi_snce A B ihA ihB =>
+    -- Past dual of stavi_untl. All directions swapped (< → >, (t,s) → (s,t)).
     simp only [stavi_temporal_truth_mu]; constructor
-    · intro ⟨s, hst, h_body, h_fail, h_init⟩
-      sorry
-    · intro ⟨s, hst, h_body, h_fail, h_init⟩
-      sorry
+    · -- mp: r' → r. Same strategy as stavi_untl mp.
+      intro ⟨s, hst, h_body, ⟨u_fail, hsu_fail, hue_fail, hmu_fail, hB_fail⟩,
+             ⟨u_init, hsu_init, hue_init, hmu_init, hB_init⟩⟩
+      obtain ⟨xf, rfl⟩ := hmu_fail
+      obtain ⟨xi, rfl⟩ := hmu_init
+      -- Helper: gap cut cofinal (same as stavi_untl)
+      have gap_cut_cofinal : ∀ (g : RDefinableGap M atomMap r') (x : M.carrier),
+          x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
+        intro g x hx
+        by_contra h_all; push_neg at h_all
+        exact g.val.no_sup ⟨x, ⟨h_all, fun b hb => hb hx⟩, hx⟩
+      rcases s with y | g
+      · -- s = extendPoint y (a point)
+        refine ⟨extendPoint y, (rank_embed_lt h (extendPoint y) e).mp hst, ?_, ?_, ?_⟩
+        · intro u hsu hue hmu_u
+          obtain ⟨xu, rfl⟩ := hmu_u
+          have h_disj := h_body (extendPoint xu)
+            ((rank_embed_lt h (extendPoint y) (extendPoint xu)).mpr hsu)
+            ((rank_embed_lt h (extendPoint xu) e).mpr hue) (mu_holds_point xu)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, hvu, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨extendPoint xv, (rank_embed_lt h (extendPoint xv) (extendPoint xu)).mp hvu,
+              mu_holds_point xv,
+              fun w hvw hwe hmu_w => by
+                obtain ⟨xw, rfl⟩ := hmu_w
+                exact (ihB _).mp (hBv (extendPoint xw)
+                  ((rank_embed_lt h (extendPoint xv) (extendPoint xw)).mpr hvw)
+                  ((rank_embed_lt h (extendPoint xw) e).mpr hwe)
+                  (mu_holds_point xw))⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', huv', hv'e, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            exact ⟨fun v hsv hvu hmu_v => by
+                obtain ⟨xv, rfl⟩ := hmu_v
+                exact (ihA _).mp (hA (extendPoint xv)
+                  ((rank_embed_lt h (extendPoint y) (extendPoint xv)).mpr hsv)
+                  ((rank_embed_lt h (extendPoint xv) (extendPoint xu)).mpr hvu)
+                  (mu_holds_point xv)),
+              extendPoint xv', (rank_embed_lt h (extendPoint xu) (extendPoint xv')).mp huv',
+                (rank_embed_lt h (extendPoint xv') e).mp hv'e,
+                mu_holds_point xv',
+                fun hBv'_r => hBv' ((ihB _).mpr hBv'_r)⟩
+        · exact ⟨extendPoint xf, (rank_embed_lt h (extendPoint y) (extendPoint xf)).mp hsu_fail,
+            (rank_embed_lt h (extendPoint xf) e).mp hue_fail,
+            mu_holds_point xf, fun hB => hB_fail ((ihB _).mpr hB)⟩
+        · exact ⟨extendPoint xi, (rank_embed_lt h (extendPoint y) (extendPoint xi)).mp hsu_init,
+            (rank_embed_lt h (extendPoint xi) e).mp hue_init,
+            mu_holds_point xi,
+            fun v hvu hve hmu_v => by
+              obtain ⟨xv, rfl⟩ := hmu_v
+              exact (ihB _).mp (hB_init (extendPoint xv)
+                ((rank_embed_lt h (extendPoint xi) (extendPoint xv)).mpr hvu)
+                ((rank_embed_lt h (extendPoint xv) e).mpr hve)
+                (mu_holds_point xv))⟩
+      · -- s = Sum.inr g (gap): find point bound in gap's complement (above gap)
+        -- For S' (past), s < e means gap is BELOW e. Points in (s, e) have xf, xi ∉ g.val.cut.
+        -- Actually, s < extendPoint xf means xf ∉ g.val.cut (gap is below xf).
+        -- We need a bound below e. The gap g has complement with no minimum.
+        -- xf, xi are NOT in the cut (since Sum.inr g < extendPoint xf/xi).
+        -- We need s_r < extendPoint xf and s_r < extendPoint xi.
+        -- Any point z with z ∉ g.val.cut works: extendPoint z > Sum.inr g.
+        -- But we need z < xf and z < xi. Use complement_no_min:
+        -- there exist points below xf/xi not in the cut... actually no.
+        -- If Sum.inr g < extendPoint xf, then xf ∉ g.val.cut.
+        -- The complement_no_min says the complement has no minimum.
+        -- So there exists z ∉ g.val.cut with z < xf, and z < xi.
+        -- Actually the right approach: the cut IS downward-closed.
+        -- If xf ∉ g.val.cut, we need s_r at rank r with s_r < extendPoint xf.
+        -- Since the gap g separates: all cut elements are < g < all non-cut elements.
+        -- So if xf ∉ cut, then for any z ∈ cut, z < xf (by contrapositive of downward_closed).
+        -- Wait, that's not right. downward_closed says: if x ∈ cut and y ≤ x then y ∈ cut.
+        -- Contrapositive: if y ∉ cut, then for all x ≥ y, x ∉ cut.
+        -- So: xf ∉ cut means for all z, if z ∈ cut then z < xf (not z ≤ xf, since if z = xf,
+        -- then xf ∈ cut, contradiction). Actually if z ∈ cut and z ≥ xf, then
+        -- xf ∈ cut by downward_closed. Contradiction. So z < xf.
+        -- Similarly for xi.
+        -- We need s_r at rank r such that s_r < e AND the mu-points in (s_r, e) at rank r
+        -- are exactly (or a superset of) those in (Sum.inr g, rank_embed h e) at rank r'.
+        -- For the body (universal quantifier), we need (s_r, e)_mu at rank r ⊆ (g, e)_mu at rank r'.
+        -- This means: if s_r < extendPoint z < e at rank r, then Sum.inr g < extendPoint z < rank_embed h e.
+        -- The second part: extendPoint z < rank_embed h e ↔ extendPoint z < e (rank_embed preserves).
+        -- The first part: Sum.inr g < extendPoint z ↔ z ∉ g.val.cut.
+        -- So we need: if s_r < extendPoint z at rank r, then z ∉ g.val.cut.
+        -- Pick s_r = extendPoint w for some w ∈ g.val.cut. Then s_r < extendPoint z means w < z.
+        -- But w ∈ cut doesn't guarantee z ∉ cut when z > w. We need the opposite.
+        -- Actually: we need z ∉ cut to guarantee Sum.inr g < extendPoint z.
+        -- Pick s_r such that (s_r, e)_mu ⊆ {z : M.carrier | z ∉ g.val.cut ∧ z < e_point}.
+        -- For the existential witnesses: xf, xi ∉ g.val.cut. We need s_r < xf and s_r < xi.
+        -- Use complement_no_min: the complement has no minimum. So for xf not in cut,
+        -- there exists z < xf with z not in cut. Then extendPoint z > Sum.inr g.
+        -- But we need s_r < BOTH xf and xi. If we find z₁ < xf with z₁ ∉ cut,
+        -- and z₂ < xi with z₂ ∉ cut, take s_r = extendPoint (min z₁ z₂).
+        -- min z₁ z₂ ∉ cut? min is one of z₁, z₂, both ∉ cut. So yes.
+        -- And min z₁ z₂ < xf and < xi. Then (min z₁ z₂, e) ⊇ {xf, xi}.
+        -- For the body: if min z₁ z₂ < z < e_point and z ∉ cut, then g < extendPoint z. Good.
+        -- But what if z ∈ cut? Then extendPoint z ≤ Sum.inr g. And s_r = extendPoint (min z₁ z₂) > Sum.inr g
+        -- (since min z₁ z₂ ∉ cut). So extendPoint z < s_r? Not necessarily.
+        -- z ∈ cut and min z₁ z₂ ∉ cut means z < min z₁ z₂ (by downward_closed contrapositive).
+        -- Wait: z ∈ cut and min z₁ z₂ ∉ cut. If z ≥ min z₁ z₂, then by downward_closed,
+        -- min z₁ z₂ ∈ cut. Contradiction. So z < min z₁ z₂.
+        -- Hence extendPoint z < extendPoint (min z₁ z₂) = s_r. So z is NOT in (s_r, e)!
+        -- This means all mu-points in (s_r, e) have z ∉ cut, hence Sum.inr g < extendPoint z.
+        --
+        -- Summary: pick s_r = extendPoint (min z₁ z₂) where z₁ < xf, z₂ < xi, both ∉ cut.
+        -- Key properties:
+        -- - s_r < e: s_r < extendPoint xf < e (using hue_fail)
+        -- - mu-points in (s_r, e) at rank r ↔ z ∉ g.val.cut ∧ z > min z₁ z₂
+        --   and these satisfy Sum.inr g < extendPoint z at rank r'
+        have hxf_not_cut : xf ∉ g.val.cut := by
+          intro hxf_in
+          have : (extendPoint xf : ExtendedCarrier M atomMap r') ≤ Sum.inr g :=
+            (extendPoint_le_gap_iff xf g).mpr hxf_in
+          exact not_lt.mpr this hsu_fail
+        have hxi_not_cut : xi ∉ g.val.cut := by
+          intro hxi_in
+          have : (extendPoint xi : ExtendedCarrier M atomMap r') ≤ Sum.inr g :=
+            (extendPoint_le_gap_iff xi g).mpr hxi_in
+          exact not_lt.mpr this hsu_init
+        -- complement_no_min gives us points below xf and xi not in cut
+        have compl_no_min := g.val.complement_no_min
+        -- There exist z₁ < xf and z₂ < xi with z₁, z₂ ∉ cut
+        have ⟨z₁, hz₁_not_cut, hz₁_xf⟩ : ∃ z, z ∉ g.val.cut ∧ z < xf := by
+          by_contra h_all; push_neg at h_all
+          exact compl_no_min ⟨xf, hxf_not_cut, fun y hy => h_all y hy⟩
+        have ⟨z₂, hz₂_not_cut, hz₂_xi⟩ : ∃ z, z ∉ g.val.cut ∧ z < xi := by
+          by_contra h_all; push_neg at h_all
+          exact compl_no_min ⟨xi, hxi_not_cut, fun y hy => h_all y hy⟩
+        -- min z₁ z₂ ∉ cut
+        have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
+          rcases le_or_lt z₁ z₂ with h | h
+          · simp [min_eq_left h]; exact hz₁_not_cut
+          · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
+        -- Helper: z ∉ cut → Sum.inr g < extendPoint z at rank r'
+        -- Inline helper: z ∉ cut → Sum.inr g < Sum.inl z
+        -- (proved via lt_of_not_le since Sum.inl z ≤ Sum.inr g ↔ z ∈ cut)
+        -- Use s_r = extendPoint (min z₁ z₂) at rank r
+        have hs_r_e : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) (min z₁ z₂)) < e := by
+          calc extendPoint (min z₁ z₂) ≤ extendPoint z₁ :=
+                show (min z₁ z₂ ≤ z₁ : Prop) from min_le_left z₁ z₂
+            _ < extendPoint xf := (extendPoint_lt_iff' z₁ xf).mpr hz₁_xf
+            _ < e := (rank_embed_lt h (extendPoint xf) e).mp hue_fail
+        refine ⟨extendPoint (min z₁ z₂), hs_r_e, ?_, ?_, ?_⟩
+        · -- Body
+          intro u hsu hue hmu_u
+          obtain ⟨xu, rfl⟩ := hmu_u
+          -- xu > min z₁ z₂ and xu ∉ g.val.cut (since min z₁ z₂ ∉ cut and xu > min z₁ z₂)
+          have hxu_not_cut : xu ∉ g.val.cut := by
+            intro hxu_in
+            -- xu ∈ cut, min z₁ z₂ ∉ cut. By downward_closed: xu ≤ min z₁ z₂ → min ∈ cut. Contra.
+            -- So xu < min z₁ z₂? No, we know extendPoint (min z₁ z₂) < extendPoint xu.
+            -- So min z₁ z₂ < xu. But xu ∈ cut and min z₁ z₂ ≤ xu (by min ≤ xu), so min ∈ cut.
+            exact hmin_not_cut (g.val.downward_closed xu (min z₁ z₂) hxu_in
+              (le_of_lt ((extendPoint_lt_iff' (min z₁ z₂) xu).mp hsu)))
+          -- Sum.inr g < Sum.inl xu follows from hsu_fail (Sum.inr g < Sum.inl xf)
+          -- and transitivity, if we knew extendPoint xf ≤ extendPoint xu.
+          -- But simpler: reconstruct from scratch.
+          -- Since this type class issue persists, define s' explicitly typed.
+          have hxu_above_g : @LT.lt (ExtendedCarrier M atomMap r')
+              extendedLinearOrder.toLT (Sum.inr g) (Sum.inl xu) :=
+            ⟨hxu_not_cut, fun h => hxu_not_cut h⟩
+          have h_disj := h_body (extendPoint xu)
+            hxu_above_g ((rank_embed_lt h (extendPoint xu) e).mpr hue) (mu_holds_point xu)
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, hvu, hmu_v, hBv⟩ := h_cof
+            obtain ⟨xv, rfl⟩ := hmu_v
+            exact ⟨extendPoint xv, (rank_embed_lt h (extendPoint xv) (extendPoint xu)).mp hvu,
+              mu_holds_point xv,
+              fun w hvw hwe hmu_w => by
+                obtain ⟨xw, rfl⟩ := hmu_w
+                exact (ihB _).mp (hBv (extendPoint xw)
+                  ((rank_embed_lt h (extendPoint xv) (extendPoint xw)).mpr hvw)
+                  ((rank_embed_lt h (extendPoint xw) e).mpr hwe)
+                  (mu_holds_point xw))⟩
+          | inr h_take =>
+            right
+            obtain ⟨hA, v', huv', hv'e, hmu_v', hBv'⟩ := h_take
+            obtain ⟨xv', rfl⟩ := hmu_v'
+            exact ⟨fun v hsv hvu hmu_v => by
+                obtain ⟨xv, rfl⟩ := hmu_v
+                -- xv > min z₁ z₂ → xv ∉ cut → Sum.inr g < extendPoint xv
+                have hxv_not_cut : xv ∉ g.val.cut := by
+                  intro hxv_in
+                  exact hmin_not_cut (g.val.downward_closed xv (min z₁ z₂) hxv_in
+                    (le_of_lt ((extendPoint_lt_iff' (min z₁ z₂) xv).mp hsv)))
+                have hxv_above_g : @LT.lt (ExtendedCarrier M atomMap r')
+                    extendedLinearOrder.toLT (Sum.inr g) (Sum.inl xv) :=
+                  ⟨hxv_not_cut, fun h => hxv_not_cut h⟩
+                exact (ihA _).mp (hA (extendPoint xv)
+                  hxv_above_g
+                  ((rank_embed_lt h (extendPoint xv) (extendPoint xu)).mpr hvu)
+                  (mu_holds_point xv)),
+              extendPoint xv', (rank_embed_lt h (extendPoint xu) (extendPoint xv')).mp huv',
+                (rank_embed_lt h (extendPoint xv') e).mp hv'e,
+                mu_holds_point xv',
+                fun hBv'_r => hBv' ((ihB _).mpr hBv'_r)⟩
+        · -- Fail
+          exact ⟨extendPoint xf,
+            (extendPoint_lt_iff' (min z₁ z₂) xf).mpr (lt_of_le_of_lt (min_le_left z₁ z₂) hz₁_xf),
+            (rank_embed_lt h (extendPoint xf) e).mp hue_fail,
+            mu_holds_point xf, fun hB => hB_fail ((ihB _).mpr hB)⟩
+        · -- Init
+          exact ⟨extendPoint xi,
+            (extendPoint_lt_iff' (min z₁ z₂) xi).mpr (lt_of_le_of_lt (min_le_right z₁ z₂) hz₂_xi),
+            (rank_embed_lt h (extendPoint xi) e).mp hue_init,
+            mu_holds_point xi,
+            fun v hvu hve hmu_v => by
+              obtain ⟨xv, rfl⟩ := hmu_v
+              exact (ihB _).mp (hB_init (extendPoint xv)
+                ((rank_embed_lt h (extendPoint xi) (extendPoint xv)).mpr hvu)
+                ((rank_embed_lt h (extendPoint xv) e).mpr hve)
+                (mu_holds_point xv))⟩
+    · -- mpr: r → r'. Push witnesses through rank_embed.
+      intro ⟨s, hse, h_body, ⟨u_fail, hsu_fail, hue_fail, hmu_fail, hB_fail⟩,
+             ⟨u_init, hsu_init, hue_init, hmu_init, hB_init⟩⟩
+      refine ⟨rank_embed h s, (rank_embed_lt h s e).mpr hse, ?_, ?_, ?_⟩
+      · -- Body
+        intro u hsu hue hmu_u
+        obtain ⟨x, rfl⟩ := hmu_u
+        have h_disj := h_body (extendPoint x)
+          ((rank_embed_lt h s (extendPoint x)).mp hsu)
+          ((rank_embed_lt h (extendPoint x) e).mp hue) (mu_holds_point x)
+        cases h_disj with
+        | inl h_cof =>
+          left
+          obtain ⟨v, hvu, hmu_v, hBv⟩ := h_cof
+          exact ⟨rank_embed h v, (rank_embed_lt h v (extendPoint x)).mpr hvu,
+            (rank_embed_mu_holds h v).mpr hmu_v,
+            fun w hvw hwe hmu_w => by
+              obtain ⟨y, rfl⟩ := hmu_w
+              exact (ihB _).mpr (hBv (extendPoint y)
+                ((rank_embed_lt h v (extendPoint y)).mp hvw)
+                ((rank_embed_lt h (extendPoint y) e).mp hwe)
+                (mu_holds_point y))⟩
+        | inr h_take =>
+          right
+          obtain ⟨hA, v', huv', hv'e, hmu_v', hBv'⟩ := h_take
+          exact ⟨fun v hsv hvu hmu_v => by
+              obtain ⟨y, rfl⟩ := hmu_v
+              exact (ihA _).mpr (hA (extendPoint y)
+                ((rank_embed_lt h s (extendPoint y)).mp hsv)
+                ((rank_embed_lt h (extendPoint y) (extendPoint x)).mp hvu)
+                (mu_holds_point y)),
+            rank_embed h v', (rank_embed_lt h (extendPoint x) v').mpr huv',
+              (rank_embed_lt h v' e).mpr hv'e,
+              (rank_embed_mu_holds h v').mpr hmu_v',
+              fun hBv'_r' => hBv' ((ihB _).mp hBv'_r')⟩
+      · -- Fail
+        exact ⟨rank_embed h u_fail, (rank_embed_lt h s u_fail).mpr hsu_fail,
+          (rank_embed_lt h u_fail e).mpr hue_fail,
+          (rank_embed_mu_holds h u_fail).mpr hmu_fail,
+          fun hB => hB_fail ((ihB _).mp hB)⟩
+      · -- Init
+        exact ⟨rank_embed h u_init, (rank_embed_lt h s u_init).mpr hsu_init,
+          (rank_embed_lt h u_init e).mpr hue_init,
+          (rank_embed_mu_holds h u_init).mpr hmu_init,
+          fun v hvu hve hmu_v => by
+            obtain ⟨y, rfl⟩ := hmu_v
+            exact (ihB _).mpr (hB_init (extendPoint y)
+              ((rank_embed_lt h u_init (extendPoint y)).mp hvu)
+              ((rank_embed_lt h (extendPoint y) e).mp hve)
+              (mu_holds_point y))⟩
 
 /-! ## Gap Detection Formulas (GHR93 Definition 8.5)
 
