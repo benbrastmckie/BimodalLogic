@@ -195,13 +195,6 @@ instance : SerialFrame Int := {}
 -/
 instance : DiscreteTemporalFrame Int := {}
 
-/-! ## Typeclass Inference Verification for Int -/
-
--- Verify that typeclass inference works correctly for Int
-#check (inferInstance : LinearTemporalFrame Int)
-#check (inferInstance : SerialFrame Int)
-#check (inferInstance : DiscreteTemporalFrame Int)
-
 /-! ## Helper for Dense Frames
 
 For dense frames, the caller must provide `DenselyOrdered D`. This is typically

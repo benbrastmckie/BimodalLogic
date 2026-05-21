@@ -1374,11 +1374,6 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 --   temporal_search (depth := 5)
 example : True := trivial
 
--- Test 21: SearchConfig structure works
-#check (SearchConfig.default : SearchConfig)
-#check (SearchConfig.temporal : SearchConfig)
-#check (SearchConfig.propositional : SearchConfig)
-
 /-!
 ### Phase 1.8 Tests: Specialized Tactics
 -/
