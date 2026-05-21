@@ -426,7 +426,7 @@ private theorem cont_holds_above_gap {sig : MonadicSignature}
     {p : N.carrier}
     (h_not_in_cut : p ∉ inf_carrier_cut (continuation_set x' y' a_n))
     (hx'y' : x' ≤ y')
-    (hp_le_y' : (extendPoint p : ExtendedCarrier N atomMap r) ≤ y')
+    (hp_lt_y' : (extendPoint p : ExtendedCarrier N atomMap r) < y')
     (hx'_le_p : x' ≤ (extendPoint p : ExtendedCarrier N atomMap r))
     (A : StaviFormula) (hA : stavi_depth A ≤ r)
     (hA_interval : ∀ v : ExtendedCarrier N atomMap r,
@@ -438,45 +438,21 @@ private theorem cont_holds_above_gap {sig : MonadicSignature}
   push_neg at h_not_in_cut
   obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
   -- s ∈ continuation_set x' y' a_n and s < extendPoint p
-  -- (push_neg turned ¬(extendPoint p ≤ s) into s < extendPoint p)
   -- extendPoint p is in [x', y'] and above s, so by upward-closedness
   -- extendPoint p ∈ S_C
   have hp_in_sc : (extendPoint p : ExtendedCarrier N atomMap r) ∈
       continuation_set x' y' a_n :=
-    continuation_set_upward_closed hs_in (le_of_lt hs_lt) hp_le_y' hx'_le_p
-  -- extendPoint p ∈ S_C means: cont_holds holds at all mu-points in
-  -- (extendPoint p, y']. But we need cont_holds at extendPoint p itself.
-  -- Actually, S_C says cont_holds at all mu-points in (t, y'] for t ∈ S_C.
-  -- We need to show the formula holds at p directly.
-  -- Since extendPoint p is a mu-point (it's a carrier point), and it is in S_C,
-  -- we use the fact that any element above a_n and below y' that is in S_C
-  -- satisfies cont_holds (because elements even further in the tail satisfy it).
-  -- But we need cont_holds at p itself.
-  -- The key insight: cont_holds is reflexive for points IN S_C when
-  -- the formula holds on (a_n, y').
-  -- Actually, cont_holds a_n y' (extendPoint p) says: for all A with depth ≤ r,
-  -- if A holds at all mu-points in (a_n, y'), then A holds at extendPoint p.
-  -- This is exactly what we want!
-  -- But S_C only guarantees cont_holds at mu-points ABOVE t, not at t itself.
-  -- We need a slightly different argument.
-  -- Case split: is extendPoint p < y'?
-  rcases lt_or_eq_of_le hp_le_y' with hp_lt_y' | hp_eq_y'
-  · -- extendPoint p < y': find t ∈ S_C with t < extendPoint p
-    -- Then extendPoint p is a mu-point in (t, y'), so t's S_C membership
-    -- gives cont_holds at extendPoint p
-    have h_mu : mu_holds (extendPoint p : ExtendedCarrier N atomMap r) :=
-      mu_holds_point p
-    -- s ∈ S_C and s < extendPoint p < y'
-    have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y' h_mu
-    -- h_cont : cont_holds a_n y' (extendPoint p)
-    -- Apply cont_holds to our formula A
-    have h_mu_truth := h_cont A hA hA_interval
-    -- h_mu_truth : stavi_temporal_truth_mu N atomMap r (extendPoint p) A
-    exact (stavi_truth_mu_at_point p A).mp h_mu_truth
-  · -- extendPoint p = y': A holds at p iff A holds at y'
-    -- All mu-points in (a_n, y') satisfy A. We need A at y' = extendPoint p.
-    -- This is the same edge case as in a_n_in_continuation_set.
-    sorry
+    continuation_set_upward_closed hs_in (le_of_lt hs_lt) (le_of_lt hp_lt_y') hx'_le_p
+  -- s ∈ S_C and s < extendPoint p. Since extendPoint p < y' and
+  -- extendPoint p is a mu-point, s.2 gives cont_holds at extendPoint p.
+  have h_mu : mu_holds (extendPoint p : ExtendedCarrier N atomMap r) :=
+    mu_holds_point p
+  have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y' h_mu
+  -- h_cont : cont_holds a_n y' (extendPoint p)
+  -- Apply cont_holds to our formula A
+  have h_mu_truth := h_cont A hA hA_interval
+  -- h_mu_truth : stavi_temporal_truth_mu N atomMap r (extendPoint p) A
+  exact (stavi_truth_mu_at_point p A).mp h_mu_truth
 
 /-- Below the gap, for any carrier point in the cut satisfying x' ≤ extendPoint p,
     cont_holds fails at some mu-point strictly above p and strictly below y'.
@@ -527,26 +503,53 @@ private theorem cont_fails_below_gap {sig : MonadicSignature}
   apply h_not_point_glb
   exact ⟨p, h_in_cut, fun q hq => hq (extendPoint p) hp_in_sc⟩
 
+/-- NormalForm-to-StaviFormula bridge: carrier points with the same NormalForm
+    characteristic at depth r agree on all StaviFormula truth values at depth ≤ r.
+
+    This bridges the NormalForm finiteness theory (NormalForm.lean) with the
+    StaviFormula truth (EFGames.lean). The proof requires showing that
+    stavi_temporal_truth on the original structure corresponds to nf_eval_nf
+    on the extendedStructure. Since NormalForm sig r 1 is Fintype, two carrier
+    points p, q with the same nf_characteristic have the same truth on all
+    depth-≤-r StaviFormulas.
+
+    Proof path (not yet formalized):
+    1. Show stavi_temporal_truth_mu M atomMap r (extendPoint p) A corresponds
+       to a predicate expressible in the monadic theory of extendedStructure
+    2. Monadic theory at depth r is determined by nf_characteristic at depth r
+       (via nf_eval_unique and nf_exists_unique)
+    3. Same nf_characteristic → same monadic theory → same stavi truth -/
+private theorem nf_determines_stavi_truth {sig : MonadicSignature}
+    {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {p q : N.carrier}
+    (h_same_nf : nf_characteristic (extendedStructure N atomMap r) r 1
+        (fun _ => extendPoint p) =
+      nf_characteristic (extendedStructure N atomMap r) r 1
+        (fun _ => extendPoint q))
+    (A : StaviFormula) (hA : stavi_depth A ≤ r) :
+    stavi_temporal_truth N atomMap p A ↔
+    stavi_temporal_truth N atomMap q A := by
+  sorry
+
 /-- Pigeonhole extraction: from the fact that cont_holds fails cofinally
-    below the gap (at every carrier point p in the cut with x' ≤ p ≤ y',
-    there is a carrier point u ≥ p in the cut where some formula of depth
-    ≤ r fails), extract a SINGLE formula D of depth ≤ r that:
-    - holds at all mu-points in (a_n, y')
-    - fails cofinally in the cut
+    below the gap, extract a SINGLE formula D of depth ≤ r that holds on
+    the interval but fails cofinally in the cut.
 
-    The argument uses the finiteness of rank_types via NormalForm:
-    since NormalForm sig r 1 is Fintype, the set of possible rank-r
-    types at carrier points is finite. Each failing formula is determined
-    by the rank_type at the failure point. By pigeonhole, some formula
-    must fail at cofinally many points.
+    By contradiction: if every formula eventually holds, we build an ascending
+    chain of failure points with pairwise distinct NormalForm types. Since
+    NormalForm sig r 1 is Fintype (NormalForm.lean:178), the chain length
+    exceeds the cardinality, giving a contradiction.
 
-    SORRY'd: requires the NormalForm-to-rank_type finiteness bridge. -/
+    Uses nf_determines_stavi_truth (sorry'd bridge lemma) for the key step:
+    same NF type → same truth → the "old" formula still holds → new failure
+    must have a different NF type. -/
 private theorem pigeonhole_definable_formula {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     (hx'y' : x' ≤ y')
-    -- For every carrier point p in the cut with x' ≤ p ≤ y', there is
-    -- a carrier point u ≥ p in the cut where some depth-≤-r formula fails
+    (h_cut_start : ∃ p₀ : N.carrier,
+      p₀ ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
+      x' ≤ (extendPoint p₀ : ExtendedCarrier N atomMap r))
     (h_cofinal_failure :
       ∀ p : N.carrier, p ∈ inf_carrier_cut (continuation_set x' y' a_n) →
         x' ≤ (extendPoint p : ExtendedCarrier N atomMap r) →
@@ -565,21 +568,39 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
       (∀ v : ExtendedCarrier N atomMap r,
         a_n < v → v < y' → mu_holds v →
         stavi_temporal_truth_mu N atomMap r v D) ∧
-      -- D fails cofinally: for every t in the cut with x' ≤ t ≤ y',
-      -- there exists u ≥ t in the cut where D fails
       (∀ t : N.carrier, t ∈ inf_carrier_cut (continuation_set x' y' a_n) →
         x' ≤ (extendPoint t : ExtendedCarrier N atomMap r) →
         (extendPoint t : ExtendedCarrier N atomMap r) ≤ y' →
         ∃ u : N.carrier, t ≤ u ∧
           u ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
           ¬ stavi_temporal_truth N atomMap u D) := by
-  -- Pending the NormalForm-to-rank_type finiteness bridge.
-  -- The argument: NormalForm sig r 1 is Fintype (NormalForm.lean:178).
-  -- The map p ↦ (rank_type M atomMap r (extendPoint p)) factors through
-  -- NormalForm (via nf_exists_unique), so its image is finite.
-  -- Each failure at u picks A_u from a finite pool (determined by rank_type at u).
-  -- By pigeonhole (Finset.exists_ne_map_eq_of_card_lt or similar),
-  -- some A appears cofinally.
+  -- Cut points are below y' (since y' ∈ S_C and cut points are lower bounds of S_C)
+  have cut_le_y' : ∀ p, p ∈ inf_carrier_cut (continuation_set x' y' a_n) →
+      (extendPoint p : ExtendedCarrier N atomMap r) ≤ y' := by
+    intro p hp
+    obtain ⟨s₀, hs₀⟩ := continuation_set_nonempty hx'y' (a_n := a_n)
+    exact le_trans (hp s₀ hs₀) hs₀.1.2
+  -- By contradiction: suppose no single formula fails cofinally.
+  by_contra h_no_cofinal
+  push_neg at h_no_cofinal
+  -- h_no_cofinal says: for every D with depth ≤ r that holds on the interval,
+  -- there exists a bound t in the cut above which D holds at all cut points.
+  -- Combined with h_cofinal_failure (each cut point has SOME formula failing
+  -- above it), this implies infinitely many distinct truth patterns — but
+  -- NormalForm sig r 1 is Fintype, giving at most finitely many. Contradiction.
+  --
+  -- The formal argument builds an ascending chain of failure points with
+  -- pairwise distinct NormalForm types, exceeding Fintype.card.
+  -- This requires nf_determines_stavi_truth (sorry'd bridge lemma).
+  --
+  -- Proof sketch:
+  -- 1. Get failure (u₀, A₀) above p₀. A₀ eventually holds (by h_no_cofinal),
+  --    giving bound b₀. Take q₀ = max(u₀, b₀).
+  -- 2. Get failure (u₁, A₁) above q₀. Since u₁ ≥ q₀ ≥ b₀, A₀ holds at u₁.
+  --    But A₀ fails at u₀. So nf(u₁) ≠ nf(u₀) (they differ on A₀).
+  -- 3. Continue: at step n, failure point uₙ has nf(uₙ) ≠ nf(uᵢ) for all i < n
+  --    (because Aᵢ holds at uₙ ≥ qᵢ ≥ bᵢ but fails at uᵢ).
+  -- 4. After Fintype.card + 1 steps, we have too many distinct NF types.
   sorry
 
 /-- Bridge lemma: from cont_fails_below_gap (which gives an extended carrier
@@ -746,7 +767,7 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
             stavi_temporal_truth_mu N atomMap r v A) ∧
           ¬ stavi_temporal_truth N atomMap u A := h_cofinal
   obtain ⟨D, hD_depth, hD_interval, hD_cofinal⟩ :=
-    pigeonhole_definable_formula hx'y' h_cofinal'
+    pigeonhole_definable_formula hx'y' hx'_bound h_cofinal'
   -- Step 3: Show D satisfies gap_definable_on_right.
   -- r_definable_gap = ∃ D, depth D ≤ r ∧ (left ∨ right)
   refine ⟨D, hD_depth, Or.inr ?_⟩
@@ -775,11 +796,10 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
       obtain ⟨s, hs_in, hs_lt⟩ := hu_not_cut'
       exact le_trans hs_in.1.1 (le_of_lt hs_lt)
     -- extendPoint u ≤ extendPoint q₀ < y'
-    have hu_le_y' : (extendPoint u : ExtendedCarrier N atomMap r) ≤ y' :=
-      le_of_lt (lt_of_le_of_lt (extendPoint_le_iff u q₀ |>.mpr hu_le_q₀) hq₀_lt_y')
-    -- Apply cont_holds_above_gap. The < y' branch applies since
-    -- extendPoint u ≤ extendPoint q₀ < y'.
-    exact cont_holds_above_gap hu_not_cut' hx'y' hu_le_y' hx'_le_u D hD_depth hD_interval
+    have hu_lt_y' : (extendPoint u : ExtendedCarrier N atomMap r) < y' :=
+      lt_of_le_of_lt (extendPoint_le_iff u q₀ |>.mpr hu_le_q₀) hq₀_lt_y'
+    -- Apply cont_holds_above_gap with strict inequality (no y' edge case).
+    exact cont_holds_above_gap hu_not_cut' hx'y' hu_lt_y' hx'_le_u D hD_depth hD_interval
   · -- Second conjunct: ¬(∃ t ∈ cut, ∀ u ≥ t, u ∈ cut → truth u D).
     -- This follows from D failing cofinally in the cut.
     intro ⟨t, ht_in_cut, ht_final⟩

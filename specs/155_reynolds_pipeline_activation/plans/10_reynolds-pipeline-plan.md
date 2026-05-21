@@ -436,7 +436,7 @@ This phase resolves the 4 remaining sorries in `obtain_split_point_props` that a
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- degenerate gap lemma (done)
 - `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- d-consistency, M-side degenerate, SplitPointProps
 
-**Sorry inventory** (15 total across 2 files, verified after W1.2d completion):
+**Sorry inventory** (13 total across 2 files, verified after W1.2b+d+e session):
 
 EFGames.lean (4 sorries, unchanged):
 - Line 2415: `left_formula_gap_detection` (Lemma 9 left)
@@ -444,16 +444,16 @@ EFGames.lean (4 sorries, unchanged):
 - Line 3504: `ghr93_decomposition_implies_game` (Lemma 11 backward)
 - Line 3576: `stavi_expressive_completeness` (Corollary 5)
 
-ExpressivenessGeneral.lean (11 sorries, +3 from W1.2d, +1 from W1.2b):
-- Line 209: `a_n_in_continuation_set` edge case u = y' (W1.2b)
-- Line 485: `cont_holds_above_gap` edge case extendPoint p = y' (W1.2d)
-- Line 593: `pigeonhole_definable_formula` NormalForm finiteness bridge (W1.2d — key remaining infrastructure)
-- Line 774: `infimum_gap_r_definable` first conjunct interval bounds (W1.2d)
-- Lines 1012, 1022: d-consistency left/right (Task W1.2e)
-- Lines 1136, 1153: M-side degenerate point witnesses (Task W1.4)
-- Line 1257: c construction gap case (blocked by Lemma 9)
-- Line 3161: Cases III/IV (blocked by Lemma 9)
-- Line 3382: rank-varying Theorem 6 (Phase 4C-W4)
+ExpressivenessGeneral.lean (9 sorries):
+- Line 532: `nf_determines_stavi_truth` NormalForm-to-StaviFormula bridge (W1.2d — requires nf_eval_nf/stavi_temporal_truth correspondence)
+- Line 604: `pigeonhole_definable_formula` contradiction body (W1.2d — chain construction + NF finiteness, depends on bridge above)
+- Line 906: `d_consistency_left` full Claim 1 proof (W1.2e)
+- Line 939: `d_consistency_right` full Claim 1 proof (W1.2e)
+- Lines 1269, 1286: M-side degenerate point witnesses (Task W1.4)
+- Line 1390: c construction gap case (blocked by Lemma 9, Phase 4C-W3)
+- Line 3294: Cases III/IV (blocked by Lemma 9, Phase 4C-W3)
+- Line 3515: rank-varying Theorem 6 (Phase 4C-W4)
+- CLOSED: `cont_holds_above_gap` y' edge case — eliminated by strengthening hypothesis to strict < (was line 479)
 
 StaviConnectives.lean: **0 sorries** (completely sorry-free with correct GHR93 semantics)
 
