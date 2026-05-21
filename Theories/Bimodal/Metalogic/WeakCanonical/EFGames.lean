@@ -4179,11 +4179,12 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     -- Complex FO encoding with 4 quantifier levels. The proof requires
     -- matching De Bruijn index-based FO encoding against semantic definition
     -- through 4 levels of lift lemmas. Lift lemmas (1-4) and IH-based iff
-    -- lemmas are verified. The remaining difficulty is propositional:
-    -- Fin.cons at specific Fin indices is definitionally equal to the value
-    -- but Lean's `change` and `simp` don't reduce through nested Fin.cons
-    -- applications at depth 3+. Approach: use `native_decide` or a custom
-    -- congruence tactic, or refactor to avoid eval unfolding entirely.
+    -- lemmas are verified (see block comment below). The remaining difficulty
+    -- is propositional: after simp, the FO side has Fin.cons applications at
+    -- specific Fin literal indices that don't reduce via simp/dsimp/change.
+    -- The forward direction is structurally complete (using by_contra to
+    -- negate guard, by_cases for the disjunction, lift_iff lemmas for eval
+    -- conversion). The backward direction needs the symmetric encoding.
     sorry
   | stavi_snce A B ihA ihB =>
     -- Past dual of stavi_untl, same complexity.
