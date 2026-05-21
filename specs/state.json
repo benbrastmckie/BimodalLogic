@@ -68,10 +68,10 @@
     {
       "project_number": 182,
       "project_name": "boneyard_deep_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T11:04:34Z",
+      "last_updated": "2026-05-21T11:27:45Z",
       "topic": "formula-refactor",
       "session_id": "sess_1779361463_4ea114",
       "researched": "2026-05-21T06:40:30Z",
@@ -86,9 +86,16 @@
           "path": "specs/182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md",
           "type": "plan",
           "summary": "5-phase plan: BoneyardArchive lean_lib target, import fixes, README coverage, compilation verification, doc consolidation and maintenance standard"
+        },
+        {
+          "path": "specs/182_boneyard_deep_cleanup/summaries/01_boneyard-cleanup-summary.md",
+          "type": "summary",
+          "summary": "Boneyard deep cleanup: BoneyardArchive target, import fixes, 10 READMEs, compilation verification, doc-only consolidation"
         }
       ],
-      "started": "2026-05-21T11:04:34Z"
+      "started": "2026-05-21T11:04:34Z",
+      "completed": "2026-05-21T11:27:45Z",
+      "completion_summary": "Added BoneyardArchive lean_lib target to lakefile.lean. Fixed 14 broken imports. Created 10 missing READMEs (all 20 subdirs now covered). Made all files elaborate cleanly via #exit and sorry stubs. Deleted 18 doc-only .lean files (56->36). Updated inventory and established Boneyard Maintenance Standard."
     },
     {
       "project_number": 180,

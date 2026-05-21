@@ -491,6 +491,7 @@ theorem extendPoint_le_gap_iff {sig : MonadicSignature} {M : OrderedMonadicStruc
   · intro h; exact h
   · intro h; exact h
 
+
 /-! ### Discrete Orders Have No Gaps
 
 In a succ-archimedean discrete order, gaps cannot exist. This means
@@ -1480,6 +1481,54 @@ theorem rank_embed_inClosedInterval {sig : MonadicSignature}
     inClosedInterval (rank_embed h x) (rank_embed h y) (rank_embed h e) ↔
     inClosedInterval x y e := by
   simp [inClosedInterval, rank_embed_le]
+
+/-- Between two strictly ordered gaps (e₁ < e₂ where eᵢ = Sum.inr gᵢ), there exists
+    an actual point between them. Since g₁.cut ⊊ g₂.cut, take q ∈ g₂.cut \ g₁.cut. -/
+theorem point_between_strict_gaps {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    {e₁ e₂ : ExtendedCarrier M atomMap r}
+    {g₁ g₂ : RDefinableGap M atomMap r}
+    (he₁ : e₁ = Sum.inr g₁) (he₂ : e₂ = Sum.inr g₂)
+    (h : e₁ < e₂) :
+    ∃ (p : M.carrier), inClosedInterval e₁ e₂
+        (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p) := by
+  subst he₁; subst he₂
+  have hnsub : ¬(g₂.val.cut ⊆ g₁.val.cut) := fun h' =>
+    h.ne (le_antisymm h.le h')
+  obtain ⟨q, hq₂, hq₁⟩ := Set.not_subset.mp hnsub
+  exact ⟨q, show extendedLE (Sum.inr g₁) (Sum.inl q) from hq₁,
+         show extendedLE (Sum.inl q) (Sum.inr g₂) from hq₂⟩
+
+/-- If a gap g is strictly between endpoints a < Sum.inr g < b, and [a, b] contains
+    an actual point, then both sub-intervals [a, Sum.inr g] and [Sum.inr g, b]
+    contain actual points. -/
+theorem gap_splits_interval_points {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {r : Nat}
+    {g : RDefinableGap M atomMap r}
+    {a b eg : ExtendedCarrier M atomMap r}
+    (heg : eg = Sum.inr g)
+    (hag : a < eg) (hgb : eg < b)
+    (h_pt : ∃ (p : M.carrier), inClosedInterval a b (extendPoint p)) :
+    (∃ (p : M.carrier), inClosedInterval a eg (extendPoint p)) ∧
+    (∃ (p : M.carrier), inClosedInterval eg b (extendPoint p)) := by
+  obtain ⟨p, hp_lo, hp_hi⟩ := h_pt
+  rcases le_or_lt (extendPoint p) eg with h | h
+  · -- p ≤ g: p witnesses [a, g], need point in [g, b]
+    refine ⟨⟨p, hp_lo, h⟩, ?_⟩
+    rcases isPoint_or_isGap b with ⟨b_pt, hb_pt⟩ | ⟨g_b, hg_b⟩
+    · rw [hb_pt] at hgb ⊢
+      exact ⟨b_pt, hgb.le, le_refl _⟩
+    · rw [heg, hg_b] at hgb ⊢
+      exact point_between_strict_gaps rfl rfl hgb
+  · -- p > g: p witnesses [g, b], need point in [a, g]
+    refine ⟨?_, ⟨p, h.le, hp_hi⟩⟩
+    rcases isPoint_or_isGap a with ⟨a_pt, ha_pt⟩ | ⟨g_a, hg_a⟩
+    · rw [ha_pt] at hag ⊢
+      exact ⟨a_pt, le_refl _, hag.le⟩
+    · rw [heg, hg_a] at hag ⊢
+      exact point_between_strict_gaps rfl rfl hag
 
 /-- The "all positions" tuple for the game: boundary elements x, y, the n
     selected elements a_i, and the challenge point b, collected as a

@@ -135,7 +135,7 @@ After 155 completes:
 
 ### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
 - **Effort**: large (15-20 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Research**: [specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md]
 - **Task Type**: lean4
 - **Plan**: [182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md]
