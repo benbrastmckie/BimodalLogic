@@ -52,7 +52,7 @@ After 155 completes:
 
 ### Wave 1a+ — Boneyard & Dead Code (parallel with 155)
 
-182 [NOT STARTED] — Boneyard deep cleanup: tombstones, READMEs, delete trash, establish standard
+182 [NOT STARTED] — Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
 184 [NOT STARTED] — Dead code tombstone sweep: prune removal comments, #check, stale TODOs
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
@@ -117,28 +117,32 @@ After 155 completes:
 - **Task Type**: lean4
 - **Dependencies**: 131, 175
 
-**Description**: Establish and apply a comprehensive documentation standard for the entire `Theories/Bimodal/` tree. This task defines the standard AND applies it after structural refactoring (tasks 131, 175) is complete. Three deliverables:
+**Description**: Establish and apply a comprehensive documentation standard for the entire `Theories/Bimodal/` tree, then systematically update every README and docstring in the repository to be accurate and complete. This task defines the standard AND applies it after structural refactoring (tasks 131, 175) is complete. Four deliverables:
 
-**A) Directory README standard**: Every directory under `Theories/Bimodal/` must have a `README.md` with: (1) one-paragraph purpose statement, (2) module inventory table (file | lines | status | description), (3) cross-links to related directories (dependencies and dependents), (4) key definitions/theorems exported. Currently missing READMEs: `FrameConditions/`, `Metalogic/BXCanonical/`, `Metalogic/WeakCanonical/`, `latex/build/`. Existing READMEs vary wildly in style — normalize all to the template.
+**A) Directory README standard + systematic update**: Every directory under `Theories/Bimodal/` must have a `README.md` with: (1) one-paragraph purpose statement, (2) module inventory table (file | lines | status | description), (3) cross-links to related directories (dependencies and dependents), (4) key definitions/theorems exported. Currently missing READMEs: `FrameConditions/`, `Metalogic/BXCanonical/`, `Metalogic/WeakCanonical/`, `latex/build/`. Existing READMEs vary wildly in style — normalize all to the template. **Critically**: every existing README must be audited for accuracy — many contain stale file counts, reference deleted modules, describe superseded architectures, or list wrong sorry counts. The update must be systematic: script-assisted where possible (e.g., auto-generating module inventory tables from `find` + `wc -l`, cross-checking listed files against actual directory contents) to ensure no README is left stale. The top-level `Theories/Bimodal/README.md`, `Metalogic/README.md`, and all subdirectory READMEs must reflect the post-refactoring state with accurate file inventories, dependency descriptions, and status information.
 
 **B) Module docstring standard**: Every `.lean` file must have a `/-! ... -/` module docstring as its first non-import block containing: (1) one-line summary, (2) 2-3 sentence description of purpose and role, (3) key definitions/theorems listed, (4) cross-references to related modules. Currently 152 active files with inconsistent or missing docstrings. Audit all and bring to standard.
 
 **C) Comment convention standard**: Define and enforce: (1) No multi-line removal/archived/tombstone comments in active code (those go in git history). (2) `-- NOTE:` for non-obvious invariants or constraints. (3) `-- FIX:` for known issues requiring attention. (4) No `#check` in library code (only in Examples/). (5) No commented-out code blocks. (6) Docstrings on all public `theorem`/`def`/`structure` declarations that form the module's API. Write the standard as a reference document at `Theories/Bimodal/docs/reference/documentation-standard.md` and then apply it across the codebase.
 
+**D) Root-level documentation**: Update the project `README.md` at repository root and `Theories/Bimodal/README.md` to accurately reflect final architecture, sorry status, axiom inventory, directory structure, and build instructions. Ensure cross-links between all READMEs form a navigable web — every README should link to its parent, its children, and its key lateral dependencies so a reader can traverse the project structure from any entry point.
+
 ---
 
-### 182. Boneyard deep cleanup: tombstones, READMEs, delete trash, establish standard
-- **Effort**: medium (8-12 hours)
+### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
+- **Effort**: large (15-20 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 
-**Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Three objectives:
+**Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Four objectives:
 
-**A) README coverage**: 9 of 20 subdirectories lack READMEs: `ChainCompleteness/`, `ClosedGuardLegacy/`, `DeadCanonicalModel/`, `DefectDirectedChain/`, `DenseChronicle/`, `DiscreteXY/`, `NonBurgessSeed/`, `OpenGuardInvalid/`, `RoundRobinChain/`, `UltrafilterFrame/`. Add a README to each following the existing good examples (e.g., `BundleTemporalCoherence/README.md`, `StrictSemanticsLegacy/README.md`). Each README must include: (1) what the code attempted, (2) why it was archived (which archival reason taxonomy category), (3) the archiving task number, (4) whether code compiles or is documentation-only, (5) recovery instructions via git.
+**A) Make all Boneyard code compile cleanly**: Currently most Boneyard `.lean` files reference removed imports, deleted definitions, or use outdated API conventions and do not compile. Design an elegant strategy to make all retained `.lean` files compile under `lake build` without polluting the active codebase. Approaches to research and evaluate: (1) a dedicated `Boneyard.lean` aggregator that is excluded from the main build target but can be built separately via `lake build Bimodal.Boneyard`, (2) stub imports or a minimal compatibility shim that provides deleted type signatures as `sorry`-backed `axiom` declarations in a `Boneyard/Compat.lean` file, (3) selective use of `noncomputable` / `sorry` / `axiom` to patch broken references while preserving the code's structural intent, (4) deleting files that cannot be made compilable without excessive effort and preserving their content in README prose instead. The goal is that `lake build Bimodal.Boneyard` (or equivalent) succeeds with only expected `sorry`/`axiom` warnings, and every `.lean` file that survives cleanup is valid Lean 4 — not a graveyard of red squiggles. This makes the Boneyard genuinely consultable rather than a write-only archive.
 
-**B) Delete trash, reduce bulk**: Audit all 56 files. Some Boneyard files contain only commented-out code or empty shells with documentation headers but no Lean content (e.g., UltrafilterDeadCode files are "documentation headers only"). Files that contain zero compilable Lean definitions should either be (a) consolidated into their subdirectory README as prose, or (b) deleted if the README already covers the information. Target: reduce file count by removing pure-documentation `.lean` files that duplicate README content. The `VacuousKEquiv.lean` at the Boneyard root should be moved into an appropriate subdirectory or deleted.
+**B) README coverage**: 9 of 20 subdirectories lack READMEs: `ChainCompleteness/`, `ClosedGuardLegacy/`, `DeadCanonicalModel/`, `DefectDirectedChain/`, `DenseChronicle/`, `DiscreteXY/`, `NonBurgessSeed/`, `OpenGuardInvalid/`, `RoundRobinChain/`, `UltrafilterFrame/`. Add a README to each following the existing good examples (e.g., `BundleTemporalCoherence/README.md`, `StrictSemanticsLegacy/README.md`). Each README must include: (1) what the code attempted, (2) why it was archived (which archival reason taxonomy category), (3) the archiving task number, (4) whether code compiles or is documentation-only, (5) recovery instructions via git.
 
-**C) Establish Boneyard standard**: Add a "Boneyard Maintenance Standard" section to the top-level `Boneyard/README.md` specifying: (1) every subdirectory MUST have a README.md, (2) every `.lean` file MUST have a `/-! ... -/` module docstring with archival reason + task number + date, (3) files containing no compilable Lean code should be consolidated into README prose, (4) the archival reason taxonomy (already present) is the canonical classification, (5) the inventory table must be kept current when files are added or removed. Update the existing top-level README inventory table to be accurate after cleanup.
+**C) Delete trash, reduce bulk**: Audit all 56 files. Some Boneyard files contain only commented-out code or empty shells with documentation headers but no Lean content (e.g., UltrafilterDeadCode files are "documentation headers only"). Files that contain zero compilable Lean definitions should either be (a) consolidated into their subdirectory README as prose, or (b) deleted if the README already covers the information. Target: reduce file count by removing pure-documentation `.lean` files that duplicate README content. The `VacuousKEquiv.lean` at the Boneyard root should be moved into an appropriate subdirectory or deleted.
+
+**D) Establish Boneyard standard**: Add a "Boneyard Maintenance Standard" section to the top-level `Boneyard/README.md` specifying: (1) every subdirectory MUST have a README.md, (2) every `.lean` file MUST have a `/-! ... -/` module docstring with archival reason + task number + date, (3) all retained `.lean` files must compile (via the compatibility strategy from objective A), (4) files containing no compilable Lean code should be consolidated into README prose, (5) the archival reason taxonomy (already present) is the canonical classification, (6) the inventory table must be kept current when files are added or removed. Update the existing top-level README inventory table to be accurate after cleanup.
 
 ---
 
