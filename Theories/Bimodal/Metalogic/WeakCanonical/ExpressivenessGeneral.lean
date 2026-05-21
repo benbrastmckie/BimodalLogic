@@ -146,7 +146,12 @@ structure SplitPointProps {sig : MonadicSignature}
   hc_interval : inClosedInterval x y c
   /-- d is in [x', y'] -/
   hd_interval : inClosedInterval x' y' d
-  /-- The split point d equals a_n (Spoiler's last backward pick) -/
+  /-- The split point d equals a_n (Spoiler's last backward pick).
+      In the current construction d := a_bwd(n), so this is rfl.
+      When d is redefined as a strategy response or infimum, this will
+      follow from Claim 1 (GHR93 p.28): any winning response to c must
+      equal d. The equality is needed by Case II which uses it at ~30
+      locations to transfer between d and a_bwd(n) in game tuples. -/
   hd_eq_an : d = a_bwd ⟨n, by omega⟩
   /-- x ≤ c (for sub-interval well-formedness) -/
   hxc : x ≤ c

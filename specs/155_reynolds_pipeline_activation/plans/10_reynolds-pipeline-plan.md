@@ -286,9 +286,9 @@ This phase resolves 6 of the 9 sorries in ExpressivenessGeneral.lean: the 2 d-co
 
 **Tasks**:
 
-- [ ] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean (~20 lines). Proof: Round 2 requires Spoiler to pick an actual M-point from [c,c] where c is a gap, which is impossible. The universal quantifier over the empty domain is vacuously true.
+- [x] **Task W1.1**: Add `ghr93_duplicator_wins_degenerate_gap` lemma to EFGames.lean (~20 lines). Proof: Round 2 requires Spoiler to pick an actual M-point from [c,c] where c is a gap, which is impossible. The universal quantifier over the empty domain is vacuously true. *(completed — sorry-free, verified via lean_verify)*
 
-- [ ] **Task W1.2**: Restructure `SplitPointProps` (~30 lines changed). Replace `hd_eq_an : d = a_bwd n` with `hd_le_an : d <= a_bwd n`. Optionally add `hd_point_or_gap : IsPoint d \/ IsGap d` (always true by definition but useful for pattern matching).
+- [ ] **Task W1.2**: Restructure `SplitPointProps` (~30 lines changed). Replace `hd_eq_an : d = a_bwd n` with `hd_le_an : d <= a_bwd n`. Optionally add `hd_point_or_gap : IsPoint d \/ IsGap d` (always true by definition but useful for pattern matching). *(deviation: deferred — analysis shows Case II derives hd_eq_an back from hd_le_an + h_no_split but this gives only d <= a_bwd(n), not equality. Changing to hd_le_an REQUIRES full Case II rewrite since 28 sites use d = a_bwd(n). See phase-4CW1-handoff for detailed coupling analysis.)*
 
 - [ ] **Task W1.3**: Redefine d in `obtain_split_point_props` (~80-120 lines). Use one of:
   - (a) Play the forward strategy with c as input; define d := canonical response. D-consistency is `rfl`. Prove d <= a_bwd(n) via Claim 1 argument (formula C at a_bwd(n) implies the set has a_bwd(n), so infimum <= a_bwd(n)).

@@ -1830,6 +1830,46 @@ def ghr93_duplicator_wins {sig : MonadicSignature}
             (game_tuple x y a b)
             (game_tuple x' y' a' b')
 
+/-- When both endpoints of a sub-interval are the same gap, the backward game
+    is vacuously won. Round 1 requires Spoiler to pick elements from [e_M, e_M],
+    which forces all selections equal to e_M; Duplicator responds with e_N.
+    Round 2 requires Spoiler to pick an actual M-point from [e_M, e_M], but
+    e_M is a gap, so no actual point exists in the degenerate interval.
+    The universal quantifier over the empty domain is vacuously true.
+
+    This handles degenerate sub-intervals arising when the split point d
+    equals a boundary (x' = d or d = y') and both are gaps. -/
+theorem ghr93_duplicator_wins_degenerate_gap {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig}
+    {atomMap : Formula → sig.preds} {n r : Nat}
+    {e_N : ExtendedCarrier N atomMap r}
+    {e_M : ExtendedCarrier M atomMap r}
+    (h_gap_N : IsGap e_N) (h_gap_M : IsGap e_M)
+    (h_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu N atomMap r e_N A ↔
+       stavi_temporal_truth_mu M atomMap r e_M A))
+    (h_gp : (IsPoint e_N ↔ IsPoint e_M) ∧ (IsGap e_N ↔ IsGap e_M)) :
+    ghr93_duplicator_wins N M atomMap n r e_N e_N e_M e_M := by
+  -- In ghr93_duplicator_wins N M ... e_N e_N e_M e_M:
+  -- First structure = N, so x,y = e_N, a picks from N's ExtendedCarrier in [e_N,e_N]
+  -- Second structure = M, so x',y' = e_M, responses in M's ExtendedCarrier in [e_M,e_M]
+  -- Round 2: Spoiler picks b' : M.carrier from [e_M,e_M], which is impossible when e_M is a gap
+  intro a ha
+  -- All a(i) = e_N (forced by [e_N, e_N])
+  have ha_eq : ∀ i, a i = e_N := fun i => le_antisymm (ha i).2 (ha i).1
+  -- Respond with all e_M
+  refine ⟨fun _ => e_M, fun _ => ⟨le_refl _, le_refl _⟩, ?_⟩
+  -- Round 2: for all actual M-points b' in [e_M, e_M]...
+  intro b' hb'
+  -- e_M is a gap: e_M = Sum.inr g for some g
+  obtain ⟨g_M, hg_M⟩ := h_gap_M
+  -- inClosedInterval gives e_M ≤ extendPoint b' ≤ e_M, so extendPoint b' = e_M
+  have h_eq : extendPoint (sig := sig) (atomMap := atomMap) (r := r) b' = e_M :=
+    le_antisymm hb'.2 hb'.1
+  -- But extendPoint b' = Sum.inl b' while e_M = Sum.inr g_M: contradiction
+  exact absurd (h_eq.symm ▸ hg_M : extendPoint b' = Sum.inr g_M)
+    (by simp [extendPoint])
+
 /-! ### Lemma 10: Monotonicity of the Custom Game
 
 GHR93 Lemma 10 states: if Duplicator wins G_{n;r}(M,xy; N,x'y'), then she
@@ -2439,6 +2479,7 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
       fun i A hA => by rw [h_eq_M i, h_eq_N i];
                        exact hform_full (restrict_emb_right n i) A hA
     ⟩
+
 
 /-! ## Decomposition Formulas and Lemma 11 (GHR93 Definition 8.8)
 
