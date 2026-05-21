@@ -140,7 +140,7 @@ The v6 plan (07_reynolds-pipeline-plan.md) had 12 phases. Phases 1-5, 4A, 4B: CO
 
 | File | Line | Identifier | Phase | Status |
 |------|------|-----------|-------|--------|
-| Transfer.lean | 574 | `h_truth_corr` | 10 | BLOCKED (WorldState=Unit issue) |
+| Transfer.lean | 574 | `h_truth_corr` | 10 | UNBLOCKED (delegate to dd_countermodel_chronicle_discrete) |
 | IntegerModel.lean | 859 | `no_gaps_discrete` | 8 | Awaits Phase 6 |
 | IntegerModel.lean | 1135 | `cofinal_decomposition_k_equiv` | 7 | NOT STARTED |
 | IntegerModel.lean | 1194 | `ordered_sum_of_good_bounded_is_good` | 7 | NOT STARTED |
@@ -159,14 +159,14 @@ The v6 plan (07_reynolds-pipeline-plan.md) had 12 phases. Phases 1-5, 4A, 4B: CO
 | 6 | 6 (Gap Elimination Lemmas 6-13, Theorem 14) | 5' | NOT STARTED |
 | 7 | 7 (IntegerModel helpers), 8 (Wire no_gaps_discrete) | 6 (for 8), none (for 7) | NOT STARTED |
 | 8 | 9 (Rewrite chronicle_is_good) | 7, 8 | NOT STARTED |
-| 9 | 10 (h_truth_corr discharge) | -- | BLOCKED |
+| 9 | 10 (h_truth_corr delegation) | -- | NOT STARTED (unblocked) |
 | 10 | 11 (Final wiring) | 9, 10 | NOT STARTED |
 
 **Execution order** (STRICT SEQUENTIAL within main chain):
 4C-W1 -> 4C-W2 -> 4C-W3 -> 4C-W4 -> 5' -> 6 -> 8 -> 9 -> 11.
 Phase 7 (IntegerModel helpers) can proceed in parallel with the 4C chain.
-Phase 10 (h_truth_corr) is BLOCKED pending architectural resolution of WorldState=Unit issue.
-Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- verify first whether Proposition 7 actually needs it.
+Phase 10 (h_truth_corr delegation) can proceed in parallel — delegation to dd_countermodel_chronicle_discrete is ~5 lines and carries same succ_cofinal sorry as current code.
+Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave — verify first whether Proposition 7 actually needs it.
 
 ---
 
@@ -253,37 +253,30 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
 
 ### Phase 4C-W1: Infrastructure Fixes [PARTIAL]
 
-**Goal**: Resolve the 3 categories of infrastructure sorries in `obtain_split_point_props` (6 sorries) and develop the bridge lemma that unlocks Lemma 9. This wave eliminates 6 existing sorries and creates 1 critical new theorem.
+**Goal**: Resolve infrastructure sorries in `obtain_split_point_props` and prepare for Lemma 9.
 
-**Research Basis**: All 5 teammates converged on the d-consistency restructuring and flatten_stavi_correct_mu as the two essential prerequisites. Teammates B and C provided the strongest evidence that d-consistency is structurally unprovable as stated.
+**Implementation Findings** (from W1 implementation session):
+1. **W1.1 d-consistency**: BLOCKED. The hypotheses are genuinely unprovable for non-deterministic strategies. The proposed inequality fix breaks Case II at ~30 locations (Case II requires full equality `d = a_bwd(n)`). Requires deeper restructuring: either (a) define `d` FROM the strategy's canonical response via `Classical.choice`, (b) eliminate d-consistency from strategy restriction entirely, or (c) handle degenerate x'=d case before constructing sigma.
+2. **W1.2 point witnesses**: PARTIAL. Non-degenerate cases proved (gap with strict endpoint). Degenerate cases (endpoint = split point, both gaps) reveal `[d,d]` interval is unwinnable. Added `point_between_strict_gaps` and `gap_splits_interval_points` helpers.
+3. **W1.3 bridge lemma**: FALSE. `flatten_stavi_correct_mu` is false for non-discrete orders because `U^mu(B,bot)` requires a "next mu-point" which doesn't exist in dense carriers. **Lemma 9 does NOT need this bridge** — proceed by direct structural analysis of left_formula/right_formula.
 
 **Tasks**:
 
-- [ ] **Task W1.1**: Restructure d-consistency in `obtain_split_point_props` (lines 297, 307). *(deviation: blocked -- d-consistency is genuinely unprovable as stated; the plan's proposed inequality fix breaks Case II which requires full equality d = a_bwd(n); requires deeper architectural restructuring of how d is defined)*
-- [x] **Task W1.2**: Close sub-interval point witnesses (lines 336, 345, 351, 356). *(deviation: altered -- non-degenerate cases proved via point_between_strict_gaps helper; 4 degenerate endpoint=gap sorries remain, revealing structural issue where sigma game on [d,d] is unwinnable)*
-- [ ] **Task W1.3**: Develop `flatten_stavi_correct_mu` bridge lemma. *(deviation: skipped -- theorem is FALSE for non-discrete orders because U^mu(B,bot) requires a next mu-point which doesn't exist in dense carriers; Lemma 9 does not need this bridge)*. Original statement:
-  ```
-  theorem flatten_stavi_correct_mu (M : OrderedMonadicStructure sig)
-      (atomMap : Formula -> sig.preds) (r : Nat) (m : M.carrier) (A : StaviFormula) :
-      temporal_truth_mu M atomMap r (extendPoint m) (flatten_stavi A) <->
-      stavi_temporal_truth_mu M atomMap r (extendPoint m) A
-  ```
-  Proof by structural induction on A. At actual points `extendPoint m`, mu-relativization restricts temporal operators to act only over actual points, which is exactly what `stavi_temporal_truth_mu` does. The key cases are `.stavi_untl` and `.stavi_snce` where the mu-restricted Until/Since matches the Stavi connective semantics.
-- [ ] **Task W1.4**: Verify `lake build` passes after all W1 changes.
+- [ ] **Task W1.1**: Restructure d-consistency (BLOCKED — requires deeper architectural work). Three approaches: (a) `Classical.choice` on strategy to make response deterministic, (b) parameterize restriction differently, (c) dispatch degenerate x'=d before sigma construction.
+- [x] **Task W1.2**: Close sub-interval point witnesses — non-degenerate cases proved. Degenerate endpoint=gap sorries remain (structural issue: sigma game on [d,d] is unwinnable).
+- [x] **Task W1.3**: ~~Develop flatten_stavi_correct_mu~~ CANCELLED — theorem is false for non-discrete orders. Lemma 9 proceeds by direct structural analysis instead.
+- [x] **Task W1.4**: `lake build` passes.
 
-**Timing**: 4-6 hours
+**Timing**: 4-6 hours (actual: ~4 hours, partial completion)
 
-**Depends on**: none (uses existing infrastructure from Phases 4A-4B)
+**Depends on**: none
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- restructure obtain_split_point_props (Tasks W1.1, W1.2)
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- add flatten_stavi_correct_mu (Task W1.3)
-- `Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean` -- may need helpers for bridge lemma
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- restructured point witnesses, added h_pt_M parameter
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- added point_between_strict_gaps, gap_splits_interval_points
 
 **Verification**:
-- `obtain_split_point_props` has at most 1 sorry remaining (line 446, c-gap-case, blocked by Lemma 9)
-- `lean_verify ghr93_case_I` still shows no `sorryAx` (regression check)
-- `lean_verify ghr93_case_II` still shows no `sorryAx` (regression check)
+- `ghr93_case_I` and `ghr93_case_II` remain sorry-free (regression check passed)
 - `lake build` passes
 
 ---
@@ -292,9 +285,11 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
 
 **Goal**: Prove `left_formula_gap_detection` and `right_formula_gap_detection` -- the GHR93 Lemma 9 that bridges temporal formulas to gap properties. This is the single biggest blocker for the entire Phase 4C completion.
 
-**Research Basis**: All 5 teammates identified this as the central bottleneck. The paper says "PROOF. Clear." but the Lean encoding requires substantial case analysis, especially for the S/S' cases via flatten_stavi. The flatten_stavi_correct_mu bridge lemma (from W1.3) is the key prerequisite.
+**Research Basis**: All 5 teammates identified this as the central bottleneck. The paper says "PROOF. Clear." but the Lean encoding requires substantial case analysis, especially for the S/S' cases via flatten_stavi.
 
-**BEFORE CODING**: Re-read GHR93 Section 8, Definition 8.5 and Lemma 9. The proof is by structural induction on A. The easy cases (atom, bot, box, neg, conj) are genuinely clear. The Until/U'/Since/S' cases require careful unfolding of temporal semantics and gap definability.
+**CRITICAL UPDATE**: The `flatten_stavi_correct_mu` bridge lemma (originally planned as W1.3) is **FALSE for non-discrete orders** — `U^mu(B,bot)` requires a "next mu-point" which doesn't exist in dense carriers. Lemma 9 must proceed by **direct structural analysis** of left_formula/right_formula definitions, case-by-case, without a universal bridge lemma.
+
+**BEFORE CODING**: Re-read GHR93 Section 8, Definition 8.5 and Lemma 9. The proof is by structural induction on A. The easy cases (atom, bot, box, neg, conj) are genuinely clear. The Until/U'/Since/S' cases require careful unfolding of temporal semantics and gap definability. For the S/S' cases, directly analyze the `flatten_stavi` encoding in the specific left_formula output — do NOT attempt a universal bridge lemma.
 
 **Tasks**:
 
@@ -305,17 +300,17 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
   - `.neg A`: IH + negation, using `U'(top, D) and not left(A,D)`
   - `.conj A B`: IH + conjunction
   - `.stavi_untl A B`: unfold U'^mu definition, `U'(B and U'(A,B), D)`
-- [ ] **Task W2.2**: Prove Lemma 9 left hard cases (~130-200 lines). The S/S' cases use flatten_stavi:
-  - `.base (.untl phi psi)`: `U'(B and U(A,B), D)` -- unfold U'^mu
-  - `.base (.snce phi psi)`: uses `flatten_stavi compound` -- apply flatten_stavi_correct_mu bridge
-  - `.stavi_snce A B`: uses `flatten_stavi compound` -- apply bridge lemma
+- [ ] **Task W2.2**: Prove Lemma 9 left hard cases (~200-300 lines). The S/S' cases use flatten_stavi. Proceed by direct analysis of the specific flatten_stavi output for each case (NOT via a universal bridge lemma):
+  - `.base (.untl phi psi)`: `U'(B and U(A,B), D)` -- unfold U'^mu, analyze standard Until within mu-restricted context
+  - `.base (.snce phi psi)`: left_formula produces `.base (.untl (flatten_stavi compound) (flatten_stavi D))` — directly analyze what `temporal_truth_mu` of this specific Until means at actual points, show it detects a gap defined on the left
+  - `.stavi_snce A B`: similar to `.base (.snce)` — direct case analysis of the flatten_stavi output
   Each case requires showing the temporal formula at actual point m detects a gap gamma > m defined by D on the left, with D holding in (m, gamma) and A^mu(gamma) holding.
 - [ ] **Task W2.3**: Prove Lemma 9 right (`right_formula_gap_detection`, ~50 lines after left). Dual of left by swapping U<->S, U'<->S', future<->past.
 - [ ] **Task W2.4**: Verify `lake build` passes.
 
-**Timing**: 6-10 hours
+**Timing**: 8-14 hours (increased estimate — no bridge lemma shortcut)
 
-**Depends on**: 4C-W1 (flatten_stavi_correct_mu bridge lemma)
+**Depends on**: none (W1.3 bridge lemma is cancelled; Lemma 9 proceeds independently)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close sorries at lines 1423, 1442
@@ -532,33 +527,35 @@ Lemma 11 backward (EFGames.lean:2423) can proceed in parallel with any wave -- v
 
 ---
 
-### Phase 10: Discharge h_truth_corr [BLOCKED]
+### Phase 10: Discharge h_truth_corr [NOT STARTED]
 
-**Goal**: Discharge the h_truth_corr sorry at Transfer.lean:574.
+**Goal**: Eliminate the h_truth_corr sorry at Transfer.lean:574 by delegating `countermodel_discrete` to `dd_countermodel_chronicle_discrete`.
 
-**Status**: BLOCKED. The `zIntervalTaskFrame` uses `WorldState = Unit`, making position-dependent atom truth impossible. A prior implementation attempt (commit f446497a) tried to bypass this by delegating to `dd_countermodel_chronicle_discrete`; this was reverted 15 minutes later (commit 4ac2184e) because it contradicts the task goal (delegation still carries sorryAx).
+**Status update**: UNBLOCKED by research report 11_phase10-blocker-research.md. The prior revert was premature — the current `countermodel_discrete` ALREADY carries `succ_cofinal` sorry through `orderIsoIntOfLinearSuccPredArch` at line 521. Delegation to `dd_countermodel_chronicle_discrete` is **strictly better**: it eliminates h_truth_corr while retaining the same `succ_cofinal` dependency (1 sorry source instead of 2). After Phases 6-9 complete, gap elimination makes `chronicle_is_good` sorry-free, which makes both paths sorry-free.
 
-**Blocker**: The z_interval_countermodel architecture fundamentally cannot support the truth correspondence needed here. Resolution requires either:
-- (a) Replacing zIntervalTaskFrame with a frame having position-dependent world states (major refactor)
-- (b) Restructuring countermodel_discrete to not use z_interval_countermodel at all, using the Reynolds pipeline's k-equivalence + chronicle machinery directly to produce the countermodel
-
-**This phase is INDEPENDENT of Phases 4C-9** and can be unblocked by separate architectural research.
+**Research Basis**: Report 11 (Phase 10 blocker research) confirmed:
+1. `zIntervalTaskFrame` with `WorldState = Unit` fundamentally cannot support position-dependent atom truth
+2. `dd_countermodel_chronicle_discrete` uses `ParametricCanonicalTaskFrame` with MCS-based world states — architecturally correct
+3. Both paths carry `succ_cofinal` sorry via `chronicle_is_good` — delegation adds no new sorries
+4. Type signatures match exactly; all imports already present
 
 **Tasks**:
-- [ ] **Task 10.1**: Research and design alternative architecture
-- [ ] **Task 10.2**: Implement the chosen approach
-- [ ] **Task 10.3**: Verify `lean_verify countermodel_discrete` shows no `sorryAx` (after Phase 9 also completed)
+- [ ] **Task 10.1**: Replace `countermodel_discrete` proof body with delegation to `dd_countermodel_chronicle_discrete` (~5 lines replacing ~80 lines)
+- [ ] **Task 10.2**: Remove unused `zIntervalTaskFrame`, `zIntervalOmega`, `zIntervalHistory`, `h_truth_corr` infrastructure from Transfer.lean (cleanup, ~50 lines removed)
+- [ ] **Task 10.3**: Verify `lean_verify countermodel_discrete` — sorryAx from `succ_cofinal` only (same as current)
+- [ ] **Task 10.4**: Verify `lake build` passes
 
-**Timing**: 3-5 hours (once unblocked)
+**Timing**: 1-2 hours
 
-**Depends on**: none (independent), but requires architectural resolution first
+**Depends on**: none (can proceed immediately, independent of Phases 4C-9)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`
+- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` — replace countermodel_discrete body
 
 **Verification**:
-- Transfer.lean:574 sorry closed
-- `lean_verify countermodel_discrete` -- sorryAx only from upstream (chronicle_is_good until Phase 9)
+- Transfer.lean:574 sorry eliminated
+- `lean_verify countermodel_discrete` — sorryAx only from `succ_cofinal` (same as current)
+- No new sorry introduced
 - `lake build` passes
 
 ---
