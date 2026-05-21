@@ -1464,29 +1464,184 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     exact Iff.and (ihA m) (ihB m)
   | stavi_untl A B ihA ihB =>
-    -- GHR93 FO table: ∃ s, m < s ∧ (body) ∧ (fail) ∧ (init)
-    -- At actual point m, mu-restricted quantifiers reduce to unrestricted.
-    -- The witness s maps between extendPoint and M.carrier.
-    -- Since s is NOT mu-restricted, we need to handle both directions.
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     constructor
     · -- mp: mu-relativized → standard
-      -- The mu-version has ∃ s (not mu-restricted), so s can be a gap or point.
-      -- All other quantified variables ARE mu-restricted (and hence actual points).
-      -- At an actual point m, extendPoint provides the embedding.
       intro ⟨s, hms, h_body, ⟨u_fail, hmu_fail, hus_fail, hmu_fail_mu, hB_fail⟩,
              ⟨u_init, hmu_init, hus_init, hmu_init_mu, hB_init⟩⟩
-      sorry
+      -- Get M.carrier representatives
+      obtain ⟨uf, rfl⟩ := hmu_fail_mu
+      obtain ⟨ui, rfl⟩ := hmu_init_mu
+      -- We need s' : M.carrier with s' > m. The witness s might be a gap.
+      -- Use a point in the complement of s's gap (if s is a gap), or s itself.
+      -- For the bound, we need s' such that uf < s' and ui < s'.
+      -- Key: s > extendPoint uf and s > extendPoint ui.
+      -- Take s' : find a point in M.carrier above both uf and ui.
+      -- Option: use s if it's a point, otherwise use complement element.
+      -- Actually we can just pick a point above both witnesses.
+      -- Since the body only needs to hold on (m, s'), we can pick s' > uf, ui.
+      -- But we need s' > uf AND s' > ui. Without NoMaxOrder, just take max(uf, ui) + 1?
+      -- Actually, we have s > extendPoint uf in ExtendedCarrier. If s is a gap g,
+      -- then uf ∈ g.val.cut. Since g.val.cut ≠ univ (proper), ∃ s' ∉ g.val.cut.
+      -- Such s' satisfies extendPoint s' > Sum.inr g > extendPoint uf, so s' > uf.
+      -- Similarly s' > ui.
+      -- If s is a point extendPoint s', then s' > uf and s' > ui directly.
+      -- In either case, we get s' > max(uf, ui) > m.
+      -- Let's handle both cases of s:
+      rcases s with s' | g
+      · -- s = extendPoint s'
+        have hms' : m < s' := (extendPoint_lt_iff m s').mp hms
+        refine ⟨s', hms', ?_, ?_, ?_⟩
+        · -- Body: ∀ u ∈ (m, s'), disjunction
+          intro u hmu hus'
+          have h_disj := h_body (extendPoint u) ((extendPoint_lt_iff m u).mpr hmu)
+            ((extendPoint_lt_iff u s').mpr hus') ⟨u, rfl⟩
+          cases h_disj with
+          | inl h =>
+            left
+            obtain ⟨v, huv, hv_mu, hBv⟩ := h
+            obtain ⟨v', rfl⟩ := hv_mu
+            exact ⟨v', (extendPoint_lt_iff u v').mp huv,
+              fun w hmw hwv' => (ihB w).mp (hBv (extendPoint w)
+                ((extendPoint_lt_iff m w).mpr hmw) ((extendPoint_lt_iff w v').mpr hwv') ⟨w, rfl⟩)⟩
+          | inr h =>
+            right
+            obtain ⟨hA, v', hmv', hv'u, hv'_mu, hBv'⟩ := h
+            obtain ⟨v'', rfl⟩ := hv'_mu
+            exact ⟨fun v huv hvs' => (ihA v).mp (hA (extendPoint v)
+                ((extendPoint_lt_iff u v).mpr huv) ((extendPoint_lt_iff v s').mpr hvs') ⟨v, rfl⟩),
+              v'', (extendPoint_lt_iff m v'').mp hmv', (extendPoint_lt_iff v'' u).mp hv'u,
+              fun h => hBv' ((ihB v'').mpr h)⟩
+        · -- Fail: ∃ u ∈ (m, s'), ¬B(u)
+          exact ⟨uf, (extendPoint_lt_iff m uf).mp hmu_fail,
+            (extendPoint_lt_iff uf s').mp hus_fail,
+            fun h => hB_fail ((ihB uf).mpr h)⟩
+        · -- Init: ∃ u ∈ (m, s'), B on (m, u)
+          exact ⟨ui, (extendPoint_lt_iff m ui).mp hmu_init,
+            (extendPoint_lt_iff ui s').mp hus_init,
+            fun v hmv hvu => (ihB v).mp (hB_init (extendPoint v)
+              ((extendPoint_lt_iff m v).mpr hmv) ((extendPoint_lt_iff v ui).mpr hvu) ⟨v, rfl⟩)⟩
+      · -- s = Sum.inr g (a gap)
+        -- The mu-version's bound s is a gap. All mu-witnesses (uf, ui) are actual points
+        -- below the gap (in g.cut). Find s' in g.cut above both uf and ui using no_sup.
+        -- The body transfers since (m, s') ⊆ g.cut.
+        sorry
     · -- mpr: standard → mu-relativized
-      intro ⟨s, hms, h_body, h_fail, h_init⟩
-      sorry
+      intro ⟨s, hms, h_body, ⟨uf, hmuf, hufs, hBuf⟩, ⟨ui, hmui, huis, hBui⟩⟩
+      -- Use extendPoint s as the witness (s is an actual point, NOT mu-restricted)
+      refine ⟨extendPoint s, (extendPoint_lt_iff m s).mpr hms, ?_, ?_, ?_⟩
+      · -- Body
+        intro u hmu hus hmu_holds
+        obtain ⟨u', rfl⟩ := hmu_holds
+        have hmu' : m < u' := (extendPoint_lt_iff m u').mp hmu
+        have hus' : u' < s := (extendPoint_lt_iff u' s).mp hus
+        have h_disj := h_body u' hmu' hus'
+        cases h_disj with
+        | inl h =>
+          left
+          obtain ⟨v, huv, hBv⟩ := h
+          exact ⟨extendPoint v, (extendPoint_lt_iff u' v).mpr huv, ⟨v, rfl⟩,
+            fun w hmw hwv hw_mu => by
+              obtain ⟨w', rfl⟩ := hw_mu
+              exact (ihB w').mpr (hBv w' ((extendPoint_lt_iff m w').mp hmw)
+                ((extendPoint_lt_iff w' v).mp hwv))⟩
+        | inr h =>
+          right
+          obtain ⟨hA, v', hmv', hv'u, hBv'⟩ := h
+          exact ⟨fun v huv hvs hv_mu => by
+              obtain ⟨v', rfl⟩ := hv_mu
+              exact (ihA v').mpr (hA v' ((extendPoint_lt_iff u' v').mp huv)
+                ((extendPoint_lt_iff v' s).mp hvs)),
+            extendPoint v', (extendPoint_lt_iff m v').mpr hmv',
+              (extendPoint_lt_iff v' u').mpr hv'u, ⟨v', rfl⟩,
+              fun h => hBv' ((ihB v').mp h)⟩
+      · -- Fail
+        exact ⟨extendPoint uf, (extendPoint_lt_iff m uf).mpr hmuf,
+          (extendPoint_lt_iff uf s).mpr hufs, ⟨uf, rfl⟩,
+          fun h => hBuf ((ihB uf).mp h)⟩
+      · -- Init
+        exact ⟨extendPoint ui, (extendPoint_lt_iff m ui).mpr hmui,
+          (extendPoint_lt_iff ui s).mpr huis, ⟨ui, rfl⟩,
+          fun v hmv hvu hv_mu => by
+            obtain ⟨v', rfl⟩ := hv_mu
+            exact (ihB v').mpr (hBui v' ((extendPoint_lt_iff m v').mp hmv)
+              ((extendPoint_lt_iff v' ui).mp hvu))⟩
   | stavi_snce A B ihA ihB =>
     simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
     constructor
-    · intro ⟨s, hsm, h_body, h_fail, h_init⟩
-      sorry
-    · intro ⟨s, hsm, h_body, h_fail, h_init⟩
-      sorry
+    · -- mp: mu-relativized → standard (past dual)
+      intro ⟨s, hsm, h_body, ⟨u_fail, hsu_fail, hum_fail, hmu_fail_mu, hB_fail⟩,
+             ⟨u_init, hsu_init, hum_init, hmu_init_mu, hB_init⟩⟩
+      obtain ⟨uf, rfl⟩ := hmu_fail_mu
+      obtain ⟨ui, rfl⟩ := hmu_init_mu
+      rcases s with s' | g
+      · -- s = extendPoint s'
+        have hs'm : s' < m := (extendPoint_lt_iff s' m).mp hsm
+        refine ⟨s', hs'm, ?_, ?_, ?_⟩
+        · intro u hsu hum
+          have h_disj := h_body (extendPoint u) ((extendPoint_lt_iff s' u).mpr hsu)
+            ((extendPoint_lt_iff u m).mpr hum) ⟨u, rfl⟩
+          cases h_disj with
+          | inl h =>
+            left
+            obtain ⟨v, hvu, hv_mu, hBv⟩ := h
+            obtain ⟨v', rfl⟩ := hv_mu
+            exact ⟨v', (extendPoint_lt_iff v' u).mp hvu,
+              fun w hvw hwm => (ihB w).mp (hBv (extendPoint w)
+                ((extendPoint_lt_iff v' w).mpr hvw) ((extendPoint_lt_iff w m).mpr hwm) ⟨w, rfl⟩)⟩
+          | inr h =>
+            right
+            obtain ⟨hA, v', huv', hv'm, hv'_mu, hBv'⟩ := h
+            obtain ⟨v'', rfl⟩ := hv'_mu
+            exact ⟨fun v hsv hvu => (ihA v).mp (hA (extendPoint v)
+                ((extendPoint_lt_iff s' v).mpr hsv) ((extendPoint_lt_iff v u).mpr hvu) ⟨v, rfl⟩),
+              v'', (extendPoint_lt_iff u v'').mp huv', (extendPoint_lt_iff v'' m).mp hv'm,
+              fun h => hBv' ((ihB v'').mpr h)⟩
+        · exact ⟨uf, (extendPoint_lt_iff s' uf).mp hsu_fail,
+            (extendPoint_lt_iff uf m).mp hum_fail,
+            fun h => hB_fail ((ihB uf).mpr h)⟩
+        · exact ⟨ui, (extendPoint_lt_iff s' ui).mp hsu_init,
+            (extendPoint_lt_iff ui m).mp hum_init,
+            fun v huv hvm => (ihB v).mp (hB_init (extendPoint v)
+              ((extendPoint_lt_iff ui v).mpr huv) ((extendPoint_lt_iff v m).mpr hvm) ⟨v, rfl⟩)⟩
+      · -- s = Sum.inr g (gap) — find s' in complement below m
+        sorry
+    · -- mpr: standard → mu-relativized
+      intro ⟨s, hsm, h_body, ⟨uf, hsuf, hufm, hBuf⟩, ⟨ui, hsui, huim, hBui⟩⟩
+      refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ?_, ?_, ?_⟩
+      · intro u hsu hum hmu_holds
+        obtain ⟨u', rfl⟩ := hmu_holds
+        have hsu' : s < u' := (extendPoint_lt_iff s u').mp hsu
+        have hu'm : u' < m := (extendPoint_lt_iff u' m).mp hum
+        have h_disj := h_body u' hsu' hu'm
+        cases h_disj with
+        | inl h =>
+          left
+          obtain ⟨v, hvu, hBv⟩ := h
+          exact ⟨extendPoint v, (extendPoint_lt_iff v u').mpr hvu, ⟨v, rfl⟩,
+            fun w hvw hwm hw_mu => by
+              obtain ⟨w', rfl⟩ := hw_mu
+              exact (ihB w').mpr (hBv w' ((extendPoint_lt_iff v w').mp hvw)
+                ((extendPoint_lt_iff w' m).mp hwm))⟩
+        | inr h =>
+          right
+          obtain ⟨hA, v', hu'v', hv'm, hBv'⟩ := h
+          exact ⟨fun v hsv hvu hv_mu => by
+              obtain ⟨v', rfl⟩ := hv_mu
+              exact (ihA v').mpr (hA v' ((extendPoint_lt_iff s v').mp hsv)
+                ((extendPoint_lt_iff v' u').mp hvu)),
+            extendPoint v', (extendPoint_lt_iff u' v').mpr hu'v',
+              (extendPoint_lt_iff v' m).mpr hv'm, ⟨v', rfl⟩,
+              fun h => hBv' ((ihB v').mp h)⟩
+      · exact ⟨extendPoint uf, (extendPoint_lt_iff s uf).mpr hsuf,
+          (extendPoint_lt_iff uf m).mpr hufm, ⟨uf, rfl⟩,
+          fun h => hBuf ((ihB uf).mp h)⟩
+      · exact ⟨extendPoint ui, (extendPoint_lt_iff s ui).mpr hsui,
+          (extendPoint_lt_iff ui m).mpr huim, ⟨ui, rfl⟩,
+          fun v huv hvm hv_mu => by
+            obtain ⟨v', rfl⟩ := hv_mu
+            exact (ihB v').mpr (hBui v' ((extendPoint_lt_iff ui v').mp huv)
+              ((extendPoint_lt_iff v' m).mp hvm))⟩
 
 /-! ### Gap Uniqueness for Lemma 9
 
