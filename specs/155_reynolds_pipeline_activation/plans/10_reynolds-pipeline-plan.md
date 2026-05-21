@@ -325,15 +325,27 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [BLOCKED]
 
 **Goal**: Prove `left_formula_gap_detection` and `right_formula_gap_detection` -- the GHR93 Lemma 9 that bridges temporal formulas to gap properties.
 
-**Status**: Infrastructure complete. 4 lemmas proved in W2 session: `extendPoint_lt_iff`, `temporal_truth_mu_at_point`, `stavi_truth_mu_at_point`, `gap_detection_unique`. Theorem signatures corrected with `hD : stavi_depth D <= r`. Base cases (atom, bot, box) proved. The gap existence lemma is the sole remaining blocker.
+**Status**: BLOCKED. The theorem `left_formula_gap_detection` as currently stated is **mathematically false**. The backward direction of the IFF fails for the `.neg` case. See BLOCKER below for counterexample and analysis. Infrastructure complete (4 lemmas proved). The fix requires changing the LHS from `stavi_temporal_truth_mu` (mu-relativized truth) to `stavi_temporal_truth` on `extendedStructure` (standard truth in M_r).
 
-**Research Basis**: W2 handoff identifies the gap existence lemma as the critical prerequisite for ALL non-trivial cases. The lemma connects `U'^mu(top, D)(m)` at an actual point m to the existence of an r-definable gap gamma > m that is D-definable on the left with D holding between m and gamma.
+**BLOCKER** (Phase 4C-W2):
+- **What failed**: The theorem `left_formula_gap_detection` has a false backward direction for the `.neg A` case.
+- **Counterexample**: Let M = Q (rationals), D = `.base (.atom a)` with a interpreted as `{x in Q | x < sqrt(2)}`, m = 0, A = `.neg (.base .bot)`. Then:
+  - LHS = `stavi_temporal_truth_mu Q atomMap r (extendPoint 0) (left_formula (.neg (.base .bot)) D)` = `U'(top, D)(0) AND True` = `U'(top, D)(0)`. Since D = "x < sqrt(2)" holds on (0, 1) in Q, standard Until `U(top, D)(0)` is True (witness s=1, D continuous on (0,1)). So the negation condition of U' fails, making U'(top, D)(0) = False. LHS = False.
+  - RHS = exists gap gamma at sqrt(2), conditions AND `(neg (base bot))^mu(gamma)` = True. The gap at sqrt(2) has cut = {x in Q | x < sqrt(2)}, is D-definable on left, D holds between 0 and gamma. RHS = True.
+  - IFF = False iff True = **FALSE**.
+- **Root cause**: `stavi_truth_mu_at_point` converts mu-relativized truth at actual points to standard truth in M (the original structure). But GHR93 Lemma 9's LHS should use standard truth in M_r (the extended structure), where quantifiers range over ALL of M_r (points AND gaps). In M_r, U'(top, D)(m) is True because D fails at gaps between m and s (gaps have `interp p (Sum.inr _) = False` for atomic D), preventing continuous D on any (m, s) in M_r. The mu-relativized version restricts to actual points only, missing this gap-mediated discontinuity.
+- **What was tried**: (1) Standalone gap existence lemma from U'(top, D)(m) in M -- showed impossible because U'(top, D)(m) in M combined with D-between condition implies U(top, D)(m) (actual points between m and gap form a continuous D-interval), contradicting U'. (2) Cut construction {x | D continuous on (m,x]} -- degenerates to {x <= m} which fails no_sup. (3) Alternative cut definitions -- all either collapse or violate gap axioms.
+- **Why it's stuck**: The theorem's LHS uses `stavi_temporal_truth_mu` (mu-relativized, quantifying over actual points only). GHR93 Lemma 9 requires standard truth in M_r (quantifying over all of M_r including gaps). These differ for formulas containing U'/S' because gap-mediated discontinuity is invisible to mu-relativized evaluation.
+- **What is needed**: Change the LHS from `stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula A D)` to `stavi_temporal_truth (extendedStructure M atomMap r) atomMap (extendPoint m) (left_formula A D)`. This requires: (1) Verify `stavi_temporal_truth` works on `extendedStructure` (carrier = ExtendedCarrier, includes gaps). (2) Prove the corrected IFF. (3) Add a bridge lemma connecting mu-relativized truth (from game winning condition) to standard M_r truth for the specific formulas `left_formula A D` -- needed for Cases III/IV downstream usage. Alternatively, if only the forward direction is needed downstream, change to an implication.
+- **Prohibited workarounds**: Do NOT use sorry, def X := True, or any vacuous placeholder.
 
-**BEFORE CODING**: Re-read GHR93 Section 8, Definition 8.5 and Lemma 9. The proof is by structural induction on A. Use `stavi_truth_mu_at_point` (already proved) to convert between mu-relativized and standard evaluation at actual points.
+**Research Basis**: W2 handoff identifies the gap existence lemma as the critical prerequisite for ALL non-trivial cases. NOTE: the gap existence approach is invalidated by the counterexample above -- the theorem statement itself is wrong.
+
+**BEFORE CODING**: Fix the theorem statement (see BLOCKER above). The LHS must use standard truth in M_r, not mu-relativized truth.
 
 **Tasks**:
 
@@ -346,38 +358,13 @@ GHR93 Claim 1 states: for any winning strategy response, the response at the bou
 
 - [x] **Task W2.base**: Base cases proved (atom, bot, box): both sides reduce to False at gaps.
 
-- [ ] **Task W2.1**: Prove the gap existence lemma (~150-250 lines). This is the CRITICAL prerequisite.
+- [ ] **Task W2.1**: Prove the gap existence lemma (~150-250 lines). *(deviation: blocked -- theorem statement is mathematically false, see BLOCKER above. The standalone gap existence from U'(top,D)(m) in M is impossible because the D-between condition combined with actual points between m and gamma implies U(top,D)(m), contradicting U'. The theorem LHS must be changed from stavi_temporal_truth_mu to stavi_temporal_truth on extendedStructure.)*
 
-  **Statement** (to be added in EFGames.lean):
-  ```
-  theorem gap_existence_from_stavi_untl_top
-      (D : StaviFormula) (hD : stavi_depth D <= r) (m : M.carrier)
-      (h : stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_untl .base_top D)) :
-      exists (gamma : RDefinableGap M atomMap r),
-        extendPoint m < Sum.inr gamma /\
-        gap_definable_on_left M atomMap gamma.val D /\
-        (forall u : M.carrier, m < u -> u in gamma.val.cut ->
-          stavi_temporal_truth_mu M atomMap r (extendPoint u) D) /\
-        m in gamma.val.cut
-  ```
+- [ ] **Task W2.2**: Prove Lemma 9 left easy cases using gap existence (~100 lines total) *(deviation: blocked -- depends on W2.1 which requires theorem statement fix)*
 
-  **Proof strategy**:
-  - **Forward** (U'(top, D)(m) -> gap exists): Unfold stavi_temporal_truth_mu at extendPoint m. U'(top, D) means "D is cofinal above m among mu-points, and there is no mu-point above m where top holds with D continuous between". Since top always holds, this means "D is cofinal but not continuously holding". Construct the Dedekind cut {x | D holds continuously from m to x}. Show this cut defines a gap. Show it is D-definable on the left.
-  - **Backward** (gap exists -> U'(top, D)(m)): Given gamma with the conditions, show D is cofinal above m (because D holds between m and gamma, and gamma.cut is nonempty). Show the "continuous D" condition fails at gamma. Use `stavi_truth_mu_at_point` to convert.
-  - **Key construction**: The Dedekind cut is `{x in M | forall u, m < u -> u < x -> D holds at u}`. Need to show: (a) nonempty (m is in it), (b) proper (not all of M, since D cofinal but not continuous implies a break), (c) downward-closed, (d) no supremum in M (gap property), (e) complement has no minimum, (f) D-definable on left.
+- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (~200-300 lines) *(deviation: blocked -- depends on W2.1)*
 
-- [ ] **Task W2.2**: Prove Lemma 9 left easy cases using gap existence (~100 lines total):
-  - `.neg A`: Use IH for A. gap_existence gives gamma. At gamma, A^mu does NOT hold (by IH reversed), so (.neg A)^mu holds. Gap is same (D-definable, D-between).
-  - `.conj A B`: Use IH for both A and B. gap_existence gives gamma. Both A^mu and B^mu hold at gamma. Gap is same.
-  - `.stavi_untl A B`: left_formula is `U'(B /\ U'(A,B), D)`. Unfold, use gap_existence with the compound formula.
-
-- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (~200-300 lines):
-  - `.base (.untl phi psi)`: left_formula produces `U'(psi_stavi /\ U(phi_stavi, psi_stavi), D)`. Direct analysis of U'^mu with the specific Until formula. Use `temporal_truth_mu_at_point` to work at actual points.
-  - `.base (.snce phi psi)`: left_formula uses flatten_stavi, producing a `.base (.untl ...)` wrapped form. Analyze what `temporal_truth_mu` of this specific Until means at actual points. Show it detects a gap defined on the left with the correct properties.
-  - `.stavi_snce A B`: Similar to `.base (.snce)` -- direct case analysis of the flatten_stavi output.
-  Each S/S' case requires showing the temporal formula at actual point m detects a gap gamma > m defined by D on the left, with D holding in (m, gamma) and A^mu(gamma) holding.
-
-- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`, ~50 lines). Dual of left by swapping U<->S, U'<->S', future<->past. Much of the structure mirrors left_formula_gap_detection with direction reversed.
+- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`, ~50 lines) *(deviation: blocked -- same issue as left direction)*
 
 - [ ] **Task W2.5**: Verify `lake build` passes.
 
