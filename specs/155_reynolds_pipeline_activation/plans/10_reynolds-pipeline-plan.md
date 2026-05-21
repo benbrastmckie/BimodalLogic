@@ -332,7 +332,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 - [x] **Task 0.6**: Reprove or replace `stavi_U_discrete_equiv` (StaviConnectives.lean:362-377) and `stavi_S_discrete_equiv` (lines 384-398). *(completed — replaced with stavi_U_always_false_discrete/stavi_S_always_false_discrete stub; the actual always-false proof is now embedded in fo_table_body_forces_P/fo_table_body_forces_P_past)*
 
-- [ ] **Task 0.7**: Replace FO-table encoding definitions (`cofinal_above_fo`, `stavi_U_fo`, etc., StaviConnectives.lean:176-232) with the correct GHR93 FO table encodings. These are `MonadicFormula` encodings used for the FO-definability direction. (~80 lines) *(deviation: deferred — not on critical path for game-theoretic pipeline)*
+- [x] **Task 0.7**: Delete wrong FO-table encoding definitions (`cofinal_above_fo`, `cofinal_below_fo`, `stavi_U_fo`, `stavi_S_fo` from StaviConnectives.lean). These encoded the OLD wrong "cofinal AND NOT U/S" semantics and had no consumers. *(deviation: altered — deleted rather than replaced, as these dead-wrong definitions had no consumers)*
 
 - [x] **Task 0.8**: Reprove `rank_embed_stavi_truth_mu` stavi_untl/snce cases. *(completed — 4 sorries eliminated. Both mp (r' → r) and mpr (r → r') proved for stavi_untl and stavi_snce. Gap-bound case uses gap_cut_cofinal and complement_no_min to find point bounds. lean_verify shows only propext/Classical.choice/Quot.sound.)*
 
@@ -340,7 +340,7 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 - [x] **Task 0.10**: Verify that Cases I and II (`ghr93_case_I`, `ghr93_case_II`), Lemma 10 (`ghr93_duplicator_wins_round_mono`), and Lemma 11 forward (`ghr93_game_implies_decomposition`) still compile with `lake build`. These should NOT need changes. *(completed — verified, all compile unchanged)*
 
-- [ ] **Task 0.11**: Optionally, extend StaviFormula with `std_untl` and `std_snce` constructors for standard Until/Since of StaviFormula subformulas (needed if `left_formula` S/S' cases currently use `flatten_stavi`). Extend `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `stavi_depth` for the new constructors. (~80-120 lines additive) *(deviation: deferred — not needed for current pipeline)*
+- [x] **Task 0.11**: Extended StaviFormula with `std_untl` and `std_snce` constructors for standard Until/Since of StaviFormula arguments. Extended `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `stavi_depth`, `flatten_stavi`, `flatten_stavi_correct` for the new constructors. Updated `left_formula`/`right_formula` to use `std_untl`/`std_snce` instead of `flatten_stavi`. Extended all pattern matches: `rank_embed_stavi_truth_mu`, `stavi_truth_mu_at_point`, `operator_depth_flatten_stavi_le`, `stavi_depth_left_formula`, `stavi_depth_right_formula`. *(completed)*
 
 - [x] **Task 0.12**: Run `lake build` and verify zero errors. *(completed — build passes with zero errors. All Phase 0 sorries eliminated: 4 in rank_embed + 2 in gap cases = 6 total.)*
 

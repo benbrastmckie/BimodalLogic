@@ -188,6 +188,8 @@ def stavi_depth : StaviFormula → Nat
   | .stavi_snce A B => max (stavi_depth A) (stavi_depth B) + 2
   | .neg φ => stavi_depth φ
   | .conj φ ψ => max (stavi_depth φ) (stavi_depth ψ)
+  | .std_untl A B => max (stavi_depth A) (stavi_depth B) + 2
+  | .std_snce A B => max (stavi_depth A) (stavi_depth B) + 2
 
 /--
 Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
@@ -849,6 +851,18 @@ noncomputable def stavi_temporal_truth_mu {sig : MonadicSignature}
   | .neg φ => ¬ stavi_temporal_truth_mu M atomMap r t φ
   | .conj φ ψ =>
     stavi_temporal_truth_mu M atomMap r t φ ∧ stavi_temporal_truth_mu M atomMap r t ψ
+  | .std_untl A B =>
+    -- Standard Until, mu-relativized: ∃ mu-point s > t, A(s) ∧ ∀ mu-point u ∈ (t,s), B(u)
+    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
+      stavi_temporal_truth_mu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
+        stavi_temporal_truth_mu M atomMap r u B
+  | .std_snce A B =>
+    -- Standard Since, mu-relativized: ∃ mu-point s < t, A(s) ∧ ∀ mu-point u ∈ (s,t), B(u)
+    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
+      stavi_temporal_truth_mu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
+        stavi_temporal_truth_mu M atomMap r u B
 
 /-! ### Type Formulas (GHR93 Definition 8.8)
 
@@ -1505,6 +1519,52 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
               ((rank_embed_lt h u_init (extendPoint y)).mp hvu)
               ((rank_embed_lt h (extendPoint y) e).mp hve)
               (mu_holds_point y))⟩
+  | std_untl A B ihA ihB =>
+    -- Standard Until, mu-relativized. Witnesses are mu-points at both ranks.
+    simp only [stavi_temporal_truth_mu]; constructor
+    · -- mp: r' → r
+      intro ⟨s, hts, hmu_s, hAs, hBu⟩
+      obtain ⟨x, rfl⟩ := hmu_s
+      refine ⟨Sum.inl x, (rank_embed_lt h e (extendPoint x)).mp hts, ⟨x, rfl⟩,
+        (ihA _).mp hAs, fun u heu hux hmu_u => ?_⟩
+      obtain ⟨y, rfl⟩ := hmu_u
+      exact (ihB _).mp (hBu (Sum.inl y)
+        ((rank_embed_lt h e (extendPoint y)).mpr heu)
+        ((rank_embed_lt h (extendPoint y) (extendPoint x)).mpr hux)
+        ⟨y, rfl⟩)
+    · -- mpr: r → r'
+      intro ⟨s, hts, hmu_s, hAs, hBu⟩
+      obtain ⟨x, rfl⟩ := hmu_s
+      refine ⟨Sum.inl x, (rank_embed_lt h e (extendPoint x)).mpr hts, ⟨x, rfl⟩,
+        (ihA _).mpr hAs, fun u heu hux hmu_u => ?_⟩
+      obtain ⟨y, rfl⟩ := hmu_u
+      exact (ihB _).mpr (hBu (Sum.inl y)
+        ((rank_embed_lt h e (extendPoint y)).mp heu)
+        ((rank_embed_lt h (extendPoint y) (extendPoint x)).mp hux)
+        ⟨y, rfl⟩)
+  | std_snce A B ihA ihB =>
+    -- Standard Since, mu-relativized. Dual of std_untl.
+    simp only [stavi_temporal_truth_mu]; constructor
+    · -- mp: r' → r
+      intro ⟨s, hse, hmu_s, hAs, hBu⟩
+      obtain ⟨x, rfl⟩ := hmu_s
+      refine ⟨Sum.inl x, (rank_embed_lt h (extendPoint x) e).mp hse, ⟨x, rfl⟩,
+        (ihA _).mp hAs, fun u hxu hue hmu_u => ?_⟩
+      obtain ⟨y, rfl⟩ := hmu_u
+      exact (ihB _).mp (hBu (Sum.inl y)
+        ((rank_embed_lt h (extendPoint x) (extendPoint y)).mpr hxu)
+        ((rank_embed_lt h (extendPoint y) e).mpr hue)
+        ⟨y, rfl⟩)
+    · -- mpr: r → r'
+      intro ⟨s, hse, hmu_s, hAs, hBu⟩
+      obtain ⟨x, rfl⟩ := hmu_s
+      refine ⟨Sum.inl x, (rank_embed_lt h (extendPoint x) e).mpr hse, ⟨x, rfl⟩,
+        (ihA _).mpr hAs, fun u hxu hue hmu_u => ?_⟩
+      obtain ⟨y, rfl⟩ := hmu_u
+      exact (ihB _).mpr (hBu (Sum.inl y)
+        ((rank_embed_lt h (extendPoint x) (extendPoint y)).mp hxu)
+        ((rank_embed_lt h (extendPoint y) e).mp hue)
+        ⟨y, rfl⟩)
 
 /-! ## Gap Detection Formulas (GHR93 Definition 8.5)
 
@@ -1538,12 +1598,9 @@ left(S'(A,B), D)   = U(D and B and S'(A,B) and U'(top, B and D) and neg U'(D, B 
     constructors have structurally smaller subterms.
 
     For the `.snce` case, the GHR93 definition produces `U(X, D)` where X
-    contains Stavi connectives. Since StaviFormula has no "standard Until
-    of StaviFormulas" constructor, we use `flatten_stavi` to convert the
-    Stavi-enriched compound X and the guard D back to base Formulas, then
-    wrap in `.base (.untl ...)`. This is syntactically correct; semantic
-    correctness (connecting flatten_stavi with stavi_temporal_truth_mu) is
-    established in Lemma 9. -/
+    contains Stavi connectives. We use `std_untl` to represent standard Until
+    of StaviFormula arguments, avoiding the need for `flatten_stavi` (which
+    maps U'/S' to bot, breaking the semantics for compound formulas). -/
 noncomputable def left_formula_base (D : StaviFormula) : Formula → StaviFormula
   | .atom _ => .base .bot
   | .bot => .base .bot
@@ -1562,7 +1619,7 @@ noncomputable def left_formula_base (D : StaviFormula) : Formula → StaviFormul
     .stavi_untl (.conj (.base ψ) (.base (.untl φ ψ))) D
   | .snce φ ψ =>
     -- left(S(A,B), D) = U(D ∧ B ∧ S(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D), D)
-    -- The compound X contains Stavi connectives, so we flatten to base Formula.
+    -- Uses std_untl to represent standard Until of StaviFormula arguments.
     let bD := .base ψ  -- B as StaviFormula
     let sAB := .base (.snce φ ψ)  -- S(A,B) as StaviFormula
     let bAndD := StaviFormula.conj bD D  -- B ∧ D
@@ -1572,8 +1629,8 @@ noncomputable def left_formula_base (D : StaviFormula) : Formula → StaviFormul
       (StaviFormula.conj bD
         (StaviFormula.conj sAB
           (StaviFormula.conj uPrimTopBD negUPrimDBD)))
-    -- U(compound, D): standard Until of StaviFormulas, flattened to base
-    .base (.untl (flatten_stavi compound) (flatten_stavi D))
+    -- U(compound, D): standard Until of StaviFormula arguments
+    .std_untl compound D
 
 /--
 Gap detection formula `left(A, D)` from GHR93 Definition 8.5.
@@ -1584,9 +1641,9 @@ a StaviFormula that detects whether there is a D-defined gap gamma > m
 where A^mu holds at gamma, with D holding on all points between m and gamma.
 
 The definition is by structural induction on A, following GHR93 exactly
-for all cases. For the `.stavi_snce` case (and the `.base (.snce ...)` case),
-the result uses `flatten_stavi` to encode standard Until of Stavi-enriched
-subformulas as a base Formula.
+for all cases. For the S/S' cases, the result uses `std_untl` to encode
+standard Until of Stavi-enriched subformulas (replacing the old
+`flatten_stavi` approach which incorrectly mapped U'/S' to bot).
 -/
 noncomputable def left_formula : StaviFormula → StaviFormula → StaviFormula
   | .base φ, D => left_formula_base D φ
@@ -1609,8 +1666,21 @@ noncomputable def left_formula : StaviFormula → StaviFormula → StaviFormula
       (StaviFormula.conj B
         (StaviFormula.conj (.stavi_snce A B)
           (StaviFormula.conj uPrimTopBD negUPrimDBD)))
-    -- Standard Until of StaviFormulas, flattened to base Formula
-    .base (.untl (flatten_stavi compound) (flatten_stavi D))
+    -- Standard Until of StaviFormula arguments
+    .std_untl compound D
+  | .std_untl A B, D =>
+    -- left(U(A,B), D) = U'(B ∧ U(A,B), D)
+    .stavi_untl (.conj B (.std_untl A B)) D
+  | .std_snce A B, D =>
+    -- left(S(A,B), D) = U(D ∧ B ∧ S(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D), D)
+    let bAndD := StaviFormula.conj B D
+    let uPrimTopBD := StaviFormula.stavi_untl (.base Formula.top) bAndD
+    let negUPrimDBD := StaviFormula.neg (StaviFormula.stavi_untl D bAndD)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj B
+        (StaviFormula.conj (.std_snce A B)
+          (StaviFormula.conj uPrimTopBD negUPrimDBD)))
+    .std_untl compound D
 
 /-- Helper: right_formula for base (standard temporal) formulas.
     Dual of left_formula_base: swaps U↔S and U'↔S' throughout. -/
@@ -1626,7 +1696,7 @@ noncomputable def right_formula_base (D : StaviFormula) : Formula → StaviFormu
   | .box _ => .base .bot
   | .untl φ ψ =>
     -- right(U(A,B), D) = S(D ∧ B ∧ U(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D), D)
-    -- Dual: S case in right corresponds to U case in left for Since subformulas
+    -- Uses std_snce to represent standard Since of StaviFormula arguments.
     let bD := .base ψ
     let uAB := .base (.untl φ ψ)
     let bAndD := StaviFormula.conj bD D
@@ -1636,7 +1706,7 @@ noncomputable def right_formula_base (D : StaviFormula) : Formula → StaviFormu
       (StaviFormula.conj bD
         (StaviFormula.conj uAB
           (StaviFormula.conj sPrimTopBD negSPrimDBD)))
-    .base (.snce (flatten_stavi compound) (flatten_stavi D))
+    .std_snce compound D
   | .snce φ ψ =>
     -- right(S(A,B), D) = S'(B ∧ S(A,B), D)
     .stavi_snce (.conj (.base ψ) (.base (.snce φ ψ))) D
@@ -1666,10 +1736,24 @@ noncomputable def right_formula : StaviFormula → StaviFormula → StaviFormula
       (StaviFormula.conj B
         (StaviFormula.conj (.stavi_untl A B)
           (StaviFormula.conj sPrimTopBD negSPrimDBD)))
-    .base (.snce (flatten_stavi compound) (flatten_stavi D))
+    -- Standard Since of StaviFormula arguments
+    .std_snce compound D
   | .stavi_snce A B, D =>
     -- right(S'(A,B), D) = S'(B ∧ S'(A,B), D)
     .stavi_snce (.conj B (.stavi_snce A B)) D
+  | .std_untl A B, D =>
+    -- right(U(A,B), D) = S(D ∧ B ∧ U(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D), D)
+    let bAndD := StaviFormula.conj B D
+    let sPrimTopBD := StaviFormula.stavi_snce (.base Formula.top) bAndD
+    let negSPrimDBD := StaviFormula.neg (StaviFormula.stavi_snce D bAndD)
+    let compound := StaviFormula.conj D
+      (StaviFormula.conj B
+        (StaviFormula.conj (.std_untl A B)
+          (StaviFormula.conj sPrimTopBD negSPrimDBD)))
+    .std_snce compound D
+  | .std_snce A B, D =>
+    -- right(S(A,B), D) = S'(B ∧ S(A,B), D)
+    .stavi_snce (.conj B (.std_snce A B)) D
 
 /-! ### Rank Bounds for Gap Detection Formulas -/
 
@@ -1693,6 +1777,12 @@ private theorem operator_depth_flatten_stavi_le (A : StaviFormula) :
     omega
   | stavi_snce A B ihA ihB =>
     simp only [flatten_stavi, stavi_depth, Formula.and, Formula.neg, operator_depth]
+    omega
+  | std_untl A B ihA ihB =>
+    simp only [flatten_stavi, stavi_depth, operator_depth]
+    omega
+  | std_snce A B ihA ihB =>
+    simp only [flatten_stavi, stavi_depth, operator_depth]
     omega
 
 /-- Helper: stavi_depth of left_formula_base is bounded.
@@ -1719,22 +1809,11 @@ private theorem stavi_depth_left_formula_base (D : StaviFormula) (φ : Formula) 
     simp only [left_formula_base, stavi_depth, operator_depth]
     omega
   | snce φ ψ =>
-    -- The snce case uses flatten_stavi. The bound follows from
-    -- operator_depth_flatten_stavi_le applied to the compound and D,
-    -- combined with the fact that stavi_depth of the compound is bounded
-    -- by max(operator_depth φ, operator_depth ψ) + 2 and stavi_depth D.
-    -- The resulting max arithmetic is within the bound.
+    -- The snce case uses std_untl. stavi_depth of std_untl compound D =
+    -- max (stavi_depth compound) (stavi_depth D) + 2. The compound contains
+    -- U' subformulas giving +2, so total depth is bounded by
+    -- max(operator_depth φ, operator_depth ψ, stavi_depth D) + 4.
     simp only [left_formula_base, stavi_depth, operator_depth, Formula.top]
-    have h1 := operator_depth_flatten_stavi_le D
-    have h2 := operator_depth_flatten_stavi_le
-      (D.conj ((StaviFormula.base ψ).conj ((StaviFormula.base (φ.snce ψ)).conj
-        (((StaviFormula.base (Formula.bot.imp Formula.bot)).stavi_untl
-          ((StaviFormula.base ψ).conj D)).conj
-        (D.stavi_untl ((StaviFormula.base ψ).conj D)).neg))))
-    simp only [stavi_depth, operator_depth] at h2
-    -- The RHS of h2 simplifies: the nested max expressions collapse
-    -- to max(operator_depth φ)(max(operator_depth ψ)(stavi_depth D)) + 2
-    have key : max (stavi_depth D) (max (operator_depth ψ) (max (max (operator_depth φ) (operator_depth ψ) + 2) (max (max (max 0 0) (max (operator_depth ψ) (stavi_depth D)) + 2) (max (stavi_depth D) (max (operator_depth ψ) (stavi_depth D)) + 2)))) ≤ max (max (operator_depth φ) (operator_depth ψ) + 2) (stavi_depth D) + 2 := by omega
     omega
 
 /--
@@ -1767,18 +1846,16 @@ theorem stavi_depth_left_formula (A D : StaviFormula) :
     simp only [left_formula, stavi_depth]
     omega
   | stavi_snce A B =>
-    -- left(S'(A,B), D) = .base (.untl (flatten compound) (flatten D))
-    -- stavi_depth = max (op_depth (flatten compound)) (op_depth (flatten D)) + 2
-    -- compound = D ∧ B ∧ S'(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D)
-    -- stavi_depth compound ≤ max(stavi_depth A)(max(stavi_depth B)(stavi_depth D)) + 2
-    -- op_depth (flatten compound) ≤ stavi_depth compound (by operator_depth_flatten_stavi_le)
+    -- left(S'(A,B), D) = std_untl compound D
     simp only [left_formula, stavi_depth, operator_depth, Formula.top]
-    have hD := operator_depth_flatten_stavi_le D
-    have hC := operator_depth_flatten_stavi_le
-      (StaviFormula.conj D (StaviFormula.conj B (StaviFormula.conj (StaviFormula.stavi_snce A B)
-        (StaviFormula.conj (StaviFormula.stavi_untl (StaviFormula.base (Formula.bot.imp Formula.bot)) (StaviFormula.conj B D))
-          (StaviFormula.neg (StaviFormula.stavi_untl D (StaviFormula.conj B D)))))))
-    simp only [stavi_depth, operator_depth] at hC
+    omega
+  | std_untl A B =>
+    -- left(U(A,B), D) = U'(B ∧ U(A,B), D)
+    simp only [left_formula, stavi_depth]
+    omega
+  | std_snce A B =>
+    -- left(S(A,B), D) = std_untl compound D
+    simp only [left_formula, stavi_depth, operator_depth, Formula.top]
     omega
 
 /--
@@ -1801,22 +1878,8 @@ theorem stavi_depth_right_formula (A D : StaviFormula) :
       simp only [right_formula_base, stavi_depth, operator_depth, Formula.top] at *; omega
     | box _ => simp [right_formula_base, stavi_depth, operator_depth]
     | untl φ ψ =>
+      -- right_formula_base now uses std_snce instead of flatten_stavi
       simp only [right_formula_base, stavi_depth, operator_depth, Formula.top]
-      have hD := operator_depth_flatten_stavi_le D
-      have hC := operator_depth_flatten_stavi_le
-        (StaviFormula.conj D (StaviFormula.conj (StaviFormula.base ψ)
-          (StaviFormula.conj (StaviFormula.base (φ.untl ψ))
-            (StaviFormula.conj
-              (StaviFormula.stavi_snce (StaviFormula.base (Formula.bot.imp Formula.bot))
-                (StaviFormula.conj (StaviFormula.base ψ) D))
-              (StaviFormula.neg (StaviFormula.stavi_snce D
-                (StaviFormula.conj (StaviFormula.base ψ) D)))))))
-      simp only [stavi_depth, operator_depth] at hC
-      have key : max (stavi_depth D) (max (operator_depth ψ)
-        (max (max (operator_depth φ) (operator_depth ψ) + 2)
-          (max (max (max 0 0) (max (operator_depth ψ) (stavi_depth D)) + 2)
-            (max (stavi_depth D) (max (operator_depth ψ) (stavi_depth D)) + 2)))) ≤
-        max (max (operator_depth φ) (operator_depth ψ) + 2) (stavi_depth D) + 2 := by omega
       omega
     | snce φ ψ => simp only [right_formula_base, stavi_depth, operator_depth]; omega
   | neg A ih =>
@@ -1826,17 +1889,19 @@ theorem stavi_depth_right_formula (A D : StaviFormula) :
     simp only [right_formula, stavi_depth]
     omega
   | stavi_untl A B =>
-    -- right(U'(A,B), D) = S(compound, D) via flatten
+    -- right(U'(A,B), D) = std_snce compound D
     simp only [right_formula, stavi_depth, operator_depth, Formula.top]
-    have hD := operator_depth_flatten_stavi_le D
-    have hC := operator_depth_flatten_stavi_le
-      (StaviFormula.conj D (StaviFormula.conj B (StaviFormula.conj (StaviFormula.stavi_untl A B)
-        (StaviFormula.conj (StaviFormula.stavi_snce (StaviFormula.base (Formula.bot.imp Formula.bot)) (StaviFormula.conj B D))
-          (StaviFormula.neg (StaviFormula.stavi_snce D (StaviFormula.conj B D)))))))
-    simp only [stavi_depth, operator_depth] at hC
     omega
   | stavi_snce A B =>
     -- right(S'(A,B), D) = S'(B ∧ S'(A,B), D)
+    simp only [right_formula, stavi_depth]
+    omega
+  | std_untl A B =>
+    -- right(U(A,B), D) = std_snce compound D
+    simp only [right_formula, stavi_depth, operator_depth, Formula.top]
+    omega
+  | std_snce A B =>
+    -- right(S(A,B), D) = S'(B ∧ S(A,B), D)
     simp only [right_formula, stavi_depth]
     omega
 
@@ -2218,6 +2283,38 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
             obtain ⟨v', rfl⟩ := hv_mu
             exact (ihB v').mpr (hBui v' ((extendPoint_lt_iff ui v').mp huv)
               ((extendPoint_lt_iff v' m).mp hvm))⟩
+  | std_untl A B ihA ihB =>
+    -- Standard Until at an actual point: same structure as temporal_truth_mu_at_point untl case
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    constructor
+    · intro ⟨s, hms, hmu, hAs, hBu⟩
+      obtain ⟨s', rfl⟩ := hmu
+      have hms' : m < s' := (extendPoint_lt_iff m s').mp hms
+      exact ⟨s', hms', (ihA s').mp hAs, fun u hmu' hus =>
+        (ihB u).mp (hBu (extendPoint u) ((extendPoint_lt_iff m u).mpr hmu')
+          ((extendPoint_lt_iff u s').mpr hus) ⟨u, rfl⟩)⟩
+    · intro ⟨s, hms, hAs, hBu⟩
+      refine ⟨extendPoint s, (extendPoint_lt_iff m s).mpr hms, ⟨s, rfl⟩,
+        (ihA s).mpr hAs, fun u hmu hus hmu_holds => ?_⟩
+      obtain ⟨u', rfl⟩ := hmu_holds
+      exact (ihB u').mpr (hBu u' ((extendPoint_lt_iff m u').mp hmu)
+        ((extendPoint_lt_iff u' s).mp hus))
+  | std_snce A B ihA ihB =>
+    -- Standard Since at an actual point: same structure as temporal_truth_mu_at_point snce case
+    simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+    constructor
+    · intro ⟨s, hsm, hmu, hAs, hBu⟩
+      obtain ⟨s', rfl⟩ := hmu
+      have hsm' : s' < m := (extendPoint_lt_iff s' m).mp hsm
+      exact ⟨s', hsm', (ihA s').mp hAs, fun u hsu hum =>
+        (ihB u).mp (hBu (extendPoint u) ((extendPoint_lt_iff s' u).mpr hsu)
+          ((extendPoint_lt_iff u m).mpr hum) ⟨u, rfl⟩)⟩
+    · intro ⟨s, hsm, hAs, hBu⟩
+      refine ⟨extendPoint s, (extendPoint_lt_iff s m).mpr hsm, ⟨s, rfl⟩,
+        (ihA s).mpr hAs, fun u hsu hum hmu_holds => ?_⟩
+      obtain ⟨u', rfl⟩ := hmu_holds
+      exact (ihB u').mpr (hBu u' ((extendPoint_lt_iff s u').mp hsu)
+        ((extendPoint_lt_iff u' m).mp hum))
 
 /-! ### Gap Uniqueness for Lemma 9
 
@@ -2299,9 +2396,10 @@ evaluable at actual points.
 
 NOTE: The full proof of Lemma 9 requires careful case analysis on the
 structure of A, connecting the syntactic left_formula definition with
-the semantic gap properties. The S/S' cases are particularly complex
-due to the flatten_stavi encoding. This is sorry'd pending the full
-game-theoretic proof in Phase 4C.
+the semantic gap properties. The S/S' cases use `std_untl`/`std_snce`
+constructors to correctly represent standard Until/Since of Stavi-enriched
+subformulas. This is sorry'd pending the full game-theoretic proof in
+Phase 4C.
 -/
 theorem left_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}

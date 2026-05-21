@@ -143,6 +143,10 @@ inductive StaviFormula : Type where
   | neg (φ : StaviFormula) : StaviFormula
   /-- Conjunction -/
   | conj (φ ψ : StaviFormula) : StaviFormula
+  /-- Standard Until applied to StaviFormula arguments: U(A, B) -/
+  | std_untl (A B : StaviFormula) : StaviFormula
+  /-- Standard Since applied to StaviFormula arguments: S(A, B) -/
+  | std_snce (A B : StaviFormula) : StaviFormula
 
 /--
 Semantic truth of extended Stavi formulas on an ordered monadic structure.
@@ -186,89 +190,14 @@ def stavi_temporal_truth {sig : MonadicSignature}
   | .neg φ => ¬ stavi_temporal_truth M atomMap t φ
   | .conj φ ψ =>
     stavi_temporal_truth M atomMap t φ ∧ stavi_temporal_truth M atomMap t ψ
-
-/-! ## First-Order Table for Stavi Connectives
-
-The monadic first-order equivalents of U'(p,q) and S'(p,q). These
-are the FO formulas that define the Stavi connective semantics.
-
-U'(p,q) corresponds to:
-  ∀s(t < s → ∃r(t < r ∧ r ≤ s ∧ q(r))) ∧
-  ¬∃s(t < s ∧ p(s) ∧ ∀r(t < r ∧ r < s → q(r)))
-
-The second conjunct is just ¬table(U(p,q)).
--/
-
-/--
-First-order formula for "q is cofinal above t" with one free variable t.
-∀s > t, ∃r, t < r ∧ r ≤ s ∧ q(r)
-
-In MonadicFormula sig 1 (var 0 = t):
-After ∀ (var 0 = s, var 1 = t):
-  s > t: lt 1 0  (t < s)
-  ∃r (var 0 = r, var 1 = s, var 2 = t):
-    t < r: lt 2 0
-    r ≤ s: not(lt 1 0), i.e., ¬(s < r) which is r ≤ s
-    q(r): lift of table for q applied to var 0
--/
-noncomputable def cofinal_above_fo (sig : MonadicSignature)
-    (atomMap : Formula → sig.preds) (q : Formula) :
-    MonadicFormula sig 1 :=
-  .all  -- ∀s
-    (.not (.and
-      (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- t < s →
-      (.not (.ex  -- ∃r
-        (.and (.and
-          (.lt ⟨2, by omega⟩ ⟨0, by omega⟩)  -- t < r
-          (.not (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)))  -- r ≤ s (¬(s < r))
-        (((table sig atomMap q).lift 1).lift 1))))))  -- q(r)
-
-/--
-First-order formula for the Stavi Until U'(p,q)(t):
-cofinal_above q ∧ ¬table(U(p,q))
-
-This is `MonadicFormula sig 1` with one free variable t.
--/
-noncomputable def stavi_U_fo (sig : MonadicSignature)
-    (atomMap : Formula → sig.preds) (p q : Formula) :
-    MonadicFormula sig 1 :=
-  .and (cofinal_above_fo sig atomMap q)
-       (.not (table sig atomMap (.untl p q)))
-
-/--
-First-order formula for "q is cofinal below t":
-∀s < t, ∃r, s ≤ r ∧ r < t ∧ q(r)
-
-In MonadicFormula sig 1 (var 0 = t):
-After ∀ (var 0 = s, var 1 = t):
-  s < t: lt 0 1
-  ∃r (var 0 = r, var 1 = s, var 2 = t):
-    s ≤ r: not(lt 0 1), i.e., ¬(r < s) which is s ≤ r
-    r < t: lt 0 2
-    q(r): lift of table for q applied to var 0
--/
-noncomputable def cofinal_below_fo (sig : MonadicSignature)
-    (atomMap : Formula → sig.preds) (q : Formula) :
-    MonadicFormula sig 1 :=
-  .all  -- ∀s
-    (.not (.and
-      (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)  -- s < t →
-      (.not (.ex  -- ∃r
-        (.and (.and
-          (.not (.lt ⟨0, by omega⟩ ⟨1, by omega⟩))  -- s ≤ r (¬(r < s))
-          (.lt ⟨0, by omega⟩ ⟨2, by omega⟩))  -- r < t
-        (((table sig atomMap q).lift 1).lift 1))))))  -- q(r)
-
-/--
-First-order formula for the Stavi Since S'(p,q)(t):
-cofinal_below q ∧ ¬table(S(p,q))
--/
-noncomputable def stavi_S_fo (sig : MonadicSignature)
-    (atomMap : Formula → sig.preds) (p q : Formula) :
-    MonadicFormula sig 1 :=
-  .and (cofinal_below_fo sig atomMap q)
-       (.not (table sig atomMap (.snce p q)))
-
+  | .std_untl A B =>
+    -- Standard Until: ∃ s > t, A(s) ∧ ∀ u ∈ (t,s), B(u)
+    ∃ s : M.carrier, t < s ∧ stavi_temporal_truth M atomMap s A ∧
+      ∀ u : M.carrier, t < u → u < s → stavi_temporal_truth M atomMap u B
+  | .std_snce A B =>
+    -- Standard Since: ∃ s < t, A(s) ∧ ∀ u ∈ (s,t), B(u)
+    ∃ s : M.carrier, s < t ∧ stavi_temporal_truth M atomMap s A ∧
+      ∀ u : M.carrier, s < u → u < t → stavi_temporal_truth M atomMap u B
 
 /-! ## Stavi Connectives in Discrete Orders (Phase 0 / Phase 5)
 
@@ -519,6 +448,8 @@ noncomputable def flatten_stavi : StaviFormula → Formula
   | .stavi_snce _A _B =>
     -- S'(A,B) is always false on discrete orders, so flatten to ⊥
     Formula.bot
+  | .std_untl A B => Formula.untl (flatten_stavi A) (flatten_stavi B)
+  | .std_snce A B => Formula.snce (flatten_stavi A) (flatten_stavi B)
 
 /-! ## Helper Lemmas: temporal_truth of derived operators -/
 
@@ -627,5 +558,21 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
           exact ⟨u, hsu, hut, fun h => hBu ((ihB u).mpr h)⟩)
     · -- Backward: False → S' FO table (vacuous)
       exact False.elim
+  | std_untl A B ihA ihB =>
+    -- flatten_stavi (.std_untl A B) = .untl (flatten_stavi A) (flatten_stavi B)
+    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    constructor
+    · intro ⟨s, hts, hAs, hBu⟩
+      exact ⟨s, hts, (ihA s).mp hAs, fun u htu hus => (ihB u).mp (hBu u htu hus)⟩
+    · intro ⟨s, hts, hAs, hBu⟩
+      exact ⟨s, hts, (ihA s).mpr hAs, fun u htu hus => (ihB u).mpr (hBu u htu hus)⟩
+  | std_snce A B ihA ihB =>
+    -- flatten_stavi (.std_snce A B) = .snce (flatten_stavi A) (flatten_stavi B)
+    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    constructor
+    · intro ⟨s, hst, hAs, hBu⟩
+      exact ⟨s, hst, (ihA s).mp hAs, fun u hsu hut => (ihB u).mp (hBu u hsu hut)⟩
+    · intro ⟨s, hst, hAs, hBu⟩
+      exact ⟨s, hst, (ihA s).mpr hAs, fun u hsu hut => (ihB u).mpr (hBu u hsu hut)⟩
 
 end Bimodal.Metalogic.WeakCanonical
