@@ -339,9 +339,11 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 **Sorry inventory** (10 total across 2 files, verified grep count):
 - EFGames.lean [5]: Lemma 9 left (1423), Lemma 9 right (1442),
   Lemma 11 fwd (2277), Lemma 11 bwd (2298), stavi_expressive_completeness (2365)
-- ExpressivenessGeneral.lean [5]: split props gap case (411),
-  Case I win-cond left (579), Case I win-cond right (592),
-  Cases II-IV (639), rank-varying Thm 6 (834)
+- ExpressivenessGeneral.lean [5]: split props gap case (420),
+  Case I same_order_type left (734), Case I same_order_type right (881),
+  Cases II-IV (950), rank-varying Thm 6 (1145)
+  NOTE: Case I gap_point_agreement and formula_agreement are PROVED for both cases.
+  Only same_order_type remains (~200 lines index arithmetic per case).
 
 **Completed infrastructure** (sorry-free, ~3000 lines):
 - Gap/M_r/ExtendedCarrier/LinearOrder (4B.2) ✓
