@@ -526,7 +526,7 @@ private theorem nf_determines_stavi_truth {sig : MonadicSignature}
         (fun _ => extendPoint p) =
       nf_characteristic (extendedStructureWithMu N atomMap r) r 1
         (fun _ => extendPoint q))
-    (A : StaviFormula) (hA : stavi_depth A ≤ r) :
+    (A : StaviFormula) (hA : stavi_fo_depth A ≤ r) :
     stavi_temporal_truth N atomMap p A ↔
     stavi_temporal_truth N atomMap q A := by
   -- The proof uses the chain:

@@ -3769,6 +3769,46 @@ private def stavi_snce_fo {sig : MonadicSignature}
                         (MonadicFormula.lt ⟨0, by omega⟩ ⟨3, by omega⟩)))
                 (MonadicFormula.not cB4)))))))))))
 
+/-- Mu-relativized table translation: translates a standard Formula to
+    MonadicFormula (muSig sig) 1 with mu-relativized quantifiers in Until/Since.
+    Atoms and box are translated via atomMap (lifted to muSig via Sum.inl).
+    The temporal quantifiers (Until, Since) only range over mu-points. -/
+def table_mu {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) : Formula → MonadicFormula (muSig sig) 1
+  | .atom a => .atom (.inl (atomMap (.atom a))) ⟨0, by omega⟩
+  | .bot => .lt ⟨0, by omega⟩ ⟨0, by omega⟩
+  | .imp ψ₁ ψ₂ =>
+    .not (.and (table_mu atomMap ψ₁) (.not (table_mu atomMap ψ₂)))
+  | .box ψ => .atom (.inl (atomMap (.box ψ))) ⟨0, by omega⟩
+  | .untl ψ₁ ψ₂ =>
+    -- ∃s. mu(s) ∧ t < s ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ t < u ∧ u < s) → C_ψ₂(u)
+    let c1 := table_mu atomMap ψ₁  -- 1 var
+    let c2 := table_mu atomMap ψ₂
+    let c1_2 := c1.lift 1          -- 2 vars: var 0 = s, var 1 = t
+    let c2_3 := (c2.lift 1).lift 1 -- 3 vars: var 0 = u, var 1 = s, var 2 = t
+    .ex (.and (.atom (.inr ()) ⟨0, by omega⟩)       -- mu(s)
+      (.and (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)       -- t < s
+        (.and c1_2                                    -- C_ψ₁(s)
+          (.all (.not (.and
+            (.and (.atom (.inr ()) ⟨0, by omega⟩)    -- mu(u)
+              (.and (.lt ⟨2, by omega⟩ ⟨0, by omega⟩)  -- t < u
+                    (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))  -- u < s
+            (.not c2_3)))))))                          -- C_ψ₂(u)
+  | .snce ψ₁ ψ₂ =>
+    -- ∃s. mu(s) ∧ s < t ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ s < u ∧ u < t) → C_ψ₂(u)
+    let c1 := table_mu atomMap ψ₁
+    let c2 := table_mu atomMap ψ₂
+    let c1_2 := c1.lift 1
+    let c2_3 := (c2.lift 1).lift 1
+    .ex (.and (.atom (.inr ()) ⟨0, by omega⟩)       -- mu(s)
+      (.and (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)       -- s < t
+        (.and c1_2                                    -- C_ψ₁(s)
+          (.all (.not (.and
+            (.and (.atom (.inr ()) ⟨0, by omega⟩)    -- mu(u)
+              (.and (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- s < u
+                    (.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))  -- u < t
+            (.not c2_3)))))))                          -- C_ψ₂(u)
+
 /-- Standard translation of StaviFormula to monadic FO formula over muSig.
     Mu-relativized quantifiers use the mu predicate from muSig.
 
@@ -3778,7 +3818,7 @@ private def stavi_snce_fo {sig : MonadicSignature}
     - After ex then all: variable 0 = inner, variable 1 = outer, variable 2 = t -/
 noncomputable def stavi_table_mu {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) : StaviFormula → MonadicFormula (muSig sig) 1
-  | .base φ => liftSigFormula (table sig atomMap φ)
+  | .base φ => table_mu atomMap φ
   | .neg A => .not (stavi_table_mu atomMap A)
   | .conj A B => .and (stavi_table_mu atomMap A) (stavi_table_mu atomMap B)
   | .std_untl A B =>
@@ -3820,11 +3860,59 @@ noncomputable def stavi_table_mu {sig : MonadicSignature}
     stavi_snce_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
       (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
 
-/-- The quantifier depth of stavi_table_mu is bounded by stavi_depth. -/
+/-- The FO quantifier depth of the stavi_table_mu translation.
+    This bounds `(stavi_table_mu atomMap A).quantifier_depth` and accounts
+    for the fact that stavi_untl/snce FO encodings use more quantifiers
+    than the temporal operator depth (stavi_depth). -/
+def stavi_fo_depth : StaviFormula → Nat
+  | .base φ => operator_depth φ
+  | .neg A => stavi_fo_depth A
+  | .conj A B => max (stavi_fo_depth A) (stavi_fo_depth B)
+  | .std_untl A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 2
+  | .std_snce A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 2
+  | .stavi_untl A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 4
+  | .stavi_snce A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 4
+
+/-- stavi_fo_depth is always at least stavi_depth. -/
+theorem stavi_depth_le_fo_depth (A : StaviFormula) :
+    stavi_depth A ≤ stavi_fo_depth A := by
+  induction A with
+  | base φ => simp [stavi_depth, stavi_fo_depth]
+  | neg A ih => simp [stavi_depth, stavi_fo_depth, ih]
+  | conj A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | std_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | std_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | stavi_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | stavi_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+
+/-- The quantifier depth of stavi_table_mu is bounded by stavi_fo_depth. -/
 theorem stavi_table_mu_depth {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} (A : StaviFormula) :
-    (stavi_table_mu atomMap A).quantifier_depth ≤ stavi_depth A := by
-  sorry
+    (stavi_table_mu atomMap A).quantifier_depth ≤ stavi_fo_depth A := by
+  induction A with
+  | base φ =>
+    simp only [stavi_table_mu, stavi_fo_depth]
+    -- table_mu has same depth structure as table, need to prove by induction on φ
+    sorry
+  | neg A ih =>
+    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth]
+    exact ih
+  | conj A B ihA ihB =>
+    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth]
+    exact Nat.max_le.mpr ⟨le_trans ihA (le_max_left _ _), le_trans ihB (le_max_right _ _)⟩
+  | std_untl A B ihA ihB =>
+    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth,
+      lift_quantifier_depth, muPred]
+    omega
+  | std_snce A B ihA ihB =>
+    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth,
+      lift_quantifier_depth, muPred]
+    omega
+  | stavi_untl A B ihA ihB =>
+    -- Complex FO encoding with 4 quantifier levels around sub-formulas
+    sorry
+  | stavi_snce A B ihA ihB =>
+    sorry
 
 /-- **Table Correctness for Stavi Formulas**: evaluating `stavi_table_mu A`
     on `extendedStructureWithMu` at a point t is equivalent to
@@ -3838,7 +3926,29 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     eval (extendedStructureWithMu M atomMap r) (fun _ => t)
       (stavi_table_mu atomMap A) ↔
     stavi_temporal_truth_mu M atomMap r t A := by
-  sorry
+  induction A generalizing t with
+  | base φ =>
+    -- stavi_table_mu (.base φ) = table_mu atomMap φ
+    -- stavi_temporal_truth_mu (.base φ) = temporal_truth_mu M atomMap r t φ
+    simp only [stavi_table_mu, stavi_temporal_truth_mu]
+    -- Need: eval extendedStructureWithMu (fun _ => t) (table_mu atomMap φ)
+    --       ↔ temporal_truth_mu M atomMap r t φ
+    -- This is table_mu_correct, proved by induction on φ.
+    sorry
+  | neg A ih =>
+    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu]
+    exact (ih t).not
+  | conj A B ihA ihB =>
+    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu]
+    exact (ihA t).and (ihB t)
+  | std_untl A B ihA ihB =>
+    sorry
+  | std_snce A B ihA ihB =>
+    sorry
+  | stavi_untl A B ihA ihB =>
+    sorry
+  | stavi_snce A B ihA ihB =>
+    sorry
 
 /--
 **GHR93 Theorem 9.3.1 (Theorem 4)**: {U, S, U', S'} is expressively
