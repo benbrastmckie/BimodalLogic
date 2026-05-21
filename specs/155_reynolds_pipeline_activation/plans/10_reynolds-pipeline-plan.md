@@ -332,17 +332,17 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel -- delegation to dd_c
 
 - [x] **Task 0.6**: Reprove or replace `stavi_U_discrete_equiv` (StaviConnectives.lean:362-377) and `stavi_S_discrete_equiv` (lines 384-398). *(completed — replaced with stavi_U_always_false_discrete/stavi_S_always_false_discrete stub; the actual always-false proof is now embedded in fo_table_body_forces_P/fo_table_body_forces_P_past)*
 
-- [ ] **Task 0.7**: Replace FO-table encoding definitions (`cofinal_above_fo`, `stavi_U_fo`, etc., StaviConnectives.lean:176-232) with the correct GHR93 FO table encodings. These are `MonadicFormula` encodings used for the FO-definability direction. (~80 lines)
+- [ ] **Task 0.7**: Replace FO-table encoding definitions (`cofinal_above_fo`, `stavi_U_fo`, etc., StaviConnectives.lean:176-232) with the correct GHR93 FO table encodings. These are `MonadicFormula` encodings used for the FO-definability direction. (~80 lines) *(deviation: deferred — not on critical path for game-theoretic pipeline)*
 
-- [ ] **Task 0.8**: Reprove `rank_embed_stavi_truth_mu` stavi_untl/snce cases (EFGames.lean:1025-1052). Statement survives unchanged. Proof must show FO-table witnesses transfer through rank_embed. Key fact: rank_embed preserves order, mu-status, and predicate values. Currently sorry'd (4 sorries). (~80-120 lines)
+- [x] **Task 0.8**: Reprove `rank_embed_stavi_truth_mu` stavi_untl/snce cases. *(completed — 4 sorries eliminated. Both mp (r' → r) and mpr (r → r') proved for stavi_untl and stavi_snce. Gap-bound case uses gap_cut_cofinal and complement_no_min to find point bounds. lean_verify shows only propext/Classical.choice/Quot.sound.)*
 
-- [ ] **Task 0.9**: Reprove `stavi_truth_mu_at_point` stavi_untl/snce cases (EFGames.lean:1466-1496). Statement survives unchanged. At actual points m, mu-restricted quantifiers reduce to unrestricted quantifiers over M.carrier. Must show each FO-table clause transfers. Currently sorry'd (4 sorries). (~60-100 lines)
+- [x] **Task 0.9**: Reprove `stavi_truth_mu_at_point` stavi_untl/snce gap cases. *(completed — 2 sorries eliminated. Gap case for stavi_untl finds s' above witnesses in cut. Gap case for stavi_snce finds s' below witnesses outside cut. lean_verify clean.)*
 
 - [x] **Task 0.10**: Verify that Cases I and II (`ghr93_case_I`, `ghr93_case_II`), Lemma 10 (`ghr93_duplicator_wins_round_mono`), and Lemma 11 forward (`ghr93_game_implies_decomposition`) still compile with `lake build`. These should NOT need changes. *(completed — verified, all compile unchanged)*
 
-- [ ] **Task 0.11**: Optionally, extend StaviFormula with `std_untl` and `std_snce` constructors for standard Until/Since of StaviFormula subformulas (needed if `left_formula` S/S' cases currently use `flatten_stavi`). Extend `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `stavi_depth` for the new constructors. (~80-120 lines additive)
+- [ ] **Task 0.11**: Optionally, extend StaviFormula with `std_untl` and `std_snce` constructors for standard Until/Since of StaviFormula subformulas (needed if `left_formula` S/S' cases currently use `flatten_stavi`). Extend `stavi_temporal_truth`, `stavi_temporal_truth_mu`, `stavi_depth` for the new constructors. (~80-120 lines additive) *(deviation: deferred — not needed for current pipeline)*
 
-- [x] **Task 0.12**: Run `lake build` and verify zero errors. *(completed — build passes with zero errors; 9 new sorries in Tasks 0.5-past, 0.8, 0.9)*
+- [x] **Task 0.12**: Run `lake build` and verify zero errors. *(completed — build passes with zero errors. All Phase 0 sorries eliminated: 4 in rank_embed + 2 in gap cases = 6 total.)*
 
 **Timing**: 8-14 hours (across 2-3 sessions)
 
