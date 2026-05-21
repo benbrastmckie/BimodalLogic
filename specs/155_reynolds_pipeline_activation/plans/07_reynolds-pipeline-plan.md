@@ -337,12 +337,11 @@ Status key: [DONE] sorry-free | [STRUCT] structure in place, sub-proofs sorry'd 
 11. Proposition 7 composition — [TODO] (~150-250 lines, uses Lemma 11)
 12. Corollary 5 = stavi_expressive_completeness — [SORRY] (line 2324, ~80-120 lines)
 
-**Sorry inventory** (15 total across 2 files, up from 14 due to Case I decomposition):
-- EFGames.lean: Lemma 9 left (1423), Lemma 9 right (1442), strategy restrict ordering (1900),
-  Lemma 11 fwd (2236), Lemma 11 bwd (2257), stavi_expressive_completeness (2324) [6]
-- ExpressivenessGeneral.lean: d-consistency left (293), d-consistency right (303),
-  sub-interval points (322, 323), split props gap case (411),
-  Case I win transfer left (583), Case I win transfer right (592),
+**Sorry inventory** (11 total across 2 files, verified grep count):
+- EFGames.lean [6]: Lemma 9 left (1423), Lemma 9 right (1442), strategy restrict ordering (1900),
+  Lemma 11 fwd (2236), Lemma 11 bwd (2257), stavi_expressive_completeness (2324)
+- ExpressivenessGeneral.lean [5]: split props gap case (411),
+  Case I win-cond left (583), Case I win-cond right (592),
   Cases II-IV (639), rank-varying Thm 6 (815)
 
 **Completed infrastructure** (sorry-free, ~3000 lines):
