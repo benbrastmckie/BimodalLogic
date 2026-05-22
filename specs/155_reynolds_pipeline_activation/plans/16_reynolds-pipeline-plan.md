@@ -144,45 +144,44 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Infimum Redefinition + Case II Restructure [BLOCKED]
+### Phase 1: Rank Embedding for D-Consistency (GHR93 Claim 1) [BLOCKED]
 
-**Prior status**: BLOCKED when trying direct uniqueness proof. Report 27 identifies the root cause: GHR93 Claim 1 requires the game at rank r' > r (using rank-(r+1) formula C'), but our code uses rank r only. The point interior case is unprovable at rank r because two carrier points can share rank-r type without being equal. Gap case also non-trivial (formula agreement does NOT directly imply same cut — see handoff phase-1-handoff.md).
+**Prior status**: BLOCKED. Three approaches tried (direct uniqueness, infimum redefinition, atomic refactoring) — none viable. See phase-1-handoff-b.md for definitive analysis.
 
-**Current blocker**: Requires atomic refactoring of ~400-600 lines including Case II (762 lines) which uses hd_eq_an at 25 sites. Cannot be done incrementally (Steps 1-2 break the build). See phase-1-handoff.md for full architecture analysis and sequencing strategy.
+**Root cause**: GHR93 Claim 1 uses rank-(r+1) formula C' = ¬C ∨ K⁻¬C to pin Duplicator's response. Our code provides formula agreement at rank r only. Claim 1 is UNPROVABLE at rank r — for BOTH gaps and points (formula agreement at rank r does NOT determine cut identity for gaps, nor carrier point identity for points).
 
-**Revised strategy** (from report 27, Section 5): Redefine d as the infimum of continuation_set (matching GHR93) and restructure Case II to follow GHR93 exactly. This eliminates d_consistency_left/right entirely — they become unnecessary when d is the infimum and strategy restriction uses the infimum property directly.
+**Why infimum redefinition doesn't help**: Changing d from a_bwd(n) to infimum moves the sorry but doesn't eliminate it. The strategy_restrict lemma still needs "response at position n = d" (Claim 1), regardless of how d is defined. The ~400-600 line infimum refactoring is WASTED EFFORT.
 
-**GHR93 Reference**: Section 8, Theorem 6 proof. d-bar = inf{t ∈ [x',y'] : C holds on (t,y')} is a fixed element. Case II constructs e_n fresh via U(B,A) formula transfer, NOT by putting c at position n.
+**Correct strategy: Rank Embedding** (report 27 Section 6, confirmed in handoff-b):
+1. Keep d = a_bwd(n) (current architecture is correct)
+2. Define `rank_embed : r ≤ r' → ExtendedCarrier M atomMap r ↪o ExtendedCarrier M atomMap r'` (~150 lines)
+3. Prove preservation: ordering, formula truth at rank r, gap/point status (~100 lines)
+4. Modify `ghr93_forward_to_backward` signature to take `∀ r' ≥ r, strategy at r'` (~50 lines)
+5. Prove Claim 1 at rank r+1 using C' formula (~80 lines)
+6. Close d_consistency_left/right interior sorries (~40 lines)
+7. Case II UNCHANGED — all 25 hd_eq_an rewrites still work
 
 **Tasks**:
-- [ ] **Task 1.1**: In `obtain_split_point_props`, redefine d as infimum of `continuation_set x' y' (a_bwd n)` (~60-100 lines). Use existing infrastructure: `continuation_set_nonempty`, `continuation_set_upward_closed`, `infimum_gap`/`infimum_gap_r_definable`. Prove `hd_le_an : d ≤ a_bwd ⟨n, by omega⟩`.
-- [ ] **Task 1.2**: Change `SplitPointProps.hd_eq_an` to `hd_le_an : d ≤ a_bwd ⟨n, by omega⟩` (~10 lines).
-- [ ] **Task 1.3**: Fix Case I uses of hd_eq_an at lines 1825, 1836 (~10-20 lines). Both need only ≤, not =.
-- [ ] **Task 1.4**: Rewrite `ghr93_strategy_restrict_left/right` to use the infimum's continuation property instead of d_consistency (~80-120 lines). Key argument: Round 2 transfer shows carrier points above the response t map to carrier points above c in M where cont_holds holds; by formula agreement, cont_holds transfers back. Combined with same_order_type, responses land in [x', d].
-- [ ] **Task 1.5**: Remove `d_consistency_left` and `d_consistency_right` entirely (~-160 lines).
-- [ ] **Task 1.6**: Restructure Case II to match GHR93 (~150-250 lines):
-  - All a_bwd(i) > d (strictly, since d = infimum ≤ a_bwd(i) and a_bwd(i) is in interior)
-  - Use τ for positions 0..n-1, construct e_n fresh via U(B,A) formula transfer
-  - Response at position n is e_n (fresh point), NOT c
-  - Remove all 25 `rw [← hd_eq_an]` game-tuple rewrites
-- [ ] **Task 1.7**: Verify `lake build` passes with all changes.
+- [ ] **Task 1.1**: Define `rank_embed` order embedding and prove preservation lemmas (~250 lines). New file or section in EFGames.lean.
+- [ ] **Task 1.2**: Define `ghr93_duplicator_wins_rank_embed` — lift winning strategy from rank r to rank r' (~50-80 lines).
+- [ ] **Task 1.3**: Modify `ghr93_forward_to_backward` signature to take universal rank hypothesis (~50 lines). Cascading change to `ghr93_inductive_step` caller and `stavi_expressive_completeness`.
+- [ ] **Task 1.4**: Prove GHR93 Claim 1 at rank r+1 (~80 lines). Use C' = ¬C ∨ K⁻¬C formula. Show C'(t) from formula agreement at rank r+1, derive t ≤ d, then t = d by contradiction.
+- [ ] **Task 1.5**: Close d_consistency_left/right interior sorries (~40 lines). Apply Claim 1 to the forward strategy's response.
+- [ ] **Task 1.6**: Verify `lake build` passes. Verify `lean_verify d_consistency_left` shows no `sorryAx`.
 
 **Timing**: 6-10 hours
 
-**Depends on**: none
+**Depends on**: none (can proceed in parallel with Phases 2-4)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- redefine d, fix Cases I-II, remove d_consistency
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- rewrite strategy_restrict_left/right
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` — rank_embed, wins_rank_embed (NEW infrastructure)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` — signature change to ghr93_forward_to_backward, close d_consistency
 
 **Verification**:
-- `lean_verify obtain_split_point_props` shows no `sorryAx` (for infimum definition)
-- `lean_verify ghr93_strategy_restrict_left` shows no `sorryAx`
-- `lean_verify ghr93_case_I` shows no `sorryAx`
-- `lean_verify ghr93_inductive_step` compiles
+- `lean_verify d_consistency_left` shows no `sorryAx`
+- `lean_verify d_consistency_right` shows no `sorryAx`
+- `lean_verify ghr93_forward_to_backward` shows no `sorryAx`
 - `lake build` passes
-
-**Fallback** (from report 27, Section 6): If the infimum approach encounters obstacles in strategy_restrict, add rank embedding infrastructure (`embed_rank : ExtendedCarrier M atomMap r ↪o ExtendedCarrier M atomMap r'` when r ≤ r', ~440 lines) to match GHR93 exactly.
 
 ---
 
