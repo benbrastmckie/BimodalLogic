@@ -210,17 +210,7 @@ Phases within the same wave can execute in parallel.
   - Set e_n = z (a genuinely fresh point, NOT c, NOT d-bar)
   - Prove rank-r formula agreement between e_n and alpha_n (both satisfy B = X_{alpha_n})
   - Close the sorry at line ~2890
-- [ ] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836 (~170-235 lines). Resolution from report 18:
-  - Create `ghr93_forward_to_backward_core` (80-100 lines) with decoupled parameters:
-    - `rounds_r1 : Nat` — independent of induction variable `n`
-    - `h_enough : 4 + 3 * n ≤ rounds_r1` — round budget bound
-    - `h_r1_univ : ∀ {x₁ y₁ x₁' y₁'}, x₁ ≤ y₁ → x₁' ≤ y₁' → ghr93_duplicator_wins M N atomMap rounds_r1 (r+1) (rank_embed ... x₁) ...` — universally quantified over endpoints
-  - Revert ONLY `h_enough x y x' y' hxy hx'y' h_pt h_pt_M h` (NOT `h_r1_univ`) before induction
-  - IH `ih_gen` is then rank-r-only (no rank r+1 obligation)
-  - At each step: derive `h_r1_here` from `h_r1_univ` applied to current endpoints + `ghr93_duplicator_wins_round_mono`
-  - Create wrapper `ghr93_forward_to_backward` (10-15 lines) that calls core
-  - If caller cannot provide `h_r1_univ`, may need `ghr93_duplicator_wins_sub_interval` helper (80-120 lines)
-  - Fallback: GHR93 rank-varying approach with `ghr93_duplicator_wins_rank_down` (~230-370 lines total)
+- [x] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836. *(deviation: altered — Created ghr93_forward_to_backward_core with decoupled rounds_r1 and h_r1_univ universal over endpoints; changed ghr93_forward_to_backward API to take h_r1_univ; 83 lines added, 39 removed; used h_enough : 1+3n <= rounds_r1 instead of report 18's 4+3n constraint)*
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 
 **Timing**: 12-18 hours (revised up from 8-12; Task 1.7 is 170-235 lines per report 18, not 40-60)
