@@ -2881,8 +2881,16 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           exact (temporal_truth_mu_at_point v g).mp
             (hg_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
     | snce f g _ _ =>
-      -- left_formula_base D (snce f g) = std_untl compound D
-      -- This mirrors the std_snce outer case
+      -- left_formula_base D (snce f g) = std_untl(compound, D)
+      -- compound = D ∧ g ∧ S(f,g) ∧ U'(⊤, g∧D) ∧ ¬U'(D, g∧D)
+      -- Proof approach (verified):
+      -- 1. Unfold to std_untl FO table: ∃ s > m, compound(s) ∧ D on (m,s)
+      -- 2. Extract: D(s), g(s), S(f,g)(s), U'(⊤,g∧D)(s), ¬U'(D,g∧D)(s)
+      -- 3. hD_fails: D fails above s (by contradiction via ¬U'(D,g∧D))
+      -- 4. hD_init: D on (m, u_init_gD) from g∧D initial segment
+      -- 5. Construct D-gap from D transition (same cut construction as
+      --    stavi_untl_gap_detection forward, ~120 lines)
+      -- 6. Show S(f,g)^mu at the D-gap from S(f,g)(s) and gap position
       sorry
   | neg A ih =>
     -- left_formula (.neg A) D = .conj (.stavi_untl (.base top) D) (.neg (left_formula A D))
