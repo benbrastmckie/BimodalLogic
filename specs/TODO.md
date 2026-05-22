@@ -208,11 +208,12 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
 - **Effort**: medium (10-15 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**: [specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: none (assists 155)
+- **Plan**: [195_ef_game_automation_tactics/plans/01_ef-game-tactics.md]
 
 **Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Implement NOW to unblock the remaining Phase 1 sorries in task 155, then use for refactoring later. Four components, ranked by impact:
 
