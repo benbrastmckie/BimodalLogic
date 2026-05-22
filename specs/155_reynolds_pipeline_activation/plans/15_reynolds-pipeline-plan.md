@@ -120,13 +120,13 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 | Line | Identifier | Phase | Status |
 |------|-----------|-------|--------|
 | ~~639~~ | ~~`pigeonhole_definable_formula` chain body~~ | ~~4C-W1 (depends on muSig)~~ | **CLOSED** (pigeonhole proof via recursive chain + Fintype contradiction) |
-| 1098 | `d_consistency_left` | 4C-W1 (Claim 1) | open (line shifted from 941) |
-| 1131 | `d_consistency_right` | 4C-W1 (Claim 1) | open (line shifted from 974) |
-| 1461 | M-side degenerate `h_pt_xc` | 4C-W1 | open (line shifted from 1304) |
-| 1478 | M-side degenerate `h_pt_cy` | 4C-W1 | open (line shifted from 1321) |
-| 1582 | c construction gap case | 4C-W3 | open (line shifted from 1425) |
-| 3486 | `ghr93_cases_III_IV` | 4C-W3 | open (line shifted from 3329) |
-| 3707 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 | open (line shifted from 3550) |
+| 1103 | `d_consistency_left` | 4C-W1 (Claim 1) | **BLOCKED** (needs claim1_d_consistency infra) |
+| 1136 | `d_consistency_right` | 4C-W1 (Claim 1) | **BLOCKED** (needs claim1_d_consistency infra) |
+| 1466 | M-side degenerate `h_pt_xc` | 4C-W1 | LATENT (unreachable until W3 gap case) |
+| 1483 | M-side degenerate `h_pt_cy` | 4C-W1 | LATENT (unreachable until W3 gap case) |
+| 1587 | c construction gap case | 4C-W3 | open |
+| 3491 | `ghr93_cases_III_IV` | 4C-W3 | open |
+| 3712 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 | open |
 
 ### IntegerModel.lean (3 sorries)
 | Line | Identifier | Phase |
