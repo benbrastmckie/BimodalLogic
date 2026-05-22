@@ -2420,27 +2420,78 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
   simp only [stavi_temporal_truth]
   -- Now LHS is the FO table: ∃ s > m, conditions (1)(2)(3)
   -- RHS is: ∃ γ, m < γ ∧ gap_definable_on_left γ D ∧ D-between(m,γ) ∧ X^mu(γ)
-  --
-  -- **Forward direction sketch** (FO table → gap):
-  -- Define cut = {x : M.carrier | ∀ u, m < u → u ≤ x → stavi_temporal_truth M atomMap u D}
-  -- This is nonempty (condition 3 gives D on initial segment),
-  -- proper (condition 2 gives ¬D witness outside cut),
-  -- downward-closed (by definition),
-  -- no_sup (condition 1's second disjunct gives ¬D witnesses below any boundary point),
-  -- complement_no_min (condition 1's first disjunct gives D-cofinal witnesses above boundary).
-  -- Gap is D-definable on left: D holds on final segment of cut (by definition),
-  -- and D fails somewhere in complement (by condition 2).
-  -- X^mu(γ) follows from condition 1's second disjunct at complement points near γ.
-  --
-  -- **Backward direction sketch** (gap → FO table):
-  -- Given gap γ with D-defined-on-left, D-between, X^mu(γ):
-  -- Choose s = some point in complement of γ (exists since cut is proper).
-  -- By complement_no_min, can find s arbitrarily close to γ.
-  -- Condition (3): D on initial segment (m, u) -- take u in cut above m, D holds by D-between.
-  -- Condition (2): ¬D at some point in (m,s) -- from complement_no_min + gap_definable_on_left.
-  -- Condition (1): for u in cut: first disjunct (D cofinal). For u in complement: second disjunct
-  --   (X above by X^mu(γ) FO witnesses + ¬D below by complement_no_min).
-  sorry
+  constructor
+  · -- **Forward direction** (FO table → gap):
+    -- Construct gap with cut = {x | ∀ u, m < u → u ≤ x → D(u)}.
+    -- Gap axioms follow from FO table conditions (1)-(3).
+    -- X^mu(γ) from condition (1) second disjunct at complement points.
+    sorry
+  · -- **Backward direction** (gap → FO table):
+    intro ⟨γ, hm_lt_γ, h_def_left, h_D_bet, hX_mu⟩
+    have hm_in_cut : m ∈ γ.val.cut :=
+      (extendPoint_le_gap_iff m γ).mp (le_of_lt hm_lt_γ)
+    obtain ⟨⟨t_cut, ht_in, ht_D_final⟩, h_no_init_seg⟩ := h_def_left
+    -- Helper: from negation of initial segment condition, get ¬D witnesses
+    have h_neg_init : ∀ t, t ∉ γ.val.cut →
+        ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
+      intro t ht; by_contra h_all; push_neg at h_all
+      exact h_no_init_seg ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
+    -- Helper: complement points are above all cut points (including m)
+    have h_compl_gt_m : ∀ x, x ∉ γ.val.cut → m < x := by
+      intro x hx; by_contra h; push_neg at h
+      exact hx (γ.val.downward_closed m x hm_in_cut h)
+    -- Complement is non-empty (cut is proper)
+    have h_compl_ne : ∃ x, x ∉ γ.val.cut := by
+      by_contra h_all; push_neg at h_all
+      exact γ.val.proper (Set.eq_univ_iff_forall.mpr h_all)
+    obtain ⟨s₀, hs₀_not⟩ := h_compl_ne
+    refine ⟨s₀, h_compl_gt_m s₀ hs₀_not, ?_, ?_, ?_⟩
+    · -- Condition (1): ∀ u ∈ (m, s₀), disjunction
+      intro u hmu hus₀
+      by_cases hu_cut : u ∈ γ.val.cut
+      · -- u ∈ cut: first disjunct — D cofinal above u
+        left
+        -- Since u ∈ cut and cut has no sup, ∃ y ∈ cut with y > u
+        have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
+          by_contra h_all; push_neg at h_all
+          exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
+        exact ⟨y, huy, fun w hmw hwy =>
+          (stavi_truth_mu_at_point w D).mp
+            (h_D_bet w hmw (γ.val.downward_closed y w hy_in (le_of_lt hwy)))⟩
+      · -- u ∉ cut: second disjunct — X on (u,s₀) and ¬D witness below u
+        right
+        refine ⟨?_, ?_⟩
+        · -- ∀ v, u < v → v < s₀ → X(v)
+          -- Requires extracting X at complement points from X^mu(γ).
+          -- This is the hardest sub-obligation and depends on X's structure.
+          sorry
+        · -- ∃ v', m < v' ∧ v' < u ∧ ¬D(v')
+          -- complement_no_min gives y < u with y ∉ cut, then h_neg_init gives ¬D witness
+          have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
+          obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+          exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hyu, hDw⟩
+    · -- Condition (2): ∃ u ∈ (m, s₀), ¬D(u)
+      -- complement_no_min: s₀ is not the minimum, so ∃ y < s₀ in complement
+      have ⟨y, hy_not, hys₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s₀ := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.complement_no_min ⟨s₀, hs₀_not, fun z hz => h_all z hz⟩
+      -- h_neg_init gives ¬D witness at or below y
+      obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+      exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hys₀, hDw⟩
+    · -- Condition (3): ∃ u ∈ (m, s₀), D on (m, u)
+      -- From no_sup: ∃ y ∈ cut with y > m
+      have ⟨y, hy_in, hmy⟩ : ∃ y ∈ γ.val.cut, m < y := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.no_sup ⟨m, ⟨fun x hx => h_all x hx, fun b hb => hb hm_in_cut⟩, hm_in_cut⟩
+      -- y < s₀ since y ∈ cut, s₀ ∉ cut, and cut is downward-closed
+      have hys₀ : y < s₀ := by
+        by_contra h; push_neg at h
+        exact hs₀_not (γ.val.downward_closed y s₀ hy_in h)
+      exact ⟨y, hmy, hys₀, fun v hmv hvy =>
+        (stavi_truth_mu_at_point v D).mp
+          (h_D_bet v hmv (γ.val.downward_closed y v hy_in (le_of_lt hvy)))⟩
 
 /-- Standard-Until gap detection: U(X, D) at an actual point m in M_r detects
     a D-defined gap γ > m where X^mu holds at γ, with D holding between m and γ.
@@ -2672,12 +2723,13 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
     simp only [left_formula]
     sorry
 
-/--
-**GHR93 Lemma 9** (Gap detection correctness, right direction):
+/-! ### GHR93 Lemma 9 (Gap detection correctness, right direction)
+
 right_formula(A, D) evaluated at an actual point m in M_r detects
 whether A^mu holds at a gap gamma that is D-defined on the right,
 with gamma < m and D holding at all actual points between gamma and m.
 -/
+
 /-- Core helper for right: S'(X, D) at an actual point m detects a D-defined
     gap γ < m where X^mu holds at γ. Dual of stavi_untl_gap_detection. -/
 theorem stavi_snce_gap_detection {sig : MonadicSignature}

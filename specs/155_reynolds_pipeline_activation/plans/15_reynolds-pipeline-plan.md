@@ -339,7 +339,7 @@ Option (b) IMPLEMENTED: Weakened d_consistency_left/right from universal ("for A
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [PARTIAL]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
 
 **Goal**: Prove `left_formula_gap_detection` (line 2432) and `right_formula_gap_detection` (line 2451) -- GHR93 Lemma 9 bridging temporal formulas to gap properties.
 
