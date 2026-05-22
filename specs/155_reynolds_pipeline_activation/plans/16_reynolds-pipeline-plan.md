@@ -458,14 +458,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: IntegerModel.lean Helper Sorries [NOT STARTED]
+### Phase 7: IntegerModel.lean Helper Sorries [BLOCKED]
 
 **Goal**: Close `cofinal_decomposition_k_equiv` (line 1135) and `ordered_sum_of_good_bounded_is_good` (line 1194).
 
+**BLOCKER** (Task 7.1): `cofinal_decomposition_k_equiv` as stated appears INCORRECT for k ≥ 2. The ordered sum uses closed subintervals [a(i), a(i+1)] which share boundary points. The Sigma-type construction creates disjoint copies, giving the ordered sum MORE elements than M. Reynolds 1994 (p.888) uses `N | a_i, a_{i+1}-1` (disjoint intervals via predecessor). Fix: add SuccOrder/PredOrder hypotheses and use half-open or predecessor-bounded intervals matching Reynolds. See `handoffs/phase-7-handoff.md` for detailed analysis and fix options.
+
 **Tasks**:
-- [ ] **Task 7.1**: Prove `cofinal_decomposition_k_equiv` (~100-150 lines). Show that if M and N are k-equivalent and both have cofinal decomposition property, then their cofinal decompositions are also k-equivalent. Uses induction on the decomposition structure and the existing `NEquivalence` infrastructure.
-- [ ] **Task 7.2**: Prove `ordered_sum_of_good_bounded_is_good` for k >= 2 (~100-200 lines). Show that an ordered sum of "good" structures indexed by a bounded linear order is itself good. Uses the shift-and-glue technique: construct an OrderIso from the ordered sum to Z by concatenating the individual OrderIsos from each summand.
-- [ ] **Task 7.3**: Construct shift-and-glue OrderIso helper (~80-120 lines). Technical lemma: if each summand is order-isomorphic to an interval of Z, and the index set is finite, then the concatenation is order-isomorphic to a larger interval of Z.
+- [ ] **Task 7.0**: RESEARCH — verify correct ordered sum construction against Reynolds 1994. Determine whether Option 2 (discrete predecessor intervals) is the right fix and assess downstream impact on `very_good_implies_good`, Phase 8 (`no_gaps_discrete`), and Phase 9 (`chronicle_is_good`).
+- [ ] **Task 7.1**: Fix `cofinal_decomposition_k_equiv` theorem statement and proof (~100-200 lines). Add SuccOrder/PredOrder hypotheses, use `[a(i), pred(a(i+1))]` intervals matching Reynolds.
+- [ ] **Task 7.2**: Prove `ordered_sum_of_good_bounded_is_good` for k >= 2 (~300-500 lines). Shift-and-glue OrderIso via cumulative offset: map ⟨i, z⟩ to z + offset(i).
+- [ ] **Task 7.3**: Construct shift-and-glue OrderIso helper (~100-150 lines).
 - [ ] **Task 7.4**: Verify `lean_verify very_good_implies_good` shows no `sorryAx`. Run `lake build`.
 
 **Timing**: 4-6 hours
@@ -537,7 +540,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Discharge h_truth_corr [NOT STARTED]
+### Phase 10: Discharge h_truth_corr [COMPLETED]
 
 **Goal**: Eliminate the h_truth_corr sorry at Transfer.lean:574 by delegating `countermodel_discrete` to `dd_countermodel_chronicle_discrete`.
 
