@@ -249,7 +249,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 23,
+      "next_artifact_number": 24,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -390,6 +390,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/22_claim1-case2-literature.md",
           "type": "research",
           "summary": "GHR93 Claim 1 + Case II literature extraction: predicate-level proof, U(B,A) transfer, Lean identifier mappings"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T174500Z.md",
+          "type": "handoff",
+          "summary": "Round 6: d_consistency interior solved via h_d_unique, Case II decomposed into 6 targeted sorries"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
