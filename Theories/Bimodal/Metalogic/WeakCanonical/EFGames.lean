@@ -5161,8 +5161,101 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           stavi_temporal_truth M atomMap u B :=
         fun u hu hus => (hX_cut u hu hus).1
       -- S'(A,B)^mu at γ from S'(A,B) at cut points: mirrors left stavi_untl forward
-      -- The FO table for S'(A,B) at a cut point u₀ extends to the gap γ
-      sorry
+      -- Pick cut point u₁ above s_bound
+      have ⟨u₁, hu₁_in, hu₁s⟩ : ∃ u₁, u₁ ∈ γ.val.cut ∧ s_bound < u₁ := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
+      -- FO table of S'(A,B) at u₁
+      have hSA_u₁ := hSA_cut u₁ hu₁_in hu₁s
+      simp only [stavi_temporal_truth] at hSA_u₁
+      obtain ⟨s₁, hs₁u₁, h_body₁, ⟨wf, hs₁wf, hwfu₁, hBwf⟩,
+              ⟨wi, hs₁wi, hwiu₁, hBwi⟩⟩ := hSA_u₁
+      -- s₁ ∈ cut (s₁ < u₁ ∈ cut, downward closure)
+      have hs₁_in : s₁ ∈ γ.val.cut :=
+        γ.val.downward_closed u₁ s₁ hu₁_in (le_of_lt hs₁u₁)
+      -- wf ∈ cut (wf < u₁)
+      have hwf_in : wf ∈ γ.val.cut :=
+        γ.val.downward_closed u₁ wf hu₁_in (le_of_lt hwfu₁)
+      -- wi ∈ cut (wi < u₁)
+      have hwi_in : wi ∈ γ.val.cut :=
+        γ.val.downward_closed u₁ wi hu₁_in (le_of_lt hwiu₁)
+      -- Construct S'(A,B)^mu(Sum.inr γ)
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+      refine ⟨extendPoint s₁, ?_, ?_, ?_, ?_⟩
+      · -- extendPoint s₁ < Sum.inr γ: s₁ ∈ cut
+        exact ⟨hs₁_in, fun h => h hs₁_in⟩
+      · -- Condition (1): ∀ mu-point u ∈ (extendPoint s₁, Sum.inr γ), FO body
+        intro u hs₁u huγ hmu
+        obtain ⟨u_pt, rfl⟩ := hmu
+        have hu_pt_in : u_pt ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff u_pt γ).mp (le_of_lt huγ)
+        have hu_pt_s₁ : s₁ < u_pt := (extendPoint_lt_iff s₁ u_pt).mp hs₁u
+        by_cases hu_pt_u₁ : u_pt < u₁
+        · -- u_pt between s₁ and u₁: use h_body₁
+          cases h_body₁ u_pt hu_pt_s₁ hu_pt_u₁ with
+          | inl h_cof =>
+            left
+            obtain ⟨v, hvu_pt, hBv⟩ := h_cof
+            refine ⟨extendPoint v, (extendPoint_lt_iff v u_pt).mpr hvu_pt, ⟨v, rfl⟩,
+              fun w hvw hwγ hmu_w => ?_⟩
+            obtain ⟨w_pt, rfl⟩ := hmu_w
+            have hw_pt_in : w_pt ∈ γ.val.cut :=
+              (extendPoint_le_gap_iff w_pt γ).mp (le_of_lt hwγ)
+            have hw_pt_v : v < w_pt := (extendPoint_lt_iff v w_pt).mp hvw
+            by_cases hwu₁ : w_pt < u₁
+            · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hw_pt_v hwu₁)
+            · push_neg at hwu₁
+              have hw_sb : s_bound < w_pt := lt_of_lt_of_le hu₁s hwu₁
+              exact (stavi_truth_mu_at_point w_pt B).mpr (hB_cut w_pt hw_pt_in hw_sb)
+          | inr h_right =>
+            right
+            obtain ⟨hA_below, v', hv'u_pt, hv'u₁, hBv'⟩ := h_right
+            refine ⟨fun v hv hvs hmu_v => ?_, ?_⟩
+            · obtain ⟨v_pt, rfl⟩ := hmu_v
+              exact (stavi_truth_mu_at_point v_pt A).mpr
+                (hA_below v_pt ((extendPoint_lt_iff s₁ v_pt).mp hv)
+                  ((extendPoint_lt_iff v_pt u_pt).mp hvs))
+            · refine ⟨extendPoint v', (extendPoint_lt_iff u_pt v').mpr hv'u_pt, ?_,
+                ⟨v', rfl⟩, mt (stavi_truth_mu_at_point v' B).mp hBv'⟩
+              have hv'_in : v' ∈ γ.val.cut :=
+                γ.val.downward_closed u₁ v' hu₁_in (le_of_lt hv'u₁)
+              exact ⟨hv'_in, fun h => h hv'_in⟩
+        · -- u_pt ≥ u₁: B holds at u_pt from hB_cut. Use LEFT disjunct.
+          push_neg at hu_pt_u₁
+          left
+          refine ⟨extendPoint wi, (extendPoint_lt_iff wi u_pt).mpr (lt_of_lt_of_le hwiu₁ hu_pt_u₁),
+            ⟨wi, rfl⟩, fun w hwwi hwγ hmu_w => ?_⟩
+          obtain ⟨w_pt, rfl⟩ := hmu_w
+          have hw_pt_in : w_pt ∈ γ.val.cut :=
+            (extendPoint_le_gap_iff w_pt γ).mp (le_of_lt hwγ)
+          have hw_pt_wi : wi < w_pt := (extendPoint_lt_iff wi w_pt).mp hwwi
+          by_cases hwu₁ : w_pt < u₁
+          · exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi w_pt hw_pt_wi hwu₁)
+          · push_neg at hwu₁
+            exact (stavi_truth_mu_at_point w_pt B).mpr
+              (hB_cut w_pt hw_pt_in (lt_of_lt_of_le hu₁s hwu₁))
+      · -- Condition (2): ∃ mu-point in (s₁, γ) with ¬B^mu
+        have hwf_lt_γ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint wf) (Sum.inr γ) := ⟨hwf_in, fun h => h hwf_in⟩
+        refine ⟨extendPoint wf, (extendPoint_lt_iff s₁ wf).mpr hs₁wf,
+          hwf_lt_γ,
+          ⟨wf, rfl⟩, mt (stavi_truth_mu_at_point wf B).mp hBwf⟩
+      · -- Condition (3): ∃ mu-point in (s₁, γ) with B^mu on final segment to γ
+        have hwi_lt_γ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint wi) (Sum.inr γ) := ⟨hwi_in, fun h => h hwi_in⟩
+        refine ⟨extendPoint wi, (extendPoint_lt_iff s₁ wi).mpr hs₁wi,
+          hwi_lt_γ,
+          ⟨wi, rfl⟩, fun v hwiv hvγ hmu_v => ?_⟩
+        · obtain ⟨v_pt, rfl⟩ := hmu_v
+          have hv_pt_in : v_pt ∈ γ.val.cut :=
+            (extendPoint_le_gap_iff v_pt γ).mp (le_of_lt hvγ)
+          have hv_pt_wi : wi < v_pt := (extendPoint_lt_iff wi v_pt).mp hwiv
+          by_cases hvu₁ : v_pt < u₁
+          · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi v_pt hv_pt_wi hvu₁)
+          · push_neg at hvu₁
+            exact (stavi_truth_mu_at_point v_pt B).mpr
+              (hB_cut v_pt hv_pt_in (lt_of_lt_of_le hu₁s hvu₁))
     · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
       -- Backward: mirrors left stavi_untl backward (mu-form restriction)
       sorry

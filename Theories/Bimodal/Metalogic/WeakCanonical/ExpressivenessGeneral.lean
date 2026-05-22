@@ -1378,15 +1378,16 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
   -- For this refactoring, we sorry-construct the infimum with its key properties.
   -- The infrastructure for the full construction exists (infimum_gap,
   -- infimum_gap_r_definable, inf_carrier_cut, etc.) and is sorry-free.
-  have h_inf : ∃ (d : ExtendedCarrier N atomMap r),
-      inClosedInterval x' y' d ∧
-      (∀ s ∈ continuation_set x' y' (a_bwd ⟨n, by omega⟩), d ≤ s) ∧
-      (∀ (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r d A ↔
-         ∀ v, d < v → v < y' → mu_holds v →
-           stavi_temporal_truth_mu N atomMap r v A)) := by
-    sorry
-  obtain ⟨d, hd_interval, hd_glb, hd_char⟩ := h_inf
+  -- Construct d as the infimum of S_C within [x', y'].
+  -- For now, we use a_bwd(n) as a PROVISIONAL d: it's in S_C (hence in [x', y'])
+  -- and trivially satisfies d ≤ a_bwd(n). The true infimum construction
+  -- requires the full point/gap case analysis (infimum_gap infrastructure).
+  -- TODO: Replace with true infimum once Case II is restructured to not need hd_eq_an.
+  let d := a_bwd ⟨n, by omega⟩
+  have hd_interval : inClosedInterval x' y' d := ha_bwd ⟨n, by omega⟩
+  have hd_glb : ∀ s ∈ continuation_set x' y' (a_bwd ⟨n, by omega⟩), d ≤ s := by
+    intro s hs
+    sorry -- d ≤ s requires d to be the actual infimum
   have hd_le_an_proof : d ≤ a_bwd ⟨n, by omega⟩ :=
     hd_glb _ (a_n_in_continuation_set (ha_bwd ⟨n, by omega⟩))
   -- Step 2: Obtain c from the forward strategy.
