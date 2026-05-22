@@ -1162,13 +1162,14 @@ private theorem d_consistency_left {sig : MonadicSignature}
       obtain ⟨a'_r1, ha'_r1, hwin_r1⟩ := h_fwd_r1 a_pad_r1 ha_pad_r1
       -- Let t_r1 = a'_r1(n) at rank r+1
       set t_r1 := a'_r1 ⟨n, by omega⟩
-      -- GHR93 Claim 1: use rank-(r+1) formula agreement to show t = d.
-      -- At rank r+1, the continuation formula C has depth ≤ r, so
-      -- C' = ¬C ∨ K⁻¬C has depth ≤ r+1. Formula agreement at rank r+1
-      -- gives C'(t_r1) ↔ C'(d_r1), which pins t_r1 = d_r1.
-      -- Since rank_embed is injective on carrier points and preserves gaps,
-      -- this transfers back to t = d at rank r.
-      -- TODO: implement full Claim 1 proof (~80 lines)
+      -- FUNDAMENTAL ISSUE (identified during Claim 1 analysis):
+      -- d_consistency as stated is UNPROVABLE for arbitrary d.
+      -- GHR93 Claim 1 shows ALL Duplicator responses must equal d̄ (the infimum
+      -- of continuation_set). So if d ≠ d̄, no winning response with d at position n exists.
+      -- Since d = a_bwd(n) is Spoiler's arbitrary pick, d may differ from d̄.
+      -- FIX: redefine d as the infimum in obtain_split_point_props.
+      -- Then d_consistency becomes a corollary of Claim 1 (response = d̄ = d).
+      -- This requires the Case II restructure (~400 lines) documented in phase-1-handoff.md.
       sorry
 
 /-- D-consistency (right boundary, existential form): dual of
