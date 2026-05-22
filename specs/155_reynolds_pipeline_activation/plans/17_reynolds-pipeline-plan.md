@@ -26,7 +26,7 @@
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
-- **reports_integrated**: [23_tactic-needs-beyond-195.md, 27_post-195-assessment.md]
+- **reports_integrated**: [23_tactic-needs-beyond-195.md, 27_post-195-assessment.md, 28_claim1-formula-materialization.md, 29_lean-infra-h-d-unique.md]
 
 ---
 
@@ -36,26 +36,28 @@ The plan formalizes the complete GHR93 game-theoretic proof of expressive comple
 
 **Key finding (report 32)**: The omega-chain construction CAN produce gaps (Z+Z models). `succ_cofinal` cannot be closed from temporal axioms or construction internals alone (Prior-UZ guard is vacuous in discrete case, report 33). The FULL Reynolds gap elimination (Theorem 14) is the only viable path. The EFGames/ExpressivenessGeneral infrastructure IS the Reynolds pipeline.
 
-**Phase 1 resolution (report 35)**: Report 29 is correct; handoff-b is wrong. BOTH infimum redefinition AND rank embedding are needed. The current code sets d = x' (placeholder, not the actual infimum). With d = d-bar (the true infimum), Claim 1 at rank r+1 proves d_consistency. Case II must be restructured to construct e_n fresh via U(B,A) transfer. All required infrastructure (rank_embed, infimum_gap, h_fwd_r1 propagation) is already sorry-free.
+**Phase 1 resolution (report 35)**: Report 29 is correct; handoff-b is wrong. BOTH infimum redefinition AND rank embedding are needed. The current code sets d = x' (placeholder, not the actual infimum). With d = d-bar (the true infimum), Claim 1 at rank r+2 (Lean depth) proves d_consistency. Case II must be restructured to construct e_n fresh via U(B,A) transfer. All required infrastructure (rank_embed, infimum_gap, h_fwd_r1 propagation) is already sorry-free.
+
+**Rank arithmetic fix (reports 28-29, Round 13)**: GHR93's "rank r+1" maps to Lean `stavi_depth` r+2, because `stavi_depth(.std_snce A B) = max(depth A, depth B) + 2`. The h_fwd_r1 parameter has been bumped from r+1 to r+2 across 6 signatures (Round 13, committed). Case 2 of infimum construction proved unreachable. The K⁻(¬D) formula (depth ≤ r+2) is the bridge for h_d_unique: `neg(std_snce(top, D))` where D is the pigeonhole formula.
 
 **Task 195 completion (v14)**: Task 195 created `EFGameTactics.lean` with `simp_game_tuple`, `same_order_type_grid`, `order_refl`, `extract_order`, `pivot_chain_order'`/`pivot_chain_order_rev'`, `gap_point_agreement_of_cases`, and `formula_agreement_of_cases`. It also moved `game_tuple_*_eq` and `pivot_chain_order`/`pivot_chain_order_rev` from ExpressivenessGeneral.lean to EFGames.lean as public declarations. These tactics directly resolve the compilation blocker for Phase 1 Task 1.6 same_order_type (sigma and tau).
 
 ---
 
-## Overview (v14)
+## Overview (v15)
 
-This plan (v14) revises v13 based on the completion of task 195 (EF game automation tactics). The key change: the 2 same_order_type sorries at lines 3059 and 3263, which were BLOCKED since Round 8, are now UNBLOCKED. Task 195's `same_order_type_grid` macro provides `intro i j; simp only [game_tuple]; split_ifs` (avoiding the `simp_all` hypothesis-rewriting that caused the compilation blocker), and the `order_refl`/`extract_order` macros assist with grid cell closing. The block-commented proofs at lines 3060-3162 (sigma) and 3264-3419 (tau) contain verified-correct proof architecture that must be uncommented and fixed to use the new tactics.
+This plan (v15) revises v14 based on the completion of rounds 10-13. The rank arithmetic mismatch (reports 28-29) has been RESOLVED: h_fwd_r1 bumped from r+1 to r+2 (Round 13, committed, builds pass). The K⁻(¬D) formula approach is identified and partially verified via multi_attempt. The same_order_type sigma proof has 18/25 grid goals closed via task 195 tactics (Round 10), with 7 remaining blocked on h_d_unique.
 
 The critical path remains:
 
 ```
-Phase 1 (d-consistency: same_order_type fix + h_d_unique)
+Phase 1 (h_d_unique via K⁻(¬D) at rank r+2 → same_order_type sigma/tau)
   -> Phase 3 (Cases III/IV) -> Phase 4 (Assembly + Corollary 5)
     -> Phase 5 (Reynolds Thm 5) -> Phases 6A-6B (gap elimination)
       -> succ_cofinal -> bx_completeness
 ```
 
-Phase 1 is now in its final stretch: 3 sorries remain (same_order_type sigma/tau now UNBLOCKED, h_d_unique). Phases 2, 10 are COMPLETE. Phases 7-9 remain OFF the critical path.
+Phase 1 status: h_d_unique has 2 targeted sorries (boundary cases + u>d subcase proved, remaining 2 need K⁻(¬D) formula construction + game transfer at rank r+2). Sigma SOT has 18/25 grid goals closed. Tau SOT not yet attempted. Once h_d_unique closes, both SOT proofs unblock via c<=e_n. Phases 2, 10 are COMPLETE. Phases 7-9 remain OFF the critical path.
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes with zero errors, no `axiom` declarations in the pipeline.
 
@@ -66,13 +68,17 @@ Reports 23 and 27 (integrated in v14) provide the post-task-195 assessment:
 - **Report 23**: Systematic per-sorry tactic analysis. Confirms task 195 tactics are the right and sufficient tactic investment. The remaining 7 sorries (excluding 2 same_order_type) are each unique mathematical arguments that cannot be profitably automated. Only marginal additional tactic (`point_witness_interval`) saves lines but blocks nothing.
 - **Report 27**: Post-task-195 blocker assessment. Confirms lines 3059 (sigma) and 3263 (tau) same_order_type are DIRECTLY RESOLVED by replacing `simp_all` with `delta game_tuple; split_ifs` (controlled normalization via `simp_game_tuple`). Provides recommended proof strategies for both sigma and tau cases. Notes that tau case needs sigma instantiation for `(x' < d iff x < c)` ordering link.
 
-Prior integration (v13):
+Integrated in v15:
+- **Report 28**: GHR93 Claim 1 formula materialization. Critical finding: `stavi_depth(.std_snce A B) = max(depth A, depth B) + 2`, so K⁻(¬D) has Lean depth r+2 (not r+1 as GHR93 rank suggests). Fix: bump h_fwd_r1 to rank r+2. Proof path: pigeonhole formula D + K⁻(¬D) construction + game transfer.
+- **Report 29**: Lean infrastructure inventory. Both sorry goals are `False`. Existing infrastructure: `pigeonhole_definable_formula`, `infimum_gap_r_definable`, `rank_embed_stavi_truth_mu`, `stavi_table_mu_correct`. Missing: K⁻ combinator, finite type conjunction, predicate-to-formula bridge. Recommends standalone `ghr93_claim1_uniqueness` lemma (150-250 lines).
+
+Prior integration (v13-v14):
 - **Report 35**: Resolves Phase 1 d-consistency blocker. Report 29 correct, handoff-b wrong. Both infimum redefinition and rank embedding needed.
 - **Report 18**: Resolves Task 1.7 IH h_fwd_r1 recursive rank tower via decoupled round count + universal h_r1_univ.
 
 ### Prior Plan Reference
 
-v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Task 1.6 same_order_type was BLOCKED by the `game_tuple` noncomputable/`simp_all` compilation issue. v14 unblocks it by incorporating task 195's EFGameTactics. Line numbers updated from v13 estimates to report 27's verified locations. Effort revised down by ~6 hours reflecting the unblocking.
+v14 was accurate on all phases. v15 incorporates the rank arithmetic fix (reports 28-29, Round 13): h_fwd_r1 bumped from r+1 to r+2, K⁻(¬D) approach identified for h_d_unique. Session progress table updated through Round 13. Case 2 of infimum construction proved unreachable.
 
 ### Session Progress (v12 -> v13 -> rounds 1-12 -> task 195 completion)
 
@@ -96,6 +102,9 @@ v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Ta
 | Phase 1: Task 1.4 h_d_unique u>d subcase | COMPLETE | Round 12 | d<=t' direction, u>d branch |
 | Phase 1: Task 1.4 h_d_unique rank bump (r+1 → r+2) | COMPLETE | Round 13 | 6 signatures + 2 derivation sites updated |
 | Phase 1: Task 1.4 h_d_unique interior (2 sorries) | BLOCKED | Round 12-13 | needs rank-(r+2) K⁻(¬D) formula argument |
+| Phase 1: h_fwd_r1 rank bump r+1 → r+2 | COMPLETE | Round 13 | 6 signatures + 2 derivations, build passes |
+| Phase 1: Case 2 infimum proved unreachable | COMPLETE | Round 13 | d ∈ S_C contradicts hp_not_in |
+| Phase 1: d ∈ S_C lemma | VERIFIED | Round 13 | multi_attempt confirms, not yet committed |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from h_d_unique |
 | Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
 | Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
