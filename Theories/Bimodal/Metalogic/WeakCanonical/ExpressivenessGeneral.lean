@@ -2823,13 +2823,45 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           ghr93_winning_condition (n + 1)
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
-  -- SORRY'd pending GHR93-faithful restructure.
-  -- Previously used hd_eq_an (d = a_bwd(n)) at 25+ sites for game tuple rewrites.
-  -- With d = infimum (d̄), this equality no longer holds. Case II must be rewritten
-  -- to match GHR93: all a_bwd(i) > d strictly, use τ for positions 0..n-1,
-  -- construct e_n fresh via U(B,A) formula transfer at position n.
-  -- The response at position n is e_n (NOT c). No hd_eq_an rewrites.
-  sorry
+  -- GHR93 Case II: all a_bwd(i) ≥ d, a_bwd(n) is a point.
+  -- Step 1: Build init sub-sequence (first n elements, all in [d, y'])
+  let a_init : Fin n → ExtendedCarrier N atomMap r :=
+    fun k => a_bwd ⟨k.val, by omega⟩
+  have ha_init : ∀ k, inClosedInterval d y' (a_init k) := by
+    intro k
+    exact ⟨h_no_split ⟨k.val, by omega⟩, (ha_bwd ⟨k.val, by omega⟩).2⟩
+  -- Step 2: Apply τ to the init sub-sequence
+  obtain ⟨resp_tau, hresp_tau_in, hwin_tau⟩ := props.tau a_init ha_init
+  -- resp_tau : Fin n → ExtendedCarrier M atomMap r, all in [c, y]
+  -- Step 3: Construct e_n for position n.
+  -- a_bwd(n) is a point in [d, y']. We need a matching element in [x, y].
+  -- Since a_bwd(n) ≥ d and a_bwd(n) is a point in [d, y'], it's in τ's interval.
+  -- Use the forward strategy to find a matching point.
+  -- For now, sorry the e_n construction and its properties.
+  obtain ⟨e_n, he_n_in, he_n_props⟩ :
+      ∃ e_n : ExtendedCarrier M atomMap r,
+        inClosedInterval x y e_n ∧
+        -- e_n must satisfy: same gap/point as a_bwd(n), formula agreement,
+        -- and ordering compatibility with resp_tau entries and c
+        (∀ (b_sp : M.carrier), inClosedInterval x y (extendPoint b_sp) →
+          ∃ (b_resp : N.carrier), inClosedInterval x' y' (extendPoint b_resp) ∧
+            ghr93_winning_condition (n + 1)
+              (game_tuple x' y' a_bwd b_resp)
+              (game_tuple x y (fun i => if h : i.val < n then resp_tau ⟨i.val, h⟩ else e_n) b_sp)) := by
+    sorry
+  -- Step 4: Build merged response
+  let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
+    if h : i.val < n then resp_tau ⟨i.val, h⟩
+    else e_n
+  have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
+    intro i; simp only [a'_resp]
+    split
+    case isTrue h =>
+      have := hresp_tau_in ⟨i.val, h⟩
+      exact ⟨le_trans props.hxc this.1, this.2⟩
+    case isFalse _ => exact he_n_in
+  -- Step 5: Provide response with winning condition
+  exact ⟨a'_resp, ha'_resp_in, fun b_sp hb_sp => he_n_props b_sp hb_sp⟩
   /-  OLD CASE II PROOF (used hd_eq_an, incompatible with d = infimum)
   have hd_eq_an : d = a_bwd ⟨n, by omega⟩ := props.hd_eq_an
   -- d is a point
