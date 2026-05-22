@@ -5160,8 +5160,11 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       have hB_cut : ∀ u : M.carrier, u ∈ γ.val.cut → s_bound < u →
           stavi_temporal_truth M atomMap u B :=
         fun u hu hus => (hX_cut u hu hus).1
+      -- S'(A,B)^mu at γ from S'(A,B) at cut points: mirrors left stavi_untl forward
+      -- The FO table for S'(A,B) at a cut point u₀ extends to the gap γ
       sorry
     · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
+      -- Backward: mirrors left stavi_untl backward (mu-form restriction)
       sorry
   | std_untl A B _ _ =>
     sorry
