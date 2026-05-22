@@ -2346,13 +2346,12 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
       -- index categories: {x=0, b=n+2, y=n+3, sel} × {x=0, b=n+2, y=n+3, sel}
       -- Goal 1: x vs x
-      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      · order_refl
       -- Goal 2: x vs b
       · exact sig_x_b
       -- Goal 3: x vs y
-      · exact pivot_chain_order props.hx'd props.hdy' props.hxc props.hcy
-          sig_x_d.1 sig_x_d.2 tau_d_y.1 tau_d_y.2
+      · exact pivot_chain_order' props.hx'd props.hdy' props.hxc props.hcy
+          sig_x_d tau_d_y
       -- Goal 4: x vs sel(j)
       · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
         by_cases hjd' : a_bwd j' < d
@@ -2368,18 +2367,16 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd j' = a_tau k := by
             simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
           rw [this]
-          exact pivot_chain_order props.hx'd (hd_le_a_tau k)
-            props.hxc (hc_le_rR k) sig_x_d.1 sig_x_d.2
-            (tau_d_sel k).1 (tau_d_sel k).2
+          exact pivot_chain_order' props.hx'd (hd_le_a_tau k)
+            props.hxc (hc_le_rR k) sig_x_d (tau_d_sel k)
       -- Goal 5: b vs x
       · have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨0, by omega⟩
-        simp only [game_tuple_b_eq, game_tuple_zero_eq] at h; exact h
+        simp_game_tuple at h; exact h
       -- Goal 6: b vs b
-      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      · order_refl
       -- Goal 7: b vs y
-      · exact pivot_chain_order hb_resp_L_in.2 props.hdy' hbc props.hcy
-          sig_b_d.1 sig_b_d.2 tau_d_y.1 tau_d_y.2
+      · exact pivot_chain_order' hb_resp_L_in.2 props.hdy' hbc props.hcy
+          sig_b_d tau_d_y
       -- Goal 8: b vs sel(j)
       · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
         by_cases hjd' : a_bwd j' < d
@@ -2395,18 +2392,16 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd j' = a_tau k := by
             simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
           rw [this]
-          exact pivot_chain_order hb_resp_L_in.2 (hd_le_a_tau k)
-            hbc (hc_le_rR k) sig_b_d.1 sig_b_d.2
-            (tau_d_sel k).1 (tau_d_sel k).2
+          exact pivot_chain_order' hb_resp_L_in.2 (hd_le_a_tau k)
+            hbc (hc_le_rR k) sig_b_d (tau_d_sel k)
       -- Goal 9: y vs x
-      · exact pivot_chain_order_rev props.hdy' props.hx'd props.hcy props.hxc
-          tau_d_y.1 tau_d_y.2 sig_x_d.1 sig_x_d.2
+      · exact pivot_chain_order_rev' props.hdy' props.hx'd props.hcy props.hxc
+          tau_d_y sig_x_d
       -- Goal 10: y vs b
-      · exact pivot_chain_order_rev props.hdy' hb_resp_L_in.2 props.hcy hbc
-          tau_d_y.1 tau_d_y.2 sig_b_d.1 sig_b_d.2
+      · exact pivot_chain_order_rev' props.hdy' hb_resp_L_in.2 props.hcy hbc
+          tau_d_y sig_b_d
       -- Goal 11: y vs y
-      · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      · order_refl
       -- Goal 12: y vs sel(j)
       · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
         by_cases hjd' : a_bwd j' < d
@@ -2416,9 +2411,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd j' = a_sigma k := by
             simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
           rw [this]
-          exact pivot_chain_order_rev props.hdy' (ha_sig_le_d k)
-            props.hcy (hresp_L_le_c k) tau_d_y.1 tau_d_y.2
-            (sig_sel_d k).1 (sig_sel_d k).2
+          exact pivot_chain_order_rev' props.hdy' (ha_sig_le_d k)
+            props.hcy (hresp_L_le_c k) tau_d_y (sig_sel_d k)
         · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
           simp only [a'_resp, hjd', dite_false]
           set k := isoR.symm ⟨j', hj_mem⟩
@@ -2440,16 +2434,15 @@ private theorem ghr93_case_I {sig : MonadicSignature}
             simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
           rw [this]
           have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨0, by omega⟩
-          simp only [game_tuple_sel_eq, game_tuple_zero_eq] at h; exact h
+          simp_game_tuple at h; exact h
         · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
           simp only [a'_resp, hid', dite_false]
           set k := isoR.symm ⟨i', hi_mem⟩
           have : a_bwd i' = a_tau k := by
             simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
           rw [this]
-          exact pivot_chain_order_rev (hd_le_a_tau k) props.hx'd
-            (hc_le_rR k) props.hxc
-            (tau_d_sel k).1 (tau_d_sel k).2 sig_x_d.1 sig_x_d.2
+          exact pivot_chain_order_rev' (hd_le_a_tau k) props.hx'd
+            (hc_le_rR k) props.hxc (tau_d_sel k) sig_x_d
       -- Goal 14: sel(i) vs b
       · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
         by_cases hid' : a_bwd i' < d
@@ -2465,9 +2458,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd i' = a_tau k := by
             simp only [a_tau]; congr 1; exact (heR_inv i' hi_mem).symm
           rw [this]
-          exact pivot_chain_order_rev (hd_le_a_tau k) hb_resp_L_in.2
-            (hc_le_rR k) hbc
-            (tau_d_sel k).1 (tau_d_sel k).2 sig_b_d.1 sig_b_d.2
+          exact pivot_chain_order_rev' (hd_le_a_tau k) hb_resp_L_in.2
+            (hc_le_rR k) hbc (tau_d_sel k) sig_b_d
       -- Goal 15: sel(i) vs y
       · set i' : Fin (n + 1) := ⟨i.val - 1, by omega⟩
         by_cases hid' : a_bwd i' < d
@@ -2477,9 +2469,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd i' = a_sigma k := by
             simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
           rw [this]
-          exact pivot_chain_order (ha_sig_le_d k) props.hdy'
-            (hresp_L_le_c k) props.hcy
-            (sig_sel_d k).1 (sig_sel_d k).2 tau_d_y.1 tau_d_y.2
+          exact pivot_chain_order' (ha_sig_le_d k) props.hdy'
+            (hresp_L_le_c k) props.hcy (sig_sel_d k) tau_d_y
         · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
           simp only [a'_resp, hid', dite_false]
           set k := isoR.symm ⟨i', hi_mem⟩
@@ -2509,10 +2500,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
             rw [hj_eq]
-            exact pivot_chain_order (ha_sig_le_d ki) (hd_le_a_tau kj)
-              (hresp_L_le_c ki) (hc_le_rR kj)
-              (sig_sel_d ki).1 (sig_sel_d ki).2
-              (tau_d_sel kj).1 (tau_d_sel kj).2
+            exact pivot_chain_order' (ha_sig_le_d ki) (hd_le_a_tau kj)
+              (hresp_L_le_c ki) (hc_le_rR kj) (sig_sel_d ki) (tau_d_sel kj)
         · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
           simp only [a'_resp, hid', dite_false]
           set ki := isoR.symm ⟨i', hi_mem⟩
@@ -2526,10 +2515,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
             have hj_eq : a_bwd j' = a_sigma kj := by
               simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
             rw [hj_eq]
-            exact pivot_chain_order_rev (hd_le_a_tau ki) (ha_sig_le_d kj)
-              (hc_le_rR ki) (hresp_L_le_c kj)
-              (tau_d_sel ki).1 (tau_d_sel ki).2
-              (sig_sel_d kj).1 (sig_sel_d kj).2
+            exact pivot_chain_order_rev' (hd_le_a_tau ki) (ha_sig_le_d kj)
+              (hc_le_rR ki) (hresp_L_le_c kj) (tau_d_sel ki) (sig_sel_d kj)
           · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
             simp only [a'_resp, hjd', dite_false]
             set kj := isoR.symm ⟨j', hj_mem⟩

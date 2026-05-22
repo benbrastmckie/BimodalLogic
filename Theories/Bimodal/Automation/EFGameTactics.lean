@@ -57,4 +57,50 @@ macro "game_tuple_unfold" loc:(Lean.Parser.Tactic.location)? : tactic =>
   | none =>
     `(tactic| (simp only [game_tuple]; split_ifs <;> try omega))
 
+/-! ## Component C: pivot_order -/
+
+/-- `pivot_chain_order'` is a convenience wrapper around `pivot_chain_order` that
+    takes the left and right ordering witnesses as pairs rather than as 4
+    separate arguments. This matches the natural shape of hypotheses extracted
+    from `same_order_type` sub-game results.
+
+    Instead of:
+    ```
+    exact pivot_chain_order hap hpb ha'q hqb' hord_l.1 hord_l.2 hord_r.1 hord_r.2
+    ```
+    Write:
+    ```
+    exact pivot_chain_order' hap hpb ha'q hqb' hord_l hord_r
+    ``` -/
+theorem pivot_chain_order' {α β : Type*} [LinearOrder α] [LinearOrder β]
+    {a p b : α} {a' q b' : β}
+    (hap : a ≤ p) (hpb : p ≤ b) (ha'q : a' ≤ q) (hqb' : q ≤ b')
+    (hord_l : (a < p ↔ a' < q) ∧ (a = p ↔ a' = q))
+    (hord_r : (p < b ↔ q < b') ∧ (p = b ↔ q = b')) :
+    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') :=
+  pivot_chain_order hap hpb ha'q hqb' hord_l.1 hord_l.2 hord_r.1 hord_r.2
+
+/-- `pivot_chain_order_rev'` is a convenience wrapper around `pivot_chain_order_rev`
+    that takes the ordering witnesses as pairs. -/
+theorem pivot_chain_order_rev' {α β : Type*} [LinearOrder α] [LinearOrder β]
+    {a p b : α} {a' q b' : β}
+    (hpa : p ≤ a) (hbp : b ≤ p) (hqa' : q ≤ a') (hb'q : b' ≤ q)
+    (hord_l : (p < a ↔ q < a') ∧ (p = a ↔ q = a'))
+    (hord_r : (b < p ↔ b' < q) ∧ (b = p ↔ b' = q)) :
+    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') :=
+  pivot_chain_order_rev hpa hbp hqa' hb'q hord_l.1 hord_l.2 hord_r.1 hord_r.2
+
+/-- `order_refl` closes goals of the form
+    `(a < a ↔ b < b) ∧ (a = a ↔ b = b)` — the diagonal case in the
+    same_order_type grid where both indices refer to the same element. -/
+theorem order_refl_pair {α β : Type*} [Preorder α] [Preorder β] (a : α) (b : β) :
+    (a < a ↔ b < b) ∧ (a = a ↔ b = b) :=
+  ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+   ⟨fun _ => rfl, fun _ => rfl⟩⟩
+
+/-- `order_refl` tactic closes goals of the form
+    `(a < a ↔ b < b) ∧ (a = a ↔ b = b)`. -/
+macro "order_refl" : tactic =>
+  `(tactic| exact order_refl_pair _ _)
+
 end Bimodal.Metalogic.WeakCanonical
