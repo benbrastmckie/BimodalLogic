@@ -220,7 +220,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -229,7 +229,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-22T15:35:36Z",
+      "last_updated": "2026-05-22T15:42:21Z",
       "next_artifact_number": 18,
       "artifacts": [
         {
@@ -323,11 +323,6 @@
           "summary": "Root cause analysis and solution for stavi_untl/snce sorry-closing blocker in stavi_table_mu_correct"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/16_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "v11 plan: 12 phases covering all 15 sorry sites through sorry-free bx_completeness"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/27_d-consistency-blocker.md",
           "type": "research",
           "summary": "Root cause analysis: rank mismatch (GHR93 needs rank r+1, code uses rank r). Recommends infimum redefinition + Case II restructure."
@@ -336,6 +331,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md",
           "type": "research",
           "summary": "Deep analysis of GHR93 Claim 1 literature, definitive resolution of Phase 1 d-consistency blocker strategies, Lean infrastructure inventory, pipeline health assessment"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/17_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "v13 plan: Phase 1 unblocked via infimum + Claim 1 + Case II restructure. 40-60 hours remaining across 11 phases."
         }
       ],
       "session_id": "sess_1779464097_a01624",

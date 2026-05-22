@@ -277,7 +277,7 @@ After 155:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -293,6 +293,7 @@ After 155:
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/03_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/07_reynolds-pipeline-plan.md]
+  - [155_reynolds_pipeline_activation/plans/17_reynolds-pipeline-plan.md]
 
 **Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
 
