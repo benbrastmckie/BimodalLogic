@@ -34,9 +34,8 @@ technical_debt:
 **Execution Pipeline**:
 
 ```
-Phase 1 (parallel now):
+Phase 1 (now):
   155 (Reynolds pipeline — sorry-free bx_completeness)
-  181 (Derivable Prop wrapper — independent, small)
 
 Phase 2 (post-155 cleanup):
   176, 95                                               (parallel)
@@ -54,7 +53,7 @@ Phase 6 (tactics — Tier 2 engineering):
   186, 187, 189 (parallel, after 185) → 188 (after 187)
 
 Phase 7 (tactics — Tier 3 research-level):
-  191 (after 181) → 192 (after 181, 185, 187, 190, 191)
+  191 → 192 (after 185, 187, 190, 191)
 
 Phase 8 (tactic-powered codebase refactoring):
   193                                                   (after 192)
@@ -63,10 +62,9 @@ Phase 9 (final documentation + examples):
   177, 178                                              (after 183, 193)
 ```
 
-### Phase 1 — Active Parallel Work
+### Phase 1 — Active Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-181 [COMPLETED] — Add Derivable Prop-valued wrapper alongside DerivationTree
 
 ### Completed Research (informs Phase 3)
 
@@ -119,9 +117,8 @@ Phase 9 (final documentation + examples):
 ### Phase 7 — Tactics Tier 3 (research-level)
 
 191 [NOT STARTED] — Propositional fragment decision procedure
-  └─ 181
 192 [NOT STARTED] — Master tactic dispatch (tm_prove)
-  └─ 181, 185, 187, 190, 191
+  └─ 185, 187, 190, 191
 
 ### Phase 8 — Tactic-Powered Codebase Refactoring
 
