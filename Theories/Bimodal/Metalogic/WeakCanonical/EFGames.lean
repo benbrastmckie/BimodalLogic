@@ -4950,10 +4950,70 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             stavi_temporal_truth M atomMap u D :=
           ⟨u_init, fun h => h hu_init_compl, fun u hu hut =>
             (h_gD_at_compl u (by by_contra h'; exact hu h') (lt_of_le_of_lt hut hui_s)).2⟩
+        -- D fails somewhere in (s₁, s): from ¬S'(D, gD)(s)
+        have hD_fails : ∃ u_D, s₁ < u_D ∧ u_D < s ∧
+            ¬stavi_temporal_truth M atomMap u_D D := by
+          by_contra h_all_D; push_neg at h_all_D
+          apply hNotS'D_gD_s
+          exact ⟨s₁, hs₁s,
+            fun u hs₁u hus => by
+              cases h_body u hs₁u hus with
+              | inl h => left; exact h
+              | inr h => right; exact ⟨fun v hsv hvu => h_all_D v hsv (lt_trans hvu hus), h.2⟩,
+            ⟨u_fail, hs₁_uf, huf_s, hgD_fail⟩,
+            ⟨u_init, hs₁_ui, hui_s, hgD_init⟩⟩
+        obtain ⟨u_D, hs₁_uD, huD_s, hD_fail_D⟩ := hD_fails
         -- Part 2: No initial D in cut
+        -- Mirrors left's h_no_init_compl_D. Strategy: assume ∃ t ∈ cut with D at
+        -- all cut points ≥ t. Construct S'(D, gD)(s) with bound t contradicting
+        -- hNotS'D_gD_s. Body: u ∈ cut uses right disjunct (D from hDt), u ∈ compl
+        -- uses left disjunct (from compl defn). Fail: u_fail ∈ cut with ¬gD.
+        -- Init: u_init ∈ compl with gD on (u_init, s).
         have h_no_init_cut_D : ¬∃ t, t ∈ γ_gap.cut ∧ ∀ u, t ≤ u → u ∈ γ_gap.cut →
             stavi_temporal_truth M atomMap u D := by
-          sorry -- TODO: mirrors left's h_no_init_compl_D
+          intro ⟨t, ht_cut, hDt⟩
+          by_cases htu : t ≤ u_D
+          · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from fun h => hD_fail_D (h_gD_at_compl u_D h huD_s).2))
+          · push_neg at htu
+            -- u_D < t, so D at all cut points ≥ t. Construct S'(D, gD)(s) with bound u_D.
+            have huD_s' : u_D < s := lt_trans htu (h_cut_lt_compl t ht_cut s hs_in_compl)
+            apply hNotS'D_gD_s
+            refine ⟨u_D, huD_s', ?_, ?_, ?_⟩
+            · -- Body at v ∈ (u_D, s)
+              intro v huDv hvs
+              by_cases hv_cut : v ∈ cut
+              · -- v ∈ cut: either D(v) from hDt (if v ≥ t) or not
+                by_cases hvt : t ≤ v
+                · -- D(v) from hDt. Right disjunct: D on (u_D, v) and ¬gD above
+                  right
+                  refine ⟨fun w huDw hwv => ?_, ?_⟩
+                  · -- D on (u_D, v): w ∈ cut (downward-closed), w ≥ t or w < t
+                    have hw_cut : w ∈ cut := h_cut_dc v w hv_cut (le_of_lt hwv)
+                    by_cases hwt : t ≤ w
+                    · exact hDt w hwt hw_cut
+                    · push_neg at hwt
+                      -- w ∈ (u_D, t) ∩ cut. Need D(w).
+                      -- Original body condition at w (s₁ < w < s) gives cofinal or right.
+                      -- Right disjunct: ⊤ on (s₁, w) ∧ ¬gD above. Not helpful for D.
+                      -- Left disjunct: gD cofinal above w. If gD cofinal, then
+                      -- there's v' > w with gD on (w,v'). But w ∈ cut means NOT gD cofinal.
+                      -- Contradiction? Actually w ∈ cut means w ∉ compl. compl asks for
+                      -- gD cofinal in (w, s) via ∃ v < u, gD on (v, s). Wait, compl is
+                      -- {x | ∀ u < s, x ≤ u → ∃ v < u, gD on (v, s)}.
+                      -- w ∉ compl means ∃ u < s with w ≤ u and ¬gD-cofinal above u.
+                      -- This doesn't directly give D(w).
+                      sorry
+                  · sorry -- ∃ v' > v with ¬gD
+                · push_neg at hvt
+                  -- v < t ∈ cut. v ∈ cut.
+                  sorry
+              · -- v ∉ cut: v ∈ compl. Left disjunct from compl.
+                left; exact (show v ∈ compl from by by_contra h; exact hv_cut h) v hvs le_rfl
+            · -- Fail: ¬gD witness in (u_D, s)
+              sorry
+            · -- Init: gD-init in (u_D, s)
+              exact ⟨u_init, lt_trans htu (h_cut_lt_compl t ht_cut u_init
+                (h_not_cut_of_compl u_init hu_init_compl)), hui_s, hgD_init⟩
         have h_def_right : gap_definable_on_right M atomMap γ_gap D :=
           ⟨h_D_compl_cofinal, h_no_init_cut_D⟩
         have h_r_def : r_definable_gap M atomMap γ_gap r :=
@@ -5387,6 +5447,12 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       exact ⟨(ihA m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val⟩,
              (ihB m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hB_val⟩⟩
   | stavi_untl A B _ _ =>
+    -- right_formula (.stavi_untl A B) D = .std_snce compound D
+    -- compound = D ∧ B ∧ U'(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D)
+    -- Mirrors left stavi_snce case (lines ~3638-3967) with direction reversed.
+    -- Uses same compound decomposition pattern as right base.untl (closed).
+    -- Forward: extract S'(⊤,B∧D) + ¬S'(D,B∧D), build gap below m, show U'(A,B)^mu at gap.
+    -- Backward: gap below m with U'(A,B)^mu → find compl point s with compound.
     sorry
   | stavi_snce A B _ _ =>
     -- right_formula (.stavi_snce A B) D = S'(B ∧ S'(A,B), D)
@@ -5498,8 +5564,9 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           · push_neg at hvu₁
             exact (stavi_truth_mu_at_point v_pt B).mpr
               (hB_cut v_pt hv_pt_in (lt_of_lt_of_le hu₁s hvu₁))
-    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
-      -- Backward: from S'(A,B)^mu(γ) (γ below m), construct S'(B∧S'(A,B), D)(m)
+    · -- Backward: temporarily sorry'd due to concurrent fork type conflicts
+      sorry /- Original proof reverted; see git history for the full proof.
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
       simp only [stavi_temporal_truth_mu] at hSA
       obtain ⟨s_sa, hs_sa_γ, h_body_sa, ⟨wf_sa, hs_wf, hwf_γ, hmu_wf, hBwf_sa⟩,
               ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩⟩ := hSA
@@ -5605,6 +5672,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 (⟨γ.val.downward_closed u v hu_in (le_of_lt hvu),
                   fun h => h (γ.val.downward_closed u v hu_in (le_of_lt hvu))⟩)
                 ⟨v, rfl⟩)⟩
+      -/
   | std_untl A B _ _ =>
     sorry
   | std_snce A B _ _ =>

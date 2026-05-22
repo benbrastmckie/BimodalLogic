@@ -1389,10 +1389,12 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         inClosedInterval x' y' d ∧
         (∀ s ∈ S_C, d ≤ s) ∧
         d ≤ a_bwd ⟨n, by omega⟩ := by
-    -- Infimum construction: find d = GLB of S_C in ExtendedCarrier.
-    -- Point GLB case: d = extendPoint p; Gap case: d = Sum.inr (infimum_gap).
-    -- Both cases use existing infrastructure. Sorry'd pending careful type class handling.
-    sorry
+    -- Use x' as a lower bound of S_C. Since S_C ⊆ [x', y'], x' ≤ all of S_C.
+    -- This is a valid lower bound (not necessarily the GLB). The proper infimum
+    -- construction (point/gap case split) would give the GHR93 d̄, but any lower
+    -- bound suffices for the obtain block. Downstream code uses hd_glb.
+    refine ⟨x', ⟨le_refl x', hx'y'⟩, fun s hs => ?_, (ha_bwd ⟨n, by omega⟩).1⟩
+    exact hs.1.1
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
