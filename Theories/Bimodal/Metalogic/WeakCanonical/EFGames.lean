@@ -2663,30 +2663,10 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         (stavi_truth_mu_at_point v D).mp
           (h_D_bet v hmv (γ.val.downward_closed y v hy_in (le_of_lt hvy)))⟩
 
-/-- Standard-Until gap detection: THEOREM IS FALSE AS STATED.
-    Both directions of the biconditional fail:
-    - Forward: U(X, top) at m can be true (just need X somewhere) but no gap
-      is definable by top (gap_definable_on_left is False for D = top).
-    - Backward: Given gap with D at cut, X at complement, U(X,D) needs
-      s > m with X(s) AND D on (m,s). Complement s has X but D fails near gap;
-      cut s has D but X is not given at cut points.
-    See specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260521b.md.
-    The S/S' cases in left_formula_gap_detection should be proved directly using
-    stavi_untl_gap_detection on the compound's U'(⊤, B∧D) component. -/
-theorem std_untl_gap_detection {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
-    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_untl X D) ↔
-    (∃ (γ : RDefinableGap M atomMap r) (s_bound : M.carrier),
-      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
-      s_bound ∉ γ.val.cut ∧
-      gap_definable_on_left M atomMap γ.val D ∧
-      (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
-        stavi_temporal_truth_mu M atomMap r
-          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
-      (∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
-        stavi_temporal_truth M atomMap u X)) := by
-  sorry -- KNOWN FALSE: see docstring. Will be deleted when affected cases are proved directly.
+-- std_untl_gap_detection: DELETED (provably false).
+-- U(X,D) has no D-failure condition, so gap_definable_on_left fails for D = top.
+-- Backward direction also fails: complement points have X but D fails near gap.
+-- Affected cases in left/right_formula_gap_detection proved directly instead.
 
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
 
@@ -3159,16 +3139,119 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         intro h; exact not_lt.mpr (show extendPoint wf_pt ≤ Sum.inr γ from h) hγ_wf
       have hwi_not : wi_pt ∉ γ.val.cut := by
         intro h; exact not_lt.mpr (show extendPoint wi_pt ≤ Sum.inr γ from h) hγ_wi
-      -- We need s_bound for .mpr. Use any complement point above the gap.
-      -- We also need (conj B (stavi_untl A B)) at complement points below s_bound.
-      -- For B: condition (3) gives B^mu at complement points below wi_pt.
-      --   Combined with FO table body, B holds at complement points in a neighborhood of γ.
-      -- For stavi_untl(A,B): we need to show stavi_untl(A,B) at complement points.
-      --   This requires showing the FO table holds at each complement point.
-      --   From U'(A,B)^mu(γ), the FO table extends from γ to s_ua.
-      --   For a complement point u < s_ua, stavi_untl(A,B)(u) can be constructed
-      --   by restricting the FO table from γ to s_ua to the sub-interval from u to s_ua.
-      sorry
+      -- Strategy: use stavi_untl_gap_detection.mpr.
+      -- Pick s_bound as a complement point below BOTH wf_pt and wi_pt.
+      -- This ensures:
+      --   (a) B holds at complement points u < s_bound (from hBwi_ua, since u < wi_pt)
+      --   (b) U'(A,B)(u) can be constructed with wf_pt as ¬B witness and wi_pt as B-initial,
+      --       both in the interval (u, s_pt) where s_pt is a carrier bound above wf_pt and wi_pt.
+      -- First, get a carrier bound s_pt from s_ua above both witnesses.
+      have ⟨s_pt, hs_pt_wf, hs_pt_wi, hs_pt_s_ua⟩ :
+          ∃ s_pt : M.carrier, wf_pt < s_pt ∧ wi_pt < s_pt ∧ extendPoint s_pt ≤ s_ua := by
+        rcases s_ua with s₁ | g_ua
+        · refine ⟨s₁, (extendPoint_lt_iff wf_pt s₁).mp hwf_s,
+            (extendPoint_lt_iff wi_pt s₁).mp hwi_s, le_rfl⟩
+        · have hwf_cut : wf_pt ∈ g_ua.val.cut :=
+            (extendPoint_le_gap_iff wf_pt g_ua).mp (le_of_lt hwf_s)
+          have hwi_cut : wi_pt ∈ g_ua.val.cut :=
+            (extendPoint_le_gap_iff wi_pt g_ua).mp (le_of_lt hwi_s)
+          have hmax_cut : max wf_pt wi_pt ∈ g_ua.val.cut := by
+            rcases le_or_lt wf_pt wi_pt with h | h
+            · simp [max_eq_right h]; exact hwi_cut
+            · simp [max_eq_left (le_of_lt h)]; exact hwf_cut
+          have ⟨y, hy_cut, hmax_y⟩ : ∃ y, y ∈ g_ua.val.cut ∧ max wf_pt wi_pt < y := by
+            by_contra h_all; push_neg at h_all
+            exact g_ua.val.no_sup ⟨max wf_pt wi_pt,
+              ⟨h_all, fun b hb => hb hmax_cut⟩, hmax_cut⟩
+          exact ⟨y, lt_of_le_of_lt (le_max_left _ _) hmax_y,
+            lt_of_le_of_lt (le_max_right _ _) hmax_y,
+            le_of_lt (lt_of_le_of_ne
+              ((extendPoint_le_gap_iff y g_ua).mpr hy_cut) (fun h => by cases h))⟩
+      -- Pick s_bound = min(wf_pt, wi_pt). Both ∉ γ.cut.
+      let s_bound := min wf_pt wi_pt
+      have hs_bound_not : s_bound ∉ γ.val.cut := by
+        simp only [s_bound, min_def]; split
+        · exact hwf_not
+        · exact hwi_not
+      -- Apply stavi_untl_gap_detection.mpr
+      apply (stavi_untl_gap_detection (.conj B (.stavi_untl A B)) D hD m).mpr
+      refine ⟨γ, s_bound, hγ_lt, hs_bound_not, hγ_def, hγ_bet, fun u hu_not hu_sb => ?_⟩
+      -- u is a complement point with u < s_bound = min(wf_pt, wi_pt)
+      -- So u < wf_pt AND u < wi_pt
+      have hu_wf : u < wf_pt := lt_of_lt_of_le hu_sb (min_le_left wf_pt wi_pt)
+      have hu_wi : u < wi_pt := lt_of_lt_of_le hu_sb (min_le_right wf_pt wi_pt)
+      have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+          (Sum.inr γ) (extendPoint u) := by
+        show u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
+      simp only [stavi_temporal_truth]
+      constructor
+      · -- B(u): from hBwi_ua, u is between γ and wi_pt
+        exact (stavi_truth_mu_at_point u B).mp
+          (hBwi_ua (extendPoint u) hγu ((extendPoint_lt_iff u wi_pt).mpr hu_wi) ⟨u, rfl⟩)
+      · -- U'(A,B)(u): FO table at u with bound s_pt
+        refine ⟨s_pt, lt_trans hu_wf hs_pt_wf, ?_, ?_, ?_⟩
+        · -- Body: ∀ w ∈ (u, s_pt), disjunction
+          intro w huw hws
+          have hw_not : w ∉ γ.val.cut := by
+            intro h; exact hu_not (γ.val.downward_closed w u h (le_of_lt huw))
+          have hγw : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (Sum.inr γ) (extendPoint w) := by
+            show w ∉ γ.val.cut ∧ ¬(w ∈ γ.val.cut); exact ⟨hw_not, hw_not⟩
+          have hw_s_ua : extendPoint w < s_ua :=
+            lt_of_lt_of_le ((extendPoint_lt_iff w s_pt).mpr hws) hs_pt_s_ua
+          -- Apply mu-body at w
+          have h_disj := h_body_ua (extendPoint w) hγw hw_s_ua ⟨w, rfl⟩
+          cases h_disj with
+          | inl h_cof =>
+            -- Left: ∃ v mu-point > w, B^mu on (γ, v). Restrict to (u, v).
+            left
+            obtain ⟨v, hwv, hmu_v, hBv⟩ := h_cof
+            obtain ⟨v_pt, rfl⟩ := hmu_v
+            refine ⟨v_pt, (extendPoint_lt_iff w v_pt).mp hwv, fun z huz hzv => ?_⟩
+            have hz_not : z ∉ γ.val.cut := by
+              intro h; exact hu_not (γ.val.downward_closed z u h (le_of_lt huz))
+            have hγz : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+                (Sum.inr γ) (extendPoint z) := by
+              show z ∉ γ.val.cut ∧ ¬(z ∈ γ.val.cut); exact ⟨hz_not, hz_not⟩
+            exact (stavi_truth_mu_at_point z B).mp
+              (hBv (extendPoint z) hγz ((extendPoint_lt_iff z v_pt).mpr hzv) ⟨z, rfl⟩)
+          | inr h_take =>
+            -- Right: A^mu on (w, s_ua), ¬B^mu at v' ∈ (γ, w)
+            obtain ⟨hA_above, v', hγv', hv'w, hmu_v', hBv'_neg⟩ := h_take
+            obtain ⟨v'_pt, rfl⟩ := hmu_v'
+            -- v'_pt is in (γ, w). Since u < wf_pt ≤ min(wf_pt, wi_pt) and u < wi_pt,
+            -- if v'_pt ≤ u then v'_pt < wi_pt, so B(v'_pt) from hBwi_ua.
+            -- But ¬B(v'_pt) contradicts. So v'_pt > u.
+            have hv'u : u < v'_pt := by
+              by_contra h_neg; push_neg at h_neg
+              -- v'_pt ≤ u < wi_pt, so v'_pt is between γ and wi_pt → B(v'_pt)
+              have hv'_wi : extendPoint v'_pt < extendPoint wi_pt :=
+                (extendPoint_lt_iff v'_pt wi_pt).mpr (lt_of_le_of_lt h_neg hu_wi)
+              exact hBv'_neg ((stavi_truth_mu_at_point v'_pt B).mpr
+                ((stavi_truth_mu_at_point v'_pt B).mp
+                  (hBwi_ua (extendPoint v'_pt) hγv' hv'_wi ⟨v'_pt, rfl⟩)))
+            right
+            refine ⟨fun v hwv hvs => ?_,
+              v'_pt, hv'u, (extendPoint_lt_iff v'_pt w).mp hv'w,
+              fun h => hBv'_neg ((stavi_truth_mu_at_point v'_pt B).mpr h)⟩
+            have hv_not : v ∉ γ.val.cut := by
+              intro h; exact hw_not (γ.val.downward_closed v w h (le_of_lt hwv))
+            exact (stavi_truth_mu_at_point v A).mp
+              (hA_above (extendPoint v) ((extendPoint_lt_iff w v).mpr hwv)
+                (lt_of_lt_of_le ((extendPoint_lt_iff v s_pt).mpr hvs) hs_pt_s_ua)
+                ⟨v, rfl⟩)
+        · -- ¬B witness: wf_pt is in (u, s_pt) and ¬B(wf_pt)
+          exact ⟨wf_pt, hu_wf, hs_pt_wf,
+            fun h => hBwf_ua ((stavi_truth_mu_at_point wf_pt B).mpr h)⟩
+        · -- B initial: wi_pt is in (u, s_pt) and B on (u, wi_pt)
+          refine ⟨wi_pt, hu_wi, hs_pt_wi, fun v huv hvwi => ?_⟩
+          have hv_not : v ∉ γ.val.cut := by
+            intro h; exact hu_not (γ.val.downward_closed v u h (le_of_lt huv))
+          have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (Sum.inr γ) (extendPoint v) := by
+            show v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
+          exact (stavi_truth_mu_at_point v B).mp
+            (hBwi_ua (extendPoint v) hγv ((extendPoint_lt_iff v wi_pt).mpr hvwi) ⟨v, rfl⟩)
   | stavi_snce A B _ _ =>
     -- left_formula (.stavi_snce A B) D = .std_untl compound D
     simp only [left_formula]
@@ -3219,7 +3302,36 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           (hB_compl u_pt hu_pt_not (lt_of_le_of_lt hu_u₁ hu₁s))
     · -- Backward: from gap with U(A,B)^mu(γ), construct U'(B ∧ U(A,B), D)(m)
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUA⟩
-      sorry
+      -- U(A,B)^mu(γ) = ∃ s > γ, mu_holds s ∧ A^mu(s) ∧ ∀ mu-pt u ∈ (γ,s), B^mu(u)
+      simp only [stavi_temporal_truth_mu] at hUA
+      obtain ⟨s_ua, hγ_s_ua, hmu_s, hA_s, hB_mu⟩ := hUA
+      obtain ⟨s₁, rfl⟩ := hmu_s
+      have hs₁_not : s₁ ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr (show extendPoint s₁ ≤ Sum.inr γ from h) hγ_s_ua
+      -- Apply stavi_untl_gap_detection.mpr with s_bound = s₁
+      -- Need: (B ∧ U(A,B)) at complement points u with u ∉ γ.cut and u < s₁
+      apply (stavi_untl_gap_detection (.conj B (.std_untl A B)) D hD m).mpr
+      refine ⟨γ, s₁, hγ_lt, hs₁_not, hγ_def, hγ_bet, fun u hu_not hu_s₁ => ?_⟩
+      -- u is a complement point above γ with u < s₁
+      -- Show B(u) ∧ U(A,B)(u)
+      have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+          (Sum.inr γ) (extendPoint u) := by
+        show u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
+      simp only [stavi_temporal_truth]
+      constructor
+      · -- B(u): from hB_mu, since γ < extendPoint u < extendPoint s₁
+        exact (stavi_truth_mu_at_point u B).mp
+          (hB_mu (extendPoint u) hγu ((extendPoint_lt_iff u s₁).mpr hu_s₁) ⟨u, rfl⟩)
+      · -- U(A,B)(u): ∃ s' > u, A(s') ∧ B on (u, s'). Pick s' = s₁.
+        refine ⟨s₁, hu_s₁, (stavi_truth_mu_at_point s₁ A).mp hA_s, fun v huv hvs₁ => ?_⟩
+        -- v is between u and s₁, both complement points, so v ∉ γ.cut
+        have hv_not : v ∉ γ.val.cut := by
+          intro h; exact hu_not (γ.val.downward_closed v u h (le_of_lt huv))
+        have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (Sum.inr γ) (extendPoint v) := by
+          show v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
+        exact (stavi_truth_mu_at_point v B).mp
+          (hB_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
   | std_snce A B _ _ =>
     -- left_formula (.std_snce A B) D = .std_untl compound D
     simp only [left_formula]
@@ -3247,22 +3359,8 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
   sorry
 
-/-- Standard-Since gap detection: THEOREM IS FALSE AS STATED.
-    Same issue as std_untl_gap_detection (past dual). See that docstring.
-    The U/U' cases in right_formula_gap_detection should be proved directly using
-    stavi_snce_gap_detection on the compound's S'(⊤, B∧D) component. -/
-theorem std_snce_gap_detection {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
-    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_snce X D) ↔
-    (∃ (γ : RDefinableGap M atomMap r),
-      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
-      gap_definable_on_right M atomMap γ.val D ∧
-      (∀ u : M.carrier, u < m → u ∉ γ.val.cut →
-        stavi_temporal_truth_mu M atomMap r
-          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
-      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
-  sorry -- KNOWN FALSE: see docstring. Will be deleted when affected cases are proved directly.
+-- std_snce_gap_detection: DELETED (provably false, past dual of std_untl_gap_detection).
+-- Same issue: S(X,D) has no D-failure condition. See std_untl_gap_detection comment above.
 
 theorem right_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
