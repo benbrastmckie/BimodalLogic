@@ -1167,9 +1167,6 @@ private theorem d_consistency_left {sig : MonadicSignature}
       -- GHR93 Claim 1 shows ALL Duplicator responses must equal d̄ (the infimum
       -- of continuation_set). So if d ≠ d̄, no winning response with d at position n exists.
       -- Since d = a_bwd(n) is Spoiler's arbitrary pick, d may differ from d̄.
-      -- FIX: redefine d as the infimum in obtain_split_point_props.
-      -- Then d_consistency becomes a corollary of Claim 1 (response = d̄ = d).
-      -- This requires the Case II restructure (~400 lines) documented in phase-1-handoff.md.
       sorry
 
 /-- D-consistency (right boundary, existential form): dual of
@@ -1249,10 +1246,7 @@ private theorem d_consistency_right {sig : MonadicSignature}
       have hty' : t = y' := heq_1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: same as d_consistency_left. Use Claim 1 at rank r+1.
-      -- h_fwd_r1 is available. See d_consistency_left for the full approach.
-      -- TODO: implement Claim 1 proof (symmetric to left case)
-      sorry
+    · sorry
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
