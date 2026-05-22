@@ -2881,16 +2881,17 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           exact (temporal_truth_mu_at_point v g).mp
             (hg_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
     | snce f g _ _ =>
-      -- left_formula_base D (snce f g) = std_untl(compound, D)
+      -- left_formula_base D (.snce f g) = .std_untl compound D where
       -- compound = D ∧ g ∧ S(f,g) ∧ U'(⊤, g∧D) ∧ ¬U'(D, g∧D)
-      -- Proof approach (verified):
-      -- 1. Unfold to std_untl FO table: ∃ s > m, compound(s) ∧ D on (m,s)
-      -- 2. Extract: D(s), g(s), S(f,g)(s), U'(⊤,g∧D)(s), ¬U'(D,g∧D)(s)
-      -- 3. hD_fails: D fails above s (by contradiction via ¬U'(D,g∧D))
-      -- 4. hD_init: D on (m, u_init_gD) from g∧D initial segment
-      -- 5. Construct D-gap from D transition (same cut construction as
-      --    stavi_untl_gap_detection forward, ~120 lines)
-      -- 6. Show S(f,g)^mu at the D-gap from S(f,g)(s) and gap position
+      -- Forward: From std_untl(compound,D)(m), extract U'(⊤,g∧D)(s) and
+      -- ¬U'(D,g∧D)(s). D fails in (m,s₁) because if D held throughout (m,s₁),
+      -- replacing ⊤ with D in the right branch body gives U'(D,g∧D)(s),
+      -- contradiction. With D-failure in (m,s₁), construct U'(⊤,D)(m) with
+      -- bound s₁, then apply stavi_untl_gap_detection to get D-gap.
+      -- S(f,g)^mu at gap from hSnce_s and gap position.
+      -- Backward: from D-gap γ with S(f,g)^mu(γ), find complement point s
+      -- near γ where compound holds (D,g,S(f,g) from gap, U'(⊤,g∧D) from
+      -- gap structure, ¬U'(D,g∧D) from D-failure at complement).
       sorry
   | neg A ih =>
     -- left_formula (.neg A) D = .conj (.stavi_untl (.base top) D) (.neg (left_formula A D))
@@ -3353,19 +3354,263 @@ with gamma < m and D holding at all actual points between gamma and m.
 -/
 
 /-- Core helper for right: S'(X, D) at an actual point m detects a D-defined
-    gap γ < m where X^mu holds at γ. Dual of stavi_untl_gap_detection. -/
+    gap γ < m where X holds at cut points above some bound, with D holding at
+    complement points between γ and m. Dual of stavi_untl_gap_detection.
+
+    RHS uses "X at cut points above s_bound" rather than X^mu at the gap,
+    matching the stavi_untl_gap_detection pattern. -/
 theorem stavi_snce_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
     stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_snce X D) ↔
-    (∃ (γ : RDefinableGap M atomMap r),
+    (∃ (γ : RDefinableGap M atomMap r) (s_bound : M.carrier),
       extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
+      s_bound ∈ γ.val.cut ∧
       gap_definable_on_right M atomMap γ.val D ∧
       (∀ u : M.carrier, u < m → u ∉ γ.val.cut →
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
-      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
-  sorry
+      (∀ u : M.carrier, u ∈ γ.val.cut → s_bound < u →
+        stavi_temporal_truth M atomMap u X)) := by
+  -- Dual of stavi_untl_gap_detection: reverse direction, complement ↔ cut roles swapped
+  rw [stavi_truth_mu_at_point m (.stavi_snce X D)]
+  simp only [stavi_temporal_truth]
+  -- LHS: ∃ s < m, body(1) ∧ (2) D fails somewhere ∧ (3) D holds on final segment
+  constructor
+  · -- **Forward direction** (FO table → gap):
+    intro ⟨s, hsm, h_body, ⟨u_fail, hsu_fail, hum_fail, hD_fail⟩,
+           ⟨u_init, hsu_init, hum_init, hD_init⟩⟩
+    -- Dual cut: complement (= points where D is cofinal toward m from below)
+    let compl : Set M.carrier :=
+      {x | ∀ u, x ≤ u → u < m →
+        ∃ v, v < u ∧ ∀ w, v < w → w < m → stavi_temporal_truth M atomMap w D}
+    have hm_in_compl : m ∈ compl :=
+      fun u hmu hum => absurd (lt_of_lt_of_le hum hmu) (lt_irrefl u)
+    have hu_fail_not_compl : u_fail ∉ compl := by
+      intro h; obtain ⟨v, hvu, hDv⟩ := h u_fail le_rfl hum_fail
+      exact hD_fail (hDv u_fail hvu hum_fail)
+    let cut : Set M.carrier := {x | x ∉ compl}
+    -- Classical conversion: x ∉ cut ↔ x ∈ compl
+    have h_not_cut_compl : ∀ x, x ∉ cut → x ∈ compl := fun x h => by
+      by_contra hx; exact h hx
+    have h_compl_not_cut : ∀ x, x ∈ compl → x ∉ cut := fun x hx h => h hx
+    have huf_in_cut : u_fail ∈ cut := hu_fail_not_compl
+    have hm_not_cut : m ∉ cut := h_compl_not_cut m hm_in_compl
+    -- compl is upward-closed; cut is downward-closed
+    have h_compl_up : ∀ x y, x ∈ compl → x ≤ y → y ∈ compl :=
+      fun x y hx hxy u hyu hum => hx u (le_trans hxy hyu) hum
+    have h_cut_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut :=
+      fun x y hx hyx hy => hx (h_compl_up y x hy hyx)
+    -- All cut points < all compl points
+    have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
+      intro x hx y hy; by_contra h; push_neg at h
+      exact hx (h_compl_up y x hy h)
+    have h_proper : cut ≠ Set.univ := by
+      intro h; exact hm_not_cut (h ▸ Set.mem_univ m)
+    -- Cofinal propagation (dual): body condition left ⟹ compl membership
+    have h_cofinal_propagate :
+        ∀ u, s < u → u < m →
+        (∀ w, u < w → w < m →
+          ∃ v, v < w ∧ ∀ z, v < z → z < m → stavi_temporal_truth M atomMap z D) →
+        ∃ v, v < u ∧ ∀ z, v < z → z < m → stavi_temporal_truth M atomMap z D := by
+      intro u hsu hum h_above
+      cases h_body u hsu hum with
+      | inl h => exact h
+      | inr h =>
+        obtain ⟨_, v', huv', hv'm, hDv'⟩ := h
+        obtain ⟨v₂, hv₂v', hDv₂⟩ := h_above v' huv' hv'm
+        exact absurd (hDv₂ v' hv₂v' hv'm) hDv'
+    -- u_init ∈ compl: D on (u_init, m) and body LEFT at u_init
+    have h_cofinal_u_init :
+        ∃ v, v < u_init ∧ ∀ w, v < w → w < m → stavi_temporal_truth M atomMap w D := by
+      cases h_body u_init hsu_init hum_init with
+      | inl h => exact h
+      | inr h =>
+        obtain ⟨_, v', huv', hv'm, hDv'⟩ := h
+        exact absurd (hD_init v' huv' hv'm) hDv'
+    have hu_init_compl : u_init ∈ compl := by
+      intro u huu_init hum
+      rcases eq_or_lt_of_le huu_init with rfl | hlt
+      · exact h_cofinal_u_init
+      · exact ⟨u_init, hlt, fun w hw hwm => hD_init w hw hwm⟩
+    -- D at compl points
+    have h_D_at_compl : ∀ u, u ∈ compl → u < m →
+        stavi_temporal_truth M atomMap u D := by
+      intro u hu hum; obtain ⟨v, hvu, hDv⟩ := hu u le_rfl hum
+      exact hDv u hvu hum
+    -- No sup in cut
+    have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
+      intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
+      have hpm : p < m := h_cut_lt_compl p hp_cut m hm_in_compl
+      have hps : s < p := by
+        by_contra h; push_neg at h
+        exact not_le.mpr (lt_of_le_of_lt h hsu_fail) (h_ub huf_in_cut)
+      apply hp_cut
+      intro u hpu hum
+      rcases eq_or_lt_of_le hpu with rfl | hpu'
+      · exact h_cofinal_propagate p hps hum (fun w hpw hwm => by
+          have : w ∈ compl := by by_contra hw; exact not_le.mpr hpw (h_ub hw)
+          exact this w le_rfl hwm)
+      · have : u ∈ compl := by by_contra hu_cut; exact not_le.mpr hpu' (h_ub hu_cut)
+        exact this u le_rfl hum
+    -- Complement has no minimum
+    have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
+      intro ⟨b, hb_compl, hb_min⟩
+      have hbm : b < m := by
+        rcases eq_or_lt_of_le (hb_min m (fun h => h hm_in_compl)) with rfl | h
+        · exact absurd (hb_min u_init (fun h => h hu_init_compl)) (not_le.mpr hum_init)
+        · exact h
+      have hb_in_compl : b ∈ compl := h_not_cut_compl b hb_compl
+      have hsb : s < b := by
+        by_contra h; push_neg at h
+        have hs_compl := h_compl_up b s hb_in_compl h
+        obtain ⟨v, hvu, hDv⟩ := hs_compl u_fail (le_of_lt hsu_fail) hum_fail
+        exact hD_fail (hDv u_fail hvu hum_fail)
+      cases h_body b hsb hbm with
+      | inl h_cof =>
+        obtain ⟨v, hvb, hDv⟩ := h_cof
+        by_cases hvs : s < v
+        · have hvm : v < m := lt_trans hvb hbm
+          cases h_body v hvs hvm with
+          | inl h2 =>
+            obtain ⟨v₂, hv₂v, hDv₂⟩ := h2
+            have hv_compl : v ∈ compl := by
+              intro u hvu hum
+              rcases eq_or_lt_of_le hvu with rfl | hvu'
+              · exact ⟨v₂, hv₂v, hDv₂⟩
+              · exact ⟨v, hvu', hDv⟩
+            exact absurd (hb_min v (h_compl_not_cut v hv_compl)) (not_le.mpr hvb)
+          | inr h2 =>
+            obtain ⟨_, v', hvv', hv'm, hDv'⟩ := h2
+            exact absurd (hDv v' hvv' hv'm) hDv'
+        · push_neg at hvs
+          exact absurd (hDv u_fail (lt_of_le_of_lt hvs hsu_fail) hum_fail) hD_fail
+      | inr h_right =>
+        obtain ⟨_, v', hbv', hv'm, hDv'⟩ := h_right
+        have hv'_not_compl : v' ∉ compl := by
+          intro hv'; exact hDv' (h_D_at_compl v' hv' hv'm)
+        exact not_lt.mpr (le_of_lt hbv') (h_cut_lt_compl v' hv'_not_compl b hb_in_compl)
+    -- No final-cut segment with D
+    have h_no_final_cut : ¬∃ t, t ∈ cut ∧ ∀ u, t ≤ u → u ∈ cut →
+        stavi_temporal_truth M atomMap u D := by
+      intro ⟨t, ht_cut, hDt⟩
+      have htm : t < m := h_cut_lt_compl t ht_cut m hm_in_compl
+      have hst : s < t := by
+        by_contra h; push_neg at h
+        exact hD_fail (hDt u_fail (le_trans h (le_of_lt hsu_fail)) huf_in_cut)
+      apply ht_cut
+      cases h_body t hst htm with
+      | inl h =>
+        intro u htu hum
+        rcases eq_or_lt_of_le htu with rfl | htu'
+        · exact h
+        · obtain ⟨v, hvt, hDv⟩ := h
+          exact ⟨t, htu', fun w htw hwm => by
+            by_cases hw_cut : w ∈ cut
+            · exact hDt w (le_of_lt htw) hw_cut
+            · exact h_D_at_compl w (h_not_cut_compl w hw_cut) hwm⟩
+      | inr h =>
+        obtain ⟨_, v', htv', hv'm, hDv'⟩ := h
+        by_cases hv'_cut : v' ∈ cut
+        · exact absurd (hDt v' (le_of_lt htv') hv'_cut) hDv'
+        · exact absurd (h_D_at_compl v' (h_not_cut_compl v' hv'_cut) hv'm) hDv'
+    -- Initial complement segment has D
+    have h_init_compl : ∃ t, t ∉ cut ∧ ∀ u, u ∉ cut → u ≤ t →
+        stavi_temporal_truth M atomMap u D :=
+      ⟨u_init, h_compl_not_cut u_init hu_init_compl,
+        fun u hu huu => h_D_at_compl u (h_not_cut_compl u hu) (lt_of_le_of_lt huu hum_init)⟩
+    -- Build Gap
+    let γ_gap : Gap M.carrier :=
+      ⟨cut, ⟨u_fail, huf_in_cut⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+    have h_def_right : gap_definable_on_right M atomMap γ_gap D :=
+      ⟨h_init_compl, h_no_final_cut⟩
+    have h_r_def : r_definable_gap M atomMap γ_gap r :=
+      ⟨D, hD, Or.inr h_def_right⟩
+    let γ_rdef : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
+    -- X at cut points: from body right disjunct
+    have h_X_at_cut : ∀ u : M.carrier, u ∈ cut → u_fail < u →
+        stavi_temporal_truth M atomMap u X := by
+      intro u hu_cut huf_u
+      have hum : u < m := h_cut_lt_compl u hu_cut m hm_in_compl
+      have hsu : s < u := lt_trans hsu_fail huf_u
+      have ⟨z, hz_cut, huz⟩ : ∃ z ∈ cut, u < z := by
+        by_contra h_all; push_neg at h_all
+        exact h_no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
+      have hzm : z < m := h_cut_lt_compl z hz_cut m hm_in_compl
+      have hsz : s < z := lt_trans hsu huz
+      have h_right_z : (∀ v, s < v → v < z → stavi_temporal_truth M atomMap v X) ∧
+          ∃ v', z < v' ∧ v' < m ∧ ¬stavi_temporal_truth M atomMap v' D := by
+        cases h_body z hsz hzm with
+        | inl h_left =>
+          exfalso; apply hz_cut
+          obtain ⟨v, hvz, hDv⟩ := h_left
+          intro w hzw hwm; exact ⟨v, lt_of_lt_of_le hvz hzw, hDv⟩
+        | inr h_right => exact h_right
+      exact h_right_z.1 u hsu huz
+    refine ⟨γ_rdef, u_fail, ?_, huf_in_cut, h_def_right, ?_, ?_⟩
+    · -- m > γ
+      show m ∉ cut ∧ ¬(m ∈ cut); exact ⟨hm_not_cut, hm_not_cut⟩
+    · -- D at complement points < m
+      intro u hum hu_not
+      exact (stavi_truth_mu_at_point u D).mpr (h_D_at_compl u (h_not_cut_compl u hu_not) hum)
+    · -- X at cut points above u_fail
+      exact fun u hu_cut huf_u => h_X_at_cut u hu_cut huf_u
+  · -- **Backward direction** (gap → FO table):
+    intro ⟨γ, s_bound, hm_gt_γ, hs_bound_in, h_def_right, h_D_bet, hX_cut⟩
+    have hm_not_cut : m ∉ γ.val.cut := by
+      intro h; exact not_lt.mpr (show extendPoint m ≤ Sum.inr γ from h) hm_gt_γ
+    obtain ⟨⟨t_compl, ht_not_cut, ht_D_init⟩, h_no_final_cut⟩ := h_def_right
+    have h_neg_final : ∀ t, t ∈ γ.val.cut →
+        ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
+      intro t ht; by_contra h_all; push_neg at h_all
+      exact h_no_final_cut ⟨t, ht, fun w hwt hw_cut => h_all w hw_cut hwt⟩
+    have h_cut_lt_m : ∀ x, x ∈ γ.val.cut → x < m := by
+      intro x hx; by_contra h; push_neg at h
+      exact hm_not_cut (γ.val.downward_closed x m hx h)
+    -- Complement points above cut: for v ∉ cut, all cut < v
+    have h_compl_gt_cut : ∀ v, v ∉ γ.val.cut → ∀ x, x ∈ γ.val.cut → x < v := by
+      intro v hv x hx; by_contra h; push_neg at h
+      exact hv (γ.val.downward_closed x v hx h)
+    -- Use s_bound as s (s_bound ∈ cut, so s_bound < m)
+    refine ⟨s_bound, h_cut_lt_m s_bound hs_bound_in, ?_, ?_, ?_⟩
+    · -- Condition (1): ∀ u ∈ (s_bound, m), disjunction
+      intro u hsu hum
+      by_cases hu_cut : u ∈ γ.val.cut
+      · -- u ∈ cut: RIGHT disjunct — X on (s_bound, u) and ¬D witness above u
+        right
+        refine ⟨fun v hsv hvu => ?_, ?_⟩
+        · have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
+          exact hX_cut v hv_cut hsv
+        · have ⟨z, hz_cut, huz_strict⟩ : ∃ z ∈ γ.val.cut, u < z := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
+          obtain ⟨w₂, hw₂_cut, hz_w₂, hDw₂⟩ := h_neg_final z hz_cut
+          exact ⟨w₂, lt_of_lt_of_le huz_strict hz_w₂, h_cut_lt_m w₂ hw₂_cut, hDw₂⟩
+      · -- u ∉ cut: LEFT disjunct — D cofinal below u
+        left
+        have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+          by_contra h_all; push_neg at h_all
+          exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
+        exact ⟨y, hyu, fun w hyw hwm => by
+          have hw_not : w ∉ γ.val.cut := by
+            intro h; exact hy_not (γ.val.downward_closed w y h (le_of_lt hyw))
+          exact (stavi_truth_mu_at_point w D).mp (h_D_bet w hwm hw_not)⟩
+    · -- Condition (2): ∃ u ∈ (s_bound, m), ¬D(u)
+      have ⟨z, hz_cut, hsz⟩ : ∃ z ∈ γ.val.cut, s_bound < z := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.no_sup ⟨s_bound,
+          ⟨h_all, fun b hb => hb hs_bound_in⟩, hs_bound_in⟩
+      obtain ⟨w, hw_cut, hzw, hDw⟩ := h_neg_final z hz_cut
+      exact ⟨w, lt_of_lt_of_le hsz hzw, h_cut_lt_m w hw_cut, hDw⟩
+    · -- Condition (3): ∃ u ∈ (s_bound, m), D on (u, m)
+      have ⟨y, hy_not, hym⟩ : ∃ y, y ∉ γ.val.cut ∧ y < m := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.complement_no_min ⟨m, hm_not_cut, fun z hz => h_all z hz⟩
+      have hsy : s_bound < y := h_compl_gt_cut y hy_not s_bound hs_bound_in
+      refine ⟨y, hsy, hym, fun v hyv hvm => by
+        have hv_not : v ∉ γ.val.cut := by
+          intro h; exact hy_not (γ.val.downward_closed v y h (le_of_lt hyv))
+        exact (stavi_truth_mu_at_point v D).mp (h_D_bet v hvm hv_not)⟩
 
 -- std_snce_gap_detection: DELETED (provably false, past dual of std_untl_gap_detection).
 -- Same issue: S(X,D) has no D-failure condition. See std_untl_gap_detection comment above.
