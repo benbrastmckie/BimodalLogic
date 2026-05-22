@@ -475,21 +475,8 @@ Doets/Reynolds discrete countermodel construction.
 For any MCS A containing ¬φ and □(next_top) (discrete box-class),
 there exists a countermodel on Int where φ is false.
 
-Signature matches `dd_countermodel_chronicle_discrete` exactly,
-making this a drop-in replacement at Completeness.lean line 159.
-
-## Reynolds Pipeline (Task 155)
-
-The full pipeline:
-1. Extract chronicle from MCS A
-2. Build signature `sig` from φ and atom maps
-3. Prove chronicle is good at depth k = operator_depth(φ) + 1
-4. Extract Z-interval from goodness witness
-5. Transfer temporal truth of ¬φ via existential closure
-6. Package Z-interval as TaskFrame Int countermodel
-
-Steps 1-5 are structurally complete. The pipeline propagates
-sorry from `chronicle_is_good` (upstream: task 157 / Phase 3B).
+Delegates to `dd_countermodel_chronicle_discrete` which uses the
+parametric canonical model construction directly.
 -/
 theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
@@ -498,80 +485,7 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
-  -- Step 1: Extract chronicle
-  let chron := extract_chronicle_as_prior A h_mcs h_box_discrete
-  -- Step 2: Build signature and atom maps
-  let sig := mkSigFrom φ
-  let atomMap_rev : sig.preds → Formula := mkAtomMap φ
-  -- Forward atom map: maps formulas to their predicate symbol
-  -- Uses Classical.choice for formulas not in φ.predFormulas
-  haveI h_nonempty : Nonempty sig.preds := mkSigFrom_nonempty φ
-  let atomMap_fwd : Formula → sig.preds := fun f =>
-    if h : f ∈ (φ.predFormulas : Finset Formula)
-    then ⟨f, Finset.mem_cons.mpr (Or.inr h)⟩
-    else ⟨Formula.bot, Finset.mem_cons_self _ _⟩
-  -- Step 3: Chronicle as ordered monadic structure
-  let M_chron := chronicleAsMonadicStructure chron sig atomMap_rev
-  -- Step 4: Prove chronicle is good at depth k, with explicit bounds
-  let k := operator_depth φ + 1
-  -- chronicle_is_good produces a Z-interval with lo=none, hi=none
-  -- We inline the construction to retain this information
-  haveI : Nonempty chron.domain := chron.domain_nonempty
-  let f : chron.domain ≃o ℤ := orderIsoIntOfLinearSuccPredArch
-  let Z_wit : ZIntervalStructure sig := {
-    lo := none
-    hi := none
-    interp := fun p z => (atomMap_rev p) ∈ chron.fmcs (f.symm z)
-  }
-  have h_lo : Z_wit.lo = none := rfl
-  have h_hi : Z_wit.hi = none := rfl
-  have h_k_equiv : k_equiv sig k M_chron (Z_wit.toOrdered sig) := by
-    let val_iso : Z_wit.intervalCarrier ≃o ℤ :=
-      Equiv.toOrderIso
-        { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
-          left_inv := by intro ⟨_, _⟩; rfl, right_inv := by intro _; rfl }
-        (fun _ _ h => h) (fun _ _ h => h)
-    let g : M_chron.carrier ≃o (Z_wit.toOrdered sig).carrier :=
-      f.trans val_iso.symm
-    apply k_equiv_of_iso sig k _ _ g
-    intro p x
-    show (atomMap_rev p) ∈ chron.fmcs x ↔ (atomMap_rev p) ∈ chron.fmcs (f.symm (f x))
-    simp [OrderIso.symm_apply_apply]
-  -- Step 5: Establish temporal truth of ¬φ at root_point in chronicle
-  -- The chronicle truth lemma connects MCS membership to temporal_truth
-  have h_chronicle_truth : temporal_truth M_chron atomMap_fwd chron.root_point φ.neg := by
-    -- Apply the chronicle truth lemma: temporal_truth ↔ MCS membership
-    have h_sec : ∀ (f : Formula), f ∈ φ.neg.predFormulas →
-        atomMap_rev (atomMap_fwd f) = f := by
-      intro f hf
-      simp only [atomMap_fwd, atomMap_rev, mkAtomMap]
-      have : f ∈ φ.predFormulas := by
-        simp only [Formula.neg, Formula.predFormulas, Finset.mem_union,
-          Finset.notMem_empty, or_false] at hf
-        exact hf
-      simp [dif_pos this]
-    exact (chronicle_temporal_truth chron sig atomMap_rev atomMap_fwd φ.neg
-      chron.root_point h_sec).mpr (by rw [chron.root_point_mcs]; exact h_neg_in)
-  -- Step 6: Transfer truth to Z-interval via existential closure
-  have h_k_bound : operator_depth φ.neg + 1 ≤ k := by
-    simp only [k, Formula.neg, operator_depth]
-    omega
-  have h_transfer := truth_transfer atomMap_fwd h_k_equiv φ.neg h_k_bound
-    chron.root_point h_chronicle_truth
-  obtain ⟨s_wit, h_neg_in_Z⟩ := h_transfer
-  -- Step 7: Package as TaskFrame Int countermodel
-  -- z_interval_countermodel requires TM and h_truth_corr.
-  -- The TaskModel and truth correspondence are deferred to Phase 6:
-  -- they require constructing a model where truth_at matches temporal_truth,
-  -- which uses chronicle_temporal_truth (Phase 1) + S5 single-class + box transparency.
-  let TM_wit : TaskModel zIntervalTaskFrame :=
-    { valuation := fun _ _ => False }  -- placeholder; h_truth_corr overrides
-  have h_truth_corr : ∀ (ψ : Formula) (t : Z_wit.intervalCarrier),
-      truth_at TM_wit zIntervalOmega zIntervalHistory
-        ((unboundedZIntervalEquiv Z_wit h_lo h_hi) t) ψ ↔
-        temporal_truth (Z_wit.toOrdered sig) atomMap_fwd t ψ := by
-    sorry
-  exact z_interval_countermodel Z_wit h_lo h_hi atomMap_fwd φ s_wit h_neg_in_Z TM_wit h_truth_corr
+      ¬truth_at TM Omega τ t φ :=
+  Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete A h_mcs φ h_neg_in h_box_discrete
 
 end Bimodal.Metalogic.WeakCanonical
