@@ -249,7 +249,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 20,
+      "next_artifact_number": 21,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -375,6 +375,11 @@
           "path": "specs/155_reynolds_pipeline_activation/summaries/18_phase1-task17-summary.md",
           "type": "summary",
           "summary": "Task 1.7 implementation: ghr93_forward_to_backward_core with decoupled round count"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T180000Z.md",
+          "type": "handoff",
+          "summary": "Round 4: Task 1.1 3-way case split fixed, Tasks 1.4-1.6 deferred"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
