@@ -144,9 +144,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Infimum Redefinition + Case II Restructure [NOT STARTED]
+### Phase 1: Infimum Redefinition + Case II Restructure [BLOCKED]
 
-**Prior status**: BLOCKED when trying direct uniqueness proof. Report 27 identifies the root cause: GHR93 Claim 1 requires the game at rank r' > r (using rank-(r+1) formula C'), but our code uses rank r only. The point interior case is unprovable at rank r because two carrier points can share rank-r type without being equal.
+**Prior status**: BLOCKED when trying direct uniqueness proof. Report 27 identifies the root cause: GHR93 Claim 1 requires the game at rank r' > r (using rank-(r+1) formula C'), but our code uses rank r only. The point interior case is unprovable at rank r because two carrier points can share rank-r type without being equal. Gap case also non-trivial (formula agreement does NOT directly imply same cut — see handoff phase-1-handoff.md).
+
+**Current blocker**: Requires atomic refactoring of ~400-600 lines including Case II (762 lines) which uses hd_eq_an at 25 sites. Cannot be done incrementally (Steps 1-2 break the build). See phase-1-handoff.md for full architecture analysis and sequencing strategy.
 
 **Revised strategy** (from report 27, Section 5): Redefine d as the infimum of continuation_set (matching GHR93) and restructure Case II to follow GHR93 exactly. This eliminates d_consistency_left/right entirely — they become unnecessary when d is the infimum and strategy restriction uses the infimum property directly.
 
