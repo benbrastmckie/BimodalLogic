@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Axioms
 import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Derivable
 
 /-!
 # Bimodal.ProofSystem - TM Proof System

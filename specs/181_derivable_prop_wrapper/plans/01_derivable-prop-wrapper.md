@@ -1,7 +1,7 @@
 # Implementation Plan: Derivable Prop-Valued Wrapper
 
 - **Task**: 181 - derivable_prop_wrapper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md
@@ -68,19 +68,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Create Derivable.lean with Core Definitions [NOT STARTED]
+### Phase 1: Create Derivable.lean with Core Definitions [COMPLETED]
 
 **Goal**: Create the new file with the `Derivable` definition, `ofTree` coercion, all 7 constructor-mirroring lemmas, notation, and Consistent bridge. Add import to ProofSystem.lean. Verify compilation.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/ProofSystem/Derivable.lean` with module docstring
-- [ ] Add `Derivable` definition: `def Derivable (G : Context) (p : Formula) : Prop := Nonempty (DerivationTree G p)`
-- [ ] Add `Derivable.ofTree` coercion theorem
-- [ ] Add all 7 constructor-mirroring lemmas: `ax`, `assume`, `mp`, `nec`, `temp_nec`, `temp_dual`, `weaken`
-- [ ] Add notation `|-!` for Prop-valued derivability (both `G |-! p` and `|-! p`)
-- [ ] Add `consistent_iff_not_derivable_bot` bridge lemma
-- [ ] Add `import Bimodal.ProofSystem.Derivable` to `Theories/Bimodal/ProofSystem.lean`
-- [ ] Run `lake build` to verify compilation
+- [x] Create `Theories/Bimodal/ProofSystem/Derivable.lean` with module docstring
+- [x] Add `Derivable` definition: `def Derivable (G : Context) (p : Formula) : Prop := Nonempty (DerivationTree G p)`
+- [x] Add `Derivable.ofTree` coercion theorem
+- [x] Add all 7 constructor-mirroring lemmas: `ax`, `assume`, `mp`, `nec`, `temp_nec`, `temp_dual`, `weaken`
+- [x] Add notation `|-!` for Prop-valued derivability (both `G |-! p` and `|-! p`)
+- [x] Add `consistent_iff_not_derivable_bot` bridge lemma *(deviation: altered -- placed as doc comment instead of theorem due to circular import; MaximalConsistent imports ProofSystem, so Derivable.lean cannot import MaximalConsistent)*
+- [x] Add `import Bimodal.ProofSystem.Derivable` to `Theories/Bimodal/ProofSystem.lean`
+- [x] Run `lake build` to verify compilation
 
 **Timing**: 30 minutes
 
