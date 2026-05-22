@@ -53,8 +53,8 @@ Phase 5 (tactics survey — generates tactic tasks):
 Phase 5a (tactics — Tier 1 modal foundations):
   185, 190                                              (parallel, after 161)
 
-Phase 5b (tactics — EF game automation, after file split):
-  195                                                   (after 155, 174)
+Phase 5b (tactics — EF game automation):
+  195                                                   (after 155, parallel with Phase 2-3)
 
 Phase 6 (tactics — Tier 2 engineering):
   186, 187, 189 (parallel, after 185) → 188 (after 187)
@@ -121,7 +121,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 ### Phase 5b — EF Game Automation (after sorry-free + file split)
 
 195 [NOT STARTED] — EF game automation tactics for WeakCanonical/ metalogic proofs
-  └─ 155, 174
+  └─ 155
 
 ### Phase 6 — Tactics Tier 2 (engineering)
 
@@ -216,7 +216,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Priority**: medium
-- **Dependencies**: 155, 174
+- **Dependencies**: 155
 
 **Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Four components, ranked by impact:
 
