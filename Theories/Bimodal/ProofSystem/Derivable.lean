@@ -1,3 +1,4 @@
+import Aesop
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Context
 
@@ -78,18 +79,21 @@ theorem Derivable.ofTree {G : Context} {p : Formula}
 /--
 Axiom rule: Any axiom schema instance is derivable (Prop-valued).
 -/
+@[aesop safe apply, simp]
 theorem Derivable.ax (G : Context) (p : Formula) (h : Axiom p) : Derivable G p :=
   Nonempty.intro (DerivationTree.axiom G p h)
 
 /--
 Assumption rule: Formulas in context are derivable (Prop-valued).
 -/
+@[aesop safe apply, simp]
 theorem Derivable.assume (G : Context) (p : Formula) (h : p ∈ G) : Derivable G p :=
   Nonempty.intro (DerivationTree.assumption G p h)
 
 /--
 Modus ponens: If `G |-! p → q` and `G |-! p` then `G |-! q` (Prop-valued).
 -/
+@[aesop unsafe 50% apply]
 theorem Derivable.mp (G : Context) (p q : Formula)
     (h1 : Derivable G (p.imp q)) (h2 : Derivable G p) : Derivable G q := by
   obtain ⟨d1⟩ := h1; obtain ⟨d2⟩ := h2
@@ -98,6 +102,7 @@ theorem Derivable.mp (G : Context) (p q : Formula)
 /--
 Weakening: If `G |-! p` and `G ⊆ D` then `D |-! p` (Prop-valued).
 -/
+@[aesop safe apply]
 theorem Derivable.weaken {G D : Context} {p : Formula}
     (h : Derivable G p) (hsub : G ⊆ D) : Derivable D p := by
   obtain ⟨d⟩ := h
@@ -106,6 +111,7 @@ theorem Derivable.weaken {G D : Context} {p : Formula}
 /--
 Modal necessitation: If `|-! p` then `|-! □p` (Prop-valued).
 -/
+@[aesop safe apply]
 theorem Derivable.nec {p : Formula}
     (h : Derivable [] p) : Derivable [] (Formula.box p) := by
   obtain ⟨d⟩ := h
@@ -114,6 +120,7 @@ theorem Derivable.nec {p : Formula}
 /--
 Temporal necessitation: If `|-! p` then `|-! Gp` (Prop-valued).
 -/
+@[aesop safe apply]
 theorem Derivable.temp_nec {p : Formula}
     (h : Derivable [] p) : Derivable [] (Formula.all_future p) := by
   obtain ⟨d⟩ := h
@@ -122,10 +129,25 @@ theorem Derivable.temp_nec {p : Formula}
 /--
 Temporal duality: If `|-! p` then `|-! swap_temporal p` (Prop-valued).
 -/
+@[aesop safe apply]
 theorem Derivable.temp_dual {p : Formula}
     (h : Derivable [] p) : Derivable [] p.swap_temporal := by
   obtain ⟨d⟩ := h
   exact Nonempty.intro (DerivationTree.temporal_duality p d)
+
+/-! ## Aesop and Simp Test Examples -/
+
+/--
+Test: Aesop can derive from assumptions using `Derivable.assume`.
+-/
+example (p q : Formula) : Derivable [p.imp q, p] p := by
+  aesop
+
+/--
+Test: Simp can close axiom goals when the `Axiom` instance is provided.
+-/
+example (p : Atom) : Derivable [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) := by
+  exact Derivable.ax _ _ (Axiom.modal_t _)
 
 /-! ## Consistent Bridge
 

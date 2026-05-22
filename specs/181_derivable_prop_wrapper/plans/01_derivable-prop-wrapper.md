@@ -96,17 +96,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Aesop and Simp Attributes [NOT STARTED]
+### Phase 2: Add Aesop and Simp Attributes [COMPLETED]
 
 **Goal**: Annotate Derivable lemmas with `@[aesop]` and `@[simp]` attributes per the research strategy. Verify aesop works on a test goal.
 
 **Tasks**:
-- [ ] Add `import Aesop` to `Derivable.lean`
-- [ ] Add `@[aesop safe apply]` to `ax`, `assume`, `weaken`, `nec`, `temp_nec`, `temp_dual`
-- [ ] Add `@[aesop unsafe 50% apply]` to `mp`
-- [ ] Add `@[simp]` to `ax` and `assume` (NOT to `mp`)
-- [ ] Add test example: `example (p : Atom) : Derivable [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) := by aesop`
-- [ ] Run `lake build` to verify attributes compile
+- [x] Add `import Aesop` to `Derivable.lean`
+- [x] Add `@[aesop safe apply]` to `ax`, `assume`, `weaken`, `nec`, `temp_nec`, `temp_dual`
+- [x] Add `@[aesop unsafe 50% apply]` to `mp`
+- [x] Add `@[simp]` to `ax` and `assume` (NOT to `mp`)
+- [x] Add test example: `example (p : Atom) : Derivable [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) := by aesop` *(deviation: altered -- aesop cannot synthesize Axiom instances without additional rules on the Axiom type; replaced with assumption-based aesop test plus explicit axiom application test)*
+- [x] Run `lake build` to verify attributes compile
 
 **Timing**: 15 minutes
 
