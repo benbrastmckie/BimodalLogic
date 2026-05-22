@@ -2663,9 +2663,16 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         (stavi_truth_mu_at_point v D).mp
           (h_D_bet v hmv (γ.val.downward_closed y v hy_in (le_of_lt hvy)))⟩
 
-/-- Standard-Until gap detection: U(X, D) at an actual point m in M_r detects
-    a D-defined gap γ > m where X holds at complement points below some bound,
-    with D holding between m and γ. Used by the S/S' cases of left_formula. -/
+/-- Standard-Until gap detection: THEOREM IS FALSE AS STATED.
+    Both directions of the biconditional fail:
+    - Forward: U(X, top) at m can be true (just need X somewhere) but no gap
+      is definable by top (gap_definable_on_left is False for D = top).
+    - Backward: Given gap with D at cut, X at complement, U(X,D) needs
+      s > m with X(s) AND D on (m,s). Complement s has X but D fails near gap;
+      cut s has D but X is not given at cut points.
+    See specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260521b.md.
+    The S/S' cases in left_formula_gap_detection should be proved directly using
+    stavi_untl_gap_detection on the compound's U'(⊤, B∧D) component. -/
 theorem std_untl_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
@@ -2679,7 +2686,7 @@ theorem std_untl_gap_detection {sig : MonadicSignature}
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       (∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
         stavi_temporal_truth M atomMap u X)) := by
-  sorry
+  sorry -- KNOWN FALSE: see docstring. Will be deleted when affected cases are proved directly.
 
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
 
@@ -3240,8 +3247,10 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
   sorry
 
-/-- Standard-Since gap detection: S(X, D) at an actual point m detects a
-    D-defined gap γ < m. Dual of std_untl_gap_detection. -/
+/-- Standard-Since gap detection: THEOREM IS FALSE AS STATED.
+    Same issue as std_untl_gap_detection (past dual). See that docstring.
+    The U/U' cases in right_formula_gap_detection should be proved directly using
+    stavi_snce_gap_detection on the compound's S'(⊤, B∧D) component. -/
 theorem std_snce_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
@@ -3253,7 +3262,7 @@ theorem std_snce_gap_detection {sig : MonadicSignature}
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
-  sorry
+  sorry -- KNOWN FALSE: see docstring. Will be deleted when affected cases are proved directly.
 
 theorem right_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
