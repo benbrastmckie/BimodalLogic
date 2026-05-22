@@ -34,18 +34,24 @@ technical_debt:
 **Execution Pipeline**:
 
 ```
-Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
+Parallel now:
+  155 (Reynolds pipeline — sorry-free bx_completeness)
+  181 (Derivable Prop wrapper — independent, small)
 
 After 155:
   Wave 1b: 176, 95                                     (post-155 cleanup)
-  Wave 2:  181                                          (small independent win)
   Wave 3:  168 → 174 → 175 → 180 → 131 → 161          (deep refactor)
   Wave 4:  183 → 177 → 178                             (documentation + polish)
 ```
 
-### Active — Completeness
+### Active — Parallel Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+181 [NOT STARTED] — Add Derivable Prop-valued wrapper alongside DerivationTree
+
+### Completed Research (informs Wave 3)
+
+179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
@@ -53,11 +59,6 @@ After 155:
   └─ 155
 95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
   └─ 155
-
-### Wave 2 — Independent Quick Wins (parallel with Wave 1b)
-
-179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
-181 [NOT STARTED] — Add Derivable Prop-valued wrapper alongside DerivationTree
 
 ### Wave 3 — Deep Refactor (sequential chain)
 
