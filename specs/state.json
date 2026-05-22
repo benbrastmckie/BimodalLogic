@@ -576,7 +576,8 @@
           "type": "report",
           "summary": "Seed research: deduction/undischarge tactic design for natural-deduction style"
         }
-      ]
+      ],
+      "dependencies": []
     },
     {
       "project_number": 190,
@@ -606,6 +607,9 @@
           "type": "report",
           "summary": "Seed research: truth-table vs tableaux approaches for verified decision procedure"
         }
+      ],
+      "dependencies": [
+        181
       ]
     },
     {
@@ -621,6 +625,13 @@
           "type": "report",
           "summary": "Seed research: goal analysis, dispatch logic, and transfer principle design"
         }
+      ],
+      "dependencies": [
+        185,
+        187,
+        190,
+        191,
+        194
       ]
     },
     {
@@ -636,6 +647,10 @@
           "type": "report",
           "summary": "Seed research: proof inventory (120 proofs, 6880 lines) and refactoring candidates"
         }
+      ],
+      "dependencies": [
+        192,
+        189
       ]
     },
     {
