@@ -58,6 +58,16 @@ macro "game_tuple_unfold" loc:(Lean.Parser.Tactic.location)? : tactic =>
   | none =>
     `(tactic| (simp only [game_tuple]; split_ifs <;> try omega))
 
+-- Note: For compound index expressions like `⟨1+n, ...⟩` where `n` is a
+-- variable, `simp_game_tuple` cannot fire because `game_tuple_sel_eq` requires
+-- `k : Fin n` which can't unify with raw arithmetic. Use `game_tuple_sel_nat_eq`
+-- from EFGames.lean directly, or manually unfold `game_tuple` and resolve the
+-- dite conditions:
+--
+--   simp only [game_tuple, show (1+n:Nat) ≠ 0 from by omega,
+--     show ¬((1+n:Nat) = m+1) from by omega, ...
+--     dite_false, dite_true, show 1+n-1=n from by omega] at h
+
 /-! ## Component C: pivot_order -/
 
 /-- `pivot_chain_order'` is a convenience wrapper around `pivot_chain_order` that

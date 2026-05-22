@@ -6745,6 +6745,21 @@ theorem game_tuple_sel_eq {sig : MonadicSignature}
     show ¬((1 + ↑k : Nat) = n + 2) from by { have := k.isLt; omega },
     show 1 + ↑k - 1 = k.val from by omega]
 
+/-- Variant of `game_tuple_sel_eq` that takes a raw natural number index `m`
+    with `0 < m`, `m ≠ n + 1`, `m ≠ n + 2`. This handles compound index
+    expressions like `⟨1 + n, ...⟩` where `n` is a variable, which
+    `game_tuple_sel_eq` (keyed on `Fin n`) cannot match via simp.
+
+    Usage: `rw [show game_tuple x y a b ⟨1+n, pf⟩ = a ⟨n, by omega⟩
+             from game_tuple_sel_nat_eq ..] at h` -/
+theorem game_tuple_sel_nat_eq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) {m : Nat} (hm : m < n + 3) (hm0 : m ≠ 0) (hmb : m ≠ n + 1) (hmy : m ≠ n + 2) :
+    game_tuple x y a b ⟨m, hm⟩ = a ⟨m - 1, by omega⟩ := by
+  simp only [game_tuple]
+  simp [hm0, hmb, hmy]
+
 theorem game_tuple_zero_eq {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
