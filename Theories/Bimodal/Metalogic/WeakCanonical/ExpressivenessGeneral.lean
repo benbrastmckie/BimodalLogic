@@ -3183,13 +3183,82 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       -- For tau ordering at positions 1..n, use an arbitrary point in [c,y]
       -- to instantiate hwin_tau and extract ordering/formula data.
       obtain ⟨hord_sig, hgp_sig, hform_sig⟩ := hcond_sig
+      -- Extract tau winning condition at inner positions by instantiating
+      -- hwin_tau with an arbitrary carrier point in [c, y].
+      obtain ⟨p_cy, hp_cy⟩ := props.h_pt_cy
+      obtain ⟨_b_tau, _hb_tau_in, hcond_tau_aux⟩ := hwin_tau p_cy hp_cy
+      obtain ⟨hord_tau_aux, hgp_tau_aux, hform_tau_aux⟩ := hcond_tau_aux
+      -- hgp_tau_aux/hform_tau_aux at positions 1..n give a_init(k)/resp_tau(k)
+      -- agreement, independent of the Round 2 point p_cy.
       refine ⟨?_, ?_, ?_⟩
       · -- same_order_type (n+1)
         sorry
       · -- gap_point_agreement (n+1)
-        sorry
+        intro i
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2 h0' hlt
+        · -- i=0: x'/x — from forward game at position 0
+          have hfwd0 := hgp_fwd ⟨0, by omega⟩
+          simp only [game_tuple, dite_true] at hfwd0
+          exact ⟨hfwd0.1.symm, hfwd0.2.symm⟩
+        · -- i=n+2: extendPoint b_resp / extendPoint b_sp (both are Sum.inl)
+          constructor
+          · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> cases hg
+        · -- i=n+3: y'/y — from forward game at last position
+          have hfwd_last := hgp_fwd ⟨n + 1 + 2, by omega⟩
+          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
+                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
+                     dite_false, dite_true] at hfwd_last
+          exact ⟨hfwd_last.1.symm, hfwd_last.2.symm⟩
+        · -- i inner, i-1 < n: a_bwd(i-1)/resp_tau(i-1) — from tau aux at position i
+          have htau_i := hgp_tau_aux ⟨i.val, by omega⟩
+          simp only [game_tuple, show i.val ≠ 0 from h0,
+                     show i.val ≠ n + 1 from by omega,
+                     show i.val ≠ n + 2 from by omega,
+                     dite_false] at htau_i
+          convert htau_i using 2 <;> congr 1 <;> exact Fin.ext (by omega)
+        · -- i inner, i-1=n: a_bwd(n)/e_n — both are Sum.inl (point)
+          have hi_eq : i.val - 1 = n := by omega
+          have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                     a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+          rw [hab, hp_n]
+          constructor
+          · exact ⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> exact (Sum.inl_ne_inr hg).elim
       · -- formula_agreement (n+1)
-        sorry
+        intro i A hA
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2 h0' hlt
+        · -- i=0: x'/x — from forward game at position 0
+          have hfwd0 := hform_fwd ⟨0, by omega⟩ A hA
+          simp only [game_tuple, dite_true] at hfwd0
+          exact hfwd0.symm
+        · -- i=n+2: extendPoint b_resp / extendPoint b_sp — from sigma at position n+1
+          have hsig_n1 := hform_sig ⟨n + 1, by omega⟩ A hA
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+                     show (n + 1 : Nat) = n + 1 from rfl,
+                     dite_false, dite_true] at hsig_n1
+          exact hsig_n1
+        · -- i=n+3: y'/y — from forward game at last position
+          have hfwd_last := hform_fwd ⟨n + 1 + 2, by omega⟩ A hA
+          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
+                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
+                     dite_false, dite_true] at hfwd_last
+          exact hfwd_last.symm
+        · -- i inner, i-1 < n: a_bwd(i-1)/resp_tau(i-1) — from tau aux at position i
+          have htau_i := hform_tau_aux ⟨i.val, by omega⟩ A hA
+          simp only [game_tuple, show i.val ≠ 0 from h0,
+                     show i.val ≠ n + 1 from by omega,
+                     show i.val ≠ n + 2 from by omega,
+                     dite_false] at htau_i
+          convert htau_i using 2 <;> congr 1 <;> exact Fin.ext (by omega)
+        · -- i inner, i-1=n: a_bwd(n)/e_n — from hform_en_an
+          have hi_eq : i.val - 1 = n := by omega
+          have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                     a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+          rw [hab]
+          exact (hform_en_an A hA).symm
     · -- Case B: b_sp > c, i.e., b_sp ∈ (c, y]. Use tau for round 2.
       push_neg at hbc
       have hc_lt_bsp : c < extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp := hbc
@@ -3226,9 +3295,74 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         -- bounds and forward game ordering.
         sorry
       · -- gap_point_agreement (n+1): for all positions
-        sorry
+        intro i
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2 h0' hlt
+        · -- i=0: x'/x — from forward game at position 0
+          have hfwd0 := hgp_fwd ⟨0, by omega⟩
+          simp only [game_tuple, dite_true] at hfwd0
+          exact ⟨hfwd0.1.symm, hfwd0.2.symm⟩
+        · -- i=n+2: extendPoint b_resp / extendPoint b_sp
+          -- Both are Sum.inl, hence both are points and neither is a gap
+          constructor
+          · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> cases hg
+        · -- i=n+3: y'/y — from forward game at last position
+          have hfwd_last := hgp_fwd ⟨n + 1 + 2, by omega⟩
+          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
+                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
+                     dite_false, dite_true] at hfwd_last
+          exact ⟨hfwd_last.1.symm, hfwd_last.2.symm⟩
+        · -- i inner, i-1 < n: a_bwd(i-1) / resp_tau(i-1) — from tau at position i
+          have htau_i := hgp_tau ⟨i.val, by omega⟩
+          simp only [game_tuple, show i.val ≠ 0 from h0,
+                     show i.val ≠ n + 1 from by omega,
+                     show i.val ≠ n + 2 from by omega,
+                     dite_false] at htau_i
+          convert htau_i using 2 <;> congr 1 <;> exact Fin.ext (by omega)
+        · -- i inner, i-1=n: a_bwd(n)/e_n — both are Sum.inl (point)
+          have hi_eq : i.val - 1 = n := by omega
+          have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                     a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+          rw [hab, hp_n]
+          -- Now: (IsPoint (Sum.inl p_n) ↔ IsPoint e_n) ∧ (IsGap (Sum.inl p_n) ↔ IsGap e_n)
+          -- Both sides are Sum.inl, so both are points and neither is a gap
+          constructor
+          · exact ⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> exact (Sum.inl_ne_inr hg).elim
       · -- formula_agreement (n+1): for all positions and formulas
-        sorry
+        intro i A hA
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2 h0' hlt
+        · -- i=0: x'/x — from forward game at position 0
+          have hfwd0 := hform_fwd ⟨0, by omega⟩ A hA
+          simp only [game_tuple, dite_true] at hfwd0
+          exact hfwd0.symm
+        · -- i=n+2: extendPoint b_resp / extendPoint b_sp — from tau at position n+1
+          have htau_n1 := hform_tau ⟨n + 1, by omega⟩ A hA
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+                     show (n + 1 : Nat) = n + 1 from rfl,
+                     dite_false, dite_true] at htau_n1
+          exact htau_n1
+        · -- i=n+3: y'/y — from forward game at last position
+          have hfwd_last := hform_fwd ⟨n + 1 + 2, by omega⟩ A hA
+          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
+                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
+                     dite_false, dite_true] at hfwd_last
+          exact hfwd_last.symm
+        · -- i inner, i-1 < n: a_bwd(i-1) / resp_tau(i-1) — from tau at position i
+          have htau_i := hform_tau ⟨i.val, by omega⟩ A hA
+          simp only [game_tuple, show i.val ≠ 0 from h0,
+                     show i.val ≠ n + 1 from by omega,
+                     show i.val ≠ n + 2 from by omega,
+                     dite_false] at htau_i
+          convert htau_i using 2 <;> congr 1 <;> exact Fin.ext (by omega)
+        · -- i inner, i-1=n: a_bwd(n)/e_n — from hform_en_an
+          have hi_eq : i.val - 1 = n := by omega
+          have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                     a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+          rw [hab]
+          exact (hform_en_an A hA).symm
   -- Step 4: Build merged response
   let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
     if h : i.val < n then resp_tau ⟨i.val, h⟩
