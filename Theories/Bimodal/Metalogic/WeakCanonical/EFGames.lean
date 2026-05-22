@@ -5257,8 +5257,112 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             exact (stavi_truth_mu_at_point v_pt B).mpr
               (hB_cut v_pt hv_pt_in (lt_of_lt_of_le hu₁s hvu₁))
     · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
-      -- Backward: mirrors left stavi_untl backward (mu-form restriction)
-      sorry
+      -- Backward: from S'(A,B)^mu(γ) (γ below m), construct S'(B∧S'(A,B), D)(m)
+      simp only [stavi_temporal_truth_mu] at hSA
+      obtain ⟨s_sa, hs_sa_γ, h_body_sa, ⟨wf_sa, hs_wf, hwf_γ, hmu_wf, hBwf_sa⟩,
+              ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩⟩ := hSA
+      obtain ⟨wf_pt, rfl⟩ := hmu_wf
+      obtain ⟨wi_pt, rfl⟩ := hmu_wi
+      have hwf_in : wf_pt ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff wf_pt γ).mp (le_of_lt hwf_γ)
+      have hwi_in : wi_pt ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff wi_pt γ).mp (le_of_lt hwi_γ)
+      -- Get a carrier bound s_pt below s_sa (and below both wf_pt, wi_pt)
+      have ⟨s_pt, hs_pt_wf, hs_pt_wi, hs_sa_s_pt⟩ :
+          ∃ s_pt : M.carrier, s_pt < wf_pt ∧ s_pt < wi_pt ∧ s_sa ≤ extendPoint s_pt := by
+        rcases s_sa with s₁ | g_sa
+        · refine ⟨s₁, (extendPoint_lt_iff s₁ wf_pt).mp hs_wf,
+            (extendPoint_lt_iff s₁ wi_pt).mp hs_wi, le_rfl⟩
+        · have hwf_not : wf_pt ∉ g_sa.val.cut := by
+            intro h; exact not_lt.mpr ((extendPoint_le_gap_iff wf_pt g_sa).mpr h) hs_wf
+          have hwi_not : wi_pt ∉ g_sa.val.cut := by
+            intro h; exact not_lt.mpr ((extendPoint_le_gap_iff wi_pt g_sa).mpr h) hs_wi
+          have hmin_not : min wf_pt wi_pt ∉ g_sa.val.cut := by
+            rcases le_or_lt wf_pt wi_pt with h | h
+            · simp [min_eq_left h]; exact hwf_not
+            · simp [min_eq_right (le_of_lt h)]; exact hwi_not
+          have ⟨y, hy_not, hy_min⟩ : ∃ y, y ∉ g_sa.val.cut ∧ y < min wf_pt wi_pt := by
+            by_contra h_all; push_neg at h_all
+            exact g_sa.val.complement_no_min ⟨min wf_pt wi_pt, hmin_not,
+              fun z hz => h_all z hz⟩
+          exact ⟨y, lt_of_lt_of_le hy_min (min_le_left _ _),
+            lt_of_lt_of_le hy_min (min_le_right _ _),
+            le_of_lt (show @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (Sum.inr g_sa) (extendPoint y) from ⟨hy_not, hy_not⟩)⟩
+      -- Pick s_bound = max(wf_pt, wi_pt). Both ∈ γ.cut.
+      let s_bound := max wf_pt wi_pt
+      have hs_bound_in : s_bound ∈ γ.val.cut := by
+        simp only [s_bound, max_def]; split
+        · exact hwi_in
+        · exact hwf_in
+      -- Apply stavi_snce_gap_detection.mpr
+      apply (stavi_snce_gap_detection (.conj B (.stavi_snce A B)) D hD m).mpr
+      refine ⟨γ, s_bound, hγ_lt, hs_bound_in, hγ_def, hγ_bet, fun u hu_in hu_sb => ?_⟩
+      -- u is a cut point with s_bound < u, so wf_pt < u AND wi_pt < u
+      have hu_wf : wf_pt < u := lt_of_le_of_lt (le_max_left wf_pt wi_pt) hu_sb
+      have hu_wi : wi_pt < u := lt_of_le_of_lt (le_max_right wf_pt wi_pt) hu_sb
+      have huγ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+          (extendPoint u) (Sum.inr γ) := ⟨hu_in, fun h => h hu_in⟩
+      simp only [stavi_temporal_truth]
+      constructor
+      · -- B(u): from hBwi_sa, u is between wi_pt and γ
+        exact (stavi_truth_mu_at_point u B).mp
+          (hBwi_sa (extendPoint u) ((extendPoint_lt_iff wi_pt u).mpr hu_wi) huγ ⟨u, rfl⟩)
+      · -- S'(A,B)(u): FO table at u with bound s_pt
+        refine ⟨s_pt, lt_trans hs_pt_wf hu_wf, ?_, ?_, ?_⟩
+        · -- Body: ∀ w ∈ (s_pt, u), disjunction
+          intro w hsw hwu
+          have hw_in : w ∈ γ.val.cut :=
+            γ.val.downward_closed u w hu_in (le_of_lt hwu)
+          have hwγ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint w) (Sum.inr γ) := ⟨hw_in, fun h => h hw_in⟩
+          have hs_sa_w : s_sa < extendPoint w :=
+            lt_of_le_of_lt hs_sa_s_pt ((extendPoint_lt_iff s_pt w).mpr hsw)
+          have h_disj := h_body_sa (extendPoint w) hs_sa_w hwγ ⟨w, rfl⟩
+          cases h_disj with
+          | inl h_cof =>
+            left
+            obtain ⟨v, hvw, hmu_v, hBv⟩ := h_cof
+            obtain ⟨v_pt, rfl⟩ := hmu_v
+            refine ⟨v_pt, (extendPoint_lt_iff v_pt w).mp hvw, fun z hzv hzu => ?_⟩
+            have hz_in : z ∈ γ.val.cut :=
+              γ.val.downward_closed u z hu_in (le_of_lt hzu)
+            have hzγ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+                (extendPoint z) (Sum.inr γ) := ⟨hz_in, fun h => h hz_in⟩
+            exact (stavi_truth_mu_at_point z B).mp
+              (hBv (extendPoint z) ((extendPoint_lt_iff v_pt z).mpr hzv) hzγ ⟨z, rfl⟩)
+          | inr h_take =>
+            obtain ⟨hA_below, v', hv'_above_w, hv'_below_γ, hmu_v', hBv'_neg⟩ := h_take
+            obtain ⟨v'_pt, rfl⟩ := hmu_v'
+            have hv'_w : w < v'_pt := (extendPoint_lt_iff w v'_pt).mp hv'_above_w
+            have hv'_in : v'_pt ∈ γ.val.cut :=
+              (extendPoint_le_gap_iff v'_pt γ).mp (le_of_lt hv'_below_γ)
+            by_cases hv'u : v'_pt < u
+            · -- v'_pt between w and u: use RIGHT disjunct with v'_pt as ¬B witness
+              right
+              constructor
+              · intro v hsv hvu
+                exact (stavi_truth_mu_at_point v A).mp
+                  (hA_below (extendPoint v) (lt_of_le_of_lt hs_sa_s_pt ((extendPoint_lt_iff s_pt v).mpr hsv))
+                    ((extendPoint_lt_iff v w).mpr hvu) ⟨v, rfl⟩)
+              · exact ⟨v'_pt, hv'_w, hv'u,
+                  mt (stavi_truth_mu_at_point v'_pt B).mpr hBv'_neg⟩
+            · -- v'_pt ≥ u > wi_pt: B(v'_pt) from hBwi_sa contradicts ¬B(v'_pt)
+              push_neg at hv'u
+              exfalso
+              exact hBv'_neg
+                (hBwi_sa (extendPoint v'_pt)
+                  ((extendPoint_lt_iff wi_pt v'_pt).mpr (lt_of_lt_of_le hu_wi hv'u))
+                  ⟨hv'_in, fun h => h hv'_in⟩ ⟨v'_pt, rfl⟩)
+        · -- Condition (2): ¬B witness
+          exact ⟨wf_pt, hs_pt_wf, hu_wf, mt (stavi_truth_mu_at_point wf_pt B).mpr hBwf_sa⟩
+        · -- Condition (3): B on final segment
+          exact ⟨wi_pt, hs_pt_wi, hu_wi, fun v hwiv hvu =>
+            (stavi_truth_mu_at_point v B).mp
+              (hBwi_sa (extendPoint v) ((extendPoint_lt_iff wi_pt v).mpr hwiv)
+                (⟨γ.val.downward_closed u v hu_in (le_of_lt hvu),
+                  fun h => h (γ.val.downward_closed u v hu_in (le_of_lt hvu))⟩)
+                ⟨v, rfl⟩)⟩
   | std_untl A B _ _ =>
     sorry
   | std_snce A B _ _ =>
