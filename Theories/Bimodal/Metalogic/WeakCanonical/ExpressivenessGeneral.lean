@@ -1379,17 +1379,65 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
   -- The infrastructure for the full construction exists (infimum_gap,
   -- infimum_gap_r_definable, inf_carrier_cut, etc.) and is sorry-free.
   -- Construct d as the infimum of S_C within [x', y'].
-  -- For now, we use a_bwd(n) as a PROVISIONAL d: it's in S_C (hence in [x', y'])
-  -- and trivially satisfies d ≤ a_bwd(n). The true infimum construction
-  -- requires the full point/gap case analysis (infimum_gap infrastructure).
-  -- TODO: Replace with true infimum once Case II is restructured to not need hd_eq_an.
-  let d := a_bwd ⟨n, by omega⟩
-  have hd_interval : inClosedInterval x' y' d := ha_bwd ⟨n, by omega⟩
-  have hd_glb : ∀ s ∈ continuation_set x' y' (a_bwd ⟨n, by omega⟩), d ≤ s := by
-    intro s hs
-    sorry -- d ≤ s requires d to be the actual infimum
-  have hd_le_an_proof : d ≤ a_bwd ⟨n, by omega⟩ :=
-    hd_glb _ (a_n_in_continuation_set (ha_bwd ⟨n, by omega⟩))
+  -- Case split: either a_bwd(n) is the minimum of S_C, or S_C has elements
+  -- strictly below a_bwd(n) (requiring gap/point infimum construction).
+  set S_C := continuation_set x' y' (a_bwd ⟨n, by omega⟩) with S_C_def
+  have h_an_in_SC : a_bwd ⟨n, by omega⟩ ∈ S_C :=
+    a_n_in_continuation_set (ha_bwd ⟨n, by omega⟩)
+  obtain ⟨d, hd_interval, hd_glb, hd_le_an_proof⟩ :
+      ∃ d : ExtendedCarrier N atomMap r,
+        inClosedInterval x' y' d ∧
+        (∀ s ∈ S_C, d ≤ s) ∧
+        d ≤ a_bwd ⟨n, by omega⟩ := by
+    by_cases h_an_min : ∀ s ∈ S_C, a_bwd ⟨n, by omega⟩ ≤ s
+    · exact ⟨a_bwd ⟨n, by omega⟩, ha_bwd ⟨n, by omega⟩, h_an_min, le_refl _⟩
+    · push_neg at h_an_min
+      obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := h_an_min
+      -- S_C has elements below a_bwd(n). Need true infimum construction.
+      -- Case split: does a point GLB exist among carrier points?
+      by_cases h_point_glb : ∃ p : N.carrier,
+          (∀ s ∈ S_C, (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p) ≤ s) ∧
+          (∀ q : N.carrier, (∀ s ∈ S_C,
+            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s) →
+            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ extendPoint p)
+      · -- Point GLB case: d = extendPoint p
+        obtain ⟨p, hp_lb, hp_greatest⟩ := h_point_glb
+        have hp_interval : inClosedInterval x' y' (extendPoint p) := by
+          constructor
+          · -- x' ≤ extendPoint p: case split on whether x' is a point or gap
+            match x', hx'y' with
+            | Sum.inl q, _ =>
+              -- x' = extendPoint q is a carrier point
+              -- q is a carrier lower bound of S_C (since x' ≤ s for all s ∈ S_C)
+              have hq_lb : ∀ s ∈ S_C,
+                  (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s :=
+                fun s hs => hs.1.1
+              exact hp_greatest q hq_lb
+            | Sum.inr g, _ =>
+              -- x' = Sum.inr g is a gap. Show p ∉ g.val.cut.
+              -- If p ∈ g.val.cut, then: every q ∈ g.cut has q ≤ p (since q is a
+              -- carrier lower bound and p is the greatest), making p the LUB of
+              -- g.cut IN g.cut — contradicting g.val.no_sup.
+              show p ∉ g.val.cut
+              intro hp_cut
+              apply g.val.no_sup
+              refine ⟨p, ⟨fun q hq => ?_, fun u hu => hu p hp_cut⟩, hp_cut⟩
+              -- Show q ≤ p for any q ∈ g.val.cut:
+              -- q ∈ g.cut → extendPoint q ≤ Sum.inr g (= x') ≤ s for all s ∈ S_C
+              -- → q is a carrier lower bound of S_C → extendPoint q ≤ extendPoint p
+              have hq_lb : ∀ s ∈ S_C,
+                  (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s :=
+                fun s hs => le_trans
+                  (show (Sum.inl q : ExtendedCarrier N atomMap r) ≤ Sum.inr g from hq)
+                  (hs.1.1)
+              exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
+          · -- extendPoint p ≤ y': p is a lower bound of S_C, y' ∈ S_C
+            exact le_trans (hp_lb _ (continuation_set_nonempty hx'y').some_mem)
+              (continuation_set_nonempty hx'y').some_mem.1.2
+        exact ⟨extendPoint p, hp_interval, hp_lb,
+          hp_lb _ h_an_in_SC⟩
+      · -- Gap case: d = Sum.inr (infimum_gap ...)
+        sorry
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
