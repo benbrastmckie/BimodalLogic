@@ -23,6 +23,8 @@
   - specs/155_reynolds_pipeline_activation/reports/20_nf-bridge-research.md
   - specs/155_reynolds_pipeline_activation/reports/20_lean-pigeonhole-patterns.md
   - specs/155_reynolds_pipeline_activation/reports/21_muSig-blocker-resolution.md (NEW in v10)
+  - specs/155_reynolds_pipeline_activation/reports/22_d-consistency-implementation.md (d-consistency strategy analysis)
+  - specs/155_reynolds_pipeline_activation/reports/23_lemma9-correct-proof.md (Lemma 9 correct proof: theorem valid, needs stavi_untl_gap_detection helper)
 - **Artifacts**: plans/15_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -111,22 +113,22 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 |------|-----------|-------|--------|
 | 2432 | `left_formula_gap_detection` | 4C-W2 | open |
 | 2451 | `right_formula_gap_detection` | 4C-W2 | open |
-| 3521 | `ghr93_decomposition_implies_game` | 4C-W4 | open |
+| 3512 | `ghr93_decomposition_implies_game` | 4C-W4 | open |
 | ~~4188~~ | ~~`stavi_table_mu_correct` stavi_untl case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
 | ~~4191~~ | ~~`stavi_table_mu_correct` stavi_snce case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
-| 4823 | `stavi_expressive_completeness` | 4C-W4 | open (line shifted from 4529→4809→4823) |
+| 4814 | `stavi_expressive_completeness` | 4C-W4 | open |
 
 ### ExpressivenessGeneral.lean (7 sorries, down from 8)
 | Line | Identifier | Phase | Status |
 |------|-----------|-------|--------|
 | ~~639~~ | ~~`pigeonhole_definable_formula` chain body~~ | ~~4C-W1 (depends on muSig)~~ | **CLOSED** (pigeonhole proof via recursive chain + Fintype contradiction) |
-| 1157 | `d_consistency_left` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (existential form; needs Claim 1 to construct response with d at position n) |
-| 1235 | `d_consistency_right` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (existential form; same as left) |
-| 1466 | M-side degenerate `h_pt_xc` | 4C-W1 | LATENT (unreachable until W3 gap case) |
-| 1483 | M-side degenerate `h_pt_cy` | 4C-W1 | LATENT (unreachable until W3 gap case) |
-| 1587 | c construction gap case | 4C-W3 | open |
-| 3491 | `ghr93_cases_III_IV` | 4C-W3 | open |
-| 3712 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 | open |
+| 1157 | `d_consistency_left` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (weakened to existential; needs infimum/Claim 1 to construct response) |
+| 1235 | `d_consistency_right` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (weakened to existential; same) |
+| 1547 | M-side degenerate `h_pt_xc` | 4C-W1 | LATENT (unreachable until W3 gap case) |
+| 1564 | M-side degenerate `h_pt_cy` | 4C-W1 | LATENT (unreachable until W3 gap case) |
+| 1668 | c construction gap case | 4C-W3 | open |
+| 3572 | `ghr93_cases_III_IV` | 4C-W3 | open |
+| 3793 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 | open |
 
 ### IntegerModel.lean (3 sorries)
 | Line | Identifier | Phase |
@@ -337,11 +339,11 @@ Option (b) IMPLEMENTED: Weakened d_consistency_left/right from universal ("for A
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [BLOCKED]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [NOT STARTED]
 
 **Goal**: Prove `left_formula_gap_detection` (line 2432) and `right_formula_gap_detection` (line 2451) -- GHR93 Lemma 9 bridging temporal formulas to gap properties.
 
-**Status**: BLOCKED. The naive "gap-equivalence" approach (U'(X,D)^mu(m) ↔ ∃ gap with X^mu(γ)) is mathematically incorrect. The correct proof requires case-specific constructions.
+**Status**: UNBLOCKED. Research (report 23) confirmed theorem statement is CORRECT -- the prior "counterexample" was invalid (confused U' with simplified "cofinal AND NOT U" characterization). The correct proof needs structural induction with core helper `stavi_untl_gap_detection` (~620-880 lines). See report 23 for detailed strategy.
 
 **BLOCKER** (Phase 4C-W2):
 - **What failed**: The gap-equivalence lemma `U'(X, D)^mu(m) ↔ ∃ gap γ, conditions ∧ X^mu(γ)` is NOT a valid biconditional. Specifically, the backward direction of temporal cases (stavi_untl, std_untl, base.untl) requires `B^mu(γ)` from `U(A,B)^mu(γ)`, which is FALSE when B is an atom (atoms evaluate to False at gaps, but U(A,B) can still hold at a gap via mu-point witnesses above it).
