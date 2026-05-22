@@ -659,9 +659,26 @@
       "last_updated": "2026-05-22T19:18:49Z",
       "next_artifact_number": 1,
       "artifacts": []
+    },
+    {
+      "project_number": 196,
+      "project_name": "codebase_tactic_survey",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "automation",
+      "description": "Systematic survey of the entire Theories/Bimodal/ codebase to identify all tactic and automation opportunities. Produces a ranked inventory of tactic groups with effort estimates, line savings, and dependency relationships. Output: one new task per tactic group, replacing or refining existing tasks 185-195.",
+      "dependencies": [
+        155,
+        161
+      ],
+      "created": "2026-05-22T19:21:48Z",
+      "last_updated": "2026-05-22T19:21:48Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 196,
+  "next_project_number": 197,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

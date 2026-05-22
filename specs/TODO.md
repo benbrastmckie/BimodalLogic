@@ -46,6 +46,10 @@ Phase 3 (structural refactor — sequential, before tactics):
 Phase 4 (standards + Derivable migration — after structural refactor):
   183, 194                                              (parallel, after 161)
 
+Phase 5 (tactics survey — generates tactic tasks):
+  196                                                   (after 155, 161)
+  → may refine/replace existing tasks 185-195
+
 Phase 5a (tactics — Tier 1 modal foundations):
   185, 190                                              (parallel, after 161)
 
@@ -63,6 +67,9 @@ Phase 8 (tactic-powered codebase refactoring):
 
 Phase 9 (final documentation + examples):
   177, 178                                              (after 183, 193)
+
+Note: Task 196 (survey) may generate new tasks and restructure Phases 5a-8.
+Existing tasks 185-195 are provisional until the survey completes.
 ```
 
 ### Phase 1 — Active Work
@@ -100,6 +107,11 @@ Phase 9 (final documentation + examples):
   └─ 161
 194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
   └─ 161
+
+### Phase 5 — Tactics Survey (generates tactic task roadmap)
+
+196 [NOT STARTED] — Codebase-wide tactic opportunity survey (generates tasks)
+  └─ 155, 161
 
 ### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
 
@@ -160,6 +172,44 @@ Phase 9 (final documentation + examples):
 
 
 ## Tasks
+
+### 196. Codebase-wide tactic opportunity survey
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 155, 161
+
+**Description**: Systematic survey of the entire `Theories/Bimodal/` codebase (~50K+ lines across Syntax, ProofSystem, Semantics, Metalogic, Theorems, and Automation) to identify every repeated proof pattern that could benefit from custom tactics, simp sets, or macro abstractions. The survey produces a ranked inventory of tactic groups, each of which becomes a new implementation task.
+
+**Methodology**:
+1. **Scan every `.lean` file** in `Theories/Bimodal/` using grep, pattern matching, and manual inspection
+2. **Classify patterns** into domains: modal proof search, frame semantics, derivation tree manipulation, EF games, model construction, soundness/completeness infrastructure, linear order reasoning, extended carrier manipulation
+3. **For each pattern**, record: description, occurrence count, lines per occurrence, example file:line locations, estimated tactic complexity, estimated line savings, dependency on other tactics
+4. **Group patterns** into coherent tactic units (a single tactic file or simp set that addresses related patterns)
+5. **Rank groups** by (frequency × lines_saved) / implementation_effort
+6. **Produce dependency graph** between tactic groups (e.g., `game_tuple_simp` is a prerequisite for `solve_same_order_type`)
+
+**Scope includes** (not limited to):
+- `Metalogic/WeakCanonical/` — EF games, expressive completeness, gap elimination, integer models, transfer, chronicle
+- `Metalogic/Soundness*.lean` — soundness proof patterns
+- `Metalogic/Completeness.lean` — completeness wiring
+- `Metalogic/Decidability.lean` — decidability proof patterns
+- `Theorems/` — derived theorem proofs (imp_trans chains, modal reasoning)
+- `ProofSystem/` — derivation tree construction patterns
+- `Semantics/` — frame/model evaluation patterns
+- `Syntax/` — formula manipulation patterns
+
+**Output**: A research report containing:
+- Table of all identified tactic groups with metrics
+- Dependency DAG between groups
+- One proposed task per tactic group (title, description, effort, dependencies, target files)
+- Recommendations for which existing tasks (185-195) to keep, merge, split, or replace
+- Priority ordering for implementation
+
+**Relationship to existing tasks**: Tasks 185-195 were created incrementally based on specific needs. This survey may confirm, refine, or supersede them. Task 195 (EF game automation) was created from a focused WeakCanonical/ scan and is likely correct but may be restructured. Tasks 185-193 (modal proof search pipeline) were designed top-down and may benefit from bottom-up validation.
+
+---
 
 ### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
 - **Effort**: medium (10-15 hours)
