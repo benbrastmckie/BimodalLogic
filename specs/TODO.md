@@ -31,54 +31,9 @@ technical_debt:
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
-**Execution Pipeline**:
-
-```
-Phase 1 (now — parallel):
-  155 (Reynolds pipeline — sorry-free bx_completeness)
-  195 (EF game tactics — assists 155)
-
-Phase 2 (post-155 cleanup):
-  176, 95                                               (parallel)
-
-Phase 3 (structural refactor — sequential, before tactics):
-  168 → 174 → 175 → 180 → 131 → 161
-
-Phase 4 (standards + Derivable migration — after structural refactor):
-  183, 194                                              (parallel, after 161)
-
-Phase 5 (tactics survey — generates tactic tasks):
-  196                                                   (after 155, 161)
-  → may refine/replace existing tasks 185-195
-
-Phase 5a (tactics — Tier 1 modal foundations):
-  185, 190                                              (parallel, after 161)
-
-Phase 6 (tactics — Tier 2 engineering):
-  186, 187, 189 (parallel, after 185) → 188 (after 187)
-
-Phase 7 (tactics — Tier 3 research-level):
-  191 → 192 (after 185, 187, 190, 191)
-
-Phase 8 (tactic-powered codebase refactoring):
-  193                                                   (after 192)
-
-Phase 9 (final documentation + examples):
-  177, 178                                              (after 183, 193)
-
-Note: Task 196 (survey) may generate new tasks and restructure Phases 5a-8.
-Existing tasks 185-195 are provisional until the survey completes.
-```
-
-### Phase 1 — Active Work (parallel)
+### Phase 1 — Active Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-195 [RESEARCHED] — EF game automation tactics for WeakCanonical/ metalogic proofs
-  (no dependencies — assists 155)
-
-### Completed Research (informs Phase 3)
-
-179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
 
 ### Phase 2 — Post-155 Cleanup
 
@@ -125,7 +80,6 @@ Existing tasks 185-195 are provisional until the survey completes.
 187 [NOT STARTED] — Backward-chaining lemma database (solve_by_elim analogue)
   └─ 185
 189 [NOT STARTED] — Deduction theorem tactic
-  └─ 185
 188 [NOT STARTED] — Weakening-aware proof search
   └─ 187
 
@@ -133,12 +87,12 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 191 [NOT STARTED] — Propositional fragment decision procedure
 192 [NOT STARTED] — Master tactic dispatch (tm_prove)
-  └─ 185, 187, 190, 191
+  └─ 185, 187, 190, 191, 194
 
 ### Phase 8 — Tactic-Powered Codebase Refactoring
 
 193 [NOT STARTED] — Codebase-wide tactic refactoring
-  └─ 192
+  └─ 192, 189
 
 ### Phase 9 — Final Documentation & Examples
 
@@ -163,7 +117,6 @@ Existing tasks 185-195 are provisional until the survey completes.
 ### Meta/Tooling
 
 162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
-156 [NOT STARTED] — Multi-angle team research strategy for formal agents
 
 
 ## Tasks
@@ -175,10 +128,6 @@ Existing tasks 185-195 are provisional until the survey completes.
 - **Priority**: medium
 - **Dependencies**: 155, 161
 - **Research**:
-  - [specs/196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
-  - [specs/196_codebase_tactic_survey/reports/01_teammate-b-findings.md]
-  - [specs/196_codebase_tactic_survey/reports/01_teammate-c-findings.md]
-  - [specs/196_codebase_tactic_survey/reports/01_teammate-d-findings.md]
   - [specs/196_codebase_tactic_survey/reports/01_team-research.md]
 
 **Description**: Systematic survey of the entire `Theories/Bimodal/` codebase (~50K+ lines across Syntax, ProofSystem, Semantics, Metalogic, Theorems, and Automation) to identify every repeated proof pattern that could benefit from custom tactics, simp sets, or macro abstractions. The survey produces a ranked inventory of tactic groups, each of which becomes a new implementation task.
@@ -255,7 +204,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 - **Status**: [NOT STARTED]
 - **Research**: [specs/193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 - **Task Type**: lean4
-- **Dependencies**: 192
+- **Dependencies**: 192, 189
 
 **Description**: Once the tactics library is mature (tasks 185-192), refactor ALL proof files in Theorems/ to use the new automation. Currently ~120 proofs across 6,880 lines use explicit term-level constructions (manual imp_trans chains, explicit DerivationTree constructor applications). Many proofs could be dramatically shortened — e.g., a 7-line imp_trans proof reduces to `modal_search`. Survey all proofs, classify which are automatable vs necessarily structural, apply tactics systematically, and measure compression ratios. Update Examples/ to showcase tactics as pedagogical demonstrations. This task produces the "tactics as product" outcome.
 
@@ -266,7 +215,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 - **Status**: [NOT STARTED]
 - **Research**: [specs/192_master_tactic_dispatch/reports/01_master-dispatch-seed.md]
 - **Task Type**: lean4
-- **Dependencies**: 181, 185, 187, 190, 191
+- **Dependencies**: 181, 185, 187, 190, 191, 194
 
 **Description**: Create a unified `tm_prove` tactic that dispatches to the right sub-tactic based on goal type and formula structure. If goal is `Derivable G p` (Prop): use aesop with TMDerivable rule set, or `decide_prop` for propositional fragment. If goal is `DerivationTree G p` (Type): use `modal_search` with full search strategies. Implement formula analysis at the meta level to classify goals as propositional/modal/temporal/bimodal and route accordingly. Implement the transfer principle: prove `Derivable` via Prop reasoning, then extract `DerivationTree` via `Classical.choice` when needed. This is the integration point for all tactics work.
 
@@ -298,7 +247,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 - **Status**: [NOT STARTED]
 - **Research**: [specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
 - **Task Type**: lean4
-- **Dependencies**: 185
+- **Dependencies**: none (uses existing Core/DeductionTheorem.lean)
 
 **Description**: Wrap the deduction theorem (DeductionTheorem.lean) as a tactic. Create `deduction` tactic: given goal `G ⊢ p → q`, creates subgoal `G, p ⊢ q` (moving antecedent to context). Create `undischarge` tactic for the reverse direction. This gives a natural-deduction feel to Hilbert-style proofs, dramatically simplifying many derivations that currently require explicit imp_trans and b_combinator chains. The deduction theorem proof uses well-founded recursion on tree height (noncomputable), which affects tactic design — the tactic must mark results noncomputable. Currently 20+ files use deduction_theorem directly; the tactic would simplify those call sites.
 
@@ -512,15 +461,6 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 - **Task Type**: lean4
 
 **Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
-
-
-### 156. Improve formal/lean/math/logic research agents with multi-angle team research strategy
-- **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Priority**: medium
-
-**Description**: Improve formal/lean/math/logic research agents with multi-angle team research strategy. In the task 154 research cycle, a proof blocker persisted through multiple single-agent rounds. What broke through was launching 4 parallel agents each assigned a distinct angle: (A) backward from sorry sites using lean_goal/lean_multi_attempt, (B) infrastructure inventory with exact signatures and gap analysis, (C) literature review assessing approach soundness, (D) decomposition into small lemmas with lean_run_code verification. Improvements: (1) Add multi-angle analysis mode to lean-research-agent, (2) Always try lean_multi_attempt/lean_run_code to verify solutions compile, (3) Add guidance for when to recommend team research after repeated blockers, (4) Add prototype-first research pattern, (5) Update formal-research-agent to auto-route to multi-angle team research when multiple handoffs indicate the same blocker.
 
 ---
 

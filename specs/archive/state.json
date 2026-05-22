@@ -588,6 +588,18 @@
   ],
   "completed_projects": [
     {
+      "project_number": 156,
+      "project_name": "multi_angle_research_strategy",
+      "status": "abandoned",
+      "task_type": "meta",
+      "priority": "medium",
+      "topic": "agent-system",
+      "description": "Improve formal/lean/math/logic research agents with multi-angle team research strategy. In the task 154 (sum_preservation) research cycle, a proof blocker persisted through multiple single-agent research rounds — each agent analyzed the problem, added infrastructure, but stopped short of the hardest construction step. What broke through was launching 4 parallel research agents, each assigned a distinct angle on the SAME problem: (A) backward from sorry sites using lean_goal/lean_multi_attempt, (B) full infrastructure inventory with exact signatures and gap analysis, (C) literature review assessing whether the approach was sound, (D) decomposition into small independently-provable lemmas with lean_run_code verification. The synthesis produced consensus and a concrete breakthrough (Agent D verified the dependent type cast solution compiles). Improvements: (1) Add multi-angle analysis mode to lean-research-agent that decomposes blocked proofs into backward/infrastructure/literature/decompose angles, (2) Update lean-research-agent to always try lean_multi_attempt and lean_run_code to verify proposed solutions compile, (3) Add guidance for when to recommend team research (e.g., after 2+ failed rounds on the same blocker), (4) Add prototype-first research pattern where agents write small compilable Lean snippets before proposing full lemmas, (5) Update formal-research-agent coordinator to route to multi-angle team research when multiple handoffs indicate the same blocker.",
+      "created": "2026-05-16T04:50:48Z",
+      "last_updated": "2026-05-16T04:50:48Z",
+      "abandoned": "2026-05-22T20:32:57Z"
+    },
+    {
       "project_number": 114,
       "project_name": "plan_compliance_rule_for_implementation_agents",
       "status": "abandoned",
