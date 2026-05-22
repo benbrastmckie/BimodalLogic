@@ -1664,25 +1664,64 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         rw [show (extendPoint p' = y') = (d = y') from by rw [hep'_eq]] at hcmp_23
         exact hcmp_23.2
   · -- Case: d is a gap (d = Sum.inr g' for some gap g')
-    -- This case is more complex: need to find c that is also a gap in M
-    -- with the same rank_type. The construction uses gap detection formulas
-    -- (left_formula / right_formula from GHR93 Lemma 9) to locate a compatible
-    -- gap in M. This requires the gap detection correctness lemma
-    -- (left_formula_gap_detection / right_formula_gap_detection), which are
-    -- sorry'd in EFGames.lean.
-    --
-    -- The argument:
-    -- 1. g' is an r-definable gap in N, defined by some formula D of depth ≤ r
-    -- 2. For each formula A with stavi_depth A ≤ r, compute left(A, D) or right(A, D)
-    -- 3. These formulas are evaluable at actual points in M
-    -- 4. By the forward strategy's winning condition (formula agreement at the
-    --    boundary elements x/x' and y/y'), the gap detection formulas agree
-    --    between M and N
-    -- 5. This gives a compatible gap in M
-    --
-    -- For now, this is sorry'd. The full proof requires Lemma 9 to be
-    -- fully proved (~400-500 lines) plus ~100 lines of case analysis here.
-    sorry
+    -- Use the backward game (N→M) to find a matching gap c in M.
+    -- Get (1+3n)-round forward from h_fwd, convert to n-round backward via IH:
+    have h_fwd_reduced : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' :=
+      ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n) hxy hx'y' h_fwd
+    have h_bwd_n : ghr93_duplicator_wins N M atomMap n r x' y' x y :=
+      ih hxy hx'y' h_pt h_fwd_reduced
+    -- Need n ≥ 1 to play d in the backward game.
+    -- For n = 0: the backward game has 0 rounds (no bulk selections).
+    -- Use a separate argument for this case.
+    by_cases hn : n = 0
+    · -- n = 0 gap case: sorry'd pending dedicated argument
+      sorry
+    · -- n ≥ 1: play the backward game with d as Spoiler's selection
+      have hn_pos : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
+      have h_bwd_1 : ghr93_duplicator_wins N M atomMap 1 r x' y' x y :=
+        ghr93_duplicator_wins_round_mono hn_pos hx'y' hxy h_bwd_n
+      -- Spoiler picks d (1 element) in [x',y']
+      obtain ⟨a_resp, ha_resp, hwin_resp⟩ := h_bwd_1 (fun _ => d) (fun _ => hd_interval)
+      -- Use any M-side point witness for Round 2
+      obtain ⟨p_M, hp_M⟩ := h_pt_M
+      obtain ⟨b_resp, hb_resp, hcond⟩ := hwin_resp p_M hp_M
+      obtain ⟨hord, hgp, hform⟩ := hcond
+      -- c = response at position 0 (corresponding to d at position 0)
+      -- game_tuple indices: 0=x'/x, 1=a_bwd(0)/a_resp(0)=d/c, 2=b_resp/p_M, 3=y'/y
+      set c_val := a_resp ⟨0, by omega⟩
+      -- Formula agreement at index 1 (d/c_val):
+      have hcd_form : ∀ A : StaviFormula, stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu M atomMap r c_val A ↔
+           stavi_temporal_truth_mu N atomMap r d A) := by
+        intro A hA
+        have h := hform ⟨1, by omega⟩ A hA
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ 1 + 1 from by omega,
+                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega] at h
+        exact h.symm
+      -- Gap/point agreement at index 1:
+      have hcd_gp : (IsPoint c_val ↔ IsPoint d) ∧ (IsGap c_val ↔ IsGap d) := by
+        have h := hgp ⟨1, by omega⟩
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ 1 + 1 from by omega,
+                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega] at h
+        exact ⟨h.1.symm, h.2.symm⟩
+      -- Boundary correspondence from same_order_type:
+      -- Index (0,1): x' vs d ↔ x vs c_val
+      have hord_01 := hord ⟨0, by omega⟩ ⟨1, by omega⟩
+      simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+                 show (1 : Nat) ≠ 0 from by omega,
+                 show (1 : Nat) ≠ 1 + 1 from by omega,
+                 show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                 show 1 - 1 = 0 from by omega] at hord_01
+      -- Index (1,3): d vs y' ↔ c_val vs y
+      have hord_13 := hord ⟨1, by omega⟩ ⟨3, by omega⟩
+      simp [game_tuple] at hord_13
+      have hcd_boundary : (x = c_val ↔ x' = d) ∧ (c_val = y ↔ d = y') :=
+        ⟨hord_01.2.symm, hord_13.2.symm⟩
+      exact ⟨c_val, ha_resp ⟨0, by omega⟩, hcd_form, hcd_gp, hcd_boundary⟩
 
 /-! ### Order Preservation Helpers for Merged Game Tuples -/
 
