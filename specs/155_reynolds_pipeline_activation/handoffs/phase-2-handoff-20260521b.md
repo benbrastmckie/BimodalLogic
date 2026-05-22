@@ -83,29 +83,28 @@ theorem std_snce_gap_detection ...
 
 **Caveat**: Even with h_D_nontrivial, the gap construction needs the complement to have no minimum. With U(X,D), D holds on (m,s) and fails at q > m. If q ≥ s, the D-failure boundary near s might be a point (not a proper gap). The full proof may require the STRONGER hypothesis that U'(⊤, D) also holds — see Option B.
 
-### Option B: Stronger Fix (Fallback)
+### Option B: ALSO BROKEN — Backward Direction Fails Too
 
-Replace std_untl_gap_detection with a combined form:
+The backward direction (gap → std_untl) is ALSO invalid:
+- If s = complement point u₀: X(u₀) ✓, but (m,u₀) includes complement points near gap where D fails (gap_definable_on_left says ¬D is dense in initial complement). So D on (m,u₀) FAILS.
+- If s = cut point: D on (m,s) ✓ (all points between m and s are cut), but X(s) is NOT given (hypothesis only gives X at complement points, not cut points).
 
-```lean
--- U(X,D) at m AND U'(⊤,D) at m → gap conditions
-theorem std_untl_gap_detection_with_stavi ...
-    (h_stavi : stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_untl (.base Formula.top) D)) :
-    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_untl X D) →
-    ∃ (γ : RDefinableGap ...) (s_bound : M.carrier), gap_conditions
-```
+Neither choice works. **The entire biconditional is wrong, not just the forward direction.**
 
-This uses stavi_untl_gap_detection for the gap construction and std_untl for X.
+This rules out adding hypotheses to fix the theorem. The theorem fundamentally cannot be stated as gap_conditions ↔ std_untl.
 
-### Option C: Prove Cases Directly (Most Robust)
+### Option C: Prove Cases Directly (ONLY VIABLE OPTION)
 
-Skip std_untl/std_snce_gap_detection entirely. Prove each affected case in left/right_formula_gap_detection directly by:
-1. Unpacking the compound (which includes U'(⊤, B∧D))
-2. Applying stavi_untl_gap_detection to U'(⊤, B∧D) to get a (B∧D)-gap
-3. Proving the (B∧D)-gap is also D-definable using ¬U'(D, B∧D)
-4. Proving X^mu at the gap from the compound's other components
+**Delete std_untl_gap_detection and std_snce_gap_detection.** Replace their `sorry` with a comment explaining they are false.
 
-This avoids the incorrect intermediate theorems but is more work per case (~200 lines each).
+For each affected case in left/right_formula_gap_detection, prove directly by:
+1. Unpacking the compound (which includes U'(⊤, B∧D) or S'(⊤, B∧D))
+2. Applying stavi_untl/stavi_snce_gap_detection to the internal U'/S' to get a (B∧D)-gap
+3. Proving the (B∧D)-gap is also D-definable on the left, using ¬U'(D, B∧D) to show D-failure in complement
+4. Proving the D-between condition: D holds from m to the (B∧D)-gap boundary (combining D on (m,s) from std_untl with D at cut points from the (B∧D)-gap)
+5. Proving A^mu at the gap from the compound's other components (S'(A,B) or S(A,B) from compound)
+
+Estimated ~200 lines per case × 3 cases (base.snce + stavi_snce + std_snce in left_formula) + 3 dual cases in right_formula = ~1200 lines total. Can share infrastructure via helper lemmas for steps 3-4.
 
 ## Secondary Finding: stavi_snce_gap_detection RHS Asymmetry
 
