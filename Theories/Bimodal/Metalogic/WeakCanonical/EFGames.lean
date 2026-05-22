@@ -4849,11 +4849,35 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
   | stavi_untl A B _ _ =>
     sorry
   | stavi_snce A B _ _ =>
-    sorry
+    -- right_formula (.stavi_snce A B) D = S'(B ∧ S'(A,B), D)
+    -- Mirrors left's stavi_untl case with stavi_snce_gap_detection
+    simp only [right_formula]
+    constructor
+    · intro h
+      obtain ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩ :=
+        (stavi_snce_gap_detection (.conj B (.stavi_snce A B)) D hD m).mp h
+      have hSA_cut : ∀ u : M.carrier, u ∈ γ.val.cut → s_bound < u →
+          stavi_temporal_truth M atomMap u (.stavi_snce A B) :=
+        fun u hu hus => (hX_cut u hu hus).2
+      have hB_cut : ∀ u : M.carrier, u ∈ γ.val.cut → s_bound < u →
+          stavi_temporal_truth M atomMap u B :=
+        fun u hu hus => (hX_cut u hu hus).1
+      sorry
+    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
+      sorry
   | std_untl A B _ _ =>
     sorry
   | std_snce A B _ _ =>
-    sorry
+    -- right_formula (.std_snce A B) D = S'(B ∧ S(A,B), D)
+    -- Mirrors left's std_untl case (uses stavi_snce_gap_detection bridge)
+    simp only [right_formula]
+    constructor
+    · intro h
+      obtain ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩ :=
+        (stavi_snce_gap_detection (.conj B (.std_snce A B)) D hD m).mp h
+      sorry
+    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
+      sorry
 
 /-! ## Custom Game G_{n;r} (GHR93 Definition 8.7)
 
