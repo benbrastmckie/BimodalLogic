@@ -5646,6 +5646,196 @@
       "session_id": "sess_1779262392_5cd576",
       "completion_summary": "Eliminated all 5 axioms from SeparationThm.lean: 4 proper separation axioms replaced via predicate equivalence (is_syntactically_separated = is_properly_separated), atom preservation proved via restrict_atoms approach. Cleaned 22+ stale comments, deleted 2 dead wrappers. Zero axioms, zero sorries in Separation module.",
       "archived": "2026-05-20T15:28:05Z"
+    },
+    {
+      "project_number": 184,
+      "project_name": "dead_code_tombstone_sweep",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Removed 197 lines of dead code across 10 Lean files: tombstone comments (74 lines from Soundness/SoundnessLemmas/Completeness), BXCanonical removal notes (92 lines from 8 files), 6 #check statements, 2 dead tactic definitions (95 lines). Zero WeakCanonical files touched. Lake build clean."
+    },
+    {
+      "project_number": 182,
+      "project_name": "boneyard_deep_cleanup",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Added BoneyardArchive lean_lib target to lakefile.lean. Fixed 14 broken imports. Created 10 missing READMEs (all 20 subdirs now covered). Made all files elaborate cleanly via #exit and sorry stubs. Deleted 18 doc-only .lean files (56->36). Updated inventory and established Boneyard Maintenance Standard."
+    },
+    {
+      "project_number": 21,
+      "project_name": "technical_debt_cleanup",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Archived UltrafilterFrame.lean and TenseS5Algebra.lean to Boneyard (removing 5 sorries from build path). Fixed stale docstrings in 6 Bundle/ files. Corrected 5 ghost references to CanonicalConstruction.lean. Updated Metalogic, Bundle, and Algebraic READMEs. Build verified."
+    },
+    {
+      "project_number": 130,
+      "project_name": "archive_dead_sorries_to_boneyard",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Archived 10 dead-code sorries to 3 Boneyard subdirectories (ScheduleBasedBFMCS, FiltrationOrdering, BX1DependentCode). Deleted 5 trivial sorry stubs. Annotated 4 convergence sorries with DEAD APPROACH markers. Net sorry reduction: 15. Build verified after each phase."
+    },
+    {
+      "project_number": 172,
+      "project_name": "fix_stale_metalogic_docstring",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Replaced stale docstrings in both Metalogic.lean files with accurate content reflecting irreflexive semantics, Chronicle/WeakCanonical architecture, and current sorry status. Build verified."
+    },
+    {
+      "project_number": 173,
+      "project_name": "archive_dead_temporal_derived_sorry_stubs",
+      "status": "completed",
+      "task_type": "lean4",
+      "archived": "2026-05-22T00:00:00Z",
+      "completion_summary": "Removed 27 sorry-tainted definitions from TemporalDerived.lean (19 direct sorry stubs + 8 transitive dependents). Archived 5 definitions with proof content to Boneyard/OpenGuardInvalid/. Updated 6 downstream call sites with tombstone comments. Net sorry reduction: 19. Build verified."
+    },
+    {
+      "project_number": 6,
+      "project_name": "canonical_taskframe_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 39,
+      "project_name": "study_preorder_semantics_conformance",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 65,
+      "project_name": "build_taskmodel_from_restricted_construction",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 66,
+      "project_name": "wire_restricted_completeness_to_target_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 69,
+      "project_name": "close_z_chain_forward_f",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 74,
+      "project_name": "research_strict_vs_reflexive_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 75,
+      "project_name": "research_strict_temporal_extension_design",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 76,
+      "project_name": "research_density_discreteness_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 78,
+      "project_name": "resolve_consistency_proof_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 79,
+      "project_name": "clean_up_termination_artifact_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 82,
+      "project_name": "close_fmp_truth_preservation_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 89,
+      "project_name": "close_frame_lean_eventuality_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 109,
+      "project_name": "close_chain_construction_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 118,
+      "project_name": "prove_issucc_archimedean_discrete_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-05-22T15:23:06Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
     }
   ]
 }

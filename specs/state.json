@@ -6,38 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 184,
-      "project_name": "dead_code_tombstone_sweep",
-      "status": "completed",
-      "task_type": "lean4",
-      "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T11:15:35Z",
-      "topic": "formula-refactor",
-      "session_id": "sess_1779361463_4ea114",
-      "researched": "2026-05-21T06:40:03Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md",
-          "type": "research",
-          "summary": "Complete catalog of tombstone comments, #check statements, stale TODOs, and dead tactics across 12 active Lean files, with classification, safe removal verdicts, and 6 ordered implementation batches"
-        },
-        {
-          "path": "specs/184_dead_code_tombstone_sweep/plans/01_tombstone-sweep.md",
-          "type": "plan",
-          "summary": "4-phase plan to remove ~120-140 lines of dead code across 12 files: tombstone comments, #check statements, dead tactic definitions"
-        },
-        {
-          "path": "specs/184_dead_code_tombstone_sweep/summaries/01_tombstone-sweep-summary.md",
-          "type": "summary",
-          "summary": "Removed 197 lines of dead code across 10 Lean files in 4 phases"
-        }
-      ],
-      "started": "2026-05-21T11:04:34Z",
-      "completed": "2026-05-21T11:15:35Z",
-      "completion_summary": "Removed 197 lines of dead code across 10 Lean files: tombstone comments (74 lines from Soundness/SoundnessLemmas/Completeness), BXCanonical removal notes (92 lines from 8 files), 6 #check statements, 2 dead tactic definitions (95 lines). Zero WeakCanonical files touched. Lake build clean."
-    },
-    {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
       "status": "planned",
@@ -64,38 +32,6 @@
           "summary": "5-phase plan: define standards + lint scripts, create 8 missing READMEs, fix 6 stale READMEs, docstring quality pass, root navigation hub"
         }
       ]
-    },
-    {
-      "project_number": 182,
-      "project_name": "boneyard_deep_cleanup",
-      "status": "completed",
-      "task_type": "lean4",
-      "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T11:27:45Z",
-      "topic": "formula-refactor",
-      "session_id": "sess_1779361463_4ea114",
-      "researched": "2026-05-21T06:40:30Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md",
-          "type": "research",
-          "summary": "Comprehensive compilation audit of 56 Boneyard files: 24 doc-only (zero effort), 18 with valid imports, 14 with fixable broken paths; recommends separate lean_lib target + mechanical import rewrites"
-        },
-        {
-          "path": "specs/182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md",
-          "type": "plan",
-          "summary": "5-phase plan: BoneyardArchive lean_lib target, import fixes, README coverage, compilation verification, doc consolidation and maintenance standard"
-        },
-        {
-          "path": "specs/182_boneyard_deep_cleanup/summaries/01_boneyard-cleanup-summary.md",
-          "type": "summary",
-          "summary": "Boneyard deep cleanup: BoneyardArchive target, import fixes, 10 READMEs, compilation verification, doc-only consolidation"
-        }
-      ],
-      "started": "2026-05-21T11:04:34Z",
-      "completed": "2026-05-21T11:27:45Z",
-      "completion_summary": "Added BoneyardArchive lean_lib target to lakefile.lean. Fixed 14 broken imports. Created 10 missing READMEs (all 20 subdirs now covered). Made all files elaborate cleanly via #exit and sorry stubs. Deleted 18 doc-only .lean files (56->36). Updated inventory and established Boneyard Maintenance Standard."
     },
     {
       "project_number": 180,
@@ -252,33 +188,6 @@
       "topic": "completeness"
     },
     {
-      "project_number": 21,
-      "project_name": "technical_debt_cleanup",
-      "status": "completed",
-      "language": "lean4",
-      "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-05-20T16:33:48Z",
-      "dependencies": [],
-      "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
-      "artifacts": [
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/03_archive-delete-audit.md",
-          "type": "research",
-          "summary": "Archive vs delete audit for tech debt"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/plans/02_tech-debt-cleanup.md",
-          "type": "plan",
-          "summary": "4-phase plan: archive dead Algebraic files, fix stale docstrings, update README"
-        }
-      ],
-      "session_id": "sess_1779293683_4e43b6",
-      "researched": "2026-03-21T19:21:35Z",
-      "planned": "2026-03-21T19:28:53Z",
-      "topic": "completeness",
-      "completion_summary": "Archived UltrafilterFrame.lean and TenseS5Algebra.lean to Boneyard (removing 5 sorries from build path). Fixed stale docstrings in 6 Bundle/ files. Corrected 5 ghost references to CanonicalConstruction.lean. Updated Metalogic, Bundle, and Algebraic READMEs. Build verified."
-    },
-    {
       "project_number": 127,
       "project_name": "time_addition_operator",
       "status": "not_started",
@@ -307,39 +216,6 @@
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "frame-extensions"
-    },
-    {
-      "project_number": 130,
-      "project_name": "archive_dead_sorries_to_boneyard",
-      "status": "completed",
-      "task_type": "lean4",
-      "priority": "medium",
-      "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
-      "dependencies": [],
-      "created": "2026-05-13T08:44:55Z",
-      "last_updated": "2026-05-20T16:38:57Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md",
-          "type": "research_report",
-          "summary": "Full sorry inventory: 73 active sorries across 18 files. 15 confirmed dead-code sorries archivable (BXCanonical non-Chronicle pipeline), 4 dead-approach sorries to annotate in ChronicleToCountermodel, 6 Bundle sorries NOT archivable (still active), 48 sorries on active paths. Revised total: 19 actionable (vs ~40 estimated)."
-        },
-        {
-          "path": "specs/130_archive_dead_sorries_to_boneyard/reports/02_archive-vs-delete.md",
-          "type": "research",
-          "summary": "Archive-vs-delete classification for 19 dead-code sorries: 10 ARCHIVE, 5 DELETE, 4 ANNOTATE. Proposes 3 Boneyard subdirectories with tombstone templates."
-        },
-        {
-          "path": "specs/130_archive_dead_sorries_to_boneyard/plans/01_archive-dead-sorries.md",
-          "type": "plan",
-          "summary": "5-phase plan: delete stubs, archive RootScopedChain + SigmaOrdering, surgical Realization extraction, annotate convergence sorries"
-        }
-      ],
-      "topic": "formula-refactor",
-      "session_id": "sess_1779293683_4e43b6",
-      "researched": "2026-05-18T23:27:40Z",
-      "completion_summary": "Archived 10 dead-code sorries to 3 Boneyard subdirectories (ScheduleBasedBFMCS, FiltrationOrdering, BX1DependentCode). Deleted 5 trivial sorry stubs. Annotated 4 convergence sorries with DEAD APPROACH markers. Net sorry reduction: 15. Build verified after each phase."
     },
     {
       "project_number": 155,
@@ -462,58 +338,6 @@
       "started": "2026-05-16T19:49:58Z"
     },
     {
-      "project_number": 172,
-      "project_name": "fix_stale_metalogic_docstring",
-      "status": "completed",
-      "task_type": "lean4",
-      "priority": "medium",
-      "description": "Rewrite Metalogic.lean docstring which is severely stale. Currently says \"Reflexive G/H Semantics\" but the project uses irreflexive semantics (task 93). References \"SuccChain architecture\" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.",
-      "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:22:05Z",
-      "dependencies": [],
-      "session_id": "sess_1779293683_4e43b6",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md",
-          "type": "research",
-          "summary": "Audit of stale docstrings in both Metalogic.lean files with full replacement text. References to Reflexive semantics, SuccChain, and 11 nonexistent files identified."
-        },
-        {
-          "path": "specs/172_fix_stale_metalogic_docstring/plans/01_docstring-fix.md",
-          "type": "plan",
-          "summary": "2-phase plan to replace stale docstrings in both Metalogic.lean files and verify build"
-        }
-      ],
-      "completion_summary": "Replaced stale docstrings in both Metalogic.lean files with accurate content reflecting irreflexive semantics, Chronicle/WeakCanonical architecture, and current sorry status. Build verified."
-    },
-    {
-      "project_number": 173,
-      "project_name": "archive_dead_temporal_derived_sorry_stubs",
-      "status": "completed",
-      "task_type": "lean4",
-      "priority": "medium",
-      "description": "Archive or remove 19 sorry-stubbed theorems in TemporalDerived.lean that are explicitly documented as NOT VALID under open guard semantics (task 113). Includes psi_imp_until, until_imp_or, refl_F, bot_until_bot_absurd, and 15 others. These theorems are semantically invalid and will never be provable. Move to Boneyard/ClosedGuardDerived/ or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.",
-      "created": "2026-05-20T15:36:06Z",
-      "last_updated": "2026-05-20T16:34:38Z",
-      "dependencies": [],
-      "session_id": "sess_1779293683_4e43b6",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md",
-          "type": "research",
-          "summary": "Complete audit of 19 sorry stubs: DELETE 22 definitions (pure stubs), ARCHIVE 5 (G_bot_absurd, H_bot_absurd, until_F_expansion, since_P_expansion, past_density_derivable). Net sorry reduction: 19."
-        },
-        {
-          "path": "specs/173_archive_dead_temporal_derived_sorry_stubs/plans/01_sorry-stub-archive.md",
-          "type": "plan",
-          "summary": "5-phase plan: archive 5 definitions, delete 22, update 6 downstream call sites, verify build"
-        }
-      ],
-      "completion_summary": "Removed 27 sorry-tainted definitions from TemporalDerived.lean (19 direct sorry stubs + 8 transitive dependents). Archived 5 definitions with proof content to Boneyard/OpenGuardInvalid/. Updated 6 downstream call sites with tombstone comments. Net sorry reduction: 19. Build verified."
-    },
-    {
       "project_number": 174,
       "project_name": "split_oversized_files",
       "status": "not_started",
@@ -530,7 +354,7 @@
     {
       "project_number": 175,
       "project_name": "naming_convention_and_bridge_cleanup",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.",
@@ -539,8 +363,18 @@
         174
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-20T15:55:54Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-05-22T15:25:23Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1779462811_376d78",
+      "researched": "2026-05-22T15:25:23Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: naming audit, bridge analysis, risk assessment, strategic alignment"
+        }
+      ]
     },
     {
       "project_number": 176,
@@ -601,7 +435,7 @@
     "abandoned": 75
   },
   "repository_health": {
-    "last_assessed": "2026-05-20T15:31:14Z",
+    "last_assessed": "2026-05-22T15:25:04Z",
     "status": "healthy"
   },
   "last_updated": "2026-04-12T12:00:00Z",

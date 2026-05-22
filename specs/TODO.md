@@ -1,16 +1,16 @@
 ---
-next_project_number: 182
+next_project_number: 185
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-05-20T00:00:00Z
+  last_assessed: 2026-05-22T00:00:00Z
 task_counts:
   active: 23
-  completed: 128
+  completed: 134
   in_progress: 1
-  not_started: 13
+  not_started: 20
   abandoned: 0
-  total: 143
+  total: 149
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-20. 26 active tasks. Created 3 cleanup/documentation tasks (182-184).*
+*Updated 2026-05-22. 23 active tasks. Archived 6 completed tasks (21, 130, 172, 173, 182, 184).*
 
 **Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
 
@@ -36,9 +36,9 @@ technical_debt:
 ```
 Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
 
-Parallel with 155:
-  Wave 1a: 173, 130, 21, 172                (purge dead code — no 155 overlap) [DONE]
-  Wave 1a+: 182, 184                        (Boneyard cleanup + tombstone sweep)
+Completed waves:
+  Wave 1a: 173, 130, 21, 172                (purge dead code) [DONE]
+  Wave 1a+: 182, 184                        (Boneyard cleanup + tombstone sweep) [DONE]
 
 After 155 completes:
   Wave 1b: 176, 95                           (Chronicle relocation, verification)
@@ -49,11 +49,6 @@ After 155 completes:
 ### Completeness (in progress)
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-
-### Wave 1a+ — Boneyard & Dead Code (parallel with 155)
-
-182 [NOT STARTED] — Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
-184 [NOT STARTED] — Dead code tombstone sweep: prune removal comments, #check, stale TODOs
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
@@ -67,7 +62,7 @@ After 155 completes:
 168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
 174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
   └─ 168 — (SoundnessLemmas dedup depends on FrameClass parameterization)
-175 [NOT STARTED] — Naming conventions + bridge/wrapper cleanup
+175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
   └─ 168, 174
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
@@ -102,17 +97,6 @@ After 155 completes:
 
 ## Tasks
 
-### 184. Dead code tombstone sweep
-- **Effort**: small (3-5 hours)
-- **Status**: [COMPLETED]
-- **Research**: [specs/184_dead_code_tombstone_sweep/reports/01_tombstone-catalog.md]
-- **Task Type**: lean4
-- **Plan**: [184_dead_code_tombstone_sweep/plans/01_tombstone-sweep.md]
-
-**Description**: Sweep the active codebase (everything outside `Boneyard/`) for dead code artifacts that can be removed without affecting task 155 or any active proof work. Targets: (1) **54 tombstone "REMOVED/archived" comments** scattered across active files (Soundness.lean, Completeness.lean, ChronicleTypes.lean, CanonicalChain.lean, Realization.lean, DefectChain.lean, PointInsertion.lean, RestrictedMCS.lean) — these multi-line removal explanations belong in git history, not source code; replace with at most a single-line note or delete entirely. (2) **19 `#check` statements** in Theorems.lean (6), Decidability.lean (3), Semantics.lean (3), Bimodal.lean (1), Tactics.lean (3), FrameClass.lean (3) — keep only those in Examples/ or pedagogical files, remove from library code. (3) **2 stale TODO comments** in Automation/Tactics.lean (lines 498, 543) referencing "BX refactor - temp_4/temp_a axiom removed" — either fix the underlying issue or convert to a tracked task. (4) **Verbose removal explanation blocks** in Completeness.lean (lines 364-367, 525-526) that list removed duplicates. Verify `lake build` passes after each batch of changes. Avoid modifying any file in the `WeakCanonical/ExpressivenessGeneral.lean` or other files actively touched by task 155.
-
----
-
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
 - **Status**: [PLANNED]
@@ -130,25 +114,6 @@ After 155 completes:
 **C) Comment convention standard**: Define and enforce: (1) No multi-line removal/archived/tombstone comments in active code (those go in git history). (2) `-- NOTE:` for non-obvious invariants or constraints. (3) `-- FIX:` for known issues requiring attention. (4) No `#check` in library code (only in Examples/). (5) No commented-out code blocks. (6) Docstrings on all public `theorem`/`def`/`structure` declarations that form the module's API. Write the standard as a reference document at `Theories/Bimodal/docs/reference/documentation-standard.md` and then apply it across the codebase.
 
 **D) Root-level documentation**: Update the project `README.md` at repository root and `Theories/Bimodal/README.md` to accurately reflect final architecture, sorry status, axiom inventory, directory structure, and build instructions. Ensure cross-links between all READMEs form a navigable web — every README should link to its parent, its children, and its key lateral dependencies so a reader can traverse the project structure from any entry point.
-
----
-
-### 182. Boneyard deep cleanup: compile cleanly, READMEs, delete trash, establish standard
-- **Effort**: large (15-20 hours)
-- **Status**: [COMPLETED]
-- **Research**: [specs/182_boneyard_deep_cleanup/reports/01_compilation-strategy.md]
-- **Task Type**: lean4
-- **Plan**: [182_boneyard_deep_cleanup/plans/01_boneyard-cleanup.md]
-
-**Description**: Deep cleanup of the `Theories/Bimodal/Boneyard/` directory (20 subdirectories, 56 files, 28,877 lines). Four objectives:
-
-**A) Make all Boneyard code compile cleanly**: Currently most Boneyard `.lean` files reference removed imports, deleted definitions, or use outdated API conventions and do not compile. Design an elegant strategy to make all retained `.lean` files compile under `lake build` without polluting the active codebase. Approaches to research and evaluate: (1) a dedicated `Boneyard.lean` aggregator that is excluded from the main build target but can be built separately via `lake build Bimodal.Boneyard`, (2) stub imports or a minimal compatibility shim that provides deleted type signatures as `sorry`-backed `axiom` declarations in a `Boneyard/Compat.lean` file, (3) selective use of `noncomputable` / `sorry` / `axiom` to patch broken references while preserving the code's structural intent, (4) deleting files that cannot be made compilable without excessive effort and preserving their content in README prose instead. The goal is that `lake build Bimodal.Boneyard` (or equivalent) succeeds with only expected `sorry`/`axiom` warnings, and every `.lean` file that survives cleanup is valid Lean 4 — not a graveyard of red squiggles. This makes the Boneyard genuinely consultable rather than a write-only archive.
-
-**B) README coverage**: 9 of 20 subdirectories lack READMEs: `ChainCompleteness/`, `ClosedGuardLegacy/`, `DeadCanonicalModel/`, `DefectDirectedChain/`, `DenseChronicle/`, `DiscreteXY/`, `NonBurgessSeed/`, `OpenGuardInvalid/`, `RoundRobinChain/`, `UltrafilterFrame/`. Add a README to each following the existing good examples (e.g., `BundleTemporalCoherence/README.md`, `StrictSemanticsLegacy/README.md`). Each README must include: (1) what the code attempted, (2) why it was archived (which archival reason taxonomy category), (3) the archiving task number, (4) whether code compiles or is documentation-only, (5) recovery instructions via git.
-
-**C) Delete trash, reduce bulk**: Audit all 56 files. Some Boneyard files contain only commented-out code or empty shells with documentation headers but no Lean content (e.g., UltrafilterDeadCode files are "documentation headers only"). Files that contain zero compilable Lean definitions should either be (a) consolidated into their subdirectory README as prose, or (b) deleted if the README already covers the information. Target: reduce file count by removing pure-documentation `.lean` files that duplicate README content. The `VacuousKEquiv.lean` at the Boneyard root should be moved into an appropriate subdirectory or deleted.
-
-**D) Establish Boneyard standard**: Add a "Boneyard Maintenance Standard" section to the top-level `Boneyard/README.md` specifying: (1) every subdirectory MUST have a README.md, (2) every `.lean` file MUST have a `/-! ... -/` module docstring with archival reason + task number + date, (3) all retained `.lean` files must compile (via the compatibility strategy from objective A), (4) files containing no compilable Lean code should be consolidated into README prose, (5) the archival reason taxonomy (already present) is the canonical classification, (6) the inventory table must be kept current when files are added or removed. Update the existing top-level README inventory table to be accurate after cleanup.
 
 ---
 
@@ -217,7 +182,8 @@ After 155 completes:
 
 ### 175. Naming convention and bridge/wrapper cleanup
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 168, 174
@@ -234,30 +200,6 @@ After 155 completes:
 - **Dependencies**: 168
 
 **Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
-
----
-
-### 173. Archive 19 dead sorry stubs from TemporalDerived.lean
-- **Effort**: small (1-2 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: medium
-- **Research**: [173_archive_dead_temporal_derived_sorry_stubs/reports/01_sorry-stub-audit.md]
-- **Plan**: [173_archive_dead_temporal_derived_sorry_stubs/plans/01_sorry-stub-archive.md]
-
-**Description**: Archive or remove 19 sorry-stubbed theorems in `TemporalDerived.lean` that are explicitly documented as "NOT VALID under open guard semantics" (task 113). Includes `psi_imp_until`, `until_imp_or`, `refl_F`, `bot_until_bot_absurd`, and 15 others. These theorems are semantically invalid under the current open-guard `(t,s)` semantics and will never be provable. Move to `Boneyard/ClosedGuardDerived/` or delete with a file-level comment listing removals. This will reduce the active sorry count by 19.
-
----
-
-### 172. Fix stale Metalogic.lean docstring
-- **Effort**: small (1-2 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: medium
-- **Research**: [172_fix_stale_metalogic_docstring/reports/01_docstring-audit.md]
-- **Plan**: [172_fix_stale_metalogic_docstring/plans/01_docstring-fix.md]
-
-**Description**: Rewrite `Metalogic.lean` docstring which is severely stale. Currently says "Reflexive G/H Semantics" but the project uses irreflexive semantics (task 93). References "SuccChain architecture" (dead code). Status table shows wrong completeness architecture. Should reference Chronicle/WeakCanonical-based completeness, irreflexive semantics, and current sorry status. Also update the status table to accurately reflect which completeness results are sorry-free.
 
 ---
 
@@ -360,21 +302,6 @@ After 155 completes:
 
 ---
 
-### 130. Archive dead sorries to Boneyard
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: medium
-- **Dependencies**: 129
-- **Research**:
-  - [specs/130_archive_dead_sorries_to_boneyard/reports/01_sorry-inventory.md]
-  - [130_archive_dead_sorries_to_boneyard/reports/02_archive-vs-delete.md]
-- **Plan**: [130_archive_dead_sorries_to_boneyard/plans/01_archive-dead-sorries.md]
-
-**Description**: After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates — convergence approach superseded. (3) succ_cofinal gap analysis — entire convergence + Z1 gap section. (4) BXCanonical pipeline dead code (Quasimodel/Realization, Quasimodel/Construction, TruthLemma, RootScopedChain, Filtration/SigmaOrdering, Frame) — bypassed by Chronicle. (5) Bundle/SuccRelation and Bundle/SuccExistence sorries if no longer needed. Total: ~40 sorries to archive.
-
----
-
 ### 128. Open set (interior) operator for dense and continuous temporal frames
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
@@ -430,23 +357,6 @@ After 155 completes:
 - **Created**: 2026-04-10
 
 **Description**: Verification pass on `bx_completeness` sorry status. Updated scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case `sorryAx` chain: `dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal` (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
-
----
-
-### 21. Clean up technical debt from tasks 9-20
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: None
-- **Research**:
-  - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md)
-  - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md)
-  - [03_archive-delete-audit.md](021_technical_debt_cleanup/reports/03_archive-delete-audit.md)
-- **Plan**:
-  - [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md)
-  - [021_technical_debt_cleanup/plans/02_tech-debt-cleanup.md]
-
-**Description**: Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned).
 
 ---
 
