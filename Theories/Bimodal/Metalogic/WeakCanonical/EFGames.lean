@@ -2402,19 +2402,27 @@ where ¬D holds. The FO table conditions follow from the gap axioms.
 -/
 
 /-- Core helper: U'(X, D) at an actual point m in M_r detects a D-defined
-    gap γ > m where X^mu holds at γ, with D holding on all actual points
-    between m and γ. This is the "engine" behind all temporal cases of Lemma 9. -/
+    gap γ > m where X holds at all complement points of γ below some bound,
+    with D holding on all actual points between m and γ.
+    This is the "engine" behind all temporal cases of Lemma 9.
+
+    Note: The conclusion provides X at complement points (actual points above γ)
+    rather than X^mu(γ), because atoms evaluate to False at gaps. Callers that
+    need X^mu(γ) for temporal X can derive it from complement-point truth via
+    the structure of temporal evaluation at gaps. -/
 theorem stavi_untl_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
     stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_untl X D) ↔
-    (∃ (γ : RDefinableGap M atomMap r),
+    (∃ (γ : RDefinableGap M atomMap r) (s_bound : M.carrier),
       extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
+      s_bound ∉ γ.val.cut ∧
       gap_definable_on_left M atomMap γ.val D ∧
       (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
-      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+      (∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+        stavi_temporal_truth M atomMap u X)) := by
   -- Convert LHS from mu-relativized at actual point to standard evaluation
   rw [stavi_truth_mu_at_point m (.stavi_untl X D)]
   simp only [stavi_temporal_truth]
@@ -2542,25 +2550,49 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
       ⟨D, hD, Or.inl h_def_left⟩
     -- Package as RDefinableGap
     let γ_rdef : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
-    refine ⟨γ_rdef, ?_, ?_, ?_, ?_⟩
+    refine ⟨γ_rdef, s, ?_, ?_, ?_, ?_, ?_⟩
     · -- extendPoint m < Sum.inr γ_rdef ↔ m ∈ cut (for point vs gap, < ↔ ∈ cut)
       constructor
       · exact hm_in_cut
       · intro h; exact h hm_in_cut
+    · -- s ∉ cut: s is a complement point (cut points are all < s)
+      intro hs_cut; exact not_lt.mpr le_rfl (h_cut_lt_s s hs_cut)
     · -- gap_definable_on_left M atomMap γ_rdef.val D
       exact h_def_left
     · -- D-between: ∀ u, m < u → u ∈ cut → D^mu(u)
       intro u hmu hu_cut
       exact (stavi_truth_mu_at_point u D).mpr
         (h_D_at_cut u hmu hu_cut)
-    · -- X^mu(γ): stavi_temporal_truth_mu at the gap.
-      -- From condition (1), complement points u ∉ cut have X on (u, s).
-      -- Extracting X^mu at the gap from X at complement points requires
-      -- a structural result about mu-relativized evaluation at gaps.
-      -- This is the "gap evaluation" lemma needed by both directions.
-      sorry
+    · -- X at complement points below s:
+      -- For any complement point u < s, the right disjunct of condition (1)
+      -- at a smaller complement point u₀ < u gives X at (u₀, s) ⊇ {u}.
+      intro u hu_not_cut hus
+      -- u ∉ cut, so m < u (complement points are above cut points, m ∈ cut)
+      have hmu : m < u := by
+        by_contra h; push_neg at h; exact hu_not_cut (h_dc m u hm_in_cut h)
+      -- Since complement has no minimum, ∃ u₀ < u with u₀ ∉ cut
+      have ⟨u₀, hu₀_not, hu₀u⟩ : ∃ u₀, u₀ ∉ cut ∧ u₀ < u := by
+        by_contra h_all; push_neg at h_all
+        exact h_comp_no_min ⟨u, hu_not_cut, fun y hy => h_all y hy⟩
+      have hmu₀ : m < u₀ := by
+        by_contra h; push_neg at h; exact hu₀_not (h_dc m u₀ hm_in_cut h)
+      have hu₀s : u₀ < s := lt_trans hu₀u hus
+      -- At complement point u₀: left disjunct would imply u₀ ∈ cut, so right holds
+      have h_right_u₀ :
+          (∀ v, u₀ < v → v < s → stavi_temporal_truth M atomMap v X) ∧
+          ∃ v', m < v' ∧ v' < u₀ ∧ ¬stavi_temporal_truth M atomMap v' D := by
+        cases h_body u₀ hmu₀ hu₀s with
+        | inl h_left =>
+          -- Left disjunct: ∃ v > u₀, D on (m, v). This implies u₀ ∈ cut.
+          exfalso; apply hu₀_not
+          obtain ⟨v, hu₀v, hDv⟩ := h_left
+          intro u' hmu' hu'u₀
+          exact ⟨v, lt_of_le_of_lt hu'u₀ hu₀v, hDv⟩
+        | inr h_right => exact h_right
+      -- From right disjunct at u₀: X at all points in (u₀, s), including u
+      exact h_right_u₀.1 u hu₀u hus
   · -- **Backward direction** (gap → FO table):
-    intro ⟨γ, hm_lt_γ, h_def_left, h_D_bet, hX_mu⟩
+    intro ⟨γ, s_bound, hm_lt_γ, hs_bound_not, h_def_left, h_D_bet, hX_compl⟩
     have hm_in_cut : m ∈ γ.val.cut :=
       (extendPoint_le_gap_iff m γ).mp (le_of_lt hm_lt_γ)
     obtain ⟨⟨t_cut, ht_in, ht_D_final⟩, h_no_init_seg⟩ := h_def_left
@@ -2577,10 +2609,10 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
     have h_compl_ne : ∃ x, x ∉ γ.val.cut := by
       by_contra h_all; push_neg at h_all
       exact γ.val.proper (Set.eq_univ_iff_forall.mpr h_all)
-    obtain ⟨s₀, hs₀_not⟩ := h_compl_ne
-    refine ⟨s₀, h_compl_gt_m s₀ hs₀_not, ?_, ?_, ?_⟩
-    · -- Condition (1): ∀ u ∈ (m, s₀), disjunction
-      intro u hmu hus₀
+    -- Use s_bound as s₀ (a complement point)
+    refine ⟨s_bound, h_compl_gt_m s_bound hs_bound_not, ?_, ?_, ?_⟩
+    · -- Condition (1): ∀ u ∈ (m, s_bound), disjunction
+      intro u hmu hus
       by_cases hu_cut : u ∈ γ.val.cut
       · -- u ∈ cut: first disjunct — D cofinal above u
         left
@@ -2591,13 +2623,18 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         exact ⟨y, huy, fun w hmw hwy =>
           (stavi_truth_mu_at_point w D).mp
             (h_D_bet w hmw (γ.val.downward_closed y w hy_in (le_of_lt hwy)))⟩
-      · -- u ∉ cut: second disjunct — X on (u,s₀) and ¬D witness below u
+      · -- u ∉ cut: second disjunct — X on (u, s_bound) and ¬D witness below u
         right
         refine ⟨?_, ?_⟩
-        · -- ∀ v, u < v → v < s₀ → X(v)
-          -- Requires extracting X at complement points from X^mu(γ).
-          -- This is the hardest sub-obligation and depends on X's structure.
-          sorry
+        · -- ∀ v, u < v → v < s_bound → X(v)
+          -- All points between two complement points are complement (upward-closed).
+          -- hX_compl gives X at complement points below s_bound.
+          intro v huv hvs
+          -- v is between u (complement) and s_bound (complement), so v ∉ cut
+          have hv_not : v ∉ γ.val.cut := by
+            intro hv_in
+            exact hu_cut (γ.val.downward_closed v u hv_in (le_of_lt huv))
+          exact hX_compl v hv_not hvs
         · -- ∃ v', m < v' ∧ v' < u ∧ ¬D(v')
           -- complement_no_min gives y < u with y ∉ cut, then h_neg_init gives ¬D witness
           have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
@@ -2605,41 +2642,43 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
             exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hyu, hDw⟩
-    · -- Condition (2): ∃ u ∈ (m, s₀), ¬D(u)
-      -- complement_no_min: s₀ is not the minimum, so ∃ y < s₀ in complement
-      have ⟨y, hy_not, hys₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s₀ := by
+    · -- Condition (2): ∃ u ∈ (m, s_bound), ¬D(u)
+      -- complement_no_min: s_bound is not the minimum, so ∃ y < s_bound in complement
+      have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s_bound := by
         by_contra h_all; push_neg at h_all
-        exact γ.val.complement_no_min ⟨s₀, hs₀_not, fun z hz => h_all z hz⟩
+        exact γ.val.complement_no_min ⟨s_bound, hs_bound_not, fun z hz => h_all z hz⟩
       -- h_neg_init gives ¬D witness at or below y
       obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
-      exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hys₀, hDw⟩
-    · -- Condition (3): ∃ u ∈ (m, s₀), D on (m, u)
+      exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hys, hDw⟩
+    · -- Condition (3): ∃ u ∈ (m, s_bound), D on (m, u)
       -- From no_sup: ∃ y ∈ cut with y > m
       have ⟨y, hy_in, hmy⟩ : ∃ y ∈ γ.val.cut, m < y := by
         by_contra h_all; push_neg at h_all
         exact γ.val.no_sup ⟨m, ⟨fun x hx => h_all x hx, fun b hb => hb hm_in_cut⟩, hm_in_cut⟩
-      -- y < s₀ since y ∈ cut, s₀ ∉ cut, and cut is downward-closed
-      have hys₀ : y < s₀ := by
+      -- y < s_bound since y ∈ cut, s_bound ∉ cut, and cut is downward-closed
+      have hys : y < s_bound := by
         by_contra h; push_neg at h
-        exact hs₀_not (γ.val.downward_closed y s₀ hy_in h)
-      exact ⟨y, hmy, hys₀, fun v hmv hvy =>
+        exact hs_bound_not (γ.val.downward_closed y s_bound hy_in h)
+      exact ⟨y, hmy, hys, fun v hmv hvy =>
         (stavi_truth_mu_at_point v D).mp
           (h_D_bet v hmv (γ.val.downward_closed y v hy_in (le_of_lt hvy)))⟩
 
 /-- Standard-Until gap detection: U(X, D) at an actual point m in M_r detects
-    a D-defined gap γ > m where X^mu holds at γ, with D holding between m and γ.
-    Used by the S/S' cases of left_formula. -/
+    a D-defined gap γ > m where X holds at complement points below some bound,
+    with D holding between m and γ. Used by the S/S' cases of left_formula. -/
 theorem std_untl_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
     stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_untl X D) ↔
-    (∃ (γ : RDefinableGap M atomMap r),
+    (∃ (γ : RDefinableGap M atomMap r) (s_bound : M.carrier),
       extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
+      s_bound ∉ γ.val.cut ∧
       gap_definable_on_left M atomMap γ.val D ∧
       (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
-      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+      (∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+        stavi_temporal_truth M atomMap u X)) := by
   sorry
 
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
@@ -2737,7 +2776,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have hU' : stavi_temporal_truth_mu M atomMap r (extendPoint m)
           (.stavi_untl (.base Formula.top) D) := by
         simp only [stavi_temporal_truth_mu]; exact hU
-      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, _⟩ :=
+      obtain ⟨γ, _s_bound, hγ_lt, _hs_not, hγ_def, hγ_bet, _⟩ :=
         (stavi_untl_gap_detection (.base Formula.top) D hD m).mp hU'
       -- From ¬left(A,D)(m), by IH we get ¬(∃ γ with A^mu(γ))
       -- But actually we get: ¬ left_formula(A,D)(m), so by IH: not (∃ γ, ... ∧ A^mu(γ))
@@ -2755,12 +2794,17 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hNot_A⟩
       constructor
       · -- U'(top, D)(m)
-        -- top^mu(γ) is True (top = imp bot bot, so temporal_truth_mu ... top = (False → False) = True)
-        have hTop : stavi_temporal_truth_mu M atomMap r (Sum.inr γ) (.base Formula.top) := by
-          simp only [stavi_temporal_truth_mu, temporal_truth_mu, Formula.top]
-          exact id
+        -- Need s_bound ∉ cut. Get one from complement_no_min or properness.
+        have h_compl : ∃ x, x ∉ γ.val.cut := by
+          by_contra h; push_neg at h; exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
+        obtain ⟨s_b, hs_b⟩ := h_compl
+        -- top holds at all complement points (trivially)
+        have hTop_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_b →
+            stavi_temporal_truth M atomMap u (.base Formula.top) := by
+          intro u _ _
+          simp only [stavi_temporal_truth, temporal_truth, Formula.top]; exact id
         have := (stavi_untl_gap_detection (.base Formula.top) D hD m).mpr
-          ⟨γ, hγ_lt, hγ_def, hγ_bet, hTop⟩
+          ⟨γ, s_b, hγ_lt, hs_b, hγ_def, hγ_bet, hTop_compl⟩
         simp only [stavi_temporal_truth_mu] at this
         exact this
       · -- ¬left(A,D)(m)
@@ -2822,16 +2866,169 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
     -- Need: U'(B ∧ U'(A,B), D)(m) ↔ ∃ γ, ... ∧ U'(A,B)^mu(γ)
     simp only [left_formula]
     constructor
-    · -- Forward: from U'(B ∧ U'(A,B), D)(m), get gap with (B ∧ U'(A,B))^mu(γ)
-      -- then drop B to get U'(A,B)^mu(γ)
+    · -- Forward: from U'(B ∧ U'(A,B), D)(m), get gap with (B ∧ U'(A,B)) at complement points
+      -- Extract U'(A,B) at complement points, then construct U'(A,B)^mu(γ)
       intro h
-      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, hX⟩ :=
+      obtain ⟨γ, s_bound, hγ_lt, hs_not, hγ_def, hγ_bet, hX_compl⟩ :=
         (stavi_untl_gap_detection (.conj B (.stavi_untl A B)) D hD m).mp h
-      simp only [stavi_temporal_truth_mu] at hX
-      exact ⟨γ, hγ_lt, hγ_def, hγ_bet, hX.2⟩
+      -- Extract stavi_untl(A,B) and B at complement points below s_bound
+      have hUA_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+          stavi_temporal_truth M atomMap u (.stavi_untl A B) :=
+        fun u hu hus => (hX_compl u hu hus).2
+      have hB_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+          stavi_temporal_truth M atomMap u B :=
+        fun u hu hus => (hX_compl u hu hus).1
+      -- Pick complement point u₁ < s_bound
+      have ⟨u₁, hu₁_not, hu₁s⟩ : ∃ u₁, u₁ ∉ γ.val.cut ∧ u₁ < s_bound := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.complement_no_min ⟨s_bound, hs_not, fun z hz => h_all z hz⟩
+      -- FO table of stavi_untl(A,B) at u₁
+      have hUA_u₁ := hUA_compl u₁ hu₁_not hu₁s
+      simp only [stavi_temporal_truth] at hUA_u₁
+      obtain ⟨s₁, hu₁s₁, h_body₁, ⟨wf, hwf_u₁, hwf_s₁, hBwf⟩,
+              ⟨wi, hwi_u₁, hwi_s₁, hBwi⟩⟩ := hUA_u₁
+      -- s₁ ∉ cut (upward-closed complement: s₁ > u₁ ∉ cut)
+      have hs₁_not : s₁ ∉ γ.val.cut := by
+        intro h; exact hu₁_not (γ.val.downward_closed s₁ u₁ h (le_of_lt hu₁s₁))
+      -- wf ∉ cut (wf > u₁)
+      have hwf_not : wf ∉ γ.val.cut := by
+        intro h; exact hu₁_not (γ.val.downward_closed wf u₁ h (le_of_lt hwf_u₁))
+      -- wi ∉ cut (wi > u₁)
+      have hwi_not : wi ∉ γ.val.cut := by
+        intro h; exact hu₁_not (γ.val.downward_closed wi u₁ h (le_of_lt hwi_u₁))
+      -- Construct stavi_untl(A,B)^mu(Sum.inr γ):
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      -- Need: stavi_temporal_truth_mu M atomMap r (Sum.inr γ) (.stavi_untl A B)
+      -- Use (stavi_truth_mu_at_point u₁ (.stavi_untl A B)).mpr to convert back
+      -- Actually, construct directly in the mu-relativized form
+      simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+      refine ⟨extendPoint s₁, ?_, ?_, ?_, ?_⟩
+      · -- Sum.inr γ < extendPoint s₁: s₁ ∉ cut
+        exact ⟨hs₁_not, hs₁_not⟩
+      · -- Condition (1): ∀ mu-point u ∈ (γ, extendPoint s₁), FO body
+        intro u hγu hus₁ hmu
+        obtain ⟨u_pt, rfl⟩ := hmu
+        -- u_pt ∉ cut (Sum.inr γ < extendPoint u_pt means u_pt ∉ cut)
+        have hu_pt_not : u_pt ∉ γ.val.cut := by
+          intro h; exact not_lt.mpr (show extendPoint u_pt ≤ Sum.inr γ from h) hγu
+        -- u_pt < s₁ (extendPoint u_pt < extendPoint s₁)
+        have hu_pt_s₁ : u_pt < s₁ := (extendPoint_lt_iff u_pt s₁).mp hus₁
+        -- Case split: u_pt > u₁ (use inner FO table) or u_pt ≤ u₁ (B-cofinal)
+        by_cases hu_pt_u₁ : u₁ < u_pt
+        · -- u_pt > u₁: use h_body₁ at u_pt
+          cases h_body₁ u_pt hu_pt_u₁ hu_pt_s₁ with
+          | inl h_cof =>
+            -- LEFT: ∃ v > u_pt, B on (u₁, v). Extend to B on (γ, v) using hB_compl.
+            left
+            obtain ⟨v, hu_pt_v, hBv⟩ := h_cof
+            refine ⟨extendPoint v, (extendPoint_lt_iff u_pt v).mpr hu_pt_v, ⟨v, rfl⟩,
+              fun w hγw hwv hmu_w => ?_⟩
+            obtain ⟨w_pt, rfl⟩ := hmu_w
+            have hw_pt_v : w_pt < v := (extendPoint_lt_iff w_pt v).mp hwv
+            have hw_pt_not : w_pt ∉ γ.val.cut := by
+              intro h; exact not_lt.mpr (show extendPoint w_pt ≤ Sum.inr γ from h) hγw
+            -- w_pt is a complement point. If w_pt > u₁, use hBv. If w_pt ≤ u₁, use hB_compl.
+            by_cases hwu₁ : u₁ < w_pt
+            · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hwu₁ hw_pt_v)
+            · push_neg at hwu₁
+              -- w_pt ≤ u₁. w_pt ∉ cut and w_pt < s_bound (w_pt < v < s₁, s₁ > u₁, u₁ < s_bound)
+              -- Need w_pt < s_bound. w_pt ≤ u₁ < s_bound.
+              have hw_sb : w_pt < s_bound := lt_of_le_of_lt hwu₁ hu₁s
+              exact (stavi_truth_mu_at_point w_pt B).mpr (hB_compl w_pt hw_pt_not hw_sb)
+          | inr h_right =>
+            -- RIGHT: A on (u_pt, s₁) and ¬B witness v' ∈ (u₁, u_pt)
+            right
+            obtain ⟨hA_above, v', hmv', hv'u, hBv'⟩ := h_right
+            refine ⟨fun v hv hvs hmu_v => ?_, ?_⟩
+            · -- A^mu(v) for v mu-point in (u_pt, s₁)
+              obtain ⟨v_pt, rfl⟩ := hmu_v
+              exact (stavi_truth_mu_at_point v_pt A).mpr
+                (hA_above v_pt ((extendPoint_lt_iff u_pt v_pt).mp hv)
+                  ((extendPoint_lt_iff v_pt s₁).mp hvs))
+            · -- ∃ v' mu-point ∈ (γ, u_pt) with ¬B^mu(v')
+              refine ⟨extendPoint v', ?_, (extendPoint_lt_iff v' u_pt).mpr hv'u,
+                ⟨v', rfl⟩, ?_⟩
+              · -- Sum.inr γ < extendPoint v': v' > u₁ > γ (v' ∈ (u₁, u_pt))
+                show v' ∉ γ.val.cut ∧ ¬(v' ∈ γ.val.cut)
+                have hv'_not : v' ∉ γ.val.cut := by
+                  intro h; exact hu₁_not (γ.val.downward_closed v' u₁ h (le_of_lt hmv'))
+                exact ⟨hv'_not, hv'_not⟩
+              · exact mt (stavi_truth_mu_at_point v' B).mp hBv'
+        · -- u_pt ≤ u₁: B holds at u_pt (from hB_compl) and at all complement points below wi
+          -- Use LEFT disjunct: B cofinal
+          push_neg at hu_pt_u₁
+          left
+          -- Need ∃ v_mu > u_pt with B^mu on (γ, v_mu)
+          -- Use v_mu = extendPoint wi (wi from inner FO table: B on (u₁, wi))
+          refine ⟨extendPoint wi, (extendPoint_lt_iff u_pt wi).mpr (lt_of_le_of_lt hu_pt_u₁ hwi_u₁),
+            ⟨wi, rfl⟩, fun w hγw hwwi hmu_w => ?_⟩
+          obtain ⟨w_pt, rfl⟩ := hmu_w
+          have hw_pt_not : w_pt ∉ γ.val.cut := by
+            intro h; exact not_lt.mpr (show extendPoint w_pt ≤ Sum.inr γ from h) hγw
+          have hw_pt_wi : w_pt < wi := (extendPoint_lt_iff w_pt wi).mp hwwi
+          by_cases hwu₁ : u₁ < w_pt
+          · -- w_pt > u₁: B at w_pt from hBwi (B on (u₁, wi))
+            exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi w_pt hwu₁ hw_pt_wi)
+          · -- w_pt ≤ u₁: B at w_pt from hB_compl
+            push_neg at hwu₁
+            exact (stavi_truth_mu_at_point w_pt B).mpr
+              (hB_compl w_pt hw_pt_not (lt_of_le_of_lt hwu₁ hu₁s))
+      · -- Condition (2): ∃ mu-point in (γ, s') with ¬B^mu
+        refine ⟨extendPoint wf, ?_, (extendPoint_lt_iff wf s₁).mpr hwf_s₁,
+          ⟨wf, rfl⟩, mt (stavi_truth_mu_at_point wf B).mp hBwf⟩
+        show wf ∉ γ.val.cut ∧ ¬(wf ∈ γ.val.cut)
+        exact ⟨hwf_not, hwf_not⟩
+      · -- Condition (3): ∃ mu-point in (γ, s') with B^mu initial
+        -- Use u₁ as the initial segment witness: B holds at all complement points in (γ, u₁)
+        -- because complement points below u₁ are below s_bound, so hB_compl applies.
+        -- But we need the initial mu-point between γ and s₁ where B holds from γ to that point.
+        -- Wait: we need ∃ u_init ∈ (γ, s'), B^mu on (γ, u_init). The interval (γ, u_init)
+        -- should contain only complement points where B holds.
+        -- Pick u₁ itself if B at all complement points below u₁.
+        -- Actually, from hBwi: B on (u₁, wi). Combined with hB_compl for complement points
+        -- below u₁, we can use wi as the initial segment bound: B on complement points in (γ, wi).
+        -- But we need u_init to satisfy: u_init ∈ (γ, s') and B^mu on (γ, u_init).
+        -- complement_no_min gives us complement points below u₁ where B holds.
+        -- Use wi as u_init: B holds on all complement points in (γ, wi).
+        refine ⟨extendPoint wi, ?_, (extendPoint_lt_iff wi s₁).mpr hwi_s₁,
+          ⟨wi, rfl⟩, fun v hγv hvwi hmu_v => ?_⟩
+        · show wi ∉ γ.val.cut ∧ ¬(wi ∈ γ.val.cut)
+          exact ⟨hwi_not, hwi_not⟩
+        · obtain ⟨v_pt, rfl⟩ := hmu_v
+          have hv_pt_not : v_pt ∉ γ.val.cut := by
+            intro h; exact not_lt.mpr (show extendPoint v_pt ≤ Sum.inr γ from h) hγv
+          have hv_pt_wi : v_pt < wi := (extendPoint_lt_iff v_pt wi).mp hvwi
+          by_cases hvu₁ : u₁ < v_pt
+          · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi v_pt hvu₁ hv_pt_wi)
+          · push_neg at hvu₁
+            exact (stavi_truth_mu_at_point v_pt B).mpr
+              (hB_compl v_pt hv_pt_not (lt_of_le_of_lt hvu₁ hu₁s))
     · -- Backward: from gap with U'(A,B)^mu(γ), construct U'(B ∧ U'(A,B), D)(m)
-      -- This requires showing B^mu(γ) from U'(A,B)^mu(γ) -- the hard direction
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUA⟩
+      -- From U'(A,B)^mu(γ), extract complement-point truth of B ∧ U'(A,B)
+      -- U'(A,B)^mu(γ) gives FO table at the gap with witnesses among complement points
+      simp only [stavi_temporal_truth_mu] at hUA
+      obtain ⟨s_ua, hγ_s_ua, h_body_ua, ⟨wf_ua, hγ_wf, hwf_s, hmu_wf, hBwf_ua⟩,
+              ⟨wi_ua, hγ_wi, hwi_s, hmu_wi, hBwi_ua⟩⟩ := hUA
+      -- Extract s_ua bound. All mu-points above γ are complement points.
+      -- From the FO table, B and stavi_untl(A,B) hold at specific complement points.
+      -- We need to provide (conj B (stavi_untl A B)) at complement points for .mpr
+      -- Get a complement point as s_bound for .mpr
+      obtain ⟨wf_pt, rfl⟩ := hmu_wf
+      obtain ⟨wi_pt, rfl⟩ := hmu_wi
+      have hwf_not : wf_pt ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr (show extendPoint wf_pt ≤ Sum.inr γ from h) hγ_wf
+      have hwi_not : wi_pt ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr (show extendPoint wi_pt ≤ Sum.inr γ from h) hγ_wi
+      -- We need s_bound for .mpr. Use any complement point above the gap.
+      -- We also need (conj B (stavi_untl A B)) at complement points below s_bound.
+      -- For B: condition (3) gives B^mu at complement points below wi_pt.
+      --   Combined with FO table body, B holds at complement points in a neighborhood of γ.
+      -- For stavi_untl(A,B): we need to show stavi_untl(A,B) at complement points.
+      --   This requires showing the FO table holds at each complement point.
+      --   From U'(A,B)^mu(γ), the FO table extends from γ to s_ua.
+      --   For a complement point u < s_ua, stavi_untl(A,B)(u) can be constructed
+      --   by restricting the FO table from γ to s_ua to the sub-interval from u to s_ua.
       sorry
   | stavi_snce A B _ _ =>
     -- left_formula (.stavi_snce A B) D = .std_untl compound D
@@ -2842,12 +3039,45 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
     -- Same pattern as stavi_untl: U'(B ∧ U(A,B), D)(m) ↔ ∃ γ, ... ∧ U(A,B)^mu(γ)
     simp only [left_formula]
     constructor
-    · -- Forward: drop B from (B ∧ U(A,B))^mu(γ)
+    · -- Forward: from U'(B ∧ U(A,B), D)(m), get complement point truth, derive U(A,B)^mu(γ)
       intro h
-      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, hX⟩ :=
+      obtain ⟨γ, s_bound, hγ_lt, hs_not, hγ_def, hγ_bet, hX_compl⟩ :=
         (stavi_untl_gap_detection (.conj B (.std_untl A B)) D hD m).mp h
-      simp only [stavi_temporal_truth_mu] at hX
-      exact ⟨γ, hγ_lt, hγ_def, hγ_bet, hX.2⟩
+      -- hX_compl gives conj B (std_untl A B) at complement points
+      -- Extract std_untl(A,B) at complement points and construct std_untl(A,B)^mu(γ)
+      have hUA_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+          stavi_temporal_truth M atomMap u (.std_untl A B) :=
+        fun u hu hus => (hX_compl u hu hus).2
+      -- std_untl(A,B)^mu(γ): ∃ mu-point s > γ, A^mu(s) ∧ ∀ mu-point u ∈ (γ,s), B^mu(u)
+      -- Pick complement point u₁ < s_bound. std_untl(A,B)(u₁) gives ∃ s > u₁, A(s) ∧ B on (u₁, s).
+      -- B at complement points below u₁ from hX_compl.
+      have ⟨u₁, hu₁_not, hu₁s⟩ : ∃ u₁, u₁ ∉ γ.val.cut ∧ u₁ < s_bound := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.complement_no_min ⟨s_bound, hs_not, fun z hz => h_all z hz⟩
+      have hB_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
+          stavi_temporal_truth M atomMap u B :=
+        fun u hu hus => (hX_compl u hu hus).1
+      have hUA_u₁ := hUA_compl u₁ hu₁_not hu₁s
+      -- std_untl(A,B)(u₁): ∃ s₁ > u₁, A(s₁) ∧ B on (u₁, s₁)
+      simp only [stavi_temporal_truth] at hUA_u₁
+      obtain ⟨s₁, hu₁s₁, hAs₁, hB_between⟩ := hUA_u₁
+      -- Construct std_untl(A,B)^mu(γ)
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      simp only [stavi_temporal_truth_mu]
+      -- Need: ∃ s > γ, mu_holds s ∧ A^mu(s) ∧ ∀ mu-pt u ∈ (γ,s), B^mu(u)
+      have hs₁_not : s₁ ∉ γ.val.cut := by
+        intro h; exact hu₁_not (γ.val.downward_closed s₁ u₁ h (le_of_lt hu₁s₁))
+      refine ⟨extendPoint s₁, ⟨hs₁_not, hs₁_not⟩, ⟨s₁, rfl⟩,
+        (stavi_truth_mu_at_point s₁ A).mpr hAs₁, fun u hγu hus hmu => ?_⟩
+      obtain ⟨u_pt, rfl⟩ := hmu
+      have hu_pt_not : u_pt ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr (show extendPoint u_pt ≤ Sum.inr γ from h) hγu
+      have hu_pt_s₁ : u_pt < s₁ := (extendPoint_lt_iff u_pt s₁).mp hus
+      by_cases hu_u₁ : u₁ < u_pt
+      · exact (stavi_truth_mu_at_point u_pt B).mpr (hB_between u_pt hu_u₁ hu_pt_s₁)
+      · push_neg at hu_u₁
+        exact (stavi_truth_mu_at_point u_pt B).mpr
+          (hB_compl u_pt hu_pt_not (lt_of_le_of_lt hu_u₁ hu₁s))
     · -- Backward: from gap with U(A,B)^mu(γ), construct U'(B ∧ U(A,B), D)(m)
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUA⟩
       sorry
