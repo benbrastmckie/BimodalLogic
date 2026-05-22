@@ -46,8 +46,11 @@ Phase 3 (structural refactor — sequential, before tactics):
 Phase 4 (standards + Derivable migration — after structural refactor):
   183, 194                                              (parallel, after 161)
 
-Phase 5 (tactics — Tier 1 foundations):
+Phase 5a (tactics — Tier 1 modal foundations):
   185, 190                                              (parallel, after 161)
+
+Phase 5b (tactics — EF game automation, after file split):
+  195                                                   (after 155, 174)
 
 Phase 6 (tactics — Tier 2 engineering):
   186, 187, 189 (parallel, after 185) → 188 (after 187)
@@ -98,10 +101,15 @@ Phase 9 (final documentation + examples):
 194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
   └─ 161
 
-### Phase 5 — Tactics Tier 1 (foundations, after structural refactor)
+### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
 
 185 [NOT STARTED] — Complete axiom & derived theorem coverage in modal_search
 190 [NOT STARTED] — Derived operator normalization tactic (modal_norm)
+
+### Phase 5b — EF Game Automation (after sorry-free + file split)
+
+195 [NOT STARTED] — EF game automation tactics for WeakCanonical/ metalogic proofs
+  └─ 155, 174
 
 ### Phase 6 — Tactics Tier 2 (engineering)
 
@@ -152,6 +160,27 @@ Phase 9 (final documentation + examples):
 
 
 ## Tasks
+
+### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
+- **Effort**: medium (10-15 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 155, 174
+
+**Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Four components, ranked by impact:
+
+**A) `solve_same_order_type` tactic (~600-1300 lines saved)**: Automates the N×N grid case dispatch in `same_order_type` proofs. Currently each proof is 100-220 lines of manual `intro i j; simp only [game_tuple]; split_ifs` followed by 16-25 goals dispatched via `pivot_chain_order`. The tactic takes interval bounds and sub-game order data as arguments and generates the entire grid proof. 6+ existing proof blocks would compress to 1-3 line tactic invocations.
+
+**B) `game_tuple_simp` simp set (~150-350 lines saved)**: Bundles `game_tuple_zero_eq`, `game_tuple_b_eq`, `game_tuple_y_eq`, `game_tuple_sel_eq` into a declared simp set. Replaces 75+ multi-line `simp only [game_tuple, show ... from by omega, ...]` blocks with `simp only [game_tuple_simp]`. Also includes a `game_tuple_unfold` tactic for the raw `dite` expansion when needed.
+
+**C) `pivot_order` tactic (~120-180 lines saved)**: Automates `pivot_chain_order` / `pivot_chain_order_rev` calls (63 sites). Each currently passes 4 interval bounds + 4 order witnesses manually. The tactic searches the local context for the interval structure (`SplitPointProps` or explicit bounds) and auto-fills the arguments.
+
+**D) `winning_condition_tac` tactic (~350-700 lines saved)**: Automates the 5-way `game_tuple` index split used in `formula_agreement`, `gap_point_agreement`, and `same_order_type` proofs. Takes the sub-game winning conditions as arguments and dispatches each index category to the appropriate source (forward game, sigma, tau, direct agreement).
+
+All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lean` file. Depends on 155 (sorry-free theorems to refactor) and 174 (file splitting, since EFGames.lean at 9K lines and ExpressivenessGeneral.lean at 4.7K lines are primary targets). Independent of the modal proof search tactics (185-192) which target `Theorems/` derivation proofs.
+
+---
 
 ### 194. Migrate Nonempty (DerivationTree ...) patterns to Derivable
 - **Effort**: small (3-5 hours)
