@@ -458,18 +458,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: IntegerModel.lean Helper Sorries [BLOCKED]
+### Phase 7: IntegerModel.lean Helper Sorries [DEPRIORITIZED]
 
 **Goal**: Close `cofinal_decomposition_k_equiv` (line 1135) and `ordered_sum_of_good_bounded_is_good` (line 1194).
 
-**BLOCKER** (Task 7.1): `cofinal_decomposition_k_equiv` as stated appears INCORRECT for k ≥ 2. The ordered sum uses closed subintervals [a(i), a(i+1)] which share boundary points. The Sigma-type construction creates disjoint copies, giving the ordered sum MORE elements than M. Reynolds 1994 (p.888) uses `N | a_i, a_{i+1}-1` (disjoint intervals via predecessor). Fix: add SuccOrder/PredOrder hypotheses and use half-open or predecessor-bounded intervals matching Reynolds. See `handoffs/phase-7-handoff.md` for detailed analysis and fix options.
+**OFF CRITICAL PATH** (report 28): `very_good_implies_good` is orphaned infrastructure — never used on the path to sorry-free `bx_completeness`. `chronicle_is_good` is already sorry-free via direct OrderIso. The sorry chain: `bx_completeness ← countermodel_discrete ← dd_countermodel_chronicle_discrete ← chronicle_is_good (sorry-free) + stavi_expressive_completeness (Phase 4)`. Phases 7-9 are not needed.
 
-**Tasks**:
-- [ ] **Task 7.0**: RESEARCH — verify correct ordered sum construction against Reynolds 1994. Determine whether Option 2 (discrete predecessor intervals) is the right fix and assess downstream impact on `very_good_implies_good`, Phase 8 (`no_gaps_discrete`), and Phase 9 (`chronicle_is_good`).
-- [ ] **Task 7.1**: Fix `cofinal_decomposition_k_equiv` theorem statement and proof (~100-200 lines). Add SuccOrder/PredOrder hypotheses, use `[a(i), pred(a(i+1))]` intervals matching Reynolds.
-- [ ] **Task 7.2**: Prove `ordered_sum_of_good_bounded_is_good` for k >= 2 (~300-500 lines). Shift-and-glue OrderIso via cumulative offset: map ⟨i, z⟩ to z + offset(i).
-- [ ] **Task 7.3**: Construct shift-and-glue OrderIso helper (~100-150 lines).
-- [ ] **Task 7.4**: Verify `lean_verify very_good_implies_good` shows no `sorryAx`. Run `lake build`.
+**Correctness issue** (still documented): `cofinal_decomposition_k_equiv` as stated is likely incorrect for k ≥ 2 due to overlapping boundary points (Reynolds uses disjoint predecessor-bounded intervals). If ever needed, Option B (discrete predecessor) is recommended (~100 lines). See `reports/28_phase7-ordered-sum.md` and `handoffs/phase-7-handoff.md`.
+
+**Tasks**: DEFERRED — focus on Phases 1-4 (critical path).
 
 **Timing**: 4-6 hours
 
