@@ -144,42 +144,43 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: D-Consistency (GHR93 Claim 1) [BLOCKED]
+### Phase 1: Infimum Redefinition + Case II Restructure [NOT STARTED]
 
-**BLOCKER** (Phase 1):
-- **What failed**: The interior case of d_consistency_left/right requires showing that the forward strategy's response t = a'_full(n) equals d. The current formulation sets d = a_bwd(n) (Spoiler's backward pick) and requires EXHIBITING a response with d at position n.
-- **What was tried**: (1) Proving t = d directly from formula agreement + gap/point agreement + boundary correspondence -- fails because two distinct elements CAN have the same rank-r type. (2) Constructing a'_new by substituting d for t at position n -- requires showing d and t have the same ordering relative to ALL game tuple elements, which needs formula-determines-ordering infrastructure not yet in the codebase. (3) Using Round 2 with specific challenges (p_d, p_t) to extract ordering constraints -- yields equalities like `t = d ↔ c = extendPoint b` but doesn't directly force equality.
-- **Why it's stuck**: The root cause is a formalization design issue: GHR93 defines d as the INFIMUM of all valid responses (then proves any response equals d), but the current code defines d = a_bwd(n) (Spoiler's backward pick). This disconnect means d_consistency_left/right as currently stated may require either (a) an infimum construction, (b) formula-determines-ordering infrastructure showing that same rank_type + same boundary position implies equality in ExtendedCarrier, or (c) restructuring obtain_split_point_props to define d from the forward strategy instead of from a_bwd.
-- **What is needed**: Either (a) add infrastructure proving that two elements of ExtendedCarrier with the same rank_type, same gap/point status, and same boundary relationships must be equal (possible for gaps via cut equality; harder for points), or (b) refactor obtain_split_point_props to define d as the forward strategy's canonical response at the boundary position, then adjust the 30+ downstream uses of hd_eq_an in Cases I-IV.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**Prior status**: BLOCKED when trying direct uniqueness proof. Report 27 identifies the root cause: GHR93 Claim 1 requires the game at rank r' > r (using rank-(r+1) formula C'), but our code uses rank r only. The point interior case is unprovable at rank r because two carrier points can share rank-r type without being equal.
 
-**Goal**: Close the 2 interior case sorries in `d_consistency_left` (line 1157) and `d_consistency_right` (line 1235) using the direct uniqueness argument from report 22.
+**Revised strategy** (from report 27, Section 5): Redefine d as the infimum of continuation_set (matching GHR93) and restructure Case II to follow GHR93 exactly. This eliminates d_consistency_left/right entirely — they become unnecessary when d is the infimum and strategy restriction uses the infimum property directly.
 
-**GHR93 Reference**: Section 8, Theorem 6 proof, Claim 1 (p.116). "Consider a play of the game G_{m;r'}(M, xy; N, x'y') ... Let Spoiler begin by choosing c plus m-1 other points, and let Duplicator's response to c be d (plus m-1 other points). Then d = d-bar."
-
-**Strategy** (from report 22): The theorem has been weakened to existential form: need to EXHIBIT a'_full with bounds + winning + a'_full(n) = d. The direct uniqueness proof works by case-splitting on whether d is a point or gap:
-- **Boundary cases** (d = x' or d = y'): Already proved (boundary correspondence forces equality).
-- **Interior gap case**: Two gaps with identical formula truth for all depth-r formulas must have identical cuts (gap extensionality). Need bridge lemma connecting formula truth to cut equality (~30-40 lines).
-- **Interior point case**: Play Round 2 with p_d (the carrier point that IS d). From the winning condition, extract ordering constraint: `c < extendPoint b ↔ t < extendPoint p_d`. By trichotomy on p_d vs p_t (the carrier point of t), derive p_d = p_t, hence d = t (~30-40 lines).
+**GHR93 Reference**: Section 8, Theorem 6 proof. d-bar = inf{t ∈ [x',y'] : C holds on (t,y')} is a fixed element. Case II constructs e_n fresh via U(B,A) formula transfer, NOT by putting c at position n.
 
 **Tasks**:
-- [ ] **Task 1.1**: Define `d_consistency_point_case` helper lemma (~30-40 lines). Uses h_pt to play Round 2 with p_d. Extracts same_order_type from winning condition at index n+1 vs n+2. Derives p_d = p_t by linear order trichotomy.
-- [ ] **Task 1.2**: Define `d_consistency_gap_case` helper lemma (~30-40 lines). When d and t are both gaps with same formula-type and boundary position, show their cuts are equal via: for any carrier point p, `p in d.cut iff p in t.cut` follows from formula agreement (ordering relative to p is characterizable by rank-r formulas).
-- [ ] **Task 1.3**: Close `d_consistency_left` interior sorry (line 1157, ~40-60 lines). Intro a_pad, extract t = a'_full(n) from winning condition, case-split on IsPoint d vs IsGap d, apply point_case or gap_case helper.
-- [ ] **Task 1.4**: Close `d_consistency_right` interior sorry (line 1235, ~10-20 lines). Symmetric to left; c at position 0 instead of n.
-- [ ] **Task 1.5**: Verify `lake build` passes. Verify `lean_verify d_consistency_left` shows no `sorryAx`.
+- [ ] **Task 1.1**: In `obtain_split_point_props`, redefine d as infimum of `continuation_set x' y' (a_bwd n)` (~60-100 lines). Use existing infrastructure: `continuation_set_nonempty`, `continuation_set_upward_closed`, `infimum_gap`/`infimum_gap_r_definable`. Prove `hd_le_an : d ≤ a_bwd ⟨n, by omega⟩`.
+- [ ] **Task 1.2**: Change `SplitPointProps.hd_eq_an` to `hd_le_an : d ≤ a_bwd ⟨n, by omega⟩` (~10 lines).
+- [ ] **Task 1.3**: Fix Case I uses of hd_eq_an at lines 1825, 1836 (~10-20 lines). Both need only ≤, not =.
+- [ ] **Task 1.4**: Rewrite `ghr93_strategy_restrict_left/right` to use the infimum's continuation property instead of d_consistency (~80-120 lines). Key argument: Round 2 transfer shows carrier points above the response t map to carrier points above c in M where cont_holds holds; by formula agreement, cont_holds transfers back. Combined with same_order_type, responses land in [x', d].
+- [ ] **Task 1.5**: Remove `d_consistency_left` and `d_consistency_right` entirely (~-160 lines).
+- [ ] **Task 1.6**: Restructure Case II to match GHR93 (~150-250 lines):
+  - All a_bwd(i) > d (strictly, since d = infimum ≤ a_bwd(i) and a_bwd(i) is in interior)
+  - Use τ for positions 0..n-1, construct e_n fresh via U(B,A) formula transfer
+  - Response at position n is e_n (fresh point), NOT c
+  - Remove all 25 `rw [← hd_eq_an]` game-tuple rewrites
+- [ ] **Task 1.7**: Verify `lake build` passes with all changes.
 
-**Timing**: 2-4 hours
+**Timing**: 6-10 hours
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- close lines 1157, 1235
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- redefine d, fix Cases I-II, remove d_consistency
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- rewrite strategy_restrict_left/right
 
 **Verification**:
-- `lean_verify d_consistency_left` shows no `sorryAx`
-- `lean_verify d_consistency_right` shows no `sorryAx`
+- `lean_verify obtain_split_point_props` shows no `sorryAx` (for infimum definition)
+- `lean_verify ghr93_strategy_restrict_left` shows no `sorryAx`
+- `lean_verify ghr93_case_I` shows no `sorryAx`
+- `lean_verify ghr93_inductive_step` compiles
 - `lake build` passes
+
+**Fallback** (from report 27, Section 6): If the infimum approach encounters obstacles in strategy_restrict, add rank embedding infrastructure (`embed_rank : ExtendedCarrier M atomMap r ↪o ExtendedCarrier M atomMap r'` when r ≤ r', ~440 lines) to match GHR93 exactly.
 
 ---
 
