@@ -249,7 +249,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 26,
+      "next_artifact_number": 27,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -405,6 +405,11 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T210000Z.md",
           "type": "handoff",
           "summary": "Round 8: same_order_type proofs verified correct (multi_attempt), compilation blocked by simp_all hypothesis rewriting"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/23_tactic-needs-beyond-195.md",
+          "type": "research",
+          "summary": "Tactic needs beyond task 195: none required. 7 remaining sorries are unique mathematical arguments. Task 195 is sufficient."
         }
       ],
       "session_id": "sess_1779465184_1afc38",
@@ -646,17 +651,18 @@
     {
       "project_number": 195,
       "project_name": "ef_game_automation_tactics",
-      "status": "researching",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
       "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N×N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
       "dependencies": [],
       "created": "2026-05-22T19:18:49Z",
-      "last_updated": "2026-05-22T19:29:06Z",
+      "last_updated": "2026-05-22T19:29:54Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "session_id": "sess_1779478127_74bc0c"
+      "session_id": "sess_1779465184_1afc38",
+      "started": "2026-05-22T19:29:54Z"
     },
     {
       "project_number": 196,
