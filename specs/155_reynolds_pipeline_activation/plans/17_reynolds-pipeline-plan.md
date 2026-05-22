@@ -74,7 +74,7 @@ Prior integration (v13):
 
 v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Task 1.6 same_order_type was BLOCKED by the `game_tuple` noncomputable/`simp_all` compilation issue. v14 unblocks it by incorporating task 195's EFGameTactics. Line numbers updated from v13 estimates to report 27's verified locations. Effort revised down by ~6 hours reflecting the unblocking.
 
-### Session Progress (v12 -> v13 -> implementation rounds 1-9 -> task 195 completion)
+### Session Progress (v12 -> v13 -> rounds 1-12 -> task 195 completion)
 
 | Item | Status | Round | Lines |
 |------|--------|-------|-------|
@@ -91,8 +91,13 @@ v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Ta
 | Phase 1: Task 1.6 gp_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
 | Phase 1: Task 1.6 formula_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
 | Phase 1: Task 1.4 h_d_unique parameter refactor | PARTIAL | Round 6 | refactored, 1 sorry |
-| Phase 1: Task 1.6 same_order_type (sigma + tau) | UNBLOCKED | Round 8-9 + task 195 | block-commented proofs verified, task 195 tactics available |
-| Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), lemma moves to EFGames.lean |
+| Phase 1: Task 1.6 sigma SOT grid (18/25 goals) | PARTIAL | Round 10 | ~60 new, 7 goals need c<=e_n |
+| Phase 1: Task 1.4 h_d_unique boundary cases | COMPLETE | Round 12 | x'=d and d=y' cases proved |
+| Phase 1: Task 1.4 h_d_unique u>d subcase | COMPLETE | Round 12 | d<=t' direction, u>d branch |
+| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | BLOCKED | Round 12 | needs rank-(r+1) C' formula argument |
+| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from h_d_unique |
+| Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
+| Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
 | Rank embedding infrastructure | CONFIRMED | pre-v13 | 0 (already sorry-free) |
 
@@ -137,18 +142,19 @@ v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Ta
 | Proposition 7 composition too complex (decomposition formula counting) | M | M | GHR93 Proposition 7 proof is explicit (p.26-27). If composition stalls, try direct Corollary 5 route via formula enumeration. |
 | Model surgery (Lemma 12) case explosion exceeds budget | M | L | Report 26 estimates 350-450 lines. Modularize into per-case helpers; S cases are perfectly dual to U cases (use a shared template with direction parameter). |
 
-## Full Sorry Inventory (Current -- after 9 implementation rounds + task 195 completion)
+## Full Sorry Inventory (Current -- after 12 implementation rounds + task 195 completion)
 
-### ExpressivenessGeneral.lean (9 sorries)
+### ExpressivenessGeneral.lean (10 sorries — Round 12 split h_d_unique into 2 targeted sorries, added 1 sigma SOT fallback)
 | Line | Context | Phase | Status |
 |------|---------|-------|--------|
 | ~1614 | Case 3 infimum gap construction | 3 | Needs infimum_gap precondition assembly |
-| ~1709 | `h_d_unique` (Claim 1 obligation) | 1 | Refactored in Round 6; 1 sorry at calling site |
+| ~1759 | `h_d_unique` interior case (t'<=d direction) | 1 | **BLOCKER**: needs rank-(r+1) C' formula argument |
+| ~1796 | `h_d_unique` interior case (d<=t', u<=d subcase) | 1 | **BLOCKER**: needs rank-(r+1) C' formula argument |
 | ~1804 | `h_pt_xc` degenerate gap | 1/3 | Possibly unreachable; may need SplitPointProps weakening |
 | ~1821 | `h_pt_cy` degenerate gap | 1/3 | Same |
 | ~1919 | n=0 gap case c construction | 1/3 | Needs dedicated n=0 argument |
-| ~3059 | Case II sigma same_order_type | 1 | UNBLOCKED by task 195 tactics |
-| ~3263 | Case II tau same_order_type | 1 | UNBLOCKED by task 195 tactics |
+| ~3177 | Case II sigma same_order_type (7 remaining grid goals) | 1 | BLOCKED on h_d_unique (needs c<=e_n) |
+| ~3263 | Case II tau same_order_type | 1 | BLOCKED on h_d_unique (needs c<=e_n + sigma instantiation) |
 | ~4246 | `ghr93_cases_III_IV` | 3 | Cases III/IV of Theorem 6 |
 | ~4501 | `ghr93_forward_to_backward_rank_varying` | 4 | Rank-varying theorem |
 
@@ -165,7 +171,7 @@ v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Ta
 | 1135 | `cofinal_decomposition_k_equiv` | 7 |
 | 1194 | `ordered_sum_of_good_bounded_is_good` | 7 |
 
-**Phase 1 progress**: Started with 9 sorry sites in scope (4 original + 5 introduced during restructuring). Closed 6, introduced h_d_unique refactor. 5 remain in Phase 1 scope: h_d_unique (1 sorry), same_order_type sigma/tau (2 sorries, now UNBLOCKED), degenerate gap points (2 sorries, possibly unreachable). Of these, same_order_type sigma/tau are the immediate next action.
+**Phase 1 progress**: Started with 9 sorry sites in scope (4 original + 5 introduced during restructuring). Closed 6, introduced h_d_unique refactor. After 12 rounds: h_d_unique has 2 targeted sorries (boundary cases proved, u>d subcase proved — remaining 2 need rank-(r+1) C' formula argument); sigma SOT has 18/25 grid goals closed via task 195 tactics (7 remaining need c<=e_n from h_d_unique); tau SOT not yet attempted (blocked on h_d_unique + sigma instantiation). **Critical blocker**: h_d_unique lines ~1759, ~1796 — requires materializing C' = ¬C ∨ K⁻(¬C) as a StaviFormula or a direct rank-(r+1) game argument. Two parallel research agents investigating (reports 28, 29).
 
 ## Implementation Phases (v14 -- Task 195 Tactics Available)
 
@@ -214,7 +220,7 @@ Phases within the same wave can execute in parallel.
   - [x] sigma formula_agreement -- Round 7
   - [x] tau gap_point_agreement -- Round 7
   - [x] tau formula_agreement -- Round 7
-  - [ ] **sigma same_order_type** (line ~3059) -- UNBLOCKED by task 195. Implementation steps:
+  - [ ] **sigma same_order_type** (line ~3059) -- PARTIALLY CLOSED (Round 10: 18/25 goals via task 195 tactics, 7 remaining need c<=e_n from h_d_unique). Implementation steps for remaining 7 goals:
     1. Uncomment the block-commented proof at lines 3060-3162
     2. Replace `delta game_tuple; split_ifs <;> simp_all <;>` with `same_order_type_grid <;>` (or equivalently `intro i j; simp only [game_tuple]; split_ifs <;>`)
     3. Use `order_refl` to close 3 diagonal goals (x-x, b-b, y-y)
