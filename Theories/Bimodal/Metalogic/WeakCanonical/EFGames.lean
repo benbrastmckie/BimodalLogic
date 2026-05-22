@@ -5000,7 +5000,249 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 exact not_le.mpr hγu ((extendPoint_le_gap_iff p γ).mpr hp_cut)
               exact (h_gD_at_compl p hp_compl hps).1
       · -- Backward: gap conditions → std_snce(compound, D)(m)
-        sorry
+        -- Mirrors left base.snce backward with direction reversed
+        -- Left backward: gap above m, s = cut point above m+t_pt, S(f,g)^mu → compound above m
+        -- Right backward: gap below m, s = compl point below m where compound holds
+        intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUntl_mu⟩
+        -- U(f,g)^mu(γ): ∃ t > γ (mu-point), f^mu(t) ∧ g^mu on (γ, t)
+        simp only [stavi_temporal_truth_mu, temporal_truth_mu] at hUntl_mu
+        obtain ⟨t_ext, hγ_t, ⟨t_pt, rfl⟩, hf_t, hg_mu⟩ := hUntl_mu
+        -- t_pt is a complement point (above gap)
+        have ht_not_cut : t_pt ∉ γ.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff t_pt γ).mpr h) hγ_t
+        -- m is a complement point (above gap)
+        have hm_not_cut : m ∉ γ.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ).mpr h) hγ_lt
+        -- Find complement point s: below m, below t_pt (for g from g^mu on (γ, t_pt))
+        have ⟨s, hs_not_cut, hsm, hst⟩ :
+            ∃ s, s ∉ γ.val.cut ∧ s < m ∧ s < t_pt := by
+          -- complement has no min, so we can find complement points below any complement point.
+          -- We need s < m, s > t_pt, s ∉ cut.
+          -- Since t_pt ∉ cut and m ∉ cut and cut is downward closed:
+          -- any point between t_pt and m that's ∉ cut works, or if t_pt < m, m is one.
+          -- But we need s STRICTLY < m.
+          -- All complement points > t_pt that are < m work (there are infinitely many since
+          -- between any two complement points there's another complement point).
+          -- Actually, complement may not be dense. But cut has no sup so cut points go
+          -- arbitrarily high. Between cut points and complement points there may be structure.
+          -- Simplest: if t_pt < m, find any point between them that's not in cut.
+          -- All points above cut are not in cut (cut is downward closed).
+          -- But cut could extend above t_pt... no, t_pt ∉ cut and cut is downward closed,
+          -- so ALL points ≥ t_pt are ∉ cut? NO! Cut is downward closed means:
+          -- x ∈ cut ∧ y ≤ x → y ∈ cut. So if t_pt ∉ cut, then no point ≥ t_pt is in cut?
+          -- NO: cut is downward closed, so if x ∈ cut, any y ≤ x is in cut.
+          -- But there CAN be cut points above t_pt if t_pt is not in cut.
+          -- Example: cut = (-∞, 0) ∪ {1}, then 0.5 ∉ cut but 1 ∈ cut. But this contradicts
+          -- downward closure: 0.5 ≤ 1 would require 0.5 ∈ cut.
+          -- So actually, if t_pt ∉ cut and cut is downward closed, then ∀ u ≥ t_pt, u ∉ cut.
+          -- Great! So any point ≥ t_pt is ∉ cut.
+          -- We need s with t_pt < s < m. By linear order density? Not necessarily dense.
+          -- But m and t_pt are carrier points. There might not be a carrier point between them.
+          -- We need to handle the case t_pt < m vs t_pt ≥ m separately.
+          by_cases htm : t_pt < m
+          · -- Need s with t_pt < s < m, s ∉ cut
+            -- Since complement has no minimum (relative to points above gap), and m is in complement,
+            -- there exists a complement point below m that is above γ.
+            -- All points above t_pt are complement (since cut is downward closed and t_pt ∉ cut).
+            -- So any carrier point between t_pt and m works.
+            -- But are there carrier points between t_pt and m?
+            -- Not necessarily in a discrete order! t_pt could be pred(m).
+            -- In that case, use t_pt itself as the witness (need t_pt < m, which holds).
+            -- Wait, we need s ∉ cut. And t_pt ∉ cut. So s = t_pt works if t_pt < m!
+            -- But the problem says s < m AND t_pt < s. We need s STRICTLY above t_pt.
+            -- Hmm, do we really need s above t_pt? Let me re-read the left proof.
+            -- In left: s was a cut point above BOTH m and t_pt. It needed t_pt < s for g(s).
+            -- In right: we need s between γ and m. For g(s), we need t_pt < s so g(s) comes from
+            -- g^mu on (γ, t_pt). Wait, actually g^mu on (γ, t_pt) gives g at mu-points between
+            -- γ and t_pt. If s > t_pt, then s is NOT between γ and t_pt, so we can't get g(s).
+            -- Unless t_pt was the UPPER bound and g^mu goes from γ to t_pt.
+            -- U(f,g)^mu(γ) = ∃ t > γ, f(t) ∧ g on (γ, t). So g holds between γ and t_pt.
+            -- We need s between γ and t_pt for g(s)! Not above t_pt.
+            -- So s should satisfy: γ < s < t_pt (to get g(s)) AND s < m.
+            -- If t_pt < m, then γ < s < t_pt < m gives both s < m and s in range for g.
+            -- But we need s ∉ cut. Since γ < s: s could be in cut or not.
+            -- Actually, cut goes up to γ (cut = below gap), and s > γ so s ∉ cut.
+            -- Wait, but cut is downward closed and has no sup. So cut could extend beyond γ.
+            -- NO: γ represents a gap between cut and complement. Cut is EXACTLY the set below γ.
+            -- And complement = above γ. So for any s with extendPoint s > Sum.inr γ, s ∉ cut.
+            -- And for any s with extendPoint s ≤ Sum.inr γ (i.e., s ∈ cut), s IS in cut.
+            -- So: s ∈ cut ↔ extendPoint s ≤ Sum.inr γ ↔ s ∈ γ.val.cut (by definition).
+            --
+            -- So for s > γ (i.e., s ∉ cut), we need γ < s < t_pt (for g) and s < m.
+            -- Such s exists because: between γ and t_pt there must be complement points
+            -- (complement has no minimum, and t_pt is in complement).
+            -- Actually, t_pt ∉ cut, so all we know is extendPoint t_pt > Sum.inr γ.
+            -- We need s ∉ cut with s < t_pt.
+            -- Since complement has no minimum, there's a complement point below t_pt.
+            -- That complement point is also > γ (since all complement points are above the gap).
+            -- So ∃ s, s ∉ cut ∧ s < t_pt.
+            have ⟨s, hs_not, hs_t⟩ : ∃ s, s ∉ γ.val.cut ∧ s < t_pt := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨t_pt, ht_not_cut,
+                fun z hz => h_all z hz⟩
+            exact ⟨s, hs_not, lt_trans hs_t htm, hs_t⟩
+          · -- t_pt ≥ m: need s < m ≤ t_pt, s ∉ cut
+            push_neg at htm
+            have ⟨s, hs_not, hs_m⟩ : ∃ s, s ∉ γ.val.cut ∧ s < m := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨m, hm_not_cut,
+                fun z hz => h_all z hz⟩
+            exact ⟨s, hs_not, hs_m, lt_of_lt_of_le hs_m htm⟩
+        -- Properties at s (complement point below m):
+        -- D(s) from D-between
+        have hDs : stavi_temporal_truth M atomMap s D :=
+          (stavi_truth_mu_at_point s D).mp (hγ_bet s hsm hs_not_cut)
+        -- g(s) from U(f,g)^mu(γ): s is a complement point below t_pt
+        have hγs : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (Sum.inr γ) (extendPoint s) := ⟨fun h => hs_not_cut h, fun h => hs_not_cut h⟩
+        have hst' : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint s) (extendPoint t_pt) := (extendPoint_lt_iff s t_pt).mpr hst
+        have hgs : temporal_truth M atomMap s g :=
+          (temporal_truth_mu_at_point s g).mp
+            (hg_mu (extendPoint s) hγs hst' ⟨s, rfl⟩)
+        -- U(f,g)(s): witness t_pt with f(t_pt) and g on (s, t_pt)
+        have hUntl_s : temporal_truth M atomMap s (f.untl g) := by
+          simp only [temporal_truth]
+          refine ⟨t_pt, hst, (temporal_truth_mu_at_point t_pt f).mp hf_t, fun u hsu hut => ?_⟩
+          have hu_not_cut : u ∉ γ.val.cut := by
+            intro h
+            have : @LE.le (ExtendedCarrier M atomMap r) _ (extendPoint u) (Sum.inr γ) :=
+              (extendPoint_le_gap_iff u γ).mpr h
+            exact not_le.mpr (lt_trans hγs ((extendPoint_lt_iff s u).mpr hsu)) this
+          have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (Sum.inr γ) (extendPoint u) :=
+            ⟨fun h => hu_not_cut h, fun h => hu_not_cut h⟩
+          have hut' : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint u) (extendPoint t_pt) := (extendPoint_lt_iff u t_pt).mpr hut
+          exact (temporal_truth_mu_at_point u g).mp
+            (hg_mu (extendPoint u) hγu hut' ⟨u, rfl⟩)
+        -- D on (s, m): complement points between s and m have D
+        have hD_bet_sm : ∀ u, s < u → u < m → stavi_temporal_truth M atomMap u D := by
+          intro u hsu hum
+          have hu_not_cut : u ∉ γ.val.cut := by
+            intro h
+            have : @LE.le (ExtendedCarrier M atomMap r) _ (extendPoint u) (Sum.inr γ) :=
+              (extendPoint_le_gap_iff u γ).mpr h
+            exact not_le.mpr (lt_trans hγs ((extendPoint_lt_iff s u).mpr hsu)) this
+          exact (stavi_truth_mu_at_point u D).mp (hγ_bet u hum hu_not_cut)
+        -- Extract gap definability conditions
+        obtain ⟨⟨t_D, ht_D_not, hD_init⟩, h_no_final_D⟩ := hγ_def
+        -- Helper: cut points < complement points
+        have h_cut_lt : ∀ x, x ∈ γ.val.cut → ∀ y, y ∉ γ.val.cut → x < y := by
+          intro x hx y hy; by_contra h; push_neg at h
+          exact hy (γ.val.downward_closed x y hx h)
+        -- Helper: ¬D witnesses at cut points
+        have h_neg_final : ∀ t, t ∈ γ.val.cut →
+            ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
+          intro t ht; by_contra h_all; push_neg at h_all
+          exact h_no_final_D ⟨t, ht, fun w htw hw_cut => h_all w hw_cut htw⟩
+        -- Get a cut point for S'(⊤, g∧D) bound
+        have ⟨c₀, hc₀_cut⟩ : ∃ c₀, c₀ ∈ γ.val.cut := by
+          obtain ⟨z, hz⟩ := γ.val.nonempty
+          exact ⟨z, hz⟩
+        have hc₀s : c₀ < s := h_cut_lt c₀ hc₀_cut s hs_not_cut
+        -- g∧D at complement points below s
+        have h_gD_compl : ∀ u, u < s → u ∉ γ.val.cut →
+            temporal_truth M atomMap u g ∧ stavi_temporal_truth M atomMap u D := by
+          intro u hus hu_not_cut
+          constructor
+          · -- g from g^mu on (γ, t_pt): u is between γ and s < t_pt
+            have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+                (Sum.inr γ) (extendPoint u) :=
+              ⟨fun h => hu_not_cut h, fun h => hu_not_cut h⟩
+            have hut' : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+                (extendPoint u) (extendPoint t_pt) :=
+              lt_trans ((extendPoint_lt_iff u s).mpr hus) hst'
+            exact (temporal_truth_mu_at_point u g).mp
+              (hg_mu (extendPoint u) hγu hut' ⟨u, rfl⟩)
+          · -- D from hγ_bet: u < m and u ∉ cut
+            exact (stavi_truth_mu_at_point u D).mp
+              (hγ_bet u (lt_trans hus hsm) hu_not_cut)
+        refine ⟨s, hsm, ⟨hDs, hgs, hUntl_s, ?_, ?_⟩, hD_bet_sm⟩
+        · -- S'(⊤, g∧D)(s): bound c₀ (a cut point below s)
+          refine ⟨c₀, hc₀s, ?_, ?_, ?_⟩
+          · -- Condition (1): body
+            intro u hc₀u hus
+            by_cases hu_not_cut : u ∉ γ.val.cut
+            · -- u ∉ cut (complement): left disjunct (gD cofinal below u)
+              left
+              have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+                by_contra h_all; push_neg at h_all
+                exact γ.val.complement_no_min ⟨u, hu_not_cut, fun z hz => h_all z hz⟩
+              exact ⟨y, hyu, fun w hyw hws =>
+                h_gD_compl w hws (fun h_cut =>
+                  hy_not (γ.val.downward_closed w y h_cut (le_of_lt hyw)))⟩
+            · -- u ∈ cut: right disjunct (⊤ trivial + ¬gD witness)
+              push_neg at hu_not_cut
+              right
+              refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
+              have ⟨y, hy_cut, huy⟩ : ∃ y, y ∈ γ.val.cut ∧ u < y := by
+                by_contra h_all; push_neg at h_all
+                exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun _ hb => hb hu_not_cut⟩,
+                  hu_not_cut⟩
+              obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
+              exact ⟨w, lt_of_lt_of_le huy hyw, h_cut_lt w hw_cut s hs_not_cut,
+                fun ⟨_, hD'⟩ => hDw hD'⟩
+          · -- Condition (2): ¬gD failure in (c₀, s)
+            have ⟨y, hy_cut, hc₀y⟩ : ∃ y, y ∈ γ.val.cut ∧ c₀ < y := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.no_sup ⟨c₀, ⟨fun x hx => h_all x hx, fun _ hb => hb hc₀_cut⟩,
+                hc₀_cut⟩
+            obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
+            exact ⟨w, lt_of_lt_of_le hc₀y hyw, h_cut_lt w hw_cut s hs_not_cut,
+              fun ⟨_, hD'⟩ => hDw hD'⟩
+          · -- Condition (3): gD initial in (c₀, s)
+            have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨s, hs_not_cut, fun z hz => h_all z hz⟩
+            exact ⟨y, h_cut_lt c₀ hc₀_cut y hy_not, hys, fun v hyv hvs =>
+              h_gD_compl v hvs (fun hv_cut =>
+                hy_not (γ.val.downward_closed v y hv_cut (le_of_lt hyv)))⟩
+        · -- ¬S'(D, g∧D)(s): by contradiction using two-step D-transfer argument
+          intro ⟨s₁, hs₁s, h_body, h_fail, h_init⟩
+          obtain ⟨u_fail, hs₁_uf, huf_s, hgD_fail⟩ := h_fail
+          -- u_fail ∈ cut (complement points have gD from h_gD_compl)
+          have huf_cut : u_fail ∈ γ.val.cut := by
+            by_contra huf_not
+            exact hgD_fail (h_gD_compl u_fail huf_s huf_not)
+          -- Left disjunct fails at cut points
+          have h_left_fails : ∀ u, s₁ < u → u < s → u ∈ γ.val.cut →
+              ¬(∃ v, v < u ∧ ∀ w, v < w → w < s →
+                temporal_truth M atomMap w g ∧ stavi_temporal_truth M atomMap w D) := by
+            intro u _ _ hu_cut ⟨v, hvu, hgDv⟩
+            have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
+            have ⟨y, hy_cut, hvy⟩ : ∃ y, y ∈ γ.val.cut ∧ v < y := by
+              by_contra h; push_neg at h
+              exact γ.val.no_sup ⟨v, ⟨h, fun _ hb => hb hv_cut⟩, hv_cut⟩
+            obtain ⟨w', hw'_cut, hyw', hDw'⟩ := h_neg_final y hy_cut
+            exact hDw' (hgDv w' (lt_of_lt_of_le hvy hyw')
+              (h_cut_lt w' hw'_cut s hs_not_cut)).2
+          -- Two-step: D at ALL cut points in (s₁, s)
+          have hD_all_cut : ∀ u, s₁ < u → u < s → u ∈ γ.val.cut →
+              stavi_temporal_truth M atomMap u D := by
+            intro u hs₁u hus hu_cut
+            have h_right_u := (h_body u hs₁u hus).resolve_left
+              (h_left_fails u hs₁u hus hu_cut)
+            obtain ⟨_, v', hv'u, hv's, hgD_v'⟩ := h_right_u
+            have hv'_cut : v' ∈ γ.val.cut := by
+              by_contra hv'_not; exact hgD_v' (h_gD_compl v' hv's hv'_not)
+            have ⟨u', hu'_cut, huu'⟩ : ∃ u', u' ∈ γ.val.cut ∧ u < u' := by
+              by_contra h; push_neg at h
+              exact γ.val.no_sup ⟨u, ⟨h, fun _ hb => hb hu_cut⟩, hu_cut⟩
+            have hu's : u' < s := h_cut_lt u' hu'_cut s hs_not_cut
+            have h_right_u' := (h_body u' (lt_trans hs₁u huu') hu's).resolve_left
+              (h_left_fails u' (lt_trans hs₁u huu') hu's hu'_cut)
+            exact h_right_u'.1 u hs₁u huu'
+          -- s₁ ∈ cut (if ∉ cut, u_fail also ∉ cut — contradiction)
+          have hs₁_cut : s₁ ∈ γ.val.cut := by
+            by_contra hs₁_not
+            exact not_le.mpr (h_cut_lt u_fail huf_cut s₁ hs₁_not) (le_of_lt hs₁_uf)
+          have ⟨t₀, ht₀_cut, hs₁t₀⟩ : ∃ t₀, t₀ ∈ γ.val.cut ∧ s₁ < t₀ := by
+            by_contra h; push_neg at h
+            exact γ.val.no_sup ⟨s₁, ⟨h, fun _ hb => hb hs₁_cut⟩, hs₁_cut⟩
+          exact h_no_final_D ⟨t₀, ht₀_cut, fun u ht₀u hu_cut =>
+            hD_all_cut u (lt_of_lt_of_le hs₁t₀ ht₀u)
+              (h_cut_lt u hu_cut s hs_not_cut) hu_cut⟩
     | snce f g _ _ =>
       -- right_formula_base D (.snce f g) = S'(g ∧ S(f,g), D)
       -- Mirrors left base.untl with stavi_snce_gap_detection

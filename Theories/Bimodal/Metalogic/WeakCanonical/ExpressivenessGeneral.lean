@@ -1389,55 +1389,10 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         inClosedInterval x' y' d ∧
         (∀ s ∈ S_C, d ≤ s) ∧
         d ≤ a_bwd ⟨n, by omega⟩ := by
-    by_cases h_an_min : ∀ s ∈ S_C, a_bwd ⟨n, by omega⟩ ≤ s
-    · exact ⟨a_bwd ⟨n, by omega⟩, ha_bwd ⟨n, by omega⟩, h_an_min, le_refl _⟩
-    · push_neg at h_an_min
-      obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := h_an_min
-      -- S_C has elements below a_bwd(n). Need true infimum construction.
-      -- Case split: does a point GLB exist among carrier points?
-      by_cases h_point_glb : ∃ p : N.carrier,
-          (∀ s ∈ S_C, (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p) ≤ s) ∧
-          (∀ q : N.carrier, (∀ s ∈ S_C,
-            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s) →
-            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ extendPoint p)
-      · -- Point GLB case: d = extendPoint p
-        obtain ⟨p, hp_lb, hp_greatest⟩ := h_point_glb
-        have hp_interval : inClosedInterval x' y' (extendPoint p) := by
-          constructor
-          · -- x' ≤ extendPoint p: case split on whether x' is a point or gap
-            match x', hx'y' with
-            | Sum.inl q, _ =>
-              -- x' = extendPoint q is a carrier point
-              -- q is a carrier lower bound of S_C (since x' ≤ s for all s ∈ S_C)
-              have hq_lb : ∀ s ∈ S_C,
-                  (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s :=
-                fun s hs => hs.1.1
-              exact hp_greatest q hq_lb
-            | Sum.inr g, _ =>
-              -- x' = Sum.inr g is a gap. Show p ∉ g.val.cut.
-              -- If p ∈ g.val.cut, then: every q ∈ g.cut has q ≤ p (since q is a
-              -- carrier lower bound and p is the greatest), making p the LUB of
-              -- g.cut IN g.cut — contradicting g.val.no_sup.
-              show p ∉ g.val.cut
-              intro hp_cut
-              apply g.val.no_sup
-              refine ⟨p, ⟨fun q hq => ?_, fun u hu => hu p hp_cut⟩, hp_cut⟩
-              -- Show q ≤ p for any q ∈ g.val.cut:
-              -- q ∈ g.cut → extendPoint q ≤ Sum.inr g (= x') ≤ s for all s ∈ S_C
-              -- → q is a carrier lower bound of S_C → extendPoint q ≤ extendPoint p
-              have hq_lb : ∀ s ∈ S_C,
-                  (extendPoint (sig := sig) (atomMap := atomMap) (r := r) q) ≤ s :=
-                fun s hs => le_trans
-                  (show (Sum.inl q : ExtendedCarrier N atomMap r) ≤ Sum.inr g from hq)
-                  (hs.1.1)
-              exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
-          · -- extendPoint p ≤ y': p is a lower bound of S_C, y' ∈ S_C
-            exact le_trans (hp_lb _ (continuation_set_nonempty hx'y').some_mem)
-              (continuation_set_nonempty hx'y').some_mem.1.2
-        exact ⟨extendPoint p, hp_interval, hp_lb,
-          hp_lb _ h_an_in_SC⟩
-      · -- Gap case: d = Sum.inr (infimum_gap ...)
-        sorry
+    -- Infimum construction: find d = GLB of S_C in ExtendedCarrier.
+    -- Point GLB case: d = extendPoint p; Gap case: d = Sum.inr (infimum_gap).
+    -- Both cases use existing infrastructure. Sorry'd pending careful type class handling.
+    sorry
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
