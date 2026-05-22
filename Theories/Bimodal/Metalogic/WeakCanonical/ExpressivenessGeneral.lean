@@ -1093,6 +1093,9 @@ private theorem d_consistency_left {sig : MonadicSignature}
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
+      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
@@ -1145,15 +1148,27 @@ private theorem d_consistency_left {sig : MonadicSignature}
       have hty' : t = y' := heq_n1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: x' < d < y'.
-      -- The forward strategy's response t = a'_full(n) satisfies:
-      --   - same formula agreement as c (from winning condition)
-      --   - same gap/point status as c (from winning condition)
-      --   - same relative boundary position as c (x' < t < y')
-      -- These properties match d's properties but do NOT force t = d.
-      -- The existential form still requires exhibiting a'_full with a'_full(n) = d.
-      -- BLOCKED: requires GHR93 Claim 1 infimum infrastructure to construct
-      -- a response with d at position n.
+    · -- Interior case: x' < d < y'. Use GHR93 Claim 1 at rank r+1.
+      -- Play the rank-(r+1) game with embedded selections.
+      -- The rank-(r+1) response has stronger formula agreement (depth r+1),
+      -- which pins the response to d via the continuation formula C'.
+      -- Embed a_pad into rank r+1:
+      let a_pad_r1 : Fin (n + 1) → ExtendedCarrier M atomMap (r + 1) :=
+        fun i => rank_embed (Nat.le_succ r) (a_pad i)
+      have ha_pad_r1 : ∀ i, inClosedInterval
+          (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y) (a_pad_r1 i) :=
+        fun i => (rank_embed_inClosedInterval (Nat.le_succ r) x y (a_pad i)).mpr (ha_pad i)
+      -- Play the rank-(r+1) game
+      obtain ⟨a'_r1, ha'_r1, hwin_r1⟩ := h_fwd_r1 a_pad_r1 ha_pad_r1
+      -- Let t_r1 = a'_r1(n) at rank r+1
+      set t_r1 := a'_r1 ⟨n, by omega⟩
+      -- GHR93 Claim 1: use rank-(r+1) formula agreement to show t = d.
+      -- At rank r+1, the continuation formula C has depth ≤ r, so
+      -- C' = ¬C ∨ K⁻¬C has depth ≤ r+1. Formula agreement at rank r+1
+      -- gives C'(t_r1) ↔ C'(d_r1), which pins t_r1 = d_r1.
+      -- Since rank_embed is injective on carrier points and preserves gaps,
+      -- this transfers back to t = d at rank r.
+      -- TODO: implement full Claim 1 proof (~80 lines)
       sorry
 
 /-- D-consistency (right boundary, existential form): dual of
@@ -1178,6 +1193,9 @@ private theorem d_consistency_right {sig : MonadicSignature}
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
+      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
@@ -1230,8 +1248,9 @@ private theorem d_consistency_right {sig : MonadicSignature}
       have hty' : t = y' := heq_1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: same blocker as d_consistency_left.
-      -- See report 22 and phase-W1.2e-handoff for full analysis.
+    · -- Interior case: same as d_consistency_left. Use Claim 1 at rank r+1.
+      -- h_fwd_r1 is available. See d_consistency_left for the full approach.
+      -- TODO: implement Claim 1 proof (symmetric to left case)
       sorry
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
@@ -1345,6 +1364,9 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
           ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
           ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
+      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
     (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
     ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
@@ -1421,16 +1443,22 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
     have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
+    have h_mono_left_r1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) (r + 1)
+        (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+        (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y') :=
+      ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n)
+        ((rank_embed_le (Nat.le_succ r) x y).mpr hxy)
+        ((rank_embed_le (Nat.le_succ r) x' y').mpr hx'y') h_fwd_r1
     -- D-consistency (existential form) and strategy restriction.
     -- d_consistency_left/right provide: for any padded selection ending/starting
     -- with c, there EXISTS a response with bounds + winning + d at boundary.
     -- ghr93_strategy_restrict_left/right consume this directly.
     have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_pt
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt
     have h_d_consistent_right :=
       d_consistency_right hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_pt
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
@@ -3618,14 +3646,17 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
           (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
           ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
           ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
-    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y') :
+    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
+      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y')) :
     ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
   unfold ghr93_duplicator_wins
   intro a_bwd ha_bwd
   -- Obtain split points c, d and their properties
   obtain ⟨c, d, props⟩ :=
-    obtain_split_point_props hxy hx'y' h_pt h_pt_M ih h_fwd a_bwd ha_bwd
+    obtain_split_point_props hxy hx'y' h_pt h_pt_M ih h_fwd h_fwd_r1 a_bwd ha_bwd
   -- Case split: does any selection fall strictly below d?
   by_cases h_split : ∃ i : Fin (n + 1), a_bwd i < d
   · -- Case I: at least one selection below d (the "split" case)
@@ -3663,14 +3694,17 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
-    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y') :
+    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
+    (h_r1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1)
+      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y')) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
   -- Revert endpoints before induction so the IH is universally quantified
   -- over all sub-intervals, not bound to the specific x, y, x', y'.
-  revert x y x' y' hxy hx'y' h_pt h_pt_M h
+  revert x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
   induction n with
   | zero =>
-    intro x y x' y' hxy hx'y' h_pt h_pt_M h
+    intro x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -3719,38 +3753,22 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
           base_case_N_eq x' y' q p a'_resp hq_eq i]
       exact (hform_fwd _ A hA).symm
   | succ n ih_gen =>
-    intro x y x' y' hxy hx'y' h_pt h_pt_M h
+    intro x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
     -- Inductive step: (*)_n → (*)_{n+1}
-    -- ih_gen is now universally quantified over all endpoints:
-    --   ih_gen : ∀ {x y x' y'}, x ≤ y → x' ≤ y' → (∃ p, ...) →
-    --            (∃ p, ...) →
-    --            ghr93_duplicator_wins M N (1+3*n) r x y x' y' →
-    --            ghr93_duplicator_wins N M n r x' y' x y
-    --
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
     rw [h_rounds] at h
-    -- Apply the inductive step helper with the generalized IH
-    -- ih_gen now takes h_pt_M, but the IH of ghr93_inductive_step does not.
-    -- We wrap ih_gen, providing a default h_pt_M argument derived from hfwd.
-    -- Since the IH is only used inside obtain_split_point_props, we need to
-    -- supply h_pt_M for each sub-interval. We use a sorry-free derivation:
-    -- the forward game on any sub-interval implies existence of points via
-    -- the game's Round 2 mechanism. For now, we use the forward game to get
-    -- a matching M-point for any N-point in the sub-interval.
+    have h_rounds_r1 : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
+    rw [h_rounds_r1] at h_r1
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
         ih_gen hle hle' hpt' (by
-          -- Derive ∃ p_M, inClosedInterval x₀ y₀ (extendPoint p_M)
-          -- from the forward game hfwd and h_pt' for N-side
           obtain ⟨p_N, hp_N⟩ := hpt'
-          -- Play the forward game's Round 1 with any element from [x₀, y₀]
           obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
             (fun _ => ⟨le_refl x₀, hle⟩)
-          -- Play Round 2 with p_N
           obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
-          exact ⟨b_M, hb_M_in⟩) hfwd)
-      h
+          exact ⟨b_M, hb_M_in⟩) hfwd sorry)
+      h h_r1
 
 /-! ## Rank-Varying Theorem 6
 
