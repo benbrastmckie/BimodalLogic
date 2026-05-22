@@ -1370,9 +1370,25 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
     ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
       SplitPointProps n x y x' y' c d a_bwd := by
-  -- Step 1: Set d = a_bwd(n) (Spoiler's last backward pick)
-  let d := a_bwd ⟨n, by omega⟩
-  have hd_interval : inClosedInterval x' y' d := ha_bwd ⟨n, by omega⟩
+  -- Step 1: Set d = inf(continuation_set) — the GHR93 d̄.
+  -- S_C = {t ∈ [x',y'] : cont_holds at all mu-points in (t, y')}
+  -- a_bwd(n) ∈ S_C. d = inf(S_C) ≤ a_bwd(n).
+  -- The infimum is either a carrier point (if S_C has a point minimum)
+  -- or a gap (constructed via infimum_gap).
+  -- For this refactoring, we sorry-construct the infimum with its key properties.
+  -- The infrastructure for the full construction exists (infimum_gap,
+  -- infimum_gap_r_definable, inf_carrier_cut, etc.) and is sorry-free.
+  have h_inf : ∃ (d : ExtendedCarrier N atomMap r),
+      inClosedInterval x' y' d ∧
+      (∀ s ∈ continuation_set x' y' (a_bwd ⟨n, by omega⟩), d ≤ s) ∧
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r d A ↔
+         ∀ v, d < v → v < y' → mu_holds v →
+           stavi_temporal_truth_mu N atomMap r v A)) := by
+    sorry
+  obtain ⟨d, hd_interval, hd_glb, hd_char⟩ := h_inf
+  have hd_le_an_proof : d ≤ a_bwd ⟨n, by omega⟩ :=
+    hd_glb _ (a_n_in_continuation_set (ha_bwd ⟨n, by omega⟩))
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
@@ -1603,7 +1619,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     exact {
       hc_interval := hc_interval
       hd_interval := hd_interval
-      hd_le_an := le_refl d
+      hd_le_an := hd_le_an_proof
       hxc := hc_interval.1
       hcy := hc_interval.2
       hx'd := hd_interval.1

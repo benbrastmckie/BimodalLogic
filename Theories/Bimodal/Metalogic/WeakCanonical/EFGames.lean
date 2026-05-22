@@ -4915,9 +4915,32 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               exact this w hws le_rfl)
           · have : u ∈ compl := by by_contra hu_cut; exact not_le.mpr hpu' (h_ub hu_cut)
             exact this u hus le_rfl
+        have h_not_cut_of_compl : ∀ x, x ∈ compl → x ∉ cut :=
+          fun x hx hx_cut => hx_cut hx
         -- No min in complement (mirrors stavi_snce_gap_detection)
         have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
-          sorry -- TODO: fill in comp_no_min proof
+          intro ⟨b, hb_not_cut, hb_min⟩
+          have hb_compl : b ∈ compl := by by_contra h; exact hb_not_cut (show b ∈ cut from h)
+          have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl)) hui_s
+          have hs₁b : s₁ < b := h_compl_gt_s₁ b hb_compl
+          have h_below_b : ∀ y, y < b → y ∈ cut := by
+            intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
+          cases h_body b hs₁b hbs with
+          | inl h_cof =>
+            obtain ⟨v, hvb, hgDv⟩ := h_cof
+            by_cases hvs₁ : v ≤ s₁
+            · exact hgD_fail (hgDv u_fail (lt_of_le_of_lt hvs₁ hs₁_uf) huf_s)
+            · push_neg at hvs₁
+              have hv_compl : v ∈ compl := by
+                intro u hus hvu
+                rcases eq_or_lt_of_le hvu with rfl | hvu'
+                · exact h_cofinal_propagate v hvs₁ (lt_trans hvb hbs)
+                    (fun w hvw hws => ⟨v, hvw, hgDv⟩)
+                · exact ⟨v, hvu', hgDv⟩
+              exact absurd hvb (not_lt.mpr (hb_min v (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
+          | inr h =>
+            obtain ⟨_, v', hbv', hv's, hgDv'⟩ := h
+            exact hgDv' (h_gD_at_compl v' (h_compl_uc b v' hb_compl (le_of_lt hbv')) hv's)
         -- Construct Gap
         let γ_gap : Gap M.carrier :=
           ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
