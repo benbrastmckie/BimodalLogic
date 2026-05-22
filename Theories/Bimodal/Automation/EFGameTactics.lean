@@ -23,6 +23,7 @@ infrastructure (GHR93 expressive completeness proof).
 namespace Bimodal.Metalogic.WeakCanonical
 
 open Lean Elab Tactic
+open Bimodal.Syntax
 
 /-! ## Component B: game_tuple_simp -/
 
@@ -102,5 +103,72 @@ theorem order_refl_pair {α β : Type*} [Preorder α] [Preorder β] (a : α) (b 
     `(a < a ↔ b < b) ∧ (a = a ↔ b = b)`. -/
 macro "order_refl" : tactic =>
   `(tactic| exact order_refl_pair _ _)
+
+/-! ## Component D: winning_condition_tac -/
+
+/-- Helper lemma for gap_point_agreement proofs: dispatch a 4-way case split
+    over game_tuple indices. Given agreement facts for x (index 0),
+    b (index n+1), y (index n+2), and selection indices, proves
+    gap_point_agreement for the full game tuple. -/
+theorem gap_point_agreement_of_cases {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat}
+    {x y : ExtendedCarrier M atomMap r} {a : Fin n → ExtendedCarrier M atomMap r}
+    {b_M : M.carrier}
+    {x' y' : ExtendedCarrier N atomMap r} {a' : Fin n → ExtendedCarrier N atomMap r}
+    {b_N : N.carrier}
+    (hgp_x : (IsPoint x ↔ IsPoint x') ∧ (IsGap x ↔ IsGap x'))
+    (hgp_b : (IsPoint (@extendPoint sig M atomMap r b_M) ↔
+              IsPoint (@extendPoint sig N atomMap r b_N)) ∧
+             (IsGap (@extendPoint sig M atomMap r b_M) ↔
+              IsGap (@extendPoint sig N atomMap r b_N)))
+    (hgp_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y'))
+    (hgp_sel : ∀ k : Fin n, (IsPoint (a k) ↔ IsPoint (a' k)) ∧
+               (IsGap (a k) ↔ IsGap (a' k))) :
+    gap_point_agreement n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+  intro i
+  simp only [game_tuple]
+  by_cases hi0 : i.val = 0
+  · simp [hi0]; exact hgp_x
+  · by_cases hi_b : i.val = n + 1
+    · simp [hi_b]; exact hgp_b
+    · by_cases hi_y : i.val = n + 2
+      · simp [hi_y]; exact hgp_y
+      · simp [hi0, hi_b, hi_y]; exact hgp_sel ⟨i.val - 1, by omega⟩
+
+/-- Helper lemma for formula_agreement proofs: dispatch a 4-way case split
+    over game_tuple indices. Given agreement facts for x (index 0),
+    b (index n+1), y (index n+2), and selection indices, proves
+    formula_agreement for the full game tuple. -/
+theorem formula_agreement_of_cases {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat}
+    {x y : ExtendedCarrier M atomMap r} {a : Fin n → ExtendedCarrier M atomMap r}
+    {b_M : M.carrier}
+    {x' y' : ExtendedCarrier N atomMap r} {a' : Fin n → ExtendedCarrier N atomMap r}
+    {b_N : N.carrier}
+    (hform_x : ∀ A : StaviFormula, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r x A ↔
+       stavi_temporal_truth_mu N atomMap r x' A))
+    (hform_b : ∀ A : StaviFormula, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r (@extendPoint sig M atomMap r b_M) A ↔
+       stavi_temporal_truth_mu N atomMap r (@extendPoint sig N atomMap r b_N) A))
+    (hform_y : ∀ A : StaviFormula, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r y A ↔
+       stavi_temporal_truth_mu N atomMap r y' A))
+    (hform_sel : ∀ (k : Fin n) (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r (a k) A ↔
+       stavi_temporal_truth_mu N atomMap r (a' k) A)) :
+    formula_agreement n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+  intro i A hA
+  simp only [game_tuple]
+  by_cases hi0 : i.val = 0
+  · simp [hi0]; exact hform_x A hA
+  · by_cases hi_b : i.val = n + 1
+    · simp [hi_b]; exact hform_b A hA
+    · by_cases hi_y : i.val = n + 2
+      · simp [hi_y]; exact hform_y A hA
+      · simp [hi0, hi_b, hi_y]
+        exact hform_sel ⟨i.val - 1, by omega⟩ A hA
 
 end Bimodal.Metalogic.WeakCanonical

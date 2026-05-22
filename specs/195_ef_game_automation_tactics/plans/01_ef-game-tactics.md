@@ -149,21 +149,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Component D -- winning_condition_tac [NOT STARTED]
+### Phase 4: Component D -- winning_condition_tac [COMPLETED]
 
 **Goal**: Create a tactic that automates the 4-way index split pattern used in `gap_point_agreement` and `formula_agreement` proofs.
 
 **Tasks**:
-- [ ] Define `gap_point_index_split hgp_x hgp_b hgp_y hgp_sel` tactic that:
-  1. Introduces `i`, applies `simp only [game_tuple]`
-  2. Does `by_cases hi0 : i.val = 0` and dispatches with `hgp_x`
-  3. Does `by_cases hi_b : i.val = n + 1 + 1` and dispatches with `hgp_b`
-  4. Does `by_cases hi_y : i.val = (n + 1) + 2` and dispatches with `hgp_y`
-  5. In the else case, applies `hgp_sel (i.val - 1, by omega)`
-- [ ] Define `formula_index_split hform_x hform_b hform_y hform_sel` tactic (same but with extra `intro A hA`)
-- [ ] Validate by replacing one `gap_point_agreement` proof block (lines 2630-2640 in ExpressivenessGeneral.lean) with the tactic
-- [ ] Validate by replacing one `formula_agreement` proof block (lines 2641-2651) with the tactic
-- [ ] Run `lake build` and verify
+- [x] Define `gap_point_index_split hgp_x hgp_b hgp_y hgp_sel` tactic *(deviation: altered -- implemented as gap_point_agreement_of_cases helper theorem rather than elab tactic. Takes 4 agreement facts and proves gap_point_agreement for the full game tuple. Usage: `exact gap_point_agreement_of_cases hgp_x hgp_b hgp_y hgp_sel`)*
+- [x] Define `formula_index_split hform_x hform_b hform_y hform_sel` tactic *(deviation: altered -- implemented as formula_agreement_of_cases helper theorem. Usage: `exact formula_agreement_of_cases hform_x hform_b hform_y hform_sel`)*
+- [x] Validate by replacing one `gap_point_agreement` proof block with the tactic *(completed -- replaced 3 instances across Case I left/right and Case II)*
+- [x] Validate by replacing one `formula_agreement` proof block with the tactic *(completed -- replaced 3 instances)*
+- [x] Run `lake build` and verify
 
 **Timing**: 1.5 hours
 

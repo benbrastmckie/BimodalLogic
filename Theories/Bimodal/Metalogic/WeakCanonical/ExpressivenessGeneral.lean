@@ -2524,27 +2524,9 @@ private theorem ghr93_case_I {sig : MonadicSignature}
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
             rw [hj_eq]; exact tau_sel_sel ki kj
     · -- gap_point_agreement (n+1)
-      intro i
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hgp_x
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hgp_b
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hgp_y
-          · simp [hi0, hi_b, hi_y]
-            exact hgp_sel ⟨i.val - 1, by omega⟩
+      exact gap_point_agreement_of_cases hgp_x hgp_b hgp_y hgp_sel
     · -- formula_agreement (n+1)
-      intro i A hA
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hform_x A hA
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hform_b A hA
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hform_y A hA
-          · simp [hi0, hi_b, hi_y]
-            exact hform_sel ⟨i.val - 1, by omega⟩ A hA
+      exact formula_agreement_of_cases hform_x hform_b hform_y hform_sel
   · -- b_sp in (c, y]: delegate to τ's Round 2
     push_neg at hbc
     obtain ⟨b_resp_R, hb_resp_R_in, hcond_R⟩ :=
@@ -2930,27 +2912,9 @@ private theorem ghr93_case_I {sig : MonadicSignature}
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
             rw [hj_eq]; exact tau_sel_sel ki kj
     · -- gap_point_agreement (n+1)
-      intro i
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hgp_x_R
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hgp_b_R
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hgp_y_R
-          · simp [hi0, hi_b, hi_y]
-            exact hgp_sel_R ⟨i.val - 1, by omega⟩
+      exact gap_point_agreement_of_cases hgp_x_R hgp_b_R hgp_y_R hgp_sel_R
     · -- formula_agreement (n+1)
-      intro i A hA
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hform_x_R A hA
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hform_b_R A hA
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hform_y_R A hA
-          · simp [hi0, hi_b, hi_y]
-            exact hform_sel_R ⟨i.val - 1, by omega⟩ A hA
+      exact formula_agreement_of_cases hform_x_R hform_b_R hform_y_R hform_sel_R
 
 /-! ### Case II: a_n is a Point
 
@@ -3914,27 +3878,9 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             rw [← hd_eq_an]
             simp
     · -- gap_point_agreement (n+1)
-      intro i
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hgp_x
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hgp_b
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hgp_y
-          · simp [hi0, hi_b, hi_y]
-            exact hgp_sel ⟨i.val - 1, by omega⟩
+      exact gap_point_agreement_of_cases hgp_x hgp_b hgp_y hgp_sel
     · -- formula_agreement (n+1)
-      intro i A hA
-      simp only [game_tuple]
-      by_cases hi0 : i.val = 0
-      · simp [hi0]; exact hform_x A hA
-      · by_cases hi_b : i.val = n + 1 + 1
-        · simp [hi0, hi_b]; exact hform_b A hA
-        · by_cases hi_y : i.val = (n + 1) + 2
-          · simp [hi0, hi_b, hi_y]; exact hform_y A hA
-          · simp [hi0, hi_b, hi_y]
-            exact hform_sel ⟨i.val - 1, by omega⟩ A hA
+      exact formula_agreement_of_cases hform_x hform_b hform_y hform_sel
   · -- b_sp in (c, y]: delegate to τ's Round 2
     push_neg at hbc
     obtain ⟨b_resp_tau, hb_resp_tau_in, hcond_tau⟩ := hwin_tau b_sp ⟨le_of_lt hbc, hb_sp.2⟩
