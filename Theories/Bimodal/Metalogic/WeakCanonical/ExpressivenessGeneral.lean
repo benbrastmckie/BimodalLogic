@@ -1071,8 +1071,9 @@ follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
     The proof follows GHR93 Claim 1: formula agreement + order transfer forces
     the response to match d.
 
-    SORRY'd: requires the full GHR93 Claim 1 argument involving the infimum
-    construction and uniqueness of the split point. -/
+    Boundary cases (x'=d, d=y') proved via same_order_type extraction from the
+    winning condition. Interior case remains sorry'd: requires the infimum
+    characterization of d (see report 22 and plan W1.2e blocker). -/
 private theorem d_consistency_left {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
@@ -1100,12 +1101,63 @@ private theorem d_consistency_left {sig : MonadicSignature}
             ghr93_winning_condition (n + 1)
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
         a'_full ⟨n, by omega⟩ = d := by
-  sorry
+  intro a_pad ha_pad hc_last a'_full ha'_full hwin
+  -- Let t = a'_full(n) be the response at the boundary position
+  set t := a'_full ⟨n, by omega⟩ with ht_def
+  -- Use any point witness to extract a winning condition instance
+  obtain ⟨p₀, hp₀⟩ := h_pt
+  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin p₀ hp₀
+  obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
+  -- Extract boundary equivalences from same_order_type.
+  -- game_tuple layout for n+1 selections (total n+4 = (n+1)+3 indices):
+  --   index 0 = x/x', index (n+1) = a_pad(n)/a'_full(n), index (n+3) = y/y'
+  -- Equality at (0, n+1): x = c ↔ x' = t
+  have heq_0_n1 := (hord₀ ⟨0, by omega⟩ ⟨n + 1, by omega⟩).2
+  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+             show (n + 1 : Nat) ≠ 0 from by omega,
+             show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+             show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+             show n + 1 - 1 = n from by omega] at heq_0_n1
+  rw [hc_last] at heq_0_n1
+  -- Equality at (n+1, n+3): c = y ↔ t = y'
+  have heq_n1_n3 := (hord₀ ⟨n + 1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
+  simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+             show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+             show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+             show n + 1 - 1 = n from by omega,
+             show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
+             show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
+             show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at heq_n1_n3
+  rw [hc_last] at heq_n1_n3
+  -- Boundary case 1: x' = d
+  by_cases hx'd : x' = d
+  · have hxc : x = c := hcd_boundary.1.mpr hx'd
+    have hx't : x' = t := heq_0_n1.mp hxc
+    exact hx't.symm.trans hx'd
+  · by_cases hdy' : d = y'
+    · have hcy : c = y := hcd_boundary.2.mpr hdy'
+      have hty' : t = y' := heq_n1_n3.mp hcy
+      exact hty'.trans hdy'.symm
+    · -- Interior case: x' < d < y' and the winning condition constrains t.
+      -- BLOCKED: The interior case requires the GHR93 Claim 1 infimum argument.
+      -- Analysis (see report 22):
+      --   The same_order_type + formula_agreement from the winning condition give:
+      --   - t and d agree on all rank-r formulas (transitively through c)
+      --   - t and d have the same gap/point status
+      --   - t and d have the same boundary position relative to x', y'
+      --   However, these properties do NOT force t = d in general:
+      --   - Point case: two interior points with same rank_type can be distinct
+      --   - Gap case: proving cut equality requires connecting formula truth to
+      --     cut membership, which needs the infimum characterization of d
+      --   The proof requires either:
+      --   (a) Redefining d as the infimum of continuation_set (architectural change), or
+      --   (b) Adding an explicit "d is the infimum" hypothesis to this theorem
+      sorry
 
 /-- D-consistency (right boundary): dual of d_consistency_left for the right
     sub-interval, where c is placed at position 0.
 
-    SORRY'd: requires the full GHR93 Claim 1 argument. -/
+    Boundary cases proved; interior case sorry'd (same blocker as left). -/
 private theorem d_consistency_right {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
@@ -1133,7 +1185,46 @@ private theorem d_consistency_right {sig : MonadicSignature}
             ghr93_winning_condition (n + 1)
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
         a'_full ⟨0, by omega⟩ = d := by
-  sorry
+  intro a_pad ha_pad hc_first a'_full ha'_full hwin
+  -- Let t = a'_full(0) be the response at the boundary position
+  set t := a'_full ⟨0, by omega⟩ with ht_def
+  -- Use any point witness to extract a winning condition instance
+  obtain ⟨p₀, hp₀⟩ := h_pt
+  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin p₀ hp₀
+  obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
+  -- Extract boundary equivalences from same_order_type.
+  -- game_tuple index 1 = a_pad(0) = c / a'_full(0) = t
+  -- Equality at (0, 1): x = c ↔ x' = t
+  have heq_0_1 := (hord₀ ⟨0, by omega⟩ ⟨1, by omega⟩).2
+  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+             show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+             show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega] at heq_0_1
+  rw [hc_first] at heq_0_1
+  -- Equality at (1, n+3): c = y ↔ t = y'
+  have heq_1_n3 : c = y ↔ t = y' := by
+    have h := (hord₀ ⟨1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+               show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega,
+               show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
+               show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
+               show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at h
+    rwa [show a_pad ⟨1 - 1, by omega⟩ = c from hc_first] at h
+  -- Boundary case 1: x' = d
+  by_cases hx'd : x' = d
+  · have hxc : x = c := hcd_boundary.1.mpr hx'd
+    have hx't : x' = t := heq_0_1.mp hxc
+    exact hx't.symm.trans hx'd
+  · by_cases hdy' : d = y'
+    · have hcy : c = y := hcd_boundary.2.mpr hdy'
+      have hty' : t = y' := heq_1_n3.mp hcy
+      exact hty'.trans hdy'.symm
+    · -- Interior case: same blocker as d_consistency_left.
+      -- See report 22 for full analysis.
+      sorry
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
