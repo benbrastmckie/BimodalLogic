@@ -206,7 +206,7 @@ Phases within the same wave can execute in parallel.
 - [ ] **Task 2.6**: Prove `std_snce_gap_detection` (line 3124, ~100-140 lines). Dual of `std_untl_gap_detection`.
 - [ ] **Task 2.7**: Close `left_formula_gap_detection` stavi_snce case (line 3036, ~60-80 lines). Uses `stavi_snce_gap_detection` + FO-table shift (since direction).
 - [ ] **Task 2.8**: Close `left_formula_gap_detection` std_snce case (line 3087, ~60-80 lines). Uses `std_snce_gap_detection` + FO-table shift.
-- [ ] **Task 2.9**: Close `left_formula_gap_detection` base cases -- imp (line 2759, ~40-60 lines), untl (line 2763, ~20-30 lines), snce (line 2767, ~20-30 lines). base.imp expands to neg/conj; base.untl/snce reduce to temporal case patterns.
+- [x] **Task 2.9**: Close `left_formula_gap_detection` base cases -- imp (line 2759, ~40-60 lines), untl (line 2763, ~20-30 lines), snce (line 2767, ~20-30 lines). base.imp expands to neg/conj; base.untl/snce reduce to temporal case patterns. *(deviation: altered -- base.imp closed via gap_detection_unique + IH, base.untl closed via stavi_untl_gap_detection bridge, base.snce still sorry'd pending std_untl_gap_detection)*
 - [ ] **Task 2.10**: Prove `right_formula_gap_detection` (line 3137, ~200-300 lines). Dual of left_formula_gap_detection with S'/S in place of U'/U, snce_gap_detection in place of untl_gap_detection, right(A,D) in place of left(A,D). May share infrastructure via direction parameter or manual duplication.
 - [ ] **Task 2.11**: Verify `lean_verify left_formula_gap_detection` and `lean_verify right_formula_gap_detection` show no `sorryAx`. Verify `lake build` passes.
 
