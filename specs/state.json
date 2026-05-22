@@ -44,17 +44,22 @@
     {
       "project_number": 181,
       "project_name": "derivable_prop_wrapper",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-20T22:25:13Z",
-      "last_updated": "2026-05-22T16:01:26Z",
-      "session_id": "sess_1779465180_1e8c5e",
+      "last_updated": "2026-05-22T16:07:28Z",
+      "session_id": "sess_1779465838_8e4fc6",
       "researched": "2026-05-22T16:01:26Z",
       "artifacts": [
         {
           "path": "specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md",
           "type": "report",
           "summary": "Research report covering DerivationTree API surface, proposed Derivable definition with 7 core lemmas, file placement recommendation, simp/aesop integration strategy, and implementation plan in 3 phases."
+        },
+        {
+          "path": "specs/181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for Derivable Prop-valued wrapper with aesop/simp integration"
         }
       ]
     },

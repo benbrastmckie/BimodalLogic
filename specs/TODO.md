@@ -47,7 +47,7 @@ After 155:
 ### Active — Parallel Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-181 [RESEARCHED] — Add Derivable Prop-valued wrapper alongside DerivationTree
+181 [PLANNED] — Add Derivable Prop-valued wrapper alongside DerivationTree
 
 ### Completed Research (informs Wave 3)
 
@@ -124,9 +124,10 @@ After 155:
 
 ### 181. Add Derivable Prop-valued wrapper alongside DerivationTree
 - **Effort**: small (3-5 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**: [specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md]
 - **Task Type**: lean4
+- **Plan**: [181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md]
 
 **Description**: Add a `Derivable` Prop-valued wrapper (`def Derivable (Γ : Context) (φ : Formula) : Prop := Nonempty (DerivationTree Γ φ)`) alongside the existing Type-valued `DerivationTree`. This enables `simp` and `aesop` integration for derivability goals (which failed on the Type-valued tree due to proof reconstruction errors) while preserving the existing computable proof tree structure for height functions, pattern matching, and the Metalogic infrastructure. Add basic `Derivable` lemmas mirroring the key `DerivationTree` constructors (modus_ponens, axiom, weakening, necessitation) and a `Derivable.ofTree` coercion. Per task 179 research report `02_mathlib-submission.md`.
 
