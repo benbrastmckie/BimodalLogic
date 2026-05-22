@@ -98,16 +98,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Component B -- game_tuple_simp Macro [NOT STARTED]
+### Phase 2: Component B -- game_tuple_simp Macro [COMPLETED]
 
 **Goal**: Create the `simp_game_tuple` tactic macro that bundles all four game_tuple simplification lemmas into a single invocation, plus a `game_tuple_unfold` macro for raw dite expansion.
 
 **Tasks**:
-- [ ] Define `simp_game_tuple` macro in EFGameTactics.lean expanding to `simp only [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_y_eq, game_tuple_sel_eq]`
-- [ ] Define variant `simp_game_tuple at h` for hypothesis rewriting
-- [ ] Define `game_tuple_unfold` macro expanding to `simp only [game_tuple]; split_ifs <;> try omega`
-- [ ] Validate by replacing one verbose `simp only [game_tuple, show ... from by omega, ...]` block in ExpressivenessGeneral.lean with `simp_game_tuple at ...`
-- [ ] Run `lake build` and verify
+- [x] Define `simp_game_tuple` macro in EFGameTactics.lean expanding to `simp only [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_y_eq, game_tuple_sel_eq]`
+- [x] Define variant `simp_game_tuple at h` for hypothesis rewriting *(completed — single macro handles both via optional location parameter)*
+- [x] Define `game_tuple_unfold` macro expanding to `simp only [game_tuple]; split_ifs <;> try omega`
+- [x] Validate by replacing one verbose `simp only [game_tuple, show ... from by omega, ...]` block in ExpressivenessGeneral.lean with `simp_game_tuple at ...` *(completed — replaced 15 call sites across Case I proof)*
+- [x] Run `lake build` and verify
 
 **Timing**: 1 hour
 

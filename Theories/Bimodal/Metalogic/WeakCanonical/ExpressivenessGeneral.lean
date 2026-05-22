@@ -2281,56 +2281,56 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       -- Pre-extract sigma boundary orderings (as value-level facts)
       have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
         have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_b_d : (extendPoint b_resp_L < d ↔ extendPoint b_sp < c) ∧
                      (extendPoint b_resp_L = d ↔ extendPoint b_sp = c) := by
         have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨L.card + 2, by omega⟩
-        simp only [game_tuple_b_eq, game_tuple_y_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
         have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+        simp_game_tuple at h; exact h
       -- Extract sigma ordering for L-selection k vs other sigma values
       have sig_x_sel : ∀ (k : Fin L.card),
           (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
         intro k; have h := sig_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_sel_d : ∀ (k : Fin L.card),
           (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) := by
         intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 2, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_b_sel : ∀ (k : Fin L.card),
           (extendPoint b_resp_L < a_sigma k ↔ extendPoint b_sp < resp_L k) ∧
           (extendPoint b_resp_L = a_sigma k ↔ extendPoint b_sp = resp_L k) := by
         intro k; have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨1 + k.val, by omega⟩
-        simp only [game_tuple_b_eq, game_tuple_sel_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_sel_b : ∀ (k : Fin L.card),
           (a_sigma k < extendPoint b_resp_L ↔ resp_L k < extendPoint b_sp) ∧
           (a_sigma k = extendPoint b_resp_L ↔ resp_L k = extendPoint b_sp) := by
         intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 1, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_b_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_sel_sel : ∀ (k k' : Fin L.card),
           (a_sigma k < a_sigma k' ↔ resp_L k < resp_L k') ∧
           (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') := by
         intro k k'; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_sel_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have sig_x_b : (x' < extendPoint b_resp_L ↔ x < extendPoint b_sp) ∧
                      (x' = extendPoint b_resp_L ↔ x = extendPoint b_sp) := by
         have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 1, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_b_eq] at h; exact h
+        simp_game_tuple at h; exact h
       -- Extract tau ordering for R-selection k vs other tau values
       have tau_d_sel : ∀ (k : Fin R.card),
           (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
         intro k; have h := tau_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have tau_sel_y : ∀ (k : Fin R.card),
           (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) := by
         intro k; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨R.card + 2, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+        simp_game_tuple at h; exact h
       have tau_sel_sel : ∀ (k k' : Fin R.card),
           (a_tau k < a_tau k' ↔ resp_R k < resp_R k') ∧
           (a_tau k = a_tau k' ↔ resp_R k = resp_R k') := by
         intro k k'; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_sel_eq] at h; exact h
+        simp_game_tuple at h; exact h
       -- Interval bounds needed for pivot_chain_order
       -- a_sigma(k) ≤ d (since a_sigma(k) = a_bwd(eL(k)) and eL(k) ∈ L means a_bwd < d)
       have ha_sig_le_d : ∀ (k : Fin L.card), a_sigma k ≤ d :=
