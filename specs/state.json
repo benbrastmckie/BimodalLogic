@@ -651,14 +651,14 @@
     {
       "project_number": 195,
       "project_name": "ef_game_automation_tactics",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
       "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N×N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
       "dependencies": [],
       "created": "2026-05-22T19:18:49Z",
-      "last_updated": "2026-05-22T19:45:39Z",
+      "last_updated": "2026-05-22T20:09:58Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -670,16 +670,22 @@
           "path": "specs/195_ef_game_automation_tactics/plans/01_ef-game-tactics.md",
           "type": "plan",
           "summary": "5-phase implementation plan for EF game automation tactics (game_tuple_simp, pivot_order, winning_condition_tac, same_order_type_grid)"
+        },
+        {
+          "path": "specs/195_ef_game_automation_tactics/summaries/01_ef-game-tactics-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for EF game automation tactics"
         }
       ],
-      "session_id": "sess_1779478813_009e49",
+      "session_id": "sess_1779479262_f283a7",
       "started": "2026-05-22T19:29:54Z",
-      "researched": "2026-05-22T19:38:51Z"
+      "researched": "2026-05-22T19:38:51Z",
+      "completion_summary": "Created EFGameTactics.lean with 4 tactic components (simp_game_tuple, pivot_chain_order', gap_point_agreement_of_cases, same_order_type_grid). Relocated 6 private lemmas to EFGames.lean. Validated by replacing ~36 call sites in ExpressivenessGeneral.lean. Build passes."
     },
     {
       "project_number": 196,
       "project_name": "codebase_tactic_survey",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
@@ -689,9 +695,10 @@
         161
       ],
       "created": "2026-05-22T19:21:48Z",
-      "last_updated": "2026-05-22T19:21:48Z",
+      "last_updated": "2026-05-22T20:07:30Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1779480433_410e72"
     }
   ],
   "next_project_number": 197,

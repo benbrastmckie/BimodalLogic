@@ -110,7 +110,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### Phase 5 — Tactics Survey (generates tactic task roadmap)
 
-196 [NOT STARTED] — Codebase-wide tactic opportunity survey (generates tasks)
+196 [RESEARCHING] — Codebase-wide tactic opportunity survey (generates tasks)
   └─ 155, 161
 
 ### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
@@ -170,7 +170,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### 196. Codebase-wide tactic opportunity survey
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 155, 161
@@ -202,18 +202,22 @@ Existing tasks 185-195 are provisional until the survey completes.
 - Recommendations for which existing tasks (185-195) to keep, merge, split, or replace
 - Priority ordering for implementation
 
+**Known deferred enhancements to evaluate**:
+- **`pivot_order` context-search elab tactic** (deferred from task 195 Phase 3): A full `elab` tactic in `TacticM` that auto-discovers pivot elements, interval bounds, and ordering witnesses from the local context via `getLCtx`/`isDefEq`, then applies `pivot_chain_order'`/`pivot_chain_order_rev'` with zero explicit arguments. The pair-based convenience theorems already implemented in task 195 capture ~90% of the ergonomic win (6 args instead of 8), but the remaining step to full context search (~100 lines of metaprogramming) would eliminate all manual argument assembly at ~65 call sites. Evaluate whether the maintenance cost of context-search brittleness is justified by the marginal gain.
+
 **Relationship to existing tasks**: Tasks 185-195 were created incrementally based on specific needs. This survey may confirm, refine, or supersede them. Task 195 (EF game automation) was created from a focused WeakCanonical/ scan and is likely correct but may be restructured. Tasks 185-193 (modal proof search pipeline) were designed top-down and may benefit from bottom-up validation.
 
 ---
 
 ### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
 - **Effort**: medium (10-15 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Research**: [specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: none (assists 155)
 - **Plan**: [195_ef_game_automation_tactics/plans/01_ef-game-tactics.md]
+- **Summary**: [195_ef_game_automation_tactics/summaries/01_ef-game-tactics-summary.md]
 
 **Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Implement NOW to unblock the remaining Phase 1 sorries in task 155, then use for refactoring later. Four components, ranked by impact:
 
