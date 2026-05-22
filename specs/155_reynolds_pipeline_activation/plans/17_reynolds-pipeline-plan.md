@@ -191,7 +191,7 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). *(deviation: altered — Fixed buggy 2-way case split with correct 3-way split: (1) carrier-point minimum d=extendPoint p (unchanged), (2) carrier-point GLB p not in S_C d=extendPoint p (new, fully proved using gap no_sup axiom), (3) no carrier-point GLB (sorry'd, deferred to Phase 3 c-gap-case which wires infimum_gap_r_definable). Net -2 sorries: removed 3 buggy sorries, added 1 clean sorry for Case 3.)*
 - [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). With d = infimum, d <= a_bwd(n) (since a_bwd(n) is in S_C and d is the infimum). Update structure definition and downstream usage. *(completed — already done in prior session; line 1298 has `hd_le_an`)*
 - [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). With hd_le_an instead of hd_eq_an, the two Case I usage sites need minor adjustments. *(completed — all live hd_eq_an references are in the OLD CASE II PROOF block comment (lines 2904-3624); only line 1323 remains as a docstring mention; Case I uses hd_le_an at lines 1881, 1892 correctly)*
-- [ ] **Task 1.4**: Prove GHR93 Claim 1 (~80-120 lines). *(deviation: deferred to task 1.4 next round — requires continuation formula C' construction, ~100 lines new theorem)* New theorem `ghr93_claim_1` in ExpressivenessGeneral.lean:
+- [ ] **Task 1.4**: Prove GHR93 Claim 1 (~80-120 lines). *(deviation: deferred — Round 5 confirmed h_claim1 unprovable at rank r alone; requires rank r+1 argument via h_fwd_r1)* New theorem `ghr93_claim_1` in ExpressivenessGeneral.lean:
   - Construct C' = not-C or K^{-}(not-C) of rank r+1
   - Show M_r |= C'(c) using infimum properties (`cont_fails_below_gap`, `cont_holds_above_gap`)
   - Use h_fwd_r1 (rank r+1 forward strategy, already parameterized) to transfer
@@ -200,13 +200,12 @@ Phases within the same wave can execute in parallel.
   - Prove d >= d-bar by contradiction (if d < d-bar, Spoiler exploits the gap)
   - Conclude d = d-bar
 - [ ] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: deferred — depends on Task 1.4)* Apply Claim 1 to the forward strategy's response. With d = d-bar and Claim 1 proved, these become trivial applications.
-- [ ] **Task 1.6**: Restructure Case II to construct e_n fresh (~300-500 lines). *(deviation: deferred — most complex remaining Phase 1 task)* Follow GHR93 pp.117-118:
-  - Use tau response for positions 0..n-1 (line ~2873, already exists)
-  - Transfer U(B, A)(alpha_{n-1}) from N to M via tau (rank r+1 formula; tau preserves rank r+4 formulas from Claim 2 style argument)
-  - Find z > resp_tau(n-1) with M |= B(z) and A on (resp_tau(n-1), z)
-  - Set e_n = z (a genuinely fresh point, NOT c, NOT d-bar)
-  - Prove rank-r formula agreement between e_n and alpha_n (both satisfy B = X_{alpha_n})
-  - Close the sorry at line ~2890
+- [ ] **Task 1.6**: Restructure Case II to construct e_n fresh (~300-500 lines). *(deviation: altered — Round 5 completed e_n construction via (n+1)-round forward game round 2, formula agreement extracted; split into b_sp <= c and b_sp > c sub-cases; winning condition assembly sorry'd for both sub-cases ~200-400 lines remain)* Approach changed from GHR93 pp.117-118 to forward-game-based e_n:
+  - h_fwd_n1 added to SplitPointProps (n+1 round forward strategy)
+  - e_n constructed via forward game round 2 with p_n (carrier point of a_bwd(n))
+  - Formula agreement hform_en_an extracted from forward game winning condition
+  - b_sp case split: sigma for b_sp <= c, tau for b_sp > c
+  - Winning condition assembly for each sub-case sorry'd (~100-200 lines each)
 - [x] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836. *(deviation: altered — Created ghr93_forward_to_backward_core with decoupled rounds_r1 and h_r1_univ universal over endpoints; changed ghr93_forward_to_backward API to take h_r1_univ; 83 lines added, 39 removed; used h_enough : 1+3n <= rounds_r1 instead of report 18's 4+3n constraint)*
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 
