@@ -283,6 +283,7 @@ After 155 completes:
   - [specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md]
   - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
+  - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]

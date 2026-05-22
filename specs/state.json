@@ -229,8 +229,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-22T04:05:09Z",
-      "next_artifact_number": 17,
+      "last_updated": "2026-05-22T15:31:52Z",
+      "next_artifact_number": 18,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -331,6 +331,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/27_d-consistency-blocker.md",
           "type": "research",
           "summary": "Root cause analysis: rank mismatch (GHR93 needs rank r+1, code uses rank r). Recommends infimum redefinition + Case II restructure."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md",
+          "type": "research",
+          "summary": "Deep analysis of GHR93 Claim 1 literature, definitive resolution of Phase 1 d-consistency blocker strategies, Lean infrastructure inventory, pipeline health assessment"
         }
       ],
       "session_id": "sess_1779422692_419580",
