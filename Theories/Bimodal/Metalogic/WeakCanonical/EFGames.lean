@@ -5442,14 +5442,180 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
     · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val, hB_val⟩
       exact ⟨(ihA m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val⟩,
              (ihB m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hB_val⟩⟩
-  | stavi_untl A B _ _ =>
+  | stavi_untl A B ihA ihB =>
     -- right_formula (.stavi_untl A B) D = .std_snce compound D
     -- compound = D ∧ B ∧ U'(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D)
-    -- Mirrors left stavi_snce case (lines ~3638-3967) with direction reversed.
-    -- Uses same compound decomposition pattern as right base.untl (closed).
-    -- Forward: extract S'(⊤,B∧D) + ¬S'(D,B∧D), build gap below m, show U'(A,B)^mu at gap.
-    -- Backward: gap below m with U'(A,B)^mu → find compl point s with compound.
-    sorry
+    -- Same compound decomposition as right base.untl with U'(A,B) instead of U(f,g)
+    simp only [right_formula]
+    rw [stavi_truth_mu_at_point m (.std_snce _ D)]
+    simp only [stavi_temporal_truth]
+    constructor
+    · -- Forward: std_snce(compound, D)(m) → gap conditions
+      intro ⟨s, hsm, ⟨hDs, hBs, hUntl_s, hS'_BD_s, hNotS'D_BD_s⟩, hD_bet⟩
+      obtain ⟨s₁, hs₁s, h_body, h_fail, h_init⟩ := hS'_BD_s
+      obtain ⟨u_fail, hs₁_uf, huf_s, hBD_fail⟩ := h_fail
+      obtain ⟨u_init, hs₁_ui, hui_s, hBD_init⟩ := h_init
+      -- Gap construction (identical to base.untl)
+      let bD : M.carrier → Prop := fun u =>
+        stavi_temporal_truth M atomMap u B ∧ stavi_temporal_truth M atomMap u D
+      let compl : Set M.carrier :=
+        {x | ∀ u, u < s → x ≤ u → ∃ v, v < u ∧ ∀ w, v < w → w < s → bD w}
+      have hs_in_compl : s ∈ compl :=
+        fun u hus hsu => absurd (lt_of_le_of_lt hsu hus) (lt_irrefl s)
+      have hu_fail_not_compl : u_fail ∉ compl := by
+        intro h; obtain ⟨v, hvuf, hBDv⟩ := h u_fail huf_s le_rfl
+        exact hBD_fail (hBDv u_fail hvuf huf_s)
+      have h_compl_gt_uf : ∀ x ∈ compl, u_fail < x := by
+        intro x hx; by_contra h; push_neg at h
+        exact hu_fail_not_compl (fun u hus huf => hx u hus (le_trans h huf))
+      have h_compl_uc : ∀ x y, x ∈ compl → x ≤ y → y ∈ compl :=
+        fun x y hx hxy u hus hyu => hx u hus (le_trans (le_trans hxy hyu) le_rfl)
+      let cut : Set M.carrier := {x | x ∉ compl}
+      have h_cut_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut := by
+        intro x y hx hyx hy; exact hx (h_compl_uc y x hy hyx)
+      have h_proper : cut ≠ Set.univ := by
+        intro h; have := h ▸ Set.mem_univ s; exact this hs_in_compl
+      have h_cofinal_propagate :
+          ∀ u, s₁ < u → u < s →
+          (∀ w, u < w → w < s → ∃ v, v < w ∧ ∀ z, v < z → z < s → bD z) →
+          ∃ v, v < u ∧ ∀ z, v < z → z < s → bD z := by
+        intro u hs₁u hus h_above
+        cases h_body u hs₁u hus with
+        | inl h => exact h
+        | inr h =>
+          obtain ⟨_, v', huv', hv's, hBDv'⟩ := h
+          obtain ⟨v₂, hv₂v', hBDv₂⟩ := h_above v' huv' hv's
+          exact absurd (hBDv₂ v' hv₂v' hv's) hBDv'
+      have hu_init_compl : u_init ∈ compl := by
+        intro u hus huu_init
+        rcases eq_or_lt_of_le huu_init with rfl | hlt
+        · cases h_body u_init hs₁_ui hui_s with
+          | inl h => exact h
+          | inr h =>
+            obtain ⟨_, v', hv'ui, hv's, hBDv'⟩ := h
+            exact absurd (hBD_init v' hv'ui hv's) hBDv'
+        · exact ⟨u_init, hlt, fun z huz hzs => hBD_init z huz hzs⟩
+      have h_bD_at_compl : ∀ u, u ∈ compl → u < s → bD u := by
+        intro u hu hus; obtain ⟨v, hvu, hBDv⟩ := hu u hus le_rfl
+        exact hBDv u hvu hus
+      have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
+        intro x hx y hy; by_contra h; push_neg at h
+        exact hx (h_compl_uc y x hy h)
+      have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
+        intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
+        have hps : p < s := h_cut_lt_compl p hp_cut s hs_in_compl
+        have hs₁p : s₁ < p := by
+          by_contra h; push_neg at h
+          exact not_le.mpr (lt_of_le_of_lt h hs₁_uf) (h_ub hu_fail_not_compl)
+        apply hp_cut
+        intro u hus hpu
+        rcases eq_or_lt_of_le hpu with rfl | hpu'
+        · exact h_cofinal_propagate p hs₁p hus (fun w hpw hws => by
+            have : w ∈ compl := by by_contra hw; exact not_le.mpr hpw (h_ub hw)
+            exact this w hws le_rfl)
+        · have : u ∈ compl := by by_contra hu_cut; exact not_le.mpr hpu' (h_ub hu_cut)
+          exact this u hus le_rfl
+      have h_not_cut_of_compl : ∀ x, x ∈ compl → x ∉ cut :=
+        fun x hx hx_cut => hx_cut hx
+      have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
+        intro ⟨b, hb_not_cut, hb_min⟩
+        have hb_compl : b ∈ compl := by by_contra h; exact hb_not_cut (show b ∈ cut from h)
+        have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl)) hui_s
+        have hs₁b : s₁ < b := lt_trans hs₁_uf (h_compl_gt_uf b hb_compl)
+        have h_below_b : ∀ y, y < b → y ∈ cut := by
+          intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
+        cases h_body b hs₁b hbs with
+        | inl h_cof =>
+          obtain ⟨v, hvb, hBDv⟩ := h_cof
+          by_cases hvs₁ : v ≤ s₁
+          · exact hBD_fail (hBDv u_fail (lt_of_le_of_lt hvs₁ hs₁_uf) huf_s)
+          · push_neg at hvs₁
+            have hv_compl : v ∈ compl := by
+              intro u hus hvu
+              rcases eq_or_lt_of_le hvu with rfl | hvu'
+              · exact h_cofinal_propagate v hvs₁ (lt_trans hvb hbs)
+                  (fun w hvw hws => ⟨v, hvw, hBDv⟩)
+              · exact ⟨v, hvu', hBDv⟩
+            exact absurd hvb (not_lt.mpr (hb_min v (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
+        | inr h =>
+          obtain ⟨_, v', hbv', hv's, hBDv'⟩ := h
+          exact hBDv' (h_bD_at_compl v' (h_compl_uc b v' hb_compl (le_of_lt hbv')) hv's)
+      let γ_gap : Gap M.carrier :=
+        ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+      have h_D_compl_cofinal : ∃ t, t ∉ γ_gap.cut ∧ ∀ u, u ∉ γ_gap.cut → u ≤ t →
+          stavi_temporal_truth M atomMap u D :=
+        ⟨u_init, fun h => h hu_init_compl, fun u hu hut =>
+          (h_bD_at_compl u (by by_contra h'; exact hu h') (lt_of_le_of_lt hut hui_s)).2⟩
+      have hD_fails : ∃ u_D, s₁ < u_D ∧ u_D < s ∧
+          ¬stavi_temporal_truth M atomMap u_D D := by
+        by_contra h_all_D; push_neg at h_all_D
+        apply hNotS'D_BD_s
+        exact ⟨s₁, hs₁s,
+          fun u hs₁u hus => by
+            cases h_body u hs₁u hus with
+            | inl h => left; exact h
+            | inr h => right; exact ⟨fun v hsv hvu => h_all_D v hsv (lt_trans hvu hus), h.2⟩,
+          ⟨u_fail, hs₁_uf, huf_s, hBD_fail⟩,
+          ⟨u_init, hs₁_ui, hui_s, hBD_init⟩⟩
+      obtain ⟨u_D, hs₁_uD, huD_s, hD_fail_D⟩ := hD_fails
+      have hu_D_not_compl : u_D ∉ compl := by
+        intro h; exact hD_fail_D (h_bD_at_compl u_D h huD_s).2
+      have h_no_init_cut_D : ¬∃ t, t ∈ γ_gap.cut ∧ ∀ u, t ≤ u → u ∈ γ_gap.cut →
+          stavi_temporal_truth M atomMap u D := by
+        intro ⟨t, ht_cut, hDt⟩
+        by_cases htu : t ≤ u_D
+        · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from hu_D_not_compl))
+        · push_neg at htu
+          apply hNotS'D_BD_s
+          have hts : t < s := h_cut_lt_compl t ht_cut s hs_in_compl
+          refine ⟨t, hts, ?_, ?_, ?_⟩
+          · intro u htu' hus
+            have hs₁u : s₁ < u := lt_trans (lt_trans hs₁_uD htu) htu'
+            cases h_body u hs₁u hus with
+            | inl h => left; exact h
+            | inr h =>
+              right
+              exact ⟨fun v htv hvu => by
+                by_cases hv_compl : v ∈ compl
+                · exact (h_bD_at_compl v hv_compl (lt_trans hvu hus)).2
+                · exact hDt v (le_of_lt htv) (show v ∈ γ_gap.cut from hv_compl), h.2⟩
+          · have ⟨u₂, hu₂_cut, htu₂⟩ : ∃ u₂, u₂ ∈ cut ∧ t < u₂ := by
+              by_contra h; push_neg at h
+              exact h_no_sup ⟨t, ⟨fun x hx => h x hx,
+                fun ub hub => hub ht_cut⟩, ht_cut⟩
+            have hu₂s : u₂ < s := h_cut_lt_compl u₂ hu₂_cut s hs_in_compl
+            have hs₁u₂ : s₁ < u₂ := lt_trans (lt_trans hs₁_uD htu) htu₂
+            rcases h_body u₂ hs₁u₂ hu₂s with ⟨v, hvu₂, hBDv⟩ | ⟨_, v', hv'u₂, hv's, hngD⟩
+            · exfalso
+              exact hu₂_cut (show u₂ ∈ compl from
+                fun u' hu's hu₂u' => ⟨v, lt_of_lt_of_le hvu₂ hu₂u', hBDv⟩)
+            · exact ⟨v', lt_trans htu₂ hv'u₂, hv's, hngD⟩
+          · exact ⟨u_init, h_cut_lt_compl t ht_cut u_init hu_init_compl, hui_s, hBD_init⟩
+      have h_def_right : gap_definable_on_right M atomMap γ_gap D :=
+        ⟨h_D_compl_cofinal, h_no_init_cut_D⟩
+      have h_r_def : r_definable_gap M atomMap γ_gap r :=
+        ⟨D, hD, Or.inr h_def_right⟩
+      let γ : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
+      refine ⟨γ, ?_, h_def_right, ?_, ?_⟩
+      · have hm_compl : m ∈ compl := h_compl_uc s m hs_in_compl (le_of_lt hsm)
+        show @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
+        exact ⟨fun h => h hm_compl, fun h => h hm_compl⟩
+      · intro u hum hu_not_cut
+        have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
+        by_cases hus : u < s
+        · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_compl u hu_compl hus).2
+        · push_neg at hus
+          rcases eq_or_lt_of_le hus with rfl | hsu
+          · exact (stavi_truth_mu_at_point s D).mpr hDs
+          · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
+      · -- U'(A,B)^mu at γ: use s as mu-point witness above γ
+        -- U'(A,B)(s) = hUntl_s. Since extendPoint s > Sum.inr γ (s is complement),
+        -- U'(A,B)^mu(γ) follows by taking extendPoint s as the mu-point.
+        -- The FO table body between γ and s₂ extends via B∧D at complement points.
+        sorry
+    · -- Backward: gap below m with U'(A,B)^mu → compound at m
+      -- Mirror of left stavi_snce backward: find complement point s with all compound components.
+      sorry
   | stavi_snce A B _ _ =>
     -- right_formula (.stavi_snce A B) D = S'(B ∧ S'(A,B), D)
     -- Mirrors left's stavi_untl case with stavi_snce_gap_detection
