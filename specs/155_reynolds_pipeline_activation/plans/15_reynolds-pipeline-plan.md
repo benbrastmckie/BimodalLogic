@@ -49,7 +49,7 @@ Agents MUST:
 
 This plan (v10) integrates the muSig blocker resolution from report 21 and updates the sorry inventory to reflect current codebase state. The key new finding is a `not_not_and_not` helper lemma that bridges the FO encoding's `not (not A and not B)` disjunction representation to Lean's native `Or` type, unblocking the `stavi_table_mu_correct` stavi_untl/snce cases.
 
-Phases 1-5, 4A, 4B, and 0 are COMPLETED. Phase 4C-W1 is PARTIAL with sub-phases W1.1, W1.2a-c, W1.3, W1.2d first conjunct, and W1.muSig completed. The muSig infrastructure is now fully sorry-free (9/9 closed): the root cause was a sign error in `stavi_untl_fo`/`stavi_snce_fo` (spurious `MonadicFormula.not` wrapper around disjunction conjunction). Remaining W1 sub-phases: pigeonhole (W1.2d-remainder), d-consistency (W1.2e), M-side degenerate (W1.4). The plan maintains the same dependency chain as v9.
+Phases 1-5, 4A, 4B, and 0 are COMPLETED. Phase 4C-W1 is PARTIAL with sub-phases W1.1, W1.2a-c, W1.3, W1.2d (both first conjunct and pigeonhole), and W1.muSig all completed. The muSig infrastructure is fully sorry-free (9/9 closed) and `pigeonhole_definable_formula` is closed (required new `stavi_fo_depth_le_twice_depth` bridge lemma + NF at depth `2*r`). Remaining W1 sub-phases: d-consistency (W1.2e, 2 sorries), M-side degenerate (W1.4, 2 sorries). The plan maintains the same dependency chain as v9.
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, no `axiom` declarations in the pipeline, `stavi_expressive_completeness` is sorry-free.
 
@@ -79,7 +79,7 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 
 **Goals**:
 - ~~Close the 2 remaining muSig sorries (`stavi_table_mu_correct` stavi_untl/snce)~~ **DONE** (FO encoding bug fix)
-- Close the pigeonhole_definable_formula sorry (now unblocked: muSig is sorry-free)
+- ~~Close the pigeonhole_definable_formula sorry~~ **DONE** (recursive chain + Fintype pigeonhole at depth 2*r)
 - Complete d-consistency (GHR93 Claim 1) via infimum argument
 - Close M-side degenerate interval sorries (lines 1304, 1321)
 - Prove GHR93 Lemma 9 (gap detection correctness)
@@ -114,19 +114,19 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 | 3521 | `ghr93_decomposition_implies_game` | 4C-W4 | open |
 | ~~4188~~ | ~~`stavi_table_mu_correct` stavi_untl case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
 | ~~4191~~ | ~~`stavi_table_mu_correct` stavi_snce case~~ | ~~4C-W1 (muSig)~~ | **CLOSED** (FO encoding bug fix) |
-| 4809 | `stavi_expressive_completeness` | 4C-W4 | open (line shifted from 4529) |
+| 4823 | `stavi_expressive_completeness` | 4C-W4 | open (line shifted from 4529→4809→4823) |
 
-### ExpressivenessGeneral.lean (8 sorries)
-| Line | Identifier | Phase |
-|------|-----------|-------|
-| 639 | `pigeonhole_definable_formula` chain body | 4C-W1 (depends on muSig) |
-| 941 | `d_consistency_left` | 4C-W1 (Claim 1) |
-| 974 | `d_consistency_right` | 4C-W1 (Claim 1) |
-| 1304 | M-side degenerate `h_pt_xc` | 4C-W1 |
-| 1321 | M-side degenerate `h_pt_cy` | 4C-W1 |
-| 1425 | c construction gap case | 4C-W3 |
-| 3329 | `ghr93_cases_III_IV` | 4C-W3 |
-| 3550 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 |
+### ExpressivenessGeneral.lean (7 sorries, down from 8)
+| Line | Identifier | Phase | Status |
+|------|-----------|-------|--------|
+| ~~639~~ | ~~`pigeonhole_definable_formula` chain body~~ | ~~4C-W1 (depends on muSig)~~ | **CLOSED** (pigeonhole proof via recursive chain + Fintype contradiction) |
+| 1098 | `d_consistency_left` | 4C-W1 (Claim 1) | open (line shifted from 941) |
+| 1131 | `d_consistency_right` | 4C-W1 (Claim 1) | open (line shifted from 974) |
+| 1461 | M-side degenerate `h_pt_xc` | 4C-W1 | open (line shifted from 1304) |
+| 1478 | M-side degenerate `h_pt_cy` | 4C-W1 | open (line shifted from 1321) |
+| 1582 | c construction gap case | 4C-W3 | open (line shifted from 1425) |
+| 3486 | `ghr93_cases_III_IV` | 4C-W3 | open (line shifted from 3329) |
+| 3707 | `ghr93_forward_to_backward_rank_varying` | 4C-W4 | open (line shifted from 3550) |
 
 ### IntegerModel.lean (3 sorries)
 | Line | Identifier | Phase |
@@ -140,7 +140,7 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 |------|-----------|-------|
 | 574 | `h_truth_corr` | 10 |
 
-**Total critical-path sorries**: 16 (was 18; 2 muSig sorries closed, count corrected from 17)
+**Total critical-path sorries**: 15 (down from 18; 3 closed: 2 muSig + 1 pigeonhole)
 
 ## Implementation Phases
 
@@ -266,9 +266,9 @@ Phase 10 (h_truth_corr delegation) can proceed in parallel.
 
 **Goal**: Close the muSig infrastructure sorries, complete the pigeonhole argument, restructure `obtain_split_point_props` with infimum-based d, handle degenerate intervals via vacuous game lemma, close M-side degenerate sorries.
 
-**Status**: PARTIAL. Completed: Task W1.1 (degenerate gap lemma), W1.2a-c (definitions, S_C properties, gap construction -- all sorry-free), W1.2d first conjunct (`cont_holds_above_gap` sorry-free), W1.3 (N-side degenerate sorries), muSig infrastructure 9/9 sorries closed (including stavi_untl/snce via FO encoding bug fix), `nf_determines_stavi_truth` sorry-free.
+**Status**: PARTIAL. Completed: Task W1.1 (degenerate gap lemma), W1.2a-c (definitions, S_C properties, gap construction -- all sorry-free), W1.2d (both `cont_holds_above_gap` and `pigeonhole_definable_formula` sorry-free), W1.3 (N-side degenerate sorries), W1.muSig (9/9 sorries closed via FO encoding bug fix), `nf_determines_stavi_truth` and `nf_determines_stavi_truth_depth` sorry-free.
 
-**Remaining work** (5 sorries in this phase; 2 muSig sorries now closed):
+**Remaining work** (4 sorries in this phase; muSig + pigeonhole now closed):
 
 **Sub-phase W1.muSig: Close stavi_table_mu_correct stavi_untl/snce [COMPLETED]**
 
@@ -294,12 +294,12 @@ Closed `pigeonhole_definable_formula` sorry. Key insight: `stavi_fo_depth` can e
 
 **Sub-phase W1.2e-remainder: D-Consistency Claim 1 [NOT STARTED]**
 
-- [ ] **Task W1.2e.1**: Prove `d_consistency_left` (line 941) via GHR93 Claim 1 infimum argument. Steps: C'(c_bar) holds by infimum property, formula transfer gives C'(d), C'(d) implies d <= d_bar, contradiction if d < d_bar. ~150-200 lines.
-- [ ] **Task W1.2e.2**: Prove `d_consistency_right` (line 974) -- dual. ~100-150 lines.
+- [ ] **Task W1.2e.1**: Prove `d_consistency_left` (line 1098) via GHR93 Claim 1 infimum argument. Steps: C'(c_bar) holds by infimum property, formula transfer gives C'(d), C'(d) implies d <= d_bar, contradiction if d < d_bar. ~150-200 lines.
+- [ ] **Task W1.2e.2**: Prove `d_consistency_right` (line 1131) -- dual. ~100-150 lines.
 
 **Sub-phase W1.4: M-side Degenerate Sorries [NOT STARTED]**
 
-- [ ] **Task W1.4.1**: Close M-side degenerate `h_pt_xc` (line 1304) and `h_pt_cy` (line 1321). Requires restructuring SplitPointProps to make point witnesses optional in degenerate cases, plus ~50-100 line branch in Case I for deriving R-side data from `hcd_form`/`hcd_gp` instead of from tau when c=y. Case II is trivially fixable.
+- [ ] **Task W1.4.1**: Close M-side degenerate `h_pt_xc` (line 1461) and `h_pt_cy` (line 1478). Requires restructuring SplitPointProps to make point witnesses optional in degenerate cases, plus ~50-100 line branch in Case I for deriving R-side data from `hcd_form`/`hcd_gp` instead of from tau when c=y. Case II is trivially fixable.
 
 - [ ] **Task W1.5**: Verify `lake build` passes. Cases I and II remain sorry-free.
 
