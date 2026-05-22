@@ -3167,16 +3167,106 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           intro u hmu hus
           have hu_cut : u ∈ γ.val.cut := γ.val.downward_closed s u hs_cut (le_of_lt hus)
           exact (stavi_truth_mu_at_point u D).mp (hγ_bet u hmu hu_cut)
-        -- Provide witness s with the easy parts, sorry the U'/¬U' conditions
-        -- All easy parts verified: D(s), g(s), S(f,g)(s), D-between(m,s)
-        -- BLOCKED: constructing U'(⊤, g∧D)(s) and ¬U'(D, g∧D)(s) from gap structure
-        -- g∧D at cut points: g from hg_mu (S(f,g)^mu gives g above t_pt),
-        --   D from hγ_bet (D-between gives D at cut points above m)
-        -- (g∧D)-failure: from gap_definable_on_left condition 2 (no initial D in complement)
-        -- ¬U'(D, g∧D)(s): from gap_definable_on_left condition 2,
-        --   complement has no initial D-segment, which prevents U'(D, g∧D) from holding
-        --   at s because condition (1) right branch requires D in the complement
-        sorry
+        -- Extract gap definability conditions
+        obtain ⟨⟨t_D, ht_D_cut, hD_final⟩, h_no_init_D⟩ := hγ_def
+        -- Helper: complement points > cut points
+        have h_compl_gt : ∀ x, x ∉ γ.val.cut → ∀ y, y ∈ γ.val.cut → y < x := by
+          intro x hx y hy; by_contra h; push_neg at h
+          exact hx (γ.val.downward_closed y x hy h)
+        -- Helper: ¬D witnesses at complement points
+        have h_neg_init : ∀ t, t ∉ γ.val.cut →
+            ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
+          intro t ht; by_contra h_all; push_neg at h_all
+          exact h_no_init_D ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
+        -- Get a complement point for U'(⊤, g∧D) bound
+        have ⟨c₀, hc₀_not⟩ : ∃ c₀, c₀ ∉ γ.val.cut := by
+          by_contra h; push_neg at h
+          exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
+        have hsc₀ : s < c₀ := h_compl_gt c₀ hc₀_not s hs_cut
+        -- g∧D at cut points above s
+        have h_gD_cut : ∀ u, s < u → u ∈ γ.val.cut →
+            temporal_truth M atomMap u g ∧ stavi_temporal_truth M atomMap u D := by
+          intro u hsu hu_cut
+          exact ⟨(temporal_truth_mu_at_point u g).mp
+            (hg_mu (extendPoint u)
+              ((extendPoint_lt_iff t_pt u).mpr (lt_trans hts hsu))
+              ⟨hu_cut, fun h => h hu_cut⟩ ⟨u, rfl⟩),
+            (stavi_truth_mu_at_point u D).mp (hγ_bet u (lt_trans hms hsu) hu_cut)⟩
+        refine ⟨s, hms, ⟨hDs, hgs, hSnce_s, ?_, ?_⟩, hD_bet_ms⟩
+        · -- U'(⊤, g∧D)(s): bound c₀
+          refine ⟨c₀, hsc₀, ?_, ?_, ?_⟩
+          · -- Condition (1): body
+            intro u hsu huc₀
+            by_cases hu_cut : u ∈ γ.val.cut
+            · -- u ∈ cut: left disjunct (gD cofinal)
+              left
+              have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
+                by_contra h_all; push_neg at h_all
+                exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
+              exact ⟨y, huy, fun w hsw hwy =>
+                h_gD_cut w hsw (γ.val.downward_closed y w hy_in (le_of_lt hwy))⟩
+            · -- u ∉ cut: right disjunct (⊤ trivial + ¬gD witness)
+              right
+              refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
+              have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+                by_contra h_all; push_neg at h_all
+                exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
+              obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+              exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyu,
+                fun ⟨_, hD'⟩ => hDw hD'⟩
+          · -- Condition (2): ¬gD failure in (s, c₀)
+            have ⟨y, hy_not, hyc₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < c₀ := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨c₀, hc₀_not, fun z hz => h_all z hz⟩
+            obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+            exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyc₀,
+              fun ⟨_, hD'⟩ => hDw hD'⟩
+          · -- Condition (3): gD initial in (s, c₀)
+            have ⟨y, hy_in, hsy⟩ : ∃ y ∈ γ.val.cut, s < y := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.no_sup ⟨s, ⟨fun x hx => h_all x hx, fun b hb => hb hs_cut⟩, hs_cut⟩
+            exact ⟨y, hsy, h_compl_gt c₀ hc₀_not y hy_in, fun v hsv hvy =>
+              h_gD_cut v hsv (γ.val.downward_closed y v hy_in (le_of_lt hvy))⟩
+        · -- ¬U'(D, g∧D)(s): by contradiction using two-step D-transfer argument
+          intro ⟨s₁, hss₁, h_body, h_fail, h_init⟩
+          obtain ⟨u_fail, hsu_fail, huf_s₁, hgD_fail⟩ := h_fail
+          have huf_not_cut : u_fail ∉ γ.val.cut := by
+            intro h; exact hgD_fail (h_gD_cut u_fail hsu_fail h)
+          -- Left disjunct fails at any complement point: ¬D below blocks gD on (s,v)
+          have h_left_fails : ∀ u, s < u → u < s₁ → u ∉ γ.val.cut →
+              ¬(∃ v, u < v ∧ ∀ w, s < w → w < v →
+                temporal_truth M atomMap w g ∧ stavi_temporal_truth M atomMap w D) := by
+            intro u hsu _ hu_not ⟨v, huv, hgDv⟩
+            have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨u, hu_not, fun z hz => h_all z hz⟩
+            obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+            exact hDw (hgDv w (h_compl_gt w hw_not s hs_cut)
+              (lt_trans (lt_of_le_of_lt hwy hyu) huv)).2
+          -- Two-step argument: D holds at ALL complement points in (s, s₁)
+          have hD_all_compl : ∀ u, s < u → u < s₁ → u ∉ γ.val.cut →
+              stavi_temporal_truth M atomMap u D := by
+            intro u hsu hus₁ hu_not
+            -- Step 1: right branch at u gives v' ∈ (s, u) complement
+            have h_right_u := (h_body u hsu hus₁).resolve_left
+              (h_left_fails u hsu hus₁ hu_not)
+            obtain ⟨_, v', hsv', hv'u, hgD_v'⟩ := h_right_u
+            have hv'_not : v' ∉ γ.val.cut := by
+              intro h; exact hgD_v' (h_gD_cut v' hsv' h)
+            -- Step 2: right branch at v' gives D on (v', s₁)
+            have hv'_s₁ : v' < s₁ := lt_trans hv'u hus₁
+            have h_right_v' := (h_body v' hsv' hv'_s₁).resolve_left
+              (h_left_fails v' hsv' hv'_s₁ hv'_not)
+            -- D(u) from D on (v', s₁) since v' < u < s₁
+            exact h_right_v'.1 u hv'u hus₁
+          -- Contradiction: initial D-segment in complement violates gap condition (2)
+          have ⟨t, ht_not, ht_uf⟩ : ∃ t, t ∉ γ.val.cut ∧ t < u_fail := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.complement_no_min ⟨u_fail, huf_not_cut, fun z hz => h_all z hz⟩
+          apply h_no_init_D
+          exact ⟨t, ht_not, fun u hu_not hut =>
+            hD_all_compl u (h_compl_gt u hu_not s hs_cut)
+              (lt_of_le_of_lt hut (lt_trans ht_uf huf_s₁)) hu_not⟩
   | neg A ih =>
     -- left_formula (.neg A) D = .conj (.stavi_untl (.base top) D) (.neg (left_formula A D))
     simp only [left_formula, stavi_temporal_truth_mu]
