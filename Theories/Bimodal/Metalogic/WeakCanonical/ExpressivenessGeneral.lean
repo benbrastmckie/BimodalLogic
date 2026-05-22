@@ -1167,11 +1167,11 @@ private theorem d_consistency_left {sig : MonadicSignature}
       -- Approach (GHR93 pp.116):
       -- (1) t agrees with c on rank-r formulas (from winning condition) =>
       --     t ∈ S_C (continuation set), so d ≤ t (from infimum)
-      -- (2) Use h_fwd_r1 (rank r+1 forward strategy): the rank r+1 response
-      --     agrees with rank_embed(c) on rank-(r+1) formulas. The continuation
-      --     formula C' (of rank r+1) holds above the gap at d and fails below,
-      --     forcing the rank r+1 response to equal rank_embed(d).
-      -- (3) Project back: rank r+1 response = rank_embed(d) implies rank r
+      -- (2) Use h_fwd_r1 (rank r+2 forward strategy): the rank r+2 response
+      --     agrees with rank_embed(c) on rank-(r+2) formulas. The K⁻(¬D)
+      --     formula (of depth r+2) holds above the gap at d and fails below,
+      --     forcing the rank r+2 response to equal rank_embed(d).
+      -- (3) Project back: rank r+2 response = rank_embed(d) implies rank r
       --     response t = d.
       -- Interior case: apply GHR93 Claim 1 extract (h_d_unique).
       -- Step 1: Extract formula agreement between c and t at rank r
@@ -1692,10 +1692,13 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- ghr93_strategy_restrict_left/right consume this directly.
     -- GHR93 Claim 1: d is uniquely determined among elements with the same
     -- rank-r type, gap/point status, and boundary position.
-    -- This follows from the infimum construction of d and the rank-(r+1)
-    -- forward strategy (h_fwd_r1). The full proof requires showing that the
-    -- rank-(r+1) continuation formula pins the response to d.
-    -- TODO(Phase 1, Claim 1): Prove using infimum properties + h_fwd_r1.
+    -- This follows from the infimum construction of d and the rank-(r+2)
+    -- forward strategy (h_fwd_r1). The proof requires constructing the
+    -- rank-(r+2) formula K⁻(¬D) = neg(std_snce(neg(base .bot), D)) where
+    -- D is the pigeonhole formula with stavi_depth D ≤ r. The formula
+    -- K⁻(¬D) has depth r+2 (within the rank budget after the r+1→r+2 bump).
+    -- Key fact: d ∈ S_C (proved: tail condition from GLB property).
+    -- TODO(Phase 1, Claim 1): Construct K⁻(¬D), prove S(top,D) semantics.
     have h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
         inClosedInterval x' y' t' →
         (∀ (A : StaviFormula), stavi_depth A ≤ r →
@@ -1745,17 +1748,37 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             rcases eq_or_lt_of_le hd_le_t' with hd_eq_t' | _hd_lt_t'
             · -- d = t': s < t' = d contradicts d ≤ s
               exact absurd (hd_eq_t' ▸ hd_glb s hs) (not_le.mpr h_not_le)
-            · -- d < t': GHR93 Claim 1 — requires the rank-(r+1) formula
-              -- C' = ¬C ∨ K⁻(¬C). The full argument uses h_fwd_r1 to show
-              -- that any element t' with the same rank-r type as d and
-              -- t' > d leads to a violation of the rank-(r+1) game's winning
-              -- condition. Specifically: C'(c) holds in M_r (from the infimum
-              -- properties of c); by formula transfer at rank r+1, C'(d_response)
-              -- holds in N_r; C'(d_response) implies d_response ≤ d, but
-              -- d_response has rank-r agreement with t' > d, contradiction.
-              -- This requires materializing C' as a StaviFormula of depth r+1
-              -- or encoding the argument at the predicate level.
-              -- BLOCKED: pending C' formula construction infrastructure.
+            · -- d < t': GHR93 Claim 1 — requires the rank-(r+2) formula
+              -- K⁻(¬D) = neg(std_snce(neg(base .bot), D)) where D is the
+              -- pigeonhole formula from infimum_gap_r_definable.
+              -- stavi_depth(K⁻(¬D)) = stavi_depth D + 2 ≤ r + 2.
+              --
+              -- Proof outline:
+              -- (1) d ∈ S_C (proved: any u > d is not a lb of S_C, so
+              --     ∃ s ∈ S_C with s < u, giving cont_holds at u from
+              --     s's tail condition).
+              -- (2) D fails cofinally below d: for any mu-point s < d,
+              --     ∃ mu-point u ∈ (s,d) with ¬D(u). So S(top,D) at d
+              --     is FALSE, hence K⁻(¬D) = ¬S(top,D) at d is TRUE.
+              -- (3) D holds on a final segment below t' (since d < t'
+              --     and D holds at all mu-points in (d, y') by d ∈ S_C
+              --     and cont_holds). So S(top,D) at t' is TRUE, hence
+              --     K⁻(¬D) at t' is FALSE.
+              -- (4) K⁻(¬D) at d ≠ K⁻(¬D) at t'. Since depth ≤ r+2
+              --     and h_mono_left_r1 gives rank-(r+2) game, Spoiler
+              --     can select rank_embed(c), get response e with
+              --     K⁻(¬D)(rank_embed c) = K⁻(¬D)(e). By rank_embed:
+              --     K⁻(¬D)(c in M) = K⁻(¬D)(e in N). The game response
+              --     must match d (not t') since K⁻(¬D) separates them.
+              -- (5) But this direction is already handled if we show
+              --     K⁻(¬D)(d) ≠ K⁻(¬D)(t') directly, contradicting the
+              --     hypothesis that d and t' share rank-r type AND are
+              --     related by the same game response.
+              --
+              -- BLOCKED: requires constructing K⁻(¬D) from pigeonhole
+              -- formula D + proving S(top,D) semantics at d and t'.
+              -- The rank bump from r+1 to r+2 (Round 13) makes the depth
+              -- budget sufficient. The remaining work is formula wiring.
               sorry
           · -- Goal: d ≤ t'
             -- Assume t' < d for contradiction.
@@ -1779,20 +1802,29 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             -- and s's tail condition gives cont_holds at u. Contradiction.
             rcases le_or_gt u d with hu_le_d | hu_gt_d
             · -- u ≤ d: the failure witness is at or below d.
-              -- GHR93 Claim 1 (d ≤ t' direction): if t' < d, then
-              -- the rank-(r+1) formula C' = ¬C ∨ K⁻(¬C) holds at c in M.
-              -- By formula transfer at rank r+1, C' holds at any game
-              -- response to c in N. Since C' implies the response is ≤ d
-              -- (by the semantic analysis of C'), and the response agrees
-              -- with t' at rank r, we get t' ≤ d. But we assumed t' < d,
-              -- so actually the argument shows d ≤ t' (contradiction
-              -- with t' < d only when combined with the t' ≤ d direction).
-              -- More precisely: the GHR93 argument shows d ≤ d-bar directly
-              -- from C'(d), which gives d ≤ d. The other direction (d-bar ≤ d)
-              -- is by contradiction: assume d < d-bar, pick d' ∈ (d, d-bar)
-              -- with ¬C(d'), challenge Duplicator. She can't match because
-              -- C holds above c in M.
-              -- BLOCKED: requires C' formula construction.
+              -- GHR93 Claim 1 (d ≤ t' direction): t' < d, so t' is
+              -- below the infimum. K⁻(¬D) = ¬S(top,D) has depth r+2.
+              --
+              -- At d: D fails cofinally below d (infimum property),
+              -- so S(top,D) is FALSE at d, hence K⁻(¬D) is TRUE.
+              -- At t': t' < d, and u is between t' and d with
+              -- ¬cont_holds at u. Since u ≤ d, there exist mu-points
+              -- between t' and d where D fails. So D does NOT hold on
+              -- any final segment below t', hence S(top,D) is also
+              -- FALSE at t', and K⁻(¬D) is TRUE at t'.
+              --
+              -- Alternative approach (d ≤ t' direction): Since d ∈ S_C
+              -- (proved: tail condition from GLB property), d is the
+              -- minimum. The game at rank r+2 (h_mono_left_r1) with
+              -- Spoiler selecting rank_embed(c) gives a response in N
+              -- at rank r+2 that agrees with c on depth-(r+2) formulas.
+              -- K⁻(¬D) at rank_embed(c) in M determines K⁻(¬D) at the
+              -- response in N. Since K⁻(¬D) separates d from positions
+              -- below d, the response must correspond to d (not t'),
+              -- contradicting t' < d.
+              --
+              -- BLOCKED: requires constructing K⁻(¬D) from pigeonhole
+              -- formula D + proving S(top,D) semantics at d and t'.
               sorry
             · -- u > d: derive contradiction.
               have : ¬ (∀ s ∈ S_C, u ≤ s) := by
@@ -4449,13 +4481,13 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
 /-! ## GHR93 Theorem 6: Forward-to-Backward Transfer -/
 
 /-- **GHR93 Theorem 6, core** (Forward-to-backward transfer with decoupled r+1 round count):
-    The key insight is that the rank r+1 forward hypothesis `h_r1_univ` is universally
+    The key insight is that the rank r+2 forward hypothesis `h_r1_univ` is universally
     quantified over endpoints, so it does NOT depend on the induction variable `n` or
     the specific endpoints `x, y, x', y'`. This allows it to stay out of the IH,
-    breaking the recursive tower where each induction level needs rank r+1 on
+    breaking the recursive tower where each induction level needs rank r+2 on
     sub-intervals.
 
-    Parameter `rounds_r1` is the round count for the rank r+1 game, decoupled from `n`.
+    Parameter `rounds_r1` is the round count for the rank r+2 game, decoupled from `n`.
     The constraint `h_enough : 1 + 3 * n ≤ rounds_r1` ensures enough rounds at each level.
     (In the succ case, 1+3(n+1) = 4+3n ≤ rounds_r1 gives the 4+3n rounds needed
     by ghr93_inductive_step for h_fwd_r1, and 1+3n ≤ rounds_r1 for the IH.) -/
@@ -4565,10 +4597,10 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     from N. This is needed for the base case to trigger Round 2 of the
     forward game and extract a matching point.
 
-    The hypothesis `h_r1_univ` provides a rank (r+1) forward strategy for
+    The hypothesis `h_r1_univ` provides a rank (r+2) forward strategy for
     ALL pairs of intervals, not just the specific [x,y] and [x',y'].
     This is needed because the induction reduces to sub-intervals, and each
-    level needs a rank (r+1) strategy on its specific sub-interval.
+    level needs a rank (r+2) strategy on its specific sub-interval.
     In the completeness proof context, this comes from the decomposition
     formula which gives agreement at all positions.
 
