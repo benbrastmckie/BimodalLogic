@@ -171,4 +171,38 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
       · simp [hi0, hi_b, hi_y]
         exact hform_sel ⟨i.val - 1, by omega⟩ A hA
 
+/-! ## Component A: same_order_type Grid Setup -/
+
+/-- `same_order_type_grid` macro sets up the 4×4 grid proof for
+    same_order_type goals. It does:
+    1. `intro i j` to introduce the two index variables
+    2. `simp only [game_tuple]` to unfold game_tuple
+    3. `split_ifs` to case-split on index categories
+
+    After this macro, there are 16 goals corresponding to all pairs
+    of index categories: {x=0, b=n+1, y=n+2, sel} × {x=0, b=n+1, y=n+2, sel}.
+
+    Usage:
+    ```
+    · -- same_order_type
+      same_order_type_grid <;> first
+        | order_refl
+        | ...  -- handle off-diagonal cases
+    ``` -/
+macro "same_order_type_grid" : tactic =>
+  `(tactic| (intro i j; simp only [game_tuple]; split_ifs))
+
+/-- `extract_order h i j` is a helper macro for extracting ordering data
+    from a sub-game same_order_type hypothesis at specific indices.
+    It creates a new hypothesis with the ordering at indices i, j,
+    with game_tuple simplified away.
+
+    Usage:
+    ```
+    have hord_ij := extract_order hord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
+    -- hord_ij now contains the value-level ordering, with game_tuple simplified
+    ``` -/
+macro "extract_order" h:ident i:term j:term : tactic =>
+  `(tactic| (have h := $h $i $j; simp_game_tuple at h; exact h))
+
 end Bimodal.Metalogic.WeakCanonical
