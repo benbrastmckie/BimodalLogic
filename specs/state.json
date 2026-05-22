@@ -447,9 +447,144 @@
       "created": "2026-05-20T15:55:54Z",
       "last_updated": "2026-05-20T15:55:54Z",
       "topic": "formula-refactor"
+    },
+    {
+      "project_number": 185,
+      "project_name": "complete_axiom_derived_coverage",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md",
+          "type": "report",
+          "summary": "Seed research: axiom coverage gaps and derived theorem inventory"
+        }
+      ]
+    },
+    {
+      "project_number": 186,
+      "project_name": "unify_search_systems",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/186_unify_search_systems/reports/01_unify-search-seed.md",
+          "type": "report",
+          "summary": "Seed research: architecture comparison of TacticM vs computable search"
+        }
+      ]
+    },
+    {
+      "project_number": 187,
+      "project_name": "backward_chaining_lemma_db",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md",
+          "type": "report",
+          "summary": "Seed research: theorem inventory and @[tm_lemma] attribute design"
+        }
+      ]
+    },
+    {
+      "project_number": 188,
+      "project_name": "weakening_aware_search",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/188_weakening_aware_search/reports/01_weakening-aware-seed.md",
+          "type": "report",
+          "summary": "Seed research: weakening usage patterns and context subsumption design"
+        }
+      ]
+    },
+    {
+      "project_number": 189,
+      "project_name": "deduction_theorem_tactic",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md",
+          "type": "report",
+          "summary": "Seed research: deduction/undischarge tactic design for natural-deduction style"
+        }
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "derived_operator_normalization",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/190_derived_operator_normalization/reports/01_normalization-seed.md",
+          "type": "report",
+          "summary": "Seed research: derived operator inventory and modal_norm tactic design"
+        }
+      ]
+    },
+    {
+      "project_number": 191,
+      "project_name": "propositional_decision_procedure",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md",
+          "type": "report",
+          "summary": "Seed research: truth-table vs tableaux approaches for verified decision procedure"
+        }
+      ]
+    },
+    {
+      "project_number": 192,
+      "project_name": "master_tactic_dispatch",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/192_master_tactic_dispatch/reports/01_master-dispatch-seed.md",
+          "type": "report",
+          "summary": "Seed research: goal analysis, dispatch logic, and transfer principle design"
+        }
+      ]
+    },
+    {
+      "project_number": 193,
+      "project_name": "codebase_tactic_refactor",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-22T16:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md",
+          "type": "report",
+          "summary": "Seed research: proof inventory (120 proofs, 6880 lines) and refactoring candidates"
+        }
+      ]
     }
   ],
-  "next_project_number": 185,
+  "next_project_number": 194,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

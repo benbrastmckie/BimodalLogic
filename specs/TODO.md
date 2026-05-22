@@ -1,16 +1,16 @@
 ---
-next_project_number: 185
+next_project_number: 194
 repository_health:
   overall_score: 95
   production_readiness: near-publication
   last_assessed: 2026-05-22T00:00:00Z
 task_counts:
-  active: 23
+  active: 32
   completed: 134
   in_progress: 1
-  not_started: 20
+  not_started: 29
   abandoned: 0
-  total: 149
+  total: 158
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -27,9 +27,9 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-22. 23 active tasks.*
+*Updated 2026-05-22. 32 active tasks.*
 
-**Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
+**Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase. **Parallel goal**: Build a sophisticated tactics library as a first-class product.
 
 **Execution Pipeline**:
 
@@ -42,6 +42,12 @@ After 155:
   Wave 1b: 176, 95                                     (post-155 cleanup)
   Wave 3:  168 → 174 → 175 → 180 → 131 → 161          (deep refactor)
   Wave 4:  183 → 177 → 178                             (documentation + polish)
+
+Tactics pipeline (after 181):
+  Tier 1: 185, 190                                     (foundations, independent)
+  Tier 2: 186 → 185; 187 → 185; 189 → 185; 188 → 187 (engineering)
+  Tier 3: 191 → 181; 192 → 181,185,187,190,191        (research-level)
+  Final:  193 → 192                                    (codebase refactor)
 ```
 
 ### Active — Parallel Work
@@ -52,6 +58,31 @@ After 155:
 ### Completed Research (informs Wave 3)
 
 179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
+
+### Tactics Pipeline — Tier 1 (foundations)
+
+185 [NOT STARTED] — Complete axiom & derived theorem coverage in modal_search
+190 [NOT STARTED] — Derived operator normalization tactic (modal_norm)
+
+### Tactics Pipeline — Tier 2 (engineering)
+
+186 [NOT STARTED] — Unify computable and tactic proof search systems
+  └─ 185
+187 [NOT STARTED] — Backward-chaining lemma database (solve_by_elim analogue)
+  └─ 185
+189 [NOT STARTED] — Deduction theorem tactic
+  └─ 185
+188 [NOT STARTED] — Weakening-aware proof search
+  └─ 187
+
+### Tactics Pipeline — Tier 3 (research-level)
+
+191 [NOT STARTED] — Propositional fragment decision procedure
+  └─ 181
+192 [NOT STARTED] — Master tactic dispatch (tm_prove)
+  └─ 181, 185, 187, 190, 191
+193 [NOT STARTED] — Codebase-wide tactic refactoring
+  └─ 192
 
 ### Wave 1b — Post-155 Cleanup (blocked on 155)
 
@@ -101,6 +132,103 @@ After 155:
 
 
 ## Tasks
+
+### 193. Codebase-wide tactic refactoring
+- **Effort**: large (30-40 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 192
+
+**Description**: Once the tactics library is mature (tasks 185-192), refactor ALL proof files in Theorems/ to use the new automation. Currently ~120 proofs across 6,880 lines use explicit term-level constructions (manual imp_trans chains, explicit DerivationTree constructor applications). Many proofs could be dramatically shortened — e.g., a 7-line imp_trans proof reduces to `modal_search`. Survey all proofs, classify which are automatable vs necessarily structural, apply tactics systematically, and measure compression ratios. Update Examples/ to showcase tactics as pedagogical demonstrations. This task produces the "tactics as product" outcome.
+
+---
+
+### 192. Master tactic dispatch (tm_prove)
+- **Effort**: large (20-25 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/192_master_tactic_dispatch/reports/01_master-dispatch-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 181, 185, 187, 190, 191
+
+**Description**: Create a unified `tm_prove` tactic that dispatches to the right sub-tactic based on goal type and formula structure. If goal is `Derivable G p` (Prop): use aesop with TMDerivable rule set, or `decide_prop` for propositional fragment. If goal is `DerivationTree G p` (Type): use `modal_search` with full search strategies. Implement formula analysis at the meta level to classify goals as propositional/modal/temporal/bimodal and route accordingly. Implement the transfer principle: prove `Derivable` via Prop reasoning, then extract `DerivationTree` via `Classical.choice` when needed. This is the integration point for all tactics work.
+
+---
+
+### 191. Propositional fragment decision procedure
+- **Effort**: large (25-35 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 181
+
+**Description**: Implement a verified decision procedure for the propositional fragment of TM logic. The propositional axioms (prop_k, prop_s, ex_falso, peirce) are complete for classical propositional logic. Create a `Decidable` instance for `Derivable [] p` when `p` is purely propositional (no modal/temporal operators). Two implementation approaches: (a) truth-table evaluation via BoolEval — evaluate `p` under all atom assignments, if all true then derivable; (b) analytic tableaux — more efficient for large formulas. The `decide` tactic could then close propositional derivability goals automatically. This is publishable: a verified decision procedure for classical propositional logic inside a modal logic framework.
+
+---
+
+### 190. Derived operator normalization tactic (modal_norm)
+- **Effort**: medium (10-12 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
+- **Task Type**: lean4
+
+**Description**: Create a `modal_norm` tactic that unfolds all derived operators to primitive form before proof search. The Formula type has 15+ derived operators (diamond, always, sometimes, some_past, some_future, neg, and, or, iff, top, etc.) that expand to combinations of 6 primitives (bot, imp, box, all_future, all_past, untl/snce, atom). AesopRules.lean already defines `@[aesop norm unfold]` for some operators. The tactic should: (1) unfold all derived operators to primitive form, (2) optionally canonicalize negation to `imp ... bot`, (3) support selective normalization (e.g., only unfold modal operators). This significantly reduces the branching factor for proof search since search only needs to handle primitive connectives.
+
+---
+
+### 189. Deduction theorem tactic
+- **Effort**: medium (10-12 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 185
+
+**Description**: Wrap the deduction theorem (DeductionTheorem.lean) as a tactic. Create `deduction` tactic: given goal `G ⊢ p → q`, creates subgoal `G, p ⊢ q` (moving antecedent to context). Create `undischarge` tactic for the reverse direction. This gives a natural-deduction feel to Hilbert-style proofs, dramatically simplifying many derivations that currently require explicit imp_trans and b_combinator chains. The deduction theorem proof uses well-founded recursion on tree height (noncomputable), which affects tactic design — the tactic must mark results noncomputable. Currently 20+ files use deduction_theorem directly; the tactic would simplify those call sites.
+
+---
+
+### 188. Weakening-aware proof search
+- **Effort**: medium (10-12 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/188_weakening_aware_search/reports/01_weakening-aware-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 187
+
+**Description**: Extend proof search to automatically apply weakening when a lemma proves from a smaller context. Currently modal_search never applies `DerivationTree.weakening` — if a registered lemma proves `G ⊢ p` but the goal is `D ⊢ p` with `G ⊆ D`, the search fails. Implement context subsumption checking: when a lemma match is found with context `G`, verify `G ≤ D` (list subset) and automatically insert weakening. This removes the most common manual step in existing proofs. 50+ direct weakening calls and 186 `List.nil_subset` uses in the codebase would be eliminated. Integrates with the lemma database (task 187).
+
+---
+
+### 187. Backward-chaining lemma database (solve_by_elim analogue)
+- **Effort**: large (20-25 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 185
+
+**Description**: Build a TM-logic-specific analogue of Mathlib's `solve_by_elim`. Create a `@[tm_lemma]` attribute that registers `DerivationTree`-valued theorems for backward chaining. All theorems in Combinators.lean (~30), Propositional.lean (~15), ModalS5.lean, TemporalDerived.lean, Perpetuity.lean, and GeneralizedNecessitation.lean are candidates. The tactic: for goal `G ⊢ p`, find any registered lemma whose conclusion unifies with the goal, then recursively solve premises. Use heuristic ordering (axioms first, assumptions second, derived theorems by complexity). This is the core infrastructure that tasks 188 and 192 build upon.
+
+---
+
+### 186. Unify computable and tactic proof search systems
+- **Effort**: medium (12-15 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/186_unify_search_systems/reports/01_unify-search-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 185
+
+**Description**: Unify the two parallel proof search implementations: `modal_search` (TacticM, builds terms via `mkAppM`) and `bounded_search`/`bounded_search_with_proof` (computable, returns `Option (DerivationTree G p)`). The computable search is incomplete — `bounded_search_with_proof` has no modal K or temporal K (lines 951-955 say "would go here"). `SearchConfig` weights exist but `searchProof` ignores them (line 1028). Complete `bounded_search_with_proof` with modal K and temporal K. Make `SearchConfig` weights functional. Optionally have `modal_search` call the computable search as fallback for goals the TacticM search can't handle.
+
+---
+
+### 185. Complete axiom & derived theorem coverage in modal_search
+- **Effort**: small (6-8 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]
+- **Task Type**: lean4
+
+**Description**: Extend `tryAxiomMatch` in Tactics.lean to cover all axiom schemata (currently 12 of ~16: missing prior_UZ, prior_SZ, serial_future, serial_past, and incomplete connect_future coverage). Add a `tryDerivedMatch` function that registers derived theorems from Combinators.lean (imp_trans, identity, b_combinator, theorem_flip, dni, double_negation) and Propositional.lean (ecq, raa, efq, lce, rce, ldi, rdi, rcp) as additional apply targets in `modal_search`. Add tests for each new pattern. This is the foundational step that all subsequent tactics tasks build upon.
+
+---
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
