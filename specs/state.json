@@ -249,7 +249,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 25,
+      "next_artifact_number": 26,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -400,6 +400,11 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T193000Z.md",
           "type": "handoff",
           "summary": "Round 7: 4 sorries closed (gp+formula for sigma/tau), 3 remain (h_d_unique + 2 same_order_type blocked by game_tuple)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T210000Z.md",
+          "type": "handoff",
+          "summary": "Round 8: same_order_type proofs verified correct (multi_attempt), compilation blocked by simp_all hypothesis rewriting"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
