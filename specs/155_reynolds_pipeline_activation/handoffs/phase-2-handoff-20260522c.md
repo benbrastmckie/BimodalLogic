@@ -1,6 +1,38 @@
-# Phase 2 Handoff (Round 5): base.snce Forward Direction Complete
+# Phase 2 Handoff (Round 5): base.snce Backward Direction Analysis
 
 ## Summary
+
+The base.snce backward direction (line ~3172) is partially scaffolded: witness s (cut point above max(m, t_pt)) verified for D(s), g(s), S(f,g)(s), D-between(m,s). Remaining: U'(⊤, g∧D)(s) (~60-80 lines, constructible) and ¬U'(D, g∧D)(s) (~80-120 lines, requires verifying that gap_definable_on_left condition 2 gives ¬D at complement points arbitrarily far above the gap).
+
+## Proven Conjuncts at Witness s
+
+1. **D(s)**: from hγ_bet (D-between at cut points above m) ✓
+2. **g(s)**: from hg_mu (S(f,g)^mu gives g at cut points above t_pt) ✓
+3. **S(f,g)(s)**: constructed with t_pt as sub-witness, f(t_pt) from S(f,g)^mu, g on (t_pt,s) from all intermediate cut points having g ✓
+4. **D-between(m,s)**: all points in (m,s) are cut points (downward closure), D from hγ_bet ✓
+
+## Blocked: U'(⊤, g∧D)(s)
+
+Constructible with complement point c₀ as bound:
+- condition (1) at cut u: left disjunct with next cut point, g∧D on (s,v) since all intermediate are cut ✓
+- condition (1) at complement u: right disjunct, ⊤ always true, ¬(g∧D) below u from gap condition 2 ✓
+- condition (2): ¬D at complement point from gap condition 2 ✓
+- condition (3): g∧D on (s, next_cut_point) ✓
+
+## Blocked: ¬U'(D, g∧D)(s)
+
+Key question: does gap_definable_on_left condition 2 give ¬D at complement points ABOVE any given complement point? If yes, ¬U'(D, g∧D)(s) follows because condition (1) fails at complement points (both disjuncts fail). If condition 2 only gives ¬D BELOW a given complement point, the proof needs a different approach.
+
+## Remaining Phase 2 Sorry Sites (4 in Lemma 9, 2 in Phase 4)
+
+| Line | Case | Status |
+|------|------|--------|
+| ~3172 | base.snce backward | PARTIALLY SCAFFOLDED |
+| ~3490 | stavi_snce | SAME compound pattern |
+| ~3570 | std_snce | SAME compound pattern |
+| ~3852 | right_formula_gap_detection | Dual of all left cases |
+
+## Original summary below
 
 Closed the FORWARD direction of base.snce in left_formula_gap_detection. Backward direction still sorry'd. Sorry count: 6 (was 7).
 

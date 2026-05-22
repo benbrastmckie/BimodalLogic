@@ -3105,6 +3105,77 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               · push_neg at hps
                 exact (h_gD_at_cut p hps hp_cut).1⟩
       · -- Backward: gap conditions → std_untl(compound, D)^mu(m)
+        -- Given D-gap γ with S(f,g)^mu(γ), construct std_untl(compound, D)(m)
+        -- where compound = D ∧ g ∧ S(f,g) ∧ U'(⊤, g∧D) ∧ ¬U'(D, g∧D)
+        intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSnce_mu⟩
+        -- S(f,g)^mu(γ): ∃ t < γ (mu-point), f^mu(t) ∧ g^mu on (t, γ)
+        simp only [stavi_temporal_truth_mu, temporal_truth_mu] at hSnce_mu
+        obtain ⟨t_ext, ht_γ, ⟨t_pt, rfl⟩, hf_t, hg_mu⟩ := hSnce_mu
+        -- t_pt is in the cut
+        have ht_cut : t_pt ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff t_pt γ).mp (le_of_lt ht_γ)
+        -- m is in the cut
+        have hm_cut : m ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff m γ).mp (le_of_lt hγ_lt)
+        -- Find a cut point s above both m and t_pt (cut has no sup)
+        have ⟨s, hs_cut, hms, hts⟩ : ∃ s, s ∈ γ.val.cut ∧ m < s ∧ t_pt < s := by
+          -- Cut has no sup, so there exist cut points above any cut member.
+          -- We need one above both m and t_pt.
+          -- First get one above m:
+          have ⟨s₁, hs₁, hms₁⟩ : ∃ s₁ ∈ γ.val.cut, m < s₁ := by
+            by_contra h; push_neg at h
+            exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
+          -- Then get one above max(s₁, t_pt):
+          have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
+            rcases le_or_lt s₁ t_pt with h | h
+            · simp [max_eq_right h]; exact ht_cut
+            · simp [max_eq_left (le_of_lt h)]; exact hs₁
+          have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
+            by_contra h; push_neg at h
+            exact γ.val.no_sup ⟨max s₁ t_pt, ⟨h, fun _ hb => hb hmax_cut⟩, hmax_cut⟩
+          exact ⟨s₂, hs₂,
+            lt_trans hms₁ (lt_of_le_of_lt (le_max_left s₁ t_pt) hmax_s₂),
+            lt_of_le_of_lt (le_max_right s₁ t_pt) hmax_s₂⟩
+        -- Properties at s (cut point above m and t_pt):
+        -- D(s) from D-between
+        have hDs : stavi_temporal_truth M atomMap s D :=
+          (stavi_truth_mu_at_point s D).mp (hγ_bet s hms hs_cut)
+        -- g(s) from S(f,g)^mu(γ): s is a cut point above t_pt
+        have hγs : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint t_pt) (extendPoint s) :=
+          (extendPoint_lt_iff t_pt s).mpr hts
+        have hγs' : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint s) (Sum.inr γ) := by
+          exact ⟨hs_cut, fun h => h hs_cut⟩
+        have hgs : temporal_truth M atomMap s g :=
+          (temporal_truth_mu_at_point s g).mp
+            (hg_mu (extendPoint s) hγs hγs' ⟨s, rfl⟩)
+        -- S(f,g)(s): witness t_pt with f(t_pt) and g on (t_pt, s)
+        have hSnce_s : temporal_truth M atomMap s (f.snce g) := by
+          simp only [temporal_truth]
+          refine ⟨t_pt, hts, (temporal_truth_mu_at_point t_pt f).mp hf_t, fun u htu hus => ?_⟩
+          have hu_cut : u ∈ γ.val.cut := γ.val.downward_closed s u hs_cut (le_of_lt hus)
+          have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint t_pt) (extendPoint u) :=
+            (extendPoint_lt_iff t_pt u).mpr htu
+          have huγ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint u) (Sum.inr γ) := ⟨hu_cut, fun h => h hu_cut⟩
+          exact (temporal_truth_mu_at_point u g).mp
+            (hg_mu (extendPoint u) hγu huγ ⟨u, rfl⟩)
+        -- D on (m, s): all points between m and s are cut points and have D
+        have hD_bet_ms : ∀ u, m < u → u < s → stavi_temporal_truth M atomMap u D := by
+          intro u hmu hus
+          have hu_cut : u ∈ γ.val.cut := γ.val.downward_closed s u hs_cut (le_of_lt hus)
+          exact (stavi_truth_mu_at_point u D).mp (hγ_bet u hmu hu_cut)
+        -- Provide witness s with the easy parts, sorry the U'/¬U' conditions
+        -- All easy parts verified: D(s), g(s), S(f,g)(s), D-between(m,s)
+        -- BLOCKED: constructing U'(⊤, g∧D)(s) and ¬U'(D, g∧D)(s) from gap structure
+        -- g∧D at cut points: g from hg_mu (S(f,g)^mu gives g above t_pt),
+        --   D from hγ_bet (D-between gives D at cut points above m)
+        -- (g∧D)-failure: from gap_definable_on_left condition 2 (no initial D in complement)
+        -- ¬U'(D, g∧D)(s): from gap_definable_on_left condition 2,
+        --   complement has no initial D-segment, which prevents U'(D, g∧D) from holding
+        --   at s because condition (1) right branch requires D in the complement
         sorry
   | neg A ih =>
     -- left_formula (.neg A) D = .conj (.stavi_untl (.base top) D) (.neg (left_formula A D))
