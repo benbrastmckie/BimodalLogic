@@ -212,19 +212,19 @@ Phases within the same wave can execute in parallel.
 - [ ] **Task 2.10**: Prove `right_formula_gap_detection` (line 3137, ~200-300 lines). Dual of left_formula_gap_detection with S'/S in place of U'/U, snce_gap_detection in place of untl_gap_detection, right(A,D) in place of left(A,D). May share infrastructure via direction parameter or manual duplication.
 - [ ] **Task 2.11**: Verify `lean_verify left_formula_gap_detection` and `lean_verify right_formula_gap_detection` show no `sorryAx`. Verify `lake build` passes.
 
-**Timing**: 8-12 hours
+**Timing**: 12-18 hours (revised up: proving cases directly without std_untl/std_snce is ~200 lines per case × 6 affected cases, plus FO-table shift lemma and stavi_snce refactor)
 
 **Depends on**: none (can proceed in parallel with Phase 1)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- close 11 sorry sites (lines 2682, 2759, 2763, 2767, 3032, 3036, 3083, 3087, 3109, 3124, 3137)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- delete false theorems (std_untl/std_snce_gap_detection), refactor stavi_snce_gap_detection, close remaining sorry sites, prove affected cases directly
 
 **Verification**:
 - `lean_verify left_formula_gap_detection` shows no `sorryAx`
 - `lean_verify right_formula_gap_detection` shows no `sorryAx`
 - `lean_verify stavi_snce_gap_detection` shows no `sorryAx`
-- `lean_verify std_untl_gap_detection` shows no `sorryAx`
 - `lake build` passes
+- No references to deleted `std_untl_gap_detection` or `std_snce_gap_detection`
 
 ---
 
