@@ -3163,7 +3163,8 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                 (by rw [← hab_n]; exact le_refl _))
               (hd_le_sel ⟨_, ‹_›⟩) he_n_in.1 (hc_le_rtau ⟨_, ‹_›⟩)
               fwd_x_b (tau_d_sel ⟨_, ‹_›⟩))
-          -- Remaining: b vs x (impossible direction), p_n vs x/b/y, b vs p_n
+          -- Remaining impossible-direction goals (both sides False for <)
+          -- b_resp vs x (b_resp ≥ x', b_sp ≥ x)
           | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h hb_resp_in.1) (lt_irrefl _),
                      fun h => absurd (lt_of_lt_of_le h hb_sp.1) (lt_irrefl _)⟩,
                     ⟨fun h => by rw [h] at hb_resp_in; exact absurd
@@ -3174,6 +3175,31 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                        (lt_of_lt_of_le (sig_x_b.1.mp (lt_of_le_of_eq hb_resp_in.1
                          (sig_x_b.2.mpr hb_sp.1.symm).symm)) hb_sp.1)
                        (lt_irrefl _)⟩⟩)
+          -- y' vs a_init(k) (a_init(k) ≤ y', resp_tau(k) ≤ y; both < False)
+          | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h (ha_bwd ⟨_, by omega⟩).2)
+                       (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h (hresp_tau_in ⟨_, ‹_›⟩).2)
+                       (lt_irrefl _)⟩,
+                    ⟨fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mp (by
+                       convert h.symm using 2; congr 1; exact Fin.ext (by omega))).symm,
+                     fun h => by
+                       have := (tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm
+                       convert this.symm using 2; congr 1; exact Fin.ext (by omega)⟩⟩)
+          -- y' vs p_n (p_n ≤ y', e_n ≤ y; both < False)
+          | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h hp_n_in.2) (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h he_n_in.2) (lt_irrefl _)⟩,
+                    ⟨fun h => (fwd_b_y.2.mpr h.symm).symm,
+                     fun h => (fwd_b_y.2.mp h.symm).symm⟩⟩)
+          -- p_n vs x' (p_n ≥ x', e_n ≥ x; both < False)
+          | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h hp_n_in.1) (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h he_n_in.1) (lt_irrefl _)⟩,
+                    ⟨fun h => (fwd_x_b.2.mpr h.symm).symm,
+                     fun h => (fwd_x_b.2.mp h.symm).symm⟩⟩)
+          -- Remaining goals involving p_n/e_n cross-boundary orderings.
+          -- These require c ≤ e_n (or equivalent) which is not available
+          -- from the current sub-game data. Closing these goals depends on
+          -- h_d_unique (GHR93 Claim 1) or a restructured forward game
+          -- argument. See handoff for details.
           | sorry
       · -- gap_point_agreement (n+1)
         intro i
