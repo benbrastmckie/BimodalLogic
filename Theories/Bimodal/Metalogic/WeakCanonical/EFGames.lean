@@ -4761,12 +4761,144 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       constructor
       · exact False.elim
       · intro ⟨γ, _, _, _, hA⟩; exact hA
-    | imp f g _ _ =>
-      sorry
+    | imp f g ih_f ih_g =>
+      -- right_formula_base D (.imp f g) = S'(⊤,D) ∧ ¬(right_base(f) ∧ S'(⊤,D) ∧ ¬right_base(g))
+      -- Mirrors left base.imp with stavi_snce_gap_detection
+      constructor
+      · -- Forward direction
+        intro hLHS
+        simp only [right_formula_base] at hLHS
+        simp only [stavi_temporal_truth_mu] at hLHS
+        obtain ⟨hS, hNeg⟩ := hLHS
+        have hS' : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+            (.stavi_snce (.base Formula.top) D) := by
+          simp only [stavi_temporal_truth_mu]; exact hS
+        obtain ⟨γ, _s_bound, hγ_lt, _hs_in, hγ_def, hγ_bet, _⟩ :=
+          (stavi_snce_gap_detection (.base Formula.top) D hD m).mp hS'
+        refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+        simp only [stavi_temporal_truth_mu, temporal_truth_mu]
+        intro hf_at_γ
+        have hRight_f : stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula_base D f) :=
+          ih_f.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hf_at_γ⟩
+        have hRight_g : stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula_base D g) := by
+          by_contra h
+          exact hNeg ⟨hRight_f, hS, h⟩
+        obtain ⟨γ', hγ'_lt, hγ'_def, hγ'_bet, hg_at_γ'⟩ := ih_g.mp hRight_g
+        have hm_not : m ∉ γ.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ).mpr h) hγ_lt
+        have hm_not' : m ∉ γ'.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ').mpr h) hγ'_lt
+        have hγ_bet_std : ∀ u, u < m → u ∉ γ.val.cut →
+            stavi_temporal_truth M atomMap u D :=
+          fun u hum hu_not => (stavi_truth_mu_at_point u D).mp (hγ_bet u hum hu_not)
+        have hγ'_bet_std : ∀ u, u < m → u ∉ γ'.val.cut →
+            stavi_temporal_truth M atomMap u D :=
+          fun u hum hu_not => (stavi_truth_mu_at_point u D).mp (hγ'_bet u hum hu_not)
+        have heq : γ.val = γ'.val :=
+          gap_detection_unique_right hγ_def hγ'_def hγ_bet_std hγ'_bet_std hm_not hm_not'
+        rw [Subtype.ext heq]
+        exact hg_at_γ'
+      · -- Backward direction
+        intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hfg_at_γ⟩
+        simp only [right_formula_base, stavi_temporal_truth_mu]
+        constructor
+        · -- S'(⊤,D)(m): from γ, construct stavi_snce_gap_detection
+          have h_compl : ∃ x, x ∈ γ.val.cut := by
+            obtain ⟨x, hx⟩ := γ.val.nonempty
+            exact ⟨x, hx⟩
+          obtain ⟨s_b, hs_b⟩ := h_compl
+          have hTop_cut : ∀ u : M.carrier, u ∈ γ.val.cut → s_b < u →
+              stavi_temporal_truth M atomMap u (.base Formula.top) := by
+            intro u _ _
+            simp only [stavi_temporal_truth, temporal_truth, Formula.top]; exact id
+          have := (stavi_snce_gap_detection (.base Formula.top) D hD m).mpr
+            ⟨γ, s_b, hγ_lt, hs_b, hγ_def, hγ_bet, hTop_cut⟩
+          simp only [stavi_temporal_truth_mu] at this
+          exact this
+        · -- ¬(right_base(f) ∧ S'(⊤,D)(m) ∧ ¬right_base(g))
+          intro ⟨hRf, _, hNRg⟩
+          obtain ⟨γ₁, hγ₁_lt, hγ₁_def, hγ₁_bet, hf_at_γ₁⟩ := ih_f.mp hRf
+          have hm_not : m ∉ γ.val.cut := by
+            intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ).mpr h) hγ_lt
+          have hm_not₁ : m ∉ γ₁.val.cut := by
+            intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ₁).mpr h) hγ₁_lt
+          have hγ_bet_std : ∀ u, u < m → u ∉ γ.val.cut →
+              stavi_temporal_truth M atomMap u D :=
+            fun u hum hu_not => (stavi_truth_mu_at_point u D).mp (hγ_bet u hum hu_not)
+          have hγ₁_bet_std : ∀ u, u < m → u ∉ γ₁.val.cut →
+              stavi_temporal_truth M atomMap u D :=
+            fun u hum hu_not => (stavi_truth_mu_at_point u D).mp (hγ₁_bet u hum hu_not)
+          have heq : γ₁.val = γ.val :=
+            gap_detection_unique_right hγ₁_def hγ_def hγ₁_bet_std hγ_bet_std hm_not₁ hm_not
+          simp only [stavi_temporal_truth_mu, temporal_truth_mu] at hfg_at_γ
+          have hg_at_γ := hfg_at_γ ((Subtype.ext heq) ▸ hf_at_γ₁)
+          exact hNRg (ih_g.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hg_at_γ⟩)
     | untl f g _ _ =>
       sorry
     | snce f g _ _ =>
-      sorry
+      -- right_formula_base D (.snce f g) = S'(g ∧ S(f,g), D)
+      -- Mirrors left base.untl with stavi_snce_gap_detection
+      simp only [right_formula_base]
+      rw [stavi_snce_gap_detection (.conj (.base g) (.base (.snce f g))) D hD m]
+      constructor
+      · -- Forward: cut-point truth of g ∧ S(f,g) → S(f,g)^mu at γ
+        intro ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩
+        refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+        simp only [stavi_temporal_truth_mu, stavi_temporal_truth, temporal_truth_mu]
+        -- Need S(f,g)^mu at γ: ∃ s < γ (mu), f^mu(s) ∧ g^mu on (s, γ)
+        -- Pick a cut point u₀ above s_bound
+        have ⟨u₀, hu₀_in, hu₀s⟩ : ∃ u₀, u₀ ∈ γ.val.cut ∧ s_bound < u₀ := by
+          by_contra h_all; push_neg at h_all
+          exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
+        have hX_u₀ := hX_cut u₀ hu₀_in hu₀s
+        simp only [stavi_temporal_truth, temporal_truth] at hX_u₀
+        obtain ⟨hg_u₀, t₁, ht₁u₀, hf_t₁, hg_between⟩ := hX_u₀
+        -- t₁ ∈ cut (since t₁ < u₀ and u₀ ∈ cut, cut is downward closed)
+        have ht₁_in : t₁ ∈ γ.val.cut :=
+          γ.val.downward_closed u₀ t₁ hu₀_in (le_of_lt ht₁u₀)
+        -- Witness: s = extendPoint t₁
+        refine ⟨extendPoint t₁, ⟨ht₁_in, fun h => h ht₁_in⟩, ⟨t₁, rfl⟩,
+          (temporal_truth_mu_at_point t₁ f).mpr hf_t₁, fun v hvt₁ hvγ hmu => ?_⟩
+        obtain ⟨v₀, rfl⟩ := hmu
+        have hv₀_in : v₀ ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff v₀ γ).mp (le_of_lt hvγ)
+        have hv₀_t₁ : t₁ < v₀ := (extendPoint_lt_iff t₁ v₀).mp hvt₁
+        apply (temporal_truth_mu_at_point v₀ g).mpr
+        by_cases hv_u₀ : v₀ < u₀
+        · exact hg_between v₀ hv₀_t₁ hv_u₀
+        · push_neg at hv_u₀
+          have hv₀_sb : s_bound < v₀ := lt_of_lt_of_le hu₀s hv_u₀
+          exact (hX_cut v₀ hv₀_in hv₀_sb).1
+      · -- Backward: S(f,g)^mu at γ → cut-point truth of g ∧ S(f,g)
+        intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
+        simp only [stavi_temporal_truth_mu, temporal_truth_mu] at hSA
+        obtain ⟨s, hsγ, hmu_s, hf_s, hg_mu⟩ := hSA
+        obtain ⟨t₁, rfl⟩ := hmu_s
+        have ht₁_in : t₁ ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff t₁ γ).mp (le_of_lt hsγ)
+        refine ⟨γ, t₁, hγ_lt, ht₁_in, hγ_def, hγ_bet, fun u hu_in hu_t₁ => ?_⟩
+        simp only [stavi_temporal_truth, temporal_truth]
+        constructor
+        · -- g(u): u is a cut point between t₁ and γ
+          have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint u) (Sum.inr γ) := by
+            exact ⟨hu_in, fun h => h hu_in⟩
+          have hut₁ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint t₁) (extendPoint u) :=
+            (extendPoint_lt_iff t₁ u).mpr hu_t₁
+          exact (temporal_truth_mu_at_point u g).mp
+            (hg_mu (extendPoint u) hut₁ hγu ⟨u, rfl⟩)
+        · -- S(f,g)(u): use t₁ as witness
+          refine ⟨t₁, hu_t₁, (temporal_truth_mu_at_point t₁ f).mp hf_s, fun v htv hvu => ?_⟩
+          have hv_in : v ∈ γ.val.cut := by
+            exact γ.val.downward_closed u v hu_in (le_of_lt hvu)
+          have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint v) (Sum.inr γ) := ⟨hv_in, fun h => h hv_in⟩
+          have hvt₁ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+              (extendPoint t₁) (extendPoint v) :=
+            (extendPoint_lt_iff t₁ v).mpr htv
+          exact (temporal_truth_mu_at_point v g).mp
+            (hg_mu (extendPoint v) hvt₁ hγv ⟨v, rfl⟩)
   | neg A ih =>
     simp only [right_formula, stavi_temporal_truth_mu]
     constructor
@@ -4869,15 +5001,61 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
     sorry
   | std_snce A B _ _ =>
     -- right_formula (.std_snce A B) D = S'(B ∧ S(A,B), D)
-    -- Mirrors left's std_untl case (uses stavi_snce_gap_detection bridge)
+    -- Same pattern as base.snce with S(A,B) instead of S(f,g)
     simp only [right_formula]
+    rw [stavi_snce_gap_detection (.conj B (.std_snce A B)) D hD m]
     constructor
-    · intro h
-      obtain ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩ :=
-        (stavi_snce_gap_detection (.conj B (.std_snce A B)) D hD m).mp h
-      sorry
-    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
-      sorry
+    · -- Forward: cut-point truth of B ∧ S(A,B) → S(A,B)^mu at γ
+      intro ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      simp only [stavi_temporal_truth_mu, stavi_temporal_truth, temporal_truth_mu]
+      have ⟨u₀, hu₀_in, hu₀s⟩ : ∃ u₀, u₀ ∈ γ.val.cut ∧ s_bound < u₀ := by
+        by_contra h_all; push_neg at h_all
+        exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
+      have hX_u₀ := hX_cut u₀ hu₀_in hu₀s
+      simp only [stavi_temporal_truth, temporal_truth] at hX_u₀
+      obtain ⟨hB_u₀, t₁, ht₁u₀, hA_t₁, hB_between⟩ := hX_u₀
+      have ht₁_in : t₁ ∈ γ.val.cut :=
+        γ.val.downward_closed u₀ t₁ hu₀_in (le_of_lt ht₁u₀)
+      refine ⟨extendPoint t₁, ⟨ht₁_in, fun h => h ht₁_in⟩, ⟨t₁, rfl⟩,
+        (stavi_truth_mu_at_point t₁ A).mpr hA_t₁, fun v hvt₁ hvγ hmu => ?_⟩
+      obtain ⟨v₀, rfl⟩ := hmu
+      have hv₀_in : v₀ ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff v₀ γ).mp (le_of_lt hvγ)
+      have hv₀_t₁ : t₁ < v₀ := (extendPoint_lt_iff t₁ v₀).mp hvt₁
+      apply (stavi_truth_mu_at_point v₀ B).mpr
+      by_cases hv_u₀ : v₀ < u₀
+      · exact hB_between v₀ hv₀_t₁ hv_u₀
+      · push_neg at hv_u₀
+        have hv₀_sb : s_bound < v₀ := lt_of_lt_of_le hu₀s hv_u₀
+        exact (hX_cut v₀ hv₀_in hv₀_sb).1
+    · -- Backward: S(A,B)^mu at γ → cut-point truth of B ∧ S(A,B)
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
+      simp only [stavi_temporal_truth_mu] at hSA
+      obtain ⟨s, hsγ, hmu_s, hA_s, hB_mu⟩ := hSA
+      obtain ⟨t₁, rfl⟩ := hmu_s
+      have ht₁_in : t₁ ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff t₁ γ).mp (le_of_lt hsγ)
+      refine ⟨γ, t₁, hγ_lt, ht₁_in, hγ_def, hγ_bet, fun u hu_in hu_t₁ => ?_⟩
+      simp only [stavi_temporal_truth]
+      constructor
+      · have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint u) (Sum.inr γ) := ⟨hu_in, fun h => h hu_in⟩
+        have hut₁ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint t₁) (extendPoint u) :=
+          (extendPoint_lt_iff t₁ u).mpr hu_t₁
+        exact (stavi_truth_mu_at_point u B).mp
+          (hB_mu (extendPoint u) hut₁ hγu ⟨u, rfl⟩)
+      · refine ⟨t₁, hu_t₁, (stavi_truth_mu_at_point t₁ A).mp hA_s, fun v htv hvu => ?_⟩
+        have hv_in : v ∈ γ.val.cut :=
+          γ.val.downward_closed u v hu_in (le_of_lt hvu)
+        have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint v) (Sum.inr γ) := ⟨hv_in, fun h => h hv_in⟩
+        have hvt₁ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint t₁) (extendPoint v) :=
+          (extendPoint_lt_iff t₁ v).mpr htv
+        exact (stavi_truth_mu_at_point v B).mp
+          (hB_mu (extendPoint v) hvt₁ hγv ⟨v, rfl⟩)
 
 /-! ## Custom Game G_{n;r} (GHR93 Definition 8.7)
 
