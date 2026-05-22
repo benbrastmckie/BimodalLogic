@@ -335,15 +335,29 @@ Closed `pigeonhole_definable_formula` sorry. Key insight: `stavi_fo_depth` can e
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [NOT STARTED]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [BLOCKED]
 
 **Goal**: Prove `left_formula_gap_detection` (line 2432) and `right_formula_gap_detection` (line 2451) -- GHR93 Lemma 9 bridging temporal formulas to gap properties.
 
-**Status**: UNBLOCKED by Phase 0 (correct U' semantics). GHR93 calls this "Clear".
+**Status**: BLOCKED. The naive "gap-equivalence" approach (U'(X,D)^mu(m) ↔ ∃ gap with X^mu(γ)) is mathematically incorrect. The correct proof requires case-specific constructions.
+
+**BLOCKER** (Phase 4C-W2):
+- **What failed**: The gap-equivalence lemma `U'(X, D)^mu(m) ↔ ∃ gap γ, conditions ∧ X^mu(γ)` is NOT a valid biconditional. Specifically, the backward direction of temporal cases (stavi_untl, std_untl, base.untl) requires `B^mu(γ)` from `U(A,B)^mu(γ)`, which is FALSE when B is an atom (atoms evaluate to False at gaps, but U(A,B) can still hold at a gap via mu-point witnesses above it).
+- **What was tried**:
+  1. Structural induction on A with generic gap-equivalence helpers (incorrect mathematical foundation)
+  2. The neg and conj cases DO work via IH + gap_detection_unique (proved: type coercions, Subtype.ext)
+  3. The easy base cases (atom, bot, box) work (both sides are False)
+  4. The temporal cases (stavi_untl, std_untl, base.untl/snce) require case-specific proofs
+- **Why it's stuck**: The FO table semantics of U'(X, D) at an actual point m does NOT decompose into "∃ gap with X at gap" because the FO table quantifies over the EXTENDED carrier (including gaps as bounds but evaluating at mu-points), while A^mu(γ) at a gap evaluates the formula AT the gap point itself. The gap is embedded WITHIN the U' interval, not at its boundary. The correct proof requires: (a) identifying the gap within the U' oscillation pattern, (b) showing that the oscillation conditions encode A^mu(γ) for the specific A in each case, (c) constructing U' witnesses from gap conditions for the backward direction. Each temporal case needs ~100-200 lines of careful construction.
+- **What is needed**: A case-by-case direct proof that connects the U' FO table oscillation pattern to gap detection for each temporal constructor. Key sub-problems:
+  1. Forward: Given U'(B ∧ U(A,B), D)^mu(m), extract a gap γ in M_r from the interval where D transitions from holding to failing, then show U(A,B)^mu(γ) from the tail of the oscillation.
+  2. Backward: Given gap γ with U(A,B)^mu(γ) and D-between conditions, construct a bound s above γ such that the FO table conditions hold with witness s in the extended carrier.
+  3. The key mathematical insight: the bound s for the OUTER U' should be chosen ABOVE the gap (in the complement), using `gap_definable_on_left` and `complement_no_min` to find appropriate witnesses where D fails.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 
-- [ ] **Task W2.1**: Prove gap-equivalence lemma (~80-150 lines): FO-table-based U'(top, D)(m) iff existence of gap gamma above m with D-defined-on-left.
+- [ ] **Task W2.1**: Prove gap-equivalence lemma (~80-150 lines): FO-table-based U'(top, D)(m) iff existence of gap gamma above m with D-defined-on-left. *(deviation: skipped — naive formulation is incorrect; needs case-specific approach)*
 - [ ] **Task W2.2**: Prove Lemma 9 left easy cases (atom, bot, box, neg, conj) using gap-equivalence (~100-150 lines).
 - [ ] **Task W2.3**: Prove Lemma 9 left hard cases (untl, snce, stavi_untl, stavi_snce) (~200-300 lines).
 - [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`) -- dual (~50-100 lines).
