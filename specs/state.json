@@ -597,9 +597,24 @@
           "summary": "Seed research: proof inventory (120 proofs, 6880 lines) and refactoring candidates"
         }
       ]
+    },
+    {
+      "project_number": 194,
+      "project_name": "migrate_nonempty_to_derivable",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-22T17:15:00Z",
+      "last_updated": "2026-05-22T17:15:00Z",
+      "artifacts": [
+        {
+          "path": "specs/194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md",
+          "type": "report",
+          "summary": "Seed research: 56 migration sites across 16 files in Metalogic/"
+        }
+      ]
     }
   ],
-  "next_project_number": 194,
+  "next_project_number": 195,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

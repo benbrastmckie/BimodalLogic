@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-22. 32 active tasks.*
+*Updated 2026-05-22. 33 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
@@ -44,8 +44,8 @@ Phase 2 (post-155 cleanup):
 Phase 3 (structural refactor — sequential, before tactics):
   168 → 174 → 175 → 180 → 131 → 161
 
-Phase 4 (documentation standards — define rules for all subsequent work):
-  183                                                   (after 161)
+Phase 4 (standards + Derivable migration — after structural refactor):
+  183, 194                                              (parallel, after 161)
 
 Phase 5 (tactics — Tier 1 foundations):
   185, 190                                              (parallel, after 161)
@@ -93,9 +93,11 @@ Phase 9 (final documentation + examples):
 161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST in Phase 3)
   └─ 131
 
-### Phase 4 — Documentation Standards (define rules for all subsequent work)
+### Phase 4 — Standards & Derivable Migration (after structural refactor)
 
 183 [PLANNED] — Documentation standards: directory READMEs, module docstrings, comment conventions
+  └─ 161
+194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
   └─ 161
 
 ### Phase 5 — Tactics Tier 1 (foundations, after structural refactor)
@@ -153,6 +155,17 @@ Phase 9 (final documentation + examples):
 
 
 ## Tasks
+
+### 194. Migrate Nonempty (DerivationTree ...) patterns to Derivable
+- **Effort**: small (3-5 hours)
+- **Status**: [NOT STARTED]
+- **Research**: [specs/194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md]
+- **Task Type**: lean4
+- **Dependencies**: 161
+
+**Description**: Replace all 56 occurrences of `Nonempty (DerivationTree ...)` across 16 active Metalogic/ files with the `Derivable` wrapper introduced in task 181. This is a mechanical, definitional migration — `Derivable G p` unfolds to `Nonempty (DerivationTree G p)` so no proof changes are needed. Also replace the local `ContextDerivable` duplicate in `Bundle/Construction.lean` with the global `Derivable` import. Depends on 161 (namespace rename) to avoid redoing the migration during structural refactor. Run after Phase 3.
+
+---
 
 ### 193. Codebase-wide tactic refactoring
 - **Effort**: large (30-40 hours)
