@@ -4700,6 +4700,37 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
 -- std_snce_gap_detection: DELETED (provably false, past dual of std_untl_gap_detection).
 -- Same issue: S(X,D) has no D-failure condition. See std_untl_gap_detection comment above.
 
+private theorem gap_detection_unique_right {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {γ₁ γ₂ : Gap M.carrier} {D : StaviFormula} {m : M.carrier}
+    (h₁_def : gap_definable_on_right M atomMap γ₁ D)
+    (h₂_def : gap_definable_on_right M atomMap γ₂ D)
+    (h₁_bet : ∀ u : M.carrier, u < m → u ∉ γ₁.cut →
+      stavi_temporal_truth M atomMap u D)
+    (h₂_bet : ∀ u : M.carrier, u < m → u ∉ γ₂.cut →
+      stavi_temporal_truth M atomMap u D)
+    (hm₁ : m ∉ γ₁.cut)
+    (hm₂ : m ∉ γ₂.cut) :
+    γ₁ = γ₂ := by
+  apply gap_ext
+  by_contra hne
+  wlog h : ¬(γ₁.cut ⊆ γ₂.cut) with H
+  · push_neg at hne
+    rcases gap_cuts_total γ₁ γ₂ with hsub | hsub
+    · exact H h₂_def h₁_def h₂_bet h₁_bet hm₂ hm₁ (Ne.symm hne)
+        (fun h' => hne (Set.Subset.antisymm hsub h'))
+    · exact h (fun h' => hne (Set.Subset.antisymm h' hsub))
+  obtain ⟨x, hx₁, hx₂⟩ := Set.not_subset.mp h
+  obtain ⟨_, h_no_init⟩ := h₁_def
+  apply h_no_init
+  refine ⟨x, hx₁, fun u hxu hu_in₁ => ?_⟩
+  have hu_not₂ : u ∉ γ₂.cut := by
+    intro h'; exact hx₂ (γ₂.downward_closed u x h' hxu)
+  have hum : u < m := by
+    by_contra h_not; push_neg at h_not
+    exact hm₁ (γ₁.downward_closed u m hu_in₁ h_not)
+  exact h₂_bet u hum hu_not₂
+
 theorem right_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (A D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
@@ -4711,7 +4742,118 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A) := by
-  sorry
+  induction A generalizing m with
+  | base φ =>
+    simp only [right_formula]
+    induction φ with
+    | atom a =>
+      simp only [right_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | bot =>
+      simp only [right_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | box a =>
+      simp only [right_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | imp f g _ _ =>
+      sorry
+    | untl f g _ _ =>
+      sorry
+    | snce f g _ _ =>
+      sorry
+  | neg A ih =>
+    simp only [right_formula, stavi_temporal_truth_mu]
+    constructor
+    · intro ⟨hS, hNot⟩
+      have hS' : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+          (.stavi_snce (.base Formula.top) D) := by
+        simp only [stavi_temporal_truth_mu]; exact hS
+      obtain ⟨γ, _s_bound, hγ_lt, _hs_in, hγ_def, hγ_bet, _⟩ :=
+        (stavi_snce_gap_detection (.base Formula.top) D hD m).mp hS'
+      have hNot' : ¬(∃ (γ' : RDefinableGap M atomMap r),
+          extendPoint m > Sum.inr γ' ∧
+          gap_definable_on_right M atomMap γ'.val D ∧
+          (∀ u, u < m → u ∉ γ'.val.cut → stavi_temporal_truth_mu M atomMap r (extendPoint u) D) ∧
+          stavi_temporal_truth_mu M atomMap r (Sum.inr γ') A) := by
+        rwa [← ih m]
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      intro hA_at_γ
+      exact hNot' ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_at_γ⟩
+    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hNot_A⟩
+      constructor
+      · have h_compl : ∃ x, x ∈ γ.val.cut := by
+          obtain ⟨x, hx⟩ := γ.val.nonempty
+          exact ⟨x, hx⟩
+        obtain ⟨s_b, hs_b⟩ := h_compl
+        have hTop_cut : ∀ u : M.carrier, u ∈ γ.val.cut → s_b < u →
+            stavi_temporal_truth M atomMap u (.base Formula.top) := by
+          intro u _ _
+          simp only [stavi_temporal_truth, temporal_truth, Formula.top]; exact id
+        have := (stavi_snce_gap_detection (.base Formula.top) D hD m).mpr
+          ⟨γ, s_b, hγ_lt, hs_b, hγ_def, hγ_bet, hTop_cut⟩
+        simp only [stavi_temporal_truth_mu] at this
+        exact this
+      · rw [ih m]
+        intro ⟨γ', hγ'_lt, hγ'_def, hγ'_bet, hA_at_γ'⟩
+        have hm_not : m ∉ γ.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ).mpr h) hγ_lt
+        have hm_not' : m ∉ γ'.val.cut := by
+          intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ').mpr h) hγ'_lt
+        have hγ_bet_std : ∀ u, u < m → u ∉ γ.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hum hu_not
+          exact (stavi_truth_mu_at_point u D).mp (hγ_bet u hum hu_not)
+        have hγ'_bet_std : ∀ u, u < m → u ∉ γ'.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hum hu_not
+          exact (stavi_truth_mu_at_point u D).mp (hγ'_bet u hum hu_not)
+        have heq : γ.val = γ'.val :=
+          gap_detection_unique_right hγ_def hγ'_def hγ_bet_std hγ'_bet_std hm_not hm_not'
+        have : γ = γ' := Subtype.ext heq
+        rw [this] at hNot_A
+        exact hNot_A hA_at_γ'
+  | conj A B ihA ihB =>
+    simp only [right_formula, stavi_temporal_truth_mu]
+    constructor
+    · intro ⟨hA, hB⟩
+      obtain ⟨γA, hγA_lt, hγA_def, hγA_bet, hγA_val⟩ := (ihA m).mp hA
+      obtain ⟨γB, hγB_lt, hγB_def, hγB_bet, hγB_val⟩ := (ihB m).mp hB
+      have hm_not_A : m ∉ γA.val.cut := by
+        intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γA).mpr h) hγA_lt
+      have hm_not_B : m ∉ γB.val.cut := by
+        intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γB).mpr h) hγB_lt
+      have hγA_bet' : ∀ u, u < m → u ∉ γA.val.cut →
+          stavi_temporal_truth M atomMap u D := by
+        intro u hum hu_not
+        exact (stavi_truth_mu_at_point u D).mp (hγA_bet u hum hu_not)
+      have hγB_bet' : ∀ u, u < m → u ∉ γB.val.cut →
+          stavi_temporal_truth M atomMap u D := by
+        intro u hum hu_not
+        exact (stavi_truth_mu_at_point u D).mp (hγB_bet u hum hu_not)
+      have heq : γA.val = γB.val :=
+        gap_detection_unique_right hγA_def hγB_def hγA_bet' hγB_bet' hm_not_A hm_not_B
+      refine ⟨γA, hγA_lt, hγA_def, hγA_bet, ?_, ?_⟩
+      · exact hγA_val
+      · have : γA = γB := Subtype.ext heq
+        rw [this]
+        exact hγB_val
+    · intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val, hB_val⟩
+      exact ⟨(ihA m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val⟩,
+             (ihB m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hB_val⟩⟩
+  | stavi_untl A B _ _ =>
+    sorry
+  | stavi_snce A B _ _ =>
+    sorry
+  | std_untl A B _ _ =>
+    sorry
+  | std_snce A B _ _ =>
+    sorry
 
 /-! ## Custom Game G_{n;r} (GHR93 Definition 8.7)
 
