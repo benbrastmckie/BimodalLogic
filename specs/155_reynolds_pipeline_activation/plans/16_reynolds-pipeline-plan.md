@@ -190,21 +190,22 @@ Phases within the same wave can execute in parallel.
 
 **GHR93 Reference**: Section 8, Lemma 9 (p.111). "Let A, D be temporal formulas with D of rank at most r. Let m in M_r. Then left(A,D)^mu(m) iff exists gap gamma with conditions. PROOF. Clear."
 
-**Current state**: `stavi_untl_gap_detection` is sorry-free. `stavi_untl` and `std_untl` forward directions are closed. The following remain sorry'd: `std_untl_gap_detection` body, base.imp/untl/snce cases, stavi_untl/snce backward directions, std_untl/snce backward directions, stavi_snce_gap_detection, std_snce_gap_detection, right_formula_gap_detection.
+**Current state**: `stavi_untl_gap_detection` is sorry-free. base.imp and base.untl closed (2/11). 9 sorry sites remain. **CRITICAL**: `std_untl_gap_detection` and `std_snce_gap_detection` as stated are PROVABLY INCORRECT (Lean-verified: `gap_definable_on_left` is False for D = top, but std_untl LHS can be True). See handoff `phase-2-handoff-20260521b.md` for full analysis, counterexample, and proposed fixes.
 
-**Strategy** (from reports 23, 24):
+**Strategy** (REVISED after analysis):
+0. **Fix std_untl/std_snce theorem statements** (prerequisite for 6 of 9 remaining sorry sites). Either: (A) add hypothesis `h_D_nontrivial : ∃ q, m < q ∧ ¬D(q)` and verify gap construction works, (B) replace with combined form using stavi_untl for gap construction, or (C) prove affected left/right_formula cases directly without intermediate theorems.
 1. **FO-table shift lemma** (new, ~80-120 lines): If U'(A,B)^mu(gamma) holds at a gap, then U'(A,B) holds at complement points near gamma. The mu-FO-table witnesses at gamma (quantifying over mu-points) restrict to standard FO-table witnesses at complement points. This is the key missing backward direction piece.
 2. **Backward directions**: Given gap gamma with A^mu(gamma), need left_formula(A,D)(m). For stavi_untl case A = U'(A0,B0): from U'(A0,B0)^mu(gamma), extract B0 at complement points via condition (3), extract U'(A0,B0) at complement points via FO-table shift. Combine to get (B0 AND U'(A0,B0)) at complement points. Feed to `stavi_untl_gap_detection.mpr` to get U'(B0 AND U'(A0,B0), D)(m).
-3. **snce/since variants**: Dual of untl variants. `stavi_snce_gap_detection` and `std_snce_gap_detection` mirror the untl helpers with S'/S in place of U'/U and "below" in place of "above". `right_formula_gap_detection` is dual of `left_formula_gap_detection` with appropriate direction swap.
-4. **base cases**: base.imp expands to neg/conj pattern. base.untl and base.snce reduce to the corresponding temporal case patterns.
+3. **snce/since variants**: `stavi_snce_gap_detection` RHS should be refactored to match the untl pattern (X at cut points with s_bound, NOT X^mu at gap) for a provable ~250-line dual. `std_snce_gap_detection` needs the same fix as std_untl.
+4. **base cases**: base.imp and base.untl CLOSED. base.snce blocked on std_untl fix.
 
 **Tasks**:
 - [ ] **Task 2.1**: Prove `stavi_untl_mu_at_gap_gives_complement_truth` -- the FO-table shift lemma (~80-120 lines). From U'(A,B)^mu(gamma), extract FO witnesses at gamma, restrict to complement points above gamma, produce standard FO table at each complement point.
 - [ ] **Task 2.2**: Close `left_formula_gap_detection` stavi_untl backward (line 3032, ~60-80 lines). Use FO-table shift to get U'(A0,B0) at complement points. Extract B0 from condition (3). Combine and apply `stavi_untl_gap_detection.mpr`.
 - [ ] **Task 2.3**: Close `left_formula_gap_detection` std_untl backward (line 3083, ~60-80 lines). Same pattern as stavi_untl backward, adapted for standard Until.
-- [ ] **Task 2.4**: Prove `std_untl_gap_detection` body (line 2682, ~120-160 lines). Analogous to `stavi_untl_gap_detection` but for standard Until U(X,D). Forward: construct gap from U(X,D)(m). Backward: construct U(X,D)(m) from gap conditions.
-- [ ] **Task 2.5**: Prove `stavi_snce_gap_detection` (line 3109, ~100-140 lines). Dual of `stavi_untl_gap_detection` with S' in place of U', "below" in place of "above", cut complement in place of cut.
-- [ ] **Task 2.6**: Prove `std_snce_gap_detection` (line 3124, ~100-140 lines). Dual of `std_untl_gap_detection`.
+- [ ] **Task 2.4**: FIX `std_untl_gap_detection` theorem statement (line 2682). Theorem as stated is PROVABLY INCORRECT (see handoff phase-2-handoff-20260521b.md). Either add `h_D_nontrivial` hypothesis, reformulate as one-directional with stavi_untl for gap construction, or remove and prove affected left_formula cases directly. Then prove the corrected theorem (~120-160 lines).
+- [ ] **Task 2.5**: Refactor `stavi_snce_gap_detection` RHS (line 3241) to match untl pattern (X at cut points with s_bound, not X^mu at gap), then prove by mirroring stavi_untl_gap_detection with reversed inequalities (~250 lines).
+- [ ] **Task 2.6**: FIX `std_snce_gap_detection` theorem statement (line 3256). Same incorrectness as std_untl (past dual). Apply same fix pattern.
 - [ ] **Task 2.7**: Close `left_formula_gap_detection` stavi_snce case (line 3036, ~60-80 lines). Uses `stavi_snce_gap_detection` + FO-table shift (since direction).
 - [ ] **Task 2.8**: Close `left_formula_gap_detection` std_snce case (line 3087, ~60-80 lines). Uses `std_snce_gap_detection` + FO-table shift.
 - [x] **Task 2.9**: Close `left_formula_gap_detection` base cases -- imp (line 2759, ~40-60 lines), untl (line 2763, ~20-30 lines), snce (line 2767, ~20-30 lines). base.imp expands to neg/conj; base.untl/snce reduce to temporal case patterns. *(deviation: altered -- base.imp closed via gap_detection_unique + IH, base.untl closed via stavi_untl_gap_detection bridge, base.snce still sorry'd pending std_untl_gap_detection)*
