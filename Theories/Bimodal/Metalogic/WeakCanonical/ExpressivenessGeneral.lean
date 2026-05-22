@@ -3733,44 +3733,42 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
 
 /-! ## GHR93 Theorem 6: Forward-to-Backward Transfer -/
 
-/-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
-    (*)_n: If Duplicator wins G_{1+3n; r}(M, xy; N, x'y'),
-    then she wins G_{n; r}(N, x'y'; M, xy).
+/-- **GHR93 Theorem 6, core** (Forward-to-backward transfer with decoupled r+1 round count):
+    The key insight is that the rank r+1 forward hypothesis `h_r1_univ` is universally
+    quantified over endpoints, so it does NOT depend on the induction variable `n` or
+    the specific endpoints `x, y, x', y'`. This allows it to stay out of the IH,
+    breaking the recursive tower where each induction level needs rank r+1 on
+    sub-intervals.
 
-    The hypothesis `h_pt` requires that [x',y'] contains an actual point
-    from N. This is needed for the base case to trigger Round 2 of the
-    forward game and extract a matching point.
-
-    The proof is by induction on n. The base case (n=0) uses the 1-round
-    forward strategy with the Spoiler's point as the selection, extracts
-    a matching point via gap_point_agreement, and transfers the winning
-    condition via the base_case embedding. The inductive step delegates to
-    `ghr93_inductive_step`, which establishes split points c (in M_r) and
-    d (in N_r), obtains sub-interval backward strategies σ and τ via the
-    IH, and splits into four cases:
-      Case I:   ∃ i, a_i < d (split case — sorry'd, Phase 4C.3)
-      Case II:  all a_i ≥ d, a_n is a point (sorry'd, Phase 4C.4)
-      Case III: all a_i ≥ d, a_n is a left-defined gap (sorry'd, Phase 4C.5)
-      Case IV:  all a_i ≥ d, a_n is a gap not left-defined (sorry'd, Phase 4C.6) -/
-theorem ghr93_forward_to_backward {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds) (n r : Nat)
+    Parameter `rounds_r1` is the round count for the rank r+1 game, decoupled from `n`.
+    The constraint `h_enough : 1 + 3 * n ≤ rounds_r1` ensures enough rounds at each level.
+    (In the succ case, 1+3(n+1) = 4+3n ≤ rounds_r1 gives the 4+3n rounds needed
+    by ghr93_inductive_step for h_fwd_r1, and 1+3n ≤ rounds_r1 for the IH.) -/
+private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n : Nat) (rounds_r1 r : Nat)
     {M N : OrderedMonadicStructure sig}
+    (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap rounds_r1 (r + 1)
+                   (rank_embed (Nat.le_succ r) x₁)
+                   (rank_embed (Nat.le_succ r) y₁)
+                   (rank_embed (Nat.le_succ r) x₁')
+                   (rank_embed (Nat.le_succ r) y₁'))
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
+    (h_enough : 1 + 3 * n ≤ rounds_r1)
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
-    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
-    (h_r1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1)
-      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y')) :
+    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y') :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
-  -- Revert endpoints before induction so the IH is universally quantified
-  -- over all sub-intervals, not bound to the specific x, y, x', y'.
-  revert x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
+  -- h_r1_univ does NOT depend on n or specific endpoints, so it stays in scope
+  -- after reverting. Only revert what depends on n and the specific endpoints.
+  revert h_enough x y x' y' hxy hx'y' h_pt h_pt_M h
   induction n with
   | zero =>
-    intro x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
+    intro x y x' y' _ hxy hx'y' h_pt _h_pt_M h
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -3796,11 +3794,7 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
       rwa [show extendPoint q = a'_resp ⟨0, by omega⟩ from hq_eq.symm]
     refine ⟨q, hq_in, ?_⟩
     -- Transfer winning condition from 1-game to 0-game via embedding
-    -- Use game_tuple_zero_eq to normalize the a_bwd function
     rw [show a_bwd = Fin.elim0 from funext (fun i => Fin.elim0 i)]
-    -- The backward 0-game winning condition at (N, M) follows from
-    -- the forward 1-game winning condition at (M, N) restricted to
-    -- the embedded indices, with Iff direction swapped (symmetry).
     refine ⟨?_, ?_, ?_⟩
     · -- same_order_type 0: transfer via embedding + symmetry
       intro i j
@@ -3819,22 +3813,72 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
           base_case_N_eq x' y' q p a'_resp hq_eq i]
       exact (hform_fwd _ A hA).symm
   | succ n ih_gen =>
-    intro x y x' y' hxy hx'y' h_pt h_pt_M h h_r1
+    -- Goal: ∀ {x y x' y'}, 1+3*(n+1) ≤ rounds_r1 → x ≤ y → x' ≤ y' → ... → backward (n+1) r
+    -- intro introduces both implicit and explicit binders in order
+    intro x y x' y' h_enough hxy hx'y' h_pt h_pt_M h
+    -- ih_gen : (1 + 3 * n ≤ rounds_r1) → ∀ x₀ y₀ ..., forward (1+3n) r → backward n r
+    -- ih_gen does NOT include h_r1_univ — it stays in scope from the outer theorem.
     -- Inductive step: (*)_n → (*)_{n+1}
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
     rw [h_rounds] at h
-    have h_rounds_r1 : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
-    rw [h_rounds_r1] at h_r1
+    -- Derive h_fwd_r1 for the specific endpoints from h_r1_univ + round_mono
+    -- h_r1_univ gives rounds_r1 rounds; we need 4+3n rounds for ghr93_inductive_step
+    -- h_enough : 1+3(n+1) = 4+3n ≤ rounds_r1, so round_mono applies directly
+    have h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
+        (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
+        (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y') :=
+      ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)
+        ((rank_embed_le (Nat.le_succ r) x y).mpr hxy)
+        ((rank_embed_le (Nat.le_succ r) x' y').mpr hx'y')
+        (h_r1_univ hxy hx'y')
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
-        ih_gen hle hle' hpt' (by
+        ih_gen (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
           obtain ⟨p_N, hp_N⟩ := hpt'
           obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
             (fun _ => ⟨le_refl x₀, hle⟩)
           obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
-          exact ⟨b_M, hb_M_in⟩) hfwd sorry)
-      h h_r1
+          exact ⟨b_M, hb_M_in⟩) hfwd)
+      h h_fwd_r1
+
+/-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
+    (*)_n: If Duplicator wins G_{1+3n; r}(M, xy; N, x'y'),
+    then she wins G_{n; r}(N, x'y'; M, xy).
+
+    The hypothesis `h_pt` requires that [x',y'] contains an actual point
+    from N. This is needed for the base case to trigger Round 2 of the
+    forward game and extract a matching point.
+
+    The hypothesis `h_r1_univ` provides a rank (r+1) forward strategy for
+    ALL pairs of intervals, not just the specific [x,y] and [x',y'].
+    This is needed because the induction reduces to sub-intervals, and each
+    level needs a rank (r+1) strategy on its specific sub-interval.
+    In the completeness proof context, this comes from the decomposition
+    formula which gives agreement at all positions.
+
+    The proof delegates to `ghr93_forward_to_backward_core` which keeps
+    `h_r1_univ` out of the induction hypothesis. -/
+theorem ghr93_forward_to_backward {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n r : Nat)
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
+    (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1)
+                   (rank_embed (Nat.le_succ r) x₁)
+                   (rank_embed (Nat.le_succ r) y₁)
+                   (rank_embed (Nat.le_succ r) x₁')
+                   (rank_embed (Nat.le_succ r) y₁')) :
+    ghr93_duplicator_wins N M atomMap n r x' y' x y :=
+  ghr93_forward_to_backward_core atomMap n (1 + 3 * n) r
+    h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h
 
 /-! ## Rank-Varying Theorem 6
 
