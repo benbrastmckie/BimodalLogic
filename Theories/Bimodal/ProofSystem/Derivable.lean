@@ -144,10 +144,24 @@ example (p q : Formula) : Derivable [p.imp q, p] p := by
   aesop
 
 /--
-Test: Simp can close axiom goals when the `Axiom` instance is provided.
+Test: Axiom application via explicit term.
 -/
 example (p : Atom) : Derivable [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) := by
   exact Derivable.ax _ _ (Axiom.modal_t _)
+
+/--
+Test: Modus ponens chain -- derive `q` from `p → q` and `p` in context.
+-/
+example (p q : Formula) : Derivable [p.imp q, p] q := by
+  apply Derivable.mp _ p
+  · exact Derivable.assume _ _ (by simp)
+  · exact Derivable.assume _ _ (by simp)
+
+/--
+Test: Weakening preserves derivability.
+-/
+example (p q r : Formula) (h : Derivable [p] q) : Derivable [p, r] q :=
+  Derivable.weaken h (by intro x hx; simp_all)
 
 /-! ## Consistent Bridge
 

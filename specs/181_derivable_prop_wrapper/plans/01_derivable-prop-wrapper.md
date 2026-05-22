@@ -121,15 +121,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Full Build Verification and Regression Check [NOT STARTED]
+### Phase 3: Full Build Verification and Regression Check [COMPLETED]
 
 **Goal**: Run full project build and verify no regressions. Confirm aesop integration works on representative goals.
 
 **Tasks**:
-- [ ] Run full `lake build` (not just the new file)
-- [ ] Verify no new warnings or errors in existing files
-- [ ] Test aesop on 2-3 sample Derivable goals (axiom application, modus ponens chain)
-- [ ] Verify `Consistent` bridge works: `example (G : Context) : Consistent G <-> -Derivable G Formula.bot := Iff.rfl`
+- [x] Run full `lake build` (not just the new file)
+- [x] Verify no new warnings or errors in existing files
+- [x] Test aesop on 2-3 sample Derivable goals (axiom application, modus ponens chain)
+- [x] Verify `Consistent` bridge works: `example (G : Context) : Consistent G <-> -Derivable G Formula.bot := Iff.rfl` *(verified via lean_run_code with both imports)*
 
 **Timing**: 15 minutes
 
