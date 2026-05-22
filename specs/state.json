@@ -410,6 +410,11 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/23_tactic-needs-beyond-195.md",
           "type": "research",
           "summary": "Tactic needs beyond task 195: none required. 7 remaining sorries are unique mathematical arguments. Task 195 is sufficient."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/27_post-195-assessment.md",
+          "type": "report",
+          "summary": "Post-task-195 assessment: same_order_type blocker resolved, h_d_unique + 3 other Phase 1 sorries remain, implementation spec for uncomment+fix approach"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
