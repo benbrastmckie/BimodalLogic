@@ -5608,13 +5608,107 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           rcases eq_or_lt_of_le hus with rfl | hsu
           · exact (stavi_truth_mu_at_point s D).mpr hDs
           · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
-      · -- U'(A,B)^mu at γ: use s as mu-point witness above γ
-        -- U'(A,B)(s) = hUntl_s. Since extendPoint s > Sum.inr γ (s is complement),
-        -- U'(A,B)^mu(γ) follows by taking extendPoint s as the mu-point.
-        -- The FO table body between γ and s₂ extends via B∧D at complement points.
-        sorry
-    · -- Backward: gap below m with U'(A,B)^mu → compound at m
-      -- Mirror of left stavi_snce backward: find complement point s with all compound components.
+      · -- U'(A,B)^mu at γ: extend FO table of U'(A,B)(s) from (s, s₂) to (γ, s₂)
+        obtain ⟨s₂, hss₂, h_body_AB, ⟨wf_AB, hswf, hwfs₂, hBwf_AB⟩,
+                ⟨wi_AB, hswi, hwis₂, hBwi_AB⟩⟩ := hUntl_s
+        simp only [stavi_temporal_truth_mu, stavi_temporal_truth]
+        refine ⟨extendPoint s₂, ?_, ?_, ?_, ?_⟩
+        · -- Sum.inr γ < extendPoint s₂: s₂ > s > γ (s₂ ∉ cut)
+          have hs₂_compl : s₂ ∈ compl := h_compl_uc s s₂ hs_in_compl (le_of_lt hss₂)
+          exact ⟨fun h => h hs₂_compl, fun h => h hs₂_compl⟩
+        · -- Condition (1): ∀ mu-point u ∈ (γ, s₂), FO body
+          intro u hγu hus₂ hmu
+          obtain ⟨u_pt, rfl⟩ := hmu
+          have hu_pt_not_cut : u_pt ∉ γ_gap.cut := by
+            intro h; exact not_lt.mpr (show extendPoint u_pt ≤ Sum.inr γ from h) hγu
+          have hu_pt_compl : u_pt ∈ compl := by by_contra h'; exact hu_pt_not_cut h'
+          have hu_pt_s₂ : u_pt < s₂ := (extendPoint_lt_iff u_pt s₂).mp hus₂
+          by_cases hus : u_pt < s
+          · -- u_pt ∈ (γ, s): complement point below s. B holds from h_bD_at_compl.
+            left
+            refine ⟨extendPoint s, (extendPoint_lt_iff u_pt s).mpr hus, ⟨s, rfl⟩,
+              fun w hγw hws hmu_w => ?_⟩
+            obtain ⟨w_pt, rfl⟩ := hmu_w
+            have hw_pt_s : w_pt < s := (extendPoint_lt_iff w_pt s).mp hws
+            have hw_pt_not_cut : w_pt ∉ γ_gap.cut := by
+              intro h; exact not_lt.mpr (show extendPoint w_pt ≤ Sum.inr γ from h) hγw
+            have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
+            exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hw_pt_s).1
+          · -- u_pt ≥ s: use h_body_AB from U'(A,B)(s)
+            push_neg at hus
+            rcases eq_or_lt_of_le hus with rfl | hsu
+            · -- u_pt = s: B-cofinal using wi_AB
+              left
+              refine ⟨extendPoint wi_AB, (extendPoint_lt_iff s wi_AB).mpr hswi, ⟨wi_AB, rfl⟩,
+                fun w hγw hwwi hmu_w => ?_⟩
+              obtain ⟨w_pt, rfl⟩ := hmu_w
+              have hw_pt_wi : w_pt < wi_AB := (extendPoint_lt_iff w_pt wi_AB).mp hwwi
+              have hw_pt_not_cut : w_pt ∉ γ_gap.cut := by
+                intro h; exact not_lt.mpr (show extendPoint w_pt ≤ Sum.inr γ from h) hγw
+              have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
+              by_cases hws : w_pt < s
+              · exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hws).1
+              · push_neg at hws
+                rcases eq_or_lt_of_le hws with rfl | hsw
+                · exact (stavi_truth_mu_at_point s B).mpr hBs
+                · exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi_AB w_pt hsw hw_pt_wi)
+            · -- u_pt > s: use h_body_AB
+              cases h_body_AB u_pt hsu hu_pt_s₂ with
+              | inl h_cof =>
+                left
+                obtain ⟨v, hu_v, hBv⟩ := h_cof
+                refine ⟨extendPoint v, (extendPoint_lt_iff u_pt v).mpr hu_v, ⟨v, rfl⟩,
+                  fun w hγw hwv hmu_w => ?_⟩
+                obtain ⟨w_pt, rfl⟩ := hmu_w
+                have hw_pt_v : w_pt < v := (extendPoint_lt_iff w_pt v).mp hwv
+                have hw_pt_not_cut : w_pt ∉ γ_gap.cut := by
+                  intro h; exact not_lt.mpr (show extendPoint w_pt ≤ Sum.inr γ from h) hγw
+                have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
+                by_cases hws : w_pt < s
+                · exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hws).1
+                · push_neg at hws
+                  rcases eq_or_lt_of_le hws with rfl | hsw
+                  · exact (stavi_truth_mu_at_point s B).mpr hBs
+                  · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hsw hw_pt_v)
+              | inr h_right =>
+                right
+                obtain ⟨hA_above, v', hmv', hv'u, hBv'⟩ := h_right
+                refine ⟨fun v hv hvs hmu_v => ?_, ?_⟩
+                · obtain ⟨v_pt, rfl⟩ := hmu_v
+                  exact (stavi_truth_mu_at_point v_pt A).mpr
+                    (hA_above v_pt ((extendPoint_lt_iff u_pt v_pt).mp hv)
+                      ((extendPoint_lt_iff v_pt s₂).mp hvs))
+                · refine ⟨extendPoint v', ?_, (extendPoint_lt_iff v' u_pt).mpr hv'u,
+                    ⟨v', rfl⟩, mt (stavi_truth_mu_at_point v' B).mp hBv'⟩
+                  have hv'_compl : v' ∈ compl := h_compl_uc s v' hs_in_compl (le_of_lt hmv')
+                  exact ⟨fun h => h hv'_compl, fun h => h hv'_compl⟩
+        · -- Condition (2): ∃ mu-point ∈ (γ, s₂) with ¬B^mu
+          have hwf_compl : wf_AB ∈ compl := h_compl_uc s wf_AB hs_in_compl (le_of_lt hswf)
+          refine ⟨extendPoint wf_AB, ?_, (extendPoint_lt_iff wf_AB s₂).mpr hwfs₂,
+            ⟨wf_AB, rfl⟩, mt (stavi_truth_mu_at_point wf_AB B).mp hBwf_AB⟩
+          exact ⟨fun h => h hwf_compl, fun h => h hwf_compl⟩
+        · -- Condition (3): ∃ mu-point ∈ (γ, s₂) with B^mu initial
+          have hwi_compl : wi_AB ∈ compl := h_compl_uc s wi_AB hs_in_compl (le_of_lt hswi)
+          refine ⟨extendPoint wi_AB, ?_, (extendPoint_lt_iff wi_AB s₂).mpr hwis₂,
+            ⟨wi_AB, rfl⟩, fun v hγv hvwi hmu_v => ?_⟩
+          · exact ⟨fun h => h hwi_compl, fun h => h hwi_compl⟩
+          · obtain ⟨v_pt, rfl⟩ := hmu_v
+            have hv_pt_wi : v_pt < wi_AB := (extendPoint_lt_iff v_pt wi_AB).mp hvwi
+            have hv_pt_not_cut : v_pt ∉ γ_gap.cut := by
+              intro h; exact not_lt.mpr (show extendPoint v_pt ≤ Sum.inr γ from h) hγv
+            have hv_pt_compl : v_pt ∈ compl := by by_contra h'; exact hv_pt_not_cut h'
+            by_cases hvs : v_pt < s
+            · exact (stavi_truth_mu_at_point v_pt B).mpr (h_bD_at_compl v_pt hv_pt_compl hvs).1
+            · push_neg at hvs
+              rcases eq_or_lt_of_le hvs with rfl | hsv
+              · exact (stavi_truth_mu_at_point s B).mpr hBs
+              · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi_AB v_pt hsv hv_pt_wi)
+    · -- Backward: gap below m with U'(A,B)^mu → std_snce(compound, D)(m)
+      -- Mirrors left base.snce backward. Given D-gap γ below m with U'(A,B)^mu(γ):
+      -- 1. Extract FO table witnesses from U'(A,B)^mu(γ)
+      -- 2. Pick complement point s below m with: D(s), B(s), U'(A,B)(s) (from mu-form restriction),
+      --    S'(⊤,B∧D)(s) (from gap structure below s), ¬S'(D,B∧D)(s) (from gap ¬D in cut)
+      -- 3. D on (s,m) from hγ_bet
       sorry
   | stavi_snce A B _ _ =>
     -- right_formula (.stavi_snce A B) D = S'(B ∧ S'(A,B), D)
