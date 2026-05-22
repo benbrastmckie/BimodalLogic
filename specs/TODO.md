@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-22. 23 active tasks. Archived 6 completed tasks (21, 130, 172, 173, 182, 184).*
+*Updated 2026-05-22. 23 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase.
 
@@ -36,17 +36,14 @@ technical_debt:
 ```
 Active: 155 (Reynolds pipeline — sorry-free bx_completeness)
 
-Completed waves:
-  Wave 1a: 173, 130, 21, 172                (purge dead code) [DONE]
-  Wave 1a+: 182, 184                        (Boneyard cleanup + tombstone sweep) [DONE]
-
-After 155 completes:
-  Wave 1b: 176, 95                           (Chronicle relocation, verification)
-  Wave 3:  168 → 174 → 175 → 131 → 161     (deep refactor)
-  Wave 4:  183 → 177 → 178                  (documentation standards + final polish)
+After 155:
+  Wave 1b: 176, 95                                     (post-155 cleanup)
+  Wave 2:  181                                          (small independent win)
+  Wave 3:  168 → 174 → 175 → 180 → 131 → 161          (deep refactor)
+  Wave 4:  183 → 177 → 178                             (documentation + polish)
 ```
 
-### Completeness (in progress)
+### Active — Completeness
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
@@ -57,19 +54,26 @@ After 155 completes:
 95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
   └─ 155
 
-### Wave 3 — Deep Refactor
+### Wave 2 — Independent Quick Wins (parallel with Wave 1b)
+
+179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
+181 [NOT STARTED] — Add Derivable Prop-valued wrapper alongside DerivationTree
+
+### Wave 3 — Deep Refactor (sequential chain)
 
 168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
 174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
-  └─ 168 — (SoundnessLemmas dedup depends on FrameClass parameterization)
+  └─ 168
 175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
   └─ 168, 174
+180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
+  └─ 174
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
 161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
 
 ### Wave 4 — Documentation & Final Polish
 
-183 [NOT STARTED] — Documentation standards: directory READMEs, module docstrings, comment conventions
+183 [PLANNED] — Documentation standards: directory READMEs, module docstrings, comment conventions
   └─ 131, 175
 177 [NOT STARTED] — Update README and all module docstrings
   └─ 183
