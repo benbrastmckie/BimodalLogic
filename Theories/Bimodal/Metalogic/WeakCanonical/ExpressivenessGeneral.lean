@@ -1706,7 +1706,102 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         (x' = t' ↔ x' = d) →
         (t' = y' ↔ d = y') →
         t' = d := by
-      sorry
+      intro t' ht'_interval ht'_form ht'_pt ht'_gap hx'_t' ht'_y'
+      -- Boundary case 1: d = x'
+      by_cases hx'd : x' = d
+      · -- x' = d, so by boundary correspondence x' = t', hence t' = d
+        exact (hx'_t'.mpr hx'd).symm.trans hx'd
+      · -- x' ≠ d, so x' < d (since x' ≤ d from hd_interval.1)
+        by_cases hdy' : d = y'
+        · -- d = y', so by boundary correspondence t' = y', hence t' = d
+          exact (ht'_y'.mpr hdy').trans hdy'.symm
+        · -- Interior case: x' < d < y' and x' < t' < y'
+          -- From boundary conditions: x' ≠ t' and t' ≠ y'
+          have hx't' : x' ≠ t' := fun h => hx'd (hx'_t'.mp h)
+          have ht'y' : t' ≠ y' := fun h => hdy' (ht'_y'.mp h)
+          -- So x' < t' < y'
+          have hx'_lt_t' : x' < t' :=
+            lt_of_le_of_ne ht'_interval.1 hx't'
+          have ht'_lt_y' : t' < y' :=
+            lt_of_le_of_ne ht'_interval.2 ht'y'
+          have _hx'_lt_d : x' < d :=
+            lt_of_le_of_ne hd_interval.1 hx'd
+          have _hd_lt_y' : d < y' :=
+            lt_of_le_of_ne hd_interval.2 hdy'
+          -- Prove t' = d by antisymmetry
+          apply le_antisymm
+          · -- Goal: t' ≤ d
+            -- By hd_is_inf, it suffices to show t' is a lower bound of S_C.
+            apply hd_is_inf
+            intro s hs
+            -- Assume for contradiction that s < t'.
+            by_contra h_not_le
+            push_neg at h_not_le
+            -- By upward-closedness, t' ∈ S_C
+            have ht'_in_SC : t' ∈ S_C :=
+              continuation_set_upward_closed hs (le_of_lt h_not_le)
+                (le_of_lt ht'_lt_y') (le_of_lt hx'_lt_t')
+            have hd_le_t' : d ≤ t' := hd_glb t' ht'_in_SC
+            rcases eq_or_lt_of_le hd_le_t' with hd_eq_t' | _hd_lt_t'
+            · -- d = t': s < t' = d contradicts d ≤ s
+              exact absurd (hd_eq_t' ▸ hd_glb s hs) (not_le.mpr h_not_le)
+            · -- d < t': GHR93 Claim 1 — requires the rank-(r+1) formula
+              -- C' = ¬C ∨ K⁻(¬C). The full argument uses h_fwd_r1 to show
+              -- that any element t' with the same rank-r type as d and
+              -- t' > d leads to a violation of the rank-(r+1) game's winning
+              -- condition. Specifically: C'(c) holds in M_r (from the infimum
+              -- properties of c); by formula transfer at rank r+1, C'(d_response)
+              -- holds in N_r; C'(d_response) implies d_response ≤ d, but
+              -- d_response has rank-r agreement with t' > d, contradiction.
+              -- This requires materializing C' as a StaviFormula of depth r+1
+              -- or encoding the argument at the predicate level.
+              -- BLOCKED: pending C' formula construction infrastructure.
+              sorry
+          · -- Goal: d ≤ t'
+            -- Assume t' < d for contradiction.
+            by_contra h_not_le
+            push_neg at h_not_le
+            -- t' < d, so t' is strictly below inf(S_C). Hence t' ∉ S_C.
+            have ht'_not_SC : t' ∉ S_C := by
+              intro h_in
+              exact absurd (hd_glb t' h_in) (not_le.mpr h_not_le)
+            -- t' ∉ S_C and t' ∈ [x', y']: tail condition fails at some mu-point
+            have ht'_not_cont : ¬ (∀ u : ExtendedCarrier N atomMap r,
+                t' < u → u < y' → mu_holds u →
+                cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
+              intro h_all
+              exact ht'_not_SC ⟨ht'_interval, h_all⟩
+            push_neg at ht'_not_cont
+            obtain ⟨u, ht'u, huy', hmu_u, h_not_cont_u⟩ := ht'_not_cont
+            -- u is a mu-point with t' < u < y' and ¬ cont_holds a_n y' u.
+            -- Show u > d leads to contradiction (then u ≤ d is the only option):
+            -- If u > d: u is above the infimum, so ∃ s ∈ S_C with s < u,
+            -- and s's tail condition gives cont_holds at u. Contradiction.
+            rcases le_or_gt u d with hu_le_d | hu_gt_d
+            · -- u ≤ d: the failure witness is at or below d.
+              -- GHR93 Claim 1 (d ≤ t' direction): if t' < d, then
+              -- the rank-(r+1) formula C' = ¬C ∨ K⁻(¬C) holds at c in M.
+              -- By formula transfer at rank r+1, C' holds at any game
+              -- response to c in N. Since C' implies the response is ≤ d
+              -- (by the semantic analysis of C'), and the response agrees
+              -- with t' at rank r, we get t' ≤ d. But we assumed t' < d,
+              -- so actually the argument shows d ≤ t' (contradiction
+              -- with t' < d only when combined with the t' ≤ d direction).
+              -- More precisely: the GHR93 argument shows d ≤ d-bar directly
+              -- from C'(d), which gives d ≤ d. The other direction (d-bar ≤ d)
+              -- is by contradiction: assume d < d-bar, pick d' ∈ (d, d-bar)
+              -- with ¬C(d'), challenge Duplicator. She can't match because
+              -- C holds above c in M.
+              -- BLOCKED: requires C' formula construction.
+              sorry
+            · -- u > d: derive contradiction.
+              have : ¬ (∀ s ∈ S_C, u ≤ s) := by
+                intro h_lb
+                exact absurd (hd_is_inf u h_lb) (not_le.mpr hu_gt_d)
+              push_neg at this
+              obtain ⟨s, hs_in, hs_lt⟩ := this
+              -- s ∈ S_C and s < u. Tail condition of s gives cont_holds at u.
+              exact absurd (hs_in.2 u hs_lt huy' hmu_u) h_not_cont_u
     have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
         hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
