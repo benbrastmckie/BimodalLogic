@@ -3395,16 +3395,15 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       obtain ⟨hord_tau, hgp_tau, hform_tau⟩ := hcond_tau
       refine ⟨?_, ?_, ?_⟩
       · -- same_order_type (n+1): tau sub-case
-        -- Proof verified via multi_attempt: extract ordering data from forward
-        -- and tau games, then delta game_tuple; split_ifs; simp_all; close
-        -- 13 remaining cases with pivot_chain_order + extracted orderings.
-        -- Key insight: fwd_x_y extraction should use `exact h` not `exact ⟨h.1.symm, h.2.symm⟩`
-        -- since the forward game already has the right direction.
-        -- TODO(Phase 1): Fix compilation — multi_attempt confirms proof works.
+        -- Round 9 finding: The block-commented proofs relied on simp_all which
+        -- behaves differently in file vs multi_attempt context due to hypothesis
+        -- rewriting. Additionally, the proofs had sorry fallbacks (not fully
+        -- verified). The pivot_chain_order approach needs (x' < d ↔ x < c)
+        -- which requires instantiating the sigma strategy. Deferred.
         sorry
-        /-
-        have hab_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n := hp_n
-        -- Forward game: (x,y,a_M,e_n_pt) vs (x',y',a_N,p_n) at (n+1) rounds
+        /- Dead code preserved for reference (tau ordering extractions):
+        have hd_le_an := props.hd_le_an
+        -- Forward game orderings
         have fwd_x_b : (x < e_n ↔ x' < extendPoint p_n) ∧
             (x = e_n ↔ x' = extendPoint p_n) := by
           have h := hord_fwd ⟨0, by omega⟩ ⟨n + 1 + 1, by omega⟩
@@ -3416,25 +3415,7 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             (e_n = y ↔ extendPoint p_n = y') := by
           have h := hord_fwd ⟨n + 1 + 1, by omega⟩ ⟨n + 1 + 2, by omega⟩
           simp only [game_tuple_b_eq, game_tuple_y_eq] at h; exact h
-        have fwd_x_sel : ∀ (k : Fin (n + 1)),
-            (x < a_M k ↔ x' < a_N k) ∧ (x = a_M k ↔ x' = a_N k) := by
-          intro k; have h := hord_fwd ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-          simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
-        have fwd_sel_b : ∀ (k : Fin (n + 1)),
-            (a_M k < e_n ↔ a_N k < extendPoint p_n) ∧
-            (a_M k = e_n ↔ a_N k = extendPoint p_n) := by
-          intro k; have h := hord_fwd ⟨1 + k.val, by omega⟩ ⟨n + 1 + 1, by omega⟩
-          simp only [game_tuple_sel_eq, game_tuple_b_eq] at h; exact h
-        have fwd_sel_y : ∀ (k : Fin (n + 1)),
-            (a_M k < y ↔ a_N k < y') ∧ (a_M k = y ↔ a_N k = y') := by
-          intro k; have h := hord_fwd ⟨1 + k.val, by omega⟩ ⟨n + 1 + 2, by omega⟩
-          simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
-        have fwd_sel_sel : ∀ (k k' : Fin (n + 1)),
-            (a_M k < a_M k' ↔ a_N k < a_N k') ∧
-            (a_M k = a_M k' ↔ a_N k = a_N k') := by
-          intro k k'; have h := hord_fwd ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
-          simp only [game_tuple_sel_eq] at h; exact h
-        -- Tau game: (d,y',a_init,b_resp) vs (c,y,resp_tau,b_sp) at n rounds
+        -- Tau game orderings
         have tau_d_b : (d < extendPoint b_resp ↔ c < extendPoint b_sp) ∧
             (d = extendPoint b_resp ↔ c = extendPoint b_sp) := by
           have h := hord_tau ⟨0, by omega⟩ ⟨n + 1, by omega⟩
@@ -3470,119 +3451,109 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             (extendPoint b_resp = a_init k ↔ extendPoint b_sp = resp_tau k) := by
           intro k; have h := hord_tau ⟨n + 1, by omega⟩ ⟨1 + k.val, by omega⟩
           simp only [game_tuple_b_eq, game_tuple_sel_eq] at h; exact h
-        -- Helper: rewrite selection positions for the target game.
-        -- Target N-side: a_bwd(k) for k<n is a_init(k); a_bwd(n) = extendPoint p_n.
-        -- Target M-side: merged(k) for k<n is resp_tau(k); merged(n) = e_n.
-        -- Forward M-side: a_M(k) for k<n is resp_tau(k); a_M(n) = c.
-        -- So merged(k) = a_M(k) when k<n; merged(n) = e_n ≠ a_M(n) = c.
-        -- Unfold and case-split
-        intro i j; delta game_tuple; split_ifs <;> simp_all
-        -- G0: x' vs b_resp (i=0, j=n+2) — pivot through d/c
+        -- Main split: delta + split_ifs + simp_all, then close remaining goals.
+        -- NOTE: hab_n is NOT in context yet — simp_all cannot rewrite it.
+        sorry
+        -- NOTE: Round 9 analysis found the block-commented proof had a sorry
+        -- fallback. The proof needs (x' < d ↔ x < c) for pivot_chain_order
+        -- but this is not directly available from forward or tau games.
+        -- A sigma-game instantiation or alternative approach is needed.
+        -- G0: x' vs b_resp — pivot through d/c
         · exact pivot_chain_order props.hx'd hb_resp_in.1
             props.hxc (le_of_lt hc_lt_bsp) tau_d_b.1 tau_d_b.2
             (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
-        -- G1: x' vs y' (i=0, j=n+3) — from forward game
+        -- G1: x' vs y' — from forward game
         · exact fwd_x_y
-        -- G2: x' vs sel(j) (i=0, j=inner) — split on j-1<n
+        -- G2: x' vs sel(j) — split on j-1<n
         · split_ifs with hjn
-          · -- j-1 < n: tau-covered, pivot d/c
-            exact pivot_chain_order props.hx'd (h_no_split ⟨_, by omega⟩)
+          · exact pivot_chain_order props.hx'd (h_no_split ⟨_, by omega⟩)
               props.hxc (hresp_tau_in ⟨_, hjn⟩).1
               (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
               (tau_d_sel ⟨_, hjn⟩).1 (tau_d_sel ⟨_, hjn⟩).2
-          · -- j-1 = n: a_bwd(n)/e_n
-            have hjn_eq : j.val - 1 = n := by omega
-            rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hjn_eq, hab_n]
+          · rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
             exact ⟨fwd_x_b.1.symm, fwd_x_b.2.symm⟩
-        -- G3: b_resp vs x' (i=n+2, j=0) — reverse of G0
+        -- G3: b_resp vs x' — reverse of G0
         · exact pivot_chain_order_rev hb_resp_in.1 props.hx'd
             (le_of_lt hc_lt_bsp) props.hxc
             tau_d_b.1 tau_d_b.2
             (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
-        -- G4: b_resp vs y' (i=n+2, j=n+3) — from tau
+        -- G4: b_resp vs y' — from tau
         · exact tau_b_y'
-        -- G5: b_resp vs sel(j) (i=n+2, j=inner)
+        -- G5: b_resp vs sel(j)
         · split_ifs with hjn
           · exact tau_b_sel ⟨_, hjn⟩
-          · have hjn_eq : j.val - 1 = n := by omega
-            rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hjn_eq, hab_n]
-            exact pivot_chain_order_rev hb_resp_in.1 (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an)
+          · rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
+            exact pivot_chain_order_rev hb_resp_in.1
+              (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an)
               (le_of_lt hc_lt_bsp) he_n_in.1
               tau_d_b.1 tau_d_b.2
               (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
-        -- G6: y' vs x' (i=n+3, j=0) — reverse of G1
+        -- G6: y' vs x' — reverse of G1
         · exact ⟨fwd_x_y.1.symm, fwd_x_y.2.symm⟩
-        -- G7: y' vs b_resp (i=n+3, j=n+2) — reverse of G4
+        -- G7: y' vs b_resp — reverse of G4
         · exact ⟨tau_b_y'.1.symm, tau_b_y'.2.symm⟩
-        -- G8: y' vs sel(j) (i=n+3, j=inner)
+        -- G8: y' vs sel(j)
         · split_ifs with hjn
           · exact pivot_chain_order_rev props.hdy' (h_no_split ⟨_, by omega⟩)
               props.hcy (hresp_tau_in ⟨_, hjn⟩).1
               tau_d_y'.1 tau_d_y'.2
               (tau_d_sel ⟨_, hjn⟩).1 (tau_d_sel ⟨_, hjn⟩).2
-          · have hjn_eq : j.val - 1 = n := by omega
-            rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hjn_eq, hab_n]
+          · rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
             exact ⟨fwd_b_y.1.symm, fwd_b_y.2.symm⟩
-        -- G9: sel(i) vs x' (i=inner, j=0)
+        -- G9: sel(i) vs x'
         · split_ifs with hin
           · exact pivot_chain_order_rev (h_no_split ⟨_, by omega⟩) props.hx'd
               (hresp_tau_in ⟨_, hin⟩).1 props.hxc
               (tau_d_sel ⟨_, hin⟩).1 (tau_d_sel ⟨_, hin⟩).2
               (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
-          · have hin_eq : i.val - 1 = n := by omega
-            rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hin_eq, hab_n]
+          · rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
             exact ⟨fwd_x_b.1, fwd_x_b.2⟩
-        -- G10: sel(i) vs b_resp (i=inner, j=n+2)
+        -- G10: sel(i) vs b_resp
         · split_ifs with hin
           · exact tau_sel_b ⟨_, hin⟩
-          · have hin_eq : i.val - 1 = n := by omega
-            rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hin_eq, hab_n]
-            exact pivot_chain_order (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an) hb_resp_in.1
+          · rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
+            exact pivot_chain_order
+              (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an) hb_resp_in.1
               he_n_in.1 (le_of_lt hc_lt_bsp)
               (by rw [hab_n]; exact ⟨fun h => fwd_x_b.1.mp (lt_of_le_of_lt props.hx'd h),
                 fun h => fwd_x_b.1.mpr (lt_of_le_of_lt props.hxc h)⟩)
-              (by rw [hab_n]; exact ⟨fun h => (fwd_x_b.2.mp (le_antisymm props.hx'd (h ▸ hd_le_an))).trans h,
+              (by rw [hab_n]; exact ⟨fun h => (fwd_x_b.2.mp (le_antisymm props.hx'd
+                (h ▸ hd_le_an))).trans h,
                 fun h => (fwd_x_b.2.mpr (le_antisymm props.hxc (h ▸ he_n_in.1))).trans h⟩)
               tau_d_b.1 tau_d_b.2
-        -- G11: sel(i) vs y' (i=inner, j=n+3)
+        -- G11: sel(i) vs y'
         · split_ifs with hin
           · exact tau_sel_y ⟨_, hin⟩
-          · have hin_eq : i.val - 1 = n := by omega
-            rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hin_eq, hab_n]
+          · rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
             exact fwd_b_y
-        -- G12: sel(i) vs sel(j) (both inner)
+        -- G12: sel(i) vs sel(j)
         · split_ifs with hin hjn
-          · -- Both < n: tau-covered
-            exact tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩
-          · -- i < n, j = n: a_init(i-1) vs a_bwd(n)/e_n
-            have hjn_eq : j.val - 1 = n := by omega
-            rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hjn_eq, hab_n]
-            exact pivot_chain_order (hd_le_sel ⟨_, hin⟩) (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an)
-              (hc_le_rtau ⟨_, hin⟩) he_n_in.1
+          · exact tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩
+          · rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
+            exact pivot_chain_order ((ha_init ⟨_, hin⟩).1)
+              (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an)
+              (hresp_tau_in ⟨_, hin⟩).1 he_n_in.1
               (tau_d_sel ⟨_, hin⟩).1 (tau_d_sel ⟨_, hin⟩).2
               (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
-          · -- i = n, j < n: reverse
-            have hin_eq : i.val - 1 = n := by omega
-            rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hin_eq, hab_n]
-            exact pivot_chain_order_rev (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an) (hd_le_sel ⟨_, hjn⟩)
-              he_n_in.1 (hc_le_rtau ⟨_, hjn⟩)
+          · rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega), hab_n]
+            exact pivot_chain_order_rev
+              (by rw [hab_n] at hd_le_an ⊢; exact hd_le_an)
+              ((ha_init ⟨_, hjn⟩).1)
+              he_n_in.1 (hresp_tau_in ⟨_, hjn⟩).1
               (by rw [hab_n]; exact fwd_x_b.1) (by rw [hab_n]; exact fwd_x_b.2)
               (tau_d_sel ⟨_, hjn⟩).1 (tau_d_sel ⟨_, hjn⟩).2
-          · -- Both = n: trivial (same position)
-            have hin_eq : i.val - 1 = n := by omega
-            have hjn_eq : j.val - 1 = n := by omega
-            rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hin_eq,
+          · rw [show a_bwd ⟨i.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
+              by congr 1; exact Fin.ext (by omega),
               show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-              by congr 1; exact Fin.ext hjn_eq]
+              by congr 1; exact Fin.ext (by omega)]
             exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
                    ⟨fun _ => rfl, fun _ => rfl⟩⟩
         -/
