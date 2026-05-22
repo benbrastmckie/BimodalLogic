@@ -1297,13 +1297,11 @@ structure SplitPointProps {sig : MonadicSignature}
   hc_interval : inClosedInterval x y c
   /-- d is in [x', y'] -/
   hd_interval : inClosedInterval x' y' d
-  /-- The split point d equals a_n (Spoiler's last backward pick).
-      In the current construction d := a_bwd(n), so this is rfl.
-      When d is redefined as a strategy response or infimum, this will
-      follow from Claim 1 (GHR93 p.28): any winning response to c must
-      equal d. The equality is needed by Case II which uses it at ~30
-      locations to transfer between d and a_bwd(n) in game tuples. -/
-  hd_eq_an : d = a_bwd ⟨n, by omega⟩
+  /-- The split point d is ≤ a_n (Spoiler's last backward pick).
+      When d = infimum of continuation_set (GHR93 d̄), this holds because
+      a_bwd(n) ∈ continuation_set and the infimum ≤ every member.
+      Case I uses ≤ only. Case II is restructured to work without =. -/
+  hd_le_an : d ≤ a_bwd ⟨n, by omega⟩
   /-- x ≤ c (for sub-interval well-formedness) -/
   hxc : x ≤ c
   /-- c ≤ y (for sub-interval well-formedness) -/
@@ -1375,7 +1373,6 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
   -- Step 1: Set d = a_bwd(n) (Spoiler's last backward pick)
   let d := a_bwd ⟨n, by omega⟩
   have hd_interval : inClosedInterval x' y' d := ha_bwd ⟨n, by omega⟩
-  have hd_eq_an : d = a_bwd ⟨n, by omega⟩ := rfl
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
@@ -1606,7 +1603,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     exact {
       hc_interval := hc_interval
       hd_interval := hd_interval
-      hd_eq_an := hd_eq_an
+      hd_le_an := le_refl d
       hxc := hc_interval.1
       hcy := hc_interval.2
       hx'd := hd_interval.1
@@ -1844,14 +1841,14 @@ private theorem ghr93_case_I {sig : MonadicSignature}
   -- ---------------------------------------------------------------
   -- Step 0: Handle n = 0 by contradiction
   -- When n = 0, Fin 1 has one index ⟨0, _⟩. h_split says a_bwd ⟨0,_⟩ < d,
-  -- but hd_eq_an says d = a_bwd ⟨0,_⟩, so d ≤ a_bwd ⟨0,_⟩. Contradiction.
+  -- but hd_le_an gives d ≤ a_bwd ⟨0,_⟩. Contradiction.
   -- ---------------------------------------------------------------
   obtain ⟨i_split, hi_split⟩ := h_split
   by_cases hn : n = 0
   · subst hn
     have : i_split = ⟨0, by omega⟩ := by ext; omega
     rw [this] at hi_split
-    exact absurd (props.hd_eq_an ▸ le_refl _) (not_le.mpr hi_split)
+    exact absurd props.hd_le_an (not_le.mpr hi_split)
   -- ---------------------------------------------------------------
   -- Step 1: Partition indices into L (below d) and R (at or above d)
   -- ---------------------------------------------------------------
@@ -1862,7 +1859,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     ⟨i_split, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi_split⟩⟩
   have hR_nonempty : R.Nonempty := by
     refine ⟨⟨n, by omega⟩, Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩⟩
-    exact not_lt.mpr (props.hd_eq_an ▸ le_refl _)
+    exact not_lt.mpr props.hd_le_an
   have hLR_card : L.card + R.card = n + 1 := by
     have := Finset.card_filter_add_card_filter_not (s := Finset.univ)
       (p := fun i : Fin (n + 1) => a_bwd i < d)
@@ -2835,9 +2832,14 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           ghr93_winning_condition (n + 1)
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
-  -- ---------------------------------------------------------------
-  -- Step 0: Establish that d = a_bwd(n) and d is a point
-  -- ---------------------------------------------------------------
+  -- SORRY'd pending GHR93-faithful restructure.
+  -- Previously used hd_eq_an (d = a_bwd(n)) at 25+ sites for game tuple rewrites.
+  -- With d = infimum (d̄), this equality no longer holds. Case II must be rewritten
+  -- to match GHR93: all a_bwd(i) > d strictly, use τ for positions 0..n-1,
+  -- construct e_n fresh via U(B,A) formula transfer at position n.
+  -- The response at position n is e_n (NOT c). No hd_eq_an rewrites.
+  sorry
+  /-  OLD CASE II PROOF (used hd_eq_an, incompatible with d = infimum)
   have hd_eq_an : d = a_bwd ⟨n, by omega⟩ := props.hd_eq_an
   -- d is a point
   obtain ⟨p_d, hp_d⟩ := h_point
@@ -3557,6 +3559,7 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           · simp [hi0, hi_b, hi_y]; exact hform_y A hA
           · simp [hi0, hi_b, hi_y]
             exact hform_sel ⟨i.val - 1, by omega⟩ A hA
+  END OLD CASE II PROOF -/
 
 /-! ### Cases III-IV: Gap Cases
 
