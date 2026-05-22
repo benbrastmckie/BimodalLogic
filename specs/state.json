@@ -244,7 +244,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 19,
+      "next_artifact_number": 20,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -360,6 +360,16 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/18_task17-blocker-resolution.md",
           "type": "research",
           "summary": "Task 1.7 blocker resolution: decouple round count from n, universal h_r1_univ parameter keeps rank r+1 out of IH. 170-235 lines. Fallback: GHR93 rank-varying (230-370 lines)."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T164255Z.md",
+          "type": "handoff",
+          "summary": "Phase 1 handoff: Task 1.7 resolved, 8 sorries remain, Tasks 1.1/1.4/1.5/1.6 pending"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/summaries/18_phase1-task17-summary.md",
+          "type": "summary",
+          "summary": "Task 1.7 implementation: ghr93_forward_to_backward_core with decoupled round count"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
