@@ -1096,7 +1096,20 @@ private theorem d_consistency_left {sig : MonadicSignature}
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
       (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
       (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
-    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    -- GHR93 Claim 1 extract: any element t' in [x',y'] that agrees with d
+    -- on rank-r formulas and has the same gap/point and boundary
+    -- relationships must equal d.
+    (h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
+      inClosedInterval x' y' t' →
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r t' A ↔
+         stavi_temporal_truth_mu N atomMap r d A)) →
+      (IsPoint t' ↔ IsPoint d) →
+      (IsGap t' ↔ IsGap d) →
+      (x' = t' ↔ x' = d) →
+      (t' = y' ↔ d = y') →
+      t' = d) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨n, by omega⟩ = c →
@@ -1159,10 +1172,39 @@ private theorem d_consistency_left {sig : MonadicSignature}
       --     forcing the rank r+1 response to equal rank_embed(d).
       -- (3) Project back: rank r+1 response = rank_embed(d) implies rank r
       --     response t = d.
-      -- Infrastructure: cont_holds_above_gap, cont_fails_below_gap,
-      -- pigeonhole_definable_formula (all sorry-free).
-      -- Full proof: ~80-120 lines.
-      sorry
+      -- Interior case: apply GHR93 Claim 1 extract (h_d_unique).
+      -- Step 1: Extract formula agreement between c and t at rank r
+      have htc_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu M atomMap r c A ↔
+           stavi_temporal_truth_mu N atomMap r t A) := by
+        intro A hA
+        have h := hform₀ ⟨n + 1, by omega⟩ A hA
+        simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+                   show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+                   show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                   show n + 1 - 1 = n from by omega] at h
+        rw [hc_last] at h; exact h
+      -- Step 2: Derive t-d formula agreement (transitivity through c)
+      have htd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu N atomMap r t A ↔
+           stavi_temporal_truth_mu N atomMap r d A) :=
+        fun A hA => (htc_form A hA).symm.trans (hcd_form A hA)
+      -- Step 3: t and d have same gap/point status (via c)
+      have htd_gp : (IsPoint t ↔ IsPoint d) ∧ (IsGap t ↔ IsGap d) := by
+        have hgp := hgp₀ ⟨n + 1, by omega⟩
+        simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+                   show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+                   show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                   show n + 1 - 1 = n from by omega] at hgp
+        rw [hc_last] at hgp
+        exact ⟨hgp.1.symm.trans hcd_gp.1, hgp.2.symm.trans hcd_gp.2⟩
+      -- Step 4: Apply h_d_unique to conclude t = d
+      have ht_eq_d : t = d := h_d_unique t
+        (ha'_full ⟨n, by omega⟩)
+        htd_form htd_gp.1 htd_gp.2
+        (heq_0_n1.symm.trans hcd_boundary.1)
+        (heq_n1_n3.symm.trans hcd_boundary.2)
+      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
 
 /-- D-consistency (right boundary, existential form): dual of
     d_consistency_left for the right sub-interval, where c is placed at
@@ -1189,7 +1231,18 @@ private theorem d_consistency_right {sig : MonadicSignature}
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
       (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
       (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
-    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    -- GHR93 Claim 1 extract (symmetric): same as d_consistency_left.
+    (h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
+      inClosedInterval x' y' t' →
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r t' A ↔
+         stavi_temporal_truth_mu N atomMap r d A)) →
+      (IsPoint t' ↔ IsPoint d) →
+      (IsGap t' ↔ IsGap d) →
+      (x' = t' ↔ x' = d) →
+      (t' = y' ↔ d = y') →
+      t' = d) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨0, by omega⟩ = c →
@@ -1241,9 +1294,39 @@ private theorem d_consistency_right {sig : MonadicSignature}
       have hty' : t = y' := heq_1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: x' < d < y'. GHR93 Claim 1 (symmetric).
-      -- Same argument as d_consistency_left interior case.
-      sorry
+    · -- Interior case: x' < d < y'. Apply GHR93 Claim 1 extract.
+      -- Step 1: Extract formula agreement between c and t at rank r
+      have htc_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu M atomMap r c A ↔
+           stavi_temporal_truth_mu N atomMap r t A) := by
+        intro A hA
+        have h := hform₀ ⟨1, by omega⟩ A hA
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega] at h
+        rw [hc_first] at h; exact h
+      -- Step 2: Derive t-d formula agreement
+      have htd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu N atomMap r t A ↔
+           stavi_temporal_truth_mu N atomMap r d A) :=
+        fun A hA => (htc_form A hA).symm.trans (hcd_form A hA)
+      -- Step 3: t and d have same gap/point status
+      have htd_gp : (IsPoint t ↔ IsPoint d) ∧ (IsGap t ↔ IsGap d) := by
+        have hgp := hgp₀ ⟨1, by omega⟩
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega] at hgp
+        rw [hc_first] at hgp
+        exact ⟨hgp.1.symm.trans hcd_gp.1, hgp.2.symm.trans hcd_gp.2⟩
+      -- Step 4: Apply h_d_unique to conclude t = d
+      have ht_eq_d : t = d := h_d_unique t
+        (ha'_full ⟨0, by omega⟩)
+        htd_form htd_gp.1 htd_gp.2
+        (heq_0_1.symm.trans hcd_boundary.1)
+        (heq_1_n3.symm.trans hcd_boundary.2)
+      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
@@ -1606,12 +1689,29 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- d_consistency_left/right provide: for any padded selection ending/starting
     -- with c, there EXISTS a response with bounds + winning + d at boundary.
     -- ghr93_strategy_restrict_left/right consume this directly.
+    -- GHR93 Claim 1: d is uniquely determined among elements with the same
+    -- rank-r type, gap/point status, and boundary position.
+    -- This follows from the infimum construction of d and the rank-(r+1)
+    -- forward strategy (h_fwd_r1). The full proof requires showing that the
+    -- rank-(r+1) continuation formula pins the response to d.
+    -- TODO(Phase 1, Claim 1): Prove using infimum properties + h_fwd_r1.
+    have h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
+        inClosedInterval x' y' t' →
+        (∀ (A : StaviFormula), stavi_depth A ≤ r →
+          (stavi_temporal_truth_mu N atomMap r t' A ↔
+           stavi_temporal_truth_mu N atomMap r d A)) →
+        (IsPoint t' ↔ IsPoint d) →
+        (IsGap t' ↔ IsGap d) →
+        (x' = t' ↔ x' = d) →
+        (t' = y' ↔ d = y') →
+        t' = d := by
+      sorry
     have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
     have h_d_consistent_right :=
       d_consistency_right hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
@@ -3078,8 +3178,18 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         hwin_sig b_sp ⟨hb_sp.1, hbc⟩
       -- b_resp ∈ [x', d] ⊆ [x', y']
       refine ⟨b_resp, ⟨hb_resp_in.1, le_trans hb_resp_in.2 props.hdy'⟩, ?_⟩
-      -- Assemble winning condition from tau + sigma + e_n data
-      sorry
+      -- Assemble winning condition from tau + sigma + e_n data.
+      -- b_resp comes from sigma (in [x',d]), tau provides positions 1..n.
+      -- For tau ordering at positions 1..n, use an arbitrary point in [c,y]
+      -- to instantiate hwin_tau and extract ordering/formula data.
+      obtain ⟨hord_sig, hgp_sig, hform_sig⟩ := hcond_sig
+      refine ⟨?_, ?_, ?_⟩
+      · -- same_order_type (n+1)
+        sorry
+      · -- gap_point_agreement (n+1)
+        sorry
+      · -- formula_agreement (n+1)
+        sorry
     · -- Case B: b_sp > c, i.e., b_sp ∈ (c, y]. Use tau for round 2.
       push_neg at hbc
       have hc_lt_bsp : c < extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp := hbc
@@ -3088,8 +3198,37 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       obtain ⟨b_resp, hb_resp_in, hcond_tau⟩ := hwin_tau b_sp hb_sp_cy
       -- b_resp ∈ [d, y'] ⊆ [x', y']
       refine ⟨b_resp, ⟨le_trans props.hx'd hb_resp_in.1, hb_resp_in.2⟩, ?_⟩
-      -- Assemble winning condition from tau + e_n data
-      sorry
+      -- Assemble winning condition from tau + e_n data.
+      -- The target: ghr93_winning_condition (n+1)
+      --   (game_tuple x' y' a_bwd b_resp)
+      --   (game_tuple x y merged_resp b_sp)
+      -- where merged_resp(i) = resp_tau(i) for i < n, merged_resp(n) = e_n.
+      --
+      -- We have hcond_tau: winning condition on (n)-round game
+      --   (game_tuple d y' a_init b_resp) vs (game_tuple c y resp_tau b_sp)
+      -- and hform_en_an: e_n and a_bwd(n) agree on rank-r formulas.
+      --
+      -- The (n+1)-round game tuple extends the tau game with:
+      --   position 0: x'/x (instead of d/c)
+      --   position n+1: a_bwd(n)/e_n (new position)
+      --
+      -- The ordering, gp, and formula properties at the tau-covered positions
+      -- follow from hcond_tau (shifted). At position n+1 they follow from
+      -- the forward game properties.
+      obtain ⟨hord_tau, hgp_tau, hform_tau⟩ := hcond_tau
+      refine ⟨?_, ?_, ?_⟩
+      · -- same_order_type (n+1): for all pairs (i,j) in Fin(n+4)
+        intro i j
+        -- This requires case analysis on which positions i,j land on.
+        -- For the tau-covered positions (shifted indices 1..n, n+2, n+3
+        -- corresponding to tau indices 0..n-1, n+1, n+2), we use hord_tau.
+        -- For position 0 (x'/x) and n+1 (a_bwd(n)/e_n), we use interval
+        -- bounds and forward game ordering.
+        sorry
+      · -- gap_point_agreement (n+1): for all positions
+        sorry
+      · -- formula_agreement (n+1): for all positions and formulas
+        sorry
   -- Step 4: Build merged response
   let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
     if h : i.val < n then resp_tau ⟨i.val, h⟩
