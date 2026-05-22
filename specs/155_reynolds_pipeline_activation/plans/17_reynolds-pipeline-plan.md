@@ -17,6 +17,7 @@
   - reports/35_phase1-blocker-prior-art.md (DEFINITIVE: report 29 correct, handoff-b wrong; both infimum + rank embedding needed)
   - reports/18_task17-blocker-resolution.md (Task 1.7 resolution: decouple round count from n, universal h_r1_univ keeps rank r+1 out of IH; Option B infeasible, Option E incorrect)
   - handoffs/phase-1-handoff-20260522T160731Z.md (sorry inventory, Task 1.2/1.3 confirmed complete, 5 proposed solutions for Task 1.7)
+  - reports/22_claim1-case2-literature.md (GHR93 Claim 1 and Case II verbatim extraction with Lean identifier mappings; predicate-level Claim 1 proof, U(B,A) transfer for Case II, 5-case round-2 winning condition)
 - **Artifacts**: plans/17_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -191,21 +192,23 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). *(deviation: altered — Fixed buggy 2-way case split with correct 3-way split: (1) carrier-point minimum d=extendPoint p (unchanged), (2) carrier-point GLB p not in S_C d=extendPoint p (new, fully proved using gap no_sup axiom), (3) no carrier-point GLB (sorry'd, deferred to Phase 3 c-gap-case which wires infimum_gap_r_definable). Net -2 sorries: removed 3 buggy sorries, added 1 clean sorry for Case 3.)*
 - [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). With d = infimum, d <= a_bwd(n) (since a_bwd(n) is in S_C and d is the infimum). Update structure definition and downstream usage. *(completed — already done in prior session; line 1298 has `hd_le_an`)*
 - [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). With hd_le_an instead of hd_eq_an, the two Case I usage sites need minor adjustments. *(completed — all live hd_eq_an references are in the OLD CASE II PROOF block comment (lines 2904-3624); only line 1323 remains as a docstring mention; Case I uses hd_le_an at lines 1881, 1892 correctly)*
-- [ ] **Task 1.4**: Prove GHR93 Claim 1 (~80-120 lines). *(deviation: deferred — Round 5 confirmed h_claim1 unprovable at rank r alone; requires rank r+1 argument via h_fwd_r1)* New theorem `ghr93_claim_1` in ExpressivenessGeneral.lean:
-  - Construct C' = not-C or K^{-}(not-C) of rank r+1
-  - Show M_r |= C'(c) using infimum properties (`cont_fails_below_gap`, `cont_holds_above_gap`)
-  - Use h_fwd_r1 (rank r+1 forward strategy, already parameterized) to transfer
-  - Derive N_r |= C'(d) from winning condition at rank r+1
-  - Prove d <= d-bar from C'(d)
-  - Prove d >= d-bar by contradiction (if d < d-bar, Spoiler exploits the gap)
-  - Conclude d = d-bar
+- [ ] **Task 1.4**: Prove GHR93 Claim 1 (~80-120 lines). *(deviation: deferred — Round 5 confirmed h_claim1 unprovable at rank r alone; requires rank r+1 argument via h_fwd_r1. Report 22 provides literature-faithful proof.)* The proof is a predicate-level argument (no need to materialize C' as a StaviFormula):
+  - **Step 1 (d ≤ d-bar)**: Use h_fwd_r1 to play rank-(r+1) game including c. Winning condition gives rank-(r+1) formula agreement between c and response d. Since c = inf(S_C) in M, cont_holds fails below c (use `cont_fails_below_gap`) and holds above c (use `cont_holds_above_gap`). By formula transfer at rank r+1, the same semantic pattern holds at d in N. If d > d-bar, d ∈ S_C(N), so cont_holds holds throughout (d, y'), contradicting the transferred "fails cofinally below" property. So d ≤ d-bar.
+  - **Step 2 (d-bar ≤ d by contradiction)**: Assume d < d-bar. Then d ∉ S_C(N), so ∃ witness u in (d, y') where cont_holds fails. Spoiler challenges with u in round 2. Duplicator must respond with b in (c, y) in M. But c = inf(S_C(M)) means cont_holds holds on (c, y), so M |= cont_holds(b), contradicting formula transfer of ¬cont_holds.
+  - **Step 3**: d ≤ d-bar ∧ d-bar ≤ d → d = d-bar.
+  - **Key infrastructure**: `cont_holds_above_gap`, `cont_fails_below_gap`, `h_fwd_r1` (already parameter), `continuation_set_upward_closed`
 - [ ] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: deferred — depends on Task 1.4)* Apply Claim 1 to the forward strategy's response. With d = d-bar and Claim 1 proved, these become trivial applications.
-- [ ] **Task 1.6**: Restructure Case II to construct e_n fresh (~300-500 lines). *(deviation: altered — Round 5 completed e_n construction via (n+1)-round forward game round 2, formula agreement extracted; split into b_sp <= c and b_sp > c sub-cases; winning condition assembly sorry'd for both sub-cases ~200-400 lines remain)* Approach changed from GHR93 pp.117-118 to forward-game-based e_n:
-  - h_fwd_n1 added to SplitPointProps (n+1 round forward strategy)
-  - e_n constructed via forward game round 2 with p_n (carrier point of a_bwd(n))
-  - Formula agreement hform_en_an extracted from forward game winning condition
-  - b_sp case split: sigma for b_sp <= c, tau for b_sp > c
-  - Winning condition assembly for each sub-case sorry'd (~100-200 lines each)
+- [ ] **Task 1.6**: Restructure Case II to construct e_n fresh (~200-300 lines remaining). *(deviation: altered — Round 5 partially implemented; report 22 identifies architectural flaw: current code constructs e_n via forward game h_fwd_n1, but GHR93 constructs e_n via U(B,A) transfer through tau. Must restructure.)* GHR93-faithful approach (report 22, Section 4):
+  - **Step A**: Show N_r |= U(B,A)(alpha_{n-1}) — alpha_n witnesses the Until formula (~20 lines)
+  - **Step B**: Transfer via tau (preserves rank r+4 ≥ r+1 = rank of U(B,A)): M_r |= U(B,A)(resp_tau(n-1)) (~20 lines)
+  - **Step C**: Unfold Until witness: ∃ z > resp_tau(n-1) with B(z) and A on (resp_tau(n-1), z). Set e_n = z (~30 lines)
+  - **Step D**: 5-case winning condition for round 2 Spoiler challenge t (~100-150 lines):
+    - t < c → delegate to sigma
+    - c < t < resp_tau(n-1) → delegate to tau
+    - resp_tau(n-1) < t < e_n → A holds at t, find type-match t' in (alpha_{n-1}, alpha_n)
+    - t = e_n → respond with alpha_n (B-agreement)
+    - t > e_n → C holds at t (since t > c), find type-match t' above alpha_n
+  - **Note**: tau step delivering resp_tau is already implemented (lines ~3007-3013)
 - [x] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836. *(deviation: altered — Created ghr93_forward_to_backward_core with decoupled rounds_r1 and h_r1_univ universal over endpoints; changed ghr93_forward_to_backward API to take h_r1_univ; 83 lines added, 39 removed; used h_enough : 1+3n <= rounds_r1 instead of report 18's 4+3n constraint)*
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 

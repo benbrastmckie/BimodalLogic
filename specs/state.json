@@ -249,7 +249,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 22,
+      "next_artifact_number": 23,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -385,6 +385,11 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T190000Z.md",
           "type": "handoff",
           "summary": "Round 5: Task 1.6 partial (e_n constructed, sigma/tau split), Task 1.4 needs rank r+1, Task 1.5 blocked"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/22_claim1-case2-literature.md",
+          "type": "research",
+          "summary": "GHR93 Claim 1 + Case II literature extraction: predicate-level proof, U(B,A) transfer, Lean identifier mappings"
         }
       ],
       "session_id": "sess_1779465184_1afc38",
