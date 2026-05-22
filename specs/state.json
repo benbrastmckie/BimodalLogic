@@ -43,11 +43,11 @@
     {
       "project_number": 181,
       "project_name": "derivable_prop_wrapper",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-20T22:25:13Z",
-      "last_updated": "2026-05-22T16:07:28Z",
-      "session_id": "sess_1779465838_8e4fc6",
+      "last_updated": "2026-05-22T17:05:37Z",
+      "session_id": "sess_1779468897_2cf3b1",
       "researched": "2026-05-22T16:01:26Z",
       "artifacts": [
         {
@@ -59,8 +59,14 @@
           "path": "specs/181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md",
           "type": "plan",
           "summary": "3-phase implementation plan for Derivable Prop-valued wrapper with aesop/simp integration"
+        },
+        {
+          "path": "specs/181_derivable_prop_wrapper/summaries/01_derivable-prop-wrapper-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for Derivable Prop-valued wrapper"
         }
-      ]
+      ],
+      "completion_summary": "Added Derivable Prop-valued wrapper (180 lines) with 7 constructor-mirroring lemmas, aesop/simp attributes, |-! notation. Zero sorries, build passes, Consistent bridge verified."
     },
     {
       "project_number": 179,

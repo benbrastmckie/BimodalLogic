@@ -1,7 +1,7 @@
 # Implementation Plan: Derivable Prop-Valued Wrapper
 
 - **Task**: 181 - derivable_prop_wrapper
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md

@@ -66,7 +66,7 @@ Phase 9 (final documentation + examples):
 ### Phase 1 — Active Parallel Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-181 [PLANNED] — Add Derivable Prop-valued wrapper alongside DerivationTree
+181 [COMPLETED] — Add Derivable Prop-valued wrapper alongside DerivationTree
 
 ### Completed Research (informs Phase 3)
 
@@ -273,10 +273,11 @@ Phase 9 (final documentation + examples):
 
 ### 181. Add Derivable Prop-valued wrapper alongside DerivationTree
 - **Effort**: small (3-5 hours)
-- **Status**: [PLANNED]
-- **Research**: [specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
+- **Research**: [specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md]
 - **Plan**: [181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md]
+- **Summary**: [181_derivable_prop_wrapper/summaries/01_derivable-prop-wrapper-summary.md]
 
 **Description**: Add a `Derivable` Prop-valued wrapper (`def Derivable (Γ : Context) (φ : Formula) : Prop := Nonempty (DerivationTree Γ φ)`) alongside the existing Type-valued `DerivationTree`. This enables `simp` and `aesop` integration for derivability goals (which failed on the Type-valued tree due to proof reconstruction errors) while preserving the existing computable proof tree structure for height functions, pattern matching, and the Metalogic infrastructure. Add basic `Derivable` lemmas mirroring the key `DerivationTree` constructors (modus_ponens, axiom, weakening, necessitation) and a `Derivable.ofTree` coercion. Per task 179 research report `02_mathlib-submission.md`.
 
