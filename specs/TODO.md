@@ -34,8 +34,9 @@ technical_debt:
 **Execution Pipeline**:
 
 ```
-Phase 1 (now):
+Phase 1 (now — parallel):
   155 (Reynolds pipeline — sorry-free bx_completeness)
+  195 (EF game tactics — assists 155)
 
 Phase 2 (post-155 cleanup):
   176, 95                                               (parallel)
@@ -53,9 +54,6 @@ Phase 5 (tactics survey — generates tactic tasks):
 Phase 5a (tactics — Tier 1 modal foundations):
   185, 190                                              (parallel, after 161)
 
-Phase 5b (tactics — EF game automation):
-  195                                                   (after 155, parallel with Phase 2-3)
-
 Phase 6 (tactics — Tier 2 engineering):
   186, 187, 189 (parallel, after 185) → 188 (after 187)
 
@@ -72,9 +70,11 @@ Note: Task 196 (survey) may generate new tasks and restructure Phases 5a-8.
 Existing tasks 185-195 are provisional until the survey completes.
 ```
 
-### Phase 1 — Active Work
+### Phase 1 — Active Work (parallel)
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+195 [NOT STARTED] — EF game automation tactics for WeakCanonical/ metalogic proofs
+  (no dependencies — assists 155)
 
 ### Completed Research (informs Phase 3)
 
@@ -117,11 +117,6 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 185 [NOT STARTED] — Complete axiom & derived theorem coverage in modal_search
 190 [NOT STARTED] — Derived operator normalization tactic (modal_norm)
-
-### Phase 5b — EF Game Automation (after sorry-free + file split)
-
-195 [NOT STARTED] — EF game automation tactics for WeakCanonical/ metalogic proofs
-  └─ 155
 
 ### Phase 6 — Tactics Tier 2 (engineering)
 
@@ -215,10 +210,10 @@ Existing tasks 185-195 are provisional until the survey completes.
 - **Effort**: medium (10-15 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Priority**: medium
-- **Dependencies**: 155
+- **Priority**: high
+- **Dependencies**: none (assists 155)
 
-**Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Four components, ranked by impact:
+**Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Implement NOW to unblock the remaining Phase 1 sorries in task 155, then use for refactoring later. Four components, ranked by impact:
 
 **A) `solve_same_order_type` tactic (~600-1300 lines saved)**: Automates the N×N grid case dispatch in `same_order_type` proofs. Currently each proof is 100-220 lines of manual `intro i j; simp only [game_tuple]; split_ifs` followed by 16-25 goals dispatched via `pivot_chain_order`. The tactic takes interval bounds and sub-game order data as arguments and generates the entire grid proof. 6+ existing proof blocks would compress to 1-3 line tactic invocations.
 
@@ -228,7 +223,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 **D) `winning_condition_tac` tactic (~350-700 lines saved)**: Automates the 5-way `game_tuple` index split used in `formula_agreement`, `gap_point_agreement`, and `same_order_type` proofs. Takes the sub-game winning conditions as arguments and dispatches each index category to the appropriate source (forward game, sigma, tau, direct agreement).
 
-All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lean` file. Depends on 155 (sorry-free theorems to refactor) and 174 (file splitting, since EFGames.lean at 9K lines and ExpressivenessGeneral.lean at 4.7K lines are primary targets). Independent of the modal proof search tactics (185-192) which target `Theorems/` derivation proofs.
+All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lean` file. No dependencies — implement immediately to assist task 155's remaining Phase 1 sorries (`same_order_type`, `h_d_unique`), then use for Phases 3-11 and post-completion refactoring. Independent of the modal proof search tactics (185-192) which target `Theorems/` derivation proofs.
 
 ---
 
