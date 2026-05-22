@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames
 import Mathlib.Data.Finset.Sort
+import Mathlib.Data.Fintype.Pigeonhole
 
 /-!
 # GHR93 Theorem 6: Forward-to-Backward Game Transfer
@@ -687,7 +688,7 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
     · exact ⟨u, A, t, t, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
         ht_cut, hx't, hut, le_refl t⟩
     · exact ⟨u, A, t, u, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
-        hu_cut, le_trans hx'f (extendPoint_le_extendPoint.mpr hfu),
+        hu_cut, le_trans hx'f ((extendPoint_le_iff _ _).mpr hfu),
         le_refl u, htu⟩
   -- Build chain by Nat.rec on a bundled floor state.
   -- State = { f // f ∈ Cut ∧ x' ≤ extendPoint f }
@@ -731,8 +732,10 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
         w.2.2.2 ∈ inf_carrier_cut (continuation_set x' y' a_n) ∧
         x' ≤ (extendPoint w.2.2.2 : ExtendedCarrier N atomMap r) ∧
         w.1 ≤ w.2.2.2 ∧ w.2.2.1 ≤ w.2.2.2 } := by
-    have ⟨u, A, t, nf, h⟩ := one_step f hf hx'f
-    exact ⟨(u, A, t, nf), h⟩
+    have h_ex := one_step f hf hx'f
+    exact Classical.indefiniteDescription _ (by
+      obtain ⟨u, A, t, nf, hp⟩ := h_ex
+      exact ⟨(u, A, t, nf), hp⟩)
   -- Define state sequence (floors) by recursion
   let state : Nat → S := Nat.rec ⟨p₀, hp₀_cut, hx'_p₀⟩ fun n prev =>
     let w := choose_witness prev.1 prev.2.1 prev.2.2
@@ -784,7 +787,9 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
       (fun _ => extendPoint (u_seq i))
   -- Pigeonhole: K+1 > K → two indices have same NF
   have h_card : Fintype.card (NormalForm (muSig sig) (2 * r) 1) <
-      Fintype.card (Fin (K + 1)) := by simp [Fintype.card_fin]
+      Fintype.card (Fin (K + 1)) := by
+    simp only [Fintype.card_fin]
+    exact Nat.lt_succ_of_le (le_refl K)
   obtain ⟨i, j, hij, h_same_nf⟩ := Fintype.exists_ne_map_eq_of_card_lt nf_map h_card
   -- WLOG i < j (or j < i)
   rcases lt_or_gt_of_ne hij with h_ij | h_ij

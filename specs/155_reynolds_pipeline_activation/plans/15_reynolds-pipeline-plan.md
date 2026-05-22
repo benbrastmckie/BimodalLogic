@@ -292,14 +292,28 @@ Closed `pigeonhole_definable_formula` sorry. Key insight: `stavi_fo_depth` can e
 
 - [x] **Task W1.2d.1**: Close `pigeonhole_definable_formula` (line ~681) *(deviation: altered -- used NormalForm at depth 2*r instead of r, added stavi_fo_depth_le_twice_depth helper lemma and nf_determines_stavi_truth_depth bridge variant)*
 
-**Sub-phase W1.2e-remainder: D-Consistency Claim 1 [NOT STARTED]**
+**Sub-phase W1.2e-remainder: D-Consistency Claim 1 [BLOCKED]**
 
-- [ ] **Task W1.2e.1**: Prove `d_consistency_left` (line 1098) via GHR93 Claim 1 infimum argument. Steps: C'(c_bar) holds by infimum property, formula transfer gives C'(d), C'(d) implies d <= d_bar, contradiction if d < d_bar. ~150-200 lines.
-- [ ] **Task W1.2e.2**: Prove `d_consistency_right` (line 1131) -- dual. ~100-150 lines.
+**BLOCKER** (Sub-phase W1.2e):
+- **What failed**: `d_consistency_left` (line 1103) and `d_consistency_right` (line 1136) cannot be proved from their current hypotheses.
+- **What was tried**: (1) Direct proof from formula_agreement + same_order_type in winning condition; (2) Round 2 challenge-based contradiction; (3) Boundary correspondence argument.
+- **Why it's stuck**: The theorem asks: for ALL winning plays with c at position n, the N-side response at position n equals d. But `ghr93_duplicator_wins` is existential (non-deterministic) -- different invocations can choose different responses. The GHR93 Claim 1 argument uses a rank-(r+1) formula C' to force uniqueness, but the winning condition only provides rank-r formula agreement. Without the infimum characterization of d, uniqueness is unprovable.
+- **What is needed**: Implement `claim1_d_consistency` per report 18 (alternative-strategies.md), Option I. This requires: (a) defining the "achievable responses" set; (b) proving all achievable responses have the same rank-r type; (c) proving all achievable responses are equal (the hard step -- requires gap/infimum structure argument, ~50-100 lines); (d) proving d is achievable (from the existing construction where d = a_bwd(n)). Total ~130-170 lines in EFGames.lean. Key open question: whether the "Phase C uniqueness for points" argument works without a strict infimum. See report 18, Section 3, Phase C for details.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-**Sub-phase W1.4: M-side Degenerate Sorries [NOT STARTED]**
+- [ ] **Task W1.2e.1**: Prove `d_consistency_left` (line 1103) via GHR93 Claim 1 infimum argument *(deviation: blocked -- d-consistency unprovable from current hypotheses without claim1_d_consistency infrastructure)*
+- [ ] **Task W1.2e.2**: Prove `d_consistency_right` (line 1136) -- dual *(deviation: blocked -- same as W1.2e.1)*
 
-- [ ] **Task W1.4.1**: Close M-side degenerate `h_pt_xc` (line 1461) and `h_pt_cy` (line 1478). Requires restructuring SplitPointProps to make point witnesses optional in degenerate cases, plus ~50-100 line branch in Case I for deriving R-side data from `hcd_form`/`hcd_gp` instead of from tau when c=y. Case II is trivially fixable.
+**Sub-phase W1.4: M-side Degenerate Sorries [BLOCKED]**
+
+**BLOCKER** (Sub-phase W1.4):
+- **What failed**: Lines 1466 and 1483 ask for `∃ p, inClosedInterval x c (extendPoint p)` when x = c and c is a gap. No such point exists.
+- **What was tried**: Analysis of whether the case is contradictory (it is not -- genuinely reachable when d is a gap and x' = d). Analysis of whether making h_pt_xc/h_pt_cy conditional is safe (it is, but requires 5+ downstream usage site updates with careful case analysis in Case I).
+- **Why it's stuck**: (1) These sorries are LATENT -- currently unreachable because the gap case of `h_exists` (line 1587, Phase 4C-W3) is itself sorry'd. The code path only fires when d is a gap AND the c construction for gaps is implemented. (2) The fix requires restructuring `SplitPointProps` to make `h_pt_xc`/`h_pt_cy` conditional (`x < c → ∃ p, ...`), then updating 5 downstream sites. Each site needs proof that `x < c` (or `c < y`) holds in its specific branch. In Case I, this follows from the split hypothesis + boundary correspondence. In Case II, c is always a point (so the witness exists trivially). (3) This is a prerequisite for Phase 4C-W3 gap case but NOT independently closable now.
+- **What is needed**: Change `SplitPointProps.h_pt_xc` to `x < c → ∃ p, inClosedInterval x c (extendPoint p)` (and similarly `h_pt_cy`). Then update all 5 usage sites with appropriate guards. Estimated ~30-50 lines of changes. Should be done TOGETHER with Phase 4C-W3 (gap case of h_exists) to avoid wasted work.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+- [ ] **Task W1.4.1**: Close M-side degenerate `h_pt_xc` (line 1466) and `h_pt_cy` (line 1483) *(deviation: blocked -- latent sorries unreachable until Phase 4C-W3 gap case is implemented; fix requires SplitPointProps restructuring best done together with W3)*
 
 - [ ] **Task W1.5**: Verify `lake build` passes. Cases I and II remain sorry-free.
 
