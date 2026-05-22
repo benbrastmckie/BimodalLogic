@@ -1,15 +1,19 @@
-# Implementation Plan: Reynolds Pipeline Activation (v11)
+# Implementation Plan: Reynolds Pipeline Activation (v12)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
-- **Effort**: 40-60 hours
+- **Status**: [IMPLEMENTING]
+- **Effort**: 60-90 hours (revised from 40-60; Phase 2 alone was ~30 hours)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED)
 - **Research Inputs**:
-  - reports/22_d-consistency-implementation.md (d-consistency via direct uniqueness + Round 2 challenges)
-  - reports/23_lemma9-correct-proof.md (Lemma 9 correct -- prior "counterexample" invalid; needs stavi_untl_gap_detection + structural induction)
-  - reports/24_lemma9-xmu-gap-evaluation.md (GHR93 uses standard mu-semantics at gaps; complement-point approach correct; FO-table shift transfer lemma)
-  - reports/25_cases-III-IV-assembly.md (D-consistency NOT needed for Cases III/IV; assembly chain: Thm 6 rank-varying -> Prop 6 -> Lemma 11 backward -> Prop 7 -> Corollary 5)
-  - reports/26_reynolds-gap-elimination.md (1070-1470 lines; split into 6A/6B; depends on Phase 5')
+  - reports/22-26 (original research, see v11 for summaries)
+  - reports/27_d-consistency-blocker.md (rank mismatch root cause, rank embedding approach)
+  - reports/28_phase7-ordered-sum.md (Phase 7 orphaned — very_good_implies_good unused)
+  - reports/29_d-consistency-architecture.md (infimum redefinition IS necessary, not wasted)
+  - reports/30_critical-path-wiring.md (critical path analysis — superseded by reports 31-32)
+  - reports/31_succ-cofinal-analysis.md (root sorry analysis, OrderIso bypass fails)
+  - reports/32_burgess-omega-chain.md (omega-chain CAN produce gaps; full Reynolds pipeline needed)
+  - reports/33_omega-chain-internals.md (Prior-UZ argument fails in discrete case — vacuous guard)
+  - reports/34_boneyard-candidates.md (Tier 1 archival: ~430 lines genuinely orphaned)
 - **Artifacts**: plans/16_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -17,35 +21,50 @@
 
 ---
 
-## CRITICAL DIRECTIVE: FULL GHR93, NO SHORTCUTS
+## CRITICAL DIRECTIVE: FULL GHR93 + REYNOLDS, NO SHORTCUTS
 
-The plan formalizes the complete GHR93 game-theoretic proof of expressive completeness of {U,S,U',S'} over ALL linear temporal structures, then uses Reynolds gap elimination to show {U,S} suffices for Prior structures. Every sorry must be closed by following GHR93 step-by-step. No `axiom` declarations, no `IsSuccArchimedean`, no shortcuts.
+The plan formalizes the complete GHR93 game-theoretic proof of expressive completeness of {U,S,U',S'} over ALL linear temporal structures, then uses Reynolds gap elimination to show {U,S} suffices for Prior structures and close `succ_cofinal`. No `axiom` declarations, no shortcuts.
+
+**Key finding (report 32)**: The omega-chain construction CAN produce gaps (Z+Z models). `succ_cofinal` cannot be closed from temporal axioms or construction internals alone (Prior-UZ guard is vacuous in discrete case, report 33). The FULL Reynolds gap elimination (Theorem 14) is the only viable path. The EFGames/ExpressivenessGeneral infrastructure IS the Reynolds pipeline.
 
 ---
 
-## Overview
+## Overview (v12)
 
-This plan (v11) integrates findings from research reports 22-26 and provides a complete phase-by-phase path from the current sorry inventory to sorry-free `bx_completeness`. The plan covers 15 remaining sorry sites across 4 files, organized into 11 phases totaling 40-60 hours. Phases 1-3 address the GHR93 Section 8 core (d-consistency, Lemma 9, Cases III/IV), Phase 4 completes the assembly chain (rank-varying Thm 6, Props 6-7, Corollary 5), Phase 5 bridges to Reynolds Theorem 5, Phases 6A-6B handle gap elimination (Lemmas 6-14), Phases 7-8 close IntegerModel helpers and wire `no_gaps_discrete`, Phase 9 removes `IsSuccArchimedean`, Phase 10 discharges `h_truth_corr`, and Phase 11 runs final verification.
+This plan (v12) revises v11 based on 34 research reports and 120+ implementation commits. Phase 2 (Lemma 9) is COMPLETE. Phase 10 is COMPLETE. The remaining critical path to sorry-free `bx_completeness` runs through:
+
+```
+Phase 1 (d-consistency) → Phase 3 (Cases III/IV) → Phase 4 (Assembly + Corollary 5)
+  → Phase 5 (Reynolds Thm 5) → Phases 6A-6B (gap elimination)
+    → succ_cofinal → bx_completeness
+```
+
+Phases 7-9 are OFF the critical path (report 28: `very_good_implies_good` is orphaned, `chronicle_is_good` is sorry-free as a theorem). Phase 10 is DONE.
+
+**Genuinely orphaned** (Tier 1 archival, report 34): IntegerModel `very_good_implies_good` chain, TruthLemma non-critical sorry sites, OrderedSum `doets_lemma_1_5` (~430 lines).
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes with zero errors, no `axiom` declarations in the pipeline.
 
-### Research Integration
+### Session Progress (v11 → v12)
 
-- **Report 22** (d-consistency): Direct uniqueness proof via Round 2 point challenges. When d is a point, play Round 2 with p_d; trichotomy gives d = t. When d is a gap, formula agreement forces same cut. Estimated 110-200 lines. Does NOT require infimum architecture change.
-- **Report 23** (Lemma 9): Theorem statement IS correct (prior counterexample was invalid -- confused U' with simplified "cofinal AND NOT U"). Proof by structural induction on A, with core helper `stavi_untl_gap_detection` providing X at complement points. Forward direction for stavi_untl case is already closed. Estimated 620-880 total lines.
-- **Report 24** (X^mu gap evaluation): GHR93 evaluates A^mu(gamma) at gaps using standard mu-relativized semantics. The X^mu(gamma) problem is a proof architecture issue: `stavi_untl_gap_detection` provides X at complement points, not X^mu(gamma). The fix is an "FO-table shift" transfer lemma for the backward direction.
-- **Report 25** (Cases III/IV + assembly): D-consistency is NOT directly needed by Cases III/IV (they use sigma/tau from SplitPointProps). Assembly chain: Thm 6 -> rank-varying Thm 6 -> Prop 6 -> Prop 7 (needs Lemma 11 backward) -> Corollary 5. Total ~1200-2000 lines for Cases III/IV + assembly.
-- **Report 26** (gap elimination): Reynolds Lemmas 6-14 estimated at 1070-1470 lines. Split into 6A (Lemmas 6-11, infrastructure) and 6B (Lemma 12 surgery + 13 + 14). Blocked on Phase 5' (US expressive completeness over Prior).
-
-### Prior Plan Reference
-
-The v10 plan had 11 phases (1-5, 4A, 4B, 0, 4C-W1 through 4C-W4, 5' through 11). Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIAL (muSig + pigeonhole closed; d-consistency weakened to existential; M-side degenerate blocked/latent). Phase 4C-W2: IN PROGRESS (stavi_untl_gap_detection closed; stavi_untl/std_untl forward directions closed; backward directions and snce variants still sorry'd). Key lessons: (1) U' semantics fix was the critical breakthrough; (2) FO encoding bugs can masquerade as mathematical blockers; (3) effort per wave is 4-8 hours.
+| Item | Status | Lines |
+|------|--------|-------|
+| Phase 2: left_formula_gap_detection | COMPLETE | ~2500 new |
+| Phase 2: right_formula_gap_detection | COMPLETE | ~2000 new |
+| Phase 2: stavi_snce_gap_detection | COMPLETE | ~200 new |
+| Phase 2: false theorem deletion | COMPLETE | std_untl/std_snce_gap_detection deleted |
+| Phase 10: Transfer.lean | COMPLETE | -86 net |
+| Phase 1: d redefined as infimum | DONE (architecture) | ~50 new |
+| Phase 1: rank r+1 parameter propagated | DONE | ~40 new |
+| Phase 1: Case II skeleton | DONE (sorry'd body) | ~30 new |
+| Phase 3: c-gap-case (n≥1) | DONE | ~40 new |
+| Rank embedding infrastructure | CONFIRMED existing | 0 (already sorry-free) |
 
 ### Roadmap Alignment
 
 - Advances "sorry-free `bx_completeness`" (primary critical path item)
-- Eliminates circular dependency through `succ_cofinal` (task 129)
-- Formalizes the complete GHR93 Theorem 3 (expressive completeness of {U,S,U',S'})
+- Eliminates `succ_cofinal` via Reynolds gap elimination (not task 129 Henkin approach)
+- Formalizes the complete GHR93 Theorem 3 + Reynolds Theorem 14
 
 ## Goals & Non-Goals
 
@@ -122,17 +141,25 @@ The v10 plan had 11 phases (1-5, 4A, 4B, 0, 4C-W1 through 4C-W4, 5' through 11).
 |------|-----------|-------|
 | 574 | `h_truth_corr` | 10 |
 
-**Total**: 24 sorry instances across 15 distinct theorems/locations.
+**Total (original)**: 24 sorry instances across 15 distinct theorems/locations.
+**Current (v12)**: 12 sorry calls in EFGames + ExpressivenessGeneral + 4 in ChronicleToCountermodel (succ_cofinal chain). Phase 2 COMPLETE, Phase 10 COMPLETE.
 
-## Implementation Phases
+## Implementation Phases (v12 — Revised Critical Path)
 
-**Dependency Analysis**:
-| Wave | Phases | Blocked by |
-|------|--------|------------|
-| 1 | 1, 2 | -- |
-| 2 | 3 | 1, 2 |
-| 3 | 4 | 3 |
-| 4 | 5 | 4 |
+**Critical path**: Phase 1 → 3 → 4 → 5 → 6A → 6B → succ_cofinal wiring → bx_completeness
+
+| Wave | Phases | Status | Blocked by |
+|------|--------|--------|------------|
+| 1 | 2 | **COMPLETE** | -- |
+| 1 | 10 | **COMPLETE** | -- |
+| 2 | 1 | IN PROGRESS (infimum done, Case II sorry'd) | -- |
+| 3 | 3 | PARTIAL (c-gap n≥1 done) | 1, 2 |
+| 4 | 4 | NOT STARTED | 3 |
+| 5 | 5 | NOT STARTED | 4 |
+| 6 | 6A | NOT STARTED | 5 |
+| 7 | 6B | NOT STARTED | 6A |
+| 8 | succ_cofinal wiring | NOT STARTED | 6B |
+| -- | 7, 8, 9 | DEPRIORITIZED (off critical path) | -- |
 | 5 | 6A | 5 |
 | 6 | 6B, 7 | 6A (for 6B), -- (for 7) |
 | 7 | 8 | 6B, 7 |
