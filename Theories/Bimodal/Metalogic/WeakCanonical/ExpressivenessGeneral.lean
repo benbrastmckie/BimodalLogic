@@ -1094,9 +1094,9 @@ private theorem d_consistency_left {sig : MonadicSignature}
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
-      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     -- GHR93 Claim 1 extract: any element t' in [x',y'] that agrees with d
     -- on rank-r formulas and has the same gap/point and boundary
@@ -1229,9 +1229,9 @@ private theorem d_consistency_right {sig : MonadicSignature}
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 1)
-      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     -- GHR93 Claim 1 extract (symmetric): same as d_consistency_left.
     (h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
@@ -1442,9 +1442,9 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
           ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
           ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
-      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y'))
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
     ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
@@ -1680,12 +1680,12 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
     have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
-    have h_mono_left_r1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) (r + 1)
-        (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-        (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y') :=
+    have h_mono_left_r1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) (r + 2)
+        (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+        (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y') :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n)
-        ((rank_embed_le (Nat.le_succ r) x y).mpr hxy)
-        ((rank_embed_le (Nat.le_succ r) x' y').mpr hx'y') h_fwd_r1
+        ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+        ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y') h_fwd_r1
     -- D-consistency (existential form) and strategy restriction.
     -- d_consistency_left/right provide: for any padded selection ending/starting
     -- with c, there EXISTS a response with bounds + winning + d at boundary.
@@ -4428,9 +4428,9 @@ private theorem ghr93_inductive_step {sig : MonadicSignature}
           ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
           ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
-      (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-      (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y')) :
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y')) :
     ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
   unfold ghr93_duplicator_wins
@@ -4465,11 +4465,11 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
                    {x₁' y₁' : ExtendedCarrier N atomMap r},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap rounds_r1 (r + 1)
-                   (rank_embed (Nat.le_succ r) x₁)
-                   (rank_embed (Nat.le_succ r) y₁)
-                   (rank_embed (Nat.le_succ r) x₁')
-                   (rank_embed (Nat.le_succ r) y₁'))
+                 ghr93_duplicator_wins M N atomMap rounds_r1 (r + 2)
+                   (rank_embed (by omega : r ≤ r + 2) x₁)
+                   (rank_embed (by omega : r ≤ r + 2) y₁)
+                   (rank_embed (by omega : r ≤ r + 2) x₁')
+                   (rank_embed (by omega : r ≤ r + 2) y₁'))
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
     (h_enough : 1 + 3 * n ≤ rounds_r1)
@@ -4540,12 +4540,12 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     -- Derive h_fwd_r1 for the specific endpoints from h_r1_univ + round_mono
     -- h_r1_univ gives rounds_r1 rounds; we need 4+3n rounds for ghr93_inductive_step
     -- h_enough : 1+3(n+1) = 4+3n ≤ rounds_r1, so round_mono applies directly
-    have h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 1)
-        (rank_embed (Nat.le_succ r) x) (rank_embed (Nat.le_succ r) y)
-        (rank_embed (Nat.le_succ r) x') (rank_embed (Nat.le_succ r) y') :=
+    have h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
+        (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+        (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y') :=
       ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)
-        ((rank_embed_le (Nat.le_succ r) x y).mpr hxy)
-        ((rank_embed_le (Nat.le_succ r) x' y').mpr hx'y')
+        ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+        ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
         (h_r1_univ hxy hx'y')
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
@@ -4586,11 +4586,11 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
                    {x₁' y₁' : ExtendedCarrier N atomMap r},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1)
-                   (rank_embed (Nat.le_succ r) x₁)
-                   (rank_embed (Nat.le_succ r) y₁)
-                   (rank_embed (Nat.le_succ r) x₁')
-                   (rank_embed (Nat.le_succ r) y₁')) :
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2)
+                   (rank_embed (by omega : r ≤ r + 2) x₁)
+                   (rank_embed (by omega : r ≤ r + 2) y₁)
+                   (rank_embed (by omega : r ≤ r + 2) x₁')
+                   (rank_embed (by omega : r ≤ r + 2) y₁')) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y :=
   ghr93_forward_to_backward_core atomMap n (1 + 3 * n) r
     h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h

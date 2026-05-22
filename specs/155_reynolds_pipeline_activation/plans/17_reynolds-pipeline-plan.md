@@ -94,7 +94,8 @@ v13 was accurate on all phases and overall pipeline architecture. Its Phase 1 Ta
 | Phase 1: Task 1.6 sigma SOT grid (18/25 goals) | PARTIAL | Round 10 | ~60 new, 7 goals need c<=e_n |
 | Phase 1: Task 1.4 h_d_unique boundary cases | COMPLETE | Round 12 | x'=d and d=y' cases proved |
 | Phase 1: Task 1.4 h_d_unique u>d subcase | COMPLETE | Round 12 | d<=t' direction, u>d branch |
-| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | BLOCKED | Round 12 | needs rank-(r+1) C' formula argument |
+| Phase 1: Task 1.4 h_d_unique rank bump (r+1 → r+2) | COMPLETE | Round 13 | 6 signatures + 2 derivation sites updated |
+| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | BLOCKED | Round 12-13 | needs rank-(r+2) K⁻(¬D) formula argument |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from h_d_unique |
 | Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
 | Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
