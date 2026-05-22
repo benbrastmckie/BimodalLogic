@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,8 +237,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-22T15:53:22Z",
-      "next_artifact_number": 27,
+      "last_updated": "2026-05-22T23:51:35Z",
+      "next_artifact_number": 28,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -404,10 +404,15 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/27_post-195-assessment.md",
           "type": "report",
           "summary": "Post-task-195 assessment: same_order_type blocker resolved, h_d_unique + 3 other Phase 1 sorries remain, implementation spec for uncomment+fix approach"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/27_team-research.md",
+          "type": "research",
+          "summary": "Team research round 5 (4 teammates): h_d_unique blocker resolution, Claim 1 proof extraction, infrastructure inventory, strategic assessment"
         }
       ],
-      "session_id": "sess_1779465184_1afc38",
-      "researched": "2026-05-20T18:54:12Z",
+      "session_id": "sess_1779492472_909b0f",
+      "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z"
     },
     {

@@ -477,6 +477,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
   - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
   - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
+  - [155_reynolds_pipeline_activation/reports/27_team-research.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
   - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
