@@ -2385,6 +2385,54 @@ theorem gap_detection_unique {sig : MonadicSignature}
   -- D(u) by the D-between condition for γ₂
   exact h₂_bet u hmu hu_in_2
 
+/-! ### Core Gap Detection Helper: U'(X, D) at actual points
+
+The fundamental connection between U'(X, D) evaluated at an actual point m
+and the existence of a D-defined gap. This is the linchpin of Lemma 9:
+all temporal cases of left_formula reduce to applications of this lemma.
+
+**Forward direction** (U' → gap exists):
+From U'(X, D)(m) with FO-table witness s, the gap γ is defined as the
+boundary where D transitions from holding to failing in (m, s).
+Gap cut = {x | ∀ u, m < u → u ≤ x → D(u)}.
+
+**Backward direction** (gap → U'):
+Given γ with gap conditions, choose s = some point in complement above γ
+where ¬D holds. The FO table conditions follow from the gap axioms.
+-/
+
+/-- Core helper: U'(X, D) at an actual point m in M_r detects a D-defined
+    gap γ > m where X^mu holds at γ, with D holding on all actual points
+    between m and γ. This is the "engine" behind all temporal cases of Lemma 9. -/
+theorem stavi_untl_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_untl X D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
+      gap_definable_on_left M atomMap γ.val D ∧
+      (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+  sorry
+
+/-- Standard-Until gap detection: U(X, D) at an actual point m in M_r detects
+    a D-defined gap γ > m where X^mu holds at γ, with D holding between m and γ.
+    Used by the S/S' cases of left_formula. -/
+theorem std_untl_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_untl X D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m < Sum.inr γ ∧
+      gap_definable_on_left M atomMap γ.val D ∧
+      (∀ u : M.carrier, m < u → u ∈ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+  sorry
+
 /-! ### Lemma 9: Gap Detection Correctness (GHR93)
 
 The crucial bridge: `left_formula(A,D)` evaluated at an actual point m
@@ -2429,7 +2477,175 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) A) := by
-  sorry
+  induction A generalizing m with
+  | base φ =>
+    -- left_formula (.base φ) D = left_formula_base D φ
+    -- This case requires sub-induction on the Formula φ.
+    -- All sub-cases reduce to the same pattern as the outer StaviFormula cases
+    -- because left_formula_base maps atom/bot/box to .base .bot (both sides False)
+    -- and imp/untl/snce to formulas that mirror the neg/conj/stavi_untl patterns.
+    -- For now we handle this via a sub-induction on φ.
+    simp only [left_formula]
+    induction φ with
+    | atom a =>
+      -- left_formula_base D (atom a) = .base .bot
+      simp only [left_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | bot =>
+      -- left_formula_base D bot = .base .bot
+      simp only [left_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | box f =>
+      -- left_formula_base D (box f) = .base .bot
+      simp only [left_formula_base, stavi_temporal_truth_mu, temporal_truth_mu]
+      constructor
+      · exact False.elim
+      · intro ⟨γ, _, _, _, hA⟩; exact hA
+    | imp f g _ _ =>
+      -- left_formula_base D (f → g) involves neg and conj patterns
+      -- This sub-case is complex and mirrors the neg/conj outer cases
+      sorry
+    | untl f g _ _ =>
+      -- left_formula_base D (untl f g) = .stavi_untl (.conj (.base g) (.base (untl f g))) D
+      -- This mirrors the stavi_untl outer case
+      sorry
+    | snce f g _ _ =>
+      -- left_formula_base D (snce f g) = std_untl compound D
+      -- This mirrors the std_snce outer case
+      sorry
+  | neg A ih =>
+    -- left_formula (.neg A) D = .conj (.stavi_untl (.base top) D) (.neg (left_formula A D))
+    simp only [left_formula, stavi_temporal_truth_mu]
+    constructor
+    · -- Forward: U'(top, D)(m) ∧ ¬left(A,D)(m) → ∃ γ with ¬A^mu(γ)
+      intro ⟨hU, hNot⟩
+      -- Use stavi_untl_gap_detection to extract gap from U'(top, D)(m)
+      -- First reconstruct the stavi_untl term from the expanded goal
+      have hU' : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+          (.stavi_untl (.base Formula.top) D) := by
+        simp only [stavi_temporal_truth_mu]; exact hU
+      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, _⟩ :=
+        (stavi_untl_gap_detection (.base Formula.top) D hD m).mp hU'
+      -- From ¬left(A,D)(m), by IH we get ¬(∃ γ with A^mu(γ))
+      -- But actually we get: ¬ left_formula(A,D)(m), so by IH: not (∃ γ, ... ∧ A^mu(γ))
+      have hNot' : ¬(∃ (γ' : RDefinableGap M atomMap r),
+          extendPoint m < Sum.inr γ' ∧
+          gap_definable_on_left M atomMap γ'.val D ∧
+          (∀ u, m < u → u ∈ γ'.val.cut → stavi_temporal_truth_mu M atomMap r (extendPoint u) D) ∧
+          stavi_temporal_truth_mu M atomMap r (Sum.inr γ') A) := by
+        rwa [← ih m]
+      -- Therefore γ has ¬A^mu(γ)
+      refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
+      intro hA_at_γ
+      exact hNot' ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_at_γ⟩
+    · -- Backward: ∃ γ with ¬A^mu(γ) → U'(top, D)(m) ∧ ¬left(A,D)(m)
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hNot_A⟩
+      constructor
+      · -- U'(top, D)(m)
+        -- top^mu(γ) is True (top = imp bot bot, so temporal_truth_mu ... top = (False → False) = True)
+        have hTop : stavi_temporal_truth_mu M atomMap r (Sum.inr γ) (.base Formula.top) := by
+          simp only [stavi_temporal_truth_mu, temporal_truth_mu, Formula.top]
+          exact id
+        have := (stavi_untl_gap_detection (.base Formula.top) D hD m).mpr
+          ⟨γ, hγ_lt, hγ_def, hγ_bet, hTop⟩
+        simp only [stavi_temporal_truth_mu] at this
+        exact this
+      · -- ¬left(A,D)(m)
+        rw [ih m]
+        intro ⟨γ', hγ'_lt, hγ'_def, hγ'_bet, hA_at_γ'⟩
+        -- γ and γ' must be equal by gap_detection_unique
+        have hm_in : m ∈ γ.val.cut :=
+          (extendPoint_le_gap_iff m γ).mp (le_of_lt hγ_lt)
+        have hm_in' : m ∈ γ'.val.cut :=
+          (extendPoint_le_gap_iff m γ').mp (le_of_lt hγ'_lt)
+        have hγ_bet_std : ∀ u, m < u → u ∈ γ.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hmu hu_in
+          exact (stavi_truth_mu_at_point u D).mp (hγ_bet u hmu hu_in)
+        have hγ'_bet_std : ∀ u, m < u → u ∈ γ'.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hmu hu_in
+          exact (stavi_truth_mu_at_point u D).mp (hγ'_bet u hmu hu_in)
+        have heq : γ.val = γ'.val :=
+          gap_detection_unique hγ_def hγ'_def hγ_bet_std hγ'_bet_std hm_in hm_in'
+        have : γ = γ' := Subtype.ext heq
+        rw [this] at hNot_A
+        exact hNot_A hA_at_γ'
+  | conj A B ihA ihB =>
+    -- left_formula (.conj A B) D = .conj (left_formula A D) (left_formula B D)
+    simp only [left_formula, stavi_temporal_truth_mu]
+    constructor
+    · -- Forward: left(A,D)(m) ∧ left(B,D)(m) → ∃ γ with (A ∧ B)^mu(γ)
+      intro ⟨hA, hB⟩
+      obtain ⟨γA, hγA_lt, hγA_def, hγA_bet, hγA_val⟩ := (ihA m).mp hA
+      obtain ⟨γB, hγB_lt, hγB_def, hγB_bet, hγB_val⟩ := (ihB m).mp hB
+      -- γA and γB must be equal by gap_detection_unique
+      have hm_in_A : m ∈ γA.val.cut :=
+        (extendPoint_le_gap_iff m γA).mp (le_of_lt hγA_lt)
+      have hm_in_B : m ∈ γB.val.cut :=
+        (extendPoint_le_gap_iff m γB).mp (le_of_lt hγB_lt)
+      -- Convert D-between conditions to use stavi_temporal_truth
+      have hγA_bet' : ∀ u, m < u → u ∈ γA.val.cut →
+          stavi_temporal_truth M atomMap u D := by
+        intro u hmu hu_in
+        exact (stavi_truth_mu_at_point u D).mp (hγA_bet u hmu hu_in)
+      have hγB_bet' : ∀ u, m < u → u ∈ γB.val.cut →
+          stavi_temporal_truth M atomMap u D := by
+        intro u hmu hu_in
+        exact (stavi_truth_mu_at_point u D).mp (hγB_bet u hmu hu_in)
+      have heq : γA.val = γB.val :=
+        gap_detection_unique hγA_def hγB_def hγA_bet' hγB_bet' hm_in_A hm_in_B
+      refine ⟨γA, hγA_lt, hγA_def, hγA_bet, ?_, ?_⟩
+      · exact hγA_val
+      · have : γA = γB := Subtype.ext heq
+        rw [this]
+        exact hγB_val
+    · -- Backward: ∃ γ with (A ∧ B)^mu(γ) → left(A,D)(m) ∧ left(B,D)(m)
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val, hB_val⟩
+      exact ⟨(ihA m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hA_val⟩,
+             (ihB m).mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hB_val⟩⟩
+  | stavi_untl A B _ _ =>
+    -- left_formula (.stavi_untl A B) D = .stavi_untl (.conj B (.stavi_untl A B)) D
+    -- Need: U'(B ∧ U'(A,B), D)(m) ↔ ∃ γ, ... ∧ U'(A,B)^mu(γ)
+    simp only [left_formula]
+    constructor
+    · -- Forward: from U'(B ∧ U'(A,B), D)(m), get gap with (B ∧ U'(A,B))^mu(γ)
+      -- then drop B to get U'(A,B)^mu(γ)
+      intro h
+      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, hX⟩ :=
+        (stavi_untl_gap_detection (.conj B (.stavi_untl A B)) D hD m).mp h
+      simp only [stavi_temporal_truth_mu] at hX
+      exact ⟨γ, hγ_lt, hγ_def, hγ_bet, hX.2⟩
+    · -- Backward: from gap with U'(A,B)^mu(γ), construct U'(B ∧ U'(A,B), D)(m)
+      -- This requires showing B^mu(γ) from U'(A,B)^mu(γ) -- the hard direction
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUA⟩
+      sorry
+  | stavi_snce A B _ _ =>
+    -- left_formula (.stavi_snce A B) D = .std_untl compound D
+    simp only [left_formula]
+    sorry
+  | std_untl A B _ _ =>
+    -- left_formula (.std_untl A B) D = .stavi_untl (.conj B (.std_untl A B)) D
+    -- Same pattern as stavi_untl: U'(B ∧ U(A,B), D)(m) ↔ ∃ γ, ... ∧ U(A,B)^mu(γ)
+    simp only [left_formula]
+    constructor
+    · -- Forward: drop B from (B ∧ U(A,B))^mu(γ)
+      intro h
+      obtain ⟨γ, hγ_lt, hγ_def, hγ_bet, hX⟩ :=
+        (stavi_untl_gap_detection (.conj B (.std_untl A B)) D hD m).mp h
+      simp only [stavi_temporal_truth_mu] at hX
+      exact ⟨γ, hγ_lt, hγ_def, hγ_bet, hX.2⟩
+    · -- Backward: from gap with U(A,B)^mu(γ), construct U'(B ∧ U(A,B), D)(m)
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hUA⟩
+      sorry
+  | std_snce A B _ _ =>
+    -- left_formula (.std_snce A B) D = .std_untl compound D
+    simp only [left_formula]
+    sorry
 
 /--
 **GHR93 Lemma 9** (Gap detection correctness, right direction):
@@ -2437,6 +2653,36 @@ right_formula(A, D) evaluated at an actual point m in M_r detects
 whether A^mu holds at a gap gamma that is D-defined on the right,
 with gamma < m and D holding at all actual points between gamma and m.
 -/
+/-- Core helper for right: S'(X, D) at an actual point m detects a D-defined
+    gap γ < m where X^mu holds at γ. Dual of stavi_untl_gap_detection. -/
+theorem stavi_snce_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.stavi_snce X D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
+      gap_definable_on_right M atomMap γ.val D ∧
+      (∀ u : M.carrier, u < m → u ∉ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+  sorry
+
+/-- Standard-Since gap detection: S(X, D) at an actual point m detects a
+    D-defined gap γ < m. Dual of std_untl_gap_detection. -/
+theorem std_snce_gap_detection {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (X D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
+    stavi_temporal_truth_mu M atomMap r (extendPoint m) (.std_snce X D) ↔
+    (∃ (γ : RDefinableGap M atomMap r),
+      extendPoint (sig := sig) (atomMap := atomMap) (r := r) m > Sum.inr γ ∧
+      gap_definable_on_right M atomMap γ.val D ∧
+      (∀ u : M.carrier, u < m → u ∉ γ.val.cut →
+        stavi_temporal_truth_mu M atomMap r
+          (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
+      stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+  sorry
+
 theorem right_formula_gap_detection {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (A D : StaviFormula) (hD : stavi_depth D ≤ r) (m : M.carrier) :
