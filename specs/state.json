@@ -651,18 +651,25 @@
     {
       "project_number": 195,
       "project_name": "ef_game_automation_tactics",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
       "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N×N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
       "dependencies": [],
       "created": "2026-05-22T19:18:49Z",
-      "last_updated": "2026-05-22T19:29:54Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
+      "last_updated": "2026-05-22T19:38:51Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md",
+          "type": "report",
+          "summary": "Research report: pattern analysis, tactic specifications, implementation plan for 4 EF game automation components"
+        }
+      ],
       "session_id": "sess_1779465184_1afc38",
-      "started": "2026-05-22T19:29:54Z"
+      "started": "2026-05-22T19:29:54Z",
+      "researched": "2026-05-22T19:38:51Z"
     },
     {
       "project_number": 196,

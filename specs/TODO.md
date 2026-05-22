@@ -73,7 +73,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 ### Phase 1 — Active Work (parallel)
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
-195 [RESEARCHING] — EF game automation tactics for WeakCanonical/ metalogic proofs
+195 [RESEARCHED] — EF game automation tactics for WeakCanonical/ metalogic proofs
   (no dependencies — assists 155)
 
 ### Completed Research (informs Phase 3)
@@ -208,7 +208,8 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
 - **Effort**: medium (10-15 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: none (assists 155)
