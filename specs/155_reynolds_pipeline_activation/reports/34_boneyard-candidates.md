@@ -8,41 +8,48 @@
 
 ## 1. Critical Path Summary
 
-The sorry chain to `bx_completeness` (`completeness_discrete`) goes through:
+**CORRECTION (report 32)**: The omega-chain construction CAN produce gaps (Z+Z models). `succ_cofinal` cannot be closed from construction internals alone — it requires the full Reynolds gap elimination (Lemmas 6-14). The GHR93 infrastructure in EFGames/ExpressivenessGeneral IS the Reynolds pipeline and IS on the critical path.
+
+The sorry chain to `bx_completeness`:
 ```
-completeness_discrete → countermodel_discrete_enriched → countermodel_discrete
-  → dd_countermodel_chronicle_discrete → succ_cofinal (ROOT SORRY)
+completeness_discrete → countermodel_discrete → dd_countermodel_chronicle_discrete
+  → succ_cofinal (ROOT SORRY)
+    ← needs Reynolds Theorem 14 (gap elimination)
+      ← needs Reynolds Theorem 5 (US complete over Prior, Phase 5)
+        ← needs stavi_expressive_completeness (Corollary 5, Phase 4)
+          ← needs Cases III/IV (Phase 3) + Assembly chain (Phase 4)
+            ← needs Lemma 9 (Phase 2, COMPLETE) + d-consistency (Phase 1)
 ```
 
-**Nothing in WeakCanonical/ is on the critical path.** The `countermodel_discrete` in Transfer.lean delegates directly to `dd_countermodel_chronicle_discrete` in ChronicleToCountermodel.lean. The WeakCanonical infrastructure (EFGames, ExpressivenessGeneral, IntegerModel, etc.) is imported by WeakCanonical.lean but none of its sorry'd theorems propagate into `bx_completeness`.
+**WeakCanonical IS on the critical path** via the Reynolds pipeline: Phases 1 → 3 → 4 → 5 → 6A → 6B → succ_cofinal → bx_completeness.
 
 ---
 
 ## 2. Confirmed Orphaned Theorems (grep evidence)
 
-### EFGames.lean (2 sorry sites — BOTH orphaned)
+### EFGames.lean (2 sorry sites — ON CRITICAL PATH via Reynolds pipeline)
 
-| Theorem | Line | References Outside Definition | Status |
-|---------|------|-------------------------------|--------|
-| `stavi_expressive_completeness` | 8983 | **0** (only self-definition) | ORPHANED |
-| `ghr93_decomposition_implies_game` | 7680 | 1 (self-call at 7708) | ORPHANED (used only by itself recursively) |
+| Theorem | Line | Reynolds Role | Critical Path? |
+|---------|------|---------------|----------------|
+| `stavi_expressive_completeness` | 8983 | Corollary 5 → Phase 5 (Reynolds Thm 5) → Phase 6 (gap elimination) | **YES** — not yet wired but NEEDED |
+| `ghr93_decomposition_implies_game` | 7680 | Lemma 11 backward → Assembly chain → Corollary 5 | **YES** |
 
-**Evidence**: `grep -rn "stavi_expressive_completeness" Theories/Bimodal/` returns only the definition line. `grep -rn "ghr93_decomposition_implies_game"` returns the definition + one recursive self-call.
+**Note**: These are not yet called from the completeness proof because the Reynolds pipeline (Phases 5-6B) hasn't been built yet. Once Phases 5-6B are implemented, these theorems will be wired into the `succ_cofinal` proof via Reynolds Theorem 14.
 
-### ExpressivenessGeneral.lean (8 sorry sites — ALL orphaned for bx_completeness)
+### ExpressivenessGeneral.lean (8 sorry sites — ON CRITICAL PATH via Reynolds pipeline)
 
-| Theorem | Line | Used By | Critical Path? |
-|---------|------|---------|----------------|
-| `d_consistency_left` | 1170 | `obtain_split_point_props` | NO — `ghr93_forward_to_backward` has 0 callers |
-| `d_consistency_right` | 1249 | `obtain_split_point_props` | NO |
-| `h_pt_xc` degenerate | 1564 | `obtain_split_point_props` | NO |
-| `h_pt_cy` degenerate | 1581 | `obtain_split_point_props` | NO |
-| c-gap-case | 1685 | `obtain_split_point_props` | NO |
-| Case II | 2851 | `ghr93_case_II` | NO |
-| Cases III/IV | 3627 | `ghr93_inductive_step` | NO |
-| rank-varying | 3838 | standalone | NO |
+| Theorem | Line | Reynolds Role | Critical Path? |
+|---------|------|---------------|----------------|
+| `d_consistency_left` | 1170 | Phase 1 → enables Theorem 6 | **YES** |
+| `d_consistency_right` | 1249 | Phase 1 | **YES** |
+| `h_pt_xc` degenerate | 1564 | Phase 3 | **YES** |
+| `h_pt_cy` degenerate | 1581 | Phase 3 | **YES** |
+| c-gap-case | 1685 | Phase 3 | **YES** |
+| Case II | 2851 | Phase 1 | **YES** |
+| Cases III/IV | 3627 | Phase 3 → Theorem 6 → Corollary 5 | **YES** |
+| rank-varying | 3838 | Phase 4 → Corollary 5 | **YES** |
 
-**Evidence**: `ghr93_forward_to_backward` has **zero callers** outside its own file (confirmed by grep). The entire GHR93 Theorem 6 chain (d_consistency → split points → Cases I-IV → forward_to_backward → rank_varying) is standalone formalization work not wired into the completeness proof.
+**Note**: `ghr93_forward_to_backward` has zero callers NOW because the Reynolds pipeline (Phases 5-6B) hasn't been built. Once built, the chain flows: Theorem 6 → Corollary 5 → Reynolds Thm 5 → gap elimination → succ_cofinal → bx_completeness.
 
 ### IntegerModel.lean (3 sorry sites — ALL orphaned)
 
@@ -84,15 +91,15 @@ All sorry sites are marked "non-critical-path" in comments. The WeakCanonical Tr
 | TruthLemma.lean: all 6 sorry'd theorems | ~130 | All marked "non-critical-path", not used by BXCanonical |
 | **Subtotal** | **~430** | |
 
-### Tier 2: Valuable standalone formalization (keep but mark as non-critical)
+### Tier 2: Reynolds pipeline (CRITICAL PATH — must complete for sorry-free bx_completeness)
 
-| File/Component | Lines | Reason to Keep |
-|----------------|-------|---------------|
-| EFGames.lean: `stavi_expressive_completeness` | ~100 | GHR93 Corollary 5 — important theorem even if not wired in |
-| EFGames.lean: `ghr93_decomposition_implies_game` | ~30 | GHR93 Lemma 11 backward |
-| EFGames.lean: `left_formula_gap_detection` + `right_formula_gap_detection` | ~5000 | GHR93 Lemma 9 — FULLY PROVED, major achievement |
-| ExpressivenessGeneral.lean: entire GHR93 Theorem 6 chain | ~3800 | GHR93 Section 8 formalization |
-| **Subtotal** | **~8930** | Keep — valuable formalization |
+| File/Component | Lines | Role in Pipeline |
+|----------------|-------|-----------------|
+| EFGames.lean: `left_formula_gap_detection` + `right_formula_gap_detection` | ~5000 | GHR93 Lemma 9 — FULLY PROVED |
+| EFGames.lean: `stavi_expressive_completeness` | ~100 | GHR93 Corollary 5 → Reynolds Thm 5 → gap elimination |
+| EFGames.lean: `ghr93_decomposition_implies_game` | ~30 | Lemma 11 backward → Assembly chain |
+| ExpressivenessGeneral.lean: GHR93 Theorem 6 chain | ~3800 | Phases 1, 3, 4 → Corollary 5 |
+| **Subtotal** | **~8930** | **CRITICAL — Reynolds pipeline infrastructure** |
 
 ### Tier 3: Infrastructure used by Tier 2 (keep if Tier 2 kept)
 
@@ -116,13 +123,14 @@ The WeakCanonical directory would go from 20 sorry sites to 10 (the Expressivene
 
 ---
 
-## 6. Summary
+## 6. Summary (CORRECTED per report 32)
 
 | Category | Sorry Sites | Lines | Action |
 |----------|-------------|-------|--------|
-| Critical path (ChronicleToCountermodel) | 4 | ~400 | CLOSE (succ_cofinal) |
-| Orphaned (Tier 1: archive) | 10 | ~430 | Archive to Boneyard |
-| Standalone formalization (Tier 2: keep) | 10 | ~8930 | Keep, mark non-critical |
+| Reynolds pipeline (WeakCanonical + ChronicleToCountermodel) | 14 | ~9330 | CLOSE — full Reynolds pipeline (Phases 1-6B) |
+| Genuinely orphaned (Tier 1: archive) | 10 | ~430 | Archive to Boneyard |
 | Sorry-free infrastructure | 0 | ~6000 | Preserve |
 
-**The single most impactful action**: close `succ_cofinal` Step 9 (~200-500 lines in ChronicleToCountermodel.lean). This makes bx_completeness sorry-free without touching any WeakCanonical sorry sites.
+**The full Reynolds pipeline is necessary.** The omega-chain construction CAN produce gaps (report 32). `succ_cofinal` requires Reynolds Theorem 14 (gap elimination), which requires the full GHR93 → Reynolds chain (Phases 1-6B). Closing succ_cofinal from construction internals alone is NOT possible.
+
+**Remaining critical path**: Phase 1 (d-consistency, ~400-600 lines) → Phase 3 (Cases III/IV, ~240-360 lines) → Phase 4 (Assembly + Corollary 5) → Phase 5 (Reynolds Thm 5, ~100 lines) → Phases 6A-6B (gap elimination, ~1000-1500 lines) → succ_cofinal → bx_completeness.
