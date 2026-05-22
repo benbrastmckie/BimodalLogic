@@ -4834,7 +4834,150 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hg_at_γ := hfg_at_γ ((Subtype.ext heq) ▸ hf_at_γ₁)
           exact hNRg (ih_g.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hg_at_γ⟩)
     | untl f g _ _ =>
-      sorry
+      -- right_formula_base D (.untl f g) = .std_snce compound D where
+      -- compound = D ∧ g ∧ U(f,g) ∧ S'(⊤, g∧D) ∧ ¬S'(D, g∧D)
+      -- Mirrors left base.snce with direction reversed
+      simp only [right_formula_base]
+      rw [stavi_truth_mu_at_point m (.std_snce _ D)]
+      simp only [stavi_temporal_truth]
+      constructor
+      · -- Forward: std_snce(compound, D)(m) → gap conditions
+        intro ⟨s, hsm, hcompound_s, hD_bet⟩
+        obtain ⟨hDs, hgs, hUntl_s, hS'_gD_s, hNotS'D_gD_s⟩ := hcompound_s
+        obtain ⟨s₁, hs₁s, h_body, h_fail, h_init⟩ := hS'_gD_s
+        obtain ⟨u_fail, hs₁_uf, huf_s, hgD_fail⟩ := h_fail
+        obtain ⟨u_init, hs₁_ui, hui_s, hgD_init⟩ := h_init
+        -- Build g∧D-cofinal complement (past direction, mirrors left's cut)
+        let gD : M.carrier → Prop := fun u =>
+          temporal_truth M atomMap u g ∧ stavi_temporal_truth M atomMap u D
+        let compl : Set M.carrier :=
+          {x | ∀ u, u < s → x ≤ u → ∃ v, v < u ∧ ∀ w, v < w → w < s → gD w}
+        have hs_in_compl : s ∈ compl :=
+          fun u hus hsu => absurd (lt_of_le_of_lt hsu hus) (lt_irrefl s)
+        have hu_fail_not_compl : u_fail ∉ compl := by
+          intro h; obtain ⟨v, hvuf, hgDv⟩ := h u_fail huf_s le_rfl
+          exact hgD_fail (hgDv u_fail hvuf huf_s)
+        have h_compl_gt_uf : ∀ x ∈ compl, u_fail < x := by
+          intro x hx; by_contra h; push_neg at h
+          exact hu_fail_not_compl (fun u hus huf => hx u hus (le_trans h huf))
+        have h_compl_gt_s₁ : ∀ x ∈ compl, s₁ < x :=
+          fun x hx => lt_trans hs₁_uf (h_compl_gt_uf x hx)
+        have h_compl_uc : ∀ x y, x ∈ compl → x ≤ y → y ∈ compl :=
+          fun x y hx hxy u hus hyu => hx u hus (le_trans (le_trans hxy hyu) le_rfl)
+        -- cut = complement of compl (reversed from left's cut)
+        let cut : Set M.carrier := {x | x ∉ compl}
+        have h_cut_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut := by
+          intro x y hx hyx hy; exact hx (h_compl_uc y x hy hyx)
+        have h_proper : cut ≠ Set.univ := by
+          intro h; have := h ▸ Set.mem_univ s; exact this hs_in_compl
+        have h_cofinal_propagate :
+            ∀ u, s₁ < u → u < s →
+            (∀ w, u < w → w < s →
+              ∃ v, v < w ∧ ∀ z, v < z → z < s → gD z) →
+            ∃ v, v < u ∧ ∀ z, v < z → z < s → gD z := by
+          intro u hs₁u hus h_above
+          cases h_body u hs₁u hus with
+          | inl h => exact h
+          | inr h =>
+            obtain ⟨_, v', huv', hv's, hgDv'⟩ := h
+            obtain ⟨v₂, hv₂v', hgDv₂⟩ := h_above v' huv' hv's
+            exact absurd (hgDv₂ v' hv₂v' hv's) hgDv'
+        have h_cofinal_u_init :
+            ∃ v, v < u_init ∧ ∀ w, v < w → w < s → gD w := by
+          cases h_body u_init hs₁_ui hui_s with
+          | inl h => exact h
+          | inr h =>
+            obtain ⟨_, v', hv'ui, hv's, hgDv'⟩ := h
+            exact absurd (hgD_init v' hv'ui hv's) hgDv'
+        have hu_init_compl : u_init ∈ compl := by
+          intro u hus huu_init
+          rcases eq_or_lt_of_le huu_init with rfl | hlt
+          · exact h_cofinal_u_init
+          · exact ⟨u_init, hlt, fun z huz hzs => hgD_init z huz hzs⟩
+        have h_gD_at_compl : ∀ u, u ∈ compl → u < s → gD u := by
+          intro u hu hus; obtain ⟨v, hvu, hgDv⟩ := hu u hus le_rfl
+          exact hgDv u hvu hus
+        have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
+          intro x hx y hy; by_contra h; push_neg at h
+          exact hx (h_compl_uc y x hy h)
+        -- No sup in cut (mirrors stavi_snce_gap_detection)
+        have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
+          intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
+          have hps : p < s := h_cut_lt_compl p hp_cut s hs_in_compl
+          have hs₁p : s₁ < p := by
+            by_contra h; push_neg at h
+            exact not_le.mpr (lt_of_le_of_lt h hs₁_uf) (h_ub hu_fail_not_compl)
+          apply hp_cut
+          intro u hus hpu
+          rcases eq_or_lt_of_le hpu with rfl | hpu'
+          · exact h_cofinal_propagate p hs₁p hus (fun w hpw hws => by
+              have : w ∈ compl := by by_contra hw; exact not_le.mpr hpw (h_ub hw)
+              exact this w hws le_rfl)
+          · have : u ∈ compl := by by_contra hu_cut; exact not_le.mpr hpu' (h_ub hu_cut)
+            exact this u hus le_rfl
+        -- No min in complement (mirrors stavi_snce_gap_detection)
+        have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
+          sorry -- TODO: fill in comp_no_min proof
+        -- Construct Gap
+        let γ_gap : Gap M.carrier :=
+          ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+        -- D-definable-on-right: D cofinal in complement, no initial D in cut
+        -- Part 1: D cofinal in complement (from gD cofinal → D cofinal)
+        have h_D_compl_cofinal : ∃ t, t ∉ γ_gap.cut ∧ ∀ u, u ∉ γ_gap.cut → u ≤ t →
+            stavi_temporal_truth M atomMap u D :=
+          ⟨u_init, fun h => h hu_init_compl, fun u hu hut =>
+            (h_gD_at_compl u (by by_contra h'; exact hu h') (lt_of_le_of_lt hut hui_s)).2⟩
+        -- Part 2: No initial D in cut
+        have h_no_init_cut_D : ¬∃ t, t ∈ γ_gap.cut ∧ ∀ u, t ≤ u → u ∈ γ_gap.cut →
+            stavi_temporal_truth M atomMap u D := by
+          sorry -- TODO: mirrors left's h_no_init_compl_D
+        have h_def_right : gap_definable_on_right M atomMap γ_gap D :=
+          ⟨h_D_compl_cofinal, h_no_init_cut_D⟩
+        have h_r_def : r_definable_gap M atomMap γ_gap r :=
+          ⟨D, hD, Or.inr h_def_right⟩
+        let γ : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
+        refine ⟨γ, ?_, h_def_right, ?_, ?_⟩
+        · -- extendPoint m > Sum.inr γ: m ∉ cut (m is above all cut points)
+          have hm_compl : m ∈ compl := h_compl_uc s m hs_in_compl (le_of_lt hsm)
+          show @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
+          exact ⟨fun h => h hm_compl, fun h => h hm_compl⟩
+        · -- D at complement points below m
+          intro u hum hu_not_cut
+          have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
+          by_cases hus : u < s
+          · exact (stavi_truth_mu_at_point u D).mpr (h_gD_at_compl u hu_compl hus).2
+          · push_neg at hus
+            rcases eq_or_lt_of_le hus with rfl | hsu
+            · exact (stavi_truth_mu_at_point s D).mpr hDs
+            · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
+        · -- U(f,g)^mu at γ
+          simp only [temporal_truth] at hUntl_s
+          obtain ⟨s₂, hss₂, hf_s₂, hg_bet⟩ := hUntl_s
+          show temporal_truth_mu M atomMap r (Sum.inr γ) (f.untl g)
+          have hs_compl : s ∈ compl := hs_in_compl
+          refine ⟨extendPoint s₂, ?_, ⟨s₂, rfl⟩,
+            (temporal_truth_mu_at_point s₂ f).mpr hf_s₂, ?_⟩
+          · -- Sum.inr γ < extendPoint s₂
+            show @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr γ) (extendPoint s₂)
+            have : @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr γ) (extendPoint s) :=
+              ⟨fun h => h hs_compl, fun h => h hs_compl⟩
+            exact lt_trans this ((extendPoint_lt_iff s s₂).mpr hss₂)
+          · -- g^mu at mu-points between γ and s₂
+            intro u hγu hus₂ hmu
+            obtain ⟨p, rfl⟩ := hmu
+            apply (temporal_truth_mu_at_point p g).mpr
+            have hps₂ : p < s₂ := (extendPoint_lt_iff p s₂).mp hus₂
+            by_cases hps : s ≤ p
+            · rcases eq_or_lt_of_le hps with rfl | hsp
+              · exact hgs
+              · exact hg_bet p hsp hps₂
+            · push_neg at hps
+              have hp_compl : p ∈ compl := by
+                by_contra hp_cut
+                exact not_le.mpr hγu ((extendPoint_le_gap_iff p γ).mpr hp_cut)
+              exact (h_gD_at_compl p hp_compl hps).1
+      · -- Backward: gap conditions → std_snce(compound, D)(m)
+        sorry
     | snce f g _ _ =>
       -- right_formula_base D (.snce f g) = S'(g ∧ S(f,g), D)
       -- Mirrors left base.untl with stavi_snce_gap_detection
