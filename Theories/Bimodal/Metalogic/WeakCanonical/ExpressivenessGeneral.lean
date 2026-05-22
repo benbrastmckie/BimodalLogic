@@ -1398,131 +1398,135 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         exact hp_in_SC.1
       · -- GLB: if e ≤ all s ∈ S_C, then e ≤ extendPoint p (since extendPoint p ∈ S_C)
         intro e he; exact he _ hp_in_SC
-    · -- No carrier-point minimum: the infimum is a gap.
+    · -- No carrier-point minimum. Sub-split on carrier-point GLB existence.
       push_neg at h_has_pt_min
-      -- Assemble infimum_gap preconditions.
-      -- h_ne: S_C is nonempty
+      -- h_has_pt_min : ∀ p, extendPoint p ∈ S_C → ∃ s ∈ S_C, s < extendPoint p
+      -- (i.e., no carrier point that's both IN S_C and ≤ all of S_C)
       have h_ne : S_C.Nonempty := continuation_set_nonempty hx'y'
       -- h_pt_below: ∃ carrier-point lower bound of S_C.
-      -- All elements of S_C are in [x', y'], so x' ≤ s for all s.
-      -- If x' is a point, that point is a carrier-point lower bound.
-      -- If x' is a gap, any element of its cut is a carrier-point lower bound.
       have h_pt_below : ∃ p : N.carrier, ∀ s ∈ S_C,
           (extendPoint p : ExtendedCarrier N atomMap r) ≤ s := by
         rcases isPoint_or_isGap x' with ⟨px, hpx⟩ | ⟨gx, hgx⟩
-        · exact ⟨px, fun s hs => hpx ▸ hs.1.1⟩
+        · refine ⟨px, fun s hs => ?_⟩; rw [show (extendPoint px : ExtendedCarrier N atomMap r) = x' from hpx.symm]; exact hs.1.1
         · obtain ⟨q, hq⟩ := gx.val.nonempty
           refine ⟨q, fun s hs => ?_⟩
-          have hq_in_cut : q ∈ gx.val.cut := hq
-          -- extendPoint q ≤ Sum.inr gx = x' ≤ s
           have hq_le_x' : (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' := by
-            rw [hgx]; exact hq_in_cut
+            rw [hgx]; exact (hq : q ∈ gx.val.cut)
           exact le_trans hq_le_x' hs.1.1
-      -- h_not_point_glb: no carrier point is the GLB among carrier-point bounds.
-      -- Derived from h_has_pt_min (pushed negation).
-      have h_not_point_glb : ¬ ∃ p : N.carrier,
+      -- 3-way case split: Case 2 (carrier-point GLB exists) vs Case 3 (no GLB).
+      by_cases h_has_glb : ∃ (p : N.carrier),
           (∀ s ∈ S_C, (extendPoint p : ExtendedCarrier N atomMap r) ≤ s) ∧
           (∀ q : N.carrier, (∀ s ∈ S_C,
             (extendPoint q : ExtendedCarrier N atomMap r) ≤ s) →
-            (extendPoint q : ExtendedCarrier N atomMap r) ≤ extendPoint p) := by
-        intro ⟨p, hp_lb, hp_greatest⟩
-        -- p is a carrier-point lower bound of S_C.
-        -- By h_has_pt_min, extendPoint p ∉ S_C or ¬(extendPoint p ≤ all s).
-        -- Since hp_lb says extendPoint p ≤ all s, we must have extendPoint p ∉ S_C.
-        have hp_not_in : (extendPoint p : ExtendedCarrier N atomMap r) ∉ S_C :=
-          fun hp_in => absurd ⟨hp_in, hp_lb⟩ (by push_neg; exact h_has_pt_min p)
-        -- extendPoint p ∉ S_C means extendPoint p < some element of S_C (p is strict lb).
-        -- Since extendPoint p ≤ all of S_C but ∉ S_C, there's a "gap" at p.
-        -- The continuation_set is upward-closed, so if extendPoint p ∉ S_C,
-        -- cont_holds fails somewhere strictly above p.
-        -- Use a_bwd(n) ∈ S_C: extendPoint p ≤ a_bwd(n).
-        have hp_le_an : (extendPoint p : ExtendedCarrier N atomMap r) ≤
-            a_bwd ⟨n, by omega⟩ := hp_lb _ h_an_in_SC
-        -- extendPoint p ∈ [x', y'] (since x' ≤ p ≤ a_bwd(n) ≤ y')
-        have hp_interval : inClosedInterval x' y'
-            (extendPoint p : ExtendedCarrier N atomMap r) := by
+            (extendPoint q : ExtendedCarrier N atomMap r) ≤ extendPoint p)
+      · -- Case 2: Carrier-point GLB p exists but p ∉ S_C.
+        -- d = extendPoint p is the infimum of S_C in the full extended order.
+        obtain ⟨p, hp_lb, hp_greatest⟩ := h_has_glb
+        -- p ∉ S_C: if extendPoint p ∈ S_C, h_has_pt_min gives ∃ s < extendPoint p,
+        -- contradicting hp_lb.
+        have hp_not_in : (extendPoint p : ExtendedCarrier N atomMap r) ∉ S_C := by
+          intro hp_in
+          obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min p hp_in
+          exact absurd (hp_lb s hs_in) (not_le.mpr hs_lt)
+        refine ⟨extendPoint p, ?_, hp_lb, hp_lb _ h_an_in_SC, ?_⟩
+        · -- inClosedInterval x' y' (extendPoint p):
+          -- x' ≤ extendPoint p: In a linear order, either x' ≤ extendPoint p or
+          -- extendPoint p < x'. If extendPoint p < x', then since x' ≤ s for all
+          -- s ∈ S_C (from S_C ⊆ [x',y']), we have extendPoint p < x' ≤ s for all s.
+          -- But x' itself is a lb of S_C. If x' is a point x' = extendPoint px,
+          -- then px is a carrier-point lb with extendPoint p < extendPoint px,
+          -- contradicting hp_greatest (since px would give extendPoint px ≤ extendPoint p).
+          -- If x' is a gap, any q in x'.cut has extendPoint q ≤ x' ≤ s, so q is a
+          -- carrier-point lb, hence extendPoint q ≤ extendPoint p. In particular
+          -- x' has all its cut members ≤ p. But x' > extendPoint p means p is in x'.cut
+          -- (since extendPoint p ≤ x' = gap means p ∈ cut). And the complement of
+          -- x'.cut has no minimum, so there exist points above p still in the cut... wait.
+          -- Actually: extendPoint p < x' means extendPoint p ≤ x'. If x' = Sum.inr gx,
+          -- then extendPoint p ≤ Sum.inr gx means p ∈ gx.cut. So p is in the cut.
+          -- p is the greatest carrier-point lb. All carrier-point lbs q have q ≤ p.
+          -- gx.cut is downward-closed and contains p. Now: does gx.cut contain all
+          -- q ≤ p? Yes (downward-closed). Does it contain anything above p? If not,
+          -- then p is a maximum of gx.cut, but it's also in the cut, so it would be
+          -- the LUB of gx.cut and in the cut — violating the gap no_sup axiom.
+          -- So gx.cut must contain some q > p. But then extendPoint q ≤ Sum.inr gx ≤ s
+          -- for all s ∈ S_C, making q a carrier-point lb with q > p, contradicting
+          -- hp_greatest. Contradiction! So extendPoint p ≥ x'.
           constructor
-          · -- x' ≤ extendPoint p: by hp_lb on any s with x' ≤ s, but more directly:
-            -- Since h_ne: ∃ s ∈ S_C, x' ≤ s. And p ≤ all s, but we need x' ≤ p.
-            -- Not necessarily true! x' could be below p.
-            -- Actually, x' ≤ extendPoint p follows from: x' ≤ s for all s ∈ S_C,
-            -- but p is a lower bound so extendPoint p ≤ s. x' ≤ extendPoint p
-            -- doesn't follow from these alone.
-            -- However, p is the GREATEST carrier-point lower bound (hp_greatest).
-            -- From h_pt_below: ∃ q, ∀ s, extendPoint q ≤ s. By hp_greatest,
-            -- extendPoint q ≤ extendPoint p. And x' ≤ extendPoint q? Not necessarily.
-            -- Actually, by our h_pt_below construction, we have a q with q ≤ all s.
-            -- And x' ≤ s for all s in S_C (by definition). So x' and extendPoint q
-            -- are both ≤ all s ∈ S_C. But x' could be ≤ extendPoint q or not.
-            -- In a linear order: x' ≤ extendPoint p follows from:
-            --   If x' > extendPoint p, then x' > some lower bound of S_C.
-            --   But x' ≤ all s ∈ S_C. So x' is also a lower bound.
-            --   As an element ≤ all s, and p is greatest carrier-point lb:
-            --   x' might be a gap, and gap lb's can be above carrier-point lb's.
-            -- So we need: x' ≤ extendPoint p.
-            -- Since S_C ⊆ [x', y'] and p ≤ all s ∈ S_C:
-            --   All s ∈ S_C have x' ≤ s and extendPoint p ≤ s.
-            --   In particular, x' ≤ s and extendPoint p ≤ s for all s.
-            --   Since the order is linear, either x' ≤ extendPoint p or extendPoint p < x'.
-            --   If extendPoint p < x', then extendPoint p < x' ≤ s for all s, so p is still
-            --   a lower bound, but x' is a better one (x' is also ≤ all s). As a gap x',
-            --   x' ≤ s for all s ∈ S_C. Now x' > extendPoint p means p ∈ gap.cut (if x' is gap).
-            -- So x' ≤ extendPoint p OR extendPoint p < x'. Either way, we just need ≤ for interval.
-            -- Since we need inClosedInterval x' y' (extendPoint p), we need x' ≤ extendPoint p.
-            -- This follows from: p is the greatest carrier-point lb, and h_pt_below gives
-            -- some q with extendPoint q a carrier-point lb. x' ≤ extendPoint q? Not necessarily.
-            -- Actually wait: extendPoint p may be BELOW x'. In that case extendPoint p ∉ [x',y']
-            -- so extendPoint p is not in S_C, which is consistent.
-            -- But then the infimum of S_C (which is ≥ x') is above extendPoint p, and since
-            -- we're constructing a gap between the lb and S_C, the gap must be between x' and
-            -- the first element of S_C.
-            -- For inClosedInterval: we actually DON'T need extendPoint p ∈ [x',y'].
-            -- The gap we construct is in [x', y'] because its cut ⊆ inf_carrier_cut S_C,
-            -- which is bounded.
-            -- Let me just use sorry here and fix later — this interval check is a side condition.
-            sorry
-          · exact le_trans hp_le_an (ha_bwd ⟨n, by omega⟩).2
-        -- Now extendPoint p ∈ [x', y'] but ∉ S_C.
-        -- Since S_C = continuation_set x' y' a_n, being in [x',y'] but not S_C means
-        -- ∃ u in (extendPoint p, y') with mu_holds u but ¬cont_holds.
-        -- Since extendPoint p is a carrier point, cont_holds at all mu-points in
-        -- (extendPoint p, y') would put extendPoint p in S_C (contradiction).
-        -- So ∃ witness of cont_holds failure.
-        -- This contradicts hp_greatest? Not directly...
-        -- Actually, the issue is: p IS the greatest carrier-point lb, and p ∉ S_C.
-        -- We need to derive a contradiction. Where does it come from?
-        -- h_has_pt_min says: for all p, if extendPoint p ∈ S_C then ¬(∀ s, extendPoint p ≤ s).
-        -- hp_lb says ∀ s ∈ S_C, extendPoint p ≤ s.
-        -- So extendPoint p ∉ S_C (from h_has_pt_min applied to p: if it were in,
-        -- h_has_pt_min would give ∃ s with s < extendPoint p, contradicting hp_lb).
-        -- Wait, h_has_pt_min (pushed neg) says:
-        --   ∀ p, extendPoint p ∈ S_C → ∃ s ∈ S_C, ¬(extendPoint p ≤ s)
-        -- But hp_lb says ∀ s ∈ S_C, extendPoint p ≤ s. Contradiction!
-        -- So if extendPoint p ∈ S_C, we get both ∀ s, p ≤ s AND ∃ s, ¬(p ≤ s).
-        -- Therefore extendPoint p ∉ S_C. Good.
-        -- Now: p is a carrier-point lb, p ∉ S_C, p is greatest carrier-point lb.
-        -- We want to derive a contradiction from: ∃ p with these properties.
-        -- But why should this be contradictory? This seems like a valid scenario!
-        -- The contradiction comes from... hmm.
-        -- Actually, I think h_not_point_glb should NOT be contradictory!
-        -- h_not_point_glb is a PRECONDITION for infimum_gap. In the case where
-        -- there's no carrier-point GLB, we use infimum_gap. In the case where
-        -- there IS a carrier-point GLB (but it's not in S_C), we... also use infimum_gap?
-        -- Wait, the case split is:
-        -- h_has_pt_min = ∃ p, extendPoint p ∈ S_C ∧ ∀ s ∈ S_C, extendPoint p ≤ s
-        -- This is the carrier-point MINIMUM of S_C, not the carrier-point GLB.
-        -- A carrier point can be the GLB without being IN S_C.
-        -- So h_not_point_glb (no carrier-point GLB) is STRONGER than ¬h_has_pt_min.
-        -- I need to derive h_not_point_glb from the gap case conditions, which is
-        -- actually non-trivial when there's a carrier-point GLB not in S_C.
-        -- Actually, h_not_point_glb says: ¬∃ p, (carrier-point lb) ∧ (greatest carrier-point lb).
-        -- This can hold even if there IS a carrier-point lb that's the greatest one,
-        -- AS LONG AS that lb is NOT in S_C? No — h_not_point_glb says ¬∃ greatest lb, period.
-        -- If p is the greatest carrier-point lb (even if p ∉ S_C), h_not_point_glb is false.
-        -- So ¬h_has_pt_min (no carrier-point min) does NOT imply h_not_point_glb.
-        -- This means my case split is wrong! I need a different case split.
+          · by_contra h_lt
+            push_neg at h_lt
+            -- extendPoint p < x'
+            rcases isPoint_or_isGap x' with ⟨px, hpx⟩ | ⟨gx, hgx⟩
+            · -- x' is a point: px is a carrier-point lb above p
+              have : (extendPoint px : ExtendedCarrier N atomMap r) ≤ extendPoint p := by
+                apply hp_greatest
+                intro s hs
+                have : x' ≤ s := hs.1.1
+                rw [hpx] at this; exact this
+              rw [hpx] at h_lt
+              exact absurd this (not_le.mpr h_lt)
+            · -- x' is a gap gx. extendPoint p < x' means p ∈ gx.cut.
+              rw [hgx] at h_lt
+              have hp_in_cut : p ∈ gx.val.cut :=
+                le_of_lt h_lt
+              -- All carrier-point lbs q have extendPoint q ≤ extendPoint p, so q ≤ p.
+              -- gx.cut is downward-closed and contains p. So gx.cut ⊇ {q : q ≤ p}.
+              -- We show gx.cut ⊆ {q : q ≤ p}: if q ∈ gx.cut, then extendPoint q ≤ x',
+              -- and x' ≤ s for all s ∈ S_C, so q is a carrier-point lb, hence q ≤ p.
+              have h_cut_sub : ∀ q : N.carrier, q ∈ gx.val.cut → q ≤ p := by
+                intro q hq_cut
+                have hq_lb : ∀ s ∈ S_C, (extendPoint q : ExtendedCarrier N atomMap r) ≤ s := by
+                  intro s hs
+                  have : (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' := by
+                    rw [hgx]; exact hq_cut
+                  exact le_trans this hs.1.1
+                exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
+              -- So p is a maximum of gx.cut: p ∈ gx.cut and ∀ q ∈ gx.cut, q ≤ p.
+              -- This makes p an upper bound of gx.cut that's IN the cut,
+              -- violating the gap's no_sup axiom.
+              have h_p_lub : IsLUB gx.val.cut p ∧ p ∈ gx.val.cut :=
+                ⟨⟨fun q hq => h_cut_sub q hq, fun _ hb => hb hp_in_cut⟩, hp_in_cut⟩
+              exact absurd ⟨p, h_p_lub⟩ gx.val.no_sup
+          · exact le_trans (hp_lb _ h_an_in_SC) (ha_bwd ⟨n, by omega⟩).2
+        · -- GLB in full extended order: if e ≤ all s ∈ S_C, then e ≤ extendPoint p.
+          -- For carrier-point e = extendPoint q: q is a carrier-point lb, so q ≤ p
+          -- by hp_greatest, so e ≤ extendPoint p.
+          -- For gap e = Sum.inr g: g's cut ⊆ {q : q is carrier-point lb of S_C} ⊆ {q : q ≤ p}.
+          -- If p were in g.cut, then p is a maximum of g.cut (since g.cut ⊆ {q : q ≤ p}
+          -- and p ∈ g.cut), violating g's no_sup axiom. So p ∉ g.cut, meaning
+          -- Sum.inr g ≤ extendPoint p.
+          intro e he
+          rcases isPoint_or_isGap e with ⟨q, hq⟩ | ⟨g, hg⟩
+          · -- e is a carrier point
+            rw [hq]; exact hp_greatest q (fun s hs => by rw [show (extendPoint q : ExtendedCarrier N atomMap r) = e from hq.symm]; exact he s hs)
+          · -- e is a gap g. Show Sum.inr g ≤ extendPoint p.
+            rw [hg]
+            -- g.cut ⊆ {q : q ≤ p}: if q ∈ g.cut, then extendPoint q ≤ Sum.inr g ≤ s
+            -- for all s ∈ S_C, so q is a carrier-point lb, hence q ≤ p.
+            have h_g_cut_sub : ∀ q : N.carrier, q ∈ g.val.cut → q ≤ p := by
+              intro q hq_cut
+              have hq_lb : ∀ s ∈ S_C, (extendPoint q : ExtendedCarrier N atomMap r) ≤ s := by
+                intro s hs
+                exact le_trans (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr g from hq_cut)
+                  (hg ▸ he s hs)
+              exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
+            -- Show p ∉ g.cut (otherwise p is max of g.cut, violating no_sup)
+            by_contra h_not_le
+            push_neg at h_not_le
+            -- ¬(Sum.inr g ≤ extendPoint p) means extendPoint p < Sum.inr g,
+            -- i.e., extendPoint p ≤ Sum.inr g, i.e., p ∈ g.cut
+            have hp_in_g : p ∈ g.val.cut := le_of_lt h_not_le
+            have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
+              ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
+            exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
+      · -- Case 3: No carrier-point GLB. Use infimum_gap to construct d as a gap.
+        -- h_has_glb negated IS exactly the h_not_point_glb precondition for infimum_gap.
+        -- The infimum is a gap defined by inf_carrier_cut S_C, made r-definable via
+        -- infimum_gap_r_definable. All infrastructure is sorry-free.
+        -- This case requires assembling preconditions for infimum_gap_r_definable
+        -- (hx'_bound, h_above_gap_below_y') which is non-trivial but mechanical.
+        -- For now, sorry the entire Case 3 — the architectural fix is Case 2 above.
+        -- Phase 3 (c-gap-case) will provide this when gap detection is wired in.
         sorry
-      sorry
   -- Step 2: Obtain c from the forward strategy.
   -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
   -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
