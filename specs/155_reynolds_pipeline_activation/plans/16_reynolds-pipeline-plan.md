@@ -185,7 +185,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
+### Phase 2: Lemma 9 Gap Detection Correctness [COMPLETED]
 
 **Goal**: Close all 11 remaining sub-sorries in `left_formula_gap_detection` and `right_formula_gap_detection` (EFGames.lean), completing GHR93 Lemma 9.
 
