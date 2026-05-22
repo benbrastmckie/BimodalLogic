@@ -2,7 +2,7 @@
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IMPLEMENTING]
-- **Effort**: 40-60 hours (revised down from 60-90; Phase 2 and Phase 10 COMPLETE, Phase 1 blocker definitively resolved)
+- **Effort**: 44-66 hours (revised from 40-60; Task 1.7 up +4-6h per report 18 decoupled round count approach)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED)
 - **Research Inputs**:
   - reports/22-26 (original research, see v11 for summaries)
@@ -15,6 +15,8 @@
   - reports/33_omega-chain-internals.md (Prior-UZ argument fails in discrete case -- vacuous guard)
   - reports/34_boneyard-candidates.md (Tier 1 archival: ~430 lines genuinely orphaned)
   - reports/35_phase1-blocker-prior-art.md (DEFINITIVE: report 29 correct, handoff-b wrong; both infimum + rank embedding needed)
+  - reports/18_task17-blocker-resolution.md (Task 1.7 resolution: decouple round count from n, universal h_r1_univ keeps rank r+1 out of IH; Option B infeasible, Option E incorrect)
+  - handoffs/phase-1-handoff-20260522T160731Z.md (sorry inventory, Task 1.2/1.3 confirmed complete, 5 proposed solutions for Task 1.7)
 - **Artifacts**: plans/17_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -49,16 +51,23 @@ Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake bu
 
 ### Research Integration
 
-Report 35 resolves the three conflicting analyses of the Phase 1 blocker:
+Report 35 resolves the three conflicting analyses of the Phase 1 d-consistency blocker:
 - **Report 29**: CORRECT. Both infimum redefinition and rank embedding are necessary.
 - **Handoff-b**: WRONG. "Keep d = a_bwd(n)" fails because Claim 1 forces response = d-bar (the infimum), not a_bwd(n). d_consistency is literally false when d != d-bar.
 - **Report 27**: Partially correct. Correct diagnosis but underestimates Case II restructure and doesn't clearly state that rank embedding is also needed for Claim 1.
 
 The current code flaw is at `obtain_split_point_props` (line ~1390): d is set to x' (a placeholder), not the actual infimum. All infrastructure to construct the real infimum exists and is sorry-free.
 
+**Report 18** resolves the Task 1.7 architectural blocker (IH h_fwd_r1 recursive rank tower):
+- **Option B** (don't revert h_r1): INFEASIBLE. h_r1's type depends on both n and endpoints; Lean forces reverting it.
+- **Option E** (d_consistency vacuous at IH level): INCORRECT. Each level genuinely needs rank r+1.
+- **Primary fix**: Decouple round count from `n`. New `ghr93_forward_to_backward_core` takes `rounds_r1` (fixed) and `h_r1_univ` (universally quantified over endpoints). Since h_r1_univ depends on neither `n` nor specific endpoints, it stays in scope during induction. The IH becomes rank-r-only. At each step, derive h_r1_here via `h_r1_univ` + `ghr93_duplicator_wins_round_mono`.
+- **Fallback**: GHR93 rank-varying approach with `ghr93_duplicator_wins_rank_down` lemma (~230-370 lines).
+- **GHR93 insight**: The paper avoids the tower by using rank r+4n (4 rank levels per induction step). Our formalization uses rank r+1, providing insufficient headroom. The decoupled approach captures this budget without requiring the full rank-varying machinery.
+
 ### Prior Plan Reference
 
-v12 was accurate on Phases 2-11 and overall pipeline architecture. Its Phase 1 was BLOCKED due to the conflicting analyses (handoff-b vs report 29). v13 unblocks Phase 1 by adopting report 29's combined strategy (infimum + rank embedding + Case II restructure), updating effort estimates based on report 35's detailed assessment, and breaking Phase 1 into clear sub-tasks. v12's effort estimate of 60-90 hours is revised to 40-60 hours based on pipeline health assessment in report 35.
+v12 was accurate on Phases 2-11 and overall pipeline architecture. Its Phase 1 was BLOCKED due to the conflicting analyses (handoff-b vs report 29). v13 unblocks Phase 1 by adopting report 29's combined strategy (infimum + rank embedding + Case II restructure), updating effort estimates based on report 35's detailed assessment, and breaking Phase 1 into clear sub-tasks. Task 1.7 estimate revised up from 40-60 lines to 170-235 lines per report 18.
 
 ### Session Progress (v12 -> v13)
 
@@ -113,7 +122,7 @@ v12 was accurate on Phases 2-11 and overall pipeline architecture. Its Phase 1 w
 | Case II restructure exceeds estimate (~300-500 lines) | H | M | The existing skeleton at lines 2880-2890 has the right structure. tau for positions 0..n-1 is already done (line 2873). Focus on U(B,A) transfer and e_n witness construction. Modularize into sub-lemmas. |
 | Infimum construction: assembling preconditions of `infimum_gap` proves complex | M | L | All building blocks exist and are sorry-free. Use Classical.em on point-minimum. ~100-150 lines. |
 | Claim 1: C' formula encoding in StaviFormula requires new infrastructure | M | L | C is already a Prop-level predicate. C' = not-C or K^{-}(not-C) uses existing stavi_temporal_truth_mu. ~80-120 lines. |
-| Sub-interval r+1 restriction: d_consistency at rank r+1 needs Claim 1 at r+2 | M | L | Forward hypothesis at rank r+4(n+1) >= r+2 for all n >= 0. The rank arithmetic works. |
+| Task 1.7 h_r1 decoupling: providing universal h_r1_univ from single-interval h_r1 | M | M | Report 18: if sub-interval monotonicity is hard, change outer theorem signature to take h_r1_univ directly and push obligation to caller. Fallback: GHR93 rank-varying with rank_down lemma (~230-370 lines). |
 | Cases III/IV gap detection formula rank bounds don't match codebase | M | M | Follow GHR93 exactly: Case III uses left(B,D) with rank r+2, Case IV uses right(B,D) with rank r+3. Verify rank bounds with `stavi_depth` computation before proceeding. |
 | Proposition 7 composition too complex (decomposition formula counting) | M | M | GHR93 Proposition 7 proof is explicit (p.26-27). If composition stalls, try direct Corollary 5 route via formula enumeration. |
 | Model surgery (Lemma 12) case explosion exceeds budget | M | L | Report 26 estimates 350-450 lines. Modularize into per-case helpers; S cases are perfectly dual to U cases (use a shared template with direction parameter). |
@@ -170,18 +179,13 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: D-Consistency via Infimum + Claim 1 + Case II Restructure (GHR93 Claim 1) [BLOCKED]
+### Phase 1: D-Consistency via Infimum + Claim 1 + Case II Restructure (GHR93 Claim 1) [IN PROGRESS]
 
-**BLOCKER** (Phase 1):
-- **What failed**: Task 1.7 — closing the IH h_fwd_r1 sorry at line ~3836.
-- **What was tried**: Deep analysis of the induction structure in `ghr93_forward_to_backward` (lines 3755-3837). The sorry provides `ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1) (rank_embed ... x₀) ... (rank_embed ... y₀')` on sub-intervals, but only the FULL-interval rank r+1 strategy `h_r1` is available.
-- **Why it's stuck**: All hypothesis variables including `h_r1` are reverted before induction (line 3770), making the IH `ih_gen` universally quantified over `h_r1`. Every recursive call must provide rank r+1 on its specific sub-interval. Deriving sub-interval rank r+1 from full-interval rank r+1 requires strategy restriction at rank r+1, which requires d_consistency at rank r+1, which requires Claim 1 at rank r+2 — creating a recursive tower. The plan's estimate of 40-60 lines is too low.
-- **What is needed**: Research into restructuring options: (B) helper lemma `ghr93_forward_to_backward_core` that doesn't universally quantify h_r1, or (E) proving d_consistency is vacuously true at sub-interval IH levels. See handoff `handoffs/phase-1-handoff-20260522T160731Z.md` for 5 proposed solutions.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
-
-**Goal**: Close the d-consistency interior sorries by (a) constructing the actual infimum of continuation_set, (b) proving GHR93 Claim 1 at rank r+1, (c) restructuring Case II to construct e_n fresh, and (d) closing the IH h_fwd_r1 sorry for sub-intervals.
+**Goal**: Close the d-consistency interior sorries by (a) constructing the actual infimum of continuation_set, (b) proving GHR93 Claim 1 at rank r+1, (c) restructuring Case II to construct e_n fresh, and (d) closing the IH h_fwd_r1 sorry via decoupled round count + universal h_r1.
 
 **Root cause (definitively resolved by report 35)**: GHR93 Claim 1 proves that any winning response to c equals d-bar (the infimum of the N-side continuation set). The current code sets d = x' (placeholder), making d_consistency unprovable. With d = d-bar, Claim 1 gives d_consistency directly. Rank embedding infrastructure is already sorry-free. Case II must construct e_n as a fresh point via U(B,A) transfer, not as d-bar or a_bwd(n).
+
+**Task 1.7 resolution (report 18)**: The original blocker — IH universally quantifying h_r1 creating a recursive rank tower — is resolved by decoupling round count from `n`. Create `ghr93_forward_to_backward_core` with a `rounds_r1` parameter independent of `n` and a `h_r1_univ` parameter universally quantified over endpoints. Since `h_r1_univ` depends on neither `n` nor specific endpoints, it stays in scope during induction and the IH becomes rank-r-only. Option E (d_consistency vacuous at IH level) is INCORRECT — each level genuinely needs rank r+1. Option B (don't revert h_r1) is INFEASIBLE as stated since h_r1's type depends on n and endpoints. The decoupled round count variant (report 18 Section 6) is the correct fix.
 
 **Tasks**:
 - [ ] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). Replace the x' placeholder (lines ~1381-1391) with a proper case split:
@@ -206,15 +210,25 @@ Phases within the same wave can execute in parallel.
   - Set e_n = z (a genuinely fresh point, NOT c, NOT d-bar)
   - Prove rank-r formula agreement between e_n and alpha_n (both satisfy B = X_{alpha_n})
   - Close the sorry at line ~2890
-- [ ] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836 (~40-60 lines). *(deviation: altered — ARCHITECTURAL BLOCKER discovered: the sorry provides `ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1) (rank_embed ... x₀) ... (rank_embed ... y₀')` on SUB-INTERVALS [x₀,y₀] vs [x₀',y₀'], but only the FULL-interval rank r+1 strategy h_r1 is available. The IH `ih_gen` universally quantifies over h_r1 because it was reverted before induction (line 3770). Deriving sub-interval rank r+1 from full-interval rank r+1 requires strategy restriction at rank r+1, which requires d_consistency at rank r+1, which requires Claim 1 at rank r+2 — creating a recursive tower. The plan's estimate of 40-60 lines is too low; this requires either (a) restructuring the induction in `ghr93_forward_to_backward` to not universally quantify h_r1, (b) proving a "rank-monotone strategy restriction" lemma, or (c) showing that the sub-interval IH call doesn't actually need rank r+1 because `ghr93_inductive_step` gets h_fwd_r1 from its own parameter. See handoff for detailed analysis.)*
+- [ ] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836 (~170-235 lines). Resolution from report 18:
+  - Create `ghr93_forward_to_backward_core` (80-100 lines) with decoupled parameters:
+    - `rounds_r1 : Nat` — independent of induction variable `n`
+    - `h_enough : 4 + 3 * n ≤ rounds_r1` — round budget bound
+    - `h_r1_univ : ∀ {x₁ y₁ x₁' y₁'}, x₁ ≤ y₁ → x₁' ≤ y₁' → ghr93_duplicator_wins M N atomMap rounds_r1 (r+1) (rank_embed ... x₁) ...` — universally quantified over endpoints
+  - Revert ONLY `h_enough x y x' y' hxy hx'y' h_pt h_pt_M h` (NOT `h_r1_univ`) before induction
+  - IH `ih_gen` is then rank-r-only (no rank r+1 obligation)
+  - At each step: derive `h_r1_here` from `h_r1_univ` applied to current endpoints + `ghr93_duplicator_wins_round_mono`
+  - Create wrapper `ghr93_forward_to_backward` (10-15 lines) that calls core
+  - If caller cannot provide `h_r1_univ`, may need `ghr93_duplicator_wins_sub_interval` helper (80-120 lines)
+  - Fallback: GHR93 rank-varying approach with `ghr93_duplicator_wins_rank_down` (~230-370 lines total)
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 
-**Timing**: 8-12 hours
+**Timing**: 12-18 hours (revised up from 8-12; Task 1.7 is 170-235 lines per report 18, not 40-60)
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- infimum construction, SplitPointProps change, Claim 1, d_consistency closure, Case II restructure, IH h_fwd_r1
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- infimum construction, SplitPointProps change, Claim 1, d_consistency closure, Case II restructure, IH h_fwd_r1 (decoupled round count refactor)
 
 **Verification**:
 - `lean_verify d_consistency_left` shows no `sorryAx`
@@ -530,8 +544,9 @@ Phases within the same wave can execute in parallel.
 
 ## Rollback/Contingency
 
-1. **D-consistency (Phase 1)**: The infimum construction path is now definitively confirmed correct (report 35). If the infimum_gap precondition assembly is unexpectedly complex, the infrastructure is modular -- construct the infimum in a separate helper lemma and wire in. If Case II restructure exceeds 500 lines, modularize the U(B,A) transfer into a separate lemma and the e_n witness construction into another.
-2. **Cases III/IV (Phase 3)**: If the case-specific construction exceeds budget, implement Case III first (simpler: left-defined gap, rank r+2) and leave Case IV for a follow-up.
-3. **Assembly (Phase 4)**: If Prop 7 composition is too complex, try direct Corollary 5 route via formula type enumeration.
-4. **Gap elimination (Phases 6A-6B)**: Lemma 12's 14 cases can be individually modularized. S cases are perfectly dual to U cases.
-5. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck on any phase, mark [BLOCKED] and request additional research. The critical directive prohibits shortcuts.
+1. **D-consistency (Phase 1, Tasks 1.1-1.6)**: The infimum construction path is now definitively confirmed correct (report 35). If the infimum_gap precondition assembly is unexpectedly complex, the infrastructure is modular -- construct the infimum in a separate helper lemma and wire in. If Case II restructure exceeds 500 lines, modularize the U(B,A) transfer into a separate lemma and the e_n witness construction into another.
+2. **IH h_fwd_r1 (Phase 1, Task 1.7)**: Primary approach: decoupled round count + universal h_r1_univ (report 18, ~170-235 lines). If providing h_r1_univ from a single-interval h_r1 proves hard, change the outer theorem signature to take h_r1_univ directly. If that is inadequate downstream, fall back to the full GHR93 rank-varying approach: prove `ghr93_duplicator_wins_rank_down` (~150-250 lines) + reformulate with rank r+4n forward game (~80-120 lines). Total fallback: ~230-370 lines but mathematically complete.
+3. **Cases III/IV (Phase 3)**: If the case-specific construction exceeds budget, implement Case III first (simpler: left-defined gap, rank r+2) and leave Case IV for a follow-up.
+4. **Assembly (Phase 4)**: If Prop 7 composition is too complex, try direct Corollary 5 route via formula type enumeration.
+5. **Gap elimination (Phases 6A-6B)**: Lemma 12's 14 cases can be individually modularized. S cases are perfectly dual to U cases.
+6. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck on any phase, mark [BLOCKED] and request additional research. The critical directive prohibits shortcuts.
