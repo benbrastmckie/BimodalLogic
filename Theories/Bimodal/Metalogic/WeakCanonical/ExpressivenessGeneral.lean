@@ -1697,8 +1697,47 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- rank-(r+2) formula K⁻(¬D) = neg(std_snce(neg(base .bot), D)) where
     -- D is the pigeonhole formula with stavi_depth D ≤ r. The formula
     -- K⁻(¬D) has depth r+2 (within the rank budget after the r+1→r+2 bump).
-    -- Key fact: d ∈ S_C (proved: tail condition from GLB property).
-    -- TODO(Phase 1, Claim 1): Construct K⁻(¬D), prove S(top,D) semantics.
+    -- Key fact: d ∈ S_C (tail condition from GLB property).
+    have hd_in_SC : d ∈ S_C := by
+      refine ⟨hd_interval, ?_⟩
+      intro u hdu huy' hmu
+      have : ¬ (∀ s ∈ S_C, u ≤ s) := by
+        intro h_lb
+        exact absurd (hd_is_inf u h_lb) (not_le.mpr hdu)
+      push_neg at this
+      obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
+      exact hs₀_in.2 u hs₀_lt huy' hmu
+    -- Cofinal failure below d: for any element s ∈ [x', y'] with s < d,
+    -- there exists a mu-point u with s < u ≤ d, u < y', where
+    -- cont_holds fails. This follows from s ∉ S_C (since d = inf(S_C))
+    -- and d ∈ S_C (which rules out failures above d).
+    have h_cofinal_failure_below_d :
+        ∀ (s : ExtendedCarrier N atomMap r),
+          inClosedInterval x' y' s → s < d →
+          ∃ (u : ExtendedCarrier N atomMap r),
+            s < u ∧ u ≤ d ∧ u < y' ∧
+            mu_holds u ∧ ¬ cont_holds (a_bwd ⟨n, by omega⟩) y' u := by
+      intro s hs_interval hs_lt_d
+      -- s < d = inf(S_C), so s ∉ S_C
+      have hs_not_SC : s ∉ S_C := by
+        intro hs_in; exact absurd (hd_glb s hs_in) (not_le.mpr hs_lt_d)
+      -- s ∈ [x', y'] and s ∉ S_C: tail condition fails
+      have : ¬ (∀ u : ExtendedCarrier N atomMap r,
+          s < u → u < y' → mu_holds u →
+          cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
+        intro h_all; exact hs_not_SC ⟨hs_interval, h_all⟩
+      push_neg at this
+      obtain ⟨v, hsv, hvy', hmu_v, h_not_cont_v⟩ := this
+      -- v is a mu-point with s < v < y' and ¬cont_holds at v.
+      -- Show v ≤ d: if v > d, then v ∈ (d, y') and d ∈ S_C gives
+      -- cont_holds at v, contradicting h_not_cont_v.
+      rcases le_or_gt v d with hv_le_d | hv_gt_d
+      · exact ⟨v, hsv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩
+      · -- v > d: contradiction from d ∈ S_C
+        exact absurd (hd_in_SC.2 v hv_gt_d hvy' hmu_v) h_not_cont_v
+    -- TODO(Phase 1, Claim 1): Use h_cofinal_failure_below_d + pigeonhole
+    -- to get a SINGLE formula D that fails cofinally below d, then
+    -- construct K⁻(¬D) = neg(std_snce(neg(base .bot), D)) of depth r+2.
     have h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
         inClosedInterval x' y' t' →
         (∀ (A : StaviFormula), stavi_depth A ≤ r →
@@ -1784,56 +1823,26 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             -- Assume t' < d for contradiction.
             by_contra h_not_le
             push_neg at h_not_le
-            -- t' < d, so t' is strictly below inf(S_C). Hence t' ∉ S_C.
-            have ht'_not_SC : t' ∉ S_C := by
-              intro h_in
-              exact absurd (hd_glb t' h_in) (not_le.mpr h_not_le)
-            -- t' ∉ S_C and t' ∈ [x', y']: tail condition fails at some mu-point
-            have ht'_not_cont : ¬ (∀ u : ExtendedCarrier N atomMap r,
-                t' < u → u < y' → mu_holds u →
-                cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
-              intro h_all
-              exact ht'_not_SC ⟨ht'_interval, h_all⟩
-            push_neg at ht'_not_cont
-            obtain ⟨u, ht'u, huy', hmu_u, h_not_cont_u⟩ := ht'_not_cont
-            -- u is a mu-point with t' < u < y' and ¬ cont_holds a_n y' u.
-            -- Show u > d leads to contradiction (then u ≤ d is the only option):
-            -- If u > d: u is above the infimum, so ∃ s ∈ S_C with s < u,
-            -- and s's tail condition gives cont_holds at u. Contradiction.
-            rcases le_or_gt u d with hu_le_d | hu_gt_d
-            · -- u ≤ d: the failure witness is at or below d.
-              -- GHR93 Claim 1 (d ≤ t' direction): t' < d, so t' is
-              -- below the infimum. K⁻(¬D) = ¬S(top,D) has depth r+2.
-              --
-              -- At d: D fails cofinally below d (infimum property),
-              -- so S(top,D) is FALSE at d, hence K⁻(¬D) is TRUE.
-              -- At t': t' < d, and u is between t' and d with
-              -- ¬cont_holds at u. Since u ≤ d, there exist mu-points
-              -- between t' and d where D fails. So D does NOT hold on
-              -- any final segment below t', hence S(top,D) is also
-              -- FALSE at t', and K⁻(¬D) is TRUE at t'.
-              --
-              -- Alternative approach (d ≤ t' direction): Since d ∈ S_C
-              -- (proved: tail condition from GLB property), d is the
-              -- minimum. The game at rank r+2 (h_mono_left_r1) with
-              -- Spoiler selecting rank_embed(c) gives a response in N
-              -- at rank r+2 that agrees with c on depth-(r+2) formulas.
-              -- K⁻(¬D) at rank_embed(c) in M determines K⁻(¬D) at the
-              -- response in N. Since K⁻(¬D) separates d from positions
-              -- below d, the response must correspond to d (not t'),
-              -- contradicting t' < d.
-              --
-              -- BLOCKED: requires constructing K⁻(¬D) from pigeonhole
-              -- formula D + proving S(top,D) semantics at d and t'.
-              sorry
-            · -- u > d: derive contradiction.
-              have : ¬ (∀ s ∈ S_C, u ≤ s) := by
-                intro h_lb
-                exact absurd (hd_is_inf u h_lb) (not_le.mpr hu_gt_d)
-              push_neg at this
-              obtain ⟨s, hs_in, hs_lt⟩ := this
-              -- s ∈ S_C and s < u. Tail condition of s gives cont_holds at u.
-              exact absurd (hs_in.2 u hs_lt huy' hmu_u) h_not_cont_u
+            -- By h_cofinal_failure_below_d: t' ∈ [x', y'], t' < d,
+            -- so ∃ mu-point u with t' < u ≤ d and ¬cont_holds at u.
+            obtain ⟨u, ht'u, hu_le_d, huy', hmu_u, h_not_cont_u⟩ :=
+              h_cofinal_failure_below_d t' ht'_interval h_not_le
+            -- u is a mu-point with t' < u ≤ d, ¬cont_holds at u.
+            -- GHR93 Claim 1 (d ≤ t' direction): Requires the depth-(r+2)
+            -- formula K⁻(¬D) = neg(std_snce(neg(base .bot), D)) to
+            -- separate d from t'.
+            --
+            -- Key facts available:
+            -- (a) hd_in_SC : d ∈ S_C (cont_holds on (d, y'))
+            -- (b) h_cofinal_failure_below_d : ∀ s < d, ∃ failure between s and d
+            -- (c) h_not_cont_u : ¬cont_holds at u, with t' < u ≤ d
+            -- (d) ht'_form : t' and d agree on depth-r formulas
+            -- (e) h_mono_left_r1 : rank-(r+2) game available
+            --
+            -- BLOCKED: requires materializing the continuation predicate as
+            -- a single StaviFormula D via pigeonhole, then constructing
+            -- K⁻(¬D) of depth r+2 and proving its semantics at d vs t'.
+            sorry
     have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
         hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
