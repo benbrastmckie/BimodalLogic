@@ -3224,8 +3224,8 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             -- But ¬B(v'_pt) contradicts. So v'_pt > u.
             have hv'u : u < v'_pt := by
               by_contra h_neg; push_neg at h_neg
-              -- v'_pt ≤ u < wi_pt, so v'_pt is between γ and wi_pt → B(v'_pt)
-              have hv'_wi : extendPoint v'_pt < extendPoint wi_pt :=
+              have hv'_wi : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+                  (extendPoint v'_pt) (extendPoint wi_pt) :=
                 (extendPoint_lt_iff v'_pt wi_pt).mpr (lt_of_le_of_lt h_neg hu_wi)
               exact hBv'_neg ((stavi_truth_mu_at_point v'_pt B).mpr
                 ((stavi_truth_mu_at_point v'_pt B).mp
