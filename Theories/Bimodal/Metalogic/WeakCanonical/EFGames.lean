@@ -4975,11 +4975,41 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_cases htu : t ≤ u_D
           · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from fun h => hD_fail_D (h_gD_at_compl u_D h huD_s).2))
           · push_neg at htu
-            -- u_D < t. Construct S'(D, gD)(s) with bound u_D contradicting hNotS'D_gD_s.
-            -- Key: for cut points w between u_D and t, D(w) follows from the body condition
-            -- (h_body) + the fact that the right disjunct's ⊤-branch is trivially true,
-            -- combined with ¬gD at complement points near the gap providing the D-failure.
-            sorry
+            -- u_D < t. Construct S'(D, gD)(s) with bound t, contradicting hNotS'D_gD_s.
+            -- All points in (t, s) have D: cut points ≥ t get D from hDt,
+            -- compl points get gD → D from h_gD_at_compl.
+            apply hNotS'D_gD_s
+            have hts : t < s := h_cut_lt_compl t ht_cut s hs_in_compl
+            refine ⟨t, hts, ?_, ?_, ?_⟩
+            · -- Body: ∀ u ∈ (t, s), left or right disjunct
+              intro u htu' hus
+              have hs₁u : s₁ < u := lt_trans (lt_trans hs₁_uD htu) htu'
+              cases h_body u hs₁u hus with
+              | inl h => left; exact h
+              | inr h =>
+                right
+                exact ⟨fun v htv hvu => by
+                  by_cases hv_compl : v ∈ compl
+                  · exact (h_gD_at_compl v hv_compl (lt_trans hvu hus)).2
+                  · exact hDt v (le_of_lt htv) (show v ∈ γ_gap.cut from hv_compl), h.2⟩
+            · -- Fail: ∃ u ∈ (t, s) with ¬gD(u)
+              -- cut has no sup → ∃ u₂ ∈ cut with u₂ > t
+              have ⟨u₂, hu₂_cut, htu₂⟩ : ∃ u₂, u₂ ∈ cut ∧ t < u₂ := by
+                by_contra h; push_neg at h
+                exact h_no_sup ⟨t, ⟨fun x hx => h x hx,
+                  fun ub hub => hub ht_cut⟩, ht_cut⟩
+              have hu₂s : u₂ < s := h_cut_lt_compl u₂ hu₂_cut s hs_in_compl
+              have hs₁u₂ : s₁ < u₂ := lt_trans (lt_trans hs₁_uD htu) htu₂
+              -- h_body at u₂: left → u₂ ∈ compl contradiction, so right
+              rcases h_body u₂ hs₁u₂ hu₂s with ⟨v, hvu₂, hgDv⟩ | ⟨_, v', hv'u₂, hv's, hngD⟩
+              · exfalso
+                exact hu₂_cut (show u₂ ∈ compl from
+                  fun u' hu's hu₂u' => ⟨v, lt_of_lt_of_le hvu₂ hu₂u', hgDv⟩)
+              · exact ⟨v', lt_trans htu₂ hv'u₂, hv's, hngD⟩
+            · -- Init: ∃ u ∈ (t, s) with gD on (u, s)
+              have ht_ui : t < u_init :=
+                h_cut_lt_compl t ht_cut u_init hu_init_compl
+              exact ⟨u_init, ht_ui, hui_s, hgD_init⟩
         have h_def_right : gap_definable_on_right M atomMap γ_gap D :=
           ⟨h_D_compl_cofinal, h_no_init_cut_D⟩
         have h_r_def : r_definable_gap M atomMap γ_gap r :=
