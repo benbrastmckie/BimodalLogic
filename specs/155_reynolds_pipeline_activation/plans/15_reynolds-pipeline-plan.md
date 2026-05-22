@@ -339,7 +339,7 @@ Option (b) IMPLEMENTED: Weakened d_consistency_left/right from universal ("for A
 
 ---
 
-### Phase 4C-W2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
+### Phase 4C-W2: Lemma 9 Gap Detection Correctness [PARTIAL]
 
 **Goal**: Prove `left_formula_gap_detection` (line 2432) and `right_formula_gap_detection` (line 2451) -- GHR93 Lemma 9 bridging temporal formulas to gap properties.
 
@@ -361,11 +361,11 @@ Option (b) IMPLEMENTED: Weakened d_consistency_left/right from universal ("for A
 
 **Tasks**:
 
-- [ ] **Task W2.1**: Prove gap-equivalence lemma (~80-150 lines): FO-table-based U'(top, D)(m) iff existence of gap gamma above m with D-defined-on-left. *(deviation: skipped — naive formulation is incorrect; needs case-specific approach)*
-- [ ] **Task W2.2**: Prove Lemma 9 left easy cases (atom, bot, box, neg, conj) using gap-equivalence (~100-150 lines).
-- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (untl, snce, stavi_untl, stavi_snce) (~200-300 lines).
-- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`) -- dual (~50-100 lines).
-- [ ] **Task W2.5**: Verify `lake build` passes.
+- [ ] **Task W2.1**: Prove gap-equivalence lemma (~80-150 lines): FO-table-based U'(top, D)(m) iff existence of gap gamma above m with D-defined-on-left. *(deviation: altered -- extracted as 4 standalone helpers: stavi_untl_gap_detection, std_untl_gap_detection, stavi_snce_gap_detection, std_snce_gap_detection. These are sorry'd pending gap construction proof.)*
+- [x] **Task W2.2**: Prove Lemma 9 left easy cases (atom, bot, box, neg, conj) using gap-equivalence (~100-150 lines). *(completed: base.atom/bot/box both-sides-False, conj via gap_detection_unique+IH, neg via stavi_untl_gap_detection helper + gap_detection_unique)*
+- [ ] **Task W2.3**: Prove Lemma 9 left hard cases (untl, snce, stavi_untl, stavi_snce) (~200-300 lines). *(in progress: forward directions for stavi_untl and std_untl closed via helper + conj drop. Backward directions and snce cases still sorry'd.)*
+- [ ] **Task W2.4**: Prove Lemma 9 right (`right_formula_gap_detection`) -- dual (~50-100 lines). *(in progress: helper infrastructure stavi_snce_gap_detection/std_snce_gap_detection extracted, right_formula_gap_detection sorry'd pending helpers)*
+- [x] **Task W2.5**: Verify `lake build` passes. *(completed: build passes with only sorry warnings, no compilation errors)*
 
 **Timing**: 6-10 hours
 

@@ -2415,6 +2415,31 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         stavi_temporal_truth_mu M atomMap r
           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) u) D) ∧
       stavi_temporal_truth_mu M atomMap r (Sum.inr γ) X) := by
+  -- Convert LHS from mu-relativized at actual point to standard evaluation
+  rw [stavi_truth_mu_at_point m (.stavi_untl X D)]
+  simp only [stavi_temporal_truth]
+  -- Now LHS is the FO table: ∃ s > m, conditions (1)(2)(3)
+  -- RHS is: ∃ γ, m < γ ∧ gap_definable_on_left γ D ∧ D-between(m,γ) ∧ X^mu(γ)
+  --
+  -- **Forward direction sketch** (FO table → gap):
+  -- Define cut = {x : M.carrier | ∀ u, m < u → u ≤ x → stavi_temporal_truth M atomMap u D}
+  -- This is nonempty (condition 3 gives D on initial segment),
+  -- proper (condition 2 gives ¬D witness outside cut),
+  -- downward-closed (by definition),
+  -- no_sup (condition 1's second disjunct gives ¬D witnesses below any boundary point),
+  -- complement_no_min (condition 1's first disjunct gives D-cofinal witnesses above boundary).
+  -- Gap is D-definable on left: D holds on final segment of cut (by definition),
+  -- and D fails somewhere in complement (by condition 2).
+  -- X^mu(γ) follows from condition 1's second disjunct at complement points near γ.
+  --
+  -- **Backward direction sketch** (gap → FO table):
+  -- Given gap γ with D-defined-on-left, D-between, X^mu(γ):
+  -- Choose s = some point in complement of γ (exists since cut is proper).
+  -- By complement_no_min, can find s arbitrarily close to γ.
+  -- Condition (3): D on initial segment (m, u) -- take u in cut above m, D holds by D-between.
+  -- Condition (2): ¬D at some point in (m,s) -- from complement_no_min + gap_definable_on_left.
+  -- Condition (1): for u in cut: first disjunct (D cofinal). For u in complement: second disjunct
+  --   (X above by X^mu(γ) FO witnesses + ¬D below by complement_no_min).
   sorry
 
 /-- Standard-Until gap detection: U(X, D) at an actual point m in M_r detects
