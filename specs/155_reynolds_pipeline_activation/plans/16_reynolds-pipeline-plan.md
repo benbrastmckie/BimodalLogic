@@ -144,7 +144,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: D-Consistency (GHR93 Claim 1) [NOT STARTED]
+### Phase 1: D-Consistency (GHR93 Claim 1) [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The interior case of d_consistency_left/right requires showing that the forward strategy's response t = a'_full(n) equals d. The current formulation sets d = a_bwd(n) (Spoiler's backward pick) and requires EXHIBITING a response with d at position n.
+- **What was tried**: (1) Proving t = d directly from formula agreement + gap/point agreement + boundary correspondence -- fails because two distinct elements CAN have the same rank-r type. (2) Constructing a'_new by substituting d for t at position n -- requires showing d and t have the same ordering relative to ALL game tuple elements, which needs formula-determines-ordering infrastructure not yet in the codebase. (3) Using Round 2 with specific challenges (p_d, p_t) to extract ordering constraints -- yields equalities like `t = d ↔ c = extendPoint b` but doesn't directly force equality.
+- **Why it's stuck**: The root cause is a formalization design issue: GHR93 defines d as the INFIMUM of all valid responses (then proves any response equals d), but the current code defines d = a_bwd(n) (Spoiler's backward pick). This disconnect means d_consistency_left/right as currently stated may require either (a) an infimum construction, (b) formula-determines-ordering infrastructure showing that same rank_type + same boundary position implies equality in ExtendedCarrier, or (c) restructuring obtain_split_point_props to define d from the forward strategy instead of from a_bwd.
+- **What is needed**: Either (a) add infrastructure proving that two elements of ExtendedCarrier with the same rank_type, same gap/point status, and same boundary relationships must be equal (possible for gaps via cut equality; harder for points), or (b) refactor obtain_split_point_props to define d as the forward strategy's canonical response at the boundary position, then adjust the 30+ downstream uses of hd_eq_an in Cases I-IV.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Close the 2 interior case sorries in `d_consistency_left` (line 1157) and `d_consistency_right` (line 1235) using the direct uniqueness argument from report 22.
 
@@ -176,7 +183,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 9 Gap Detection Correctness [NOT STARTED]
+### Phase 2: Lemma 9 Gap Detection Correctness [IN PROGRESS]
 
 **Goal**: Close all 11 remaining sub-sorries in `left_formula_gap_detection` and `right_formula_gap_detection` (EFGames.lean), completing GHR93 Lemma 9.
 
