@@ -29,42 +29,81 @@ technical_debt:
 
 *Updated 2026-05-22. 32 active tasks.*
 
-**Goal**: Sorry-free `bx_completeness` → purge dead code → FrameClass refactor → split/rename/clean → publication-quality codebase. **Parallel goal**: Build a sophisticated tactics library as a first-class product.
+**Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
 **Execution Pipeline**:
 
 ```
-Parallel now:
+Phase 1 (parallel now):
   155 (Reynolds pipeline — sorry-free bx_completeness)
   181 (Derivable Prop wrapper — independent, small)
 
-After 155:
-  Wave 1b: 176, 95                                     (post-155 cleanup)
-  Wave 3:  168 → 174 → 175 → 180 → 131 → 161          (deep refactor)
-  Wave 4:  183 → 177 → 178                             (documentation + polish)
+Phase 2 (post-155 cleanup):
+  176, 95                                               (parallel)
 
-Tactics pipeline (after 181):
-  Tier 1: 185, 190                                     (foundations, independent)
-  Tier 2: 186 → 185; 187 → 185; 189 → 185; 188 → 187 (engineering)
-  Tier 3: 191 → 181; 192 → 181,185,187,190,191        (research-level)
-  Final:  193 → 192                                    (codebase refactor)
+Phase 3 (structural refactor — sequential, before tactics):
+  168 → 174 → 175 → 180 → 131 → 161
+
+Phase 4 (documentation standards — define rules for all subsequent work):
+  183                                                   (after 161)
+
+Phase 5 (tactics — Tier 1 foundations):
+  185, 190                                              (parallel, after 161)
+
+Phase 6 (tactics — Tier 2 engineering):
+  186, 187, 189 (parallel, after 185) → 188 (after 187)
+
+Phase 7 (tactics — Tier 3 research-level):
+  191 (after 181) → 192 (after 181, 185, 187, 190, 191)
+
+Phase 8 (tactic-powered codebase refactoring):
+  193                                                   (after 192)
+
+Phase 9 (final documentation + examples):
+  177, 178                                              (after 183, 193)
 ```
 
-### Active — Parallel Work
+### Phase 1 — Active Parallel Work
 
 155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 181 [PLANNED] — Add Derivable Prop-valued wrapper alongside DerivationTree
 
-### Completed Research (informs Wave 3)
+### Completed Research (informs Phase 3)
 
 179 [RESEARCHED] — Research Lean 4 best practices (informs 175, 180, 181)
 
-### Tactics Pipeline — Tier 1 (foundations)
+### Phase 2 — Post-155 Cleanup
+
+176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
+  └─ 155
+95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
+  └─ 155
+
+### Phase 3 — Structural Refactor (before tactics — 168 changes DerivationTree type)
+
+168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
+174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
+  └─ 168
+175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
+  └─ 168, 174
+180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
+  └─ 174
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
+  └─ 175, 180
+161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST in Phase 3)
+  └─ 131
+
+### Phase 4 — Documentation Standards (define rules for all subsequent work)
+
+183 [PLANNED] — Documentation standards: directory READMEs, module docstrings, comment conventions
+  └─ 161
+
+### Phase 5 — Tactics Tier 1 (foundations, after structural refactor)
 
 185 [NOT STARTED] — Complete axiom & derived theorem coverage in modal_search
 190 [NOT STARTED] — Derived operator normalization tactic (modal_norm)
 
-### Tactics Pipeline — Tier 2 (engineering)
+### Phase 6 — Tactics Tier 2 (engineering)
 
 186 [NOT STARTED] — Unify computable and tactic proof search systems
   └─ 185
@@ -75,42 +114,24 @@ Tactics pipeline (after 181):
 188 [NOT STARTED] — Weakening-aware proof search
   └─ 187
 
-### Tactics Pipeline — Tier 3 (research-level)
+### Phase 7 — Tactics Tier 3 (research-level)
 
 191 [NOT STARTED] — Propositional fragment decision procedure
   └─ 181
 192 [NOT STARTED] — Master tactic dispatch (tm_prove)
   └─ 181, 185, 187, 190, 191
+
+### Phase 8 — Tactic-Powered Codebase Refactoring
+
 193 [NOT STARTED] — Codebase-wide tactic refactoring
   └─ 192
 
-### Wave 1b — Post-155 Cleanup (blocked on 155)
+### Phase 9 — Final Documentation & Examples
 
-176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
-  └─ 155
-95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
-  └─ 155
-
-### Wave 3 — Deep Refactor (sequential chain)
-
-168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
-174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
-  └─ 168
-175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
-  └─ 168, 174
-180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
-  └─ 174
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
-161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
-
-### Wave 4 — Documentation & Final Polish
-
-183 [PLANNED] — Documentation standards: directory READMEs, module docstrings, comment conventions
-  └─ 131, 175
 177 [NOT STARTED] — Update README and all module docstrings
-  └─ 183
+  └─ 183, 193
 178 [NOT STARTED] — Publication examples and demo
-  └─ 131
+  └─ 183, 193
 
 ### Deferred — New Features (post-publication)
 
@@ -235,7 +256,7 @@ Tactics pipeline (after 181):
 - **Status**: [PLANNED]
 - **Research**: [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
 - **Task Type**: lean4
-- **Dependencies**: 131, 175
+- **Dependencies**: 161
 - **Plan**: [183_documentation_standards_readmes_comments/plans/01_documentation-standards.md]
 
 **Description**: Establish and apply a comprehensive documentation standard for the entire `Theories/Bimodal/` tree, then systematically update every README and docstring in the repository to be accurate and complete. This task defines the standard AND applies it after structural refactoring (tasks 131, 175) is complete. Four deliverables:
@@ -287,7 +308,7 @@ Tactics pipeline (after 181):
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Priority**: low
-- **Dependencies**: 131
+- **Dependencies**: 183, 193
 
 **Description**: Expand `Examples/` with publication-quality demonstrations of the full verified pipeline. Add a complete worked example showing soundness-completeness-decidability on a concrete formula. Add examples exercising each frame class (Base, Dense, Discrete) with the FrameClass-parameterized `DerivationTree` from task 168. Add examples of the expressive completeness result (separation theorem). Update `BimodalProofs.lean` and `TemporalStructures.lean` to use current API conventions. All examples sorry-free.
 
@@ -298,7 +319,7 @@ Tactics pipeline (after 181):
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Priority**: medium
-- **Dependencies**: 131, 175
+- **Dependencies**: 183, 193
 
 **Description**: Final documentation pass after all structural refactoring is complete. Update `README.md` axiom counts, architecture diagram, and sorry obligations section. Ensure every file in the final structure has an accurate `/-! ... -/` module docstring reflecting its role. Update `ROADMAP.md` to reflect completed refactoring. Verify Axiom Reference doc against actual constructors.
 

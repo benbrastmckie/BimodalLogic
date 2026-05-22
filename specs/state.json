@@ -11,8 +11,7 @@
       "status": "planned",
       "task_type": "lean4",
       "dependencies": [
-        131,
-        175
+        161
       ],
       "created": "2026-05-20T23:00:00Z",
       "last_updated": "2026-05-21T10:26:44Z",
