@@ -105,6 +105,9 @@ v14 was accurate on all phases. v15 incorporates the rank arithmetic fix (report
 | Phase 1: h_fwd_r1 rank bump r+1 → r+2 | COMPLETE | Round 13 | 6 signatures + 2 derivations, build passes |
 | Phase 1: Case 2 infimum proved unreachable | COMPLETE | Round 13 | d ∈ S_C contradicts hp_not_in |
 | Phase 1: d ∈ S_C lemma | VERIFIED | Round 13 | multi_attempt confirms, not yet committed |
+| Phase 1: d ∈ S_C lemma | COMPLETE | Round 14 | committed to file, build passes |
+| Phase 1: h_cofinal_failure_below_d | COMPLETE | Round 14 | failure mu-point in (s, d] for s < d |
+| Phase 1: pigeonhole precondition analysis | BLOCKED | Round 14 | h_cofinal_failure universal quantifier too strong for carrier-point d |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from h_d_unique |
 | Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
 | Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
@@ -181,7 +184,7 @@ v14 was accurate on all phases. v15 incorporates the rank arithmetic fix (report
 | 1135 | `cofinal_decomposition_k_equiv` | 7 |
 | 1194 | `ordered_sum_of_good_bounded_is_good` | 7 |
 
-**Phase 1 progress**: Started with 9 sorry sites in scope (4 original + 5 introduced during restructuring). Closed 6, introduced h_d_unique refactor. After 12 rounds: h_d_unique has 2 targeted sorries (boundary cases proved, u>d subcase proved — remaining 2 need rank-(r+1) C' formula argument); sigma SOT has 18/25 grid goals closed via task 195 tactics (7 remaining need c<=e_n from h_d_unique); tau SOT not yet attempted (blocked on h_d_unique + sigma instantiation). **Critical blocker**: h_d_unique lines ~1759, ~1796 — requires materializing C' = ¬C ∨ K⁻(¬C) as a StaviFormula or a direct rank-(r+1) game argument. Two parallel research agents investigating (reports 28, 29).
+**Phase 1 progress (after 14 rounds)**: h_fwd_r1 rank bumped from r+1 to r+2 (Round 13). d ∈ S_C and h_cofinal_failure_below_d proved (Round 14). h_d_unique has 2 remaining sorries (lines ~1821, ~1845) requiring K⁻(¬D) formula at depth r+2. The pigeonhole formula D exists (`pigeonhole_definable_formula`) but its universal precondition `h_cofinal_failure` is too strong when d is a carrier-point minimum with cont_holds at d. **Recommended fix (Solution A from Round 14 handoff)**: create `pigeonhole_definable_formula'` with weakened precondition requiring failure only for p with extendPoint p < d (not ≤). The chain argument is unchanged. Then construct K⁻(¬D) = neg(std_snce(top, D)), prove Since(⊤,D) false at d / true at t', transfer via rank-(r+2) game. Sigma SOT 18/25 goals closed (7 blocked on h_d_unique); tau SOT not attempted.
 
 ## Implementation Phases (v14 -- Task 195 Tactics Available)
 
