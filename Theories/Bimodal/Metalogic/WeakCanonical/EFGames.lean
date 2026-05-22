@@ -2912,26 +2912,25 @@ private theorem restrict_left_game_tuple_N {sig : MonadicSignature}
         simp [*]
 
 /-- **Strategy restriction, left sub-interval**:
-    If Duplicator wins G_{n+1;r} on [x,y] vs [x',y'], and c in [x,y],
-    d in [x',y'] are compatible split points (same rank_type, same gap/point
-    status), AND d equals the strategy's response to c for every padded
-    selection, then Duplicator wins G_{n;r} on [x,c] vs [x',d].
+    If for every Spoiler selection from [x,y] ending with c at position n,
+    there exists a Duplicator response in [x',y'] satisfying the winning
+    condition AND whose n-th element equals d, then Duplicator wins G_{n;r}
+    on [x,c] vs [x',d].
 
-    The hypothesis `h_d_consistent` ties d to the strategy: for any
-    Spoiler selection from [x,c] padded with c, the strategy's response
-    at position n must equal d. This is what makes response containment
-    and winning condition transfer provable.
+    The hypothesis `h_d_consistent` provides both the forward strategy
+    response AND the d-consistency guarantee in existential form: for any
+    padded selection ending with c, THERE EXISTS a response where the
+    boundary element equals d. This is weaker than requiring ALL winning
+    responses to have this property (which would need the full GHR93 Claim 1
+    infimum argument).
 
-    In the GHR93 paper, this consistency follows from d being defined as
-    an infimum. In our formulation, the caller provides it based on the
-    specific construction of d (e.g., d = the strategy response in a
-    canonical play). -/
+    The consumer only needs ONE specific response with the d-consistency
+    property, so the existential form suffices. -/
 theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r} {d : ExtendedCarrier N atomMap r}
-    (h : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
     (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
     (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
@@ -2940,16 +2939,16 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
     (h_d_consistent : ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨n, by omega⟩ = c →
-      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
-        (∀ i, inClosedInterval x' y' (a'_full i)) →
+      ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) ∧
         (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
-              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨n, by omega⟩ = d)
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ghr93_duplicator_wins M N atomMap n r x c x' d := by
-  unfold ghr93_duplicator_wins at h ⊢
+  unfold ghr93_duplicator_wins at *
   intro a ha
   -- Pad: a_1,...,a_n from [x,c], plus c as element n+1
   let a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
@@ -2964,11 +2963,8 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
     simp [a_pad, show ¬(n < n) from by omega]
   have ha_pad_eq : ∀ i : Fin n, a_pad ⟨i.val, by omega⟩ = a i := by
     intro i; simp [a_pad, i.isLt]
-  -- Apply the (n+1)-round strategy on [x,y] vs [x',y']
-  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h a_pad ha_pad
-  -- d consistency: a'_full(n) = d
-  have hd_eq : a'_full ⟨n, by omega⟩ = d :=
-    h_d_consistent a_pad ha_pad hc_last a'_full ha'_full hwin_full
+  -- Apply d-consistency (existential form) to get response with a'_full(n) = d
+  obtain ⟨a'_full, ha'_full, hwin_full, hd_eq⟩ := h_d_consistent a_pad ha_pad hc_last
   -- Extract the first n responses as our restricted response
   let a'_res : Fin n → ExtendedCarrier N atomMap r := fun i =>
     a'_full ⟨i.val, by omega⟩
@@ -3153,19 +3149,17 @@ private theorem restrict_right_game_tuple_N {sig : MonadicSignature}
         simp [*]
 
 /-- **Strategy restriction, right sub-interval**:
-    Dual of `ghr93_strategy_restrict_left`. If Duplicator wins G_{n+1;r}
-    on [x,y] vs [x',y'], and c in [x,y], d in [x',y'] are compatible,
-    and d is consistent with the strategy's response to c, then
-    Duplicator wins G_{n;r} on [c,y] vs [d,y'].
+    Dual of `ghr93_strategy_restrict_left`. For every Spoiler selection
+    from [x,y] starting with c at position 0, there exists a Duplicator
+    response in [x',y'] satisfying the winning condition AND whose 0-th
+    element equals d, giving Duplicator a win on G_{n;r} on [c,y] vs [d,y'].
 
-    The proof pads with c at position 0, then uses the d-consistency
-    hypothesis to transfer the winning condition. -/
+    Uses the existential form of d-consistency (same as the left variant). -/
 theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r} {d : ExtendedCarrier N atomMap r}
-    (h : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
     (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
     (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
@@ -3174,16 +3168,16 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
     (h_d_consistent : ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨0, by omega⟩ = c →
-      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
-        (∀ i, inClosedInterval x' y' (a'_full i)) →
+      ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) ∧
         (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
-              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨0, by omega⟩ = d)
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p)) :
     ghr93_duplicator_wins M N atomMap n r c y d y' := by
-  unfold ghr93_duplicator_wins at h ⊢
+  unfold ghr93_duplicator_wins at *
   intro a ha
   -- Pad: c as element 0, then a_1,...,a_n from [c,y]
   let a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
@@ -3198,11 +3192,8 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
     simp [a_pad]
   have ha_pad_eq : ∀ i : Fin n, a_pad ⟨i.val + 1, by omega⟩ = a i := by
     intro i; simp [a_pad]
-  -- Apply the (n+1)-round strategy on [x,y] vs [x',y']
-  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h a_pad ha_pad
-  -- d consistency: a'_full(0) = d
-  have hd_eq : a'_full ⟨0, by omega⟩ = d :=
-    h_d_consistent a_pad ha_pad hc_first a'_full ha'_full hwin_full
+  -- Apply d-consistency (existential form) to get response with a'_full(0) = d
+  obtain ⟨a'_full, ha'_full, hwin_full, hd_eq⟩ := h_d_consistent a_pad ha_pad hc_first
   -- Extract responses 1..n as our restricted response
   let a'_res : Fin n → ExtendedCarrier N atomMap r := fun i =>
     a'_full ⟨i.val + 1, by omega⟩

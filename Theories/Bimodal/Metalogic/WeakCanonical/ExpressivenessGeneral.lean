@@ -1063,17 +1063,20 @@ can have the same rank_type AND the same ordering relative to endpoints, which
 follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
 -/
 
-/-- D-consistency (left boundary): if c is placed at the last selection position
-    and Duplicator has a winning response, the response at the last position must
-    equal d.
+/-- D-consistency (left boundary, existential form): for any Spoiler
+    selection ending with c at position n, there exists a Duplicator response
+    satisfying bounds, winning condition, AND having d at position n.
 
-    This is a key lemma for strategy restriction (ghr93_strategy_restrict_left).
-    The proof follows GHR93 Claim 1: formula agreement + order transfer forces
-    the response to match d.
+    This existential form is weaker than the universal form (which would
+    require ALL winning responses to have d at position n). The existential
+    suffices for `ghr93_strategy_restrict_left` which only needs ONE response
+    with the d-consistency property.
 
-    Boundary cases (x'=d, d=y') proved via same_order_type extraction from the
-    winning condition. Interior case remains sorry'd: requires the infimum
-    characterization of d (see report 22 and plan W1.2e blocker). -/
+    The proof applies the forward strategy h_fwd to obtain a candidate response,
+    then verifies a'_full(n) = d using boundary correspondence from
+    same_order_type. Boundary cases (x'=d, d=y') are fully proved.
+    Interior case uses the forward strategy's response directly (sorry-free
+    for boundary cases; interior case sorry'd pending Claim 1). -/
 private theorem d_consistency_left {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
@@ -1094,19 +1097,21 @@ private theorem d_consistency_left {sig : MonadicSignature}
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨n, by omega⟩ = c →
-      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
-        (∀ i, inClosedInterval x' y' (a'_full i)) →
+      ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) ∧
         (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
-              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨n, by omega⟩ = d := by
-  intro a_pad ha_pad hc_last a'_full ha'_full hwin
+  intro a_pad ha_pad hc_last
+  -- Apply the forward strategy to get a candidate response
+  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
   -- Let t = a'_full(n) be the response at the boundary position
   set t := a'_full ⟨n, by omega⟩ with ht_def
   -- Use any point witness to extract a winning condition instance
   obtain ⟨p₀, hp₀⟩ := h_pt
-  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin p₀ hp₀
+  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
   obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
   -- Extract boundary equivalences from same_order_type.
   -- game_tuple layout for n+1 selections (total n+4 = (n+1)+3 indices):
@@ -1133,29 +1138,28 @@ private theorem d_consistency_left {sig : MonadicSignature}
   by_cases hx'd : x' = d
   · have hxc : x = c := hcd_boundary.1.mpr hx'd
     have hx't : x' = t := heq_0_n1.mp hxc
-    exact hx't.symm.trans hx'd
+    have ht_eq_d : t = d := hx't.symm.trans hx'd
+    exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
   · by_cases hdy' : d = y'
     · have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_n1_n3.mp hcy
-      exact hty'.trans hdy'.symm
-    · -- Interior case: x' < d < y' and the winning condition constrains t.
-      -- BLOCKED: The interior case requires the GHR93 Claim 1 infimum argument.
-      -- Analysis (see report 22):
-      --   The same_order_type + formula_agreement from the winning condition give:
-      --   - t and d agree on all rank-r formulas (transitively through c)
-      --   - t and d have the same gap/point status
-      --   - t and d have the same boundary position relative to x', y'
-      --   However, these properties do NOT force t = d in general:
-      --   - Point case: two interior points with same rank_type can be distinct
-      --   - Gap case: proving cut equality requires connecting formula truth to
-      --     cut membership, which needs the infimum characterization of d
-      --   The proof requires either:
-      --   (a) Redefining d as the infimum of continuation_set (architectural change), or
-      --   (b) Adding an explicit "d is the infimum" hypothesis to this theorem
+      have ht_eq_d : t = d := hty'.trans hdy'.symm
+      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
+    · -- Interior case: x' < d < y'.
+      -- The forward strategy's response t = a'_full(n) satisfies:
+      --   - same formula agreement as c (from winning condition)
+      --   - same gap/point status as c (from winning condition)
+      --   - same relative boundary position as c (x' < t < y')
+      -- These properties match d's properties but do NOT force t = d.
+      -- The existential form still requires exhibiting a'_full with a'_full(n) = d.
+      -- BLOCKED: requires GHR93 Claim 1 infimum infrastructure to construct
+      -- a response with d at position n.
       sorry
 
-/-- D-consistency (right boundary): dual of d_consistency_left for the right
-    sub-interval, where c is placed at position 0.
+/-- D-consistency (right boundary, existential form): dual of
+    d_consistency_left for the right sub-interval, where c is placed at
+    position 0. For any Spoiler selection starting with c, there exists a
+    response satisfying bounds, winning condition, AND having d at position 0.
 
     Boundary cases proved; interior case sorry'd (same blocker as left). -/
 private theorem d_consistency_right {sig : MonadicSignature}
@@ -1178,19 +1182,21 @@ private theorem d_consistency_right {sig : MonadicSignature}
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨0, by omega⟩ = c →
-      ∀ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
-        (∀ i, inClosedInterval x' y' (a'_full i)) →
+      ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) ∧
         (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
           ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
             ghr93_winning_condition (n + 1)
-              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨0, by omega⟩ = d := by
-  intro a_pad ha_pad hc_first a'_full ha'_full hwin
+  intro a_pad ha_pad hc_first
+  -- Apply the forward strategy to get a candidate response
+  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
   -- Let t = a'_full(0) be the response at the boundary position
   set t := a'_full ⟨0, by omega⟩ with ht_def
   -- Use any point witness to extract a winning condition instance
   obtain ⟨p₀, hp₀⟩ := h_pt
-  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin p₀ hp₀
+  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
   obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
   -- Extract boundary equivalences from same_order_type.
   -- game_tuple index 1 = a_pad(0) = c / a'_full(0) = t
@@ -1217,13 +1223,15 @@ private theorem d_consistency_right {sig : MonadicSignature}
   by_cases hx'd : x' = d
   · have hxc : x = c := hcd_boundary.1.mpr hx'd
     have hx't : x' = t := heq_0_1.mp hxc
-    exact hx't.symm.trans hx'd
+    have ht_eq_d : t = d := hx't.symm.trans hx'd
+    exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
   · by_cases hdy' : d = y'
     · have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_1_n3.mp hcy
-      exact hty'.trans hdy'.symm
+      have ht_eq_d : t = d := hty'.trans hdy'.symm
+      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
     · -- Interior case: same blocker as d_consistency_left.
-      -- See report 22 for full analysis.
+      -- See report 22 and phase-W1.2e-handoff for full analysis.
       sorry
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
@@ -1413,40 +1421,22 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- By strategy_restrict: (1+3n) rounds on sub-interval. OK.
     have h_mono_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
-    -- D-consistency and strategy restriction.
-    -- These are sorry'd pending the full Claim 1 (GHR93 p.28) infrastructure.
-    -- Claim 1 proves that for any winning play where M-side places c at the
-    -- boundary, the N-side response at the boundary must equal d (the infimum).
-    have h_d_consistent_left : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
-        (∀ i, inClosedInterval x y (a_pad i)) →
-        a_pad ⟨1 + 3 * n, by omega⟩ = c →
-        ∀ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
-          (∀ i, inClosedInterval x' y' (a'_full i)) →
-          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
-            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
-              ghr93_winning_condition (1 + 3 * n + 1)
-                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-          a'_full ⟨1 + 3 * n, by omega⟩ = d :=
+    -- D-consistency (existential form) and strategy restriction.
+    -- d_consistency_left/right provide: for any padded selection ending/starting
+    -- with c, there EXISTS a response with bounds + winning + d at boundary.
+    -- ghr93_strategy_restrict_left/right consume this directly.
+    have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
         hcd_form hcd_gp hcd_boundary h_mono_left h_pt
-    have h_d_consistent_right : ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
-        (∀ i, inClosedInterval x y (a_pad i)) →
-        a_pad ⟨0, by omega⟩ = c →
-        ∀ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
-          (∀ i, inClosedInterval x' y' (a'_full i)) →
-          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
-            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
-              ghr93_winning_condition (1 + 3 * n + 1)
-                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) →
-          a'_full ⟨0, by omega⟩ = d :=
+    have h_d_consistent_right :=
       d_consistency_right hxy hx'y' hc_interval hd_interval
         hcd_form hcd_gp hcd_boundary h_mono_left h_pt
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
-      ghr93_strategy_restrict_left h_mono_left
+      ghr93_strategy_restrict_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
         hcd_form hcd_gp h_d_consistent_left h_pt
     have h_restrict_right : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r c y d y' :=
-      ghr93_strategy_restrict_right h_mono_left
+      ghr93_strategy_restrict_right
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
         hcd_form hcd_gp h_d_consistent_right h_pt
     -- Construct sigma: backward n-round on [x',d] vs [x,c]

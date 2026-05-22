@@ -120,8 +120,8 @@ The v9 plan had 12 phases. Phases 1-5, 4A, 4B, 0: COMPLETED. Phase 4C-W1: PARTIA
 | Line | Identifier | Phase | Status |
 |------|-----------|-------|--------|
 | ~~639~~ | ~~`pigeonhole_definable_formula` chain body~~ | ~~4C-W1 (depends on muSig)~~ | **CLOSED** (pigeonhole proof via recursive chain + Fintype contradiction) |
-| 1103 | `d_consistency_left` | 4C-W1 (Claim 1) | **BLOCKED** (needs claim1_d_consistency infra) |
-| 1136 | `d_consistency_right` | 4C-W1 (Claim 1) | **BLOCKED** (needs claim1_d_consistency infra) |
+| 1157 | `d_consistency_left` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (existential form; needs Claim 1 to construct response with d at position n) |
+| 1235 | `d_consistency_right` (interior) | 4C-W1 (Claim 1) | **BLOCKED** (existential form; same as left) |
 | 1466 | M-side degenerate `h_pt_xc` | 4C-W1 | LATENT (unreachable until W3 gap case) |
 | 1483 | M-side degenerate `h_pt_cy` | 4C-W1 | LATENT (unreachable until W3 gap case) |
 | 1587 | c construction gap case | 4C-W3 | open |
@@ -292,17 +292,19 @@ Closed `pigeonhole_definable_formula` sorry. Key insight: `stavi_fo_depth` can e
 
 - [x] **Task W1.2d.1**: Close `pigeonhole_definable_formula` (line ~681) *(deviation: altered -- used NormalForm at depth 2*r instead of r, added stavi_fo_depth_le_twice_depth helper lemma and nf_determines_stavi_truth_depth bridge variant)*
 
-**Sub-phase W1.2e-remainder: D-Consistency Claim 1 [BLOCKED]**
+**Sub-phase W1.2e-remainder: D-Consistency Claim 1 [PARTIAL]**
 
-**BLOCKER** (Sub-phase W1.2e):
-- **What failed**: The INTERIOR case of `d_consistency_left` (line 1154) and `d_consistency_right` (line 1226). Boundary cases (x'=d, d=y') are now proved.
-- **What was tried** (sess_1779410766_5a52de): (1) Extracted same_order_type at boundary indices (0, n+1) and (n+1, n+3) to derive `x = c ↔ x' = t` and `c = y ↔ t = y'`, proving boundary cases; (2) For interior point case: played Round 2 with p_d and p_t, derived `c = extendPoint b_d ↔ t = d` and `c = extendPoint b_t`, showing that proving `b_d = b_t` (M-side) would give `t = d` (N-side); (3) Showed the ordering constraints from same_order_type are tautological for points (they just say `b_t < b_d ↔ p_t < p_d` which is trivially true); (4) Confirmed formula_agreement gives `stavi_truth M r (extendPoint b_d) A ↔ stavi_truth M r c A` but same formula type does NOT force equality of interior points.
-- **Why it's stuck**: The universally quantified statement (for ALL winning plays) is too strong for the given hypotheses. In GHR93, d-bar is the INFIMUM of continuation_set, giving an asymmetric characterization. The current code sets d = a_bwd(n) (Spoiler's backward choice) which has no infimum property. Two distinct interior points with the same rank_type can both satisfy the winning condition, making the universal statement unprovable without the infimum structure.
-- **What is needed**: Either (a) add `d_is_infimum : IsInfimum d (continuation_set x' y' ...)` as a hypothesis and prove d-consistency from it (requires changing the call site in `obtain_split_point_props` to establish this); or (b) weaken the theorem from "for ALL a'_full" to "there EXISTS a'_full with a'_full(n) = d" (requires updating `ghr93_strategy_restrict_left/right` to use the strategy's own response rather than an arbitrary one); or (c) redefine d as the infimum in `obtain_split_point_props` and prove d ≤ a_bwd(n), updating Case II accordingly. Option (b) is likely simplest (~50 lines in EFGames.lean).
+Option (b) IMPLEMENTED: Weakened d_consistency_left/right from universal ("for ALL a'_full") to existential ("THERE EXISTS a'_full with a'_full(n) = d"). Updated ghr93_strategy_restrict_left/right to consume the existential form directly. Removed redundant `h` (forward strategy) parameter from strategy_restrict. Build passes; sorry count unchanged. Interior case sorry remains (requires Claim 1 infimum infrastructure to construct a winning response with d at position n).
+
+**Remaining blocker** (interior case):
+- The existential form still requires exhibiting a'_full with bounds + winning + a'_full(n) = d for the interior case (x' < d < y')
+- The forward strategy h_fwd provides a candidate a'_full but its n-th element may differ from d = a_bwd(n)
+- Closing requires: GHR93 Claim 1 infimum argument OR redefining d as forward strategy's response (with hd_eq_an proof)
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-- [ ] **Task W1.2e.1**: Prove `d_consistency_left` (line 1154) via GHR93 Claim 1 infimum argument *(deviation: partial -- boundary cases (x'=d, d=y') proved via same_order_type extraction; interior case remains blocked -- requires infimum characterization of d)*
-- [ ] **Task W1.2e.2**: Prove `d_consistency_right` (line 1226) -- dual *(deviation: partial -- boundary cases proved, interior case blocked -- same as W1.2e.1)*
+- [x] **Task W1.2e.1**: Weaken d_consistency_left/right to existential form *(deviation: altered -- used Option (b) weakening instead of full Claim 1 infimum; interior sorry remains but statement is now existential)*
+- [x] **Task W1.2e.2**: Update ghr93_strategy_restrict_left/right consumers to use existential h_d_consistent *(completed -- removed h parameter, obtain from existential directly)*
+- [ ] **Task W1.2e.3**: Close interior case sorry (lines 1157, 1235) via Claim 1 infimum construction *(blocked -- requires continuation_set infrastructure)*
 
 **Sub-phase W1.4: M-side Degenerate Sorries [BLOCKED]**
 
