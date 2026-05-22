@@ -70,20 +70,27 @@ The current code flaw is at `obtain_split_point_props` (line ~1390): d is set to
 
 v12 was accurate on Phases 2-11 and overall pipeline architecture. Its Phase 1 was BLOCKED due to the conflicting analyses (handoff-b vs report 29). v13 unblocks Phase 1 by adopting report 29's combined strategy (infimum + rank embedding + Case II restructure), updating effort estimates based on report 35's detailed assessment, and breaking Phase 1 into clear sub-tasks. Task 1.7 estimate revised up from 40-60 lines to 170-235 lines per report 18.
 
-### Session Progress (v12 -> v13)
+### Session Progress (v12 -> v13 -> implementation rounds 1-9)
 
-| Item | Status | Lines |
-|------|--------|-------|
-| Phase 2: left_formula_gap_detection | COMPLETE | ~2500 new |
-| Phase 2: right_formula_gap_detection | COMPLETE | ~2000 new |
-| Phase 2: stavi_snce_gap_detection | COMPLETE | ~200 new |
-| Phase 2: false theorem deletion | COMPLETE | std_untl/std_snce_gap_detection deleted |
-| Phase 10: Transfer.lean | COMPLETE | -86 net |
-| Phase 1: d redefined as infimum | DONE (architecture) | ~50 new |
-| Phase 1: rank r+1 parameter propagated | DONE | ~40 new |
-| Phase 1: Case II skeleton | DONE (sorry'd body) | ~30 new |
-| Phase 3: c-gap-case (n>=1) | DONE | ~40 new |
-| Rank embedding infrastructure | CONFIRMED existing | 0 (already sorry-free) |
+| Item | Status | Round | Lines |
+|------|--------|-------|-------|
+| Phase 2: Lemma 9 gap detection | COMPLETE | pre-v13 | ~4700 new |
+| Phase 10: Transfer.lean | COMPLETE | pre-v13 | -86 net |
+| Phase 1: d redefined as infimum (architecture) | COMPLETE | pre-v13 | ~50 new |
+| Phase 1: rank r+1 parameter propagated | COMPLETE | pre-v13 | ~40 new |
+| Phase 1: Task 1.2 (hd_le_an) | COMPLETE | pre-v13 | 0 (already done) |
+| Phase 1: Task 1.3 (Case I sites) | COMPLETE | pre-v13 | 0 (already correct) |
+| Phase 1: Task 1.7 (IH h_fwd_r1 decoupled) | COMPLETE | Round 2 | +83, -39 |
+| Phase 1: Task 1.1 (infimum 3-way case split) | COMPLETE | Round 4 | ~140 new, -2 sorries |
+| Phase 1: Task 1.5 (d_consistency interior via h_d_unique) | COMPLETE | Round 6 | ~100 new |
+| Phase 1: Task 1.6 e_n construction + sigma/tau split | COMPLETE | Round 5 | ~60 new |
+| Phase 1: Task 1.6 gp_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
+| Phase 1: Task 1.6 formula_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
+| Phase 1: Task 1.4 h_d_unique parameter refactor | PARTIAL | Round 6 | refactored, 1 sorry |
+| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED | Round 8-9 | game_tuple noncomputable |
+| Task 195: EF game tactics (assists 155) | IN PROGRESS | parallel | new task |
+| Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
+| Rank embedding infrastructure | CONFIRMED | pre-v13 | 0 (already sorry-free) |
 
 ### Roadmap Alignment
 
@@ -114,49 +121,49 @@ v12 was accurate on Phases 2-11 and overall pipeline architecture. Its Phase 1 w
 - Closing `succ_cofinal` directly (bypassed via gap elimination)
 - Frame-class completeness variants (Completeness.lean:254, 279, 288)
 - Optimizing existing sorry-free infrastructure
-- Proof automation or tactic development
+- General-purpose tactic development (but targeted EF game tactics in task 195 assist this task)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Case II restructure exceeds estimate (~300-500 lines) | H | M | The existing skeleton at lines 2880-2890 has the right structure. tau for positions 0..n-1 is already done (line 2873). Focus on U(B,A) transfer and e_n witness construction. Modularize into sub-lemmas. |
-| Infimum construction: assembling preconditions of `infimum_gap` proves complex | M | L | All building blocks exist and are sorry-free. Use Classical.em on point-minimum. ~100-150 lines. |
-| Claim 1: C' formula encoding in StaviFormula requires new infrastructure | M | L | C is already a Prop-level predicate. C' = not-C or K^{-}(not-C) uses existing stavi_temporal_truth_mu. ~80-120 lines. |
+| Case II same_order_type: game_tuple noncomputable blocks simp/unfold | H | CONFIRMED | `game_tuple` is noncomputable; `simp_all` rewrites hypotheses destructively. Task 195 (EF game tactics) builds `game_tuple_simp` set and `solve_same_order_type` tactic to resolve. Case I template at line ~2434 shows working `simp only [game_tuple]; split_ifs` approach for 25-goal grid. |
+| h_d_unique (Claim 1): predicate-level proof vs formula materialization | M | M | Report 22 provides predicate-level GHR93 Claim 1 proof. h_d_unique at calling site has hd_glb, hd_is_inf, h_mono_left_r1 in scope. May need rank r+1 game argument or ExtendedCarrier extensionality. |
+| Infimum construction Case 3: infimum_gap precondition assembly | M | L | Case 1 (point minimum) and Case 2 (carrier-point GLB) done. Case 3 (no GLB, use infimum_gap) needs h_not_point_glb + h_above preconditions. Deferred to Phase 3 c-gap-case. |
 | Task 1.7 h_r1 decoupling: providing universal h_r1_univ from single-interval h_r1 | M | M | Report 18: if sub-interval monotonicity is hard, change outer theorem signature to take h_r1_univ directly and push obligation to caller. Fallback: GHR93 rank-varying with rank_down lemma (~230-370 lines). |
 | Cases III/IV gap detection formula rank bounds don't match codebase | M | M | Follow GHR93 exactly: Case III uses left(B,D) with rank r+2, Case IV uses right(B,D) with rank r+3. Verify rank bounds with `stavi_depth` computation before proceeding. |
 | Proposition 7 composition too complex (decomposition formula counting) | M | M | GHR93 Proposition 7 proof is explicit (p.26-27). If composition stalls, try direct Corollary 5 route via formula enumeration. |
 | Model surgery (Lemma 12) case explosion exceeds budget | M | L | Report 26 estimates 350-450 lines. Modularize into per-case helpers; S cases are perfectly dual to U cases (use a shared template with direction parameter). |
 
-## Full Sorry Inventory (Remaining Sites)
+## Full Sorry Inventory (Current — after 9 implementation rounds)
 
-### ExpressivenessGeneral.lean
-| Line | Identifier | GHR93 Reference | Phase |
-|------|-----------|-----------------|-------|
-| ~1170 | `d_consistency_left` interior | Claim 1 (d = d-bar) | 1 |
-| ~1249 | `d_consistency_right` interior | Claim 1 (symmetric) | 1 |
-| ~1564 | `h_pt_xc` degenerate gap | SplitPointProps restructuring | 3 |
-| ~1581 | `h_pt_cy` degenerate gap | SplitPointProps restructuring | 3 |
-| ~1678 | c construction gap case | Lemma 9 application | 3 |
-| ~2890 | Case II e_n construction | Case II restructure | 1 |
-| ~3666 | `ghr93_cases_III_IV` | Theorem 6 Cases III/IV | 3 |
-| ~3836 | IH h_fwd_r1 sorry | Sub-interval r+1 restriction | 1 |
-| ~3877 | `ghr93_forward_to_backward_rank_varying` | Theorem 6 rank-varying | 4 |
+### ExpressivenessGeneral.lean (9 sorries)
+| Line | Context | Phase | Status |
+|------|---------|-------|--------|
+| ~1613 | Case 3 infimum gap construction | 3 | Needs infimum_gap precondition assembly |
+| ~1708 | `h_d_unique` (Claim 1 obligation) | 1 | Refactored in Round 6; 1 sorry at calling site |
+| ~1803 | `h_pt_xc` degenerate gap | 3 | Conditional SplitPointProps restructuring |
+| ~1820 | `h_pt_cy` degenerate gap | 3 | Same |
+| ~1918 | n=0 gap case c construction | 3 | Lemma 9 application |
+| ~3199 | Case II sigma same_order_type | 1 | BLOCKED: game_tuple noncomputable (task 195) |
+| ~3404 | Case II tau same_order_type | 1 | BLOCKED: same (task 195) |
+| ~4007 | `ghr93_cases_III_IV` | 3 | Cases III/IV of Theorem 6 |
+| ~4262 | `ghr93_forward_to_backward_rank_varying` | 4 | Rank-varying theorem |
 
-### EFGames.lean
-| Line | Identifier | GHR93 Reference | Phase |
-|------|-----------|-----------------|-------|
-| ~7688 | `ghr93_decomposition_implies_game` | Lemma 11 backward | 4 |
-| ~8990 | `stavi_expressive_completeness` | Corollary 5 | 4 |
+### EFGames.lean (2 sorries, unchanged)
+| Line | Identifier | Phase |
+|------|-----------|-------|
+| ~7688 | `ghr93_decomposition_implies_game` | 4 |
+| ~8990 | `stavi_expressive_completeness` | 4 |
 
-### IntegerModel.lean
+### IntegerModel.lean (3 sorries, unchanged)
 | Line | Identifier | Phase |
 |------|-----------|-------|
 | 859 | `no_gaps_discrete` | 8 |
 | 1135 | `cofinal_decomposition_k_equiv` | 7 |
 | 1194 | `ordered_sum_of_good_bounded_is_good` | 7 |
 
-**Phase 1 should close 4 sorry sites** (lines ~1170, ~1249, ~2890, ~3836), plus introduce the actual infimum construction.
+**Phase 1 progress**: Started with 9 sorry sites in scope (4 original + 5 introduced during restructuring). Closed 6, introduced h_d_unique refactor. 3 remain: h_d_unique (1 sorry), same_order_type sigma/tau (2 sorries, blocked pending task 195 EF game tactics).
 
 ## Implementation Phases (v13 -- Phase 1 Unblocked)
 
