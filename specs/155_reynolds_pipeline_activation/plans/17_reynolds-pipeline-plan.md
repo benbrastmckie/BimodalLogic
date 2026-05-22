@@ -170,7 +170,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: D-Consistency via Infimum + Claim 1 + Case II Restructure (GHR93 Claim 1) [NOT STARTED]
+### Phase 1: D-Consistency via Infimum + Claim 1 + Case II Restructure (GHR93 Claim 1) [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: Task 1.7 — closing the IH h_fwd_r1 sorry at line ~3836.
+- **What was tried**: Deep analysis of the induction structure in `ghr93_forward_to_backward` (lines 3755-3837). The sorry provides `ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1) (rank_embed ... x₀) ... (rank_embed ... y₀')` on sub-intervals, but only the FULL-interval rank r+1 strategy `h_r1` is available.
+- **Why it's stuck**: All hypothesis variables including `h_r1` are reverted before induction (line 3770), making the IH `ih_gen` universally quantified over `h_r1`. Every recursive call must provide rank r+1 on its specific sub-interval. Deriving sub-interval rank r+1 from full-interval rank r+1 requires strategy restriction at rank r+1, which requires d_consistency at rank r+1, which requires Claim 1 at rank r+2 — creating a recursive tower. The plan's estimate of 40-60 lines is too low.
+- **What is needed**: Research into restructuring options: (B) helper lemma `ghr93_forward_to_backward_core` that doesn't universally quantify h_r1, or (E) proving d_consistency is vacuously true at sub-interval IH levels. See handoff `handoffs/phase-1-handoff-20260522T160731Z.md` for 5 proposed solutions.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Close the d-consistency interior sorries by (a) constructing the actual infimum of continuation_set, (b) proving GHR93 Claim 1 at rank r+1, (c) restructuring Case II to construct e_n fresh, and (d) closing the IH h_fwd_r1 sorry for sub-intervals.
 
@@ -181,8 +188,8 @@ Phases within the same wave can execute in parallel.
   - Point-minimum case: if S_C has a carrier-point minimum p, set d = extendPoint p
   - Gap case: use `infimum_gap` + `infimum_gap_r_definable` to construct gap d from inf_carrier_cut(S_C)
   - Preconditions assembled from: `continuation_set_nonempty`, point existence via h_pt, `a_n_in_continuation_set`
-- [ ] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). With d = infimum, d <= a_bwd(n) (since a_bwd(n) is in S_C and d is the infimum). Update structure definition and downstream usage.
-- [ ] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). With hd_le_an instead of hd_eq_an, the two Case I usage sites need minor adjustments. These should be trivial since hd_le_an is a weaker hypothesis than hd_eq_an (any proof using hd_eq_an for an ordering argument works with hd_le_an via transitivity).
+- [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). With d = infimum, d <= a_bwd(n) (since a_bwd(n) is in S_C and d is the infimum). Update structure definition and downstream usage. *(completed — already done in prior session; line 1298 has `hd_le_an`)*
+- [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). With hd_le_an instead of hd_eq_an, the two Case I usage sites need minor adjustments. *(completed — all live hd_eq_an references are in the OLD CASE II PROOF block comment (lines 2904-3624); only line 1323 remains as a docstring mention; Case I uses hd_le_an at lines 1881, 1892 correctly)*
 - [ ] **Task 1.4**: Prove GHR93 Claim 1 (~80-120 lines). New theorem `ghr93_claim_1` in ExpressivenessGeneral.lean:
   - Construct C' = not-C or K^{-}(not-C) of rank r+1
   - Show M_r |= C'(c) using infimum properties (`cont_fails_below_gap`, `cont_holds_above_gap`)
@@ -199,7 +206,7 @@ Phases within the same wave can execute in parallel.
   - Set e_n = z (a genuinely fresh point, NOT c, NOT d-bar)
   - Prove rank-r formula agreement between e_n and alpha_n (both satisfy B = X_{alpha_n})
   - Close the sorry at line ~2890
-- [ ] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836 (~40-60 lines). The r+1 forward strategy on [x,y] restricts to sub-intervals via `strategy_restrict_left/right`. d_consistency at rank r+1 follows from Claim 1 applied at one rank higher (rank r+2, available since forward hypothesis provides rank r+4(n+1) >= r+2).
+- [ ] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836 (~40-60 lines). *(deviation: altered — ARCHITECTURAL BLOCKER discovered: the sorry provides `ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 1) (rank_embed ... x₀) ... (rank_embed ... y₀')` on SUB-INTERVALS [x₀,y₀] vs [x₀',y₀'], but only the FULL-interval rank r+1 strategy h_r1 is available. The IH `ih_gen` universally quantifies over h_r1 because it was reverted before induction (line 3770). Deriving sub-interval rank r+1 from full-interval rank r+1 requires strategy restriction at rank r+1, which requires d_consistency at rank r+1, which requires Claim 1 at rank r+2 — creating a recursive tower. The plan's estimate of 40-60 lines is too low; this requires either (a) restructuring the induction in `ghr93_forward_to_backward` to not universally quantify h_r1, (b) proving a "rank-monotone strategy restriction" lemma, or (c) showing that the sub-interval IH call doesn't actually need rank r+1 because `ghr93_inductive_step` gets h_fwd_r1 from its own parameter. See handoff for detailed analysis.)*
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 
 **Timing**: 8-12 hours
