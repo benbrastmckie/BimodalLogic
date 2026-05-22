@@ -344,7 +344,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -353,7 +353,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-22T00:12:16Z",
+      "last_updated": "2026-05-22T03:35:50Z",
       "next_artifact_number": 16,
       "artifacts": [
         {
@@ -447,12 +447,12 @@
           "summary": "Root cause analysis and solution for stavi_untl/snce sorry-closing blocker in stavi_table_mu_correct"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/15_reynolds-pipeline-plan.md",
+          "path": "specs/155_reynolds_pipeline_activation/plans/16_reynolds-pipeline-plan.md",
           "type": "plan",
-          "summary": "v10 plan integrating muSig blocker resolution with updated sorry inventory (17 total)"
+          "summary": "v11 plan: 12 phases covering all 15 sorry sites through sorry-free bx_completeness"
         }
       ],
-      "session_id": "sess_1779408727_f4aa4c",
+      "session_id": "sess_1779420360_800c46",
       "researched": "2026-05-20T18:54:12Z",
       "started": "2026-05-16T19:49:58Z"
     },
