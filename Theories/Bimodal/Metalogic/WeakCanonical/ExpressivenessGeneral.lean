@@ -894,8 +894,8 @@ private theorem formula_failure_in_cut {sig : MonadicSignature}
     3. Second conjunct: D does NOT hold on any final segment of the cut
        (since D fails cofinally in the cut).
 
-    All steps except the pigeonhole extraction (which requires the NormalForm
-    finiteness bridge) are sorry-free. -/
+    All steps are sorry-free, including the pigeonhole extraction which uses
+    NormalForm finiteness at depth 2*r via nf_determines_stavi_truth_depth. -/
 private theorem infimum_gap_r_definable {sig : MonadicSignature}
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
