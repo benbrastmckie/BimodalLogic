@@ -1559,34 +1559,9 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     -- M-side sub-interval point witnesses (for SplitPointProps)
     have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by
       by_cases hxc_eq : x = c
-      · -- Degenerate: x = c. From boundary: x' = d.
-        -- If c is a point, c witnesses. If c is a gap, need to show
-        -- this never arises (since h_pt_M says [x,y] has a point,
-        -- and x = c = gap would need points above c in [c,y]).
-        rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hxc_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · -- x = c is a gap. From h_pt_M, there exists p in [x, y].
-          -- Since x = c (a gap), extendPoint p > x = c, so p ∉ [x, c].
-          -- But we need a point in [x, c] = [c, c]. There is none.
-          -- This means the M-side is also degenerate. sigma handles this.
-          -- h_pt_xc is used for SplitPointProps, but the degenerate case
-          -- should still provide something. Since x = c (both gaps), any
-          -- point in [x, c] would satisfy extendPoint p = c = gap,
-          -- contradiction. So [x, c] has no points.
-          -- We assert this exists vacuously by noting that the degenerate
-          -- sigma (via ghr93_duplicator_wins_degenerate_gap) doesn't
-          -- actually use h_pt_xc. But SplitPointProps demands it.
-          -- For now, get a dummy witness from h_pt_M by relaxing the bound.
-          obtain ⟨p_M, hp_M⟩ := h_pt_M
-          -- p_M is in [x, y]. Since x = c is a gap, p_M > c.
-          -- So p_M is NOT in [x, c]. We are stuck.
-          -- Actually: when x = c (degenerate), h_pt_xc is used downstream
-          -- only in the context where sigma is from degenerate_gap, which
-          -- doesn't use it. But SplitPointProps requires the field.
-          -- FIX: We need to accept that h_pt_xc can't be provided when x = c
-          -- and both are gaps. This means SplitPointProps needs restructuring
-          -- (make h_pt_xc optional). For now, sorry this sub-case.
-          sorry
+        · sorry
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, hc_interval.1, le_refl _⟩
@@ -1603,7 +1578,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       by_cases hcy_eq : c = y
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [← hcy_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · sorry -- Same degenerate case: c = y, both gaps. See h_pt_xc_w comment.
+        · sorry
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, le_refl _, hc_interval.2⟩
