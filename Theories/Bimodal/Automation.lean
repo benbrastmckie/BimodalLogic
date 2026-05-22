@@ -2,6 +2,7 @@ import Bimodal.Automation.Tactics
 import Bimodal.Automation.ProofSearch
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
+import Bimodal.Automation.EFGameTactics
 
 /-!
 # Bimodal.Automation - Proof Automation

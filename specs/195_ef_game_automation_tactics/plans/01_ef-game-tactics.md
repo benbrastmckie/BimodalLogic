@@ -1,7 +1,7 @@
 # Implementation Plan: EF Game Automation Tactics
 
 - **Task**: 195 - ef_game_automation_tactics
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: None (Task 155 benefits from Component A but is not a blocker)
 - **Research Inputs**: reports/01_ef-game-tactics.md
@@ -67,19 +67,19 @@ No ROADMAP.md consultation performed.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Lemma Migration and File Scaffolding [NOT STARTED]
+### Phase 1: Lemma Migration and File Scaffolding [COMPLETED]
 
 **Goal**: Make private lemmas public, create the EFGameTactics.lean file with correct imports, and establish the import chain EFGames <- EFGameTactics <- ExpressivenessGeneral.
 
 **Tasks**:
-- [ ] Make `game_tuple_sel_eq`, `game_tuple_zero_eq`, `game_tuple_b_eq`, `game_tuple_y_eq` non-private in ExpressivenessGeneral.lean (remove `private` keyword)
-- [ ] Make `pivot_chain_order` and `pivot_chain_order_rev` non-private in ExpressivenessGeneral.lean
-- [ ] Move the 4 `game_tuple_*_eq` lemmas from ExpressivenessGeneral.lean (lines 2024-2056) into EFGames.lean immediately after the `game_tuple` definition (after line 6731)
-- [ ] Move `pivot_chain_order` and `pivot_chain_order_rev` from ExpressivenessGeneral.lean (lines 1971-2020) into EFGames.lean (after the game_tuple lemmas)
-- [ ] Create `Theories/Bimodal/Automation/EFGameTactics.lean` with `import Bimodal.Metalogic.WeakCanonical.EFGames` and `import Lean`
-- [ ] Add `import Bimodal.Automation.EFGameTactics` to `Theories/Bimodal/Automation.lean`
-- [ ] Add `import Bimodal.Automation.EFGameTactics` to the imports of ExpressivenessGeneral.lean (so it can use tactics from the new file)
-- [ ] Run `lake build` and verify compilation passes
+- [x] Make `game_tuple_sel_eq`, `game_tuple_zero_eq`, `game_tuple_b_eq`, `game_tuple_y_eq` non-private in ExpressivenessGeneral.lean (remove `private` keyword) *(completed — moved to EFGames.lean without private)*
+- [x] Make `pivot_chain_order` and `pivot_chain_order_rev` non-private in ExpressivenessGeneral.lean *(completed — moved to EFGames.lean without private)*
+- [x] Move the 4 `game_tuple_*_eq` lemmas from ExpressivenessGeneral.lean (lines 2024-2056) into EFGames.lean immediately after the `game_tuple` definition (after line 6731)
+- [x] Move `pivot_chain_order` and `pivot_chain_order_rev` from ExpressivenessGeneral.lean (lines 1971-2020) into EFGames.lean (after the game_tuple lemmas)
+- [x] Create `Theories/Bimodal/Automation/EFGameTactics.lean` with `import Bimodal.Metalogic.WeakCanonical.EFGames` and `import Lean`
+- [x] Add `import Bimodal.Automation.EFGameTactics` to `Theories/Bimodal/Automation.lean`
+- [x] Add `import Bimodal.Automation.EFGameTactics` to the imports of ExpressivenessGeneral.lean (so it can use tactics from the new file)
+- [x] Run `lake build` and verify compilation passes
 
 **Timing**: 1.5 hours
 

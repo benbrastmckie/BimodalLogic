@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames
+import Bimodal.Automation.EFGameTactics
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Fintype.Pigeonhole
 
@@ -1962,98 +1963,6 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       have hcd_boundary : (x = c_val ↔ x' = d) ∧ (c_val = y ↔ d = y') :=
         ⟨hord_01.2.symm, hord_13.2.symm⟩
       exact ⟨c_val, ha_resp ⟨0, by omega⟩, hcd_form, hcd_gp, hcd_boundary⟩
-
-/-! ### Order Preservation Helpers for Merged Game Tuples -/
-
-/-- Pivot chain: if a ≤ p ≤ b in one linear order, and a' ≤ q ≤ b' in another,
-    with (a < p ↔ a' < q), (a = p ↔ a' = q), (p < b ↔ q < b'), (p = b ↔ q = b'),
-    then (a < b ↔ a' < b') and (a = b ↔ a' = b'). -/
-private theorem pivot_chain_order {α β : Type*} [LinearOrder α] [LinearOrder β]
-    {a p b : α} {a' q b' : β}
-    (hap : a ≤ p) (hpb : p ≤ b) (ha'q : a' ≤ q) (hqb' : q ≤ b')
-    (hlt_l : a < p ↔ a' < q) (heq_l : a = p ↔ a' = q)
-    (hlt_r : p < b ↔ q < b') (heq_r : p = b ↔ q = b') :
-    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') := by
-  constructor
-  · constructor
-    · intro hab
-      rcases lt_or_eq_of_le hap with hlt | heq
-      · exact lt_of_lt_of_le (hlt_l.mp hlt) hqb'
-      · rw [heq_l.mp heq]; exact hlt_r.mp (heq ▸ hab)
-    · intro ha'b'
-      rcases lt_or_eq_of_le ha'q with hlt | heq
-      · exact lt_of_lt_of_le (hlt_l.mpr hlt) hpb
-      · rw [heq_l.mpr heq]; exact hlt_r.mpr (heq ▸ ha'b')
-  · constructor
-    · intro hab
-      have h1 : a = p := le_antisymm hap (hab ▸ hpb)
-      have h2 : p = b := le_antisymm hpb (hab ▸ hap)
-      exact (heq_l.mp h1).trans (heq_r.mp h2)
-    · intro ha'b'
-      have h1 : a' = q := le_antisymm ha'q (ha'b' ▸ hqb')
-      have h2 : q = b' := le_antisymm hqb' (ha'b' ▸ ha'q)
-      exact (heq_l.mpr h1).trans (heq_r.mpr h2)
-
-/-- Reverse pivot chain: if a ≥ p ≥ b, transfer ordering through the pivot. -/
-private theorem pivot_chain_order_rev {α β : Type*} [LinearOrder α] [LinearOrder β]
-    {a p b : α} {a' q b' : β}
-    (hpa : p ≤ a) (hbp : b ≤ p) (hqa' : q ≤ a') (hb'q : b' ≤ q)
-    (hlt_l : p < a ↔ q < a') (heq_l : p = a ↔ q = a')
-    (hlt_r : b < p ↔ b' < q) (heq_r : b = p ↔ b' = q) :
-    (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') := by
-  -- a ≥ p ≥ b, a' ≥ q ≥ b': if a < b then a ≤ p ∧ b ≤ p but a < b ≤ p ≤ a, contradiction
-  -- So a < b is impossible on both sides (since a ≥ p ≥ b).
-  -- Similarly a' < b' is impossible.
-  -- And a = b iff a = p = b, iff a' = q = b'.
-  constructor
-  · constructor
-    · intro hab; exact absurd hab (not_lt.mpr (le_trans hbp hpa))
-    · intro ha'b'; exact absurd ha'b' (not_lt.mpr (le_trans hb'q hqa'))
-  · constructor
-    · intro hab
-      have h1 : b = p := le_antisymm hbp (hab ▸ hpa)
-      have h2 : p = a := le_antisymm hpa (hab ▸ hbp)
-      exact ((heq_r.mp h1).trans (heq_l.mp h2)).symm
-    · intro ha'b'
-      have h1 : b' = q := le_antisymm hb'q (ha'b' ▸ hqa')
-      have h2 : q = a' := le_antisymm hqa' (ha'b' ▸ hb'q)
-      exact ((heq_r.mpr h1).trans (heq_l.mpr h2)).symm
-
-/-- Extract ordering from same_order_type at specific game_tuple indices.
-    This helper simplifies game_tuple at a selection index. -/
-private theorem game_tuple_sel_eq {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
-    (b : M.carrier) (k : Fin n) :
-    game_tuple x y a b ⟨1 + k.val, by omega⟩ = a k := by
-  simp only [game_tuple]
-  simp [show (1 + k.val : Nat) ≠ 0 from by omega,
-    show ¬((1 + ↑k : Nat) = n + 1) from by { have := k.isLt; omega },
-    show ¬((1 + ↑k : Nat) = n + 2) from by { have := k.isLt; omega },
-    show 1 + ↑k - 1 = k.val from by omega]
-
-private theorem game_tuple_zero_eq {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
-    (b : M.carrier) :
-    game_tuple x y a b ⟨0, by omega⟩ = x := by
-  simp only [game_tuple, dite_true]
-
-private theorem game_tuple_b_eq {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
-    (b : M.carrier) :
-    game_tuple x y a b ⟨n + 1, by omega⟩ = extendPoint b := by
-  simp only [game_tuple]
-  simp [show (n + 1 : Nat) ≠ 0 from by omega]
-
-private theorem game_tuple_y_eq {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    {n : Nat} (x y : ExtendedCarrier M atomMap r) (a : Fin n → ExtendedCarrier M atomMap r)
-    (b : M.carrier) :
-    game_tuple x y a b ⟨n + 2, by omega⟩ = y := by
-  simp only [game_tuple]
-  simp [show (n + 2 : Nat) ≠ 0 from by omega, show ¬((n + 2 : Nat) = n + 1) from by omega]
 
 /-! ### Case I: The Split Case
 
