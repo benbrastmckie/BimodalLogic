@@ -5704,12 +5704,143 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               · exact (stavi_truth_mu_at_point s B).mpr hBs
               · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi_AB v_pt hsv hv_pt_wi)
     · -- Backward: gap below m with U'(A,B)^mu → std_snce(compound, D)(m)
-      -- Mirrors left base.snce backward. Given D-gap γ below m with U'(A,B)^mu(γ):
-      -- 1. Extract FO table witnesses from U'(A,B)^mu(γ)
-      -- 2. Pick complement point s below m with: D(s), B(s), U'(A,B)(s) (from mu-form restriction),
-      --    S'(⊤,B∧D)(s) (from gap structure below s), ¬S'(D,B∧D)(s) (from gap ¬D in cut)
-      -- 3. D on (s,m) from hγ_bet
+      -- Mirrors left base.snce backward (lines 5062-5301). ~200 lines needed.
       sorry
+  /-  -- wf_pt and wi_pt are complement points (above gap)
+      have hwf_not_cut : wf_pt ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr ((extendPoint_le_gap_iff wf_pt γ).mpr h) hwf_γ
+      have hwi_not_cut : wi_pt ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr ((extendPoint_le_gap_iff wi_pt γ).mpr h) hwi_γ
+      -- m is a complement point (above gap)
+      have hm_not_cut : m ∉ γ.val.cut := by
+        intro h; exact not_lt.mpr ((extendPoint_le_gap_iff m γ).mpr h) hγ_lt
+      -- Find complement point s below m, below wf_pt and wi_pt
+      have ⟨s, hs_not_cut, hsm, hswf, hswi⟩ :
+          ∃ s, s ∉ γ.val.cut ∧ s < m ∧ s < wf_pt ∧ s < wi_pt := by
+        -- complement has no min, so there are complement points below any complement point
+        have ⟨s₁, hs₁_not, hs₁_min⟩ : ∃ s₁, s₁ ∉ γ.val.cut ∧
+            s₁ < min (min wf_pt wi_pt) m := by
+          have hmin_not : min (min wf_pt wi_pt) m ∉ γ.val.cut := by
+            simp only [min_def]; split_ifs with h
+            · simp only [min_def] at *; split_ifs with h' <;> assumption
+            · exact hm_not_cut
+          by_contra h_all; push_neg at h_all
+          exact γ.val.complement_no_min ⟨min (min wf_pt wi_pt) m, hmin_not,
+            fun z hz => h_all z hz⟩
+        exact ⟨s₁, hs₁_not,
+          lt_of_lt_of_le hs₁_min (min_le_right _ _),
+          lt_of_lt_of_le hs₁_min (le_trans (min_le_left _ _) (min_le_left _ _)),
+          lt_of_lt_of_le hs₁_min (le_trans (min_le_left _ _) (min_le_right _ _))⟩
+      -- s_sa ≤ extendPoint s (s_sa is below or at s, since s ∉ cut means s > gap,
+      -- and s_sa < gap = Sum.inr γ, so s_sa could be below or a gap itself)
+      -- Actually, s_sa is below the gap (or at gap), and s is above the gap.
+      -- So s_sa < Sum.inr γ ≤ extendPoint s? No: Sum.inr γ < extendPoint s
+      -- because s ∉ cut. So s_sa < extendPoint s.
+      have hs_sa_s : s_sa < extendPoint s := by
+        calc s_sa < Sum.inr γ := hs_sa_γ
+        _ < extendPoint s := ⟨fun h => hs_not_cut h, fun h => hs_not_cut h⟩
+      -- D(s) from D-between (s < m and s ∉ cut)
+      have hDs : stavi_temporal_truth M atomMap s D :=
+        (stavi_truth_mu_at_point s D).mp (hγ_bet s hsm hs_not_cut)
+      -- B(s) from hBwi_sa (s is between s_sa and wi_pt)
+      -- Hmm, hBwi_sa is the B-init condition: B at all mu-points in (s_sa, wi_pt).
+      -- But wait, s < wi_pt and s_sa < s, so extendPoint s is between s_sa and extendPoint wi_pt.
+      -- Actually hBwi_sa says: ∀ v, s_sa < v → v < extendPoint wi_pt → mu(v) → B(v)
+      -- Wait, let me re-check. The goal structure showed:
+      -- wi: ∃ u, s_1 < u ∧ u < s_1 ∧ ∀ v, s < v → v < u → B(v)
+      -- Actually the FO table for U'(A,B)(s) has condition (3): ∃ wi_pt ∈ (s_sa, s₁),
+      -- B on (wi_pt, s₁). So hBwi_sa : ∀ v, wi_pt < v → v < ? → B(v).
+      -- Hmm, I need to re-read what hBwi_sa actually is. From the obtain:
+      -- ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩ := hUA_mu
+      -- This is from condition (3) of U'(A,B) FO table:
+      -- ∃ wi, s_sa < wi ∧ wi < s₁ ∧ mu(wi) ∧ B on (s_sa, wi)
+      -- Wait no, I need to look at the exact FO table structure. Let me check.
+      -- Actually from the simp/obtain: the last condition gives
+      -- ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩
+      -- hBwi_sa is probably: ∀ v, s_sa < v → v < extendPoint wi_pt → B^mu(v)
+      -- Wait, the Stavi Until FO table condition (3) is: ∃ u_init, B on (s_sa, u_init).
+      -- So hBwi_sa : ∀ v, s_sa < v → v < extendPoint wi_pt → B(v)... or similar.
+      --
+      -- Let me look at how the left proof handles this. In the left proof for stavi_snce backward
+      -- (lines 5823-5929 which I just uncommented), the B condition is handled via hBwi_sa.
+      --
+      -- Actually, I need to re-check the exact structure. The obtain pattern was:
+      -- ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩
+      -- In the U' FO table, condition (3) = ∃ u_init ∈ (s_sa, s₁), B-init.
+      -- So wi_sa = u_init position, hs_wi = s_sa < wi_sa, hwi_γ = wi_sa < s₁ = Sum.inr γ,
+      -- hmu_wi = ⟨wi_pt, rfl⟩ (it's a mu-point), hBwi_sa = B on final segment.
+      -- Actually, the FO table condition (3) for U' says:
+      -- ∃ u_init, s < u_init ∧ u_init < bound ∧ ∀ v, s < v → v < u_init → D'(v)
+      -- Wait no, the condition (3) is B-init: B holds on (s, u_init).
+      -- Actually hBwi_sa is: ∀ v, s_sa < v → v < extendPoint wi_pt → B(v)... wait,
+      -- this doesn't look right for "B on init segment from s_sa to wi_pt".
+      -- Let me check what the actual obtain pattern destructures.
+      --
+      -- The FO table for U'(A,B) at point s is:
+      -- ∃ s₁ > s, body ∧ fail ∧ init
+      -- where:
+      -- body = ∀ u ∈ (s, s₁), (cofinal B) ∨ (A below ∧ ¬B witness)
+      -- fail = ∃ u ∈ (s, s₁), ¬B(u)
+      -- init = ∃ u ∈ (s, s₁), B on (s, u) [= ∀ v ∈ (s, u), B(v)]
+      --
+      -- At gap γ, this becomes U'(A,B)^mu(γ):
+      -- ∃ s_sa > γ, body_mu ∧ fail_mu ∧ init_mu
+      -- s_sa was obtained as the bound.
+      -- init_mu: ∃ wi_sa ∈ (γ, s_sa), mu(wi_sa) ∧ ∀ v, γ < v → v < wi_sa → mu(v) → B^mu(v)
+      -- Hmm, wait. Actually, B on initial segment means ∀ v ∈ (γ, wi_sa), B(v).
+      -- In mu form at gap, this is:
+      -- ∃ wi_sa, s_sa_lower < wi_sa ∧ wi_sa < s_sa_upper ∧ mu(wi_sa) ∧
+      --   ∀ v, s_sa_lower < v → v < wi_sa → B^mu(v) [wait, or just B(v)?]
+      --
+      -- Actually, looking at the goal output more carefully:
+      -- The obtain pattern for U'(A,B)^mu(γ) was:
+      -- ⟨s_sa, hs_sa_γ, h_body_sa, ⟨wf_sa, hs_wf, hwf_γ, hmu_wf, hBwf_sa⟩,
+      --         ⟨wi_sa, hs_wi, hwi_γ, hmu_wi, hBwi_sa⟩⟩
+      --
+      -- This destructures the expanded FO table. Based on the goal, condition (3) gives:
+      -- ∃ u, s₁ < u ∧ u < s₁ ∧ ∀ v, s < v → v < u → B(v)
+      -- In our case at gap: ∃ wi_sa > Sum.inr γ, wi_sa < s_sa, mu(wi_sa),
+      --   ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → B^mu(v)
+      --
+      -- Wait, I'm getting confused because this is in the wrong direction.
+      -- Let me just check: hBwi_sa type.
+      -- From the obtain: hBwi_sa is the last element after hmu_wi.
+      -- The FO table init condition for U'(A,B) gives:
+      -- ∃ u_init ∈ (s_sa, s₁), ∀ v ∈ (s_sa, u_init), B(v)
+      -- At the gap level, s₁ = Sum.inr γ (the gap, which is the lower bound since U' goes upward).
+      -- Wait, U'(A,B) at gap γ means the FO table is evaluated at Sum.inr γ.
+      -- But Sum.inr γ < extendPoint m means the gap is BELOW m. U' looks to the FUTURE (above).
+      -- So the FO table for U'(A,B) at gap γ looks ABOVE γ:
+      -- ∃ s_sa > Sum.inr γ, body ∧ fail ∧ init
+      -- where body, fail, init are about the interval (Sum.inr γ, s_sa).
+      --
+      -- So hBwi_sa should be:
+      -- ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → mu(v) → B^mu(v)
+      -- Wait, no. The FO table init condition is:
+      -- ∃ u_init ∈ (Sum.inr γ, s_sa), B on (Sum.inr γ, u_init)
+      -- And "B on (Sum.inr γ, u_init)" means ∀ v, Sum.inr γ < v → v < u_init → B(v)
+      -- In mu form: ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → B^mu(v)... no.
+      -- The FO table at a gap has mu-quantification. The init condition becomes:
+      -- ∃ wi, Sum.inr γ < wi ∧ wi < s_sa ∧ mu(wi) ∧
+      --   ∀ v, Sum.inr γ < v → v < wi ∧ mu(v) → B^mu(v)
+      -- Hmm, actually I'm not sure about the exact mu-quantification pattern.
+      --
+      -- Actually, from the original obtain, the structure matches stavi_temporal_truth
+      -- after simp. So hBwi_sa is probably just:
+      -- ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → stavi_temporal_truth M atomMap (carrier_of v) B
+      -- But this doesn't have mu-quantification...
+      --
+      -- I think the actual type depends on how stavi_temporal_truth is defined for U'.
+      -- Let me just use lean_hover_info to check.
+
+      -- Actually, let me take a simpler approach. I know from the left proof template
+      -- that B(s) can be obtained. In the left proof, hgs is proved using hg_mu
+      -- (g on (γ, t_pt)) with s between γ and t_pt. For the right version, I need
+      -- B(s) from the U'(A,B) FO table. Since s is between γ and wi_pt (in the complement),
+      -- and hBwi_sa gives B on the initial segment, B(s) should follow.
+      --
+      -- Let me just write the proof and check with lean_goal.
+      -/
   | stavi_snce A B _ _ =>
     -- right_formula (.stavi_snce A B) D = S'(B ∧ S'(A,B), D)
     -- Mirrors left's stavi_untl case with stavi_snce_gap_detection
@@ -5820,8 +5951,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           · push_neg at hvu₁
             exact (stavi_truth_mu_at_point v_pt B).mpr
               (hB_cut v_pt hv_pt_in (lt_of_lt_of_le hu₁s hvu₁))
-    · -- Backward: temporarily sorry'd due to concurrent fork type conflicts
-      sorry /- Original proof reverted; see git history for the full proof.
+    · -- Backward: stavi_snce backward direction (restored from comment)
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSA⟩
       simp only [stavi_temporal_truth_mu] at hSA
       obtain ⟨s_sa, hs_sa_γ, h_body_sa, ⟨wf_sa, hs_wf, hwf_γ, hmu_wf, hBwf_sa⟩,
@@ -5928,7 +6058,6 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 (⟨γ.val.downward_closed u v hu_in (le_of_lt hvu),
                   fun h => h (γ.val.downward_closed u v hu_in (le_of_lt hvu))⟩)
                 ⟨v, rfl⟩)⟩
-      -/
   | std_untl A B _ _ =>
     sorry
   | std_snce A B _ _ =>
