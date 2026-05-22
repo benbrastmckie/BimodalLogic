@@ -3637,7 +3637,11 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             (hBwi_ua (extendPoint v) hγv ((extendPoint_lt_iff v wi_pt).mpr hvwi) ⟨v, rfl⟩)
   | stavi_snce A B _ _ =>
     -- left_formula (.stavi_snce A B) D = .std_untl compound D
+    -- compound = D ∧ B ∧ S'(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D)
+    -- Same compound decomposition as base.snce; differs only in temporal component
     simp only [left_formula]
+    rw [stavi_truth_mu_at_point m (.std_untl _ D)]
+    simp only [stavi_temporal_truth]
     sorry
   | std_untl A B _ _ =>
     -- left_formula (.std_untl A B) D = .stavi_untl (.conj B (.std_untl A B)) D
@@ -3717,8 +3721,311 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           (hB_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
   | std_snce A B _ _ =>
     -- left_formula (.std_snce A B) D = .std_untl compound D
+    -- compound = D ∧ B ∧ S(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D)
+    -- Same compound decomposition as base.snce; S(A,B)^mu has simple structure
     simp only [left_formula]
-    sorry
+    rw [stavi_truth_mu_at_point m (.std_untl _ D)]
+    simp only [stavi_temporal_truth]
+    constructor
+    · -- Forward: compound at s → gap with S(A,B)^mu(γ)
+      -- Identical compound decomposition as base.snce, only temporal part differs
+      intro ⟨s, hms, ⟨hDs, hBs, ⟨q, hqs, hAq, hBqs⟩, hU'_BD_s, hNotU'D_BD_s⟩, hD_bet⟩
+      obtain ⟨s₁, hss₁, h_body, h_fail, h_init⟩ := hU'_BD_s
+      obtain ⟨u_fail, hsu_fail, hu_fail_s₁, hBD_fail⟩ := h_fail
+      obtain ⟨u_init, hsu_init, hu_init_s₁, hBD_init⟩ := h_init
+      let bD : M.carrier → Prop := fun u =>
+        stavi_temporal_truth M atomMap u B ∧ stavi_temporal_truth M atomMap u D
+      let cut : Set M.carrier :=
+        {x | ∀ u, s < u → u ≤ x → ∃ v, u < v ∧ ∀ w, s < w → w < v → bD w}
+      have hs_in_cut : s ∈ cut :=
+        fun u hsu hus => absurd (lt_of_lt_of_le hsu hus) (lt_irrefl s)
+      have hu_fail_not_cut : u_fail ∉ cut := by
+        intro h; obtain ⟨v, hfv, hBDv⟩ := h u_fail hsu_fail le_rfl
+        exact hBD_fail (hBDv u_fail hsu_fail hfv)
+      have h_cut_lt_uf : ∀ x ∈ cut, x < u_fail := by
+        intro x hx; by_contra h; push_neg at h
+        exact hu_fail_not_cut (fun u hsu huf => hx u hsu (le_trans huf h))
+      have h_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut :=
+        fun x y hx hyx u hsu huy => hx u hsu (le_trans huy hyx)
+      have h_proper : cut ≠ Set.univ := by
+        intro h; exact hu_fail_not_cut (h ▸ Set.mem_univ u_fail)
+      have h_cofinal_propagate :
+          ∀ u, s < u → u < s₁ →
+          (∀ w, s < w → w < u → ∃ v, w < v ∧ ∀ z, s < z → z < v → bD z) →
+          ∃ v, u < v ∧ ∀ z, s < z → z < v → bD z := by
+        intro u hsu hus₁ h_below
+        cases h_body u hsu hus₁ with
+        | inl h => exact h
+        | inr h =>
+          obtain ⟨_, v', hsv', hv'u, hBDv'⟩ := h
+          obtain ⟨v₂, hv'v₂, hBDv₂⟩ := h_below v' hsv' hv'u
+          exact absurd (hBDv₂ v' hsv' hv'v₂) hBDv'
+      have hu_init_cut : u_init ∈ cut := by
+        intro u hsu huu_init
+        exact h_cofinal_propagate u hsu (lt_of_le_of_lt huu_init hu_init_s₁)
+          (fun w hsw hwu => ⟨u_init, lt_of_lt_of_le hwu huu_init,
+            fun z hsz hz_init => hBD_init z hsz hz_init⟩)
+      have h_bD_at_cut : ∀ u, s < u → u ∈ cut → bD u := by
+        intro u hsu hu_cut
+        obtain ⟨v, huv, hBDv⟩ := hu_cut u hsu le_rfl
+        exact hBDv u hsu huv
+      have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
+        intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
+        have hsp : s < p := lt_of_lt_of_le hsu_init (h_ub hu_init_cut)
+        obtain ⟨v, hpv, hBDv⟩ := hp_cut p hsp le_rfl
+        have hvs₁ : v < s₁ := by
+          by_contra h; push_neg at h
+          exact hBD_fail (hBDv u_fail hsu_fail (lt_of_lt_of_le hu_fail_s₁ h))
+        exact not_le.mpr hpv (h_ub (show v ∈ cut from fun u hsu huv => by
+          rcases eq_or_lt_of_le huv with rfl | huv'
+          · exact h_cofinal_propagate u (lt_trans hsp hpv) hvs₁
+              (fun w hsw hwu => ⟨u, hwu, hBDv⟩)
+          · exact ⟨v, huv', hBDv⟩))
+      have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
+        intro ⟨b, hb_not, hb_min⟩
+        have hsb : s < b := by
+          by_contra h; push_neg at h; exact hb_not (h_dc s b hs_in_cut h)
+        have hbs₁ : b < s₁ := lt_of_le_of_lt (hb_min u_fail hu_fail_not_cut) hu_fail_s₁
+        have h_below_b : ∀ y, y < b → y ∈ cut := by
+          intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
+        cases h_body b hsb hbs₁ with
+        | inl h_cof =>
+          exact hb_not (fun u hsu hub => by
+            rcases eq_or_lt_of_le hub with rfl | hub'
+            · exact h_cof
+            · exact (h_below_b u hub') u hsu le_rfl)
+        | inr h =>
+          obtain ⟨_, v', hsv', hv'b, hBDv'⟩ := h
+          obtain ⟨v₂, hv'v₂, hBDv₂⟩ := (h_below_b v' hv'b) v' hsv' le_rfl
+          exact hBDv' (hBDv₂ v' hsv' hv'v₂)
+      let γ_gap : Gap M.carrier :=
+        ⟨cut, ⟨s, hs_in_cut⟩, h_proper, h_dc, h_no_sup, h_comp_no_min⟩
+      have h_D_cofinal_cut : ∃ t, t ∈ γ_gap.cut ∧
+          ∀ u, t ≤ u → u ∈ γ_gap.cut → stavi_temporal_truth M atomMap u D :=
+        ⟨u_init, hu_init_cut, fun u hu_le hu_cut =>
+          (h_bD_at_cut u (lt_of_lt_of_le hsu_init hu_le) hu_cut).2⟩
+      have h_no_init_compl_bD : ¬∃ t, t ∉ γ_gap.cut ∧
+          ∀ u, u ∉ γ_gap.cut → u ≤ t → bD u := by
+        intro ⟨t, ht_not, hBDt⟩
+        have hst : s < t := by
+          by_contra h; push_neg at h; exact ht_not (h_dc s t hs_in_cut h)
+        have hts₁ : t < s₁ := by
+          by_contra h; push_neg at h
+          exact hBD_fail (hBDt u_fail hu_fail_not_cut (le_trans (le_of_lt hu_fail_s₁) h))
+        suffices t ∈ cut from ht_not this
+        intro u hsu hut
+        exact h_cofinal_propagate u hsu (lt_of_le_of_lt hut hts₁)
+          (fun w hsw hwu =>
+            h_cofinal_propagate w hsw (lt_trans hwu (lt_of_le_of_lt hut hts₁))
+              (fun z hsz hzw => by
+                cases h_body z hsz (lt_trans hzw (lt_trans hwu
+                    (lt_of_le_of_lt hut hts₁))) with
+                | inl h => exact h
+                | inr h =>
+                  obtain ⟨_, v', hsv', hv'z, hBDv'⟩ := h
+                  have : bD v' := by
+                    by_cases hv'_cut : v' ∈ cut
+                    · exact h_bD_at_cut v' hsv' hv'_cut
+                    · exact hBDt v' hv'_cut (le_trans (le_of_lt hv'z)
+                        (le_trans (le_of_lt hzw) (le_trans (le_of_lt hwu) hut)))
+                  exact absurd this hBDv'))
+      have hD_fails : ∃ u_D, s < u_D ∧ u_D < s₁ ∧
+          ¬stavi_temporal_truth M atomMap u_D D := by
+        by_contra h_all_D; push_neg at h_all_D
+        apply hNotU'D_BD_s
+        exact ⟨s₁, hss₁,
+          fun u hsu hus₁ => by
+            cases h_body u hsu hus₁ with
+            | inl h => left; exact h
+            | inr h => right; exact ⟨fun v huv hvs₁ => h_all_D v (lt_trans hsu huv) hvs₁, h.2⟩,
+          ⟨u_fail, hsu_fail, hu_fail_s₁, hBD_fail⟩,
+          ⟨u_init, hsu_init, hu_init_s₁, hBD_init⟩⟩
+      obtain ⟨u_D, hsu_D, hu_D_s₁, hD_fail_D⟩ := hD_fails
+      have hu_D_not_cut : u_D ∉ cut := by
+        intro h; exact hD_fail_D (h_bD_at_cut u_D hsu_D h).2
+      have h_compl_gt_cut : ∀ x, x ∉ cut → ∀ y, y ∈ cut → y < x := by
+        intro x hx y hy; by_contra h; push_neg at h; exact hx (h_dc y x hy h)
+      have h_no_init_compl_D : ¬∃ t, t ∉ γ_gap.cut ∧
+          ∀ u, u ∉ γ_gap.cut → u ≤ t → stavi_temporal_truth M atomMap u D := by
+        intro ⟨t, ht_not, hDt⟩
+        have hst : s < t := h_compl_gt_cut t ht_not s hs_in_cut
+        have ht_uD : t < u_D := by
+          by_contra h; push_neg at h; exact hD_fail_D (hDt u_D hu_D_not_cut h)
+        have hts₁ : t < s₁ := lt_trans ht_uD hu_D_s₁
+        apply hNotU'D_BD_s
+        refine ⟨t, hst, ?_, ?_, ?_⟩
+        · intro u hsu hut
+          cases h_body u hsu (lt_trans hut hts₁) with
+          | inl h => left; exact h
+          | inr h => right
+                     exact ⟨fun v huv hvt => by
+                       by_cases hv_cut : v ∈ cut
+                       · exact (h_bD_at_cut v (lt_trans hsu huv) hv_cut).2
+                       · exact hDt v hv_cut (le_of_lt hvt), h.2⟩
+        · by_contra h_no_fail; push_neg at h_no_fail
+          apply h_no_init_compl_bD
+          obtain ⟨c, hc_not, hct⟩ : ∃ c, c ∉ cut ∧ c < t := by
+            by_contra h; push_neg at h
+            exact h_comp_no_min ⟨t, ht_not, fun y hy => h y hy⟩
+          exact ⟨c, hc_not, fun u hu huc =>
+            h_no_fail u (h_compl_gt_cut u hu s hs_in_cut) (lt_of_le_of_lt huc hct)⟩
+        · exact ⟨u_init, hsu_init, h_compl_gt_cut t ht_not u_init hu_init_cut, hBD_init⟩
+      have h_def_left_D : gap_definable_on_left M atomMap γ_gap D :=
+        ⟨h_D_cofinal_cut, h_no_init_compl_D⟩
+      let γ : RDefinableGap M atomMap r := ⟨γ_gap, ⟨D, hD, Or.inl h_def_left_D⟩⟩
+      refine ⟨γ, ?_, ?_, ?_, ?_⟩
+      · have hm_in : m ∈ cut := h_dc s m hs_in_cut (le_of_lt hms)
+        exact ⟨hm_in, fun h => h hm_in⟩
+      · exact h_def_left_D
+      · intro u hmu hu_cut
+        by_cases hsu : s < u
+        · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_cut u hsu hu_cut).2
+        · push_neg at hsu
+          rcases eq_or_lt_of_le hsu with rfl | hus
+          · exact (stavi_truth_mu_at_point u D).mpr hDs
+          · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hmu hus)
+      · -- S(A,B)^mu(γ): from S(A,B)(s), same construction as base.snce
+        have hq_cut : q ∈ cut := h_dc s q hs_in_cut (le_of_lt hqs)
+        exact ⟨extendPoint q, ⟨hq_cut, fun h => h hq_cut⟩, ⟨q, rfl⟩,
+          (stavi_truth_mu_at_point q A).mpr hAq,
+          fun u hqu huγ hmu => by
+            obtain ⟨p, rfl⟩ := hmu
+            have hp_cut : p ∈ cut := huγ.1
+            have hqp : q < p := (extendPoint_lt_iff q p).mp hqu
+            by_cases hps : p ≤ s
+            · rcases eq_or_lt_of_le hps with rfl | hps'
+              · exact (stavi_truth_mu_at_point p B).mpr hBs
+              · exact (stavi_truth_mu_at_point p B).mpr (hBqs p hqp hps')
+            · push_neg at hps
+              exact (stavi_truth_mu_at_point p B).mpr (h_bD_at_cut p hps hp_cut).1⟩
+    · -- Backward: gap with S(A,B)^mu(γ) → compound at m
+      intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSnce_mu⟩
+      obtain ⟨t_ext, ht_γ, ⟨t_pt, rfl⟩, hA_t, hB_mu⟩ := hSnce_mu
+      have ht_cut : t_pt ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff t_pt γ).mp (le_of_lt ht_γ)
+      have hm_cut : m ∈ γ.val.cut :=
+        (extendPoint_le_gap_iff m γ).mp (le_of_lt hγ_lt)
+      have ⟨s, hs_cut, hms, hts⟩ : ∃ s, s ∈ γ.val.cut ∧ m < s ∧ t_pt < s := by
+        have ⟨s₁, hs₁, hms₁⟩ : ∃ s₁ ∈ γ.val.cut, m < s₁ := by
+          by_contra h; push_neg at h
+          exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
+        have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
+          rcases le_or_lt s₁ t_pt with h | h
+          · simp [max_eq_right h]; exact ht_cut
+          · simp [max_eq_left (le_of_lt h)]; exact hs₁
+        have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
+          by_contra h; push_neg at h
+          exact γ.val.no_sup ⟨max s₁ t_pt, ⟨h, fun _ hb => hb hmax_cut⟩, hmax_cut⟩
+        exact ⟨s₂, hs₂,
+          lt_trans hms₁ (lt_of_le_of_lt (le_max_left s₁ t_pt) hmax_s₂),
+          lt_of_le_of_lt (le_max_right s₁ t_pt) hmax_s₂⟩
+      have hDs : stavi_temporal_truth M atomMap s D :=
+        (stavi_truth_mu_at_point s D).mp (hγ_bet s hms hs_cut)
+      have hγs : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+          (extendPoint t_pt) (extendPoint s) :=
+        (extendPoint_lt_iff t_pt s).mpr hts
+      have hγs' : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+          (extendPoint s) (Sum.inr γ) := ⟨hs_cut, fun h => h hs_cut⟩
+      have hBs : stavi_temporal_truth M atomMap s B :=
+        (stavi_truth_mu_at_point s B).mp
+          (hB_mu (extendPoint s) hγs hγs' ⟨s, rfl⟩)
+      have hSnce_s : ∃ s_1 < s, stavi_temporal_truth M atomMap s_1 A ∧
+          ∀ u, s_1 < u → u < s → stavi_temporal_truth M atomMap u B := by
+        refine ⟨t_pt, hts, (stavi_truth_mu_at_point t_pt A).mp hA_t, fun u htu hus => ?_⟩
+        have hu_cut : u ∈ γ.val.cut := γ.val.downward_closed s u hs_cut (le_of_lt hus)
+        have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint t_pt) (extendPoint u) :=
+          (extendPoint_lt_iff t_pt u).mpr htu
+        have huγ : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
+            (extendPoint u) (Sum.inr γ) := ⟨hu_cut, fun h => h hu_cut⟩
+        exact (stavi_truth_mu_at_point u B).mp
+          (hB_mu (extendPoint u) hγu huγ ⟨u, rfl⟩)
+      have hD_bet_ms : ∀ u, m < u → u < s → stavi_temporal_truth M atomMap u D := by
+        intro u hmu hus
+        exact (stavi_truth_mu_at_point u D).mp
+          (hγ_bet u hmu (γ.val.downward_closed s u hs_cut (le_of_lt hus)))
+      obtain ⟨⟨t_D, ht_D_cut, hD_final⟩, h_no_init_D⟩ := hγ_def
+      have h_compl_gt : ∀ x, x ∉ γ.val.cut → ∀ y, y ∈ γ.val.cut → y < x := by
+        intro x hx y hy; by_contra h; push_neg at h
+        exact hx (γ.val.downward_closed y x hy h)
+      have h_neg_init : ∀ t, t ∉ γ.val.cut →
+          ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
+        intro t ht; by_contra h_all; push_neg at h_all
+        exact h_no_init_D ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
+      have ⟨c₀, hc₀_not⟩ : ∃ c₀, c₀ ∉ γ.val.cut := by
+        by_contra h; push_neg at h
+        exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
+      have hsc₀ : s < c₀ := h_compl_gt c₀ hc₀_not s hs_cut
+      have h_bD_cut : ∀ u, s < u → u ∈ γ.val.cut →
+          stavi_temporal_truth M atomMap u B ∧ stavi_temporal_truth M atomMap u D := by
+        intro u hsu hu_cut
+        exact ⟨(stavi_truth_mu_at_point u B).mp
+          (hB_mu (extendPoint u)
+            ((extendPoint_lt_iff t_pt u).mpr (lt_trans hts hsu))
+            ⟨hu_cut, fun h => h hu_cut⟩ ⟨u, rfl⟩),
+          (stavi_truth_mu_at_point u D).mp (hγ_bet u (lt_trans hms hsu) hu_cut)⟩
+      refine ⟨s, hms, ⟨hDs, hBs, hSnce_s, ?_, ?_⟩, hD_bet_ms⟩
+      · -- U'(⊤, B∧D)(s): same as base.snce backward
+        refine ⟨c₀, hsc₀, ?_, ?_, ?_⟩
+        · intro u hsu huc₀
+          by_cases hu_cut : u ∈ γ.val.cut
+          · left
+            have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
+            exact ⟨y, huy, fun w hsw hwy =>
+              h_bD_cut w hsw (γ.val.downward_closed y w hy_in (le_of_lt hwy))⟩
+          · right
+            refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
+            have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+              by_contra h_all; push_neg at h_all
+              exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
+            obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+            exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyu,
+              fun ⟨_, hD'⟩ => hDw hD'⟩
+        · have ⟨y, hy_not, hyc₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < c₀ := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.complement_no_min ⟨c₀, hc₀_not, fun z hz => h_all z hz⟩
+          obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+          exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyc₀,
+            fun ⟨_, hD'⟩ => hDw hD'⟩
+        · have ⟨y, hy_in, hsy⟩ : ∃ y ∈ γ.val.cut, s < y := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.no_sup ⟨s, ⟨fun x hx => h_all x hx, fun b hb => hb hs_cut⟩, hs_cut⟩
+          exact ⟨y, hsy, h_compl_gt c₀ hc₀_not y hy_in, fun v hsv hvy =>
+            h_bD_cut v hsv (γ.val.downward_closed y v hy_in (le_of_lt hvy))⟩
+      · -- ¬U'(D, B∧D)(s): same two-step D-transfer as base.snce
+        intro ⟨s₁, hss₁, h_body, h_fail, h_init⟩
+        obtain ⟨u_fail, hsu_fail, huf_s₁, hBD_fail⟩ := h_fail
+        have huf_not_cut : u_fail ∉ γ.val.cut := by
+          intro h; exact hBD_fail (h_bD_cut u_fail hsu_fail h)
+        have h_left_fails : ∀ u, s < u → u < s₁ → u ∉ γ.val.cut →
+            ¬(∃ v, u < v ∧ ∀ w, s < w → w < v →
+              stavi_temporal_truth M atomMap w B ∧ stavi_temporal_truth M atomMap w D) := by
+          intro u hsu _ hu_not ⟨v, huv, hBDv⟩
+          have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
+            by_contra h_all; push_neg at h_all
+            exact γ.val.complement_no_min ⟨u, hu_not, fun z hz => h_all z hz⟩
+          obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
+          exact hDw (hBDv w (h_compl_gt w hw_not s hs_cut)
+            (lt_trans (lt_of_le_of_lt hwy hyu) huv)).2
+        have hD_all_compl : ∀ u, s < u → u < s₁ → u ∉ γ.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hsu hus₁ hu_not
+          have h_right_u := (h_body u hsu hus₁).resolve_left
+            (h_left_fails u hsu hus₁ hu_not)
+          obtain ⟨_, v', hsv', hv'u, hBD_v'⟩ := h_right_u
+          have hv'_not : v' ∉ γ.val.cut := by
+            intro h; exact hBD_v' (h_bD_cut v' hsv' h)
+          have h_right_v' := (h_body v' hsv' (lt_trans hv'u hus₁)).resolve_left
+            (h_left_fails v' hsv' (lt_trans hv'u hus₁) hv'_not)
+          exact h_right_v'.1 u hv'u hus₁
+        have ⟨t, ht_not, ht_uf⟩ : ∃ t, t ∉ γ.val.cut ∧ t < u_fail := by
+          by_contra h_all; push_neg at h_all
+          exact γ.val.complement_no_min ⟨u_fail, huf_not_cut, fun z hz => h_all z hz⟩
+        exact h_no_init_D ⟨t, ht_not, fun u hu_not hut =>
+          hD_all_compl u (h_compl_gt u hu_not s hs_cut)
+            (lt_of_le_of_lt hut (lt_trans ht_uf huf_s₁)) hu_not⟩
 
 /-! ### GHR93 Lemma 9 (Gap detection correctness, right direction)
 
