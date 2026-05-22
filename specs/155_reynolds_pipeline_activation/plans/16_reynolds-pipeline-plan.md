@@ -205,7 +205,7 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 2.2**: Close `left_formula_gap_detection` stavi_untl backward. CLOSED (round 3).
 - [x] **Task 2.3**: Close `left_formula_gap_detection` std_untl backward. CLOSED (round 3).
 - [x] **Task 2.4**: DELETE `std_untl_gap_detection`. DONE (provably false, round 3).
-- [ ] **Task 2.5**: Refactor `stavi_snce_gap_detection` RHS (line ~3409) to match untl pattern (X at cut points with s_bound, not X^mu at gap), then prove by mirroring stavi_untl_gap_detection with reversed inequalities (~250 lines).
+- [x] **Task 2.5**: Refactor `stavi_snce_gap_detection` RHS to match untl pattern and prove (~200 lines). CLOSED (round 4). RHS uses "X at cut points above s_bound".
 - [x] **Task 2.6**: DELETE `std_snce_gap_detection`. DONE (provably false, round 3).
 - [ ] **Task 2.7**: Close `left_formula_gap_detection` stavi_snce case (line ~3307, ~60-80 lines). Uses refactored `stavi_snce_gap_detection`.
 - [ ] **Task 2.8**: Close `left_formula_gap_detection` std_snce case (line ~3387, ~60-80 lines). Prove directly using compound decomposition (same pattern as base.snce).

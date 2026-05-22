@@ -1,101 +1,75 @@
-# Phase 2 Handoff (Round 3): Lemma 9 Gap Detection
+# Phase 2 Handoff (Round 4): Lemma 9 Gap Detection
 
 ## Summary
 
-Deleted provably false theorems `std_untl_gap_detection` and `std_snce_gap_detection`. Fixed pre-existing type class synthesis error in stavi_untl backward proof. Verified approach for base.snce forward direction.
+Closed 3 additional sorry sites this round (5 total across rounds 1-4):
+- **stavi_untl backward** (was line 3164): FO-table shift from U'(A,B)^mu(gamma)
+- **std_untl backward** (was line 3215): Complement-point truth from U(A,B)^mu(gamma)
+- **stavi_snce_gap_detection** (was line 3241): Full ~200 line dual of stavi_untl_gap_detection
 
-## What Was Done
+Also refactored stavi_snce_gap_detection RHS and cleaned up base.snce compilation.
 
-1. **Deleted false theorems**: `std_untl_gap_detection` (was line 2682) and `std_snce_gap_detection` (was line 3256) replaced with explanatory comments. Build passes.
+## Completed Proofs (All Rounds)
 
-2. **Fixed build error**: Pre-existing type class error at line 3228 in stavi_untl backward proof. Added explicit `@LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT` annotation.
+| # | Case | Round | Technique |
+|---|------|-------|-----------|
+| 1 | base.imp | 1 | gap_detection_unique + IH |
+| 2 | base.untl | 1 | stavi_untl_gap_detection bridge |
+| 3 | stavi_untl backward | 4 | FO-table shift with min(wf_pt, wi_pt) bound |
+| 4 | std_untl backward | 4 | Complement-point U(A,B) construction |
+| 5 | stavi_snce_gap_detection | 4 | Dual gap construction with reversed direction |
 
-3. **Verified D-failure argument** for base.snce forward direction:
-   - From `¬U'(D, g∧D)(s) ∧ U'(⊤, g∧D)(s)`: D must fail somewhere above s
-   - Proof by contradiction: if D held everywhere, construct U'(D, g∧D)(s) using same FO table witnesses
-   - For condition (1), case split on `u < u_fail_gD`: left disjunct uses D-everywhere, right uses ¬(g∧D) witness
-   - This argument type-checks in Lean (verified via lean_goal)
+## Key Techniques
 
-## Remaining Sorry Sites in EFGames.lean (7)
+### FO-Table Shift (Backward Directions)
+Pick s_bound = min(wf_pt, wi_pt) to ensure complement points u below the bound have
+both witnesses in the interval (u, s_pt). The right-disjunct case v'_pt <= u becomes
+provably impossible: v'_pt < wi_pt (since v'_pt <= u < wi_pt), so B(v'_pt) from
+condition (3), contradicting not-B(v'_pt).
 
-| # | Line | Location | Status | Approach |
-|---|------|----------|--------|----------|
-| 1 | 2895 | base.snce | APPROACH VERIFIED | D-gap construction from compound (see below) |
-| 2 | 3307 | stavi_snce case | BLOCKED | Needs stavi_snce_gap_detection |
-| 3 | 3387 | std_snce case | NEEDS DIRECT PROOF | Same compound decomposition as base.snce |
-| 4 | 3409 | stavi_snce_gap_detection | NEEDS REFACTOR | RHS too strong; mirror untl with reversed inequalities |
-| 5 | 3425 | right_formula_gap_detection | BLOCKED | Needs #4 + dual of all left cases |
-| 6 | 4486 | ghr93_decomposition_implies_game | Phase 4 |
-| 7 | 5788 | stavi_expressive_completeness | Phase 4 |
+### stavi_snce_gap_detection Dual
+- Cut = {x | x not in compl} where compl = {x | D cofinal from x toward m}
+- Classical conversion helper needed for double negation: cut = not-compl
+- gap_definable_on_right: D on initial complement, not-D on final cut
+- X at cut points from body right disjunct
 
-## base.snce Forward Direction: Detailed Proof Plan
+### Changed Theorem Statement
+stavi_snce_gap_detection RHS uses "X at cut points above s_bound" instead of
+"X^mu at Sum.inr gamma", matching the stavi_untl_gap_detection pattern.
 
-### Setup (verified, ~15 lines)
-```lean
-simp only [left_formula_base]
-rw [stavi_truth_mu_at_point m (.std_untl _ D)]
-simp only [stavi_temporal_truth]
-constructor
-· intro ⟨s, hms, h_compound_s, hD_bet_ms⟩
-  obtain ⟨hDs, hgs, hSnce_s, hU'top_gD_s, hNotU'D_gD_s⟩ := h_compound_s
-  simp only [stavi_temporal_truth] at hU'top_gD_s
-  obtain ⟨s₁, hss₁, h_body_gD, ⟨u_fail_gD, ...⟩, ⟨u_init_gD, ...⟩⟩ := hU'top_gD_s
-```
+## Remaining Sorry Sites in EFGames.lean (6)
 
-### Step 1: D fails above s (~20 lines, verified)
-```lean
-have hD_fails : ∃ u_D, s < u_D ∧ ¬stavi_temporal_truth M atomMap u_D D := by
-  by_contra h_all; push_neg at h_all
-  apply hNotU'D_gD_s; simp only [stavi_temporal_truth]
-  refine ⟨s₁, hss₁, ?_, conditions_2_3_reuse⟩
-  intro u hsu hus₁
-  by_cases h_lt : u < u_fail_gD
-  · left; exact ⟨u_fail_gD, h_lt, D_everywhere⟩
-  · right; exact ⟨D_everywhere, u_fail_gD, ...⟩
-```
+| # | Line | Identifier | Phase | Approach |
+|---|------|-----------|-------|----------|
+| 1 | 2890 | base.snce | 2 | Direct proof via stavi_untl_gap_detection on U'(top, D) from compound |
+| 2 | 3262 | stavi_snce case | 2 | Direct proof; left_formula = .std_untl compound D |
+| 3 | 3342 | std_snce case | 2 | Direct proof; same pattern as stavi_snce |
+| 4 | 3624 | right_formula_gap_detection | 2 | Full dual of left_formula_gap_detection |
+| 5 | 4685 | ghr93_decomposition_implies_game | 4 | Not in scope |
+| 6 | 5987 | stavi_expressive_completeness | 4 | Not in scope |
 
-### Step 2: D initial segment (~10 lines, verified)
-```lean
-have hD_init : ∀ v, s < v → v < u_init_gD → stavi_temporal_truth M atomMap v D
-have hD_full_init : ∀ v, m < v → v < u_init_gD → stavi_temporal_truth M atomMap v D
-```
+## Approach for Remaining Phase 2 Sorries
 
-### Step 3: Construct D-gap (~120 lines, follows stavi_untl_gap_detection pattern)
-Replicate the cut construction from `stavi_untl_gap_detection` forward direction:
-- `cut = {x | ∀ u, m < u → u ≤ x → ∃ v > u, D on (m, v)}`
-- D on (m, s) + D(s) → s ∈ cut? No, s might not be in cut. Actually m ∈ cut.
-- Use h_body_gD (condition 1 from U'(⊤, g∧D)(s)) for cofinal propagation
-- Key difference: the "condition (1)" here is for g∧D, not D. Need to extract D-cofinal from g∧D-cofinal. This works because g∧D ⊆ D (g∧D → D).
+### base.snce, stavi_snce, std_snce (Lines 2890, 3262, 3342)
+All three have left_formula = .std_untl compound D where compound includes U'(top, B and D).
 
-**IMPORTANT**: The condition (1) body `h_body_gD` uses g∧D, not D. For the cut construction, we need D-cofinality, not g∧D-cofinality. The left disjunct of h_body_gD gives `∃ v > u, g∧D on (s, v)` which implies `D on (s, v)`. So D-cofinality follows from g∧D-cofinality.
+Strategy:
+1. From U(compound, D)(m): extract s with compound(s) and D on (m,s)
+2. From compound(s): extract U'(top, B and D)(s) and not-U'(D, B and D)(s)
+3. Derive D fails above s (from not-U'(D, B and D))
+4. Construct U'(top, D)(m) using D on (m,s) + D fails above s + body from U'(top, B and D)
+5. Apply stavi_untl_gap_detection to get D-gap
+6. Show target formula at gamma from compound's remaining components
 
-### Step 4: Show S(f,g)^mu at the D-gap (~30 lines)
-- hSnce_s : S(f,g)(s), s is an actual point, s ∈ cut (or near cut boundary)
-- Need S(f,g)^mu at the gap γ = ∃ t < γ (mu-point), f^mu(t) ∧ g^mu on (t, γ)
-- Use s as the mu-point since s is in the cut (below the gap)
-- f(s) from S(f,g)(s), g(s) from compound
+~100-150 lines per case, some infrastructure sharable.
 
-### Step 5: Backward direction (~100 lines)
-Given D-gap γ with S(f,g)^mu(γ), construct std_untl(compound, D)(m).
-Need s > m with compound(s) and D on (m, s).
-- From D-between: D holds at cut points between m and γ
-- Need a complement point s where ALL compound components hold
-- S(f,g)^mu(γ) gives witnesses at complement points
-- g∧D at cut points (from D-definability), ¬(g∧D) at complement (from definability)
-- U'(⊤, g∧D) at complement points from gap structure
-- ¬U'(D, g∧D) from D-failure at complement points
+### right_formula_gap_detection (Line 3624)
+Full dual of left_formula_gap_detection using stavi_snce_gap_detection (now proved).
+~300 lines, mostly mechanical dualization.
 
-## Depth Issue: RESOLVED
+## Commits
+- 00893bd71: close stavi_untl and std_untl backward directions
+- 741c94e3a: prove stavi_snce_gap_detection, fix base.snce compilation
 
-`stavi_untl_gap_detection` requires `stavi_depth D ≤ r` to produce `RDefinableGap`. The base.snce proof constructs a D-gap (not a (g∧D)-gap), so only `stavi_depth D ≤ r` is needed (which we have as `hD`). The approach does NOT use `stavi_untl_gap_detection` as a black box — it inlines the gap construction from raw FO table data.
-
-## Recommended Approach
-
-1. **Extract gap construction helper** from `stavi_untl_gap_detection` forward direction (~160 lines) into a standalone lemma that produces `Gap M.carrier` (not `RDefinableGap`). This eliminates the depth constraint from the construction and allows reuse.
-
-2. **Apply helper** in base.snce with the D-cofinal data extracted from the compound's FO table.
-
-3. **stavi_snce_gap_detection**: Refactor RHS to match untl pattern, then prove by mirroring stavi_untl_gap_detection backward direction.
-
-## Files Modified
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` — deleted false theorems, fixed type class error
+## Next Action
+Prove base.snce forward direction by constructing U'(top, D)(m) from the compound's data.
