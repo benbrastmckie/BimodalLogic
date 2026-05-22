@@ -110,7 +110,7 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### Phase 5 — Tactics Survey (generates tactic task roadmap)
 
-196 [RESEARCHING] — Codebase-wide tactic opportunity survey (generates tasks)
+196 [RESEARCHED] — Codebase-wide tactic opportunity survey (generates tasks)
   └─ 155, 161
 
 ### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
@@ -170,10 +170,16 @@ Existing tasks 185-195 are provisional until the survey completes.
 
 ### 196. Codebase-wide tactic opportunity survey
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 155, 161
+- **Research**:
+  - [specs/196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
+  - [specs/196_codebase_tactic_survey/reports/01_teammate-b-findings.md]
+  - [specs/196_codebase_tactic_survey/reports/01_teammate-c-findings.md]
+  - [specs/196_codebase_tactic_survey/reports/01_teammate-d-findings.md]
+  - [specs/196_codebase_tactic_survey/reports/01_team-research.md]
 
 **Description**: Systematic survey of the entire `Theories/Bimodal/` codebase (~50K+ lines across Syntax, ProofSystem, Semantics, Metalogic, Theorems, and Automation) to identify every repeated proof pattern that could benefit from custom tactics, simp sets, or macro abstractions. The survey produces a ranked inventory of tactic groups, each of which becomes a new implementation task.
 

@@ -685,7 +685,7 @@
     {
       "project_number": 196,
       "project_name": "codebase_tactic_survey",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
@@ -695,10 +695,17 @@
         161
       ],
       "created": "2026-05-22T19:21:48Z",
-      "last_updated": "2026-05-22T20:07:30Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1779480433_410e72"
+      "last_updated": "2026-05-22T20:21:09Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/196_codebase_tactic_survey/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: codebase-wide tactic opportunity survey"
+        }
+      ],
+      "session_id": "sess_1779480433_410e72",
+      "researched": "2026-05-22T20:21:09Z"
     }
   ],
   "next_project_number": 197,
