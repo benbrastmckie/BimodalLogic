@@ -2020,11 +2020,153 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             exact ⟨q, ⟨s₀, hs₀⟩, lt_of_le_of_ne hq_ge (Ne.symm hq_ne)⟩
         -- Step 3.2: Construct the gap and package as RDefinableGap.
         set gamma := infimum_gap h_ne h_pt_below h_above h_has_glb with gamma_def
-        -- Step 3.3: Prove r-definability (needed to form ExtendedCarrier element).
-        -- This requires hx'_bound and h_above_gap_below_y' preconditions.
-        -- Deferred: the precondition derivation involves sub-case split on whether
-        -- the infimum equals x' (sub-case 3b) or is strictly above x' (sub-case 3a).
-        sorry
+        -- Step 3.3: Three-way case split on boundary structure (GHR93 p.116).
+        -- Key: does ∃ p₀ in the cut with x' ≤ extendPoint p₀?
+        by_cases hx'_bound : ∃ p₀ : N.carrier,
+            p₀ ∈ inf_carrier_cut S_C ∧
+            x' ≤ (extendPoint p₀ : ExtendedCarrier N atomMap r)
+        · -- hx'_bound: gamma strictly above x'. Second split on h_abv.
+          by_cases h_abv : ∃ q₀ : N.carrier,
+              q₀ ∉ inf_carrier_cut S_C ∧
+              (extendPoint q₀ : ExtendedCarrier N atomMap r) < y' ∧
+              x' ≤ (extendPoint q₀ : ExtendedCarrier N atomMap r)
+          · -- Sub-case (b): r-definable gap. Apply infimum_gap_r_definable.
+            have h_rdef := infimum_gap_r_definable hx'y'
+              (ha_bwd ⟨n, by omega⟩) h_ne h_pt_below h_above h_has_glb
+              hx'_bound h_abv
+            have h_gamma_lb_pt : ∀ (ps : N.carrier),
+                (extendPoint ps : ExtendedCarrier N atomMap r) ∈ S_C →
+                ps ∉ gamma.cut := by
+              intro ps hps h_in
+              obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min ps hps
+              exact absurd ((h_in : ps ∈ inf_carrier_cut S_C) s hs_in) (not_le.mpr hs_lt)
+            have h_gamma_lb_gap : ∀ (gs : RDefinableGap N atomMap r),
+                (Sum.inr gs : ExtendedCarrier N atomMap r) ∈ S_C →
+                gamma.cut ⊆ gs.val.cut := by
+              intro gs hgs q hq; exact (hq : q ∈ inf_carrier_cut S_C) _ hgs
+            refine ⟨Sum.inr ⟨gamma, h_rdef⟩, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
+            · -- x' ≤ d
+              obtain ⟨p₀, hp₀_cut, hx'_le⟩ := hx'_bound
+              exact le_trans hx'_le (hp₀_cut : p₀ ∈ inf_carrier_cut S_C)
+            · -- d ≤ y': via d ≤ a_bwd(n) ≤ y'
+              apply le_trans _ (ha_bwd ⟨n, by omega⟩).2
+              match h_eq : a_bwd ⟨n, by omega⟩, h_an_in_SC with
+              | Sum.inl pa, hs => exact h_gamma_lb_pt pa hs
+              | Sum.inr ga, hs => exact h_gamma_lb_gap ga hs
+            · -- ∀ s ∈ S_C, d ≤ s
+              intro s hs; match s, hs with
+              | Sum.inl ps, hs => exact h_gamma_lb_pt ps hs
+              | Sum.inr gs, hs => exact h_gamma_lb_gap gs hs
+            · -- d ≤ a_bwd(n)
+              match h_eq : a_bwd ⟨n, by omega⟩, h_an_in_SC with
+              | Sum.inl pa, hs => exact h_gamma_lb_pt pa hs
+              | Sum.inr ga, hs => exact h_gamma_lb_gap ga hs
+            · -- GLB: ∀ e, (∀ s ∈ S_C, e ≤ s) → e ≤ d
+              intro e he; match e, he with
+              | Sum.inl pe, he => exact he
+              | Sum.inr ge, he =>
+                intro q hq s hs
+                exact le_trans (hq : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr ge) (he s hs)
+          · -- Sub-case (c): gamma = y' (as gaps), d = y'.
+            push_neg at h_abv
+            have h_y'_gap : IsGap y' := by
+              rcases isPoint_or_isGap y' with ⟨py', hpy'⟩ | hg
+              · exfalso
+                have hpy'_not_cut : py' ∉ gamma.cut := by
+                  intro h_in
+                  have h_y'_in_SC : (extendPoint py' : ExtendedCarrier N atomMap r) ∈ S_C := by
+                    rw [show (extendPoint py' : ExtendedCarrier N atomMap r) = y' from hpy'.symm]
+                    exact ⟨⟨hx'y', le_refl y'⟩, fun u hyu huy' _ => absurd (lt_trans hyu huy') (lt_irrefl _)⟩
+                  obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min py' h_y'_in_SC
+                  exact absurd ((h_in : py' ∈ inf_carrier_cut S_C) s hs_in) (not_le.mpr hs_lt)
+                have : ¬ (∀ q, q ∉ gamma.cut → py' ≤ q) :=
+                  fun h => gamma.complement_no_min ⟨py', hpy'_not_cut, h⟩
+                push_neg at this
+                obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
+                obtain ⟨p₀, hp₀_cut, hx'_le_p₀⟩ := hx'_bound
+                have hq'_lt_y' : (extendPoint q' : ExtendedCarrier N atomMap r) < y' := by
+                  rw [hpy']; exact (extendPoint_lt_iff q' py').mpr hq'_lt
+                have hq'_lt_x' := h_abv q' (hq'_not_cut : q' ∉ inf_carrier_cut S_C) hq'_lt_y'
+                have : ¬ (q' ≤ p₀) := fun h => hq'_not_cut (gamma.downward_closed p₀ q' hp₀_cut h)
+                have hx'_le_q' := le_trans hx'_le_p₀
+                  ((extendPoint_le_iff p₀ q').mpr (le_of_lt (not_le.mp this)))
+                exact absurd hx'_le_q' (not_le.mpr hq'_lt_x')
+              · exact hg
+            obtain ⟨gy', hgy'⟩ := h_y'_gap
+            have h_cut_eq : gamma.cut = gy'.val.cut := by
+              ext q; constructor
+              · intro hq
+                have h1 := (hq : q ∈ inf_carrier_cut S_C) _ h_an_in_SC
+                have h2 := (ha_bwd ⟨n, by omega⟩).2
+                rw [hgy'] at h2; exact le_trans h1 h2
+              · intro hq; by_contra hq_not
+                obtain ⟨p₀, hp₀_cut, hx'_le_p₀⟩ := hx'_bound
+                have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
+                  rw [hgy']; exact ⟨hq, fun h => absurd hq h⟩
+                have hq_lt_x' := h_abv q (hq_not : q ∉ inf_carrier_cut S_C) hq_lt_y'
+                have : ¬ (q ≤ p₀) := fun h => hq_not (gamma.downward_closed p₀ q hp₀_cut h)
+                have hx'_le_q := le_trans hx'_le_p₀
+                  ((extendPoint_le_iff p₀ q).mpr (le_of_lt (not_le.mp this)))
+                exact absurd hx'_le_q (not_le.mpr hq_lt_x')
+            refine ⟨y', ⟨hx'y', le_refl y'⟩, ?_, ?_, ?_⟩
+            · -- ∀ s ∈ S_C, y' ≤ s
+              intro s hs; match s, hs with
+              | Sum.inl ps, hs =>
+                rw [hgy']
+                have : ps ∉ gamma.cut := by
+                  intro h_in; obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min ps hs
+                  exact absurd ((h_in : ps ∈ inf_carrier_cut S_C) t ht_in) (not_le.mpr ht_lt)
+                rwa [h_cut_eq] at this
+              | Sum.inr gs, hs =>
+                rw [hgy']; intro q hq; rw [← h_cut_eq] at hq
+                exact (hq : q ∈ inf_carrier_cut S_C) _ hs
+            · -- y' ≤ a_bwd(n)
+              match h_eq : a_bwd ⟨n, by omega⟩, h_an_in_SC with
+              | Sum.inl pa, hs =>
+                rw [hgy']
+                have : pa ∉ gamma.cut := by
+                  intro h_in; obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min pa hs
+                  exact absurd ((h_in : pa ∈ inf_carrier_cut S_C) t ht_in) (not_le.mpr ht_lt)
+                rwa [h_cut_eq] at this
+              | Sum.inr ga, hs =>
+                rw [hgy']; intro q hq; rw [← h_cut_eq] at hq
+                exact (hq : q ∈ inf_carrier_cut S_C) _ hs
+            · -- GLB
+              intro e he; exact le_trans (he _ h_an_in_SC) (ha_bwd ⟨n, by omega⟩).2
+        · -- ¬hx'_bound: gamma = x' (as gaps), d = x'.
+          push_neg at hx'_bound
+          have hx'_gap : IsGap x' := by
+            rcases isPoint_or_isGap x' with ⟨px', hpx'⟩ | hg
+            · exfalso
+              have h_px'_cut : px' ∈ inf_carrier_cut S_C := by
+                intro s hs
+                rw [show (extendPoint px' : ExtendedCarrier N atomMap r) = x' from hpx'.symm]
+                exact hs.1.1
+              exact absurd (hx'_bound px' h_px'_cut) (not_lt.mpr (hpx' ▸ le_refl _))
+            · exact hg
+          obtain ⟨gx', hgx'⟩ := hx'_gap
+          have h_cut_eq : gamma.cut = gx'.val.cut := by
+            ext q; constructor
+            · intro hq; by_contra h_not_in
+              exact absurd (hx'_bound q hq) (not_lt.mpr
+                (show x' ≤ (extendPoint q : ExtendedCarrier N atomMap r) by rw [hgx']; exact h_not_in))
+            · intro hq s hs
+              exact le_trans
+                (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' by rw [hgx']; exact hq) hs.1.1
+          refine ⟨x', ⟨le_refl _, hx'y'⟩, ?_, (ha_bwd ⟨n, by omega⟩).1, ?_⟩
+          · intro s hs; exact hs.1.1
+          · intro e he
+            rcases isPoint_or_isGap e with ⟨pe, hpe⟩ | ⟨ge, hge⟩
+            · rw [hpe, hgx']
+              have hmem : pe ∈ gamma.cut := by rw [hpe] at he; exact he
+              rw [h_cut_eq] at hmem; exact hmem
+            · rw [hge, hgx']
+              have hmem : ge.val.cut ⊆ gamma.cut := by
+                intro q hq; rw [hge] at he
+                intro s hs
+                exact le_trans
+                  (hq : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr ge) (he s hs)
+              intro q hq; exact (h_cut_eq ▸ hmem hq : q ∈ gx'.val.cut)
   -- Step 2: Construct c = inf(S_C^M) — the M-side infimum (GHR93 p.115-116).
   -- S_C^M = { t ∈ [x,y] : cont_holds_cross at all mu-points in (t, y) in M }.
   -- The continuation predicate uses N-side interval type (a_bwd(n), y') but
