@@ -1417,6 +1417,231 @@ private theorem infimum_gap_r_definable {sig : MonadicSignature}
       have h_holds := ht_final u htu hu_in_cut
       exact hu_fail h_holds
 
+/-! ### Cross-Structure Gap R-Definability (M-side)
+
+The M-side gap (infimum of S_C^M) is r-definable using M-side formula
+evaluation. The argument mirrors `infimum_gap_r_definable` but with:
+- `continuation_set_cross` instead of `continuation_set`
+- `cont_holds_cross` instead of `cont_holds`
+- `pigeonhole_definable_formula_cross` for extracting the single formula D
+
+Key conceptual point: the continuation formula A holds on (a_n_N, y'_N) in N
+but is evaluated for truth in M. The gap_definable_on_right uses M-side truth. -/
+
+/-- Cross-version of cont_holds_above_gap: if p is a carrier point in M
+    NOT in the cut of inf(S_C^M), then p is above some element of S_C^M,
+    hence in S_C^M by upward-closedness, and cont_holds_cross holds at p.
+    So for any formula A of depth ≤ r that holds on (a_n_N, y'_N) in N,
+    A also holds at extendPoint p in M. -/
+private theorem cont_holds_above_gap_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    {p : M.carrier}
+    (h_not_in_cut : p ∉ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
+    (hxy : x ≤ y)
+    (hp_lt_y : (extendPoint p : ExtendedCarrier M atomMap r) < y)
+    (hx_le_p : x ≤ (extendPoint p : ExtendedCarrier M atomMap r))
+    (A : StaviFormula) (hA : stavi_depth A ≤ r)
+    (hA_interval : ∀ v : ExtendedCarrier N atomMap r,
+      a_n_N < v → v < y'_N → mu_holds v →
+      stavi_temporal_truth_mu N atomMap r v A) :
+    stavi_temporal_truth M atomMap p A := by
+  -- p ∉ inf_carrier_cut S_C_M means ∃ s ∈ S_C_M, ¬(extendPoint p ≤ s)
+  simp only [inf_carrier_cut, Set.mem_setOf_eq] at h_not_in_cut
+  push_neg at h_not_in_cut
+  obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
+  -- extendPoint p ∈ S_C_M by upward-closedness
+  have hp_in_sc : (extendPoint p : ExtendedCarrier M atomMap r) ∈
+      continuation_set_cross x y a_n_N y'_N :=
+    continuation_set_cross_upward_closed hs_in (le_of_lt hs_lt) (le_of_lt hp_lt_y) hx_le_p
+  -- s < extendPoint p < y and extendPoint p is mu. Apply hs_in.2.
+  have h_mu : mu_holds (extendPoint p : ExtendedCarrier M atomMap r) :=
+    mu_holds_point p
+  have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y h_mu
+  -- h_cont : cont_holds_cross a_n_N y'_N (extendPoint p)
+  have h_mu_truth := h_cont A hA hA_interval
+  exact (stavi_truth_mu_at_point p A).mp h_mu_truth
+
+/-- Cross-version of cont_fails_below_gap: if p is in the cut of
+    inf(S_C^M), then there exists a mu-point u strictly above extendPoint p
+    and below y where cont_holds_cross fails. -/
+private theorem cont_fails_below_gap_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    {p : M.carrier}
+    (h_in_cut : p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
+    (hxy : x ≤ y)
+    (hx_le_p : x ≤ (extendPoint p : ExtendedCarrier M atomMap r))
+    (hp_le_y : (extendPoint p : ExtendedCarrier M atomMap r) ≤ y)
+    (h_not_point_glb : ¬ ∃ p' : M.carrier,
+      (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+        (extendPoint p' : ExtendedCarrier M atomMap r) ≤ s) ∧
+      (∀ q : M.carrier,
+        (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+          (extendPoint q : ExtendedCarrier M atomMap r) ≤ s) →
+        (extendPoint q : ExtendedCarrier M atomMap r) ≤ extendPoint p')) :
+    ∃ (u : ExtendedCarrier M atomMap r),
+      (extendPoint p : ExtendedCarrier M atomMap r) < u ∧ u < y ∧
+      mu_holds u ∧ ¬ cont_holds_cross a_n_N y'_N u := by
+  by_contra h_no_witness
+  push_neg at h_no_witness
+  have hp_in_sc : (extendPoint p : ExtendedCarrier M atomMap r) ∈
+      continuation_set_cross x y a_n_N y'_N := by
+    refine ⟨⟨hx_le_p, hp_le_y⟩, ?_⟩
+    exact h_no_witness
+  apply h_not_point_glb
+  exact ⟨p, h_in_cut, fun q hq => hq (extendPoint p) hp_in_sc⟩
+
+/-- Cross-version of formula_failure_in_cut: for a carrier point p in the
+    cut of inf(S_C^M) with x ≤ p ≤ y, there exists u ≥ p in the cut and
+    a formula A of depth ≤ r that holds on (a_n_N, y'_N) in N but fails
+    at u in M. -/
+private theorem formula_failure_in_cut_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    {p : M.carrier}
+    (h_in_cut : p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
+    (hxy : x ≤ y)
+    (hx_le_p : x ≤ (extendPoint p : ExtendedCarrier M atomMap r))
+    (hp_le_y : (extendPoint p : ExtendedCarrier M atomMap r) ≤ y)
+    (h_not_point_glb : ¬ ∃ p' : M.carrier,
+      (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+        (extendPoint p' : ExtendedCarrier M atomMap r) ≤ s) ∧
+      (∀ q : M.carrier,
+        (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+          (extendPoint q : ExtendedCarrier M atomMap r) ≤ s) →
+        (extendPoint q : ExtendedCarrier M atomMap r) ≤ extendPoint p')) :
+    ∃ (u : M.carrier),
+      p ≤ u ∧
+      u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      ∃ (A : StaviFormula),
+        stavi_depth A ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n_N < v → v < y'_N → mu_holds v →
+          stavi_temporal_truth_mu N atomMap r v A) ∧
+        ¬ stavi_temporal_truth M atomMap u A := by
+  obtain ⟨u, hpu, huy, hmu, hcont_fail⟩ :=
+    cont_fails_below_gap_cross h_in_cut hxy hx_le_p hp_le_y h_not_point_glb
+  obtain ⟨u', hu'⟩ := hmu
+  have hmu_u : mu_holds u := ⟨u', hu'⟩
+  have hcont_fail_orig : ¬ cont_holds_cross a_n_N y'_N u := hcont_fail
+  simp only [cont_holds_cross] at hcont_fail
+  push_neg at hcont_fail
+  obtain ⟨A, hA_depth, hA_interval, hA_fail⟩ := hcont_fail
+  rw [hu'] at hA_fail
+  have hA_fail_carrier : ¬ stavi_temporal_truth M atomMap u' A := by
+    intro h_holds
+    exact hA_fail ((stavi_truth_mu_at_point u' A).mpr h_holds)
+  have hu'_in_cut : u' ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) := by
+    intro s hs
+    by_contra h_not_le
+    push_neg at h_not_le
+    have h_s_lt_u : s < u := hu' ▸ h_not_le
+    have h_cont_at_u := hs.2 u h_s_lt_u huy hmu_u
+    exact hcont_fail_orig (hu' ▸ h_cont_at_u)
+  have hpu' : p ≤ u' := by
+    rw [← extendPoint_le_iff p u']
+    exact le_of_lt (hu' ▸ hpu)
+  exact ⟨u', hpu', hu'_in_cut, A, hA_depth, hA_interval, hA_fail_carrier⟩
+
+/-- The M-side infimum gap is r-definable (cross-structure version).
+    Mirrors `infimum_gap_r_definable` but for `continuation_set_cross`:
+    the defining formula D holds on (a_n_N, y'_N) in N but evaluates
+    M-side truth for gap_definable_on_right. -/
+private theorem infimum_gap_r_definable_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y)
+    (h_ne : (continuation_set_cross x y a_n_N y'_N).Nonempty)
+    (h_pt_below : ∃ p : M.carrier, ∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+      (extendPoint p : ExtendedCarrier M atomMap r) ≤ s)
+    (h_above : ∃ (q : M.carrier) (s : ↥(continuation_set_cross x y a_n_N y'_N)),
+      (extendPoint q : ExtendedCarrier M atomMap r) > s.val)
+    (h_not_point_glb : ¬ ∃ p : M.carrier,
+      (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+        (extendPoint p : ExtendedCarrier M atomMap r) ≤ s) ∧
+      (∀ q : M.carrier,
+        (∀ s ∈ continuation_set_cross x y a_n_N y'_N,
+          (extendPoint q : ExtendedCarrier M atomMap r) ≤ s) →
+        (extendPoint q : ExtendedCarrier M atomMap r) ≤ extendPoint p))
+    (hx_bound : ∃ p₀ : M.carrier,
+      p₀ ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r))
+    (h_above_gap_below_y : ∃ q₀ : M.carrier,
+      q₀ ∉ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      (extendPoint q₀ : ExtendedCarrier M atomMap r) < y ∧
+      x ≤ (extendPoint q₀ : ExtendedCarrier M atomMap r)) :
+    r_definable_gap M atomMap
+      (infimum_gap h_ne h_pt_below h_above h_not_point_glb) r := by
+  set gamma := infimum_gap h_ne h_pt_below h_above h_not_point_glb with gamma_def
+  -- Step 1: Establish cofinal formula failure below the gap.
+  have h_cofinal : ∀ p : M.carrier,
+      p ∈ gamma.cut →
+      x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
+      (extendPoint p : ExtendedCarrier M atomMap r) ≤ y →
+      ∃ (u : M.carrier), p ≤ u ∧ u ∈ gamma.cut ∧
+        ∃ (A : StaviFormula), stavi_depth A ≤ r ∧
+          (∀ v : ExtendedCarrier N atomMap r,
+            a_n_N < v → v < y'_N → mu_holds v →
+            stavi_temporal_truth_mu N atomMap r v A) ∧
+          ¬ stavi_temporal_truth M atomMap u A := by
+    intro p hp hxp hpy
+    exact formula_failure_in_cut_cross hp hxy hxp hpy h_not_point_glb
+  -- Step 2: Apply pigeonhole to extract a single formula D.
+  have h_cofinal' : ∀ p : M.carrier,
+      p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+      x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
+      (extendPoint p : ExtendedCarrier M atomMap r) ≤ y →
+      ∃ (u : M.carrier), p ≤ u ∧
+        u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        ∃ (A : StaviFormula), stavi_depth A ≤ r ∧
+          (∀ v : ExtendedCarrier N atomMap r,
+            a_n_N < v → v < y'_N → mu_holds v →
+            stavi_temporal_truth_mu N atomMap r v A) ∧
+          ¬ stavi_temporal_truth M atomMap u A := h_cofinal
+  obtain ⟨D, hD_depth, hD_interval, hD_cofinal⟩ :=
+    pigeonhole_definable_formula_cross hxy hx_bound h_cofinal'
+  -- Step 3: Show D satisfies gap_definable_on_right.
+  refine ⟨D, hD_depth, Or.inr ?_⟩
+  constructor
+  · -- First conjunct: D holds at all carrier points above the gap and ≤ q₀.
+    obtain ⟨q₀, hq₀_not_cut, hq₀_lt_y, hx_le_q₀⟩ := h_above_gap_below_y
+    refine ⟨q₀, hq₀_not_cut, ?_⟩
+    intro u hu_not_cut hu_le_q₀
+    have hu_not_cut' : u ∉ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) := hu_not_cut
+    have hx_le_u : x ≤ (extendPoint u : ExtendedCarrier M atomMap r) := by
+      simp only [inf_carrier_cut, Set.mem_setOf_eq] at hu_not_cut'
+      push_neg at hu_not_cut'
+      obtain ⟨s, hs_in, hs_lt⟩ := hu_not_cut'
+      exact le_trans hs_in.1.1 (le_of_lt hs_lt)
+    have hu_lt_y : (extendPoint u : ExtendedCarrier M atomMap r) < y :=
+      lt_of_le_of_lt (extendPoint_le_iff u q₀ |>.mpr hu_le_q₀) hq₀_lt_y
+    exact cont_holds_above_gap_cross hu_not_cut' hxy hu_lt_y hx_le_u D hD_depth hD_interval
+  · -- Second conjunct: ¬(∃ t ∈ cut, ∀ u ≥ t, u ∈ cut → truth u D).
+    intro ⟨t, ht_in_cut, ht_final⟩
+    obtain ⟨p₀, hp₀_in, hx_le_p₀⟩ := hx_bound
+    have ht_le_y : (extendPoint t : ExtendedCarrier M atomMap r) ≤ y := by
+      obtain ⟨s₀, hs₀⟩ := continuation_set_cross_nonempty hxy (a_n_N := a_n_N) (y'_N := y'_N)
+      exact le_trans (ht_in_cut s₀ hs₀) hs₀.1.2
+    rcases le_total t p₀ with htp₀ | hp₀t
+    · have hp₀_le_y : (extendPoint p₀ : ExtendedCarrier M atomMap r) ≤ y := by
+        obtain ⟨s₀, hs₀⟩ := continuation_set_cross_nonempty hxy (a_n_N := a_n_N) (y'_N := y'_N)
+        exact le_trans (hp₀_in s₀ hs₀) hs₀.1.2
+      obtain ⟨u, hp₀u, hu_in_cut, hu_fail⟩ :=
+        hD_cofinal p₀ hp₀_in hx_le_p₀ hp₀_le_y
+      have h_holds := ht_final u (le_trans htp₀ hp₀u) hu_in_cut
+      exact hu_fail h_holds
+    · have hx_le_t : x ≤ (extendPoint t : ExtendedCarrier M atomMap r) :=
+        le_trans hx_le_p₀ ((extendPoint_le_iff p₀ t).mpr hp₀t)
+      obtain ⟨u, htu, hu_in_cut, hu_fail⟩ :=
+        hD_cofinal t ht_in_cut hx_le_t ht_le_y
+      have h_holds := ht_final u htu hu_in_cut
+      exact hu_fail h_holds
+
 /-! ## GHR93 Claim 1: D-Consistency of Strategy Responses
 
 GHR93 Chapter 9, Section 8, Claim 1 (p.28): if Duplicator has a winning strategy
@@ -2280,9 +2505,97 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             p₀ ∈ inf_carrier_cut S_C_M ∧
             x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r)
         · -- hx_bound: gamma_M strictly above x.
-          -- Sub-case (b): r-definable gap. Needs cross-version of infimum_gap_r_definable.
-          -- Deferred: infimum_gap_r_definable_cross not yet implemented.
-          sorry
+          -- Further split: is there a carrier point above the gap and strictly below y?
+          by_cases h_abv_M : ∃ q₀ : M.carrier,
+              q₀ ∉ inf_carrier_cut S_C_M ∧
+              (extendPoint q₀ : ExtendedCarrier M atomMap r) < y ∧
+              x ≤ (extendPoint q₀ : ExtendedCarrier M atomMap r)
+          · -- Sub-case (b): r-definable gap. Apply infimum_gap_r_definable_cross.
+            have h_rdef := infimum_gap_r_definable_cross hxy
+              h_ne_M h_pt_below_M h_above_M h_has_glb_M
+              hx_bound h_abv_M
+            have h_gamma_lb_pt : ∀ (ps : M.carrier),
+                (extendPoint ps : ExtendedCarrier M atomMap r) ∈ S_C_M →
+                ps ∉ gamma_M.cut := by
+              intro ps hps h_in
+              obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min_M ps hps
+              exact absurd ((h_in : ps ∈ inf_carrier_cut S_C_M) s hs_in) (not_le.mpr hs_lt)
+            have h_gamma_lb_gap : ∀ (gs : RDefinableGap M atomMap r),
+                (Sum.inr gs : ExtendedCarrier M atomMap r) ∈ S_C_M →
+                gamma_M.cut ⊆ gs.val.cut := by
+              intro gs hgs q hq; exact (hq : q ∈ inf_carrier_cut S_C_M) _ hgs
+            refine ⟨Sum.inr ⟨gamma_M, h_rdef⟩, ⟨?_, ?_⟩, ?_, ?_⟩
+            · -- x ≤ c_inf
+              obtain ⟨p₀, hp₀_cut, hx_le⟩ := hx_bound
+              exact le_trans hx_le (hp₀_cut : p₀ ∈ inf_carrier_cut S_C_M)
+            · -- c_inf ≤ y: via c_inf ≤ y (y ∈ S_C_M)
+              match h_eq : y, h_y_in_SC_M with
+              | Sum.inl py, hy => exact h_gamma_lb_pt py hy
+              | Sum.inr gy, hy => exact h_gamma_lb_gap gy hy
+            · -- ∀ s ∈ S_C_M, c_inf ≤ s
+              intro s hs; match s, hs with
+              | Sum.inl ps, hs => exact h_gamma_lb_pt ps hs
+              | Sum.inr gs, hs => exact h_gamma_lb_gap gs hs
+            · -- GLB: ∀ e, (∀ s ∈ S_C_M, e ≤ s) → e ≤ c_inf
+              intro e he; match e, he with
+              | Sum.inl pe, he => exact he
+              | Sum.inr ge, he =>
+                intro q hq s hs
+                exact le_trans (hq : (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr ge) (he s hs)
+          · -- Sub-case (c): gamma_M = y (as gaps), c_inf = y.
+            push_neg at h_abv_M
+            have h_y_gap : IsGap y := by
+              rcases isPoint_or_isGap y with ⟨py, hpy⟩ | hg
+              · exfalso
+                have hpy_not_cut : py ∉ gamma_M.cut := by
+                  intro h_in
+                  have h_y_in_SC' : (extendPoint py : ExtendedCarrier M atomMap r) ∈ S_C_M := by
+                    rw [show (extendPoint py : ExtendedCarrier M atomMap r) = y from hpy.symm]
+                    exact h_y_in_SC_M
+                  obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min_M py h_y_in_SC'
+                  exact absurd ((h_in : py ∈ inf_carrier_cut S_C_M) s hs_in) (not_le.mpr hs_lt)
+                have : ¬ (∀ q, q ∉ gamma_M.cut → py ≤ q) :=
+                  fun h => gamma_M.complement_no_min ⟨py, hpy_not_cut, h⟩
+                push_neg at this
+                obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
+                obtain ⟨p₀, hp₀_cut, hx_le_p₀⟩ := hx_bound
+                have hq'_lt_y : (extendPoint q' : ExtendedCarrier M atomMap r) < y := by
+                  rw [hpy]; exact (extendPoint_lt_iff q' py).mpr hq'_lt
+                have hq'_lt_x := h_abv_M q' (hq'_not_cut : q' ∉ inf_carrier_cut S_C_M) hq'_lt_y
+                have : ¬ (q' ≤ p₀) := fun h => hq'_not_cut (gamma_M.downward_closed p₀ q' hp₀_cut h)
+                have hx_le_q' := le_trans hx_le_p₀
+                  ((extendPoint_le_iff p₀ q').mpr (le_of_lt (not_le.mp this)))
+                exact absurd hx_le_q' (not_le.mpr hq'_lt_x)
+              · exact hg
+            obtain ⟨gy, hgy⟩ := h_y_gap
+            have h_cut_eq_M' : gamma_M.cut = gy.val.cut := by
+              ext q; constructor
+              · intro hq
+                have h1 := (hq : q ∈ inf_carrier_cut S_C_M) _ h_y_in_SC_M
+                rw [hgy] at h1; exact h1
+              · intro hq; by_contra hq_not
+                obtain ⟨p₀, hp₀_cut, hx_le_p₀⟩ := hx_bound
+                have hq_lt_y : (extendPoint q : ExtendedCarrier M atomMap r) < y := by
+                  rw [hgy]; exact ⟨hq, fun h => absurd hq h⟩
+                have hq_lt_x := h_abv_M q (hq_not : q ∉ inf_carrier_cut S_C_M) hq_lt_y
+                have : ¬ (q ≤ p₀) := fun h => hq_not (gamma_M.downward_closed p₀ q hp₀_cut h)
+                have hx_le_q := le_trans hx_le_p₀
+                  ((extendPoint_le_iff p₀ q).mpr (le_of_lt (not_le.mp this)))
+                exact absurd hx_le_q (not_le.mpr hq_lt_x)
+            refine ⟨y, ⟨hxy, le_refl y⟩, ?_, ?_⟩
+            · -- ∀ s ∈ S_C_M, y ≤ s
+              intro s hs; match s, hs with
+              | Sum.inl ps, hs =>
+                rw [hgy]
+                have : ps ∉ gamma_M.cut := by
+                  intro h_in; obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min_M ps hs
+                  exact absurd ((h_in : ps ∈ inf_carrier_cut S_C_M) t ht_in) (not_le.mpr ht_lt)
+                rwa [h_cut_eq_M'] at this
+              | Sum.inr gs, hs =>
+                rw [hgy]; intro q hq; rw [← h_cut_eq_M'] at hq
+                exact (hq : q ∈ inf_carrier_cut S_C_M) _ hs
+            · -- GLB
+              intro e he; exact he _ h_y_in_SC_M
         · -- ¬hx_bound: gamma_M = x (as gaps), c_inf = x.
           push_neg at hx_bound
           have hx_gap : IsGap x := by
