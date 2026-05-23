@@ -2002,14 +2002,31 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
               ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
             exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
-      · -- Case 3: No carrier-point GLB. Use infimum_gap to construct d as a gap.
-        -- h_has_glb negated IS exactly the h_not_point_glb precondition for infimum_gap.
-        -- The infimum is a gap defined by inf_carrier_cut S_C, made r-definable via
-        -- infimum_gap_r_definable. All infrastructure is sorry-free.
-        -- This case requires assembling preconditions for infimum_gap_r_definable
-        -- (hx'_bound, h_above_gap_below_y') which is non-trivial but mechanical.
-        -- For now, sorry the entire Case 3 — the architectural fix is Case 2 above.
-        -- Phase 3 (c-gap-case) will provide this when gap detection is wired in.
+      · -- Case 3: No carrier-point GLB. Construct d as a gap via infimum_gap.
+        -- Step 3.1: Derive h_above (needed for inf_carrier_cut_proper).
+        have h_above : ∃ (q : N.carrier) (s : ↥S_C),
+            (extendPoint q : ExtendedCarrier N atomMap r) > s.val := by
+          obtain ⟨s₀, hs₀⟩ := h_ne
+          rcases isPoint_or_isGap s₀ with ⟨p₀, hp₀⟩ | ⟨g₀, hg₀⟩
+          · -- s₀ is carrier point: h_has_pt_min gives t ∈ S_C with t < s₀
+            have hs₀' : (extendPoint p₀ : ExtendedCarrier N atomMap r) ∈ S_C := by
+              rw [show (extendPoint p₀ : ExtendedCarrier N atomMap r) = s₀ from hp₀.symm]; exact hs₀
+            obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min p₀ hs₀'
+            exact ⟨p₀, ⟨t, ht_in⟩, ht_lt⟩
+          · -- s₀ is a gap: use g₀.proper to find q ∉ g₀.cut
+            have h_proper := g₀.val.proper
+            rw [Set.ne_univ_iff_exists_not_mem] at h_proper
+            obtain ⟨q, hq_not_in⟩ := h_proper
+            have hq_ge : (extendPoint q : ExtendedCarrier N atomMap r) ≥ s₀ := hg₀ ▸ hq_not_in
+            have hq_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ s₀ := by
+              rw [hg₀]; exact fun h => absurd h (by simp [extendPoint])
+            exact ⟨q, ⟨s₀, hs₀⟩, lt_of_le_of_ne hq_ge (Ne.symm hq_ne)⟩
+        -- Step 3.2: Construct the gap and package as RDefinableGap.
+        set gamma := infimum_gap h_ne h_pt_below h_above h_has_glb with gamma_def
+        -- Step 3.3: Prove r-definability (needed to form ExtendedCarrier element).
+        -- This requires hx'_bound and h_above_gap_below_y' preconditions.
+        -- Deferred: the precondition derivation involves sub-case split on whether
+        -- the infimum equals x' (sub-case 3b) or is strictly above x' (sub-case 3a).
         sorry
   -- Step 2: Construct c = inf(S_C^M) — the M-side infimum (GHR93 p.115-116).
   -- S_C^M = { t ∈ [x,y] : cont_holds_cross at all mu-points in (t, y) in M }.
@@ -2100,7 +2117,27 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
               ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
             exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
-      · -- Case 3: No carrier-point GLB. Gap case — sorry'd (same as N-side Case 3).
+      · -- Case 3: No carrier-point GLB. Construct c_inf as a gap (mirrors N-side Case 3).
+        -- Step 3.1: Derive h_above_M.
+        have h_above_M : ∃ (q : M.carrier) (s : ↥S_C_M),
+            (extendPoint q : ExtendedCarrier M atomMap r) > s.val := by
+          obtain ⟨s₀, hs₀⟩ := h_ne_M
+          rcases isPoint_or_isGap s₀ with ⟨p₀, hp₀⟩ | ⟨g₀, hg₀⟩
+          · have hs₀' : (extendPoint p₀ : ExtendedCarrier M atomMap r) ∈ S_C_M := by
+              rw [show (extendPoint p₀ : ExtendedCarrier M atomMap r) = s₀ from hp₀.symm]; exact hs₀
+            obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min_M p₀ hs₀'
+            exact ⟨p₀, ⟨t, ht_in⟩, ht_lt⟩
+          · have h_proper := g₀.val.proper
+            rw [Set.ne_univ_iff_exists_not_mem] at h_proper
+            obtain ⟨q, hq_not_in⟩ := h_proper
+            have hq_ge : (extendPoint q : ExtendedCarrier M atomMap r) ≥ s₀ := hg₀ ▸ hq_not_in
+            have hq_ne : (extendPoint q : ExtendedCarrier M atomMap r) ≠ s₀ := by
+              rw [hg₀]; exact fun h => absurd h (by simp [extendPoint])
+            exact ⟨q, ⟨s₀, hs₀⟩, lt_of_le_of_ne hq_ge (Ne.symm hq_ne)⟩
+        -- Step 3.2: Construct the gap.
+        set gamma_M := infimum_gap h_ne_M h_pt_below_M h_above_M h_has_glb_M with gamma_M_def
+        -- Step 3.3: Package as ExtendedCarrier element (needs r-definability).
+        -- Same as N-side: requires infimum_gap_r_definable preconditions.
         sorry
   -- c_inf ∈ S_C^M: for any mu u > c_inf in M, u is not a lower bound of S_C^M,
   -- so ∃ s ∈ S_C^M with s < u, giving cont_holds_cross at u from s's tail.
@@ -2423,7 +2460,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       by_cases hxc_eq : x = c
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hxc_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · sorry
+        · sorry -- Degenerate gap: x = c is a gap, no carrier point in [c, c]
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, hc_interval.1, le_refl _⟩
@@ -2440,7 +2477,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       by_cases hcy_eq : c = y
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [← hcy_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · sorry
+        · sorry -- Degenerate gap: c = y is a gap, no carrier point in [c, c]
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, le_refl _, hc_interval.2⟩
