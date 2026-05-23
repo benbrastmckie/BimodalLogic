@@ -9135,28 +9135,144 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
         exact (lift3_iffB s uinit v).mpr (hinit v huv hvt hmu_v)
 -/
 
-/--
-**GHR93 Theorem 9.3.1 (Theorem 4)**: {U, S, U', S'} is expressively
-complete for all linear temporal structures.
+/-! ## StaviFormula Disjunction Combinator -/
 
-For any monadic FO formula psi with one free variable, there exists a
-StaviFormula A such that for any ordered monadic structure M, atom map,
-and point t:
+private def sf_disj (A B : StaviFormula) : StaviFormula :=
+  .neg (.conj (.neg A) (.neg B))
 
-  stavi_temporal_truth M atomMap t A ↔ eval M (fun _ => t) psi
+private def sf_disjList : List StaviFormula → StaviFormula
+  | [] => .base .bot
+  | [a] => a
+  | a :: as => sf_disj a (sf_disjList as)
 
-NOTE: This is currently sorry'd. The full game-theoretic proof is
-estimated at 1000-1500 lines across the four cases of the main
-induction. See the plan for Phase 4 (Sub-stages 4B and 4C).
--/
+private theorem sf_disj_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (A B : StaviFormula) :
+    stavi_temporal_truth M atomMap t (sf_disj A B) ↔
+    (stavi_temporal_truth M atomMap t A ∨ stavi_temporal_truth M atomMap t B) := by
+  simp only [sf_disj, stavi_temporal_truth]; tauto
+
+private theorem sf_disjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (l : List StaviFormula) :
+    stavi_temporal_truth M atomMap t (sf_disjList l) ↔
+    (∃ A ∈ l, stavi_temporal_truth M atomMap t A) := by
+  induction l with
+  | nil =>
+    simp only [sf_disjList, stavi_temporal_truth, temporal_truth]
+    constructor
+    · exact False.elim
+    · rintro ⟨A, ⟨⟩, _⟩
+  | cons a as ih =>
+    cases as with
+    | nil =>
+      simp only [sf_disjList, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h => ⟨a, rfl, h⟩, fun ⟨_, rfl, h⟩ => h⟩
+    | cons b bs =>
+      simp only [sf_disjList]
+      rw [sf_disj_iff]
+      constructor
+      · rintro (ha | hrest)
+        · exact ⟨a, List.Mem.head _, ha⟩
+        · obtain ⟨A, hA, h⟩ := ih.mp hrest
+          exact ⟨A, List.Mem.tail a hA, h⟩
+      · rintro ⟨A, hA, h⟩
+        cases hA with
+        | head => exact Or.inl h
+        | tail _ hA => exact Or.inr (ih.mpr ⟨A, hA, h⟩)
+
+/-! ## NF Characterization by StaviFormulas -/
+
+/-- Core game-theoretic lemma: each NF is characterizable by a StaviFormula. -/
+theorem nf_characterizable_by_stavi
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat) (nf : NormalForm sig k 1) :
+    ∃ A : StaviFormula, ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
+      stavi_temporal_truth M atomMap t A ↔
+      nf_eval_nf M k 1 (fun _ => t) nf := by
+  sorry
+
+/-- **GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete. -/
 noncomputable def stavi_expressive_completeness
     (sig : MonadicSignature) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (psi : MonadicFormula sig 1) :
     { A : StaviFormula //
       ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
         stavi_temporal_truth M atomMap t A ↔
         eval M (fun _ => t) psi } := by
-  sorry
+  set k := psi.quantifier_depth with hk_def
+  -- Choose characteristic StaviFormulas for each NF
+  have nf_char := fun nf => nf_characterizable_by_stavi atomMap h_surj k nf
+  let char_sf : NormalForm sig k 1 → StaviFormula :=
+    fun nf => Classical.choose (nf_char nf)
+  have char_correct : ∀ (nf : NormalForm sig k 1)
+      (M : OrderedMonadicStructure sig) (t : M.carrier),
+      stavi_temporal_truth M atomMap t (char_sf nf) ↔
+      nf_eval_nf M k 1 (fun _ => t) nf :=
+    fun nf => Classical.choose_spec (nf_char nf)
+  -- "good" predicate as Prop
+  let good_prop : NormalForm sig k 1 → Prop :=
+    fun nf => ∃ (M : OrderedMonadicStructure sig) (t : M.carrier),
+      nf_eval_nf M k 1 (fun _ => t) nf ∧ eval M (fun _ => t) psi
+  -- Build the disjunction via Classical.dec as a Bool filter
+  let all_nfs := (Fintype.elems (α := NormalForm sig k 1)).val.toList
+  let good_formulas := all_nfs.filterMap (fun nf =>
+    if @decide (good_prop nf) (Classical.dec _) then some (char_sf nf) else none)
+  -- Helper: good_formulas membership characterization
+  have mem_good_iff : ∀ (sf : StaviFormula), sf ∈ good_formulas ↔
+      ∃ nf ∈ all_nfs, good_prop nf ∧ sf = char_sf nf := by
+    intro sf
+    simp only [good_formulas, List.mem_filterMap]
+    constructor
+    · rintro ⟨nf, hnf_mem, h_ite⟩
+      by_cases hg : good_prop nf
+      · rw [if_pos (@decide_eq_true _ (Classical.dec _) hg)] at h_ite
+        exact ⟨nf, hnf_mem, hg, (Option.some.inj h_ite).symm⟩
+      · rw [if_neg (mt (@decide_eq_true_eq _ (Classical.dec _)).mp hg)] at h_ite
+        exact absurd h_ite (by simp)
+    · rintro ⟨nf, hnf_mem, hg, rfl⟩
+      exact ⟨nf, hnf_mem, by rw [if_pos (@decide_eq_true _ (Classical.dec _) hg)]⟩
+  -- NF determines psi (from doets_lemma_1_1 + nf_exists_unique)
+  have nf_determines_psi : ∀ (nf : NormalForm sig k 1)
+      (M₁ M₂ : OrderedMonadicStructure sig) (t₁ : M₁.carrier) (t₂ : M₂.carrier),
+      nf_eval_nf M₁ k 1 (fun _ => t₁) nf →
+      nf_eval_nf M₂ k 1 (fun _ => t₂) nf →
+      (eval M₁ (fun _ => t₁) psi ↔ eval M₂ (fun _ => t₂) psi) := by
+    intro nf M₁ M₂ t₁ t₂ h₁ h₂
+    apply doets_lemma_1_1 k 1 psi (hk_def ▸ le_refl _) M₁ M₂ (fun _ => t₁) (fun _ => t₂)
+    intro nf'
+    obtain ⟨c₁, hc₁, hu₁⟩ := nf_exists_unique M₁ k 1 (fun _ => t₁)
+    obtain ⟨c₂, hc₂, hu₂⟩ := nf_exists_unique M₂ k 1 (fun _ => t₂)
+    simp only at hu₁ hu₂
+    have h_eq₁ : c₁ = nf := (hu₁ nf h₁).symm
+    have h_eq₂ : c₂ = nf := (hu₂ nf h₂).symm
+    subst h_eq₁; subst h_eq₂
+    constructor
+    · intro h'; have := hu₁ nf' h'; subst this; exact hc₂
+    · intro h'; have := hu₂ nf' h'; subst this; exact hc₁
+  -- Construct the result
+  refine ⟨sf_disjList good_formulas, fun M t => ?_⟩
+  rw [sf_disjList_iff]
+  constructor
+  · -- Forward: some good NF's characteristic formula holds → psi holds
+    rintro ⟨A, hA_mem, hA_eval⟩
+    rw [mem_good_iff] at hA_mem
+    obtain ⟨nf, _, h_good, rfl⟩ := hA_mem
+    have h_nf_eval := (char_correct nf M t).mp hA_eval
+    obtain ⟨M', t', hM'_nf, hM'_psi⟩ := h_good
+    exact (nf_determines_psi nf M' M t' t hM'_nf h_nf_eval).mp hM'_psi
+  · -- Backward: psi holds → some good NF's characteristic formula holds
+    intro h_psi
+    set nf_M := nf_characteristic M k 1 (fun _ => t)
+    have h_nf_M := nf_characteristic_satisfies M k 1 (fun _ => t)
+    have h_char_eval := (char_correct nf_M M t).mpr h_nf_M
+    have h_good : good_prop nf_M := ⟨M, t, h_nf_M, h_psi⟩
+    have h_in : char_sf nf_M ∈ good_formulas := by
+      rw [mem_good_iff]
+      exact ⟨nf_M, Multiset.mem_toList.mpr (Fintype.complete nf_M), h_good, rfl⟩
+    exact ⟨char_sf nf_M, h_in, h_char_eval⟩
 
 
 end Bimodal.Metalogic.WeakCanonical
