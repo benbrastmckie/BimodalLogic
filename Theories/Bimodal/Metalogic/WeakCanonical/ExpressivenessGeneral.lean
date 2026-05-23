@@ -30,23 +30,6 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax
 
-/-! ## Symmetry of the Winning Condition -/
-
-/-- The winning condition is symmetric: swapping the tuples (and structures)
-    preserves it. -/
-theorem ghr93_winning_condition_symm {sig : MonadicSignature}
-    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
-    {n : Nat}
-    {tM : Fin (n + 3) → ExtendedCarrier M atomMap r}
-    {tN : Fin (n + 3) → ExtendedCarrier N atomMap r}
-    (h : ghr93_winning_condition n tM tN) :
-    ghr93_winning_condition n tN tM := by
-  obtain ⟨hord, hgp, hform⟩ := h
-  refine ⟨?_, ?_, ?_⟩
-  · intro i j; exact ⟨(hord i j).1.symm, (hord i j).2.symm⟩
-  · intro i; exact ⟨(hgp i).1.symm, (hgp i).2.symm⟩
-  · intro i A hA; exact (hform i A hA).symm
-
 /-! ## Base Case Helper: Embedding 0-Game into 1-Game Tuples
 
 For the base case of Theorem 6, we need to relate game_tuples for the
@@ -4738,7 +4721,7 @@ private theorem ghr93_case_II {sig : MonadicSignature}
   -- ghr93_winning_condition (n+1) (game_tuple x y a_M e_n_pt) (game_tuple x' y' a_N p_n)
   -- By symmetry, we also get:
   -- ghr93_winning_condition (n+1) (game_tuple x' y' a_N p_n) (game_tuple x y a_M e_n_pt)
-  have hcond_sym := ghr93_winning_condition_symm hcond_fwd
+  have hcond_sym := (ghr93_winning_condition_symm _ _).mp hcond_fwd
   -- Extract formula agreement at position n+1 (e_n vs a_bwd(n))
   obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
   have hform_en_an : ∀ (A : StaviFormula), stavi_depth A ≤ r →
