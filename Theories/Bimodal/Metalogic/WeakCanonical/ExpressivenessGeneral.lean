@@ -2900,26 +2900,134 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         have hK_true_r2 : stavi_temporal_truth_mu N atomMap (r + 2) r2_resp K_minus :=
           hform_1.mp (hM_bridge_K.mpr hK_true_c)
         -- (3) Since(⊤, D_M) TRUE at r2_resp in N at rank r+2 (for contradiction).
-        -- hK_true_r2 gives K_minus TRUE = Since FALSE at r2_resp.
-        -- Need Since TRUE at r2_resp independently.
-        -- Since(⊤, D_M)(r2_resp) = ∃ mu s < r2_resp, ∀ mu u ∈ (s, r2_resp), D_M(u).
-        -- D_M holds on all mu in (d, y') in N at rank r:
-        --   - On (a_bwd(n), y') from hD_interval directly
-        --   - On (d, a_bwd(n)] via cont_holds (d ∈ S_C + hD_interval)
-        -- At rank r+2: D_M holds on all mu in (rank_embed(d), rank_embed(y')).
-        -- Need mu witness s with rank_embed(d) ≤ s < r2_resp.
-        -- When d is mu: s = rank_embed(d) works.
-        -- When d is gap: need mu-point above d below r2_resp.
-        -- Edge case: no such mu-point exists (gap between d and next carrier point).
-        -- This Since witness construction is the remaining blocker.
-        -- NOTE: hK_true_r2 and h_since_false_c are fully proved above.
-        sorry
+        -- hK_true_r2 gives K_minus = neg(Since(⊤, D_M)), so Since FALSE at r2_resp.
+        -- We show Since TRUE at r2_resp: witness s = rank_embed(d) when d is a point.
+        -- Unfold K_minus to get ¬∃ form.
+        simp only [K_minus, stavi_temporal_truth_mu] at hK_true_r2
+        -- hK_true_r2 : ¬∃ s < r2_resp, mu_holds s ∧ ¬(.bot)(s) ∧ ∀ mu u ∈ (s,r2_resp), D_M(u)
+        -- Case-split: is d a carrier point or a gap?
+        rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+        · -- d = extendPoint p_d: rank_embed d = extendPoint p_d at rank r+2
+          apply hK_true_r2
+          refine ⟨rank_embed (by omega : r ≤ r + 2) d, h_not_le, ?_, ?_, ?_⟩
+          · -- mu_holds (rank_embed d): d is a carrier point, so rank_embed d is too
+            exact (rank_embed_mu_holds (by omega : r ≤ r + 2) d).mpr ⟨p_d, hp_d⟩
+          · -- ¬ temporal_truth_mu N atomMap (r+2) (rank_embed d) .bot = ¬ False
+            simp [temporal_truth_mu]
+          · -- ∀ mu u ∈ (rank_embed d, r2_resp), D_M(u) at rank r+2
+            intro u hu_gt hu_lt hmu_u
+            -- u is a mu-point in (rank_embed d, r2_resp) at rank r+2.
+            -- mu_holds u means u = extendPoint q for some q : N.carrier.
+            obtain ⟨q, hq⟩ := hmu_u
+            rw [hq] at hu_gt hu_lt ⊢
+            -- extendPoint q at rank r+2 is Sum.inl q. We need D_M at q.
+            -- Use rank_embed_stavi_truth_mu: truth at rank r+2 ↔ truth at rank r.
+            -- Sum.inl q = extendPoint q = rank_embed (extendPoint q).
+            have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
+                rank_embed (by omega : r ≤ r + 2)
+                  (extendPoint q : ExtendedCarrier N atomMap r) :=
+              (rank_embed_point (by omega : r ≤ r + 2) q).symm
+            rw [hq_eq, rank_embed_stavi_truth_mu]
+            -- Goal: stavi_temporal_truth_mu N atomMap r (extendPoint q) D_M
+            -- rank_embed d < rank_embed (extendPoint q), so d < extendPoint q.
+            have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
+              rw [hq_eq] at hu_gt
+              exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q)).mp hu_gt
+            -- extendPoint q < r2_resp ≤ rank_embed y', so extendPoint q < y' at rank r.
+            have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
+              (ha'_r2 ⟨0, by omega⟩).2
+            have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
+              have h1 : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                  rank_embed (by omega : r ≤ r + 2) y' := by
+                rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
+              exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp h1
+            -- d ∈ S_C: cont_holds at all mu in (d, y'). Apply to extendPoint q.
+            exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+        · -- d is a gap: Phase 3 deferred (gap infimum wiring).
+          -- When d is a gap, we need a mu-point witness above d and below r2_resp.
+          -- This requires the gap-infimum → carrier-point-below machinery from Phase 3.
+          sorry
       · -- Case B: ¬ cont_holds_cross at c_inf.
-        -- c_inf is a mu-point where cont_holds_cross fails. From ¬cont_holds_cross:
-        -- ∃ A, stavi_depth A ≤ r, A on (a_bwd(n), y') in N, ¬A at c_inf in M.
-        -- This formula A directly serves as a separator. Use it for the K⁻ argument.
-        -- Sorry'd pending detailed implementation (Case B).
-        sorry
+        -- ¬cont_holds_cross gives us formula A_B with depth ≤ r that holds on
+        -- (a_bwd(n), y') in N but fails at c_inf in M.
+        -- Direct transfer via formula_agreement: A_B false at c_inf in M
+        -- → A_B false at r2_resp in N (at rank r+2).
+        -- But A_B holds at all mu-points in (d, y') in N at rank r, so if
+        -- r2_resp is a carrier point, A_B holds there → contradiction.
+        simp only [cont_holds_cross] at h_cont_c
+        push_neg at h_cont_c
+        obtain ⟨A_B, hA_depth, hA_interval_B, hA_fail⟩ := h_cont_c
+        -- Transfer A_B from c_inf (M) to r2_resp (N) via formula_agreement.
+        -- A_B has depth ≤ r ≤ r+2.
+        have hA_depth_r2 : stavi_depth A_B ≤ r + 2 := le_trans hA_depth (by omega)
+        have hform_A := hform_w ⟨1, by omega⟩ A_B (by exact hA_depth_r2)
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ 1 + 1 from by omega,
+                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega] at hform_A
+        have hM_bridge_A : stavi_temporal_truth_mu M atomMap (r + 2)
+            (rank_embed (by omega : r ≤ r + 2) c_inf) A_B ↔
+            stavi_temporal_truth_mu M atomMap r c_inf A_B :=
+          rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf A_B
+        -- ¬A_B(c_inf) at rank r → ¬A_B(rank_embed c_inf) at rank r+2 → ¬A_B(r2_resp) at rank r+2
+        have hA_false_r2 : ¬ stavi_temporal_truth_mu N atomMap (r + 2) r2_resp A_B := by
+          intro h_true
+          exact hA_fail (hM_bridge_A.mp (hform_A.mpr h_true))
+        -- Now we need A_B TRUE at r2_resp to get contradiction.
+        -- Case split on whether r2_resp is a carrier point or gap.
+        rcases isPoint_or_isGap r2_resp with ⟨q_r2, hq_r2⟩ | ⟨g_r2, hg_r2⟩
+        · -- r2_resp = extendPoint q_r2 at rank r+2.
+          -- Show A_B holds at q_r2 at rank r+2 via rank_embed and cont_holds.
+          apply hA_false_r2
+          rw [hq_r2]
+          -- extendPoint q_r2 at rank r+2 = rank_embed(extendPoint q_r2 at rank r)
+          have hq_eq : (Sum.inl q_r2 : ExtendedCarrier N atomMap (r + 2)) =
+              rank_embed (by omega : r ≤ r + 2)
+                (extendPoint q_r2 : ExtendedCarrier N atomMap r) :=
+            (rank_embed_point (by omega : r ≤ r + 2) q_r2).symm
+          rw [hq_eq, rank_embed_stavi_truth_mu]
+          -- Need: d < extendPoint q_r2 < y' at rank r.
+          have hd_lt_q : d < (extendPoint q_r2 : ExtendedCarrier N atomMap r) := by
+            have : rank_embed (by omega : r ≤ r + 2) d <
+                rank_embed (by omega : r ≤ r + 2) (extendPoint q_r2 : ExtendedCarrier N atomMap r) := by
+              rw [← hq_eq]; rw [← hq_r2]; exact h_not_le
+            exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q_r2)).mp this
+          have hq_lt_y' : (extendPoint q_r2 : ExtendedCarrier N atomMap r) < y' := by
+            have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
+              (ha'_r2 ⟨0, by omega⟩).2
+            have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_r2 : ExtendedCarrier N atomMap r) ≤
+                rank_embed (by omega : r ≤ r + 2) y' := by
+              rw [← hq_eq]; rw [← hq_r2]; exact hr2_le_y'
+            have hle := (rank_embed_le (by omega : r ≤ r + 2) (extendPoint q_r2) y').mp this
+            -- Need strict: q_r2 < y'. If q_r2 = y', then r2_resp = rank_embed y'.
+            -- hA_interval_B needs a_bwd(n) < v < y' for A_B(v).
+            -- But then A_B at r2_resp = A_B at rank_embed y' = A_B at y'.
+            -- If y' is a carrier point, then A_B would hold at y' only if a_bwd(n) < y' < y'.
+            -- Actually we just need strict inequality.
+            rcases lt_or_eq_of_le hle with h | h
+            · exact h
+            · -- extendPoint q_r2 = y'. Then rank_embed(extendPoint q_r2) = rank_embed y'.
+              -- So r2_resp = rank_embed y'. From hord_13: c_inf < y ↔ r2_resp < rank_embed y'.
+              -- But r2_resp = rank_embed y' makes r2_resp < rank_embed y' false.
+              -- So ¬(c_inf < y), i.e. y ≤ c_inf. With c_inf ≤ y: c_inf = y.
+              -- Then x < c_inf = y, but cont_holds_cross fails at c_inf = y.
+              -- But y ∈ S_C_M means cont_holds_cross at all mu in (y, y) which is vacuous.
+              -- The failure is AT y = c_inf, which is consistent.
+              -- From hx_lt_c and c_inf = y: x < y (OK, follows from hxy and hx_lt_c).
+              -- But we need h_not_le: rank_embed d < r2_resp = rank_embed y'.
+              -- So d < y'. And d ≤ a_bwd(n) < y' (from ha_bwd).
+              -- Actually, since d ≤ y' and rank_embed d < rank_embed y', d < y'.
+              -- So extendPoint q_r2 = y' and r2_resp = rank_embed y'.
+              -- The transfer gives ¬A_B(rank_embed y') in N at rank r+2
+              -- = ¬A_B(y') at rank r. But hA_interval_B: a_bwd(n) < v < y' → A_B(v).
+              -- This doesn't give A_B at y' itself. So actually the direct transfer
+              -- approach doesn't work at the boundary y'. Need K⁻ argument for this edge.
+              -- For now, sorry this edge case.
+              sorry
+          -- d ∈ S_C: cont_holds at all mu in (d, y'). Apply to extendPoint q_r2.
+          exact hd_in_SC.2 (extendPoint q_r2) hd_lt_q hq_lt_y' (mu_holds_point q_r2) A_B hA_depth hA_interval_B
+        · -- r2_resp is a gap: deferred to Phase 3 (gap handling).
+          sorry
   -- Direction 2: rank_embed(d) ≤ r2_resp
   -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
   have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
