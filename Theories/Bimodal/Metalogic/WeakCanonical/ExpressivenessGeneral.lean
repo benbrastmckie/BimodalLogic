@@ -3267,30 +3267,52 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       -- r2_resp = rank_embed(x') ≤ rank_embed(d), contradicting h_not_le
       exact absurd (h_r2_eq_x' ▸ hx'_le_d) (not_le.mpr h_not_le)
     · -- Case: x < c_inf. GHR93 Claim 1 K⁻(¬D_M) argument.
-      -- Case split on cont_holds_cross at c_inf (report 38 "The Third Option"):
-      -- Case A: cont_holds_cross holds at c_inf → all cofinal failure witnesses
-      --   are strictly below c_inf → strict pigeonhole works cleanly.
-      -- Case B: cont_holds_cross fails at c_inf → direct formula failure
-      --   (sorry'd for now, to be filled in follow-up).
-      by_cases h_cont_c : cont_holds_cross (a_bwd ⟨n, by omega⟩) y' c_inf
-      · -- Case A: cont_holds_cross holds at c_inf.
-        -- All cofinal failure witnesses must be strictly below c_inf:
-        -- if any witness u from h_cofinal_failure_below_c_inf satisfies u = c_inf,
-        -- then ¬cont_holds_cross at u = c_inf, contradicting h_cont_c.
-        have h_strict_failure :
-            ∀ (s : ExtendedCarrier M atomMap r),
-              inClosedInterval x y s → s < c_inf →
-              ∃ (u : ExtendedCarrier M atomMap r),
-                s < u ∧ u < c_inf ∧ u < y ∧
-                mu_holds u ∧ ¬ cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u := by
-          intro s hs hs_lt_c
-          obtain ⟨v, hsv, hv_le_c, hvy, hmu_v, h_not_cont_v⟩ :=
-            h_cofinal_failure_below_c_inf s hs hs_lt_c
-          have hv_lt_c : v < c_inf := by
-            rcases eq_or_lt_of_le hv_le_c with hv_eq | hv_lt
-            · exact absurd (hv_eq ▸ h_cont_c) h_not_cont_v
-            · exact hv_lt
-          exact ⟨v, hsv, hv_lt_c, hvy, hmu_v, h_not_cont_v⟩
+      -- Strict failures below c_inf: for any s < c_inf in [x,y], there exists
+      -- a mu-point u with s < u < c_inf, u < y, and ¬cont_holds_cross at u.
+      -- This holds unconditionally (no case split on cont_holds_cross at c_inf):
+      -- if ALL failures were at c_inf (u = c_inf), then cont_holds_cross would hold
+      -- at every mu in (s, c_inf) for any s, making s ∈ S_C_M and c_inf ≤ s,
+      -- contradicting s < c_inf.
+      have h_strict_failure :
+          ∀ (s : ExtendedCarrier M atomMap r),
+            inClosedInterval x y s → s < c_inf →
+            ∃ (u : ExtendedCarrier M atomMap r),
+              s < u ∧ u < c_inf ∧ u < y ∧
+              mu_holds u ∧ ¬ cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u := by
+        intro s hs hs_lt_c
+        -- By contradiction: assume no strict failure in (s, c_inf).
+        -- Then cont_holds_cross holds at every mu in (s, c_inf).
+        -- Combined with c_inf ∈ S_C_M (which covers mu above c_inf), s ∈ S_C_M.
+        -- But c_inf = GLB(S_C_M) ≤ s < c_inf. Contradiction.
+        by_contra h_no_strict
+        push_neg at h_no_strict
+        -- h_no_strict: ∀ u, s < u → u < c_inf → u < y → mu_holds u →
+        --              cont_holds_cross ... u
+        -- (from the push_neg of ¬∃ u, s < u ∧ u < c_inf ∧ u < y ∧ mu_holds u ∧ ¬cont_holds_cross u)
+        -- Actually push_neg gives: ∀ u, s < u → u < c_inf → u < y → mu_holds u → cont_holds_cross u
+        -- Wait, the negated form is more complex. Let me handle this carefully.
+        -- ¬(∃ u, s < u ∧ u < c_inf ∧ u < y ∧ mu_holds u ∧ ¬cont_holds_cross u)
+        -- = ∀ u, ¬(s < u ∧ u < c_inf ∧ u < y ∧ mu_holds u ∧ ¬cont_holds_cross u)
+        -- = ∀ u, s < u → u < c_inf → u < y → mu_holds u → cont_holds_cross u
+        -- (by repeated application of ¬(A ∧ B) = A → ¬B when A is Prop)
+        -- Actually push_neg on ¬∃ gives ∀ ¬, and on ∧ gives →.
+        -- The result is: ∀ u, s < u → u < c_inf → u < y → mu_holds u → ¬¬cont_holds_cross u
+        -- which simplifies to cont_holds_cross u.
+        -- Let me use the right structure.
+        have h_cont_between : ∀ (u : ExtendedCarrier M atomMap r),
+            s < u → u < c_inf → u < y → mu_holds u →
+            cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u := by
+          intro u hsu hu_lt_c huy hmu
+          by_contra h_fail
+          exact h_no_strict ⟨u, hsu, hu_lt_c, huy, hmu, h_fail⟩
+        -- Now show s ∈ S_C_M.
+        have hs_in_SC_M : s ∈ S_C_M := by
+          refine ⟨hs, ?_⟩
+          intro u hsu huy hmu_u
+          rcases lt_or_le u c_inf with hu_lt_c | hu_ge_c
+          · exact h_cont_between u hsu hu_lt_c huy hmu_u
+          · exact hc_inf_in_SC_M.2 u (lt_of_lt_of_le hs_lt_c hu_ge_c) huy hmu_u
+        exact absurd (hc_inf_glb s hs_in_SC_M) (not_le.mpr hs_lt_c)
         -- Bridge to strict pigeonhole precondition (trivially satisfied now):
         have h_strict_bridge :
             ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
@@ -3671,87 +3693,6 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
               exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
-      · -- Case B: ¬ cont_holds_cross at c_inf.
-        -- ¬cont_holds_cross gives us formula A_B with depth ≤ r that holds on
-        -- (a_bwd(n), y') in N but fails at c_inf in M.
-        -- Direct transfer via formula_agreement: A_B false at c_inf in M
-        -- → A_B false at r2_resp in N (at rank r+2).
-        -- But A_B holds at all mu-points in (d, y') in N at rank r, so if
-        -- r2_resp is a carrier point, A_B holds there → contradiction.
-        simp only [cont_holds_cross] at h_cont_c
-        push_neg at h_cont_c
-        obtain ⟨A_B, hA_depth, hA_interval_B, hA_fail⟩ := h_cont_c
-        -- Transfer A_B from c_inf (M) to r2_resp (N) via formula_agreement.
-        -- A_B has depth ≤ r ≤ r+2.
-        have hA_depth_r2 : stavi_depth A_B ≤ r + 2 := le_trans hA_depth (by omega)
-        have hform_A := hform_w ⟨1, by omega⟩ A_B (by exact hA_depth_r2)
-        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-                   show (1 : Nat) ≠ 1 + 1 from by omega,
-                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-                   show 1 - 1 = 0 from by omega] at hform_A
-        have hM_bridge_A : stavi_temporal_truth_mu M atomMap (r + 2)
-            (rank_embed (by omega : r ≤ r + 2) c_inf) A_B ↔
-            stavi_temporal_truth_mu M atomMap r c_inf A_B :=
-          rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf A_B
-        -- ¬A_B(c_inf) at rank r → ¬A_B(rank_embed c_inf) at rank r+2 → ¬A_B(r2_resp) at rank r+2
-        have hA_false_r2 : ¬ stavi_temporal_truth_mu N atomMap (r + 2) r2_resp A_B := by
-          intro h_true
-          exact hA_fail (hM_bridge_A.mp (hform_A.mpr h_true))
-        -- Now we need A_B TRUE at r2_resp to get contradiction.
-        -- Case split on whether r2_resp is a carrier point or gap.
-        rcases isPoint_or_isGap r2_resp with ⟨q_r2, hq_r2⟩ | ⟨g_r2, hg_r2⟩
-        · -- r2_resp = extendPoint q_r2 at rank r+2.
-          -- Show A_B holds at q_r2 at rank r+2 via rank_embed and cont_holds.
-          apply hA_false_r2
-          rw [hq_r2]
-          -- extendPoint q_r2 at rank r+2 = rank_embed(extendPoint q_r2 at rank r)
-          have hq_eq : (Sum.inl q_r2 : ExtendedCarrier N atomMap (r + 2)) =
-              rank_embed (by omega : r ≤ r + 2)
-                (extendPoint q_r2 : ExtendedCarrier N atomMap r) :=
-            (rank_embed_point (by omega : r ≤ r + 2) q_r2).symm
-          rw [hq_eq, rank_embed_stavi_truth_mu]
-          -- Need: d < extendPoint q_r2 < y' at rank r.
-          have hd_lt_q : d < (extendPoint q_r2 : ExtendedCarrier N atomMap r) := by
-            have : rank_embed (by omega : r ≤ r + 2) d <
-                rank_embed (by omega : r ≤ r + 2) (extendPoint q_r2 : ExtendedCarrier N atomMap r) := by
-              rw [← hq_eq]; rw [← hq_r2]; exact h_not_le
-            exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q_r2)).mp this
-          have hq_lt_y' : (extendPoint q_r2 : ExtendedCarrier N atomMap r) < y' := by
-            have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
-              (ha'_r2 ⟨0, by omega⟩).2
-            have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_r2 : ExtendedCarrier N atomMap r) ≤
-                rank_embed (by omega : r ≤ r + 2) y' := by
-              rw [← hq_eq]; rw [← hq_r2]; exact hr2_le_y'
-            have hle := (rank_embed_le (by omega : r ≤ r + 2) (extendPoint q_r2) y').mp this
-            -- Need strict: q_r2 < y'. If q_r2 = y', then r2_resp = rank_embed y'.
-            -- hA_interval_B needs a_bwd(n) < v < y' for A_B(v).
-            -- But then A_B at r2_resp = A_B at rank_embed y' = A_B at y'.
-            -- If y' is a carrier point, then A_B would hold at y' only if a_bwd(n) < y' < y'.
-            -- Actually we just need strict inequality.
-            rcases lt_or_eq_of_le hle with h | h
-            · exact h
-            · -- extendPoint q_r2 = y'. Then rank_embed(extendPoint q_r2) = rank_embed y'.
-              -- So r2_resp = rank_embed y'. From hord_13: c_inf < y ↔ r2_resp < rank_embed y'.
-              -- But r2_resp = rank_embed y' makes r2_resp < rank_embed y' false.
-              -- So ¬(c_inf < y), i.e. y ≤ c_inf. With c_inf ≤ y: c_inf = y.
-              -- Then x < c_inf = y, but cont_holds_cross fails at c_inf = y.
-              -- But y ∈ S_C_M means cont_holds_cross at all mu in (y, y) which is vacuous.
-              -- The failure is AT y = c_inf, which is consistent.
-              -- From hx_lt_c and c_inf = y: x < y (OK, follows from hxy and hx_lt_c).
-              -- But we need h_not_le: rank_embed d < r2_resp = rank_embed y'.
-              -- So d < y'. And d ≤ a_bwd(n) < y' (from ha_bwd).
-              -- Actually, since d ≤ y' and rank_embed d < rank_embed y', d < y'.
-              -- So extendPoint q_r2 = y' and r2_resp = rank_embed y'.
-              -- The transfer gives ¬A_B(rank_embed y') in N at rank r+2
-              -- = ¬A_B(y') at rank r. But hA_interval_B: a_bwd(n) < v < y' → A_B(v).
-              -- This doesn't give A_B at y' itself. So actually the direct transfer
-              -- approach doesn't work at the boundary y'. Need K⁻ argument for this edge.
-              -- For now, sorry this edge case.
-              sorry
-          -- d ∈ S_C: cont_holds at all mu in (d, y'). Apply to extendPoint q_r2.
-          exact hd_in_SC.2 (extendPoint q_r2) hd_lt_q hq_lt_y' (mu_holds_point q_r2) A_B hA_depth hA_interval_B
-        · -- r2_resp is a gap: deferred to Phase 3 (gap handling).
-          sorry
   -- Direction 2: rank_embed(d) ≤ r2_resp
   -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
   have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
