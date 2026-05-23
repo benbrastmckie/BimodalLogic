@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-22T23:51:35Z",
+      "last_updated": "2026-05-23T00:03:58Z",
       "next_artifact_number": 28,
       "artifacts": [
         {
@@ -341,11 +341,6 @@
           "summary": "Deep analysis of GHR93 Claim 1 literature, definitive resolution of Phase 1 d-consistency blocker strategies, Lean infrastructure inventory, pipeline health assessment"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/17_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "v13 plan: Phase 1 unblocked via infimum + Claim 1 + Case II restructure. 40-60 hours remaining across 11 phases."
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T160731Z.md",
           "type": "handoff",
           "summary": "Phase 1 handoff: architectural blocker at Task 1.7 (IH h_fwd_r1), Tasks 1.2/1.3 confirmed complete, 5 proposed solutions for research"
@@ -409,9 +404,14 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/27_team-research.md",
           "type": "research",
           "summary": "Team research round 5 (4 teammates): h_d_unique blocker resolution, Claim 1 proof extraction, infrastructure inventory, strategic assessment"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v16 for Reynolds pipeline activation with Round 15 team research integrated -- 11 phases, 40-65 hours, Phase 1 h_d_unique resolution strategy fully specified"
         }
       ],
-      "session_id": "sess_1779492472_909b0f",
+      "session_id": "sess_1779494067_780bab",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z"
     },
