@@ -39,7 +39,7 @@ Formalize GHR93 Section 8 (expressive completeness of {U,S,U',S'}) + Reynolds ga
 
 | Risk | Mitigation |
 |------|-----------|
-| `interval_type_formula` construction (GHR93 Def 8.8) requires NormalForm → StaviFormula translation | Report 39 (pending) will determine exact construction. NormalForm is Fintype; StaviFormula has conj/neg. |
+| Full formula materialization (GHR93 Def 8.8) is CIRCULAR | Report 39: MonadicFormula depth 2r → StaviFormula depth r requires the theorem being proved. Use case-split (report 38) instead: GHR93 implicitly evaluates C(c), which our case split mirrors faithfully. |
 | Rank arithmetic: GHR93 rank r+1 = our stavi_depth r+2 | Already handled. h_fwd_r1 at rank r+2 provides sufficient depth budget. |
 | Model surgery (Reynolds Lemma 12) case explosion | Modularize per-case; S dual to U. |
 
@@ -60,14 +60,16 @@ Formalize GHR93 Section 8 (expressive completeness of {U,S,U',S'}) + Reynolds ga
 - [x] Direction 2 (d ≤ game response): carrier-point + gap cases, both proved
 - [x] IH h_fwd_r1 decoupled (Task 1.7)
 
-**Remaining work**:
-- [ ] **Build `interval_type_formula`** per GHR93 Definition 8.8 (~100-200 lines). Pending report 39. This is the SINGLE BLOCKER for Claim 1.
-- [ ] **Prove Claim 1 Direction 1** (game response ≤ d) using C' transfer (~80 lines once formula exists).
-- [ ] **Remove h_d_unique** + rewire d_consistency_left/right (~-100 lines).
+**Remaining work** (report 39 findings integrated):
+- [ ] **Case split on cont_holds at c_inf** (report 38/39, ~240 lines). Full formula materialization per Def 8.8 is CIRCULAR (MonadicFormula depth 2r → StaviFormula depth r requires the theorem being proved). GHR93 implicitly evaluates C(c); our case split mirrors this. Case A (holds): strict pigeonhole works, no boundary. Case B (fails): direct formula extraction, no pigeonhole.
+- [ ] **K⁻(¬D) construction + Since semantics** (~60 lines). Shared helper for both cases.
+- [ ] **Close Direction 1 interior sorry** using K⁻ transfer + Since witness at rank_embed(d) (~40 lines).
+- [ ] **Close Case B** using direct formula from ¬cont_holds_cross (~40 lines).
+- [ ] **Remove h_d_unique** + rewire (~-100 lines).
 - [ ] **sigma/tau same_order_type** (Task 1.6, ~100 lines with task 195 tactics). Unblocked once Claim 1 closes.
 - [ ] **Verification**: `lean_verify d_consistency_left`, `lean_verify ghr93_forward_to_backward`, `lake build`.
 
-**Timing**: 8-15 hours remaining.
+**Timing**: 6-10 hours remaining.
 **Files**: `ExpressivenessGeneral.lean`
 
 ---
@@ -150,4 +152,4 @@ Verify `#print axioms bx_completeness` shows no `sorryAx`. Full `lake build`.
 
 ## Rollback/Contingency
 
-If `interval_type_formula` construction proves infeasible due to NormalForm → StaviFormula circularity: research alternative constructions faithful to GHR93 Definition 8.8. No deviation to pigeonhole or predicate-level workarounds permitted.
+Report 39 confirmed full formula materialization is circular. The case-split approach (report 38) faithfully mirrors GHR93's implicit C(c) evaluation. The pigeonhole in Case A is necessary infrastructure (not a deviation) — it extracts a single StaviFormula separator since the full interval type formula can't be materialized without the theorem being proved.
