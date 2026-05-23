@@ -2693,9 +2693,42 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
           -- If r2_resp = rank_embed(x') and x' = d: r2_resp = rank_embed(d).
           -- Contradicts h_not_le: r2_resp < rank_embed(d).
           -- If x' < d: r2_resp = rank_embed(x') < rank_embed(d). Consistent.
-          -- Interior gap case — requires K⁻(¬D) pipeline.
-          sorry
-        · -- Interior case: x < c_inf < y. K⁻(¬D) pipeline needed.
+          -- r2_resp = rank_embed(x') (from h_r2_eq_x') and r2_resp < rank_embed(d),
+          -- so rank_embed(x') < rank_embed(d) hence x' < d.
+          -- Use h_cofinal_failure_below_d to get a mu-point u with x' < u < y' and ¬cont_holds.
+          -- Since r2_resp = rank_embed(x') < rank_embed(u) (carrier point above x'),
+          -- h_cont_transfer gives cont_holds at u. Contradiction.
+          have hx'_lt_d : x' < d := by
+            have : rank_embed (by omega : r ≤ r + 2) x' < rank_embed (by omega : r ≤ r + 2) d := by
+              calc rank_embed (by omega : r ≤ r + 2) x' = a'_r2 ⟨0, by omega⟩ := h_r2_eq_x'
+                _ = r2_resp := r2_resp_def.symm
+                _ < rank_embed (by omega : r ≤ r + 2) d := h_not_le
+            exact (rank_embed_lt (by omega : r ≤ r + 2) x' d).mp this
+          obtain ⟨u, hx'u, hud, huy', hmu_u, h_not_cont_u⟩ :=
+            h_cofinal_failure_below_d x' ⟨le_refl x', hx'y'⟩ hx'_lt_d
+          obtain ⟨q_u, hq_u⟩ := hmu_u
+          rw [hq_u] at hx'u huy' h_not_cont_u
+          -- r2_resp = rank_embed(x') < extendPoint(q_u) at rank r+2
+          have hr2_lt_qu : r2_resp <
+              (extendPoint q_u : ExtendedCarrier N atomMap (r + 2)) := by
+            calc r2_resp = a'_r2 ⟨0, by omega⟩ := r2_resp_def.symm
+              _ = rank_embed (by omega : r ≤ r + 2) x' := h_r2_eq_x'.symm
+              _ < rank_embed (by omega : r ≤ r + 2) (extendPoint q_u) := by
+                  exact (rank_embed_lt (by omega : r ≤ r + 2) x' (extendPoint q_u)).mpr hx'u
+              _ = extendPoint q_u := rank_embed_point (by omega : r ≤ r + 2) q_u
+          exact h_not_cont_u (h_cont_transfer q_u hr2_lt_qu huy')
+        · -- Interior case: x < c_inf < y, gap, r2_resp < rank_embed(d).
+          -- From ha'_r2: rank_embed(x') ≤ r2_resp.
+          -- hord_01₂: x < c_inf ↔ x' < r2_resp (at rank r+2).
+          -- Since x < c_inf (hx_lt_c): rank_embed(x') < r2_resp.
+          -- Combined with h_not_le: rank_embed(x') < r2_resp < rank_embed(d), so x' < d.
+          -- Use h_cofinal_failure_below_d to find u with x' < u ≤ d, u < y', ¬cont_holds u.
+          -- Need r2_resp < rank_embed(u) at rank r+2 for h_cont_transfer.
+          -- Direct approach: iterate h_cofinal_failure_below_d to find u close to d.
+          -- If d is a carrier point: take u = d directly via the cofinal failure chain.
+          -- If d is a gap: the carrier points below d have rank_embed below rank_embed(d),
+          -- and r2_resp < rank_embed(d). But r2_resp might be above some carrier points.
+          -- For now, sorry this edge case pending gap equivalence infrastructure.
           sorry
   have h_r2_eq : r2_resp = rank_embed (by omega : r ≤ r + 2) d :=
     le_antisymm h_r2_resp_le_d h_r2_resp_ge_d
