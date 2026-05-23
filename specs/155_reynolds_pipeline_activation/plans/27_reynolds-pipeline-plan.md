@@ -127,10 +127,10 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Step 1.4f: Gap/point + boundary projection | COMPLETE | Round 19 | +45 lines, sorry-free |
 | Step 1.4g: Direction 2 carrier-point case | COMPLETE | Round 19 | +60 lines (h_cont_transfer), sorry-free |
 | Step 1.4g: Formula agreement hform_cd | COMPLETE | Round 19 | sorry-free via rank_embed projection |
-| Step 1.4h-i: Pigeonhole-based K⁻ pipeline | ABANDONED | Round 19-21 | Root cause found (report 36): cont_holds is a predicate, not a formula. Pigeonhole approach creates artificial edge cases. |
-| Step 1.4h NEW: interval_type_formula | NOT STARTED | Round 22 | GHR93 Def 8.8: materialize C as StaviFormula (~100 lines) |
-| Step 1.4i NEW: C' + C'(c_inf) = TRUE | NOT STARTED | Round 22 | Two clean cases by infimum property (~40 lines) |
-| Step 1.4j NEW: Claim 1 verbatim | NOT STARTED | Round 22 | GHR93 p.116: transfer + analysis, no edge cases (~80 lines) |
+| Step 1.4h-i OLD: Pigeonhole-based K⁻ pipeline | ABANDONED | Round 19-21 | Root cause (report 36): cont_holds is predicate not formula |
+| Root cause analysis (report 36) | COMPLETE | Round 22 | GHR93 C is single formula; our cont_holds is predicate |
+| Claim 1 boundary cases (c_inf=x, c_inf=y) | COMPLETE | Round 22 | Proved via game order agreement, no K⁻ needed |
+| Claim 1 interior cases (3 sorries: 2577, 2697, 2699) | BLOCKED | Round 22 | Need either gap equivalence lemma OR interval_type_formula materialization |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
 | Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
@@ -277,20 +277,17 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
   - [x] **Step 1.4a-c**: Cross-structure definitions + c_inf construction (~175 lines). *(completed, sorry-free except Case 3 gap)*
   - [x] **Step 1.4d**: Cross-structure pigeonhole (~180 lines). *(completed, sorry-free — may become unnecessary for Claim 1 but useful for infimum_gap_r_definable)*
   - [x] **Step 1.4e-g**: Suffices restructured + projections + Direction 2 carrier-point (~235 lines). *(completed, Direction 2 carrier-point sorry-free, formula agreement sorry-free)*
-  - [ ] **Step 1.4h**: Build `interval_type_formula` (~100 lines). GHR93 Definition 8.8: X_{(a_n, y')} = disjunction of X_v for mu-points v in (a_n, y'), where X_v = conjunction of rank-r formulas true at v. Implementation:
-    1. `point_type_formula (v : ExtendedCarrier N atomMap r) : StaviFormula` — conjunction of rank-r formulas true at v. Finite by NormalForm at depth 2r (nf_determines_stavi_truth_depth). Depth ≤ r.
-    2. `interval_type_formula (a_n y' : ExtendedCarrier N atomMap r) : StaviFormula` — disjunction of point_type_formula(v) for mu-points v in (a_n, y'). Finite by NormalForm finiteness. Depth ≤ r.
-    3. `interval_type_correct`: truth at t iff t has same rank-r type as some mu-point in (a_n, y'). Equivalently: cont_holds a_n y' t ↔ stavi_temporal_truth_mu N atomMap r t (interval_type_formula a_n y').
-    **NOTE**: Check whether StaviFormula already has conjunction/disjunction constructors or whether they need to be built from neg/base.
-  - [ ] **Step 1.4i**: Build C' and prove C'(c_inf) = TRUE (~40 lines). GHR93 p.116:
-    1. C' = ¬C ∨ K⁻(¬C) where C = interval_type_formula. As StaviFormula: `cprime = neg C ||| neg (std_snce (base ⊤) C)`. Wait — GHR93's C' = ¬C ∨ K⁻(¬C) and K⁻(¬C) = ¬S(⊤, C). So C' = ¬C ∨ ¬S(⊤, C). Depth: max(r, r+2) = r+2.
-    2. C'(c_inf) = TRUE in M: Case c_inf ∉ S_C^M → ¬C(c_inf) directly. Case c_inf ∈ S_C^M → K⁻(¬C)(c_inf) from cofinal C-failure below c_inf (from h_cofinal_failure_below_c_inf + interval_type_correct). ~30 lines, two clean cases, no edge cases.
-  - [ ] **Step 1.4j**: Claim 1 proof — close the 2 remaining sorries (~80 lines). GHR93 p.116 verbatim:
-    1. C' has depth ≤ r+2. Transfer via h_fwd_r1 game: C'(rank_embed(c_inf)) ↔ C'(r2_resp). By rank_embed: C'(c_inf) = TRUE → C'(r2_resp) = TRUE. (~10 lines)
-    2. Analyze C'(r2_resp) in N: ¬C(r2_resp) → r2_resp ∉ S_C^N → r2_resp ≤ rank_embed(d). OR K⁻(¬C)(r2_resp) → C fails cofinally below r2_resp → if r2_resp > rank_embed(d) then C holds on (d, r2_resp) contradiction. So r2_resp ≤ rank_embed(d). (~20 lines)
-    3. Combined with Direction 2 (r2_resp ≥ rank_embed(d), already partly proved): r2_resp = rank_embed(d). (~5 lines)
-    4. For Direction 2 gap case: C'(r2_resp) = TRUE also constrains r2_resp ≥ rank_embed(d) by symmetric argument. (~20 lines)
-    **NO pigeonhole. NO carrier-point vs gap case split. NO edge cases.** C is a formula, transfer is direct.
+  - [ ] **Step 1.4h**: Close 3 interior sorries (lines 2577, 2697, 2699). Two resolution paths, BOTH following GHR93:
+  
+    **Path A — Gap equivalence lemma (~50-100 lines, simpler)**:
+    Prove: if two ExtendedCarrier elements have no mu-points strictly between them, they agree on all mu-relativized StaviFormula truth. This is a structural induction on StaviFormula — temporal connectives quantify over mu-points, so elements between the same pair of adjacent mu-points are indistinguishable. With this lemma: when r2_resp is a gap adjacent to rank_embed(d), gap equivalence gives depth-(r+2) formula agreement directly, resolving all 3 sorries without K⁻ or formula materialization.
+    
+    **Path B — interval_type_formula materialization (~200 lines, faithful to GHR93 Def 8.8)**:
+    Build C as a single StaviFormula using NormalForm finiteness. Then K⁻(¬C) at depth r+2 distinguishes rank_embed(d) from r2_resp even when they're adjacent gaps (non-mu-relativized truth CAN differ at gaps). GHR93's proof uses this: C' = ¬C ∨ K⁻(¬C) transferred via the game. Requires: StaviFormula conjunction/disjunction, NormalForm-to-formula translation, correctness proof.
+    
+    **DECISION NEEDED**: Path A is simpler but may not generalize. Path B is faithful to GHR93 but requires more infrastructure. Research whether mu-relativized truth truly can't distinguish adjacent gaps, or whether the gap equivalence always holds. If gap equivalence holds, Path A is correct and complete. If not, Path B is needed.
+    
+    **NOTE**: GHR93 works at a single rank (no rank embedding), so the adjacent-gap issue doesn't arise in the paper. It's an artifact of our rank-(r+2) lifting. Path A resolves this artifact directly.
   - [ ] **Step 1.4k**: Remove h_d_unique + rewire (~-100 lines). Delete h_d_unique, remove from d_consistency_left/right signatures. h_d_unique's 2 sorries become orphaned.
   - [ ] **Step 1.4l**: d_consistency_right (mirror of left). Share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
