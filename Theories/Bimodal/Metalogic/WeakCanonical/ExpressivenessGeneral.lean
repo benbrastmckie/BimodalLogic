@@ -2552,28 +2552,31 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         (rank_embed_le (by omega : r ≤ r + 2) x' d).mpr hd_interval.1
       -- r2_resp = rank_embed(x') ≤ rank_embed(d), contradicting h_not_le
       exact absurd (h_r2_eq_x' ▸ hx'_le_d) (not_le.mpr h_not_le)
-    · -- Case: x < c_inf
-      -- K⁻(¬D) argument: extract D via pigeonhole, build K⁻(¬D), transfer.
-      -- Step 1: Extract a single formula D from cofinal failure below c_inf.
-      -- From h_cofinal_failure_below_c_inf: for any s with x ≤ s < c_inf,
-      -- ∃ mu-point u with s < u ≤ c_inf, ¬cont_holds_cross at u.
-      -- cont_holds_cross failure at u gives: ∃ A, depth ≤ r, A on N-interval, ¬A(u) in M.
-      -- By NormalForm pigeonhole: a single D fails cofinally below c_inf.
+    · -- Case: x < c_inf. K⁻(¬D_M) argument needed.
+      -- GHR93 Claim 1 Direction 1: rank_embed(d) < r2_resp → contradiction.
+      -- Requires: (1) extract formula D_M via pigeonhole, (2) construct
+      -- K⁻(¬D_M) = neg(std_snce(base(⊤), D_M)) of depth r+2,
+      -- (3) prove K⁻(¬D_M)(c_inf) = TRUE in M (D_M fails cofinally below
+      -- c_inf), (4) transfer via formula agreement at rank r+2 to get
+      -- K⁻(¬D_M)(r2_resp) = TRUE in N, (5) show Since(⊤, D_M)(r2_resp)
+      -- = TRUE using d as witness (D_M holds above d from d ∈ S_C),
+      -- (6) contradiction.
       --
-      -- Step 2: Build K⁻(¬D) = neg(std_snce(.neg (.base .bot), D)) of depth r+2.
-      -- K⁻(¬D)(c_inf) = TRUE: "D fails cofinally below c_inf in M"
-      --   = ¬(∃ mu s < c_inf, ∀ mu u ∈ (s, c_inf), D(u))
+      -- BLOCKER: pigeonhole_definable_formula_cross h_cofinal_failure
+      -- precondition requires failure at ALL carrier cut points ≤ c_inf.
+      -- When c_inf is a carrier point and cont_holds_cross holds AT c_inf,
+      -- the precondition fails for p = c_inf (no failure point above p).
+      -- The h_lt_c subcase (extendPoint p < c_inf) works; only h_eq_c
+      -- (extendPoint p = c_inf) is problematic.
       --
-      -- Step 3: Transfer via hform_r2_1: K⁻(¬D)(r2_resp) = TRUE in N at rank r+2.
-      --
-      -- Step 4: Since rank_embed(d) < r2_resp and d ∈ S_C:
-      --   D holds at all mu above d. If ∃ mu between rank_embed(d) and r2_resp:
-      --   take that as witness for Since(⊤, D)(r2_resp). Contradiction with K⁻(¬D).
-      --
-      -- For now, this case requires the full K⁻(¬D) pipeline which needs
-      -- materializing a cofinal failure formula. The infrastructure is in place
-      -- (pigeonhole_definable_formula_cross, rank_embed_stavi_truth_mu, hform_r2_1)
-      -- but bridging the formats requires additional work.
+      -- Potential fix: show cont_holds_cross FAILS at c_inf when c_inf is
+      -- a carrier point. This follows from the cofinal failure: for any
+      -- s < c_inf, ∃ mu u with s < u ≤ c_inf and ¬cont_holds_cross(u).
+      -- If all such u are strictly below c_inf, then the infimum of
+      -- {s : cont_holds_cross fails at some mu in (s, c_inf]} approaches
+      -- c_inf, contradicting c_inf being a carrier point minimum of S_C_M.
+      -- This argument requires a separate lemma about infimum properties
+      -- of continuation sets at carrier-point infima.
       sorry
   -- Direction 2: rank_embed(d) ≤ r2_resp
   -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
