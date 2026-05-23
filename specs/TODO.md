@@ -33,7 +33,7 @@ technical_debt:
 
 ### Phase 1 — Active Work
 
-155 [IMPLEMENTING] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+155 [PLANNED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
 
 ### Phase 2 — Post-155 Cleanup
 

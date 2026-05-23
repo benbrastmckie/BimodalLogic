@@ -1,8 +1,8 @@
-# Implementation Plan: Reynolds Pipeline Activation (v16)
+# Implementation Plan: Reynolds Pipeline Activation (v17)
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [NOT STARTED]
-- **Effort**: 40-65 hours (revised from 38-58; Phase 1 h_d_unique higher due to game-internal proof complexity)
+- **Effort**: 44-72 hours (revised from 40-65; Phase 1 restructured with M-side infimum construction)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**:
   - reports/22-26 (original research, see v11 for summaries)
@@ -24,11 +24,12 @@
   - handoffs/phase-1-handoff-20260522T210000Z.md (Round 8: same_order_type proof architecture verified via multi_attempt, simp_all compilation blocker identified)
   - handoffs/phase-1-handoff-20260522T220000Z.md (Round 9: simp_all rewrite analysis, sigma sorry fallback found, tau needs sigma instantiation for (x' < d iff x < c))
   - handoffs/phase-1-handoff-20260522T234500Z.md (Round 14: hd_in_SC + h_cofinal_failure_below_d proved, pigeonhole precondition blocker identified)
+  - **handoffs/phase-1-handoff-20260523T010000Z.md** (Round 16: DEFINITIVE -- h_d_unique as stated is too strong for generic elements; GHR93 Claim 1 requires c = inf(S_C^M); M-side infimum construction needed)
 - **Artifacts**: plans/27_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
-- **reports_integrated**: [23_tactic-needs-beyond-195.md, 27_post-195-assessment.md, 28_claim1-formula-materialization.md, 29_lean-infra-h-d-unique.md, 27_team-research.md]
+- **reports_integrated**: [23_tactic-needs-beyond-195.md, 27_post-195-assessment.md, 28_claim1-formula-materialization.md, 29_lean-infra-h-d-unique.md, 27_team-research.md, phase-1-handoff-20260523T010000Z.md]
 
 ---
 
@@ -38,30 +39,36 @@ The plan formalizes the complete GHR93 game-theoretic proof of expressive comple
 
 **Key finding (report 32)**: The omega-chain construction CAN produce gaps (Z+Z models). `succ_cofinal` cannot be closed from temporal axioms or construction internals alone (Prior-UZ guard is vacuous in discrete case, report 33). The FULL Reynolds gap elimination (Theorem 14) is the only viable path. The EFGames/ExpressivenessGeneral infrastructure IS the Reynolds pipeline.
 
-**Phase 1 resolution (report 35)**: Report 29 is correct; handoff-b is wrong. BOTH infimum redefinition AND rank embedding are needed. The current code sets d = x' (placeholder, not the actual infimum). With d = d-bar (the true infimum), Claim 1 at rank r+2 (Lean depth) proves d_consistency. Case II must be restructured to construct e_n fresh via U(B,A) transfer. All required infrastructure (rank_embed, infimum_gap, h_fwd_r1 propagation) is already sorry-free.
+**Phase 1 resolution (report 35 + Round 16 handoff)**: Report 29 is correct; handoff-b is wrong. BOTH infimum redefinition AND rank embedding are needed. The current code sets d = x' (placeholder, not the actual infimum). With d = d-bar (the true infimum), Claim 1 at rank r+2 (Lean depth) proves d_consistency. Case II must construct e_n as a fresh point via U(B,A) transfer. All required infrastructure (rank_embed, infimum_gap, h_fwd_r1 propagation) is already sorry-free.
 
-**Rank arithmetic fix (reports 28-29, Round 13)**: GHR93's "rank r+1" maps to Lean `stavi_depth` r+2, because `stavi_depth(.std_snce A B) = max(depth A, depth B) + 2`. The h_fwd_r1 parameter has been bumped from r+1 to r+2 across 6 signatures (Round 13, committed). Case 2 of infimum construction proved unreachable. The K^-(not-D) formula (depth <= r+2) is the bridge for h_d_unique: `neg(std_snce(top, D))` where D is the pigeonhole formula.
+**v17 CRITICAL CORRECTION (Round 16 handoff)**: h_d_unique as currently formulated is UNPROVABLE for generic elements. GHR93 Claim 1 only proves uniqueness for game responses, not arbitrary elements. The proof requires c = inf(S_C^M) (the M-side infimum), not just rank-r agreement from a 1-round game play. The fix: (1) construct M-side continuation set S_C^M and c = inf(S_C^M), (2) remove h_d_unique as standalone lemma, (3) inline the Claim 1 argument directly in d_consistency_left/right using both infima (c = inf(S_C^M), d = inf(S_C^N)) and the rank-(r+2) game for formula transfer.
+
+**Rank arithmetic fix (reports 28-29, Round 13)**: GHR93's "rank r+1" maps to Lean `stavi_depth` r+2, because `stavi_depth(.std_snce A B) = max(depth A, depth B) + 2`. The h_fwd_r1 parameter has been bumped from r+1 to r+2 across 6 signatures (Round 13, committed). Case 2 of infimum construction proved unreachable. The K^-(not-D) formula (depth <= r+2) is the bridge for the inline Claim 1 argument.
 
 **Task 195 completion (v14)**: Task 195 created `EFGameTactics.lean` with `simp_game_tuple`, `same_order_type_grid`, `order_refl`, `extract_order`, `pivot_chain_order'`/`pivot_chain_order_rev'`, `gap_point_agreement_of_cases`, and `formula_agreement_of_cases`. It also moved `game_tuple_*_eq` and `pivot_chain_order`/`pivot_chain_order_rev` from ExpressivenessGeneral.lean to EFGames.lean as public declarations. These tactics directly resolve the compilation blocker for Phase 1 Task 1.6 same_order_type (sigma and tau).
 
-**Round 15 team research resolution (v16)**: 4-teammate convergent finding: the pigeonhole approach for Claim 1 is a DETOUR from GHR93. GHR93 Claim 1 uses C' = not-C or K^-(not-C) directly. h_d_unique IS provable as stated because h_fwd_r1 is IN SCOPE of the proof body (it is a parameter of `obtain_split_point_props`). The proof uses h_fwd_r1 INTERNALLY to derive contradictions in both directions, not as a hypothesis on t'. The weakened pigeonhole IS still needed to produce a single formula D that fails cofinally below d (h_cofinal_failure_below_d only guarantees SOME formula fails at each point, not that the SAME formula fails cofinally). All infrastructure exists: StaviFormula.neg, .std_snce, rank_embed_stavi_truth_mu, formula_agreement. Sorry count corrected to 16 (extra at line 2055).
-
 ---
 
-## Overview (v16)
+## Overview (v17)
 
-This plan (v16) revises v15 based on Round 15 team research (4-teammate synthesis). The core finding: h_d_unique IS provable as stated because h_fwd_r1 (the rank-(r+2) game) is in scope and can be used INTERNALLY for both proof directions. The pigeonhole chain approach used in previous rounds was a detour; the correct GHR93 approach constructs K^-(not-D) directly and uses the game as a side channel for contradictions. The weakened pigeonhole (failure only for p with extendPoint p < d) IS still needed to produce a single formula D.
+This plan (v17) revises v16 based on Round 16 implementation analysis (handoff-20260523T010000Z). The core finding: h_d_unique as stated is TOO STRONG for generic elements. GHR93 Claim 1 only proves that the game response equals the infimum, not that ANY element with rank-r agreement equals the infimum. The proof fundamentally requires c = inf(S_C^M), not just an existential witness with rank-r agreement from a 1-round game.
+
+**Why h_d_unique fails**: The statement says for ANY t' in [x', y'] with rank-r formula agreement with d, same gap/point and boundary status, t' = d. This cannot be proved because: (1) ht'_form only gives rank-r agreement but K^-(not-D) needs rank-(r+2), (2) h_fwd_r1 gives M-to-N agreement at rank r+2 but not N-to-N, (3) h_fwd and h_fwd_r1 are independent game instances with no relation between their responses, (4) no mechanism exists in the game API for N-to-N agreement between two N-points.
+
+**Why GHR93's proof works**: In GHR93, d (game response) and d-bar (infimum) are connected via the SAME game instance. The game at rank r+1 (our r+2) places c (M-side infimum) against d in round 1. Formula agreement at rank r+1 transfers K^-(not-C') from c to d. C'(c) = TRUE from M-side infimum analysis. So C'(d) = TRUE constrains d to equal d-bar. The key: c is constructed as inf(S_C^M), not as a generic game response.
+
+**v17 restructuring**: Remove h_d_unique as standalone lemma. Construct M-side continuation set S_C^M and c = inf(S_C^M). Prove infimum correspondence (rank-r agreement between c and d via the game). Inline the full GHR93 Claim 1 argument in d_consistency_left/right using both infima and K^-(not-D) transfer.
 
 The critical path remains:
 
 ```
-Phase 1 (h_d_unique via K^-(not-D) at rank r+2, same_order_type sigma/tau)
+Phase 1 (M-side infimum + inline Claim 1 + same_order_type sigma/tau)
   -> Phase 3 (Cases III/IV) -> Phase 4 (Assembly + Corollary 5)
     -> Phase 5 (Reynolds Thm 5) -> Phases 6A-6B (gap elimination)
       -> succ_cofinal -> bx_completeness
 ```
 
-Phase 1 status: h_fwd_r1 rank bumped from r+1 to r+2 (Round 13). d in S_C and h_cofinal_failure_below_d proved (Round 14). h_d_unique has 2 remaining sorries (lines ~1759, ~1796) requiring K^-(not-D) formula at depth r+2. Research identifies concrete 2-direction proof strategy. Sigma SOT has 18/25 grid goals closed. Tau SOT not yet attempted. Once h_d_unique closes, both SOT proofs unblock via c<=e_n. Phases 2, 10 are COMPLETE. Phases 7-9 remain OFF the critical path.
+Phase 1 status: h_fwd_r1 rank bumped from r+1 to r+2 (Round 13). d in S_C and h_cofinal_failure_below_d proved (Round 14). h_d_unique has 2 remaining sorries but is NOW KNOWN TO BE UNPROVABLE as formulated. Restructuring required: remove h_d_unique, construct M-side infimum, inline Claim 1 argument. Sigma SOT has 18/25 grid goals closed. Tau SOT not yet attempted. Once the inline Claim 1 closes d_consistency, both SOT proofs unblock via c<=e_n. Phases 2, 10 are COMPLETE. Phases 7-9 remain OFF the critical path.
 
 Definition of done: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes with zero errors, no `axiom` declarations in the pipeline.
 
@@ -79,15 +86,18 @@ Integrated in v15:
 Integrated in v16:
 - **Report 27_team-research.md**: 4-teammate convergent resolution of h_d_unique blocker. Key findings: (1) pigeonhole approach is a detour from GHR93 Claim 1, (2) h_d_unique IS provable as stated using h_fwd_r1 internally, (3) all infrastructure exists (StaviFormula.neg, .std_snce, rank_embed_stavi_truth_mu, formula_agreement), (4) GHR93+Reynolds pipeline confirmed as the only viable path, (5) sorry count is 16 (not 15). Revised effort: 40-65 hours.
 
+Integrated in v17:
+- **Handoff phase-1-handoff-20260523T010000Z.md**: DEFINITIVE Round 16 analysis. After 3+ hours of exhaustive proof attempts, h_d_unique as stated is confirmed UNPROVABLE for generic elements. The v16 team research was WRONG about h_d_unique being provable (the h_fwd_r1 game gives M-to-N agreement, not N-to-N). GHR93 Claim 1 fundamentally requires c = inf(S_C^M). The fix: construct M-side continuation set, define c = inf(S_C^M), remove h_d_unique, inline Claim 1 in d_consistency_left/right. Net +80-180 lines, significant restructuring. All required infrastructure (pigeonhole, rank_embed, stavi_truth_mu) is sorry-free.
+
 Prior integration (v13-v14):
 - **Report 35**: Resolves Phase 1 d-consistency blocker. Report 29 correct, handoff-b wrong. Both infimum redefinition and rank embedding needed.
 - **Report 18**: Resolves Task 1.7 IH h_fwd_r1 recursive rank tower via decoupled round count + universal h_r1_univ.
 
 ### Prior Plan Reference
 
-v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy, which was insufficiently specified. v16 replaces the vague "K^-(not-D) formula argument" with the exact 2-direction proof from the team research. Sorry inventory corrected from 15 to 16. Effort estimates adjusted upward for Phase 1 based on research consensus. Session progress table updated through Round 15. Phases 2-11 structure unchanged from v15 (they were accurate).
+v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the team research (v16) incorrectly claimed h_d_unique was provable as stated. Round 16 implementation analysis DEFINITIVELY shows h_d_unique is too strong for generic elements. v17 replaces the standalone h_d_unique approach with M-side infimum construction + inline Claim 1. Sorry count remains 16 but the 2 h_d_unique sorries will be REPLACED (not closed) by the restructured inline proof. Effort estimates adjusted upward. Phases 2-11 structure unchanged from v16.
 
-### Session Progress (v12 -> v13 -> rounds 1-14 -> Round 15 research)
+### Session Progress (v12 -> v13 -> rounds 1-14 -> Round 15 research -> Round 16 analysis)
 
 | Item | Status | Round | Lines |
 |------|--------|-------|-------|
@@ -103,24 +113,25 @@ v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy
 | Phase 1: Task 1.6 e_n construction + sigma/tau split | COMPLETE | Round 5 | ~60 new |
 | Phase 1: Task 1.6 gp_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
 | Phase 1: Task 1.6 formula_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
-| Phase 1: Task 1.4 h_d_unique parameter refactor | PARTIAL | Round 6 | refactored, 1 sorry |
-| Phase 1: Task 1.6 sigma SOT grid (18/25 goals) | PARTIAL | Round 10 | ~60 new, 7 goals need c<=e_n |
-| Phase 1: Task 1.4 h_d_unique boundary cases | COMPLETE | Round 12 | x'=d and d=y' cases proved |
-| Phase 1: Task 1.4 h_d_unique u>d subcase | COMPLETE | Round 12 | d<=t' direction, u>d branch |
-| Phase 1: Task 1.4 h_d_unique rank bump (r+1 -> r+2) | COMPLETE | Round 13 | 6 signatures + 2 derivation sites updated |
-| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | BLOCKED | Round 12-13 | needs rank-(r+2) K^-(not-D) formula argument |
+| Phase 1: Task 1.4 h_d_unique parameter refactor | OBSOLETE | Round 6 | refactored, 1 sorry -- to be removed in v17 |
+| Phase 1: Task 1.6 sigma SOT grid (18/25 goals) | PARTIAL | Round 10 | ~60 new, 7 goals need c<=e_n from Claim 1 |
+| Phase 1: Task 1.4 h_d_unique boundary cases | OBSOLETE | Round 12 | x'=d and d=y' cases proved -- to be removed in v17 |
+| Phase 1: Task 1.4 h_d_unique u>d subcase | OBSOLETE | Round 12 | d<=t' direction, u>d branch -- to be removed in v17 |
+| Phase 1: Task 1.4 h_d_unique rank bump (r+1 -> r+2) | PRESERVED | Round 13 | 6 signatures + 2 derivation sites updated -- rank bump still needed |
+| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | ABANDONED | Round 12-16 | UNPROVABLE as stated; replaced by M-side infimum + inline Claim 1 |
 | Phase 1: h_fwd_r1 rank bump r+1 -> r+2 | COMPLETE | Round 13 | 6 signatures + 2 derivations, build passes |
 | Phase 1: Case 2 infimum proved unreachable | COMPLETE | Round 13 | d in S_C contradicts hp_not_in |
 | Phase 1: d in S_C lemma | COMPLETE | Round 14 | committed to file, build passes |
 | Phase 1: h_cofinal_failure_below_d | COMPLETE | Round 14 | failure mu-point in (s, d] for s < d |
 | Phase 1: pigeonhole precondition analysis | BLOCKED | Round 14 | h_cofinal_failure universal quantifier too strong for carrier-point d |
-| Phase 1: h_d_unique formulation analysis | BLOCKED | Round 16 | h_d_unique too strong for generic elements; needs game-based restructuring |
-| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from h_d_unique |
+| Phase 1: h_d_unique formulation analysis | CLOSED | Round 16 | DEFINITIVELY unprovable; replaced by M-side infimum approach |
+| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from inline Claim 1 |
 | Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
 | Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
 | Rank embedding infrastructure | CONFIRMED | pre-v13 | 0 (already sorry-free) |
-| Round 15: team research on h_d_unique blocker | COMPLETE | Round 15 | 4-teammate convergence: proof strategy identified |
+| Round 15: team research on h_d_unique blocker | SUPERSEDED | Round 15 | Claimed h_d_unique provable; Round 16 REFUTES this |
+| Round 16: h_d_unique definitively unprovable | COMPLETE | Round 16 | M-side infimum construction identified as correct fix |
 
 ### Roadmap Alignment
 
@@ -131,9 +142,11 @@ v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy
 ## Goals & Non-Goals
 
 **Goals**:
-- Prove h_d_unique via the 2-direction K^-(not-D) game argument (Round 15 research strategy)
+- Construct M-side continuation set S_C^M and c = inf(S_C^M), mirroring d = inf(S_C^N)
+- Remove h_d_unique as standalone lemma
+- Inline GHR93 Claim 1 argument in d_consistency_left/right using both infima + K^-(not-D) + rank-(r+2) game
 - Close same_order_type sigma (line 3059) and tau (line 3263) using task 195 EFGameTactics -- uncomment and fix block-commented proofs
-- Close d_consistency_left/right via Claim 1 (already structurally complete, depends on h_d_unique)
+- Close d_consistency_left/right via inline Claim 1 (replaces previous h_d_unique dependency)
 - Complete Lemma 9 left/right gap detection (EFGames.lean: remaining sub-sorries)
 - Close M-side degenerate sorries (ExpressivenessGeneral.lean) together with c-gap-case
 - Prove Cases III/IV of GHR93 Theorem 6 (ExpressivenessGeneral.lean)
@@ -150,15 +163,19 @@ v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy
 - Frame-class completeness variants (Completeness.lean:254, 279, 288)
 - Optimizing existing sorry-free infrastructure
 - General-purpose tactic development (task 195 delivered the needed tactics)
+- Preserving h_d_unique as standalone lemma (DEFINITIVELY abandoned)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| h_d_unique direction 1: K^-(not-D) Since semantics lemma missing | M | M | Round 15 research confirmed `stavi_temporal_truth_mu` for `std_snce` exists at EFGames.lean:877. Need to verify Since(T,D) false at d / true at t'. If direct lemma missing, prove from `stavi_temporal_truth_mu` definition (~20-30 lines). |
-| h_d_unique direction 2: game API does not support extracting individual round responses | M | M | Round 15 research notes this as a gap. If game API lacks round-2 extraction, restructure using the full game winning condition rather than round-by-round analysis. Alternatively, construct a direct contradiction via formula transfer at rank r+2. |
-| Weakened pigeonhole: chain length bounded by NormalForm cardinality in extended carrier | M | L | Round 15 research confirmed: chain elements include gaps, not just carrier points. Extended carrier between any two elements contains gaps. NormalForm cardinality bounds the chain. Create `pigeonhole_definable_formula_below_d` with weakened precondition (~40-50 lines). |
-| Same_order_type tau: sigma instantiation for `(x' < d iff x < c)` | M | M | Report 27: instantiate `props.sigma` with trivial selections (all d) to get sigma winning condition, extract ordering at positions (0, n+2). Same technique used at lines ~3174-3185 for sigma sub-case. |
+| M-side continuation set definition diverges from N-side | H | L | Mirror N-side definition exactly. S_C^M = { t in [x, y] : cont_holds_M(a_n_M, y, t) }. The game ensures structural correspondence between M and N. |
+| M-side infimum construction hits different case split than N-side | M | M | The 3-way case split (carrier-point min, carrier-point GLB, no carrier-point GLB) applies symmetrically to M. Case 2 should be unreachable for same reason (inf in S_C contradicts hp_not_in). If M-side has additional complications from different carrier structure, fall back to game-based construction. |
+| Rank-r agreement between c=inf(S_C^M) and d=inf(S_C^N) hard to establish | H | M | Use the game at rank r: Spoiler picks c in M, Duplicator responds with some d' in N. Show d' = d by infimum properties. Both are infima of structurally isomorphic continuation sets; the game ensures continuation predicates transfer. If direct approach fails, use h_fwd with specific challenges to establish agreement formula-by-formula. |
+| K^-(not-D) Since semantics lemma missing for inline proof | M | M | Round 15 research confirmed `stavi_temporal_truth_mu` for `std_snce` exists at EFGames.lean:877. Need to verify Since(T,D) false at d / true at game response. If direct lemma missing, prove from `stavi_temporal_truth_mu` definition (~20-30 lines). |
+| Circularity in c-d agreement when c is constructed as infimum | M | L | No circularity: c is constructed from M-side data alone (S_C^M definition + infimum in M). d is constructed from N-side data alone. Agreement is then PROVED using the game, not assumed. |
+| d_consistency_left/right restructuring invalidates Task 1.5 work | M | H | Task 1.5 currently routes d_consistency interior through h_d_unique. The restructuring replaces this routing with inline argument. Task 1.5's ~100 lines of framework (extracting formula/gp/boundary agreement from winning condition) will need adaptation but the pattern is preserved. Budget 30-50 lines for rewiring. |
+| Same_order_type sigma (Task 1.6): still needs c<=e_n after restructuring | M | L | The inline Claim 1 proof in d_consistency_left/right establishes that the game response in [x', y'] that agrees with d at rank r is constrained to equal d. This gives c<=e_n through the same mechanism as h_d_unique did. The SOT proofs are structurally unchanged. |
 | Same_order_type block-commented proofs: sorry fallbacks inside closers | M | CONFIRMED | Round 9 handoff: sigma proof line 3162 has `\| sorry)` as last alternative. After switching to `simp only [game_tuple]; split_ifs` (task 195 approach), this sorry should become unnecessary. If goals remain, use `extract_order` macro to close them. |
 | Cases III/IV gap detection formula rank bounds don't match codebase | M | M | Follow GHR93 exactly: Case III uses left(B,D) with rank r+2, Case IV uses right(B,D) with rank r+3. Verify rank bounds with `stavi_depth` computation before proceeding. |
 | Proposition 7 composition too complex (decomposition formula counting) | M | M | GHR93 Proposition 7 proof is explicit (p.26-27). If composition stalls, try direct Corollary 5 route via formula enumeration. |
@@ -166,18 +183,18 @@ v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy
 
 ## Full Sorry Inventory (Current -- after 14 implementation rounds + task 195 completion)
 
-### ExpressivenessGeneral.lean (11 sorries -- corrected count from Round 15 research)
-| Line | Context | Phase | Status |
-|------|---------|-------|--------|
+### ExpressivenessGeneral.lean (11 sorries -- unchanged from v16)
+| Line | Context | Phase | v17 Status |
+|------|---------|-------|------------|
 | ~1614 | Case 3 infimum gap construction | 3 | Needs infimum_gap precondition assembly |
-| ~1759 | `h_d_unique` interior case (t'<=d direction) | 1 | **BLOCKER**: needs K^-(not-D) game argument |
-| ~1796 | `h_d_unique` interior case (d<=t', u<=d subcase) | 1 | **BLOCKER**: needs K^-(not-D) game argument |
+| ~1759 | `h_d_unique` interior case (t'<=d direction) | 1 | **WILL BE REMOVED** -- h_d_unique deleted, replaced by inline Claim 1 |
+| ~1796 | `h_d_unique` interior case (d<=t', u<=d subcase) | 1 | **WILL BE REMOVED** -- h_d_unique deleted, replaced by inline Claim 1 |
 | ~1804 | `h_pt_xc` degenerate gap | 1/3 | Possibly unreachable; may need SplitPointProps weakening |
 | ~1821 | `h_pt_cy` degenerate gap | 1/3 | Same |
 | ~1919 | n=0 gap case c construction | 1/3 | Needs dedicated n=0 argument |
 | ~2055 | n=0 gap case (additional sorry) | 1/3 | Missed in v15; identified by Round 15 research |
-| ~3177 | Case II sigma same_order_type (7 remaining grid goals) | 1 | BLOCKED on h_d_unique (needs c<=e_n) |
-| ~3263 | Case II tau same_order_type | 1 | BLOCKED on h_d_unique (needs c<=e_n + sigma instantiation) |
+| ~3177 | Case II sigma same_order_type (7 remaining grid goals) | 1 | BLOCKED on inline Claim 1 (needs c<=e_n) |
+| ~3263 | Case II tau same_order_type | 1 | BLOCKED on inline Claim 1 (needs c<=e_n + sigma instantiation) |
 | ~4246 | `ghr93_cases_III_IV` | 3 | Cases III/IV of Theorem 6 |
 | ~4501 | `ghr93_forward_to_backward_rank_varying` | 4 | Rank-varying theorem |
 
@@ -196,15 +213,11 @@ v15 was accurate on all phases except Phase 1 Task 1.4 h_d_unique proof strategy
 
 **Total: 16 sorries** (11 ExpressivenessGeneral + 2 EFGames + 3 IntegerModel)
 
-**Phase 1 progress (after 14 rounds + Round 15 research)**: h_fwd_r1 rank bumped from r+1 to r+2 (Round 13). d in S_C and h_cofinal_failure_below_d proved (Round 14). h_d_unique has 2 remaining sorries (lines ~1759, ~1796) requiring K^-(not-D) formula at depth r+2. Round 15 research provides the complete proof strategy:
+**v17 sorry trajectory**: The 2 h_d_unique sorries (lines ~1759, ~1796) will be DELETED when h_d_unique is removed. The inline Claim 1 proof in d_consistency_left/right may introduce 0-2 temporary sorries during development, but the target is net -2 sorries from Phase 1 restructuring (the h_d_unique sorries vanish, and the inline proof closes without new sorries). The d_consistency_left/right interior cases currently route through h_d_unique (Task 1.5, completed Round 6) and will need rewiring to the inline argument.
 
-**Direction 1 (d < t')**: Create weakened pigeonhole formula D. Construct K^-(not-D) = neg(std_snce(base(.bot.imp .bot), D)). Prove Since(T,D) FALSE at d (D fails cofinally below d) and TRUE at t' (witness: d itself, D holds on tail above d). Play h_fwd_r1 to get rank-(r+2) formula agreement. K^-(not-D) separates d from t', contradicting agreement.
+**Phase 1 progress (after 16 rounds)**: h_fwd_r1 rank bumped from r+1 to r+2 (Round 13). d in S_C and h_cofinal_failure_below_d proved (Round 14). h_d_unique DEFINITIVELY UNPROVABLE as stated (Round 16). Restructuring required: M-side infimum + inline Claim 1. Sigma SOT 18/25 goals closed (7 blocked on Claim 1 output); tau SOT not attempted.
 
-**Direction 2 (t' < d)**: Since t' < d = inf(S_C), t' is not in S_C, so there exists a failure mu-point u in (t', y') with formula A (depth <= r) that holds on (a_n, y') but fails at u. Play h_fwd_r1 round 2 with rank_embed(u) as challenge. Duplicator responds with v in (c, y) in M. Since c = inf(S_C in M), A holds on (c, y), so A(v) = TRUE. But not-A(u) = TRUE, contradicting rank-r formula transfer.
-
-Sigma SOT 18/25 goals closed (7 blocked on h_d_unique); tau SOT not attempted.
-
-## Implementation Phases (v16 -- Round 15 Research Integrated)
+## Implementation Phases (v17 -- Round 16 Restructuring Integrated)
 
 **Critical path**: Phase 1 -> 3 -> 4 -> 5 -> 6A -> 6B -> succ_cofinal wiring -> bx_completeness
 
@@ -226,50 +239,40 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: D-Consistency via Infimum + Claim 1 + Case II Restructure (GHR93 Claim 1) [IN PROGRESS]
+### Phase 1: D-Consistency via M-Side Infimum + Inline Claim 1 + Case II Restructure (GHR93 Claim 1) [IN PROGRESS]
 
-**Goal**: Close the d-consistency interior sorries by (a) constructing the actual infimum of continuation_set, (b) proving GHR93 Claim 1 at rank r+2 via the 2-direction K^-(not-D) game argument, (c) closing same_order_type sigma/tau using task 195 EFGameTactics, and (d) closing the IH h_fwd_r1 sorry via decoupled round count + universal h_r1.
+**Goal**: Close the d-consistency interior sorries by (a) constructing the M-side continuation set S_C^M and c = inf(S_C^M), (b) removing h_d_unique and inlining the GHR93 Claim 1 argument directly in d_consistency_left/right using both infima + K^-(not-D) + rank-(r+2) game, (c) closing same_order_type sigma/tau using task 195 EFGameTactics, and (d) closing the IH h_fwd_r1 sorry via decoupled round count + universal h_r1.
 
-**Root cause (definitively resolved by report 35)**: GHR93 Claim 1 proves that any winning response to c equals d-bar (the infimum of the N-side continuation set). The current code sets d = x' (placeholder), making d_consistency unprovable. With d = d-bar, Claim 1 gives d_consistency directly. Rank embedding infrastructure is already sorry-free. Case II must construct e_n as a fresh point via U(B,A) transfer, not as d-bar or a_bwd(n).
+**Root cause (definitively resolved by report 35 + Round 16 handoff)**: GHR93 Claim 1 proves that the game response to c (M-side infimum) equals d-bar (N-side infimum). The current code sets d = x' (placeholder), making d_consistency unprovable. With d = d-bar, Claim 1 gives d_consistency directly. HOWEVER, h_d_unique as a standalone lemma is unprovable because it applies to GENERIC elements, not game responses. The fix is to construct c = inf(S_C^M) and inline the Claim 1 argument where the game is in scope.
 
-**h_d_unique proof strategy (Round 15 research convergence)**: h_d_unique IS provable as stated because h_fwd_r1 is IN SCOPE of `obtain_split_point_props`. The proof uses the rank-(r+2) game INTERNALLY to derive contradictions, not as a hypothesis on t'. The proof is NOT circular. It proceeds in two directions:
+**v17 architectural change**: Remove h_d_unique (lines ~1741-1845). Replace with:
+1. M-side backward selections derived from the game (play h_fwd backwards)
+2. M-side continuation set S_C^M = { t in [x, y] : cont_holds_M(a_n_M, y, t) }
+3. c = inf(S_C^M) constructed by mirroring the d = inf(S_C^N) 3-way case split
+4. Infimum correspondence: both are infima of structurally isomorphic continuation sets; game ensures continuation predicates transfer, giving c-d rank-r agreement
+5. Inline K^-(not-D) argument in d_consistency_left/right using both infima
 
-**Direction 1 (d < t', derive contradiction)**:
-1. Create `pigeonhole_definable_formula_below_d` -- weakened variant of `pigeonhole_definable_formula` requiring failure only for p with `extendPoint p < d` (not <= d). This avoids the blocker identified in Round 14 where cont_holds at d prevents the universal precondition. (~40-50 lines)
-2. Get formula D from the weakened pigeonhole: a single StaviFormula of depth <= r that fails cofinally below d in (s, d) for all s < d.
-3. Construct K^-(not-D) = `StaviFormula.neg (StaviFormula.std_snce (StaviFormula.base (.bot.imp .bot)) D)`. Depth = max(0, stavi_depth D) + 2 <= r + 2. Within rank-(r+2) game budget.
-4. Prove Since(T, D) FALSE at d: By definition, Since(T,D)(d) requires exists s < d with D(s) and T holds on (s,d). But D fails cofinally below d (from pigeonhole), so for any s < d, there exists u in (s, d) with not-D(u), contradicting the Since guard. Therefore K^-(not-D)(d) = not Since(T,D)(d) = TRUE.
-5. Prove Since(T, D) TRUE at t' when d < t': The witness is d itself (d < t'). D(d) holds because d in S_C implies cont_holds at d, which means all rank-r formulas in the continuation set hold at d, and D is such a formula. T holds trivially on (d, t'). Therefore Since(T,D)(t') = TRUE, so K^-(not-D)(t') = FALSE.
-6. Play h_fwd_r1 (rank-(r+2) game): Spoiler picks rank_embed(c) in M. Gets response e in N with rank-(r+2) formula agreement. Since c is M-side infimum with same structural position as d in N, the formula agreement transfers K^-(not-D) truth: K^-(not-D)(c) = K^-(not-D)(e). But c has same infimum property as d, so K^-(not-D)(c) = TRUE. Then K^-(not-D)(e) = TRUE, meaning e <= d. But game response e must be in (x', y') and have structural correspondence with c. If t' > d and e <= d, the game's position correspondence forces t' into the sub-interval [x', d], contradicting t' > d.
-
-**Direction 2 (t' < d, derive contradiction)**:
-1. Since t' < d = inf(S_C in N), t' is not in S_C(N).
-2. Therefore there exists a failure mu-point: some u in (t', y') where cont_holds fails. Specifically, there exists a formula A of depth <= r that holds on (a_n, y') but not-A(u).
-3. Use `h_cofinal_failure_below_d` (proved Round 14) to locate u.
-4. Play h_fwd_r1 with rank_embed(u) as Spoiler's challenge in round 2. Duplicator must respond with some v in (c, y) in M preserving rank-r formulas.
-5. Since c = inf(S_C in M), and c is in S_C, all rank-r continuation formulas hold on (c, y). In particular A(v) = TRUE.
-6. But not-A(u) = TRUE, and the game gives rank-r formula agreement between u and v. Contradiction.
-
-**Task 1.6 same_order_type resolution (report 27 + task 195)**: The compilation blocker was `simp_all` rewriting hypotheses (particularly `hp_n : a_bwd n = extendPoint p_n`) in file context but not in multi_attempt isolation. Task 195's `same_order_type_grid` macro provides the fix: `intro i j; simp only [game_tuple]; split_ifs` which produces 25 clean goals without hypothesis destruction. The `order_refl` macro closes 3 diagonal goals. The `extract_order` macro and `pivot_chain_order'` handle cross-boundary cells. The block-commented proofs at lines 3060-3162 (sigma) and 3264-3419 (tau) contain the verified proof architecture.
+**Why this works (GHR93 Claim 1 structure)**:
+- **d <= game_response**: d = inf(S_C^N), game_response is in S_C^N (from game winning condition), so d <= game_response.
+- **game_response <= d (by contradiction, assume game_response > d)**: Construct K^-(not-D) where D is the pigeonhole formula. K^-(not-D)(c) = TRUE because c = inf(S_C^M) and D fails cofinally below c (mirror of D failing cofinally below d). Game at rank r+2 transfers: K^-(not-D)(c) = K^-(not-D)(game_response). But game_response > d implies Since(T,D)(game_response) = TRUE (witness: d, which is in S_C so D(d) = TRUE, and T holds on (d, game_response)). So K^-(not-D)(game_response) = FALSE. Contradiction.
 
 **Tasks**:
 - [x] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). *(deviation: altered -- Fixed buggy 2-way case split with correct 3-way split: (1) carrier-point minimum d=extendPoint p (unchanged), (2) carrier-point GLB p not in S_C d=extendPoint p (new, fully proved using gap no_sup axiom), (3) no carrier-point GLB (sorry'd, deferred to Phase 3 c-gap-case which wires infimum_gap_r_definable). Net -2 sorries: removed 3 buggy sorries, added 1 clean sorry for Case 3.)*
 - [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). *(completed -- already done in prior session; line 1298 has `hd_le_an`)*
 - [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). *(completed -- all live hd_eq_an references are in the OLD CASE II PROOF block comment; Case I uses hd_le_an correctly)*
-- [ ] **Task 1.4**: Prove GHR93 Claim 1 -- close 2 remaining h_d_unique sorries (lines ~1759, ~1796). *(deviation: altered — Round 16 analysis reveals h_d_unique as stated is too strong for generic elements; GHR93 Claim 1 only applies to game responses. Requires restructuring: either (A) merge Claim 1 into d_consistency_left/right using game at rank r+2, or (B) construct M-side continuation set S_C^M with c=inf(S_C^M) to enable the full K^-(not-D) transfer argument. See handoff phase-1-handoff-20260523T010000Z.md for full analysis.)*
-  - [ ] **Step 1.4a**: Create `pigeonhole_definable_formula_below_d` (~40-50 lines). *(unchanged — still needed for K^-(not-D) construction)*
-  - [ ] **Step 1.4b**: Get formula D from weakened pigeonhole. Verify `stavi_depth D <= r`. *(unchanged)*
-  - [ ] **Step 1.4c**: Construct K^-(not-D). Depth verification confirmed: stavi_depth(neg(std_snce(base(.bot.imp.bot), D))) = stavi_depth(D) + 2 ≤ r + 2. *(unchanged)*
-  - [ ] **Step 1.4d-REVISED**: Remove h_d_unique standalone lemma. Restructure d_consistency_left interior case to use game at rank r+2 directly. *(NEW — replaces old steps 1.4d-1.4f)*
-    - Define M-side continuation set S_C^M (mirror of S_C^N)
-    - Construct c = inf(S_C^M) (mirror of d = inf(S_C^N) construction)
-    - Prove K^-(not-D)(c in M) = TRUE using M-side infimum property
-    - Play h_fwd_r1: transfer K^-(not-D) from c to rank-(r+2) response t_r2
-    - Show t_r2 = rank_embed(d) (contradiction if t_r2 > d: Since(T,D) true, K^-(not-D) false)
-    - Project rank-(r+2) result to rank r for d_consistency output
-  - [ ] **Step 1.4e-REVISED**: Same restructuring for d_consistency_right. *(NEW)*
-  - [ ] **Step 1.4f-REVISED**: Remove h_d_unique from obtain_split_point_props and update callers. *(NEW)*
-- [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. Depends on Task 1.4 for h_d_unique proof.)*
+- [ ] **Task 1.4**: M-side infimum construction + inline Claim 1 (RESTRUCTURED from v16). **This is the critical new work in v17.**
+  - [ ] **Step 1.4a**: Define M-side continuation set S_C^M (~20-30 lines). Mirror the N-side `continuation_set` definition for M. Define `cont_holds_M(a_n_M, y, t)` analogously to `cont_holds(a_n, y', t)`.
+  - [ ] **Step 1.4b**: Derive M-side backward selections from the game (~30-50 lines). Currently `obtain_split_point_props` takes `a_bwd : Fin (n+1) -> ExtendedCarrier N atomMap r` but no M-side backward selections. Extract M-side backward selections from the game's round-1 response (h_fwd plays M->N, so the backward direction N->M gives the M-side points).
+  - [ ] **Step 1.4c**: Construct c = inf(S_C^M) (~80-120 lines). Mirror the d = inf(S_C^N) construction (lines 1460-1614). Use the same 3-way case split: (1) carrier-point minimum, (2) carrier-point GLB not in S_C^M, (3) no carrier-point GLB (gap case, deferred to Phase 3 like the N-side). The M-side construction should be structurally identical to the N-side.
+  - [ ] **Step 1.4d**: Create `pigeonhole_definable_formula_below_d` (~40-50 lines). Weakened variant of `pigeonhole_definable_formula` requiring failure only for p with `extendPoint p < d` (not <= d). This avoids the Round 14 blocker where cont_holds at d prevents the universal precondition. Also create the M-side analog: `pigeonhole_definable_formula_below_c` for D failing cofinally below c.
+  - [ ] **Step 1.4e**: Construct K^-(not-D) formula (~15-20 lines). K^-(not-D) = `StaviFormula.neg (StaviFormula.std_snce (StaviFormula.base (.bot.imp .bot)) D)`. Verify depth: stavi_depth(neg(std_snce(base(.bot.imp.bot), D))) = stavi_depth(D) + 2 <= r + 2. Within rank-(r+2) game budget.
+  - [ ] **Step 1.4f**: Prove K^-(not-D)(c) = TRUE (~40-60 lines). c = inf(S_C^M), so D fails cofinally below c in M (from M-side pigeonhole). Since(T,D) false at c because for any s < c, there exists u in (s,c) with not-D(u). Therefore K^-(not-D)(c) = not Since(T,D)(c) = TRUE.
+  - [ ] **Step 1.4g**: Prove K^-(not-D)(t) = FALSE when t > d (~30-40 lines). If t > d = inf(S_C^N), then d is a witness for Since(T,D)(t): d < t, D(d) holds (d in S_C^N implies cont_holds at d, D is a rank-r formula in the continuation set), and T holds on (d, t). So Since(T,D)(t) = TRUE, meaning K^-(not-D)(t) = FALSE.
+  - [ ] **Step 1.4h**: Inline Claim 1 in d_consistency_left interior case (~60-80 lines). Replace the current h_d_unique call at line ~1203 with inline argument: (1) show d <= t (infimum property, already proved via Task 1.5 framework), (2) show t <= d by contradiction: assume t > d, play h_fwd_r1 at rank r+2, transfer K^-(not-D) from c to game_response at rank r+2, get K^-(not-D)(game_response) = TRUE from K^-(not-D)(c) = TRUE (step 1.4f), but K^-(not-D)(game_response) = FALSE from step 1.4g since game_response >= t > d. Contradiction.
+  - [ ] **Step 1.4i**: Inline Claim 1 in d_consistency_right interior case (~60-80 lines). Same argument as 1.4h for the right direction.
+  - [ ] **Step 1.4j**: Remove h_d_unique from obtain_split_point_props (~-100 lines). Delete the h_d_unique lemma (lines ~1741-1845) and its boundary/u>d subcases. Update `SplitPointProps` to remove the h_d_unique field. Update all callers (d_consistency_left, d_consistency_right) which now use the inline argument instead.
+  - [ ] **Step 1.4k**: Rewire Task 1.5 d_consistency interior (~30-50 lines). Task 1.5 (completed Round 6) currently routes d_consistency interior cases through h_d_unique. Adapt the ~100 lines of framework code to use the inline Claim 1 output instead. The pattern (extract formula/gp/boundary agreement from winning condition) is preserved; only the uniqueness source changes.
+- [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
 - [ ] **Task 1.6**: Restructure Case II winning condition assembly. *(Round 5 implemented e_n construction via forward game + sigma/tau split. Round 6 decomposed 2 monolithic sorries into 6 targeted: same_order_type, gap_point_agreement, formula_agreement x sigma/tau. Round 7 closed 4 of 6 (gap_point + formula for both sub-cases). Remaining: 2 same_order_type sorries NOW UNBLOCKED by task 195.)*
   - [x] e_n construction via forward game round 2 (h_fwd_n1 + p_n challenge) -- Round 5
   - [x] sigma/tau case split on b_sp <= c vs b_sp > c -- Round 5
@@ -277,7 +280,7 @@ Phases within the same wave can execute in parallel.
   - [x] sigma formula_agreement -- Round 7
   - [x] tau gap_point_agreement -- Round 7
   - [x] tau formula_agreement -- Round 7
-  - [ ] **sigma same_order_type** (line ~3059) -- PARTIALLY CLOSED (Round 10: 18/25 goals via task 195 tactics, 7 remaining need c<=e_n from h_d_unique). Implementation steps for remaining 7 goals:
+  - [ ] **sigma same_order_type** (line ~3059) -- PARTIALLY CLOSED (Round 10: 18/25 goals via task 195 tactics, 7 remaining need c<=e_n from inline Claim 1). Implementation steps for remaining 7 goals:
     1. Uncomment the block-commented proof at lines 3060-3162
     2. Replace `delta game_tuple; split_ifs <;> simp_all <;>` with `same_order_type_grid <;>` (or equivalently `intro i j; simp only [game_tuple]; split_ifs <;>`)
     3. Use `order_refl` to close 3 diagonal goals (x-x, b-b, y-y)
@@ -295,12 +298,12 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 1.7**: Close IH h_fwd_r1 sorry at line ~3836. *(deviation: altered -- Created ghr93_forward_to_backward_core with decoupled rounds_r1 and h_r1_univ universal over endpoints; changed ghr93_forward_to_backward API to take h_r1_univ; 83 lines added, 39 removed; used h_enough : 1+3n <= rounds_r1 instead of report 18's 4+3n constraint)*
 - [ ] **Task 1.8**: Verify `lean_verify d_consistency_left` and `lean_verify d_consistency_right` show no `sorryAx`. Verify `lake build` passes.
 
-**Timing**: 10-18 hours (revised up from 8-12; h_d_unique game-internal proof more complex than previously estimated per Round 15 research consensus)
+**Timing**: 14-22 hours (revised up from 10-18; M-side infimum construction adds ~150-200 lines, inline Claim 1 adds ~200-300 lines, rewiring adds ~30-50 lines, h_d_unique removal saves ~100 lines; net +280-450 lines)
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- h_d_unique Claim 1 proof, same_order_type sigma/tau fix, pigeonhole_definable_formula_below_d
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- M-side continuation set, c=inf(S_C^M), inline Claim 1 in d_consistency, remove h_d_unique, same_order_type sigma/tau fix, pigeonhole_definable_formula_below_d/c
 
 **Verification**:
 - `lean_verify d_consistency_left` shows no `sorryAx`
@@ -330,7 +333,7 @@ Phases within the same wave can execute in parallel.
 - **Case III**: alpha_n is a gap defined on the left by D. Use left(B,D) as the detection formula. Apply Lemma 9 left to find gap e_n in (t,d)_r.
 - **Case IV**: alpha_n is a gap NOT left-defined. Use right(B,D) as the detection formula. Apply Lemma 9 right to find gap e_n in (t,u).
 
-**Sub-tasks for c-gap-case (line ~1614)**: When d is a gap in `obtain_split_point_props`, use Lemma 9 to transfer gap detection from N-side to M-side. The gap gamma in N has a defining formula D; apply `left_formula_gap_detection` or `right_formula_gap_detection` to find the corresponding c in M_r.
+**Sub-tasks for c-gap-case (line ~1614)**: When d is a gap in `obtain_split_point_props`, use Lemma 9 to transfer gap detection from N-side to M-side. The gap gamma in N has a defining formula D; apply `left_formula_gap_detection` or `right_formula_gap_detection` to find the corresponding c in M_r. **v17 note**: This now applies to BOTH the N-side (d) and M-side (c) infimum constructions. If c is also a gap, the same Lemma 9 mechanism transfers.
 
 **Sub-tasks for M-side degenerate (lines ~1804, ~1821)**: Either prove these cases are unreachable (degenerate interval at a gap contains no points, contradiction with some other hypothesis) or restructure `SplitPointProps` to make `h_pt_xc`/`h_pt_cy` conditional: `x < c -> exists p, inClosedInterval x c (extendPoint p)`. Update 5 downstream usage sites with appropriate guards.
 
@@ -610,21 +613,22 @@ Phases within the same wave can execute in parallel.
 
 - `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- Lemma 9 (COMPLETE), Lemma 11 backward, stavi_expressive_completeness, game_tuple_*_eq lemmas (moved from ExpressivenessGeneral), pivot_chain_order/rev (moved)
 - `Theories/Bimodal/Automation/EFGameTactics.lean` -- Task 195 output: simp_game_tuple, same_order_type_grid, order_refl, extract_order, pivot_chain_order'/rev', gap_point_agreement_of_cases, formula_agreement_of_cases
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- infimum construction, Claim 1 (h_d_unique), d-consistency, Case II restructure, M-side degenerate, c-gap-case, Cases III/IV, rank-varying Thm 6, Props 6-7
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- M-side continuation set S_C^M, c=inf(S_C^M), inline Claim 1 in d_consistency, h_d_unique REMOVED, Case II restructure, M-side degenerate, c-gap-case, Cases III/IV, rank-varying Thm 6, Props 6-7
 - `Theories/Bimodal/Metalogic/WeakCanonical/GapElimination.lean` (NEW) -- Reynolds Lemmas 6-13, Theorem 14
 - `Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean` or `Theorem5.lean` -- Reynolds Theorem 5
 - `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` -- no_gaps_discrete
 - `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- h_truth_corr (COMPLETE)
-- `specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md` -- This plan (v16)
+- `specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md` -- This plan (v17)
 
 ## Rollback/Contingency
 
-1. **h_d_unique direction 1 (Task 1.4d)**: If Since semantics lemmas for K^-(not-D) are hard to prove, try direct formula_agreement at rank r+2 between d and t' without going through the Since combinator. The key fact is that K^-(not-D) has different truth values at d vs t', and rank-(r+2) agreement must transfer this. If the game position correspondence is too complex, restructure using a standalone `ghr93_claim1_uniqueness` lemma (~150-250 lines) as recommended by report 29.
-2. **h_d_unique direction 2 (Task 1.4e)**: If the game API does not support extracting individual round-2 responses, restructure using the full game winning condition. Alternatively, if the failure mu-point extraction from h_cofinal_failure_below_d is structurally incompatible, construct the failure witness directly from the definition of S_C membership.
-3. **Weakened pigeonhole (Task 1.4a)**: If the weakened precondition approach hits unforeseen issues with chain construction in the extended carrier, fall back to proving that `h_cofinal_failure_below_d` with Classical.choice can produce a single formula that fails at infinitely many points (by pigeonhole on the finite formula space), without the chain-based argument.
-4. **Same_order_type sigma (Task 1.6)**: If `same_order_type_grid` approach still leaves unresolved goals after uncommenting: use `extract_order` macro for individual cell extraction, or fall back to fully manual `intro i j; delta game_tuple; split_ifs` with per-cell closers (verbose but reliable, ~200 lines).
-5. **Same_order_type tau (Task 1.6)**: If sigma instantiation for `(x' < d iff x < c)` is hard to extract: try using the forward game ordering `hord_fwd` at positions (0, n+1) which relates x to a_M(n) and x' to a_N(n). Since a_M(n)=c by construction, this gives `(x' < a_N(n) iff x < c)`. Then separately show `a_N(n) = d` or use a weaker ordering relationship.
-6. **Cases III/IV (Phase 3)**: If the case-specific construction exceeds budget, implement Case III first (simpler: left-defined gap, rank r+2) and leave Case IV for a follow-up. Task 195 tactics assist the winning condition assembly.
-7. **Assembly (Phase 4)**: If Prop 7 composition is too complex, try direct Corollary 5 route via formula type enumeration.
-8. **Gap elimination (Phases 6A-6B)**: Lemma 12's 14 cases can be individually modularized. S cases are perfectly dual to U cases.
-9. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck on any phase, mark [BLOCKED] and request additional research. The critical directive prohibits shortcuts.
+1. **M-side infimum construction (Task 1.4c)**: If the M-side 3-way case split diverges from N-side due to different carrier structure, try a game-based approach: play the game with c as Spoiler's challenge, get d' as response, show d' = d by infimum uniqueness. This avoids constructing c as an explicit infimum. Alternatively, if the M-side continuation set has different structural properties, introduce a helper lemma that maps N-side case analysis to M-side via the game's order-preserving property.
+2. **Rank-r agreement c-d (Task 1.4 overall)**: If establishing rank-r agreement between c=inf(S_C^M) and d=inf(S_C^N) is difficult via direct game argument, try: (a) show continuation predicates are rank-r definable (they are -- from pigeonhole_definable_formula), (b) show infima of rank-r-definable sets must agree if the game at rank r relates M and N, (c) use rank_embed_stavi_truth_mu for the transfer. This is the "infimum correspondence lemma" approach from the task context's Finding 4.
+3. **K^-(not-D) Since semantics (Tasks 1.4f-g)**: If direct Since semantics lemmas are missing, prove from `stavi_temporal_truth_mu` definition. The key facts are: Since(T,D)(d) requires exists s < d with D(s) and T on (s,d), and D fails cofinally below d (from pigeonhole). These are combinable in ~20-30 lines.
+4. **d_consistency rewiring (Task 1.4k)**: If Task 1.5's ~100 lines of framework are tightly coupled to h_d_unique's specific output format, consider a compatibility wrapper: define a local `h_d_unique_inline` that has the same type as h_d_unique but is proved inline using the Claim 1 argument. This preserves all downstream code. Cost: ~10 extra lines but zero refactoring risk.
+5. **Same_order_type sigma (Task 1.6)**: If `same_order_type_grid` approach still leaves unresolved goals after uncommenting: use `extract_order` macro for individual cell extraction, or fall back to fully manual `intro i j; delta game_tuple; split_ifs` with per-cell closers (verbose but reliable, ~200 lines).
+6. **Same_order_type tau (Task 1.6)**: If sigma instantiation for `(x' < d iff x < c)` is hard to extract: try using the forward game ordering `hord_fwd` at positions (0, n+1) which relates x to a_M(n) and x' to a_N(n). Since a_M(n)=c by construction, this gives `(x' < a_N(n) iff x < c)`. Then separately show `a_N(n) = d` or use a weaker ordering relationship.
+7. **Cases III/IV (Phase 3)**: If the case-specific construction exceeds budget, implement Case III first (simpler: left-defined gap, rank r+2) and leave Case IV for a follow-up. Task 195 tactics assist the winning condition assembly.
+8. **Assembly (Phase 4)**: If Prop 7 composition is too complex, try direct Corollary 5 route via formula type enumeration.
+9. **Gap elimination (Phases 6A-6B)**: Lemma 12's 14 cases can be individually modularized. S cases are perfectly dual to U cases.
+10. **NEVER fall back to axioms or IsSuccArchimedean**: If stuck on any phase, mark [BLOCKED] and request additional research. The critical directive prohibits shortcuts.

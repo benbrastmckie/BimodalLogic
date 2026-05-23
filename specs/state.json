@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-23T00:03:58Z",
+      "last_updated": "2026-05-23T01:16:06Z",
       "next_artifact_number": 28,
       "artifacts": [
         {
@@ -408,10 +408,10 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md",
           "type": "plan",
-          "summary": "Implementation plan v16 for Reynolds pipeline activation with Round 15 team research integrated -- 11 phases, 40-65 hours, Phase 1 h_d_unique resolution strategy fully specified"
+          "summary": "Revised plan (v17) integrating Round 16 finding that h_d_unique is unprovable; restructures Phase 1 with M-side infimum construction and inline Claim 1"
         }
       ],
-      "session_id": "sess_1779494067_780bab",
+      "session_id": "sess_1779498361_8f9195",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z"
     },
