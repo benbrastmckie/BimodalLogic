@@ -127,8 +127,10 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Step 1.4f: Gap/point + boundary projection | COMPLETE | Round 19 | +45 lines, sorry-free |
 | Step 1.4g: Direction 2 carrier-point case | COMPLETE | Round 19 | +60 lines (h_cont_transfer), sorry-free |
 | Step 1.4g: Formula agreement hform_cd | COMPLETE | Round 19 | sorry-free via rank_embed projection |
-| Step 1.4h: Direction 1 Since(⊤,D_M) pipeline | BLOCKED | Round 19-21 | Pigeonhole precondition gap when c_inf is carrier pt with cont_holds_cross; fix: strict variant |
-| Step 1.4i: Direction 2 gap case | BLOCKED | Round 21 | NOT trivial; needs symmetric argument or gap-specific proof |
+| Step 1.4h-i: Pigeonhole-based K⁻ pipeline | ABANDONED | Round 19-21 | Root cause found (report 36): cont_holds is a predicate, not a formula. Pigeonhole approach creates artificial edge cases. |
+| Step 1.4h NEW: interval_type_formula | NOT STARTED | Round 22 | GHR93 Def 8.8: materialize C as StaviFormula (~100 lines) |
+| Step 1.4i NEW: C' + C'(c_inf) = TRUE | NOT STARTED | Round 22 | Two clean cases by infimum property (~40 lines) |
+| Step 1.4j NEW: Claim 1 verbatim | NOT STARTED | Round 22 | GHR93 p.116: transfer + analysis, no edge cases (~80 lines) |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
 | Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
@@ -269,26 +271,28 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
 - [x] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). *(deviation: altered -- Fixed buggy 2-way case split with correct 3-way split: (1) carrier-point minimum d=extendPoint p (unchanged), (2) carrier-point GLB p not in S_C d=extendPoint p (new, fully proved using gap no_sup axiom), (3) no carrier-point GLB (sorry'd, deferred to Phase 3 c-gap-case which wires infimum_gap_r_definable). Net -2 sorries: removed 3 buggy sorries, added 1 clean sorry for Case 3.)*
 - [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). *(completed -- already done in prior session; line 1298 has `hd_le_an`)*
 - [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). *(completed -- all live hd_eq_an references are in the OLD CASE II PROOF block comment; Case I uses hd_le_an correctly)*
-- [ ] **Task 1.4**: Cross-structure M-side infimum + inline Claim 1 (RESTRUCTURED v17, corrected v18, updated v19 to match implementation). **Critical new work.**
-  - [x] **Step 1.4a**: Define cross-structure definitions (~55 lines). *(completed -- cont_holds_cross, continuation_set_cross, continuation_set_cross_nonempty, continuation_set_cross_upward_closed added after line 137. Build passes.)*
-  - [x] **Step 1.4b**: Construct c_inf = inf(S_C^M) (~90 lines). *(completed -- mirrored d = inf(S_C^N) with 3-way case split: Cases 1+2 sorry-free, Case 3 sorry'd matching N-side. Build passes.)*
-  - [x] **Step 1.4c**: Prove c_inf ∈ S_C^M and cofinal failure (~30 lines). *(completed -- hc_inf_in_SC_M and h_cofinal_failure_below_c_inf. Build passes.)*
-  - [x] **Step 1.4d**: Cross-structure pigeonhole `pigeonhole_definable_formula_cross` (~180 lines). *(completed -- sorry-free mirror of pigeonhole_definable_formula for cross-structure case, using M-side NormalForms and N-side continuation formula hypothesis. Build passes.)*
-  - [x] **Step 1.4e**: Suffices restructured to use h_fwd_r1 at rank r+2 (~130 lines). *(completed -- ARCHITECTURAL CHANGE: the suffices proof now plays h_fwd_r1 directly instead of h1 at rank r. Shows r2_resp = rank_embed(d) via both directions, then projects to rank r via rank_embed_stavi_truth_mu. Bypasses t_game entirely — no rank mismatch. Formula agreement hform_cd sorry-free via rank-(r+2) projection.)*
-  - [x] **Step 1.4f**: Gap/point + boundary projection (~45 lines). *(completed -- hgp_cd via rank_embed_isPoint + case analysis on Sum.inl/inr. hbdy_cd via rank_embed injectivity from rank_embed_le. Build passes.)*
-  - [x] **Step 1.4g**: Direction 2 carrier-point case at rank r+2 (~60 lines). *(completed -- h_cont_transfer proves cont_holds at carrier points above r2_resp using game Round 2 + c_inf ∈ S_C^M + formula transfer via rank_embed_stavi_truth_mu. Carrier-point subcase projects to rank r and contradicts h_cofinal_failure_below_d. Build passes.)*
-  - [ ] **Step 1.4h**: Direction 1 at rank r+2 — Since(⊤, D_M) pipeline (line 2495, ~150-250 lines). 6-step pipeline confirmed correct by 3 analysis rounds:
-    1. Apply pigeonhole_definable_formula_cross → D_M (depth ≤ r, cofinal failure below c_inf in M)
-    2. Use Since(⊤, D_M) directly (depth ≤ r+2) — optimization: no need for K⁻ = neg wrapping
-    3. Since(⊤, D_M)(c_inf) = FALSE in M at rank r (D_M fails cofinally below c_inf)
-    4. Transfer via h_fwd_r1 game at rank r+2: Since(⊤, D_M)(r2_resp) = FALSE
-    5. If r2_resp > rank_embed(d): Since(⊤, D_M)(r2_resp) = TRUE (witness: carrier point above d, D_M holds by continuation). Contradiction with step 4.
-    6. So r2_resp ≤ rank_embed(d).
-    **BLOCKER (Round 21)**: pigeonhole_definable_formula_cross has a precondition gap when c_inf is a carrier point with cont_holds_cross(c_inf) = TRUE. The cut has a maximum p_c, but the pigeonhole's h_cofinal_failure requires a failure at p_c (which doesn't exist since all continuation formulas hold there). **FIX**: Create a weakened variant `pigeonhole_definable_formula_cross_strict` requiring failures only at cut points with extendPoint(p) < c_inf (not ≤). All h_cofinal_failure_below_c_inf failures are provably strict when cont_holds_cross(c_inf) holds.
-    **Sub-cases for Since witness (step 5)**: d carrier point → use rank_embed(d) directly. d gap → find carrier point above d (from h_pt or d ∈ S_C properties). Both provable but gap case needs careful cut arithmetic.
-  - [ ] **Step 1.4i**: Direction 2 gap case at rank r+2 (line 2567, ~80-150 lines). NOT trivial as previously claimed (h_r2_resp_le_d and h_not_le are same direction, not contradictory). Requires symmetric K⁻/Since argument using N-side pigeonhole or gap-specific argument. May need separate treatment.
-  - [ ] **Step 1.4j**: Remove h_d_unique + rewire (~-100 lines). Once suffices proof is sorry-free: delete h_d_unique (lines ~2135-2159 and surroundings). Remove h_d_unique parameter from d_consistency_left/right. Callers no longer pass h_d_unique. h_d_unique's 2 sorries (lines 2135, 2159) become orphaned and are deleted.
-  - [ ] **Step 1.4k**: d_consistency_right (mirror of left). d_consistency_right currently uses h_d_unique at line ~1325. After h_d_unique removal, needs same inline argument. Can share infrastructure with left variant.
+- [ ] **Task 1.4**: Formula materialization + inline Claim 1 (v20: ROOT CAUSE FIX per report 36).
+  **ROOT CAUSE (report 36)**: GHR93's C = X_{(a_n, y')} is a SINGLE formula (Definition 8.8: finite disjunction of point-type conjunctions). Our cont_holds is a second-order predicate. This deviation forced the pigeonhole (~360 lines) and all carrier-point/gap edge cases. FIX: materialize C as a StaviFormula, then Claim 1 follows GHR93 verbatim.
+  **Prior infrastructure (retained)**: Steps 1.4a-g are PRESERVED — cross-structure definitions, c_inf = inf(S_C^M), suffices restructured to h_fwd_r1. These remain correct and useful. The formula materialization REPLACES steps 1.4h-i (the pigeonhole-based K⁻ pipeline that was blocked).
+  - [x] **Step 1.4a-c**: Cross-structure definitions + c_inf construction (~175 lines). *(completed, sorry-free except Case 3 gap)*
+  - [x] **Step 1.4d**: Cross-structure pigeonhole (~180 lines). *(completed, sorry-free — may become unnecessary for Claim 1 but useful for infimum_gap_r_definable)*
+  - [x] **Step 1.4e-g**: Suffices restructured + projections + Direction 2 carrier-point (~235 lines). *(completed, Direction 2 carrier-point sorry-free, formula agreement sorry-free)*
+  - [ ] **Step 1.4h**: Build `interval_type_formula` (~100 lines). GHR93 Definition 8.8: X_{(a_n, y')} = disjunction of X_v for mu-points v in (a_n, y'), where X_v = conjunction of rank-r formulas true at v. Implementation:
+    1. `point_type_formula (v : ExtendedCarrier N atomMap r) : StaviFormula` — conjunction of rank-r formulas true at v. Finite by NormalForm at depth 2r (nf_determines_stavi_truth_depth). Depth ≤ r.
+    2. `interval_type_formula (a_n y' : ExtendedCarrier N atomMap r) : StaviFormula` — disjunction of point_type_formula(v) for mu-points v in (a_n, y'). Finite by NormalForm finiteness. Depth ≤ r.
+    3. `interval_type_correct`: truth at t iff t has same rank-r type as some mu-point in (a_n, y'). Equivalently: cont_holds a_n y' t ↔ stavi_temporal_truth_mu N atomMap r t (interval_type_formula a_n y').
+    **NOTE**: Check whether StaviFormula already has conjunction/disjunction constructors or whether they need to be built from neg/base.
+  - [ ] **Step 1.4i**: Build C' and prove C'(c_inf) = TRUE (~40 lines). GHR93 p.116:
+    1. C' = ¬C ∨ K⁻(¬C) where C = interval_type_formula. As StaviFormula: `cprime = neg C ||| neg (std_snce (base ⊤) C)`. Wait — GHR93's C' = ¬C ∨ K⁻(¬C) and K⁻(¬C) = ¬S(⊤, C). So C' = ¬C ∨ ¬S(⊤, C). Depth: max(r, r+2) = r+2.
+    2. C'(c_inf) = TRUE in M: Case c_inf ∉ S_C^M → ¬C(c_inf) directly. Case c_inf ∈ S_C^M → K⁻(¬C)(c_inf) from cofinal C-failure below c_inf (from h_cofinal_failure_below_c_inf + interval_type_correct). ~30 lines, two clean cases, no edge cases.
+  - [ ] **Step 1.4j**: Claim 1 proof — close the 2 remaining sorries (~80 lines). GHR93 p.116 verbatim:
+    1. C' has depth ≤ r+2. Transfer via h_fwd_r1 game: C'(rank_embed(c_inf)) ↔ C'(r2_resp). By rank_embed: C'(c_inf) = TRUE → C'(r2_resp) = TRUE. (~10 lines)
+    2. Analyze C'(r2_resp) in N: ¬C(r2_resp) → r2_resp ∉ S_C^N → r2_resp ≤ rank_embed(d). OR K⁻(¬C)(r2_resp) → C fails cofinally below r2_resp → if r2_resp > rank_embed(d) then C holds on (d, r2_resp) contradiction. So r2_resp ≤ rank_embed(d). (~20 lines)
+    3. Combined with Direction 2 (r2_resp ≥ rank_embed(d), already partly proved): r2_resp = rank_embed(d). (~5 lines)
+    4. For Direction 2 gap case: C'(r2_resp) = TRUE also constrains r2_resp ≥ rank_embed(d) by symmetric argument. (~20 lines)
+    **NO pigeonhole. NO carrier-point vs gap case split. NO edge cases.** C is a formula, transfer is direct.
+  - [ ] **Step 1.4k**: Remove h_d_unique + rewire (~-100 lines). Delete h_d_unique, remove from d_consistency_left/right signatures. h_d_unique's 2 sorries become orphaned.
+  - [ ] **Step 1.4l**: d_consistency_right (mirror of left). Share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
 - [ ] **Task 1.6**: Restructure Case II winning condition assembly. *(Round 5 implemented e_n construction via forward game + sigma/tau split. Round 6 decomposed 2 monolithic sorries into 6 targeted: same_order_type, gap_point_agreement, formula_agreement x sigma/tau. Round 7 closed 4 of 6 (gap_point + formula for both sub-cases). Remaining: 2 same_order_type sorries NOW UNBLOCKED by task 195.)*
   - [x] e_n construction via forward game round 2 (h_fwd_n1 + p_n challenge) -- Round 5
