@@ -132,7 +132,10 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Claim 1 boundary cases (c_inf=x, c_inf=y) | COMPLETE | Round 22 | Proved via game order agreement, no K⁻ needed |
 | Gap equivalence research | FALSE | Round 23 | Atoms distinguish points from gaps; lemma fails at base case |
 | Key insight: d always carrier point | COMPLETE | Round 23 | Case 3 (gap) is sorry'd Phase 3; Cases 1+2 give d = extendPoint p |
-| Claim 1 interior cases (2 sorries: ~2577, ~2732) | UNBLOCKED | Round 23 | K⁻(¬D_M) with vacuous Since witness s=rank_embed(d) works on live paths |
+| Direction 2 gap case CLOSED | COMPLETE | Round 24 | Dedekind cut complement argument, 170 lines |
+| Strict pigeonhole written | COMPLETE | Round 24 | pigeonhole_definable_formula_cross_strict, 173 lines sorry-free |
+| Root cause report 38 | COMPLETE | Round 24 | Pigeonhole boundary INHERENT; formula materialization CIRCULAR; case split is correct fix |
+| Direction 1 interior (line ~2580) | BLOCKED | Round 24 | Case split on cont_holds_cross at c_inf needed (report 38) |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
 | Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
@@ -279,24 +282,19 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
   - [x] **Step 1.4a-c**: Cross-structure definitions + c_inf construction (~175 lines). *(completed, sorry-free except Case 3 gap)*
   - [x] **Step 1.4d**: Cross-structure pigeonhole (~180 lines). *(completed, sorry-free — may become unnecessary for Claim 1 but useful for infimum_gap_r_definable)*
   - [x] **Step 1.4e-g**: Suffices restructured + projections + Direction 2 carrier-point (~235 lines). *(completed, Direction 2 carrier-point sorry-free, formula agreement sorry-free)*
-  - [ ] **Step 1.4h**: Close 2 interior sorries (lines ~2577, ~2732) via K⁻(¬D_M) with vacuous Since witness. *(deviation: altered -- Sorry 2 (Direction 2 gap case, line ~2732) CLOSED via Dedekind cut complement argument (170 lines). Sorry 1 (Direction 1 interior, line ~2580) remains: pigeonhole h_cofinal_failure precondition fails when c_inf is carrier point with cont_holds_cross at c_inf.)*
-  
-    **KEY INSIGHT (Round 23)**: On ALL non-sorry'd paths, d = extendPoint p (carrier point). Case 3 of the d construction (d is gap) is sorry'd for Phase 3. Therefore rank_embed(d) is ALWAYS a mu-point on live paths. This resolves the adjacent-gap blocker.
+  - [ ] **Step 1.4h**: Close Direction 1 interior sorry (line ~2580) via case split on cont_holds_cross at c_inf (report 38). *(Direction 2 gap case CLOSED in Round 24 via Dedekind cut complement, 170 lines.)*
     
-    **Path A (gap equivalence) RULED OUT**: Report 37 proves the lemma FALSE — atoms distinguish points from gaps.
+    **ROOT CAUSE (report 38)**: Pigeonhole boundary is INHERENT (non-strict infimum vs strict chain). Formula materialization is CIRCULAR (requires inverting stavi_table_mu = expressive completeness being proved). Path A (gap equivalence) FALSE (report 37). The correct fix follows GHR93's implicit case analysis.
     
-    **Path B (formula materialization) NOT NEEDED**: Since d is always a carrier point, the K⁻(¬D_M) argument works with the VACUOUS Since witness:
-    1. Pigeonhole → D_M (depth ≤ r, cofinal failure below c_inf in M)
-    2. neg(Since(⊤, D_M))(c_inf in M) = TRUE (cofinal D_M-failure below c_inf)
-    3. Transfer via h_fwd_r1: neg(Since(⊤, D_M))(r2_resp in N at r+2) = TRUE
-    4. Since(⊤, D_M)(r2_resp) with witness s = rank_embed(d):
-       - rank_embed(d) < r2_resp ✓ (from hypothesis)
-       - mu_holds(rank_embed(d)) ✓ (d is carrier point on live paths)
-       - ⊤(rank_embed(d)) = TRUE ✓ (tautology at carrier points)
-       - ∀ mu u ∈ (rank_embed(d), r2_resp), D_M(u) = vacuously TRUE ✓ (no mu-points in interval when r2_resp is adjacent gap; if mu-points exist, D_M holds from cont_holds above d)
-    5. Contradiction: Since = TRUE but neg(Since) = TRUE
+    **Case split on cont_holds_cross(a_bwd(n), y', c_inf)**:
     
-    **Sorry 2 (Direction 2 gap case, r2_resp < rank_embed(d))**: When d is a carrier point, rank_embed(d) is a mu-point ABOVE r2_resp. h_cont_transfer can use rank_embed(d) as the mu-point for the cont_holds transfer. OR: since d is a carrier point, the carrier-point case of Direction 2 already covers it — the gap case only arises when r2_resp is a gap, but d being a carrier point means rank_embed(d) is available for contradiction.
+    **Case A (FAILS)**: c_inf is a mu-point where cont_holds_cross fails. Unwind ¬cont_holds_cross: ∃ A depth ≤ r, A on (a_bwd(n), y') in N, ¬A(c_inf in M). This A serves as D directly — no pigeonhole. Build neg(Since(⊤, A)) of depth r+2, prove FALSE at c_inf (trivially: A fails at c_inf so Since can't have a witness with A holding on a tail ending at c_inf... actually Since(⊤, A)(c_inf) needs A at all mu in (s, c_inf), and A fails at c_inf itself — but c_inf is a mu-point, so if s < c_inf, the interval (s, c_inf) doesn't include c_inf. Need: A fails at some mu in every (s, c_inf). From cofinal failure below c_inf: for any s, ∃ mu v in (s, c_inf] with ¬cont_holds_cross(v). Extract A_v that fails at v. But A_v might ≠ A. So Since(⊤, A) might still hold.)
+    
+    **CORRECTION**: Case A doesn't give cofinal A-failure below c_inf automatically. It gives A failing AT c_inf. For Since(⊤, A)(c_inf) = FALSE: need A to fail in every interval (s, c_inf). Having A fail only at c_inf doesn't suffice (c_inf ∉ open interval (s, c_inf)). So Case A still needs pigeonhole for cofinal failure. BUT: with cont_holds_cross FAILING at c_inf, the infimum cut INCLUDES c_inf (a mu-point where some formula fails). The NON-strict pigeonhole can use c_inf as a failure point. No boundary issue.
+    
+    **Case B (HOLDS)**: Every witness u from h_cofinal_failure_below_c_inf has u < c_inf (strict), because u = c_inf contradicts cont_holds_cross(c_inf) = TRUE. The strict pigeonhole precondition is trivially satisfied. Proceed with strict pigeonhole → D_M → K⁻ argument.
+    
+    **Both cases produce D of depth ≤ r with cofinal failure below c_inf.** Then: neg(Since(⊤, D))(c_inf) = TRUE, transfer via game, Since(⊤, D)(r2_resp) = TRUE (witness: rank_embed(d)), contradiction.
   - [ ] **Step 1.4k**: Remove h_d_unique + rewire (~-100 lines). Delete h_d_unique, remove from d_consistency_left/right signatures. h_d_unique's 2 sorries become orphaned.
   - [ ] **Step 1.4l**: d_consistency_right (mirror of left). Share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
