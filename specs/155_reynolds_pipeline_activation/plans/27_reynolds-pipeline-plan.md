@@ -127,8 +127,8 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Step 1.4f: Gap/point + boundary projection | COMPLETE | Round 19 | +45 lines, sorry-free |
 | Step 1.4g: Direction 2 carrier-point case | COMPLETE | Round 19 | +60 lines (h_cont_transfer), sorry-free |
 | Step 1.4g: Formula agreement hform_cd | COMPLETE | Round 19 | sorry-free via rank_embed projection |
-| Step 1.4h: Direction 1 K⁻(¬D_M) pipeline | IN PROGRESS | Round 19 | agent running |
-| Step 1.4i: Direction 2 gap case | BLOCKED on 1.4h | Round 19 | ~2 lines once 1.4h closes |
+| Step 1.4h: Direction 1 Since(⊤,D_M) pipeline | BLOCKED | Round 19-21 | Pigeonhole precondition gap when c_inf is carrier pt with cont_holds_cross; fix: strict variant |
+| Step 1.4i: Direction 2 gap case | BLOCKED | Round 21 | NOT trivial; needs symmetric argument or gap-specific proof |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
 | Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
@@ -277,8 +277,16 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
   - [x] **Step 1.4e**: Suffices restructured to use h_fwd_r1 at rank r+2 (~130 lines). *(completed -- ARCHITECTURAL CHANGE: the suffices proof now plays h_fwd_r1 directly instead of h1 at rank r. Shows r2_resp = rank_embed(d) via both directions, then projects to rank r via rank_embed_stavi_truth_mu. Bypasses t_game entirely — no rank mismatch. Formula agreement hform_cd sorry-free via rank-(r+2) projection.)*
   - [x] **Step 1.4f**: Gap/point + boundary projection (~45 lines). *(completed -- hgp_cd via rank_embed_isPoint + case analysis on Sum.inl/inr. hbdy_cd via rank_embed injectivity from rank_embed_le. Build passes.)*
   - [x] **Step 1.4g**: Direction 2 carrier-point case at rank r+2 (~60 lines). *(completed -- h_cont_transfer proves cont_holds at carrier points above r2_resp using game Round 2 + c_inf ∈ S_C^M + formula transfer via rank_embed_stavi_truth_mu. Carrier-point subcase projects to rank r and contradicts h_cofinal_failure_below_d. Build passes.)*
-  - [ ] **Step 1.4h**: Direction 1 at rank r+2 — K⁻(¬D_M) pipeline (line 2495, ~100 lines). **AGENT RUNNING.** Apply pigeonhole_definable_formula_cross to get D_M. Construct K⁻(¬D_M) = neg(std_snce(base(⊤), D_M)) at depth ≤ r+2. Prove K⁻(¬D_M)(c_inf) = TRUE from cofinal D_M-failure (Since semantics). Transfer via h_fwd_r1 game: K⁻(¬D_M)(r2_resp) = TRUE. If r2_resp > rank_embed(d): D_M holds at mu above d (continuation formula) → Since(⊤, D_M)(r2_resp) = TRUE → contradiction. So r2_resp ≤ rank_embed(d).
-  - [ ] **Step 1.4i**: Direction 2 gap case at rank r+2 (line 2567, ~2 lines). Trivial once 1.4h closes: h_r2_resp_le_d + h_not_le gives absurd.
+  - [ ] **Step 1.4h**: Direction 1 at rank r+2 — Since(⊤, D_M) pipeline (line 2495, ~150-250 lines). 6-step pipeline confirmed correct by 3 analysis rounds:
+    1. Apply pigeonhole_definable_formula_cross → D_M (depth ≤ r, cofinal failure below c_inf in M)
+    2. Use Since(⊤, D_M) directly (depth ≤ r+2) — optimization: no need for K⁻ = neg wrapping
+    3. Since(⊤, D_M)(c_inf) = FALSE in M at rank r (D_M fails cofinally below c_inf)
+    4. Transfer via h_fwd_r1 game at rank r+2: Since(⊤, D_M)(r2_resp) = FALSE
+    5. If r2_resp > rank_embed(d): Since(⊤, D_M)(r2_resp) = TRUE (witness: carrier point above d, D_M holds by continuation). Contradiction with step 4.
+    6. So r2_resp ≤ rank_embed(d).
+    **BLOCKER (Round 21)**: pigeonhole_definable_formula_cross has a precondition gap when c_inf is a carrier point with cont_holds_cross(c_inf) = TRUE. The cut has a maximum p_c, but the pigeonhole's h_cofinal_failure requires a failure at p_c (which doesn't exist since all continuation formulas hold there). **FIX**: Create a weakened variant `pigeonhole_definable_formula_cross_strict` requiring failures only at cut points with extendPoint(p) < c_inf (not ≤). All h_cofinal_failure_below_c_inf failures are provably strict when cont_holds_cross(c_inf) holds.
+    **Sub-cases for Since witness (step 5)**: d carrier point → use rank_embed(d) directly. d gap → find carrier point above d (from h_pt or d ∈ S_C properties). Both provable but gap case needs careful cut arithmetic.
+  - [ ] **Step 1.4i**: Direction 2 gap case at rank r+2 (line 2567, ~80-150 lines). NOT trivial as previously claimed (h_r2_resp_le_d and h_not_le are same direction, not contradictory). Requires symmetric K⁻/Since argument using N-side pigeonhole or gap-specific argument. May need separate treatment.
   - [ ] **Step 1.4j**: Remove h_d_unique + rewire (~-100 lines). Once suffices proof is sorry-free: delete h_d_unique (lines ~2135-2159 and surroundings). Remove h_d_unique parameter from d_consistency_left/right. Callers no longer pass h_d_unique. h_d_unique's 2 sorries (lines 2135, 2159) become orphaned and are deleted.
   - [ ] **Step 1.4k**: d_consistency_right (mirror of left). d_consistency_right currently uses h_d_unique at line ~1325. After h_d_unique removal, needs same inline argument. Can share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
