@@ -1784,10 +1784,24 @@ structure SplitPointProps {sig : MonadicSignature}
   hx'd : x' ≤ d
   /-- d ≤ y' (for sub-interval well-formedness) -/
   hdy' : d ≤ y'
-  /-- There exists an actual M-point in [x, c] -/
-  h_pt_xc : ∃ (p : M.carrier), inClosedInterval x c (extendPoint p)
-  /-- There exists an actual M-point in [c, y] -/
-  h_pt_cy : ∃ (p : M.carrier), inClosedInterval c y (extendPoint p)
+  /-- There exists an actual M-point in [x, c], or x = c (and x' = d) with c a gap.
+      Degenerate case: GHR93 allows the sub-interval to be a single gap point.
+      The x' = d condition ensures the N-side sub-interval is also degenerate. -/
+  h_pt_xc : (∃ (p : M.carrier), inClosedInterval x c (extendPoint p)) ∨
+             (x = c ∧ x' = d ∧ IsGap c ∧ IsGap d)
+  /-- There exists an actual M-point in [c, y], or c = y (and d = y') with c a gap.
+      Degenerate case: GHR93 allows the sub-interval to be a single gap point.
+      The d = y' condition ensures the N-side sub-interval is also degenerate. -/
+  h_pt_cy : (∃ (p : M.carrier), inClosedInterval c y (extendPoint p)) ∨
+             (c = y ∧ d = y' ∧ IsGap c ∧ IsGap d)
+  /-- Formula agreement between c and d at rank r.
+      Used in degenerate gap cases (GHR93 implicit: game on [d,d] vs [c,c]). -/
+  hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r c A ↔
+       stavi_temporal_truth_mu N atomMap r d A)
+  /-- Gap/point correspondence between c and d.
+      Used in degenerate gap cases and Case II point derivation. -/
+  hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d)
   /-- Backward strategy σ on the left sub-interval:
       Duplicator wins G_{n;r}(N, x'd; M, xc) -/
   sigma : ghr93_duplicator_wins N M atomMap n r x' d x c
@@ -2456,12 +2470,19 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
               exact point_between_strict_gaps rfl rfl hdy'_lt
         exact ih hc_interval.2 hd_interval.2 h_pt_sub h_restrict_right
     -- M-side sub-interval point witnesses (for SplitPointProps)
-    have h_pt_xc_w : ∃ p, inClosedInterval x c (extendPoint p) := by
+    -- Disjunctive form: either a carrier point exists in the sub-interval,
+    -- or the sub-interval is degenerate (x = c or c = y) with c a gap.
+    have h_pt_xc_w : (∃ p, inClosedInterval x c (extendPoint p)) ∨
+        (x = c ∧ x' = d ∧ IsGap c ∧ IsGap d) := by
       by_cases hxc_eq : x = c
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
-        · rw [hxc_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · sorry -- Degenerate gap: x = c is a gap, no carrier point in [c, c]
-      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · left; rw [hxc_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
+        · right
+          have hx'd_eq : x' = d := hcd_boundary.1.mp hxc_eq
+          have hd_gap : IsGap d := hcd_gp.2.mp ⟨g_c, hg_c⟩
+          exact ⟨hxc_eq, hx'd_eq, ⟨g_c, hg_c⟩, hd_gap⟩
+      · left
+        rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, hc_interval.1, le_refl _⟩
         · obtain ⟨p_M, hp_M⟩ := h_pt_M
@@ -2473,12 +2494,17 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             · have hxc_lt : x < c := lt_of_le_of_ne hc_interval.1 hxc_eq
               rw [hgx] at hxc_lt ⊢; rw [hg_c] at hxc_lt ⊢
               exact point_between_strict_gaps rfl rfl hxc_lt
-    have h_pt_cy_w : ∃ p, inClosedInterval c y (extendPoint p) := by
+    have h_pt_cy_w : (∃ p, inClosedInterval c y (extendPoint p)) ∨
+        (c = y ∧ d = y' ∧ IsGap c ∧ IsGap d) := by
       by_cases hcy_eq : c = y
       · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
-        · rw [← hcy_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
-        · sorry -- Degenerate gap: c = y is a gap, no carrier point in [c, c]
-      · rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
+        · left; rw [← hcy_eq, hp_c]; exact ⟨p_c, le_refl _, le_refl _⟩
+        · right
+          have hdy'_eq : d = y' := hcd_boundary.2.mp hcy_eq
+          have hd_gap : IsGap d := hcd_gp.2.mp ⟨g_c, hg_c⟩
+          exact ⟨hcy_eq, hdy'_eq, ⟨g_c, hg_c⟩, hd_gap⟩
+      · left
+        rcases isPoint_or_isGap c with ⟨p_c, hp_c⟩ | ⟨g_c, hg_c⟩
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, le_refl _, hc_interval.2⟩
         · obtain ⟨p_M, hp_M⟩ := h_pt_M
@@ -2500,6 +2526,8 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       hdy' := hd_interval.2
       h_pt_xc := h_pt_xc_w
       h_pt_cy := h_pt_cy_w
+      hcd_form := hcd_form
+      hcd_gp := hcd_gp
       sigma := sigma
       tau := tau
       h_fwd_n1 := ghr93_duplicator_wins_round_mono (by omega : n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
@@ -3658,12 +3686,129 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     -- ---------------------------------------------------------------
     -- Winning condition transfer (left case)
     -- ---------------------------------------------------------------
-    -- Instantiate tau with a point from [c,y] to get R-side data
-    obtain ⟨p_cy, hp_cy⟩ := props.h_pt_cy
-    obtain ⟨b_tau_resp, _, hcond_R_aux⟩ := hwin_R p_cy hp_cy
-    -- Extract components from both winning conditions
+    -- Instantiate tau with a point from [c,y] to get R-side data.
+    -- In the degenerate case (c = y, d = y', both gaps), derive R-side
+    -- data directly from hcd_form/hcd_gp since no carrier point exists in [c,c].
     obtain ⟨hord_L, hgp_L, hform_L⟩ := hcond_L
-    obtain ⟨hord_R_aux, hgp_R_aux, hform_R_aux⟩ := hcond_R_aux
+    -- Obtain R-side gap/point and formula data for selection indices and boundaries.
+    -- These are extracted from tau instantiation (non-degenerate) or from hcd_form/hcd_gp
+    -- (degenerate: c = y, d = y', both gaps, all R-selections collapse to d/c).
+    have hgp_R_sel : ∀ (k : Fin R.card),
+        (IsPoint (a_tau k) ↔ IsPoint (resp_R k)) ∧
+        (IsGap (a_tau k) ↔ IsGap (resp_R k)) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨_, hgp_aux, _⟩ := hcond
+        have := hgp_aux ⟨1 + k.val, by omega⟩
+        simp only [game_tuple,
+          show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
+          show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
+          dite_false, show 1 + ↑k - 1 = k.val from by omega] at this
+        exact this
+      · intro k
+        -- Degenerate: a_tau k = d (forced by [d,d]), resp_R k = c (forced by [c,c])
+        have ha_eq : a_tau k = d := le_antisymm
+          (hdy'_eq ▸ (ha_tau k).2) (ha_tau k).1
+        have hr_eq : resp_R k = c := le_antisymm
+          (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
+        rw [ha_eq, hr_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
+    have hform_R_sel : ∀ (k : Fin R.card) (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r (a_tau k) A ↔
+         stavi_temporal_truth_mu M atomMap r (resp_R k) A) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
+      · intro k A hA
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨_, _, hform_aux⟩ := hcond
+        have := hform_aux ⟨1 + k.val, by omega⟩ A hA
+        simp only [game_tuple,
+          show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
+          show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
+          dite_false, show 1 + ↑k - 1 = k.val from by omega] at this
+        exact this
+      · intro k A hA
+        have ha_eq : a_tau k = d := le_antisymm
+          (hdy'_eq ▸ (ha_tau k).2) (ha_tau k).1
+        have hr_eq : resp_R k = c := le_antisymm
+          (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
+        rw [ha_eq, hr_eq]; exact (props.hcd_form A hA).symm
+    have hgp_y_data : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
+      · obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨_, hgp_aux, _⟩ := hcond
+        have := hgp_aux ⟨R.card + 2, by omega⟩
+        simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+          show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
+          show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+        exact this
+      · rw [← hdy'_eq, ← hcy_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
+    have hform_y_data : ∀ A, stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
+      · intro A hA
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨_, _, hform_aux⟩ := hcond
+        have := hform_aux ⟨R.card + 2, by omega⟩ A hA
+        simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+          show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
+          show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+        exact this
+      · intro A hA; rw [← hdy'_eq, ← hcy_eq]; exact (props.hcd_form A hA).symm
+    -- Tau ordering data for R-selections (for same_order_type)
+    have tau_d_y_data : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, _, _⟩
+      · obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp_game_tuple at h; exact h
+      · exact ⟨⟨fun h => absurd hdy'_eq (ne_of_lt h), fun h => absurd hcy_eq (ne_of_lt h)⟩,
+               ⟨fun _ => hcy_eq, fun _ => hdy'_eq⟩⟩
+    have tau_d_sel_data : ∀ (k : Fin R.card),
+        (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, _, _⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp_game_tuple at h; exact h
+      · intro k
+        have ha_eq : a_tau k = d := le_antisymm (hdy'_eq ▸ (ha_tau k).2) (ha_tau k).1
+        have hr_eq : resp_R k = c := le_antisymm (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
+        exact ⟨⟨fun h => absurd ha_eq (ne_of_lt h).symm, fun h => absurd hr_eq (ne_of_lt h).symm⟩,
+               ⟨fun _ => hr_eq.symm, fun _ => ha_eq.symm⟩⟩
+    have tau_sel_y_data : ∀ (k : Fin R.card),
+        (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, _, _⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨1 + k.val, by omega⟩ ⟨R.card + 2, by omega⟩
+        simp_game_tuple at h; exact h
+      · intro k
+        have ha_eq : a_tau k = d := le_antisymm (hdy'_eq ▸ (ha_tau k).2) (ha_tau k).1
+        have hr_eq : resp_R k = c := le_antisymm (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
+        rw [ha_eq, hdy'_eq, hr_eq, hcy_eq]
+        exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+    have tau_sel_sel_data : ∀ (k k' : Fin R.card),
+        (a_tau k < a_tau k' ↔ resp_R k < resp_R k') ∧
+        (a_tau k = a_tau k' ↔ resp_R k = resp_R k') := by
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, _, _⟩
+      · intro k k'
+        obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp_game_tuple at h; exact h
+      · intro k k'
+        have ha_eq : a_tau k = d := le_antisymm (hdy'_eq ▸ (ha_tau k).2) (ha_tau k).1
+        have ha_eq' : a_tau k' = d := le_antisymm (hdy'_eq ▸ (ha_tau k').2) (ha_tau k').1
+        have hr_eq : resp_R k = c := le_antisymm (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
+        have hr_eq' : resp_R k' = c := le_antisymm (hcy_eq ▸ (hresp_R_in k').2) (hresp_R_in k').1
+        rw [ha_eq, ha_eq', hr_eq, hr_eq']
+        exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
     -- Interval facts for N-side values
     have hN_L_le_d : ∀ (j : Fin (n + 1)), a_bwd j < d → a_bwd j ≤ d :=
       fun j h => le_of_lt h
@@ -3704,12 +3849,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
         have hj_mem : j ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
         simp only [a'_resp, hjd, dite_false]
         set k := isoR.symm ⟨j, hj_mem⟩ with hk_def
-        have htau_gp := hgp_R_aux ⟨1 + k.val, by omega⟩
-        simp only [game_tuple,
-          show (1 + k.val : Nat) ≠ 0 from by omega,
-          show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
-          show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
-          dite_false, show 1 + ↑k - 1 = k.val from by omega] at htau_gp
+        have htau_gp := hgp_R_sel k
         have hN_eq : a_tau k = a_bwd j := by
           simp only [a_tau]
           congr 1; exact heR_inv j hj_mem
@@ -3736,12 +3876,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       · have hj_mem : j ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
         simp only [a'_resp, hjd, dite_false]
         set k := isoR.symm ⟨j, hj_mem⟩ with hk_def
-        have htau_form := hform_R_aux ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
-          show (1 + k.val : Nat) ≠ 0 from by omega,
-          show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
-          show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
-          dite_false, show 1 + ↑k - 1 = k.val from by omega] at htau_form
+        have htau_form := hform_R_sel k A hA
         have hN_eq : a_tau k = a_bwd j := by
           simp only [a_tau]; congr 1; exact heR_inv j hj_mem
         rw [hN_eq] at htau_form; exact htau_form
@@ -3751,12 +3886,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
         show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
       exact this
-    have hgp_y : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := by
-      have := hgp_R_aux ⟨R.card + 2, by omega⟩
-      simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
-        show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-        show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
-      exact this
+    have hgp_y : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := hgp_y_data
     -- Boundary formula data
     have hform_x : ∀ A, stavi_depth A ≤ r →
         (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) := by
@@ -3766,13 +3896,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
         show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
       exact this
     have hform_y : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) := by
-      intro A hA
-      have := hform_R_aux ⟨R.card + 2, by omega⟩ A hA
-      simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
-        show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-        show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
-      exact this
+        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) :=
+      hform_y_data
     -- b-index gap/point: both are extendPoint, so both are points
     have hgp_b : (@IsPoint sig N atomMap r (extendPoint b_resp_L) ↔
                   @IsPoint sig M atomMap r (extendPoint b_sp)) ∧
@@ -3801,9 +3926,6 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       -- Extract value-level ordering from sigma's same_order_type
       -- sigma maps: 0→x'/x, 1+k→a_sigma(k)/resp_L(k), L.card+1→b_resp_L/b_sp, L.card+2→d/c
       have sig_ord := fun a₁ a₂ : Fin (L.card + 3) => hord_L a₁ a₂
-      -- Extract value-level ordering from tau's same_order_type
-      -- tau maps: 0→d/c, 1+k→a_tau(k)/resp_R(k), R.card+1→b_tau_resp/p_cy, R.card+2→y'/y
-      have tau_ord := fun a₁ a₂ : Fin (R.card + 3) => hord_R_aux a₁ a₂
       -- Pre-extract sigma boundary orderings (as value-level facts)
       have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
         have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
@@ -3812,9 +3934,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
                      (extendPoint b_resp_L = d ↔ extendPoint b_sp = c) := by
         have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨L.card + 2, by omega⟩
         simp_game_tuple at h; exact h
-      have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
-        have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
-        simp_game_tuple at h; exact h
+      have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := tau_d_y_data
       -- Extract sigma ordering for L-selection k vs other sigma values
       have sig_x_sel : ∀ (k : Fin L.card),
           (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
@@ -3845,18 +3965,15 @@ private theorem ghr93_case_I {sig : MonadicSignature}
         simp_game_tuple at h; exact h
       -- Extract tau ordering for R-selection k vs other tau values
       have tau_d_sel : ∀ (k : Fin R.card),
-          (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
-        intro k; have h := tau_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-        simp_game_tuple at h; exact h
+          (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) :=
+        tau_d_sel_data
       have tau_sel_y : ∀ (k : Fin R.card),
-          (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) := by
-        intro k; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨R.card + 2, by omega⟩
-        simp_game_tuple at h; exact h
+          (a_tau k < y' ↔ resp_R k < y) ∧ (a_tau k = y' ↔ resp_R k = y) :=
+        tau_sel_y_data
       have tau_sel_sel : ∀ (k k' : Fin R.card),
           (a_tau k < a_tau k' ↔ resp_R k < resp_R k') ∧
-          (a_tau k = a_tau k' ↔ resp_R k = resp_R k') := by
-        intro k k'; have h := tau_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
-        simp_game_tuple at h; exact h
+          (a_tau k = a_tau k' ↔ resp_R k = resp_R k') :=
+        tau_sel_sel_data
       -- Interval bounds needed for pivot_chain_order
       -- a_sigma(k) ≤ d (since a_sigma(k) = a_bwd(eL(k)) and eL(k) ∈ L means a_bwd < d)
       have ha_sig_le_d : ∀ (k : Fin L.card), a_sigma k ≤ d :=
@@ -4061,14 +4178,125 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     -- ---------------------------------------------------------------
     -- Winning condition transfer (right case): symmetric to left case.
     -- ---------------------------------------------------------------
-    -- Instantiate sigma with a point from [x,c] for L-side data
-    obtain ⟨p_xc, hp_xc⟩ := props.h_pt_xc
-    obtain ⟨b_sigma_resp, _, hcond_L_aux⟩ := hwin_L p_xc hp_xc
-    -- Extract components from both winning conditions
+    -- Instantiate sigma with a point from [x,c] for L-side data.
+    -- In the degenerate case (x = c, x' = d, both gaps), derive L-side
+    -- data directly from hcd_form/hcd_gp.
     obtain ⟨hord_R, hgp_R, hform_R⟩ := hcond_R
-    obtain ⟨hord_L_aux, hgp_L_aux, hform_L_aux⟩ := hcond_L_aux
-    -- Reuse the same helper pattern as the left case
-    -- (heL_inv, heR_inv are already in scope from the outer proof)
+    -- L-side gap/point and formula data for selection indices and boundaries
+    have hgp_L_sel_R : ∀ (k : Fin L.card),
+        (IsPoint (a_sigma k) ↔ IsPoint (resp_L k)) ∧
+        (IsGap (a_sigma k) ↔ IsGap (resp_L k)) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨_, hgp_aux, _⟩ := hcond
+        have := hgp_aux ⟨1 + k.val, by omega⟩
+        simp only [game_tuple,
+          show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
+          show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
+          dite_false, show 1 + ↑k - 1 = k.val from by omega] at this
+        exact this
+      · intro k
+        have ha_eq : a_sigma k = d := le_antisymm
+          (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+        have hr_eq : resp_L k = c := le_antisymm
+          (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+        rw [ha_eq, hr_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
+    have hform_L_sel_R : ∀ (k : Fin L.card) (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r (a_sigma k) A ↔
+         stavi_temporal_truth_mu M atomMap r (resp_L k) A) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
+      · intro k A hA
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨_, _, hform_aux⟩ := hcond
+        have := hform_aux ⟨1 + k.val, by omega⟩ A hA
+        simp only [game_tuple,
+          show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
+          show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
+          dite_false, show 1 + ↑k - 1 = k.val from by omega] at this
+        exact this
+      · intro k A hA
+        have ha_eq : a_sigma k = d := le_antisymm
+          (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+        have hr_eq : resp_L k = c := le_antisymm
+          (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+        rw [ha_eq, hr_eq]; exact (props.hcd_form A hA).symm
+    have hgp_x_data_R : (IsPoint x' ↔ IsPoint x) ∧ (IsGap x' ↔ IsGap x) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
+      · obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨_, hgp_aux, _⟩ := hcond
+        have := hgp_aux ⟨0, by omega⟩
+        simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+          show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
+        exact this
+      · rw [hx'd_eq, hxc_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
+    have hform_x_data_R : ∀ A, stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
+      · intro A hA
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨_, _, hform_aux⟩ := hcond
+        have := hform_aux ⟨0, by omega⟩ A hA
+        simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+          show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
+        exact this
+      · intro A hA; rw [hx'd_eq, hxc_eq]; exact (props.hcd_form A hA).symm
+    -- Sigma ordering data for L-selections
+    have sig_x_d_data_R : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+      · obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      · exact ⟨⟨fun h => absurd hx'd_eq (ne_of_lt h), fun h => absurd hxc_eq (ne_of_lt h)⟩,
+               ⟨fun _ => hxc_eq, fun _ => hx'd_eq⟩⟩
+    have sig_sel_d_data_R : ∀ (k : Fin L.card),
+        (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨1 + k.val, by omega⟩ ⟨L.card + 2, by omega⟩
+        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+      · intro k
+        have ha_eq : a_sigma k = d := le_antisymm (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+        have hr_eq : resp_L k = c := le_antisymm (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+        rw [ha_eq, hr_eq]
+        exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+    have sig_x_sel_data_R : ∀ (k : Fin L.card),
+        (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+      · intro k
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+      · intro k
+        have ha_eq : a_sigma k = d := le_antisymm (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+        have hr_eq : resp_L k = c := le_antisymm (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+        rw [ha_eq, hx'd_eq, hr_eq, hxc_eq]
+        exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+    have sig_sel_sel_data_R : ∀ (k k' : Fin L.card),
+        (a_sigma k < a_sigma k' ↔ resp_L k < resp_L k') ∧
+        (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+      · intro k k'
+        obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+        obtain ⟨hord_aux, _, _⟩ := hcond
+        have h := hord_aux ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
+        simp only [game_tuple_sel_eq] at h; exact h
+      · intro k k'
+        have ha_eq : a_sigma k = d := le_antisymm (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+        have ha_eq' : a_sigma k' = d := le_antisymm (ha_sigma k').2 (hx'd_eq ▸ (ha_sigma k').1)
+        have hr_eq : resp_L k = c := le_antisymm (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+        have hr_eq' : resp_L k' = c := le_antisymm (hresp_L_in k').2 (hxc_eq ▸ (hresp_L_in k').1)
+        rw [ha_eq, ha_eq', hr_eq, hr_eq']
+        exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
     -- ----- Per-index: gap_point and formula (right case) -----
     have hgp_sel_R : ∀ (j : Fin (n + 1)),
         (IsPoint (a_bwd j) ↔ IsPoint (a'_resp j)) ∧
@@ -4078,12 +4306,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       · have hj_mem : j ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
         simp only [a'_resp, hjd, dite_true]
         set k := isoL.symm ⟨j, hj_mem⟩
-        have hsig_gp := hgp_L_aux ⟨1 + k.val, by omega⟩
-        simp only [game_tuple,
-          show (1 + k.val : Nat) ≠ 0 from by omega,
-          show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
-          show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
-          dite_false, show 1 + ↑k - 1 = k.val from by omega] at hsig_gp
+        have hsig_gp := hgp_L_sel_R k
         have hN_eq : a_sigma k = a_bwd j := by
           simp only [a_sigma]; congr 1; exact heL_inv j hj_mem
         rw [hN_eq] at hsig_gp; exact hsig_gp
@@ -4107,12 +4330,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       · have hj_mem : j ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
         simp only [a'_resp, hjd, dite_true]
         set k := isoL.symm ⟨j, hj_mem⟩
-        have hsig_form := hform_L_aux ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
-          show (1 + k.val : Nat) ≠ 0 from by omega,
-          show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
-          show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
-          dite_false, show 1 + ↑k - 1 = k.val from by omega] at hsig_form
+        have hsig_form := hform_L_sel_R k A hA
         have hN_eq : a_sigma k = a_bwd j := by
           simp only [a_sigma]; congr 1; exact heL_inv j hj_mem
         rw [hN_eq] at hsig_form; exact hsig_form
@@ -4129,11 +4347,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           simp only [a_tau]; congr 1; exact heR_inv j hj_mem
         rw [hN_eq] at htau_form; exact htau_form
     -- Boundary gap/point and formula (from sigma_aux and tau)
-    have hgp_x_R : (IsPoint x' ↔ IsPoint x) ∧ (IsGap x' ↔ IsGap x) := by
-      have := hgp_L_aux ⟨0, by omega⟩
-      simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
-        show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
-      exact this
+    have hgp_x_R : (IsPoint x' ↔ IsPoint x) ∧ (IsGap x' ↔ IsGap x) := hgp_x_data_R
     have hgp_y_R : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := by
       have := hgp_R ⟨R.card + 2, by omega⟩
       simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
@@ -4149,12 +4363,8 @@ private theorem ghr93_case_I {sig : MonadicSignature}
       · exact ⟨fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl,
                fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl⟩
     have hform_x_R : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) := by
-      intro A hA
-      have := hform_L_aux ⟨0, by omega⟩ A hA
-      simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
-        show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
-      exact this
+        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) :=
+      hform_x_data_R
     have hform_y_R : ∀ A, stavi_depth A ≤ r →
         (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) := by
       intro A hA
@@ -4175,12 +4385,9 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     refine ⟨?_, ?_, ?_⟩
     · -- same_order_type (n+1): symmetric to left case, with b in tau's sub-game
       -- Extract value-level orderings from sub-game same_order_types
-      have sig_ord := fun a₁ a₂ : Fin (L.card + 3) => hord_L_aux a₁ a₂
       have tau_ord := fun a₁ a₂ : Fin (R.card + 3) => hord_R a₁ a₂
       -- Sigma boundary orderings
-      have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
-        have h := sig_ord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := sig_x_d_data_R
       -- Tau boundary orderings
       have tau_d_y : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
         have h := tau_ord ⟨0, by omega⟩ ⟨R.card + 2, by omega⟩
@@ -4192,18 +4399,15 @@ private theorem ghr93_case_I {sig : MonadicSignature}
         simp only [game_tuple_zero_eq, game_tuple_b_eq] at h; exact h
       -- Sigma: L-selection orderings
       have sig_x_sel : ∀ (k : Fin L.card),
-          (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) := by
-        intro k; have h := sig_ord ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h; exact h
+          (x' < a_sigma k ↔ x < resp_L k) ∧ (x' = a_sigma k ↔ x = resp_L k) :=
+        sig_x_sel_data_R
       have sig_sel_d : ∀ (k : Fin L.card),
-          (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) := by
-        intro k; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨L.card + 2, by omega⟩
-        simp only [game_tuple_sel_eq, game_tuple_y_eq] at h; exact h
+          (a_sigma k < d ↔ resp_L k < c) ∧ (a_sigma k = d ↔ resp_L k = c) :=
+        sig_sel_d_data_R
       have sig_sel_sel : ∀ (k k' : Fin L.card),
           (a_sigma k < a_sigma k' ↔ resp_L k < resp_L k') ∧
-          (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') := by
-        intro k k'; have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨1 + k'.val, by omega⟩
-        simp only [game_tuple_sel_eq] at h; exact h
+          (a_sigma k = a_sigma k' ↔ resp_L k = resp_L k') :=
+        sig_sel_sel_data_R
       -- Tau: R-selection orderings
       have tau_d_sel : ∀ (k : Fin R.card),
           (d < a_tau k ↔ c < resp_R k) ∧ (d = a_tau k ↔ c = resp_R k) := by
@@ -4340,8 +4544,17 @@ private theorem ghr93_case_I {sig : MonadicSignature}
           have : a_bwd i' = a_sigma k := by
             simp only [a_sigma]; congr 1; exact (heL_inv i' hi_mem).symm
           rw [this]
-          have h := sig_ord ⟨1 + k.val, by omega⟩ ⟨0, by omega⟩
-          simp only [game_tuple_sel_eq, game_tuple_zero_eq] at h; exact h
+          -- Ordering: a_sigma k vs x' ↔ resp_L k vs x
+          rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+          · obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
+            obtain ⟨hord_aux, _, _⟩ := hcond
+            have h := hord_aux ⟨1 + k.val, by omega⟩ ⟨0, by omega⟩
+            simp only [game_tuple_sel_eq, game_tuple_zero_eq] at h; exact h
+          · have ha_eq : a_sigma k = d := le_antisymm (ha_sigma k).2 (hx'd_eq ▸ (ha_sigma k).1)
+            have hr_eq : resp_L k = c := le_antisymm (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
+            rw [ha_eq, hx'd_eq, hr_eq, hxc_eq]
+            exact ⟨⟨fun h => absurd rfl (ne_of_lt h), fun h => absurd rfl (ne_of_lt h)⟩,
+                   ⟨fun _ => rfl, fun _ => rfl⟩⟩
         · have hi_mem : i' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hid'⟩
           simp only [a'_resp, hid', dite_false]
           set k := isoR.symm ⟨i', hi_mem⟩
@@ -4571,7 +4784,18 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       obtain ⟨hord_sig, hgp_sig, hform_sig⟩ := hcond_sig
       -- Extract tau winning condition at inner positions by instantiating
       -- hwin_tau with an arbitrary carrier point in [c, y].
-      obtain ⟨p_cy, hp_cy⟩ := props.h_pt_cy
+      -- In Case II, the degenerate case (c = y gap) is impossible because
+      -- d = y' and a_bwd(n) is a point, but d would be a gap — contradiction.
+      have ⟨p_cy, hp_cy⟩ : ∃ (p : M.carrier), inClosedInterval c y (extendPoint p) := by
+        rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨_, hdy'_eq, _, hgap_d⟩
+        · exact ⟨p_cy, hp_cy⟩
+        · -- d = y', d is gap, but a_bwd(n) ∈ [d, y'] = [d, d] is a point — contradiction
+          obtain ⟨g_d, hg_d⟩ := hgap_d
+          have ha_eq : a_bwd ⟨n, by omega⟩ = d :=
+            le_antisymm (hdy'_eq ▸ (ha_bwd ⟨n, by omega⟩).2) (h_no_split ⟨n, by omega⟩)
+          -- a_bwd(n) = extendPoint p_n, so d = extendPoint p_n, but d = Sum.inr g_d
+          have : d = extendPoint p_n := ha_eq ▸ hp_n
+          exact absurd (this.symm ▸ hg_d : extendPoint p_n = Sum.inr g_d) (by simp [extendPoint])
       obtain ⟨_b_tau, _hb_tau_in, hcond_tau_aux⟩ := hwin_tau p_cy hp_cy
       obtain ⟨hord_tau_aux, hgp_tau_aux, hform_tau_aux⟩ := hcond_tau_aux
       -- hgp_tau_aux/hform_tau_aux at positions 1..n give a_init(k)/resp_tau(k)

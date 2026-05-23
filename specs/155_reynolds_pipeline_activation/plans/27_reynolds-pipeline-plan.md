@@ -81,7 +81,7 @@ Plus 2 sorries in EFGames.lean (Phase 4) and 3 in IntegerModel.lean (Phases 7-8)
 
 ---
 
-### Phase 3: Gap Infimum Wiring + Cases III/IV (GHR93 Theorem 6) [NOT STARTED]
+### Phase 3: Gap Infimum Wiring + Cases III/IV (GHR93 Theorem 6) [IN PROGRESS]
 
 **GHR93 reference**: Section 8, pp.117-119.
 
@@ -90,7 +90,7 @@ Plus 2 sorries in EFGames.lean (Phase 4) and 3 in IntegerModel.lean (Phases 7-8)
 **Tasks**:
 - [ ] **3A. N-side gap infimum** (line 2013). Wire infimum_gap_r_definable for Case 3 of d construction.
 - [ ] **3B. M-side gap infimum** (line 2104). Mirror N-side.
-- [ ] **3C. Degenerate gap cases** (lines 2426, 2443). Prove h_pt_xc/h_pt_cy unreachable at gaps, or restructure to conditional form.
+- [x] **3C. Degenerate gap cases** (lines 2426, 2443). *(completed: refactored h_pt_xc/h_pt_cy to disjunctive form with gap/point/formula data, updated 3 active consumer sites)*
 - [ ] **3D. Claim 1 gap sub-cases** (lines 2949, 3030). Extend Claim 1 to gap d / gap r2_resp using Lemma 9 gap detection.
 - [ ] **3E. Cases III/IV** (line 5775). Split into Case III (left-defined gap) and Case IV (right-defined gap). Use Lemma 9.
 
