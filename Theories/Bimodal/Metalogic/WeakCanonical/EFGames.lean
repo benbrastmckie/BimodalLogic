@@ -9181,9 +9181,228 @@ private theorem sf_disjList_iff {sig : MonadicSignature}
         | head => exact Or.inl h
         | tail _ hA => exact Or.inr (ih.mpr ⟨A, hA, h⟩)
 
+/-! ## StaviFormula Conjunction Combinator -/
+
+/-- Top StaviFormula: always true. -/
+private def sf_top : StaviFormula := .base Formula.top
+
+private theorem sf_top_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier) :
+    stavi_temporal_truth M atomMap t sf_top ↔ True := by
+  simp only [sf_top, stavi_temporal_truth, temporal_truth, Formula.top]; tauto
+
+private def sf_conjList : List StaviFormula → StaviFormula
+  | [] => sf_top
+  | [a] => a
+  | a :: as => .conj a (sf_conjList as)
+
+private theorem sf_conjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (l : List StaviFormula) :
+    stavi_temporal_truth M atomMap t (sf_conjList l) ↔
+    (∀ A ∈ l, stavi_temporal_truth M atomMap t A) := by
+  induction l with
+  | nil =>
+    simp only [sf_conjList]
+    rw [sf_top_iff]
+    constructor
+    · intro _ A hA; simp at hA
+    · intro _; trivial
+  | cons a as ih =>
+    cases as with
+    | nil =>
+      simp only [sf_conjList, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h A hA => hA ▸ h, fun h => h a rfl⟩
+    | cons b bs =>
+      simp only [sf_conjList, stavi_temporal_truth]
+      constructor
+      · rintro ⟨ha, hrest⟩ A hA
+        cases hA with
+        | head => exact ha
+        | tail _ hA => exact (ih.mp hrest) A hA
+      · intro h
+        exact ⟨h a (List.Mem.head _), ih.mpr (fun A hA => h A (List.Mem.tail a hA))⟩
+
+/-! ## Atom Literal StaviFormula -/
+
+/-- Build a StaviFormula for a single atom literal:
+    if `val = true`, the atom formula; if `val = false`, its negation. -/
+private def sf_atom_literal (a : Atom) (val : Bool) : StaviFormula :=
+  if val then .base (.atom a) else .neg (.base (.atom a))
+
+private theorem sf_atom_literal_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (a : Atom) (val : Bool) :
+    stavi_temporal_truth M atomMap t (sf_atom_literal a val) ↔
+    (M.interp (atomMap (.atom a)) t ↔ val = true) := by
+  cases val <;> simp [sf_atom_literal, stavi_temporal_truth, temporal_truth]
+
+/-! ## Base-case NF characterization helpers -/
+
+/-- For an AtomKind at n=1, map it to a StaviFormula literal.
+    `pred p ⟨0,_⟩` maps to the corresponding atom literal.
+    `order i j h` is impossible for n=1 since Fin 1 has one element. -/
+private noncomputable def atomKind_to_sf_literal
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ak : AtomKind sig 1) (val : Bool) : StaviFormula :=
+  match ak with
+  | .pred p _ =>
+    let a := Classical.choose (h_surj p)
+    sf_atom_literal a val
+  | .order i j h => absurd (Fin.ext_iff.mpr (by omega : i.val = j.val)) h
+
+/-- Correctness of atomKind_to_sf_literal. -/
+private theorem atomKind_to_sf_literal_correct
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (ak : AtomKind sig 1) (val : Bool) :
+    stavi_temporal_truth M atomMap t (atomKind_to_sf_literal atomMap h_surj ak val) ↔
+    (atom_eval M (fun _ => t) ak ↔ val = true) := by
+  match ak with
+  | .pred p i =>
+    simp only [atomKind_to_sf_literal]
+    have h_spec := Classical.choose_spec (h_surj p)
+    -- h_spec : atomMap (Formula.atom (Classical.choose (h_surj p))) = p
+    rw [sf_atom_literal_iff]
+    -- Goal: (M.interp (atomMap (.atom (Classical.choose ...))) t ↔ val = true) ↔
+    --       (atom_eval M (fun _ => t) (.pred p i) ↔ val = true)
+    show (M.interp (atomMap (.atom (Classical.choose (h_surj p)))) t ↔ val = true) ↔
+         (M.interp p ((fun _ : Fin 1 => t) i) ↔ val = true)
+    simp only [h_spec]
+  | .order i j h =>
+    exact absurd (Fin.ext_iff.mpr (by omega : i.val = j.val)) h
+
+/-- Build a StaviFormula characterizing a depth-0 NormalForm with 1 variable.
+    Constructs a conjunction of atom literals over all AtomKind sig 1 elements. -/
+private noncomputable def nf_base_sf
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf : NormalForm sig 0 1) : StaviFormula :=
+  let atoms := (Fintype.elems (α := AtomKind sig 1)).val.toList
+  sf_conjList (atoms.map (fun ak => atomKind_to_sf_literal atomMap h_surj ak (nf ak)))
+
+/-- The base StaviFormula correctly characterizes the depth-0 NF. -/
+private theorem nf_base_sf_correct
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf : NormalForm sig 0 1)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    stavi_temporal_truth M atomMap t (nf_base_sf atomMap h_surj nf) ↔
+    nf_eval_nf M 0 1 (fun _ => t) nf := by
+  simp only [nf_base_sf, nf_eval_nf]
+  rw [sf_conjList_iff]
+  constructor
+  · -- Forward: all literals hold → all atom_eval's match
+    intro h_all ak
+    have h_in_list : ak ∈ (Fintype.elems (α := AtomKind sig 1)).val.toList :=
+      Multiset.mem_toList.mpr (Fintype.complete ak)
+    have h_mem : atomKind_to_sf_literal atomMap h_surj ak (nf ak) ∈
+        (Fintype.elems (α := AtomKind sig 1)).val.toList.map
+          (fun ak' => atomKind_to_sf_literal atomMap h_surj ak' (nf ak')) :=
+      List.mem_map.mpr ⟨ak, h_in_list, rfl⟩
+    exact (atomKind_to_sf_literal_correct atomMap h_surj M t ak (nf ak)).mp
+      (h_all _ h_mem)
+  · -- Backward: all atom_eval's match → all literals hold
+    intro h_nf A hA
+    rw [List.mem_map] at hA
+    obtain ⟨ak, _, rfl⟩ := hA
+    exact (atomKind_to_sf_literal_correct atomMap h_surj M t ak (nf ak)).mpr
+      (h_nf ak)
+
+/-! ## Existence Formulas for Quantifier Part
+
+For the inductive step of NF characterization, we need to express the existential
+"∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf" as a StaviFormula.
+When sub_nf is at depth 0, the 2-variable NF is purely atomic:
+predicates at x, predicates at t, and order between x and t.
+-/
+
+/-- Extract the order direction between variable 0 (x) and variable 1 (t)
+    from a NormalForm with n ≥ 2 variables. Returns:
+    - some true if t < x (i.e., x is above t)
+    - some false if x < t (i.e., x is below t)
+    - none if x = t (both order atoms false) or impossible (both true). -/
+private noncomputable def nf_order_0_1 {sig : MonadicSignature} {k : Nat}
+    (sub_nf : NormalForm sig k 2) : Option Bool :=
+  let atom_assgn := sub_nf.atom_assgn
+  let x_lt_t := atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+  let t_lt_x := atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+  match t_lt_x, x_lt_t with
+  | true, false => some true    -- t < x: use Until
+  | false, true => some false   -- x < t: use Since
+  | false, false => none        -- x = t: check at t
+  | true, true => none          -- impossible (caught by consistency check)
+
+/-- Check whether a sub_nf's constraints on variable 1 (= t) are consistent
+    with the parent NF's atom assignment.
+    For each predicate p, sub_nf(pred p 1) must equal parent_atoms(pred p 0). -/
+private noncomputable def nf_t_consistent {sig : MonadicSignature} {k : Nat}
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig k 2) : Bool :=
+  -- Check that each pred at variable 1 in sub_nf matches parent's pred at variable 0
+  (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+    sub_nf.atom_assgn (.pred p ⟨1, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)
+
+/-- Build a StaviFormula for the predicates at the quantified variable (variable 0)
+    in a 2-variable NormalForm at depth 0.
+    This is a conjunction of atom literals for pred atoms at variable 0. -/
+private noncomputable def nf_x_preds_sf
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 0 2) : StaviFormula :=
+  let preds := (Fintype.elems (α := sig.preds)).val.toList
+  sf_conjList (preds.map fun p =>
+    let a := Classical.choose (h_surj p)
+    let val := sub_nf (.pred p ⟨0, by omega⟩)
+    sf_atom_literal a val)
+
+/-- Build the existence StaviFormula for "∃x, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf".
+    Uses Until for x > t, Since for x < t, direct check for x = t. -/
+private noncomputable def nf_exist_sf_depth0
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 0 2) : StaviFormula :=
+  -- If t-constraints are inconsistent, the existential is false
+  if ¬ nf_t_consistent parent_atoms sub_nf = true then
+    .base .bot
+  else
+    -- Also check that both order atoms aren't true (asymmetry)
+    let x_lt_t := sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+    let t_lt_x := sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+    if x_lt_t && t_lt_x then
+      .base .bot  -- impossible: x < t ∧ t < x
+    else
+      let x_preds := nf_x_preds_sf atomMap h_surj sub_nf
+      match nf_order_0_1 sub_nf with
+      | some true =>  -- t < x: use Until
+        .std_untl x_preds sf_top
+      | some false =>  -- x < t: use Since
+        .std_snce x_preds sf_top
+      | none =>
+        if x_lt_t == false && t_lt_x == false then
+          -- x = t: predicates at x must match predicates at t (which is just the parent)
+          -- The existential is true iff x's predicates match when x = t
+          x_preds
+        else
+          .base .bot  -- impossible case (both true, caught above)
+
 /-! ## NF Characterization by StaviFormulas -/
 
-/-- Core game-theoretic lemma: each NF is characterizable by a StaviFormula. -/
+/-- Core game-theoretic lemma: each NF is characterizable by a StaviFormula.
+
+The proof proceeds by induction on k. The base case (k=0) constructs a conjunction
+of atom literals. The inductive step (k+1) splits into:
+- Atom part: same conjunction of literals for predicate agreement at t
+- Quantifier part: for each sub_nf : NormalForm sig k 2, an existence/non-existence
+  formula using Until (for x > t) or Since (for x < t).
+
+For depth-0 sub_nfs, the existence formula is purely atomic (predicate literals
+at the quantified variable). For depth-k sub_nfs with k ≥ 1, the IH provides
+characteristic StaviFormulas for 1-variable NFs at depth k, which are used to
+characterize the quantified variable's type. -/
 theorem nf_characterizable_by_stavi
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -9191,7 +9410,27 @@ theorem nf_characterizable_by_stavi
     ∃ A : StaviFormula, ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
       stavi_temporal_truth M atomMap t A ↔
       nf_eval_nf M k 1 (fun _ => t) nf := by
-  sorry
+  induction k with
+  | zero =>
+    exact ⟨nf_base_sf atomMap h_surj nf, fun M t => nf_base_sf_correct atomMap h_surj nf M t⟩
+  | succ k ih =>
+    -- The inductive step requires the GHR93 game-theoretic argument (Section 8).
+    -- The IH gives StaviFormulas for 1-variable NFs at depth k, but the
+    -- quantifier part of nf involves 2-variable NFs (NormalForm sig k 2).
+    -- Expressing "∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf"
+    -- as a StaviFormula requires characterizing the joint type of (x, t),
+    -- which temporal connectives alone cannot capture for k ≥ 1 sub_nfs.
+    --
+    -- The GHR93 proof handles this via:
+    -- (1) Custom EF games G_{n;r} with forward-to-backward theorem (Thm 6)
+    -- (2) Composition lemma (Prop 7) composing strategies on sub-intervals
+    -- (3) Four cases for the main induction (atoms, Until, Since, Stavi gaps)
+    -- (4) Gap detection formulas (Lemma 9) for Stavi connective cases
+    --
+    -- The existing game infrastructure in this file (EFPosition, game_depth,
+    -- ghr93_duplicator_wins, decomposition_agreement, left_formula, etc.)
+    -- provides the foundation but the central induction remains.
+    sorry
 
 /-- **GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete. -/
 noncomputable def stavi_expressive_completeness
