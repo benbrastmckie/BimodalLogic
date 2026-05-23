@@ -2481,18 +2481,100 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     by_contra h_not_le
     push_neg at h_not_le
     -- h_not_le : rank_embed d < r2_resp
-    -- Step 1: d ∈ S_C (already proved as hd_in_SC in the parent scope).
-    -- Step 2: If rank_embed(d) < r2_resp, then for any mu s between d and y' in N,
-    -- rank_embed(s) > rank_embed(d) (since s > d). If rank_embed(s) > r2_resp... no.
-    -- Actually: rank_embed(d) < r2_resp. D holds above d in N (from d ∈ S_C).
-    -- Since(⊤, D)(r2_resp) should be TRUE at rank r+2 (witness: rank_embed(d)).
-    -- But K⁻(¬D_M)(r2_resp) = TRUE from transfer. Contradiction.
+    -- GHR93 Claim 1, Direction 1: K⁻(¬D) argument.
+    -- Extract order agreement at indices (0,1) from the game.
+    -- Instantiate hwin_r2 with any carrier point from h_pt to get winning condition.
+    obtain ⟨p_N, hp_N⟩ := h_pt
+    have hp_N_r2 : inClosedInterval
+        (rank_embed (by omega : r ≤ r + 2) x')
+        (rank_embed (by omega : r ≤ r + 2) y')
+        (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) := by
+      rw [← rank_embed_point (by omega : r ≤ r + 2) p_N]
+      exact (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x' y'
+        (extendPoint p_N)).mpr hp_N
+    obtain ⟨b_w, hb_w_in, hcond_w⟩ := hwin_r2 p_N hp_N_r2
+    obtain ⟨hord_w, _, _⟩ := hcond_w
+    -- Order agreement at index (0,1): rank_embed(x) < rank_embed(c_inf) ↔ rank_embed(x') < r2_resp
+    have hord_01 := hord_w ⟨0, by omega⟩ ⟨1, by omega⟩
+    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+               show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ 1 + 1 from by omega,
+               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega] at hord_01
+    -- hord_01 : rank_embed x < rank_embed c_inf ↔ rank_embed x' < r2_resp
+    -- Also extract (1,3): rank_embed(c_inf) < rank_embed(y) ↔ r2_resp < rank_embed(y')
+    have hord_13 := hord_w ⟨1, by omega⟩ ⟨3, by omega⟩
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ 1 + 1 from by omega,
+               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega,
+               show (3 : Nat) ≠ 0 from by omega,
+               show ¬((3 : Nat) = 1 + 1) from by omega,
+               show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_13
+    -- Use the game Round 2 response to derive contradiction via cont_holds transfer.
+    -- For any carrier point q in N with r2_resp < extendPoint(q) at rank r+2 and
+    -- extendPoint(q) < y' at rank r, h_cont_transfer gives cont_holds at q.
+    -- From d ∈ S_C: cont_holds at all mu above d and below y'.
+    -- Key: play Round 2 with a carrier point p' above d.
+    -- The game response b gives formula agreement between b (M) and p' (N).
+    -- If b ≤ c_inf: cont_holds_cross at b (from formula agreement with p' where
+    -- cont_holds holds), then the infimum property gives contradiction with failures
+    -- below c_inf.
     --
-    -- Need: D_M from pigeonhole, K⁻(¬D_M) construction, semantics at c_inf and r2_resp.
-    -- This is the full K⁻(¬D_M) pipeline.
-    -- BLOCKED: requires bridging h_cofinal_failure_below_c_inf to pigeonhole format,
-    -- constructing h_cut_start, proving K⁻(¬D_M) semantics.
-    sorry
+    -- Step 1: Find a carrier point p' with d < extendPoint(p') < y' in N.
+    -- From hd_in_SC and d being the infimum: d ≤ a_bwd(n) and a_bwd(n) ∈ S_C.
+    -- If d < a_bwd(n): then between d and a_bwd(n) there might be carrier points.
+    -- Actually use h_pt: there exists p in [x', y'].
+    -- If extendPoint(p_N) > d: take p' = p_N.
+    -- If extendPoint(p_N) ≤ d: need another carrier point above d.
+    -- From h_an_in_SC: a_bwd(n) ∈ S_C means a_bwd(n) ∈ [x', y'].
+    -- a_bwd(n) might or might not be a carrier point.
+    -- Use a separate argument: Since(⊤, D) semantics.
+    --
+    -- Actually, the simplest contradiction comes from the order agreement itself.
+    -- If c_inf = x: order (0,1) gives rank_embed(x) = rank_embed(c_inf), so
+    -- ¬(rank_embed(x) < rank_embed(c_inf)). By iff: ¬(rank_embed(x') < r2_resp).
+    -- So r2_resp ≤ rank_embed(x') ≤ rank_embed(d). Contradicts h_not_le.
+    -- If c_inf > x: we need the K⁻(¬D) argument.
+    rcases eq_or_lt_of_le hc_inf_interval.1 with hx_eq_c | hx_lt_c
+    · -- Case: x = c_inf
+      -- Order (0,1) equality iff: x = c_inf → x' = r2_resp
+      have h_x_eq : rank_embed (by omega : r ≤ r + 2) x =
+          rank_embed (by omega : r ≤ r + 2) c_inf := by rw [hx_eq_c]
+      have h_x'_eq : rank_embed (by omega : r ≤ r + 2) x' = a'_r2 ⟨0, by omega⟩ :=
+        hord_01.2.mp h_x_eq
+      -- So r2_resp = rank_embed(x')
+      have h_r2_eq_x' : r2_resp = rank_embed (by omega : r ≤ r + 2) x' :=
+        h_x'_eq.symm
+      -- rank_embed(x') ≤ rank_embed(d) (since x' ≤ d from hd_interval)
+      have hx'_le_d : rank_embed (by omega : r ≤ r + 2) x' ≤
+          rank_embed (by omega : r ≤ r + 2) d :=
+        (rank_embed_le (by omega : r ≤ r + 2) x' d).mpr hd_interval.1
+      -- r2_resp = rank_embed(x') ≤ rank_embed(d), contradicting h_not_le
+      exact absurd (h_r2_eq_x' ▸ hx'_le_d) (not_le.mpr h_not_le)
+    · -- Case: x < c_inf
+      -- K⁻(¬D) argument: extract D via pigeonhole, build K⁻(¬D), transfer.
+      -- Step 1: Extract a single formula D from cofinal failure below c_inf.
+      -- From h_cofinal_failure_below_c_inf: for any s with x ≤ s < c_inf,
+      -- ∃ mu-point u with s < u ≤ c_inf, ¬cont_holds_cross at u.
+      -- cont_holds_cross failure at u gives: ∃ A, depth ≤ r, A on N-interval, ¬A(u) in M.
+      -- By NormalForm pigeonhole: a single D fails cofinally below c_inf.
+      --
+      -- Step 2: Build K⁻(¬D) = neg(std_snce(.neg (.base .bot), D)) of depth r+2.
+      -- K⁻(¬D)(c_inf) = TRUE: "D fails cofinally below c_inf in M"
+      --   = ¬(∃ mu s < c_inf, ∀ mu u ∈ (s, c_inf), D(u))
+      --
+      -- Step 3: Transfer via hform_r2_1: K⁻(¬D)(r2_resp) = TRUE in N at rank r+2.
+      --
+      -- Step 4: Since rank_embed(d) < r2_resp and d ∈ S_C:
+      --   D holds at all mu above d. If ∃ mu between rank_embed(d) and r2_resp:
+      --   take that as witness for Since(⊤, D)(r2_resp). Contradiction with K⁻(¬D).
+      --
+      -- For now, this case requires the full K⁻(¬D) pipeline which needs
+      -- materializing a cofinal failure formula. The infrastructure is in place
+      -- (pigeonhole_definable_formula_cross, rank_embed_stavi_truth_mu, hform_r2_1)
+      -- but bridging the formats requires additional work.
+      sorry
   -- Direction 2: rank_embed(d) ≤ r2_resp
   -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
   have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
@@ -2551,20 +2633,70 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         exact h
       -- h_cont_transfer gives cont_holds at q, contradicting ¬cont_holds
       exact h_not_cont_v (h_cont_transfer q hr2_lt_q hvy')
-    · -- r2_resp is a gap: use h_r2_resp_le_d to derive r2_resp = rank_embed(d).
-      -- h_r2_resp_le_d : r2_resp ≤ rank_embed(d)
-      -- h_not_le : r2_resp < rank_embed(d)
-      -- These are consistent. We need the game-based contradiction.
-      -- The gap case requires showing no gap can sit between r2_resp and rank_embed(d)
-      -- while being consistent with the formula agreement. This follows from:
-      -- (1) h_r2_resp_le_d gives r2_resp ≤ rank_embed(d), and
-      -- (2) h_not_le gives r2_resp < rank_embed(d) (strict).
-      -- The formula agreement at depth r+2 between rank_embed(c_inf) and r2_resp
-      -- combined with rank_embed(c_inf) and rank_embed(d) having specific depth-r+2
-      -- properties (from the K⁻(¬D_M) argument used in Direction 1) should
-      -- prevent r2_resp from being a gap strictly below rank_embed(d).
-      -- BLOCKED: same K⁻(¬D_M) infrastructure as Direction 1.
-      sorry
+    · -- r2_resp is a gap, r2_resp < rank_embed(d). Use order agreement.
+      -- Extract order agreement for boundary analysis.
+      obtain ⟨p_N₂, hp_N₂⟩ := h_pt
+      have hp_N₂_r2 : inClosedInterval
+          (rank_embed (by omega : r ≤ r + 2) x')
+          (rank_embed (by omega : r ≤ r + 2) y')
+          (extendPoint p_N₂ : ExtendedCarrier N atomMap (r + 2)) := by
+        rw [← rank_embed_point (by omega : r ≤ r + 2) p_N₂]
+        exact (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x' y'
+          (extendPoint p_N₂)).mpr hp_N₂
+      obtain ⟨b_w₂, _, hcond_w₂⟩ := hwin_r2 p_N₂ hp_N₂_r2
+      obtain ⟨hord_w₂, _, _⟩ := hcond_w₂
+      -- Order (1,3): rank_embed(c_inf) < rank_embed(y) ↔ r2_resp < rank_embed(y')
+      have hord_13₂ := hord_w₂ ⟨1, by omega⟩ ⟨3, by omega⟩
+      simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                 show (1 : Nat) ≠ 1 + 1 from by omega,
+                 show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                 show 1 - 1 = 0 from by omega,
+                 show (3 : Nat) ≠ 0 from by omega,
+                 show ¬((3 : Nat) = 1 + 1) from by omega,
+                 show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_13₂
+      -- Also extract (0,1)
+      have hord_01₂ := hord_w₂ ⟨0, by omega⟩ ⟨1, by omega⟩
+      simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+                 show (1 : Nat) ≠ 0 from by omega,
+                 show (1 : Nat) ≠ 1 + 1 from by omega,
+                 show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                 show 1 - 1 = 0 from by omega] at hord_01₂
+      -- Case split: c_inf = y (right boundary) or c_inf < y
+      rcases eq_or_lt_of_le hc_inf_interval.2 with hc_eq_y | hc_lt_y
+      · -- c_inf = y: order (1,3) equality gives r2_resp = rank_embed(y')
+        have h_eq : rank_embed (by omega : r ≤ r + 2) c_inf =
+            rank_embed (by omega : r ≤ r + 2) y := by rw [hc_eq_y]
+        have h_r2_eq_y' : a'_r2 ⟨0, by omega⟩ = rank_embed (by omega : r ≤ r + 2) y' :=
+          hord_13₂.2.mp h_eq
+        -- r2_resp = rank_embed(y') ≥ rank_embed(d)
+        have : r2_resp = rank_embed (by omega : r ≤ r + 2) y' := h_r2_eq_y'
+        have hd_le_y' : rank_embed (by omega : r ≤ r + 2) d ≤
+            rank_embed (by omega : r ≤ r + 2) y' :=
+          (rank_embed_le (by omega : r ≤ r + 2) d y').mpr hd_interval.2
+        exact absurd (this ▸ hd_le_y') (not_le.mpr h_not_le)
+      · -- c_inf < y and c_inf > x (interior case)
+        -- c_inf = x boundary case
+        rcases eq_or_lt_of_le hc_inf_interval.1 with hx_eq_c | hx_lt_c
+        · -- x = c_inf: order (0,1) equality gives r2_resp = rank_embed(x')
+          have h_eq : rank_embed (by omega : r ≤ r + 2) x =
+              rank_embed (by omega : r ≤ r + 2) c_inf := by rw [hx_eq_c]
+          have h_r2_eq_x' : rank_embed (by omega : r ≤ r + 2) x' = a'_r2 ⟨0, by omega⟩ :=
+            hord_01₂.2.mp h_eq
+          -- r2_resp = rank_embed(x') ≤ rank_embed(d)
+          have hx'_le_d : rank_embed (by omega : r ≤ r + 2) x' ≤
+              rank_embed (by omega : r ≤ r + 2) d :=
+            (rank_embed_le (by omega : r ≤ r + 2) x' d).mpr hd_interval.1
+          -- h_not_le : r2_resp < rank_embed(d)
+          -- This is consistent with r2_resp ≤ rank_embed(d). No contradiction here.
+          -- But: r2_resp is a gap (Sum.inr g_resp).
+          -- rank_embed(x') might equal rank_embed(d) or be strictly less.
+          -- If r2_resp = rank_embed(x') and x' = d: r2_resp = rank_embed(d).
+          -- Contradicts h_not_le: r2_resp < rank_embed(d).
+          -- If x' < d: r2_resp = rank_embed(x') < rank_embed(d). Consistent.
+          -- Interior gap case — requires K⁻(¬D) pipeline.
+          sorry
+        · -- Interior case: x < c_inf < y. K⁻(¬D) pipeline needed.
+          sorry
   have h_r2_eq : r2_resp = rank_embed (by omega : r ≤ r + 2) d :=
     le_antisymm h_r2_resp_le_d h_r2_resp_ge_d
   -- Step 6: Get winning condition from rank-(r+2) game for extraction.
