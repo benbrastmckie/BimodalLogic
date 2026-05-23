@@ -33,9 +33,15 @@
 
 ---
 
-## CRITICAL DIRECTIVE: FULL GHR93 + REYNOLDS, NO SHORTCUTS
+## CRITICAL DIRECTIVE: FOLLOW GHR93 EXACTLY — NO DEVIATIONS
 
-The plan formalizes the complete GHR93 game-theoretic proof of expressive completeness of {U,S,U',S'} over ALL linear temporal structures, then uses Reynolds gap elimination to show {U,S} suffices for Prior structures and close `succ_cofinal`. No `axiom` declarations, no shortcuts.
+**NO DEVIATIONS FROM THE PUBLISHED PROOF ARE PERMITTED.** Every deviation from GHR93 has produced weeks of wasted effort fighting artificial edge cases. The pigeonhole approach (Rounds 19-24, ~360 lines) was a deviation from GHR93 Definition 8.8 that produced 6+ rounds of irrecoverable boundary condition failures. The `cont_holds` predicate encoding was a deviation from GHR93's single formula C that forced the pigeonhole in the first place.
+
+**The rule**: If GHR93 defines something as a formula, formalize it as a `StaviFormula`. If GHR93 uses a 5-line proof, the Lean proof should be proportionally short. If an implementation approach creates edge cases that don't exist in GHR93, the approach is WRONG — go back to the paper and implement what it actually says.
+
+**Forbidden**: Encoding formulas as predicates. Pigeonhole extraction to compensate for predicate encodings. "Workarounds" that avoid building the mathematical objects GHR93 defines. Any approach not traceable to a specific page/line in GHR93 or Reynolds.
+
+The plan formalizes the complete GHR93 game-theoretic proof of expressive completeness of {U,S,U',S'} over ALL linear temporal structures, then uses Reynolds gap elimination to show {U,S} suffices for Prior structures and close `succ_cofinal`. No `axiom` declarations, no shortcuts, no deviations.
 
 **Key finding (report 32)**: The omega-chain construction CAN produce gaps (Z+Z models). `succ_cofinal` cannot be closed from temporal axioms or construction internals alone (Prior-UZ guard is vacuous in discrete case, report 33). The FULL Reynolds gap elimination (Theorem 14) is the only viable path. The EFGames/ExpressivenessGeneral infrastructure IS the Reynolds pipeline.
 
