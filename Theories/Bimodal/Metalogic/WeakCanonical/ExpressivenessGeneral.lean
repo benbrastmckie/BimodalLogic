@@ -856,6 +856,178 @@ private theorem pigeonhole_definable_formula {sig : MonadicSignature}
     exact (fails_at j) ((nf_determines_stavi_truth_depth (Eq.symm h_same_nf)
       (A_seq j) (props j).2.2.1).mpr (holds_later j i h_ij))
 
+/-- Cross-structure pigeonhole extraction: MIRROR of pigeonhole_definable_formula
+    for the M-side continuation set S_C^M.
+
+    The key difference from the N-side version:
+    - Takes TWO structures M and N
+    - The "continuation formula" hypothesis checks N:
+      ∀ v : ExtendedCarrier N, a_n_N < v → v < y'_N → mu_holds v → truth_mu N v A
+    - The failure conclusion checks M: ¬ stavi_temporal_truth M atomMap u A
+    - The pigeonhole chain uses M-side NormalForms
+    - nf_determines_stavi_truth_depth is structure-parametric (works for M)
+    - inf_carrier_cut operates on continuation_set_cross
+
+    Used in GHR93 Claim 1 Direction 2: extracting a single formula D_M of
+    depth ≤ r that holds on (a_n, y') in N but fails cofinally below c_inf in M. -/
+private theorem pigeonhole_definable_formula_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y)
+    (h_cut_start : ∃ p₀ : M.carrier,
+      p₀ ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r))
+    (h_cofinal_failure :
+      ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
+        (extendPoint p : ExtendedCarrier M atomMap r) ≤ y →
+        ∃ (u : M.carrier),
+          p ≤ u ∧
+          u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+          ∃ (A : StaviFormula),
+            stavi_depth A ≤ r ∧
+            (∀ v : ExtendedCarrier N atomMap r,
+              a_n_N < v → v < y'_N → mu_holds v →
+              stavi_temporal_truth_mu N atomMap r v A) ∧
+            ¬ stavi_temporal_truth M atomMap u A) :
+    ∃ (D : StaviFormula),
+      stavi_depth D ≤ r ∧
+      (∀ v : ExtendedCarrier N atomMap r,
+        a_n_N < v → v < y'_N → mu_holds v →
+        stavi_temporal_truth_mu N atomMap r v D) ∧
+      (∀ t : M.carrier, t ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        x ≤ (extendPoint t : ExtendedCarrier M atomMap r) →
+        (extendPoint t : ExtendedCarrier M atomMap r) ≤ y →
+        ∃ u : M.carrier, t ≤ u ∧
+          u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+          ¬ stavi_temporal_truth M atomMap u D) := by
+  -- Cut points are below y (since y ∈ S_C_M and cut points are lower bounds of S_C_M)
+  have cut_le_y : ∀ p, p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+      (extendPoint p : ExtendedCarrier M atomMap r) ≤ y := by
+    intro p hp
+    obtain ⟨s₀, hs₀⟩ := continuation_set_cross_nonempty hxy (a_n_N := a_n_N) (y'_N := y'_N)
+    exact le_trans (hp s₀ hs₀) hs₀.1.2
+  -- By contradiction: suppose no single formula fails cofinally.
+  by_contra h_no_cofinal
+  push_neg at h_no_cofinal
+  -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
+  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
+  let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
+  obtain ⟨p₀, hp₀_cut, hx_p₀⟩ := h_cut_start
+  -- One-step: from a cut point with x ≤ extendPoint, produce failure data + next floor
+  have one_step : ∀ (f : M.carrier),
+      f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+      x ≤ (extendPoint f : ExtendedCarrier M atomMap r) →
+      ∃ (u : M.carrier) (A : StaviFormula) (t nf : M.carrier),
+        f ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        stavi_depth A ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n_N < v → v < y'_N → mu_holds v → stavi_temporal_truth_mu N atomMap r v A) ∧
+        ¬ stavi_temporal_truth M atomMap u A ∧
+        (∀ w, t ≤ w → w ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+          stavi_temporal_truth M atomMap w A) ∧
+        nf ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        x ≤ (extendPoint nf : ExtendedCarrier M atomMap r) ∧
+        u ≤ nf ∧ t ≤ nf := by
+    intro f hf_cut hxf
+    obtain ⟨u, hfu, hu_cut, A, hA_depth, hA_interval, hA_fail⟩ :=
+      h_cofinal_failure f hf_cut hxf (cut_le_y f hf_cut)
+    obtain ⟨t, ht_cut, hxt, _, h_bound⟩ := h_no_cofinal A hA_depth hA_interval
+    rcases le_total u t with hut | htu
+    · exact ⟨u, A, t, t, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
+        ht_cut, hxt, hut, le_refl t⟩
+    · exact ⟨u, A, t, u, hfu, hu_cut, hA_depth, hA_interval, hA_fail, h_bound,
+        hu_cut, le_trans hxf ((extendPoint_le_iff _ _).mpr hfu),
+        le_refl u, htu⟩
+  -- Build chain by Nat.rec on a bundled floor state.
+  let S := { f : M.carrier // f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      x ≤ (extendPoint f : ExtendedCarrier M atomMap r) }
+  -- Wrap one_step into a choice function:
+  have choose_witness (f : M.carrier)
+      (hf : f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
+      (hxf : x ≤ (extendPoint f : ExtendedCarrier M atomMap r)) :
+      { w : M.carrier × StaviFormula × M.carrier × M.carrier //
+        f ≤ w.1 ∧ w.1 ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        stavi_depth w.2.1 ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n_N < v → v < y'_N → mu_holds v → stavi_temporal_truth_mu N atomMap r v w.2.1) ∧
+        ¬ stavi_temporal_truth M atomMap w.1 w.2.1 ∧
+        (∀ w', w.2.2.1 ≤ w' → w' ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+          stavi_temporal_truth M atomMap w' w.2.1) ∧
+        w.2.2.2 ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        x ≤ (extendPoint w.2.2.2 : ExtendedCarrier M atomMap r) ∧
+        w.1 ≤ w.2.2.2 ∧ w.2.2.1 ≤ w.2.2.2 } := by
+    have h_ex := one_step f hf hxf
+    exact Classical.indefiniteDescription _ (by
+      obtain ⟨u, A, t, nf, hp⟩ := h_ex
+      exact ⟨(u, A, t, nf), hp⟩)
+  -- Define state sequence (floors) by recursion
+  let state : Nat → S := Nat.rec ⟨p₀, hp₀_cut, hx_p₀⟩ fun n prev =>
+    let w := choose_witness prev.1 prev.2.1 prev.2.2
+    ⟨w.1.2.2.2, w.2.2.2.2.2.2.2.1, w.2.2.2.2.2.2.2.2.1⟩
+  -- Define output at each step
+  let output (n : Nat) := choose_witness (state n).1 (state n).2.1 (state n).2.2
+  -- Extract individual sequences
+  let u_seq (n : Nat) : M.carrier := (output n).1.1
+  let A_seq (n : Nat) : StaviFormula := (output n).1.2.1
+  let t_seq (n : Nat) : M.carrier := (output n).1.2.2.1
+  -- Extract properties
+  have props (n : Nat) :
+      (state n).1 ≤ u_seq n ∧
+      u_seq n ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      stavi_depth (A_seq n) ≤ r ∧
+      (∀ v : ExtendedCarrier N atomMap r,
+        a_n_N < v → v < y'_N → mu_holds v →
+        stavi_temporal_truth_mu N atomMap r v (A_seq n)) ∧
+      ¬ stavi_temporal_truth M atomMap (u_seq n) (A_seq n) ∧
+      (∀ w, t_seq n ≤ w → w ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        stavi_temporal_truth M atomMap w (A_seq n)) ∧
+      u_seq n ≤ (state (n + 1)).1 ∧
+      t_seq n ≤ (state (n + 1)).1 := by
+    have h := (output n).2
+    exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1,
+      h.2.2.2.2.2.2.2.2.1, h.2.2.2.2.2.2.2.2.2⟩
+  -- Monotonicity: u_seq is increasing
+  have u_mono : ∀ n, u_seq n ≤ u_seq (n + 1) := fun n =>
+    le_trans (props n).2.2.2.2.2.2.1 (props (n + 1)).1
+  -- Transitivity: for i ≤ j, u_seq i ≤ u_seq j
+  have u_mono_le : ∀ i j, i ≤ j → u_seq i ≤ u_seq j := by
+    intro i j hij
+    induction hij with
+    | refl => exact le_refl _
+    | step _ ih => exact le_trans ih (u_mono _)
+  -- Key bound: for j > i, t_seq i ≤ u_seq j (so A_i holds at u_j)
+  have bound_le : ∀ i j, i < j → t_seq i ≤ u_seq j := fun i j hij =>
+    le_trans (props i).2.2.2.2.2.2.2 (le_trans (props (i + 1)).1 (u_mono_le (i + 1) j hij))
+  -- A_i holds at u_j for j > i (via the bound property)
+  have holds_later : ∀ i j, i < j →
+      stavi_temporal_truth M atomMap (u_seq j) (A_seq i) := fun i j hij =>
+    (props i).2.2.2.2.2.1 (u_seq j) (bound_le i j hij) (props j).2.1
+  -- A_i fails at u_i
+  have fails_at : ∀ i, ¬ stavi_temporal_truth M atomMap (u_seq i) (A_seq i) := fun i =>
+    (props i).2.2.2.2.1
+  -- NF map: Fin (K+1) → NormalForm (muSig sig) (2*r) 1
+  -- Key: NF evaluation uses M (since u_seq are M.carrier points)
+  let nf_map : Fin (K + 1) → NormalForm (muSig sig) (2 * r) 1 := fun i =>
+    nf_characteristic (extendedStructureWithMu M atomMap r) (2 * r) 1
+      (fun _ => extendPoint (u_seq i))
+  -- Pigeonhole: K+1 > K → two indices have same NF
+  have h_card : Fintype.card (NormalForm (muSig sig) (2 * r) 1) <
+      Fintype.card (Fin (K + 1)) := by
+    simp only [Fintype.card_fin]
+    exact Nat.lt_succ_of_le (le_refl K)
+  obtain ⟨i, j, hij, h_same_nf⟩ := Fintype.exists_ne_map_eq_of_card_lt nf_map h_card
+  -- WLOG i < j (or j < i)
+  rcases lt_or_gt_of_ne hij with h_ij | h_ij
+  · -- i < j: A_i holds at u_j but fails at u_i
+    -- nf_determines_stavi_truth_depth applied to M gives truth equivalence at M carrier points
+    exact (fails_at i) ((nf_determines_stavi_truth_depth h_same_nf
+      (A_seq i) (props i).2.2.1).mpr (holds_later i j h_ij))
+  · -- j < i: A_j holds at u_i but fails at u_j
+    exact (fails_at j) ((nf_determines_stavi_truth_depth (Eq.symm h_same_nf)
+      (A_seq j) (props j).2.2.1).mpr (holds_later j i h_ij))
+
 /-- Bridge lemma: from cont_fails_below_gap (which gives an extended carrier
     mu-point where cont_holds fails) to a carrier-level formula failure
     at a carrier point in the cut.
@@ -2124,47 +2296,67 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       h_fwd_n1 := ghr93_duplicator_wins_round_mono (by omega : n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
     }
   -- Prove the existence of c with the needed properties using c_inf = inf(S_C^M).
-  -- Play the 1-round forward game with c_inf as Spoiler's selection to get
-  -- a game response t_game in [x',y']. The winning condition gives gap/point
-  -- and boundary correspondence between c_inf and t_game. Formula agreement
-  -- between c_inf and d requires the full GHR93 Claim 1 argument (sorry'd).
-  obtain ⟨a'_play, ha'_play, hwin_play⟩ :=
-    h1 (fun _ : Fin 1 => c_inf) (fun _ => hc_inf_interval)
-  -- a'_play ⟨0, _⟩ is the game response t_game ∈ [x',y']
-  set t_game := a'_play ⟨0, by omega⟩ with t_game_def
-  -- Get gap/point and boundary from the game, using an arbitrary point witness for Round 2
+  -- GHR93 Claim 1: Use the rank-(r+2) game h_fwd_r1 to show that the game
+  -- response to rank_embed(c_inf) equals rank_embed(d). This gives formula
+  -- agreement at depth r+2 between rank_embed(c_inf) and rank_embed(d), which
+  -- projects to depth-r agreement between c_inf and d via rank_embed_stavi_truth_mu.
+  -- Gap/point and boundary are derived from the rank-(r+2) game's winning condition.
+  -- This completely bypasses the rank-r game and t_game, avoiding the depth
+  -- mismatch that makes t_game = d unprovable via hform_1 (depth r only).
+  --
+  -- Step 1: Reduce h_fwd_r1 to 1 round at rank r+2
+  have h1_r2 : ghr93_duplicator_wins M N atomMap 1 (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x)
+      (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x')
+      (rank_embed (by omega : r ≤ r + 2) y') :=
+    ghr93_duplicator_wins_round_mono (by omega : 1 ≤ 4 + 3 * n)
+      ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+      ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y') h_fwd_r1
+  -- Step 2: Play with rank_embed(c_inf)
+  have hc_inf_r2 : inClosedInterval
+      (rank_embed (by omega : r ≤ r + 2) x)
+      (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) c_inf) :=
+    (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x y c_inf).mpr hc_inf_interval
+  obtain ⟨a'_r2, ha'_r2, hwin_r2⟩ := h1_r2
+    (fun _ => rank_embed (by omega : r ≤ r + 2) c_inf) (fun _ => hc_inf_r2)
+  set r2_resp := a'_r2 ⟨0, by omega⟩ with r2_resp_def
+  -- Step 3: Direction 2 at rank r+2 (r2_resp ≥ rank_embed(d))
+  -- r2_resp ∈ S_C at rank r+2, hence rank_embed(d) ≤ r2_resp.
+  -- Proof mirrors h_t_game_in_SC: for mu u > r2_resp in N at rank r+2,
+  -- play Round 2 to get M-side point above rank_embed(c_inf),
+  -- then use c_inf ∈ S_C_M and formula transfer.
+  have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
+    sorry
+  -- Step 4: Direction 1 at rank r+2 (r2_resp ≤ rank_embed(d))
+  -- GHR93 Claim 1 core: M-side pigeonhole → D_M → K⁻(¬D_M) → transfer → bound.
+  have h_r2_resp_le_d : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) d := by
+    sorry
+  -- Step 5: r2_resp = rank_embed(d)
+  have h_r2_eq : r2_resp = rank_embed (by omega : r ≤ r + 2) d :=
+    le_antisymm h_r2_resp_le_d h_r2_resp_ge_d
+  -- Step 6: Get winning condition from rank-(r+2) game for extraction.
   obtain ⟨p_N, hp_N⟩ := h_pt
-  obtain ⟨b_play, hb_play, hcond_play⟩ := hwin_play p_N hp_N
+  have hp_N_r2 : inClosedInterval
+      (rank_embed (by omega : r ≤ r + 2) x')
+      (rank_embed (by omega : r ≤ r + 2) y')
+      (extendPoint p_N) := by
+    rw [← rank_embed_point (by omega : r ≤ r + 2) p_N]
+    exact (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x' y'
+      (extendPoint p_N)).mpr hp_N
+  obtain ⟨b_play, hb_play, hcond_play⟩ := hwin_r2 p_N hp_N_r2
   obtain ⟨hord_play, hgp_play, hform_play⟩ := hcond_play
-  -- game_tuple indices for k=1: 0=x/x', 1=c_inf/t_game, 2=extendPoint(b_play)/extendPoint(p_N), 3=y/y'
-  -- Extract gap/point agreement at index 1 (c_inf vs t_game):
-  have hgp_1 := hgp_play ⟨1, by omega⟩
-  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-             show (1 : Nat) ≠ 1 + 1 from by omega,
-             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-             show 1 - 1 = 0 from by omega] at hgp_1
-  -- hgp_1 : (IsPoint c_inf ↔ IsPoint t_game) ∧ (IsGap c_inf ↔ IsGap t_game)
-  -- Extract boundary correspondence from same_order_type:
-  -- Index (0,1): x vs c_inf ↔ x' vs t_game
-  have hord_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
-  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
-             show (1 : Nat) ≠ 0 from by omega,
-             show (1 : Nat) ≠ 1 + 1 from by omega,
-             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-             show 1 - 1 = 0 from by omega] at hord_01
-  -- Index (1,3): c_inf vs y ↔ t_game vs y'
-  have hord_13 := hord_play ⟨1, by omega⟩ ⟨3, by omega⟩
-  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-             show (1 : Nat) ≠ 1 + 1 from by omega,
-             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-             show 1 - 1 = 0 from by omega,
-             show (3 : Nat) ≠ 0 from by omega,
-             show ¬((3 : Nat) = 1 + 1) from by omega,
-             show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_13
-  -- Formula agreement at index 1 (c_inf vs t_game):
-  have hform_1 : ∀ A : StaviFormula, stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r c_inf A ↔
-       stavi_temporal_truth_mu N atomMap r t_game A) := by
+  -- game_tuple indices for k=1 at rank r+2:
+  -- 0 = rank_embed(x) / rank_embed(x')
+  -- 1 = rank_embed(c_inf) / r2_resp
+  -- 2 = extendPoint(b_play) / extendPoint(p_N)
+  -- 3 = rank_embed(y) / rank_embed(y')
+  -- Extract formula agreement at index 1 at depth r+2:
+  have hform_r2_1 : ∀ A : StaviFormula, stavi_depth A ≤ r + 2 →
+      (stavi_temporal_truth_mu M atomMap (r + 2)
+        (rank_embed (by omega : r ≤ r + 2) c_inf) A ↔
+       stavi_temporal_truth_mu N atomMap (r + 2) r2_resp A) := by
     intro A hA
     have h := hform_play ⟨1, by omega⟩ A hA
     simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
@@ -2172,91 +2364,63 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
                show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
                show 1 - 1 = 0 from by omega] at h
     exact h
-  -- GHR93 Claim 1: t_game = d. This is the core uniqueness argument.
-  -- The game response t_game and the N-side infimum d must coincide because
-  -- both are determined by the continuation set structure. The proof requires
-  -- showing d ≤ t_game (from cofinal failure below d transferred via the game)
-  -- and t_game ≤ d (from t_game being in S_C via continuation from c_inf ∈ S_C_M).
-  -- Direction 2 (t_game ≤ d): t_game ∈ S_C follows from c_inf ∈ S_C_M and
-  -- the game's formula agreement transferring cont_holds from M to N.
-  -- Direction 1 (d ≤ t_game): by contradiction from cofinal failure below d.
-  -- Full Claim 1 proof requires detailed formula transfer — sorry'd for now.
-  -- Direction 2: t_game ∈ S_C, hence d ≤ t_game
-  have h_t_game_in_SC : t_game ∈ S_C := by
-    refine ⟨ha'_play ⟨0, by omega⟩, ?_⟩
-    -- Need: ∀ u, t_game < u → u < y' → mu_holds u → cont_holds (a_bwd ⟨n,_⟩) y' u
-    -- Strategy: for mu-point u = extendPoint p_u with t_game < u < y',
-    -- play round 2 of the game with p_u to get b_u in M with
-    -- c_inf < extendPoint b_u (from same_order_type) and extendPoint b_u < y.
-    -- Then cont_holds_cross at b_u (from c_inf ∈ S_C_M) + formula transfer => cont_holds at u.
-    intro u htu huy' ⟨p_u, hp_u⟩
-    -- Play round 2 with p_u
-    have hp_u_in : inClosedInterval x' y' (extendPoint p_u) := by
-      rw [hp_u] at htu huy'; exact ⟨le_trans (ha'_play ⟨0, by omega⟩).1 (le_of_lt htu), le_of_lt huy'⟩
-    obtain ⟨b_u, hb_u_in, hcond_u⟩ := hwin_play p_u hp_u_in
-    obtain ⟨hord_u, _hgp_u, hform_u⟩ := hcond_u
-    -- From same_order_type index (1,2): c_inf vs extendPoint b_u ↔ t_game vs extendPoint p_u
-    have hord_12 := hord_u ⟨1, by omega⟩ ⟨2, by omega⟩
-    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-               show (1 : Nat) ≠ 1 + 1 from by omega,
-               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-               show 1 - 1 = 0 from by omega,
-               show (2 : Nat) ≠ 0 from by omega,
-               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hord_12
-    -- hord_12 : (c_inf < extendPoint b_u ↔ t_game < extendPoint p_u) ∧ ...
-    rw [hp_u] at htu
-    have hc_lt_bu : c_inf < extendPoint b_u := hord_12.1.mpr htu
-    -- From same_order_type index (2,3): extendPoint b_u vs y ↔ extendPoint p_u vs y'
-    have hord_23 := hord_u ⟨2, by omega⟩ ⟨3, by omega⟩
-    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega,
-               show (2 : Nat) = 1 + 1 from by omega, dite_true,
-               show (3 : Nat) ≠ 0 from by omega,
-               show ¬((3 : Nat) = 1 + 1) from by omega,
-               show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_23
-    rw [hp_u] at huy'
-    have hbu_lt_y : extendPoint b_u < y := hord_23.1.mpr huy'
-    -- c_inf ∈ S_C_M and c_inf < extendPoint b_u < y and mu_holds (extendPoint b_u)
-    have hmu_bu : mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_u) :=
-      ⟨b_u, rfl⟩
-    have h_cont_cross_bu : cont_holds_cross (a_bwd ⟨n, by omega⟩) y' (extendPoint b_u) :=
-      hc_inf_in_SC_M.2 (extendPoint b_u) hc_lt_bu hbu_lt_y hmu_bu
-    -- Formula agreement at index 2: truth M (extendPoint b_u) A ↔ truth N (extendPoint p_u) A
-    -- cont_holds_cross at b_u + formula transfer => cont_holds at u
-    intro A hA h_all_mu
-    -- h_all_mu : ∀ v, a_bwd n < v → v < y' → mu_holds v → truth N v A
-    -- h_cont_cross_bu : ∀ A, depth A ≤ r → (∀ v, a_bwd n < v → v < y' → mu_holds v → truth N v A) → truth M (extendPoint b_u) A
-    have hA_bu : stavi_temporal_truth_mu M atomMap r (extendPoint b_u) A :=
-      h_cont_cross_bu A hA h_all_mu
-    -- Transfer from M to N via formula agreement at index 2
-    have hform_2 := hform_u ⟨2, by omega⟩ A hA
-    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
-               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_2
-    rw [hp_u]
-    exact hform_2.mp hA_bu
-  have h_d_le_t : d ≤ t_game := hd_glb t_game h_t_game_in_SC
-  -- Direction 1: t_game ≤ d (by contradiction from cofinal failure below d)
-  -- Assume t_game > d (i.e., d < t_game). Apply cofinal failure below d:
-  -- there exists a mu-point u with d < u ≤ ... and ¬cont_holds at u in N.
-  -- But t_game ∈ S_C (above) gives cont_holds at u. Contradiction.
-  -- Actually we need: if t_game > d, then ... This direction uses the
-  -- rank-(r+2) game (h_fwd_r1) and is the core of GHR93 Claim 1.
-  have h_t_le_d : t_game ≤ d := by
-    sorry
-  have h_t_game_eq_d : t_game = d := le_antisymm h_t_le_d h_d_le_t
-  -- Now use t_game = d to transfer all game-derived properties to d.
-  refine ⟨c_inf, hc_inf_interval, ?_, ?_, ?_⟩
-  · -- Formula agreement: c_inf vs d
+  -- Rewrite using h_r2_eq: r2_resp = rank_embed(d)
+  rw [h_r2_eq] at hform_r2_1
+  -- Step 8: Project formula agreement from rank r+2 to rank r via rank_embed_stavi_truth_mu.
+  have hform_cd : ∀ A : StaviFormula, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r c_inf A ↔
+       stavi_temporal_truth_mu N atomMap r d A) := by
     intro A hA
-    rw [← h_t_game_eq_d]
-    exact hform_1 A hA
-  · -- Gap/point agreement: c_inf vs d
-    constructor
-    · rw [← h_t_game_eq_d]; exact hgp_1.1
-    · rw [← h_t_game_eq_d]; exact hgp_1.2
-  · -- Boundary correspondence: (x = c_inf ↔ x' = d) ∧ (c_inf = y ↔ d = y')
-    constructor
-    · rw [← h_t_game_eq_d]; exact hord_01.2
-    · rw [← h_t_game_eq_d]; exact hord_13.2
+    have h_depth_r2 : stavi_depth A ≤ r + 2 := le_trans hA (by omega)
+    calc stavi_temporal_truth_mu M atomMap r c_inf A
+        ↔ stavi_temporal_truth_mu M atomMap (r + 2)
+            (rank_embed (by omega : r ≤ r + 2) c_inf) A :=
+          (rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf A).symm
+      _ ↔ stavi_temporal_truth_mu N atomMap (r + 2)
+            (rank_embed (by omega : r ≤ r + 2) d) A :=
+          hform_r2_1 A h_depth_r2
+      _ ↔ stavi_temporal_truth_mu N atomMap r d A :=
+          rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) d A
+  -- Step 9: Gap/point agreement from rank-(r+2) game, projected to rank r.
+  -- rank_embed preserves IsPoint: IsPoint(rank_embed e) ↔ IsPoint e
+  -- IsGap = ¬IsPoint (from isPoint_or_isGap), so IsGap also preserved.
+  have hgp_r2_1 := hgp_play ⟨1, by omega⟩
+  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega] at hgp_r2_1
+  have h_a'_r2_eq_d : a'_r2 ⟨0, by omega⟩ = rank_embed (by omega : r ≤ r + 2) d :=
+    r2_resp_def ▸ h_r2_eq
+  rw [h_a'_r2_eq_d] at hgp_r2_1
+  have hgp_cd : (IsPoint c_inf ↔ IsPoint d) ∧ (IsGap c_inf ↔ IsGap d) := by
+    -- hgp_r2_1 gives IsPoint/IsGap agreement at rank r+2 between rank_embed(c_inf)
+    -- and rank_embed(d). rank_embed preserves IsPoint/IsGap, so this projects.
+    sorry
+  -- Step 10: Boundary correspondence from rank-(r+2) game, projected to rank r.
+  have hord_r2_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
+  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+             show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega] at hord_r2_01
+  have hord_r2_13 := hord_play ⟨1, by omega⟩ ⟨3, by omega⟩
+  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega,
+             show (3 : Nat) ≠ 0 from by omega,
+             show ¬((3 : Nat) = 1 + 1) from by omega,
+             show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_r2_13
+  rw [h_a'_r2_eq_d] at hord_r2_01 hord_r2_13
+  -- Project boundary from rank r+2 to rank r using rank_embed injectivity.
+  have hbdy_cd : (x = c_inf ↔ x' = d) ∧ (c_inf = y ↔ d = y') := by
+    -- hord_r2_01/hord_r2_13 give boundary correspondence at rank r+2 between
+    -- rank_embed endpoints. rank_embed is injective (from rank_embed_le), so
+    -- this projects to rank r.
+    sorry
+  -- Step 11: Provide the suffices witness directly from the rank-(r+2) game.
+  -- This bypasses t_game entirely — no rank mismatch.
+  refine ⟨c_inf, hc_inf_interval, hform_cd, hgp_cd, hbdy_cd⟩
 
 /-! ### Case I: The Split Case
 
