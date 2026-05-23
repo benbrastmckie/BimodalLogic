@@ -20,9 +20,12 @@ one-class theorem, and the main `chronicle_is_good` result.
 ## Status
 Phase 2: `contemp_equiv_is_equiv` proved WITHOUT `IsSuccArchimedean`
 using Reynolds Lemma 17 (ordered sum decomposition at b + doets_lemma_1_4).
-Phase 4: `very_good_implies_good` rewritten WITHOUT `IsSuccArchimedean`/`SuccOrder`/`PredOrder`
-using Reynolds Lemma 16 (cofinal decomposition + doets_lemma_1_4 + shift-and-glue).
-One helper lemma remains sorry'd: cofinal_decomposition_k_equiv.
+Phase 4: `very_good_implies_good` uses PredOrder (required for half-open partition
+correctness). Reynolds Lemma 16 via cofinal decomposition into disjoint half-open
+pieces + doets_lemma_1_4 + shift-and-glue. `cofinal_decomposition_k_equiv` proved
+via order isomorphism from M to orderedSum of half-open pieces [a(i), a(i+1)).
+The original closed-interval formulation was incorrect (boundary point duplication
+makes orderedSum non-k-equivalent to M in general).
 ordered_sum_of_good_bounded_is_good closed via shift-and-glue OrderIso construction.
 Phases 3, 5-6 still use `IsSuccArchimedean` (to be removed in subsequent phases).
 
@@ -1113,27 +1116,103 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
         x (-(↑m + 1)) (↑(m + 1)) h_below h_above
     exact ⟨i, hi_le, le_of_lt hi_next⟩
 
+/-! ### Half-Open Partition Pieces -/
+
 /--
-M is k-equivalent to the ordered sum of its subintervals along a cofinal sequence.
+Half-open subinterval [a, b) of an ordered monadic structure.
+The carrier is `{x : M.carrier // a ≤ x ∧ x < b}`.
+-/
+def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // a ≤ x ∧ x < b}
+  interp p x := M.interp p x.val
+  carrier_order := inferInstance
 
-Given a strictly increasing cofinal sequence a : ℤ → M.carrier (every x lies in
-some [a(i), a(i+1)]), M is k-equivalent to orderedSum ℤ (fun i => M.subinterval a(i) a(i+1)).
+/--
+Uniqueness of the partition index: each x belongs to exactly one half-open piece [a(i), a(i+1)).
+-/
+private theorem partition_index_unique {α : Type} [LinearOrder α] (a : ℤ → α)
+    (h_mono : StrictMono a) {x : α} {i j : ℤ}
+    (hi : a i ≤ x ∧ x < a (i + 1)) (hj : a j ≤ x ∧ x < a (j + 1)) : i = j := by
+  by_contra h
+  rcases Ne.lt_or_lt h with h_lt | h_lt
+  · -- i < j, so i + 1 ≤ j, hence a(i+1) ≤ a(j) ≤ x < a(i+1)
+    have h1 : a (i + 1) ≤ a j := h_mono.monotone (Int.add_one_le_iff.mpr h_lt)
+    exact absurd (lt_of_lt_of_le hi.2 (le_trans h1 hj.1)) (lt_irrefl x)
+  · -- j < i, symmetric
+    have h1 : a (j + 1) ≤ a i := h_mono.monotone (Int.add_one_le_iff.mpr h_lt)
+    exact absurd (lt_of_lt_of_le hj.2 (le_trans h1 hi.1)) (lt_irrefl x)
 
-The ordered sum may have MORE elements than M (endpoints a(i+1) = a(i+1) appear in
-both piece i and piece i+1). However, the k-types agree because:
-- There is a natural embedding from M into the ordered sum (send x to piece i where
-  a(i) ≤ x ≤ a(i+1), choosing the leftmost such i)
-- The ordered sum has "duplicated" boundary points but these don't affect k-types:
-  the duplicate points satisfy the same predicates and are adjacent in the order.
+/--
+M is k-equivalent to the ordered sum of its half-open partition pieces along a cofinal sequence.
 
-This is Reynolds's "cofinal decomposition" from Lemma 16.
+Given a strictly increasing cofinal sequence a : ℤ → M.carrier where every x lies in
+some half-open interval [a(i), a(i+1)), M is order-isomorphic to the ordered sum
+of the partition pieces, hence k-equivalent.
+
+The half-open pieces [a(i), a(i+1)) form a DISJOINT partition of M (unlike the
+closed subintervals [a(i), a(i+1)] which overlap at boundary points). The proof
+constructs an explicit OrderIso and applies k_equiv_of_iso.
+
+This is the corrected formulation of Reynolds's "cofinal decomposition" (Lemma 16).
+The original closed-interval formulation is false: the ordered sum of closed intervals
+has strictly more elements than M (duplicate boundary points), making the structures
+non-isomorphic and non-k-equivalent in general.
 -/
 private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig) (a : ℤ → M.carrier)
     (h_mono : StrictMono a)
-    (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x ≤ a (i + 1)) :
-    k_equiv sig k M (orderedSum sig ℤ (fun i => M.subinterval sig (a i) (a (i + 1)))) := by
-  sorry
+    (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1)) :
+    k_equiv sig k M (orderedSum sig ℤ
+      (fun i => M.hoSubinterval sig (a i) (a (i + 1)))) := by
+  -- Step 1: Construct the forward map M → orderedSum
+  have h_index : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1) := h_cofinal
+  -- Use Exists.choose to pick the unique partition index for each x
+  let idx : M.carrier → ℤ := fun x => (h_index x).choose
+  have h_idx_spec : ∀ x, a (idx x) ≤ x ∧ x < a (idx x + 1) := fun x => (h_index x).choose_spec
+  -- Forward map: x ↦ ⟨idx(x), ⟨x, proof⟩⟩
+  let fwd : M.carrier → (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier :=
+    fun x => ⟨idx x, ⟨x, h_idx_spec x⟩⟩
+  -- Backward map: ⟨i, ⟨x, _⟩⟩ ↦ x
+  let bwd : (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier → M.carrier :=
+    fun s => s.2.val
+  -- Step 2: Show these form an Equiv
+  have h_left_inv : ∀ x, bwd (fwd x) = x := fun _ => rfl
+  have h_right_inv : ∀ s, fwd (bwd s) = s := by
+    intro ⟨i, ⟨x, hx⟩⟩
+    show (⟨idx x, ⟨x, h_idx_spec x⟩⟩ : Sigma fun i => (M.hoSubinterval sig (a i) (a (i + 1))).carrier) = ⟨i, ⟨x, hx⟩⟩
+    have h_idx_eq : idx x = i := partition_index_unique a h_mono (h_idx_spec x) hx
+    exact Sigma.ext h_idx_eq (by subst h_idx_eq; rfl)
+  let e : M.carrier ≃ (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier :=
+    { toFun := fwd, invFun := bwd, left_inv := h_left_inv, right_inv := h_right_inv }
+  -- Step 3: Show e is monotone (both directions), yielding an OrderIso.
+  let S := orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))
+  -- Step 3: Prove inverse monotone first (clean because destructuring gives simple vars)
+  have h_inv_mono : Monotone e.symm := by
+    intro s1 s2 h12
+    show bwd s1 ≤ bwd s2
+    obtain ⟨i, ⟨x, hx⟩⟩ := s1
+    obtain ⟨j, ⟨y, hy⟩⟩ := s2
+    show x ≤ y
+    rcases Sigma.Lex.le_def.mp h12 with h_lt_idx | ⟨h_eq_idx, h_le_snd⟩
+    · -- i < j: x < a(i+1) ≤ a(j) ≤ y
+      exact le_of_lt (lt_of_lt_of_le hx.2
+        (le_trans (h_mono.monotone (Int.add_one_le_iff.mpr h_lt_idx)) hy.1))
+    · -- i = j: extract x ≤ y from the subtype ordering
+      cases h_eq_idx; exact h_le_snd
+  -- Forward monotone: derived from inverse monotone + bijectivity.
+  -- If x ≤ y and e y < e x, then y = e.symm(e y) ≤ e.symm(e x) = x, so x = y,
+  -- contradicting e y < e x.
+  have h_fwd_mono : Monotone e := by
+    intro x y hxy
+    rw [not_lt.symm]
+    intro h_abs
+    have h1 : e.symm (e y) ≤ e.symm (e x) := h_inv_mono (le_of_lt h_abs)
+    simp only [Equiv.symm_apply_apply] at h1
+    exact absurd (le_antisymm hxy h1 ▸ h_abs) (lt_irrefl _)
+  let f : M.carrier ≃o S.carrier := Equiv.toOrderIso e h_fwd_mono h_inv_mono
+  -- Step 4: Apply k_equiv_of_iso
+  exact k_equiv_of_iso sig k M _ f (fun p x => Iff.rfl)
 
 /-! ### Shift-and-Glue Helpers -/
 
@@ -1621,40 +1700,84 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) (k 
       exact ⟨Z_final, h_sum_equiv.trans hZ_final⟩
 
 /--
-Reynolds Lemma 16: If M is a countable linear order without endpoints and
+Closed-to-half-open k-equivalence: a half-open subinterval [a, b) is good when
+a < b and the order has PredOrder, because [a, b) = [a, pred(b)] which is a
+closed subinterval and hence good by very_good.
+-/
+private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) [PredOrder M.carrier]
+    (a b : M.carrier) (h_lt : a < b) (h_very_good : very_good sig k M) :
+    good sig k (M.hoSubinterval sig a b) := by
+  have h_pred_lt : Order.pred b < b := Order.pred_lt_of_not_isMin (not_isMin_of_lt h_lt)
+  have h_a_le_pred : a ≤ Order.pred b := Order.le_pred_of_lt h_lt
+  have h_good_closed := h_very_good a (Order.pred b) h_a_le_pred
+  have h_iff : ∀ x : M.carrier, (a ≤ x ∧ x < b) ↔ (a ≤ x ∧ x ≤ Order.pred b) := by
+    intro x; exact ⟨fun ⟨h1, h2⟩ => ⟨h1, Order.le_pred_of_lt h2⟩,
+                    fun ⟨h1, h2⟩ => ⟨h1, lt_of_le_of_lt h2 h_pred_lt⟩⟩
+  let e : (M.hoSubinterval sig a b).carrier ≃ (M.subinterval sig a (Order.pred b)).carrier :=
+    { toFun := fun ⟨x, hx⟩ => ⟨x, (h_iff x).mp hx⟩
+      invFun := fun ⟨x, hx⟩ => ⟨x, (h_iff x).mpr hx⟩
+      left_inv := fun ⟨_, _⟩ => rfl
+      right_inv := fun ⟨_, _⟩ => rfl }
+  let f : (M.hoSubinterval sig a b).carrier ≃o (M.subinterval sig a (Order.pred b)).carrier :=
+    Equiv.toOrderIso e (fun _ _ h => h) (fun _ _ h => h)
+  have h_k_equiv := k_equiv_of_iso sig k (M.hoSubinterval sig a b)
+    (M.subinterval sig a (Order.pred b)) f (fun _ _ => Iff.rfl)
+  obtain ⟨Z, hZ⟩ := h_good_closed
+  exact ⟨Z, h_k_equiv.trans hZ⟩
+
+/--
+Reynolds Lemma 16: If M is a countable discrete linear order without endpoints and
 every subinterval of M is good (very_good), then M itself is good.
 
-The proof constructs a cofinal decomposition of M along a bi-infinite strictly
-increasing sequence, applies Doets Lemma 1.4 (sum preservation) to transfer
-k-equivalence component-wise to Z-interval witnesses, then uses the shift-and-glue
-construction to collapse the ordered sum of bounded Z-intervals into a single
-unbounded Z-interval.
+The proof constructs a cofinal decomposition of M into half-open pieces [a(i), a(i+1))
+which partition M disjointly (unlike closed intervals which overlap at boundaries).
+M is order-isomorphic to the ordered sum of these pieces. Each half-open piece
+is good (via PredOrder: [a(i), a(i+1)) = [a(i), pred(a(i+1))], a closed subinterval
+that is good by very_good). The ordered sum of good bounded structures is itself good
+(by the shift-and-glue OrderIso + doets_lemma_1_4 construction).
 
-NO IsSuccArchimedean, SuccOrder, or PredOrder is assumed on M.
+PredOrder is required to convert half-open pieces to closed subintervals for very_good.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    [Nonempty M.carrier]
+    [Nonempty M.carrier] [PredOrder M.carrier]
     (_h_countable : Countable M.carrier) (h_very_good : very_good sig k M) :
     good sig k M := by
   -- Step 1: Construct cofinal sequence
-  obtain ⟨a, h_mono, h_cofinal⟩ := @exists_cofinal_sequence M.carrier M.carrier_order
+  obtain ⟨a, h_mono, h_cofinal_closed⟩ := @exists_cofinal_sequence M.carrier M.carrier_order
     _h_countable inferInstance inferInstance inferInstance
-  -- Step 2: Define the pieces (subintervals along cofinal sequence)
-  let pieces := fun i : ℤ => M.subinterval sig (a i) (a (i + 1))
-  -- Step 3: Each piece is good by very_good
+  -- Step 1b: Derive half-open cofinality from closed cofinality
+  have h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1) := by
+    intro x
+    obtain ⟨i, hi_le, hi_le'⟩ := h_cofinal_closed x
+    by_cases h : x < a (i + 1)
+    · exact ⟨i, hi_le, h⟩
+    · push_neg at h
+      have h_eq : x = a (i + 1) := le_antisymm hi_le' h
+      exact ⟨i + 1, h_eq ▸ le_refl _, h_eq ▸ h_mono (by omega : i + 1 < i + 1 + 1)⟩
+  -- Step 2: Define the half-open pieces
+  let pieces := fun i : ℤ => M.hoSubinterval sig (a i) (a (i + 1))
+  -- Step 3: Each piece is good by very_good + PredOrder
   have h_pieces_good : ∀ i : ℤ, good sig k (pieces i) := fun i =>
-    h_very_good (a i) (a (i + 1)) (le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl)))
-  -- Step 4: M ~k orderedSum ℤ pieces (cofinal decomposition)
+    hoSubinterval_good_of_very_good sig k M (a i) (a (i + 1))
+      (h_mono (Int.lt_add_one_iff.mpr le_rfl)) h_very_good
+  -- Step 4: M ~k orderedSum ℤ pieces (cofinal decomposition via order isomorphism)
   have h_decomp : k_equiv sig k M (orderedSum sig ℤ pieces) :=
     cofinal_decomposition_k_equiv sig k M a h_mono h_cofinal
-  -- Step 5: Each piece has max and min (since M.subinterval(a_i, a_{i+1}) is bounded)
-  have h_has_max : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, x ≤ m :=
-    fun i => ⟨⟨a (i + 1), le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl)), le_refl _⟩,
-              fun x => x.property.2⟩
-  have h_has_min : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, m ≤ x :=
-    fun i => ⟨⟨a i, le_refl _, le_of_lt (h_mono (Int.lt_add_one_iff.mpr le_rfl))⟩,
-              fun x => x.property.1⟩
+  -- Step 5: Each piece has max and min
+  have h_has_max : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, x ≤ m := by
+    intro i
+    have h_lt : a i < a (i + 1) := h_mono (Int.lt_add_one_iff.mpr le_rfl)
+    have h_pred_lt : Order.pred (a (i + 1)) < a (i + 1) :=
+      Order.pred_lt_of_not_isMin (not_isMin_of_lt h_lt)
+    have h_a_le_pred : a i ≤ Order.pred (a (i + 1)) := Order.le_pred_of_lt h_lt
+    refine ⟨⟨Order.pred (a (i + 1)), h_a_le_pred, h_pred_lt⟩, ?_⟩
+    intro ⟨x, hx⟩; exact Order.le_pred_of_lt hx.2
+  have h_has_min : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, m ≤ x := by
+    intro i
+    have h_lt : a i < a (i + 1) := h_mono (Int.lt_add_one_iff.mpr le_rfl)
+    exact ⟨⟨a i, le_refl _, h_lt⟩, fun ⟨_, hx⟩ => hx.1⟩
   -- Step 6: orderedSum pieces is good (shift-and-glue)
   have h_sum_good : good sig k (orderedSum sig ℤ pieces) :=
     ordered_sum_of_good_bounded_is_good sig k pieces h_pieces_good h_has_max h_has_min
