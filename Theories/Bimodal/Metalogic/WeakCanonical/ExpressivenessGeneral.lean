@@ -1667,48 +1667,135 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
         -- For now, sorry the entire Case 3 — the architectural fix is Case 2 above.
         -- Phase 3 (c-gap-case) will provide this when gap detection is wired in.
         sorry
-  -- Step 2: Obtain c from the forward strategy.
-  -- Use the (4+3n)-round strategy with 1 selection: play it with an arbitrary
-  -- element from [x,y]. By round_mono, the (4+3n)-round strategy implies a
-  -- 1-round strategy. Play the 1-round strategy to find a point c that matches d.
-  --
-  -- First, get a 1-round strategy on [x,y] vs [x',y']:
+  -- Step 2: Construct c = inf(S_C^M) — the M-side infimum (GHR93 p.115-116).
+  -- S_C^M = { t ∈ [x,y] : cont_holds_cross at all mu-points in (t, y) in M }.
+  -- The continuation predicate uses N-side interval type (a_bwd(n), y') but
+  -- evaluates truth in M. This mirrors d = inf(S_C^N) exactly.
+  set S_C_M := continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y' with S_C_M_def
+  have h_y_in_SC_M : y ∈ S_C_M := by
+    refine ⟨⟨hxy, le_refl y⟩, ?_⟩
+    intro u hyu huy _
+    exact absurd (lt_trans hyu huy) (lt_irrefl y)
+  obtain ⟨c_inf, hc_inf_interval, hc_inf_glb, hc_inf_is_inf⟩ :
+      ∃ c_inf : ExtendedCarrier M atomMap r,
+        inClosedInterval x y c_inf ∧
+        (∀ s ∈ S_C_M, c_inf ≤ s) ∧
+        (∀ e : ExtendedCarrier M atomMap r, (∀ s ∈ S_C_M, e ≤ s) → e ≤ c_inf) := by
+    -- Mirror the d = inf(S_C^N) construction (3-way case split).
+    by_cases h_has_pt_min_M : ∃ (p : M.carrier),
+        (extendPoint p : ExtendedCarrier M atomMap r) ∈ S_C_M ∧
+        ∀ s ∈ S_C_M, (extendPoint p : ExtendedCarrier M atomMap r) ≤ s
+    · -- Case 1: Carrier-point minimum exists.
+      obtain ⟨p, hp_in, hp_lb⟩ := h_has_pt_min_M
+      exact ⟨extendPoint p, hp_in.1, hp_lb, fun e he => he _ hp_in⟩
+    · push_neg at h_has_pt_min_M
+      -- h_has_pt_min_M : ∀ p, extendPoint p ∈ S_C_M → ∃ s ∈ S_C_M, s < extendPoint p
+      have h_ne_M : S_C_M.Nonempty := ⟨y, h_y_in_SC_M⟩
+      have h_pt_below_M : ∃ p : M.carrier, ∀ s ∈ S_C_M,
+          (extendPoint p : ExtendedCarrier M atomMap r) ≤ s := by
+        rcases isPoint_or_isGap x with ⟨px, hpx⟩ | ⟨gx, hgx⟩
+        · refine ⟨px, fun s hs => ?_⟩
+          rw [show (extendPoint px : ExtendedCarrier M atomMap r) = x from hpx.symm]
+          exact hs.1.1
+        · obtain ⟨q, hq⟩ := gx.val.nonempty
+          refine ⟨q, fun s hs => ?_⟩
+          have hq_le_x : (extendPoint q : ExtendedCarrier M atomMap r) ≤ x := by
+            rw [hgx]; exact (hq : q ∈ gx.val.cut)
+          exact le_trans hq_le_x hs.1.1
+      by_cases h_has_glb_M : ∃ (p : M.carrier),
+          (∀ s ∈ S_C_M, (extendPoint p : ExtendedCarrier M atomMap r) ≤ s) ∧
+          (∀ q : M.carrier, (∀ s ∈ S_C_M,
+            (extendPoint q : ExtendedCarrier M atomMap r) ≤ s) →
+            (extendPoint q : ExtendedCarrier M atomMap r) ≤ extendPoint p)
+      · -- Case 2: Carrier-point GLB p exists but p ∉ S_C_M.
+        obtain ⟨p, hp_lb, hp_greatest⟩ := h_has_glb_M
+        have hp_not_in : (extendPoint p : ExtendedCarrier M atomMap r) ∉ S_C_M := by
+          intro hp_in
+          obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min_M p hp_in
+          exact absurd (hp_lb s hs_in) (not_le.mpr hs_lt)
+        refine ⟨extendPoint p, ?_, hp_lb, ?_⟩
+        · constructor
+          · by_contra h_lt
+            push_neg at h_lt
+            rcases isPoint_or_isGap x with ⟨px, hpx⟩ | ⟨gx, hgx⟩
+            · have : (extendPoint px : ExtendedCarrier M atomMap r) ≤ extendPoint p := by
+                apply hp_greatest
+                intro s hs
+                have : x ≤ s := hs.1.1
+                rw [hpx] at this; exact this
+              rw [hpx] at h_lt
+              exact absurd this (not_le.mpr h_lt)
+            · rw [hgx] at h_lt
+              have hp_in_cut : p ∈ gx.val.cut := le_of_lt h_lt
+              have h_cut_sub : ∀ q : M.carrier, q ∈ gx.val.cut → q ≤ p := by
+                intro q hq_cut
+                have hq_lb : ∀ s ∈ S_C_M, (extendPoint q : ExtendedCarrier M atomMap r) ≤ s := by
+                  intro s hs
+                  have : (extendPoint q : ExtendedCarrier M atomMap r) ≤ x := by
+                    rw [hgx]; exact hq_cut
+                  exact le_trans this hs.1.1
+                exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
+              have h_p_lub : IsLUB gx.val.cut p ∧ p ∈ gx.val.cut :=
+                ⟨⟨fun q hq => h_cut_sub q hq, fun _ hb => hb hp_in_cut⟩, hp_in_cut⟩
+              exact absurd ⟨p, h_p_lub⟩ gx.val.no_sup
+          · exact le_trans (hp_lb _ h_y_in_SC_M) h_y_in_SC_M.1.2
+        · intro e he
+          rcases isPoint_or_isGap e with ⟨q, hq⟩ | ⟨g, hg⟩
+          · rw [hq]; exact hp_greatest q (fun s hs => by rw [show (extendPoint q : ExtendedCarrier M atomMap r) = e from hq.symm]; exact he s hs)
+          · rw [hg]
+            have h_g_cut_sub : ∀ q : M.carrier, q ∈ g.val.cut → q ≤ p := by
+              intro q hq_cut
+              have hq_lb : ∀ s ∈ S_C_M, (extendPoint q : ExtendedCarrier M atomMap r) ≤ s := by
+                intro s hs
+                exact le_trans (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr g from hq_cut)
+                  (hg ▸ he s hs)
+              exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
+            by_contra h_not_le
+            push_neg at h_not_le
+            have hp_in_g : p ∈ g.val.cut := le_of_lt h_not_le
+            have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
+              ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
+            exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
+      · -- Case 3: No carrier-point GLB. Gap case — sorry'd (same as N-side Case 3).
+        sorry
+  -- c_inf ∈ S_C^M: for any mu u > c_inf in M, u is not a lower bound of S_C^M,
+  -- so ∃ s ∈ S_C^M with s < u, giving cont_holds_cross at u from s's tail.
+  have hc_inf_in_SC_M : c_inf ∈ S_C_M := by
+    refine ⟨hc_inf_interval, ?_⟩
+    intro u hcu huy hmu
+    have : ¬ (∀ s ∈ S_C_M, u ≤ s) := by
+      intro h_lb
+      exact absurd (hc_inf_is_inf u h_lb) (not_le.mpr hcu)
+    push_neg at this
+    obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
+    exact hs₀_in.2 u hs₀_lt huy hmu
+  -- Cofinal cont_holds_cross failure below c_inf: for any s ∈ [x, y] with s < c_inf,
+  -- ∃ mu-point u in M with s < u ≤ c_inf, u < y, and ¬cont_holds_cross at u.
+  have h_cofinal_failure_below_c_inf :
+      ∀ (s : ExtendedCarrier M atomMap r),
+        inClosedInterval x y s → s < c_inf →
+        ∃ (u : ExtendedCarrier M atomMap r),
+          s < u ∧ u ≤ c_inf ∧ u < y ∧
+          mu_holds u ∧ ¬ cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u := by
+    intro s hs_interval hs_lt_c
+    have hs_not_SC_M : s ∉ S_C_M := by
+      intro hs_in; exact absurd (hc_inf_glb s hs_in) (not_le.mpr hs_lt_c)
+    have : ¬ (∀ u : ExtendedCarrier M atomMap r,
+        s < u → u < y → mu_holds u →
+        cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u) := by
+      intro h_all; exact hs_not_SC_M ⟨hs_interval, h_all⟩
+    push_neg at this
+    obtain ⟨v, hsv, hvy, hmu_v, h_not_cont_v⟩ := this
+    rcases le_or_gt v c_inf with hv_le_c | hv_gt_c
+    · exact ⟨v, hsv, hv_le_c, hvy, hmu_v, h_not_cont_v⟩
+    · exact absurd (hc_inf_in_SC_M.2 v hv_gt_c hvy hmu_v) h_not_cont_v
+  -- Step 3: Get a 1-round forward strategy for game-based properties.
   have h1 : ghr93_duplicator_wins M N atomMap 1 r x y x' y' :=
     ghr93_duplicator_wins_round_mono (by omega : 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
-  -- Play the 1-round strategy: Spoiler picks 1 element from [x,y].
-  -- We need to pick something from [x,y] to find c. Use an arbitrary point
-  -- (e.g., x itself, or any element that will give us a meaningful c).
-  -- The winning condition will give us a response that matches the selection.
-  -- We choose x as the selection (simplest choice that's in [x,y]).
-  obtain ⟨a'1, ha'1, _hwin1⟩ := h1 (fun _ : Fin 1 => x) (fun _ => ⟨le_refl x, hxy⟩)
-  -- a'1 ⟨0, ...⟩ is the response to x. It's in [x',y'].
-  -- But we need c to match d. The above play doesn't directly give us c matching d.
-  --
-  -- Better approach: use the full (4+3n)-round strategy to derive c.
-  -- Play with d as one of the N-side elements by using the backward structure.
-  -- Since d is in N and the forward game goes M→N, we can't directly use d as input.
-  --
-  -- Key realization: c doesn't need to come from a specific play of the game.
-  -- We need c such that:
-  --   (a) c ∈ [x,y]
-  --   (b) rank_type(c) = rank_type(d) (or formula agreement)
-  --   (c) IsPoint c ↔ IsPoint d
-  --
-  -- Then strategy restriction gives forward strategies on sub-intervals, and
-  -- the IH converts them to backward strategies.
-  --
-  -- For now, we use sorry to construct c with the needed properties.
-  -- The full construction would use the forward strategy's Round 2 mechanism
-  -- to extract a compatible element from M.
-  --
-  -- When d is a point (∃ p', d = extendPoint p'), we can play the forward
-  -- game's Round 2 with p' to get a matching point b in [x,y] ∩ M.
-  -- When d is a gap, the argument uses gap detection formulas (Lemma 9).
-  --
-  -- Step 3-5: Construct c, sigma, tau
-  -- These depend on strategy restriction (ghr93_strategy_restrict_left/right)
-  -- which has sorry's in EFGames.lean. We propagate the sorry here but
-  -- provide the correct structural decomposition.
+  -- Step 4-5: Prove c satisfies the suffices requirements.
+  -- c = inf(S_C^M) has interval and infimum properties.
+  -- Formula agreement, gap/point, and boundary correspondence require
+  -- the game to connect c (M-side infimum) with d (N-side infimum).
   suffices h_exists : ∃ c : ExtendedCarrier M atomMap r,
       inClosedInterval x y c ∧
       (∀ (A : StaviFormula), stavi_depth A ≤ r →
