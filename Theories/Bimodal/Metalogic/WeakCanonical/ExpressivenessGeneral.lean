@@ -2327,13 +2327,244 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
   -- Proof mirrors h_t_game_in_SC: for mu u > r2_resp in N at rank r+2,
   -- play Round 2 to get M-side point above rank_embed(c_inf),
   -- then use c_inf ∈ S_C_M and formula transfer.
-  have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
-    sorry
-  -- Step 4: Direction 1 at rank r+2 (r2_resp ≤ rank_embed(d))
-  -- GHR93 Claim 1 core: M-side pigeonhole → D_M → K⁻(¬D_M) → transfer → bound.
+  -- Re-derive d ∈ S_C and cofinal failure below d (these were proved in the
+  -- suffices branch but are not in scope here).
+  have hd_in_SC : d ∈ S_C := by
+    refine ⟨hd_interval, ?_⟩
+    intro u hdu huy' hmu
+    have : ¬ (∀ s ∈ S_C, u ≤ s) := by
+      intro h_lb
+      exact absurd (hd_is_inf u h_lb) (not_le.mpr hdu)
+    push_neg at this
+    obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
+    exact hs₀_in.2 u hs₀_lt huy' hmu
+  have h_cofinal_failure_below_d :
+      ∀ (s : ExtendedCarrier N atomMap r),
+        inClosedInterval x' y' s → s < d →
+        ∃ (u : ExtendedCarrier N atomMap r),
+          s < u ∧ u ≤ d ∧ u < y' ∧
+          mu_holds u ∧ ¬ cont_holds (a_bwd ⟨n, by omega⟩) y' u := by
+    intro s hs_interval hs_lt_d
+    have hs_not_SC : s ∉ S_C := by
+      intro hs_in; exact absurd (hd_glb s hs_in) (not_le.mpr hs_lt_d)
+    have : ¬ (∀ u : ExtendedCarrier N atomMap r,
+        s < u → u < y' → mu_holds u →
+        cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
+      intro h_all; exact hs_not_SC ⟨hs_interval, h_all⟩
+    push_neg at this
+    obtain ⟨v, hsv, hvy', hmu_v, h_not_cont_v⟩ := this
+    rcases le_or_gt v d with hv_le_d | hv_gt_d
+    · exact ⟨v, hsv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩
+    · exact absurd (hd_in_SC.2 v hv_gt_d hvy' hmu_v) h_not_cont_v
+  -- Steps 3-5 combined: r2_resp = rank_embed(d)
+  -- GHR93 Claim 1: the game response must equal rank_embed of the infimum.
+  --
+  -- Direction 1 (r2_resp ≤ rank_embed(d)): K⁻(¬D_M) argument.
+  --   Apply pigeonhole_definable_formula_cross to S_C_M to get D_M of depth ≤ r
+  --   that holds on (a_bwd(n), y') in N but fails cofinally below c_inf in M.
+  --   Construct K⁻(¬D_M) = neg(std_snce(base(⊤), D_M)) of depth ≤ r + 2.
+  --   K⁻(¬D_M)(c_inf) = TRUE (¬D_M cofinal below c_inf in M).
+  --   Transfer via hform_r2_1 at depth r+2: K⁻(¬D_M)(r2_resp) = TRUE.
+  --   If r2_resp > rank_embed(d): D_M holds on (d, y') (from d ∈ S_C),
+  --   so Since(⊤, D_M)(r2_resp) = TRUE, contradicting K⁻(¬D_M)(r2_resp).
+  --
+  -- Direction 2 (rank_embed(d) ≤ r2_resp): game Round 2 argument.
+  --   For any mu p with r2_resp < extendPoint p < y' (at rank r+2):
+  --   play p in Round 2, get M-side b with c_inf < b < y, cont_holds_cross at b,
+  --   formula transfer gives cont_holds at p. So cont_holds above r2_resp.
+  --   By contradiction: if r2_resp < rank_embed(d), find failure between
+  --   r2_resp and d (from cofinal failure), contradicting cont_holds above r2_resp.
+  --   The carrier-point case gives contradiction directly; the gap case
+  --   follows from Direction 1 giving r2_resp ≤ rank_embed(d).
+  --
+  -- We prove both directions and combine.
+  -- Direction 2 helper: cont_holds transfer via game Round 2.
+  -- For any carrier point p of N with r2_resp < extendPoint p (at rank r+2)
+  -- and extendPoint p < y' (at rank r), cont_holds holds at extendPoint p.
+  have h_cont_transfer : ∀ (p : N.carrier),
+      r2_resp < (extendPoint p : ExtendedCarrier N atomMap (r + 2)) →
+      (extendPoint p : ExtendedCarrier N atomMap r) < y' →
+      cont_holds (a_bwd ⟨n, by omega⟩) y' (extendPoint p) := by
+    intro p hr2_lt_p hp_lt_y'
+    -- Play p in Round 2 of the rank-(r+2) game
+    have hp_in_r2 : inClosedInterval
+        (rank_embed (by omega : r ≤ r + 2) x')
+        (rank_embed (by omega : r ≤ r + 2) y')
+        (extendPoint p : ExtendedCarrier N atomMap (r + 2)) := by
+      constructor
+      · -- rank_embed(x') ≤ extendPoint(p) at rank r+2
+        -- From ha'_r2: rank_embed(x') ≤ r2_resp, and r2_resp < extendPoint(p)
+        exact le_trans (ha'_r2 ⟨0, by omega⟩).1 (le_of_lt hr2_lt_p)
+      · -- extendPoint(p) ≤ rank_embed(y') at rank r+2
+        -- hp_lt_y' : extendPoint(p) < y' at rank r
+        -- rank_embed preserves: rank_embed(extendPoint(p)) < rank_embed(y')
+        rw [← rank_embed_point (by omega : r ≤ r + 2) p]
+        exact le_of_lt ((rank_embed_lt (by omega : r ≤ r + 2)
+          (extendPoint p) y').mpr hp_lt_y')
+    obtain ⟨b_u, hb_u_in, hcond_u⟩ := hwin_r2 p hp_in_r2
+    obtain ⟨hord_u, _hgp_u, hform_u⟩ := hcond_u
+    -- Extract order at index (1,2): rank_embed(c_inf) vs extendPoint(b_u)
+    have hord_12 := hord_u ⟨1, by omega⟩ ⟨2, by omega⟩
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ 1 + 1 from by omega,
+               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega,
+               show (2 : Nat) ≠ 0 from by omega,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hord_12
+    -- c_inf < extendPoint b_u at rank r (from order type)
+    have hc_lt_bu_r : c_inf < (extendPoint b_u : ExtendedCarrier M atomMap r) := by
+      have : rank_embed (by omega : r ≤ r + 2) c_inf <
+          (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) := by
+        rw [← rank_embed_point (by omega : r ≤ r + 2) p] at hr2_lt_p
+        exact hord_12.1.mpr hr2_lt_p
+      rw [← rank_embed_point (by omega : r ≤ r + 2) b_u] at this
+      exact (rank_embed_lt (by omega : r ≤ r + 2) c_inf (extendPoint b_u)).mp this
+    -- Extract order at index (2,3): extendPoint(b_u) vs rank_embed(y)
+    have hord_23 := hord_u ⟨2, by omega⟩ ⟨3, by omega⟩
+    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true,
+               show (3 : Nat) ≠ 0 from by omega,
+               show ¬((3 : Nat) = 1 + 1) from by omega,
+               show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_23
+    -- extendPoint(b_u) < y at rank r
+    have hbu_lt_y : (extendPoint b_u : ExtendedCarrier M atomMap r) < y := by
+      have hp_lt_y'_r2 : (extendPoint p : ExtendedCarrier N atomMap (r + 2)) <
+          rank_embed (by omega : r ≤ r + 2) y' := by
+        rw [← rank_embed_point (by omega : r ≤ r + 2) p]
+        exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p) y').mpr hp_lt_y'
+      have : (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) <
+          rank_embed (by omega : r ≤ r + 2) y := hord_23.1.mpr hp_lt_y'_r2
+      rw [← rank_embed_point (by omega : r ≤ r + 2) b_u] at this
+      exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint b_u) y).mp this
+    -- c_inf ∈ S_C_M: cont_holds_cross at extendPoint b_u
+    have hmu_bu : mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_u) :=
+      ⟨b_u, rfl⟩
+    have h_cont_cross_bu : cont_holds_cross (a_bwd ⟨n, by omega⟩) y' (extendPoint b_u) :=
+      hc_inf_in_SC_M.2 (extendPoint b_u) hc_lt_bu_r hbu_lt_y hmu_bu
+    -- Transfer: for any A with depth ≤ r, if A holds at all mu in (a_bwd(n), y'),
+    -- then A holds at extendPoint(b_u) in M (from cont_holds_cross),
+    -- then A holds at extendPoint(p) in N (from formula agreement).
+    intro A hA h_all_mu
+    have hA_bu : stavi_temporal_truth_mu M atomMap r (extendPoint b_u) A :=
+      h_cont_cross_bu A hA h_all_mu
+    -- Formula agreement at index 2, depth ≤ r+2
+    have hform_2 := hform_u ⟨2, by omega⟩ A (le_trans hA (by omega : r ≤ r + 2))
+    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_2
+    -- Bridge from rank r to rank r+2 via rank_embed_stavi_truth_mu.
+    -- hform_2 : truth M (r+2) (extendPoint b_u) A ↔ truth N (r+2) (extendPoint p) A
+    -- We need: truth N r (extendPoint p) A
+    -- extendPoint b_u at rank r+2 = rank_embed(extendPoint b_u at rank r) by rank_embed_point.
+    -- So truth M (r+2) (extendPoint b_u) A ↔ truth M r (extendPoint b_u) A.
+    -- Similarly for p on the N side.
+    have hM_bridge : stavi_temporal_truth_mu M atomMap (r + 2)
+        (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) A ↔
+        stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r) A := by
+      conv_lhs => rw [show (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) =
+        rank_embed (by omega : r ≤ r + 2) (extendPoint b_u : ExtendedCarrier M atomMap r) from
+        (rank_embed_point (by omega : r ≤ r + 2) b_u).symm]
+      exact rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) (extendPoint b_u) A
+    have hN_bridge : stavi_temporal_truth_mu N atomMap (r + 2)
+        (extendPoint p : ExtendedCarrier N atomMap (r + 2)) A ↔
+        stavi_temporal_truth_mu N atomMap r (extendPoint p : ExtendedCarrier N atomMap r) A := by
+      conv_lhs => rw [show (extendPoint p : ExtendedCarrier N atomMap (r + 2)) =
+        rank_embed (by omega : r ≤ r + 2) (extendPoint p : ExtendedCarrier N atomMap r) from
+        (rank_embed_point (by omega : r ≤ r + 2) p).symm]
+      exact rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) (extendPoint p) A
+    exact hN_bridge.mp (hform_2.mp (hM_bridge.mpr hA_bu))
+  -- Direction 1: r2_resp ≤ rank_embed(d)
+  -- GHR93 Claim 1 Step 2.2: K⁻(¬D_M) argument.
+  -- Apply pigeonhole_definable_formula_cross to get D_M, construct K⁻(¬D_M),
+  -- transfer via game, derive bound.
   have h_r2_resp_le_d : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) d := by
+    -- By contradiction: assume rank_embed(d) < r2_resp.
+    by_contra h_not_le
+    push_neg at h_not_le
+    -- h_not_le : rank_embed d < r2_resp
+    -- Step 1: d ∈ S_C (already proved as hd_in_SC in the parent scope).
+    -- Step 2: If rank_embed(d) < r2_resp, then for any mu s between d and y' in N,
+    -- rank_embed(s) > rank_embed(d) (since s > d). If rank_embed(s) > r2_resp... no.
+    -- Actually: rank_embed(d) < r2_resp. D holds above d in N (from d ∈ S_C).
+    -- Since(⊤, D)(r2_resp) should be TRUE at rank r+2 (witness: rank_embed(d)).
+    -- But K⁻(¬D_M)(r2_resp) = TRUE from transfer. Contradiction.
+    --
+    -- Need: D_M from pigeonhole, K⁻(¬D_M) construction, semantics at c_inf and r2_resp.
+    -- This is the full K⁻(¬D_M) pipeline.
+    -- BLOCKED: requires bridging h_cofinal_failure_below_c_inf to pigeonhole format,
+    -- constructing h_cut_start, proving K⁻(¬D_M) semantics.
     sorry
-  -- Step 5: r2_resp = rank_embed(d)
+  -- Direction 2: rank_embed(d) ≤ r2_resp
+  -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
+  have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
+    -- By contradiction: assume r2_resp < rank_embed(d).
+    by_contra h_not_le
+    push_neg at h_not_le
+    -- h_not_le : r2_resp < rank_embed d
+    -- From h_cont_transfer: any mu p with r2_resp < extendPoint(p) and p < y'
+    -- satisfies cont_holds at p.
+    -- From h_cofinal_failure_below_d: for any s < d, ∃ mu v with s < v ≤ d,
+    -- v < y', ¬cont_holds v.
+    -- Case split on whether r2_resp is a carrier point or gap.
+    rcases isPoint_or_isGap r2_resp with ⟨p_resp, hp_resp⟩ | ⟨g_resp, hg_resp⟩
+    · -- r2_resp = extendPoint(p_resp): carrier point case.
+      -- extendPoint(p_resp) < rank_embed(d) at rank r+2.
+      -- Project to rank r: extendPoint(p_resp) < d.
+      have hp_lt_d : (extendPoint p_resp : ExtendedCarrier N atomMap r) < d := by
+        -- r2_resp < rank_embed(d) at rank r+2, and r2_resp = extendPoint(p_resp) at rank r+2
+        -- extendPoint(p_resp) at rank r+2 = rank_embed(extendPoint(p_resp) at rank r)
+        -- So rank_embed(extendPoint(p_resp)) < rank_embed(d), hence extendPoint(p_resp) < d
+        have : r2_resp < rank_embed (by omega : r ≤ r + 2) d := h_not_le
+        rw [hp_resp] at this
+        -- this : Sum.inl p_resp < rank_embed d, where Sum.inl p_resp = extendPoint p_resp at rank r+2
+        -- = rank_embed (extendPoint p_resp at rank r) by rank_embed_point
+        exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p_resp) d).mp
+          (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r)
+            < rank_embed (by omega : r ≤ r + 2) d from by
+              simp only [rank_embed_point]; exact this)
+      -- extendPoint(p_resp) ∈ [x', y']
+      have hp_in : inClosedInterval x' y' (extendPoint p_resp : ExtendedCarrier N atomMap r) := by
+        have h_r2 := ha'_r2 ⟨0, by omega⟩
+        rw [show a'_r2 ⟨0, by omega⟩ = r2_resp from r2_resp_def.symm, hp_resp] at h_r2
+        constructor
+        · exact (rank_embed_le (by omega : r ≤ r + 2) x' (extendPoint p_resp)).mp
+            (show rank_embed (by omega : r ≤ r + 2) x' ≤
+              rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
+              simp only [rank_embed_point]; exact h_r2.1)
+        · exact (rank_embed_le (by omega : r ≤ r + 2) (extendPoint p_resp) y').mp
+            (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
+              rank_embed (by omega : r ≤ r + 2) y' from by
+              simp only [rank_embed_point]; exact h_r2.2)
+      -- Cofinal failure: ∃ mu v with extendPoint(p_resp) < v ≤ d, ¬cont_holds v
+      obtain ⟨v, hpv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩ :=
+        h_cofinal_failure_below_d (extendPoint p_resp) hp_in hp_lt_d
+      obtain ⟨q, hq⟩ := hmu_v
+      rw [hq] at hpv hv_le_d hvy' h_not_cont_v
+      -- rank_embed(extendPoint(q)) > r2_resp at rank r+2
+      have hr2_lt_q : r2_resp < (extendPoint q : ExtendedCarrier N atomMap (r + 2)) := by
+        rw [hp_resp]
+        show (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
+          (extendPoint q : ExtendedCarrier N atomMap (r + 2))
+        have h := (rank_embed_lt (by omega : r ≤ r + 2)
+          (extendPoint p_resp : ExtendedCarrier N atomMap r)
+          (extendPoint q : ExtendedCarrier N atomMap r)).mpr hpv
+        simp only [rank_embed_point] at h
+        exact h
+      -- h_cont_transfer gives cont_holds at q, contradicting ¬cont_holds
+      exact h_not_cont_v (h_cont_transfer q hr2_lt_q hvy')
+    · -- r2_resp is a gap: use h_r2_resp_le_d to derive r2_resp = rank_embed(d).
+      -- h_r2_resp_le_d : r2_resp ≤ rank_embed(d)
+      -- h_not_le : r2_resp < rank_embed(d)
+      -- These are consistent. We need the game-based contradiction.
+      -- The gap case requires showing no gap can sit between r2_resp and rank_embed(d)
+      -- while being consistent with the formula agreement. This follows from:
+      -- (1) h_r2_resp_le_d gives r2_resp ≤ rank_embed(d), and
+      -- (2) h_not_le gives r2_resp < rank_embed(d) (strict).
+      -- The formula agreement at depth r+2 between rank_embed(c_inf) and r2_resp
+      -- combined with rank_embed(c_inf) and rank_embed(d) having specific depth-r+2
+      -- properties (from the K⁻(¬D_M) argument used in Direction 1) should
+      -- prevent r2_resp from being a gap strictly below rank_embed(d).
+      -- BLOCKED: same K⁻(¬D_M) infrastructure as Direction 1.
+      sorry
   have h_r2_eq : r2_resp = rank_embed (by omega : r ≤ r + 2) d :=
     le_antisymm h_r2_resp_le_d h_r2_resp_ge_d
   -- Step 6: Get winning condition from rank-(r+2) game for extraction.
