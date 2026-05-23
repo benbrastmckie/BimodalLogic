@@ -279,7 +279,7 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
   - [x] **Step 1.4a-c**: Cross-structure definitions + c_inf construction (~175 lines). *(completed, sorry-free except Case 3 gap)*
   - [x] **Step 1.4d**: Cross-structure pigeonhole (~180 lines). *(completed, sorry-free — may become unnecessary for Claim 1 but useful for infimum_gap_r_definable)*
   - [x] **Step 1.4e-g**: Suffices restructured + projections + Direction 2 carrier-point (~235 lines). *(completed, Direction 2 carrier-point sorry-free, formula agreement sorry-free)*
-  - [ ] **Step 1.4h**: Close 2 interior sorries (lines ~2577, ~2732) via K⁻(¬D_M) with vacuous Since witness.
+  - [ ] **Step 1.4h**: Close 2 interior sorries (lines ~2577, ~2732) via K⁻(¬D_M) with vacuous Since witness. *(deviation: altered -- Sorry 2 (Direction 2 gap case, line ~2732) CLOSED via Dedekind cut complement argument (170 lines). Sorry 1 (Direction 1 interior, line ~2580) remains: pigeonhole h_cofinal_failure precondition fails when c_inf is carrier point with cont_holds_cross at c_inf.)*
   
     **KEY INSIGHT (Round 23)**: On ALL non-sorry'd paths, d = extendPoint p (carrier point). Case 3 of the d construction (d is gap) is sorry'd for Phase 3. Therefore rank_embed(d) is ALWAYS a mu-point on live paths. This resolves the adjacent-gap blocker.
     
