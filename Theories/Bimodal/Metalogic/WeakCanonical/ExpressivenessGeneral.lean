@@ -2275,9 +2275,48 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             exact ⟨q, ⟨s₀, hs₀⟩, lt_of_le_of_ne hq_ge (Ne.symm hq_ne)⟩
         -- Step 3.2: Construct the gap.
         set gamma_M := infimum_gap h_ne_M h_pt_below_M h_above_M h_has_glb_M with gamma_M_def
-        -- Step 3.3: Package as ExtendedCarrier element (needs r-definability).
-        -- Same as N-side: requires infimum_gap_r_definable preconditions.
-        sorry
+        -- Step 3.3: Three-way case split (mirror of N-side).
+        by_cases hx_bound : ∃ p₀ : M.carrier,
+            p₀ ∈ inf_carrier_cut S_C_M ∧
+            x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r)
+        · -- hx_bound: gamma_M strictly above x.
+          -- Sub-case (b): r-definable gap. Needs cross-version of infimum_gap_r_definable.
+          -- Deferred: infimum_gap_r_definable_cross not yet implemented.
+          sorry
+        · -- ¬hx_bound: gamma_M = x (as gaps), c_inf = x.
+          push_neg at hx_bound
+          have hx_gap : IsGap x := by
+            rcases isPoint_or_isGap x with ⟨px, hpx⟩ | hg
+            · exfalso
+              have h_px_cut : px ∈ inf_carrier_cut S_C_M := by
+                intro s hs
+                rw [show (extendPoint px : ExtendedCarrier M atomMap r) = x from hpx.symm]
+                exact hs.1.1
+              exact absurd (hx_bound px h_px_cut) (not_lt.mpr (hpx ▸ le_refl _))
+            · exact hg
+          obtain ⟨gx, hgx⟩ := hx_gap
+          have h_cut_eq_M : gamma_M.cut = gx.val.cut := by
+            ext q; constructor
+            · intro hq; by_contra h_not_in
+              exact absurd (hx_bound q hq) (not_lt.mpr
+                (show x ≤ (extendPoint q : ExtendedCarrier M atomMap r) by rw [hgx]; exact h_not_in))
+            · intro hq s hs
+              exact le_trans
+                (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ x by rw [hgx]; exact hq) hs.1.1
+          refine ⟨x, ⟨le_refl _, hxy⟩, ?_, ?_⟩
+          · intro s hs; exact hs.1.1
+          · intro e he
+            rcases isPoint_or_isGap e with ⟨pe, hpe⟩ | ⟨ge, hge⟩
+            · rw [hpe, hgx]
+              have hmem : pe ∈ gamma_M.cut := by rw [hpe] at he; exact he
+              rw [h_cut_eq_M] at hmem; exact hmem
+            · rw [hge, hgx]
+              have hmem : ge.val.cut ⊆ gamma_M.cut := by
+                intro q hq; rw [hge] at he
+                intro s hs
+                exact le_trans
+                  (hq : (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr ge) (he s hs)
+              intro q hq; exact (h_cut_eq_M ▸ hmem hq : q ∈ gx.val.cut)
   -- c_inf ∈ S_C^M: for any mu u > c_inf in M, u is not a lower bound of S_C^M,
   -- so ∃ s ∈ S_C^M with s < u, giving cont_holds_cross at u from s's tail.
   have hc_inf_in_SC_M : c_inf ∈ S_C_M := by
