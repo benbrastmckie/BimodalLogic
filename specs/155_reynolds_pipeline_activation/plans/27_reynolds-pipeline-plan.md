@@ -130,7 +130,9 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Step 1.4h-i OLD: Pigeonhole-based K⁻ pipeline | ABANDONED | Round 19-21 | Root cause (report 36): cont_holds is predicate not formula |
 | Root cause analysis (report 36) | COMPLETE | Round 22 | GHR93 C is single formula; our cont_holds is predicate |
 | Claim 1 boundary cases (c_inf=x, c_inf=y) | COMPLETE | Round 22 | Proved via game order agreement, no K⁻ needed |
-| Claim 1 interior cases (3 sorries: 2577, 2697, 2699) | BLOCKED | Round 22 | Need either gap equivalence lemma OR interval_type_formula materialization |
+| Gap equivalence research | FALSE | Round 23 | Atoms distinguish points from gaps; lemma fails at base case |
+| Key insight: d always carrier point | COMPLETE | Round 23 | Case 3 (gap) is sorry'd Phase 3; Cases 1+2 give d = extendPoint p |
+| Claim 1 interior cases (2 sorries: ~2577, ~2732) | UNBLOCKED | Round 23 | K⁻(¬D_M) with vacuous Since witness s=rank_embed(d) works on live paths |
 | Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
 | Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
@@ -277,17 +279,24 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
   - [x] **Step 1.4a-c**: Cross-structure definitions + c_inf construction (~175 lines). *(completed, sorry-free except Case 3 gap)*
   - [x] **Step 1.4d**: Cross-structure pigeonhole (~180 lines). *(completed, sorry-free — may become unnecessary for Claim 1 but useful for infimum_gap_r_definable)*
   - [x] **Step 1.4e-g**: Suffices restructured + projections + Direction 2 carrier-point (~235 lines). *(completed, Direction 2 carrier-point sorry-free, formula agreement sorry-free)*
-  - [ ] **Step 1.4h**: Close 3 interior sorries (lines 2577, 2697, 2699). Two resolution paths, BOTH following GHR93:
+  - [ ] **Step 1.4h**: Close 2 interior sorries (lines ~2577, ~2732) via K⁻(¬D_M) with vacuous Since witness.
   
-    **Path A — Gap equivalence lemma (~50-100 lines, simpler)**:
-    Prove: if two ExtendedCarrier elements have no mu-points strictly between them, they agree on all mu-relativized StaviFormula truth. This is a structural induction on StaviFormula — temporal connectives quantify over mu-points, so elements between the same pair of adjacent mu-points are indistinguishable. With this lemma: when r2_resp is a gap adjacent to rank_embed(d), gap equivalence gives depth-(r+2) formula agreement directly, resolving all 3 sorries without K⁻ or formula materialization.
+    **KEY INSIGHT (Round 23)**: On ALL non-sorry'd paths, d = extendPoint p (carrier point). Case 3 of the d construction (d is gap) is sorry'd for Phase 3. Therefore rank_embed(d) is ALWAYS a mu-point on live paths. This resolves the adjacent-gap blocker.
     
-    **Path B — interval_type_formula materialization (~200 lines, faithful to GHR93 Def 8.8)**:
-    Build C as a single StaviFormula using NormalForm finiteness. Then K⁻(¬C) at depth r+2 distinguishes rank_embed(d) from r2_resp even when they're adjacent gaps (non-mu-relativized truth CAN differ at gaps). GHR93's proof uses this: C' = ¬C ∨ K⁻(¬C) transferred via the game. Requires: StaviFormula conjunction/disjunction, NormalForm-to-formula translation, correctness proof.
+    **Path A (gap equivalence) RULED OUT**: Report 37 proves the lemma FALSE — atoms distinguish points from gaps.
     
-    **DECISION NEEDED**: Path A is simpler but may not generalize. Path B is faithful to GHR93 but requires more infrastructure. Research whether mu-relativized truth truly can't distinguish adjacent gaps, or whether the gap equivalence always holds. If gap equivalence holds, Path A is correct and complete. If not, Path B is needed.
+    **Path B (formula materialization) NOT NEEDED**: Since d is always a carrier point, the K⁻(¬D_M) argument works with the VACUOUS Since witness:
+    1. Pigeonhole → D_M (depth ≤ r, cofinal failure below c_inf in M)
+    2. neg(Since(⊤, D_M))(c_inf in M) = TRUE (cofinal D_M-failure below c_inf)
+    3. Transfer via h_fwd_r1: neg(Since(⊤, D_M))(r2_resp in N at r+2) = TRUE
+    4. Since(⊤, D_M)(r2_resp) with witness s = rank_embed(d):
+       - rank_embed(d) < r2_resp ✓ (from hypothesis)
+       - mu_holds(rank_embed(d)) ✓ (d is carrier point on live paths)
+       - ⊤(rank_embed(d)) = TRUE ✓ (tautology at carrier points)
+       - ∀ mu u ∈ (rank_embed(d), r2_resp), D_M(u) = vacuously TRUE ✓ (no mu-points in interval when r2_resp is adjacent gap; if mu-points exist, D_M holds from cont_holds above d)
+    5. Contradiction: Since = TRUE but neg(Since) = TRUE
     
-    **NOTE**: GHR93 works at a single rank (no rank embedding), so the adjacent-gap issue doesn't arise in the paper. It's an artifact of our rank-(r+2) lifting. Path A resolves this artifact directly.
+    **Sorry 2 (Direction 2 gap case, r2_resp < rank_embed(d))**: When d is a carrier point, rank_embed(d) is a mu-point ABOVE r2_resp. h_cont_transfer can use rank_embed(d) as the mu-point for the cont_holds transfer. OR: since d is a carrier point, the carrier-point case of Direction 2 already covers it — the gap case only arises when r2_resp is a gap, but d being a carrier point means rank_embed(d) is available for contradiction.
   - [ ] **Step 1.4k**: Remove h_d_unique + rewire (~-100 lines). Delete h_d_unique, remove from d_consistency_left/right signatures. h_d_unique's 2 sorries become orphaned.
   - [ ] **Step 1.4l**: d_consistency_right (mirror of left). Share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
