@@ -136,6 +136,61 @@ private def cont_holds {sig : MonadicSignature}
       stavi_temporal_truth_mu N atomMap r v A) →
     stavi_temporal_truth_mu N atomMap r t A
 
+/-- Cross-structure continuation predicate (GHR93 p.115-116).
+    Like cont_holds, but the hypothesis checks truth in N (the interval
+    (a_n_N, y'_N)) while the conclusion evaluates in M at t_M.
+    GHR93 defines the continuation set S_C^M from N-side interval type
+    evaluated in M. -/
+private def cont_holds_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (a_n_N y'_N : ExtendedCarrier N atomMap r)
+    (t_M : ExtendedCarrier M atomMap r) : Prop :=
+  ∀ A : StaviFormula, stavi_depth A ≤ r →
+    (∀ v : ExtendedCarrier N atomMap r,
+      a_n_N < v → v < y'_N → mu_holds v →
+      stavi_temporal_truth_mu N atomMap r v A) →
+    stavi_temporal_truth_mu M atomMap r t_M A
+
+/-- Cross-structure continuation set S_C^M (GHR93 p.115-116).
+    Collects all points t in [x_M, y_M] (in M) where cont_holds_cross
+    holds at every mu-point in the tail (t, y_M).
+    The interval type is checked in N (via a_n_N, y'_N) but truth is
+    evaluated in M. -/
+private def continuation_set_cross {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (x_M y_M : ExtendedCarrier M atomMap r)
+    (a_n_N y'_N : ExtendedCarrier N atomMap r) :
+    Set (ExtendedCarrier M atomMap r) :=
+  { t | inClosedInterval x_M y_M t ∧
+    ∀ u : ExtendedCarrier M atomMap r,
+      t < u → u < y_M → mu_holds u → cont_holds_cross a_n_N y'_N u }
+
+/-- S_C^M is nonempty: y_M is in S_C^M since the tail condition (t, y_M) is
+    vacuous when t = y_M (no u with y_M < u < y_M). -/
+private theorem continuation_set_cross_nonempty {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x_M y_M : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    (hxy : x_M ≤ y_M) :
+    (continuation_set_cross x_M y_M a_n_N y'_N).Nonempty := by
+  refine ⟨y_M, ⟨hxy, le_refl y_M⟩, ?_⟩
+  intro u hyu huy' _
+  exact absurd (lt_trans hyu huy') (lt_irrefl y_M)
+
+/-- S_C^M is upward-closed within [x_M, y_M]: if t ∈ S_C^M and t ≤ t' ≤ y_M
+    with x_M ≤ t', then t' ∈ S_C^M. -/
+private theorem continuation_set_cross_upward_closed {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x_M y_M : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    {t t' : ExtendedCarrier M atomMap r}
+    (ht : t ∈ continuation_set_cross x_M y_M a_n_N y'_N)
+    (htt' : t ≤ t') (ht'y : t' ≤ y_M) (hxt' : x_M ≤ t') :
+    t' ∈ continuation_set_cross x_M y_M a_n_N y'_N := by
+  refine ⟨⟨hxt', ht'y⟩, ?_⟩
+  intro u ht'u huy hmu
+  exact ht.2 u (lt_of_le_of_lt htt' ht'u) huy hmu
+
 /-- The continuation set S_C (GHR93 p.115).
     S_C = {t ∈ [x',y'] : C holds at all mu-points in (t, y')}.
     Note: uses the OPEN interval (t, y') to avoid an edge case at y'
