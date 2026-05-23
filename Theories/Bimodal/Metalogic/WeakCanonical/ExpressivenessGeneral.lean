@@ -2393,9 +2393,23 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
     r2_resp_def ▸ h_r2_eq
   rw [h_a'_r2_eq_d] at hgp_r2_1
   have hgp_cd : (IsPoint c_inf ↔ IsPoint d) ∧ (IsGap c_inf ↔ IsGap d) := by
-    -- hgp_r2_1 gives IsPoint/IsGap agreement at rank r+2 between rank_embed(c_inf)
-    -- and rank_embed(d). rank_embed preserves IsPoint/IsGap, so this projects.
-    sorry
+    refine ⟨(rank_embed_isPoint _ c_inf).symm.trans
+      (hgp_r2_1.1.trans (rank_embed_isPoint _ d)), ?_⟩
+    cases c_inf with
+    | inl x =>
+      cases d with
+      | inl y => simp [IsGap]
+      | inr g =>
+        exfalso
+        have := hgp_r2_1.1.mp ⟨x, rfl⟩
+        exact (by simp [rank_embed, IsPoint] at this : False)
+    | inr g =>
+      cases d with
+      | inl y =>
+        exfalso
+        have := hgp_r2_1.1.mpr ⟨y, rfl⟩
+        exact (by simp [rank_embed, IsPoint] at this : False)
+      | inr g' => simp [IsGap]
   -- Step 10: Boundary correspondence from rank-(r+2) game, projected to rank r.
   have hord_r2_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
   simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
@@ -2414,10 +2428,20 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
   rw [h_a'_r2_eq_d] at hord_r2_01 hord_r2_13
   -- Project boundary from rank r+2 to rank r using rank_embed injectivity.
   have hbdy_cd : (x = c_inf ↔ x' = d) ∧ (c_inf = y ↔ d = y') := by
-    -- hord_r2_01/hord_r2_13 give boundary correspondence at rank r+2 between
-    -- rank_embed endpoints. rank_embed is injective (from rank_embed_le), so
-    -- this projects to rank r.
-    sorry
+    have re_eq : ∀ (S : OrderedMonadicStructure sig) (aM : Formula → sig.preds)
+        (a b : ExtendedCarrier S aM r),
+        rank_embed (by omega : r ≤ r + 2) a = rank_embed (by omega : r ≤ r + 2) b ↔ a = b := by
+      intro S aM a b
+      constructor
+      · intro h
+        exact le_antisymm ((rank_embed_le _ a b).mp (le_of_eq h))
+          ((rank_embed_le _ b a).mp (le_of_eq h.symm))
+      · intro h; rw [h]
+    constructor
+    · rw [← re_eq M atomMap x c_inf, ← re_eq N atomMap x' d]
+      exact hord_r2_01.2
+    · rw [← re_eq M atomMap c_inf y, ← re_eq N atomMap d y']
+      exact hord_r2_13.2
   -- Step 11: Provide the suffices witness directly from the rank-(r+2) game.
   -- This bypasses t_game entirely — no rank mismatch.
   refine ⟨c_inf, hc_inf_interval, hform_cd, hgp_cd, hbdy_cd⟩
