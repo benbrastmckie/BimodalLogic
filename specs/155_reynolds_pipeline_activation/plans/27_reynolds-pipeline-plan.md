@@ -97,7 +97,7 @@ Prior integration (v13-v14):
 
 v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the team research (v16) incorrectly claimed h_d_unique was provable as stated. Round 16 implementation analysis DEFINITIVELY shows h_d_unique is too strong for generic elements. v17 replaces the standalone h_d_unique approach with M-side infimum construction + inline Claim 1. Sorry count remains 16 but the 2 h_d_unique sorries will be REPLACED (not closed) by the restructured inline proof. Effort estimates adjusted upward. Phases 2-11 structure unchanged from v16.
 
-### Session Progress (v12 -> v13 -> rounds 1-14 -> Round 15 research -> Round 16 analysis)
+### Session Progress (v12 -> v13 -> rounds 1-14 -> Round 15 research -> Round 16-19 implementation)
 
 | Item | Status | Round | Lines |
 |------|--------|-------|-------|
@@ -113,25 +113,26 @@ v16 was accurate on all phases except Phase 1 Task 1.4 h_d_unique, where the tea
 | Phase 1: Task 1.6 e_n construction + sigma/tau split | COMPLETE | Round 5 | ~60 new |
 | Phase 1: Task 1.6 gp_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
 | Phase 1: Task 1.6 formula_agreement (sigma + tau) | COMPLETE | Round 7 | ~80 new |
-| Phase 1: Task 1.4 h_d_unique parameter refactor | OBSOLETE | Round 6 | refactored, 1 sorry -- to be removed in v17 |
 | Phase 1: Task 1.6 sigma SOT grid (18/25 goals) | PARTIAL | Round 10 | ~60 new, 7 goals need c<=e_n from Claim 1 |
-| Phase 1: Task 1.4 h_d_unique boundary cases | OBSOLETE | Round 12 | x'=d and d=y' cases proved -- to be removed in v17 |
-| Phase 1: Task 1.4 h_d_unique u>d subcase | OBSOLETE | Round 12 | d<=t' direction, u>d branch -- to be removed in v17 |
-| Phase 1: Task 1.4 h_d_unique rank bump (r+1 -> r+2) | PRESERVED | Round 13 | 6 signatures + 2 derivation sites updated -- rank bump still needed |
-| Phase 1: Task 1.4 h_d_unique interior (2 sorries) | ABANDONED | Round 12-16 | UNPROVABLE as stated; replaced by M-side infimum + inline Claim 1 |
-| Phase 1: h_fwd_r1 rank bump r+1 -> r+2 | COMPLETE | Round 13 | 6 signatures + 2 derivations, build passes |
+| Phase 1: h_fwd_r1 rank bump r+1 -> r+2 | COMPLETE | Round 13 | 6 signatures + 2 derivations |
 | Phase 1: Case 2 infimum proved unreachable | COMPLETE | Round 13 | d in S_C contradicts hp_not_in |
-| Phase 1: d in S_C lemma | COMPLETE | Round 14 | committed to file, build passes |
-| Phase 1: h_cofinal_failure_below_d | COMPLETE | Round 14 | failure mu-point in (s, d] for s < d |
-| Phase 1: pigeonhole precondition analysis | BLOCKED | Round 14 | h_cofinal_failure universal quantifier too strong for carrier-point d |
-| Phase 1: h_d_unique formulation analysis | CLOSED | Round 16 | DEFINITIVELY unprovable; replaced by M-side infimum approach |
-| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma goals + all tau goals need c<=e_n from inline Claim 1 |
-| Task 195: EF game tactics (assists 155) | COMPLETE | -- | +208 lines (EFGameTactics.lean), +game_tuple_sel_nat_eq |
-| Task 195 tactic validation (in task 155) | PARTIAL | Round 10-11 | simp_game_tuple compound index fix applied |
+| Phase 1: d in S_C lemma | COMPLETE | Round 14 | hd_in_SC |
+| Phase 1: h_cofinal_failure_below_d | COMPLETE | Round 14 | failure mu-point in (s, d] |
+| Round 16: h_d_unique UNPROVABLE | COMPLETE | Round 16 | definitively confirmed by 5 agents |
+| Step 1.4a: cont_holds_cross + continuation_set_cross | COMPLETE | Round 18 | +55 lines, sorry-free |
+| Step 1.4b: c_inf = inf(S_C^M) | COMPLETE | Round 18 | +90 lines, Case 3 sorry'd |
+| Step 1.4c: c_inf ∈ S_C^M + cofinal failure | COMPLETE | Round 18 | +30 lines, sorry-free |
+| Step 1.4d: pigeonhole_definable_formula_cross | COMPLETE | Round 19 | +180 lines, sorry-free |
+| Step 1.4e: Suffices restructured to h_fwd_r1 | COMPLETE | Round 19 | +130/-117 lines |
+| Step 1.4f: Gap/point + boundary projection | COMPLETE | Round 19 | +45 lines, sorry-free |
+| Step 1.4g: Direction 2 carrier-point case | COMPLETE | Round 19 | +60 lines (h_cont_transfer), sorry-free |
+| Step 1.4g: Formula agreement hform_cd | COMPLETE | Round 19 | sorry-free via rank_embed projection |
+| Step 1.4h: Direction 1 K⁻(¬D_M) pipeline | IN PROGRESS | Round 19 | agent running |
+| Step 1.4i: Direction 2 gap case | BLOCKED on 1.4h | Round 19 | ~2 lines once 1.4h closes |
+| Phase 1: Task 1.6 same_order_type (sigma + tau) | BLOCKED on 1.4 | Round 10 | 7 sigma + all tau goals |
+| Task 195: EF game tactics | COMPLETE | -- | +208 lines |
 | Phase 3: c-gap-case (n>=1) | DONE | pre-v13 | ~40 new |
 | Rank embedding infrastructure | CONFIRMED | pre-v13 | 0 (already sorry-free) |
-| Round 15: team research on h_d_unique blocker | SUPERSEDED | Round 15 | Claimed h_d_unique provable; Round 16 REFUTES this |
-| Round 16: h_d_unique definitively unprovable | COMPLETE | Round 16 | M-side infimum construction identified as correct fix |
 
 ### Roadmap Alignment
 
@@ -268,17 +269,18 @@ Assume t > d for contradiction. This direction requires C' = ¬C ∨ K⁻(¬C) a
 - [x] **Task 1.1**: Construct actual infimum at `obtain_split_point_props` (~100-150 lines). *(deviation: altered -- Fixed buggy 2-way case split with correct 3-way split: (1) carrier-point minimum d=extendPoint p (unchanged), (2) carrier-point GLB p not in S_C d=extendPoint p (new, fully proved using gap no_sup axiom), (3) no carrier-point GLB (sorry'd, deferred to Phase 3 c-gap-case which wires infimum_gap_r_definable). Net -2 sorries: removed 3 buggy sorries, added 1 clean sorry for Case 3.)*
 - [x] **Task 1.2**: Change `SplitPointProps` from `hd_eq_an` to `hd_le_an` if not already done (~10-20 lines). *(completed -- already done in prior session; line 1298 has `hd_le_an`)*
 - [x] **Task 1.3**: Fix Case I sites (~20-40 lines, 2 sites). *(completed -- all live hd_eq_an references are in the OLD CASE II PROOF block comment; Case I uses hd_le_an correctly)*
-- [ ] **Task 1.4**: Cross-structure M-side infimum + inline Claim 1 (RESTRUCTURED v17, corrected v18). **Critical new work.**
-  - [x] **Step 1.4a**: Define cross-structure M-side continuation predicate (~20-30 lines). `cont_holds_M(u_M) := ∀ A ≤ r, (∀ v, a_bwd(n) < v < y' → mu_N(v) → A(v in N)) → A(u_M in M)`. This uses the SAME continuation formulas from N (determined by a_bwd(n) and y') but evaluates them in M. NO M-side backward selections needed — GHR93 defines C from N-side interval type and evaluates in M. Define `continuation_set_M x y := { t ∈ [x, y] : ∀ mu u in M, t < u < y → cont_holds_M(u) }`. *(completed -- added cont_holds_cross, continuation_set_cross, continuation_set_cross_nonempty, continuation_set_cross_upward_closed after line 137; build passes)*
-  - [x] **Step 1.4b**: Construct c_inf = inf(S_C^M) (~90 lines). *(completed -- mirrored d = inf(S_C^N) construction with 3-way case split: Cases 1+2 sorry-free, Case 3 sorry'd matching N-side Case 3. Named c_inf to avoid shadowing suffices c. Build passes.)*
-  - [x] **Step 1.4c**: Prove c_inf ∈ S_C^M and cofinal cont_holds_cross failure below c_inf (~30 lines). *(completed -- hc_inf_in_SC_M and h_cofinal_failure_below_c_inf proved, mirroring N-side exactly. Build passes.)*
-  - [ ] **Step 1.4d**: Prove c-d rank-r agreement (~40-60 lines). For each A ≤ r: need A(c in M) ↔ A(d in N). Approach: c ∈ S_C^M gives cont_holds_M at mu above c, but A(c) requires evaluating AT c. If c is a mu-point: use the game (h_fwd Round 2) to relate c to a corresponding N-point, then transfer. If c is a gap: use gap characterization. This matches the existing suffices block's requirements (line 1657-1667). **NOTE: This is the trickiest step — the formula agreement between the two infima. May need the game's Round 2 to establish A(c in M) ↔ A(d in N) individually for each A.**
-  - [ ] **Step 1.4e**: Prove gap/point and boundary correspondence between c and d (~20-30 lines). If d is a point, c must be a point (from game correspondence). If d is a gap, c must be a gap. Boundary: x = c ↔ x' = d (from infimum properties matching boundary positions). This satisfies the suffices block at line 1657.
-  - [ ] **Step 1.4f**: Direction 1 — prove d ≤ t in d_consistency_left (~60-80 lines). Inline in d_consistency_left interior case. Assume t < d for contradiction. t ∉ S_C^N gives ¬cont_holds_N(u) for some mu u with t < u ≤ d. Extract A with A on (a_bwd(n), y') but ¬A(u in N). Play h_mono_left's Round 2 with p_u from N → get b from M. Formula agreement: ¬A(extendPoint(b) in M). Order: u > t at position (n+1,n+2) gives extendPoint(b) > c. But extendPoint(b) > c = inf(S_C^M) so cont_holds_M(extendPoint(b)) = TRUE, giving A(extendPoint(b) in M) = TRUE. Contradiction.
-  - [ ] **Step 1.4g**: Direction 2 — prove t ≤ d in d_consistency_left (~80-120 lines). Assume t > d for contradiction. Apply M-side pigeonhole (mirror of `pigeonhole_definable_formula`) to get D_M (depth ≤ r) failing cofinally below c in M. Construct K⁻(¬D_M) = neg(std_snce(base(.bot.imp.bot), D_M)) of depth ≤ r+2. K⁻(¬D_M)(c in M) = TRUE (D_M fails cofinally). Transfer via h_fwd_r1 at rank r+2: K⁻(¬D_M)(rank_embed(c)) ↔ K⁻(¬D_M)(t_r2). So K⁻(¬D_M)(t_r2) = TRUE. Apply Direction 1 at rank r+2 to show t_r2 ≥ rank_embed(d). Since d ∈ S_C^N: D_M (a continuation formula) holds on (d, y'), so Since(⊤, D_M)(t_r2) = TRUE when t_r2 > rank_embed(d). But K⁻(¬D_M)(t_r2) = ¬Since(⊤, D_M)(t_r2) = TRUE implies Since(⊤, D_M)(t_r2) = FALSE. So t_r2 ≤ rank_embed(d). Combined: t_r2 = rank_embed(d). Project rank-(r+2) winning condition to rank r: formula via rank_embed_stavi_truth_mu, order via rank_embed_le, Round 2 via carrier-point invariance. d_consistency_left existential satisfied with a'_full(n) = d.
-  - [ ] **Step 1.4h**: Direction 1+2 for d_consistency_right (~60-80 lines). Same as 1.4f + 1.4g for the right sub-interval.
-  - [ ] **Step 1.4i**: Remove h_d_unique from obtain_split_point_props (~-100 lines). Delete h_d_unique (lines ~1741-1845). Remove h_d_unique from SplitPointProps. Remove h_d_unique parameter from d_consistency_left/right signatures (they now do inline Claim 1).
-  - [ ] **Step 1.4j**: Rewire Task 1.5 d_consistency interior (~30-50 lines). d_consistency_left/right no longer take h_d_unique — they prove t = d internally. Callers (obtain_split_point_props lines 1846-1851) no longer pass h_d_unique. Adjust API.
+- [ ] **Task 1.4**: Cross-structure M-side infimum + inline Claim 1 (RESTRUCTURED v17, corrected v18, updated v19 to match implementation). **Critical new work.**
+  - [x] **Step 1.4a**: Define cross-structure definitions (~55 lines). *(completed -- cont_holds_cross, continuation_set_cross, continuation_set_cross_nonempty, continuation_set_cross_upward_closed added after line 137. Build passes.)*
+  - [x] **Step 1.4b**: Construct c_inf = inf(S_C^M) (~90 lines). *(completed -- mirrored d = inf(S_C^N) with 3-way case split: Cases 1+2 sorry-free, Case 3 sorry'd matching N-side. Build passes.)*
+  - [x] **Step 1.4c**: Prove c_inf ∈ S_C^M and cofinal failure (~30 lines). *(completed -- hc_inf_in_SC_M and h_cofinal_failure_below_c_inf. Build passes.)*
+  - [x] **Step 1.4d**: Cross-structure pigeonhole `pigeonhole_definable_formula_cross` (~180 lines). *(completed -- sorry-free mirror of pigeonhole_definable_formula for cross-structure case, using M-side NormalForms and N-side continuation formula hypothesis. Build passes.)*
+  - [x] **Step 1.4e**: Suffices restructured to use h_fwd_r1 at rank r+2 (~130 lines). *(completed -- ARCHITECTURAL CHANGE: the suffices proof now plays h_fwd_r1 directly instead of h1 at rank r. Shows r2_resp = rank_embed(d) via both directions, then projects to rank r via rank_embed_stavi_truth_mu. Bypasses t_game entirely — no rank mismatch. Formula agreement hform_cd sorry-free via rank-(r+2) projection.)*
+  - [x] **Step 1.4f**: Gap/point + boundary projection (~45 lines). *(completed -- hgp_cd via rank_embed_isPoint + case analysis on Sum.inl/inr. hbdy_cd via rank_embed injectivity from rank_embed_le. Build passes.)*
+  - [x] **Step 1.4g**: Direction 2 carrier-point case at rank r+2 (~60 lines). *(completed -- h_cont_transfer proves cont_holds at carrier points above r2_resp using game Round 2 + c_inf ∈ S_C^M + formula transfer via rank_embed_stavi_truth_mu. Carrier-point subcase projects to rank r and contradicts h_cofinal_failure_below_d. Build passes.)*
+  - [ ] **Step 1.4h**: Direction 1 at rank r+2 — K⁻(¬D_M) pipeline (line 2495, ~100 lines). **AGENT RUNNING.** Apply pigeonhole_definable_formula_cross to get D_M. Construct K⁻(¬D_M) = neg(std_snce(base(⊤), D_M)) at depth ≤ r+2. Prove K⁻(¬D_M)(c_inf) = TRUE from cofinal D_M-failure (Since semantics). Transfer via h_fwd_r1 game: K⁻(¬D_M)(r2_resp) = TRUE. If r2_resp > rank_embed(d): D_M holds at mu above d (continuation formula) → Since(⊤, D_M)(r2_resp) = TRUE → contradiction. So r2_resp ≤ rank_embed(d).
+  - [ ] **Step 1.4i**: Direction 2 gap case at rank r+2 (line 2567, ~2 lines). Trivial once 1.4h closes: h_r2_resp_le_d + h_not_le gives absurd.
+  - [ ] **Step 1.4j**: Remove h_d_unique + rewire (~-100 lines). Once suffices proof is sorry-free: delete h_d_unique (lines ~2135-2159 and surroundings). Remove h_d_unique parameter from d_consistency_left/right. Callers no longer pass h_d_unique. h_d_unique's 2 sorries (lines 2135, 2159) become orphaned and are deleted.
+  - [ ] **Step 1.4k**: d_consistency_right (mirror of left). d_consistency_right currently uses h_d_unique at line ~1325. After h_d_unique removal, needs same inline argument. Can share infrastructure with left variant.
 - [x] **Task 1.5**: Close `d_consistency_left` and `d_consistency_right` interior sorries (~20-40 lines). *(deviation: altered -- Round 6 resolved via h_d_unique parameter. Interior cases now extract formula/gp/boundary agreement from winning condition and apply h_d_unique. ~50 lines added per theorem. WILL NEED REWIRING in Task 1.4k to use inline Claim 1 instead of h_d_unique.)*
 - [ ] **Task 1.6**: Restructure Case II winning condition assembly. *(Round 5 implemented e_n construction via forward game + sigma/tau split. Round 6 decomposed 2 monolithic sorries into 6 targeted: same_order_type, gap_point_agreement, formula_agreement x sigma/tau. Round 7 closed 4 of 6 (gap_point + formula for both sub-cases). Remaining: 2 same_order_type sorries NOW UNBLOCKED by task 195.)*
   - [x] e_n construction via forward game round 2 (h_fwd_n1 + p_n challenge) -- Round 5
