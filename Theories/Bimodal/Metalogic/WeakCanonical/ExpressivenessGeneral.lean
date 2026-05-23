@@ -2123,124 +2123,140 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       tau := tau
       h_fwd_n1 := ghr93_duplicator_wins_round_mono (by omega : n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
     }
-  -- Prove the existence of c with the needed properties.
-  -- Case split on whether d is a point or a gap.
-  rcases isPoint_or_isGap d with ⟨p', hp'⟩ | ⟨g', hg'⟩
-  · -- Case: d is a point (d = extendPoint p' for some p' : N.carrier)
-    -- Use the forward game's Round 2 mechanism: play with p' as Spoiler's
-    -- Round 2 challenge to find a matching point b in [x,y] ∩ M.
-    --
-    -- We need a play of the forward game first (Round 1).
-    -- Use round_mono to get a 1-round strategy, play with any element.
-    obtain ⟨a'_play, _ha'_play, hwin_play⟩ :=
-      h1 (fun _ : Fin 1 => x) (fun _ => ⟨le_refl x, hxy⟩)
-    -- Now play Round 2 with p'. Since d = extendPoint p' ∈ [x',y'],
-    -- p' is in [x',y'] ∩ N.
-    have hp'_in : inClosedInterval x' y' (extendPoint p') := by
-      have : extendPoint p' = d := by rw [hp']; rfl
-      rw [this]; exact hd_interval
-    obtain ⟨b, hb_in, hcond⟩ := hwin_play p' hp'_in
-    -- b is in [x,y] ∩ M. Set c = extendPoint b.
-    refine ⟨extendPoint b, hb_in, ?_, ?_, ?_⟩
-    · -- Formula agreement
-      obtain ⟨_, _, hform⟩ := hcond
-      intro A hA
-      have hform_b := hform ⟨2, by omega⟩ A hA
-      simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
-                 show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_b
-      rw [hp']; exact hform_b
-    · -- Gap/point agreement
-      constructor
-      · rw [hp']; exact ⟨fun _ => ⟨p', rfl⟩, fun _ => ⟨b, rfl⟩⟩
-      · rw [hp']; simp only [IsGap, extendPoint]
-        exact ⟨fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl,
-               fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl⟩
-    · -- Boundary order correspondence: x = extendPoint b ↔ x' = d, and
-      -- extendPoint b = y ↔ d = y'. From same_order_type in the 1-round game:
-      -- game_tuple indices: 0 = x/x', 1 = x/a'_play(0), 2 = b/p', 3 = y/y'
-      obtain ⟨hord, _, _⟩ := hcond
-      constructor
-      · -- x = extendPoint b ↔ x' = d
-        have hcmp_02 := hord ⟨0, by omega⟩ ⟨2, by omega⟩
-        simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
-                   show (2 : Nat) ≠ 0 from by omega, dite_false,
-                   show (2 : Nat) = 1 + 1 from by omega, dite_true] at hcmp_02
-        -- hcmp_02.2 : x = extendPoint b ↔ x' = extendPoint p'
-        -- Need: x = extendPoint b ↔ x' = d
-        -- extendPoint p' = d (since hp' : d = Sum.inl p' and extendPoint = Sum.inl)
-        have hep'_eq : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p' = d := hp'.symm
-        rw [show (x' = extendPoint p') = (x' = d) from by rw [hep'_eq]] at hcmp_02
-        exact hcmp_02.2
-      · -- extendPoint b = y ↔ d = y'
-        have hcmp_23 := hord ⟨2, by omega⟩ ⟨3, by omega⟩
-        simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
-                   show (2 : Nat) = 1 + 1 from by omega, dite_true,
-                   show (3 : Nat) ≠ 0 from by omega,
-                   show ¬((3 : Nat) = 1 + 1) from by omega,
-                   show (3 : Nat) = 1 + 2 from by omega] at hcmp_23
-        -- hcmp_23.2 : extendPoint b = y ↔ extendPoint p' = y'
-        have hep'_eq : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p' = d := hp'.symm
-        rw [show (extendPoint p' = y') = (d = y') from by rw [hep'_eq]] at hcmp_23
-        exact hcmp_23.2
-  · -- Case: d is a gap (d = Sum.inr g' for some gap g')
-    -- Use the backward game (N→M) to find a matching gap c in M.
-    -- Get (1+3n)-round forward from h_fwd, convert to n-round backward via IH:
-    have h_fwd_reduced : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y' :=
-      ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n) hxy hx'y' h_fwd
-    have h_bwd_n : ghr93_duplicator_wins N M atomMap n r x' y' x y :=
-      ih hxy hx'y' h_pt h_fwd_reduced
-    -- Need n ≥ 1 to play d in the backward game.
-    -- For n = 0: the backward game has 0 rounds (no bulk selections).
-    -- Use a separate argument for this case.
-    by_cases hn : n = 0
-    · -- n = 0 gap case: sorry'd pending dedicated argument
-      sorry
-    · -- n ≥ 1: play the backward game with d as Spoiler's selection
-      have hn_pos : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
-      have h_bwd_1 : ghr93_duplicator_wins N M atomMap 1 r x' y' x y :=
-        ghr93_duplicator_wins_round_mono hn_pos hx'y' hxy h_bwd_n
-      -- Spoiler picks d (1 element) in [x',y']
-      obtain ⟨a_resp, ha_resp, hwin_resp⟩ := h_bwd_1 (fun _ => d) (fun _ => hd_interval)
-      -- Use any M-side point witness for Round 2
-      obtain ⟨p_M, hp_M⟩ := h_pt_M
-      obtain ⟨b_resp, hb_resp, hcond⟩ := hwin_resp p_M hp_M
-      obtain ⟨hord, hgp, hform⟩ := hcond
-      -- c = response at position 0 (corresponding to d at position 0)
-      -- game_tuple indices: 0=x'/x, 1=a_bwd(0)/a_resp(0)=d/c, 2=b_resp/p_M, 3=y'/y
-      set c_val := a_resp ⟨0, by omega⟩
-      -- Formula agreement at index 1 (d/c_val):
-      have hcd_form : ∀ A : StaviFormula, stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu M atomMap r c_val A ↔
-           stavi_temporal_truth_mu N atomMap r d A) := by
-        intro A hA
-        have h := hform ⟨1, by omega⟩ A hA
-        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-                   show (1 : Nat) ≠ 1 + 1 from by omega,
-                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-                   show 1 - 1 = 0 from by omega] at h
-        exact h.symm
-      -- Gap/point agreement at index 1:
-      have hcd_gp : (IsPoint c_val ↔ IsPoint d) ∧ (IsGap c_val ↔ IsGap d) := by
-        have h := hgp ⟨1, by omega⟩
-        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-                   show (1 : Nat) ≠ 1 + 1 from by omega,
-                   show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-                   show 1 - 1 = 0 from by omega] at h
-        exact ⟨h.1.symm, h.2.symm⟩
-      -- Boundary correspondence from same_order_type:
-      -- Index (0,1): x' vs d ↔ x vs c_val
-      have hord_01 := hord ⟨0, by omega⟩ ⟨1, by omega⟩
-      simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
-                 show (1 : Nat) ≠ 0 from by omega,
-                 show (1 : Nat) ≠ 1 + 1 from by omega,
-                 show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
-                 show 1 - 1 = 0 from by omega] at hord_01
-      -- Index (1,3): d vs y' ↔ c_val vs y
-      have hord_13 := hord ⟨1, by omega⟩ ⟨3, by omega⟩
-      simp [game_tuple] at hord_13
-      have hcd_boundary : (x = c_val ↔ x' = d) ∧ (c_val = y ↔ d = y') :=
-        ⟨hord_01.2.symm, hord_13.2.symm⟩
-      exact ⟨c_val, ha_resp ⟨0, by omega⟩, hcd_form, hcd_gp, hcd_boundary⟩
+  -- Prove the existence of c with the needed properties using c_inf = inf(S_C^M).
+  -- Play the 1-round forward game with c_inf as Spoiler's selection to get
+  -- a game response t_game in [x',y']. The winning condition gives gap/point
+  -- and boundary correspondence between c_inf and t_game. Formula agreement
+  -- between c_inf and d requires the full GHR93 Claim 1 argument (sorry'd).
+  obtain ⟨a'_play, ha'_play, hwin_play⟩ :=
+    h1 (fun _ : Fin 1 => c_inf) (fun _ => hc_inf_interval)
+  -- a'_play ⟨0, _⟩ is the game response t_game ∈ [x',y']
+  set t_game := a'_play ⟨0, by omega⟩ with t_game_def
+  -- Get gap/point and boundary from the game, using an arbitrary point witness for Round 2
+  obtain ⟨p_N, hp_N⟩ := h_pt
+  obtain ⟨b_play, hb_play, hcond_play⟩ := hwin_play p_N hp_N
+  obtain ⟨hord_play, hgp_play, hform_play⟩ := hcond_play
+  -- game_tuple indices for k=1: 0=x/x', 1=c_inf/t_game, 2=extendPoint(b_play)/extendPoint(p_N), 3=y/y'
+  -- Extract gap/point agreement at index 1 (c_inf vs t_game):
+  have hgp_1 := hgp_play ⟨1, by omega⟩
+  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega] at hgp_1
+  -- hgp_1 : (IsPoint c_inf ↔ IsPoint t_game) ∧ (IsGap c_inf ↔ IsGap t_game)
+  -- Extract boundary correspondence from same_order_type:
+  -- Index (0,1): x vs c_inf ↔ x' vs t_game
+  have hord_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
+  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+             show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega] at hord_01
+  -- Index (1,3): c_inf vs y ↔ t_game vs y'
+  have hord_13 := hord_play ⟨1, by omega⟩ ⟨3, by omega⟩
+  simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+             show (1 : Nat) ≠ 1 + 1 from by omega,
+             show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+             show 1 - 1 = 0 from by omega,
+             show (3 : Nat) ≠ 0 from by omega,
+             show ¬((3 : Nat) = 1 + 1) from by omega,
+             show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_13
+  -- Formula agreement at index 1 (c_inf vs t_game):
+  have hform_1 : ∀ A : StaviFormula, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r c_inf A ↔
+       stavi_temporal_truth_mu N atomMap r t_game A) := by
+    intro A hA
+    have h := hform_play ⟨1, by omega⟩ A hA
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ 1 + 1 from by omega,
+               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega] at h
+    exact h
+  -- GHR93 Claim 1: t_game = d. This is the core uniqueness argument.
+  -- The game response t_game and the N-side infimum d must coincide because
+  -- both are determined by the continuation set structure. The proof requires
+  -- showing d ≤ t_game (from cofinal failure below d transferred via the game)
+  -- and t_game ≤ d (from t_game being in S_C via continuation from c_inf ∈ S_C_M).
+  -- Direction 2 (t_game ≤ d): t_game ∈ S_C follows from c_inf ∈ S_C_M and
+  -- the game's formula agreement transferring cont_holds from M to N.
+  -- Direction 1 (d ≤ t_game): by contradiction from cofinal failure below d.
+  -- Full Claim 1 proof requires detailed formula transfer — sorry'd for now.
+  -- Direction 2: t_game ∈ S_C, hence d ≤ t_game
+  have h_t_game_in_SC : t_game ∈ S_C := by
+    refine ⟨ha'_play ⟨0, by omega⟩, ?_⟩
+    -- Need: ∀ u, t_game < u → u < y' → mu_holds u → cont_holds (a_bwd ⟨n,_⟩) y' u
+    -- Strategy: for mu-point u = extendPoint p_u with t_game < u < y',
+    -- play round 2 of the game with p_u to get b_u in M with
+    -- c_inf < extendPoint b_u (from same_order_type) and extendPoint b_u < y.
+    -- Then cont_holds_cross at b_u (from c_inf ∈ S_C_M) + formula transfer => cont_holds at u.
+    intro u htu huy' ⟨p_u, hp_u⟩
+    -- Play round 2 with p_u
+    have hp_u_in : inClosedInterval x' y' (extendPoint p_u) := by
+      rw [hp_u] at htu huy'; exact ⟨le_trans (ha'_play ⟨0, by omega⟩).1 (le_of_lt htu), le_of_lt huy'⟩
+    obtain ⟨b_u, hb_u_in, hcond_u⟩ := hwin_play p_u hp_u_in
+    obtain ⟨hord_u, _hgp_u, hform_u⟩ := hcond_u
+    -- From same_order_type index (1,2): c_inf vs extendPoint b_u ↔ t_game vs extendPoint p_u
+    have hord_12 := hord_u ⟨1, by omega⟩ ⟨2, by omega⟩
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ 1 + 1 from by omega,
+               show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega,
+               show (2 : Nat) ≠ 0 from by omega,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hord_12
+    -- hord_12 : (c_inf < extendPoint b_u ↔ t_game < extendPoint p_u) ∧ ...
+    rw [hp_u] at htu
+    have hc_lt_bu : c_inf < extendPoint b_u := hord_12.1.mpr htu
+    -- From same_order_type index (2,3): extendPoint b_u vs y ↔ extendPoint p_u vs y'
+    have hord_23 := hord_u ⟨2, by omega⟩ ⟨3, by omega⟩
+    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true,
+               show (3 : Nat) ≠ 0 from by omega,
+               show ¬((3 : Nat) = 1 + 1) from by omega,
+               show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_23
+    rw [hp_u] at huy'
+    have hbu_lt_y : extendPoint b_u < y := hord_23.1.mpr huy'
+    -- c_inf ∈ S_C_M and c_inf < extendPoint b_u < y and mu_holds (extendPoint b_u)
+    have hmu_bu : mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_u) :=
+      ⟨b_u, rfl⟩
+    have h_cont_cross_bu : cont_holds_cross (a_bwd ⟨n, by omega⟩) y' (extendPoint b_u) :=
+      hc_inf_in_SC_M.2 (extendPoint b_u) hc_lt_bu hbu_lt_y hmu_bu
+    -- Formula agreement at index 2: truth M (extendPoint b_u) A ↔ truth N (extendPoint p_u) A
+    -- cont_holds_cross at b_u + formula transfer => cont_holds at u
+    intro A hA h_all_mu
+    -- h_all_mu : ∀ v, a_bwd n < v → v < y' → mu_holds v → truth N v A
+    -- h_cont_cross_bu : ∀ A, depth A ≤ r → (∀ v, a_bwd n < v → v < y' → mu_holds v → truth N v A) → truth M (extendPoint b_u) A
+    have hA_bu : stavi_temporal_truth_mu M atomMap r (extendPoint b_u) A :=
+      h_cont_cross_bu A hA h_all_mu
+    -- Transfer from M to N via formula agreement at index 2
+    have hform_2 := hform_u ⟨2, by omega⟩ A hA
+    simp only [game_tuple, show (2 : Nat) ≠ 0 from by omega, dite_false,
+               show (2 : Nat) = 1 + 1 from by omega, dite_true] at hform_2
+    rw [hp_u]
+    exact hform_2.mp hA_bu
+  have h_d_le_t : d ≤ t_game := hd_glb t_game h_t_game_in_SC
+  -- Direction 1: t_game ≤ d (by contradiction from cofinal failure below d)
+  -- Assume t_game > d (i.e., d < t_game). Apply cofinal failure below d:
+  -- there exists a mu-point u with d < u ≤ ... and ¬cont_holds at u in N.
+  -- But t_game ∈ S_C (above) gives cont_holds at u. Contradiction.
+  -- Actually we need: if t_game > d, then ... This direction uses the
+  -- rank-(r+2) game (h_fwd_r1) and is the core of GHR93 Claim 1.
+  have h_t_le_d : t_game ≤ d := by
+    sorry
+  have h_t_game_eq_d : t_game = d := le_antisymm h_t_le_d h_d_le_t
+  -- Now use t_game = d to transfer all game-derived properties to d.
+  refine ⟨c_inf, hc_inf_interval, ?_, ?_, ?_⟩
+  · -- Formula agreement: c_inf vs d
+    intro A hA
+    rw [← h_t_game_eq_d]
+    exact hform_1 A hA
+  · -- Gap/point agreement: c_inf vs d
+    constructor
+    · rw [← h_t_game_eq_d]; exact hgp_1.1
+    · rw [← h_t_game_eq_d]; exact hgp_1.2
+  · -- Boundary correspondence: (x = c_inf ↔ x' = d) ∧ (c_inf = y ↔ d = y')
+    constructor
+    · rw [← h_t_game_eq_d]; exact hord_01.2
+    · rw [← h_t_game_eq_d]; exact hord_13.2
 
 /-! ### Case I: The Split Case
 
