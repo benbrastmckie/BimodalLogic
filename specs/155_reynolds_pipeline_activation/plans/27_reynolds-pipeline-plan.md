@@ -54,16 +54,23 @@ Plus 2 sorries in EFGames.lean (Phase 4) and 3 in IntegerModel.lean (Phases 7-8)
 
 ## Implementation Phases
 
-### Phase 1: Cleanup + Same Order Type [IN PROGRESS]
+### Phase 1: Cleanup + Same Order Type [BLOCKED]
 
 **Status**: GHR93 Claim 1 carrier-point cases COMPLETE. Remaining work is cleanup and Task 1.6.
 
+**BLOCKER** (Phase 1):
+- **What failed**: Tasks 1A, 1C, 1D, 1E all depend on GHR93 Claim 1 (h_d_unique) which has 2 sorries (lines 2307, 2331). h_d_unique is NOT orphaned — it is actively used by d_consistency_left (line 1602) and d_consistency_right (line 1724). The plan's claim that "d_consistency now uses inline Claim 1" is incorrect.
+- **What was tried**: (1) Verified h_d_unique is still passed to d_consistency_left/right at lines 2332-2337. (2) For 1D (sigma same_order_type, line 4692): inspected the 6 remaining goals after same_order_type_grid — all require `(d < extendPoint p_n ↔ c < e_n)` which requires either h_d_unique or a proof that the forward game's a_N(n) = d (i.e., Claim 1). No block-commented proof exists for sigma. (3) For 1C (boundary edge, line 3026): the case extendPoint q_r2 = y' implies r2_resp = rank_embed(y'), but c_inf = y is consistent with ¬cont_holds_cross at c_inf; the case is NOT unreachable from game bounds. (4) For 1E: also blocked on sigma instantiation for (x' < d ↔ x < c).
+- **Why it's stuck**: All tasks share the root dependency on h_d_unique/Claim 1. The inline Claim 1 (lines 2530-2950) proves r2_resp = rank_embed(d) but does NOT prove h_d_unique (t' = d for arbitrary t' with same rank-r type). The 2 sorries in h_d_unique (lines 2307, 2331) require materializing the continuation predicate as a single StaviFormula via pigeonhole + constructing K⁻(¬D) of depth r+2.
+- **What is needed**: Complete h_d_unique by proving its 2 sorries. This requires: (a) materializing the cofinal formula failure below d as a single StaviFormula D via pigeonhole, (b) constructing K⁻(¬D) = neg(std_snce(neg(base .bot), D)) of depth r+2, (c) proving K⁻(¬D) separates d from t'. This is the same infrastructure needed for Phase 3 gap cases.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 **Tasks**:
-- [ ] **1A. Delete h_d_unique** (~-150 lines). h_d_unique (lines ~2236-2331) is orphaned — its 2 sorries are unreachable since d_consistency now uses inline Claim 1. Remove h_d_unique, remove it from d_consistency_left/right signatures, remove it from SplitPointProps. This deletes sorries at lines 2307 and 2331.
-- [ ] **1B. Archive or delete pigeonhole_definable_formula_cross_strict** (~161 lines at line ~1212). The strict pigeonhole variant was built for the abandoned K⁻ pipeline. If useful for Phase 3 gap cases, keep. Otherwise delete. The non-strict `pigeonhole_definable_formula_cross` (~180 lines at ~1040) stays — used in Case A of Claim 1.
-- [ ] **1C. Close boundary edge case** (line 3026, ~20 lines). Claim 1 Case B when q_r2 = y'. Either prove via K⁻ argument or show this case is unreachable from the game's order constraints (r2_resp < rank_embed(y') from game bounds).
-- [ ] **1D. sigma same_order_type** (line 4692, ~40 lines). Uncomment block-commented proof. Use `same_order_type_grid`, `order_refl`, `extract_order`, `pivot_chain_order'` from task 195.
-- [ ] **1E. tau same_order_type** (lines 4792, 4845, ~60 lines). Uncomment block-commented proof. Instantiate `props.sigma` with trivial selections to extract `(x' < d ↔ x < c)`. Use task 195 tactics.
+- [ ] **1A. Delete h_d_unique** (~-150 lines). h_d_unique (lines ~2236-2331) is orphaned — its 2 sorries are unreachable since d_consistency now uses inline Claim 1. Remove h_d_unique, remove it from d_consistency_left/right signatures, remove it from SplitPointProps. This deletes sorries at lines 2307 and 2331. *(deviation: skipped — h_d_unique is NOT orphaned; still used by d_consistency_left/right at lines 1602, 1724, 2332-2337)*
+- [x] **1B. Archive or delete pigeonhole_definable_formula_cross_strict** (~161 lines at line ~1212). The strict pigeonhole variant was built for the abandoned K⁻ pipeline. If useful for Phase 3 gap cases, keep. Otherwise delete. The non-strict `pigeonhole_definable_formula_cross` (~180 lines at ~1040) stays — used in Case A of Claim 1. *(deviation: altered — decision is KEEP; it is used at line 2792 in Case B carrier-point sub-case)*
+- [ ] **1C. Close boundary edge case** (line 3026, ~20 lines). Claim 1 Case B when q_r2 = y'. Either prove via K⁻ argument or show this case is unreachable from the game's order constraints (r2_resp < rank_embed(y') from game bounds). *(deviation: skipped — case is NOT unreachable from bounds; requires K⁻ argument which depends on Claim 1 infrastructure)*
+- [ ] **1D. sigma same_order_type** (line 4692, ~40 lines). Uncomment block-commented proof. Use `same_order_type_grid`, `order_refl`, `extract_order`, `pivot_chain_order'` from task 195. *(deviation: skipped — no block-commented proof exists for sigma case; 6 remaining goals after same_order_type_grid all require (d < p_n ↔ c < e_n) from Claim 1)*
+- [ ] **1E. tau same_order_type** (lines 4792, 4845, ~60 lines). Uncomment block-commented proof. Instantiate `props.sigma` with trivial selections to extract `(x' < d ↔ x < c)`. Use task 195 tactics. *(deviation: skipped — blocked on sigma instantiation for (x' < d ↔ x < c); dead code at lines 4850-4948 uses pivot_chain_order which also needs this fact)*
 - [ ] **1F. Verification**: `lake build` passes.
 
 **Timing**: 3-5 hours. **Files**: `ExpressivenessGeneral.lean`
