@@ -1028,6 +1028,179 @@ private theorem pigeonhole_definable_formula_cross {sig : MonadicSignature}
     exact (fails_at j) ((nf_determines_stavi_truth_depth (Eq.symm h_same_nf)
       (A_seq j) (props j).2.2.1).mpr (holds_later j i h_ij))
 
+/-- Strict variant of `pigeonhole_definable_formula_cross`:
+    The cofinal failure hypothesis and conclusion are restricted to cut points
+    STRICTLY below an upper bound. This is needed when the infimum c_inf of
+    S_C_M is a carrier-point minimum: cont_holds_cross may hold at c_inf itself,
+    but failures are cofinal strictly below c_inf.
+
+    The proof is identical to `pigeonhole_definable_formula_cross` — the chain
+    stays strictly below `upper` throughout, and the pigeonhole argument
+    (NormalForm finiteness + nf_determines_stavi_truth_depth) is unchanged. -/
+private theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {x y : ExtendedCarrier M atomMap r}
+    {a_n_N y'_N : ExtendedCarrier N atomMap r}
+    {upper : ExtendedCarrier M atomMap r}
+    (hxy : x ≤ y)
+    (h_cut_start : ∃ p₀ : M.carrier,
+      p₀ ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r) ∧
+      (extendPoint p₀ : ExtendedCarrier M atomMap r) < upper)
+    (h_cofinal_failure :
+      ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
+        (extendPoint p : ExtendedCarrier M atomMap r) < upper →
+        ∃ (u : M.carrier),
+          p ≤ u ∧
+          u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+          (extendPoint u : ExtendedCarrier M atomMap r) < upper ∧
+          ∃ (A : StaviFormula),
+            stavi_depth A ≤ r ∧
+            (∀ v : ExtendedCarrier N atomMap r,
+              a_n_N < v → v < y'_N → mu_holds v →
+              stavi_temporal_truth_mu N atomMap r v A) ∧
+            ¬ stavi_temporal_truth M atomMap u A) :
+    ∃ (D : StaviFormula),
+      stavi_depth D ≤ r ∧
+      (∀ v : ExtendedCarrier N atomMap r,
+        a_n_N < v → v < y'_N → mu_holds v →
+        stavi_temporal_truth_mu N atomMap r v D) ∧
+      (∀ t : M.carrier, t ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        x ≤ (extendPoint t : ExtendedCarrier M atomMap r) →
+        (extendPoint t : ExtendedCarrier M atomMap r) < upper →
+        ∃ u : M.carrier, t ≤ u ∧
+          u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+          ¬ stavi_temporal_truth M atomMap u D) := by
+  -- By contradiction: suppose no single formula fails cofinally below upper.
+  by_contra h_no_cofinal
+  push_neg at h_no_cofinal
+  -- Pigeonhole over NormalForm types at depth 2*r.
+  let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
+  obtain ⟨p₀, hp₀_cut, hx_p₀, hp₀_lt_upper⟩ := h_cut_start
+  -- One-step: from a cut point with x ≤ extendPoint and extendPoint < upper,
+  -- produce failure data + next floor (also < upper).
+  have one_step : ∀ (f : M.carrier),
+      f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+      x ≤ (extendPoint f : ExtendedCarrier M atomMap r) →
+      (extendPoint f : ExtendedCarrier M atomMap r) < upper →
+      ∃ (u : M.carrier) (A : StaviFormula) (t nf : M.carrier),
+        f ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        (extendPoint u : ExtendedCarrier M atomMap r) < upper ∧
+        stavi_depth A ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n_N < v → v < y'_N → mu_holds v → stavi_temporal_truth_mu N atomMap r v A) ∧
+        ¬ stavi_temporal_truth M atomMap u A ∧
+        (∀ w, t ≤ w → w ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+          (extendPoint w : ExtendedCarrier M atomMap r) < upper →
+          stavi_temporal_truth M atomMap w A) ∧
+        nf ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        x ≤ (extendPoint nf : ExtendedCarrier M atomMap r) ∧
+        (extendPoint nf : ExtendedCarrier M atomMap r) < upper ∧
+        u ≤ nf ∧ t ≤ nf := by
+    intro f hf_cut hxf hf_lt
+    obtain ⟨u, hfu, hu_cut, hu_lt, A, hA_depth, hA_interval, hA_fail⟩ :=
+      h_cofinal_failure f hf_cut hxf hf_lt
+    obtain ⟨t, ht_cut, hxt, ht_lt, h_bound⟩ := h_no_cofinal A hA_depth hA_interval
+    rcases le_total u t with hut | htu
+    · exact ⟨u, A, t, t, hfu, hu_cut, hu_lt, hA_depth, hA_interval, hA_fail,
+        fun w hw1 hw2 _ => h_bound w hw1 hw2,
+        ht_cut, hxt, ht_lt, hut, le_refl t⟩
+    · exact ⟨u, A, t, u, hfu, hu_cut, hu_lt, hA_depth, hA_interval, hA_fail,
+        fun w hw1 hw2 _ => h_bound w hw1 hw2,
+        hu_cut, le_trans hxf ((extendPoint_le_iff _ _).mpr hfu), hu_lt,
+        le_refl u, htu⟩
+  -- Build chain by Nat.rec on a bundled floor state.
+  let S := { f : M.carrier // f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      x ≤ (extendPoint f : ExtendedCarrier M atomMap r) ∧
+      (extendPoint f : ExtendedCarrier M atomMap r) < upper }
+  -- Wrap one_step into a choice function:
+  have choose_witness (f : M.carrier)
+      (hf : f ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
+      (hxf : x ≤ (extendPoint f : ExtendedCarrier M atomMap r))
+      (hf_lt : (extendPoint f : ExtendedCarrier M atomMap r) < upper) :
+      { w : M.carrier × StaviFormula × M.carrier × M.carrier //
+        f ≤ w.1 ∧ w.1 ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        (extendPoint w.1 : ExtendedCarrier M atomMap r) < upper ∧
+        stavi_depth w.2.1 ≤ r ∧
+        (∀ v : ExtendedCarrier N atomMap r,
+          a_n_N < v → v < y'_N → mu_holds v → stavi_temporal_truth_mu N atomMap r v w.2.1) ∧
+        ¬ stavi_temporal_truth M atomMap w.1 w.2.1 ∧
+        (∀ w', w.2.2.1 ≤ w' → w' ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+          (extendPoint w' : ExtendedCarrier M atomMap r) < upper →
+          stavi_temporal_truth M atomMap w' w.2.1) ∧
+        w.2.2.2 ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+        x ≤ (extendPoint w.2.2.2 : ExtendedCarrier M atomMap r) ∧
+        (extendPoint w.2.2.2 : ExtendedCarrier M atomMap r) < upper ∧
+        w.1 ≤ w.2.2.2 ∧ w.2.2.1 ≤ w.2.2.2 } := by
+    have h_ex := one_step f hf hxf hf_lt
+    exact Classical.indefiniteDescription _ (by
+      obtain ⟨u, A, t, nf, hp⟩ := h_ex
+      exact ⟨(u, A, t, nf), hp⟩)
+  -- Define state sequence (floors) by recursion
+  let state : Nat → S := Nat.rec ⟨p₀, hp₀_cut, hx_p₀, hp₀_lt_upper⟩ fun n prev =>
+    let w := choose_witness prev.1 prev.2.1 prev.2.2.1 prev.2.2.2
+    ⟨w.1.2.2.2, w.2.2.2.2.2.2.2.2.1, w.2.2.2.2.2.2.2.2.2.1, w.2.2.2.2.2.2.2.2.2.2.1⟩
+  -- Define output at each step
+  let output (n : Nat) := choose_witness (state n).1 (state n).2.1 (state n).2.2.1 (state n).2.2.2
+  -- Extract individual sequences
+  let u_seq (n : Nat) : M.carrier := (output n).1.1
+  let A_seq (n : Nat) : StaviFormula := (output n).1.2.1
+  let t_seq (n : Nat) : M.carrier := (output n).1.2.2.1
+  -- Extract properties
+  have props (n : Nat) :
+      (state n).1 ≤ u_seq n ∧
+      u_seq n ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
+      (extendPoint (u_seq n) : ExtendedCarrier M atomMap r) < upper ∧
+      stavi_depth (A_seq n) ≤ r ∧
+      (∀ v : ExtendedCarrier N atomMap r,
+        a_n_N < v → v < y'_N → mu_holds v →
+        stavi_temporal_truth_mu N atomMap r v (A_seq n)) ∧
+      ¬ stavi_temporal_truth M atomMap (u_seq n) (A_seq n) ∧
+      (∀ w, t_seq n ≤ w → w ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) →
+        (extendPoint w : ExtendedCarrier M atomMap r) < upper →
+        stavi_temporal_truth M atomMap w (A_seq n)) ∧
+      u_seq n ≤ (state (n + 1)).1 ∧
+      t_seq n ≤ (state (n + 1)).1 := by
+    have h := (output n).2
+    exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1, h.2.2.2.2.2.2.1,
+      h.2.2.2.2.2.2.2.2.2.2.1, h.2.2.2.2.2.2.2.2.2.2.2⟩
+  -- Monotonicity: u_seq is increasing
+  have u_mono : ∀ n, u_seq n ≤ u_seq (n + 1) := fun n =>
+    le_trans (props n).2.2.2.2.2.2.2.1 (props (n + 1)).1
+  -- Transitivity: for i ≤ j, u_seq i ≤ u_seq j
+  have u_mono_le : ∀ i j, i ≤ j → u_seq i ≤ u_seq j := by
+    intro i j hij
+    induction hij with
+    | refl => exact le_refl _
+    | step _ ih => exact le_trans ih (u_mono _)
+  -- Key bound: for j > i, t_seq i ≤ u_seq j (so A_i holds at u_j)
+  have bound_le : ∀ i j, i < j → t_seq i ≤ u_seq j := fun i j hij =>
+    le_trans (props i).2.2.2.2.2.2.2.2 (le_trans (props (i + 1)).1 (u_mono_le (i + 1) j hij))
+  -- A_i holds at u_j for j > i (via the bound property)
+  have holds_later : ∀ i j, i < j →
+      stavi_temporal_truth M atomMap (u_seq j) (A_seq i) := fun i j hij =>
+    (props i).2.2.2.2.2.2.1 (u_seq j) (bound_le i j hij) (props j).2.1 (props j).2.2.1
+  -- A_i fails at u_i
+  have fails_at : ∀ i, ¬ stavi_temporal_truth M atomMap (u_seq i) (A_seq i) := fun i =>
+    (props i).2.2.2.2.2.1
+  -- NF map: Fin (K+1) → NormalForm (muSig sig) (2*r) 1
+  let nf_map : Fin (K + 1) → NormalForm (muSig sig) (2 * r) 1 := fun i =>
+    nf_characteristic (extendedStructureWithMu M atomMap r) (2 * r) 1
+      (fun _ => extendPoint (u_seq i))
+  -- Pigeonhole: K+1 > K → two indices have same NF
+  have h_card : Fintype.card (NormalForm (muSig sig) (2 * r) 1) <
+      Fintype.card (Fin (K + 1)) := by
+    simp only [Fintype.card_fin]
+    exact Nat.lt_succ_of_le (le_refl K)
+  obtain ⟨i, j, hij, h_same_nf⟩ := Fintype.exists_ne_map_eq_of_card_lt nf_map h_card
+  -- WLOG i < j (or j < i)
+  rcases lt_or_gt_of_ne hij with h_ij | h_ij
+  · exact (fails_at i) ((nf_determines_stavi_truth_depth h_same_nf
+      (A_seq i) (props i).2.2.2.1).mpr (holds_later i j h_ij))
+  · exact (fails_at j) ((nf_determines_stavi_truth_depth (Eq.symm h_same_nf)
+      (A_seq j) (props j).2.2.2.1).mpr (holds_later j i h_ij))
+
 /-- Bridge lemma: from cont_fails_below_gap (which gives an extended carrier
     mu-point where cont_holds fails) to a carrier-level formula failure
     at a carrier point in the cut.
