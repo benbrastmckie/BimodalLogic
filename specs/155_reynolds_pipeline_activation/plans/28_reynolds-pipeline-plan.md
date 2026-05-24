@@ -1,8 +1,8 @@
-# Implementation Plan: Reynolds Pipeline Activation (v28)
+# Implementation Plan: Reynolds Pipeline Activation (v28 revised)
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IMPLEMENTING]
-- **Effort**: 20-30 hours (Track A: 8-14h, Track B: 12-16h)
+- **Effort**: 16-24 hours
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**: reports/28_team-research.md (5-teammate synthesis), reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md
 - **Artifacts**: plans/28_reynolds-pipeline-plan.md (this file)
@@ -12,9 +12,11 @@
 
 ## Overview
 
-This plan has two tracks. Track A (priority 1) achieves sorry-free `bx_completeness` via the OrderIso bypass strategy, wiring `countermodel_discrete_enriched` through `countermodel_discrete` using `chronicle_is_good`'s sorry-free OrderIso to bypass `succ_cofinal`. Track B (priority 2) completes the GHR93 expressive completeness pipeline as a standalone mathematical contribution, resolving 14 critical-path sorry sites through a staged attack: rank fix, atom type verification, formula C resolution, mechanical sorry closure, and the keystone NF characterization. The two tracks are independent after Phase A1's feasibility verification, and Track B phases can be executed in parallel with Track A.
+This plan targets sorry-free `bx_completeness` via the GHR93 expressive completeness pipeline, closing `succ_cofinal` through gap elimination. The prior two-track strategy (Track A: OrderIso bypass, Track B: GHR93 pipeline) has been collapsed to a single track after Track A was proven infeasible: every path from the Burgess chronicle to a countermodel on Int goes through `IsSuccArchimedean` for `LimitDomSubtype`, which is exactly the sorry in `succ_cofinal`. Separately, Phase B2's atom type verification confirmed that `StaviFormula` uses infinite `Formula` atoms, blocking Approach A (direct enumeration) for formula C resolution. The plan proceeds entirely via Approach C (case-split) and the remaining GHR93 pipeline machinery.
 
-**Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, `doets_countermodel_discrete` uses Reynolds pipeline (no chronicle fallback).
+Nine phases close the 14 critical-path sorry sites in a dependency-ordered sequence, culminating in proving `succ_cofinal` via `nf_characterizable_by_stavi` + `no_gaps_discrete` (the gap elimination argument).
+
+**Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes. `succ_cofinal` is proved via GHR93 gap elimination, making the entire discrete completeness pipeline sorry-free.
 
 ### Research Integration
 
@@ -22,43 +24,35 @@ Nine research reports and a 5-teammate team research synthesis were integrated i
 
 | Report | Key Finding | Impact on Plan |
 |--------|-------------|----------------|
-| 28_team-research (5 teammates) | Formula C circularity is narrower than claimed; rank off-by-one confirmed; atom type may block Approach A; case-split targets outdated; position-tracking sorries need separate fix; same root cause rediscovered 5+ times | Drives the two-track structure and the ordered phase sequencing in Track B |
-| 29_literature-alignment | Approach A (direct StaviFormula enumeration) is non-circular; Approach B (NormalForm mediated) IS circular; Approach C (case-split) is pragmatic fix | Determines the decision gate at Phase B2 |
-| 30_critical-path-wiring | EFGames sorry sites are ORPHANED from bx_completeness; OrderIso bypass needs ~310-510 lines | Drives Track A strategy |
-| 30_forward-inventory | 14 sorry sites on GHR93 critical path; mechanical strategy for S3, S5 | Drives Track B phasing and effort estimates |
-| 35_phase1-blocker-prior-art | Full GHR93 pipeline estimated at 40-60 hours remaining | Motivates two-track approach (bypass first, then pipeline) |
+| 28_team-research (5 teammates) | Formula C circularity is narrower than claimed; rank off-by-one confirmed; atom type may block Approach A; case-split targets outdated; position-tracking sorries need separate fix; same root cause rediscovered 5+ times | Drives phase sequencing and Approach C selection |
+| 29_literature-alignment | Approach A (direct StaviFormula enumeration) is non-circular; Approach B (NormalForm mediated) IS circular; Approach C (case-split) is pragmatic fix | Confirms Approach C as viable path |
+| 30_critical-path-wiring | EFGames sorry sites are ORPHANED from bx_completeness; OrderIso bypass needs ~310-510 lines | Informed (now-abandoned) Track A |
+| 30_forward-inventory | 14 sorry sites on GHR93 critical path; mechanical strategy for S3, S5 | Drives phase effort estimates |
+| 35_phase1-blocker-prior-art | Full GHR93 pipeline estimated at 40-60 hours remaining | Calibrates effort expectations |
 | 40_literature-crossref | 28 total sorries mapped to GHR93 paper steps; Claim 1 cluster = 7 sorries | Confirms sorry-to-phase mapping |
-| 30_mechanical-strategy | K^-(negD) adaptation strategy for multi-round games | Informs Phase B4 (mechanical sorry closure) |
+| 30_mechanical-strategy | K^-(negD) adaptation strategy for multi-round games | Informs Phase 1 (mechanical sorry closure) |
 | 30_session-audit | 2,978 net new lines; 21 new theorems; build passes | Confirms stable codebase baseline |
-| 29_d-consistency-architecture | d_consistency with d=a_bwd(n) is UNPROVABLE; infimum needed | Historical context for Track B approach |
+| 29_d-consistency-architecture | d_consistency with d=a_bwd(n) is UNPROVABLE; infimum needed | Historical context for case-split approach |
 
-### Prior Plan Reference
+### Revision History
 
-The prior plan (v27) recommended the OrderIso bypass strategy with 6 phases (12-18 hours). Key lessons:
+**v28 original**: Two-track plan (Track A: OrderIso bypass, Track B: GHR93 pipeline). Track A and Track B were independent after Wave 1.
 
-- **Validated approach**: The OrderIso bypass from `chronicle_is_good` is confirmed sorry-free and architecturally sound. Track A preserves this strategy with tighter phase boundaries.
-- **Effort calibration**: v27 estimated 12-18 hours for Track A. The new research (28_team-research) does not change this estimate but provides higher confidence in feasibility.
-- **Missing scope**: v27 treated the 14 GHR93 sorry sites as "deferred future work" in a single documentation phase. The new research provides enough detail for a concrete phased attack (Track B), which this plan adds.
-- **Risk awareness**: v27 identified OrderIso type mismatch as the primary risk. The new research confirms this is mitigable but adds a new risk: the atom type cardinality question that determines Approach A vs C for formula C resolution.
-
-### Roadmap Alignment
-
-This plan advances the following roadmap items:
-- "Reynolds pipeline activation" -- Track A directly achieves this
-- "sorry-free discrete completeness" -- Track A achieves sorry-free `bx_completeness`
-- The GHR93 expressive completeness formalization (Track B) would be the first machine-verified proof of Stavi expressive completeness for general linear orders
+**v28 revised (this version)**: Single-track plan (GHR93 pipeline only). Changes:
+- Track A (OrderIso bypass) removed -- proven infeasible during Phase A1 implementation
+- Phases B1, B2 completed -- h_fwd_r1 rank fix done, atom type verified as infinite
+- Approach A (Fintype enumeration) ruled out -- StaviFormula uses infinite Formula atoms
+- Approach C (case-split) confirmed as sole viable formula C resolution path
+- Phases renumbered sequentially 1-9 (was A1-A5, B1-B9)
+- Phase 8 added: closing `succ_cofinal` via gap elimination (the payoff connecting GHR93 to bx_completeness)
 
 ## Goals & Non-Goals
 
 **Goals**:
-- (Track A) Achieve sorry-free `bx_completeness` via OrderIso bypass of `succ_cofinal`
-- (Track A) Wire `countermodel_discrete_enriched` to `countermodel_discrete`
-- (Track A) Replace chronicle fallback with OrderIso-based construction
-- (Track A) Verify `#print axioms bx_completeness` shows no `sorryAx`
-- (Track B) Fix h_fwd_r1 rank from r+1 to r+2 across 6 signature locations
-- (Track B) Determine atom type cardinality and select formula C resolution approach
-- (Track B) Close all 14 GHR93 critical-path sorry sites in ExpressivenessGeneral.lean, EFGames.lean, IntegerModel.lean
-- (Track B) Achieve sorry-free `nf_characterizable_by_stavi` and `no_gaps_discrete`
+- Close all 14 GHR93 critical-path sorry sites (S1-S14)
+- Prove `succ_cofinal` via gap elimination using `nf_characterizable_by_stavi` + `no_gaps_discrete`
+- Achieve sorry-free `bx_completeness` by closing `succ_cofinal` (the root sorry blocking TC/FUC coherence)
+- Achieve sorry-free `nf_characterizable_by_stavi` and `no_gaps_discrete`
 
 **Non-Goals**:
 - Closing TruthLemma.lean sorry sites (non-critical-path, parametric truth lemma handles via BFMCS coherence)
@@ -66,6 +60,8 @@ This plan advances the following roadmap items:
 - Dense or mixed completeness variants
 - Archiving BXCanonical dead-code sorries (separate cleanup task)
 - Building rank_lift infrastructure (case-split approach is preferred for S1/S2)
+- OrderIso bypass (Track A) -- proven infeasible
+- Approach A (Fintype enumeration for StaviFormula) -- blocked by infinite atoms
 
 ## Superseded Approaches
 
@@ -73,6 +69,8 @@ The following approaches have been tried and ruled out across 10+ sessions and 1
 
 | Approach | Where Tried | Why It Failed |
 |----------|-------------|---------------|
+| **Track A: OrderIso bypass** | Phase A1 (this plan, v28 original) | `chronicle_is_good` requires `ChronicleAsPriorModel` whose constructor `extract_chronicle_as_prior` fills `domain_succ_archimedean := limitDomSubtype_isSuccArchimedean` which uses `succ_cofinal`. Every path from Burgess chronicle to countermodel on Int goes through `IsSuccArchimedean`. `valid_discrete` itself quantifies over `IsSuccArchimedean D` domains. No bypass exists. |
+| **Approach A: Fintype StaviFormula enumeration** | Phase B2 (this plan) | `StaviFormula` is monomorphic with `Formula` atoms (infinite type, `Countable + Infinite`). `Fintype { A : StaviFormula // stavi_depth A <= r }` is NOT constructible. `NormalForm (muSig sig)` IS Fintype but inversion back to StaviFormula is circular (= Approach B). |
 | Rank embedding alone (without infimum) | `phase-1-handoff-b.md` | Rank-r and rank-(r+1) games give unrelated responses; no theorem bridges them |
 | d = a_bwd(n) with rank-(r+1) | Several sessions | d_consistency literally false when d is not d-bar |
 | h_d_unique (uniqueness from rank-r type) | Lines 2755-2859 | MATHEMATICALLY FALSE: K^-(negD) has depth r+2, two points can share rank-r type but differ at r+2 |
@@ -81,18 +79,20 @@ The following approaches have been tried and ruled out across 10+ sessions and 1
 | NormalForm -> StaviFormula inversion (Approach B) | reports 38-39 | CIRCULAR: converting NF back to StaviFormula IS the expressive completeness theorem being proved |
 | Predicate-level argument at rank r (without game) | report 29 lean-infra | Tail condition of S_C membership quantifies over intervals above the point; same type does not imply same tail |
 
-**Key settled question**: Infimum redefinition IS necessary (reports 29, 35 definitively refuted handoff-b's claim). Do not revisit this.
+**Key settled questions**:
+- Infimum redefinition IS necessary (reports 29, 35 definitively refuted handoff-b's claim). Do not revisit this.
+- Track A (OrderIso bypass) is NOT FEASIBLE without first proving `succ_cofinal`. Do not revisit this.
+- Approach A (Fintype enumeration) is BLOCKED by infinite atoms. Do not revisit this.
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| OrderIso type mismatch between chronicle domain and TaskFrame Int | H | M | Phase A1 verifies compatibility before heavy coding; abort to full pipeline if infeasible |
-| TC/FUC coherence proofs via OrderIso more complex than estimated | M | M | Start with TC (simpler); if blocked after 4h, analyze specific obligation types and pivot |
-| Atom type is infinite, blocking Approach A for formula C | M | M | Phase B2 explicitly checks this; if blocked, use Approach C (case-split) which has no Fintype requirement |
-| Case-split targets from reports 38/39 are outdated against current sorry sites | M | H | Phase B3 re-maps case-split to CURRENT sorry locations (3901, 3935, 4412, 4424, 4468) before implementation |
-| Position-tracking sorries (4483/4508) harder than estimated | M | M | Phase B5 attempts rank_embed_project_eq (~50-100 lines); if blocked, inline rank_down projection (~200 lines) |
-| NF characterization inductive step (S13) requires major new game-theoretic argument | H | H | Defer to Phase B8; if blocked, document as future work -- Track A already achieves sorry-free completeness |
+| Case-split targets from reports 38/39 are outdated against current sorry sites | M | H | Phase 2 re-maps case-split to CURRENT sorry locations (3901, 3935, 4412, 4424, 4468) before implementation |
+| S8 requires `c <= e_n` bound not currently in scope in `ghr93_case_II` | M | H | Phase 3 extends `SplitPointProps` to export this bound or derives it from tau game ordering |
+| Position-tracking sorries (4483/4508) harder than estimated | M | M | Phase 4 attempts `rank_embed_project_eq` (~50-100 lines); if blocked, inline rank_down projection (~200 lines) |
+| NF characterization inductive step (S13) requires major new game-theoretic argument | H | H | Defer to Phase 6; all prior phases provide infrastructure. If blocked, document what remains. |
+| `succ_cofinal` proof via gap elimination requires additional lemmas beyond S13+S14 | H | M | Phase 8 has contingency: if gap elimination is blocked, document the gap and recommend Task 129 Henkin approach |
 | Same diagnosis rediscovered without follow-through (historical pattern) | M | M | This plan includes explicit verification gates; each phase has concrete line-count deliverables; use Superseded Approaches section to prevent backtracking |
 | Build regression after wiring changes | M | L | Run `lake build` after every phase; commit working states |
 
@@ -101,274 +101,98 @@ The following approaches have been tried and ruled out across 10+ sessions and 1
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | A1, B1 | -- |
-| 2 | A2, B2 | A1, B1 |
-| 3 | A3, B3 | A2, B2 |
-| 4 | A4, B4, B5 | A3, B3 |
-| 5 | A5, B6 | A4, B4 |
-| 6 | B7, B8 | B6 |
-| 7 | B9 | B8 |
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3, 4 | 2 |
+| 4 | 5 | 3, 4 |
+| 5 | 6 | 5 |
+| 6 | 7 | 6 |
+| 7 | 8 | 6, 7 |
+| 8 | 9 | 8 |
 
-Phases within the same wave can execute in parallel. Track A and Track B are independent after Wave 1 (A1 confirms bypass feasibility; B1 is always required).
+Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase A1: Verify OrderIso Bypass Feasibility [COMPLETED]
+### Phase 1: Mechanical Sorry Closure S3 + S5 [NOT STARTED]
 
-**Goal**: Confirm that the OrderIso bypass is viable by tracing sorryAx propagation and verifying type compatibility between `chronicle_is_good`, `countermodel_discrete`, and `countermodel_discrete_enriched`.
+**Goal**: Close the two independently closable mechanical sorry sites that are pure index arithmetic adaptations of existing proofs. These have no dependency on formula C resolution or any other sorry site.
 
 **Tasks**:
-- [x] **Task A1.1**: Run `#print axioms bx_completeness` and trace every `sorryAx` to its source file and line *(completed)*
-- [x] **Task A1.2**: Run `#print axioms chronicle_is_good` and confirm zero `sorryAx` *(completed)*
-- [x] **Task A1.3**: Read `chronicle_is_good` signature and return type (OrderIso to what?) *(completed)*
-- [x] **Task A1.4**: Read `countermodel_discrete` in Transfer.lean -- identify type signature and delegation chain *(completed)*
-- [x] **Task A1.5**: Read `countermodel_discrete_enriched` in Completeness.lean:227 -- identify existential form *(completed)*
-- [x] **Task A1.6**: Read `dd_countermodel_chronicle_discrete` in ChronicleToCountermodel.lean -- identify which sub-lemmas carry `sorryAx` *(completed: confirmed tc and fuc carry sorryAx, buc is sorry-free)*
-- [x] **Task A1.7**: Read `succ_embed_surjective` and `succ_cofinal` -- confirm these are the root sorry sites *(completed)*
-- [x] **Task A1.8**: Document type compatibility: can `chronicle_is_good`'s OrderIso produce a `TaskFrame Int` that matches what `countermodel_discrete` needs? *(completed: INFEASIBLE — see findings)*
-- [x] **Task A1.9**: Identify exact coherence obligations (TC, BUC, FUC) that currently use `succ_embed_surjective` and would need OrderIso alternatives *(completed)*
+- [ ] Close S3 (line 4412, `h_cont_transfer_mr`): mechanical copy of `h_cont_transfer` (lines 3240-3330) with multi-round indices `(2+3n, 3+3n, 4+3n)` instead of `(1, 2, 3)` (~90 lines)
+- [ ] Close S5 (line 4468, `h_mr_resp_ge_d` gap case): mirror of existing gap proof at lines 3994-4250 with adapted indices (~255 lines)
+- [ ] Run `lake build` after each closure to confirm no regressions
+- [ ] Verify no new sorry sites introduced
 
-**Phase A1 Findings (Track A INFEASIBLE)**:
-
-Sorry chain: `bx_completeness` → `completeness_discrete` → `countermodel_discrete_enriched` (sorry at Completeness.lean:227) → `WeakCanonical.countermodel_discrete` → `dd_countermodel_chronicle_discrete` → `cantor_bfmcs_discrete_restricted_tc` / `_fuc` → `succ_embed_surjective` → `limitDomSubtype_isSuccArchimedean` → `succ_cofinal` (sorry at ChronicleToCountermodel.lean:1885).
-
-`chronicle_is_good` is sorry-free but is called on a `ChronicleAsPriorModel`, and `extract_chronicle_as_prior` (the only constructor from the Burgess chronicle) is NOT sorry-free because it fills `domain_succ_archimedean := limitDomSubtype_isSuccArchimedean` which uses `succ_cofinal`.
-
-Every path from the Burgess chronicle to a countermodel on Int goes through `IsSuccArchimedean` for `LimitDomSubtype`. The `z_interval_countermodel` approach (Reynolds pipeline) also requires `LimitDomSubtype ≃o ℤ` via `orderIsoIntOfLinearSuccPredArch`, which requires `IsSuccArchimedean`. `valid_discrete` itself quantifies over `IsSuccArchimedean D` domains.
-
-**Verdict**: Track A (OrderIso bypass) is NOT FEASIBLE without first proving `succ_cofinal`. Track B (GHR93 pipeline) also requires sorry-free discrete completeness machinery and is similarly blocked. Both tracks ultimately require `succ_cofinal` or an entirely different model construction (Task 129 Henkin approach).
-
-**Timing**: 1-2 hours
+**Timing**: 2-3 hours
 
 **Depends on**: none
 
 **Files to modify**:
-- None (analysis only)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- ~345 lines across 2 sorry sites
 
 **Verification**:
-- Written notes on type compatibility and coherence obligation signatures
-- Clear yes/no on bypass feasibility
-- If no: document the specific type mismatch; Track A is abandoned, Track B becomes sole path
-
----
-
-### Phase A2: OrderIso-Based Coherence Proofs [NOT STARTED]
-
-**Goal**: Prove TC and FUC coherence conditions using the OrderIso from `chronicle_is_good` instead of `succ_embed_surjective`, eliminating `succ_cofinal` from the dependency chain.
-
-**Tasks**:
-- [ ] Create a new section or file for OrderIso-based coherence proofs (e.g., `OrderIsoCherence.lean` or inline in Transfer.lean)
-- [ ] Extract the OrderIso from `chronicle_is_good` -- this gives a bijection between Z and the chronicle's limit domain
-- [ ] Prove TC (temporal coherence) for the OrderIso-based construction: forward/backward temporal content preserved through the OrderIso mapping
-- [ ] Verify BUC (backward Until coherence) does NOT use `succ_embed_surjective` (expected sorry-free already via `cantor_bfmcs_discrete_restricted_buc`)
-- [ ] Prove FUC (forward Until coherence) for the OrderIso-based construction: Until witnesses in Z map through the OrderIso to chronicle domain witnesses
-- [ ] Verify that OrderIso-based TC/FUC proofs do NOT reference `succ_embed`, `succ_embed_surjective`, or `succ_cofinal`
-- [ ] Run `lake build` to confirm no regressions
-
-**Timing**: 4-6 hours
-
-**Depends on**: A1
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` or new file -- OrderIso coherence proofs (~200-300 lines)
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- may need to extract helper lemmas
-
-**Verification**:
-- `#print axioms` on the new TC/FUC lemmas shows no `sorryAx`
+- Sorry sites S3, S5 (lines 4412, 4468) are closed
 - `lake build` passes
+- Sorry count reduced by 2
 
 ---
 
-### Phase A3: Replace Chronicle Fallback in countermodel_discrete [NOT STARTED]
+### Phase 2: Formula C Case-Split Resolution S1 + S2 [NOT STARTED]
 
-**Goal**: Replace the `dd_countermodel_chronicle_discrete` delegation in `countermodel_discrete` with the OrderIso-based construction, eliminating `succ_cofinal` from the `bx_completeness` critical path.
-
-**Tasks**:
-- [ ] Modify `countermodel_discrete` in Transfer.lean to use the OrderIso-based construction instead of delegating to `dd_countermodel_chronicle_discrete`
-- [ ] New construction: (1) use sorry-free chronicle MCS family, (2) use `chronicle_is_good` for OrderIso, (3) build `TaskFrame Int` via OrderIso, (4) use OrderIso-based TC/FUC from Phase A2
-- [ ] Verify `fully_restricted_parametric_completeness_from_neg_membership` (sorry-free) still works
-- [ ] Verify `cantor_bfmcs_discrete` (sorry-free) still works
-- [ ] Run `#print axioms countermodel_discrete` and confirm no `sorryAx`
-- [ ] Run `lake build` to confirm no regressions
-
-**Timing**: 2-4 hours
-
-**Depends on**: A2
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` -- replace delegation (~100-200 lines)
-
-**Verification**:
-- `#print axioms countermodel_discrete` shows no `sorryAx`
-- `lake build` passes
-
----
-
-### Phase A4: Wire countermodel_discrete_enriched [NOT STARTED]
-
-**Goal**: Close the sorry at Completeness.lean:227 by wiring `countermodel_discrete_enriched` to `countermodel_discrete`.
+**Goal**: Resolve the formula C predicate-vs-formula gap using Approach C (case-split on `cont_holds` at infimum). This closes S1 and S2, the core of the Claim 1 sorry cluster. S4 inherits from S1/S2 and should close automatically or with minimal adaptation.
 
 **Tasks**:
-- [ ] Read the type signatures of both `countermodel_discrete_enriched` and `countermodel_discrete`
-- [ ] Replace the `sorry` at Completeness.lean:227 with a call to `countermodel_discrete`, specializing D = Int from the existential
-- [ ] Handle any type adaptation between the enriched and generic existential forms
-- [ ] Run `#print axioms countermodel_discrete_enriched` and confirm no `sorryAx`
-- [ ] Run `lake build` to confirm no regressions
-
-**Timing**: 1-2 hours
-
-**Depends on**: A3
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- wire enriched to discrete (~10-30 lines)
-
-**Verification**:
-- `#print axioms countermodel_discrete_enriched` shows no `sorryAx`
-- `lake build` passes
-
----
-
-### Phase A5: Verify bx_completeness Axiom Cleanliness [NOT STARTED]
-
-**Goal**: Confirm that `bx_completeness` has no `sorryAx` and that the definition of done is fully met.
-
-**Tasks**:
-- [ ] Run `#print axioms bx_completeness` (or `completeness_discrete`)
-- [ ] Confirm output shows only `propext`, `Classical.choice`, `Quot.sound` (standard Lean axioms)
-- [ ] Verify no `sorryAx` appears anywhere in the output
-- [ ] Run `lake build` -- confirm zero errors
-- [ ] Verify `doets_countermodel_discrete` uses the Reynolds pipeline path, not the chronicle fallback
-- [ ] Search for any `axiom` declarations in `Theories/Bimodal/Metalogic/WeakCanonical/` -- confirm none exist
-
-**Timing**: 0.5-1 hour
-
-**Depends on**: A4
-
-**Files to modify**:
-- None (verification only)
-
-**Verification**:
-- `#print axioms bx_completeness` shows no `sorryAx`
-- `lake build` passes with zero errors
-- Definition of done is met
-
----
-
-### Phase B1: h_fwd_r1 Rank Fix (r+1 to r+2) [COMPLETED]
-
-**Goal**: Fix the rank off-by-one in h_fwd_r1 across 6 signature locations. This is always required regardless of which formula C approach is chosen, because `std_snce` adds +2 to stavi_depth, making C' = neg(C) or K^-(neg(C)) have depth r+2 (not r+1).
-
-**Tasks**:
-- [x] Identify all 6 signature locations where h_fwd_r1 uses rank r+1 (expected in ExpressivenessGeneral.lean) *(completed: all 6 already use r+2 — done in earlier session)*
-- [x] Change each from r+1 to r+2 (~30 lines total) *(completed: already done in earlier session)*
-- [x] Verify that the forward game budget (rank r+4(n+1)) accommodates r+2 (r+2 << r+4 for n >= 0) *(completed: confirmed)*
-- [x] Run `lake build` to confirm no regressions *(completed: no errors in diagnostic messages)*
-- [x] Verify no new sorry sites introduced by the rank change *(completed: sorry count unchanged)*
-
-**Timing**: 1-2 hours
-
-**Depends on**: none
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- 6 signature locations (~30 lines)
-
-**Verification**:
-- `lake build` passes
-- All existing proofs that depend on h_fwd_r1 still compile (the wider budget accommodates the change)
-
----
-
-### Phase B2: Atom Type Verification (Decision Gate) [COMPLETED]
-
-**Goal**: Determine whether `StaviFormula` in the relevant context uses `Fintype` atoms (enabling Approach A: direct enumeration) or infinite `Atom` (requiring Approach C: case-split). This is the critical decision gate for formula C resolution.
-
-**Tasks**:
-- [x] Check the type parameter of `StaviFormula` where it is used in `stavi_temporal_truth_mu` -- is it parameterized by `Atom` (infinite: `Countable + Infinite`) or `muSig sig` (finite: `Fintype`)? *(completed: StaviFormula is monomorphic with infinite Formula atoms — NOT Fintype)*
-- [x] If `muSig sig` (Fintype): verify that `Fintype { A : StaviFormula // stavi_depth A <= r }` is constructible *(deviation: skipped — atoms are NOT Fintype; Approach A is not viable)*
-- [x] If `Atom` (infinite): confirm that `Fintype` for bounded StaviFormulas is impossible *(completed: confirmed — StaviFormula uses Formula (infinite), not muSig sig)*
-- [x] Check whether `NormalForm (muSig sig) (2*r) 1` already has a `Fintype` instance (expected yes) *(completed: NormalForm IS Fintype and already used in pigeonhole machinery)*
-- [x] Document the decision: Approach A (atoms are Fintype) or Approach C (atoms are infinite) *(completed: DECISION = Approach C — case-split; Approach A blocked by infinite atoms)*
-
-**Timing**: 1-2 hours
-
-**Depends on**: B1
-
-**Files to modify**:
-- None (analysis only)
-
-**Verification**:
-- Clear written determination of atom type in the relevant context
-- Clear decision on Approach A vs Approach C for Phase B3
-
----
-
-### Phase B3: Formula C Resolution [NOT STARTED]
-
-**Goal**: Resolve the formula C predicate-vs-formula gap that causes 7 of the 14 critical-path sorry sites (S1, S2, S3, S4, S5 in lines 3901, 3935, 4412, 4424, 4468). The approach depends on Phase B2's determination.
-
-**IF Approach A (atoms are Fintype)**:
-
-**Tasks**:
-- [ ] Build `Fintype { A : StaviFormula // stavi_depth A <= r }` (~150-200 lines)
-- [ ] Define `interval_type_formula : StaviFormula` as the conjunction of all depth-r StaviFormulas holding on the interval (a_n, y') (~50 lines)
-- [ ] Prove `cont_holds a_n y' t <-> stavi_temporal_truth_mu N atomMap r t (interval_type_formula a_n y')` (~100 lines)
-- [ ] Construct C' = neg(C) or K^-(neg(C)) as a StaviFormula of depth r+2 (~30 lines)
-- [ ] Close all 7 Claim 1 sorry sites via GHR93's 5-line proof (~80 lines)
-- [ ] Delete ~360 lines of pigeonhole machinery (net code reduction)
-- [ ] Run `lake build` to confirm no regressions
-
-**IF Approach C (case-split, atoms are infinite)**:
-
-**Tasks**:
-- [ ] Re-map the case-split from reports 38/39 to CURRENT sorry site locations (3901, 3935, 4412, 4424, 4468) -- the old targets (2307-2825) are outdated
+- [ ] Re-map the case-split from reports 38/39 to CURRENT sorry site locations (3901, 3935) -- the old targets (2307-2825) are outdated
 - [ ] Implement case-split on `cont_holds` at infimum c_inf:
   - Case A (cont_holds FAILS at c_inf): extract witnessing formula A directly from negation (~60 lines)
   - Case B (cont_holds HOLDS at c_inf): all failures strictly below c_inf, strict pigeonhole applies cleanly (~80 lines)
-- [ ] Build truth-at-gap lemma for S2 (line 3935) gap sub-case: if A holds at all approaching carrier points, it holds at the gap (~80 lines)
-- [ ] Close S1 (line 3901, boundary case: r2_resp = rank_embed(y')) via dedicated boundary analysis (~30 lines)
-- [ ] Close S3 (line 4412, h_cont_transfer_mr multi-round adaptation) -- this may close automatically from the case-split or need mechanical adaptation (~65 lines)
-- [ ] Close S4 (line 4424, h_mr_resp_le_d multi-round) and S5 (line 4468, multi-round gap case) similarly
+- [ ] Close S1 (line 3901, boundary case: `r2_resp = rank_embed(y')`) via dedicated boundary analysis (~30 lines)
+- [ ] Close S2 (line 3935, gap `r2_resp` + formula materialization): build truth-at-gap lemma -- if A holds at all approaching carrier points, it holds at the gap (~80 lines)
+- [ ] Close S4 (line 4424, multi-round `K^-(~D_M)`): this inherits from S1/S2 resolution -- verify it closes from the case-split or adapt (~30 lines)
 - [ ] Run `lake build` to confirm no regressions
 
-**Timing**: 2 hours (Approach A) or 2 hours (Approach C)
+**Timing**: 2-3 hours
 
-**Depends on**: B2
+**Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- formula C resolution (~200-400 lines depending on approach)
-- Possibly `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/EFGames.lean` -- if Approach A needs Fintype infrastructure there
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- formula C case-split resolution (~240 lines)
 
 **Verification**:
-- Sorry sites S1-S5 (lines 3901, 3935, 4412, 4424, 4468) are closed
+- Sorry sites S1, S2, S4 (lines 3901, 3935, 4424) are closed
 - `lake build` passes
 - `#print axioms` on affected lemmas shows no new `sorryAx`
 
 ---
 
-### Phase B4: Mechanical Sorry Closure (S3, S5, S8) [NOT STARTED]
+### Phase 3: SplitPointProps Extension for S8 + Case II Ordering S9/S10 [NOT STARTED]
 
-**Goal**: Close the three Tier 1 mechanical sorry sites that are independent of the formula C resolution. These are pure index arithmetic adaptations.
+**Goal**: Close S8 by extending `SplitPointProps` to export `c <= e_n` (or deriving it within `ghr93_case_II`), then close S9 and S10 which are cross-boundary sigma strategy instantiations.
 
 **Tasks**:
-- [ ] Close S3 (line 4412, h_cont_transfer_mr): mechanical copy of h_cont_transfer with multi-round indices, per report 30_mechanical-strategy (~65 lines)
-- [ ] Close S5 (line 4468, h_mr_resp_ge_d gap case): mirror of existing gap proof with adapted indices (~255 lines)
-- [ ] Close S8 (line 5945, Case II cross-boundary ordering): sigma strategy instantiation for `x' < d <-> x < c` (~50 lines)
-- [ ] Run `lake build` after each closure
+- [ ] Analyze whether `c <= e_n` can be derived inside `ghr93_case_II` from `hord_fwd` combined with N-side constraint `a_N(n) <= d`, OR whether `SplitPointProps` needs to export this bound
+- [ ] If SplitPointProps extension needed: add `hc_le_en : c <= e_n` field and prove it in `obtain_split_point_props` (~80 lines)
+- [ ] If derivable in place: establish `a_N(n) <= d` from the tau game and chain through `hord_fwd` (~50 lines)
+- [ ] Close S8 (line 5945, `same_order_type_grid` remaining goals): use `c <= e_n` to resolve the 5-6 cross-boundary ordering sub-goals (~50 lines)
+- [ ] Close S9 (line 6045): sigma strategy instantiation for `same_order_type` goal, extractable from `hgp_cd`/`hcd_boundary` hypotheses (~50 lines)
+- [ ] Close S10 (line 6098): related ordering goal in Case II (~50 lines)
+- [ ] Run `lake build` to confirm no regressions
 
-**Timing**: 2 hours
+**Timing**: 2-3 hours
 
-**Depends on**: B3 (S3 and S5 may already be closed if Phase B3 resolves them; skip if so)
+**Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- ~370 lines across 3 sorry sites
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- SplitPointProps extension + Case II ordering (~200-250 lines)
 
 **Verification**:
-- Sorry sites S3, S5, S8 are closed
+- Sorry sites S8, S9, S10 (lines 5945, 6045, 6098) are closed
 - `lake build` passes
 
 ---
 
-### Phase B5: Position-Tracking Fix (S6, S7) [NOT STARTED]
+### Phase 4: Position-Tracking Fix S6 + S7 [NOT STARTED]
 
 **Goal**: Close the position-tracking sorry sites at lines 4483 and 4508, which are structurally different from the formula C cluster. After `rank_down` projects from rank r+2 to rank r, position-level tracking (`a'_rd(position) = d`) is lost.
 
@@ -381,10 +205,10 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 
 **Timing**: 1-2 hours
 
-**Depends on**: B3 (position-tracking context is within the Claim 1 proof structure modified by B3)
+**Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- position-tracking fix (~50-200 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- position-tracking fix (~50-200 lines)
 
 **Verification**:
 - Sorry sites S6, S7 (lines 4483, 4508) are closed
@@ -392,30 +216,7 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 
 ---
 
-### Phase B6: Case II Ordering (S8, S9, S10) [NOT STARTED]
-
-**Goal**: Close the three Case II ordering sorry sites that require cross-boundary ordering lemmas relating sigma and tau strategies.
-
-**Tasks**:
-- [ ] Close S8 (line 5945, if not already closed in B4): cross-boundary ordering goal `x' < d <-> x < c` from sigma strategy
-- [ ] Close S9 (line 6045): same_order_type goal, extractable from `hgp_cd`/`hcd_boundary` hypotheses
-- [ ] Close S10 (line 6098): related ordering goal in Case II
-- [ ] Run `lake build` to confirm no regressions
-
-**Timing**: 1-2 hours
-
-**Depends on**: B4 (S8 may already be closed)
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- Case II ordering (~100-150 lines)
-
-**Verification**:
-- Sorry sites S8, S9, S10 are closed
-- `lake build` passes
-
----
-
-### Phase B7: Cases III/IV + Lemma 10 (S11, S12) [NOT STARTED]
+### Phase 5: Cases III/IV + Lemma 10 (S11, S12) [NOT STARTED]
 
 **Goal**: Close the Cases III/IV gap-detection sorry (S11) and the Lemma 10 strategy-restriction sorry (S12).
 
@@ -424,20 +225,20 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 - [ ] Close S12 (line 7390, Lemma 10 strategy restriction): sub-interval strategy restriction for `ghr93_forward_to_backward_rank_varying` (~150-200 lines)
 - [ ] Run `lake build` to confirm no regressions
 
-**Timing**: 2 hours
+**Timing**: 2-3 hours
 
-**Depends on**: B6
+**Depends on**: 3, 4
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- Cases III/IV + Lemma 10 (~250-350 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- Cases III/IV + Lemma 10 (~250-350 lines)
 
 **Verification**:
-- Sorry sites S11, S12 are closed
+- Sorry sites S11, S12 (lines 7028, 7390) are closed
 - `lake build` passes
 
 ---
 
-### Phase B8: Keystone Sorry -- NF Characterization (S13) [NOT STARTED]
+### Phase 6: Keystone Sorry -- NF Characterization (S13) [NOT STARTED]
 
 **Goal**: Close the keystone sorry at EFGames.lean:10086 -- the inductive step of `nf_characterizable_by_stavi`. This is the central theorem of the GHR93 formalization: every NormalForm at depth k+1 is characterizable by a StaviFormula.
 
@@ -445,16 +246,16 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 - [ ] Read the current structure of `nf_characterizable_by_stavi` and identify exactly what the inductive step requires
 - [ ] The base case (k=0) is proved via `nf_base_sf` (sorry-free)
 - [ ] The inductive step for k+1 NFs requires handling 2-variable NFs (`NormalForm sig k 2`) -- characterizing the joint type of a pair (x, t) using Until/Since connectives
-- [ ] Implement the inductive step using the game-theoretic argument from GHR93 Theorem 6/Proposition 7
-- [ ] This requires all previous phases (S1-S12 closed), as the proof uses the four-case analysis
+- [ ] Implement the inductive step using the game-theoretic argument from GHR93 Theorem 6/Proposition 7, which relies on the four-case analysis proved in Phases 2-5
+- [ ] This requires all previous S1-S12 closed, as the inductive step invokes the four-case analysis
 - [ ] Run `lake build` to confirm no regressions
 
-**Timing**: 2 hours (may require additional research if blocked)
+**Timing**: 2-4 hours (may require additional research if blocked)
 
-**Depends on**: B7
+**Depends on**: 5
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/EFGames.lean` -- NF characterization inductive step (~200-400 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- NF characterization inductive step (~200-400 lines)
 
 **Verification**:
 - Sorry site S13 (EFGames.lean:10086) is closed
@@ -463,70 +264,121 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 
 ---
 
-### Phase B9: Reynolds Theorem 5 -- no_gaps_discrete (S14) [NOT STARTED]
+### Phase 7: Reynolds Theorem 5 -- no_gaps_discrete (S14) [NOT STARTED]
 
-**Goal**: Close S14 (`no_gaps_discrete` in IntegerModel.lean) -- Reynolds Theorem 5 showing that the integer model has no gaps. This is the final sorry site in the GHR93 pipeline.
+**Goal**: Close S14 (`no_gaps_discrete` in IntegerModel.lean) -- Reynolds Theorem 5 showing that the integer model has no gaps. This uses `nf_characterizable_by_stavi` to show every NF is a StaviFormula, then argues that every type realized in the integer model is a principal type (no gaps possible).
 
 **Tasks**:
 - [ ] Read the current state of `no_gaps_discrete` in IntegerModel.lean
-- [ ] Implement the proof using the gap elimination argument for Prior structures (Reynolds 1992)
-- [ ] This may use the `Fintype (BoundedStaviFormula r)` infrastructure if built in Phase B3 (Approach A)
+- [ ] Implement the proof using the gap elimination argument for Prior structures (Reynolds 1992): since every NF is characterizable by a StaviFormula (Phase 6), and StaviFormulas are determined by their truth at integer points, gaps in the integer model would require a type not characterizable by any StaviFormula -- contradiction
 - [ ] Run `lake build` to confirm no regressions
 
 **Timing**: 1-2 hours
 
-**Depends on**: B8
+**Depends on**: 6
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/IntegerModel.lean` -- no_gaps_discrete (~100-200 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` -- no_gaps_discrete (~100-200 lines)
 
 **Verification**:
 - Sorry site S14 is closed
 - `#print axioms no_gaps_discrete` shows no `sorryAx`
 - `lake build` passes
-- All 14 GHR93 critical-path sorry sites are closed
+
+---
+
+### Phase 8: Close succ_cofinal via Gap Elimination [NOT STARTED]
+
+**Goal**: Prove `succ_cofinal` (ChronicleToCountermodel.lean:1885) -- the root sorry blocking `bx_completeness`. With `nf_characterizable_by_stavi` (Phase 6) and `no_gaps_discrete` (Phase 7) in hand, the gap elimination argument shows `LimitDomSubtype` satisfies `IsSuccArchimedean`: every point has a successor, because otherwise there would be a gap in the type space, contradicting `no_gaps_discrete`.
+
+**Tasks**:
+- [ ] Read the current state of `succ_cofinal` and `limitDomSubtype_isSuccArchimedean` in ChronicleToCountermodel.lean
+- [ ] Wire `no_gaps_discrete` + `nf_characterizable_by_stavi` to prove `IsSuccArchimedean` for `LimitDomSubtype`
+- [ ] The argument: if there existed a point x in `LimitDomSubtype` with no successor, the interval (x, ...) would contain a gap. But `no_gaps_discrete` on the integer model (via the chronicle's OrderIso) shows no such gap exists. Therefore every point has a successor.
+- [ ] Close `succ_cofinal` -- this makes `succ_embed_surjective`, `cantor_bfmcs_discrete_restricted_tc`, and `cantor_bfmcs_discrete_restricted_fuc` all sorry-free
+- [ ] Verify `#print axioms dd_countermodel_chronicle_discrete` shows no `sorryAx`
+- [ ] Run `lake build` to confirm no regressions
+
+**Timing**: 2-4 hours
+
+**Depends on**: 6, 7
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- succ_cofinal proof (~100-300 lines)
+
+**Verification**:
+- `succ_cofinal` sorry is closed
+- `#print axioms dd_countermodel_chronicle_discrete` shows no `sorryAx`
+- `#print axioms countermodel_discrete` shows no `sorryAx`
+- `lake build` passes
+
+---
+
+### Phase 9: Final Wiring + Verification [NOT STARTED]
+
+**Goal**: Wire `countermodel_discrete_enriched` to `countermodel_discrete` (closing the sorry at Completeness.lean:227) and verify that `bx_completeness` is entirely sorry-free.
+
+**Tasks**:
+- [ ] Read the type signatures of both `countermodel_discrete_enriched` and `countermodel_discrete`
+- [ ] Replace the `sorry` at Completeness.lean:227 with a call to `countermodel_discrete`, specializing D = Int from the existential
+- [ ] Handle any type adaptation between the enriched and generic existential forms
+- [ ] Run `#print axioms countermodel_discrete_enriched` and confirm no `sorryAx`
+- [ ] Run `#print axioms bx_completeness` (or `completeness_discrete`)
+- [ ] Confirm output shows only `propext`, `Classical.choice`, `Quot.sound` (standard Lean axioms)
+- [ ] Verify no `sorryAx` appears anywhere in the output
+- [ ] Run `lake build` -- confirm zero errors
+- [ ] Verify `doets_countermodel_discrete` uses the Reynolds pipeline path, not the chronicle fallback
+- [ ] Search for any `axiom` declarations in `Theories/Bimodal/Metalogic/WeakCanonical/` -- confirm none exist
+
+**Timing**: 1-2 hours
+
+**Depends on**: 8
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- wire enriched to discrete (~10-30 lines)
+
+**Verification**:
+- `#print axioms bx_completeness` shows no `sorryAx`
+- `lake build` passes with zero errors
+- Definition of done is met
 
 ---
 
 ## Testing & Validation
 
 - [ ] `lake build` passes with zero errors after each phase
+- [ ] All 14 GHR93 critical-path sorry sites closed: S1-S14
+- [ ] `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
+- [ ] `#print axioms no_gaps_discrete` shows no `sorryAx`
+- [ ] `succ_cofinal` sorry is closed (root sorry for bx_completeness)
 - [ ] `#print axioms bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound` (standard Lean axioms)
 - [ ] No `sorryAx` in the axiom output for `bx_completeness`
 - [ ] `doets_countermodel_discrete` uses Reynolds pipeline (no chronicle fallback)
-- [ ] OrderIso-based coherence proofs are individually sorry-free (`#print axioms` on each)
-- [ ] (Track B) All 14 GHR93 critical-path sorry sites closed: S1-S14
-- [ ] (Track B) `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
-- [ ] (Track B) `#print axioms no_gaps_discrete` shows no `sorryAx`
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` -- OrderIso-based countermodel construction (Track A)
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- `countermodel_discrete_enriched` wired to `countermodel_discrete` (Track A)
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ExpressivenessGeneral.lean` -- formula C resolution + mechanical sorry closure + position tracking + Case II ordering + Cases III/IV (Track B)
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/EFGames.lean` -- NF characterization inductive step (Track B)
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/IntegerModel.lean` -- no_gaps_discrete (Track B)
-- Possibly new file for OrderIso coherence lemmas (Track A, Phase A2 design decision)
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- formula C resolution + mechanical sorry closure + position tracking + Case II ordering + Cases III/IV (Phases 1-5)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean` -- NF characterization inductive step (Phase 6)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` -- no_gaps_discrete (Phase 7)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- succ_cofinal proof (Phase 8)
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- countermodel_discrete_enriched wired to countermodel_discrete (Phase 9)
 - `specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md` -- this plan
 
 ## Rollback/Contingency
 
-**If Track A (OrderIso bypass) fails at Phase A1** (type mismatch that cannot be bridged):
-1. Track B becomes the sole path to sorry-free `bx_completeness`
-2. Track B phases B1-B9 must all succeed for the GHR93 pipeline to be fully sorry-free
-3. Estimated effort increases to 30-40+ hours with higher uncertainty on Phases B7-B9
-4. The key risk becomes Phases B7/B8 (Lemma 10 and NF characterization), which have the highest uncertainty
+**If Phase 2 (formula C case-split) is blocked**:
+1. Re-examine whether a hybrid approach using `NormalForm (muSig sig)` (which IS Fintype) can partially substitute for formula C without circular NF->StaviFormula inversion
+2. Alternatively, investigate whether the case-split can be decomposed differently (e.g., splitting on individual formula truth rather than `cont_holds` at infimum)
+3. Document exactly which sub-goals remain open for future sessions
 
-**If Phase B2 determines atoms are infinite** (blocking Approach A):
-1. Use Approach C (case-split) in Phase B3 -- this is fully viable and non-circular
-2. The case-split closes S1/S2 and contributes to S3-S5 closure
-3. The `Fintype (BoundedStaviFormula r)` infrastructure becomes a separate future task
-4. S13 (NF characterization) may need alternative infrastructure beyond what the case-split provides
+**If Phase 6 (NF characterization, S13) is blocked**:
+1. This is the highest-risk phase. If the inductive step requires infrastructure beyond what Phases 1-5 provide, document what is missing
+2. S13 blocking does not prevent closing S1-S12 (valuable partial progress)
+3. A dedicated research round on the 2-variable NF characterization may be needed
 
-**If Phase B8 (NF characterization) is blocked**:
-1. Track A already achieves sorry-free `bx_completeness` -- the project's primary goal is met
-2. S13 and dependent S14 are documented as future work
-3. The GHR93 formalization remains a valuable partial contribution (S1-S12 closed, S13-S14 open)
-4. A dedicated research round on the 2-variable NF characterization may be needed
+**If Phase 8 (succ_cofinal via gap elimination) is blocked**:
+1. The gap elimination argument may require additional intermediate lemmas connecting `no_gaps_discrete` (on the integer model) to `IsSuccArchimedean` (on `LimitDomSubtype`)
+2. If blocked, document the precise gap and recommend Task 129 (Henkin canonical model approach) as an alternative path to sorry-free `bx_completeness`
+3. All S1-S14 closures remain valuable as standalone GHR93 formalization progress
 
 **General rollback**: All changes are committed after each phase. Git history enables rollback to any phase boundary.
