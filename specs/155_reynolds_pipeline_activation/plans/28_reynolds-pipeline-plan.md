@@ -141,6 +141,7 @@ Phases within the same wave can execute in parallel.
 ### Phase 2: Pigeonhole + K⁻(¬D) Bridge (Unified S1/S2/S4/S7-right Resolution) [IN PROGRESS]
 - **Started**: 2026-05-24T17:30:00Z
 - **Revised**: 2026-05-24T20:00:00Z — Definitive resolution found (report 29_cont-holds-refactoring.md)
+- **Progress**: 2026-05-24T21:00:00Z — S1 CLOSED via K⁻(¬D_M) pigeonhole argument (+commit d20541402). One 30-line sub-sorry remains (d-is-gap Since witness). S2 gap case still blocked.
 
 **Goal**: Build 3 bridge lemmas connecting existing pigeonhole output D to the K⁻ transfer argument. This closes S1, S2, S4, and S7-right UNIFORMLY — no point/gap case split needed.
 
