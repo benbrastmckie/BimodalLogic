@@ -4369,47 +4369,57 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
                 (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
           a'_full ⟨1 + 3 * n, by omega⟩ = d := by
     intro _hx'd _hdy' a_pad ha_pad hc_last
-    -- Apply ghr93_duplicator_wins_rank_down to h_fwd_r1 (reduced to 1+3n+1 rounds)
-    -- to get a rank-r strategy. This provides bounds and winning condition.
-    -- Position tracking at index 1+3n uses the Claim 1 argument.
+    -- Step 1: Play the multi-round rank r+2 game with rank_embed(a_pad).
     have h_mr1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) (r + 2)
         (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
         (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y') :=
       ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n)
         ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
         ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y') h_fwd_r1
-    -- Apply rank_down to get the rank-r strategy
+    -- Embed a_pad to rank r+2
+    have ha_pad_r2 : ∀ i, inClosedInterval
+        (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+        (rank_embed (by omega : r ≤ r + 2) (a_pad i)) :=
+      fun i => (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x y (a_pad i)).mpr (ha_pad i)
+    obtain ⟨a'_mr, ha'_mr_in, hwin_mr⟩ := h_mr1
+      (fun i => rank_embed (by omega : r ≤ r + 2) (a_pad i)) ha_pad_r2
+    -- Step 2: The rank r+2 response at position 1+3n agrees with
+    -- rank_embed(c_inf) on depth r+2 formulas (from winning condition).
+    -- Combined with hform_r2_1, it agrees with rank_embed(d) at depth r+2.
+    -- By the SAME K⁻(¬D) argument that proved h_r2_eq, this response
+    -- must equal rank_embed(d).
+    -- We use rank_down as a theorem to get rank-r bounds + winning condition,
+    -- and separately track position 1+3n.
+    -- Step 3: Apply rank_down to get rank-r responses with bounds and winning.
     have h_rank_r : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
       ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 2) (by omega : r + 2 ≤ r + 2)
         hxy hx'y' h_mr1
-    -- Apply the rank-r strategy to a_pad
-    obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_rank_r a_pad ha_pad
-    -- The rank-r strategy provides bounds and winning condition.
-    -- For position tracking, we need a'_full(1+3n) = d.
-    -- This follows because rank_down's projection maps rank_embed(d) → d,
-    -- and the rank r+2 game response at position 1+3n = rank_embed(d)
-    -- (by Claim 1, already proved via h_r2_eq for the 1-round case).
+    obtain ⟨a'_rd, ha'_rd, hwin_rd⟩ := h_rank_r a_pad ha_pad
+    -- We have a'_rd with bounds and winning at rank r.
+    -- We also have a'_mr (rank r+2 response from h_mr1 played with rank_embed(a_pad)).
+    -- The rank_down theorem internally projects a'_mr to get a'_rd.
+    -- Since rank_down is opaque, we can't access this relationship directly.
+    -- Instead, we construct a'_full that agrees with a'_rd at all positions
+    -- except potentially 1+3n, where we set it to d.
+    -- But we need the winning condition to still hold.
+    -- The key: a'_rd(1+3n) and d agree on all rank-r formulas and gap/point,
+    -- so the winning condition is preserved under substitution IF the order
+    -- type is preserved. This is the GHR93 Claim 1 argument.
     --
-    -- However, rank_down is a black box — we don't have access to the
-    -- specific response it produces internally. So we need a different approach.
+    -- Actually, the cleanest approach: just return a'_rd and prove a'_rd(1+3n) = d.
+    -- This requires the K⁻(¬D) argument showing the rank r+2 response at
+    -- position 1+3n is rank_embed(d), which projects to d.
+    -- But rank_down is opaque, so we can't directly access the rank r+2 response.
     --
-    -- Alternative: show that a'_full(1+3n) must equal d using the winning
-    -- condition's formula agreement + the infimum properties.
+    -- ALTERNATIVE: Extract formula agreement from hwin_rd at position 1+3n
+    -- and use hform_r2_1 to show agreement at depth r+2, then Claim 1.
+    -- But hwin_rd gives depth r agreement (not r+2).
     --
-    -- From the winning condition, for any carrier point b' in [x',y'],
-    -- the game tuple at position 1+3n on the M side is a_pad(1+3n) = c_inf,
-    -- and on the N side is a'_full(1+3n). Formula agreement at depth r says
-    -- c_inf and a'_full(1+3n) agree on all rank-r formulas.
-    -- Combined with hform_cd (c_inf ↔ d at depth r), a'_full(1+3n) agrees
-    -- with d on all rank-r formulas.
-    -- Gap/point agreement also transfers.
-    --
-    -- At rank r, this doesn't uniquely determine a'_full(1+3n) = d.
-    -- But rank_down's internal construction guarantees this because it
-    -- projects rank_embed(d) at rank r+2 to d at rank r.
-    -- Since we can't access rank_down's internals, we prove it by
-    -- contradiction using the infimum properties.
-    sorry
+    -- CONCLUSION: We must bypass rank_down and directly construct a'_full
+    -- by inlining the projection. This is too complex for this session.
+    -- Return a'_rd as the response (bounds + winning are satisfied)
+    -- and defer the position constraint.
+    exact ⟨a'_rd, ha'_rd, hwin_rd, sorry⟩
   -- Step 12: GHR93 Claim 1 interior case (right). Mirror of left.
   have h_interior_right : x' ≠ d → d ≠ y' →
       ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
@@ -4423,7 +4433,18 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
                 (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
           a'_full ⟨0, by omega⟩ = d := by
     intro _hx'd _hdy' a_pad ha_pad hc_first
-    sorry
+    -- Mirror of h_interior_left with position 0 instead of 1+3n.
+    have h_mr1 : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) (r + 2)
+        (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+        (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y') :=
+      ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n + 1 ≤ 4 + 3 * n)
+        ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+        ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y') h_fwd_r1
+    have h_rank_r : ghr93_duplicator_wins M N atomMap (1 + 3 * n + 1) r x y x' y' :=
+      ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 2) (by omega : r + 2 ≤ r + 2)
+        hxy hx'y' h_mr1
+    obtain ⟨a'_rd, ha'_rd, hwin_rd⟩ := h_rank_r a_pad ha_pad
+    exact ⟨a'_rd, ha'_rd, hwin_rd, sorry⟩
   -- Step 13: Provide the suffices witness directly from the rank-(r+2) game.
   -- This bypasses t_game entirely — no rank mismatch.
   refine ⟨c_inf, hc_inf_interval, hform_cd, hgp_cd, hbdy_cd, h_interior_left, h_interior_right⟩
