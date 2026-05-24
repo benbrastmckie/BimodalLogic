@@ -6948,6 +6948,56 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
   ghr93_forward_to_backward_core atomMap n (1 + 3 * n) r
     h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h
 
+/-! ## Game Rank Downward Transport (GHR93 Lemma 10, rank part)
+
+If Duplicator wins the game at rank r' with rank-embedded positions from
+rank r, she also wins at rank r. This is the rank-monotonicity part of
+GHR93 Lemma 10: the rank-r' game with rank-embedded endpoints involves
+more carrier elements (more gaps) but also a stronger winning condition
+(formula agreement at depth ≤ r' ≥ r). Crucially, Duplicator's responses
+can always be chosen from rank r, because formula agreement forces gap
+responses to be r-definable (via the K⁺/K⁻ characterization of gaps). -/
+
+/-- **GHR93 Lemma 10** (Game rank downward transport):
+    If Duplicator wins G_{m;r'}(M, xy; N, x'y') with rank-embedded positions
+    (r ≤ r'), then she wins G_{m;r}(M, xy; N, x'y').
+
+    The proof uses GHR93's K⁺/K⁻ argument to show that gap responses at
+    rank r' are r-definable when Spoiler's picks are rank-embedded. -/
+private theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {m r r' : Nat} (hle : r ≤ r')
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h : ghr93_duplicator_wins M N atomMap m r'
+           (rank_embed hle x) (rank_embed hle y)
+           (rank_embed hle x') (rank_embed hle y')) :
+    ghr93_duplicator_wins M N atomMap m r x y x' y' := by
+  -- Spoiler picks m elements from [x,y] at rank r.
+  intro a ha
+  -- Embed Spoiler's picks to rank r'.
+  have ha' : ∀ i, inClosedInterval (rank_embed hle x) (rank_embed hle y)
+      (rank_embed hle (a i)) := by
+    intro i; exact (rank_embed_inClosedInterval hle x y (a i)).mpr (ha i)
+  -- Apply the rank-r' strategy.
+  obtain ⟨a'_r', ha'_r'_in, hwin_r'⟩ := h (fun i => rank_embed hle (a i)) ha'
+  -- For Round 2: carrier points are the same at all ranks.
+  -- If Spoiler challenges with b' : N.carrier in [x',y'], embed to rank r'.
+  -- We construct the rank-r response by processing each a'_r'(i).
+  -- Point responses transfer directly; gap responses are r-definable by
+  -- GHR93 Lemma 10's K⁺/K⁻ argument (formula agreement forces definability).
+  --
+  -- For now, we project rank-r' elements to rank-r elements:
+  -- - Points (Sum.inl q) map to extendPoint q at rank r
+  -- - Gaps (Sum.inr g') are r-definable (by formula agreement), so they
+  --   map to the same gap at rank r.
+  --
+  -- The gap r-definability argument requires constructing the characterizing
+  -- formula D' = (K⁺D ∧ ¬K⁻D) ∨ (K⁻¬D ∧ ¬K⁺D) from GHR93 Lemma 10.
+  -- This is deferred to a follow-up task establishing the full Lemma 10.
+  sorry
+
 /-! ## Rank-Varying Theorem 6
 
 The full GHR93 statement of Theorem 6 uses different ranks for the forward
@@ -6981,11 +7031,119 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
            (rank_embed (by omega : r ≤ r + 4 * n) x')
            (rank_embed (by omega : r ≤ r + 4 * n) y')) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
-  -- Use the uniform-rank version at rank r+4n, then transport back to rank r.
-  -- Step 1: Apply the uniform-rank Theorem 6 at rank r+4n.
-  -- Step 2: The result gives a backward strategy at rank r+4n.
-  -- Step 3: Transport the backward strategy back to rank r using rank_embed properties.
-  -- For now, this is sorry'd pending the full inductive step proof.
-  sorry
+  -- GHR93 Theorem 6 (rank-varying): forward at rank r+4n → backward at rank r.
+  -- Proof by induction on n, with r and all position-dependent data generalized.
+  -- Base (n=0): rank_embed is identity (r+0=r), use forward 1-game directly.
+  -- Step (n→n+1): use ghr93_forward_to_backward at rank r, deriving its
+  -- hypotheses from h via round monotonicity and the IH at rank r+4.
+  revert r x y x' y' hxy hx'y' h_pt h
+  induction n with
+  | zero =>
+    intro r x y x' y' hxy hx'y' h_pt h
+    -- n = 0: Forward 1-game at rank r → backward 0-game at rank r.
+    simp only [Nat.mul_zero, Nat.add_zero] at h
+    -- rank_embed (r ≤ r) is the identity
+    have rank_embed_id_M : ∀ (e : ExtendedCarrier M atomMap r),
+        rank_embed (show r ≤ r + 4 * 0 by omega) e = e := by
+      intro e; cases e with
+      | inl _ => rfl
+      | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
+    have rank_embed_id_N : ∀ (e : ExtendedCarrier N atomMap r),
+        rank_embed (show r ≤ r + 4 * 0 by omega) e = e := by
+      intro e; cases e with
+      | inl _ => rfl
+      | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
+    -- Convert h to use bare positions
+    have h' : ghr93_duplicator_wins M N atomMap 1 r x y x' y' := by
+      simp only [rank_embed_id_M, rank_embed_id_N] at h; exact h
+    -- Backward 0-game: Spoiler picks 0 elements, then point challenge.
+    unfold ghr93_duplicator_wins
+    intro a_bwd _ha_bwd
+    refine ⟨Fin.elim0, fun i => Fin.elim0 i, ?_⟩
+    intro b_sp hb_sp
+    obtain ⟨a'_resp, ha'_resp, hwin_fwd⟩ :=
+      h' (fun _ : Fin 1 => extendPoint b_sp) (fun _ => hb_sp)
+    obtain ⟨p, hp⟩ := h_pt
+    obtain ⟨b_resp, _, hcond_fwd⟩ := hwin_fwd p hp
+    obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
+    have hgp1 := hgp_fwd ⟨1, by omega⟩
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show ¬(1 : Nat) = 1 + 1 from by omega,
+               show ¬(1 : Nat) = 1 + 2 from by omega, dite_false] at hgp1
+    obtain ⟨q, hq_eq⟩ := hgp1.1.mp ⟨b_sp, rfl⟩
+    have hq_in : inClosedInterval x' y' (extendPoint q) := by
+      have := ha'_resp ⟨0, by omega⟩
+      rwa [show extendPoint q = a'_resp ⟨0, by omega⟩ from hq_eq.symm]
+    refine ⟨q, hq_in, ?_⟩
+    rw [show a_bwd = Fin.elim0 from funext (fun i => Fin.elim0 i)]
+    exact ⟨fun i j => by
+        rw [base_case_M_eq x y b_sp b_resp i, base_case_M_eq x y b_sp b_resp j,
+            base_case_N_eq x' y' q p a'_resp hq_eq i,
+            base_case_N_eq x' y' q p a'_resp hq_eq j]
+        exact ⟨(hord_fwd _ _).1.symm, (hord_fwd _ _).2.symm⟩,
+      fun i => by
+        rw [base_case_M_eq x y b_sp b_resp i,
+            base_case_N_eq x' y' q p a'_resp hq_eq i]
+        exact ⟨(hgp_fwd _).1.symm, (hgp_fwd _).2.symm⟩,
+      fun i A hA => by
+        rw [base_case_M_eq x y b_sp b_resp i,
+            base_case_N_eq x' y' q p a'_resp hq_eq i]
+        exact (hform_fwd _ A hA).symm⟩
+  | succ n ih =>
+    intro r x y x' y' hxy hx'y' h_pt h
+    -- Inductive step: forward at rank r + 4*(n+1) with 4+3n rounds
+    -- → backward at rank r with n+1 rounds.
+    --
+    -- Apply ghr93_forward_to_backward at rank r. Its hypotheses are derived
+    -- from h via game rank downward transport (ghr93_duplicator_wins_rank_down).
+    --
+    -- Step 1: Derive h_pt_M (point in M-interval) from the game.
+    have h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p) := by
+      obtain ⟨p_N, hp_N⟩ := h_pt
+      have hp_N' : inClosedInterval (rank_embed (by omega : r ≤ r + 4 * (n + 1)) x')
+          (rank_embed (by omega : r ≤ r + 4 * (n + 1)) y')
+          (extendPoint p_N) := by
+        rw [← rank_embed_point (by omega : r ≤ r + 4 * (n + 1)) p_N]
+        exact (rank_embed_inClosedInterval _ x' y' (extendPoint p_N)).mpr hp_N
+      obtain ⟨a', _, hwin⟩ := h (fun _ => rank_embed (by omega : r ≤ r + 4 * (n + 1)) x)
+        (fun _ => ⟨le_refl _, (rank_embed_le (by omega : r ≤ r + 4 * (n + 1)) x y).mpr hxy⟩)
+      obtain ⟨b, hb, _⟩ := hwin p_N hp_N'
+      refine ⟨b, ?_⟩
+      rw [← rank_embed_point (by omega : r ≤ r + 4 * (n + 1)) b] at hb
+      exact (rank_embed_inClosedInterval (by omega : r ≤ r + 4 * (n + 1)) x y
+        (extendPoint b)).mp hb
+    -- Step 2: Transport forward game from rank r+4(n+1) to rank r.
+    have h_fwd : ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1)) r x y x' y' :=
+      ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 4 * (n + 1)) hxy hx'y' h
+    -- Step 3: Derive h_r1_univ at rank r+2 (for ghr93_forward_to_backward).
+    -- This requires the game on ALL sub-intervals at rank r+2, derived from h
+    -- via rank downward transport (r+4*(n+1) → r+2) with rank_embed composition.
+    have h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
+        {x₁' y₁' : ExtendedCarrier N atomMap r},
+        x₁ ≤ y₁ → x₁' ≤ y₁' →
+        ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1)) (r + 2)
+          (rank_embed (by omega : r ≤ r + 2) x₁)
+          (rank_embed (by omega : r ≤ r + 2) y₁)
+          (rank_embed (by omega : r ≤ r + 2) x₁')
+          (rank_embed (by omega : r ≤ r + 2) y₁') := by
+      intro x₁ y₁ x₁' y₁' hx₁y₁ hx₁'y₁'
+      -- Rank-down from r+4*(n+1) to r+2 on sub-intervals [x₁,y₁].
+      -- This requires the game on [x₁,y₁] at rank r+4*(n+1), obtained
+      -- by applying the game rank UPWARD transport (from r to r+4*(n+1))
+      -- to a rank-r game on [x₁,y₁].
+      --
+      -- However, we only have h on the ORIGINAL interval [x,y], not on
+      -- arbitrary sub-intervals. Deriving universal sub-interval strategies
+      -- requires GHR93 Lemma 10's full argument or strategy restriction.
+      --
+      -- For the rank-varying theorem, h_r1_univ is derivable from h via:
+      -- 1. Round-mono: h has enough rounds (4+3n ≥ 1+3n+1)
+      -- 2. Strategy restriction: the (n+1)-round game restricts to sub-intervals
+      -- 3. Rank-down: from r+4(n+1) to r+2
+      -- This chain requires the full Lemma 10 + strategy restriction.
+      -- Deferred to the Lemma 10 implementation.
+      sorry
+    -- Step 4: Apply the uniform-rank forward-to-backward transfer at rank r.
+    exact ghr93_forward_to_backward atomMap (n + 1) r hxy hx'y' h_pt h_pt_M h_fwd h_r1_univ
 
 end Bimodal.Metalogic.WeakCanonical
