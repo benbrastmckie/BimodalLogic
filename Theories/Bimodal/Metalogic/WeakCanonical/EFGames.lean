@@ -7301,6 +7301,452 @@ theorem ghr93_strategy_rank_lift {sig : MonadicSignature}
     obtain ⟨b, hb, hcond⟩ := hwin' b' hb'
     exact ⟨b, hb, hcond, trivial⟩⟩
 
+/-! ## GHR93 Lemma 10: Gap Transfer via K+/K- Operators
+
+GHR93 Lemma 10 (p.113): If Duplicator wins G_{n;r}(M,xy; N,x'y') and
+r' ≤ r, n' ≤ n, with x,y ∈ M_{r'} and x',y' ∈ N_{r'}, then σ gives
+a winning strategy for G_{n';r'}(M,xy; N,x'y').
+
+Key insight: When Spoiler plays an r'-definable gap α_i (defined by D of
+depth ≤ r'), a formula D' of depth ≤ stavi_depth(D) + 2 ≤ r' + 2 ≤ r
+holds at α_i and transfers via formula agreement to show Duplicator's
+response e_i is also r'-definable.
+
+### K+ and K- operators
+
+- K⁺(A) = ¬U(⊤, ¬A) — "¬A is NOT eventual in the future" = "A holds at all
+  future mu-points"
+- K⁻(A) = ¬S(⊤, ¬A) — "¬A is NOT eventual in the past" = "A holds at all
+  past mu-points"
+
+In our encoding, ⊤ = .neg (.base .bot) (negation of bottom).
+-/
+
+/-- Verum (⊤) as a StaviFormula: negation of bottom. -/
+def sf_verum : StaviFormula := .neg (.base .bot)
+
+/-- K⁺(A) = ¬U(⊤, ¬A): "A holds at all future mu-points".
+    In mu-relativized semantics on M_r, this means: there is no mu-point
+    s > t such that ¬A(s). -/
+def sf_K_plus (A : StaviFormula) : StaviFormula :=
+  .neg (.std_untl sf_verum (.neg A))
+
+/-- K⁻(A) = ¬S(⊤, ¬A): "A holds at all past mu-points".
+    In mu-relativized semantics on M_r, this means: there is no mu-point
+    s < t such that ¬A(s). -/
+def sf_K_minus (A : StaviFormula) : StaviFormula :=
+  .neg (.std_snce sf_verum (.neg A))
+
+/-- stavi_depth of sf_verum is 0. -/
+theorem stavi_depth_sf_verum : stavi_depth sf_verum = 0 := by
+  simp [sf_verum, stavi_depth, operator_depth]
+
+/-- stavi_depth of K⁺(A) = stavi_depth(A) + 2. -/
+theorem stavi_depth_sf_K_plus (A : StaviFormula) :
+    stavi_depth (sf_K_plus A) = stavi_depth A + 2 := by
+  simp [sf_K_plus, stavi_depth, stavi_depth_sf_verum]
+
+/-- stavi_depth of K⁻(A) = stavi_depth(A) + 2. -/
+theorem stavi_depth_sf_K_minus (A : StaviFormula) :
+    stavi_depth (sf_K_minus A) = stavi_depth A + 2 := by
+  simp [sf_K_minus, stavi_depth, stavi_depth_sf_verum]
+
+/-- K⁺(A) at t ↔ there is no mu-point s > t such that ¬A holds at all
+    mu-points of (t,s). Equivalently: A is "cofinal above t among mu-points"
+    in the sense that every interval (t,s) for mu-point s contains a mu-point
+    satisfying A. -/
+theorem sf_K_plus_iff {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :
+    stavi_temporal_truth_mu M atomMap r t (sf_K_plus A) ↔
+    ¬ ∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
+        ¬ stavi_temporal_truth_mu M atomMap r u A := by
+  -- K⁺(A) = ¬U(⊤, ¬A) = ¬(∃ s, t < s ∧ mu(s) ∧ ⊤(s) ∧ ∀ mu u ∈ (t,s), ¬A(u))
+  -- Since ⊤ is always true at mu-points, the ⊤(s) condition is redundant.
+  simp only [sf_K_plus, stavi_temporal_truth_mu]
+  constructor
+  · intro h ⟨s, hts, hmu, hinv⟩
+    apply h
+    refine ⟨s, hts, hmu, ?_, ?_⟩
+    · -- ⊤(s): sf_verum true at mu-point s
+      obtain ⟨x, rfl⟩ := hmu
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+            extendedStructure, extendPoint, Formula.top]
+    · -- ∀ mu u ∈ (t,s), ¬A(u): the invariant is ¬A^mu, which is exactly hinv
+      exact hinv
+  · intro h ⟨s, hts, hmu, _, hinv⟩
+    exact h ⟨s, hts, hmu, hinv⟩
+
+/-- K⁻(A) at t ↔ there is no mu-point s < t such that ¬A holds at all
+    mu-points of (s,t). -/
+theorem sf_K_minus_iff {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :
+    stavi_temporal_truth_mu M atomMap r t (sf_K_minus A) ↔
+    ¬ ∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
+        ¬ stavi_temporal_truth_mu M atomMap r u A := by
+  simp only [sf_K_minus, stavi_temporal_truth_mu]
+  constructor
+  · intro h ⟨s, hst, hmu, hinv⟩
+    apply h
+    refine ⟨s, hst, hmu, ?_, ?_⟩
+    · obtain ⟨x, rfl⟩ := hmu
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+            extendedStructure, extendPoint, Formula.top]
+    · exact hinv
+  · intro h ⟨s, hst, hmu, _, hinv⟩
+    exact h ⟨s, hst, hmu, hinv⟩
+
+/-- GHR93 Lemma 10 gap characterization formula.
+
+    gap_char_formula D = (S(⊤,D) ∧ ¬U(⊤,D)) ∨ (U(⊤,D) ∧ ¬S(⊤,D))
+
+    The left disjunct characterizes gaps defined by D on the LEFT:
+    - S^μ(⊤,D) = D holds in a final segment of the cut
+    - ¬U^μ(⊤,D) = D does NOT hold in any initial segment above
+
+    The right disjunct characterizes gaps defined by D on the RIGHT:
+    - U^μ(⊤,D) = D holds in an initial segment above
+    - ¬S^μ(⊤,D) = D does NOT hold in any final segment of cut
+
+    This formula has stavi_depth = stavi_depth(D) + 2, so it fits within
+    a game's formula budget when the gap is r'-definable with r'+2 ≤ r.
+
+    Key property: gap_char_formula D holds at gap g in M_r iff g is
+    definable by D (on left or right). This transfers via formula agreement
+    to show that Duplicator's response is also D-definable.
+-/
+def gap_char_formula (D : StaviFormula) : StaviFormula :=
+  -- (S(⊤,D) ∧ ¬U(⊤,D)) ∨ (U(⊤,D) ∧ ¬S(⊤,D))
+  -- encoded as ¬(¬(S∧¬U) ∧ ¬(U∧¬S))
+  .neg (.conj
+    (.neg (.conj (.std_snce sf_verum D) (.neg (.std_untl sf_verum D))))
+    (.neg (.conj (.std_untl sf_verum D) (.neg (.std_snce sf_verum D)))))
+
+/-- stavi_depth of the gap characterization formula:
+    stavi_depth(gap_char_formula D) = stavi_depth(D) + 2 -/
+theorem stavi_depth_gap_char_formula (D : StaviFormula) :
+    stavi_depth (gap_char_formula D) = stavi_depth D + 2 := by
+  simp [gap_char_formula, stavi_depth, stavi_depth_sf_verum, stavi_depth_neg]
+
+/-- The gap characterization formula has depth at most r + 2 when D has
+    depth at most r. This is the key bound ensuring it is within the formula
+    budget of a rank-(r+2) game. -/
+theorem stavi_depth_gap_char_formula_le {D : StaviFormula} {r : Nat}
+    (hD : stavi_depth D ≤ r) :
+    stavi_depth (gap_char_formula D) ≤ r + 2 := by
+  rw [stavi_depth_gap_char_formula]
+  omega
+
+/-- Helper: point in cut implies point < gap.
+    The le is via extendPoint_le_gap_iff; ne follows from Sum.inl ≠ Sum.inr. -/
+private def extendPoint_lt_gap {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (x : M.carrier) (g : RDefinableGap M atomMap r) (h : x ∈ g.val.cut) :
+    (extendPoint x : ExtendedCarrier M atomMap r) < Sum.inr g :=
+  lt_of_le_of_ne ((extendPoint_le_gap_iff x g).mpr h) (fun heq => by cases heq)
+
+/-- Helper: point < gap implies point in cut. -/
+private def lt_gap_mem_cut {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (x : M.carrier) (g : RDefinableGap M atomMap r)
+    (h : (extendPoint x : ExtendedCarrier M atomMap r) < Sum.inr g) :
+    x ∈ g.val.cut := le_of_lt h
+
+/-- Helper: gap < point implies point not in cut. Uses @LT.lt to resolve instance. -/
+private theorem gap_lt_not_cut {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (x : M.carrier)
+    (h : @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr g) (extendPoint x)) :
+    x ∉ g.val.cut := by
+  exact fun hc => not_lt.mpr ((extendPoint_le_gap_iff x g).mpr hc) h
+
+/-- Helper: point not in cut implies gap < point. Uses @LT.lt to resolve instance. -/
+private theorem gap_lt_extendPoint {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (x : M.carrier)
+    (h : x ∉ g.val.cut) :
+    @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr g) (extendPoint x) := by
+  exact lt_of_not_le (fun hle => h ((extendPoint_le_gap_iff x g).mp hle))
+
+/-- Gap cuts have no maximum: every element has a larger element in the cut. -/
+private theorem gap_cut_no_max {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} (g : Gap M.carrier)
+    (x : M.carrier) (hx : x ∈ g.cut) : ∃ y, y ∈ g.cut ∧ x < y := by
+  by_contra h
+  push_neg at h
+  have : IsLUB g.cut x := ⟨h, fun b hb => hb hx⟩
+  exact g.no_sup ⟨x, this, hx⟩
+
+/-- Gap complements have no minimum: every element has a smaller element
+    not in the cut. -/
+private theorem gap_complement_no_min {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} (g : Gap M.carrier)
+    (x : M.carrier) (hx : x ∉ g.cut) : ∃ y, y ∉ g.cut ∧ y < x := by
+  by_contra h; push_neg at h
+  -- h : ∀ y ∉ g.cut, x ≤ y. So x is the minimum of the complement.
+  exact g.complement_no_min ⟨x, hx, h⟩
+
+/-- gap_char_formula D holds at a gap g when g is defined by D on the LEFT.
+    That is: S^μ(⊤,D) ∧ ¬U^μ(⊤,D) holds at g. -/
+theorem gap_char_formula_left {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (D : StaviFormula)
+    (h_left : gap_definable_on_left M atomMap g.val D) :
+    stavi_temporal_truth_mu M atomMap r (Sum.inr g) (gap_char_formula D) := by
+  -- gap_char_formula D = ¬(¬(S(⊤,D) ∧ ¬U(⊤,D)) ∧ ¬(U(⊤,D) ∧ ¬S(⊤,D)))
+  -- Left disjunct: S(⊤,D) ∧ ¬U(⊤,D)
+  simp only [gap_char_formula, stavi_temporal_truth_mu]
+  -- Need to show the disjunction holds. We show the left disjunct.
+  intro ⟨h_not_left, _⟩
+  apply h_not_left; clear h_not_left
+  obtain ⟨⟨t, ht_cut, hD_final⟩, h_no_init⟩ := h_left
+  constructor
+  · -- S^μ(⊤, D): exists mu-point s < g with D at all mu in (s, g)
+    refine ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩, ?_, ?_⟩
+    · -- ⊤(t)
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+            extendedStructure, extendPoint, Formula.top]
+    · -- ∀ mu u ∈ (t, g), D(u)
+      intro u htu hug hmu_u
+      obtain ⟨y, rfl⟩ := hmu_u
+      have hy_cut : y ∈ g.val.cut := lt_gap_mem_cut y g hug
+      have ht_lt_y : t < y := (extendPoint_lt_iff t y).mp htu
+      exact (stavi_truth_mu_at_point y D).mpr (hD_final y (le_of_lt ht_lt_y) hy_cut)
+  · -- ¬U^μ(⊤, D): no mu-point s > g with D at all mu in (g, s)
+    intro ⟨s, hgs, hmu_s, _, hD_inv⟩
+    obtain ⟨x, rfl⟩ := hmu_s
+    have hx_not_cut : x ∉ g.val.cut := gap_lt_not_cut g x hgs
+    -- hD_inv gives D at all mu in OPEN interval (g, x). We need to contradict
+    -- h_no_init which says D is NOT true in any initial segment of complement.
+    -- Use gap_complement_no_min to find y < x not in cut, then y witnesses
+    -- an initial segment where D holds.
+    obtain ⟨y, hy_not_cut, hyx⟩ := gap_complement_no_min g.val x hx_not_cut
+    apply h_no_init
+    refine ⟨y, hy_not_cut, ?_⟩
+    intro u hu_not_cut hu_le_y
+    -- u is in complement with u ≤ y < x, so g < u < x among mu-points
+    have hgu := gap_lt_extendPoint g u hu_not_cut
+    have hux : extendPoint u < (extendPoint x : ExtendedCarrier M atomMap r) :=
+      (extendPoint_lt_iff u x).mpr (lt_of_le_of_lt hu_le_y hyx)
+    exact (stavi_truth_mu_at_point u D).mp
+      (hD_inv (extendPoint u) hgu hux ⟨u, rfl⟩)
+
+/-- gap_char_formula D holds at a gap g when g is defined by D on the RIGHT. -/
+theorem gap_char_formula_right {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (D : StaviFormula)
+    (h_right : gap_definable_on_right M atomMap g.val D) :
+    stavi_temporal_truth_mu M atomMap r (Sum.inr g) (gap_char_formula D) := by
+  simp only [gap_char_formula, stavi_temporal_truth_mu]
+  intro ⟨_, h_not_right⟩
+  apply h_not_right; clear h_not_right
+  obtain ⟨⟨t, ht_not_cut, hD_init⟩, h_no_final⟩ := h_right
+  constructor
+  · -- U^μ(⊤, D): exists mu-point s > g with D at all mu in (g, s)
+    refine ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩, ?_, ?_⟩
+    · simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+            extendedStructure, extendPoint, Formula.top]
+    · intro u hgu hut hmu_u
+      obtain ⟨y, rfl⟩ := hmu_u
+      have hy_not_cut : y ∉ g.val.cut := gap_lt_not_cut g y hgu
+      have hy_le_t : y ≤ t := le_of_lt ((extendPoint_lt_iff y t).mp hut)
+      exact (stavi_truth_mu_at_point y D).mpr (hD_init y hy_not_cut hy_le_t)
+  · -- ¬S^μ(⊤, D): no mu-point s < g with D at all mu in (s, g)
+    intro ⟨s, hsg, hmu_s, _, hD_inv⟩
+    obtain ⟨x, rfl⟩ := hmu_s
+    have hx_cut : x ∈ g.val.cut := lt_gap_mem_cut x g hsg
+    apply h_no_final
+    refine ⟨x, hx_cut, ?_⟩
+    intro u hu_ge_x hu_cut
+    have hxu : (extendPoint x : ExtendedCarrier M atomMap r) ≤ extendPoint u :=
+      (extendPoint_le_iff x u).mpr hu_ge_x
+    have hug : extendPoint u < Sum.inr g := extendPoint_lt_gap u g hu_cut
+    by_cases hxu_eq : x = u
+    · -- x = u: need D(x)
+      -- Actually, the invariant is on the OPEN interval (x, g), so x = u means
+      -- we need D(u) = D(x). But (extendPoint x, g) might not contain extendPoint x.
+      -- We need u > x (strictly) for the invariant to apply. If u = x, we're at
+      -- the boundary and need a different argument.
+      subst hxu_eq
+      -- D at x: from gap_definable_on_right, we need D at x. But condition 1 says
+      -- D at complement points, and x is in the cut. So this case needs h_no_final negation.
+      -- Actually, the ¬S case wants to show h_no_final is contradicted.
+      -- h_no_final says ¬(∃ t ∈ cut, ∀ u ≥ t in cut, D(u)).
+      -- We're trying to construct such a t. With u = x (in cut), we need D(x).
+      -- The invariant gives D at all mu in (x, g), not at x itself.
+      -- Use gap_cut_no_max to find y > x in cut, then D(y) from invariant.
+      -- Then take t = y: need D at all u ≥ y in cut.
+      obtain ⟨y, hy_cut, hxy⟩ := gap_cut_no_max g.val x hx_cut
+      -- D(y) from invariant
+      have hD_y := hD_inv (extendPoint y) ((extendPoint_lt_iff x y).mpr hxy)
+        (extendPoint_lt_gap y g hy_cut) ⟨y, rfl⟩
+      -- But we need D at ALL u ≥ x in cut, not just at y.
+      -- This approach gives a single y but not the full final segment.
+      -- Let's instead provide a weaker but sufficient form: use y as the witness for h_no_final.
+      -- h_no_final says ¬(∃ t ∈ cut, ∀ u ≥ t in cut, D(u)).
+      -- We want to derive D at all u ≥ y in cut from the invariant.
+      exfalso
+      apply h_no_final
+      obtain ⟨z, hz_cut, hyz⟩ := gap_cut_no_max g.val y hy_cut
+      refine ⟨z, hz_cut, fun w hw_ge_z hw_cut => ?_⟩
+      have hxw : (extendPoint x : ExtendedCarrier M atomMap r) < extendPoint w := by
+        exact (extendPoint_lt_iff x w).mpr (lt_of_lt_of_le (lt_trans hxy hyz) hw_ge_z)
+      exact (stavi_truth_mu_at_point w D).mp
+        (hD_inv (extendPoint w) hxw (extendPoint_lt_gap w g hw_cut) ⟨w, rfl⟩)
+    · -- x ≠ u, so x < u
+      have hxu_strict : x < u := lt_of_le_of_ne hu_ge_x hxu_eq
+      exact (stavi_truth_mu_at_point u D).mp
+        (hD_inv (extendPoint u) ((extendPoint_lt_iff x u).mpr hxu_strict) hug ⟨u, rfl⟩)
+
+/-- gap_char_formula D holds at any gap g that is r-definable by D. -/
+theorem gap_char_formula_holds {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (D : StaviFormula)
+    (hD_depth : stavi_depth D ≤ r)
+    (h_def : gap_definable_on_left M atomMap g.val D ∨
+             gap_definable_on_right M atomMap g.val D) :
+    stavi_temporal_truth_mu M atomMap r (Sum.inr g) (gap_char_formula D) := by
+  cases h_def with
+  | inl h_left => exact gap_char_formula_left g D h_left
+  | inr h_right => exact gap_char_formula_right g D h_right
+
+/-- If gap_char_formula D holds at a gap g, then g is definable by D
+    (on the left or on the right). This is the converse of gap_char_formula_holds.
+
+    The proof: gap_char_formula D = (S(⊤,D) ∧ ¬U(⊤,D)) ∨ (U(⊤,D) ∧ ¬S(⊤,D)).
+    - The left disjunct gives gap_definable_on_left
+    - The right disjunct gives gap_definable_on_right -/
+theorem gap_char_formula_implies_definable {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (g : RDefinableGap M atomMap r) (D : StaviFormula)
+    (h_char : stavi_temporal_truth_mu M atomMap r (Sum.inr g) (gap_char_formula D)) :
+    gap_definable_on_left M atomMap g.val D ∨
+    gap_definable_on_right M atomMap g.val D := by
+  -- Unfold h_char to expose the ¬(¬L ∧ ¬R) structure
+  change ¬ (¬ (stavi_temporal_truth_mu M atomMap r (Sum.inr g)
+      (.conj (.std_snce sf_verum D) (.neg (.std_untl sf_verum D)))) ∧
+    ¬ (stavi_temporal_truth_mu M atomMap r (Sum.inr g)
+      (.conj (.std_untl sf_verum D) (.neg (.std_snce sf_verum D))))) at h_char
+  -- Let S_prop = S(⊤,D)∧¬U(⊤,D) and U_prop = U(⊤,D)∧¬S(⊤,D)
+  -- h_char : ¬(¬S_prop ∧ ¬U_prop), i.e., S_prop ∨ U_prop (classical)
+  -- Case split on whether S(⊤,D) holds
+  simp only [stavi_temporal_truth_mu] at h_char
+  -- h_char is now the unfolded form of ¬(¬L ∧ ¬R)
+  rcases Classical.em (∃ s : ExtendedCarrier M atomMap r, s < Sum.inr g ∧ mu_holds s ∧
+      stavi_temporal_truth_mu M atomMap r s sf_verum ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < Sum.inr g → mu_holds u →
+        stavi_temporal_truth_mu M atomMap r u D) with h_S | h_not_S
+  · -- S(⊤,D) holds
+    rcases Classical.em (∃ s : ExtendedCarrier M atomMap r, s > (Sum.inr g : ExtendedCarrier M atomMap r) ∧ mu_holds s ∧
+        stavi_temporal_truth_mu M atomMap r s sf_verum ∧
+        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s → mu_holds u →
+          stavi_temporal_truth_mu M atomMap r u D) with h_U | h_not_U
+    · -- Both S and U hold. Then ¬(S∧¬U) = True (since ¬U is false) and
+      -- ¬(U∧¬S) = True (since ¬S is false). So ¬L∧¬R = True, and h_char = ¬True = False.
+      exfalso; apply h_char; exact ⟨fun ⟨_, hc⟩ => hc h_U, fun ⟨_, hc⟩ => hc h_S⟩
+    · -- S ∧ ¬U: left-definable
+      left
+      obtain ⟨s, hsg, hmu_s, _, hD_inv⟩ := h_S
+      obtain ⟨x, rfl⟩ := hmu_s
+      have hx_cut : x ∈ g.val.cut := lt_gap_mem_cut x g hsg
+      constructor
+      · obtain ⟨y, hy_cut, hxy⟩ := gap_cut_no_max g.val x hx_cut
+        exact ⟨y, hy_cut, fun u hu_ge_y hu_cut =>
+          (stavi_truth_mu_at_point u D).mp
+            (hD_inv (extendPoint u)
+              ((extendPoint_lt_iff x u).mpr (lt_of_lt_of_le hxy hu_ge_y))
+              (extendPoint_lt_gap u g hu_cut) ⟨u, rfl⟩)⟩
+      · intro ⟨t, ht_not_cut, hD_init⟩
+        apply h_not_U
+        exact ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩,
+          (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+                    extendedStructure, extendPoint, Formula.top]),
+          fun u hgu hut hmu_u => by
+            obtain ⟨y, rfl⟩ := hmu_u
+            exact (stavi_truth_mu_at_point y D).mpr
+              (hD_init y (gap_lt_not_cut g y hgu)
+                (le_of_lt ((extendPoint_lt_iff y t).mp hut)))⟩
+  · -- ¬S(⊤,D): from h_char we get U(⊤,D) ∧ ¬S(⊤,D), i.e., right-definable
+    have h_R : (∃ s : ExtendedCarrier M atomMap r, s > (Sum.inr g : ExtendedCarrier M atomMap r) ∧ mu_holds s ∧
+        stavi_temporal_truth_mu M atomMap r s sf_verum ∧
+        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s → mu_holds u →
+          stavi_temporal_truth_mu M atomMap r u D) ∧
+      ¬ ∃ s : ExtendedCarrier M atomMap r, s < Sum.inr g ∧ mu_holds s ∧
+        stavi_temporal_truth_mu M atomMap r s sf_verum ∧
+        ∀ u : ExtendedCarrier M atomMap r, s < u → u < Sum.inr g → mu_holds u →
+          stavi_temporal_truth_mu M atomMap r u D := by
+      by_contra h_not_R
+      exact h_char ⟨fun ⟨hs, _⟩ => absurd hs h_not_S, h_not_R⟩
+    right
+    obtain ⟨⟨s, hgs, hmu_s, _, hD_inv⟩, _⟩ := h_R
+    obtain ⟨x, rfl⟩ := hmu_s
+    have hx_not_cut : x ∉ g.val.cut := gap_lt_not_cut g x hgs
+    constructor
+    · obtain ⟨y, hy_not_cut, hyx⟩ := gap_complement_no_min g.val x hx_not_cut
+      exact ⟨y, hy_not_cut, fun u hu_not_cut hu_le_y =>
+        (stavi_truth_mu_at_point u D).mp
+          (hD_inv (extendPoint u) (gap_lt_extendPoint g u hu_not_cut)
+            ((extendPoint_lt_iff u x).mpr (lt_of_le_of_lt hu_le_y hyx)) ⟨u, rfl⟩)⟩
+    · intro ⟨t, ht_cut, hD_final⟩
+      apply h_not_S
+      exact ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩,
+        (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
+                  extendedStructure, extendPoint, Formula.top]),
+        fun u htu hug hmu_u => by
+          obtain ⟨y, rfl⟩ := hmu_u
+          exact (stavi_truth_mu_at_point y D).mpr
+            (hD_final y (le_of_lt ((extendPoint_lt_iff t y).mp htu))
+              (lt_gap_mem_cut y g hug))⟩
+
+/-! ### GHR93 Lemma 10: Rank Monotonicity of Winning Strategies
+
+    If Duplicator wins G_{n;r}(M,xy; N,x'y') and r' ≤ r, n' ≤ n,
+    with x,y ∈ M_{r'} and x',y' ∈ N_{r'}, then Duplicator has a winning
+    strategy for G_{n';r'}(M,xy; N,x'y').
+
+    The key insight: Duplicator pads Spoiler's n' selections to n
+    selections (filling with x), applies the rank-r strategy σ, and
+    shows the responses lie in N_{r'}.
+
+    For carrier-point selections: responses are carrier points (from
+    gap/point agreement in σ's winning condition).
+
+    For r'-gap selections (gap defined by D of depth ≤ r'): the gap
+    characterization formula D' of depth ≤ r'+2 ≤ r holds at the input
+    and transfers via formula agreement to the response, implying the
+    response is also r'-definable.
+-/
+
+/-- An element of ExtendedCarrier at rank r is in the range of rank_embed
+    from rank r' iff it is either a carrier point or an r'-definable gap. -/
+def in_rank_embed_range {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (_ : r' ≤ r) (e : ExtendedCarrier M atomMap r) : Prop :=
+  match e with
+  | .inl _ => True  -- carrier points are always in range
+  | .inr g => r_definable_gap M atomMap g.val r'
+
+/-- Carrier points are always in the range of rank_embed. -/
+theorem in_rank_embed_range_point {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r' ≤ r) (x : M.carrier) :
+    in_rank_embed_range h (extendPoint x : ExtendedCarrier M atomMap r) := by
+  simp [in_rank_embed_range, extendPoint]
+
+/-- rank_embed elements are always in the range. -/
+theorem in_rank_embed_range_embed {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r' ≤ r) (e : ExtendedCarrier M atomMap r') :
+    in_rank_embed_range h (rank_embed h e) := by
+  cases e with
+  | inl x => simp [rank_embed, Sum.map, in_rank_embed_range, extendPoint]
+  | inr g =>
+    simp [rank_embed, Sum.map, in_rank_embed_range, rank_embed_gap]
+    exact g.prop
+
 /-! ## Strategy Restriction (GHR93 Theorem 6 Infrastructure)
 
 Given that Duplicator wins the game G_{n+1;r} on the full interval [x,y] vs
