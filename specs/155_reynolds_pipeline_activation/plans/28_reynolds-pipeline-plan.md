@@ -138,7 +138,8 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula C Case-Split Resolution S1 + S2 [NOT STARTED]
+### Phase 2: Formula C Case-Split Resolution S1 + S2 [IN PROGRESS]
+- **Started**: 2026-05-24T17:30:00Z
 
 **Goal**: Resolve the formula C predicate-vs-formula gap using Approach C (case-split on `cont_holds` at infimum). This closes S1 and S2, the core of the Claim 1 sorry cluster. S4 inherits from S1/S2 and should close automatically or with minimal adaptation.
 
