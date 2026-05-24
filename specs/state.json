@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-23T19:43:22Z",
+      "last_updated": "2026-05-24T08:15:14Z",
       "next_artifact_number": 28,
       "artifacts": [
         {
@@ -408,10 +408,10 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md",
           "type": "plan",
-          "summary": "Revised plan (v17) integrating Round 16 finding that h_d_unique is unprovable; restructures Phase 1 with M-side infimum construction and inline Claim 1"
+          "summary": "Implementation plan v27: OrderIso bypass strategy for sorry-free bx_completeness (6 phases, 12-18 hours)"
         }
       ],
-      "session_id": "sess_1779565373_9bf0c5",
+      "session_id": "sess_1779610495_46c9e0",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z"
     },

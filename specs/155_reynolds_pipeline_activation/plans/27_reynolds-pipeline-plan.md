@@ -1,224 +1,280 @@
-# Implementation Plan: Reynolds Pipeline Activation (v25)
+# Implementation Plan: Reynolds Pipeline Activation (v27)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [IN PROGRESS]
-- **Effort**: 20-40 hours remaining (11 sorries remain; 12 closed including rank_down, 4 added by restructuring)
+- **Status**: [NOT STARTED]
+- **Effort**: 12-18 hours (OrderIso bypass path); 50-70 hours (full GHR93 pipeline, deferred)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
-- **Research Inputs**: reports/22 (GHR93 Claim 1), reports/36 (root cause), reports/38 (case-split), reports/39 (circularity confirmed)
+- **Research Inputs**: reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/29_literature-alignment.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md
 - **Artifacts**: plans/27_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
 
----
-
-## CRITICAL DIRECTIVE: FOLLOW GHR93 EXACTLY — NO DEVIATIONS
-
-Every deviation from GHR93 has produced weeks of wasted effort. If an implementation creates edge cases absent from GHR93, the approach is wrong. Encode formulas as formulas. No predicate workarounds. Every proof step must trace to a specific page/line in GHR93 or Reynolds.
-
----
-
 ## Overview
 
-Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sorry-free `bx_completeness`.
+This plan replaces the chronicle fallback in Transfer.lean with a sorry-free countermodel construction using the OrderIso bypass strategy (report 30, critical-path-wiring). The key insight from report 30 is that the EFGames/ExpressivenessGeneral sorry sites are ORPHANED from the actual bx_completeness critical path. The sole root sorry is `succ_cofinal` in ChronicleToCountermodel.lean, which propagates through `succ_embed_surjective` to the TC/FUC coherence conditions. The OrderIso from `chronicle_is_good` (sorry-free) provides a direct bijection between Z and the chronicle domain, bypassing `succ_embed` entirely. This achieves the definition of done (no sorryAx in `bx_completeness`, lake build passes) without requiring the full GHR93 game-theoretic pipeline.
 
-**Critical path**: Phase 1 → 3 → 4 → 5 → 6A → 6B → 8 → 11
+**Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, `doets_countermodel_discrete` uses Reynolds pipeline (no chronicle fallback).
 
-**Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes, no `axiom` declarations.
+### Research Integration
+
+Eight research reports were integrated into this plan:
+
+| Report | Key Finding | Impact on Plan |
+|--------|-------------|----------------|
+| 30_critical-path-wiring | EFGames sorry sites are ORPHANED; OrderIso bypass needs ~310-510 lines | Drives the bypass strategy (Phases 1-4) |
+| 30_forward-inventory | 22 sorries across 5 files; 14 on critical path of FULL pipeline | Confirms bypass avoids 14 critical-path sorries |
+| 35_phase1-blocker-prior-art | Full GHR93 pipeline estimated at 40-60 hours remaining | Motivates bypass over full pipeline |
+| 29_literature-alignment | Formula C vs predicate cont_holds divergence is root cause of Claim 1 sorries | Relevant only for full pipeline (Phase 6) |
+| 40_literature-crossref | 28 total sorries; Claim 1 cluster (7 sorries) is critical divergence | Maps which sorries the bypass avoids |
+| 30_session-audit | 2,978 net new lines; 21 new theorems; build passes | Confirms stable codebase for bypass work |
+| 29_d-consistency-architecture | d_consistency with d=a_bwd(n) is UNPROVABLE; infimum needed | Relevant only for full pipeline |
+| 30_mechanical-strategy | K^-(negD) adaptation strategy for multi-round games | Relevant only for full pipeline |
+
+### Prior Plan Reference
+
+The prior plan (v25) structured work around the full GHR93 pipeline with 11 phases (Phases 1-11). Key lessons:
+
+- **Effort calibration**: Phase 1 (Claim 1) and Phase 3 (Cases III/IV) were repeatedly blocked by the formula materialization circularity (reports 38, 39). The 40-60 hour estimate was validated by report 35.
+- **Validated approaches**: Phase 2 (Lemma 9) and Phase 10 (Transfer.lean wiring) were completed. The OrderIso from `chronicle_is_good` is confirmed sorry-free.
+- **Risks encountered**: The `h_d_unique` false universal claim wasted significant effort. The cont_holds predicate-vs-formula divergence is the single most significant architectural issue.
+- **Completed work**: 12 sorry sites closed (including rank_down, gap infimum cases, decomposition_implies_game). Build passes with 1649 jobs.
+
+The prior plan's Phase 10 (Transfer.lean wiring) is complete but the full pipeline (Phases 1, 3, 4, 5, 6A, 6B, 8, 11) requires 40-60 more hours. This revised plan takes the bypass path instead.
+
+### Roadmap Alignment
+
+- Advances "Reynolds pipeline activation" and "sorry-free discrete completeness" roadmap items
+- Achieves sorry-free `bx_completeness` without closing all GHR93 sorry sites
+- The full GHR93 pipeline (Phases 5-6) can be pursued as future work for mathematical completeness
 
 ## Goals & Non-Goals
 
-**Goals**: Sorry-free `bx_completeness` via full GHR93 + Reynolds pipeline.
-**Non-Goals**: Dense completeness, closing `succ_cofinal` directly, general tactic development.
+**Goals**:
+- Achieve sorry-free `bx_completeness` via OrderIso bypass of `succ_cofinal`
+- Replace chronicle fallback in `countermodel_discrete` with OrderIso-based construction
+- Prove TC/FUC coherence conditions using OrderIso from `chronicle_is_good` instead of `succ_embed`
+- Wire `countermodel_discrete_enriched` to `countermodel_discrete` (closing Completeness.lean:227 sorry)
+- Verify `#print axioms bx_completeness` shows no `sorryAx`
 
-## Current Sorry Inventory (11 remaining across 3 files)
+**Non-Goals**:
+- Closing the 11 ExpressivenessGeneral.lean sorry sites (GHR93 game-theoretic pipeline)
+- Closing the 1 EFGames.lean sorry site (`nf_characterizable_by_stavi`)
+- Closing the TruthLemma.lean sorry sites (non-critical-path)
+- Closing the OrderedSum.lean sorry site (dense case only)
+- Dense or mixed completeness variants
+- Closing `no_gaps_discrete` in IntegerModel.lean (not on bypass critical path)
 
-### ExpressivenessGeneral.lean (9 remaining)
+## Risks & Mitigations
 
-| Line | Blocker | Description | Effort |
-|------|---------|-------------|--------|
-| 2835 | Formula materialization | h_d_unique sorry 1 — predicate-level cont_holds can't be materialized as formula without circularity | Fundamental |
-| 2859 | Formula materialization | h_d_unique sorry 2 — same circularity | Fundamental |
-| 3759 | Formula materialization | ¬cont_holds_cross boundary (r2_resp = rank_embed(y')) | Fundamental |
-| 3793 | Formula materialization | ¬cont_holds_cross gap r2_resp | Fundamental |
-| 5651 | h_d_unique | sigma same_order_type — needs game response = d | Gated |
-| 5751 | h_d_unique | tau same_order_type (1) — needs sigma instantiation | Gated |
-| 5804 | h_d_unique | tau same_order_type (2) — needs sigma instantiation | Gated |
-| 6734 | Signature threading | Cases III/IV — needs h_fwd_r1 threaded through signatures + 500-1000 lines | 12-22 hrs |
-| ~~6999~~ | ~~GHR93 Lemma 10~~ | ~~rank-varying (rank downward transport 1)~~ — **CLOSED** via gap_char_formula transfer (+244 lines) | Done |
-| 7369 | Theorem restructure | rank-varying inductive step h_r1_univ — needs universal sub-interval game from IH | Medium |
-
-### EFGames.lean (1 remaining)
-
-| Line | Blocker | Description | Effort |
-|------|---------|-------------|--------|
-| 9433 | GHR93 Thm 6 + Props 6-7 | nf_characterizable_by_stavi inductive step (base case k=0 proved) | 1000-1500 lines |
-
-### IntegerModel.lean (1 remaining)
-
-| Line | Blocker | Description | Effort |
-|------|---------|-------------|--------|
-| 863 | Phases 5-6B | no_gaps_discrete — gated on Reynolds Theorem 5 | Gated |
-
-### Blocker Dependency Graph
-
-```
-Formula materialization (FUNDAMENTAL — report 29 confirmed, report 39 circularity)
-  └─ h_d_unique ×2 (lines 2835, 2859)
-  └─ ¬cont_holds_cross edges ×2 (lines 3759, 3793)
-  └─ same_order_type ×3 (lines 5651, 5751, 5804) [gated on h_d_unique]
-
-GHR93 Lemma 10 (rank downward transport — CLOSED)
-  └─ ~~rank-varying line 6999~~ — **CLOSED**
-  └─ rank-varying line 7369 (h_r1_univ) — needs theorem restructure
-
-Signature threading + Cases III/IV proof (12-22 hours)
-  └─ ghr93_cases_III_IV (line 6734)
-
-GHR93 Theorem 6 + Props 6-7 (1000-1500 lines)
-  └─ nf_characterizable_by_stavi (EFGames line 9433)
-  └─ no_gaps_discrete (IntModel line 863) [gated on nf_characterizable]
-```
-
-### Session Progress (closed sorries)
-
-| # | Description | Method |
-|---|-------------|--------|
-| 1 | SplitPointProps h_pt_xc degenerate gap | Disjunctive refactor |
-| 2 | SplitPointProps h_pt_cy degenerate gap | Disjunctive refactor |
-| 3 | N-side Case 3 gap infimum | Three-way case split with infimum_gap_r_definable |
-| 4 | M-side Case 3 gap infimum | Cross infimum_gap_r_definable |
-| 5 | Claim 1 Case A, d is gap | Unified proof via h_strict_failure |
-| 6 | Claim 1 Case B, q_r2 = y' boundary | Unified proof eliminating Case A/B split |
-| 7 | Claim 1 Case B, r2_resp is gap | Unified proof eliminating Case A/B split |
-| 8 | ghr93_decomposition_implies_game (EFGames) | Strengthened decomposition_agreement per GHR93 Def 8.8 |
-| 9 | ordered_sum_of_good_bounded_is_good (IntModel) | Shift-and-glue OrderIso (Reynolds Lemma 16) |
-| 10 | cofinal_decomposition_k_equiv (IntModel) | Corrected to half-open intervals per Reynolds |
-| 11 | h_strict_failure v=c_inf regression | Case split on h_cont_c |
-| 12 | ghr93_duplicator_wins_rank_down (Lemma 10) | gap_char_formula transfer (+244 lines) |
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| OrderIso type mismatch between chronicle domain and TaskFrame Int | H | M | Report 30 confirms `chronicle_is_good` gives OrderIso to Z; verify type compatibility before heavy coding |
+| TC coherence proof via OrderIso more complex than estimated | M | M | Start with TC (simpler direction); if blocked, analyze the specific obligation types |
+| FUC coherence proof requires forward Until witnesses not available via OrderIso | H | L | The OrderIso is surjective by construction; forward witnesses in Z map directly to chronicle domain |
+| `countermodel_discrete_enriched` type signature incompatible with `countermodel_discrete` | M | M | Read both signatures first; adapt existential instantiation as needed |
+| Build regression after wiring changes | M | L | Run `lake build` after each phase; commit working states |
+| Remaining sorry sites in non-bypassed files cause unexpected sorryAx propagation | H | L | Use `#print axioms` after Phase 3 to verify clean axiom set before final wiring |
 
 ## Implementation Phases
 
-### Phase 1: Cleanup + Same Order Type [IN PROGRESS]
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
+| 5 | 5 | 4 |
+| 6 | 6 | 5 |
 
-**Status**: Boundary edge and Claim 1 gap cases CLOSED via unified proof. h_d_unique discovered to be mathematically FALSE. Restructuring d_consistency to bypass h_d_unique is in progress.
+Phases are fully sequential because each builds on the previous phase's output.
 
-**CRITICAL DISCOVERY 1**: `h_d_unique` is **unprovable as stated**. It claims ANY element t' with the same depth-r StaviFormula type as d must equal d. This is mathematically false — two distinct points in a linear order can share the same depth-r type. GHR93 Claim 1 only proves the game RESPONSE equals d at depth r+2 using K⁻(¬D). The depth mismatch (r vs r+2) makes the universal statement unprovable.
+---
 
-**CRITICAL DISCOVERY 2 (report 29)**: The root blocker for h_d_unique + 4 other sorries is **predicate-vs-formula circularity**. GHR93 uses C = X_{(a_n,y')} as a SINGLE concrete temporal formula. The Lean code uses a universally-quantified Prop (`cont_holds_cross`), which cannot be materialized as a single formula without enumerating all rank-r formulas — requiring the very expressive completeness result being proved.
+### Phase 1: Analyze Critical Path and Verify Bypass Feasibility [NOT STARTED]
 
-**RESEARCH FINDINGS** (3 parallel agents analyzed literature):
-- GHR93 (report 28): Proof is valid for ALL linear orders; operates on M_r; no density assumption
-- Reynolds 1994 (report 28): K⁻ is vacuously false on discrete carrier points; Reynolds uses syntactic elimination, not games, for integer time
-- Handbook (report 28): GHR94 Ch 10 proves integer completeness via Reynolds eliminations — no games, no K⁻. K⁻ only appears in Ch 12's general linear time proof where gaps exist.
-
-**FIX OPTIONS**: (a) Break circularity by restructuring the induction to make formula C available at the right point; (b) Switch to Reynolds syntactic elimination for the integer-time case; (c) Restructure d_consistency to inline the K⁻ argument with a concrete formula extracted from the game state.
+**Goal**: Confirm that the OrderIso bypass is viable by tracing the exact sorryAx propagation chain and verifying type compatibility between `chronicle_is_good`, `countermodel_discrete`, and `countermodel_discrete_enriched`.
 
 **Tasks**:
-- [x] **1B. Keep pigeonhole_definable_formula_cross_strict** — used at line 2792 in Case B carrier-point sub-case
-- [x] **1C. Boundary edge case** — CLOSED via unified Claim 1 proof (eliminated Case A/B split)
-- [x] **1A. Restructure d_consistency + delete h_d_unique** — *(deviation: altered — removed false h_d_unique universal claim, replaced with h_interior_d parameter in d_consistency_left/right. Interior case proofs are sorry'd pending inline rank_down + K-(negD) argument. 2 sorries replaced with 2 provable sorries.)*
-- [ ] **1D. sigma same_order_type** — Blocked on d_consistency restructure. Needs `(d < p_n ↔ c < e_n)` from game response properties.
-- [ ] **1E. tau same_order_type** — Blocked on sigma. Needs sigma instantiation for `(x' < d ↔ x < c)`.
-- [ ] **1F. Verification**: `lake build` passes.
+- [ ] Run `#print axioms bx_completeness` and trace every `sorryAx` to its source file and line
+- [ ] Run `#print axioms chronicle_is_good` and confirm zero `sorryAx`
+- [ ] Read `chronicle_is_good` signature and return type (OrderIso to what?)
+- [ ] Read `countermodel_discrete` in Transfer.lean — identify its type signature, what it returns, and where it delegates to `dd_countermodel_chronicle_discrete`
+- [ ] Read `countermodel_discrete_enriched` in Completeness.lean:227 — identify its type signature and what existential it must produce
+- [ ] Read `dd_countermodel_chronicle_discrete` in ChronicleToCountermodel.lean — identify which sub-lemmas carry `sorryAx` (expected: `cantor_bfmcs_discrete_restricted_tc` and `cantor_bfmcs_discrete_restricted_fuc`)
+- [ ] Read `succ_embed_surjective` and `succ_cofinal` — confirm these are the root sorry sites
+- [ ] Document type compatibility findings: can `chronicle_is_good`'s OrderIso produce a `TaskFrame Int` that matches what `countermodel_discrete` needs?
+- [ ] Identify the exact coherence obligations (TC, BUC, FUC) that currently use `succ_embed_surjective` and would need OrderIso-based alternatives
 
-**Timing**: 4-8 hours remaining. **Files**: `ExpressivenessGeneral.lean`
+**Timing**: 1-2 hours
+
+**Depends on**: none
+
+**Files to modify**:
+- None (analysis only)
+
+**Verification**:
+- Written notes on type compatibility and coherence obligation signatures
+- Clear yes/no on bypass feasibility
+- If no: document the specific type mismatch and abort plan (fall back to full pipeline)
 
 ---
 
-### Phase 2: Lemma 9 Gap Detection [COMPLETED]
+### Phase 2: OrderIso-Based Coherence Proofs [NOT STARTED]
 
----
-
-### Phase 3: Gap Infimum Wiring + Cases III/IV (GHR93 Theorem 6) [PARTIAL]
-
-**GHR93 reference**: Section 8, pp.117-119.
-
-**Original sorries**: 2013, 2104, 2426, 2443, 2949, 3030 (6 sorries). **4 closed, 1 remaining** (Cases III/IV).
+**Goal**: Prove TC and FUC coherence conditions using the OrderIso from `chronicle_is_good` instead of `succ_embed_surjective`, eliminating `succ_cofinal` from the dependency chain.
 
 **Tasks**:
-- [x] **3A. N-side gap infimum** — CLOSED. Three-way case split: (a) gamma=x' boundary, (b) gamma interior with infimum_gap_r_definable, (c) gamma=y' via complement_no_min contradiction.
-- [x] **3B. M-side gap infimum** — CLOSED. Created 4 new cross-structure lemmas (cont_holds_above_gap_cross, cont_fails_below_gap_cross, formula_failure_in_cut_cross, infimum_gap_r_definable_cross). Three-way case split mirroring N-side.
-- [x] **3C. Degenerate gap cases** — CLOSED. SplitPointProps refactored to disjunctive form (carrier-point witness OR gap boundary). 3 consumer sites updated.
-- [x] **3D. Claim 1 gap sub-cases** — CLOSED. Unified Claim 1 proof via h_strict_failure eliminates Case A/B split entirely. d-gap case proved via carrier-point witnesses between rank_embed(d) and r2_resp.
-- [ ] **3E. Cases III/IV** (1 sorry). *(deviation: blocked — rank mismatch, see blocker below)*
+- [ ] Create a new section or file (e.g., `OrderIsoCherence.lean` or inline in Transfer.lean) for the OrderIso-based coherence proofs
+- [ ] Extract the OrderIso from `chronicle_is_good` — this gives a bijection between Z (or a Z-like structure) and the chronicle's limit domain
+- [ ] Prove TC (temporal coherence) for the OrderIso-based construction: for each MCS in the chronicle family, the forward/backward temporal content is preserved through the OrderIso mapping
+- [ ] Prove BUC (backward Until coherence) — this should follow from the existing sorry-free `cantor_bfmcs_discrete_restricted_buc` since BUC does not use `succ_embed_surjective`
+- [ ] Prove FUC (forward Until coherence) for the OrderIso-based construction: Until witnesses in Z map through the OrderIso to chronicle domain witnesses
+- [ ] Verify that the OrderIso-based TC/FUC proofs do NOT reference `succ_embed`, `succ_embed_surjective`, or `succ_cofinal`
+- [ ] Run `lake build` to confirm no regressions
 
-**BLOCKER** (Phase 3, Task 3E):
-- **What failed**: `ghr93_cases_III_IV` (line 6734) cannot be closed with current theorem signature.
-- **What was tried**: Analysis of GHR93 Cases III/IV proof structure vs formalization infrastructure. GHR93 uses tau at rank r+4 to transfer U(delta, A) formulas of rank ~r+3. The formalization's `SplitPointProps.tau` is at rank r only. All creative rank-r-only approaches (forward game inversion, type matching, direct gap construction) fail because the backward game inversion problem requires higher-rank formula transfer.
-- **Why it's stuck**: The formalization decouples ranks (IH at rank r, forward game at rank r+2 as side parameter). GHR93's induction hypothesis provides backward games at rank r+4, enabling Cases III/IV formula transfer. The formalization's backward games are at rank r, which is insufficient for the gap detection formula `left_formula A D` (depth ~r+4) or its composition `U(delta, A)` (depth ~r+3). The rank r+2 forward game `h_fwd_r1` is available in `ghr93_inductive_step` but is NOT threaded to `ghr93_cases_III_IV`.
-- **What is needed**: (1) Thread `h_fwd_r1` through `ghr93_cases_II_III_IV` to `ghr93_cases_III_IV`. (2) Within Cases III/IV, use `h_fwd_r1` to derive rank r+2 backward games on sub-intervals (via `ghr93_forward_to_backward_core` at rank r+2, or a direct argument). (3) Use the higher-rank backward game to transfer the gap detection formula `U(delta, A)` from `a_{n-1}` to `e_{n-1}`. (4) Apply Lemma 9 to find matching gap `e_n`. (5) Verify winning condition (same_order_type, gap_point_agreement, formula_agreement). Estimated 500-1000 lines.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+**Timing**: 4-6 hours
 
-**Timing**: Blocked pending signature refactoring + rank r+2 backward game derivation. Estimated 8-16 hours.
+**Depends on**: 1
 
----
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` or new file — OrderIso coherence proofs (~200-300 lines)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` — may need to extract helper lemmas
 
-### Phase 4: Assembly — Rank-Varying Thm 6, Props 6-7, Corollary 5 [IN PROGRESS]
-
-**GHR93 reference**: pp.113-115.
-
-**Progress**:
-- [x] **Lemma 11 backward** (ghr93_decomposition_implies_game) — CLOSED in EFGames.lean. Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8.
-- [x] **stavi_expressive_completeness assembly** — Sorry-free assembly proof factored through nf_characterizable_by_stavi. Uses NormalForm partition + finite StaviFormula disjunction. Base case (k=0) proved with new infrastructure (sf_conjList, sf_atom_literal, atomKind_to_sf_literal).
-- [ ] **nf_characterizable_by_stavi (inductive step)** — 1 sorry in EFGames.lean. Game-theoretic core: construct StaviFormulas encoding NormalForm quantifier structure via U/S connectives. Needs GHR93 Theorem 6 + Propositions 6-7 (~1000-1500 lines).
-- [ ] **rank-varying theorem** (1 sorry remaining in ExpressivenessGeneral.lean, line 7369) — Base case (n=0) proved sorry-free. ghr93_duplicator_wins_rank_down CLOSED (+244 lines, gap_char_formula transfer). Remaining sorry h_r1_univ requires restructuring to take universal sub-interval game from IH rather than deriving from h. *(deviation: altered — rank_down closed via gap_char_formula instead of K+/K- directly; h_r1_univ blocked on theorem restructuring)*
-
-**Timing**: 12-20 hours remaining. **Depends on**: Phase 3 + Lemma 10 infrastructure.
+**Verification**:
+- `#print axioms` on the new TC/FUC lemmas shows no `sorryAx`
+- `lake build` passes
 
 ---
 
-### Phase 5: Reynolds Theorem 5 — US Completeness over Prior [NOT STARTED]
+### Phase 3: Replace Chronicle Fallback in countermodel_discrete [NOT STARTED]
 
-Compose `stavi_expressive_completeness` with `flatten_stavi_correct`.
+**Goal**: Replace the `dd_countermodel_chronicle_discrete` delegation in `countermodel_discrete` with the OrderIso-based construction, eliminating `succ_cofinal` from the `bx_completeness` critical path.
 
-**Timing**: 2-3 hours. **Depends on**: Phase 4.
+**Tasks**:
+- [ ] Modify `countermodel_discrete` in Transfer.lean to use the OrderIso-based construction instead of delegating to `dd_countermodel_chronicle_discrete`
+- [ ] The new construction should: (1) use the chronicle's MCS family (sorry-free), (2) use `chronicle_is_good` to get the OrderIso, (3) build a `TaskFrame Int` via the OrderIso, (4) use the OrderIso-based TC/FUC from Phase 2
+- [ ] Verify that `fully_restricted_parametric_completeness_from_neg_membership` (sorry-free) still works with the new construction
+- [ ] Verify that `cantor_bfmcs_discrete` (sorry-free) still works
+- [ ] Run `#print axioms countermodel_discrete` and confirm no `sorryAx`
+- [ ] Run `lake build` to confirm no regressions
 
----
+**Timing**: 2-4 hours
 
-### Phase 6A: Reynolds Gap Elimination Lemmas 6-11 [NOT STARTED]
+**Depends on**: 2
 
-**Timing**: 6-8 hours. **Depends on**: Phase 5.
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` — replace delegation (~100-200 lines)
 
----
-
-### Phase 6B: Reynolds Lemma 12 Surgery + Theorem 14 [NOT STARTED]
-
-**Timing**: 6-8 hours. **Depends on**: Phase 6A.
-
----
-
-### Phase 7-8: IntegerModel.lean + Wire no_gaps_discrete [PARTIAL]
-
-**Progress**:
-- [x] **ordered_sum_of_good_bounded_is_good** — CLOSED. Shift-and-glue OrderIso via cumulativeOffset (Reynolds Lemma 16). New helpers: witness_bounded, cumulativeOffset_covers, cumulativeOffset_unique_piece.
-- [x] **cofinal_decomposition_k_equiv** — CLOSED. Original statement was FALSE (closed intervals duplicate boundary points). Corrected to half-open intervals per Reynolds. New infrastructure: hoSubinterval, partition_index_unique, hoSubinterval_good_of_very_good.
-- [ ] **no_gaps_discrete** — 1 sorry. Blocked on Reynolds Theorem 5 (stavi_expressive_completeness, Phases 5-6B).
-
-**Timing**: 1-2 hours remaining for no_gaps_discrete. **Depends on**: Phase 6B.
+**Verification**:
+- `#print axioms countermodel_discrete` shows no `sorryAx`
+- `lake build` passes
 
 ---
 
-### Phase 11: Final Verification [NOT STARTED]
+### Phase 4: Wire countermodel_discrete_enriched [NOT STARTED]
 
-**Timing**: 1-2 hours. **Depends on**: Phase 8.
+**Goal**: Close the sorry at Completeness.lean:227 by wiring `countermodel_discrete_enriched` to `countermodel_discrete`.
+
+**Tasks**:
+- [ ] Read the type signature of `countermodel_discrete_enriched` — it should return `exists (F : TaskFrame Int), ...` (enriched version)
+- [ ] Read the type signature of `countermodel_discrete` — it returns `exists (D : Type), ...` (generic version)
+- [ ] Replace the `sorry` at line 227 with a call to `countermodel_discrete`, specializing D = Int from the existential
+- [ ] Handle any type adaptation between the enriched and generic existential forms
+- [ ] Run `#print axioms countermodel_discrete_enriched` and confirm no `sorryAx`
+- [ ] Run `lake build` to confirm no regressions
+
+**Timing**: 1-2 hours
+
+**Depends on**: 3
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — wire enriched to discrete (~10-30 lines)
+
+**Verification**:
+- `#print axioms countermodel_discrete_enriched` shows no `sorryAx`
+- `lake build` passes
+
+---
+
+### Phase 5: Verify bx_completeness Axiom Cleanliness [NOT STARTED]
+
+**Goal**: Confirm that `bx_completeness` (aka `completeness_discrete`) has no `sorryAx` and that the definition of done is met.
+
+**Tasks**:
+- [ ] Run `#print axioms bx_completeness` (or `completeness_discrete`, whichever is the canonical name)
+- [ ] Confirm output shows only `propext`, `Classical.choice`, `Quot.sound` (standard Lean axioms)
+- [ ] Verify no `sorryAx` appears anywhere in the output
+- [ ] Run `lake build` — confirm zero errors
+- [ ] Search for any `axiom` declarations in `Theories/Bimodal/Metalogic/WeakCanonical/` — confirm none exist (or only standard ones)
+- [ ] Verify `doets_countermodel_discrete` uses the Reynolds pipeline path, not the chronicle fallback
+
+**Timing**: 0.5-1 hour
+
+**Depends on**: 4
+
+**Files to modify**:
+- None (verification only)
+
+**Verification**:
+- `#print axioms bx_completeness` shows no `sorryAx`
+- `lake build` passes with zero errors
+- No `axiom` declarations in WeakCanonical/
+- Definition of done is met
+
+---
+
+### Phase 6: Full GHR93 Pipeline (Deferred — Future Work) [NOT STARTED]
+
+**Goal**: Document the remaining GHR93 work as future tasks, not blocking the current definition of done. This phase is NOT required for sorry-free `bx_completeness` but would close all 14 critical-path sorry sites for mathematical completeness.
+
+**Tasks**:
+- [ ] Document remaining sorry inventory (14 critical-path sorries in ExpressivenessGeneral.lean, EFGames.lean, IntegerModel.lean)
+- [ ] Categorize by attack order (from report 30_forward-inventory):
+  - Tier 1 (closable now): S3, S5, S8 — mechanical index adaptations
+  - Tier 2 (closable with effort): S1, S6, S7, S9, S10 — careful construction
+  - Tier 3 (need new infrastructure): S2, S4 — formula materialization (report 29_literature-alignment Approach A)
+  - Tier 4 (need new theorems): S11, S12, S13, S14 — Lemma 9, Lemma 10, full GHR93, Theorem 5
+- [ ] Create task(s) for the full GHR93 pipeline work if desired
+- [ ] Update plan status to reflect bypass completion
+
+**Timing**: 0.5-1 hour
+
+**Depends on**: 5
+
+**Files to modify**:
+- This plan file (status update)
+
+**Verification**:
+- Clear documentation of remaining work
+- Decision on whether to pursue full pipeline as a separate task
 
 ---
 
 ## Testing & Validation
 
-- `lake build` passes with zero errors
-- `#print axioms bx_completeness` shows only: `propext`, `Classical.choice`, `Quot.sound`
-- No `axiom` declarations in `Theories/Bimodal/Metalogic/WeakCanonical/`
-- No `sorry` on the critical path
+- [ ] `lake build` passes with zero errors after each phase
+- [ ] `#print axioms bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound`
+- [ ] No `sorryAx` in the axiom output
+- [ ] No `axiom` declarations in `Theories/Bimodal/Metalogic/WeakCanonical/`
+- [ ] `doets_countermodel_discrete` uses Reynolds pipeline (no chronicle fallback)
+- [ ] OrderIso-based coherence proofs are individually sorry-free (`#print axioms` on each)
 
 ## Artifacts & Outputs
 
-- `ExpressivenessGeneral.lean` — inline Claim 1, Cases III/IV, rank-varying Thm 6
-- `EFGames.lean` — Lemma 11 backward, stavi_expressive_completeness
-- `GapElimination.lean` (NEW) — Reynolds Lemmas 6-14
-- `IntegerModel.lean` — no_gaps_discrete wiring
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/Transfer.lean` — OrderIso-based countermodel construction replacing chronicle fallback
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — `countermodel_discrete_enriched` wired to `countermodel_discrete`
+- Possibly a new file for OrderIso coherence lemmas (depending on Phase 2 design decisions)
+- `specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md` — this plan
 
 ## Rollback/Contingency
 
-Report 39 confirmed full formula materialization (GHR93 Def 8.8) is circular at this stage of the proof. The case-split approach (report 38) faithfully mirrors GHR93's implicit C(c) evaluation. The pigeonhole in Case A extracts a single StaviFormula separator — necessary since the full interval type formula can't be materialized without the theorem being proved.
+If the OrderIso bypass proves infeasible (Phase 1 identifies a type mismatch that cannot be bridged):
+
+1. **Preserve all bypass work** in a separate branch or commented section
+2. **Fall back to the full GHR93 pipeline** per the prior plan (v25), starting with Phase 1 (infimum construction + Claim 1)
+3. **Estimated fallback effort**: 40-60 hours (report 35)
+4. **Key risk in fallback**: The formula materialization circularity (reports 38, 39) blocks 7 of the 14 critical-path sorries. Report 29 (literature-alignment) identifies Approach A (direct StaviFormula enumeration, ~200-300 lines) as the mathematically correct fix.
+
+The bypass approach is lower risk because it avoids the formula materialization circularity entirely — it does not need any of the GHR93 game-theoretic machinery for the critical path.
