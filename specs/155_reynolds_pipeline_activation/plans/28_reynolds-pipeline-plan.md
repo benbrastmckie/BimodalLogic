@@ -138,33 +138,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula C Case-Split Resolution S1 + S2 [BLOCKED]
+### Phase 2: K⁻ Fallback for S1 + S2 Architectural Resolution [IN PROGRESS]
 - **Started**: 2026-05-24T17:30:00Z
-- **Blocked**: 2026-05-24T18:00:00Z — S1 (r2_resp = rank_embed(y') boundary) has no direct contradiction in current proof context. Requires either proof restructuring to avoid this sub-case, or showing the game cannot respond with rank_embed(y'). S2 (gap case) not yet attempted.
+- **Revised**: 2026-05-24T19:00:00Z — Research found S1 IS closable; S2 is a genuine architectural blocker
 
-**Goal**: Resolve the formula C predicate-vs-formula gap using Approach C (case-split on `cont_holds` at infimum). This closes S1 and S2, the core of the Claim 1 sorry cluster. S4 inherits from S1/S2 and should close automatically or with minimal adaptation.
+**Goal**: Close S1 via K⁻(¬D_M) fallback. Resolve S2 architecturally (gap sub-case needs NormalForm or continuation_set restructuring).
+
+**Research Findings** (reports 29_s1-boundary-resolution.md, 29_s2-gap-resolution.md):
+- **K⁻ semantics corrected**: K⁻(A) = "A is cofinal below t" (∀ mu s < t, ∃ mu u ∈ (s,t), A(u)), NOT "past eventually". All prior reports had wrong semantics.
+- **S1 IS closable**: When `c_inf = y` (forced by r2_resp = rank_embed(y')), `h_cofinal_failure_below_c_inf` gives strict failures below c_inf, enabling the Case A K⁻ logic (~150-200 lines).
+- **S2 is a GENUINE BLOCKER**: Cannot close with current approach. A_fail doesn't fail cofinally below c_inf in M. Truth doesn't inherit from carriers to gaps (atoms are False at gaps). Needs one of:
+  - (a) NormalForm equivalence from formula_agreement (new infrastructure)
+  - (b) Show gap responses impossible in this sub-case via continuation_set structure
+  - (c) Restructure proof to follow GHR93 more faithfully (C as formula — but blocked by infinite atoms)
 
 **Tasks**:
-- [ ] Re-map the case-split from reports 38/39 to CURRENT sorry site locations (3901, 3935) -- the old targets (2307-2825) are outdated
-- [ ] Implement case-split on `cont_holds` at infimum c_inf:
-  - Case A (cont_holds FAILS at c_inf): extract witnessing formula A directly from negation (~60 lines)
-  - Case B (cont_holds HOLDS at c_inf): all failures strictly below c_inf, strict pigeonhole applies cleanly (~80 lines)
-- [ ] Close S1 (line 3901, boundary case: `r2_resp = rank_embed(y')`) via dedicated boundary analysis (~30 lines)
-- [ ] Close S2 (line 3935, gap `r2_resp` + formula materialization): build truth-at-gap lemma -- if A holds at all approaching carrier points, it holds at the gap (~80 lines)
-- [ ] Close S4 (line 4424, multi-round `K^-(~D_M)`): this inherits from S1/S2 resolution -- verify it closes from the case-split or adapt (~30 lines)
-- [ ] Run `lake build` to confirm no regressions
+- [ ] Close S1 via K⁻ fallback: fall back to Case A logic when c_inf = y (~150-200 lines)
+- [ ] Investigate S2 Fix (b): can continuation_set_upward_closed show all elements above d are carrier points, eliminating gap responses?
+- [ ] If Fix (b) fails: S2 requires NormalForm infrastructure (Fix a) — estimate ~300 lines of new NF comparison lemmas
+- [ ] Close S4 (multi-round K⁻): inherits from S1/S2 resolution
+- [ ] Close new S7-right sorry (same K⁻ type, introduced by Phase 4 implementation)
 
-**Timing**: 2-3 hours
+**Timing**: 3-5 hours (S1 is mechanical; S2 may require research + new infrastructure)
 
 **Depends on**: 1
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- formula C case-split resolution (~240 lines)
-
-**Verification**:
-- Sorry sites S1, S2, S4 (lines 3901, 3935, 4424) are closed
-- `lake build` passes
-- `#print axioms` on affected lemmas shows no new `sorryAx`
+**GHR93 Alignment Note**: GHR93 avoids this entirely because C IS a formula. The gap sub-case is handled by C'(d) = ¬C(d) ∨ K⁻(¬C)(d) directly, where K⁻(¬C) is a single formula transferred through game agreement. The predicate encoding makes this impossible — the K⁻ argument requires a SINGLE formula that fails cofinally, but cont_holds failures yield different formulas at each point.
 
 ---
 
