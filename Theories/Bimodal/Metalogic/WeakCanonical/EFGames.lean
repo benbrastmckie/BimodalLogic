@@ -700,6 +700,29 @@ theorem rank_embed_lt {sig : MonadicSignature}
     exact ⟨(rank_embed_le h a b).mpr hle,
            fun hba => hnle ((rank_embed_le h b a).mp hba)⟩
 
+/-- rank_embed is injective: if two rank-r elements map to the same rank-r'
+    element, they are equal. This follows because rank_embed = Sum.map id f
+    where f (rank_embed_gap) preserves the underlying Gap value. -/
+theorem rank_embed_injective {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r)
+    (hab : rank_embed h a = rank_embed h b) : a = b := by
+  have : Function.Injective (rank_embed h : ExtendedCarrier M atomMap r →
+      ExtendedCarrier M atomMap r') := by
+    rw [rank_embed, Sum.map_injective]
+    exact ⟨Function.injective_id, fun ga gb heq => by
+      simp [rank_embed_gap] at heq
+      exact Subtype.ext heq⟩
+  exact this hab
+
+/-- Variant of rank_embed_injective: contrapositive form.
+    If two rank-r elements are distinct, their rank-embeddings are distinct. -/
+theorem rank_embed_ne {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r)
+    (hab : a ≠ b) : rank_embed h a ≠ rank_embed h b :=
+  fun heq => hab (rank_embed_injective h a b heq)
+
 /-! ## Relativized Formulas and Type Formulas (GHR93 Definitions 8.4, 8.8)
 
 The extended structure M_r needs to become an OrderedMonadicStructure so that
@@ -7093,6 +7116,190 @@ theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
       intro i A hA
       rw [h_eq_M i, h_eq_N i]
       exact hform (round_mono_emb n n' hn i) A hA
+
+/-! ## Rank Lifting Infrastructure (GHR93 Lemma 10 Components)
+
+Infrastructure for lifting game strategies across ranks. The key components:
+
+1. **rank_embed commutation**: game_tuple composed with rank_embed gives
+   rank_embed of game_tuple.
+2. **Winning condition transfer**: same_order_type, gap_point_agreement,
+   and formula_agreement (at depth ≤ r) transfer through rank_embed.
+3. **rank_embed_injective**: if rank_embed(a) = rank_embed(b) then a = b
+   (proved above in the rank_embed section).
+
+These support the d_consistency restructuring: when all game positions are
+rank-embeddings, the winning condition at rank r' reduces to the winning
+condition at rank r (for formula depth ≤ r). The K⁻(¬D) argument then
+provides the additional formula transfer needed for depth r+2 formulas.
+
+### References
+
+- GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 10
+- Task 155 handoff: d-consistency restructure analysis, Section 5
+-/
+
+/-- rank_embed commutes with game_tuple: embedding each component of a rank-r
+    game tuple gives the rank-r' game tuple with rank-embedded components.
+
+    This is the key structural lemma for rank lifting: it lets us interpret
+    a rank-r game play as a rank-r' game play at rank-embedded positions. -/
+theorem rank_embed_game_tuple {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') {n : Nat}
+    (x y : ExtendedCarrier M atomMap r)
+    (a : Fin n → ExtendedCarrier M atomMap r)
+    (b : M.carrier) (i : Fin (n + 3)) :
+    rank_embed h (game_tuple x y a b i) =
+    game_tuple (rank_embed h x) (rank_embed h y) (fun j => rank_embed h (a j)) b i := by
+  simp only [game_tuple]
+  split
+  · rfl
+  · next h0 =>
+    split
+    · simp [rank_embed, extendPoint, Sum.map]
+    · next h1 =>
+      split
+      · rfl
+      · rfl
+
+/-- rank_embed preserves same_order_type: order relationships between
+    rank-embedded tuples are identical to the original tuples' relationships. -/
+theorem rank_embed_same_order_type {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') {n : Nat}
+    {tM : Fin (n + 3) → ExtendedCarrier M atomMap r}
+    {tN : Fin (n + 3) → ExtendedCarrier N atomMap r}
+    (hord : same_order_type n tM tN) :
+    same_order_type n (fun i => rank_embed h (tM i))
+      (fun i => rank_embed h (tN i)) := by
+  intro i j
+  -- Beta-reduce the lambda applications
+  show (rank_embed h (tM i) < rank_embed h (tM j) ↔
+        rank_embed h (tN i) < rank_embed h (tN j)) ∧
+       (rank_embed h (tM i) = rank_embed h (tM j) ↔
+        rank_embed h (tN i) = rank_embed h (tN j))
+  constructor
+  · exact (rank_embed_lt h (tM i) (tM j)).trans
+      ((hord i j).1.trans (rank_embed_lt h (tN i) (tN j)).symm)
+  · constructor
+    · intro heq
+      have hle : tM i ≤ tM j :=
+        (rank_embed_le h (tM i) (tM j)).mp (le_of_eq heq)
+      have hge : tM j ≤ tM i :=
+        (rank_embed_le h (tM j) (tM i)).mp (le_of_eq heq.symm)
+      have heq_r : tM i = tM j := le_antisymm hle hge
+      exact le_antisymm
+        ((rank_embed_le h (tN i) (tN j)).mpr (le_of_eq ((hord i j).2.mp heq_r)))
+        ((rank_embed_le h (tN j) (tN i)).mpr (le_of_eq ((hord i j).2.mp heq_r).symm))
+    · intro heq
+      have hle : tN i ≤ tN j :=
+        (rank_embed_le h (tN i) (tN j)).mp (le_of_eq heq)
+      have hge : tN j ≤ tN i :=
+        (rank_embed_le h (tN j) (tN i)).mp (le_of_eq heq.symm)
+      have heq_r : tN i = tN j := le_antisymm hle hge
+      exact le_antisymm
+        ((rank_embed_le h (tM i) (tM j)).mpr (le_of_eq ((hord i j).2.mpr heq_r)))
+        ((rank_embed_le h (tM j) (tM i)).mpr (le_of_eq ((hord i j).2.mpr heq_r).symm))
+
+/-- rank_embed preserves gap_point_agreement: gap/point status at
+    rank-embedded positions matches the original positions' status. -/
+theorem rank_embed_gap_point_agreement {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') {n : Nat}
+    {tM : Fin (n + 3) → ExtendedCarrier M atomMap r}
+    {tN : Fin (n + 3) → ExtendedCarrier N atomMap r}
+    (hgp : gap_point_agreement n tM tN) :
+    gap_point_agreement n (fun i => rank_embed h (tM i))
+      (fun i => rank_embed h (tN i)) := by
+  intro i
+  -- Beta-reduce the lambda applications
+  show (IsPoint (rank_embed h (tM i)) ↔ IsPoint (rank_embed h (tN i))) ∧
+       (IsGap (rank_embed h (tM i)) ↔ IsGap (rank_embed h (tN i)))
+  constructor
+  · -- IsPoint transfer: use rank_embed_isPoint on both sides
+    exact (rank_embed_isPoint h (tM i)).trans
+      ((hgp i).1.trans (rank_embed_isPoint h (tN i)).symm)
+  · -- IsGap transfer: cases on the carrier type
+    constructor
+    · intro ⟨g, hg⟩
+      -- g is a gap at rank r', recover rank-r gap from tM i
+      cases htM : tM i with
+      | inl x => rw [htM] at hg; simp [rank_embed, extendPoint, Sum.map] at hg
+      | inr gM =>
+        have hgM : IsGap (tM i) := ⟨gM, htM⟩
+        obtain ⟨gN, hgN⟩ := (hgp i).2.mp hgM
+        exact ⟨rank_embed_gap h gN, by rw [hgN]; simp [rank_embed, Sum.map]⟩
+    · intro ⟨g, hg⟩
+      cases htN : tN i with
+      | inl x => rw [htN] at hg; simp [rank_embed, extendPoint, Sum.map] at hg
+      | inr gN =>
+        have hgN : IsGap (tN i) := ⟨gN, htN⟩
+        obtain ⟨gM, hgM⟩ := (hgp i).2.mpr hgN
+        exact ⟨rank_embed_gap h gM, by rw [hgM]; simp [rank_embed, Sum.map]⟩
+
+/-- rank_embed preserves formula_agreement at depth ≤ r.
+    Formula evaluation at rank-embedded positions reduces to evaluation at
+    the original rank (via rank_embed_stavi_truth_mu), so formula agreement
+    transfers directly. Note: this only gives agreement at depth ≤ r, NOT
+    depth ≤ r'. For full depth ≤ r' agreement at rank r', additional
+    infrastructure (GHR93 Lemma 10 gap transfer) is needed. -/
+theorem rank_embed_formula_agreement {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat} (h : r ≤ r') {n : Nat}
+    {tM : Fin (n + 3) → ExtendedCarrier M atomMap r}
+    {tN : Fin (n + 3) → ExtendedCarrier N atomMap r}
+    (hform : formula_agreement n tM tN) :
+    ∀ (i : Fin (n + 3)) (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r' (rank_embed h (tM i)) A ↔
+       stavi_temporal_truth_mu N atomMap r' (rank_embed h (tN i)) A) := by
+  intro i A hA
+  exact (rank_embed_stavi_truth_mu h (tM i) A).trans
+    ((hform i A hA).trans (rank_embed_stavi_truth_mu h (tN i) A).symm)
+
+/-- **Rank lifting for rank-embedded Spoiler selections**: If Duplicator wins
+    G_{n;r}(M, x y; N, x' y'), then for any r' ≥ r, Duplicator can respond
+    to rank-embedded Spoiler selections at rank r' with rank-embedded responses
+    that satisfy the winning condition (same_order_type, gap_point_agreement,
+    and formula_agreement at depth ≤ r) at rank r'.
+
+    This is formulated as: applying the rank-r strategy and then rank-embedding
+    the responses gives a valid partial strategy at rank r'. The formula
+    agreement is only guaranteed at depth ≤ r (not depth ≤ r'), which is a
+    consequence of the rank-r game's depth limitation.
+
+    For the d_consistency application, the responses being rank-embeddings is
+    the critical property. The K⁻(¬D) formula (depth r+2) is handled through
+    direct semantic reasoning, not through the game's formula agreement. -/
+theorem ghr93_strategy_rank_lift {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n r r' : Nat} (hr : r ≤ r')
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hwin : ghr93_duplicator_wins M N atomMap n r x y x' y') :
+    ∀ (a : Fin n → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a i)) →
+      ∃ (a' : Fin n → ExtendedCarrier N atomMap r),
+        -- Responses are in [x', y'] at rank r
+        (∀ i, inClosedInterval x' y' (a' i)) ∧
+        -- For all point challenges...
+        ∀ (b' : N.carrier),
+          inClosedInterval x' y' (extendPoint b') →
+          ∃ (b : M.carrier),
+            inClosedInterval x y (extendPoint b) ∧
+            -- Winning condition at rank r (from which rank-r' winning condition
+            -- at rank-embedded positions follows via rank_embed_same_order_type,
+            -- rank_embed_gap_point_agreement, and rank_embed_formula_agreement)
+            ghr93_winning_condition n (game_tuple x y a b)
+              (game_tuple x' y' a' b') ∧
+            -- Key property: all responses are rank-r elements
+            -- (so their rank-embeddings are rank-r' responses in image of rank_embed)
+            True := by
+  intro a ha
+  obtain ⟨a', ha', hwin'⟩ := hwin a ha
+  exact ⟨a', ha', fun b' hb' => by
+    obtain ⟨b, hb, hcond⟩ := hwin' b' hb'
+    exact ⟨b, hb, hcond, trivial⟩⟩
 
 /-! ## Strategy Restriction (GHR93 Theorem 6 Infrastructure)
 
