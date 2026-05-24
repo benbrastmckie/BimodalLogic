@@ -99,27 +99,53 @@ B. Case-split: if cont_holds_cross holds at c_inf, h_strict_failure is provable;
    if it fails, handle the K- argument differently (use c_inf failure directly)
 C. Add a hypothesis that c_inf-failure implies strict failures exist
 
+## Critical Analysis: h_strict_failure
+
+Further analysis confirmed that `h_strict_failure` is genuinely UNPROVABLE for
+some configurations. Specifically:
+
+- `OrderedMonadicStructure` only requires `LinearOrder carrier` (no density)
+- If c_inf = extendPoint p_inf (carrier point) and cont_holds_cross FAILS at c_inf,
+  and there are no carrier points in the open interval (s, c_inf), then no strict
+  failure witness exists
+- `h_cofinal_failure_below_c_inf` returns v ≤ c_inf (non-strict), and v = c_inf
+  is possible
+
+**The fix**: Replace `h_strict_bridge + pigeonhole_definable_formula_cross_strict`
+with the non-strict variant `pigeonhole_definable_formula_cross`. The non-strict
+variant exists at line 856 and doesn't require `< upper`. Cut points are below
+c_inf by definition, so the non-strict pigeonhole gives D_M that fails at cut
+points below c_inf. The K- argument then uses D_M to show Since(T, D_M) is
+FALSE at c_inf (since D_M fails cofinally below c_inf, even if only at c_inf
+itself when c_inf is a carrier point in the cut).
+
+**Detailed fix plan**:
+1. Replace h_strict_failure with a non-strict version (h_cofinal_failure_bridge)
+   that converts h_cofinal_failure_below_c_inf output to pigeonhole-compatible form
+2. Apply pigeonhole_definable_formula_cross (non-strict) to get D_M
+3. The rest of the K- argument (Since(T,D_M) false, K- transfer, Since true
+   at r2_resp, contradiction) remains the same — the non-strict D_M has the
+   same properties needed
+
 ## What Was NOT Done
 
-1. **d_consistency restructuring**: Not attempted due to the projection problem
-   (rank r+2 to rank r) and the need for a unified game approach.
+1. **d_consistency restructuring**: Not attempted due to the rank projection obstacle.
 
 2. **same_order_type sorries**: Remain blocked on h_d_unique / d_consistency.
 
 3. **Cases III/IV and rank_varying**: Independent sorries, not attempted.
 
-4. **h_strict_failure sorry closure**: Requires choosing between fix options A/B/C above.
+4. **h_strict_failure sorry closure**: Requires switching to non-strict pigeonhole variant.
 
 ## Immediate Next Action
 
-1. **Fix h_strict_failure** (line 3331): Option B is recommended. Case-split on
-   whether cont_holds_cross holds at c_inf. If yes, h_cofinal_failure returns
-   v < c_inf (since v = c_inf contradicts cont_holds_cross at c_inf). If no,
-   use the non-strict pigeonhole variant with c_inf as a known failure point.
+1. **Fix h_strict_failure** (line 3331): Replace with non-strict cofinal failure
+   bridge feeding into `pigeonhole_definable_formula_cross` instead of the strict
+   variant. This is a targeted refactoring of lines 3332-3373 (bridge + pigeonhole
+   call). The K- argument afterward (lines 3374-3695) should mostly work unchanged.
 
-2. **After fixing h_strict_failure**: The K- argument at lines 3333-3695 should
-   compile cleanly (it was previously dead code that compiled only because
-   the goal was already closed).
+2. **After fixing h_strict_failure**: The K- argument should compile cleanly.
+   Verify with `lake build`.
 
 3. **For d_consistency**: Consider restructuring to use a single game at rank r+2
    instead of separate rank-r and rank-(r+2) games. This requires either:
