@@ -1,7 +1,7 @@
-# Phase 3e Handoff: Build Fixes + Dead Code Bug Exposure
+# Phase 3e Handoff: Build Fixes + Dead Code Bug Exposure + Architectural Analysis
 
 **Session**: sess_1779565373_9bf0c5
-**Phase**: 3e (build fixes and structural analysis)
+**Phase**: 3e (build fixes, structural analysis, h_strict_failure investigation)
 **Status**: PARTIAL (0 sorries closed; 1 regression sorry from exposing dead code bug; net 8 sorries)
 **File**: `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean`
 
@@ -137,21 +137,49 @@ itself when c_inf is a carrier point in the cut).
 
 4. **h_strict_failure sorry closure**: Requires switching to non-strict pigeonhole variant.
 
+## Deep Analysis: Why Switching to Non-Strict Pigeonhole Also Fails
+
+Attempted switching h_strict_bridge to use `pigeonhole_definable_formula_cross`
+(non-strict) instead of `pigeonhole_definable_formula_cross_strict`. This also
+fails because:
+
+1. The non-strict hD_cofinal returns u with ep(u) ≤ c_inf (not strictly <)
+2. The K- argument (`h_since_false_c`) needs ¬D_M in the OPEN interval (s, c_inf)
+3. If all D_M failures are AT c_inf (ep(u) = c_inf), then D_M holds on (s, c_inf)
+4. Then Since(top, D_M) at c_inf is TRUE, making K-(not D_M) FALSE
+5. The K- transfer gives K-(not D_M) FALSE at r2_resp, which doesn't help
+
+**Root cause**: When c_inf is a carrier point in a discrete linear order with
+cont_holds_cross failing ONLY at c_inf, the K- formula approach breaks. The
+formula D_M fails at c_inf but holds everywhere in (s, c_inf), so Since(top, D_M)
+is TRUE at c_inf, and K-(not D_M) is FALSE. The argument needs D_M to fail
+COFINALLY (infinitely often) below c_inf, not just at c_inf.
+
+**GHR93 assumption**: The GHR93 paper works with temporal structures that have
+sufficient density/continuity. In such structures, failures are never isolated
+at a single point — they propagate to nearby points. The Lean formalization uses
+a general `LinearOrder carrier` without density, exposing this gap.
+
+**Possible resolutions**:
+1. Add a density/continuity hypothesis to the structures (matches GHR93 intent)
+2. Handle the discrete case separately (c_inf is a carrier point with isolated failure)
+3. Prove that isolated failures at c_inf can't occur in the GHR93 construction
+   (the continuation predicate might have structural properties preventing this)
+
 ## Immediate Next Action
 
-1. **Fix h_strict_failure** (line 3331): Replace with non-strict cofinal failure
-   bridge feeding into `pigeonhole_definable_formula_cross` instead of the strict
-   variant. This is a targeted refactoring of lines 3332-3373 (bridge + pigeonhole
-   call). The K- argument afterward (lines 3374-3695) should mostly work unchanged.
+1. **Investigate resolution 3**: Check whether the continuation predicate
+   `cont_holds_cross` has properties that prevent isolated failures at c_inf.
+   The predicate is defined as `∀ A depth ≤ r, (∀ mu v ∈ (a_n, y'), A(v)) → A(t)`.
+   If A holds at ALL mu in (a_n, y') (a large interval), it might be forced to
+   hold at nearby points by structural properties of StaviFormulas.
 
-2. **After fixing h_strict_failure**: The K- argument should compile cleanly.
-   Verify with `lake build`.
+2. **If resolution 3 fails**: Add density hypothesis. The GHR93 proof implicitly
+   assumes this.
 
-3. **For d_consistency**: Consider restructuring to use a single game at rank r+2
-   instead of separate rank-r and rank-(r+2) games. This requires either:
-   - Proving that rank-(r+2) game responses can be projected to rank r
-   - Constructing rank-r responses directly from rank-(r+2) winning conditions
-   - Adding a left inverse for rank_embed on the response range
+3. **For d_consistency**: The rank projection obstacle remains. Consider the
+   GHR93 approach of using a single higher-rank game. This requires rethinking
+   the d_consistency signature to operate at rank r+2.
 
 ## Key Decisions
 
