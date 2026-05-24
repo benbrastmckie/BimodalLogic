@@ -1,7 +1,7 @@
 # Implementation Plan: Reynolds Pipeline Activation (v28)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20-30 hours (Track A: 8-14h, Track B: 12-16h)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**: reports/28_team-research.md (5-teammate synthesis), reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md
@@ -113,20 +113,30 @@ Phases within the same wave can execute in parallel. Track A and Track B are ind
 
 ---
 
-### Phase A1: Verify OrderIso Bypass Feasibility [NOT STARTED]
+### Phase A1: Verify OrderIso Bypass Feasibility [COMPLETED]
 
 **Goal**: Confirm that the OrderIso bypass is viable by tracing sorryAx propagation and verifying type compatibility between `chronicle_is_good`, `countermodel_discrete`, and `countermodel_discrete_enriched`.
 
 **Tasks**:
-- [ ] Run `#print axioms bx_completeness` and trace every `sorryAx` to its source file and line
-- [ ] Run `#print axioms chronicle_is_good` and confirm zero `sorryAx`
-- [ ] Read `chronicle_is_good` signature and return type (OrderIso to what?)
-- [ ] Read `countermodel_discrete` in Transfer.lean -- identify type signature and delegation chain
-- [ ] Read `countermodel_discrete_enriched` in Completeness.lean:227 -- identify existential form
-- [ ] Read `dd_countermodel_chronicle_discrete` in ChronicleToCountermodel.lean -- identify which sub-lemmas carry `sorryAx` (expected: `cantor_bfmcs_discrete_restricted_tc`, `cantor_bfmcs_discrete_restricted_fuc`)
-- [ ] Read `succ_embed_surjective` and `succ_cofinal` -- confirm these are the root sorry sites
-- [ ] Document type compatibility: can `chronicle_is_good`'s OrderIso produce a `TaskFrame Int` that matches what `countermodel_discrete` needs?
-- [ ] Identify exact coherence obligations (TC, BUC, FUC) that currently use `succ_embed_surjective` and would need OrderIso alternatives
+- [x] **Task A1.1**: Run `#print axioms bx_completeness` and trace every `sorryAx` to its source file and line *(completed)*
+- [x] **Task A1.2**: Run `#print axioms chronicle_is_good` and confirm zero `sorryAx` *(completed)*
+- [x] **Task A1.3**: Read `chronicle_is_good` signature and return type (OrderIso to what?) *(completed)*
+- [x] **Task A1.4**: Read `countermodel_discrete` in Transfer.lean -- identify type signature and delegation chain *(completed)*
+- [x] **Task A1.5**: Read `countermodel_discrete_enriched` in Completeness.lean:227 -- identify existential form *(completed)*
+- [x] **Task A1.6**: Read `dd_countermodel_chronicle_discrete` in ChronicleToCountermodel.lean -- identify which sub-lemmas carry `sorryAx` *(completed: confirmed tc and fuc carry sorryAx, buc is sorry-free)*
+- [x] **Task A1.7**: Read `succ_embed_surjective` and `succ_cofinal` -- confirm these are the root sorry sites *(completed)*
+- [x] **Task A1.8**: Document type compatibility: can `chronicle_is_good`'s OrderIso produce a `TaskFrame Int` that matches what `countermodel_discrete` needs? *(completed: INFEASIBLE — see findings)*
+- [x] **Task A1.9**: Identify exact coherence obligations (TC, BUC, FUC) that currently use `succ_embed_surjective` and would need OrderIso alternatives *(completed)*
+
+**Phase A1 Findings (Track A INFEASIBLE)**:
+
+Sorry chain: `bx_completeness` → `completeness_discrete` → `countermodel_discrete_enriched` (sorry at Completeness.lean:227) → `WeakCanonical.countermodel_discrete` → `dd_countermodel_chronicle_discrete` → `cantor_bfmcs_discrete_restricted_tc` / `_fuc` → `succ_embed_surjective` → `limitDomSubtype_isSuccArchimedean` → `succ_cofinal` (sorry at ChronicleToCountermodel.lean:1885).
+
+`chronicle_is_good` is sorry-free but is called on a `ChronicleAsPriorModel`, and `extract_chronicle_as_prior` (the only constructor from the Burgess chronicle) is NOT sorry-free because it fills `domain_succ_archimedean := limitDomSubtype_isSuccArchimedean` which uses `succ_cofinal`.
+
+Every path from the Burgess chronicle to a countermodel on Int goes through `IsSuccArchimedean` for `LimitDomSubtype`. The `z_interval_countermodel` approach (Reynolds pipeline) also requires `LimitDomSubtype ≃o ℤ` via `orderIsoIntOfLinearSuccPredArch`, which requires `IsSuccArchimedean`. `valid_discrete` itself quantifies over `IsSuccArchimedean D` domains.
+
+**Verdict**: Track A (OrderIso bypass) is NOT FEASIBLE without first proving `succ_cofinal`. Track B (GHR93 pipeline) also requires sorry-free discrete completeness machinery and is similarly blocked. Both tracks ultimately require `succ_cofinal` or an entirely different model construction (Task 129 Henkin approach).
 
 **Timing**: 1-2 hours
 
@@ -244,7 +254,7 @@ Phases within the same wave can execute in parallel. Track A and Track B are ind
 
 ---
 
-### Phase B1: h_fwd_r1 Rank Fix (r+1 to r+2) [NOT STARTED]
+### Phase B1: h_fwd_r1 Rank Fix (r+1 to r+2) [COMPLETED]
 
 **Goal**: Fix the rank off-by-one in h_fwd_r1 across 6 signature locations. This is always required regardless of which formula C approach is chosen, because `std_snce` adds +2 to stavi_depth, making C' = neg(C) or K^-(neg(C)) have depth r+2 (not r+1).
 
@@ -268,16 +278,16 @@ Phases within the same wave can execute in parallel. Track A and Track B are ind
 
 ---
 
-### Phase B2: Atom Type Verification (Decision Gate) [NOT STARTED]
+### Phase B2: Atom Type Verification (Decision Gate) [COMPLETED]
 
 **Goal**: Determine whether `StaviFormula` in the relevant context uses `Fintype` atoms (enabling Approach A: direct enumeration) or infinite `Atom` (requiring Approach C: case-split). This is the critical decision gate for formula C resolution.
 
 **Tasks**:
-- [ ] Check the type parameter of `StaviFormula` where it is used in `stavi_temporal_truth_mu` -- is it parameterized by `Atom` (infinite: `Countable + Infinite`) or `muSig sig` (finite: `Fintype`)?
-- [ ] If `muSig sig` (Fintype): verify that `Fintype { A : StaviFormula // stavi_depth A <= r }` is constructible
-- [ ] If `Atom` (infinite): confirm that `Fintype` for bounded StaviFormulas is impossible
-- [ ] Check whether `NormalForm (muSig sig) (2*r) 1` already has a `Fintype` instance (expected yes)
-- [ ] Document the decision: Approach A (atoms are Fintype) or Approach C (atoms are infinite)
+- [x] Check the type parameter of `StaviFormula` where it is used in `stavi_temporal_truth_mu` -- is it parameterized by `Atom` (infinite: `Countable + Infinite`) or `muSig sig` (finite: `Fintype`)? *(completed: StaviFormula is monomorphic with infinite Formula atoms — NOT Fintype)*
+- [x] If `muSig sig` (Fintype): verify that `Fintype { A : StaviFormula // stavi_depth A <= r }` is constructible *(deviation: skipped — atoms are NOT Fintype; Approach A is not viable)*
+- [x] If `Atom` (infinite): confirm that `Fintype` for bounded StaviFormulas is impossible *(completed: confirmed — StaviFormula uses Formula (infinite), not muSig sig)*
+- [x] Check whether `NormalForm (muSig sig) (2*r) 1` already has a `Fintype` instance (expected yes) *(completed: NormalForm IS Fintype and already used in pigeonhole machinery)*
+- [x] Document the decision: Approach A (atoms are Fintype) or Approach C (atoms are infinite) *(completed: DECISION = Approach C — case-split; Approach A blocked by infinite atoms)*
 
 **Timing**: 1-2 hours
 
