@@ -138,32 +138,40 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: K⁻ Fallback for S1 + S2 Architectural Resolution [IN PROGRESS]
+### Phase 2: Pigeonhole + K⁻(¬D) Bridge (Unified S1/S2/S4/S7-right Resolution) [IN PROGRESS]
 - **Started**: 2026-05-24T17:30:00Z
-- **Revised**: 2026-05-24T19:00:00Z — Research found S1 IS closable; S2 is a genuine architectural blocker
+- **Revised**: 2026-05-24T20:00:00Z — Definitive resolution found (report 29_cont-holds-refactoring.md)
 
-**Goal**: Close S1 via K⁻(¬D_M) fallback. Resolve S2 architecturally (gap sub-case needs NormalForm or continuation_set restructuring).
+**Goal**: Build 3 bridge lemmas connecting existing pigeonhole output D to the K⁻ transfer argument. This closes S1, S2, S4, and S7-right UNIFORMLY — no point/gap case split needed.
 
-**Research Findings** (reports 29_s1-boundary-resolution.md, 29_s2-gap-resolution.md):
-- **K⁻ semantics corrected**: K⁻(A) = "A is cofinal below t" (∀ mu s < t, ∃ mu u ∈ (s,t), A(u)), NOT "past eventually". All prior reports had wrong semantics.
-- **S1 IS closable**: When `c_inf = y` (forced by r2_resp = rank_embed(y')), `h_cofinal_failure_below_c_inf` gives strict failures below c_inf, enabling the Case A K⁻ logic (~150-200 lines).
-- **S2 is a GENUINE BLOCKER**: Cannot close with current approach. A_fail doesn't fail cofinally below c_inf in M. Truth doesn't inherit from carriers to gaps (atoms are False at gaps). Needs one of:
-  - (a) NormalForm equivalence from formula_agreement (new infrastructure)
-  - (b) Show gap responses impossible in this sub-case via continuation_set structure
-  - (c) Restructure proof to follow GHR93 more faithfully (C as formula — but blocked by infinite atoms)
+**Definitive Research Finding** (report 29_cont-holds-refactoring.md):
+- Full cont_holds → formula refactoring is **CIRCULAR** (requires nf_characterizable_by_stavi = sorry S13)
+- **Non-circular resolution**: Use the pigeonhole's output D (single StaviFormula, depth ≤ r, fails cofinally below infimum) in the K⁻ argument directly
+- K⁻(¬D) works uniformly for carrier points AND gaps — no case split needed
+- This follows GHR93's proof structure exactly (same K⁻ argument, different formula selection)
 
-**Tasks**:
-- [ ] Close S1 via K⁻ fallback: fall back to Case A logic when c_inf = y (~150-200 lines)
-- [ ] Investigate S2 Fix (b): can continuation_set_upward_closed show all elements above d are carrier points, eliminating gap responses?
-- [ ] If Fix (b) fails: S2 requires NormalForm infrastructure (Fix a) — estimate ~300 lines of new NF comparison lemmas
-- [ ] Close S4 (multi-round K⁻): inherits from S1/S2 resolution
-- [ ] Close new S7-right sorry (same K⁻ type, introduced by Phase 4 implementation)
+**New Infrastructure** (~120 lines):
+- [ ] `K_minus_from_cofinal_failure` (~40 lines): D fails cofinally below t among mu-points → K⁻(¬D)(t) holds at rank r+2
+- [ ] `K_minus_transfer` (~30 lines): Transfer K⁻(¬D) through game agreement at rank r+2 (direct from h_fwd_r1)
+- [ ] `K_minus_implies_le_infimum` (~50 lines): K⁻(¬D) at response + D holds above d → response ≤ rank_embed(d)
 
-**Timing**: 3-5 hours (S1 is mechanical; S2 may require research + new infrastructure)
+**Sorry Site Rewrites** (~200 lines replacing existing dead code):
+- [ ] S1 (boundary): Apply K⁻(¬D) argument — contradiction with h_not_le
+- [ ] S2 (gap): Same K⁻(¬D) argument — works for gaps because K⁻ semantics are defined for all elements
+- [ ] S4 (multi-round): Same pattern with multi-round indices
+- [ ] S7-right: Same pattern applied in right sub-case
+
+**Code Removal** (~250 lines):
+- [ ] Remove Case A/Case B split at sorry sites (K⁻ approach is uniform)
+- [ ] Remove boundary-specific and gap-specific workaround code
+
+**Net change**: ~+320 lines new, ~-250 lines removed = ~+70 lines net. Closes 4 sorry sites.
+
+**Timing**: 2-3 hours
 
 **Depends on**: 1
 
-**GHR93 Alignment Note**: GHR93 avoids this entirely because C IS a formula. The gap sub-case is handled by C'(d) = ¬C(d) ∨ K⁻(¬C)(d) directly, where K⁻(¬C) is a single formula transferred through game agreement. The predicate encoding makes this impossible — the K⁻ argument requires a SINGLE formula that fails cofinally, but cont_holds failures yield different formulas at each point.
+**GHR93 Alignment**: Uses GHR93's identical K⁻ argument structure. Difference: GHR93 uses C (full interval-type formula, circular to construct); we use D (single separating formula from pigeonhole, non-circular). Same proof pattern, different formula selection. Both valid.
 
 ---
 
