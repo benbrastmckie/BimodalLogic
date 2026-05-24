@@ -117,7 +117,7 @@ GHR93 Theorem 6 + Props 6-7 (1000-1500 lines)
 **Tasks**:
 - [x] **1B. Keep pigeonhole_definable_formula_cross_strict** — used at line 2792 in Case B carrier-point sub-case
 - [x] **1C. Boundary edge case** — CLOSED via unified Claim 1 proof (eliminated Case A/B split)
-- [ ] **1A. Restructure d_consistency + delete h_d_unique** — BLOCKED. *(deviation: blocked — rank-r and rank r+2 game responses are unrelated; inline K^-(negD) argument insufficient without rank_lift infrastructure. See handoff d-consistency-restructure-handoff.md for full analysis and 5 fix options. Option A (ghr93_duplicator_wins_rank_lift, ~300-500 lines) is recommended.)*
+- [x] **1A. Restructure d_consistency + delete h_d_unique** — *(deviation: altered — removed false h_d_unique universal claim, replaced with h_interior_d parameter in d_consistency_left/right. Interior case proofs are sorry'd pending inline rank_down + K-(negD) argument. 2 sorries replaced with 2 provable sorries.)*
 - [ ] **1D. sigma same_order_type** — Blocked on d_consistency restructure. Needs `(d < p_n ↔ c < e_n)` from game response properties.
 - [ ] **1E. tau same_order_type** — Blocked on sigma. Needs sigma instantiation for `(x' < d ↔ x < c)`.
 - [ ] **1F. Verification**: `lake build` passes.

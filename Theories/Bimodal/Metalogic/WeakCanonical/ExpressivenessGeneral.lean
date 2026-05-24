@@ -1705,19 +1705,21 @@ private theorem d_consistency_left {sig : MonadicSignature}
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
       (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
-    -- GHR93 Claim 1 extract: any element t' in [x',y'] that agrees with d
-    -- on rank-r formulas and has the same gap/point and boundary
-    -- relationships must equal d.
-    (h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
-      inClosedInterval x' y' t' →
-      (∀ (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r t' A ↔
-         stavi_temporal_truth_mu N atomMap r d A)) →
-      (IsPoint t' ↔ IsPoint d) →
-      (IsGap t' ↔ IsGap d) →
-      (x' = t' ↔ x' = d) →
-      (t' = y' ↔ d = y') →
-      t' = d) :
+    -- GHR93 Claim 1 (interior case): when d is strictly interior to [x',y'],
+    -- the rank-r forward game response at position n equals d.
+    -- This replaces the false universal h_d_unique with a direct d-consistency
+    -- guarantee constructed via rank_down(h_fwd_r1) + K⁻(¬D) at the call site.
+    (h_interior_d : x' ≠ d → d ≠ y' →
+      ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
+        (∀ i, inClosedInterval x y (a_pad i)) →
+        a_pad ⟨n, by omega⟩ = c →
+        ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+          (∀ i, inClosedInterval x' y' (a'_full i)) ∧
+          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+              ghr93_winning_condition (n + 1)
+                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
+          a'_full ⟨n, by omega⟩ = d) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨n, by omega⟩ = c →
@@ -1729,90 +1731,47 @@ private theorem d_consistency_left {sig : MonadicSignature}
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨n, by omega⟩ = d := by
   intro a_pad ha_pad hc_last
-  -- Apply the forward strategy to get a candidate response
-  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
-  -- Let t = a'_full(n) be the response at the boundary position
-  set t := a'_full ⟨n, by omega⟩ with ht_def
-  -- Use any point witness to extract a winning condition instance
-  obtain ⟨p₀, hp₀⟩ := h_pt
-  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
-  obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
-  -- Extract boundary equivalences from same_order_type.
-  -- game_tuple layout for n+1 selections (total n+4 = (n+1)+3 indices):
-  --   index 0 = x/x', index (n+1) = a_pad(n)/a'_full(n), index (n+3) = y/y'
-  -- Equality at (0, n+1): x = c ↔ x' = t
-  have heq_0_n1 := (hord₀ ⟨0, by omega⟩ ⟨n + 1, by omega⟩).2
-  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
-             show (n + 1 : Nat) ≠ 0 from by omega,
-             show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
-             show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-             show n + 1 - 1 = n from by omega] at heq_0_n1
-  rw [hc_last] at heq_0_n1
-  -- Equality at (n+1, n+3): c = y ↔ t = y'
-  have heq_n1_n3 := (hord₀ ⟨n + 1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
-  simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
-             show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
-             show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-             show n + 1 - 1 = n from by omega,
-             show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
-             show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
-             show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at heq_n1_n3
-  rw [hc_last] at heq_n1_n3
   -- Boundary case 1: x' = d
   by_cases hx'd : x' = d
-  · have hxc : x = c := hcd_boundary.1.mpr hx'd
+  · -- Apply the forward strategy for the boundary case
+    obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
+    set t := a'_full ⟨n, by omega⟩ with ht_def
+    obtain ⟨p₀, hp₀⟩ := h_pt
+    obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
+    obtain ⟨hord₀, _, _⟩ := hcond₀
+    have heq_0_n1 := (hord₀ ⟨0, by omega⟩ ⟨n + 1, by omega⟩).2
+    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+               show (n + 1 : Nat) ≠ 0 from by omega,
+               show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+               show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+               show n + 1 - 1 = n from by omega] at heq_0_n1
+    rw [hc_last] at heq_0_n1
+    have hxc : x = c := hcd_boundary.1.mpr hx'd
     have hx't : x' = t := heq_0_n1.mp hxc
     have ht_eq_d : t = d := hx't.symm.trans hx'd
     exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
   · by_cases hdy' : d = y'
-    · have hcy : c = y := hcd_boundary.2.mpr hdy'
+    · -- Apply the forward strategy for the boundary case
+      obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
+      set t := a'_full ⟨n, by omega⟩ with ht_def
+      obtain ⟨p₀, hp₀⟩ := h_pt
+      obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
+      obtain ⟨hord₀, _, _⟩ := hcond₀
+      have heq_n1_n3 := (hord₀ ⟨n + 1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
+      simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
+                 show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
+                 show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                 show n + 1 - 1 = n from by omega,
+                 show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
+                 show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
+                 show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at heq_n1_n3
+      rw [hc_last] at heq_n1_n3
+      have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_n1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: x' < d < y'. GHR93 Claim 1.
-      -- Need to show t = d where t is the forward strategy's response.
-      -- Approach (GHR93 pp.116):
-      -- (1) t agrees with c on rank-r formulas (from winning condition) =>
-      --     t ∈ S_C (continuation set), so d ≤ t (from infimum)
-      -- (2) Use h_fwd_r1 (rank r+2 forward strategy): the rank r+2 response
-      --     agrees with rank_embed(c) on rank-(r+2) formulas. The K⁻(¬D)
-      --     formula (of depth r+2) holds above the gap at d and fails below,
-      --     forcing the rank r+2 response to equal rank_embed(d).
-      -- (3) Project back: rank r+2 response = rank_embed(d) implies rank r
-      --     response t = d.
-      -- Interior case: apply GHR93 Claim 1 extract (h_d_unique).
-      -- Step 1: Extract formula agreement between c and t at rank r
-      have htc_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu M atomMap r c A ↔
-           stavi_temporal_truth_mu N atomMap r t A) := by
-        intro A hA
-        have h := hform₀ ⟨n + 1, by omega⟩ A hA
-        simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
-                   show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
-                   show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-                   show n + 1 - 1 = n from by omega] at h
-        rw [hc_last] at h; exact h
-      -- Step 2: Derive t-d formula agreement (transitivity through c)
-      have htd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu N atomMap r t A ↔
-           stavi_temporal_truth_mu N atomMap r d A) :=
-        fun A hA => (htc_form A hA).symm.trans (hcd_form A hA)
-      -- Step 3: t and d have same gap/point status (via c)
-      have htd_gp : (IsPoint t ↔ IsPoint d) ∧ (IsGap t ↔ IsGap d) := by
-        have hgp := hgp₀ ⟨n + 1, by omega⟩
-        simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
-                   show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
-                   show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-                   show n + 1 - 1 = n from by omega] at hgp
-        rw [hc_last] at hgp
-        exact ⟨hgp.1.symm.trans hcd_gp.1, hgp.2.symm.trans hcd_gp.2⟩
-      -- Step 4: Apply h_d_unique to conclude t = d
-      have ht_eq_d : t = d := h_d_unique t
-        (ha'_full ⟨n, by omega⟩)
-        htd_form htd_gp.1 htd_gp.2
-        (heq_0_n1.symm.trans hcd_boundary.1)
-        (heq_n1_n3.symm.trans hcd_boundary.2)
-      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
+    · -- Interior case: x' < d < y'. Delegate to h_interior_d.
+      exact h_interior_d hx'd hdy' a_pad ha_pad hc_last
 
 /-- D-consistency (right boundary, existential form): dual of
     d_consistency_left for the right sub-interval, where c is placed at
@@ -1840,17 +1799,20 @@ private theorem d_consistency_right {sig : MonadicSignature}
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
       (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
-    -- GHR93 Claim 1 extract (symmetric): same as d_consistency_left.
-    (h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
-      inClosedInterval x' y' t' →
-      (∀ (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r t' A ↔
-         stavi_temporal_truth_mu N atomMap r d A)) →
-      (IsPoint t' ↔ IsPoint d) →
-      (IsGap t' ↔ IsGap d) →
-      (x' = t' ↔ x' = d) →
-      (t' = y' ↔ d = y') →
-      t' = d) :
+    -- GHR93 Claim 1 (interior case, right boundary): when d is strictly
+    -- interior to [x',y'], the rank-r forward game response at position 0
+    -- equals d. Constructed via rank_down(h_fwd_r1) + K⁻(¬D) at the call site.
+    (h_interior_d : x' ≠ d → d ≠ y' →
+      ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
+        (∀ i, inClosedInterval x y (a_pad i)) →
+        a_pad ⟨0, by omega⟩ = c →
+        ∃ (a'_full : Fin (n + 1) → ExtendedCarrier N atomMap r),
+          (∀ i, inClosedInterval x' y' (a'_full i)) ∧
+          (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+            ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+              ghr93_winning_condition (n + 1)
+                (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
+          a'_full ⟨0, by omega⟩ = d) :
     ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨0, by omega⟩ = c →
@@ -1862,79 +1824,46 @@ private theorem d_consistency_right {sig : MonadicSignature}
               (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
         a'_full ⟨0, by omega⟩ = d := by
   intro a_pad ha_pad hc_first
-  -- Apply the forward strategy to get a candidate response
-  obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
-  -- Let t = a'_full(0) be the response at the boundary position
-  set t := a'_full ⟨0, by omega⟩ with ht_def
-  -- Use any point witness to extract a winning condition instance
-  obtain ⟨p₀, hp₀⟩ := h_pt
-  obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
-  obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
-  -- Extract boundary equivalences from same_order_type.
-  -- game_tuple index 1 = a_pad(0) = c / a'_full(0) = t
-  -- Equality at (0, 1): x = c ↔ x' = t
-  have heq_0_1 := (hord₀ ⟨0, by omega⟩ ⟨1, by omega⟩).2
-  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
-             show (1 : Nat) ≠ 0 from by omega,
-             show (1 : Nat) ≠ (n + 1) + 1 from by omega,
-             show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-             show 1 - 1 = 0 from by omega] at heq_0_1
-  rw [hc_first] at heq_0_1
-  -- Equality at (1, n+3): c = y ↔ t = y'
-  have heq_1_n3 : c = y ↔ t = y' := by
-    have h := (hord₀ ⟨1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
-    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-               show (1 : Nat) ≠ (n + 1) + 1 from by omega,
-               show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-               show 1 - 1 = 0 from by omega,
-               show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
-               show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
-               show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at h
-    rwa [show a_pad ⟨1 - 1, by omega⟩ = c from hc_first] at h
   -- Boundary case 1: x' = d
   by_cases hx'd : x' = d
-  · have hxc : x = c := hcd_boundary.1.mpr hx'd
+  · obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
+    set t := a'_full ⟨0, by omega⟩ with ht_def
+    obtain ⟨p₀, hp₀⟩ := h_pt
+    obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
+    obtain ⟨hord₀, _, _⟩ := hcond₀
+    have heq_0_1 := (hord₀ ⟨0, by omega⟩ ⟨1, by omega⟩).2
+    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+               show (1 : Nat) ≠ 0 from by omega,
+               show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+               show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+               show 1 - 1 = 0 from by omega] at heq_0_1
+    rw [hc_first] at heq_0_1
+    have hxc : x = c := hcd_boundary.1.mpr hx'd
     have hx't : x' = t := heq_0_1.mp hxc
     have ht_eq_d : t = d := hx't.symm.trans hx'd
     exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
   · by_cases hdy' : d = y'
-    · have hcy : c = y := hcd_boundary.2.mpr hdy'
+    · obtain ⟨a'_full, ha'_full, hwin_full⟩ := h_fwd a_pad ha_pad
+      set t := a'_full ⟨0, by omega⟩ with ht_def
+      obtain ⟨p₀, hp₀⟩ := h_pt
+      obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
+      obtain ⟨hord₀, _, _⟩ := hcond₀
+      have heq_1_n3 : c = y ↔ t = y' := by
+        have h := (hord₀ ⟨1, by omega⟩ ⟨(n + 1) + 2, by omega⟩).2
+        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 1 from by omega,
+                   show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
+                   show 1 - 1 = 0 from by omega,
+                   show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
+                   show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
+                   show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at h
+        rwa [show a_pad ⟨1 - 1, by omega⟩ = c from hc_first] at h
+      have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_1_n3.mp hcy
       have ht_eq_d : t = d := hty'.trans hdy'.symm
       exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
-    · -- Interior case: x' < d < y'. Apply GHR93 Claim 1 extract.
-      -- Step 1: Extract formula agreement between c and t at rank r
-      have htc_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu M atomMap r c A ↔
-           stavi_temporal_truth_mu N atomMap r t A) := by
-        intro A hA
-        have h := hform₀ ⟨1, by omega⟩ A hA
-        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-                   show (1 : Nat) ≠ (n + 1) + 1 from by omega,
-                   show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-                   show 1 - 1 = 0 from by omega] at h
-        rw [hc_first] at h; exact h
-      -- Step 2: Derive t-d formula agreement
-      have htd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu N atomMap r t A ↔
-           stavi_temporal_truth_mu N atomMap r d A) :=
-        fun A hA => (htc_form A hA).symm.trans (hcd_form A hA)
-      -- Step 3: t and d have same gap/point status
-      have htd_gp : (IsPoint t ↔ IsPoint d) ∧ (IsGap t ↔ IsGap d) := by
-        have hgp := hgp₀ ⟨1, by omega⟩
-        simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
-                   show (1 : Nat) ≠ (n + 1) + 1 from by omega,
-                   show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
-                   show 1 - 1 = 0 from by omega] at hgp
-        rw [hc_first] at hgp
-        exact ⟨hgp.1.symm.trans hcd_gp.1, hgp.2.symm.trans hcd_gp.2⟩
-      -- Step 4: Apply h_d_unique to conclude t = d
-      have ht_eq_d : t = d := h_d_unique t
-        (ha'_full ⟨0, by omega⟩)
-        htd_form htd_gp.1 htd_gp.2
-        (heq_0_1.symm.trans hcd_boundary.1)
-        (heq_1_n3.symm.trans hcd_boundary.2)
-      exact ⟨a'_full, ha'_full, hwin_full, ht_def ▸ ht_eq_d⟩
+    · -- Interior case: x' < d < y'. Delegate to h_interior_d.
+      exact h_interior_d hx'd hdy' a_pad ha_pad hc_first
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
@@ -2749,120 +2678,53 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       · exact ⟨v, hsv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩
       · -- v > d: contradiction from d ∈ S_C
         exact absurd (hd_in_SC.2 v hv_gt_d hvy' hmu_v) h_not_cont_v
-    -- TODO(Phase 1, Claim 1): Use h_cofinal_failure_below_d + pigeonhole
-    -- to get a SINGLE formula D that fails cofinally below d, then
-    -- construct K⁻(¬D) = neg(std_snce(neg(base .bot), D)) of depth r+2.
-    have h_d_unique : ∀ (t' : ExtendedCarrier N atomMap r),
-        inClosedInterval x' y' t' →
-        (∀ (A : StaviFormula), stavi_depth A ≤ r →
-          (stavi_temporal_truth_mu N atomMap r t' A ↔
-           stavi_temporal_truth_mu N atomMap r d A)) →
-        (IsPoint t' ↔ IsPoint d) →
-        (IsGap t' ↔ IsGap d) →
-        (x' = t' ↔ x' = d) →
-        (t' = y' ↔ d = y') →
-        t' = d := by
-      intro t' ht'_interval ht'_form ht'_pt ht'_gap hx'_t' ht'_y'
-      -- Boundary case 1: d = x'
-      by_cases hx'd : x' = d
-      · -- x' = d, so by boundary correspondence x' = t', hence t' = d
-        exact (hx'_t'.mpr hx'd).symm.trans hx'd
-      · -- x' ≠ d, so x' < d (since x' ≤ d from hd_interval.1)
-        by_cases hdy' : d = y'
-        · -- d = y', so by boundary correspondence t' = y', hence t' = d
-          exact (ht'_y'.mpr hdy').trans hdy'.symm
-        · -- Interior case: x' < d < y' and x' < t' < y'
-          -- From boundary conditions: x' ≠ t' and t' ≠ y'
-          have hx't' : x' ≠ t' := fun h => hx'd (hx'_t'.mp h)
-          have ht'y' : t' ≠ y' := fun h => hdy' (ht'_y'.mp h)
-          -- So x' < t' < y'
-          have hx'_lt_t' : x' < t' :=
-            lt_of_le_of_ne ht'_interval.1 hx't'
-          have ht'_lt_y' : t' < y' :=
-            lt_of_le_of_ne ht'_interval.2 ht'y'
-          have _hx'_lt_d : x' < d :=
-            lt_of_le_of_ne hd_interval.1 hx'd
-          have _hd_lt_y' : d < y' :=
-            lt_of_le_of_ne hd_interval.2 hdy'
-          -- Prove t' = d by antisymmetry
-          apply le_antisymm
-          · -- Goal: t' ≤ d
-            -- By hd_is_inf, it suffices to show t' is a lower bound of S_C.
-            apply hd_is_inf
-            intro s hs
-            -- Assume for contradiction that s < t'.
-            by_contra h_not_le
-            push_neg at h_not_le
-            -- By upward-closedness, t' ∈ S_C
-            have ht'_in_SC : t' ∈ S_C :=
-              continuation_set_upward_closed hs (le_of_lt h_not_le)
-                (le_of_lt ht'_lt_y') (le_of_lt hx'_lt_t')
-            have hd_le_t' : d ≤ t' := hd_glb t' ht'_in_SC
-            rcases eq_or_lt_of_le hd_le_t' with hd_eq_t' | _hd_lt_t'
-            · -- d = t': s < t' = d contradicts d ≤ s
-              exact absurd (hd_eq_t' ▸ hd_glb s hs) (not_le.mpr h_not_le)
-            · -- d < t': GHR93 Claim 1 — requires the rank-(r+2) formula
-              -- K⁻(¬D) = neg(std_snce(neg(base .bot), D)) where D is the
-              -- pigeonhole formula from infimum_gap_r_definable.
-              -- stavi_depth(K⁻(¬D)) = stavi_depth D + 2 ≤ r + 2.
-              --
-              -- Proof outline:
-              -- (1) d ∈ S_C (proved: any u > d is not a lb of S_C, so
-              --     ∃ s ∈ S_C with s < u, giving cont_holds at u from
-              --     s's tail condition).
-              -- (2) D fails cofinally below d: for any mu-point s < d,
-              --     ∃ mu-point u ∈ (s,d) with ¬D(u). So S(top,D) at d
-              --     is FALSE, hence K⁻(¬D) = ¬S(top,D) at d is TRUE.
-              -- (3) D holds on a final segment below t' (since d < t'
-              --     and D holds at all mu-points in (d, y') by d ∈ S_C
-              --     and cont_holds). So S(top,D) at t' is TRUE, hence
-              --     K⁻(¬D) at t' is FALSE.
-              -- (4) K⁻(¬D) at d ≠ K⁻(¬D) at t'. Since depth ≤ r+2
-              --     and h_mono_left_r1 gives rank-(r+2) game, Spoiler
-              --     can select rank_embed(c), get response e with
-              --     K⁻(¬D)(rank_embed c) = K⁻(¬D)(e). By rank_embed:
-              --     K⁻(¬D)(c in M) = K⁻(¬D)(e in N). The game response
-              --     must match d (not t') since K⁻(¬D) separates them.
-              -- (5) But this direction is already handled if we show
-              --     K⁻(¬D)(d) ≠ K⁻(¬D)(t') directly, contradicting the
-              --     hypothesis that d and t' share rank-r type AND are
-              --     related by the same game response.
-              --
-              -- BLOCKED: requires constructing K⁻(¬D) from pigeonhole
-              -- formula D + proving S(top,D) semantics at d and t'.
-              -- The rank bump from r+1 to r+2 (Round 13) makes the depth
-              -- budget sufficient. The remaining work is formula wiring.
-              sorry
-          · -- Goal: d ≤ t'
-            -- Assume t' < d for contradiction.
-            by_contra h_not_le
-            push_neg at h_not_le
-            -- By h_cofinal_failure_below_d: t' ∈ [x', y'], t' < d,
-            -- so ∃ mu-point u with t' < u ≤ d and ¬cont_holds at u.
-            obtain ⟨u, ht'u, hu_le_d, huy', hmu_u, h_not_cont_u⟩ :=
-              h_cofinal_failure_below_d t' ht'_interval h_not_le
-            -- u is a mu-point with t' < u ≤ d, ¬cont_holds at u.
-            -- GHR93 Claim 1 (d ≤ t' direction): Requires the depth-(r+2)
-            -- formula K⁻(¬D) = neg(std_snce(neg(base .bot), D)) to
-            -- separate d from t'.
-            --
-            -- Key facts available:
-            -- (a) hd_in_SC : d ∈ S_C (cont_holds on (d, y'))
-            -- (b) h_cofinal_failure_below_d : ∀ s < d, ∃ failure between s and d
-            -- (c) h_not_cont_u : ¬cont_holds at u, with t' < u ≤ d
-            -- (d) ht'_form : t' and d agree on depth-r formulas
-            -- (e) h_mono_left_r1 : rank-(r+2) game available
-            --
-            -- BLOCKED: requires materializing the continuation predicate as
-            -- a single StaviFormula D via pigeonhole, then constructing
-            -- K⁻(¬D) of depth r+2 and proving its semantics at d vs t'.
-            sorry
+    -- GHR93 Claim 1 interior case: use rank_down(h_mono_left_r1) to construct
+    -- responses where the boundary position equals d. This replaces the
+    -- mathematically false h_d_unique universal claim.
+    -- The proof uses ghr93_duplicator_wins_rank_down which projects rank r+2
+    -- responses to rank r. The key property is that all projected responses
+    -- come from the rank r+2 game, so the position corresponding to c
+    -- (mapped to rank_embed(c) at rank r+2) gets a response that projects to d.
+    -- GHR93 Claim 1 interior case (left/right):
+    -- Construct response with position n = d (left) or position 0 = d (right).
+    -- The proof inlines ghr93_duplicator_wins_rank_down's construction:
+    -- embed Spoiler's selection to rank r+2, play through h_mono_left_r1,
+    -- project responses back. The K⁻(¬D) argument (already proved in the
+    -- Claim 1 block below) shows the rank r+2 response at the boundary
+    -- position equals rank_embed(d), so the projection gives d.
+    -- TODO(Claim 1 interior): inline rank_down + K⁻(¬D) for position tracking
+    have h_interior_d_left : x' ≠ d → d ≠ y' →
+        ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
+          (∀ i, inClosedInterval x y (a_pad i)) →
+          a_pad ⟨1 + 3 * n, by omega⟩ = c →
+          ∃ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
+            (∀ i, inClosedInterval x' y' (a'_full i)) ∧
+            (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+              ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+                ghr93_winning_condition (1 + 3 * n + 1)
+                  (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
+            a'_full ⟨1 + 3 * n, by omega⟩ = d := by
+      intro hx'd hdy' a_pad ha_pad hc_last
+      sorry
+    have h_interior_d_right : x' ≠ d → d ≠ y' →
+        ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
+          (∀ i, inClosedInterval x y (a_pad i)) →
+          a_pad ⟨0, by omega⟩ = c →
+          ∃ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
+            (∀ i, inClosedInterval x' y' (a'_full i)) ∧
+            (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+              ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+                ghr93_winning_condition (1 + 3 * n + 1)
+                  (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
+            a'_full ⟨0, by omega⟩ = d := by
+      intro hx'd hdy' a_pad ha_pad hc_first
+      sorry
     have h_d_consistent_left :=
       d_consistency_left hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_interior_d_left
     have h_d_consistent_right :=
       d_consistency_right hxy hx'y' hc_interval hd_interval
-        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_d_unique
+        hcd_form hcd_gp hcd_boundary h_mono_left h_mono_left_r1 h_pt h_interior_d_right
     have h_restrict_left : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x c x' d :=
       ghr93_strategy_restrict_left
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
