@@ -4228,35 +4228,85 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
                 rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus
               have hK_true_r2 : stavi_temporal_truth_mu N atomMap (r + 2) r2_resp K_minus :=
                 hform_1_K.mp (hM_bridge_K.mpr hK_true_c)
-              -- Since(⊤, D_M) TRUE at r2_resp: witness = rank_embed(d)
+              -- Since(⊤, D_M) TRUE at r2_resp: find Since witness between d and r2_resp
               simp only [K_minus, stavi_temporal_truth_mu] at hK_true_r2
               apply hK_true_r2
-              refine ⟨rank_embed (by omega : r ≤ r + 2) d, h_not_le, ?_, ?_, ?_⟩
-              · exact (rank_embed_mu_holds (by omega : r ≤ r + 2) d).mpr
-                  (by rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
-                      · exact ⟨p_d, hp_d⟩
-                      · -- d is a gap: find carrier point between d and r2_resp
-                        -- Actually mu_holds needs d to be a point. If d is a gap,
-                        -- use a carrier point above d as witness instead.
-                        sorry)
-              · simp [temporal_truth_mu]
-              · intro u hu_gt hu_lt hmu_u
-                obtain ⟨q, hq⟩ := hmu_u
-                rw [hq] at hu_gt hu_lt ⊢
-                have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
-                    rank_embed (by omega : r ≤ r + 2)
-                      (extendPoint q : ExtendedCarrier N atomMap r) :=
-                  (rank_embed_point (by omega : r ≤ r + 2) q).symm
-                rw [hq_eq, rank_embed_stavi_truth_mu]
-                have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
-                  rw [hq_eq] at hu_gt
-                  exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q)).mp hu_gt
-                have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
-                      rank_embed (by omega : r ≤ r + 2) y' := by
-                    rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
-                  exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
-                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+              -- Case split: if d is a point, use rank_embed(d). If gap, use complement_no_min.
+              rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+              · -- d is a carrier point: use rank_embed(d) directly
+                refine ⟨rank_embed (by omega : r ≤ r + 2) d, h_not_le, ?_, ?_, ?_⟩
+                · exact (rank_embed_mu_holds (by omega : r ≤ r + 2) d).mpr ⟨p_d, hp_d⟩
+                · simp [temporal_truth_mu]
+                · intro u hu_gt hu_lt hmu_u
+                  obtain ⟨q, hq⟩ := hmu_u
+                  rw [hq] at hu_gt hu_lt ⊢
+                  have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
+                      rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q : ExtendedCarrier N atomMap r) :=
+                    (rank_embed_point (by omega : r ≤ r + 2) q).symm
+                  rw [hq_eq, rank_embed_stavi_truth_mu]
+                  have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
+                    rw [hq_eq] at hu_gt
+                    exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q)).mp hu_gt
+                  have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
+                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                        rank_embed (by omega : r ≤ r + 2) y' := by
+                      rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
+                    exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
+                  exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+              · -- d is a gap: use complement_no_min to find carrier point above d
+                -- q_r2 ∉ (rank_embed_gap g_d).cut since rank_embed d < r2_resp = extendPoint q_r2
+                have hq_r2_not_cut : q_r2 ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+                  rw [rank_embed_gap_cut]
+                  intro h_in
+                  have : (extendPoint q_r2 : ExtendedCarrier N atomMap (r + 2)) ≤
+                      rank_embed (by omega : r ≤ r + 2) d := by
+                    rw [hg_d]; exact h_in
+                  rw [hq_r2] at h_not_le
+                  exact absurd this (not_le.mpr h_not_le)
+                have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut → q_r2 ≤ q) :=
+                  fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.complement_no_min
+                    ⟨q_r2, hq_r2_not_cut, h⟩
+                push_neg at this
+                obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
+                have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
+                    (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
+                  rw [show rank_embed (by omega : r ≤ r + 2) d =
+                    (Sum.inr (rank_embed_gap (by omega : r ≤ r + 2) g_d) :
+                      ExtendedCarrier N atomMap (r + 2)) from by rw [hg_d]; rfl]
+                  constructor
+                  · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut from hq'_not_cut)
+                  · exact (show ¬(q' ∈ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut) from
+                      fun h => absurd h (by rwa [rank_embed_gap_cut]))
+                have hq'_lt_r2 : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) < r2_resp := by
+                  rw [show r2_resp = (Sum.inl q_r2 : ExtendedCarrier N atomMap (r + 2)) from hq_r2]
+                  exact (extendPoint_lt_iff q' q_r2).mpr hq'_lt
+                refine ⟨extendPoint q', hq'_lt_r2, ⟨q', rfl⟩, ?_, ?_⟩
+                · simp [temporal_truth_mu]
+                · intro u hu_gt hu_lt hmu_u
+                  obtain ⟨q_u, hq_u⟩ := hmu_u
+                  rw [hq_u] at hu_gt hu_lt ⊢
+                  have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
+                      rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                    (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
+                  rw [hq_eq, rank_embed_stavi_truth_mu]
+                  have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
+                    have : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) <
+                        (extendPoint q_u : ExtendedCarrier N atomMap (r + 2)) := hu_gt
+                    have hd_lt_q'_r : d < (extendPoint q' : ExtendedCarrier N atomMap r) :=
+                      (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q')).mp
+                        (by rw [rank_embed_point]; exact hq'_gt_d)
+                    rw [← rank_embed_point (by omega : r ≤ r + 2) q',
+                        ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
+                    exact lt_trans hd_lt_q'_r
+                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                  have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
+                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                        rank_embed (by omega : r ≤ r + 2) y' := by
+                      rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
+                    exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
             · -- r2_resp < rank_embed y'. Project to rank r.
               have hr2_lt : r2_resp < rank_embed (by omega : r ≤ r + 2) y' := h_lt
               have : rank_embed (by omega : r ≤ r + 2)
