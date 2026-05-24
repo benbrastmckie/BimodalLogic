@@ -165,8 +165,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Restructure Case II e_n Construction (S8/S9/S10) [NOT STARTED]
+### Phase 3: Restructure Case II e_n Construction (S8/S9/S10) [BLOCKED]
 - **Unblocked**: 2026-05-24T22:00:00Z — Phase 2 completion enables backward strategy for U(B,A) transfer
+- **Analysis completed**: 2026-05-24T22:45:00Z — Full sorry analysis done, implementation halted by coordinator
+- **Blocked**: 2026-05-24T23:30:00Z — Cross-boundary orderings require `a_N(n) = d` which needs full infimum characterization
+
+**BLOCKER** (Phase 3):
+- **What failed**: Cross-boundary ordering goals at line 7075 in `ghr93_case_II` Case A need `(d < p_n ↔ c < e_n) ∧ (d = p_n ↔ c = e_n)`. This requires showing the forward game N-response `a_N(n)` equals the split point `d`.
+- **What was tried**: (1) Forward game ordering extraction at positions (n+1, n+2) gives `(c < e_n ↔ a_N(n) < p_n)`. (2) Sigma+forward combination gives `(x' < d ↔ x' < a_N(n))`. (3) Case split on `x' = d` vs `x' < d`: when `x' = d`, the equality `x' = a_N(n)` follows, giving `a_N(n) = d`. When `x' < d`, both `d` and `a_N(n)` are indistinguishable from `x'` and `y'` and all interior points, but this does NOT imply `d = a_N(n)` without the full infimum characterization.
+- **Why it's stuck**: `d` is constructed as the infimum of the continuation set `S_C` in `obtain_split_point_props`. The property `d = inf(S_C)` means any point with the same ordering relationship to all game positions as `d` must equal `d`. But this infimum uniqueness property is not exported as a field of `SplitPointProps` and `obtain_split_point_props` itself has sorries.
+- **What is needed**: Add a field to `SplitPointProps` that exports either `(d < p_n ↔ c < e_n) ∧ (d = p_n ↔ c = e_n)` directly, or a property like `h_fwd_n1_d_compat` that ensures the forward game N-response at position n equals `d`. This requires modifying `obtain_split_point_props` to derive this property from the infimum construction.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Restructure `ghr93_case_II` to construct `e_n` via U(B,A) transfer per GHR93, not from forward game response.
 
@@ -182,10 +191,10 @@ Phases within the same wave can execute in parallel.
 - S8/S9/S10 then close from the construction (ordering is built into e_n's definition)
 
 **Tasks**:
-- [ ] After Phase 2: restructure e_n construction to use tau-transferred U(B,A) witness per GHR93 p.117-118
-- [ ] Derive `c < e_n` from Until witness properties (e_n > resp_tau(n-1) ≥ c)
-- [ ] Close S8 cross-boundary ordering from restructured e_n
-- [ ] Close S9/S10 same_order_type from restructured e_n + sigma/tau composition
+- [ ] After Phase 2: restructure e_n construction to use tau-transferred U(B,A) witness per GHR93 p.117-118 *(in progress — analysis complete, see handoffs/phase-3-handoff-20260524T224500Z.md)*
+- [ ] Derive `c < e_n` from Until witness properties (e_n > resp_tau(n-1) ≥ c) *(deviation: blocked — requires `a_N(n) = d` which needs full infimum characterization in `obtain_split_point_props`)*
+- [ ] Close S8 cross-boundary ordering from restructured e_n — **S8 is at line 7075**: Goals 1, 3 closeable immediately (both False); Goals 2, 4, 5, 6 need `c ≤ e_n` *(deviation: blocked — goals 2,4,5,6 need `(d < p_n ↔ c < e_n)` which depends on `a_N(n) = d`)*
+- [ ] Close S9/S10 same_order_type from restructured e_n + sigma/tau composition — **S9/S10 at line 7175**: Case B needs sigma-extracted `sig_x_d` plus `c ≤ e_n` for cross-boundary goals *(deviation: blocked — same root cause as S8)*
 
 **Timing**: 3-4 hours (substantial restructure)
 

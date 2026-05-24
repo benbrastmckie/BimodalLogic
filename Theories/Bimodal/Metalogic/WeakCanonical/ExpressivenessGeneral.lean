@@ -7068,10 +7068,10 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                     ⟨fun h => (fwd_x_b.2.mpr h.symm).symm,
                      fun h => (fwd_x_b.2.mp h.symm).symm⟩⟩)
           -- Remaining goals involving p_n/e_n cross-boundary orderings.
-          -- These require c ≤ e_n (or equivalent) which is not available
-          -- from the current sub-game data. Closing these goals depends on
-          -- h_d_unique (GHR93 Claim 1) or a restructured forward game
-          -- argument. See handoff for details.
+          -- These require (d < p_n ↔ c < e_n) which needs a_N(n) = d.
+          -- The x' = d case gives a_N(n) = d directly. The x' < d case
+          -- requires the full infimum characterization (not yet formalized).
+          -- Phase 3 BLOCKED on this architectural gap. See plan for details.
           | sorry
       · -- gap_point_agreement (n+1)
         intro i
