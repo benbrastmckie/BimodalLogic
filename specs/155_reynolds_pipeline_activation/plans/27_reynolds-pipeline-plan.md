@@ -2,7 +2,7 @@
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IN PROGRESS]
-- **Effort**: 15-30 hours remaining (11 of 19 sorries closed)
+- **Effort**: 20-40 hours remaining (12 sorries remain from original 19; 11 closed, 4 added by restructuring)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**: reports/22 (GHR93 Claim 1), reports/36 (root cause), reports/38 (case-split), reports/39 (circularity confirmed)
 - **Artifacts**: plans/27_reynolds-pipeline-plan.md (this file)
@@ -31,44 +31,69 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 **Goals**: Sorry-free `bx_completeness` via full GHR93 + Reynolds pipeline.
 **Non-Goals**: Dense completeness, closing `succ_cofinal` directly, general tactic development.
 
-## Current Sorry Inventory (9 remaining across 3 files; 11 closed this session)
+## Current Sorry Inventory (12 remaining across 3 files)
 
-### ExpressivenessGeneral.lean (7 remaining, 9 closed)
+### ExpressivenessGeneral.lean (10 remaining)
 
-| Status | Category | Description | Action |
-|--------|----------|-------------|--------|
-| ~~CLOSED~~ | Phase 3 | N-side Case 3 gap infimum | Three-way case split with infimum_gap_r_definable |
-| ~~CLOSED~~ | Phase 3 | M-side Case 3 gap infimum | Cross infimum_gap_r_definable + three-way case split |
-| **OPEN** | **Phase 1** | h_d_unique sorry 1 (line 2835) | **FALSE AS STATED**: depth-r uniqueness is wrong; restructure d_consistency to use Claim 1 game arg at depth r+2 |
-| **OPEN** | **Phase 1** | h_d_unique sorry 2 (line 2859) | Same — delete h_d_unique, inline K⁻ argument in d_consistency |
-| ~~CLOSED~~ | Phase 3 | h_pt_xc degenerate gap | SplitPointProps disjunctive refactor |
-| ~~CLOSED~~ | Phase 3 | h_pt_cy degenerate gap | SplitPointProps disjunctive refactor |
-| ~~CLOSED~~ | Phase 3 | Claim 1 Case A, d is gap | Unified proof via h_strict_failure |
-| ~~CLOSED~~ | Edge | Claim 1 Case B, q_r2 = y' boundary | Unified proof eliminating Case A/B split |
-| ~~CLOSED~~ | Phase 3 | Claim 1 Case B, r2_resp is gap | Unified proof eliminating Case A/B split |
-| ~~CLOSED~~ | Regression | h_strict_failure v=c_inf (h_cont_c case) | Case split: contradiction with h_cont_c |
-| **OPEN** | **Edge** | ¬cont_holds_cross + boundary r2_resp (line 3759) | r2_resp = rank_embed(y') forces c_inf = y; needs formula materialization or boundary lemma |
-| **OPEN** | **Edge** | ¬cont_holds_cross + gap r2_resp (line 3793) | Requires formula materialization (report 39: circular) |
-| **OPEN** | **Phase 1** | sigma same_order_type (line 5651) | Blocked on h_d_unique restructure |
-| **OPEN** | **Phase 1** | tau same_order_type (lines 5751, 5804) | Blocked on h_d_unique restructure |
-| ~~CLOSED~~ | Cleanup | ghr93_winning_condition_symm duplicate | Moved to EFGames.lean |
-| **OPEN** | **Phase 4** | ghr93_cases_III_IV (line 6734) | Lemma 9 now proved; needs gap case construction |
-| **OPEN** | **Phase 4** | rank-varying theorem (line 6989) | Blocked on rank_embed game transport infrastructure |
+| Line | Blocker | Description | Effort |
+|------|---------|-------------|--------|
+| 2835 | Formula materialization | h_d_unique sorry 1 — predicate-level cont_holds can't be materialized as formula without circularity | Fundamental |
+| 2859 | Formula materialization | h_d_unique sorry 2 — same circularity | Fundamental |
+| 3759 | Formula materialization | ¬cont_holds_cross boundary (r2_resp = rank_embed(y')) | Fundamental |
+| 3793 | Formula materialization | ¬cont_holds_cross gap r2_resp | Fundamental |
+| 5651 | h_d_unique | sigma same_order_type — needs game response = d | Gated |
+| 5751 | h_d_unique | tau same_order_type (1) — needs sigma instantiation | Gated |
+| 5804 | h_d_unique | tau same_order_type (2) — needs sigma instantiation | Gated |
+| 6734 | Signature threading | Cases III/IV — needs h_fwd_r1 threaded through signatures + 500-1000 lines | 12-22 hrs |
+| 6999 | GHR93 Lemma 10 | rank-varying (rank downward transport 1) — needs K+/K- gap characterization | 300-500 lines |
+| 7145 | GHR93 Lemma 10 | rank-varying (rank downward transport 2) — same blocker | Same |
 
-### EFGames.lean (1 remaining, 1 closed)
+### EFGames.lean (1 remaining)
 
-| Status | Description | Action |
-|--------|-------------|--------|
-| ~~CLOSED~~ | ghr93_decomposition_implies_game (Lemma 11 backward) | Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8 |
-| **OPEN** | nf_characterizable_by_stavi (inductive step) | Base case (k=0) proved; inductive step needs GHR93 Theorem 6 + Props 6-7 (~1000-1500 lines) |
+| Line | Blocker | Description | Effort |
+|------|---------|-------------|--------|
+| 9433 | GHR93 Thm 6 + Props 6-7 | nf_characterizable_by_stavi inductive step (base case k=0 proved) | 1000-1500 lines |
 
-### IntegerModel.lean (1 remaining, 2 closed)
+### IntegerModel.lean (1 remaining)
 
-| Status | Description | Action |
-|--------|-------------|--------|
-| ~~CLOSED~~ | ordered_sum_of_good_bounded_is_good | Shift-and-glue OrderIso via cumulativeOffset (Reynolds Lemma 16) |
-| ~~CLOSED~~ | cofinal_decomposition_k_equiv | Corrected from closed to half-open intervals per Reynolds; proved via OrderIso + Equiv.toOrderIso |
-| **OPEN** | no_gaps_discrete | Blocked on Reynolds Theorem 5 (Phases 5-6B) |
+| Line | Blocker | Description | Effort |
+|------|---------|-------------|--------|
+| 863 | Phases 5-6B | no_gaps_discrete — gated on Reynolds Theorem 5 | Gated |
+
+### Blocker Dependency Graph
+
+```
+Formula materialization (FUNDAMENTAL — report 29 confirmed, report 39 circularity)
+  └─ h_d_unique ×2 (lines 2835, 2859)
+  └─ ¬cont_holds_cross edges ×2 (lines 3759, 3793)
+  └─ same_order_type ×3 (lines 5651, 5751, 5804) [gated on h_d_unique]
+
+GHR93 Lemma 10 (rank downward transport — 300-500 lines)
+  └─ rank-varying ×2 (lines 6999, 7145)
+
+Signature threading + Cases III/IV proof (12-22 hours)
+  └─ ghr93_cases_III_IV (line 6734)
+
+GHR93 Theorem 6 + Props 6-7 (1000-1500 lines)
+  └─ nf_characterizable_by_stavi (EFGames line 9433)
+  └─ no_gaps_discrete (IntModel line 863) [gated on nf_characterizable]
+```
+
+### Session Progress (closed sorries)
+
+| # | Description | Method |
+|---|-------------|--------|
+| 1 | SplitPointProps h_pt_xc degenerate gap | Disjunctive refactor |
+| 2 | SplitPointProps h_pt_cy degenerate gap | Disjunctive refactor |
+| 3 | N-side Case 3 gap infimum | Three-way case split with infimum_gap_r_definable |
+| 4 | M-side Case 3 gap infimum | Cross infimum_gap_r_definable |
+| 5 | Claim 1 Case A, d is gap | Unified proof via h_strict_failure |
+| 6 | Claim 1 Case B, q_r2 = y' boundary | Unified proof eliminating Case A/B split |
+| 7 | Claim 1 Case B, r2_resp is gap | Unified proof eliminating Case A/B split |
+| 8 | ghr93_decomposition_implies_game (EFGames) | Strengthened decomposition_agreement per GHR93 Def 8.8 |
+| 9 | ordered_sum_of_good_bounded_is_good (IntModel) | Shift-and-glue OrderIso (Reynolds Lemma 16) |
+| 10 | cofinal_decomposition_k_equiv (IntModel) | Corrected to half-open intervals per Reynolds |
+| 11 | h_strict_failure v=c_inf regression | Case split on h_cont_c |
 
 ## Implementation Phases
 
@@ -76,9 +101,16 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 
 **Status**: Boundary edge and Claim 1 gap cases CLOSED via unified proof. h_d_unique discovered to be mathematically FALSE. Restructuring d_consistency to bypass h_d_unique is in progress.
 
-**CRITICAL DISCOVERY**: `h_d_unique` is **unprovable as stated**. It claims ANY element t' with the same depth-r StaviFormula type as d must equal d. This is mathematically false — two distinct points in a linear order can share the same depth-r type. GHR93 Claim 1 only proves the game RESPONSE equals d at depth r+2 using K⁻(¬D). The depth mismatch (r vs r+2) makes the universal statement unprovable.
+**CRITICAL DISCOVERY 1**: `h_d_unique` is **unprovable as stated**. It claims ANY element t' with the same depth-r StaviFormula type as d must equal d. This is mathematically false — two distinct points in a linear order can share the same depth-r type. GHR93 Claim 1 only proves the game RESPONSE equals d at depth r+2 using K⁻(¬D). The depth mismatch (r vs r+2) makes the universal statement unprovable.
 
-**FIX**: Restructure `d_consistency_left/right` to use the Claim 1 game argument directly (K⁻ at depth r+2) instead of going through h_d_unique. Then delete h_d_unique entirely.
+**CRITICAL DISCOVERY 2 (report 29)**: The root blocker for h_d_unique + 4 other sorries is **predicate-vs-formula circularity**. GHR93 uses C = X_{(a_n,y')} as a SINGLE concrete temporal formula. The Lean code uses a universally-quantified Prop (`cont_holds_cross`), which cannot be materialized as a single formula without enumerating all rank-r formulas — requiring the very expressive completeness result being proved.
+
+**RESEARCH FINDINGS** (3 parallel agents analyzed literature):
+- GHR93 (report 28): Proof is valid for ALL linear orders; operates on M_r; no density assumption
+- Reynolds 1994 (report 28): K⁻ is vacuously false on discrete carrier points; Reynolds uses syntactic elimination, not games, for integer time
+- Handbook (report 28): GHR94 Ch 10 proves integer completeness via Reynolds eliminations — no games, no K⁻. K⁻ only appears in Ch 12's general linear time proof where gaps exist.
+
+**FIX OPTIONS**: (a) Break circularity by restructuring the induction to make formula C available at the right point; (b) Switch to Reynolds syntactic elimination for the integer-time case; (c) Restructure d_consistency to inline the K⁻ argument with a concrete formula extracted from the game state.
 
 **Tasks**:
 - [x] **1B. Keep pigeonhole_definable_formula_cross_strict** — used at line 2792 in Case B carrier-point sub-case
@@ -128,9 +160,9 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 - [x] **Lemma 11 backward** (ghr93_decomposition_implies_game) — CLOSED in EFGames.lean. Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8.
 - [x] **stavi_expressive_completeness assembly** — Sorry-free assembly proof factored through nf_characterizable_by_stavi. Uses NormalForm partition + finite StaviFormula disjunction. Base case (k=0) proved with new infrastructure (sf_conjList, sf_atom_literal, atomKind_to_sf_literal).
 - [ ] **nf_characterizable_by_stavi (inductive step)** — 1 sorry in EFGames.lean. Game-theoretic core: construct StaviFormulas encoding NormalForm quantifier structure via U/S connectives. Needs GHR93 Theorem 6 + Propositions 6-7 (~1000-1500 lines).
-- [ ] **rank-varying theorem** (1 sorry in ExpressivenessGeneral.lean) — Blocked on rank_embed transport.
+- [ ] **rank-varying theorem** (2 sorries in ExpressivenessGeneral.lean, lines 6999/7145) — Base case (n=0) proved sorry-free. Inductive case structured but both sorries blocked on GHR93 Lemma 10 (rank downward transport). Needs K+/K- gap characterization formula D' (~300-500 lines).
 
-**Timing**: 8-14 hours remaining. **Depends on**: Phase 3.
+**Timing**: 12-20 hours remaining. **Depends on**: Phase 3 + Lemma 10 infrastructure.
 
 ---
 
