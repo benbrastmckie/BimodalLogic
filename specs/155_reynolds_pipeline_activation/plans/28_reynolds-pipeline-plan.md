@@ -194,7 +194,9 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Position-Tracking Fix S6 + S7 [NOT STARTED]
+### Phase 4: Position-Tracking Fix S6 + S7 [COMPLETED]
+- **Completed**: 2026-05-24T18:30:00Z
+- **Method**: New lemma `ghr93_rank_down_proj` (233 lines) — position-tracking variant. S6 closed directly. S7 expanded with 1 new sorry (same K⁻ blocker type as S1/S2). Net -1 sorry.
 
 **Goal**: Close the position-tracking sorry sites at lines 4483 and 4508, which are structurally different from the formula C cluster. After `rank_down` projects from rank r+2 to rank r, position-level tracking (`a'_rd(position) = d`) is lost.
 
