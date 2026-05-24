@@ -2,7 +2,7 @@
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IN PROGRESS]
-- **Effort**: 20-40 hours remaining (12 sorries remain from original 19; 11 closed, 4 added by restructuring)
+- **Effort**: 20-40 hours remaining (11 sorries remain; 12 closed including rank_down, 4 added by restructuring)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**: reports/22 (GHR93 Claim 1), reports/36 (root cause), reports/38 (case-split), reports/39 (circularity confirmed)
 - **Artifacts**: plans/27_reynolds-pipeline-plan.md (this file)
@@ -31,9 +31,9 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 **Goals**: Sorry-free `bx_completeness` via full GHR93 + Reynolds pipeline.
 **Non-Goals**: Dense completeness, closing `succ_cofinal` directly, general tactic development.
 
-## Current Sorry Inventory (12 remaining across 3 files)
+## Current Sorry Inventory (11 remaining across 3 files)
 
-### ExpressivenessGeneral.lean (10 remaining)
+### ExpressivenessGeneral.lean (9 remaining)
 
 | Line | Blocker | Description | Effort |
 |------|---------|-------------|--------|
@@ -45,8 +45,8 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 | 5751 | h_d_unique | tau same_order_type (1) — needs sigma instantiation | Gated |
 | 5804 | h_d_unique | tau same_order_type (2) — needs sigma instantiation | Gated |
 | 6734 | Signature threading | Cases III/IV — needs h_fwd_r1 threaded through signatures + 500-1000 lines | 12-22 hrs |
-| 6999 | GHR93 Lemma 10 | rank-varying (rank downward transport 1) — needs K+/K- gap characterization | 300-500 lines |
-| 7145 | GHR93 Lemma 10 | rank-varying (rank downward transport 2) — same blocker | Same |
+| ~~6999~~ | ~~GHR93 Lemma 10~~ | ~~rank-varying (rank downward transport 1)~~ — **CLOSED** via gap_char_formula transfer (+244 lines) | Done |
+| 7369 | Theorem restructure | rank-varying inductive step h_r1_univ — needs universal sub-interval game from IH | Medium |
 
 ### EFGames.lean (1 remaining)
 
@@ -68,8 +68,9 @@ Formula materialization (FUNDAMENTAL — report 29 confirmed, report 39 circular
   └─ ¬cont_holds_cross edges ×2 (lines 3759, 3793)
   └─ same_order_type ×3 (lines 5651, 5751, 5804) [gated on h_d_unique]
 
-GHR93 Lemma 10 (rank downward transport — 300-500 lines)
-  └─ rank-varying ×2 (lines 6999, 7145)
+GHR93 Lemma 10 (rank downward transport — CLOSED)
+  └─ ~~rank-varying line 6999~~ — **CLOSED**
+  └─ rank-varying line 7369 (h_r1_univ) — needs theorem restructure
 
 Signature threading + Cases III/IV proof (12-22 hours)
   └─ ghr93_cases_III_IV (line 6734)
@@ -94,6 +95,7 @@ GHR93 Theorem 6 + Props 6-7 (1000-1500 lines)
 | 9 | ordered_sum_of_good_bounded_is_good (IntModel) | Shift-and-glue OrderIso (Reynolds Lemma 16) |
 | 10 | cofinal_decomposition_k_equiv (IntModel) | Corrected to half-open intervals per Reynolds |
 | 11 | h_strict_failure v=c_inf regression | Case split on h_cont_c |
+| 12 | ghr93_duplicator_wins_rank_down (Lemma 10) | gap_char_formula transfer (+244 lines) |
 
 ## Implementation Phases
 
@@ -160,7 +162,7 @@ GHR93 Theorem 6 + Props 6-7 (1000-1500 lines)
 - [x] **Lemma 11 backward** (ghr93_decomposition_implies_game) — CLOSED in EFGames.lean. Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8.
 - [x] **stavi_expressive_completeness assembly** — Sorry-free assembly proof factored through nf_characterizable_by_stavi. Uses NormalForm partition + finite StaviFormula disjunction. Base case (k=0) proved with new infrastructure (sf_conjList, sf_atom_literal, atomKind_to_sf_literal).
 - [ ] **nf_characterizable_by_stavi (inductive step)** — 1 sorry in EFGames.lean. Game-theoretic core: construct StaviFormulas encoding NormalForm quantifier structure via U/S connectives. Needs GHR93 Theorem 6 + Propositions 6-7 (~1000-1500 lines).
-- [ ] **rank-varying theorem** (2 sorries in ExpressivenessGeneral.lean, lines 6999/7145) — Base case (n=0) proved sorry-free. Inductive case structured but both sorries blocked on GHR93 Lemma 10 (rank downward transport). Needs K+/K- gap characterization formula D' (~300-500 lines).
+- [ ] **rank-varying theorem** (1 sorry remaining in ExpressivenessGeneral.lean, line 7369) — Base case (n=0) proved sorry-free. ghr93_duplicator_wins_rank_down CLOSED (+244 lines, gap_char_formula transfer). Remaining sorry h_r1_univ requires restructuring to take universal sub-interval game from IH rather than deriving from h. *(deviation: altered — rank_down closed via gap_char_formula instead of K+/K- directly; h_r1_univ blocked on theorem restructuring)*
 
 **Timing**: 12-20 hours remaining. **Depends on**: Phase 3 + Lemma 10 infrastructure.
 
