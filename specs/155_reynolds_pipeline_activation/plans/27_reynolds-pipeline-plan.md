@@ -107,9 +107,16 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 - [x] **3B. M-side gap infimum** — CLOSED. Created 4 new cross-structure lemmas (cont_holds_above_gap_cross, cont_fails_below_gap_cross, formula_failure_in_cut_cross, infimum_gap_r_definable_cross). Three-way case split mirroring N-side.
 - [x] **3C. Degenerate gap cases** — CLOSED. SplitPointProps refactored to disjunctive form (carrier-point witness OR gap boundary). 3 consumer sites updated.
 - [x] **3D. Claim 1 gap sub-cases** — CLOSED. Unified Claim 1 proof via h_strict_failure eliminates Case A/B split entirely. d-gap case proved via carrier-point witnesses between rank_embed(d) and r2_resp.
-- [ ] **3E. Cases III/IV** (1 sorry). Blocked on Lemma 9 gap detection infrastructure.
+- [ ] **3E. Cases III/IV** (1 sorry). *(deviation: blocked — rank mismatch, see blocker below)*
 
-**Timing**: 4-8 hours remaining for 3E. **Depends on**: Phase 1.
+**BLOCKER** (Phase 3, Task 3E):
+- **What failed**: `ghr93_cases_III_IV` (line 6734) cannot be closed with current theorem signature.
+- **What was tried**: Analysis of GHR93 Cases III/IV proof structure vs formalization infrastructure. GHR93 uses tau at rank r+4 to transfer U(delta, A) formulas of rank ~r+3. The formalization's `SplitPointProps.tau` is at rank r only. All creative rank-r-only approaches (forward game inversion, type matching, direct gap construction) fail because the backward game inversion problem requires higher-rank formula transfer.
+- **Why it's stuck**: The formalization decouples ranks (IH at rank r, forward game at rank r+2 as side parameter). GHR93's induction hypothesis provides backward games at rank r+4, enabling Cases III/IV formula transfer. The formalization's backward games are at rank r, which is insufficient for the gap detection formula `left_formula A D` (depth ~r+4) or its composition `U(delta, A)` (depth ~r+3). The rank r+2 forward game `h_fwd_r1` is available in `ghr93_inductive_step` but is NOT threaded to `ghr93_cases_III_IV`.
+- **What is needed**: (1) Thread `h_fwd_r1` through `ghr93_cases_II_III_IV` to `ghr93_cases_III_IV`. (2) Within Cases III/IV, use `h_fwd_r1` to derive rank r+2 backward games on sub-intervals (via `ghr93_forward_to_backward_core` at rank r+2, or a direct argument). (3) Use the higher-rank backward game to transfer the gap detection formula `U(delta, A)` from `a_{n-1}` to `e_{n-1}`. (4) Apply Lemma 9 to find matching gap `e_n`. (5) Verify winning condition (same_order_type, gap_point_agreement, formula_agreement). Estimated 500-1000 lines.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Timing**: Blocked pending signature refactoring + rank r+2 backward game derivation. Estimated 8-16 hours.
 
 ---
 
