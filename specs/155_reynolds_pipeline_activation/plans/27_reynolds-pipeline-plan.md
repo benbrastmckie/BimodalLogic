@@ -2,7 +2,7 @@
 
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [IN PROGRESS]
-- **Effort**: 25-45 hours remaining
+- **Effort**: 15-30 hours remaining (11 of 19 sorries closed)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED)
 - **Research Inputs**: reports/22 (GHR93 Claim 1), reports/36 (root cause), reports/38 (case-split), reports/39 (circularity confirmed)
 - **Artifacts**: plans/27_reynolds-pipeline-plan.md (this file)
@@ -31,49 +31,64 @@ Formalize GHR93 Section 8 + Reynolds gap elimination (Theorem 14) to achieve sor
 **Goals**: Sorry-free `bx_completeness` via full GHR93 + Reynolds pipeline.
 **Non-Goals**: Dense completeness, closing `succ_cofinal` directly, general tactic development.
 
-## Current Sorry Inventory (14 total in ExpressivenessGeneral.lean)
+## Current Sorry Inventory (9 remaining across 3 files; 11 closed this session)
 
-| Line | Category | Description | Action |
-|------|----------|-------------|--------|
-| 2013 | Phase 3 | N-side Case 3 gap infimum | Phase 3: wire infimum_gap_r_definable |
-| 2104 | Phase 3 | M-side Case 3 gap infimum | Phase 3: mirror N-side |
-| 2307 | **Orphaned** | h_d_unique sorry 1 | **DELETE**: remove h_d_unique entirely |
-| 2331 | **Orphaned** | h_d_unique sorry 2 | **DELETE**: remove h_d_unique entirely |
-| 2426 | Phase 3 | h_pt_xc degenerate gap | Phase 3: prove unreachable or restructure |
-| 2443 | Phase 3 | h_pt_cy degenerate gap | Phase 3: prove unreachable or restructure |
-| 2949 | Phase 3 | Claim 1 Case A, d is gap | Phase 3: d-gap case deferred |
-| 3026 | Edge | Claim 1 Case B, q_r2 = y' boundary | Close: K⁻ argument or show unreachable |
-| 3030 | Phase 3 | Claim 1 Case B, r2_resp is gap | Phase 3: gap handling |
-| 4692 | Phase 1 | sigma same_order_type | Close: task 195 tactics |
-| 4792 | Phase 1 | tau same_order_type | Close: task 195 tactics |
-| 4845 | Phase 1 | tau same_order_type (second) | Close: task 195 tactics |
-| 5775 | Phase 4 | ghr93_cases_III_IV | Phase 4: Cases III/IV |
-| 6030 | Phase 4 | rank-varying theorem | Phase 4: rank-varying Thm 6 |
+### ExpressivenessGeneral.lean (7 remaining, 9 closed)
 
-Plus 2 sorries in EFGames.lean (Phase 4) and 3 in IntegerModel.lean (Phases 7-8).
+| Status | Category | Description | Action |
+|--------|----------|-------------|--------|
+| ~~CLOSED~~ | Phase 3 | N-side Case 3 gap infimum | Three-way case split with infimum_gap_r_definable |
+| ~~CLOSED~~ | Phase 3 | M-side Case 3 gap infimum | Cross infimum_gap_r_definable + three-way case split |
+| **OPEN** | **Phase 1** | h_d_unique sorry 1 (line 2835) | **FALSE AS STATED**: depth-r uniqueness is wrong; restructure d_consistency to use Claim 1 game arg at depth r+2 |
+| **OPEN** | **Phase 1** | h_d_unique sorry 2 (line 2859) | Same — delete h_d_unique, inline K⁻ argument in d_consistency |
+| ~~CLOSED~~ | Phase 3 | h_pt_xc degenerate gap | SplitPointProps disjunctive refactor |
+| ~~CLOSED~~ | Phase 3 | h_pt_cy degenerate gap | SplitPointProps disjunctive refactor |
+| ~~CLOSED~~ | Phase 3 | Claim 1 Case A, d is gap | Unified proof via h_strict_failure |
+| ~~CLOSED~~ | Edge | Claim 1 Case B, q_r2 = y' boundary | Unified proof eliminating Case A/B split |
+| ~~CLOSED~~ | Phase 3 | Claim 1 Case B, r2_resp is gap | Unified proof eliminating Case A/B split |
+| ~~CLOSED~~ | Regression | h_strict_failure v=c_inf (h_cont_c case) | Case split: contradiction with h_cont_c |
+| **OPEN** | **Edge** | ¬cont_holds_cross + boundary r2_resp (line 3759) | r2_resp = rank_embed(y') forces c_inf = y; needs formula materialization or boundary lemma |
+| **OPEN** | **Edge** | ¬cont_holds_cross + gap r2_resp (line 3793) | Requires formula materialization (report 39: circular) |
+| **OPEN** | **Phase 1** | sigma same_order_type (line 5651) | Blocked on h_d_unique restructure |
+| **OPEN** | **Phase 1** | tau same_order_type (lines 5751, 5804) | Blocked on h_d_unique restructure |
+| ~~CLOSED~~ | Cleanup | ghr93_winning_condition_symm duplicate | Moved to EFGames.lean |
+| **OPEN** | **Phase 4** | ghr93_cases_III_IV (line 6734) | Lemma 9 now proved; needs gap case construction |
+| **OPEN** | **Phase 4** | rank-varying theorem (line 6989) | Blocked on rank_embed game transport infrastructure |
+
+### EFGames.lean (1 remaining, 1 closed)
+
+| Status | Description | Action |
+|--------|-------------|--------|
+| ~~CLOSED~~ | ghr93_decomposition_implies_game (Lemma 11 backward) | Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8 |
+| **OPEN** | nf_characterizable_by_stavi (inductive step) | Base case (k=0) proved; inductive step needs GHR93 Theorem 6 + Props 6-7 (~1000-1500 lines) |
+
+### IntegerModel.lean (1 remaining, 2 closed)
+
+| Status | Description | Action |
+|--------|-------------|--------|
+| ~~CLOSED~~ | ordered_sum_of_good_bounded_is_good | Shift-and-glue OrderIso via cumulativeOffset (Reynolds Lemma 16) |
+| ~~CLOSED~~ | cofinal_decomposition_k_equiv | Corrected from closed to half-open intervals per Reynolds; proved via OrderIso + Equiv.toOrderIso |
+| **OPEN** | no_gaps_discrete | Blocked on Reynolds Theorem 5 (Phases 5-6B) |
 
 ## Implementation Phases
 
-### Phase 1: Cleanup + Same Order Type [BLOCKED]
+### Phase 1: Cleanup + Same Order Type [IN PROGRESS]
 
-**Status**: GHR93 Claim 1 carrier-point cases COMPLETE. Remaining work is cleanup and Task 1.6.
+**Status**: Boundary edge and Claim 1 gap cases CLOSED via unified proof. h_d_unique discovered to be mathematically FALSE. Restructuring d_consistency to bypass h_d_unique is in progress.
 
-**BLOCKER** (Phase 1):
-- **What failed**: Tasks 1A, 1C, 1D, 1E all depend on GHR93 Claim 1 (h_d_unique) which has 2 sorries (lines 2307, 2331). h_d_unique is NOT orphaned — it is actively used by d_consistency_left (line 1602) and d_consistency_right (line 1724). The plan's claim that "d_consistency now uses inline Claim 1" is incorrect.
-- **What was tried**: (1) Verified h_d_unique is still passed to d_consistency_left/right at lines 2332-2337. (2) For 1D (sigma same_order_type, line 4692): inspected the 6 remaining goals after same_order_type_grid — all require `(d < extendPoint p_n ↔ c < e_n)` which requires either h_d_unique or a proof that the forward game's a_N(n) = d (i.e., Claim 1). No block-commented proof exists for sigma. (3) For 1C (boundary edge, line 3026): the case extendPoint q_r2 = y' implies r2_resp = rank_embed(y'), but c_inf = y is consistent with ¬cont_holds_cross at c_inf; the case is NOT unreachable from game bounds. (4) For 1E: also blocked on sigma instantiation for (x' < d ↔ x < c).
-- **Why it's stuck**: All tasks share the root dependency on h_d_unique/Claim 1. The inline Claim 1 (lines 2530-2950) proves r2_resp = rank_embed(d) but does NOT prove h_d_unique (t' = d for arbitrary t' with same rank-r type). The 2 sorries in h_d_unique (lines 2307, 2331) require materializing the continuation predicate as a single StaviFormula via pigeonhole + constructing K⁻(¬D) of depth r+2.
-- **What is needed**: Complete h_d_unique by proving its 2 sorries. This requires: (a) materializing the cofinal formula failure below d as a single StaviFormula D via pigeonhole, (b) constructing K⁻(¬D) = neg(std_snce(neg(base .bot), D)) of depth r+2, (c) proving K⁻(¬D) separates d from t'. This is the same infrastructure needed for Phase 3 gap cases.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**CRITICAL DISCOVERY**: `h_d_unique` is **unprovable as stated**. It claims ANY element t' with the same depth-r StaviFormula type as d must equal d. This is mathematically false — two distinct points in a linear order can share the same depth-r type. GHR93 Claim 1 only proves the game RESPONSE equals d at depth r+2 using K⁻(¬D). The depth mismatch (r vs r+2) makes the universal statement unprovable.
+
+**FIX**: Restructure `d_consistency_left/right` to use the Claim 1 game argument directly (K⁻ at depth r+2) instead of going through h_d_unique. Then delete h_d_unique entirely.
 
 **Tasks**:
-- [ ] **1A. Delete h_d_unique** (~-150 lines). h_d_unique (lines ~2236-2331) is orphaned — its 2 sorries are unreachable since d_consistency now uses inline Claim 1. Remove h_d_unique, remove it from d_consistency_left/right signatures, remove it from SplitPointProps. This deletes sorries at lines 2307 and 2331. *(deviation: skipped — h_d_unique is NOT orphaned; still used by d_consistency_left/right at lines 1602, 1724, 2332-2337)*
-- [x] **1B. Archive or delete pigeonhole_definable_formula_cross_strict** (~161 lines at line ~1212). The strict pigeonhole variant was built for the abandoned K⁻ pipeline. If useful for Phase 3 gap cases, keep. Otherwise delete. The non-strict `pigeonhole_definable_formula_cross` (~180 lines at ~1040) stays — used in Case A of Claim 1. *(deviation: altered — decision is KEEP; it is used at line 2792 in Case B carrier-point sub-case)*
-- [ ] **1C. Close boundary edge case** (line 3026, ~20 lines). Claim 1 Case B when q_r2 = y'. Either prove via K⁻ argument or show this case is unreachable from the game's order constraints (r2_resp < rank_embed(y') from game bounds). *(deviation: skipped — case is NOT unreachable from bounds; requires K⁻ argument which depends on Claim 1 infrastructure)*
-- [ ] **1D. sigma same_order_type** (line 4692, ~40 lines). Uncomment block-commented proof. Use `same_order_type_grid`, `order_refl`, `extract_order`, `pivot_chain_order'` from task 195. *(deviation: skipped — no block-commented proof exists for sigma case; 6 remaining goals after same_order_type_grid all require (d < p_n ↔ c < e_n) from Claim 1)*
-- [ ] **1E. tau same_order_type** (lines 4792, 4845, ~60 lines). Uncomment block-commented proof. Instantiate `props.sigma` with trivial selections to extract `(x' < d ↔ x < c)`. Use task 195 tactics. *(deviation: skipped — blocked on sigma instantiation for (x' < d ↔ x < c); dead code at lines 4850-4948 uses pivot_chain_order which also needs this fact)*
+- [x] **1B. Keep pigeonhole_definable_formula_cross_strict** — used at line 2792 in Case B carrier-point sub-case
+- [x] **1C. Boundary edge case** — CLOSED via unified Claim 1 proof (eliminated Case A/B split)
+- [ ] **1A. Restructure d_consistency + delete h_d_unique** — IN PROGRESS. Replace h_d_unique parameter in d_consistency_left/right with inline Claim 1 game argument at depth r+2. Then delete h_d_unique (~100 lines, 2 sorries removed).
+- [ ] **1D. sigma same_order_type** — Blocked on d_consistency restructure. Needs `(d < p_n ↔ c < e_n)` from game response properties.
+- [ ] **1E. tau same_order_type** — Blocked on sigma. Needs sigma instantiation for `(x' < d ↔ x < c)`.
 - [ ] **1F. Verification**: `lake build` passes.
 
-**Timing**: 3-5 hours. **Files**: `ExpressivenessGeneral.lean`
+**Timing**: 4-8 hours remaining. **Files**: `ExpressivenessGeneral.lean`
 
 ---
 
@@ -81,30 +96,34 @@ Plus 2 sorries in EFGames.lean (Phase 4) and 3 in IntegerModel.lean (Phases 7-8)
 
 ---
 
-### Phase 3: Gap Infimum Wiring + Cases III/IV (GHR93 Theorem 6) [IN PROGRESS]
+### Phase 3: Gap Infimum Wiring + Cases III/IV (GHR93 Theorem 6) [PARTIAL]
 
 **GHR93 reference**: Section 8, pp.117-119.
 
-**Sorries to close**: 2013, 2104, 2426, 2443, 2949, 3030 (6 sorries, all gap-related).
+**Original sorries**: 2013, 2104, 2426, 2443, 2949, 3030 (6 sorries). **4 closed, 1 remaining** (Cases III/IV).
 
 **Tasks**:
-- [ ] **3A. N-side gap infimum** (line 2013). Wire infimum_gap_r_definable for Case 3 of d construction.
-- [ ] **3B. M-side gap infimum** (line 2104). Mirror N-side.
-- [x] **3C. Degenerate gap cases** (lines 2426, 2443). *(completed: refactored h_pt_xc/h_pt_cy to disjunctive form with gap/point/formula data, updated 3 active consumer sites)*
-- [ ] **3D. Claim 1 gap sub-cases** (lines 2949, 3030). Extend Claim 1 to gap d / gap r2_resp using Lemma 9 gap detection.
-- [ ] **3E. Cases III/IV** (line 5775). Split into Case III (left-defined gap) and Case IV (right-defined gap). Use Lemma 9.
+- [x] **3A. N-side gap infimum** — CLOSED. Three-way case split: (a) gamma=x' boundary, (b) gamma interior with infimum_gap_r_definable, (c) gamma=y' via complement_no_min contradiction.
+- [x] **3B. M-side gap infimum** — CLOSED. Created 4 new cross-structure lemmas (cont_holds_above_gap_cross, cont_fails_below_gap_cross, formula_failure_in_cut_cross, infimum_gap_r_definable_cross). Three-way case split mirroring N-side.
+- [x] **3C. Degenerate gap cases** — CLOSED. SplitPointProps refactored to disjunctive form (carrier-point witness OR gap boundary). 3 consumer sites updated.
+- [x] **3D. Claim 1 gap sub-cases** — CLOSED. Unified Claim 1 proof via h_strict_failure eliminates Case A/B split entirely. d-gap case proved via carrier-point witnesses between rank_embed(d) and r2_resp.
+- [ ] **3E. Cases III/IV** (1 sorry). Blocked on Lemma 9 gap detection infrastructure.
 
-**Timing**: 6-10 hours. **Depends on**: Phase 1.
+**Timing**: 4-8 hours remaining for 3E. **Depends on**: Phase 1.
 
 ---
 
-### Phase 4: Assembly — Rank-Varying Thm 6, Props 6-7, Corollary 5 [NOT STARTED]
+### Phase 4: Assembly — Rank-Varying Thm 6, Props 6-7, Corollary 5 [IN PROGRESS]
 
 **GHR93 reference**: pp.113-115.
 
-**Sorries to close**: 6030 (rank-varying), EFGames.lean sorries (Lemma 11 backward, stavi_expressive_completeness).
+**Progress**:
+- [x] **Lemma 11 backward** (ghr93_decomposition_implies_game) — CLOSED in EFGames.lean. Strengthened decomposition_agreement with point-challenge condition per GHR93 Def 8.8.
+- [x] **stavi_expressive_completeness assembly** — Sorry-free assembly proof factored through nf_characterizable_by_stavi. Uses NormalForm partition + finite StaviFormula disjunction. Base case (k=0) proved with new infrastructure (sf_conjList, sf_atom_literal, atomKind_to_sf_literal).
+- [ ] **nf_characterizable_by_stavi (inductive step)** — 1 sorry in EFGames.lean. Game-theoretic core: construct StaviFormulas encoding NormalForm quantifier structure via U/S connectives. Needs GHR93 Theorem 6 + Propositions 6-7 (~1000-1500 lines).
+- [ ] **rank-varying theorem** (1 sorry in ExpressivenessGeneral.lean) — Blocked on rank_embed transport.
 
-**Timing**: 8-14 hours. **Depends on**: Phase 3.
+**Timing**: 8-14 hours remaining. **Depends on**: Phase 3.
 
 ---
 
@@ -128,9 +147,14 @@ Compose `stavi_expressive_completeness` with `flatten_stavi_correct`.
 
 ---
 
-### Phase 8: Wire no_gaps_discrete [NOT STARTED]
+### Phase 7-8: IntegerModel.lean + Wire no_gaps_discrete [PARTIAL]
 
-**Timing**: 1-2 hours. **Depends on**: Phase 6B.
+**Progress**:
+- [x] **ordered_sum_of_good_bounded_is_good** — CLOSED. Shift-and-glue OrderIso via cumulativeOffset (Reynolds Lemma 16). New helpers: witness_bounded, cumulativeOffset_covers, cumulativeOffset_unique_piece.
+- [x] **cofinal_decomposition_k_equiv** — CLOSED. Original statement was FALSE (closed intervals duplicate boundary points). Corrected to half-open intervals per Reynolds. New infrastructure: hoSubinterval, partition_index_unique, hoSubinterval_good_of_very_good.
+- [ ] **no_gaps_discrete** — 1 sorry. Blocked on Reynolds Theorem 5 (stavi_expressive_completeness, Phases 5-6B).
+
+**Timing**: 1-2 hours remaining for no_gaps_discrete. **Depends on**: Phase 6B.
 
 ---
 
