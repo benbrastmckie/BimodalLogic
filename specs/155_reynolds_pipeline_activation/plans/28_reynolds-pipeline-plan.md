@@ -138,8 +138,9 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula C Case-Split Resolution S1 + S2 [IN PROGRESS]
+### Phase 2: Formula C Case-Split Resolution S1 + S2 [BLOCKED]
 - **Started**: 2026-05-24T17:30:00Z
+- **Blocked**: 2026-05-24T18:00:00Z — S1 (r2_resp = rank_embed(y') boundary) has no direct contradiction in current proof context. Requires either proof restructuring to avoid this sub-case, or showing the game cannot respond with rank_embed(y'). S2 (gap case) not yet attempted.
 
 **Goal**: Resolve the formula C predicate-vs-formula gap using Approach C (case-split on `cont_holds` at infimum). This closes S1 and S2, the core of the Claim 1 sorry cluster. S4 inherits from S1/S2 and should close automatically or with minimal adaptation.
 
