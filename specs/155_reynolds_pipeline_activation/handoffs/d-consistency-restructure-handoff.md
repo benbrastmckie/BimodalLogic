@@ -188,7 +188,61 @@ These are INDEPENDENT of d_consistency. They have separate blockers (signature t
 ### Follow-up (Separate Task)
 
 5. Close same_order_type sorries (5651, 5751, 5804) using the resolved d-consistency
-6. Fix edge cases (3759, 3793) using extended K^-(negD)
+6. Fix edge cases (3759, 3793) — see Section 8.1 below for detailed analysis
+
+---
+
+## 8.1 Edge Case Analysis (Lines 3759, 3793)
+
+Both sorries are in the `not cont_holds_cross at c_inf` branch of Claim 1 Direction 1.
+
+### Line 3759: c_inf = y AND r2_resp = rank_embed(y')
+
+**Setup**: `not cont_holds_cross` gives `A_fail` (depth <= r) failing at c_inf but holding at all mu in (a_bwd n, y'). Formula agreement transfers: A_fail fails at r2_resp. Sub-case: r2_resp is carrier point = rank_embed(y').
+
+**Analysis**: `c_inf = y` is proved (lines 3733-3741). This means S_C_M = {y} (all interior mu-points fail cont_holds_cross). With r2_resp = rank_embed(y'), formula agreement at position 1 gives `truth M r y A <-> truth N r y' A` for depth <= r. A_fail fails at both y (M) and y' (N), which is consistent (no contradiction from A_fail alone).
+
+**The problem**: A_fail fails at y' in N, but hA_interval only guarantees A_fail on (a_bwd n, y') (open at y'). So A_fail at y' cannot be derived from hA_interval. Need a DIFFERENT formula or a boundary argument.
+
+**Possible fix**: Use the K^-(negD) argument from the cont_holds_cross branch instead. The strict pigeonhole still works when c_inf = y (since all interior mu-points have cont_holds_cross failure, the cofinal failure condition is satisfied). This would ELIMINATE the case split on cont_holds_cross entirely.
+
+**Key question**: Does `h_strict_failure` (line 3275) require cont_holds_cross to hold at c_inf? YES -- it uses `h_cont_c` at line 3286 to strengthen the failure from `<= c_inf` to `< c_inf`. Without cont_holds_cross at c_inf, the failure point v could EQUAL c_inf, preventing strict pigeonhole.
+
+**Alternative**: When v = c_inf (failure point equals infimum), derive contradiction differently. If c_inf is a mu-point and cont_holds_cross fails at c_inf, then A_fail fails at c_inf. But c_inf in S_C_M means cont_holds_cross holds at all mu ABOVE c_inf, not AT c_inf. So v = c_inf is not in the cofinal failure set (it's the infimum itself). The strict pigeonhole requires failures STRICTLY BELOW c_inf.
+
+**Feasibility**: Moderate (~100-200 lines). Need to either:
+(a) Show c_inf = y with not cont_holds_cross is impossible (derive structural contradiction), or
+(b) Handle the c_inf = y boundary case directly (A_fail at y' fails because y' is at the boundary, use order_agreement to show d = y' contradicting d < y')
+
+Option (b) looks promising: if c_inf = y in M and r2_resp = rank_embed(y') in N, and the game preserves boundary relationships, then d should equal y' (boundary correspondence). But we have d < y' from h_not_le. So if we can derive d = y', we get a contradiction.
+
+From boundary correspondence (hbdy_cd or hord_r2_01/hord_r2_13): c_inf = y implies d = y' (from order_agreement at positions 1 and 3). But this contradicts rank_embed(d) < r2_resp = rank_embed(y'), i.e., d < y'. CONTRADICTION.
+
+**Wait**: the boundary correspondence at lines 4200-4214 uses the POST-Claim-1 order agreement (after establishing r2_resp = rank_embed(d)). Here we're INSIDE Claim 1, trying to establish that. So the boundary correspondence isn't available yet.
+
+But the order agreement from THIS round's winning condition IS available: hord_13 at line 3170 (approximately). Let me trace: if c_inf = y, then rank_embed(c_inf) = rank_embed(y). Order (1,3): rank_embed(c_inf) = rank_embed(y) iff r2_resp = rank_embed(y'). YES: hord_13.2 gives rank_embed(c_inf) = rank_embed(y) -> r2_resp = rank_embed(y'), which is satisfied. And conversely.
+
+But this doesn't give d = y'. We don't have the boundary correspondence between d and y' at this point.
+
+**Revised assessment**: The edge case at 3759 requires showing that `c_inf = y, not cont_holds_cross at y, r2_resp = rank_embed(y'), and rank_embed(d) < r2_resp` is contradictory. This needs a dedicated argument relating the M-side boundary (c_inf = y) to the N-side structure.
+
+### Line 3793: r2_resp is a gap + not cont_holds_cross
+
+**Setup**: Same A_fail formula. r2_resp is a gap at rank r+2. Need to show A_fail holds at r2_resp (contradiction with hA_fail_r2).
+
+**Analysis**: A_fail holds at all carrier-point mu above d. But r2_resp is a gap, and stavi_temporal_truth_mu at a gap depends on the formula structure. For base formulas (atoms), truth at a gap involves temporal_truth_mu which is defined via the gap's DedeGap position. For std_snce/std_untl, it involves existential/universal quantification over extended carrier elements.
+
+**Key issue**: A_fail's truth at a gap r2_resp is not directly derivable from A_fail's truth at nearby carrier points (without knowing the formula structure of A_fail).
+
+**Possible fix**: Use the K^-(negD) argument instead of A_fail. K^-(negD) has depth r+2 (within budget) and its truth at gaps is structurally manageable (K_minus = neg(std_snce(...)), so truth_mu at a gap can be analyzed via Since semantics at the gap).
+
+**Feasibility**: Hard (~200-300 lines). Requires unifying the cont_holds_cross and not cont_holds_cross branches.
+
+### Recommended Approach for Edge Cases
+
+**Unify branches**: Eliminate the `by_cases h_cont_c` split at line 3273. Instead, ALWAYS use the K^-(negD) argument. The strict pigeonhole requires strict failures below c_inf. When cont_holds_cross holds at c_inf, strict failures exist (current sorry-free proof). When cont_holds_cross fails at c_inf, the failure at c_inf itself provides the starting point, and the pigeonhole still works on the open interval (x, c_inf).
+
+This unification eliminates both sorry sites (3759, 3793) and simplifies the code. Estimated 200-400 lines of restructuring.
 
 ---
 
