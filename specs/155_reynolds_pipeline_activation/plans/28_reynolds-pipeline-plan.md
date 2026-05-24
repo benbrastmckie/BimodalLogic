@@ -175,29 +175,33 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: SplitPointProps Extension for S8 + Case II Ordering S9/S10 [NOT STARTED]
+### Phase 3: Restructure Case II e_n Construction (S8/S9/S10) [BLOCKED]
+- **Blocked**: 2026-05-24T20:00:00Z — Same architectural divergence as Phase 2 (report phase3-s8-handoff.md)
 
-**Goal**: Close S8 by extending `SplitPointProps` to export `c <= e_n` (or deriving it within `ghr93_case_II`), then close S9 and S10 which are cross-boundary sigma strategy instantiations.
+**Goal**: Restructure `ghr93_case_II` to construct `e_n` via U(B,A) transfer per GHR93, not from forward game response.
+
+**Root Cause Finding** (handoffs/phase3-s8-handoff.md):
+- GHR93 constructs `e_n` via U(B,A) formula transfer (guaranteeing `c < e_n` by construction since `e_n > resp_tau(n-1) ≥ c`)
+- The formalization gets `e_n` from the forward game response — provides NO ordering guarantee relative to `c`
+- S8/S9/S10 share the SAME architectural divergence as S1/S2 — formalization doesn't follow GHR93 faithfully
+
+**Resolution Path** (after Phase 2 K⁻ bridge):
+- Once Phase 2 closes Claim 1 direction, the forward-to-backward strategy is established
+- Case II can then use the backward strategy (tau) to transfer U(B,A) from N to M
+- This gives `e_n` by the Until witness in M, guaranteeing `c < e_n` and `B(e_n)` simultaneously
+- S8/S9/S10 then close from the construction (ordering is built into e_n's definition)
 
 **Tasks**:
-- [ ] Analyze whether `c <= e_n` can be derived inside `ghr93_case_II` from `hord_fwd` combined with N-side constraint `a_N(n) <= d`, OR whether `SplitPointProps` needs to export this bound
-- [ ] If SplitPointProps extension needed: add `hc_le_en : c <= e_n` field and prove it in `obtain_split_point_props` (~80 lines)
-- [ ] If derivable in place: establish `a_N(n) <= d` from the tau game and chain through `hord_fwd` (~50 lines)
-- [ ] Close S8 (line 5945, `same_order_type_grid` remaining goals): use `c <= e_n` to resolve the 5-6 cross-boundary ordering sub-goals (~50 lines)
-- [ ] Close S9 (line 6045): sigma strategy instantiation for `same_order_type` goal, extractable from `hgp_cd`/`hcd_boundary` hypotheses (~50 lines)
-- [ ] Close S10 (line 6098): related ordering goal in Case II (~50 lines)
-- [ ] Run `lake build` to confirm no regressions
+- [ ] After Phase 2: restructure e_n construction to use tau-transferred U(B,A) witness per GHR93 p.117-118
+- [ ] Derive `c < e_n` from Until witness properties (e_n > resp_tau(n-1) ≥ c)
+- [ ] Close S8 cross-boundary ordering from restructured e_n
+- [ ] Close S9/S10 same_order_type from restructured e_n + sigma/tau composition
 
-**Timing**: 2-3 hours
+**Timing**: 3-4 hours (substantial restructure)
 
-**Depends on**: 2
+**Depends on**: 2 (K⁻ bridge enables backward strategy needed for U(B,A) transfer)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- SplitPointProps extension + Case II ordering (~200-250 lines)
-
-**Verification**:
-- Sorry sites S8, S9, S10 (lines 5945, 6045, 6098) are closed
-- `lake build` passes
+**GHR93 Alignment**: This phase eliminates the second major architectural divergence. GHR93 Case II explicitly constructs e_n as a U(B,A) witness; the formalization must do the same.
 
 ---
 
