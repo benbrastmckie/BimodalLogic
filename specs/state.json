@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-24T15:45:41Z",
+      "last_updated": "2026-05-24T16:09:34Z",
       "next_artifact_number": 29,
       "artifacts": [
         {
@@ -254,11 +254,6 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md",
           "type": "research",
           "summary": "Post-task-157 status: 5 sorry sites (only 4 on critical path), succ_cofinal is deepest blocker, valuation bug in z_interval_countermodel, estimates 13-23 hours"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/summaries/02_reynolds-pipeline-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: architectural blockers in Phase 1 (box modality mismatch) and Phase 2 (EF game framework needed)"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-0-handoff-20260520.md",
@@ -356,11 +351,6 @@
           "summary": "Phase 1 handoff: Task 1.7 resolved, 8 sorries remain, Tasks 1.1/1.4/1.5/1.6 pending"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/summaries/18_phase1-task17-summary.md",
-          "type": "summary",
-          "summary": "Task 1.7 implementation: ghr93_forward_to_backward_core with decoupled round count"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T180000Z.md",
           "type": "handoff",
           "summary": "Round 4: Task 1.1 3-way case split fixed, Tasks 1.4-1.6 deferred"
@@ -414,11 +404,17 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Two-track plan v28: Track A (OrderIso bypass, 8-14h) + Track B (GHR93 pipeline, 12-16h)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/summaries/28_reynolds-bypass-summary.md",
+          "type": "summary",
+          "summary": "Phase A1: Track A OrderIso bypass infeasible — succ_cofinal blocks all paths"
         }
       ],
-      "session_id": "sess_1779637152_a108f3",
+      "session_id": "sess_1779637811_da1ed9",
       "researched": "2026-05-22T23:51:35Z",
-      "started": "2026-05-16T19:49:58Z"
+      "started": "2026-05-16T19:49:58Z",
+      "resume_phase": 2
     },
     {
       "project_number": 174,

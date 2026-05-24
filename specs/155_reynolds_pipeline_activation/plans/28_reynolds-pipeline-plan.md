@@ -259,11 +259,11 @@ Every path from the Burgess chronicle to a countermodel on Int goes through `IsS
 **Goal**: Fix the rank off-by-one in h_fwd_r1 across 6 signature locations. This is always required regardless of which formula C approach is chosen, because `std_snce` adds +2 to stavi_depth, making C' = neg(C) or K^-(neg(C)) have depth r+2 (not r+1).
 
 **Tasks**:
-- [ ] Identify all 6 signature locations where h_fwd_r1 uses rank r+1 (expected in ExpressivenessGeneral.lean)
-- [ ] Change each from r+1 to r+2 (~30 lines total)
-- [ ] Verify that the forward game budget (rank r+4(n+1)) accommodates r+2 (r+2 << r+4 for n >= 0)
-- [ ] Run `lake build` to confirm no regressions
-- [ ] Verify no new sorry sites introduced by the rank change
+- [x] Identify all 6 signature locations where h_fwd_r1 uses rank r+1 (expected in ExpressivenessGeneral.lean) *(completed: all 6 already use r+2 — done in earlier session)*
+- [x] Change each from r+1 to r+2 (~30 lines total) *(completed: already done in earlier session)*
+- [x] Verify that the forward game budget (rank r+4(n+1)) accommodates r+2 (r+2 << r+4 for n >= 0) *(completed: confirmed)*
+- [x] Run `lake build` to confirm no regressions *(completed: no errors in diagnostic messages)*
+- [x] Verify no new sorry sites introduced by the rank change *(completed: sorry count unchanged)*
 
 **Timing**: 1-2 hours
 
