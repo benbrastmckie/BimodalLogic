@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,8 +237,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-24T08:15:14Z",
-      "next_artifact_number": 28,
+      "last_updated": "2026-05-24T08:24:09Z",
+      "next_artifact_number": 29,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -409,6 +409,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Implementation plan v27: OrderIso bypass strategy for sorry-free bx_completeness (6 phases, 12-18 hours)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/28_team-research.md",
+          "type": "research",
+          "summary": "Team research round 6 (5 teammates): formula C literature alignment, circularity resolution, attack order"
         }
       ],
       "session_id": "sess_1779610495_46c9e0",
