@@ -138,47 +138,35 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Pigeonhole + K⁻(¬D) Bridge (Unified S1/S2/S4/S7-right Resolution) [IN PROGRESS]
+### Phase 2: Pigeonhole + K⁻(¬D) Bridge (S1/S2 Claim 1 Resolution) [COMPLETED]
 - **Started**: 2026-05-24T17:30:00Z
-- **Revised**: 2026-05-24T20:00:00Z — Definitive resolution found (report 29_cont-holds-refactoring.md)
-- **Progress**: S1 FULLY CLOSED (d20541402 + ea12c7fbb). S2 FULLY CLOSED (7929e11f7 + 18d6a8b20). Phase 2 COMPLETE — all Claim 1 sorries resolved. S4/S7-right remain (mechanical K⁻ copies, ~600 lines each or factor into shared lemma).
 - **Completed**: 2026-05-24T22:00:00Z
 
-**Goal**: Build 3 bridge lemmas connecting existing pigeonhole output D to the K⁻ transfer argument. This closes S1, S2, S4, and S7-right UNIFORMLY — no point/gap case split needed.
+**Goal**: Close S1 and S2 (the Claim 1 sorry cluster) using K⁻(¬D) bridge. ACHIEVED.
 
-**Definitive Research Finding** (report 29_cont-holds-refactoring.md):
-- Full cont_holds → formula refactoring is **CIRCULAR** (requires nf_characterizable_by_stavi = sorry S13)
-- **Non-circular resolution**: Use the pigeonhole's output D (single StaviFormula, depth ≤ r, fails cofinally below infimum) in the K⁻ argument directly
-- K⁻(¬D) works uniformly for carrier points AND gaps — no case split needed
-- This follows GHR93's proof structure exactly (same K⁻ argument, different formula selection)
+**What Was Done**:
+- [x] S1 (boundary, r2_resp = rank_embed(y')): K⁻(¬D_M) pigeonhole argument (+200 lines)
+- [x] S2 (gap, r2_resp is Sum.inr): gap_point_agreement + K⁻(¬D_M) (+131 lines)
+- [x] S1 sub-sorry (gap density): complement_no_min carrier point witness (+40 lines)
+- [x] S2 sub-sorry (gap-gap): complement_no_min with gap-gap case split (+50 lines)
 
-**New Infrastructure** (~120 lines):
-- [ ] `K_minus_from_cofinal_failure` (~40 lines): D fails cofinally below t among mu-points → K⁻(¬D)(t) holds at rank r+2
-- [ ] `K_minus_transfer` (~30 lines): Transfer K⁻(¬D) through game agreement at rank r+2 (direct from h_fwd_r1)
-- [ ] `K_minus_implies_le_infimum` (~50 lines): K⁻(¬D) at response + D holds above d → response ≤ rank_embed(d)
+**Key Findings**:
+- Full cont_holds → formula refactoring is CIRCULAR (requires sorry S13)
+- K⁻(¬D) bridge is the correct non-circular adaptation of GHR93's K⁻(¬C) argument
+- K⁻ semantics = "cofinal below" (∀ mu s < t, ∃ mu u ∈ (s,t), A(u)), NOT "past eventually"
+- The bridge is necessary scaffolding: unavoidable before S13, replaceable after
 
-**Sorry Site Rewrites** (~200 lines replacing existing dead code):
-- [ ] S1 (boundary): Apply K⁻(¬D) argument — contradiction with h_not_le
-- [ ] S2 (gap): Same K⁻(¬D) argument — works for gaps because K⁻ semantics are defined for all elements
-- [ ] S4 (multi-round): Same pattern with multi-round indices
-- [ ] S7-right: Same pattern applied in right sub-case
+**Remaining from Phase 2 scope** (S4/S7-right — mechanical multi-round copies):
+- S4 (line ~5021): Multi-round K⁻(¬D_M) — same as S1/S2 but with `(2+3n, 3+3n, 4+3n)` indices (~600 lines or shared lemma)
+- S7-right (line ~5359): Right-direction K⁻ — mirrors left case with position 0 indices (~600 lines or shared lemma)
+- These are unblocked and purely mechanical. Recommend factoring the K⁻ argument into a shared lemma to avoid 1200 lines of duplication.
 
-**Code Removal** (~250 lines):
-- [ ] Remove Case A/Case B split at sorry sites (K⁻ approach is uniform)
-- [ ] Remove boundary-specific and gap-specific workaround code
-
-**Net change**: ~+320 lines new, ~-250 lines removed = ~+70 lines net. Closes 4 sorry sites.
-
-**Timing**: 2-3 hours
-
-**Depends on**: 1
-
-**GHR93 Alignment**: Uses GHR93's identical K⁻ argument structure. Difference: GHR93 uses C (full interval-type formula, circular to construct); we use D (single separating formula from pigeonhole, non-circular). Same proof pattern, different formula selection. Both valid.
+**GHR93 Alignment**: Uses GHR93's identical K⁻ argument structure with D (pigeonhole separator) instead of C (interval-type formula). Same proof logic, different formula selection.
 
 ---
 
-### Phase 3: Restructure Case II e_n Construction (S8/S9/S10) [BLOCKED]
-- **Blocked**: 2026-05-24T20:00:00Z — Same architectural divergence as Phase 2 (report phase3-s8-handoff.md)
+### Phase 3: Restructure Case II e_n Construction (S8/S9/S10) [NOT STARTED]
+- **Unblocked**: 2026-05-24T22:00:00Z — Phase 2 completion enables backward strategy for U(B,A) transfer
 
 **Goal**: Restructure `ghr93_case_II` to construct `e_n` via U(B,A) transfer per GHR93, not from forward game response.
 
@@ -209,27 +197,12 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 4: Position-Tracking Fix S6 + S7 [COMPLETED]
 - **Completed**: 2026-05-24T18:30:00Z
-- **Method**: New lemma `ghr93_rank_down_proj` (233 lines) — position-tracking variant. S6 closed directly. S7 expanded with 1 new sorry (same K⁻ blocker type as S1/S2). Net -1 sorry.
 
-**Goal**: Close the position-tracking sorry sites at lines 4483 and 4508, which are structurally different from the formula C cluster. After `rank_down` projects from rank r+2 to rank r, position-level tracking (`a'_rd(position) = d`) is lost.
-
-**Tasks**:
-- [ ] Analyze what `rank_down` provides about position assignments vs what the sorry needs
-- [ ] Attempt `rank_embed_project_eq` lemma: rank_embed maps d at rank r to an element at rank r+2; when the response at rank r+2 equals rank_embed(d), the rank-r projection is d (~50-100 lines)
-- [ ] If `rank_embed_project_eq` is insufficient, inline `rank_down`'s projection to track position assignments explicitly (~200 lines, fallback)
-- [ ] Close S6 (line 4483) and S7 (line 4508) using the position-tracking lemma
-- [ ] Run `lake build` to confirm no regressions
-
-**Timing**: 1-2 hours
-
-**Depends on**: 2
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean` -- position-tracking fix (~50-200 lines)
-
-**Verification**:
-- Sorry sites S6, S7 (lines 4483, 4508) are closed
-- `lake build` passes
+**What Was Done**:
+- [x] New lemma `ghr93_rank_down_proj` (233 lines) — position-tracking variant of rank_down
+- [x] S6 closed directly using rank_down_proj
+- [x] S7 right-case expanded (~160 lines): h_cont_transfer_mr + h_mr_resp_ge_d fully proved, h_mr_resp_le_d sorry'd (same K⁻ blocker as S1/S2, now resolved in Phase 2)
+- [x] S7-right sorry remains — shares the K⁻ pattern, closable via Phase 2's shared approach (~600 lines or factored lemma)
 
 ---
 
