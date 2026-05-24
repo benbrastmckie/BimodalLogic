@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-24T16:34:43Z",
+      "last_updated": "2026-05-24T16:53:31Z",
       "next_artifact_number": 29,
       "artifacts": [
         {
@@ -414,7 +414,7 @@
       "session_id": "sess_1779640471_03278b",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 2
+      "resume_phase": 1
     },
     {
       "project_number": 174,

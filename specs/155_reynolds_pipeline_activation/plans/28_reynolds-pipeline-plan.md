@@ -114,15 +114,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Mechanical Sorry Closure S3 + S5 [IN PROGRESS]
+### Phase 1: Mechanical Sorry Closure S3 + S5 [COMPLETED]
 
 **Goal**: Close the two independently closable mechanical sorry sites that are pure index arithmetic adaptations of existing proofs. These have no dependency on formula C resolution or any other sorry site.
 
 **Tasks**:
-- [ ] Close S3 (line 4412, `h_cont_transfer_mr`): mechanical copy of `h_cont_transfer` (lines 3240-3330) with multi-round indices `(2+3n, 3+3n, 4+3n)` instead of `(1, 2, 3)` (~90 lines)
-- [ ] Close S5 (line 4468, `h_mr_resp_ge_d` gap case): mirror of existing gap proof at lines 3994-4250 with adapted indices (~255 lines)
-- [ ] Run `lake build` after each closure to confirm no regressions
-- [ ] Verify no new sorry sites introduced
+- [x] Close S3 (line 4412, `h_cont_transfer_mr`): mechanical copy of `h_cont_transfer` (lines 3240-3330) with multi-round indices `(2+3n, 3+3n, 4+3n)` instead of `(1, 2, 3)` (~90 lines) *(completed: fixed 9 omega failures + type mismatch by using simp [game_tuple, show k=n_sel+j] pattern)*
+- [x] Close S5 (line 4468, `h_mr_resp_ge_d` gap case): mirror of existing gap proof at lines 3994-4250 with adapted indices (~255 lines) *(completed: used ha'_mr_in bound instead of game-tuple order agreement)*
+- [x] Run `lake build` after each closure to confirm no regressions *(completed: lean_diagnostic_messages confirmed clean)*
+- [x] Verify no new sorry sites introduced *(completed: only pre-existing sorries remain)*
 
 **Timing**: 2-3 hours
 
