@@ -1,0 +1,16 @@
+{
+  "phase": 1,
+  "phase_name": "Mechanical Sorry Closure S3 + S5",
+  "started_at": "2026-05-24T00:00:00Z",
+  "last_updated": "2026-05-24T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Close S3 (line 4412, h_cont_transfer_mr): mechanical copy of h_cont_transfer with multi-round indices", "status": "not_started"},
+    {"id": 2, "description": "Close S5 (line 4468, h_mr_resp_ge_d gap case): mirror of h_r2_resp_ge_d gap case with adapted indices", "status": "not_started"},
+    {"id": 3, "description": "Run lake build to confirm no regressions", "status": "not_started"},
+    {"id": 4, "description": "Verify no new sorry sites introduced", "status": "not_started"}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Mechanical Sorry Closure S3 + S5 [NOT STARTED]
+### Phase 1: Mechanical Sorry Closure S3 + S5 [IN PROGRESS]
 
 **Goal**: Close the two independently closable mechanical sorry sites that are pure index arithmetic adaptations of existing proofs. These have no dependency on formula C resolution or any other sorry site.
 

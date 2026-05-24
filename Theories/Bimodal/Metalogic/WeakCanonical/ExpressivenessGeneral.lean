@@ -4404,12 +4404,119 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
             (extendPoint p) y').mpr hp_lt_y')
       obtain ⟨b_u, hb_u_in, hcond_u⟩ := hwin_mr p hp_in_r2
       obtain ⟨hord_u, _hgp_u, hform_u⟩ := hcond_u
-      -- The proof uses order and formula agreement from the multi-round game at
-      -- positions (sel=2+3n, b=3+3n, y=4+3n). This is the same structure as
-      -- h_cont_transfer (lines 3240-3330) with adapted game indices.
-      -- For brevity, we sorry this adaptation. The full proof is ~90 lines of
-      -- index arithmetic identical to h_cont_transfer.
-      sorry
+      -- Extract order at index (2+3n, 3+3n): rank_embed(c_inf) vs extendPoint(b_u)
+      -- Multi-round adaptation of h_cont_transfer (lines 3240-3330).
+      -- game_tuple indices for n_sel = 1+3*n+1 selections:
+      --   a_pad[1+3*n] = c_inf at game index 1+(1+3*n) = 2+3*n
+      --   b_u at game index n_sel+1 = (1+3*n+1)+1 = 3+3*n
+      --   y at game index n_sel+2 = (1+3*n+1)+2 = 4+3*n
+      -- Precompute Fin equalities so game_tuple_b_eq/y_eq/sel_nat_eq can unify:
+      have hfin_2n : (⟨2 + 3 * n, by omega⟩ : Fin ((1 + 3 * n + 1) + 3)) =
+          ⟨1 + (1 + 3 * n), by omega⟩ := by ext; omega
+      have hfin_3n : (⟨3 + 3 * n, by omega⟩ : Fin ((1 + 3 * n + 1) + 3)) =
+          ⟨(1 + 3 * n + 1) + 1, by omega⟩ := by ext; omega
+      have hfin_4n : (⟨4 + 3 * n, by omega⟩ : Fin ((1 + 3 * n + 1) + 3)) =
+          ⟨(1 + 3 * n + 1) + 2, by omega⟩ := by ext; omega
+      -- Helpers to convert game_tuple at indices 2+3n, 3+3n, 4+3n.
+      -- For n_sel=1+3*n+1: x at 0, selections at 1..(n_sel), b at n_sel+1=3+3*n, y at n_sel+2=4+3*n
+      -- Use simp [game_tuple] + split_ifs to handle residual ifs.
+      have ha_pad_c : game_tuple (rank_embed (by omega : r ≤ r + 2) x)
+            (rank_embed (by omega : r ≤ r + 2) y)
+            (fun i => rank_embed (by omega : r ≤ r + 2) (a_pad i)) b_u
+            ⟨2 + 3 * n, by omega⟩ = rank_embed (by omega : r ≤ r + 2) c_inf := by
+        simp only [game_tuple]
+        split_ifs with h1 h2 h3
+        · omega
+        · omega
+        · omega
+        · have heq : a_pad ⟨2 + 3 * n - 1, by omega⟩ = a_pad ⟨1 + 3 * n, by omega⟩ :=
+            congrArg a_pad (Fin.ext (by omega))
+          rw [heq, hc_last]
+      -- Index 3+3n = n_sel+1: b slot → extendPoint b_u
+      have hgt_M_b : game_tuple (rank_embed (by omega : r ≤ r + 2) x)
+            (rank_embed (by omega : r ≤ r + 2) y)
+            (fun i => rank_embed (by omega : r ≤ r + 2) (a_pad i)) b_u
+            ⟨3 + 3 * n, by omega⟩ = extendPoint b_u := by
+        simp only [game_tuple]; split_ifs with h1 h2 h3 <;> omega
+      -- Index 3+3n = n_sel+1 on N side: b slot → extendPoint p
+      have hgt_N_b : game_tuple (rank_embed (by omega : r ≤ r + 2) x')
+            (rank_embed (by omega : r ≤ r + 2) y') a'_mr p
+            ⟨3 + 3 * n, by omega⟩ = extendPoint p := by
+        simp only [game_tuple]; split_ifs with h1 h2 h3 <;> omega
+      -- Index 4+3n = n_sel+2: y slot → rank_embed(y)
+      have hgt_M_y : game_tuple (rank_embed (by omega : r ≤ r + 2) x)
+            (rank_embed (by omega : r ≤ r + 2) y)
+            (fun i => rank_embed (by omega : r ≤ r + 2) (a_pad i)) b_u
+            ⟨4 + 3 * n, by omega⟩ = rank_embed (by omega : r ≤ r + 2) y := by
+        simp only [game_tuple]; split_ifs with h1 h2 h3 <;> omega
+      -- Index 4+3n = n_sel+2 on N side: y slot → rank_embed(y')
+      have hgt_N_y : game_tuple (rank_embed (by omega : r ≤ r + 2) x')
+            (rank_embed (by omega : r ≤ r + 2) y') a'_mr p
+            ⟨4 + 3 * n, by omega⟩ = rank_embed (by omega : r ≤ r + 2) y' := by
+        simp only [game_tuple]; split_ifs with h1 h2 h3 <;> omega
+      -- Index 2+3n on N side: selection slot → a'_mr[1+3*n] = mr_resp
+      have hgt_N_c : game_tuple (rank_embed (by omega : r ≤ r + 2) x')
+            (rank_embed (by omega : r ≤ r + 2) y') a'_mr p
+            ⟨2 + 3 * n, by omega⟩ = a'_mr ⟨1 + 3 * n, by omega⟩ := by
+        simp only [game_tuple]
+        split_ifs with h1 h2 h3
+        · omega
+        · omega
+        · omega
+        · exact congrArg a'_mr (Fin.ext (by omega))
+      -- Extract order at index (2+3n, 3+3n): c_inf vs b_u
+      have hord_c_b := hord_u ⟨2 + 3 * n, by omega⟩ ⟨3 + 3 * n, by omega⟩
+      rw [ha_pad_c, hgt_N_c, hgt_N_b] at hord_c_b
+      -- hord_c_b : (rank_embed c_inf < extendPoint b_u ↔ mr_resp < extendPoint p) ∧ ...
+      -- c_inf < extendPoint b_u at rank r (from order type)
+      have hc_lt_bu_r : c_inf < (extendPoint b_u : ExtendedCarrier M atomMap r) := by
+        have : rank_embed (by omega : r ≤ r + 2) c_inf <
+            (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) := by
+          rw [← rank_embed_point (by omega : r ≤ r + 2) p] at hmr_lt_p
+          exact hord_c_b.1.mpr hmr_lt_p
+        rw [← rank_embed_point (by omega : r ≤ r + 2) b_u] at this
+        exact (rank_embed_lt (by omega : r ≤ r + 2) c_inf (extendPoint b_u)).mp this
+      -- Extract order at index (3+3n, 4+3n): extendPoint(b_u) vs rank_embed(y)
+      have hord_b_y := hord_u ⟨3 + 3 * n, by omega⟩ ⟨4 + 3 * n, by omega⟩
+      rw [hgt_M_b, hgt_M_y, hgt_N_b, hgt_N_y] at hord_b_y
+      -- extendPoint(b_u) < y at rank r
+      have hbu_lt_y : (extendPoint b_u : ExtendedCarrier M atomMap r) < y := by
+        have hp_lt_y'_r2 : (extendPoint p : ExtendedCarrier N atomMap (r + 2)) <
+            rank_embed (by omega : r ≤ r + 2) y' := by
+          rw [← rank_embed_point (by omega : r ≤ r + 2) p]
+          exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p) y').mpr hp_lt_y'
+        have : (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) <
+            rank_embed (by omega : r ≤ r + 2) y := hord_b_y.1.mpr hp_lt_y'_r2
+        rw [← rank_embed_point (by omega : r ≤ r + 2) b_u] at this
+        exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint b_u) y).mp this
+      -- c_inf ∈ S_C_M: cont_holds_cross at extendPoint b_u
+      have hmu_bu : mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_u) :=
+        ⟨b_u, rfl⟩
+      have h_cont_cross_bu : cont_holds_cross (a_bwd ⟨n, by omega⟩) y' (extendPoint b_u) :=
+        hc_inf_in_SC_M.2 (extendPoint b_u) hc_lt_bu_r hbu_lt_y hmu_bu
+      -- Transfer: A holds at b_u in M → A holds at p in N (via formula agreement)
+      intro A hA h_all_mu
+      have hA_bu : stavi_temporal_truth_mu M atomMap r (extendPoint b_u) A :=
+        h_cont_cross_bu A hA h_all_mu
+      -- Formula agreement at index 3+3n (b_u/p slot), depth ≤ r+2
+      have hform_3n := hform_u ⟨3 + 3 * n, by omega⟩ A (le_trans hA (by omega : r ≤ r + 2))
+      rw [hgt_M_b, hgt_N_b] at hform_3n
+      -- Bridge from rank r to rank r+2 via rank_embed_stavi_truth_mu.
+      have hM_bridge : stavi_temporal_truth_mu M atomMap (r + 2)
+          (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) A ↔
+          stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r) A := by
+        conv_lhs => rw [show (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) =
+          rank_embed (by omega : r ≤ r + 2) (extendPoint b_u : ExtendedCarrier M atomMap r) from
+          (rank_embed_point (by omega : r ≤ r + 2) b_u).symm]
+        exact rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) (extendPoint b_u) A
+      have hN_bridge : stavi_temporal_truth_mu N atomMap (r + 2)
+          (extendPoint p : ExtendedCarrier N atomMap (r + 2)) A ↔
+          stavi_temporal_truth_mu N atomMap r (extendPoint p : ExtendedCarrier N atomMap r) A := by
+        conv_lhs => rw [show (extendPoint p : ExtendedCarrier N atomMap (r + 2)) =
+          rank_embed (by omega : r ≤ r + 2) (extendPoint p : ExtendedCarrier N atomMap r) from
+          (rank_embed_point (by omega : r ≤ r + 2) p).symm]
+        exact rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) (extendPoint p) A
+      exact hN_bridge.mp (hform_3n.mp (hM_bridge.mpr hA_bu))
     -- Step 4: Prove mr_resp ≤ rank_embed(d) (Direction 1: K⁻(¬D_M) argument).
     -- This mirrors the proof of h_r2_resp_le_d but for the multi-round game.
     -- The argument uses h_cont_transfer_mr, cofinal failures, and pigeonhole,
