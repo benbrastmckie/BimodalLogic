@@ -228,7 +228,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -237,7 +237,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-24T08:24:09Z",
+      "last_updated": "2026-05-24T15:45:41Z",
       "next_artifact_number": 29,
       "artifacts": [
         {
@@ -406,17 +406,17 @@
           "summary": "Team research round 5 (4 teammates): h_d_unique blocker resolution, Claim 1 proof extraction, infrastructure inventory, strategic assessment"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v27: OrderIso bypass strategy for sorry-free bx_completeness (6 phases, 12-18 hours)"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/28_team-research.md",
           "type": "research",
           "summary": "Team research round 6 (5 teammates): formula C literature alignment, circularity resolution, attack order"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Two-track plan v28: Track A (OrderIso bypass, 8-14h) + Track B (GHR93 pipeline, 12-16h)"
         }
       ],
-      "session_id": "sess_1779610495_46c9e0",
+      "session_id": "sess_1779637152_a108f3",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z"
     },
