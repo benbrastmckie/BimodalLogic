@@ -4123,12 +4123,140 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
               -- at rank r+2. Projecting: extendPoint(q_r2) = y' at rank r.
               -- But we need A_fail to hold at y', which requires y' to be in
               -- (a_bwd n, y'), which is vacuous (y' is not < y').
-              -- This sub-case needs the game's winning condition more carefully.
-              -- For now, this is an edge case within an edge case.
-              -- The r2_resp = rank_embed(y') case forces c_inf = y, and the
-              -- argument needs either the full formula materialization or a
-              -- dedicated boundary lemma.
-              sorry
+              -- c_inf = y gives STRICT failures below c_inf (since u < y = c_inf).
+              -- Apply the same K⁻(¬D_M) pigeonhole argument as Case A.
+              have h_strict_failure_s1 :
+                  ∀ (s : ExtendedCarrier M atomMap r),
+                    inClosedInterval x y s → s < c_inf →
+                    ∃ (u : ExtendedCarrier M atomMap r),
+                      s < u ∧ u < c_inf ∧ u < y ∧
+                      mu_holds u ∧ ¬ cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u := by
+                intro s hs hs_lt_c
+                obtain ⟨v, hsv, hv_le_c, hvy, hmu_v, h_not_cont_v⟩ :=
+                  h_cofinal_failure_below_c_inf s hs hs_lt_c
+                -- v < y and c_inf = y, so v < c_inf (strict!)
+                exact ⟨v, hsv, h_c_eq_y ▸ hvy, hvy, hmu_v, h_not_cont_v⟩
+              -- Build strict bridge for pigeonhole (same as Case A pattern)
+              have h_strict_bridge_s1 :
+                  ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                    x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
+                    (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
+                    ∃ (u : M.carrier),
+                      p ≤ u ∧
+                      u ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') ∧
+                      (extendPoint u : ExtendedCarrier M atomMap r) < c_inf ∧
+                      ∃ (A : StaviFormula),
+                        stavi_depth A ≤ r ∧
+                        (∀ v : ExtendedCarrier N atomMap r,
+                          a_bwd ⟨n, by omega⟩ < v → v < y' → mu_holds v →
+                          stavi_temporal_truth_mu N atomMap r v A) ∧
+                        ¬ stavi_temporal_truth M atomMap u A := by
+                intro p hp_cut hxp hp_lt_c
+                have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+                  ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
+                obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
+                  h_strict_failure_s1 (extendPoint p) hp_interval hp_lt_c
+                obtain ⟨q, hq_eq⟩ := hmu_v
+                rw [hq_eq] at hpv hv_lt_c h_not_cont_v
+                have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
+                have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
+                simp only [cont_holds_cross] at h_not_cont_v
+                push_neg at h_not_cont_v
+                obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
+                have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
+                  fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
+                exact ⟨q, hp_le_q, hq_cut, hv_lt_c, B, hB_depth, hB_interval, hB_fail_carrier⟩
+              -- Get starting point for strict pigeonhole
+              obtain ⟨u₀, hx_lt_u₀, hu₀_lt_c, _, hmu_u₀, _⟩ :=
+                h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
+              obtain ⟨q₀, hq₀⟩ := hmu_u₀
+              rw [hq₀] at hx_lt_u₀ hu₀_lt_c
+              have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
+              -- Apply strict pigeonhole to get D_M with cofinal failures
+              obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
+                pigeonhole_definable_formula_cross_strict hxy
+                  ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s1
+              -- K⁻(¬D_M) argument: construct K_minus, show Since false at c_inf
+              let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+              have hK_depth : stavi_depth K_minus ≤ r + 2 := by
+                simp only [K_minus, stavi_depth, operator_depth]; omega
+              -- Since(⊤, D_M) FALSE at c_inf: D_M fails in every interval (s, c_inf)
+              have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
+                  (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
+                simp only [stavi_temporal_truth_mu]
+                push_neg
+                intro s hs_lt_c _hmu_s _h_neg_bot
+                rcases le_or_lt x s with hxs | hsx
+                · have hs_interval : inClosedInterval x y s :=
+                    ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
+                  obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
+                    h_strict_failure_s1 s hs_interval hs_lt_c
+                  obtain ⟨q', hq'_eq⟩ := hmu_v
+                  rw [hq'_eq] at hsv hv_lt_c
+                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                    intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
+                  obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
+                    hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
+                  refine ⟨extendPoint u, hsv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u),
+                          hu_lt_c, ⟨u, rfl⟩, ?_⟩
+                  exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
+                · obtain ⟨v, hxv, hv_lt_c, _, hmu_v, _⟩ :=
+                    h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
+                  obtain ⟨q', hq'_eq⟩ := hmu_v
+                  rw [hq'_eq] at hxv hv_lt_c
+                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                    intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
+                  obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
+                    hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
+                  refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                          hu_lt_c, ⟨u, rfl⟩, ?_⟩
+                  exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
+              -- K_minus TRUE at c_inf in M
+              have hK_true_c : stavi_temporal_truth_mu M atomMap r c_inf K_minus :=
+                h_since_false_c
+              -- Transfer K_minus via formula agreement to r2_resp
+              have hform_1_K := hform_w ⟨1, by omega⟩ K_minus (by exact hK_depth)
+              simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+                         show (1 : Nat) ≠ 1 + 1 from by omega,
+                         show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
+                         show 1 - 1 = 0 from by omega] at hform_1_K
+              have hM_bridge_K : stavi_temporal_truth_mu M atomMap (r + 2)
+                  (rank_embed (by omega : r ≤ r + 2) c_inf) K_minus ↔
+                  stavi_temporal_truth_mu M atomMap r c_inf K_minus :=
+                rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus
+              have hK_true_r2 : stavi_temporal_truth_mu N atomMap (r + 2) r2_resp K_minus :=
+                hform_1_K.mp (hM_bridge_K.mpr hK_true_c)
+              -- Since(⊤, D_M) TRUE at r2_resp: witness = rank_embed(d)
+              simp only [K_minus, stavi_temporal_truth_mu] at hK_true_r2
+              apply hK_true_r2
+              refine ⟨rank_embed (by omega : r ≤ r + 2) d, h_not_le, ?_, ?_, ?_⟩
+              · exact (rank_embed_mu_holds (by omega : r ≤ r + 2) d).mpr
+                  (by rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
+                      · exact ⟨p_d, hp_d⟩
+                      · -- d is a gap: find carrier point between d and r2_resp
+                        -- Actually mu_holds needs d to be a point. If d is a gap,
+                        -- use a carrier point above d as witness instead.
+                        sorry)
+              · simp [temporal_truth_mu]
+              · intro u hu_gt hu_lt hmu_u
+                obtain ⟨q, hq⟩ := hmu_u
+                rw [hq] at hu_gt hu_lt ⊢
+                have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
+                    rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q : ExtendedCarrier N atomMap r) :=
+                  (rank_embed_point (by omega : r ≤ r + 2) q).symm
+                rw [hq_eq, rank_embed_stavi_truth_mu]
+                have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
+                  rw [hq_eq] at hu_gt
+                  exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q)).mp hu_gt
+                have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
+                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                      rank_embed (by omega : r ≤ r + 2) y' := by
+                    rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
+                  exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
+                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
             · -- r2_resp < rank_embed y'. Project to rank r.
               have hr2_lt : r2_resp < rank_embed (by omega : r ≤ r + 2) y' := h_lt
               have : rank_embed (by omega : r ≤ r + 2)
