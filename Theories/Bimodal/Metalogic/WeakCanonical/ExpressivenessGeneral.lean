@@ -2454,6 +2454,21 @@ structure SplitPointProps {sig : MonadicSignature}
       Derived from the (4+3n)-round forward strategy via round_mono.
       Used in Case II to construct e_n and establish ordering compatibility. -/
   h_fwd_n1 : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y'
+  /-- D-compatible (1+3n+1)-round forward strategy: for any selection ending
+      with c, there exists a response ending with d and satisfying the winning
+      condition. Used in Case II to derive cross-boundary orderings between
+      d/c and p_n/e_n. -/
+  h_d_compat_left :
+    ∀ (a_pad : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a_pad i)) →
+      a_pad ⟨1 + 3 * n, by omega⟩ = c →
+      ∃ (a'_full : Fin (1 + 3 * n + 1) → ExtendedCarrier N atomMap r),
+        (∀ i, inClosedInterval x' y' (a'_full i)) ∧
+        (∀ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') →
+          ∃ (b : M.carrier), inClosedInterval x y (extendPoint b) ∧
+            ghr93_winning_condition (1 + 3 * n + 1)
+              (game_tuple x y a_pad b) (game_tuple x' y' a'_full b')) ∧
+        a'_full ⟨1 + 3 * n, by omega⟩ = d
 
 set_option maxHeartbeats 800000 in
 /-- Obtain the split point properties. This is the core setup lemma for
@@ -3381,6 +3396,7 @@ private theorem obtain_split_point_props {sig : MonadicSignature}
       sigma := sigma
       tau := tau
       h_fwd_n1 := ghr93_duplicator_wins_round_mono (by omega : n + 1 ≤ 4 + 3 * n) hxy hx'y' h_fwd
+      h_d_compat_left := h_d_consistent_left
     }
   -- Prove the existence of c with the needed properties using c_inf = inf(S_C^M).
   -- GHR93 Claim 1: Use the rank-(r+2) game h_fwd_r1 to show that the game
@@ -8207,32 +8223,99 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       have := hresp_tau_in ⟨i.val, h⟩
       exact ⟨le_trans props.hxc this.1, this.2⟩
     case isFalse _ => exact props.hc_interval
-  -- Play the (n+1)-round forward game
-  obtain ⟨a_N, ha_N, hwin_fwd⟩ := props.h_fwd_n1 a_M ha_M
-  -- Challenge round 2 with p_n (carrier point of a_bwd(n)) to get e_n_pt
-  obtain ⟨e_n_pt, he_n_pt_in, hcond_fwd⟩ := hwin_fwd p_n hp_n_in
+  -- Play the d-compatible (1+3n+1)-round forward game to get e_n AND
+  -- the cross-boundary ordering (d < p_n ↔ c < e_n).
+  -- Step 3a: Pad a_M to (1+3n+1) elements with c at position 1+3n.
+  let a_pad_big : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r := fun i =>
+    if h : i.val < n then resp_tau ⟨i.val, h⟩
+    else if i.val = 1 + 3 * n then c
+    else a_M ⟨min i.val n, by omega⟩
+  have ha_pad_big : ∀ i, inClosedInterval x y (a_pad_big i) := by
+    intro i; simp only [a_pad_big]
+    split
+    · exact ⟨le_trans props.hxc (hresp_tau_in ⟨_, ‹_›⟩).1, (hresp_tau_in ⟨_, ‹_›⟩).2⟩
+    · split
+      · exact props.hc_interval
+      · exact ha_M ⟨min i.val n, by omega⟩
+  have hpad_last : a_pad_big ⟨1 + 3 * n, by omega⟩ = c := by
+    simp [a_pad_big, show ¬(1 + 3 * n < n) from by omega]
+  -- Step 3b: Apply d-compatible strategy.
+  obtain ⟨a'_big, ha'_big, hwin_big, hd_eq_big⟩ :=
+    props.h_d_compat_left a_pad_big ha_pad_big hpad_last
+  -- Step 3c: Challenge with p_n to get e_n_pt.
+  obtain ⟨e_n_pt, he_n_pt_in, hcond_big⟩ := hwin_big p_n hp_n_in
   let e_n : ExtendedCarrier M atomMap r := extendPoint e_n_pt
   have he_n_in : inClosedInterval x y e_n := he_n_pt_in
-  -- hcond_fwd gives the FORWARD winning condition:
-  -- ghr93_winning_condition (n+1) (game_tuple x y a_M e_n_pt) (game_tuple x' y' a_N p_n)
-  -- By symmetry, we also get:
-  -- ghr93_winning_condition (n+1) (game_tuple x' y' a_N p_n) (game_tuple x y a_M e_n_pt)
-  have hcond_sym := (ghr93_winning_condition_symm _ _).mp hcond_fwd
-  -- Extract formula agreement at position n+1 (e_n vs a_bwd(n))
-  obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
+  -- Step 3d: Extract ordering and formula agreement from the big game.
+  obtain ⟨hord_big, hgp_big, hform_big⟩ := hcond_big
+  -- Position indices for the big game (a_pad_big : Fin (1+3*n+1)):
+  -- b-position = (1+3*n+1)+1, y-position = (1+3*n+1)+2,
+  -- last selection position in game_tuple = 1+(1+3*n) = 2+3*n.
+  -- Formula agreement at b-position: e_n vs p_n.
   have hform_en_an : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r e_n A ↔
        stavi_temporal_truth_mu N atomMap r (a_bwd ⟨n, by omega⟩) A) := by
     intro A hA
-    have h := hform_fwd ⟨n + 2, by omega⟩ A hA
-    simp only [game_tuple, show (n + 2 : Nat) ≠ 0 from by omega,
-               show (n + 2 : Nat) = (n + 1) + 1 from by omega,
-               show (n + 2 : Nat) ≠ (n + 1) + 2 from by omega,
-               dite_true, dite_false] at h
+    have h := hform_big ⟨(1 + 3 * n + 1) + 1, by omega⟩ A hA
+    simp only [game_tuple_b_eq] at h
     rw [hp_n]; exact h
-  -- The full winning condition assembly (sorry'd — see below for plan):
-  -- The forward winning condition relates (a_M, e_n_pt) to (a_N, p_n).
-  -- We need to relate (a_bwd, b_resp) to (merged_resp, b_sp).
+  -- Cross-boundary ordering: (c < e_n ↔ d < p_n).
+  -- Selection c at game_tuple position 1+(1+3*n) = 2+3*n.
+  -- b-position at (1+3*n+1)+1.
+  have hord_cd_en_pn : (c < e_n ↔ d < extendPoint p_n) ∧
+      (c = e_n ↔ d = extendPoint p_n) := by
+    have hord := hord_big ⟨1 + (1 + 3 * n), by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
+    -- M-side at selection position: a_pad_big(1+3*n) = c
+    -- M-side at selection position: unfold game_tuple, show a_pad_big(1+3*n) = c
+    have hM_sel : game_tuple x y a_pad_big e_n_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
+      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
+      show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
+      simp only [a_pad_big, show ¬(1 + (1 + 3 * n) - 1 < n) from by omega,
+        show ¬(1 + 3 * n < n) from by omega,
+        show 1 + (1 + 3 * n) - 1 = 1 + 3 * n from by omega, dite_false, ite_true]
+    have hM_b : game_tuple x y a_pad_big e_n_pt ⟨(1 + 3 * n + 1) + 1, by omega⟩ = e_n :=
+      game_tuple_b_eq x y a_pad_big e_n_pt
+    -- N-side at selection position: a'_big(1+3*n) = d
+    have hN_sel : game_tuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
+      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
+      show a'_big ⟨1 + (1 + 3 * n) - 1, _⟩ = d
+      have h1 : 1 + (1 + 3 * n) - 1 = 1 + 3 * n := by omega
+      have : a'_big ⟨1 + (1 + 3 * n) - 1, by omega⟩ = a'_big ⟨1 + 3 * n, by omega⟩ := by
+        congr 1; exact Fin.ext h1
+      rw [this]; exact hd_eq_big
+    have hN_b : game_tuple x' y' a'_big p_n ⟨(1 + 3 * n + 1) + 1, by omega⟩ = extendPoint p_n :=
+      game_tuple_b_eq x' y' a'_big p_n
+    rw [hM_sel, hM_b, hN_sel, hN_b] at hord; exact hord
+  -- Forward game orderings from the big game.
+  have hord_fwd_x_en : (x < e_n ↔ x' < extendPoint p_n) ∧
+      (x = e_n ↔ x' = extendPoint p_n) := by
+    have hord := hord_big ⟨0, by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
+    simp only [game_tuple_zero_eq, game_tuple_b_eq] at hord; exact hord
+  have hord_fwd_x_y : (x < y ↔ x' < y') ∧ (x = y ↔ x' = y') := by
+    have hord := hord_big ⟨0, by omega⟩ ⟨(1 + 3 * n + 1) + 2, by omega⟩
+    simp only [game_tuple_zero_eq, game_tuple_y_eq] at hord; exact hord
+  have hord_fwd_en_y : (e_n < y ↔ extendPoint p_n < y') ∧
+      (e_n = y ↔ extendPoint p_n = y') := by
+    have hord := hord_big ⟨(1 + 3 * n + 1) + 1, by omega⟩ ⟨(1 + 3 * n + 1) + 2, by omega⟩
+    simp only [game_tuple_b_eq, game_tuple_y_eq] at hord; exact hord
+  -- Gap/point and formula agreement from big game for x/x' and y/y' positions.
+  have hgp_fwd_x : (IsPoint x ↔ IsPoint x') ∧ (IsGap x ↔ IsGap x') := by
+    have h := hgp_big ⟨0, by omega⟩; simp only [game_tuple_zero_eq] at h; exact h
+  have hgp_fwd_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y') := by
+    have h := hgp_big ⟨(1 + 3 * n + 1) + 2, by omega⟩; simp only [game_tuple_y_eq] at h; exact h
+  have hform_fwd_x : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r x A ↔ stavi_temporal_truth_mu N atomMap r x' A) := by
+    intro A hA; have h := hform_big ⟨0, by omega⟩ A hA
+    simp only [game_tuple_zero_eq] at h; exact h
+  have hform_fwd_y : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r y A ↔ stavi_temporal_truth_mu N atomMap r y' A) := by
+    intro A hA; have h := hform_big ⟨(1 + 3 * n + 1) + 2, by omega⟩ A hA
+    simp only [game_tuple_y_eq] at h; exact h
+  -- The full winning condition assembly:
   -- The key gap: a_N ≠ a_bwd in general, so the forward winning condition
   -- doesn't directly give us the backward winning condition.
   -- The assembly requires combining tau's ordering with the e_n ordering.
@@ -8246,6 +8329,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
               (game_tuple x y (fun i => if h : i.val < n then resp_tau ⟨i.val, h⟩ else e_n) b_sp)) := by
     refine ⟨e_n, he_n_in, ?_⟩
     intro b_sp hb_sp
+    -- Derive c ≤ e_n from the cross-boundary ordering and d ≤ p_n.
+    have hd_le_pn : d ≤ extendPoint p_n := by
+      have h := h_no_split ⟨n, by omega⟩; rw [hp_n] at h; exact h
+    have hc_le_en : c ≤ e_n := by
+      rcases lt_or_eq_of_le hd_le_pn with hlt | heq
+      · exact le_of_lt (hord_cd_en_pn.1.mpr hlt)
+      · exact le_of_eq (hord_cd_en_pn.2.mpr heq)
     -- Case split on b_sp vs c for round-2 delegation
     by_cases hbc : extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp ≤ c
     · -- Case A: b_sp ∈ [x, c]. Use sigma for round 2.
@@ -8289,18 +8379,10 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           intro k hk hkn
           have : k = n := Nat.eq_of_lt_succ_of_not_lt hk hkn
           subst this; exact hp_n
-        -- Extract orderings from three sub-games using simp_game_tuple
-        have fwd_x_b : (x < e_n ↔ x' < extendPoint p_n) ∧
-            (x = e_n ↔ x' = extendPoint p_n) := by
-          have h := hord_fwd ⟨0, by omega⟩ ⟨n + 1 + 1, by omega⟩
-          simp_game_tuple at h; exact h
-        have fwd_x_y : (x < y ↔ x' < y') ∧ (x = y ↔ x' = y') := by
-          have h := hord_fwd ⟨0, by omega⟩ ⟨n + 1 + 2, by omega⟩
-          simp_game_tuple at h; exact h
-        have fwd_b_y : (e_n < y ↔ extendPoint p_n < y') ∧
-            (e_n = y ↔ extendPoint p_n = y') := by
-          have h := hord_fwd ⟨n + 1 + 1, by omega⟩ ⟨n + 1 + 2, by omega⟩
-          simp_game_tuple at h; exact h
+        -- Forward game orderings (from d-compatible big game)
+        have fwd_x_b := hord_fwd_x_en
+        have fwd_x_y := hord_fwd_x_y
+        have fwd_b_y := hord_fwd_en_y
         have sig_x_b : (x' < extendPoint b_resp ↔ x < extendPoint b_sp) ∧
             (x' = extendPoint b_resp ↔ x = extendPoint b_sp) := by
           have h := hord_sig ⟨0, by omega⟩ ⟨n + 1, by omega⟩
@@ -8424,30 +8506,31 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                      fun h => absurd (lt_of_lt_of_le h he_n_in.1) (lt_irrefl _)⟩,
                     ⟨fun h => (fwd_x_b.2.mpr h.symm).symm,
                      fun h => (fwd_x_b.2.mp h.symm).symm⟩⟩)
-          -- Remaining goals involving p_n/e_n cross-boundary orderings.
-          -- These require (d < p_n ↔ c < e_n) which needs a_N(n) = d.
-          -- The x' = d case gives a_N(n) = d directly. The x' < d case
-          -- requires the full infimum characterization (not yet formalized).
-          -- Phase 3 BLOCKED on this architectural gap. See plan for details.
+          -- Cross-boundary orderings: pivot through d/c using hord_cd_en_pn.
+          -- b_resp vs p_n / p_n vs b_resp
+          | (exact pivot_chain_order' hb_resp_in.2 hd_le_pn hbc hc_le_en
+              sig_b_d hord_cd_en_pn)
+          | (exact pivot_chain_order_rev' hd_le_pn hb_resp_in.2 hc_le_en hbc
+              hord_cd_en_pn sig_b_d)
+          -- a_init(k) vs p_n / p_n vs a_init(k)
+          | (exact pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
+              hc_le_en (hc_le_rtau ⟨_, ‹_›⟩) hord_cd_en_pn (tau_d_sel ⟨_, ‹_›⟩))
+          | (exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+              (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn)
+          -- Fallback for any remaining cases
           | sorry
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2 h0' hlt
-        · -- i=0: x'/x — from forward game at position 0
-          have hfwd0 := hgp_fwd ⟨0, by omega⟩
-          simp only [game_tuple, dite_true] at hfwd0
-          exact ⟨hfwd0.1.symm, hfwd0.2.symm⟩
+        · -- i=0: x'/x — from d-compatible big game at position 0
+          exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
         · -- i=n+2: extendPoint b_resp / extendPoint b_sp (both are Sum.inl)
           constructor
           · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
           · constructor <;> intro ⟨g, hg⟩ <;> cases hg
-        · -- i=n+3: y'/y — from forward game at last position
-          have hfwd_last := hgp_fwd ⟨n + 1 + 2, by omega⟩
-          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
-                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
-                     dite_false, dite_true] at hfwd_last
-          exact ⟨hfwd_last.1.symm, hfwd_last.2.symm⟩
+        · -- i=n+3: y'/y — from d-compatible big game
+          exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
         · -- i inner, i-1 < n: a_bwd(i-1)/resp_tau(i-1) — from tau aux at position i
           have htau_i := hgp_tau_aux ⟨i.val, by omega⟩
           simp only [game_tuple, show i.val ≠ 0 from h0,
@@ -8467,22 +8550,16 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         intro i A hA
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2 h0' hlt
-        · -- i=0: x'/x — from forward game at position 0
-          have hfwd0 := hform_fwd ⟨0, by omega⟩ A hA
-          simp only [game_tuple, dite_true] at hfwd0
-          exact hfwd0.symm
+        · -- i=0: x'/x — from d-compatible big game
+          exact (hform_fwd_x A hA).symm
         · -- i=n+2: extendPoint b_resp / extendPoint b_sp — from sigma at position n+1
           have hsig_n1 := hform_sig ⟨n + 1, by omega⟩ A hA
           simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
                      show (n + 1 : Nat) = n + 1 from rfl,
                      dite_false, dite_true] at hsig_n1
           exact hsig_n1
-        · -- i=n+3: y'/y — from forward game at last position
-          have hfwd_last := hform_fwd ⟨n + 1 + 2, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
-                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
-                     dite_false, dite_true] at hfwd_last
-          exact hfwd_last.symm
+        · -- i=n+3: y'/y — from d-compatible big game
+          exact (hform_fwd_y A hA).symm
         · -- i inner, i-1 < n: a_bwd(i-1)/resp_tau(i-1) — from tau aux at position i
           have htau_i := hform_tau_aux ⟨i.val, by omega⟩ A hA
           simp only [game_tuple, show i.val ≠ 0 from h0,
@@ -8690,21 +8767,15 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         intro i
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2 h0' hlt
-        · -- i=0: x'/x — from forward game at position 0
-          have hfwd0 := hgp_fwd ⟨0, by omega⟩
-          simp only [game_tuple, dite_true] at hfwd0
-          exact ⟨hfwd0.1.symm, hfwd0.2.symm⟩
+        · -- i=0: x'/x — from d-compatible big game
+          exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
         · -- i=n+2: extendPoint b_resp / extendPoint b_sp
           -- Both are Sum.inl, hence both are points and neither is a gap
           constructor
           · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
           · constructor <;> intro ⟨g, hg⟩ <;> cases hg
-        · -- i=n+3: y'/y — from forward game at last position
-          have hfwd_last := hgp_fwd ⟨n + 1 + 2, by omega⟩
-          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
-                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
-                     dite_false, dite_true] at hfwd_last
-          exact ⟨hfwd_last.1.symm, hfwd_last.2.symm⟩
+        · -- i=n+3: y'/y — from d-compatible big game
+          exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
         · -- i inner, i-1 < n: a_bwd(i-1) / resp_tau(i-1) — from tau at position i
           have htau_i := hgp_tau ⟨i.val, by omega⟩
           simp only [game_tuple, show i.val ≠ 0 from h0,
@@ -8726,22 +8797,16 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         intro i A hA
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2 h0' hlt
-        · -- i=0: x'/x — from forward game at position 0
-          have hfwd0 := hform_fwd ⟨0, by omega⟩ A hA
-          simp only [game_tuple, dite_true] at hfwd0
-          exact hfwd0.symm
+        · -- i=0: x'/x — from d-compatible big game
+          exact (hform_fwd_x A hA).symm
         · -- i=n+2: extendPoint b_resp / extendPoint b_sp — from tau at position n+1
           have htau_n1 := hform_tau ⟨n + 1, by omega⟩ A hA
           simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega,
                      show (n + 1 : Nat) = n + 1 from rfl,
                      dite_false, dite_true] at htau_n1
           exact htau_n1
-        · -- i=n+3: y'/y — from forward game at last position
-          have hfwd_last := hform_fwd ⟨n + 1 + 2, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 + 2 : Nat) ≠ 0 from by omega,
-                     show (n + 1 + 2 : Nat) ≠ n + 1 + 1 from by omega,
-                     dite_false, dite_true] at hfwd_last
-          exact hfwd_last.symm
+        · -- i=n+3: y'/y — from d-compatible big game
+          exact (hform_fwd_y A hA).symm
         · -- i inner, i-1 < n: a_bwd(i-1) / resp_tau(i-1) — from tau at position i
           have htau_i := hform_tau ⟨i.val, by omega⟩ A hA
           simp only [game_tuple, show i.val ≠ 0 from h0,
