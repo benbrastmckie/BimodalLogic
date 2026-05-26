@@ -1,6 +1,6 @@
 import Bimodal.Boneyard.ChainCompleteness.Bundle.MCSWitnessSuccessor
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 

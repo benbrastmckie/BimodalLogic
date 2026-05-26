@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Metalogic.Bundle.SuccExistence
 import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation

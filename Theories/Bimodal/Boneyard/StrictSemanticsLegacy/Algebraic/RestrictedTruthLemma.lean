@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Semantics.TaskModel
 import Bimodal.Theorems.Propositional
 

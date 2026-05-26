@@ -1,7 +1,7 @@
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Metalogic.Bundle.SuccExistence
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Metalogic.Bundle.TemporalContent
 
 /-!
