@@ -59,9 +59,9 @@ Proof: Suppose {¬φ} is inconsistent. Then some finite L ⊆ {¬φ} with L ⊢ 
 Either L = [] (then [] ⊢ ⊥, contradicting consistency of TM) or L = [¬φ]
 (then [¬φ] ⊢ ⊥, so [] ⊢ ¬¬φ by deduction, so [] ⊢ φ by double negation elimination).
 -/
-theorem neg_consistent_of_not_derivable (φ : Formula)
-    (h_not_deriv : ¬Nonempty (DerivationTree FrameClass.Base [] φ)) :
-    SetConsistent (fc := FrameClass.Base) ({Formula.neg φ} : Set Formula) := by
+theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
+    (h_not_deriv : ¬Nonempty (DerivationTree fc [] φ)) :
+    SetConsistent (fc := fc) ({Formula.neg φ} : Set Formula) := by
   intro L hL ⟨d⟩
   -- Every element of L is ¬φ
   have h_all_neg : ∀ ψ ∈ L, ψ = Formula.neg φ := by
@@ -71,7 +71,7 @@ theorem neg_consistent_of_not_derivable (φ : Formula)
   by_cases h_in : Formula.neg φ ∈ L
   · -- ¬φ ∈ L. Put it first, then deduction theorem.
     let L_filt := L.filter (fun y => decide (y ≠ Formula.neg φ))
-    have d_reord : DerivationTree FrameClass.Base (Formula.neg φ :: L_filt) Formula.bot :=
+    have d_reord : DerivationTree fc (Formula.neg φ :: L_filt) Formula.bot :=
       derivation_exchange d (fun x => (cons_filter_neq_perm h_in x).symm)
     -- L_filt ⊆ {¬φ}, so L_filt is a subset of [¬φ,...,¬φ] with all ≠ ¬φ, hence L_filt = []
     -- Actually L_filt may still contain ¬φ if there are duplicates... no, the filter removes ALL ¬φ.
@@ -85,12 +85,12 @@ theorem neg_consistent_of_not_derivable (φ : Formula)
       exact h_ne_neg (h_all_neg a h_and.1)
     rw [h_filt_empty] at d_reord
     -- Now d_reord : [¬φ] ⊢ ⊥
-    have d_negneg : DerivationTree FrameClass.Base [] (Formula.neg (Formula.neg φ)) :=
+    have d_negneg : DerivationTree fc [] (Formula.neg (Formula.neg φ)) :=
       deduction_theorem [] (Formula.neg φ) Formula.bot d_reord
     -- ¬¬φ → φ by double negation elimination
-    have h_dne : DerivationTree FrameClass.Base [] ((Formula.neg (Formula.neg φ)).imp φ) :=
+    have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg φ)).imp φ) :=
       Bimodal.Theorems.Propositional.double_negation φ
-    have d_phi : DerivationTree FrameClass.Base [] φ :=
+    have d_phi : DerivationTree fc [] φ :=
       DerivationTree.modus_ponens [] _ _ h_dne d_negneg
     exact h_not_deriv ⟨d_phi⟩
   · -- ¬φ ∉ L. Then L ⊆ {¬φ} with ¬φ ∉ L means L = [] (since only element is ¬φ).
@@ -103,9 +103,9 @@ theorem neg_consistent_of_not_derivable (φ : Formula)
     -- [] ⊢ ⊥ means ⊥ is a theorem, but the empty context is consistent
     -- (propositional logic is consistent)
     -- Actually we can derive: from [] ⊢ ⊥ we get [] ⊢ φ by ex_falso
-    have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
+    have h_ef : DerivationTree fc [] (Formula.bot.imp φ) :=
       DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial
-    have d_phi : DerivationTree FrameClass.Base [] φ :=
+    have d_phi : DerivationTree fc [] φ :=
       DerivationTree.modus_ponens [] _ _ h_ef d
     exact h_not_deriv ⟨d_phi⟩
 

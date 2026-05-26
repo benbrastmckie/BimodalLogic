@@ -64,23 +64,23 @@ whether Dense-MCS forces the dense indicator formula □(F'⊤)).
 
 ## Implementation Phases
 
-### Phase 1: Parameterize neg_consistent_of_not_derivable [NOT STARTED]
+### Phase 1: Parameterize neg_consistent_of_not_derivable [COMPLETED]
 
 **Goal**: Make `neg_consistent_of_not_derivable` work at arbitrary fc. The proof uses only
 structural rules (deduction theorem, modus ponens, double negation, ex falso) — all already
 parameterized over fc by tasks 168/197.
 
 **Tasks**:
-- [ ] **1.1** Change `neg_consistent_of_not_derivable` signature to take `{fc : FrameClass}`:
+- [x] **1.1** Change `neg_consistent_of_not_derivable` signature to take `{fc : FrameClass}`:
   ```lean
   theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
       (h_not_deriv : ¬Nonempty (DerivationTree fc [] φ)) :
       SetConsistent (fc := fc) ({Formula.neg φ} : Set Formula)
   ```
-- [ ] **1.2** Update the proof body: replace hardcoded `FrameClass.Base` with `fc`.
+- [x] **1.2** Update the proof body: replace hardcoded `FrameClass.Base` with `fc`.
   All internal helpers (deduction_theorem, double_negation, ex_falso, modus_ponens)
   are already fc-polymorphic.
-- [ ] **1.3** Verify: base `completeness` still compiles (it will infer fc = Base).
+- [x] **1.3** Verify: base `completeness` still compiles (it will infer fc = Base).
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 
