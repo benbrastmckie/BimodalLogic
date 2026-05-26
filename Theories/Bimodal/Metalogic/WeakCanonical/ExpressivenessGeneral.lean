@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.EFGames
+import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 import Bimodal.Automation.EFGameTactics
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Fintype.Pigeonhole

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.EFGames
+import Bimodal.Metalogic.WeakCanonical.EFGames.CustomGame
 import Lean
 
 /-!

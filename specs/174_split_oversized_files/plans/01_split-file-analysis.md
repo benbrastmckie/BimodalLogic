@@ -328,22 +328,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Split Hierarchy.lean (2 importers, 3-file split) [IN PROGRESS]
+### Phase 8: Split Hierarchy.lean (2 importers, 3-file split) [COMPLETED]
 
 **Goal**: Split Hierarchy.lean (3845 lines) into 3 focused modules aligned with the GHR94 separation hierarchy stages.
 
 **Tasks**:
-- [ ] Audit `private` definitions, `open` scopes, and internal theorem dependencies in Hierarchy.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy/`
-- [ ] Create `Hierarchy/HierarchyDefs.lean` (~820 lines): Single U/S-type predicates, Lemma 10.2.5 (single-U separability), U/S-formula abstraction, semantic correctness, preservation lemmas, count properties, junction-depth monotonicity. Module docstring: "Separation hierarchy definitions: U/S-type predicates, abstraction, and junction-depth monotonicity."
-- [ ] Create `Hierarchy/HierarchyInduction.lean` (~1600 lines): Hierarchy theorem steps 1-5b: substitution preservation, strict count decrease, count_U_total lemmas, substitution into separated formulas, S/U-nesting depth measures, callback infrastructure. Module docstring: "Substitution-based induction engine for the separation hierarchy (Steps 1-5b)."
-- [ ] Create `Hierarchy/HierarchyCompletion.lean` (~1600 lines): Steps 5c-5d and JD infrastructure: U-type-preserving separation, separable_with_U_type strengthening, combinators, Cases 5-8 with U-type preservation, single-U-type separability (axiom-free), GHR94 Lemma 10.2.6/10.2.7, oracle threading, all_formulas_separable. Module docstring: "Hierarchy completion: U-type-preserving separation and final all_formulas_separable."
-- [ ] Add module docstrings to all three new files
-- [ ] Map importers: `Separation.lean` and `SeparationThm.lean` import `Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy`
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean`: change to direct import(s)
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean`: change to direct import(s)
-- [ ] Delete `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions, `open` scopes, and internal theorem dependencies in Hierarchy.lean
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy/`
+- [x] Create `Hierarchy/HierarchyDefs.lean` (808 lines): U/S-type predicates, Lemma 10.2.5, abstraction, preservation lemmas, junction-depth monotonicity. Module docstring: "Separation Hierarchy Definitions: U/S-Type Predicates, Abstraction, and Junction-Depth Monotonicity"
+- [x] Create `Hierarchy/HierarchyInduction.lean` (1436 lines): Steps 1-5b: substitution preservation, count decrease, S/U-nesting depth, callback infrastructure. Module docstring: "Substitution-Based Induction Engine for the Separation Hierarchy (Steps 1-5b)"
+- [x] Create `Hierarchy/HierarchyCompletion.lean` (1621 lines): Steps 5c-5d, U-type-preserving separation, GHR94 Lemma 10.2.6/10.2.7, all_formulas_separable. Module docstring: "Hierarchy Completion: U-Type-Preserving Separation and Final all_formulas_separable"
+- [x] Add module docstrings to all three new files
+- [x] Map importers: `Separation.lean` and `SeparationThm.lean` (2 importers as planned)
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean`: imports all three (HierarchyDefs, HierarchyInduction, HierarchyCompletion)
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean`: imports HierarchyCompletion
+- [x] Delete `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 3.5 hours
 
@@ -375,26 +375,17 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split SubformulaClosure.lean (1889 lines in `Theories/Bimodal/Syntax/`) into 3 focused modules. Note: only `Bimodal.Syntax.SubformulaClosure` is being split (1889 lines); the separate `BXCanonical/Quasimodel/SubformulaClosure.lean` (112 lines) is not affected.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in `Theories/Bimodal/Syntax/SubformulaClosure.lean`
-- [ ] Create directory `Theories/Bimodal/Syntax/SubformulaClosure/`
-- [ ] Create `SubformulaClosure/Closure.lean` (~550 lines): Core subformula closure as Finset, closureWithNeg, diamond detection/subformulas, subformula membership lemmas. Module docstring: "Core subformula closure: Finset-based closure, negation closure, and membership lemmas."
-- [ ] Create `SubformulaClosure/NestingDepth.lean` (~550 lines): F/P-nesting depth, max nesting depth in closure, F/P inner formula extraction. Module docstring: "F/P-nesting depth computation and maximum depth within closure sets."
-- [ ] Create `SubformulaClosure/TemporalFormulas.lean` (~790 lines): Future/past formula extraction, deferral types (Until/Since deferral infrastructure), seriality formulas, temporal blocking set, deferral closure definitions, F/P-depth bounding for deferral closure, structural lemmas. Module docstring: "Temporal formula infrastructure: deferral types, blocking sets, and deferral closure."
-- [ ] Add module docstrings to all three new files
-- [ ] Map all 7 active importers of `Bimodal.Syntax.SubformulaClosure`:
-  1. `Theories/Bimodal/Syntax.lean`
-  2. `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean`
-  3. `Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean`
-  4. `Theories/Bimodal/Metalogic/Algebraic/RestrictedParametricTruthLemma.lean`
-  5. `Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean` (was RestrictedMCS.lean, split in Phase 4) or `RestrictedMCS/Deferral.lean`
-  6. `Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean`
-  7. `Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean`
-- [ ] For each importer, determine which specific split module(s) it needs:
-  - Most importers likely only need `Closure` (core subformula closure)
-  - MCS/decidability files may also need `TemporalFormulas` (deferral closure)
-- [ ] Update each importer to use direct imports to the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Syntax/SubformulaClosure.lean`
-- [ ] Run `lake build` and verify no errors across all 7 importers
+- [x] Audit `private` definitions and `open` scopes in `Theories/Bimodal/Syntax/SubformulaClosure.lean`
+- [x] Create directory `Theories/Bimodal/Syntax/SubformulaClosure/`
+- [x] Create `SubformulaClosure/Closure.lean` (367 lines): Core closure, closureWithNeg, diamond detection, membership lemmas. Module docstring: "Core Subformula Closure: Finset-Based Closure, Negation Closure, and Membership Lemmas"
+- [x] Create `SubformulaClosure/NestingDepth.lean` (232 lines): F/P-nesting depth, max depth in closure. Module docstring: "F/P-Nesting Depth Computation and Maximum Depth Within Closure Sets"
+- [x] Create `SubformulaClosure/TemporalFormulas.lean` (1296 lines): Deferral types, seriality formulas, blocking set, deferral closure, structural lemmas. Module docstring: "Temporal Formula Infrastructure: Deferral Types, Blocking Sets, and Deferral Closure"
+- [x] Add module docstrings to all three new files
+- [x] Map all importers: found 9 total (7 active + 2 Boneyard: FiniteDeferral.lean, CanonicalConstruction.lean)
+- [x] Determine which modules each importer needs and update to direct imports
+- [x] Update all 9 importers to use direct imports to specific modules
+- [x] Delete `Theories/Bimodal/Syntax/SubformulaClosure.lean`
+- [x] Run `lake build` and verify no errors across all importers
 
 **Timing**: 3.5 hours
 
@@ -431,13 +422,13 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split Propositional.lean (1704 lines) into 3 focused modules. This is the highest-fan-out split: 19 files import `Bimodal.Theorems.Propositional`. The decomposition aligns with proof-theoretic levels.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in Propositional.lean
-- [ ] Create directory `Theories/Bimodal/Theorems/Propositional/`
-- [ ] Create `Propositional/Core.lean` (~750 lines): LEM, ex falso quodlibet (efq), ex contradictione quodlibet (ecq), reductio ad absurdum (raa), left/right disjunction introduction (ldi, rdi), left/right conjunction elimination (lce, rce), right conjunction principle (rcp). Module docstring: "Core propositional proof combinators: LEM, efq, ecq, raa, disjunction intro, conjunction elim."
-- [ ] Create `Propositional/Connectives.lean` (~730 lines): Classical merge (classical_merge), iff introduction/elimination (iff_intro, iff_elim), contraposition, De Morgan laws, biconditional manipulation. Module docstring: "Derived connective reasoning: classical merge, iff, contraposition, and De Morgan laws."
-- [ ] Create `Propositional/Reasoning.lean` (~230 lines): Negation introduction/elimination (ni, ne), biconditional intro (bi_imp), disjunction elimination. Module docstring: "Natural deduction rules: negation intro/elim, biconditional, disjunction elimination."
-- [ ] Add module docstrings to all three new files
-- [ ] Map all 19 active importers of `Bimodal.Theorems.Propositional`:
+- [x] Audit `private` definitions and `open` scopes in Propositional.lean
+- [x] Create directory `Theories/Bimodal/Theorems/Propositional/`
+- [x] Create `Propositional/Core.lean` (730 lines): LEM, efq, ecq, raa, ldi, rdi, lce, rce, rcp. *(original section headers preserved as docstrings)*
+- [x] Create `Propositional/Connectives.lean` (745 lines): classical_merge, iff intro/elim, contraposition, De Morgan laws. *(original section headers preserved)*
+- [x] Create `Propositional/Reasoning.lean` (247 lines): ni, ne, bi_imp, de, or_elim_neg_neg. *(original section headers preserved)*
+- [x] Add module docstrings to all three new files *(original section headers preserved)*
+- [x] Map all importers: found 25 total (19 active + tests + Boneyard + docs). Updated all of `Bimodal.Theorems.Propositional`:
   1. `Theories/Bimodal/Theorems.lean`
   2. `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
   3. `Theories/Bimodal/Theorems/ModalS4.lean`
@@ -457,13 +448,10 @@ Phases within the same wave can execute in parallel.
   17. `Theories/Bimodal/Metalogic/Decidability/FMP/FMP.lean`
   18. `Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean`
   19. `Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean`
-- [ ] For each importer, determine which specific split module(s) it needs:
-  - Most importers use only `Core` (ecq, raa, efq, ldi, rdi, lce, rce)
-  - Some use `Connectives` (iff, De Morgan, classical_merge)
-  - Few use `Reasoning` (ni, ne, bi_imp)
-- [ ] Update each of the 19 importers to use direct imports to the specific module(s)
-- [ ] Delete `Theories/Bimodal/Theorems/Propositional.lean`
-- [ ] Run `lake build` and verify no errors across all 19 importers
+- [x] For each importer, determined which specific split module(s) it needs and updated to direct imports
+- [x] Update all 25 importers to use direct imports to the specific module(s)
+- [x] Delete `Theories/Bimodal/Theorems/Propositional.lean`
+- [x] Run `lake build` and verify no errors (1658 jobs, clean)
 
 **Timing**: 5 hours
 
@@ -488,33 +476,33 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Split EFGames.lean (10K lines, 3 importers, 6-file split) [NOT STARTED]
+### Phase 11: Split EFGames.lean (10K lines, 3 importers, 6-file split) [COMPLETED]
 
 **Goal**: Split EFGames.lean (10170 lines) into 6 focused modules. This is the largest file in the codebase. The decomposition follows the mathematical structure of EF game theory: foundations, type formulas, gap detection (Lemma 9 both directions kept together), custom game, decomposition, and Stavi completeness.
 
 **Tasks**:
-- [ ] Map all `private` definitions and cross-section usages in EFGames.lean
-- [ ] Map all `open` declarations and determine scope per split file
-- [ ] Verify all importers: `WeakCanonical.lean`, `EFGameTactics.lean`, `ExpressivenessGeneral.lean`
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/`
-- [ ] Create `EFGames/Defs.lean` (~580 lines): Game configuration, EFPosition, depth function, n-equivalence, Gap structure, ExtendedCarrier, IsPoint/IsGap, discrete no-gaps, rank embedding foundations. Module docstring: "EF game foundations: positions, n-equivalence, gap structures, and rank embedding basics."
-- [ ] Build and verify after Defs.lean
-- [ ] Create `EFGames/TypeFormulas.lean` (~880 lines): Mu-relativized temporal truth, type formulas, rank-embedding formula transfer. Module docstring: "Type formulas and mu-relativized truth for rank-embedding transfer."
-- [ ] Build and verify after TypeFormulas.lean
-- [ ] Create `EFGames/GapDetection.lean` (~5040 lines): Gap detection formulas (Def 8.5), rank bounds, mu-relativized truth at actual points, gap uniqueness, core gap detection helper, Lemma 9 BOTH directions (left and right). Kept together because they share private definitions and Lemma 9 is mathematically indivisible. Module docstring: "Gap detection formulas and Lemma 9 (both directions): the core EF game characterization."
-- [ ] Build and verify after GapDetection.lean
-- [ ] Create `EFGames/CustomGame.lean` (~1580 lines): Custom game G_{n;r} (Def 8.7), winning condition, round monotonicity, strategy restriction, game tuple simplification, order preservation, Lemma 10, rank lifting. Module docstring: "Custom game G_{n;r}: definition, winning conditions, and strategy restriction."
-- [ ] Build and verify after CustomGame.lean
-- [ ] Create `EFGames/Decomposition.lean` (~330 lines): Decomposition agreement, game-decomposition equivalence (Lemma 11). Module docstring: "Decomposition formulas and Lemma 11: game-decomposition equivalence."
-- [ ] Build and verify after Decomposition.lean
-- [ ] Create `EFGames/StaviCompleteness.lean` (~1610 lines): Standard translation, mu-table correctness, NF characterization, Stavi combinators, main expressive completeness statement. Module docstring: "Stavi expressive completeness: standard translation, NF characterization, and the main theorem."
-- [ ] Add module docstrings to all 6 new files
-- [ ] Map importers and update each:
-  - `WeakCanonical.lean`: likely needs `StaviCompleteness` (for the main theorem)
-  - `EFGameTactics.lean`: needs `Defs` and possibly other modules
-  - `ExpressivenessGeneral.lean`: needs `Defs`, `GapDetection`, `CustomGame`, `Decomposition` (for Claim 1 and game transfer)
-- [ ] Delete `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean`
-- [ ] Run full `lake build` and verify no errors
+- [x] Map all `private` definitions and cross-section usages in EFGames.lean *(only `extendedLE` needed to be made non-private for cross-file usage in CustomGame)*
+- [x] Map all `open` declarations and determine scope per split file
+- [x] Verify all importers: `WeakCanonical.lean`, `EFGameTactics.lean`, `ExpressivenessGeneral.lean`
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/`
+- [x] Create `EFGames/Defs.lean` (559 lines): Game configuration, EFPosition, depth function, n-equivalence, Gap structure, ExtendedCarrier, IsPoint/IsGap, discrete no-gaps, rank embedding foundations.
+- [x] Build and verify after Defs.lean
+- [x] Create `EFGames/TypeFormulas.lean` (1043 lines): Mu-relativized temporal truth, type formulas, rank-embedding formula transfer.
+- [x] Build and verify after TypeFormulas.lean
+- [x] Create `EFGames/GapDetection.lean` (5057 lines): Gap detection formulas (Def 8.5), rank bounds, mu-relativized truth at actual points, gap uniqueness, core gap detection helper, Lemma 9 BOTH directions.
+- [x] Build and verify after GapDetection.lean
+- [x] Create `EFGames/CustomGame.lean` (1593 lines): Custom game G_{n;r}, winning condition, round monotonicity, strategy restriction, game tuple simplification, order preservation, Lemma 10, rank lifting.
+- [x] Build and verify after CustomGame.lean
+- [x] Create `EFGames/Decomposition.lean` (315 lines): Decomposition agreement, game-decomposition equivalence (Lemma 11).
+- [x] Build and verify after Decomposition.lean
+- [x] Create `EFGames/StaviCompleteness.lean` (1652 lines): Standard translation, mu-table correctness, NF characterization, Stavi combinators, main expressive completeness statement.
+- [x] Add module docstrings to all 6 new files
+- [x] Map importers and update each: *(deviation: altered — actual DAG is linear Defs→TypeFormulas→GapDetection→CustomGame→Decomposition→StaviCompleteness, not the branching DAG in the plan)*
+  - `WeakCanonical.lean`: imports `StaviCompleteness`
+  - `EFGameTactics.lean`: imports `CustomGame` *(deviation: altered — needs CustomGame not just Defs, for game_tuple/gap_point_agreement)*
+  - `ExpressivenessGeneral.lean`: imports `StaviCompleteness` *(deviation: altered — needs stavi_table_mu/stavi_fo_depth from StaviCompleteness, not just Decomposition)*
+- [x] Delete `Theories/Bimodal/Metalogic/WeakCanonical/EFGames.lean`
+- [x] Run full `lake build` and verify no errors (1663 jobs, clean)
 
 **Timing**: 8 hours
 
