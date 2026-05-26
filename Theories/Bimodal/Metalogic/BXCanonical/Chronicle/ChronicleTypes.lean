@@ -66,9 +66,9 @@ open Bimodal.Metalogic.Bundle
 /-- A set is closed under derivation if every consequence of its elements is also in it.
 This is Burgess 1982's definition of "deductively closed set" (DCS).
 Note: does NOT require consistency. `Set.univ` is `ClosedUnderDerivation`. -/
-def ClosedUnderDerivation (S : Set Formula) : Prop :=
+def ClosedUnderDerivation (fc : FrameClass) (S : Set Formula) : Prop :=
   ∀ (L : List Formula) (φ : Formula),
-    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree FrameClass.Base L φ) → φ ∈ S
+    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree fc L φ) → φ ∈ S
 
 /--
 A set of formulas is **deductively closed** if it is consistent and closed
@@ -79,30 +79,35 @@ Every MCS is deductively closed, but not every DCS is maximal.
 DCS are used for the interval function `g(x,y)` in the chronicle,
 which describes the formulas that hold throughout an interval.
 -/
-def SetDeductivelyClosed (S : Set Formula) : Prop :=
-  SetConsistent (fc := FrameClass.Base) S ∧ ClosedUnderDerivation S
+def SetDeductivelyClosed (fc : FrameClass) (S : Set Formula) : Prop :=
+  SetConsistent (fc := fc) S ∧ ClosedUnderDerivation fc S
 
 /-- Every MCS is deductively closed. -/
-theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent (fc := FrameClass.Base) S) :
-    SetDeductivelyClosed S :=
+theorem mcs_is_dcs {fc : FrameClass} {S : Set Formula}
+    (h : SetMaximalConsistent (fc := fc) S) :
+    SetDeductivelyClosed fc S :=
   ⟨h.1, fun L _ hL hd => SetMaximalConsistent.closed_under_derivation h L hL hd⟩
 
 /-- A CUD set contains all theorems. -/
-theorem cud_contains_theorems {S : Set Formula} (h : ClosedUnderDerivation S)
-    {φ : Formula} (hd : DerivationTree FrameClass.Base [] φ) : φ ∈ S :=
+theorem cud_contains_theorems {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
+    {φ : Formula} (hd : DerivationTree fc [] φ) : φ ∈ S :=
   h [] φ (fun _ h => absurd h List.not_mem_nil) hd
 
 /-- A DCS contains all theorems. -/
-theorem dcs_contains_theorems {S : Set Formula} (h : SetDeductivelyClosed S)
-    {φ : Formula} (hd : DerivationTree FrameClass.Base [] φ) : φ ∈ S :=
+theorem dcs_contains_theorems {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
+    {φ : Formula} (hd : DerivationTree fc [] φ) : φ ∈ S :=
   cud_contains_theorems h.2 hd
 
 /-- A DCS is consistent. -/
-theorem dcs_consistent {S : Set Formula} (h : SetDeductivelyClosed S) :
-    SetConsistent (fc := FrameClass.Base) S := h.1
+theorem dcs_consistent {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S) :
+    SetConsistent (fc := fc) S := h.1
 
 /-- Modus ponens in a CUD set. -/
-theorem cud_modus_ponens {S : Set Formula} (h : ClosedUnderDerivation S)
+theorem cud_modus_ponens {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
     {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
   apply h [φ, φ.imp ψ] ψ
   · intro χ h_mem
@@ -115,33 +120,38 @@ theorem cud_modus_ponens {S : Set Formula} (h : ClosedUnderDerivation S)
       (DerivationTree.assumption _ φ (by simp))
 
 /-- Modus ponens in a DCS: if phi -> psi and phi are in S, then psi is in S. -/
-theorem dcs_modus_ponens {S : Set Formula} (h : SetDeductivelyClosed S)
+theorem dcs_modus_ponens {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
     {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S :=
   cud_modus_ponens h.2 h_imp h_phi
 
 /-- A CUD set is closed under conjunction. -/
-theorem cud_conj_closed {S : Set Formula} (h : ClosedUnderDerivation S)
+theorem cud_conj_closed {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
     {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
-  have h_pair := cud_contains_theorems h (Bimodal.Theorems.Combinators.pairing φ ψ)
+  have h_pair := cud_contains_theorems h
+    (DerivationTree.lift (fc₁ := .Base) trivial (Bimodal.Theorems.Combinators.pairing φ ψ))
   exact cud_modus_ponens h (cud_modus_ponens h h_pair h_phi) h_psi
 
 /-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
-theorem dcs_conj_closed {S : Set Formula} (h : SetDeductivelyClosed S)
+theorem dcs_conj_closed {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
     {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S :=
   cud_conj_closed h.2 h_phi h_psi
 
 /-- A CUD set with a non-member is SDC (consistent + CUD).
 If B is ClosedUnderDerivation and φ ∉ B, then B is SetDeductivelyClosed.
 Proof: if B were inconsistent, then B = Set.univ, but φ ∉ Set.univ is false. -/
-theorem cud_not_mem_is_sdc {B : Set Formula} (h_cud : ClosedUnderDerivation B)
-    {φ : Formula} (h_not_mem : φ ∉ B) : SetDeductivelyClosed B := by
+theorem cud_not_mem_is_sdc {fc : FrameClass} {B : Set Formula}
+    (h_cud : ClosedUnderDerivation fc B)
+    {φ : Formula} (h_not_mem : φ ∉ B) : SetDeductivelyClosed fc B := by
   refine ⟨?_, h_cud⟩
   intro L hL ⟨d⟩
   -- If B inconsistent: ⊥ ∈ B, then for any ψ, ψ ∈ B (ex falso).
   -- In particular φ ∈ B, contradicting h_not_mem.
   have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
-  have h_efq : DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
-    Bimodal.Theorems.Propositional.efq_axiom φ
+  have h_efq : DerivationTree fc [] (Formula.bot.imp φ) :=
+    DerivationTree.lift (fc₁ := .Base) trivial (Bimodal.Theorems.Propositional.efq_axiom φ)
   exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
 
 /-! ## Adjacency predicate -/
@@ -237,22 +247,22 @@ B is R-maximal with respect to A if:
 R-maximality ensures interval sets contain as many formulas as possible
 while maintaining consistency and the r-relation.
 -/
-def rMaximal (A B : Set Formula) : Prop :=
-  SetDeductivelyClosed B ∧
+def rMaximal (fc : FrameClass) (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
   rRelation A B ∧
   ∀ (C : Set Formula),
-    SetDeductivelyClosed C →
+    SetDeductivelyClosed fc C →
     B ⊂ C →
     ¬rRelation A C
 
 /--
 R-maximality for Since.
 -/
-def rMaximalSince (A B : Set Formula) : Prop :=
-  SetDeductivelyClosed B ∧
+def rMaximalSince (fc : FrameClass) (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
   rRelationSince A B ∧
   ∀ (C : Set Formula),
-    SetDeductivelyClosed C →
+    SetDeductivelyClosed fc C →
     B ⊂ C →
     ¬rRelationSince A C
 
@@ -265,22 +275,22 @@ B is R3-maximal with respect to endpoints A and C if:
 2. r3Relation A B C holds (both rRelation A B and rRelationSince C B)
 3. No proper DCS extension of B satisfies r3Relation A - C
 -/
-def R3Maximal (A B C : Set Formula) : Prop :=
-  SetDeductivelyClosed B ∧
+def R3Maximal (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
   r3Relation A B C ∧
   ∀ (D : Set Formula),
-    SetDeductivelyClosed D →
+    SetDeductivelyClosed fc D →
     B ⊂ D →
     ¬r3Relation A D C
 
 /--
 Three-argument R-maximality for Since direction.
 -/
-def R3MaximalSince (A B C : Set Formula) : Prop :=
-  SetDeductivelyClosed B ∧
+def R3MaximalSince (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
   r3RelationSince A B C ∧
   ∀ (D : Set Formula),
-    SetDeductivelyClosed D →
+    SetDeductivelyClosed fc D →
     B ⊂ D →
     ¬r3RelationSince A D C
 
@@ -355,10 +365,10 @@ over CUD sets, giving CUD-maximality by construction. No `NoUnivBurgessR3`
 hypothesis is needed. The resulting B may or may not be consistent;
 at finite stages g-values can be Set.univ (inconsistent).
 -/
-def BurgessR3Maximal (A B C : Set Formula) : Prop :=
-  ClosedUnderDerivation B ∧
+def BurgessR3Maximal (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  ClosedUnderDerivation fc B ∧
   burgessR3 A B C ∧
-  ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
+  ∀ D, ClosedUnderDerivation fc D → B ⊂ D → ¬burgessR3 A D C
 
 /-! ## Chronicle Structure -/
 
@@ -382,16 +392,16 @@ structure Chronicle where
 /-! ## Chronicle Conditions -/
 
 /-- **C0**: Every point in the domain maps to an MCS. -/
-def Chronicle.c0 (χ : Chronicle) : Prop :=
-  ∀ x ∈ χ.dom, SetMaximalConsistent (fc := FrameClass.Base) (χ.f x)
+def Chronicle.c0 (fc : FrameClass) (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom, SetMaximalConsistent (fc := fc) (χ.f x)
 
 /-- **C1**: Every pair x < y in the domain maps to a CUD set
 (closed under derivation, possibly inconsistent). This matches Burgess 1982
 exactly: interval sets g(x,y) are DCS = deductively closed, which does NOT
 require consistency. At finite stages, g-values can be Set.univ (inconsistent)
 when the interval is vacuous (adjacent points with no intermediate witnesses). -/
-def Chronicle.c1 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → ClosedUnderDerivation (χ.g x y)
+def Chronicle.c1 (fc : FrameClass) (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → ClosedUnderDerivation fc (χ.g x y)
 
 /-- **C2**: The three-argument r-relation holds for all pairs x < y in the domain.
 For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
@@ -411,9 +421,9 @@ formulas as possible while maintaining the r-relation, which is needed for:
 At the limit, the domain is dense (no adjacent pairs), so c2' is vacuously true.
 The `burgessR3Maximal_exists_from_seed` theorem in RRelation.lean produces maximal
 DCS from seed elements. -/
-def Chronicle.c2' (χ : Chronicle) : Prop :=
+def Chronicle.c2' (fc : FrameClass) (χ : Chronicle) : Prop :=
   ∀ x y : Rat, Adjacent χ.dom x y →
-    BurgessR3Maximal (χ.f x) (χ.g x y) (χ.f y)
+    BurgessR3Maximal fc (χ.f x) (χ.g x y) (χ.f y)
 
 /-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
 For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
@@ -487,15 +497,15 @@ def Chronicle.c5' (χ : Chronicle) : Prop :=
 A **valid chronicle** satisfies all the core chronicle conditions.
 This is the target state after the omega-chain construction in Phase 4.
 -/
-structure ValidChronicle extends Chronicle where
+structure ValidChronicle (fc : FrameClass) extends Chronicle where
   /-- C0: Points map to MCS -/
-  hc0 : toChronicle.c0
+  hc0 : toChronicle.c0 fc
   /-- C1: All pairs map to DCS -/
-  hc1 : toChronicle.c1
+  hc1 : toChronicle.c1 fc
   /-- C2: Three-argument r-relation for all pairs -/
   hc2 : toChronicle.c2
   /-- C2': R3-maximality for adjacent pairs -/
-  hc2' : toChronicle.c2'
+  hc2' : toChronicle.c2' fc
   /-- C3: Three-way interval decomposition -/
   hc3 : toChronicle.c3
   /-- C4: Backward counterexample for Until -/
@@ -565,16 +575,16 @@ absorption (see `burgessR3_absorption` in RRelation.lean). The finite-stage
 invariant only needs C2' because non-adjacent g values are defined by C3
 and the r-relation for non-adjacent pairs follows from Lemma 2.5.
 -/
-structure ChronicleInvariant (χ : Chronicle) : Prop where
+structure ChronicleInvariant (fc : FrameClass) (χ : Chronicle) : Prop where
   /-- C0: Every domain point maps to an MCS -/
-  hc0 : χ.c0
+  hc0 : χ.c0 fc
   /-- C1: Every pair x < y maps to a DCS -/
-  hc1 : χ.c1
+  hc1 : χ.c1 fc
   /-- C2': BurgessR3Maximal for adjacent pairs (Burgess Definition 2.5).
   Uses the content-based Burgess r-relation (burgessR3) with maximality.
   C2 (r3Relation for ALL pairs) is derivable at the limit via Lemma 2.5 absorption.
   The finite-stage invariant only needs C2' for adjacent pairs. -/
-  hc2' : χ.c2'
+  hc2' : χ.c2' fc
   /-- C3: Three-way interval decomposition -/
   hc3 : χ.c3
 
@@ -615,15 +625,18 @@ theorem r3Relation_subset {A B B' C : Set Formula}
 
 /-- R3Maximal implies rMaximal (weakening, R3-maximal sets are at least R-maximal
     within the class of DCS satisfying the three-argument constraint). -/
-theorem R3Maximal_dcs {A B C : Set Formula} (h : R3Maximal A B C) :
-    SetDeductivelyClosed B := h.1
+theorem R3Maximal_dcs {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
+    SetDeductivelyClosed fc B := h.1
 
 /-- R3Maximal implies r3Relation. -/
-theorem R3Maximal_r3 {A B C : Set Formula} (h : R3Maximal A B C) :
+theorem R3Maximal_r3 {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
     r3Relation A B C := h.2.1
 
 /-- R3Maximal implies rRelation (via bridge). -/
-theorem R3Maximal_rRelation {A B C : Set Formula} (h : R3Maximal A B C) :
+theorem R3Maximal_rRelation {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
     rRelation A B := h.2.1.1
 
 /-! ## DCS Intersection Properties -/
@@ -637,10 +650,10 @@ Proof: If all premises of a derivation are in S₁ ∩ S₂, they are in both S�
 Since both are closed under derivation, the conclusion is in both, hence in the
 intersection.
 -/
-theorem dcs_inter_dcs {S₁ S₂ : Set Formula}
-    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetDeductivelyClosed S₂)
-    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂)) :
-    SetDeductivelyClosed (S₁ ∩ S₂) := by
+theorem dcs_inter_dcs {fc : FrameClass} {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetDeductivelyClosed fc S₂)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂) := by
   constructor
   · exact h_cons
   · intro L φ hL hd
@@ -651,18 +664,18 @@ theorem dcs_inter_dcs {S₁ S₂ : Set Formula}
 /--
 The intersection of a DCS with an MCS is deductively closed (when consistent).
 -/
-theorem dcs_inter_mcs {S₁ S₂ : Set Formula}
-    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent (fc := FrameClass.Base) S₂)
-    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂)) :
-    SetDeductivelyClosed (S₁ ∩ S₂) :=
+theorem dcs_inter_mcs {fc : FrameClass} {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetMaximalConsistent (fc := fc) S₂)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂) :=
   dcs_inter_dcs h₁ (mcs_is_dcs h₂) h_cons
 
 /--
 A subset of a consistent set is consistent (for derivation-based consistency).
 If S ⊆ T and T is consistent, then S is consistent.
 -/
-theorem SetConsistent_of_subset {S T : Set Formula}
-    (h_sub : S ⊆ T) (h_cons : SetConsistent (fc := FrameClass.Base) T) : SetConsistent (fc := FrameClass.Base) S := by
+theorem SetConsistent_of_subset {fc : FrameClass} {S T : Set Formula}
+    (h_sub : S ⊆ T) (h_cons : SetConsistent (fc := fc) T) : SetConsistent (fc := fc) S := by
   intro L hL hd
   exact h_cons L (fun ψ hψ => h_sub (hL ψ hψ)) hd
 
@@ -670,20 +683,20 @@ theorem SetConsistent_of_subset {S T : Set Formula}
 The three-way intersection g(w,x) ∩ f(x) ∩ B is consistent when it is
 a subset of a consistent set (e.g., B).
 -/
-theorem three_way_inter_consistent {S₁ S₂ S₃ : Set Formula}
-    (h₃_cons : SetConsistent (fc := FrameClass.Base) S₃) :
-    SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂ ∩ S₃) :=
+theorem three_way_inter_consistent {fc : FrameClass} {S₁ S₂ S₃ : Set Formula}
+    (h₃_cons : SetConsistent (fc := fc) S₃) :
+    SetConsistent (fc := fc) (S₁ ∩ S₂ ∩ S₃) :=
   SetConsistent_of_subset (fun _ h => h.2) h₃_cons
 
 /--
 The three-way intersection of two DCS and an MCS is deductively closed.
 Used for C1 verification when defining g values by C3.
 -/
-theorem dcs_inter_mcs_inter_dcs {S₁ S₂ S₃ : Set Formula}
-    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent (fc := FrameClass.Base) S₂)
-    (h₃ : SetDeductivelyClosed S₃)
-    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂ ∩ S₃)) :
-    SetDeductivelyClosed (S₁ ∩ S₂ ∩ S₃) := by
+theorem dcs_inter_mcs_inter_dcs {fc : FrameClass} {S₁ S₂ S₃ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetMaximalConsistent (fc := fc) S₂)
+    (h₃ : SetDeductivelyClosed fc S₃)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂ ∩ S₃)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂ ∩ S₃) := by
   constructor
   · exact h_cons
   · intro L φ hL hd
