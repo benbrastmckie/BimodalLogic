@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 198,
+      "project_name": "prove_frame_class_indicator_forcing",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-26T14:52:05Z",
+      "description": "Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. Specifically: (1) completeness_dense line 285: prove that a Dense-MCS necessarily contains □(F'⊤), making the non-dense branch unreachable. The density axiom FFφ → Fφ should force the canonical model's density indicator into every Dense-MCS. (2) completeness_discrete line 317: prove that a Discrete-MCS cannot contain □(F'⊤), making the dense branch unreachable. The discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (next_top = U(⊤,⊥) and its negation F'⊤). Resolution likely requires showing that the density axiom is derivably equivalent to F'⊤ (or that □(F'⊤) is derivable from the density axiom via necessitation), and symmetrically that the discrete axioms are derivably inconsistent with F'⊤. Definition of done: both sorries in completeness_dense and completeness_discrete eliminated, lake build passes, no new sorries."
+    },
+    {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
       "status": "planned",
@@ -872,7 +880,7 @@
       }
     }
   ],
-  "next_project_number": 198,
+  "next_project_number": 199,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

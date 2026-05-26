@@ -1,5 +1,5 @@
 ---
-next_project_number: 194
+next_project_number: 199
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -132,6 +132,17 @@ technical_debt:
 
 
 ## Tasks
+
+### 198. Prove frame-class axioms force canonical model indicator formulas
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 168, 197
+
+**Description**: Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. (1) `completeness_dense` line 285: prove that a Dense-MCS necessarily contains `□(F'⊤)`, making the non-dense branch unreachable — the density axiom `FFφ → Fφ` should force the canonical model's density indicator into every Dense-MCS. (2) `completeness_discrete` line 317: prove that a Discrete-MCS cannot contain `□(F'⊤)`, making the dense branch unreachable — the discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (`next_top = U(⊤,⊥)` and its negation `F'⊤`). Definition of done: both sorries eliminated, `lake build` passes, no new sorries.
+
+---
 
 ### 196. Codebase-wide tactic opportunity survey
 - **Effort**: medium (8-12 hours)
