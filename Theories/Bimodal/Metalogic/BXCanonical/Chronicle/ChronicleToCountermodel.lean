@@ -339,7 +339,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
             (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg) trivial))
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
+          (theorem_in_mcs h_mcs (liftBase fc (box_to_past (Formula.box (Formula.box φ).neg)))) h_box_box_neg
         rw [← limit_f_zero fc A h_mcs] at h_H
         have h_H' := limit_backward_H fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_neg
           (Formula.box (Formula.box φ).neg) h_H
@@ -364,7 +364,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
         SetMaximalConsistent.implication_property h_mcs
           (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial)) h_box_A
       have h_H := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (box_to_past (Formula.box φ))) h_box_box
+        (theorem_in_mcs h_mcs (liftBase fc (box_to_past (Formula.box φ)))) h_box_box
       rw [← limit_f_zero fc A h_mcs] at h_H
       exact limit_backward_H fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_neg
         (Formula.box φ) h_H
@@ -429,7 +429,7 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula) (h_N : SetMa
       h_box_dense
   have h_H_box : Formula.all_past (Formula.box next_top.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (box_to_past (Formula.box next_top.neg))) h_box_box
+      (theorem_in_mcs h_N (liftBase fc (box_to_past (Formula.box next_top.neg)))) h_box_box
   -- Now propagate to x ∈ limit_dom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
   · -- x > 0: G(□(F'T)) ∈ limit_f(0) = N, propagate via limit_forward_G
@@ -537,11 +537,11 @@ noncomputable def cantor_bfmcs_dense (fc : FrameClass) (A : Set Formula) (h_mcs 
       (box_stable_in_rooted_cantor_fmcs_dense fc N h_N h_box_N φ s t).mp h_box
     have h_box_A : Formula.box φ ∈ A := (h_eqN φ).mpr h_box_in_N
     have h_box_in_N' : Formula.box φ ∈ N' := (h_eqN' φ).mp h_box_A
-    have h_box_t' : Formula.box φ ∈ (rooted_cantor_fmcs_dense N' h_N' h_box_N' s').mcs t :=
-      (box_stable_in_rooted_cantor_fmcs_dense N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
+    have h_box_t' : Formula.box φ ∈ (rooted_cantor_fmcs_dense fc N' h_N' h_box_N' s').mcs t :=
+      (box_stable_in_rooted_cantor_fmcs_dense fc N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
     exact SetMaximalConsistent.implication_property
-      ((rooted_cantor_fmcs_dense N' h_N' h_box_N' s').is_mcs t)
-      (theorem_in_mcs ((rooted_cantor_fmcs_dense N' h_N' h_box_N' s').is_mcs t)
+      ((rooted_cantor_fmcs_dense fc N' h_N' h_box_N' s').is_mcs t)
+      (theorem_in_mcs ((rooted_cantor_fmcs_dense fc N' h_N' h_box_N' s').is_mcs t)
         (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial)) h_box_t'
   modal_backward := by
     intro fam hfam φ t h_all
@@ -611,7 +611,7 @@ theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula) (h_
     simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_F ⊢
     have h_mem := (iso.symm (t + offset)).property
     have h_F' : φ.some_future ∈ limit_f fc N h_N (iso.symm (t + offset)).val := h_F
-    obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution N h_N (iso.symm (t + offset)).val h_mem φ h_F'
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution fc N h_N (iso.symm (t + offset)).val h_mem φ h_F'
     refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_⟩
     · have h1 : iso (iso.symm (t + offset)) < iso ⟨y, hy⟩ := iso.strictMono hlt
       simp [OrderIso.apply_symm_apply] at h1
@@ -627,7 +627,7 @@ theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula) (h_
     simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_P ⊢
     have h_mem := (iso.symm (t + offset)).property
     have h_P' : φ.some_past ∈ limit_f fc N h_N (iso.symm (t + offset)).val := h_P
-    obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution N h_N (iso.symm (t + offset)).val h_mem φ h_P'
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution fc N h_N (iso.symm (t + offset)).val h_mem φ h_P'
     refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_⟩
     · have h1 : iso ⟨y, hy⟩ < iso (iso.symm (t + offset)) := iso.strictMono hlt
       simp [OrderIso.apply_symm_apply] at h1
@@ -664,7 +664,7 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula) (h
       · exact absurd h h_not_until
       · exact h
     set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
-    obtain ⟨z, hz, hxtz, hzxu, hψneg⟩ := limit_satisfies_c4 N h_N
+    obtain ⟨z, hz, hxtz, hzxu, hψneg⟩ := limit_satisfies_c4 fc N h_N
       xt.val xu.val xt.property xu.property
       (iso.symm.strictMono (show t + offset < u + offset by linarith))
       ψ φ h_neg_until hφu
@@ -692,7 +692,7 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula) (h
       · exact absurd h h_not_since
       · exact h
     set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
-    obtain ⟨z, hz, huxz, hzxt, hψneg⟩ := limit_satisfies_c4' N h_N
+    obtain ⟨z, hz, huxz, hzxt, hψneg⟩ := limit_satisfies_c4' fc N h_N
       xt.val xu.val xt.property xu.property
       (iso.symm.strictMono (show u + offset < t + offset by linarith))
       ψ φ h_neg_since hφu
@@ -730,7 +730,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula) (h
     intro t φ ψ _ h_until
     simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_until ⊢
     set xt := iso.symm (t + offset)
-    obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong N h_N
+    obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong fc N h_N
       xt.val xt.property ψ φ h_until
     refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_, ?_⟩
     · have h1 : iso (iso.symm (t + offset)) < iso ⟨y, hy⟩ :=
@@ -755,7 +755,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula) (h
     intro t φ ψ _ h_since
     simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_since ⊢
     set xt := iso.symm (t + offset)
-    obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong N h_N
+    obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong fc N h_N
       xt.val xt.property ψ φ h_since
     refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_, ?_⟩
     · have h1 : iso ⟨y, hy⟩ < iso (iso.symm (t + offset)) :=
@@ -1903,7 +1903,7 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
     rcases eq_or_lt_of_le hab with rfl | hab_lt
     · exact ⟨0, rfl⟩
     · -- a < b. By succ_cofinal: ∃ n, b ≤ s^[n](a).
-      obtain ⟨n, hn⟩ := succ_cofinal A h_mcs h_discrete a b hab_lt
+      obtain ⟨n, hn⟩ := succ_cofinal fc A h_mcs h_discrete a b hab_lt
       -- By succ_orbit_convex: ∃ j ≤ n, s^[j](a) = b.
       exact (succ_orbit_convex fc A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
         fun j ⟨_, hj⟩ => hj
@@ -1937,7 +1937,7 @@ Succ-reachability is reflexive: `succ^[0] a = a`.
 theorem collapse_equiv_refl (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a : LimitDomSubtype fc A h_mcs) :
-    collapse_equiv A h_mcs h_discrete a a :=
+    collapse_equiv fc A h_mcs h_discrete a a :=
   ⟨0, Or.inl rfl⟩
 
 /--
@@ -1946,8 +1946,8 @@ Succ-reachability is symmetric: by swapping the disjunction.
 theorem collapse_equiv_symm (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs)
-    (h : collapse_equiv A h_mcs h_discrete a b) :
-    collapse_equiv A h_mcs h_discrete b a := by
+    (h : collapse_equiv fc A h_mcs h_discrete a b) :
+    collapse_equiv fc A h_mcs h_discrete b a := by
   obtain ⟨n, h_or⟩ := h
   exact ⟨n, h_or.symm⟩
 
@@ -1970,7 +1970,7 @@ private theorem limitDomSubtype_succ_iter_lt (fc : FrameClass) (A : Set Formula)
     (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a <
       (limitDomSubtype_succ fc A h_mcs h_discrete)^[n + 1] a := by
   rw [Function.iterate_succ', Function.comp_apply]
-  exact limitDomSubtype_succ_lt A h_mcs h_discrete _
+  exact limitDomSubtype_succ_lt fc A h_mcs h_discrete _
 
 /--
 Succ iterates are monotone: `n ≤ m → succ^[n] a ≤ succ^[m] a`.
@@ -1987,7 +1987,7 @@ private theorem limitDomSubtype_succ_iter_mono (fc : FrameClass) (A : Set Formul
   | succ k ih =>
     rw [show n + (k + 1) = n + k + 1 from by omega]
     exact le_of_lt (lt_of_le_of_lt ih
-      (limitDomSubtype_succ_iter_lt A h_mcs h_discrete a _))
+      (limitDomSubtype_succ_iter_lt fc A h_mcs h_discrete a _))
 
 /--
 Succ iterates are strictly monotone: `n < m → succ^[n] a < succ^[m] a`.
@@ -1999,8 +1999,8 @@ private theorem limitDomSubtype_succ_iter_strictMono (fc : FrameClass) (A : Set 
     (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a <
       (limitDomSubtype_succ fc A h_mcs h_discrete)^[m] a := by
   exact lt_of_lt_of_le
-    (limitDomSubtype_succ_iter_lt A h_mcs h_discrete a n)
-    (limitDomSubtype_succ_iter_mono A h_mcs h_discrete a (by omega))
+    (limitDomSubtype_succ_iter_lt fc A h_mcs h_discrete a n)
+    (limitDomSubtype_succ_iter_mono fc A h_mcs h_discrete a (by omega))
 
 /--
 Succ iterates are injective: `succ^[n] a = succ^[m] a → n = m`.
@@ -2028,9 +2028,9 @@ If `succ^[n] a = b` and `succ^[m] c = b`, then either `a` reaches `c` or
 theorem collapse_equiv_trans (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b c : LimitDomSubtype fc A h_mcs)
-    (hab : collapse_equiv A h_mcs h_discrete a b)
-    (hbc : collapse_equiv A h_mcs h_discrete b c) :
-    collapse_equiv A h_mcs h_discrete a c := by
+    (hab : collapse_equiv fc A h_mcs h_discrete a b)
+    (hbc : collapse_equiv fc A h_mcs h_discrete b c) :
+    collapse_equiv fc A h_mcs h_discrete a c := by
   obtain ⟨n, hn⟩ := hab
   obtain ⟨m, hm⟩ := hbc
   -- Abbreviate the succ function
@@ -2041,11 +2041,11 @@ theorem collapse_equiv_trans (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
     by_contra h_ne
     rcases lt_or_gt_of_ne h_ne with h_lt | h_gt
     · have h1 : s x ≤ y := (limitDomSubtype_succ_le_iff fc A h_mcs h_discrete x y).mpr h_lt
-      have h2 : y < s y := limitDomSubtype_succ_lt A h_mcs h_discrete y
+      have h2 : y < s y := limitDomSubtype_succ_lt fc A h_mcs h_discrete y
       have h3 : s x < s y := lt_of_le_of_lt h1 h2
       exact absurd hxy (ne_of_lt h3)
     · have h1 : s y ≤ x := (limitDomSubtype_succ_le_iff fc A h_mcs h_discrete y x).mpr h_gt
-      have h2 : x < s x := limitDomSubtype_succ_lt A h_mcs h_discrete x
+      have h2 : x < s x := limitDomSubtype_succ_lt fc A h_mcs h_discrete x
       have h3 : s y < s x := lt_of_le_of_lt h1 h2
       exact absurd hxy.symm (ne_of_lt h3)
   -- Helper: iteration composition
@@ -2097,11 +2097,11 @@ The succ-reachability relation as a `Setoid`.
 noncomputable def collapse_setoid (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     Setoid (LimitDomSubtype fc A h_mcs) where
-  r := collapse_equiv A h_mcs h_discrete
+  r := collapse_equiv fc A h_mcs h_discrete
   iseqv := {
-    refl := collapse_equiv_refl A h_mcs h_discrete
-    symm := collapse_equiv_symm A h_mcs h_discrete _ _
-    trans := collapse_equiv_trans A h_mcs h_discrete _ _ _
+    refl := collapse_equiv_refl fc A h_mcs h_discrete
+    symm := collapse_equiv_symm fc A h_mcs h_discrete _ _
+    trans := collapse_equiv_trans fc A h_mcs h_discrete _ _ _
   }
 
 /--
@@ -2110,7 +2110,7 @@ Each element represents one succ-orbit (omega-chain or singleton).
 -/
 noncomputable def CollapseClass (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :=
-  Quotient (collapse_setoid A h_mcs h_discrete)
+  Quotient (collapse_setoid fc A h_mcs h_discrete)
 
 /--
 Helper: the succ function maps equivalent elements to equivalent elements.
@@ -2120,8 +2120,8 @@ Similarly for the other direction.
 private theorem collapse_equiv_succ_congr (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs)
-    (h : collapse_equiv A h_mcs h_discrete a b) :
-    collapse_equiv A h_mcs h_discrete
+    (h : collapse_equiv fc A h_mcs h_discrete a b) :
+    collapse_equiv fc A h_mcs h_discrete
       (limitDomSubtype_succ fc A h_mcs h_discrete a)
       (limitDomSubtype_succ fc A h_mcs h_discrete b) := by
   obtain ⟨n, hn⟩ := h
@@ -2179,12 +2179,12 @@ the orbit of `a` (since `a ≤ b ≤ succ^[n] a`), contradicting `a ≁ b`.
 private theorem collapse_orbit_bounded (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs)
-    (h_lt : a < b) (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (h_lt : a < b) (h_ne : ¬ collapse_equiv fc A h_mcs h_discrete a b)
     (n : ℕ) :
     (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a < b := by
   by_contra h_not_lt
   push_neg at h_not_lt
-  obtain ⟨k, _, hk⟩ := collapse_orbit_convex A h_mcs h_discrete a b n h_lt.le h_not_lt
+  obtain ⟨k, _, hk⟩ := collapse_orbit_convex fc A h_mcs h_discrete a b n h_lt.le h_not_lt
   exact h_ne ⟨k, Or.inl hk⟩
 
 /--
@@ -2195,12 +2195,12 @@ iterate of x were equivalent to b, then x ~ b, hence a ~ b.
 private theorem collapse_not_equiv_of_orbit (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs)
-    (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (h_ne : ¬ collapse_equiv fc A h_mcs h_discrete a b)
     (n : ℕ) :
-    ¬ collapse_equiv A h_mcs h_discrete
+    ¬ collapse_equiv fc A h_mcs h_discrete
       ((limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a) b := by
   intro ⟨m, hm⟩
-  exact h_ne (collapse_equiv_trans A h_mcs h_discrete a
+  exact h_ne (collapse_equiv_trans fc A h_mcs h_discrete a
     ((limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a) b
     ⟨n, Or.inl rfl⟩ ⟨m, hm⟩)
 
@@ -2211,9 +2211,9 @@ if `a ≁ b` and `a < b`, then `a' < b'` for any `a' ~ a` and `b' ~ b`.
 private theorem collapse_class_sep (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs) (a' b' : LimitDomSubtype fc A h_mcs)
-    (ha : collapse_equiv A h_mcs h_discrete a a')
-    (hb : collapse_equiv A h_mcs h_discrete b b')
-    (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (ha : collapse_equiv fc A h_mcs h_discrete a a')
+    (hb : collapse_equiv fc A h_mcs h_discrete b b')
+    (h_ne : ¬ collapse_equiv fc A h_mcs h_discrete a b)
     (h_lt : a < b) : a' < b' := by
   set s := limitDomSubtype_succ fc A h_mcs h_discrete
   -- Step 1: a' < b (all elements of [a] are < b)
@@ -2221,10 +2221,10 @@ private theorem collapse_class_sep (fc : FrameClass) (A : Set Formula) (h_mcs : 
     obtain ⟨p, hp⟩ := ha
     rcases hp with hp_eq | hp_eq
     · -- s^[p] a = a', so a' is a succ-iterate of a. Show all iterates < b.
-      exact hp_eq ▸ collapse_orbit_bounded A h_mcs h_discrete a b h_lt h_ne p
+      exact hp_eq ▸ collapse_orbit_bounded fc A h_mcs h_discrete a b h_lt h_ne p
     · -- s^[p] a' = a, so a' ≤ s^[p] a' = a < b
       calc a' ≤ s^[p] a' :=
-            limitDomSubtype_succ_iter_mono A h_mcs h_discrete a' (Nat.zero_le p)
+            limitDomSubtype_succ_iter_mono fc A h_mcs h_discrete a' (Nat.zero_le p)
         _ = a := hp_eq
         _ < b := h_lt
   -- Step 2: a' < b' using ha'_lt_b and the separation argument
@@ -2232,11 +2232,11 @@ private theorem collapse_class_sep (fc : FrameClass) (A : Set Formula) (h_mcs : 
   -- (or b' is a succ-iterate of b). If succ^q b = b', then b ≤ b' < a' -- but a' < b, contradiction.
   -- If succ^q b' = b, then by collapse_orbit_bounded (b' < a', b' ≁ a'),
   -- succ^q b' < a', so b < a'. But a' < b, contradiction.
-  have h_ne' : ¬ collapse_equiv A h_mcs h_discrete a' b' := by
+  have h_ne' : ¬ collapse_equiv fc A h_mcs h_discrete a' b' := by
     intro h
-    exact h_ne (collapse_equiv_trans A h_mcs h_discrete a a' b
-      ha (collapse_equiv_trans A h_mcs h_discrete a' b' b h
-        (collapse_equiv_symm A h_mcs h_discrete b b' hb)))
+    exact h_ne (collapse_equiv_trans fc A h_mcs h_discrete a a' b
+      ha (collapse_equiv_trans fc A h_mcs h_discrete a' b' b h
+        (collapse_equiv_symm fc A h_mcs h_discrete b b' hb)))
   by_contra h_not_lt'
   push_neg at h_not_lt'
   have h_b'_ne_a' : b' ≠ a' := fun h_eq => h_ne' (h_eq ▸ collapse_equiv_refl _ _ _ _)
@@ -2245,13 +2245,13 @@ private theorem collapse_class_sep (fc : FrameClass) (A : Set Formula) (h_mcs : 
   rcases hq with hq_bb' | hq_b'b
   · -- s^[q] b = b'. So b ≤ b' (succ iterates are monotone).
     have h_b_le_b' : b ≤ b' := hq_bb' ▸
-      limitDomSubtype_succ_iter_mono A h_mcs h_discrete b (Nat.zero_le q)
+      limitDomSubtype_succ_iter_mono fc A h_mcs h_discrete b (Nat.zero_le q)
     exact absurd ha'_lt_b (not_lt.mpr (le_trans h_b_le_b' h_not_lt'))
   · -- s^[q] b' = b. b' < a' and b' ≁ a'.
-    have h_ne_b'a' : ¬ collapse_equiv A h_mcs h_discrete b' a' :=
-      fun h => h_ne' (collapse_equiv_symm A h_mcs h_discrete b' a' h)
+    have h_ne_b'a' : ¬ collapse_equiv fc A h_mcs h_discrete b' a' :=
+      fun h => h_ne' (collapse_equiv_symm fc A h_mcs h_discrete b' a' h)
     have h_iter_lt : s^[q] b' < a' :=
-      collapse_orbit_bounded A h_mcs h_discrete b' a' h_b'_lt_a' h_ne_b'a' q
+      collapse_orbit_bounded fc A h_mcs h_discrete b' a' h_b'_lt_a' h_ne_b'a' q
     have h_b_lt_a' : b < a' := hq_b'b ▸ h_iter_lt
     exact absurd ha'_lt_b (not_lt.mpr h_b_lt_a'.le)
 
@@ -2262,14 +2262,14 @@ If `a < b`, `a ≁ b`, `b < c`, and `b ≁ c`, then `a < c` and `a ≁ c`.
 private theorem collapse_lt_trans (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     {a b c : LimitDomSubtype fc A h_mcs}
-    (hab : a < b) (hnab : ¬ collapse_equiv A h_mcs h_discrete a b)
-    (hbc : b < c) (_hnbc : ¬ collapse_equiv A h_mcs h_discrete b c) :
-    a < c ∧ ¬ collapse_equiv A h_mcs h_discrete a c := by
+    (hab : a < b) (hnab : ¬ collapse_equiv fc A h_mcs h_discrete a b)
+    (hbc : b < c) (_hnbc : ¬ collapse_equiv fc A h_mcs h_discrete b c) :
+    a < c ∧ ¬ collapse_equiv fc A h_mcs h_discrete a c := by
   refine ⟨lt_trans hab hbc, fun hac => ?_⟩
   -- a ~ c. By sep: since a ≁ b and a < b, for a' ~ a, b' ~ b, a' < b'.
   -- In particular, taking a' = c (since c ~ a), b' = b: c < b. But b < c. Contradiction.
-  have : c < b := collapse_class_sep A h_mcs h_discrete a b c b
-    hac (collapse_equiv_refl A h_mcs h_discrete b) hnab hab
+  have : c < b := collapse_class_sep fc A h_mcs h_discrete a b c b
+    hac (collapse_equiv_refl fc A h_mcs h_discrete b) hnab hab
   exact absurd (lt_trans hbc this) (lt_irrefl b)
 
 /--
@@ -2283,51 +2283,51 @@ from the trichotomy on the underlying `LimitDomSubtype`.
 noncomputable instance collapseClass_linearOrder (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    LinearOrder (CollapseClass A h_mcs h_discrete) := by
-  letI setoid := collapse_setoid A h_mcs h_discrete
+    LinearOrder (CollapseClass fc A h_mcs h_discrete) := by
+  letI setoid := collapse_setoid fc A h_mcs h_discrete
   -- The strict order: [a] < [b] iff a < b and a ≁ b (well-defined by collapse_class_sep)
-  let lt_fn : CollapseClass A h_mcs h_discrete → CollapseClass A h_mcs h_discrete → Prop :=
+  let lt_fn : CollapseClass fc A h_mcs h_discrete → CollapseClass fc A h_mcs h_discrete → Prop :=
     @Quotient.lift₂ _ _ Prop setoid setoid
-      (fun a b => a < b ∧ ¬ collapse_equiv A h_mcs h_discrete a b)
+      (fun a b => a < b ∧ ¬ collapse_equiv fc A h_mcs h_discrete a b)
       (by
         intro a₁ b₁ a₂ b₂ ha hb; ext; constructor
         · rintro ⟨h_lt, h_ne⟩
-          exact ⟨collapse_class_sep A h_mcs h_discrete a₁ b₁ a₂ b₂ ha hb h_ne h_lt,
-                 fun h => h_ne (collapse_equiv_trans A h_mcs h_discrete a₁ a₂ b₁
-                   ha (collapse_equiv_trans A h_mcs h_discrete a₂ b₂ b₁ h
-                     (collapse_equiv_symm A h_mcs h_discrete b₁ b₂ hb)))⟩
+          exact ⟨collapse_class_sep fc A h_mcs h_discrete a₁ b₁ a₂ b₂ ha hb h_ne h_lt,
+                 fun h => h_ne (collapse_equiv_trans fc A h_mcs h_discrete a₁ a₂ b₁
+                   ha (collapse_equiv_trans fc A h_mcs h_discrete a₂ b₂ b₁ h
+                     (collapse_equiv_symm fc A h_mcs h_discrete b₁ b₂ hb)))⟩
         · rintro ⟨h_lt, h_ne⟩
-          exact ⟨collapse_class_sep A h_mcs h_discrete a₂ b₂ a₁ b₁
-                   (collapse_equiv_symm A h_mcs h_discrete a₁ a₂ ha)
-                   (collapse_equiv_symm A h_mcs h_discrete b₁ b₂ hb) h_ne h_lt,
-                 fun h => h_ne (collapse_equiv_trans A h_mcs h_discrete a₂ a₁ b₂
-                   (collapse_equiv_symm A h_mcs h_discrete a₁ a₂ ha)
-                   (collapse_equiv_trans A h_mcs h_discrete a₁ b₁ b₂ h hb))⟩)
+          exact ⟨collapse_class_sep fc A h_mcs h_discrete a₂ b₂ a₁ b₁
+                   (collapse_equiv_symm fc A h_mcs h_discrete a₁ a₂ ha)
+                   (collapse_equiv_symm fc A h_mcs h_discrete b₁ b₂ hb) h_ne h_lt,
+                 fun h => h_ne (collapse_equiv_trans fc A h_mcs h_discrete a₂ a₁ b₂
+                   (collapse_equiv_symm fc A h_mcs h_discrete a₁ a₂ ha)
+                   (collapse_equiv_trans fc A h_mcs h_discrete a₁ b₁ b₂ h hb))⟩)
   -- Trichotomy on the quotient
-  have h_tri : ∀ (a b : CollapseClass A h_mcs h_discrete),
+  have h_tri : ∀ (a b : CollapseClass fc A h_mcs h_discrete),
       lt_fn a b ∨ a = b ∨ lt_fn b a :=
     Quotient.ind₂ (fun a b => by
       rcases lt_trichotomy a b with h | h | h
-      · rcases Classical.em (collapse_equiv A h_mcs h_discrete a b) with hab | hab
+      · rcases Classical.em (collapse_equiv fc A h_mcs h_discrete a b) with hab | hab
         · exact Or.inr (Or.inl (Quotient.sound hab))
         · exact Or.inl ⟨h, hab⟩
       · exact Or.inr (Or.inl (by subst h; rfl))
-      · rcases Classical.em (collapse_equiv A h_mcs h_discrete b a) with hba | hba
+      · rcases Classical.em (collapse_equiv fc A h_mcs h_discrete b a) with hba | hba
         · exact Or.inr (Or.inl (Quotient.sound hba).symm)
         · exact Or.inr (Or.inr ⟨h, hba⟩))
   -- Irreflexivity
-  have h_irrefl : ∀ (a : CollapseClass A h_mcs h_discrete), ¬ lt_fn a a :=
+  have h_irrefl : ∀ (a : CollapseClass fc A h_mcs h_discrete), ¬ lt_fn a a :=
     Quotient.ind (fun a ⟨h, _⟩ => lt_irrefl a h)
   -- Transitivity
-  have h_trans : ∀ (a b c : CollapseClass A h_mcs h_discrete),
+  have h_trans : ∀ (a b c : CollapseClass fc A h_mcs h_discrete),
       lt_fn a b → lt_fn b c → lt_fn a c := by
     intro a b c
     exact Quotient.inductionOn₃ a b c (fun _ _ _ hab hbc =>
-      collapse_lt_trans A h_mcs h_discrete hab.1 hab.2 hbc.1 hbc.2)
+      collapse_lt_trans fc A h_mcs h_discrete hab.1 hab.2 hbc.1 hbc.2)
   -- Build Preorder → PartialOrder → LinearOrder
-  letI : LT (CollapseClass A h_mcs h_discrete) := ⟨lt_fn⟩
-  letI : LE (CollapseClass A h_mcs h_discrete) := ⟨fun a b => a = b ∨ lt_fn a b⟩
-  letI : Preorder (CollapseClass A h_mcs h_discrete) :=
+  letI : LT (CollapseClass fc A h_mcs h_discrete) := ⟨lt_fn⟩
+  letI : LE (CollapseClass fc A h_mcs h_discrete) := ⟨fun a b => a = b ∨ lt_fn a b⟩
+  letI : Preorder (CollapseClass fc A h_mcs h_discrete) :=
   { le_refl := fun _ => Or.inl rfl
     le_trans := by
       intro a b c hab hbc
@@ -2346,7 +2346,7 @@ noncomputable instance collapseClass_linearOrder (A : Set Formula)
         rcases hab with rfl | hab
         · exact absurd (Or.inl rfl) hba
         · exact hab }
-  letI : PartialOrder (CollapseClass A h_mcs h_discrete) :=
+  letI : PartialOrder (CollapseClass fc A h_mcs h_discrete) :=
   { le_antisymm := by
       intro a b hab hba
       rcases hab with rfl | hab; rfl
@@ -2386,18 +2386,18 @@ starting from `⟨0, zero_mem⟩` and going upward. Defined by iterated choice u
 noncomputable def embed_forward (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
     ℕ → LimitDomSubtype fc A h_mcs
   | 0 => ⟨0, zero_mem_limit_dom fc A h_mcs⟩
-  | n + 1 => (exists_gt (embed_forward A h_mcs n)).choose
+  | n + 1 => (exists_gt (embed_forward fc A h_mcs n)).choose
 
 private theorem embed_forward_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    embed_forward A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := rfl
+    embed_forward fc A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := rfl
 
 private theorem embed_forward_lt_succ (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (n : ℕ) : embed_forward A h_mcs n < embed_forward A h_mcs (n + 1) :=
-  (exists_gt (embed_forward A h_mcs n)).choose_spec
+    (n : ℕ) : embed_forward fc A h_mcs n < embed_forward fc A h_mcs (n + 1) :=
+  (exists_gt (embed_forward fc A h_mcs n)).choose_spec
 
 private theorem embed_forward_strictMono (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    StrictMono (embed_forward A h_mcs) :=
-  strictMono_nat_of_lt_succ (embed_forward_lt_succ A h_mcs)
+    StrictMono (embed_forward fc A h_mcs) :=
+  strictMono_nat_of_lt_succ (embed_forward_lt_succ fc A h_mcs)
 
 /--
 Backward embedding: a strictly decreasing sequence starting from `⟨0, zero_mem⟩`
@@ -2406,21 +2406,21 @@ and going downward. Defined by iterated choice using `NoMinOrder`.
 noncomputable def embed_backward (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
     ℕ → LimitDomSubtype fc A h_mcs
   | 0 => ⟨0, zero_mem_limit_dom fc A h_mcs⟩
-  | n + 1 => (exists_lt (embed_backward A h_mcs n)).choose
+  | n + 1 => (exists_lt (embed_backward fc A h_mcs n)).choose
 
 private theorem embed_backward_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    embed_backward A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := rfl
+    embed_backward fc A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := rfl
 
 private theorem embed_backward_succ_lt (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (n : ℕ) : embed_backward A h_mcs (n + 1) < embed_backward A h_mcs n :=
-  (exists_lt (embed_backward A h_mcs n)).choose_spec
+    (n : ℕ) : embed_backward fc A h_mcs (n + 1) < embed_backward fc A h_mcs n :=
+  (exists_lt (embed_backward fc A h_mcs n)).choose_spec
 
 private theorem embed_backward_strictAnti (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    StrictAnti (embed_backward A h_mcs) := by
+    StrictAnti (embed_backward fc A h_mcs) := by
   intro m n hmn
   induction hmn with
-  | refl => exact embed_backward_succ_lt A h_mcs m
-  | step h ih => exact lt_trans (embed_backward_succ_lt A h_mcs _) ih
+  | refl => exact embed_backward_succ_lt fc A h_mcs m
+  | step h ih => exact lt_trans (embed_backward_succ_lt fc A h_mcs _) ih
 
 /--
 Combined embedding `ℤ → LimitDomSubtype`:
@@ -2431,12 +2431,12 @@ noncomputable def discrete_embed (fc : FrameClass) (A : Set Formula) (h_mcs : Se
     ℤ → LimitDomSubtype fc A h_mcs :=
   fun n =>
     if 0 ≤ n then
-      embed_forward A h_mcs n.toNat
+      embed_forward fc A h_mcs n.toNat
     else
-      embed_backward A h_mcs ((-n).toNat)
+      embed_backward fc A h_mcs ((-n).toNat)
 
 private theorem discrete_embed_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    discrete_embed A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
+    discrete_embed fc A h_mcs 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
   simp [discrete_embed, embed_forward]
 
 /--
@@ -2444,8 +2444,8 @@ Helper: `embed_backward` at positive indices is strictly below `⟨0, zero_mem�
 -/
 private theorem embed_backward_pos_lt_zero (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (n : ℕ) (hn : 0 < n) :
-    embed_backward A h_mcs n < ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
-  have := embed_backward_strictAnti A h_mcs hn
+    embed_backward fc A h_mcs n < ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
+  have := embed_backward_strictAnti fc A h_mcs hn
   rwa [embed_backward_zero] at this
 
 /--
@@ -2453,30 +2453,30 @@ The combined embedding is strictly increasing.
 -/
 private theorem discrete_embed_strictMono (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    StrictMono (discrete_embed A h_mcs) := by
+    StrictMono (discrete_embed fc A h_mcs) := by
   intro a b hab
   simp only [discrete_embed]
   by_cases ha : 0 ≤ a <;> by_cases hb : 0 ≤ b
   · -- Both non-negative: use embed_forward_strictMono
     simp only [ha, hb, ite_true]
-    exact embed_forward_strictMono A h_mcs (by omega)
+    exact embed_forward_strictMono fc A h_mcs (by omega)
   · -- a ≥ 0, b < 0: impossible since a < b
     omega
   · -- a < 0, b ≥ 0: backward(|a|) < 0 ≤ forward(|b|)
     simp only [ha, hb, ite_true, ite_false]
     push_neg at ha
-    have h_back_lt : embed_backward A h_mcs ((-a).toNat) <
+    have h_back_lt : embed_backward fc A h_mcs ((-a).toNat) <
         ⟨(0 : Rat), zero_mem_limit_dom fc A h_mcs⟩ :=
       embed_backward_pos_lt_zero fc A h_mcs _ (by omega)
     have h_fwd_ge : ⟨(0 : Rat), zero_mem_limit_dom fc A h_mcs⟩ ≤
-        embed_forward A h_mcs b.toNat := by
+        embed_forward fc A h_mcs b.toNat := by
       rw [← embed_forward_zero]
-      exact embed_forward_strictMono A h_mcs |>.monotone (by omega)
+      exact embed_forward_strictMono fc A h_mcs |>.monotone (by omega)
     exact lt_of_lt_of_le h_back_lt h_fwd_ge
   · -- Both negative: use embed_backward_strictAnti
     simp only [ha, hb, ite_false]
     push_neg at ha hb
-    exact embed_backward_strictAnti A h_mcs (by omega)
+    exact embed_backward_strictAnti fc A h_mcs (by omega)
 
 /--
 MCS assignment via the direct embedding (discrete case). For each integer `n`,
@@ -2485,7 +2485,7 @@ evaluate `limit_f` at the embedded domain point.
 noncomputable def discrete_f (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (_h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     ℤ → Set Formula :=
-  fun n => limit_f fc A h_mcs (discrete_embed A h_mcs n).val
+  fun n => limit_f fc A h_mcs (discrete_embed fc A h_mcs n).val
 
 /-- The origin integer in the discrete case is simply `0 : ℤ`. -/
 noncomputable def discrete_zero (fc : FrameClass) (_A : Set Formula) (_h_mcs : SetMaximalConsistent (fc := fc) _A)
@@ -2495,15 +2495,15 @@ noncomputable def discrete_zero (fc : FrameClass) (_A : Set Formula) (_h_mcs : S
 /-- `discrete_f` at `discrete_zero` equals A (the root MCS). -/
 theorem discrete_f_at_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    discrete_f A h_mcs h_discrete (discrete_zero fc A h_mcs h_discrete) = A := by
+    discrete_f fc A h_mcs h_discrete (discrete_zero fc A h_mcs h_discrete) = A := by
   simp only [discrete_f, discrete_zero, discrete_embed_zero]
   exact limit_f_zero fc A h_mcs
 
 /-- Every integer maps to an MCS via `discrete_f`. -/
 theorem discrete_f_is_mcs (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
-    (n : ℤ) : SetMaximalConsistent (fc := fc) (discrete_f A h_mcs h_discrete n) := by
-  exact limit_c0 fc A h_mcs _ (discrete_embed A h_mcs n).property
+    (n : ℤ) : SetMaximalConsistent (fc := fc) (discrete_f fc A h_mcs h_discrete n) := by
+  exact limit_c0 fc A h_mcs _ (discrete_embed fc A h_mcs n).property
 
 /--
 FMCS on ℤ (discrete case): chronicle coherence properties transported through
@@ -2518,21 +2518,21 @@ and `embed(t) < embed(t')` give `φ ∈ f(embed(t'))`.
 noncomputable def discrete_fmcs (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     FMCS (fc := fc) ℤ where
-  mcs := discrete_f A h_mcs h_discrete
-  is_mcs := discrete_f_is_mcs A h_mcs h_discrete
+  mcs := discrete_f fc A h_mcs h_discrete
+  is_mcs := discrete_f_is_mcs fc A h_mcs h_discrete
   forward_G := by
     intro t t' φ h_lt h_G
     have h_embed_lt := discrete_embed_strictMono fc A h_mcs h_lt
     exact limit_forward_G fc A h_mcs
-      (discrete_embed A h_mcs t).val (discrete_embed A h_mcs t').val
-      (discrete_embed A h_mcs t).property (discrete_embed A h_mcs t').property
+      (discrete_embed fc A h_mcs t).val (discrete_embed fc A h_mcs t').val
+      (discrete_embed fc A h_mcs t).property (discrete_embed fc A h_mcs t').property
       h_embed_lt φ h_G
   backward_H := by
     intro t t' φ h_lt h_H
     have h_embed_lt := discrete_embed_strictMono fc A h_mcs h_lt
     exact limit_backward_H fc A h_mcs
-      (discrete_embed A h_mcs t).val (discrete_embed A h_mcs t').val
-      (discrete_embed A h_mcs t).property (discrete_embed A h_mcs t').property
+      (discrete_embed fc A h_mcs t).val (discrete_embed fc A h_mcs t').val
+      (discrete_embed fc A h_mcs t).property (discrete_embed fc A h_mcs t').property
       h_embed_lt φ h_H
 
 /-! ## Discrete Case: Succ-Based Embedding and BFMCS on Z
@@ -2577,7 +2577,7 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula) (h_N
       h_box_discrete
   have h_H_box : Formula.all_past (Formula.box next_top) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (box_to_past (Formula.box next_top))) h_box_box
+      (theorem_in_mcs h_N (liftBase fc (box_to_past (Formula.box next_top)))) h_box_box
   -- Now propagate to x ∈ limit_dom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
   · -- x > 0: G(□(U(T,bot))) ∈ limit_f(0) = N, propagate via limit_forward_G
@@ -2613,14 +2613,14 @@ noncomputable def succ_embed (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
 
 theorem succ_embed_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    succ_embed A h_mcs h_discrete 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
+    succ_embed fc A h_mcs h_discrete 0 = ⟨0, zero_mem_limit_dom fc A h_mcs⟩ := by
   simp [succ_embed]
 
 theorem succ_embed_succ (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (n : ℤ) (hn : 0 ≤ n) :
-    succ_embed A h_mcs h_discrete (n + 1) =
-      limitDomSubtype_succ fc A h_mcs h_discrete (succ_embed A h_mcs h_discrete n) := by
+    succ_embed fc A h_mcs h_discrete (n + 1) =
+      limitDomSubtype_succ fc A h_mcs h_discrete (succ_embed fc A h_mcs h_discrete n) := by
   simp only [succ_embed]
   have h1 : 0 ≤ n + 1 := by omega
   simp only [h1, hn, dite_true]
@@ -2630,8 +2630,8 @@ theorem succ_embed_succ (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalC
 theorem succ_embed_pred (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (n : ℤ) (hn : n ≤ 0) :
-    succ_embed A h_mcs h_discrete (n - 1) =
-      limitDomSubtype_pred fc A h_mcs h_discrete (succ_embed A h_mcs h_discrete n) := by
+    succ_embed fc A h_mcs h_discrete (n - 1) =
+      limitDomSubtype_pred fc A h_mcs h_discrete (succ_embed fc A h_mcs h_discrete n) := by
   set s := limitDomSubtype_succ fc A h_mcs h_discrete
   set p := limitDomSubtype_pred fc A h_mcs h_discrete
   set root : LimitDomSubtype fc A h_mcs := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
@@ -2656,24 +2656,24 @@ The succ-based embedding is strictly monotone.
 -/
 private theorem succ_embed_step (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
-    (n : ℤ) : succ_embed A h_mcs h_discrete n <
-      succ_embed A h_mcs h_discrete (n + 1) := by
+    (n : ℤ) : succ_embed fc A h_mcs h_discrete n <
+      succ_embed fc A h_mcs h_discrete (n + 1) := by
   by_cases hn : 0 ≤ n
-  · rw [succ_embed_succ A h_mcs h_discrete n hn]
-    exact limitDomSubtype_succ_lt A h_mcs h_discrete _
+  · rw [succ_embed_succ fc A h_mcs h_discrete n hn]
+    exact limitDomSubtype_succ_lt fc A h_mcs h_discrete _
   · push_neg at hn
     have hn1 : n + 1 ≤ 0 := by omega
     have h_eq : n = (n + 1) - 1 := by ring
-    rw [h_eq, succ_embed_pred A h_mcs h_discrete (n + 1) hn1]
+    rw [h_eq, succ_embed_pred fc A h_mcs h_discrete (n + 1) hn1]
     have h_eq2 : (n + 1) - 1 + 1 = n + 1 := by ring
     rw [h_eq2]
     exact limitDomSubtype_pred_lt fc A h_mcs h_discrete _
 
 theorem succ_embed_strictMono (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    StrictMono (succ_embed A h_mcs h_discrete) := by
+    StrictMono (succ_embed fc A h_mcs h_discrete) := by
   intro a b hab
-  have h_step := succ_embed_step A h_mcs h_discrete
+  have h_step := succ_embed_step fc A h_mcs h_discrete
   -- Induction on the gap b - a
   obtain ⟨k, hk⟩ : ∃ k : ℕ, b = a + (↑k + 1) := ⟨(b - a - 1).toNat, by omega⟩
   subst hk
@@ -2682,10 +2682,10 @@ theorem succ_embed_strictMono (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
     simp only [Nat.cast_zero, zero_add]
     exact h_step a
   | succ k ih =>
-    calc succ_embed A h_mcs h_discrete a
-      < succ_embed A h_mcs h_discrete (a + (↑k + 1)) := ih (by omega)
-      _ < succ_embed A h_mcs h_discrete (a + (↑k + 1) + 1) := h_step _
-      _ = succ_embed A h_mcs h_discrete (a + (↑(k + 1) + 1)) := by
+    calc succ_embed fc A h_mcs h_discrete a
+      < succ_embed fc A h_mcs h_discrete (a + (↑k + 1)) := ih (by omega)
+      _ < succ_embed fc A h_mcs h_discrete (a + (↑k + 1) + 1) := h_step _
+      _ = succ_embed fc A h_mcs h_discrete (a + (↑(k + 1) + 1)) := by
             congr 1; omega
 
 /--
@@ -2699,29 +2699,29 @@ non-negative n (and symmetrically via pred for negative), the gap-free property 
 theorem succ_embed_no_gap (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (n : ℤ) (w : LimitDomSubtype fc A h_mcs)
-    (h1 : succ_embed A h_mcs h_discrete n < w)
-    (h2 : w < succ_embed A h_mcs h_discrete (n + 1)) : False := by
+    (h1 : succ_embed fc A h_mcs h_discrete n < w)
+    (h2 : w < succ_embed fc A h_mcs h_discrete (n + 1)) : False := by
   by_cases hn : 0 ≤ n
   · -- n ≥ 0: succ_embed(n+1) = succ(succ_embed(n))
-    rw [succ_embed_succ A h_mcs h_discrete n hn] at h2
+    rw [succ_embed_succ fc A h_mcs h_discrete n hn] at h2
     -- succ(succ_embed(n)) is the immediate successor: no points between
     -- succ_embed(n) and succ(succ_embed(n)). From succ_le_iff:
     -- succ(x) ≤ y ↔ x < y. Taking y = w: succ(succ_embed(n)) ≤ w ↔ succ_embed(n) < w.
     -- Since succ_embed(n) < w, we get succ(succ_embed(n)) ≤ w.
     -- But w < succ(succ_embed(n)). Contradiction.
-    have h3 : limitDomSubtype_succ fc A h_mcs h_discrete (succ_embed A h_mcs h_discrete n) ≤ w :=
+    have h3 : limitDomSubtype_succ fc A h_mcs h_discrete (succ_embed fc A h_mcs h_discrete n) ≤ w :=
       (limitDomSubtype_succ_le_iff fc A h_mcs h_discrete _ w).mpr h1
     exact absurd h2 (not_lt.mpr h3)
   · -- n < 0: succ_embed(n) = pred(succ_embed(n+1))
     push_neg at hn
     have hn1 : n + 1 ≤ 0 := by omega
     rw [show n = (n + 1) - 1 from by ring,
-        succ_embed_pred A h_mcs h_discrete (n + 1) hn1] at h1
+        succ_embed_pred fc A h_mcs h_discrete (n + 1) hn1] at h1
     -- pred(succ_embed(n+1)) is the immediate predecessor: no points between
     -- pred(x) and x. From le_pred_iff: a ≤ pred(b) ↔ a < b.
     -- w < succ_embed(n+1), so w ≤ pred(succ_embed(n+1)).
     -- But pred(succ_embed(n+1)) < w. Contradiction.
-    have h3 : w ≤ limitDomSubtype_pred fc A h_mcs h_discrete (succ_embed A h_mcs h_discrete (n + 1)) :=
+    have h3 : w ≤ limitDomSubtype_pred fc A h_mcs h_discrete (succ_embed fc A h_mcs h_discrete (n + 1)) :=
       (limitDomSubtype_le_pred_iff fc A h_mcs h_discrete w _).mpr h2
     exact absurd h1 (not_lt.mpr h3)
 
@@ -2737,15 +2737,15 @@ theorem succ_embed_squeeze (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaxim
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : ℤ) (hab : a ≤ b)
     (w : LimitDomSubtype fc A h_mcs)
-    (hw_lo : succ_embed A h_mcs h_discrete a ≤ w)
-    (hw_hi : w ≤ succ_embed A h_mcs h_discrete b) :
-    ∃ k : ℤ, a ≤ k ∧ k ≤ b ∧ succ_embed A h_mcs h_discrete k = w := by
+    (hw_lo : succ_embed fc A h_mcs h_discrete a ≤ w)
+    (hw_hi : w ≤ succ_embed fc A h_mcs h_discrete b) :
+    ∃ k : ℤ, a ≤ k ∧ k ≤ b ∧ succ_embed fc A h_mcs h_discrete k = w := by
   -- Induction on the gap b - a as a natural number
   suffices h : ∀ (d : ℕ) (a' b' : ℤ), b' - a' = ↑d → a' ≤ b' →
       ∀ (w' : LimitDomSubtype fc A h_mcs),
-      succ_embed A h_mcs h_discrete a' ≤ w' →
-      w' ≤ succ_embed A h_mcs h_discrete b' →
-      ∃ k : ℤ, a' ≤ k ∧ k ≤ b' ∧ succ_embed A h_mcs h_discrete k = w' by
+      succ_embed fc A h_mcs h_discrete a' ≤ w' →
+      w' ≤ succ_embed fc A h_mcs h_discrete b' →
+      ∃ k : ℤ, a' ≤ k ∧ k ≤ b' ∧ succ_embed fc A h_mcs h_discrete k = w' by
     exact h (b - a).toNat a b (by omega) hab w hw_lo hw_hi
   intro d
   induction d with
@@ -2759,10 +2759,10 @@ theorem succ_embed_squeeze (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaxim
     rcases eq_or_lt_of_le hw_lo' with hw_eq | hw_gt
     · exact ⟨a', le_rfl, hab', hw_eq⟩
     · -- succ_embed(a') < w'. By no-gap, succ_embed(a'+1) ≤ w'.
-      have h_a1_le : succ_embed A h_mcs h_discrete (a' + 1) ≤ w' := by
+      have h_a1_le : succ_embed fc A h_mcs h_discrete (a' + 1) ≤ w' := by
         by_contra h_not_le
         push_neg at h_not_le
-        exact succ_embed_no_gap A h_mcs h_discrete a' w' hw_gt h_not_le
+        exact succ_embed_no_gap fc A h_mcs h_discrete a' w' hw_gt h_not_le
       exact (ih (a' + 1) b' (by omega) (by omega) w' h_a1_le hw_hi').imp
         fun k ⟨hk1, hk2, hk3⟩ => ⟨by omega, hk2, hk3⟩
 
@@ -2774,21 +2774,21 @@ theorem succ_embed_squeeze_strict (fc : FrameClass) (A : Set Formula) (h_mcs : S
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : ℤ) (hab : a < b)
     (w : LimitDomSubtype fc A h_mcs)
-    (hw_lo : succ_embed A h_mcs h_discrete a < w)
-    (hw_hi : w < succ_embed A h_mcs h_discrete b) :
-    ∃ k : ℤ, a < k ∧ k < b ∧ succ_embed A h_mcs h_discrete k = w := by
+    (hw_lo : succ_embed fc A h_mcs h_discrete a < w)
+    (hw_hi : w < succ_embed fc A h_mcs h_discrete b) :
+    ∃ k : ℤ, a < k ∧ k < b ∧ succ_embed fc A h_mcs h_discrete k = w := by
   -- succ_embed(a) < w, so by no-gap, succ_embed(a+1) ≤ w
-  have h_a1_le : succ_embed A h_mcs h_discrete (a + 1) ≤ w := by
+  have h_a1_le : succ_embed fc A h_mcs h_discrete (a + 1) ≤ w := by
     by_contra h_not_le
     push_neg at h_not_le
-    exact succ_embed_no_gap A h_mcs h_discrete a w hw_lo h_not_le
+    exact succ_embed_no_gap fc A h_mcs h_discrete a w hw_lo h_not_le
   -- w < succ_embed(b), so w ≤ succ_embed(b-1) by no-gap
-  have h_b1_ge : w ≤ succ_embed A h_mcs h_discrete (b - 1) := by
+  have h_b1_ge : w ≤ succ_embed fc A h_mcs h_discrete (b - 1) := by
     by_contra h_not_le
     push_neg at h_not_le
-    have hstep := succ_embed_step A h_mcs h_discrete (b - 1)
+    have hstep := succ_embed_step fc A h_mcs h_discrete (b - 1)
     rw [show b - 1 + 1 = b from by omega] at hstep
-    exact succ_embed_no_gap A h_mcs h_discrete (b - 1) w h_not_le
+    exact succ_embed_no_gap fc A h_mcs h_discrete (b - 1) w h_not_le
       (by rwa [show b - 1 + 1 = b from by omega])
   -- Now a+1 ≤ b-1 follows from h_a1_le and h_b1_ge
   have hab' : a + 1 ≤ b - 1 := by
@@ -2800,7 +2800,7 @@ theorem succ_embed_squeeze_strict (fc : FrameClass) (A : Set Formula) (h_mcs : S
     subst hba
     rw [show a + 1 - 1 = a from by omega] at h_b1_ge
     exact absurd (lt_of_lt_of_le hw_lo h_b1_ge) (lt_irrefl _)
-  obtain ⟨k, hk_lo, hk_hi, hk_eq⟩ := succ_embed_squeeze A h_mcs h_discrete
+  obtain ⟨k, hk_lo, hk_hi, hk_eq⟩ := succ_embed_squeeze fc A h_mcs h_discrete
     (a + 1) (b - 1) hab' w h_a1_le h_b1_ge
   exact ⟨k, by omega, by omega, hk_eq⟩
 
@@ -2817,7 +2817,7 @@ between `succ^[n](root)` and `succ_embed(n)`.
 theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (w : LimitDomSubtype fc A h_mcs) :
-    ∃ n : ℤ, succ_embed A h_mcs h_discrete n = w := by
+    ∃ n : ℤ, succ_embed fc A h_mcs h_discrete n = w := by
   letI succOrd := limitDomSubtype_succOrder fc A h_mcs h_discrete
   letI predOrd := limitDomSubtype_predOrder fc A h_mcs h_discrete
   letI := limitDomSubtype_isSuccArchimedean fc A h_mcs h_discrete
@@ -2826,11 +2826,11 @@ theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
   set p := limitDomSubtype_pred fc A h_mcs h_discrete
   -- Helper: succ_embed(n) = s^[n](root) for n ≥ 0
   have h_succ_embed_nat : ∀ (n : ℕ),
-      succ_embed A h_mcs h_discrete (↑n) = s^[n] root := by
+      succ_embed fc A h_mcs h_discrete (↑n) = s^[n] root := by
     intro n; unfold succ_embed; simp [Int.toNat_natCast]; rfl
   -- Helper: succ_embed(-n) = p^[n](root) for n ≥ 0
   have h_succ_embed_neg : ∀ (n : ℕ),
-      succ_embed A h_mcs h_discrete (-(↑n)) = p^[n] root := by
+      succ_embed fc A h_mcs h_discrete (-(↑n)) = p^[n] root := by
     intro n
     unfold succ_embed
     cases n with
@@ -2890,18 +2890,18 @@ MCS assignment via the succ-based embedding.
 noncomputable def succ_discrete_f (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     ℤ → Set Formula :=
-  fun n => limit_f fc A h_mcs (succ_embed A h_mcs h_discrete n).val
+  fun n => limit_f fc A h_mcs (succ_embed fc A h_mcs h_discrete n).val
 
 /-- Every integer maps to an MCS via `succ_discrete_f`. -/
 theorem succ_discrete_f_is_mcs (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
-    (n : ℤ) : SetMaximalConsistent (fc := fc) (succ_discrete_f A h_mcs h_discrete n) :=
-  limit_c0 fc A h_mcs _ (succ_embed A h_mcs h_discrete n).property
+    (n : ℤ) : SetMaximalConsistent (fc := fc) (succ_discrete_f fc A h_mcs h_discrete n) :=
+  limit_c0 fc A h_mcs _ (succ_embed fc A h_mcs h_discrete n).property
 
 /-- `succ_discrete_f` at 0 equals A. -/
 theorem succ_discrete_f_at_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    succ_discrete_f A h_mcs h_discrete 0 = A := by
+    succ_discrete_f fc A h_mcs h_discrete 0 = A := by
   simp only [succ_discrete_f, succ_embed_zero]
   exact limit_f_zero fc A h_mcs
 
@@ -2909,8 +2909,8 @@ theorem succ_discrete_f_at_zero (fc : FrameClass) (A : Set Formula) (h_mcs : Set
 theorem box_stable_in_succ_discrete_f (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (φ : Formula) (n : ℤ) :
-    Formula.box φ ∈ succ_discrete_f A h_mcs h_discrete n ↔ Formula.box φ ∈ A := by
-  exact box_stable_in_limit_f fc A h_mcs φ _ (succ_embed A h_mcs h_discrete n).property
+    Formula.box φ ∈ succ_discrete_f fc A h_mcs h_discrete n ↔ Formula.box φ ∈ A := by
+  exact box_stable_in_limit_f fc A h_mcs φ _ (succ_embed fc A h_mcs h_discrete n).property
 
 /--
 FMCS on ℤ via the succ-based embedding. Uses `limit_forward_G` and
@@ -2919,21 +2919,21 @@ FMCS on ℤ via the succ-based embedding. Uses `limit_forward_G` and
 noncomputable def succ_discrete_fmcs (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     FMCS (fc := fc) ℤ where
-  mcs := succ_discrete_f A h_mcs h_discrete
-  is_mcs := succ_discrete_f_is_mcs A h_mcs h_discrete
+  mcs := succ_discrete_f fc A h_mcs h_discrete
+  is_mcs := succ_discrete_f_is_mcs fc A h_mcs h_discrete
   forward_G := by
     intro t t' φ h_lt h_G
-    have h_embed_lt := succ_embed_strictMono A h_mcs h_discrete h_lt
+    have h_embed_lt := succ_embed_strictMono fc A h_mcs h_discrete h_lt
     exact limit_forward_G fc A h_mcs
-      (succ_embed A h_mcs h_discrete t).val (succ_embed A h_mcs h_discrete t').val
-      (succ_embed A h_mcs h_discrete t).property (succ_embed A h_mcs h_discrete t').property
+      (succ_embed fc A h_mcs h_discrete t).val (succ_embed fc A h_mcs h_discrete t').val
+      (succ_embed fc A h_mcs h_discrete t).property (succ_embed fc A h_mcs h_discrete t').property
       h_embed_lt φ h_G
   backward_H := by
     intro t t' φ h_lt h_H
-    have h_embed_lt := succ_embed_strictMono A h_mcs h_discrete h_lt
+    have h_embed_lt := succ_embed_strictMono fc A h_mcs h_discrete h_lt
     exact limit_backward_H fc A h_mcs
-      (succ_embed A h_mcs h_discrete t).val (succ_embed A h_mcs h_discrete t').val
-      (succ_embed A h_mcs h_discrete t).property (succ_embed A h_mcs h_discrete t').property
+      (succ_embed fc A h_mcs h_discrete t).val (succ_embed fc A h_mcs h_discrete t').val
+      (succ_embed fc A h_mcs h_discrete t).property (succ_embed fc A h_mcs h_discrete t').property
       h_embed_lt φ h_H
 
 /--
@@ -2942,16 +2942,16 @@ Shifted FMCS on ℤ: `mcs t := succ_discrete_f(t + offset)`.
 noncomputable def shifted_succ_discrete_fmcs (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (offset : ℤ) : FMCS (fc := fc) ℤ where
-  mcs t := succ_discrete_f A h_mcs h_discrete (t + offset)
-  is_mcs t := succ_discrete_f_is_mcs A h_mcs h_discrete (t + offset)
+  mcs t := succ_discrete_f fc A h_mcs h_discrete (t + offset)
+  is_mcs t := succ_discrete_f_is_mcs fc A h_mcs h_discrete (t + offset)
   forward_G := by
     intro t t' φ h_lt h_G
     have h_lt' : t + offset < t' + offset := by omega
-    exact (succ_discrete_fmcs A h_mcs h_discrete).forward_G (t + offset) (t' + offset) φ h_lt' h_G
+    exact (succ_discrete_fmcs fc A h_mcs h_discrete).forward_G (t + offset) (t' + offset) φ h_lt' h_G
   backward_H := by
     intro t t' φ h_lt h_H
     have h_lt' : t' + offset < t + offset := by omega
-    exact (succ_discrete_fmcs A h_mcs h_discrete).backward_H (t + offset) (t' + offset) φ h_lt' h_H
+    exact (succ_discrete_fmcs fc A h_mcs h_discrete).backward_H (t + offset) (t' + offset) φ h_lt' h_H
 
 /--
 Rooted FMCS on ℤ (discrete case): builds a chronicle for MCS N (with `□(U(⊤,⊥)) ∈ N`
@@ -2959,38 +2959,38 @@ ensuring discreteness), applies the succ embedding, and shifts to place N at tim
 -/
 noncomputable def rooted_succ_discrete_fmcs (fc : FrameClass) (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
     (h_box_discrete_N : Formula.box next_top ∈ N) (s : ℤ) : FMCS (fc := fc) ℤ :=
-  let h_discrete_N := box_discrete_gives_discreteness N h_N h_box_discrete_N
+  let h_discrete_N := box_discrete_gives_discreteness fc N h_N h_box_discrete_N
   -- Offset = -s, so mcs(s) = succ_discrete_f(s + (-s)) = succ_discrete_f(0) = N
-  shifted_succ_discrete_fmcs N h_N h_discrete_N (-s)
+  shifted_succ_discrete_fmcs fc N h_N h_discrete_N (-s)
 
 /--
 The rooted FMCS at `s` has `mcs s = N`.
 -/
 theorem rooted_succ_discrete_fmcs_at_s (fc : FrameClass) (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
     (h_box_discrete_N : Formula.box next_top ∈ N) (s : ℤ) :
-    (rooted_succ_discrete_fmcs N h_N h_box_discrete_N s).mcs s = N := by
+    (rooted_succ_discrete_fmcs fc N h_N h_box_discrete_N s).mcs s = N := by
   simp only [rooted_succ_discrete_fmcs, shifted_succ_discrete_fmcs]
   rw [show s + -s = 0 from by omega]
-  exact succ_discrete_f_at_zero N h_N (box_discrete_gives_discreteness N h_N h_box_discrete_N)
+  exact succ_discrete_f_at_zero fc N h_N (box_discrete_gives_discreteness fc N h_N h_box_discrete_N)
 
 /--
 Box stability for `rooted_succ_discrete_fmcs`:
-`Box φ ∈ (rooted_succ_discrete_fmcs N h_N h_box s).mcs t ↔ Box φ ∈ N`.
+`Box φ ∈ (rooted_succ_discrete_fmcs fc N h_N h_box s).mcs t ↔ Box φ ∈ N`.
 -/
 theorem box_stable_in_rooted_succ_discrete_fmcs (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N) (h_box_discrete_N : Formula.box next_top ∈ N)
     (φ : Formula) (s t : ℤ) :
-    Formula.box φ ∈ (rooted_succ_discrete_fmcs N h_N h_box_discrete_N s).mcs t ↔
+    Formula.box φ ∈ (rooted_succ_discrete_fmcs fc N h_N h_box_discrete_N s).mcs t ↔
       Formula.box φ ∈ N := by
   simp only [rooted_succ_discrete_fmcs, shifted_succ_discrete_fmcs]
-  exact box_stable_in_succ_discrete_f N h_N
-    (box_discrete_gives_discreteness N h_N h_box_discrete_N) φ (t + -s)
+  exact box_stable_in_succ_discrete_f fc N h_N
+    (box_discrete_gives_discreteness fc N h_N h_box_discrete_N) φ (t + -s)
 
 /--
 Bundle of FMCS families on ℤ (discrete case).
 
 Requires `□(U(⊤,⊥)) ∈ A` (box discreteness). Each family is a
-`rooted_succ_discrete_fmcs N h_N h_box_N s` where N is box-equivalent to A
+`rooted_succ_discrete_fmcs fc N h_N h_box_N s` where N is box-equivalent to A
 (hence `□(U(⊤,⊥)) ∈ N` by box-equiv). Each N gets its own chronicle, which
 is discrete by `box_discrete_gives_discreteness`.
 -/
@@ -3000,8 +3000,8 @@ noncomputable def cantor_bfmcs_discrete (fc : FrameClass) (A : Set Formula) (h_m
   families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
     (h_box_N : Formula.box next_top ∈ N) (s : ℤ),
     (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
-    fam = rooted_succ_discrete_fmcs N h_N h_box_N s }
-  nonempty := ⟨rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0,
+    fam = rooted_succ_discrete_fmcs fc N h_N h_box_N s }
+  nonempty := ⟨rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0,
     A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩
   modal_forward := by
     intro fam hfam φ t h_box fam' hfam'
@@ -3038,13 +3038,13 @@ noncomputable def cantor_bfmcs_discrete (fc : FrameClass) (A : Set Formula) (h_m
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
           (h_box_N : Formula.box next_top ∈ N) (s : ℤ),
           (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
-          fam = rooted_succ_discrete_fmcs N h_N h_box_N s } :=
+          fam = rooted_succ_discrete_fmcs fc N h_N h_box_N s } :=
       ⟨v.formulas, v.is_mcs, h_box_discrete_v, t, fun ψ => h_equiv ψ, rfl⟩
     have h_phi_v := h_all (rooted_succ_discrete_fmcs v.formulas v.is_mcs h_box_discrete_v t)
       h_fam_v_mem
     rw [rooted_succ_discrete_fmcs_at_s] at h_phi_v
     exact set_consistent_not_both v.is_mcs.1 φ h_phi_v h_neg_phi_v
-  eval_family := rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0
+  eval_family := rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0
   eval_family_mem := ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩
 
 /-! ## Discrete Restricted Coherence
@@ -3065,13 +3065,13 @@ the squeeze lemma to map C4 witnesses back to integers.
 -/
 theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
-    (cantor_bfmcs_discrete A h_mcs h_box_discrete).restricted_backward_until_since_coherent root := by
+    (cantor_bfmcs_discrete fc A h_mcs h_box_discrete).restricted_backward_until_since_coherent root := by
   intro fam hfam
   obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
-  set h_discrete_N := box_discrete_gives_discreteness N h_N h_box_N
+  set h_discrete_N := box_discrete_gives_discreteness fc N h_N h_box_N
   set offset := (-s : ℤ)
   -- Helper to unfold the fam.mcs definition
-  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs N h_N h_box_N s).mcs t =
+  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs fc N h_N h_box_N s).mcs t =
       limit_f fc N h_N (succ_embed N h_N h_discrete_N (t + offset)).val := by
     intro t; rfl
   constructor
@@ -3086,7 +3086,7 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
         (Formula.untl φ ψ) with h | h
       · exact absurd h h_not_until
       · exact h
-    obtain ⟨z, hz, htz, hzu, hψneg⟩ := limit_satisfies_c4 N h_N
+    obtain ⟨z, hz, htz, hzu, hψneg⟩ := limit_satisfies_c4 fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (u + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property
@@ -3113,7 +3113,7 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
         (Formula.snce φ ψ) with h | h
       · exact absurd h h_not_since
       · exact h
-    obtain ⟨z, hz, huz, hzt, hψneg⟩ := limit_satisfies_c4' N h_N
+    obtain ⟨z, hz, huz, hzt, hψneg⟩ := limit_satisfies_c4' fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (u + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property
@@ -3143,19 +3143,19 @@ theorem cantor_bfmcs_discrete_restricted_tc (fc : FrameClass) (A : Set Formula) 
     (h_box_discrete : Formula.box next_top ∈ A)
     (root : Formula)
     (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
-    (cantor_bfmcs_discrete A h_mcs h_box_discrete).restricted_temporally_coherent root := by
+    (cantor_bfmcs_discrete fc A h_mcs h_box_discrete).restricted_temporally_coherent root := by
   intro fam hfam
   obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
-  set h_discrete_N := box_discrete_gives_discreteness N h_N h_box_N
+  set h_discrete_N := box_discrete_gives_discreteness fc N h_N h_box_N
   set offset := (-s : ℤ)
-  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs N h_N h_box_N s).mcs t =
+  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs fc N h_N h_box_N s).mcs t =
       limit_f fc N h_N (succ_embed N h_N h_discrete_N (t + offset)).val := by
     intro t; rfl
   constructor
   · -- Forward F direction: F(φ) ∈ fam.mcs(t) → ∃ s > t, φ ∈ fam.mcs(s)
     intro t φ _ h_F
     rw [h_mcs_eq] at h_F
-    obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution N h_N
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property φ h_F
     obtain ⟨m, hm⟩ := succ_embed_surjective N h_N h_discrete_N ⟨y, hy⟩
@@ -3171,7 +3171,7 @@ theorem cantor_bfmcs_discrete_restricted_tc (fc : FrameClass) (A : Set Formula) 
   · -- Backward P direction: P(φ) ∈ fam.mcs(t) → ∃ s < t, φ ∈ fam.mcs(s)
     intro t φ _ h_P
     rw [h_mcs_eq] at h_P
-    obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution N h_N
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property φ h_P
     obtain ⟨m, hm⟩ := succ_embed_surjective N h_N h_discrete_N ⟨y, hy⟩
@@ -3196,19 +3196,19 @@ which is covered by the C5 guard.
 -/
 theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
-    (cantor_bfmcs_discrete A h_mcs h_box_discrete).restricted_forward_until_since_coherent root := by
+    (cantor_bfmcs_discrete fc A h_mcs h_box_discrete).restricted_forward_until_since_coherent root := by
   intro fam hfam
   obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
-  set h_discrete_N := box_discrete_gives_discreteness N h_N h_box_N
+  set h_discrete_N := box_discrete_gives_discreteness fc N h_N h_box_N
   set offset := (-s : ℤ)
-  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs N h_N h_box_N s).mcs t =
+  have h_mcs_eq : ∀ t : ℤ, (rooted_succ_discrete_fmcs fc N h_N h_box_N s).mcs t =
       limit_f fc N h_N (succ_embed N h_N h_discrete_N (t + offset)).val := by
     intro t; rfl
   constructor
   · -- Until forward: untl(φ,ψ) ∈ fam.mcs t → ∃ u > t, φ ∈ fam.mcs u ∧ guard
     intro t φ ψ _ h_until
     rw [h_mcs_eq] at h_until
-    obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong N h_N
+    obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property ψ φ h_until
     obtain ⟨m, hm⟩ := succ_embed_surjective N h_N h_discrete_N ⟨y, hy⟩
@@ -3239,7 +3239,7 @@ theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula)
   · -- Since forward: snce(φ,ψ) ∈ fam.mcs t → ∃ u < t, φ ∈ fam.mcs u ∧ guard
     intro t φ ψ _ h_since
     rw [h_mcs_eq] at h_since
-    obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong N h_N
+    obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong fc N h_N
       (succ_embed N h_N h_discrete_N (t + offset)).val
       (succ_embed N h_N h_discrete_N (t + offset)).property ψ φ h_since
     obtain ⟨m, hm⟩ := succ_embed_surjective N h_N h_discrete_N ⟨y, hy⟩
@@ -3279,7 +3279,7 @@ build a countermodel on `Int` where `phi` is false.
 Uses `cantor_bfmcs_discrete` (sorry-free BFMCS) with the three restricted
 coherence conditions (BUC, TC, FUC), all proved via `succ_embed_surjective`
 and `succ_embed_squeeze`/`succ_embed_squeeze_strict`. The eval family is
-`rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0` which has `mcs 0 = A`,
+`rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0` which has `mcs 0 = A`,
 so `neg(phi) in eval_family.mcs 0`.
 -/
 theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -3292,23 +3292,23 @@ theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (
       ¬truth_at TM Omega τ t φ := by
   refine ⟨Int, inferInstance, inferInstance, inferInstance, inferInstance,
     ParametricCanonicalTaskFrame Int, ParametricCanonicalTaskModel Int,
-    ShiftClosedParametricCanonicalOmega (cantor_bfmcs_discrete A h_mcs h_box_discrete),
+    ShiftClosedParametricCanonicalOmega (cantor_bfmcs_discrete fc A h_mcs h_box_discrete),
     shiftClosedParametricCanonicalOmega_is_shift_closed _,
-    parametric_to_history (rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0),
+    parametric_to_history (rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0),
     parametricCanonicalOmega_subset_shiftClosed _
-      ⟨rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0,
+      ⟨rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0,
        ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
-  have h_neg_fam : φ.neg ∈ (rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0).mcs 0 := by
+  have h_neg_fam : φ.neg ∈ (rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0).mcs 0 := by
     rw [rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
   exact fully_restricted_parametric_completeness_from_neg_membership
-    (cantor_bfmcs_discrete A h_mcs h_box_discrete) φ
-    (cantor_bfmcs_discrete_restricted_tc A h_mcs h_box_discrete φ
+    (cantor_bfmcs_discrete fc A h_mcs h_box_discrete) φ
+    (cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (cantor_bfmcs_discrete_restricted_buc A h_mcs h_box_discrete φ)
-    (cantor_bfmcs_discrete_restricted_fuc A h_mcs h_box_discrete φ)
+    (cantor_bfmcs_discrete_restricted_buc fc A h_mcs h_box_discrete φ)
+    (cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_box_discrete φ)
     φ (self_mem_subformulaClosure φ)
-    (rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0)
+    (rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0)
     ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 /--
@@ -3369,6 +3369,6 @@ theorem dd_countermodel_chronicle_mixed_sorry (fc : FrameClass) (A : Set Formula
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  exact False.elim (mcs_mixed_case_absurd A h_mcs h_not_box_dense h_not_box_discrete)
+  exact False.elim (mcs_mixed_case_absurd fc A h_mcs h_not_box_dense h_not_box_discrete)
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
