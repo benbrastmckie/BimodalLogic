@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 3: PointInsertion.lean [NOT STARTED]
+### Phase 3: PointInsertion.lean [IN PROGRESS]
 
 **Goal**: Thread `fc` through all point insertion functions and lemmas. This is the largest single file by reference count (344 refs).
 
