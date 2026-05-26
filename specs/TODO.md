@@ -439,7 +439,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 168. Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
 - **Effort**: large (24 hours, 7 phases)
-- **Status**: [IMPLEMENTING] — Phase 1 complete, paused for agent system update
+- **Status**: [COMPLETED] — All 7 phases done; 6 discrete chronicle sorries resolved by task 197
 - **Task Type**: lean4
 - **Research**: [specs/168_parameterize_derivationtree_over_frameclass/reports/01_research.md]
 - **Plan**: [specs/168_parameterize_derivationtree_over_frameclass/plans/01_implementation-plan.md]
