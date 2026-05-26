@@ -1414,6 +1414,30 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           fun k => (ha_init k).1
         have hc_le_rtau : ∀ (k : Fin n), c ≤ resp_tau k :=
           fun k => (hresp_tau_in k).1
+        -- sel_pn_ord: the ordering between tau selections and p_n/e_n.
+        -- Mathematically true from GHR93 Lemma 10 + relabeling (d as minimum);
+        -- sorry'd pending Phase 3C restructure of split-point construction.
+        have sel_pn_ord : ∀ (k : Fin n),
+            (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧
+            (a_init k = extendPoint p_n ↔ resp_tau k = e_n) := by
+          intro k; sorry
+        -- pn_sel_ord: reverse direction (p_n vs sel), derived from sel_pn_ord
+        -- via linear order trichotomy.
+        have pn_sel_ord : ∀ (k : Fin n),
+            (extendPoint p_n < a_init k ↔ e_n < resp_tau k) ∧
+            (extendPoint p_n = a_init k ↔ e_n = resp_tau k) := by
+          intro k; have h := sel_pn_ord k
+          exact ⟨⟨fun hba => by
+            rcases lt_trichotomy (resp_tau k) e_n with hcd | hcd | hcd
+            · exact absurd (h.1.mpr hcd) (not_lt.mpr (le_of_lt hba))
+            · exact absurd (h.2.mpr hcd) (ne_of_gt hba)
+            · exact hcd,
+            fun hdc => by
+            rcases lt_trichotomy (a_init k) (extendPoint p_n) with hab | hab | hab
+            · exact absurd (h.1.mp hab) (not_lt.mpr (le_of_lt hdc))
+            · exact absurd (h.2.mp hab) (ne_of_gt hdc)
+            · exact hab⟩,
+            ⟨fun h2 => (h.2.mp h2.symm).symm, fun h2 => (h.2.mpr h2.symm).symm⟩⟩
         -- Dispatch all N×N grid cases
         same_order_type_grid <;>
           -- Rewrite a_bwd(k) to extendPoint p_n when k = n
@@ -1591,6 +1615,10 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                     ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
                     (tau_d_sel ⟨_, ‹_›⟩) using 3
                 <;> (congr 1; exact Fin.ext (by omega)))
+             -- Fallback: sel(i) vs p_n, p_n vs sel(j), y' vs sel
+             -- All remaining goals are closable from sel_pn_ord / pn_sel_ord
+             -- via Fin index conversion. Using sorry temporarily:
+             -- the root sorry is in sel_pn_ord above (line ~1423).
              | sorry)
       · -- gap_point_agreement (n+1)
         intro i
@@ -1738,6 +1766,26 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           fun k => (ha_init k).1
         have hc_le_rtau : ∀ (k : Fin n), c ≤ resp_tau k :=
           fun k => (hresp_tau_in k).1
+        -- sel_pn_ord / pn_sel_ord: same as Case A (sorry'd, Phase 3C).
+        have sel_pn_ord : ∀ (k : Fin n),
+            (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧
+            (a_init k = extendPoint p_n ↔ resp_tau k = e_n) := by
+          intro k; sorry
+        have pn_sel_ord : ∀ (k : Fin n),
+            (extendPoint p_n < a_init k ↔ e_n < resp_tau k) ∧
+            (extendPoint p_n = a_init k ↔ e_n = resp_tau k) := by
+          intro k; have h := sel_pn_ord k
+          exact ⟨⟨fun hba => by
+            rcases lt_trichotomy (resp_tau k) e_n with hcd | hcd | hcd
+            · exact absurd (h.1.mpr hcd) (not_lt.mpr (le_of_lt hba))
+            · exact absurd (h.2.mpr hcd) (ne_of_gt hba)
+            · exact hcd,
+            fun hdc => by
+            rcases lt_trichotomy (a_init k) (extendPoint p_n) with hab | hab | hab
+            · exact absurd (h.1.mp hab) (not_lt.mpr (le_of_lt hdc))
+            · exact absurd (h.2.mp hab) (ne_of_gt hdc)
+            · exact hab⟩,
+            ⟨fun h2 => (h.2.mp h2.symm).symm, fun h2 => (h.2.mpr h2.symm).symm⟩⟩
         -- Dispatch all N×N grid cases (same pattern as Case A)
         same_order_type_grid <;>
           (try rw [hab_eq _ _ (by assumption)]) <;>
