@@ -987,14 +987,14 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
   exact h D F M Omega h_sc τ h_mem s
 
 /--
-**Soundness Theorem (Dense-Compatible)**: Derivability implies semantic consequence
-for dense-compatible derivations.
+**Soundness Theorem (Base)**: Derivability in the base system implies semantic consequence.
 
-If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨ φ`.
-Dense-compatibility excludes Prior-UZ/SZ which are only valid on discrete frames.
+If `Γ ⊢[Base] φ`, then `Γ ⊨ φ`.
+The `FrameClass.Base` parameter on `DerivationTree` structurally excludes axioms with
+`minFrameClass > Base` (density, Prior-UZ/SZ, z1) via the `h_fc` gate on the axiom rule.
 
 The proof proceeds by induction on the derivation tree structure:
-- **Axiom**: Use the axiom validity theorems (Prior-UZ/SZ excluded by h_dc)
+- **Axiom**: Use the axiom validity theorems (incompatible axioms excluded by `h_fc`)
 - **Assumption**: If φ ∈ Γ and all of Γ holds, then φ holds
 - **Modus ponens**: If Γ ⊨ φ → ψ and Γ ⊨ φ, then Γ ⊨ ψ
 - **Necessitation**: Uses `necessitation_preserves_valid`
@@ -1002,9 +1002,9 @@ The proof proceeds by induction on the derivation tree structure:
 - **Temporal duality**: Uses `SoundnessLemmas.derivable_implies_swap_valid_general`
 - **Weakening**: Monotonicity of semantic consequence
 
-**Note**: Prior-UZ/SZ are excluded via the `h_dc` guard since they are not universally
-valid (they fail on dense orders like Q). Use `soundness_discrete` for derivations
-containing Prior-UZ/SZ.
+**Note**: Prior-UZ/SZ and z1 are excluded structurally — their `minFrameClass` is
+`Discrete`, which is incomparable to `Base` in the partial order. Use
+`soundness_discrete` for derivations containing these axioms.
 -/
 theorem soundness (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Base Γ φ)
