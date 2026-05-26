@@ -8,9 +8,51 @@
     {
       "project_number": 198,
       "project_name": "prove_frame_class_indicator_forcing",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-26T14:52:05Z",
+      "researched": "2026-05-26T15:30:00Z",
+      "planned": "2026-05-26T18:30:00Z",
+      "session_id": "sess_1779808712_c4ab21",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/198_prove_frame_class_indicator_forcing/reports/01_frame-class-indicator-forcing.md",
+          "type": "research",
+          "summary": "Density axiom GGphi->Gphi is insufficient to derive F'T; needs axiom extension. Discrete case solvable from prior_UZ+serial_future."
+        },
+        {
+          "path": "specs/198_prove_frame_class_indicator_forcing/plans/01_frame-class-indicator-forcing.md",
+          "type": "plan",
+          "summary": "4-phase plan: add dense_indicator axiom+soundness, prove Dense sorry via necessitation, prove Discrete sorry via prior_UZ derivation chain, full build verification"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_frame-class-indicator-forcing.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      },
       "description": "Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. Specifically: (1) completeness_dense line 285: prove that a Dense-MCS necessarily contains □(F'⊤), making the non-dense branch unreachable. The density axiom FFφ → Fφ should force the canonical model's density indicator into every Dense-MCS. (2) completeness_discrete line 317: prove that a Discrete-MCS cannot contain □(F'⊤), making the dense branch unreachable. The discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (next_top = U(⊤,⊥) and its negation F'⊤). Resolution likely requires showing that the density axiom is derivably equivalent to F'⊤ (or that □(F'⊤) is derivable from the density axiom via necessitation), and symmetrically that the discrete axioms are derivably inconsistent with F'⊤. Definition of done: both sorries in completeness_dense and completeness_discrete eliminated, lake build passes, no new sorries."
     },
     {
@@ -508,7 +550,8 @@
     {
       "project_number": 174,
       "project_name": "split_oversized_files",
-      "status": "not_started",
+      "status": "researched",
+      "session_id": "sess_1779809662_d9784a",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines — split by induction level), SoundnessLemmas.lean (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
@@ -517,7 +560,16 @@
       ],
       "created": "2026-05-20T15:55:54Z",
       "last_updated": "2026-05-20T15:55:54Z",
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/174_split_oversized_files/reports/01_split-file-analysis.md",
+          "type": "research",
+          "summary": "File inventory (10 targets), per-file split proposals with section analysis, import impact, recommended execution order"
+        }
+      ]
     },
     {
       "project_number": 175,
@@ -590,17 +642,25 @@
     {
       "project_number": 185,
       "project_name": "complete_axiom_derived_coverage",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-26T18:00:00Z",
+      "session_id": "sess_1779809662_d9784a",
       "artifacts": [
         {
           "path": "specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md",
           "type": "report",
           "summary": "Seed research: axiom coverage gaps and derived theorem inventory"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md",
+          "type": "research",
+          "summary": "Complete axiom coverage matrix (41 constructors), tryAxiomMatch gap analysis, derived theorem inventory, modal_search architecture, implementation plan"
         }
-      ]
+      ],
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 3
     },
     {
       "project_number": 186,
@@ -666,17 +726,25 @@
     {
       "project_number": 190,
       "project_name": "derived_operator_normalization",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-05-26T15:38:45Z",
       "artifacts": [
         {
           "path": "specs/190_derived_operator_normalization/reports/01_normalization-seed.md",
           "type": "report",
           "summary": "Seed research: derived operator inventory and modal_norm tactic design"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/reports/02_modal-norm-research.md",
+          "type": "research",
+          "summary": "Formula type inventory, derived-to-primitive expansion table, modal_norm tactic design with code sketches, integration recommendations"
         }
-      ]
+      ],
+      "session_id": "sess_1779809662_d9784a",
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 3
     },
     {
       "project_number": 191,

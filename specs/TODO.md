@@ -42,7 +42,7 @@ technical_debt:
 197 [COMPLETED] — Parameterize chronicle construction over FrameClass (eliminate 6 sorry workarounds from task 168)
   - **Plan**: [specs/197_parameterize_chronicle_over_frameclass/plans/01_chronicle-fc-parameterization.md]
   └─ 168
-174 [NOT STARTED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
+174 [RESEARCHED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
   └─ 168
 
 ### Phase 1b — Resume 155 (Phase 3 remainder + Phases 5-9, after file splitting)
@@ -82,8 +82,8 @@ technical_debt:
 
 ### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
 
-185 [NOT STARTED] — Complete axiom & derived theorem coverage in modal_search
-190 [NOT STARTED] — Derived operator normalization tactic (modal_norm)
+185 [RESEARCHED] — Complete axiom & derived theorem coverage in modal_search
+190 [RESEARCHED] — Derived operator normalization tactic (modal_norm)
 
 ### Phase 6 — Tactics Tier 2 (engineering)
 
@@ -134,11 +134,13 @@ technical_debt:
 ## Tasks
 
 ### 198. Prove frame-class axioms force canonical model indicator formulas
-- **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: medium (4 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 168, 197
+- **Research**: [specs/198_prove_frame_class_indicator_forcing/reports/01_frame-class-indicator-forcing.md]
+- **Plan**: [specs/198_prove_frame_class_indicator_forcing/plans/01_frame-class-indicator-forcing.md]
 
 **Description**: Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. (1) `completeness_dense` line 285: prove that a Dense-MCS necessarily contains `□(F'⊤)`, making the non-dense branch unreachable — the density axiom `FFφ → Fφ` should force the canonical model's density indicator into every Dense-MCS. (2) `completeness_discrete` line 317: prove that a Discrete-MCS cannot contain `□(F'⊤)`, making the dense branch unreachable — the discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (`next_top = U(⊤,⊥)` and its negation `F'⊤`). Definition of done: both sorries eliminated, `lake build` passes, no new sorries.
 
@@ -257,9 +259,11 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 190. Derived operator normalization tactic (modal_norm)
 - **Effort**: medium (10-12 hours)
-- **Status**: [NOT STARTED]
-- **Research**: [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**:
+  - [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
+  - [specs/190_derived_operator_normalization/reports/02_modal-norm-research.md]
 
 **Description**: Create a `modal_norm` tactic that unfolds all derived operators to primitive form before proof search. The Formula type has 15+ derived operators (diamond, always, sometimes, some_past, some_future, neg, and, or, iff, top, etc.) that expand to combinations of 6 primitives (bot, imp, box, all_future, all_past, untl/snce, atom). AesopRules.lean already defines `@[aesop norm unfold]` for some operators. The tactic should: (1) unfold all derived operators to primitive form, (2) optionally canonicalize negation to `imp ... bot`, (3) support selective normalization (e.g., only unfold modal operators). This significantly reduces the branching factor for proof search since search only needs to handle primitive connectives.
 
@@ -311,9 +315,11 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 185. Complete axiom & derived theorem coverage in modal_search
 - **Effort**: small (6-8 hours)
-- **Status**: [NOT STARTED]
-- **Research**: [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**:
+  - [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]
+  - [specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md]
 
 **Description**: Extend `tryAxiomMatch` in Tactics.lean to cover all axiom schemata (currently 12 of ~16: missing prior_UZ, prior_SZ, serial_future, serial_past, and incomplete connect_future coverage). Add a `tryDerivedMatch` function that registers derived theorems from Combinators.lean (imp_trans, identity, b_combinator, theorem_flip, dni, double_negation) and Propositional.lean (ecq, raa, efq, lce, rce, ldi, rdi, rcp) as additional apply targets in `modal_search`. Add tests for each new pattern. This is the foundational step that all subsequent tactics tasks build upon.
 
@@ -419,10 +425,11 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 174. Split oversized files (> 1500 lines)
 - **Effort**: medium-large (12-20 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 168
+- **Research**: [specs/174_split_oversized_files/reports/01_split-file-analysis.md]
 
 **Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `ExpressivenessGeneral.lean` (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
 
