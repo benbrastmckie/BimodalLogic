@@ -1459,11 +1459,10 @@ theorem derivable_implies_swap_valid [DenselyOrdered D] [Nontrivial D]
 
 /-! ## General (Frame-Class-Free) Versions
 
-The BX axiom system has no density or discreteness extension axioms:
-`Axiom.isDenseCompatible` and `Axiom.isDiscreteCompatible` are both `| _ => True`.
-Therefore `axiom_swap_valid` and `axiom_locally_valid` never actually use the
-`[DenselyOrdered D]` or `[Nontrivial D]` constraints. These general versions
-remove those constraints, enabling soundness proofs for arbitrary frame classes.
+All base axioms (those with `minFrameClass = .Base`) are valid on any linear order,
+without requiring `[DenselyOrdered D]` or `[Nontrivial D]`. These general versions
+remove frame constraints from the swap/locally-valid lemmas, enabling soundness proofs
+for the base frame class without unnecessary hypotheses.
 
 This resolves the 3 `temporal_duality` sorries in Soundness.lean:
 - `soundness` (general, line ~877)
@@ -2124,8 +2123,9 @@ theorem derivable_implies_swap_valid_general [Nontrivial D]
 /-! ## Discrete Frame Versions
 
 The following theorems provide validity and swap-validity for all axioms on discrete
-frames. Prior-UZ/SZ are only valid on discrete orders, so these theorems handle all
-axioms including Prior-UZ/SZ, unlike the general versions which require isDenseCompatible.
+frames. Prior-UZ/SZ have `minFrameClass = .Discrete` and are only valid on discrete orders,
+so these theorems handle all axioms including Prior-UZ/SZ. The discrete frame class
+constraint `h.minFrameClass ≤ .Discrete` structurally excludes the density axiom.
 -/
 
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).

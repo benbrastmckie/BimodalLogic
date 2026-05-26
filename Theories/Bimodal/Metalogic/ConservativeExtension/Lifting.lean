@@ -128,11 +128,11 @@ freshAtom not-in phi.atoms, so the IRR step is preserved unchanged.
 -/
 
 /-- Apply substitution sigma[q -> bot] to a derivation tree. -/
-noncomputable def substDerivation : {Gamma : ExtContext} → {phi : ExtFormula} →
-    ExtDerivationTree Gamma phi →
-    ExtDerivationTree (Gamma.map substFormula) (substFormula phi)
-  | _, _, ExtDerivationTree.axiom _Gamma _phi h =>
-    ExtDerivationTree.axiom _ _ (substAxiom h)
+noncomputable def substDerivation {fc : FrameClass} : {Gamma : ExtContext} → {phi : ExtFormula} →
+    ExtDerivationTree fc Gamma phi →
+    ExtDerivationTree fc (Gamma.map substFormula) (substFormula phi)
+  | _, _, ExtDerivationTree.axiom _Gamma _phi h h_fc =>
+    ExtDerivationTree.axiom _ _ (substAxiom h) (substAxiom_preserves_minFrameClass h ▸ h_fc)
   | _, _, ExtDerivationTree.assumption _Gamma _phi h =>
     ExtDerivationTree.assumption _ _ (List.mem_map_of_mem (f := substFormula) h)
   | _, _, ExtDerivationTree.modus_ponens _Gamma a b d1 d2 =>
@@ -242,6 +242,12 @@ def substAxiomFresh (a : Atom) {φ : ExtFormula} (h : ExtAxiom φ) :
   | prior_UZ x => exact ExtAxiom.prior_UZ _
   | prior_SZ x => exact ExtAxiom.prior_SZ _
   | z1 x => exact ExtAxiom.z1 _
+  | density x => exact ExtAxiom.density _
+
+/-- substFreshWith preserves minFrameClass. -/
+private theorem substAxiomFresh_preserves_minFrameClass (a : Atom) {φ : ExtFormula}
+    (h : ExtAxiom φ) : (substAxiomFresh a h).minFrameClass = h.minFrameClass := by
+  cases h <;> rfl
 
 /-!
 ## Unembedding Axioms: ExtAxiom to Axiom
@@ -290,6 +296,7 @@ def unembedAxiom {φ : ExtFormula} (h : ExtAxiom φ) : Axiom (unembedFormula φ)
   | prior_UZ a => exact Axiom.prior_UZ _
   | prior_SZ a => exact Axiom.prior_SZ _
   | z1 a => exact Axiom.z1 _
+  | density a => exact Axiom.density _
 
 /-- unembedFormula commutes with swap_temporal. -/
 theorem unembed_swap_temporal (φ : ExtFormula) :
@@ -392,9 +399,9 @@ private theorem inl_mem_implies_collectInl {a : Atom} {φ : ExtFormula}
     cases h with | inl h => left; exact iha h | inr h => right; exact ihb h
 
 /-- Collect all Sum.inl atoms from all formulas in an ExtDerivationTree. -/
-private noncomputable def collectDerivInl :
-    {Γ : ExtContext} → {φ : ExtFormula} → ExtDerivationTree Γ φ → Finset Atom
-  | _, _, ExtDerivationTree.axiom _ φ _ => collectInl φ
+private noncomputable def collectDerivInl {fc : FrameClass} :
+    {Γ : ExtContext} → {φ : ExtFormula} → ExtDerivationTree fc Γ φ → Finset Atom
+  | _, _, ExtDerivationTree.axiom _ φ _ _ => collectInl φ
   | _, _, ExtDerivationTree.assumption _ φ _ => collectInl φ
   | _, _, ExtDerivationTree.modus_ponens _ a b d1 d2 =>
     collectInl a ∪ collectInl b ∪ collectDerivInl d1 ∪ collectDerivInl d2
@@ -405,30 +412,36 @@ private noncomputable def collectDerivInl :
     collectInl φ ∪ collectDerivInl d ∪ Δ.foldl (fun acc ψ => acc ∪ collectInl ψ) ∅
 
 /-- Subderivation atoms are included in parent atoms (monotonicity lemmas). -/
-private theorem collectDerivInl_sub_modus_ponens_left {Γ : ExtContext} {a b : ExtFormula}
-    {d1 : ExtDerivationTree Γ (a.imp b)} {d2 : ExtDerivationTree Γ a} :
+private theorem collectDerivInl_sub_modus_ponens_left {fc : FrameClass}
+    {Γ : ExtContext} {a b : ExtFormula}
+    {d1 : ExtDerivationTree fc Γ (a.imp b)} {d2 : ExtDerivationTree fc Γ a} :
     collectDerivInl d1 ⊆ collectDerivInl (ExtDerivationTree.modus_ponens Γ a b d1 d2) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_modus_ponens_right {Γ : ExtContext} {a b : ExtFormula}
-    {d1 : ExtDerivationTree Γ (a.imp b)} {d2 : ExtDerivationTree Γ a} :
+private theorem collectDerivInl_sub_modus_ponens_right {fc : FrameClass}
+    {Γ : ExtContext} {a b : ExtFormula}
+    {d1 : ExtDerivationTree fc Γ (a.imp b)} {d2 : ExtDerivationTree fc Γ a} :
     collectDerivInl d2 ⊆ collectDerivInl (ExtDerivationTree.modus_ponens Γ a b d1 d2) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_nec {φ : ExtFormula} {d : ExtDerivationTree [] φ} :
+private theorem collectDerivInl_sub_nec {fc : FrameClass}
+    {φ : ExtFormula} {d : ExtDerivationTree fc [] φ} :
     collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.necessitation φ d) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_tnec {φ : ExtFormula} {d : ExtDerivationTree [] φ} :
+private theorem collectDerivInl_sub_tnec {fc : FrameClass}
+    {φ : ExtFormula} {d : ExtDerivationTree fc [] φ} :
     collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.temporal_necessitation φ d) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_tdual {φ : ExtFormula} {d : ExtDerivationTree [] φ} :
+private theorem collectDerivInl_sub_tdual {fc : FrameClass}
+    {φ : ExtFormula} {d : ExtDerivationTree fc [] φ} :
     collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.temporal_duality φ d) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_weak {Γ Δ : ExtContext} {φ : ExtFormula}
-    {d : ExtDerivationTree Γ φ} {h : Γ ⊆ Δ} :
+private theorem collectDerivInl_sub_weak {fc : FrameClass}
+    {Γ Δ : ExtContext} {φ : ExtFormula}
+    {d : ExtDerivationTree fc Γ φ} {h : Γ ⊆ Δ} :
     collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.weakening Γ Δ φ d h) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
@@ -566,6 +579,12 @@ private def liftAxiom (a : Atom) {φ : ExtFormula} (h : ExtAxiom φ) :
   | prior_UZ x => exact Axiom.prior_UZ _
   | prior_SZ x => exact Axiom.prior_SZ _
   | z1 x => exact Axiom.z1 _
+  | density x => exact Axiom.density _
+
+/-- liftAxiom preserves minFrameClass. -/
+private theorem liftAxiom_preserves_minFrameClass (a : Atom) {φ : ExtFormula}
+    (h : ExtAxiom φ) : (liftAxiom a h).minFrameClass = h.minFrameClass := by
+  cases h <;> rfl
 
 /-- liftFormula freshness transfer: if Sum.inl t ∉ phi.atoms and t ≠ a,
 then t ∉ (liftFormula a phi).atoms. -/
@@ -606,13 +625,13 @@ private theorem liftFormula_fresh_for_replacement {a : Atom} {phi : ExtFormula}
 by replacing Sum.inr () with Sum.inl a and unembedding.
 
 Requires a to be fresh for the entire derivation (a ∉ collectDerivInl d). -/
-private noncomputable def liftDerivationWith (a : Atom) :
+private noncomputable def liftDerivationWith {fc : FrameClass} (a : Atom) :
     {Γ : ExtContext} → {φ : ExtFormula} →
-    (d : ExtDerivationTree Γ φ) →
+    (d : ExtDerivationTree fc Γ φ) →
     (h_fresh : a ∉ collectDerivInl d) →
-    DerivationTree (Γ.map (liftFormula a)) (liftFormula a φ)
-  | _, _, ExtDerivationTree.axiom Γ φ h_ax, _ =>
-    DerivationTree.axiom _ _ (liftAxiom a h_ax)
+    DerivationTree fc (Γ.map (liftFormula a)) (liftFormula a φ)
+  | _, _, ExtDerivationTree.axiom Γ φ h_ax h_fc, _ =>
+    DerivationTree.axiom _ _ (liftAxiom a h_ax) (liftAxiom_preserves_minFrameClass a h_ax ▸ h_fc)
   | _, _, ExtDerivationTree.assumption Γ φ h_mem, _ =>
     DerivationTree.assumption _ _ (List.mem_map_of_mem (f := liftFormula a) h_mem)
   | _, _, ExtDerivationTree.modus_ponens Γ x y d1 d2, h_fr => by
@@ -658,9 +677,9 @@ This is the key result enabling the irreflexivity proof. The proof works by:
 2. Choosing a fresh atom a not among them
 3. Applying liftDerivationWith a to convert the ExtDerivationTree to a DerivationTree
 4. Using liftFormula_embed to simplify the context and conclusion -/
-theorem lift_derivation_qfree (L : List Formula) (phi : Formula)
-    (d : ExtDerivationTree (L.map embedFormula) (embedFormula phi)) :
-    Nonempty (DerivationTree L phi) := by
+theorem lift_derivation_qfree {fc : FrameClass} (L : List Formula) (phi : Formula)
+    (d : ExtDerivationTree fc (L.map embedFormula) (embedFormula phi)) :
+    Nonempty (DerivationTree fc L phi) := by
   obtain ⟨a, ha⟩ := exists_fresh_atom (collectDerivInl d)
   have lifted := liftDerivationWith a d ha
   -- The context and conclusion simplify via liftFormula_embed

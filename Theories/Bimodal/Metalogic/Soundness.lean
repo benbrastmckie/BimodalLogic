@@ -75,7 +75,8 @@ Soundness is organized by frame class because axioms require different frame con
 All soundness theorems are sorry-free. The discrete soundness theorem uses
 `derivable_implies_swap_valid_discrete` from SoundnessLemmas.lean, which
 proves Prior-UZ/SZ validity via well-founded descent on succ/pred chains.
-Prior-UZ/SZ are excluded from dense-compatible derivations via `isDenseCompatible`.
+Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Dense` constraint
+(their `minFrameClass = .Discrete` is incomparable with `.Dense`).
 
 ## References
 
@@ -1166,8 +1167,10 @@ If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨_dense φ`.
 - `[DenselyOrdered D]`: Required for density axiom (GGφ → Gφ)
 - `[Nontrivial D]`: Required for seriality axioms (provides NoMaxOrder/NoMinOrder)
 
-**Dense Compatibility** (`h_dc : d.isDenseCompatible`):
-Ensures the derivation doesn't use `discreteness_forward` which is invalid on dense frames.
+**Frame Class Constraint** (`fc = .Dense`):
+The `DerivationTree .Dense` parameterization structurally ensures no discrete-specific axioms
+(prior_UZ, prior_SZ, z1) appear in the derivation, since their `minFrameClass = .Discrete`
+is incomparable with `.Dense`.
 
 **Note on IRR rule**: The IRR case uses `soundness_dense_valid` to obtain universal validity,
 then instantiates for the specific model.
@@ -1243,7 +1246,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
     exact SoundnessLemmas.derivable_implies_swap_valid d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))

@@ -872,8 +872,7 @@ theorem next_top_gives_since (A : Set Formula) (h_mcs : SetMaximalConsistent (fc
     Formula.snce top_formula Formula.bot ∈ limit_f A h_mcs x := by
   have h_mcs_x := limit_c0 A h_mcs x hx
   exact SetMaximalConsistent.implication_property h_mcs_x
-    -- TODO(task 168): discrete_symm_fwd requires FrameClass.Discrete, not Base
-    (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd sorry))
+    (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd trivial))
     h_next
 
 /--
@@ -1521,13 +1520,16 @@ private def z1_formula (φ : Formula) : Formula :=
   (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future)
 
 /-- Z1 derivation: `⊢ G(Gφ→φ) → (FGφ→Gφ)`.
-Z1 is an axiom of the system (Axiom.z1), so the derivation is immediate. -/
+BLOCKED(task 168): z1 has minFrameClass = .Discrete, but the chronicle construction
+uses fc := .Base. The correct fix is to parameterize the chronicle infrastructure
+over fc and instantiate with .Discrete for the discrete completeness pipeline.
+This requires a cascade through ChronicleConstruction.lean (70+ FrameClass.Base refs). -/
 private def z1_derivation (φ : Formula) :
     DerivationTree FrameClass.Base [] (z1_formula φ) :=
-  -- TODO(task 168): z1 requires FrameClass.Discrete, not Base
   DerivationTree.axiom [] _ (Axiom.z1 φ) sorry
 
-/-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`. -/
+/-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`.
+BLOCKED(task 168): Same blocker as z1_derivation. -/
 private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     z1_formula φ ∈ S :=
@@ -3329,8 +3331,7 @@ theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent (f
     (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False := by
   -- Step 1: Build the derivation tree for the axiom: U(T,bot) → □(U(T,bot))
   have h_axiom : [] ⊢ next_top.imp (Formula.box next_top) :=
-    -- TODO(task 168): discrete_box_necessity requires FrameClass.Discrete, not Base
-    DerivationTree.axiom [] _ Axiom.discrete_box_necessity sorry
+    DerivationTree.axiom [] _ Axiom.discrete_box_necessity trivial
   -- Step 2: Contrapositive: ¬□(U(T,bot)) → ¬U(T,bot)
   have h_contra : [] ⊢ (Formula.box next_top).neg.imp next_top.neg :=
     Bimodal.Theorems.Propositional.contraposition h_axiom

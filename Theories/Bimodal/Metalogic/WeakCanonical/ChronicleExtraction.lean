@@ -53,8 +53,12 @@ the Prior-UZ axiom instance (for any formula ψ) is in that MCS.
 theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f A h_mcs x :=
+  -- BLOCKED(task 168): prior_UZ has minFrameClass = .Discrete, but the chronicle construction
+  -- uses fc := .Base throughout. The correct fix is to parameterize ChronicleConstruction.lean
+  -- and ChronicleToCountermodel.lean over fc, then instantiate with .Discrete for the discrete
+  -- completeness pipeline. This is a 70+ line cascade through the chronicle files.
+  -- See plan Phase 5.10 for details.
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    -- TODO(task 168): prior_UZ requires FrameClass.Discrete, not Base
     (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) sorry)
 
 /--
@@ -63,8 +67,9 @@ Prior-SZ holds at every point in the limit domain.
 theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f A h_mcs x :=
+  -- BLOCKED(task 168): Same issue as prior_UZ_in_limit_domain.
+  -- prior_SZ has minFrameClass = .Discrete but chronicle uses fc := .Base.
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    -- TODO(task 168): prior_SZ requires FrameClass.Discrete, not Base
     (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) sorry)
 
 /-! ## ChronicleAsPriorModel -/

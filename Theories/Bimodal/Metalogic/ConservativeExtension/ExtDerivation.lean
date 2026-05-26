@@ -13,7 +13,8 @@ to an extended derivation, preserving the proof structure.
 ## Main Definitions
 
 - `ExtAxiom`: Axiom schemata for the extended language (mirrors `Axiom` exactly)
-- `ExtDerivationTree`: Derivation trees in the extended proof system
+- `ExtAxiom.minFrameClass`: Frame class assignment mirroring `Axiom.minFrameClass`
+- `ExtDerivationTree`: Derivation trees parameterized by `FrameClass`
 - `embedAxiom`: Lifting of base axioms to extended axioms
 - `embedDerivation`: Lifting of base derivations to extended derivations
 
@@ -149,28 +150,41 @@ inductive ExtAxiom : ExtFormula → Type where
   | z1 (φ : ExtFormula) :
       ExtAxiom ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future))
 
-/--
-Derivation tree for the extended proof system.
+  -- Layer 8: Density (1)
+  | density (φ : ExtFormula) :
+      ExtAxiom ((φ.all_future.all_future).imp φ.all_future)
 
-Includes all inference rules from the base system.
+/-- Minimum frame class required by an extended axiom, mirroring `Axiom.minFrameClass`. -/
+def ExtAxiom.minFrameClass {φ : ExtFormula} : ExtAxiom φ → FrameClass
+  | density _ => .Dense
+  | prior_UZ _ => .Discrete
+  | prior_SZ _ => .Discrete
+  | z1 _ => .Discrete
+  | _ => .Base
+
+/--
+Derivation tree for the extended proof system, parameterized by `FrameClass`.
+
+The `h_fc` constraint on the `axiom` constructor ensures that only axioms compatible
+with the frame class `fc` can appear in derivations, mirroring `DerivationTree`.
 -/
-inductive ExtDerivationTree : ExtContext → ExtFormula → Type where
-  | axiom (Γ : ExtContext) (φ : ExtFormula) (h : ExtAxiom φ) :
-      ExtDerivationTree Γ φ
+inductive ExtDerivationTree (fc : FrameClass) : ExtContext → ExtFormula → Type where
+  | axiom (Γ : ExtContext) (φ : ExtFormula) (h : ExtAxiom φ) (h_fc : h.minFrameClass ≤ fc) :
+      ExtDerivationTree fc Γ φ
   | assumption (Γ : ExtContext) (φ : ExtFormula) (h : φ ∈ Γ) :
-      ExtDerivationTree Γ φ
+      ExtDerivationTree fc Γ φ
   | modus_ponens (Γ : ExtContext) (φ ψ : ExtFormula)
-      (d1 : ExtDerivationTree Γ (φ.imp ψ))
-      (d2 : ExtDerivationTree Γ φ) : ExtDerivationTree Γ ψ
+      (d1 : ExtDerivationTree fc Γ (φ.imp ψ))
+      (d2 : ExtDerivationTree fc Γ φ) : ExtDerivationTree fc Γ ψ
   | necessitation (φ : ExtFormula)
-      (d : ExtDerivationTree [] φ) : ExtDerivationTree [] (ExtFormula.box φ)
+      (d : ExtDerivationTree fc [] φ) : ExtDerivationTree fc [] (ExtFormula.box φ)
   | temporal_necessitation (φ : ExtFormula)
-      (d : ExtDerivationTree [] φ) : ExtDerivationTree [] (ExtFormula.all_future φ)
+      (d : ExtDerivationTree fc [] φ) : ExtDerivationTree fc [] (ExtFormula.all_future φ)
   | temporal_duality (φ : ExtFormula)
-      (d : ExtDerivationTree [] φ) : ExtDerivationTree [] φ.swap_temporal
+      (d : ExtDerivationTree fc [] φ) : ExtDerivationTree fc [] φ.swap_temporal
   | weakening (Γ Δ : ExtContext) (φ : ExtFormula)
-      (d : ExtDerivationTree Γ φ)
-      (h : Γ ⊆ Δ) : ExtDerivationTree Δ φ
+      (d : ExtDerivationTree fc Γ φ)
+      (h : Γ ⊆ Δ) : ExtDerivationTree fc Δ φ
 
 /-!
 ## Embedding Axioms
@@ -218,6 +232,12 @@ def embedAxiom {φ : Formula} : Axiom φ → ExtAxiom (embedFormula φ)
   | Axiom.prior_UZ a => ExtAxiom.prior_UZ (embedFormula a)
   | Axiom.prior_SZ a => ExtAxiom.prior_SZ (embedFormula a)
   | Axiom.z1 a => ExtAxiom.z1 (embedFormula a)
+  | Axiom.density a => ExtAxiom.density (embedFormula a)
+
+/-- The minFrameClass of an embedded axiom equals the original's minFrameClass. -/
+theorem embedAxiom_preserves_minFrameClass {φ : Formula} (ax : Axiom φ) :
+    (embedAxiom ax).minFrameClass = ax.minFrameClass := by
+  cases ax <;> rfl
 
 /-!
 ## Embedding Derivations
@@ -239,12 +259,12 @@ theorem map_embedFormula_subset {Γ Δ : List Formula} (h : Γ ⊆ Δ) :
 /-- Embed a base derivation into an extended derivation.
 
 This is the key structural lemma: every proof in the base system
-can be replayed in the extended system.
+can be replayed in the extended system. The frame class is preserved.
 -/
-noncomputable def embedDerivation : {Γ : List Formula} → {φ : Formula} →
-    DerivationTree Γ φ → ExtDerivationTree (Γ.map embedFormula) (embedFormula φ)
-  | _, _, DerivationTree.axiom _Γ _φ h =>
-    ExtDerivationTree.axiom _ _ (embedAxiom h)
+noncomputable def embedDerivation {fc : FrameClass} : {Γ : List Formula} → {φ : Formula} →
+    DerivationTree fc Γ φ → ExtDerivationTree fc (Γ.map embedFormula) (embedFormula φ)
+  | _, _, DerivationTree.axiom _Γ _φ h h_fc =>
+    ExtDerivationTree.axiom _ _ (embedAxiom h) (embedAxiom_preserves_minFrameClass h ▸ h_fc)
   | _, _, DerivationTree.assumption _Γ _φ h =>
     ExtDerivationTree.assumption _ _ (mem_map_embedFormula h)
   | _, _, DerivationTree.modus_ponens _Γ a b d1 d2 =>

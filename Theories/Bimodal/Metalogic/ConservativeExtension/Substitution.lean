@@ -242,6 +242,12 @@ def substAxiom {φ : ExtFormula} (h : ExtAxiom φ) : ExtAxiom (substFormula φ) 
   | prior_UZ a => exact ExtAxiom.prior_UZ (substFormula a)
   | prior_SZ a => exact ExtAxiom.prior_SZ (substFormula a)
   | z1 a => exact ExtAxiom.z1 (substFormula a)
+  | density a => exact ExtAxiom.density (substFormula a)
+
+/-- Substitution preserves `minFrameClass`. -/
+theorem substAxiom_preserves_minFrameClass {φ : ExtFormula} (h : ExtAxiom φ) :
+    (substAxiom h).minFrameClass = h.minFrameClass := by
+  cases h <;> rfl
 
 /-!
 ## List Substitution
