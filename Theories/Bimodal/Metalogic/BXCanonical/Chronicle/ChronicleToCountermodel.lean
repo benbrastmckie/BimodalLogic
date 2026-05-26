@@ -560,24 +560,24 @@ noncomputable def cantor_bfmcs_dense (fc : FrameClass) (A : Set Formula) (h_mcs 
     -- ◇(¬φ) ∈ A
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
       Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
-    -- Modal witness: v box-equivalent to A with ¬φ ∈ v
-    obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨A, h_mcs⟩ (Formula.neg φ) h_diamond_neg
+        (liftBase fc (Bimodal.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
+    -- Modal witness: v box-equivalent to A with ¬φ ∈ v (fc-parameterized)
+    obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ) h_diamond_neg
     -- v is box-equivalent to A, so □(F'T) ∈ v
-    have h_box_dense_v : Formula.box next_top.neg ∈ v.formulas :=
+    have h_box_dense_v : Formula.box next_top.neg ∈ v :=
       (h_equiv next_top.neg).mp h_box_dense
     -- rooted_cantor_fmcs_dense v t is in families
-    have h_fam_v_mem : rooted_cantor_fmcs_dense v.formulas v.is_mcs h_box_dense_v t ∈
+    have h_fam_v_mem : rooted_cantor_fmcs_dense fc v h_v_mcs h_box_dense_v t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
           (h_box_N : Formula.box next_top.neg ∈ N) (s : Rat),
           (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
           fam = rooted_cantor_fmcs_dense fc N h_N h_box_N s } :=
-      ⟨v.formulas, v.is_mcs, h_box_dense_v, t, fun ψ => h_equiv ψ, rfl⟩
-    -- h_all gives φ ∈ rooted(v, t).mcs t = v.formulas
-    have h_phi_v := h_all (rooted_cantor_fmcs_dense v.formulas v.is_mcs h_box_dense_v t) h_fam_v_mem
+      ⟨v, h_v_mcs, h_box_dense_v, t, fun ψ => h_equiv ψ, rfl⟩
+    -- h_all gives φ ∈ rooted(v, t).mcs t = v
+    have h_phi_v := h_all (rooted_cantor_fmcs_dense fc v h_v_mcs h_box_dense_v t) h_fam_v_mem
     rw [rooted_cantor_fmcs_dense_at_s] at h_phi_v
-    -- Contradiction: φ and ¬φ both in v.formulas
-    exact set_consistent_not_both v.is_mcs.1 φ h_phi_v h_neg_phi_v
+    -- Contradiction: φ and ¬φ both in v
+    exact set_consistent_not_both h_v_mcs.1 φ h_phi_v h_neg_phi_v
   eval_family := rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
   eval_family_mem := ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
 
@@ -1718,15 +1718,15 @@ private theorem succ_cofinal (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
       -- K-distribution: ⊢ G(ψ.neg.neg → ψ) → (G(ψ.neg.neg) → G(ψ))
       have h_dist : DerivationTree fc [] ((ψ.neg.neg.imp ψ).all_future.imp
           (ψ.neg.neg.all_future.imp ψ.all_future)) :=
-        Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ.neg.neg ψ
+        liftBase fc (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ.neg.neg ψ)
       -- Modus ponens: ⊢ G(ψ.neg.neg) → G(ψ)
       have h_G_impl : DerivationTree fc [] (ψ.neg.neg.all_future.imp ψ.all_future) :=
         DerivationTree.modus_ponens [] _ _ h_dist h_G_dne
       -- Contrapositive: ⊢ ¬G(ψ) → ¬G(ψ.neg.neg)
       -- Note: ¬G(ψ.neg.neg) = (ψ.neg.neg.all_future).neg = F(ψ.neg)  (definitionally)
       have h_contra : DerivationTree fc [] (ψ.all_future.neg.imp ψ.neg.neg.all_future.neg) := by
-        have h_cp := Bimodal.Theorems.TemporalDerived.contrapositive
-          ψ.neg.neg.all_future ψ.all_future
+        have h_cp := liftBase fc (Bimodal.Theorems.TemporalDerived.contrapositive
+          ψ.neg.neg.all_future ψ.all_future)
         exact DerivationTree.modus_ponens [] _ _ h_cp h_G_impl
       -- Apply in MCS: F(ψ.neg) ∈ limit_f(x)
       -- F(ψ.neg) = ψ.neg.some_future = ψ.neg.neg.all_future.neg  (by definition)
@@ -2280,7 +2280,7 @@ The strict order `[a] < [b]` is defined as `a < b ∧ a ≁ b` (well-defined by
 `collapse_class_sep`). The `≤` relation is `= ∨ <`, and totality follows
 from the trichotomy on the underlying `LimitDomSubtype`.
 -/
-noncomputable instance collapseClass_linearOrder (A : Set Formula)
+noncomputable instance collapseClass_linearOrder (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     LinearOrder (CollapseClass fc A h_mcs h_discrete) := by
@@ -3030,20 +3030,20 @@ noncomputable def cantor_bfmcs_discrete (fc : FrameClass) (A : Set Formula) (h_m
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
       Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
-    obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨A, h_mcs⟩ (Formula.neg φ) h_diamond_neg
-    have h_box_discrete_v : Formula.box next_top ∈ v.formulas :=
+        (liftBase fc (Bimodal.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
+    obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ) h_diamond_neg
+    have h_box_discrete_v : Formula.box next_top ∈ v :=
       (h_equiv next_top).mp h_box_discrete
-    have h_fam_v_mem : rooted_succ_discrete_fmcs v.formulas v.is_mcs h_box_discrete_v t ∈
+    have h_fam_v_mem : rooted_succ_discrete_fmcs fc v h_v_mcs h_box_discrete_v t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
           (h_box_N : Formula.box next_top ∈ N) (s : ℤ),
           (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
           fam = rooted_succ_discrete_fmcs fc N h_N h_box_N s } :=
-      ⟨v.formulas, v.is_mcs, h_box_discrete_v, t, fun ψ => h_equiv ψ, rfl⟩
-    have h_phi_v := h_all (rooted_succ_discrete_fmcs v.formulas v.is_mcs h_box_discrete_v t)
+      ⟨v, h_v_mcs, h_box_discrete_v, t, fun ψ => h_equiv ψ, rfl⟩
+    have h_phi_v := h_all (rooted_succ_discrete_fmcs fc v h_v_mcs h_box_discrete_v t)
       h_fam_v_mem
     rw [rooted_succ_discrete_fmcs_at_s] at h_phi_v
-    exact set_consistent_not_both v.is_mcs.1 φ h_phi_v h_neg_phi_v
+    exact set_consistent_not_both h_v_mcs.1 φ h_phi_v h_neg_phi_v
   eval_family := rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0
   eval_family_mem := ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩
 
