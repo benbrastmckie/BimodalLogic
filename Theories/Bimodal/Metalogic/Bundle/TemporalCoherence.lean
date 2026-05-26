@@ -3,7 +3,7 @@ import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!

@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
 # CanonicalTask Relation for Discrete Temporal Frames

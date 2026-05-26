@@ -1,7 +1,9 @@
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
 import Bimodal.Syntax.Subformulas
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.Closure
+import Bimodal.Syntax.SubformulaClosure.NestingDepth
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
 # Bimodal.Syntax - Formula Syntax

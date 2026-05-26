@@ -1,6 +1,6 @@
 import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicChain
 import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicFMCS
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 import Mathlib.Data.Finset.Powerset
 
 -- Deep API drift: DeterministicChain and DeterministicFMCS behind #exit.

@@ -220,17 +220,17 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split SoundnessLemmas.lean (2407 lines) into 3 focused modules aligned with frame-class boundaries.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in SoundnessLemmas.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/SoundnessLemmas/`
-- [ ] Create `SoundnessLemmas/Core.lean` (~160 lines): `is_valid` definition, `truth_at_swap_swap`, core infrastructure shared by all frame-class variants. Module docstring: "Core validity definitions and swap infrastructure for soundness proofs."
-- [ ] Create `SoundnessLemmas/DenseValidity.lean` (~1310 lines): Swap validity, local validity, combined soundness theorems for the dense frame class. Module docstring: "Axiom and rule validity for the dense frame class."
-- [ ] Create `SoundnessLemmas/FrameClassVariants.lean` (~950 lines): General (Base) frame class and discrete frame class validity variants. Module docstring: "Soundness lemmas for general and discrete frame classes."
-- [ ] Add module docstrings to all three new files
-- [ ] Map importers: `Metalogic.lean` imports `Bimodal.Metalogic.SoundnessLemmas`; `Soundness.lean` imports `Bimodal.Metalogic.SoundnessLemmas`
-- [ ] Update `Theories/Bimodal/Metalogic.lean`: change to direct import of the specific module(s) it needs
-- [ ] Update `Theories/Bimodal/Metalogic/Soundness.lean`: change to direct import of the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in SoundnessLemmas.lean
+- [x] Create directory `Theories/Bimodal/Metalogic/SoundnessLemmas/`
+- [x] Create `SoundnessLemmas/Core.lean` (106 lines): `is_valid` definition, `truth_at_swap_swap`, core infrastructure. Module docstring: "Core Validity Definitions and Swap Infrastructure for Soundness Proofs"
+- [x] Create `SoundnessLemmas/DenseValidity.lean` (1338 lines): Swap validity, local validity, combined soundness theorems for the dense frame class. Module docstring: "Axiom and Rule Validity for the Dense Frame Class"
+- [x] Create `SoundnessLemmas/FrameClassVariants.lean` (971 lines): General (Base) and discrete frame class validity variants. Module docstring: "Soundness Lemmas for General and Discrete Frame Classes"
+- [x] Add module docstrings to all three new files
+- [x] Map importers: `Metalogic.lean` and `Soundness.lean` (2 importers as planned)
+- [x] Update `Theories/Bimodal/Metalogic.lean`: imports all three modules (Core, DenseValidity, FrameClassVariants)
+- [x] Update `Theories/Bimodal/Metalogic/Soundness.lean`: imports FrameClassVariants
+- [x] Delete `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2.5 hours
 
@@ -259,16 +259,16 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split DedekindZ.lean (2236 lines) into 2 focused modules within the existing `Separation/DedekindZ/` directory path.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in DedekindZ.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ/`
-- [ ] Create `DedekindZ/QLemma.lean` (~520 lines): K+/K- definitions, Q-lemma (forward and backward), Q_Z syntactic properties, Case 3 equivalence for Z. Module docstring: "K+/K- operators and Q-lemma for Dedekind-complete integer orders."
-- [ ] Create `DedekindZ/Cases.lean` (~1710 lines): Replace-U infrastructure, congruence lemmas, Cases 5-8 separability proofs (Case 5, Case 6 infrastructure + direct formula, Case 7, Case 8). Module docstring: "Cases 5-8 separability on Z via replacement and direct-formula construction."
-- [ ] Add module docstrings to both new files
-- [ ] Map importers: `Hierarchy.lean` and `NormalForm.lean` import `Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ`
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`: change to direct import of the specific module(s) it needs
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NormalForm.lean`: change to direct import of the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in DedekindZ.lean
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ/`
+- [x] Create `DedekindZ/QLemma.lean` (459 lines): K+/K- definitions, Q-lemma, Q_Z syntactic properties. Module docstring: "K+/K- Operators and Q-Lemma for Dedekind-Complete Integer Orders"
+- [x] Create `DedekindZ/Cases.lean` (1768 lines): Replace-U infrastructure, congruence lemmas, Cases 5-8 separability proofs. Module docstring: "Cases 5-8 Separability on Z via Replacement and Direct-Formula Construction"
+- [x] Add module docstrings to both new files
+- [x] Map importers: `Hierarchy.lean` and `NormalForm.lean` (2 importers as planned)
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Hierarchy.lean`: imports Cases
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NormalForm.lean`: imports Cases
+- [x] Delete `Theories/Bimodal/Metalogic/WeakCanonical/Separation/DedekindZ.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2.5 hours
 
@@ -291,21 +291,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Split IntegerModel.lean (2 importers) [IN PROGRESS]
+### Phase 7: Split IntegerModel.lean (2 importers) [COMPLETED]
 
 **Goal**: Split IntegerModel.lean (1816 lines) into 2 focused modules at the good/very-good boundary.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in IntegerModel.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/`
-- [ ] Create `IntegerModel/GoodStructures.lean` (~930 lines): Z-interval structures, good structures, succ-iteration, transitivity helpers (Reynolds Lemma 17), contemporaneous equivalence, no gaps in discrete orders, one-class theorem. Module docstring: "Good Z-interval structures: foundations, succ-iteration, and the one-class theorem."
-- [ ] Create `IntegerModel/ShiftAndGlue.lean` (~890 lines): Very good -> good (Reynolds Lemma 16), half-open partition, shift-and-glue helpers, chronicle-is-good. Module docstring: "Shift-and-glue construction: very-good to good via Reynolds Lemma 16."
-- [ ] Add module docstrings to both new files
-- [ ] Map importers: `Transfer.lean` and `WeakCanonical.lean` import `Bimodal.Metalogic.WeakCanonical.IntegerModel`
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`: change to direct import of the specific module(s) it needs
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean`: change to direct import of the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in IntegerModel.lean
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/`
+- [x] Create `IntegerModel/GoodStructures.lean` (909 lines): Z-interval structures, good structures, succ-iteration, transitivity helpers, contemporaneous equivalence, one-class theorem. Module docstring: "Good Z-Interval Structures: Foundations, Succ-Iteration, and the One-Class Theorem"
+- [x] Create `IntegerModel/ShiftAndGlue.lean` (904 lines): Very-good→good, half-open partition, shift-and-glue helpers, chronicle-is-good. Module docstring: "Shift-and-Glue Construction: Very-Good to Good via Reynolds Lemma 16"
+- [x] Add module docstrings to both new files
+- [x] Map importers: `Transfer.lean` and `WeakCanonical.lean` (2 importers as planned)
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`: imports GoodStructures
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean`: imports GoodStructures + ShiftAndGlue
+- [x] Delete `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2.5 hours
 
@@ -370,7 +370,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Split SubformulaClosure.lean (7 active importers, 3-file split) [NOT STARTED]
+### Phase 9: Split SubformulaClosure.lean (7 active importers, 3-file split) [IN PROGRESS]
 
 **Goal**: Split SubformulaClosure.lean (1889 lines in `Theories/Bimodal/Syntax/`) into 3 focused modules. Note: only `Bimodal.Syntax.SubformulaClosure` is being split (1889 lines); the separate `BXCanonical/Quasimodel/SubformulaClosure.lean` (112 lines) is not affected.
 

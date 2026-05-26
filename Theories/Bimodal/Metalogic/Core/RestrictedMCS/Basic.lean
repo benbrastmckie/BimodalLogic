@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.NestingDepth
 import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation

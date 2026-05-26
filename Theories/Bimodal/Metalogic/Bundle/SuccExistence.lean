@@ -6,7 +6,7 @@ import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Completeness
 import Bimodal.Theorems.GeneralizedNecessitation
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
 # Succ Successor and Predecessor Existence

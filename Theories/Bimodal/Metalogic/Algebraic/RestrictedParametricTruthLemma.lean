@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
 # Restricted Parametric Truth Lemma

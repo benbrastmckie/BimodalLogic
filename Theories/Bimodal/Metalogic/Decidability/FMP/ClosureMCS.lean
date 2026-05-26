@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Core.RestrictedMCS.Basic
 import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.Closure
 
 /-!
 # Closure MCS Infrastructure for FMP

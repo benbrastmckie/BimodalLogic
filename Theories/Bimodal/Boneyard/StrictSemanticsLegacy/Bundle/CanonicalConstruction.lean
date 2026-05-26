@@ -10,7 +10,7 @@ import Bimodal.Semantics.TaskFrame
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Formula
-import Bimodal.Syntax.SubformulaClosure
+import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Propositional
 
