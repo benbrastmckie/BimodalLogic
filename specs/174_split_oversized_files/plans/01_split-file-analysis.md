@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Split Tactics.lean (1 importer) [NOT STARTED]
+### Phase 2: Split Tactics.lean (1 importer) [COMPLETED]
 
 **Goal**: Split Tactics.lean (1342 lines) into 2 focused modules. Only `Automation.lean` imports it.
 
@@ -141,7 +141,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Split ProofSearch.lean (2 importers) [NOT STARTED]
+### Phase 3: Split ProofSearch.lean (2 importers) [COMPLETED]
 
 **Goal**: Split ProofSearch.lean (1388 lines) into 2 focused modules.
 
@@ -178,7 +178,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Split RestrictedMCS.lean (2 importers) [NOT STARTED]
+### Phase 4: Split RestrictedMCS.lean (2 importers) [COMPLETED]
 
 **Goal**: Split RestrictedMCS.lean (1407 lines) into 2 focused modules at the boundary between closure-restricted and deferral-restricted MCS.
 
