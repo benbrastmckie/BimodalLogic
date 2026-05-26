@@ -1,35 +1,10 @@
 import Bimodal.Metalogic.Core.RestrictedMCS.Basic
 import Bimodal.Metalogic.Bundle.SuccExistence
 
-/-!
-# Deferral-Restricted MCS: Closure Under Derivation and Deferral-Specific Properties
-
-MCS restricted to deferralClosure(phi) instead of closureWithNeg(phi).
-The deferralClosure includes the deferral disjunctions needed by the
-successor seed construction while preserving the same F/P-depth bounds.
-
-## Main Definitions
-
-- `DeferralRestricted`: A set is deferral-restricted if it's a subset of deferralClosure
-- `DeferralRestrictedConsistent`: Deferral-restricted and set-consistent
-- `DeferralRestrictedMCS`: Maximal consistent within deferralClosure
-- `deferral_restricted_lindenbaum`: Extends consistent deferral-restricted set to DRM
-
-## Key Properties
-
-- `deferral_restricted_mcs_negation_complete`: Negation completeness for subformulaClosure
-- `drm_closed_under_derivation`: Closure under derivation for deferralClosure formulas
-- `drm_implication_property`: Modus ponens reflected in membership
-- `theorem_in_drm`: Theorems in deferralClosure are in any DRM
-- `drm_G_neg_implies_not_F`: G(neg phi) excludes F(phi)
-
--/
-
 namespace Bimodal.Metalogic.Core
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
-open Bimodal.Metalogic.Bundle
 
 /-!
 ## Deferral-Restricted MCS
@@ -49,7 +24,7 @@ def DeferralRestricted (phi : Formula) (S : Set Formula) : Prop :=
 A deferral-restricted set that is also set-consistent.
 -/
 def DeferralRestrictedConsistent (phi : Formula) (S : Set Formula) : Prop :=
-  DeferralRestricted phi S ∧ SetConsistent S
+  DeferralRestricted phi S ∧ SetConsistent (fc := FrameClass.Base) S
 
 /--
 Maximal consistent within the deferral closure: cannot be extended within
@@ -57,7 +32,7 @@ deferralClosure while remaining consistent.
 -/
 def DeferralRestrictedMCS (phi : Formula) (S : Set Formula) : Prop :=
   DeferralRestrictedConsistent phi S ∧
-  ∀ psi ∈ deferralClosure phi, psi ∉ S → ¬SetConsistent (insert psi S)
+  ∀ psi ∈ deferralClosure phi, psi ∉ S → ¬SetConsistent (fc := FrameClass.Base) (insert psi S)
 
 /--
 A deferral restricted MCS is deferral-restricted.
@@ -70,7 +45,7 @@ theorem deferral_restricted_mcs_is_restricted {phi : Formula} {S : Set Formula}
 A deferral restricted MCS is set-consistent.
 -/
 theorem deferral_restricted_mcs_is_consistent {phi : Formula} {S : Set Formula}
-    (h : DeferralRestrictedMCS phi S) : SetConsistent S :=
+    (h : DeferralRestrictedMCS phi S) : SetConsistent (fc := FrameClass.Base) S :=
   h.1.2
 
 /--
@@ -94,7 +69,7 @@ Deferral-Restricted Lindenbaum's Lemma: Every deferral-restricted consistent set
 extended to a deferral-restricted maximal consistent set.
 -/
 theorem deferral_restricted_lindenbaum (phi : Formula) (S : Set Formula)
-    (h_restricted : DeferralRestricted phi S) (h_cons : SetConsistent S) :
+    (h_restricted : DeferralRestricted phi S) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     ∃ M : Set Formula, S ⊆ M ∧ DeferralRestrictedMCS phi M := by
   -- Define the collection of deferral-restricted consistent supersets
   let RCS := {T | S ⊆ T ∧ DeferralRestrictedConsistent phi T}
@@ -171,7 +146,7 @@ theorem deferral_restricted_mcs_negation_complete {phi : Formula} {S : Set Formu
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
-    have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+    have h_bot : Nonempty (DerivationTree FrameClass.Base L Formula.bot) := inconsistent_derives_bot h_L_incons
     obtain ⟨d_bot⟩ := h_bot
     let Γ := L.filter (· ≠ psi)
     have h_Γ_in_S : ∀ χ ∈ Γ, χ ∈ S := by
@@ -190,14 +165,14 @@ theorem deferral_restricted_mcs_negation_complete {phi : Formula} {S : Set Formu
       · simp only [List.mem_cons]
         right
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-    have d_bot' : DerivationTree (psi :: Γ) Formula.bot :=
+    have d_bot' : DerivationTree FrameClass.Base (psi :: Γ) Formula.bot :=
       DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
-    have d_neg : DerivationTree Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
+    have d_neg : DerivationTree FrameClass.Base Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
     have h_incons_neg := h_mcs.2 psi.neg h_neg_dc h_neg_not
     unfold SetConsistent at h_incons_neg
     push_neg at h_incons_neg
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
-    have h_bot'' : Nonempty (DerivationTree L' Formula.bot) := inconsistent_derives_bot h_L'_incons
+    have h_bot'' : Nonempty (DerivationTree FrameClass.Base L' Formula.bot) := inconsistent_derives_bot h_L'_incons
     obtain ⟨d_bot''⟩ := h_bot''
     let Δ := L'.filter (· ≠ psi.neg)
     have h_Δ_in_S : ∀ χ ∈ Δ, χ ∈ S := by
@@ -216,9 +191,9 @@ theorem deferral_restricted_mcs_negation_complete {phi : Formula} {S : Set Formu
       · simp only [List.mem_cons]
         right
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-    have d_bot''' : DerivationTree (psi.neg :: Δ) Formula.bot :=
+    have d_bot''' : DerivationTree FrameClass.Base (psi.neg :: Δ) Formula.bot :=
       DerivationTree.weakening L' (psi.neg :: Δ) Formula.bot d_bot'' h_L'_sub_psiΔ
-    have d_neg_neg : DerivationTree Δ psi.neg.neg :=
+    have d_neg_neg : DerivationTree FrameClass.Base Δ psi.neg.neg :=
       deduction_theorem Δ psi.neg Formula.bot d_bot'''
     let ΓΔ := Γ ++ Δ
     have h_ΓΔ_in_S : ∀ χ ∈ ΓΔ, χ ∈ S := by
@@ -227,11 +202,11 @@ theorem deferral_restricted_mcs_negation_complete {phi : Formula} {S : Set Formu
       rcases hχ with hχΓ | hχΔ
       · exact h_Γ_in_S χ hχΓ
       · exact h_Δ_in_S χ hχΔ
-    have d_neg' : DerivationTree ΓΔ psi.neg :=
+    have d_neg' : DerivationTree FrameClass.Base ΓΔ psi.neg :=
       DerivationTree.weakening Γ ΓΔ _ d_neg (List.subset_append_left Γ Δ)
-    have d_neg_neg' : DerivationTree ΓΔ psi.neg.neg :=
+    have d_neg_neg' : DerivationTree FrameClass.Base ΓΔ psi.neg.neg :=
       DerivationTree.weakening Δ ΓΔ _ d_neg_neg (List.subset_append_right Γ Δ)
-    have d_bot_final : DerivationTree ΓΔ Formula.bot :=
+    have d_bot_final : DerivationTree FrameClass.Base ΓΔ Formula.bot :=
       derives_bot_from_phi_neg_phi d_neg' d_neg_neg'
     exact h_mcs.1.2 ΓΔ h_ΓΔ_in_S ⟨d_bot_final⟩
 
@@ -255,7 +230,7 @@ theorem deferral_restricted_mcs_double_neg_elim {phi : Formula} {M : Set Formula
   push_neg at h_incons
   obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
   -- L derives bot
-  have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+  have h_bot : Nonempty (DerivationTree FrameClass.Base L Formula.bot) := inconsistent_derives_bot h_L_incons
   obtain ⟨d_bot⟩ := h_bot
   -- Extract Gamma = L \ {psi}, so Gamma ⊆ M
   let Γ := L.filter (· ≠ psi)
@@ -277,10 +252,10 @@ theorem deferral_restricted_mcs_double_neg_elim {phi : Formula} {M : Set Formula
       right
       exact List.mem_filter.mpr ⟨hχ, by simpa⟩
   -- Weaken: (psi :: Gamma) derives bot
-  have d_bot' : DerivationTree (psi :: Γ) Formula.bot :=
+  have d_bot' : DerivationTree FrameClass.Base (psi :: Γ) Formula.bot :=
     DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
   -- By deduction: Gamma derives neg psi
-  have d_neg_psi : DerivationTree Γ (Formula.neg psi) :=
+  have d_neg_psi : DerivationTree FrameClass.Base Γ (Formula.neg psi) :=
     deduction_theorem Γ psi Formula.bot d_bot'
   -- We have neg(neg psi) in M, so from DNE: {neg(neg psi)} derives psi
   have d_dne : [] ⊢ (Formula.neg (Formula.neg psi)).imp psi :=
@@ -290,7 +265,7 @@ theorem deferral_restricted_mcs_double_neg_elim {phi : Formula} {M : Set Formula
   have d_assumption : [Formula.neg (Formula.neg psi)] ⊢ Formula.neg (Formula.neg psi) :=
     DerivationTree.assumption [Formula.neg (Formula.neg psi)] (Formula.neg (Formula.neg psi))
       (List.mem_singleton.mpr rfl)
-  have d_psi_from_neg_neg : DerivationTree [Formula.neg (Formula.neg psi)] psi :=
+  have d_psi_from_neg_neg : DerivationTree FrameClass.Base [Formula.neg (Formula.neg psi)] psi :=
     DerivationTree.modus_ponens _ _ _ d_dne_ctx d_assumption
   -- Combine: (neg(neg psi) :: Gamma) derives psi and neg psi, hence bot
   let Δ := (Formula.neg (Formula.neg psi)) :: Γ
@@ -305,11 +280,11 @@ theorem deferral_restricted_mcs_double_neg_elim {phi : Formula} {M : Set Formula
     simp only [List.mem_singleton] at hx
     subst hx
     exact @List.mem_cons_self _ (Formula.neg (Formula.neg psi)) Γ
-  have d_psi' : DerivationTree Δ psi :=
+  have d_psi' : DerivationTree FrameClass.Base Δ psi :=
     DerivationTree.weakening [Formula.neg (Formula.neg psi)] Δ psi d_psi_from_neg_neg h_subset1
-  have d_neg_psi' : DerivationTree Δ (Formula.neg psi) :=
+  have d_neg_psi' : DerivationTree FrameClass.Base Δ (Formula.neg psi) :=
     DerivationTree.weakening Γ Δ _ d_neg_psi (List.subset_cons_of_subset _ (List.Subset.refl _))
-  have d_bot_final : DerivationTree Δ Formula.bot :=
+  have d_bot_final : DerivationTree FrameClass.Base Δ Formula.bot :=
     derives_bot_from_phi_neg_phi d_psi' d_neg_psi'
   -- Contradiction: Δ ⊆ M but Δ derives bot, contradicting consistency
   exact h_mcs.1.2 Δ h_Δ_in_M ⟨d_bot_final⟩
@@ -407,7 +382,7 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
     Bimodal.Theorems.past_necessitation _ h_dne
   have h_bx3' : [] ⊢ (psi.neg.neg.imp psi).all_past.imp
       ((Formula.snce psi.neg.neg Formula.top).imp (Formula.snce psi Formula.top)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_since psi.neg.neg psi Formula.top)
+    DerivationTree.axiom [] _ (Axiom.right_mono_since psi.neg.neg psi Formula.top) trivial
   have h_P_mono : [] ⊢ (Formula.some_past psi.neg.neg).imp (Formula.some_past psi) :=
     DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dne
   have h_contra : [] ⊢ (Formula.some_past psi).neg.imp (Formula.some_past psi.neg.neg).neg :=
@@ -648,26 +623,26 @@ which contradicts L ⊢ φ when L ⊆ M.
 theorem drm_closed_under_derivation {phi : Formula} {M : Set Formula}
     (h_mcs : DeferralRestrictedMCS phi M) {ψ : Formula}
     (L : List Formula) (h_sub : ∀ χ ∈ L, χ ∈ M)
-    (h_deriv : DerivationTree L ψ)
+    (h_deriv : DerivationTree FrameClass.Base L ψ)
     (h_ψ_dc : ψ ∈ deferralClosure phi) : ψ ∈ M := by
   by_contra h_not_mem
   -- By DRM maximality, insert ψ M is inconsistent
-  have h_incons : ¬SetConsistent (insert ψ M) := h_mcs.2 ψ h_ψ_dc h_not_mem
+  have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert ψ M) := h_mcs.2 ψ h_ψ_dc h_not_mem
   unfold SetConsistent at h_incons
   push_neg at h_incons
   obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
   -- L' ⊆ insert ψ M and L' is inconsistent
   by_cases h_psi_in_L' : ψ ∈ L'
   · -- ψ ∈ L'. Use exchange to put ψ first, then deduction theorem.
-    have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+    have ⟨d_bot⟩ : Nonempty (DerivationTree FrameClass.Base L' Formula.bot) := by
       unfold Consistent at h_L'_incons
       push_neg at h_L'_incons
       exact h_L'_incons
     let L'_filt := L'.filter (fun y => decide (y ≠ ψ))
     have h_perm := cons_filter_neq_perm h_psi_in_L'
-    have d_bot_reord : DerivationTree (ψ :: L'_filt) Formula.bot :=
+    have d_bot_reord : DerivationTree FrameClass.Base (ψ :: L'_filt) Formula.bot :=
       derivation_exchange d_bot (fun x => (h_perm x).symm)
-    have d_neg_psi : DerivationTree L'_filt (Formula.neg ψ) :=
+    have d_neg_psi : DerivationTree FrameClass.Base L'_filt (Formula.neg ψ) :=
       deduction_theorem L'_filt ψ Formula.bot d_bot_reord
     -- L'_filt ⊆ M
     have h_filt_sub : ∀ χ ∈ L'_filt, χ ∈ M := by
@@ -686,11 +661,11 @@ theorem drm_closed_under_derivation {phi : Formula} {M : Set Formula}
       cases hχ with
       | inl hL => exact h_sub χ hL
       | inr hL' => exact h_filt_sub χ hL'
-    have d_psi' : DerivationTree LL' ψ :=
+    have d_psi' : DerivationTree FrameClass.Base LL' ψ :=
       DerivationTree.weakening L LL' ψ h_deriv (List.subset_append_left L L'_filt)
-    have d_neg_psi' : DerivationTree LL' (Formula.neg ψ) :=
+    have d_neg_psi' : DerivationTree FrameClass.Base LL' (Formula.neg ψ) :=
       DerivationTree.weakening L'_filt LL' _ d_neg_psi (List.subset_append_right L L'_filt)
-    have d_bot_final : DerivationTree LL' Formula.bot :=
+    have d_bot_final : DerivationTree FrameClass.Base LL' Formula.bot :=
       derives_bot_from_phi_neg_phi d_psi' d_neg_psi'
     exact h_mcs.1.2 LL' h_LL'_sub ⟨d_bot_final⟩
   · -- ψ ∉ L', so L' ⊆ M
@@ -721,7 +696,7 @@ theorem drm_implication_property {phi : Formula} {M : Set Formula}
     cases h_mem with
     | inl h_eq => exact h_eq ▸ h_psi
     | inr h_eq => exact h_eq ▸ h_imp
-  have h_deriv : DerivationTree [ψ, ψ.imp χ] χ := by
+  have h_deriv : DerivationTree FrameClass.Base [ψ, ψ.imp χ] χ := by
     have h_assume_psi : [ψ, ψ.imp χ] ⊢ ψ :=
       DerivationTree.assumption [ψ, ψ.imp χ] ψ (by simp)
     have h_assume_imp : [ψ, ψ.imp χ] ⊢ ψ.imp χ :=
@@ -743,12 +718,6 @@ theorem theorem_in_drm {phi : Formula} {M : Set Formula}
     simp only [List.mem_nil_iff] at h
   exact drm_closed_under_derivation h_mcs [] h_sub h_thm h_ψ_dc
 
--- NOTE: neg_FF_implies_GG_neg_in_drm was removed (Task 167) because:
--- 1. It was dead code with no callers
--- 2. The MCS version (neg_FF_implies_GG_neg_in_mcs) is used on the critical path
--- 3. If a DRM version is needed in the future, the temporalBlockingSet provides
---    the necessary H(¬chi)/G(¬chi) formulas in deferralClosure
-
 /--
 G(neg phi) in DeferralRestrictedMCS implies F(phi) not in DeferralRestrictedMCS.
 
@@ -769,7 +738,7 @@ theorem drm_G_neg_implies_not_F {phi : Formula} {M : Set Formula}
     DerivationTree.temporal_necessitation _ h_dni
   have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).all_future.imp
       ((Formula.untl psi Formula.top).imp (Formula.untl psi.neg.neg Formula.top)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until psi psi.neg.neg Formula.top)
+    DerivationTree.axiom [] _ (Axiom.right_mono_until psi psi.neg.neg Formula.top) trivial
   have h_F_mono : [] ⊢ (Formula.some_future psi).imp (Formula.some_future psi.neg.neg) :=
     DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
   -- Build: [F(psi), G(¬psi)] ⊢ ⊥

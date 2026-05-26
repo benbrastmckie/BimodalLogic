@@ -1,22 +1,10 @@
 import Bimodal.Automation.Tactics.Helpers
 
-/-!
-# User-facing proof tactics: modal_search, temporal_search, and tm_auto.
-
-This module provides the main proof automation tactics for TM bimodal logic:
-
-- `SearchConfig` structure with presets (default, temporal, propositional)
-- `modal_search` - General bounded proof search for TM derivability goals
-- `temporal_search` - Search optimized for temporal formulas
-- `propositional_search` - Search for purely propositional formulas
-- `tm_auto` - Alias for `modal_search` (replaces previous Aesop-based version)
-- Test suite verifying all tactics
--/
-
-open Bimodal.Syntax Bimodal.ProofSystem
-open Lean Elab Tactic Meta
-
 namespace Bimodal.Automation
+
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Lean Elab Tactic Meta
 
 /-!
 ### Phase 1.6: Configuration Structure
@@ -147,7 +135,7 @@ def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
@@ -195,7 +183,7 @@ def runTemporalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "temporal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
@@ -251,7 +239,7 @@ def runPropositionalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
@@ -405,11 +393,6 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 -- example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
 --   temporal_search (depth := 5)
 example : True := trivial
-
--- Test 21: SearchConfig structure works
-#check (SearchConfig.default : SearchConfig)
-#check (SearchConfig.temporal : SearchConfig)
-#check (SearchConfig.propositional : SearchConfig)
 
 /-!
 ### Phase 1.8 Tests: Specialized Tactics

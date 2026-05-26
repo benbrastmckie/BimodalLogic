@@ -1,13 +1,5 @@
 import Bimodal.Automation.ProofSearch.Core
 
-/-! # Advanced Search Strategies
-
-Advanced search strategies: IDDFS, best-first, and learning-enabled proof search.
-
-Best-first search with priority queue, search strategy configuration,
-unified search interface, learning-enabled search, and batch search.
--/
-
 namespace Bimodal.Automation
 
 open Bimodal.Syntax
@@ -370,18 +362,18 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (proof : DerivationTree [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
+example : ∃ (proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
   let p := Formula.atom_s "p"
-  ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p), trivial⟩
+  ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial, trivial⟩
 
 /-- Example: Search with depth 2 for modus ponens application -/
-example (p q : Formula) (h1 : DerivationTree [] p) (h2 : DerivationTree [] (p.imp q)) :
-    ∃ (proof : DerivationTree [] q), True :=
+example (p q : Formula) (h1 : ⊢ p) (h2 : ⊢ (p.imp q)) :
+    ∃ (proof : ⊢ q), True :=
   ⟨DerivationTree.modus_ponens [] p q h2 h1, trivial⟩
 
 /-- Example: Modal K search requires context transformation -/
-example (p : Formula) (h : DerivationTree [p.box] p) :
-    ∃ (proof : DerivationTree [p.box] p.box), True :=
+example (p : Formula) (h : [p.box] ⊢ p) :
+    ∃ (proof : [p.box] ⊢ p.box), True :=
   ⟨DerivationTree.assumption [p.box] p.box (by simp), trivial⟩
 
 end Bimodal.Automation

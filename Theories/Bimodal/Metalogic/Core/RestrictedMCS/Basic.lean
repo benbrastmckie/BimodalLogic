@@ -4,6 +4,7 @@ import Bimodal.Syntax.SubformulaClosure
 import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
+import Bimodal.Metalogic.Bundle.SuccExistence
 
 /-!
 # Closure-Restricted Maximal Consistent Sets and Lindenbaum Construction
@@ -63,7 +64,7 @@ def ClosureRestricted (S : Set Formula) : Prop :=
 A closure-restricted set that is also set-consistent.
 -/
 def RestrictedConsistent (S : Set Formula) : Prop :=
-  ClosureRestricted phi S ∧ SetConsistent S
+  ClosureRestricted phi S ∧ SetConsistent (fc := FrameClass.Base) S
 
 /--
 Maximal consistent within the closure: cannot be extended within closure
@@ -71,7 +72,7 @@ while remaining consistent.
 -/
 def RestrictedMCS (S : Set Formula) : Prop :=
   RestrictedConsistent phi S ∧
-  ∀ psi ∈ closureWithNeg phi, psi ∉ S → ¬SetConsistent (insert psi S)
+  ∀ psi ∈ closureWithNeg phi, psi ∉ S → ¬SetConsistent (fc := FrameClass.Base) (insert psi S)
 
 variable {phi : Formula}
 
@@ -90,7 +91,7 @@ theorem restricted_consistent_is_restricted {S : Set Formula}
 A restricted consistent set is set-consistent.
 -/
 theorem restricted_consistent_is_consistent {S : Set Formula}
-    (h : RestrictedConsistent phi S) : SetConsistent S :=
+    (h : RestrictedConsistent phi S) : SetConsistent (fc := FrameClass.Base) S :=
   h.2
 
 /--
@@ -104,7 +105,7 @@ theorem restricted_mcs_is_restricted_consistent {S : Set Formula}
 A restricted MCS is set-consistent.
 -/
 theorem restricted_mcs_is_consistent {S : Set Formula}
-    (h : RestrictedMCS phi S) : SetConsistent S :=
+    (h : RestrictedMCS phi S) : SetConsistent (fc := FrameClass.Base) S :=
   h.1.2
 
 /--
@@ -147,13 +148,13 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
     -- Now we need to show psi.neg ∈ S
     by_contra h_neg_not
 
-    -- From h_incons: ¬SetConsistent (insert psi S)
+    -- From h_incons: ¬SetConsistent (fc := FrameClass.Base) (insert psi S)
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
 
     -- L is inconsistent, so L ⊢ ⊥
-    have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+    have h_bot : Nonempty (DerivationTree FrameClass.Base L Formula.bot) := inconsistent_derives_bot h_L_incons
     obtain ⟨d_bot⟩ := h_bot
 
     -- Define Γ = L.filter (· ≠ psi)
@@ -181,11 +182,11 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
 
     -- Weaken derivation from L to psi :: Γ
-    have d_bot' : DerivationTree (psi :: Γ) Formula.bot :=
+    have d_bot' : DerivationTree FrameClass.Base (psi :: Γ) Formula.bot :=
       DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
 
     -- By deduction theorem, Γ ⊢ psi.neg
-    have d_neg : DerivationTree Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
+    have d_neg : DerivationTree FrameClass.Base Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
 
     -- Since psi.neg ∉ S and psi.neg ∈ closureWithNeg, by maximality
     -- insert psi.neg S is inconsistent
@@ -197,7 +198,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
 
     -- L' is inconsistent, so L' ⊢ ⊥
-    have h_bot'' : Nonempty (DerivationTree L' Formula.bot) := inconsistent_derives_bot h_L'_incons
+    have h_bot'' : Nonempty (DerivationTree FrameClass.Base L' Formula.bot) := inconsistent_derives_bot h_L'_incons
     obtain ⟨d_bot''⟩ := h_bot''
 
     -- Define Δ = L'.filter (· ≠ psi.neg)
@@ -225,11 +226,11 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
 
     -- Weaken derivation from L' to psi.neg :: Δ
-    have d_bot''' : DerivationTree (psi.neg :: Δ) Formula.bot :=
+    have d_bot''' : DerivationTree FrameClass.Base (psi.neg :: Δ) Formula.bot :=
       DerivationTree.weakening L' (psi.neg :: Δ) Formula.bot d_bot'' h_L'_sub_psiΔ
 
     -- By deduction theorem, Δ ⊢ psi.neg.neg
-    have d_neg_neg : DerivationTree Δ psi.neg.neg :=
+    have d_neg_neg : DerivationTree FrameClass.Base Δ psi.neg.neg :=
       deduction_theorem Δ psi.neg Formula.bot d_bot'''
 
     -- Combine Γ and Δ
@@ -242,13 +243,13 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       · exact h_Δ_in_S χ hχΔ
 
     -- Weaken both derivations to ΓΔ
-    have d_neg' : DerivationTree ΓΔ psi.neg :=
+    have d_neg' : DerivationTree FrameClass.Base ΓΔ psi.neg :=
       DerivationTree.weakening Γ ΓΔ _ d_neg (List.subset_append_left Γ Δ)
-    have d_neg_neg' : DerivationTree ΓΔ psi.neg.neg :=
+    have d_neg_neg' : DerivationTree FrameClass.Base ΓΔ psi.neg.neg :=
       DerivationTree.weakening Δ ΓΔ _ d_neg_neg (List.subset_append_right Γ Δ)
 
     -- Combine to get ⊥ from psi.neg and psi.neg.neg
-    have d_bot_final : DerivationTree ΓΔ Formula.bot :=
+    have d_bot_final : DerivationTree FrameClass.Base ΓΔ Formula.bot :=
       derives_bot_from_phi_neg_phi d_neg' d_neg_neg'
 
     -- This contradicts consistency of S
@@ -306,7 +307,7 @@ to terminate.
 3. Maximal element is a RestrictedMCS
 -/
 theorem restricted_lindenbaum (phi : Formula) (S : Set Formula)
-    (h_restricted : ClosureRestricted phi S) (h_cons : SetConsistent S) :
+    (h_restricted : ClosureRestricted phi S) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     ∃ M : Set Formula, S ⊆ M ∧ RestrictedMCS phi M := by
   -- Define the collection of restricted consistent supersets
   let RCS := RestrictedConsistentSupersets phi S
@@ -346,7 +347,7 @@ theorem restricted_lindenbaum (phi : Formula) (S : Set Formula)
   · -- Show RestrictedMCS phi M
     constructor
     · exact hMrc
-    · -- Show ∀ psi ∈ closureWithNeg phi, psi ∉ M → ¬SetConsistent (insert psi M)
+    · -- Show ∀ psi ∈ closureWithNeg phi, psi ∉ M → ¬SetConsistent (fc := FrameClass.Base) (insert psi M)
       intro psi h_psi_clos h_psi_not_M hcons_insert
       -- If insert psi M were consistent, then insert psi M ∈ RCS
       have h_insert_restricted : ClosureRestricted phi (insert psi M) := by
@@ -376,7 +377,7 @@ to a RestrictedMCS containing psi.
 -/
 theorem restricted_mcs_exists_containing (phi psi : Formula)
     (h_psi_clos : psi ∈ closureWithNeg phi)
-    (h_cons : SetConsistent {psi}) :
+    (h_cons : SetConsistent (fc := FrameClass.Base) {psi}) :
     ∃ M : Set Formula, psi ∈ M ∧ RestrictedMCS phi M := by
   -- {psi} is closure-restricted since psi ∈ closureWithNeg
   have h_restricted : ClosureRestricted phi {psi} := by
@@ -397,12 +398,12 @@ a RestrictedMCS containing phi.
 This is the key entry point for BFMCS construction.
 -/
 theorem restricted_mcs_from_formula (phi : Formula)
-    (h_cons : ¬Nonempty (DerivationTree [] phi.neg)) :
+    (h_cons : ¬Nonempty (DerivationTree FrameClass.Base [] phi.neg)) :
     ∃ M : Set Formula, phi ∈ M ∧ RestrictedMCS phi M := by
   -- phi is in closureWithNeg phi
   have h_phi_clos : phi ∈ closureWithNeg phi := self_mem_closureWithNeg phi
   -- {phi} is consistent (follows from phi.neg not being a theorem)
-  have h_singleton_cons : SetConsistent {phi} := by
+  have h_singleton_cons : SetConsistent (fc := FrameClass.Base) {phi} := by
     intro L hL
     intro ⟨d⟩
     by_cases h_phi_in_L : phi ∈ L
@@ -412,10 +413,10 @@ theorem restricted_mcs_from_formula (phi : Formula)
         have := hL x hx
         simp only [Set.mem_singleton_iff] at this
         simp [this]
-      have d_phi : DerivationTree [phi] Formula.bot :=
+      have d_phi : DerivationTree FrameClass.Base [phi] Formula.bot :=
         DerivationTree.weakening L [phi] _ d h_weak
       -- By deduction theorem: ⊢ phi → ⊥ = ⊢ phi.neg
-      have d_neg : DerivationTree [] phi.neg :=
+      have d_neg : DerivationTree FrameClass.Base [] phi.neg :=
         deduction_theorem [] phi Formula.bot d_phi
       exact h_cons ⟨d_neg⟩
     · -- phi ∉ L, so L ⊆ {phi} means L = []
@@ -431,8 +432,8 @@ theorem restricted_mcs_from_formula (phi : Formula)
       -- [] ⊢ ⊥ means bot is a theorem
       rw [h_L_empty] at d
       -- But ⊢ ⊥ implies ⊢ phi.neg (weakening)
-      have d_neg : DerivationTree [] phi.neg := by
-        have d_efq := DerivationTree.axiom [] (Formula.bot.imp phi.neg) (Axiom.ex_falso phi.neg)
+      have d_neg : DerivationTree FrameClass.Base [] phi.neg := by
+        have d_efq := DerivationTree.axiom (fc := FrameClass.Base) [] (Formula.bot.imp phi.neg) (Axiom.ex_falso phi.neg) trivial
         exact DerivationTree.modus_ponens [] _ _ d_efq d
       exact h_cons ⟨d_neg⟩
   exact restricted_mcs_exists_containing phi phi h_phi_clos h_singleton_cons
@@ -647,5 +648,6 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     have h_eq : min_n - 1 + 1 = min_n := by omega
     rw [h_eq]
     exact h_min_not
+
 
 end Bimodal.Metalogic.Core

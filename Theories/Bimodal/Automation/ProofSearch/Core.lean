@@ -5,12 +5,177 @@ import Bimodal.Semantics
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Theorems.Combinators
 
-/-! # Core Proof Search
+/-!
+# Automated Proof Search
 
-Core proof search: axiom matching, heuristics, and bounded depth-first search.
+This module implements automated proof search for the TM bimodal logic system,
+including IDDFS, best-first search, and success pattern learning.
 
-Types, helper functions, heuristic scoring, bounded DFS, matchDerived,
-bounded_search_with_proof, and IDDFS search.
+## Main Functions
+
+- `search`: Unified search interface with configurable strategy (recommended)
+- `search_with_learning`: Search with pattern learning for repeated proofs
+- `bestFirst_search`: Priority queue-based best-first search
+- `iddfs_search`: Iterative deepening DFS with completeness guarantees
+- `bounded_search`: Depth-limited DFS (may miss deep proofs)
+- `batch_search_with_learning`: Batch search with cumulative pattern learning
+
+## Search Strategies
+
+### SearchStrategy.IDDFS (Default - Recommended for Axioms)
+
+Iterative Deepening Depth-First Search (IDDFS) combines the completeness of BFS
+with the space efficiency of DFS by running depth-limited searches with
+increasing depth limits.
+
+**Properties**:
+- **Complete**: Guaranteed to find a proof if one exists (within maxDepth)
+- **Optimal**: Guaranteed to find the shortest proof (minimum depth)
+- **Space efficient**: O(d) space complexity where d = solution depth
+- **Time complexity**: O(b^d) where b = branching factor
+
+**Best for**: Axiom-like goals, shallow proofs, memory-constrained environments
+
+### SearchStrategy.BoundedDFS
+
+Traditional depth-limited DFS. Faster for shallow proofs but may miss proofs
+beyond the depth limit. Not complete or optimal.
+
+**Best for**: Quick shallow searches where depth bound is known
+
+### SearchStrategy.BestFirst (Recommended for Context-Based Goals)
+
+Priority queue-based best-first search that explores nodes by f-score (cost + heuristic).
+Uses pattern-aware heuristics for intelligent branch ordering.
+
+**Properties**:
+- **Guided**: Explores promising branches first based on heuristics
+- **Adaptive**: Leverages success pattern history for improved ordering
+- **Complete**: Guaranteed to find proof if one exists (within expansion limit)
+
+**Best for**: Context-based goals (with hypotheses), modus ponens chains
+
+## Strategy Selection Guide
+
+| Goal Type | Recommended Strategy | Reason |
+|-----------|---------------------|--------|
+| Axiom match | IDDFS-20 | Fast, depth-1 usually suffices |
+| Modal K rule | IDDFS-20 | Predictable depth structure |
+| Temporal K rule | IDDFS-20 | Predictable depth structure |
+| Context assumption | BestFirst-1000 | Benefits from heuristic ordering |
+| Modus ponens chain | BestFirst-10000 | Heuristics guide antecedent search |
+| Unknown complexity | IDDFS-100 | Safe default with completeness |
+
+## Success Pattern Learning
+
+The pattern learning system (`SuccessPatterns.lean`) records successful proofs
+and uses them to guide future searches:
+
+1. **Pattern Recording**: After each successful proof, the formula's structural
+   pattern (modal depth, temporal depth, complexity) is recorded along with the
+   successful strategy.
+
+2. **Heuristic Boosting**: When searching similar formulas, strategies that
+   previously succeeded receive priority boosts (-10 for >80% success rate,
+   -5 for >50%, -2 for >20%).
+
+3. **Depth Hints**: Average successful depth is tracked to suggest depth limits.
+
+**Usage**:
+```lean
+-- Search with learning (pattern database is updated)
+let result := search_with_learning Γ φ
+let updatedDb := result.patternDb
+
+-- Batch search accumulates patterns
+let finalResult := batch_search_with_learning benchmarks PatternDatabase.empty
+```
+
+## Heuristic Tuning
+
+The `HeuristicWeights` structure controls search behavior:
+
+| Weight | Default | Effect |
+|--------|---------|--------|
+| `axiomWeight` | 0 | Priority for axiom matching (lower = try first) |
+| `assumptionWeight` | 1 | Priority for context lookup |
+| `mpBase` | 3 | Base cost for modus ponens |
+| `mpPerAntecedent` | 1 | Additional cost per antecedent complexity |
+| `modalKWeight` | 5 | Cost for modal K rule application |
+| `temporalKWeight` | 5 | Cost for temporal K rule application |
+
+**Weight Presets**:
+- Default: Balanced for general proofs
+- Modal-Optimized: `modalKWeight := 2` - prioritize modal reasoning
+- Temporal-Optimized: `temporalKWeight := 2` - prioritize temporal reasoning
+- Low-Context: `assumptionWeight := 5` - deprioritize context search
+
+## Complexity Analysis
+
+| Strategy | Time | Space | Complete | Optimal |
+|----------|------|-------|----------|---------|
+| IDDFS | O(b^d) | O(d) | Yes | Yes |
+| BoundedDFS | O(b^d) | O(d) | No | No |
+| BestFirst | O(b^d) | O(b^d) | Yes | Heuristic-dep |
+
+Where b = branching factor, d = depth of shallowest solution.
+
+## Benchmark Results
+
+| Category | IDDFS | BestFirst | Winner |
+|----------|-------|-----------|--------|
+| Modal axioms (5) | 5/5, 5 visits | 5/5, 5 visits | Tie |
+| Temporal axioms (3) | 3/3, 3 visits | 3/3, 3 visits | Tie |
+| Propositional (4) | 4/4, 4 visits | 4/4, 4 visits | Tie |
+| Context-based (3) | 1/3, 39 visits | 3/3, 6 visits | **BestFirst** |
+
+BestFirst significantly outperforms IDDFS on context-based goals requiring
+modus ponens or assumption lookup in larger contexts.
+
+## Implementation Status
+
+**Implemented**:
+- ✓ Bounded DFS with heuristics and caching
+- ✓ Iterative deepening DFS (IDDFS) with completeness guarantees
+- ✓ Best-first search with priority queue
+- ✓ Success pattern learning with `PatternDatabase`
+- ✓ Pattern-aware heuristic scoring
+- ✓ SearchStrategy enum with unified interface
+- ✓ Visit limit enforcement
+- ✓ Search statistics tracking
+- ✓ Domain-specific heuristics (modal, temporal, structure)
+- ✓ Comprehensive benchmark suite
+
+**Future Work**:
+- Proof term construction (blocked by Axiom Prop vs Type issue)
+- Adaptive strategy selection based on goal analysis
+
+## Example Usage
+
+```lean
+-- Use IDDFS (default, complete and optimal)
+let (found, cache, visited, stats, visits) := search [] myFormula
+
+-- Use BestFirst for context-based goals
+let (found, _, _, _, _) := search Γ myFormula (.BestFirst 10000)
+
+-- Use search with pattern learning
+let result := search_with_learning Γ myFormula (.IDDFS 100)
+-- result.patternDb contains updated pattern database
+
+-- Batch search with cumulative learning
+let benchmarks := [("goal1", [], φ1), ("goal2", [], φ2)]
+let finalResult := batch_search_with_learning benchmarks
+```
+
+## References
+
+* Korf, R.E. (1985). Depth-first iterative-deepening: An optimal admissible
+  tree search. Artificial Intelligence, 27(1), 97-109.
+* Yang et al. (2019). Learning to Prove Theorems via Interacting with
+  Proof Assistants. ICML.
+* Automated Theorem Proving: https://www.cs.cmu.edu/~fp/courses/atp/
+* LEAN Proof Search: Mathlib's `solve_by_elim` tactic
 -/
 
 namespace Bimodal.Automation
@@ -36,7 +201,7 @@ Proof search result with actual derivation tree.
 Returns `Option (DerivationTree Γ φ)` where `some d` means proof found.
 This is the proof-constructing variant enabled by the Axiom : Type refactor.
 -/
-abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (DerivationTree Γ φ)
+abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (Γ ⊢ φ)
 
 /--
 Membership witness for formula in context.
@@ -678,7 +843,7 @@ Match a formula against derived theorem patterns, returning a DerivationTree if 
 Currently handles:
 - TF (temp_future_derived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
 -/
-def matchDerived (φ : Formula) : Option (DerivationTree [] φ) :=
+def matchDerived (φ : Formula) : Option (⊢ φ) :=
   match φ with
   | .imp (.box phi) (.all_future (.box phi')) =>
       if h : phi = phi' then
@@ -722,7 +887,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
     (visited : Visited := Visited.empty)
     (visits : Nat := 0)
     (visitLimit : Nat := 500)
-    : Option (DerivationTree Γ φ) × Visited × Nat :=
+    : Option (Γ ⊢ φ) × Visited × Nat :=
   if depth = 0 then
     (none, visited, visits)
   else if visits ≥ visitLimit then
@@ -738,9 +903,13 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
       -- Try axiom match first (via matchAxiom for proof construction)
       match _hax : matchAxiom φ with
       | some ⟨ψ, witness⟩ =>
-          -- We need to verify φ = ψ to use the witness
+          -- We need to verify φ = ψ and frame class compatibility
           if heq : φ = ψ then
-            (some (heq ▸ DerivationTree.axiom Γ ψ witness), visited, visits)
+            if hfc : witness.minFrameClass ≤ FrameClass.Base then
+              (some (heq ▸ DerivationTree.axiom Γ ψ witness hfc), visited, visits)
+            else
+              -- Axiom not compatible with Base frame class (e.g., discrete-only axioms)
+              (none, visited, visits)
           else
             -- Formula mismatch - this shouldn't happen with correct matchAxiom
             (none, visited, visits)
@@ -844,5 +1013,6 @@ def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
         iterate (depth + 1) cache' stats' visits'
   termination_by maxDepth - depth
   iterate 0 ProofCache.empty {} 0
+
 
 end Bimodal.Automation

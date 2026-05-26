@@ -1,4 +1,4 @@
-import Bimodal.Automation.Tactics
+import Bimodal.Automation.Tactics.Commands
 
 /-!
 # Simple Tests for Automation Tactics

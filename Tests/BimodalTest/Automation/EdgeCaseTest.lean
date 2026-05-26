@@ -1,5 +1,5 @@
 import Bimodal.Automation.ProofSearch.Core
-import Bimodal.Automation.Tactics
+import Bimodal.Automation.Tactics.Commands
 import Bimodal.ProofSystem
 
 /-!
