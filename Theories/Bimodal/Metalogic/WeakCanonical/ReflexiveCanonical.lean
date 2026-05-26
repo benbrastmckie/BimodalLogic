@@ -35,7 +35,7 @@ open Bimodal.Theorems
 /-! ## Domain -/
 
 /-- Domain of the reflexive canonical model: all set-maximal consistent sets. -/
-def ReflCanDomain : Type := { S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S }
+def ReflCanDomain (fc : FrameClass := FrameClass.Base) : Type := { S : Set Formula // SetMaximalConsistent (fc := fc) S }
 
 namespace ReflCanDomain
 

@@ -41,8 +41,8 @@ open Bimodal.Metalogic.BXCanonical.Chronicle
 The hypothesis that `next_top` (= U(⊤, ⊥)) is in every MCS of the limit domain.
 This follows from `□(next_top) ∈ A` via `box_discrete_gives_discreteness`.
 -/
-def DiscreteHypothesis (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) : Prop :=
-  ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x
+def DiscreteHypothesis (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
+  ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x
 
 /-! ## Prior-UZ/SZ Validity -/
 
@@ -50,27 +50,22 @@ def DiscreteHypothesis (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := Fr
 Prior-UZ holds at every point in the limit domain: for any MCS in the domain,
 the Prior-UZ axiom instance (for any formula ψ) is in that MCS.
 -/
-theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
-    (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f A h_mcs x :=
-  -- BLOCKED(task 168): prior_UZ has minFrameClass = .Discrete, but the chronicle construction
-  -- uses fc := .Base throughout. The correct fix is to parameterize ChronicleConstruction.lean
-  -- and ChronicleToCountermodel.lean over fc, then instantiate with .Discrete for the discrete
-  -- completeness pipeline. This is a 70+ line cascade through the chronicle files.
-  -- See plan Phase 5.10 for details.
-  theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) sorry)
+theorem prior_UZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (x : Rat) (hx : x ∈ limit_dom fc A h_mcs) (ψ : Formula) :
+    Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f fc A h_mcs x :=
+  theorem_in_mcs (limit_c0 fc A h_mcs x hx)
+    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) h_fc)
 
 /--
 Prior-SZ holds at every point in the limit domain.
 -/
-theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
-    (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f A h_mcs x :=
-  -- BLOCKED(task 168): Same issue as prior_UZ_in_limit_domain.
-  -- prior_SZ has minFrameClass = .Discrete but chronicle uses fc := .Base.
-  theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) sorry)
+theorem prior_SZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (x : Rat) (hx : x ∈ limit_dom fc A h_mcs) (ψ : Formula) :
+    Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f fc A h_mcs x :=
+  theorem_in_mcs (limit_c0 fc A h_mcs x hx)
+    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) h_fc)
 
 /-! ## ChronicleAsPriorModel -/
 
@@ -87,11 +82,11 @@ For a given MCS A with `□(next_top) ∈ A`, the chronicle produces:
 The `domain` type and its typeclass instances are bundled together as
 fields of the structure.
 -/
-structure ChronicleAsPriorModel where
+structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
   /-- The root MCS A -/
   root : Set Formula
   /-- Proof that A is MCS -/
-  root_mcs : SetMaximalConsistent (fc := FrameClass.Base) root
+  root_mcs : SetMaximalConsistent (fc := fc) root
   /-- Domain: countable subtype of Rat, discrete without endpoints -/
   domain : Type
   /-- Domain inherits LinearOrder from Rat -/
@@ -115,7 +110,7 @@ structure ChronicleAsPriorModel where
   /-- MCS assignment at each domain point -/
   fmcs : domain → Set Formula
   /-- Each domain point maps to an MCS -/
-  fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fc := FrameClass.Base) (fmcs t)
+  fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fc := fc) (fmcs t)
   /-- The root point's MCS equals A -/
   root_point_mcs : fmcs root_point = root
   /-- Discreteness: next_top ∈ MCS at every point -/
@@ -170,40 +165,41 @@ to every domain point.
 
 The root point is `⟨0, zero_mem_limit_dom A h_mcs⟩` where `limit_f = A`.
 -/
-noncomputable def extract_chronicle_as_prior (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
-    (h_box_discrete : Formula.box next_top ∈ A) : ChronicleAsPriorModel :=
-  let h_discrete := box_discrete_gives_discreteness A h_mcs h_box_discrete
+noncomputable def extract_chronicle_as_prior {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_discrete : Formula.box next_top ∈ A) : ChronicleAsPriorModel fc :=
+  let h_discrete := box_discrete_gives_discreteness fc A h_mcs h_box_discrete
   {
     root := A
     root_mcs := h_mcs
-    domain := LimitDomSubtype A h_mcs
-    domain_succ := limitDomSubtype_succOrder A h_mcs h_discrete
-    domain_pred := limitDomSubtype_predOrder A h_mcs h_discrete
-    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean A h_mcs h_discrete
-    root_point := ⟨0, zero_mem_limit_dom A h_mcs⟩
-    fmcs := fun t => limit_f A h_mcs t.val
-    fmcs_is_mcs := fun t => limit_c0 A h_mcs t.val t.property
-    root_point_mcs := limit_f_zero A h_mcs
+    domain := LimitDomSubtype fc A h_mcs
+    domain_succ := limitDomSubtype_succOrder fc A h_mcs h_discrete
+    domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
+    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean fc A h_mcs h_discrete
+    root_point := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
+    fmcs := fun t => limit_f fc A h_mcs t.val
+    fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property
+    root_point_mcs := limit_f_zero fc A h_mcs
     next_top_everywhere := fun t => h_discrete t.val t.property
     prior_UZ_valid := fun t ψ =>
-      prior_UZ_in_limit_domain A h_mcs t.val t.property ψ
+      prior_UZ_in_limit_domain h_fc A h_mcs t.val t.property ψ
     prior_SZ_valid := fun t ψ =>
-      prior_SZ_in_limit_domain A h_mcs t.val t.property ψ
+      prior_SZ_in_limit_domain h_fc A h_mcs t.val t.property ψ
     until_coherent_fwd := fun t φ ψ h_until => by
       obtain ⟨y, hy, hty, hφy, h_guard⟩ :=
-        limit_satisfies_c5_strong A h_mcs t.val t.property ψ φ h_until
+        limit_satisfies_c5_strong fc A h_mcs t.val t.property ψ φ h_until
       exact ⟨⟨y, hy⟩, hty, hφy, fun r htr hrs => h_guard r.val r.property htr hrs⟩
     since_coherent_fwd := fun t φ ψ h_since => by
       obtain ⟨y, hy, hyt, hφy, h_guard⟩ :=
-        limit_satisfies_c5'_strong A h_mcs t.val t.property ψ φ h_since
+        limit_satisfies_c5'_strong fc A h_mcs t.val t.property ψ φ h_since
       exact ⟨⟨y, hy⟩, hyt, hφy, fun r hry hrt => h_guard r.val r.property hry hrt⟩
     neg_until_coherent := fun t s hts φ ψ h_neg_until hφs => by
       obtain ⟨z, hz, htz, hzs, h_neg_ψ⟩ :=
-        limit_satisfies_c4 A h_mcs t.val s.val t.property s.property hts ψ φ h_neg_until hφs
+        limit_satisfies_c4 fc A h_mcs t.val s.val t.property s.property hts ψ φ h_neg_until hφs
       exact ⟨⟨z, hz⟩, htz, hzs, h_neg_ψ⟩
     neg_since_coherent := fun t s hst φ ψ h_neg_since hφs => by
       obtain ⟨z, hz, hsz, hzt, h_neg_ψ⟩ :=
-        limit_satisfies_c4' A h_mcs t.val s.val t.property s.property hst ψ φ h_neg_since hφs
+        limit_satisfies_c4' fc A h_mcs t.val s.val t.property s.property hst ψ φ h_neg_since hφs
       exact ⟨⟨z, hz⟩, hsz, hzt, h_neg_ψ⟩
   }
 

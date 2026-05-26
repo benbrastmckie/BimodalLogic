@@ -155,7 +155,7 @@ theorem completeness (φ : Formula) :
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
     obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-      Chronicle.countermodel_dense M hM_mcs φ h_neg_in h_box_dense
+      Chronicle.countermodel_dense FrameClass.Base M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
@@ -166,7 +166,7 @@ theorem completeness (φ : Formula) :
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — some worlds dense, others discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        Chronicle.dd_countermodel_chronicle_mixed_sorry M hM_mcs φ h_neg_in
+        Chronicle.dd_countermodel_chronicle_mixed_sorry FrameClass.Base M hM_mcs φ h_neg_in
           h_not_box_dense h_not_box_discrete
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
@@ -190,8 +190,8 @@ private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaxima
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
       ¬truth_at TM Omega τ t φ := by
-  let bfmcs := Chronicle.cantor_bfmcs_dense A h_mcs h_box_dense
-  let fam₀ := Chronicle.rooted_cantor_fmcs_dense A h_mcs h_box_dense 0
+  let bfmcs := Chronicle.cantor_bfmcs_dense FrameClass.Base A h_mcs h_box_dense
+  let fam₀ := Chronicle.rooted_cantor_fmcs_dense FrameClass.Base A h_mcs h_box_dense 0
   refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
     Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
     Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
@@ -204,10 +204,10 @@ private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaxima
     rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
   exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
-    (Chronicle.cantor_bfmcs_dense_restricted_tc A h_mcs h_box_dense φ
+    (Chronicle.cantor_bfmcs_dense_restricted_tc FrameClass.Base A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Chronicle.cantor_bfmcs_dense_restricted_buc A h_mcs h_box_dense φ)
-    (Chronicle.cantor_bfmcs_dense_restricted_fuc A h_mcs h_box_dense φ)
+    (Chronicle.cantor_bfmcs_dense_restricted_buc FrameClass.Base A h_mcs h_box_dense φ)
+    (Chronicle.cantor_bfmcs_dense_restricted_fuc FrameClass.Base A h_mcs h_box_dense φ)
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 

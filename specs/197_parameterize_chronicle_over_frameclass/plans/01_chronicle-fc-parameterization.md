@@ -183,7 +183,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 5: ChronicleToCountermodel.lean (fix sorry #6) [PARTIAL]
+### Phase 5: ChronicleToCountermodel.lean (fix sorry #6) [COMPLETED]
 
 **Goal**: Thread `fc` through the largest Chronicle file and fix sorry #6 (z1_derivation). This phase requires special care to NOT disturb the existing `succ_cofinal` sorry and other intentional sorries.
 
@@ -227,7 +227,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 6: WeakCanonical Layer -- ReflexiveCanonical.lean and TruthLemma.lean [NOT STARTED]
+### Phase 6: WeakCanonical Layer -- ReflexiveCanonical.lean and TruthLemma.lean [COMPLETED]
 
 **Goal**: Parameterize the reflexive canonical model and truth lemma over `fc`. This enables the downstream sorry fixes in Phase 7.
 
@@ -265,7 +265,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 7: Fix Remaining 5 Sorries -- FrameProperties.lean and ChronicleExtraction.lean [NOT STARTED]
+### Phase 7: Fix Remaining 5 Sorries -- FrameProperties.lean and ChronicleExtraction.lean [IN PROGRESS]
 
 **Goal**: Fix sorries #1-5 by leveraging the parameterized infrastructure from Phases 1-6. Update downstream consumers (IntegerModel, NEquivalence, WeakCanonical).
 

@@ -486,6 +486,6 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (f
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ :=
-  Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete A h_mcs φ h_neg_in h_box_discrete
+  Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete FrameClass.Base A h_mcs φ h_neg_in h_box_discrete
 
 end Bimodal.Metalogic.WeakCanonical
