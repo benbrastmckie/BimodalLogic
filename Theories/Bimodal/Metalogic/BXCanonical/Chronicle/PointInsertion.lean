@@ -516,9 +516,9 @@ theorem r3Maximal_neg_of_not_mem (fc : FrameClass) {A B C : Set Formula}
   have h_cons := dcs_neg_union_consistent fc h_R3.1 h_not
   have h_dc_dcs := deductiveClosure_is_dcs fc h_cons
   have h_B_sub : B ⊆ deductiveClosure fc ({δ.neg} ∪ B) :=
-    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+    fun φ hφ => subset_deductiveClosure fc ({δ.neg} ∪ B) (Set.mem_union_right _ hφ)
   have h_neg_in : δ.neg ∈ deductiveClosure fc ({δ.neg} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton δ.neg))
+    subset_deductiveClosure fc ({δ.neg} ∪ B) (Set.mem_union_left _ (Set.mem_singleton δ.neg))
   have h_proper : B ⊂ deductiveClosure fc ({δ.neg} ∪ B) :=
     ⟨h_B_sub, fun h_eq => h_neg_not (h_eq h_neg_in)⟩
   have h_r3 : r3Relation A (deductiveClosure fc ({δ.neg} ∪ B)) C :=
@@ -533,9 +533,9 @@ theorem R3Maximal_is_mcs (fc : FrameClass) {A B C : Set Formula}
   have h_cons : SetConsistent (fc := fc) ({φ} ∪ B) := by rwa [Set.insert_eq] at h_cons_insert
   have h_dc_dcs := deductiveClosure_is_dcs fc h_cons
   have h_B_sub : B ⊆ deductiveClosure fc ({φ} ∪ B) :=
-    fun ψ hψ => subset_deductiveClosure _ (Set.mem_union_right _ hψ)
+    fun ψ hψ => subset_deductiveClosure fc ({φ} ∪ B) (Set.mem_union_right _ hψ)
   have h_φ_in : φ ∈ deductiveClosure fc ({φ} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton φ))
+    subset_deductiveClosure fc ({φ} ∪ B) (Set.mem_union_left _ (Set.mem_singleton φ))
   exact h_R3.2.2 _ h_dc_dcs ⟨h_B_sub, fun h_eq => h_not_φ (h_eq h_φ_in)⟩
     (r3Relation_subset h_R3.2.1 h_B_sub)
 
@@ -625,11 +625,11 @@ theorem BurgessR3Maximal_extension_fails (fc : FrameClass) {A B C : Set Formula}
     ¬burgessR3 A (deductiveClosure fc ({delta} ∪ B)) C := by
   intro h_r3
   have h_cud : ClosedUnderDerivation fc (deductiveClosure fc ({delta} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+    deductiveClosure_closed_under_derivation fc _
   have h_sub : B ⊆ deductiveClosure fc ({delta} ∪ B) :=
-    fun phi hphi => subset_deductiveClosure _ (Set.mem_union_right _ hphi)
+    fun phi hphi => subset_deductiveClosure fc ({delta} ∪ B) (Set.mem_union_right _ hphi)
   have h_delta_in : delta ∈ deductiveClosure fc ({delta} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton delta))
+    subset_deductiveClosure fc ({delta} ∪ B) (Set.mem_union_left _ (Set.mem_singleton delta))
   have h_proper : B ⊂ deductiveClosure fc ({delta} ∪ B) :=
     ⟨h_sub, fun h_eq => h_delta_not (h_eq h_delta_in)⟩
   exact h_R3M.2.2 _ h_cud h_proper h_r3
@@ -799,7 +799,7 @@ theorem xu_lemma_2_3_until_top (fc : FrameClass) {A B C : Set Formula}
           (theorem_in_mcs h_mcs_C h_past_k2) h_H_flip)
         h_H_untl
     -- left_mono_since_H: H(beta → beta ∧ untl) → snce(alpha, beta) → snce(alpha, beta ∧ untl)
-    exact snce_left_mono_H h_mcs_C h_H_guard_str h_snce
+    exact snce_left_mono_H fc h_mcs_C h_H_guard_str h_snce
   -- Step 4: Until condition from burgessRSince_implies_burgessR
   have h_until_all : ∀ beta ∈ B, ∀ gamma' ∈ C,
       Formula.untl gamma' (Formula.and beta (Formula.untl gamma top)) ∈ A := by
@@ -1889,7 +1889,7 @@ private theorem l27_a_event_list_mem (fc : FrameClass) {A B C : Set Formula}
     {xi eta : Formula} {L : List Formula}
     {hL : ∀ φ ∈ L, φ ∈ lemma_2_7_seed fc A B C xi eta}
     {α : Formula} (hα : α ∈ l27_a_event_list fc xi eta L hL) : α ∈ A := by
-  unfold l27_a_event_list fc at hα
+  unfold l27_a_event_list at hα
   rcases List.mem_filterMap.mp hα with ⟨φ, _, h_eq⟩
   split at h_eq
   · next h_snce5 =>
@@ -2161,8 +2161,8 @@ private theorem lemma_2_7_seed_consistent (fc : FrameClass) {A B C : Set Formula
     intro α hα
     have h_snce_guard := evt.h_snce α hα
     have h_guard_to_bχ : DerivationTree fc [] (guard.imp (Formula.and b χ_gen)) := by
-      have h1 := imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl γ_hat b))
-      have h2 := rce_imp φ_gen χ_gen
+      have h1 : DerivationTree fc [] _ := imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl γ_hat b))
+      have h2 : DerivationTree fc [] _ := rce_imp φ_gen χ_gen
       exact combine_imp_conj h1 h2
     exact imp_trans h_snce_guard (snce_left_mono_deriv fc guard α (Formula.and b χ_gen) h_guard_to_bχ)
   exact ⟨event, h_F_event, h_ev_b, h_ev_eta, h_ev_untl, h_ev_snce⟩
@@ -2256,7 +2256,7 @@ theorem lemma_2_7 (fc : FrameClass) {A B C : Set Formula}
   -- Step 6: Derive burgessR(A, β∧xi, D) for all β ∈ B using guard conjunction (Phase 1)
   have h_burgessR_conj : ∀ β ∈ B, burgessR A (Formula.and β xi) D := by
     intro β hβ
-    exact burgessR_conj h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
+    exact burgessR_conj fc h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
   -- Step 6b: Derive untl(β∧xi, δ) ∈ A for all β ∈ B, δ ∈ D
   have h_until_conj : ∀ β ∈ B, ∀ δ ∈ D, Formula.untl δ (Formula.and β xi) ∈ A := by
     intro β hβ δ hδ
@@ -2266,7 +2266,7 @@ theorem lemma_2_7 (fc : FrameClass) {A B C : Set Formula}
     dc_delta_B_burgessR3 fc h_mcs_A h_D_mcs h_B_dcs h_r3_ABD h_until_conj h_snce_conj_xi_D
   -- Step 6d: DC({xi} ∪ B) is CUD (always true, no consistency needed)
   have h_DC_cud : ClosedUnderDerivation fc (deductiveClosure fc ({xi} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+    deductiveClosure_closed_under_derivation fc _
   -- Step 6e: BurgessR3Maximal via Zorn from DC({xi} ∪ B) — gives xi ∈ B'
   obtain ⟨B', h_DC_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists fc h_mcs_A h_D_mcs
     h_DC_cud h_r3_DC_ABD
@@ -2274,11 +2274,11 @@ theorem lemma_2_7 (fc : FrameClass) {A B C : Set Formula}
     h_B_dcs h_r3_DBC
   -- Extract B ⊆ B' from B ⊆ {xi} ∪ B ⊆ DC({xi} ∪ B) ⊆ B'
   have h_B_sub_DC : B ⊆ deductiveClosure fc ({xi} ∪ B) :=
-    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+    fun φ hφ => subset_deductiveClosure fc _ (Set.mem_union_right _ hφ)
   have h_B_sub_B' : B ⊆ B' := Set.Subset.trans h_B_sub_DC h_DC_sub_B'
   -- Extract xi ∈ B' from {xi} ⊆ DC({xi} ∪ B) ⊆ B'
   have h_xi_in_DC : xi ∈ deductiveClosure fc ({xi} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+    subset_deductiveClosure fc _ (Set.mem_union_left _ (Set.mem_singleton xi))
   have h_xi_in_B' : xi ∈ B' := h_DC_sub_B' h_xi_in_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D,
     h_B_sub_B'', h_xi_in_B'⟩
@@ -2421,7 +2421,7 @@ private theorem lemma_2_8_seed_consistent (fc : FrameClass) {A B C : Set Formula
       have h_event_to_bot : DerivationTree fc [] ((Formula.and γ_hat χ_gen).imp Formula.bot) := by
         have h1 : DerivationTree fc [] ((Formula.and γ_hat χ_gen).imp χ_gen.neg) :=
           imp_trans (lce_imp γ_hat χ_gen) (imp_trans h_γ_to_γ' h_γ'_to_neg_chi)
-        have h2 := rce_imp γ_hat χ_gen
+        have h2 : DerivationTree fc [] _ := rce_imp γ_hat χ_gen
         let P := Formula.and γ_hat χ_gen
         have d1 : DerivationTree fc [P] χ_gen.neg := DerivationTree.modus_ponens _ _ _
           (DerivationTree.weakening [] _ _ h1 (List.nil_subset _))
@@ -2454,8 +2454,8 @@ private theorem lemma_2_8_seed_consistent (fc : FrameClass) {A B C : Set Formula
     intro α hα
     have h_snce_guard := evt.h_snce α hα
     have h_guard_to_bχ : DerivationTree fc [] (guard.imp (Formula.and b χ_gen)) := by
-      have h1 := imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl γ_hat b))
-      have h2 := rce_imp φ_gen χ_gen
+      have h1 : DerivationTree fc [] _ := imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl γ_hat b))
+      have h2 : DerivationTree fc [] _ := rce_imp φ_gen χ_gen
       exact combine_imp_conj h1 h2
     exact imp_trans h_snce_guard (snce_left_mono_deriv fc guard α (Formula.and b χ_gen) h_guard_to_bχ)
   exact ⟨event, h_F_event, h_ev_b, h_ev_eta, h_ev_untl, h_ev_snce⟩
@@ -2537,7 +2537,7 @@ theorem lemma_2_8 (fc : FrameClass) {A B C : Set Formula}
   -- Step 6: Guard conjunction + DC(B ∪ {xi}) Zorn seed (same as lemma_2_7)
   have h_burgessR_conj : ∀ β ∈ B, burgessR A (Formula.and β xi) D := by
     intro β hβ
-    exact burgessR_conj h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
+    exact burgessR_conj fc h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
   have h_until_conj : ∀ β ∈ B, ∀ δ ∈ D, Formula.untl δ (Formula.and β xi) ∈ A := by
     intro β hβ δ hδ
     exact h_burgessR_conj β hβ δ hδ
@@ -2545,16 +2545,16 @@ theorem lemma_2_8 (fc : FrameClass) {A B C : Set Formula}
     dc_delta_B_burgessR3 fc h_mcs_A h_D_mcs h_B_dcs h_r3_ABD h_until_conj h_snce_conj_xi_D
   -- DC({xi} ∪ B) is CUD (always true, no consistency needed)
   have h_DC_cud : ClosedUnderDerivation fc (deductiveClosure fc ({xi} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+    deductiveClosure_closed_under_derivation fc _
   obtain ⟨B', h_DC_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists fc h_mcs_A h_D_mcs
     h_DC_cud h_r3_DC_ABD
   obtain ⟨B'', h_B_sub_B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists fc h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC
   have h_B_sub_DC : B ⊆ deductiveClosure fc ({xi} ∪ B) :=
-    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+    fun φ hφ => subset_deductiveClosure fc _ (Set.mem_union_right _ hφ)
   have h_B_sub_B' : B ⊆ B' := Set.Subset.trans h_B_sub_DC h_DC_sub_B'
   have h_xi_in_DC : xi ∈ deductiveClosure fc ({xi} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+    subset_deductiveClosure fc _ (Set.mem_union_left _ (Set.mem_singleton xi))
   have h_xi_in_B' : xi ∈ B' := h_DC_sub_B' h_xi_in_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B',
     h_B_sub_B'', h_xi_in_B'⟩
@@ -2919,24 +2919,24 @@ theorem lemma_2_7_since (fc : FrameClass) {A B C : Set Formula}
   -- Guard conjunction + DC(B ∪ {xi}) Zorn seed for B'' with xi ∈ B''
   have h_burgessR_conj : ∀ β ∈ B, burgessR D (Formula.and β xi) C := by
     intro β hβ
-    exact burgessR_conj h_D_mcs (h_rSet_D β hβ) h_burgessR_xi
+    exact burgessR_conj fc h_D_mcs (h_rSet_D β hβ) h_burgessR_xi
   have h_snce_conj_xi_C : ∀ β ∈ B, ∀ δ ∈ D, Formula.snce δ (Formula.and β xi) ∈ C := by
     intro β hβ δ hδ
-    have h_rSince := burgessRSince_conj h_mcs_C (h_rSetSince_D β hβ) h_burgessRSince_xi
+    have h_rSince := burgessRSince_conj fc h_mcs_C (h_rSetSince_D β hβ) h_burgessRSince_xi
     exact h_rSince δ hδ
   have h_r3_DC_DBC : burgessR3 D (deductiveClosure fc ({xi} ∪ B)) C :=
     dc_delta_B_burgessR3 fc h_D_mcs h_mcs_C h_B_dcs h_r3_DBC h_untl_conj_xi_D h_snce_conj_xi_C
   have h_DC_cud : ClosedUnderDerivation fc (deductiveClosure fc ({xi} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+    deductiveClosure_closed_under_derivation fc _
   obtain ⟨B', h_B_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists fc h_mcs_A h_D_mcs
     h_B_dcs h_r3_ABD
   obtain ⟨B'', h_DC_sub_B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists fc h_D_mcs h_mcs_C
     h_DC_cud h_r3_DC_DBC
   have h_B_sub_DC : B ⊆ deductiveClosure fc ({xi} ∪ B) :=
-    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+    fun φ hφ => subset_deductiveClosure fc _ (Set.mem_union_right _ hφ)
   have h_B_sub_B'' : B ⊆ B'' := Set.Subset.trans h_B_sub_DC h_DC_sub_B''
   have h_xi_in_DC : xi ∈ deductiveClosure fc ({xi} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+    subset_deductiveClosure fc _ (Set.mem_union_left _ (Set.mem_singleton xi))
   have h_xi_in_B'' : xi ∈ B'' := h_DC_sub_B'' h_xi_in_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D,
     h_B_sub_B'', h_xi_in_B''⟩
@@ -3197,20 +3197,20 @@ theorem lemma_2_8_since (fc : FrameClass) {A B C : Set Formula}
     burgessR_implies_burgessRSince fc h_D_mcs h_mcs_C h_burgessR_xi
   have h_snce_conj_xi_C : ∀ β ∈ B, ∀ δ ∈ D, Formula.snce δ (Formula.and β xi) ∈ C := by
     intro β hβ δ hδ
-    exact (burgessRSince_conj h_mcs_C (h_rSetSince_D β hβ) h_burgessRSince_xi) δ hδ
+    exact (burgessRSince_conj fc h_mcs_C (h_rSetSince_D β hβ) h_burgessRSince_xi) δ hδ
   have h_r3_DC_DBC : burgessR3 D (deductiveClosure fc ({xi} ∪ B)) C :=
     dc_delta_B_burgessR3 fc h_D_mcs h_mcs_C h_B_dcs h_r3_DBC h_untl_conj_xi_D h_snce_conj_xi_C
   have h_DC_cud : ClosedUnderDerivation fc (deductiveClosure fc ({xi} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+    deductiveClosure_closed_under_derivation fc _
   obtain ⟨B', h_B_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists fc h_mcs_A h_D_mcs
     h_B_dcs h_r3_ABD
   obtain ⟨B'', h_DC_sub_B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists fc h_D_mcs h_mcs_C
     h_DC_cud h_r3_DC_DBC
   have h_B_sub_DC : B ⊆ deductiveClosure fc ({xi} ∪ B) :=
-    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+    fun φ hφ => subset_deductiveClosure fc _ (Set.mem_union_right _ hφ)
   have h_B_sub_B'' : B ⊆ B'' := Set.Subset.trans h_B_sub_DC h_DC_sub_B''
   have h_xi_in_DC : xi ∈ deductiveClosure fc ({xi} ∪ B) :=
-    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+    subset_deductiveClosure fc _ (Set.mem_union_left _ (Set.mem_singleton xi))
   have h_xi_in_B'' : xi ∈ B'' := h_DC_sub_B'' h_xi_in_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B',
     h_B_sub_B'', h_xi_in_B''⟩
@@ -3369,7 +3369,7 @@ noncomputable def lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
   -- burgessR(A, γ, C) from burgessRSince via Lemma 2.3 backward
   have h_burgessR := burgessRSince_implies_burgessR fc h_mcs h_C_mcs h_burgessRSince
   -- B with γ ∈ B and BurgessR3Maximal(A, B, C)
-  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard A C γ h_mcs h_C_mcs
+  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard fc A C γ h_mcs h_C_mcs
     h_burgessR h_burgessRSince
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_γ_B, h_r3m⟩
 
@@ -3520,7 +3520,7 @@ noncomputable def lemma_2_4_since_with_guard (fc : FrameClass) {A : Set Formula}
   -- burgessRSince(A, γ, C) from burgessR via Lemma 2.3 forward
   have h_burgessRSince := burgessR_implies_burgessRSince fc h_C_mcs h_mcs h_burgessR
   -- B with γ ∈ B and BurgessR3Maximal(C, B, A)
-  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard C A γ h_C_mcs h_mcs
+  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard fc C A γ h_C_mcs h_mcs
     h_burgessR h_burgessRSince
   exact ⟨B, C, h_C_mcs, h_β_C, h_h_sub, h_γ_B, h_r3m⟩
 
