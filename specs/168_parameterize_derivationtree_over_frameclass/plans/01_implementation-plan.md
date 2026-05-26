@@ -193,12 +193,12 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: ProofSystem Layer and Derivable [NOT STARTED]
+### Phase 2: ProofSystem Layer and Derivable [COMPLETED]
 
 **Goal**: Update all files in `ProofSystem/` that import Derivation.lean, plus the `Derivable` wrapper. After this phase, all of `ProofSystem/` compiles. The key decision is how `Derivable` handles the `fc` parameter.
 
 **Tasks**:
-- [ ] **2.1** Update `Derivable` in `ProofSystem/Derivable.lean`:
+- [x] **2.1** Update `Derivable` in `ProofSystem/Derivable.lean`: *(completed)*
   ```lean
   def Derivable (fc : FrameClass) (G : Context) (p : Formula) : Prop :=
     Nonempty (DerivationTree fc G p)
@@ -210,7 +210,7 @@ Phases within the same wave can execute in parallel.
   ```
   Add a `Derivable.lift` that wraps `DerivationTree.lift`.
 
-- [ ] **2.2** Update notation in Derivable.lean:
+- [x] **2.2** Update notation in Derivable.lean: *(completed)*
   ```lean
   notation:50 G " |-![" fc "] " p => Derivable fc G p
   notation:50 "|-![" fc "] " p => Derivable fc [] p
@@ -218,13 +218,13 @@ Phases within the same wave can execute in parallel.
   notation:50 "|-! " p => Derivable FrameClass.Base [] p
   ```
 
-- [ ] **2.3** Update `ProofSystem/Substitution.lean` to thread `fc` through all substitution lemmas. The `subst_derivation` function recurses on `DerivationTree` and builds a new one -- add `fc` parameter.
+- [x] **2.3** Update `ProofSystem/Substitution.lean` to thread `fc` through all substitution lemmas. The `subst_derivation` function recurses on `DerivationTree` and builds a new one -- add `fc` parameter. *(completed -- also added density case to axiom_subst and axiom_subst_minFrameClass lemma)*
 
-- [ ] **2.4** Update `ProofSystem/LinearityDerivedFacts.lean` to thread `fc`. These prove derived theorems using base axioms only, so they become `DerivationTree .Base`.
+- [x] **2.4** Update `ProofSystem/LinearityDerivedFacts.lean` to thread `fc`. These prove derived theorems using base axioms only, so they become `DerivationTree .Base`. *(completed -- added trivial for h_fc proof)*
 
-- [ ] **2.5** Update `ProofSystem.lean` (aggregator) if needed.
+- [x] **2.5** Update `ProofSystem.lean` (aggregator) if needed. *(completed -- no changes needed, aggregator only re-exports)*
 
-- [ ] **2.6** Verify all of `ProofSystem/` compiles: `lake build Bimodal.ProofSystem`.
+- [x] **2.6** Verify all of `ProofSystem/` compiles: `lake build Bimodal.ProofSystem`. *(completed -- 661 jobs, passes cleanly)*
 
 **Timing**: 2 hours
 

@@ -375,6 +375,9 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | z1 a =>
     simp only [subst_imp, subst_all_future, subst_some_future]
     exact Axiom.z1 (a.subst q r)
+  | density a =>
+    simp only [subst_imp, subst_all_future]
+    exact Axiom.density (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution
@@ -397,14 +400,24 @@ theorem swap_temporal_subst (q r : Atom) (φ : Formula) :
   | untl a b iha ihb => simp [swap_temporal, subst, iha, ihb]
   | snce a b iha ihb => simp [swap_temporal, subst, iha, ihb]
 
+/-- Axiom substitution preserves `minFrameClass`.
+
+If `ax : Axiom φ`, then `(axiom_subst q r ax).minFrameClass = ax.minFrameClass`.
+This ensures that substituted axioms have the same frame class requirement.
+-/
+theorem axiom_subst_minFrameClass (q r : Atom) {φ : Formula} (h : Axiom φ) :
+    (axiom_subst q r h).minFrameClass = h.minFrameClass := by
+  cases h <;> simp [axiom_subst, Axiom.minFrameClass]
+
 /-- Derivations are preserved under atom substitution.
 
-If `Γ ⊢ φ`, then `Γ.subst q r ⊢ φ.subst q r`.
+If `Γ ⊢[fc] φ`, then `Γ.subst q r ⊢[fc] φ.subst q r`.
 -/
-def derivation_subst (q r : Atom) : {Γ : Context} → {φ : Formula} →
-    DerivationTree Γ φ → DerivationTree (Context.subst q r Γ) (φ.subst q r)
-  | Γ, φ, DerivationTree.axiom _ _ h =>
+def derivation_subst (q r : Atom) {fc : FrameClass} : {Γ : Context} → {φ : Formula} →
+    DerivationTree fc Γ φ → DerivationTree fc (Context.subst q r Γ) (φ.subst q r)
+  | Γ, φ, DerivationTree.axiom _ _ h h_fc =>
     DerivationTree.axiom (Context.subst q r Γ) (φ.subst q r) (axiom_subst q r h)
+      (axiom_subst_minFrameClass q r h ▸ h_fc)
   | Γ, φ, DerivationTree.assumption _ _ h => by
     apply DerivationTree.assumption
     rw [mem_context_subst_iff]

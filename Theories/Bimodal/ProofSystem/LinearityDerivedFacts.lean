@@ -69,12 +69,14 @@ open Bimodal.Syntax
 The temporal linearity axiom as a derivation from the empty context.
 
 This provides a convenient way to use the linearity axiom in proofs.
+The `temp_linearity` axiom is a base axiom (valid on all linear orders),
+so it is available at any frame class via `trivial`.
 -/
 noncomputable def temp_linearity_derivation (φ ψ : Formula) :
     [] ⊢ (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
       (Formula.or (Formula.some_future (Formula.and φ ψ))
         (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
           (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ)
+  DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ) trivial
 
 end Bimodal.ProofSystem
