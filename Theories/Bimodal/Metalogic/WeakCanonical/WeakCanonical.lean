@@ -7,7 +7,8 @@ import Bimodal.Metalogic.WeakCanonical.NEquivalence
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.WeakCanonical.Table
-import Bimodal.Metalogic.WeakCanonical.IntegerModel
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import Bimodal.Metalogic.WeakCanonical.StaviConnectives
 import Bimodal.Metalogic.WeakCanonical.EFGames
 import Bimodal.Metalogic.WeakCanonical.ExpressivenessGeneral

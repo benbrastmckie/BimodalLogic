@@ -146,16 +146,16 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split ProofSearch.lean (1388 lines) into 2 focused modules.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in ProofSearch.lean
-- [ ] Create directory `Theories/Bimodal/Automation/ProofSearch/`
-- [ ] Create `ProofSearch/Core.lean` (~750 lines): Types, helper functions, heuristics, bounded search, matchDerived, bounded_search_with_proof, iddfs_search. Module docstring: "Core proof search: axiom matching, heuristics, and bounded depth-first search."
-- [ ] Create `ProofSearch/Strategies.lean` (~640 lines): Best-first search, search strategy configuration, learning-enabled search, batch search. Module docstring: "Advanced search strategies: IDDFS, best-first, and learning-enabled proof search."
-- [ ] Add module docstrings to both new files
-- [ ] Map importers: `Automation.lean` and `Decidability/Closure.lean` import `Bimodal.Automation.ProofSearch`
-- [ ] Update `Theories/Bimodal/Automation.lean`: change to import `Bimodal.Automation.ProofSearch.Strategies` (or both, depending on what it uses)
-- [ ] Update `Theories/Bimodal/Metalogic/Decidability/Closure.lean`: change to import the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Automation/ProofSearch.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in ProofSearch.lean *(no private defs needed conversion)*
+- [x] Create directory `Theories/Bimodal/Automation/ProofSearch/`
+- [x] Create `ProofSearch/Core.lean` (1018 lines): Types, helpers, heuristics, bounded search, matchDerived, bounded_search_with_proof, iddfs_search. *(sed extraction — original docstring preserved)*
+- [x] Create `ProofSearch/Strategies.lean` (379 lines): Best-first search, strategy configuration, learning-enabled search, batch search. *(sed extraction — original section header preserved)*
+- [x] Add module docstrings to both new files *(original file headers preserved)*
+- [x] Map importers: found 7 total (Automation.lean, Closure.lean, DecisionProcedure.lean + 4 test files)
+- [x] Update `Theories/Bimodal/Automation.lean`: imports both Core + Strategies
+- [x] Update `Theories/Bimodal/Metalogic/Decidability/Closure.lean`: imports Core *(also updated DecisionProcedure.lean, ProofSearchBenchmark.lean, ProofSearchTest.lean, EdgeCaseTest.lean, TacticsTest.lean)*
+- [x] Delete `Theories/Bimodal/Automation/ProofSearch.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2 hours
 
@@ -183,16 +183,16 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split RestrictedMCS.lean (1407 lines) into 2 focused modules at the boundary between closure-restricted and deferral-restricted MCS.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in RestrictedMCS.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/Core/RestrictedMCS/`
-- [ ] Create `RestrictedMCS/Basic.lean` (~650 lines): ClosureRestricted, RestrictedConsistent, RestrictedMCS definitions, basic properties, negation completeness, Lindenbaum, constructing MCS from formula, iter_F/P boundedness. Module docstring: "Closure-restricted maximal consistent sets and Lindenbaum construction."
-- [ ] Create `RestrictedMCS/Deferral.lean` (~750 lines): DeferralRestrictedConsistent, DeferralRestrictedMCS definitions, negation completeness, iter_F/P boundedness, closure under derivation, implication property, theorem_in_drm, G_neg lemma. Module docstring: "Deferral-restricted MCS: closure under derivation and deferral-specific properties."
-- [ ] Add module docstrings to both new files
-- [ ] Map importers: `Core/Core.lean` and `Decidability/FMP/ClosureMCS.lean` import `Bimodal.Metalogic.Core.RestrictedMCS`
-- [ ] Update `Theories/Bimodal/Metalogic/Core/Core.lean`: change to direct import of the specific module(s) it needs
-- [ ] Update `Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean`: change to direct import of the specific module(s) it needs
-- [ ] Delete `Theories/Bimodal/Metalogic/Core/RestrictedMCS.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in RestrictedMCS.lean *(no private defs needed conversion)*
+- [x] Create directory `Theories/Bimodal/Metalogic/Core/RestrictedMCS/`
+- [x] Create `RestrictedMCS/Basic.lean` (653 lines): ClosureRestricted, RestrictedConsistent, RestrictedMCS definitions, basic properties, negation completeness, Lindenbaum, constructing MCS from formula, iter_F/P boundedness. *(sed extraction — original docstring preserved)*
+- [x] Create `RestrictedMCS/Deferral.lean` (763 lines): DeferralRestrictedConsistent, DeferralRestrictedMCS definitions, negation completeness, iter_F/P boundedness, closure under derivation, implication property, theorem_in_drm, G_neg lemma. *(sed extraction — original section header preserved)*
+- [x] Add module docstrings to both new files *(original file headers preserved)*
+- [x] Map importers: found 9 total (Core.lean, ClosureMCS.lean + 6 Boneyard files + Deferral cross-import)
+- [x] Update `Theories/Bimodal/Metalogic/Core/Core.lean`: imports both Basic + Deferral
+- [x] Update `Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean`: imports Basic *(also updated 6 Boneyard files to import Deferral)*
+- [x] Delete `Theories/Bimodal/Metalogic/Core/RestrictedMCS.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2 hours
 
@@ -254,7 +254,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Split DedekindZ.lean (2 importers) [IN PROGRESS]
+### Phase 6: Split DedekindZ.lean (2 importers) [COMPLETED]
 
 **Goal**: Split DedekindZ.lean (2236 lines) into 2 focused modules within the existing `Separation/DedekindZ/` directory path.
 
@@ -291,7 +291,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Split IntegerModel.lean (2 importers) [NOT STARTED]
+### Phase 7: Split IntegerModel.lean (2 importers) [IN PROGRESS]
 
 **Goal**: Split IntegerModel.lean (1816 lines) into 2 focused modules at the good/very-good boundary.
 

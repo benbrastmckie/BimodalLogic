@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.IntegerModel
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
