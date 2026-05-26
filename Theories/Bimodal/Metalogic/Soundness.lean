@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
-import Bimodal.Metalogic.SoundnessLemmas
+import Bimodal.Metalogic.SoundnessLemmas.FrameClassVariants
 
 /-!
 # Soundness - Soundness Theorem for TM Logic

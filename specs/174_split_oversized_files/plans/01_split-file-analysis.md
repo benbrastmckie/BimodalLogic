@@ -215,7 +215,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Split SoundnessLemmas.lean (2 active importers) [NOT STARTED]
+### Phase 5: Split SoundnessLemmas.lean (2 active importers) [IN PROGRESS]
 
 **Goal**: Split SoundnessLemmas.lean (2407 lines) into 3 focused modules aligned with frame-class boundaries.
 

@@ -1,4 +1,6 @@
-import Bimodal.Metalogic.SoundnessLemmas
+import Bimodal.Metalogic.SoundnessLemmas.Core
+import Bimodal.Metalogic.SoundnessLemmas.DenseValidity
+import Bimodal.Metalogic.SoundnessLemmas.FrameClassVariants
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Decidability
