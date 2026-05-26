@@ -61,6 +61,15 @@ open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 
+/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
+theorem base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
+  cases fc <;> trivial
+
+/-- Lift a Base-level derivation to any frame class. -/
+noncomputable def liftBase (fc : FrameClass) {Γ : List Formula} {φ : Formula}
+    (d : DerivationTree FrameClass.Base Γ φ) : DerivationTree fc Γ φ :=
+  d.lift (base_le fc)
+
 /-! ## Deductively Closed Sets (DCS) -/
 
 /-- A set is closed under derivation if every consequence of its elements is also in it.

@@ -86,12 +86,12 @@ This is derived via temporal duality:
 3. Apply `temporal_duality` again
 4. Simplify using `swap_temporal_involution` to get `⊢ Hφ`
 -/
-noncomputable def past_necessitation (φ : Formula)
-    (d : [] ⊢ φ) : [] ⊢ Formula.all_past φ := by
-  have h_swap : ⊢ φ.swap_temporal := DerivationTree.temporal_duality _ d
-  have g_swap : ⊢ φ.swap_temporal.all_future :=
+noncomputable def past_necessitation {fc : FrameClass} (φ : Formula)
+    (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.all_past φ) := by
+  have h_swap : DerivationTree fc [] φ.swap_temporal := DerivationTree.temporal_duality _ d
+  have g_swap : DerivationTree fc [] φ.swap_temporal.all_future :=
     DerivationTree.temporal_necessitation _ h_swap
-  have final : ⊢ φ.swap_temporal.all_future.swap_temporal :=
+  have final : DerivationTree fc [] φ.swap_temporal.all_future.swap_temporal :=
     DerivationTree.temporal_duality _ g_swap
   simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
     Formula.swap_temporal_involution] at final
@@ -105,16 +105,17 @@ Past K distribution axiom (derived via temporal duality).
 This is the past analog of `temp_k_dist`, derived by applying temporal duality
 to the future K distribution axiom.
 -/
-noncomputable def past_k_dist (A B : Formula) :
-    ⊢ (A.imp B).all_past.imp (A.all_past.imp B.all_past) := by
-  -- Apply derived temp_k_dist to swapped formulas
+noncomputable def past_k_dist {fc : FrameClass} (A B : Formula) :
+    DerivationTree fc [] ((A.imp B).all_past.imp (A.all_past.imp B.all_past)) := by
+  -- Apply derived temp_k_dist to swapped formulas (at Base, then lift)
   have fk : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future.imp
                (A.swap_temporal.all_future.imp B.swap_temporal.all_future) :=
     temp_k_dist_local A.swap_temporal B.swap_temporal
+  have fk_fc := DerivationTree.lift (fc₁ := .Base) (fc₂ := fc) trivial fk
   -- Apply temporal duality
-  have td : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future.imp
+  have td : DerivationTree fc [] ((A.swap_temporal.imp B.swap_temporal).all_future.imp
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
-    DerivationTree.temporal_duality _ fk
+    DerivationTree.temporal_duality _ fk_fc
   -- Simplify: swap(swap x) = x
   simp only [Formula.swap_temporal_all_future,
     Formula.swap_temporal, Formula.swap_temporal_involution] at td
