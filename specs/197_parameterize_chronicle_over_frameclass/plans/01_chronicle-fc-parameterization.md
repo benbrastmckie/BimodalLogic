@@ -183,7 +183,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 5: ChronicleToCountermodel.lean (fix sorry #6) [NOT STARTED]
+### Phase 5: ChronicleToCountermodel.lean (fix sorry #6) [IN PROGRESS]
 
 **Goal**: Thread `fc` through the largest Chronicle file and fix sorry #6 (z1_derivation). This phase requires special care to NOT disturb the existing `succ_cofinal` sorry and other intentional sorries.
 

@@ -94,11 +94,11 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 - FMCS = Family of MCS (single family)
 - BFMCS = Bundle of FMCSs (collection of families)
 -/
-structure FMCS where
+structure FMCS (fc : FrameClass := FrameClass.Base) where
   /-- The MCS assignment: each time t gets an MCS -/
   mcs : D -> Set Formula
   /-- Each assigned set is maximal consistent -/
-  is_mcs : forall t, SetMaximalConsistent (fc := FrameClass.Base) (mcs t)
+  is_mcs : forall t, SetMaximalConsistent (fc := fc) (mcs t)
   /--
   Forward G coherence: G phi at time t implies phi at all strictly future times t' > t.
 

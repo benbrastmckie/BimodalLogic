@@ -44,6 +44,7 @@ From the modal coherence conditions, we derive S5-like properties:
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 
 /-!
@@ -81,9 +82,9 @@ The truth lemma for Box phi becomes:
 
 This avoids the problematic quantification over ALL possible MCS families.
 -/
-structure BFMCS where
+structure BFMCS (fc : FrameClass := FrameClass.Base) where
   /-- The collection of indexed MCS families forming the bundle -/
-  families : Set (FMCS D)
+  families : Set (FMCS (fc := fc) D)
 
   /-- The bundle is non-empty -/
   nonempty : families.Nonempty
@@ -109,7 +110,7 @@ structure BFMCS where
 
       This is the family containing the original consistent context Gamma.
   -/
-  eval_family : FMCS D
+  eval_family : FMCS (fc := fc) D
 
   /-- The evaluation family is in the bundle -/
   eval_family_mem : eval_family ∈ families
