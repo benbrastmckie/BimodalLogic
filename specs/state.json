@@ -350,7 +350,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-27T01:00:00Z",
-      "next_artifact_number": 34,
+      "next_artifact_number": 35,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -551,6 +551,26 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/32_post-dependency-assessment.md",
           "type": "research",
           "summary": "Post-dependency assessment: tasks 168, 174, 195, 198 impact analysis, updated sorry inventory and file path mapping"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/33_lit-sel-pn-ordering.md",
+          "type": "research",
+          "summary": "Literature analysis: GHR93 sel-vs-p_n is trivially True<->True from strict ordering; formalization diverges by using separate forward game for e_n"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/33_infra-sel-pn-fix.md",
+          "type": "research",
+          "summary": "Infrastructure analysis: fan configuration makes pivot chain impossible; Approaches A-D fail; Approach E (unified forward game) recommended (~80-120 lines)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/33_tactic-sel-pn-grid.md",
+          "type": "research",
+          "summary": "Tactic analysis: 2 live sorry sites; anonymous hypothesis problem from split_ifs; structured focused proofs with named hypotheses recommended"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/33_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v33: Phase 3 split into 3A (unified game restructure) and 3B (tactic overhaul) based on 3 targeted research reports"
         }
       ],
       "session_id": "sess_1779640471_03278b",
