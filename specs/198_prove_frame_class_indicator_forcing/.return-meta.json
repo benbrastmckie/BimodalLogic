@@ -1,34 +1,7 @@
 {
-  "status": "implemented",
-  "started_at": "2026-05-26T00:00:00Z",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/198_prove_frame_class_indicator_forcing/plans/01_frame-class-indicator-forcing.md"
-    },
-    {
-      "type": "summary",
-      "path": "specs/198_prove_frame_class_indicator_forcing/summaries/01_frame-class-indicator-forcing-summary.md"
-    }
-  ],
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "completed",
-    "details": "All 4 phases completed successfully. 2 sorries eliminated in Completeness.lean.",
-    "phases_completed": 4,
-    "phases_total": 4
-  },
+  "status": "completed",
   "metadata": {
-    "session_id": "sess_1779808712_c4ab21",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed"
+    "cycles_used": 3,
+    "final_state": "completed"
   }
 }
