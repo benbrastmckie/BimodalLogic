@@ -8517,8 +8517,49 @@ private theorem ghr93_case_II {sig : MonadicSignature}
               hc_le_en (hc_le_rtau ⟨_, ‹_›⟩) hord_cd_en_pn (tau_d_sel ⟨_, ‹_›⟩))
           | (exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
               (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn)
-          -- Fallback for any remaining cases
-          | sorry
+          -- b_resp vs x' (reverse impossible: b_resp ≥ x', b_sp ≥ x)
+          | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h hb_resp_in.1) (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h hb_sp.1) (lt_irrefl _)⟩,
+                    ⟨fun h => (sig_x_b.2.mp h.symm).symm,
+                     fun h => (sig_x_b.2.mpr h.symm).symm⟩⟩)
+          -- b_resp vs p_n: pivot through d/c (hord_cd_en_pn orientation corrected)
+          | (exact pivot_chain_order' hb_resp_in.2 hd_le_pn hbc hc_le_en
+              sig_b_d ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩)
+          -- y' vs a_bwd(j-1) reverse (impossible: a_bwd ≤ y', resp_tau ≤ y)
+          | (refine ⟨⟨fun h => absurd (lt_of_lt_of_le h ?_) (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h (hresp_tau_in ⟨_, ‹_›⟩).2)
+                       (lt_irrefl _)⟩,
+                    ⟨fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mp (by
+                       convert h.symm using 2; congr 1; exact Fin.ext (by omega))).symm,
+                     fun h => by
+                       have := (tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm
+                       convert this.symm using 2; congr 1; exact Fin.ext (by omega)⟩⟩
+             convert (ha_bwd ⟨_, by omega⟩).2 using 2; congr 1; exact Fin.ext (by omega))
+          -- p_n vs b_resp: reverse of b_resp vs p_n
+          | (exact pivot_chain_order_rev' hd_le_pn hb_resp_in.2 hc_le_en hbc
+              ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩ sig_b_d)
+          -- y' vs sel(j-1) reverse: impossible < + tau_sel_y = (Fin index mismatch)
+          | (refine ⟨⟨fun h => absurd (lt_of_lt_of_le h ?_) (lt_irrefl _),
+                     fun h => absurd (lt_of_lt_of_le h ?_) (lt_irrefl _)⟩,
+                    ⟨fun h => ?_, fun h => ?_⟩⟩
+             · convert (ha_bwd ⟨_, by omega⟩).2 using 2; congr 1; exact Fin.ext rfl
+             · convert (hresp_tau_in ⟨_, ‹_›⟩).2 using 2; congr 1; exact Fin.ext rfl
+             · exact ((tau_sel_y ⟨_, ‹_›⟩).2.mp (by
+                 convert h.symm using 2; congr 1; exact Fin.ext (by omega))).symm
+             · have := (tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm
+               convert this.symm using 2; congr 1; exact Fin.ext (by omega))
+          -- sel(i) vs p_n / p_n vs sel(j): remaining cross-boundary grid cases.
+          -- These involve a_bwd with ¬(k-1<n), so k-1=n.
+          -- Rewrite using hab_eq then dispatch with pivot_chain_order'.
+          | (try rw [hab_eq _ (by omega) (by omega)]
+             first
+             | exact pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
+                    hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
+                    (tau_d_sel ⟨_, ‹_›⟩)
+             | exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+                    (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩)
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
