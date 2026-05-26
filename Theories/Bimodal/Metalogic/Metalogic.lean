@@ -28,8 +28,8 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 | **Soundness (dense)** | `soundness_dense` | SORRY-FREE |
 | **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
 | **Completeness** | `completeness` | SORRY (chronicle construction) |
-| **Completeness (dense)** | `completeness_dense` | SORRY (chronicle + frame-class theory) |
-| **Completeness (discrete)** | `completeness_discrete` | SORRY (discrete pipeline + frame-class theory) |
+| **Completeness (dense)** | `completeness_dense` | SORRY (chronicle + canonical model open question) |
+| **Completeness (discrete)** | `completeness_discrete` | SORRY (chronicle + canonical model open question) |
 | **Decidability** | `decide` | SORRY-FREE |
 
 ## Completeness Architecture

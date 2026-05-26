@@ -1,7 +1,7 @@
 # Revised Plan: Fix completeness_dense/discrete Return Types
 
 - **Task**: 168 - Parameterize DerivationTree over FrameClass (Phase 8 addendum)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4-6 hours
 - **Dependencies**: Phases 1-7 (all complete), Task 197 (complete)
 - **Research Inputs**: Completion audit (reports/02_completion-audit.md)
@@ -124,33 +124,33 @@ parameterized over fc by tasks 168/197.
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 
-### Phase 4: Downstream Consumers and Final Verification [NOT STARTED]
+### Phase 4: Downstream Consumers and Final Verification [COMPLETED]
 
 **Goal**: Update any code that calls `completeness_dense` or `completeness_discrete` and
 expects `DerivationTree Base`.
 
 **Tasks**:
-- [ ] **4.1** Search for all callers of `completeness_dense` and `completeness_discrete`:
+- [x] **4.1** Search for all callers of `completeness_dense` and `completeness_discrete`:
   ```bash
   grep -rn "completeness_dense\|completeness_discrete" Theories/
   ```
-- [ ] **4.2** Update callers — they may need `DerivationTree.lift` to convert
+- [x] **4.2** Update callers — they may need `DerivationTree.lift` to convert *(deviation: skipped -- no Lean callers exist outside Completeness.lean itself; only documentation references in README.md and Metalogic.lean)*
   Dense/Discrete trees back to a common fc if needed.
-- [ ] **4.3** Update docstrings in Completeness.lean to reflect correct return types.
-- [ ] **4.4** Full `lake build` verification.
-- [ ] **4.5** Grep for sorry in Completeness.lean — document any remaining sorries
+- [x] **4.3** Update docstrings in Completeness.lean to reflect correct return types.
+- [x] **4.4** Full `lake build` verification.
+- [x] **4.5** Grep for sorry in Completeness.lean — document any remaining sorries
   with their mathematical status (genuine gap vs. machinery gap).
 
 **Files**: Various (determined by grep in 4.1)
 
 ## Testing & Validation
 
-- [ ] `lake build` passes after each phase
-- [ ] `completeness_dense` returns `DerivationTree FrameClass.Dense`
-- [ ] `completeness_discrete` returns `DerivationTree FrameClass.Discrete`
-- [ ] Base `completeness` unchanged and still compiles
-- [ ] No new sorries introduced (existing sorries may transform but not multiply)
-- [ ] Every remaining sorry has clear mathematical documentation (genuine gap, not false statement)
+- [x] `lake build` passes after each phase
+- [x] `completeness_dense` returns `DerivationTree FrameClass.Dense`
+- [x] `completeness_discrete` returns `DerivationTree FrameClass.Discrete`
+- [x] Base `completeness` unchanged and still compiles
+- [x] No new sorries introduced (2 sorries remain from 4 original; 2 eliminated)
+- [x] Every remaining sorry has clear mathematical documentation (genuine gap, not false statement)
 
 ## Artifacts & Outputs
 
