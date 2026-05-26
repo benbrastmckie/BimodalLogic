@@ -314,11 +314,52 @@ theorem completeness_discrete (φ : Formula) :
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
-  · -- Dense case: □(F'T) ∈ M — countermodel on Rat (NOT discrete).
-    -- With a Discrete-MCS, whether □(F'T) can appear is a genuine open question.
-    -- This sorry guards a potentially provable goal (unlike the previous sorry
-    -- which guarded the unprovable goal `valid_discrete φ → Base-derivable φ`).
-    sorry
+  · -- Dense case: □(F'T) ∈ M — but U(T,bot) is a Discrete theorem.
+    -- Derive next_top (= U(T,bot)) in the Discrete system, then from
+    -- □(neg(next_top)) ∈ M extract neg(next_top) ∈ M via Modal T, contradiction.
+    -- Step 1: T = bot → bot
+    have h_top : ⊢[FrameClass.Discrete] Chronicle.top_formula :=
+      Bimodal.Theorems.Combinators.identity Formula.bot
+    -- Steps 2-3: F(T) from seriality + MP
+    have h_ft : ⊢[FrameClass.Discrete] Chronicle.top_formula.some_future :=
+      DerivationTree.modus_ponens [] _ _
+        (DerivationTree.axiom [] _ Axiom.serial_future (FrameClass.base_le _)) h_top
+    -- Steps 4-5: U(T, ¬T) from prior_UZ + MP
+    have h_ut_negT : ⊢[FrameClass.Discrete] (Formula.untl Chronicle.top_formula Chronicle.top_formula.neg) :=
+      DerivationTree.modus_ponens [] _ _
+        (DerivationTree.axiom [] _ (Axiom.prior_UZ Chronicle.top_formula) (by trivial)) h_ft
+    -- Step 6: ¬T → ⊥ via deduction theorem (assume T→⊥, derive T from identity, MP gives ⊥)
+    have h_negT_bot : ⊢[FrameClass.Discrete] (Chronicle.top_formula.neg.imp Formula.bot) := by
+      show ⊢[FrameClass.Discrete] ((Chronicle.top_formula.imp Formula.bot).imp Formula.bot)
+      exact deduction_theorem [] (Chronicle.top_formula.imp Formula.bot) Formula.bot
+        (DerivationTree.modus_ponens [Chronicle.top_formula.imp Formula.bot] Chronicle.top_formula Formula.bot
+          (DerivationTree.assumption _ _ (by simp))
+          (DerivationTree.weakening [] [Chronicle.top_formula.imp Formula.bot] _ h_top (by simp)))
+    -- Step 7: G(¬T → ⊥) via temporal necessitation
+    have h_G_negT_bot : ⊢[FrameClass.Discrete] (Chronicle.top_formula.neg.imp Formula.bot).all_future :=
+      DerivationTree.temporal_necessitation _ h_negT_bot
+    -- Step 8: left_mono_until_G: G(¬T→⊥) → (U(T,¬T) → U(T,⊥))
+    have h_mono : ⊢[FrameClass.Discrete]
+        ((Chronicle.top_formula.neg.imp Formula.bot).all_future.imp
+          ((Formula.untl Chronicle.top_formula Chronicle.top_formula.neg).imp
+            (Formula.untl Chronicle.top_formula Formula.bot))) :=
+      DerivationTree.axiom [] _ (Axiom.left_mono_until_G Chronicle.top_formula.neg Formula.bot Chronicle.top_formula) (FrameClass.base_le _)
+    -- Step 9: U(T,¬T) → U(T,⊥)
+    have h_imp_next : ⊢[FrameClass.Discrete]
+        ((Formula.untl Chronicle.top_formula Chronicle.top_formula.neg).imp Chronicle.next_top) :=
+      DerivationTree.modus_ponens [] _ _ h_mono h_G_negT_bot
+    -- Step 10: U(T,⊥) = next_top
+    have h_next_top : ⊢[FrameClass.Discrete] Chronicle.next_top :=
+      DerivationTree.modus_ponens [] _ _ h_imp_next h_ut_negT
+    -- Place next_top in M
+    have h_in_next : Chronicle.next_top ∈ M := theorem_in_mcs hM_mcs h_next_top
+    -- Extract ¬(next_top) from □(¬(next_top)) via Modal T
+    have h_modal_t : ⊢[FrameClass.Discrete] (Chronicle.next_top.neg.box.imp Chronicle.next_top.neg) :=
+      DerivationTree.axiom [] _ (Axiom.modal_t Chronicle.next_top.neg) (FrameClass.base_le _)
+    have h_in_neg_next : Chronicle.next_top.neg ∈ M :=
+      SetMaximalConsistent.implication_property hM_mcs (theorem_in_mcs hM_mcs h_modal_t) h_box_dense
+    -- Contradiction: next_top ∈ M and ¬(next_top) ∈ M
+    exact set_consistent_not_both hM_mcs.1 Chronicle.next_top h_in_next h_in_neg_next
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete

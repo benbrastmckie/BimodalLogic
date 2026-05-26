@@ -123,7 +123,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove completeness_discrete Sorry [NOT STARTED]
+### Phase 3: Prove completeness_discrete Sorry [COMPLETED]
 
 **Goal**: Eliminate the sorry at line 317 in `completeness_discrete` by showing that a Discrete-MCS cannot contain `box(next_top.neg)`, since `next_top` (= `U(T,bot)`) is derivable from discrete axioms.
 
