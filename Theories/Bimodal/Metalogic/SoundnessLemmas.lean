@@ -793,6 +793,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | density _ =>
     -- density axiom: GGφ → Gφ, swap is HHφ → Hφ (past density)
     -- HHφ = ¬P(¬Hφ) = ¬P(¬(¬P(¬φ))) and Hφ = ¬P(¬φ)
@@ -1340,6 +1341,13 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     intro h_GG s hts
     obtain ⟨r, htr, hrs⟩ := exists_between hts
     exact h_GG r htr s hrs
+  | dense_indicator =>
+    -- dense indicator axiom: ¬U(⊤,⊥)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.neg, truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
+    intro ⟨s, hts, _h_top, h_guard⟩
+    obtain ⟨r, htr, hrs⟩ := exists_between hts
+    exact h_guard r htr hrs
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -1798,6 +1806,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
     exact ⟨r, hrt, fun h => h, h_guard⟩
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -2067,6 +2076,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
     exact ⟨s, hts, fun h => h, h_guard⟩
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -2341,6 +2351,7 @@ private theorem axiom_swap_valid_discrete
         (φ.swap_temporal.all_past.some_past.imp φ.swap_temporal.all_past))
       exact z1_past_is_valid φ.swap_temporal
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | _ => exact absurd trivial hbase
 
 /-- All discrete-compatible axioms are locally valid on discrete orders. For base axioms,
@@ -2356,6 +2367,7 @@ private theorem axiom_locally_valid_discrete
     | prior_SZ φ => exact prior_SZ_is_valid φ
     | z1 φ => exact z1_is_valid φ
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | _ => exact absurd trivial hbase
 
 /-- Combined soundness on discrete frames: derivability implies both validity

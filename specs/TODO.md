@@ -425,11 +425,12 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 174. Split oversized files (> 1500 lines)
 - **Effort**: medium-large (12-20 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 168
 - **Research**: [specs/174_split_oversized_files/reports/01_split-file-analysis.md]
+- **Plan**: [174_split_oversized_files/plans/01_split-file-analysis.md]
 
 **Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `ExpressivenessGeneral.lean` (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
 

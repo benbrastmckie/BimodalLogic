@@ -362,6 +362,17 @@ theorem P_since_equiv_valid (φ : Formula) :
   intro ⟨s, hst, h_φs⟩
   exact ⟨s, hst, h_φs, fun _ _ _ => id⟩
 
+/-- Dense indicator axiom is valid on dense orders: `⊨_dense ¬U(⊤,⊥)`.
+On a densely ordered frame, `U(⊤,⊥)` at t requires s > t with empty (t,s),
+but `DenselyOrdered` provides r with t < r < s, contradiction. -/
+theorem dense_indicator_valid :
+    valid_dense (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg := by
+  intro T _ _ _ h_dense _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.neg, truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
+  intro ⟨s, hts, _h_top, h_guard⟩
+  obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense T _ h_dense t s hts
+  exact h_guard r htr hrs
+
 /-- Density axiom (DN) is valid on dense orders: `⊨_dense GGφ → Gφ`.
 Under strict semantics: GGφ → Gφ requires DenselyOrdered. Given s > t,
 find r with t < r < s by density, then h_GG(r)(s) gives φ(s). -/
@@ -857,6 +868,7 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ Fr
   | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
   | discrete_box_necessity => exact discrete_box_necessity_valid
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -905,6 +917,7 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
   | discrete_box_necessity => exact Validity.valid_implies_valid_dense discrete_box_necessity_valid
   | density φ => exact density_valid φ
+  | dense_indicator => exact dense_indicator_valid
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -954,6 +967,7 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameCla
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
   | discrete_box_necessity => exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ φ => exact prior_UZ_valid φ
   | prior_SZ φ => exact prior_SZ_valid φ
   | z1 φ => exact z1_valid φ
@@ -1058,6 +1072,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -1227,6 +1242,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
     | density φ => exact density_valid φ D F M Omega h_sc τ h_mem t
+    | dense_indicator => exact dense_indicator_valid D F M Omega h_sc τ h_mem t
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])

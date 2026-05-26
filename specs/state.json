@@ -550,8 +550,8 @@
     {
       "project_number": 174,
       "project_name": "split_oversized_files",
-      "status": "researched",
-      "session_id": "sess_1779809662_d9784a",
+      "status": "planned",
+      "session_id": "sess_1779810332_dc1959",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines — split by induction level), SoundnessLemmas.lean (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
@@ -559,7 +559,7 @@
         168
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-26T15:50:30Z",
       "topic": "formula-refactor",
       "researched": "2026-05-26T20:00:00Z",
       "next_artifact_number": 2,
@@ -568,8 +568,51 @@
           "path": "specs/174_split_oversized_files/reports/01_split-file-analysis.md",
           "type": "research",
           "summary": "File inventory (10 targets), per-file split proposals with section analysis, import impact, recommended execution order"
+        },
+        {
+          "path": "specs/174_split_oversized_files/plans/01_split-file-analysis.md",
+          "type": "plan",
+          "summary": "12-phase plan to split 12 oversized Lean files into focused modules using aggregator pattern, organized in 5 dependency waves from 0-importer files to 10K-line giants"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 12,
+        "total_effort_hours": 34,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            5,
+            6,
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9,
+            10
+          ],
+          [
+            11,
+            12
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_split-file-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      }
     },
     {
       "project_number": 175,

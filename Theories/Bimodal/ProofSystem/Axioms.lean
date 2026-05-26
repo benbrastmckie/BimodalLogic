@@ -34,7 +34,7 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 41 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1 + 1 density).
+**Total**: 42 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1 + 2 density).
 Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean, Task 116).
 
 ### Key Properties
@@ -59,7 +59,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-41 constructors organized into eight layers:
+42 constructors organized into eight layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
@@ -67,10 +67,10 @@ Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 - **Uniformity** (5): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 - **Z1** (1): IsSuccArchimedean characteristic axiom (discrete-only)
-- **Density** (1): GGφ → Gφ (dense-only)
+- **Density** (2): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
 
 Base axioms (37) are valid on all linear temporal orders. Prior/Z1 axioms (3) are discrete-only.
-The density axiom (1) is valid only on densely ordered frames.
+The density axioms (2) are valid only on densely ordered frames.
 Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean, Task 116).
 -/
 inductive Axiom : Formula → Type where
@@ -385,6 +385,18 @@ inductive Axiom : Formula → Type where
   | density (φ : Formula) :
       Axiom (φ.all_future.all_future.imp φ.all_future)
 
+  /-- Dense indicator: `¬U(⊤,⊥)`.
+  On a densely ordered frame, `U(⊤,⊥)` ("there exists an immediate successor") is
+  false at every point, since for any s > t, density provides r with t < r < s,
+  so the interval (t,s) is never empty. This is the Burgess 1982 Section 1.6
+  density axiom for Until/Since tense logic.
+  This axiom is added alongside `density` (GGφ → Gφ), not as a replacement.
+  The density schema alone is provably insufficient to derive `¬U(⊤,⊥)`
+  (conservativity argument: all atom-free instances of GGφ → Gφ are valid on ℤ,
+  but U(⊤,⊥) is true on ℤ). -/
+  | dense_indicator :
+      Axiom (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg
+
   deriving Repr
 
 /--
@@ -434,7 +446,7 @@ Minimum frame class for each axiom constructor.
 
 This is the single source of truth for axiom-frame-class compatibility:
 - Base (37 axioms): valid on all linear temporal orders
-- Dense (1 axiom: density): valid on densely ordered frames
+- Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
 - Discrete (3 axioms: prior_UZ, prior_SZ, z1): valid on discrete frames
 
 The constraint `ax.minFrameClass ≤ fc` in DerivationTree's axiom constructor
@@ -443,6 +455,7 @@ derivation tree parameterized by `fc`.
 -/
 def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
   | density _ => .Dense
+  | dense_indicator => .Dense
   | prior_UZ _ => .Discrete
   | prior_SZ _ => .Discrete
   | z1 _ => .Discrete
