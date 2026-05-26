@@ -38,7 +38,7 @@ technical_debt:
 
 ### Phase 1a — File Splitting (next active work)
 
-168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
+168 [IMPLEMENTING] — Parameterize DerivationTree over FrameClass (Phase 1 complete, 6 phases remain)
 174 [NOT STARTED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
   └─ 168
 
@@ -435,9 +435,11 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 ---
 
 ### 168. Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
-- **Effort**: large
-- **Status**: [NOT STARTED]
+- **Effort**: large (24 hours, 7 phases)
+- **Status**: [IMPLEMENTING] — Phase 1 complete, paused for agent system update
 - **Task Type**: lean4
+- **Research**: [specs/168_parameterize_derivationtree_over_frameclass/reports/01_research.md]
+- **Plan**: [specs/168_parameterize_derivationtree_over_frameclass/plans/01_implementation-plan.md]
 
 **Description**: Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.
 
