@@ -54,7 +54,7 @@ theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ))
+    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) trivial)
 
 /--
 Prior-SZ holds at every point in the limit domain.
@@ -63,7 +63,7 @@ theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ))
+    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) trivial)
 
 /-! ## ChronicleAsPriorModel -/
 

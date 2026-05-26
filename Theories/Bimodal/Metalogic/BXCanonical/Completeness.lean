@@ -104,7 +104,7 @@ theorem neg_consistent_of_not_derivable (φ : Formula)
     -- (propositional logic is consistent)
     -- Actually we can derive: from [] ⊢ ⊥ we get [] ⊢ φ by ex_falso
     have h_ef : DerivationTree [] (Formula.bot.imp φ) :=
-      DerivationTree.axiom [] _ (Axiom.ex_falso φ)
+      DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial
     have d_phi : DerivationTree [] φ :=
       DerivationTree.modus_ponens [] _ _ h_ef d
     exact h_not_deriv ⟨d_phi⟩

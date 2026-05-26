@@ -337,7 +337,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
       · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + box_to_past)
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
           SetMaximalConsistent.implication_property h₀
-            (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)))
+            (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg))) trivial
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
@@ -346,7 +346,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
     have h_neg_box_t : (Formula.box φ).neg ∈ int_chain M₀ h₀ t :=
       SetMaximalConsistent.implication_property (int_chain_mcs M₀ h₀ t)
         (theorem_in_mcs (int_chain_mcs M₀ h₀ t)
-          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg)))
+          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg))) trivial
         h_box_neg_t
     -- Contradiction: Box φ and ¬(Box φ) both in chain(t)
     exact set_consistent_not_both (int_chain_mcs M₀ h₀ t).1 (Formula.box φ) h_box_t h_neg_box_t

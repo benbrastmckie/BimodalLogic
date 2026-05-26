@@ -124,7 +124,7 @@ theorem exists_mcs_with_negation (phi : Formula)
       rw [h_L_empty] at d_bot
       -- From [] ⊢ ⊥, derive [] ⊢ phi
       have h_efq : [] ⊢ Formula.bot.imp phi :=
-        DerivationTree.axiom [] _ (Axiom.ex_falso phi)
+        DerivationTree.axiom [] _ (Axiom.ex_falso phi) trivial
       have d_phi : [] ⊢ phi := DerivationTree.modus_ponens [] _ _ h_efq d_bot
       exact h_not_provable ⟨d_phi⟩
   -- phi.neg is in closureWithNeg phi

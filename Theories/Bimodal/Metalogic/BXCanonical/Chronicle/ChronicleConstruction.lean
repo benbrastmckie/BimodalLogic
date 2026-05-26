@@ -694,7 +694,7 @@ theorem limit_F_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent (fc :
   have h_mcs_x := limit_c0 A h_mcs x hx
   have h_bx12 : DerivationTree [] ((Formula.some_future φ).imp
       (Formula.untl φ (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv φ)
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv φ) trivial
   have h_until : Formula.untl φ (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
     SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x h_bx12) h_F
@@ -715,7 +715,7 @@ theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent (fc :
   have h_mcs_x := limit_c0 A h_mcs x hx
   have h_bx12' : DerivationTree [] ((Formula.some_past φ).imp
       (Formula.snce φ (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.P_since_equiv φ)
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv φ) trivial
   have h_since : Formula.snce φ (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
     SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x h_bx12') h_P
@@ -978,7 +978,7 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
     · exact h
   -- BX4': ¬ψ → H(F(¬ψ))
   have h_ax : DerivationTree [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg)
+    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg) trivial
   have h_HF : Formula.all_past (Formula.some_future ψ.neg) ∈ B :=
     SetMaximalConsistent.implication_property h_mcs_B
       (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
@@ -1053,7 +1053,7 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
     exact Bundle.some_future_all_future_neg_absurd h_mcs_x φ.neg h_abs h_G_nn
   set top := Formula.bot.imp Formula.bot with htop_def
   have h_bx10 : DerivationTree [] ((Formula.untl φ.neg top).imp (Formula.some_future φ.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.until_F top φ.neg)
+    DerivationTree.axiom [] _ (Axiom.until_F top φ.neg) trivial
   have h_until_not : Formula.untl φ.neg top ∉ limit_f A h_mcs x := by
     intro h_in
     exact h_F_not (SetMaximalConsistent.implication_property h_mcs_x
@@ -1067,7 +1067,7 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
   have h_mcs_z := limit_c0 A h_mcs z hz_dom
   have h_top_in : top ∈ limit_f A h_mcs z := by
     apply theorem_in_mcs h_mcs_z
-    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   exact set_consistent_not_both h_mcs_z.1 top h_top_in h_top_neg
 
 /--
@@ -1106,7 +1106,7 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := 
     exact Bundle.some_past_all_past_neg_absurd h_mcs_x φ.neg h_abs h_H_nn
   set top := Formula.bot.imp Formula.bot with htop_def
   have h_bx10' : DerivationTree [] ((Formula.snce φ.neg top).imp (Formula.some_past φ.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.since_P top φ.neg)
+    DerivationTree.axiom [] _ (Axiom.since_P top φ.neg) trivial
   have h_since_not : Formula.snce φ.neg top ∉ limit_f A h_mcs x := by
     intro h_in
     exact h_P_not (SetMaximalConsistent.implication_property h_mcs_x
@@ -1120,7 +1120,7 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := 
   have h_mcs_z := limit_c0 A h_mcs z hz_dom
   have h_top_in : top ∈ limit_f A h_mcs z := by
     apply theorem_in_mcs h_mcs_z
-    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   exact set_consistent_not_both h_mcs_z.1 top h_top_in h_top_neg
 
 /-! ## Claim 2.11: Truth Claim

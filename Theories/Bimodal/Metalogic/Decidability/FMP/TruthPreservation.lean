@@ -193,7 +193,7 @@ theorem mcs_box_closure {phi : Formula} {S : ClosureMCSBundle phi}
     ψ ∈ S.carrier := by
   -- Modal T axiom: □ψ → ψ
   have h_modal_t_thm : [] ⊢ (ψ.box).imp ψ :=
-    DerivationTree.axiom [] _ (Axiom.modal_t ψ)
+    DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial
   have h_deriv : [ψ.box] ⊢ ψ := by
     have h_axiom : [ψ.box] ⊢ (ψ.box).imp ψ :=
       DerivationTree.weakening [] _ _ h_modal_t_thm (by intro; simp)
@@ -215,7 +215,7 @@ theorem mcs_box_box {phi : Formula} {S : ClosureMCSBundle phi}
     ψ.box.box ∈ S.carrier := by
   -- Modal 4 axiom: □ψ → □□ψ
   have h_modal_4_thm : [] ⊢ (ψ.box).imp (ψ.box.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 ψ)
+    DerivationTree.axiom [] _ (Axiom.modal_4 ψ) trivial
   have h_deriv : [ψ.box] ⊢ ψ.box.box := by
     have h_axiom : [ψ.box] ⊢ (ψ.box).imp (ψ.box.box) :=
       DerivationTree.weakening [] _ _ h_modal_4_thm (by intro; simp)
@@ -347,7 +347,7 @@ theorem mcs_imp_intro {phi : Formula} {S : ClosureMCSBundle phi}
     have h_chi : χ ∈ S.carrier := h h_psi
     -- From χ, derive ψ → χ via prop_s: χ → (ψ → χ)
     have h_prop_s_thm : [] ⊢ χ.imp (ψ.imp χ) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s χ ψ)
+      DerivationTree.axiom [] _ (Axiom.prop_s χ ψ) trivial
     have h_deriv : [χ] ⊢ (ψ.imp χ) := by
       have h_axiom : [χ] ⊢ χ.imp (ψ.imp χ) :=
         DerivationTree.weakening [] _ _ h_prop_s_thm (by intro; simp)
@@ -370,7 +370,7 @@ theorem mcs_imp_intro {phi : Formula} {S : ClosureMCSBundle phi}
         have h_bot : (ψ :: [ψ.neg]) ⊢ Formula.bot :=
           derives_bot_from_phi_neg_phi h_psi_assume h_neg_assume
         have h_efq_thm : [] ⊢ Formula.bot.imp χ :=
-          DerivationTree.axiom [] _ (Axiom.ex_falso χ)
+          DerivationTree.axiom [] _ (Axiom.ex_falso χ) trivial
         have h_efq : (ψ :: [ψ.neg]) ⊢ Formula.bot.imp χ :=
           DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
         exact DerivationTree.modus_ponens _ _ _ h_efq h_bot

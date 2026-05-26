@@ -18,19 +18,19 @@ open Bimodal.Metalogic.Core
 theorem z1_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.all_future (Formula.imp (Formula.all_future psi) psi))
       (Formula.imp (Formula.some_future (Formula.all_future psi)) (Formula.all_future psi)) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.z1 psi))
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.z1 psi) trivial)
 
 /-! ## Prior-UZ/SZ in the Canonical Frame -/
 
 /-- Prior-UZ: F(psi) → U(psi, ¬psi) is a theorem. -/
 theorem prior_UZ_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.some_future psi) (Formula.untl psi psi.neg) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi))
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi) trivial)
 
 /-- Prior-SZ: P(psi) → S(psi, ¬psi) is a theorem. -/
 theorem prior_SZ_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.some_past psi) (Formula.snce psi psi.neg) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi))
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi) trivial)
 
 /-! ## Seriality (No Endpoints) -/
 

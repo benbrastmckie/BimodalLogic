@@ -114,7 +114,7 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
 
   -- Step 2: modal_t for ¬A gives us □¬A → ¬A
   have mt_neg_a : ⊢ (A.imp Formula.bot).box.imp (A.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (A.imp Formula.bot)) trivial
+    DerivationTree.axiom [] _ (Axiom.modal_t (A.imp Formula.bot) trivial)
 
   -- Step 3: RAA gives us A → (¬A → ⊥)
   have raa_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
@@ -197,7 +197,7 @@ noncomputable def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.
 
   -- Step 2: □B → □(¬A → B) using weakening (prop_s)
   have weak_b : ⊢ B.imp ((A.imp Formula.bot).imp B) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot)) trivial
+    DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot) trivial)
 
   have box_b_case : ⊢ B.box.imp ((A.imp Formula.bot).imp B).box :=
     box_mono weak_b
@@ -522,7 +522,7 @@ noncomputable def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.an
     -- We need □A → □B → □(A ∧ B)
     -- Use modal K distribution: □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have modal_k : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B) trivial)
 
     -- Compose: □A → □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have comp1 : ⊢ A.box.imp (B.box.imp (A.and B).box) :=

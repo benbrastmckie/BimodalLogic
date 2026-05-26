@@ -96,7 +96,7 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
       -- From ⊢ ⊥ derive ⊢ φ → ⊥ = ⊢ ¬φ
       have d_neg : DerivationTree [] φ.neg := by
         have d_efq : DerivationTree [] (Formula.bot.imp φ.neg) :=
-          DerivationTree.axiom [] _ (Axiom.ex_falso φ.neg)
+          DerivationTree.axiom [] _ (Axiom.ex_falso φ.neg) trivial
         exact DerivationTree.modus_ponens [] _ _ d_efq d_bot
       exact h ⟨d_neg⟩
     · -- L is non-empty, so L ⊆ {φ} means L = [φ, ..., φ]
@@ -153,7 +153,7 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
       -- Since ⊢ ¬φ, this follows by weakening
       show Derives (Formula.bot.imp Formula.bot) φ.neg
       have d_s : DerivationTree [] (φ.neg.imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot))
+        DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot) trivial)
       exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_neg⟩
   have h_phi_bot : toQuot φ = ⊥ := by
     -- [φ]ᶜ = [¬φ] = ⊤, so [φ] = ⊤ᶜ = ⊥

@@ -293,7 +293,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
     intro γ hγ
     -- BX4': γ → H(F(γ))
     have h_ax_cp : DerivationTree [] (γ.imp (Formula.all_past (Formula.some_future γ))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_past γ)
+      DerivationTree.axiom [] _ (Axiom.connect_past γ) trivial
     have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
       SetMaximalConsistent.implication_property h_mcs_C
         (theorem_in_mcs h_mcs_C h_ax_cp) hγ
@@ -301,7 +301,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
     have h_F : Formula.some_future γ ∈ A := h_hc h_HF
     -- F(γ) → U(⊤, γ) by F_until_equiv
     have h_bx12 : DerivationTree [] ((Formula.some_future γ).imp (Formula.untl γ top)) :=
-      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ)
+      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ) trivial
     exact SetMaximalConsistent.implication_property h_mcs_A
       (theorem_in_mcs h_mcs_A h_bx12) h_F
   -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
@@ -318,7 +318,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
       exact SetMaximalConsistent.neg_excludes h_mcs_A α h_neg_A hα
     -- P(α) → S(⊤, α) by P_since_equiv
     have h_bx12' : DerivationTree [] ((Formula.some_past α).imp (Formula.snce α top)) :=
-      DerivationTree.axiom [] _ (Axiom.P_since_equiv α)
+      DerivationTree.axiom [] _ (Axiom.P_since_equiv α) trivial
     exact SetMaximalConsistent.implication_property h_mcs_C
       (theorem_in_mcs h_mcs_C h_bx12') h_P
   exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
@@ -398,7 +398,7 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_P_η : Formula.some_past ce.η ∈ χ.f ce.x := by
     have h_ax : DerivationTree [] ((Formula.snce ce.η ce.ξ).imp (Formula.some_past ce.η)) :=
-      DerivationTree.axiom [] _ (Axiom.since_P ce.ξ ce.η)
+      DerivationTree.axiom [] _ (Axiom.since_P ce.ξ ce.η) trivial
     exact SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x h_ax) ce.since_mem
   have h_seed := past_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.η h_P_η
@@ -2977,7 +2977,7 @@ noncomputable def eliminate_potential_counterexample
           have h_bx6 : DerivationTree []
             ((Formula.untl (Formula.and pc.ξ (Formula.untl pc.η pc.ξ)) pc.ξ).imp
               (Formula.untl pc.η pc.ξ)) :=
-            DerivationTree.axiom [] _ (Axiom.absorb_until pc.ξ pc.η)
+            DerivationTree.axiom [] _ (Axiom.absorb_until pc.ξ pc.η) trivial
           have h_bx6_in := theorem_in_mcs h_mcs_w h_bx6
           have h_untl_eta := SetMaximalConsistent.implication_property h_mcs_w h_bx6_in h_untl_conj
           -- Now untl(ξ,η) ∈ f(w) contradicts neg(untl(ξ,η)) ∈ f(w)
@@ -3281,7 +3281,7 @@ noncomputable def eliminate_potential_counterexample
           have h_bx6' : DerivationTree []
             ((Formula.snce (Formula.and pc.ξ (Formula.snce pc.η pc.ξ)) pc.ξ).imp
               (Formula.snce pc.η pc.ξ)) :=
-            DerivationTree.axiom [] _ (Axiom.absorb_since pc.ξ pc.η)
+            DerivationTree.axiom [] _ (Axiom.absorb_since pc.ξ pc.η) trivial
           have h_bx6'_in := theorem_in_mcs h_mcs_w h_bx6'
           have h_snce_eta := SetMaximalConsistent.implication_property h_mcs_w h_bx6'_in h_snce_conj
           -- Now snce(ξ,η) ∈ f(w) contradicts neg(snce(ξ,η)) ∈ f(w)

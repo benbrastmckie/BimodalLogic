@@ -600,7 +600,7 @@ theorem g_content_subset_implies_h_content_reverse
     · exact absurd h h_not_phi
     · exact h
   have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).some_past) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future (Formula.neg phi)) trivial
+    DerivationTree.axiom [] _ (Axiom.connect_future (Formula.neg phi) trivial)
   have h_G_P_neg : Formula.all_future (Formula.neg phi).some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).some_past ∈ M' := h_GC h_G_P_neg

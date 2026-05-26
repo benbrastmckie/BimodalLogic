@@ -143,7 +143,7 @@ theorem temp_linearity_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       (Formula.or (Formula.some_future (Formula.and A B))
         (Formula.or (Formula.some_future (Formula.and A (Formula.some_future B)))
           (Formula.some_future (Formula.and (Formula.some_future A) B)))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_linearity A B)
+    DerivationTree.axiom [] _ (Axiom.temp_linearity A B) trivial
   have h_disj := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_conj
   -- Case split on the disjunction

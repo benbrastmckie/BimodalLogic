@@ -45,7 +45,7 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
     Formula.untl ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_future ψ).imp
     (Formula.untl ψ (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ)
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -55,7 +55,7 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
     Formula.snce ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_past ψ).imp
     (Formula.snce ψ (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ)
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -68,7 +68,7 @@ theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.untl ψ φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
     (Formula.untl ψ φ)) :=
-    DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ)
+    DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -78,7 +78,7 @@ theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.snce ψ φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
     (Formula.snce ψ φ)) :=
-    DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ)
+    DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 

@@ -94,7 +94,7 @@ theorem imp_mcs_iff (x : ReflCanDomain) (φ ψ : Formula) :
     by_cases h_φ_in : φ ∈ x.val
     · have h_ψ_in := h_fun h_φ_in
       have h_ax : DerivationTree [] (ψ.imp (φ.imp ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s ψ φ)
+        DerivationTree.axiom [] _ (Axiom.prop_s ψ φ) trivial
       exact h_mcs.implication_property (theorem_in_mcs h_mcs h_ax) h_ψ_in
     · have h_neg_φ : Formula.neg φ ∈ x.val :=
         (SetMaximalConsistent.negation_complete h_mcs φ).resolve_left h_φ_in
@@ -107,7 +107,7 @@ theorem imp_mcs_iff (x : ReflCanDomain) (φ ψ : Formula) :
           have h_bot : DerivationTree [φ, φ.neg] Formula.bot :=
             DerivationTree.modus_ponens _ _ _ h_neg_assum h_φ_assum
           have h_ef : DerivationTree [] (Formula.bot.imp ψ) :=
-            DerivationTree.axiom [] _ (Axiom.ex_falso ψ)
+            DerivationTree.axiom [] _ (Axiom.ex_falso ψ) trivial
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
         exact Bimodal.Metalogic.Core.deduction_theorem [φ.neg] φ ψ h_step
@@ -206,7 +206,7 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
           (Context.map Formula.box L) h_box_L_in d_box_bot
       -- □⊥ → ⊥ by modal_t
       have h_ax : DerivationTree [] (Formula.box Formula.bot |>.imp Formula.bot) :=
-        DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot)
+        DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
       have h_bot : Formula.bot ∈ x.val :=
         SetMaximalConsistent.implication_property h_mcs_x (theorem_in_mcs h_mcs_x h_ax) h_box_bot_in
       -- ⊥ in MCS contradicts consistency
@@ -224,14 +224,14 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
   have h_canS5R : canS5R x y := by
     intro χ h_box_χ
     have h_m4 : DerivationTree [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
-      DerivationTree.axiom [] _ (Axiom.modal_4 χ)
+      DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
     have h_box_box_χ : Formula.box (Formula.box χ) ∈ x.val :=
       SetMaximalConsistent.implication_property h_mcs_x
         (theorem_in_mcs h_mcs_x h_m4) h_box_χ
     have h_in_bc : Formula.box χ ∈ bc := h_box_box_χ
     have h_box_χ_in_y : Formula.box χ ∈ y.val := h_bc_sub h_in_bc
     have h_mt : DerivationTree [] ((Formula.box χ).imp χ) :=
-      DerivationTree.axiom [] _ (Axiom.modal_t χ)
+      DerivationTree.axiom [] _ (Axiom.modal_t χ) trivial
     exact SetMaximalConsistent.implication_property hM_mcs
       (theorem_in_mcs hM_mcs h_mt) h_box_χ_in_y
   -- Now: h_truth says reflCanTruth y φ, and ih converts to φ ∈ y.val.
@@ -406,7 +406,7 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   have h_mcs := x.property
   -- BX10: U(ψ₁,ψ₂) → F(ψ₁)
   have h_F_ψ₁ : Formula.some_future ψ₁ ∈ x.val := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.until_F ψ₂ ψ₁)
+    have h_ax := DerivationTree.axiom [] _ (Axiom.until_F ψ₂ ψ₁) trivial
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   -- Use forward_temporal_witness_seed_consistent from Bundle
@@ -460,7 +460,7 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   have h_mcs := x.property
   -- BX10': S(ψ₁,ψ₂) → P(ψ₁)
   have h_P_ψ₁ : Formula.some_past ψ₁ ∈ x.val := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.since_P ψ₂ ψ₁)
+    have h_ax := DerivationTree.axiom [] _ (Axiom.since_P ψ₂ ψ₁) trivial
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_since
   -- Use past_temporal_witness_seed_consistent from Bundle

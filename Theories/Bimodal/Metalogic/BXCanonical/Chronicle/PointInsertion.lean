@@ -141,7 +141,7 @@ theorem until_witness_seed_consistent {A : Set Formula}
     SetConsistent (fc := FrameClass.Base) ({β} ∪ g_content A) := by
   have h_F_β : Formula.some_future β ∈ A := by
     have h_ax : DerivationTree [] ((Formula.untl β γ).imp (Formula.some_future β)) :=
-      DerivationTree.axiom [] _ (Axiom.until_F γ β)
+      DerivationTree.axiom [] _ (Axiom.until_F γ β) trivial
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   exact forward_temporal_witness_seed_consistent A h_mcs β h_F_β
@@ -168,7 +168,7 @@ noncomputable def lemma_2_4 {A : Set Formula}
   have h_GP : Formula.all_future (Formula.some_past (Formula.untl β γ)) ∈ A := by
     have h_ax : DerivationTree [] ((Formula.untl β γ).imp
         (Formula.all_future (Formula.some_past (Formula.untl β γ)))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl β γ))
+      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl β γ) trivial)
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl β γ) ∈ C :=
@@ -182,7 +182,7 @@ theorem until_F_mcs {A : Set Formula}
     (h_until : Formula.untl β γ ∈ A) :
     Formula.some_future β ∈ A := by
   have h_ax : DerivationTree [] ((Formula.untl β γ).imp (Formula.some_future β)) :=
-    DerivationTree.axiom [] _ (Axiom.until_F γ β)
+    DerivationTree.axiom [] _ (Axiom.until_F γ β) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_until
 
@@ -193,7 +193,7 @@ theorem self_accum_until_mcs {A : Set Formula}
     Formula.untl β (Formula.and γ (Formula.untl β γ)) ∈ A := by
   have h_ax : DerivationTree [] ((Formula.untl β γ).imp
       (Formula.untl β (Formula.and γ (Formula.untl β γ)))) :=
-    DerivationTree.axiom [] _ (Axiom.self_accum_until γ β)
+    DerivationTree.axiom [] _ (Axiom.self_accum_until γ β) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_until
 
@@ -204,7 +204,7 @@ theorem self_accum_since_mcs {A : Set Formula}
     Formula.snce β (Formula.and γ (Formula.snce β γ)) ∈ A := by
   have h_ax : DerivationTree [] ((Formula.snce β γ).imp
       (Formula.snce β (Formula.and γ (Formula.snce β γ)))) :=
-    DerivationTree.axiom [] _ (Axiom.self_accum_since γ β)
+    DerivationTree.axiom [] _ (Axiom.self_accum_since γ β) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_since
 
@@ -214,7 +214,7 @@ theorem connect_future_mcs {A : Set Formula}
     (h_φ : φ ∈ A) :
     Formula.all_future (Formula.some_past φ) ∈ A := by
   have h_ax : DerivationTree [] (φ.imp (Formula.all_future (Formula.some_past φ))) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future φ)
+    DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_φ
 
@@ -250,7 +250,7 @@ theorem linear_until_mcs {A : Set Formula}
   -- Form the conjunction: U(φ,ψ) ∧ U(χ,θ) ∈ A
   have h_conj := conj_mcs h_mcs _ _ h_u1 h_u2
   -- Apply BX7 axiom
-  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_until φ ψ χ θ)
+  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_until φ ψ χ θ) trivial
   have h_disj := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_bx7) h_conj
   -- h_disj : (D1 ∨ D2) ∨ D3 ∈ A
@@ -273,7 +273,7 @@ theorem linear_since_mcs {A : Set Formula}
     Formula.snce (Formula.and ψ χ) (Formula.and φ χ) ∈ A ∨
     Formula.snce (Formula.and φ θ) (Formula.and φ χ) ∈ A := by
   have h_conj := conj_mcs h_mcs _ _ h_s1 h_s2
-  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_since φ ψ χ θ)
+  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_since φ ψ χ θ) trivial
   have h_disj := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_bx7) h_conj
   rcases or_elim_mcs h_mcs h_disj with h12 | h3
@@ -374,7 +374,7 @@ theorem G_implies_F_mcs {A : Set Formula}
     Formula.some_future α ∈ A := by
   set top := Formula.bot.imp Formula.bot with top_def
   have h_weak : DerivationTree [] (Formula.imp α (Formula.imp top α)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s α top)
+    DerivationTree.axiom [] _ (Axiom.prop_s α top) trivial
   have h_G_top_α : Formula.all_future (Formula.imp top α) ∈ A := by
     have h1 := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_weak)
     have h2 := theorem_in_mcs h_mcs
@@ -391,7 +391,7 @@ theorem G_implies_F_mcs {A : Set Formula}
       (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.F_until_equiv top))) h_F_top
   have h_TUα : Formula.untl α top ∈ A := by
     have h1 := SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_until top α top)))
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_until top α top))) trivial
       h_G_top_α
     exact SetMaximalConsistent.implication_property h_mcs h1 h_TUT
   exact SetMaximalConsistent.implication_property h_mcs
@@ -404,7 +404,7 @@ theorem H_implies_P_mcs {A : Set Formula}
     Formula.some_past α ∈ A := by
   set top := Formula.bot.imp Formula.bot with top_def
   have h_weak : DerivationTree [] (Formula.imp α (Formula.imp top α)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s α top)
+    DerivationTree.axiom [] _ (Axiom.prop_s α top) trivial
   have h_H_top_α : Formula.all_past (Formula.imp top α) ∈ A := by
     have h1 := theorem_in_mcs h_mcs (Bimodal.Theorems.past_necessitation _ h_weak)
     have h2 := theorem_in_mcs h_mcs (Bimodal.Theorems.past_k_dist α (Formula.imp top α))
@@ -420,7 +420,7 @@ theorem H_implies_P_mcs {A : Set Formula}
       (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.P_since_equiv top))) h_P_top
   have h_TSα : Formula.snce α top ∈ A := by
     have h1 := SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_since top α top)))
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_since top α top))) trivial
       h_H_top_α
     exact SetMaximalConsistent.implication_property h_mcs h1 h_TST
   exact SetMaximalConsistent.implication_property h_mcs
@@ -692,12 +692,12 @@ theorem xu_lemma_2_3_since_top {A B C : Set Formula}
   -- Step 2: Derive G(snce(alpha, top)) ∈ A from alpha ∈ A
   -- BX4: alpha → G(P(alpha))
   have h_bx4 : DerivationTree [] (alpha.imp (alpha.some_past.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_future alpha)
+    DerivationTree.axiom [] _ (Axiom.connect_future alpha) trivial
   have h_G_P_alpha : alpha.some_past.all_future ∈ A :=
     SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx4) h_alpha
   -- BX12': P(alpha) → snce(alpha, top) (theorem)
   have h_bx12' : DerivationTree [] (alpha.some_past.imp (Formula.snce alpha top)) :=
-    DerivationTree.axiom [] _ (Axiom.P_since_equiv alpha)
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv alpha) trivial
   -- G(P(alpha) → snce(alpha, top)) via temporal necessitation
   have h_G_impl : (alpha.some_past.imp (Formula.snce alpha top)).all_future ∈ A :=
     theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_bx12')
@@ -763,12 +763,12 @@ theorem xu_lemma_2_3_until_top {A B C : Set Formula}
   -- Step 2: Derive H(untl(gamma, top)) ∈ C from gamma ∈ C
   -- BX4': gamma → H(F(gamma))
   have h_bx4' : DerivationTree [] (gamma.imp (gamma.some_future.all_past)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_past gamma)
+    DerivationTree.axiom [] _ (Axiom.connect_past gamma) trivial
   have h_H_F_gamma : gamma.some_future.all_past ∈ C :=
     SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_bx4') h_gamma
   -- BX12: F(gamma) → untl(gamma, top) (theorem)
   have h_bx12 : DerivationTree [] (gamma.some_future.imp (Formula.untl gamma top)) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv gamma)
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv gamma) trivial
   -- H(F(gamma) → untl(gamma, top)) via past necessitation
   have h_H_impl : (gamma.some_future.imp (Formula.untl gamma top)).all_past ∈ C :=
     theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_bx12)
@@ -1005,7 +1005,7 @@ private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
     · exact absurd h h_not
     · exact h
   have h_ax : DerivationTree [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg)
+    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg) trivial
   have h_HF : Formula.all_past (Formula.some_future ψ.neg) ∈ B :=
     SetMaximalConsistent.implication_property h_mcs_B
       (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
@@ -1111,7 +1111,7 @@ private theorem right_mono_until_mcs {A : Set Formula}
   have h_G_impl : Formula.all_future (ψ.imp χ) ∈ A :=
     theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
   -- BX3: G(ψ → χ) → U(φ, ψ) → U(φ, χ)
-  have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until ψ χ φ)
+  have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until ψ χ φ) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_bx3) h_G_impl) h_untl
@@ -1124,7 +1124,7 @@ private theorem right_mono_since_mcs {C : Set Formula}
     Formula.snce χ φ ∈ C := by
   have h_H_impl : Formula.all_past (ψ.imp χ) ∈ C :=
     theorem_in_mcs h_mcs (Bimodal.Theorems.past_necessitation _ h_impl)
-  have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since ψ χ φ)
+  have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since ψ χ φ) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_bx3') h_H_impl) h_snce
@@ -1139,7 +1139,7 @@ private theorem enrichment_until_mcs {A : Set Formula}
     (h_untl : Formula.untl psi phi ∈ A) :
     Formula.untl (Formula.and psi (Formula.snce p phi)) phi ∈ A := by
   have h_conj := conj_mcs h_mcs p (Formula.untl psi phi) h_p h_untl
-  have h_bx13 := DerivationTree.axiom [] _ (Axiom.enrichment_until phi psi p)
+  have h_bx13 := DerivationTree.axiom [] _ (Axiom.enrichment_until phi psi p) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_bx13) h_conj
 
@@ -1315,7 +1315,7 @@ private noncomputable def untl_left_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp χ)) :
     DerivationTree [] ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) := by
   have h_G := DerivationTree.temporal_necessitation _ h_impl
-  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ)
+  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ) trivial
   exact DerivationTree.modus_ponens [] _ _ h_ax h_G
 
 /-- Derivation-level left_mono for Since: if ⊢ φ→χ then ⊢ snce(φ,ψ) → snce(χ,ψ).
@@ -1324,7 +1324,7 @@ private noncomputable def snce_left_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp χ)) :
     DerivationTree [] ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) := by
   have h_H := Bimodal.Theorems.past_necessitation _ h_impl
-  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ)
+  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
   exact DerivationTree.modus_ponens [] _ _ h_ax h_H
 
 /-- Derivation-level right_mono for Until: if ⊢ φ→ψ then ⊢ untl(χ,φ) → untl(χ,ψ).
@@ -1333,7 +1333,7 @@ private noncomputable def untl_right_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp ψ)) :
     DerivationTree [] ((Formula.untl φ χ).imp (Formula.untl ψ χ)) := by
   have h_G := DerivationTree.temporal_necessitation _ h_impl
-  have h_ax := DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ)
+  have h_ax := DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ) trivial
   exact DerivationTree.modus_ponens [] _ _ h_ax h_G
 
 /-- Derivation-level right_mono for Since: if ⊢ φ→ψ then ⊢ snce(χ,φ) → snce(χ,ψ).
@@ -1342,7 +1342,7 @@ private noncomputable def snce_right_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp ψ)) :
     DerivationTree [] ((Formula.snce φ χ).imp (Formula.snce ψ χ)) := by
   have h_H := Bimodal.Theorems.past_necessitation _ h_impl
-  have h_ax := DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ)
+  have h_ax := DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ) trivial
   exact DerivationTree.modus_ponens [] _ _ h_ax h_H
 
 /-- BX13' (enrichment_since) at MCS level: If p ∈ C and snce(phi, psi) ∈ C,
@@ -1353,7 +1353,7 @@ private theorem enrichment_since_mcs {C : Set Formula}
     (h_snce : Formula.snce psi phi ∈ C) :
     Formula.snce (Formula.and psi (Formula.untl p phi)) phi ∈ C := by
   have h_conj := conj_mcs h_mcs p (Formula.snce psi phi) h_p h_snce
-  have h_bx13 := DerivationTree.axiom [] _ (Axiom.enrichment_since phi psi p)
+  have h_bx13 := DerivationTree.axiom [] _ (Axiom.enrichment_since phi psi p) trivial
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_bx13) h_conj
 
@@ -1573,7 +1573,7 @@ theorem xu_lemma_3_2_1_until {A B C : Set Formula}
   have h_event_impl : DerivationTree [] (gamma''.imp gamma) := lce_imp gamma gamma'
   have h_G_event : DerivationTree [] (gamma''.imp gamma).all_future :=
     DerivationTree.temporal_necessitation _ h_event_impl
-  have h_bx3_ax := DerivationTree.axiom [] _ (Axiom.right_mono_until gamma'' gamma beta'')
+  have h_bx3_ax := DerivationTree.axiom [] _ (Axiom.right_mono_until gamma'' gamma beta'') trivial
   -- ⊢ untl(gamma'', beta'') → untl(gamma, beta'')
   have h_event_mono : DerivationTree [] ((Formula.untl gamma'' beta'').imp (Formula.untl gamma beta'')) :=
     DerivationTree.modus_ponens [] _ _ h_bx3_ax h_G_event
@@ -1696,7 +1696,7 @@ theorem xu_lemma_3_2_1_since {A B C : Set Formula}
   have h_event_impl : DerivationTree [] (alpha''.imp alpha') := rce_imp alpha alpha'
   have h_H_event : DerivationTree [] (alpha''.imp alpha').all_past :=
     Bimodal.Theorems.past_necessitation _ h_event_impl
-  have h_bx3'_ax := DerivationTree.axiom [] _ (Axiom.right_mono_since alpha'' alpha' beta'')
+  have h_bx3'_ax := DerivationTree.axiom [] _ (Axiom.right_mono_since alpha'' alpha' beta'') trivial
   -- ⊢ snce(alpha'', beta'') → snce(alpha', beta'')
   have h_event_mono : DerivationTree [] ((Formula.snce alpha'' beta'').imp (Formula.snce alpha' beta'')) :=
     DerivationTree.modus_ponens [] _ _ h_bx3'_ax h_H_event
@@ -1731,7 +1731,7 @@ theorem xu_lemma_3_2_1_since {A B C : Set Formula}
       have h_ev : DerivationTree [] (alpha''.imp alpha) := lce_imp alpha alpha'
       have h_H_ev : DerivationTree [] (alpha''.imp alpha).all_past :=
         Bimodal.Theorems.past_necessitation _ h_ev
-      have h_bx3'_ev := DerivationTree.axiom [] _ (Axiom.right_mono_since alpha'' alpha beta'')
+      have h_bx3'_ev := DerivationTree.axiom [] _ (Axiom.right_mono_since alpha'' alpha beta'') trivial
       have h_ev_mono : DerivationTree [] ((Formula.snce alpha'' beta'').imp (Formula.snce alpha beta'')) :=
         DerivationTree.modus_ponens [] _ _ h_bx3'_ev h_H_ev
       -- Guard: beta'' → beta (lce_imp)
@@ -3327,7 +3327,7 @@ theorem until_witness_enriched_seed_consistent {A : Set Formula}
       rw [hφ_eq]
       have h_proj := list_conj_implies_elem alpha_list α hα_list
       have h_H_proj := Bimodal.Theorems.past_necessitation _ h_proj
-      have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since α_star α γ)
+      have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since α_star α γ) trivial
       have h_snce_mono : DerivationTree [] ((Formula.snce α_star γ).imp (Formula.snce α γ)) :=
         mp h_H_proj h_bx3'
       exact Or.inr ⟨imp_trans (rce_imp β (Formula.snce α_star γ)) h_snce_mono⟩
@@ -3358,7 +3358,7 @@ noncomputable def lemma_2_4_with_guard {A : Set Formula}
   have h_GP : Formula.all_future (Formula.some_past (Formula.untl β γ)) ∈ A := by
     have h_ax : DerivationTree [] ((Formula.untl β γ).imp
         (Formula.all_future (Formula.some_past (Formula.untl β γ)))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl β γ))
+      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl β γ) trivial)
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl β γ) ∈ C := h_g_sub h_GP
@@ -3487,7 +3487,7 @@ theorem since_witness_enriched_seed_consistent {A : Set Formula}
       have h_proj := list_conj_implies_elem alpha_list α hα_list
       -- G(α_star → α) gives untl(γ, α_star) → untl(γ, α) via BX3 (right_mono_until)
       have h_G_proj := DerivationTree.temporal_necessitation _ h_proj
-      have h_bx2 := DerivationTree.axiom [] _ (Axiom.right_mono_until α_star α γ)
+      have h_bx2 := DerivationTree.axiom [] _ (Axiom.right_mono_until α_star α γ) trivial
       have h_untl_mono : DerivationTree [] ((Formula.untl α_star γ).imp (Formula.untl α γ)) :=
         mp h_G_proj h_bx2
       exact Or.inr ⟨imp_trans (rce_imp β (Formula.untl α_star γ)) h_untl_mono⟩

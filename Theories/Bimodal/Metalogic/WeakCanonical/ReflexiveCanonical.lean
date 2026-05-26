@@ -201,7 +201,7 @@ noncomputable def some_future_mono {A B : Formula}
   -- BX3: G(A → B) → (U(A, ⊤) → U(B, ⊤)) = G(A → B) → (F(A) → F(B))
   have h_bx3 : [] ⊢ (A.imp B).all_future.imp
       ((Formula.untl A Formula.top).imp (Formula.untl B Formula.top)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until A B Formula.top)
+    DerivationTree.axiom [] _ (Axiom.right_mono_until A B Formula.top) trivial
   -- F(A) → F(B) by MP
   exact DerivationTree.modus_ponens [] _ _ h_bx3 h_G
 
@@ -295,7 +295,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ.neg :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ.neg)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
+        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h1 (Combinators.mp h2 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -377,7 +377,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
+        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h2 (Combinators.mp h1 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -583,7 +583,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
   -- From G(⊥), derive G(⊤ → ⊥) using ex_falso + temp_k_dist
   let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
   have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
-    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top) trivial
   have h_G_ef : DerivationTree [] (Formula.all_future (Formula.bot.imp neg_top)) :=
     DerivationTree.temporal_necessitation _ h_ef
   have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
@@ -600,7 +600,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
     DerivationTree.axiom [] _ Axiom.serial_future
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
@@ -639,7 +639,7 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
     h_content_closed_derivation h_mcs L hL d
   let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
   have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
-    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top) trivial
   have h_H_ef : DerivationTree [] (Formula.all_past (Formula.bot.imp neg_top)) :=
     Bimodal.Theorems.past_necessitation _ h_ef
   have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_past.imp
@@ -655,7 +655,7 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
     DerivationTree.axiom [] _ Axiom.serial_past
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
@@ -687,7 +687,7 @@ theorem canS5R_refl (x : ReflCanDomain) : canS5R x x := by
   have h_mcs := x.property
   -- Theorem: □φ → φ
   have h_t : [] ⊢ (Formula.box φ).imp φ :=
-    DerivationTree.axiom [] _ (Axiom.modal_t φ)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
   -- MCS contains all theorems
   have h_imp_in : (Formula.box φ).imp φ ∈ x.val :=
     theorem_in_mcs h_mcs h_t
@@ -707,7 +707,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
     | inr h => exact h
   -- modal_b on ¬φ: ⊢ ¬φ → □◇(¬φ)
   have h_mb : [] ⊢ (Formula.neg φ).imp (Formula.box (Formula.neg φ).diamond) :=
-    DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ))
+    DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ) trivial)
   have h_box_dia : Formula.box (Formula.neg φ).diamond ∈ x.val :=
     h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_mb) h_neg_phi
   -- canS5R x y: ◇(¬φ) ∈ y.val
@@ -722,7 +722,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
     DerivationTree.necessitation _ h_dni
   -- Step: ⊢ □(φ → ¬¬φ) → (□φ → □(¬¬φ)) via modal_k_dist
   have h_kd : [] ⊢ (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg) trivial
   -- □(φ → ¬¬φ) ∈ y.val
   have h_box_dni_y : (φ.imp φ.neg.neg).box ∈ y.val :=
     theorem_in_mcs h_mcs_y h_box_dni
@@ -748,7 +748,7 @@ theorem canS5R_trans {x y z : ReflCanDomain}
   -- From modal 4: □φ → □□φ
   have h_box_box_phi_x : Formula.box (Formula.box φ) ∈ x.val := by
     have h_4 : [] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
-      DerivationTree.axiom [] _ (Axiom.modal_4 φ)
+      DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial
     have h_4_in : (Formula.box φ).imp (Formula.box (Formula.box φ)) ∈ x.val :=
       theorem_in_mcs h_mcs_x h_4
     exact h_mcs_x.implication_property h_4_in h_box_phi_x

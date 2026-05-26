@@ -336,7 +336,7 @@ theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent (f
       · -- x < 0: use H propagation
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ A :=
           SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)))
+            (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg))) trivial
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h_mcs
           (theorem_in_mcs h_mcs (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
@@ -415,7 +415,7 @@ theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent (f
   -- F'T ∈ N (from □(F'T) by modal_t)
   have h_ft_N : next_top.neg ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg)))
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg))) trivial
       h_box_dense
   -- G(□(F'T)) ∈ N (from □(F'T) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top.neg) ∈ N :=
@@ -425,7 +425,7 @@ theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent (f
   -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
   have h_box_box : Formula.box (Formula.box next_top.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 next_top.neg)))
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 next_top.neg))) trivial
       h_box_dense
   have h_H_box : Formula.all_past (Formula.box next_top.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
@@ -1523,7 +1523,7 @@ private def z1_formula (φ : Formula) : Formula :=
 Z1 is an axiom of the system (Axiom.z1), so the derivation is immediate. -/
 private def z1_derivation (φ : Formula) :
     DerivationTree [] (z1_formula φ) :=
-  DerivationTree.axiom [] _ (Axiom.z1 φ)
+  DerivationTree.axiom [] _ (Axiom.z1 φ) trivial
 
 /-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`. -/
 private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
@@ -2563,7 +2563,7 @@ theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsi
   -- U(T,bot) ∈ N (from □(U(T,bot)) by modal_t)
   have h_nt_N : next_top ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top)))
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top))) trivial
       h_box_discrete
   -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top) ∈ N :=
@@ -2573,7 +2573,7 @@ theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsi
   -- H(□(U(T,bot))) ∈ N (from □(U(T,bot)) → □□(U(T,bot)) → H(□(U(T,bot))))
   have h_box_box : Formula.box (Formula.box next_top) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 next_top)))
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 next_top))) trivial
       h_box_discrete
   have h_H_box : Formula.all_past (Formula.box next_top) ∈ N :=
     SetMaximalConsistent.implication_property h_N
@@ -3337,7 +3337,7 @@ theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent (f
   -- Step 4: K-distribution axiom instance: □(A → B) → (□A → □B)
   have h_k_dist : [] ⊢ (Formula.box ((Formula.box next_top).neg.imp next_top.neg)).imp
       ((Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist (Formula.box next_top).neg next_top.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist (Formula.box next_top).neg next_top.neg) trivial
   -- Step 5: MP: □(¬□(U(T,bot))) → □(¬U(T,bot))
   have h_box_chain : [] ⊢ (Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg) :=
     DerivationTree.modus_ponens [] _ _ h_k_dist h_nec
