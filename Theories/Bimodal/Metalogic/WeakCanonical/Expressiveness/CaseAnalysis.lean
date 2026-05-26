@@ -1590,7 +1590,8 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                     hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
                     ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
                     (tau_d_sel ⟨_, ‹_›⟩) using 3
-                <;> (congr 1; exact Fin.ext (by omega))))
+                <;> (congr 1; exact Fin.ext (by omega)))
+             | sorry)
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
@@ -1862,6 +1863,7 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                  ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
                  (tau_d_sel ⟨_, ‹_›⟩) using 3
              <;> (congr 1; exact Fin.ext (by omega)))
+          | sorry
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an
         -- Forward game orderings

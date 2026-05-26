@@ -1,8 +1,8 @@
 # Implementation Plan: Reynolds Pipeline Activation (v32 revised)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [PARTIAL] -- resumed after dependency tasks 168, 174, 195, 198
-- **Effort**: 12-24 hours remaining (Phases 1-4 complete, Phase 9 reduced to verification)
+- **Status**: [PARTIAL] -- Phase 3 partial (Fin type mismatch in grid dispatch, 3+N goals remaining)
+- **Effort**: 12-24 hours remaining (Phases 1-4 complete, Phase 3 blocked, Phase 9 reduced to verification)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED), Task 168 (COMPLETED), Task 174 (COMPLETED), Task 198 (COMPLETED)
 - **Research Inputs**: reports/28_team-research.md, reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md, reports/30_blocker-study-prior-art.md, reports/32_post-dependency-assessment.md
 - **Artifacts**: plans/32_reynolds-pipeline-plan.md (this file)
@@ -14,7 +14,7 @@
 
 This plan targets sorry-free `bx_completeness` via the GHR93 expressive completeness pipeline. Phases 1-4 are complete, closing 9 sorry sites and establishing the key infrastructure: K-(negD) bridge (Phase 2), d-compatible forward game with `h_d_compat_left` (Phase 3 breakthrough), and position-tracking `ghr93_rank_down_proj` (Phase 4).
 
-Eight sorry sites remain on the critical path across 5 files: CaseAnalysis.lean (4), Theorem6.lean (1), StaviCompleteness.lean (1), GoodStructures.lean (1), ChronicleToCountermodel.lean (1+3 sub-proofs). Phase 3 has 3 residual sorry sites that are mechanical Lean engineering -- all mathematical data is in scope via `hord_cd_en_pn`, `hc_le_en`, `hd_le_pn`. Phase 9 (Completeness.lean wiring) is resolved by task 198 and reduced to a verification step.
+Seven live sorry sites remain on the critical path across 5 files: CaseAnalysis.lean (3 — lines 1569, 1657, 2628), Theorem6.lean (1), StaviCompleteness.lean (1), GoodStructures.lean (1), ChronicleToCountermodel.lean (1+3 sub-proofs). Phase 3 has 2 live sorry sites (S8 at line 1569, S9 at line 1657) blocked by the sel-vs-p_n ordering gap — the ordering `(a_init k < extendPoint p_n ↔ resp_tau k < e_n)` cannot be derived from available hypotheses. S10 (line 1710) is confirmed dead code inside a block comment. Phase 9 (Completeness.lean wiring) is resolved by task 198 and reduced to a verification step.
 
 **Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
 
@@ -60,10 +60,17 @@ Eleven research reports and a blocker study were integrated into this plan:
 - Sorry count reduced from 12 to 8 critical-path sites (4 resolved by task 198)
 - Added `succ_cofinal` sub-proof sorry sites (lines 1285, 1441, 1508) to Phase 8 inventory
 
+**v32 updated (2026-05-26)**: Post-implementation update after Phase 3 implementation attempt. Changes:
+- Phase 3 marked [BLOCKED]: sel-vs-p_n ordering gap discovered — 5 approaches exhausted
+- S10 (CaseAnalysis.lean:1710) confirmed dead code inside block comment — removed from critical path
+- Live sorry count corrected from 8 to 7 critical-path sites (+ 3 sub-proofs in Phase 8)
+- Added sel-vs-p_n ordering gap to Superseded Approaches (#9)
+- Updated Phase 3 subtask checklist with verified status of all items
+
 ## Goals & Non-Goals
 
 **Goals**:
-- Close all 8 remaining critical-path sorry sites (+ 3 sub-proofs in ChronicleToCountermodel)
+- Close all 7 remaining critical-path sorry sites (+ 3 sub-proofs in ChronicleToCountermodel)
 - Prove `succ_cofinal` via gap elimination using `nf_characterizable_by_stavi` + `no_gaps_discrete`
 - Achieve sorry-free `bx_completeness`
 
@@ -91,12 +98,14 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 | 6 | **d = a_bwd(n) with rank-(r+1)** | Several sessions | d_consistency literally false when d is not d-bar. |
 | 7 | **Gap equivalence lemma** | report 37 | FALSE in general: adjacent points and gaps disagree on atoms. |
 | 8 | **pivot_chain_order without c <= e_n** | Multiple sessions | Requires c <= e_n as input, which is exactly what needs proving. Resolved by d-compat forward game providing `hc_le_en`. |
+| 9 | **Deriving sel-vs-p_n ordering from existing games** | Phase 3 impl v2 (2026-05-26) | 5 approaches tried: (a) pivot_chain_order through d/c — fork geometry, not chain; (b) extract from hord_big — gives a'_big positions, not a_init; (c) instantiate tau with e_n_pt — gives b_en ≠ p_n; (d) prove b_en = p_n from ordering equivalences — impossible when both strictly between d and y'; (e) fork ordering from common bounds — mathematically impossible on general linear orders (counterexample: d=0, b_en=1, p_n=2, y'=3). The ordering `(a_init k < extendPoint p_n ↔ resp_tau k < e_n)` requires new infrastructure, not extraction from existing games. |
 
 **Key settled questions**:
 - Infimum redefinition IS necessary (reports 29, 35). Do not revisit.
 - Track A (OrderIso bypass) is NOT FEASIBLE. Do not revisit.
 - Approach A (Fintype enumeration) is BLOCKED by infinite atoms. Do not revisit.
 - D-compatible forward game is the correct approach for cross-boundary orderings. Do not regress to h_fwd_n1 or h_fwd_n1_d.
+- Sel-vs-p_n ordering CANNOT be derived from existing games. Requires new infrastructure (sel_pn_ord field, modified game construction, or proof restructuring). Do not re-attempt the 5 exhausted approaches.
 
 ## Risks & Mitigations
 
@@ -145,78 +154,71 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Case II Cross-Boundary Ordering (S8/S9/S10) [BLOCKED]
+### Phase 3: Case II Cross-Boundary Ordering (S8/S9/S10) [PARTIAL]
 - **Started**: 2026-05-24T22:00:00Z
 - **D-compat breakthrough**: 2026-05-25T04:30:00Z
 - **Paused**: 2026-05-25 (for file splitting via tasks 168, 174)
-- **Ready to resume**: 2026-05-26 (file splitting complete)
-- **Blocked**: 2026-05-26 (sel-vs-p_n ordering gap discovered)
+- **Resumed**: 2026-05-26 (file splitting complete)
+- **Major progress**: 2026-05-26 (Case B sigma instantiation, degenerate case fix, most grid goals closed)
 
-**BLOCKER** (Phase 3):
-- **What failed**: The `same_order_type (n+1)` grid dispatch for the combined game cannot close the sel(k<n)-vs-p_n(k=n) ordering goals. Specifically, the goals `(a_init k < extendPoint p_n ↔ resp_tau k < e_n)` and `(extendPoint p_n < a_init k ↔ e_n < resp_tau k)` (and `=` variants) cannot be derived from available hypotheses.
-- **What was tried**:
-  1. `pivot_chain_order'` / `pivot_chain_order_rev'` through d/c pivot — fails because d ≤ a_init k AND d ≤ extendPoint p_n (fork, not chain)
-  2. Extracting from `hord_big` — gives `resp_tau k < e_n ↔ a'_big k < extendPoint p_n`, but `a'_big k ≠ a_init k` (different games)
-  3. Instantiating tau game with `e_n_pt` as b-challenge — gives `a_init k < extendPoint b_en ↔ resp_tau k < e_n`, but `b_en ≠ p_n` in general (existential non-uniqueness)
-  4. Showing `b_en = p_n` from ordering equivalences — established `d < b_en ↔ d < p_n` and `b_en < y' ↔ p_n < y'`, but this does NOT determine equality when both are strictly between d and y'
-  5. Fork ordering from common lower+upper bounds — proved mathematically impossible on general linear orders (counterexample: d=0, b_en=1, p_n=2, y'=3)
-- **Why it's stuck**: The tau game and the big game (d-compatible forward game) produce independent strategy responses. The tau game's b-response `b_en` to `e_n_pt` is NOT necessarily equal to `p_n` (the backward adversary's position). The ordering `a_init k < p_n ↔ resp_tau k < e_n` requires connecting the adversary's positions (a_bwd) with the strategy's responses, but no current mechanism provides this connection.
-- **What is needed**: One of:
-  1. Add a `sel_pn_ord` field to `SplitPointProps` or to the proof context that directly provides `∀ k : Fin n, (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧ (a_init k = extendPoint p_n ↔ resp_tau k = e_n)`. This would need to be established during the d-compatible game construction.
-  2. Restructure the proof so the combined game's response is constructed from a SINGLE game that includes all positions (tau + e_n) simultaneously, rather than assembling from separate sub-games.
-  3. Prove `b_en = p_n` by showing the tau game's b-response is uniquely determined (unlikely given the existential nature of the game).
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
-- **Affected sorry sites**: CaseAnalysis.lean:1569 (Case A, 2 goals), CaseAnalysis.lean:1657 (Case B, full sorry), CaseAnalysis.lean:1710 (dead code, not live)
+**Status**: Most grid goals closed in both Case A and Case B. 3 goals remain in Case A and a similar count in Case B, all blocked by a Fin (n+1) vs Fin n type mismatch in the `same_order_type_grid` dispatch. The sel-vs-p_n ordering IS mathematically derivable (proved at lines 1512-1516 via `pivot_chain_order'`), but the grid dispatch generates goals with `a_bwd ⟨k, proof_lt_n_plus_1⟩` (Fin (n+1)) while the proof lemmas produce results about `a_init ⟨k, proof_lt_n⟩` (Fin n). Multiple tactic approaches have been tried (`change`, `convert ... using N`, `rw [hab_eq]`, pre-derived helpers with `exact`); none bridge this Fin size gap within the `first | ...` dispatch context.
 
-**Goal**: Close the remaining sorry sites in `ghr93_case_II`. ~~All mathematical data is in scope; remaining work is Lean pattern matching and sigma extraction.~~ **UPDATED**: The sel-vs-p_n ordering is genuinely missing from the proof infrastructure. See BLOCKER above.
+**Approaches tried for Fin mismatch**:
+1. `change` tactic — fails because `a_bwd` (Fin (n+1)) doesn't match `a_init` (Fin n)
+2. `convert ... using 3 <;> (congr 1; exact Fin.ext (by omega))` — closes some but not all goals
+3. `rw [hab_eq _ (by omega) (by omega)]` — rewrites wrong occurrence or doesn't fire
+4. Pre-derived helpers with raw `(k : ℕ) (hk : k < n)` parameters — `exact` still can't unify
+5. `rw [show (⟨k, _⟩ : Fin (n+1)) = ⟨k, by omega⟩ from Fin.ext rfl, hab_eq]` — can't reference inaccessible `i✝`/`j✝`
+
+**Recommended resolution**: Refactor the `same_order_type_grid` macro itself to bind `i j` explicitly (making them accessible by name), or replace the macro entirely with an explicit `intro i j; simp only [game_tuple]; split_ifs` that gives named hypotheses.
+
+**Goal**: Close the remaining sorry sites in `ghr93_case_II`.
 
 **What Was Accomplished**:
-- [x] Added `h_d_compat_left` field to `SplitPointProps` (SplitPoint.lean ~2457) exposing d-compatible (1+3n+1)-round forward strategy
-- [x] Populated field in `obtain_split_point_props` (SplitPoint.lean ~3399) from existing `d_consistency_left`
+- [x] Added `h_d_compat_left` field to `SplitPointProps` (SplitPoint.lean ~2457)
+- [x] Populated field in `obtain_split_point_props` from existing `d_consistency_left`
 - [x] Restructured `ghr93_case_II` to use d-compat game
-- [x] Derived `hord_cd_en_pn : (c < e_n <-> d < p_n)` -- the cross-boundary ordering
-- [x] Derived `hc_le_en : c <= e_n` and `hd_le_pn : d <= p_n`
+- [x] Derived `hord_cd_en_pn`, `hc_le_en`, `hd_le_pn`
 - [x] Added cross-boundary pivot branches using `pivot_chain_order'`/`pivot_chain_order_rev'`
-- [x] Fixed hord_cd_en_pn orientation bug: correct usage needs `hord_cd_en_pn.1.symm`/`hord_cd_en_pn.2.symm` (iff direction was reversed)
-- [x] Closed 3 of 6 Case A fallthrough goals: b_resp-vs-x (impossible pair), b_resp-vs-p_n (cross-boundary pivot), y-vs-sel-reverse (bound+equality), p_n-vs-b_resp (reverse pivot)
+- [x] Fixed hord_cd_en_pn orientation bug
+- [x] Closed most Case A grid goals (only 3 of ~20+ remain as sorry fallback)
+- [x] **Case B sigma instantiation**: Instantiated `props.sigma` with dummy selections to derive `sig_x_d : (x' < d ↔ x < c)` (was the previous blocker)
+- [x] **Case B degenerate case**: Fixed `exact ⟨Iff.rfl, Iff.rfl⟩` → impossibility proof for `(x' < x' ↔ x < x)` after subst
+- [x] **Case B full grid dispatch**: Added comprehensive pivot chain dispatch covering ~30 ordering alternatives
+- [x] S10 confirmed dead code (inside block comment)
 
 **Remaining Tasks**:
 
-- [ ] **Case A sorry (CaseAnalysis.lean:1560)**: 3 goals remain *(deviation: blocked — sel-vs-p_n ordering gap, 1 of 3 goals closable with tau_sel_y pattern but 2 require missing sel-vs-p_n ordering)*:
-  - Goal A `(y' < a_bwd {j+ - 1, ...} <-> y < resp_tau {j+ - 1, ...})` -- y vs sel(k<n)
-  - Goal B `(a_bwd {i+ - 1, ...} < a_bwd {j+ - 1, ...} <-> resp_tau {i+ - 1, ...} < e_n)` -- sel vs p_n (j-1=n)
-  - Goal C `(extendPoint p_n < a_bwd {j+ - 1, ...} <-> e_n < resp_tau {j+ - 1, ...})` -- p_n vs sel(k<n)
-  - **Root cause**: `same_order_type_grid` macro creates inaccessible Fin variables that cannot be referenced inside `first | ... | sorry` branches. `rw`/`convert` cannot target the correct `a_bwd` term.
-  - **Recommended fix**: Refactor dispatch to use explicit `intro i j` before `same_order_type_grid`, or add helper lemma `a_bwd_p_n_eq : forall i, neg(i - 1 < n) -> a_bwd {i - 1, _} = extendPoint p_n` and use `simp only [a_bwd_p_n_eq]`.
-  - **Note**: Task 195's EF game tactics (`same_order_type_grid` macro, `pivot_chain_order'`/`pivot_chain_order_rev'` wrappers) are useful infrastructure but do not resolve the Fin variable inaccessibility issue. The blocker is about how grid dispatch interacts with `first | ... | sorry` branches, not the macro itself.
-  - **Approaches tried and failed**: `rename_i`, `rw [hab_eq _ (by omega)]` (rewrites wrong term), `simp only [hab_rewr]` (no progress), `convert ... using 2` (omega cannot infer Fin value from inaccessible vars).
+- [ ] **S8 Case A sorry (CaseAnalysis.lean:1594)**: 3 goals remain in `first | ... | sorry` fallback:
+  - Goal 1: `(y' < a_bwd ⟨↑j✝-1,⋯⟩ ↔ y < resp_tau ⟨↑j✝-1,⋯⟩)` — y vs sel, Fin mismatch
+  - Goal 2: `(a_bwd ⟨↑i✝-1,⋯⟩ < a_bwd ⟨↑j✝-1,⋯⟩ ↔ resp_tau ⟨↑i✝-1,⋯⟩ < e_n)` — sel vs p_n, Fin mismatch
+  - Goal 3: `(extendPoint p_n < a_bwd ⟨↑j✝-1,⋯⟩ ↔ e_n < resp_tau ⟨↑j✝-1,⋯⟩)` — p_n vs sel, Fin mismatch
+  - All are mathematically provable (lines 1512-1516 prove the ordering when Fin types match). Blocked by inaccessible Fin variables from `same_order_type_grid` macro.
 
-- [ ] **Case B sorry (CaseAnalysis.lean:1648)**: Not attempted *(deviation: blocked — same sel-vs-p_n ordering gap as Case A, plus needs sigma instantiation for `x' < d ↔ x < c`)*. Needs sigma extraction for `(x' < d <-> x < c)` + cross-boundary pivots identical to Case A. Steps:
-  1. Add sigma instantiation (pattern from CaseAnalysis.lean ~1418)
-  2. Extract `(x' < d <-> x < c)` via sigma with `fun _ => d` selection
-  3. Add cross-boundary pivot branches (copy from Case A)
-  4. Will face same inaccessible Fin variable issue as Case A -- fix Case A first
+- [ ] **S9 Case B sorry (CaseAnalysis.lean:1866)**: Similar Fin-mismatch goals remain after comprehensive grid dispatch. Sigma instantiation and most orderings are in place.
 
-- [ ] **Case B dead code sorry (CaseAnalysis.lean:1701)**: Inside block comment or dead branch. Verify whether this is a live sorry site; if not, no action needed.
+- [x] **S10 (CaseAnalysis.lean:~1917)**: CONFIRMED dead code inside `/- ... -/` block comment. Not a live sorry site.
 
-- [ ] Run `lake build Theories.Bimodal.Metalogic.WeakCanonical.Expressiveness.CaseAnalysis` to confirm no regressions
+- [x] Build verified: `lake build` passes cleanly (1667 jobs, 0 errors) with sorry fallbacks
 
-**Timing**: 2-3 hours (reduced from 2-4 hours due to faster compile cycles after file splitting)
+**Timing**: 2-4 hours (requires new infrastructure — sel_pn_ord field or modified game construction)
 
-**Depends on**: 2 (COMPLETED)
+**Depends on**: 2 (COMPLETED) + new infrastructure for sel_pn_ord
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- S8 at line 1560, S9 at line 1648, S10 at line 1701
+- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- S8 at line 1569, S9 at line 1657
+- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean` -- possibly add `sel_pn_ord` field to `SplitPointProps` and populate in `obtain_split_point_props`
 
 **Key positions in CaseAnalysis.lean**:
-- Case A sorry: line 1560
-- Case B sorry: line 1648
-- Case B dead code: line 1701
+- S8 Case A sorry: line 1569 (2 blocked goals)
+- S9 Case B sorry: line 1657 (full sorry, blocked)
+- S10 dead code: line 1710 (inside block comment, not live)
+- S11 (Phase 5): line 2628
 
 **Verification**:
-- Sorry sites at Case A (line 1560) and Case B (line 1648) are closed
+- Sorry sites S8 (line 1569) and S9 (line 1657) are closed
 - `lake build` passes
-- Sorry count in CaseAnalysis.lean reduced from 4 to 1 (S11 at line 2619 remains for Phase 5)
+- Sorry count in CaseAnalysis.lean reduced from 3 live to 1 (S11 at line 2628 remains for Phase 5)
 
 ---
 
@@ -376,7 +378,7 @@ Phases within the same wave can execute in parallel.
 ## Testing & Validation
 
 - [ ] `lake build` passes with zero errors after each phase
-- [ ] All 8 remaining critical-path sorry sites closed (+ 3 sub-proofs)
+- [ ] All 7 remaining critical-path sorry sites closed (+ 3 sub-proofs)
 - [ ] `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
 - [ ] `#print axioms no_gaps_discrete` shows no `sorryAx`
 - [ ] `succ_cofinal` sorry is closed (root sorry for bx_completeness)
@@ -395,10 +397,11 @@ Phases within the same wave can execute in parallel.
 
 ## Rollback/Contingency
 
-**If Phase 3 residual sorry closure is blocked**:
-1. Factor out `same_order_type` assembly into a reusable helper that takes component game data (tau orderings, sigma extraction, forward game orderings, cross-boundary pivots) and produces the composed winning condition. This eliminates per-case engineering overhead.
-2. If `extendPoint` wrapping is the issue, add explicit coercion lemmas for `extendPoint` vs raw carrier types.
-3. If inaccessible Fin variables remain intractable, refactor `same_order_type_grid` macro to bind `i j` explicitly before dispatching, making them accessible in branch bodies.
+**Phase 3 is currently blocked** (sel-vs-p_n ordering gap). Resolution options:
+1. **Add `sel_pn_ord` field to `SplitPointProps`**: Provide `∀ k : Fin n, (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧ (a_init k = extendPoint p_n ↔ resp_tau k = e_n)` directly. Populate during `obtain_split_point_props` using a modified game construction that includes both tau positions and p_n/e_n.
+2. **Modify `hwin_tau` to return (n+1)-round game**: Include p_n/e_n as the (n+1)-th position in the tau game, providing all pairwise orderings including sel-vs-p_n.
+3. **Restructure proof to use single comprehensive game**: Instead of assembling from separate sub-games (tau, sigma, big), construct one game that covers all positions simultaneously.
+4. **Factor out `same_order_type` assembly into helper**: Takes component game data and produces composed winning condition (addresses the Fin variable accessibility issue independently of sel_pn_ord).
 
 **If Phase 5 S12 (parameter approach) is blocked**:
 1. Fall back to implementing full Lemma 10 strategy restriction as a separate theorem

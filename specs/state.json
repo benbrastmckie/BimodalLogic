@@ -349,8 +349,8 @@
         174
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-25T22:10:00Z",
-      "next_artifact_number": 32,
+      "last_updated": "2026-05-27T01:00:00Z",
+      "next_artifact_number": 34,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -541,6 +541,16 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/31_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan v31: Phases 1-4 completed, Phase 3 d-compat approach with 3 mechanical sorries, Phase 5 parameter approach for S12"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/32_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v32: updated file paths after task 174 split, Phase 9 reduced to verification after task 198"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/32_post-dependency-assessment.md",
+          "type": "research",
+          "summary": "Post-dependency assessment: tasks 168, 174, 195, 198 impact analysis, updated sorry inventory and file path mapping"
         }
       ],
       "session_id": "sess_1779640471_03278b",
