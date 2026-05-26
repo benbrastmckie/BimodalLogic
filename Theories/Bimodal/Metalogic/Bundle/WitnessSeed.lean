@@ -50,8 +50,8 @@ we need helpers that derive contradictions between `some_future psi ∈ M` and
 
 open Bimodal.ProofSystem Bimodal.Theorems in
 /-- In an MCS, `some_future psi ∈ M` and `all_future (neg psi) ∈ M` is contradictory. -/
-lemma some_future_all_future_neg_absurd {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (psi : Formula)
+lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
     (h_F : Formula.some_future psi ∈ M)
     (h_G_neg : Formula.all_future (Formula.neg psi) ∈ M) : False := by
   -- all_future (neg psi) = (some_future psi.neg.neg).neg
@@ -66,13 +66,14 @@ lemma some_future_all_future_neg_absurd {M : Set Formula}
   have h_impl : [] ⊢ (Formula.some_future psi).imp (Formula.some_future psi.neg.neg) :=
     DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
   have h_sf_nn : Formula.some_future psi.neg.neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_impl) h_F
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_impl)) h_F
   exact set_consistent_not_both h_mcs.1 (Formula.some_future psi.neg.neg) h_sf_nn h_G_neg
 
 open Bimodal.ProofSystem Bimodal.Theorems in
 /-- In an MCS, `some_past psi ∈ M` and `all_past (neg psi) ∈ M` is contradictory. -/
-lemma some_past_all_past_neg_absurd {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (psi : Formula)
+lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
     (h_P : Formula.some_past psi ∈ M)
     (h_H_neg : Formula.all_past (Formula.neg psi) ∈ M) : False := by
   have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.dni psi
@@ -84,7 +85,8 @@ lemma some_past_all_past_neg_absurd {M : Set Formula}
   have h_impl : [] ⊢ (Formula.some_past psi).imp (Formula.some_past psi.neg.neg) :=
     DerivationTree.modus_ponens [] _ _ h_bx3 h_H_dni
   have h_sp_nn : Formula.some_past psi.neg.neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_impl) h_P
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_impl)) h_P
   exact set_consistent_not_both h_mcs.1 (Formula.some_past psi.neg.neg) h_sp_nn h_H_neg
 
 /-! ## Duality Conversions
@@ -96,14 +98,11 @@ dual, these conversions go through the proof system (BX3/BX3' + DNE/DNI). -/
 open Bimodal.ProofSystem Bimodal.Theorems in
 /-- In an MCS, `¬F(φ) ∈ M` implies `G(¬φ) ∈ M`.
     Proof: `¬P(φ) → ¬P(φ.neg.neg)` via contrapositive of BX3'+DNE, which equals `G(¬φ)`. -/
-lemma neg_some_future_to_all_future_neg {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma neg_some_future_to_all_future_neg {fc : FrameClass} {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) M) (phi : Formula)
     (h_neg_F : Formula.neg (Formula.some_future phi) ∈ M) :
     Formula.all_future (Formula.neg phi) ∈ M := by
-  -- ¬F(φ) ∈ M means (some_future φ).neg ∈ M
-  -- G(¬φ) = all_future φ.neg = (some_future φ.neg.neg).neg
-  -- Strategy: ⊢ φ.neg.neg → φ (DNE), lift through F via BX3: ⊢ F(φ.neg.neg) → F(φ)
-  -- Contrapositive: ⊢ ¬F(φ) → ¬F(φ.neg.neg) = G(¬φ)
+  -- Build derivation chain at Base level, then lift to fc
   have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.double_negation _
   have h_nec : [] ⊢ (phi.neg.neg.imp phi).all_future :=
     DerivationTree.temporal_necessitation _ h_dne
@@ -114,13 +113,14 @@ lemma neg_some_future_to_all_future_neg {M : Set Formula}
     DerivationTree.modus_ponens [] _ _ h_bx3 h_nec
   have h_contra : [] ⊢ (Formula.some_future phi).neg.imp (Formula.some_future phi.neg.neg).neg :=
     Propositional.contraposition h_F_mono
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_F
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_contra)) h_neg_F
 
 open Bimodal.ProofSystem Bimodal.Theorems in
 /-- In an MCS, `¬P(φ) ∈ M` implies `H(¬φ) ∈ M`.
     Past dual of `neg_some_future_to_all_future_neg`. -/
-lemma neg_some_past_to_all_past_neg {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma neg_some_past_to_all_past_neg {fc : FrameClass} {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) M) (phi : Formula)
     (h_neg_P : Formula.neg (Formula.some_past phi) ∈ M) :
     Formula.all_past (Formula.neg phi) ∈ M := by
   have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.double_negation _
@@ -133,7 +133,8 @@ lemma neg_some_past_to_all_past_neg {M : Set Formula}
     DerivationTree.modus_ponens [] _ _ h_bx3 h_nec
   have h_contra : [] ⊢ (Formula.some_past phi).neg.imp (Formula.some_past phi.neg.neg).neg :=
     Propositional.contraposition h_P_mono
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_P
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_contra)) h_neg_P
 
 /-!
 ## Forward Temporal Witness Seed
