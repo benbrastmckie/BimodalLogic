@@ -39,7 +39,7 @@ technical_debt:
 ### Phase 1a — File Splitting (next active work)
 
 168 [PARTIAL] — Parameterize DerivationTree over FrameClass (50+ files updated, 6 discrete chronicle sorries remain → task 197)
-197 [IMPLEMENTING] — Parameterize chronicle construction over FrameClass (eliminate 6 sorry workarounds from task 168)
+197 [COMPLETED] — Parameterize chronicle construction over FrameClass (eliminate 6 sorry workarounds from task 168)
   - **Plan**: [specs/197_parameterize_chronicle_over_frameclass/plans/01_chronicle-fc-parameterization.md]
   └─ 168
 174 [NOT STARTED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)

@@ -265,7 +265,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 7: Fix Remaining 5 Sorries -- FrameProperties.lean and ChronicleExtraction.lean [IN PROGRESS]
+### Phase 7: Fix Remaining 5 Sorries -- FrameProperties.lean and ChronicleExtraction.lean [COMPLETED]
 
 **Goal**: Fix sorries #1-5 by leveraging the parameterized infrastructure from Phases 1-6. Update downstream consumers (IntegerModel, NEquivalence, WeakCanonical).
 
@@ -305,7 +305,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 8: Integration, Instantiation Sites, and Final Verification [NOT STARTED]
+### Phase 8: Integration, Instantiation Sites, and Final Verification [COMPLETED]
 
 **Goal**: Update the top-level instantiation sites (Transfer.lean, Completeness.lean), verify the full build, and confirm all 6 sorries are eliminated with no new sorries introduced.
 
