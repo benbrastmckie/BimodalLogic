@@ -155,7 +155,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 4: CounterexampleElimination.lean and ChronicleConstruction.lean [NOT STARTED]
+### Phase 4: CounterexampleElimination.lean and ChronicleConstruction.lean [COMPLETED]
 
 **Goal**: Thread `fc` through counterexample elimination and the chronicle construction (omega-chain, limit chronicle, limit lemmas). These are combined in one phase because CounterexampleElimination feeds directly into ChronicleConstruction and both are on the same dependency tier.
 
