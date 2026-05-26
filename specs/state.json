@@ -228,17 +228,19 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
       "dependencies": [
-        154
+        154,
+        168,
+        174
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-24T16:53:31Z",
-      "next_artifact_number": 29,
+      "last_updated": "2026-05-25T22:10:00Z",
+      "next_artifact_number": 32,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -409,12 +411,32 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan: single-track GHR93 pipeline, 9 phases, Approach C (case-split), ~20 hours"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/29_phase3-blocker-research.md",
+          "type": "research",
+          "summary": "Phase 3 blocker: d-compat field design, obtain_split_point_props has zero sorries, attack order S4->S7->d-compat->cross-boundary"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260525T043000Z.md",
+          "type": "handoff",
+          "summary": "Phase 3 d-compat breakthrough: h_d_compat_left field added, cross-boundary ordering derivable, 5 sorries remain (mechanical)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/30_blocker-study-prior-art.md",
+          "type": "research",
+          "summary": "Deep analysis of GHR93 Claim 1 literature, definitive resolution of Phase 3 blockers, 12-sorry inventory, pipeline health assessment (17-32h remaining)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/31_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v31: Phases 1-4 completed, Phase 3 d-compat approach with 3 mechanical sorries, Phase 5 parameter approach for S12"
         }
       ],
       "session_id": "sess_1779640471_03278b",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 1
+      "resume_phase": 3
     },
     {
       "project_number": 174,
@@ -422,7 +444,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "priority": "medium",
-      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: Hierarchy.lean (3845), SoundnessLemmas.lean (2422), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889), Propositional.lean (1712), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring. SoundnessLemmas should be split after task 168 collapses its 4 near-duplicate frame-class blocks.",
+      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines — split by induction level), SoundnessLemmas.lean (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
       "dependencies": [
         168
       ],

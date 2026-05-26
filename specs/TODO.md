@@ -27,13 +27,25 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-22. 33 active tasks.*
+*Updated 2026-05-25. 33 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
-### Phase 1 — Active Work
+### Phase 1 — Paused (155 Phase 3 partial, awaiting file splitting)
 
-155 [PLANNED] — Reynolds pipeline: eliminate succ_cofinal from bx_completeness
+155 [PARTIAL] — Reynolds pipeline: Phase 3 partial (3/6 Case A goals closed, Case B pending). Paused for file splitting.
+  └─ 154, 168, 174
+
+### Phase 1a — File Splitting (next active work)
+
+168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
+174 [NOT STARTED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
+  └─ 168
+
+### Phase 1b — Resume 155 (Phase 3 remainder + Phases 5-9, after file splitting)
+
+155 → Resume Phase 3 sorry closure + Phases 5-9 (with split modules, faster builds)
+  └─ 168, 174
 
 ### Phase 2 — Post-155 Cleanup
 
@@ -44,9 +56,6 @@ technical_debt:
 
 ### Phase 3 — Structural Refactor (before tactics — 168 changes DerivationTree type)
 
-168 [NOT STARTED] — Parameterize DerivationTree over FrameClass (the linchpin refactor)
-174 [NOT STARTED] — Split oversized files (9 files > 1400 lines)
-  └─ 168
 175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
   └─ 168, 174
 180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
@@ -395,13 +404,13 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 ---
 
 ### 174. Split oversized files (> 1500 lines)
-- **Effort**: medium (8-12 hours)
+- **Effort**: medium-large (12-20 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Priority**: medium
+- **Priority**: high
 - **Dependencies**: 168
 
-**Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
+**Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `ExpressivenessGeneral.lean` (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
 
 ---
 
