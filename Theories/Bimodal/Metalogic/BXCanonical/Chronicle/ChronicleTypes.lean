@@ -70,6 +70,34 @@ noncomputable def liftBase (fc : FrameClass) {Γ : List Formula} {φ : Formula}
     (d : DerivationTree FrameClass.Base Γ φ) : DerivationTree fc Γ φ :=
   d.lift (base_le fc)
 
+/-- An MCS at any frame class is also an MCS at Base.
+
+Consistency: fc has more axioms than Base, so if ⊥ is not derivable at fc then
+it is not derivable at Base (any Base derivation lifts to fc by `liftBase`).
+
+Maximality: For φ ∉ A, negation completeness at fc gives ¬φ ∈ A. Then
+φ, ¬φ ⊢_Base ⊥ (structural, no axioms needed), so A ∪ {φ} is Base-inconsistent. -/
+theorem mcs_to_base {fc : FrameClass} {A : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) A) :
+    SetMaximalConsistent (fc := FrameClass.Base) A := by
+  constructor
+  · -- Consistency at Base: if L ⊆ A derived ⊥ at Base, lift to fc → contradiction
+    intro L hL ⟨d⟩
+    have d_fc : DerivationTree fc L Formula.bot := liftBase fc d
+    exact h_mcs.1 L hL ⟨d_fc⟩
+  · -- Maximality at Base: for φ ∉ A, show A ∪ {φ} is Base-inconsistent
+    intro φ hφ
+    -- By negation completeness at fc: ¬φ ∈ A
+    have h_neg : φ.neg ∈ A := by
+      rcases SetMaximalConsistent.negation_complete h_mcs φ with h | h
+      · exact absurd h hφ
+      · exact h
+    -- A ∪ {φ} contains both φ and ¬φ, which derive ⊥ at Base
+    intro h_cons
+    have h_phi_mem : φ ∈ insert φ A := Set.mem_insert φ A
+    have h_neg_mem : φ.neg ∈ insert φ A := Set.mem_insert_of_mem φ h_neg
+    exact set_consistent_not_both h_cons φ h_phi_mem h_neg_mem
+
 /-! ## Deductively Closed Sets (DCS) -/
 
 /-- A set is closed under derivation if every consequence of its elements is also in it.

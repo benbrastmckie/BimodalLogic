@@ -249,15 +249,15 @@ But wait - we need: `G phi ∈ M` implies `phi ∈ M''`.
 From `G phi ∈ M` and Temp 4, `G(G phi) ∈ M`. So `G phi ∈ g_content M ⊆ M'`.
 Then `phi ∈ g_content M' ⊆ M''`.
 -/
-theorem existsTask_transitive (M M' M'' : Set Formula)
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem existsTask_transitive {fc : FrameClass} (M M' M'' : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
     (h_R1 : ExistsTask M M') (h_R2 : ExistsTask M' M'') :
     ExistsTask M M'' := by
   intro phi h_G_phi
   -- phi ∈ g_content M means G phi ∈ M
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
-  have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived phi
+  have h_T4 : DerivationTree fc [] ((Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi))) :=
+    (Bimodal.Theorems.TemporalDerived.temp_4_derived phi).lift (by cases fc <;> trivial)
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_phi
   -- G phi ∈ g_content M, and g_content M ⊆ M' by h_R1
@@ -266,7 +266,7 @@ theorem existsTask_transitive (M M' M'' : Set Formula)
   exact h_R2 h_G_in_M'
 
 /-- Backward compatibility alias. -/
-abbrev canonicalR_transitive := existsTask_transitive
+abbrev canonicalR_transitive := @existsTask_transitive
 
 /--
 h_content chain transitivity: If `h_content V ⊆ N` and `h_content N ⊆ M`, then `h_content V ⊆ M`.
@@ -279,14 +279,15 @@ Given `phi ∈ h_content V` (i.e., `H phi ∈ V`):
 2. So `H phi ∈ h_content V ⊆ N`
 3. So `phi ∈ h_content N ⊆ M`
 -/
-theorem h_content_chain_transitive (M N V : Set Formula)
-    (h_mcs_V : SetMaximalConsistent (fc := FrameClass.Base) V)
+theorem h_content_chain_transitive {fc : FrameClass} (M N V : Set Formula)
+    (h_mcs_V : SetMaximalConsistent (fc := fc) V)
     (hNV : h_content V ⊆ N) (hMN : h_content N ⊆ M) :
     h_content V ⊆ M := by
   intro phi h_H_phi
   -- h_H_phi : phi ∈ h_content V, i.e., H phi ∈ V
   -- By Temporal 4 for H: H phi → H(H phi), so H(H phi) ∈ V
-  have h_H4 := temp_4_past phi
+  have h_H4 : DerivationTree fc [] (phi.all_past.imp phi.all_past.all_past) :=
+    (temp_4_past phi).lift (by cases fc <;> trivial)
   have h_HH_in_V := SetMaximalConsistent.implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4) h_H_phi
   -- H phi ∈ h_content V, and h_content V ⊆ N, so H phi ∈ N
   have h_Hphi_in_N := hNV h_HH_in_V

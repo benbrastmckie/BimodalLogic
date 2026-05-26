@@ -35,7 +35,7 @@ open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-!
 ## Helper Tautologies for Imp Case
@@ -43,7 +43,7 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-- Classical tautology: neg(psi -> chi) -> psi -/
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
-    DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp ψ) := by
+    DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
   have h_efq : DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.imp χ)) :=
     Bimodal.Theorems.Propositional.efq_neg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
@@ -66,11 +66,13 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
     Bimodal.Theorems.Combinators.b_combinator
   have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
     Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
-  exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp ψ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+  exact h_base.lift (by cases fc <;> trivial)
 
 /-- Classical tautology: neg(psi -> chi) -> neg(chi) -/
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
-    DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp χ.neg) := by
+    DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ) trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
@@ -85,7 +87,9 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
     Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
     Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp χ.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+  exact h_base.lift (by cases fc <;> trivial)
 
 /-!
 ## Restricted Shifted Truth Lemma
@@ -102,13 +106,13 @@ The hypothesis `h_sub : φ ∈ subformulaClosure root` ensures that in the G/H b
 cases, `neg(psi) ∈ deferralClosure root` (since `psi ∈ subformulaClosure root` implies
 `psi.neg ∈ closureWithNeg root ⊆ deferralClosure root`).
 -/
-theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
+theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
-    (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (t : D) :
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
@@ -126,7 +130,7 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+      have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
@@ -144,14 +148,14 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
       · exact h_imp
       · exfalso
         have h_ψ_mcs : ψ ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_antecedent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := neg_imp_implies_antecedent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_neg_consequent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := neg_imp_implies_neg_consequent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
@@ -231,14 +235,14 @@ Restricted completeness: if φ.neg is in a family's MCS, then φ is false at the
 canonical model. Uses restricted temporal coherence for φ only.
 -/
 theorem restricted_parametric_completeness_from_neg_membership
-    (B : BFMCS D)
+    (B : BFMCS (fc := fc) D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
     (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
-    (fam : FMCS D) (hfam : fam ∈ B.families)
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
@@ -262,13 +266,13 @@ so the restricted versions suffice.
 Fully restricted parametric shifted truth lemma: all three coherence hypotheses
 are restricted to subformulaClosure/deferralClosure of root.
 -/
-theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
+theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.restricted_backward_until_since_coherent root)
     (h_fuc : B.restricted_forward_until_since_coherent root) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
-    (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (t : D) :
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
@@ -286,7 +290,7 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+      have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
@@ -304,14 +308,14 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
       · exact h_imp
       · exfalso
         have h_ψ_mcs : ψ ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_antecedent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := neg_imp_implies_antecedent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_neg_consequent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := neg_imp_implies_neg_consequent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
@@ -388,14 +392,14 @@ canonical model. Uses restricted temporal coherence, restricted backward, and re
 forward Until/Since coherence — all scoped to root.
 -/
 theorem fully_restricted_parametric_completeness_from_neg_membership
-    (B : BFMCS D)
+    (B : BFMCS (fc := fc) D)
     (root : Formula)
     (h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.restricted_backward_until_since_coherent root)
     (h_fuc : B.restricted_forward_until_since_coherent root)
     (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
-    (fam : FMCS D) (hfam : fam ∈ B.families)
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by

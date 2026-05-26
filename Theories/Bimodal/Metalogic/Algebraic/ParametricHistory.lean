@@ -37,8 +37,9 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Semantics
+open Bimodal.ProofSystem
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-!
 ## FMCS to WorldHistory Conversion
@@ -58,7 +59,7 @@ Key property: domain = True eliminates all domain-related complexity.
 - If d = 0 (i.e., s = t): need states s = states t, which holds since s = t.
 - d < 0 is impossible since s <= t implies t - s >= 0.
 -/
-def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTaskFrame D) where
+def parametric_to_history (fam : FMCS (fc := fc) D) : WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => True.intro
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
@@ -84,7 +85,7 @@ def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTask
 /--
 States of parametric_to_history at time t.
 -/
-theorem parametric_to_history_states (fam : FMCS D) (t : D) (ht : True) :
+theorem parametric_to_history_states (fam : FMCS (fc := fc) D) (t : D) (ht : True) :
     (parametric_to_history fam).states t ht = ⟨fam.mcs t, fam.is_mcs t⟩ := rfl
 
 /-!
@@ -99,7 +100,7 @@ ParametricCanonicalOmega B = { tau | exists fam in B.families, tau = parametric_
 This set is NOT necessarily ShiftClosed. ShiftClosed is not needed for
 the TruthLemma (only for the connection to standard validity).
 -/
-def ParametricCanonicalOmega (B : BFMCS D) : Set (WorldHistory (ParametricCanonicalTaskFrame D)) :=
+def ParametricCanonicalOmega (B : BFMCS (fc := fc) D) : Set (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D)) :=
   { tau | ∃ fam ∈ B.families, tau = parametric_to_history fam }
 
 /-!
@@ -112,9 +113,9 @@ This is the enlargement of ParametricCanonicalOmega that includes all time-shift
 For any family fam and any time offset delta, the shifted history
 `WorldHistory.time_shift (parametric_to_history fam) delta` is in this set.
 -/
-def ShiftClosedParametricCanonicalOmega (B : BFMCS D) :
-    Set (WorldHistory (ParametricCanonicalTaskFrame D)) :=
-  { σ | ∃ (fam : FMCS D) (_ : fam ∈ B.families) (delta : D),
+def ShiftClosedParametricCanonicalOmega (B : BFMCS (fc := fc) D) :
+    Set (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D)) :=
+  { σ | ∃ (fam : FMCS (fc := fc) D) (_ : fam ∈ B.families) (delta : D),
     σ = WorldHistory.time_shift (parametric_to_history fam) delta }
 
 /-- Time-shift of parametric canonical histories composes: shifting by delta then delta'
@@ -122,7 +123,7 @@ equals shifting by delta + delta'.
 
 This is the key lemma for proving shift-closure. -/
 private theorem time_shift_parametric_to_history_compose
-    (fam : FMCS D)
+    (fam : FMCS (fc := fc) D)
     (delta delta' : D) :
     WorldHistory.time_shift (WorldHistory.time_shift (parametric_to_history fam) delta) delta' =
     WorldHistory.time_shift (parametric_to_history fam) (delta + delta') := by
@@ -135,12 +136,12 @@ private theorem time_shift_parametric_to_history_compose
   rw [h_time_eq t]
 
 /-- A parametric canonical history equals its time-shift by 0. -/
-private theorem parametric_to_history_eq_time_shift_zero (fam : FMCS D) :
+private theorem parametric_to_history_eq_time_shift_zero (fam : FMCS (fc := fc) D) :
     parametric_to_history fam = WorldHistory.time_shift (parametric_to_history fam) 0 := by
   simp only [WorldHistory.time_shift, parametric_to_history, add_zero]
 
 /-- ShiftClosedParametricCanonicalOmega is shift-closed. -/
-theorem shiftClosedParametricCanonicalOmega_is_shift_closed (B : BFMCS D) :
+theorem shiftClosedParametricCanonicalOmega_is_shift_closed (B : BFMCS (fc := fc) D) :
     ShiftClosed (ShiftClosedParametricCanonicalOmega B) := by
   intro σ h_mem Δ'
   obtain ⟨fam, hfam, delta, h_eq⟩ := h_mem
@@ -150,7 +151,7 @@ theorem shiftClosedParametricCanonicalOmega_is_shift_closed (B : BFMCS D) :
 
 /-- Every parametric canonical history is in the shift-closed parametric canonical Omega
 (take delta = 0). -/
-theorem parametricCanonicalOmega_subset_shiftClosed (B : BFMCS D) :
+theorem parametricCanonicalOmega_subset_shiftClosed (B : BFMCS (fc := fc) D) :
     ParametricCanonicalOmega B ⊆ ShiftClosedParametricCanonicalOmega B := by
   intro σ h_mem
   obtain ⟨fam, hfam, h_eq⟩ := h_mem
@@ -163,11 +164,11 @@ theorem parametricCanonicalOmega_subset_shiftClosed (B : BFMCS D) :
 -/
 
 /-- Domain of parametric_to_history is full. -/
-theorem parametric_to_history_domain_full (fam : FMCS D) (t : D) :
+theorem parametric_to_history_domain_full (fam : FMCS (fc := fc) D) (t : D) :
     (parametric_to_history fam).domain t := True.intro
 
 /-- The underlying MCS of the world state at time t equals fam.mcs t. -/
-theorem parametric_to_history_mcs_eq (fam : FMCS D) (t : D) (ht : True) :
+theorem parametric_to_history_mcs_eq (fam : FMCS (fc := fc) D) (t : D) (ht : True) :
     ((parametric_to_history fam).states t ht).val = fam.mcs t := rfl
 
 end Bimodal.Metalogic.Algebraic.ParametricHistory

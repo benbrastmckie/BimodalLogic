@@ -87,7 +87,7 @@ open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-!
 ## Parametric Canonical Task Model
@@ -99,17 +99,17 @@ The D-parametric canonical task model: valuation is MCS membership.
 An atom p is true at world-state M iff `atom p in M.val`.
 -/
 def ParametricCanonicalTaskModel (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] : TaskModel (ParametricCanonicalTaskFrame D) where
+    [IsOrderedAddMonoid D] : TaskModel (ParametricCanonicalTaskFrame (fc := fc) D) where
   valuation := fun M p => Formula.atom p ∈ M.val
 
 /-!
 ## Helper Tautologies for Imp Case
 -/
 
-/-- Classical tautology: neg(psi -> chi) -> psi -/
+/-- Classical tautology: neg(psi -> chi) -> psi. Derived at Base and lifted to fc. -/
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp ψ) := by
-  have h_efq : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.imp χ)) :=
+    Bimodal.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
+  have h_efq : [] ⊢ (ψ.neg.imp (ψ.imp χ)) :=
     Bimodal.Theorems.Propositional.efq_neg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
     Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
@@ -131,11 +131,13 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
     Bimodal.Theorems.Combinators.b_combinator
   have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
     Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
-  exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp ψ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+  exact h_base.lift (by cases fc <;> trivial)
 
 /-- Classical tautology: neg(psi -> chi) -> neg(chi) -/
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp χ.neg) := by
+    Bimodal.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ) trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
@@ -150,7 +152,9 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
     Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
     Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp χ.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+  exact h_base.lift (by cases fc <;> trivial)
 
 /-!
 ## Box Persistence
@@ -158,8 +162,8 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
-    Bimodal.ProofSystem.DerivationTree FrameClass.Base [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
-  have h_tf_swap : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] _ := Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
+    Bimodal.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
+  have h_tf_swap : Bimodal.ProofSystem.DerivationTree fc [] _ := Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
   have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
   have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
       (Formula.box (Formula.swap_temporal φ)).all_future) =
@@ -176,7 +180,7 @@ The proof uses:
 3. forward_G and backward_H to extract Box phi at specific times
 -/
 theorem parametric_box_persistent
-    (fam : FMCS D)
+    (fam : FMCS (fc := fc) D)
     (φ : Formula) (t s : D)
     (h_box : Formula.box φ ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs s := by
@@ -267,14 +271,14 @@ theorem parametric_canonical_truth_lemma
       · exact h_imp
       · exfalso
         have h_psi_mcs : psi ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_antecedent psi chi
+          have h_taut := @neg_imp_implies_antecedent FrameClass.Base psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_chi_mcs : chi.neg ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_neg_consequent psi chi
+          have h_taut := @neg_imp_implies_neg_consequent FrameClass.Base psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
@@ -392,14 +396,14 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       · exact h_imp
       · exfalso
         have h_ψ_mcs : ψ ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_antecedent ψ χ
+          have h_taut := @neg_imp_implies_antecedent FrameClass.Base ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
-          have h_taut := neg_imp_implies_neg_consequent ψ χ
+          have h_taut := @neg_imp_implies_neg_consequent FrameClass.Base ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _

@@ -61,8 +61,8 @@ Parametric canonical world state: a maximal consistent set packaged as a subtype
 This is the WorldState of the parametric canonical TaskFrame.
 It is D-independent since MCS structure depends only on formula syntax.
 -/
-def ParametricCanonicalWorldState : Type :=
-  { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
+def ParametricCanonicalWorldState (fc : FrameClass := FrameClass.Base) : Type :=
+  { M : Set Formula // SetMaximalConsistent (fc := fc) M }
 
 /-!
 ## D-Parametric Task Relation
@@ -71,7 +71,7 @@ The task relation uses ExistsTask from CanonicalFrame.lean, with sign-based
 case analysis to handle forward (d > 0), identity (d = 0), and backward (d < 0).
 -/
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
 Parametric canonical task relation: forward accessibility with converse for negative durations.
@@ -83,8 +83,8 @@ The task relation captures temporal coherence between MCSs along trajectories:
 
 This is parametric in D: the same definition works for any ordered abelian group.
 -/
-def parametric_canonical_task_rel (M : ParametricCanonicalWorldState) (d : D)
-    (N : ParametricCanonicalWorldState) : Prop :=
+def parametric_canonical_task_rel (M : ParametricCanonicalWorldState fc) (d : D)
+    (N : ParametricCanonicalWorldState fc) : Prop :=
   if d > 0 then ExistsTask M.val N.val
   else if d < 0 then ExistsTask N.val M.val
   else M = N  -- d = 0
@@ -98,7 +98,7 @@ We prove the three TaskFrame axioms: nullity_identity, forward_comp, and convers
 /--
 Nullity identity: `parametric_canonical_task_rel M 0 N` holds iff `M = N`.
 -/
-theorem parametric_task_rel_nullity_identity (M N : ParametricCanonicalWorldState) :
+theorem parametric_task_rel_nullity_identity (M N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M (0 : D) N ↔ M = N := by
   unfold parametric_canonical_task_rel
   simp only [gt_iff_lt, lt_irrefl, ite_false]
@@ -114,7 +114,7 @@ Since we restrict to non-negative durations, only these cases apply:
 - x > 0, y > 0: chain via `canonicalR_transitive` (uses temp_4: G(φ) → G(G(φ)))
 -/
 theorem parametric_task_rel_forward_comp
-    (M U V : ParametricCanonicalWorldState) (x y : D)
+    (M U V : ParametricCanonicalWorldState fc) (x y : D)
     (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : parametric_canonical_task_rel M x U)
     (h2 : parametric_canonical_task_rel U y V) :
@@ -160,7 +160,7 @@ This holds because of how we defined `parametric_canonical_task_rel`:
 - If d < 0: LHS = ExistsTask N M, RHS (with -d > 0) = ExistsTask N M
 -/
 theorem parametric_task_rel_converse
-    (M : ParametricCanonicalWorldState) (d : D) (N : ParametricCanonicalWorldState) :
+    (M : ParametricCanonicalWorldState fc) (d : D) (N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M d N ↔ parametric_canonical_task_rel N (-d) M := by
   unfold parametric_canonical_task_rel
   by_cases hd_pos : d > 0
@@ -199,7 +199,7 @@ D = Rat for dense time, or any other ordered abelian group.
 -/
 def ParametricCanonicalTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] : TaskFrame D where
-  WorldState := ParametricCanonicalWorldState
+  WorldState := ParametricCanonicalWorldState fc
   task_rel := parametric_canonical_task_rel
   nullity_identity := parametric_task_rel_nullity_identity
   forward_comp := fun M U V x y hx hy h1 h2 =>
@@ -213,7 +213,7 @@ def ParametricCanonicalTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
 /--
 Nullity theorem: zero-duration task is reflexive.
 -/
-theorem parametric_task_rel_nullity (M : ParametricCanonicalWorldState) :
+theorem parametric_task_rel_nullity (M : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M (0 : D) M :=
   (parametric_task_rel_nullity_identity M M).mpr rfl
 
@@ -221,7 +221,7 @@ theorem parametric_task_rel_nullity (M : ParametricCanonicalWorldState) :
 Forward-positive case: for d > 0, task_rel M d N iff ExistsTask M.val N.val.
 -/
 theorem parametric_task_rel_pos {d : D} (hd : d > 0)
-    (M N : ParametricCanonicalWorldState) :
+    (M N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M d N ↔ ExistsTask M.val N.val := by
   unfold parametric_canonical_task_rel
   simp only [hd, ite_true]
@@ -229,7 +229,7 @@ theorem parametric_task_rel_pos {d : D} (hd : d > 0)
 /--
 Zero case: task_rel M 0 N iff M = N.
 -/
-theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState) :
+theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M (0 : D) N ↔ M = N :=
   parametric_task_rel_nullity_identity M N
 
@@ -237,7 +237,7 @@ theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState) :
 Negative case: for d < 0, task_rel M d N iff ExistsTask N.val M.val.
 -/
 theorem parametric_task_rel_neg {d : D} (hd : d < 0)
-    (M N : ParametricCanonicalWorldState) :
+    (M N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M d N ↔ ExistsTask N.val M.val := by
   unfold parametric_canonical_task_rel
   have hd_npos : ¬(d > 0) := not_lt.mpr (le_of_lt hd)
