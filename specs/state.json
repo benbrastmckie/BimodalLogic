@@ -802,9 +802,23 @@
       ],
       "session_id": "sess_1779480433_410e72",
       "researched": "2026-05-22T20:21:09Z"
+    },
+    {
+      "project_number": 197,
+      "project_name": "parameterize_chronicle_over_frameclass",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-25T22:35:00Z",
+      "last_updated": "2026-05-25T22:35:00Z",
+      "dependencies": [
+        168
+      ],
+      "description": "Parameterize the BXCanonical chronicle construction over FrameClass to eliminate 6 sorry workarounds introduced in task 168. Currently ChronicleConstruction.lean hardcodes SetMaximalConsistent (fc := FrameClass.Base), but the discrete completeness pipeline needs fc = FrameClass.Discrete for axioms z1, prior_UZ, prior_SZ (which have minFrameClass = .Discrete). The fix: parameterize ChronicleConstruction.lean and its downstream consumers (ChronicleToCountermodel.lean, ChronicleExtraction.lean, FrameProperties.lean) over fc, instantiating with .Base for the base/dense pipeline and .Discrete for the discrete pipeline. Affects ~70 references in ChronicleConstruction.lean plus cascading changes. Sorry locations: FrameProperties.lean:25,34,41 (z1, prior_UZ, prior_SZ), ChronicleExtraction.lean:62,73 (prior_UZ, prior_SZ), ChronicleToCountermodel.lean:1529 (z1). Definition of done: all 6 sorry entries replaced with proper h_fc proofs, lake build passes, no new sorries introduced.",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 197,
+  "next_project_number": 198,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
