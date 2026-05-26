@@ -214,17 +214,38 @@ private theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula) 
 /--
 Enriched discrete countermodel: constructs a countermodel with `Int` explicit
 throughout, so `SuccOrder`/`PredOrder` are available for `valid_discrete`.
+
+Uses `dd_countermodel_chronicle_discrete` from the Chronicle pipeline, which is
+already parameterized over fc. The D = Int specialization is obtained by matching
+on the existential that returns D = Int.
 -/
-private theorem countermodel_discrete_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
+private theorem countermodel_discrete_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box Chronicle.next_top ∈ A) :
     ∃ (F : TaskFrame Int) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Int),
       ¬truth_at TM Omega τ t φ := by
-  -- countermodel_discrete constructs D = Int via z_interval_countermodel.
-  -- We inline with Int explicit. The proof carries sorry from the upstream.
-  sorry
+  let bfmcs := Chronicle.cantor_bfmcs_discrete fc A h_mcs h_box_discrete
+  let fam₀ := Chronicle.rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0
+  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Int,
+    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Int,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+      ⟨fam₀, ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+    0, ?_⟩
+  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
+    rw [Chronicle.rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
+  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+    bfmcs φ
+    (Chronicle.cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_box_discrete φ
+      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
+    (Chronicle.cantor_bfmcs_discrete_restricted_buc fc A h_mcs h_box_discrete φ)
+    (Chronicle.cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_box_discrete φ)
+    φ (self_mem_subformulaClosure φ)
+    fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 /--
 Dense Completeness Theorem: If a formula is valid on all densely ordered models,
@@ -265,27 +286,34 @@ theorem completeness_dense (φ : Formula) :
 
 /--
 Discrete Completeness Theorem: If a formula is valid on all discretely ordered models,
-then it is derivable in TM.
+then it is derivable in the Discrete proof system.
 
-**Proof Strategy**: Same contrapositive + MCS construction as `completeness`.
-- Discrete case: `countermodel_discrete_enriched` produces a countermodel on `Int`
-  (SuccOrder, PredOrder), directly contradicting `valid_discrete`.
-- Non-discrete cases: sorried (require frame-class-specific completeness theory).
+**Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
+but using Discrete-derivability and Discrete-MCS throughout.
+- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_enriched` produces a
+  countermodel on `Int` (SuccOrder, PredOrder), contradicting `valid_discrete`.
+- Dense case (□(F'⊤) ∈ M): sorried. With a Discrete-MCS, whether □(F'⊤) can
+  appear is a genuine open question about the canonical model.
+- Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
-**Sorry Status**: Inherits sorries from `countermodel_discrete` (discrete case) and
-requires frame-class-specific theory for the dense/mixed cases.
+**Sorry Status**: The dense-case sorry is a genuine open question (not false).
+The mixed-case sorry is eliminated via `dd_countermodel_chronicle_mixed_sorry`.
+The previous return type (`DerivationTree FrameClass.Base`) was mathematically
+wrong — the discrete axioms (prior_UZ, prior_SZ, z1) are not Base-derivable.
 -/
 theorem completeness_discrete (φ : Formula) :
-    valid_discrete φ → Nonempty (DerivationTree FrameClass.Base [] φ) := by
+    valid_discrete φ → Nonempty (DerivationTree FrameClass.Discrete [] φ) := by
   intro h_valid_discrete
   by_contra h_not_deriv
-  have h_cons := neg_consistent_of_not_derivable φ h_not_deriv
+  have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Discrete) φ h_not_deriv
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg φ} h_cons
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
-  · -- Dense case: □(F'T) ∈ M — countermodel on Rat (NOT discrete)
-    -- valid_discrete only quantifies over discrete models. Sorried.
+  · -- Dense case: □(F'T) ∈ M — countermodel on Rat (NOT discrete).
+    -- With a Discrete-MCS, whether □(F'T) can appear is a genuine open question.
+    -- This sorry guards a potentially provable goal (unlike the previous sorry
+    -- which guarded the unprovable goal `valid_discrete φ → Base-derivable φ`).
     sorry
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
@@ -294,8 +322,8 @@ theorem completeness_discrete (φ : Formula) :
       obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
         countermodel_discrete_enriched M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid_discrete Int F TM Omega h_sc τ h_mem t)
-    · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M. Sorried.
-      sorry
+    · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
+      exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs h_not_box_dense h_not_box_discrete)
 
 #print axioms Bimodal.Metalogic.BXCanonical.completeness_dense
 #print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete

@@ -106,21 +106,21 @@ parameterized over fc by tasks 168/197.
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 
-### Phase 3: Fix completeness_discrete [NOT STARTED]
+### Phase 3: Fix completeness_discrete [COMPLETED]
 
 **Goal**: Same treatment for discrete completeness.
 
 **Tasks**:
-- [ ] **3.1** Change `completeness_discrete` return type:
+- [x] **3.1** Change `completeness_discrete` return type:
   ```lean
   theorem completeness_discrete (φ : Formula) :
       valid_discrete φ → Nonempty (DerivationTree FrameClass.Discrete [] φ)
   ```
-- [ ] **3.2** Update the proof to use `neg_consistent_of_not_derivable` at fc = Discrete.
-- [ ] **3.3** Update `countermodel_discrete_enriched` to accept a Discrete-MCS.
-- [ ] **3.4** Investigate whether Discrete-MCS forces the discrete indicator □(U(⊤,⊥)) ∈ M,
+- [x] **3.2** Update the proof to use `neg_consistent_of_not_derivable` at fc = Discrete.
+- [x] **3.3** Update `countermodel_discrete_enriched` to accept a Discrete-MCS. *(deviation: altered -- implemented full proof body using dd_countermodel_chronicle_discrete pipeline instead of sorry, eliminating the sorry entirely)*
+- [x] **3.4** Investigate whether Discrete-MCS forces the discrete indicator □(U(⊤,⊥)) ∈ M,
   making the dense branch unreachable.
-- [ ] **3.5** Verify compilation.
+- [x] **3.5** Verify compilation.
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 
