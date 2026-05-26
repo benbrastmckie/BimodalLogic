@@ -1566,35 +1566,17 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                        fun h => by
                          have := (tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm
                          convert this.symm using 2; congr 1; exact Fin.ext (by omega)⟩⟩
-             -- Remaining goals: y'-vs-sel, sel(i=p_n)-vs-sel, p_n-vs-sel
-             -- All have a_bwd with Fin (n+1) proof mismatch vs a_init with Fin n.
-             | (-- Remaining sel-vs-pn goals: normalize Fin via change, then dispatch
-                first
-                | -- Goal 1: y' vs sel(j) — change normalizes a_bwd to a_init
-                  (change (y' < a_init ⟨_, ‹_›⟩ ↔ y < resp_tau ⟨_, ‹_›⟩) ∧
-                          (y' = a_init ⟨_, ‹_›⟩ ↔ y = resp_tau ⟨_, ‹_›⟩)
-                   exact pivot_chain_order_rev' props.hdy' (hd_le_sel ⟨_, ‹_›⟩)
-                       props.hcy (hc_le_rtau ⟨_, ‹_›⟩) tau_d_y' (tau_d_sel ⟨_, ‹_›⟩))
-                | -- Goal 2: sel(i, i-1<n) vs sel(j, ¬j-1<n=pn) — change i-side to a_init
-                  (change (a_init ⟨_, ‹_›⟩ < a_bwd ⟨_, _⟩ ↔
-                           resp_tau ⟨_, ‹_›⟩ < e_n) ∧
-                          (a_init ⟨_, ‹_›⟩ = a_bwd ⟨_, _⟩ ↔
-                           resp_tau ⟨_, ‹_›⟩ = e_n)
-                   rw [show a_bwd ⟨_, _⟩ = a_bwd ⟨_, by omega⟩ from
-                       by congr 1; exact Fin.ext rfl,
-                       hab_eq _ (by omega) (by omega)]
-                   exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
-                       (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en
-                       (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn)
-                | -- Goal 3: p_n vs sel(j) — change j, then pivot directly
-                  (change (extendPoint p_n < a_init ⟨_, ‹_›⟩ ↔
-                           e_n < resp_tau ⟨_, ‹_›⟩) ∧
-                          (extendPoint p_n = a_init ⟨_, ‹_›⟩ ↔
-                           e_n = resp_tau ⟨_, ‹_›⟩)
-                   exact pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
-                       hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
-                       ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
-                       (tau_d_sel ⟨_, ‹_›⟩))))
+             | (have key := (tau_sel_y ⟨_, ‹_›⟩)
+                convert ⟨key.1.symm, key.2.symm⟩ using 3 <;> (congr 1; exact Fin.ext (by omega)))
+             | (have key := pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+                    (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn
+                convert key using 3 <;> (congr 1; exact Fin.ext (by omega)))
+             | (exact pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
+                    hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
+                    (tau_d_sel ⟨_, ‹_›⟩))
+             | (exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+                    (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn))
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
@@ -1690,7 +1672,8 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             simp_game_tuple at h; exact h
           · -- Degenerate: x = c and x' = d, so both sides trivial
             subst hxc_eq; subst hx'd_eq
-            exact ⟨Iff.rfl, Iff.rfl⟩
+            exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+                   ⟨fun _ => rfl, fun _ => rfl⟩⟩
         -- Now extract tau orderings from hord_tau.
         have hab_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n := hp_n
         have hab_eq : ∀ (k : Nat) (hk : k < n + 1), ¬(k < n) →
@@ -1815,29 +1798,30 @@ private theorem ghr93_case_II {sig : MonadicSignature}
               hord_cd_en_pn tau_d_y')
           | (exact pivot_chain_order_rev' props.hdy' hd_le_pn props.hcy hc_le_en
               tau_d_y' hord_cd_en_pn)
-          -- Remaining Fin-mismatched goals (same change-based approach as Case A)
-          | (first
-              | (change (y' < a_init ⟨_, ‹_›⟩ ↔ y < resp_tau ⟨_, ‹_›⟩) ∧
-                        (y' = a_init ⟨_, ‹_›⟩ ↔ y = resp_tau ⟨_, ‹_›⟩)
-                 exact pivot_chain_order_rev' props.hdy' (hd_le_sel ⟨_, ‹_›⟩)
-                     props.hcy (hc_le_rtau ⟨_, ‹_›⟩) tau_d_y' (tau_d_sel ⟨_, ‹_›⟩))
-              | (change (a_bwd ⟨_, _⟩ < a_init ⟨_, ‹_›⟩ ↔
-                         resp_tau ⟨_, ‹_›⟩ < e_n) ∧
-                        (a_bwd ⟨_, _⟩ = a_init ⟨_, ‹_›⟩ ↔
-                         resp_tau ⟨_, ‹_›⟩ = e_n)
-                 rw [show a_bwd ⟨_, _⟩ = a_bwd ⟨_, by omega⟩ from
-                     by congr 1; exact Fin.ext rfl,
-                     hab_eq _ (by omega) (by omega)]
-                 exact pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
-                     hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
-                     hord_cd_en_pn (tau_d_sel ⟨_, ‹_›⟩))
-              | (change (extendPoint p_n < a_init ⟨_, ‹_›⟩ ↔
-                         e_n < resp_tau ⟨_, ‹_›⟩) ∧
-                        (extendPoint p_n = a_init ⟨_, ‹_›⟩ ↔
-                         e_n = resp_tau ⟨_, ‹_›⟩)
-                 exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
-                     (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en
-                     (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn))
+          -- b_resp vs p_n (pivot through d/c + hord_cd_en_pn)
+          | (exact pivot_chain_order' hb_resp_in.1 hd_le_pn (le_of_lt hc_lt_bsp)
+              hc_le_en tau_d_b hord_cd_en_pn)
+          -- y' vs b_resp (reverse of tau_b_y')
+          | (exact ⟨tau_b_y'.1.symm, tau_b_y'.2.symm⟩)
+          -- y' vs sel (Fin mismatch, convert tau_sel_y)
+          | (have key := (tau_sel_y ⟨_, ‹_›⟩)
+             convert ⟨key.1.symm, key.2.symm⟩ using 3 <;> (congr 1; exact Fin.ext (by omega)))
+          -- y' vs p_n (reverse of fwd_b_y)
+          | (exact ⟨fwd_b_y.1.symm, fwd_b_y.2.symm⟩)
+          -- p_n vs x' (reverse of fwd_x_b)
+          | (exact ⟨fwd_x_b.1.symm, fwd_x_b.2.symm⟩)
+          -- p_n vs b_resp (pivot_chain_order_rev')
+          | (exact pivot_chain_order_rev' hd_le_pn hb_resp_in.1 hc_le_en
+              (le_of_lt hc_lt_bsp) hord_cd_en_pn tau_d_b)
+          -- sel(i) vs p_n (Fin mismatch, convert pivot_chain_order')
+          | (have key := pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+                  (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩) hord_cd_en_pn
+             convert key using 3 <;> (congr 1; exact Fin.ext (by omega)))
+          -- p_n vs sel(j)
+          | (convert pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
+                  hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
+                  ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
+                  (tau_d_sel ⟨_, ‹_›⟩) using 3 <;> (congr 1; exact Fin.ext (by omega)))
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an
         -- Forward game orderings
