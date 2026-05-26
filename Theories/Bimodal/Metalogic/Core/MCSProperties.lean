@@ -241,20 +241,22 @@ If Gφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then GGφ ∈
 
 This is the future transitivity property: always future implies always always future.
 -/
-theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+theorem SetMaximalConsistent.all_future_all_future {fc : FrameClass} {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
-  -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6)
-  have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+  -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6, at Base, then lifted)
+  have h_temp_4_base : ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
     Bimodal.Theorems.TemporalDerived.temp_4_derived φ
+  have h_temp_4_thm : ⊢[fc] (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+    DerivationTree.lift (FrameClass.base_le fc) h_temp_4_base
   -- Weaken to context [Gφ]
-  have h_temp_4 : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+  have h_temp_4 : [Formula.all_future φ] ⊢[fc] (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
   -- Assume Gφ in context
-  have h_all_future_assume : [Formula.all_future φ] ⊢ Formula.all_future φ :=
+  have h_all_future_assume : [Formula.all_future φ] ⊢[fc] Formula.all_future φ :=
     DerivationTree.assumption _ _ (by simp)
   -- Apply modus ponens to get GGφ
-  have h_deriv : [Formula.all_future φ] ⊢ (Formula.all_future φ).all_future :=
+  have h_deriv : [Formula.all_future φ] ⊢[fc] (Formula.all_future φ).all_future :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
   -- By closure: GGφ ∈ S
   have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
@@ -298,20 +300,22 @@ If Hφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then HHφ ∈
 
 This is the past transitivity property: always past implies always always past.
 -/
-theorem SetMaximalConsistent.all_past_all_past {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+theorem SetMaximalConsistent.all_past_all_past {fc : FrameClass} {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
-  -- Derived temporal 4 for past: Hφ → HHφ
-  have h_temp_4_past_thm : [] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+  -- Derived temporal 4 for past: Hφ → HHφ (at Base, then lifted)
+  have h_temp_4_past_base : ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
     temp_4_past φ
+  have h_temp_4_past_thm : ⊢[fc] (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+    DerivationTree.lift (FrameClass.base_le fc) h_temp_4_past_base
   -- Weaken to context [Hφ]
-  have h_temp_4 : [Formula.all_past φ] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+  have h_temp_4 : [Formula.all_past φ] ⊢[fc] (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
   -- Assume Hφ in context
-  have h_all_past_assume : [Formula.all_past φ] ⊢ Formula.all_past φ :=
+  have h_all_past_assume : [Formula.all_past φ] ⊢[fc] Formula.all_past φ :=
     DerivationTree.assumption _ _ (by simp)
   -- Apply modus ponens to get HHφ
-  have h_deriv : [Formula.all_past φ] ⊢ (Formula.all_past φ).all_past :=
+  have h_deriv : [Formula.all_past φ] ⊢[fc] (Formula.all_past φ).all_past :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
   -- By closure: HHφ ∈ S
   have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
