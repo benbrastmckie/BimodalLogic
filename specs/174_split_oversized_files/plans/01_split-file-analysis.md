@@ -538,28 +538,28 @@ TypeFormulas + Decomposition -> StaviCompleteness
 
 ---
 
-### Phase 12: Split ExpressivenessGeneral.lean (10K lines, 1 importer, 5-file split) [NOT STARTED]
+### Phase 12: Split ExpressivenessGeneral.lean (10K lines, 1 importer, 5-file split) [COMPLETED]
 
 **Goal**: Split ExpressivenessGeneral.lean (9988 lines) into 5 focused modules. This is the second-largest file; only WeakCanonical.lean imports it but it is actively used by paused task 155. The decomposition follows the logical structure of GHR93 Theorem 6.
 
 **Tasks**:
-- [ ] Map all `private` definitions and cross-section usages in ExpressivenessGeneral.lean
-- [ ] Map all `open` declarations and determine scope per split file
-- [ ] Document split boundaries for task 155 rebase reference
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/`
-- [ ] Create `Expressiveness/Claim1.lean` (~1610 lines): GHR93 Claim 1 -- continuation predicate, gap construction from infimum, S_C properties, infimum cut, gap r-definability, cross-structure gap r-definability. Module docstring: "GHR93 Claim 1: continuation predicates, gap construction, and gap r-definability."
-- [ ] Build and verify after Claim1.lean
-- [ ] Create `Expressiveness/DConsistencyTransport.lean` (~730 lines): D-consistency left/right, game rank downward transport (Lemma 10 rank part). Module docstring: "D-consistency and game rank downward transport."
-- [ ] Build and verify after DConsistencyTransport.lean
-- [ ] Create `Expressiveness/SplitPoint.lean` (~4640 lines): SplitPointProps structure, obtain_split_point_props (the core inductive-step theorem), and all supporting lemmas. This remains large because it is a single cohesive proof with deep interdependencies. Module docstring: "Split-point infrastructure: SplitPointProps and the main obtain_split_point_props theorem."
-- [ ] Build and verify after SplitPoint.lean
-- [ ] Create `Expressiveness/CaseAnalysis.lean` (~2680 lines): Cases I, II, III-IV analysis and assembly of the inductive step. Module docstring: "Case analysis: Cases I, II, III-IV for the inductive step of Theorem 6."
-- [ ] Build and verify after CaseAnalysis.lean
-- [ ] Create `Expressiveness/Theorem6.lean` (~300 lines): Final forward-to-backward theorem (uniform rank + rank-varying versions). Module docstring: "Theorem 6: forward-to-backward game transfer for expressive completeness."
-- [ ] Add module docstrings to all 5 new files
-- [ ] Update `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean`: change `import Bimodal.Metalogic.WeakCanonical.ExpressivenessGeneral` to direct import of the specific module(s) it needs (likely `Theorem6`)
-- [ ] Delete `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean`
-- [ ] Run full `lake build` and verify no errors
+- [x] Map all `private` definitions and cross-section usages in ExpressivenessGeneral.lean *(31 private defs in Claim1 made non-private, 4 in DConsistencyTransport, 1 in SplitPoint, 1 in CaseAnalysis)*
+- [x] Map all `open` declarations and determine scope per split file
+- [x] Document split boundaries for task 155 rebase reference *(documented in phase handoff)*
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/`
+- [x] Create `Expressiveness/Claim1.lean` (1629 lines): GHR93 Claim 1 -- continuation predicate, gap construction from infimum, S_C properties, infimum cut, gap r-definability, cross-structure gap r-definability.
+- [x] Build and verify after Claim1.lean
+- [x] Create `Expressiveness/DConsistencyTransport.lean` (742 lines): D-consistency left/right, game rank downward transport (Lemma 10 rank part).
+- [x] Build and verify after DConsistencyTransport.lean
+- [x] Create `Expressiveness/SplitPoint.lean` (4657 lines): SplitPointProps structure, obtain_split_point_props and all supporting lemmas.
+- [x] Build and verify after SplitPoint.lean
+- [x] Create `Expressiveness/CaseAnalysis.lean` (2688 lines): Cases I, II, III-IV analysis and assembly of the inductive step.
+- [x] Build and verify after CaseAnalysis.lean
+- [x] Create `Expressiveness/Theorem6.lean` (312 lines): Final forward-to-backward theorem (uniform rank + rank-varying versions).
+- [x] Add module docstrings to all 5 new files
+- [x] Update `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean`: imports `Theorem6`
+- [x] Delete `Theories/Bimodal/Metalogic/WeakCanonical/ExpressivenessGeneral.lean`
+- [x] Run full `lake build` and verify no errors (1667 jobs, clean)
 
 **Timing**: 7 hours
 
