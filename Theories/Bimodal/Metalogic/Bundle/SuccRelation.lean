@@ -40,6 +40,7 @@ state or properly deferred.
 -/
 
 namespace Bimodal.Metalogic.Bundle
+open Bimodal.ProofSystem
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
@@ -102,7 +103,7 @@ existing duality theorem `g_content_subset_implies_h_content_reverse` from Witne
 The duality uses axiom temp_a: φ → G(P(φ)).
 -/
 theorem Succ_implies_h_content_reverse
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (h_succ : Succ u v) :
     h_content v ⊆ u :=
   g_content_subset_implies_h_content_reverse u v h_mcs_u h_mcs_v h_succ.1
@@ -117,7 +118,7 @@ G(neg phi) in MCS implies F(phi) not in MCS.
 Since `F phi = neg(G(neg phi))`, having both `G(neg phi)` and `F(phi)` in M
 would mean having both `G(neg phi)` and `neg(G(neg phi))` in M, contradicting consistency.
 -/
-lemma G_neg_implies_not_F (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
+lemma G_neg_implies_not_F (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_G_neg : Formula.all_future phi.neg ∈ M) :
     Formula.some_future phi ∉ M := by
   intro h_F
@@ -137,7 +138,7 @@ We have:
 
 So neg(FF(phi)) contains a double negation that can be eliminated.
 -/
-lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
+lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_neg_FF : (Formula.some_future (Formula.some_future phi)).neg ∈ M) :
     Formula.all_future (Formula.all_future phi.neg) ∈ M := by
   -- Proof by contradiction using MCS negation completeness.
@@ -231,7 +232,7 @@ hold at `v`.
 8. Therefore `phi ∈ v`
 -/
 theorem single_step_forcing
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ u)
     (h_FF_not : Formula.some_future (Formula.some_future phi) ∉ u)
@@ -283,7 +284,7 @@ would mean having both `H(neg phi)` and `neg(H(neg phi))` in M, contradicting co
 
 Symmetric to `G_neg_implies_not_F`.
 -/
-lemma H_neg_implies_not_P (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
+lemma H_neg_implies_not_P (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_H_neg : Formula.all_past phi.neg ∈ M) :
     Formula.some_past phi ∉ M := by
   intro h_P
@@ -302,7 +303,7 @@ We have:
 
 So neg(PP(phi)) contains a double negation that can be eliminated.
 -/
-lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (phi : Formula)
+lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_neg_PP : (Formula.some_past (Formula.some_past phi)).neg ∈ M) :
     Formula.all_past (Formula.all_past phi.neg) ∈ M := by
   -- Mirror of neg_FF_implies_GG_neg_in_mcs for the past direction.
@@ -391,7 +392,7 @@ The direction is: Succ u v means u's successor is v, so going from v backward
 we reach u.
 -/
 theorem single_step_forcing_past
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ v)
     (h_PP_not : Formula.some_past (Formula.some_past phi) ∉ v)
@@ -549,7 +550,7 @@ These are used by the dovetailed chain construction to track Until/Since obligat
 
 /-- `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding in an MCS.
   Derived from BX5 (self-accumulation) + BX9 (elimination) + BX8 (reflexive intro). -/
-theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot ∈ M := by
   -- TOMBSTONE (task 173): was TemporalDerived.until_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
@@ -558,7 +559,7 @@ theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 
 /-- `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding in an MCS.
   Derived from BX5' (self-accumulation) + BX9' (elimination) + BX8' (reflexive intro). -/
-theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot ∈ M := by
   -- TOMBSTONE (task 173): was TemporalDerived.since_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
@@ -582,7 +583,7 @@ or a fundamentally different approach. The dovetailed chain construction bypasse
 by resolving Until obligations through fair scheduling rather than Succ-based propagation.
 -/
 theorem until_persists_through_succ (u v : Set Formula)
-    (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v) (h_succ : Succ u v)
+    (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v) (h_succ : Succ u v)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ u) (h_neg_psi : Formula.neg ψ ∈ u) :
     Formula.untl ψ φ ∈ v := by
   -- BLOCKED: requires X-content propagation infrastructure.
@@ -610,7 +611,7 @@ the disjunction `ψ ∨ (φ ∧ (φ U ψ))` immediately gives `(φ U ψ)`:
 - If ψ holds, by BX8 (reflexive intro): `ψ → (φ U ψ)`
 - If `φ ∧ (φ U ψ)` holds, by conjunction elimination: `(φ U ψ)` directly
 -/
-theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.untl ψ φ)) ∈ M) :
     Formula.untl ψ φ ∈ M := by
@@ -624,7 +625,7 @@ In any MCS: `(ψ ∨ (φ ∧ (φ S ψ))) ∈ M → (φ S ψ) ∈ M`.
 Temporal dual of `or_until_in_mcs`. Uses BX8' (reflexive Since intro) and
 conjunction elimination.
 -/
-theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.snce ψ φ)) ∈ M) :
     Formula.snce ψ φ ∈ M := by
@@ -637,7 +638,7 @@ theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 
 Under BX1, `G(φ) → φ`, so `G(φ) ∈ u` and MCS derivation closure give `φ ∈ u`.
 -/
-theorem g_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
+theorem g_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u) :
     g_content u ⊆ u := by
   intro chi h_gc
   -- Under irreflexive semantics, G(φ) → φ is no longer valid. Sorry.
@@ -647,7 +648,7 @@ theorem g_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) 
 `h_content(u) ⊆ u` for any MCS u under BX1' (reflexive H).
 Under irreflexive semantics, H(φ) → φ is no longer valid.
 -/
-theorem h_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
+theorem h_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u) :
     h_content u ⊆ u := by
   sorry
 

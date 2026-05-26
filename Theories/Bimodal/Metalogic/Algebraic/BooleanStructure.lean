@@ -160,8 +160,8 @@ theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ or_quot a b := by
   -- φ ∨ ψ = ¬φ → ψ, so we need ⊢ ψ → (¬φ → ψ)
   -- This is just weakening (prop_s): ⊢ ψ → (¬φ → ψ)
   unfold Derives
-  have d_s : DerivationTree [] (ψ.imp (φ.neg.imp ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s ψ φ.neg)
+  have d_s : ⊢ (ψ.imp (φ.neg.imp ψ)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s ψ φ.neg) trivial
   exact ⟨d_s⟩
 
 /--
@@ -212,7 +212,7 @@ theorem bot_le_quot (a : LindenbaumAlg) : ⊥ ≤ a := by
   induction a using Quotient.ind
   rename_i φ
   show Derives Formula.bot φ
-  exact ⟨DerivationTree.axiom [] _ (Axiom.ex_falso φ)⟩
+  exact ⟨DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial⟩
 
 /--
 `a ≤ ⊤`: top is greatest element.
@@ -223,10 +223,10 @@ theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
   show Derives φ (Formula.bot.imp Formula.bot)
   -- ⊢ φ → (⊥ → ⊥)
   -- Derivable: from identity and weakening
-  have d_id : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+  have d_id : ⊢ (Formula.bot.imp Formula.bot) :=
     Bimodal.Theorems.Combinators.identity Formula.bot
-  have d_s : DerivationTree [] ((Formula.bot.imp Formula.bot).imp (φ.imp (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ)
+  have d_s : ⊢ ((Formula.bot.imp Formula.bot).imp (φ.imp (Formula.bot.imp Formula.bot))) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ) trivial
   exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_id⟩
 
 /--
@@ -406,7 +406,7 @@ theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot 
   have h_lem : ⊢ φ.or φ.neg := Bimodal.Theorems.Propositional.lem φ
   -- Weaken: ⊢ (φ ∨ ¬φ) → ((⊥ → ⊥) → (φ ∨ ¬φ))
   have h_s : ⊢ (φ.or φ.neg).imp ((Formula.bot.imp Formula.bot).imp (φ.or φ.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (φ.or φ.neg) (Formula.bot.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_s (φ.or φ.neg) (Formula.bot.imp Formula.bot)) trivial
   exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_lem⟩
 
 /--

@@ -168,7 +168,7 @@ theorem BFMCS.transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.famili
 
 /-- The MCS at any family and time is consistent (used by BFMCS.diamond_witness) -/
 lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
-    SetConsistent (fam.mcs t) :=
+    SetConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) (fam.mcs t) :=
   (fam.is_mcs t).1
 
 /-!

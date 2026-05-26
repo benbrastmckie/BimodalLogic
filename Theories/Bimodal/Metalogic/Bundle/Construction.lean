@@ -26,6 +26,7 @@ This module provides primitive building blocks for BFMCS construction:
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 
 variable {D : Type*} [Preorder D]
@@ -46,8 +47,8 @@ A list context is set-consistent if listing its elements doesn't derive bot.
 This follows from list consistency plus finite subset property.
 -/
 lemma list_consistent_to_set_consistent {Gamma : List Formula}
-    (h_cons : Consistent Gamma) :
-    SetConsistent (contextAsSet Gamma) := by
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+    SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := by
   intro L hL
   intro ⟨d⟩
   apply h_cons
@@ -103,7 +104,7 @@ These definitions are used by the active completeness chain.
 A context is consistent if no derivation of bot exists.
 -/
 def ContextConsistent (Gamma : List Formula) : Prop :=
-  ¬Nonempty (Bimodal.ProofSystem.DerivationTree Gamma Formula.bot)
+  ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base Gamma Formula.bot)
 
 /--
 Helper: Extract MCS from Lindenbaum result for a list context.
@@ -127,29 +128,29 @@ lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : ContextConsistent G
 The Lindenbaum MCS is maximal consistent.
 -/
 lemma lindenbaumMCS_is_mcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    SetMaximalConsistent (lindenbaumMCS Gamma h_cons) :=
-  let h_set_cons : SetConsistent (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+    SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS Gamma h_cons) :=
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).2
 
 /--
 Helper: Extract MCS from Lindenbaum result for a set.
 -/
-noncomputable def lindenbaumMCS_set (S : Set Formula) (h_cons : SetConsistent S) :
+noncomputable def lindenbaumMCS_set (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     Set Formula :=
   Classical.choose (set_lindenbaum S h_cons)
 
 /--
 The Lindenbaum MCS (set version) contains the original set.
 -/
-lemma lindenbaumMCS_set_extends (S : Set Formula) (h_cons : SetConsistent S) :
+lemma lindenbaumMCS_set_extends (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     S ⊆ lindenbaumMCS_set S h_cons :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).1
 
 /--
 The Lindenbaum MCS (set version) is maximal consistent.
 -/
-lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent S) :
-    SetMaximalConsistent (lindenbaumMCS_set S h_cons) :=
+lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+    SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS_set S h_cons) :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).2
 
 /-!
@@ -164,7 +165,7 @@ to avoid importing the archived `Completeness.lean`.
 Context derivability: there exists a derivation of φ from Γ.
 -/
 def ContextDerivable (Γ : List Formula) (φ : Formula) : Prop :=
-  Nonempty (Bimodal.ProofSystem.DerivationTree Γ φ)
+  Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base Γ φ)
 
 /--
 Helper: If `⊬ φ` (not derivable from empty context), then `[φ.neg]` is consistent.
@@ -176,18 +177,18 @@ By double negation elimination (classically derivable), `⊢ φ`.
 Contradiction with `⊬ φ`.
 -/
 lemma not_derivable_implies_neg_consistent (φ : Formula)
-    (h_not_deriv : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
+    (h_not_deriv : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
     ContextConsistent [φ.neg] := by
   -- Suppose [φ.neg] is inconsistent
   intro ⟨d_bot⟩
   -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
-  have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg) :=
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
     Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_bot
   -- Get double negation elimination: ⊢ ¬¬φ → φ
-  have h_dne : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg.imp φ) :=
+  have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
     Bimodal.Theorems.Propositional.double_negation φ
   -- Apply modus ponens to get ⊢ φ
-  have d_phi : Bimodal.ProofSystem.DerivationTree [] φ :=
+  have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
     Bimodal.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
   -- Contradiction with h_not_deriv
   exact h_not_deriv ⟨d_phi⟩
@@ -226,7 +227,7 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
     Bimodal.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
 
   -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
-  have h_dne : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg.imp φ) :=
+  have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
     Bimodal.Theorems.Propositional.double_negation φ
 
   -- Weaken to Γ

@@ -37,7 +37,7 @@ Derives relation: `Derives φ ψ` means `⊢ φ → ψ` (derivable from empty co
 
 This is the primitive ordering used to define provable equivalence.
 -/
-def Derives (φ ψ : Formula) : Prop := Nonempty (DerivationTree [] (φ.imp ψ))
+def Derives (φ ψ : Formula) : Prop := Nonempty (⊢ (φ.imp ψ))
 
 /--
 Provable equivalence: `ProvEquiv φ ψ` means `⊢ φ ↔ ψ`.
@@ -152,15 +152,15 @@ theorem provEquiv_box_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) : φ.box ≈ₚ
   obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
   constructor
   · -- Show ⊢ □φ → □ψ
-    have d_box : DerivationTree [] (Formula.box (φ.imp ψ)) :=
+    have d_box : DerivationTree FrameClass.Base [] (Formula.box (φ.imp ψ)) :=
       DerivationTree.necessitation (φ.imp ψ) d_fwd
-    have d_k : DerivationTree [] ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist φ ψ)
+    have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist φ ψ) trivial
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_box⟩
-  · have d_box : DerivationTree [] (Formula.box (ψ.imp φ)) :=
+  · have d_box : DerivationTree FrameClass.Base [] (Formula.box (ψ.imp φ)) :=
       DerivationTree.necessitation (ψ.imp φ) d_bwd
-    have d_k : DerivationTree [] ((ψ.imp φ).box.imp (ψ.box.imp φ.box)) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist ψ φ)
+    have d_k : DerivationTree FrameClass.Base [] ((ψ.imp φ).box.imp (ψ.box.imp φ.box)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist ψ φ) trivial
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_box⟩
 
 /--
@@ -171,14 +171,14 @@ theorem provEquiv_all_future_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
   unfold ProvEquiv Derives at *
   obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
   constructor
-  · have d_temp : DerivationTree [] (Formula.all_future (φ.imp ψ)) :=
+  · have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp ψ)) :=
       DerivationTree.temporal_necessitation (φ.imp ψ) d_fwd
-    have d_k : DerivationTree [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
+    have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
       sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ φ ψ)
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
-  · have d_temp : DerivationTree [] (Formula.all_future (ψ.imp φ)) :=
+  · have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (ψ.imp φ)) :=
       DerivationTree.temporal_necessitation (ψ.imp φ) d_bwd
-    have d_k : DerivationTree [] ((ψ.imp φ).all_future.imp (ψ.all_future.imp φ.all_future)) :=
+    have d_k : DerivationTree FrameClass.Base [] ((ψ.imp φ).all_future.imp (ψ.all_future.imp φ.all_future)) :=
       sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ ψ φ)
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
@@ -350,7 +350,7 @@ theorem swap_temporal_derives {φ ψ : Formula} (h : Derives φ ψ) :
     Derives φ.swap_temporal ψ.swap_temporal := by
   unfold Derives at *
   obtain ⟨d⟩ := h
-  have d_swap : DerivationTree [] (φ.imp ψ).swap_temporal :=
+  have d_swap : DerivationTree FrameClass.Base [] (φ.imp ψ).swap_temporal :=
     DerivationTree.temporal_duality (φ.imp ψ) d
   simp only [Formula.swap_temporal] at d_swap
   exact ⟨d_swap⟩

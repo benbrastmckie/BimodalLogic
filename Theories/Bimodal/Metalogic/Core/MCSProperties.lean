@@ -59,8 +59,8 @@ lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
 /--
 Exchange lemma for derivations: If Γ and Γ' have the same elements, derivation is preserved.
 -/
-def derivation_exchange {Γ Γ' : Context} {φ : Formula}
-    (h : Γ ⊢ φ) (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') : Γ' ⊢ φ :=
+def derivation_exchange {fc : FrameClass} {Γ Γ' : Context} {φ : Formula}
+    (h : Γ ⊢[fc] φ) (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') : Γ' ⊢[fc] φ :=
   DerivationTree.weakening Γ Γ' φ h (fun x hx => (h_perm x).mp hx)
 
 /-! ## Set-Based MCS Properties -/
@@ -70,10 +70,10 @@ For set-based MCS, derivable formulas are in the set.
 
 If S is SetMaximalConsistent and L ⊆ S derives φ, then φ ∈ S.
 -/
-lemma SetMaximalConsistent.closed_under_derivation {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
+lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ S)
-    (h_deriv : DerivationTree L φ) : φ ∈ S := by
+    (h_deriv : DerivationTree fc L φ) : φ ∈ S := by
   -- By contradiction: assume φ ∉ S
   by_contra h_not_mem
   -- By SetMaximalConsistent definition, insert φ S is inconsistent
@@ -90,17 +90,17 @@ lemma SetMaximalConsistent.closed_under_derivation {S : Set Formula} {φ : Formu
   by_cases h_phi_in_L' : φ ∈ L'
   · -- φ ∈ L'. Use exchange to put φ first, then deduction theorem.
     -- We have L' ⊢ ⊥ (since L' is inconsistent)
-    have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+    have ⟨d_bot⟩ : Nonempty (DerivationTree fc L' Formula.bot) := by
       unfold Consistent at h_L'_incons
       push_neg at h_L'_incons
       exact h_L'_incons
     -- Exchange to put φ first: L' has same elements as φ :: L'.filter (fun x => x ≠ φ)
     let L'_filt := L'.filter (fun y => decide (y ≠ φ))
     have h_perm := cons_filter_neq_perm h_phi_in_L'
-    have d_bot_reord : DerivationTree (φ :: L'_filt) Formula.bot :=
+    have d_bot_reord : DerivationTree fc (φ :: L'_filt) Formula.bot :=
       derivation_exchange d_bot (fun x => (h_perm x).symm)
     -- Apply deduction theorem
-    have d_neg_phi : DerivationTree L'_filt (Formula.neg φ) :=
+    have d_neg_phi : DerivationTree fc L'_filt (Formula.neg φ) :=
       deduction_theorem L'_filt φ Formula.bot d_bot_reord
     -- L'_filt ⊆ S
     have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
@@ -122,12 +122,12 @@ lemma SetMaximalConsistent.closed_under_derivation {S : Set Formula} {φ : Formu
       cases List.mem_append.mp h_mem with
       | inl h_L => exact h_sub ψ h_L
       | inr h_filt => exact h_filt_sub ψ h_filt
-    have d_phi_Γ : DerivationTree Γ φ :=
+    have d_phi_Γ : DerivationTree fc Γ φ :=
       DerivationTree.weakening L Γ φ h_deriv (List.subset_append_left L _)
-    have d_neg_Γ : DerivationTree Γ (Formula.neg φ) :=
+    have d_neg_Γ : DerivationTree fc Γ (Formula.neg φ) :=
       DerivationTree.weakening L'_filt Γ (Formula.neg φ) d_neg_phi
         (List.subset_append_right L _)
-    have d_bot_Γ : DerivationTree Γ Formula.bot :=
+    have d_bot_Γ : DerivationTree fc Γ Formula.bot :=
       derives_bot_from_phi_neg_phi d_phi_Γ d_neg_Γ
     -- This contradicts S being consistent
     exact h_mcs.1 Γ h_Γ_sub ⟨d_bot_Γ⟩
@@ -148,8 +148,8 @@ Set-based MCS implication property: modus ponens is reflected in membership.
 
 If (φ → ψ) ∈ S and φ ∈ S for a SetMaximalConsistent S, then ψ ∈ S.
 -/
-theorem SetMaximalConsistent.implication_property {S : Set Formula} {φ ψ : Formula}
-    (h_mcs : SetMaximalConsistent S)
+theorem SetMaximalConsistent.implication_property {fc : FrameClass} {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (h_imp : (φ.imp ψ) ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
   -- Use SetMaximalConsistent.closed_under_derivation with L = [φ, φ.imp ψ]
   have h_sub : ∀ χ ∈ [φ, φ.imp ψ], χ ∈ S := by
@@ -159,10 +159,10 @@ theorem SetMaximalConsistent.implication_property {S : Set Formula} {φ ψ : For
     | inl h_eq => exact h_eq ▸ h_phi
     | inr h_eq => exact h_eq ▸ h_imp
   -- Derive ψ from [φ, φ → ψ]
-  have h_deriv : DerivationTree [φ, φ.imp ψ] ψ := by
-    have h_assume_phi : [φ, φ.imp ψ] ⊢ φ :=
+  have h_deriv : DerivationTree fc [φ, φ.imp ψ] ψ := by
+    have h_assume_phi : [φ, φ.imp ψ] ⊢[fc] φ :=
       DerivationTree.assumption [φ, φ.imp ψ] φ (by simp)
-    have h_assume_imp : [φ, φ.imp ψ] ⊢ φ.imp ψ :=
+    have h_assume_imp : [φ, φ.imp ψ] ⊢[fc] φ.imp ψ :=
       DerivationTree.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
     exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ h_assume_imp h_assume_phi
   exact SetMaximalConsistent.closed_under_derivation h_mcs [φ, φ.imp ψ] h_sub h_deriv
@@ -172,8 +172,8 @@ Set-based MCS: negation completeness.
 
 For SetMaximalConsistent S, either φ ∈ S or (¬φ) ∈ S.
 -/
-theorem SetMaximalConsistent.negation_complete {S : Set Formula}
-    (h_mcs : SetMaximalConsistent S) (φ : Formula) :
+theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S) (φ : Formula) :
     φ ∈ S ∨ (Formula.neg φ) ∈ S := by
   by_cases h : φ ∈ S
   · left; exact h
@@ -189,17 +189,17 @@ theorem SetMaximalConsistent.negation_complete {S : Set Formula}
     -- L' \ {φ} ⊢ φ → ⊥, i.e., L' \ {φ} ⊢ ¬φ
     by_cases h_phi_in_L' : φ ∈ L'
     · -- φ ∈ L'. Use exchange and deduction theorem.
-      have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+      have ⟨d_bot⟩ : Nonempty (DerivationTree fc L' Formula.bot) := by
         unfold Consistent at h_L'_incons
         push_neg at h_L'_incons
         exact h_L'_incons
       -- Exchange to put φ first using filter
       let L'_filt := L'.filter (fun y => decide (y ≠ φ))
       have h_perm := cons_filter_neq_perm h_phi_in_L'
-      have d_bot_reord : DerivationTree (φ :: L'_filt) Formula.bot :=
+      have d_bot_reord : DerivationTree fc (φ :: L'_filt) Formula.bot :=
         derivation_exchange d_bot (fun x => (h_perm x).symm)
       -- Apply deduction theorem
-      have d_neg_phi : DerivationTree L'_filt (Formula.neg φ) :=
+      have d_neg_phi : DerivationTree fc L'_filt (Formula.neg φ) :=
         deduction_theorem L'_filt φ Formula.bot d_bot_reord
       -- L'_filt ⊆ S
       have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
@@ -242,7 +242,7 @@ If Gφ ∈ S for a SetMaximalConsistent S, then GGφ ∈ S.
 This is the future transitivity property: always future implies always always future.
 -/
 theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
   -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6)
   have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
@@ -265,16 +265,16 @@ Derivation of temporal 4 axiom for past: Hφ → HHφ.
 
 Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
 -/
-noncomputable def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.all_past) := by
+noncomputable def temp_4_past (φ : Formula) : ⊢ (φ.all_past.imp φ.all_past.all_past) := by
   -- We want: Hφ → HHφ
   -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
   -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
   let ψ := φ.swap_temporal
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
-  have h1 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future) :=
+  have h1 : ⊢ (ψ.all_future.imp ψ.all_future.all_future) :=
     Bimodal.Theorems.TemporalDerived.temp_4_derived ψ
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
-  have h2 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
+  have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1
   -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
   -- since swap(swap φ) = φ by involution
@@ -299,7 +299,7 @@ If Hφ ∈ S for a SetMaximalConsistent S, then HHφ ∈ S.
 This is the past transitivity property: always past implies always always past.
 -/
 theorem SetMaximalConsistent.all_past_all_past {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
   -- Derived temporal 4 for past: Hφ → HHφ
   have h_temp_4_past_thm : [] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
@@ -326,15 +326,16 @@ In a set-consistent set, φ and φ.neg cannot both be members.
 1. Build derivation [φ, φ.neg] ⊢ ⊥ using modus ponens
 2. Since [φ, φ.neg] ⊆ S and S is consistent, this is a contradiction
 -/
-theorem set_consistent_not_both {S : Set Formula} (h_cons : SetConsistent S)
+theorem set_consistent_not_both {fc : FrameClass} {S : Set Formula}
+    (h_cons : SetConsistent (fc := fc) S)
     (phi : Formula) (h_phi : phi ∈ S) (h_neg : phi.neg ∈ S) : False := by
   -- [phi, phi.neg] ⊢ ⊥
-  have h_deriv : DerivationTree [phi, phi.neg] Formula.bot := by
+  have h_deriv : DerivationTree fc [phi, phi.neg] Formula.bot := by
     -- phi.neg = phi → ⊥
     -- From phi and phi → ⊥, derive ⊥ by modus ponens
-    have h_phi_assume : DerivationTree [phi, phi.neg] phi :=
+    have h_phi_assume : DerivationTree fc [phi, phi.neg] phi :=
       DerivationTree.assumption _ _ (by simp)
-    have h_neg_assume : DerivationTree [phi, phi.neg] phi.neg :=
+    have h_neg_assume : DerivationTree fc [phi, phi.neg] phi.neg :=
       DerivationTree.assumption _ _ (by simp)
     exact DerivationTree.modus_ponens _ phi Formula.bot h_neg_assume h_phi_assume
   -- But [phi, phi.neg] ⊆ S, so S is inconsistent
@@ -352,7 +353,8 @@ If φ.neg is in a set-maximal consistent set M, then φ is not in M.
 This is the contrapositive of negation completeness: if ¬φ ∈ M, then φ ∉ M.
 Used in the completeness proof to show countermodels exist.
 -/
-theorem SetMaximalConsistent.neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+theorem SetMaximalConsistent.neg_excludes {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
   intro h_phi
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg

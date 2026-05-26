@@ -54,7 +54,7 @@ Result of the decision procedure for a formula.
 -/
 inductive DecisionResult (φ : Formula) : Type where
   /-- Formula is valid, witnessed by a derivation tree. -/
-  | valid (proof : DerivationTree [] φ)
+  | valid (proof : ⊢ φ)
   /-- Formula is invalid, witnessed by a countermodel description. -/
   | invalid (counter : SimpleCountermodel)
   /-- Decision procedure timed out (fuel exhausted). -/
@@ -81,7 +81,7 @@ def isTimeout : DecisionResult φ → Bool
   | _ => false
 
 /-- Get the proof if valid. -/
-def getProof? : DecisionResult φ → Option (DerivationTree [] φ)
+def getProof? : DecisionResult φ → Option (⊢ φ)
   | valid proof => some proof
   | _ => none
 
@@ -135,7 +135,10 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
           let axiomProofs := closedBranches.filterMap fun cb =>
             match cb.reason with
             | .axiomNeg ψ ax =>
-                if h : φ = ψ then some (h ▸ DerivationTree.axiom [] ψ ax)
+                if h : φ = ψ then
+                  if h_fc : ax.minFrameClass ≤ FrameClass.Base then
+                    some (h ▸ DerivationTree.axiom [] ψ ax h_fc)
+                  else none
                 else none
             | _ => none
           match axiomProofs.head? with

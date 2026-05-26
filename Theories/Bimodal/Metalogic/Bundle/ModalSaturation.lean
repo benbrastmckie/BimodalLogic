@@ -7,7 +7,7 @@ import Bimodal.Theorems.Propositional
 /-!
 # Modal Saturation for BFMCS
 
-This module implements modal saturation for Bundle of Maximal Consistent Sets (BFMCS),
+This module implements modal saturation for Bundle of Maximal Consistent (fc := FrameClass.Base) Sets (BFMCS),
 enabling the elimination of the `modal_backward` sorry in Construction.lean.
 
 ## Overview
@@ -104,7 +104,7 @@ If Diamond psi is in an MCS, then Box (neg psi) is not in that MCS.
 This follows from MCS consistency: Diamond psi = neg (Box (neg psi)),
 so having both would violate consistency.
 -/
-lemma diamond_excludes_box_neg {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+lemma diamond_excludes_box_neg {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (psi : Formula) (h_diamond : psi.diamond ∈ S) :
     Formula.box (Formula.neg psi) ∉ S := by
   intro h_box
@@ -117,7 +117,7 @@ If Diamond psi is in an MCS and psi is not in that MCS, then neg psi is in the M
 
 This is by MCS negation completeness.
 -/
-lemma diamond_and_not_psi_implies_neg {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+lemma diamond_and_not_psi_implies_neg {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (psi : Formula) (h_diamond : psi.diamond ∈ S) (h_not_psi : psi ∉ S) :
     Formula.neg psi ∈ S := by
   rcases SetMaximalConsistent.negation_complete h_mcs psi with h_psi | h_neg
@@ -125,7 +125,7 @@ lemma diamond_and_not_psi_implies_neg {S : Set Formula} (h_mcs : SetMaximalConsi
   · exact h_neg
 
 /-!
-## MCS Existence for Consistent Formulas
+## MCS Existence for Consistent (fc := FrameClass.Base) Formulas
 
 We need to show that if Diamond psi is in an MCS, then psi is consistent
 (can be extended to an MCS).
@@ -141,9 +141,9 @@ Then Box (neg psi) is a theorem (by necessitation). Then Box (neg psi)
 is in S (theorems are in MCS). But Diamond psi = neg (Box (neg psi)) is
 in S, contradicting consistency.
 -/
-lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (psi : Formula) (h_diamond : psi.diamond ∈ S) :
-    SetConsistent {psi} := by
+    SetConsistent (fc := FrameClass.Base) {psi} := by
   intro L hL ⟨d⟩
   by_cases h_psi_in_L : psi ∈ L
   · -- Derive [psi] ⊢ ⊥ by weakening
@@ -152,13 +152,13 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
       have := hL x hx
       simp only [Set.mem_singleton_iff] at this
       simp [this]
-    have d_psi : DerivationTree [psi] Formula.bot :=
+    have d_psi : DerivationTree FrameClass.Base [psi] Formula.bot :=
       DerivationTree.weakening L [psi] _ d h_weak
     -- By deduction theorem: ⊢ psi → ⊥ = ⊢ neg psi
-    have d_neg : DerivationTree [] (Formula.neg psi) :=
+    have d_neg : DerivationTree FrameClass.Base [] (Formula.neg psi) :=
       Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d_psi
     -- By necessitation: ⊢ Box (neg psi)
-    have d_box : DerivationTree [] (Formula.box (Formula.neg psi)) :=
+    have d_box : DerivationTree FrameClass.Base [] (Formula.box (Formula.neg psi)) :=
       DerivationTree.necessitation (Formula.neg psi) d_neg
     -- Box (neg psi) is in S since it's a theorem
     have h_box_in_S : Formula.box (Formula.neg psi) ∈ S := theorem_in_mcs h_mcs d_box
@@ -180,7 +180,7 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
     -- [] ⊢ ⊥ means bot is a theorem
     rw [h_L_empty] at d
     have h_bot_in_S : Formula.bot ∈ S := theorem_in_mcs h_mcs d
-    have h_deriv : DerivationTree [Formula.bot] Formula.bot :=
+    have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
       DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
     have h_sub : ∀ x ∈ [Formula.bot], x ∈ S := by simp [h_bot_in_S]
     exact h_mcs.1 [Formula.bot] h_sub ⟨h_deriv⟩
@@ -258,7 +258,7 @@ noncomputable def box_dne_theorem (phi : Formula) :
   -- Step 3: ⊢ Box(¬¬φ → φ) → (Box(¬¬φ) → Box φ) (K distribution axiom)
   have h_K : [] ⊢ (Formula.box ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist _ _)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist _ _) trivial
   -- Step 4: ⊢ Box(¬¬φ) → Box φ (modus ponens)
   exact DerivationTree.modus_ponens [] _ _ h_K h_box_dne
 
@@ -267,7 +267,7 @@ Contraposition helper: if ⊢ A → B and B → ⊥ ∈ S, then A → ⊥ ∈ S 
 
 This is used to transfer implications contrapositively through MCS membership.
 -/
-lemma SetMaximalConsistent.contrapositive {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+lemma SetMaximalConsistent.contrapositive {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     {A B : Formula} (h_impl : [] ⊢ A.imp B) (h_negB : B.neg ∈ S) : A.neg ∈ S := by
   -- We have ⊢ A → B and ¬B ∈ S
   -- We want ¬A ∈ S, i.e., (A → ⊥) ∈ S
@@ -402,7 +402,7 @@ This is a wrapper around the axiom for convenience.
 -/
 noncomputable def modal_5_collapse_theorem (phi : Formula) :
     [] ⊢ Formula.box phi |>.diamond.imp (Formula.box phi) :=
-  DerivationTree.axiom [] _ (Axiom.modal_5_collapse phi)
+  DerivationTree.axiom [] _ (Axiom.modal_5_collapse phi) trivial
 
 /--
 Axiom 5 (Negative Introspection): `⊢ ¬□φ → □¬□φ`.
@@ -510,7 +510,7 @@ If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
 
 This follows from axiom 5 and deductive closure of MCS.
 -/
-lemma SetMaximalConsistent.neg_box_implies_box_neg_box {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+lemma SetMaximalConsistent.neg_box_implies_box_neg_box {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ S) :
     Formula.box (Formula.box phi).neg ∈ S := by
   have h_ax5 := neg_box_to_box_neg_box phi

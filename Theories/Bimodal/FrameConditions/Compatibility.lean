@@ -118,40 +118,40 @@ DenseTemporalFrame and DiscreteTemporalFrame by monotonicity).
 -/
 
 instance (φ ψ χ : Formula) : AxiomLinearCompatible (Axiom.prop_k φ ψ χ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.prop_k φ ψ χ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.prop_k φ ψ χ) trivial D
 
 instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.prop_s φ ψ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.prop_s φ ψ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.prop_s φ ψ) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_t φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_t φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_t φ) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_4 φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_4 φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_4 φ) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_b φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_b φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_b φ) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_5_collapse φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_5_collapse φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_5_collapse φ) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.ex_falso φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.ex_falso φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.ex_falso φ) trivial D
 
 instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.peirce φ ψ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.peirce φ ψ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.peirce φ ψ) trivial D
 
 instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.modal_k_dist φ ψ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_k_dist φ ψ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_k_dist φ ψ) trivial D
 
 instance : AxiomLinearCompatible (Axiom.serial_future) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.serial_future) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.serial_future) trivial D
 
 instance : AxiomLinearCompatible (Axiom.serial_past) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.serial_past) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.serial_past) trivial D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_future φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_future φ) (by simp [Axiom.isBase]) D
+  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_future φ) trivial D
 
 -- Note: AxiomLinearCompatible instance for Axiom.temp_future removed -- TF is now derived.
 
@@ -166,7 +166,8 @@ Under BX, discrete axioms are separate extension points (not in base system).
 If an axiom is base, then it is linear-compatible.
 Under BX, all axioms are base.
 -/
-theorem axiom_base_implies_linear_compatible {φ : Formula} (ax : Axiom φ) (h : ax.isBase) :
+theorem axiom_base_implies_linear_compatible {φ : Formula} (ax : Axiom φ)
+    (h : ax.minFrameClass ≤ FrameClass.Base) :
     AxiomLinearCompatible ax := by
   constructor
   intro D _ _ _ _ _

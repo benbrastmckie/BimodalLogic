@@ -41,14 +41,15 @@ open Bimodal.Automation
 Build a proof of φ from a proof of ⊥ → φ (via ex_falso).
 This is used when we have a contradiction in the branch.
 -/
-def proofFromBot (φ : Formula) : DerivationTree [] (Formula.bot.imp φ) :=
-  DerivationTree.axiom [] _ (Axiom.ex_falso φ)
+def proofFromBot (φ : Formula) : ⊢ (Formula.bot.imp φ) :=
+  DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial
 
 /--
 Build a proof of φ from an axiom witness.
 -/
-def proofFromAxiom (φ : Formula) (ax : Axiom φ) : DerivationTree [] φ :=
-  DerivationTree.axiom [] φ ax
+def proofFromAxiom (φ : Formula) (ax : Axiom φ) (h_fc : ax.minFrameClass ≤ FrameClass.Base) :
+    ⊢ φ :=
+  DerivationTree.axiom [] φ ax h_fc
 
 /-!
 ## Proof Extraction from Closure Reasons
@@ -67,11 +68,14 @@ which means φ is valid (since assuming ¬φ leads to contradiction).
 Note: This returns a proof of the formula that caused closure, not necessarily
 the original goal. The full tableau-to-proof extraction combines these.
 -/
-def extractFromClosureReason (reason : ClosureReason) : Option (Σ φ : Formula, DerivationTree [] φ) :=
+def extractFromClosureReason (reason : ClosureReason) : Option (Σ φ : Formula, ⊢ φ) :=
   match reason with
   | .axiomNeg φ ax =>
-      -- The axiom itself is provable
-      some ⟨φ, proofFromAxiom φ ax⟩
+      -- The axiom itself is provable (only if base-compatible)
+      if h_fc : ax.minFrameClass ≤ FrameClass.Base then
+        some ⟨φ, proofFromAxiom φ ax h_fc⟩
+      else
+        none
   | .contradiction _ =>
       -- Contradiction means the branch is unsatisfiable
       -- The proof would need to trace back the specific contradiction
@@ -89,11 +93,14 @@ def extractFromClosureReason (reason : ClosureReason) : Option (Σ φ : Formula,
 Try to build a direct proof of a formula if it's an axiom instance.
 Uses `matchAxiom` from ProofSearch.
 -/
-def tryAxiomProof (φ : Formula) : Option (DerivationTree [] φ) :=
+def tryAxiomProof (φ : Formula) : Option (⊢ φ) :=
   match matchAxiom φ with
   | some ⟨ψ, ax⟩ =>
       if h : φ = ψ then
-        some (h ▸ DerivationTree.axiom [] ψ ax)
+        if h_fc : ax.minFrameClass ≤ FrameClass.Base then
+          some (h ▸ DerivationTree.axiom [] ψ ax h_fc)
+        else
+          none
       else
         none
   | none => none
@@ -107,7 +114,7 @@ Result of proof extraction from a closed tableau.
 -/
 inductive ProofExtractionResult (φ : Formula) : Type where
   /-- Successfully extracted a proof. -/
-  | success (proof : DerivationTree [] φ)
+  | success (proof : ⊢ φ)
   /-- Could not extract proof (tableau method limitation). -/
   | incomplete (reason : String)
   deriving Repr
@@ -141,7 +148,10 @@ def extractProof (φ : Formula) (tableau : ExpandedTableau) : ProofExtractionRes
           let axiomProofs := closedBranches.filterMap fun cb =>
             match cb.reason with
             | .axiomNeg ψ ax =>
-                if h : φ = ψ then some (h ▸ DerivationTree.axiom [] ψ ax)
+                if h : φ = ψ then
+                  if h_fc : ax.minFrameClass ≤ FrameClass.Base then
+                    some (h ▸ DerivationTree.axiom [] ψ ax h_fc)
+                  else none
                 else none
             | _ => none
           match axiomProofs.head? with
@@ -161,7 +171,7 @@ First attempts direct proof search (which is fast for axioms),
 then falls back to tableau method for more complex formulas.
 -/
 def findProofCombined (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
-    : Option (DerivationTree [] φ) :=
+    : Option (⊢ φ) :=
   -- First try direct proof search (fast for axioms)
   match bounded_search_with_proof [] φ searchDepth with
   | (some proof, _, _) => some proof
@@ -183,13 +193,13 @@ Verify that a proof term is well-formed (type-checks).
 This is automatically enforced by Lean's type system, but we provide
 this function for documentation and potential runtime checks.
 -/
-def verifyProof (_φ : Formula) (_proof : DerivationTree [] _φ) : Bool :=
+def verifyProof (_φ : Formula) (_proof : ⊢ _φ) : Bool :=
   true  -- Type system ensures well-formedness
 
 /--
 Get the height of a proof (number of inference steps).
 -/
-def proofHeight {φ : Formula} (proof : DerivationTree [] φ) : Nat :=
+def proofHeight {φ : Formula} (proof : ⊢ φ) : Nat :=
   proof.height
 
 /-!

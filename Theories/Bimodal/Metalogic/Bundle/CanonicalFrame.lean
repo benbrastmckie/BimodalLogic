@@ -43,6 +43,7 @@ WitnessSeed.lean) guarantees `{psi} ∪ g_content(M)` is consistent, and
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 
 /-!
@@ -130,9 +131,9 @@ such that `ExistsTask M W` and `psi ∈ W`.
 This is the property that all 12 chain-based approaches failed to prove.
 In the canonical frame, it is trivial.
 -/
-theorem canonical_forward_F (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem canonical_forward_F (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ psi ∈ W := by
   -- Step 1: {psi} ∪ g_content(M) is consistent
   have h_seed_cons : SetConsistent (forward_temporal_witness_seed M psi) :=
     forward_temporal_witness_seed_consistent M h_mcs psi h_F
@@ -159,9 +160,9 @@ such that `ExistsTask_past M W` and `psi ∈ W`.
 
 This is the past-symmetric version of canonical_forward_F.
 -/
-theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ psi ∈ W := by
   -- Step 1: {psi} ∪ h_content(M) is consistent
   have h_seed_cons : SetConsistent (past_temporal_witness_seed M psi) :=
     past_temporal_witness_seed_consistent M h_mcs psi h_P
@@ -196,9 +197,9 @@ induction axiom to prevent perpetual deferral of ψ.
 **Usage**: In the dovetailed chain (Phase 6), when a Until obligation `φ U ψ`
 is scheduled for resolution, this theorem provides the witness MCS where ψ holds.
 -/
-theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ ψ ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
   have h_seed_cons : SetConsistent (until_witness_seed M ψ) :=
     until_witness_seed_consistent M h_mcs φ ψ h_U
@@ -218,9 +219,9 @@ such that `ExistsTask_past M W` and `ψ ∈ W`.
 
 Symmetric to `canonical_forward_U` using since_induction.
 -/
-theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
   have h_seed_cons : SetConsistent (past_temporal_witness_seed M ψ) :=
     since_witness_seed_consistent M h_mcs φ ψ h_S
@@ -249,7 +250,7 @@ From `G phi ∈ M` and Temp 4, `G(G phi) ∈ M`. So `G phi ∈ g_content M ⊆ M
 Then `phi ∈ g_content M' ⊆ M''`.
 -/
 theorem existsTask_transitive (M M' M'' : Set Formula)
-    (h_mcs : SetMaximalConsistent M)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (h_R1 : ExistsTask M M') (h_R2 : ExistsTask M' M'') :
     ExistsTask M M'' := by
   intro phi h_G_phi
@@ -279,7 +280,7 @@ Given `phi ∈ h_content V` (i.e., `H phi ∈ V`):
 3. So `phi ∈ h_content N ⊆ M`
 -/
 theorem h_content_chain_transitive (M N V : Set Formula)
-    (h_mcs_V : SetMaximalConsistent V)
+    (h_mcs_V : SetMaximalConsistent (fc := FrameClass.Base) V)
     (hNV : h_content V ⊆ N) (hMN : h_content N ⊆ M) :
     h_content V ⊆ M := by
   intro phi h_H_phi

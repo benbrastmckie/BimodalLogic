@@ -56,7 +56,7 @@ Formally: `Consistent Γ ↔ ¬(Γ ⊢ ⊥)`
 - `[p]` is consistent for atomic `p`
 - `[p, ¬p]` is inconsistent (derives ⊥ via propositional reasoning)
 -/
-def Consistent (Γ : Context) : Prop := ¬Nonempty (DerivationTree Γ Formula.bot)
+def Consistent {fc : FrameClass} (Γ : Context) : Prop := ¬Nonempty (DerivationTree fc Γ Formula.bot)
 
 /--
 A context `Γ` is **maximal consistent** if it's consistent and adding any
@@ -69,8 +69,8 @@ Formally: `MaximalConsistent Γ ↔ Consistent Γ ∧ ∀ φ, φ ∉ Γ → ¬Co
 - Negation complete: `φ ∉ Γ → ¬φ ∈ Γ`
 - Implication property: `(φ → ψ) ∈ Γ → (φ ∈ Γ → ψ ∈ Γ)`
 -/
-def MaximalConsistent (Γ : Context) : Prop :=
-  Consistent Γ ∧ ∀ φ : Formula, φ ∉ Γ → ¬Consistent (φ :: Γ)
+def MaximalConsistent {fc : FrameClass} (Γ : Context) : Prop :=
+  Consistent (fc := fc) Γ ∧ ∀ φ : Formula, φ ∉ Γ → ¬Consistent (fc := fc) (φ :: Γ)
 
 /-!
 ## Set-Based Consistency
@@ -85,27 +85,28 @@ Set-based consistency: A set of formulas is consistent if listing them doesn't d
 We define consistency in terms of finite subsets, since a derivation can only use
 finitely many premises.
 -/
-def SetConsistent (S : Set Formula) : Prop :=
-  ∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → Consistent L
+def SetConsistent {fc : FrameClass} (S : Set Formula) : Prop :=
+  ∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → Consistent (fc := fc) L
 
 /--
 Set-based maximal consistency: A set is maximally consistent if it is consistent
 and cannot be properly extended while remaining consistent.
 -/
-def SetMaximalConsistent (S : Set Formula) : Prop :=
-  SetConsistent S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (insert φ S)
+def SetMaximalConsistent {fc : FrameClass} (S : Set Formula) : Prop :=
+  SetConsistent (fc := fc) S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (fc := fc) (insert φ S)
 
 /--
 ConsistentExtensions represents the set of all consistent extensions of a base set.
 -/
-def ConsistentExtensions (base : Set Formula) : Set (Set Formula) :=
-  {S | base ⊆ S ∧ SetConsistent S}
+def ConsistentExtensions {fc : FrameClass} (base : Set Formula) : Set (Set Formula) :=
+  {S | base ⊆ S ∧ SetConsistent (fc := fc) S}
 
 /--
 The base set is in its own consistent extensions (given it's consistent).
 -/
-lemma base_mem_consistent_extensions {base : Set Formula} (h : SetConsistent base) :
-    base ∈ ConsistentExtensions base :=
+lemma base_mem_consistent_extensions {fc : FrameClass} {base : Set Formula}
+    (h : SetConsistent (fc := fc) base) :
+    base ∈ ConsistentExtensions (fc := fc) base :=
   ⟨Set.Subset.refl base, h⟩
 
 /--
@@ -116,8 +117,9 @@ def contextToSet (Γ : Context) : Set Formula := {φ | φ ∈ Γ}
 /--
 List-based consistency implies set-based consistency for the corresponding set.
 -/
-lemma consistent_implies_set_consistent {Γ : Context} (h : Consistent Γ) :
-    SetConsistent (contextToSet Γ) := by
+lemma consistent_implies_set_consistent {fc : FrameClass} {Γ : Context}
+    (h : Consistent (fc := fc) Γ) :
+    SetConsistent (fc := fc) (contextToSet Γ) := by
   intro L hL ⟨d⟩
   apply h
   -- We need to derive ⊥ from Γ using the derivation from L
@@ -140,8 +142,8 @@ assumptions in the derivation. The result is a list (may have duplicates).
 Note: For necessitation rules (which require empty context), usedFormulas
 returns [] since the subderivation also has empty context.
 -/
-def usedFormulas {Γ : Context} {φ : Formula} : DerivationTree Γ φ → List Formula
-  | DerivationTree.axiom _ _ _ => []
+def usedFormulas {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTree fc Γ φ → List Formula
+  | DerivationTree.axiom _ _ _ _ => []
   | DerivationTree.assumption _ ψ _ => [ψ]
   | DerivationTree.modus_ponens _ _ _ d1 d2 => usedFormulas d1 ++ usedFormulas d2
   | DerivationTree.necessitation _ d => usedFormulas d
@@ -152,8 +154,8 @@ def usedFormulas {Γ : Context} {φ : Formula} : DerivationTree Γ φ → List F
 /--
 All formulas used in a derivation come from the context.
 -/
-lemma usedFormulas_subset {Γ : Context} {φ : Formula}
-    (d : DerivationTree Γ φ) : ∀ ψ ∈ usedFormulas d, ψ ∈ Γ := by
+lemma usedFormulas_subset {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (d : DerivationTree fc Γ φ) : ∀ ψ ∈ usedFormulas d, ψ ∈ Γ := by
   induction d with
   | «axiom» => simp [usedFormulas]
   | assumption Γ' ψ h =>
@@ -194,8 +196,8 @@ a derivation from that finite subset.
 This is formulated without constructing the derivation directly (avoiding
 the termination issues with necessitation rules).
 -/
-theorem derivation_uses_finite_context {Γ : Context} {φ : Formula}
-    (d : DerivationTree Γ φ) :
+theorem derivation_uses_finite_context {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (d : DerivationTree fc Γ φ) :
     ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ (L ⊆ Γ) := by
   exact ⟨usedFormulas d, usedFormulas_subset d, usedFormulas_subset d⟩
 
@@ -250,9 +252,9 @@ If every set in a nonempty chain is SetConsistent, then their union is also SetC
 This uses the fact that any derivation uses only finitely many premises, and
 those finite premises come from some single chain member.
 -/
-theorem consistent_chain_union {C : Set (Set Formula)}
+theorem consistent_chain_union {fc : FrameClass} {C : Set (Set Formula)}
     (hchain : IsChain (· ⊆ ·) C) (hCne : C.Nonempty)
-    (hcons : ∀ S ∈ C, SetConsistent S) : SetConsistent (⋃₀ C) := by
+    (hcons : ∀ S ∈ C, SetConsistent (fc := fc) S) : SetConsistent (fc := fc) (⋃₀ C) := by
   intro L hL
   -- hL says all elements of L are in ⋃₀ C
   -- We need to show Consistent L
@@ -272,14 +274,15 @@ This is the key lemma enabling canonical model construction.
 The set of consistent extensions of a base set S.
 Used for Zorn's lemma application.
 -/
-def ConsistentSupersets (S : Set Formula) : Set (Set Formula) :=
-  {T | S ⊆ T ∧ SetConsistent T}
+def ConsistentSupersets {fc : FrameClass} (S : Set Formula) : Set (Set Formula) :=
+  {T | S ⊆ T ∧ SetConsistent (fc := fc) T}
 
 /--
 A consistent set is in its own consistent supersets.
 -/
-lemma self_mem_consistent_supersets {S : Set Formula} (h : SetConsistent S) :
-    S ∈ ConsistentSupersets S :=
+lemma self_mem_consistent_supersets {fc : FrameClass} {S : Set Formula}
+    (h : SetConsistent (fc := fc) S) :
+    S ∈ ConsistentSupersets (fc := fc) S :=
   ⟨Set.Subset.refl S, h⟩
 
 /--
@@ -288,10 +291,10 @@ set-maximal consistent set.
 
 Uses `zorn_subset_nonempty` from Mathlib.Order.Zorn.
 -/
-theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
-    ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M := by
+theorem set_lindenbaum {fc : FrameClass} (S : Set Formula) (hS : SetConsistent (fc := fc) S) :
+    ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent (fc := fc) M := by
   -- Define the collection of consistent supersets
-  let CS := ConsistentSupersets S
+  let CS := ConsistentSupersets (fc := fc) S
   -- Show CS satisfies the chain condition for Zorn's lemma
   have hchain : ∀ C ⊆ CS, IsChain (· ⊆ ·) C → C.Nonempty →
       ∃ ub ∈ CS, ∀ T ∈ C, T ⊆ ub := by
@@ -348,8 +351,9 @@ If a context is inconsistent, it derives bottom.
 
 This is essentially the definition of inconsistency unwrapped into a derivation.
 -/
-lemma inconsistent_derives_bot {Γ : Context} (h : ¬Consistent Γ) :
-    Nonempty (DerivationTree Γ Formula.bot) := by
+lemma inconsistent_derives_bot {fc : FrameClass} {Γ : Context}
+    (h : ¬Consistent (fc := fc) Γ) :
+    Nonempty (DerivationTree fc Γ Formula.bot) := by
   unfold Consistent at h
   push_neg at h
   exact h
@@ -360,25 +364,26 @@ context derives ¬φ (i.e., φ → ⊥).
 
 This is a key lemma for proving MCS closure properties. It uses the deduction theorem.
 -/
-lemma derives_neg_from_inconsistent_extension {Γ : Context} {φ : Formula}
-    (h_incons : ¬Consistent (φ :: Γ)) :
-    Nonempty (DerivationTree Γ (Formula.neg φ)) := by
+lemma derives_neg_from_inconsistent_extension {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (h_incons : ¬Consistent (fc := fc) (φ :: Γ)) :
+    Nonempty (DerivationTree fc Γ (Formula.neg φ)) := by
   -- Get the derivation of ⊥ from φ :: Γ
   have ⟨d_bot⟩ := inconsistent_derives_bot h_incons
   -- Apply deduction theorem: (φ :: Γ) ⊢ ⊥ implies Γ ⊢ φ → ⊥
-  have d_neg : Γ ⊢ φ.imp Formula.bot := deduction_theorem Γ φ Formula.bot d_bot
+  have d_neg : (φ :: Γ) ⊢[fc] Formula.bot := d_bot
+  have d_imp := deduction_theorem (fc := fc) Γ φ Formula.bot d_neg
   -- φ → ⊥ is exactly neg φ by definition
-  exact ⟨d_neg⟩
+  exact ⟨d_imp⟩
 
 /--
 From Γ ⊢ φ and Γ ⊢ ¬φ (i.e., φ → ⊥), derive Γ ⊢ ⊥.
 
 This combines a formula and its negation to produce a contradiction.
 -/
-def derives_bot_from_phi_neg_phi {Γ : Context} {φ : Formula}
-    (h_phi : DerivationTree Γ φ)
-    (h_neg : DerivationTree Γ (Formula.neg φ)) :
-    DerivationTree Γ Formula.bot :=
+def derives_bot_from_phi_neg_phi {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (h_phi : DerivationTree fc Γ φ)
+    (h_neg : DerivationTree fc Γ (Formula.neg φ)) :
+    DerivationTree fc Γ Formula.bot :=
   -- neg φ = φ.imp bot, so we apply modus ponens
   DerivationTree.modus_ponens Γ φ Formula.bot h_neg h_phi
 
@@ -387,9 +392,9 @@ For maximal consistent sets, if φ ∉ Γ then the extension φ :: Γ is inconsi
 
 This is one direction of the maximality definition, made into a lemma for convenience.
 -/
-lemma maximal_extends_inconsistent {Γ : Context} {φ : Formula}
-    (h_max : MaximalConsistent Γ) (h_not_mem : φ ∉ Γ) :
-    ¬Consistent (φ :: Γ) :=
+lemma maximal_extends_inconsistent {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (h_max : MaximalConsistent (fc := fc) Γ) (h_not_mem : φ ∉ Γ) :
+    ¬Consistent (fc := fc) (φ :: Γ) :=
   h_max.2 φ h_not_mem
 
 /--
@@ -398,9 +403,9 @@ Bridge lemma: SetMaximalConsistent implies consistency for any finite subset.
 For any list L whose elements are all in a SetMaximalConsistent set S,
 the list L is Consistent.
 -/
-lemma SetMaximalConsistent.finite_subset_consistent {S : Set Formula}
-    (h_mcs : SetMaximalConsistent S) (L : List Formula) (h_sub : ∀ φ ∈ L, φ ∈ S) :
-    Consistent L :=
+lemma SetMaximalConsistent.finite_subset_consistent {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S) (L : List Formula) (h_sub : ∀ φ ∈ L, φ ∈ S) :
+    Consistent (fc := fc) L :=
   h_mcs.1 L h_sub
 
 /-!
@@ -421,8 +426,8 @@ Maximal consistent sets are deductively closed.
 
 **Note**: Requires deduction theorem for TM logic.
 -/
-theorem maximal_consistent_closed (Γ : Context) (φ : Formula)
-    (h_max : MaximalConsistent Γ) (h_deriv : DerivationTree Γ φ) : φ ∈ Γ := by
+theorem maximal_consistent_closed {fc : FrameClass} (Γ : Context) (φ : Formula)
+    (h_max : MaximalConsistent (fc := fc) Γ) (h_deriv : DerivationTree fc Γ φ) : φ ∈ Γ := by
   -- Proof by contradiction: assume φ ∉ Γ and derive a contradiction
   by_contra h_not_mem
   -- By maximality, (φ :: Γ) is inconsistent
@@ -430,7 +435,7 @@ theorem maximal_consistent_closed (Γ : Context) (φ : Formula)
   -- So we can derive ¬φ from Γ (using deduction theorem)
   have ⟨h_neg_deriv⟩ := derives_neg_from_inconsistent_extension h_incons
   -- Combine Γ ⊢ φ and Γ ⊢ ¬φ to get Γ ⊢ ⊥
-  have h_bot : DerivationTree Γ Formula.bot :=
+  have h_bot : DerivationTree fc Γ Formula.bot :=
     derives_bot_from_phi_neg_phi h_deriv h_neg_deriv
   -- This contradicts consistency of Γ
   exact h_max.1 ⟨h_bot⟩
@@ -446,8 +451,8 @@ Maximal consistent sets are negation complete.
 3. By deduction theorem, `Γ ⊢ φ → ⊥`, i.e., `Γ ⊢ ¬φ`
 4. By closure, `¬φ ∈ Γ`
 -/
-theorem maximal_negation_complete (Γ : Context) (φ : Formula)
-    (h_max : MaximalConsistent Γ) (h_not_mem : φ ∉ Γ) : Formula.neg φ ∈ Γ := by
+theorem maximal_negation_complete {fc : FrameClass} (Γ : Context) (φ : Formula)
+    (h_max : MaximalConsistent (fc := fc) Γ) (h_not_mem : φ ∉ Γ) : Formula.neg φ ∈ Γ := by
   -- By maximality, (φ :: Γ) is inconsistent
   have h_incons : ¬Consistent (φ :: Γ) := maximal_extends_inconsistent h_max h_not_mem
   -- So we can derive ¬φ from Γ (using deduction theorem)
@@ -473,9 +478,9 @@ Theorems (formulas derivable from empty context) are in every maximal consistent
 6. But also [] ⊢ φ weakens to Γ ⊢ φ
 7. Combining gives Γ ⊢ ⊥, contradicting S being consistent
 -/
-theorem theorem_in_mcs {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
-    (h_deriv : DerivationTree [] φ) : φ ∈ S := by
+theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
+    (h_deriv : DerivationTree fc [] φ) : φ ∈ S := by
   by_contra h_not_in
   -- By maximality, insert φ S is inconsistent
   have h_incons : ¬SetConsistent (insert φ S) := h_mcs.2 φ h_not_in
@@ -484,7 +489,7 @@ theorem theorem_in_mcs {S : Set Formula} {φ : Formula}
   push_neg at h_incons
   obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
   -- L is inconsistent, so L ⊢ ⊥
-  have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+  have h_bot : Nonempty (DerivationTree fc L Formula.bot) := inconsistent_derives_bot h_L_incons
   obtain ⟨d_bot⟩ := h_bot
   -- Define Γ = L.filter (· ≠ φ)
   let Γ := L.filter (· ≠ φ)
@@ -508,16 +513,16 @@ theorem theorem_in_mcs {S : Set Formula} {φ : Formula}
       right
       exact List.mem_filter.mpr ⟨hψ, by simpa⟩
   -- Weaken derivation from L to φ :: Γ
-  have d_bot' : DerivationTree (φ :: Γ) Formula.bot :=
+  have d_bot' : DerivationTree fc (φ :: Γ) Formula.bot :=
     DerivationTree.weakening L (φ :: Γ) Formula.bot d_bot h_L_sub_phiGamma
   -- By deduction theorem, Γ ⊢ ¬φ
-  have d_neg : DerivationTree Γ (Formula.neg φ) := deduction_theorem Γ φ Formula.bot d_bot'
+  have d_neg : DerivationTree fc Γ (Formula.neg φ) := deduction_theorem Γ φ Formula.bot d_bot'
   -- Weaken [] ⊢ φ to Γ ⊢ φ
-  have d_phi : DerivationTree Γ φ := DerivationTree.weakening [] Γ φ h_deriv (by simp)
+  have d_phi : DerivationTree fc Γ φ := DerivationTree.weakening [] Γ φ h_deriv (by simp)
   -- Combine to get Γ ⊢ ⊥
-  have d_bot_Γ : DerivationTree Γ Formula.bot := derives_bot_from_phi_neg_phi d_phi d_neg
+  have d_bot_Γ : DerivationTree fc Γ Formula.bot := derives_bot_from_phi_neg_phi d_phi d_neg
   -- This contradicts SetConsistent S (since Γ ⊆ S)
-  have h_Γ_cons : Consistent Γ := h_mcs.1 Γ h_Γ_in_S
+  have h_Γ_cons : Consistent (fc := fc) Γ := h_mcs.1 Γ h_Γ_in_S
   exact h_Γ_cons ⟨d_bot_Γ⟩
 
 end Bimodal.Metalogic.Core

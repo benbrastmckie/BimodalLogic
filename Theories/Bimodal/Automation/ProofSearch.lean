@@ -201,7 +201,7 @@ Proof search result with actual derivation tree.
 Returns `Option (DerivationTree Γ φ)` where `some d` means proof found.
 This is the proof-constructing variant enabled by the Axiom : Type refactor.
 -/
-abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (DerivationTree Γ φ)
+abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (Γ ⊢ φ)
 
 /--
 Membership witness for formula in context.
@@ -843,7 +843,7 @@ Match a formula against derived theorem patterns, returning a DerivationTree if 
 Currently handles:
 - TF (temp_future_derived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
 -/
-def matchDerived (φ : Formula) : Option (DerivationTree [] φ) :=
+def matchDerived (φ : Formula) : Option (⊢ φ) :=
   match φ with
   | .imp (.box phi) (.all_future (.box phi')) =>
       if h : phi = phi' then
@@ -887,7 +887,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
     (visited : Visited := Visited.empty)
     (visits : Nat := 0)
     (visitLimit : Nat := 500)
-    : Option (DerivationTree Γ φ) × Visited × Nat :=
+    : Option (Γ ⊢ φ) × Visited × Nat :=
   if depth = 0 then
     (none, visited, visits)
   else if visits ≥ visitLimit then
@@ -903,9 +903,13 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
       -- Try axiom match first (via matchAxiom for proof construction)
       match _hax : matchAxiom φ with
       | some ⟨ψ, witness⟩ =>
-          -- We need to verify φ = ψ to use the witness
+          -- We need to verify φ = ψ and frame class compatibility
           if heq : φ = ψ then
-            (some (heq ▸ DerivationTree.axiom Γ ψ witness), visited, visits)
+            if hfc : witness.minFrameClass ≤ FrameClass.Base then
+              (some (heq ▸ DerivationTree.axiom Γ ψ witness hfc), visited, visits)
+            else
+              -- Axiom not compatible with Base frame class (e.g., discrete-only axioms)
+              (none, visited, visits)
           else
             -- Formula mismatch - this shouldn't happen with correct matchAxiom
             (none, visited, visits)
@@ -1367,18 +1371,18 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (proof : DerivationTree [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
+example : ∃ (proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
   let p := Formula.atom_s "p"
-  ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p), trivial⟩
+  ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial, trivial⟩
 
 /-- Example: Search with depth 2 for modus ponens application -/
-example (p q : Formula) (h1 : DerivationTree [] p) (h2 : DerivationTree [] (p.imp q)) :
-    ∃ (proof : DerivationTree [] q), True :=
+example (p q : Formula) (h1 : ⊢ p) (h2 : ⊢ (p.imp q)) :
+    ∃ (proof : ⊢ q), True :=
   ⟨DerivationTree.modus_ponens [] p q h2 h1, trivial⟩
 
 /-- Example: Modal K search requires context transformation -/
-example (p : Formula) (h : DerivationTree [p.box] p) :
-    ∃ (proof : DerivationTree [p.box] p.box), True :=
+example (p : Formula) (h : [p.box] ⊢ p) :
+    ∃ (proof : [p.box] ⊢ p.box), True :=
   ⟨DerivationTree.assumption [p.box] p.box (by simp), trivial⟩
 
 end Bimodal.Automation

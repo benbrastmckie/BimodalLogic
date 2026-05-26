@@ -815,7 +815,7 @@ theorem z1_valid (φ : Formula) : valid_discrete
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
-theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ := by
+theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨ φ := by
   cases h with
   | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
   | prop_s φ ψ => exact prop_s_valid φ ψ
@@ -855,14 +855,15 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ :
   | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
   | discrete_box_necessity => exact discrete_box_necessity_valid
-  | prior_UZ _ => exact absurd h_base (by simp [Axiom.isBase])
-  | prior_SZ _ => exact absurd h_base (by simp [Axiom.isBase])
-  | z1 _ => exact absurd h_base (by simp [Axiom.isBase])
+  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
 Note: Under strict semantics, seriality axioms require NoMaxOrder/NoMinOrder (via Nontrivial). -/
-theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompatible) : valid_dense φ := by
+theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) : valid_dense φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_dense (prop_k_valid φ ψ χ)
   | prop_s φ ψ => exact Validity.valid_implies_valid_dense (prop_s_valid φ ψ)
@@ -902,14 +903,15 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
   | discrete_box_necessity => exact Validity.valid_implies_valid_dense discrete_box_necessity_valid
-  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
-  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
-  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | density φ => exact density_valid φ
+  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
 Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder + Nontrivial). -/
-theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteCompatible) :
+theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Discrete) :
     valid_discrete φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_discrete (prop_k_valid φ ψ χ)
@@ -950,6 +952,7 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
   | discrete_box_necessity => exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
+  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ φ => exact prior_UZ_valid φ
   | prior_SZ φ => exact prior_SZ_valid φ
   | z1 φ => exact z1_valid φ
@@ -1003,7 +1006,7 @@ valid (they fail on dense orders like Q). Use `soundness_discrete` for derivatio
 containing Prior-UZ/SZ.
 -/
 theorem soundness (Γ : Context) (φ : Formula)
-    (d : DerivationTree Γ φ) (h_dc : d.isDenseCompatible)
+    (d : DerivationTree FrameClass.Base Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
@@ -1011,8 +1014,8 @@ theorem soundness (Γ : Context) (φ : Formula)
     (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
     truth_at M Omega τ t φ := by
   induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax =>
-    -- All dense-compatible axioms are universally valid; Prior-UZ/SZ excluded by h_dc
+  | «axiom» Γ' φ' h_ax h_fc =>
+    -- All base axioms are universally valid; density/discrete excluded by h_fc
     cases h_ax with
     | prop_k φ ψ χ => exact prop_k_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | prop_s φ ψ => exact prop_s_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1053,31 +1056,31 @@ theorem soundness (Γ : Context) (φ : Formula)
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
-    | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
-    | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
-    | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := ih1 h_dc1 τ h_mem t h_ctx
-    have h2 := ih2 h_dc2 τ h_mem t h_ctx
+    have h1 := ih1 τ h_mem t h_ctx
+    have h2 := ih2 τ h_mem t h_ctx
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff] at h1
     exact h1 h2
   | necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro σ h_σ_mem
-    exact ih h_dc σ h_σ_mem t (by simp)
+    exact ih σ h_σ_mem t (by simp)
   | temporal_necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro s _hts
-    exact ih h_dc τ h_mem s (by simp)
+    exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
     -- d' : ⊢ φ', goal is truth_at ... φ'.swap_temporal
     -- Use general swap validity with dense-compatibility guard
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' h_dc F M Omega h_sc τ h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## Frame-Class-Restricted Soundness Theorems
 
@@ -1103,19 +1106,18 @@ This theorem is defined before `soundness_dense` because `soundness_dense`'s IRR
 needs to invoke it for universal validity.
 -/
 theorem soundness_dense_valid {phi : Formula}
-    (d : DerivationTree [] phi) (h_dc : d.isDenseCompatible) : valid_dense phi := by
+    (d : DerivationTree FrameClass.Dense [] phi) : valid_dense phi := by
   match d with
-  | .axiom _ _ h_ax =>
+  | .axiom _ _ h_ax h_fc =>
     -- All dense-compatible axioms are valid_dense
-    exact axiom_dense_valid h_ax h_dc
+    exact axiom_dense_valid h_ax h_fc
   | .assumption _ _ h_mem =>
     -- Empty context has no assumptions
     exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ psi' _ d1 d2 =>
     -- From valid_dense (psi' → phi) and valid_dense psi', derive valid_dense phi
-    obtain ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := soundness_dense_valid d1 h_dc1
-    have h2 := soundness_dense_valid d2 h_dc2
+    have h1 := soundness_dense_valid d1
+    have h2 := soundness_dense_valid d2
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     have h1' := h1 D F M Omega h_sc tau h_mem t
     have h2' := h2 D F M Omega h_sc tau h_mem t
@@ -1123,14 +1125,14 @@ theorem soundness_dense_valid {phi : Formula}
     exact h1' h2'
   | .necessitation psi' d' =>
     -- valid_dense psi' → valid_dense (box psi')
-    have h := soundness_dense_valid d' h_dc
+    have h := soundness_dense_valid d'
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro sigma h_sigma_mem
     exact h D F M Omega h_sc sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
     -- valid_dense psi' → valid_dense (all_future psi')
-    have h := soundness_dense_valid d' h_dc
+    have h := soundness_dense_valid d'
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro s _hts
@@ -1139,19 +1141,15 @@ theorem soundness_dense_valid {phi : Formula}
     -- valid_dense psi' → valid_dense (swap psi')
     -- Use derivable_implies_swap_valid which gives is_valid, then convert
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc tau h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid d' F M Omega h_sc tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     -- Since d : DerivationTree [] phi and Gamma' ⊆ [], we have Gamma' = []
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_dc_sub : (h_eq ▸ d').isDenseCompatible := by
-      simp only [DerivationTree.isDenseCompatible] at h_dc
-      subst h_eq
-      exact h_dc
     have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
     have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
       simp only [h_height_eq, DerivationTree.height]
       omega
-    exact soundness_dense_valid (h_eq ▸ d') h_dc_sub
+    exact soundness_dense_valid (h_eq ▸ d')
 termination_by d.height
 decreasing_by
   all_goals first
@@ -1175,7 +1173,7 @@ Ensures the derivation doesn't use `discreteness_forward` which is invalid on de
 then instantiates for the specific model.
 -/
 theorem soundness_dense (Γ : Context) (φ : Formula)
-    (d : DerivationTree Γ φ) (h_dc : d.isDenseCompatible)
+    (d : DerivationTree FrameClass.Dense Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DenselyOrdered D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
@@ -1184,7 +1182,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
     truth_at M Omega τ t φ := by
   induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax =>
+  | «axiom» Γ' φ' h_ax h_fc =>
     cases h_ax with
     | prop_k φ ψ χ => exact prop_k_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | prop_s φ ψ => exact prop_s_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1225,34 +1223,30 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
-    | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
-    | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
-    | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | density φ => exact density_valid φ D F M Omega h_sc τ h_mem t
+    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := ih1 h_dc1 τ h_mem t h_ctx
-    have h2 := ih2 h_dc2 τ h_mem t h_ctx
+    have h1 := ih1 τ h_mem t h_ctx
+    have h2 := ih2 τ h_mem t h_ctx
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff] at h1
     exact h1 h2
   | necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro σ h_σ_mem
-    -- For theorems (empty context), the ih gives truth at any (σ, t)
-    exact ih h_dc σ h_σ_mem t (by simp)
+    exact ih σ h_σ_mem t (by simp)
   | temporal_necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro s _hts
-    -- For theorems (empty context), the ih gives truth at any (τ, s)
-    exact ih h_dc τ h_mem s (by simp)
+    exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- d' : ⊢ φ', and the goal is truth_at M Omega τ t φ'.swap_temporal
-    -- Use derivable_implies_swap_valid from SoundnessLemmas
     -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
-    exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc τ h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## Discrete Frame Soundness Theorems
 
@@ -1272,29 +1266,28 @@ swap-validity without frame-class constraints. No separate discrete version is
 needed because the BX axiom system has no frame-class extension axioms.
 -/
 theorem soundness_discrete_valid {phi : Formula}
-    (d : DerivationTree [] phi) (h_dc : d.isDiscreteCompatible) : valid_discrete phi := by
+    (d : DerivationTree FrameClass.Discrete [] phi) : valid_discrete phi := by
   match d with
-  | .axiom _ _ h_ax =>
-    exact axiom_discrete_valid h_ax h_dc
+  | .axiom _ _ h_ax h_fc =>
+    exact axiom_discrete_valid h_ax h_fc
   | .assumption _ _ h_mem =>
     exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ psi' _ d1 d2 =>
-    obtain ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := soundness_discrete_valid d1 h_dc1
-    have h2 := soundness_discrete_valid d2 h_dc2
+    have h1 := soundness_discrete_valid d1
+    have h2 := soundness_discrete_valid d2
     intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
     have h1' := h1 D F M Omega h_sc tau h_mem t
     have h2' := h2 D F M Omega h_sc tau h_mem t
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff] at h1'
     exact h1' h2'
   | .necessitation psi' d' =>
-    have h := soundness_discrete_valid d' h_dc
+    have h := soundness_discrete_valid d'
     intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro sigma h_sigma_mem
     exact h D F M Omega h_sc sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
-    have h := soundness_discrete_valid d' h_dc
+    have h := soundness_discrete_valid d'
     intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro s _hts
@@ -1305,15 +1298,11 @@ theorem soundness_discrete_valid {phi : Formula}
     exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F M Omega h_sc tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_dc_sub : (h_eq ▸ d').isDiscreteCompatible := by
-      simp only [DerivationTree.isDiscreteCompatible] at h_dc
-      subst h_eq
-      exact h_dc
     have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
     have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
       simp only [h_height_eq, DerivationTree.height]
       omega
-    exact soundness_discrete_valid (h_eq ▸ d') h_dc_sub
+    exact soundness_discrete_valid (h_eq ▸ d')
 termination_by d.height
 decreasing_by
   all_goals first
@@ -1329,7 +1318,7 @@ derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration o
 discrete frame, then `φ` is also true there.
 -/
 theorem soundness_discrete (Γ : Context) (φ : Formula)
-    (d : DerivationTree Γ φ) (h_dc : d.isDiscreteCompatible)
+    (d : DerivationTree FrameClass.Discrete Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
@@ -1338,28 +1327,27 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
     truth_at M Omega τ t φ := by
   induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax =>
-    exact axiom_discrete_valid h_ax h_dc D F M Omega h_sc τ h_mem t
+  | «axiom» Γ' φ' h_ax h_fc =>
+    exact axiom_discrete_valid h_ax h_fc D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := ih1 h_dc1 τ h_mem t h_ctx
-    have h2 := ih2 h_dc2 τ h_mem t h_ctx
+    have h1 := ih1 τ h_mem t h_ctx
+    have h2 := ih2 τ h_mem t h_ctx
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff] at h1
     exact h1 h2
   | necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro σ h_σ_mem
-    exact ih h_dc σ h_σ_mem t (by simp)
+    exact ih σ h_σ_mem t (by simp)
   | temporal_necessitation φ' _ ih =>
     simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]
     intro s _hts
-    exact ih h_dc τ h_mem s (by simp)
+    exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
     -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
     exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 end Bimodal.Metalogic

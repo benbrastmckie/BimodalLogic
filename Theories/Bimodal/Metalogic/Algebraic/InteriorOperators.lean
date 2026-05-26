@@ -77,9 +77,9 @@ theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b :
   show Derives φ.all_future ψ.all_future
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
-  have d_temp : DerivationTree [] (Formula.all_future (φ.imp ψ)) :=
+  have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp ψ)) :=
     DerivationTree.temporal_necessitation (φ.imp ψ) d
-  have d_k : DerivationTree [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
+  have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
     sorry /- temp_k_dist derivable from BX -/
   exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
@@ -118,7 +118,7 @@ theorem box_le_self (a : LindenbaumAlg) : box_quot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
   show Derives φ.box φ
-  exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ)⟩
+  exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial⟩
 
 /--
 Box is monotone: `φ ≤ ψ → □φ ≤ □ψ`.
@@ -132,10 +132,10 @@ theorem box_monotone (a b : LindenbaumAlg) (h : a ≤ b) : box_quot a ≤ box_qu
   show Derives φ.box ψ.box
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
-  have d_box : DerivationTree [] (Formula.box (φ.imp ψ)) :=
+  have d_box : DerivationTree FrameClass.Base [] (Formula.box (φ.imp ψ)) :=
     DerivationTree.necessitation (φ.imp ψ) d
-  have d_k : DerivationTree [] ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ ψ)
+  have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ ψ) trivial
   exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_box⟩
 
 /--
@@ -149,8 +149,8 @@ theorem box_idempotent (a : LindenbaumAlg) : box_quot (box_quot a) = box_quot a 
   apply Quotient.sound
   show ProvEquiv φ.box.box φ.box
   constructor
-  · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ.box)⟩
-  · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_4 φ)⟩
+  · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ.box) trivial⟩
+  · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial⟩
 
 /--
 Box is an interior operator on the Lindenbaum algebra.

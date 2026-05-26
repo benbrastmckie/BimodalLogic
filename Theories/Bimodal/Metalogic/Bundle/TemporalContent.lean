@@ -148,7 +148,7 @@ This reflects the definitional duality Fφ = ¬G¬φ lifted to content extractor
 - Backward: If G¬φ ∉ M, then ¬G¬φ ∈ M by negation completeness, so Fφ ∈ M
 -/
 theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) M) (phi : Formula) :
     phi ∈ f_content M ↔ phi.neg ∉ g_content M := by
   simp only [mem_f_content_iff, mem_g_content_iff]
   -- Goal: some_future phi ∈ M ↔ all_future (phi.neg) ∉ M
@@ -165,7 +165,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
       DerivationTree.temporal_necessitation _ h_dni
     have h_bx3 : [] ⊢ (phi.imp phi.neg.neg).all_future.imp
         ((Formula.untl phi Formula.top).imp (Formula.untl phi.neg.neg Formula.top)) :=
-      DerivationTree.axiom [] _ (Axiom.right_mono_until phi phi.neg.neg Formula.top)
+      DerivationTree.axiom [] _ (Axiom.right_mono_until phi phi.neg.neg Formula.top) trivial
     have h_sf_impl : [] ⊢ (Formula.some_future phi).imp (Formula.some_future phi.neg.neg) :=
       DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
     have h_sf_nn_in : Formula.some_future phi.neg.neg ∈ M :=
@@ -184,7 +184,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
         DerivationTree.temporal_necessitation _ h_dne
       have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_future.imp
           ((Formula.untl phi.neg.neg Formula.top).imp (Formula.untl phi Formula.top)) :=
-        DerivationTree.axiom [] _ (Axiom.right_mono_until phi.neg.neg phi Formula.top)
+        DerivationTree.axiom [] _ (Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
       have h_sf_impl : [] ⊢ (Formula.some_future phi.neg.neg).imp (Formula.some_future phi) :=
         DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne
       exact SetMaximalConsistent.implication_property h_mcs
@@ -202,7 +202,7 @@ This reflects the definitional duality Pφ = ¬H¬φ lifted to content extractor
 Symmetric to `f_content_iff_not_neg_in_g_content`.
 -/
 theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) M) (phi : Formula) :
     phi ∈ p_content M ↔ phi.neg ∉ h_content M := by
   simp only [mem_p_content_iff, mem_h_content_iff]
   -- Goal: some_past phi ∈ M ↔ all_past (phi.neg) ∉ M
@@ -217,7 +217,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
       Bimodal.Theorems.past_necessitation _ h_dni
     have h_bx3p : [] ⊢ (phi.imp phi.neg.neg).all_past.imp
         ((Formula.snce phi Formula.top).imp (Formula.snce phi.neg.neg Formula.top)) :=
-      DerivationTree.axiom [] _ (Axiom.right_mono_since phi phi.neg.neg Formula.top)
+      DerivationTree.axiom [] _ (Axiom.right_mono_since phi phi.neg.neg Formula.top) trivial
     have h_sp_impl : [] ⊢ (Formula.some_past phi).imp (Formula.some_past phi.neg.neg) :=
       DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dni
     have h_sp_nn_in : Formula.some_past phi.neg.neg ∈ M :=
@@ -234,7 +234,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
         Bimodal.Theorems.past_necessitation _ h_dne
       have h_bx3p : [] ⊢ (phi.neg.neg.imp phi).all_past.imp
           ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
-        DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top)
+        DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
       have h_sp_impl : [] ⊢ (Formula.some_past phi.neg.neg).imp (Formula.some_past phi) :=
         DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dne
       exact SetMaximalConsistent.implication_property h_mcs

@@ -59,7 +59,7 @@ Attempts to unify the goal with each axiom schema and applies the matching axiom
 
 **Example**:
 ```lean
-example : DerivationTree [] (Formula.box p |>.imp p) := by
+example : ⊢ (Formula.box p |>.imp p) := by
   apply_axiom  -- Finds and applies Axiom.modal_t
 ```
 
@@ -292,7 +292,7 @@ def mkOperatorKTactic (tacticName : String) (operatorConst : Name)
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) _context) formula =>
+  | .app (.app (.app (.const ``DerivationTree _) _fc) _context) formula =>
     match formula with
     | .app (.const opConst _) _innerFormula =>
       if opConst == operatorConst then
@@ -324,7 +324,7 @@ and applies `Theorems.generalized_modal_k`.
 
 **Example**:
 ```lean
-example (p : Formula) : DerivationTree [p.box] (p.box) := by
+example (p : Formula) : [p.box] ⊢ (p.box) := by
   -- Goal: [□p] ⊢ □p
   -- After modal_k_tactic: subgoal [p] ⊢ p
   modal_k_tactic
@@ -344,7 +344,7 @@ and applies `Derivable.temporal_k`.
 
 **Example**:
 ```lean
-example (p : Formula) : DerivationTree [p.all_future] (p.all_future) := by
+example (p : Formula) : [p.all_future] ⊢ (p.all_future) := by
   -- Goal: [Fp] ⊢ Fp
   -- After temporal_k_tactic: subgoal [p] ⊢ p
   temporal_k_tactic
@@ -369,7 +369,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : DerivationTree [] ((p.box).imp (p.box.box)) := by
+example (p : Formula) : ⊢ ((p.box).imp (p.box.box)) := by
   modal_4_tactic
 ```
 
@@ -380,7 +380,7 @@ elab "modal_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) _context) formula =>
+  | .app (.app (.app (.const ``DerivationTree _) _fc) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -393,7 +393,9 @@ elab "modal_4_tactic" : tactic => do
 
           if ← isDefEq innerFormula innerFormula2 then
             let axiomProof ← mkAppM ``Axiom.modal_4 #[innerFormula]
-            let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
+            -- modal_4 is a base axiom so h_fc = trivial
+            let hfc ← mkAppM ``trivial #[]
+            let proof ← mkAppM ``DerivationTree.axiom #[axiomProof, hfc]
             goal.assign proof
           else
             throwError (
@@ -419,7 +421,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : DerivationTree [] (p.imp (p.diamond.box)) := by
+example (p : Formula) : ⊢ (p.imp (p.diamond.box)) := by
   modal_b_tactic
 ```
 
@@ -430,7 +432,7 @@ elab "modal_b_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) _context) formula =>
+  | .app (.app (.app (.const ``DerivationTree _) _fc) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -444,7 +446,9 @@ elab "modal_b_tactic" : tactic => do
         if !lhsMatches then
           -- Try alternate: check structure of diamondPart
           let axiomProof ← mkAppM ``Axiom.modal_b #[lhs]
-          let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
+          -- modal_b is a base axiom so h_fc = trivial
+          let hfc ← mkAppM ``trivial #[]
+          let proof ← mkAppM ``DerivationTree.axiom #[axiomProof, hfc]
           goal.assign proof
         else
           throwError "modal_b_tactic: pattern mismatch in □◇φ structure"
@@ -483,10 +487,10 @@ Extract context and formula from a `DerivationTree Γ φ` goal type.
 
 Returns `some (Γ, φ)` if the goal is a derivability goal, `none` otherwise.
 -/
-def extractDerivationGoal (goalType : Expr) : MetaM (Option (Expr × Expr)) := do
+def extractDerivationGoal (goalType : Expr) : MetaM (Option (Expr × Expr × Expr)) := do
   match goalType with
-  | .app (.app (.const ``DerivationTree _) ctx) formula =>
-    return some (ctx, formula)
+  | .app (.app (.app (.const ``DerivationTree _) fc) ctx) formula =>
+    return some (fc, ctx, formula)
   | _ => return none
 
 /-!
@@ -527,14 +531,26 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
   -- Use observing? to try application without corrupting mvar state on failure
   let result ← observing? do
     setGoals [goal]
-    -- Apply DerivationTree.axiom to the goal, creating a new goal of type `Axiom φ`
+    -- Apply DerivationTree.axiom to the goal
     let axiomExpr := mkConst ``DerivationTree.axiom
     let newGoals ← goal.apply axiomExpr
     if newGoals.isEmpty then
       return ()  -- Already solved (unlikely for axiom)
 
-    -- Should have exactly one goal: prove `Axiom φ` for some φ
-    let [axiomGoal] := newGoals | throwError "expected single axiom goal"
+    -- With FrameClass parameterization, newGoals contains goals for:
+    -- (1) Axiom φ and (2) h.minFrameClass ≤ fc
+    -- The ordering may vary. We identify the axiom goal by type.
+    let mut axiomGoal? : Option MVarId := none
+    let mut fcGoals : List MVarId := []
+    for g in newGoals do
+      let gType ← g.getType
+      match gType with
+      | .app (.const ``Axiom _) _ => axiomGoal? := some g
+      | _ => fcGoals := g :: fcGoals
+
+    let axiomGoal ← match axiomGoal? with
+      | some g => pure g
+      | none => throwError "no axiom goal found"
 
     -- Try each axiom constructor
     let axiomCtors : List Name := [
@@ -557,6 +573,11 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
         let ctorExpr := mkConst ctorName
         let remainingGoals ← axiomGoal.apply ctorExpr
         if remainingGoals.isEmpty then
+          -- Axiom matched; now close frame class compatibility goals
+          -- These are all base axioms so `trivial` should work
+          for fcGoal in fcGoals do
+            setGoals [fcGoal]
+            evalTactic (← `(tactic| trivial))
           setGoals []
           return ()  -- Found matching axiom
       catch _ =>
@@ -652,7 +673,7 @@ then recursively prove the antecedent.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryModusPonens (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Collect candidate antecedents from context implications `φ → formula`
   let ctxFormulas ← extractContextFormulas ctx
   let mut candidates : List Expr := []
@@ -665,8 +686,8 @@ def tryModusPonens (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → N
     let success ← observing? do
       setGoals [goal]
       -- Create metavariables for the two proofs
-      let impType ← mkAppM ``DerivationTree #[ctx, ← mkAppM ``Formula.imp #[antecedent, formula]]
-      let antType ← mkAppM ``DerivationTree #[ctx, antecedent]
+      let impType ← mkAppM ``DerivationTree #[fc, ctx, ← mkAppM ``Formula.imp #[antecedent, formula]]
+      let antType ← mkAppM ``DerivationTree #[fc, ctx, antecedent]
       let impMVar ← mkFreshExprMVar impType
       let antMVar ← mkFreshExprMVar antType
 
@@ -748,7 +769,7 @@ applies `generalized_modal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryModalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryModalK (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Check if formula is □χ
   let innerFormula ← match formula with
     | .app (.const ``Formula.box _) inner => pure inner
@@ -770,7 +791,9 @@ def tryModalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat �
     -- The goal should match this pattern
 
     -- Create metavariable for the subgoal: unboxedCtx ⊢ innerFormula
-    let subgoalType ← mkAppM ``DerivationTree #[unboxedCtxExpr, innerFormula]
+    -- generalized_modal_k is at FrameClass.Base
+    let baseFC := mkConst ``FrameClass.Base
+    let subgoalType ← mkAppM ``DerivationTree #[baseFC, unboxedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
     -- Build the proof: generalized_modal_k unboxedCtx innerFormula subgoalMVar
@@ -799,7 +822,7 @@ applies `generalized_temporal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryTemporalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryTemporalK (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Check if formula is Fχ
   let innerFormula ← match formula with
     | .app (.const ``Formula.all_future _) inner => pure inner
@@ -819,7 +842,9 @@ def tryTemporalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat
     --     (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
 
     -- Create metavariable for the subgoal: unfuturedCtx ⊢ innerFormula
-    let subgoalType ← mkAppM ``DerivationTree #[unfuturedCtxExpr, innerFormula]
+    -- generalized_temporal_k is at FrameClass.Base
+    let baseFC := mkConst ``FrameClass.Base
+    let subgoalType ← mkAppM ``DerivationTree #[baseFC, unfuturedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
     -- Build the proof: generalized_temporal_k unfuturedCtx innerFormula subgoalMVar
@@ -864,7 +889,7 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
     return false
 
   let goalType ← goal.getType
-  let some (ctx, formula) ← extractDerivationGoal goalType
+  let some (fc, ctx, formula) ← extractDerivationGoal goalType
     | return false  -- Not a DerivationTree goal
 
   -- Strategy 1: Try axiom matching (cheapest)
@@ -877,17 +902,17 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
 
   -- Strategy 3: Try modus ponens decomposition (expensive)
   if depth > 1 then  -- Need at least 2 levels for modus ponens
-    if ← tryModusPonens goal ctx formula searchProof depth then
+    if ← tryModusPonens goal fc ctx formula searchProof depth then
       return true
 
   -- Strategy 4: Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
   if depth > 1 then
-    if ← tryModalK goal ctx formula searchProof depth then
+    if ← tryModalK goal fc ctx formula searchProof depth then
       return true
 
   -- Strategy 5: Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
   if depth > 1 then
-    if ← tryTemporalK goal ctx formula searchProof depth then
+    if ← tryTemporalK goal fc ctx formula searchProof depth then
       return true
 
   return false
@@ -1021,7 +1046,7 @@ def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
@@ -1069,7 +1094,7 @@ def runTemporalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "temporal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
@@ -1125,7 +1150,7 @@ def runPropositionalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goalType ← goal.getType
 
   -- Validate goal type
-  let some (_ctx, _formula) ← extractDerivationGoal goalType
+  let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search
