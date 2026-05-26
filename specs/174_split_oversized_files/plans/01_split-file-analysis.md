@@ -76,18 +76,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Split ExpressiveCompleteness.lean (0 importers) [NOT STARTED]
+### Phase 1: Split ExpressiveCompleteness.lean (0 importers) [COMPLETED]
 
 **Goal**: Split ExpressiveCompleteness.lean (2129 lines, 0 downstream importers) into 2 focused modules. Zero import impact -- safest first split.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in ExpressiveCompleteness.lean
-- [ ] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness/`
-- [ ] Create `ExpressiveCompleteness/QuantifierElimination.lean` (~1600 lines): FO-to-temporal translation infrastructure, purity semantic lemmas, substitution under purity, extended signature, quantifier elimination, atom elimination infrastructure, QE correctness, atom membership, guard formulas. Module docstring: "Quantifier elimination and atom elimination for the FO-to-temporal translation."
-- [ ] Create `ExpressiveCompleteness/Theorem.lean` (~530 lines): Core expressiveness lemma, final Theorem 10.2.10 linking FO-definability to temporal definability. Module docstring: "Expressive completeness theorem (Theorem 10.2.10): every FO-definable property is temporal."
-- [ ] Add module docstrings to both new files
-- [ ] Delete `ExpressiveCompleteness.lean` (no importers to update)
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in ExpressiveCompleteness.lean
+- [x] Create directory `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness/`
+- [x] Create `ExpressiveCompleteness/QuantifierElimination.lean` (~1600 lines): FO-to-temporal translation infrastructure, purity semantic lemmas, substitution under purity, extended signature, quantifier elimination, atom elimination infrastructure, QE correctness, atom membership, guard formulas. Module docstring: "Quantifier elimination and atom elimination for the FO-to-temporal translation." *(deviation: altered -- 5 private defs made public instead of protected, needed for cross-file access from Theorem.lean)*
+- [x] Create `ExpressiveCompleteness/Theorem.lean` (~530 lines): Core expressiveness lemma, final Theorem 10.2.10 linking FO-definability to temporal definability. Module docstring: "Expressive completeness theorem (Theorem 10.2.10): every FO-definable property is temporal."
+- [x] Add module docstrings to both new files
+- [x] Delete `ExpressiveCompleteness.lean` (no importers to update)
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 2 hours
 

@@ -551,7 +551,7 @@
     {
       "project_number": 174,
       "project_name": "split_oversized_files",
-      "status": "planned",
+      "status": "implementing",
       "session_id": "sess_1779810332_dc1959",
       "task_type": "lean4",
       "priority": "medium",
@@ -560,7 +560,7 @@
         168
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-26T15:50:30Z",
+      "last_updated": "2026-05-26T16:00:00Z",
       "topic": "formula-refactor",
       "researched": "2026-05-26T20:00:00Z",
       "next_artifact_number": 2,
