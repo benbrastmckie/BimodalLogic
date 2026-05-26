@@ -164,7 +164,7 @@ in MCS), contradicting consistency of A.
 -/
 theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
     (h_r3m : BurgessR3Maximal A B C)
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C) :
     g_content A ⊆ C := by
   intro φ hφ
   -- hφ : G(φ) ∈ A, i.e., all_future(φ) ∈ A
@@ -282,7 +282,7 @@ Proof: Use η = ⊤ as the seed element.
   Then P(α) → S(⊤, α) by P_since_equiv.
 -/
 theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_hc : h_content C ⊆ A) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
   set top := Formula.bot.imp Formula.bot with top_def
@@ -689,7 +689,7 @@ private noncomputable def c5_forward_walk
     let B := h_l24.choose
     let C := h_l24.choose_spec.choose
     have h_l24_prop := h_l24.choose_spec.choose_spec
-    have h_C_mcs : SetMaximalConsistent C := h_l24_prop.1
+    have h_C_mcs : SetMaximalConsistent (fc := FrameClass.Base) C := h_l24_prop.1
     have h_η_C : η ∈ C := h_l24_prop.2.1
     have h_ξ_B : ξ ∈ B := h_l24_prop.2.2.2.2.1
     have h_r3m : BurgessR3Maximal (χ.f pt) B C := h_l24_prop.2.2.2.2.2
@@ -966,7 +966,7 @@ private noncomputable def c5_forward_walk
       have h_split_result : ∃ B' D B'' : Set Formula,
           BurgessR3Maximal (χ.f pt) B' D ∧
           BurgessR3Maximal D B'' (χ.f x') ∧
-          SetMaximalConsistent D ∧
+          SetMaximalConsistent (fc := FrameClass.Base) D ∧
           η ∈ D ∧
           χ.g pt x' ⊆ D ∧
           χ.g pt x' ⊆ B' ∧
@@ -1048,7 +1048,7 @@ private noncomputable def c5_forward_walk
       have h_split_prop := h_split_result.choose_spec.choose_spec.choose_spec
       have h_B'_max : BurgessR3Maximal (χ.f pt) B' D := h_split_prop.1
       have h_B''_max : BurgessR3Maximal D B'' (χ.f x') := h_split_prop.2.1
-      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
       have h_eta_D : η ∈ D := h_split_prop.2.2.2.1
       have h_g_sub_D : χ.g pt x' ⊆ D := h_split_prop.2.2.2.2.1
       have h_g_sub_B' : χ.g pt x' ⊆ B' := h_split_prop.2.2.2.2.2.1
@@ -1275,7 +1275,7 @@ private noncomputable def c5_backward_walk
     let B := h_l24s.choose
     let C := h_l24s.choose_spec.choose
     have h_l24s_prop := h_l24s.choose_spec.choose_spec
-    have h_C_mcs : SetMaximalConsistent C := h_l24s_prop.1
+    have h_C_mcs : SetMaximalConsistent (fc := FrameClass.Base) C := h_l24s_prop.1
     have h_η_C : η ∈ C := h_l24s_prop.2.1
     have h_ξ_B : ξ ∈ B := h_l24s_prop.2.2.2.1
     have h_r3m : BurgessR3Maximal C B (χ.f pt) := h_l24s_prop.2.2.2.2
@@ -1547,7 +1547,7 @@ private noncomputable def c5_backward_walk
       have h_split_result : ∃ B' D B'' : Set Formula,
           BurgessR3Maximal (χ.f x'') B' D ∧
           BurgessR3Maximal D B'' (χ.f pt) ∧
-          SetMaximalConsistent D ∧
+          SetMaximalConsistent (fc := FrameClass.Base) D ∧
           η ∈ D ∧
           χ.g x'' pt ⊆ D ∧
           χ.g x'' pt ⊆ B' ∧
@@ -1628,7 +1628,7 @@ private noncomputable def c5_backward_walk
       have h_split_prop := h_split_result.choose_spec.choose_spec.choose_spec
       have h_B'_max : BurgessR3Maximal (χ.f x'') B' D := h_split_prop.1
       have h_B''_max : BurgessR3Maximal D B'' (χ.f pt) := h_split_prop.2.1
-      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
       have h_eta_D : η ∈ D := h_split_prop.2.2.2.1
       have h_g_sub_D : χ.g x'' pt ⊆ D := h_split_prop.2.2.2.2.1
       have h_g_sub_B' : χ.g x'' pt ⊆ B' := h_split_prop.2.2.2.2.2.1
@@ -1843,7 +1843,7 @@ noncomputable def eliminate_potential_counterexample
         let B := h_l24.choose
         let C := h_l24.choose_spec.choose
         have h_l24_prop := h_l24.choose_spec.choose_spec
-        have h_C_mcs : SetMaximalConsistent C := h_l24_prop.1
+        have h_C_mcs : SetMaximalConsistent (fc := FrameClass.Base) C := h_l24_prop.1
         have h_η_C : pc.η ∈ C := h_l24_prop.2.1
         have h_ξ_B : pc.ξ ∈ B := h_l24_prop.2.2.2.2.1
         have h_r3m : BurgessR3Maximal (χ.f pc.x) B C := h_l24_prop.2.2.2.2.2
@@ -2045,7 +2045,7 @@ noncomputable def eliminate_potential_counterexample
           have h_split_result : ∃ B' D B'' : Set Formula,
               BurgessR3Maximal (χ.f pc.x) B' D ∧
               BurgessR3Maximal D B'' (χ.f x') ∧
-              SetMaximalConsistent D ∧
+              SetMaximalConsistent (fc := FrameClass.Base) D ∧
               pc.η ∈ D ∧
               χ.g pc.x x' ⊆ D ∧
               χ.g pc.x x' ⊆ B' ∧
@@ -2134,7 +2134,7 @@ noncomputable def eliminate_potential_counterexample
           have h_split_prop := h_split_result.choose_spec.choose_spec.choose_spec
           have h_B'_max : BurgessR3Maximal (χ.f pc.x) B' D := h_split_prop.1
           have h_B''_max : BurgessR3Maximal D B'' (χ.f x') := h_split_prop.2.1
-          have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+          have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
           have h_η_D : pc.η ∈ D := h_split_prop.2.2.2.1
           have h_g_sub_D : χ.g pc.x x' ⊆ D := h_split_prop.2.2.2.2.1
           have h_g_sub_B' : χ.g pc.x x' ⊆ B' := h_split_prop.2.2.2.2.2.1
@@ -2375,7 +2375,7 @@ noncomputable def eliminate_potential_counterexample
         let B_new := h_l24s.choose
         let C := h_l24s.choose_spec.choose
         have h_l24s_prop := h_l24s.choose_spec.choose_spec
-        have h_C_mcs : SetMaximalConsistent C := h_l24s_prop.1
+        have h_C_mcs : SetMaximalConsistent (fc := FrameClass.Base) C := h_l24s_prop.1
         have h_η_C : pc.η ∈ C := h_l24s_prop.2.1
         have h_ξ_B : pc.ξ ∈ B_new := h_l24s_prop.2.2.2.1
         have h_B_new_r3m : BurgessR3Maximal C B_new (χ.f pc.x) := h_l24s_prop.2.2.2.2
@@ -2571,7 +2571,7 @@ noncomputable def eliminate_potential_counterexample
           have h_split_result : ∃ B' D B'' : Set Formula,
             BurgessR3Maximal (χ.f x'') B' D ∧
             BurgessR3Maximal D B'' (χ.f pc.x) ∧
-            SetMaximalConsistent D ∧
+            SetMaximalConsistent (fc := FrameClass.Base) D ∧
             pc.η ∈ D ∧
             χ.g x'' pc.x ⊆ D ∧
             χ.g x'' pc.x ⊆ B' ∧
@@ -2656,7 +2656,7 @@ noncomputable def eliminate_potential_counterexample
           have h_split_prop := h_split_result.choose_spec.choose_spec.choose_spec
           have h_B'_max : BurgessR3Maximal (χ.f x'') B' D := h_split_prop.1
           have h_B''_max : BurgessR3Maximal D B'' (χ.f pc.x) := h_split_prop.2.1
-          have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+          have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
           have h_η_D : pc.η ∈ D := h_split_prop.2.2.2.1
           have h_g_sub_D : χ.g x'' pc.x ⊆ D := h_split_prop.2.2.2.2.1
           have h_g_sub_B' : χ.g x'' pc.x ⊆ B' := h_split_prop.2.2.2.2.2.1
@@ -2994,7 +2994,7 @@ noncomputable def eliminate_potential_counterexample
       have h_split_prop := h_split.choose_spec.choose_spec.choose_spec
       have h_B'_max : BurgessR3Maximal (χ.f w) B' D := h_split_prop.1
       have h_B''_max : BurgessR3Maximal D B'' (χ.f w_next) := h_split_prop.2.1
-      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
       have h_xi_neg_D : pc.ξ.neg ∈ D := h_split_prop.2.2.2.1
       have h_g_sub_D : χ.g w w_next ⊆ D := h_split_prop.2.2.2.2.1
       have h_g_sub_B' : χ.g w w_next ⊆ B' := h_split_prop.2.2.2.2.2.1
@@ -3298,7 +3298,7 @@ noncomputable def eliminate_potential_counterexample
       have h_split_prop := h_split.choose_spec.choose_spec.choose_spec
       have h_B'_max : BurgessR3Maximal (χ.f w_prev) B' D := h_split_prop.1
       have h_B''_max : BurgessR3Maximal D B'' (χ.f w) := h_split_prop.2.1
-      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      have h_D_mcs : SetMaximalConsistent (fc := FrameClass.Base) D := h_split_prop.2.2.1
       have h_xi_neg_D : pc.ξ.neg ∈ D := h_split_prop.2.2.2.1
       have h_g_sub_D : χ.g w_prev w ⊆ D := h_split_prop.2.2.2.2.1
       have h_g_sub_B' : χ.g w_prev w ⊆ B' := h_split_prop.2.2.2.2.2.1

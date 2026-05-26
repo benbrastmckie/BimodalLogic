@@ -86,6 +86,7 @@ which is done in the instantiation modules.
 namespace Bimodal.Metalogic.Algebraic.ParametricCompleteness
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
@@ -222,7 +223,7 @@ The instantiation modules use this to construct the specific BFMCS.
 -/
 theorem not_provable_implies_neg_extends_to_mcs
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
-    ∃ M : Set Formula, SetMaximalConsistent M ∧ φ.neg ∈ M := by
+    ∃ M : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) M ∧ φ.neg ∈ M := by
   have h_cons := not_provable_implies_neg_set_consistent φ h_not_prov
   obtain ⟨M, h_sub, h_mcs⟩ := set_lindenbaum {φ.neg} h_cons
   exact ⟨M, h_mcs, h_sub (Set.mem_singleton φ.neg)⟩
@@ -253,7 +254,7 @@ to the caller. The instantiation modules provide the concrete construction.
 -/
 theorem parametric_canonical_completeness_conditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
-    (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent M →
+    (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent (fc := FrameClass.Base) M →
       Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
          (h_buc : B.backward_until_since_coherent)
          (h_fuc : B.forward_until_since_coherent)

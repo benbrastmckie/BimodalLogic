@@ -302,13 +302,13 @@ theorem set_lindenbaum {fc : FrameClass} (S : Set Formula) (hS : SetConsistent (
     -- The upper bound is the union of the chain
     use ⋃₀ C
     constructor
-    · -- Show ⋃₀ C ∈ CS, i.e., S ⊆ ⋃₀ C and SetConsistent (⋃₀ C)
+    · -- Show ⋃₀ C ∈ CS, i.e., S ⊆ ⋃₀ C and SetConsistent (fc := FrameClass.Base) (⋃₀ C)
       constructor
       · -- S ⊆ ⋃₀ C: Since C is nonempty, pick any T ∈ C, then S ⊆ T ⊆ ⋃₀ C
         obtain ⟨T, hT⟩ := hCne
         have hST : S ⊆ T := (hCsub hT).1
         exact Set.Subset.trans hST (Set.subset_sUnion_of_mem hT)
-      · -- SetConsistent (⋃₀ C): Use consistent_chain_union
+      · -- SetConsistent (fc := FrameClass.Base) (⋃₀ C): Use consistent_chain_union
         apply consistent_chain_union hCchain hCne
         intro T hT
         exact (hCsub hT).2
@@ -326,10 +326,10 @@ theorem set_lindenbaum {fc : FrameClass} (S : Set Formula) (hS : SetConsistent (
   use M
   constructor
   · exact hSM
-  · -- Show SetMaximalConsistent M
+  · -- Show SetMaximalConsistent (fc := FrameClass.Base) M
     constructor
     · exact hMcons
-    · -- Show ∀ φ ∉ M, ¬SetConsistent (insert φ M)
+    · -- Show ∀ φ ∉ M, ¬SetConsistent (fc := FrameClass.Base) (insert φ M)
       intro φ hφnotM hcons_insert
       -- If insert φ M were consistent, then insert φ M ∈ CS
       have h_insert_mem : insert φ M ∈ CS := by
@@ -398,9 +398,9 @@ lemma maximal_extends_inconsistent {fc : FrameClass} {Γ : Context} {φ : Formul
   h_max.2 φ h_not_mem
 
 /--
-Bridge lemma: SetMaximalConsistent implies consistency for any finite subset.
+Bridge lemma: SetMaximalConsistent (fc := FrameClass.Base) implies consistency for any finite subset.
 
-For any list L whose elements are all in a SetMaximalConsistent set S,
+For any list L whose elements are all in a SetMaximalConsistent (fc := FrameClass.Base) set S,
 the list L is Consistent.
 -/
 lemma SetMaximalConsistent.finite_subset_consistent {fc : FrameClass} {S : Set Formula}
@@ -483,7 +483,7 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
     (h_deriv : DerivationTree fc [] φ) : φ ∈ S := by
   by_contra h_not_in
   -- By maximality, insert φ S is inconsistent
-  have h_incons : ¬SetConsistent (insert φ S) := h_mcs.2 φ h_not_in
+  have h_incons : ¬SetConsistent (fc := fc) (insert φ S) := h_mcs.2 φ h_not_in
   -- Unfold ¬SetConsistent to get a witness list
   unfold SetConsistent at h_incons
   push_neg at h_incons

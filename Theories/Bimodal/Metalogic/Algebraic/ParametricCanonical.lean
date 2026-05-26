@@ -42,6 +42,7 @@ Bundle/CanonicalTaskRelation.lean but generalized to arbitrary D instead of hard
 namespace Bimodal.Metalogic.Algebraic.ParametricCanonical
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
@@ -61,7 +62,7 @@ This is the WorldState of the parametric canonical TaskFrame.
 It is D-independent since MCS structure depends only on formula syntax.
 -/
 def ParametricCanonicalWorldState : Type :=
-  { M : Set Formula // SetMaximalConsistent M }
+  { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
 
 /-!
 ## D-Parametric Task Relation

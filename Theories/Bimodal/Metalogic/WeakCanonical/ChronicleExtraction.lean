@@ -41,7 +41,7 @@ open Bimodal.Metalogic.BXCanonical.Chronicle
 The hypothesis that `next_top` (= U(⊤, ⊥)) is in every MCS of the limit domain.
 This follows from `□(next_top) ∈ A` via `box_discrete_gives_discreteness`.
 -/
-def DiscreteHypothesis (A : Set Formula) (h_mcs : SetMaximalConsistent A) : Prop :=
+def DiscreteHypothesis (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) : Prop :=
   ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x
 
 /-! ## Prior-UZ/SZ Validity -/
@@ -50,7 +50,7 @@ def DiscreteHypothesis (A : Set Formula) (h_mcs : SetMaximalConsistent A) : Prop
 Prior-UZ holds at every point in the limit domain: for any MCS in the domain,
 the Prior-UZ axiom instance (for any formula ψ) is in that MCS.
 -/
-theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
@@ -59,7 +59,7 @@ theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent
 /--
 Prior-SZ holds at every point in the limit domain.
 -/
-theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
@@ -84,7 +84,7 @@ structure ChronicleAsPriorModel where
   /-- The root MCS A -/
   root : Set Formula
   /-- Proof that A is MCS -/
-  root_mcs : SetMaximalConsistent root
+  root_mcs : SetMaximalConsistent (fc := FrameClass.Base) root
   /-- Domain: countable subtype of Rat, discrete without endpoints -/
   domain : Type
   /-- Domain inherits LinearOrder from Rat -/
@@ -163,7 +163,7 @@ to every domain point.
 
 The root point is `⟨0, zero_mem_limit_dom A h_mcs⟩` where `limit_f = A`.
 -/
-noncomputable def extract_chronicle_as_prior (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def extract_chronicle_as_prior (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_discrete : Formula.box next_top ∈ A) : ChronicleAsPriorModel :=
   let h_discrete := box_discrete_gives_discreteness A h_mcs h_box_discrete
   {

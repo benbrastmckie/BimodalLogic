@@ -73,7 +73,7 @@ We prove the typeclass prerequisites `Countable`, `NoMinOrder`, `NoMaxOrder`, `N
 -/
 
 /-- The limit domain as a subtype of the rationals. -/
-abbrev LimitDomSubtype (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+abbrev LimitDomSubtype (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     :=
   {q : Rat // q ∈ limit_dom A h_mcs}
 
@@ -81,7 +81,7 @@ abbrev LimitDomSubtype (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 `LimitDomSubtype` is countable: `limit_dom` is a countable union of finite sets
 (each `omega_chain_val(n).dom` is a `Finset Rat`).
 -/
-instance limitDomSubtype_countable (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+instance limitDomSubtype_countable (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     :
     Countable (LimitDomSubtype A h_mcs) :=
   Subtype.countable
@@ -93,7 +93,7 @@ Proof: The seriality axiom `serial_future` gives `F(top)` in every MCS.
 Since `limit_c0` assigns an MCS to x, we have `F(top) ∈ limit_f(x)`.
 Then `limit_F_resolution` produces y > x in `limit_dom`.
 -/
-theorem limit_dom_no_max (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limit_dom_no_max (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
     ∃ y ∈ limit_dom A h_mcs, x < y := by
   have h_mcs_x := limit_c0 A h_mcs x hx
@@ -112,7 +112,7 @@ Proof: The seriality axiom `serial_past` gives `P(top)` in every MCS.
 Since `limit_c0` assigns an MCS to x, we have `P(top) ∈ limit_f(x)`.
 Then `limit_P_resolution` produces y < x in `limit_dom`.
 -/
-theorem limit_dom_no_min (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limit_dom_no_min (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
     ∃ y ∈ limit_dom A h_mcs, y < x := by
   have h_mcs_x := limit_c0 A h_mcs x hx
@@ -127,7 +127,7 @@ theorem limit_dom_no_min (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 `LimitDomSubtype` has no maximum element: from seriality + `limit_F_resolution`.
 -/
-instance limitDomSubtype_noMaxOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+instance limitDomSubtype_noMaxOrder (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     :
     NoMaxOrder (LimitDomSubtype A h_mcs) where
   exists_gt := by
@@ -138,7 +138,7 @@ instance limitDomSubtype_noMaxOrder (A : Set Formula) (h_mcs : SetMaximalConsist
 /--
 `LimitDomSubtype` has no minimum element: from seriality + `limit_P_resolution`.
 -/
-instance limitDomSubtype_noMinOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+instance limitDomSubtype_noMinOrder (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     :
     NoMinOrder (LimitDomSubtype A h_mcs) where
   exists_lt := by
@@ -149,7 +149,7 @@ instance limitDomSubtype_noMinOrder (A : Set Formula) (h_mcs : SetMaximalConsist
 /--
 `LimitDomSubtype` is nonempty: from `zero_mem_limit_dom`.
 -/
-instance limitDomSubtype_nonempty (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+instance limitDomSubtype_nonempty (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     :
     Nonempty (LimitDomSubtype A h_mcs) :=
   ⟨⟨0, zero_mem_limit_dom A h_mcs⟩⟩
@@ -186,7 +186,7 @@ Given `x < y` in `limit_dom`, we invoke `limit_satisfies_c4` with `η = ⊤`
 The conclusion gives `z ∈ limit_dom` with `x < z < y` (and `⊥.neg ∈ limit_f(z)`,
 which is trivially true).
 -/
-theorem limit_dom_dense_from_F'T (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limit_dom_dense_from_F'T (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
@@ -205,7 +205,7 @@ theorem limit_dom_dense_from_F'T (A : Set Formula) (h_mcs : SetMaximalConsistent
 `DenselyOrdered` instance for `LimitDomSubtype`, conditional on F'T being
 in every domain MCS. Wraps `limit_dom_dense_from_F'T`.
 -/
-def limitDomSubtype_denselyOrdered_from_F'T (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+def limitDomSubtype_denselyOrdered_from_F'T (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     DenselyOrdered (LimitDomSubtype A h_mcs) where
@@ -220,7 +220,7 @@ Cantor isomorphism: `LimitDomSubtype A h_mcs ≃o Rat`, conditional on density.
 Requires `DenselyOrdered`, `Countable`, `NoMinOrder`, `NoMaxOrder`, `Nonempty`
 — all available (the first from `h_dense`, the rest unconditionally).
 -/
-noncomputable def cantor_iso_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_iso_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     LimitDomSubtype A h_mcs ≃o Rat :=
@@ -228,21 +228,21 @@ noncomputable def cantor_iso_dense (A : Set Formula) (h_mcs : SetMaximalConsiste
   Classical.choice (Order.iso_of_countable_dense (LimitDomSubtype A h_mcs) Rat)
 
 /-- MCS assignment via the Cantor isomorphism (dense case). -/
-noncomputable def cantor_f_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_f_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     Rat → Set Formula :=
   fun q => limit_f A h_mcs ((cantor_iso_dense A h_mcs h_dense).symm q).val
 
 /-- The rational corresponding to the origin `0 ∈ limit_dom` (dense case). -/
-noncomputable def cantor_zero_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_zero_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     Rat :=
   (cantor_iso_dense A h_mcs h_dense) ⟨0, zero_mem_limit_dom A h_mcs⟩
 
 /-- `cantor_f_dense` at `cantor_zero_dense` equals A (the root MCS). -/
-theorem cantor_f_dense_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_f_dense_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     cantor_f_dense A h_mcs h_dense (cantor_zero_dense A h_mcs h_dense) = A := by
@@ -251,7 +251,7 @@ theorem cantor_f_dense_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A
   exact limit_f_zero A h_mcs
 
 /-- Every rational maps to an MCS via `cantor_f_dense`. -/
-theorem cantor_f_dense_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_f_dense_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x)
     (q : Rat) : SetMaximalConsistent (cantor_f_dense A h_mcs h_dense q) := by
@@ -263,7 +263,7 @@ FMCS on Rat (dense case): the chronicle coherence properties `limit_forward_G`
 and `limit_backward_H` are transported through `cantor_iso_dense.symm`, which
 is strictly monotone (as an OrderIso symm).
 -/
-noncomputable def cantor_fmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_fmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs,
       next_top.neg ∈ limit_f A h_mcs x) :
     FMCS Rat where
@@ -302,7 +302,7 @@ The proof uses S5 axioms:
 Box stability on `limit_f`: for any `x ∈ limit_dom`, `Box φ ∈ limit_f(x) ↔ Box φ ∈ A`.
 Since `limit_f(0) = A`, this says box formulas are uniform across the limit domain.
 -/
-theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
     Formula.box φ ∈ limit_f A h_mcs x ↔ Formula.box φ ∈ A := by
   constructor
@@ -373,7 +373,7 @@ theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Box stability on `cantor_f_dense`: `Box φ ∈ cantor_f_dense(q) ↔ Box φ ∈ A`.
 Transport of `box_stable_in_limit_f` through the Cantor isomorphism.
 -/
-theorem box_stable_in_cantor_f_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem box_stable_in_cantor_f_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_dense : ∀ x ∈ limit_dom A h_mcs, next_top.neg ∈ limit_f A h_mcs x)
     (φ : Formula) (q : Rat) :
     Formula.box φ ∈ cantor_f_dense A h_mcs h_dense q ↔ Formula.box φ ∈ A := by
@@ -408,7 +408,7 @@ From `□(F'T) ∈ N`, derive the density hypothesis for N's chronicle.
 The proof: `□(F'T) → G(□(F'T))` (temp_future_derived), then at each domain point
 `□(F'T) → F'T` (modal_t). Similarly for past via `box_to_past`.
 -/
-theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent N)
+theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_dense : Formula.box next_top.neg ∈ N) :
     ∀ x ∈ limit_dom N h_N, next_top.neg ∈ limit_f N h_N x := by
   intro x hx
@@ -453,7 +453,7 @@ theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent N)
 Shifted FMCS on Rat: `mcs t := cantor_f_dense(t + offset)`.
 Helper for `rooted_cantor_fmcs_dense`.
 -/
-noncomputable def shifted_cantor_fmcs_dense' (N : Set Formula) (h_N : SetMaximalConsistent N)
+noncomputable def shifted_cantor_fmcs_dense' (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_dense_N : ∀ x ∈ limit_dom N h_N, next_top.neg ∈ limit_f N h_N x)
     (offset : Rat) : FMCS Rat where
   mcs t := cantor_f_dense N h_N h_dense_N (t + offset)
@@ -471,7 +471,7 @@ noncomputable def shifted_cantor_fmcs_dense' (N : Set Formula) (h_N : SetMaximal
 Rooted FMCS on Rat (dense case): builds a chronicle for MCS N (with `□(F'T) ∈ N`
 ensuring density), applies the Cantor isomorphism, and shifts to place N at time `s`.
 -/
-noncomputable def rooted_cantor_fmcs_dense (N : Set Formula) (h_N : SetMaximalConsistent N)
+noncomputable def rooted_cantor_fmcs_dense (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_dense_N : Formula.box next_top.neg ∈ N) (s : Rat) : FMCS Rat :=
   let h_dense_N := box_dense_gives_density N h_N h_box_dense_N
   let cz := cantor_zero_dense N h_N h_dense_N
@@ -483,7 +483,7 @@ The rooted FMCS at `s` has `mcs s = N` (the root MCS).
 This works because the shift places `cantor_zero_dense` at `s`, and
 `cantor_f_dense` at `cantor_zero_dense` equals N.
 -/
-theorem rooted_cantor_fmcs_dense_at_s (N : Set Formula) (h_N : SetMaximalConsistent N)
+theorem rooted_cantor_fmcs_dense_at_s (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_dense_N : Formula.box next_top.neg ∈ N) (s : Rat) :
     (rooted_cantor_fmcs_dense N h_N h_box_dense_N s).mcs s = N := by
   -- mcs s = cantor_f_dense(s + (cz - s)) = cantor_f_dense(cz) = N
@@ -498,7 +498,7 @@ Box stability for `rooted_cantor_fmcs_dense`:
 `Box φ ∈ (rooted_cantor_fmcs_dense N h_N h_box s).mcs t ↔ Box φ ∈ N`.
 -/
 theorem box_stable_in_rooted_cantor_fmcs_dense (N : Set Formula)
-    (h_N : SetMaximalConsistent N) (h_box_dense_N : Formula.box next_top.neg ∈ N)
+    (h_N : SetMaximalConsistent (fc := FrameClass.Base) N) (h_box_dense_N : Formula.box next_top.neg ∈ N)
     (φ : Formula) (s t : Rat) :
     Formula.box φ ∈ (rooted_cantor_fmcs_dense N h_N h_box_dense_N s).mcs t ↔
       Formula.box φ ∈ N := by
@@ -520,10 +520,10 @@ The modal forward/backward proofs mirror `bx_bfmcs` from RootScopedChain.lean:
   v box-equiv to A, so rooted_cantor_fmcs_dense v.formulas has mcs(t) = v.formulas,
   giving φ ∈ v.formulas (from h_all) and ¬φ ∈ v.formulas (from witness), contradiction.
 -/
-noncomputable def cantor_bfmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_bfmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_dense : Formula.box next_top.neg ∈ A) :
     BFMCS Rat where
-  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_N : Formula.box next_top.neg ∈ N) (s : Rat),
     (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
     fam = rooted_cantor_fmcs_dense N h_N h_box_N s }
@@ -568,7 +568,7 @@ noncomputable def cantor_bfmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsis
       (h_equiv next_top.neg).mp h_box_dense
     -- rooted_cantor_fmcs_dense v t is in families
     have h_fam_v_mem : rooted_cantor_fmcs_dense v.formulas v.is_mcs h_box_dense_v t ∈
-        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
           (h_box_N : Formula.box next_top.neg ∈ N) (s : Rat),
           (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
           fam = rooted_cantor_fmcs_dense N h_N h_box_N s } :=
@@ -595,7 +595,7 @@ uses `cantor_f_dense N h_N h_dense_N`. The Cantor isomorphism makes all rational
 domain points, so `limit_F_resolution`/`limit_P_resolution` apply directly after
 transfer through `cantor_iso_dense.symm`.
 -/
-theorem cantor_bfmcs_dense_restricted_tc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_dense_restricted_tc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_dense : Formula.box next_top.neg ∈ A)
     (root : Formula)
     (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
@@ -645,7 +645,7 @@ The backward direction uses C4/C4' (limit_satisfies_c4/c4') to prove
 that if ¬U(φ,ψ) ∈ f(t) and the Until witness pattern holds, we get
 a contradiction via an intermediate point where the guard fails.
 -/
-theorem cantor_bfmcs_dense_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_dense_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
     (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_backward_until_since_coherent root := by
   intro fam hfam
@@ -717,7 +717,7 @@ The forward direction uses `limit_satisfies_c5_strong`/`limit_satisfies_c5'_stro
 to find the Until/Since witness, and the guard follows from the Cantor iso
 making all rationals domain points (so the guard covers D = Rat).
 -/
-theorem cantor_bfmcs_dense_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_dense_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
     (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_forward_until_since_coherent root := by
   intro fam hfam
@@ -790,7 +790,7 @@ Uses `cantor_bfmcs_dense` (sorry-free BFMCS) with the three restricted
 coherence conditions. The eval family is `rooted_cantor_fmcs_dense A h_mcs h_box_dense 0`
 which has `mcs 0 = A`, so `¬φ ∈ eval_family.mcs 0`.
 -/
-theorem countermodel_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem countermodel_dense (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box next_top.neg ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
@@ -836,7 +836,7 @@ Successor witness in the discrete case: given `U(⊤,⊥) ∈ limit_f(x)`, there
 exists `y ∈ limit_dom` that is the immediate successor of `x` — i.e., `x < y`
 and there are no domain points between `x` and `y`.
 -/
-theorem limit_dom_has_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limit_dom_has_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs)
     (h_next : next_top ∈ limit_f A h_mcs x) :
     ∃ y ∈ limit_dom A h_mcs, x < y ∧
@@ -851,7 +851,7 @@ theorem limit_dom_has_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Predecessor witness in the discrete case: given `S(⊤,⊥) ∈ limit_f(x)`, there
 exists `y ∈ limit_dom` that is the immediate predecessor of `x`.
 -/
-theorem limit_dom_has_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limit_dom_has_pred (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs)
     (h_since : Formula.snce top_formula Formula.bot ∈ limit_f A h_mcs x) :
     ∃ y ∈ limit_dom A h_mcs, y < x ∧
@@ -866,7 +866,7 @@ theorem limit_dom_has_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 From `U(⊤,⊥) ∈ limit_f(x)`, derive `S(⊤,⊥) ∈ limit_f(x)` using the
 `discrete_symm_fwd` axiom (which is a BX theorem, hence in every MCS).
 -/
-theorem next_top_gives_since (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem next_top_gives_since (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs)
     (h_next : next_top ∈ limit_f A h_mcs x) :
     Formula.snce top_formula Formula.bot ∈ limit_f A h_mcs x := by
@@ -879,7 +879,7 @@ theorem next_top_gives_since (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Noncomputable successor function on `LimitDomSubtype` in the discrete case.
 Uses `Classical.choose` to extract the immediate successor witness from C5.
 -/
-noncomputable def limitDomSubtype_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def limitDomSubtype_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     LimitDomSubtype A h_mcs → LimitDomSubtype A h_mcs :=
   fun ⟨x, hx⟩ =>
@@ -890,7 +890,7 @@ noncomputable def limitDomSubtype_succ (A : Set Formula) (h_mcs : SetMaximalCons
 The successor function satisfies `succ a ≤ b ↔ a < b` — this is the key
 property for `SuccOrder.ofSuccLeIff`.
 -/
-theorem limitDomSubtype_succ_le_iff (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_succ_le_iff (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) :
     limitDomSubtype_succ A h_mcs h_discrete a ≤ b ↔ a < b := by
@@ -919,7 +919,7 @@ theorem limitDomSubtype_succ_le_iff (A : Set Formula) (h_mcs : SetMaximalConsist
 /--
 `SuccOrder` instance for `LimitDomSubtype` in the discrete case.
 -/
-noncomputable def limitDomSubtype_succOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def limitDomSubtype_succOrder (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     SuccOrder (LimitDomSubtype A h_mcs) :=
   SuccOrder.ofSuccLeIff
@@ -930,7 +930,7 @@ noncomputable def limitDomSubtype_succOrder (A : Set Formula) (h_mcs : SetMaxima
 Noncomputable predecessor function on `LimitDomSubtype` in the discrete case.
 Uses `Classical.choose` to extract the immediate predecessor witness from C5'.
 -/
-noncomputable def limitDomSubtype_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def limitDomSubtype_pred (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     LimitDomSubtype A h_mcs → LimitDomSubtype A h_mcs :=
   fun ⟨x, hx⟩ =>
@@ -942,7 +942,7 @@ noncomputable def limitDomSubtype_pred (A : Set Formula) (h_mcs : SetMaximalCons
 The predecessor function satisfies `a ≤ pred b ↔ a < b` — key property
 for `PredOrder.ofLePredIff`.
 -/
-theorem limitDomSubtype_le_pred_iff (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_le_pred_iff (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) :
     a ≤ limitDomSubtype_pred A h_mcs h_discrete b ↔ a < b := by
@@ -972,7 +972,7 @@ theorem limitDomSubtype_le_pred_iff (A : Set Formula) (h_mcs : SetMaximalConsist
 /--
 `PredOrder` instance for `LimitDomSubtype` in the discrete case.
 -/
-noncomputable def limitDomSubtype_predOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def limitDomSubtype_predOrder (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     PredOrder (LimitDomSubtype A h_mcs) :=
   PredOrder.ofLePredIff
@@ -984,7 +984,7 @@ When `limitDomSubtype_succOrder` is registered via `letI`, `Order.succ` is
 definitionally equal to `limitDomSubtype_succ`. This is because `SuccOrder.ofSuccLeIff`
 stores the provided function directly as `succ`.
 -/
-theorem order_succ_eq_limitDomSubtype_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem order_succ_eq_limitDomSubtype_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (x : LimitDomSubtype A h_mcs) :
     @Order.succ _ _ (limitDomSubtype_succOrder A h_mcs h_discrete) x =
@@ -995,7 +995,7 @@ When `limitDomSubtype_predOrder` is registered via `letI`, `Order.pred` is
 definitionally equal to `limitDomSubtype_pred`. This is because `PredOrder.ofLePredIff`
 stores the provided function directly as `pred`.
 -/
-theorem order_pred_eq_limitDomSubtype_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem order_pred_eq_limitDomSubtype_pred (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (x : LimitDomSubtype A h_mcs) :
     @Order.pred _ _ (limitDomSubtype_predOrder A h_mcs h_discrete) x =
@@ -1007,7 +1007,7 @@ is the identity. This follows because `pred(b) < b` and `succ(pred(b))` is
 the least domain point > `pred(b)`. Since there are no domain points between
 `pred(b)` and `b` (by the predecessor property), `succ(pred(b)) = b`.
 -/
-theorem limitDomSubtype_succ_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_succ_pred (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (b : LimitDomSubtype A h_mcs) :
     limitDomSubtype_succ A h_mcs h_discrete
@@ -1041,7 +1041,7 @@ is the identity. Mirror of `limitDomSubtype_succ_pred`. Follows because
 Since there are no domain points between `a` and `succ(a)` (by the successor
 property), `pred(succ(a)) = a`.
 -/
-theorem limitDomSubtype_pred_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_pred_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) :
     limitDomSubtype_pred A h_mcs h_discrete
@@ -1069,7 +1069,7 @@ theorem limitDomSubtype_pred_succ (A : Set Formula) (h_mcs : SetMaximalConsisten
 /--
 Helper: `a ≤ pred(b)` when `a < b`. Follows from `limitDomSubtype_le_pred_iff`.
 -/
-theorem limitDomSubtype_le_pred_of_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_le_pred_of_lt (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) (h : a < b) :
     a ≤ limitDomSubtype_pred A h_mcs h_discrete b :=
@@ -1078,7 +1078,7 @@ theorem limitDomSubtype_le_pred_of_lt (A : Set Formula) (h_mcs : SetMaximalConsi
 /--
 Helper: `pred(b) < b` for any `b`. Follows from `limitDomSubtype_le_pred_iff`.
 -/
-theorem limitDomSubtype_pred_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem limitDomSubtype_pred_lt (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (b : LimitDomSubtype A h_mcs) :
     limitDomSubtype_pred A h_mcs h_discrete b < b :=
@@ -1090,7 +1090,7 @@ Succ-orbit convexity: if `a ≤ b ≤ succ^[n] a`, then `b = succ^[k] a` for som
 This follows from the fact that between consecutive succ-iterates there are no domain
 points, so `b` must coincide with one of them.
 -/
-private theorem succ_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem succ_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) (n : ℕ)
     (h_le : a ≤ b)
@@ -1144,7 +1144,7 @@ pipeline (tasks 154-155) bypasses `succ_cofinal` entirely.
 Stage induction: for any N and any a, b in dom(N) with a ≤ b, there exists k
 such that `succ^[k](a) = b` in the full limit_dom ordering.
 -/
-private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (N : ℕ) (a b : LimitDomSubtype A h_mcs)
     (ha : a.val ∈ (omega_chain_val A h_mcs N).dom)
@@ -1456,7 +1456,7 @@ If `succ^[n₀](a) > z` for some `n₀`: take minimum; then `z` is between conse
 succ-iterates, contradicting the immediate-successor property.
 -/
 private theorem limit_dom_points_are_succ_iterates
-    (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a z : LimitDomSubtype A h_mcs) (h_az : a ≤ z)
     (h_all_below : ∀ n, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a ≤ z) :
@@ -1527,7 +1527,7 @@ private def z1_derivation (φ : Formula) :
 
 /-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`. -/
 private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
-    (h_mcs : SetMaximalConsistent S) :
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     z1_formula φ ∈ S :=
   theorem_in_mcs h_mcs (z1_derivation φ)
 
@@ -1550,7 +1550,7 @@ By contradiction: assume `succ^[n](a) < b` for all `n`. The key steps:
    `succ^[n](a).val > pred(z).val`, placing a limit_dom point between `pred(z)` and `z`.
    This contradicts the immediate-predecessor property.
 -/
-private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) (hab : a < b) :
     ∃ n, b ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[n] a := by
@@ -1891,7 +1891,7 @@ Uses `succ_cofinal` (which has a sorry — see section docstring above) combined
 `succ_orbit_convex`. Contains a sorry via `succ_cofinal`; resolution: task 129.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean
-    (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     @IsSuccArchimedean (LimitDomSubtype A h_mcs)
       inferInstance
@@ -1925,7 +1925,7 @@ Succ-reachability relation: `a` and `b` are collapse-equivalent iff one is
 reachable from the other by finitely many applications of `limitDomSubtype_succ`.
 Each equivalence class is one succ-orbit (omega-chain).
 -/
-def collapse_equiv (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+def collapse_equiv (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) : Prop :=
   ∃ n : ℕ, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a = b ∨
@@ -1934,7 +1934,7 @@ def collapse_equiv (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 Succ-reachability is reflexive: `succ^[0] a = a`.
 -/
-theorem collapse_equiv_refl (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem collapse_equiv_refl (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) :
     collapse_equiv A h_mcs h_discrete a a :=
@@ -1943,7 +1943,7 @@ theorem collapse_equiv_refl (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 Succ-reachability is symmetric: by swapping the disjunction.
 -/
-theorem collapse_equiv_symm (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem collapse_equiv_symm (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs)
     (h : collapse_equiv A h_mcs h_discrete a b) :
@@ -1954,7 +1954,7 @@ theorem collapse_equiv_symm (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 The succ function is strictly monotone: `a < limitDomSubtype_succ a`.
 -/
-private theorem limitDomSubtype_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem limitDomSubtype_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) :
     a < limitDomSubtype_succ A h_mcs h_discrete a :=
@@ -1964,7 +1964,7 @@ private theorem limitDomSubtype_succ_lt (A : Set Formula) (h_mcs : SetMaximalCon
 /--
 Succ iterates are strictly increasing: `succ^[n] a < succ^[n+1] a`.
 -/
-private theorem limitDomSubtype_succ_iter_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem limitDomSubtype_succ_iter_lt (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) (n : ℕ) :
     (limitDomSubtype_succ A h_mcs h_discrete)^[n] a <
@@ -1975,7 +1975,7 @@ private theorem limitDomSubtype_succ_iter_lt (A : Set Formula) (h_mcs : SetMaxim
 /--
 Succ iterates are monotone: `n ≤ m → succ^[n] a ≤ succ^[m] a`.
 -/
-private theorem limitDomSubtype_succ_iter_mono (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem limitDomSubtype_succ_iter_mono (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) {n m : ℕ} (h : n ≤ m) :
     (limitDomSubtype_succ A h_mcs h_discrete)^[n] a ≤
@@ -1993,7 +1993,7 @@ private theorem limitDomSubtype_succ_iter_mono (A : Set Formula) (h_mcs : SetMax
 Succ iterates are strictly monotone: `n < m → succ^[n] a < succ^[m] a`.
 -/
 private theorem limitDomSubtype_succ_iter_strictMono (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) {n m : ℕ} (h : n < m) :
     (limitDomSubtype_succ A h_mcs h_discrete)^[n] a <
@@ -2006,7 +2006,7 @@ private theorem limitDomSubtype_succ_iter_strictMono (A : Set Formula)
 Succ iterates are injective: `succ^[n] a = succ^[m] a → n = m`.
 -/
 private theorem limitDomSubtype_succ_iter_injective (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a : LimitDomSubtype A h_mcs) {n m : ℕ}
     (h : (limitDomSubtype_succ A h_mcs h_discrete)^[n] a =
@@ -2025,7 +2025,7 @@ If `succ^[n] a = b` and `succ^[m] b = c`, then `succ^[n+m] a = c`.
 If `succ^[n] a = b` and `succ^[m] c = b`, then either `a` reaches `c` or
 `c` reaches `a` (by comparing n and m, using injectivity).
 -/
-theorem collapse_equiv_trans (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem collapse_equiv_trans (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b c : LimitDomSubtype A h_mcs)
     (hab : collapse_equiv A h_mcs h_discrete a b)
@@ -2094,7 +2094,7 @@ theorem collapse_equiv_trans (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 The succ-reachability relation as a `Setoid`.
 -/
-noncomputable def collapse_setoid (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def collapse_setoid (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     Setoid (LimitDomSubtype A h_mcs) where
   r := collapse_equiv A h_mcs h_discrete
@@ -2108,7 +2108,7 @@ noncomputable def collapse_setoid (A : Set Formula) (h_mcs : SetMaximalConsisten
 The quotient type of `LimitDomSubtype` under succ-reachability.
 Each element represents one succ-orbit (omega-chain or singleton).
 -/
-noncomputable def CollapseClass (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def CollapseClass (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :=
   Quotient (collapse_setoid A h_mcs h_discrete)
 
@@ -2117,7 +2117,7 @@ Helper: the succ function maps equivalent elements to equivalent elements.
 If `succ^[n] a = b`, then `succ^[n+1] a = succ(b)`, so `a ~ succ(b)` via `n+1`.
 Similarly for the other direction.
 -/
-private theorem collapse_equiv_succ_congr (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_equiv_succ_congr (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs)
     (h : collapse_equiv A h_mcs h_discrete a b) :
@@ -2146,7 +2146,7 @@ Step: if `a ≤ b ≤ succ^[n+1] a`, either `b ≤ succ^[n] a` (use IH) or
 `succ(succ^[n] a) ≤ b` (from `succ_le_iff` and `succ^[n] a < b`), so
 `b = succ^[n+1] a`.
 -/
-private theorem collapse_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) (n : ℕ)
     (h_le : a ≤ b)
@@ -2176,7 +2176,7 @@ If `a < b` and `a ≁ b`, then every succ-iterate of `a` is strictly less than `
 This follows from orbit convexity: if `succ^[n] a ≥ b`, then `b` would be in
 the orbit of `a` (since `a ≤ b ≤ succ^[n] a`), contradicting `a ≁ b`.
 -/
-private theorem collapse_orbit_bounded (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_orbit_bounded (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs)
     (h_lt : a < b) (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
@@ -2192,7 +2192,7 @@ If `a ≁ b`, then for the canonical representatives: if `succ^[p] x = a`,
 all iterates of x are also not equivalent to b. Contrapositively: if any
 iterate of x were equivalent to b, then x ~ b, hence a ~ b.
 -/
-private theorem collapse_not_equiv_of_orbit (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_not_equiv_of_orbit (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs)
     (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
@@ -2208,7 +2208,7 @@ private theorem collapse_not_equiv_of_orbit (A : Set Formula) (h_mcs : SetMaxima
 The collapse equivalence classes are totally separated:
 if `a ≁ b` and `a < b`, then `a' < b'` for any `a' ~ a` and `b' ~ b`.
 -/
-private theorem collapse_class_sep (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_class_sep (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : LimitDomSubtype A h_mcs) (a' b' : LimitDomSubtype A h_mcs)
     (ha : collapse_equiv A h_mcs h_discrete a a')
@@ -2259,7 +2259,7 @@ private theorem collapse_class_sep (A : Set Formula) (h_mcs : SetMaximalConsiste
 Auxiliary: strict order on `CollapseClass` representatives is transitive.
 If `a < b`, `a ≁ b`, `b < c`, and `b ≁ c`, then `a < c` and `a ≁ c`.
 -/
-private theorem collapse_lt_trans (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem collapse_lt_trans (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     {a b c : LimitDomSubtype A h_mcs}
     (hab : a < b) (hnab : ¬ collapse_equiv A h_mcs h_discrete a b)
@@ -2281,7 +2281,7 @@ The strict order `[a] < [b]` is defined as `a < b ∧ a ≁ b` (well-defined by
 from the trichotomy on the underlying `LimitDomSubtype`.
 -/
 noncomputable instance collapseClass_linearOrder (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     LinearOrder (CollapseClass A h_mcs h_discrete) := by
   letI setoid := collapse_setoid A h_mcs h_discrete
@@ -2383,19 +2383,19 @@ Forward embedding: a strictly increasing sequence of `LimitDomSubtype` elements
 starting from `⟨0, zero_mem⟩` and going upward. Defined by iterated choice using
 `NoMaxOrder`.
 -/
-noncomputable def embed_forward (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+noncomputable def embed_forward (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     ℕ → LimitDomSubtype A h_mcs
   | 0 => ⟨0, zero_mem_limit_dom A h_mcs⟩
   | n + 1 => (exists_gt (embed_forward A h_mcs n)).choose
 
-private theorem embed_forward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+private theorem embed_forward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     embed_forward A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := rfl
 
-private theorem embed_forward_lt_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem embed_forward_lt_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (n : ℕ) : embed_forward A h_mcs n < embed_forward A h_mcs (n + 1) :=
   (exists_gt (embed_forward A h_mcs n)).choose_spec
 
-private theorem embed_forward_strictMono (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+private theorem embed_forward_strictMono (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     StrictMono (embed_forward A h_mcs) :=
   strictMono_nat_of_lt_succ (embed_forward_lt_succ A h_mcs)
 
@@ -2403,19 +2403,19 @@ private theorem embed_forward_strictMono (A : Set Formula) (h_mcs : SetMaximalCo
 Backward embedding: a strictly decreasing sequence starting from `⟨0, zero_mem⟩`
 and going downward. Defined by iterated choice using `NoMinOrder`.
 -/
-noncomputable def embed_backward (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+noncomputable def embed_backward (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     ℕ → LimitDomSubtype A h_mcs
   | 0 => ⟨0, zero_mem_limit_dom A h_mcs⟩
   | n + 1 => (exists_lt (embed_backward A h_mcs n)).choose
 
-private theorem embed_backward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+private theorem embed_backward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     embed_backward A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := rfl
 
-private theorem embed_backward_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem embed_backward_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (n : ℕ) : embed_backward A h_mcs (n + 1) < embed_backward A h_mcs n :=
   (exists_lt (embed_backward A h_mcs n)).choose_spec
 
-private theorem embed_backward_strictAnti (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+private theorem embed_backward_strictAnti (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     StrictAnti (embed_backward A h_mcs) := by
   intro m n hmn
   induction hmn with
@@ -2427,7 +2427,7 @@ Combined embedding `ℤ → LimitDomSubtype`:
 - Non-negative integers use `embed_forward`
 - Negative integers use `embed_backward` (on the absolute value)
 -/
-noncomputable def discrete_embed (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+noncomputable def discrete_embed (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     ℤ → LimitDomSubtype A h_mcs :=
   fun n =>
     if 0 ≤ n then
@@ -2435,7 +2435,7 @@ noncomputable def discrete_embed (A : Set Formula) (h_mcs : SetMaximalConsistent
     else
       embed_backward A h_mcs ((-n).toNat)
 
-private theorem discrete_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+private theorem discrete_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     discrete_embed A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := by
   simp [discrete_embed, embed_forward]
 
@@ -2443,7 +2443,7 @@ private theorem discrete_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsist
 Helper: `embed_backward` at positive indices is strictly below `⟨0, zero_mem⟩`.
 -/
 private theorem embed_backward_pos_lt_zero (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A) (n : ℕ) (hn : 0 < n) :
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (n : ℕ) (hn : 0 < n) :
     embed_backward A h_mcs n < ⟨0, zero_mem_limit_dom A h_mcs⟩ := by
   have := embed_backward_strictAnti A h_mcs hn
   rwa [embed_backward_zero] at this
@@ -2452,7 +2452,7 @@ private theorem embed_backward_pos_lt_zero (A : Set Formula)
 The combined embedding is strictly increasing.
 -/
 private theorem discrete_embed_strictMono (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A) :
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     StrictMono (discrete_embed A h_mcs) := by
   intro a b hab
   simp only [discrete_embed]
@@ -2482,25 +2482,25 @@ private theorem discrete_embed_strictMono (A : Set Formula)
 MCS assignment via the direct embedding (discrete case). For each integer `n`,
 evaluate `limit_f` at the embedded domain point.
 -/
-noncomputable def discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (_h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ → Set Formula :=
   fun n => limit_f A h_mcs (discrete_embed A h_mcs n).val
 
 /-- The origin integer in the discrete case is simply `0 : ℤ`. -/
-noncomputable def discrete_zero (_A : Set Formula) (_h_mcs : SetMaximalConsistent _A)
+noncomputable def discrete_zero (_A : Set Formula) (_h_mcs : SetMaximalConsistent (fc := FrameClass.Base) _A)
     (_h_discrete : ∀ x ∈ limit_dom _A _h_mcs, next_top ∈ limit_f _A _h_mcs x) :
     ℤ := 0
 
 /-- `discrete_f` at `discrete_zero` equals A (the root MCS). -/
-theorem discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     discrete_f A h_mcs h_discrete (discrete_zero A h_mcs h_discrete) = A := by
   simp only [discrete_f, discrete_zero, discrete_embed_zero]
   exact limit_f_zero A h_mcs
 
 /-- Every integer maps to an MCS via `discrete_f`. -/
-theorem discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) : SetMaximalConsistent (discrete_f A h_mcs h_discrete n) := by
   exact limit_c0 A h_mcs _ (discrete_embed A h_mcs n).property
@@ -2515,7 +2515,7 @@ and `embed(t) < embed(t')` give `φ ∈ f(embed(t'))`.
 
 `backward_H` follows similarly from `limit_backward_H`.
 -/
-noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     FMCS ℤ where
   mcs := discrete_f A h_mcs h_discrete
@@ -2556,7 +2556,7 @@ Mirror of `box_dense_gives_density`.
 Proof: `□(U(⊤,⊥)) → G(□(U(⊤,⊥)))` via `temp_future_derived`, then at each domain point
 `□(U(⊤,⊥)) → U(⊤,⊥)` via `modal_t`. Past direction via `modal_4` + `box_to_past`.
 -/
-theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsistent N)
+theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_discrete : Formula.box next_top ∈ N) :
     ∀ x ∈ limit_dom N h_N, next_top ∈ limit_f N h_N x := by
   intro x hx
@@ -2602,7 +2602,7 @@ Succ-based embedding `ℤ → LimitDomSubtype` for the discrete case.
 Maps 0 to ⟨0, zero_mem⟩, positive n to succ^n(root), negative n to pred^|n|(root).
 This follows the deterministic successor structure when `U(⊤,⊥)` holds everywhere.
 -/
-noncomputable def succ_embed (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def succ_embed (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ → LimitDomSubtype A h_mcs :=
   fun n =>
@@ -2611,12 +2611,12 @@ noncomputable def succ_embed (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     else
       (limitDomSubtype_pred A h_mcs h_discrete)^[(-n).toNat] ⟨0, zero_mem_limit_dom A h_mcs⟩
 
-theorem succ_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     succ_embed A h_mcs h_discrete 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := by
   simp [succ_embed]
 
-theorem succ_embed_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_succ (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) (hn : 0 ≤ n) :
     succ_embed A h_mcs h_discrete (n + 1) =
@@ -2627,7 +2627,7 @@ theorem succ_embed_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   rw [show (n + 1).toNat = n.toNat + 1 from by omega]
   rw [Function.iterate_succ', Function.comp_apply]
 
-theorem succ_embed_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_pred (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) (hn : n ≤ 0) :
     succ_embed A h_mcs h_discrete (n - 1) =
@@ -2654,7 +2654,7 @@ theorem succ_embed_pred (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 The succ-based embedding is strictly monotone.
 -/
-private theorem succ_embed_step (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem succ_embed_step (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) : succ_embed A h_mcs h_discrete n <
       succ_embed A h_mcs h_discrete (n + 1) := by
@@ -2669,7 +2669,7 @@ private theorem succ_embed_step (A : Set Formula) (h_mcs : SetMaximalConsistent 
     rw [h_eq2]
     exact limitDomSubtype_pred_lt A h_mcs h_discrete _
 
-theorem succ_embed_strictMono (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_strictMono (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     StrictMono (succ_embed A h_mcs h_discrete) := by
   intro a b hab
@@ -2696,7 +2696,7 @@ When `U(⊤,⊥)` holds everywhere, `limitDomSubtype_succ` gives an IMMEDIATE su
 (no intermediate domain points). Since `succ_embed(n+1) = succ(succ_embed(n))` for
 non-negative n (and symmetrically via pred for negative), the gap-free property follows.
 -/
-theorem succ_embed_no_gap (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_no_gap (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) (w : LimitDomSubtype A h_mcs)
     (h1 : succ_embed A h_mcs h_discrete n < w)
@@ -2733,7 +2733,7 @@ This is the key lemma that makes coherence proofs work without full surjectivity
 The proof is by induction on `b - a`: the no-gap property eliminates domain points
 between consecutive embedded points, squeezing w to the next embedded point.
 -/
-theorem succ_embed_squeeze (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_squeeze (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : ℤ) (hab : a ≤ b)
     (w : LimitDomSubtype A h_mcs)
@@ -2770,7 +2770,7 @@ theorem succ_embed_squeeze (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Strict version of squeeze: any domain point STRICTLY between `succ_embed(a)` and
 `succ_embed(b)` is an embedded point `succ_embed(k)` for some `a < k < b`.
 -/
-theorem succ_embed_squeeze_strict (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_squeeze_strict (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (a b : ℤ) (hab : a < b)
     (w : LimitDomSubtype A h_mcs)
@@ -2814,7 +2814,7 @@ Since `Order.succ = limitDomSubtype_succ` (definitional equality from
 `SuccOrder.ofSuccLeIff`), this gives `succ_embed n = w` via the correspondence
 between `succ^[n](root)` and `succ_embed(n)`.
 -/
-theorem succ_embed_surjective (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_embed_surjective (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (w : LimitDomSubtype A h_mcs) :
     ∃ n : ℤ, succ_embed A h_mcs h_discrete n = w := by
@@ -2887,26 +2887,26 @@ theorem succ_embed_surjective (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /--
 MCS assignment via the succ-based embedding.
 -/
-noncomputable def succ_discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def succ_discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ → Set Formula :=
   fun n => limit_f A h_mcs (succ_embed A h_mcs h_discrete n).val
 
 /-- Every integer maps to an MCS via `succ_discrete_f`. -/
-theorem succ_discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) : SetMaximalConsistent (succ_discrete_f A h_mcs h_discrete n) :=
   limit_c0 A h_mcs _ (succ_embed A h_mcs h_discrete n).property
 
 /-- `succ_discrete_f` at 0 equals A. -/
-theorem succ_discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem succ_discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     succ_discrete_f A h_mcs h_discrete 0 = A := by
   simp only [succ_discrete_f, succ_embed_zero]
   exact limit_f_zero A h_mcs
 
 /-- Box stability for `succ_discrete_f`. -/
-theorem box_stable_in_succ_discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem box_stable_in_succ_discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (φ : Formula) (n : ℤ) :
     Formula.box φ ∈ succ_discrete_f A h_mcs h_discrete n ↔ Formula.box φ ∈ A := by
@@ -2916,7 +2916,7 @@ theorem box_stable_in_succ_discrete_f (A : Set Formula) (h_mcs : SetMaximalConsi
 FMCS on ℤ via the succ-based embedding. Uses `limit_forward_G` and
 `limit_backward_H` through the strictly monotone embedding.
 -/
-noncomputable def succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     FMCS ℤ where
   mcs := succ_discrete_f A h_mcs h_discrete
@@ -2939,7 +2939,7 @@ noncomputable def succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsis
 /--
 Shifted FMCS on ℤ: `mcs t := succ_discrete_f(t + offset)`.
 -/
-noncomputable def shifted_succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def shifted_succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (offset : ℤ) : FMCS ℤ where
   mcs t := succ_discrete_f A h_mcs h_discrete (t + offset)
@@ -2957,7 +2957,7 @@ noncomputable def shifted_succ_discrete_fmcs (A : Set Formula) (h_mcs : SetMaxim
 Rooted FMCS on ℤ (discrete case): builds a chronicle for MCS N (with `□(U(⊤,⊥)) ∈ N`
 ensuring discreteness), applies the succ embedding, and shifts to place N at time `s`.
 -/
-noncomputable def rooted_succ_discrete_fmcs (N : Set Formula) (h_N : SetMaximalConsistent N)
+noncomputable def rooted_succ_discrete_fmcs (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_discrete_N : Formula.box next_top ∈ N) (s : ℤ) : FMCS ℤ :=
   let h_discrete_N := box_discrete_gives_discreteness N h_N h_box_discrete_N
   -- Offset = -s, so mcs(s) = succ_discrete_f(s + (-s)) = succ_discrete_f(0) = N
@@ -2966,7 +2966,7 @@ noncomputable def rooted_succ_discrete_fmcs (N : Set Formula) (h_N : SetMaximalC
 /--
 The rooted FMCS at `s` has `mcs s = N`.
 -/
-theorem rooted_succ_discrete_fmcs_at_s (N : Set Formula) (h_N : SetMaximalConsistent N)
+theorem rooted_succ_discrete_fmcs_at_s (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_discrete_N : Formula.box next_top ∈ N) (s : ℤ) :
     (rooted_succ_discrete_fmcs N h_N h_box_discrete_N s).mcs s = N := by
   simp only [rooted_succ_discrete_fmcs, shifted_succ_discrete_fmcs]
@@ -2978,7 +2978,7 @@ Box stability for `rooted_succ_discrete_fmcs`:
 `Box φ ∈ (rooted_succ_discrete_fmcs N h_N h_box s).mcs t ↔ Box φ ∈ N`.
 -/
 theorem box_stable_in_rooted_succ_discrete_fmcs (N : Set Formula)
-    (h_N : SetMaximalConsistent N) (h_box_discrete_N : Formula.box next_top ∈ N)
+    (h_N : SetMaximalConsistent (fc := FrameClass.Base) N) (h_box_discrete_N : Formula.box next_top ∈ N)
     (φ : Formula) (s t : ℤ) :
     Formula.box φ ∈ (rooted_succ_discrete_fmcs N h_N h_box_discrete_N s).mcs t ↔
       Formula.box φ ∈ N := by
@@ -2994,10 +2994,10 @@ Requires `□(U(⊤,⊥)) ∈ A` (box discreteness). Each family is a
 (hence `□(U(⊤,⊥)) ∈ N` by box-equiv). Each N gets its own chronicle, which
 is discrete by `box_discrete_gives_discreteness`.
 -/
-noncomputable def cantor_bfmcs_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable def cantor_bfmcs_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     BFMCS ℤ where
-  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
     (h_box_N : Formula.box next_top ∈ N) (s : ℤ),
     (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
     fam = rooted_succ_discrete_fmcs N h_N h_box_N s }
@@ -3035,7 +3035,7 @@ noncomputable def cantor_bfmcs_discrete (A : Set Formula) (h_mcs : SetMaximalCon
     have h_box_discrete_v : Formula.box next_top ∈ v.formulas :=
       (h_equiv next_top).mp h_box_discrete
     have h_fam_v_mem : rooted_succ_discrete_fmcs v.formulas v.is_mcs h_box_discrete_v t ∈
-        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := FrameClass.Base) N)
           (h_box_N : Formula.box next_top ∈ N) (s : ℤ),
           (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
           fam = rooted_succ_discrete_fmcs N h_N h_box_N s } :=
@@ -3063,7 +3063,7 @@ Restricted backward Until/Since coherence for `cantor_bfmcs_discrete`.
 Uses `limit_satisfies_c4`/`c4'` (counterexample elimination) combined with
 the squeeze lemma to map C4 witnesses back to integers.
 -/
-theorem cantor_bfmcs_discrete_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_discrete_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
     (cantor_bfmcs_discrete A h_mcs h_box_discrete).restricted_backward_until_since_coherent root := by
   intro fam hfam
@@ -3139,7 +3139,7 @@ witnesses back to integers. The surjectivity lemma guarantees that every domain
 point corresponds to an embedded integer, enabling the same proof pattern as
 the dense case (which uses the Cantor isomorphism for the same purpose).
 -/
-theorem cantor_bfmcs_discrete_restricted_tc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_discrete_restricted_tc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_discrete : Formula.box next_top ∈ A)
     (root : Formula)
     (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
@@ -3194,7 +3194,7 @@ witnesses back to integers. The guard transfers via `succ_embed_squeeze_strict`:
 any integer between t and s maps to a domain point between the source and witness,
 which is covered by the C5 guard.
 -/
-theorem cantor_bfmcs_discrete_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem cantor_bfmcs_discrete_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
     (cantor_bfmcs_discrete A h_mcs h_box_discrete).restricted_forward_until_since_coherent root := by
   intro fam hfam
@@ -3282,7 +3282,7 @@ and `succ_embed_squeeze`/`succ_embed_squeeze_strict`. The eval family is
 `rooted_succ_discrete_fmcs A h_mcs h_box_discrete 0` which has `mcs 0 = A`,
 so `neg(phi) in eval_family.mcs 0`.
 -/
-theorem dd_countermodel_chronicle_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem dd_countermodel_chronicle_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
@@ -3322,7 +3322,7 @@ From the structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))):
 5. From steps 2, 4: `□(¬U(T,bot)) ∈ A`, i.e., `□(F'T) ∈ A`
 6. But `¬□(F'T) ∈ A` (h_not_box_dense) — contradiction with MCS consistency
 -/
-theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
     (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False := by
   -- Step 1: Build the derivation tree for the axiom: U(T,bot) → □(U(T,bot))
@@ -3360,7 +3360,7 @@ discreteness propagates to all box-accessible worlds via translation invariance.
 Combined with S5 and K-distribution, this makes the mixed-case hypotheses contradictory.
 Previously this was a sorry — see task 142 research reports for the full analysis.
 -/
-theorem dd_countermodel_chronicle_mixed_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem dd_countermodel_chronicle_mixed_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
     (h_not_box_discrete : (Formula.box next_top).neg ∈ A) :

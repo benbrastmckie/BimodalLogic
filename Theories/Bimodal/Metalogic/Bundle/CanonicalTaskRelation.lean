@@ -47,6 +47,7 @@ and enables cleaner proofs of individual directions.
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 
 /-!
@@ -553,10 +554,10 @@ A forward chain with MCS witnesses at each step.
 This version carries the MCS proofs for all worlds in the chain.
 -/
 inductive CanonicalTask_forward_MCS : Set Formula → Nat → Set Formula → Prop where
-  | base {u : Set Formula} (h_mcs : SetMaximalConsistent u) :
+  | base {u : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u) :
       CanonicalTask_forward_MCS u 0 u
   | step {u w v : Set Formula} {n : Nat}
-      (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
       (h_succ : Succ u w) (h_chain : CanonicalTask_forward_MCS w n v) :
       CanonicalTask_forward_MCS u (n + 1) v
 
@@ -564,7 +565,7 @@ inductive CanonicalTask_forward_MCS : Set Formula → Nat → Set Formula → Pr
 Extract the MCS property of the starting world from a forward MCS chain.
 -/
 theorem CanonicalTask_forward_MCS.start_mcs {u v : Set Formula} {n : Nat}
-    (h : CanonicalTask_forward_MCS u n v) : SetMaximalConsistent u := by
+    (h : CanonicalTask_forward_MCS u n v) : SetMaximalConsistent (fc := FrameClass.Base) u := by
   cases h with
   | base h_mcs => exact h_mcs
   | step h_mcs_u _ _ _ => exact h_mcs_u
@@ -573,7 +574,7 @@ theorem CanonicalTask_forward_MCS.start_mcs {u v : Set Formula} {n : Nat}
 Extract the MCS property of the ending world from a forward MCS chain.
 -/
 theorem CanonicalTask_forward_MCS.end_mcs {u v : Set Formula} {n : Nat}
-    (h : CanonicalTask_forward_MCS u n v) : SetMaximalConsistent v := by
+    (h : CanonicalTask_forward_MCS u n v) : SetMaximalConsistent (fc := FrameClass.Base) v := by
   induction h with
   | base h_mcs => exact h_mcs
   | step _ _ _ _ ih => exact ih
@@ -592,7 +593,7 @@ Extract the step from a forward MCS chain.
 -/
 theorem CanonicalTask_forward_MCS.step_inv {u v : Set Formula} {n : Nat}
     (h : CanonicalTask_forward_MCS u (n + 1) v) :
-    ∃ w, SetMaximalConsistent u ∧ SetMaximalConsistent w ∧ Succ u w ∧ CanonicalTask_forward_MCS w n v := by
+    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent (fc := FrameClass.Base) w ∧ Succ u w ∧ CanonicalTask_forward_MCS w n v := by
   cases h with
   | step h_mcs_u h_mcs_w h_succ h_chain => exact ⟨_, h_mcs_u, h_mcs_w, h_succ, h_chain⟩
 
@@ -603,7 +604,7 @@ When we have GG(neg(iter_F k phi)) ∈ u and Succ u w, the G-persistence gives u
 G(neg(iter_F k phi)) ∈ w, which by G_neg_implies_not_F gives F(iter_F k phi) ∉ w.
 -/
 lemma succ_propagates_F_not
-    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
     (h_succ : Succ u w) (psi : Formula)
     (h_FF_not : Formula.some_future (Formula.some_future psi) ∉ u) :
     Formula.some_future psi ∉ w := by
@@ -841,10 +842,10 @@ The P-step property ensures: p_content(v) ⊆ u ∪ p_content(u) at each step.
 This is satisfied by predecessor-constructed worlds.
 -/
 inductive CanonicalTask_backward_MCS_P : Set Formula → Nat → Set Formula → Prop where
-  | base {v : Set Formula} (h_mcs : SetMaximalConsistent v) :
+  | base {v : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) v) :
       CanonicalTask_backward_MCS_P v 0 v
   | step {u w v : Set Formula} {n : Nat}
-      (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
       (h_succ : Succ u w) -- Succ u w means u is predecessor of w
       (h_p_step : p_content w ⊆ u ∪ p_content u) -- P-step property
       (h_chain : CanonicalTask_backward_MCS_P w n v) :
@@ -854,7 +855,7 @@ inductive CanonicalTask_backward_MCS_P : Set Formula → Nat → Set Formula →
 Extract the MCS property of the starting world from a backward MCS P chain.
 -/
 theorem CanonicalTask_backward_MCS_P.start_mcs {u v : Set Formula} {n : Nat}
-    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent u := by
+    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent (fc := FrameClass.Base) u := by
   cases h with
   | base h_mcs => exact h_mcs
   | step h_mcs_u _ _ _ _ => exact h_mcs_u
@@ -863,7 +864,7 @@ theorem CanonicalTask_backward_MCS_P.start_mcs {u v : Set Formula} {n : Nat}
 Extract the MCS property of the ending world from a backward MCS P chain.
 -/
 theorem CanonicalTask_backward_MCS_P.end_mcs {u v : Set Formula} {n : Nat}
-    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent v := by
+    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent (fc := FrameClass.Base) v := by
   induction h with
   | base h_mcs => exact h_mcs
   | step _ _ _ _ _ ih => exact ih
@@ -873,7 +874,7 @@ Extract the step from a backward MCS P chain.
 -/
 theorem CanonicalTask_backward_MCS_P.step_inv {u v : Set Formula} {n : Nat}
     (h : CanonicalTask_backward_MCS_P u (n + 1) v) :
-    ∃ w, SetMaximalConsistent u ∧ SetMaximalConsistent w ∧ Succ u w ∧
+    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent (fc := FrameClass.Base) w ∧ Succ u w ∧
          p_content w ⊆ u ∪ p_content u ∧ CanonicalTask_backward_MCS_P w n v := by
   cases h with
   | step h_mcs_u h_mcs_w h_succ h_p_step h_chain =>
@@ -890,7 +891,7 @@ From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi))
 From H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P.
 -/
 lemma succ_propagates_P_not
-    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
     (h_succ : Succ u w) (psi : Formula)
     (h_PP_not : Formula.some_past (Formula.some_past psi) ∉ w) :
     Formula.some_past psi ∉ u := by

@@ -95,7 +95,7 @@ Projection preserves consistency.
 -/
 theorem projectToClosure_preserves_consistency (phi : Formula) (S : Set Formula)
     (h_cons : SetConsistent S) :
-    SetConsistent (projectToClosure phi S) := by
+    SetConsistent (fc := FrameClass.Base) (projectToClosure phi S) := by
   intro L hL
   apply h_cons L
   intro psi hpsi
@@ -103,11 +103,11 @@ theorem projectToClosure_preserves_consistency (phi : Formula) (S : Set Formula)
   exact Set.mem_of_mem_inter_left this
 
 /--
-If S is a full SetMaximalConsistent set, then its projection to closure
+If S is a full SetMaximalConsistent (fc := FrameClass.Base) set, then its projection to closure
 is closure-consistent.
 -/
 theorem full_mcs_projection_consistent (phi : Formula) (S : Set Formula)
-    (h_mcs : SetMaximalConsistent S) :
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     ClosureConsistent phi (projectToClosure phi S) :=
   ⟨projectToClosure_restricted phi S, projectToClosure_preserves_consistency phi S h_mcs.1⟩
 

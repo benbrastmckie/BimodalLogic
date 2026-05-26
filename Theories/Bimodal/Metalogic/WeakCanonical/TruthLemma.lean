@@ -147,7 +147,7 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
   -- box_content: all formulas χ with □χ ∈ x
   let bc := {χ : Formula | Formula.box χ ∈ x.val}
   -- Seed: {¬φ} ∪ bc. Show consistent.
-  have h_seed_cons : SetConsistent ({Formula.neg φ} ∪ bc) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg φ} ∪ bc) := by
     intro L hL ⟨d⟩
     by_cases h_negφ_in : Formula.neg φ ∈ L
     · -- Case 1: ¬φ ∈ L. Deduce L\{¬φ} ⊢ φ, then by generalized_modal_k get □φ ∈ x.
@@ -262,7 +262,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
   have h_mcs := x.property
   by_contra h_not_G
   -- Seed: {¬ψ} ∪ g_content x. Show it's consistent.
-  have h_seed_cons : SetConsistent ({Formula.neg ψ} ∪ g_content x) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ g_content x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use g_content_closed_derivation to get Gψ ∈ x.
@@ -335,7 +335,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
   have h_mcs := x.property
   by_contra h_not_H
   -- Seed: {¬ψ} ∪ h_content x. Show it's consistent.
-  have h_seed_cons : SetConsistent ({Formula.neg ψ} ∪ h_content x) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ h_content x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use h_content_closed_derivation to get Hψ ∈ x.
@@ -410,7 +410,7 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   -- Use forward_temporal_witness_seed_consistent from Bundle
-  have h_seed_cons : SetConsistent (Bundle.forward_temporal_witness_seed x.val ψ₁) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (Bundle.forward_temporal_witness_seed x.val ψ₁) :=
     Bundle.forward_temporal_witness_seed_consistent x.val h_mcs ψ₁ h_F_ψ₁
   -- Rewrite the seed as {ψ₁} ∪ g_content x
   have h_seed_eq : Bundle.forward_temporal_witness_seed x.val ψ₁ = ({ψ₁} ∪ g_content x) := by
@@ -464,7 +464,7 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_since
   -- Use past_temporal_witness_seed_consistent from Bundle
-  have h_seed_cons : SetConsistent (Bundle.past_temporal_witness_seed x.val ψ₁) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (Bundle.past_temporal_witness_seed x.val ψ₁) :=
     Bundle.past_temporal_witness_seed_consistent x.val h_mcs ψ₁ h_P_ψ₁
   -- Rewrite the seed as {ψ₁} ∪ h_content x
   have h_seed_eq : Bundle.past_temporal_witness_seed x.val ψ₁ = ({ψ₁} ∪ h_content x) := by

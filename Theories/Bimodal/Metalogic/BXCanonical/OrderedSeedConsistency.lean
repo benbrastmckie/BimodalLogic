@@ -68,9 +68,9 @@ The proof strategy:
 6. Since M' is consistent, any subset is consistent
 -/
 theorem enriched_resolving_seed_consistent {M : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (ψ α : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ α : Formula)
     (h_F : Formula.some_future (Formula.and ψ α) ∈ M) :
-    SetConsistent (enriched_resolving_seed M ψ α) := by
+    SetConsistent (fc := FrameClass.Base) (enriched_resolving_seed M ψ α) := by
   -- Step 1: {ψ ∧ α} ∪ g_content(M) is consistent
   have h_seed_cons := forward_temporal_witness_seed_consistent M h_mcs
     (Formula.and ψ α) h_F
@@ -106,9 +106,9 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
 /-- Special case: If `F(ψ₁ ∧ F(ψ₂)) ∈ M`, then `{ψ₁, F(ψ₂)} ∪ g_content(M)`
 is consistent. This is the Ordered Seed Consistency Theorem for two defects. -/
 theorem ordered_two_defect_seed_consistent {M : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (ψ₁ ψ₂ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
     (h_F : Formula.some_future (Formula.and ψ₁ (Formula.some_future ψ₂)) ∈ M) :
-    SetConsistent ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) :=
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) :=
   enriched_resolving_seed_consistent h_mcs ψ₁ (Formula.some_future ψ₂) h_F
 
 /-! ## BX11 Temporal Linearity at MCS Level
@@ -122,7 +122,7 @@ resolution.
 
 /-- BX11 at MCS level: given `F(A) ∈ M` and `F(B) ∈ M`, at least one of
 the three BX11 disjuncts holds in M. -/
-theorem temp_linearity_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+theorem temp_linearity_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (A B : Formula)
     (h_FA : Formula.some_future A ∈ M) (h_FB : Formula.some_future B ∈ M) :
     Formula.some_future (Formula.and A B) ∈ M ∨
@@ -184,12 +184,12 @@ Returns either:
 - `{ψ₁, ψ₂} ∪ g_content(M)` is consistent (resolve both simultaneously)
 -/
 theorem two_defect_consistent_seed {M : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (ψ₁ ψ₂ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
     (h_F1 : Formula.some_future ψ₁ ∈ M)
     (h_F2 : Formula.some_future ψ₂ ∈ M) :
-    SetConsistent ({ψ₁, ψ₂} ∪ g_content M) ∨
-    SetConsistent ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) ∨
-    SetConsistent ({ψ₂, Formula.some_future ψ₁} ∪ g_content M) := by
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, ψ₂} ∪ g_content M) ∨
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) ∨
+    SetConsistent (fc := FrameClass.Base) ({ψ₂, Formula.some_future ψ₁} ∪ g_content M) := by
   rcases temp_linearity_mcs h_mcs ψ₁ ψ₂ h_F1 h_F2 with h_both | h_1first | h_2first
   · -- F(ψ₁ ∧ ψ₂) ∈ M: resolve both
     exact Or.inl (enriched_resolving_seed_consistent h_mcs ψ₁ ψ₂ h_both)
@@ -211,8 +211,8 @@ theorem two_defect_consistent_seed {M : Set Formula}
     -- The seed is {F(ψ₁), ψ₂} ∪ g_content(M) = {ψ₂, F(ψ₁)} ∪ g_content(M).
     have h_seed := enriched_resolving_seed_consistent h_mcs
       (Formula.some_future ψ₁) ψ₂ h_2first
-    -- h_seed : SetConsistent ({F(ψ₁), ψ₂} ∪ g_content M)
-    -- We need: SetConsistent ({ψ₂, F(ψ₁)} ∪ g_content M)
+    -- h_seed : SetConsistent (fc := FrameClass.Base) ({F(ψ₁), ψ₂} ∪ g_content M)
+    -- We need: SetConsistent (fc := FrameClass.Base) ({ψ₂, F(ψ₁)} ∪ g_content M)
     exact Or.inr (Or.inr (by
       unfold enriched_resolving_seed at h_seed
       have h_eq : ({ψ₂, Formula.some_future ψ₁} : Set Formula) =
@@ -230,7 +230,7 @@ in the new MCS).
 This shows that F-formulas absent from M cannot appear in successors built
 from g_content(M). -/
 theorem no_new_f_defects {M M' : Set Formula}
-    (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
     (h_g_sub : g_content M ⊆ M')
     (α : Formula) (h_neg : Formula.all_future (Formula.neg α) ∈ M) :
     Formula.some_future α ∉ M' := by

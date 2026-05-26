@@ -43,7 +43,7 @@ theorem schedule_surjective_above (ψ : Formula) (k : Nat) :
 /-- Build a successor MCS containing g_content(M). If F(ψ) ∈ M, also contains ψ.
     Under irreflexive semantics, the non-resolving branch uses g_content(M) alone
     (consistent by seriality via g_content_set_consistent). -/
-noncomputable def fwd_succ (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+noncomputable def fwd_succ (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     Set Formula := by
   by_cases h_F : Formula.some_future ψ ∈ M
   · exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
@@ -51,7 +51,7 @@ noncomputable def fwd_succ (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact (set_lindenbaum (g_content M)
       (g_content_set_consistent h_mcs)).choose
 
-theorem fwd_succ_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+theorem fwd_succ_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     SetMaximalConsistent (fwd_succ M h_mcs ψ) := by
   unfold fwd_succ; split
   · exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
@@ -59,7 +59,7 @@ theorem fwd_succ_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Fo
   · exact (set_lindenbaum (g_content M)
       (g_content_set_consistent h_mcs)).choose_spec.2
 
-theorem fwd_succ_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+theorem fwd_succ_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     g_content M ⊆ fwd_succ M h_mcs ψ := by
   unfold fwd_succ; split
   · exact fun χ hχ => (set_lindenbaum (forward_temporal_witness_seed M ψ)
@@ -68,7 +68,7 @@ theorem fwd_succ_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact fun χ hχ => (set_lindenbaum (g_content M)
       (g_content_set_consistent h_mcs)).choose_spec.1 hχ
 
-theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
+theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula)
     (h_F : Formula.some_future ψ ∈ M) : ψ ∈ fwd_succ M h_mcs ψ := by
   unfold fwd_succ; rw [dif_pos h_F]
   exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
@@ -79,13 +79,13 @@ theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
 
 /-- h_content(M) is consistent for MCS M.
 Under irreflexive semantics, uses seriality (⊤ → P(⊤)) via h_content_set_consistent. -/
-theorem h_content_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    SetConsistent (h_content M) :=
+theorem h_content_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) :
+    SetConsistent (fc := FrameClass.Base) (h_content M) :=
   h_content_set_consistent h_mcs
 
 /-- Build a predecessor MCS containing h_content(M). If P(ψ) ∈ M, also contains ψ.
     Under irreflexive semantics, the non-resolving branch uses h_content(M) alone. -/
-noncomputable def bwd_pred (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+noncomputable def bwd_pred (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     Set Formula := by
   by_cases h_P : Formula.some_past ψ ∈ M
   · exact (set_lindenbaum (past_temporal_witness_seed M ψ)
@@ -93,7 +93,7 @@ noncomputable def bwd_pred (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact (set_lindenbaum (h_content M)
       (h_content_set_consistent h_mcs)).choose
 
-theorem bwd_pred_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+theorem bwd_pred_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     SetMaximalConsistent (bwd_pred M h_mcs ψ) := by
   unfold bwd_pred; split
   · exact (set_lindenbaum (past_temporal_witness_seed M ψ)
@@ -101,7 +101,7 @@ theorem bwd_pred_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Fo
   · exact (set_lindenbaum (h_content M)
       (h_content_set_consistent h_mcs)).choose_spec.2
 
-theorem bwd_pred_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
+theorem bwd_pred_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     h_content M ⊆ bwd_pred M h_mcs ψ := by
   unfold bwd_pred; split
   · exact fun χ hχ => (set_lindenbaum (past_temporal_witness_seed M ψ)
@@ -110,7 +110,7 @@ theorem bwd_pred_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact fun χ hχ => (set_lindenbaum (h_content M)
       (h_content_set_consistent h_mcs)).choose_spec.1 hχ
 
-theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
+theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula)
     (h_P : Formula.some_past ψ ∈ M) : ψ ∈ bwd_pred M h_mcs ψ := by
   unfold bwd_pred; rw [dif_pos h_P]
   exact (set_lindenbaum (past_temporal_witness_seed M ψ)
@@ -119,15 +119,15 @@ theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
 
 /-! ## Forward/Backward Chains -/
 
-noncomputable def fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
-    (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+noncomputable def fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
+    (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
   | 0 => ⟨M₀, h₀⟩
   | n + 1 =>
     let ⟨M, hM⟩ := fwd_chain M₀ h₀ n
     ⟨fwd_succ M hM (schedule n), fwd_succ_mcs M hM (schedule n)⟩
 
-noncomputable def bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
-    (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+noncomputable def bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
+    (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
   | 0 => ⟨M₀, h₀⟩
   | n + 1 =>
     let ⟨M, hM⟩ := bwd_chain M₀ h₀ n
@@ -135,15 +135,15 @@ noncomputable def bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
 
 /-! ## Int-indexed Chain -/
 
-noncomputable def int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t : Int) :
+noncomputable def int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (t : Int) :
     Set Formula :=
   if t ≥ 0 then (fwd_chain M₀ h₀ t.toNat).val
   else (bwd_chain M₀ h₀ ((-t).toNat)).val
 
-theorem int_chain_zero (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
+theorem int_chain_zero (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
     int_chain M₀ h₀ 0 = M₀ := by simp [int_chain, fwd_chain]
 
-theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t : Int) :
+theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (t : Int) :
     SetMaximalConsistent (int_chain M₀ h₀ t) := by
   simp only [int_chain]; split
   · exact (fwd_chain M₀ h₀ t.toNat).property
@@ -151,7 +151,7 @@ theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t
 
 /-! ### Chain ordering (g_content/h_content) -/
 
-theorem fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (n : Nat) :
+theorem fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (n : Nat) :
     g_content (fwd_chain M₀ h₀ n).val ⊆ (fwd_chain M₀ h₀ (n + 1)).val := by
   show g_content (fwd_chain M₀ h₀ n).val ⊆
     (fwd_succ (fwd_chain M₀ h₀ n).val (fwd_chain M₀ h₀ n).property (schedule n))
@@ -159,7 +159,7 @@ theorem fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsiste
 
 /-- g_content transits strictly: m < n → g_content(chain(m)) ⊆ chain(n).
 Under strict FMCS ordering, only strictly future propagation is needed. -/
-theorem fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
     g_content (fwd_chain M₀ h₀ m).val ⊆ (fwd_chain M₀ h₀ n).val := by
   induction n with
@@ -171,7 +171,7 @@ theorem fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsist
       have h_GG := SetMaximalConsistent.all_future_all_future (fwd_chain M₀ h₀ m).property hφ
       exact fwd_chain_g_content_step M₀ h₀ n (ih h_lt h_GG)
 
-theorem bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (n : Nat) :
+theorem bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (n : Nat) :
     h_content (bwd_chain M₀ h₀ n).val ⊆ (bwd_chain M₀ h₀ (n + 1)).val := by
   show h_content (bwd_chain M₀ h₀ n).val ⊆
     (bwd_pred (bwd_chain M₀ h₀ n).val (bwd_chain M₀ h₀ n).property (schedule n))
@@ -179,7 +179,7 @@ theorem bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsiste
 
 /-- h_content transits strictly: m < n → h_content(chain(m)) ⊆ chain(n).
 Under strict FMCS ordering, only strictly past propagation is needed. -/
-theorem bwd_chain_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem bwd_chain_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
     h_content (bwd_chain M₀ h₀ m).val ⊆ (bwd_chain M₀ h₀ n).val := by
   induction n with
@@ -194,7 +194,7 @@ theorem bwd_chain_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsist
 /-! ### Forward G and Backward H -/
 
 /-- The g_content relationship also gives us reverse h_content (strict). -/
-theorem fwd_chain_reverse_h (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem fwd_chain_reverse_h (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
     h_content (fwd_chain M₀ h₀ n).val ⊆ (fwd_chain M₀ h₀ m).val :=
   g_content_subset_implies_h_content_reverse
@@ -203,7 +203,7 @@ theorem fwd_chain_reverse_h (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
     (fwd_chain_g_content_trans M₀ h₀ h)
 
 /-- Reverse: h_content along bwd_chain gives g_content in reverse (strict). -/
-theorem bwd_chain_reverse_g (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem bwd_chain_reverse_g (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
     g_content (bwd_chain M₀ h₀ n).val ⊆ (bwd_chain M₀ h₀ m).val :=
   h_content_subset_implies_g_content_reverse
@@ -212,7 +212,7 @@ theorem bwd_chain_reverse_g (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
     (bwd_chain_h_content_trans M₀ h₀ h)
 
 /-- g_content propagation across the full Int chain (strict). -/
-theorem int_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem int_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {t t' : Int} (h_lt : t < t') :
     g_content (int_chain M₀ h₀ t) ⊆ int_chain M₀ h₀ t' := by
   simp only [int_chain]
@@ -247,14 +247,14 @@ theorem int_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
     -- Since t < t' < 0: (-t').toNat < (-t).toNat
     exact bwd_chain_reverse_g M₀ h₀ (by omega)
 
-theorem int_chain_forward_G (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem int_chain_forward_G (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (t t' : Int) (φ : Formula) (h_lt : t < t')
     (h_G : Formula.all_future φ ∈ int_chain M₀ h₀ t) :
     φ ∈ int_chain M₀ h₀ t' :=
   int_chain_g_content M₀ h₀ h_lt h_G
 
 /-- h_content propagation across the full Int chain (reverse direction, strict). -/
-theorem int_chain_h_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem int_chain_h_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {t t' : Int} (h_lt : t < t') :
     h_content (int_chain M₀ h₀ t') ⊆ int_chain M₀ h₀ t :=
   g_content_subset_implies_h_content_reverse
@@ -262,7 +262,7 @@ theorem int_chain_h_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
     (int_chain_mcs M₀ h₀ t) (int_chain_mcs M₀ h₀ t')
     (int_chain_g_content M₀ h₀ h_lt)
 
-theorem int_chain_backward_H (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem int_chain_backward_H (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (t t' : Int) (φ : Formula) (h_lt : t' < t)
     (h_H : Formula.all_past φ ∈ int_chain M₀ h₀ t) :
     φ ∈ int_chain M₀ h₀ t' :=
@@ -270,13 +270,13 @@ theorem int_chain_backward_H (M₀ : Set Formula) (h₀ : SetMaximalConsistent M
 
 /-! ## FMCS -/
 
-noncomputable def bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) : FMCS Int where
+noncomputable def bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) : FMCS Int where
   mcs := int_chain M₀ h₀
   is_mcs := int_chain_mcs M₀ h₀
   forward_G := int_chain_forward_G M₀ h₀
   backward_H := int_chain_backward_H M₀ h₀
 
-theorem bx_fmcs_at_zero (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
+theorem bx_fmcs_at_zero (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
     (bx_fmcs M₀ h₀).mcs 0 = M₀ := int_chain_zero M₀ h₀
 
 /-! ## Shifted FMCS
@@ -287,14 +287,14 @@ we shift the chain so the witness MCS appears at position t.
 -/
 
 /-- A time-shifted FMCS: `mcs t = int_chain M₀ h₀ (t - s)`. -/
-noncomputable def shifted_bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+noncomputable def shifted_bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (s : Int) : FMCS Int where
   mcs t := int_chain M₀ h₀ (t - s)
   is_mcs t := int_chain_mcs M₀ h₀ (t - s)
   forward_G t t' φ h_lt h_G := int_chain_forward_G M₀ h₀ (t - s) (t' - s) φ (by omega) h_G
   backward_H t t' φ h_lt h_H := int_chain_backward_H M₀ h₀ (t - s) (t' - s) φ (by omega) h_H
 
-theorem shifted_bx_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (s : Int) :
+theorem shifted_bx_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (s : Int) :
     (shifted_bx_fmcs M₀ h₀ s).mcs s = M₀ := by
   simp [shifted_bx_fmcs, int_chain_zero]
 
@@ -307,7 +307,7 @@ The proof uses:
 - Forward: temp_future_derived (□φ → G(□φ)) for t ≥ 0, modal_4 + box_to_past for t < 0
 - Backward: contrapositive via neg_box_to_box_neg_box (S5 negative introspection)
 -/
-theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (φ : Formula) (t : Int) :
     Formula.box φ ∈ int_chain M₀ h₀ t ↔ Formula.box φ ∈ M₀ := by
   constructor
@@ -368,7 +368,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
       exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H
 
 /-- Box stability for shifted FMCS: Box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Box φ ∈ M₀. -/
-theorem box_stable_in_shifted_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+theorem box_stable_in_shifted_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (φ : Formula) (s t : Int) :
     Formula.box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Formula.box φ ∈ M₀ :=
   box_stable_in_int_chain M₀ h₀ φ (t - s)

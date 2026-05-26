@@ -295,14 +295,14 @@ theorem SetMaximalConsistent.conjunction_iff {S : Set Formula} {φ ψ : Formula}
 /-!
 ### Modal Closure Properties
 
-These lemmas establish modal closure properties for SetMaximalConsistent sets,
+These lemmas establish modal closure properties for SetMaximalConsistent (fc := FrameClass.Base) sets,
 using the Modal T axiom (□φ → φ) to derive that necessity implies truth.
 -/
 
 /--
 Set-based MCS: box closure property.
 
-If □φ ∈ S for a SetMaximalConsistent S, then φ ∈ S.
+If □φ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then φ ∈ S.
 
 **Proof Strategy**:
 1. Modal T axiom: □φ → φ
@@ -333,7 +333,7 @@ theorem SetMaximalConsistent.box_closure {S : Set Formula} {φ : Formula}
 /--
 Set-based MCS: modal 4 axiom property.
 
-If □φ ∈ S for a SetMaximalConsistent S, then □□φ ∈ S.
+If □φ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then □□φ ∈ S.
 
 **Proof Strategy**:
 1. Modal 4 axiom: □φ → □□φ

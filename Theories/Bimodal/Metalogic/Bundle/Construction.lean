@@ -113,7 +113,7 @@ Given a consistent context Gamma, returns the MCS that extends it.
 -/
 noncomputable def lindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     Set Formula :=
-  let h_set_cons : SetConsistent (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   Classical.choose (set_lindenbaum (contextAsSet Gamma) h_set_cons)
 
 /--
@@ -121,7 +121,7 @@ The Lindenbaum MCS contains the original context.
 -/
 lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     contextAsSet Gamma ⊆ lindenbaumMCS Gamma h_cons :=
-  let h_set_cons : SetConsistent (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).1
 
 /--

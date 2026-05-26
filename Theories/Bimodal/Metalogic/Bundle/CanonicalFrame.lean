@@ -164,7 +164,7 @@ theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent (fc
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ psi ∈ W := by
   -- Step 1: {psi} ∪ h_content(M) is consistent
-  have h_seed_cons : SetConsistent (past_temporal_witness_seed M psi) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M psi) :=
     past_temporal_witness_seed_consistent M h_mcs psi h_P
   -- Step 2: Extend to an MCS via Lindenbaum
   obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (past_temporal_witness_seed M psi) h_seed_cons
@@ -201,7 +201,7 @@ theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent (fc 
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
-  have h_seed_cons : SetConsistent (until_witness_seed M ψ) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (until_witness_seed M ψ) :=
     until_witness_seed_consistent M h_mcs φ ψ h_U
   -- Step 2: Extend to an MCS via Lindenbaum
   obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (until_witness_seed M ψ) h_seed_cons
@@ -223,7 +223,7 @@ theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent (fc
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
-  have h_seed_cons : SetConsistent (past_temporal_witness_seed M ψ) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M ψ) :=
     since_witness_seed_consistent M h_mcs φ ψ h_S
   -- Step 2: Extend to an MCS via Lindenbaum
   obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (past_temporal_witness_seed M ψ) h_seed_cons

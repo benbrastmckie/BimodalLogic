@@ -68,7 +68,7 @@ This is Burgess 1982's definition of "deductively closed set" (DCS).
 Note: does NOT require consistency. `Set.univ` is `ClosedUnderDerivation`. -/
 def ClosedUnderDerivation (S : Set Formula) : Prop :=
   ∀ (L : List Formula) (φ : Formula),
-    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree L φ) → φ ∈ S
+    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree FrameClass.Base L φ) → φ ∈ S
 
 /--
 A set of formulas is **deductively closed** if it is consistent and closed
@@ -80,26 +80,26 @@ DCS are used for the interval function `g(x,y)` in the chronicle,
 which describes the formulas that hold throughout an interval.
 -/
 def SetDeductivelyClosed (S : Set Formula) : Prop :=
-  SetConsistent S ∧ ClosedUnderDerivation S
+  SetConsistent (fc := FrameClass.Base) S ∧ ClosedUnderDerivation S
 
 /-- Every MCS is deductively closed. -/
-theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent S) :
+theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent (fc := FrameClass.Base) S) :
     SetDeductivelyClosed S :=
   ⟨h.1, fun L _ hL hd => SetMaximalConsistent.closed_under_derivation h L hL hd⟩
 
 /-- A CUD set contains all theorems. -/
 theorem cud_contains_theorems {S : Set Formula} (h : ClosedUnderDerivation S)
-    {φ : Formula} (hd : DerivationTree [] φ) : φ ∈ S :=
+    {φ : Formula} (hd : DerivationTree FrameClass.Base [] φ) : φ ∈ S :=
   h [] φ (fun _ h => absurd h List.not_mem_nil) hd
 
 /-- A DCS contains all theorems. -/
 theorem dcs_contains_theorems {S : Set Formula} (h : SetDeductivelyClosed S)
-    {φ : Formula} (hd : DerivationTree [] φ) : φ ∈ S :=
+    {φ : Formula} (hd : DerivationTree FrameClass.Base [] φ) : φ ∈ S :=
   cud_contains_theorems h.2 hd
 
 /-- A DCS is consistent. -/
 theorem dcs_consistent {S : Set Formula} (h : SetDeductivelyClosed S) :
-    SetConsistent S := h.1
+    SetConsistent (fc := FrameClass.Base) S := h.1
 
 /-- Modus ponens in a CUD set. -/
 theorem cud_modus_ponens {S : Set Formula} (h : ClosedUnderDerivation S)
@@ -140,7 +140,7 @@ theorem cud_not_mem_is_sdc {B : Set Formula} (h_cud : ClosedUnderDerivation B)
   -- If B inconsistent: ⊥ ∈ B, then for any ψ, ψ ∈ B (ex falso).
   -- In particular φ ∈ B, contradicting h_not_mem.
   have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
-  have h_efq : DerivationTree [] (Formula.bot.imp φ) :=
+  have h_efq : DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
     Bimodal.Theorems.Propositional.efq_axiom φ
   exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
 
@@ -383,7 +383,7 @@ structure Chronicle where
 
 /-- **C0**: Every point in the domain maps to an MCS. -/
 def Chronicle.c0 (χ : Chronicle) : Prop :=
-  ∀ x ∈ χ.dom, SetMaximalConsistent (χ.f x)
+  ∀ x ∈ χ.dom, SetMaximalConsistent (fc := FrameClass.Base) (χ.f x)
 
 /-- **C1**: Every pair x < y in the domain maps to a CUD set
 (closed under derivation, possibly inconsistent). This matches Burgess 1982
@@ -639,7 +639,7 @@ intersection.
 -/
 theorem dcs_inter_dcs {S₁ S₂ : Set Formula}
     (h₁ : SetDeductivelyClosed S₁) (h₂ : SetDeductivelyClosed S₂)
-    (h_cons : SetConsistent (S₁ ∩ S₂)) :
+    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂)) :
     SetDeductivelyClosed (S₁ ∩ S₂) := by
   constructor
   · exact h_cons
@@ -652,8 +652,8 @@ theorem dcs_inter_dcs {S₁ S₂ : Set Formula}
 The intersection of a DCS with an MCS is deductively closed (when consistent).
 -/
 theorem dcs_inter_mcs {S₁ S₂ : Set Formula}
-    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent S₂)
-    (h_cons : SetConsistent (S₁ ∩ S₂)) :
+    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent (fc := FrameClass.Base) S₂)
+    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂)) :
     SetDeductivelyClosed (S₁ ∩ S₂) :=
   dcs_inter_dcs h₁ (mcs_is_dcs h₂) h_cons
 
@@ -662,7 +662,7 @@ A subset of a consistent set is consistent (for derivation-based consistency).
 If S ⊆ T and T is consistent, then S is consistent.
 -/
 theorem SetConsistent_of_subset {S T : Set Formula}
-    (h_sub : S ⊆ T) (h_cons : SetConsistent T) : SetConsistent S := by
+    (h_sub : S ⊆ T) (h_cons : SetConsistent (fc := FrameClass.Base) T) : SetConsistent (fc := FrameClass.Base) S := by
   intro L hL hd
   exact h_cons L (fun ψ hψ => h_sub (hL ψ hψ)) hd
 
@@ -671,8 +671,8 @@ The three-way intersection g(w,x) ∩ f(x) ∩ B is consistent when it is
 a subset of a consistent set (e.g., B).
 -/
 theorem three_way_inter_consistent {S₁ S₂ S₃ : Set Formula}
-    (h₃_cons : SetConsistent S₃) :
-    SetConsistent (S₁ ∩ S₂ ∩ S₃) :=
+    (h₃_cons : SetConsistent (fc := FrameClass.Base) S₃) :
+    SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂ ∩ S₃) :=
   SetConsistent_of_subset (fun _ h => h.2) h₃_cons
 
 /--
@@ -680,9 +680,9 @@ The three-way intersection of two DCS and an MCS is deductively closed.
 Used for C1 verification when defining g values by C3.
 -/
 theorem dcs_inter_mcs_inter_dcs {S₁ S₂ S₃ : Set Formula}
-    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent S₂)
+    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent (fc := FrameClass.Base) S₂)
     (h₃ : SetDeductivelyClosed S₃)
-    (h_cons : SetConsistent (S₁ ∩ S₂ ∩ S₃)) :
+    (h_cons : SetConsistent (fc := FrameClass.Base) (S₁ ∩ S₂ ∩ S₃)) :
     SetDeductivelyClosed (S₁ ∩ S₂ ∩ S₃) := by
   constructor
   · exact h_cons

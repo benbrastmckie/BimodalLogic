@@ -478,7 +478,7 @@ there exists a countermodel on Int where φ is false.
 Delegates to `dd_countermodel_chronicle_discrete` which uses the
 parametric canonical model construction directly.
 -/
-theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)

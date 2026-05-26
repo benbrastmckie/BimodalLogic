@@ -169,7 +169,7 @@ theorem chain_step_seed_consistent_enriched
     (v : BXPoint)
     (h_bx_le_witness :
       ∀ w : BXPoint, (∀ f ∈ h.formulas, f ∈ w.formulas) → bx_le v w) :
-    SetConsistent ((h.formulas : Set Formula) ∪ g_content v.formulas) := by
+    SetConsistent (fc := FrameClass.Base) ((h.formulas : Set Formula) ∪ g_content v.formulas) := by
   -- Extract a BXPoint witness `w` backing `h` from the `ChainWitnessed` predicate.
   obtain ⟨w, hw⟩ := h_wit h h_mem
   -- The caller-supplied witness hypothesis upgrades the backing witness to `bx_le v w`.
@@ -201,7 +201,7 @@ theorem chain_step_seed_consistent_enriched_since
     (h_h_content_witness :
       ∀ w : BXPoint, (∀ f ∈ h.formulas, f ∈ w.formulas) →
         h_content v.formulas ⊆ w.formulas) :
-    SetConsistent ((h.formulas : Set Formula) ∪ h_content v.formulas) := by
+    SetConsistent (fc := FrameClass.Base) ((h.formulas : Set Formula) ∪ h_content v.formulas) := by
   obtain ⟨w, hw⟩ := h_wit h h_mem
   have h_hv : h_content v.formulas ⊆ w.formulas := h_h_content_witness w hw
   intro L hL ⟨d⟩

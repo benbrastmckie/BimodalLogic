@@ -132,7 +132,7 @@ We need to show that if Diamond psi is in an MCS, then psi is consistent
 -/
 
 /--
-If Diamond psi is in a SetMaximalConsistent S, then psi is set-consistent
+If Diamond psi is in a SetMaximalConsistent (fc := FrameClass.Base) S, then psi is set-consistent
 (i.e., {psi} is consistent).
 
 **Proof Sketch**:

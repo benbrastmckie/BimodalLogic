@@ -160,7 +160,7 @@ Since P(φ) = ¬H(¬φ) by definition, ¬P(φ) = ¬¬H(¬φ).
 By MCS double negation elimination, H(¬φ) ∈ u.
 -/
 theorem p_step_blocking_formulas_subset_u (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u) :
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u) :
     p_step_blocking_formulas u ⊆ u := by
   intro χ h_block
   obtain ⟨φ, h_P_not, _, rfl⟩ := h_block
@@ -434,9 +434,9 @@ and any subset of an MCS is consistent.
 This extends `successor_deferral_seed_consistent` with the P-step blocking guarantee.
 -/
 theorem constrained_successor_seed_consistent (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (constrained_successor_seed u) := by
+    SetConsistent (fc := FrameClass.Base) (constrained_successor_seed u) := by
   -- Show that constrained_successor_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
@@ -490,7 +490,7 @@ This is the MCS that satisfies:
 2. p_content(v) ⊆ u ∪ p_content(u) (P-step guarantee from blocking formulas)
 -/
 noncomputable def constrained_successor_from_seed
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     Set Formula :=
   lindenbaumMCS_set (constrained_successor_seed u)
@@ -500,16 +500,16 @@ noncomputable def constrained_successor_from_seed
 The constrained successor is an MCS.
 -/
 theorem constrained_successor_from_seed_mcs
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetMaximalConsistent (constrained_successor_from_seed u h_mcs h_F_top) :=
+    SetMaximalConsistent (fc := FrameClass.Base) (constrained_successor_from_seed u h_mcs h_F_top) :=
   lindenbaumMCS_set_is_mcs _ _
 
 /--
 The constrained successor extends the seed.
 -/
 theorem constrained_successor_from_seed_extends
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     constrained_successor_seed u ⊆ constrained_successor_from_seed u h_mcs h_F_top :=
   lindenbaumMCS_set_extends _ _
@@ -518,7 +518,7 @@ theorem constrained_successor_from_seed_extends
 G-persistence for constrained successor: g_content(u) ⊆ constrained_successor.
 -/
 theorem constrained_successor_satisfies_g_persistence
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     g_content u ⊆ constrained_successor_from_seed u h_mcs h_F_top :=
   Set.Subset.trans (g_content_subset_constrained_successor_seed u)
@@ -528,7 +528,7 @@ theorem constrained_successor_satisfies_g_persistence
 F-step for constrained successor: f_content(u) ⊆ successor ∪ f_content(successor).
 -/
 theorem constrained_successor_satisfies_f_step
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     f_content u ⊆ (constrained_successor_from_seed u h_mcs h_F_top) ∪
                    f_content (constrained_successor_from_seed u h_mcs h_F_top) := by
@@ -549,7 +549,7 @@ theorem constrained_successor_satisfies_f_step
 The constrained successor satisfies the Succ relation.
 -/
 theorem constrained_successor_succ
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     Succ u (constrained_successor_from_seed u h_mcs h_F_top) :=
   ⟨constrained_successor_satisfies_g_persistence u h_mcs h_F_top,
@@ -569,7 +569,7 @@ For each φ with P(φ) ∈ constrained_successor and φ ∉ u and P(φ) ∉ u:
 This is the key theorem that makes the forward chain satisfy P-step coherence.
 -/
 theorem successor_p_step
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     p_content (constrained_successor_from_seed u h_mcs h_F_top) ⊆ u ∪ p_content u := by
   intro φ h_φ_in_p_content
@@ -740,9 +740,9 @@ Under BX1, `G(φ) → φ`, so `g_content(u) ⊆ u` for any MCS u. The seed
 `g_content(u) ∪ deferralDisjunctions(u) ⊆ u`, hence consistent.
 -/
 theorem successor_deferral_seed_consistent_axiom (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (successor_deferral_seed u) := by
+    SetConsistent (fc := FrameClass.Base) (successor_deferral_seed u) := by
   -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
   -- g_content(u) ⊆ u no longer holds. Sorry'd (non-critical Bundle path).
   have h_g_content_in_u : g_content u ⊆ u := by
@@ -783,9 +783,9 @@ The successor deferral seed is consistent.
 If u is an MCS with F(⊤) ∈ u, then `successor_deferral_seed u` is consistent.
 -/
 theorem successor_deferral_seed_consistent (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (successor_deferral_seed u) :=
+    SetConsistent (fc := FrameClass.Base) (successor_deferral_seed u) :=
   successor_deferral_seed_consistent_axiom u h_mcs h_F_top
 
 /-!
@@ -814,9 +814,9 @@ Under BX1', `H(φ) → φ`, so `h_content(u) ⊆ u` for any MCS u. The seed
 Temporal dual of `successor_deferral_seed_consistent_axiom`.
 -/
 theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (predecessor_deferral_seed u) := by
+    SetConsistent (fc := FrameClass.Base) (predecessor_deferral_seed u) := by
   -- Under irreflexive semantics, BX1' (H(φ) → φ) is removed.
   -- h_content(u) ⊆ u no longer holds. Sorry'd (non-critical Bundle path).
   have h_h_content_in_u : h_content u ⊆ u := by
@@ -866,9 +866,9 @@ The predecessor deferral seed is consistent.
 If u is an MCS with P(⊤) ∈ u, then `predecessor_deferral_seed u` is consistent.
 -/
 theorem predecessor_deferral_seed_consistent (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (predecessor_deferral_seed u) :=
+    SetConsistent (fc := FrameClass.Base) (predecessor_deferral_seed u) :=
   predecessor_deferral_seed_consistent_axiom u h_mcs h_P_top
 
 /-!
@@ -884,7 +884,7 @@ The successor of u via deferral seed: Lindenbaum extension of `successor_deferra
 This is the MCS that will be u's successor in the discrete timeline.
 -/
 noncomputable def successor_from_deferral_seed
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     Set Formula :=
   lindenbaumMCS_set (successor_deferral_seed u)
@@ -894,16 +894,16 @@ noncomputable def successor_from_deferral_seed
 The successor from deferral seed is an MCS.
 -/
 theorem successor_from_deferral_seed_mcs
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetMaximalConsistent (successor_from_deferral_seed u h_mcs h_F_top) :=
+    SetMaximalConsistent (fc := FrameClass.Base) (successor_from_deferral_seed u h_mcs h_F_top) :=
   lindenbaumMCS_set_is_mcs _ _
 
 /--
 The successor extends the deferral seed.
 -/
 theorem successor_from_deferral_seed_extends
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     successor_deferral_seed u ⊆ successor_from_deferral_seed u h_mcs h_F_top :=
   lindenbaumMCS_set_extends _ _
@@ -914,7 +914,7 @@ G-persistence: g_content u ⊆ successor.
 This is Succ condition (1).
 -/
 theorem successor_satisfies_g_persistence
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     g_content u ⊆ successor_from_deferral_seed u h_mcs h_F_top :=
   Set.Subset.trans (g_content_subset_successor_deferral_seed u)
@@ -929,7 +929,7 @@ This is Succ condition (2). For each φ with F(φ) ∈ u:
 - In either case, φ ∈ successor ∪ f_content(successor)
 -/
 theorem successor_satisfies_f_step
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     f_content u ⊆ (successor_from_deferral_seed u h_mcs h_F_top) ∪
                    f_content (successor_from_deferral_seed u h_mcs h_F_top) := by
@@ -958,7 +958,7 @@ theorem successor_satisfies_f_step
 The successor satisfies the Succ relation: Succ u (successor_from_deferral_seed u).
 -/
 theorem successor_succ
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     Succ u (successor_from_deferral_seed u h_mcs h_F_top) :=
   ⟨successor_satisfies_g_persistence u h_mcs h_F_top,
@@ -972,9 +972,9 @@ For any MCS u with F(⊤) ∈ u, there exists an MCS v with Succ(u,v).
 This is the key theorem that establishes successor existence for the discrete
 track without requiring the covering lemma.
 -/
-theorem successor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+theorem successor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    ∃ v, SetMaximalConsistent v ∧ Succ u v :=
+    ∃ v, SetMaximalConsistent (fc := FrameClass.Base) v ∧ Succ u v :=
   ⟨successor_from_deferral_seed u h_mcs h_F_top,
    successor_from_deferral_seed_mcs u h_mcs h_F_top,
    successor_succ u h_mcs h_F_top⟩
@@ -996,7 +996,7 @@ The predecessor of u via deferral seed: Lindenbaum extension of `predecessor_def
 This is the MCS that will be u's predecessor in the discrete timeline.
 -/
 noncomputable def predecessor_from_deferral_seed
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     Set Formula :=
   lindenbaumMCS_set (predecessor_deferral_seed u)
@@ -1006,16 +1006,16 @@ noncomputable def predecessor_from_deferral_seed
 The predecessor from deferral seed is an MCS.
 -/
 theorem predecessor_from_deferral_seed_mcs
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    SetMaximalConsistent (predecessor_from_deferral_seed u h_mcs h_P_top) :=
+    SetMaximalConsistent (fc := FrameClass.Base) (predecessor_from_deferral_seed u h_mcs h_P_top) :=
   lindenbaumMCS_set_is_mcs _ _
 
 /--
 The predecessor extends the deferral seed.
 -/
 theorem predecessor_from_deferral_seed_extends
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     predecessor_deferral_seed u ⊆ predecessor_from_deferral_seed u h_mcs h_P_top :=
   lindenbaumMCS_set_extends _ _
@@ -1026,7 +1026,7 @@ H-persistence: h_content u ⊆ predecessor.
 This is an intermediate step. Combined with g/h duality, this gives Succ condition (1).
 -/
 theorem predecessor_satisfies_h_persistence
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     h_content u ⊆ predecessor_from_deferral_seed u h_mcs h_P_top :=
   Set.Subset.trans (h_content_subset_predecessor_deferral_seed u)
@@ -1039,7 +1039,7 @@ This is Succ condition (1) for Succ v u. It follows from h_content(u) ⊆ v
 via the duality theorem `h_content_subset_implies_g_content_reverse`.
 -/
 theorem predecessor_satisfies_g_persistence_reverse
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     g_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u :=
   h_content_subset_implies_g_content_reverse u
@@ -1061,7 +1061,7 @@ This was previously an axiom (`predecessor_f_step_axiom`), now proven directly
 via the constrained predecessor seed construction.
 -/
 theorem predecessor_f_step
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     f_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u ∪ f_content u := by
   intro φ h_φ_in_f_content
@@ -1095,7 +1095,7 @@ theorem predecessor_f_step
 The predecessor satisfies the Succ relation: Succ (predecessor) u.
 -/
 theorem predecessor_succ
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     Succ (predecessor_from_deferral_seed u h_mcs h_P_top) u :=
   ⟨predecessor_satisfies_g_persistence_reverse u h_mcs h_P_top,
@@ -1105,7 +1105,7 @@ theorem predecessor_succ
 The predecessor satisfies the Pred relation: Pred u (predecessor).
 -/
 theorem predecessor_pred
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     Pred u (predecessor_from_deferral_seed u h_mcs h_P_top) :=
   predecessor_succ u h_mcs h_P_top
@@ -1117,9 +1117,9 @@ For any MCS u with P(⊤) ∈ u, there exists an MCS v with Pred(u,v), i.e., Suc
 
 This is the symmetric dual of `successor_exists`.
 -/
-theorem predecessor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+theorem predecessor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    ∃ v, SetMaximalConsistent v ∧ Pred u v :=
+    ∃ v, SetMaximalConsistent (fc := FrameClass.Base) v ∧ Pred u v :=
   ⟨predecessor_from_deferral_seed u h_mcs h_P_top,
    predecessor_from_deferral_seed_mcs u h_mcs h_P_top,
    predecessor_pred u h_mcs h_P_top⟩
@@ -1144,7 +1144,7 @@ For each formula φ with P(φ) ∈ u:
 - In either case, φ ∈ predecessor ∪ p_content(predecessor)
 -/
 theorem predecessor_satisfies_p_step
-    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (u : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     p_content u ⊆ (predecessor_from_deferral_seed u h_mcs h_P_top) ∪
                    p_content (predecessor_from_deferral_seed u h_mcs h_P_top) := by

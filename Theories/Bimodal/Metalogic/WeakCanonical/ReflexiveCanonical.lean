@@ -35,14 +35,14 @@ open Bimodal.Theorems
 /-! ## Domain -/
 
 /-- Domain of the reflexive canonical model: all set-maximal consistent sets. -/
-def ReflCanDomain : Type := { S : Set Formula // SetMaximalConsistent S }
+def ReflCanDomain : Type := { S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S }
 
 namespace ReflCanDomain
 
 instance : CoeSort ReflCanDomain (Set Formula) := ⟨fun x => x.val⟩
 
 /-- Extract MCS proof from a domain element. -/
-def mcs (x : ReflCanDomain) : SetMaximalConsistent x.val := x.property
+def mcs (x : ReflCanDomain) : SetMaximalConsistent (fc := FrameClass.Base) x.val := x.property
 
 /-- Equality via set equality. -/
 theorem ext {x y : ReflCanDomain} (h : x.val = y.val) : x = y := by
@@ -552,7 +552,7 @@ This is the same as `g_content_closed_derivation` in BXCanonical/Frame.lean
 but adapted for ReflCanDomain.
 -/
 noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
-    (h_mcs : SetMaximalConsistent x.val)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ g_content x)
     (h_deriv : DerivationTree L φ) : Formula.all_future φ ∈ x.val := by
   -- Apply generalized temporal K: L ⊢ φ gives G(L) ⊢ G(φ)
@@ -574,7 +574,7 @@ noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
 g_content of an MCS is consistent.
 -/
 theorem g_content_set_consistent (x : ReflCanDomain) :
-    SetConsistent (g_content x) := by
+    SetConsistent (fc := FrameClass.Base) (g_content x) := by
   have h_mcs := x.property
   intro L hL ⟨d⟩
   -- From L ⊆ g_content(x) and L ⊢ ⊥, get G(⊥) ∈ x.val
@@ -612,7 +612,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
 If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.val.
 -/
 noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
-    (h_mcs : SetMaximalConsistent x.val)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ h_content x)
     (h_deriv : DerivationTree L φ) : Formula.all_past φ ∈ x.val := by
   have d_H : (Context.map Formula.all_past L) ⊢ Formula.all_past φ :=
@@ -632,7 +632,7 @@ noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
 h_content of an MCS is consistent.
 -/
 theorem h_content_set_consistent (x : ReflCanDomain) :
-    SetConsistent (h_content x) := by
+    SetConsistent (fc := FrameClass.Base) (h_content x) := by
   have h_mcs := x.property
   intro L hL ⟨d⟩
   have h_H_bot : Formula.all_past Formula.bot ∈ x.val :=

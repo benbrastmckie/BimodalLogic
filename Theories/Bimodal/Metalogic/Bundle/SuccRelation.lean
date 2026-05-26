@@ -172,7 +172,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
       Bimodal.ProofSystem.DerivationTree.axiom [] _
         (Bimodal.ProofSystem.Axiom.right_mono_until
           (Formula.some_future phi.neg.neg).neg.neg
-          (Formula.some_future phi.neg.neg) Formula.top)
+          (Formula.some_future phi.neg.neg) Formula.top) trivial
     have h_F_dne2 : [] ⊢ (Formula.some_future (Formula.some_future phi.neg.neg).neg.neg).imp
         (Formula.some_future (Formula.some_future phi.neg.neg)) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
@@ -187,7 +187,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_future.imp
         ((Formula.untl phi.neg.neg Formula.top).imp (Formula.untl phi Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top)
+        (Bimodal.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
     have h_F_dne3 : [] ⊢ (Formula.some_future phi.neg.neg).imp (Formula.some_future phi) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
     -- Lift ⊢ F(¬¬φ) → F(φ) through outer F via BX3:
@@ -198,7 +198,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
          (Formula.untl (Formula.some_future phi) Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
         (Bimodal.ProofSystem.Axiom.right_mono_until
-          (Formula.some_future phi.neg.neg) (Formula.some_future phi) Formula.top)
+          (Formula.some_future phi.neg.neg) (Formula.some_future phi) Formula.top) trivial
     have h_FF_lift : [] ⊢ (Formula.some_future (Formula.some_future phi.neg.neg)).imp
         (Formula.some_future (Formula.some_future phi)) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec
@@ -334,7 +334,7 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
       Bimodal.ProofSystem.DerivationTree.axiom [] _
         (Bimodal.ProofSystem.Axiom.right_mono_since
           (Formula.some_past phi.neg.neg).neg.neg
-          (Formula.some_past phi.neg.neg) Formula.top)
+          (Formula.some_past phi.neg.neg) Formula.top) trivial
     have h_P_dne2 : [] ⊢ (Formula.some_past (Formula.some_past phi.neg.neg).neg.neg).imp
         (Formula.some_past (Formula.some_past phi.neg.neg)) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
@@ -348,7 +348,7 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_past.imp
         ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top)
+        (Bimodal.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
     have h_P_dne3 : [] ⊢ (Formula.some_past phi.neg.neg).imp (Formula.some_past phi) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
     -- Lift P(¬¬φ) → P(φ) through outer P via BX3':
@@ -359,7 +359,7 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
          (Formula.snce (Formula.some_past phi) Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
         (Bimodal.ProofSystem.Axiom.right_mono_since
-          (Formula.some_past phi.neg.neg) (Formula.some_past phi) Formula.top)
+          (Formula.some_past phi.neg.neg) (Formula.some_past phi) Formula.top) trivial
     have h_PP_lift : [] ⊢ (Formula.some_past (Formula.some_past phi.neg.neg)).imp
         (Formula.some_past (Formula.some_past phi)) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec

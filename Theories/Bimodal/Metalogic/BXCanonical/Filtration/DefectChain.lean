@@ -65,7 +65,7 @@ theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
 theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
     Formula.some_future ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_until
 
@@ -73,7 +73,7 @@ theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
 theorem defect_step_connect {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
     Formula.all_future (Formula.some_past (Formula.untl ψ φ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl ψ φ))
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl ψ φ)) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_until
 
@@ -81,7 +81,7 @@ theorem defect_step_connect {w : BXPoint} {φ ψ : Formula}
 theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
     Formula.untl ψ (Formula.and φ (Formula.untl ψ φ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_until
 
@@ -97,7 +97,7 @@ noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce ψ φ ∈ w.formulas) :
     Formula.some_past ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_since
 
@@ -105,7 +105,7 @@ theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
 theorem since_defect_step_connect {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce ψ φ ∈ w.formulas) :
     Formula.all_past (Formula.some_future (Formula.snce ψ φ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_past (Formula.snce ψ φ))
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_past (Formula.snce ψ φ)) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_since
 

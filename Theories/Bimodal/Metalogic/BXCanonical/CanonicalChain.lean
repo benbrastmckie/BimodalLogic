@@ -43,7 +43,7 @@ open Bimodal.Metalogic.BXCanonical.Filtration
 theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
     (h : Formula.some_future ψ ∈ w.formulas) :
     Formula.untl ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.some_future ψ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_future ψ).imp
     (Formula.untl ψ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -53,7 +53,7 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
 theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
     (h : Formula.some_past ψ ∈ w.formulas) :
     Formula.snce ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.some_past ψ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_past ψ).imp
     (Formula.snce ψ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -66,7 +66,7 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
 theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ ∈ w.formulas) :
     Formula.untl ψ φ ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
     (Formula.untl ψ φ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -76,7 +76,7 @@ theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
 theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ ∈ w.formulas) :
     Formula.snce ψ φ ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
     (Formula.snce ψ φ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs

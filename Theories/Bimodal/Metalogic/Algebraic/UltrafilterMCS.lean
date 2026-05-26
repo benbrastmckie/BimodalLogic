@@ -160,7 +160,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
       -- Need to show that if we assume ψ ∉ Γ, we get contradiction
       by_contra h_not
       -- By MCS, ψ ∉ Γ implies insert ψ Γ is inconsistent
-      have h_incons : ¬SetConsistent (insert ψ Γ) := h_mcs.2 ψ h_not
+      have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert ψ Γ) := h_mcs.2 ψ h_not
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -235,7 +235,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
       have d_bot'' : DerivationTree FrameClass.Base (φ :: Γ') Formula.bot :=
         DerivationTree.modus_ponens (φ :: Γ') ψ Formula.bot d_neg_ψ' d_ψ
       -- But φ :: Γ' ⊆ Γ (since φ ∈ Γ and Γ' ⊆ Γ)
-      have h_cons_list : Consistent (φ :: Γ') := by
+      have h_cons_list : Consistent (fc := FrameClass.Base) (φ :: Γ') := by
         apply h_mcs.1 (φ :: Γ')
         intro χ hχ
         simp at hχ
@@ -259,7 +259,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     -- From φ ∈ Γ and ψ ∈ Γ, derive φ ∧ ψ ∈ Γ
     by_contra h_not
     -- If φ ∧ ψ ∉ Γ, then insert (φ ∧ ψ) Γ is inconsistent
-    have h_incons : ¬SetConsistent (insert (φ.and ψ) Γ) := h_mcs.2 (φ.and ψ) h_not
+    have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert (φ.and ψ) Γ) := h_mcs.2 (φ.and ψ) h_not
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -329,7 +329,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
       DerivationTree.modus_ponens (ψ :: φ :: Γ') (φ.and ψ) Formula.bot d_neg' d_and
 
     -- But ψ :: φ :: Γ' ⊆ Γ
-    have h_cons : Consistent (ψ :: φ :: Γ') := by
+    have h_cons : Consistent (fc := FrameClass.Base) (ψ :: φ :: Γ') := by
       apply h_mcs.1 (ψ :: φ :: Γ')
       intro χ hχ
       simp at hχ
@@ -357,7 +357,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
     · left; exact ⟨φ, h, rfl⟩
     · right
       -- If φ ∉ Γ, show ¬φ ∈ Γ using maximality
-      have h_incons : ¬SetConsistent (insert φ Γ) := h_mcs.2 φ h
+      have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ) := h_mcs.2 φ h
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -391,7 +391,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       have h_neg_in : φ.neg ∈ Γ := by
         by_contra h_neg_not
         -- If ¬φ ∉ Γ, then insert ¬φ Γ is inconsistent
-        have h_incons' : ¬SetConsistent (insert φ.neg Γ) := h_mcs.2 φ.neg h_neg_not
+        have h_incons' : ¬SetConsistent (fc := FrameClass.Base) (insert φ.neg Γ) := h_mcs.2 φ.neg h_neg_not
         unfold SetConsistent at h_incons'
         push_neg at h_incons'
         obtain ⟨L', hL', hL'_incons⟩ := h_incons'
@@ -444,7 +444,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           DerivationTree.modus_ponens (Γ'' ++ Γ') φ Formula.bot d_neg_combined d_φ_combined
 
         -- But Γ'' ++ Γ' ⊆ Γ
-        have h_combined_cons : Consistent (Γ'' ++ Γ') := by
+        have h_combined_cons : Consistent (fc := FrameClass.Base) (Γ'' ++ Γ') := by
           apply h_mcs.1 (Γ'' ++ Γ')
           intro χ hχ
           simp at hχ
@@ -566,7 +566,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     unfold Derives
     -- From h : [] ⊢ ψ, we get ⊢ ψ. Then ⊢ T → ψ by prop_s.
     have d_s : DerivationTree FrameClass.Base [] (ψ.imp ((Formula.bot.imp Formula.bot).imp ψ)) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s ψ (Formula.bot.imp Formula.bot) trivial trivial)
+      DerivationTree.axiom [] _ (Axiom.prop_s ψ (Formula.bot.imp Formula.bot)) trivial
     exact ⟨DerivationTree.modus_ponens [] _ _ d_s h⟩
   | cons φ L' ih =>
     -- (φ :: L') ⊢ ψ, need to show: ⊤ ⊓ [φ] ⊓ fold(L') ≤ [ψ]
@@ -660,7 +660,7 @@ def ultrafilterToSet (U : Ultrafilter LindenbaumAlg) : Set Formula :=
 ultrafilterToSet U is an MCS.
 -/
 theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
-    SetMaximalConsistent (ultrafilterToSet U) := by
+    SetMaximalConsistent (fc := FrameClass.Base) (ultrafilterToSet U) := by
   constructor
   · -- Consistency: for any L ⊆ ultrafilterToSet U, L is consistent (¬(L ⊢ ⊥))
     intro L hL
@@ -711,7 +711,7 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
     have h_bot_in_U : (⊥ : LindenbaumAlg) ∈ U.carrier := U.mem_of_le h_meet h_le_bot
     -- But this contradicts U.bot_not_mem
     exact U.bot_not_mem h_bot_in_U
-  · -- Maximality: φ ∉ ultrafilterToSet U implies ¬SetConsistent (insert φ (ultrafilterToSet U))
+  · -- Maximality: φ ∉ ultrafilterToSet U implies ¬SetConsistent (fc := FrameClass.Base) (insert φ (ultrafilterToSet U))
     intro φ hφ
     -- hφ : φ ∉ ultrafilterToSet U, i.e., [φ] ∉ U
     unfold ultrafilterToSet at hφ
@@ -795,7 +795,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
       -- From ψ ∈ Γ and ⊢ ψ → φ, derive φ ∈ Γ
       by_contra h_not
-      have h_incons : ¬SetConsistent (insert φ Γ.val) := Γ.property.2 φ h_not
+      have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ h_not
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -837,7 +837,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       have d_bot'' : DerivationTree FrameClass.Base (ψ :: Γ') Formula.bot :=
         DerivationTree.modus_ponens (ψ :: Γ') φ Formula.bot d_neg' d_φ
 
-      have h_cons : Consistent (ψ :: Γ') := by
+      have h_cons : Consistent (fc := FrameClass.Base) (ψ :: Γ') := by
         apply Γ.property.1 (ψ :: Γ')
         intro χ hχ
         simp at hχ
@@ -982,7 +982,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
     -- From ψ ∈ Γ and ⊢ ψ → φ, derive φ ∈ Γ
     by_contra h_not
-    have h_incons : ¬SetConsistent (insert φ Γ.val) := Γ.property.2 φ h_not
+    have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ h_not
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -1021,7 +1021,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     have d_bot'' : DerivationTree FrameClass.Base (ψ :: Γ') Formula.bot :=
       DerivationTree.modus_ponens (ψ :: Γ') φ Formula.bot d_neg' d_φ
 
-    have h_cons : Consistent (ψ :: Γ') := by
+    have h_cons : Consistent (fc := FrameClass.Base) (ψ :: Γ') := by
       apply Γ.property.1 (ψ :: Γ')
       intro χ hχ
       simp at hχ

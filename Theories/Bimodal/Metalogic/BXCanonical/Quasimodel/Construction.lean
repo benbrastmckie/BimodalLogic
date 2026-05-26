@@ -114,7 +114,7 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
 theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
     Formula.untl φ (Formula.and ψ (Formula.untl φ ψ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_until ψ φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.self_accum_until ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -123,7 +123,7 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
 theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
     Formula.some_future φ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -132,7 +132,7 @@ theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_future_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.all_future (Formula.some_past φ) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_future φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -142,7 +142,7 @@ theorem connect_future_mcs {w : BXPoint} {φ : Formula}
 theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
     Formula.snce φ (Formula.and ψ (Formula.snce φ ψ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_since ψ φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.self_accum_since ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -150,7 +150,7 @@ theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
 theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
     Formula.some_past φ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.since_P ψ φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -158,7 +158,7 @@ theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_past_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.all_past (Formula.some_future φ) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_past φ)
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_past φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -632,7 +632,7 @@ theorem chain_step_seed_consistent
     {c : HintikkaRawChain Sigma} (h_wit : ChainWitnessed c)
     {h : HintikkaPoint Sigma} (h_mem : h ∈ c.points)
     (S : Set Formula) (h_sub : S ⊆ (h.formulas : Set Formula)) :
-    SetConsistent S := by
+    SetConsistent (fc := FrameClass.Base) S := by
   -- Extract the BXPoint witness backing `h`
   obtain ⟨w, hw⟩ := h_wit h h_mem
   -- Close: any list from S has all elements in w.formulas, so
@@ -785,7 +785,7 @@ theorem chain_step_seed_consistent_since
     {c : HintikkaRawChain Sigma} (h_wit : ChainWitnessed c)
     {h : HintikkaPoint Sigma} (h_mem : h ∈ c.points)
     (S : Set Formula) (h_sub : S ⊆ (h.formulas : Set Formula)) :
-    SetConsistent S :=
+    SetConsistent (fc := FrameClass.Base) S :=
   chain_step_seed_consistent (c := c) h_wit h_mem S h_sub
 
 /-- Guard lemma: at any interior point of the raw chain built by

@@ -120,7 +120,7 @@ If some finite L ⊆ g_content(S) derives ⊥, then G(⊥) ∈ S (by g_content_c
 then ⊥ ∈ S (by BX1: G(⊥) → ⊥), contradicting S consistent.
 -/
 theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
-    SetConsistent (g_content S) := by
+    SetConsistent (fc := FrameClass.Base) (g_content S) := by
   intro L hL ⟨d⟩
   -- From L ⊆ g_content(S) and L ⊢ ⊥, get G(⊥) ∈ S
   have h_G_bot : Formula.all_future Formula.bot ∈ S :=
@@ -148,7 +148,7 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
   -- Seriality: ⊤ → F(⊤) is derivable, where F(⊤) = ¬G(¬⊤)
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_future (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_future
+    DerivationTree.axiom [] _ Axiom.serial_future trivial
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   -- ⊤ = ⊥→⊥ is derivable, hence in S
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
@@ -165,7 +165,7 @@ h_content of an MCS is consistent.
 Mirror of g_content_set_consistent using serial_past.
 -/
 theorem h_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
-    SetConsistent (h_content S) := by
+    SetConsistent (fc := FrameClass.Base) (h_content S) := by
   intro L hL ⟨d⟩
   have h_H_bot : Formula.all_past Formula.bot ∈ S :=
     h_content_closed_derivation h_mcs L hL d
@@ -184,7 +184,7 @@ theorem h_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
     SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_past (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_past
+    DerivationTree.axiom [] _ Axiom.serial_past trivial
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
@@ -268,7 +268,7 @@ noncomputable def bx_G_backward (w : BXPoint) (φ : Formula)
     (h_not_G : Formula.all_future φ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ φ ∉ v.formulas := by
   -- Seed: {¬φ} ∪ g_content(w)
-  have h_seed_cons : SetConsistent ({Formula.neg φ} ∪ g_content w.formulas) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg φ} ∪ g_content w.formulas) := by
     intro L hL ⟨d⟩
     by_cases h_negφ_in : Formula.neg φ ∈ L
     · -- ¬φ ∈ L. Deduction: L \ {¬φ} ⊢ ¬¬φ. Then derive G(φ) ∈ w.
@@ -337,7 +337,7 @@ noncomputable def bx_H_backward (w : BXPoint) (φ : Formula)
     (h_not_H : Formula.all_past φ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ φ ∉ v.formulas := by
   -- Seed: {¬φ} ∪ h_content(w)
-  have h_seed_cons : SetConsistent ({Formula.neg φ} ∪ h_content w.formulas) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg φ} ∪ h_content w.formulas) := by
     intro L hL ⟨d⟩
     by_cases h_negφ_in : Formula.neg φ ∈ L
     · let L_filt := L.filter (fun y => decide (y ≠ Formula.neg φ))
@@ -414,7 +414,7 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
   -- box_content
   let bc := {χ : Formula | Formula.box χ ∈ w.formulas}
   -- Seed consistency
-  have h_seed_cons : SetConsistent ({ψ} ∪ bc) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({ψ} ∪ bc) := by
     intro L hL ⟨d⟩
     by_cases h_ψ_in : ψ ∈ L
     · -- ψ ∈ L case
@@ -566,7 +566,7 @@ Proof: modal_5_collapse gives ◇□φ → □φ, i.e., ¬□(¬□φ) → □φ
 Contrapositive: ¬□φ → ¬¬□(¬□φ). Compose with DNE to get ¬□φ → □(¬□φ).
 -/
 noncomputable def neg_box_to_box_neg_box (φ : Formula) :
-    DerivationTree [] ((Formula.box φ).neg.imp (Formula.box (Formula.box φ).neg)) := by
+    DerivationTree FrameClass.Base [] ((Formula.box φ).neg.imp (Formula.box (Formula.box φ).neg)) := by
   -- modal_5_collapse φ: (□φ).neg.box.neg → □φ, i.e., ◇□φ → □φ
   have h_m5 : DerivationTree FrameClass.Base [] ((Formula.box φ).neg.box.neg.imp (Formula.box φ)) :=
     DerivationTree.axiom [] _ (Axiom.modal_5_collapse φ) trivial
@@ -621,7 +621,7 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : bx_le w v) (φ : Formu
     have h_box_neg_v := bx_G_forward h_le h_G_box_neg
     -- □(¬□φ) ∈ v → ¬□φ ∈ v by modal_t
     have h_mt : DerivationTree FrameClass.Base [] ((Formula.box (Formula.box φ).neg).imp (Formula.box φ).neg) :=
-      DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ) trivial.neg)
+      DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial
     have h_neg_v := SetMaximalConsistent.implication_property v.is_mcs
       (theorem_in_mcs v.is_mcs h_mt) h_box_neg_v
     -- ¬□φ ∈ v and □φ ∈ v: contradiction
@@ -682,7 +682,7 @@ noncomputable def bx_until_eventuality_resolution
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas := by
   -- By BX10: F(ψ) ∈ w
   have h_F_psi : Formula.some_future ψ ∈ w.formulas := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
+    have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_until
   -- By bx_forward_witness: get v with bx_le w v and ψ ∈ v
@@ -701,7 +701,7 @@ noncomputable def bx_since_eventuality_resolution
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas := by
   -- By BX10': P(ψ) ∈ w
   have h_P_psi : Formula.some_past ψ ∈ w.formulas := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
+    have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_since
   -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v

@@ -86,7 +86,7 @@ since F(¬φ) = ¬G(¬¬φ) which is not definitionally equal to ¬G(φ).
 
 /-- If G(φ) ∉ MCS A, then F(¬φ) ∈ A. -/
 theorem F_neg_of_G_not {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ : Formula)
     (h_Gφ_not : Formula.all_future φ ∉ A) :
     Formula.some_future φ.neg ∈ A := by
   -- Case split on F(¬φ) directly
@@ -111,7 +111,7 @@ theorem F_neg_of_G_not {A : Set Formula}
 
 /-- If H(φ) ∉ MCS A, then P(¬φ) ∈ A. Dual of `F_neg_of_G_not`. -/
 theorem P_neg_of_H_not {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ : Formula)
     (h_Hφ_not : Formula.all_past φ ∉ A) :
     Formula.some_past φ.neg ∈ A := by
   rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ.neg) with h | h
@@ -136,9 +136,9 @@ theorem P_neg_of_H_not {A : Set Formula}
 /-- The Until witness seed: {β} ∪ g_content(A) is consistent when
 U(γ,β) ∈ MCS A. -/
 theorem until_witness_seed_consistent {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
-    SetConsistent ({β} ∪ g_content A) := by
+    SetConsistent (fc := FrameClass.Base) ({β} ∪ g_content A) := by
   have h_F_β : Formula.some_future β ∈ A := by
     have h_ax : DerivationTree [] ((Formula.untl β γ).imp (Formula.some_future β)) :=
       DerivationTree.axiom [] _ (Axiom.until_F γ β)
@@ -155,9 +155,9 @@ The hypothesis `h_not_univ_gen` provides ¬burgessR3(A, Set.univ, C) for ANY MCS
 extending the seed {β} ∪ g_content(A). This is needed because C is constructed
 internally and callers cannot know it in advance. -/
 noncomputable def lemma_2_4 {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
-    ∃ B C : Set Formula, SetMaximalConsistent C ∧
+    ∃ B C : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) C ∧
       β ∈ C ∧ g_content A ⊆ C ∧
       Formula.some_past (Formula.untl β γ) ∈ C ∧
       BurgessR3Maximal A B C := by
@@ -178,7 +178,7 @@ noncomputable def lemma_2_4 {A : Set Formula}
 
 /-- BX10 at MCS level: U(γ,β) ∈ A implies F(β) ∈ A. -/
 theorem until_F_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
     Formula.some_future β ∈ A := by
   have h_ax : DerivationTree [] ((Formula.untl β γ).imp (Formula.some_future β)) :=
@@ -188,7 +188,7 @@ theorem until_F_mcs {A : Set Formula}
 
 /-- BX5 at MCS level: U(γ,β) ∈ A implies U(γ∧U(γ,β), β) ∈ A. -/
 theorem self_accum_until_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
     Formula.untl β (Formula.and γ (Formula.untl β γ)) ∈ A := by
   have h_ax : DerivationTree [] ((Formula.untl β γ).imp
@@ -199,7 +199,7 @@ theorem self_accum_until_mcs {A : Set Formula}
 
 /-- BX5' at set-MCS level: snce(γ, β) ∈ A implies snce(γ ∧ snce(γ, β), β) ∈ A. -/
 theorem self_accum_since_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_since : Formula.snce β γ ∈ A) :
     Formula.snce β (Formula.and γ (Formula.snce β γ)) ∈ A := by
   have h_ax : DerivationTree [] ((Formula.snce β γ).imp
@@ -210,7 +210,7 @@ theorem self_accum_since_mcs {A : Set Formula}
 
 /-- BX4 at MCS level: φ ∈ A implies G(P(φ)) ∈ A. -/
 theorem connect_future_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ : Formula)
     (h_φ : φ ∈ A) :
     Formula.all_future (Formula.some_past φ) ∈ A := by
   have h_ax : DerivationTree [] (φ.imp (Formula.all_future (Formula.some_past φ))) :=
@@ -220,7 +220,7 @@ theorem connect_future_mcs {A : Set Formula}
 
 /-- Conjunction introduction at MCS level. -/
 theorem conj_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ ψ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ : Formula)
     (h_φ : φ ∈ A) (h_ψ : ψ ∈ A) :
     Formula.and φ ψ ∈ A := by
   rcases SetMaximalConsistent.negation_complete h_mcs (φ.imp ψ.neg) with h | h
@@ -231,7 +231,7 @@ theorem conj_mcs {A : Set Formula}
 /-- MCS disjunction elimination (local version): If (φ ∨ ψ) ∈ A then φ ∈ A ∨ ψ ∈ A.
 Recall φ.or ψ = φ.neg.imp ψ. -/
 private theorem or_elim_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) {φ ψ : Formula}
     (h : (φ.or ψ) ∈ A) : φ ∈ A ∨ ψ ∈ A := by
   rcases SetMaximalConsistent.negation_complete h_mcs φ with h_φ | h_neg_φ
   · exact Or.inl h_φ
@@ -241,7 +241,7 @@ private theorem or_elim_mcs {A : Set Formula}
 then one of three disjuncts holds:
   D1: U(φ∧χ, ψ∧θ) ∈ A, or D2: U(φ∧χ, ψ∧χ) ∈ A, or D3: U(φ∧χ, φ∧θ) ∈ A. -/
 theorem linear_until_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ ψ χ θ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ χ θ : Formula)
     (h_u1 : Formula.untl ψ φ ∈ A)
     (h_u2 : Formula.untl θ χ ∈ A) :
     Formula.untl (Formula.and ψ θ) (Formula.and φ χ) ∈ A ∨
@@ -266,7 +266,7 @@ theorem linear_until_mcs {A : Set Formula}
 then one of three disjuncts holds:
   D1: S(φ∧χ, ψ∧θ) ∈ A, or D2: S(φ∧χ, ψ∧χ) ∈ A, or D3: S(φ∧χ, φ∧θ) ∈ A. -/
 theorem linear_since_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ ψ χ θ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ χ θ : Formula)
     (h_s1 : Formula.snce ψ φ ∈ A)
     (h_s2 : Formula.snce θ χ ∈ A) :
     Formula.snce (Formula.and ψ θ) (Formula.and φ χ) ∈ A ∨
@@ -286,7 +286,7 @@ theorem linear_since_mcs {A : Set Formula}
 
 /-- **Lemma 2.5** (composition): g_content ordering is transitive. -/
 theorem lemma_2_5b {A D C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
     (h_AD : g_content A ⊆ D) (h_DC : g_content D ⊆ C) :
     g_content A ⊆ C := by
   intro φ hφ
@@ -297,7 +297,7 @@ theorem lemma_2_5b {A D C : Set Formula}
 
 /-- Dual of lemma_2_5b: h_content ordering is transitive (past direction). -/
 theorem lemma_2_5b_past {A D C : Set Formula}
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_CD : h_content C ⊆ D) (h_DA : h_content D ⊆ A) :
     h_content C ⊆ A := by
   intro φ hφ
@@ -311,12 +311,12 @@ theorem lemma_2_5b_past {A D C : Set Formula}
 /-- **Lemma 2.6** (adapted): Given MCS A and C with g_content(A) ⊆ C,
 if δ ∉ C, then there exists MCS D with ¬δ ∈ D and g_content(A) ⊆ D. -/
 noncomputable def lemma_2_6 {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_g_AC : g_content A ⊆ C)
     (δ : Formula)
     (h_δ_not_C : δ ∉ C) :
-    ∃ D : Set Formula, SetMaximalConsistent D ∧
+    ∃ D : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) D ∧
       δ.neg ∈ D ∧ g_content A ⊆ D := by
   have h_Gδ_not_A : Formula.all_future δ ∉ A := by
     intro h_Gδ; exact h_δ_not_C (h_g_AC h_Gδ)
@@ -349,7 +349,7 @@ noncomputable def lemma_2_6 {A C : Set Formula}
 
 /-- Conjunction membership gives left component in MCS. -/
 theorem conj_left_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ ψ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ : Formula)
     (h_conj : Formula.and φ ψ ∈ A) :
     φ ∈ A := by
   have h_ax : DerivationTree [] ((Formula.and φ ψ).imp φ) := lce_imp φ ψ
@@ -358,7 +358,7 @@ theorem conj_left_mcs {A : Set Formula}
 
 /-- Conjunction membership gives right component in MCS. -/
 theorem conj_right_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (φ ψ : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ : Formula)
     (h_conj : Formula.and φ ψ ∈ A) :
     ψ ∈ A := by
   have h_ax : DerivationTree [] ((Formula.and φ ψ).imp ψ) := rce_imp φ ψ
@@ -369,7 +369,7 @@ theorem conj_right_mcs {A : Set Formula}
 
 /-- In an MCS, G(α) implies F(α). Uses seriality + BX3 + BX10 + BX12. -/
 theorem G_implies_F_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (α : Formula)
     (h_G : Formula.all_future α ∈ A) :
     Formula.some_future α ∈ A := by
   set top := Formula.bot.imp Formula.bot with top_def
@@ -399,7 +399,7 @@ theorem G_implies_F_mcs {A : Set Formula}
 
 /-- In an MCS, H(α) implies P(α). Mirror of G_implies_F_mcs. -/
 theorem H_implies_P_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (α : Formula)
     (h_H : Formula.all_past α ∈ A) :
     Formula.some_past α ∈ A := by
   set top := Formula.bot.imp Formula.bot with top_def
@@ -428,7 +428,7 @@ theorem H_implies_P_mcs {A : Set Formula}
 
 /-- G-propagation seed consistency. -/
 theorem g_propagation_seed_consistent {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (α : Formula)
     (h_G : Formula.all_future α ∈ A) :
     SetConsistent (forward_temporal_witness_seed A α) := by
   exact forward_temporal_witness_seed_consistent A h_mcs α (G_implies_F_mcs h_mcs α h_G)
@@ -436,9 +436,9 @@ theorem g_propagation_seed_consistent {A : Set Formula}
 /-- G-propagation insertion: given G(α) ∈ f(x), produce MCS D with α ∈ D
 and g_content(f(x)) ⊆ D. -/
 noncomputable def g_propagation_witness {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (α : Formula)
     (h_G : Formula.all_future α ∈ A) :
-    ∃ D : Set Formula, SetMaximalConsistent D ∧ α ∈ D ∧ g_content A ⊆ D := by
+    ∃ D : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) D ∧ α ∈ D ∧ g_content A ⊆ D := by
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ (g_propagation_seed_consistent h_mcs α h_G)
   exact ⟨D, h_D_mcs,
     h_sup (Set.mem_union_left _ (Set.mem_singleton _)),
@@ -449,7 +449,7 @@ noncomputable def g_propagation_witness {A : Set Formula}
 /-- If S is a DCS and φ ∉ S, then {φ.neg} ∪ S is consistent. -/
 theorem dcs_neg_union_consistent {S : Set Formula} (h_dcs : SetDeductivelyClosed S)
     {φ : Formula} (h_not : φ ∉ S) :
-    SetConsistent ({φ.neg} ∪ S) := by
+    SetConsistent (fc := FrameClass.Base) ({φ.neg} ∪ S) := by
   intro L hL ⟨d⟩
   apply h_not
   by_cases h_neg_in_L : φ.neg ∈ L
@@ -527,10 +527,10 @@ theorem r3Maximal_neg_of_not_mem {A B C : Set Formula}
 
 /-- R3Maximal forces MCS (via monotonicity of r3Relation). -/
 theorem R3Maximal_is_mcs {A B C : Set Formula}
-    (h_R3 : R3Maximal A B C) : SetMaximalConsistent B := by
+    (h_R3 : R3Maximal A B C) : SetMaximalConsistent (fc := FrameClass.Base) B := by
   refine ⟨h_R3.1.1, ?_⟩
   intro φ h_not_φ h_cons_insert
-  have h_cons : SetConsistent ({φ} ∪ B) := by rwa [Set.insert_eq] at h_cons_insert
+  have h_cons : SetConsistent (fc := FrameClass.Base) ({φ} ∪ B) := by rwa [Set.insert_eq] at h_cons_insert
   have h_dc_dcs := deductiveClosure_is_dcs h_cons
   have h_B_sub : B ⊆ deductiveClosure ({φ} ∪ B) :=
     fun ψ hψ => subset_deductiveClosure _ (Set.mem_union_right _ hψ)
@@ -541,7 +541,7 @@ theorem R3Maximal_is_mcs {A B C : Set Formula}
 
 /-- An MCS has no proper DCS extension. -/
 theorem mcs_no_proper_dcs_extension {B D : Set Formula}
-    (h_mcs : SetMaximalConsistent B) (h_dcs : SetDeductivelyClosed D)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) B) (h_dcs : SetDeductivelyClosed D)
     (hBD : B ⊂ D) : False := by
   obtain ⟨φ, h_φ_D, h_φ_not_B⟩ := Set.not_subset.mp hBD.2
   have h_incons := h_mcs.2 φ h_φ_not_B
@@ -637,7 +637,7 @@ theorem BurgessR3Maximal_extension_fails {A B C : Set Formula}
 /-- If both until and since conditions hold for delta extension of B,
 then DC({delta} union B) satisfies burgessR3(A, -, C). -/
 theorem dc_delta_B_burgessR3 {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_dcs : ClosedUnderDerivation B)
     (h_r3 : burgessR3 A B C)
     {delta : Formula}
@@ -678,7 +678,7 @@ BurgessR3Maximal_extension_fails gives ¬burgessR3(A, DC({snce(alpha,top)}∪B),
 But dc_delta_B_burgessR3 shows both Until and Since conditions hold, using
 left_mono_until_G with G(snce(alpha, top)) ∈ A (derived from alpha ∈ A via BX4 + BX12'). -/
 theorem xu_lemma_2_3_since_top {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     {alpha : Formula} (h_alpha : alpha ∈ A) :
     Formula.snce alpha (Formula.bot.imp Formula.bot) ∈ B := by
@@ -750,7 +750,7 @@ theorem xu_lemma_2_3_since_top {A B C : Set Formula}
 Dual of xu_lemma_2_3_since_top: uses BX4' + BX12 + left_mono_since_H
 for the Since guard strengthening, and burgessRSince_implies_burgessR for the Until direction. -/
 theorem xu_lemma_2_3_until_top {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     {gamma : Formula} (h_gamma : gamma ∈ C) :
     Formula.untl gamma (Formula.bot.imp Formula.bot) ∈ B := by
@@ -844,7 +844,7 @@ private noncomputable def ex_falso_from_assumption (φ ψ : Formula) :
 
 /-- Helper: G(φ.neg → ψ) ∈ A from G(φ) ∈ A, using ex_falso_from_assumption + TG + temp_k_dist. -/
 private theorem G_ex_falso_strengthen {A : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (φ ψ : Formula)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (φ ψ : Formula)
     (h_Gφ : Formula.all_future φ ∈ A) :
     (φ.neg.imp ψ).all_future ∈ A := by
   have d_ef := ex_falso_from_assumption φ ψ
@@ -856,7 +856,7 @@ private theorem G_ex_falso_strengthen {A : Set Formula}
 
 /-- Helper: H(ψ.neg → χ) ∈ C from H(ψ) ∈ C, using ex_falso_from_assumption + past_necessitation + past_k_dist. -/
 private theorem H_ex_falso_strengthen {C : Set Formula}
-    (h_mcs_C : SetMaximalConsistent C) (ψ χ : Formula)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C) (ψ χ : Formula)
     (h_Hψ : Formula.all_past ψ ∈ C) :
     (ψ.neg.imp χ).all_past ∈ C := by
   have d_ef := ex_falso_from_assumption ψ χ
@@ -871,7 +871,7 @@ Proof: ¬SetConsistent means ∃ derivation of ⊥ from {φ} ∪ B.
 By deduction theorem: derivation of φ.neg from B. By closure: φ.neg ∈ B. -/
 private theorem neg_mem_of_inconsistent_union {B : Set Formula}
     (h_cud : ClosedUnderDerivation B)
-    {φ : Formula} (h_not_cons : ¬SetConsistent ({φ} ∪ B)) :
+    {φ : Formula} (h_not_cons : ¬SetConsistent (fc := FrameClass.Base) ({φ} ∪ B)) :
     φ.neg ∈ B := by
   -- ¬SetConsistent means ∃ L ⊆ {φ} ∪ B with Nonempty (DerivationTree L ⊥)
   -- SetConsistent S = ∀ L, (∀ ψ ∈ L, ψ ∈ S) → ¬Nonempty (DerivationTree L ⊥)
@@ -920,7 +920,7 @@ theorem BurgessR3Maximal_neg_or_ext_fails {A B C : Set Formula}
     (h_R3M : BurgessR3Maximal A B C)
     {delta : Formula} (h_delta_not : delta ∉ B) :
     delta.neg ∈ B ∨ ¬burgessR3 A (deductiveClosure ({delta} ∪ B)) C := by
-  by_cases h_cons : SetConsistent ({delta} ∪ B)
+  by_cases h_cons : SetConsistent (fc := FrameClass.Base) ({delta} ∪ B)
   · exact Or.inr (BurgessR3Maximal_extension_fails h_R3M h_delta_not)
   · exact Or.inl (neg_mem_of_inconsistent_union h_R3M.1 h_cons)
 
@@ -931,7 +931,7 @@ for any ψ: G(φ.neg → ψ) ∈ A (ex falso), then untl_left_mono_G gives
 untl(ψ, γ) ∈ A from untl(φ.neg, γ) ∈ A. This gives burgessRSet for Set.univ.
 burgessR_implies_burgessRSince gives the Since direction. -/
 private theorem burgessR3_univ_of_inconsistent_ext {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3 : burgessR3 A B C)
     {φ : Formula} (h_Gφ : Formula.all_future φ ∈ A)
     (h_neg_in_B : φ.neg ∈ B) :
@@ -995,7 +995,7 @@ Proof: Suppose G(ψ) ∈ A and ψ ∉ B. Then ¬ψ ∈ B (MCS). By BX4' (connect
 But F(¬ψ) = ¬G(ψ^{nn}), so G(ψ^{nn}) ∉ A. Yet G(ψ) → G(ψ^{nn}) by DNI
 + temporal necessitation + K distribution, contradiction. -/
 private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_B : SetMaximalConsistent (fc := FrameClass.Base) B)
     (h_hBA : h_content B ⊆ A) :
     g_content A ⊆ B := by
   intro ψ hψ
@@ -1028,7 +1028,7 @@ private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
 
 /-- g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B. Dual of above. -/
 private theorem g_content_sub_imp_h_content_sub' {A B : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_B : SetMaximalConsistent (fc := FrameClass.Base) B)
     (h_gAB : g_content A ⊆ B) :
     h_content B ⊆ A := by
   intro ψ hψ
@@ -1103,7 +1103,7 @@ So we obtain `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(beta₀∧eta, gamma₀
 /-- Helper: BX3 (right_mono_until) at MCS level. If ⊢ ψ → χ and
 U(φ, ψ) ∈ A, then U(φ, χ) ∈ A. -/
 private theorem right_mono_until_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {φ ψ χ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) {φ ψ χ : Formula}
     (h_impl : DerivationTree [] (ψ.imp χ))
     (h_untl : Formula.untl ψ φ ∈ A) :
     Formula.untl χ φ ∈ A := by
@@ -1118,7 +1118,7 @@ private theorem right_mono_until_mcs {A : Set Formula}
 
 /-- Right monotonicity for Since at MCS level: if ⊢ ψ→χ and S(φ,ψ) ∈ C, then S(φ,χ) ∈ C. -/
 private theorem right_mono_since_mcs {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C) {φ ψ χ : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C) {φ ψ χ : Formula}
     (h_impl : DerivationTree [] (ψ.imp χ))
     (h_snce : Formula.snce ψ φ ∈ C) :
     Formula.snce χ φ ∈ C := by
@@ -1134,7 +1134,7 @@ private theorem right_mono_since_mcs {C : Set Formula}
 /-- BX13 (enrichment_until) at MCS level: If p ∈ A and untl(phi, psi) ∈ A,
 then untl(phi, psi ∧ snce(phi, p)) ∈ A. -/
 private theorem enrichment_until_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {phi psi p : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) {phi psi p : Formula}
     (h_p : p ∈ A)
     (h_untl : Formula.untl psi phi ∈ A) :
     Formula.untl (Formula.and psi (Formula.snce p phi)) phi ∈ A := by
@@ -1146,7 +1146,7 @@ private theorem enrichment_until_mcs {A : Set Formula}
 /-- BX10 (until_F) at MCS level: If untl(phi, psi) ∈ A, then F(psi) ∈ A.
 Alias for `until_F_mcs` for local use. -/
 private theorem until_implies_F_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {phi psi : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) {phi psi : Formula}
     (h_untl : Formula.untl psi phi ∈ A) :
     Formula.some_future psi ∈ A :=
   until_F_mcs h_mcs phi psi h_untl
@@ -1155,7 +1155,7 @@ private theorem until_implies_F_mcs {A : Set Formula}
 F(phi) = ¬G(¬phi). From ⊢ phi → psi we get ⊢ ¬psi → ¬phi, then G(¬psi) → G(¬phi),
 so ¬G(¬phi) → ¬G(¬psi), i.e., F(phi) → F(psi). -/
 private theorem F_mono_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {phi psi : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) {phi psi : Formula}
     (h_impl : DerivationTree [] (phi.imp psi))
     (h_F : Formula.some_future phi ∈ A) :
     Formula.some_future psi ∈ A := by
@@ -1281,7 +1281,7 @@ private theorem list_conj_mem_dcs {B : Set Formula} (h_dcs : ClosedUnderDerivati
     exact cud_conj_closed h_dcs h1 h2
 
 /-- If A is MCS and all elements of L are in A, then list_conj L ∈ A. -/
-private theorem list_conj_mem_mcs {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
+private theorem list_conj_mem_mcs {A : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) :
     (L : List Formula) → (h : ∀ φ ∈ L, φ ∈ A) → list_conj L ∈ A
   | [], _ => theorem_in_mcs h_mcs (identity Formula.bot)
   | [φ], h => by simp [list_conj]; exact h φ (List.mem_singleton.mpr rfl)
@@ -1295,16 +1295,16 @@ private theorem list_conj_mem_mcs {A : Set Formula} (h_mcs : SetMaximalConsisten
 
 /-- If F(φ)∈A (MCS), then {φ} is consistent. -/
 private theorem consistent_of_F_mem {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_F : Formula.some_future φ ∈ A) :
-    SetConsistent ({φ} : Set Formula) := by
+    SetConsistent (fc := FrameClass.Base) ({φ} : Set Formula) := by
   -- {φ} ⊆ {φ} ∪ g_content(A), and the latter is consistent
   have h_seed := forward_temporal_witness_seed_consistent A h_mcs φ h_F
   exact SetConsistent_of_subset (Set.subset_union_left) h_seed
 
 /-- If {φ} is consistent and [φ] ⊢ ⊥, then False. -/
 private theorem inconsistent_singleton_false {φ : Formula}
-    (h_cons : SetConsistent ({φ} : Set Formula))
+    (h_cons : SetConsistent (fc := FrameClass.Base) ({φ} : Set Formula))
     (d : DerivationTree [φ] Formula.bot) : False :=
   h_cons [φ] (fun ψ hψ => by simp [List.mem_singleton] at hψ; subst hψ; exact Set.mem_singleton _) ⟨d⟩
 
@@ -1348,7 +1348,7 @@ private noncomputable def snce_right_mono_deriv (φ ψ χ : Formula)
 /-- BX13' (enrichment_since) at MCS level: If p ∈ C and snce(phi, psi) ∈ C,
 then snce(phi, psi ∧ untl(phi, p)) ∈ C. -/
 private theorem enrichment_since_mcs {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C) {phi psi p : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C) {phi psi p : Formula}
     (h_p : p ∈ C)
     (h_snce : Formula.snce psi phi ∈ C) :
     Formula.snce (Formula.and psi (Formula.untl p phi)) phi ∈ C := by
@@ -1359,23 +1359,23 @@ private theorem enrichment_since_mcs {C : Set Formula}
 
 /-- BX10' (since_P) at MCS level: If snce(phi, psi) ∈ C, then P(psi) ∈ C. -/
 private theorem since_implies_P_mcs {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C) {phi psi : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C) {phi psi : Formula}
     (h_snce : Formula.snce psi phi ∈ C) :
     Formula.some_past psi ∈ C :=
   since_implies_P_in_mcs h_mcs h_snce
 
 /-- If P(φ)∈C (MCS), then {φ} is consistent. -/
 private theorem consistent_of_P_mem {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C)
     (φ : Formula) (h_P : Formula.some_past φ ∈ C) :
-    SetConsistent ({φ} : Set Formula) := by
+    SetConsistent (fc := FrameClass.Base) ({φ} : Set Formula) := by
   have h_seed := past_temporal_witness_seed_consistent C h_mcs φ h_P
   exact SetConsistent_of_subset (Set.subset_union_left) h_seed
 
 /-- P-monotonicity at MCS level: If ⊢ phi → psi and P(phi) ∈ C, then P(psi) ∈ C.
 Mirror of F_mono_mcs using H instead of G. -/
 private theorem P_mono_mcs {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C) {phi psi : Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C) {phi psi : Formula}
     (h_impl : DerivationTree [] (phi.imp psi))
     (h_P : Formula.some_past phi ∈ C) :
     Formula.some_past psi ∈ C := by
@@ -1415,7 +1415,7 @@ formulas each in A, enrich the event with snce(guard, αⱼ) for each αⱼ.
 
 Result: EnrichedEvent containing the new event and proofs. -/
 private noncomputable def iterated_enrichment {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (guard : Formula) :
     (alphas : List Formula) →
     (h_alphas : ∀ α ∈ alphas, α ∈ A) →
@@ -1451,7 +1451,7 @@ structure EnrichedEventSince (C : Set Formula) (guard event : Formula) (gammas :
 /-- Iterated BX13' enrichment (Since direction): given snce(guard, event) ∈ C and
 a list of formulas each in C, enrich the event with untl(guard, γⱼ) for each γⱼ. -/
 private noncomputable def iterated_enrichment_since {C : Set Formula}
-    (h_mcs : SetMaximalConsistent C)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) C)
     (guard : Formula) :
     (gammas : List Formula) →
     (h_gammas : ∀ γ ∈ gammas, γ ∈ C) →
@@ -1504,7 +1504,7 @@ Let gamma'' = gamma ∧ gamma', beta'' = beta ∧ beta'. From burgessR3:
 untl(gamma'', beta'') ∈ A. By BX5: untl(gamma'', beta'' ∧ untl(gamma'', beta'')) ∈ A.
 By BX3+BX2G monotonicity: untl(gamma', beta' ∧ untl(gamma, beta)) ∈ A. Contradiction. -/
 theorem xu_lemma_3_2_1_until {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     {beta : Formula} (h_beta : beta ∈ B)
     {gamma : Formula} (h_gamma : gamma ∈ C) :
@@ -1636,7 +1636,7 @@ beta ∈ B and alpha ∈ A.
 Dual of xu_lemma_3_2_1_until: uses BX5' (self_accum_since), BX3' (right_mono_since),
 and BX2H (left_mono_since_H) for the guard strengthening and contradiction. -/
 theorem xu_lemma_3_2_1_since {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A) (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     {beta : Formula} (h_beta : beta ∈ B)
     {alpha : Formula} (h_alpha : alpha ∈ A) :
@@ -1769,20 +1769,20 @@ needed for burgessR3 follow from Xu 3.2.1 (guard strengthening), which proves
 untl(γ, β') ∈ B and snce(α, β') ∈ B for all β' ∈ B, γ ∈ C, α ∈ A.
 No BX14 (separation_until) is needed. -/
 theorem lemma_2_6_splitting {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (_h_gc : g_content A ⊆ C)
     (β : Formula)
     (h_β_not_B : β ∉ B) :
     ∃ B' D B'', BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧ β.neg ∈ D ∧ B ⊆ D ∧ B ⊆ B' ∧ B ⊆ B'' := by
+      SetMaximalConsistent (fc := FrameClass.Base) D ∧ β.neg ∈ D ∧ B ⊆ D ∧ B ⊆ B' ∧ B ⊆ B'' := by
   -- Step 1: Trivial seed {β.neg} ∪ B is consistent
   -- B is CUD (from BurgessR3Maximal) and β ∉ B, so B is SDC (cud_not_mem_is_sdc).
-  -- dcs_neg_union_consistent then gives SetConsistent ({β.neg} ∪ B).
+  -- dcs_neg_union_consistent then gives SetConsistent (fc := FrameClass.Base) ({β.neg} ∪ B).
   have h_sdc : SetDeductivelyClosed B := cud_not_mem_is_sdc h_B_dcs h_β_not_B
-  have h_seed_cons : SetConsistent ({β.neg} ∪ B) := dcs_neg_union_consistent h_sdc h_β_not_B
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({β.neg} ∪ B) := dcs_neg_union_consistent h_sdc h_β_not_B
   -- Step 2: Lindenbaum-extend to MCS D
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- Step 3: Extract seed memberships
@@ -1982,15 +1982,15 @@ The simplified seed has 3 components: B ∪ {eta} ∪ {snce(α, β∧xi)}.
 Uses BX5 (self-accumulation) + BX7 (linearity) + BX13 (enrichment) to derive
 F(event) ∈ A, which ensures the seed is consistent. -/
 private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl eta xi ∈ A)
     (h_xi_not_B : xi ∉ B) :
-    SetConsistent (lemma_2_7_seed A B C xi eta) := by
+    SetConsistent (fc := FrameClass.Base) (lemma_2_7_seed A B C xi eta) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Step 1: Extract neg-until witness from xi ∉ B + BurgessR3Maximal
   have h_not_r3_xi := BurgessR3Maximal_extension_fails h_r3m h_xi_not_B
@@ -2180,8 +2180,8 @@ Convention: untl(xi, eta) = U(eta, xi) in Burgess.
   xi = guard (Burgess η), eta = event (Burgess ξ).
   Burgess: U(ξ,η) ∈ A, η ∉ B, ξ ∈ D, η ∈ B', B ⊆ B'. -/
 theorem lemma_2_7 {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (h_gc : g_content A ⊆ C)
@@ -2191,7 +2191,7 @@ theorem lemma_2_7 {A B C : Set Formula}
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧
+      SetMaximalConsistent (fc := FrameClass.Base) D ∧
       eta ∈ D ∧
       B ⊆ B' ∧
       B ⊆ D ∧
@@ -2288,15 +2288,15 @@ theorem lemma_2_7 {A B C : Set Formula}
 The same seed as Lemma 2.7 (3 components after Xu 3.2.1 simplification), but
 consistency proved using ¬(eta ∨ (xi ∧ untl(xi, eta))) ∈ C instead of xi ∉ B. -/
 private theorem lemma_2_8_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl eta xi ∈ A)
     (h_neg_disj : (Formula.or eta (Formula.and xi (Formula.untl eta xi))).neg ∈ C) :
-    SetConsistent (lemma_2_7_seed A B C xi eta) := by
+    SetConsistent (fc := FrameClass.Base) (lemma_2_7_seed A B C xi eta) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   set γ' := (Formula.or eta (Formula.and xi (Formula.untl eta xi))).neg with γ'_def
   have h_γ'_to_neg_eta : DerivationTree [] (γ'.imp eta.neg) :=
@@ -2468,8 +2468,8 @@ via DC(B ∪ {xi}) Zorn seed, matching lemma_2_7's strengthening.
 Convention: untl(xi, eta) = U(eta, xi) in Burgess.
   xi = guard (Burgess η), eta = event (Burgess ξ). -/
 theorem lemma_2_8 {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (h_gc : g_content A ⊆ C)
@@ -2479,7 +2479,7 @@ theorem lemma_2_8 {A B C : Set Formula}
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧
+      SetMaximalConsistent (fc := FrameClass.Base) D ∧
       eta ∈ D ∧
       B ⊆ D ∧
       B ⊆ B' ∧
@@ -2657,15 +2657,15 @@ the 3-component seed B ∪ {eta} ∪ {untl(γ, β∧xi)} is consistent.
 
 Uses BX5'+BX7'+BX13' chain operating on C. -/
 private theorem lemma_2_7_since_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_since : Formula.snce eta xi ∈ C)
     (h_xi_not_B : xi ∉ B) :
-    SetConsistent (lemma_2_7_since_seed A B C xi eta) := by
+    SetConsistent (fc := FrameClass.Base) (lemma_2_7_since_seed A B C xi eta) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   have h_not_r3_xi := BurgessR3Maximal_extension_fails h_r3m h_xi_not_B
   have h_neg_since_exists : ∃ beta0 ∈ B, ∃ alpha0 ∈ A,
@@ -2854,8 +2854,8 @@ snce(xi, eta) ∈ C and xi ∉ B, construct MCS D with eta ∈ D splitting the R
 
 Mirror of lemma_2_7 using BX5'+BX7'+BX13' instead of BX5+BX7+BX13. -/
 theorem lemma_2_7_since {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (h_gc : g_content A ⊆ C)
@@ -2865,7 +2865,7 @@ theorem lemma_2_7_since {A B C : Set Formula}
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧
+      SetMaximalConsistent (fc := FrameClass.Base) D ∧
       eta ∈ D ∧
       B ⊆ B' ∧
       B ⊆ D ∧
@@ -2944,15 +2944,15 @@ theorem lemma_2_7_since {A B C : Set Formula}
 /-- **Lemma 2.8' seed consistency** (Since direction): Same seed as lemma_2_7_since,
 but consistency proved using ¬(eta ∨ (xi ∧ snce(xi,eta))) ∈ A instead of xi ∉ B. -/
 private theorem lemma_2_8_since_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_since : Formula.snce eta xi ∈ C)
     (h_neg_disj : (Formula.or eta (Formula.and xi (Formula.snce eta xi))).neg ∈ A) :
-    SetConsistent (lemma_2_7_since_seed A B C xi eta) := by
+    SetConsistent (fc := FrameClass.Base) (lemma_2_7_since_seed A B C xi eta) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   set α' := (Formula.or eta (Formula.and xi (Formula.snce eta xi))).neg with α'_def
   have h_α'_to_neg_eta : DerivationTree [] (α'.imp eta.neg) :=
@@ -3134,8 +3134,8 @@ private theorem lemma_2_8_since_seed_consistent {A B C : Set Formula}
 snce(xi, eta) ∈ C and ¬(eta ∨ (xi ∧ snce(xi, eta))) ∈ A, construct MCS D
 with eta ∈ D splitting the R3 pair. Returns xi ∈ B'' via DC(B∪{xi}) Zorn seed. -/
 theorem lemma_2_8_since {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (h_mcs_A : SetMaximalConsistent (fc := FrameClass.Base) A)
+    (h_mcs_C : SetMaximalConsistent (fc := FrameClass.Base) C)
     (h_r3m : BurgessR3Maximal A B C)
     (h_B_dcs : ClosedUnderDerivation B)
     (h_gc : g_content A ⊆ C)
@@ -3145,7 +3145,7 @@ theorem lemma_2_8_since {A B C : Set Formula}
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧
+      SetMaximalConsistent (fc := FrameClass.Base) D ∧
       eta ∈ D ∧
       B ⊆ D ∧
       B ⊆ B' ∧
@@ -3234,9 +3234,9 @@ from Since-obligations, form α* ∈ A, apply BX13 enrichment to get
 F(β ∧ snce(γ, α*)) ∈ A, then derive ⊥ from {β ∧ snce(γ, α*)} ∪ g_content(A),
 contradicting forward_temporal_witness_seed_consistent. -/
 theorem until_witness_enriched_seed_consistent {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
-    SetConsistent ({β} ∪ g_content A ∪ {φ | ∃ α ∈ A, φ = Formula.snce α γ}) := by
+    SetConsistent (fc := FrameClass.Base) ({β} ∪ g_content A ∪ {φ | ∃ α ∈ A, φ = Formula.snce α γ}) := by
   intro L hL ⟨d⟩
   have h_extract : ∀ φ ∈ L, (φ ∈ {β} ∪ g_content A) ∨ (∃ α ∈ A, φ = Formula.snce α γ) := by
     intro φ hφ
@@ -3341,9 +3341,9 @@ membership follows from enriching the seed with Since-obligations
 {snce(γ, α) : α ∈ A}, which gives burgessRSince(C, γ, A), then applying
 burgessR3Maximal_with_guard (RRelation.lean). -/
 noncomputable def lemma_2_4_with_guard {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
-    ∃ B C : Set Formula, SetMaximalConsistent C ∧
+    ∃ B C : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) C ∧
       β ∈ C ∧ g_content A ⊆ C ∧
       Formula.some_past (Formula.untl β γ) ∈ C ∧
       γ ∈ B ∧ BurgessR3Maximal A B C := by
@@ -3390,9 +3390,9 @@ extract α-witnesses from Until-obligations, form α*, apply enrichment_since to
 P(β ∧ untl(γ, α*)) ∈ A, then derive ⊥ from `{β ∧ untl(γ, α*)} ∪ h_content(A)`,
 contradicting past_temporal_witness_seed_consistent. -/
 theorem since_witness_enriched_seed_consistent {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_since : Formula.snce β γ ∈ A) :
-    SetConsistent ({β} ∪ h_content A ∪ {φ | ∃ α ∈ A, φ = Formula.untl α γ}) := by
+    SetConsistent (fc := FrameClass.Base) ({β} ∪ h_content A ∪ {φ | ∃ α ∈ A, φ = Formula.untl α γ}) := by
   intro L hL ⟨d⟩
   have h_extract : ∀ φ ∈ L, (φ ∈ {β} ∪ h_content A) ∨ (∃ α ∈ A, φ = Formula.untl α γ) := by
     intro φ hφ
@@ -3501,9 +3501,9 @@ follows from enriching the seed with Until-obligations
 {untl(γ, α) : α ∈ A}, which gives burgessR(C, γ, A), then
 burgessR_implies_burgessRSince and burgessR3Maximal_with_guard. -/
 noncomputable def lemma_2_4_since_with_guard {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A) (γ β : Formula)
     (h_since : Formula.snce β γ ∈ A) :
-    ∃ B C : Set Formula, SetMaximalConsistent C ∧
+    ∃ B C : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) C ∧
       β ∈ C ∧ h_content A ⊆ C ∧
       γ ∈ B ∧ BurgessR3Maximal C B A := by
   have h_seed_cons := since_witness_enriched_seed_consistent h_mcs γ β h_since

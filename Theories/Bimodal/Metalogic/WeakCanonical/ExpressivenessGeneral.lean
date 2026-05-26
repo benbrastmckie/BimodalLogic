@@ -8559,7 +8559,14 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                     (tau_d_sel ⟨_, ‹_›⟩)
              | exact pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
                     (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩)
-                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
+             | (convert pivot_chain_order_rev' hd_le_pn (hd_le_sel ⟨_, ‹_›⟩)
+                    hc_le_en (hc_le_rtau ⟨_, ‹_›⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
+                    (tau_d_sel ⟨_, ‹_›⟩) using 3 <;> congr 1 <;> exact Fin.ext (by omega))
+             | (convert pivot_chain_order' (hd_le_sel ⟨_, ‹_›⟩) hd_le_pn
+                    (hc_le_rtau ⟨_, ‹_›⟩) hc_le_en (tau_d_sel ⟨_, ‹_›⟩)
+                    ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩ using 3 <;> congr 1 <;> exact Fin.ext (by omega)))
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]

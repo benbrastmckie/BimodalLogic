@@ -61,7 +61,7 @@ Either L = [] (then [] ⊢ ⊥, contradicting consistency of TM) or L = [¬φ]
 -/
 theorem neg_consistent_of_not_derivable (φ : Formula)
     (h_not_deriv : ¬Nonempty (DerivationTree [] φ)) :
-    SetConsistent ({Formula.neg φ} : Set Formula) := by
+    SetConsistent (fc := FrameClass.Base) ({Formula.neg φ} : Set Formula) := by
   intro L hL ⟨d⟩
   -- Every element of L is ¬φ
   have h_all_neg : ∀ ψ ∈ L, ψ = Formula.neg φ := by
@@ -183,7 +183,7 @@ theorem completeness' (φ : Formula) (h : valid φ) :
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
 -/
-private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.next_top.neg ∈ A) :
     ∃ (F : TaskFrame Rat) (TM : TaskModel F)
@@ -215,7 +215,7 @@ private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaxima
 Enriched discrete countermodel: constructs a countermodel with `Int` explicit
 throughout, so `SuccOrder`/`PredOrder` are available for `valid_discrete`.
 -/
-private theorem countermodel_discrete_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+private theorem countermodel_discrete_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box Chronicle.next_top ∈ A) :
     ∃ (F : TaskFrame Int) (TM : TaskModel F)
@@ -322,7 +322,7 @@ rationals into the limit domain.
 
 **Active sorry sites** (1 total, on critical path):
 - 1 density g-value consistency in CounterexampleElimination.lean:3570 — the
-  density elimination needs `SetConsistent (χ.g pc.x pc.y)` to find β ∉ g for
+  density elimination needs `SetConsistent (fc := FrameClass.Base) (χ.g pc.x pc.y)` to find β ∉ g for
   `lemma_2_6_splitting`. This traces to the Cantor isomorphism requiring
   `DenselyOrdered` on the limit domain (an implementation choice — Burgess 1982
   doesn't need density). Task 117 will remove the Cantor iso and build the model
