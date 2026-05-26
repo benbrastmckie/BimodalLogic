@@ -1,4 +1,4 @@
-import Bimodal.Automation.Tactics
+import Bimodal.Automation.Tactics.Commands
 import Bimodal.Automation.ProofSearch
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
