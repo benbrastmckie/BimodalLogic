@@ -154,7 +154,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Case II Cross-Boundary Ordering (S8/S9/S10) [PARTIAL]
+### Phase 3: Case II Cross-Boundary Ordering (S8/S9/S10) [BLOCKED]
 - **Started**: 2026-05-24T22:00:00Z
 - **D-compat breakthrough**: 2026-05-25T04:30:00Z
 - **Paused**: 2026-05-25 (for file splitting via tasks 168, 174)
