@@ -98,7 +98,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove completeness_dense Sorry [NOT STARTED]
+### Phase 2: Prove completeness_dense Sorry [COMPLETED]
 
 **Goal**: Eliminate the sorry at line 285 in `completeness_dense` by showing that a Dense-MCS must contain `box(next_top.neg)`, making the non-dense branch unreachable.
 

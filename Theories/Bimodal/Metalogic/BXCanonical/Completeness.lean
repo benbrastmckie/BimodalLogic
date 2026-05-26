@@ -278,11 +278,15 @@ theorem completeness_dense (φ : Formula) :
     obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid_dense Rat F TM Omega h_sc τ h_mem t)
-  · -- Non-dense case: ¬□(F'T) ∈ M. With Dense-MCS, whether □(F'T) is forced
-    -- by the density axiom is a genuine open question about the canonical model.
-    -- This sorry guards a potentially provable goal (unlike the previous sorry
-    -- which guarded the unprovable goal `valid_dense φ → Base-derivable φ`).
-    sorry
+  · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
+    -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
+    -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.
+    have h_ax : DerivationTree FrameClass.Dense [] Chronicle.next_top.neg :=
+      DerivationTree.axiom [] _ Axiom.dense_indicator (by trivial)
+    have h_box : DerivationTree FrameClass.Dense [] Chronicle.next_top.neg.box :=
+      DerivationTree.necessitation _ h_ax
+    have h_in : Chronicle.next_top.neg.box ∈ M := theorem_in_mcs hM_mcs h_box
+    exact set_consistent_not_both hM_mcs.1 (Chronicle.next_top.neg.box) h_in h_not_box_dense
 
 /--
 Discrete Completeness Theorem: If a formula is valid on all discretely ordered models,
