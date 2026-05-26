@@ -255,15 +255,13 @@ then it is derivable in the Dense proof system.
 but using Dense-derivability and Dense-MCS throughout.
 - Dense case: `countermodel_dense_enriched` produces a countermodel on `Rat`
   (DenselyOrdered), directly contradicting `valid_dense`.
-- Non-dense case: sorried. With a Dense-MCS, the question of whether
-  `□(F'⊤) ∈ M` is forced by the density axiom is a genuine open question
-  about the canonical model construction (distinct from the previous false
-  sorry which used Base-derivability).
+- Non-dense case (task 198): the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
+  theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 
 **Sorry Status**: Inherits sorries from `countermodel_dense` (dense case).
-The non-dense branch sorry is a genuine open question (not a false statement).
-The previous return type (`DerivationTree FrameClass.Base`) was mathematically
-wrong — the density axiom is not Base-derivable.
+The non-dense branch is now resolved (task 198): the `dense_indicator` axiom
+`¬U(⊤,⊥)` is a Dense theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS,
+contradicting `¬□(F'T) ∈ M`.
 -/
 theorem completeness_dense (φ : Formula) :
     valid_dense φ → Nonempty (DerivationTree FrameClass.Dense [] φ) := by
@@ -296,14 +294,16 @@ then it is derivable in the Discrete proof system.
 but using Discrete-derivability and Discrete-MCS throughout.
 - Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_enriched` produces a
   countermodel on `Int` (SuccOrder, PredOrder), contradicting `valid_discrete`.
-- Dense case (□(F'⊤) ∈ M): sorried. With a Discrete-MCS, whether □(F'⊤) can
-  appear is a genuine open question about the canonical model.
+- Dense case (□(F'⊤) ∈ M, task 198): `U(⊤,⊥)` is a Discrete theorem,
+  so `next_top ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
+  contradiction.
 - Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
-**Sorry Status**: The dense-case sorry is a genuine open question (not false).
+**Sorry Status**: The dense-case branch is now resolved (task 198):
+`U(⊤,⊥)` (next_top) is a Discrete theorem (derived from prior_UZ + serial_future
++ guard weakening via left_mono_until_G), so from `□(¬U(⊤,⊥)) ∈ M` and Modal T
+we get `¬U(⊤,⊥) ∈ M`, contradicting `U(⊤,⊥) ∈ M`.
 The mixed-case sorry is eliminated via `dd_countermodel_chronicle_mixed_sorry`.
-The previous return type (`DerivationTree FrameClass.Base`) was mathematically
-wrong — the discrete axioms (prior_UZ, prior_SZ, z1) are not Base-derivable.
 -/
 theorem completeness_discrete (φ : Formula) :
     valid_discrete φ → Nonempty (DerivationTree FrameClass.Discrete [] φ) := by
