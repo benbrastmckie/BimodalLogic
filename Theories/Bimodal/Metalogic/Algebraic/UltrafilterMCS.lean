@@ -566,7 +566,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     unfold Derives
     -- From h : [] ⊢ ψ, we get ⊢ ψ. Then ⊢ T → ψ by prop_s.
     have d_s : DerivationTree FrameClass.Base [] (ψ.imp ((Formula.bot.imp Formula.bot).imp ψ)) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s ψ (Formula.bot.imp Formula.bot) trivial)
+      DerivationTree.axiom [] _ (Axiom.prop_s ψ (Formula.bot.imp Formula.bot)) trivial
     exact ⟨DerivationTree.modus_ponens [] _ _ d_s h⟩
   | cons φ L' ih =>
     -- (φ :: L') ⊢ ψ, need to show: ⊤ ⊓ [φ] ⊓ fold(L') ≤ [ψ]

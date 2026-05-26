@@ -106,7 +106,7 @@ The identity function can be built from K and S combinators:
 - SKK = λx. K x (K x) = λx. x
 -/
 def identity (A : Formula) : ⊢ A.imp A := by
-  have k1 : ⊢ A.imp ((A.imp A).imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A) trivial)
+  have k1 : ⊢ A.imp ((A.imp A).imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A)) trivial
   have k2 : ⊢ A.imp (A.imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A A) trivial
   have s : ⊢ (A.imp ((A.imp A).imp A)).imp ((A.imp (A.imp A)).imp (A.imp A)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A (A.imp A) A) trivial
@@ -617,7 +617,7 @@ def combine_imp_conj {P A B : Formula}
   have pair_ab : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   have h1 : ⊢ P.imp (B.imp (A.and B)) := imp_trans hA pair_ab
   have s : ⊢ (P.imp (B.imp (A.and B))).imp ((P.imp B).imp (P.imp (A.and B))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k P B (A.and B) trivial)
+    DerivationTree.axiom [] _ (Axiom.prop_k P B (A.and B)) trivial
   have h2 : ⊢ (P.imp B).imp (P.imp (A.and B)) :=
     DerivationTree.modus_ponens [] (P.imp (B.imp (A.and B))) ((P.imp B).imp (P.imp (A.and B))) s h1
   exact DerivationTree.modus_ponens [] (P.imp B) (P.imp (A.and B)) h2 hB
@@ -659,9 +659,10 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 -/
 def temp_future_derived (φ : Formula) :
     ⊢ (Formula.box φ).imp (Formula.all_future (Formula.box φ)) :=
-  let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ) trivial)
+  let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) trivial
     -- □(□φ) → □(G(□φ))
   let t_G_box := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ))) trivial
+
     -- □(G(□φ)) → G(□φ)
   let chain1 := imp_trans mf_box t_G_box
     -- □(□φ) → G(□φ)

@@ -426,7 +426,7 @@ def box_conj_intro {A B : Formula}
   -- Step 4: modal K distribution (second application)
   -- □(B → A∧B) → (□B → □(A∧B))
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B) trivial)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
   -- Compose: □A → □(B → A∧B) and □(B → A∧B) → (□B → □(A∧B))
   -- to get: □A → (□B → □(A∧B))
   have h2 : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
@@ -458,7 +458,7 @@ def box_conj_intro_imp {P A B : Formula}
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
     DerivationTree.modus_ponens [] _ _ mk1 box_pair
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B) trivial)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
   have box_to_box : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
 
   -- Now compose: P → □A and □A → □B → □(A ∧ B) gives P → □B → □(A ∧ B)
