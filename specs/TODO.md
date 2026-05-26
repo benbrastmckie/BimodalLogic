@@ -27,28 +27,23 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-25. 33 active tasks.*
+*Updated 2026-05-26. 28 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
 ### Phase 1 — Paused (155 Phase 3 partial, awaiting file splitting)
 
-155 [PARTIAL] — Reynolds pipeline: Phase 3 partial (3/6 Case A goals closed, Case B pending). Paused for file splitting.
-  └─ 154, 168, 174
+155 [IMPLEMENTING] — Reynolds pipeline: Phase 3 partial (3/6 Case A goals closed, Case B pending). Paused for file splitting.
+  └─ 154, 174
 
 ### Phase 1a — File Splitting (next active work)
 
-168 [PARTIAL] — Parameterize DerivationTree over FrameClass (50+ files updated, 6 discrete chronicle sorries remain → task 197)
-197 [COMPLETED] — Parameterize chronicle construction over FrameClass (eliminate 6 sorry workarounds from task 168)
-  - **Plan**: [specs/197_parameterize_chronicle_over_frameclass/plans/01_chronicle-fc-parameterization.md]
-  └─ 168
-174 [RESEARCHED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
-  └─ 168
+174 [PLANNED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
 
 ### Phase 1b — Resume 155 (Phase 3 remainder + Phases 5-9, after file splitting)
 
 155 → Resume Phase 3 sorry closure + Phases 5-9 (with split modules, faster builds)
-  └─ 168, 174
+  └─ 174
 
 ### Phase 2 — Post-155 Cleanup
 
@@ -57,10 +52,10 @@ technical_debt:
 95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
   └─ 155
 
-### Phase 3 — Structural Refactor (before tactics — 168 changes DerivationTree type)
+### Phase 3 — Structural Refactor
 
 175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
-  └─ 168, 174
+  └─ 174
 180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
   └─ 174
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
@@ -116,7 +111,6 @@ technical_debt:
 ### Deferred — New Features (post-publication)
 
 169 [NOT STARTED] — Complete frame extension: axiom, typeclass, soundness, correspondence
-  └─ 168
 170 [NOT STARTED] — Completeness theorem for TM^dc (dense + complete)
   └─ 169
 127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
