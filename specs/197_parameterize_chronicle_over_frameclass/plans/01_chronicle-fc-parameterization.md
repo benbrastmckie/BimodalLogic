@@ -104,7 +104,7 @@ Phases within the same wave can execute in parallel. This is a fully sequential 
 
 ---
 
-### Phase 2: RRelation.lean [IN PROGRESS]
+### Phase 2: RRelation.lean [COMPLETED]
 
 **Goal**: Thread `fc` through the r-relation, deductive closure, and related lemmas in RRelation.lean.
 

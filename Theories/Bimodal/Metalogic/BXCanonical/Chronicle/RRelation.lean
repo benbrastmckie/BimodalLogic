@@ -1549,13 +1549,13 @@ theorem burgessR3_untl_conj_in_A (fc : FrameClass) {A B C : Set Formula}
     -- Component 1: (β ∧ β') ∧ X → β ∧ β' → β' (two conj elims)
     have h_comp1 : DerivationTree fc [] (
       ((Formula.and β β').and ((γ.and δ).untl (Formula.and β β'))).imp β') := by
-      have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.and β β') ((γ.and δ).untl (Formula.and β β'))
-      have h2 := Bimodal.Theorems.Propositional.rce_imp β β'
+      have h1 := liftBase fc (Bimodal.Theorems.Propositional.lce_imp (Formula.and β β') ((γ.and δ).untl (Formula.and β β')))
+      have h2 := liftBase fc (Bimodal.Theorems.Propositional.rce_imp β β')
       exact imp_trans h1 h2
     -- Component 2: (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) → untl(β ∧ β', γ ∧ δ) → untl(β, γ)
     have h_comp2 : DerivationTree fc [] (
       ((Formula.and β β').and ((γ.and δ).untl (Formula.and β β'))).imp (γ.untl β)) := by
-      have h1 := Bimodal.Theorems.Propositional.rce_imp (Formula.and β β') ((γ.and δ).untl (Formula.and β β'))
+      have h1 := liftBase fc (Bimodal.Theorems.Propositional.rce_imp (Formula.and β β') ((γ.and δ).untl (Formula.and β β')))
       exact imp_trans h1 h_untl_inner_weak
     -- Combine: X → β' and X → untl(β, γ) gives X → β' ∧ untl(β, γ)
     exact combine_imp_conj h_comp1 h_comp2
@@ -1564,7 +1564,7 @@ theorem burgessR3_untl_conj_in_A (fc : FrameClass) {A B C : Set Formula}
   -- h_weak_guard : (γ.and δ).untl (β'.and (γ.untl β)) ∈ A
   -- Step 5: Weaken event via BX3: γ ∧ δ → δ
   have h_event_weak2 : DerivationTree fc [] ((Formula.and γ δ).imp δ) :=
-    Bimodal.Theorems.Propositional.rce_imp γ δ
+    liftBase fc (Bimodal.Theorems.Propositional.rce_imp γ δ)
   have h_G_event_weak2 := DerivationTree.temporal_necessitation _ h_event_weak2
   have h_bx3' := DerivationTree.axiom (fc := fc) [] _ (Axiom.right_mono_until (Formula.and γ δ) δ (β'.and (γ.untl β))) trivial
   exact SetMaximalConsistent.implication_property h_mcs_A

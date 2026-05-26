@@ -80,21 +80,20 @@ Proof:
 2. Use K axiom: `(A → (B → C)) → ((A → B) → (A → C))`
 3. Apply modus ponens twice to get `⊢ A → C`
 -/
-def imp_trans {A B C : Formula}
-    (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) : ⊢ A.imp C := by
-  have s_axiom : ⊢ (B.imp C).imp (A.imp (B.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A) trivial
-  have h3 : ⊢ A.imp (B.imp C) := DerivationTree.modus_ponens [] (B.imp C) (A.imp (B.imp C)) s_axiom h2
-  have k_axiom : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A B C) trivial
-  have h4 : ⊢ (A.imp B).imp (A.imp C) := 
-    DerivationTree.modus_ponens [] (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)) k_axiom h3
+def imp_trans {fc : FrameClass} {A B C : Formula}
+    (h1 : DerivationTree fc [] (A.imp B))
+    (h2 : DerivationTree fc [] (B.imp C)) : DerivationTree fc [] (A.imp C) := by
+  have s_axiom := DerivationTree.axiom (fc := fc) [] _ (Axiom.prop_s (B.imp C) A) (FrameClass.base_le fc)
+  have h3 := DerivationTree.modus_ponens [] (B.imp C) (A.imp (B.imp C)) s_axiom h2
+  have k_axiom := DerivationTree.axiom (fc := fc) [] _ (Axiom.prop_k A B C) (FrameClass.base_le fc)
+  have h4 := DerivationTree.modus_ponens [] (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)) k_axiom h3
   exact DerivationTree.modus_ponens [] (A.imp B) (A.imp C) h4 h1
 
 /--
 From `⊢ A` and `⊢ A → B`, derive `⊢ B` (modus ponens restated).
 -/
-def mp {A B : Formula} (h1 : ⊢ A) (h2 : ⊢ A.imp B) : ⊢ B := by
+def mp {fc : FrameClass} {A B : Formula}
+    (h1 : DerivationTree fc [] A) (h2 : DerivationTree fc [] (A.imp B)) : DerivationTree fc [] B := by
   exact DerivationTree.modus_ponens [] A B h2 h1
 
 /--
@@ -612,14 +611,14 @@ Proof:
 3. By K axiom (S combinator): `(P → B → A∧B) → (P → B) → P → A∧B`
 4. Apply modus ponens: `⊢ P → A ∧ B`
 -/
-def combine_imp_conj {P A B : Formula}
-    (hA : ⊢ P.imp A) (hB : ⊢ P.imp B) : ⊢ P.imp (A.and B) := by
-  have pair_ab : ⊢ A.imp (B.imp (A.and B)) := pairing A B
-  have h1 : ⊢ P.imp (B.imp (A.and B)) := imp_trans hA pair_ab
-  have s : ⊢ (P.imp (B.imp (A.and B))).imp ((P.imp B).imp (P.imp (A.and B))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k P B (A.and B)) trivial
-  have h2 : ⊢ (P.imp B).imp (P.imp (A.and B)) :=
-    DerivationTree.modus_ponens [] (P.imp (B.imp (A.and B))) ((P.imp B).imp (P.imp (A.and B))) s h1
+def combine_imp_conj {fc : FrameClass} {P A B : Formula}
+    (hA : DerivationTree fc [] (P.imp A))
+    (hB : DerivationTree fc [] (P.imp B)) : DerivationTree fc [] (P.imp (A.and B)) := by
+  have pair_ab : DerivationTree fc [] (A.imp (B.imp (A.and B))) :=
+    (pairing A B).lift (FrameClass.base_le fc)
+  have h1 := imp_trans hA pair_ab
+  have s := DerivationTree.axiom (fc := fc) [] _ (Axiom.prop_k P B (A.and B)) (FrameClass.base_le fc)
+  have h2 := DerivationTree.modus_ponens [] (P.imp (B.imp (A.and B))) ((P.imp B).imp (P.imp (A.and B))) s h1
   exact DerivationTree.modus_ponens [] (P.imp B) (P.imp (A.and B)) h2 hB
 
 /--
@@ -629,9 +628,11 @@ Given `⊢ P → A`, `⊢ P → B`, and `⊢ P → C`, derive `⊢ P → A ∧ (
 
 This is used for P1 where △φ = Hφ ∧ (φ ∧ Gφ).
 -/
-def combine_imp_conj_3 {P A B C : Formula}
-    (hA : ⊢ P.imp A) (hB : ⊢ P.imp B) (hC : ⊢ P.imp C) : ⊢ P.imp (A.and (B.and C)) := by
-  have hBC : ⊢ P.imp (B.and C) := combine_imp_conj hB hC
+def combine_imp_conj_3 {fc : FrameClass} {P A B C : Formula}
+    (hA : DerivationTree fc [] (P.imp A))
+    (hB : DerivationTree fc [] (P.imp B))
+    (hC : DerivationTree fc [] (P.imp C)) : DerivationTree fc [] (P.imp (A.and (B.and C))) := by
+  have hBC := combine_imp_conj hB hC
   exact combine_imp_conj hA hBC
 
 /-!

@@ -448,4 +448,8 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
   | z1 _ => .Discrete
   | _ => .Base
 
+/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
+theorem FrameClass.base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
+  cases fc <;> trivial
+
 end Bimodal.ProofSystem
