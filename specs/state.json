@@ -110,10 +110,48 @@
     {
       "project_number": 168,
       "project_name": "parameterize_derivationtree_over_frameclass",
-      "status": "not_started",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-19T15:55:50Z",
-      "last_updated": "2026-05-19T15:55:50Z"
+      "last_updated": "2026-05-25T15:10:00Z",
+      "session_id": "sess_1779755827_2a0c74",
+      "started": "2026-05-25T14:57:07Z",
+      "resume_phase": 2,
+      "description": "Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/reports/01_research.md",
+          "type": "research",
+          "summary": "Comprehensive inventory: FrameClass (3 constructors, no PartialOrder), Axiom (40 constructors, no density), DerivationTree (unparameterized, 71 live files), 3 ad-hoc predicates in 6 files, 105 h_dc refs in 5 soundness files. 47 live files need changes, 37 mechanical. 20-30h estimated across 5 phases."
+        },
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "7-phase plan: core types (density axiom, PartialOrder, parameterized DerivationTree), ProofSystem layer, Theorems mechanical, soundness refactor (collapse 3x40-case splits), Metalogic/completeness, remaining modules, documentation. 24 hours, 47 live files."
+        },
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/handoffs/phase-1-handoff.md",
+          "type": "handoff",
+          "summary": "Phase 1 complete: density axiom (41 constructors), PartialOrder on FrameClass, parameterized DerivationTree with h_fc gate, lift function, new notation. Both core files compile."
+        }
+      ],
+      "researched": "2026-05-25T12:30:00Z",
+      "plan_metadata": {
+        "phases": 7,
+        "total_effort_hours": 24,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3], [4, 5], [6], [7]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-25"
+          }
+        ]
+      }
     },
     {
       "project_number": 165,
