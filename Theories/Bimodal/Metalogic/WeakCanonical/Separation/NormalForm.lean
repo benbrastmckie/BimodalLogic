@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
-import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ
+import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ.Cases
 
 /-!
 # Normal Form Reduction (GHR94 Lemma 10.2.4)

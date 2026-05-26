@@ -112,14 +112,14 @@ Phases within the same wave can execute in parallel.
 **Goal**: Split Tactics.lean (1342 lines) into 2 focused modules. Only `Automation.lean` imports it.
 
 **Tasks**:
-- [ ] Audit `private` definitions and `open` scopes in Tactics.lean
-- [ ] Create directory `Theories/Bimodal/Automation/Tactics/`
-- [ ] Create `Tactics/Helpers.lean` (~860 lines): Basic macros (apply_axiom, modal_t), assumption_search, formula helpers (is_box, extract_from_box, etc.), tactic factory, inference rule tactics, axiom tactics, core search implementation (extractDerivationGoal, tryAxiomMatch, tryModusPonens, tryModalK, tryTemporalK). Module docstring: "Core tactic helpers: formula extractors, axiom matching, and search primitives."
-- [ ] Create `Tactics/Commands.lean` (~480 lines): SearchConfig, main tactic definitions (modal_search, temporal_search, propositional_search, tm_auto), tests. Module docstring: "User-facing proof tactics: modal_search, temporal_search, and tm_auto."
-- [ ] Add module docstrings to both new files
-- [ ] Update `Theories/Bimodal/Automation.lean`: change `import Bimodal.Automation.Tactics` to `import Bimodal.Automation.Tactics.Commands` (or both Helpers + Commands if it uses helper-level definitions)
-- [ ] Delete `Theories/Bimodal/Automation/Tactics.lean`
-- [ ] Run `lake build` and verify no errors
+- [x] Audit `private` definitions and `open` scopes in Tactics.lean *(no private defs found)*
+- [x] Create directory `Theories/Bimodal/Automation/Tactics/`
+- [x] Create `Tactics/Helpers.lean` (921 lines): Basic macros, assumption_search, formula helpers, tactic factory, inference rule tactics, axiom tactics, core search implementation. *(deviation: used sed extraction from original — preserves original docstring instead of plan-specified docstring)*
+- [x] Create `Tactics/Commands.lean` (431 lines): SearchConfig, main tactic definitions, tests. *(deviation: same — original section header preserved as docstring)*
+- [x] Add module docstrings to both new files *(original file headers preserved)*
+- [x] Update `Theories/Bimodal/Automation.lean`: `import Bimodal.Automation.Tactics.Commands` *(also updated 3 test files: TacticsTest.lean, TacticsTest_Simple.lean, EdgeCaseTest.lean)*
+- [x] Delete `Theories/Bimodal/Automation/Tactics.lean`
+- [x] Run `lake build` and verify no errors
 
 **Timing**: 1.5 hours
 
@@ -215,7 +215,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Split SoundnessLemmas.lean (2 active importers) [IN PROGRESS]
+### Phase 5: Split SoundnessLemmas.lean (2 active importers) [COMPLETED]
 
 **Goal**: Split SoundnessLemmas.lean (2407 lines) into 3 focused modules aligned with frame-class boundaries.
 
@@ -254,7 +254,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Split DedekindZ.lean (2 importers) [NOT STARTED]
+### Phase 6: Split DedekindZ.lean (2 importers) [IN PROGRESS]
 
 **Goal**: Split DedekindZ.lean (2236 lines) into 2 focused modules within the existing `Separation/DedekindZ/` directory path.
 

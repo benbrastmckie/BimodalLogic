@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure
-import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ
+import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ.Cases
 
 /-!
 # Hierarchy Lemmas (GHR94 Lemmas 10.2.5-10.2.8)
