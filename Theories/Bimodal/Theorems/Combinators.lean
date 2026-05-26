@@ -83,10 +83,10 @@ Proof:
 def imp_trans {A B C : Formula}
     (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) : ⊢ A.imp C := by
   have s_axiom : ⊢ (B.imp C).imp (A.imp (B.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A) trivial
   have h3 : ⊢ A.imp (B.imp C) := DerivationTree.modus_ponens [] (B.imp C) (A.imp (B.imp C)) s_axiom h2
   have k_axiom : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A B C)
+    DerivationTree.axiom [] _ (Axiom.prop_k A B C) trivial
   have h4 : ⊢ (A.imp B).imp (A.imp C) := 
     DerivationTree.modus_ponens [] (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)) k_axiom h3
   exact DerivationTree.modus_ponens [] (A.imp B) (A.imp C) h4 h1
@@ -106,10 +106,10 @@ The identity function can be built from K and S combinators:
 - SKK = λx. K x (K x) = λx. x
 -/
 def identity (A : Formula) : ⊢ A.imp A := by
-  have k1 : ⊢ A.imp ((A.imp A).imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A))
-  have k2 : ⊢ A.imp (A.imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A A)
+  have k1 : ⊢ A.imp ((A.imp A).imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A)) trivial
+  have k2 : ⊢ A.imp (A.imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A A) trivial
   have s : ⊢ (A.imp ((A.imp A).imp A)).imp ((A.imp (A.imp A)).imp (A.imp A)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A (A.imp A) A)
+    DerivationTree.axiom [] _ (Axiom.prop_k A (A.imp A) A) trivial
   have h1 : ⊢ (A.imp (A.imp A)).imp (A.imp A) := DerivationTree.modus_ponens [] _ _ s k1
   exact DerivationTree.modus_ponens [] _ _ h1 k2
 
@@ -127,11 +127,11 @@ Proof strategy:
 def b_combinator {A B C : Formula} : ⊢ (B.imp C).imp ((A.imp B).imp (A.imp C)) := by
   -- Step 1: S axiom gives us (B → C) → (A → (B → C))
   have s_axiom : ⊢ (B.imp C).imp (A.imp (B.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A) trivial
 
   -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
   have k_axiom : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A B C)
+    DerivationTree.axiom [] _ (Axiom.prop_k A B C) trivial
 
   -- Step 3: Compose with imp_trans
   exact imp_trans s_axiom k_axiom
@@ -152,7 +152,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
 
   -- Step 1: From K axiom at level B: (A → B → C) → (B → (A → B → C))
   have step1 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp (B.imp C))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) B)
+    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) B) trivial
 
   -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
   -- Instantiate with first arg as B: (B → A → B → C) → ((B → A → B) → (B → A → C))
@@ -181,12 +181,12 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
   -- This is exactly prop_k A B C!
 
   have k_abc : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A B C)
+    DerivationTree.axiom [] _ (Axiom.prop_k A B C) trivial
 
   -- Weaken k_abc: ((A → B → C) → ...) → (B → ((A → B → C) → ...))
   have weak_k : ⊢ ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))).imp
                    (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) B)
+    DerivationTree.axiom [] _ (Axiom.prop_s ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) B) trivial
 
   have step2 : ⊢ B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) :=
     DerivationTree.modus_ponens [] _ _ weak_k k_abc
@@ -195,7 +195,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
   -- (B → X → Y) → ((B → X) → (B → Y)) where X = (A → B → C), Y = ((A → B) → (A → C))
   have k_step : ⊢ (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))).imp
                    ((B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C)))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)))
+    DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp (B.imp C)) ((A.imp B).imp (A.imp C))) trivial
 
   have step3 : ⊢ (B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C))) :=
     DerivationTree.modus_ponens [] _ _ k_step step2
@@ -208,7 +208,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
   -- We need to "supply" (A → B) = S axiom!
 
   -- S axiom gives B → (A → B)
-  have s_ab : ⊢ B.imp (A.imp B) := DerivationTree.axiom [] _ (Axiom.prop_s B A)
+  have s_ab : ⊢ B.imp (A.imp B) := DerivationTree.axiom [] _ (Axiom.prop_s B A) trivial
 
   -- We need: (B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C)))
   -- This is exactly the b_combinator pattern!
@@ -221,7 +221,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
   have k_final :
     ⊢ (B.imp ((A.imp B).imp (A.imp C))).imp
       ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C))
+    DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C)) trivial
 
   -- Apply step4 via imp_trans pattern
   -- We have step4: (A → B → C) → (B → ((A → B) → (A → C)))
@@ -244,7 +244,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
   -- We know s_ab: B → (A → B)
   -- Weaken to: (A → B → C) level:
   have weak_s_ab : ⊢ (B.imp (A.imp B)).imp ((A.imp (B.imp C)).imp (B.imp (A.imp B))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp (A.imp B)) (A.imp (B.imp C)))
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp (A.imp B)) (A.imp (B.imp C))) trivial
 
   have step6 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp B)) :=
     DerivationTree.modus_ponens [] _ _ weak_s_ab s_ab
@@ -259,7 +259,7 @@ def theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C))
       (((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp
        ((A.imp (B.imp C)).imp (B.imp (A.imp C)))) :=
     DerivationTree.axiom [] _
-      (Axiom.prop_k (A.imp (B.imp C)) (B.imp (A.imp B)) (B.imp (A.imp C)))
+      (Axiom.prop_k (A.imp (B.imp C)) (B.imp (A.imp B)) (B.imp (A.imp C))) trivial
 
   have step7 :
     ⊢ ((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp
@@ -317,7 +317,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
 
   -- Step 3: Weaken step_b with A: (B → (B → C) → C) → (A → (B → (B → C) → C))
   have weak_step_b : ⊢ (B.imp ((B.imp C).imp C)).imp (A.imp (B.imp ((B.imp C).imp C))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp ((B.imp C).imp C)) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp ((B.imp C).imp C)) A) trivial
 
   have a_b_bc_c : ⊢ A.imp (B.imp ((B.imp C).imp C)) :=
     DerivationTree.modus_ponens [] _ _ weak_step_b step_b
@@ -325,7 +325,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
   -- Step 4: Weaken step_a with B: (A → X → Y) → (B → (A → X → Y))
   have weak_step_a : ⊢ (A.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
                         (B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C)))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp ((A.imp (B.imp C)).imp (B.imp C))) B)
+    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp ((A.imp (B.imp C)).imp (B.imp C))) B) trivial
 
   have b_a_abc_bc : ⊢ B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
     DerivationTree.modus_ponens [] _ _ weak_step_a step_a
@@ -357,7 +357,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       (Axiom.prop_s
         (((B.imp C).imp C).imp
          (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
-        B)
+        B) trivial
 
   have b_b_comp :
     ⊢ B.imp (((B.imp C).imp C).imp
@@ -374,7 +374,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       (Axiom.prop_s
         (B.imp (((B.imp C).imp C).imp
          (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
-        A)
+        A) trivial
 
   have a_b_b_comp :
     ⊢ A.imp (B.imp (((B.imp C).imp C).imp
@@ -393,7 +393,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
        (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.axiom [] _
       (Axiom.prop_k B ((B.imp C).imp C)
-        (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
+        (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) trivial
 
   have step7_b :
     ⊢ (B.imp ((B.imp C).imp C)).imp
@@ -409,7 +409,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
          ((A.imp (B.imp C)).imp C))))) :=
     DerivationTree.axiom [] _
       (Axiom.prop_k A (B.imp ((B.imp C).imp C))
-        (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
+        (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) trivial
 
   -- Weaken step7_b with A
   have weak_step7 :
@@ -421,7 +421,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       (Axiom.prop_s
         ((B.imp ((B.imp C).imp C)).imp
          (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
-        A)
+        A) trivial
 
   have a_step7 :
     ⊢ A.imp ((B.imp ((B.imp C).imp C)).imp
@@ -453,7 +453,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
        (B.imp ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.axiom [] _
-      (Axiom.prop_k B ((A.imp (B.imp C)).imp (B.imp C)) ((A.imp (B.imp C)).imp C))
+      (Axiom.prop_k B ((A.imp (B.imp C)).imp (B.imp C)) ((A.imp (B.imp C)).imp C)) trivial
 
   -- Weaken k_b_final with A
   have weak_k_b :
@@ -468,7 +468,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       (Axiom.prop_s
         ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
          ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))
-        A)
+        A) trivial
 
   have a_k_b :
     ⊢ A.imp ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
@@ -494,7 +494,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
       (Axiom.prop_k A
         (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
         ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
-         (B.imp ((A.imp (B.imp C)).imp C))))
+         (B.imp ((A.imp (B.imp C)).imp C)))) trivial
 
   have step10_a :
     ⊢ (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
@@ -520,7 +520,7 @@ def theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C))
        (A.imp (B.imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.axiom [] _
       (Axiom.prop_k A (B.imp ((A.imp (B.imp C)).imp (B.imp C)))
-        (B.imp ((A.imp (B.imp C)).imp C)))
+        (B.imp ((A.imp (B.imp C)).imp C))) trivial
 
   have step11 :
     ⊢ (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp
@@ -617,7 +617,7 @@ def combine_imp_conj {P A B : Formula}
   have pair_ab : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   have h1 : ⊢ P.imp (B.imp (A.and B)) := imp_trans hA pair_ab
   have s : ⊢ (P.imp (B.imp (A.and B))).imp ((P.imp B).imp (P.imp (A.and B))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k P B (A.and B))
+    DerivationTree.axiom [] _ (Axiom.prop_k P B (A.and B)) trivial
   have h2 : ⊢ (P.imp B).imp (P.imp (A.and B)) :=
     DerivationTree.modus_ponens [] (P.imp (B.imp (A.and B))) ((P.imp B).imp (P.imp (A.and B))) s h1
   exact DerivationTree.modus_ponens [] (P.imp B) (P.imp (A.and B)) h2 hB
@@ -659,13 +659,13 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 -/
 def temp_future_derived (φ : Formula) :
     ⊢ (Formula.box φ).imp (Formula.all_future (Formula.box φ)) :=
-  let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ))
+  let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) trivial
     -- □(□φ) → □(G(□φ))
-  let t_G_box := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ)))
+  let t_G_box := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ))) trivial
     -- □(G(□φ)) → G(□φ)
   let chain1 := imp_trans mf_box t_G_box
     -- □(□φ) → G(□φ)
-  let m4 := DerivationTree.axiom [] _ (Axiom.modal_4 φ)
+  let m4 := DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial
     -- □φ → □(□φ)
   imp_trans m4 chain1
     -- □φ → G(□φ)

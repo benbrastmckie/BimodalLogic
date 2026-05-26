@@ -53,18 +53,18 @@ If `⊢ φ` then `⊢ A → φ` for any A.
 
 This uses the S axiom (weakening): `φ → (A → φ)`.
 -/
-private def weaken_under_imp {φ A : Formula} (h : ⊢ φ) : ⊢ A.imp φ := by
-  have s_ax : ⊢ φ.imp (A.imp φ) := DerivationTree.axiom [] _ (Axiom.prop_s φ A)
+private def weaken_under_imp {fc : FrameClass} {φ A : Formula} (h : ⊢[fc] φ) : ⊢[fc] A.imp φ := by
+  have s_ax : ⊢[fc] φ.imp (A.imp φ) := DerivationTree.axiom [] _ (Axiom.prop_s φ A) trivial
   exact DerivationTree.modus_ponens [] φ (A.imp φ) s_ax h
 
 /--
 Helper: Lift weakening to contexts.
 If `Γ ⊢ φ` then `Γ ⊢ A → φ` for formulas φ that are axioms.
 -/
-private def weaken_under_imp_ctx {Γ : Context} {φ A : Formula}
-    (h : Axiom φ) : Γ ⊢ A.imp φ := by
-  have ax_deriv : ⊢ φ := DerivationTree.axiom [] φ h
-  have weakened : ⊢ A.imp φ := weaken_under_imp ax_deriv
+private def weaken_under_imp_ctx {fc : FrameClass} {Γ : Context} {φ A : Formula}
+    (h : Axiom φ) (h_fc : h.minFrameClass ≤ fc) : Γ ⊢[fc] A.imp φ := by
+  have ax_deriv : ⊢[fc] φ := DerivationTree.axiom [] φ h h_fc
+  have weakened : ⊢[fc] A.imp φ := weaken_under_imp ax_deriv
   exact DerivationTree.weakening [] Γ (A.imp φ) weakened (List.nil_subset Γ)
 
 /--
@@ -76,10 +76,10 @@ then `Γ' ⊢ φ`.
 This is proven by showing that both `Γ ⊆ Γ'` and `Γ' ⊆ Γ` when they have
 the same elements, then using weakening.
 -/
-private def exchange {Γ Γ' : Context} {φ : Formula}
-    (h : Γ ⊢ φ)
+private def exchange {fc : FrameClass} {Γ Γ' : Context} {φ : Formula}
+    (h : Γ ⊢[fc] φ)
     (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') :
-    Γ' ⊢ φ := by
+    Γ' ⊢[fc] φ := by
   apply DerivationTree.weakening Γ Γ' φ h
   intro x hx
   exact (h_perm x).mp hx
@@ -150,30 +150,32 @@ Deduction case for axioms: If φ is an axiom, then `Γ ⊢ A → φ`.
 
 **Strategy**: Use S axiom to weaken φ under implication A.
 -/
-def deduction_axiom (Γ : Context) (A φ : Formula) (h_ax : Axiom φ) :
-    Γ ⊢ A.imp φ := by
-  exact weaken_under_imp_ctx h_ax
+def deduction_axiom {fc : FrameClass} (Γ : Context) (A φ : Formula) (h_ax : Axiom φ)
+    (h_fc : h_ax.minFrameClass ≤ fc) :
+    Γ ⊢[fc] A.imp φ := by
+  exact weaken_under_imp_ctx h_ax h_fc
 
 /--
 Deduction case for same assumption: `Γ ⊢ A → A`.
 
 **Strategy**: Use identity theorem (already proven in Perpetuity.lean).
 -/
-def deduction_assumption_same (Γ : Context) (A : Formula) :
-    Γ ⊢ A.imp A := by
+def deduction_assumption_same {fc : FrameClass} (Γ : Context) (A : Formula) :
+    Γ ⊢[fc] A.imp A := by
   have id : ⊢ A.imp A := identity A
-  exact DerivationTree.weakening [] Γ (A.imp A) id (List.nil_subset Γ)
+  have id_fc : ⊢[fc] A.imp A := DerivationTree.lift (fc₁ := .Base) trivial id
+  exact DerivationTree.weakening [] Γ (A.imp A) id_fc (List.nil_subset Γ)
 
 /--
 Deduction case for other assumptions: If `B ∈ Γ`, then `Γ ⊢ A → B`.
 
 **Strategy**: Use S axiom to weaken assumption B under implication A.
 -/
-def deduction_assumption_other (Γ : Context) (A B : Formula)
-    (h_mem : B ∈ Γ) : Γ ⊢ A.imp B := by
-  have b_deriv : Γ ⊢ B := DerivationTree.assumption Γ B h_mem
-  have s_ax : ⊢ B.imp (A.imp B) := DerivationTree.axiom [] _ (Axiom.prop_s B A)
-  have s_weak : Γ ⊢ B.imp (A.imp B) :=
+def deduction_assumption_other {fc : FrameClass} (Γ : Context) (A B : Formula)
+    (h_mem : B ∈ Γ) : Γ ⊢[fc] A.imp B := by
+  have b_deriv : Γ ⊢[fc] B := DerivationTree.assumption Γ B h_mem
+  have s_ax : ⊢[fc] B.imp (A.imp B) := DerivationTree.axiom [] _ (Axiom.prop_s B A) trivial
+  have s_weak : Γ ⊢[fc] B.imp (A.imp B) :=
     DerivationTree.weakening [] Γ (B.imp (A.imp B)) s_ax (List.nil_subset Γ)
   exact DerivationTree.modus_ponens Γ B (A.imp B) s_weak b_deriv
 
@@ -183,17 +185,17 @@ If `Γ ⊢ A → (C → D)` and `Γ ⊢ A → C` then `Γ ⊢ A → D`.
 
 **Strategy**: Use K axiom distribution: `(A → C → D) → ((A → C) → (A → D))`.
 -/
-def deduction_mp (Γ : Context) (A C D : Formula)
-    (h1 : Γ ⊢ A.imp (C.imp D))
-    (h2 : Γ ⊢ A.imp C) :
-    Γ ⊢ A.imp D := by
+def deduction_mp {fc : FrameClass} (Γ : Context) (A C D : Formula)
+    (h1 : Γ ⊢[fc] A.imp (C.imp D))
+    (h2 : Γ ⊢[fc] A.imp C) :
+    Γ ⊢[fc] A.imp D := by
   -- K axiom: (A → C → D) → ((A → C) → (A → D))
-  have k_ax : ⊢ (A.imp (C.imp D)).imp ((A.imp C).imp (A.imp D)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A C D)
-  have k_weak : Γ ⊢ (A.imp (C.imp D)).imp ((A.imp C).imp (A.imp D)) :=
+  have k_ax : ⊢[fc] (A.imp (C.imp D)).imp ((A.imp C).imp (A.imp D)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_k A C D) trivial
+  have k_weak : Γ ⊢[fc] (A.imp (C.imp D)).imp ((A.imp C).imp (A.imp D)) :=
     DerivationTree.weakening [] Γ _ k_ax (List.nil_subset Γ)
   -- Apply modus ponens twice
-  have step1 : Γ ⊢ (A.imp C).imp (A.imp D) :=
+  have step1 : Γ ⊢[fc] (A.imp C).imp (A.imp D) :=
     DerivationTree.modus_ponens Γ (A.imp (C.imp D)) ((A.imp C).imp (A.imp D)) k_weak h1
   exact DerivationTree.modus_ponens Γ (A.imp C) (A.imp D) step1 h2
 
@@ -206,14 +208,14 @@ This is the key lemma for handling the weakening case where A appears in Γ'
 but not at the front. By recursing on the structure of the derivation (not using
 exchange), all recursive calls have strictly smaller height.
 -/
-private noncomputable def deduction_with_mem (Γ' : Context) (A φ : Formula)
-    (h : Γ' ⊢ φ) (hA : A ∈ Γ') :
-    (removeAll Γ' A) ⊢ A.imp φ := by
+private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (A φ : Formula)
+    (h : Γ' ⊢[fc] φ) (hA : A ∈ Γ') :
+    (removeAll Γ' A) ⊢[fc] A.imp φ := by
   haveI : Decidable (A ∈ Γ') := Classical.propDecidable _
   match h with
-  | DerivationTree.axiom _ ψ h_ax =>
+  | DerivationTree.axiom _ ψ h_ax h_fc =>
       -- ψ is an axiom
-      exact deduction_axiom (removeAll Γ' A) A ψ h_ax
+      exact deduction_axiom (removeAll Γ' A) A ψ h_ax h_fc
 
   | DerivationTree.assumption _ ψ h_mem =>
       -- ψ ∈ Γ'
@@ -231,40 +233,24 @@ private noncomputable def deduction_with_mem (Γ' : Context) (A φ : Formula)
 
   | DerivationTree.modus_ponens _ ψ χ h1 h2 =>
       -- Recursive calls on subderivations
-      have ih1 : (removeAll Γ' A) ⊢ A.imp (ψ.imp χ) :=
-        deduction_with_mem Γ' A (ψ.imp χ) h1 hA
-      have ih2 : (removeAll Γ' A) ⊢ A.imp ψ :=
-        deduction_with_mem Γ' A ψ h2 hA
+      have ih1 := deduction_with_mem Γ' A (ψ.imp χ) h1 hA
+      have ih2 := deduction_with_mem Γ' A ψ h2 hA
       exact deduction_mp (removeAll Γ' A) A ψ χ ih1 ih2
 
   | DerivationTree.necessitation ψ h_deriv =>
-      -- Necessitation has type: DerivationTree [] (Formula.box ψ)
-      -- So Γ' = [] and φ = Formula.box ψ
-      -- But hA : A ∈ Γ' = A ∈ [], which is false
-      -- In the match context, Lean knows Γ' = []
       simp at hA
 
   | DerivationTree.temporal_necessitation ψ h_deriv =>
-      -- Temporal necessitation has type: DerivationTree [] (Formula.all_future ψ)
-      -- So Γ' = [] and φ = Formula.all_future ψ
-      -- But hA : A ∈ [] is false
       simp at hA
 
   | DerivationTree.temporal_duality ψ h_deriv =>
-      -- Temporal duality has type: DerivationTree [] (Formula.swap_temporal ψ)
-      -- So Γ' = [] and φ = Formula.swap_temporal ψ
-      -- But hA : A ∈ [] is false
       simp at hA
 
-
   | DerivationTree.weakening Γ'' _ ψ h1 h2 =>
-      -- Γ'' ⊢ ψ with Γ'' ⊆ Γ'
-      -- Classical case analysis: either A ∈ Γ'' or A ∉ Γ''
       haveI : Decidable (A ∈ Γ'') := Classical.propDecidable _
       by_cases hA' : A ∈ Γ''
       · -- Case: A ∈ Γ'', recurse on h1
-        have ih : (removeAll Γ'' A) ⊢ A.imp ψ :=
-          deduction_with_mem Γ'' A ψ h1 hA'
+        have ih := deduction_with_mem Γ'' A ψ h1 hA'
         -- Weaken to removeAll Γ' A
         have h_sub : removeAll Γ'' A ⊆ removeAll Γ' A := by
           intro x hx
@@ -281,13 +267,11 @@ private noncomputable def deduction_with_mem (Γ' : Context) (A φ : Formula)
             intro h_eq
             subst h_eq
             exact absurd hx hA'⟩
-        -- Γ'' ⊢ ψ and Γ'' ⊆ removeAll Γ' A
-        have h_weak : (removeAll Γ' A) ⊢ ψ :=
-          DerivationTree.weakening Γ'' (removeAll Γ' A) ψ h1 h_sub
+        have h_weak := DerivationTree.weakening Γ'' (removeAll Γ' A) ψ h1 h_sub
         -- Use S axiom
-        have s_ax : ⊢ ψ.imp (A.imp ψ) :=
-          DerivationTree.axiom [] _ (Axiom.prop_s ψ A)
-        have s_weak : (removeAll Γ' A) ⊢ ψ.imp (A.imp ψ) :=
+        have s_ax : ⊢[fc] ψ.imp (A.imp ψ) :=
+          DerivationTree.axiom [] _ (Axiom.prop_s ψ A) trivial
+        have s_weak :=
           DerivationTree.weakening [] (removeAll Γ' A) _ s_ax (List.nil_subset _)
         exact DerivationTree.modus_ponens (removeAll Γ' A) ψ (A.imp ψ) s_weak h_weak
 
@@ -333,16 +317,16 @@ into implicational theorems.
 **Complexity**: Core metatheorem for Hilbert systems. Uses well-founded recursion
 to handle the complex weakening case where A appears in the middle of the context.
 -/
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
-    (h : (A :: Γ) ⊢ B) :
-    Γ ⊢ A.imp B := by
+noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Formula)
+    (h : (A :: Γ) ⊢[fc] B) :
+    Γ ⊢[fc] A.imp B := by
   haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
   -- Pattern match on the derivation structure
   match h with
-  | DerivationTree.axiom _ φ h_ax =>
+  | DerivationTree.axiom _ φ h_ax h_fc =>
       -- Case: φ is an axiom
       -- By deduction_axiom, Γ ⊢ A → φ
-      exact deduction_axiom Γ A φ h_ax
+      exact deduction_axiom Γ A φ h_ax h_fc
 
   | DerivationTree.assumption _ φ h_mem =>
       -- Case: φ is in the context A :: Γ
@@ -361,9 +345,9 @@ noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
   | DerivationTree.modus_ponens _ φ ψ h1 h2 =>
       -- Case: ψ derived by modus ponens from φ → ψ and φ
       -- Recursive calls on subderivations (both have smaller height)
-      have ih1 : Γ ⊢ A.imp (φ.imp ψ) := deduction_theorem Γ A (φ.imp ψ) h1
-      have ih2 : Γ ⊢ A.imp φ := deduction_theorem Γ A φ h2
-      -- Use deduction_mp to combine: Γ ⊢ A → ψ
+      have ih1 := deduction_theorem Γ A (φ.imp ψ) h1
+      have ih2 := deduction_theorem Γ A φ h2
+      -- Use deduction_mp to combine
       exact deduction_mp Γ A φ ψ ih1 ih2
 
   | DerivationTree.weakening Γ' _ φ h1 h2 =>
@@ -407,8 +391,7 @@ noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
           -- directly shows: if Γ' ⊢ φ and A ∈ Γ', then (removeAll Γ' A) ⊢ A → φ
           -- This helper will recurse on h1, which has strictly smaller height.
 
-          have ih : removeAll Γ' A ⊢ A.imp φ :=
-            deduction_with_mem Γ' A φ h1 hA
+          have ih := deduction_with_mem Γ' A φ h1 hA
 
           -- Weaken to Γ
           have h_sub : removeAll Γ' A ⊆ Γ :=
@@ -427,13 +410,13 @@ noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
               exact absurd hx hA
             | inr h_mem => exact h_mem
 
-          -- Now Γ' ⊢ φ and Γ' ⊆ Γ, so Γ ⊢ φ
-          have h_weak : Γ ⊢ φ := DerivationTree.weakening Γ' Γ φ h1 h_sub
+          -- Now Γ' ⊢[fc] φ and Γ' ⊆ Γ, so Γ ⊢[fc] φ
+          have h_weak := DerivationTree.weakening Γ' Γ φ h1 h_sub
 
-          -- Use S axiom to get Γ ⊢ A → φ
-          have s_ax : ⊢ φ.imp (A.imp φ) :=
-            DerivationTree.axiom [] _ (Axiom.prop_s φ A)
-          have s_weak : Γ ⊢ φ.imp (A.imp φ) :=
+          -- Use S axiom to get Γ ⊢[fc] A → φ
+          have s_ax : ⊢[fc] φ.imp (A.imp φ) :=
+            DerivationTree.axiom [] _ (Axiom.prop_s φ A) trivial
+          have s_weak :=
             DerivationTree.weakening [] Γ _ s_ax (List.nil_subset Γ)
           exact DerivationTree.modus_ponens Γ φ (A.imp φ) s_weak h_weak
 

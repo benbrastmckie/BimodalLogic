@@ -165,12 +165,12 @@ def contraposition {A B : Formula}
   -- Instantiate with X = A, Y = B, Z = ⊥:
   -- ⊢ (A → B → ⊥) → (A → B) → (A → ⊥)
   have s_inst : ⊢ (A.imp (B.imp Formula.bot)).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A B Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.prop_k A B Formula.bot) trivial
 
   -- Now we need: A → (B → ⊥) from h : A → B
   -- S axiom again: B → (A → B)
   have s_b : ⊢ (B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp Formula.bot) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp Formula.bot) A) trivial
 
   -- Now compose: (B → ⊥) → (A → (B → ⊥)) [s_b]
   --              (A → (B → ⊥)) → (A → B) → (A → ⊥) [s_inst]
@@ -199,7 +199,7 @@ def contraposition {A B : Formula}
   have s_final : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                    (((B.imp Formula.bot).imp (A.imp B)).imp
                     ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)) trivial
 
   -- Apply s_final to comm_bc
   have step1 : ⊢ ((B.imp Formula.bot).imp (A.imp B)).imp
@@ -210,7 +210,7 @@ def contraposition {A B : Formula}
   -- This is: constant function that ignores first arg and returns h
   -- K axiom: ⊢ (A → B) → ((B → ⊥) → (A → B))
   have const_h : ⊢ (A.imp B).imp ((B.imp Formula.bot).imp (A.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp B) (B.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp B) (B.imp Formula.bot)) trivial
 
   have step2 : ⊢ (B.imp Formula.bot).imp (A.imp B) :=
     DerivationTree.modus_ponens [] _ _ const_h h
@@ -245,7 +245,7 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 1: M4 for ¬φ: □¬φ → □□¬φ
   have m4_neg : ⊢ φ.neg.box.imp φ.neg.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg) trivial
 
   -- Step 2: Contrapose M4: ¬□□¬φ → ¬□¬φ
   -- This is: φ.neg.box.box.neg → φ.neg.box.neg
@@ -267,7 +267,7 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   have mk_dist : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box.imp
                     (φ.neg.box.neg.neg.box.imp φ.neg.box.box.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box) trivial
 
   have distributed : ⊢ φ.neg.box.neg.neg.box.imp φ.neg.box.box.box :=
     DerivationTree.modus_ponens [] _ _ mk_dist box_combined
@@ -278,7 +278,7 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 7: Use M4 on □¬φ: □□¬φ → □□□¬φ
   have m4_twice : ⊢ φ.neg.box.box.imp φ.neg.box.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg.box)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg.box) trivial
 
   -- Step 8: Contrapose: ¬□□□¬φ → ¬□□¬φ
   have m4_twice_neg : ⊢ φ.neg.box.box.box.neg.imp φ.neg.box.box.neg :=
@@ -304,7 +304,7 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Distribute
   have mk_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box.imp
                    (φ.neg.box.box.imp φ.neg.box.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg) trivial
 
   have bridge : ⊢ φ.neg.box.box.imp φ.neg.box.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk_dni box_dni
@@ -331,7 +331,7 @@ Derived from MB + diamond_4 + MK distribution:
 def modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond) trivial
 
   -- Step 2: diamond_4 for φ
   have d4 : ⊢ φ.diamond.diamond.imp φ.diamond := diamond_4 φ
@@ -343,7 +343,7 @@ def modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 4: MK distribution
   have mk : ⊢ (φ.diamond.diamond.imp φ.diamond).box.imp
                (φ.diamond.diamond.box.imp φ.diamond.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond) trivial
 
   have d4_box : ⊢ φ.diamond.diamond.box.imp φ.diamond.box :=
     DerivationTree.modus_ponens [] _ _ mk box_d4
@@ -389,7 +389,7 @@ Derived via temporal duality on MF, analogous to `box_to_past`.
 -/
 def box_to_box_past (φ : Formula) : ⊢ φ.box.imp (φ.all_past.box) := by
   have mf : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal) trivial
   have mf_swap : ⊢ (φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box)).swap_temporal :=
     DerivationTree.temporal_duality _ mf
   simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
@@ -420,13 +420,13 @@ def box_conj_intro {A B : Formula}
   -- Step 3: modal K distribution (first application)
   -- □(A → (B → A∧B)) → (□A → □(B → A∧B))
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B))) trivial
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
     DerivationTree.modus_ponens [] _ _ mk1 box_pair
   -- Step 4: modal K distribution (second application)
   -- □(B → A∧B) → (□B → □(A∧B))
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
   -- Compose: □A → □(B → A∧B) and □(B → A∧B) → (□B → □(A∧B))
   -- to get: □A → (□B → □(A∧B))
   have h2 : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
@@ -454,11 +454,11 @@ def box_conj_intro_imp {P A B : Formula}
   have box_pair : ⊢ (A.imp (B.imp (A.and B))).box :=
     DerivationTree.necessitation _ pair
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B))) trivial
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
     DerivationTree.modus_ponens [] _ _ mk1 box_pair
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
   have box_to_box : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
 
   -- Now compose: P → □A and □A → □B → □(A ∧ B) gives P → □B → □(A ∧ B)
@@ -467,7 +467,7 @@ def box_conj_intro_imp {P A B : Formula}
   -- Compose: P → □B → □(A ∧ B) and P → □B gives P → □(A ∧ B)
   -- Use K axiom: (P → (□B → □(A ∧ B))) → ((P → □B) → (P → □(A ∧ B)))
   have k : ⊢ (P.imp (B.box.imp (A.and B).box)).imp ((P.imp B.box).imp (P.imp (A.and B).box)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k P B.box (A.and B).box)
+    DerivationTree.axiom [] _ (Axiom.prop_k P B.box (A.and B).box) trivial
   have h3 : ⊢ (P.imp B.box).imp (P.imp (A.and B).box) :=
     DerivationTree.modus_ponens [] _ _ k h2
   exact DerivationTree.modus_ponens [] _ _ h3 hB
@@ -504,7 +504,7 @@ def perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
   have h_past : ⊢ φ.box.imp (φ.all_past.box) := box_to_box_past φ
   have h_present : ⊢ φ.box.imp φ.box := identity φ.box
   have h_future : ⊢ φ.box.imp (φ.all_future.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
 
   -- Combine using box_conj_intro_imp_3
   exact box_conj_intro_imp_3 h_past h_present h_future
@@ -540,7 +540,7 @@ def box_dne {A : Formula}
 
   -- Step 3: Modal K distribution
   have mk : ⊢ (A.neg.neg.imp A).box.imp (A.neg.neg.box.imp A.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist A.neg.neg A)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A.neg.neg A) trivial
 
   -- Step 4: Apply modus ponens twice
   have step : ⊢ A.neg.neg.box.imp A.box :=
@@ -599,7 +599,7 @@ def perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := by
   -- Modal K: □(△¬φ → ¬¬△¬φ) → (□△¬φ → □¬¬△¬φ)
   have mk_dni : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box.imp
                    (φ.neg.always.box.imp φ.neg.always.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg) trivial
 
   -- Apply: □△¬φ → □¬¬△¬φ
   have box_dni_imp : ⊢ φ.neg.always.box.imp φ.neg.always.neg.neg.box :=
@@ -631,7 +631,7 @@ From MB axiom `φ → □◇φ`, we can derive that truths are necessarily possi
 This is used as a foundation for the persistence lemma.
 -/
 def mb_diamond (φ : Formula) : ⊢ φ.imp (φ.diamond.box) :=
-  DerivationTree.axiom [] _ (Axiom.modal_b φ)
+  DerivationTree.axiom [] _ (Axiom.modal_b φ) trivial
 
 /--
 Helper lemma: Apply TF axiom to boxed diamond.

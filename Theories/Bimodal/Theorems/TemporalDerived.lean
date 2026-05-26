@@ -123,7 +123,7 @@ private noncomputable def F_neg_contra_imp_F_neg (φ ψ : Formula) :
       (Formula.some_future (φ.imp ψ).neg) :=
   mp (DerivationTree.temporal_necessitation _ (neg_contrapositive_imp_neg φ ψ))
      (DerivationTree.axiom [] _
-       (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top))
+       (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top) trivial)
 
 /-- `⊢ G(φ→ψ) → G(¬ψ→¬φ)`: G distributes over propositional equivalences.
 
@@ -140,7 +140,7 @@ The propositional contrapositive of `F(¬ψ) → F(¬φ)` is `¬F(¬φ) → ¬F(
 private noncomputable def G_contra_to_GK (φ ψ : Formula) :
     ⊢ (ψ.neg.imp φ.neg).all_future.imp (φ.all_future.imp ψ.all_future) :=
   imp_trans
-    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top))
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) trivial)
     (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
 
 /-- **Derived temp_k_dist**: `⊢ G(φ→ψ) → (Gφ → Gψ)`.
@@ -172,7 +172,7 @@ private noncomputable def dne_lift_F (φ : Formula) :
   mp (DerivationTree.temporal_necessitation _ (double_negation (Formula.some_future φ.neg)))
      (DerivationTree.axiom [] _
        (Axiom.right_mono_until
-         (Formula.some_future φ.neg).neg.neg (Formula.some_future φ.neg) Formula.top))
+         (Formula.some_future φ.neg).neg.neg (Formula.some_future φ.neg) Formula.top) trivial)
 
 /-- `⊢ F(F(¬φ)) → F(⊤ ∧ F(¬φ))`: Enrich F(¬φ) with ⊤ via the tautology `X → ⊤ ∧ X`.
 
@@ -185,7 +185,7 @@ private noncomputable def FF_to_F_top_and (φ : Formula) :
      (DerivationTree.axiom [] _
        (Axiom.right_mono_until
          (Formula.some_future φ.neg)
-         (Formula.top.and (Formula.some_future φ.neg)) Formula.top))
+         (Formula.top.and (Formula.some_future φ.neg)) Formula.top) trivial)
 
 /-- `⊢ F(⊤ ∧ F(¬φ)) → F(¬φ)`: Absorption of Until (BX6) collapses nested eventuality.
 
@@ -194,7 +194,7 @@ which is `F(⊤ ∧ F(¬φ)) → F(¬φ)`. -/
 private def F_top_and_absorb (φ : Formula) :
     ⊢ (Formula.some_future (Formula.top.and (Formula.some_future φ.neg))).imp
       (Formula.some_future φ.neg) :=
-  DerivationTree.axiom [] _ (Axiom.absorb_until Formula.top φ.neg)
+  DerivationTree.axiom [] _ (Axiom.absorb_until Formula.top φ.neg) trivial
 
 /-- **Derived temp_4**: `⊢ Gφ → GGφ`.
 
@@ -260,7 +260,7 @@ The present is always in the past of the future.
 -/
 def connect_future_thm (φ : Formula) :
     ⊢ φ.imp (φ.some_past.all_future) :=
-  DerivationTree.axiom [] _ (Axiom.connect_future φ)
+  DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
 
 /--
 `⊢ φ → H(F(φ))`: Temporal connectedness (past). Direct axiom (BX4').
@@ -268,7 +268,7 @@ The present is always in the future of the past.
 -/
 def connect_past_thm (φ : Formula) :
     ⊢ φ.imp (φ.some_future.all_past) :=
-  DerivationTree.axiom [] _ (Axiom.connect_past φ)
+  DerivationTree.axiom [] _ (Axiom.connect_past φ) trivial
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -276,7 +276,7 @@ def connect_past_thm (φ : Formula) :
 def G_implies_G_id (a : Formula) :
     ⊢ a.all_future.imp (a.imp a).all_future :=
   mp (DerivationTree.temporal_necessitation _ (identity a))
-     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future))
+     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future) trivial)
 
 /-!
 ## BX10-Derived Theorems
@@ -291,7 +291,7 @@ Direct from BX10 axiom.
 -/
 def until_implies_some_future (φ ψ : Formula) :
     ⊢ (Formula.untl ψ φ).imp (Formula.some_future ψ) :=
-  DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+  DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
@@ -299,7 +299,7 @@ Direct from BX10' axiom.
 -/
 def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce ψ φ).imp (Formula.some_past ψ) :=
-  DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+  DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
@@ -308,7 +308,7 @@ Direct from BX10 axiom.
 -/
 def until_imp_F (φ ψ : Formula) :
     ⊢ (Formula.untl ψ φ).imp (Formula.some_future ψ) :=
-  DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+  DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Since implies past eventuality of its endpoint.
@@ -316,7 +316,7 @@ Mirror of until_imp_F.
 -/
 def since_imp_P (φ ψ : Formula) :
     ⊢ (Formula.snce ψ φ).imp (Formula.some_past ψ) :=
-  DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+  DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /-!
 ## Propositional Helpers for Until/Since Derivations

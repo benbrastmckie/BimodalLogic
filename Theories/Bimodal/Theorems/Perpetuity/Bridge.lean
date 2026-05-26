@@ -93,7 +93,7 @@ def modal_duality_neg (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := by
 
   -- Step 3: Modal K distribution: □(φ → ¬¬φ) → (□φ → □¬¬φ)
   have mk : ⊢ (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg) trivial
 
   -- Step 4: Apply to get □φ → □¬¬φ
   have forward : ⊢ φ.box.imp φ.neg.neg.box :=
@@ -127,7 +127,7 @@ def modal_duality_neg_rev (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond := 
 
   -- Step 3: Modal K distribution: □(¬¬φ → φ) → (□¬¬φ → □φ)
   have mk : ⊢ (φ.neg.neg.imp φ).box.imp (φ.neg.neg.box.imp φ.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ) trivial
 
   -- Step 4: Apply to get □¬¬φ → □φ
   have forward : ⊢ φ.neg.neg.box.imp φ.box :=
@@ -150,7 +150,7 @@ Uses necessitation (modal_k) and K distribution axiom.
 -/
 def box_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.box.imp B.box := by
   have box_h : ⊢ (A.imp B).box := DerivationTree.necessitation _ h
-  have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) := DerivationTree.axiom [] _ (Axiom.modal_k_dist A B)
+  have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) := DerivationTree.axiom [] _ (Axiom.modal_k_dist A B) trivial
   exact DerivationTree.modus_ponens [] _ _ mk box_h
 
 /--
@@ -212,7 +212,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
 
   -- First derive: ⊥ → B
   have bot_implies_neg_neg_b : ⊢ Formula.bot.imp B.neg.neg :=
-    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot B.neg) trivial
 
   have dne_b : ⊢ B.neg.neg.imp B :=
     Propositional.double_negation B
@@ -238,11 +238,11 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Actually, we can use: (¬A → (⊥ → B)) → ((¬A → ⊥) → (¬A → B))
   -- Which is K with φ=¬A, ψ=⊥, χ=B
   have k_step_raw : ⊢ (A.neg.imp (Formula.bot.imp B)).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A.neg Formula.bot B)
+    DerivationTree.axiom [] _ (Axiom.prop_k A.neg Formula.bot B) trivial
   
   -- We need to lift (⊥ → B) to (¬A → (⊥ → B))
   have lift_bot_b : ⊢ (Formula.bot.imp B).imp (A.neg.imp (Formula.bot.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A.neg) trivial
   
   have k_step : ⊢ (Formula.bot.imp B).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
     imp_trans lift_bot_b k_step_raw
@@ -254,7 +254,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- To get: (A.neg → ⊥) → (A → (A.neg → B))
   -- Use S axiom to get (A.neg → B) → (A → (A.neg → B))
   have s_form : ⊢ (A.neg.imp B).imp (A.imp (A.neg.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (A.neg.imp B) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (A.neg.imp B) A) trivial
 
   -- Apply transitivity: (A.neg → ⊥) → (A.neg → B) → (A → (A.neg → B))
   have step1 : ⊢ (A.neg.imp Formula.bot).imp (A.imp (A.neg.imp B)) :=
@@ -281,7 +281,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
 
   -- Simpler: use prop_s to get A.neg → (A → A.neg)
   have s_form_simpler : ⊢ A.neg.imp (A.imp A.neg) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s A.neg A)
+    DerivationTree.axiom [] _ (Axiom.prop_s A.neg A) trivial
 
   -- From A and ¬A we get ⊥
   -- ⊥ → B is proven above
@@ -292,7 +292,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
 
   -- K axiom: (A → (¬A → ⊥)) → ((A → ¬A) → (A → ⊥))
   have k_form1 : ⊢ (A.imp (A.neg.imp Formula.bot)).imp ((A.imp A.neg).imp (A.imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A A.neg Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.prop_k A A.neg Formula.bot) trivial
 
   -- A → (¬A → ⊥) is identity (by definition of ¬A)
   have a_neg_def : ⊢ A.imp (A.neg.imp Formula.bot) := dni A
@@ -306,11 +306,11 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- This requires: (A → (⊥ → B)) → ((A → ⊥) → (A → B))
   -- Which is K with φ=A, ψ=⊥, χ=B
   have k_form2_raw : ⊢ (A.imp (Formula.bot.imp B)).imp ((A.imp Formula.bot).imp (A.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A Formula.bot B)
+    DerivationTree.axiom [] _ (Axiom.prop_k A Formula.bot B) trivial
   
   -- Lift (⊥ → B) to (A → (⊥ → B))
   have lift_bot_b2 : ⊢ (Formula.bot.imp B).imp (A.imp (Formula.bot.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A) trivial
   
   have k_form2 : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
     imp_trans lift_bot_b2 k_form2_raw
@@ -325,7 +325,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Now lift to get A → (¬A → B)
   -- Use S axiom form
   have s_final : ⊢ ((A.imp A.neg).imp (A.imp B)).imp (A.imp ((A.imp A.neg).imp (A.imp B))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s ((A.imp A.neg).imp (A.imp B)) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s ((A.imp A.neg).imp (A.imp B)) A) trivial
 
   have lifted1 : ⊢ A.imp ((A.imp A.neg).imp (A.imp B)) :=
     DerivationTree.modus_ponens [] _ _ s_final raa_form
@@ -359,7 +359,7 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- So: A → (¬A → A) and ¬A → (A → ¬A)
 
   have s_rev : ⊢ A.neg.imp (A.imp A.neg) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s A.neg A)
+    DerivationTree.axiom [] _ (Axiom.prop_s A.neg A) trivial
 
   -- Now from A → ¬A we need A → ⊥ (which is ¬A)
   -- And from ⊥ we get B
@@ -374,11 +374,11 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- This requires: (A → (⊥ → B)) → ((A → ⊥) → (A → B))
   -- Which is K with φ=A, ψ=⊥, χ=B
   have k_dist_raw : ⊢ (A.imp (Formula.bot.imp B)).imp ((A.imp Formula.bot).imp (A.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A Formula.bot B)
+    DerivationTree.axiom [] _ (Axiom.prop_k A Formula.bot B) trivial
   
   -- Lift (⊥ → B) to (A → (⊥ → B))
   have lift_bot_b3 : ⊢ (Formula.bot.imp B).imp (A.imp (Formula.bot.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A) trivial
   
   have k_dist : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
     imp_trans lift_bot_b3 k_dist_raw
@@ -461,7 +461,7 @@ def local_rce (A B : Formula) : [A.and B] ⊢ B := by
     exact h_conj
 
   have s_helper : ⊢ B.neg.imp (A.imp B.neg) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s B.neg A)
+    DerivationTree.axiom [] _ (Axiom.prop_s B.neg A) trivial
 
   have s_ctx : [A.and B] ⊢ B.neg.imp (A.imp B.neg) :=
     DerivationTree.weakening [] [A.and B] _ s_helper (by intro; simp)

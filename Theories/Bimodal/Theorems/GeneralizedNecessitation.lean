@@ -53,12 +53,12 @@ private noncomputable def temp_k_dist_local (φ ψ : Formula) :
   -- Step 2: F(¬(¬ψ→¬φ)) → F(¬(φ→ψ)) via BX3
   let F_step := mp (DerivationTree.temporal_necessitation _ neg_contra)
     (DerivationTree.axiom [] _
-      (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top))
+      (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top) trivial)
   -- Step 3: G(φ→ψ) → G(¬ψ→¬φ) via contraposition
   let G_contra := contraposition F_step
   -- Step 4: G(¬ψ→¬φ) → (Gφ → Gψ) via BX3 + contraposition
   let G_to_GK := imp_trans
-    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top))
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) trivial)
     (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
   -- Compose
   imp_trans G_contra G_to_GK
@@ -149,7 +149,7 @@ noncomputable def generalized_modal_k : (Γ : Context) → (φ : Formula) →
       generalized_modal_k Γ' (A.imp φ) h_deduction
     -- use modal_k_dist axiom
     let k_dist : ⊢ (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ)
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ) trivial
     let k_dist_weak :
       (Context.map Formula.box Γ') ⊢
       (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=

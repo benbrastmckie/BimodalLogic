@@ -110,11 +110,11 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
 
   -- Step 1: modal_t for A gives us □A → A
   have mt_a : ⊢ A.box.imp A :=
-    DerivationTree.axiom [] _ (Axiom.modal_t A)
+    DerivationTree.axiom [] _ (Axiom.modal_t A) trivial
 
   -- Step 2: modal_t for ¬A gives us □¬A → ¬A
   have mt_neg_a : ⊢ (A.imp Formula.bot).box.imp (A.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.modal_t (A.imp Formula.bot)) trivial
 
   -- Step 3: RAA gives us A → (¬A → ⊥)
   have raa_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
@@ -197,7 +197,7 @@ noncomputable def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.
 
   -- Step 2: □B → □(¬A → B) using weakening (prop_s)
   have weak_b : ⊢ B.imp ((A.imp Formula.bot).imp B) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot)) trivial
 
   have box_b_case : ⊢ B.box.imp ((A.imp Formula.bot).imp B).box :=
     box_mono weak_b
@@ -311,7 +311,7 @@ def k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diam
   -- Step 2: Use K axiom to distribute: □(¬B → ¬A) → (□¬B → □¬A)
   have k_inst : ⊢ ((B.imp Formula.bot).imp (A.imp Formula.bot)).box.imp
                    ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist (B.imp Formula.bot) (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist (B.imp Formula.bot) (A.imp Formula.bot)) trivial
 
   -- Step 3: Compose to get □(A → B) → (□¬B → □¬A)
   have step1 : ⊢ (A.imp B).box.imp ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box) :=
@@ -401,7 +401,7 @@ def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp 
 
   -- modal_t: □(A ∧ ¬A) → (A ∧ ¬A)
   have mt_conj : ⊢ (A.and (A.imp Formula.bot)).box.imp (A.and (A.imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (A.and (A.imp Formula.bot)))
+    DerivationTree.axiom [] _ (Axiom.modal_t (A.and (A.imp Formula.bot))) trivial
 
   -- From conjunction, extract A and ¬A, then apply RAA
   -- A ∧ ¬A = (A → ¬A → ⊥) → ⊥ = ((A → (A → ⊥) → ⊥) → ⊥)
@@ -522,7 +522,7 @@ noncomputable def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.an
     -- We need □A → □B → □(A ∧ B)
     -- Use modal K distribution: □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have modal_k : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
 
     -- Compose: □A → □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have comp1 : ⊢ A.box.imp (B.box.imp (A.and B).box) :=
@@ -563,7 +563,7 @@ noncomputable def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.an
     -- With P = (□A ∧ □B), Q = □B, R = □(A ∧ B)
     have s_ax : ⊢ ((A.box.and B.box).imp (B.box.imp (A.and B).box)).imp
                   (((A.box.and B.box).imp B.box).imp ((A.box.and B.box).imp (A.and B).box)) :=
-      DerivationTree.axiom [] _ (Axiom.prop_k (A.box.and B.box) B.box (A.and B).box)
+      DerivationTree.axiom [] _ (Axiom.prop_k (A.box.and B.box) B.box (A.and B).box) trivial
     have step4 : ⊢ ((A.box.and B.box).imp B.box).imp ((A.box.and B.box).imp (A.and B).box) :=
       DerivationTree.modus_ponens [] _ _ s_ax step3
     exact DerivationTree.modus_ponens [] _ _ step4 rce_box
@@ -795,7 +795,7 @@ def s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
 
     -- modal_4: □φ → □□φ, so with φ = A: □A → □□A
     have modal_4_a : ⊢ A.box.imp A.box.box :=
-      DerivationTree.axiom [] _ (Axiom.modal_4 A)
+      DerivationTree.axiom [] _ (Axiom.modal_4 A) trivial
 
     -- t_box_to_diamond: □B → ◇B, so with B = □A: □□A → ◇□A
     have box_box_to_diamond : ⊢ A.box.box.imp A.box.diamond :=
@@ -808,7 +808,7 @@ def s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   have forward : ⊢ (A.box.diamond).imp A.box := by
     -- Use the S5 characteristic axiom: modal_5_collapse
     -- modal_5_collapse (φ) : ◇□φ → □φ
-    exact DerivationTree.axiom [] _ (Axiom.modal_5_collapse A)
+    exact DerivationTree.axiom [] _ (Axiom.modal_5_collapse A) trivial
 
   -- Combine using pairing to build biconditional
   -- pairing: A → B → (A ∧ B)
@@ -848,10 +848,10 @@ In S5, if necessarily-A is possible, then A is true.
 def s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- ◇□A → □A (from modal_5_collapse)
   have h1 : ⊢ A.box.diamond.imp A.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_5_collapse A)
+    DerivationTree.axiom [] _ (Axiom.modal_5_collapse A) trivial
   -- □A → A (from modal_t)
   have h2 : ⊢ A.box.imp A :=
-    DerivationTree.axiom [] _ (Axiom.modal_t A)
+    DerivationTree.axiom [] _ (Axiom.modal_t A) trivial
   -- Compose: ◇□A → A
   exact imp_trans h1 h2
 

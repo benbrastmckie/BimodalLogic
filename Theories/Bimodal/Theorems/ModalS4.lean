@@ -84,7 +84,7 @@ noncomputable def s4_diamond_box_conj (A B : Formula) :
 
   -- Step 3: Apply modal_4 to get □B → □□B
   have modal_4_b : ⊢ B.box.imp B.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 B)
+    DerivationTree.axiom [] _ (Axiom.modal_4 B) trivial
 
   -- Step 4: Apply box_mono to flipped to get □□B → □(A → (A ∧ □B))
   have box_flipped : ⊢ B.box.box.imp (A.imp (A.and B.box)).box :=
@@ -132,7 +132,7 @@ noncomputable def s4_diamond_box_conj (A B : Formula) :
   have s_axiom : ⊢ ((A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond)).imp
                    (((A.diamond.and B.box).imp A.diamond).imp
                     ((A.diamond.and B.box).imp (A.and B.box).diamond)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k (A.diamond.and B.box) A.diamond (A.and B.box).diamond)
+    DerivationTree.axiom [] _ (Axiom.prop_k (A.diamond.and B.box) A.diamond (A.and B.box).diamond) trivial
 
   have step2 : ⊢ ((A.diamond.and B.box).imp A.diamond).imp
                   ((A.diamond.and B.box).imp (A.and B.box).diamond) :=
@@ -159,7 +159,7 @@ def s4_box_diamond_box (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) := by
   -- Apply to □A: □A → □◇□A
 
   have modal_b_inst : ⊢ A.box.imp (A.box.diamond).box :=
-    DerivationTree.axiom [] _ (Axiom.modal_b A.box)
+    DerivationTree.axiom [] _ (Axiom.modal_b A.box) trivial
 
   exact modal_b_inst
 
@@ -202,7 +202,7 @@ def s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.dia
 
     -- Use modal_4 first: □◇A → □□◇A
     have modal_4_diamond : ⊢ A.diamond.box.imp (A.diamond.box.box) :=
-      DerivationTree.axiom [] _ (Axiom.modal_4 A.diamond)
+      DerivationTree.axiom [] _ (Axiom.modal_4 A.diamond) trivial
 
     -- Then t_box_to_diamond on □◇A: □□◇A → ◇□◇A
     have box_box_diamond_to_diamond_box_diamond :
@@ -225,7 +225,7 @@ def s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.dia
 
     -- modal_t: □B → B, so with B = ◇A: □◇A → ◇A
     have modal_t_diamond : ⊢ A.diamond.box.imp A.diamond :=
-      DerivationTree.axiom [] _ (Axiom.modal_t A.diamond)
+      DerivationTree.axiom [] _ (Axiom.modal_t A.diamond) trivial
 
     -- diamond_mono: (A → B) → (◇A → ◇B)
     -- With A = □◇A, B = ◇A, we get: ◇□◇A → ◇◇A
@@ -273,7 +273,7 @@ def s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.dia
 
     -- Step 1: modal_5_collapse on ◇A: ◇□(◇A) → □(◇A)
     have m5c : ⊢ A.diamond.box.diamond.imp A.diamond.box :=
-      DerivationTree.axiom [] _ (Axiom.modal_5_collapse A.diamond)
+      DerivationTree.axiom [] _ (Axiom.modal_5_collapse A.diamond) trivial
 
     -- Step 2: modal_t on ◇A: □(◇A) → ◇A
     -- (Already have this as modal_t_diamond)
@@ -355,11 +355,11 @@ noncomputable def s5_diamond_conj_diamond (A B : Formula) :
     -- Let me build this step by step:
     -- Step 3a: Get □◇B → ◇B (modal_t on ◇B)
     have box_dia_to_dia : ⊢ B.diamond.box.imp B.diamond :=
-      DerivationTree.axiom [] _ (Axiom.modal_t B.diamond)
+      DerivationTree.axiom [] _ (Axiom.modal_t B.diamond) trivial
 
     -- Step 3b: Get ◇□◇B → □◇B (modal_5_collapse on ◇B)
     have dia_box_dia_to_box_dia : ⊢ B.diamond.box.diamond.imp B.diamond.box :=
-      DerivationTree.axiom [] _ (Axiom.modal_5_collapse B.diamond)
+      DerivationTree.axiom [] _ (Axiom.modal_5_collapse B.diamond) trivial
 
     -- Step 3c: Compose to get ◇□◇B → ◇B
     have dia_box_dia_to_dia : ⊢ B.diamond.box.diamond.imp B.diamond :=
@@ -454,7 +454,7 @@ noncomputable def s5_diamond_conj_diamond (A B : Formula) :
         (((A.diamond.and B.diamond).imp A.diamond).imp
          ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond)) :=
       DerivationTree.axiom [] _
-        (Axiom.prop_k (A.diamond.and B.diamond) A.diamond (A.and B.diamond).diamond)
+        (Axiom.prop_k (A.diamond.and B.diamond) A.diamond (A.and B.diamond).diamond) trivial
 
     have step2 : ⊢ ((A.diamond.and B.diamond).imp A.diamond).imp
                     ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond) :=

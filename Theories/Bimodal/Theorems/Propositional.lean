@@ -82,7 +82,7 @@ the double negation elimination theorem from these axioms.
 -/
 
 def efq_axiom (φ : Formula) : ⊢ Formula.bot.imp φ :=
-  DerivationTree.axiom [] _ (Axiom.ex_falso φ)
+  DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial
 
 /--
 Peirce's Law (axiomatic): `⊢ ((φ → ψ) → φ) → φ`.
@@ -92,7 +92,7 @@ Classical reasoning in pure implicational form. This is now an axiom.
 This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
 -/
 def peirce_axiom (φ ψ : Formula) : ⊢ ((φ.imp ψ).imp φ).imp φ :=
-  DerivationTree.axiom [] _ (Axiom.peirce φ ψ)
+  DerivationTree.axiom [] _ (Axiom.peirce φ ψ) trivial
 
 /-!
 ## Derivable Classical Principles
@@ -248,7 +248,7 @@ def ecq (A B : Formula) : [A, A.neg] ⊢ B := by
 
   -- By prop_s: ⊥ → (B.neg → ⊥) which is ⊥ → ¬¬B
   have bot_to_neg_neg_b : ⊢ Formula.bot.imp B.neg.neg :=
-    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot B.neg) trivial
 
   -- Weaken to context
   have bot_to_neg_neg_b_ctx : [A, A.neg] ⊢ Formula.bot.imp B.neg.neg :=
@@ -414,7 +414,7 @@ def ldi (A B : Formula) : [A] ⊢ A.or B := by
 
   -- Use prop_k: (¬A → (A → B)) → ((¬A → A) → (¬A → B))
   have k_inst : ⊢ (A.neg.imp (A.imp B)).imp ((A.neg.imp A).imp (A.neg.imp B)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k A.neg A B)
+    DerivationTree.axiom [] _ (Axiom.prop_k A.neg A B) trivial
 
   -- Weaken to context
   have k_ctx : [A] ⊢ (A.neg.imp (A.imp B)).imp ((A.neg.imp A).imp (A.neg.imp B)) :=
@@ -427,7 +427,7 @@ def ldi (A B : Formula) : [A] ⊢ A.or B := by
   -- Now we need: ¬A → A
   -- This is derivable from A using prop_s: A → (¬A → A)
   have s_inst : ⊢ A.imp (A.neg.imp A) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s A A.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s A A.neg) trivial
 
   -- Weaken to context
   have s_ctx : [A] ⊢ A.imp (A.neg.imp A) :=
@@ -458,7 +458,7 @@ def rdi (A B : Formula) : [B] ⊢ A.or B := by
 
   -- By prop_s: B → (¬A → B)
   have s_inst : ⊢ B.imp (A.neg.imp B) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s B A.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s B A.neg) trivial
 
   -- Get B from context
   have h_b : [B] ⊢ B := by
@@ -672,7 +672,7 @@ def rce (A B : Formula) : [A.and B] ⊢ B := by
   -- We need: B.neg → (A → B.neg)
   -- This is prop_s: B.neg → (A → B.neg)
   have s_helper : ⊢ B.neg.imp (A.imp B.neg) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s B.neg A)
+    DerivationTree.axiom [] _ (Axiom.prop_s B.neg A) trivial
 
   have s_ctx : [A.and B] ⊢ B.neg.imp (A.imp B.neg) :=
     DerivationTree.weakening [] [A.and B] _ s_helper (by intro; simp)

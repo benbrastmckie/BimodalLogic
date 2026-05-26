@@ -244,26 +244,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Theorems Layer (Mechanical, Base-Only) [NOT STARTED]
+### Phase 3: Theorems Layer (Mechanical, Base-Only) [COMPLETED]
 
 **Goal**: Update all files in `Theorems/` to use `DerivationTree .Base`. These files construct derivation trees using only base axioms, so the `h_fc` obligation is always `le_refl`. This is the largest batch of files by count (10 files) but the changes are mechanical: add `(fc := .Base)` or let Lean infer it from the `le_refl` proofs.
 
 **Tasks**:
-- [ ] **3.1** Update `Theorems/Propositional.lean` (135 DerivationTree refs). All axiom uses are base, so each `.axiom G f h` becomes `.axiom G f h (le_refl .Base)` or equivalently `.axiom G f h (by decide)`. The `|- f` notation now defaults to `.Base`, so many signatures may be unchanged.
+- [x] **3.1** Update `Theorems/Propositional.lean` (135 DerivationTree refs). *(completed -- added trivial to all DerivationTree.axiom calls)*
 
-- [ ] **3.2** Update `Theorems/Combinators.lean` (58 refs). Same pattern as 3.1.
+- [x] **3.2** Update `Theorems/Combinators.lean` (58 refs). *(completed -- added trivial to 30 axiom calls)*
 
-- [ ] **3.3** Update `Theorems/TemporalDerived.lean`. Proves `temp_k_dist` and `temp_4` are derivable from base axioms.
+- [x] **3.3** Update `Theorems/TemporalDerived.lean`. *(completed -- added trivial to 12 axiom calls)*
 
-- [ ] **3.4** Update `Theorems/GeneralizedNecessitation.lean`. Proves generalized necessitation rule.
+- [x] **3.4** Update `Theorems/GeneralizedNecessitation.lean`. *(completed -- added trivial to 3 axiom calls)*
 
-- [ ] **3.5** Update `Theorems/ModalS4.lean` and `Theorems/ModalS5.lean`. S5 derived theorems.
+- [x] **3.5** Update `Theorems/ModalS4.lean` and `Theorems/ModalS5.lean`. *(completed -- 9 and 11 axiom calls respectively)*
 
-- [ ] **3.6** Update `Theorems/Perpetuity/Bridge.lean` (63 refs), `Theorems/Perpetuity/Helpers.lean`, and `Theorems/Perpetuity/Principles.lean` (55 refs). Perpetuity theorems.
+- [x] **3.6** Update `Theorems/Perpetuity/Bridge.lean` (63 refs), `Theorems/Perpetuity/Helpers.lean`, and `Theorems/Perpetuity/Principles.lean` (55 refs). *(completed -- Helpers.lean: axiom_in_context, apply_axiom_to, apply_axiom_in_context made fc-polymorphic with h_fc parameter)*
 
-- [ ] **3.7** Update `Syntax/BigConj.lean` (if it references DerivationTree -- check).
+- [x] **3.7** Update `Syntax/BigConj.lean` (if it references DerivationTree -- check). *(completed -- no DerivationTree refs, only a comment)*
 
-- [ ] **3.8** Verify: `lake build Bimodal.Theorems`.
+- [x] **3.8** Verify: `lake build Bimodal.Theorems`. *(completed -- all Theorems files compile, also Metalogic/Core/DeductionTheorem.lean made fc-polymorphic as a dependency)* *(deviation: altered -- DeductionTheorem.lean was updated here instead of Phase 5 because it's a transitive dependency of Propositional.lean)*
 
 **Pattern for all files**: For axiom invocations `DerivationTree.axiom G f h`, add the `h_fc` proof. Since all axioms used in Theorems/ are base axioms, the proof is `le_refl` or `by decide`. If the `|- f` notation defaults to `.Base`, most type signatures are unchanged. Where functions are polymorphic in the derivation tree, decide whether they should be polymorphic in `fc` (e.g., a function that only uses modus ponens and weakening can be `{fc : FrameClass} -> ...`).
 
