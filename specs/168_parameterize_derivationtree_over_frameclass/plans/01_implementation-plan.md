@@ -291,7 +291,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Soundness Refactor [NOT STARTED]
+### Phase 4: Soundness Refactor [IN PROGRESS]
 
 **Goal**: Rewrite the soundness theorems to use the parameterized `DerivationTree fc`. This is the highest-value phase: three near-duplicate 40-case splits collapse into a single dispatch, and all `h_dc` parameters are removed. The key insight is that `DerivationTree fc G f` structurally guarantees that every axiom node satisfies `ax.minFrameClass <= fc`, so no runtime check is needed.
 
