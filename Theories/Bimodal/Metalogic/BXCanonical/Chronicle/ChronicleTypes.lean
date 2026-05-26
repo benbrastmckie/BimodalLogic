@@ -139,7 +139,7 @@ theorem cud_conj_closed {fc : FrameClass} {S : Set Formula}
     (h : ClosedUnderDerivation fc S)
     {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
   have h_pair := cud_contains_theorems h
-    (DerivationTree.lift (fc₁ := .Base) trivial (Bimodal.Theorems.Combinators.pairing φ ψ))
+    (Bimodal.Theorems.Combinators.pairing φ ψ)
   exact cud_modus_ponens h (cud_modus_ponens h h_pair h_phi) h_psi
 
 /-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
@@ -160,7 +160,7 @@ theorem cud_not_mem_is_sdc {fc : FrameClass} {B : Set Formula}
   -- In particular φ ∈ B, contradicting h_not_mem.
   have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
   have h_efq : DerivationTree fc [] (Formula.bot.imp φ) :=
-    DerivationTree.lift (fc₁ := .Base) trivial (Bimodal.Theorems.Propositional.efq_axiom φ)
+    Bimodal.Theorems.Propositional.efq_axiom φ
   exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
 
 /-! ## Adjacency predicate -/

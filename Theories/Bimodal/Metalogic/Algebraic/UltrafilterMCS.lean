@@ -420,7 +420,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           Bimodal.Metalogic.Core.deduction_theorem Γ'' φ.neg Formula.bot d_bot''
 
         -- From ¬¬φ derive φ (double negation elimination)
-        have d_dne := Bimodal.Theorems.Propositional.double_negation φ
+        have d_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) := Bimodal.Theorems.Propositional.double_negation φ
         have d_dne' : DerivationTree FrameClass.Base Γ'' (φ.neg.neg.imp φ) :=
           DerivationTree.weakening [] Γ'' _ d_dne (by simp)
         have d_φ : DerivationTree FrameClass.Base Γ'' φ :=

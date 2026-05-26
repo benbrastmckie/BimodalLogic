@@ -81,8 +81,8 @@ This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
 the double negation elimination theorem from these axioms.
 -/
 
-def efq_axiom (φ : Formula) : ⊢ Formula.bot.imp φ :=
-  DerivationTree.axiom [] _ (Axiom.ex_falso φ) trivial
+def efq_axiom {fc : FrameClass} (φ : Formula) : ⊢[fc] Formula.bot.imp φ :=
+  DerivationTree.axiom [] _ (Axiom.ex_falso φ) (FrameClass.base_le fc)
 
 /--
 Peirce's Law (axiomatic): `⊢ ((φ → ψ) → φ) → φ`.
@@ -91,8 +91,8 @@ Classical reasoning in pure implicational form. This is now an axiom.
 
 This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
 -/
-def peirce_axiom (φ ψ : Formula) : ⊢ ((φ.imp ψ).imp φ).imp φ :=
-  DerivationTree.axiom [] _ (Axiom.peirce φ ψ) trivial
+def peirce_axiom {fc : FrameClass} (φ ψ : Formula) : ⊢[fc] ((φ.imp ψ).imp φ).imp φ :=
+  DerivationTree.axiom [] _ (Axiom.peirce φ ψ) (FrameClass.base_le fc)
 
 /-!
 ## Derivable Classical Principles
@@ -137,48 +137,40 @@ No circular dependencies - b_combinator is derived from K and S without using DN
 **Historical Note**: Previously an axiom, now a derived theorem. This change
 improves the foundational structure without affecting derivational power.
 -/
-def double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
+def double_negation {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.imp φ := by
   -- ¬¬φ = (φ → ⊥) → ⊥ (definition)
   unfold Formula.neg
 
-  -- Goal: ⊢ ((φ → ⊥) → ⊥) → φ
+  -- Goal: ⊢[fc] ((φ → ⊥) → ⊥) → φ
 
   -- Step 1: Peirce with ψ = ⊥ gives us: ⊢ ((φ → ⊥) → φ) → φ
-  have peirce_inst : ⊢ ((φ.imp Formula.bot).imp φ).imp φ :=
+  have peirce_inst : ⊢[fc] ((φ.imp Formula.bot).imp φ).imp φ :=
     peirce_axiom φ Formula.bot
 
   -- Step 2: EFQ gives us: ⊢ ⊥ → φ
-  have efq_inst : ⊢ Formula.bot.imp φ :=
+  have efq_inst : ⊢[fc] Formula.bot.imp φ :=
     efq_axiom φ
 
   -- Step 3: Use b_combinator to compose (⊥ → φ) with ((φ → ⊥) → ⊥)
-  -- b_combinator: (B → C) → (A → B) → (A → C)
-  -- With A = (φ → ⊥), B = ⊥, C = φ
-  -- Gives: (⊥ → φ) → ((φ → ⊥) → ⊥) → ((φ → ⊥) → φ)
-  have b_inst : ⊢ (Formula.bot.imp φ).imp
+  have b_inst : ⊢[fc] (Formula.bot.imp φ).imp
                    (((φ.imp Formula.bot).imp Formula.bot).imp
                     ((φ.imp Formula.bot).imp φ)) :=
     b_combinator
 
   -- Step 4: Apply modus ponens with efq_inst
-  have step1 : ⊢ ((φ.imp Formula.bot).imp Formula.bot).imp
+  have step1 : ⊢[fc] ((φ.imp Formula.bot).imp Formula.bot).imp
                   ((φ.imp Formula.bot).imp φ) :=
     DerivationTree.modus_ponens [] _ _ b_inst efq_inst
 
   -- Step 5: Now compose with Peirce
-  -- We have: ((φ → ⊥) → ⊥) → ((φ → ⊥) → φ)  [step1]
-  -- We have: ((φ → ⊥) → φ) → φ                [peirce_inst]
-  -- Goal:    ((φ → ⊥) → ⊥) → φ
-  -- Use b_combinator to compose
-
-  have b_final : ⊢ (((φ.imp Formula.bot).imp φ).imp φ).imp
+  have b_final : ⊢[fc] (((φ.imp Formula.bot).imp φ).imp φ).imp
                     ((((φ.imp Formula.bot).imp Formula.bot).imp
                       ((φ.imp Formula.bot).imp φ)).imp
                      (((φ.imp Formula.bot).imp Formula.bot).imp φ)) :=
     b_combinator
 
   -- Step 6: Apply modus ponens with peirce_inst
-  have step2 : ⊢ (((φ.imp Formula.bot).imp Formula.bot).imp
+  have step2 : ⊢[fc] (((φ.imp Formula.bot).imp Formula.bot).imp
                    ((φ.imp Formula.bot).imp φ)).imp
                   (((φ.imp Formula.bot).imp Formula.bot).imp φ) :=
     DerivationTree.modus_ponens [] _ _ b_final peirce_inst
@@ -293,7 +285,7 @@ def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- Now derive A → ¬A → ⊥ using theorem_app1
   -- theorem_app1: ⊢ A → (A → ⊥) → ⊥
   have a_to_neg_a_to_bot : ⊢ A.imp A.neg.neg :=
-    @theorem_app1 A Formula.bot
+    @theorem_app1 FrameClass.Base A Formula.bot
 
   -- Compose: A → ¬¬A and ¬¬A → ¬A → B
   -- We need to build: (¬¬A → ⊥) → (¬A → B) which is (A.neg → ⊥) → (A.neg → B)
@@ -301,7 +293,7 @@ def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
 
   -- Use b_combinator at inner level: (⊥ → B) → (A.neg → ⊥) → (A.neg → B)
   have b_inner : ⊢ (Formula.bot.imp B).imp (A.neg.neg.imp (A.neg.imp B)) :=
-    @b_combinator A.neg Formula.bot B
+    @b_combinator FrameClass.Base A.neg Formula.bot B
 
   have step2 : ⊢ A.neg.neg.imp (A.neg.imp B) :=
     DerivationTree.modus_ponens [] _ _ b_inner bot_to_b
@@ -309,7 +301,7 @@ def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- Finally compose: A → ¬¬A → (¬A → B)
   have b_outer : ⊢ (A.neg.neg.imp (A.neg.imp B)).imp
                     ((A.imp A.neg.neg).imp (A.imp (A.neg.imp B))) :=
-    @b_combinator A A.neg.neg (A.neg.imp B)
+    @b_combinator FrameClass.Base A A.neg.neg (A.neg.imp B)
 
   have step3 : ⊢ (A.imp A.neg.neg).imp (A.imp (A.neg.imp B)) :=
     DerivationTree.modus_ponens [] _ _ b_outer step2
@@ -365,7 +357,7 @@ def efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
     raa A B
 
   have flip_inst : ⊢ (A.imp (A.neg.imp B)).imp (A.neg.imp (A.imp B)) :=
-    @theorem_flip A A.neg B
+    @theorem_flip FrameClass.Base A A.neg B
 
   exact DerivationTree.modus_ponens [] _ _ flip_inst raa_inst
 
@@ -510,7 +502,7 @@ def rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.i
       ⊢ ((B.imp Formula.bot).imp Formula.bot).imp
         (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
          ((A.imp Formula.bot).imp Formula.bot)) :=
-      @b_combinator (A.imp Formula.bot) (B.imp Formula.bot) Formula.bot
+      @b_combinator FrameClass.Base (A.imp Formula.bot) (B.imp Formula.bot) Formula.bot
     -- Flip to get the right order
     have flip :
       ⊢ (((B.imp Formula.bot).imp Formula.bot).imp
@@ -519,7 +511,7 @@ def rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.i
         (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
          (((B.imp Formula.bot).imp Formula.bot).imp
           ((A.imp Formula.bot).imp Formula.bot))) :=
-      @theorem_flip ((B.imp Formula.bot).imp Formula.bot)
+      @theorem_flip FrameClass.Base ((B.imp Formula.bot).imp Formula.bot)
                     ((A.imp Formula.bot).imp (B.imp Formula.bot))
                     ((A.imp Formula.bot).imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc
@@ -532,7 +524,7 @@ def rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.i
 
   -- Step 3: Compose B → ¬¬B → ¬¬A
   have b_comp1 : ⊢ (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
-    @b_combinator B B.neg.neg A.neg.neg
+    @b_combinator FrameClass.Base B B.neg.neg A.neg.neg
 
   have b_comp1_ctx : Γ ⊢ (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
     DerivationTree.weakening [] Γ _ b_comp1 (by intro; simp)
@@ -552,7 +544,7 @@ def rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.i
 
   -- Step 5: Compose B → ¬¬A → A
   have b_final : ⊢ (A.neg.neg.imp A).imp ((B.imp A.neg.neg).imp (B.imp A)) :=
-    @b_combinator B A.neg.neg A
+    @b_combinator FrameClass.Base B A.neg.neg A
 
   have b_final_ctx : Γ ⊢ (A.neg.neg.imp A).imp ((B.imp A.neg.neg).imp (B.imp A)) :=
     DerivationTree.weakening [] Γ _ b_final (by intro; simp)
@@ -609,7 +601,7 @@ def lce (A B : Formula) : [A.and B] ⊢ A := by
       ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          ((A.imp Formula.bot).imp Formula.bot)) :=
-      @b_combinator (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
+      @b_combinator FrameClass.Base (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
     have flip :
       ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
          (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
@@ -617,7 +609,7 @@ def lce (A B : Formula) : [A.and B] ⊢ A := by
         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
           ((A.imp Formula.bot).imp Formula.bot))) :=
-      @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
+      @theorem_flip FrameClass.Base ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((A.imp Formula.bot).imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc
@@ -687,7 +679,7 @@ def rce (A B : Formula) : [A.and B] ⊢ B := by
       ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          ((B.imp Formula.bot).imp Formula.bot)) :=
-      @b_combinator (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
+      @b_combinator FrameClass.Base (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
     have flip :
       ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
          (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
@@ -695,7 +687,7 @@ def rce (A B : Formula) : [A.and B] ⊢ B := by
         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
           ((B.imp Formula.bot).imp Formula.bot))) :=
-      @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
+      @theorem_flip FrameClass.Base ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((B.imp Formula.bot).imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc
@@ -734,10 +726,10 @@ The context-based version `lce` is proven. This implication form would enable:
 
 **Workaround**: Use `lce` with weakening when contexts are available.
 -/
-def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
+def lce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h
+  exact DerivationTree.lift (FrameClass.base_le fc) (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h)
 
 /--
 Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
@@ -752,10 +744,10 @@ The context-based version `rce` is proven. This implication form would enable:
 
 **Workaround**: Use `rce` with weakening when contexts are available.
 -/
-def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
+def rce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h
+  exact DerivationTree.lift (FrameClass.base_le fc) (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h)
 
 /-!
 ## Phase 3: Context Manipulation and Classical Reasoning
@@ -887,7 +879,7 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
     -- We get: ((B → ⊥) → (A → B) → (A → ⊥)) → ((A → B) → (B → ⊥) → (A → ⊥))
     have flip_inst : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                        ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-      @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+      @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip_inst b
 
   -- Now compose everything
@@ -1058,7 +1050,7 @@ def contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
   -- theorem_flip: (X → Y → Z) → (Y → X → Z)
   have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                  ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-    @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+    @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
   exact DerivationTree.modus_ponens [] _ _ flip bc
 
 /--
@@ -1179,7 +1171,7 @@ def demorgan_conj_neg_forward (A B : Formula) :
                  ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
                   ((A.imp (B.imp Formula.bot)).imp
                    (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)))) :=
-    @theorem_flip (A.imp (B.imp Formula.bot))
+    @theorem_flip FrameClass.Base (A.imp (B.imp Formula.bot))
                   (((A.imp Formula.bot).imp Formula.bot).imp A)
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
 
@@ -1305,7 +1297,7 @@ def demorgan_conj_neg_backward (A B : Formula) :
 
     -- From A, derive ¬¬A using DNI (theorem_app1)
     have dni_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
-      @theorem_app1 A Formula.bot
+      @theorem_app1 FrameClass.Base A Formula.bot
     have dni_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       DerivationTree.weakening [] _ _ dni_inst (List.nil_subset _)
@@ -1451,7 +1443,7 @@ def demorgan_disj_neg_backward (A B : Formula) :
 
   -- Build: (¬A → B) → (¬A → ¬¬B)
   have dni_b : ⊢ B.imp ((B.imp Formula.bot).imp Formula.bot) :=
-    @theorem_app1 B Formula.bot
+    @theorem_app1 FrameClass.Base B Formula.bot
 
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = B, D = ¬¬B

@@ -172,19 +172,19 @@ From `L ⊢ ⊥`, by generalized temporal K, `G(L) ⊢ G(⊥)`. Since all of `G(
 distribution `⊢ G(⊥) → G(¬psi)`, so `G(¬psi) ∈ M`. But `F(psi) = ¬G(¬psi) ∈ M`.
 Contradiction.
 -/
-theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    SetConsistent (fc := FrameClass.Base) (forward_temporal_witness_seed M psi) := by
+    SetConsistent (fc := fc) (forward_temporal_witness_seed M psi) := by
   intro L hL_sub ⟨d⟩
 
   by_cases h_psi_in : psi ∈ L
   · -- Case: psi ∈ L
     let L_filt := L.filter (fun y => decide (y ≠ psi))
     have h_perm := cons_filter_neq_perm h_psi_in
-    have d_reord : DerivationTree FrameClass.Base (psi :: L_filt) Formula.bot :=
+    have d_reord : DerivationTree fc (psi :: L_filt) Formula.bot :=
       derivation_exchange d (fun x => (h_perm x).symm)
 
-    have d_neg : L_filt ⊢ Formula.neg psi :=
+    have d_neg : L_filt ⊢[fc] Formula.neg psi :=
       deduction_theorem L_filt psi Formula.bot d_reord
 
     -- Get G chi ∈ M for each chi ∈ L_filt from g_content
@@ -200,7 +200,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
       · exact h_gcontent
 
     -- Apply generalized temporal K (G distributes over derivation)
-    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg psi) :=
+    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢[fc] Formula.all_future (Formula.neg psi) :=
       Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
 
     -- All formulas in G(L_filt) are in M
@@ -230,7 +230,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
       · exact h_gcontent
 
     -- From L ⊢ ⊥, by generalized temporal K: G(L) ⊢ G(⊥)
-    have d_G_bot : (Context.map Formula.all_future L) ⊢ Formula.all_future Formula.bot :=
+    have d_G_bot : (Context.map Formula.all_future L) ⊢[fc] Formula.all_future Formula.bot :=
       Bimodal.Theorems.generalized_temporal_k L Formula.bot d
 
     -- All formulas in G(L) are in M
@@ -247,20 +247,20 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
         h_G_L_in_M d_G_bot
 
     -- ⊢ ⊥ → ¬psi by prop_s (weakening): ⊢ ⊥ → (psi → ⊥) = ⊢ ⊥ → ¬psi
-    have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg psi) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) trivial
+    have h_bot_imp_neg : ⊢[fc] Formula.bot.imp (Formula.neg psi) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) (FrameClass.base_le fc)
 
     -- By temporal necessitation: ⊢ G(⊥ → ¬psi)
-    have h_G_ef : [] ⊢ Formula.all_future (Formula.bot.imp (Formula.neg psi)) :=
+    have h_G_ef : ⊢[fc] Formula.all_future (Formula.bot.imp (Formula.neg psi)) :=
       DerivationTree.temporal_necessitation _ h_bot_imp_neg
 
     -- By temporal K distribution: ⊢ G(⊥ → ¬psi) → (G(⊥) → G(¬psi))
-    have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg psi))).imp
+    have h_K : ⊢[fc] (Formula.all_future (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi))) :=
-      Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg psi)
+      DerivationTree.lift (FrameClass.base_le fc) (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg psi))
 
     -- Modus ponens twice: G(¬psi) ∈ M
-    have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi)) :=
+    have h_G_imp : ⊢[fc] (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi)) :=
       DerivationTree.modus_ponens [] _ _ h_K h_G_ef
     have h_G_neg_psi : Formula.all_future (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
@@ -292,19 +292,19 @@ Past temporal witness seed consistency: If P(psi) is in an MCS M, then
 
 Symmetric to `forward_temporal_witness_seed_consistent`, using H and P instead of G and F.
 -/
-theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
-    SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M psi) := by
+    SetConsistent (fc := fc) (past_temporal_witness_seed M psi) := by
   intro L hL_sub ⟨d⟩
 
   by_cases h_psi_in : psi ∈ L
   · -- Case: psi ∈ L
     let L_filt := L.filter (fun y => decide (y ≠ psi))
     have h_perm := cons_filter_neq_perm h_psi_in
-    have d_reord : DerivationTree FrameClass.Base (psi :: L_filt) Formula.bot :=
+    have d_reord : DerivationTree fc (psi :: L_filt) Formula.bot :=
       derivation_exchange d (fun x => (h_perm x).symm)
 
-    have d_neg : L_filt ⊢ Formula.neg psi :=
+    have d_neg : L_filt ⊢[fc] Formula.neg psi :=
       deduction_theorem L_filt psi Formula.bot d_reord
 
     -- Get H chi ∈ M for each chi ∈ L_filt from h_content
@@ -320,7 +320,7 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       · exact h_hcontent
 
     -- Apply generalized past K (H distributes over derivation)
-    have d_H_neg : (Context.map Formula.all_past L_filt) ⊢ Formula.all_past (Formula.neg psi) :=
+    have d_H_neg : (Context.map Formula.all_past L_filt) ⊢[fc] Formula.all_past (Formula.neg psi) :=
       Bimodal.Theorems.generalized_past_k L_filt (Formula.neg psi) d_neg
 
     -- All formulas in H(L_filt) are in M
@@ -349,7 +349,7 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       · exact h_hcontent
 
     -- From L ⊢ ⊥, by generalized past K: H(L) ⊢ H(⊥)
-    have d_H_bot : (Context.map Formula.all_past L) ⊢ Formula.all_past Formula.bot :=
+    have d_H_bot : (Context.map Formula.all_past L) ⊢[fc] Formula.all_past Formula.bot :=
       Bimodal.Theorems.generalized_past_k L Formula.bot d
 
     -- All formulas in H(L) are in M
@@ -365,21 +365,21 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       SetMaximalConsistent.closed_under_derivation h_mcs (Context.map Formula.all_past L)
         h_H_L_in_M d_H_bot
 
-    -- ⊢ ⊥ → ¬psi by prop_s (weakening): ⊢ ⊥ → (psi → ⊥) = ⊢ ⊥ → ¬psi
-    have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg psi) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) trivial
+    -- ⊢ ⊥ → ¬psi by prop_s
+    have h_bot_imp_neg : ⊢[fc] Formula.bot.imp (Formula.neg psi) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) (FrameClass.base_le fc)
 
     -- By past necessitation: ⊢ H(⊥ → ¬psi)
-    have h_H_ef : [] ⊢ Formula.all_past (Formula.bot.imp (Formula.neg psi)) :=
+    have h_H_ef : ⊢[fc] Formula.all_past (Formula.bot.imp (Formula.neg psi)) :=
       Bimodal.Theorems.past_necessitation _ h_bot_imp_neg
 
     -- By past K distribution: ⊢ H(⊥ → ¬psi) → (H(⊥) → H(¬psi))
-    have h_K : [] ⊢ (Formula.all_past (Formula.bot.imp (Formula.neg psi))).imp
+    have h_K : ⊢[fc] (Formula.all_past (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg psi))) :=
       Bimodal.Theorems.past_k_dist Formula.bot (Formula.neg psi)
 
     -- Modus ponens twice: H(¬psi) ∈ M
-    have h_H_imp : [] ⊢ (Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg psi)) :=
+    have h_H_imp : ⊢[fc] (Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg psi)) :=
       DerivationTree.modus_ponens [] _ _ h_K h_H_ef
     have h_H_neg_psi : Formula.all_past (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M

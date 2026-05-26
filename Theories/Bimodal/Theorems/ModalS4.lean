@@ -80,7 +80,7 @@ noncomputable def s4_diamond_box_conj (A B : Formula) :
 
   -- Step 2: Flip to get □B → (A → (A ∧ □B))
   have flipped : ⊢ B.box.imp (A.imp (A.and B.box)) :=
-    DerivationTree.modus_ponens [] _ _ (@theorem_flip A B.box (A.and B.box)) pair
+    DerivationTree.modus_ponens [] _ _ (@theorem_flip FrameClass.Base A B.box (A.and B.box)) pair
 
   -- Step 3: Apply modal_4 to get □B → □□B
   have modal_4_b : ⊢ B.box.imp B.box.box :=
@@ -408,7 +408,7 @@ noncomputable def s5_diamond_conj_diamond (A B : Formula) :
 
     -- Step 3: Flip to get ◇B → (A → (A ∧ ◇B))
     have flipped : ⊢ B.diamond.imp (A.imp (A.and B.diamond)) :=
-      DerivationTree.modus_ponens [] _ _ (@theorem_flip A B.diamond (A.and B.diamond)) pair
+      DerivationTree.modus_ponens [] _ _ (@theorem_flip FrameClass.Base A B.diamond (A.and B.diamond)) pair
 
     -- Step 4: Apply box_mono to get □◇B → □(A → (A ∧ ◇B))
     have box_flipped : ⊢ B.diamond.box.imp (A.imp (A.and B.diamond)).box :=

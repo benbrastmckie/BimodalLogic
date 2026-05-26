@@ -97,12 +97,12 @@ theorem F_neg_of_G_not (fc : FrameClass) {A : Set Formula}
       Bundle.neg_some_future_to_all_future_neg h_mcs φ.neg h
     -- G(¬¬φ) → G(φ) via DNE under G
     have h_dne : DerivationTree fc [] (φ.neg.neg.imp φ) :=
-      Bimodal.Theorems.Propositional.double_negation φ
+      liftBase fc (Bimodal.Theorems.Propositional.double_negation φ)
     have h_G_dne : DerivationTree fc [] (Formula.all_future (φ.neg.neg.imp φ)) :=
       DerivationTree.temporal_necessitation _ h_dne
     have h_kd : DerivationTree fc [] ((φ.neg.neg.imp φ).all_future.imp
         (φ.neg.neg.all_future.imp φ.all_future)) :=
-      Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ.neg.neg φ
+      liftBase fc (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ.neg.neg φ)
     have h1 := theorem_in_mcs h_mcs h_G_dne
     have h2 := theorem_in_mcs h_mcs h_kd
     have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
@@ -119,7 +119,7 @@ theorem P_neg_of_H_not (fc : FrameClass) {A : Set Formula}
   · have h_H_nnφ : Formula.all_past φ.neg.neg ∈ A :=
       Bundle.neg_some_past_to_all_past_neg h_mcs φ.neg h
     have h_dne : DerivationTree fc [] (φ.neg.neg.imp φ) :=
-      Bimodal.Theorems.Propositional.double_negation φ
+      liftBase fc (Bimodal.Theorems.Propositional.double_negation φ)
     have h_H_dne : DerivationTree fc [] (Formula.all_past (φ.neg.neg.imp φ)) :=
       Bimodal.Theorems.past_necessitation _ h_dne
     have h_kd : DerivationTree fc [] ((φ.neg.neg.imp φ).all_past.imp
@@ -173,7 +173,7 @@ noncomputable def lemma_2_4 (fc : FrameClass) {A : Set Formula}
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl β γ) ∈ C :=
     h_g_sub h_GP
-  obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub
+  obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub fc h_mcs h_C_mcs h_g_sub
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_B⟩
 
 /-- BX10 at MCS level: U(γ,β) ∈ A implies F(β) ∈ A. -/

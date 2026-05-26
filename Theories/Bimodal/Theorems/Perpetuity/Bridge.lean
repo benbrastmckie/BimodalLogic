@@ -417,7 +417,7 @@ def local_lce (A B : Formula) : [A.and B] ⊢ A := by
       ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          ((A.imp Formula.bot).imp Formula.bot)) :=
-      @b_combinator (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
+      @b_combinator FrameClass.Base (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
     have flip :
       ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
          (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
@@ -425,7 +425,7 @@ def local_lce (A B : Formula) : [A.and B] ⊢ A := by
         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
           ((A.imp Formula.bot).imp Formula.bot))) :=
-      @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
+      @theorem_flip FrameClass.Base ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((A.imp Formula.bot).imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc
@@ -473,7 +473,7 @@ def local_rce (A B : Formula) : [A.and B] ⊢ B := by
       ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          ((B.imp Formula.bot).imp Formula.bot)) :=
-      @b_combinator (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
+      @b_combinator FrameClass.Base (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
     have flip :
       ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
          (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
@@ -481,7 +481,7 @@ def local_rce (A B : Formula) : [A.and B] ⊢ B := by
         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
          (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
           ((B.imp Formula.bot).imp Formula.bot))) :=
-      @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
+      @theorem_flip FrameClass.Base ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((B.imp Formula.bot).imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc

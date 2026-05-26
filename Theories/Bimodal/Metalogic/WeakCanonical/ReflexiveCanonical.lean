@@ -264,21 +264,21 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
     -- β = (β₀ ∧ ¬Fγ₀) ∧ δ ∈ y.val
     let β := Formula.and (Formula.and β₀ (Formula.some_future γ₀).neg) δ
     have h_β_y : β ∈ y.val := by
-      have h_p1 := pairing β₀ (Formula.some_future γ₀).neg
+      have h_p1 : DerivationTree FrameClass.Base [] _ := pairing β₀ (Formula.some_future γ₀).neg
       have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
           (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
-      have h_p2 := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ
       exact h_mcs_y.implication_property
         (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_δ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ ¬δ ∈ z.val
     let γ := Formula.and (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
     have h_γ_z : γ ∈ z.val := by
-      have h_p1 := pairing γ₀ (Formula.some_future β₀).neg
+      have h_p1 : DerivationTree FrameClass.Base [] _ := pairing γ₀ (Formula.some_future β₀).neg
       have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
           (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
-      have h_p2 := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
       exact h_mcs_z.implication_property
         (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_nδ_z
     -- F(β) ∈ x.val and F(γ) ∈ x.val (by Lemma 1.6(b))
@@ -347,21 +347,21 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
     -- β = (β₀ ∧ ¬Fγ₀) ∧ ¬δ ∈ y.val
     let β := Formula.and (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
     have h_β_y : β ∈ y.val := by
-      have h_p1 := pairing β₀ (Formula.some_future γ₀).neg
+      have h_p1 : DerivationTree FrameClass.Base [] _ := pairing β₀ (Formula.some_future γ₀).neg
       have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
           (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
-      have h_p2 := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
       exact h_mcs_y.implication_property
         (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_nδ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ δ ∈ z.val
     let γ := Formula.and (Formula.and γ₀ (Formula.some_future β₀).neg) δ
     have h_γ_z : γ ∈ z.val := by
-      have h_p1 := pairing γ₀ (Formula.some_future β₀).neg
+      have h_p1 : DerivationTree FrameClass.Base [] _ := pairing γ₀ (Formula.some_future β₀).neg
       have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
           (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
-      have h_p2 := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ
       exact h_mcs_z.implication_property
         (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_δ_z
     have h_Fβ_x : Formula.some_future β ∈ x.val :=

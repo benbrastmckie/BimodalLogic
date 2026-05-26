@@ -130,7 +130,7 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   have b_inst : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp
                    (((A.imp Formula.bot).box.imp (A.imp Formula.bot)).imp
                     ((A.imp Formula.bot).box.imp Formula.bot)) :=
-    @b_combinator (A.imp Formula.bot).box (A.imp Formula.bot) Formula.bot
+    @b_combinator FrameClass.Base (A.imp Formula.bot).box (A.imp Formula.bot) Formula.bot
 
   -- We need to flip the order to apply mt_neg_a
   -- theorem_flip: (X → Y → Z) → (Y → X → Z)
@@ -140,7 +140,7 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
                    (((A.imp Formula.bot).box.imp (A.imp Formula.bot)).imp
                     (((A.imp Formula.bot).imp Formula.bot).imp
                      ((A.imp Formula.bot).box.imp Formula.bot))) :=
-    @theorem_flip ((A.imp Formula.bot).imp Formula.bot)
+    @theorem_flip FrameClass.Base ((A.imp Formula.bot).imp Formula.bot)
                   ((A.imp Formula.bot).box.imp (A.imp Formula.bot))
                   ((A.imp Formula.bot).box.imp Formula.bot)
 
@@ -160,7 +160,7 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
        ((A.imp Formula.bot).box.imp Formula.bot)).imp
       ((A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
        (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot))) :=
-    @b_combinator A.box ((A.imp Formula.bot).imp Formula.bot)
+    @b_combinator FrameClass.Base A.box ((A.imp Formula.bot).imp Formula.bot)
       ((A.imp Formula.bot).box.imp Formula.bot)
 
   have step2 :
@@ -260,13 +260,13 @@ def box_contrapose (A B : Formula) :
     -- b_combinator: (B → C) → (A → B) → (A → C)
     -- With C = ⊥
     have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-      @b_combinator A B Formula.bot
+      @b_combinator FrameClass.Base A B Formula.bot
 
     -- We need to flip the order: (A → B) → (B → ⊥) → (A → ⊥)
     -- Use theorem_flip
     have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                    ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-      @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+      @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
 
     exact DerivationTree.modus_ponens [] _ _ flip bc
 
@@ -335,7 +335,7 @@ def k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diam
                    (((A.imp B).box.imp ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)).imp
                     ((A.imp B).box.imp (((A.imp Formula.bot).box.imp Formula.bot).imp
                                         ((B.imp Formula.bot).box.imp Formula.bot)))) :=
-    @b_combinator (A.imp B).box
+    @b_combinator FrameClass.Base (A.imp B).box
       ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)
       (((A.imp Formula.bot).box.imp Formula.bot).imp
        ((B.imp Formula.bot).box.imp Formula.bot))
@@ -410,7 +410,7 @@ def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp 
 
   -- Use theorem_app1: A → (A → ⊥) → ⊥
   have app1 : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
-    @theorem_app1 A Formula.bot
+    @theorem_app1 FrameClass.Base A Formula.bot
 
   -- Now we need: (A ∧ ¬A) → ⊥
   -- This is: ((A → ¬¬A).neg) → ⊥
@@ -459,14 +459,14 @@ def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp 
 
     -- We have dni: A → ¬¬A = A → (A → ⊥) → ⊥ = theorem_app1
     have dni_A : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
-      @theorem_app1 A Formula.bot
+      @theorem_app1 FrameClass.Base A Formula.bot
 
     -- Now derive ¬¬(A → ¬¬A) from (A → ¬¬A)
     -- Use DNI on implication: X → ¬¬X
     have dni_impl :
       ⊢ (A.imp ((A.imp Formula.bot).imp Formula.bot)).imp
         (((A.imp ((A.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp Formula.bot) :=
-      @theorem_app1 (A.imp ((A.imp Formula.bot).imp Formula.bot)) Formula.bot
+      @theorem_app1 FrameClass.Base (A.imp ((A.imp Formula.bot).imp Formula.bot)) Formula.bot
 
     exact DerivationTree.modus_ponens [] _ _ dni_impl dni_A
 

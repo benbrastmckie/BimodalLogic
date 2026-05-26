@@ -159,7 +159,7 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
     Bimodal.ProofSystem.DerivationTree FrameClass.Base [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
-  have h_tf_swap := Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
+  have h_tf_swap : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] _ := Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
   have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
   have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
       (Formula.box (Formula.swap_temporal φ)).all_future) =
