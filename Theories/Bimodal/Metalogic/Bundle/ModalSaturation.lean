@@ -510,10 +510,11 @@ If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
 
 This follows from axiom 5 and deductive closure of MCS.
 -/
-lemma SetMaximalConsistent.neg_box_implies_box_neg_box {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S)
     (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ S) :
     Formula.box (Formula.box phi).neg ∈ S := by
-  have h_ax5 := neg_box_to_box_neg_box phi
+  have h_ax5 : DerivationTree fc [] ((Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg)) :=
+    (neg_box_to_box_neg_box phi).lift (by cases fc <;> trivial)
   have h_ax5_in := theorem_in_mcs h_mcs h_ax5
   exact SetMaximalConsistent.implication_property h_mcs h_ax5_in h_neg_box
 

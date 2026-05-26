@@ -60,7 +60,7 @@ reflects the semantic meaning of each connective.
 /--
 Bot is not in any MCS.
 -/
-theorem bot_not_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
+theorem bot_not_in_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S) :
     Formula.bot ∉ S := by
   intro h_bot
   exact h_mcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
