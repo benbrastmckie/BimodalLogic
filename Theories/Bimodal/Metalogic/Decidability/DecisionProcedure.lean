@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Decidability.ProofExtraction
 import Bimodal.Metalogic.Decidability.CountermodelExtraction
+import Bimodal.Automation.ProofSearch.Strategies
 
 /-!
 # Decision Procedure for TM Bimodal Logic

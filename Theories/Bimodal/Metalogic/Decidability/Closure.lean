@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Decidability.Tableau
-import Bimodal.Automation.ProofSearch
+import Bimodal.Automation.ProofSearch.Core
 
 /-!
 # Branch Closure Detection for Tableau Decision Procedure

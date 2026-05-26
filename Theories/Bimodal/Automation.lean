@@ -1,5 +1,6 @@
 import Bimodal.Automation.Tactics.Commands
-import Bimodal.Automation.ProofSearch
+import Bimodal.Automation.ProofSearch.Core
+import Bimodal.Automation.ProofSearch.Strategies
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
 import Bimodal.Automation.EFGameTactics

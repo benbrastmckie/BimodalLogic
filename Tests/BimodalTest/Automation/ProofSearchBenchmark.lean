@@ -1,4 +1,4 @@
-import Bimodal.Automation.ProofSearch
+import Bimodal.Automation.ProofSearch.Strategies
 import Bimodal.ProofSystem
 
 /-!
