@@ -243,6 +243,7 @@ def substAxiomFresh (a : Atom) {φ : ExtFormula} (h : ExtAxiom φ) :
   | prior_SZ x => exact ExtAxiom.prior_SZ _
   | z1 x => exact ExtAxiom.z1 _
   | density x => exact ExtAxiom.density _
+  | dense_indicator => exact ExtAxiom.dense_indicator
 
 /-- substFreshWith preserves minFrameClass. -/
 private theorem substAxiomFresh_preserves_minFrameClass (a : Atom) {φ : ExtFormula}
@@ -297,6 +298,7 @@ def unembedAxiom {φ : ExtFormula} (h : ExtAxiom φ) : Axiom (unembedFormula φ)
   | prior_SZ a => exact Axiom.prior_SZ _
   | z1 a => exact Axiom.z1 _
   | density a => exact Axiom.density _
+  | dense_indicator => exact Axiom.dense_indicator
 
 /-- unembedFormula commutes with swap_temporal. -/
 theorem unembed_swap_temporal (φ : ExtFormula) :
@@ -580,6 +582,7 @@ private def liftAxiom (a : Atom) {φ : ExtFormula} (h : ExtAxiom φ) :
   | prior_SZ x => exact Axiom.prior_SZ _
   | z1 x => exact Axiom.z1 _
   | density x => exact Axiom.density _
+  | dense_indicator => exact Axiom.dense_indicator
 
 /-- liftAxiom preserves minFrameClass. -/
 private theorem liftAxiom_preserves_minFrameClass (a : Atom) {φ : ExtFormula}

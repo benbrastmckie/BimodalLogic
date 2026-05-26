@@ -793,7 +793,14 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | dense_indicator =>
+    -- dense indicator: ¬U(⊤,⊥), swap is ¬S(⊤,⊥) (past density indicator)
+    -- S(⊤,⊥) at t requires s < t with empty (s,t), contradicting DenselyOrdered
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.neg, truth_at]
+    intro ⟨s, hst, _h_top, h_guard⟩
+    obtain ⟨r, hsr, hrt⟩ := exists_between hst
+    exact h_guard r hsr hrt
   | density _ =>
     -- density axiom: GGφ → Gφ, swap is HHφ → Hφ (past density)
     -- HHφ = ¬P(¬Hφ) = ¬P(¬(¬P(¬φ))) and Hφ = ¬P(¬φ)

@@ -150,13 +150,16 @@ inductive ExtAxiom : ExtFormula → Type where
   | z1 (φ : ExtFormula) :
       ExtAxiom ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future))
 
-  -- Layer 8: Density (1)
+  -- Layer 8: Density (2)
   | density (φ : ExtFormula) :
       ExtAxiom ((φ.all_future.all_future).imp φ.all_future)
+  | dense_indicator :
+      ExtAxiom (ExtFormula.untl (ExtFormula.bot.imp ExtFormula.bot) ExtFormula.bot).neg
 
 /-- Minimum frame class required by an extended axiom, mirroring `Axiom.minFrameClass`. -/
 def ExtAxiom.minFrameClass {φ : ExtFormula} : ExtAxiom φ → FrameClass
   | density _ => .Dense
+  | dense_indicator => .Dense
   | prior_UZ _ => .Discrete
   | prior_SZ _ => .Discrete
   | z1 _ => .Discrete
@@ -233,6 +236,7 @@ def embedAxiom {φ : Formula} : Axiom φ → ExtAxiom (embedFormula φ)
   | Axiom.prior_SZ a => ExtAxiom.prior_SZ (embedFormula a)
   | Axiom.z1 a => ExtAxiom.z1 (embedFormula a)
   | Axiom.density a => ExtAxiom.density (embedFormula a)
+  | Axiom.dense_indicator => ExtAxiom.dense_indicator
 
 /-- The minFrameClass of an embedded axiom equals the original's minFrameClass. -/
 theorem embedAxiom_preserves_minFrameClass {φ : Formula} (ax : Axiom φ) :

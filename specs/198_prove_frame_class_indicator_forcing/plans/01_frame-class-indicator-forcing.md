@@ -68,7 +68,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add dense_indicator Axiom and Soundness Proof [IN PROGRESS]
+### Phase 1: Add dense_indicator Axiom and Soundness Proof [COMPLETED]
 
 **Goal**: Add the `dense_indicator` axiom constructor to the `Axiom` inductive and prove its soundness on densely ordered frames.
 

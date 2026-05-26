@@ -378,6 +378,9 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | density a =>
     simp only [subst_imp, subst_all_future]
     exact Axiom.density (a.subst q r)
+  | dense_indicator =>
+    simp only [subst_neg, subst_untl, subst_imp]
+    exact Axiom.dense_indicator
 
 /-!
 ## Main theorem: derivation substitution
