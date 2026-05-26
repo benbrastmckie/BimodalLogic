@@ -7,7 +7,9 @@ import Bimodal.Metalogic.WeakCanonical.Separation.NegationEquiv
 import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations
-import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyDefs
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyInduction
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyCompletion
 import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
 
 /-!

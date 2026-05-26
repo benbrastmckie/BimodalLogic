@@ -3,7 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Separation.Duality
-import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyCompletion
 
 /-!
 # Separation Theorem (GHR94 Theorem 10.2.9)

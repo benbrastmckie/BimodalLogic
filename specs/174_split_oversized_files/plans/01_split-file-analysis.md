@@ -328,7 +328,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Split Hierarchy.lean (2 importers, 3-file split) [NOT STARTED]
+### Phase 8: Split Hierarchy.lean (2 importers, 3-file split) [IN PROGRESS]
 
 **Goal**: Split Hierarchy.lean (3845 lines) into 3 focused modules aligned with the GHR94 separation hierarchy stages.
 
@@ -426,7 +426,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Split Propositional.lean (19 active importers, 3-file split) [IN PROGRESS]
+### Phase 10: Split Propositional.lean (19 active importers, 3-file split) [COMPLETED]
 
 **Goal**: Split Propositional.lean (1704 lines) into 3 focused modules. This is the highest-fan-out split: 19 files import `Bimodal.Theorems.Propositional`. The decomposition aligns with proof-theoretic levels.
 
