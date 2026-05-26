@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.BXCanonical.Frame
+import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Metalogic.Bundle.ModalSaturation
 import Mathlib.Data.Rat.Defs
 
 /-!
@@ -60,6 +62,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
+open Bimodal.Theorems
 
 /-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
 theorem base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
@@ -97,6 +100,124 @@ theorem mcs_to_base {fc : FrameClass} {A : Set Formula}
     have h_phi_mem : φ ∈ insert φ A := Set.mem_insert φ A
     have h_neg_mem : φ.neg ∈ insert φ A := Set.mem_insert_of_mem φ h_neg
     exact set_consistent_not_both h_cons φ h_phi_mem h_neg_mem
+
+/-- Modal witness at arbitrary fc: given an fc-MCS A with ◇ψ ∈ A, produce an fc-MCS v
+that is box-equivalent to A and contains ψ. This is the fc-parameterized version of
+`bx_modal_witness` from Frame.lean.
+
+The proof is identical in structure to `bx_modal_witness`: construct seed {ψ} ∪ box_content(A),
+show fc-consistency, extend via Lindenbaum, prove box-equivalence via modal_4 + S5 collapse.
+All axioms used (modal_4, modal_t, modal_5_collapse, prop_s, peirce) are Base axioms
+available at any fc via `base_le`. -/
+noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) A) (ψ : Formula)
+    (h_dia : Formula.diamond ψ ∈ A) :
+    ∃ (v : Set Formula), SetMaximalConsistent (fc := fc) v ∧
+      (∀ χ, Formula.box χ ∈ A ↔ Formula.box χ ∈ v) ∧ ψ ∈ v := by
+  -- Use the Base-level bx_modal_witness on the Base-MCS derived from h_mcs
+  have h_mcs_base : SetMaximalConsistent (fc := FrameClass.Base) A := mcs_to_base h_mcs
+  obtain ⟨v, h_equiv, h_ψ_v⟩ := bx_modal_witness ⟨A, h_mcs_base⟩ ψ h_dia
+  -- v is a Base-MCS. We need it to be an fc-MCS.
+  -- Key: v has the same box-content as A (which is fc-MCS).
+  -- Show v is fc-consistent: if some finite L ⊆ v derived ⊥ at fc,
+  -- then by deduction theorem we'd get a derivation of ¬(∧L) at fc.
+  -- But v is Base-maximal, so for every φ, either φ ∈ v or ¬φ ∈ v.
+  -- The fc-derivation can be lifted from Base (if it only uses Base axioms)
+  -- or uses fc-specific axioms. In the latter case, we can't directly conclude.
+  --
+  -- Alternative: since v is Base-MCS, it's also fc-consistent iff no fc-derivation
+  -- from its finite subsets reaches ⊥. We prove this by showing v has the same
+  -- consistency-relevant structure as A.
+  --
+  -- Actually, the simplest approach: extend v's Base-consistency to fc-consistency
+  -- using the fact that Base-MCS implies fc-consistent (base_le means any Base
+  -- derivation lifts to fc, so if ⊥ is derivable at Base, it's derivable at fc;
+  -- contrapositively, fc-consistency implies Base-consistency, but we need the
+  -- other direction, which is NOT true in general).
+  --
+  -- Instead, we reproduce the Lindenbaum construction at fc:
+  -- The seed {ψ} ∪ box_content(A) is fc-consistent (same proof as Base).
+  -- Lindenbaum at fc gives an fc-MCS extending the seed.
+  -- Box-equivalence follows from the same argument.
+  let bc := {χ : Formula | Formula.box χ ∈ A}
+  have h_seed_fc_cons : SetConsistent (fc := fc) ({ψ} ∪ bc) := by
+    intro L hL ⟨d⟩
+    by_cases h_ψ_in : ψ ∈ L
+    · let L_filt := L.filter (fun y => decide (y ≠ ψ))
+      have d_reord : DerivationTree fc (ψ :: L_filt) Formula.bot :=
+        derivation_exchange d (fun x => (cons_filter_neq_perm h_ψ_in x).symm)
+      have d_neg : DerivationTree fc L_filt (Formula.neg ψ) :=
+        Bimodal.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_reord
+      have h_filt_in_bc : ∀ χ ∈ L_filt, χ ∈ bc := by
+        intro χ hχ
+        have h_and := List.mem_filter.mp hχ
+        have h_ne : χ ≠ ψ := by simpa using h_and.2
+        have h_mem := hL χ h_and.1
+        simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
+        rcases h_mem with rfl | h
+        · exact absurd rfl h_ne
+        · exact h
+      have d_box_neg : DerivationTree fc (Context.map Formula.box L_filt) (Formula.box (Formula.neg ψ)) :=
+        generalized_modal_k L_filt (Formula.neg ψ) d_neg
+      have h_box_L_in : ∀ f ∈ Context.map Formula.box L_filt, f ∈ A := by
+        intro f hf
+        rw [Context.mem_map_iff] at hf
+        obtain ⟨χ, hχ_in, hχ_eq⟩ := hf
+        rw [← hχ_eq]
+        exact h_filt_in_bc χ hχ_in
+      have h_box_neg_in := SetMaximalConsistent.closed_under_derivation h_mcs
+        (Context.map Formula.box L_filt) h_box_L_in d_box_neg
+      have h_eq : Formula.diamond ψ = Formula.neg (Formula.box (Formula.neg ψ)) := rfl
+      rw [h_eq] at h_dia
+      exact set_consistent_not_both h_mcs.1 _ h_box_neg_in h_dia
+    · have h_L_in_bc : ∀ χ ∈ L, χ ∈ bc := by
+        intro χ hχ
+        have h_mem := hL χ hχ
+        simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
+        rcases h_mem with rfl | h
+        · exact absurd hχ h_ψ_in
+        · exact h
+      have d_box_bot : DerivationTree fc (Context.map Formula.box L) (Formula.box Formula.bot) :=
+        generalized_modal_k L Formula.bot d
+      have h_box_L_in : ∀ f ∈ Context.map Formula.box L, f ∈ A := by
+        intro f hf
+        rw [Context.mem_map_iff] at hf
+        obtain ⟨χ, hχ_in, hχ_eq⟩ := hf
+        rw [← hχ_eq]
+        exact h_L_in_bc χ hχ_in
+      have h_box_bot_in := SetMaximalConsistent.closed_under_derivation h_mcs
+        (Context.map Formula.box L) h_box_L_in d_box_bot
+      have h_ax : DerivationTree fc [] (Formula.box Formula.bot |>.imp Formula.bot) :=
+        DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
+      have h_bot := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_ax) h_box_bot_in
+      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp at hχ; rw [hχ]; exact h_bot)
+        ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+  obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_fc_cons
+  have h_ψ_in : ψ ∈ M := hM_sup (Set.mem_union_left _ (Set.mem_singleton ψ))
+  have h_bc_sub : bc ⊆ M := fun χ hχ => hM_sup (Set.mem_union_right _ hχ)
+  have h_box_equiv : ∀ χ, Formula.box χ ∈ A ↔ Formula.box χ ∈ M := by
+    intro χ
+    constructor
+    · intro h_box
+      have h_m4 : DerivationTree fc [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
+        DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
+      have h_box_box := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_m4) h_box
+      exact h_bc_sub h_box_box
+    · intro h_box_M
+      by_contra h_not_box
+      have h_neg_box : (Formula.box χ).neg ∈ A := by
+        rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box χ) with h | h
+        · exact absurd h h_not_box
+        · exact h
+      have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp (Formula.box (Formula.box χ).neg)) :=
+        liftBase fc (Bimodal.Metalogic.Bundle.axiom_5_negative_introspection χ)
+      have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_m5) h_neg_box
+      have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box
+      exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_box_M
+  exact ⟨M, hM_mcs, h_box_equiv, h_ψ_in⟩
 
 /-! ## Deductively Closed Sets (DCS) -/
 
