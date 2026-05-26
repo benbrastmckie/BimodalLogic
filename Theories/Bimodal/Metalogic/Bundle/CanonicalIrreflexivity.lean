@@ -4,7 +4,7 @@ import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.ProofSystem.Substitution

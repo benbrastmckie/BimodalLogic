@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.Bundle.WitnessSeed
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Bimodal.Theorems.Combinators
 import Bimodal.Syntax.Context
 

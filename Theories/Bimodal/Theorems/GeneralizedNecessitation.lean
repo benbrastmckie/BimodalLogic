@@ -3,7 +3,7 @@ import Bimodal.Syntax.Context
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 
 /-!
 # Generalized Necessitation Rules

@@ -1,4 +1,4 @@
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Propositional Theorems Tests

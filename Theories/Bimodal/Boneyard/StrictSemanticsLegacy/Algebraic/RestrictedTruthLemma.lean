@@ -4,7 +4,7 @@ import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Semantics.TaskModel
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Restricted Bidirectional Truth Lemma

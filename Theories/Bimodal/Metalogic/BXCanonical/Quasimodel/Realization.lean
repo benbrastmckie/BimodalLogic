@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.BXCanonical.Quasimodel.Construction
 import Bimodal.Syntax.BigConj
 import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Realization Lifting Lemma

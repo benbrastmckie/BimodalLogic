@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 
 /-!
 # Modal Saturation for BFMCS

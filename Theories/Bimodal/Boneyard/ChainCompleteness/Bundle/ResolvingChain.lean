@@ -1,5 +1,5 @@
 import Bimodal.Boneyard.ChainCompleteness.Bundle.SimplifiedChain
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Boneyard.ChainCompleteness.Bundle.TargetedChain

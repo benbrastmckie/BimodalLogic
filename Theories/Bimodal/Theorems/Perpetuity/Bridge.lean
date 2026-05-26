@@ -1,6 +1,6 @@
 import Bimodal.Theorems.Perpetuity.Helpers
 import Bimodal.Theorems.Perpetuity.Principles
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 
 /-!
 # Perpetuity Bridge Lemmas and P6

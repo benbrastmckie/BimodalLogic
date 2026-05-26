@@ -1,5 +1,5 @@
 import Bimodal.Theorems.Perpetuity.Helpers
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!

@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Perpetuity
 

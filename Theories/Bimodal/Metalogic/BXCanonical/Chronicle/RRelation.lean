@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleTypes
 import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Theorems.TemporalDerived
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Mathlib.Order.Zorn
 
 /-!

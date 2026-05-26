@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Decidability.FMP.TruthPreservation
 import Bimodal.Semantics.Validity
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Finite Model Property for TM Bimodal Logic

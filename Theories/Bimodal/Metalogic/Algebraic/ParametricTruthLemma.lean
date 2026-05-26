@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Semantics.TaskModel
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # D-Parametric Truth Lemma

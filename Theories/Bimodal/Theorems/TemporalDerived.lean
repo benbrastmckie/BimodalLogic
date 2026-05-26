@@ -2,7 +2,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Connectives
 
 /-!
 # Temporal Derived Theorems from BX Axioms

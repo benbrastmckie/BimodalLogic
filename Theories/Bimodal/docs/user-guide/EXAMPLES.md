@@ -633,7 +633,7 @@ If P is necessary (true in all worlds), then P is possible (true in some world).
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 open Bimodal.Theorems.Propositional
 
@@ -705,7 +705,7 @@ The `always` operator is defined as a conjunction of past and future necessity. 
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 open Bimodal.Theorems.Propositional
 
@@ -753,7 +753,7 @@ From necessity of P and necessity of Q, derive necessity of their conjunction.
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Bimodal.Theorems.Combinators
 
 open Bimodal.Theorems.Propositional
@@ -862,7 +862,7 @@ The necessity of something is equivalent to eternal necessity.
 
 ```lean
 import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Propositional

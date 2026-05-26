@@ -370,7 +370,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Split SubformulaClosure.lean (7 active importers, 3-file split) [IN PROGRESS]
+### Phase 9: Split SubformulaClosure.lean (7 active importers, 3-file split) [COMPLETED]
 
 **Goal**: Split SubformulaClosure.lean (1889 lines in `Theories/Bimodal/Syntax/`) into 3 focused modules. Note: only `Bimodal.Syntax.SubformulaClosure` is being split (1889 lines); the separate `BXCanonical/Quasimodel/SubformulaClosure.lean` (112 lines) is not affected.
 
@@ -426,7 +426,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Split Propositional.lean (19 active importers, 3-file split) [NOT STARTED]
+### Phase 10: Split Propositional.lean (19 active importers, 3-file split) [IN PROGRESS]
 
 **Goal**: Split Propositional.lean (1704 lines) into 3 focused modules. This is the highest-fan-out split: 19 files import `Bimodal.Theorems.Propositional`. The decomposition aligns with proof-theoretic levels.
 

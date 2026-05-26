@@ -12,7 +12,7 @@ import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Canonical Construction: Direct TruthLemma at TaskFrame Level

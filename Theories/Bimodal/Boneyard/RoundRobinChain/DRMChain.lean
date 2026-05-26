@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Metalogic.Bundle.SuccExistence
 import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # DRM Chain Construction for Forward_F

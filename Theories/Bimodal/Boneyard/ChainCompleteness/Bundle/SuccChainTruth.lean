@@ -4,7 +4,7 @@ import Bimodal.Boneyard.ChainCompleteness.Bundle.SuccChainWorldHistory
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Succ-Chain Truth Lemma

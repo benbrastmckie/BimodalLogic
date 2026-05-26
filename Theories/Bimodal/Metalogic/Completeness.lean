@@ -3,7 +3,7 @@ import Bimodal.Semantics
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 
 /-!
 # Completeness for TM Bimodal Logic

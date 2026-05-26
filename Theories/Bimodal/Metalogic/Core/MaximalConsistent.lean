@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Core.DeductionTheorem
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
 import Mathlib.Data.Finite.Defs

@@ -1,5 +1,7 @@
 import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
+import Bimodal.Theorems.Propositional.Connectives
+import Bimodal.Theorems.Propositional.Reasoning
 import Bimodal.Theorems.ModalS5
 import Bimodal.Theorems.ModalS4
 import Bimodal.Theorems.Perpetuity

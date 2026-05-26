@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
-import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Propositional.Core
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.GeneralizedNecessitation
