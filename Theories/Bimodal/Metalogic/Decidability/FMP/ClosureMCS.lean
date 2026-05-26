@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Basic
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.SubformulaClosure
 

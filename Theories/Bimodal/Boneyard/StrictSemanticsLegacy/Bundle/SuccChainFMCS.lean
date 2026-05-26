@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Bundle.SuccExistence
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.TemporalCoherence
-import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Metalogic.Core.RestrictedMCS.Deferral
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
