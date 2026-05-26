@@ -87,7 +87,7 @@ theorem bot_not_in_mcs {phi : Formula} (S : ClosureMCSBundle phi) :
     Formula.bot ∉ S.carrier := by
   intro h_bot
   -- If bot ∈ S, then [bot] ⊢ bot, contradicting consistency
-  have h_deriv : DerivationTree [Formula.bot] Formula.bot :=
+  have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
     DerivationTree.assumption [Formula.bot] Formula.bot List.mem_cons_self
   have h_cons := closure_mcs_consistent S.is_mcs
   apply h_cons [Formula.bot]
@@ -115,11 +115,11 @@ theorem mcs_not_both_and_neg {phi : Formula} {S : ClosureMCSBundle phi}
     (h_neg : ψ.neg ∈ S.carrier) :
     False := by
   -- [ψ, ψ.neg] ⊢ ⊥
-  have h_deriv : DerivationTree [ψ, ψ.neg] Formula.bot := by
+  have h_deriv : DerivationTree FrameClass.Base [ψ, ψ.neg] Formula.bot := by
     -- ψ.neg = ψ → ⊥
-    have h1 : DerivationTree [ψ, ψ.neg] ψ.neg :=
+    have h1 : DerivationTree FrameClass.Base [ψ, ψ.neg] ψ.neg :=
       DerivationTree.assumption [ψ, ψ.neg] ψ.neg (List.mem_cons_of_mem _ List.mem_cons_self)
-    have h2 : DerivationTree [ψ, ψ.neg] ψ :=
+    have h2 : DerivationTree FrameClass.Base [ψ, ψ.neg] ψ :=
       DerivationTree.assumption [ψ, ψ.neg] ψ List.mem_cons_self
     exact DerivationTree.modus_ponens [ψ, ψ.neg] ψ Formula.bot h1 h2
   have h_sub : ∀ x ∈ [ψ, ψ.neg], x ∈ S.carrier := by
@@ -142,10 +142,10 @@ theorem mcs_imp_elim {phi : Formula} {S : ClosureMCSBundle phi}
     (h_chi_clos : χ ∈ closureWithNeg phi) :
     χ ∈ S.carrier := by
   -- Use deductive closure: [ψ → χ, ψ] ⊢ χ by modus ponens
-  have h_deriv : DerivationTree [ψ.imp χ, ψ] χ := by
-    have h1 : DerivationTree [ψ.imp χ, ψ] (ψ.imp χ) :=
+  have h_deriv : DerivationTree FrameClass.Base [ψ.imp χ, ψ] χ := by
+    have h1 : DerivationTree FrameClass.Base [ψ.imp χ, ψ] (ψ.imp χ) :=
       DerivationTree.assumption [ψ.imp χ, ψ] (ψ.imp χ) List.mem_cons_self
-    have h2 : DerivationTree [ψ.imp χ, ψ] ψ :=
+    have h2 : DerivationTree FrameClass.Base [ψ.imp χ, ψ] ψ :=
       DerivationTree.assumption [ψ.imp χ, ψ] ψ (List.mem_cons_of_mem _ List.mem_cons_self)
     exact DerivationTree.modus_ponens [ψ.imp χ, ψ] ψ χ h1 h2
   -- All premises are in S
@@ -362,7 +362,7 @@ theorem mcs_imp_intro {phi : Formula} {S : ClosureMCSBundle phi}
     -- We have ψ.neg = ψ → ⊥. Then from ⊥ we get χ (EFQ).
     -- So [ψ.neg, ψ] ⊢ χ, hence [ψ.neg] ⊢ ψ → χ
     have h_deriv : [ψ.neg] ⊢ (ψ.imp χ) := by
-      have h_inner : DerivationTree (ψ :: [ψ.neg]) χ := by
+      have h_inner : DerivationTree FrameClass.Base (ψ :: [ψ.neg]) χ := by
         have h_psi_assume : (ψ :: [ψ.neg]) ⊢ ψ :=
           DerivationTree.assumption _ _ (by simp)
         have h_neg_assume : (ψ :: [ψ.neg]) ⊢ ψ.neg :=

@@ -295,7 +295,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ.neg :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ.neg)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h1 (Combinators.mp h2 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -312,8 +312,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_r : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀) :=
         Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
       have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _
-          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot) trivial
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -330,8 +330,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_r : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀).neg :=
         Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
       have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _
-          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot) trivial
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -377,7 +377,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h2 (Combinators.mp h1 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -393,8 +393,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_r : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀) :=
         Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
       have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _
-          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot) trivial
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -410,8 +410,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_r : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀).neg :=
         Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
       have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom [] _
-          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot) trivial
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -554,7 +554,7 @@ but adapted for ReflCanDomain.
 noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ g_content x)
-    (h_deriv : DerivationTree L φ) : Formula.all_future φ ∈ x.val := by
+    (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_future φ ∈ x.val := by
   -- Apply generalized temporal K: L ⊢ φ gives G(L) ⊢ G(φ)
   have d_G : (Context.map Formula.all_future L) ⊢ Formula.all_future φ :=
     generalized_temporal_k L φ h_deriv
@@ -582,11 +582,11 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
     g_content_closed_derivation h_mcs L hL d
   -- From G(⊥), derive G(⊤ → ⊥) using ex_falso + temp_k_dist
   let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
-  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+  have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp neg_top) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso neg_top) trivial
-  have h_G_ef : DerivationTree [] (Formula.all_future (Formula.bot.imp neg_top)) :=
+  have h_G_ef : DerivationTree FrameClass.Base [] (Formula.all_future (Formula.bot.imp neg_top)) :=
     DerivationTree.temporal_necessitation _ h_ef
-  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
+  have h_kd : DerivationTree FrameClass.Base [] ((Formula.bot.imp neg_top).all_future.imp
     (Formula.bot.all_future.imp neg_top.all_future)) :=
     Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
   have h1 := theorem_in_mcs h_mcs h_G_ef
@@ -595,11 +595,11 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
   have h_G_neg_top : neg_top.all_future ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h3 h_G_bot
   -- Seriality: ⊤ → F(⊤) is a theorem, where F(⊤) = ¬G(¬⊤) = ¬G(neg_top)
-  have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
+  have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_future (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_future
+    DerivationTree.axiom [] _ Axiom.serial_future trivial
   have h_serial_in := theorem_in_mcs h_mcs h_serial
-  have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+  have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ x.val :=
@@ -614,7 +614,7 @@ If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.v
 noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ h_content x)
-    (h_deriv : DerivationTree L φ) : Formula.all_past φ ∈ x.val := by
+    (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_past φ ∈ x.val := by
   have d_H : (Context.map Formula.all_past L) ⊢ Formula.all_past φ :=
     generalized_past_k L φ h_deriv
   have h_HL_in_x : ∀ f ∈ Context.map Formula.all_past L, f ∈ x.val := by
@@ -638,11 +638,11 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
   have h_H_bot : Formula.all_past Formula.bot ∈ x.val :=
     h_content_closed_derivation h_mcs L hL d
   let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
-  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+  have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp neg_top) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso neg_top) trivial
-  have h_H_ef : DerivationTree [] (Formula.all_past (Formula.bot.imp neg_top)) :=
+  have h_H_ef : DerivationTree FrameClass.Base [] (Formula.all_past (Formula.bot.imp neg_top)) :=
     Bimodal.Theorems.past_necessitation _ h_ef
-  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_past.imp
+  have h_kd : DerivationTree FrameClass.Base [] ((Formula.bot.imp neg_top).all_past.imp
     (Formula.bot.all_past.imp neg_top.all_past)) :=
     Bimodal.Theorems.past_k_dist Formula.bot neg_top
   have h1 := theorem_in_mcs h_mcs h_H_ef
@@ -650,11 +650,11 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
   have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
   have h_H_neg_top : neg_top.all_past ∈ x.val :=
     SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
-  have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
+  have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.some_past (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_past
+    DerivationTree.axiom [] _ Axiom.serial_past trivial
   have h_serial_in := theorem_in_mcs h_mcs h_serial
-  have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+  have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
   have h_top_in := theorem_in_mcs h_mcs h_top
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ x.val :=
@@ -707,7 +707,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
     | inr h => exact h
   -- modal_b on ¬φ: ⊢ ¬φ → □◇(¬φ)
   have h_mb : [] ⊢ (Formula.neg φ).imp (Formula.box (Formula.neg φ).diamond) :=
-    DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ) trivial)
+    DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ)) trivial
   have h_box_dia : Formula.box (Formula.neg φ).diamond ∈ x.val :=
     h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_mb) h_neg_phi
   -- canS5R x y: ◇(¬φ) ∈ y.val

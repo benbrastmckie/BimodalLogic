@@ -112,8 +112,8 @@ By double negation elimination: ⊢ phi.
 Contradiction with hypothesis.
 -/
 theorem not_provable_implies_neg_set_consistent (φ : Formula)
-    (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
-    SetConsistent {φ.neg} := by
+    (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
+    SetConsistent (fc := FrameClass.Base) {φ.neg} := by
   intro L hL ⟨d⟩
   by_cases h_mem : φ.neg ∈ L
   · -- L contains phi.neg, so we can derive [phi.neg] ⊢ ⊥
@@ -121,16 +121,16 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
       have := hL x hx
       simp only [Set.mem_singleton_iff] at this
       simp [this]
-    have d_single : Bimodal.ProofSystem.DerivationTree [φ.neg] Formula.bot :=
+    have d_single : Bimodal.ProofSystem.DerivationTree FrameClass.Base [φ.neg] Formula.bot :=
       Bimodal.ProofSystem.DerivationTree.weakening L [φ.neg] Formula.bot d h_weak
     -- By deduction theorem: ⊢ phi.neg → ⊥ = ⊢ ¬¬phi
-    have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg) :=
+    have d_neg_neg : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
       Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_single
     -- By DNE: ⊢ ¬¬phi → phi
-    have h_dne : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg.imp φ) :=
+    have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
       Bimodal.Theorems.Propositional.double_negation φ
     -- By modus ponens: ⊢ phi
-    have d_phi : Bimodal.ProofSystem.DerivationTree [] φ :=
+    have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
     exact h_not_prov ⟨d_phi⟩
   · -- phi.neg ∉ L, so L ⊆ {phi.neg} means L = []
@@ -146,9 +146,9 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
     -- [] ⊢ ⊥ means ⊥ is a theorem, contradicting consistency
     rw [h_L_empty] at d
     -- From ⊢ ⊥, derive ⊢ phi via ex falso
-    have d_efq : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp φ) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso φ)
-    have d_phi : Bimodal.ProofSystem.DerivationTree [] φ :=
+    have d_efq : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso φ) trivial
+    have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] Formula.bot φ d_efq d
     exact h_not_prov ⟨d_phi⟩
 
@@ -186,7 +186,7 @@ theorem parametric_canonical_completeness_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
+    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ))
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -222,7 +222,7 @@ This is the bridge between non-provability and the existence of a countermodel.
 The instantiation modules use this to construct the specific BFMCS.
 -/
 theorem not_provable_implies_neg_extends_to_mcs
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
+    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
     ∃ M : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) M ∧ φ.neg ∈ M := by
   have h_cons := not_provable_implies_neg_set_consistent φ h_not_prov
   obtain ⟨M, h_sub, h_mcs⟩ := set_lindenbaum {φ.neg} h_cons
@@ -253,7 +253,7 @@ This conditional formulation avoids sorries by shifting the BFMCS construction
 to the caller. The instantiation modules provide the concrete construction.
 -/
 theorem parametric_canonical_completeness_conditional
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
+    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ))
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent (fc := FrameClass.Base) M →
       Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
          (h_buc : B.backward_until_since_coherent)
@@ -292,7 +292,7 @@ theorem countermodel_implies_not_provable
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D)
     (h_false : ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ) :
-    ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ) := by
+    ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ) := by
   intro ⟨d⟩
   have h_in : φ ∈ fam.mcs t := theorem_in_mcs (fam.is_mcs t) d
   have h_true := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mp h_in

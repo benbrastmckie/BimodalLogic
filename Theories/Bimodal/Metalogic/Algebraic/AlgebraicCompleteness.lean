@@ -56,7 +56,7 @@ def algTrueAt (U : AlgWorld) (φ : Formula) : Prop := toQuot φ ∈ U.carrier
 /--
 A formula is consistent iff its negation is not provable.
 -/
-def AlgConsistent (φ : Formula) : Prop := ¬Nonempty (DerivationTree [] φ.neg)
+def AlgConsistent (φ : Formula) : Prop := ¬Nonempty (DerivationTree FrameClass.Base [] φ.neg)
 
 /--
 A formula is algebraically satisfiable if there exists an ultrafilter containing it.
@@ -76,7 +76,7 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
   -- Strategy: Show {φ} is consistent, extend to MCS, convert to ultrafilter
 
   -- Step 1: Show {φ} is set-consistent
-  have h_singleton_cons : SetConsistent {φ} := by
+  have h_singleton_cons : SetConsistent (fc := FrameClass.Base) {φ} := by
     intro L hL
     -- Assume L ⊢ ⊥ and derive contradiction
     intro ⟨d_bot⟩
@@ -94,8 +94,8 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
       rw [hL_empty] at d_bot
       -- [] ⊢ ⊥ means ⊢ ⊥
       -- From ⊢ ⊥ derive ⊢ φ → ⊥ = ⊢ ¬φ
-      have d_neg : DerivationTree [] φ.neg := by
-        have d_efq : DerivationTree [] (Formula.bot.imp φ.neg) :=
+      have d_neg : DerivationTree FrameClass.Base [] φ.neg := by
+        have d_efq : DerivationTree FrameClass.Base [] (Formula.bot.imp φ.neg) :=
           DerivationTree.axiom [] _ (Axiom.ex_falso φ.neg) trivial
         exact DerivationTree.modus_ponens [] _ _ d_efq d_bot
       exact h ⟨d_neg⟩
@@ -107,12 +107,12 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
         simp at this
         exact this
       -- Derive [φ] ⊢ ⊥ from L ⊢ ⊥
-      have d_phi_bot : DerivationTree [φ] Formula.bot := by
+      have d_phi_bot : DerivationTree FrameClass.Base [φ] Formula.bot := by
         apply DerivationTree.weakening L [φ] Formula.bot d_bot
         intro ψ hψ
         simp [h_all_phi ψ hψ]
       -- By deduction theorem: ⊢ ¬φ
-      have d_neg : DerivationTree [] φ.neg :=
+      have d_neg : DerivationTree FrameClass.Base [] φ.neg :=
         Bimodal.Metalogic.Core.deduction_theorem [] φ Formula.bot d_phi_bot
       exact h ⟨d_neg⟩
 
@@ -152,7 +152,7 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
     · -- Need: ⊤ ≤ [¬φ], i.e., ⊢ ⊤ → ¬φ
       -- Since ⊢ ¬φ, this follows by weakening
       show Derives (Formula.bot.imp Formula.bot) φ.neg
-      have d_s : DerivationTree [] (φ.neg.imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
+      have d_s : DerivationTree FrameClass.Base [] (φ.neg.imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
         DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot) trivial)
       exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_neg⟩
   have h_phi_bot : toQuot φ = ⊥ := by

@@ -52,7 +52,7 @@ noncomputable def fwd_succ (M : Set Formula) (h_mcs : SetMaximalConsistent (fc :
       (g_content_set_consistent h_mcs)).choose
 
 theorem fwd_succ_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
-    SetMaximalConsistent (fwd_succ M h_mcs ψ) := by
+    SetMaximalConsistent (fc := FrameClass.Base) (fwd_succ M h_mcs ψ) := by
   unfold fwd_succ; split
   · exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
       (forward_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.2
@@ -94,7 +94,7 @@ noncomputable def bwd_pred (M : Set Formula) (h_mcs : SetMaximalConsistent (fc :
       (h_content_set_consistent h_mcs)).choose
 
 theorem bwd_pred_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
-    SetMaximalConsistent (bwd_pred M h_mcs ψ) := by
+    SetMaximalConsistent (fc := FrameClass.Base) (bwd_pred M h_mcs ψ) := by
   unfold bwd_pred; split
   · exact (set_lindenbaum (past_temporal_witness_seed M ψ)
       (past_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.2
@@ -144,7 +144,7 @@ theorem int_chain_zero (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := 
     int_chain M₀ h₀ 0 = M₀ := by simp [int_chain, fwd_chain]
 
 theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (t : Int) :
-    SetMaximalConsistent (int_chain M₀ h₀ t) := by
+    SetMaximalConsistent (fc := FrameClass.Base) (int_chain M₀ h₀ t) := by
   simp only [int_chain]; split
   · exact (fwd_chain M₀ h₀ t.toNat).property
   · exact (bwd_chain M₀ h₀ ((-t).toNat)).property
@@ -337,7 +337,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
       · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + box_to_past)
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
           SetMaximalConsistent.implication_property h₀
-            (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg))) trivial
+            (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg) trivial))
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
@@ -346,7 +346,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
     have h_neg_box_t : (Formula.box φ).neg ∈ int_chain M₀ h₀ t :=
       SetMaximalConsistent.implication_property (int_chain_mcs M₀ h₀ t)
         (theorem_in_mcs (int_chain_mcs M₀ h₀ t)
-          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg))) trivial
+          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial))
         h_box_neg_t
     -- Contradiction: Box φ and ¬(Box φ) both in chain(t)
     exact set_consistent_not_both (int_chain_mcs M₀ h₀ t).1 (Formula.box φ) h_box_t h_neg_box_t
@@ -362,7 +362,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
     · -- t < 0: use H propagation (modal_4: □φ → □□φ, box_to_past: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.implication_property h₀
-          (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_M0
+          (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial)) h_box_M0
       have h_H := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (box_to_past (Formula.box φ))) h_box_box
       exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H

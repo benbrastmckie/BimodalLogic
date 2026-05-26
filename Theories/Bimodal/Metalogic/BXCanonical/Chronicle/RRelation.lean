@@ -140,7 +140,7 @@ theorem subset_deductiveClosure (S : Set Formula) : S ⊆ deductiveClosure S := 
 /-- The deductive closure is closed under derivation. -/
 theorem deductiveClosure_closed (S : Set Formula) :
     ∀ (L : List Formula) (φ : Formula),
-      (∀ ψ ∈ L, ψ ∈ deductiveClosure S) → DerivationTree L φ → φ ∈ deductiveClosure S := by
+      (∀ ψ ∈ L, ψ ∈ deductiveClosure S) → DerivationTree FrameClass.Base L φ → φ ∈ deductiveClosure S := by
   intro L
   induction L with
   | nil =>
@@ -940,11 +940,11 @@ theorem untl_conj_guard {A : Set Formula}
   set D3 := Formula.untl (Formula.and β₁ γ) guard
   set target := Formula.untl γ guard
   -- Helper: if ⊢ (e → γ) then ⊢ (guard U e → guard U γ)
-  have mk_thm : ∀ e : Formula, DerivationTree [] (e.imp γ) →
-      DerivationTree [] ((Formula.untl e guard).imp target) := by
+  have mk_thm : ∀ e : Formula, DerivationTree FrameClass.Base [] (e.imp γ) →
+      DerivationTree FrameClass.Base [] ((Formula.untl e guard).imp target) := by
     intro e h_e_imp
     have h_G := DerivationTree.temporal_necessitation _ h_e_imp
-    have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until e γ guard) trivial
+    have h_bx3 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.right_mono_until e γ guard) trivial
     exact DerivationTree.modus_ponens [] _ _ h_bx3 h_G
   have h_D1_impl := theorem_in_mcs h_mcs
     (mk_thm _ (Bimodal.Theorems.Propositional.lce_imp γ γ))
@@ -985,11 +985,11 @@ theorem snce_conj_guard {A : Set Formula}
   set D2 := Formula.snce (Formula.and γ β₂) guard
   set D3 := Formula.snce (Formula.and β₁ γ) guard
   set target := Formula.snce γ guard
-  have mk_thm : ∀ e : Formula, DerivationTree [] (e.imp γ) →
-      DerivationTree [] ((Formula.snce e guard).imp target) := by
+  have mk_thm : ∀ e : Formula, DerivationTree FrameClass.Base [] (e.imp γ) →
+      DerivationTree FrameClass.Base [] ((Formula.snce e guard).imp target) := by
     intro e h_e_imp
     have h_H := Bimodal.Theorems.past_necessitation _ h_e_imp
-    have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since e γ guard) trivial
+    have h_bx3' := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.right_mono_since e γ guard) trivial
     exact DerivationTree.modus_ponens [] _ _ h_bx3' h_H
   have h_D1_impl := theorem_in_mcs h_mcs
     (mk_thm _ (Bimodal.Theorems.Propositional.lce_imp γ γ))
@@ -1108,7 +1108,7 @@ By weakening from L to [η] (since every element of L is η).
 -/
 noncomputable def derivation_from_singleton_list {η φ : Formula} {L : List Formula}
     (hL : ∀ ψ ∈ L, ψ = η) (d : DerivationTree FrameClass.Base L φ) :
-    DerivationTree [η] φ :=
+    DerivationTree FrameClass.Base [η] φ :=
   DerivationTree.weakening L [η] φ d (fun ψ hψ => by rw [hL ψ hψ]; simp)
 
 /--
@@ -1342,11 +1342,11 @@ theorem burgessR_implies_burgessRSince {A C : Set Formula}
       -- burgessR gives untl(β, H(¬α)) ∈ A
       have h_untl : Formula.untl (α.neg.all_past) β ∈ A := h_burgessR _ h_H
       -- BX10: untl(β, H(¬α)) → F(H(¬α)), so F(H(¬α)) ∈ A
-      have h_ax10 := DerivationTree.axiom [] _ (Axiom.until_F β α.neg.all_past) trivial
+      have h_ax10 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.until_F β α.neg.all_past) trivial
       have h_F : Formula.some_future (α.neg.all_past) ∈ A :=
         SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_ax10) h_untl
       -- BX4: α → G(P(α)), so G(P(α)) ∈ A
-      have h_bx4 := DerivationTree.axiom [] _ (Axiom.connect_future α) trivial
+      have h_bx4 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future α) trivial
       have h_GP : Formula.all_future (Formula.some_past α) ∈ A :=
         SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx4) hα
       -- F(H(¬α)) and G(P(α)) are contradictory in MCS A
@@ -1366,7 +1366,7 @@ theorem burgessR_implies_burgessRSince {A C : Set Formula}
   have h_conj : Formula.and α (Formula.untl (Formula.snce α β).neg β) ∈ A :=
     dcs_conj_closed (mcs_is_dcs h_mcs_A) hα h_untl
   -- Apply A3a: α ∧ untl(β, ¬snce(β,α)) → untl(β, ¬snce(β,α) ∧ snce(β,α))
-  have h_a3a := DerivationTree.axiom [] _ (Axiom.enrichment_until β (Formula.snce α β).neg α) trivial
+  have h_a3a := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.enrichment_until β (Formula.snce α β).neg α) trivial
   have h_enriched : Formula.untl ((Formula.snce α β).neg.and (Formula.snce α β)) β ∈ A :=
     SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_a3a) h_conj
   -- BX10: untl(β, X) → F(X), so F(¬snce(β,α) ∧ snce(β,α)) ∈ A
@@ -1375,7 +1375,7 @@ theorem burgessR_implies_burgessRSince {A C : Set Formula}
   have h_neg_event : DerivationTree FrameClass.Base [] ((Formula.snce α β).neg.and (Formula.snce α β)).neg := by
     have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.snce α β).neg (Formula.snce α β)
     have h2 := Bimodal.Theorems.Propositional.rce_imp (Formula.snce α β).neg (Formula.snce α β)
-    have h3 := DerivationTree.axiom [] _ (Axiom.prop_k ((Formula.snce α β).neg.and (Formula.snce α β)) (Formula.snce α β) Formula.bot) trivial
+    have h3 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k ((Formula.snce α β).neg.and (Formula.snce α β)) (Formula.snce α β) Formula.bot) trivial
     exact mp h2 (mp h1 h3)
   -- G(¬(¬snce(β,α) ∧ snce(β,α))) ∈ A by temporal necessitation
   have h_G_neg := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_neg_event)
@@ -1401,11 +1401,11 @@ theorem burgessRSince_implies_burgessR {A C : Set Formula}
       -- burgessRSince gives snce(β, G(¬γ)) ∈ C (with G(¬γ) ∈ A)
       have h_snce : Formula.snce (γ.neg.all_future) β ∈ C := h_burgessRSince _ h_G
       -- BX10': snce(β, G(¬γ)) → P(G(¬γ)), so P(G(¬γ)) ∈ C
-      have h_ax10' := DerivationTree.axiom [] _ (Axiom.since_P β γ.neg.all_future) trivial
+      have h_ax10' := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.since_P β γ.neg.all_future) trivial
       have h_P : Formula.some_past (γ.neg.all_future) ∈ C :=
         SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_ax10') h_snce
       -- BX4': γ → H(F(γ)), so H(F(γ)) ∈ C
-      have h_bx4' := DerivationTree.axiom [] _ (Axiom.connect_past γ) trivial
+      have h_bx4' := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_past γ) trivial
       have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
         SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_bx4') hγ
       -- P(G(¬γ)) and H(F(γ)) are contradictory in MCS C
@@ -1425,7 +1425,7 @@ theorem burgessRSince_implies_burgessR {A C : Set Formula}
   have h_conj : Formula.and γ (Formula.snce (Formula.untl γ β).neg β) ∈ C :=
     dcs_conj_closed (mcs_is_dcs h_mcs_C) hγ h_snce
   -- Apply A3b: γ ∧ snce(β, ¬untl(β,γ)) → snce(β, ¬untl(β,γ) ∧ untl(β,γ))
-  have h_a3b := DerivationTree.axiom [] _ (Axiom.enrichment_since β (Formula.untl γ β).neg γ) trivial
+  have h_a3b := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.enrichment_since β (Formula.untl γ β).neg γ) trivial
   have h_enriched : Formula.snce ((Formula.untl γ β).neg.and (Formula.untl γ β)) β ∈ C :=
     SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_a3b) h_conj
   -- BX10': snce(β, X) → P(X), so P(¬untl(β,γ) ∧ untl(β,γ)) ∈ C
@@ -1434,7 +1434,7 @@ theorem burgessRSince_implies_burgessR {A C : Set Formula}
   have h_neg_event : DerivationTree FrameClass.Base [] ((Formula.untl γ β).neg.and (Formula.untl γ β)).neg := by
     have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.untl γ β).neg (Formula.untl γ β)
     have h2 := Bimodal.Theorems.Propositional.rce_imp (Formula.untl γ β).neg (Formula.untl γ β)
-    have h3 := DerivationTree.axiom [] _ (Axiom.prop_k ((Formula.untl γ β).neg.and (Formula.untl γ β)) (Formula.untl γ β) Formula.bot) trivial
+    have h3 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k ((Formula.untl γ β).neg.and (Formula.untl γ β)) (Formula.untl γ β) Formula.bot) trivial
     exact mp h2 (mp h1 h3)
   -- H(¬(¬untl(β,γ) ∧ untl(β,γ))) ∈ C by past necessitation
   have h_H_neg := theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_neg_event)
@@ -1511,7 +1511,7 @@ theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
   have h_event_weak1 : DerivationTree FrameClass.Base [] ((Formula.and γ δ).imp γ) :=
     Bimodal.Theorems.Propositional.lce_imp γ δ
   have h_G_event_weak1 := DerivationTree.temporal_necessitation _ h_event_weak1
-  have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until (Formula.and γ δ) γ β) trivial
+  have h_bx3 := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.right_mono_until (Formula.and γ δ) γ β) trivial
   have h_untl_beta_gamma := SetMaximalConsistent.implication_property h_mcs_A
     (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3 h_G_event_weak1))
     h_untl_step1
@@ -1523,7 +1523,7 @@ theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
   have h_untl_inner_weak : DerivationTree FrameClass.Base [] (((γ.and δ).untl (Formula.and β β')).imp (γ.untl β)) := by
     -- BX2G: G(β ∧ β' → β) → (γ ∧ δ) U (β ∧ β') → (γ ∧ δ) U β
     have h_G_gw1 := DerivationTree.temporal_necessitation _ h_guard_weak1
-    have h_bx2g := DerivationTree.axiom [] _ (Axiom.left_mono_until_G (Formula.and β β') β (Formula.and γ δ)) trivial
+    have h_bx2g := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.left_mono_until_G (Formula.and β β') β (Formula.and γ δ)) trivial
     have h_step1 : DerivationTree FrameClass.Base [] (((γ.and δ).untl (Formula.and β β')).imp ((γ.and δ).untl β)) :=
       DerivationTree.modus_ponens [] _ _ h_bx2g h_G_gw1
     -- BX3: G(γ ∧ δ → γ) → β U (γ ∧ δ) → β U γ
@@ -1556,7 +1556,7 @@ theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
   have h_event_weak2 : DerivationTree FrameClass.Base [] ((Formula.and γ δ).imp δ) :=
     Bimodal.Theorems.Propositional.rce_imp γ δ
   have h_G_event_weak2 := DerivationTree.temporal_necessitation _ h_event_weak2
-  have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_until (Formula.and γ δ) δ (β'.and (γ.untl β))) trivial
+  have h_bx3' := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.right_mono_until (Formula.and γ δ) δ (β'.and (γ.untl β))) trivial
   exact SetMaximalConsistent.implication_property h_mcs_A
     (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3' h_G_event_weak2))
     h_weak_guard

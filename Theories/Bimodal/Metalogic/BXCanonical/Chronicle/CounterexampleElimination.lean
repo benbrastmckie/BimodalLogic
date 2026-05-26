@@ -190,21 +190,21 @@ theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
   -- G(φ) ∈ A → G(φ.neg.neg) ∈ A (by φ → ¬¬φ inside G) → F(φ.neg) ∉ A
   -- Derive ⊢ φ → ¬¬φ, i.e., ⊢ φ → (φ.neg → ⊥)
   -- This is ⊢ φ → ((φ → ⊥) → ⊥), which follows from prop_s, prop_k, identity
-  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) := by
+  have h_dni : DerivationTree FrameClass.Base [] (φ.imp φ.neg.neg) := by
     -- φ.neg.neg = (φ.imp bot).imp bot
     -- Need: ⊢ φ → ((φ → ⊥) → ⊥)
     -- Proof: by deduction, assume φ.neg and φ, apply to get ⊥
-    have h1 : DerivationTree [φ.neg, φ] Formula.bot :=
+    have h1 : DerivationTree FrameClass.Base [φ.neg, φ] Formula.bot :=
       DerivationTree.modus_ponens [φ.neg, φ] φ Formula.bot
         (DerivationTree.assumption _ φ.neg (by simp))
         (DerivationTree.assumption _ φ (by simp))
-    have h2 : DerivationTree [φ] φ.neg.neg :=
+    have h2 : DerivationTree FrameClass.Base [φ] φ.neg.neg :=
       deduction_theorem [φ] φ.neg Formula.bot h1
     exact deduction_theorem [] φ φ.neg.neg h2
   -- G(φ → ¬¬φ) and temp_k_dist give G(φ) → G(¬¬φ)
-  have h_G_dni : DerivationTree [] (Formula.all_future (φ.imp φ.neg.neg)) :=
+  have h_G_dni : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp φ.neg.neg)) :=
     DerivationTree.temporal_necessitation _ h_dni
-  have h_kd : DerivationTree [] ((φ.imp φ.neg.neg).all_future.imp
+  have h_kd : DerivationTree FrameClass.Base [] ((φ.imp φ.neg.neg).all_future.imp
       (φ.all_future.imp φ.neg.neg.all_future)) :=
     Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg
   have h1 := theorem_in_mcs h_mcs_A h_G_dni
@@ -240,7 +240,7 @@ x < y} to the set of all DCSs" where DCS = deductively closed set
 (consistent + CUD). -/
 theorem BurgessR3Maximal_bot_not_mem {A B C : Set Formula}
     (_h_r3m : BurgessR3Maximal A B C)
-    (h_cons : SetConsistent B) :
+    (h_cons : SetConsistent (fc := FrameClass.Base) B) :
     Formula.bot ∉ B := by
   intro h_bot
   exact h_cons [Formula.bot] (fun φ hφ => by simp at hφ; rw [hφ]; exact h_bot)
@@ -292,7 +292,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
   have h_bR : burgessR A top C := by
     intro γ hγ
     -- BX4': γ → H(F(γ))
-    have h_ax_cp : DerivationTree [] (γ.imp (Formula.all_past (Formula.some_future γ))) :=
+    have h_ax_cp : DerivationTree FrameClass.Base [] (γ.imp (Formula.all_past (Formula.some_future γ))) :=
       DerivationTree.axiom [] _ (Axiom.connect_past γ) trivial
     have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
       SetMaximalConsistent.implication_property h_mcs_C
@@ -300,7 +300,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
     -- H(F(γ)) ∈ C → F(γ) ∈ h_content(C) ⊆ A
     have h_F : Formula.some_future γ ∈ A := h_hc h_HF
     -- F(γ) → U(⊤, γ) by F_until_equiv
-    have h_bx12 : DerivationTree [] ((Formula.some_future γ).imp (Formula.untl γ top)) :=
+    have h_bx12 : DerivationTree FrameClass.Base [] ((Formula.some_future γ).imp (Formula.untl γ top)) :=
       DerivationTree.axiom [] _ (Axiom.F_until_equiv γ) trivial
     exact SetMaximalConsistent.implication_property h_mcs_A
       (theorem_in_mcs h_mcs_A h_bx12) h_F
@@ -317,7 +317,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
       have h_neg_A : α.neg ∈ A := h_hc h_H_neg
       exact SetMaximalConsistent.neg_excludes h_mcs_A α h_neg_A hα
     -- P(α) → S(⊤, α) by P_since_equiv
-    have h_bx12' : DerivationTree [] ((Formula.some_past α).imp (Formula.snce α top)) :=
+    have h_bx12' : DerivationTree FrameClass.Base [] ((Formula.some_past α).imp (Formula.snce α top)) :=
       DerivationTree.axiom [] _ (Axiom.P_since_equiv α) trivial
     exact SetMaximalConsistent.implication_property h_mcs_C
       (theorem_in_mcs h_mcs_C h_bx12') h_P
@@ -397,7 +397,7 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
   -- Step 2: Construct MCS with eta via BX10' (since_P)
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_P_η : Formula.some_past ce.η ∈ χ.f ce.x := by
-    have h_ax : DerivationTree [] ((Formula.snce ce.η ce.ξ).imp (Formula.some_past ce.η)) :=
+    have h_ax : DerivationTree FrameClass.Base [] ((Formula.snce ce.η ce.ξ).imp (Formula.some_past ce.η)) :=
       DerivationTree.axiom [] _ (Axiom.since_P ce.ξ ce.η) trivial
     exact SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x h_ax) ce.since_mem
@@ -738,7 +738,7 @@ private noncomputable def c5_forward_walk
             dom_sub := Finset.subset_insert y χ.dom
             c0 := by
               intro q hq
-              show SetMaximalConsistent (if q = y then C else χ.f q)
+              show SetMaximalConsistent (fc := FrameClass.Base) (if q = y then C else χ.f q)
               change q ∈ insert y χ.dom at hq
               simp only [Finset.mem_insert] at hq
               rcases hq with rfl | hq
@@ -1100,7 +1100,7 @@ private noncomputable def c5_forward_walk
       exact { val := val
               dom_sub := Finset.subset_insert z χ.dom
               c0 := by
-                intro q hq; show SetMaximalConsistent (if q = z then D else χ.f q)
+                intro q hq; show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                 simp only [val, Finset.mem_insert] at hq
                 rcases hq with rfl | hq
                 · simp only [ite_true]; exact h_D_mcs
@@ -1316,7 +1316,7 @@ private noncomputable def c5_backward_walk
             dom_sub := Finset.subset_insert y χ.dom
             c0 := by
               intro q hq
-              show SetMaximalConsistent (if q = y then C else χ.f q)
+              show SetMaximalConsistent (fc := FrameClass.Base) (if q = y then C else χ.f q)
               change q ∈ insert y χ.dom at hq
               simp only [Finset.mem_insert] at hq
               rcases hq with rfl | hq
@@ -1681,7 +1681,7 @@ private noncomputable def c5_backward_walk
       exact { val := val
               dom_sub := Finset.subset_insert z χ.dom
               c0 := by
-                intro q hq; show SetMaximalConsistent (if q = z then D else χ.f q)
+                intro q hq; show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                 simp only [val, Finset.mem_insert] at hq
                 rcases hq with rfl | hq
                 · simp only [ite_true]; exact h_D_mcs
@@ -1892,7 +1892,7 @@ noncomputable def eliminate_potential_counterexample
                 dom_sub := Finset.subset_insert y χ.dom
                 c0 := by
                   intro q hq
-                  show SetMaximalConsistent (if q = y then C else χ.f q)
+                  show SetMaximalConsistent (fc := FrameClass.Base) (if q = y then C else χ.f q)
                   change q ∈ insert y χ.dom at hq
                   simp only [Finset.mem_insert] at hq
                   rcases hq with rfl | hq
@@ -2118,7 +2118,7 @@ noncomputable def eliminate_potential_counterexample
                     pc.η.neg h_eta_neg_g
                   obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_neg_neg_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩ := h_split5
                   have h_eta_D5 : pc.η ∈ D5 := by
-                    have h_dne : DerivationTree [] (pc.η.neg.neg.imp pc.η) :=
+                    have h_dne : DerivationTree FrameClass.Base [] (pc.η.neg.neg.imp pc.η) :=
                       Bimodal.Theorems.Propositional.double_negation pc.η
                     exact SetMaximalConsistent.implication_property h_D5_mcs
                       (theorem_in_mcs h_D5_mcs h_dne) h_eta_neg_neg_D5
@@ -2210,7 +2210,7 @@ noncomputable def eliminate_potential_counterexample
                   dom_sub := Finset.subset_insert z χ.dom
                   c0 := by
                     intro q hq
-                    show SetMaximalConsistent (if q = z then D else χ.f q)
+                    show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                     change q ∈ insert z χ.dom at hq
                     simp only [Finset.mem_insert] at hq
                     rcases hq with rfl | hq
@@ -2423,7 +2423,7 @@ noncomputable def eliminate_potential_counterexample
                 dom_sub := Finset.subset_insert y χ.dom
                 c0 := by
                   intro q hq
-                  show SetMaximalConsistent (if q = y then C else χ.f q)
+                  show SetMaximalConsistent (fc := FrameClass.Base) (if q = y then C else χ.f q)
                   change q ∈ insert y χ.dom at hq
                   simp only [Finset.mem_insert] at hq
                   rcases hq with rfl | hq
@@ -2731,7 +2731,7 @@ noncomputable def eliminate_potential_counterexample
                   dom_sub := Finset.subset_insert z χ.dom
                   c0 := by
                     intro q hq
-                    show SetMaximalConsistent (if q = z then D else χ.f q)
+                    show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                     change q ∈ insert z χ.dom at hq
                     simp only [Finset.mem_insert] at hq
                     rcases hq with rfl | hq
@@ -2974,7 +2974,7 @@ noncomputable def eliminate_potential_counterexample
           have h_untl_conj := h_r3m_w.2.1.1 pc.ξ h_xi_g
             (Formula.and pc.ξ (Formula.untl pc.η pc.ξ)) h_conj_wn
           -- BX6 absorption: untl(φ, φ ∧ untl(φ, ψ)) → untl(φ, ψ)
-          have h_bx6 : DerivationTree []
+          have h_bx6 : DerivationTree FrameClass.Base []
             ((Formula.untl (Formula.and pc.ξ (Formula.untl pc.η pc.ξ)) pc.ξ).imp
               (Formula.untl pc.η pc.ξ)) :=
             DerivationTree.axiom [] _ (Axiom.absorb_until pc.ξ pc.η) trivial
@@ -3076,7 +3076,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.subset_insert z χ.dom
               c0 := by
                 intro q hq
-                show SetMaximalConsistent (if q = z then D else χ.f q)
+                show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                 change q ∈ insert z χ.dom at hq
                 simp only [Finset.mem_insert] at hq
                 rcases hq with rfl | hq
@@ -3278,7 +3278,7 @@ noncomputable def eliminate_potential_counterexample
           have h_snce_conj := h_r3m_w.2.1.2 pc.ξ h_xi_g
             (Formula.and pc.ξ (Formula.snce pc.η pc.ξ)) h_conj_wp
           -- BX6' absorption: snce(φ, φ ∧ snce(φ, ψ)) → snce(φ, ψ)
-          have h_bx6' : DerivationTree []
+          have h_bx6' : DerivationTree FrameClass.Base []
             ((Formula.snce (Formula.and pc.ξ (Formula.snce pc.η pc.ξ)) pc.ξ).imp
               (Formula.snce pc.η pc.ξ)) :=
             DerivationTree.axiom [] _ (Axiom.absorb_since pc.ξ pc.η) trivial
@@ -3379,7 +3379,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.subset_insert z χ.dom
               c0 := by
                 intro q hq
-                show SetMaximalConsistent (if q = z then D else χ.f q)
+                show SetMaximalConsistent (fc := FrameClass.Base) (if q = z then D else χ.f q)
                 change q ∈ insert z χ.dom at hq
                 simp only [Finset.mem_insert] at hq
                 rcases hq with rfl | hq

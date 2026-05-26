@@ -55,12 +55,12 @@ If ¬φ is consistent (no proof of φ from empty context), then there exists
 a closure MCS containing ¬φ.
 -/
 theorem exists_mcs_with_negation (phi : Formula)
-    (h_not_provable : ¬Nonempty (DerivationTree [] phi)) :
+    (h_not_provable : ¬Nonempty (DerivationTree FrameClass.Base [] phi)) :
     ∃ S : ClosureMCSBundle phi, phi.neg ∈ S.carrier := by
   -- First, show that neg (phi.neg) = phi.neg.neg is not derivable
   -- from the fact that phi is not derivable
   -- Actually, we need to show ¬φ is consistent (singleton {¬φ} is consistent)
-  have h_neg_cons : ¬Nonempty (DerivationTree [] phi.neg.neg) := by
+  have h_neg_cons : ¬Nonempty (DerivationTree FrameClass.Base [] phi.neg.neg) := by
     intro ⟨d_neg_neg⟩
     -- From phi.neg.neg (= ¬¬φ = φ → ⊥ → ⊥), derive phi using DNE
     have h_dne : [] ⊢ phi.neg.neg.imp phi := double_negation phi
@@ -68,7 +68,7 @@ theorem exists_mcs_with_negation (phi : Formula)
     exact h_not_provable ⟨h_phi⟩
   -- Now phi.neg is consistent (its negation is not derivable from [])
   -- So {phi.neg} is set-consistent
-  have h_singleton_cons : SetConsistent {phi.neg} := by
+  have h_singleton_cons : SetConsistent (fc := FrameClass.Base) {phi.neg} := by
     intro L hL
     intro ⟨d_bot⟩
     -- L ⊆ {phi.neg} means L is either [] or [phi.neg]
@@ -106,9 +106,9 @@ theorem exists_mcs_with_negation (phi : Formula)
         have := h_L_perm hx
         simp only [List.mem_cons, h_L'_empty, List.not_mem_nil, or_false] at this
         simp [this]
-      have d_bot' : DerivationTree [phi.neg] Formula.bot :=
+      have d_bot' : DerivationTree FrameClass.Base [phi.neg] Formula.bot :=
         DerivationTree.weakening L [phi.neg] _ d_bot h_L_sub_singleton
-      have d_neg_neg : DerivationTree [] phi.neg.neg :=
+      have d_neg_neg : DerivationTree FrameClass.Base [] phi.neg.neg :=
         deduction_theorem [] phi.neg Formula.bot d_bot'
       exact h_neg_cons ⟨d_neg_neg⟩
     · -- phi.neg ∉ L. Then L ⊆ {phi.neg} \ {phi.neg} = ∅, so L = []
@@ -137,7 +137,7 @@ theorem exists_mcs_with_negation (phi : Formula)
 The filtered model for a non-provable formula provides a finite witness.
 -/
 theorem filtered_model_falsifies (phi : Formula)
-    (h_not_provable : ¬Nonempty (DerivationTree [] phi)) :
+    (h_not_provable : ¬Nonempty (DerivationTree FrameClass.Base [] phi)) :
     ∃ (S : ClosureMCSBundle phi), phi ∉ S.carrier := by
   obtain ⟨S, h_neg⟩ := exists_mcs_with_negation phi h_not_provable
   use S
@@ -191,7 +191,7 @@ a closure MCS (a world in a finite model) where φ is false (not a member).
 This is the key building block for the full FMP theorem.
 -/
 theorem mcs_finite_model_property (phi : Formula)
-    (h_not_provable : ¬Nonempty (DerivationTree [] phi)) :
+    (h_not_provable : ¬Nonempty (DerivationTree FrameClass.Base [] phi)) :
     ∃ (S : ClosureMCSBundle phi), phi ∉ S.carrier ∧
     Finite (FilteredWorld phi) := by
   obtain ⟨S, h_not_in⟩ := filtered_model_falsifies phi h_not_provable
@@ -205,7 +205,7 @@ This establishes completeness via finite model reasoning.
 -/
 theorem fmp_contrapositive (phi : Formula)
     (h_all_mcs : ∀ (S : ClosureMCSBundle phi), phi ∈ S.carrier) :
-    Nonempty (DerivationTree [] phi) := by
+    Nonempty (DerivationTree FrameClass.Base [] phi) := by
   by_contra h_not_provable
   obtain ⟨S, h_not_in, _⟩ := mcs_finite_model_property phi h_not_provable
   exact h_not_in (h_all_mcs S)

@@ -589,7 +589,7 @@ Every point in the limit domain maps to an MCS.
 -/
 theorem limit_c0 (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
-    SetMaximalConsistent (limit_f A h_mcs x) := by
+    SetMaximalConsistent (fc := FrameClass.Base) (limit_f A h_mcs x) := by
   obtain ⟨n, hn⟩ := hx
   rw [limit_f_eq A h_mcs x n hn]
   exact omega_chain_c0 A h_mcs n x hn
@@ -692,7 +692,7 @@ theorem limit_F_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent (fc :
     (h_F : Formula.some_future φ ∈ limit_f A h_mcs x) :
     ∃ y ∈ limit_dom A h_mcs, x < y ∧ φ ∈ limit_f A h_mcs y := by
   have h_mcs_x := limit_c0 A h_mcs x hx
-  have h_bx12 : DerivationTree [] ((Formula.some_future φ).imp
+  have h_bx12 : DerivationTree FrameClass.Base [] ((Formula.some_future φ).imp
       (Formula.untl φ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv φ) trivial
   have h_until : Formula.untl φ (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
@@ -713,7 +713,7 @@ theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent (fc :
     (h_P : Formula.some_past φ ∈ limit_f A h_mcs x) :
     ∃ y ∈ limit_dom A h_mcs, y < x ∧ φ ∈ limit_f A h_mcs y := by
   have h_mcs_x := limit_c0 A h_mcs x hx
-  have h_bx12' : DerivationTree [] ((Formula.some_past φ).imp
+  have h_bx12' : DerivationTree FrameClass.Base [] ((Formula.some_past φ).imp
       (Formula.snce φ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv φ) trivial
   have h_since : Formula.snce φ (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
@@ -941,11 +941,11 @@ theorem g_content_sub_imp_h_content_sub {A B : Set Formula}
   -- P(¬ψ) ∈ g_content(A) ⊆ B
   have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
   -- H(¬¬ψ) ∈ B from H(ψ) via DNI under H, then contradiction with P(¬ψ)
-  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+  have h_dni : DerivationTree FrameClass.Base [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
-  have h_H_dni : DerivationTree [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
+  have h_H_dni : DerivationTree FrameClass.Base [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
     Bimodal.Theorems.past_necessitation _ h_dni
-  have h_H_dist : DerivationTree [] ((Formula.all_past (ψ.imp ψ.neg.neg)).imp
+  have h_H_dist : DerivationTree FrameClass.Base [] ((Formula.all_past (ψ.imp ψ.neg.neg)).imp
       (Formula.all_past ψ |>.imp (Formula.all_past ψ.neg.neg))) :=
     Bimodal.Theorems.past_k_dist ψ ψ.neg.neg
   have h_H_nn : Formula.all_past ψ.neg.neg ∈ B := by
@@ -977,7 +977,7 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
     · exact absurd h h_not
     · exact h
   -- BX4': ¬ψ → H(F(¬ψ))
-  have h_ax : DerivationTree [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
+  have h_ax : DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
     DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg) trivial
   have h_HF : Formula.all_past (Formula.some_future ψ.neg) ∈ B :=
     SetMaximalConsistent.implication_property h_mcs_B
@@ -985,11 +985,11 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
   -- F(¬ψ) ∈ h_content(B) ⊆ A
   have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
   -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G, then contradiction with F(¬ψ)
-  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+  have h_dni : DerivationTree FrameClass.Base [] (ψ.imp ψ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni ψ
-  have h_G_dni : DerivationTree [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
+  have h_G_dni : DerivationTree FrameClass.Base [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
     DerivationTree.temporal_necessitation _ h_dni
-  have h_G_dist : DerivationTree [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
+  have h_G_dist : DerivationTree FrameClass.Base [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
       (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
     Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
   have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
@@ -1036,11 +1036,11 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
     · exact absurd h h_not
     · exact h
   -- Step 1: G(φ) ∈ f(x) implies G(φ^{nn}) ∈ f(x) by DNI + temporal necessitation + K
-  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) :=
+  have h_dni : DerivationTree FrameClass.Base [] (φ.imp φ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni φ
-  have h_G_dni : DerivationTree [] (Formula.all_future (φ.imp φ.neg.neg)) :=
+  have h_G_dni : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp φ.neg.neg)) :=
     DerivationTree.temporal_necessitation _ h_dni
-  have h_G_dist : DerivationTree [] ((Formula.all_future (φ.imp φ.neg.neg)).imp
+  have h_G_dist : DerivationTree FrameClass.Base [] ((Formula.all_future (φ.imp φ.neg.neg)).imp
       (Formula.all_future φ |>.imp (Formula.all_future φ.neg.neg))) :=
     Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg
   have h_G_nn : Formula.all_future φ.neg.neg ∈ limit_f A h_mcs x := by
@@ -1052,7 +1052,7 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
     intro h_abs
     exact Bundle.some_future_all_future_neg_absurd h_mcs_x φ.neg h_abs h_G_nn
   set top := Formula.bot.imp Formula.bot with htop_def
-  have h_bx10 : DerivationTree [] ((Formula.untl φ.neg top).imp (Formula.some_future φ.neg)) :=
+  have h_bx10 : DerivationTree FrameClass.Base [] ((Formula.untl φ.neg top).imp (Formula.some_future φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.until_F top φ.neg) trivial
   have h_until_not : Formula.untl φ.neg top ∉ limit_f A h_mcs x := by
     intro h_in
@@ -1089,11 +1089,11 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := 
     · exact absurd h h_not
     · exact h
   -- H(φ) → H(φ^{nn}) by DNI + past necessitation + past K
-  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) :=
+  have h_dni : DerivationTree FrameClass.Base [] (φ.imp φ.neg.neg) :=
     Bimodal.Theorems.Combinators.dni φ
-  have h_H_dni : DerivationTree [] (Formula.all_past (φ.imp φ.neg.neg)) :=
+  have h_H_dni : DerivationTree FrameClass.Base [] (Formula.all_past (φ.imp φ.neg.neg)) :=
     Bimodal.Theorems.past_necessitation _ h_dni
-  have h_H_dist : DerivationTree [] ((Formula.all_past (φ.imp φ.neg.neg)).imp
+  have h_H_dist : DerivationTree FrameClass.Base [] ((Formula.all_past (φ.imp φ.neg.neg)).imp
       (Formula.all_past φ |>.imp (Formula.all_past φ.neg.neg))) :=
     Bimodal.Theorems.past_k_dist φ φ.neg.neg
   have h_H_nn : Formula.all_past φ.neg.neg ∈ limit_f A h_mcs x := by
@@ -1105,7 +1105,7 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := 
     intro h_abs
     exact Bundle.some_past_all_past_neg_absurd h_mcs_x φ.neg h_abs h_H_nn
   set top := Formula.bot.imp Formula.bot with htop_def
-  have h_bx10' : DerivationTree [] ((Formula.snce φ.neg top).imp (Formula.some_past φ.neg)) :=
+  have h_bx10' : DerivationTree FrameClass.Base [] ((Formula.snce φ.neg top).imp (Formula.some_past φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.since_P top φ.neg) trivial
   have h_since_not : Formula.snce φ.neg top ∉ limit_f A h_mcs x := by
     intro h_in
@@ -1163,7 +1163,7 @@ theorem chronicle_model_exists (A : Set Formula) (h_mcs : SetMaximalConsistent (
     ∃ (D : Set Rat) (f : Rat → Set Formula),
       (0 : Rat) ∈ D ∧
       f 0 = A ∧
-      (∀ x ∈ D, SetMaximalConsistent (f x)) ∧
+      (∀ x ∈ D, SetMaximalConsistent (fc := FrameClass.Base) (f x)) ∧
       (∀ x ∈ D, ∀ ξ η : Formula,
         Formula.untl η ξ ∈ f x →
         ∃ y ∈ D, x < y ∧ η ∈ f y) ∧

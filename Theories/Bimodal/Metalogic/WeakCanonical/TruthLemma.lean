@@ -93,20 +93,20 @@ theorem imp_mcs_iff (x : ReflCanDomain) (φ ψ : Formula) :
   · intro h_fun
     by_cases h_φ_in : φ ∈ x.val
     · have h_ψ_in := h_fun h_φ_in
-      have h_ax : DerivationTree [] (ψ.imp (φ.imp ψ)) :=
+      have h_ax : DerivationTree FrameClass.Base [] (ψ.imp (φ.imp ψ)) :=
         DerivationTree.axiom [] _ (Axiom.prop_s ψ φ) trivial
       exact h_mcs.implication_property (theorem_in_mcs h_mcs h_ax) h_ψ_in
     · have h_neg_φ : Formula.neg φ ∈ x.val :=
         (SetMaximalConsistent.negation_complete h_mcs φ).resolve_left h_φ_in
-      have h_deriv : DerivationTree [φ.neg] (φ.imp ψ) := by
-        have h_step : DerivationTree [φ, φ.neg] ψ := by
-          have h_φ_assum : DerivationTree [φ, φ.neg] φ :=
+      have h_deriv : DerivationTree FrameClass.Base [φ.neg] (φ.imp ψ) := by
+        have h_step : DerivationTree FrameClass.Base [φ, φ.neg] ψ := by
+          have h_φ_assum : DerivationTree FrameClass.Base [φ, φ.neg] φ :=
             DerivationTree.assumption _ _ (by simp)
-          have h_neg_assum : DerivationTree [φ, φ.neg] φ.neg :=
+          have h_neg_assum : DerivationTree FrameClass.Base [φ, φ.neg] φ.neg :=
             DerivationTree.assumption _ _ (by simp)
-          have h_bot : DerivationTree [φ, φ.neg] Formula.bot :=
+          have h_bot : DerivationTree FrameClass.Base [φ, φ.neg] Formula.bot :=
             DerivationTree.modus_ponens _ _ _ h_neg_assum h_φ_assum
-          have h_ef : DerivationTree [] (Formula.bot.imp ψ) :=
+          have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp ψ) :=
             DerivationTree.axiom [] _ (Axiom.ex_falso ψ) trivial
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
@@ -152,9 +152,9 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
     by_cases h_negφ_in : Formula.neg φ ∈ L
     · -- Case 1: ¬φ ∈ L. Deduce L\{¬φ} ⊢ φ, then by generalized_modal_k get □φ ∈ x.
       let L_filt := L.filter (fun x => decide (x ≠ Formula.neg φ))
-      have d_reord : DerivationTree (Formula.neg φ :: L_filt) Formula.bot :=
+      have d_reord : DerivationTree FrameClass.Base (Formula.neg φ :: L_filt) Formula.bot :=
         derivation_exchange d (fun y => (cons_filter_neq_perm h_negφ_in y).symm)
-      have d_negneg : DerivationTree L_filt (Formula.neg (Formula.neg φ)) :=
+      have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg φ)) :=
         deduction_theorem L_filt (Formula.neg φ) Formula.bot d_reord
       have h_filt_in_bc : ∀ χ ∈ L_filt, χ ∈ bc := by
         intro χ hχ
@@ -168,8 +168,8 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
       -- DNE: ¬¬φ → φ
       have h_dne : [] ⊢ (Formula.neg (Formula.neg φ)).imp φ :=
         Bimodal.Theorems.Propositional.double_negation φ
-      have d_phi : DerivationTree L_filt φ := by
-        have d_dne_weak : DerivationTree L_filt ((Formula.neg (Formula.neg φ)).imp φ) :=
+      have d_phi : DerivationTree FrameClass.Base L_filt φ := by
+        have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg φ)).imp φ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       -- generalized_modal_k: L_filt ⊢ φ gives □(L_filt) ⊢ □φ
@@ -205,7 +205,7 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
         SetMaximalConsistent.closed_under_derivation h_mcs_x
           (Context.map Formula.box L) h_box_L_in d_box_bot
       -- □⊥ → ⊥ by modal_t
-      have h_ax : DerivationTree [] (Formula.box Formula.bot |>.imp Formula.bot) :=
+      have h_ax : DerivationTree FrameClass.Base [] (Formula.box Formula.bot |>.imp Formula.bot) :=
         DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
       have h_bot : Formula.bot ∈ x.val :=
         SetMaximalConsistent.implication_property h_mcs_x (theorem_in_mcs h_mcs_x h_ax) h_box_bot_in
@@ -223,14 +223,14 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
   -- □χ ∈ x → □□χ ∈ x (modal_4) → □χ ∈ bc → □χ ∈ y → χ ∈ y (modal_t on y)
   have h_canS5R : canS5R x y := by
     intro χ h_box_χ
-    have h_m4 : DerivationTree [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
+    have h_m4 : DerivationTree FrameClass.Base [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
       DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
     have h_box_box_χ : Formula.box (Formula.box χ) ∈ x.val :=
       SetMaximalConsistent.implication_property h_mcs_x
         (theorem_in_mcs h_mcs_x h_m4) h_box_χ
     have h_in_bc : Formula.box χ ∈ bc := h_box_box_χ
     have h_box_χ_in_y : Formula.box χ ∈ y.val := h_bc_sub h_in_bc
-    have h_mt : DerivationTree [] ((Formula.box χ).imp χ) :=
+    have h_mt : DerivationTree FrameClass.Base [] ((Formula.box χ).imp χ) :=
       DerivationTree.axiom [] _ (Axiom.modal_t χ) trivial
     exact SetMaximalConsistent.implication_property hM_mcs
       (theorem_in_mcs hM_mcs h_mt) h_box_χ_in_y
@@ -267,9 +267,9 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use g_content_closed_derivation to get Gψ ∈ x.
       let L_filt := L.filter (· ≠ Formula.neg ψ)
-      have d_reord : DerivationTree (Formula.neg ψ :: L_filt) Formula.bot :=
+      have d_reord : DerivationTree FrameClass.Base (Formula.neg ψ :: L_filt) Formula.bot :=
         derivation_exchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
-      have d_negneg : DerivationTree L_filt (Formula.neg (Formula.neg ψ)) :=
+      have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg ψ)) :=
         deduction_theorem L_filt (Formula.neg ψ) Formula.bot d_reord
       have h_filt_in_g : ∀ χ ∈ L_filt, χ ∈ g_content x := by
         intro χ hχ
@@ -282,8 +282,8 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
         Bimodal.Theorems.Propositional.double_negation ψ
-      have d_psi : DerivationTree L_filt ψ := by
-        have d_dne_weak : DerivationTree L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
+      have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
+        have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Gψ := g_content_closed_derivation h_mcs L_filt h_filt_in_g d_psi
@@ -340,9 +340,9 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use h_content_closed_derivation to get Hψ ∈ x.
       let L_filt := L.filter (· ≠ Formula.neg ψ)
-      have d_reord : DerivationTree (Formula.neg ψ :: L_filt) Formula.bot :=
+      have d_reord : DerivationTree FrameClass.Base (Formula.neg ψ :: L_filt) Formula.bot :=
         derivation_exchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
-      have d_negneg : DerivationTree L_filt (Formula.neg (Formula.neg ψ)) :=
+      have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg ψ)) :=
         deduction_theorem L_filt (Formula.neg ψ) Formula.bot d_reord
       have h_filt_in_h : ∀ χ ∈ L_filt, χ ∈ h_content x := by
         intro χ hχ
@@ -355,8 +355,8 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
         Bimodal.Theorems.Propositional.double_negation ψ
-      have d_psi : DerivationTree L_filt ψ := by
-        have d_dne_weak : DerivationTree L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
+      have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
+        have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Hψ := h_content_closed_derivation h_mcs L_filt h_filt_in_h d_psi
@@ -406,7 +406,7 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   have h_mcs := x.property
   -- BX10: U(ψ₁,ψ₂) → F(ψ₁)
   have h_F_ψ₁ : Formula.some_future ψ₁ ∈ x.val := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.until_F ψ₂ ψ₁) trivial
+    have h_ax := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.until_F ψ₂ ψ₁) trivial
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_until
   -- Use forward_temporal_witness_seed_consistent from Bundle
@@ -460,7 +460,7 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   have h_mcs := x.property
   -- BX10': S(ψ₁,ψ₂) → P(ψ₁)
   have h_P_ψ₁ : Formula.some_past ψ₁ ∈ x.val := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.since_P ψ₂ ψ₁) trivial
+    have h_ax := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.since_P ψ₂ ψ₁) trivial
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_ax) h_since
   -- Use past_temporal_witness_seed_consistent from Bundle

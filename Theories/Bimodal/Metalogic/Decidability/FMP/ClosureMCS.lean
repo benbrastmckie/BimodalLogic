@@ -142,7 +142,7 @@ A closure MCS is set-consistent.
 -/
 theorem closure_mcs_consistent {phi : Formula} {S : Set Formula}
     (h_mcs : ClosureMCS phi S) :
-    SetConsistent S :=
+    SetConsistent (fc := FrameClass.Base) S :=
   restricted_mcs_is_consistent h_mcs
 
 /--

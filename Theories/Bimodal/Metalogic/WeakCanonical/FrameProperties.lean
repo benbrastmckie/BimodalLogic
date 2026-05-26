@@ -18,30 +18,34 @@ open Bimodal.Metalogic.Core
 theorem z1_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.all_future (Formula.imp (Formula.all_future psi) psi))
       (Formula.imp (Formula.some_future (Formula.all_future psi)) (Formula.all_future psi)) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.z1 psi) trivial)
+  -- TODO(task 168): ReflCanDomain uses FrameClass.Base but z1 requires FrameClass.Discrete.
+  -- Parameterize ReflCanDomain over fc to fix.
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.z1 psi) sorry)
 
 /-! ## Prior-UZ/SZ in the Canonical Frame -/
 
 /-- Prior-UZ: F(psi) → U(psi, ¬psi) is a theorem. -/
 theorem prior_UZ_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.some_future psi) (Formula.untl psi psi.neg) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi) trivial)
+  -- TODO(task 168): ReflCanDomain uses FrameClass.Base but prior_UZ requires FrameClass.Discrete.
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi) sorry)
 
 /-- Prior-SZ: P(psi) → S(psi, ¬psi) is a theorem. -/
 theorem prior_SZ_in_frame (x : ReflCanDomain) (psi : Formula) :
     Formula.imp (Formula.some_past psi) (Formula.snce psi psi.neg) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi) trivial)
+  -- TODO(task 168): ReflCanDomain uses FrameClass.Base but prior_SZ requires FrameClass.Discrete.
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi) sorry)
 
 /-! ## Seriality (No Endpoints) -/
 
 /-- BX1 serial_future: ⊤ → F(⊤) is a theorem. -/
 theorem serial_future_in_frame (x : ReflCanDomain) :
     Formula.imp (Formula.bot.imp Formula.bot) (Formula.some_future (Formula.bot.imp Formula.bot)) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_future)
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_future trivial)
 
 /-- BX1' serial_past: ⊤ → P(⊤) is a theorem. -/
 theorem serial_past_in_frame (x : ReflCanDomain) :
     Formula.imp (Formula.bot.imp Formula.bot) (Formula.some_past (Formula.bot.imp Formula.bot)) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_past)
+  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_past trivial)
 
 end Bimodal.Metalogic.WeakCanonical

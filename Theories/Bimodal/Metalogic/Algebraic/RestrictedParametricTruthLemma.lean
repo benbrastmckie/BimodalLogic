@@ -27,6 +27,7 @@ on `neg(psi)` where `psi` is a subformula of `root`, and `neg(psi) ∈ deferralC
 namespace Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 open Bimodal.Syntax
+open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
@@ -42,8 +43,8 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-- Classical tautology: neg(psi -> chi) -> psi -/
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp ψ) := by
-  have h_efq : Bimodal.ProofSystem.DerivationTree [] (ψ.neg.imp (ψ.imp χ)) :=
+    DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp ψ) := by
+  have h_efq : DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.imp χ)) :=
     Bimodal.Theorems.Propositional.efq_neg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
     Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
@@ -69,9 +70,9 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
 
 /-- Classical tautology: neg(psi -> chi) -> neg(chi) -/
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp χ.neg) := by
+    DerivationTree FrameClass.Base [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ)
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ) trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
     Bimodal.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
   have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
@@ -125,7 +126,7 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
@@ -285,7 +286,7 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      have h_deriv : DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim

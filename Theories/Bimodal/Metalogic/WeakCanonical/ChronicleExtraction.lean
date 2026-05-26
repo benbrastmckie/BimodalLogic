@@ -54,7 +54,8 @@ theorem prior_UZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) trivial)
+    -- TODO(task 168): prior_UZ requires FrameClass.Discrete, not Base
+    (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) sorry)
 
 /--
 Prior-SZ holds at every point in the limit domain.
@@ -63,7 +64,8 @@ theorem prior_SZ_in_limit_domain (A : Set Formula) (h_mcs : SetMaximalConsistent
     (x : Rat) (hx : x ∈ limit_dom A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f A h_mcs x :=
   theorem_in_mcs (limit_c0 A h_mcs x hx)
-    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) trivial)
+    -- TODO(task 168): prior_SZ requires FrameClass.Discrete, not Base
+    (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) sorry)
 
 /-! ## ChronicleAsPriorModel -/
 
@@ -108,7 +110,7 @@ structure ChronicleAsPriorModel where
   /-- MCS assignment at each domain point -/
   fmcs : domain → Set Formula
   /-- Each domain point maps to an MCS -/
-  fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fmcs t)
+  fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fc := FrameClass.Base) (fmcs t)
   /-- The root point's MCS equals A -/
   root_point_mcs : fmcs root_point = root
   /-- Discreteness: next_top ∈ MCS at every point -/
