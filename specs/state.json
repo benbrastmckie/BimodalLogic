@@ -806,16 +806,44 @@
     {
       "project_number": 197,
       "project_name": "parameterize_chronicle_over_frameclass",
-      "status": "not_started",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-25T22:35:00Z",
-      "last_updated": "2026-05-25T22:35:00Z",
+      "last_updated": "2026-05-26T01:15:00Z",
       "dependencies": [
         168
       ],
       "description": "Parameterize the BXCanonical chronicle construction over FrameClass to eliminate 6 sorry workarounds introduced in task 168. Currently ChronicleConstruction.lean hardcodes SetMaximalConsistent (fc := FrameClass.Base), but the discrete completeness pipeline needs fc = FrameClass.Discrete for axioms z1, prior_UZ, prior_SZ (which have minFrameClass = .Discrete). The fix: parameterize ChronicleConstruction.lean and its downstream consumers (ChronicleToCountermodel.lean, ChronicleExtraction.lean, FrameProperties.lean) over fc, instantiating with .Base for the base/dense pipeline and .Discrete for the discrete pipeline. Affects ~70 references in ChronicleConstruction.lean plus cascading changes. Sorry locations: FrameProperties.lean:25,34,41 (z1, prior_UZ, prior_SZ), ChronicleExtraction.lean:62,73 (prior_UZ, prior_SZ), ChronicleToCountermodel.lean:1529 (z1). Definition of done: all 6 sorry entries replaced with proper h_fc proofs, lake build passes, no new sorries introduced.",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "session_id": "sess_1779926400_c7f2a1",
+      "researched": "2026-05-26T00:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/197_parameterize_chronicle_over_frameclass/reports/01_chronicle-fc-parameterization.md",
+          "type": "research",
+          "summary": "Complete analysis: 6 sorry locations (all fc-mismatch, Discrete<=Base=False), 12-14 files across 16K lines, 450+ mechanical replacements, 8-phase bottom-up parameterization strategy, 18-22h estimated effort."
+        },
+        {
+          "path": "specs/197_parameterize_chronicle_over_frameclass/plans/01_chronicle-fc-parameterization.md",
+          "type": "plan",
+          "summary": "8-phase bottom-up plan: parameterize Chronicle pipeline (6 files) and WeakCanonical layer (4 files) over fc, fix 6 fc-mismatch sorries, 20 hours estimated"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 8,
+        "total_effort_hours": 20,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_chronicle-fc-parameterization.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      }
     }
   ],
   "next_project_number": 198,
