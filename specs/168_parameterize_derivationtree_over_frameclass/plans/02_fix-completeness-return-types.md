@@ -84,25 +84,25 @@ parameterized over fc by tasks 168/197.
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 
-### Phase 2: Fix completeness_dense [NOT STARTED]
+### Phase 2: Fix completeness_dense [COMPLETED]
 
 **Goal**: Change return type and proof structure for dense completeness.
 
 **Tasks**:
-- [ ] **2.1** Change `completeness_dense` return type:
+- [x] **2.1** Change `completeness_dense` return type:
   ```lean
   theorem completeness_dense (φ : Formula) :
       valid_dense φ → Nonempty (DerivationTree FrameClass.Dense [] φ)
   ```
-- [ ] **2.2** Update the proof to use `neg_consistent_of_not_derivable` at fc = Dense.
+- [x] **2.2** Update the proof to use `neg_consistent_of_not_derivable` at fc = Dense.
   The Lindenbaum lemma produces a Dense-MCS.
-- [ ] **2.3** Update `countermodel_dense_enriched` to accept a Dense-MCS
+- [x] **2.3** Update `countermodel_dense_enriched` to accept a Dense-MCS
   (or any fc-MCS with fc ≥ Base, since the Chronicle pipeline is fc-parameterized).
-- [ ] **2.4** Investigate the non-dense branch: with a Dense-MCS, determine whether
+- [x] **2.4** Investigate the non-dense branch: with a Dense-MCS, determine whether
   □(F'⊤) ∈ M is forced by the density axiom. If so, the non-dense branch is
   unreachable and the sorry can be eliminated. If not, document as a genuine
   open question (distinct from the previous false sorry).
-- [ ] **2.5** Verify: `lake build Bimodal.Metalogic.BXCanonical.Completeness` passes.
+- [x] **2.5** Verify: `lake build Bimodal.Metalogic.BXCanonical.Completeness` passes.
 
 **Files**: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`
 

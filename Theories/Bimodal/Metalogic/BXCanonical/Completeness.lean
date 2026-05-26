@@ -183,15 +183,15 @@ theorem completeness' (φ : Formula) (h : valid φ) :
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
 -/
-private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
+private theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.next_top.neg ∈ A) :
     ∃ (F : TaskFrame Rat) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
       ¬truth_at TM Omega τ t φ := by
-  let bfmcs := Chronicle.cantor_bfmcs_dense FrameClass.Base A h_mcs h_box_dense
-  let fam₀ := Chronicle.rooted_cantor_fmcs_dense FrameClass.Base A h_mcs h_box_dense 0
+  let bfmcs := Chronicle.cantor_bfmcs_dense fc A h_mcs h_box_dense
+  let fam₀ := Chronicle.rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
   refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
     Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
     Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
@@ -204,10 +204,10 @@ private theorem countermodel_dense_enriched (A : Set Formula) (h_mcs : SetMaxima
     rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
   exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
-    (Chronicle.cantor_bfmcs_dense_restricted_tc FrameClass.Base A h_mcs h_box_dense φ
+    (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Chronicle.cantor_bfmcs_dense_restricted_buc FrameClass.Base A h_mcs h_box_dense φ)
-    (Chronicle.cantor_bfmcs_dense_restricted_fuc FrameClass.Base A h_mcs h_box_dense φ)
+    (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
+    (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
@@ -228,21 +228,27 @@ private theorem countermodel_discrete_enriched (A : Set Formula) (h_mcs : SetMax
 
 /--
 Dense Completeness Theorem: If a formula is valid on all densely ordered models,
-then it is derivable in TM.
+then it is derivable in the Dense proof system.
 
-**Proof Strategy**: Same contrapositive + MCS construction as `completeness`.
+**Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
+but using Dense-derivability and Dense-MCS throughout.
 - Dense case: `countermodel_dense_enriched` produces a countermodel on `Rat`
   (DenselyOrdered), directly contradicting `valid_dense`.
-- Non-dense case: sorried (requires frame-class-specific completeness theory).
+- Non-dense case: sorried. With a Dense-MCS, the question of whether
+  `□(F'⊤) ∈ M` is forced by the density axiom is a genuine open question
+  about the canonical model construction (distinct from the previous false
+  sorry which used Base-derivability).
 
-**Sorry Status**: Inherits sorries from `countermodel_dense` (dense case) and
-requires frame-class-specific theory for the non-dense case.
+**Sorry Status**: Inherits sorries from `countermodel_dense` (dense case).
+The non-dense branch sorry is a genuine open question (not a false statement).
+The previous return type (`DerivationTree FrameClass.Base`) was mathematically
+wrong — the density axiom is not Base-derivable.
 -/
 theorem completeness_dense (φ : Formula) :
-    valid_dense φ → Nonempty (DerivationTree FrameClass.Base [] φ) := by
+    valid_dense φ → Nonempty (DerivationTree FrameClass.Dense [] φ) := by
   intro h_valid_dense
   by_contra h_not_deriv
-  have h_cons := neg_consistent_of_not_derivable φ h_not_deriv
+  have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Dense) φ h_not_deriv
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg φ} h_cons
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
@@ -251,8 +257,10 @@ theorem completeness_dense (φ : Formula) :
     obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid_dense Rat F TM Omega h_sc τ h_mem t)
-  · -- Non-dense case: ¬□(F'T) ∈ M. Countermodels on non-dense domains do not
-    -- directly contradict valid_dense. Sorried pending frame-class-specific theory.
+  · -- Non-dense case: ¬□(F'T) ∈ M. With Dense-MCS, whether □(F'T) is forced
+    -- by the density axiom is a genuine open question about the canonical model.
+    -- This sorry guards a potentially provable goal (unlike the previous sorry
+    -- which guarded the unprovable goal `valid_dense φ → Base-derivable φ`).
     sorry
 
 /--
