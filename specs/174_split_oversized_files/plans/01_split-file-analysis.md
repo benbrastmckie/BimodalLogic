@@ -589,15 +589,15 @@ TypeFormulas + Decomposition -> StaviCompleteness
 
 ## Testing & Validation
 
-- [ ] `lake build` passes after every individual file split (per-phase verification)
-- [ ] Full `lake build` from clean state after all phases complete
-- [ ] No file in the codebase exceeds ~5100 lines (GapDetection.lean at ~5040 and SplitPoint.lean at ~4640 are acceptable as indivisible mathematical units)
-- [ ] Every new file has a module docstring (first comment block)
-- [ ] No aggregator files exist -- all imports are direct to specific split modules
-- [ ] `grep -rl "import.*OriginalName" Theories/` shows zero results for every original file name
-- [ ] No `private` definition is referenced from a file that cannot see it
-- [ ] 35 new module files created across 12 split operations
-- [ ] 12 original files deleted
+- [x] `lake build` passes after every individual file split (per-phase verification)
+- [x] Full `lake build` from clean state after all phases complete (1667 jobs, clean)
+- [x] No file in the codebase exceeds ~5100 lines (GapDetection.lean at 5057 and SplitPoint.lean at 4657 are acceptable as indivisible mathematical units)
+- [x] Every new file has a module docstring (first comment block)
+- [x] No aggregator files exist -- all imports are direct to specific split modules
+- [x] `grep -rl "import.*OriginalName" Theories/` shows zero results for every original file name
+- [x] No `private` definition is referenced from a file that cannot see it *(~50 private defs made non-private across phases for cross-file access)*
+- [x] 35 new module files created across 12 split operations
+- [x] 12 original files deleted
 
 ## Artifacts & Outputs
 
