@@ -3127,7 +3127,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
 -- std_snce_gap_detection: DELETED (provably false, past dual of std_untl_gap_detection).
 -- Same issue: S(X,D) has no D-failure condition. See std_untl_gap_detection comment above.
 
-private theorem gap_detection_unique_right {sig : MonadicSignature}
+theorem gap_detection_unique_right {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {γ₁ γ₂ : Gap M.carrier} {D : StaviFormula} {m : M.carrier}
     (h₁_def : gap_definable_on_right M atomMap γ₁ D)
