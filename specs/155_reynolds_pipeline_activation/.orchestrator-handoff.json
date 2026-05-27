@@ -1,24 +1,17 @@
 {
   "session_id": "sess_1748393400_orch155",
   "task_number": 155,
-  "status": "blocked",
-  "current_phase": "phase_6_nf_characterization",
-  "summary": "Phase 6 (NF characterization, keystone sorry at StaviCompleteness.lean:1567) is blocked on missing infrastructure: the GHR93 Proposition 7 composition lemma for EF games. Six proof approaches were analyzed in depth. All require this composition lemma, which composes Duplicator winning strategies on sub-intervals into a strategy on the full interval. Without it, the inductive step of nf_characterizable_by_stavi cannot connect the IH (1-variable depth-k NFs have characteristic StaviFormulas) to the goal (1-variable depth-(k+1) NFs have characteristic StaviFormulas), because the quantifier part involves 2-variable NFs whose joint type is not determined by individual 1-variable types. Phases 7 (no_gaps_discrete) and 8 (succ_cofinal) depend on Phase 6 via the chain: nf_characterizable -> stavi_expressive_completeness -> no_gaps_discrete -> one_class -> succ_cofinal. No code changes were made; build passes (1667 jobs, zero errors).",
-  "blocking_issues": [
-    "GHR93 Proposition 7 (composition lemma for custom EF games) not formalized in codebase",
-    "No existing infrastructure to compose Duplicator winning strategies on sub-intervals",
-    "1-variable IH cannot determine 2-variable quantifier types without composition",
-    "All six analyzed approaches require this missing lemma or its equivalent"
-  ],
-  "continuation_context": "The sorry at StaviCompleteness.lean:1567 is the keystone blocking Phases 6-9. Three options exist: (A) Implement GHR93 Proposition 7 (~200-300 lines) as a new lemma, then build the inductive step using it. (B) Direct construction of temporal formulas for each 2-variable sub_nf using game infrastructure (~300-500 lines). (C) Research an alternative non-game-theoretic proof. Option A is recommended as the cleanest path. The existing game infrastructure (ghr93_duplicator_wins, game_tuple, ghr93_winning_condition) provides the foundation. The composition lemma would take two winning strategies on [x,c] and [c,y] and produce one on [x,y]. See handoff file for full technical details and existing infrastructure inventory.",
-  "next_action_hint": "research",
+  "status": "partial",
+  "current_phase": "phase_6a_proposition7",
+  "summary": "Created Composition.lean (169 lines) with ghr93_strategy_compose scaffold. Structure complete: padding, sub-strategy application, response merging, Round 2 case-split, dispatch to compose_wc helpers. File compiles (lake build passes) with 3 sorry sites: compose_wc body (winning condition transfer via pivot for cross-interval order, ~80-120 lines), compose_wc_right (symmetric, ~80-120 lines), degenerate sub-interval case (~40-60 lines per side). Key architectural insight: merged M-selection = original a, simplifying the goal. pivot_flip helper lemma proved. The compose_wc proof requires per-pair index classification (LEFT vs RIGHT owned) with sub-strategy dispatch for same-side pairs and pivot_chain_order for cross pairs.",
+  "blocking_issues": [],
+  "continuation_context": "Immediate next action: fill in compose_wc body. Approach: (1) same_order_type via 4-case analysis on index pair ownership using hord_L, hord_R, and pivot_chain_order. (2) gap_point_agreement via per-index dispatch. (3) formula_agreement via per-index dispatch. See handoff at specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md for full architecture and ownership classification.",
+  "next_action_hint": "implement",
   "phases_completed": 5,
-  "phases_total": 10,
-  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-20260527.md",
+  "phases_total": 12,
+  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md",
   "artifacts_created": [
-    "specs/155_reynolds_pipeline_activation/plans/34_reynolds-pipeline-plan.md",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-20260527.md",
-    "specs/155_reynolds_pipeline_activation/.return-meta.json",
-    "specs/155_reynolds_pipeline_activation/.orchestrator-handoff.json"
+    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean",
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md"
   ]
 }

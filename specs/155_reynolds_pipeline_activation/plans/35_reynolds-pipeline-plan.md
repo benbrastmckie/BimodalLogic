@@ -326,11 +326,11 @@ theorem ghr93_strategy_compose
 5. **Prove winning condition**: Cross-interval order is preserved because left responses <= d <= right responses. Gap/point and formula agreement inherited from sub-strategies.
 
 **Tasks**:
-- [ ] **Define partition_selections** -- classify selections by position relative to split point c (~30-40 lines)
-- [ ] **Define merge_responses** -- recombine sub-interval responses into full response (~30-40 lines)
-- [ ] **Prove cross-interval order transfer** -- left responses <= d <= right responses implies correct order (~40-60 lines)
-- [ ] **Prove ghr93_strategy_compose** -- main theorem combining all components (~150-250 lines)
-- [ ] **Run `lake build`** to confirm no regressions
+- [x] **Define partition_selections** -- classify selections by position relative to split point c (~30-40 lines) *(deviation: altered -- inlined as let-bindings a_L/a_R in main theorem instead of separate definitions)*
+- [x] **Define merge_responses** -- recombine sub-interval responses into full response (~30-40 lines) *(deviation: altered -- inlined as let-binding a' in main theorem)*
+- [ ] **Prove cross-interval order transfer** -- left responses <= d <= right responses implies correct order (~40-60 lines) *(in progress -- pivot_flip proved, compose_wc body sorry'd)*
+- [ ] **Prove ghr93_strategy_compose** -- main theorem combining all components (~150-250 lines) *(in progress -- scaffold complete, compose_wc/compose_wc_right sorry'd)*
+- [x] **Run `lake build`** to confirm no regressions *(completed -- builds with sorry warnings only)*
 
 **Timing**: 4-6 hours
 
