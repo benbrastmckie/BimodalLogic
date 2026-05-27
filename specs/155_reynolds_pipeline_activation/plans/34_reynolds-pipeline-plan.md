@@ -373,19 +373,35 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Keystone Sorry -- NF Characterization (S13) [NOT STARTED]
+### Phase 6: Keystone Sorry -- NF Characterization (S13) [BLOCKED]
 
 **Goal**: Close the keystone sorry at StaviCompleteness.lean:1567 -- the inductive step of `nf_characterizable_by_stavi`. Every NormalForm at depth k+1 must be characterizable by a StaviFormula.
 
-**Tasks**:
-- [ ] Read the current structure of `nf_characterizable_by_stavi` and the inductive step
-- [ ] Base case (k=0) is proved via `nf_base_sf` (sorry-free) -- no action needed
-- [ ] Inductive step for k+1 NFs requires handling 2-variable NFs (`NormalForm sig k 2`) using Until/Since connectives
-- [ ] Implement using the game-theoretic argument from GHR93 Theorem 6/Proposition 7, invoking the four-case analysis (Cases I-IV) proved in Phases 2-5
-- [ ] This requires all S1-S12 closed (the four-case analysis is the inductive step's core)
-- [ ] Run `lake build` to confirm no regressions
+**BLOCKER** (Phase 6):
+- **What failed**: The inductive step of `nf_characterizable_by_stavi` at line 1567 requires proving that every depth-(k+1) 1-variable NF is characterizable by a StaviFormula, using the IH that every depth-k 1-variable NF is characterizable.
+- **What was tried**: Six approaches were analyzed in detail:
+  1. **Direct constructive approach (build StaviFormula from IH)**: Fails because the IH gives StaviFormulas for 1-variable NFs but the quantifier part involves 2-variable NFs. x's 1-variable depth-k type does NOT determine the 2-variable type of (x, t) -- counterexample: z between x and t has position relative to both, not captured by x's 1-variable type alone.
+  2. **Non-constructive pattern matching**: Define StaviFormula as conjunction of truth pattern from a witness structure. REQUIRES the converse direction (same StaviFormula truth -> same NF), which requires the game-theoretic argument.
+  3. **Bridge through extended structure**: `nf_determines_stavi_truth` gives NF on extended structure -> same StaviFormula truth. Converse direction blocked by circularity: showing StaviFormula truth determines original NF IS the expressive completeness theorem being proved.
+  4. **Use stavi_expressive_completeness at depth k (breaking circularity)**: `stavi_expressive_completeness` at depth k follows from IH. But expressing "exists x, sub_nf(x, t)" requires an FO formula of depth k+1 (the extra quantifier), which needs expressive completeness at depth k+1 -- circular.
+  5. **doets_lemma_1_1 converse**: Same FO truth of depth <= k+1 implies same NF at depth k+1. But StaviFormulas of depth <= R only cover stavi_table_mu FO formulas, which are a SUBSET of all FO formulas. Showing they cover ALL FO formulas IS expressive completeness.
+  6. **mu-relativized FO approach**: StaviFormulas at depth <= R correspond to mu-relativized FO of depth <= 2R. For actual points, mu-relativized FO matches original FO. But coverage of ALL original FO formulas by StaviFormula translations is exactly expressive completeness.
+- **Why it's stuck**: The proof requires a **composition lemma for EF games** (GHR93 Proposition 7) or equivalent infrastructure that does not exist in the codebase. The composition lemma would show that Duplicator's winning strategy on an interval can be composed from strategies on sub-intervals, which is the key connecting the 1-variable IH to the 2-variable quantifier step. Without this, there is no way to break the circularity between "StaviFormulas characterize NFs" and "NFs determine StaviFormula truth."
+- **What is needed**: One of:
+  (A) **Implement GHR93 Proposition 7** (Composition Lemma for Custom EF Games): ~200-300 lines. Given winning strategies on sub-intervals [x, c] and [c, y], compose them into a strategy on [x, y]. Requires careful handling of boundary types and position tracking.
+  (B) **Implement the constructive StaviFormula builder** using the game infrastructure: For each 2-variable depth-k sub_nf, construct a temporal formula (using U, S, U', S' with guards that describe intermediate types) that captures the existential. This is the GHR93 Section 8 induction and requires the four-case analysis + composition lemma.
+  (C) **Research alternative**: A non-game-theoretic proof of NF characterization may exist. The abstract algebraic approach (every partition of structures into finitely many classes, each closed under game equivalence, is definable by temporal formulas) could bypass the composition lemma. Requires research.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-**Timing**: 4-8 hours (highest-risk phase)
+**Tasks**:
+- [x] **Read the current structure of `nf_characterizable_by_stavi` and the inductive step** *(completed)*
+- [x] **Base case (k=0) is proved via `nf_base_sf` (sorry-free)** -- no action needed *(confirmed)*
+- [ ] **Inductive step for k+1 NFs requires handling 2-variable NFs (`NormalForm sig k 2`) using Until/Since connectives** *(deviation: blocked -- requires composition lemma, see blocker above)*
+- [ ] Implement using the game-theoretic argument from GHR93 Theorem 6/Proposition 7, invoking the four-case analysis (Cases I-IV) proved in Phases 2-5 *(deviation: blocked -- composition lemma infrastructure missing)*
+- [ ] This requires all S1-S12 closed (the four-case analysis is the inductive step's core) *(deviation: skipped -- blocked before this step)*
+- [ ] Run `lake build` to confirm no regressions *(deviation: skipped -- no changes made)*
+
+**Timing**: 4-8 hours (highest-risk phase) -- confirmed by analysis
 
 **Depends on**: 5
 
