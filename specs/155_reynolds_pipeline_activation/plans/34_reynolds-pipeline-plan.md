@@ -337,13 +337,11 @@ Phases within the same wave can execute in parallel.
   3. ~~Use `gap_detection_unique` to show the matching gap has correct formula agreement~~ *(done)*
   4. ~~Construct response sequence: tau (for init positions) + matching gap (for position n)~~ *(done)*
   5. ~~Handle degenerate boundary cases (x' = gamma_N, y' = gamma_N)~~ *(done)*
-  6. [ ] **Prove gamma_M interval bounds** (lines ~3328, ~3639): `Sum.inr gamma_M ≤ y` and `x ≤ Sum.inr gamma_M`
-  7. [ ] **Assemble winning condition** (line ~3753): S11.3, ~200 lines following Case II pattern
-  - **Completed**: Rank mismatch resolved (`h_r1_univ` universally quantified over r'), left/right gap detection cases with formula agreement via `gap_detection_unique`, degenerate boundary cases, response construction + interval membership + gap/point agreement. Rank-(r+4) forward game `h_fwd_r3` available in scope.
-  - **Remaining sub-sorries (3)**:
-    - Line ~3328: `Sum.inr gamma_M ≤ y` (left interval upper bound)
-    - Line ~3639: `x ≤ Sum.inr gamma_M` (right interval lower bound)
-    - Line ~3753: Winning condition assembly (needs sel_pn_ord dependency from Phase 3C)
+  6. [x] **Prove gamma_M interval bounds** (lines ~3328, ~3639): `Sum.inr gamma_M ≤ y` and `x ≤ Sum.inr gamma_M` *(completed — degenerate boundary via tau/sigma endpoint agreement + non-degenerate via sub-interval forward game contradiction)*
+  7. [ ] **Assemble winning condition** (line ~4100): S11.3, ~200 lines following Case II pattern *(deviation: deferred — blocked by sel_pn_ord from Phase 3C)*
+  - **Completed**: Rank mismatch resolved (`h_r1_univ` universally quantified over r'), left/right gap detection cases with formula agreement via `gap_detection_unique`, degenerate boundary cases, response construction + interval membership + gap/point agreement, **interval bounds for gamma_M** (both left and right cases). Rank-(r+4) forward game `h_fwd_r3` available in scope.
+  - **Remaining sub-sorries (1)**:
+    - Line ~4100: Winning condition assembly (needs sel_pn_ord dependency from Phase 3C)
   - **Interval bound approach (from report 35 — GHR93 literature analysis)**:
     - GHR93 (pp. 116-119) does NOT restrict gap detection to an interval. Instead, the interval bound is derived from the gap's **defining formula D**.
     - A "left-D-definable" gap means D holds at all points beyond the gap (to the right). So D holds throughout `(gamma_N, y']` in N.
