@@ -460,7 +460,7 @@ This phase is decomposed into 5 sub-phases below.
 
 ---
 
-#### Phase 6C-2: Redefine nf_exist_sf with Interval Guard Formula [NOT STARTED]
+#### Phase 6C-2: Redefine nf_exist_sf with Interval Guard Formula [BLOCKED]
 
 **Goal**: Replace `sf_top` in `nf_exist_sf` with a proper interval guard formula built from the IH `char_k`, following GHR93 Definition 12.8.13.
 
