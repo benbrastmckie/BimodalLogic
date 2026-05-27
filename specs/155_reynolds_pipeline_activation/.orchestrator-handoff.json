@@ -1,8 +1,13 @@
 {
   "status": "partial",
-  "summary": "S11 sorry decomposed into 2 well-typed sub-goals: gap matching (S11.1) and winning condition assembly (S11.3). Response construction, interval membership, and gap/point agreement proved.",
-  "blockers": [],
-  "continuation_context": "S11.1 (gap matching via gap detection transfer) and S11.3 (winning condition assembly following Case II pattern) remain as well-typed sorry sub-goals in ghr93_cases_III_IV",
+  "summary": "S11.1 gap matching decomposed: formula agreement closed via gap_detection_unique, 4 sub-sorries remain (degenerate case, interval bound, right case, S11.3)",
+  "blockers": [
+    "S11.1 interval upper bound (γ_M ≤ y) requires locality argument for gap detection",
+    "S11.1 right D-definability case is symmetric but unwritten",
+    "S11.1 degenerate d = γ_N edge case needs special handling",
+    "S11.3 winning condition assembly (~200 lines, follows Case II pattern)"
+  ],
+  "continuation_context": "The S11.1 left-case proof structure is complete: reference point construction, forward game extraction, left_formula transfer chain, gap_detection_unique for formula agreement iff. Four sub-sorries remain: (1) degenerate edge case d=γ_N at line 3170, (2) interval bound γ_M≤y at line 3324, (3) right D-definability case at line 3395 (symmetric to left), (4) S11.3 winning condition at line 3449. Phase 3C sorries at lines 1423,1792,2003,2056 are untouched.",
   "next_action_hint": "implement",
   "phases_completed": 5,
   "phases_total": 10
