@@ -330,15 +330,15 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 
-- [ ] **Close S11 (CaseAnalysis.lean:~3024, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: blocked — rank mismatch: gap detection formulas `left_formula A D` / `right_formula A D` have depth r+4 but only rank-(r+2) forward game is available; infrastructure for h_fwd_r1 parameter threading completed)*
+- [ ] **Close S11 (CaseAnalysis.lean:~3043, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: altered — rank mismatch RESOLVED by making h_r1_univ universally quantified over r' in ghr93_forward_to_backward_core/ghr93_forward_to_backward; h_fwd_r3 at rank r+4 now derived in ghr93_cases_III_IV via h_r1_univ at r'=r+2. Gap detection assembly remains sorry'd.)*
   1. Case-split on whether a_bwd(n) is left-defined or right-defined (or both)
   2. Use `left_formula_gap_detection` / `right_formula_gap_detection` (proved sorry-free in `EFGames/GapDetection.lean`) to find a matching gap in M
   3. Use `gap_detection_unique` to show the matching gap has correct properties
   4. Construct response sequence: tau (for init positions) + matching gap (for position n)
   5. Assemble winning condition from tau + gap detection properties
   - Estimated: 150-300 lines (substantial new proof using existing infrastructure)
-  - **Status**: Structural setup done (tau for init positions, gap extraction). Parameters `hxy`, `hx'y'`, `h_fwd_r1` threaded to `ghr93_cases_III_IV`. Core gap detection transfer remains sorry'd due to rank mismatch: gap detection formulas have depth r+4 but only rank-(r+2) game available. See `handoffs/phase-5-S11-rank-analysis-20260527.md` for full analysis and three resolution options.
-  - **Blocker**: Gap detection formula depth (r+4) exceeds available forward game rank (r+2). Fix requires making `h_r1_univ` in `ghr93_forward_to_backward_core` universally quantified over `r'` (not just endpoints), or using the rank-varying theorem structure directly.
+  - **Status**: Rank mismatch RESOLVED. `h_r1_univ` now universally quantified over rank r' in `ghr93_forward_to_backward_core`, `ghr93_forward_to_backward`, `ghr93_inductive_step`, `ghr93_cases_II_III_IV`, and `ghr93_cases_III_IV`. Rank-(r+4) forward game `h_fwd_r3` derived in `ghr93_cases_III_IV` from `h_r1_univ` at r'=r+2 via `rank_embed_comp` transitivity. Proof context at sorry now has `h_fwd_r1` (rank r+2), `h_r1_univ` (any rank r'+2), `h_fwd_r3` (rank r+4). Gap detection assembly (gap existence + formula agreement + order agreement) still requires implementation.
+  - **Former blocker (RESOLVED)**: Gap detection formula depth (r+4) exceeded available forward game rank (r+2). Fixed by extending `h_r1_univ` to be universally quantified over `r'`, enabling derivation of rank-(r+4) games.
 
 - [x] **Close S12 (Theorem6.lean:307, `ghr93_forward_to_backward_rank_varying`)**: Sub-interval strategy restriction. *(completed)*
   - **Approach**: Parameter approach -- modified `ghr93_forward_to_backward_rank_varying` to take `h_r1_univ` as a parameter quantified over all ranks `r'` and all sub-intervals. In the `succ` case, specialized to `r` and passed directly to `ghr93_forward_to_backward`. Zero case ignores the parameter. Theorem6.lean is now fully sorry-free.

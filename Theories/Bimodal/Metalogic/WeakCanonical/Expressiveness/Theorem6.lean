@@ -13,27 +13,32 @@ open Bimodal.Syntax
 /-! ## GHR93 Theorem 6: Forward-to-Backward Transfer -/
 
 /-- **GHR93 Theorem 6, core** (Forward-to-backward transfer with decoupled r+1 round count):
-    The key insight is that the rank r+2 forward hypothesis `h_r1_univ` is universally
-    quantified over endpoints, so it does NOT depend on the induction variable `n` or
-    the specific endpoints `x, y, x', y'`. This allows it to stay out of the IH,
-    breaking the recursive tower where each induction level needs rank r+2 on
-    sub-intervals.
+    The key insight is that the rank-universal forward hypothesis `h_r1_univ` is
+    quantified over ALL ranks `r'` and all endpoints, so it does NOT depend on the
+    induction variable `n` or the specific endpoints `x, y, x', y'`. This allows it
+    to stay out of the IH, breaking the recursive tower where each induction level
+    needs rank r'+2 on sub-intervals.
 
-    Parameter `rounds_r1` is the round count for the rank r+2 game, decoupled from `n`.
+    The rank-universal quantification (over `r'`) is essential for Cases III/IV
+    (gap detection), where gap detection formulas have depth up to r+4, requiring
+    a forward game at rank r+4 = (r+2)+2. By instantiating `h_r1_univ` at `r' = r+2`,
+    we obtain the needed rank-(r+4) game.
+
+    Parameter `rounds_r1` is the round count for the forward games, decoupled from `n`.
     The constraint `h_enough : 1 + 3 * n ≤ rounds_r1` ensures enough rounds at each level.
     (In the succ case, 1+3(n+1) = 4+3n ≤ rounds_r1 gives the 4+3n rounds needed
     by ghr93_inductive_step for h_fwd_r1, and 1+3n ≤ rounds_r1 for the IH.) -/
 private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) (n : Nat) (rounds_r1 r : Nat)
     {M N : OrderedMonadicStructure sig}
-    (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
-                   {x₁' y₁' : ExtendedCarrier N atomMap r},
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap rounds_r1 (r + 2)
-                   (rank_embed (by omega : r ≤ r + 2) x₁)
-                   (rank_embed (by omega : r ≤ r + 2) y₁)
-                   (rank_embed (by omega : r ≤ r + 2) x₁')
-                   (rank_embed (by omega : r ≤ r + 2) y₁'))
+                 ghr93_duplicator_wins M N atomMap rounds_r1 (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁'))
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
     (h_enough : 1 + 3 * n ≤ rounds_r1)
@@ -101,8 +106,8 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
     rw [h_rounds] at h
-    -- Derive h_fwd_r1 for the specific endpoints from h_r1_univ + round_mono
-    -- h_r1_univ gives rounds_r1 rounds; we need 4+3n rounds for ghr93_inductive_step
+    -- Derive h_fwd_r1 for the specific endpoints from h_r1_univ at r' = r + round_mono
+    -- h_r1_univ r gives rounds_r1 rounds at rank r+2; we need 4+3n rounds
     -- h_enough : 1+3(n+1) = 4+3n ≤ rounds_r1, so round_mono applies directly
     have h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
         (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
@@ -110,7 +115,7 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
       ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)
         ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
         ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
-        (h_r1_univ hxy hx'y')
+        (h_r1_univ r hxy hx'y')
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
         ih_gen (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
@@ -120,6 +125,11 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
           obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
           exact ⟨b_M, hb_M_in⟩) hfwd)
       h h_fwd_r1
+      (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
+        ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle)
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle')
+          (h_r1_univ r' hle hle'))
 
 /-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
     (*)_n: If Duplicator wins G_{1+3n; r}(M, xy; N, x'y'),
@@ -129,10 +139,13 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     from N. This is needed for the base case to trigger Round 2 of the
     forward game and extract a matching point.
 
-    The hypothesis `h_r1_univ` provides a rank (r+2) forward strategy for
-    ALL pairs of intervals, not just the specific [x,y] and [x',y'].
-    This is needed because the induction reduces to sub-intervals, and each
-    level needs a rank (r+2) strategy on its specific sub-interval.
+    The hypothesis `h_r1_univ` provides a rank (r'+2) forward strategy for
+    ALL pairs of intervals at ANY rank r', not just the specific [x,y] and
+    [x',y'] at rank r. This is needed because:
+    (1) The induction reduces to sub-intervals, and each level needs a
+        rank (r+2) strategy on its specific sub-interval.
+    (2) Cases III/IV (gap detection) need rank (r+4) = (r+2)+2 games, which
+        are obtained by instantiating h_r1_univ at r' = r+2.
     In the completeness proof context, this comes from the decomposition
     formula which gives agreement at all positions.
 
@@ -147,14 +160,14 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
-    (h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
-                   {x₁' y₁' : ExtendedCarrier N atomMap r},
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2)
-                   (rank_embed (by omega : r ≤ r + 2) x₁)
-                   (rank_embed (by omega : r ≤ r + 2) y₁)
-                   (rank_embed (by omega : r ≤ r + 2) x₁')
-                   (rank_embed (by omega : r ≤ r + 2) y₁')) :
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y :=
   ghr93_forward_to_backward_core atomMap n (1 + 3 * n) r
     h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h
@@ -295,11 +308,11 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
     -- Step 2: Transport forward game from rank r+4(n+1) to rank r.
     have h_fwd : ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1)) r x y x' y' :=
       ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 4 * (n + 1)) (by omega : r + 2 ≤ r + 4 * (n + 1)) hxy hx'y' h
-    -- Step 3: Use h_r1_univ parameter at rank r for ghr93_forward_to_backward.
+    -- Step 3: Use h_r1_univ parameter for ghr93_forward_to_backward.
     -- h_r1_univ gives games on all sub-intervals at rank r'+2 for any r'.
-    -- Specialize to r to get games at rank r+2.
+    -- Pass it through directly (ghr93_forward_to_backward now takes rank-universal h_r1_univ).
     exact ghr93_forward_to_backward atomMap (n + 1) r hxy hx'y' h_pt h_pt_M h_fwd
-      (fun {x₁ y₁ x₁' y₁'} hle hle' => h_r1_univ r hle hle')
+      h_r1_univ
 
 
 end Bimodal.Metalogic.WeakCanonical

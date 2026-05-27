@@ -2949,10 +2949,11 @@ in EFGames.lean. -/
 /-- **Cases III-IV helper**: When all selections lie in [d,y'] and a_n is
     a gap, construct Duplicator's response.
 
-    Sorry'd — requires gap detection transfer at rank r+2 (via
-    gap_char_formula for gap existence) plus formula agreement at gaps
-    (via left/right_formula_gap_detection, which need rank r+4).
-    See Phase 5 handoff for detailed analysis of the rank issue. -/
+    The `h_r1_univ` parameter provides forward games at ANY rank r'+2,
+    which is essential for gap detection transfer: gap existence needs
+    rank r+2 (via gap_char_formula), while formula agreement at gaps
+    needs rank r+4 (via left/right_formula_gap_detection). The rank-(r+4)
+    game is obtained by instantiating h_r1_univ at r' = r+2. -/
 private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
@@ -2968,7 +2969,15 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
-      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y')) :
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -2992,35 +3001,44 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
   obtain ⟨resp_tau, hresp_tau_in, hwin_tau⟩ := props.tau a_init ha_init
   -- Step 3: Extract the gap γ_N from h_gap
   obtain ⟨γ_N, hγ_N_eq⟩ := h_gap
-  -- Step 4: Gap detection transfer.
+  -- Step 4: Derive rank-(r+4) forward game from h_r1_univ at r' = r+2.
+  -- This resolves the rank mismatch: gap detection formulas (left_formula,
+  -- right_formula) have depth up to r+4, and h_fwd_r3 has rank r+4 = (r+2)+2.
+  -- rank_embed transitivity: rank_embed (r+2 ≤ r+4) ∘ rank_embed (r ≤ r+2) = rank_embed (r ≤ r+4)
+  have rank_embed_comp : ∀ (e : ExtendedCarrier M atomMap r),
+      rank_embed (show r + 2 ≤ r + 2 + 2 by omega) (rank_embed (by omega : r ≤ r + 2) e) =
+      rank_embed (show r ≤ r + 4 by omega) e := by
+    intro e; cases e with
+    | inl p => simp [rank_embed, extendPoint, Sum.map]
+    | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
+  have rank_embed_comp_N : ∀ (e : ExtendedCarrier N atomMap r),
+      rank_embed (show r + 2 ≤ r + 2 + 2 by omega) (rank_embed (by omega : r ≤ r + 2) e) =
+      rank_embed (show r ≤ r + 4 by omega) e := by
+    intro e; cases e with
+    | inl p => simp [rank_embed, extendPoint, Sum.map]
+    | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
+  have h_fwd_r3 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 4)
+      (rank_embed (by omega : r ≤ r + 4) x) (rank_embed (by omega : r ≤ r + 4) y)
+      (rank_embed (by omega : r ≤ r + 4) x') (rank_embed (by omega : r ≤ r + 4) y') := by
+    -- h_r1_univ at r' = r+2 gives game at rank (r+2)+2 = r+4.
+    -- The endpoints match via rank_embed_comp (transitivity of rank_embed).
+    have h_at_r2 := h_r1_univ (r + 2)
+      ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+      ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
+    -- h_at_r2 : game at rank (r+2)+2 with rank_embed-composed endpoints.
+    -- Rewrite rank_embed compositions to direct rank_embeds.
+    simp only [rank_embed_comp, rank_embed_comp_N] at h_at_r2
+    exact h_at_r2
+  -- Step 5: Gap detection transfer using h_fwd_r1 (rank r+2) for gap existence
+  -- and h_fwd_r3 (rank r+4) for formula agreement.
   --
-  -- γ_N is r-definable (∃ D, stavi_depth D ≤ r, γ_N definable by D).
-  -- gap_char_formula D has depth stavi_depth(D) + 2 ≤ r + 2.
-  -- It holds at Sum.inr γ_N by gap_char_formula_holds.
+  -- (a) Gap existence: gap_char_formula D has depth ≤ r+2, transfer via h_fwd_r1.
+  -- (b) Formula agreement: left/right_formula have depth ≤ r+4, transfer via h_fwd_r3.
+  -- (c) Order agreement: via the forward game ordering conditions.
   --
-  -- To find a matching gap γ_M in M, we need to transfer gap_char_formula D
-  -- via the rank-(r+2) forward game h_fwd_r1. However, the forward game
-  -- goes M → N (Spoiler picks in M, Duplicator responds in N), while we
-  -- need the N → M direction. The full argument requires:
-  --
-  -- (a) Gap existence: Using gap_char_formula D (depth r+2) and h_fwd_r1
-  --     to show M has a D-defined gap in [x, y]. This is analogous to the
-  --     DConsistencyTransport.lean pattern but in the reverse direction.
-  --
-  -- (b) Formula agreement: Proving A^mu(γ_M) ↔ A^mu(γ_N) for all A with
-  --     stavi_depth A ≤ r. This requires left_formula_gap_detection /
-  --     right_formula_gap_detection whose output formulas have depth up to
-  --     r + 4, exceeding the r + 2 rank of h_fwd_r1. Resolution options:
-  --     - Extend SplitPointProps with a rank-(r+4) forward game
-  --     - Prove formula agreement at gaps by structural induction on A
-  --       using only rank-r data from tau + forward game
-  --     - Use the rank-varying theorem structure directly
-  --
-  -- (c) Order agreement: Establishing ordering consistency between γ_M
-  --     and the other M-side response elements via the forward game.
-  --
-  -- All three sub-problems require substantial infrastructure. The sorry
-  -- captures the combined gap detection transfer argument.
+  -- The rank mismatch blocker is now resolved. The remaining work is the
+  -- actual gap detection assembly: finding γ_M in M, proving formula
+  -- agreement A^mu(γ_M) ↔ A^mu(γ_N), and establishing order consistency.
   sorry
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],
@@ -3039,7 +3057,15 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
-      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y')) :
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -3051,7 +3077,7 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
             (game_tuple x y a'_resp b_sp) := by
   rcases isPoint_or_isGap (a_bwd ⟨n, by omega⟩) with h_pt | h_gap
   · exact ghr93_case_II props ha_bwd h_no_split h_pt
-  · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1
+  · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
 
 /-! ### Assembly: The Inductive Step -/
 
@@ -3059,7 +3085,10 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
     c, d and sub-interval strategies σ, τ) with the 4-case analysis.
 
     This theorem is factored out of `ghr93_forward_to_backward` to keep
-    the main proof clean and allow each case to be addressed independently. -/
+    the main proof clean and allow each case to be addressed independently.
+
+    The `h_r1_univ` parameter provides rank-universal forward games (at any
+    rank r'+2) needed by Cases III/IV for gap detection transfer at rank r+4. -/
 theorem ghr93_inductive_step {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
@@ -3077,7 +3106,15 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
-      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y')) :
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
   unfold ghr93_duplicator_wins
@@ -3091,7 +3128,7 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
     exact ghr93_case_I props ha_bwd h_split
   · -- Cases II-IV: all selections are at or above d
     push_neg at h_split
-    exact ghr93_cases_II_III_IV props ha_bwd h_split hxy hx'y' h_fwd_r1
+    exact ghr93_cases_II_III_IV props ha_bwd h_split hxy hx'y' h_fwd_r1 h_r1_univ
 
 
 end Bimodal.Metalogic.WeakCanonical
