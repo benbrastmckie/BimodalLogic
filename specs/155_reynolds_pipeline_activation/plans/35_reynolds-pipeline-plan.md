@@ -346,7 +346,7 @@ theorem ghr93_strategy_compose
 
 ---
 
-### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [NOT STARTED]
+### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [IN PROGRESS]
 
 **Goal**: Implement the four-case analysis (Cases I-IV of GHR93 Section 8) entirely within the EFGames module, using the composition lemma from Phase 6A. This case analysis is required by nf_characterizable_by_stavi and CANNOT reuse Expressiveness/CaseAnalysis.lean (would create circular import).
 
@@ -381,7 +381,7 @@ theorem ghr93_strategy_compose
 
 ---
 
-### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [NOT STARTED]
+### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [IN PROGRESS]
 
 **Goal**: Close the keystone sorry at StaviCompleteness.lean:1567 -- the inductive step of `nf_characterizable_by_stavi`. Every NormalForm at depth k+1 must be characterizable by a StaviFormula.
 

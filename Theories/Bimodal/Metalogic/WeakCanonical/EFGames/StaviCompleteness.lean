@@ -1523,6 +1523,208 @@ private noncomputable def nf_exist_sf_depth0
         else
           .base .bot  -- impossible case (both true, caught above)
 
+/-! ## Inductive Step: Formula Construction for Depth-(k+1) NFs
+
+The depth-(k+1) NF `(atoms, quant)` at 1 variable is characterized by:
+- atoms: predicates at t (conjunction of atom literals)
+- quant: for each sub_nf : NormalForm sig k 2, whether ∃x, the 2-variable
+  depth-k NF of (x, t) equals sub_nf
+
+The formula construction proceeds in two stages:
+
+**Stage 1: Existence formulas for 2-variable sub_nfs.**
+For each sub_nf at depth k with 2 variables, build a StaviFormula
+`nf_exist_sf` expressing "∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf".
+- Depth 0: nf_exist_sf_depth0 (purely atomic, using Until/Since)
+- Depth k ≥ 1: use IH characteristic formulas + Until/Since
+
+**Stage 2: Assemble the full formula.**
+Conjunction of:
+- Atom literals for predicates at t
+- For each sub_nf with quant = true: exist_sf sub_nf
+- For each sub_nf with quant = false: ¬ exist_sf sub_nf
+-/
+
+/-- Build the existence formula for "∃x, nf_eval_nf M k 2 (Fin.cons x ...) sub_nf"
+    at arbitrary depth k, using IH characteristic formulas for 1-variable depth-k NFs.
+
+    The formula is built by:
+    1. Checking t-consistency (predicates at variable 1 match parent atoms)
+    2. Checking order consistency (not both x < t and t < x)
+    3. Choosing the appropriate temporal connective (Until/Since/identity)
+    4. For the witness type at the quantified variable: take the disjunction
+       over all 1-variable depth-k NFs nf_x. For each nf_x, include
+       `char_k nf_x` wrapped in the appropriate connective. This captures
+       "there exists x in the right direction with SOME 1-variable type nf_x".
+    5. Filter by atom compatibility: only include nf_x whose atom part at
+       variable 0 matches what sub_nf prescribes for variable 0.
+
+    NOTE: This formula is correct in the forward direction (nf_eval_nf → truth).
+    The backward direction (truth → nf_eval_nf) requires the game-theoretic
+    argument showing that the 1-variable type + temporal position determines
+    the 2-variable type. -/
+private noncomputable def nf_exist_sf
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig k 2) : StaviFormula :=
+  -- Step 1: t-consistency check
+  if ¬ nf_t_consistent parent_atoms sub_nf = true then
+    .base .bot
+  -- Step 2: order consistency check (both x<t and t<x is impossible)
+  else if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+          sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) then
+    .base .bot
+  else
+    -- Step 3: Determine order direction
+    -- Step 4: Build witness type formula from IH
+    -- For each 1-variable NF nf_x, check if its atom part is consistent
+    -- with what sub_nf prescribes for variable 0.
+    let all_nfs_k1 := (Fintype.elems (α := NormalForm sig k 1)).val.toList
+    -- Atom-compatible filter: nf_x's atom assignment for predicates must match
+    -- sub_nf's atom assignment for variable 0.
+    let atom_compat (nf_x : NormalForm sig k 1) : Bool :=
+      (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+        nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)
+    let compat_formulas := all_nfs_k1.filterMap fun nf_x =>
+      if atom_compat nf_x then some (char_k nf_x) else none
+    let witness_type := sf_disjList compat_formulas
+    match nf_order_0_1 sub_nf with
+    | some true =>  -- t < x: use Until (exists x above t with type)
+      .std_untl witness_type sf_top
+    | some false =>  -- x < t: use Since (exists x below t with type)
+      .std_snce witness_type sf_top
+    | none =>
+      -- x = t case: the existential is about x = t itself
+      -- The 2-var NF is satisfied at (t, t), so we just check the witness type
+      if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) == false &&
+         sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) == false then
+        witness_type
+      else
+        .base .bot
+
+/-- Build the full StaviFormula for a depth-(k+1) 1-variable NormalForm.
+
+    Conjunction of:
+    1. Atom literals for predicates at t (matching nf.1)
+    2. For each sub_nf with nf.2 sub_nf = true: nf_exist_sf sub_nf
+    3. For each sub_nf with nf.2 sub_nf = false: ¬ nf_exist_sf sub_nf -/
+private noncomputable def nf_succ_sf
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (nf : NormalForm sig (k + 1) 1) : StaviFormula :=
+  let atoms := nf.1
+  let quant := nf.2
+  -- Part 1: atom literals for predicates at t
+  let atom_lits := (Fintype.elems (α := AtomKind sig 1)).val.toList.map fun ak =>
+    atomKind_to_sf_literal atomMap h_surj ak (atoms ak)
+  let atom_part := sf_conjList atom_lits
+  -- Part 2: quantifier constraints
+  let all_sub_nfs := (Fintype.elems (α := NormalForm sig k 2)).val.toList
+  let quant_formulas := all_sub_nfs.map fun sub_nf =>
+    let ef := nf_exist_sf atomMap h_surj k char_k atoms sub_nf
+    if quant sub_nf then ef else .neg ef
+  let quant_part := sf_conjList quant_formulas
+  -- Full formula: atom part AND quantifier part
+  .conj atom_part quant_part
+
+/-! ## Forward Direction: NF Existence → Temporal Formula Truth
+
+Given a witness x such that the 2-variable depth-k NF of (x, t) equals sub_nf,
+show that the existence formula nf_exist_sf holds at t. -/
+
+/-- Forward direction of nf_exist_sf: if ∃x with the right 2-var NF, the temporal
+    formula holds. This is the EASIER direction — the backward direction requires
+    the full game-theoretic argument. -/
+private theorem nf_exist_sf_forward
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (M : OrderedMonadicStructure sig) (t : M.carrier),
+        stavi_temporal_truth M atomMap t (char_k nf_k) ↔
+        nf_eval_nf M k 1 (fun _ => t) nf_k)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig k 2)
+    {M : OrderedMonadicStructure sig} {t : M.carrier}
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔
+      parent_atoms a = true)
+    (h_ex : ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :
+    stavi_temporal_truth M atomMap t
+      (nf_exist_sf atomMap h_surj k char_k parent_atoms sub_nf) := by
+  obtain ⟨x, h_x⟩ := h_ex
+  -- Step 1: Extract atom information from h_x
+  -- The atoms of the 2-variable NF tell us:
+  -- - predicates at x (variable 0)
+  -- - predicates at t (variable 1)
+  -- - order between x and t
+  have h_x_atoms : ∀ (a : AtomKind sig (1 + 1)),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔ sub_nf.atom_assgn a = true := by
+    cases k with
+    | zero => exact h_x
+    | succ k' => exact h_x.1
+  -- Step 2: t-consistency holds
+  have h_t_cons : nf_t_consistent parent_atoms sub_nf = true := by
+    simp only [nf_t_consistent]
+    rw [List.all_eq_true]
+    intro p _
+    -- sub_nf's pred at variable 1 should match parent_atoms' pred at variable 0
+    simp only [beq_iff_eq]
+    -- The atom at (.pred p 1) in sub_nf matches the atom evaluation at t
+    have h_sub_t := h_x_atoms (.pred p ⟨1, by omega⟩)
+    have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+    -- atom_eval M (Fin.cons x (fun _ => t)) (.pred p 1) = M.interp p ((Fin.cons x (fun _ => t)) 1)
+    -- and (Fin.cons x (fun _ => t)) 1 = t, so both reduce to M.interp p t
+    -- Use the fact that atom_eval (.pred p i) = M.interp p (env i)
+    simp only [atom_eval] at h_sub_t h_par
+    -- h_sub_t : M.interp p ((Fin.cons x fun _ => t) 1) ↔ sub_nf.atom_assgn (.pred p 1) = true
+    -- h_par : M.interp p t ↔ parent_atoms (.pred p 0) = true
+    -- (Fin.cons x (fun _ => t)) ⟨1, ...⟩ = (fun _ => t) ⟨0, ...⟩ = t
+    have h_env_1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+      simp [Fin.cons]; rfl
+    rw [h_env_1] at h_sub_t
+    -- Now both are about M.interp p t
+    cases h1 : sub_nf.atom_assgn (.pred p ⟨1, by omega⟩) <;>
+    cases h2 : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+    simp_all
+  -- Step 3: Unfold nf_exist_sf with the consistency check passing
+  simp only [nf_exist_sf, h_t_cons, not_true, ↓reduceIte, ite_not]
+  -- Step 4: Order consistency (not both x < t and t < x)
+  have h_x_lt_t := h_x_atoms (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+  have h_t_lt_x := h_x_atoms (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+  simp only [atom_eval, Fin.cons] at h_x_lt_t h_t_lt_x
+  -- Order atoms correctly reflect the actual order between x and t
+  have h_order_compat : ¬ (sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+      sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true := by
+    intro h_both
+    rw [Bool.and_eq_true] at h_both
+    have hxt : x < t := h_x_lt_t.mpr h_both.1
+    have htx : t < x := h_t_lt_x.mpr h_both.2
+    exact absurd (lt_trans hxt htx) (lt_irrefl _)
+  simp only [h_order_compat, ite_false]
+  -- The proof proceeds by:
+  -- 1. Determining the 1-variable depth-k NF of x (call it nf_x)
+  -- 2. Showing char_k(nf_x) holds at x (from the IH)
+  -- 3. Showing nf_x is atom-compatible with sub_nf at variable 0
+  -- 4. Case-splitting on the order between x and t
+  -- 5. For each case, constructing the temporal witness
+  --
+  -- The proof involves extensive Fin.cons/Fin.cases reduction and
+  -- matching proof terms across Fin subtypes. The core mathematical
+  -- content is straightforward: if x witnesses the 2-variable NF sub_nf,
+  -- then the IH formula for x's 1-variable type holds at x, and x is
+  -- in the correct direction relative to t, so the temporal formula holds.
+  --
+  -- Deferred: Fin arithmetic details in atom compatibility and order
+  -- direction matching.
+  sorry
+
 /-! ## NF Characterization by StaviFormulas -/
 
 /-- Core game-theoretic lemma: each NF is characterizable by a StaviFormula.
@@ -1536,7 +1738,16 @@ of atom literals. The inductive step (k+1) splits into:
 For depth-0 sub_nfs, the existence formula is purely atomic (predicate literals
 at the quantified variable). For depth-k sub_nfs with k ≥ 1, the IH provides
 characteristic StaviFormulas for 1-variable NFs at depth k, which are used to
-characterize the quantified variable's type. -/
+characterize the quantified variable's type.
+
+The proof strategy for the inductive step:
+- **Formula construction**: nf_succ_sf builds the conjunction of atom literals
+  and existence/non-existence formulas for each 2-variable sub_nf.
+- **Forward direction**: Direct from the IH and the definitions.
+- **Backward direction**: Requires showing that the temporal formula truth
+  determines the 2-variable NF. Uses the game-theoretic argument:
+  points with the same StaviFormula truth pattern at depth k agree on
+  which 2-variable depth-k sub_nfs are realizable. -/
 theorem nf_characterizable_by_stavi
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1548,23 +1759,81 @@ theorem nf_characterizable_by_stavi
   | zero =>
     exact ⟨nf_base_sf atomMap h_surj nf, fun M t => nf_base_sf_correct atomMap h_surj nf M t⟩
   | succ k ih =>
-    -- The inductive step requires the GHR93 game-theoretic argument (Section 8).
-    -- The IH gives StaviFormulas for 1-variable NFs at depth k, but the
-    -- quantifier part of nf involves 2-variable NFs (NormalForm sig k 2).
-    -- Expressing "∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf"
-    -- as a StaviFormula requires characterizing the joint type of (x, t),
-    -- which temporal connectives alone cannot capture for k ≥ 1 sub_nfs.
-    --
-    -- The GHR93 proof handles this via:
-    -- (1) Custom EF games G_{n;r} with forward-to-backward theorem (Thm 6)
-    -- (2) Composition lemma (Prop 7) composing strategies on sub-intervals
-    -- (3) Four cases for the main induction (atoms, Until, Since, Stavi gaps)
-    -- (4) Gap detection formulas (Lemma 9) for Stavi connective cases
-    --
-    -- The existing game infrastructure in this file (EFPosition, game_depth,
-    -- ghr93_duplicator_wins, decomposition_agreement, left_formula, etc.)
-    -- provides the foundation but the central induction remains.
-    sorry
+    -- Use the IH to build characteristic formulas for all depth-k 1-variable NFs
+    let char_k : NormalForm sig k 1 → StaviFormula :=
+      fun nf_k => Classical.choose (ih nf_k)
+    have char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (M : OrderedMonadicStructure sig) (t : M.carrier),
+        stavi_temporal_truth M atomMap t (char_k nf_k) ↔
+        nf_eval_nf M k 1 (fun _ => t) nf_k :=
+      fun nf_k => Classical.choose_spec (ih nf_k)
+    -- Construct the StaviFormula
+    refine ⟨nf_succ_sf atomMap h_surj k char_k nf, fun M t => ?_⟩
+    -- Split the biconditional into forward and backward directions
+    constructor
+    · -- Forward: formula truth → nf_eval_nf
+      intro h_formula
+      -- The game-theoretic argument (GHR93 Proposition 7 + Theorem 6 case
+      -- analysis) is needed for the quantifier part: the temporal formula
+      -- truth pattern at depth k must determine which 2-variable depth-k
+      -- sub_nfs are realizable.
+      sorry
+    · -- Backward: nf_eval_nf → formula truth
+      intro h_nf
+      -- h_nf : nf_eval_nf M (k+1) 1 (fun _ => t) nf
+      -- = (atoms match) AND (quantifier existentials match)
+      show stavi_temporal_truth M atomMap t (nf_succ_sf atomMap h_surj k char_k nf)
+      simp only [nf_eval_nf] at h_nf
+      obtain ⟨h_atoms, h_quant⟩ := h_nf
+      -- The formula is .conj atom_part quant_part
+      -- We need to show both parts hold.
+      simp only [nf_succ_sf, stavi_temporal_truth]
+      constructor
+      · -- Atom part: conjunction of atom literals
+        -- h_atoms says all atom evaluations match nf.1
+        -- The atom part formula is sf_conjList of atomKind_to_sf_literal's
+        rw [sf_conjList_iff]
+        intro A hA
+        rw [List.mem_map] at hA
+        obtain ⟨ak, _, rfl⟩ := hA
+        exact (atomKind_to_sf_literal_correct atomMap h_surj M t ak (nf.1 ak)).mpr
+          (h_atoms ak)
+      · -- Quantifier part: conjunction of exist/non-exist formulas
+        -- For each sub_nf, need to show the right formula holds
+        rw [sf_conjList_iff]
+        intro A hA
+        rw [List.mem_map] at hA
+        obtain ⟨sub_nf, _, rfl⟩ := hA
+        -- Case split on whether quant sub_nf is true or false
+        by_cases h_q : nf.2 sub_nf = true
+        · -- quant = true: need to show nf_exist_sf holds
+          simp only [h_q, ite_true]
+          -- h_quant gives: (∃ x, nf_eval_nf M k 2 (Fin.cons x ...) sub_nf) ↔ true
+          have h_ex := (h_quant sub_nf).mpr h_q
+          -- h_ex : ∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf
+          -- Forward direction of exist_sf: witness → temporal formula holds
+          exact nf_exist_sf_forward atomMap h_surj k char_k char_k_correct
+            nf.1 sub_nf h_atoms h_ex
+        · -- quant = false: need to show ¬ nf_exist_sf holds
+          have h_q_false : nf.2 sub_nf = false := by
+            cases h_val : nf.2 sub_nf <;> simp_all
+          -- The goal is: (if nf.2 sub_nf then ... else .neg ...) truth
+          -- Since nf.2 sub_nf = false, this reduces to showing .neg truth
+          rw [show (nf.2 sub_nf) = false from h_q_false]
+          -- `if false = true then ... else ...` reduces to the else branch
+          simp only [Bool.false_eq_true, ↓reduceIte, stavi_temporal_truth]
+          -- Need: ¬ stavi_temporal_truth M atomMap t (nf_exist_sf ...)
+          -- The negation: the temporal formula should fail when
+          -- no x with the right 2-variable type exists.
+          -- h_quant gives: (∃ x, nf_eval_nf ...) ↔ false = true, i.e., false
+          have h_no_ex : ¬ ∃ x, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+            rw [h_quant sub_nf, h_q_false]; simp
+          -- Need: ¬ stavi_temporal_truth M atomMap t (nf_exist_sf ...)
+          -- This is the CONTRAPOSITIVE of the forward direction:
+          -- if the temporal formula holds, then some x exists.
+          -- Contrapositive: if no x exists, the formula fails.
+          -- This direction requires the game-theoretic backward argument.
+          sorry
 
 /-- **GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete. -/
 noncomputable def stavi_expressive_completeness
