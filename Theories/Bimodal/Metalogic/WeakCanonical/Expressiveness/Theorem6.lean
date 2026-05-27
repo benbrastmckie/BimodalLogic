@@ -47,12 +47,13 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y') :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
-  -- h_r1_univ does NOT depend on n or specific endpoints, so it stays in scope
-  -- after reverting. Only revert what depends on n and the specific endpoints.
-  revert h_enough x y x' y' hxy hx'y' h_pt h_pt_M h
+  -- h_r1_univ does NOT depend on n, r, or specific endpoints, so it stays in
+  -- scope after reverting. Revert r so that ih_gen is rank-polymorphic — this
+  -- allows constructing a rank-(r+2) backward game for Case II's U(B,A) transfer.
+  revert r h_enough x y x' y' hxy hx'y' h_pt h_pt_M h
   induction n with
   | zero =>
-    intro x y x' y' _ hxy hx'y' h_pt _h_pt_M h
+    intro r x y x' y' _ hxy hx'y' h_pt _h_pt_M h
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -97,11 +98,11 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
           base_case_N_eq x' y' q p a'_resp hq_eq i]
       exact (hform_fwd _ A hA).symm
   | succ n ih_gen =>
-    -- Goal: ∀ {x y x' y'}, 1+3*(n+1) ≤ rounds_r1 → x ≤ y → x' ≤ y' → ... → backward (n+1) r
-    -- intro introduces both implicit and explicit binders in order
-    intro x y x' y' h_enough hxy hx'y' h_pt h_pt_M h
-    -- ih_gen : (1 + 3 * n ≤ rounds_r1) → ∀ x₀ y₀ ..., forward (1+3n) r → backward n r
-    -- ih_gen does NOT include h_r1_univ — it stays in scope from the outer theorem.
+    -- Goal: ∀ (r : Nat) {x y x' y'}, ... → backward (n+1) r
+    -- ih_gen is now rank-polymorphic (r was reverted before induction):
+    -- ih_gen : ∀ (r₀ : Nat), 1+3*n ≤ rounds_r1 → ∀ {x₀ y₀ x₀' y₀'}, ... →
+    --          forward (1+3n) r₀ → backward n r₀
+    intro r x y x' y' h_enough hxy hx'y' h_pt h_pt_M h
     -- Inductive step: (*)_n → (*)_{n+1}
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
@@ -116,9 +117,26 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
         ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
         ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
         (h_r1_univ r hxy hx'y')
+    -- Construct the rank-(r+2) IH for Case II's U(B,A) transfer.
+    -- ih_gen at r+2 gives: forward (1+3n) (r+2) → backward n (r+2).
+    -- This is passed to ghr93_inductive_step so Case II can build a rank-(r+2)
+    -- tau on sub-intervals [d,y']/[c,y], preserving formulas at rank r+2.
+    have h_ih_r2 : ∀ {x₀ y₀ : ExtendedCarrier M atomMap (r + 2)}
+            {x₀' y₀' : ExtendedCarrier N atomMap (r + 2)},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2) x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n (r + 2) x₀' y₀' x₀ y₀ :=
+      fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
+        ih_gen (r + 2) (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
+          obtain ⟨p_N, hp_N⟩ := hpt'
+          obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
+            (fun _ => ⟨le_refl x₀, hle⟩)
+          obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
+          exact ⟨b_M, hb_M_in⟩) hfwd
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
-        ih_gen (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
+        ih_gen r (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
           obtain ⟨p_N, hp_N⟩ := hpt'
           obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
             (fun _ => ⟨le_refl x₀, hle⟩)
@@ -130,6 +148,7 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
           ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle)
           ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle')
           (h_r1_univ r' hle hle'))
+      h_ih_r2
 
 /-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
     (*)_n: If Duplicator wins G_{1+3n; r}(M, xy; N, x'y'),
