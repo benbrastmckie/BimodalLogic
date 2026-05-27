@@ -3009,13 +3009,13 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
       rank_embed (show r + 2 ≤ r + 2 + 2 by omega) (rank_embed (by omega : r ≤ r + 2) e) =
       rank_embed (show r ≤ r + 4 by omega) e := by
     intro e; cases e with
-    | inl p => simp [rank_embed, extendPoint, Sum.map]
+    | inl p => simp [rank_embed, Sum.map]
     | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
   have rank_embed_comp_N : ∀ (e : ExtendedCarrier N atomMap r),
       rank_embed (show r + 2 ≤ r + 2 + 2 by omega) (rank_embed (by omega : r ≤ r + 2) e) =
       rank_embed (show r ≤ r + 4 by omega) e := by
     intro e; cases e with
-    | inl p => simp [rank_embed, extendPoint, Sum.map]
+    | inl p => simp [rank_embed, Sum.map]
     | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
   have h_fwd_r3 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 4)
       (rank_embed (by omega : r ≤ r + 4) x) (rank_embed (by omega : r ≤ r + 4) y)
@@ -3029,16 +3029,91 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     -- Rewrite rank_embed compositions to direct rank_embeds.
     simp only [rank_embed_comp, rank_embed_comp_N] at h_at_r2
     exact h_at_r2
-  -- Step 5: Gap detection transfer using h_fwd_r1 (rank r+2) for gap existence
-  -- and h_fwd_r3 (rank r+4) for formula agreement.
+  -- Step 5: Gap detection assembly.
+  -- Extract the defining formula D and its depth bound from γ_N's r-definability.
+  obtain ⟨D, hD_depth, hD_def⟩ := γ_N.prop
+  -- Sub-goal S11.1: Existence of a matching gap in M with formula agreement.
+  -- GHR93 Cases III/IV core: gap detection transfer via left/right_formula.
+  -- (a) Get reference point m_N in N near the gap, with D-between condition
+  -- (b) Use left/right_formula_gap_detection backward to encode gap truth
+  -- (c) Transfer via h_fwd_r3 (rank r+4) to reference point m_M in M
+  -- (d) Use left/right_formula_gap_detection forward to extract matching gap
+  -- (e) Apply gap_detection_unique to show the gap is independent of A
+  have h_gap_match : ∃ (γ_M : RDefinableGap M atomMap r),
+      inClosedInterval x y (Sum.inr γ_M) ∧
+      (∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu M atomMap r (Sum.inr γ_M) A ↔
+         stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A)) := by
+    -- GHR93 Cases III/IV gap detection transfer.
+    -- Key tools: left/right_formula_gap_detection, gap_detection_unique,
+    -- stavi_depth_left/right_formula, rank_embed_stavi_truth_mu, h_fwd_r3.
+    --
+    -- S11.1a: Reference point — get m_N ∈ γ_N.val.cut ∩ [d, y'] with
+    -- the D-between condition satisfied. Then m_N ∈ [x', y'] since x' ≤ d.
+    -- S11.1b: Forward game at rank r+4 — derive 1-round game, challenge
+    -- with m_N to get m_M with formula agreement at depth ≤ r+4.
+    -- S11.1c: Gap detection transfer — for each A with depth ≤ r:
+    --   backward: A^mu(γ_N) → left/right_formula(A,D)(m_N) in N at rank r
+    --   transfer: left/right_formula(A,D)(m_N) ↔ left/right_formula(A,D)(m_M)
+    --     (via rank_embed_stavi_truth_mu + forward game at rank r+4,
+    --      since stavi_depth(left_formula A D) ≤ max(r,r)+4 = r+4)
+    --   forward: left/right_formula(A,D)(m_M) → ∃ γ_M, A^mu(γ_M) in M at rank r
+    -- S11.1d: Uniqueness — by gap_detection_unique, γ_M is the same for all A.
+    -- S11.1e: Interval — γ_M ∈ [x, y] from the forward game bounds.
+    sorry
+  obtain ⟨γ_M, hγ_M_in, hγ_M_form⟩ := h_gap_match
+  -- Sub-goal S11.2: gap/point agreement (both are gaps, so trivial).
+  have hγ_gp : (IsPoint (Sum.inr γ_M : ExtendedCarrier M atomMap r) ↔
+                 IsPoint (Sum.inr γ_N : ExtendedCarrier N atomMap r)) ∧
+                (IsGap (Sum.inr γ_M : ExtendedCarrier M atomMap r) ↔
+                 IsGap (Sum.inr γ_N : ExtendedCarrier N atomMap r)) := by
+    exact ⟨⟨fun ⟨_, hp⟩ => absurd hp (by simp),
+            fun ⟨_, hp⟩ => absurd hp (by simp)⟩,
+           ⟨fun _ => ⟨γ_N, rfl⟩, fun _ => ⟨γ_M, rfl⟩⟩⟩
+  -- Step 5b: Construct the response function a'_resp.
+  -- Positions 0..n-1: use resp_tau. Position n: use Sum.inr γ_M.
+  let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
+    if h : i.val < n then resp_tau ⟨i.val, h⟩
+    else Sum.inr γ_M
+  -- Step 5c: All responses are in [x, y].
+  have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
+    intro i; simp only [a'_resp]
+    split
+    case isTrue h =>
+      have := hresp_tau_in ⟨i.val, h⟩
+      exact ⟨le_trans props.hxc this.1, this.2⟩
+    case isFalse _ => exact hγ_M_in
+  -- Step 5d: Handle the point challenge and winning condition.
+  refine ⟨a'_resp, ha'_resp_in, ?_⟩
+  intro b_sp hb_sp_in
+  -- Sub-goal S11.3: Point challenge + winning condition assembly.
+  -- Strategy: Use the d-compatible forward game (h_d_compat_left) to
+  -- get b_resp with cross-boundary orderings, then assemble the winning
+  -- condition from tau sub-game + gap properties + forward game.
   --
-  -- (a) Gap existence: gap_char_formula D has depth ≤ r+2, transfer via h_fwd_r1.
-  -- (b) Formula agreement: left/right_formula have depth ≤ r+4, transfer via h_fwd_r3.
-  -- (c) Order agreement: via the forward game ordering conditions.
+  -- Key position mapping for game_tuple (n+1):
+  --   game_tuple x' y' a_bwd b_resp has n+1+3 = n+4 positions:
+  --     pos 0 = x', pos 1..n+1 = a_bwd(0..n), pos n+2 = b_resp, pos n+3 = y'
+  --   game_tuple x y a'_resp b_sp has n+4 positions:
+  --     pos 0 = x, pos 1..n = resp_tau(0..n-1), pos n+1 = γ_M,
+  --     pos n+2 = b_sp, pos n+3 = y
   --
-  -- The rank mismatch blocker is now resolved. The remaining work is the
-  -- actual gap detection assembly: finding γ_M in M, proving formula
-  -- agreement A^mu(γ_M) ↔ A^mu(γ_N), and establishing order consistency.
+  -- Step S11.3a: Play d-compatible strategy to get b_resp and orderings.
+  -- Pad the M-selections to 1+3*n+1 elements (resp_tau padded with c),
+  -- apply h_d_compat_left, challenge with an N-point from [x', y'].
+  -- This gives formula agreement + orderings between c/d and b_sp/b_resp.
+  --
+  -- Step S11.3b: Combine to get the full winning condition.
+  -- For each pair (i,j) of positions 0..n+3:
+  --   order:  from tau sub-game (for tau positions) + d-compat (for cross-boundary)
+  --           + gap interval membership (for gap position)
+  --   gp:     from tau sub-game (for tau positions) + S11.2 (for gap position)
+  --           + point status (for b_sp/b_resp)
+  --   form:   from tau sub-game (for tau positions) + S11.1 (for gap position)
+  --           + d-compat forward game (for b_sp/b_resp and endpoints)
+  --
+  -- This mirrors the Case II assembly pattern (~200 lines) with the gap at
+  -- position n+1 replacing the point e_n from Case II.
   sorry
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],

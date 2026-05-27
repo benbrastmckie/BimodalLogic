@@ -1,30 +1,9 @@
 {
-  "status": "blocked",
-  "summary": "S11 blocked on rank mismatch: gap detection formulas need rank r+4 but only rank-(r+2) forward game available. Infrastructure (h_fwd_r1 threading) completed.",
+  "status": "partial",
+  "summary": "S11 sorry decomposed into 2 well-typed sub-goals: gap matching (S11.1) and winning condition assembly (S11.3). Response construction, interval membership, and gap/point agreement proved.",
+  "blockers": [],
+  "continuation_context": "S11.1 (gap matching via gap detection transfer) and S11.3 (winning condition assembly following Case II pattern) remain as well-typed sorry sub-goals in ghr93_cases_III_IV",
+  "next_action_hint": "implement",
   "phases_completed": 5,
-  "phases_total": 10,
-  "blockers": [
-    "S11 (ghr93_cases_III_IV): Rank mismatch -- left_formula/right_formula gap detection has depth r+4, but only rank-(r+2) forward game h_fwd_r1 is available. Three resolution options documented in handoffs/phase-5-S11-rank-analysis-20260527.md. Recommended: extend h_r1_univ in ghr93_forward_to_backward_core to be universally quantified over r'.",
-    "Phase 3C: sel_pn_ord + b_resp-vs-p_n sorries (unchanged from prior session)"
-  ],
-  "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-S11-rank-analysis-20260527.md"
-  ],
-  "continuation_context": {
-    "resume_phase": "5 (S11 -- resolve rank mismatch via Option A/B/C)",
-    "key_discovery": "Rank analysis: gap_char_formula D (depth r+2) suffices for gap EXISTENCE at rank r+2. But full formula agreement A^mu(gamma_M) <-> A^mu(gamma_N) requires left_formula A D / right_formula A D (depth up to r+4), exceeding rank r+2. Resolution requires making h_r1_univ universally quantified over r' in ghr93_forward_to_backward_core, enabling derivation of rank-(r+4) games.",
-    "infrastructure_completed": "h_fwd_r1 parameter threaded through ghr93_cases_III_IV -> ghr93_cases_II_III_IV -> ghr93_inductive_step. hxy, hx'y' also threaded.",
-    "sorry_sites_remaining": [
-      "CaseAnalysis.lean:~3024 (ghr93_cases_III_IV -- gap detection transfer, Phase 5)",
-      "CaseAnalysis.lean:2003 (Case B -- 2 goals: b_resp-vs-p_n, p_n-vs-b_resp) -- Phase 3C",
-      "CaseAnalysis.lean:1423 (sel_pn_ord Case A -- root sorry, Phase 3C)",
-      "CaseAnalysis.lean:1792 (sel_pn_ord Case B -- root sorry, Phase 3C)"
-    ],
-    "build_status": "passes with zero errors (1667 jobs)",
-    "files_modified": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean"
-    ]
-  },
-  "next_action_hint": "research: extend h_r1_univ to be universally quantified over r' to unlock rank-(r+4) forward games for gap detection"
+  "phases_total": 10
 }
