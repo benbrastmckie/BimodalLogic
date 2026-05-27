@@ -47,6 +47,10 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
       (stavi_temporal_truth_mu M atomMap r c A ↔
        stavi_temporal_truth_mu N atomMap r d A))
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (h_compat_R : (¬∃ p : N.carrier, inClosedInterval d y'
+        (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p)) → c = y)
+    (h_compat_L : (¬∃ p : N.carrier, inClosedInterval x' d
+        (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p)) → x = c)
     (h_left : ghr93_duplicator_wins M N atomMap n r x c x' d)
     (h_right : ghr93_duplicator_wins M N atomMap n r c y d y') :
     ghr93_duplicator_wins M N atomMap n r x y x' y' := by
@@ -89,13 +93,56 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
       exact compose_wc hb_L.2 hxc hcy hx'd hdy' hcd_type hcd_gp
         a a_L a_R a'_L a'_R ha_L ha_R ha'_L ha'_R hL_eq hR_eq hcond_L hcond_R
     · -- Degenerate case: no point in [d, y'].
-      -- When d = y' (degenerate right interval), the merged N-response at RIGHT indices
-      -- all collapse to d = y'. The same_order_type requirement then forces all RIGHT
-      -- M-values to be equal. A direct proof from hcond_L alone is insufficient because
-      -- the merged M-tuple differs from the left sub-game M-tuple at RIGHT indices.
-      -- This case requires restructuring the merged response or a more sophisticated
-      -- argument about the degenerate sub-interval structure.
-      sorry
+      -- Derive c = y from h_compat_R and d = y' from gap structure.
+      -- Then all selections satisfy a i ≤ c, and the game tuples coincide
+      -- with the left sub-game tuples, so hcond_L applies directly.
+      have hcy_eq : c = y := h_compat_R h_no_pt_R
+      have hdy_eq : d = y' := by
+        by_contra hne
+        have hlt : d < y' := lt_of_le_of_ne hdy' hne
+        have hd_gap : IsGap d := by
+          rcases isPoint_or_isGap d with ⟨p, hp⟩ | hg
+          · have : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p = d :=
+              by rw [extendPoint]; exact hp.symm
+            exact absurd ⟨p, this ▸ le_refl _, this ▸ hdy'⟩ h_no_pt_R
+          · exact hg
+        have hy'_gap : IsGap y' := by
+          rcases isPoint_or_isGap y' with ⟨p, hp⟩ | hg
+          · have : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p = y' :=
+              by rw [extendPoint]; exact hp.symm
+            exact absurd ⟨p, this ▸ hdy', this ▸ le_refl _⟩ h_no_pt_R
+          · exact hg
+        obtain ⟨gd, hgd⟩ := hd_gap
+        obtain ⟨gy', hgy'⟩ := hy'_gap
+        exact h_no_pt_R (point_between_strict_gaps hgd hgy' hlt)
+      -- All selections are LEFT (a i ≤ c since c = y)
+      have ha_le_c : ∀ i, a i ≤ c := fun i => hcy_eq ▸ (ha i).2
+      have haL_eq : ∀ i, a_L i = a i := fun i => by simp [a_L, ha_le_c i]
+      have ha'_eq : ∀ i, a' i = a'_L i := fun i => by simp [a', ha_le_c i]
+      -- The game tuples coincide with left sub-game tuples
+      have hM_eq : game_tuple x y a b = game_tuple x c a_L b := by
+        funext ⟨i, hi⟩; simp only [game_tuple]
+        split
+        · rfl
+        case isFalse h0 =>
+          split
+          · rfl
+          case isFalse hn1 =>
+            split
+            · exact hcy_eq.symm
+            case isFalse hn2 => exact (haL_eq ⟨i - 1, by omega⟩).symm
+      have hN_eq : game_tuple x' y' a' b' = game_tuple x' d a'_L b' := by
+        funext ⟨i, hi⟩; simp only [game_tuple]
+        split
+        · rfl
+        case isFalse h0 =>
+          split
+          · rfl
+          case isFalse hn1 =>
+            split
+            · exact hdy_eq.symm
+            case isFalse hn2 => exact ha'_eq ⟨i - 1, by omega⟩
+      exact ⟨b, ⟨hb_L.1, hcy_eq ▸ hb_L.2⟩, hM_eq ▸ hN_eq ▸ hcond_L⟩
   · -- d < b': right side
     obtain ⟨b, hb_R, hcond_R⟩ := hwin_R b' ⟨le_of_lt hdb', hb'.2⟩
     rcases Classical.em (∃ p : N.carrier,
@@ -109,7 +156,76 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
         (game_tuple x' y' a' b')
       exact compose_wc_right hb_R.1 hxc hcy hx'd hdy' hcd_type hcd_gp
         a a_L a_R a'_L a'_R ha_L ha_R ha'_L ha'_R hL_eq hR_eq hcond_L hcond_R
-    · sorry -- degenerate case
+    · -- Degenerate case: no point in [x', d].
+      -- Derive x = c from h_compat_L and x' = d from gap structure.
+      -- Then a_R = a and a' = a'_R, so the game tuples coincide
+      -- with the right sub-game tuples, and hcond_R applies directly.
+      have hxc_eq : x = c := h_compat_L h_no_pt_L
+      have hx'd_eq : x' = d := by
+        by_contra hne
+        have hlt : x' < d := lt_of_le_of_ne hx'd hne
+        have hx'_gap : IsGap x' := by
+          rcases isPoint_or_isGap x' with ⟨p, hp⟩ | hg
+          · have : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p = x' :=
+              by rw [extendPoint]; exact hp.symm
+            exact absurd ⟨p, this ▸ le_refl _, this ▸ hx'd⟩ h_no_pt_L
+          · exact hg
+        have hd_gap : IsGap d := by
+          rcases isPoint_or_isGap d with ⟨p, hp⟩ | hg
+          · have : extendPoint (sig := sig) (atomMap := atomMap) (r := r) p = d :=
+              by rw [extendPoint]; exact hp.symm
+            exact absurd ⟨p, this ▸ hx'd, this ▸ le_refl _⟩ h_no_pt_L
+          · exact hg
+        obtain ⟨gx', hgx'⟩ := hx'_gap
+        obtain ⟨gd, hgd⟩ := hd_gap
+        exact h_no_pt_L (point_between_strict_gaps hgx' hgd hlt)
+      -- All selections satisfy c ≤ a i (since x = c)
+      have ha_ge_c : ∀ i, c ≤ a i := fun i => hxc_eq ▸ (ha i).1
+      have haR_eq : ∀ i, a_R i = a i := by
+        intro i; simp only [a_R]; split
+        · next h => exact le_antisymm (ha_ge_c i) h
+        · rfl
+      -- For LEFT selections (a i = c): a'_L i = d = a'_R i, so a' i = a'_R i
+      have ha'_eq_R : ∀ i, a' i = a'_R i := by
+        intro i; simp only [a']; split
+        · next h =>
+          have hac : a i = c := le_antisymm h (ha_ge_c i)
+          -- a'_L i ∈ [x', d] = [d, d], so a'_L i = d
+          have haLi_d : a'_L i = d :=
+            le_antisymm (ha'_L i).2 (hx'd_eq ▸ (ha'_L i).1)
+          -- a'_R i = d: from hcond_R same_order_type at (0, 1+i)
+          have haRi_d : a'_R i = d := by
+            apply le_antisymm _ (ha'_R i).1
+            by_contra hgt; push_neg at hgt
+            have h_sel_eq : a_R i = c := by rw [haR_eq i, hac]
+            have hord := hcond_R.1 ⟨0, by omega⟩ ⟨1 + i.val, by omega⟩
+            rw [game_tuple_zero_eq, game_tuple_sel_eq,
+                game_tuple_zero_eq, game_tuple_sel_eq] at hord
+            exact lt_irrefl c (h_sel_eq ▸ hord.1.mpr hgt)
+          rw [haLi_d, haRi_d]
+        · rfl
+      -- Game tuples coincide with right sub-game tuples
+      have hM_eq : game_tuple x y a b = game_tuple c y a_R b := by
+        funext ⟨i, hi⟩; simp only [game_tuple]
+        by_cases h0 : i = 0
+        · simp [h0, hxc_eq]
+        · by_cases hn1 : i = n + 1
+          · simp [hn1]
+          · by_cases hn2 : i = n + 2
+            · simp [hn2]
+            · simp [h0, hn1, hn2]; exact (haR_eq ⟨i - 1, by omega⟩).symm
+      have hN_eq : game_tuple x' y' a' b' = game_tuple d y' a'_R b' := by
+        funext ⟨i, hi⟩; simp only [game_tuple]
+        by_cases h0 : i = 0
+        · simp [h0, hx'd_eq]
+        · by_cases hn1 : i = n + 1
+          · simp [hn1]
+          · by_cases hn2 : i = n + 2
+            · simp [hn2]
+            · simp [h0, hn1, hn2]; exact ha'_eq_R ⟨i - 1, by omega⟩
+      refine ⟨b, ⟨hxc_eq ▸ hb_R.1, hb_R.2⟩, ?_⟩
+      rw [hM_eq, hN_eq]
+      exact hcond_R
 where
   /-- Winning condition when b comes from left strategy (b ≤ c). -/
   compose_wc

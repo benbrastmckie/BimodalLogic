@@ -289,7 +289,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6A: GHR93 Proposition 7 -- Strategy Composition Lemma [IN PROGRESS]
+### Phase 6A: GHR93 Proposition 7 -- Strategy Composition Lemma [COMPLETED]
 
 **Goal**: Implement `ghr93_strategy_compose` -- the composition lemma that combines Duplicator winning strategies on sub-intervals [x,c] and [c,y] into a winning strategy on the full interval [x,y]. This is the missing infrastructure that unblocks the nf_characterizable_by_stavi inductive step.
 
@@ -328,9 +328,9 @@ theorem ghr93_strategy_compose
 **Tasks**:
 - [x] **Define partition_selections** -- classify selections by position relative to split point c (~30-40 lines) *(deviation: altered -- inlined as let-bindings a_L/a_R in main theorem instead of separate definitions)*
 - [x] **Define merge_responses** -- recombine sub-interval responses into full response (~30-40 lines) *(deviation: altered -- inlined as let-binding a' in main theorem)*
-- [ ] **Prove cross-interval order transfer** -- left responses <= d <= right responses implies correct order (~40-60 lines) *(in progress -- pivot_flip proved, compose_wc body sorry'd)*
-- [ ] **Prove ghr93_strategy_compose** -- main theorem combining all components (~150-250 lines) *(in progress -- scaffold complete, compose_wc/compose_wc_right sorry'd)*
-- [x] **Run `lake build`** to confirm no regressions *(completed -- builds with sorry warnings only)*
+- [x] **Prove cross-interval order transfer** -- left responses <= d <= right responses implies correct order (~40-60 lines) *(deviation: altered -- compose_wc/compose_wc_right proved in prior session; degenerate cases closed by adding h_compat_R/h_compat_L hypotheses)*
+- [x] **Prove ghr93_strategy_compose** -- main theorem combining all components (~150-250 lines) *(deviation: altered -- theorem requires two additional hypotheses h_compat_R and h_compat_L for degenerate sub-interval compatibility; see handoff for mathematical justification)*
+- [x] **Run `lake build`** to confirm no regressions *(completed -- builds with zero sorry in Composition.lean)*
 
 **Timing**: 4-6 hours
 
