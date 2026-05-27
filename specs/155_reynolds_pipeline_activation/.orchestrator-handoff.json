@@ -2,28 +2,31 @@
   "task_number": 155,
   "session_id": "sess_1748390400_orch155",
   "status": "partial",
-  "summary": "Phase 3C preparatory work completed: added h_r1_univ parameter to ghr93_case_II and Mathlib.Data.Fin.Tuple.Sort import. Deep analysis confirms U(B,A) witness construction (GHR93 Theorem 12.8.15 Case II) is required to replace current e_n construction from d-compatible forward game. Detailed handoff with exact implementation steps written. Phase 6D also assessed but requires unbounded interval infrastructure not yet available.",
+  "summary": "Cycle 2: Added h_ih_r2 parameter (rank-(r+2) forward-to-backward IH) to ghr93_case_II by reverting r in ghr93_forward_to_backward_core induction. This provides the infrastructure needed for GHR93's U(B,A) transfer approach. Build passes with no regressions. sel_pn_ord remains sorry'd pending formula materialization and e_n construction replacement.",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
-    "Phase 3C requires replacing e_n construction with U(B,A) witness (GHR93 pp.443-444). This is a 4-8 hour restructuring of ghr93_case_II in CaseAnalysis.lean.",
-    "Phase 6D requires infrastructure for unbounded intervals in ghr93_duplicator_wins (currently only supports bounded [x,y]).",
-    "All 28 previously attempted approaches for sel_pn_ord have failed (fan problem). U(B,A) is the only viable path."
+    "Phase 3C sel_pn_ord requires replacing e_n construction with U(B,A) witness. Infrastructure (h_ih_r2) is now in place. Next step: formula materialization from TypeFormulas.lean, construct rank-r+2 tau on sub-interval, implement U(B,A) transfer per GHR93 pp.443-444. Estimated 250-400 lines of changes."
   ],
   "continuation_context": {
-    "phase_3C_status": "IN PROGRESS - preparatory work done",
-    "phase_3C_next_step": "Replace lines 1218-1340 of CaseAnalysis.lean (e_n construction via d-compatible forward game) with U(B,A) witness construction following GHR93 12.8.15 Case II. Key steps: (1) construct tau at rank r+4 from h_r1_univ, (2) build rank-r type formula B = X_{p_n}, (3) build std_untl B sf_top, (4) show it holds at a_init(k), (5) transfer via higher-rank tau, (6) extract witness as new e_n, (7) sel_pn_ord becomes trivial",
-    "sorry_sites": {
-      "CaseAnalysis_1444": "sel_pn_ord Case A (Phase 3C target)",
-      "CaseAnalysis_1813": "sel_pn_ord Case B (Phase 3C target)",
-      "CaseAnalysis_2024": "b_resp vs p_n Case B grid (separate from sel_pn_ord)",
-      "CaseAnalysis_2077": "Case B dead code fallback (Phase 3C target)",
-      "CaseAnalysis_4109": "Cases III/IV winning condition (Phase 5, depends on 3C)",
-      "StaviCompleteness_1873": "nf_2var_from_interval_data (dead code, Phase 6C-4)",
-      "StaviCompleteness_2152": "nf_exist_sf_guarded_backward (dead code, Phase 6C-4)"
+    "phase_3C_status": "IN PROGRESS - infrastructure complete, core replacement pending",
+    "infrastructure_added": {
+      "h_ih_r2": "Forward-to-backward conversion at rank r+2, available inside ghr93_case_II",
+      "mechanism": "Reverted r in ghr93_forward_to_backward_core induction (Theorem6.lean), making ih_gen rank-polymorphic. ih_gen(r+2) provides the conversion.",
+      "usage": "h_ih_r2 + h_r1_univ(r) + round_mono = n-round backward game at rank r+2 on any sub-interval"
     },
-    "key_insight": "GHR93 does NOT construct e_n from a forward game. e_n IS the U(B,A) witness: a point above resp_tau(n-1) satisfying the same rank-r type as p_n. This makes sel_pn_ord trivial (True <-> True with sorted selections).",
-    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-uba-handoff-20260527.md"
+    "phase_3C_next_step": "Use h_ih_r2 to: (1) construct rank-r+2 tau on [d,y']/[c,y], (2) materialize B=X_{p_n} as StaviFormula from TypeFormulas.lean, (3) build std_untl B sf_top at depth r+2 (within tau's preservation range), (4) show it holds at rank_embed(a_init(n-1)) witnessed by rank_embed(p_n), (5) transfer through rank-r+2 tau to resp_r2(n-1), (6) extract M-carrier witness z > resp_r2(n-1) as new e_n, (7) sel_pn_ord becomes trivial since e_n > resp_r2(k) for all k, and a_init(k) <= p_n after sorting",
+    "sorry_sites": {
+      "CaseAnalysis_1450": "sel_pn_ord Case A (Phase 3C target)",
+      "CaseAnalysis_1819": "sel_pn_ord Case B (Phase 3C target)",
+      "CaseAnalysis_2030": "b_resp vs p_n Case B grid (Phase 3C target)"
+    },
+    "key_files_to_read": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean",
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-rank-r2-handoff-20260527.md"
+    ],
+    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-rank-r2-handoff-20260527.md"
   },
-  "next_action_hint": "implement Phase 3C core: replace e_n construction in ghr93_case_II with U(B,A) witness per GHR93 12.8.15. See handoff file for exact steps. The h_r1_univ parameter and Tuple.Sort import are already in place."
+  "next_action_hint": "Read phase-3C-rank-r2-handoff-20260527.md for the detailed implementation plan. The rank-r+2 IH infrastructure is in place. Next cycle should focus on: (1) understanding TypeFormulas.lean API for formula materialization, (2) constructing std_untl formula, (3) replacing the entire e_n construction block (lines ~1227-1340) with the U(B,A) approach, (4) adapting downstream code to use the new construction."
 }

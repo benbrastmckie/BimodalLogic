@@ -156,16 +156,15 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C: U(B,A) Transfer — Replace e_n Construction [BLOCKED]
+### Phase 3C: U(B,A) Transfer — Replace e_n Construction [IN PROGRESS]
 
 **Goal**: Replace the d-compatible forward game e_n construction with GHR93's U(B,A) transfer, resolving sel_pn_ord and b_resp vs p_n.
 
-**BLOCKER** (Phase 3C):
-- **What failed**: sel_pn_ord requires proving `a_init(k) < p_n ↔ resp_tau(k) < e_n`. The forward game gives `resp_tau(k) < e_n ↔ a'_big(k) < p_n` (where a'_big(k) is the N-response from the d-compatible forward game). But a'_big(k) != a_init(k), and their ordering relative to p_n cannot be determined from rank-r type agreement alone.
-- **What was tried**: (1) Pivot chain through d/c -- fails because d ≤ a_init(k) AND d ≤ p_n creates a fan not a chain. (2) Extract from forward game hord_big at positions involving resp_tau vs e_n -- gives ordering iff a'_big not a_init. (3) Use rank-r formula agreement between a'_big(k) and a_init(k) to show same side of p_n -- counterexample: two points with same rank-r type can be on opposite sides of p_n. (4) Get higher-rank tau from h_r1_univ -- h_r1_univ gives FORWARD games; converting to backward requires the IH which is unavailable from CaseAnalysis.lean (circular import). (5) Add h_bwd_full parameter for (n+1)-round backward game -- round budget insufficient (IH at n gives n-round backward; we need (n+1)-round which IS what we're proving).
-- **Why it's stuck**: GHR93 uses tau at rank r+4 (not rank r). The higher rank preserves U(B,A) (rank r+1) so the formula transfers through tau and provides the witness. In our formalization: (a) props.tau is at rank r only (constructed from IH at rank r), (b) ghr93_forward_to_backward (which converts forward→backward at ANY rank) is in Theorem6.lean which CaseAnalysis.lean cannot import (circular: Theorem6 imports CaseAnalysis), (c) the round budget (4+3n rounds on full interval → 3+3n after restriction → supports only n-round backward via 1+3n IH) does not support (n+1)-round backward on sub-intervals.
-- **What is needed**: One of: (A) Move ghr93_forward_to_backward to a separate file importable by CaseAnalysis.lean, eliminating the circular import -- then h_r1_univ + forward_to_backward at rank r+2 gives the higher-rank tau directly. (B) Add `h_ih_r2` parameter providing forward-to-backward conversion at rank r+2, constructed in Theorem6.lean's inductive_step caller. (C) Restructure the induction to be rank-polymorphic (induct on both n and the rank gap), giving access to higher-rank IH within case analysis.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**Infrastructure completed** (Cycle 2):
+- `h_ih_r2` parameter added, providing forward-to-backward conversion at rank r+2 (option B from the original blocker analysis). Constructed by reverting `r` before induction in `ghr93_forward_to_backward_core`, making `ih_gen` rank-polymorphic.
+- Build passes. No regressions.
+
+**Remaining work**: Use h_ih_r2 + h_r1_univ to build rank-(r+2) tau on [d,y']/[c,y], then implement U(B,A) transfer per GHR93 Case II (pp.443-444). This requires formula materialization from TypeFormulas.lean and replacing the e_n construction with the U(B,A) witness. See handoff `phase-3C-rank-r2-handoff-20260527.md` for detailed implementation plan.
 
 **Key insight**: Uses `char_k` (IH) for formula materialization. At NF depth k+1, the game operates at rank r ≤ f(k) = `game_depth(k)`. The IH provides `char_k` covering this rank. `char_{k+1}` / `nf_characterizable_by_stavi` is NOT needed.
 
@@ -175,7 +174,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 - [ ] Implement selection sorting via `Tuple.sort` + `ghr93_winning_condition_perm` (~60-80 lines) *(prerequisite done: `import Mathlib.Data.Fin.Tuple.Sort` added to CaseAnalysis.lean; `ghr93_winning_condition_perm` already exists in CustomGame.lean)*
 - [ ] Materialize `rank_type` as StaviFormula using `char_k` IH: `sf_conjList [char_k nf | nf matching type]` (~40-80 lines)
 - [ ] Construct U(B,A) where B = continuation type, A = target type (~60-100 lines)
-- [ ] Handle rank adjustment: U(B,A) has depth r+2, tau preserves depth ≤ r. Reconstruct tau at rank r+4 via h_r1_univ if needed (~40-60 lines) *(prerequisite done: `h_r1_univ` parameter added to `ghr93_case_II` and call site updated in `ghr93_cases_II_III_IV`)*
+- [x] Handle rank adjustment: U(B,A) has depth r+2, tau preserves depth ≤ r. Reconstruct tau at rank r+4 via h_r1_univ if needed (~40-60 lines) *(deviation: altered — implemented as h_ih_r2 parameter providing rank-(r+2) forward-to-backward conversion, constructed by reverting r in ghr93_forward_to_backward_core induction)*
 - [ ] Prove U(B,A) holds at a_init(n-1) in N (~40-60 lines)
 - [ ] Transfer U(B,A) truth from N to M via tau formula agreement (~40-60 lines)
 - [ ] Extract e_n as U(B,A) witness, prove e_n > resp_tau(n-1) (~40-60 lines)
