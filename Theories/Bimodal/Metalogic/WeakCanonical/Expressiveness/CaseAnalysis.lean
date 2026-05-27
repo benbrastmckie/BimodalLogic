@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.SplitPoint
+import Mathlib.Data.Fin.Tuple.Sort
 
 /-!
 # Case Analysis: Cases I, II, III-IV for the Inductive Step
@@ -1195,7 +1196,15 @@ private theorem ghr93_case_II {sig : MonadicSignature}
     (props : SplitPointProps n x y x' y' c d a_bwd)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
     (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
-    (h_point : IsPoint (a_bwd ⟨n, by omega⟩)) :
+    (h_point : IsPoint (a_bwd ⟨n, by omega⟩))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -4134,7 +4143,7 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
   rcases isPoint_or_isGap (a_bwd ⟨n, by omega⟩) with h_pt | h_gap
-  · exact ghr93_case_II props ha_bwd h_no_split h_pt
+  · exact ghr93_case_II props ha_bwd h_no_split h_pt h_r1_univ
   · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
 
 /-! ### Assembly: The Inductive Step -/

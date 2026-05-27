@@ -156,7 +156,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C: U(B,A) Transfer — Replace e_n Construction [NOT STARTED]
+### Phase 3C: U(B,A) Transfer — Replace e_n Construction [IN PROGRESS]
 
 **Goal**: Replace the d-compatible forward game e_n construction with GHR93's U(B,A) transfer, resolving sel_pn_ord and b_resp vs p_n.
 
