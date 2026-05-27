@@ -45,6 +45,7 @@ Fifteen research reports and a blocker study were integrated into this plan:
 | **34_lemma10-strategy-restrict** | **Lemma 10 alone does NOT solve blocker; ALL game-based approaches fail; pragmatic fix: sel_pn_ord sorry'd field (~80 lines); proper fix: Lemma 10 + relabeling + d-as-minimum (~300-500 lines)** | **This revision**: Phase 3A replaced with sorry'd field; Phase 3C added for deferred sorry closure |
 | **Task 199: 01_grid-order-tactic** | Case A grid dispatch already sorry-free; Case B has 6 goals (not 5): 3 impossible-direction, 1 fixable hab_eq rewrite, 2 genuine proof gap (b_resp vs p_n fan ordering). fan_order theorem is provably false (counterexample). | Phase 3B updated: Case A confirmed done; Case B reduced from 6→2 goals by task 199 implementation; Goal 3 (sel vs p_n) closed via rename_i + hab_eq + sel_pn_ord |
 | **Task 199: 02_blocker-analysis** | b_resp vs p_n unprovable from current hypotheses: Case B has fan geometry (d≤b_resp AND d≤p_n) not chain. No game contains both b_resp and p_n. Three fix options: additional big game challenge, restructured padding, or double-challenge construction. | Phase 3B blocker: 2 remaining goals require proof-level restructuring, not tactic-level fixes |
+| **35_gap-detection-literature** | GHR93 (pp. 116-119) constrains gap location NOT by restricting gap detection, but by deriving interval bounds from the gap's defining formula D via forward game transfer. Left-D-definable means D holds beyond the gap; transfer D-truth at y'/y via forward game; conclude gamma_M ≤ y. | Phase 5 S11: correct approach for interval bound sub-sorries at lines ~3328, ~3639 |
 
 ### Revision History
 
@@ -330,15 +331,27 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 
-- [ ] **Close S11 (CaseAnalysis.lean:~3043, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: altered — rank mismatch RESOLVED by making h_r1_univ universally quantified over r' in ghr93_forward_to_backward_core/ghr93_forward_to_backward; h_fwd_r3 at rank r+4 now derived in ghr93_cases_III_IV via h_r1_univ at r'=r+2. Gap detection assembly remains sorry'd.)*
-  1. Case-split on whether a_bwd(n) is left-defined or right-defined (or both)
-  2. Use `left_formula_gap_detection` / `right_formula_gap_detection` (proved sorry-free in `EFGames/GapDetection.lean`) to find a matching gap in M
-  3. Use `gap_detection_unique` to show the matching gap has correct properties
-  4. Construct response sequence: tau (for init positions) + matching gap (for position n)
-  5. Assemble winning condition from tau + gap detection properties
-  - Estimated: 150-300 lines (substantial new proof using existing infrastructure)
-  - **Status**: Rank mismatch RESOLVED. `h_r1_univ` now universally quantified over rank r' in `ghr93_forward_to_backward_core`, `ghr93_forward_to_backward`, `ghr93_inductive_step`, `ghr93_cases_II_III_IV`, and `ghr93_cases_III_IV`. Rank-(r+4) forward game `h_fwd_r3` derived in `ghr93_cases_III_IV` from `h_r1_univ` at r'=r+2 via `rank_embed_comp` transitivity. Proof context at sorry now has `h_fwd_r1` (rank r+2), `h_r1_univ` (any rank r'+2), `h_fwd_r3` (rank r+4). Gap detection assembly (gap existence + formula agreement + order agreement) still requires implementation.
-  - **Former blocker (RESOLVED)**: Gap detection formula depth (r+4) exceeded available forward game rank (r+2). Fixed by extending `h_r1_univ` to be universally quantified over `r'`, enabling derivation of rank-(r+4) games.
+- [ ] **Close S11 (CaseAnalysis.lean:~3043, `ghr93_cases_III_IV`)**: Construct backward game response when a_n is a gap. *(deviation: rank mismatch RESOLVED; gap detection assembly largely done; 3 sub-sorries remain)*
+  1. ~~Case-split on whether a_bwd(n) is left-defined or right-defined (or both)~~ *(done)*
+  2. ~~Use `left_formula_gap_detection` / `right_formula_gap_detection` to find a matching gap in M~~ *(done — left and right cases both proved)*
+  3. ~~Use `gap_detection_unique` to show the matching gap has correct formula agreement~~ *(done)*
+  4. ~~Construct response sequence: tau (for init positions) + matching gap (for position n)~~ *(done)*
+  5. ~~Handle degenerate boundary cases (x' = gamma_N, y' = gamma_N)~~ *(done)*
+  6. [ ] **Prove gamma_M interval bounds** (lines ~3328, ~3639): `Sum.inr gamma_M ≤ y` and `x ≤ Sum.inr gamma_M`
+  7. [ ] **Assemble winning condition** (line ~3753): S11.3, ~200 lines following Case II pattern
+  - **Completed**: Rank mismatch resolved (`h_r1_univ` universally quantified over r'), left/right gap detection cases with formula agreement via `gap_detection_unique`, degenerate boundary cases, response construction + interval membership + gap/point agreement. Rank-(r+4) forward game `h_fwd_r3` available in scope.
+  - **Remaining sub-sorries (3)**:
+    - Line ~3328: `Sum.inr gamma_M ≤ y` (left interval upper bound)
+    - Line ~3639: `x ≤ Sum.inr gamma_M` (right interval lower bound)
+    - Line ~3753: Winning condition assembly (needs sel_pn_ord dependency from Phase 3C)
+  - **Interval bound approach (from report 35 — GHR93 literature analysis)**:
+    - GHR93 (pp. 116-119) does NOT restrict gap detection to an interval. Instead, the interval bound is derived from the gap's **defining formula D**.
+    - A "left-D-definable" gap means D holds at all points beyond the gap (to the right). So D holds throughout `(gamma_N, y']` in N.
+    - The forward game `h_fwd_r3` transfers D-truth from y' (N-side) to y (M-side), giving `D(y)` in M.
+    - Since gamma_M is left-D-definable in M, D holds at all points beyond gamma_M. Combined with `D(y)`, this means gamma_M ≤ y.
+    - Symmetrically for `x ≤ gamma_M` using right-definability.
+    - See `specs/155_reynolds_pipeline_activation/reports/35_gap-detection-literature.md` for full analysis.
+  - **Former blocker (RESOLVED)**: Gap detection formula depth (r+4) exceeded available forward game rank (r+2). Fixed by extending `h_r1_univ` to be universally quantified over `r'`.
 
 - [x] **Close S12 (Theorem6.lean:307, `ghr93_forward_to_backward_rank_varying`)**: Sub-interval strategy restriction. *(completed)*
   - **Approach**: Parameter approach -- modified `ghr93_forward_to_backward_rank_varying` to take `h_r1_univ` as a parameter quantified over all ranks `r'` and all sub-intervals. In the `succ` case, specialized to `r` and passed directly to `ghr93_forward_to_backward`. Zero case ignores the parameter. Theorem6.lean is now fully sorry-free.
