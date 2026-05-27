@@ -330,14 +330,15 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 
-- [ ] **Close S11 (CaseAnalysis.lean:2619, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: deferred — gap detection transfer requires ~200-300 lines connecting GapDetection.lean infrastructure with forward game; structural setup completed (tau for init positions, gap extraction) but core gap matching sorry remains)*
+- [ ] **Close S11 (CaseAnalysis.lean:~3024, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: blocked — rank mismatch: gap detection formulas `left_formula A D` / `right_formula A D` have depth r+4 but only rank-(r+2) forward game is available; infrastructure for h_fwd_r1 parameter threading completed)*
   1. Case-split on whether a_bwd(n) is left-defined or right-defined (or both)
   2. Use `left_formula_gap_detection` / `right_formula_gap_detection` (proved sorry-free in `EFGames/GapDetection.lean`) to find a matching gap in M
   3. Use `gap_detection_unique` to show the matching gap has correct properties
   4. Construct response sequence: tau (for init positions) + matching gap (for position n)
   5. Assemble winning condition from tau + gap detection properties
   - Estimated: 150-300 lines (substantial new proof using existing infrastructure)
-  - **Status**: Structural setup done (τ application, gap extraction). Core gap detection transfer remains sorry'd.
+  - **Status**: Structural setup done (tau for init positions, gap extraction). Parameters `hxy`, `hx'y'`, `h_fwd_r1` threaded to `ghr93_cases_III_IV`. Core gap detection transfer remains sorry'd due to rank mismatch: gap detection formulas have depth r+4 but only rank-(r+2) game available. See `handoffs/phase-5-S11-rank-analysis-20260527.md` for full analysis and three resolution options.
+  - **Blocker**: Gap detection formula depth (r+4) exceeds available forward game rank (r+2). Fix requires making `h_r1_univ` in `ghr93_forward_to_backward_core` universally quantified over `r'` (not just endpoints), or using the rank-varying theorem structure directly.
 
 - [x] **Close S12 (Theorem6.lean:307, `ghr93_forward_to_backward_rank_varying`)**: Sub-interval strategy restriction. *(completed)*
   - **Approach**: Parameter approach -- modified `ghr93_forward_to_backward_rank_varying` to take `h_r1_univ` as a parameter quantified over all ranks `r'` and all sub-intervals. In the `succ` case, specialized to `r` and passed directly to `ghr93_forward_to_backward`. Zero case ignores the parameter. Theorem6.lean is now fully sorry-free.
