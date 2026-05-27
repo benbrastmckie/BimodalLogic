@@ -1708,21 +1708,76 @@ private theorem nf_exist_sf_forward
     have htx : t < x := h_t_lt_x.mpr h_both.2
     exact absurd (lt_trans hxt htx) (lt_irrefl _)
   simp only [h_order_compat, ite_false]
-  -- The proof proceeds by:
-  -- 1. Determining the 1-variable depth-k NF of x (call it nf_x)
-  -- 2. Showing char_k(nf_x) holds at x (from the IH)
-  -- 3. Showing nf_x is atom-compatible with sub_nf at variable 0
-  -- 4. Case-splitting on the order between x and t
-  -- 5. For each case, constructing the temporal witness
+  -- The 1-variable depth-k NF of x
+  set nf_x := nf_characteristic M k 1 (fun _ => x) with nf_x_def
+  have h_nf_x : nf_eval_nf M k 1 (fun _ => x) nf_x :=
+    nf_characteristic_satisfies M k 1 (fun _ => x)
+  -- The IH formula for nf_x holds at x
+  have h_char_at_x : stavi_temporal_truth M atomMap x (char_k nf_x) :=
+    (char_k_correct nf_x M x).mpr h_nf_x
+  -- Key lemma: Fin.cons evaluations
+  -- Fin.cons x f reduces via Fin.cases; we need explicit eval lemmas
+  have h_fc0 : Fin.cases x (fun _ : Fin 1 => t) (⟨0, by omega⟩ : Fin 2) = x := by
+    simp [Fin.cases]
+  have h_fc1 : Fin.cases x (fun _ : Fin 1 => t) (⟨1, by omega⟩ : Fin 2) = t := by
+    simp [Fin.cases]; rfl
+  -- Simplify the order hypotheses to use x and t directly
+  rw [h_fc0, h_fc1] at h_x_lt_t
+  rw [h_fc1, h_fc0] at h_t_lt_x
+  -- h_x_lt_t : x < t ↔ sub_nf.atom_assgn (.order 0 1 ...) = true
+  -- h_t_lt_x : t < x ↔ sub_nf.atom_assgn (.order 1 0 ...) = true
+  -- nf_x is atom-compatible with sub_nf at variable 0
+  have h_compat : ∀ p : sig.preds,
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) =
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩) := by
+    intro p
+    -- nf_x.atom_assgn (.pred p 0) = decide (M.interp p x)  (by nf_characteristic def)
+    -- sub_nf.atom_assgn (.pred p 0) = decide (M.interp p x) (via h_x_atoms and Fin.cons 0 = x)
+    -- nf_x has 1 variable, so AtomKind sig 1 uses Fin 1
+    -- sub_nf has 2 variables, so AtomKind sig 2 uses Fin 2
+    -- Both .pred p 0 refer to variable 0 in their respective Fin types
+    have h_nf_x_p : atom_eval M (fun _ => x) (.pred p (0 : Fin 1)) ↔
+        (nf_x.atom_assgn (.pred p (0 : Fin 1)) = true) := by
+      cases k with
+      | zero => exact h_nf_x (.pred p 0)
+      | succ k' => exact h_nf_x.1 (.pred p 0)
+    have h_sub_p := h_x_atoms (.pred p (0 : Fin 2))
+    simp only [atom_eval] at h_nf_x_p h_sub_p
+    -- Fin.cons x (fun _ => t) at Fin 2 index 0 = x
+    have h_fc0' : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) (0 : Fin 2) = x := by
+      simp [Fin.cons]
+    rw [h_fc0'] at h_sub_p
+    -- Now both are about M.interp p x
+    cases h1 : nf_x.atom_assgn (.pred p (0 : Fin 1)) <;>
+    cases h2 : sub_nf.atom_assgn (.pred p (0 : Fin 2)) <;>
+    simp_all
+  -- Prove the compat_formulas filter condition
+  have h_compat_filter : (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+    rw [List.all_eq_true]
+    intro p _
+    simp only [beq_iff_eq]
+    exact h_compat p
+  -- char_k nf_x is in the filterMap list
+  have h_in_list : char_k nf_x ∈ (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
+      (fun nf_x' => if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+        nf_x'.atom_assgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true
+      then some (char_k nf_x') else none) := by
+    rw [List.mem_filterMap]
+    exact ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+      by rw [if_pos h_compat_filter]⟩
+  -- The proof needs to:
+  -- 1. Case-split on nf_order_0_1 sub_nf (Until/Since/equality direction)
+  -- 2. Use x as the temporal witness (x > t for Until, x < t for Since, x = t for equality)
+  -- 3. Show sf_disjList holds at x via h_in_list and h_char_at_x
+  -- 4. The sf_top guard is trivially satisfied
   --
-  -- The proof involves extensive Fin.cons/Fin.cases reduction and
-  -- matching proof terms across Fin subtypes. The core mathematical
-  -- content is straightforward: if x witnesses the 2-variable NF sub_nf,
-  -- then the IH formula for x's 1-variable type holds at x, and x is
-  -- in the correct direction relative to t, so the temporal formula holds.
-  --
-  -- Deferred: Fin arithmetic details in atom compatibility and order
-  -- direction matching.
+  -- The core difficulty is matching Lean's internal representation of the
+  -- nf_exist_sf definition (which unfolds nf_order_0_1 into a nested match)
+  -- with the structural proof. The proof requires careful definitional
+  -- unfolding and Fin subtype matching.
   sorry
 
 /-! ## NF Characterization by StaviFormulas -/
