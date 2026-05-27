@@ -346,82 +346,59 @@ theorem ghr93_strategy_compose
 
 ---
 
-### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [PARTIAL]
+### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [SUPERSEDED]
 
-**Goal**: Implement the four-case analysis (Cases I-IV of GHR93 Section 8) entirely within the EFGames module, using the composition lemma from Phase 6A. This case analysis is required by nf_characterizable_by_stavi and CANNOT reuse Expressiveness/CaseAnalysis.lean (would create circular import).
+**Status**: SUPERSEDED by direct formula construction approach in Phase 6C.
 
-**Why self-contained within EFGames** (from report 42a Section 4):
-- Importing CaseAnalysis.lean into StaviCompleteness.lean would create a circular dependency: CaseAnalysis -> Claim1 -> StaviCompleteness would become CaseAnalysis -> Claim1 -> StaviCompleteness -> CaseAnalysis.
-- The case analysis is the same mathematical content but must be formalized in a separate location within the EFGames module.
-- This is a code quality concern (duplication) but not a correctness concern. Refactoring into a shared module can be done later.
+The original plan called for reimplementing Cases I-IV within EFGames/ to avoid circular imports with Expressiveness/CaseAnalysis.lean. Instead, Phase 6C took a formula construction approach: `nf_exist_sf` builds temporal formulas directly from the depth-k IH, and `nf_characterizable_by_stavi` is proved using `nf_2var_existence_characterizable` (a Classical.choose-based existence lemma). The game-theoretic case analysis is encapsulated in `nf_2var_existence_characterizable` rather than being split into Cases I-IV.
 
-**What the case analysis proves**: Given an (n+1)-round forward game and an n-round backward IH, construct an (n+1)-round backward strategy by case-splitting on the last selection's position relative to a split point:
-- **Case I**: Last selection is between boundary and split point -- use composition (Phase 6A) to merge sub-interval strategies.
-- **Case II**: Last selection is the split point itself (degenerate) -- trivial from sub-strategies.
-- **Cases III/IV**: Last selection is beyond the split point -- use gap detection formulas (Lemma 9, already proved in GapDetection.lean) to handle gap cases.
+**Why superseded**: The formula construction approach is more direct and avoids duplicating 300-600 lines of case analysis from Expressiveness/. The remaining sorry (`nf_2var_existence_characterizable` at StaviCompleteness.lean:1865) encapsulates the game argument in a single clean statement.
 
-**Tasks**:
-- [ ] **Implement Case I** using ghr93_strategy_compose from Phase 6A. Apply composition with split point = last selection. The IH provides backward strategies on sub-intervals. (~100-200 lines) *(deviation: deferred -- game-theoretic case analysis not yet implemented; formula construction approach taken instead)*
-- [ ] **Implement Case II** (degenerate). Split point coincides with selection -- use sub-interval strategy directly. (~30-50 lines) *(deviation: deferred -- same reason as Case I)*
-- [ ] **Implement Cases III/IV** using gap detection formulas from GapDetection.lean. (~100-200 lines) *(deviation: deferred -- same reason as Case I)*
-- [ ] **Assemble the four cases** into a unified backward strategy constructor that takes the forward game and produces the backward game. (~70-150 lines) *(deviation: deferred -- same reason as Case I)*
-- [x] **Run `lake build`** to confirm no regressions *(completed -- build passes with 3 targeted sorries)*
-
-**Timing**: 4-8 hours
-
-**Depends on**: 6A
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` -- or a new file `EFGames/CaseAnalysisInternal.lean` if StaviCompleteness is too large (~300-600 lines)
-
-**Verification**:
-- Case analysis assembles into a complete backward strategy constructor
-- No sorry sites introduced (all cases handled)
-- `lake build` passes
+**No tasks remain in this phase.** All work is tracked in Phase 6C.
 
 ---
 
-### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [PARTIAL]
+### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [IN PROGRESS]
 
 **Goal**: Close the keystone sorry at StaviCompleteness.lean:1567 -- the inductive step of `nf_characterizable_by_stavi`. Every NormalForm at depth k+1 must be characterizable by a StaviFormula.
 
-**Why this phase exists** (from report 38 Section 6, refined by report 42b):
-- The inductive step requires building StaviFormulas for depth-(k+1) 1-variable NFs.
-- The quantifier part requires temporal formulas (U, S, U', S') to capture 2-variable NF satisfaction.
-- The correctness of these formulas requires the full game-theoretic machinery including composition (Phase 6A) and the completed case analysis (Phase 6B).
+**Approach taken** (deviates from original plan — formula construction instead of Cases I-IV):
+- Instead of reimplementing Cases I-IV within EFGames/, the proof uses Classical.choose existence formulas.
+- `nf_exist_sf` builds temporal formulas (U/S/U'/S') for 2-variable NF existence using depth-k IH.
+- `nf_succ_sf` assembles the full StaviFormula as conjunction of atom literals + quantifier formulas.
+- `nf_characterizable_by_stavi` main theorem proved using `nf_2var_existence_characterizable` (Classical.choose).
+- The game-theoretic argument is encapsulated in `nf_2var_existence_characterizable` rather than split into cases.
 
-**GHR93 resolution of the "circularity"** (from report 42b Section 5):
-- The induction on k is STANDARD: the k+1 case uses depth-k IH formulas (available by IH).
-- The k+1 case invokes the game argument (Theorem 6 / Phase 6B's case analysis) with rank = k.
-- The game argument uses X_t (point type) and X_{(a,b)} (interval type) at rank k, which are constructed from the depth-k IH.
-- The game argument produces the backward strategy, which is used to construct the depth-(k+1) characteristic formula.
-- This is NOT circular: we use depth-k formulas (available) to prove depth-(k+1) characterization.
-
-**Integration chain**:
-1. Composition lemma (6A) enables composing sub-interval strategies.
-2. Case analysis (6B) provides the game-theoretic argument for all four GHR93 cases.
-3. For depth-(k+1) NFs: the atom part uses `nf_base_sf` (already proved). The quantifier part needs temporal connectives (U/S/U'/S') applied to guards built from depth-k IH formulas.
-4. Correctness uses Lemma 11 (game <-> decomposition, already proved in Decomposition.lean).
+**Critical bug found and fixed** (report 43):
+- Original `nf_exist_sf` used `sf_top` as the guard in U(A, sf_top). This made ALL 2-variable NFs sharing the same atom assignment map to the SAME StaviFormula. When the actual NF assigned different quant values to same-atom sub_nfs (depth >= 2), the formula conjunction required both a formula and its negation — making it always false.
+- Both original forward/backward sorries were on FALSE statements.
+- Fix: replaced `nf_succ_sf`-based proof with Classical.choose existence formulas via `nf_2var_existence_characterizable`.
 
 **Tasks**:
-- [ ] **Build point type formula X_t at rank k** using k-case IH *(deviation: skipped -- not needed separately; nf_exist_sf handles this via disjunction over atom-compatible IH formulas)*
-- [ ] **Build interval type formula X_{(a,b)} at rank k** *(deviation: skipped -- same reason; nf_exist_sf uses sf_disjList of compat_formulas directly)*
-- [x] **Build NF existence formula for depth-k 2-variable sub_nfs** *(completed: nf_exist_sf defined at ~40 lines, using IH formulas with atom compatibility filter + Until/Since/identity based on nf_order_0_1)*
-- [ ] **Prove correctness (forward direction)** *(in progress: nf_exist_sf_forward has partial proof -- t-consistency, order compat, atom compat, IH membership all proved; sorry at final step due to definitional unfolding mismatch)*
-- [ ] **Prove correctness (backward direction)** *(deviation: deferred -- requires game-theoretic argument from Phase 6B)*
-- [x] **Assemble full StaviFormula** for depth-(k+1) NF *(completed: nf_succ_sf defined at ~20 lines, conjunction of atom literals + quantifier exist/non-exist formulas)*
-- [ ] **Prove full correctness** of the assembled formula *(in progress: atom part backward direction proved; quantifier part has 3 sorry sites)*
-- [x] **Run `lake build`** to confirm no regressions *(completed -- build passes with 3 targeted sorries)*
+- [x] **Build NF existence formula** `nf_exist_sf` *(completed: ~40 lines, IH formulas + atom compat filter + Until/Since)*
+- [x] **Prove nf_exist_sf_forward** *(completed: 4-case proof on order Bools, temporal witness construction)*
+- [x] **Assemble full StaviFormula** `nf_succ_sf` *(completed: ~20 lines, conjunction of atom literals + quantifier formulas)*
+- [x] **Prove atom part** of nf_characterizable_by_stavi *(completed: sf_conjList_iff + atomKind_to_sf_literal_correct)*
+- [x] **Prove quant=false case** *(completed: contrapositive of nf_exist_sf_forward)*
+- [x] **Diagnose formula bug** *(completed: sf_top guard makes formula always false for depth >= 2 — report 43)*
+- [x] **Fix approach**: replace nf_succ_sf proof with Classical.choose via `nf_2var_existence_characterizable` *(completed)*
+- [x] **Prove main theorem** `nf_characterizable_by_stavi` modulo `nf_2var_existence_characterizable` *(completed: both directions proved)*
+- [ ] **Close `nf_2var_existence_characterizable`** (StaviCompleteness.lean:1865): prove that for each 2-variable depth-k NF sub_nf, there exists a StaviFormula characterizing `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`. This is the encapsulated game-theoretic argument — a TRUE mathematical claim requiring Proposition 7 + depth-k IH + game argument.
+- [x] **Run `lake build`** *(passes with 1 sorry warning at line 1865)*
 
-**Timing**: 6-10 hours (highest-risk phase)
+**Remaining**: 1 sorry at StaviCompleteness.lean:1865 (`nf_2var_existence_characterizable`). This is the game-theoretic core: proving that temporal connectives with depth-k IH formulas can capture 2-variable NF realizability. Estimated 150-400 lines. Requires either:
+  - The guard formula approach (report 43): replace sf_top with an interval guard built from IH, then prove backward direction using the guard to constrain intermediate points
+  - Or a game-theoretic argument using Proposition 7 to show 1-var type + order determines 2-var type
 
-**Depends on**: 6B
+**Timing**: 4-8 hours remaining
+
+**Depends on**: 6A (COMPLETED)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` -- NF characterization inductive step at line 1567 (~540-830 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` — close sorry at line 1865
 
 **Verification**:
-- Sorry site S13 (StaviCompleteness.lean:1567) is closed
+- `nf_2var_existence_characterizable` sorry closed
 - `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
 - `lake build` passes
 
