@@ -3091,6 +3091,26 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         intro m htm hm_cut u hmu hu_cut
         exact (stavi_truth_mu_at_point u D).mpr
           (hD_above_t u (le_of_lt (lt_of_le_of_lt htm hmu)) hu_cut)
+      -- Degenerate boundary check: if x' = Sum.inr γ_N, the reference-point approach
+      -- cannot find m_N ∈ cut above x' (all cut elements are strictly below the gap).
+      -- In this case, d = x' = Sum.inr γ_N, so c corresponds via hcd_form directly.
+      if hx'_eq_γ : x' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) then
+        -- DEGENERATE LEFT BOUNDARY: x' = Sum.inr γ_N.
+        -- Then d = Sum.inr γ_N (since x' ≤ d ≤ Sum.inr γ_N = x').
+        have hd_eq_γN : d = Sum.inr γ_N :=
+          le_antisymm hd_le_γ (hx'_eq_γ ▸ props.hx'd)
+        -- c is a gap (since d is a gap by hcd_gp).
+        have hd_gap : IsGap d := ⟨γ_N, hd_eq_γN⟩
+        obtain ⟨g_c, hc_eq⟩ := props.hcd_gp.2.mpr hd_gap
+        -- g_c serves as γ_M with formula agreement from hcd_form.
+        exact ⟨g_c, ⟨hc_eq ▸ props.hxc, hc_eq ▸ props.hcy⟩,
+          fun A hA => by
+            have h := props.hcd_form A hA
+            rw [hc_eq] at h; rw [hd_eq_γN] at h; exact h⟩
+      else
+      -- NON-DEGENERATE: x' ≠ Sum.inr γ_N, hence x' < Sum.inr γ_N.
+      have hx'_lt_γ : x' < (Sum.inr γ_N : ExtendedCarrier N atomMap r) :=
+        lt_of_le_of_ne (le_trans props.hx'd hd_le_γ) hx'_eq_γ
       -- Case split: either t_N is already above x', or we need a higher cut element.
       have ⟨m_N, hm_N_cut, hm_N_above_x', hm_N_D_between⟩ :
           ∃ (m_N : N.carrier), m_N ∈ γ_N.val.cut ∧
@@ -3138,25 +3158,8 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
             have hx'_lt_γ : x' < (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
               rcases eq_or_lt_of_le (show x' ≤ Sum.inr γ_N from
                   le_trans props.hx'd hd_le_γ) with heq | hlt
-              · -- x' = Sum.inr γ_N. Then all cut elements are < x'.
-                -- But we need a cut element ≥ x'. This is the degenerate case
-                -- where x' = d = Sum.inr γ_N (since x' ≤ d ≤ Sum.inr γ_N = x').
-                -- Case split on x': must be Sum.inr g_x for some gap g_x.
-                exfalso
-                -- x' = Sum.inr γ_N, but hx'_gt : extendPoint t_N < x'
-                -- and t_N ∈ γ_N.cut. So extendPoint t_N < Sum.inr γ_N.
-                -- Since x' ≤ d and d ≤ Sum.inr γ_N = x', we get x' = d.
-                -- In particular, x' = Sum.inr γ_N is a gap. By props.hcd_gp,
-                -- d is a gap iff c is a gap. Since d = Sum.inr g_d is a gap, c is too.
-                -- By props.h_pt_xc, either ∃ p ∈ [x,c] or (x = c ∧ x' = d ∧ ...).
-                -- If x = c and x' = d, the sigma game is on [d,d] which is trivial.
-                -- But we also have hx'_gt : extendPoint t_N < x' and x' = d = a_bwd n.
-                -- The forward game h_fwd_r3 gives formula agreement for the full
-                -- interval. Since x' = Sum.inr γ_N, the gap is at the boundary of
-                -- the game interval. This degenerate case requires gap transfer
-                -- at the boundary, which is handled by a dedicated argument.
-                -- Deferred to a separate sorry — the proof requires complex index mapping
-                sorry
+              · -- x' = Sum.inr γ_N contradicts hx'_lt_γ from outer case split.
+                exact absurd heq (ne_of_lt hx'_lt_γ)
               · exact hlt
             -- Now x' < Sum.inr γ_N strictly.
             -- Find m0 ∈ γ_N.cut with x' ≤ extendPoint m0.
@@ -3410,6 +3413,46 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         intro m htm hm_not_cut u hum hu_not_cut
         exact (stavi_truth_mu_at_point u D).mpr
           (hD_below_t u hu_not_cut (le_trans (le_of_lt hum) htm))
+      -- Degenerate boundary check: if y' = Sum.inr γ_N, all complement elements
+      -- are above γ_N and hence above y', so no reference point m_N exists.
+      -- Handle via forward game endpoint agreement or hcd_form.
+      if hy'_eq_γ : y' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) then
+        -- DEGENERATE RIGHT BOUNDARY: y' = Sum.inr γ_N.
+        -- Sub-case on h_pt_cy to determine the approach.
+        rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, _hgap_d⟩
+        · -- Carrier point p_cy ∈ [c, y]. Use tau sub-game endpoint agreement.
+          -- The tau sub-game G_{n;r}(N, d y'; M, c y) challenges with M-carrier
+          -- points in [c, y] and responds with N-carrier points in [d, y'].
+          -- Challenge with p_cy to get winning condition including y ↔ y' agreement.
+          -- First need a 0-round tau game for endpoint agreement.
+          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hdy' props.hcy props.tau
+          obtain ⟨_a'_tau0, _ha'_tau0_in, hwin_tau0⟩ := h_tau_0
+            (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
+          obtain ⟨b_tau0, _hb_tau0_in, hcond_tau0⟩ := hwin_tau0 p_cy hp_cy
+          obtain ⟨_hord_tau0, hgp_tau0, hform_tau0⟩ := hcond_tau0
+          -- Extract gap/point + formula agreement at y ↔ y' (endpoint positions).
+          -- game_tuple has 0+3 = 3 positions: pos 0 = d/c, pos 1 = b/b', pos 2 = y'/y.
+          have hgp_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y') := by
+            have h := hgp_tau0 ⟨0 + 2, by omega⟩
+            simp only [game_tuple_y_eq] at h; exact ⟨h.1.symm, h.2.symm⟩
+          obtain ⟨g_y_M, hy_eq⟩ := hgp_y.2.mpr ⟨γ_N, hy'_eq_γ⟩
+          exact ⟨g_y_M, ⟨hy_eq ▸ hxy, hy_eq ▸ le_refl y⟩,
+            fun A hA => by
+              have h := hform_tau0 ⟨0 + 2, by omega⟩ A hA
+              simp only [game_tuple_y_eq] at h
+              rw [hy_eq] at h; rw [hy'_eq_γ] at h; exact h.symm⟩
+        · -- c = y, d = y', both gaps. Use hcd_form directly.
+          have hd_eq_γN : d = Sum.inr γ_N := by rw [hdy'_eq, hy'_eq_γ]
+          obtain ⟨g_c, hc_eq⟩ := hgap_c
+          exact ⟨g_c, ⟨hc_eq ▸ hcy_eq ▸ hxy, hc_eq ▸ hcy_eq ▸ le_refl y⟩,
+            fun A hA => by
+              have h := props.hcd_form A hA
+              rw [hc_eq] at h; rw [hd_eq_γN] at h; exact h⟩
+      else
+      -- NON-DEGENERATE: y' ≠ Sum.inr γ_N, hence Sum.inr γ_N < y'.
+      have hγ_ne_y' : (Sum.inr γ_N : ExtendedCarrier N atomMap r) ≠ y' :=
+        fun h => hy'_eq_γ h.symm
       -- Find m_N: a complement element below y' with D-between condition.
       -- Case split: either t_N is already below y', or we need a lower element.
       have ⟨m_N, hm_N_not_cut, hm_N_below_y', hm_N_D_between⟩ :
@@ -3468,26 +3511,12 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
               rw [hgy_eq] at hγ_N_in; exact hγ_N_in.2
             rcases eq_or_ne γ_N.val.cut g_y.val.cut with h_eq_cut | h_ne_cut
             · -- γ_N.cut = g_y.cut, so γ_N = g_y. Then y' = Sum.inr γ_N.
-              -- All complement elements are above Sum.inr γ_N = y'.
-              -- So no complement element ≤ y'. But the complement of γ_N has
-              -- elements (t_N is one), just all above y'. Degenerate case.
+              -- This contradicts hy'_eq_γ from the outer non-degenerate case split.
               exfalso
               have h_gap_eq := gap_ext γ_N.val g_y.val h_eq_cut
-              -- y' = Sum.inr g_y = Sum.inr γ_N (since g_y = γ_N as gap values)
               have hy'_eq : y' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
                 rw [hgy_eq]; congr 1; exact Subtype.ext h_gap_eq.symm
-              -- But hγ_N_in.2 : Sum.inr γ_N ≤ y', and hy'_eq gives y' = Sum.inr γ_N.
-              -- So Sum.inr γ_N = y'. All complement elements satisfy
-              -- extendPoint m > Sum.inr γ_N = y'. So extendPoint m > y'.
-              -- ht_gt : extendPoint t_N > y'. Consistent.
-              -- But ha_bwd says a_bwd i ∈ [x', y']. In particular,
-              -- a_bwd ⟨n,_⟩ = Sum.inr γ_N = y' ∈ [x', y']. Fine.
-              -- The issue: we need m_N with extendPoint m_N ≤ y' and m_N ∉ cut.
-              -- But m_N ∉ cut means extendPoint m_N > Sum.inr γ_N = y'. Contradiction.
-              -- This IS genuinely impossible: no complement element ≤ y' exists.
-              -- The degenerate case y' = Sum.inr γ_N needs separate handling
-              -- (similar to the left case degenerate). Deferred.
-              sorry
+              exact absurd hy'_eq hy'_eq_γ
             · -- γ_N.cut ⊊ g_y.cut. Find m ∈ g_y.cut \ γ_N.cut.
               have h_diff : ∃ m0, m0 ∈ g_y.val.cut ∧ m0 ∉ γ_N.val.cut := by
                 by_contra h_all; push_neg at h_all
