@@ -1778,7 +1778,37 @@ private theorem nf_exist_sf_forward
   -- nf_exist_sf definition (which unfolds nf_order_0_1 into a nested match)
   -- with the structural proof. The proof requires careful definitional
   -- unfolding and Fin subtype matching.
-  sorry
+  norm_num
+  have h_in_list' : char_k nf_x ∈ List.filterMap
+      (fun nf_x' => if (∀ x ∈ Fintype.elems, nf_x'.atom_assgn (AtomKind.pred x 0) = sub_nf.atom_assgn (AtomKind.pred x 0)) then some (char_k nf_x') else none)
+      Fintype.elems.val.toList := by
+    rw [List.mem_filterMap]
+    exact ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x), by
+      rw [if_pos]; intro p hp; exact h_compat p⟩
+  have h_disj_at_x : stavi_temporal_truth M atomMap x (sf_disjList (List.filterMap
+      (fun nf_x' => if (∀ x ∈ Fintype.elems, nf_x'.atom_assgn (AtomKind.pred x 0) = sub_nf.atom_assgn (AtomKind.pred x 0)) then some (char_k nf_x') else none)
+      Fintype.elems.val.toList)) := by
+    rw [sf_disjList_iff]
+    exact ⟨char_k nf_x, h_in_list', h_char_at_x⟩
+  match h_b1 : sub_nf.atom_assgn (AtomKind.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+        h_b2 : sub_nf.atom_assgn (AtomKind.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+  | true, false =>
+    simp only [nf_order_0_1, h_b1, h_b2, stavi_temporal_truth]
+    exact ⟨x, h_t_lt_x.mpr h_b1, h_disj_at_x, fun u _ _ => (sf_top_iff M atomMap u).mpr trivial⟩
+  | false, true =>
+    simp only [nf_order_0_1, h_b1, h_b2, stavi_temporal_truth]
+    exact ⟨x, h_x_lt_t.mpr h_b2, h_disj_at_x, fun u _ _ => (sf_top_iff M atomMap u).mpr trivial⟩
+  | false, false =>
+    simp only [nf_order_0_1, h_b1, h_b2, and_self, ↓reduceIte]
+    have h_eq : x = t := by
+      by_contra h_ne
+      rcases lt_or_gt_of_ne h_ne with h | h
+      · exact absurd (h_x_lt_t.mp h) (by simp_all)
+      · exact absurd (h_t_lt_x.mp h) (by simp_all)
+    rw [← h_eq]; exact h_disj_at_x
+  | true, true =>
+    exfalso
+    exact h_order_compat (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
 
 /-! ## NF Characterization by StaviFormulas -/
 
@@ -1828,11 +1858,49 @@ theorem nf_characterizable_by_stavi
     constructor
     · -- Forward: formula truth → nf_eval_nf
       intro h_formula
-      -- The game-theoretic argument (GHR93 Proposition 7 + Theorem 6 case
-      -- analysis) is needed for the quantifier part: the temporal formula
-      -- truth pattern at depth k must determine which 2-variable depth-k
-      -- sub_nfs are realizable.
-      sorry
+      -- Unfold nf_succ_sf to extract atom and quantifier parts
+      simp only [nf_succ_sf, stavi_temporal_truth] at h_formula
+      obtain ⟨h_f_atoms, h_f_quant⟩ := h_formula
+      have h_atom_list := (sf_conjList_iff M atomMap t _).mp h_f_atoms
+      have h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ nf.1 a = true := by
+        intro a
+        have h_mem : atomKind_to_sf_literal atomMap h_surj a (nf.1 a) ∈
+            List.map (fun ak => atomKind_to_sf_literal atomMap h_surj ak (nf.1 ak))
+            Fintype.elems.val.toList := by
+          rw [List.mem_map]; exact ⟨a, Multiset.mem_toList.mpr (Fintype.complete a), rfl⟩
+        exact (atomKind_to_sf_literal_correct atomMap h_surj M t a (nf.1 a)).mp
+          (h_atom_list _ h_mem)
+      have h_quant_list := (sf_conjList_iff M atomMap t _).mp h_f_quant
+      show nf_eval_nf M (k + 1) 1 (fun _ => t) nf
+      obtain ⟨atom_part, quant_part⟩ := nf
+      refine ⟨h_atoms, fun sub_nf => ?_⟩
+      have h_sub_truth : stavi_temporal_truth M atomMap t
+          (if quant_part sub_nf = true
+           then nf_exist_sf atomMap h_surj k char_k atom_part sub_nf
+           else (nf_exist_sf atomMap h_surj k char_k atom_part sub_nf).neg) := by
+        apply h_quant_list; rw [List.mem_map]
+        exact ⟨sub_nf, Multiset.mem_toList.mpr (Fintype.complete sub_nf), rfl⟩
+      cases h_q_val : quant_part sub_nf
+      · -- quant_part sub_nf = false
+        simp only [h_q_val, Bool.false_eq_true, ↓reduceIte, stavi_temporal_truth] at h_sub_truth
+        constructor
+        · intro h_ex
+          exact absurd (nf_exist_sf_forward atomMap h_surj k char_k char_k_correct
+            atom_part sub_nf h_atoms h_ex) h_sub_truth
+        · intro h_abs; simp at h_abs
+      · -- quant_part sub_nf = true
+        simp only [h_q_val, ↓reduceIte] at h_sub_truth
+        constructor
+        · intro _; rfl
+        · -- Need: stavi_temporal_truth truth → ∃ x, nf_eval_nf M k 2 ... sub_nf
+          -- This is the backward direction of nf_exist_sf, which requires the
+          -- game-theoretic argument (GHR93 Proposition 7 + Theorem 6):
+          -- the 1-variable depth-k type + order + t-consistency determines the
+          -- 2-variable depth-k type. The temporal formula only witnesses the
+          -- 1-variable type and order, so bridging to the 2-variable type
+          -- requires the EF game composition theorem.
+          intro _
+          sorry
     · -- Backward: nf_eval_nf → formula truth
       intro h_nf
       -- h_nf : nf_eval_nf M (k+1) 1 (fun _ => t) nf
@@ -1884,10 +1952,10 @@ theorem nf_characterizable_by_stavi
           have h_no_ex : ¬ ∃ x, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
             rw [h_quant sub_nf, h_q_false]; simp
           -- Need: ¬ stavi_temporal_truth M atomMap t (nf_exist_sf ...)
-          -- This is the CONTRAPOSITIVE of the forward direction:
-          -- if the temporal formula holds, then some x exists.
-          -- Contrapositive: if no x exists, the formula fails.
-          -- This direction requires the game-theoretic backward argument.
+          -- This is the contrapositive of the backward direction of nf_exist_sf:
+          -- if the formula holds, then ∃ x with nf_eval_nf, contradicting h_no_ex.
+          -- The backward direction requires the game-theoretic argument
+          -- (same as the quant = true case in the forward direction above).
           sorry
 
 /-- **GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete. -/
