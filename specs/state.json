@@ -346,11 +346,12 @@
       "dependencies": [
         154,
         168,
-        174
+        174,
+        199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-27T01:00:00Z",
-      "next_artifact_number": 35,
+      "last_updated": "2026-05-27T02:00:00Z",
+      "next_artifact_number": 36,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -571,6 +572,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/33_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan v33: Phase 3 split into 3A (unified game restructure) and 3B (tactic overhaul) based on 3 targeted research reports"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/34_reynolds-pipeline-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v34: Phase 3A superseded (unified game infeasible), replaced with sel_pn_ord sorry field + deferred Phase 3C for Lemma 10 restructure"
         }
       ],
       "session_id": "sess_1779640471_03278b",
@@ -1021,9 +1027,25 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 199,
+      "project_name": "grid_order_tactic",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "automation",
+      "description": "Create a bespoke grid_order_tac tactic that automates the same_order_type grid dispatch in CaseAnalysis.lean, then apply it to close the Phase 3B sorry sites. The tactic must: (1) detect grid goals of shape (a_bwd k < x iff resp_tau k < y) and (... = ... iff ...), (2) try each available ordering lemma (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) with automatic Fin (n+1) to Fin n bridging via convert/congr/Fin.ext/omega, (3) handle the hab_eq rewrite for p_n cases (not k < n implies a_bwd = extendPoint p_n), (4) fall back to sorry with a trace message if no lemma applies. After building the tactic, apply it to replace the first | ... | sorry chains at the Case A (line ~1631) and Case B (line ~1940) sorry sites in ghr93_case_II, verifying zero build errors. Iterate on the tactic design if the initial version does not close all goals.",
+      "dependencies": [
+        155
+      ],
+      "created": "2026-05-26T22:00:00Z",
+      "last_updated": "2026-05-26T22:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 199,
+  "next_project_number": 200,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

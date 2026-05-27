@@ -31,19 +31,19 @@ technical_debt:
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
-### Phase 1 — Paused (155 Phase 3 partial, awaiting file splitting)
+### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
-155 [IMPLEMENTING] — Reynolds pipeline: Phase 3 partial (3/6 Case A goals closed, Case B pending). Paused for file splitting.
-  └─ 154, 174
+199 [NOT STARTED] — Grid order tactic: bespoke `grid_order_tac` for same_order_type dispatch with automatic Fin bridging, then apply to close Phase 3B sorry sites in CaseAnalysis.lean.
+  └─ 155
 
-### Phase 1a — File Splitting (next active work)
+### Phase 1a — File Splitting
 
 174 [PLANNED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
 
-### Phase 1b — Resume 155 (Phase 3 remainder + Phases 5-9, after file splitting)
+### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
 
-155 → Resume Phase 3 sorry closure + Phases 5-9 (with split modules, faster builds)
-  └─ 174
+155 [IMPLEMENTING] — Reynolds pipeline: Phase 3A done (sel_pn_ord added), Phase 3B paused pending grid tactic (task 199). Phases 5-9 remain.
+  └─ 154, 174, 199
 
 ### Phase 2 — Post-155 Cleanup
 
