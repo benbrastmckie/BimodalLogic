@@ -3,15 +3,16 @@
   "task_number": 155,
   "status": "partial",
   "current_phase": "phase_6a_proposition7",
-  "summary": "Created Composition.lean (169 lines) with ghr93_strategy_compose scaffold. Structure complete: padding, sub-strategy application, response merging, Round 2 case-split, dispatch to compose_wc helpers. File compiles (lake build passes) with 3 sorry sites: compose_wc body (winning condition transfer via pivot for cross-interval order, ~80-120 lines), compose_wc_right (symmetric, ~80-120 lines), degenerate sub-interval case (~40-60 lines per side). Key architectural insight: merged M-selection = original a, simplifying the goal. pivot_flip helper lemma proved. The compose_wc proof requires per-pair index classification (LEFT vs RIGHT owned) with sub-strategy dispatch for same-side pairs and pivot_chain_order for cross pairs.",
-  "blocking_issues": [],
-  "continuation_context": "Immediate next action: fill in compose_wc body. Approach: (1) same_order_type via 4-case analysis on index pair ownership using hord_L, hord_R, and pivot_chain_order. (2) gap_point_agreement via per-index dispatch. (3) formula_agreement via per-index dispatch. See handoff at specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md for full architecture and ownership classification.",
+  "summary": "Closed compose_wc and compose_wc_right (2 of 4 sorry sites) in Composition.lean. Both use per-index ownership classification with pivot_chain_order for cross-interval pairs and sub-strategy dispatch for same-side pairs. 2 degenerate case sorries remain (lines 98 and 112) -- when no carrier point exists in the right/left sub-interval [d,y'] or [x',d]. These require restructuring the merged response to avoid same_order_type violations at RIGHT indices with differing M-values but equal N-values.",
+  "blocking_issues": [
+    "Degenerate case (no point in sub-interval): When d = y', all RIGHT N-values collapse to d, forcing same_order_type to require all RIGHT M-values equal -- which Spoiler can violate. The fix likely requires modifying the merged response a' in the degenerate case to use the left strategy's a'_L for all indices, but this may require proving a'_L k = d for RIGHT k (derivable from hcond_L at boundary) and then showing the modified merged game tuple satisfies the winning condition with the y boundary adjusted."
+  ],
+  "continuation_context": "Composition.lean now has 2 sorries at lines 98 and 112. File is 478 lines. compose_wc body: lines 136-315. compose_wc_right body: lines 348-475. Both use idx_data helper for per-index LEFT/RIGHT classification. The degenerate cases need: (1) prove d = y' from h_no_pt_R using isPoint_or_isGap + point_between_strict_gaps, (2) prove a'_L k = d for RIGHT k from hcond_L at (k, n+2), (3) use a'_L for ALL indices (since a'_L = a' pointwise when d = y'), (4) show merged N-tuple equals left game N-tuple, (5) prove winning condition using a modified same_order_type argument where RIGHT M-values map to c in the left sub-game and c = y boundary in the merged game.",
   "next_action_hint": "implement",
   "phases_completed": 5,
   "phases_total": 12,
   "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md",
   "artifacts_created": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean"
   ]
 }

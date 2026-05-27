@@ -338,7 +338,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -350,7 +350,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-27T16:40:16Z",
+      "last_updated": "2026-05-27T17:40:50Z",
       "next_artifact_number": 36,
       "artifacts": [
         {
@@ -562,7 +562,7 @@
       "session_id": "sess_1779640471_03278b",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 3
+      "resume_phase": 6
     },
     {
       "project_number": 174,
