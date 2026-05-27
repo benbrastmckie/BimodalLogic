@@ -1957,6 +1957,31 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             -- sel(i) vs p_n: rewrite j-side a_bwd to p_n via hab_eq, then sel_pn_ord
             | (rw [hab_eq _ (by omega) (by assumption)]
                exact sel_pn_ord ⟨_, ‹_›⟩)
+            -- y' vs b_resp: impossible < (b_resp ≤ y', b_sp ≤ y), = from tau_b_y'
+            | (exact ⟨⟨fun h => absurd h (not_lt.mpr hb_resp_in.2),
+                       fun h => absurd h (not_lt.mpr hb_sp_cy.2)⟩,
+                      ⟨fun h => (tau_b_y'.2.mp h.symm).symm,
+                       fun h => (tau_b_y'.2.mpr h.symm).symm⟩⟩)
+            -- y' vs p_n: impossible < (p_n ≤ y', e_n ≤ y), = from fwd_b_y
+            | (exact ⟨⟨fun h => absurd h (not_lt.mpr hp_n_in.2),
+                       fun h => absurd h (not_lt.mpr he_n_in.2)⟩,
+                      ⟨fun h => (fwd_b_y.2.mpr h.symm).symm,
+                       fun h => (fwd_b_y.2.mp h.symm).symm⟩⟩)
+            -- p_n vs x': impossible < (x' ≤ p_n, x ≤ e_n), = from fwd_x_b
+            | (exact ⟨⟨fun h => absurd h (not_lt.mpr hp_n_in.1),
+                       fun h => absurd h (not_lt.mpr he_n_in.1)⟩,
+                      ⟨fun h => (fwd_x_b.2.mpr h.symm).symm,
+                       fun h => (fwd_x_b.2.mp h.symm).symm⟩⟩)
+            -- sel(i) vs p_n: rw j-side a_bwd to p_n via hab_eq, then sel_pn_ord
+            | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
+                   from hab_eq _ _ (by assumption)]
+               exact sel_pn_ord ⟨_, ‹_›⟩)
+            -- sel(i) vs p_n: Fin convert variant
+            | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
+                   from hab_eq _ _ (by assumption)]
+               convert sel_pn_ord ⟨_, ‹_›⟩ using 3
+               <;> (congr 1; exact Fin.ext (by omega)))
+            -- p_n vs b_resp / b_resp vs p_n: cross-boundary ordering
             | sorry)
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an

@@ -53,7 +53,7 @@
           }
         ]
       },
-      "description": "Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. Specifically: (1) completeness_dense line 285: prove that a Dense-MCS necessarily contains □(F'⊤), making the non-dense branch unreachable. The density axiom FFφ → Fφ should force the canonical model's density indicator into every Dense-MCS. (2) completeness_discrete line 317: prove that a Discrete-MCS cannot contain □(F'⊤), making the dense branch unreachable. The discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (next_top = U(⊤,⊥) and its negation F'⊤). Resolution likely requires showing that the density axiom is derivably equivalent to F'⊤ (or that □(F'⊤) is derivable from the density axiom via necessitation), and symmetrically that the discrete axioms are derivably inconsistent with F'⊤. Definition of done: both sorries in completeness_dense and completeness_discrete eliminated, lake build passes, no new sorries.",
+      "description": "Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. Specifically: (1) completeness_dense line 285: prove that a Dense-MCS necessarily contains \u25a1(F'\u22a4), making the non-dense branch unreachable. The density axiom FF\u03c6 \u2192 F\u03c6 should force the canonical model's density indicator into every Dense-MCS. (2) completeness_discrete line 317: prove that a Discrete-MCS cannot contain \u25a1(F'\u22a4), making the dense branch unreachable. The discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (next_top = U(\u22a4,\u22a5) and its negation F'\u22a4). Resolution likely requires showing that the density axiom is derivably equivalent to F'\u22a4 (or that \u25a1(F'\u22a4) is derivable from the density axiom via necessitation), and symmetrically that the discrete axioms are derivably inconsistent with F'\u22a4. Definition of done: both sorries in completeness_dense and completeness_discrete eliminated, lake build passes, no new sorries.",
       "completion_summary": "Eliminated 2 sorries in completeness_dense and completeness_discrete by adding dense_indicator axiom and proving frame-class indicator derivation chains"
     },
     {
@@ -168,7 +168,7 @@
       "session_id": "sess_1779755827_2a0c74",
       "started": "2026-05-25T14:57:07Z",
       "resume_phase": 5,
-      "description": "Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.",
+      "description": "Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom F\u03c6 \u2192 FF\u03c6 exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for F\u03c6 \u2192 FF\u03c6 mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base \u2264 Dense, Base \u2264 Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context \u2192 Formula \u2192 Type with axiom rule requiring ax.minFrameClass \u2264 fc. (5) Add lift function for fc\u2081 \u2264 fc\u2082. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial \u2192 Base, document three axiom systems as additive extensions.",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -223,7 +223,7 @@
           }
         ]
       },
-      "completion_summary": "DerivationTree fully parameterized over FrameClass across 50+ files. PartialOrder on FrameClass, density axiom, minFrameClass gate, lift function, ad-hoc predicate removal, soundness h_dc elimination — all complete. 6 discrete chronicle sorries resolved by task 197. lake build passes clean."
+      "completion_summary": "DerivationTree fully parameterized over FrameClass across 50+ files. PartialOrder on FrameClass, density axiom, minFrameClass gate, lift function, ad-hoc predicate removal, soundness h_dc elimination \u2014 all complete. 6 discrete chronicle sorries resolved by task 197. lake build passes clean."
     },
     {
       "project_number": 165,
@@ -239,7 +239,7 @@
       "project_name": "prove_tableau_correctness",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
+      "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em \u2014 it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
       "created": "2026-05-18T18:01:17Z",
       "last_updated": "2026-05-18T18:01:17Z"
     },
@@ -266,7 +266,7 @@
       "project_name": "refactor_module_organization",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
+      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy \u2014 group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
       "created": "2026-05-13T17:05:29Z",
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
@@ -278,7 +278,7 @@
       "project_name": "jonsson_tarski_representation_bimodal_sus",
       "status": "not_started",
       "task_type": "formal",
-      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
+      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 \u2014 Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 \u2014 Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 \u2014 Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 \u2014 Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
       "dependencies": [
         122,
         163
@@ -293,7 +293,7 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "medium",
-      "description": "Verification pass on bx_completeness sorry status. Updated scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx chain: dd_countermodel_chronicle_discrete → succ_embed_surjective → limitDomSubtype_isSuccArchimedean → succ_cofinal (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
+      "description": "Verification pass on bx_completeness sorry status. Updated scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx chain: dd_countermodel_chronicle_discrete \u2192 succ_embed_surjective \u2192 limitDomSubtype_isSuccArchimedean \u2192 succ_cofinal (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
       "created": "2026-04-10T19:30:00Z",
       "last_updated": "2026-05-15T21:30:00Z",
       "related_tasks": [
@@ -310,7 +310,7 @@
       "project_name": "time_addition_operator",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
+      "description": "Add time addition operator (+) to the bimodal logic TM. \u03c6 + \u03c8 is true at (\u03c4, x) iff \u2203 y,z with x = y+z, \u03c6 true at (\u03c4,y), \u03c8 true at (\u03c4,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/\u25a1. Completeness (ternary canonical model) and decidability are open research problems \u2014 defer to later phases.",
       "dependencies": [
         123
       ],
@@ -325,7 +325,7 @@
       "project_name": "open_set_operator_dense_continuous",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete \u2124 the interior is trivial (discrete topology), but on dense \u211a and continuous \u211d it captures neighborhood-stable truth: Int(\u03c6) true at t iff \u03c6 holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(\u03c6)\u2192\u03c6, Int(\u03c6)\u2192Int(Int(\u03c6))). Phase 4: interaction with temporal operators and S5 \u25a1. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) \u2014 completeness may require non-standard techniques.",
       "dependencies": [
         122
       ],
@@ -342,7 +342,7 @@
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
-      "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
+      "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation \u2014 define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
       "dependencies": [
         154,
         168,
@@ -421,7 +421,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
           "type": "research",
-          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
+          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better \u2014 1 sorry source vs 2). Prior revert was premature."
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md",
@@ -516,7 +516,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/summaries/28_reynolds-bypass-summary.md",
           "type": "summary",
-          "summary": "Phase A1: Track A OrderIso bypass infeasible — succ_cofinal blocks all paths"
+          "summary": "Phase A1: Track A OrderIso bypass infeasible \u2014 succ_cofinal blocks all paths"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md",
@@ -591,7 +591,7 @@
       "session_id": "sess_1779810332_dc1959",
       "task_type": "lean4",
       "priority": "medium",
-      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines — split by induction level), SoundnessLemmas.lean (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
+      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines \u2014 split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines \u2014 split by induction level), SoundnessLemmas.lean (2422 lines \u2014 split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
       "dependencies": [
         168
       ],
@@ -908,7 +908,7 @@
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
-      "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N×N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
+      "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N\u00d7N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
       "dependencies": [],
       "created": "2026-05-22T19:18:49Z",
       "last_updated": "2026-05-22T20:09:58Z",
@@ -1031,18 +1031,58 @@
     {
       "project_number": 199,
       "project_name": "grid_order_tactic",
-      "status": "not_started",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "high",
       "topic": "automation",
-      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
+      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd \u27e8k, proof_n+1\u27e9 < x \u2194 resp_tau \u27e8k, proof_n\u27e9 < y) \u2227 (... = ... \u2194 ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
       "dependencies": [
         155
       ],
       "created": "2026-05-26T22:00:00Z",
-      "last_updated": "2026-05-26T22:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-05-27T00:30:00Z",
+      "researched": "2026-05-27T00:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/199_grid_order_tactic/reports/01_grid-order-tactic.md",
+          "type": "research",
+          "summary": "Full analysis: 5 remaining goals at Case B sorry (line 1960), Case A already sorry-free, ordering lemma catalog, Fin bridging analysis, fan_order helper lemma design, grid_order_tac macro architecture"
+        },
+        {
+          "path": "specs/199_grid_order_tactic/plans/01_grid-order-tactic.md",
+          "type": "plan",
+          "summary": "4-phase plan: fan_order helper lemma, grid_order_tac macro, Case B sorry elimination, full build verification"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_grid-order-tactic.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-27"
+          }
+        ]
+      }
     }
   ],
   "next_project_number": 200,
