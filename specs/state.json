@@ -338,7 +338,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "partial",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -350,7 +350,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-27T02:00:00Z",
+      "last_updated": "2026-05-27T15:59:50Z",
       "next_artifact_number": 36,
       "artifacts": [
         {
@@ -519,11 +519,6 @@
           "summary": "Phase A1: Track A OrderIso bypass infeasible — succ_cofinal blocks all paths"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/28_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan: single-track GHR93 pipeline, 9 phases, Approach C (case-split), ~20 hours"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/29_phase3-blocker-research.md",
           "type": "research",
           "summary": "Phase 3 blocker: d-compat field design, obtain_split_point_props has zero sorries, attack order S4->S7->d-compat->cross-boundary"
@@ -537,16 +532,6 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/30_blocker-study-prior-art.md",
           "type": "research",
           "summary": "Deep analysis of GHR93 Claim 1 literature, definitive resolution of Phase 3 blockers, 12-sorry inventory, pipeline health assessment (17-32h remaining)"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/31_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v31: Phases 1-4 completed, Phase 3 d-compat approach with 3 mechanical sorries, Phase 5 parameter approach for S12"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/32_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v32: updated file paths after task 174 split, Phase 9 reduced to verification after task 198"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/32_post-dependency-assessment.md",
@@ -569,14 +554,9 @@
           "summary": "Tactic analysis: 2 live sorry sites; anonymous hypothesis problem from split_ifs; structured focused proofs with named hypotheses recommended"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/33_reynolds-pipeline-plan.md",
+          "path": "specs/155_reynolds_pipeline_activation/plans/35_reynolds-pipeline-plan.md",
           "type": "plan",
-          "summary": "Revised plan v33: Phase 3 split into 3A (unified game restructure) and 3B (tactic overhaul) based on 3 targeted research reports"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/34_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v34: Phase 3A superseded (unified game infeasible), replaced with sel_pn_ord sorry field + deferred Phase 3C for Lemma 10 restructure"
+          "summary": "Revised plan v35: Phase 3C rewritten (U(B,A) transfer), Phase 6 restructured (6A/6B/6C)"
         }
       ],
       "session_id": "sess_1779640471_03278b",
