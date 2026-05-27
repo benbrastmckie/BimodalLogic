@@ -1620,9 +1620,15 @@ private theorem ghr93_case_II {sig : MonadicSignature}
              | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
                     from hab_eq _ _ ‹_›]
                 exact sel_pn_ord ⟨_, ‹_›⟩)
-             -- p_n vs sel(j): pn_sel_ord (Fin bridging needed; a_init vs a_bwd)
-             -- Phase 3B residual: exact/convert can't resolve Fin proof mismatch
-             | sorry)
+             -- p_n vs sel(j), sel(i) vs p_n, y' vs sel(j-1): Fin bridging
+             | (first
+               | (convert pn_sel_ord ⟨_, ‹_›⟩ using 3 <;> (congr 1; exact Fin.ext (by omega)))
+               | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
+                      from hab_eq _ _ (by assumption)]
+                  exact sel_pn_ord ⟨_, ‹_›⟩)
+               | (have key := (tau_sel_y ⟨_, ‹_›⟩)
+                  exact ⟨key.1.symm, key.2.symm⟩)
+               | sorry))
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
@@ -1914,7 +1920,24 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                  ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
                  (tau_d_sel ⟨_, ‹_›⟩) using 3
              <;> (congr 1; exact Fin.ext (by omega)))
-          | sorry
+          -- Remaining grid goals: b_resp/p_n, y'/b_resp, y'/sel, y'/p_n, p_n/x, p_n/b_resp, sel/p_n, p_n/sel
+          | (first
+            | (convert pn_sel_ord ⟨_, ‹_›⟩ using 3 <;> (congr 1; exact Fin.ext (by omega)))
+            | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
+                   from hab_eq _ _ (by assumption)]
+               exact sel_pn_ord ⟨_, ‹_›⟩)
+            | (have key := (tau_sel_y ⟨_, ‹_›⟩)
+               exact ⟨key.1.symm, key.2.symm⟩)
+            | exact ⟨fwd_b_y.1.symm, fwd_b_y.2.symm⟩
+            | exact ⟨fwd_x_b.1.symm, fwd_x_b.2.symm⟩
+            | exact ⟨tau_b_y'.1.symm, tau_b_y'.2.symm⟩
+            | (exact pivot_chain_order' hb_resp_in.1 hd_le_pn
+                  (le_of_lt hc_lt_bsp) hc_le_en tau_d_b
+                  ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩)
+            | (exact pivot_chain_order_rev' hd_le_pn hb_resp_in.1
+                  hc_le_en (le_of_lt hc_lt_bsp)
+                  ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩ tau_d_b)
+            | sorry)
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an
         -- Forward game orderings
