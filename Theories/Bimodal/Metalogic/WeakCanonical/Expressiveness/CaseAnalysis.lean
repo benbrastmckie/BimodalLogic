@@ -3316,14 +3316,12 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
       obtain ⟨γ_M, hm_lt_γM, h_def_γM_left, h_D_bet_γM, _⟩ :=
         hform_transfer sf_verum (by rw [stavi_depth_sf_verum]; omega) h_verum_γN
       -- Step 2: γ_M ∈ [x, y].
-      -- Lower bound: x ≤ m_M < γ_M.
-      -- Upper bound γ_M ≤ y: requires showing the D-left-definable gap
-      -- detected by left_formula at m_M lies within [x, y].
-      -- The key argument: the D-between condition at m_M propagates D-truth
-      -- in the same "local neighborhood" as at m_N, and the forward game's
-      -- order preservation ensures γ_M is bounded by the interval endpoints.
-      -- Technical proof deferred — the interval bound argument requires
-      -- a more detailed analysis of the D-between region relative to [x, y].
+      -- Lower bound: x ≤ m_M < γ_M (trivial from hm_M_in.1 and hm_lt_γM).
+      -- Upper bound Sum.inr γ_M ≤ y: by contradiction.
+      -- If y < Sum.inr γ_M, find p_N ∉ γ_N.cut with ¬D(p_N) in [x', y'].
+      -- Play sub-interval forward game on [m_M, y] vs [m_N, y'] via h_r1_univ
+      -- to get p_M with m_M < p_M (order agreement at endpoints vs response).
+      -- Then h_D_bet_γM gives D(p_M), but formula agreement gives ¬D(p_M). ⊥
       have hγ_M_in : inClosedInterval x y (Sum.inr γ_M) :=
         ⟨le_of_lt (lt_of_le_of_lt hm_M_in.1 hm_lt_γM), by sorry⟩
       -- Step 3: Formula agreement ∀ A, depth A ≤ r → (A(γ_M) ↔ A(γ_N)).
