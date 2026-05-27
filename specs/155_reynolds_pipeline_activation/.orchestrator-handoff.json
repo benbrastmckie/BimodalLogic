@@ -1,21 +1,29 @@
 {
   "task_number": 155,
-  "session_id": "sess_1779910019_ec7547",
+  "session_id": "sess_1748390400_orch155",
   "status": "partial",
-  "summary": "Phase 6C-1 COMPLETED: k=0 backward direction of nf_2var_existence_characterizable proved. ~160 lines of proof code. Sorry now only in succ k' case (line 2033). Build passes.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1"],
+  "summary": "Phase 3C preparatory work completed: added h_r1_univ parameter to ghr93_case_II and Mathlib.Data.Fin.Tuple.Sort import. Deep analysis confirms U(B,A) witness construction (GHR93 Theorem 12.8.15 Case II) is required to replace current e_n construction from d-compatible forward game. Detailed handoff with exact implementation steps written. Phase 6D also assessed but requires unbounded interval infrastructure not yet available.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
-    "succ k' case (k>=1) of nf_2var_existence_characterizable still has sorry at line 2033",
-    "nf_exist_sf with sf_top guard is insufficient for backward direction at k>=1",
-    "Requires either interval guard (Approach A, ~300-500 lines) or nested temporal formula (Approach C, ~600-800 lines)"
+    "Phase 3C requires replacing e_n construction with U(B,A) witness (GHR93 pp.443-444). This is a 4-8 hour restructuring of ghr93_case_II in CaseAnalysis.lean.",
+    "Phase 6D requires infrastructure for unbounded intervals in ghr93_duplicator_wins (currently only supports bounded [x,y]).",
+    "All 28 previously attempted approaches for sel_pn_ord have failed (fan problem). U(B,A) is the only viable path."
   ],
   "continuation_context": {
-    "sorry_location": "StaviCompleteness.lean:2033",
-    "sorry_goal": "∃ x, nf_eval_nf M (k' + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf",
-    "key_insight": "At k>=1, the 1-var depth-k type of x alone does not determine the 2-var NF of (x,t). The formula nf_exist_sf with sf_top guard provides no constraints on intermediate points or quantifier structure.",
-    "recommended_approach": "Approach A (interval guard): replace sf_top with guard constraining intermediate point 1-var types using IH char_k formulas",
-    "fallback_approach": "Approach C (nested temporal formula): directly encode multi-var NF as nested Until/Since, recursing on depth k"
+    "phase_3C_status": "IN PROGRESS - preparatory work done",
+    "phase_3C_next_step": "Replace lines 1218-1340 of CaseAnalysis.lean (e_n construction via d-compatible forward game) with U(B,A) witness construction following GHR93 12.8.15 Case II. Key steps: (1) construct tau at rank r+4 from h_r1_univ, (2) build rank-r type formula B = X_{p_n}, (3) build std_untl B sf_top, (4) show it holds at a_init(k), (5) transfer via higher-rank tau, (6) extract witness as new e_n, (7) sel_pn_ord becomes trivial",
+    "sorry_sites": {
+      "CaseAnalysis_1444": "sel_pn_ord Case A (Phase 3C target)",
+      "CaseAnalysis_1813": "sel_pn_ord Case B (Phase 3C target)",
+      "CaseAnalysis_2024": "b_resp vs p_n Case B grid (separate from sel_pn_ord)",
+      "CaseAnalysis_2077": "Case B dead code fallback (Phase 3C target)",
+      "CaseAnalysis_4109": "Cases III/IV winning condition (Phase 5, depends on 3C)",
+      "StaviCompleteness_1873": "nf_2var_from_interval_data (dead code, Phase 6C-4)",
+      "StaviCompleteness_2152": "nf_exist_sf_guarded_backward (dead code, Phase 6C-4)"
+    },
+    "key_insight": "GHR93 does NOT construct e_n from a forward game. e_n IS the U(B,A) witness: a point above resp_tau(n-1) satisfying the same rank-r type as p_n. This makes sel_pn_ord trivial (True <-> True with sorted selections).",
+    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-uba-handoff-20260527.md"
   },
-  "next_action_hint": "implement Phase 6C-2: redefine nf_exist_sf formula with interval guard"
+  "next_action_hint": "implement Phase 3C core: replace e_n construction in ghr93_case_II with U(B,A) witness per GHR93 12.8.15. See handoff file for exact steps. The h_r1_univ parameter and Tuple.Sort import are already in place."
 }
