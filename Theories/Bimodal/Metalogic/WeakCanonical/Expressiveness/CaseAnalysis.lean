@@ -3284,6 +3284,8 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
           ∃ (γ_A : RDefinableGap M atomMap r),
             (extendPoint m_M : ExtendedCarrier M atomMap r) < Sum.inr γ_A ∧
             gap_definable_on_left M atomMap γ_A.val D ∧
+            (∀ u : M.carrier, m_M < u → u ∈ γ_A.val.cut →
+              stavi_temporal_truth_mu M atomMap r (extendPoint u) D) ∧
             stavi_temporal_truth_mu M atomMap r (Sum.inr γ_A) A := by
         intro A hA hA_γN
         -- Backward: A^mu(γ_N) → left_formula(A,D)(m_N) via left_formula_gap_detection at N
@@ -3292,7 +3294,6 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
           rw [left_formula_gap_detection A D hD_depth m_N]
           exact ⟨γ_N, hm_N_lt_γ, h_left_orig, hm_N_D_between, hA_γN⟩
         -- Transfer: left_formula truth from m_N to m_M.
-        -- stavi_depth(left_formula A D) ≤ max(depth A, depth D) + 4 ≤ r + 4.
         have h_left_depth : stavi_depth (left_formula A D) ≤ r + 4 := by
           calc stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 4 :=
             stavi_depth_left_formula A D
@@ -3302,13 +3303,13 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
             (left_formula A D) := (hform_pts (left_formula A D) h_left_depth).mpr h_left_N
         -- Forward: left_formula(A,D)(m_M) → ∃ γ_A in M with A^mu(γ_A)
         rw [left_formula_gap_detection A D hD_depth m_M] at h_left_M
-        obtain ⟨γ_A, hm_lt_γA, h_def_A, _, hA_γA⟩ := h_left_M
-        exact ⟨γ_A, hm_lt_γA, h_def_A, hA_γA⟩
+        obtain ⟨γ_A, hm_lt_γA, h_def_A, h_D_bet_A, hA_γA⟩ := h_left_M
+        exact ⟨γ_A, hm_lt_γA, h_def_A, h_D_bet_A, hA_γA⟩
       -- Step 1: Instantiate hform_transfer with sf_verum to get γ_M existence.
       -- sf_verum has depth 0 ≤ r and is trivially true at all positions.
       have h_verum_γN : stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) sf_verum := by
         simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu]
-      obtain ⟨γ_M, hm_lt_γM, h_def_γM_left, _⟩ :=
+      obtain ⟨γ_M, hm_lt_γM, h_def_γM_left, h_D_bet_γM, _⟩ :=
         hform_transfer sf_verum (by rw [stavi_depth_sf_verum]; omega) h_verum_γN
       -- Step 2: γ_M ∈ [x, y].
       -- Lower bound: x ≤ m_M < γ_M.
@@ -3331,16 +3332,65 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
       refine ⟨γ_M, hγ_M_in, ?_⟩
       intro A hA
       constructor
-      · -- A(γ_M) → A(γ_N): use left_formula backward at m_M, transfer, forward at m_N
-        sorry
+      · -- A(γ_M) → A(γ_N): left_formula backward at m_M, transfer, forward at m_N.
+        intro hA_γM
+        -- left_formula(A,D) at m_M, using γ_M as witness.
+        have h_left_mM : stavi_temporal_truth_mu M atomMap r (extendPoint m_M)
+            (left_formula A D) := by
+          rw [left_formula_gap_detection A D hD_depth m_M]
+          exact ⟨γ_M, hm_lt_γM, h_def_γM_left, h_D_bet_γM, hA_γM⟩
+        -- Transfer to m_N via hform_pts
+        have h_left_depth : stavi_depth (left_formula A D) ≤ r + 4 := by
+          calc stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 4 :=
+            stavi_depth_left_formula A D
+          _ ≤ max r r + 4 := by omega
+          _ = r + 4 := by omega
+        have h_left_mN : stavi_temporal_truth_mu N atomMap r (extendPoint m_N)
+            (left_formula A D) := (hform_pts (left_formula A D) h_left_depth).mp h_left_mM
+        -- Extract γ from left_formula at m_N — must be γ_N by gap_detection_unique.
+        rw [left_formula_gap_detection A D hD_depth m_N] at h_left_mN
+        obtain ⟨γ_N', hm_lt_γN', h_def_γN', h_D_bet_γN', hA_γN'⟩ := h_left_mN
+        -- γ_N' = γ_N by gap_detection_unique
+        have hm_N_in_γN : m_N ∈ γ_N.val.cut := hm_N_cut
+        have hm_N_in_γN' : m_N ∈ γ_N'.val.cut :=
+          (extendPoint_le_gap_iff m_N γ_N').mp (le_of_lt hm_lt_γN')
+        have h_D_bet_γN_std : ∀ u : N.carrier, m_N < u → u ∈ γ_N.val.cut →
+            stavi_temporal_truth N atomMap u D := by
+          intro u hmu hu_cut
+          exact (stavi_truth_mu_at_point u D).mp (hm_N_D_between u hmu hu_cut)
+        have h_D_bet_γN'_std : ∀ u : N.carrier, m_N < u → u ∈ γ_N'.val.cut →
+            stavi_temporal_truth N atomMap u D := by
+          intro u hmu hu_cut
+          exact (stavi_truth_mu_at_point u D).mp (h_D_bet_γN' u hmu hu_cut)
+        have h_gap_eq : γ_N.val = γ_N'.val :=
+          gap_detection_unique h_left_orig h_def_γN'
+            h_D_bet_γN_std h_D_bet_γN'_std hm_N_in_γN hm_N_in_γN'
+        have h_eq : γ_N = γ_N' := Subtype.ext h_gap_eq
+        rw [h_eq]; exact hA_γN'
       · -- A(γ_N) → A(γ_M): use hform_transfer to get γ_A, then γ_A = γ_M by uniqueness
         intro hA_γN
-        obtain ⟨γ_A, hm_lt_γA, h_def_γA, hA_γA⟩ := hform_transfer A hA hA_γN
-        -- γ_A = γ_M by gap_detection_unique: both are D-left-definable gaps above m_M.
-        -- The D-between conditions at m_M for both gaps come from hform_transfer's
-        -- left_formula_gap_detection output.
-        -- Requires: m_M ∈ γ_M.cut ∩ γ_A.cut, and D-between for both.
-        sorry
+        obtain ⟨γ_A, hm_lt_γA, h_def_γA, h_D_bet_γA, hA_γA⟩ := hform_transfer A hA hA_γN
+        -- γ_A = γ_M by gap_detection_unique: both D-left-definable above m_M.
+        -- m_M ∈ γ_M.cut (from hm_lt_γM) and m_M ∈ γ_A.cut (from hm_lt_γA).
+        have hm_M_in_γM : m_M ∈ γ_M.val.cut :=
+          (extendPoint_le_gap_iff m_M γ_M).mp (le_of_lt hm_lt_γM)
+        have hm_M_in_γA : m_M ∈ γ_A.val.cut :=
+          (extendPoint_le_gap_iff m_M γ_A).mp (le_of_lt hm_lt_γA)
+        -- D-between at m_M for γ_M: h_D_bet_γM, converted to stavi_temporal_truth
+        have h_D_bet_γM' : ∀ u : M.carrier, m_M < u → u ∈ γ_M.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hmu hu_cut
+          exact (stavi_truth_mu_at_point u D).mp (h_D_bet_γM u hmu hu_cut)
+        have h_D_bet_γA' : ∀ u : M.carrier, m_M < u → u ∈ γ_A.val.cut →
+            stavi_temporal_truth M atomMap u D := by
+          intro u hmu hu_cut
+          exact (stavi_truth_mu_at_point u D).mp (h_D_bet_γA u hmu hu_cut)
+        have h_gap_eq : γ_M.val = γ_A.val :=
+          gap_detection_unique h_def_γM_left h_def_γA h_D_bet_γM' h_D_bet_γA'
+            hm_M_in_γM hm_M_in_γA
+        -- γ_M = γ_A as subtypes
+        have h_eq : γ_M = γ_A := Subtype.ext h_gap_eq
+        rw [h_eq]; exact hA_γA
     · -- RIGHT CASE: γ_N is D-definable on the right.
       sorry
   obtain ⟨γ_M, hγ_M_in, hγ_M_form⟩ := h_gap_match
