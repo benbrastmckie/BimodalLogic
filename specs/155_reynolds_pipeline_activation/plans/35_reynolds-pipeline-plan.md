@@ -1,8 +1,8 @@
 # Implementation Plan: Reynolds Pipeline Activation (v35 revised, Phase 6C decomposed)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [PARTIAL] -- Phases 1-4, 3A, 6A complete; Phase 6B superseded; Phase 6C decomposed into 6C-1 through 6C-5 to address nf_2var_existence_characterizable blocker; Phase 3B has 2 goals deferred; Phase 3C depends on Phase 6C
-- **Effort**: 16-32 hours remaining (Phase 6C-1 ~1h, Phase 6C-2 ~1-2h, Phase 6C-3 ~2-3h, Phase 6C-4 ~4-8h, Phase 6C-5 ~1h, Phase 3C ~3-6h, Phase 3B residual ~1-2h, Phase 5 residual ~2-4h, Phases 7-9 ~5-9h)
+- **Status**: [PARTIAL] -- Phases 1-4, 3A, 6A complete; Phase 6B superseded; Phase 6C-1/2/3 complete, 6C-4 superseded (bridge lemma dead end); Phase 3C restructured to use char_k IH (no Phase 6C dependency); new Phases 6D/6E/6F for GHR93 classical chain
+- **Effort**: 20-40 hours remaining (Phase 3C ~4-8h using char_k IH, Phase 5 ~2-4h, Phase 6D ~2-4h, Phase 6E ~3-6h, Phase 6F ~2-4h, Phase 6C-4/5 revised ~2-4h, Phase 3B ~1-2h, Phases 7-9 ~5-9h)
 - **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED), Task 168 (COMPLETED), Task 174 (COMPLETED), Task 198 (COMPLETED), Task 199 (PARTIAL -- closed 4/6 Case B grid goals, 2 blocked on b_resp vs p_n proof gap)
 - **Research Inputs**: reports/28_team-research.md, reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md, reports/30_blocker-study-prior-art.md, reports/32_post-dependency-assessment.md, reports/33_lit-sel-pn-ordering.md, reports/33_infra-sel-pn-fix.md, reports/33_tactic-sel-pn-grid.md, reports/34_lemma10-strategy-restrict.md, reports/35_gap-detection-literature.md, reports/38_proposition7-composition.md, reports/41_phase3c-d-as-minimum.md, reports/42_path-a-dependency-analysis.md, reports/42_path-b-direct-formula.md, reports/42_path-c-single-game.md, reports/36_nested-formula-research.md, reports/37_literature-blocker-insight.md, reports/43_backward-direction-bridge.md, **Task 199**: specs/199_grid_order_tactic/reports/01_grid-order-tactic.md, specs/199_grid_order_tactic/reports/02_blocker-analysis.md
 - **Artifacts**: plans/35_reynolds-pipeline-plan.md (this file)
@@ -21,13 +21,16 @@ This plan targets sorry-free `bx_completeness` via the GHR93 expressive complete
 
 Therefore: **Phase 6 must be implemented FIRST** (Proposition 7 + EFGames-internal case analysis + nf_characterizable_by_stavi closure). Then Phase 3C uses the resulting formula materialization to construct U(B,A) and close sel_pn_ord + b_resp vs p_n. This follows GHR93 exactly -- the inductive step at depth k+1 uses depth-k IH formulas (available by standard induction), resolving the apparent circularity.
 
-**Phase 6C decomposition (v35 revised, Phase 6C decomposed)**: Reports 36, 37, and 43 identified the root cause of the Phase 6C blocker and two viable resolution approaches:
-- **Root cause**: `nf_exist_sf` uses `sf_top` (trivially True) as the Until/Since guard. This makes the forward direction trivial but the backward direction unprovable for k>=1: knowing the 1-var depth-k type of x alone does not determine the 2-var depth-k NF of (x,t) because the 2-var NF includes quantifier information about 3-variable NFs.
-- **Approach A (Interval Guard, PRIMARY)**: Replace `sf_top` with a formula constraining intermediate-point 1-var types, built from IH `char_k`. ~300-500 lines. The interval guard + endpoint types determine the 2-var NF for k=0 and k=1. For k>=2, points z outside the interval (t,x) are unconstrained by the Until guard, but the depth-k 1-var types of x and t encode existential information about outside points via their quantifier parts. The bridge argument is non-trivial but feasible.
-- **Approach C (Nested Temporal Formula, FALLBACK)**: Directly encode the full multi-variable NF condition as nested Until/Since formulas, recursing on depth k with increasing variable count. ~600-800 lines. Zero risk, self-contained, both directions by structural recursion. No bridge theorem needed.
-- Phase 6C is now decomposed into 5 sub-phases: 6C-1 (k=0 base case), 6C-2 (redefine formula with interval guard), 6C-3 (re-prove forward direction), 6C-4 (prove backward direction with bridge), 6C-5 (wire up and verify).
+**Phase 6C restructured (v36 revised, GHR93 classical approach)**: The interval guard approach (Approach A from reports 36/37/43) was implemented through Phase 6C-3 (forward direction proved sorry-free) but Phase 6C-4 hit a **structural dead end**: the bridge lemma `nf_2var_from_interval_data` requires outside-interval hypotheses (`h_above_max`, `h_below_min`) that CANNOT be extracted from the temporal formula. The Until/Since with interval guard constrains points BETWEEN t and x but not points outside [t,x]. This makes Approach A unusable for the backward direction at k≥1.
 
-User directive: follow mathematically correct GHR93 approach head on, no workarounds.
+**Resolution — GHR93's classical argument (v36)**: The plan's dependency Phase 3C → Phase 6C was WRONG and created a circular dependency. GHR93's actual proof has no circularity because:
+1. The backward game theorem (12.8.15) is self-contained — it does NOT depend on NF characterization
+2. U(B,A) transfer in Case II uses `char_k` (IH), NOT `char_{k+1}` (nf_characterizable_by_stavi)
+3. At NF depth k+1, the game uses rank r ≤ f(k) = `game_depth(k)`, and char_k covers exactly this rank
+
+Corrected flow: Phase 3C (U(B,A) with char_k IH, no Phase 6C dependency) → Phase 5 → Theorem 12.8.15 complete → new Phases 6D/6E/6F (Props 12.8.16/18 + Cor 12.8.19) → Phase 6C revised (classical characterization via Cor 12.8.19) → Phases 7-9.
+
+User directive: follow GHR93 closely — clean, unified codebase, no bridges/wrappers/shims. Refactor as needed later for long-term quality.
 
 **Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
 
@@ -136,6 +139,17 @@ Twenty research reports, a blocker study, two task 199 reports, and three path-a
 - Effort recalibrated: Phase 3C reduced (3-6h from 6-12h, leveraging Phase 6 output); Phase 6 unchanged (14-24h total).
 - Dependency graph completely reordered (see wave table below).
 
+**v36 revised GHR93 classical approach (2026-05-27)**: Major structural correction after 4 implementation cycles exposed a dead end in Approach A (interval guard bridge). Changes:
+- **Phase 6C-4 SUPERSEDED**: Bridge lemma `nf_2var_from_interval_data` has outside-interval hypotheses (`h_above_max`, `h_below_min`) that cannot be extracted from the temporal formula. Approach A is structurally incomplete for k≥1. Dead code to be removed.
+- **Circular dependency BROKEN**: Plan v35 had Phase 3C → Phase 6C, but GHR93's approach requires Phase 6C to use the backward game theorem (which includes Phase 3C). Resolution: U(B,A) uses `char_k` (IH) directly at rank f(k) — does NOT need `char_{k+1}` / nf_characterizable_by_stavi.
+- **New Phases 6D/6E/6F added**: Proposition 12.8.16 (temporal → game), full Proposition 12.8.18 (m-tuple composition), Corollary 12.8.19 (temporal → FO equivalence). These form the GHR93 classical chain.
+- **Phase 6C-4 revised**: Now uses Corollary 12.8.19 for classical characterization instead of interval guard bridge.
+- **Phase 3C restructured**: No longer depends on Phase 6C. Uses `char_k` (IH) for formula materialization.
+- **Dependency graph completely reordered**: Waves 3-4 (backward game) and Waves 5-7 (GHR93 chain) are independent; Wave 8 (classical characterization) requires both.
+- **Superseded Approaches expanded**: #27 (interval guard bridge), #28 (Phase 3C→6C circular dependency).
+- **Settled questions expanded**: char_k sufficiency, backward game independence, classical resolution path.
+- User directive: follow GHR93 closely, clean unified codebase, no bridges/wrappers/shims.
+
 **v35 revised Phase 6C decomposed (2026-05-27)**: Post-blocker-research revision incorporating reports 36 (nested formula research), 37 (literature blocker insight), and 43 (backward direction bridge). Changes:
 - **Phase 6C decomposed into 5 sub-phases**: 6C-1 (k=0 base case, ~1h), 6C-2 (redefine nf_exist_sf with interval guard, ~1-2h), 6C-3 (re-prove forward direction, ~2-3h), 6C-4 (prove backward direction with bridge theorem, ~4-8h), 6C-5 (wire up and verify, ~1h).
 - **Root cause confirmed**: `nf_exist_sf` uses `sf_top` as Until/Since guard. This is too weak for the backward direction at k>=1 because the 2-var NF includes quantifier information not determined by the 1-var type alone.
@@ -200,6 +214,8 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 | 24 | **"Good NF" disjunction approach** | Phase 6C implementation | Build disjunction over all depth-k 1-var NFs nf_t such that the existential P holds. Uses doets_lemma_1_1 to show NF determines formula truth. FAILS because P has quantifier depth k+1 but char_k provides only depth-k information. Two points with the same depth-k NF can disagree on the depth-(k+1) existential. |
 | 25 | **NF finiteness + definability argument** | Phase 6C implementation, Report 36 Section 5.8 | Show P is a union of NF equivalence classes, hence definable. CIRCULAR because showing P is invariant under StaviFormula equivalence IS the expressive completeness theorem being proved. The "good class" predicate is classically decidable but its truth at a specific point requires depth-(k+1) information. |
 | 26 | **Reduction to stavi_expressive_completeness** | Phase 6C implementation | The existential IS a monadic FO formula, so stavi_expressive_completeness gives the StaviFormula. But stavi_expressive_completeness depends on nf_characterizable_by_stavi at depth k+1, which is what we're proving. CIRCULAR. |
+| 27 | **Interval guard bridge lemma (Approach A backward direction)** | Phase 6C-4 (4 implementation cycles) | `nf_2var_from_interval_data` bridge lemma requires outside-interval hypotheses (`h_above_max`, `h_below_min`) that CANNOT be extracted from the Until/Since temporal formula. The formula constrains points BETWEEN t and x but NOT outside [t,x]. The bridge lemma is mathematically correct but structurally unusable for the backward direction. Forward direction (`nf_exist_sf_guarded_forward`) IS correct and sorry-free; only the backward direction is blocked. Approach A is sound for k=0 (proved) but fundamentally incomplete for k≥1. |
+| 28 | **Phase 3C depending on Phase 6C (circular dependency)** | Plan v35 | The plan claimed Phase 3C (U(B,A) transfer) depends on Phase 6C (nf_characterizable_by_stavi). This creates a circular dependency when Phase 6C uses the game-theoretic argument (which requires Theorem 12.8.15, which includes Phase 3C). Resolution: U(B,A) uses `char_k` (IH) at rank f(k) ≤ r, NOT `char_{k+1}` / nf_characterizable_by_stavi. The dependency was wrong. |
 
 **Key settled questions**:
 - Infimum redefinition IS necessary (reports 29, 35). Do not revisit.
@@ -220,7 +236,10 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 - **sf_top guard is provably insufficient for backward direction** (reports 36, 37, 43): The formula U(witness_type, sf_top) gives x with the right 1-var type but does NOT determine the 2-var NF at depth k>0. A proper interval guard (constraining intermediate point types via IH formulas) is required. Do NOT attempt sf_top-based backward proofs.
 - **The backward direction requires an interval guard matching GHR93 Definition 12.8.13** (report 37): The guard X_{(t,u)} constrains which 1-var types appear at intermediate points. This is the standard construction in the literature.
 - **Approaches 23-26 are all circular or insufficient** (report 36 Sections 3-6): "Good NF" disjunction, NF finiteness/definability, and reduction to stavi_expressive_completeness all fail for specific identified reasons. Do NOT re-attempt these.
-- **The outside-interval issue for k>=2 is real but may be resolvable** (report 36 Section 6): The depth-k 1-var type of x encodes existential information about points above x, and similarly for t. The bridge argument from this information to full 2-var NF determination is non-trivial but the mathematical content is sound. If the bridge proof is too difficult, fall back to Approach C (nested temporal formula).
+- **The outside-interval issue for k>=2 makes Approach A structurally unusable**: The bridge lemma requires hypotheses about outside-interval types that cannot be extracted from the temporal formula. This is not a difficulty issue — it's a structural impossibility. Do NOT re-attempt Approach A for the backward direction at k≥1.
+- **char_k (IH) suffices for U(B,A) materialization**: At NF depth k+1, the backward game uses rank r ≤ f(k) = game_depth(k). The IH provides char_k covering this rank. U(B,A) construction does NOT need char_{k+1}. This breaks the Phase 3C → Phase 6C circular dependency.
+- **GHR93's backward game theorem (12.8.15) is self-contained**: It does not depend on NF characterization or expressive completeness. The formalization should mirror this independence.
+- **The correct resolution for nf_2var_existence_characterizable is Corollary 12.8.19**: The classical argument (disjunction of temporal types consistent with the property) follows from the game-theoretic capstone, not from formula-level bridge theorems.
 
 ## Risks & Mitigations
 
@@ -237,22 +256,23 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 
 ## Implementation Phases
 
-**Dependency Analysis**:
+**Dependency Analysis (v36 revised — corrected circular dependency)**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 2, 4 | -- (COMPLETED) |
-| 2 | 3A | 2 (COMPLETED) |
-| 3 | 6A | -- (COMPLETED) |
-| 4 | 6C-1 | -- (no dependency on incomplete phases; validates infrastructure for k=0 base case) |
-| 5 | 6C-2 | 6C-1 (redefine formula using infrastructure validated in 6C-1) |
-| 6 | 6C-3 | 6C-2 (re-prove forward direction for the redefined formula) |
-| 7 | 6C-4 | 6C-3 (prove backward direction; depends on forward being stable) |
-| 8 | 6C-5 | 6C-4 (wire up nf_2var_existence_characterizable and verify build) |
-| 9 | 3C | 6C-5 (formula materialization from nf_characterizable_by_stavi) |
-| 10 | 3B, 5 | 3C (3B's 2 blocked goals resolved by 3C; 5's winning condition assembly needs sel_pn_ord from 3C) |
-| 11 | 7 | 6C-5 (no_gaps_discrete needs nf_characterizable_by_stavi) |
-| 12 | 8 | 7 |
-| 13 | 9 | 8 |
+| 1 | 1, 2, 4, 3A, 6A | -- (ALL COMPLETED) |
+| 2 | 6C-1, 6C-2, 6C-3 | -- (ALL COMPLETED) |
+| 3 | 3C | -- (uses char_k IH directly, NO dependency on Phase 6C) |
+| 4 | 3B, 5 | 3C (sel_pn_ord + b_resp from 3C) |
+| 5 | 6D | -- (Prop 12.8.16, independent of prior phases) |
+| 6 | 6E | 6D (Prop 12.8.18, uses 12.8.16 + existing composition) |
+| 7 | 6F | 6E (Cor 12.8.19, uses 12.8.9 + 12.8.16 + 12.8.18) |
+| 8 | 6C-4 (revised) | 6F (classical characterization via Cor 12.8.19) |
+| 9 | 6C-5 | 6C-4 revised |
+| 10 | 7 | 6C-5 (no_gaps_discrete needs nf_characterizable_by_stavi) |
+| 11 | 8 | 7 |
+| 12 | 9 | 8 |
+
+**Key correction**: Waves 3-4 (backward game completion) and Waves 5-7 (GHR93 chain) are INDEPENDENT and can execute in parallel. Wave 8 (classical characterization) requires both complete.
 
 Phases within the same wave can execute in parallel.
 
@@ -548,110 +568,165 @@ Given witness x with `nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`:
 
 ---
 
-#### Phase 6C-4: Prove Backward Direction with Bridge Theorem [PARTIAL]
+#### Phase 6C-4: Prove Backward Direction via Classical Argument [BLOCKED on 6F]
 
-**Goal**: Prove `nf_exist_sf_backward` -- the critical missing piece. Given that `U(witness_type, interval_guard)` holds at t, prove `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`.
+**Status note**: The original Approach A (interval guard bridge) is **SUPERSEDED** — see Superseded Approach #27. The bridge lemma `nf_2var_from_interval_data` has outside-interval hypotheses that cannot be discharged from the temporal formula.
 
-This is the highest-risk phase and the mathematical core of the entire Phase 6C effort.
+**Revised approach (GHR93 classical argument via Corollary 12.8.19)**:
 
-**What the Until formula provides** (after strengthening):
-1. A witness x with `char_k nf_x` holding at x (so x has 1-var depth-k type nf_x by IH)
-2. x > t (or x < t, from the temporal direction)
-3. For all u in (t,x): the interval guard holds at u, meaning `char_k nf_u` holds for some allowed nf_u
+The property P(t) = "∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf" is a monadic FO formula of t with quantifier depth ≤ k+1. By Corollary 12.8.19 (Phase 6F), two points agreeing on temporal formulas of rank g(k+2)+1 agree on P. Since NormalForm equivalence classes partition temporal types at the appropriate rank, the characterizing StaviFormula is the disjunction of char types consistent with P.
 
-**What must be proved**:
-`nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`
+**Dead code to remove**:
+- `nf_2var_from_interval_data` (line 1853) — bridge lemma with unusable outside-interval hypotheses
+- `nf_2var_transfer` (line 1877) — depends on bridge lemma
+- `nf_exist_sf_guarded_backward` (line 2125) — sorry'd, depends on bridge lemma
+- `nf_2var_exist_sf_classical` (line 2157) — wires forward + backward, backward is sorry'd
+- `interval_nf_types` (line 1835) — only used by bridge lemma
 
-This decomposes into:
-- **Atoms part**: predicates at x match sub_nf's variable-0 predicates, predicates at t match parent atoms, order between x and t matches sub_nf's order atoms. All follow from the atom compatibility filter and t-consistency.
-- **Quant part** (k >= 1): for each `sub3 : NormalForm sig (k-1) 3`, whether `exists z, nf_eval_nf M (k-1) 3 (Fin.cons z (Fin.cons x (fun _ => t))) sub3` matches `sub_nf.2 sub3`.
-
-**The bridge argument** (Approach A):
-The quant part requires showing that the interval profile (which 1-var types appear in (t,x)) + the endpoint types of x and t + the ordering fully determine the 2-var NF. This is the content of GHR93's game argument:
-
-For a given z, the 3-var depth-(k-1) NF of (z, x, t) depends on:
-- z's 1-var depth-(k-1) type (contained in z's depth-k type)
-- z's position relative to x and t
-- By the IH at depth (k-1): all pairwise 2-var depth-(k-1) NFs
-
-For z in (t,x): the interval guard constrains z's depth-k 1-var type, which includes depth-(k-1) info.
-For z = x or z = t: known from the endpoint types.
-For z > x: the depth-k 1-var NF of x encodes "exists y, nf_eval_nf M (k-1) 2 (cons y (fun _ => x)) sub2" for all sub2 -- this tells us what exists above x.
-For z < t: similarly from t's depth-k type.
-
-**The outside-interval issue** (report 36 Section 6, k>=2):
-For z > x, the existence of z with a specific 1-var type is encoded in x's depth-k NF. But the INTERVAL PROFILE between x and z (what types exist in (x,z)) is NOT encoded in x's depth-k NF and is NOT constrained by our hypotheses. This means the bridge argument for z > x requires additional work.
-
-**Resolution strategies for the outside-interval issue**:
-1. **Strong induction on k**: At depth k, use the IH at ALL depths k' < k. The outside-interval existentials involve depth-(k-1) NFs, for which the bridge theorem holds by IH. The key insight: the depth-k 1-var NF of x includes the depth-(k-1) 2-var NFs of (z,x) for all z, which by IH at depth (k-1) are determined by depth-(k-1) 1-var types + ordering + interval profile. Since we have depth-k types (which embed depth-(k-1) types), and we are asking about depth-(k-1) existentials, the IH may suffice.
-2. **Direct NF computation**: For each sub3, compute whether `sub_nf.2 sub3` is true by examining what z's are available in each position region. Use the formula constraints to determine this.
-3. **Fallback to Approach C**: If the bridge is too complex, switch to nested temporal formula construction.
+**Keep**: `interval_guard_sf`, `interval_guard_sf_true`, `nf_exist_sf_guarded`, `nf_exist_sf_guarded_forward` — the guarded formula and its forward direction are correct.
 
 **Tasks**:
-- [ ] Prove the atoms part of the backward direction (predicates + order from formula constraints)
-- [ ] For k=0: the backward direction is already proved in 6C-1, wire it in
-- [ ] For k>=1, attempt the bridge argument:
-  - [ ] Case z in (t,x): use the interval guard to determine z's type, apply IH
-  - [ ] Case z = x: use the witness type constraint
-  - [ ] Case z = t: use the parent atom / t-consistency constraint
-  - [ ] Case z > x: use x's depth-k NF quant part to determine existence
-  - [ ] Case z < t: use t's depth-k NF quant part to determine existence
-- [ ] If the z > x / z < t cases are blocked after 6 hours: **trigger Approach C fallback**
-  - [ ] Define `nf_multivar_exist_sf` recursing on k with increasing variable count
-  - [ ] Prove forward by structural recursion
-  - [ ] Prove backward by structural recursion + `nf_eval_unique`
-- [ ] Close `nf_exist_sf_backward` (or its Approach C equivalent)
+- [ ] Remove dead code listed above from StaviCompleteness.lean
+- [ ] Implement classical characterization using Cor 12.8.19 (Phase 6F):
+  - [ ] For each nf_t : NormalForm sig K 1 (at appropriate depth K), classically determine if P holds in some model with type nf_t
+  - [ ] The characterizing sf = disjunction of char_K(nf_t) for consistent nf_t
+  - [ ] Forward: if P holds, t has some type nf_t consistent with P → disjunction holds
+  - [ ] Backward: if disjunction holds, t has type nf_t consistent with P → by Cor 12.8.19, P holds
+- [ ] Close `nf_2var_existence_characterizable` sorry
 - [ ] Run `lake build`
 
-**Timing**: 4-8 hours (Approach A); add 6-10 hours if fallback to Approach C is triggered
+**Timing**: 2-4 hours
 
-**Depends on**: 6C-3 (forward direction must be stable before attempting backward)
+**Depends on**: 6F (Corollary 12.8.19)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` -- backward direction proof (~100-300 lines for Approach A, ~400-600 lines for Approach C)
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` — remove dead code (~150 lines removed), add classical characterization (~100-200 lines)
 
 **Verification**:
-- `nf_exist_sf_backward` (or equivalent) type-checks with no sorry
+- `nf_2var_existence_characterizable` sorry closed
+- Dead code removed (no `interval_nf_types`, `nf_2var_from_interval_data`, etc.)
 - `lake build` passes
 
 ---
 
 #### Phase 6C-5: Wire Up and Verify Build [NOT STARTED]
 
-**Goal**: Close the sorry at `nf_2var_existence_characterizable` (StaviCompleteness.lean:1865) using the forward and backward direction proofs from 6C-3 and 6C-4, then verify the full build.
+**Goal**: Verify `nf_characterizable_by_stavi` and `stavi_expressive_completeness` are sorry-free after Phase 6C-4.
 
 **Tasks**:
-- [ ] Replace the sorry at line 1865 with the proof combining `nf_exist_sf_forward` and `nf_exist_sf_backward` (or their Approach C equivalents)
-- [ ] Handle both quant=true (forward: existence -> formula) and quant=false (backward: formula -> existence, via contrapositive) cases
 - [ ] Run `#print axioms nf_characterizable_by_stavi` and verify no `sorryAx`
 - [ ] Run `#print axioms stavi_expressive_completeness` and verify no `sorryAx`
 - [ ] Run `lake build` to confirm zero errors in EFGames/
 - [ ] Verify sorry count in StaviCompleteness.lean is zero
 
-**Timing**: ~1 hour
+**Timing**: ~0.5 hours
 
-**Depends on**: 6C-4 (needs both directions proved)
+**Depends on**: 6C-4 revised
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` -- close sorry at line 1865 (~20-40 lines wiring)
+- None expected (verification only)
 
 **Verification**:
-- `nf_2var_existence_characterizable` sorry closed
 - `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
 - `#print axioms stavi_expressive_completeness` shows no `sorryAx`
 - `lake build` passes with zero sorry warnings in EFGames/
-- All Phase 6C sub-phases complete
 
 ---
 
-### Phase 3C: U(B,A) Transfer -- Replace e_n Construction [BLOCKED on Phase 6C]
+### Phase 6D: Proposition 12.8.16 — Temporal Type → Game Strategy [NOT STARTED]
 
-**Goal**: Using the formula materialization now available from Phase 6C (nf_characterizable_by_stavi), replace the current e_n construction (d-compatible forward game) with GHR93's U(B,A) transfer. This creates e_n as a formula witness above resp_tau(n-1), producing the chain geometry resp_tau(k) <= resp_tau(n-1) < e_n that resolves both sel_pn_ord and b_resp vs p_n.
+**Goal**: Prove that if x ∈ M and y ∈ N satisfy the same temporal formulas of rank r+4n+1, then Duplicator has winning strategies for G_{n,r}(M, -∞ x; N, -∞ y) and G_{n,r}(M, x ∞; N, y ∞).
 
-**Why this phase depends on Phase 6C** (from reports 42a, 42b):
-- Formula materialization (constructing interval type as StaviFormula) IS nf_characterizable_by_stavi.
-- Path B (direct construction) is impossible without it.
-- With Phase 6C complete, we have `nf_characterizable_by_stavi` at all depths, providing the formula builder needed for U(B,A).
+**GHR93 reference**: Proposition 12.8.16 (Chapter 12.8, p. 26). Proof sketch: Spoiler chooses n points; Duplicator uses the temporal formulas to construct corresponding points preserving rank-r formula agreement.
+
+**Key infrastructure available**:
+- `stavi_n_equiv` (Defs.lean) — n-equivalence on temporal formulas
+- `rank_type` (TypeFormulas.lean) — rank-r temporal type of a point
+- `ghr93_duplicator_wins` (CustomGame.lean) — game winning predicate
+- `extendedStructure` (TypeFormulas.lean) — M_r as structure
+
+**Tasks**:
+- [ ] State the proposition in Lean using existing types
+- [ ] Prove for n=0 (base case, trivial)
+- [ ] Prove the inductive step: construct response using the formula C_0 from GHR93's proof sketch
+- [ ] Handle the gap case (points that are r-definable gaps)
+- [ ] Run `lake build`
+
+**Timing**: 2-4 hours
+
+**Depends on**: none (uses only existing sorry-free infrastructure)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` or new file `EFGames/TemporalToGame.lean` (~150-250 lines)
+
+---
+
+### Phase 6E: Full Proposition 12.8.18 — m-Tuple Game Composition [NOT STARTED]
+
+**Goal**: Extend the single-pivot `ghr93_strategy_compose` (Composition.lean) to the full m-tuple version: given winning strategies on all sub-intervals [x_i, x_{i+1}] / [y_i, y_{i+1}], compose them into a winning strategy for the standard EF game G^{n+1}((M, x̄), (N, ȳ)).
+
+**GHR93 reference**: Proposition 12.8.18 (Chapter 12.8, pp. 26-27). Uses induction on n+1 (number of FO game rounds). Spoiler picks a ∈ M; Duplicator uses sub-interval strategies to find corresponding e ∈ N.
+
+**Key infrastructure available**:
+- `ghr93_strategy_compose` (Composition.lean) — single-pivot composition (sorry-free)
+- `ghr93_game_iff_decomposition` (Decomposition.lean) — game ↔ decomposition (sorry-free)
+- `EFPosition`, `ef_duplicator_wins` (Defs.lean) — standard EF game
+
+**Tasks**:
+- [ ] State the full m-tuple composition using existing EF game types
+- [ ] Define the partition of Spoiler's choice into sub-intervals
+- [ ] Apply single-pivot composition iteratively (or by induction on m)
+- [ ] Prove order preservation across sub-intervals
+- [ ] Connect to standard EF game winning condition (`ef_duplicator_wins`)
+- [ ] Run `lake build`
+
+**Timing**: 3-6 hours
+
+**Depends on**: 6D (Proposition 12.8.16 used in 12.8.18's proof to obtain sub-interval strategies from temporal type agreement)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean` — extend with m-tuple version (~200-400 lines)
+
+---
+
+### Phase 6F: Corollary 12.8.19 — Temporal Equivalence → FO Equivalence [NOT STARTED]
+
+**Goal**: Prove that if x ∈ M and y ∈ N satisfy the same temporal formulas of rank g(n+1)+1, then for all monadic FO formulas φ of quantifier depth ≤ n, M ⊨ φ(x) iff N ⊨ φ(y).
+
+This is the **capstone result** connecting temporal logic to first-order logic via games. It enables the classical characterization in Phase 6C-4.
+
+**GHR93 reference**: Corollary 12.8.19 (Chapter 12.8, p. 27). Follows directly from:
+- Proposition 12.8.9 (standard EF game ↔ FO agreement)
+- Proposition 12.8.16 (temporal type → game, Phase 6D)
+- Proposition 12.8.18 (m-tuple composition, Phase 6E)
+
+**Proposition 12.8.9** (standard EF theorem): Duplicator has winning strategy for G^n(M, N) iff M ≡_n N (agree on FO sentences of QD ≤ n). This is a classical result that may be available in Mathlib or provable from first principles.
+
+**Tasks**:
+- [ ] Prove or import Proposition 12.8.9 (standard EF ↔ FO)
+- [ ] Combine 12.8.9 + 12.8.16 + 12.8.18 into Corollary 12.8.19
+- [ ] State in terms of `stavi_n_equiv` and `nf_eval_nf` for integration with StaviCompleteness.lean
+- [ ] Run `lake build`
+
+**Timing**: 2-4 hours
+
+**Depends on**: 6E (Proposition 12.8.18)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` or new file `EFGames/ExpressivenessCapstone.lean` (~150-300 lines)
+
+**Verification**:
+- Corollary 12.8.19 type-checks with no sorry
+- Connects temporal types to FO equivalence
+- `lake build` passes
+
+---
+
+### Phase 3C: U(B,A) Transfer -- Replace e_n Construction [NOT STARTED]
+
+**Goal**: Replace the current e_n construction (d-compatible forward game) with GHR93's U(B,A) transfer. This creates e_n as a formula witness above resp_tau(n-1), producing the chain geometry resp_tau(k) <= resp_tau(n-1) < e_n that resolves both sel_pn_ord and b_resp vs p_n.
+
+**Key insight (v36 correction)**: This phase does NOT depend on Phase 6C. In GHR93, U(B,A) uses temporal formulas at rank ≤ r, where r is the game parameter. The backward game operates within the NF induction at depth k+1, so `char_k` (the IH) is available. At NF depth k+1, the game uses rank r ≤ f(k) = `game_depth(k)`, and `char_k` covers formulas at exactly this rank. Therefore `char_k` suffices for materializing rank_type as a StaviFormula — `char_{k+1}` / `nf_characterizable_by_stavi` is NOT needed.
 
 **Partial progress**: `ghr93_winning_condition_perm` implemented in CustomGame.lean (sorry-free, 95 lines, verified). This enables selection sorting via Tuple.sort, which resolves the N-side of sel_pn_ord (a_init(k) < p_n via strict monotonicity). The M-side (resp_tau(k) < e_n) is what U(B,A) resolves.
 
@@ -662,7 +737,7 @@ For z > x, the existence of z with a specific 1-var type is encoded in x's depth
 
 **GHR93 Construction (pp. 115-116)**:
 1. In Case II, tau applied to a_init(0),...,a_init(n-1) produces resp_tau(0),...,resp_tau(n-1).
-2. Define B = rank-r type of (resp_tau(n-1), y) in M, materialized as StaviFormula via nf_characterizable_by_stavi (Phase 6C).
+2. Define B = rank-r type of (resp_tau(n-1), y) in M, materialized as StaviFormula via `char_k` (IH, available at NF depth k+1).
 3. Define A = rank-r type of (a_init(n-1), y') in N -- equivalently, B transferred via tau.
 4. U(B,A) is a StaviFormula expressing "there exists a point above me with type A, where all intermediate points have type B."
 5. Since a_init(n-1) < p_n = a_bwd(n) and all points in (a_init(n-1), p_n) have type B (by continuity), U(B,A) holds at a_init(n-1) in N.
@@ -695,7 +770,7 @@ For z > x, the existence of z with a specific 1-var type is encoded in x's depth
 **Tasks**:
 - [x] **Implement ghr93_winning_condition_perm** in CustomGame.lean (~60-80 lines). *(completed: 95 lines, sorry-free)*
 - [ ] **Implement selection sorting** in ghr93_case_II (CaseAnalysis.lean). Sort a_bwd via Tuple.sort, show monotone. (~60-80 lines)
-- [ ] **Construct interval type formula** as StaviFormula using nf_characterizable_by_stavi from Phase 6C. (~40-80 lines)
+- [ ] **Construct interval type formula** as StaviFormula using `char_k` (IH) — materialize `rank_type` as `sf_conjList [char_k nf | nf with matching type]`. (~40-80 lines)
 - [ ] **Construct U(B,A)** where B = continuation type, A = target type. Prove U(B,A) holds at a_init(n-1) in N. (~60-100 lines)
 - [ ] **Handle rank adjustment** if needed: reconstruct tau at rank r+4 via h_r1_univ for U(B,A) transfer. (~40-60 lines)
 - [ ] **Transfer U(B,A) truth from N to M** via tau formula agreement at sufficient rank. (~40-60 lines)
@@ -706,9 +781,9 @@ For z > x, the existence of z with a specific 1-var type is encoded in x's depth
 - [ ] **Run `lake build`** to confirm no regressions
 - [ ] **Verify sorry count reduction** in CaseAnalysis.lean
 
-**Timing**: 3-6 hours (reduced from 6-12h because Phase 6C provides formula materialization)
+**Timing**: 4-8 hours
 
-**Depends on**: 6C (formula materialization from nf_characterizable_by_stavi), 3A (COMPLETED)
+**Depends on**: 3A (COMPLETED). Does NOT depend on Phase 6C — uses `char_k` (IH) directly for formula materialization.
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- sorting in ghr93_case_II, sel_pn_ord closure, b_resp vs p_n closure (~260-520 lines)
@@ -908,7 +983,10 @@ For z > x, the existence of z with a specific 1-var type is encoded in x's depth
 - [ ] Phase 6C-1: `nf_2var_existence_characterizable_depth0` type-checks with no sorry
 - [ ] Phase 6C-2: `interval_guard_formula` type-checks, `nf_exist_sf` compiles with new guard
 - [ ] Phase 6C-3: `nf_exist_sf_forward` type-checks with no sorry after guard strengthening
-- [ ] Phase 6C-4: `nf_exist_sf_backward` type-checks with no sorry (Approach A or C)
+- [ ] Phase 6D: Proposition 12.8.16 type-checks with no sorry
+- [ ] Phase 6E: Full Proposition 12.8.18 (m-tuple) type-checks with no sorry
+- [ ] Phase 6F: Corollary 12.8.19 type-checks with no sorry
+- [ ] Phase 6C-4 (revised): `nf_2var_existence_characterizable` closed via classical argument, dead code removed
 - [ ] Phase 6C-5: `#print axioms nf_characterizable_by_stavi` shows no `sorryAx`
 - [ ] Phase 3C: sel_pn_ord sorry at Case A and Case B both closed via U(B,A) chain
 - [ ] Phase 3C: b_resp vs p_n sorry at Case B closed via U(B,A) chain
