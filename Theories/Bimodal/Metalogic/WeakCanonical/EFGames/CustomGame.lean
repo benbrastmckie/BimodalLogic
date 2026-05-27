@@ -1574,6 +1574,103 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
     ⟩
 
 
+/-! ### Winning Condition Permutation (GHR93 Lemma 10 Consequence)
+
+GHR93 Lemma 10 states that the winning condition is invariant under
+permutation of both Spoiler's and Duplicator's selection arrays by the
+same permutation. This enables WLOG sorting of selections. -/
+
+/-- GHR93 Lemma 10 consequence: permuting both selection arrays by the same
+    permutation preserves the winning condition. This is because the game_tuple
+    at each position maps through the permutation, and same_order_type /
+    gap_point_agreement / formula_agreement are stated for ALL index pairs,
+    so permuting indices does not change the property.
+
+    **Usage**: In ghr93_case_II, sort a_bwd via Tuple.sort to get monotone
+    selections, apply this lemma to transfer the winning condition. -/
+theorem ghr93_winning_condition_perm {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (a : Fin n → ExtendedCarrier M atomMap r)
+    (a' : Fin n → ExtendedCarrier N atomMap r)
+    (b : M.carrier) (b' : N.carrier)
+    (sigma : Equiv.Perm (Fin n))
+    (hwin : ghr93_winning_condition n
+      (game_tuple x y a b) (game_tuple x' y' a' b')) :
+    ghr93_winning_condition n
+      (game_tuple x y (a ∘ sigma) b)
+      (game_tuple x' y' (a' ∘ sigma) b') := by
+  obtain ⟨hord, hgp, hform⟩ := hwin
+  -- Key lemma: game_tuple with permuted selections at index i equals
+  -- game_tuple with original selections at the lifted index.
+  -- Specifically: for selection positions, permute; for boundaries, identity.
+  -- We define the index lifting as a function.
+  let lift : Fin (n + 3) → Fin (n + 3) := fun i =>
+    if h0 : i.val = 0 then ⟨0, by omega⟩
+    else if hn1 : i.val = n + 1 then ⟨n + 1, by omega⟩
+    else if hn2 : i.val = n + 2 then ⟨n + 2, by omega⟩
+    else -- selection position: 1 ≤ i.val ≤ n
+      ⟨1 + (sigma ⟨i.val - 1, by omega⟩).val, by
+        have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega⟩
+  -- Show that game_tuple with permuted selections equals game_tuple
+  -- with original selections at the lifted index.
+  have h_eq_M : ∀ i, game_tuple x y (a ∘ sigma) b i =
+      game_tuple x y a b (lift i) := by
+    intro i
+    simp only [game_tuple, lift, Function.comp]
+    split
+    case isTrue h0 => simp [h0]
+    case isFalse h0 =>
+      split
+      case isTrue hn1 => simp [hn1, show ¬(0 : Nat) = n + 1 from by omega]
+      case isFalse hn1 =>
+        split
+        case isTrue hn2 => simp [hn2, show ¬(0 : Nat) = n + 2 from by omega,
+          show n + 2 ≠ n + 1 from by omega]
+        case isFalse hn2 =>
+          -- selection position
+          have h_sel : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = 0) := by omega
+          have h_sel_n1 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 1) := by
+            have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
+          have h_sel_n2 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 2) := by
+            have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
+          simp [h_sel, h_sel_n1, h_sel_n2]
+  have h_eq_N : ∀ i, game_tuple x' y' (a' ∘ sigma) b' i =
+      game_tuple x' y' a' b' (lift i) := by
+    intro i
+    simp only [game_tuple, lift, Function.comp]
+    split
+    case isTrue h0 => simp [h0]
+    case isFalse h0 =>
+      split
+      case isTrue hn1 => simp [hn1, show ¬(0 : Nat) = n + 1 from by omega]
+      case isFalse hn1 =>
+        split
+        case isTrue hn2 => simp [hn2, show ¬(0 : Nat) = n + 2 from by omega,
+          show n + 2 ≠ n + 1 from by omega]
+        case isFalse hn2 =>
+          have h_sel : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = 0) := by omega
+          have h_sel_n1 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 1) := by
+            have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
+          have h_sel_n2 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 2) := by
+            have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
+          simp [h_sel, h_sel_n1, h_sel_n2]
+  refine ⟨?_, ?_, ?_⟩
+  · -- same_order_type: permuted
+    intro i j
+    rw [h_eq_M i, h_eq_M j, h_eq_N i, h_eq_N j]
+    exact hord (lift i) (lift j)
+  · -- gap_point_agreement: permuted
+    intro i
+    rw [h_eq_M i, h_eq_N i]
+    exact hgp (lift i)
+  · -- formula_agreement: permuted
+    intro i A hA
+    rw [h_eq_M i, h_eq_N i]
+    exact hform (lift i) A hA
+
 /-- The winning condition is symmetric: ghr93_winning_condition n tM tN
     iff ghr93_winning_condition n tN tM, because same_order_type,
     gap_point_agreement, and formula_agreement all use ↔. -/

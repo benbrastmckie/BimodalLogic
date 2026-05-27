@@ -326,7 +326,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3C: U(B,A) Transfer -- Replace e_n Construction [NOT STARTED]
+### Phase 3C: U(B,A) Transfer -- Replace e_n Construction [BLOCKED]
+
+**BLOCKER** (Phase 3C):
+- **What failed**: Formula materialization -- cannot construct a single StaviFormula that characterizes the rank-r interval type of (a_init(n-1), p_n). This is the prerequisite for building U(B,A) as a StaviFormula, which is needed to replace the e_n construction.
+- **What was tried**: (1) ghr93_winning_condition_perm implemented successfully (95 lines, sorry-free). (2) Exhaustive analysis of 20+ approaches to derive sel_pn_ord from existing game infrastructure -- all fail due to the fan problem (d below both resp_tau(k) and e_n, no ordering between them). (3) Investigated using cont_holds / cont_holds_cross predicates -- these capture the interval type as a predicate (universal over StaviFormulas) but cannot be transferred via game formula agreement which operates formula-by-formula. (4) Investigated using tau's Round 2 with e_n as challenge -- produces b_tau_en with same rank-r type as p_n but at unknown position relative to a_init(k). (5) Investigated using h_fwd_n1 with all resp_tau + e_n as selections -- produces NEW N-side responses a'_fwd, not a_init. (6) Investigated whether a'_big(k) = a_init(k) from formula+ordering agreement -- false in general (same rank-r type does not imply same point).
+- **Why it's stuck**: Creating a single StaviFormula for the interval type requires EITHER: (a) nf_characterizable_by_stavi (Phase 6 sorry -- circular dependency since Phase 6 depends on Phase 5 which depends on Phase 3C), or (b) finite enumeration of StaviFormulas modulo equivalence at depth <= r (Approach A, blocked by infinite atoms in Formula type). Without formula materialization, U(B,A) cannot be expressed as a StaviFormula, the game's formula agreement cannot transfer it, and no witness e_n with e_n > resp_tau(n-1) can be extracted.
+- **What is needed**: One of three paths: (Path A) Break the circular dependency by implementing nf_characterizable_by_stavi (Phase 6) FIRST, then use it for formula materialization in Phase 3C. This requires reordering phases 3C and 6. (Path B) Find a different encoding of "interval type as formula" that avoids nf_characterizable_by_stavi -- perhaps using the cont_holds predicate directly with a non-standard game transfer argument. (Path C) Restructure the entire Case II proof to use a single game that covers all positions (resp_tau + e_n + a_init + p_n), avoiding the need for cross-game ordering. This would require a fundamentally different proof architecture.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Partial progress**: `ghr93_winning_condition_perm` implemented in CustomGame.lean (sorry-free, verified). This enables selection sorting via Tuple.sort, which resolves the N-side of sel_pn_ord (a_init(k) < p_n via strict monotonicity). The M-side (resp_tau(k) < e_n) remains blocked by the fan problem.
 
 **Goal**: Replace the current e_n construction (d-compatible forward game) with GHR93's U(B,A) transfer. This creates e_n as a formula witness above resp_tau(n-1), producing the chain geometry resp_tau(k) <= resp_tau(n-1) < e_n that resolves both sel_pn_ord and b_resp vs p_n.
 
@@ -370,17 +379,17 @@ Phases within the same wave can execute in parallel.
    - Prove b_resp vs p_n: b_resp comes from tau, so it has a position in the sorted chain. The chain through resp_tau provides the needed ordering relative to e_n. On the N-side, b_resp is in [d, y'] and the sorted selections give b_resp's position relative to p_n.
 
 **Tasks**:
-- [ ] **Implement ghr93_winning_condition_perm** in CustomGame.lean (~60-80 lines). Proof strategy: unfold winning condition, show permuting both tuples by the same sigma preserves same_order_type, gap_point_agreement, and formula_agreement at corresponding indices.
-- [ ] **Implement selection sorting** in ghr93_case_II (CaseAnalysis.lean). Sort a_bwd via Tuple.sort, show monotone. Handle WLOG distinct (collapse duplicates or show injective from game properties).
-- [ ] **Construct interval type formula** as StaviFormula. Define a function that takes a rank-r type witness and produces a StaviFormula characterizing that type.
-- [ ] **Construct U(B,A)** where B = continuation type, A = target type. Prove U(B,A) holds at a_init(n-1) in N.
-- [ ] **Transfer U(B,A) truth from N to M** via tau formula agreement at sufficient rank.
-- [ ] **Extract e_n as U(B,A) witness** in M. Prove e_n > resp_tau(n-1).
-- [ ] **Close sel_pn_ord sorry** (both Case A line ~1435 and Case B line ~1804): replace `intro k; sorry` with the chain argument resp_tau(k) <= resp_tau(n-1) < e_n combined with a_init(k) < p_n.
-- [ ] **Close b_resp vs p_n sorry** (Case B line ~2015): derive ordering from the U(B,A) chain infrastructure.
-- [ ] **Close pn_sel_ord sorry** (reverse direction): follows from the same chain.
-- [ ] **Run `lake build`** to confirm no regressions.
-- [ ] **Verify sorry count reduction** in CaseAnalysis.lean.
+- [x] **Implement ghr93_winning_condition_perm** in CustomGame.lean (~60-80 lines). Proof strategy: unfold winning condition, show permuting both tuples by the same sigma preserves same_order_type, gap_point_agreement, and formula_agreement at corresponding indices. *(completed: 95 lines, sorry-free, verified via lean_verify)*
+- [ ] **Implement selection sorting** in ghr93_case_II (CaseAnalysis.lean). Sort a_bwd via Tuple.sort, show monotone. Handle WLOG distinct (collapse duplicates or show injective from game properties). *(deviation: deferred -- sorting alone resolves N-side only; M-side blocked by fan problem. Sorting becomes useful only after e_n construction is replaced.)*
+- [ ] **Construct interval type formula** as StaviFormula. Define a function that takes a rank-r type witness and produces a StaviFormula characterizing that type. *(deviation: blocked -- requires nf_characterizable_by_stavi from Phase 6 or equivalent finite type enumeration, creating circular dependency. See blocker documentation below.)*
+- [ ] **Construct U(B,A)** where B = continuation type, A = target type. Prove U(B,A) holds at a_init(n-1) in N. *(deviation: blocked -- depends on formula materialization)*
+- [ ] **Transfer U(B,A) truth from N to M** via tau formula agreement at sufficient rank. *(deviation: blocked -- depends on U(B,A) construction)*
+- [ ] **Extract e_n as U(B,A) witness** in M. Prove e_n > resp_tau(n-1). *(deviation: blocked -- depends on U(B,A) transfer)*
+- [ ] **Close sel_pn_ord sorry** (both Case A line ~1435 and Case B line ~1804): replace `intro k; sorry` with the chain argument resp_tau(k) <= resp_tau(n-1) < e_n combined with a_init(k) < p_n. *(deviation: blocked -- depends on e_n via U(B,A))*
+- [ ] **Close b_resp vs p_n sorry** (Case B line ~2015): derive ordering from the U(B,A) chain infrastructure. *(deviation: blocked -- depends on e_n via U(B,A))*
+- [ ] **Close pn_sel_ord sorry** (reverse direction): follows from the same chain. *(deviation: blocked -- depends on sel_pn_ord)*
+- [x] **Run `lake build`** to confirm no regressions. *(completed: build passes with ghr93_winning_condition_perm)*
+- [ ] **Verify sorry count reduction** in CaseAnalysis.lean. *(deviation: blocked -- sorry count unchanged since core sorries not closed)*
 
 **Timing**: 6-12 hours (major structural work)
 
