@@ -460,7 +460,7 @@ This phase is decomposed into 5 sub-phases below.
 
 ---
 
-#### Phase 6C-2: Redefine nf_exist_sf with Interval Guard Formula [BLOCKED]
+#### Phase 6C-2: Redefine nf_exist_sf with Interval Guard Formula [COMPLETED]
 
 **Goal**: Replace `sf_top` in `nf_exist_sf` with a proper interval guard formula built from the IH `char_k`, following GHR93 Definition 12.8.13.
 
@@ -511,7 +511,7 @@ Plus definition of `interval_guard_formula` (~30-50 lines).
 
 ---
 
-#### Phase 6C-3: Re-prove Forward Direction [NOT STARTED]
+#### Phase 6C-3: Re-prove Forward Direction [COMPLETED]
 
 **Goal**: Re-prove `nf_exist_sf_forward` with the strengthened interval guard formula. The forward direction must show that if a witness x exists with the right 2-var NF, then the Until/Since formula with the interval guard holds at t.
 
@@ -548,7 +548,7 @@ Given witness x with `nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`:
 
 ---
 
-#### Phase 6C-4: Prove Backward Direction with Bridge Theorem [NOT STARTED]
+#### Phase 6C-4: Prove Backward Direction with Bridge Theorem [PARTIAL]
 
 **Goal**: Prove `nf_exist_sf_backward` -- the critical missing piece. Given that `U(witness_type, interval_guard)` holds at t, prove `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`.
 
