@@ -234,33 +234,13 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 
-- [ ] **Case A (S8 at line ~1594)**: Replace the `same_order_type_grid <;> first | ... | sorry` block with structured proof:
-  ```lean
-  -- Replace:
-  --   same_order_type_grid <;>
-  --     first | order_refl | ... | sorry
-  -- With:
-  intro i j; simp only [game_tuple]; split_ifs with hi hj
-  -- For each goal, use bullet notation:
-  -- x vs x: . exact ⟨Iff.rfl, Iff.rfl⟩
-  -- x vs sel(k): . exact ⟨hord_sig_x_sel k, ...⟩  (or tau equivalent)
-  -- x vs p_n: . exact ⟨hord_fwd_x_en.1.symm, hord_fwd_x_en.2.symm⟩
-  -- sel(i) vs sel(j): . exact tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩
-  -- sel(i) vs p_n (THE KEY CASE):
-  --   . -- Use sel_pn_ord from Phase 3A
-  --     exact props.sel_pn_ord ⟨i.val - 1, hin⟩
-  --     -- (with appropriate Fin index conversion)
-  -- y' vs sel: . exact ⟨(tau_sel_y ⟨_, hin⟩).1.symm, ...⟩
-  ```
-  Estimated: ~200 lines replacing ~170 lines of `first | ... | sorry` chain.
+- [x] **Case A sel-vs-p_n (1 of 3 fallthrough goals)**: Closed via `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩`. *(completed)*
 
-- [ ] **Case B (S9 at line ~1866)**: Same structured proof approach. The dead-code block (lines 1924-2021) provides a near-complete template. Adapt to current context:
-  - Replace `hord_fwd` references with extracted `fwd_*` hypotheses
-  - Replace `hd_le_an` with `h_no_split` or equivalent
-  - Add sel-vs-p_n cases using `props.sel_pn_ord` from Phase 3A
-  Estimated: ~200 lines.
+- [ ] **Case A p_n-vs-sel (1 remaining fallthrough goal at line ~1625)**: `exact pn_sel_ord ⟨_, ‹_›⟩` fails due to Fin metavar mismatch — `a_init` takes `Fin n` but `a_bwd` takes `Fin (n+1)`. Fix: add `pn_sel_ord_bwd` helper with explicit `(k : Nat) (hk : k < n)` args to bypass Fin unification.
 
-- [ ] **Remove dead code block**: Once Case B structured proof is complete, remove the commented-out reference code at lines ~1924-2021. It has served its purpose as a template.
+- [ ] **Case B (S9 at line ~1917, 7+ goals)**: Needs same sel_pn_ord/pn_sel_ord closures plus additional b-vs-pn, y'-vs-pn, pn-vs-x, pn-vs-b goals requiring `pivot_chain_order` and `fwd_x_b`/`fwd_b_y` reversals.
+
+- [ ] **Remove dead code block**: Once Case B structured proof is complete, remove the commented-out reference code at lines ~1924-2021.
 
 - [ ] **Verify maxErrors is no longer an issue**: The structured proof eliminates the `first | ...` chain, so the error multiplication problem vanishes. Remove any `set_option maxErrors` workarounds if present.
 
@@ -278,8 +258,8 @@ Phases within the same wave can execute in parallel.
 | Goal Pattern | Tactic | Source |
 |------|--------|--------|
 | sel(i) vs sel(j) | `tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩` | tau game |
-| sel(i) vs p_n | `props.sel_pn_ord ⟨i-1, hin⟩` | SplitPointProps field (Phase 3A) |
-| p_n vs sel(j) | `(props.sel_pn_ord ⟨j-1, hjn⟩).swap` or symmetric | SplitPointProps field (Phase 3A) |
+| sel(i) vs p_n | `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩` | local have (Phase 3A) — VERIFIED WORKING |
+| p_n vs sel(j) | BLOCKED: `exact pn_sel_ord ⟨_, ‹_›⟩` fails (Fin n vs Fin n+1 metavar). Need `pn_sel_ord_bwd` helper with explicit Nat args | local have (Phase 3A) |
 | y' vs sel | `⟨(tau_sel_y ⟨_, hin⟩).1.symm, ...⟩` | tau game |
 | b_resp vs p_n | `pivot_chain_order'` through d/c | interval bounds |
 | x vs p_n | `⟨hord_fwd_x_en.1.symm, ...⟩` | forward game |
@@ -293,10 +273,10 @@ rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
 This converts `a_bwd ⟨j-1, bound_proof⟩` to `extendPoint p_n` when `not (j-1 < n)` implies `j-1 = n`.
 
 **Verification**:
-- Sorry sites S8 (line ~1594) and S9 (line ~1866) are closed
-- `lake build` passes
-- Sorry count in CaseAnalysis.lean reduced from 3 live to 1 (S11 at line ~2619 remains for Phase 5)
-- The ONLY remaining sorry from Phases 3A+3B is in `obtain_split_point_props` (the sel_pn_ord field)
+- Sorry sites S8 (line ~1622) and S9 (line ~1917) are closed (Case A: 1 of 3 goals closed, 1 remaining; Case B: 7+ remaining)
+- `lake build` passes with zero errors (sorry fallbacks in place)
+- Once complete: sorry count in CaseAnalysis.lean reduced to root sorries (sel_pn_ord x2) + Cases III-IV (Phase 5)
+- The sel_pn_ord root sorry is deferred to Phase 3C (Lemma 10 + d-as-minimum restructure)
 
 ---
 
