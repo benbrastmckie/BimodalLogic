@@ -1,5 +1,5 @@
 ---
-next_project_number: 199
+next_project_number: 200
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -126,6 +126,17 @@ technical_debt:
 
 
 ## Tasks
+
+### 199. Grid order tactic for same_order_type dispatch
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 155
+
+**Description**: Create a bespoke `grid_order_tac` tactic that automates the same_order_type grid dispatch in CaseAnalysis.lean, then apply it to close the Phase 3B sorry sites. The tactic must: (1) detect grid goals of shape `(a_bwd ⟨k, _⟩ < x ↔ resp_tau ⟨k, _⟩ < y) ∧ (... = ... ↔ ...)`, (2) try each available ordering lemma (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) with automatic Fin (n+1) → Fin n bridging via convert/congr/Fin.ext/omega, (3) handle the hab_eq rewrite for p_n cases (¬k < n → a_bwd = extendPoint p_n), (4) fall back to sorry with a trace message if no lemma applies. After building the tactic, apply it to replace the `first | ... | sorry` chains at the Case A (line ~1631) and Case B (line ~1940) sorry sites in ghr93_case_II, verifying zero build errors. Iterate on the tactic design if the initial version does not close all goals.
+
+---
 
 ### 198. Prove frame-class axioms force canonical model indicator formulas
 - **Effort**: medium (4 hours)
