@@ -1981,6 +1981,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                    from hab_eq _ _ (by assumption)]
                convert sel_pn_ord ⟨_, ‹_›⟩ using 3
                <;> (congr 1; exact Fin.ext (by omega)))
+            -- sel(i) vs p_n: rename indices, rewrite j-side a_bwd via hab_eq, then sel_pn_ord with Fin bridge
+            | (rename_i i j _ _ _ _ _ hj_not_lt
+               have hj_rw : a_bwd ⟨↑j - 1, by omega⟩ = extendPoint p_n :=
+                 hab_eq _ (by omega) hj_not_lt
+               rw [hj_rw]
+               convert sel_pn_ord ⟨_, ‹_›⟩ using 3
+               <;> (congr 1; exact Fin.ext (by omega)))
             -- p_n vs b_resp / b_resp vs p_n: cross-boundary ordering
             | sorry)
         /- Dead code preserved for reference (tau ordering extractions):
