@@ -351,7 +351,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-27T19:24:02Z",
-      "next_artifact_number": 36,
+      "next_artifact_number": 37,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -557,6 +557,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/35_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan v35: Phase 3C rewritten (U(B,A) transfer), Phase 6 restructured (6A/6B/6C)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/36_ghr93-classical-plan.md",
+          "type": "plan",
+          "summary": "v36 plan: GHR93 classical approach, breaks circular dependency, new Phases 6D/6E/6F"
         }
       ],
       "session_id": "sess_1779640471_03278b",
