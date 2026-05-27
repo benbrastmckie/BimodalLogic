@@ -165,16 +165,16 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 **GHR93 construction (pp. 115-116)**: Define B = X_{a_n} (rank-r type of a_n, materialized as `sf_conjList` of matching `char_k` formulas). Define A = X_{(a_{n-1}, a_n)}. Then U(B,A) holds at a_{n-1} in N, transfers to M via tau, and witnesses e_n > resp_tau(n-1).
 
 **Tasks**:
-- [ ] Implement selection sorting via `Tuple.sort` + `ghr93_winning_condition_perm` (~60-80 lines)
+- [ ] Implement selection sorting via `Tuple.sort` + `ghr93_winning_condition_perm` (~60-80 lines) *(prerequisite done: `import Mathlib.Data.Fin.Tuple.Sort` added to CaseAnalysis.lean; `ghr93_winning_condition_perm` already exists in CustomGame.lean)*
 - [ ] Materialize `rank_type` as StaviFormula using `char_k` IH: `sf_conjList [char_k nf | nf matching type]` (~40-80 lines)
 - [ ] Construct U(B,A) where B = continuation type, A = target type (~60-100 lines)
-- [ ] Handle rank adjustment: U(B,A) has depth r+2, tau preserves depth ≤ r. Reconstruct tau at rank r+4 via h_r1_univ if needed (~40-60 lines)
+- [ ] Handle rank adjustment: U(B,A) has depth r+2, tau preserves depth ≤ r. Reconstruct tau at rank r+4 via h_r1_univ if needed (~40-60 lines) *(prerequisite done: `h_r1_univ` parameter added to `ghr93_case_II` and call site updated in `ghr93_cases_II_III_IV`)*
 - [ ] Prove U(B,A) holds at a_init(n-1) in N (~40-60 lines)
 - [ ] Transfer U(B,A) truth from N to M via tau formula agreement (~40-60 lines)
 - [ ] Extract e_n as U(B,A) witness, prove e_n > resp_tau(n-1) (~40-60 lines)
 - [ ] Close sel_pn_ord sorry at Case A and Case B (~20-40 lines)
 - [ ] Close b_resp vs p_n sorry at Case B (~20-40 lines)
-- [ ] Run `lake build`
+- [x] Run `lake build` *(build passes with all existing sorries intact; 1668 jobs, no errors)*
 
 **Timing**: 4-8 hours
 
