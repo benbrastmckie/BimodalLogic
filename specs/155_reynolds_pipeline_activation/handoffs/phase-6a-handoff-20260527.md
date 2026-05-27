@@ -56,11 +56,43 @@ File: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean` (169 l
 
 4. **`where` clause pattern**: Helper lemmas defined as `where` clauses of the main theorem to avoid stack overflow from `where` blocks with too many implicit parameters.
 
+### Detailed Proof Strategy for `compose_wc`
+
+**Key insight**: merged M-side selection = original `a` (since `a_L(k) = a(k)` when left, `a_R(k) = a(k)` when right). The merged game tuple M-side is literally `game_tuple x y a b`, identical to the original.
+
+**Index ownership classification** (b ≤ c case):
+- LEFT-owned: {0 (x), left sel k where a(k) ≤ c, n+1 (b)}
+- RIGHT-owned: {right sel k where a(k) > c, n+2 (y)}
+
+**Property at each ownership**:
+- LEFT-owned i: `game_tuple x y a b i = game_tuple x c a_L b i` (M-side match)
+                  N-merged at i = `game_tuple x' d a'_L b' i` (N-side match)
+- RIGHT-owned i: `game_tuple x y a b i = game_tuple c y a_R b_R i` (M-side match)
+                   N-merged at i = `game_tuple d y' a'_R b'_R i` (N-side match)
+
+**same_order_type proof (per pair):**
+- Both LEFT: `rw [hM_left, hN_left]; exact hord_L i j`
+- Both RIGHT: `rw [hM_right, hN_right]; exact hord_R i j`
+- LEFT i, RIGHT j: `pivot_chain_order` with:
+  - `hap`: LEFT_M(i) ≤ c (from interval bounds)
+  - `hpb`: c ≤ RIGHT_M(j) (from interval bounds)
+  - `ha'q`: LEFT_N(i) ≤ d, `hqb'`: d ≤ RIGHT_N(j)
+  - `hlt_l, heq_l`: from `hord_L` at `(i, n+2)` (left game boundary = c/d)
+  - `hlt_r, heq_r`: from `hord_R` at `(0, j)` (right game boundary = c/d)
+- RIGHT i, LEFT j: reverse pivot (use `pivot_chain_order_rev`)
+
+**gap_point_agreement**: dispatch per-index to left or right sub-strategy
+**formula_agreement**: dispatch per-index to left or right sub-strategy
+
+**omega fix**: When classifying indices, use `have hk : i.val - 1 < n := by omega` after establishing `1 ≤ i.val` and `i.val ≤ n` from the classification. Pass this explicitly when constructing `⟨i.val - 1, hk⟩ : Fin n`.
+
+**b' ≤ d issue**: In the LEFT-RIGHT pivot, need `tN(n+1) ≤ d` i.e. `extendPoint b' ≤ d`. This comes from the `hb'd` hypothesis in the main theorem's left case. Need to pass this as an additional parameter to `compose_wc` or derive it internally.
+
 ### Next Steps (Priority Order)
 
-1. Implement `compose_wc` body (~80-120 lines)
-2. Copy to `compose_wc_right` (symmetric)
-3. Handle degenerate case
+1. Implement `compose_wc` body using the above strategy (~120-150 lines)
+2. Copy to `compose_wc_right` (symmetric, swap LEFT/RIGHT ownership for n+1)
+3. Handle degenerate case (no point in sub-interval)
 4. Verify with `lake build`
 5. Run `lean_verify` on `ghr93_strategy_compose`
 
