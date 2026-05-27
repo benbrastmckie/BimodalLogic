@@ -1988,7 +1988,18 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                rw [hj_rw]
                convert sel_pn_ord ⟨_, ‹_›⟩ using 3
                <;> (congr 1; exact Fin.ext (by omega)))
-            -- p_n vs b_resp / b_resp vs p_n: cross-boundary ordering
+            -- sel(i) vs p_n: 8-hypothesis variant (rename_i with 6 underscores)
+            | (rename_i i j _ _ _ _ _ _ hi_lt hj_not_lt
+               have hj_rw : a_bwd ⟨↑j - 1, by omega⟩ = extendPoint p_n :=
+                 hab_eq _ (by omega) hj_not_lt
+               rw [hj_rw]
+               convert sel_pn_ord ⟨_, hi_lt⟩ using 3
+               <;> (congr 1; exact Fin.ext (by omega)))
+            -- b_resp vs p_n / p_n vs b_resp: sorry'd pending Phase 3C.
+            -- In Case B, b_resp ∈ [d, y'] creates a fan (d ≤ b_resp AND d ≤ p_n)
+            -- rather than a chain, so pivot_chain_order' cannot derive this.
+            -- The property IS mathematically true once d is redefined as the minimum
+            -- of all selections (GHR93). See: specs/199_grid_order_tactic/reports/02_blocker-analysis.md
             | sorry)
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an

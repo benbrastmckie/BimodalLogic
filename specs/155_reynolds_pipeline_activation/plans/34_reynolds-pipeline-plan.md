@@ -3,8 +3,8 @@
 - **Task**: 155 - reynolds_pipeline_activation
 - **Status**: [PARTIAL] -- Phase 3A superseded (unified game infeasible), replaced with sel_pn_ord sorry'd field approach
 - **Effort**: 12-22 hours remaining (Phases 1-4 complete, Phase 3A-new ~1h, Phase 3B ~2-4h, Phases 5-9 pending)
-- **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED), Task 168 (COMPLETED), Task 174 (COMPLETED), Task 198 (COMPLETED)
-- **Research Inputs**: reports/28_team-research.md, reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md, reports/30_blocker-study-prior-art.md, reports/32_post-dependency-assessment.md, reports/33_lit-sel-pn-ordering.md, reports/33_infra-sel-pn-fix.md, reports/33_tactic-sel-pn-grid.md, reports/34_lemma10-strategy-restrict.md
+- **Dependencies**: Task 154 (COMPLETED), Tasks 147-148 (COMPLETED), Task 157 (COMPLETED), Task 195 (COMPLETED), Task 168 (COMPLETED), Task 174 (COMPLETED), Task 198 (COMPLETED), Task 199 (PARTIAL — closed 4/6 Case B grid goals, 2 blocked on b_resp vs p_n proof gap)
+- **Research Inputs**: reports/28_team-research.md, reports/29_literature-alignment.md, reports/30_critical-path-wiring.md, reports/30_forward-inventory.md, reports/35_phase1-blocker-prior-art.md, reports/40_literature-crossref.md, reports/30_mechanical-strategy.md, reports/30_session-audit.md, reports/29_d-consistency-architecture.md, reports/30_blocker-study-prior-art.md, reports/32_post-dependency-assessment.md, reports/33_lit-sel-pn-ordering.md, reports/33_infra-sel-pn-fix.md, reports/33_tactic-sel-pn-grid.md, reports/34_lemma10-strategy-restrict.md, **Task 199**: specs/199_grid_order_tactic/reports/01_grid-order-tactic.md (grid dispatch inventory), specs/199_grid_order_tactic/reports/02_blocker-analysis.md (b_resp vs p_n proof gap analysis)
 - **Artifacts**: plans/34_reynolds-pipeline-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-formats.md, tasks.md
 - **Type**: lean4
@@ -18,7 +18,7 @@ Phase 3A (unified game restructure) has been **superseded** after exhaustive ana
 
 The revised approach uses the **pragmatic fix from report 34**: add `sel_pn_ord` as a sorry'd field in `SplitPointProps` (~30 lines), propagate it to the sorry sites (~50 lines), then close the 2 sorry sites via structured focused proofs in Phase 3B. The sorry in `obtain_split_point_props` becomes a deferred obligation tracked in Phase 3C, requiring Lemma 10 + relabeling + d-as-minimum restructuring (~300-500 lines) to close properly.
 
-Seven live sorry sites remain on the critical path across 5 files: CaseAnalysis.lean (3), Theorem6.lean (1), StaviCompleteness.lean (1), GoodStructures.lean (1), ChronicleToCountermodel.lean (1+3 sub-proofs). Phase 9 (Completeness.lean wiring) is resolved by task 198 and reduced to a verification step.
+Seven live sorry sites remain on the critical path across 5 files: CaseAnalysis.lean (3), Theorem6.lean (1), StaviCompleteness.lean (1), GoodStructures.lean (1), ChronicleToCountermodel.lean (1+3 sub-proofs). Phase 9 (Completeness.lean wiring) is resolved by task 198 and reduced to a verification step. Task 199 reduced the Case B grid dispatch sorry from 6 unclosed goals to 2 (b_resp vs p_n ordering — a genuine proof gap requiring structural fix; see Phase 3B and specs/199_grid_order_tactic/reports/02_blocker-analysis.md).
 
 **Definition of done**: `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
 
@@ -43,6 +43,8 @@ Fifteen research reports and a blocker study were integrated into this plan:
 | 33_infra-sel-pn-fix | Fan configuration (d below both a_init(k) and p_n) makes pivot chain impossible; Approaches A-D fail; Approach E (unified game) recommended | v33 revision: Phase 3A restructure design |
 | 33_tactic-sel-pn-grid | Only 2 live sorry sites; anonymous hypothesis problem from split_ifs; structured proof with named hypotheses is the solution | v33 revision: Phase 3B tactic overhaul design |
 | **34_lemma10-strategy-restrict** | **Lemma 10 alone does NOT solve blocker; ALL game-based approaches fail; pragmatic fix: sel_pn_ord sorry'd field (~80 lines); proper fix: Lemma 10 + relabeling + d-as-minimum (~300-500 lines)** | **This revision**: Phase 3A replaced with sorry'd field; Phase 3C added for deferred sorry closure |
+| **Task 199: 01_grid-order-tactic** | Case A grid dispatch already sorry-free; Case B has 6 goals (not 5): 3 impossible-direction, 1 fixable hab_eq rewrite, 2 genuine proof gap (b_resp vs p_n fan ordering). fan_order theorem is provably false (counterexample). | Phase 3B updated: Case A confirmed done; Case B reduced from 6→2 goals by task 199 implementation; Goal 3 (sel vs p_n) closed via rename_i + hab_eq + sel_pn_ord |
+| **Task 199: 02_blocker-analysis** | b_resp vs p_n unprovable from current hypotheses: Case B has fan geometry (d≤b_resp AND d≤p_n) not chain. No game contains both b_resp and p_n. Three fix options: additional big game challenge, restructured padding, or double-challenge construction. | Phase 3B blocker: 2 remaining goals require proof-level restructuring, not tactic-level fixes |
 
 ### Revision History
 
@@ -76,6 +78,15 @@ Fifteen research reports and a blocker study were integrated into this plan:
 - Structured focused proofs with named hypotheses replace `same_order_type_grid <;> first | ... | sorry` pattern
 - Superseded Approaches expanded to 14 entries (5 new from infrastructure report)
 - Effort recalibrated upward slightly (2-4h -> 4-6h for Phase 3) due to restructure scope
+
+**v34 updated (2026-05-26)**: Post-task-199 update incorporating grid_order_tac research, implementation, and blocker analysis. Changes:
+- Phase 3B updated with task 199 results: Case A confirmed sorry-free, Case B reduced from 6 to 2 remaining goals
+- Task 199 closed 4 of 6 Case B goals: 3 impossible-direction proofs + Goal 3 (sel vs p_n) via rename_i + targeted hab_eq rewrite
+- fan_order theorem added to Superseded Approaches (#17) — provably false via counterexample
+- grid_order_tac macro approach added to Superseded Approaches (#18) — blocked by fan_order invalidity
+- 2 remaining goals (b_resp vs p_n, p_n vs b_resp) documented as genuine proof gap with three proposed structural fixes from task 199 blocker analysis
+- Research Inputs expanded with task 199 reports (01_grid-order-tactic.md, 02_blocker-analysis.md)
+- Tactic patterns table expanded with working patterns discovered by task 199
 
 **v34 revised (2026-05-26)**: Post-Lemma-10-research revision incorporating report 34 findings. Changes:
 - Phase 3A (unified game restructure) **superseded** -- all game-based approaches proven infeasible (report 34 Sections 2-5)
@@ -125,6 +136,8 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 | 14 | **same_order_type_grid <;> first | ... | sorry with convert/congr** | Phase 3 impl (5 variants) | Anonymous hypotheses from split_ifs prevent targeted Fin rewrites. change, convert...using, rw, pre-derived helpers, show...from all fail on inaccessible variables. |
 | 15 | **Unified forward game (Approach E from v33 Phase 3A)** | Phase 3A blocker + report 34 Section 5 | ANY game play produces NEW N-side responses a'_fwd(k) that are NOT a_init(k). Order-isomorphism between a_init and a'_fwd relative to d and y' does NOT extend to ordering relative to p_n (counterexample: d=0, a_init=1, a'=2, p_n=1.5). Six sub-approaches all fail for the same reason. |
 | 16 | **Two-phase tau construction (report 34 Section 5)** | report 34 | Play h_fwd_n1 with resp_tau + c selections, then point challenge with p_n. Produces b_fwd != e_n and a'_fwd(k) != a_init(k). Same fundamental wall. |
+| 17 | **fan_order abstract order lemma (task 199 Phase 1)** | Task 199 implementation | Given fan d≤a, d≤b with order-preserving maps, derive a vs b ordering. PROVABLY FALSE: counterexample p=0, a=1, b=2, q=0, a'=2, b'=1 satisfies all hypotheses but conclusion fails. Fan geometry does not determine relative order of the upper elements. |
+| 18 | **grid_order_tac macro approach (task 199 Phases 2-3)** | Task 199 plan | Build a reusable tactic macro to dispatch all grid goals. BLOCKED by fan_order invalidity (goals 1-2 unprovable). Inline strategy additions used instead for closable goals. |
 
 **Key settled questions**:
 - Infimum redefinition IS necessary (reports 29, 35). Do not revisit.
@@ -134,6 +147,8 @@ The following approaches have been tried and ruled out across 15+ sessions. Do N
 - Sel-vs-p_n ordering CANNOT be derived from ANY combination of separate game plays. Every game produces new responses; order-isomorphism does not extend past shared bounds. This is settled by report 34's exhaustive analysis.
 - The `same_order_type_grid <;> first | ... | sorry` pattern is structurally inadequate for goals requiring named hypotheses. Structured focused proofs with bullet notation are the correct replacement.
 - The sel_pn_ord property IS mathematically true (follows from GHR93 once d is defined as minimum of selections). The pragmatic sorry'd field approach is justified.
+- **Fan ordering is provably false** (task 199): Given a fan d≤a, d≤b with order-preserving maps, the relative order of a vs b is NOT determined. Counterexample: p=0, a=1, b=2, q=0, a'=2, b'=1. Do NOT attempt abstract fan_order lemmas.
+- **Case B b_resp vs p_n requires structural fix** (task 199 blocker analysis): Neither the tau game nor the big game contains both b_resp and p_n. An additional game challenge or padding restructure is needed. Three options documented in specs/199_grid_order_tactic/reports/02_blocker-analysis.md.
 
 ## Risks & Mitigations
 
@@ -220,61 +235,81 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3B: Structured Proof Tactic Overhaul (S8/S9 Closure) [IN PROGRESS]
+### Phase 3B: Structured Proof Tactic Overhaul (S8/S9 Closure) [IN PROGRESS — BLOCKED on 2 goals]
 
 **Goal**: Replace the `same_order_type_grid <;> first | ... | sorry` pattern in both Case A and Case B with structured focused proofs using named hypotheses, closing S8 and S9. Use the `sel_pn_ord` field from Phase 3A for the sel-vs-p_n goals.
 
 **Root cause (from tactic report)**:
 - The `same_order_type_grid` macro expands to `intro i j; simp only [game_tuple]; split_ifs` which produces inaccessible hypothesis names (`h_dagger`, `h_dagger1`).
 - The subsequent `first | tac1 | ... | sorry` chain cannot reference these hypotheses by name, causing Fin index rewrites to fail.
-- Goal count: Case A has ~25 goals (3 fall through), Case B has ~25 goals (~8 fall through).
+- Goal count: Case A has ~25 goals (0 fall through — **sorry-free**), Case B has ~25 goals (originally 6 fell through, now 2 remain).
 - The Case I proof (lines 478-650) provides a complete working template using `split_ifs with` named hypotheses.
 
 **Strategy**: Replace the grid macro with inline `intro i j; simp only [game_tuple]; split_ifs with <names>`, then handle each goal with bullet notation. For sel-vs-p_n goals specifically, use `props.sel_pn_ord` from Phase 3A.
 
+**Task 199 Results** (see specs/199_grid_order_tactic/ for full artifacts):
+- **Research report** (01_grid-order-tactic.md): Confirmed Case A is already sorry-free. Case B sorry at line ~1960 has 6 goals (not 5 as originally described). Cataloged all ordering lemma signatures and the Fin n vs Fin (n+1) bridging issue.
+- **Blocker analysis** (02_blocker-analysis.md): Proved fan_order theorem false via counterexample. Identified that b_resp vs p_n (Goals 1-2) are unprovable from current hypotheses — Case B fan geometry (d≤b_resp AND d≤p_n) prevents pivot_chain_order'. Proposed three structural fixes: additional big game challenge, restructured padding, or double-challenge construction.
+- **Implementation**: Closed 4 of 6 Case B goals:
+  - 3 impossible-direction proofs (y' vs b_resp, y' vs p_n, p_n vs x') added to inner `first` chain
+  - Goal 3 (sel vs p_n with unrewritten a_bwd) closed via `rename_i` + targeted `hab_eq` rewrite on j-side + `sel_pn_ord` with Fin bridging
+  - Build passes (1667 jobs, zero errors)
+
 **Tasks**:
 
-- [x] **Case A sel-vs-p_n (1 of 3 fallthrough goals)**: Closed via `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩`. *(completed)*
+- [x] **Case A (S8)**: Sorry-free. All ~25 grid goals close via existing `first` chain. *(confirmed by task 199 research)*
 
-- [ ] **Case A p_n-vs-sel (1 remaining fallthrough goal at line ~1625)**: `exact pn_sel_ord ⟨_, ‹_›⟩` fails due to Fin metavar mismatch — `a_init` takes `Fin n` but `a_bwd` takes `Fin (n+1)`. Fix: add `pn_sel_ord_bwd` helper with explicit `(k : Nat) (hk : k < n)` args to bypass Fin unification.
+- [x] **Case A sel-vs-p_n**: Closed via `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩`. *(completed prior to task 199)*
 
-- [ ] **Case B (S9 at line ~1917, 7+ goals)**: Needs same sel_pn_ord/pn_sel_ord closures plus additional b-vs-pn, y'-vs-pn, pn-vs-x, pn-vs-b goals requiring `pivot_chain_order` and `fwd_x_b`/`fwd_b_y` reversals.
+- [x] **Case B impossible-direction goals (3 of 6)**: Closed by task 199. y' vs b_resp, y' vs p_n, p_n vs x' proved impossible from interval bounds. *(task 199 commit 9dfb33719, f88ec5294)*
 
-- [ ] **Remove dead code block**: Once Case B structured proof is complete, remove the commented-out reference code at lines ~1924-2021.
+- [x] **Case B Goal 3: sel(i) vs p_n unrewritten a_bwd (5-underscore variant)**: Closed by task 199 via `rename_i i j _ _ _ _ _ hj_not_lt` to bind inaccessible index variables, then `hj_rw : a_bwd ⟨↑j - 1, by omega⟩ = extendPoint p_n` from `hab_eq`, `rw [hj_rw]`, and `convert sel_pn_ord ⟨_, ‹_›⟩ using 3 <;> (congr 1; exact Fin.ext (by omega))`. *(task 199 commit 9dfb33719)*
 
-- [ ] **Verify maxErrors is no longer an issue**: The structured proof eliminates the `first | ...` chain, so the error multiplication problem vanishes. Remove any `set_option maxErrors` workarounds if present.
+- [x] **Case B Goal 3 (8-hypothesis variant): sel(i) vs p_n with 6 underscores**: Closed in this session. The same sel(i) vs p_n pattern but with 8 inaccessible hypotheses (instead of 7), requiring `rename_i i j _ _ _ _ _ _ hi_lt hj_not_lt` with 6 underscores. The 5-underscore variant missed this case. *(task 155 session sess_1779853135)*
+
+- [ ] **Case B Goals 1-2: b_resp vs p_n ordering (BLOCKED — genuine proof gap)**:
+  - Goal 1: `(extendPoint b_resp < extendPoint p_n ↔ extendPoint b_sp < e_n) ∧ (... = ... ↔ ... = ...)`
+  - Goal 2: Reverse of Goal 1 (p_n vs b_resp)
+  - **Root cause** (task 199 blocker analysis): Case B has `d ≤ b_resp` (b_resp ABOVE d), creating fan geometry instead of the chain `b_resp ≤ d ≤ p_n` that Case A uses for `pivot_chain_order'`. No existing hypothesis connects b_resp and p_n directly — `b_resp` comes from the tau game, `p_n` from the backward chain, and no game contains both.
+  - **fan_order is provably false**: Counterexample (p=0, a=1, b=2, q=0, a'=2, b'=1) satisfies all hypotheses but the conclusion fails. Fan geometry alone does not determine the relative order of upper elements.
+  - **Proposed fixes** (from task 199 report 02):
+    - **Option A (recommended)**: Additional big game challenge — instantiate `hwin_big` with `b_resp` to obtain ordering relative to both b_resp and p_n
+    - **Option B**: Restructure `a_pad_big` to encode `b_sp` at a padding position
+    - **Option C**: Double-challenge construction using two big game challenges
+  - **Option A analysis (sess_1779853135)**: Investigated instantiating `hwin_big` with `b_resp`. The new game produces `b_M2` on M-side with `same_order_type` relating `b_resp` (N-side b-slot) to `a'_big` positions. But `p_n` does NOT appear in the new game's N-side tuple (it was only in the ORIGINAL game's b-slot). Two game plays share the same `a'_big` selections but have different b-slots (`p_n` vs `b_resp`). Chaining through `a'_big(i)` is circular: determining `b_resp vs a'_big(i)` relative to `p_n vs a'_big(i)` requires knowing `b_resp vs p_n`. All three options require structural changes to either the game construction or the d-definition. Deferred to Phase 3C.
+  - **Effort**: Requires proof-level restructuring, not tactic-level fixes. Estimate 2-4 hours.
+
+- [ ] **Remove dead code block**: Once Case B sorry is resolved, remove commented-out reference code.
 
 - [ ] Run `lake build` to confirm both sorry sites are closed
 
-**Timing**: 2-4 hours
+**Timing**: 2-4 hours remaining (for the 2 blocked goals + cleanup)
 
 **Depends on**: 3A
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- S8 at line ~1594, S9 at line ~1866
+- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- S9 remaining sorry at line ~1992 (2 goals)
 
-**Key tactic patterns** (from the tactic report survey):
+**Key tactic patterns** (from the tactic report survey + task 199 findings):
 
-| Goal Pattern | Tactic | Source |
+| Goal Pattern | Tactic | Status |
 |------|--------|--------|
-| sel(i) vs sel(j) | `tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩` | tau game |
-| sel(i) vs p_n | `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩` | local have (Phase 3A) — VERIFIED WORKING |
-| p_n vs sel(j) | BLOCKED: `exact pn_sel_ord ⟨_, ‹_›⟩` fails (Fin n vs Fin n+1 metavar). Need `pn_sel_ord_bwd` helper with explicit Nat args | local have (Phase 3A) |
-| y' vs sel | `⟨(tau_sel_y ⟨_, hin⟩).1.symm, ...⟩` | tau game |
-| b_resp vs p_n | `pivot_chain_order'` through d/c | interval bounds |
-| x vs p_n | `⟨hord_fwd_x_en.1.symm, ...⟩` | forward game |
-| diagonal | `⟨Iff.rfl, Iff.rfl⟩` | reflexivity |
-
-**Critical Fin rewrite pattern** (for p_n cases where j-1 = n):
-```lean
-rw [show a_bwd ⟨j.val - 1, _⟩ = a_bwd ⟨n, by omega⟩ from
-  by congr 1; exact Fin.ext (by omega), hab_n]
-```
-This converts `a_bwd ⟨j-1, bound_proof⟩` to `extendPoint p_n` when `not (j-1 < n)` implies `j-1 = n`.
+| sel(i) vs sel(j) | `tau_sel_sel ⟨_, hin⟩ ⟨_, hjn⟩` | Working |
+| sel(i) vs p_n | `rw [show a_bwd ... = extendPoint p_n from hab_eq _ _ ‹_›]; exact sel_pn_ord ⟨_, ‹_›⟩` | Working (Phase 3A) |
+| sel(i) vs p_n (unrewritten j-side a_bwd) | `rename_i i j ...; rw [show a_bwd ⟨↑j - 1, _⟩ = extendPoint p_n from hab_eq ...]; convert sel_pn_ord ⟨_, ‹_›⟩ using 3 <;> (congr 1; exact Fin.ext (by omega))` | Working (task 199) |
+| p_n vs sel(j) | `convert pn_sel_ord ... using 3 <;> (congr 1; exact Fin.ext (by omega))` | Working |
+| y' vs sel | `⟨(tau_sel_y ⟨_, hin⟩).1.symm, ...⟩` | Working |
+| y' vs b_resp | impossible-direction proof from `hb_resp_in.2` + `hb_sp_cy.2` | Working (task 199) |
+| y' vs p_n | impossible-direction proof from `hp_n_in.2` + `he_n_in.2` | Working (task 199) |
+| p_n vs x' | impossible-direction proof from `hp_n_in.1` + `he_n_in.1` | Working (task 199) |
+| b_resp vs p_n | BLOCKED: fan geometry, no chain for `pivot_chain_order'` | Needs structural fix |
+| x vs p_n | `⟨hord_fwd_x_en.1.symm, ...⟩` | Working |
+| diagonal | `⟨Iff.rfl, Iff.rfl⟩` | Working |
 
 **Verification**:
-- Sorry sites S8 (line ~1622) and S9 (line ~1917) are closed (Case A: 1 of 3 goals closed, 1 remaining; Case B: 7+ remaining)
-- `lake build` passes with zero errors (sorry fallbacks in place)
+- S8 (Case A grid dispatch): sorry-free *(confirmed)*
+- S9 (Case B grid dispatch): 2 goals remaining at sorry line ~1992, blocked on b_resp vs p_n proof gap
+- `lake build` passes with zero errors (sorry fallback in place for 2 goals)
 - Once complete: sorry count in CaseAnalysis.lean reduced to root sorries (sel_pn_ord x2) + Cases III-IV (Phase 5)
 - The sel_pn_ord root sorry is deferred to Phase 3C (Lemma 10 + d-as-minimum restructure)
 
