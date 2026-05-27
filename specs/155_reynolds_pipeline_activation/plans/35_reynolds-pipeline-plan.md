@@ -423,14 +423,7 @@ This phase is decomposed into 5 sub-phases below.
 
 ---
 
-#### Phase 6C-1: Prove k=0 Base Case Separately [BLOCKED]
-
-**BLOCKER** (Phase 6C-1):
-- **What failed**: Deep analysis revealed that the k=0 case proof is straightforward mathematically but Phase 6C-1 was blocked by time constraints in the implementation session. The proof outline is complete.
-- **What was tried**: Full mathematical analysis of the backward direction for nf_exist_sf at k=0. The proof structure was partially implemented in Lean (case splitting on nf_order_0_1, extracting x from Until witness, setting up AtomKind case analysis) but not completed due to Lean tactic debugging needed for Fin.cons evaluation and NormalForm.atom_assgn unfolding.
-- **Why it's stuck**: Time-bounded session. The proof approach is verified correct -- atoms + order determine the depth-0 2-var NF uniquely. Implementation requires ~80-100 lines of careful Lean tactic work.
-- **What is needed**: Complete the k=0 backward direction proof using the outlined approach. See handoff: `specs/155_reynolds_pipeline_activation/handoffs/phase-6C-handoff-20260527.md` for detailed proof structure.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+#### Phase 6C-1: Prove k=0 Base Case Separately [COMPLETED]
 
 **Goal**: Prove `nf_2var_existence_characterizable` for k=0 as a standalone lemma. This validates the infrastructure and provides a working base case before tackling the general case.
 
@@ -448,9 +441,9 @@ This phase is decomposed into 5 sub-phases below.
 **Tasks**:
 - [x] Read current state of `nf_2var_existence_characterizable` and `nf_exist_sf_depth0` at StaviCompleteness.lean *(completed)*
 - [x] Analyze backward direction feasibility for k=0 *(completed -- feasible, proof outlined)*
-- [ ] **Task 6C-1.3**: Implement k=0 backward direction proof (~80-100 lines) *(deviation: deferred -- session time constraint)*
-- [ ] Verify k=0 lemma type-checks with no sorry
-- [ ] Run `lake build` to confirm no regressions
+- [x] **Task 6C-1.3**: Implement k=0 backward direction proof (~160 lines) *(completed)*
+- [x] Verify k=0 case type-checks -- sorry now only in `succ k'` case *(completed)*
+- [x] Run `lake build` to confirm no regressions *(completed -- build passes)*
 
 **Critical finding from analysis**: For k>=1, the current nf_exist_sf formula (with sf_top guard) has FALSE POSITIVES in the backward direction. The formula can be TRUE when no x has the right 2-var NF. This is because the 2-var NF at k>=1 includes a quant part that is NOT constrained by the 1-var type of x alone. A DIFFERENT formula is needed for k>=1 (see Phase 6C-2 through 6C-4).
 

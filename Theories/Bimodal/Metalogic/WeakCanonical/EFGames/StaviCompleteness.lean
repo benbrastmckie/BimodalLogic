@@ -1829,10 +1829,11 @@ order, uniquely determine the 2-variable depth-k NF. The interval guard
 in Until/Since constrains intermediate point types, and the IH formulas
 characterize point types.
 
-This lemma is stated with sorry for the backward direction. The forward
-direction follows from nf_exist_sf_forward. The backward direction
-requires formalizing the game-theoretic connection between interval type
-profiles and multi-variable NFs (see report 43_backward-direction-bridge.md). -/
+The k=0 case is fully proved: at depth 0, the 2-variable NF is purely atomic,
+so the atoms + order from the nf_exist_sf formula fully determine the NF.
+The k+1 case remains sorry: the backward direction at depth k≥1 requires
+encoding the full 2-variable NF (including quantifier part) in the formula,
+which is beyond what nf_exist_sf with sf_top guard can express. -/
 private theorem nf_2var_existence_characterizable
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1850,19 +1851,186 @@ private theorem nf_2var_existence_characterizable
           parent_atoms a = true) →
         (stavi_temporal_truth M atomMap t sf ↔
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- The forward direction (existence → formula truth) is provable using
-  -- nf_exist_sf_forward: the IH characteristic formulas witness the type
-  -- of x, and the temporal connective captures the order.
-  --
-  -- The backward direction (formula truth → existence) requires the
-  -- GHR93 game-theoretic argument (Proposition 7): the interval type
-  -- profile (1-variable types at all points between t and x) together
-  -- with the witness type and order uniquely determines the 2-variable NF.
-  -- This is formalized in Composition.lean (ghr93_strategy_compose) and
-  -- Decomposition.lean (ghr93_game_iff_decomposition) at the game level,
-  -- but the bridge from game wins to NF equality for the specific formula
-  -- construction remains to be connected.
-  sorry
+  -- Strategy: use nf_exist_sf as the witness formula for all k.
+  -- Forward direction: nf_exist_sf_forward (already proved).
+  -- Backward direction: case-split on k.
+  --   k=0: depth-0 2-var NFs are purely atomic; atoms+order from the formula
+  --         fully determine the NF.
+  --   k+1: the formula with sf_top guard is too weak for backward at k≥1.
+  --         Instead, we refine the witness x using nf_characteristic to get
+  --         the actual 2-var NF, then appeal to the game-theoretic composition.
+  cases k with
+  | zero =>
+    -- k=0: nf_exist_sf works in both directions
+    refine ⟨nf_exist_sf atomMap h_surj 0 char_k parent_atoms sub_nf,
+      fun M t h_atoms => ⟨?_, nf_exist_sf_forward atomMap h_surj 0 char_k
+        char_k_correct parent_atoms sub_nf h_atoms⟩⟩
+    -- Backward direction: formula truth → ∃ x, nf_eval_nf M 0 2 (Fin.cons x ...) sub_nf
+    intro h_sf
+    -- Case-split on t-consistency BEFORE unfolding
+    by_cases h_t_cons : nf_t_consistent parent_atoms sub_nf = true
+    · -- t-consistency passes: unfold and continue
+      simp only [nf_exist_sf] at h_sf
+      simp only [h_t_cons, not_true, ↓reduceIte, ite_false] at h_sf
+      -- Unfold .atom_assgn at depth 0 (identity)
+      simp only [NormalForm.atom_assgn] at h_sf
+      -- Order consistency check: abbreviate the order booleans
+      set b_x_lt_t := sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with b_x_lt_t_def
+      set b_t_lt_x := sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) with b_t_lt_x_def
+      -- The if-condition in h_sf now uses sub_nf (.order ...) directly
+      change stavi_temporal_truth M atomMap t
+        (if (b_x_lt_t && b_t_lt_x) = true then StaviFormula.base Formula.bot
+         else _) at h_sf
+      by_cases h_order_both : (b_x_lt_t && b_t_lt_x) = true
+      · -- Both order atoms true → formula is bot
+        simp only [h_order_both, ↓reduceIte, stavi_temporal_truth, temporal_truth] at h_sf
+      · -- Order consistency passes
+        simp only [h_order_both, ↓reduceIte, ite_false] at h_sf
+        -- Unfold nf_order_0_1 to a match on the actual booleans
+        simp only [nf_order_0_1, NormalForm.atom_assgn] at h_sf
+        -- Now h_sf has a match on b_t_lt_x, b_x_lt_t
+        -- Helper: extract witness info from sf_disjList of compat_formulas
+        -- At k=0, .atom_assgn = id, so nf_x and sub_nf are just (AtomKind → Bool)
+        have extract_witness : ∀ (x : M.carrier),
+            stavi_temporal_truth M atomMap x (sf_disjList
+              (List.filterMap
+                (fun nf_x => if (Fintype.elems (α := sig.preds)).val.toList.all
+                  (fun p => nf_x (.pred p ⟨0, by omega⟩) ==
+                    sub_nf (.pred p ⟨0, by omega⟩)) = true
+                  then some (char_k nf_x) else none)
+                (Fintype.elems (α := NormalForm sig 0 1)).val.toList)) →
+            ∃ nf_x : NormalForm sig 0 1,
+              (∀ p : sig.preds, nf_x (.pred p ⟨0, by omega⟩) =
+                sub_nf (.pred p ⟨0, by omega⟩)) ∧
+              nf_eval_nf M 0 1 (fun _ => x) nf_x := by
+          intro x h_disj
+          rw [sf_disjList_iff] at h_disj
+          obtain ⟨A, h_mem, h_A⟩ := h_disj
+          rw [List.mem_filterMap] at h_mem
+          obtain ⟨nf_x, _, h_if⟩ := h_mem
+          split_ifs at h_if with h_compat
+          · cases h_if with | refl =>
+            refine ⟨nf_x, ?_, (char_k_correct nf_x M x).mp h_A⟩
+            intro p
+            have := (List.all_eq_true.mp h_compat) p
+              (Multiset.mem_toList.mpr (Fintype.complete p))
+            simp only [beq_iff_eq] at this
+            exact this
+        -- Helper: t-consistency gives predicates at t matching sub_nf
+        have h_pred_t : ∀ p : sig.preds,
+            M.interp p t ↔ sub_nf (.pred p ⟨1, by omega⟩) = true := by
+          intro p
+          have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval] at h_par
+          have h_cons : sub_nf (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩) := by
+            have := (List.all_eq_true.mp (by rw [nf_t_consistent] at h_t_cons; exact h_t_cons))
+              p (Multiset.mem_toList.mpr (Fintype.complete p))
+            simp only [beq_iff_eq] at this
+            exact this
+          rw [h_cons]; exact h_par
+        -- Helper: build nf_eval_nf M 0 2 from component data
+        have build_nf_eval : ∀ (x : M.carrier)
+            (h_px : ∀ p : sig.preds, M.interp p x ↔ sub_nf (.pred p ⟨0, by omega⟩) = true)
+            (h_pt : ∀ p : sig.preds, M.interp p t ↔ sub_nf (.pred p ⟨1, by omega⟩) = true)
+            (h_o01 : (x < t) ↔ b_x_lt_t = true)
+            (h_o10 : (t < x) ↔ b_t_lt_x = true),
+            nf_eval_nf M 0 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+          intro x h_px h_pt h_o01 h_o10
+          -- At depth 0: ∀ a, atom_eval M env a ↔ sub_nf a = true
+          simp only [nf_eval_nf]
+          -- Env lemmas
+          have henv0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
+            simp [Fin.cons]
+          have henv1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+            simp [Fin.cons]; rfl
+          intro a
+          match a with
+          | .pred p ⟨0, _⟩ =>
+            simp only [atom_eval, henv0]
+            exact h_px p
+          | .pred p ⟨1, _⟩ =>
+            simp only [atom_eval, henv1]
+            exact h_pt p
+          | .pred _ ⟨n + 2, h⟩ => exact absurd h (by omega)
+          | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
+          | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
+            simp only [atom_eval, henv0, henv1]
+            rw [b_x_lt_t_def] at h_o01; exact h_o01
+          | .order ⟨1, _⟩ ⟨0, _⟩ _ =>
+            simp only [atom_eval, henv1, henv0]
+            rw [b_t_lt_x_def] at h_o10; exact h_o10
+          | .order ⟨1, _⟩ ⟨1, _⟩ h => exact absurd rfl h
+          | .order ⟨n + 2, hi⟩ _ _ => exact absurd hi (by omega)
+          | .order _ ⟨n + 2, hj⟩ _ => exact absurd hj (by omega)
+        -- Now case-split on the order booleans
+        -- The inner match uses sub_nf (AtomKind.order ...) which at k=0 equals
+        -- b_t_lt_x and b_x_lt_t up to proof-irrelevant equalities
+        -- Strategy: substitute b_t_lt_x/b_x_lt_t into h_sf via rewriting
+        -- Rewrite the match discriminants in h_sf to use b_t_lt_x, b_x_lt_t
+        -- The proof-irrelevant proof terms (nf_order_0_1._proof_*) match definitionally
+        have h_btx_rw : sub_nf (.order ⟨1, nf_order_0_1._proof_2⟩ ⟨0, nf_order_0_1._proof_1⟩
+          nf_order_0_1._proof_6) = b_t_lt_x := b_t_lt_x_def.symm
+        have h_bxt_rw : sub_nf (.order ⟨0, nf_order_0_1._proof_1⟩ ⟨1, nf_order_0_1._proof_2⟩
+          nf_order_0_1._proof_5) = b_x_lt_t := b_x_lt_t_def.symm
+        rw [h_btx_rw, h_bxt_rw] at h_sf
+        -- Helper to extract witness and build nf_eval from disjList truth
+        have use_witness : ∀ (x : M.carrier)
+            (h_disj : stavi_temporal_truth M atomMap x (sf_disjList
+              (List.filterMap
+                (fun nf_x => if (Fintype.elems (α := sig.preds)).val.toList.all
+                  (fun p => nf_x (.pred p ⟨0, by omega⟩) ==
+                    sub_nf (.pred p ⟨0, by omega⟩)) = true
+                  then some (char_k nf_x) else none)
+                (Fintype.elems (α := NormalForm sig 0 1)).val.toList)))
+            (h_o01 : (x < t) ↔ b_x_lt_t = true)
+            (h_o10 : (t < x) ↔ b_t_lt_x = true),
+            nf_eval_nf M 0 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+          intro x h_disj h_o01 h_o10
+          obtain ⟨nf_x, h_x_compat, h_nf_x⟩ := extract_witness x h_disj
+          exact build_nf_eval x
+            (fun p => by
+              have h_nf_x_p := h_nf_x (.pred p ⟨0, by omega⟩)
+              simp only [atom_eval] at h_nf_x_p
+              rw [h_x_compat p] at h_nf_x_p; exact h_nf_x_p)
+            h_pred_t h_o01 h_o10
+        -- Case-split on b_t_lt_x, b_x_lt_t
+        rcases h_btx : b_t_lt_x with _ | _ <;> rcases h_bxt : b_x_lt_t with _ | _
+        · -- false, false: x = t equality case
+          simp only [h_btx, h_bxt, ↓reduceIte, beq_self_eq_true, Bool.true_and, Bool.false_and,
+            Bool.false_eq_true, not_false_eq_true, stavi_temporal_truth, temporal_truth] at h_sf
+          exact ⟨t, use_witness t h_sf
+            (Iff.intro (fun h => absurd h (lt_irrefl _)) (by simp [h_bxt]))
+            (Iff.intro (fun h => absurd h (lt_irrefl _)) (by simp [h_btx]))⟩
+        · -- false, true: x < t, Since case
+          simp only [h_btx, h_bxt, ↓reduceIte, stavi_temporal_truth] at h_sf
+          obtain ⟨s, h_s_lt_t, h_disj_s, _⟩ := h_sf
+          exact ⟨s, use_witness s h_disj_s
+            (Iff.intro (fun _ => h_bxt) (fun _ => h_s_lt_t))
+            (Iff.intro (fun h => absurd (lt_trans h_s_lt_t h) (lt_irrefl _)) (by simp [h_btx]))⟩
+        · -- true, false: t < x, Until case
+          simp only [h_btx, h_bxt, ↓reduceIte, stavi_temporal_truth] at h_sf
+          obtain ⟨s, h_t_lt_s, h_disj_s, _⟩ := h_sf
+          exact ⟨s, use_witness s h_disj_s
+            (Iff.intro (fun h => absurd (lt_trans h h_t_lt_s) (lt_irrefl _)) (by simp [h_bxt]))
+            (Iff.intro (fun _ => h_btx) (fun _ => h_t_lt_s))⟩
+        · -- true, true: impossible (eliminated by h_order_both)
+          exact absurd (by simp [h_btx, h_bxt] : (b_x_lt_t && b_t_lt_x) = true) h_order_both
+    · -- t-consistency fails: formula is bot → contradiction from h_sf
+      exfalso
+      -- h_sf still has nf_exist_sf (not yet unfolded)
+      have h_is_bot : nf_exist_sf atomMap h_surj 0 char_k parent_atoms sub_nf =
+          StaviFormula.base Formula.bot := by
+        unfold nf_exist_sf
+        rw [if_pos h_t_cons]
+      rw [h_is_bot] at h_sf
+      simp [stavi_temporal_truth, temporal_truth] at h_sf
+  | succ k' =>
+    -- k+1: need different approach for backward direction
+    refine ⟨nf_exist_sf atomMap h_surj (k' + 1) char_k parent_atoms sub_nf,
+      fun M t h_atoms => ⟨?_, nf_exist_sf_forward atomMap h_surj (k' + 1) char_k
+        char_k_correct parent_atoms sub_nf h_atoms⟩⟩
+    intro h_sf
+    sorry
 
 /-! ## NF Characterization by StaviFormulas -/
 
