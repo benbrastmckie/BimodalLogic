@@ -1,18 +1,18 @@
 {
-  "session_id": "sess_1748407200_orch155b",
+  "session_id": "sess_1779910019_ec7547",
   "task_number": 155,
   "status": "partial",
-  "current_phase": "phase_6bc_nf_characterization",
-  "summary": "Reduced sorries in nf_characterizable_by_stavi from 2 to 1 by diagnosing and fixing a fundamental formula bug. The prior nf_succ_sf formula used nf_exist_sf with sf_top guard, which made the formula unable to distinguish 2-variable NFs sharing the same atom assignment. This caused both sorries to be on FALSE statements. Fix: replaced the proof to use classically-chosen existence formulas (nf_2var_existence_characterizable), consolidating 2 false-sorries into 1 true-sorry. The remaining sorry asserts that for each 2-variable depth-k NF, a StaviFormula exists characterizing its realizability -- a correct claim following from GHR93 Proposition 7 (game composition).",
+  "current_phase": "phase_6c_blocked",
+  "summary": "Deep analysis of nf_2var_existence_characterizable sorry (StaviCompleteness.lean:1865). Evaluated 5 proof strategies: (1) backward of nf_exist_sf with sf_top guard — fails for k>0 because 1-var type of witness x does not determine 2-var type of (x,t); (2) 'good NF' disjunction — fails because property has QD k+1 but char_k provides only depth-k; (3) NF finiteness + definability — circular; (4) reduce to stavi_expressive_completeness — circular; (5) nested temporal formula — viable but requires ~700-1000 lines. The k=0 case is provable (atoms+order determine 2-var NF), but k>0 requires encoding the full quantifier structure as nested Until/Since formulas with recursive correctness proofs. Phase 6C marked BLOCKED. Prior estimate of 150-400 lines revised to 700-1000 lines.",
   "blocking_issues": [
-    "nf_2var_existence_characterizable (1 sorry): requires connecting the game infrastructure (ghr93_strategy_compose, ghr93_game_iff_decomposition) to the NF-level existence characterization. The game infrastructure is sorry-free but operates on ExtendedCarrier/rank_type, not NormalForm/nf_eval_nf."
+    "nf_2var_existence_characterizable (1 sorry at StaviCompleteness.lean:1865): The current formula nf_exist_sf uses sf_top as guard in Until/Since, which captures the 1-var type of the witness x but not the 2-var type of (x,t). At depth k>0, the 2-var NF includes quantifier information about which 3-var NFs are realizable, which depends on ALL three of (y,x,t), not just x. Five proof strategies were evaluated and all found circular, insufficient, or requiring ~700-1000 lines. The viable approach is a nested temporal formula construction that recursively encodes each level of quantifier nesting in the NF as nested Until/Since formulas."
   ],
-  "continuation_context": "The single remaining sorry is nf_2var_existence_characterizable at line 1865 of StaviCompleteness.lean. Its goal: for each sub_nf : NormalForm sig k 2 and parent atom assignment, there exists a StaviFormula sf such that sf holds at t iff some x realizes sub_nf relative to t. This is GHR93's core existence claim. Proof requires: (1) building a formula using IH char_k formulas + proper interval guard in Until/Since that encodes the full 2-variable NF (not just atoms), and (2) showing the backward direction via the game-theoretic argument that interval type profiles determine multi-variable NFs. The game infrastructure in Composition.lean and Decomposition.lean provides the tools but the bridge to NF equality is missing.",
-  "next_action_hint": "research",
+  "continuation_context": "The sorry at line 1865 asks: for each sub_nf : NormalForm sig k 2 and parent atom assignment, there exists a StaviFormula sf such that sf holds at t iff exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf. The viable approach is a NESTED temporal formula: for sub_nf at depth k'+1 = (atoms, quant), build U(witness_type AND quant_constraints, sf_top) where quant_constraints encodes each sub3 : NormalForm sig k' 3 as a nested temporal formula at the witness point x. The recursion terminates at depth 0 (purely atomic). Estimated 700-1000 lines: ~200-300 for formula construction, ~100-200 for forward direction, ~200-400 for backward direction, ~100 for helpers. Key infrastructure available: char_k_correct (IH), nf_eval_unique, nf_characteristic_satisfies, nf_exist_sf_forward (already proved). The game infrastructure (ghr93_strategy_compose, ghr93_game_iff_decomposition) provides an alternative bridge but the connection from ExtendedCarrier/rank_type to NormalForm/nf_eval_nf is not formalized.",
+  "next_action_hint": "research — investigate the nested temporal formula construction: define nf_exist_sf_full recursively on k, determine the exact case structure for order atoms of 3-var NFs, and prototype the backward direction proof before full implementation",
   "phases_completed": 6,
   "phases_total": 12,
-  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-sorry-closure-20260527c.md",
+  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6c-nested-formula-20260527d.md",
   "artifacts_created": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-6c-nested-formula-20260527d.md"
   ]
 }

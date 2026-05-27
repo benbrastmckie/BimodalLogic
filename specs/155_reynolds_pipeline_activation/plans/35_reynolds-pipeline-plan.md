@@ -358,7 +358,7 @@ The original plan called for reimplementing Cases I-IV within EFGames/ to avoid 
 
 ---
 
-### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [IN PROGRESS]
+### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [BLOCKED]
 
 **Goal**: Close the keystone sorry at StaviCompleteness.lean:1567 -- the inductive step of `nf_characterizable_by_stavi`. Every NormalForm at depth k+1 must be characterizable by a StaviFormula.
 
@@ -383,14 +383,28 @@ The original plan called for reimplementing Cases I-IV within EFGames/ to avoid 
 - [x] **Diagnose formula bug** *(completed: sf_top guard makes formula always false for depth >= 2 — report 43)*
 - [x] **Fix approach**: replace nf_succ_sf proof with Classical.choose via `nf_2var_existence_characterizable` *(completed)*
 - [x] **Prove main theorem** `nf_characterizable_by_stavi` modulo `nf_2var_existence_characterizable` *(completed: both directions proved)*
-- [ ] **Close `nf_2var_existence_characterizable`** (StaviCompleteness.lean:1865): prove that for each 2-variable depth-k NF sub_nf, there exists a StaviFormula characterizing `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`. This is the encapsulated game-theoretic argument — a TRUE mathematical claim requiring Proposition 7 + depth-k IH + game argument.
+- [ ] **Close `nf_2var_existence_characterizable`** (StaviCompleteness.lean:1865): prove that for each 2-variable depth-k NF sub_nf, there exists a StaviFormula characterizing `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf`. This is the encapsulated game-theoretic argument — a TRUE mathematical claim requiring a nested temporal formula construction with backward direction proof. *(deviation: blocked — see BLOCKER below)*
 - [x] **Run `lake build`** *(passes with 1 sorry warning at line 1865)*
 
-**Remaining**: 1 sorry at StaviCompleteness.lean:1865 (`nf_2var_existence_characterizable`). This is the game-theoretic core: proving that temporal connectives with depth-k IH formulas can capture 2-variable NF realizability. Estimated 150-400 lines. Requires either:
-  - The guard formula approach (report 43): replace sf_top with an interval guard built from IH, then prove backward direction using the guard to constrain intermediate points
-  - Or a game-theoretic argument using Proposition 7 to show 1-var type + order determines 2-var type
+**BLOCKER** (Phase 6C):
+- **What failed**: Closing the sorry at `nf_2var_existence_characterizable` (StaviCompleteness.lean:1865). The forward direction (existence implies formula truth) is proved via `nf_exist_sf_forward`. The backward direction (formula truth implies existence) requires showing that a temporal formula witness x with the right 1-variable depth-k type also has the right 2-variable depth-k type as a pair (x,t). At depth 0, this follows from atoms+order determining the NF. At depth k>0, the 2-variable NF includes quantifier information (which 3-variable depth-(k-1) NFs are realizable) that is NOT determined by the 1-variable type of x alone.
+- **What was tried**:
+  1. **nf_exist_sf backward with sf_top guard**: The formula `U(witness_type, sf_top)` gives x with the right 1-var type but does NOT constrain the 2-var type. The sf_top guard is too weak — it allows any intermediate point type, so the interval profile is unconstrained. The 2-var NF at depth k>0 depends on which 3-var NFs are realizable (involving a third point y relative to both x and t), which sf_top cannot capture. FAILED for k>0.
+  2. **"Good NF" approach (a la stavi_expressive_completeness)**: Build a disjunction over all depth-k 1-var NFs nf_t such that P holds. Uses doets_lemma_1_1 to show NF determines formula truth. FAILS because P has quantifier depth k+1 but char_k provides only depth-k information. Two points with the same depth-k NF can disagree on the depth-(k+1) existential.
+  3. **NF finiteness + definability argument**: Show P is a union of NF equivalence classes, hence definable. CIRCULAR because showing P is invariant under StaviFormula equivalence IS the expressive completeness theorem.
+  4. **Reduction to stavi_expressive_completeness**: The existential IS a monadic FO formula. stavi_expressive_completeness gives the StaviFormula. But stavi_expressive_completeness uses nf_characterizable_by_stavi at depth k+1, which is what we're proving. CIRCULAR.
+  5. **k=0 case analysis**: Directly proved the backward direction at depth 0 (atoms+order determine the 2-var NF). Works but does not generalize to k>0.
+- **Why it's stuck**: The core issue is that `nf_exist_sf` with `sf_top` guard is insufficient for the backward direction at k>0. A DIFFERENT formula is needed — one that encodes the full 2-variable NF, not just the 1-variable type of the witness. The correct construction requires a **nested temporal formula** with depth proportional to k: for each level of quantifier nesting in the NF, add a nested Until/Since that constrains the corresponding existential witness. This is a recursive formula construction with a recursive correctness proof.
+- **What is needed**: A nested formula construction + bidirectional correctness proof (~700-1000 lines total). Specifically:
+  1. **Formula construction** (~200-300 lines): Build `nf_exist_sf_full k char_k parent_atoms sub_nf` that encodes the FULL 2-var NF recursively. At depth 0: same as nf_exist_sf (atoms+order via Until/Since). At depth k'+1: `U(witness_type AND quant_constraints, sf_top)` where quant_constraints is a conjunction over all sub3 : NormalForm sig k' 3, each encoded as a NESTED temporal formula at the witness point x.
+  2. **Forward direction** (~100-200 lines): If ∃x with 2-var type sub_nf, the formula holds. Uses char_k_correct + the nested structure.
+  3. **Backward direction** (~200-400 lines): If the formula holds, extract the nested witnesses and show the actual 2-var NF equals sub_nf. Uses nf_eval_unique (NFs are uniquely determined) + recursive correctness.
+  4. **The nested quantifier encoding** for "∃y with 3-var depth-k' type sub3 at (y,x,t)": case-split on order atoms of sub3 to determine y's position relative to x, then use Until/Since at x. For each sub3 with k'>0, recurse.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-**Timing**: 4-8 hours remaining
+**Remaining**: 1 sorry at StaviCompleteness.lean:1865 (`nf_2var_existence_characterizable`). Estimated 700-1000 lines for the nested formula construction + correctness proofs. This is a genuine mathematical proof requiring recursive temporal formula encoding. The prior estimate of 150-400 lines was based on the assumption that the game infrastructure (ghr93_strategy_compose, ghr93_game_iff_decomposition) would provide a direct bridge, but the bridge from games (operating on ExtendedCarrier/rank_type) to NFs (operating on NormalForm/nf_eval_nf) is NOT formalized.
+
+**Timing**: 12-20 hours remaining (revised from 4-8 hours)
 
 **Depends on**: 6A (COMPLETED)
 
