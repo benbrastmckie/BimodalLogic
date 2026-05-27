@@ -3045,22 +3045,304 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         (stavi_temporal_truth_mu M atomMap r (Sum.inr γ_M) A ↔
          stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A)) := by
     -- GHR93 Cases III/IV gap detection transfer.
-    -- Key tools: left/right_formula_gap_detection, gap_detection_unique,
-    -- stavi_depth_left/right_formula, rank_embed_stavi_truth_mu, h_fwd_r3.
+    -- S11.1a: Reference point m_N ∈ γ_N.val.cut ∩ [x', y'] with D-between.
+    -- S11.1b: Forward game → m_M with formula agreement at depth ≤ r+4.
+    -- S11.1c: left/right_formula transfer via gap detection lemmas.
+    -- S11.1d: gap_detection_unique → γ_M independent of A.
+    -- S11.1e: Interval from forward game bounds.
     --
-    -- S11.1a: Reference point — get m_N ∈ γ_N.val.cut ∩ [d, y'] with
-    -- the D-between condition satisfied. Then m_N ∈ [x', y'] since x' ≤ d.
-    -- S11.1b: Forward game at rank r+4 — derive 1-round game, challenge
-    -- with m_N to get m_M with formula agreement at depth ≤ r+4.
-    -- S11.1c: Gap detection transfer — for each A with depth ≤ r:
-    --   backward: A^mu(γ_N) → left/right_formula(A,D)(m_N) in N at rank r
-    --   transfer: left/right_formula(A,D)(m_N) ↔ left/right_formula(A,D)(m_M)
-    --     (via rank_embed_stavi_truth_mu + forward game at rank r+4,
-    --      since stavi_depth(left_formula A D) ≤ max(r,r)+4 = r+4)
-    --   forward: left/right_formula(A,D)(m_M) → ∃ γ_M, A^mu(γ_M) in M at rank r
-    -- S11.1d: Uniqueness — by gap_detection_unique, γ_M is the same for all A.
-    -- S11.1e: Interval — γ_M ∈ [x, y] from the forward game bounds.
-    sorry
+    -- Case split on left vs right definability. Both cases are symmetric;
+    -- the left case uses left_formula, the right uses right_formula.
+    rcases hD_def with h_left | h_right
+    · -- LEFT CASE: γ_N is D-definable on the left.
+      -- S11.1a: Get reference point m_N.
+      -- From gap_definable_on_left: ∃ t ∈ cut, D holds at all u ≥ t in cut.
+      -- Keep h_left for later use in gap detection transfer.
+      have h_left_orig := h_left
+      obtain ⟨⟨t_N, ht_N_cut, hD_above_t⟩, _h_no_init⟩ := h_left
+      -- Find m_N ∈ γ_N.val.cut ∩ [x', y'] with D-between condition.
+      -- Strategy: case split on d (point vs gap), find a cut element above x'.
+      -- Then take max of that element and t_N for the D-between condition.
+      have hγ_N_in : inClosedInterval x' y' (Sum.inr γ_N) := by
+        rw [← hγ_N_eq]; exact ha_bwd ⟨n, by omega⟩
+      -- Any t ∈ γ_N.val.cut has extendPoint t < Sum.inr γ_N ≤ y'.
+      have ht_N_lt_γ : (extendPoint t_N : ExtendedCarrier N atomMap r) <
+          Sum.inr γ_N :=
+        lt_of_le_of_ne ((extendPoint_le_gap_iff t_N γ_N).mpr ht_N_cut)
+          (fun h => by cases h)
+      -- Find m_N: a cut element above x' with D-between condition.
+      have hd_le_γ : d ≤ Sum.inr γ_N := hγ_N_eq ▸ h_no_split ⟨n, by omega⟩
+      -- Helper: any cut element ≥ t_N satisfies the D-between condition.
+      have hD_between_any : ∀ (m : N.carrier), t_N ≤ m → m ∈ γ_N.val.cut →
+          (∀ u : N.carrier, m < u → u ∈ γ_N.val.cut →
+            stavi_temporal_truth_mu N atomMap r (extendPoint u) D) := by
+        intro m htm hm_cut u hmu hu_cut
+        exact (stavi_truth_mu_at_point u D).mpr
+          (hD_above_t u (le_of_lt (lt_of_le_of_lt htm hmu)) hu_cut)
+      -- Case split: either t_N is already above x', or we need a higher cut element.
+      have ⟨m_N, hm_N_cut, hm_N_above_x', hm_N_D_between⟩ :
+          ∃ (m_N : N.carrier), m_N ∈ γ_N.val.cut ∧
+            x' ≤ (extendPoint m_N : ExtendedCarrier N atomMap r) ∧
+            (∀ u : N.carrier, m_N < u → u ∈ γ_N.val.cut →
+              stavi_temporal_truth_mu N atomMap r (extendPoint u) D) := by
+        rcases le_or_gt x' (extendPoint t_N) with hx'_le | hx'_gt
+        · -- t_N works directly
+          exact ⟨t_N, ht_N_cut, hx'_le, hD_between_any t_N le_rfl ht_N_cut⟩
+        · -- x' > extendPoint t_N. Since x' ≤ d ≤ Sum.inr γ_N,
+          -- case-split on whether d is a point or a gap.
+          rcases isPoint_or_isGap d with ⟨d_pt, hd_eq⟩ | ⟨g_d, hd_eq⟩
+          · -- d is a point d_pt. Then d_pt ∈ γ_N.val.cut and x' ≤ d = extendPoint d_pt.
+            have hd_pt_cut : d_pt ∈ γ_N.val.cut := by
+              have h1 : (extendPoint d_pt : ExtendedCarrier N atomMap r) = d := hd_eq.symm
+              have h2 : d ≤ (Sum.inr γ_N : ExtendedCarrier N atomMap r) := hd_le_γ
+              exact (extendPoint_le_gap_iff d_pt γ_N).mp (h1 ▸ h2)
+            have hx'_le_d_pt : x' ≤ (extendPoint d_pt : ExtendedCarrier N atomMap r) := by
+              have : (extendPoint d_pt : ExtendedCarrier N atomMap r) = d := hd_eq.symm
+              rw [this]; exact props.hx'd
+            -- d_pt ≥ t_N (since extendPoint d_pt ≥ x' > extendPoint t_N)
+            have ht_le_d : t_N ≤ d_pt :=
+              le_of_lt ((extendPoint_lt_iff t_N d_pt).mp
+                (lt_of_lt_of_le hx'_gt hx'_le_d_pt))
+            exact ⟨d_pt, hd_pt_cut, hx'_le_d_pt, hD_between_any d_pt ht_le_d hd_pt_cut⟩
+          · -- d is a gap g_d. Since d ≤ Sum.inr γ_N and d ≠ Sum.inr γ_N
+            -- (d is below a_bwd(n) = Sum.inr γ_N and there's a point a_bwd(0)
+            -- between d and y'), γ_N.val.cut is NOT a subset of g_d.val.cut.
+            -- So there exists m ∈ γ_N.val.cut \ g_d.val.cut, giving Sum.inr g_d < extendPoint m.
+            -- Strategy: γ_N.val.cut has no supremum, so we can find elements
+            -- arbitrarily high. We need one above g_d and t_N.
+            -- From d ≤ Sum.inr γ_N, g_d.val.cut ⊆ γ_N.val.cut.
+            have hg_d_sub : g_d.val.cut ⊆ γ_N.val.cut := by
+              rw [hd_eq] at hd_le_γ; exact hd_le_γ
+            -- γ_N.val.cut \ g_d.val.cut is nonempty (otherwise g_d = γ_N,
+            -- but d < Sum.inr γ_N since d ≤ a_bwd(n) = Sum.inr γ_N
+            -- and we've established ht_N_lt_γ so γ_N is a proper gap above d).
+            have hd_lt_γ : d < (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
+              rcases eq_or_lt_of_le hd_le_γ with heq | hlt
+              · -- d = Sum.inr γ_N means g_d and γ_N have same cuts
+                rw [hd_eq] at heq
+                -- Sum.inr g_d = Sum.inr γ_N → g_d = γ_N
+                have hg_eq := Sum.inr_injective heq
+                -- Then d = Sum.inr γ_N, so extendPoint t_N < d = Sum.inr γ_N = Sum.inr g_d
+                -- But we also have x' ≤ d. Since x' > extendPoint t_N and x' ≤ d,
+                -- extendPoint t_N < d, which is fine.
+                -- The issue: d = Sum.inr γ_N, and d is in [x', y'].
+                -- All a_bwd are ≥ d = Sum.inr γ_N, i.e., a_bwd(i) ≥ Sum.inr γ_N.
+                -- In particular a_bwd(n) = Sum.inr γ_N ≤ a_bwd(n), which is fine.
+                -- But x' ≤ d = Sum.inr γ_N ≤ y', and gap has nonempty cut.
+                -- We can still find m above g_d using gap_cut_no_max.
+                -- Actually, in this case g_d = γ_N, so g_d.cut = γ_N.cut,
+                -- and hg_d_sub is just subset_refl. We need an element NOT in g_d.cut
+                -- but IN γ_N.cut -- but they're equal. Contradiction case is needed.
+                -- Actually if g_d = γ_N, then the cut IS γ_N.cut, and all elements
+                -- of the cut are below d = Sum.inr g_d = Sum.inr γ_N.
+                -- We need m with Sum.inr g_d < extendPoint m, i.e., m ∉ g_d.cut.
+                -- But m ∈ γ_N.cut = g_d.cut. Contradiction.
+                -- So g_d ≠ γ_N, and hd_lt_γ holds.
+                exfalso
+                -- If g_d = γ_N, then γ_N.val.cut = g_d.val.cut.
+                -- t_N ∈ γ_N.val.cut = g_d.val.cut, so extendPoint t_N ≤ Sum.inr g_d = d.
+                -- But x' > extendPoint t_N and x' ≤ d, so that's consistent — no contradiction.
+                -- We actually need a different argument.
+                -- Key: γ_N = g_d means d = Sum.inr γ_N. But d ≤ a_bwd(i) for all i.
+                -- In particular, all a_bwd are ≥ Sum.inr γ_N. And a_bwd(n) = Sum.inr γ_N.
+                -- gamma_N is r-definable, so it's a valid gap with nonempty cut.
+                -- We can use any element in the cut as reference point.
+                -- But we need it above x'. Since x' ≤ d = Sum.inr γ_N, and
+                -- gamma_N.val.cut has no supremum, there exist cut elements
+                -- arbitrarily close to Sum.inr γ_N from below.
+                -- But ALL cut elements are below Sum.inr γ_N = d, and
+                -- x' ≤ d. So x' could be a gap below d, or a point below d.
+                -- If x' is also Sum.inr γ_N (= d), then [x', y'] contains only
+                -- elements ≥ d. But cut elements are strictly below d.
+                -- Wait — x' = d means [x', y'] = [Sum.inr γ_N, y'], and cut elements
+                -- are below Sum.inr γ_N, hence below x'. So NO cut element is in [x', y'].
+                -- But we need m ∈ [x', y'] ∩ cut. Since x' ≤ Sum.inr γ_N and
+                -- cut elements are < Sum.inr γ_N, we need x' < Sum.inr γ_N.
+                -- If x' = Sum.inr γ_N, there's no valid m.
+                -- This case (d = Sum.inr γ_N, d gap, x' ≤ d) may require x' < d.
+                -- From props.hx'd : x' ≤ d. If x' = d then x' = Sum.inr γ_N.
+                -- Then [x', y'] = [Sum.inr γ_N, y'] contains only elements ≥ Sum.inr γ_N.
+                -- γ_N.val.cut elements are < Sum.inr γ_N, so they're below x'.
+                -- We'd need to use h_fwd_r3 without a reference point — perhaps using
+                -- the gap itself as a selection. But selections can be gaps.
+                -- For now, this degenerate case (d = Sum.inr γ_N, d is a gap)
+                -- might need special handling. Let's handle the generic case first.
+                sorry
+              · exact hlt
+            -- Now d < Sum.inr γ_N strictly. Since d = Sum.inr g_d,
+            -- g_d.val.cut ⊊ γ_N.val.cut (strict subset).
+            have h_strict : ∃ m, m ∈ γ_N.val.cut ∧ m ∉ g_d.val.cut := by
+              by_contra h_all
+              push_neg at h_all
+              -- Every element of γ_N.val.cut is in g_d.val.cut
+              -- Together with hg_d_sub (g_d.cut ⊆ γ_N.cut), this gives g_d.cut = γ_N.cut
+              have h_eq : g_d.val.cut = γ_N.val.cut :=
+                Set.Subset.antisymm hg_d_sub (fun x hx => h_all x hx)
+              -- Hence g_d = γ_N (by gap_ext)
+              have := gap_ext g_d.val γ_N.val h_eq
+              -- But d = Sum.inr g_d and Sum.inr γ_N, giving d = Sum.inr γ_N,
+              -- contradicting hd_lt_γ
+              have hgd_eq_γN : d = (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
+                rw [hd_eq]; congr 1; exact Subtype.ext this
+              exact absurd hgd_eq_γN (ne_of_lt hd_lt_γ)
+            obtain ⟨m0, hm0_γcut, hm0_not_gcut⟩ := h_strict
+            -- m0 ∈ γ_N.cut \ g_d.cut, so Sum.inr g_d < extendPoint m0.
+            -- Hence x' ≤ d = Sum.inr g_d < extendPoint m0.
+            have hx'_le_m0 : x' ≤ (extendPoint m0 : ExtendedCarrier N atomMap r) := by
+              have hg_lt : d < (extendPoint m0 : ExtendedCarrier N atomMap r) := by
+                rw [hd_eq]
+                exact @lt_of_not_le (ExtendedCarrier N atomMap r) _ _ _
+                  (fun h => hm0_not_gcut ((extendPoint_le_gap_iff m0 g_d).mp h))
+              exact le_of_lt (lt_of_le_of_lt props.hx'd hg_lt)
+            -- Now take max(m0, t_N) for the D-between condition.
+            rcases le_total t_N m0 with htm | htm
+            · exact ⟨m0, hm0_γcut, hx'_le_m0, hD_between_any m0 htm hm0_γcut⟩
+            · -- t_N ≥ m0, so extendPoint t_N ≥ extendPoint m0 ≥ x'. But we assumed
+              -- x' > extendPoint t_N. Contradiction.
+              exfalso
+              have : (extendPoint m0 : ExtendedCarrier N atomMap r) ≤ extendPoint t_N :=
+                (extendPoint_le_iff m0 t_N).mpr htm
+              exact not_lt.mpr (le_trans hx'_le_m0 this) hx'_gt
+      -- m_N is in [x', y']: x' ≤ extendPoint m_N and extendPoint m_N < Sum.inr γ_N ≤ y'.
+      have hm_N_lt_γ : (extendPoint m_N : ExtendedCarrier N atomMap r) < Sum.inr γ_N :=
+        lt_of_le_of_ne ((extendPoint_le_gap_iff m_N γ_N).mpr hm_N_cut)
+          (fun h => by cases h)
+      have hm_N_in : inClosedInterval x' y' (extendPoint m_N) :=
+        ⟨hm_N_above_x', le_of_lt (lt_of_lt_of_le hm_N_lt_γ hγ_N_in.2)⟩
+      -- S11.1b: Forward game at rank r+4 — challenge with m_N to get m_M.
+      -- Reduce h_fwd_r3 to a 1-round game, then challenge with m_N.
+      have h_fwd_1 : ghr93_duplicator_wins M N atomMap 1 (r + 4)
+          (rank_embed (by omega : r ≤ r + 4) x)
+          (rank_embed (by omega : r ≤ r + 4) y)
+          (rank_embed (by omega : r ≤ r + 4) x')
+          (rank_embed (by omega : r ≤ r + 4) y') := by
+        exact ghr93_duplicator_wins_round_mono (by omega : 1 ≤ 4 + 3 * n)
+          ((rank_embed_le _ x y).mpr hxy) ((rank_embed_le _ x' y').mpr hx'y') h_fwd_r3
+      -- Play the 1-round game: pick c (rank-embedded) from M.
+      have hc_in_re : inClosedInterval (rank_embed (by omega : r ≤ r + 4) x)
+          (rank_embed (by omega : r ≤ r + 4) y)
+          (rank_embed (by omega : r ≤ r + 4) c) := by
+        exact ⟨(rank_embed_le _ x c).mpr props.hxc, (rank_embed_le _ c y).mpr props.hcy⟩
+      obtain ⟨a'_1, ha'_1_in, hwin_1⟩ := h_fwd_1
+        (fun _ : Fin 1 => rank_embed (by omega : r ≤ r + 4) c)
+        (fun _ => hc_in_re)
+      -- Challenge Round 2 with m_N.
+      have hm_N_in_re : inClosedInterval
+          (rank_embed (by omega : r ≤ r + 4) x')
+          (rank_embed (by omega : r ≤ r + 4) y')
+          (extendPoint m_N) := by
+        rw [show (extendPoint m_N : ExtendedCarrier N atomMap (r + 4)) =
+            rank_embed (by omega : r ≤ r + 4) (extendPoint m_N) from
+            (rank_embed_point (by omega : r ≤ r + 4) m_N).symm]
+        exact ⟨(rank_embed_le _ x' (extendPoint m_N)).mpr hm_N_in.1,
+               (rank_embed_le _ (extendPoint m_N) y').mpr hm_N_in.2⟩
+      obtain ⟨m_M, hm_M_in_re, hcond_1⟩ := hwin_1 m_N hm_N_in_re
+      obtain ⟨_hord_1, _hgp_1, hform_1⟩ := hcond_1
+      -- hform_1 gives formula agreement at game_tuple positions.
+      -- At the b-position: m_M vs m_N.
+      have hform_mM_mN : ∀ (A : StaviFormula), stavi_depth A ≤ r + 4 →
+          (stavi_temporal_truth_mu M atomMap (r + 4) (extendPoint m_M) A ↔
+           stavi_temporal_truth_mu N atomMap (r + 4) (extendPoint m_N) A) := by
+        intro A hA
+        have h := hform_1 ⟨1 + 1, by omega⟩ A hA
+        simp only [game_tuple_b_eq] at h; exact h
+      -- Simplify via stavi_truth_mu_at_point: truth at carrier points is rank-independent.
+      -- rank r ↔ standard ↔ rank (r+4), so rank-r agreement follows from rank-(r+4) agreement.
+      have hform_pts : ∀ (A : StaviFormula), stavi_depth A ≤ r + 4 →
+          (stavi_temporal_truth_mu M atomMap r (extendPoint m_M) A ↔
+           stavi_temporal_truth_mu N atomMap r (extendPoint m_N) A) := by
+        intro A hA
+        constructor
+        · intro h
+          exact (stavi_truth_mu_at_point (r := r) m_N A).mpr
+            ((stavi_truth_mu_at_point (r := r + 4) m_N A).mp
+              ((hform_mM_mN A hA).mp
+                ((stavi_truth_mu_at_point (r := r + 4) m_M A).mpr
+                  ((stavi_truth_mu_at_point (r := r) m_M A).mp h))))
+        · intro h
+          exact (stavi_truth_mu_at_point (r := r) m_M A).mpr
+            ((stavi_truth_mu_at_point (r := r + 4) m_M A).mp
+              ((hform_mM_mN A hA).mpr
+                ((stavi_truth_mu_at_point (r := r + 4) m_N A).mpr
+                  ((stavi_truth_mu_at_point (r := r) m_N A).mp h))))
+      -- m_M is in [x, y] (from rank-embedded bounds).
+      have hm_M_in : inClosedInterval x y (extendPoint m_M) := by
+        have h_lo := hm_M_in_re.1
+        have h_hi := hm_M_in_re.2
+        -- h_lo : rank_embed x ≤ extendPoint m_M (at rank r+4)
+        -- rank_embed_point: rank_embed (extendPoint m_M) = extendPoint m_M
+        -- So h_lo : rank_embed x ≤ rank_embed (extendPoint m_M) by substitution
+        rw [← rank_embed_point (by omega : r ≤ r + 4) m_M] at h_lo h_hi
+        exact ⟨(rank_embed_le _ x (extendPoint m_M)).mp h_lo,
+               (rank_embed_le _ (extendPoint m_M) y).mp h_hi⟩
+      -- S11.1c: Gap detection transfer.
+      -- For each A with stavi_depth A ≤ r, transfer A-truth at γ_N to existence of
+      -- a matching gap γ_A_M in M via left_formula_gap_detection.
+      -- left_formula(A, D) has depth ≤ max(depth A, depth D) + 4 ≤ r + 4.
+      have hform_transfer : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+          stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A →
+          ∃ (γ_A : RDefinableGap M atomMap r),
+            (extendPoint m_M : ExtendedCarrier M atomMap r) < Sum.inr γ_A ∧
+            gap_definable_on_left M atomMap γ_A.val D ∧
+            stavi_temporal_truth_mu M atomMap r (Sum.inr γ_A) A := by
+        intro A hA hA_γN
+        -- Backward: A^mu(γ_N) → left_formula(A,D)(m_N) via left_formula_gap_detection at N
+        have h_left_N : stavi_temporal_truth_mu N atomMap r (extendPoint m_N)
+            (left_formula A D) := by
+          rw [left_formula_gap_detection A D hD_depth m_N]
+          exact ⟨γ_N, hm_N_lt_γ, h_left_orig, hm_N_D_between, hA_γN⟩
+        -- Transfer: left_formula truth from m_N to m_M.
+        -- stavi_depth(left_formula A D) ≤ max(depth A, depth D) + 4 ≤ r + 4.
+        have h_left_depth : stavi_depth (left_formula A D) ≤ r + 4 := by
+          calc stavi_depth (left_formula A D) ≤ max (stavi_depth A) (stavi_depth D) + 4 :=
+            stavi_depth_left_formula A D
+          _ ≤ max r r + 4 := by omega
+          _ = r + 4 := by omega
+        have h_left_M : stavi_temporal_truth_mu M atomMap r (extendPoint m_M)
+            (left_formula A D) := (hform_pts (left_formula A D) h_left_depth).mpr h_left_N
+        -- Forward: left_formula(A,D)(m_M) → ∃ γ_A in M with A^mu(γ_A)
+        rw [left_formula_gap_detection A D hD_depth m_M] at h_left_M
+        obtain ⟨γ_A, hm_lt_γA, h_def_A, _, hA_γA⟩ := h_left_M
+        exact ⟨γ_A, hm_lt_γA, h_def_A, hA_γA⟩
+      -- Step 1: Instantiate hform_transfer with sf_verum to get γ_M existence.
+      -- sf_verum has depth 0 ≤ r and is trivially true at all positions.
+      have h_verum_γN : stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) sf_verum := by
+        simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu]
+      obtain ⟨γ_M, hm_lt_γM, h_def_γM_left, _⟩ :=
+        hform_transfer sf_verum (by rw [stavi_depth_sf_verum]; omega) h_verum_γN
+      -- Step 2: γ_M ∈ [x, y].
+      -- Lower bound: x ≤ m_M < γ_M.
+      -- Upper bound γ_M ≤ y: requires showing the D-left-definable gap
+      -- detected by left_formula at m_M lies within [x, y].
+      -- The key argument: the D-between condition at m_M propagates D-truth
+      -- in the same "local neighborhood" as at m_N, and the forward game's
+      -- order preservation ensures γ_M is bounded by the interval endpoints.
+      -- Technical proof deferred — the interval bound argument requires
+      -- a more detailed analysis of the D-between region relative to [x, y].
+      have hγ_M_in : inClosedInterval x y (Sum.inr γ_M) :=
+        ⟨le_of_lt (lt_of_le_of_lt hm_M_in.1 hm_lt_γM), by sorry⟩
+      -- Step 3: Formula agreement ∀ A, depth A ≤ r → (A(γ_M) ↔ A(γ_N)).
+      -- The chain: A(γ) ↔ left_formula(A,D)(m) (at the correct reference point)
+      -- via left_formula_gap_detection, and left_formula truth transfers via hform_pts.
+      -- By gap_detection_unique, γ_M is the UNIQUE D-left-definable gap above m_M,
+      -- and γ_N is the unique one above m_N.
+      -- Full proof requires careful handling of gap_detection_unique + D-between
+      -- conditions on both sides. Deferred to dedicated sub-lemma.
+      refine ⟨γ_M, hγ_M_in, ?_⟩
+      intro A hA
+      constructor
+      · -- A(γ_M) → A(γ_N): use left_formula backward at m_M, transfer, forward at m_N
+        sorry
+      · -- A(γ_N) → A(γ_M): use hform_transfer to get γ_A, then γ_A = γ_M by uniqueness
+        intro hA_γN
+        obtain ⟨γ_A, hm_lt_γA, h_def_γA, hA_γA⟩ := hform_transfer A hA hA_γN
+        -- γ_A = γ_M by gap_detection_unique: both are D-left-definable gaps above m_M.
+        -- The D-between conditions at m_M for both gaps come from hform_transfer's
+        -- left_formula_gap_detection output.
+        -- Requires: m_M ∈ γ_M.cut ∩ γ_A.cut, and D-between for both.
+        sorry
+    · -- RIGHT CASE: γ_N is D-definable on the right.
+      sorry
   obtain ⟨γ_M, hγ_M_in, hγ_M_form⟩ := h_gap_match
   -- Sub-goal S11.2: gap/point agreement (both are gaps, so trivial).
   have hγ_gp : (IsPoint (Sum.inr γ_M : ExtendedCarrier M atomMap r) ↔
