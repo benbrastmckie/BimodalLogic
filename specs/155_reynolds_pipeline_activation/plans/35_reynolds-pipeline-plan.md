@@ -289,7 +289,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6A: GHR93 Proposition 7 -- Strategy Composition Lemma [NOT STARTED]
+### Phase 6A: GHR93 Proposition 7 -- Strategy Composition Lemma [IN PROGRESS]
 
 **Goal**: Implement `ghr93_strategy_compose` -- the composition lemma that combines Duplicator winning strategies on sub-intervals [x,c] and [c,y] into a winning strategy on the full interval [x,y]. This is the missing infrastructure that unblocks the nf_characterizable_by_stavi inductive step.
 
