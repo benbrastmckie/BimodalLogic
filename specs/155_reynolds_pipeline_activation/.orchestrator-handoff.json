@@ -3,18 +3,16 @@
   "task_number": 155,
   "status": "partial",
   "current_phase": "phase_6bc_nf_characterization",
-  "summary": "Defined formula construction (nf_exist_sf, nf_succ_sf) for the inductive step of nf_characterizable_by_stavi. The StaviFormula for depth-(k+1) NFs is a conjunction of atom literals and quantifier existence/non-existence formulas built from depth-k IH. Proved atom part of backward direction. 3 targeted sorries remain: (1) nf_exist_sf_forward final step (Fin unfolding issue, LOW difficulty), (2) forward direction game argument (HIGH -- needs Phase 6B case analysis), (3) backward negation case (MEDIUM -- follows from forward direction). The sorry count went from 1 to 3 because the single sorry was split into focused components.",
+  "summary": "Reduced sorries in nf_characterizable_by_stavi from 2 to 1 by diagnosing and fixing a fundamental formula bug. The prior nf_succ_sf formula used nf_exist_sf with sf_top guard, which made the formula unable to distinguish 2-variable NFs sharing the same atom assignment. This caused both sorries to be on FALSE statements. Fix: replaced the proof to use classically-chosen existence formulas (nf_2var_existence_characterizable), consolidating 2 false-sorries into 1 true-sorry. The remaining sorry asserts that for each 2-variable depth-k NF, a StaviFormula exists characterizing its realizability -- a correct claim following from GHR93 Proposition 7 (game composition).",
   "blocking_issues": [
-    "nf_exist_sf_forward sorry: Lean definitional unfolding of nf_order_0_1 nested match does not match proof structure for rcases/rw. Needs careful unfold/simp strategy or alternative proof approach.",
-    "Forward direction game argument: Formula truth must determine which 2-variable NFs are realizable. Requires EF game argument (Phase 6B case analysis within EFGames module)."
+    "nf_2var_existence_characterizable (1 sorry): requires connecting the game infrastructure (ghr93_strategy_compose, ghr93_game_iff_decomposition) to the NF-level existence characterization. The game infrastructure is sorry-free but operates on ExtendedCarrier/rank_type, not NormalForm/nf_eval_nf."
   ],
-  "continuation_context": "File: StaviCompleteness.lean. The 3 sorry sites are at lines 1781, 1835, 1891. Sorry 1 (line 1781) is in nf_exist_sf_forward and has all mathematical prerequisites proved -- only blocked by Lean definitional unfolding. Sorry 2 (line 1835) and Sorry 3 (line 1891) need the game-theoretic argument from Phase 6B. The composition lemma ghr93_strategy_compose is available (Phase 6A complete). The decomposition lemma (Lemma 11) is available. The key missing piece is assembling Cases I-IV of GHR93 Section 8 into a theorem showing formula agreement implies NF agreement at the next depth.",
-  "next_action_hint": "implement",
+  "continuation_context": "The single remaining sorry is nf_2var_existence_characterizable at line 1865 of StaviCompleteness.lean. Its goal: for each sub_nf : NormalForm sig k 2 and parent atom assignment, there exists a StaviFormula sf such that sf holds at t iff some x realizes sub_nf relative to t. This is GHR93's core existence claim. Proof requires: (1) building a formula using IH char_k formulas + proper interval guard in Until/Since that encodes the full 2-variable NF (not just atoms), and (2) showing the backward direction via the game-theoretic argument that interval type profiles determine multi-variable NFs. The game infrastructure in Composition.lean and Decomposition.lean provides the tools but the bridge to NF equality is missing.",
+  "next_action_hint": "research",
   "phases_completed": 6,
   "phases_total": 12,
-  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-partial-handoff-20260527.md",
+  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-sorry-closure-20260527c.md",
   "artifacts_created": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-partial-handoff-20260527.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"
   ]
 }
