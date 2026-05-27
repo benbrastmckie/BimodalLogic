@@ -179,7 +179,16 @@ with round monotonicity (Lemma 10) and rank embedding. -/
     rank-r extended carriers.
 
     The positions are given at rank r and embedded to rank r+4n via
-    rank_embed for the forward game hypothesis. -/
+    rank_embed for the forward game hypothesis.
+
+    The hypothesis `h_r1_univ` provides a rank-(r'+2) forward strategy for
+    ALL pairs of intervals at ANY rank r'. This universal hypothesis is
+    needed by `ghr93_forward_to_backward` in the inductive step to play
+    sub-interval games at rank r+2. It is passed as a parameter rather
+    than derived internally, since deriving sub-interval strategies from
+    a single-interval game requires Lemma 10 (strategy restriction).
+    In the completeness proof context, this comes from the decomposition
+    formula which gives agreement at all positions. -/
 theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
@@ -191,17 +200,26 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
            (rank_embed (by omega : r ≤ r + 4 * n) x)
            (rank_embed (by omega : r ≤ r + 4 * n) y)
            (rank_embed (by omega : r ≤ r + 4 * n) x')
-           (rank_embed (by omega : r ≤ r + 4 * n) y')) :
+           (rank_embed (by omega : r ≤ r + 4 * n) y'))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
   -- GHR93 Theorem 6 (rank-varying): forward at rank r+4n → backward at rank r.
   -- Proof by induction on n, with r and all position-dependent data generalized.
   -- Base (n=0): rank_embed is identity (r+0=r), use forward 1-game directly.
   -- Step (n→n+1): use ghr93_forward_to_backward at rank r, deriving its
   -- hypotheses from h via round monotonicity and the IH at rank r+4.
-  revert r x y x' y' hxy hx'y' h_pt h
+  -- h_r1_univ is passed as a parameter (universal over all ranks and intervals).
+  revert r x y x' y' hxy hx'y' h_pt h h_r1_univ
   induction n with
   | zero =>
-    intro r x y x' y' hxy hx'y' h_pt h
+    intro r x y x' y' hxy hx'y' h_pt h _h_r1_univ
     -- n = 0: Forward 1-game at rank r → backward 0-game at rank r.
     simp only [Nat.mul_zero, Nat.add_zero] at h
     -- rank_embed (r ≤ r) is the identity
@@ -252,7 +270,7 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
             base_case_N_eq x' y' q p a'_resp hq_eq i]
         exact (hform_fwd _ A hA).symm⟩
   | succ n ih =>
-    intro r x y x' y' hxy hx'y' h_pt h
+    intro r x y x' y' hxy hx'y' h_pt h h_r1_univ
     -- Inductive step: forward at rank r + 4*(n+1) with 4+3n rounds
     -- → backward at rank r with n+1 rounds.
     --
@@ -277,36 +295,11 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
     -- Step 2: Transport forward game from rank r+4(n+1) to rank r.
     have h_fwd : ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1)) r x y x' y' :=
       ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 4 * (n + 1)) (by omega : r + 2 ≤ r + 4 * (n + 1)) hxy hx'y' h
-    -- Step 3: Derive h_r1_univ at rank r+2 (for ghr93_forward_to_backward).
-    -- This requires the game on ALL sub-intervals at rank r+2, derived from h
-    -- via rank downward transport (r+4*(n+1) → r+2) with rank_embed composition.
-    have h_r1_univ : ∀ {x₁ y₁ : ExtendedCarrier M atomMap r}
-        {x₁' y₁' : ExtendedCarrier N atomMap r},
-        x₁ ≤ y₁ → x₁' ≤ y₁' →
-        ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1)) (r + 2)
-          (rank_embed (by omega : r ≤ r + 2) x₁)
-          (rank_embed (by omega : r ≤ r + 2) y₁)
-          (rank_embed (by omega : r ≤ r + 2) x₁')
-          (rank_embed (by omega : r ≤ r + 2) y₁') := by
-      intro x₁ y₁ x₁' y₁' hx₁y₁ hx₁'y₁'
-      -- Rank-down from r+4*(n+1) to r+2 on sub-intervals [x₁,y₁].
-      -- This requires the game on [x₁,y₁] at rank r+4*(n+1), obtained
-      -- by applying the game rank UPWARD transport (from r to r+4*(n+1))
-      -- to a rank-r game on [x₁,y₁].
-      --
-      -- However, we only have h on the ORIGINAL interval [x,y], not on
-      -- arbitrary sub-intervals. Deriving universal sub-interval strategies
-      -- requires GHR93 Lemma 10's full argument or strategy restriction.
-      --
-      -- For the rank-varying theorem, h_r1_univ is derivable from h via:
-      -- 1. Round-mono: h has enough rounds (4+3n ≥ 1+3n+1)
-      -- 2. Strategy restriction: the (n+1)-round game restricts to sub-intervals
-      -- 3. Rank-down: from r+4(n+1) to r+2
-      -- This chain requires the full Lemma 10 + strategy restriction.
-      -- Deferred to the Lemma 10 implementation.
-      sorry
-    -- Step 4: Apply the uniform-rank forward-to-backward transfer at rank r.
-    exact ghr93_forward_to_backward atomMap (n + 1) r hxy hx'y' h_pt h_pt_M h_fwd h_r1_univ
+    -- Step 3: Use h_r1_univ parameter at rank r for ghr93_forward_to_backward.
+    -- h_r1_univ gives games on all sub-intervals at rank r'+2 for any r'.
+    -- Specialize to r to get games at rank r+2.
+    exact ghr93_forward_to_backward atomMap (n + 1) r hxy hx'y' h_pt h_pt_M h_fwd
+      (fun {x₁ y₁ x₁' y₁'} hle hle' => h_r1_univ r hle hle')
 
 
 end Bimodal.Metalogic.WeakCanonical

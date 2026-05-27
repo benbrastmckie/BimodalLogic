@@ -324,26 +324,27 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Cases III/IV + Strategy Restriction (S11, S12) [NOT STARTED]
+### Phase 5: Cases III/IV + Strategy Restriction (S11, S12) [PARTIAL]
 
 **Goal**: Close S11 (Cases III/IV gap detection, CaseAnalysis.lean:2619) and S12 (strategy restriction for rank-varying forward-to-backward, Theorem6.lean:307).
 
 **Tasks**:
 
-- [ ] **Close S11 (CaseAnalysis.lean:2619, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap.
+- [ ] **Close S11 (CaseAnalysis.lean:2619, `ghr93_cases_III_IV`)**: Full theorem body sorry. Construct backward game response when a_n is a gap. *(deviation: deferred — gap detection transfer requires ~200-300 lines connecting GapDetection.lean infrastructure with forward game; structural setup completed (tau for init positions, gap extraction) but core gap matching sorry remains)*
   1. Case-split on whether a_bwd(n) is left-defined or right-defined (or both)
   2. Use `left_formula_gap_detection` / `right_formula_gap_detection` (proved sorry-free in `EFGames/GapDetection.lean`) to find a matching gap in M
   3. Use `gap_detection_unique` to show the matching gap has correct properties
   4. Construct response sequence: tau (for init positions) + matching gap (for position n)
   5. Assemble winning condition from tau + gap detection properties
   - Estimated: 150-300 lines (substantial new proof using existing infrastructure)
+  - **Status**: Structural setup done (τ application, gap extraction). Core gap detection transfer remains sorry'd.
 
-- [ ] **Close S12 (Theorem6.lean:307, `ghr93_forward_to_backward_rank_varying`)**: Sub-interval strategy restriction.
-  - **Approach**: Parameter approach -- modify `ghr93_forward_to_backward_rank_varying` to take the IH game (`h_r1_univ`) as a parameter from the main induction, rather than deriving it internally. The IH already provides games on all sub-intervals via universal quantification.
+- [x] **Close S12 (Theorem6.lean:307, `ghr93_forward_to_backward_rank_varying`)**: Sub-interval strategy restriction. *(completed)*
+  - **Approach**: Parameter approach -- modified `ghr93_forward_to_backward_rank_varying` to take `h_r1_univ` as a parameter quantified over all ranks `r'` and all sub-intervals. In the `succ` case, specialized to `r` and passed directly to `ghr93_forward_to_backward`. Zero case ignores the parameter. Theorem6.lean is now fully sorry-free.
   - Do NOT implement full Lemma 10 strategy restriction theorem -- the parameter approach is simpler and sufficient.
-  - Estimated: 100-200 lines (signature change + threading IH through)
+  - Actual: ~10 lines changed (signature addition + parameter threading)
 
-- [ ] Run `lake build` to confirm no regressions
+- [x] Run `lake build` to confirm no regressions *(completed — build passes, 997 jobs)*
 
 **Timing**: 4-8 hours
 

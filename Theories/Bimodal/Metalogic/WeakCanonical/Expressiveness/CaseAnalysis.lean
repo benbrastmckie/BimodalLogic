@@ -2971,6 +2971,39 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
           ghr93_winning_condition (n + 1)
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
+  -- GHR93 Cases III/IV: all a_bwd(i) ≥ d, a_bwd(n) is a gap γ_N.
+  -- Strategy: use τ for positions 0..n-1, then find a matching gap in M
+  -- for position n using the forward game + gap detection infrastructure.
+  --
+  -- Step 1: Build init sub-sequence (first n elements, all in [d, y'])
+  let a_init : Fin n → ExtendedCarrier N atomMap r :=
+    fun k => a_bwd ⟨k.val, by omega⟩
+  have ha_init : ∀ k, inClosedInterval d y' (a_init k) := by
+    intro k
+    exact ⟨h_no_split ⟨k.val, by omega⟩, (ha_bwd ⟨k.val, by omega⟩).2⟩
+  -- Step 2: Apply τ to the init sub-sequence to get M-side responses
+  obtain ⟨resp_tau, hresp_tau_in, hwin_tau⟩ := props.tau a_init ha_init
+  -- Step 3: Extract the gap γ_N from h_gap
+  obtain ⟨γ_N, hγ_N_eq⟩ := h_gap
+  -- Step 4: Find the matching gap in M for position n.
+  -- Since d ≤ a_bwd(n) = γ_N ≤ y', and all selections are ≥ d,
+  -- we need a gap g_M in [c, y] that has the same formula and ordering
+  -- behavior as γ_N.
+  --
+  -- The gap detection argument (GHR93 Lemma 9 + Theorem 6 inductive step):
+  -- γ_N is r-definable (as an element of ExtendedCarrier), so there exists
+  -- a defining formula D with stavi_depth D ≤ r. The gap detection formula
+  -- left_formula (or right_formula) converts γ_N's properties into a
+  -- point-evaluable Stavi formula. The forward game transfers this formula
+  -- to M, giving the existence of a matching gap γ_M in M.
+  --
+  -- The full implementation requires connecting gap detection theorems
+  -- (left_formula_gap_detection, right_formula_gap_detection,
+  -- gap_detection_unique from GapDetection.lean) with the forward game
+  -- infrastructure from SplitPointProps.
+  --
+  -- This is a substantial proof (~200-300 lines) that is deferred to a
+  -- dedicated follow-up task focused on gap detection transfer.
   sorry
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],
