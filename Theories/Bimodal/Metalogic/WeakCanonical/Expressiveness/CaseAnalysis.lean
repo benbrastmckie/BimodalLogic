@@ -1628,7 +1628,17 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                   exact sel_pn_ord ⟨_, ‹_›⟩)
                | (have key := (tau_sel_y ⟨_, ‹_›⟩)
                   exact ⟨key.1.symm, key.2.symm⟩)
-               | sorry))
+               -- y' vs sel(j-1) reverse: impossible < (sel ≤ y', resp_tau ≤ y), = from tau_sel_y
+               | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h (ha_bwd ⟨_, by omega⟩).2)
+                             (lt_irrefl _),
+                         fun h => absurd (lt_of_lt_of_le h (hresp_tau_in ⟨_, ‹_›⟩).2)
+                             (lt_irrefl _)⟩,
+                        ⟨fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mp h.symm).symm,
+                         fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm).symm⟩⟩)
+               -- sel(i) vs p_n: rewrite j-side a_bwd to p_n via hab_eq, then sel_pn_ord
+               | (rw [hab_eq _ (by omega) (by assumption)]
+                  exact sel_pn_ord ⟨_, ‹_›⟩)
+               | (simp only [hab_eq _ _ ‹¬_ < n›]; exact sel_pn_ord ⟨_, ‹_›⟩)))
       · -- gap_point_agreement (n+1)
         intro i
         simp only [game_tuple]
@@ -1937,6 +1947,16 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             | (exact pivot_chain_order_rev' hd_le_pn hb_resp_in.1
                   hc_le_en (le_of_lt hc_lt_bsp)
                   ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩ tau_d_b)
+            -- y' vs sel(j-1) reverse: impossible < (sel ≤ y', resp_tau ≤ y), = from tau_sel_y
+            | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h (ha_bwd ⟨_, by omega⟩).2)
+                           (lt_irrefl _),
+                       fun h => absurd (lt_of_lt_of_le h (hresp_tau_in ⟨_, ‹_›⟩).2)
+                           (lt_irrefl _)⟩,
+                      ⟨fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mp h.symm).symm,
+                       fun h => ((tau_sel_y ⟨_, ‹_›⟩).2.mpr h.symm).symm⟩⟩)
+            -- sel(i) vs p_n: rewrite j-side a_bwd to p_n via hab_eq, then sel_pn_ord
+            | (rw [hab_eq _ (by omega) (by assumption)]
+               exact sel_pn_ord ⟨_, ‹_›⟩)
             | sorry)
         /- Dead code preserved for reference (tau ordering extractions):
         have hd_le_an := props.hd_le_an
