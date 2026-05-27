@@ -1615,11 +1615,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                     ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
                     (tau_d_sel ⟨_, ‹_›⟩) using 3
                 <;> (congr 1; exact Fin.ext (by omega)))
-             -- Remaining goals: sel(i) vs p_n, p_n vs sel(j), y' vs sel
-             -- sel_pn_ord and pn_sel_ord are available in context (sorry'd).
-             -- Grid dispatch with `first | ... |` can't cleanly use them due to
-             -- Fin proof bridging and rw target ambiguity.
-             -- Phase 3B will replace the entire grid dispatch with structured proofs.
+             -- sel(i) vs p_n: rw j-side a_bwd to p_n (hab_eq on ¬j-1<n),
+             -- then the i-side a_bwd is a_init by rfl, close with sel_pn_ord
+             | (rw [show (a_bwd ⟨_, _⟩ : ExtendedCarrier N atomMap r) = extendPoint p_n
+                    from hab_eq _ _ ‹_›]
+                exact sel_pn_ord ⟨_, ‹_›⟩)
+             -- p_n vs sel(j): pn_sel_ord (Fin bridging needed; a_init vs a_bwd)
+             -- Phase 3B residual: exact/convert can't resolve Fin proof mismatch
              | sorry)
       · -- gap_point_agreement (n+1)
         intro i

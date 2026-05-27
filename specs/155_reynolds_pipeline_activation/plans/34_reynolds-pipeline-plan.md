@@ -203,26 +203,24 @@ Phases within the same wave can execute in parallel.
   - Case A: `sel_pn_ord` + `pn_sel_ord` added at lines ~1418-1441
   - Case B: `sel_pn_ord` + `pn_sel_ord` added at lines ~1769-1791
 
-- [ ] **Populate sel_pn_ord with sorry in obtain_split_point_props** *(deviation: skipped -- sel_pn_ord is local to CaseAnalysis.lean, not in SplitPointProps)*
-
 - [x] **Verify build passes**: `lake build` passes with zero errors. Sorry count: 2 new sel_pn_ord sorries (Case A line 1423, Case B line 1773). Pre-existing grid fallback sorries unchanged (lines 1622, 1914).
 
 **Timing**: ~1 hour
 
 **Depends on**: 2 (COMPLETED)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean` -- add field to SplitPointProps structure + populate with sorry
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- local `have sel_pn_ord` + `pn_sel_ord` at Case A and Case B
 
 **Verification**:
-- SplitPointProps has `sel_pn_ord` field
-- `obtain_split_point_props` compiles with sorry'd field
+- `lake build` passes with zero errors
+- sel_pn_ord available at both sorry sites
 - `lake build` passes
 - No new sorry sites introduced outside the single `sorry` in `obtain_split_point_props`
 
 ---
 
-### Phase 3B: Structured Proof Tactic Overhaul (S8/S9 Closure) [NOT STARTED]
+### Phase 3B: Structured Proof Tactic Overhaul (S8/S9 Closure) [IN PROGRESS]
 
 **Goal**: Replace the `same_order_type_grid <;> first | ... | sorry` pattern in both Case A and Case B with structured focused proofs using named hypotheses, closing S8 and S9. Use the `sel_pn_ord` field from Phase 3A for the sel-vs-p_n goals.
 
