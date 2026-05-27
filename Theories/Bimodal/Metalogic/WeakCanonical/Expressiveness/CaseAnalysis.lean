@@ -3279,6 +3279,40 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         rw [← rank_embed_point (by omega : r ≤ r + 4) m_M] at h_lo h_hi
         exact ⟨(rank_embed_le _ x (extendPoint m_M)).mp h_lo,
                (rank_embed_le _ (extendPoint m_M) y).mp h_hi⟩
+      -- Degenerate y' check: if y' = Sum.inr γ_N, the sub-interval game approach
+      -- cannot find complement elements in [m_N, y']. Handle via tau endpoint agreement.
+      if hy'_eq_γ : y' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) then
+        -- y' = Sum.inr γ_N. Use tau 0-round game for endpoint agreement.
+        rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, _hgap_d⟩
+        · -- Carrier point p_cy ∈ [c, y]. Use tau endpoint agreement.
+          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hdy' props.hcy props.tau
+          obtain ⟨_a'_tau0, _ha'_tau0_in, hwin_tau0⟩ := h_tau_0
+            (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
+          obtain ⟨b_tau0, _hb_tau0_in, hcond_tau0⟩ := hwin_tau0 p_cy hp_cy
+          obtain ⟨_hord_tau0, hgp_tau0, hform_tau0⟩ := hcond_tau0
+          have hgp_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y') := by
+            have h := hgp_tau0 ⟨0 + 2, by omega⟩
+            simp only [game_tuple_y_eq] at h; exact ⟨h.1.symm, h.2.symm⟩
+          obtain ⟨g_y_M, hy_eq⟩ := hgp_y.2.mpr ⟨γ_N, hy'_eq_γ⟩
+          exact ⟨g_y_M, ⟨hy_eq ▸ hxy, hy_eq ▸ le_refl y⟩,
+            fun A hA => by
+              have h := hform_tau0 ⟨0 + 2, by omega⟩ A hA
+              simp only [game_tuple_y_eq] at h
+              rw [hy_eq] at h; rw [hy'_eq_γ] at h; exact h.symm⟩
+        · -- c = y, d = y', both gaps. Use hcd_form directly.
+          have hd_eq_γN : d = Sum.inr γ_N := by rw [hdy'_eq, hy'_eq_γ]
+          obtain ⟨g_c, hc_eq⟩ := hgap_c
+          exact ⟨g_c, ⟨hc_eq ▸ hcy_eq ▸ hxy, hc_eq ▸ hcy_eq ▸ le_refl y⟩,
+            fun A hA => by
+              have h := props.hcd_form A hA
+              rw [hc_eq] at h; rw [hd_eq_γN] at h; exact h⟩
+      else
+      -- NON-DEGENERATE y': Sum.inr γ_N < y'.
+      have hγ_ne_y' : (Sum.inr γ_N : ExtendedCarrier N atomMap r) ≠ y' :=
+        fun h => hy'_eq_γ h.symm
+      have hy'_gt_γ : y' > (Sum.inr γ_N : ExtendedCarrier N atomMap r) :=
+        lt_of_le_of_ne hγ_N_in.2 hγ_ne_y'
       -- S11.1c: Gap detection transfer.
       -- For each A with stavi_depth A ≤ r, transfer A-truth at γ_N to existence of
       -- a matching gap γ_A_M in M via left_formula_gap_detection.
@@ -3317,13 +3351,151 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         hform_transfer sf_verum (by rw [stavi_depth_sf_verum]; omega) h_verum_γN
       -- Step 2: γ_M ∈ [x, y].
       -- Lower bound: x ≤ m_M < γ_M (trivial from hm_M_in.1 and hm_lt_γM).
-      -- Upper bound Sum.inr γ_M ≤ y: by contradiction.
-      -- If y < Sum.inr γ_M, find p_N ∉ γ_N.cut with ¬D(p_N) in [x', y'].
-      -- Play sub-interval forward game on [m_M, y] vs [m_N, y'] via h_r1_univ
-      -- to get p_M with m_M < p_M (order agreement at endpoints vs response).
+      -- Upper bound Sum.inr γ_M ≤ y: by contradiction using sub-interval game.
+      -- Since y' > Sum.inr γ_N (non-degenerate), find p_N ∉ γ_N.cut with ¬D(p_N)
+      -- in [m_N, y'] via _h_no_init. Play sub-interval forward game on [m_M, y] vs
+      -- [m_N, y'] via h_r1_univ to get p_M with m_M < p_M (order agreement).
       -- Then h_D_bet_γM gives D(p_M), but formula agreement gives ¬D(p_M). ⊥
       have hγ_M_in : inClosedInterval x y (Sum.inr γ_M) :=
-        ⟨le_of_lt (lt_of_le_of_lt hm_M_in.1 hm_lt_γM), by sorry⟩
+        ⟨le_of_lt (lt_of_le_of_lt hm_M_in.1 hm_lt_γM), by
+          by_contra h_not_le; push_neg at h_not_le
+          -- h_not_le : y < Sum.inr γ_M
+          -- Step 2a: Find complement element t₀ of γ_N with extendPoint t₀ ≤ y'.
+          have ⟨t₀, ht₀_not_cut, ht₀_le_y'⟩ : ∃ t₀ : N.carrier, t₀ ∉ γ_N.val.cut ∧
+              (extendPoint t₀ : ExtendedCarrier N atomMap r) ≤ y' := by
+            rcases isPoint_or_isGap y' with ⟨p_y', hp_eq⟩ | ⟨g_y', hg_eq⟩
+            · -- y' is a point p_y' above γ_N.
+              refine ⟨p_y', ?_, le_of_eq hp_eq.symm⟩
+              intro h_in
+              have : (extendPoint p_y' : ExtendedCarrier N atomMap r) ≤ Sum.inr γ_N :=
+                (extendPoint_le_gap_iff p_y' γ_N).mpr h_in
+              have : y' ≤ (Sum.inr γ_N : ExtendedCarrier N atomMap r) := hp_eq ▸ this
+              exact absurd this (not_le.mpr hy'_gt_γ)
+            · -- y' is a gap g_y' with γ_N.cut ⊊ g_y'.cut.
+              -- Sum.inr γ_N ≤ y' = Sum.inr g_y' implies γ_N.cut ⊆ g_y'.cut.
+              have hg_sub : γ_N.val.cut ⊆ g_y'.val.cut := by
+                -- hγ_N_in.2 : Sum.inr γ_N ≤ y' and hg_eq : y' = Sum.inr g_y'
+                -- On ExtendedCarrier, Sum.inr γ ≤ Sum.inr g ↔ γ.cut ⊆ g.cut.
+                -- Use the ordering directly.
+                show extendedLE (Sum.inr γ_N) (Sum.inr g_y')
+                have h1 : extendedLE (Sum.inr γ_N) y' := le_of_lt hy'_gt_γ
+                rwa [hg_eq] at h1
+              -- The subset is proper (since the gaps are different).
+              have hg_ne : ¬g_y'.val.cut ⊆ γ_N.val.cut := by
+                intro h_sub
+                have h_eq := gap_ext γ_N.val g_y'.val
+                  (Set.Subset.antisymm hg_sub h_sub)
+                have : y' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
+                  rw [hg_eq]; exact congr_arg Sum.inr (Subtype.ext h_eq.symm)
+                exact hy'_eq_γ this
+              obtain ⟨m₀, hm₀_in, hm₀_not⟩ := Set.not_subset.mp hg_ne
+              exact ⟨m₀, hm₀_not, le_trans ((extendPoint_le_gap_iff m₀ g_y').mpr hm₀_in)
+                (le_of_eq hg_eq.symm)⟩
+          -- Step 2b: Apply _h_no_init to get p_N with ¬D(p_N).
+          push_neg at _h_no_init
+          obtain ⟨p_N, hp_N_not_cut, hp_N_le, hpN_not_D⟩ := _h_no_init t₀ ht₀_not_cut
+          -- Step 2c: Show m_N < p_N (cut membership vs complement).
+          have hm_N_lt_p_N : m_N < p_N := by
+            by_contra h_not_lt; push_neg at h_not_lt
+            exact hp_N_not_cut (γ_N.val.downward_closed m_N p_N hm_N_cut h_not_lt)
+          -- Step 2d: p_N ∈ [m_N, y'] at rank r.
+          have hp_N_in : extendPoint p_N ≤ y' :=
+            le_trans ((extendPoint_le_iff p_N t₀).mpr hp_N_le) ht₀_le_y'
+          -- Step 2e: Sub-interval forward game on [m_M, y] vs [m_N, y'] via h_r1_univ.
+          -- Instantiate at r' = r to get game at rank r+2 (simpler than r+4).
+          have h_sub_raw := h_r1_univ r
+            (show (extendPoint m_M : ExtendedCarrier M atomMap r) ≤ y from hm_M_in.2)
+            (show (extendPoint m_N : ExtendedCarrier N atomMap r) ≤ y' from hm_N_in.2)
+          -- h_sub_raw : game at rank r+2 on [rank_embed m_M, rank_embed y] vs
+          --   [rank_embed m_N, rank_embed y'].
+          -- rank_embed_point simplifies: rank_embed(extendPoint m) = extendPoint m.
+          -- Reduce to 1-round game.
+          have h_sub_1 : ghr93_duplicator_wins M N atomMap 1 (r + 2)
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) y)
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) y') :=
+            ghr93_duplicator_wins_round_mono (show 1 ≤ 4 + 3 * n by omega)
+              ((rank_embed_le _ (extendPoint m_M) y).mpr hm_M_in.2)
+              ((rank_embed_le _ (extendPoint m_N) y').mpr hm_N_in.2)
+              h_sub_raw
+          -- M selects rank_embed(extendPoint m_M) as its single selection.
+          have hm_M_in_sub : inClosedInterval
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) y)
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r)) :=
+            ⟨le_refl _, (rank_embed_le _ (extendPoint m_M) y).mpr hm_M_in.2⟩
+          obtain ⟨a'_sub, _ha'_sub_in, hwin_sub⟩ := h_sub_1
+            (fun _ : Fin 1 => rank_embed (show r ≤ r + 2 by omega)
+              (extendPoint m_M : ExtendedCarrier M atomMap r))
+            (fun _ => hm_M_in_sub)
+          -- Challenge with p_N.
+          have hp_N_in_sub : inClosedInterval
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) y')
+              (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) := by
+            rw [← rank_embed_point (show r ≤ r + 2 by omega) p_N]
+            exact ⟨(rank_embed_le _ (extendPoint m_N) (extendPoint p_N)).mpr
+                    ((extendPoint_le_iff m_N p_N).mpr (le_of_lt hm_N_lt_p_N)),
+                   (rank_embed_le _ (extendPoint p_N) y').mpr hp_N_in⟩
+          obtain ⟨p_M, hp_M_in_sub, hcond_sub⟩ := hwin_sub p_N hp_N_in_sub
+          obtain ⟨hord_sub, _hgp_sub, hform_sub⟩ := hcond_sub
+          -- Step 2f: Order agreement at positions (0, 2) gives m_M < p_M.
+          -- game_tuple for n=1: pos 0 = rank_embed(m_M), pos 1 = rank_embed(m_M),
+          --   pos 2 = extendPoint p_M, pos 3 = rank_embed(y).
+          -- N-side: pos 0 = rank_embed(m_N), pos 1 = a'_sub(0),
+          --   pos 2 = extendPoint p_N, pos 3 = rank_embed(y').
+          have hord_0_2 := hord_sub ⟨0, by omega⟩ ⟨1 + 1, by omega⟩
+          simp only [game_tuple_zero_eq, game_tuple_b_eq] at hord_0_2
+          -- N-side: rank_embed(m_N) < extendPoint p_N at rank r+2.
+          have hm_N_lt_p_N_r2 :
+              rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r) <
+              (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) := by
+            rw [rank_embed_point (show r ≤ r + 2 by omega) m_N]
+            rw [show (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) =
+                rank_embed (show r ≤ r + 2 by omega) (extendPoint p_N : ExtendedCarrier N atomMap r)
+                from (rank_embed_point (show r ≤ r + 2 by omega) p_N).symm]
+            rw [rank_embed_point (show r ≤ r + 2 by omega) p_N]
+            exact (extendPoint_lt_iff m_N p_N).mpr hm_N_lt_p_N
+          -- Transfer: rank_embed(m_M) < extendPoint p_M at rank r+2.
+          have hm_M_lt_p_M_r2 :
+              rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r) <
+              (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) :=
+            hord_0_2.1.mpr hm_N_lt_p_N_r2
+          -- Step 2g: m_M < p_M at rank r.
+          have hm_M_lt_p_M_r : m_M < p_M := by
+            rw [rank_embed_point (show r ≤ r + 2 by omega) m_M,
+                show (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) =
+                  rank_embed (show r ≤ r + 2 by omega) (extendPoint p_M : ExtendedCarrier M atomMap r)
+                  from (rank_embed_point (show r ≤ r + 2 by omega) p_M).symm,
+                rank_embed_point (show r ≤ r + 2 by omega) p_M] at hm_M_lt_p_M_r2
+            exact (extendPoint_lt_iff m_M p_M).mp hm_M_lt_p_M_r2
+          -- Step 2h: p_M ≤ y (from game bounds) → p_M ∈ γ_M.cut.
+          have hp_M_le_y : (extendPoint p_M : ExtendedCarrier M atomMap r) ≤ y := by
+            have h_bound := hp_M_in_sub.2
+            rw [show (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) =
+                  rank_embed (show r ≤ r + 2 by omega) (extendPoint p_M : ExtendedCarrier M atomMap r)
+                  from (rank_embed_point (show r ≤ r + 2 by omega) p_M).symm] at h_bound
+            exact (rank_embed_le _ (extendPoint p_M) y).mp h_bound
+          have hp_M_in_cut : p_M ∈ γ_M.val.cut :=
+            (extendPoint_le_gap_iff p_M γ_M).mp (le_of_lt (lt_of_le_of_lt hp_M_le_y h_not_le))
+          -- Step 2i: D(p_M) from h_D_bet_γM.
+          have hD_p_M : stavi_temporal_truth_mu M atomMap r (extendPoint p_M) D :=
+            h_D_bet_γM p_M hm_M_lt_p_M_r hp_M_in_cut
+          -- Step 2j: Formula agreement at position 2 gives ¬D(p_M).
+          -- hform_sub at position 2 (b-position): D at p_M ↔ D at p_N at rank r+2.
+          have hform_D := hform_sub ⟨1 + 1, by omega⟩ D (by omega : stavi_depth D ≤ r + 2)
+          simp only [game_tuple_b_eq] at hform_D
+          -- Transfer between rank r and rank r+2 via stavi_truth_mu_at_point.
+          have hD_p_M_r2 : stavi_temporal_truth_mu M atomMap (r + 2) (extendPoint p_M) D :=
+            (stavi_truth_mu_at_point (r := r + 2) p_M D).mpr
+              ((stavi_truth_mu_at_point (r := r) p_M D).mp hD_p_M)
+          have hD_p_N_r2 : stavi_temporal_truth_mu N atomMap (r + 2) (extendPoint p_N) D :=
+            hform_D.mp hD_p_M_r2
+          have hD_p_N : stavi_temporal_truth N atomMap p_N D :=
+            (stavi_truth_mu_at_point (r := r + 2) p_N D).mp hD_p_N_r2
+          -- But ¬D(p_N) from _h_no_init.
+          exact hpN_not_D hD_p_N⟩
       -- Step 3: Formula agreement ∀ A, depth A ≤ r → (A(γ_M) ↔ A(γ_N)).
       -- The chain: A(γ) ↔ left_formula(A,D)(m) (at the correct reference point)
       -- via left_formula_gap_detection, and left_formula truth transfers via hform_pts.
@@ -3600,6 +3772,46 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         rw [← rank_embed_point (by omega : r ≤ r + 4) m_M] at h_lo h_hi
         exact ⟨(rank_embed_le _ x (extendPoint m_M)).mp h_lo,
                (rank_embed_le _ (extendPoint m_M) y).mp h_hi⟩
+      -- Degenerate x' check: if x' = Sum.inr γ_N, the sub-interval game approach
+      -- cannot find cut elements in [x', m_N] (all cut elements are below γ_N = x').
+      -- Handle via sigma endpoint agreement or hcd_form.
+      if hx'_eq_γ2 : x' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) then
+        -- x' = Sum.inr γ_N. Then d = Sum.inr γ_N = x'.
+        have hd_le_γN : d ≤ (Sum.inr γ_N : ExtendedCarrier N atomMap r) :=
+          hγ_N_eq ▸ h_no_split ⟨n, by omega⟩
+        have hd_eq_γN : d = Sum.inr γ_N :=
+          le_antisymm hd_le_γN (hx'_eq_γ2 ▸ props.hx'd)
+        -- Use sigma 0-round game or hcd_form for x/x' endpoint agreement.
+        rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, _hgap_d⟩
+        · -- Carrier point p_xc ∈ [x, c]. Use sigma endpoint agreement.
+          have h_sigma_0 : ghr93_duplicator_wins N M atomMap 0 r x' d x c :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hx'd props.hxc props.sigma
+          obtain ⟨_a'_sig0, _ha'_sig0_in, hwin_sig0⟩ := h_sigma_0
+            (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
+          obtain ⟨b_sig0, _hb_sig0_in, hcond_sig0⟩ := hwin_sig0 p_xc hp_xc
+          obtain ⟨_hord_sig0, hgp_sig0, hform_sig0⟩ := hcond_sig0
+          -- game_tuple for n=0 has 3 positions: pos 0 = x'/x, pos 1 = b/b', pos 2 = d/c.
+          -- Extract gap/point + formula agreement at x ↔ x' (position 0).
+          have hgp_x : (IsPoint x ↔ IsPoint x') ∧ (IsGap x ↔ IsGap x') := by
+            have h := hgp_sig0 ⟨0, by omega⟩
+            simp only [game_tuple_zero_eq] at h; exact ⟨h.1.symm, h.2.symm⟩
+          obtain ⟨g_x_M, hx_eq⟩ := hgp_x.2.mpr ⟨γ_N, hx'_eq_γ2⟩
+          exact ⟨g_x_M, ⟨hx_eq ▸ le_refl x, hx_eq ▸ hxy⟩,
+            fun A hA => by
+              have h := hform_sig0 ⟨0, by omega⟩ A hA
+              simp only [game_tuple_zero_eq] at h
+              rw [hx_eq] at h; rw [hx'_eq_γ2] at h; exact h.symm⟩
+        · -- x = c, x' = d, both gaps. Use hcd_form directly.
+          have hd_eq : d = x' := hx'd_eq.symm
+          obtain ⟨g_c, hc_eq⟩ := hgap_c
+          exact ⟨g_c, ⟨hc_eq ▸ hxc_eq ▸ le_refl x, hc_eq ▸ hxc_eq ▸ hxy⟩,
+            fun A hA => by
+              have h := props.hcd_form A hA
+              rw [hc_eq] at h; rw [hd_eq_γN] at h; exact h⟩
+      else
+      -- NON-DEGENERATE x': x' < Sum.inr γ_N.
+      have hx'_lt_γ2 : x' < (Sum.inr γ_N : ExtendedCarrier N atomMap r) :=
+        lt_of_le_of_ne hγ_N_in.1 hx'_eq_γ2
       -- S11.1c: Gap detection transfer (right case).
       -- For each A with depth ≤ r, transfer A-truth at γ_N to matching gap in M.
       have hform_transfer : ∀ (A : StaviFormula), stavi_depth A ≤ r →
@@ -3631,10 +3843,147 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
       obtain ⟨γ_M, hm_gt_γM, h_def_γM_right, h_D_bet_γM, _⟩ :=
         hform_transfer sf_verum (by rw [stavi_depth_sf_verum]; omega) h_verum_γN
       -- γ_M ∈ [x, y].
-      -- Upper bound: extendPoint m_M > Sum.inr γ_M, so Sum.inr γ_M < extendPoint m_M ≤ y.
-      -- Lower bound: requires interval argument (same issue as left case).
+      -- Upper bound: extendPoint m_M > Sum.inr γ_M, trivial.
+      -- Lower bound: x ≤ Sum.inr γ_M by contradiction using sub-interval game.
+      -- Since x' < Sum.inr γ_N (non-degenerate), find p_N ∈ γ_N.cut with ¬D(p_N)
+      -- in [x', m_N] via _h_no_final. Play sub-interval forward game on [x, m_M] vs
+      -- [x', m_N] to get p_M with p_M < m_M (order agreement).
+      -- Then h_D_bet_γM gives D(p_M), but formula agreement gives ¬D(p_M). ⊥
       have hγ_M_in : inClosedInterval x y (Sum.inr γ_M) :=
-        ⟨by sorry,
+        ⟨by
+          by_contra h_not_le; push_neg at h_not_le
+          -- h_not_le : Sum.inr γ_M < x
+          -- Step 2a: Find cut element t₀ of γ_N with x' ≤ extendPoint t₀.
+          have ⟨t₀, ht₀_in_cut, ht₀_ge_x'⟩ : ∃ t₀ : N.carrier, t₀ ∈ γ_N.val.cut ∧
+              x' ≤ (extendPoint t₀ : ExtendedCarrier N atomMap r) := by
+            rcases isPoint_or_isGap x' with ⟨p_x', hp_eq⟩ | ⟨g_x', hg_eq⟩
+            · -- x' is a point p_x' below γ_N.
+              have hp_cut : p_x' ∈ γ_N.val.cut := by
+                rw [hp_eq] at hx'_lt_γ2
+                exact (extendPoint_le_gap_iff p_x' γ_N).mp (le_of_lt hx'_lt_γ2)
+              obtain ⟨m₀, hm₀_cut, hp_lt_m₀⟩ := gap_cut_exists_gt γ_N.val p_x' hp_cut
+              exact ⟨m₀, hm₀_cut, le_of_lt (hp_eq ▸ (extendPoint_lt_iff p_x' m₀).mpr hp_lt_m₀)⟩
+            · -- x' is a gap g_x' with g_x'.cut ⊂ γ_N.cut.
+              have hg_sub : g_x'.val.cut ⊆ γ_N.val.cut := by
+                show extendedLE (Sum.inr g_x') (Sum.inr γ_N)
+                have : extendedLE x' (Sum.inr γ_N) := le_of_lt hx'_lt_γ2
+                rwa [hg_eq] at this
+              have hg_ne : g_x'.val.cut ≠ γ_N.val.cut := by
+                intro heq
+                have : x' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
+                  rw [hg_eq]; exact congr_arg Sum.inr (Subtype.ext (gap_ext g_x'.val γ_N.val heq))
+                exact hx'_eq_γ2 this
+              obtain ⟨m₀, hm₀_cut, hm₀_not_gx⟩ := by
+                have : ¬γ_N.val.cut ⊆ g_x'.val.cut := by
+                  intro h_sub; exact hg_ne (Set.Subset.antisymm hg_sub h_sub)
+                exact Set.not_subset.mp this
+              have hx'_le_m₀ : x' ≤ (extendPoint m₀ : ExtendedCarrier N atomMap r) := by
+                rw [hg_eq]
+                exact le_of_lt (@lt_of_not_le (ExtendedCarrier N atomMap r) _ _ _
+                  (fun h => hm₀_not_gx ((extendPoint_le_gap_iff m₀ g_x').mp h)))
+              exact ⟨m₀, hm₀_cut, hx'_le_m₀⟩
+          -- Step 2b: Apply _h_no_final to get p_N ∈ γ_N.cut with ¬D(p_N).
+          push_neg at _h_no_final
+          obtain ⟨p_N, hp_N_ge, hp_N_in_cut, hpN_not_D⟩ := _h_no_final t₀ ht₀_in_cut
+          -- Step 2c: Show p_N < m_N (cut membership vs complement).
+          -- p_N ∈ γ_N.cut, m_N ∉ γ_N.cut. If p_N ≥ m_N, then m_N ≤ p_N ∈ cut,
+          -- by downward closure m_N ∈ cut. Contradiction.
+          have hp_N_lt_m_N : p_N < m_N := by
+            by_contra h_not_lt; push_neg at h_not_lt
+            exact hm_N_not_cut (γ_N.val.downward_closed p_N m_N hp_N_in_cut h_not_lt)
+          -- Step 2d: p_N ∈ [x', m_N] at rank r.
+          have hp_N_ge_x' : x' ≤ (extendPoint p_N : ExtendedCarrier N atomMap r) :=
+            le_trans ht₀_ge_x' ((extendPoint_le_iff t₀ p_N).mpr hp_N_ge)
+          -- Step 2e: Sub-interval forward game on [x, m_M] vs [x', m_N] via h_r1_univ.
+          -- Instantiate at r' = r to get game at rank r+2.
+          have h_sub_raw := h_r1_univ r
+            (show x ≤ (extendPoint m_M : ExtendedCarrier M atomMap r) from hm_M_in.1)
+            (show x' ≤ (extendPoint m_N : ExtendedCarrier N atomMap r) from hm_N_in.1)
+          have h_sub_1 : ghr93_duplicator_wins M N atomMap 1 (r + 2)
+              (rank_embed (show r ≤ r + 2 by omega) x)
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) x')
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r)) :=
+            ghr93_duplicator_wins_round_mono (show 1 ≤ 4 + 3 * n by omega)
+              ((rank_embed_le _ x (extendPoint m_M)).mpr hm_M_in.1)
+              ((rank_embed_le _ x' (extendPoint m_N)).mpr hm_N_in.1)
+              h_sub_raw
+          -- M selects rank_embed(extendPoint m_M) as its single selection.
+          have hm_M_in_sub : inClosedInterval
+              (rank_embed (show r ≤ r + 2 by omega) x)
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r))
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r)) :=
+            ⟨(rank_embed_le _ x (extendPoint m_M)).mpr hm_M_in.1, le_refl _⟩
+          obtain ⟨a'_sub, _ha'_sub_in, hwin_sub⟩ := h_sub_1
+            (fun _ : Fin 1 => rank_embed (show r ≤ r + 2 by omega)
+              (extendPoint m_M : ExtendedCarrier M atomMap r))
+            (fun _ => hm_M_in_sub)
+          -- Challenge with p_N.
+          have hp_N_in_sub : inClosedInterval
+              (rank_embed (show r ≤ r + 2 by omega) x')
+              (rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r))
+              (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) := by
+            rw [← rank_embed_point (show r ≤ r + 2 by omega) p_N]
+            exact ⟨(rank_embed_le _ x' (extendPoint p_N)).mpr hp_N_ge_x',
+                   (rank_embed_le _ (extendPoint p_N) (extendPoint m_N)).mpr
+                    ((extendPoint_le_iff p_N m_N).mpr (le_of_lt hp_N_lt_m_N))⟩
+          obtain ⟨p_M, hp_M_in_sub, hcond_sub⟩ := hwin_sub p_N hp_N_in_sub
+          obtain ⟨hord_sub, _hgp_sub, hform_sub⟩ := hcond_sub
+          -- Step 2f: Order agreement at positions (0, 2) gives p_M < m_M.
+          -- game_tuple: pos 0 = x/x', pos 1 = m_M/a'_sub(0), pos 2 = p_M/p_N, pos 3 = m_M/m_N.
+          -- Use positions (2, 3): p_M < m_M ↔ p_N < m_N.
+          have hord_2_3 := hord_sub ⟨1 + 1, by omega⟩ ⟨1 + 2, by omega⟩
+          simp only [game_tuple_b_eq, game_tuple_y_eq] at hord_2_3
+          -- N-side: extendPoint p_N < rank_embed(extendPoint m_N) at rank r+2.
+          have hp_N_lt_m_N_r2 :
+              (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) <
+              rank_embed (show r ≤ r + 2 by omega) (extendPoint m_N : ExtendedCarrier N atomMap r) := by
+            rw [show (extendPoint p_N : ExtendedCarrier N atomMap (r + 2)) =
+                rank_embed (show r ≤ r + 2 by omega) (extendPoint p_N : ExtendedCarrier N atomMap r)
+                from (rank_embed_point (show r ≤ r + 2 by omega) p_N).symm]
+            rw [rank_embed_point (show r ≤ r + 2 by omega) p_N,
+                rank_embed_point (show r ≤ r + 2 by omega) m_N]
+            exact (extendPoint_lt_iff p_N m_N).mpr hp_N_lt_m_N
+          -- Transfer: extendPoint p_M < rank_embed(extendPoint m_M) at rank r+2.
+          have hp_M_lt_m_M_r2 :
+              (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) <
+              rank_embed (show r ≤ r + 2 by omega) (extendPoint m_M : ExtendedCarrier M atomMap r) :=
+            hord_2_3.1.mpr hp_N_lt_m_N_r2
+          -- Step 2g: p_M < m_M at rank r.
+          have hp_M_lt_m_M_r : p_M < m_M := by
+            rw [show (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) =
+                  rank_embed (show r ≤ r + 2 by omega) (extendPoint p_M : ExtendedCarrier M atomMap r)
+                  from (rank_embed_point (show r ≤ r + 2 by omega) p_M).symm,
+                rank_embed_point (show r ≤ r + 2 by omega) p_M,
+                rank_embed_point (show r ≤ r + 2 by omega) m_M] at hp_M_lt_m_M_r2
+            exact (extendPoint_lt_iff p_M m_M).mp hp_M_lt_m_M_r2
+          -- Step 2h: p_M ∉ γ_M.cut (since x ≤ extendPoint p_M and x > Sum.inr γ_M).
+          -- Actually: extendPoint p_M ≥ x > Sum.inr γ_M, so p_M ∉ γ_M.cut.
+          have hp_M_ge_x : x ≤ (extendPoint p_M : ExtendedCarrier M atomMap r) := by
+            have h_bound := hp_M_in_sub.1
+            rw [show (extendPoint p_M : ExtendedCarrier M atomMap (r + 2)) =
+                  rank_embed (show r ≤ r + 2 by omega) (extendPoint p_M : ExtendedCarrier M atomMap r)
+                  from (rank_embed_point (show r ≤ r + 2 by omega) p_M).symm] at h_bound
+            exact (rank_embed_le _ x (extendPoint p_M)).mp h_bound
+          have hp_M_not_cut : p_M ∉ γ_M.val.cut := by
+            intro h_in
+            have : (extendPoint p_M : ExtendedCarrier M atomMap r) ≤ Sum.inr γ_M :=
+              (extendPoint_le_gap_iff p_M γ_M).mpr h_in
+            exact not_le.mpr h_not_le (le_trans hp_M_ge_x this)
+          -- Step 2i: D(p_M) from h_D_bet_γM.
+          have hD_p_M : stavi_temporal_truth_mu M atomMap r (extendPoint p_M) D :=
+            h_D_bet_γM p_M hp_M_lt_m_M_r hp_M_not_cut
+          -- Step 2j: Formula agreement at position 2 gives ¬D(p_M).
+          have hform_D := hform_sub ⟨1 + 1, by omega⟩ D (by omega : stavi_depth D ≤ r + 2)
+          simp only [game_tuple_b_eq] at hform_D
+          have hD_p_M_r2 : stavi_temporal_truth_mu M atomMap (r + 2) (extendPoint p_M) D :=
+            (stavi_truth_mu_at_point (r := r + 2) p_M D).mpr
+              ((stavi_truth_mu_at_point (r := r) p_M D).mp hD_p_M)
+          have hD_p_N_r2 : stavi_temporal_truth_mu N atomMap (r + 2) (extendPoint p_N) D :=
+            hform_D.mp hD_p_M_r2
+          have hD_p_N : stavi_temporal_truth N atomMap p_N D :=
+            (stavi_truth_mu_at_point (r := r + 2) p_N D).mp hD_p_N_r2
+          exact hpN_not_D hD_p_N,
          le_of_lt (lt_of_lt_of_le hm_gt_γM hm_M_in.2)⟩
       -- Formula agreement.
       refine ⟨γ_M, hγ_M_in, ?_⟩
