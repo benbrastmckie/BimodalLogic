@@ -346,7 +346,7 @@ theorem ghr93_strategy_compose
 
 ---
 
-### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [IN PROGRESS]
+### Phase 6B: EFGames-Internal Case Analysis for nf_characterizable_by_stavi [PARTIAL]
 
 **Goal**: Implement the four-case analysis (Cases I-IV of GHR93 Section 8) entirely within the EFGames module, using the composition lemma from Phase 6A. This case analysis is required by nf_characterizable_by_stavi and CANNOT reuse Expressiveness/CaseAnalysis.lean (would create circular import).
 
@@ -361,11 +361,11 @@ theorem ghr93_strategy_compose
 - **Cases III/IV**: Last selection is beyond the split point -- use gap detection formulas (Lemma 9, already proved in GapDetection.lean) to handle gap cases.
 
 **Tasks**:
-- [ ] **Implement Case I** using ghr93_strategy_compose from Phase 6A. Apply composition with split point = last selection. The IH provides backward strategies on sub-intervals. (~100-200 lines)
-- [ ] **Implement Case II** (degenerate). Split point coincides with selection -- use sub-interval strategy directly. (~30-50 lines)
-- [ ] **Implement Cases III/IV** using gap detection formulas from GapDetection.lean. (~100-200 lines)
-- [ ] **Assemble the four cases** into a unified backward strategy constructor that takes the forward game and produces the backward game. (~70-150 lines)
-- [ ] **Run `lake build`** to confirm no regressions
+- [ ] **Implement Case I** using ghr93_strategy_compose from Phase 6A. Apply composition with split point = last selection. The IH provides backward strategies on sub-intervals. (~100-200 lines) *(deviation: deferred -- game-theoretic case analysis not yet implemented; formula construction approach taken instead)*
+- [ ] **Implement Case II** (degenerate). Split point coincides with selection -- use sub-interval strategy directly. (~30-50 lines) *(deviation: deferred -- same reason as Case I)*
+- [ ] **Implement Cases III/IV** using gap detection formulas from GapDetection.lean. (~100-200 lines) *(deviation: deferred -- same reason as Case I)*
+- [ ] **Assemble the four cases** into a unified backward strategy constructor that takes the forward game and produces the backward game. (~70-150 lines) *(deviation: deferred -- same reason as Case I)*
+- [x] **Run `lake build`** to confirm no regressions *(completed -- build passes with 3 targeted sorries)*
 
 **Timing**: 4-8 hours
 
@@ -381,7 +381,7 @@ theorem ghr93_strategy_compose
 
 ---
 
-### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [IN PROGRESS]
+### Phase 6C: Close nf_characterizable_by_stavi Sorry (S13) [PARTIAL]
 
 **Goal**: Close the keystone sorry at StaviCompleteness.lean:1567 -- the inductive step of `nf_characterizable_by_stavi`. Every NormalForm at depth k+1 must be characterizable by a StaviFormula.
 
@@ -404,14 +404,14 @@ theorem ghr93_strategy_compose
 4. Correctness uses Lemma 11 (game <-> decomposition, already proved in Decomposition.lean).
 
 **Tasks**:
-- [ ] **Build point type formula X_t at rank k** using k-case IH: for each `nf : NormalForm sig k 1`, the IH gives a characteristic StaviFormula. X_t = the IH formula for the NF of t. (~80-120 lines)
-- [ ] **Build interval type formula X_{(a,b)} at rank k** using k-case IH: disjunction of X_v for all distinct point types v occurring in (a,b). Uses NormalForm finiteness. (~60-100 lines)
-- [ ] **Build NF existence formula for depth-k 2-variable sub_nfs**: For each 2-variable depth-k sub_nf, construct a temporal formula (U/S/U'/S' with guards for intermediate types) using the 1-variable depth-k IH formulas. (~100-150 lines)
-- [ ] **Prove correctness (forward direction)**: If `exists x, nf_eval_nf M k 2 (Fin.cons x ...) sub_nf`, show the temporal formula holds. Uses game infrastructure from Phase 6B. (~150-200 lines)
-- [ ] **Prove correctness (backward direction)**: If temporal formula holds, show the existential is satisfied. Uses composition lemma (Phase 6A) to reconstruct NF satisfaction from temporal semantics. (~150-200 lines)
-- [ ] **Assemble full StaviFormula** for depth-(k+1) NF: conjunction of atom part + quantifier part (~50-80 lines)
-- [ ] **Prove full correctness** of the assembled formula (~100-150 lines)
-- [ ] **Run `lake build`** to confirm no regressions
+- [ ] **Build point type formula X_t at rank k** using k-case IH *(deviation: skipped -- not needed separately; nf_exist_sf handles this via disjunction over atom-compatible IH formulas)*
+- [ ] **Build interval type formula X_{(a,b)} at rank k** *(deviation: skipped -- same reason; nf_exist_sf uses sf_disjList of compat_formulas directly)*
+- [x] **Build NF existence formula for depth-k 2-variable sub_nfs** *(completed: nf_exist_sf defined at ~40 lines, using IH formulas with atom compatibility filter + Until/Since/identity based on nf_order_0_1)*
+- [ ] **Prove correctness (forward direction)** *(in progress: nf_exist_sf_forward has partial proof -- t-consistency, order compat, atom compat, IH membership all proved; sorry at final step due to definitional unfolding mismatch)*
+- [ ] **Prove correctness (backward direction)** *(deviation: deferred -- requires game-theoretic argument from Phase 6B)*
+- [x] **Assemble full StaviFormula** for depth-(k+1) NF *(completed: nf_succ_sf defined at ~20 lines, conjunction of atom literals + quantifier exist/non-exist formulas)*
+- [ ] **Prove full correctness** of the assembled formula *(in progress: atom part backward direction proved; quantifier part has 3 sorry sites)*
+- [x] **Run `lake build`** to confirm no regressions *(completed -- build passes with 3 targeted sorries)*
 
 **Timing**: 6-10 hours (highest-risk phase)
 

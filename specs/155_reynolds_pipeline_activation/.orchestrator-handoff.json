@@ -1,18 +1,20 @@
 {
-  "session_id": "sess_1748393400_orch155",
+  "session_id": "sess_1748407200_orch155b",
   "task_number": 155,
   "status": "partial",
-  "current_phase": "phase_6a_proposition7",
-  "summary": "Closed compose_wc and compose_wc_right (2 of 4 sorry sites) in Composition.lean. Both use per-index ownership classification with pivot_chain_order for cross-interval pairs and sub-strategy dispatch for same-side pairs. 2 degenerate case sorries remain (lines 98 and 112) -- when no carrier point exists in the right/left sub-interval [d,y'] or [x',d]. These require restructuring the merged response to avoid same_order_type violations at RIGHT indices with differing M-values but equal N-values.",
+  "current_phase": "phase_6bc_nf_characterization",
+  "summary": "Defined formula construction (nf_exist_sf, nf_succ_sf) for the inductive step of nf_characterizable_by_stavi. The StaviFormula for depth-(k+1) NFs is a conjunction of atom literals and quantifier existence/non-existence formulas built from depth-k IH. Proved atom part of backward direction. 3 targeted sorries remain: (1) nf_exist_sf_forward final step (Fin unfolding issue, LOW difficulty), (2) forward direction game argument (HIGH -- needs Phase 6B case analysis), (3) backward negation case (MEDIUM -- follows from forward direction). The sorry count went from 1 to 3 because the single sorry was split into focused components.",
   "blocking_issues": [
-    "Degenerate case (no point in sub-interval): When d = y', all RIGHT N-values collapse to d, forcing same_order_type to require all RIGHT M-values equal -- which Spoiler can violate. The fix likely requires modifying the merged response a' in the degenerate case to use the left strategy's a'_L for all indices, but this may require proving a'_L k = d for RIGHT k (derivable from hcond_L at boundary) and then showing the modified merged game tuple satisfies the winning condition with the y boundary adjusted."
+    "nf_exist_sf_forward sorry: Lean definitional unfolding of nf_order_0_1 nested match does not match proof structure for rcases/rw. Needs careful unfold/simp strategy or alternative proof approach.",
+    "Forward direction game argument: Formula truth must determine which 2-variable NFs are realizable. Requires EF game argument (Phase 6B case analysis within EFGames module)."
   ],
-  "continuation_context": "Composition.lean now has 2 sorries at lines 98 and 112. File is 478 lines. compose_wc body: lines 136-315. compose_wc_right body: lines 348-475. Both use idx_data helper for per-index LEFT/RIGHT classification. The degenerate cases need: (1) prove d = y' from h_no_pt_R using isPoint_or_isGap + point_between_strict_gaps, (2) prove a'_L k = d for RIGHT k from hcond_L at (k, n+2), (3) use a'_L for ALL indices (since a'_L = a' pointwise when d = y'), (4) show merged N-tuple equals left game N-tuple, (5) prove winning condition using a modified same_order_type argument where RIGHT M-values map to c in the left sub-game and c = y boundary in the merged game.",
+  "continuation_context": "File: StaviCompleteness.lean. The 3 sorry sites are at lines 1781, 1835, 1891. Sorry 1 (line 1781) is in nf_exist_sf_forward and has all mathematical prerequisites proved -- only blocked by Lean definitional unfolding. Sorry 2 (line 1835) and Sorry 3 (line 1891) need the game-theoretic argument from Phase 6B. The composition lemma ghr93_strategy_compose is available (Phase 6A complete). The decomposition lemma (Lemma 11) is available. The key missing piece is assembling Cases I-IV of GHR93 Section 8 into a theorem showing formula agreement implies NF agreement at the next depth.",
   "next_action_hint": "implement",
-  "phases_completed": 5,
+  "phases_completed": 6,
   "phases_total": 12,
-  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6a-handoff-20260527.md",
+  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-partial-handoff-20260527.md",
   "artifacts_created": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean"
+    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-6bc-partial-handoff-20260527.md"
   ]
 }
