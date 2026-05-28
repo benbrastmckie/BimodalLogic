@@ -163,7 +163,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C: char_k Threading + U(B,A) Witness Construction [PARTIAL]
+### Phase 3C: char_k Threading + U(B,A) Witness Construction [BLOCKED]
 
 **Goal**: Thread `char_k` from the outer NF-depth induction into the backward game call chain, then use it to construct the GHR93 U(B,A) witness for e_n, eliminating the fan problem and closing sel_pn_ord and b_resp sorries.
 
@@ -192,7 +192,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
   - If no bridge exists, prove it: GHR93 Def 8.4 fact 1 states "If t is in M, then M |= A(t) iff M_r |= A^mu(t)"
   - This is the highest-risk sub-task per the research report
 
-- [ ] **3C.3: Materialize B = X_{a_n} as StaviFormula** (~40-80 lines) *(deviation: deferred — requires e_n replacement first, see handoff)*
+- [ ] **3C.3: Materialize B = X_{a_n} as StaviFormula** (~40-80 lines) *(deviation: deferred — requires sorting preprocessing, see blocker below)*
   - Given p_n (the point from h_point), determine nf_pn via `nf_exists_unique` on the extended carrier
   - Construct B := char_k nf_pn (using the threaded char_k parameter)
   - Prove: stavi_temporal_truth_mu N atomMap r (extendPoint p_n) B (from char_k_correct + nf_eval at p_n)
@@ -235,7 +235,19 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 - [ ] **3C.8: Build verification** — `lake build` passes with strictly fewer sorries
 
-**Timing**: 4-8 hours
+**BLOCKER** (Phase 3C):
+- **What failed**: `same_side` lemma at lines 1593, 1973 of CaseAnalysis.lean. Goal: `(a'_big k < extendPoint p_n iff a_init k < extendPoint p_n) and (a'_big k = extendPoint p_n iff a_init k = extendPoint p_n)`. Also b_resp vs p_n at line 2188.
+- **What was tried**: (1) Formula transfer with phi = std_untl (char_k nf_pn) (.base Formula.top) at depth <= r. Failed: phi = "exists B-point above" does not discriminate below-p_n from above-p_n when multiple B-points exist. (2) Combined phi (Until) + neg(psi) (Since) approach. Failed: multiple B-points invalidate the distinction. (3) tau_r2 (rank r+2 backward game) to directly extract ordering. Failed: tau_r2 responses are at rank r+2 and cannot be projected to rank r; also gives different responses than tau at rank r. (4) Playing big game with different b-challenges. Failed: different b-challenges produce different Duplicator responses. (5) Abstract formula argument: proved that NO depth-r formula can distinguish "below p_n" from "above p_n" for two points with the same depth-r type. This is because the depth-r type of a point captures all depth-r formula behavior, and two points on opposite sides of p_n can have the same depth-r type.
+- **Why it's stuck**: `same_side` is **mathematically false** for unsorted selections. Proof: Let a_init(k) = extendPoint p_n (same element selected twice) and a'_big(k) be any point with the same depth-r type but at a different position in the linear order. Then a'_big(k) < p_n is possible while a_init(k) = p_n (not < p_n). The biconditional fails. More generally, rank-r formula agreement between a'_big(k) and a_init(k) does NOT determine their ordering relative to a third point p_n.
+- **What is needed**: GHR93 assumes sorted selections a_0 < a_1 < ... < a_n where a_n = p_n is the maximum. With sorting, all a_init(k) < p_n strictly, making same_side trivially true (both sides are TRUE for < and FALSE for =). The implementation requires:
+  1. Add a sorting preprocessing step at the START of ghr93_case_II that permutes a_bwd so that all a_init(k) <= extendPoint p_n. Problem: in the extended carrier, gaps can be above p_n, so extendPoint p_n might NOT be the maximum of a_bwd. Resolution: generalize the proof so that the "point" is at an ARBITRARY position, not just position n. Then sort a_bwd and identify which position contains the point.
+  2. Alternatively: restructure ghr93_case_II to use a_bwd(j) as the point for the smallest j such that a_bwd(j) is a point AND a_bwd(j) is maximal among points. Then elements above a_bwd(j) are all gaps, and the ordering a_init(k) vs a_bwd(j) for gap k is handled by the gap/point structure.
+  3. After sorting, close sel_pn_ord trivially (all a_init(k) < p_n, and e_n_new > resp_tau(k) from U(B,sf_top) construction).
+  4. Use ghr93_winning_condition_perm to permute the result back to unsorted selections.
+  Estimated scope: ~500-800 lines of changes across CaseAnalysis.lean.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Timing**: 8-16 hours (revised estimate due to sorting restructuring)
 
 **Depends on**: 3A (COMPLETED)
 
