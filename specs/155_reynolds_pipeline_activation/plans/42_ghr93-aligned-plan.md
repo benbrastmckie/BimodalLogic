@@ -106,7 +106,7 @@ Phases are fully sequential. Each phase produces a compilable state.
 
 ---
 
-### Phase S1: Close nf_2var_from_interval_data [IN PROGRESS]
+### Phase S1: Close nf_2var_from_interval_data [BLOCKED]
 
 **Goal**: Prove the bridge lemma (GHR93 Proposition 7 + Lemma 11): if two 2-variable environments agree on 1-variable types, ordering, interval types, and types above/below, then their 2-variable NFs are equal.
 
@@ -133,46 +133,56 @@ Phases are fully sequential. Each phase produces a compilable state.
   - zone_match_witness (sorry-free): matches witnesses across models in all 5 zones
   - nf_2var_existential_transfer: isolated the transfer condition
   - Depth-0 3-var transfer proved (forward + backward, sorry-free)
-  - Depth j>=1 transfer: sorry (requires Fraisse game infrastructure)
+  - Depth j>=1 transfer: sorry (requires enriched interval types)
   - Bridge lemma body reduced to: h_atom_agree + nf_fraisse_compression + existential_transfer
-- [ ] **S1.2: Build the connection from interval_nf_types to decomposition_agreement** (~100-150 lines) *(deviation: altered -- replaced by depth-decrease approach; ExtendedCarrier bridging no longer needed)*
-  - interval_nf_types gives Finset equality of realized 1-var NFs in open intervals
-  - decomposition_agreement requires: for every carrier point in (lo,hi) in M, exists one in M' with same 1-var NF, and vice versa
-  - Bridge: interval_nf_types equality -> for each NF type in the set, witnesses exist in both models -> decomposition_agreement
-  - May need helper: `interval_nf_types_implies_decomposition` (~40-60 lines)
-- [ ] **S1.3: Connect to ghr93_game_iff_decomposition** (~50-80 lines) *(deviation: blocked -- depends on S1.2)*
-  - Decomposition.lean:302 gives: decomposition_agreement <-> Duplicator wins
-  - Handle h_nf_x, h_nf_t, h_order_xt, h_above_max, h_below_min
-- [ ] **S1.4: Prove game winning implies NF characteristic equality** (~50-100 lines) *(deviation: blocked -- this is the key missing theorem; no Fraisse-type result exists in the codebase connecting game winning to nf_characteristic equality)*
-  - Game winning on 2-variable environments implies nf_characteristic equality
-  - May exist in NormalForm/EFGames infrastructure; if not, prove by induction on k
-- [ ] **S1.5: Assemble the full proof** (~50-100 lines) *(deviation: blocked -- depends on S1.2-S1.4)*
-  - Combine S1.2 + S1.3 + S1.4
-  - Handle case split on ordering (x < t vs t < x vs x = t)
-  - Verify: line 1873 sorry is closed
-- [ ] **S1.6: Close nf_exist_sf_guarded_backward** (~100-200 lines) *(deviation: blocked -- depends on bridge lemma; additionally, the formula nf_exist_sf_guarded may need restructuring to encode interval type data for the backward direction to be provable)*
-  - Chains through bridge lemma (line 2152)
-  - Extract witness, determine type, apply bridge lemma
-- [ ] **S1.7: Build verification** *(deviation: blocked -- depends on S1.5-S1.6)*
+- [ ] **S1.2: Define interval_3var_nf_types and depth-decrease** (~80 lines) *(deviation: altered -- replaces game-based approach with enriched interval types)*
+  - Define `interval_3var_nf_types M k lo hi` as Finset of depth-k 3-var NFs for (u, lo, hi) with u in (lo, hi)
+  - Prove `interval_3var_nf_types_depth_decrease`: depth-(k+1) 3-var interval types imply depth-k
+  - Define corresponding above_max and below_min 3-var variants
+- [ ] **S1.3: Prove zone_match_3var_witness** (~60-90 lines)
+  - Given `interval_3var_nf_types M k x t = interval_3var_nf_types M' k x' t'`
+  - For u in (x,t): find u' in (x',t') with matching depth-k 3-var NF for (u, x, t)/(u', x', t')
+  - The 3-var NF encodes ALL orderings (u < x, u < t) and ALL quantifier data at depth k-1
+  - Similarly for above_max and below_min cases
+- [ ] **S1.4: Prove enriched nf_2var_existential_transfer** (~80-120 lines)
+  - Takes interval_3var_nf_types hypotheses instead of interval_nf_types
+  - From 3-var zone match: nf_characteristic M k 3 (u,x,t) = nf_characteristic M' k 3 (u',x',t')
+  - By nf_agreement_monotone: depth-j' 3-var NF agreement for j' < k
+  - Quantifier part at depth j'-1 gives (j'-1)-level 4-var existential transfer
+  - At depth j'+1: nf_fraisse_compression gives depth-(j'+1) 3-var NF agreement
+  - Quantifier part at depth j' gives j'-level 4-var existential transfer (EXACTLY the sorry goal)
+- [ ] **S1.5: Modify nf_2var_from_interval_data to use enriched hypotheses** (~50-80 lines)
+  - Change h_interval_above/h_interval_below to use interval_3var_nf_types
+  - Modify h_above_max/h_below_min to use 3-var variants
+  - Apply enriched nf_2var_existential_transfer
+  - Closes sorries at lines 2347 and 2429
+- [ ] **S1.6: Modify nf_exist_sf_guarded formula + prove backward direction** (~150-250 lines)
+  - Modify nf_exist_sf_guarded to encode interval type data in the guard (using char_k)
+  - Disjunction over all valid (nf_x, ordering, interval_config) triples
+  - Forward direction: extract actual config from nf_eval_nf, show formula holds
+  - Backward direction: extract config from formula guard, reconstruct bridge hypotheses
+  - Alternative: use Classical.choose for the formula and prove existence classically
+  - Closes sorry at line 2787
+- [ ] **S1.7: Update callers of nf_2var_from_interval_data** (~30-50 lines)
+  - nf_2var_transfer: pass enriched hypotheses
+  - nf_2var_exist_sf_classical: wire to enriched backward direction
+- [ ] **S1.8: Build verification**
   - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness`
   - `#print axioms nf_characterizable_by_stavi` -- no sorryAx
 
 **BLOCKER** (Phase S1):
-- **What failed**: nf_2var_from_interval_data (line 1873) cannot be proved by simple induction on k. The inductive step at depth k+1 requires showing depth-k 3-variable NF agreement between (u,x,t) and (u',x',t'), which in turn requires interval type data for ALL sub-intervals including pairs involving the new witness points u/u'. The hypotheses only provide interval type data for the original pair (x,t).
-- **What was tried**:
-  1. Direct induction on k with `suffices nf_eval_nf M' k 2 env' (nf_char M k 2 env)`: base case (k=0) works (atoms determined by 1-var NFs + orderings). Inductive step fails because the quantifier transfer at depth k requires depth-k 3-var NF agreement, which needs interval data for (x,u), (u,t) sub-intervals at depth k -- data not available from the hypotheses.
-  2. Generalized induction on k for all n: same blocking issue -- sub-interval types for pairs involving new witness points cannot be derived from the original interval data.
-  3. Analysis of using game infrastructure from Decomposition.lean: the game world uses ExtendedCarrier/rank_type while the bridge lemma uses nf_characteristic/nf_eval_nf -- different type universes that would require substantial bridging code.
-  4. Analysis of `nf_agreement_monotone` technique: this uses depth-k NF agreement as hypothesis (which gives existential transfer), but we're trying to PROVE the agreement, so it's circular.
-- **Why it's stuck**: The proof requires a *game-theoretic back-and-forth argument* where Duplicator's strategy uses the original interval data to match witnesses at each round, and the winning condition is only checked at depth 0 (after k rounds of quantifier expansion). This fundamentally differs from a standard induction on k because intermediate states don't satisfy the bridge lemma's invariant -- only the FINAL state (depth 0, where only atoms matter) needs to be checked. Formalizing this requires either: (a) building EF-game infrastructure for the nf_characteristic/nf_eval_nf world (connecting to the existing game definitions in CustomGame.lean/Decomposition.lean which use ExtendedCarrier), or (b) a well-founded induction on (k, n_vars) where the induction peels off one quantifier round at a time, but this requires showing sub-interval type data can be derived at each step.
-- **Secondary issue**: `nf_exist_sf_guarded_backward` (line 2152) may also require changes to the formula `nf_exist_sf_guarded` itself. The current formula only encodes 1-var NF type and ordering direction of the witness, but NOT the interval type sets. For k >= 1, this makes the backward direction (formula truth -> nf_eval) unprovable without additional constraints. The formula should enumerate over all valid configurations (nf_x, ordering, interval_type_set) as described in the GHR93 proof, not just (nf_x, ordering). This is an additional ~100-200 line change to the formula construction.
-- **What is needed**:
-  1. **Option A (recommended)**: Build a "simple EF game" framework for the NF world that connects nf_characteristic equality with a k-round back-and-forth strategy. The key theorem needed: "If Duplicator has a winning strategy for the k-round game on n-variable environments, then nf_characteristic M k n envM = nf_characteristic M' k n envN." The strategy construction from the bridge lemma hypotheses is then straightforward. Estimated: 300-500 lines of game infrastructure + 100-200 lines for the bridge lemma proof.
-  2. **Option B**: Strengthen the bridge lemma's hypotheses to include interval types for ALL sub-intervals (not just the main pair). Then prove by induction on k, generalizing to all n. At each step, derive sub-interval data for new pairs from the strengthened hypotheses. Then show the original 2-variable hypotheses imply the strengthened ones for n=2 (trivially, since there's only one pair). Estimated: 200-400 lines.
-  3. **Option C**: Rewrite `nf_exist_sf_guarded` to encode the full configuration (including interval types in the guard), making the backward direction provable by direct extraction. This changes the formula but avoids the bridge lemma for the backward direction. However, the bridge lemma is still needed for downstream uses.
+- **What failed**: The 4-var existential transfer (nf_2var_existential_transfer, sorries at lines 2347/2429) is unprovable with current `interval_nf_types` (1-var) hypotheses. Sessions S1-S4 exhaustively analyzed all approaches:
+  1. Direct induction on k: fails (sub-interval ordering undetermined)
+  2. Strong induction on k: fails (same ordering gap)
+  3. nf_agreement_monotone: fails (1-var NF agreement insufficient for multi-var NF agreement)
+  4. nf_fraisse_compression: fails (existential transfer at each depth re-encounters ordering problem)
+  5. Game-based via ExtendedCarrier: viable but requires ~200-400 lines of type bridge infrastructure
+  6. Pairwise 2-var agreements from 1-var NFs: fails (different pairs give inconsistent witnesses)
+- **Root cause**: `interval_nf_types` records the SET of 1-var NFs realized in an interval but loses spatial arrangement information. When two zone-matched interior points are in the same sub-interval of (x,t), their relative ordering is undetermined by the bridge hypotheses. This blocks atom agreement at 4+ variables, which is needed for the existential transfer.
+- **Resolution**: Replace `interval_nf_types` with `interval_3var_nf_types` (records full 3-var NFs for (u, x, t), encoding all orderings and quantifier data). Zone matching with 3-var types gives u' with matching depth-k 3-var NF, which by nf_agreement_monotone gives all lower-depth agreements including the existential transfer. See handoffs S3 and S4 for detailed analysis.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
-**Timing**: 4-8 hours (original estimate); revised to 15-25 hours given blocker analysis
+**Timing**: 15-25 hours (revised after S1-S4 analysis; ~400-600 lines of new/modified code)
 
 **Depends on**: none
 
