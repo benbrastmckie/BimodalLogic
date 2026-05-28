@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches which directly assign truth-values to formulas, or Kripke semantics which evaluates formulas for truth at primitive worlds, the **task semantics** presented below evaluates formulas at both a world-history and time, where world-histories are appropriately constrained functions from times to world-states. This approach provides natural semantic clauses for tense and modality in order to describe their interaction which is essential for planning by reasoning about past and future contingency.
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a bimodal language with operators for tense and modality for reasoning about non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a world-history and time, where world-histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time. This approach provides natural semantic clauses for tense and modality, describing their interaction which is essential for reasoning about past and future contingency.
 
-The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until temporal operators.
+The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until temporal operators.
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
