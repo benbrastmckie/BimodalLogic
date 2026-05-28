@@ -163,7 +163,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C: char_k Threading + U(B,A) Witness Construction [IN PROGRESS]
+### Phase 3C: char_k Threading + U(B,A) Witness Construction [PARTIAL]
 
 **Goal**: Thread `char_k` from the outer NF-depth induction into the backward game call chain, then use it to construct the GHR93 U(B,A) witness for e_n, eliminating the fan problem and closing sel_pn_ord and b_resp sorries.
 
@@ -192,7 +192,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
   - If no bridge exists, prove it: GHR93 Def 8.4 fact 1 states "If t is in M, then M |= A(t) iff M_r |= A^mu(t)"
   - This is the highest-risk sub-task per the research report
 
-- [ ] **3C.3: Materialize B = X_{a_n} as StaviFormula** (~40-80 lines)
+- [ ] **3C.3: Materialize B = X_{a_n} as StaviFormula** (~40-80 lines) *(deviation: deferred — requires e_n replacement first, see handoff)*
   - Given p_n (the point from h_point), determine nf_pn via `nf_exists_unique` on the extended carrier
   - Construct B := char_k nf_pn (using the threaded char_k parameter)
   - Prove: stavi_temporal_truth_mu N atomMap r (extendPoint p_n) B (from char_k_correct + nf_eval at p_n)

@@ -1,28 +1,47 @@
 {
   "task_number": 155,
   "session_id": "sess_1779931340_a5cbb4",
-  "status": "blocked",
-  "summary": "Phase 3C same_side lemma confirmed unprovable after exhaustive 9-approach analysis; resolution requires restructuring e_n construction with GHR93 U(B,A) witness pattern and char_k threading",
+  "status": "partial",
+  "summary": "Phase 3C.1-3C.2 complete: char_k threaded through 6 functions with k_nf-based depth bound and stavi_truth_mu bridge verified; 3C.3-3C.8 deferred (requires replacing e_n construction with GHR93 U(B,A) witness)",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
     {
       "phase": "3C",
-      "issue": "same_side lemma at CaseAnalysis.lean lines 1585 and 1965 is unprovable from existing hypotheses",
-      "root_cause": "Fan problem: d <= a_init(k) AND d <= p_n with no chain; no single game relates all four positions {a_init(k), p_n, resp_tau(k), e_n}; rank-r formula agreement insufficient for depth r+2 discriminating formula",
-      "approaches_tried": 9,
-      "resolution": "Replace e_n construction with GHR93 U(B,A) witness. Thread char_k from nf_characterizable_by_stavi IH through 5 functions. Use tau_r2 (already constructed) for rank-(r+2) formula transfer. Critical insight: nf_characterizable_by_stavi is NOT called by ghr93_forward_to_backward, so no circularity.",
+      "issue": "e_n replacement with U(B,A) witness construction is required but very large refactor (~250-400 lines in a 4400-line file)",
+      "root_cause": "same_side lemma confirmed unprovable even with char_k: rank-r formula agreement cannot determine ordering relative to p_n because std_untl B sf_top is non-discriminating (holds on both sides when multiple B-points exist)",
+      "resolution": "Replace e_n construction in ghr93_case_II: remove forward-game e_n (lines 1241-1270), replace with U(B,A) witness extracted from rank-r tau formula transfer. Key prerequisite: Spoiler selections may need sorting (GHR93 assumes sorted a_0 < ... < a_n).",
       "estimated_effort": "6-10 hours",
-      "files_affected": ["StaviCompleteness.lean", "Theorem6.lean", "CaseAnalysis.lean"]
+      "files_affected": ["CaseAnalysis.lean"]
     }
   ],
   "continuation_context": {
     "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_lines": [1585, 1965, 2180, 2233, 4265],
-    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-same-side-analysis-20260527.md",
-    "key_insight": "The same_side approach (proving a'_big(k) and a_init(k) have same ordering w.r.t. p_n) CANNOT work with the current e_n construction. The e_n must be REDEFINED as the U(B,A) witness so that resp_tau(k) < e_n holds by construction, making sel_pn_ord trivial.",
-    "infrastructure_ready": ["h_ih_r2", "tau_r2", "h_r1_univ", "interval_guard_sf", "sf_conjList/sf_disjList", "NormalForm Fintype instances"],
-    "infrastructure_needed": ["char_k parameter in ghr93_case_II", "nf_exist_sf public access", "e_n restructuring (250-400 lines)"]
+    "sorry_lines": [1588, 1968, 2183, 2236, 4268],
+    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-char-k-threaded-20260527.md",
+    "key_findings": [
+      "char_k_depth (stavi_depth (char_k nf) + 2 <= r) is NECESSARY for rank-r tau transfer",
+      "stavi_truth_mu_at_point (GapDetection.lean:417) bridges truth and truth_mu at carrier points",
+      "rank-polymorphic char_k (∀ r', NormalForm sig r' 1 → StaviFormula) does NOT work: formula depth ~2r exceeds game rank r",
+      "k_nf-based char_k works: k_nf << r in completeness proof, so stavi_depth(char_k nf) + 2 ≤ r holds",
+      "same_side is fundamentally unprovable from rank-r type agreement alone — e_n replacement is the ONLY correct approach"
+    ],
+    "what_is_built": {
+      "char_k_params": "k_nf, char_k, char_k_correct, char_k_depth threaded through 6 functions",
+      "tau_r2": "rank-(r+2) backward game on [d,y']/[c,y] at CaseAnalysis.lean:1459",
+      "bridge": "stavi_truth_mu_at_point at GapDetection.lean:417",
+      "big_game": "hord_big_sel_en, hform_abig_ainit, hform_en_an at CaseAnalysis.lean"
+    },
+    "what_needs_building": [
+      "B = char_k (nf_characteristic N k_nf 1 (fun _ => p_n)) construction",
+      "phi = std_untl B (.base Formula.top) construction + depth bound proof",
+      "phi truth at a_init(k) when a_init(k) < extendPoint p_n",
+      "phi transfer via rank-r tau to resp_tau(k)",
+      "Extract M-side witness from phi truth at resp_tau(k) to get new e_n",
+      "Replace e_n construction (lines 1241-1270) with U(B,A) witness",
+      "Rebuild sel_pn_ord as trivial from new construction",
+      "Rebuild winning condition assembly with new e_n"
+    ]
   },
-  "next_action_hint": "Thread char_k through game theorem call chain, then restructure e_n construction in ghr93_case_II to use U(B,A) witness"
+  "next_action_hint": "Replace e_n construction in ghr93_case_II with U(B,A) witness: (1) define B from char_k at p_n's NF type, (2) build phi = std_untl B sf_top, (3) prove phi transfers through rank-r tau, (4) extract M-side witness as new e_n, (5) rebuild sel_pn_ord and winning condition"
 }
