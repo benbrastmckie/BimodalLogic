@@ -338,7 +338,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "partial",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -350,8 +350,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-28T12:00:00Z",
-      "next_artifact_number": 44,
+      "last_updated": "2026-05-28T20:47:04Z",
+      "next_artifact_number": 45,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -622,10 +622,15 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/43_definitive-ghr93-plan.md",
           "type": "plan",
           "summary": "v43 plan: Definitive GHR93-faithful plan. 6 phases: (1) Theorem6 rank-varying IH delta=4, (2) Independent X_t construction without nf_characterizable_by_stavi, (3) Case II rewrite with U(B,A) and interval type A, (4) Cases III/IV with left/right gap formulas for general linear orders, (5) Downstream sorry closure, (6) Verification. 20-30 hours."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/44_team-research.md",
+          "type": "research",
+          "summary": "Team research round 7 (4 teammates): tactic engineering, GHR93 literature, formalization gap audit, strategic horizons"
         }
       ],
-      "session_id": "sess_1780000000_rev43",
-      "researched": "2026-05-22T23:51:35Z",
+      "session_id": "sess_1779994794_96be99",
+      "researched": "2026-05-28T20:47:04Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": 1,
       "plan_metadata": {
