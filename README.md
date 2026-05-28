@@ -8,15 +8,15 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
-**Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation
+**Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
 **Demo**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
 | Metric | Count |
 |--------|-------|
-| Lean files | 189 |
-| Lines of code | ~53,995 |
-| Comment lines | ~30,235 |
+| Lean files | 210 |
+| Lines of code | ~67,227 |
+| Comment lines | ~32,997 |
 
 To get current numbers (excludes `.lake` dependencies and `Boneyard/`):
 
