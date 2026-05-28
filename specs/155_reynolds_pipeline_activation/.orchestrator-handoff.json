@@ -2,32 +2,25 @@
   "task_number": 155,
   "session_id": "sess_1779937857_21f022",
   "status": "partial",
-  "summary": "Phase 3C-STRICT 75% complete: 6 of 8 strict-case sorries closed via sub-interval composition (tau_left + ghr93_strategy_compose). 4 Case B b_sp-ordering sorries remain.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "3C-STRICT-partial"],
-  "phases_total": 14,
+  "summary": "Phase R1: SplitPointProps restructured with delta parameter. sigma/tau now at rank r+delta on rank-embedded positions. SplitPoint.lean compiles clean; CaseAnalysis.lean has 5 expected downstream breaks.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "3C-STRICT-partial", "R1"],
+  "phases_total": 15,
   "blocking_issues": [],
   "continuation_context": {
-    "next_phase": "3C-STRICT completion: close 4 remaining Case B sorries (tau_sel_b, tau_b_sel)",
-    "key_file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_sites": {
-      "phase_3C_STRICT_remaining": 4,
-      "description": "Case B tau_sel_b (lines 2146, 2148) and tau_b_sel (lines 2200, 2201) need resp_left vs b_sp ordering",
-      "phase_3C_pre_existing": 1,
-      "dead_code": 1,
-      "cases_III_IV": 1
+    "next_phase": "R2",
+    "next_action": "Restructure Theorem6.lean induction to carry rank offset through delta parameter",
+    "key_file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean",
+    "phase_R1_changes": {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean",
+      "structure_change": "SplitPointProps now takes (n : Nat) (delta : Nat) instead of (n : Nat)",
+      "sigma_tau_rank": "r + delta on rank-embedded positions",
+      "ih_change": "obtain_split_point_props ih now returns backward games at r+delta",
+      "h_fwd_r1_kept": true,
+      "downstream_breaks": {
+        "CaseAnalysis.lean": [68, 1197, 3419, 4554, 4690]
+      }
     },
-    "what_was_done_this_session": {
-      "ih_threading": "Added rank-r IH parameter to ghr93_case_II and ghr93_cases_II_III_IV",
-      "tau_left": "Constructed backward game on [d, p_n]/[c, e_n] via h_r1_univ + rank_down + round_mono + ih",
-      "tau_right": "Constructed backward game on [p_n, y']/[e_n, y] via same chain",
-      "tau_composed": "Composed via ghr93_strategy_compose at pivot p_n/e_n",
-      "resp_mod_changed": "resp_mod(k) = if a_init(k) = p_n then e_n else resp_left(k) (was resp_tau)",
-      "sel_pn_ord_closed": "Both Case A and Case B sel_pn_ord now close via hord_left_sel_pn",
-      "tau_sel_sel_mixed_closed": "Both Case A and Case B mixed cases now close via hord_left_sel_pn",
-      "case_b_b_ordering": "tau_sel_b and tau_b_sel still use sorry: resp_left vs b_sp ordering needs composed game"
-    },
-    "remaining_approach": "Replace Case B tau_sel_b/tau_b_sel strict cases by instantiating hwin_comp with b_sp and using resp_comp ordering. Equality cases (a_init(k)=p_n) may use forward game orderings with pivot_chain_order if d <= p_n <= b_resp and c <= e_n <= b_sp chains hold.",
-    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-STRICT-partial-20260527.md"
+    "build_state": "SplitPoint.lean compiles; CaseAnalysis.lean breaks at 5 call sites (expected)"
   },
-  "next_action_hint": "Close 4 remaining Case B tau_sel_b/tau_b_sel sorries. Approach: use hwin_comp instantiated with b_sp, or restructure Case B to use resp_comp consistently."
+  "next_action_hint": "Phase R2: restructure Theorem6.lean induction to carry delta parameter"
 }
