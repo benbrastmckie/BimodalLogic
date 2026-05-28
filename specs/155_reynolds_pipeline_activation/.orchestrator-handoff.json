@@ -1,100 +1,26 @@
 {
-  "task_number": 155,
-  "session_id": "sess_bridge_build_20260528",
-  "status": "blocked",
-  "summary": "Session S5: Exhaustive analysis confirmed the sub-interval splitting problem is fundamental to the NF approach. Created sorry-free NFGameBridge.lean (173 lines) with helper lemmas for the NF-game bridge. Documented the complete architecture for closing the 3 remaining sorries via the EF game. The direct NF approach (strong induction, variable threading, IH threading) provably cannot work - only the game-based approach from GHR93 resolves the sub-interval problem.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms", "S3-analysis", "S4-analysis", "S5-bridge-helpers"],
+  "status": "partial",
+  "summary": "Phase 1 completed: closed sorry at Theorem6.lean:325 (rank-varying IH, delta=4). Added 3 helper lemmas (rank_embed_trans, rank_embed_comp_heq, ghr93_duplicator_wins_rank_cast). Phase 2 started but requires creation of CharacteristicFormula.lean (~200-300 lines). Phases 2-6 remain (estimated 15-25 hours).",
+  "phases_completed": 1,
   "phases_total": 6,
-  "blocking_issues": [
-    {
-      "phase": "S5",
-      "description": "The 3 sorries (lines 2347, 2429, 2787 in StaviCompleteness.lean) require the game-based bridge. Helper lemmas are in NFGameBridge.lean. The full bridge needs ~300 additional lines connecting NF types to game-world rank_type via stavi_truth_mu_at_point and nf_determines_stavi_truth.",
-      "root_cause": "Sub-interval splitting: a type realized in interval (x,t) may appear only in sub-interval (u,t) not (x,u). The game handles this via compositional structure (ghr93_strategy_compose) which propagates types to sub-intervals automatically.",
-      "approaches_exhausted": [
-        "Direct NF induction at any depth",
-        "Strong induction on k with IH at all depths < k",
-        "Threading char_k_correct through existential transfer",
-        "Reformulating hypotheses with stronger interval conditions",
-        "Nested induction on (k, j) with variable-count escalation",
-        "3-var interval types (still faces formula encoding circularity)"
-      ],
-      "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
-      "sorry_lines": [2347, 2429, 2787]
-    }
-  ],
-  "changes_made": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean",
-      "description": "NEW: sorry-free helper lemmas (173 lines) for NF-game bridge. Includes nf_agreement_from_nf_char_eq, nf_char_eq_implies_stavi_char_agree, pred_agree_from_nf_char, nf_char_depth_le, nvar_nf_eq_depth_zero, atom_agree_from_pointwise_nf, nvar_nf_eq_depth_zero_from_pointwise."
-    },
-    {
-      "file": "specs/155_reynolds_pipeline_activation/handoffs/bridge-analysis-handoff-20260528.md",
-      "description": "Detailed handoff documenting bridge architecture, root cause analysis, and implementation plan"
-    }
-  ],
-  "resolution_plan": {
-    "approach": "Game-based bridge (GHR93 architecture)",
-    "rationale": "The ONLY approach that handles sub-interval splitting. The game's compositional structure (ghr93_strategy_compose + ghr93_decomposition_implies_game) automatically propagates type information to sub-intervals. 5+ sessions have confirmed no NF-only approach works.",
-    "two_bridges_needed": {
-      "bridge_A": {
-        "name": "NF hypotheses -> decomposition_agreement",
-        "key_connections": [
-          "nf_char_eq -> stavi_char_agree (NFGameBridge.lean, done)",
-          "stavi_truth <-> stavi_truth_mu via stavi_truth_mu_at_point (GapDetection.lean, done)",
-          "stavi_truth_mu agreement -> rank_type agreement (need ~50 lines)",
-          "interval_nf_types agreement -> interval_types agreement (need ~50 lines)",
-          "Compose into decomposition_agreement at n=0 (need ~50 lines)"
-        ],
-        "estimated_lines": 150
-      },
-      "bridge_B": {
-        "name": "ghr93_duplicator_wins -> NF agreement",
-        "key_connections": [
-          "Game winning -> formula_agreement at boundary positions (from ghr93_game_implies_decomposition)",
-          "formula_agreement -> stavi_truth_mu agreement at actual points",
-          "stavi_truth_mu -> stavi_truth via stavi_truth_mu_at_point (done)",
-          "stavi_truth agreement -> nf_characteristic equality via nf_determines_stavi_truth (Claim1.lean)",
-          "Compose for 2-var NF equality (need ~100 lines)"
-        ],
-        "estimated_lines": 150
-      }
-    },
-    "integration": {
-      "description": "Replace nf_2var_from_interval_data proof with: Bridge A -> ghr93_decomposition_implies_game -> Bridge B",
-      "estimated_lines": 50,
-      "closes_sorries": [2347, 2429, 2787]
-    },
-    "total_estimated_effort": "300-400 lines across 1-2 sessions"
-  },
+  "blockers": [],
   "continuation_context": {
-    "handoff_paths": [
-      "specs/155_reynolds_pipeline_activation/handoffs/bridge-analysis-handoff-20260528.md",
-      "specs/155_reynolds_pipeline_activation/handoffs/phase-S4-nf-agreement-monotone-analysis-20260528.md",
-      "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md"
+    "phase": 2,
+    "next_step": "Create CharacteristicFormula.lean in EFGames/ with nf_repr_stavi, x_t_formula, x_interval_formula, and sf_untl_formula per plan Phase 2 tasks 2.1-2.4. See handoff at specs/155_reynolds_pipeline_activation/handoffs/phase-2-start-handoff-20260528T193500.md for detailed context.",
+    "key_infrastructure_added": [
+      "rank_embed_trans (TypeFormulas.lean:154) - rank_embed composition",
+      "rank_embed_comp_heq (TypeFormulas.lean:163) - HEq for rank_embed at propositionally-equal ranks",
+      "ghr93_duplicator_wins_rank_cast (CustomGame.lean:428) - game transport across rank equality"
     ],
-    "build_status": "passing",
-    "sorry_lines_in_file": [2347, 2429, 2787],
-    "new_file": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean",
-    "key_existing_infrastructure": {
-      "stavi_truth_mu_at_point": "GapDetection.lean line 417 - connects mu-relativized and standard truth at actual points",
-      "nf_determines_stavi_truth": "Claim1.lean line 545 - NF agreement -> StaviFormula agreement",
-      "nf_determines_stavi_truth_depth": "Claim1.lean line 597 - depth-2r NF -> depth-r StaviFormula",
-      "stavi_table_mu_correct": "StaviCompleteness.lean line 548 - FO translation correctness",
-      "ghr93_decomposition_implies_game": "Decomposition.lean line 272 - sorry-free",
-      "ghr93_game_implies_decomposition": "Decomposition.lean line 117 - sorry-free",
-      "ghr93_strategy_compose": "Composition.lean line 40 - sorry-free composition",
-      "decomposition_agreement": "Decomposition.lean line 62 - game-world agreement at n;r",
-      "rank_type": "TypeFormulas.lean line 356 - game-world type at position",
-      "interval_types": "TypeFormulas.lean line 366 - game-world interval types"
+    "remaining_sorries_critical_path": {
+      "Theorem6.lean:124": "uniform-rank IH (Phase 5 Task 5.1)",
+      "CaseAnalysis.lean:1668-2107": "5 grid dispatch sorries (Phase 3 Task 3.7)",
+      "CaseAnalysis.lean:3350": "Cases III/IV assembly (Phase 4 Task 4.5)"
     },
-    "key_definitions_in_stavi_completeness": {
-      "interval_nf_types": "line ~1835 (NF-world interval types)",
-      "nf_2var_from_interval_data": "line ~2442 (bridge lemma to be replaced)",
-      "nf_2var_existential_transfer": "line ~2214 (contains sorries, to be bypassed)",
-      "nf_exist_sf_guarded_backward": "line ~2760 (sorry at 2787)",
-      "nf_fraisse_compression": "line ~2006 (sorry-free)",
-      "zone_match_witness": "line ~2044 (sorry-free)"
-    }
+    "handoff_paths": [
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260528T192813.md",
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-2-start-handoff-20260528T193500.md"
+    ]
   },
-  "next_action_hint": "Implement Bridge A: add rank_type agreement from NF agreement (via stavi_truth_mu_at_point + nf_determines_stavi_truth) and interval_types agreement from interval_nf_types agreement. Then compose into decomposition_agreement at n=0. The imports needed: add Claim1.lean to NFGameBridge.lean for nf_determines_stavi_truth."
+  "next_action_hint": "continue"
 }

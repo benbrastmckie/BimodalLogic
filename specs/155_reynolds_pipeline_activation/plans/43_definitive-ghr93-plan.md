@@ -134,7 +134,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Independent X_t Construction (Characteristic Formula Machinery) [NOT STARTED]
+### Phase 2: Independent X_t Construction (Characteristic Formula Machinery) [IN PROGRESS]
 
 **Goal**: Build the machinery to construct X_t = B = X_{a_n} as a SINGLE StaviFormula of depth at most r for each NormalForm equivalence class, AND build A = X_{(a_{n-1}, a_n)} as the interval type formula. This follows GHR93 Definition 8.8 exactly, WITHOUT using nf_characterizable_by_stavi.
 
