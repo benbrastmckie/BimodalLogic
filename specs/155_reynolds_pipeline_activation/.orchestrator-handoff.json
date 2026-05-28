@@ -1,43 +1,33 @@
 {
   "task_number": 155,
-  "session_id": "sess_1779931340_a5cbb4",
+  "session_id": "sess_1779937857_21f022",
   "status": "partial",
-  "summary": "Phase 3C-Sort COMPLETED: sorting wrapper + h_mono threading. Phase 3C-UBA BLOCKED: sel_pn_ord unprovable with existing e_n even after sorting; equality case (Monotone gives <= not <) breaks biconditional; modified response function proposed but needs e_n > resp_tau(k) for strict case.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort"],
+  "summary": "Phase 3C-STRICT 75% complete: 6 of 8 strict-case sorries closed via sub-interval composition (tau_left + ghr93_strategy_compose). 4 Case B b_sp-ordering sorries remain.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "3C-STRICT-partial"],
   "phases_total": 14,
-  "blocking_issues": [
-    {
-      "phase": "3C-UBA",
-      "issue": "sel_pn_ord: even with sorted selections (h_mono : Monotone a_bwd), the biconditional a_init(k) < p_n <-> resp_tau(k) < e_n is unprovable because (1) rank-r formula agreement doesn't determine ordering, and (2) equality case a_init(k) = p_n gives False <-> True with existing response function.",
-      "root_cause": "Two independent issues: (a) same_side is unprovable from formula agreement alone (fundamental math impossibility documented in 9+ approaches), (b) Tuple.monotone_sort gives Monotone (<=) not StrictMono (<), allowing a_init(k) = p_n which breaks the biconditional even with U(B,A) e_n construction.",
-      "resolution_paths": {
-        "path_1_modified_response": "Replace resp_tau(k) with e_n when a_init(k) = p_n. This fixes equality case. For strict case: construct e_n from U(B,A) to guarantee e_n > resp_tau(k_max). Challenge: U(B,A) e_n has only char_k-depth agreement (not rank-r), so losing the forward-game e_n's rank-r formula agreement.",
-        "path_2_composition": "Implement full Proposition 12.8.18 (Phase 6E) to compose sub-interval strategies, avoiding sel_pn_ord entirely. Mathematically cleanest but ~500 additional lines.",
-        "path_3_degenerate_elimination": "Handle duplicate selections separately: when a_init(k) = p_n, reduce the (n+1)-round game to an n-round game (duplicate positions are redundant). Then remaining positions all have a_init(k) < p_n strictly."
-      },
-      "estimated_effort": "6-16 hours depending on path chosen"
-    }
-  ],
+  "blocking_issues": [],
   "continuation_context": {
-    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_lines": [1594, 1974, 2189, 2242, 4274],
-    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-sort-complete-20260527.md",
-    "what_was_done_this_session": {
-      "sorting_wrapper": "Tuple.sort + ghr93_winning_condition_perm at ghr93_inductive_step (4378-4425)",
-      "h_mono_threading": "Monotone a_bwd added to ghr93_case_II (1221) and ghr93_cases_II_III_IV (4315)",
-      "proven_properties": [
-        "h_le : a_init k <= extendPoint p_n (from h_mono)",
-        "h_tau_mono : Monotone resp_tau (from tau_sel_sel + h_mono)"
-      ]
+    "next_phase": "3C-STRICT completion: close 4 remaining Case B sorries (tau_sel_b, tau_b_sel)",
+    "key_file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
+    "sorry_sites": {
+      "phase_3C_STRICT_remaining": 4,
+      "description": "Case B tau_sel_b (lines 2146, 2148) and tau_b_sel (lines 2200, 2201) need resp_left vs b_sp ordering",
+      "phase_3C_pre_existing": 1,
+      "dead_code": 1,
+      "cases_III_IV": 1
     },
-    "what_is_built": {
-      "sorting": "Tuple.sort wrapper at ghr93_inductive_step, h_mono threaded to ghr93_case_II",
-      "char_k_params": "k_nf, char_k, char_k_correct, char_k_depth threaded through 6 functions",
-      "tau_r2": "rank-(r+2) backward game on [d,y']/[c,y] at CaseAnalysis.lean:1459",
-      "bridge": "stavi_truth_mu_at_point at GapDetection.lean:417",
-      "big_game": "hord_big_sel_en, hform_abig_ainit, hform_en_an extracted",
-      "perm_lemma": "ghr93_winning_condition_perm in CustomGame.lean:1591"
-    }
+    "what_was_done_this_session": {
+      "ih_threading": "Added rank-r IH parameter to ghr93_case_II and ghr93_cases_II_III_IV",
+      "tau_left": "Constructed backward game on [d, p_n]/[c, e_n] via h_r1_univ + rank_down + round_mono + ih",
+      "tau_right": "Constructed backward game on [p_n, y']/[e_n, y] via same chain",
+      "tau_composed": "Composed via ghr93_strategy_compose at pivot p_n/e_n",
+      "resp_mod_changed": "resp_mod(k) = if a_init(k) = p_n then e_n else resp_left(k) (was resp_tau)",
+      "sel_pn_ord_closed": "Both Case A and Case B sel_pn_ord now close via hord_left_sel_pn",
+      "tau_sel_sel_mixed_closed": "Both Case A and Case B mixed cases now close via hord_left_sel_pn",
+      "case_b_b_ordering": "tau_sel_b and tau_b_sel still use sorry: resp_left vs b_sp ordering needs composed game"
+    },
+    "remaining_approach": "Replace Case B tau_sel_b/tau_b_sel strict cases by instantiating hwin_comp with b_sp and using resp_comp ordering. Equality cases (a_init(k)=p_n) may use forward game orderings with pivot_chain_order if d <= p_n <= b_resp and c <= e_n <= b_sp chains hold.",
+    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-STRICT-partial-20260527.md"
   },
-  "next_action_hint": "Research which resolution path is most viable: (1) verify that modified response function with U(B,A) e_n can achieve both rank-r formula agreement AND ordering, (2) assess effort for Proposition 12.8.18 full composition, (3) try degenerate case elimination by reducing duplicate selections."
+  "next_action_hint": "Close 4 remaining Case B tau_sel_b/tau_b_sel sorries. Approach: use hwin_comp instantiated with b_sp, or restructure Case B to use resp_comp consistently."
 }

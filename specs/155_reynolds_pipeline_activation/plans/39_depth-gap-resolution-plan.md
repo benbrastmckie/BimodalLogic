@@ -219,7 +219,7 @@ GHR93 uses B = X_{alpha_n} with depth r, transferred through rank-(r+4) tau. The
 
 **Tasks**:
 
-- [ ] **3C-STRICT.1: Restructure Case II game decomposition** (~60-100 lines)
+- [x] **3C-STRICT.1: Restructure Case II game decomposition** *(deviation: altered -- constructed sub-interval backward games via ih + h_r1_univ + rank_down + round_mono, composed with ghr93_strategy_compose. Used tau_left responses directly rather than full composition restructuring. ~80 lines.)*
   - **File**: CaseAnalysis.lean, `ghr93_case_II`
   - Instead of constructing a monolithic response function:
     1. Split the interval [x', y'] at the split point c and at p_n
