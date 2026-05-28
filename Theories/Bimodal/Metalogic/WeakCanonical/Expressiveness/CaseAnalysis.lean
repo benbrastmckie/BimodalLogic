@@ -66,6 +66,7 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     {d : ExtendedCarrier N atomMap r}
     {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
     (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
     (h_split : ∃ i : Fin (n + 1), a_bwd i < d) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
@@ -132,12 +133,16 @@ private theorem ghr93_case_I {sig : MonadicSignature}
   -- ---------------------------------------------------------------
   -- Step 3: Apply round monotonicity and play sub-games
   -- ---------------------------------------------------------------
-  -- Phase R2: sigma/tau are now at rank r+delta on rank-embedded positions.
-  -- Phase R3 will add rank projection (rank_down for delta>0, or cast for delta=0).
-  have sigma_reduced : ghr93_duplicator_wins N M atomMap L.card r x' d x c := by
-    sorry
-  have tau_reduced : ghr93_duplicator_wins N M atomMap R.card r d y' c y := by
-    sorry
+  -- Phase R3: Project sigma/tau from rank r+delta to rank r via rank_down,
+  -- then reduce rounds via round_mono.
+  have sigma_reduced : ghr93_duplicator_wins N M atomMap L.card r x' d x c :=
+    ghr93_duplicator_wins_round_mono hL_le props.hx'd props.hxc
+      (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+        (by omega : r + 2 ≤ r + delta) props.hx'd props.hxc props.sigma)
+  have tau_reduced : ghr93_duplicator_wins N M atomMap R.card r d y' c y :=
+    ghr93_duplicator_wins_round_mono hR_le props.hdy' props.hcy
+      (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+        (by omega : r + 2 ≤ r + delta) props.hdy' props.hcy props.tau)
   obtain ⟨resp_L, hresp_L_in, hwin_L⟩ := sigma_reduced a_sigma ha_sigma
   obtain ⟨resp_R, hresp_R_in, hwin_R⟩ := tau_reduced a_tau ha_tau
   -- ---------------------------------------------------------------
@@ -1197,9 +1202,24 @@ private theorem ghr93_case_II {sig : MonadicSignature}
     {d : ExtendedCarrier N atomMap r}
     {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
     (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
     (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
     (h_point : IsPoint (a_bwd ⟨n, by omega⟩))
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁'))
     (h_mono : Monotone a_bwd) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
@@ -1210,12 +1230,16 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           ghr93_winning_condition (n + 1)
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
-  -- GHR93 Case II: Phase R2 temporarily sorry'd.
-  -- Phase R3 will rewrite this using tau at rank r+delta for full rank-r
-  -- type formula transfer via U(B, sf_top).
-  -- The old proof used char_k (insufficient depth) and h_ih_r2 (unnecessary
-  -- with delta-aware IH). These parameters have been removed from the
-  -- signature. The rewrite will use props.tau at rank r+delta directly.
+  -- GHR93 Case II: all selections in [d, y'], a_n is a point p_n.
+  -- Phase R3: The complete GHR93 Case II proof requires the U(B, sf_top)
+  -- transfer through tau at rank r+delta, which depends on materializing
+  -- the rank-r type formula B = X_{p_n} as a StaviFormula. This depends on
+  -- the Stavi expressive completeness chain (Phases 6D-6F of plan v40).
+  -- Until that infrastructure is available, this remains sorry'd.
+  --
+  -- Key progress: tau_r projection from rank r+delta to rank r is now available
+  -- via rank_down (requires delta >= 2, ensured by hd). The rank projection
+  -- infrastructure enables all other sorry sites in this file to be closed.
   sorry
 /- OLD CASE II PROOF (removed in Phase R2, to be rewritten in Phase R3):
   let a_init : Fin n → ExtendedCarrier N atomMap r :=
@@ -3397,6 +3421,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     {d : ExtendedCarrier N atomMap r}
     {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
     (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
     (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
     (h_gap : IsGap (a_bwd ⟨n, by omega⟩))
@@ -3432,15 +3457,17 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     intro k
     exact ⟨h_no_split ⟨k.val, by omega⟩, (ha_bwd ⟨k.val, by omega⟩).2⟩
   -- Step 2: Apply τ to the init sub-sequence to get M-side responses.
-  -- Phase R2: tau is at rank r+delta on rank-embedded positions.
-  -- Phase R3 will rank-embed a_init and project resp_tau back to rank r.
+  -- Phase R3: Project tau from rank r+delta to rank r via rank_down.
+  have tau_r : ghr93_duplicator_wins N M atomMap n r d y' c y :=
+    ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+      (by omega : r + 2 ≤ r + delta) props.hdy' props.hcy props.tau
   have h_tau_app : ∃ (resp_tau : Fin n → ExtendedCarrier M atomMap r),
       (∀ k, inClosedInterval c y (resp_tau k)) ∧
       ∀ (b_sp : M.carrier), inClosedInterval c y (extendPoint b_sp) →
         ∃ (b_resp : N.carrier), inClosedInterval d y' (extendPoint b_resp) ∧
           ghr93_winning_condition n
             (game_tuple d y' a_init b_resp)
-            (game_tuple c y resp_tau b_sp) := by sorry
+            (game_tuple c y resp_tau b_sp) := tau_r a_init ha_init
   obtain ⟨resp_tau, hresp_tau_in, hwin_tau⟩ := h_tau_app
   -- Step 3: Extract the gap γ_N from h_gap
   obtain ⟨γ_N, hγ_N_eq⟩ := h_gap
@@ -3716,8 +3743,9 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         -- y' = Sum.inr γ_N. Use tau 0-round game for endpoint agreement.
         rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, _hgap_d⟩
         · -- Carrier point p_cy ∈ [c, y]. Use tau endpoint agreement.
-          -- Phase R2: tau at r+delta. Phase R3 will project to rank r.
-          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y := by sorry
+          -- Phase R3: Project tau to 0-round rank-r game via round_mono.
+          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hdy' props.hcy tau_r
           obtain ⟨_a'_tau0, _ha'_tau0_in, hwin_tau0⟩ := h_tau_0
             (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
           obtain ⟨b_tau0, _hb_tau0_in, hcond_tau0⟩ := hwin_tau0 p_cy hp_cy
@@ -4025,7 +4053,9 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
           -- The tau sub-game G_{n;r+delta}(N, d y'; M, c y) on rank-embedded
           -- positions. Phase R3 will project to rank r.
           -- Phase R2: tau at r+delta. Phase R3 will project to rank r.
-          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y := by sorry
+          -- Phase R3: Project tau to 0-round rank-r game via round_mono.
+          have h_tau_0 : ghr93_duplicator_wins N M atomMap 0 r d y' c y :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hdy' props.hcy tau_r
           obtain ⟨_a'_tau0, _ha'_tau0_in, hwin_tau0⟩ := h_tau_0
             (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
           obtain ⟨b_tau0, _hb_tau0_in, hcond_tau0⟩ := hwin_tau0 p_cy hp_cy
@@ -4214,7 +4244,12 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, _hgap_d⟩
         · -- Carrier point p_xc ∈ [x, c]. Use sigma endpoint agreement.
           -- Phase R2: sigma at r+delta. Phase R3 will project to rank r.
-          have h_sigma_0 : ghr93_duplicator_wins N M atomMap 0 r x' d x c := by sorry
+          -- Phase R3: Project sigma to 0-round rank-r game via rank_down + round_mono.
+          have sigma_r : ghr93_duplicator_wins N M atomMap n r x' d x c :=
+            ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+              (by omega : r + 2 ≤ r + delta) props.hx'd props.hxc props.sigma
+          have h_sigma_0 : ghr93_duplicator_wins N M atomMap 0 r x' d x c :=
+            ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n) props.hx'd props.hxc sigma_r
           obtain ⟨_a'_sig0, _ha'_sig0_in, hwin_sig0⟩ := h_sigma_0
             (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
           obtain ⟨b_sig0, _hb_sig0_in, hcond_sig0⟩ := hwin_sig0 p_xc hp_xc
@@ -4539,9 +4574,16 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
     {d : ExtendedCarrier N atomMap r}
     {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
     (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
     (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
       (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
@@ -4564,10 +4606,9 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
   rcases isPoint_or_isGap (a_bwd ⟨n, by omega⟩) with h_pt | h_gap
-  · -- Case II: a_n is a point. With tau at r+delta, the full rank-r type
-    -- formula transfer becomes available. Phase R3 will rewrite this.
-    sorry
-  · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
+  · -- Case II: a_n is a point.
+    exact ghr93_case_II props hd ha_bwd h_no_split h_pt ih h_r1_univ h_mono
+  · exact ghr93_cases_III_IV props hd ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
 
 /-! ### Assembly: The Inductive Step -/
 
@@ -4584,6 +4625,7 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
+    (hd : 2 ≤ delta)
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
@@ -4646,13 +4688,24 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
   -- Obtain split points c, d and their properties (with delta for sigma/tau rank)
   obtain ⟨c, d, props⟩ :=
     obtain_split_point_props delta hxy hx'y' h_pt h_pt_M ih h_fwd h_fwd_r1 a_sorted ha_sorted
+  -- Construct rank-r IH from the rank-(r+delta) IH via rank_down.
+  -- This is needed by Cases II (for tau_left/tau_right) and Cases III/IV (for tau).
+  have ih_r : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀ := by
+    intro x₀ y₀ x₀' y₀' hle hle' hpt' hfwd
+    exact ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+      (by omega : r + 2 ≤ r + delta) hle' hle (ih hle hle' hpt' hfwd)
   -- Case split: does any selection fall strictly below d?
   by_cases h_split : ∃ i : Fin (n + 1), a_sorted i < d
   · -- Case I: at least one selection below d (the "split" case)
-    exact ghr93_case_I props ha_sorted h_split
+    exact ghr93_case_I props hd ha_sorted h_split
   · -- Cases II-IV: all selections are at or above d
     push_neg at h_split
-    exact ghr93_cases_II_III_IV props ha_sorted h_split hxy hx'y' h_fwd_r1 h_r1_univ
+    exact ghr93_cases_II_III_IV props hd ha_sorted h_split hxy hx'y' ih_r h_fwd_r1 h_r1_univ
       h_mono
 
 

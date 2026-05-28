@@ -117,7 +117,10 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
       ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
       ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
       (h_r1_univ r hxy hx'y')
-    exact ghr93_inductive_step atomMap n r 0 hxy hx'y' h_pt h_pt_M
+    -- Phase R3: The uniform-rank version (delta=0) requires delta >= 2 for
+    -- rank_down in Case I/II/III-IV. The IH at delta=0 is also sorry'd.
+    -- Use delta=2 with a sorry'd IH to maintain type-correctness.
+    exact ghr93_inductive_step atomMap n r 2 (by omega) hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd => sorry)
       h h_fwd_r1
       (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
@@ -320,7 +323,7 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
       -- restricted to the sub-interval. Phase R3 will complete this using
       -- the ambient high-rank game and strategy restriction.
       sorry
-    exact ghr93_inductive_step atomMap n r 4 hxy hx'y' h_pt h_pt_M
+    exact ghr93_inductive_step atomMap n r 4 (by omega : 2 ≤ 4) hxy hx'y' h_pt h_pt_M
       ih_delta4 h_fwd h_fwd_r1
       (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
         ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ 1 + 3 * (n + 1))
