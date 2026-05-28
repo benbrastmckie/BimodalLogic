@@ -199,7 +199,7 @@ In Lean, the key insight is: `stavi_n_equiv atomMap n M t N s` checks agreement 
 
 ---
 
-### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [IN PROGRESS]
+### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [NOT STARTED]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly: construct e_n from U(B, A) witness transferred through tau at rank r+4, prove sel_pn_ord trivially, handle Round 2 via A's interval type property.
 
@@ -362,7 +362,7 @@ Case IV (a_n is a gap NOT defined on the left):
 
 ---
 
-### Phase 5: Downstream Sorry Closure and Wiring [NOT STARTED]
+### Phase 5: Downstream Sorry Closure and Wiring [PARTIAL]
 
 **Goal**: Close all remaining sorries that feed into bx_completeness: Theorem6.lean:124 (uniform-rank IH), Transfer.lean wiring, and any remaining mechanical sorries.
 
