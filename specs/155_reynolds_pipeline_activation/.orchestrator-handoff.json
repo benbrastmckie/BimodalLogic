@@ -4,17 +4,23 @@
   "status": "partial",
   "phase_completed": 5,
   "phases_total": 8,
-  "summary": "Phase 5 COMPLETED: All 5 grid dispatch sorries in CaseAnalysis.lean closed. Created same_order_type_of_cases helper theorem. Used in-place patch approach (plan fallback) instead of GHR93 rewrite.",
+  "blocked_phase": 6,
+  "summary": "Phase 6 BLOCKED: sel_gap_ord ordering between tau sub-game selections and gap position cannot be derived from available hypotheses. Added h_mono and ih parameters to ghr93_cases_III_IV signature. CaseAnalysis.lean has 1 sorry at line 3477. Build passes.",
   "remaining_phases": [
-    "Phase 6: Cases III/IV Gap Handling (1 sorry at line 3477)",
+    "Phase 6: Cases III/IV Gap Handling (BLOCKED - sel_gap_ord)",
     "Phase 7: Transfer.lean Rewiring",
     "Phase 8: Final Verification"
   ],
   "files_modified": [
-    "Theories/Bimodal/Automation/EFGameTactics.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean"
   ],
   "build_status": "passing",
-  "sorry_delta": -5,
-  "next_action": "Continue with Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean rewiring). Phase 7 may be independently actionable for discrete-only completeness."
+  "sorry_delta": 0,
+  "blocker_details": {
+    "what": "sel_gap_ord: (a_init(k) < gamma_N iff resp_tau(k) < gamma_M) for k < n",
+    "why": "Tau sub-game ordering doesn't extend to external gap positions. Need structural argument via gap detection reference point or extended game.",
+    "approaches_tried": ["forward game", "pivot chain through d/c", "h_d_compat_left", "formula agreement", "h_mono"],
+    "recommended": "Research: derive resp_tau(k) <= m_M < gamma_M using gap detection internals, or restructure proof to use combined game"
+  },
+  "next_action": "Research sel_gap_ord blocker. Phase 7 (Transfer.lean rewiring) may be independently actionable for discrete-only completeness (Cases III/IV vacuous on Z)."
 }
