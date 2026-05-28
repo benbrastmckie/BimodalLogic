@@ -1839,6 +1839,150 @@ private noncomputable def interval_nf_types {sig : MonadicSignature}
     ∃ u : M.carrier, lo < u ∧ u < hi ∧ nf_eval_nf M k 1 (fun _ => u) nf_u)
     (fun _ => Classical.dec _) Finset.univ
 
+/-- Depth-(k+1) 1-var NF equality implies depth-k 1-var NF equality.
+    From shared depth-(k+1) NFs, nf_agreement_monotone gives depth-k agreement,
+    which implies the depth-k characteristic NFs are equal. -/
+private theorem nf_char_depth_decrease {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
+    {k : Nat} {a : M.carrier} {a' : M'.carrier}
+    (h : nf_characteristic M (k + 1) 1 (fun _ => a) =
+         nf_characteristic M' (k + 1) 1 (fun _ => a')) :
+    nf_characteristic M k 1 (fun _ => a) =
+    nf_characteristic M' k 1 (fun _ => a') := by
+  -- Both satisfy the same depth-(k+1) NF, so they agree on all depth-(k+1) NFs
+  have hM := nf_characteristic_satisfies M (k + 1) 1 (fun _ => a)
+  have hM' := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => a')
+  have h_agree_k1 := nf_agreement_from_shared_nf M (fun _ => a) M' (fun _ => a')
+    (nf_characteristic M (k + 1) 1 (fun _ => a)) hM (h ▸ hM')
+  -- By monotonicity, they agree on all depth-k NFs
+  have h_agree_k : ∀ nf_k : NormalForm sig k 1,
+      nf_eval_nf M k 1 (fun _ => a) nf_k ↔
+      nf_eval_nf M' k 1 (fun _ => a') nf_k :=
+    nf_agreement_monotone k (k + 1) 1 (Nat.le_succ k) M (fun _ => a) M' (fun _ => a')
+      h_agree_k1
+  -- In particular, the characteristic depth-k NF of M,a is satisfied by M',a'
+  have hM_k := nf_characteristic_satisfies M k 1 (fun _ => a)
+  have hM'_k := nf_characteristic_satisfies M' k 1 (fun _ => a')
+  exact nf_eval_unique M' k 1 (fun _ => a')
+    (nf_characteristic M k 1 (fun _ => a))
+    (nf_characteristic M' k 1 (fun _ => a'))
+    ((h_agree_k _).mp hM_k) hM'_k
+
+/-- Transfer of a depth-k 1-var NF witness across models via depth-(k+1) NF agreement.
+    If u in M has depth-(k+1) 1-var NF tau, and u' in M' also has tau, then u and u'
+    have the same depth-k 1-var NF. -/
+private theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
+    {k : Nat} {u : M.carrier} {u' : M'.carrier}
+    (tau : NormalForm sig (k + 1) 1)
+    (hM : nf_eval_nf M (k + 1) 1 (fun _ => u) tau)
+    (hM' : nf_eval_nf M' (k + 1) 1 (fun _ => u') tau)
+    (nf_k : NormalForm sig k 1) :
+    nf_eval_nf M k 1 (fun _ => u) nf_k ↔
+    nf_eval_nf M' k 1 (fun _ => u') nf_k :=
+  nf_agreement_monotone k (k + 1) 1 (Nat.le_succ k) M (fun _ => u) M' (fun _ => u')
+    (nf_agreement_from_shared_nf M (fun _ => u) M' (fun _ => u') tau hM hM') nf_k
+
+/-- Interval NF types at depth k are determined by interval NF types at depth k+1.
+    If the sets of depth-(k+1) 1-var NFs realized in two intervals are equal,
+    then the sets of depth-k 1-var NFs are also equal.
+
+    Key insight: each depth-k witness u has a unique depth-(k+1) NF. Transfer the
+    depth-(k+1) NF to get u', then nf_agreement_monotone gives depth-k agreement. -/
+private theorem interval_nf_types_depth_decrease {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
+    {k : Nat} {lo hi : M.carrier} {lo' hi' : M'.carrier}
+    (h : interval_nf_types M (k + 1) lo hi = interval_nf_types M' (k + 1) lo' hi') :
+    interval_nf_types M k lo hi = interval_nf_types M' k lo' hi' := by
+  ext nf_k
+  simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · -- Forward: depth-k witness in M → depth-k witness in M'
+    rintro ⟨u, hlo, hhi, hu_k⟩
+    -- u has a unique depth-(k+1) NF
+    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
+    -- tau is in the depth-(k+1) interval types of M
+    have h_tau_mem : tau ∈ interval_nf_types M (k + 1) lo hi := by
+      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+      exact ⟨u, hlo, hhi, h_tau_sat⟩
+    -- By hypothesis, tau is also realized in M'
+    rw [h] at h_tau_mem
+    simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau_mem
+    obtain ⟨u', hlo', hhi', hu'_tau⟩ := h_tau_mem
+    -- u' has the same depth-k 1-var NF as u
+    exact ⟨u', hlo', hhi', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
+  · -- Backward: symmetric
+    rintro ⟨u', hlo', hhi', hu'_k⟩
+    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
+    have h_tau'_mem : tau' ∈ interval_nf_types M' (k + 1) lo' hi' := by
+      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+      exact ⟨u', hlo', hhi', h_tau'_sat⟩
+    rw [← h] at h_tau'_mem
+    simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau'_mem
+    obtain ⟨u, hlo, hhi, hu_tau'⟩ := h_tau'_mem
+    exact ⟨u, hlo, hhi, (nf_depth_k_from_shared_succ tau' hu_tau' h_tau'_sat nf_k).mpr hu'_k⟩
+
+/-- Above-max types at depth k are determined by above-max types at depth k+1.
+    If the sets of depth-(k+1) 1-var NFs realized above max(x,t) agree,
+    then the depth-k sets also agree. -/
+private theorem above_max_depth_decrease {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
+    {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
+    (h : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
+         (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) nf_u)) :
+    (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+    (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) := by
+  funext nf_k
+  apply propext
+  constructor
+  · rintro ⟨u, hmax, hu_k⟩
+    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
+    have h_tau_ex : ∃ u, max x t < u ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) tau :=
+      ⟨u, hmax, h_tau_sat⟩
+    have h_transfer := Iff.of_eq (congr_fun h tau)
+    obtain ⟨u', hmax', hu'_tau⟩ := h_transfer.mp h_tau_ex
+    exact ⟨u', hmax', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
+  · rintro ⟨u', hmax', hu'_k⟩
+    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
+    have h_tau'_ex : ∃ u, max x' t' < u ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) tau' :=
+      ⟨u', hmax', h_tau'_sat⟩
+    have h_transfer := (Iff.of_eq (congr_fun h tau')).symm
+    obtain ⟨u, hmax, hu_tau'⟩ := h_transfer.mp h_tau'_ex
+    exact ⟨u, hmax, (nf_depth_k_from_shared_succ tau' hu_tau' h_tau'_sat nf_k).mpr hu'_k⟩
+
+/-- Below-min types at depth k are determined by below-min types at depth k+1.
+    Same principle as above_max_depth_decrease. -/
+private theorem below_min_depth_decrease {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
+    {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
+    (h : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
+         (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) nf_u)) :
+    (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+    (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) := by
+  funext nf_k
+  apply propext
+  constructor
+  · rintro ⟨u, hmin, hu_k⟩
+    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
+    have h_tau_ex : ∃ u, u < min x t ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) tau :=
+      ⟨u, hmin, h_tau_sat⟩
+    have h_transfer := Iff.of_eq (congr_fun h tau)
+    obtain ⟨u', hmin', hu'_tau⟩ := h_transfer.mp h_tau_ex
+    exact ⟨u', hmin', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
+  · rintro ⟨u', hmin', hu'_k⟩
+    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
+    have h_tau'_ex : ∃ u, u < min x' t' ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) tau' :=
+      ⟨u', hmin', h_tau'_sat⟩
+    have h_transfer := (Iff.of_eq (congr_fun h tau')).symm
+    obtain ⟨u, hmin, hu_tau'⟩ := h_transfer.mp h_tau'_ex
+    exact ⟨u, hmin, (nf_depth_k_from_shared_succ tau' hu_tau' h_tau'_sat nf_k).mpr hu'_k⟩
+
 /-- **GHR93 Bridge Lemma**: The 2-var depth-k NF of (x,t) is determined by the
     depth-k 1-var NFs of x and t, their ordering, and the set of depth-k 1-var
     NFs realized in the interval between them.
@@ -1870,7 +2014,111 @@ private theorem nf_2var_from_interval_data {sig : MonadicSignature}
                    (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u)) :
     nf_characteristic M k 2 (Fin.cons x (fun _ => t)) =
     nf_characteristic M' k 2 (Fin.cons x' (fun _ => t')) := by
-  sorry
+  -- Extract atom agreement: atom_eval M (x,t) a ↔ atom_eval M' (x',t') a.
+  -- Predicates agree from the depth-k 1-var NF equality; orderings from h_order_xt.
+  have h_atom_agree : ∀ (a : AtomKind sig 2),
+      atom_eval M (Fin.cons x fun _ => t) a ↔
+      atom_eval M' (Fin.cons x' fun _ => t') a := by
+    intro a; cases a with
+    | pred p i =>
+      simp only [atom_eval]
+      -- Extract predicate agreement from 1-var NF agreement using shared NF
+      refine Fin.cases ?_ (fun j => ?_) i
+      · -- i = 0: pred at x ↔ pred at x'
+        simp only [Fin.cons_zero]
+        have hM := nf_characteristic_satisfies M k 1 (fun _ => x)
+        have hM' := nf_characteristic_satisfies M' k 1 (fun _ => x')
+        -- M',x' satisfies M's characteristic NF (from h_nf_x)
+        have hM'_sat_M_nf : nf_eval_nf M' k 1 (fun _ => x')
+            (nf_characteristic M k 1 (fun _ => x)) := by
+          rw [h_nf_x]; exact hM'
+        exact atom_agreement_from_nf M (fun _ => x) M' (fun _ => x')
+          (nf_agreement_from_shared_nf M (fun _ => x) M' (fun _ => x')
+            (nf_characteristic M k 1 (fun _ => x)) hM hM'_sat_M_nf)
+          (.pred p 0)
+      · -- i = succ j: pred at t ↔ pred at t'
+        simp only [Fin.cons_succ]
+        have hM := nf_characteristic_satisfies M k 1 (fun _ => t)
+        have hM' := nf_characteristic_satisfies M' k 1 (fun _ => t')
+        have hM'_sat_M_nf : nf_eval_nf M' k 1 (fun _ => t')
+            (nf_characteristic M k 1 (fun _ => t)) := by
+          rw [h_nf_t]; exact hM'
+        exact atom_agreement_from_nf M (fun _ => t) M' (fun _ => t')
+          (nf_agreement_from_shared_nf M (fun _ => t) M' (fun _ => t')
+            (nf_characteristic M k 1 (fun _ => t)) hM hM'_sat_M_nf)
+          (.pred p 0)
+    | order i j hij =>
+      simp only [atom_eval]
+      refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+      · -- i=0, j=0: x < x ↔ x' < x' (both false)
+        exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+      · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_order_xt.1
+      · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_order_xt.2
+      · -- i=succ, j=succ: t < t ↔ t' < t' (both false)
+        simp only [Fin.cons_succ]; exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+  -- Prove the bridge lemma by showing M' satisfies M's characteristic NF,
+  -- then using nf_eval_unique.
+  apply nf_eval_unique M' k 2 (Fin.cons x' fun _ => t')
+  · -- M' satisfies M's characteristic NF.
+    -- Strategy: induction on k. At k=0, atoms suffice. At k+1, derive depth-k
+    -- hypotheses from depth-(k+1) and use the IH to handle atoms, then handle
+    -- the quantifier part by finding matching witnesses.
+    induction k with
+    | zero =>
+      -- depth-0 NF = atom assignment. Transfer atom-by-atom.
+      have hM_sat := nf_characteristic_satisfies M 0 2 (Fin.cons x fun _ => t)
+      intro a; constructor
+      · intro ha'; exact (hM_sat a).mp ((h_atom_agree a).mpr ha')
+      · intro ha; exact (h_atom_agree a).mp ((hM_sat a).mpr ha)
+    | succ k ih =>
+      -- At depth k+1: need atoms + quantifier assignment.
+      -- From depth-(k+1) hypotheses, derive depth-k hypotheses via depth_decrease lemmas.
+      have h_nf_x_k := nf_char_depth_decrease h_nf_x
+      have h_nf_t_k := nf_char_depth_decrease h_nf_t
+      have h_interval_above_k : t < x → interval_nf_types M k t x = interval_nf_types M' k t' x' :=
+        fun htx => interval_nf_types_depth_decrease (h_interval_above htx)
+      have h_interval_below_k : x < t → interval_nf_types M k x t = interval_nf_types M' k x' t' :=
+        fun hxt => interval_nf_types_depth_decrease (h_interval_below hxt)
+      have h_above_max_k := above_max_depth_decrease h_above_max
+      have h_below_min_k := below_min_depth_decrease h_below_min
+      -- IH at depth k gives: M' satisfies M's depth-k 2-var NF
+      have ih_result := ih h_nf_x_k h_nf_t_k h_interval_above_k h_interval_below_k
+        h_above_max_k h_below_min_k
+      -- Characteristic NF at depth k+1 = (atoms, quantifier_assignment)
+      have hM_sat := nf_characteristic_satisfies M (k + 1) 2 (Fin.cons x fun _ => t)
+      obtain ⟨hM_atoms, hM_quant⟩ := hM_sat
+      constructor
+      · -- Atom part: transfer via h_atom_agree
+        intro a; constructor
+        · intro ha'; exact (hM_atoms a).mp ((h_atom_agree a).mpr ha')
+        · intro ha; exact (h_atom_agree a).mp ((hM_atoms a).mpr ha)
+      · -- Quantifier part: for each depth-k 3-var NF sub_nf,
+        -- (∃ u' in M', nf_eval M' k 3 (u', x', t') sub_nf) ↔ (quant_assgn sub_nf = true)
+        intro sub_nf
+        rw [← hM_quant sub_nf]
+        -- Goal: (∃ u', nf_eval_nf M' k 3 (Fin.cons u' (Fin.cons x' ...)) sub_nf) ↔
+        --       (∃ u,  nf_eval_nf M  k 3 (Fin.cons u  (Fin.cons x  ...)) sub_nf)
+        -- Transfer witnesses using zone-based matching + 1-var NF agreement
+        constructor
+        · -- Backward (M' → M): given u' in M', find u in M
+          rintro ⟨u', hu'⟩
+          -- u' has a unique depth-(k+1) 1-var NF tau'
+          set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+          have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
+          -- Determine u's zone and find matching u in M
+          -- tau' must be realizable in M in the same zone
+          -- Use congr_fun on h_above_max, h_below_min, or interval types
+          -- to transfer the witness back to M
+          -- This requires showing that the depth-(k+1) type of u' is
+          -- realizable in M, and then that the depth-k 3-var NF transfers.
+          sorry
+        · -- Forward (M → M'): given u in M, find u' in M'
+          rintro ⟨u, hu⟩
+          -- u has a unique depth-(k+1) 1-var NF tau
+          set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+          have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
+          sorry
+  · exact nf_characteristic_satisfies M' k 2 (Fin.cons x' fun _ => t')
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
     it holds for any pair with the same data. -/
