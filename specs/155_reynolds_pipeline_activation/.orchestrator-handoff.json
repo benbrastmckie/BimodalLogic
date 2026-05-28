@@ -1,25 +1,34 @@
 {
   "status": "partial",
-  "summary": "Phase 1 completed: closed sorry at Theorem6.lean:325 (rank-varying IH, delta=4). Added 3 helper lemmas (rank_embed_trans, rank_embed_comp_heq, ghr93_duplicator_wins_rank_cast). Phase 2 started but requires creation of CharacteristicFormula.lean (~200-300 lines). Phases 2-6 remain (estimated 15-25 hours).",
-  "phases_completed": 1,
+  "summary": "Completed Phase 2 (CharacteristicFormula.lean) and Task 5.1 (Theorem6.lean:124 sorry closure). Theorem6.lean is now zero-sorry. Key discovery: completeness_discrete is already sorry-free (no sorryAx). Remaining: 6 CaseAnalysis sorries and 2 CharacteristicFormula existence sorries.",
+  "phases_completed": 2,
   "phases_total": 6,
-  "blockers": [],
+  "blockers": [
+    "5 grid dispatch sorries in CaseAnalysis.lean (lines 1668, 1669, 2026, 2027, 2107) require deep Fin-arithmetic reasoning",
+    "Cases III/IV assembly sorry at CaseAnalysis.lean:3350 requires gap formula infrastructure",
+    "2 CharacteristicFormula.lean existence sorries require NormalForm-to-rank_type bridge"
+  ],
   "continuation_context": {
-    "phase": 2,
-    "next_step": "Create CharacteristicFormula.lean in EFGames/ with nf_repr_stavi, x_t_formula, x_interval_formula, and sf_untl_formula per plan Phase 2 tasks 2.1-2.4. See handoff at specs/155_reynolds_pipeline_activation/handoffs/phase-2-start-handoff-20260528T193500.md for detailed context.",
-    "key_infrastructure_added": [
-      "rank_embed_trans (TypeFormulas.lean:154) - rank_embed composition",
-      "rank_embed_comp_heq (TypeFormulas.lean:163) - HEq for rank_embed at propositionally-equal ranks",
-      "ghr93_duplicator_wins_rank_cast (CustomGame.lean:428) - game transport across rank equality"
+    "phase": 3,
+    "next_step": "Close the 5 grid dispatch sorries in CaseAnalysis.lean (Task 3.7). These are ordering proof obligations between game_tuple positions, requiring Fin bridging and existing ordering lemmas.",
+    "key_discoveries": [
+      "completeness_discrete is ALREADY sorry-free (verified: no sorryAx in axiom audit)",
+      "Theorem6.lean is completely sorry-free (both uniform and rank-varying versions)",
+      "CharacteristicFormula.lean provides full API for X_t and interval type formulas",
+      "The 5 grid dispatch sorries in CaseAnalysis.lean are the main remaining obstacles"
     ],
     "remaining_sorries_critical_path": {
-      "Theorem6.lean:124": "uniform-rank IH (Phase 5 Task 5.1)",
-      "CaseAnalysis.lean:1668-2107": "5 grid dispatch sorries (Phase 3 Task 3.7)",
-      "CaseAnalysis.lean:3350": "Cases III/IV assembly (Phase 4 Task 4.5)"
+      "CaseAnalysis.lean:1668": "grid dispatch: sel(i) vs p_n Fin-convert variant",
+      "CaseAnalysis.lean:1669": "grid dispatch: sel(i) vs p_n 8-hypothesis variant",
+      "CaseAnalysis.lean:2026": "b_resp vs x' equality direction",
+      "CaseAnalysis.lean:2027": "remaining grid dispatch cases",
+      "CaseAnalysis.lean:2107": "Case B2 ordering grid dispatch",
+      "CaseAnalysis.lean:3350": "Cases III/IV assembly",
+      "CharacteristicFormula.lean:221": "x_t_formula_exists (rank_type finiteness)",
+      "CharacteristicFormula.lean:285": "x_interval_formula_exists (rank_type finiteness)"
     },
     "handoff_paths": [
-      "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260528T192813.md",
-      "specs/155_reynolds_pipeline_activation/handoffs/phase-2-start-handoff-20260528T193500.md"
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260528T203000.md"
     ]
   },
   "next_action_hint": "continue"
