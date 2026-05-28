@@ -1983,6 +1983,48 @@ private theorem below_min_depth_decrease {sig : MonadicSignature}
     obtain ⟨u, hmin, hu_tau'⟩ := h_transfer.mp h_tau'_ex
     exact ⟨u, hmin, (nf_depth_k_from_shared_succ tau' hu_tau' h_tau'_sat nf_k).mpr hu'_k⟩
 
+/-- **Fraïssé compression lemma**: If two n-variable environments agree on atoms
+    AND the existential transfer holds at each depth j < k (i.e., for each
+    depth-j (n+1)-var NF, realizability by an extension is the same in both
+    models), then the depth-k n-var NFs are equal.
+
+    This is the key compression principle: k rounds of successful quantifier
+    matching (at depths 0, ..., k-1) compress into depth-k NF agreement.
+    It is a direct consequence of the structure of nf_characteristic. -/
+private theorem nf_fraisse_compression {sig : MonadicSignature}
+    (k n : Nat)
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (M' : OrderedMonadicStructure sig) (env_M' : Fin n → M'.carrier)
+    (h_atoms : ∀ a : AtomKind sig n, atom_eval M env_M a ↔ atom_eval M' env_M' a)
+    (h_transfer : ∀ j, j < k →
+      ∀ chi : NormalForm sig j (n + 1),
+        (∃ u, nf_eval_nf M j (n + 1) (Fin.cons u env_M) chi) ↔
+        (∃ u', nf_eval_nf M' j (n + 1) (Fin.cons u' env_M') chi)) :
+    nf_characteristic M k n env_M = nf_characteristic M' k n env_M' := by
+  apply nf_eval_unique M' k n env_M'
+  · -- M' satisfies M's characteristic NF
+    induction k with
+    | zero =>
+      -- Depth-0: atom agreement
+      have hM := nf_characteristic_satisfies M 0 n env_M
+      intro a; constructor
+      · intro ha'; exact (hM a).mp ((h_atoms a).mpr ha')
+      · intro ha; exact (h_atoms a).mp ((hM a).mpr ha)
+    | succ k ih =>
+      -- Depth-(k+1): atoms + quantifier
+      have hM := nf_characteristic_satisfies M (k + 1) n env_M
+      obtain ⟨hM_atoms, hM_quant⟩ := hM
+      constructor
+      · -- Atoms
+        intro a; constructor
+        · intro ha'; exact (hM_atoms a).mp ((h_atoms a).mpr ha')
+        · intro ha; exact (h_atoms a).mp ((hM_atoms a).mpr ha)
+      · -- Quantifier: use h_transfer at depth k
+        intro sub_nf
+        rw [← hM_quant sub_nf]
+        exact (h_transfer k (Nat.lt_succ_iff.mpr (Nat.le_refl k)) sub_nf).symm
+  · exact nf_characteristic_satisfies M' k n env_M'
+
 /-- **GHR93 Bridge Lemma**: The 2-var depth-k NF of (x,t) is determined by the
     depth-k 1-var NFs of x and t, their ordering, and the set of depth-k 1-var
     NFs realized in the interval between them.
