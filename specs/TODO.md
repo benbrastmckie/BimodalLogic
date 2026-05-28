@@ -42,7 +42,7 @@ technical_debt:
 
 ### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
 
-155 [PLANNED] — Reynolds pipeline: Plan v42 -- GHR93-aligned revision. delta=4 throughout, new Phase S2.5 for rank-varying IH, B at depth k_nf, Round 2 via tau formula preservation, n=0 boundary explicit. 6 phases, 20-35 hours.
+155 [PLANNED] — Reynolds pipeline: Plan v43 -- Definitive GHR93-faithful plan. Independent X_t construction (not via nf_characterizable_by_stavi), delta=4, general linear orders (Cases III/IV with left/right gap formulas), interval type formula A. 6 phases, 20-30 hours.
   └─ 154, 174, 199
 
 ### Phase 2 — Post-155 Cleanup
@@ -522,9 +522,9 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
   - [specs/155_reynolds_pipeline_activation/reports/40_ghr93-case-ii-step6.md]
   - [specs/155_reynolds_pipeline_activation/reports/41_stavi-completeness-audit.md]
 - **Plan**:
-  - [specs/155_reynolds_pipeline_activation/plans/42_ghr93-aligned-plan.md]
+  - [specs/155_reynolds_pipeline_activation/plans/43_definitive-ghr93-plan.md]
 
-**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Plan v42 (GHR93-aligned): delta=4 throughout (not delta=2), new Phase S2.5 closes rank-varying IH as prerequisite, B at depth k_nf via nf_characterizable_by_stavi (not depth r), Round 2 handled via tau's formula preservation at rank r+4 (not via A formula), n=0 boundary explicit, Cases III/IV rank r+3 formulas transfer through tau at r+4. Definition of done: `bx_completeness` has no `sorryAx`, `lake build` passes.
+**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Plan v43 (definitive GHR93-faithful): delta=4 throughout, independent X_t construction (not via nf_characterizable_by_stavi), general linear orders with Cases III/IV using left(B,D)/right(B,D) gap formulas, interval type formula A = X_{(a_{n-1}, a_n)}. Bridge lemma deferred to separate task (NOT on bx_completeness critical path). 6 phases: (1) Theorem6 rank-varying IH, (2) X_t characteristic formula machinery, (3) Case II rewrite with U(B,A), (4) Cases III/IV gap handling, (5) Downstream sorry closure, (6) Verification. Definition of done: `bx_completeness` has no `sorryAx`, `lake build` passes.
 
 ---
 

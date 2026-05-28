@@ -351,7 +351,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-28T12:00:00Z",
-      "next_artifact_number": 43,
+      "next_artifact_number": 44,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -617,19 +617,24 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/42_ghr93-aligned-plan.md",
           "type": "plan",
           "summary": "v42 plan: GHR93-aligned revision. delta=4 throughout, new Phase S2.5 for rank-varying IH, B at depth k_nf (not r), A handled semantically via tau formula preservation, n=0 boundary explicit. 6 phases (S1-S5 + S2.5), 20-35 hours."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/43_definitive-ghr93-plan.md",
+          "type": "plan",
+          "summary": "v43 plan: Definitive GHR93-faithful plan. 6 phases: (1) Theorem6 rank-varying IH delta=4, (2) Independent X_t construction without nf_characterizable_by_stavi, (3) Case II rewrite with U(B,A) and interval type A, (4) Cases III/IV with left/right gap formulas for general linear orders, (5) Downstream sorry closure, (6) Verification. 20-30 hours."
         }
       ],
-      "session_id": "sess_1780000000_rev41",
+      "session_id": "sess_1780000000_rev43",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": 1,
       "plan_metadata": {
         "phases": 6,
-        "total_effort_hours": 28,
+        "total_effort_hours": 25,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 42,
-        "dependency_waves": [[1], [2], [3], [4], [5], [6]],
+        "plan_version": 43,
+        "dependency_waves": [[1], [2], [3, 4], [5], [6]],
         "reports_integrated": [
           {
             "path": "reports/36_char-k-threading-research.md",
@@ -664,6 +669,36 @@
           {
             "path": "reports/42_plan-literature-alignment.md",
             "integrated_in_plan_version": 42,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/47_xt-complete-usage-analysis.md",
+            "integrated_in_plan_version": 43,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/47_lean-infrastructure-inventory.md",
+            "integrated_in_plan_version": 43,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/47_plan-v42-deep-review.md",
+            "integrated_in_plan_version": 43,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/46_strategic-pivot-report.md",
+            "integrated_in_plan_version": 43,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/45_semantic-vs-syntactic-B.md",
+            "integrated_in_plan_version": 43,
+            "integrated_date": "2026-05-28"
+          },
+          {
+            "path": "reports/44_literature-interval-splitting.md",
+            "integrated_in_plan_version": 43,
             "integrated_date": "2026-05-28"
           }
         ]
