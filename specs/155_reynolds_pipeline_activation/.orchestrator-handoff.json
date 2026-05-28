@@ -1,47 +1,48 @@
 {
   "task_number": 155,
   "session_id": "sess_1779931340_a5cbb4",
-  "status": "partial",
-  "summary": "Phase 3C.1-3C.2 complete: char_k threaded through 6 functions with k_nf-based depth bound and stavi_truth_mu bridge verified; 3C.3-3C.8 deferred (requires replacing e_n construction with GHR93 U(B,A) witness)",
+  "status": "blocked",
+  "summary": "Phase 3C BLOCKED: same_side proved mathematically false for unsorted selections. GHR93 assumes sorted a_0 < ... < a_n; resolution requires restructuring ghr93_case_II with sorting preprocessing + U(B,A) witness (~500-800 lines).",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
     {
       "phase": "3C",
-      "issue": "e_n replacement with U(B,A) witness construction is required but very large refactor (~250-400 lines in a 4400-line file)",
-      "root_cause": "same_side lemma confirmed unprovable even with char_k: rank-r formula agreement cannot determine ordering relative to p_n because std_untl B sf_top is non-discriminating (holds on both sides when multiple B-points exist)",
-      "resolution": "Replace e_n construction in ghr93_case_II: remove forward-game e_n (lines 1241-1270), replace with U(B,A) witness extracted from rank-r tau formula transfer. Key prerequisite: Spoiler selections may need sorting (GHR93 assumes sorted a_0 < ... < a_n).",
-      "estimated_effort": "6-10 hours",
-      "files_affected": ["CaseAnalysis.lean"]
+      "issue": "same_side lemma is mathematically FALSE for unsorted selections. 8+ approaches tried, all fail. Root cause: rank-r formula agreement does not determine ordering relative to a third point. GHR93 proof requires sorted selections.",
+      "root_cause": "Counterexample: let a_init(k) = extendPoint p_n (same point selected twice) and a'_big(k) be any point with same depth-r type at a different linear order position. Then a'_big(k) < p_n is possible while a_init(k) = p_n. Biconditional fails.",
+      "resolution": "Restructure ghr93_case_II: (1) Add sorting preprocessing using Tuple.sort (already imported). (2) Generalize proof so point can be at arbitrary position, not just position n. (3) With sorted selections, all a_init(k) < p_n, making sel_pn_ord trivial. (4) Use ghr93_winning_condition_perm to permute result. Complication: in extended carrier, gaps above p_n mean p_n may not be the maximum element; must handle gaps specially.",
+      "estimated_effort": "8-16 hours",
+      "files_affected": ["CaseAnalysis.lean"],
+      "approaches_tried": [
+        "phi = std_untl (char_k nf_pn) (.base Formula.top) formula transfer at depth <= r",
+        "phi AND NOT(psi) bidirectional formula",
+        "tau_r2 rank r+2 backward game direct ordering",
+        "Big game with different b-challenges",
+        "U(B,sf_top) witness construction (e_n replacement without sorting)",
+        "tau_r2 ordering with b-challenge = e_n_pt",
+        "Formula agreement at rank r+2 via tau_r2",
+        "Abstract proof that no depth-r formula distinguishes below-p_n from above-p_n"
+      ]
     }
   ],
   "continuation_context": {
     "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_lines": [1588, 1968, 2183, 2236, 4268],
-    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-char-k-threaded-20260527.md",
-    "key_findings": [
-      "char_k_depth (stavi_depth (char_k nf) + 2 <= r) is NECESSARY for rank-r tau transfer",
-      "stavi_truth_mu_at_point (GapDetection.lean:417) bridges truth and truth_mu at carrier points",
-      "rank-polymorphic char_k (∀ r', NormalForm sig r' 1 → StaviFormula) does NOT work: formula depth ~2r exceeds game rank r",
-      "k_nf-based char_k works: k_nf << r in completeness proof, so stavi_depth(char_k nf) + 2 ≤ r holds",
-      "same_side is fundamentally unprovable from rank-r type agreement alone — e_n replacement is the ONLY correct approach"
-    ],
+    "sorry_lines": [1593, 1973, 2188, 4273],
+    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-blocker-analysis-20260527.md",
+    "key_finding": "same_side IS MATHEMATICALLY FALSE. Two points with the same depth-r type CAN be on opposite sides of a third point. This is not a proof engineering issue; it is a fundamental mathematical impossibility. The ONLY resolution is the GHR93 approach: sort selections so all a_init(k) < p_n, then sel_pn_ord holds trivially.",
     "what_is_built": {
       "char_k_params": "k_nf, char_k, char_k_correct, char_k_depth threaded through 6 functions",
       "tau_r2": "rank-(r+2) backward game on [d,y']/[c,y] at CaseAnalysis.lean:1459",
       "bridge": "stavi_truth_mu_at_point at GapDetection.lean:417",
-      "big_game": "hord_big_sel_en, hform_abig_ainit, hform_en_an at CaseAnalysis.lean"
+      "big_game": "hord_big_sel_en, hform_abig_ainit, hform_en_an extracted",
+      "sorting_import": "Mathlib.Data.Fin.Tuple.Sort already imported, Tuple.sort available",
+      "perm_lemma": "ghr93_winning_condition_perm available in CustomGame.lean:1591"
     },
-    "what_needs_building": [
-      "B = char_k (nf_characteristic N k_nf 1 (fun _ => p_n)) construction",
-      "phi = std_untl B (.base Formula.top) construction + depth bound proof",
-      "phi truth at a_init(k) when a_init(k) < extendPoint p_n",
-      "phi transfer via rank-r tau to resp_tau(k)",
-      "Extract M-side witness from phi truth at resp_tau(k) to get new e_n",
-      "Replace e_n construction (lines 1241-1270) with U(B,A) witness",
-      "Rebuild sel_pn_ord as trivial from new construction",
-      "Rebuild winning condition assembly with new e_n"
-    ]
+    "resolution_plan": {
+      "option_a": "Sort + generalize point position. Most general but ~800 lines. Sort a_bwd, find point position after sorting, generalize Case II proof.",
+      "option_b": "Sort + partition. Partition selections into below/equal/above p_n. Handle each partition differently. Moderate scope ~500 lines.",
+      "option_c": "Verify if elements above p_n are always gaps (would simplify greatly). If yes, gap ordering has special properties that might bypass same_side."
+    }
   },
-  "next_action_hint": "Replace e_n construction in ghr93_case_II with U(B,A) witness: (1) define B from char_k at p_n's NF type, (2) build phi = std_untl B sf_top, (3) prove phi transfers through rank-r tau, (4) extract M-side witness as new e_n, (5) rebuild sel_pn_ord and winning condition"
+  "next_action_hint": "Research: verify whether elements in ExtendedCarrier strictly above extendPoint p_n (a carrier point) in [d,y'] are necessarily gaps. If yes, use gap properties for simplified resolution. If no, implement sorting approach (Option A or B). See handoff phase-3C-blocker-analysis-20260527.md for full analysis."
 }
