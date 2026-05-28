@@ -181,6 +181,43 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
       · simp [hi0, hi_b, hi_y]
         exact hform_sel ⟨i.val - 1, by omega⟩ A hA
 
+/-! ## Component E: order_reverse -/
+
+/-- Reverse ordering: given `(a < b ↔ a' < b') ∧ (a = b ↔ a' = b')`,
+    derive `(b < a ↔ b' < a') ∧ (b = a ↔ b' = a')`.
+
+    This is needed when the grid dispatch produces a goal about `(j, i)` ordering
+    but the hypothesis provides `(i, j)` ordering. The proof uses trichotomy:
+    `b < a ↔ ¬(a ≤ b) ↔ ¬(a < b ∨ a = b)`, etc. -/
+theorem order_reverse {α β : Type*} [LinearOrder α] [LinearOrder β]
+    {a b : α} {a' b' : β}
+    (h : (a < b ↔ a' < b') ∧ (a = b ↔ a' = b')) :
+    (b < a ↔ b' < a') ∧ (b = a ↔ b' = a') := by
+  obtain ⟨h_lt, h_eq⟩ := h
+  constructor
+  · -- b < a ↔ b' < a': by trichotomy, b < a ↔ ¬(a ≤ b) ↔ ¬(a < b ∨ a = b)
+    constructor
+    · intro hba
+      rcases lt_trichotomy a' b' with h1 | h1 | h1
+      · exact absurd (h_lt.mpr h1) (not_lt.mpr (le_of_lt hba))
+      · exact absurd (h_eq.mpr h1) (ne_of_gt hba)
+      · exact h1
+    · intro hba'
+      rcases lt_trichotomy a b with h1 | h1 | h1
+      · exact absurd (h_lt.mp h1) (not_lt.mpr (le_of_lt hba'))
+      · exact absurd (h_eq.mp h1) (ne_of_gt hba')
+      · exact h1
+  · -- b = a ↔ b' = a': trivially from a = b ↔ a' = b'
+    exact ⟨fun h => (h_eq.mp h.symm).symm, fun h => (h_eq.mpr h.symm).symm⟩
+
+/-- `order_reverse` tactic applies `order_reverse` to close goals of the form
+    `(b < a ↔ b' < a') ∧ (b = a ↔ b' = a')` when a hypothesis of the form
+    `(a < b ↔ a' < b') ∧ (a = b ↔ a' = b')` exists in context.
+
+    Usage: `order_reverse` -/
+macro "order_rev" : tactic =>
+  `(tactic| (first | exact order_reverse ‹_› | exact order_reverse (And.symm ‹_›)))
+
 /-! ## Component A: same_order_type Grid Setup -/
 
 /-- `same_order_type_grid` macro sets up the 4×4 grid proof for
@@ -201,6 +238,24 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
     ``` -/
 macro "same_order_type_grid" : tactic =>
   `(tactic| (intro i j; simp only [game_tuple]; split_ifs))
+
+/-- `same_order_type_grid_uh` is a variant of `same_order_type_grid` that uses
+    `unhygienic` to preserve access to `i` and `j` variable names through
+    the `<;>` combinator. Without `unhygienic`, variables introduced by `intro`
+    become inaccessible after `<;>`, preventing per-case tactics from
+    referencing the index values.
+
+    Usage:
+    ```
+    · -- same_order_type
+      same_order_type_grid_uh <;>
+        first
+          | order_refl
+          | exact order_reverse ‹_›
+          | ...
+    ``` -/
+macro "same_order_type_grid_uh" : tactic =>
+  `(tactic| unhygienic (intro i j; simp only [game_tuple]; split_ifs))
 
 /-- `extract_order h i j` is a helper macro for extracting ordering data
     from a sub-game same_order_type hypothesis at specific indices.

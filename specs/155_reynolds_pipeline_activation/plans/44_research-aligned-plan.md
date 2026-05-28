@@ -197,7 +197,7 @@ For x_interval_formula_exists: the interval type is the set of rank_types realiz
 
 ---
 
-### Phase 4: Tactic Infrastructure (Grid Dispatch Prerequisites) [NOT STARTED]
+### Phase 4: Tactic Infrastructure (Grid Dispatch Prerequisites) [COMPLETED]
 
 **Goal**: Build general-purpose tactic infrastructure that will be used by the Case II rewrite (Phase 5), Cases III/IV (Phase 6), and any remaining grid dispatch goals. This phase can execute in parallel with Phase 3.
 
@@ -212,17 +212,17 @@ For x_interval_formula_exists: the interval type is the set of rank_types realiz
 - Goal classification at line 1668: 8 goals, all analyzable with accessible Fin variables
 
 **Tasks**:
-- [ ] Task 4.1: Add `order_reverse` theorem to EFGameTactics.lean (~25 lines)
+- [x] Task 4.1: Add `order_reverse` theorem to EFGameTactics.lean (~25 lines)
   - Derives `(b < a iff b' < a') AND (b = a iff b' = a')` from `(a < b iff a' < b') AND (a = b iff a' = b')` via linear order trichotomy
   - This pattern already exists inline at lines 1818-1830 and 1928-1942; factor it out
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/EFGameTactics.lean`
   - **Verification**: `lean_verify` on order_reverse, `lake build`
-- [ ] Task 4.2: Add `same_order_type_grid_uh` macro to EFGameTactics.lean (~5 lines)
+- [x] Task 4.2: Add `same_order_type_grid_uh` macro to EFGameTactics.lean (~5 lines)
   - `macro "same_order_type_grid_uh" : tactic => \`(tactic| unhygienic (intro i j; simp only [game_tuple]; split_ifs))`
   - This preserves `i` and `j` as accessible names in broadcast subgoals after `<;>`
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/EFGameTactics.lean`
   - **Verification**: Test with lean_multi_attempt on a sample grid goal
-- [ ] Task 4.3: (Optional) Create sel_dispatch helper tactic (~30-50 lines)
+- [ ] Task 4.3: (Optional) Create sel_dispatch helper tactic (~30-50 lines) *(deviation: deferred -- will implement only if Phase 5 leaves >3 grid goals requiring sel dispatch, as noted in the plan)*
   - Encapsulate the common pattern: `by_cases hlt : i.val - 1 < n` followed by simp + ordering lemma application
   - If the Case II rewrite (Phase 5) eliminates most grid goals, this may be unnecessary
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/EFGameTactics.lean`
