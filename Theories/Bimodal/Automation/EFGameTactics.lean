@@ -218,6 +218,59 @@ theorem order_reverse {α β : Type*} [LinearOrder α] [LinearOrder β]
 macro "order_rev" : tactic =>
   `(tactic| (first | exact order_reverse ‹_› | exact order_reverse (And.symm ‹_›)))
 
+/-! ## Component F: same_order_type_of_cases -/
+
+/-- Helper lemma for same_order_type proofs: dispatch a 4-way case split
+    over game_tuple indices for BOTH i and j. Given ordering facts for all
+    10 index-category pairs, proves same_order_type for the full game tuple.
+
+    The 10 pairs are: (x,b), (x,y), (b,y), (x,sel), (b,sel), (y,sel),
+    (sel,sel), plus all reverses via `order_reverse`. The diagonal cases
+    (x,x), (b,b), (y,y), (sel_k,sel_k) are handled automatically by
+    `order_refl_pair`. -/
+theorem same_order_type_of_cases {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    {n : Nat}
+    {x y : ExtendedCarrier M atomMap r} {a : Fin n → ExtendedCarrier M atomMap r}
+    {b_M : M.carrier}
+    {x' y' : ExtendedCarrier N atomMap r} {a' : Fin n → ExtendedCarrier N atomMap r}
+    {b_N : N.carrier}
+    (hord_xb : (x < @extendPoint sig M atomMap r b_M ↔ x' < @extendPoint sig N atomMap r b_N) ∧
+               (x = @extendPoint sig M atomMap r b_M ↔ x' = @extendPoint sig N atomMap r b_N))
+    (hord_xy : (x < y ↔ x' < y') ∧ (x = y ↔ x' = y'))
+    (hord_by : (@extendPoint sig M atomMap r b_M < y ↔ @extendPoint sig N atomMap r b_N < y') ∧
+               (@extendPoint sig M atomMap r b_M = y ↔ @extendPoint sig N atomMap r b_N = y'))
+    (hord_x_sel : ∀ k : Fin n, (x < a k ↔ x' < a' k) ∧ (x = a k ↔ x' = a' k))
+    (hord_b_sel : ∀ k : Fin n, (@extendPoint sig M atomMap r b_M < a k ↔
+                  @extendPoint sig N atomMap r b_N < a' k) ∧
+                  (@extendPoint sig M atomMap r b_M = a k ↔
+                   @extendPoint sig N atomMap r b_N = a' k))
+    (hord_y_sel : ∀ k : Fin n, (y < a k ↔ y' < a' k) ∧ (y = a k ↔ y' = a' k))
+    (hord_sel_sel : ∀ k k' : Fin n, (a k < a k' ↔ a' k < a' k') ∧
+                    (a k = a k' ↔ a' k = a' k')) :
+    same_order_type n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+  intro i j
+  simp only [game_tuple]
+  split_ifs with hi0 hib hiy hj0 hjb hjy
+      hj0' hjb' hjy'
+      hj0'' hjb'' hjy''
+      hj0''' hjb''' hjy''' <;>
+    first
+    | exact order_refl_pair _ _
+    | exact hord_xb
+    | exact hord_xy
+    | exact hord_x_sel ⟨j.val - 1, by omega⟩
+    | exact order_reverse hord_xb
+    | exact hord_by
+    | exact hord_b_sel ⟨j.val - 1, by omega⟩
+    | exact order_reverse hord_xy
+    | exact order_reverse hord_by
+    | exact hord_y_sel ⟨j.val - 1, by omega⟩
+    | exact order_reverse (hord_x_sel ⟨i.val - 1, by omega⟩)
+    | exact order_reverse (hord_b_sel ⟨i.val - 1, by omega⟩)
+    | exact order_reverse (hord_y_sel ⟨i.val - 1, by omega⟩)
+    | exact hord_sel_sel ⟨i.val - 1, by omega⟩ ⟨j.val - 1, by omega⟩
+
 /-! ## Component A: same_order_type Grid Setup -/
 
 /-- `same_order_type_grid` macro sets up the 4×4 grid proof for
