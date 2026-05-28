@@ -1,52 +1,66 @@
 {
   "task_number": 155,
-  "session_id": "sess_1748476800_bridge",
+  "session_id": "sess_1748480000_game",
   "status": "blocked",
-  "summary": "Session S3 definitively identified root cause of 4-var existential transfer sorry: interval_nf_types (Finset of 1-var NFs) loses spatial arrangement information. Splitting lemma proved FALSE via concrete counterexample. Added interval_2var_nf_types definition (records 2-var NFs relative to endpoint, capturing spatial structure). Three sorries remain (2335, 2417, 2775). Resolution requires ~400-600 lines of restructuring.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms", "S3-analysis"],
+  "summary": "Session S4 exhaustively analyzed all approaches (strong induction on k, nf_agreement_monotone, nf_fraisse_compression, game-based). Confirmed S3 root cause: interval_nf_types loses spatial info. Key finding: even with strong induction and nf_agreement_monotone, the sub-interval ordering problem persists because zone-matched interior points lack mutual ordering constraints. Three sorries remain (2347, 2429, 2787). Resolution requires enriched 3-var interval types (~400-600 lines).",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms", "S3-analysis", "S4-analysis"],
   "phases_total": 6,
   "blocking_issues": [
     {
-      "phase": "S3",
-      "description": "Bridge lemma's interval_nf_types hypothesis is semantically too weak. Splitting lemma provably false. Formula guard is trivially true.",
-      "root_cause": "interval_nf_types records SET of types in interval, not spatial arrangement. Different models can have same type set but different spatial layouts, leading to different sub-interval types when split.",
+      "phase": "S4",
+      "description": "Bridge lemma's interval_nf_types hypothesis is semantically too weak for the 4-var existential transfer. All non-enrichment approaches fail.",
+      "root_cause": "Zone matching against 2-point boundary (x,t) gives correct orderings with x and t but NOT with other zone-matched interior points. When two interior points are in the same sub-interval, their relative ordering is undetermined. This blocks 4-var NF agreement even at depth 0 (atoms include orderings between all 4 vars).",
+      "approaches_exhausted": [
+        "Strong induction on k: IH at depth j < k gives 2-var bridge, need 3-var. Generalizing to n-var fails because IH needs sub-interval types for extended configs.",
+        "nf_agreement_monotone: gives multi-depth transfer from shared NF, but depth-k 1-var NF agreement does NOT imply multi-var NF agreement.",
+        "nf_fraisse_compression: atoms OK but existential transfer at each depth re-encounters the ordering problem.",
+        "Game approach: correct in principle but requires ExtendedCarrier<->M.carrier type bridge, rank_type<->nf_characteristic bridge, and formula_agreement<->NF_agreement via char_k. Significant infrastructure cost.",
+        "Pairwise 2-var agreements: from depth-k 1-var NFs, get depth-(k-1) 2-var transfer for each pair, but different pairs give DIFFERENT witnesses that may not be consistent."
+      ],
       "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
-      "sorry_lines": [2335, 2417, 2775]
+      "sorry_lines": [2347, 2429, 2787]
     }
   ],
   "changes_made": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
-      "description": "Added interval_2var_nf_types definition (enriched interval invariant using 2-var NFs)"
-    },
-    {
-      "file": "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md",
-      "description": "Definitive blocker analysis with root cause, counterexample, resolution path, and circular dependency analysis"
+      "file": "specs/155_reynolds_pipeline_activation/handoffs/phase-S4-nf-agreement-monotone-analysis-20260528.md",
+      "description": "Exhaustive analysis of all approaches with detailed failure modes"
     }
   ],
   "resolution_plan": {
-    "approach": "Restructure bridge lemma to use enriched interval data",
+    "approach": "Enriched 3-var interval types (interval_3var_nf_types)",
+    "rationale": "A 3-var interval type sigma = nf_characteristic M k 3 (u, x, t) encodes: (a) u's orderings with BOTH x and t, (b) u's predicates, (c) depth-(k-1) 4-var quantifier data for extensions of (u,x,t). Zone matching with 3-var types gives u' with ALL orderings and ALL quantifier data, fully resolving the sub-interval ordering problem.",
     "steps": [
-      "1. Define nf_2var_from_interval_data_rich: bridge lemma taking interval_2var_nf_types instead of interval_nf_types as hypothesis. The enriched data provides 2-var NFs of (u, hi) for u in (lo, hi), encoding spatial arrangement.",
-      "2. Prove zone_match_witness_rich: zone matching that produces u' with same 2-var NF relative to endpoint (not just same 1-var NF).",
-      "3. Prove interval splitting from enriched data: from interval_2var_nf_types for (lo, hi) and a matched u, derive interval_nf_types for (lo, u) and (u, hi) at depth k-1. The 2-var NF of (u, hi) encodes u's quantifier structure relative to hi, from which sub-interval data can be extracted.",
-      "4. Restructure nf_2var_existential_transfer to use enriched data: the transfer at depth j receives sub-interval data from the enriched interval types.",
-      "5. Modify nf_exist_sf_guarded to encode 2-var interval types (not 1-var) in the formula guard. The guard becomes: for each 2-var NF sigma in the enriched set, build char_2var sigma. The formula disjunction ranges over valid enriched sets.",
-      "6. Re-prove forward and backward directions with enriched formula.",
-      "7. Wire enriched bridge lemma to nf_2var_exist_sf_classical."
+      "1. Define interval_3var_nf_types M k lo hi: Finset of depth-k 3-var NFs for (u, lo, hi) with u in (lo, hi). ~30 lines.",
+      "2. Prove depth decrease for 3-var interval types. ~50 lines.",
+      "3. New zone_match_3var: from interval_3var_nf_types equality, find u' with matching 3-var NF. ~60-90 lines.",
+      "4. New nf_2var_existential_transfer using 3-var zone match: From 3-var NF agreement at depth k, get depth-j 3-var agreement by monotonicity, extract quantifier for depth-j 4-var transfer. ~80-120 lines.",
+      "5. Modify nf_exist_sf_guarded formula to encode enriched interval types (requires char_2var from completeness IH or Classical.choice). ~80-120 lines.",
+      "6. Re-prove forward/backward directions. Forward: straightforward. Backward: extract 3-var interval types from formula guard. ~80-120 lines.",
+      "7. Wire to nf_2var_exist_sf_classical. ~20-30 lines."
     ],
-    "estimated_effort": "400-600 lines of new/modified Lean code",
-    "key_lemmas_needed": [
-      "Variable dropping lemma: from depth-k n-var NF, extract depth-k m-var NF for sub-tuple",
-      "Enriched interval splitting: from interval_2var_nf_types for (lo, hi) + matched u, derive depth-(k-1) bridge data for sub-intervals",
-      "Enriched zone matching: find u' with matching 2-var NF relative to endpoint"
-    ]
+    "estimated_effort": "400-560 lines across 2-3 sessions",
+    "key_insight": "From 3-var NF agreement at depth k (via 3-var zone match): nf_agreement_monotone gives depth-j' 3-var agreement for j' < k. The depth-j' 3-var NF quantifier part at depth j'-1 gives (j'-1)-level 4-var transfer. Combined with atoms at 3 vars (from 3-var NF): nf_fraisse_compression at depth j' gives 3-var NF at depth j'. The quantifier at depth j'-1 gives the j'-level 4-var existential transfer needed by the sorry goals.",
+    "caution": "Step 5 (formula encoding) may have circular dependency: the formula needs to characterize 3-var NFs, which requires the completeness theorem at higher var count. Resolution: use Classical.choice or encode only 1-var interval types in the formula and derive 3-var types from 1-var types + bridge lemma IH."
   },
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md",
-    "build_status": "passing (987 jobs for StaviCompleteness, 1669 total)",
-    "new_definitions": ["interval_2var_nf_types at line ~1850 in StaviCompleteness.lean"],
+    "handoff_paths": [
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md",
+      "specs/155_reynolds_pipeline_activation/handoffs/phase-S4-nf-agreement-monotone-analysis-20260528.md"
+    ],
+    "build_status": "passing",
+    "sorry_lines_in_file": [2347, 2429, 2787],
+    "key_definitions": {
+      "interval_2var_nf_types": "line ~1847 in StaviCompleteness.lean (already defined, records 2-var NFs relative to right endpoint)",
+      "interval_nf_types": "line ~1835 (current, too weak)",
+      "nf_2var_from_interval_data": "line ~2442 (bridge lemma, current proof has sorries)",
+      "nf_2var_existential_transfer": "line ~2214 (contains sorries at 2347/2429)",
+      "nf_exist_sf_guarded_backward": "line ~2760 (sorry at 2787)",
+      "nf_fraisse_compression": "line ~2006 (sorry-free, reusable)",
+      "zone_match_witness": "line ~2044 (sorry-free, needs enriched version)",
+      "nf_agreement_monotone": "NormalForm.lean line ~339 (sorry-free, key for deriving lower-depth transfer from higher-depth)"
+    },
     "estimated_effort_to_resolve": "2-3 sessions (~400-600 lines)"
   },
-  "next_action_hint": "Start with step 3 (interval splitting from enriched data): prove that from interval_2var_nf_types equality + matched u, the sub-interval types at depth k-1 agree. This is the KEY lemma that unblocks everything else."
+  "next_action_hint": "Define interval_3var_nf_types (Step 1), then implement zone_match_3var (Step 3). This gives the foundation for Step 4 (enriched existential transfer) which directly closes sorries at 2347/2429. Step 5 (formula) and Step 6 (backward direction) close sorry at 2787."
 }
