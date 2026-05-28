@@ -128,6 +128,13 @@ Phases are fully sequential. Each phase produces a compilable state.
   - Order agreement via h_order_xt + Fin.cases
   - Base case k=0: direct transfer via h_atom_agree
   - Inductive step atoms: derived from depth-k hypotheses via depth_decrease
+- [x] **S1.1d: Restructure with nf_fraisse_compression + zone matching** (~370 lines, NEW)
+  - Replaced inner induction with nf_fraisse_compression at top level
+  - zone_match_witness (sorry-free): matches witnesses across models in all 5 zones
+  - nf_2var_existential_transfer: isolated the transfer condition
+  - Depth-0 3-var transfer proved (forward + backward, sorry-free)
+  - Depth j>=1 transfer: sorry (requires Fraisse game infrastructure)
+  - Bridge lemma body reduced to: h_atom_agree + nf_fraisse_compression + existential_transfer
 - [ ] **S1.2: Build the connection from interval_nf_types to decomposition_agreement** (~100-150 lines) *(deviation: altered -- replaced by depth-decrease approach; ExtendedCarrier bridging no longer needed)*
   - interval_nf_types gives Finset equality of realized 1-var NFs in open intervals
   - decomposition_agreement requires: for every carrier point in (lo,hi) in M, exists one in M' with same 1-var NF, and vice versa
