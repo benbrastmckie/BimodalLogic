@@ -1,22 +1,34 @@
 {
   "task_number": 155,
-  "session_id": "sess_1779974755_8f84e8",
-  "status": "blocked",
-  "summary": "Phase S1 blocked: nf_2var_from_interval_data bridge lemma requires EF game infrastructure for the NF world that does not exist in the codebase; simple induction on k is insufficient",
+  "session_id": "sess_1779980783_109c5d",
+  "status": "in_progress",
+  "summary": "Phase S1 infrastructure complete: 6 sorry-free lemmas built (5 depth-decrease + Fraisse compression). Bridge lemma atom agreement + base case proved. Sorry count unchanged at 2. Quantifier transfer requires Fraisse game framework (~300-500 lines new infrastructure).",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial"],
   "phases_total": 6,
   "blocking_issues": [
     {
       "phase": "S1",
-      "description": "The bridge lemma proof requires a game-theoretic back-and-forth argument. Direct induction on k fails because the inductive step needs interval type data for sub-intervals involving new witness points, which cannot be derived from the hypotheses. Three resolution options documented in the plan BLOCKER entry (Option A: build NF-world game framework ~400-700 lines; Option B: strengthen hypotheses ~300-500 lines; Option C: restructure the formula ~200-400 lines).",
+      "description": "The bridge lemma quantifier transfer (line 2159) requires showing the depth-k 3-var existential transfers between M and M'. Zone-based witness matching from interval/above/below data finds u' with same depth-(k+1) 1-var NF, but proving the depth-k 3-var NF agrees requires Fraisse-style reasoning: the sub-interval types for configurations with 3+ points cannot be derived from the original 2-point interval data. The Fraisse compression lemma (nf_fraisse_compression, sorry-free) reduces this to proving h_transfer at each depth j < k, but h_transfer itself requires sub-interval matching at recursive levels.",
       "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
-      "sorry_lines": [1873, 2152]
+      "sorry_lines": [2159, 2439],
+      "infrastructure_built": [
+        "nf_char_depth_decrease (sorry-free): depth-(k+1) 1-var NF => depth-k",
+        "nf_depth_k_from_shared_succ (sorry-free): shared depth-(k+1) NF => depth-k agreement",
+        "interval_nf_types_depth_decrease (sorry-free): depth-(k+1) interval types => depth-k",
+        "above_max_depth_decrease (sorry-free): depth-(k+1) above-max => depth-k",
+        "below_min_depth_decrease (sorry-free): depth-(k+1) below-min => depth-k",
+        "nf_fraisse_compression (sorry-free): atoms + depth-j transfer for j<k => depth-k agreement",
+        "bridge lemma atom agreement (sorry-free): for all k",
+        "bridge lemma base case k=0 (sorry-free)",
+        "bridge lemma inductive atoms (sorry-free): depth-(k+1) -> depth-k via depth_decrease"
+      ]
     }
   ],
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S1-handoff-20260528T134950Z.md",
-    "recommended_action": "Option A: Build simple EF game framework for NF world (nf_game_strategy + Fraisse theorem for nf_characteristic), then prove bridge lemma using game strategy from hypotheses",
-    "estimated_effort": "15-25 hours (revised from original 4-8)"
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S1-handoff-20260528T180000Z.md",
+    "recommended_action": "Build multi-round EF game for NF world: (1) define game positions with k matched points, (2) show Duplicator has strategy from bridge hypotheses (each round uses original interval data), (3) show game completion gives depth-0 (2+k)-var atom agreement, (4) combine with nf_fraisse_compression to close bridge lemma",
+    "estimated_effort": "300-500 lines, 10-15 hours",
+    "key_mathematical_insight": "The game avoids sub-interval matching by using the ORIGINAL interval data at each round. The matched point ends up in (x', t') (not in a sub-interval), but its depth-(k+1) 1-var NF ensures correct behavior. After k rounds, depth-0 atom agreement at (2+k) vars follows from orderings + predicates. The compression lemma then gives depth-k agreement at 2 vars."
   },
-  "next_action_hint": "Research task needed: design the NF-world EF game framework (nf_game_strategy, nf_game_implies_nf_eq) before attempting implementation"
+  "next_action_hint": "Continue implementation: build the multi-round EF game in StaviCompleteness.lean, then close the quantifier transfer sorry"
 }

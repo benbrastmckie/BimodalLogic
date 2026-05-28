@@ -106,7 +106,7 @@ Phases are fully sequential. Each phase produces a compilable state.
 
 ---
 
-### Phase S1: Close nf_2var_from_interval_data [BLOCKED]
+### Phase S1: Close nf_2var_from_interval_data [IN PROGRESS]
 
 **Goal**: Prove the bridge lemma (GHR93 Proposition 7 + Lemma 11): if two 2-variable environments agree on 1-variable types, ordering, interval types, and types above/below, then their 2-variable NFs are equal.
 
@@ -116,7 +116,19 @@ Phases are fully sequential. Each phase produces a compilable state.
   - Read Composition.lean for ghr93_strategy_compose signature
   - Read Decomposition.lean for decomposition_agreement
   - Map: interval_nf_types -> decomposition_agreement -> game winning -> NF equality
-- [ ] **S1.2: Build the connection from interval_nf_types to decomposition_agreement** (~100-150 lines) *(deviation: blocked -- decomposition_agreement uses ExtendedCarrier/rank_type, nf_2var_from_interval_data uses nf_characteristic/nf_eval_nf; bridging requires ~300-500 lines of game infrastructure for the NF world, see BLOCKER)*
+- [x] **S1.1b: Build depth-decrease infrastructure** (~150 lines, NEW)
+  - nf_char_depth_decrease: depth-(k+1) 1-var NF => depth-k 1-var NF
+  - nf_depth_k_from_shared_succ: shared depth-(k+1) NF => depth-k agreement
+  - interval_nf_types_depth_decrease: depth-(k+1) interval types => depth-k
+  - above_max_depth_decrease: depth-(k+1) above-max => depth-k
+  - below_min_depth_decrease: depth-(k+1) below-min => depth-k
+  - All sorry-free, verified via lean_verify
+- [x] **S1.1c: Prove bridge lemma atom agreement + base case** (~70 lines, NEW)
+  - h_atom_agree: predicate agreement via nf_agreement_from_shared_nf
+  - Order agreement via h_order_xt + Fin.cases
+  - Base case k=0: direct transfer via h_atom_agree
+  - Inductive step atoms: derived from depth-k hypotheses via depth_decrease
+- [ ] **S1.2: Build the connection from interval_nf_types to decomposition_agreement** (~100-150 lines) *(deviation: altered -- replaced by depth-decrease approach; ExtendedCarrier bridging no longer needed)*
   - interval_nf_types gives Finset equality of realized 1-var NFs in open intervals
   - decomposition_agreement requires: for every carrier point in (lo,hi) in M, exists one in M' with same 1-var NF, and vice versa
   - Bridge: interval_nf_types equality -> for each NF type in the set, witnesses exist in both models -> decomposition_agreement
