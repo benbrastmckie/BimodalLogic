@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
 
 ---
 
-### Phase R1: SplitPointProps Restructuring [NOT STARTED]
+### Phase R1: SplitPointProps Restructuring [COMPLETED]
 
 **Goal**: Add a `delta` parameter to `SplitPointProps` so that sigma/tau live at rank `r + delta` on rank-embedded positions, matching GHR93's rank structure. Update `obtain_split_point_props` to construct with `delta = 4`.
 
@@ -110,7 +110,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
 
 **Tasks**:
 
-- [ ] **R1.1: Add delta parameter to SplitPointProps** (~50-80 lines changed)
+- [x] **R1.1: Add delta parameter to SplitPointProps** (~50-80 lines changed) *(completed)*
   - Add `(delta : Nat := 0)` parameter to the `SplitPointProps` structure (line 44)
   - Change `sigma` field (line 89) from:
     ```lean
@@ -135,14 +135,14 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - Keep all other fields unchanged (they remain at rank r)
   - Verification: SplitPoint.lean compiles with the new structure definition
 
-- [ ] **R1.2: Add rank_embed helper lemmas** (~30-60 lines)
+- [ ] **R1.2: Add rank_embed helper lemmas** (~30-60 lines) *(deviation: skipped -- existing rank_embed infrastructure (rank_embed_le, rank_embed_lt, rank_embed_isPoint, rank_embed_stavi_truth_mu, rank_embed_inClosedInterval) was sufficient; no new helper lemmas needed)*
   - `rank_embed_game_tuple`: relate game_tuple at rank r to game_tuple at rank r+delta
   - `rank_embed_inClosedInterval_iff`: inClosedInterval commutes with rank_embed
   - `rank_embed_winning_condition`: winning condition transfers through rank_embed
   - These may already partially exist (check TypeFormulas.lean for rank_embed infrastructure)
   - Verification: helper lemmas compile
 
-- [ ] **R1.3: Update obtain_split_point_props** (~100-200 lines changed)
+- [x] **R1.3: Update obtain_split_point_props** (~100-200 lines changed) *(deviation: altered -- h_fwd_r1 parameter kept (needed for c-d correspondence K-(negD) argument, independent of sigma/tau rank); degenerate gap cases inlined directly instead of calling ghr93_duplicator_wins_degenerate_gap to avoid formula-agreement depth mismatch)*
   - Change the IH parameter to produce backward games at rank `r + 4` (not `r`):
     ```lean
     (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
@@ -165,12 +165,12 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - Remove `h_fwd_r1` parameter (rank r+2 forward game) -- no longer needed
   - Verification: obtain_split_point_props compiles with new signature
 
-- [ ] **R1.4: Update h_d_compat_left and h_fwd_n1 fields** (~20-40 lines)
+- [x] **R1.4: Update h_d_compat_left and h_fwd_n1 fields** (~20-40 lines) *(completed -- these fields remain at rank r, unchanged; verified they compile with the new structure)*
   - These fields remain at rank r (they use the original forward game, not sigma/tau)
   - Verify they compile unchanged after the structure change
   - If any field needs rank adjustment, add rank_embed wrappers
 
-- [ ] **R1.5: Build verification**
+- [x] **R1.5: Build verification** *(completed -- `lake build Bimodal.Metalogic.WeakCanonical.Expressiveness.SplitPoint` passes; `lean_verify` shows no sorryAx; downstream CaseAnalysis.lean breaks at 5 call sites as expected)*
   - `lake build Bimodal.Metalogic.WeakCanonical.Expressiveness.SplitPoint`
   - Fix any downstream compilation errors
 

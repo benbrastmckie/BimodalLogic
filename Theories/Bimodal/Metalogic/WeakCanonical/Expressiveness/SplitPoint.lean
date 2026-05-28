@@ -32,18 +32,17 @@ last selection in the backward game). -/
 
 /-- Properties of the split points c, d that are needed for the case analysis.
 
-    These encapsulate the key facts established in the GHR93 proof about
-    the relationship between c, d, the forward strategy, and the IH.
-    All properties are sorry'd pending the full infimum/strategy-restriction
-    infrastructure.
+    **GHR93 rank structure**: The `delta` parameter captures the rank offset
+    between the backward game's rank `r` and the rank at which sigma/tau play.
+    In GHR93, the induction peels off 4 from the rank at each step, so sigma/tau
+    end up at rank `r + delta` (with delta = 4 in the inductive step). Positions
+    c, d, x, y, x', y' live at rank `r`, and sigma/tau play on rank-embedded
+    positions via `rank_embed (by omega : r ≤ r + delta)`.
 
-    The record bundles:
-    - Interval containment: d ∈ [x',y'], c ∈ [x,y]
-    - Position bound: d ≤ a_n (Spoiler's last pick is past the split)
-    - Sub-interval backward strategies σ, τ from the IH -/
+    When `delta = 0`, this reduces to the original structure (sigma/tau at rank r). -/
 structure SplitPointProps {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
-    {r : Nat} (n : Nat)
+    {r : Nat} (n : Nat) (delta : Nat)
     (x y : ExtendedCarrier M atomMap r)
     (x' y' : ExtendedCarrier N atomMap r)
     (c : ExtendedCarrier M atomMap r)
@@ -84,12 +83,22 @@ structure SplitPointProps {sig : MonadicSignature}
   /-- Gap/point correspondence between c and d.
       Used in degenerate gap cases and Case II point derivation. -/
   hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d)
-  /-- Backward strategy σ on the left sub-interval:
-      Duplicator wins G_{n;r}(N, x'd; M, xc) -/
-  sigma : ghr93_duplicator_wins N M atomMap n r x' d x c
-  /-- Backward strategy τ on the right sub-interval:
-      Duplicator wins G_{n;r}(N, dy'; M, cy) -/
-  tau : ghr93_duplicator_wins N M atomMap n r d y' c y
+  /-- Backward strategy σ on the left sub-interval at rank r + delta:
+      Duplicator wins G_{n; r+delta}(N, x'd; M, xc) on rank-embedded positions.
+      GHR93: sigma lives at rank r+4 (delta=4) from the IH applied at base rank r+4. -/
+  sigma : ghr93_duplicator_wins N M atomMap n (r + delta)
+    (rank_embed (by omega : r ≤ r + delta) x')
+    (rank_embed (by omega : r ≤ r + delta) d)
+    (rank_embed (by omega : r ≤ r + delta) x)
+    (rank_embed (by omega : r ≤ r + delta) c)
+  /-- Backward strategy τ on the right sub-interval at rank r + delta:
+      Duplicator wins G_{n; r+delta}(N, dy'; M, cy) on rank-embedded positions.
+      GHR93: tau lives at rank r+4 (delta=4) from the IH applied at base rank r+4. -/
+  tau : ghr93_duplicator_wins N M atomMap n (r + delta)
+    (rank_embed (by omega : r ≤ r + delta) d)
+    (rank_embed (by omega : r ≤ r + delta) y')
+    (rank_embed (by omega : r ≤ r + delta) c)
+    (rank_embed (by omega : r ≤ r + delta) y)
   /-- (n+1)-round forward strategy on the full interval.
       Derived from the (4+3n)-round forward strategy via round_mono.
       Used in Case II to construct e_n and establish ordering compatibility. -/
@@ -143,6 +152,7 @@ theorem obtain_split_point_props {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
+    (delta : Nat)
     (hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
@@ -151,7 +161,11 @@ theorem obtain_split_point_props {sig : MonadicSignature}
           x₀ ≤ y₀ → x₀' ≤ y₀' →
           (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
           ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
-          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
+          ghr93_duplicator_wins N M atomMap n (r + delta)
+            (rank_embed (by omega : r ≤ r + delta) x₀')
+            (rank_embed (by omega : r ≤ r + delta) y₀')
+            (rank_embed (by omega : r ≤ r + delta) x₀)
+            (rank_embed (by omega : r ≤ r + delta) y₀))
     (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
     (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
@@ -159,7 +173,7 @@ theorem obtain_split_point_props {sig : MonadicSignature}
     (a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r)
     (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i)) :
     ∃ (c : ExtendedCarrier M atomMap r) (d : ExtendedCarrier N atomMap r),
-      SplitPointProps n x y x' y' c d a_bwd := by
+      SplitPointProps n delta x y x' y' c d a_bwd := by
   -- Step 1: Set d = inf(continuation_set) — the GHR93 d̄.
   -- S_C = {t ∈ [x',y'] : cont_holds at all mu-points in (t, y')}
   -- a_bwd(n) ∈ S_C. d = inf(S_C) ≤ a_bwd(n).
@@ -899,18 +913,17 @@ theorem obtain_split_point_props {sig : MonadicSignature}
       ghr93_strategy_restrict_right
         hc_interval.1 hc_interval.2 hd_interval.1 hd_interval.2
         hcd_form hcd_gp h_d_consistent_right h_pt
-    -- Construct sigma: backward n-round on [x',d] vs [x,c]
+    -- Construct sigma: backward n-round on [x',d] vs [x,c] at rank r+delta
+    -- GHR93: sigma lives at rank r+delta on rank-embedded positions
     -- Two cases: degenerate (x' = d, both gaps) or non-degenerate (∃ point in [x',d])
-    have sigma : ghr93_duplicator_wins N M atomMap n r x' d x c := by
+    have sigma : ghr93_duplicator_wins N M atomMap n (r + delta)
+        (rank_embed (by omega : r ≤ r + delta) x')
+        (rank_embed (by omega : r ≤ r + delta) d)
+        (rank_embed (by omega : r ≤ r + delta) x)
+        (rank_embed (by omega : r ≤ r + delta) c) := by
       by_cases hx'd_eq : x' = d
       · -- Degenerate: x' = d. By boundary correspondence, x = c.
         have hxc_eq : x = c := hcd_boundary.1.mpr hx'd_eq
-        -- Both d and c must be gaps (if x' = d, x' is a gap or point;
-        -- if x' is a point, then x' itself witnesses [x',d], contradiction
-        -- with the degenerate case needing special handling. Actually:
-        -- x' = d means the interval is degenerate. d could be a point or gap.
-        -- If d is a point, then d itself is in [x',d], so the sub-interval
-        -- has a witness and the IH works. So degenerate = x'=d AND d is a gap.
         rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
         · -- d is a point: [x',d] = [d,d] with d a point, so d witnesses itself
           have h_pt_sub : ∃ p, inClosedInterval x' d (extendPoint p) := by
@@ -919,12 +932,25 @@ theorem obtain_split_point_props {sig : MonadicSignature}
         · -- d is a gap, x' = d: fully degenerate. By gap agreement, c is a gap.
           have hc_gap : IsGap c := hcd_gp.2.mpr ⟨g_d, hg_d⟩
           obtain ⟨g_c, hg_c⟩ := hc_gap
-          -- Use degenerate gap lemma with d and c, then rewrite endpoints.
-          have h_degen : ghr93_duplicator_wins N M atomMap n r d d c c :=
-            ghr93_duplicator_wins_degenerate_gap (n := n)
-              ⟨g_d, hg_d⟩ ⟨g_c, hg_c⟩
-              (fun A hA => (hcd_form A hA).symm) ⟨hcd_gp.1.symm, hcd_gp.2.symm⟩
-          rwa [hx'd_eq, hxc_eq]
+          -- Directly construct degenerate gap game at rank r+delta.
+          -- Both rank_embed d and rank_embed c are gaps, so Round 2 is vacuous
+          -- (no carrier point in a gap interval).
+          rw [hx'd_eq, hxc_eq]
+          intro a ha
+          have ha_eq : ∀ i, a i = rank_embed (by omega : r ≤ r + delta) d :=
+            fun i => le_antisymm (ha i).2 (ha i).1
+          refine ⟨fun _ => rank_embed (by omega : r ≤ r + delta) c,
+                  fun _ => ⟨le_refl _, le_refl _⟩, ?_⟩
+          intro b' hb'
+          -- rank_embed c is a gap: extendPoint b' = rank_embed c is impossible
+          have hg_c_embed : rank_embed (by omega : r ≤ r + delta) c =
+              Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c) := by
+            rw [hg_c]; rfl
+          have h_eq : extendPoint b' = rank_embed (by omega : r ≤ r + delta) c :=
+            le_antisymm hb'.2 hb'.1
+          exact absurd (h_eq.symm ▸ hg_c_embed : extendPoint b' =
+            Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c))
+            (by simp [extendPoint])
       · -- Non-degenerate: x' ≠ d, so x' < d (strict).
         have hx'd_lt : x' < d := lt_of_le_of_ne hd_interval.1 hx'd_eq
         -- Find a point witness in [x', d]
@@ -938,8 +964,13 @@ theorem obtain_split_point_props {sig : MonadicSignature}
             · rw [hg_x] at hx'd_lt ⊢; rw [hg_d] at hx'd_lt ⊢
               exact point_between_strict_gaps rfl rfl hx'd_lt
         exact ih hc_interval.1 hd_interval.1 h_pt_sub h_restrict_left
-    -- Construct tau: backward n-round on [d,y'] vs [c,y]
-    have tau : ghr93_duplicator_wins N M atomMap n r d y' c y := by
+    -- Construct tau: backward n-round on [d,y'] vs [c,y] at rank r+delta
+    -- GHR93: tau lives at rank r+delta on rank-embedded positions
+    have tau : ghr93_duplicator_wins N M atomMap n (r + delta)
+        (rank_embed (by omega : r ≤ r + delta) d)
+        (rank_embed (by omega : r ≤ r + delta) y')
+        (rank_embed (by omega : r ≤ r + delta) c)
+        (rank_embed (by omega : r ≤ r + delta) y) := by
       by_cases hdy'_eq : d = y'
       · -- Degenerate: d = y'. By boundary correspondence, c = y.
         have hcy_eq : c = y := hcd_boundary.2.mpr hdy'_eq
@@ -949,19 +980,24 @@ theorem obtain_split_point_props {sig : MonadicSignature}
           exact ih hc_interval.2 hd_interval.2 h_pt_sub h_restrict_right
         · have hc_gap : IsGap c := hcd_gp.2.mpr ⟨g_d, hg_d⟩
           obtain ⟨g_c, hg_c⟩ := hc_gap
-          -- d = y' and c = y, both are gaps.
-          -- Goal: ghr93_duplicator_wins N M atomMap n r d y' c y
-          -- Use ghr93_duplicator_wins_degenerate_gap with d and c
-          -- Goal: ghr93_duplicator_wins N M atomMap n r d y' c y
-          -- Since d = y' and c = y, convert to ghr93_duplicator_wins N M atomMap n r d d c c
-          have h1 : d = y' := hdy'_eq
-          have h2 : c = y := hcy_eq
-          rw [h1, h2]
-          exact ghr93_duplicator_wins_degenerate_gap (n := n)
-            ⟨g_d, h1 ▸ hg_d⟩ ⟨g_c, h2 ▸ hg_c⟩
-            (fun A hA => by rw [← h1, ← h2]; exact (hcd_form A hA).symm)
-            ⟨by rw [← h1, ← h2]; exact hcd_gp.1.symm,
-             by rw [← h1, ← h2]; exact hcd_gp.2.symm⟩
+          -- Directly construct degenerate gap game at rank r+delta.
+          -- Both rank_embed d and rank_embed c are gaps, so Round 2 is vacuous.
+          rw [show y' = d from hdy'_eq.symm, show y = c from hcy_eq.symm]
+          intro a ha
+          have ha_eq : ∀ i, a i = rank_embed (by omega : r ≤ r + delta) d :=
+            fun i => le_antisymm (ha i).2 (ha i).1
+          refine ⟨fun _ => rank_embed (by omega : r ≤ r + delta) c,
+                  fun _ => ⟨le_refl _, le_refl _⟩, ?_⟩
+          intro b' hb'
+          -- rank_embed c is a gap: extendPoint b' = rank_embed c is impossible
+          have hg_c_embed : rank_embed (by omega : r ≤ r + delta) c =
+              Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c) := by
+            rw [hg_c]; rfl
+          have h_eq : extendPoint b' = rank_embed (by omega : r ≤ r + delta) c :=
+            le_antisymm hb'.2 hb'.1
+          exact absurd (h_eq.symm ▸ hg_c_embed : extendPoint b' =
+            Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c))
+            (by simp [extendPoint])
       · have hdy'_lt : d < y' := lt_of_le_of_ne hd_interval.2 hdy'_eq
         have h_pt_sub : ∃ p, inClosedInterval d y' (extendPoint p) := by
           rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
