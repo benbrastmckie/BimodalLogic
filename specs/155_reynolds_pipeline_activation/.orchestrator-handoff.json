@@ -1,29 +1,22 @@
 {
   "task_number": 155,
-  "session_id": "sess_1748404800_caseii2",
-  "status": "partial",
-  "summary": "Case II restructured with tau_left/tau_right sub-split. Deleted 2147 lines of old block-commented proof. Case A fully proved. Case B gap_point_agreement and formula_agreement fully proved. Case B1 ordering nearly complete (2 edge-case sorries in grid dispatch). Case B2 ordering sorry'd. CaseAnalysis.lean reduced from 4712 to ~3350 lines. Sorry count: 6 (4 in Case II ordering, 1 pre-existing Cases III/IV, 1 pre-existing Case I).",
+  "session_id": "sess_1779974755_8f84e8",
+  "status": "blocked",
+  "summary": "Phase S1 blocked: nf_2var_from_interval_data bridge lemma requires EF game infrastructure for the NF world that does not exist in the codebase; simple induction on k is insufficient",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial"],
-  "phases_total": 13,
+  "phases_total": 6,
   "blocking_issues": [
-    "Case B2 ordering grid dispatch: needs same_order_type proof using tau_right orderings + interval containment",
-    "Case B1 edge cases: 2 grid dispatch goals need closing (b_resp vs x' equality, remaining fallback patterns)"
+    {
+      "phase": "S1",
+      "description": "The bridge lemma proof requires a game-theoretic back-and-forth argument. Direct induction on k fails because the inductive step needs interval type data for sub-intervals involving new witness points, which cannot be derived from the hypotheses. Three resolution options documented in the plan BLOCKER entry (Option A: build NF-world game framework ~400-700 lines; Option B: strengthen hypotheses ~300-500 lines; Option C: restructure the formula ~200-400 lines).",
+      "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
+      "sorry_lines": [1873, 2152]
+    }
   ],
   "continuation_context": {
-    "next_phase": "R3.4: Close remaining ordering grid dispatch",
-    "next_action": "Close Case B2 same_order_type (line 2107) using tau_right orderings. Then close B1 edge cases (lines 2026-2027). Then fix Case A rename_i patterns (lines 1668-1669).",
-    "key_architecture": {
-      "case_b_sub_split": "Case B splits on b_sp vs e_n. B1: tau_left Round 2. B2: tau_right Round 2.",
-      "tau_sel_b_mod": "Lifts tau_left sel-vs-b ordering to resp_mod via case split on a_init(k) = p_n",
-      "tau_b_pn": "The key ordering (b_resp < p_n iff b_sp < e_n) comes from tau_left positions n+1 vs n+2"
-    },
-    "remaining_sorries": {
-      "case_a_grid": "Lines 1668-1669: rename_i patterns (pre-existing, minor)",
-      "case_b1_edge": "Lines 2026-2027: b_resp vs x' equality, fallback alternatives",
-      "case_b2_ordering": "Line 2107: full same_order_type for Case B2",
-      "cases_iii_iv": "Line 3350: pre-existing, independent of Case II"
-    },
-    "build_state": "Full build passes. 6 sorry sites in CaseAnalysis.lean."
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S1-handoff-20260528T134950Z.md",
+    "recommended_action": "Option A: Build simple EF game framework for NF world (nf_game_strategy + Fraisse theorem for nf_characteristic), then prove bridge lemma using game strategy from hypotheses",
+    "estimated_effort": "15-25 hours (revised from original 4-8)"
   },
-  "next_action_hint": "Write Case B2 same_order_type proof (line 2107). Use interval containment for most orderings (resp_mod(k) <= e_n < b_sp, b_resp >= p_n >= a_init(k)). Extract b_resp vs p_n from hord_right_b."
+  "next_action_hint": "Research task needed: design the NF-world EF game framework (nf_game_strategy, nf_game_implies_nf_eq) before attempting implementation"
 }
