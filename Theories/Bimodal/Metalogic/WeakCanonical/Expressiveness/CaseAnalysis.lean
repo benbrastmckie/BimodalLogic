@@ -2349,7 +2349,14 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
                    (rank_embed (by omega : r' ≤ r' + 2) x₁)
                    (rank_embed (by omega : r' ≤ r' + 2) y₁)
                    (rank_embed (by omega : r' ≤ r' + 2) x₁')
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁'))
+    (h_mono : Monotone a_bwd)
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -3522,6 +3529,7 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
   · -- Case II: a_n is a point.
     exact ghr93_case_II props hd ha_bwd h_no_split h_pt ih h_r1_univ h_mono
   · exact ghr93_cases_III_IV props hd ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
+      h_mono ih
 
 /-! ### Assembly: The Inductive Step -/
 

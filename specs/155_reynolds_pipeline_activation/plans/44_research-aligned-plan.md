@@ -344,9 +344,16 @@ Step 7. Round 2 verification (5-way case split on Spoiler's challenge b_sp):
 
 ---
 
-### Phase 6: Cases III/IV Gap Handling (General Linear Orders) [NOT STARTED]
+### Phase 6: Cases III/IV Gap Handling (General Linear Orders) [BLOCKED]
 
 **Goal**: Implement left(B, D) and right(B, D) per GHR93 Definition 8.5 / Lemma 9, then use them to complete Cases III/IV, closing the sorry at CaseAnalysis.lean:3355. This phase targets the FULL GENERAL RESULT for arbitrary linear orders -- no vacuous discharge, no discrete-only shortcut.
+
+**BLOCKER** (Phase 6):
+- **What failed**: The winning condition assembly at CaseAnalysis.lean:3477 requires `sel_gap_ord`: for each k < n, `(a_init(k) < Sum.inr gamma_N iff resp_tau(k) < Sum.inr gamma_M) ∧ (a_init(k) = Sum.inr gamma_N iff resp_tau(k) = Sum.inr gamma_M)`. This ordering between tau sub-game selections and the gap position cannot be derived from the available hypotheses.
+- **What was tried**: (1) Forward game h_fwd_n1 with a'_resp -- gives resp_tau vs gamma_M ordering but through a'_fwd, not a_bwd. (2) Pivot chain through d/c -- works for tau-vs-tau but requires resp_tau(k) <= gamma_M which is unproven. (3) h_d_compat_left -- gives cross-boundary orderings but not vs gamma_M. (4) Formula agreement -- doesn't determine ordering. (5) Adding h_mono to signature -- gives a_init(k) <= gamma_N but not resp_tau(k) <= gamma_M.
+- **Why it's stuck**: The tau sub-game maps [d, y'] to [c, y] with n rounds, but gamma_N/gamma_M are NOT in the tau game. The ordering between tau game positions and external gap positions requires either (a) showing resp_tau(k) <= reference point m_M < gamma_M using the gap detection construction, or (b) playing an extended (n+1)-round tau game that includes gamma as a selection, or (c) using the IH on a sub-interval [d, gamma_N] vs [c, gamma_M].
+- **What is needed**: Establish resp_tau(k) <= gamma_M via one of the three approaches above. The most promising is (a): the gap detection reference point m_M satisfies m_M > all tau selections (derivable from the forward game used in gap detection), and m_M < gamma_M (from the construction). This gives resp_tau(k) < gamma_M for all k.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Literature to read BEFORE implementing**:
 - GHR93 Definition 8.5 / GHR94 Definition 12.8.6 (left/right formulas, structural induction on A)
