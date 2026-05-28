@@ -1,11 +1,9 @@
 {
-  "status": "blocked",
-  "summary": "Phase 5 grid dispatch sorry closure blocked on iterative proof term debugging. Root cause identified: same_order_type_grid macro creates inaccessible index variables via hygienic intro. Solution found: replace macro with manual expansion (intro i j; simp only [game_tuple]; split_ifs) to keep i/j accessible for by_cases dispatch. Remaining work: fix proof term type mismatches in sel-index boundary cases across 3 grid dispatch sites (Case A, B1, B2). Estimated 2-3 hours iterative debugging with lean_goal.",
+  "status": "partial",
+  "summary": "Phases 1-4 completed. Phase 5 not started -- an exploratory investigation analyzed the grid dispatch sorries and discovered that same_order_type_grid_uh does NOT propagate unhygienic through the <;> combinator, and rename_i has incompatible semantics (renames from end, hard errors on mismatch). Found a working approach (manual macro expansion) but did not execute the plan's GHR93 rewrite tasks (5.1-5.7). No source code was changed. Plan updated with corrected anti-deviation warnings.",
   "phases_completed": 4,
   "phases_total": 8,
-  "blockers": [
-    "Grid dispatch proof terms need iterative debugging after manual macro expansion. The hbc hypothesis form (negation vs strict lt) and pivot_chain_order argument alignment need adjustment. Requires multiple lean_goal/lean_multi_attempt cycles to match exact types."
-  ],
+  "blockers": [],
   "continuation_context": {
     "resume_phase": 5,
     "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-5-handoff-20260528.md"

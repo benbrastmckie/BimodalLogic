@@ -1,7 +1,7 @@
 # Implementation Plan: Research-Aligned Reynolds Pipeline Completion (v44)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 22-35 hours
 - **Dependencies**: Tasks 154 (COMPLETED), 168 (COMPLETED), 174 (COMPLETED), 199 (PARTIAL)
 - **Research Inputs**: reports/44_team-research.md, reports/44_teammate-a-findings.md, reports/44_teammate-b-findings.md, reports/44_teammate-c-findings.md, reports/44_teammate-d-findings.md, reports/47_xt-complete-usage-analysis.md, reports/47_lean-infrastructure-inventory.md, reports/47_plan-v42-deep-review.md, reports/46_strategic-pivot-report.md, reports/45_semantic-vs-syntactic-B.md, reports/44_literature-interval-splitting.md, reports/42_plan-literature-alignment.md, reports/40_ghr93-case-ii-step6.md, reports/39_game-depth-restructuring.md
@@ -247,14 +247,16 @@ For x_interval_formula_exists: the interval type is the set of rank_types realiz
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite [BLOCKED]
+### Phase 5: GHR93-Faithful Case II Rewrite [IN PROGRESS]
 
-**BLOCKER** (Phase 5):
-- **What failed**: The 5 grid dispatch sorries (lines 1668, 1669, 2031, 2032, 2112) involve `same_order_type` ordering goals where the Fin index variables `i` and `j` are inaccessible (marked `i✝`, `j✝`) due to hygienic `intro` in the `same_order_type_grid` macro. This prevents `by_cases` on whether the sel-index is in the tau region (< n) or at the p_n/e_n boundary (= n).
-- **What was tried**: (1) `same_order_type_grid_uh` with `unhygienic` -- does NOT propagate through `<;>`. (2) `rename_i i j` inside `<;> first` -- renames from the END of inaccessible list, and has hard errors (not failures) when count mismatches. (3) `rename_i i j _ _ _ _` with varying counts inside `first` -- hard error prevents fallback. (4) Manual expansion `(intro i j; simp only [game_tuple]; split_ifs)` -- this WORKS to make `i j` accessible. The remaining issue is adjusting proof terms in the j=n and i=n boundary cases.
-- **Why it's stuck**: The manual expansion approach works syntactically but needs proof term adjustments for the `hbc` hypothesis form (`¬(≤)` vs `<`) and for pivot_chain_order argument alignment. This requires iterative debugging with lean_goal/lean_multi_attempt to match exact types, which exceeds current context budget.
-- **What is needed**: Continue with the manual expansion approach. Replace `same_order_type_grid` at lines 1581, 1950, and 2112 with `(intro i j; simp only [game_tuple]; split_ifs)`. Then fix proof term type mismatches in the `by_cases` dispatch for sel-index goals. Estimated: 2-3 hours of iterative debugging. See `specs/155_reynolds_pipeline_activation/handoffs/phase-5-handoff-20260528.md` for detailed approach.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+**Pre-implementation investigation** (sess_1780001766_2e723d):
+An exploratory attempt investigated the grid dispatch sorries (lines 1668, 1669, 2031, 2032, 2112) WITHOUT performing the planned GHR93 rewrite. No source code was changed. Key findings about the tactic infrastructure:
+- `same_order_type_grid_uh` (Phase 4 output) does NOT propagate `unhygienic` through `<;>` -- the Fin index variables remain inaccessible in broadcast goals.
+- `rename_i` renames from the END of the inaccessible name list (not the beginning), and raises a hard error (not a tactic failure) when the argument count mismatches, so `first | rename_i ... | rename_i ...` fallback chains do not work.
+- **Working approach found**: replace `same_order_type_grid` with its manual expansion `(intro i j; simp only [game_tuple]; split_ifs)`, which keeps `i` and `j` directly accessible. This was verified to compile syntactically but the proof terms in the `by_cases` dispatch need type-level adjustment (specifically `hbc` hypothesis form and `pivot_chain_order` argument alignment).
+- See `handoffs/phase-5-handoff-20260528.md` for full details.
+
+These findings inform Task 5.7 (grid dispatch) regardless of whether Phase 5 follows the full GHR93 rewrite path or a patch-in-place fallback. The plan's Tasks 5.1-5.6 (GHR93 rewrite) have not been attempted.
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly: construct e_n from U(B,A) witness transferred through tau at rank r+4, prove sel_pn_ord trivially from monotonicity + Until witness, handle Round 2 via A's interval type property. Target: ~400-600 lines replacing the current ~1170-line Case II proof, closing grid dispatch sorries at lines 1668, 1669, 2031, 2032, 2112.
 
@@ -344,9 +346,10 @@ Step 7. Round 2 verification (5-way case split on Spoiler's challenge b_sp):
   - Case (e): endpoints -> sigma/tau boundary conditions
   - **File**: CaseAnalysis.lean
 - [ ] Task 5.7: Close remaining grid dispatch goals using Phase 4 infrastructure (~50-100 lines)
-  - Apply same_order_type_grid_uh instead of same_order_type_grid
+  - **CORRECTION**: `same_order_type_grid_uh` does NOT propagate `unhygienic` through `<;>`. Use manual expansion `(intro i j; simp only [game_tuple]; split_ifs)` instead, which keeps `i` and `j` directly accessible for `by_cases` dispatch.
   - Use order_reverse for reverse-ordering goals
   - Apply sel dispatch pattern (by_cases on i.val - 1 < n) for selection-index goals
+  - Note on `rename_i`: renames from the END of the inaccessible list (not beginning), and raises hard errors on count mismatch. Do NOT use inside `first` fallback chains.
   - The GHR93 rewrite simplifies the grid because:
     - sel_pn_ord is trivial (no resp_mod case split needed)
     - All response elements come from the same game (tau + Until witness, not two different games)
@@ -361,6 +364,8 @@ Step 7. Round 2 verification (5-way case split on Spoiler's challenge b_sp):
 - Do NOT skip the n=0 boundary case
 - Do NOT keep resp_mod -- it is an artifact of the forward-game e_n and should be deleted
 - Do NOT use lean_verify for sorry checking -- always use `#print axioms` via lean_run_code
+- Do NOT use `same_order_type_grid_uh` via `<;>` for grid dispatch (unhygienic does not propagate; use manual expansion instead)
+- Do NOT use `rename_i` inside `first` fallback chains (hard error on count mismatch, not tactic failure)
 
 **Timing**: 6-10 hours
 
