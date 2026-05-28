@@ -1795,7 +1795,74 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             ExtendedCarrier M atomMap r) = resp_left k) := by
         intro k; have h := hord_left_b ⟨n + 1, by omega⟩ ⟨1 + k.val, by omega⟩
         simp_game_tuple at h; exact h
-      sorry -- Case B1: full winning condition assembly (tau_left-based)
+      refine ⟨?_, ?_, ?_⟩
+      · -- same_order_type (n+1): Case B1
+        sorry -- Case B1 ordering grid dispatch
+      · -- gap_point_agreement (n+1): Case B1
+        intro i
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2
+        · exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
+        · constructor
+          · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> cases hg
+        · exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
+        · by_cases hlt : i.val - 1 < n
+          · let k : Fin n := ⟨i.val - 1, hlt⟩
+            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
+              have : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
+              rw [this]
+              exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
+                     ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
+              have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
+              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
+              exact hleft_gp
+          · have hi_eq : i.val - 1 = n := by omega
+            have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                       a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+            rw [hab, hp_n]
+            simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
+            exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
+                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+      · -- formula_agreement (n+1): Case B1
+        intro i A hA
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2
+        · exact (hform_fwd_x A hA).symm
+        · -- b_resp/b_sp from tau_left
+          have htau_b := hform_left_b ⟨n + 1, by omega⟩ A hA
+          simp_game_tuple at htau_b; exact htau_b
+        · exact (hform_fwd_y A hA).symm
+        · by_cases hlt : i.val - 1 < n
+          · let k : Fin n := ⟨i.val - 1, hlt⟩
+            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
+              have hab_pn : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                  a_bwd ⟨n, by omega⟩ := by
+                have h1 : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
+                rw [h1, hp_n]; rfl
+              rw [hab_pn]
+              exact (hform_en_an A hA).symm
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
+              have hleft_form := hform_left_b ⟨1 + (i.val - 1), by omega⟩ A hA
+              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
+              exact hleft_form
+          · have hi_eq : i.val - 1 = n := by omega
+            have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                       a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+            rw [hab]
+            simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
+            exact (hform_en_an A hA).symm
     · -- Sub-case B2: b_sp > e_n. Use tau_right for Round 2.
       -- Orderings from interval containment: resp_mod(k) ≤ e_n < b_sp.
       have hb_sp_ey : inClosedInterval e_n y (extendPoint b_sp) :=
@@ -1808,7 +1875,77 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       refine ⟨b_resp, ⟨le_trans props.hx'd (le_trans hd_le_pn hb_resp_in_R.1),
                         hb_resp_in_R.2⟩, ?_⟩
       obtain ⟨hord_right_b, hgp_right_b, hform_right_b⟩ := hcond_right_b
-      sorry -- Case B2: full winning condition assembly (tau_right-based)
+      refine ⟨?_, ?_, ?_⟩
+      · -- same_order_type (n+1): Case B2
+        sorry -- Case B2 ordering grid dispatch
+      · -- gap_point_agreement (n+1): Case B2
+        intro i
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2
+        · exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
+        · constructor
+          · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
+          · constructor <;> intro ⟨g, hg⟩ <;> cases hg
+        · exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
+        · by_cases hlt : i.val - 1 < n
+          · let k : Fin n := ⟨i.val - 1, hlt⟩
+            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
+              have : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
+              rw [this]
+              exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
+                     ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
+              have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
+              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
+              exact hleft_gp
+          · have hi_eq : i.val - 1 = n := by omega
+            have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                       a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+            rw [hab, hp_n]
+            simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
+            exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
+                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+      · -- formula_agreement (n+1): Case B2
+        -- b_resp from tau_right, has formula agreement at pivot p_n/e_n
+        -- and at b-position from tau_right's winning condition.
+        intro i A hA
+        simp only [game_tuple]
+        split_ifs with h0 hn1 hn2
+        · exact (hform_fwd_x A hA).symm
+        · -- b_resp/b_sp: from tau_right at b-position
+          have hform_b := hform_right_b ⟨n + 1, by omega⟩ A hA
+          simp_game_tuple at hform_b; exact hform_b
+        · exact (hform_fwd_y A hA).symm
+        · by_cases hlt : i.val - 1 < n
+          · let k : Fin n := ⟨i.val - 1, hlt⟩
+            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
+              have hab_pn : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                  a_bwd ⟨n, by omega⟩ := by
+                have h1 : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
+                rw [h1, hp_n]; rfl
+              rw [hab_pn]
+              exact (hform_en_an A hA).symm
+            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
+              -- Use tau_left formula agreement (from hform_left, pre-computed)
+              have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
+              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
+              exact hleft_form
+          · have hi_eq : i.val - 1 = n := by omega
+            have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
+                       a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
+            rw [hab]
+            simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
+            exact (hform_en_an A hA).symm
 /- OLD CASE II PROOF DELETED. See git history for reference. -/
 
 /-! ### Cases III-IV: Gap Cases
