@@ -338,7 +338,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "partial",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -350,8 +350,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-28T01:14:50Z",
-      "next_artifact_number": 37,
+      "last_updated": "2026-05-27T12:00:00Z",
+      "next_artifact_number": 39,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -562,12 +562,42 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/36_ghr93-classical-plan.md",
           "type": "plan",
           "summary": "v36 plan: GHR93 classical approach, breaks circular dependency, new Phases 6D/6E/6F"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/37_ghr93-uba-witness-plan.md",
+          "type": "plan",
+          "summary": "v37 plan: Phase 3C rewritten with char_k threading + U(B,A) witness construction per GHR93 pp.115-116, eliminating fan problem"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/38_sorting-uba-plan.md",
+          "type": "plan",
+          "summary": "v38 plan: Phase 3C split into 3C-Sort (sorting wrapper, ~30-50 lines) + 3C-UBA (U(B,A) witness replacement, ~200-350 lines). Regular tau suffices. No changes to SplitPointProps/Theorem6."
         }
       ],
-      "session_id": "sess_1779640471_03278b",
+      "session_id": "sess_1780000000_rev37",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 6
+      "resume_phase": 6,
+      "plan_metadata": {
+        "phases": 16,
+        "total_effort_hours": 28,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 38,
+        "dependency_waves": [[1, 2, 3, 4, 5, 6, 7, 8], [9], [10], [11, 12], [13], [14], [15], [16]],
+        "reports_integrated": [
+          {
+            "path": "reports/36_char-k-threading-research.md",
+            "integrated_in_plan_version": 37,
+            "integrated_date": "2026-05-27"
+          },
+          {
+            "path": "reports/37_sorting-approach-research.md",
+            "integrated_in_plan_version": 38,
+            "integrated_date": "2026-05-27"
+          }
+        ]
+      }
     },
     {
       "project_number": 174,

@@ -42,7 +42,7 @@ technical_debt:
 
 ### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
 
-155 [IMPLEMENTING] — Reynolds pipeline: Phase 3A done (sel_pn_ord added), Phase 3B paused pending grid tactic (task 199). Phases 5-9 remain.
+155 [PLANNED] — Reynolds pipeline: Revised plan v38 — Phase 3C split into 3C-Sort (sorting wrapper, ~30-50 lines) + 3C-UBA (U(B,A) witness replacement, ~200-350 lines). Regular tau suffices. Phases 3C-Sort, 3C-UBA, 3B, 5-9 remain.
   └─ 154, 174, 199
 
 ### Phase 2 — Post-155 Cleanup
@@ -507,7 +507,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
@@ -518,14 +518,10 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
   - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
   - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
+  - [specs/155_reynolds_pipeline_activation/reports/36_char-k-threading-research.md]
   - [155_reynolds_pipeline_activation/reports/27_team-research.md]
 - **Plan**:
-  - [155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md]
-  - [155_reynolds_pipeline_activation/plans/02_reynolds-pipeline-plan.md]
-  - [155_reynolds_pipeline_activation/plans/03_reynolds-pipeline-plan.md]
-  - [155_reynolds_pipeline_activation/plans/07_reynolds-pipeline-plan.md]
-  - [155_reynolds_pipeline_activation/plans/17_reynolds-pipeline-plan.md]
-  - [155_reynolds_pipeline_activation/plans/27_reynolds-pipeline-plan.md]
+  - [155_reynolds_pipeline_activation/plans/38_sorting-uba-plan.md]
 
 **Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
 
