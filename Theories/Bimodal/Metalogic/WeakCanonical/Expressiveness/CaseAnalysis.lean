@@ -1218,7 +1218,8 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
         nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
     (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
-        stavi_depth (char_k nf_k) + 2 ≤ r) :
+        stavi_depth (char_k nf_k) + 2 ≤ r)
+    (h_mono : Monotone a_bwd) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -4310,7 +4311,8 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
         stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
         nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
     (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
-        stavi_depth (char_k nf_k) + 2 ≤ r) :
+        stavi_depth (char_k nf_k) + 2 ≤ r)
+    (h_mono : Monotone a_bwd) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -4322,7 +4324,7 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
             (game_tuple x y a'_resp b_sp) := by
   rcases isPoint_or_isGap (a_bwd ⟨n, by omega⟩) with h_pt | h_gap
   · exact ghr93_case_II props ha_bwd h_no_split h_pt h_r1_univ h_ih_r2
-      k_nf char_k char_k_correct char_k_depth
+      k_nf char_k char_k_correct char_k_depth h_mono
   · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
 
 /-! ### Assembly: The Inductive Step -/
@@ -4379,17 +4381,47 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
   -- Unfold the backward game
   unfold ghr93_duplicator_wins
   intro a_bwd ha_bwd
+  -- GHR93 WLOG: sort Spoiler's selections so a_sorted is monotone.
+  -- GHR93 p. 115 assumes sorted selections; the winning condition is
+  -- permutation-invariant (ghr93_winning_condition_perm), so this is sound.
+  let σ := Tuple.sort a_bwd
+  let a_sorted : Fin (n + 1) → ExtendedCarrier N atomMap r := a_bwd ∘ σ
+  have ha_sorted : ∀ i, inClosedInterval x' y' (a_sorted i) :=
+    fun i => ha_bwd (σ i)
+  have h_mono : Monotone a_sorted := Tuple.monotone_sort a_bwd
+  -- Reduce to the sorted case: prove for a_sorted, transfer back to a_bwd.
+  suffices h_sorted : ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a'_resp i)) ∧
+      ∀ (b_sp : M.carrier), inClosedInterval x y (extendPoint b_sp) →
+        ∃ (b_resp : N.carrier), inClosedInterval x' y' (extendPoint b_resp) ∧
+          ghr93_winning_condition (n + 1)
+            (game_tuple x' y' a_sorted b_resp)
+            (game_tuple x y a'_resp b_sp) by
+    -- Transfer from sorted back to original via σ⁻¹
+    obtain ⟨a'_resp_s, ha'_in_s, hwin_s⟩ := h_sorted
+    refine ⟨a'_resp_s ∘ σ.symm, fun i => ha'_in_s (σ.symm i), ?_⟩
+    intro b_sp hb_sp
+    obtain ⟨b_resp, hb_resp_in, hcond_s⟩ := hwin_s b_sp hb_sp
+    refine ⟨b_resp, hb_resp_in, ?_⟩
+    -- a_sorted ∘ σ⁻¹ = a_bwd ∘ σ ∘ σ⁻¹ = a_bwd
+    have h_unsort_N : a_sorted ∘ σ.symm = a_bwd := by
+      ext i; simp [a_sorted, Function.comp]
+    -- Apply ghr93_winning_condition_perm with σ⁻¹
+    have h_perm := ghr93_winning_condition_perm a_sorted a'_resp_s b_resp b_sp
+      σ.symm hcond_s
+    rwa [h_unsort_N] at h_perm
+  -- Now prove the theorem for sorted selections a_sorted.
   -- Obtain split points c, d and their properties
   obtain ⟨c, d, props⟩ :=
-    obtain_split_point_props hxy hx'y' h_pt h_pt_M ih h_fwd h_fwd_r1 a_bwd ha_bwd
+    obtain_split_point_props hxy hx'y' h_pt h_pt_M ih h_fwd h_fwd_r1 a_sorted ha_sorted
   -- Case split: does any selection fall strictly below d?
-  by_cases h_split : ∃ i : Fin (n + 1), a_bwd i < d
+  by_cases h_split : ∃ i : Fin (n + 1), a_sorted i < d
   · -- Case I: at least one selection below d (the "split" case)
-    exact ghr93_case_I props ha_bwd h_split
+    exact ghr93_case_I props ha_sorted h_split
   · -- Cases II-IV: all selections are at or above d
     push_neg at h_split
-    exact ghr93_cases_II_III_IV props ha_bwd h_split hxy hx'y' h_fwd_r1 h_r1_univ h_ih_r2
-      k_nf char_k char_k_correct char_k_depth
+    exact ghr93_cases_II_III_IV props ha_sorted h_split hxy hx'y' h_fwd_r1 h_r1_univ h_ih_r2
+      k_nf char_k char_k_correct char_k_depth h_mono
 
 
 end Bimodal.Metalogic.WeakCanonical
