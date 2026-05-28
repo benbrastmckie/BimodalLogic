@@ -87,7 +87,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Theorem6.lean Rank-Varying IH (delta=4 Foundation) [NOT STARTED]
+### Phase 1: Theorem6.lean Rank-Varying IH (delta=4 Foundation) [COMPLETED]
 
 **Goal**: Close the sorry at Theorem6.lean:325, enabling sigma/tau at rank r+4 throughout the proof. This is the gate for all subsequent phases.
 
@@ -109,10 +109,10 @@ Phases within the same wave can execute in parallel.
 - The rank embedding infrastructure (rank_embed, rank_embed_le, rank_embed_lt, etc.) is entirely sorry-free in TypeFormulas.lean
 
 **Tasks**:
-- [ ] Task 1.1: Understand the existing `ih_delta4` lambda structure at line 308-316
-- [ ] Task 1.2: Implement the rank promotion: forward game at rank r restricts to sub-intervals via ghr93_duplicator_wins_round_mono + rank embedding
-- [ ] Task 1.3: Apply the IH at base rank r+4 with rank-embedded positions
-- [ ] Task 1.4: Verify that the resulting backward game at rank r+4 on rank-embedded positions has the correct type
+- [x] Task 1.1: Understand the existing `ih_delta4` lambda structure at line 308-316 *(completed)*
+- [x] Task 1.2: Implement the rank promotion: forward game at rank r restricts to sub-intervals via ghr93_duplicator_wins_round_mono + rank embedding *(deviation: altered -- used h_r1_univ at r'=r+4n+2 instead of direct restriction, added rank_embed_trans and rank_embed_comp_heq helper lemmas)*
+- [x] Task 1.3: Apply the IH at base rank r+4 with rank-embedded positions *(completed)*
+- [x] Task 1.4: Verify that the resulting backward game at rank r+4 on rank-embedded positions has the correct type *(completed -- used ghr93_duplicator_wins_rank_cast for dependent type transport)*
 
 **Anti-deviation warnings**:
 - Do NOT try to avoid rank_embed by changing SplitPointProps signatures (SplitPointProps already supports delta parameter)

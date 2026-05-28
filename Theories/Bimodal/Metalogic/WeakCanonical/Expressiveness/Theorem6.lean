@@ -316,13 +316,74 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
             (rank_embed (by omega : r ≤ r + 4) y₀) := by
       intro x₀ y₀ x₀' y₀' hle hle' hpt' hfwd
       -- GHR93 rank promotion: forward (1+3n) at r → backward n at r+4.
-      -- The IH `ih` at base rank r+4 says: forward (1+3n) at (r+4)+4n
-      -- on rank-embedded positions → backward n at r+4.
-      -- We need to promote the rank-r forward game to rank (r+4)+4n.
-      -- This requires the original forward game at rank r+4(n+1) = (r+4)+4n,
-      -- restricted to the sub-interval. Phase R3 will complete this using
-      -- the ambient high-rank game and strategy restriction.
-      sorry
+      -- Apply the IH `ih` at base rank r+4. The IH says:
+      --   forward (1+3n) at (r+4)+4n → backward n at r+4.
+      -- We obtain the forward game at (r+4)+4n = r+4(n+1) from h_r1_univ
+      -- at r' = r+4n+2, giving (1+3(n+1)) rounds at (r+4n+2)+2 = r+4+4n.
+      -- Then round_mono drops from (1+3(n+1)) to (1+3n) rounds.
+      apply ih (r + 4)
+        ((rank_embed_le (by omega : r ≤ r + 4) x₀ y₀).mpr hle)
+        ((rank_embed_le (by omega : r ≤ r + 4) x₀' y₀').mpr hle')
+      · -- Point existence: ∃ p, inClosedInterval (rank_embed x₀') (rank_embed y₀') (extendPoint p)
+        obtain ⟨p, hp⟩ := hpt'
+        refine ⟨p, ?_⟩
+        rw [← rank_embed_point (by omega : r ≤ r + 4) p]
+        exact (rank_embed_inClosedInterval (by omega : r ≤ r + 4) x₀' y₀'
+            (extendPoint p)).mpr hp
+      · -- Forward game: (1+3n) rounds at (r+4)+4n on rank-embedded positions.
+        -- h_r1_univ at r'=r+4n+2 gives (1+3(n+1)) rounds at (r+4n+2)+2.
+        -- The goal needs rank r+4+4n. (r+4n+2)+2 = r+4n+4 and r+4+4n = r+4+4n.
+        -- These are propositionally but not definitionally equal. We use `simp [Nat.add_assoc, ...]`
+        -- or `omega` on the rank.
+        -- Since the positions live at the rank type, we must be careful.
+        -- Strategy: Use h_r1_univ with r' such that r'+2 DEFINITIONALLY equals r+4+4*n.
+        -- r + 4 + 4 * n is (r + 4) + (4 * n) definitionally.
+        -- If we set r' = (r + 4) + (4 * n) - 2 = r + 2 + 4 * n,
+        -- then r' + 2 = (r + 2 + 4 * n) + 2 = r + 2 + 4 * n + 2.
+        -- Still not equal to (r + 4) + (4 * n) definitionally.
+        -- The ONLY way to get definitional equality is to match the parenthesization.
+        -- r + 4 + 4 * n is (r + 4) + (4 * n). We need r' + 2 = (r + 4) + (4 * n).
+        -- So r' = (r + 4) + (4 * n) - 2. But Lean's Nat subtraction is messy.
+        -- Alternative: Use `show` with `calc` or `conv` on the goal to normalize.
+        -- Pragmatic: use `Eq.mpr` to transport the type.
+        have h_re := h_r1_univ (r + 4 * n + 2)
+          (x₁ := rank_embed (by omega : r ≤ r + 4 * n + 2) x₀)
+          (y₁ := rank_embed (by omega : r ≤ r + 4 * n + 2) y₀)
+          (x₁' := rank_embed (by omega : r ≤ r + 4 * n + 2) x₀')
+          (y₁' := rank_embed (by omega : r ≤ r + 4 * n + 2) y₀')
+          ((rank_embed_le (by omega : r ≤ r + 4 * n + 2) x₀ y₀).mpr hle)
+          ((rank_embed_le (by omega : r ≤ r + 4 * n + 2) x₀' y₀').mpr hle')
+        -- h_re: 1+3(n+1) rounds at rank (r+4*n+2)+2.
+        -- Drop rounds via round_mono.
+        have hle_M := (rank_embed_le (by omega : r + 4 * n + 2 ≤ r + 4 * n + 2 + 2)
+            (rank_embed (by omega : r ≤ r + 4 * n + 2) x₀)
+            (rank_embed (by omega : r ≤ r + 4 * n + 2) y₀)).mpr
+            ((rank_embed_le (by omega : r ≤ r + 4 * n + 2) x₀ y₀).mpr hle)
+        have hle_N := (rank_embed_le (by omega : r + 4 * n + 2 ≤ r + 4 * n + 2 + 2)
+            (rank_embed (by omega : r ≤ r + 4 * n + 2) x₀')
+            (rank_embed (by omega : r ≤ r + 4 * n + 2) y₀')).mpr
+            ((rank_embed_le (by omega : r ≤ r + 4 * n + 2) x₀' y₀').mpr hle')
+        have h_mono := ghr93_duplicator_wins_round_mono
+          (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1)) hle_M hle_N h_re
+        -- h_mono: 1+3n rounds at rank r+4*n+2+2. Goal: rank r+4+4*n.
+        -- These ranks are propositionally equal. Use convert to bridge.
+        -- convert using 1 resolves the rank (via omega) and leaves HEq goals
+        -- for positions. Each position pair has the same underlying element
+        -- (both are rank_embed compositions from r to the same target rank),
+        -- differing only in proof arguments.
+        convert h_mono using 1
+        · omega
+        -- Each remaining goal is HEq between rank_embed compositions at
+        -- propositionally-equal ranks (r+4+4*n vs r+4*n+2+2).
+        -- Use rank_embed_comp_heq which handles the dependent-type arithmetic.
+        all_goals exact rank_embed_comp_heq _ _ _ _ (by omega) _
+      · -- Sub-h_r1_univ: forward (1+3n) at r'+2 for any sub-interval.
+        -- From outer h_r1_univ (at (1+3(n+1)) rounds), use round_mono.
+        intro r' x₁ y₁ x₁' y₁' hle₁ hle₁'
+        exact ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1))
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle₁)
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle₁')
+          (h_r1_univ r' hle₁ hle₁')
     exact ghr93_inductive_step atomMap n r 4 (by omega : 2 ≤ 4) hxy hx'y' h_pt h_pt_M
       ih_delta4 h_fwd h_fwd_r1
       (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>

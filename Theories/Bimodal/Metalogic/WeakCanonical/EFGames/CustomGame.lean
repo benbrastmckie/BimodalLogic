@@ -425,6 +425,19 @@ private theorem game_tuple_emb_eq_N {sig : MonadicSignature}
         have : ¬(j.val = n + 2) := by omega
         simp [*]
 
+/-- Transport a duplicator-wins game across a propositional rank equality.
+    Since ExtendedCarrier and rank_embed are parameterized by the rank,
+    changing the rank requires transporting all position arguments. -/
+theorem ghr93_duplicator_wins_rank_cast {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {m r r' : Nat} (h_eq : r = r')
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hw : ghr93_duplicator_wins M N atomMap m r x y x' y') :
+    ghr93_duplicator_wins M N atomMap m r'
+      (h_eq ▸ x) (h_eq ▸ y) (h_eq ▸ x') (h_eq ▸ y') := by
+  subst h_eq; exact hw
+
 theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n n' r : Nat} (hn : n' ≤ n)

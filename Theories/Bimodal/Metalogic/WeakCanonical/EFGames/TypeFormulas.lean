@@ -148,6 +148,31 @@ theorem rank_embed_injective {sig : MonadicSignature}
       exact Subtype.ext heq⟩
   exact this hab
 
+/-- rank_embed composes: embedding r → r' → r'' equals embedding r → r''.
+    Points map to themselves (id composed with id), and gaps have the same
+    underlying cut regardless of the proof of definability. -/
+theorem rank_embed_trans {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' r'' : Nat} (h1 : r ≤ r') (h2 : r' ≤ r'')
+    (e : ExtendedCarrier M atomMap r) :
+    rank_embed h2 (rank_embed h1 e) = rank_embed (Nat.le_trans h1 h2) e := by
+  cases e with
+  | inl _ => simp [rank_embed, Sum.map]
+  | inr _ => simp [rank_embed, Sum.map, rank_embed_gap]
+
+/-- HEq for rank_embed compositions at propositionally-equal target ranks.
+    When rank_embed h2 ∘ rank_embed h1 and rank_embed h4 ∘ rank_embed h3 both
+    map from rank r to the same target rank (h_eq : r₃ = r₄), the results
+    are heterogeneously equal. This is essential for bridging Nat arithmetic
+    mismatches in dependent types (e.g., (r+4)+4n vs (r+4n+2)+2). -/
+theorem rank_embed_comp_heq {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r₁ r₂ r₃ r₄ : Nat} (h1 : r ≤ r₁) (h2 : r₁ ≤ r₃) (h3 : r ≤ r₂) (h4 : r₂ ≤ r₄)
+    (h_eq : r₃ = r₄)
+    (e : ExtendedCarrier M atomMap r) :
+    HEq (rank_embed h2 (rank_embed h1 e)) (rank_embed h4 (rank_embed h3 e)) := by
+  subst h_eq; rw [rank_embed_trans, rank_embed_trans]
+
 /-- Variant of rank_embed_injective: contrapositive form.
     If two rank-r elements are distinct, their rank-embeddings are distinct. -/
 theorem rank_embed_ne {sig : MonadicSignature}
