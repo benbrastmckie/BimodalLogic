@@ -117,11 +117,37 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
       ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
       ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
       (h_r1_univ r hxy hx'y')
-    -- Phase R3: The uniform-rank version (delta=0) requires delta >= 2 for
-    -- rank_down in Case I/II/III-IV. The IH at delta=0 is also sorry'd.
-    -- Use delta=2 with a sorry'd IH to maintain type-correctness.
+    -- Uniform-rank IH at delta=2: use ih_gen at rank r+2.
+    -- ih_gen gives: forward (1+3n) at rank (r+2) → backward n at rank (r+2).
+    -- h_r1_univ gives forward games at any rank r'+2, so we get the forward
+    -- game at (r+2) with round_mono from rounds_r1 to 1+3*n.
     exact ghr93_inductive_step atomMap n r 2 (by omega) hxy hx'y' h_pt h_pt_M
-      (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd => sorry)
+      (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd => by
+        -- N-side point at rank r+2
+        obtain ⟨p_N, hp_N⟩ := hpt'
+        have hpt'_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀')
+            (rank_embed (by omega : r ≤ r + 2) y₀') (extendPoint p) :=
+          ⟨p_N, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀' y₀'
+            (extendPoint p_N)).mpr hp_N⟩
+        -- M-side point: extract from forward game hfwd at rank r.
+        -- hfwd is M vs N. Spoiler picks M-elements. Play with all at x₀.
+        -- Then challenge with p_N to get M-side point b_M.
+        obtain ⟨a'_dum, _, hwin_fwd⟩ :=
+          hfwd (fun _ => x₀) (fun _ => ⟨le_refl _, hle⟩)
+        obtain ⟨b_M, hb_M, _⟩ := hwin_fwd p_N hp_N
+        have hpt_M_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀)
+            (rank_embed (by omega : r ≤ r + 2) y₀) (extendPoint p) :=
+          ⟨b_M, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀ y₀
+            (extendPoint b_M)).mpr hb_M⟩
+        -- Forward game at rank r+2 from h_r1_univ + round_mono
+        have h_fwd_r2 := ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ rounds_r1)
+            ((rank_embed_le (by omega : r ≤ r + 2) x₀ y₀).mpr hle)
+            ((rank_embed_le (by omega : r ≤ r + 2) x₀' y₀').mpr hle')
+            (h_r1_univ r hle hle')
+        exact ih_gen (by omega) (r + 2)
+          ((rank_embed_le (by omega : r ≤ r + 2) x₀ y₀).mpr hle)
+          ((rank_embed_le (by omega : r ≤ r + 2) x₀' y₀').mpr hle')
+          hpt'_r2 hpt_M_r2 h_fwd_r2)
       h h_fwd_r1
       (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
         ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)

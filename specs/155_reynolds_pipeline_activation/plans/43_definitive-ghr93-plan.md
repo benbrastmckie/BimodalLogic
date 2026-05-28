@@ -199,7 +199,7 @@ In Lean, the key insight is: `stavi_n_equiv atomMap n M t N s` checks agreement 
 
 ---
 
-### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [NOT STARTED]
+### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [IN PROGRESS]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly: construct e_n from U(B, A) witness transferred through tau at rank r+4, prove sel_pn_ord trivially, handle Round 2 via A's interval type property.
 
@@ -371,10 +371,10 @@ Case IV (a_n is a gap NOT defined on the left):
 - Report 47 (infrastructure inventory): Section 7 (complete sorry inventory), Section 8.2 (what's missing)
 
 **Tasks**:
-- [ ] Task 5.1: Close Theorem6.lean:124 (uniform-rank IH) (~50-100 lines)
-  - The uniform-rank version uses delta=0 (sigma/tau at rank r, same as backward game)
-  - With the rank-varying version (Phase 1) sorry-free, the uniform version can be proved as a corollary: instantiate rank-varying with a forward game at rank r (= r+4*0), getting backward at rank r
-  - Alternatively, the uniform version may become unused if the downstream code only calls the rank-varying version
+- [x] Task 5.1: Close Theorem6.lean:124 (uniform-rank IH) *(completed -- used ih_gen at rank r+2 with h_r1_univ providing forward game, round_mono dropping rounds)*
+  - The uniform-rank version uses delta=2 in ghr93_inductive_step
+  - The IH `ih_gen` at rank r+2 gives backward n at rank r+2; forward game at rank r+2 comes from h_r1_univ + round_mono
+  - Theorem6.lean is now ZERO-sorry
 - [ ] Task 5.2: Verify Transfer.lean imports and wiring (~30-50 lines)
   - Transfer.lean should call the game-theoretic pipeline (Theorem6 + CaseAnalysis) to produce a countermodel
   - Verify that doets_countermodel_discrete uses the Reynolds pipeline, not the chronicle fallback
