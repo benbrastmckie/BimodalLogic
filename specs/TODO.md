@@ -42,7 +42,7 @@ technical_debt:
 
 ### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
 
-155 [PLANNED] — Reynolds pipeline: Revised plan v38 — Phase 3C split into 3C-Sort (sorting wrapper, ~30-50 lines) + 3C-UBA (U(B,A) witness replacement, ~200-350 lines). Regular tau suffices. Phases 3C-Sort, 3C-UBA, 3B, 5-9 remain.
+155 [PLANNED] — Reynolds pipeline: Plan v40 -- GHR93 rank restructuring. Raise sigma/tau to rank r+4 via delta parameter in SplitPointProps. Delete all workarounds (char_k, tau_r2, h_ih_r2, resp_mod, tau_left). 5 core phases (R1-R5) + 8 downstream phases. 20-35 hours.
   └─ 154, 174, 199
 
 ### Phase 2 — Post-155 Cleanup
@@ -519,9 +519,10 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
   - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
   - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
   - [specs/155_reynolds_pipeline_activation/reports/36_char-k-threading-research.md]
+  - [specs/155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md]
   - [155_reynolds_pipeline_activation/reports/27_team-research.md]
 - **Plan**:
-  - [155_reynolds_pipeline_activation/plans/38_sorting-uba-plan.md]
+  - [155_reynolds_pipeline_activation/plans/40_rank-restructuring-plan.md]
 
 **Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
 

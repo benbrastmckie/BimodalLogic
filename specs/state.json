@@ -350,8 +350,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-27T12:00:00Z",
-      "next_artifact_number": 39,
+      "last_updated": "2026-05-27T19:30:00Z",
+      "next_artifact_number": 41,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -572,19 +572,39 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/38_sorting-uba-plan.md",
           "type": "plan",
           "summary": "v38 plan: Phase 3C split into 3C-Sort (sorting wrapper, ~30-50 lines) + 3C-UBA (U(B,A) witness replacement, ~200-350 lines). Regular tau suffices. No changes to SplitPointProps/Theorem6."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/38_equality-case-research.md",
+          "type": "research",
+          "summary": "Depth-agreement gap analysis: GHR93 rank r+4(n+1) vs Lean rank r, char_k depth ~2k_nf insufficient for rank-r agreement. Four resolution paths analyzed. Equality case solvable (~20-40 lines)."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/39_depth-gap-resolution-plan.md",
+          "type": "plan",
+          "summary": "v39 plan: Phase 3C-UBA split into 3C-EQ (equality case, ~20-40 lines) + 3C-STRICT (strategy composition via Prop 12.8.18). Depth-agreement gap resolved by avoiding sel_pn_ord entirely via composition."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md",
+          "type": "research",
+          "summary": "Definitive research: game_depth unchanged, rank flattening is root cause. Fix: add delta parameter to SplitPointProps, sigma/tau at rank r+4 via rank_embed. 750-1400 lines across 5 files."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/40_rank-restructuring-plan.md",
+          "type": "plan",
+          "summary": "v40 plan: GHR93 rank restructuring. Raise sigma/tau to rank r+4 via delta parameter in SplitPointProps. Delete all workarounds (char_k, tau_r2, h_ih_r2, resp_mod, tau_left). 5 phases (R1-R5) + 8 downstream phases. 20-35 hours."
         }
       ],
-      "session_id": "sess_1780000000_rev37",
+      "session_id": "sess_1780000000_rev40",
       "researched": "2026-05-22T23:51:35Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 6,
+      "resume_phase": 1,
       "plan_metadata": {
-        "phases": 16,
+        "phases": 13,
         "total_effort_hours": 28,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 38,
-        "dependency_waves": [[1, 2, 3, 4, 5, 6, 7, 8], [9], [10], [11, 12], [13], [14], [15], [16]],
+        "plan_version": 40,
+        "dependency_waves": [[1], [2], [3], [4, 5, 6], [7], [8], [9], [10], [11], [12], [13]],
         "reports_integrated": [
           {
             "path": "reports/36_char-k-threading-research.md",
@@ -594,6 +614,16 @@
           {
             "path": "reports/37_sorting-approach-research.md",
             "integrated_in_plan_version": 38,
+            "integrated_date": "2026-05-27"
+          },
+          {
+            "path": "reports/38_equality-case-research.md",
+            "integrated_in_plan_version": 39,
+            "integrated_date": "2026-05-27"
+          },
+          {
+            "path": "reports/39_game-depth-restructuring.md",
+            "integrated_in_plan_version": 40,
             "integrated_date": "2026-05-27"
           }
         ]
