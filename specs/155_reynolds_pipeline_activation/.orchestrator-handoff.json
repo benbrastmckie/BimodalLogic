@@ -1,12 +1,14 @@
 {
-  "status": "partial",
-  "summary": "Completed Phases 3 and 4 of 8. Phase 3 closed both CharacteristicFormula existence sorries (x_t_formula_exists, x_interval_formula_exists) using NF profile finiteness on extendedStructureWithMu. Phase 4 added order_reverse theorem and same_order_type_grid_uh macro to EFGameTactics.lean. All modified files are sorry-free. Full project build passes. Phases 5-8 (Case II rewrite, Cases III/IV, Transfer rewiring, final verification) remain.",
+  "status": "blocked",
+  "summary": "Phase 5 grid dispatch sorry closure blocked on iterative proof term debugging. Root cause identified: same_order_type_grid macro creates inaccessible index variables via hygienic intro. Solution found: replace macro with manual expansion (intro i j; simp only [game_tuple]; split_ifs) to keep i/j accessible for by_cases dispatch. Remaining work: fix proof term type mismatches in sel-index boundary cases across 3 grid dispatch sites (Case A, B1, B2). Estimated 2-3 hours iterative debugging with lean_goal.",
   "phases_completed": 4,
   "phases_total": 8,
-  "blockers": [],
+  "blockers": [
+    "Grid dispatch proof terms need iterative debugging after manual macro expansion. The hbc hypothesis form (negation vs strict lt) and pivot_chain_order argument alignment need adjustment. Requires multiple lean_goal/lean_multi_attempt cycles to match exact types."
+  ],
   "continuation_context": {
     "resume_phase": 5,
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260528.md"
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-5-handoff-20260528.md"
   },
   "next_action_hint": "continue"
 }

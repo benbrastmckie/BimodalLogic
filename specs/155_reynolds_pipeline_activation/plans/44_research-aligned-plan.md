@@ -247,7 +247,14 @@ For x_interval_formula_exists: the interval type is the set of rank_types realiz
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite [NOT STARTED]
+### Phase 5: GHR93-Faithful Case II Rewrite [BLOCKED]
+
+**BLOCKER** (Phase 5):
+- **What failed**: The 5 grid dispatch sorries (lines 1668, 1669, 2031, 2032, 2112) involve `same_order_type` ordering goals where the Fin index variables `i` and `j` are inaccessible (marked `i✝`, `j✝`) due to hygienic `intro` in the `same_order_type_grid` macro. This prevents `by_cases` on whether the sel-index is in the tau region (< n) or at the p_n/e_n boundary (= n).
+- **What was tried**: (1) `same_order_type_grid_uh` with `unhygienic` -- does NOT propagate through `<;>`. (2) `rename_i i j` inside `<;> first` -- renames from the END of inaccessible list, and has hard errors (not failures) when count mismatches. (3) `rename_i i j _ _ _ _` with varying counts inside `first` -- hard error prevents fallback. (4) Manual expansion `(intro i j; simp only [game_tuple]; split_ifs)` -- this WORKS to make `i j` accessible. The remaining issue is adjusting proof terms in the j=n and i=n boundary cases.
+- **Why it's stuck**: The manual expansion approach works syntactically but needs proof term adjustments for the `hbc` hypothesis form (`¬(≤)` vs `<`) and for pivot_chain_order argument alignment. This requires iterative debugging with lean_goal/lean_multi_attempt to match exact types, which exceeds current context budget.
+- **What is needed**: Continue with the manual expansion approach. Replace `same_order_type_grid` at lines 1581, 1950, and 2112 with `(intro i j; simp only [game_tuple]; split_ifs)`. Then fix proof term type mismatches in the `by_cases` dispatch for sel-index goals. Estimated: 2-3 hours of iterative debugging. See `specs/155_reynolds_pipeline_activation/handoffs/phase-5-handoff-20260528.md` for detailed approach.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly: construct e_n from U(B,A) witness transferred through tau at rank r+4, prove sel_pn_ord trivially from monotonicity + Until witness, handle Round 2 via A's interval type property. Target: ~400-600 lines replacing the current ~1170-line Case II proof, closing grid dispatch sorries at lines 1668, 1669, 2031, 2032, 2112.
 
