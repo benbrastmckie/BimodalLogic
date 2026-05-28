@@ -2025,6 +2025,373 @@ private theorem nf_fraisse_compression {sig : MonadicSignature}
         exact (h_transfer k (Nat.lt_succ_iff.mpr (Nat.le_refl k)) sub_nf).symm
   · exact nf_characteristic_satisfies M' k n env_M'
 
+/-- Zone matching: given u in M, find u' in M' with the same depth-k 1-var NF
+    and the same orderings relative to x' and t'. The five zones are:
+    (1) u < min(x,t), (2) u = x, (3) between x and t, (4) u = t, (5) u > max(x,t).
+    Each zone's matching uses the corresponding hypothesis. -/
+private theorem zone_match_witness {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig}
+    (k : Nat) (x t : M.carrier) (x' t' : M'.carrier) (u : M.carrier)
+    (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
+              nf_characteristic M' k 1 (fun _ => x'))
+    (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
+              nf_characteristic M' k 1 (fun _ => t'))
+    (h_order_xt : (x < t ↔ x' < t') ∧ (t < x ↔ t' < x'))
+    (h_interval_above : t < x →
+      interval_nf_types M k t x = interval_nf_types M' k t' x')
+    (h_interval_below : x < t →
+      interval_nf_types M k x t = interval_nf_types M' k x' t')
+    (h_above_max : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u))
+    (h_below_min : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u)) :
+    ∃ u' : M'.carrier,
+      nf_characteristic M k 1 (fun _ => u) =
+        nf_characteristic M' k 1 (fun _ => u') ∧
+      (u < x ↔ u' < x') ∧ (x < u ↔ x' < u') ∧
+      (u < t ↔ u' < t') ∧ (t < u ↔ t' < u') := by
+  -- Determine u's zone relative to (x, t)
+  set tau := nf_characteristic M k 1 (fun _ => u) with tau_def
+  have h_tau_sat := nf_characteristic_satisfies M k 1 (fun _ => u)
+  -- Case 1: u = x
+  by_cases hux : u = x
+  · subst hux
+    exact ⟨x', h_nf_x,
+      iff_of_false (lt_irrefl _) (lt_irrefl _),
+      iff_of_false (lt_irrefl _) (lt_irrefl _),
+      h_order_xt.1, h_order_xt.2⟩
+  -- Case 2: u = t
+  by_cases hut : u = t
+  · subst hut
+    exact ⟨t', h_nf_t,
+      h_order_xt.2, h_order_xt.1,
+      iff_of_false (lt_irrefl _) (lt_irrefl _),
+      iff_of_false (lt_irrefl _) (lt_irrefl _)⟩
+  -- u ≠ x and u ≠ t. By linear order trichotomy, u < x or x < u.
+  -- Also u < t or t < u.
+  have hux_lt_or_gt : u < x ∨ x < u := by
+    rcases lt_trichotomy u x with h | h | h
+    · exact Or.inl h
+    · exact absurd h hux
+    · exact Or.inr h
+  have hut_lt_or_gt : u < t ∨ t < u := by
+    rcases lt_trichotomy u t with h | h | h
+    · exact Or.inl h
+    · exact absurd h hut
+    · exact Or.inr h
+  -- Case 3: u < min(x,t) (below both)
+  by_cases h_below : u < min x t
+  · have h_tau_below : ∃ v, v < min x t ∧ nf_eval_nf M k 1 (fun _ => v) tau :=
+      ⟨u, h_below, h_tau_sat⟩
+    have h_transfer : (∃ v, v < min x t ∧ nf_eval_nf M k 1 (fun _ => v) tau) ↔
+        (∃ v', v' < min x' t' ∧ nf_eval_nf M' k 1 (fun _ => v') tau) :=
+      Iff.of_eq (congr_fun h_below_min tau)
+    obtain ⟨u', hu'_min, hu'_tau⟩ := h_transfer.mp h_tau_below
+    have hu'_lt_x' : u' < x' := lt_of_lt_of_le hu'_min (min_le_left x' t')
+    have hu'_lt_t' : u' < t' := lt_of_lt_of_le hu'_min (min_le_right x' t')
+    have hu_lt_x : u < x := lt_of_lt_of_le h_below (min_le_left x t)
+    have hu_lt_t : u < t := lt_of_lt_of_le h_below (min_le_right x t)
+    refine ⟨u', ?_, ?_, ?_, ?_, ?_⟩
+    · exact nf_eval_unique M' k 1 (fun _ => u')
+        tau (nf_characteristic M' k 1 (fun _ => u')) hu'_tau
+        (nf_characteristic_satisfies M' k 1 (fun _ => u'))
+    · exact ⟨fun _ => hu'_lt_x', fun _ => hu_lt_x⟩
+    · exact ⟨fun h => absurd h (not_lt.mpr (le_of_lt hu_lt_x)),
+             fun h => absurd h (not_lt.mpr (le_of_lt hu'_lt_x'))⟩
+    · exact ⟨fun _ => hu'_lt_t', fun _ => hu_lt_t⟩
+    · exact ⟨fun h => absurd h (not_lt.mpr (le_of_lt hu_lt_t)),
+             fun h => absurd h (not_lt.mpr (le_of_lt hu'_lt_t'))⟩
+  -- Case 4: u > max(x,t) (above both)
+  by_cases h_above : max x t < u
+  · have h_tau_above : ∃ v, max x t < v ∧ nf_eval_nf M k 1 (fun _ => v) tau :=
+      ⟨u, h_above, h_tau_sat⟩
+    have h_transfer : (∃ v, max x t < v ∧ nf_eval_nf M k 1 (fun _ => v) tau) ↔
+        (∃ v', max x' t' < v' ∧ nf_eval_nf M' k 1 (fun _ => v') tau) :=
+      Iff.of_eq (congr_fun h_above_max tau)
+    obtain ⟨u', hu'_max, hu'_tau⟩ := h_transfer.mp h_tau_above
+    have hu'_gt_x' : x' < u' := lt_of_le_of_lt (le_max_left x' t') hu'_max
+    have hu'_gt_t' : t' < u' := lt_of_le_of_lt (le_max_right x' t') hu'_max
+    have hu_gt_x : x < u := lt_of_le_of_lt (le_max_left x t) h_above
+    have hu_gt_t : t < u := lt_of_le_of_lt (le_max_right x t) h_above
+    refine ⟨u', ?_, ?_, ?_, ?_, ?_⟩
+    · exact nf_eval_unique M' k 1 (fun _ => u')
+        tau (nf_characteristic M' k 1 (fun _ => u')) hu'_tau
+        (nf_characteristic_satisfies M' k 1 (fun _ => u'))
+    · exact ⟨fun h => absurd h (not_lt.mpr (le_of_lt hu_gt_x)),
+             fun h => absurd h (not_lt.mpr (le_of_lt hu'_gt_x'))⟩
+    · exact ⟨fun _ => hu'_gt_x', fun _ => hu_gt_x⟩
+    · exact ⟨fun h => absurd h (not_lt.mpr (le_of_lt hu_gt_t)),
+             fun h => absurd h (not_lt.mpr (le_of_lt hu'_gt_t'))⟩
+    · exact ⟨fun _ => hu'_gt_t', fun _ => hu_gt_t⟩
+  -- Case 5: u is in the interval between x and t (not below min, not above max,
+  -- not equal to either). By case analysis on x < t vs t < x.
+  push_neg at h_below h_above
+  -- Since u is not below min and not above max, u is between x and t.
+  -- We need to know which way the interval goes.
+  rcases hux_lt_or_gt with hux_lt | hux_gt
+  · -- u < x, but not below min. Since min ≤ u, and u < x, we have t ≤ u < x.
+    -- So t ≤ u and u < x. Since u ≠ t, we have t < u.
+    rcases hut_lt_or_gt with hut_lt | hut_gt
+    · -- u < t and u < x: u < min(x,t), contradicts h_below
+      exact absurd (lt_min hux_lt hut_lt) (not_lt.mpr h_below)
+    · -- t < u < x: u is in the interval (t, x)
+      have h_tau_interval : tau ∈ interval_nf_types M k t x := by
+        simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+        exact ⟨u, hut_gt, hux_lt, h_tau_sat⟩
+      rw [h_interval_above (lt_trans hut_gt hux_lt)] at h_tau_interval
+      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau_interval
+      obtain ⟨u', ht'u', hu'x', hu'_tau⟩ := h_tau_interval
+      refine ⟨u', ?_, ?_, ?_, ?_, ?_⟩
+      · exact nf_eval_unique M' k 1 (fun _ => u')
+          tau (nf_characteristic M' k 1 (fun _ => u')) hu'_tau
+          (nf_characteristic_satisfies M' k 1 (fun _ => u'))
+      · exact ⟨fun _ => hu'x', fun _ => hux_lt⟩
+      · exact ⟨fun h => absurd hux_lt (not_lt.mpr (le_of_lt h)),
+               fun h => absurd hu'x' (not_lt.mpr (le_of_lt h))⟩
+      · exact ⟨fun h => absurd hut_gt (not_lt.mpr (le_of_lt h)),
+               fun h => absurd ht'u' (not_lt.mpr (le_of_lt h))⟩
+      · exact ⟨fun _ => ht'u', fun _ => hut_gt⟩
+  · -- x < u, but not above max. Since u ≤ max, and x < u, we have x < u ≤ max(x,t).
+    rcases hut_lt_or_gt with hut_lt | hut_gt
+    · -- x < u < t: u is in the interval (x, t)
+      have h_tau_interval : tau ∈ interval_nf_types M k x t := by
+        simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+        exact ⟨u, hux_gt, hut_lt, h_tau_sat⟩
+      rw [h_interval_below (lt_trans hux_gt hut_lt)] at h_tau_interval
+      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau_interval
+      obtain ⟨u', hx'u', hu't', hu'_tau⟩ := h_tau_interval
+      refine ⟨u', ?_, ?_, ?_, ?_, ?_⟩
+      · exact nf_eval_unique M' k 1 (fun _ => u')
+          tau (nf_characteristic M' k 1 (fun _ => u')) hu'_tau
+          (nf_characteristic_satisfies M' k 1 (fun _ => u'))
+      · exact ⟨fun h => absurd hux_gt (not_lt.mpr (le_of_lt h)),
+               fun h => absurd hx'u' (not_lt.mpr (le_of_lt h))⟩
+      · exact ⟨fun _ => hx'u', fun _ => hux_gt⟩
+      · exact ⟨fun _ => hu't', fun _ => hut_lt⟩
+      · exact ⟨fun h => absurd hut_lt (not_lt.mpr (le_of_lt h)),
+               fun h => absurd hu't' (not_lt.mpr (le_of_lt h))⟩
+    · -- x < u and t < u: u > max(x,t), contradicts h_above
+      exact absurd (max_lt hux_gt hut_gt) (not_lt.mpr h_above)
+
+/-- **GHR93 Existential Transfer**: The bridge lemma hypotheses (1-var NF agreement,
+    ordering, interval/above/below type agreement at depth k) imply existential
+    transfer at every depth j < k for 3-variable extensions.
+
+    Mathematically, this is the content of Duplicator's winning strategy in the
+    k-round EF game on colored linear orders (GHR93 Proposition 7): at each round
+    j, Duplicator matches the new challenge point in the correct zone (using
+    interval/above/below data) to maintain the game invariant. After k rounds, the
+    invariant at depth 0 (atom agreement) is trivially satisfied, and the Fraïssé
+    compression lemma lifts this to depth-k NF agreement.
+
+    The proof requires a back-and-forth game argument because:
+    1. Zone matching finds u' with the same 1-var NF and correct orderings relative
+       to x' and t', but the depth-j 3-var NF agreement at (u,x,t)/(u',x',t')
+       requires sub-interval type data for ALL pairs in the 3-point configuration.
+    2. The sub-interval types of (x,u)/(x',u') at depth j are NOT determined by the
+       interval types of (x,t)/(x',t') at depth k alone — they depend on the
+       specific arrangement of types within the interval.
+    3. The game argument resolves this by having Duplicator choose u' to SPLIT the
+       interval types consistently: the types in (x',u') match those in (x,u) and
+       the types in (u',t') match those in (u,t). This "interval-splitting" choice
+       maintains the game invariant at the cost of decreasing the depth by 1.
+
+    Formalizing the game strategy requires ~300-500 lines of infrastructure:
+    defining game positions, proving strategy existence from the hypotheses,
+    and proving that the strategy maintains the invariant at each round. -/
+private theorem nf_2var_existential_transfer {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig}
+    (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
+    (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
+              nf_characteristic M' k 1 (fun _ => x'))
+    (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
+              nf_characteristic M' k 1 (fun _ => t'))
+    (h_order_xt : (x < t ↔ x' < t') ∧ (t < x ↔ t' < x'))
+    (h_interval_above : t < x →
+      interval_nf_types M k t x = interval_nf_types M' k t' x')
+    (h_interval_below : x < t →
+      interval_nf_types M k x t = interval_nf_types M' k x' t')
+    (h_above_max : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u))
+    (h_below_min : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u)) :
+    ∀ j, j < k →
+      ∀ chi : NormalForm sig j (2 + 1),
+        (∃ u, nf_eval_nf M j (2 + 1) (Fin.cons u (Fin.cons x (fun _ => t))) chi) ↔
+        (∃ u', nf_eval_nf M' j (2 + 1) (Fin.cons u' (Fin.cons x' (fun _ => t'))) chi) := by
+  intro j hj chi
+  -- Forward direction: M → M'
+  constructor
+  · rintro ⟨u, hu⟩
+    -- Zone-match u to u' in M'
+    obtain ⟨u', h_nf_u, h_ux, h_xu, h_ut, h_tu⟩ :=
+      zone_match_witness k x t x' t' u h_nf_x h_nf_t h_order_xt
+        h_interval_above h_interval_below h_above_max h_below_min
+    -- u and u' have matching depth-k 1-var NFs, hence matching depth-j NFs
+    -- (by nf_agreement_monotone). Together with ordering agreement, this gives
+    -- depth-j 3-var NF agreement at (u,x,t)/(u',x',t'), which includes chi.
+    --
+    -- The depth-j 3-var NF agreement requires the Fraïssé game argument for j ≥ 1:
+    -- atoms agree (from 1-var NFs + orderings), but the quantifier transfer at depth
+    -- j-1 for 4-var extensions requires sub-interval matching for the 3-point
+    -- configuration (u,x,t). This is the same sub-interval problem as the outer
+    -- bridge lemma, but at one fewer variable and one lower depth.
+    --
+    -- For j = 0: the depth-0 3-var NF is just atoms (predicates + orderings).
+    -- Zone matching gives correct orderings, and 1-var NF agreement gives predicates.
+    -- For j ≥ 1: requires the Fraïssé game argument (sub-interval matching).
+    -- We use u' from zone matching as the witness.
+    refine ⟨u', ?_⟩
+    -- Show atom agreement at 3 vars between (u,x,t) and (u',x',t')
+    -- Atom agreement at 3 vars: each point shares depth-k NF => atom agreement
+    have h_agree_u := nf_agreement_from_shared_nf M (fun _ => u) M' (fun _ => u')
+      (nf_characteristic M k 1 (fun _ => u))
+      (nf_characteristic_satisfies M k 1 (fun _ => u))
+      (h_nf_u ▸ nf_characteristic_satisfies M' k 1 (fun _ => u'))
+    have h_agree_x := nf_agreement_from_shared_nf M (fun _ => x) M' (fun _ => x')
+      (nf_characteristic M k 1 (fun _ => x))
+      (nf_characteristic_satisfies M k 1 (fun _ => x))
+      (h_nf_x ▸ nf_characteristic_satisfies M' k 1 (fun _ => x'))
+    have h_agree_t := nf_agreement_from_shared_nf M (fun _ => t) M' (fun _ => t')
+      (nf_characteristic M k 1 (fun _ => t))
+      (nf_characteristic_satisfies M k 1 (fun _ => t))
+      (h_nf_t ▸ nf_characteristic_satisfies M' k 1 (fun _ => t'))
+    have h_pred_u : ∀ p : sig.preds, M.interp p u ↔ M'.interp p u' :=
+      fun p => atom_agreement_from_nf M (fun _ => u) M' (fun _ => u') h_agree_u (.pred p 0)
+    have h_pred_x : ∀ p : sig.preds, M.interp p x ↔ M'.interp p x' :=
+      fun p => atom_agreement_from_nf M (fun _ => x) M' (fun _ => x') h_agree_x (.pred p 0)
+    have h_pred_t : ∀ p : sig.preds, M.interp p t ↔ M'.interp p t' :=
+      fun p => atom_agreement_from_nf M (fun _ => t) M' (fun _ => t') h_agree_t (.pred p 0)
+    have h_3var_atoms : ∀ (a : AtomKind sig 3),
+        atom_eval M (Fin.cons u (Fin.cons x fun _ => t)) a ↔
+        atom_eval M' (Fin.cons u' (Fin.cons x' fun _ => t')) a := by
+      intro a; cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        refine Fin.cases ?_ (fun i' => ?_) i
+        · -- i = 0: pred at u
+          simp only [Fin.cons_zero]; exact h_pred_u p
+        · refine Fin.cases ?_ (fun i'' => ?_) i'
+          · -- i = 1: pred at x
+            simp only [Fin.cons_succ, Fin.cons_zero]; exact h_pred_x p
+          · -- i = 2: pred at t
+            simp only [Fin.cons_succ]; exact h_pred_t p
+      | order i j hij =>
+        simp only [atom_eval]
+        refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+        -- (0, 0): u < u ↔ u' < u'
+        · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+        -- (0, succ j'): u < ...
+        · refine Fin.cases ?_ (fun j'' => ?_) j'
+          · -- (0, 1): u < x ↔ u' < x'
+            simp only [Fin.cons_zero, Fin.cons_succ]; exact h_ux
+          · -- (0, 2): u < t ↔ u' < t'
+            simp only [Fin.cons_zero, Fin.cons_succ]; exact h_ut
+        -- (succ i', 0): ... < u ↔ ... < u'
+        · refine Fin.cases ?_ (fun i'' => ?_) i'
+          · -- (1, 0): x < u ↔ x' < u'
+            simp only [Fin.cons_zero, Fin.cons_succ]; exact h_xu
+          · -- (2, 0): t < u ↔ t' < u'
+            simp only [Fin.cons_zero, Fin.cons_succ]; exact h_tu
+        -- (succ i', succ j'):
+        · refine Fin.cases ?_ (fun i'' => ?_) i' <;> refine Fin.cases ?_ (fun j'' => ?_) j'
+          · -- (1, 1): x < x ↔ x' < x'
+            exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+          · -- (1, 2): x < t ↔ x' < t'
+            simp only [Fin.cons_succ]; exact h_order_xt.1
+          · -- (2, 1): t < x ↔ t' < x'
+            simp only [Fin.cons_succ]; exact h_order_xt.2
+          · -- (2, 2): t < t ↔ t' < t'
+            simp only [Fin.cons_succ]; exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    -- Now use atom agreement to prove the goal.
+    -- For j = 0: nf_eval_nf at depth 0 = atom agreement. Direct transfer.
+    -- For j ≥ 1: need atoms + quantifier transfer. Atoms proved; quantifier requires
+    -- sub-interval matching (the Fraïssé game argument).
+    match j with
+    | 0 =>
+      -- Depth 0: just atoms. Transfer via h_3var_atoms and hu.
+      intro a; constructor
+      · intro ha'; exact (hu a).mp ((h_3var_atoms a).mpr ha')
+      · intro ha; exact (h_3var_atoms a).mp ((hu a).mpr ha)
+    | j' + 1 =>
+      -- Depth j'+1: atoms + quantifier transfer for 4-var extensions.
+      -- The atom part transfers via h_3var_atoms.
+      -- The quantifier part requires sub-interval matching at the 3-point
+      -- configuration (u,x,t)/(u',x',t'), which is the Fraïssé game argument.
+      sorry
+  · rintro ⟨u', hu'⟩
+    -- Backward direction: M' → M (symmetric, using reversed hypotheses)
+    have h_nf_x' := h_nf_x.symm
+    have h_nf_t' := h_nf_t.symm
+    have h_order_xt' : (x' < t' ↔ x < t) ∧ (t' < x' ↔ t < x) :=
+      ⟨h_order_xt.1.symm, h_order_xt.2.symm⟩
+    have h_interval_above' : t' < x' → interval_nf_types M' k t' x' = interval_nf_types M k t x :=
+      fun h => (h_interval_above (h_order_xt.2.mpr h)).symm
+    have h_interval_below' : x' < t' → interval_nf_types M' k x' t' = interval_nf_types M k x t :=
+      fun h => (h_interval_below (h_order_xt.1.mpr h)).symm
+    have h_above_max' : (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) =
+        (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) :=
+      h_above_max.symm
+    have h_below_min' : (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) =
+        (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) :=
+      h_below_min.symm
+    obtain ⟨u, h_nf_u, h_u'x', h_x'u', h_u't', h_t'u'⟩ :=
+      zone_match_witness k x' t' x t u' h_nf_x' h_nf_t' h_order_xt'
+        h_interval_above' h_interval_below' h_above_max' h_below_min'
+    refine ⟨u, ?_⟩
+    -- Same structure as forward: atom agreement at 3 vars, then split on j.
+    have h_agree_u := nf_agreement_from_shared_nf M' (fun _ => u') M (fun _ => u)
+      (nf_characteristic M' k 1 (fun _ => u'))
+      (nf_characteristic_satisfies M' k 1 (fun _ => u'))
+      (h_nf_u ▸ nf_characteristic_satisfies M k 1 (fun _ => u))
+    have h_agree_x := nf_agreement_from_shared_nf M' (fun _ => x') M (fun _ => x)
+      (nf_characteristic M' k 1 (fun _ => x'))
+      (nf_characteristic_satisfies M' k 1 (fun _ => x'))
+      (h_nf_x' ▸ nf_characteristic_satisfies M k 1 (fun _ => x))
+    have h_agree_t := nf_agreement_from_shared_nf M' (fun _ => t') M (fun _ => t)
+      (nf_characteristic M' k 1 (fun _ => t'))
+      (nf_characteristic_satisfies M' k 1 (fun _ => t'))
+      (h_nf_t' ▸ nf_characteristic_satisfies M k 1 (fun _ => t))
+    have h_pred_u : ∀ p : sig.preds, M'.interp p u' ↔ M.interp p u :=
+      fun p => atom_agreement_from_nf M' (fun _ => u') M (fun _ => u) h_agree_u (.pred p 0)
+    have h_pred_x : ∀ p : sig.preds, M'.interp p x' ↔ M.interp p x :=
+      fun p => atom_agreement_from_nf M' (fun _ => x') M (fun _ => x) h_agree_x (.pred p 0)
+    have h_pred_t : ∀ p : sig.preds, M'.interp p t' ↔ M.interp p t :=
+      fun p => atom_agreement_from_nf M' (fun _ => t') M (fun _ => t) h_agree_t (.pred p 0)
+    have h_3var_atoms : ∀ (a : AtomKind sig 3),
+        atom_eval M' (Fin.cons u' (Fin.cons x' fun _ => t')) a ↔
+        atom_eval M (Fin.cons u (Fin.cons x fun _ => t)) a := by
+      intro a; cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        refine Fin.cases ?_ (fun i' => ?_) i
+        · simp only [Fin.cons_zero]; exact h_pred_u p
+        · refine Fin.cases ?_ (fun i'' => ?_) i'
+          · simp only [Fin.cons_succ, Fin.cons_zero]; exact h_pred_x p
+          · simp only [Fin.cons_succ]; exact h_pred_t p
+      | order i j hij =>
+        simp only [atom_eval]
+        refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+        · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+        · refine Fin.cases ?_ (fun j'' => ?_) j'
+          · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_u'x'
+          · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_u't'
+        · refine Fin.cases ?_ (fun i'' => ?_) i'
+          · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_x'u'
+          · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_t'u'
+        · refine Fin.cases ?_ (fun i'' => ?_) i' <;> refine Fin.cases ?_ (fun j'' => ?_) j'
+          · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+          · simp only [Fin.cons_succ]; exact h_order_xt'.1
+          · simp only [Fin.cons_succ]; exact h_order_xt'.2
+          · simp only [Fin.cons_succ]; exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    match j with
+    | 0 =>
+      intro a; constructor
+      · intro ha'; exact (hu' a).mp ((h_3var_atoms a).mpr ha')
+      · intro ha; exact (h_3var_atoms a).mp ((hu' a).mpr ha)
+    | j' + 1 =>
+      sorry
+
 /-- **GHR93 Bridge Lemma**: The 2-var depth-k NF of (x,t) is determined by the
     depth-k 1-var NFs of x and t, their ordering, and the set of depth-k 1-var
     NFs realized in the interval between them.
@@ -2098,66 +2465,11 @@ private theorem nf_2var_from_interval_data {sig : MonadicSignature}
       · simp only [Fin.cons_zero, Fin.cons_succ]; exact h_order_xt.2
       · -- i=succ, j=succ: t < t ↔ t' < t' (both false)
         simp only [Fin.cons_succ]; exact iff_of_false (lt_irrefl _) (lt_irrefl _)
-  -- Prove the bridge lemma by showing M' satisfies M's characteristic NF,
-  -- then using nf_eval_unique.
-  apply nf_eval_unique M' k 2 (Fin.cons x' fun _ => t')
-  · -- M' satisfies M's characteristic NF.
-    -- Strategy: induction on k. At k=0, atoms suffice. At k+1, derive depth-k
-    -- hypotheses from depth-(k+1) and use the IH to handle atoms, then handle
-    -- the quantifier part by finding matching witnesses.
-    induction k with
-    | zero =>
-      -- depth-0 NF = atom assignment. Transfer atom-by-atom.
-      have hM_sat := nf_characteristic_satisfies M 0 2 (Fin.cons x fun _ => t)
-      intro a; constructor
-      · intro ha'; exact (hM_sat a).mp ((h_atom_agree a).mpr ha')
-      · intro ha; exact (h_atom_agree a).mp ((hM_sat a).mpr ha)
-    | succ k ih =>
-      -- At depth k+1: need atoms + quantifier assignment.
-      -- From depth-(k+1) hypotheses, derive depth-k hypotheses via depth_decrease lemmas.
-      have h_nf_x_k := nf_char_depth_decrease h_nf_x
-      have h_nf_t_k := nf_char_depth_decrease h_nf_t
-      have h_interval_above_k : t < x → interval_nf_types M k t x = interval_nf_types M' k t' x' :=
-        fun htx => interval_nf_types_depth_decrease (h_interval_above htx)
-      have h_interval_below_k : x < t → interval_nf_types M k x t = interval_nf_types M' k x' t' :=
-        fun hxt => interval_nf_types_depth_decrease (h_interval_below hxt)
-      have h_above_max_k := above_max_depth_decrease h_above_max
-      have h_below_min_k := below_min_depth_decrease h_below_min
-      -- IH at depth k gives: M' satisfies M's depth-k 2-var NF
-      have ih_result := ih h_nf_x_k h_nf_t_k h_interval_above_k h_interval_below_k
-        h_above_max_k h_below_min_k
-      -- Characteristic NF at depth k+1 = (atoms, quantifier_assignment)
-      have hM_sat := nf_characteristic_satisfies M (k + 1) 2 (Fin.cons x fun _ => t)
-      obtain ⟨hM_atoms, hM_quant⟩ := hM_sat
-      constructor
-      · -- Atom part: transfer via h_atom_agree
-        intro a; constructor
-        · intro ha'; exact (hM_atoms a).mp ((h_atom_agree a).mpr ha')
-        · intro ha; exact (h_atom_agree a).mp ((hM_atoms a).mpr ha)
-      · -- Quantifier part: for each depth-k 3-var NF sub_nf,
-        -- (∃ u' in M', nf_eval M' k 3 (u', x', t') sub_nf) ↔ (quant_assgn sub_nf = true)
-        --
-        -- This is the Fraïssé quantifier transfer: given u in M with some
-        -- depth-k 3-var NF at (u, x, t), find u' in M' with the same NF.
-        --
-        -- Step 1 (doable): Find u' via interval/above/below data with the same
-        -- depth-(k+1) 1-var NF tau in the same zone relative to x' and t'.
-        --
-        -- Step 2 (gap): Show the depth-k 3-var NF at (u', x', t') equals that
-        -- at (u, x, t). This requires the "Fraïssé compression" argument:
-        -- k rounds of back-and-forth matching (using the original interval data
-        -- at each round), followed by depth-0 atom checking. The compression
-        -- theorem (depth-0 agreement at n+k vars → depth-k agreement at n vars)
-        -- does NOT follow from nf_agreement_monotone (which varies depth at
-        -- fixed n) and requires new game-theoretic infrastructure.
-        --
-        -- Available for the next attempt:
-        -- • ih_result: depth-k 2-var NFs at (x,t)/(x',t') agree
-        -- • h_nf_x, h_nf_t: depth-(k+1) 1-var NFs at x/x', t/t' agree
-        -- • h_interval_*, h_above_max, h_below_min: depth-(k+1) zone data
-        -- • The five depth_decrease lemmas provide depth-k versions of all data
-        sorry
-  · exact nf_characteristic_satisfies M' k 2 (Fin.cons x' fun _ => t')
+  -- Use the Fraïssé compression lemma: atoms + existential transfer at each
+  -- depth j < k implies depth-k NF equality.
+  exact nf_fraisse_compression k 2 M (Fin.cons x fun _ => t) M' (Fin.cons x' fun _ => t')
+    h_atom_agree (nf_2var_existential_transfer k x t x' t'
+      h_nf_x h_nf_t h_order_xt h_interval_above h_interval_below h_above_max h_below_min)
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
     it holds for any pair with the same data. -/
