@@ -1,23 +1,49 @@
 {
   "task_number": 155,
-  "session_id": "sess_1748390400_s1xfer",
-  "status": "in_progress",
-  "summary": "Deep analysis of nf_2var_existential_transfer j>=1. Decomposed j'+1 case into atoms (PROVED) and clean 4-var quantifier transfer (SORRY). The atom part at 3 vars now proved in both directions. The remaining sorry is a clean statement: (∃ w, nf_eval M j' 4 (w::u::x::t) sub) ↔ (∃ w', nf_eval M' j' 4 (w'::u'::x'::t') sub). Confirmed interval splitting is mathematically necessary for closing this. Sorry count: 3 (2 in 4-var transfer + 1 in backward formula).",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial"],
+  "session_id": "sess_1748390400_s2xfer",
+  "status": "blocked",
+  "summary": "Exhaustive mathematical analysis (S2, 7 approaches) confirms the 4-var existential transfer at depth j' inside nf_2var_existential_transfer CANNOT be closed with current infrastructure. The root cause: interval_nf_types is a Finset of 1-var NFs that records WHICH types appear in an interval but NOT their spatial arrangement. When zone-matching a new point w relative to (x,t), the ordering w vs u is undetermined for points in the same zone. Interval splitting (proving sub-interval types agree) requires positional information that the current invariant does not capture. Key positive finding: variable dropping lemma (depth-j n-var NF agreement implies depth-j m-var NF agreement for sub-tuples) holds with NO depth loss.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms"],
   "phases_total": 6,
   "blocking_issues": [
     {
-      "phase": "S1",
-      "description": "4-var existential transfer at depth j' for env (u,x,t)/(u',x',t'). The atom part of j'+1 is now proved. The quantifier part reduces to: given w in M, find w' in M' with matching depth-j' 4-var NF at (w',u',x',t'). Zone matching from (x,t) gives orderings relative to x',t' but NOT relative to u'. Interval splitting needed to get orderings relative to all 3 reference points.",
+      "phase": "S2",
+      "description": "Interval splitting not derivable from current hypotheses. The interval_nf_types definition (Finset of depth-k 1-var NFs in open interval) loses spatial information. Cannot determine from the bridge data for (x,t) which types appear specifically in sub-intervals (x,u) or (u,t) when u splits the interval.",
+      "root_cause": "interval_nf_types is a SET, not a POSITIONAL structure. Two witnesses: v' < u' from u's NF and w' in (x',t') from the interval bridge. Neither is guaranteed to be in (x',u'). The intersection of 'types below u' and 'types in (x,t)' is NOT equal to 'types in (x,u)' because witnesses may be in different locations.",
+      "approaches_exhausted": [
+        "Zone matching on (x,t) for the new point w",
+        "Using u's depth-k NF to find w' < u'",
+        "Using x's depth-k NF to find w' > x'",
+        "Combining witnesses from u's and x's NFs",
+        "Full interval bridge to find w' in (x',t')",
+        "Fraisse compression approach (circular)",
+        "IH from induction on k (requires interval splitting)"
+      ],
       "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
-      "sorry_lines": [2335, 2417, 2775],
-      "goal_at_sorry": "(∃ w, nf_eval_nf M j' (2+1+1) (w::u::x::t) sub_nf) ↔ (∃ w', nf_eval_nf M' j' (2+1+1) (w'::u'::x'::t') sub_nf)"
+      "sorry_lines": [2335, 2417, 2775]
     }
   ],
-  "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S1-transfer-deep-analysis-20260528.md",
-    "recommended_approach": "Implement splitting_zone_match_witness that guarantees sub-interval type matching at depth k-1. The depth-(k+1) NF of u encodes directional info: types above vs below, plus depth-(k-1) 3-var NF data encoding whether types appear between specific pairs. Use this to prove interval_nf_types at depth k-1 for (x,u)/(x',u') and (u,t)/(u',t') agree. Then build bridge hypotheses at depth k-1 for all consecutive pairs in the sorted 3-point configuration. Apply the bridge lemma (IH) at depth k-1 to get 2-var NF agreement for all pairs. This gives the existential transfer at all depths < k-1. Since j' < k-1 (because j'+1 < k), this suffices.",
-    "estimated_effort": "300-500 lines, 1-2 sessions"
+  "resolution_options": {
+    "A_directional_splitting": {
+      "description": "Prove splitting_zone_match_witness using directional 2-var NF data from u's depth-k NF. The depth-k NF encodes which depth-(k-1) 2-var NFs (v,u) are realized, including the ordering v<u. Combined with the variable dropping lemma, this gives which depth-(k-1) 1-var NFs exist below u. Prove that this directional data, combined with the interval types and x's NF, determines the sub-interval types at depth k-1. Loses 1 depth level per split.",
+      "effort": "200-300 lines",
+      "risk": "The directional data may still be insufficient; the analysis showed that 'below u' intersected with 'in (x,t)' does NOT equal 'in (x,u)'. A different extraction is needed."
+    },
+    "B_richer_invariant": {
+      "description": "Replace interval_nf_types (Finset of 1-var NFs) with a structure that records 2-var NF types relative to a reference point. For each pair of points in the interval, record the 2-var NF. This captures spatial arrangement.",
+      "effort": "300-400 lines",
+      "risk": "Requires modifying the bridge lemma hypotheses and all callers. Significant refactoring."
+    },
+    "C_ef_game": {
+      "description": "Formalize the EF game directly: game positions as sorted sequences with bridge invariant, Duplicator strategy lemma, NF agreement from game result.",
+      "effort": "400-500 lines",
+      "risk": "Most principled but most infrastructure. The game position type and strategy type are complex."
+    }
   },
-  "next_action_hint": "Implement splitting zone match to get sub-interval type matching, enabling 3-point zone matching for the 4-var transfer"
+  "continuation_context": {
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S2-variable-dropping-analysis-20260528.md",
+    "key_discovery": "Variable dropping lemma: from shared depth-j (n+1)-var NF, any sub-tuple of m <= n+1 variables has the same depth-j m-var NF. NO depth loss. Proof by induction on j: at depth 0, restrict atoms; at depth j+1, use IH to show that each (m+1)-var extension realized in M is also realized in M' via the corresponding (n+2)-var extension.",
+    "estimated_effort_to_resolve": "1-3 sessions depending on approach"
+  },
+  "next_action_hint": "User decision needed: choose resolution approach (A, B, or C) then implement. Approach A is smallest but riskiest. Approach C is most principled."
 }
