@@ -1839,6 +1839,18 @@ private noncomputable def interval_nf_types {sig : MonadicSignature}
     ∃ u : M.carrier, lo < u ∧ u < hi ∧ nf_eval_nf M k 1 (fun _ => u) nf_u)
     (fun _ => Classical.dec _) Finset.univ
 
+/-- The set of depth-k 2-var NF types (u, hi) realized by points u in the open interval (lo, hi).
+    This is a RICHER invariant than interval_nf_types: the 2-var NF encodes both
+    u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
+    This additional information captures the spatial arrangement within the interval,
+    enabling the bridge lemma's sub-interval matching. -/
+private noncomputable def interval_2var_nf_types {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
+    Finset (NormalForm sig k 2) :=
+  @Finset.filter _ (fun nf2 =>
+    ∃ u : M.carrier, lo < u ∧ u < hi ∧ nf_eval_nf M k 2 (Fin.cons u (fun _ => hi)) nf2)
+    (fun _ => Classical.dec _) Finset.univ
+
 /-- Depth-(k+1) 1-var NF equality implies depth-k 1-var NF equality.
     From shared depth-(k+1) NFs, nf_agreement_monotone gives depth-k agreement,
     which implies the depth-k characteristic NFs are equal. -/
