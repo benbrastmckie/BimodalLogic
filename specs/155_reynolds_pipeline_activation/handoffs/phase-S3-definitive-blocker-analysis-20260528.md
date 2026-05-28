@@ -173,3 +173,61 @@ CONCLUSION: The formula-level fix is the ONLY viable path that closes ALL three 
 - Config-based disjunction formula builder
 - Forward: extract actual config from nf_eval_nf
 - Backward: reconstruct bridge data from config
+
+## Addendum: Circular Dependency in the Formula Fix
+
+The formula construction for `nf_exist_sf_guarded` needs to know which (nf_x, interval_type_set) configurations produce sub_nf as the 2-var NF. This determination requires the bridge lemma (`nf_2var_from_interval_data`). But the bridge lemma proof depends on `nf_2var_existential_transfer`, which depends on sub-interval data, which would come from the formula configuration.
+
+**Breaking the circularity**: The bridge lemma must be proved INDEPENDENTLY of the formula. Two paths:
+
+### Path 1: Induction on k with enriched hypotheses
+Prove `nf_2var_from_interval_data` by induction on k, strengthening the hypotheses to include sub-interval data. The callers of the bridge lemma provide the enriched data. The formula backward direction provides it via the config guard. The FORMULA depends on the bridge lemma (for construction), but the BRIDGE LEMMA does not depend on the formula.
+
+### Path 2: Direct EF game argument (no formula dependency)
+Prove the bridge lemma via a k-round back-and-forth game. The game takes bridge data (including sub-interval structure) and produces NF agreement. No formula dependency.
+
+### Recommended Path
+Path 1 is simpler. The enriched hypotheses are: for each NF type tau in the interval, provide the sub-interval type sets when the interval is split by a tau-point. This enrichment:
+1. Is finitely enumerable (NF types are Fintype)
+2. Can be provided by the forward direction of the formula (from nf_eval_nf)
+3. Can be extracted by the backward direction (from the config guard)
+4. Provides the sub-interval data needed by `nf_2var_existential_transfer`
+
+The enriched hypothesis type:
+```
+enriched_interval : interval_nf_types M k x t = interval_nf_types M' k x' t' ∧
+  ∀ tau ∈ interval_nf_types M k x t, 
+    ∀ u u', nf_eval_nf M k 1 u tau → nf_eval_nf M' k 1 u' tau →
+      x < u → u < t → x' < u' → u' < t' →
+        interval_nf_types M (k-1) x u = interval_nf_types M' (k-1) x' u' ∧
+        interval_nf_types M (k-1) u t = interval_nf_types M' (k-1) u' t'
+```
+
+But this is WRONG because different u-points with the same NF tau may give different sub-interval types! This is exactly the spatial arrangement problem.
+
+**The CORRECT enrichment**: Provide the sub-interval types as a function of the SPECIFIC 2-var NF of (u, x) (or (u, t)), not just u's 1-var NF.
+
+```
+enriched_interval : ∀ sigma : NormalForm sig k 2,
+    (∃ u, x < u ∧ u < t ∧ nf_eval_nf M k 2 (u :: t) sigma) ↔
+    (∃ u', x' < u' ∧ u' < t' ∧ nf_eval_nf M' k 2 (u' :: t') sigma)
+```
+
+This says: the SET of 2-var NFs realized by (u, t) for u in (x,t) is the same in both models. The 2-var NF encodes the 1-var NF of u, the ordering, and the relationship between u and t. From the 2-var NF of (u, t), we can derive:
+- u's 1-var NF (by variable dropping)
+- The ordering u < t (from atom assignment)
+- Sub-interval bridge data for (u, t) (by applying the IH at depth k-1)
+
+This enrichment IS what `nf_2var_from_interval_data` already uses implicitly: the interval types of (x,t) at depth k encode which 1-var NFs appear, but the 2-var NFs of (u,t) for u in (x,t) encode the FULL relationship between u and t.
+
+And the depth-(k+1) 1-var NF of t's quantifier assignment directly provides:
+```
+∀ sigma : NormalForm sig k 2,
+    (∃ u, nf_eval_nf M k 2 (u :: t) sigma) ↔ (sigma ∈ quant_assgn(nf_char M (k+1) 1 t))
+```
+
+Since t and t' have the same depth-(k+1) NF, the same sigma's are realized. COMBINED with the ORDERING constraint (u in (x,t)), we need: the set of sigma's realized by u in (x,t) equals those in (x',t').
+
+And THIS is what interval_nf_types tries to capture (at 1-var level). At 2-var level, the set of sigma's realized IN (x,t) is richer.
+
+**Conclusion**: Replace `interval_nf_types` (set of 1-var NFs in interval) with `interval_2var_nf_types` (set of 2-var NFs relative to one endpoint). This captures the full spatial structure needed for sub-interval matching.
