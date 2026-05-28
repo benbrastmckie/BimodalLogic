@@ -308,7 +308,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
 - Step 8-NEW: Round 2 winning condition dispatch (~200-300 lines)
 
 **Tasks**:
-- [ ] Task 5.1: Import CharacteristicFormula.lean and construct B, A (~30-50 lines)
+- [ ] Task 5.1: Import CharacteristicFormula.lean and construct B, A (~30-50 lines) *(deviation: skipped -- Until witness containment issue (report 45 Section 8.1) blocks pure GHR93 U(B,A) approach; hybrid simplification applied instead)*
   - Add `import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula` at line 1
   - After step 1 (line 1247, extracting p_n and defining a_init), add:
     - Define `ref_N : ExtendedCarrier N atomMap r` as `a_bwd (n-1, ...)` when n > 0, or `d` when n = 0
@@ -318,7 +318,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`
   - **Insert after**: line 1247 (before current line 1248)
 
-- [ ] Task 5.1b: Handle n=0 boundary and degenerate case d = a_bwd(n) (~20-30 lines)
+- [ ] Task 5.1b: Handle n=0 boundary and degenerate case d = a_bwd(n) (~20-30 lines) *(deviation: skipped -- not needed without U(B,A) approach)*
   - Case split at top of proof body: `if h_degen : d = a_bwd (n, ...)` then all selections equal d = p_n (by h_no_split + h_mono)
   - In degenerate case: respond with all c and e_n = c. Proof is trivial (no U(B,A) needed)
   - In non-degenerate case: proceed with main GHR93 construction (d < a_bwd(n) strict)
@@ -326,7 +326,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **File**: CaseAnalysis.lean
   - **Risk**: Per report 45 Section 3.4, when d = p_n and n=0, U(B,A)(d) fails because the witness z > d = p_n would need p_n > p_n. The degenerate case split eliminates this.
 
-- [ ] Task 5.2: Prove N_r |= U(B, A)(ref_N) (~10-20 lines)
+- [ ] Task 5.2: Prove N_r |= U(B, A)(ref_N) (~10-20 lines) *(deviation: skipped -- not needed without U(B,A) approach)*
   - Apply `untl_type_holds_at_witness` with witness `a_bwd (n, by omega)` = `extendPoint p_n`
   - Need: `mu_holds (a_bwd (n, by omega))` -- from h_point (a_n is a point, hence mu_holds)
   - Need: `ref_N < a_bwd (n, by omega)` -- from h_ref_N_lt_an (Task 5.1), guaranteed by degenerate case elimination (Task 5.1b)
@@ -334,7 +334,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **File**: CaseAnalysis.lean
   - **Insert after**: Task 5.1 additions
 
-- [ ] Task 5.3: Transfer U(B, A) through tau at rank r+delta (~40-60 lines)
+- [ ] Task 5.3: Transfer U(B, A) through tau at rank r+delta (~40-60 lines) *(deviation: skipped -- not needed without U(B,A) approach)*
   - Keep `tau_r := ghr93_duplicator_wins_rank_down ... props.tau` (line 1252-1254) for resp_tau ordering
   - Play `tau_r` with `a_init` to get `resp_tau` (current line 1255, keep)
   - Define `ref_M : ExtendedCarrier M atomMap r` as `resp_tau (n-1, ...)` when n > 0, or `c` when n = 0
@@ -348,7 +348,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **File**: CaseAnalysis.lean
   - **Key detail**: Must play tau TWICE -- once at rank r (tau_r, for resp_tau ordering) and once at rank r+delta (props.tau, for formula transfer of U(B,A)). Or do everything at rank r+delta and use rank_embed_stavi_truth_mu at the end (cleaner, per report 45 Section 3.3).
 
-- [ ] Task 5.4: Extract witness z = e_n and prove sel_pn_ord (~30-50 lines)
+- [ ] Task 5.4: Extract witness z = e_n and prove sel_pn_ord (~30-50 lines) *(deviation: skipped -- Until witness not guaranteed in [x,y]; sel_pn_ord via hord_left_sel_pn instead)*
   - Apply `untl_extract_witness` to `h_untl_M` to get `z > ref_M`, `mu_holds z`, `B(z)`, `A on (ref_M, z)`
   - Set `e_n := z` (or `e_n := extendPoint e_n_pt` from mu_holds decomposition)
   - Prove `hform_en_an`: e_n and a_n agree on all rank-r StaviFormulas (from `B(z)` + `x_t_correct`)
@@ -360,7 +360,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **File**: CaseAnalysis.lean
   - **Risk**: Until witness z may not be in [x, y]. See Risks & Mitigations. Three paths: (1) structural argument that tau maps [d,y'] to [c,y] so witness must be in range; (2) hybrid approach using forward game for existence; (3) prove first-witness-in-range lemma. Investigate during implementation.
 
-- [ ] Task 5.5: Delete old e_n construction and resp_mod, replace with new code (~-550 to -700 lines net)
+- [x] Task 5.5: Delete old e_n construction and resp_mod, replace with new code (~-550 to -700 lines net) *(deviation: altered -- kept forward-game e_n construction, deleted only resp_mod indirection + heq_k/hne_k case splits; net -338 lines)*
   - Delete lines 1257-1288 (a_pad_big, h_d_compat_left call, forward-game e_n)
   - Delete lines 1289-1345 (forward game extraction: hform_en_an, hord_cd_en_pn, etc.)
   - Delete lines 1346-1391 (p_cy hoisting, tau_left, tau_right, pivot data)
@@ -372,7 +372,7 @@ Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 2
   - **Net deletion**: ~183 lines of pure deletion (lines 1257-1439) minus ~130-180 lines of new insertions from Tasks 5.1-5.4
   - **Dependencies**: Tasks 5.1-5.4 must be ready as replacements before deleting
 
-- [ ] Task 5.6: Rewrite Round 2 winning condition dispatch (~200-300 lines, replacing ~850 lines)
+- [x] Task 5.6: Rewrite Round 2 winning condition dispatch (~200-300 lines, replacing ~850 lines) *(deviation: altered -- simplified Round 2 by using resp_left directly instead of resp_mod, eliminating all heq_k/hne_k case splits across Cases A, B1, B2; uniform tau_left data usage in gap/point and formula agreement)*
   - Rewrite lines 1450-2302 (Case A, Case B1, Case B2) with simplified ordering:
   - **Case A (b_sp <= c)**: Use sigma for Round 2 response. Same structure but with resp_tau instead of resp_mod. No resp_mod case splits needed.
   - **Case B (b_sp > c)**: Split on b_sp vs e_n:

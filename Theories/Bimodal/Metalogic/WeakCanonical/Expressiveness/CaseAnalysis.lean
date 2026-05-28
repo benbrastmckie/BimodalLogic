@@ -1412,40 +1412,21 @@ private theorem ghr93_case_II {sig : MonadicSignature}
     intro k
     have h := hord_left ⟨1 + k.val, by omega⟩ ⟨n + 2, by omega⟩
     simp_game_tuple at h; exact h
-  -- Step 7: Modified response function.
-  -- When a_init(k) = p_n: respond with e_n.
-  -- When a_init(k) < p_n: use resp_left(k).
-  let resp_mod : Fin n → ExtendedCarrier M atomMap r := fun k =>
-    if a_init k = extendPoint p_n then e_n else resp_left k
-  have hresp_mod_eq : ∀ (k : Fin n), a_init k = extendPoint p_n → resp_mod k = e_n :=
-    fun k heq => by simp [resp_mod, heq]
-  have hresp_mod_ne : ∀ (k : Fin n), a_init k ≠ extendPoint p_n → resp_mod k = resp_left k :=
-    fun k hne => by simp [resp_mod, hne]
-  have hresp_mod_in : ∀ (k : Fin n), inClosedInterval c y (resp_mod k) := by
-    intro k; simp only [resp_mod]
-    split
-    · exact ⟨hc_le_en, he_n_in.2⟩
-    · exact ⟨(hresp_left_in k).1, le_trans (hresp_left_in k).2 h_en_le_y⟩
-  -- sel_pn_ord: direct from hord_left_sel_pn.
-  have sel_pn_ord : ∀ (k : Fin n),
-      (a_init k < extendPoint p_n ↔ resp_mod k < e_n) ∧
-      (a_init k = extendPoint p_n ↔ resp_mod k = e_n) := by
-    intro k
-    rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-    · rw [hresp_mod_eq k heq, heq]
-      exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-             ⟨fun _ => rfl, fun _ => rfl⟩⟩
-    · rw [hresp_mod_ne k hne]
-      exact hord_left_sel_pn k
+  -- Step 7: resp_left IS the response function — no resp_mod indirection needed.
+  -- Key: hord_left_sel_pn shows (a_init k = p_n ↔ resp_left k = e_n),
+  -- so when a_init(k) = p_n, resp_left(k) = e_n automatically.
+  -- sel_pn_ord is just hord_left_sel_pn.
+  have hresp_left_in_cy : ∀ (k : Fin n), inClosedInterval c y (resp_left k) :=
+    fun k => ⟨(hresp_left_in k).1, le_trans (hresp_left_in k).2 h_en_le_y⟩
   -- Step 8: Build the final (n+1)-element response and dispatch round 2.
-  -- Response: resp_mod(0..n-1), e_n at position n.
+  -- Response: resp_left(0..n-1), e_n at position n.
   let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
-    if h : i.val < n then resp_mod ⟨i.val, h⟩ else e_n
+    if h : i.val < n then resp_left ⟨i.val, h⟩ else e_n
   have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
     intro i; simp only [a'_resp]
     split
-    case isTrue h => exact ⟨le_trans props.hxc (hresp_mod_in ⟨i.val, h⟩).1,
-                           (hresp_mod_in ⟨i.val, h⟩).2⟩
+    case isTrue h => exact ⟨le_trans props.hxc (hresp_left_in_cy ⟨i.val, h⟩).1,
+                           (hresp_left_in_cy ⟨i.val, h⟩).2⟩
     case isFalse _ => exact he_n_in
   refine ⟨a'_resp, ha'_resp_in, ?_⟩
   intro b_sp hb_sp
@@ -1489,106 +1470,60 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       have tau_d_y' : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
         have h := hord_tau_aux ⟨0, by omega⟩ ⟨n + 2, by omega⟩
         simp_game_tuple at h; exact h
-      -- Build sel-index ordering for the full Fin (n+1).
-      -- a_bwd k maps to a_init for k<n and to extendPoint p_n for k=n.
-      -- a'_resp k maps to resp_mod for k<n and to e_n for k=n.
+      -- tau_left orderings — used uniformly (no resp_mod case splits).
       have hd_le_sel : ∀ (k : Fin n), d ≤ a_init k :=
         fun k => (ha_init k).1
-      have hc_le_rmod : ∀ (k : Fin n), c ≤ resp_mod k := by
-        intro k; exact (hresp_mod_in k).1
+      have hc_le_rl : ∀ (k : Fin n), c ≤ resp_left k :=
+        fun k => (hresp_left_in k).1
       have tau_d_sel : ∀ (k : Fin n),
-          (d < a_init k ↔ c < resp_mod k) ∧
-          (d = a_init k ↔ c = resp_mod k) := by
+          (d < a_init k ↔ c < resp_left k) ∧
+          (d = a_init k ↔ c = resp_left k) := by
         intro k
-        rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-        · rw [hresp_mod_eq k heq, heq]
-          exact ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
-        · rw [hresp_mod_ne k hne]
-          have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-          simp_game_tuple at h; exact h
-      have tau_sel_sel_raw : ∀ (j j' : Fin n),
+        have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+        simp_game_tuple at h; exact h
+      have tau_sel_sel : ∀ (j j' : Fin n),
           (a_init j < a_init j' ↔ resp_left j < resp_left j') ∧
           (a_init j = a_init j' ↔ resp_left j = resp_left j') := by
         intro j j'
         have h := hord_left ⟨1 + j.val, by omega⟩ ⟨1 + j'.val, by omega⟩
         simp_game_tuple at h; exact h
       -- Full sel-vs-sel ordering covering Fin (n+1) × Fin (n+1).
-      -- Case-split on whether each index is < n (a_init/resp_mod) or = n (p_n/e_n).
       have full_sel_sel : ∀ (k k' : Fin (n + 1)),
           (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
           (a_bwd k = a_bwd k' ↔ a'_resp k = a'_resp k') := by
         intro k k'
         by_cases hk : k.val < n <;> by_cases hk' : k'.val < n
-        · -- Both < n: a_init/resp_mod
-          have hk_eq : a_bwd k = a_init ⟨k.val, hk⟩ := rfl
-          have hk'_eq : a_bwd k' = a_init ⟨k'.val, hk'⟩ := rfl
-          rw [hk_eq, hk'_eq, show a'_resp k = resp_mod ⟨k.val, hk⟩ from by
-            simp [a'_resp, hk], show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by
-            simp [a'_resp, hk']]
-          rcases Decidable.em (a_init ⟨k.val, hk⟩ = extendPoint p_n) with heq_k | hne_k
-          · rcases Decidable.em (a_init ⟨k'.val, hk'⟩ = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_eq _ heq_k, hresp_mod_eq _ heq_k', heq_k, heq_k']
-              exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                     ⟨fun _ => rfl, fun _ => rfl⟩⟩
-            · rw [hresp_mod_eq _ heq_k, hresp_mod_ne _ hne_k', heq_k]
-              have hlt := lt_of_le_of_ne (h_ainit_le_pn _) hne_k'
-              have hlt_r := (hord_left_sel_pn _).1.mp hlt
-              exact ⟨⟨fun h => absurd h (not_lt_of_gt hlt),
-                      fun h => absurd h (not_lt_of_gt hlt_r)⟩,
-                     ⟨fun h => absurd hlt (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_r (h ▸ lt_irrefl _)⟩⟩
-          · rcases Decidable.em (a_init ⟨k'.val, hk'⟩ = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_ne _ hne_k, hresp_mod_eq _ heq_k', heq_k']
-              have hlt := lt_of_le_of_ne (h_ainit_le_pn _) hne_k
-              have hlt_r := (hord_left_sel_pn _).1.mp hlt
-              exact ⟨⟨fun _ => hlt_r, fun _ => hlt⟩,
-                     ⟨fun h => absurd hlt (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_r (h ▸ lt_irrefl _)⟩⟩
-            · rw [hresp_mod_ne _ hne_k, hresp_mod_ne _ hne_k']
-              exact tau_sel_sel_raw _ _
-        · -- k < n, k' = n: a_init vs p_n / resp_mod vs e_n
-          have hk_eq : a_bwd k = a_init ⟨k.val, hk⟩ := rfl
-          have hk'_eq : k'.val = n := Nat.eq_of_lt_succ_of_not_lt k'.isLt hk'
-          have hk'_bwd : a_bwd k' = extendPoint p_n := by
-            have : k' = ⟨n, by omega⟩ := Fin.ext hk'_eq; rw [this]; exact hp_n
-          have hk'_resp : a'_resp k' = e_n := by simp [a'_resp, hk']
-          rw [hk_eq, hk'_bwd, hk'_resp, show a'_resp k = resp_mod ⟨k.val, hk⟩ from by
-            simp [a'_resp, hk]]
-          exact sel_pn_ord ⟨k.val, hk⟩
-        · -- k = n, k' < n: p_n vs a_init / e_n vs resp_mod
-          have hk_eq : k.val = n := Nat.eq_of_lt_succ_of_not_lt k.isLt hk
-          have hk_bwd : a_bwd k = extendPoint p_n := by
-            have : k = ⟨n, by omega⟩ := Fin.ext hk_eq; rw [this]; exact hp_n
-          have hk_resp : a'_resp k = e_n := by simp [a'_resp, hk]
-          have hk'_eq : a_bwd k' = a_init ⟨k'.val, hk'⟩ := rfl
-          rw [hk_bwd, hk_resp, hk'_eq, show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by
-            simp [a'_resp, hk']]
-          exact order_reverse (sel_pn_ord ⟨k'.val, hk'⟩)
-        · -- Both = n: p_n vs p_n / e_n vs e_n
-          have hk_eq : k.val = n := Nat.eq_of_lt_succ_of_not_lt k.isLt hk
-          have hk'_eq : k'.val = n := Nat.eq_of_lt_succ_of_not_lt k'.isLt hk'
-          have hk_bwd : a_bwd k = extendPoint p_n := by
-            have : k = ⟨n, by omega⟩ := Fin.ext hk_eq; rw [this]; exact hp_n
-          have hk'_bwd : a_bwd k' = extendPoint p_n := by
-            have : k' = ⟨n, by omega⟩ := Fin.ext hk'_eq; rw [this]; exact hp_n
-          rw [hk_bwd, hk'_bwd,
-              show a'_resp k = e_n from by simp [a'_resp, hk],
+        · -- Both < n: use tau_left sel-vs-sel directly
+          rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+              show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk']]
+          exact tau_sel_sel ⟨k.val, hk⟩ ⟨k'.val, hk'⟩
+        · -- k < n, k' = n: sel vs p_n/e_n
+          have : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
+          rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+              show a'_resp k' = e_n from by simp [a'_resp, hk'], this, hp_n]
+          exact hord_left_sel_pn ⟨k.val, hk⟩
+        · -- k = n, k' < n: reverse of sel vs p_n/e_n
+          have : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
+          rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+              show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk'], this, hp_n]
+          exact order_reverse (hord_left_sel_pn ⟨k'.val, hk'⟩)
+        · -- Both = n
+          rw [show a'_resp k = e_n from by simp [a'_resp, hk],
               show a'_resp k' = e_n from by simp [a'_resp, hk']]
-          exact order_refl_pair _ _
+          have hkeq : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
+          have hk'eq : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
+          rw [hkeq, hk'eq]; exact order_refl_pair _ _
       -- x vs sel ordering for Fin (n+1).
       have full_x_sel : ∀ (k : Fin (n + 1)),
           (x' < a_bwd k ↔ x < a'_resp k) ∧
           (x' = a_bwd k ↔ x = a'_resp k) := by
         intro k
         by_cases hk : k.val < n
-        · have hk_eq : a_bwd k = a_init ⟨k.val, hk⟩ := rfl
-          rw [hk_eq, show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+        · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
           exact pivot_chain_order' props.hx'd (hd_le_sel ⟨k.val, hk⟩) props.hxc
-            (hc_le_rmod ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
-        · have hk_eq : k.val = n := Nat.eq_of_lt_succ_of_not_lt k.isLt hk
-          have hk_bwd : a_bwd k = extendPoint p_n := by
-            have : k = ⟨n, by omega⟩ := Fin.ext hk_eq; rw [this]; exact hp_n
-          rw [hk_bwd, show a'_resp k = e_n from by simp [a'_resp, hk]]
+            (hc_le_rl ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
+        · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+              show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
           exact ⟨hord_fwd_x_en.1.symm, hord_fwd_x_en.2.symm⟩
       -- b_resp vs sel ordering for Fin (n+1).
       have full_b_sel : ∀ (k : Fin (n + 1)),
@@ -1596,45 +1531,30 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           (extendPoint b_resp = a_bwd k ↔ extendPoint b_sp = a'_resp k) := by
         intro k
         by_cases hk : k.val < n
-        · have hk_eq : a_bwd k = a_init ⟨k.val, hk⟩ := rfl
-          rw [hk_eq, show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+        · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
           exact pivot_chain_order' hb_resp_in.2 (hd_le_sel ⟨k.val, hk⟩) hbc
-            (hc_le_rmod ⟨k.val, hk⟩) sig_b_d (tau_d_sel ⟨k.val, hk⟩)
-        · have hk_eq : k.val = n := Nat.eq_of_lt_succ_of_not_lt k.isLt hk
-          have hk_bwd : a_bwd k = extendPoint p_n := by
-            have : k = ⟨n, by omega⟩ := Fin.ext hk_eq; rw [this]; exact hp_n
-          rw [hk_bwd, show a'_resp k = e_n from by simp [a'_resp, hk]]
+            (hc_le_rl ⟨k.val, hk⟩) sig_b_d (tau_d_sel ⟨k.val, hk⟩)
+        · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+              show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
           exact pivot_chain_order' hb_resp_in.2 hd_le_pn hbc hc_le_en
             sig_b_d ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
       -- y vs sel ordering for Fin (n+1).
-      -- Derive (a_init k < y' ↔ resp_mod k < y) for k < n, then order_reverse.
       have sel_y_ord : ∀ (k : Fin n),
-          (a_init k < y' ↔ resp_mod k < y) ∧
-          (a_init k = y' ↔ resp_mod k = y) := by
+          (a_init k < y' ↔ resp_left k < y) ∧
+          (a_init k = y' ↔ resp_left k = y) := by
         intro k
-        rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-        · rw [hresp_mod_eq k heq, heq]
-          exact ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
-        · rw [hresp_mod_ne k hne]
-          have hlt_pn : a_init k < extendPoint p_n := lt_of_le_of_ne (h_ainit_le_pn k) hne
-          have hlt_en : resp_left k < e_n := (hord_left_sel_pn k).1.mp hlt_pn
-          have hlt_y' : a_init k < y' := lt_of_lt_of_le hlt_pn h_pn_le_y'
-          have hlt_y : resp_left k < y := lt_of_lt_of_le hlt_en h_en_le_y
-          exact ⟨⟨fun _ => hlt_y, fun _ => hlt_y'⟩,
-                 ⟨fun h => absurd hlt_y' (by rw [h]; exact lt_irrefl _),
-                  fun h => absurd hlt_y (by rw [h]; exact lt_irrefl _)⟩⟩
+        exact pivot_chain_order' (h_ainit_le_pn k) h_pn_le_y'
+          ((hresp_left_in k).2) h_en_le_y
+          (hord_left_sel_pn k) ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
       have full_y_sel : ∀ (k : Fin (n + 1)),
           (y' < a_bwd k ↔ y < a'_resp k) ∧
           (y' = a_bwd k ↔ y = a'_resp k) := by
         intro k
         by_cases hk : k.val < n
-        · have hk_eq : a_bwd k = a_init ⟨k.val, hk⟩ := rfl
-          rw [hk_eq, show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+        · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
           exact order_reverse (sel_y_ord ⟨k.val, hk⟩)
-        · have hk_eq : k.val = n := Nat.eq_of_lt_succ_of_not_lt k.isLt hk
-          have hk_bwd : a_bwd k = extendPoint p_n := by
-            have : k = ⟨n, by omega⟩ := Fin.ext hk_eq; rw [this]; exact hp_n
-          rw [hk_bwd, show a'_resp k = e_n from by simp [a'_resp, hk]]
+        · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+              show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
           exact order_reverse ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
       -- Apply the same_order_type_of_cases helper.
       exact same_order_type_of_cases sig_x_b
@@ -1650,25 +1570,16 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩
         · constructor <;> intro ⟨g, hg⟩ <;> cases hg
       · exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
-      · -- Inner position i, 1 ≤ i ≤ n+1, so i-1 ∈ {0,...,n}
+      · -- Inner position: use tau_left's gap/point data uniformly.
         by_cases hlt : i.val - 1 < n
-        · -- a_bwd(i-1) / resp_mod(i-1)
-          let k : Fin n := ⟨i.val - 1, hlt⟩
-          simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-          · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-            have : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-            rw [this]
-            exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
-                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
-          · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-            have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
-            exact hleft_gp
-        · -- i-1 = n: a_bwd(n)/e_n
+        · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+          have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
+          simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                     show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                     show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                     dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
+          exact hleft_gp
+        · -- i-1 = n: a_bwd(n)/e_n — both points
           have hi_eq : i.val - 1 = n := by omega
           have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                      a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
@@ -1685,24 +1596,15 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         have hsig_b := hform_sig ⟨n + 1, by omega⟩ A hA
         simp_game_tuple at hsig_b; exact hsig_b
       · exact (hform_fwd_y A hA).symm
-      · by_cases hlt : i.val - 1 < n
-        · let k : Fin n := ⟨i.val - 1, hlt⟩
-          simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-          · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-            have hab_pn : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
-                a_bwd ⟨n, by omega⟩ := by
-              have h1 : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-              rw [h1, hp_n]; rfl
-            rw [hab_pn]
-            exact (hform_en_an A hA).symm
-          · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-            have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
-            exact hleft_form
+      · -- Inner position: use tau_left's formula data uniformly.
+        by_cases hlt : i.val - 1 < n
+        · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+          have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
+          simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                     show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                     show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                     dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
+          exact hleft_form
         · have hi_eq : i.val - 1 = n := by omega
           have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                      a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
@@ -1711,30 +1613,22 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           exact (hform_en_an A hA).symm
   · -- ================================================================
     -- Case B: b_sp > c. Use tau_left or tau_right for round 2.
-    -- Key fix: sub-split on b_sp vs e_n so Round 2 response comes from
-    -- the same sub-game family as Round 1 responses (tau_left), or from
-    -- tau_right with interval containment arguments.
+    -- resp_left used directly (no resp_mod indirection).
     -- ================================================================
     push_neg at hbc
     have hc_lt_bsp : c < extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp := hbc
     -- Sub-split on b_sp vs e_n for round 2 dispatch.
     rcases le_or_gt (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp) e_n with hbe | heb
     · -- Sub-case B1: b_sp ≤ e_n. Use tau_left for Round 2.
-      -- All orderings come from tau_left's winning condition.
       have hb_sp_ce : inClosedInterval c e_n (extendPoint b_sp) :=
         ⟨le_of_lt hc_lt_bsp, hbe⟩
       obtain ⟨b_resp, hb_resp_in, hcond_left_b⟩ := hwin_left b_sp hb_sp_ce
-      -- b_resp ∈ [d, p_n] ⊆ [x', y']
       refine ⟨b_resp, ⟨le_trans props.hx'd hb_resp_in.1, le_trans hb_resp_in.2 h_pn_le_y'⟩, ?_⟩
       obtain ⟨hord_left_b, hgp_left_b, hform_left_b⟩ := hcond_left_b
-      -- Extract all needed orderings from tau_left.
+      -- All orderings from tau_left (b-challenge variant).
       have tau_d_b : (d < extendPoint b_resp ↔ c < extendPoint b_sp) ∧
           (d = extendPoint b_resp ↔ c = extendPoint b_sp) := by
         have h := hord_left_b ⟨0, by omega⟩ ⟨n + 1, by omega⟩
-        simp_game_tuple at h; exact h
-      have tau_d_pn : (d < extendPoint p_n ↔ c < e_n) ∧
-          (d = extendPoint p_n ↔ c = e_n) := by
-        have h := hord_left_b ⟨0, by omega⟩ ⟨n + 2, by omega⟩
         simp_game_tuple at h; exact h
       have tau_b_pn :
           ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) <
@@ -1758,199 +1652,67 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             ExtendedCarrier M atomMap r)) := by
         intro k; have h := hord_left_b ⟨1 + k.val, by omega⟩ ⟨n + 1, by omega⟩
         simp_game_tuple at h; exact h
-      have tau_b_sel : ∀ (k : Fin n),
-          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-            ExtendedCarrier N atomMap r) < a_init k ↔
-           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-            ExtendedCarrier M atomMap r) < resp_left k) ∧
-          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-            ExtendedCarrier N atomMap r) = a_init k ↔
-           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-            ExtendedCarrier M atomMap r) = resp_left k) := by
-        intro k; have h := hord_left_b ⟨n + 1, by omega⟩ ⟨1 + k.val, by omega⟩
+      -- sigma_x_d for Case B1
+      have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
+        rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
+        · obtain ⟨_resp_sig_b1, _, hwin_sig_b1⟩ :=
+            sigma_r (fun _ : Fin n => d) (fun _ => ⟨props.hx'd, le_refl d⟩)
+          obtain ⟨_b_sig_b1, _, hcond_sig_b1⟩ := hwin_sig_b1 p_xc hp_xc
+          obtain ⟨hord_sig_b1, _, _⟩ := hcond_sig_b1
+          have h := hord_sig_b1 ⟨0, by omega⟩ ⟨n + 2, by omega⟩
+          simp_game_tuple at h; exact h
+        · subst hxc_eq; subst hx'd_eq
+          exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+                 ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      -- tau_left orderings — used uniformly.
+      have hd_le_sel : ∀ (k : Fin n), d ≤ a_init k := fun k => (ha_init k).1
+      have hc_le_rl : ∀ (k : Fin n), c ≤ resp_left k := fun k => (hresp_left_in k).1
+      have tau_d_sel : ∀ (k : Fin n),
+          (d < a_init k ↔ c < resp_left k) ∧ (d = a_init k ↔ c = resp_left k) := by
+        intro k; have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
         simp_game_tuple at h; exact h
+      have tau_sel_sel : ∀ (j j' : Fin n),
+          (a_init j < a_init j' ↔ resp_left j < resp_left j') ∧
+          (a_init j = a_init j' ↔ resp_left j = resp_left j') := by
+        intro j j'
+        have h := hord_left ⟨1 + j.val, by omega⟩ ⟨1 + j'.val, by omega⟩
+        simp_game_tuple at h; exact h
+      have sel_y_ord : ∀ (k : Fin n),
+          (a_init k < y' ↔ resp_left k < y) ∧
+          (a_init k = y' ↔ resp_left k = y) := by
+        intro k
+        exact pivot_chain_order' (h_ainit_le_pn k) h_pn_le_y'
+          ((hresp_left_in k).2) h_en_le_y
+          (hord_left_sel_pn k) ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
       refine ⟨?_, ?_, ?_⟩
       · -- same_order_type (n+1): Case B1
-        -- Case B1 ordering: all orderings from tau_left + forward game.
-        -- Lift tau_left orderings to resp_mod via case split on a_init = p_n.
-        have tau_sel_b_mod : ∀ (k : Fin n),
-            (a_init k < (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-              ExtendedCarrier N atomMap r) ↔
-             resp_mod k < (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-              ExtendedCarrier M atomMap r)) ∧
-            (a_init k = (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-              ExtendedCarrier N atomMap r) ↔
-             resp_mod k = (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-              ExtendedCarrier M atomMap r)) := by
-          intro k
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-          · -- a_init(k) = p_n, resp_mod(k) = e_n
-            rw [hresp_mod_eq k heq_k, heq_k]
-            -- Need: p_n < b_resp iff e_n < b_sp, and p_n = b_resp iff e_n = b_sp
-            -- This is the reverse of tau_b_pn (b_resp < p_n iff b_sp < e_n)
-            have h := tau_b_pn
-            exact ⟨⟨fun hba => by
-              rcases lt_trichotomy (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-                ExtendedCarrier M atomMap r) e_n with hlt | heq | hgt
-              · exact absurd (h.1.mpr hlt) (not_lt.mpr (le_of_lt hba))
-              · exact absurd (h.2.mpr heq) (ne_of_gt hba)
-              · exact hgt,
-              fun hdc => by
-              rcases lt_trichotomy (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-                ExtendedCarrier N atomMap r) (extendPoint p_n) with hlt | heq | hgt
-              · exact absurd (h.1.mp hlt) (not_lt.mpr (le_of_lt hdc))
-              · exact absurd (h.2.mp heq) (ne_of_gt hdc)
-              · exact hgt⟩,
-              ⟨fun h2 => (h.2.mp h2.symm).symm, fun h2 => (h.2.mpr h2.symm).symm⟩⟩
-          · -- a_init(k) ≠ p_n, resp_mod(k) = resp_left(k)
-            rw [hresp_mod_ne k hne_k]
-            exact tau_sel_b k
-        have tau_b_sel_mod : ∀ (k : Fin n),
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-              ExtendedCarrier N atomMap r) < a_init k ↔
-             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-              ExtendedCarrier M atomMap r) < resp_mod k) ∧
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-              ExtendedCarrier N atomMap r) = a_init k ↔
-             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-              ExtendedCarrier M atomMap r) = resp_mod k) := by
-          intro k; have h := tau_sel_b_mod k
-          exact ⟨⟨fun hba => by
-            rcases lt_trichotomy (resp_mod k) (extendPoint b_sp : ExtendedCarrier M atomMap r)
-              with hlt | heq | hgt
-            · exact absurd (h.1.mpr hlt) (not_lt.mpr (le_of_lt hba))
-            · exact absurd (h.2.mpr heq) (ne_of_gt hba)
-            · exact hgt,
-            fun hdc => by
-            rcases lt_trichotomy (a_init k) (extendPoint b_resp : ExtendedCarrier N atomMap r)
-              with hlt | heq | hgt
-            · exact absurd (h.1.mp hlt) (not_lt.mpr (le_of_lt hdc))
-            · exact absurd (h.2.mp heq) (ne_of_gt hdc)
-            · exact hgt⟩,
-            ⟨fun h2 => (h.2.mp h2.symm).symm, fun h2 => (h.2.mpr h2.symm).symm⟩⟩
-        -- sigma_x_d for Case B1 (x' vs d iff x vs c)
-        have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
-          rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
-          · obtain ⟨_resp_sig_b1, _, hwin_sig_b1⟩ :=
-              sigma_r (fun _ : Fin n => d) (fun _ => ⟨props.hx'd, le_refl d⟩)
-            obtain ⟨_b_sig_b1, _, hcond_sig_b1⟩ := hwin_sig_b1 p_xc hp_xc
-            obtain ⟨hord_sig_b1, _, _⟩ := hcond_sig_b1
-            have h := hord_sig_b1 ⟨0, by omega⟩ ⟨n + 2, by omega⟩
-            simp_game_tuple at h; exact h
-          · subst hxc_eq; subst hx'd_eq
-            exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                   ⟨fun _ => rfl, fun _ => rfl⟩⟩
-        -- tau_left orderings for sel vs sel (lifted to resp_mod)
-        have tau_sel_sel_raw : ∀ (j j' : Fin n),
-            (a_init j < a_init j' ↔ resp_left j < resp_left j') ∧
-            (a_init j = a_init j' ↔ resp_left j = resp_left j') := by
-          intro j j'
-          have h := hord_left ⟨1 + j.val, by omega⟩ ⟨1 + j'.val, by omega⟩
-          simp_game_tuple at h; exact h
-        have tau_d_sel_raw : ∀ (k : Fin n),
-            (d < a_init k ↔ c < resp_left k) ∧ (d = a_init k ↔ c = resp_left k) := by
-          intro k; have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-          simp_game_tuple at h; exact h
-        have hd_le_sel : ∀ (k : Fin n), d ≤ a_init k := fun k => (ha_init k).1
-        have hc_le_rmod : ∀ (k : Fin n), c ≤ resp_mod k := fun k => (hresp_mod_in k).1
-        have tau_d_sel : ∀ (k : Fin n),
-            (d < a_init k ↔ c < resp_mod k) ∧ (d = a_init k ↔ c = resp_mod k) := by
-          intro k
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-          · rw [hresp_mod_eq k heq, heq]
-            exact ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
-          · rw [hresp_mod_ne k hne]; exact tau_d_sel_raw k
-        have tau_sel_sel : ∀ (k k' : Fin n),
-            (a_init k < a_init k' ↔ resp_mod k < resp_mod k') ∧
-            (a_init k = a_init k' ↔ resp_mod k = resp_mod k') := by
-          intro k k'
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-          · rcases Decidable.em (a_init k' = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_eq k heq_k, hresp_mod_eq k' heq_k', heq_k, heq_k']
-              exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                     ⟨fun _ => rfl, fun _ => rfl⟩⟩
-            · rw [hresp_mod_eq k heq_k, hresp_mod_ne k' hne_k', heq_k]
-              have hlt_k' := lt_of_le_of_ne (h_ainit_le_pn k') hne_k'
-              have hlt_rk' := (hord_left_sel_pn k').1.mp hlt_k'
-              exact ⟨⟨fun h => absurd h (not_lt_of_gt hlt_k'),
-                      fun h => absurd h (not_lt_of_gt hlt_rk')⟩,
-                     ⟨fun h => absurd hlt_k' (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_rk' (h ▸ lt_irrefl _)⟩⟩
-          · rcases Decidable.em (a_init k' = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_ne k hne_k, hresp_mod_eq k' heq_k', heq_k']
-              have hlt_k := lt_of_le_of_ne (h_ainit_le_pn k) hne_k
-              have hlt_rk := (hord_left_sel_pn k).1.mp hlt_k
-              exact ⟨⟨fun _ => hlt_rk, fun _ => hlt_k⟩,
-                     ⟨fun h => absurd hlt_k (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_rk (h ▸ lt_irrefl _)⟩⟩
-            · rw [hresp_mod_ne k hne_k, hresp_mod_ne k' hne_k']
-              exact tau_sel_sel_raw k k'
-        have tau_sel_y : ∀ (k : Fin n),
-            (a_init k < y' ↔ resp_mod k < y) ∧
-            (a_init k = y' ↔ resp_mod k = y) := by
-          intro k
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-          · rw [hresp_mod_eq k heq, heq]
-            exact ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
-          · rw [hresp_mod_ne k hne]
-            have hlt_pn := lt_of_le_of_ne (h_ainit_le_pn k) hne
-            have hlt_en := (hord_left_sel_pn k).1.mp hlt_pn
-            exact ⟨⟨fun _ => lt_of_lt_of_le hlt_en h_en_le_y,
-                    fun _ => lt_of_lt_of_le hlt_pn h_pn_le_y'⟩,
-                   ⟨fun h => absurd (lt_of_lt_of_le hlt_pn h_pn_le_y') (by rw [h]; exact lt_irrefl _),
-                    fun h => absurd (lt_of_lt_of_le hlt_en h_en_le_y) (by rw [h]; exact lt_irrefl _)⟩⟩
-        have pn_sel_ord : ∀ (k : Fin n),
-            (extendPoint p_n < a_init k ↔ e_n < resp_mod k) ∧
-            (extendPoint p_n = a_init k ↔ e_n = resp_mod k) := by
-          intro k; have h := sel_pn_ord k
-          exact ⟨⟨fun hba => by
-            rcases lt_trichotomy (resp_mod k) e_n with hcd | hcd | hcd
-            · exact absurd (h.1.mpr hcd) (not_lt.mpr (le_of_lt hba))
-            · exact absurd (h.2.mpr hcd) (ne_of_gt hba)
-            · exact hcd,
-            fun hdc => by
-            rcases lt_trichotomy (a_init k) (extendPoint p_n) with hab | hab | hab
-            · exact absurd (h.1.mp hab) (not_lt.mpr (le_of_lt hdc))
-            · exact absurd (h.2.mp hab) (ne_of_gt hdc)
-            · exact hab⟩,
-            ⟨fun h2 => (h.2.mp h2.symm).symm, fun h2 => (h.2.mpr h2.symm).symm⟩⟩
-        -- b_resp vs p_n iff b_sp vs e_n (from tau_b_pn)
-        -- b_resp vs y' (transitivity through p_n)
-        have hb_resp_le_pn : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp :
-            ExtendedCarrier N atomMap r) ≤ extendPoint p_n := hb_resp_in.2
-        have hbsp_le_en : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp :
-            ExtendedCarrier M atomMap r) ≤ e_n := hbe
-        -- Build full sel-index orderings for same_order_type_of_cases.
         have full_sel_sel : ∀ (k k' : Fin (n + 1)),
             (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
             (a_bwd k = a_bwd k' ↔ a'_resp k = a'_resp k') := by
           intro k k'
           by_cases hk : k.val < n <;> by_cases hk' : k'.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk],
-                show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by simp [a'_resp, hk']]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+                show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk']]
             exact tau_sel_sel ⟨k.val, hk⟩ ⟨k'.val, hk'⟩
           · have : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
-            rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk],
-                show a'_resp k' = e_n from by simp [a'_resp, hk'],
-                this, hp_n]
-            exact sel_pn_ord ⟨k.val, hk⟩
+            rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+                show a'_resp k' = e_n from by simp [a'_resp, hk'], this, hp_n]
+            exact hord_left_sel_pn ⟨k.val, hk⟩
           · have : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
             rw [show a'_resp k = e_n from by simp [a'_resp, hk],
-                show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by simp [a'_resp, hk'],
-                this, hp_n]
-            exact order_reverse (sel_pn_ord ⟨k'.val, hk'⟩)
-          · simp only [a'_resp, hk, hk', dite_false]
+                show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk'], this, hp_n]
+            exact order_reverse (hord_left_sel_pn ⟨k'.val, hk'⟩)
+          · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+                show a'_resp k' = e_n from by simp [a'_resp, hk']]
             have hkeq : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
             have hk'eq : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
-            rw [hkeq, hk'eq]
-            exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                   ⟨fun _ => trivial, fun _ => rfl⟩⟩
+            rw [hkeq, hk'eq]; exact order_refl_pair _ _
         have full_x_sel : ∀ (k : Fin (n + 1)),
             (x' < a_bwd k ↔ x < a'_resp k) ∧ (x' = a_bwd k ↔ x = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
             exact pivot_chain_order' props.hx'd (hd_le_sel ⟨k.val, hk⟩) props.hxc
-              (hc_le_rmod ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
+              (hc_le_rl ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
           · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
                 show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
             exact ⟨hord_fwd_x_en.1.symm, hord_fwd_x_en.2.symm⟩
@@ -1958,27 +1720,24 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             (extendPoint b_resp < a_bwd k ↔ extendPoint b_sp < a'_resp k) ∧
             (extendPoint b_resp = a_bwd k ↔ extendPoint b_sp = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
-            exact tau_b_sel_mod ⟨k.val, hk⟩
-          · simp only [a'_resp, hk, dite_false]
-            have hk_eq : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
-            rw [hk_eq, hp_n]
+          · -- b_resp vs a_init(k) / b_sp vs resp_left(k): reverse of sel_b
+            rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+            exact order_reverse (tau_sel_b ⟨k.val, hk⟩)
+          · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+                show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
             exact tau_b_pn
         have full_y_sel : ∀ (k : Fin (n + 1)),
             (y' < a_bwd k ↔ y < a'_resp k) ∧ (y' = a_bwd k ↔ y = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
-            exact order_reverse (tau_sel_y ⟨k.val, hk⟩)
-          · simp only [a'_resp, hk, dite_false]
-            have hk_eq : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
-            rw [hk_eq, hp_n]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+            exact order_reverse (sel_y_ord ⟨k.val, hk⟩)
+          · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+                show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
             exact order_reverse ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
-        -- b_resp vs y ordering (through p_n/e_n pivot chain).
         have hord_by : (extendPoint b_resp < y' ↔ extendPoint b_sp < y) ∧
             (extendPoint b_resp = y' ↔ extendPoint b_sp = y) :=
-          pivot_chain_order' hb_resp_le_pn h_pn_le_y' hbsp_le_en h_en_le_y
+          pivot_chain_order' hb_resp_in.2 h_pn_le_y' hbe h_en_le_y
             tau_b_pn ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
-        -- x vs b_resp ordering (through d/c pivot chain).
         have hord_xb : (x' < extendPoint b_resp ↔ x < extendPoint b_sp) ∧
             (x' = extendPoint b_resp ↔ x = extendPoint b_sp) :=
           pivot_chain_order' props.hx'd hb_resp_in.1 props.hxc (le_of_lt hc_lt_bsp)
@@ -1996,21 +1755,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           · constructor <;> intro ⟨g, hg⟩ <;> cases hg
         · exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
         · by_cases hlt : i.val - 1 < n
-          · let k : Fin n := ⟨i.val - 1, hlt⟩
-            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-              have : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-              rw [this]
-              exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
-                     ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-              have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
-              exact hleft_gp
+          · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
+            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
+            exact hleft_gp
           · have hi_eq : i.val - 1 = n := by omega
             have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                        a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
@@ -2023,28 +1774,17 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2
         · exact (hform_fwd_x A hA).symm
-        · -- b_resp/b_sp from tau_left
-          have htau_b := hform_left_b ⟨n + 1, by omega⟩ A hA
+        · have htau_b := hform_left_b ⟨n + 1, by omega⟩ A hA
           simp_game_tuple at htau_b; exact htau_b
         · exact (hform_fwd_y A hA).symm
         · by_cases hlt : i.val - 1 < n
-          · let k : Fin n := ⟨i.val - 1, hlt⟩
-            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-              have hab_pn : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
-                  a_bwd ⟨n, by omega⟩ := by
-                have h1 : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-                rw [h1, hp_n]; rfl
-              rw [hab_pn]
-              exact (hform_en_an A hA).symm
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-              have hleft_form := hform_left_b ⟨1 + (i.val - 1), by omega⟩ A hA
-              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
-              exact hleft_form
+          · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            have hleft_form := hform_left_b ⟨1 + (i.val - 1), by omega⟩ A hA
+            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
+            exact hleft_form
           · have hi_eq : i.val - 1 = n := by omega
             have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                        a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
@@ -2052,33 +1792,23 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
             exact (hform_en_an A hA).symm
     · -- Sub-case B2: b_sp > e_n. Use tau_right for Round 2.
-      -- Orderings from interval containment: resp_mod(k) ≤ e_n < b_sp.
+      -- Orderings: resp_left(k) ≤ e_n < b_sp, so b_sp > all resp_left values.
       have hb_sp_ey : inClosedInterval e_n y (extendPoint b_sp) :=
         ⟨le_of_lt heb, hb_sp.2⟩
-      -- Play tau_right with dummy selections (all p_n) to get Round 2 response.
       obtain ⟨_resp_right_dummy, _, hwin_right⟩ := tau_right
         (fun _ : Fin n => extendPoint p_n) (fun _ => ⟨le_refl _, h_pn_le_y'⟩)
       obtain ⟨b_resp, hb_resp_in_R, hcond_right_b⟩ := hwin_right b_sp hb_sp_ey
-      -- b_resp ∈ [p_n, y'] ⊆ [x', y']
       refine ⟨b_resp, ⟨le_trans props.hx'd (le_trans hd_le_pn hb_resp_in_R.1),
                         hb_resp_in_R.2⟩, ?_⟩
       obtain ⟨hord_right_b, hgp_right_b, hform_right_b⟩ := hcond_right_b
       refine ⟨?_, ?_, ?_⟩
       · -- same_order_type (n+1): Case B2
-        -- Extract orderings from tau_right game.
         have tau_pn_b :
             ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) <
              extendPoint b_resp ↔ e_n < extendPoint b_sp) ∧
             ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) =
              extendPoint b_resp ↔ e_n = extendPoint b_sp) := by
           have h := hord_right_b ⟨0, by omega⟩ ⟨n + 1, by omega⟩
-          simp_game_tuple at h; exact h
-        have tau_pn_y' :
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) < y' ↔
-             e_n < y) ∧
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) = y' ↔
-             e_n = y) := by
-          have h := hord_right_b ⟨0, by omega⟩ ⟨n + 2, by omega⟩
           simp_game_tuple at h; exact h
         have tau_b_y' :
             ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) < y' ↔
@@ -2087,7 +1817,6 @@ private theorem ghr93_case_II {sig : MonadicSignature}
              (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) = y) := by
           have h := hord_right_b ⟨n + 1, by omega⟩ ⟨n + 2, by omega⟩
           simp_game_tuple at h; exact h
-        -- x vs b_resp through d/c + p_n/e_n chains.
         have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
           rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, _, _⟩
           · obtain ⟨_resp_sig_b2, _, hwin_sig_b2⟩ :=
@@ -2106,114 +1835,69 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             (pivot_chain_order' props.hx'd hd_le_pn props.hxc hc_le_en
               sig_x_d ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩)
             tau_pn_b
-        -- sel-index orderings (reusing outer-scope sel_pn_ord etc.)
+        -- tau_left orderings — used uniformly.
         have hd_le_sel : ∀ (k : Fin n), d ≤ a_init k := fun k => (ha_init k).1
-        have hc_le_rmod : ∀ (k : Fin n), c ≤ resp_mod k := fun k => (hresp_mod_in k).1
+        have hc_le_rl : ∀ (k : Fin n), c ≤ resp_left k := fun k => (hresp_left_in k).1
         have tau_d_sel : ∀ (k : Fin n),
-            (d < a_init k ↔ c < resp_mod k) ∧ (d = a_init k ↔ c = resp_mod k) := by
-          intro k
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-          · rw [hresp_mod_eq k heq, heq]
-            exact ⟨hord_cd_en_pn.1.symm, hord_cd_en_pn.2.symm⟩
-          · rw [hresp_mod_ne k hne]
-            have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
-            simp_game_tuple at h; exact h
-        have tau_sel_sel_raw : ∀ (j j' : Fin n),
+            (d < a_init k ↔ c < resp_left k) ∧ (d = a_init k ↔ c = resp_left k) := by
+          intro k; have h := hord_left ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩
+          simp_game_tuple at h; exact h
+        have tau_sel_sel : ∀ (j j' : Fin n),
             (a_init j < a_init j' ↔ resp_left j < resp_left j') ∧
             (a_init j = a_init j' ↔ resp_left j = resp_left j') := by
           intro j j'
           have h := hord_left ⟨1 + j.val, by omega⟩ ⟨1 + j'.val, by omega⟩
           simp_game_tuple at h; exact h
-        have tau_sel_sel : ∀ (k k' : Fin n),
-            (a_init k < a_init k' ↔ resp_mod k < resp_mod k') ∧
-            (a_init k = a_init k' ↔ resp_mod k = resp_mod k') := by
-          intro k k'
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-          · rcases Decidable.em (a_init k' = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_eq k heq_k, hresp_mod_eq k' heq_k', heq_k, heq_k']
-              exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                     ⟨fun _ => rfl, fun _ => rfl⟩⟩
-            · rw [hresp_mod_eq k heq_k, hresp_mod_ne k' hne_k', heq_k]
-              have hlt := lt_of_le_of_ne (h_ainit_le_pn k') hne_k'
-              have hlt_r := (hord_left_sel_pn k').1.mp hlt
-              exact ⟨⟨fun h => absurd h (not_lt_of_gt hlt),
-                      fun h => absurd h (not_lt_of_gt hlt_r)⟩,
-                     ⟨fun h => absurd hlt (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_r (h ▸ lt_irrefl _)⟩⟩
-          · rcases Decidable.em (a_init k' = extendPoint p_n) with heq_k' | hne_k'
-            · rw [hresp_mod_ne k hne_k, hresp_mod_eq k' heq_k', heq_k']
-              have hlt := lt_of_le_of_ne (h_ainit_le_pn k) hne_k
-              have hlt_r := (hord_left_sel_pn k).1.mp hlt
-              exact ⟨⟨fun _ => hlt_r, fun _ => hlt⟩,
-                     ⟨fun h => absurd hlt (h ▸ lt_irrefl _),
-                      fun h => absurd hlt_r (h ▸ lt_irrefl _)⟩⟩
-            · rw [hresp_mod_ne k hne_k, hresp_mod_ne k' hne_k']
-              exact tau_sel_sel_raw k k'
         have sel_y_ord : ∀ (k : Fin n),
-            (a_init k < y' ↔ resp_mod k < y) ∧ (a_init k = y' ↔ resp_mod k = y) := by
+            (a_init k < y' ↔ resp_left k < y) ∧ (a_init k = y' ↔ resp_left k = y) := by
           intro k
-          rcases Decidable.em (a_init k = extendPoint p_n) with heq | hne
-          · rw [hresp_mod_eq k heq, heq]
-            exact ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
-          · rw [hresp_mod_ne k hne]
-            have hlt_pn := lt_of_le_of_ne (h_ainit_le_pn k) hne
-            have hlt_en := (hord_left_sel_pn k).1.mp hlt_pn
-            exact ⟨⟨fun _ => lt_of_lt_of_le hlt_en h_en_le_y,
-                    fun _ => lt_of_lt_of_le hlt_pn h_pn_le_y'⟩,
-                   ⟨fun h => absurd (lt_of_lt_of_le hlt_pn h_pn_le_y') (by rw [h]; exact lt_irrefl _),
-                    fun h => absurd (lt_of_lt_of_le hlt_en h_en_le_y) (by rw [h]; exact lt_irrefl _)⟩⟩
-        -- Build full sel orderings for Fin (n+1).
+          exact pivot_chain_order' (h_ainit_le_pn k) h_pn_le_y'
+            ((hresp_left_in k).2) h_en_le_y
+            (hord_left_sel_pn k) ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
+        have hb_resp_gt_pn :
+            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) <
+            extendPoint b_resp := tau_pn_b.1.mpr heb
         have full_sel_sel : ∀ (k k' : Fin (n + 1)),
             (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
             (a_bwd k = a_bwd k' ↔ a'_resp k = a'_resp k') := by
           intro k k'
           by_cases hk : k.val < n <;> by_cases hk' : k'.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk],
-                show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by simp [a'_resp, hk']]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+                show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk']]
             exact tau_sel_sel ⟨k.val, hk⟩ ⟨k'.val, hk'⟩
           · have : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
-            rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk],
+            rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk],
                 show a'_resp k' = e_n from by simp [a'_resp, hk'], this, hp_n]
-            exact sel_pn_ord ⟨k.val, hk⟩
+            exact hord_left_sel_pn ⟨k.val, hk⟩
           · have : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
             rw [show a'_resp k = e_n from by simp [a'_resp, hk],
-                show a'_resp k' = resp_mod ⟨k'.val, hk'⟩ from by simp [a'_resp, hk'], this, hp_n]
-            exact order_reverse (sel_pn_ord ⟨k'.val, hk'⟩)
-          · simp only [a'_resp, hk, hk', dite_false]
+                show a'_resp k' = resp_left ⟨k'.val, hk'⟩ from by simp [a'_resp, hk'], this, hp_n]
+            exact order_reverse (hord_left_sel_pn ⟨k'.val, hk'⟩)
+          · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
+                show a'_resp k' = e_n from by simp [a'_resp, hk']]
             have hkeq : k = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk)
             have hk'eq : k' = ⟨n, by omega⟩ := Fin.ext (Nat.eq_of_lt_succ_of_not_lt k'.isLt hk')
-            rw [hkeq, hk'eq]
-            exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
-                   ⟨fun _ => trivial, fun _ => rfl⟩⟩
+            rw [hkeq, hk'eq]; exact order_refl_pair _ _
         have full_x_sel : ∀ (k : Fin (n + 1)),
             (x' < a_bwd k ↔ x < a'_resp k) ∧ (x' = a_bwd k ↔ x = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
             exact pivot_chain_order' props.hx'd (hd_le_sel ⟨k.val, hk⟩) props.hxc
-              (hc_le_rmod ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
+              (hc_le_rl ⟨k.val, hk⟩) sig_x_d (tau_d_sel ⟨k.val, hk⟩)
           · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
                 show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
             exact ⟨hord_fwd_x_en.1.symm, hord_fwd_x_en.2.symm⟩
-        -- b_resp > p_n in Case B2 (from tau_pn_b + heb).
-        have hb_resp_gt_pn :
-            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) <
-            extendPoint b_resp := tau_pn_b.1.mpr heb
         have full_b_sel : ∀ (k : Fin (n + 1)),
             (extendPoint b_resp < a_bwd k ↔ extendPoint b_sp < a'_resp k) ∧
             (extendPoint b_resp = a_bwd k ↔ extendPoint b_sp = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · -- b_resp > p_n ≥ a_init k, b_sp > e_n ≥ resp_mod k. Both < and = are False.
-            rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+          · -- b_resp > p_n ≥ a_init(k), b_sp > e_n ≥ resp_left(k). Both sides false.
+            rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
             have h_bwd_lt : a_bwd k < extendPoint b_resp :=
               lt_of_le_of_lt (h_ainit_le_pn ⟨k.val, hk⟩) hb_resp_gt_pn
-            have h_resp_le : resp_mod ⟨k.val, hk⟩ ≤ e_n := by
-              rcases Decidable.em (a_init ⟨k.val, hk⟩ = extendPoint p_n) with heq | hne
-              · exact hresp_mod_eq _ heq ▸ le_refl _
-              · exact hresp_mod_ne _ hne ▸ le_of_lt ((hord_left_sel_pn ⟨k.val, hk⟩).1.mp
-                  (lt_of_le_of_ne (h_ainit_le_pn _) hne))
-            have h_resp_lt : resp_mod ⟨k.val, hk⟩ <
+            have h_resp_lt : resp_left ⟨k.val, hk⟩ <
                 (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) :=
-              lt_of_le_of_lt h_resp_le heb
+              lt_of_le_of_lt (hresp_left_in ⟨k.val, hk⟩).2 heb
             exact ⟨⟨fun h => absurd h (not_lt.mpr (le_of_lt h_bwd_lt)),
                     fun h => absurd h (not_lt.mpr (le_of_lt h_resp_lt))⟩,
                    ⟨fun h => absurd h_bwd_lt (h ▸ lt_irrefl _),
@@ -2224,7 +1908,7 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         have full_y_sel : ∀ (k : Fin (n + 1)),
             (y' < a_bwd k ↔ y < a'_resp k) ∧ (y' = a_bwd k ↔ y = a'_resp k) := by
           intro k; by_cases hk : k.val < n
-          · rw [show a'_resp k = resp_mod ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
+          · rw [show a'_resp k = resp_left ⟨k.val, hk⟩ from by simp [a'_resp, hk]]
             exact order_reverse (sel_y_ord ⟨k.val, hk⟩)
           · rw [show a'_resp k = e_n from by simp [a'_resp, hk],
                 show k = ⟨n, by omega⟩ from Fin.ext (Nat.eq_of_lt_succ_of_not_lt k.isLt hk), hp_n]
@@ -2242,21 +1926,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           · constructor <;> intro ⟨g, hg⟩ <;> cases hg
         · exact ⟨hgp_fwd_y.1.symm, hgp_fwd_y.2.symm⟩
         · by_cases hlt : i.val - 1 < n
-          · let k : Fin n := ⟨i.val - 1, hlt⟩
-            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-              have : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-              rw [this]
-              exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
-                     ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-              have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
-              exact hleft_gp
+          · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
+            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
+            exact hleft_gp
           · have hi_eq : i.val - 1 = n := by omega
             have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                        a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
@@ -2265,35 +1941,21 @@ private theorem ghr93_case_II {sig : MonadicSignature}
             exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
                    ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
       · -- formula_agreement (n+1): Case B2
-        -- b_resp from tau_right, has formula agreement at pivot p_n/e_n
-        -- and at b-position from tau_right's winning condition.
         intro i A hA
         simp only [game_tuple]
         split_ifs with h0 hn1 hn2
         · exact (hform_fwd_x A hA).symm
-        · -- b_resp/b_sp: from tau_right at b-position
-          have hform_b := hform_right_b ⟨n + 1, by omega⟩ A hA
+        · have hform_b := hform_right_b ⟨n + 1, by omega⟩ A hA
           simp_game_tuple at hform_b; exact hform_b
         · exact (hform_fwd_y A hA).symm
         · by_cases hlt : i.val - 1 < n
-          · let k : Fin n := ⟨i.val - 1, hlt⟩
-            simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
-            rcases Decidable.em (a_init k = extendPoint p_n) with heq_k | hne_k
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_eq k heq_k]
-              have hab_pn : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
-                  a_bwd ⟨n, by omega⟩ := by
-                have h1 : a_bwd ⟨i.val - 1, by omega⟩ = extendPoint p_n := heq_k
-                rw [h1, hp_n]; rfl
-              rw [hab_pn]
-              exact (hform_en_an A hA).symm
-            · rw [show (⟨i.val - 1, hlt⟩ : Fin n) = k from rfl, hresp_mod_ne k hne_k]
-              -- Use tau_left formula agreement (from hform_left, pre-computed)
-              have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
-              simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
-                         show ¬(1 + (i.val - 1) = n + 1) from by omega,
-                         show ¬(1 + (i.val - 1) = n + 2) from by omega,
-                         dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
-              exact hleft_form
+          · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
+            have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
+            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+                       show ¬(1 + (i.val - 1) = n + 1) from by omega,
+                       show ¬(1 + (i.val - 1) = n + 2) from by omega,
+                       dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
+            exact hleft_form
           · have hi_eq : i.val - 1 = n := by omega
             have hab : (a_bwd ⟨i.val - 1, by omega⟩ : ExtendedCarrier N atomMap r) =
                        a_bwd ⟨n, by omega⟩ := by congr 1; exact Fin.ext hi_eq
