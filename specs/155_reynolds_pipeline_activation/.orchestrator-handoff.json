@@ -2,50 +2,27 @@
   "task_number": 155,
   "session_id": "sess_1748390400_orch155",
   "status": "partial",
-  "summary": "Phase 3C BLOCKED (Cycle 3): Exhaustive analysis of 6 approaches confirms sel_pn_ord is PROVABLY UNPROVABLE from the current e_n construction. The fundamental issue is the 'fan problem': d branches to both a_init(k) and p_n with no chain between them. Resolution requires the full GHR93 U(B,A) witness construction (250-400 lines), which itself requires StaviFormula finiteness at each depth as a prerequisite.",
+  "summary": "Restructured sel_pn_ord proof in ghr93_case_II. Added 4 new infrastructure items: (1) hord_big_sel_en extracts resp_tau(k) vs e_n ordering from the big forward game, (2) hform_abig_ainit proves a'_big(k) and a_init(k) agree on rank-r formulas via big-game/tau transitivity, (3) tau_r2 constructs rank-(r+2) backward game from h_r1_univ + h_ih_r2, (4) sel_pn_ord reduced to same_side sorry (char_k materialization). Build passes, no regressions.",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
     {
       "phase": "3C",
-      "issue": "sel_pn_ord unprovable: the fan d -> {a_init k, p_n} cannot be resolved to a chain. No combination of tau game, forward game, big game, or formula agreement hypotheses bridges this gap.",
-      "approaches_tried": [
-        "pivot_chain_order' (needs chain, have fan)",
-        "big game hord_big (gives surrogate a'_big, not a_init)",
-        "tau at e_n_pt (gives b_tau_resp, not p_n)",
-        "double game combination (more surrogates)",
-        "ordering transitivity (all paths dead-end)",
-        "formula agreement (same type != same ordering in DLO)"
-      ],
-      "resolution": "Replace e_n construction with GHR93 U(B,A) witness",
-      "prerequisites": [
-        "StaviFormula finiteness at each depth (not yet formalized)",
-        "Formula materialization: rank_type -> StaviFormula conjunction",
-        "std_untl truth proof at rank-embedded positions",
-        "Rank-(r+2) formula transfer via tau_r2",
-        "Witness extraction from std_untl semantics"
-      ],
-      "estimated_effort": "8-16 hours (250-400 lines)"
+      "issue": "same_side lemma requires char_k formula materialization (private to StaviCompleteness.lean)",
+      "resolution": "Make char_k accessible from CaseAnalysis.lean, construct U(char_k nf, sf_top), prove same_side via tau_r2 formula transfer",
+      "estimated_effort": "4-8 hours"
     }
   ],
   "continuation_context": {
-    "phase_3C_status": "BLOCKED - infrastructure complete, core construction requires formula materialization prerequisite",
-    "infrastructure_in_place": [
-      "h_ih_r2: rank-polymorphic forward-to-backward IH at rank r+2",
-      "h_r1_univ: universal forward game at any rank r'+2",
-      "rank_embed + rank_embed_stavi_truth_mu: formula preservation across ranks",
-      "ghr93_winning_condition_perm: selection permutation",
-      "std_untl semantics defined in TypeFormulas.lean (lines 327-332)"
-    ],
-    "sorry_sites": {
-      "CaseAnalysis_1450": "sel_pn_ord Case A - fan problem (d -> {a_init k, p_n})",
-      "CaseAnalysis_1819": "sel_pn_ord Case B - identical root cause",
-      "CaseAnalysis_2030": "b_resp vs p_n Case B - same fan structure (d -> {b_resp, p_n})",
-      "CaseAnalysis_2083": "dead code (already commented out)",
-      "CaseAnalysis_4115": "Cases III-IV assembly (separate from Phase 3C)"
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
+    "sorry_lines": [1585, 1965],
+    "sorry_statement": "same_side: a'_big(k) and a_init(k) have same ordering w.r.t. p_n",
+    "available_data": {
+      "hform_abig_ainit": "rank-r formula agreement between a'_big(k) and a_init(k)",
+      "tau_r2": "rank-(r+2) backward game on [rank_embed d, rank_embed y'] to [rank_embed c, rank_embed y]",
+      "hord_big_sel_en": "resp_tau(k) < e_n iff a'_big(k) < p_n"
     },
-    "key_insight": "The tau game relates {a_init, resp_tau} and the forward game relates {p_n, e_n}. No game in the current construction relates ALL FOUR. The GHR93 resolution redefines e_n so that resp_tau(k) < e_n is ALWAYS true, making sel_pn_ord trivially True <-> True.",
-    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-sel-pn-ord-analysis-20260527.md"
+    "proof_structure": "sel_pn_ord = hord_big_sel_en + same_side. same_side needs U(B, sf_top) where B = char_k(type of p_n) at depth r, giving depth r+2 formula transferable through tau_r2."
   },
-  "next_action_hint": "Research TypeFormulas.lean for StaviFormula finiteness infrastructure. Check if NormalForm (Fintype) can be leveraged to enumerate all inequivalent formulas at each depth. If finiteness exists, proceed with formula materialization and the U(B,A) construction. If not, first formalize StaviFormula depth-d finiteness."
+  "next_action_hint": "Make char_k accessible from CaseAnalysis.lean (remove private or add public wrapper), then construct U(char_k nf, sf_top) formula and prove same_side via tau_r2 formula transfer"
 }

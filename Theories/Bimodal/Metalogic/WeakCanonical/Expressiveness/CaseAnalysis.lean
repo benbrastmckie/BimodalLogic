@@ -1339,6 +1339,123 @@ private theorem ghr93_case_II {sig : MonadicSignature}
       (stavi_temporal_truth_mu M atomMap r y A ↔ stavi_temporal_truth_mu N atomMap r y' A) := by
     intro A hA; have h := hform_big ⟨(1 + 3 * n + 1) + 2, by omega⟩ A hA
     simp only [game_tuple_y_eq] at h; exact h
+  -- Step 3e: Extract big-game ordering between resp_tau(k) / a'_big(k) and e_n / p_n.
+  -- For k < n, position (1+k) in the big game has a_pad_big(k) = resp_tau(k) on M-side
+  -- and a'_big(k) on N-side. The b-position has e_n on M-side and p_n on N-side.
+  -- This gives: resp_tau(k) < e_n ↔ a'_big(k) < p_n (and = variant).
+  have hord_big_sel_en : ∀ (k : Fin n),
+      (resp_tau k < e_n ↔ a'_big ⟨k.val, by omega⟩ < extendPoint p_n) ∧
+      (resp_tau k = e_n ↔ a'_big ⟨k.val, by omega⟩ = extendPoint p_n) := by
+    intro k
+    have hord := hord_big ⟨1 + k.val, by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
+    -- M-side at position (1+k): game_tuple x y a_pad_big e_n_pt ⟨1+k.val, _⟩
+    --   = a_pad_big ⟨k.val, _⟩ = resp_tau ⟨k.val, _⟩ (since k.val < n)
+    have hM_sel : game_tuple x y a_pad_big e_n_pt ⟨1 + k.val, by omega⟩ =
+        resp_tau k := by
+      simp only [game_tuple, show (1 + k.val : Nat) ≠ 0 from by omega,
+        show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 1) from by { have := k.isLt; omega },
+        show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 2) from by { have := k.isLt; omega },
+        dite_false]
+      show a_pad_big ⟨1 + k.val - 1, _⟩ = resp_tau k
+      simp only [a_pad_big, show 1 + k.val - 1 = k.val from by omega,
+        show k.val < n from k.isLt, dite_true]
+    -- N-side at position (1+k): a'_big ⟨k.val, _⟩
+    have hN_sel : game_tuple x' y' a'_big p_n ⟨1 + k.val, by omega⟩ =
+        a'_big ⟨k.val, by omega⟩ := by
+      simp only [game_tuple, show (1 + k.val : Nat) ≠ 0 from by omega,
+        show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 1) from by { have := k.isLt; omega },
+        show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 2) from by { have := k.isLt; omega },
+        dite_false, show 1 + k.val - 1 = k.val from by omega]
+    rw [hM_sel, game_tuple_b_eq, hN_sel, game_tuple_b_eq] at hord
+    exact hord
+  -- Step 3f: Hoist p_cy existence (needed for tau formula agreement, independent of b_sp).
+  have ⟨p_cy_pre, hp_cy_pre⟩ : ∃ (p : M.carrier), inClosedInterval c y (extendPoint p) := by
+    rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨_, hdy'_eq, _, hgap_d⟩
+    · exact ⟨p_cy, hp_cy⟩
+    · -- d = y', d is gap, but a_bwd(n) ∈ [d, y'] = [d, d] is a point — contradiction
+      obtain ⟨g_d, hg_d⟩ := hgap_d
+      have ha_eq : a_bwd ⟨n, by omega⟩ = d :=
+        le_antisymm (hdy'_eq ▸ (ha_bwd ⟨n, by omega⟩).2) (h_no_split ⟨n, by omega⟩)
+      have : d = extendPoint p_n := ha_eq ▸ hp_n
+      exact absurd (this.symm ▸ hg_d : extendPoint p_n = Sum.inr g_d) (by simp [extendPoint])
+  -- Instantiate hwin_tau with p_cy_pre to get formula agreement at inner positions.
+  obtain ⟨_b_tau_pre, _hb_tau_pre_in, hcond_tau_pre⟩ := hwin_tau p_cy_pre hp_cy_pre
+  obtain ⟨_hord_tau_pre, _hgp_tau_pre, hform_tau_pre⟩ := hcond_tau_pre
+  -- Formula agreement between a'_big(k) and a_init(k) at rank r.
+  -- Both agree with resp_tau(k) at rank r (from big game and tau respectively),
+  -- so they agree with each other.
+  have hform_abig_ainit : ∀ (k : Fin n) (A : StaviFormula), stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu N atomMap r (a'_big ⟨k.val, by omega⟩) A ↔
+       stavi_temporal_truth_mu N atomMap r (a_init k) A) := by
+    intro k A hA
+    -- From big game formula agreement at position (1+k):
+    -- M resp_tau(k) ↔ N a'_big(k)
+    have h_big : stavi_temporal_truth_mu M atomMap r (resp_tau k) A ↔
+        stavi_temporal_truth_mu N atomMap r (a'_big ⟨k.val, by omega⟩) A := by
+      have h := hform_big ⟨1 + k.val, by omega⟩ A hA
+      -- M-side: game_tuple at (1+k) = a_pad_big(k) = resp_tau(k) for k < n
+      have hM : game_tuple x y a_pad_big e_n_pt ⟨1 + k.val, by omega⟩ = resp_tau k := by
+        simp only [game_tuple, show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 1) from by { have := k.isLt; omega },
+          show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 2) from by { have := k.isLt; omega },
+          dite_false]
+        show a_pad_big ⟨1 + k.val - 1, _⟩ = resp_tau k
+        simp only [a_pad_big, show 1 + k.val - 1 = k.val from by omega,
+          show k.val < n from k.isLt, dite_true]
+      -- N-side: game_tuple at (1+k) = a'_big(k)
+      have hN : game_tuple x' y' a'_big p_n ⟨1 + k.val, by omega⟩ =
+          a'_big ⟨k.val, by omega⟩ := by
+        simp only [game_tuple, show (1 + k.val : Nat) ≠ 0 from by omega,
+          show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 1) from by { have := k.isLt; omega },
+          show ¬((1 + k.val : Nat) = 1 + 3 * n + 1 + 2) from by { have := k.isLt; omega },
+          dite_false, show 1 + k.val - 1 = k.val from by omega]
+      rw [hM, hN] at h; exact h
+    -- From tau formula agreement at position (1+k):
+    -- N a_init(k) ↔ M resp_tau(k)
+    have h_tau : stavi_temporal_truth_mu N atomMap r (a_init k) A ↔
+        stavi_temporal_truth_mu M atomMap r (resp_tau k) A := by
+      have h := hform_tau_pre ⟨1 + k.val, by omega⟩ A hA
+      simp_game_tuple at h; exact h
+    -- Combine: a'_big(k) ↔ resp_tau(k) (from h_big.symm) ↔ a_init(k) (from h_tau.symm)
+    exact h_big.symm.trans h_tau.symm
+  -- Step 3g: Construct rank-(r+2) backward game tau_r2 on [d,y']/[c,y].
+  -- GHR93 Case II requires a backward game at rank r+2 to transfer formulas
+  -- of depth r+2 (specifically U(B, sf_top) where B has depth r).
+  -- Construction: h_r1_univ gives (4+3n)-round forward at rank r+2,
+  -- round_mono reduces to (1+3n) rounds, h_ih_r2 converts to n-round backward.
+  have h_fwd_r2 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) c) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) d) (rank_embed (by omega : r ≤ r + 2) y') :=
+    h_r1_univ r props.hcy props.hdy'
+  have h_fwd_r2_mono : ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) c) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) d) (rank_embed (by omega : r ≤ r + 2) y') :=
+    ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n)
+      ((rank_embed_le (by omega : r ≤ r + 2) c y).mpr props.hcy)
+      ((rank_embed_le (by omega : r ≤ r + 2) d y').mpr props.hdy')
+      h_fwd_r2
+  -- Point witness in [rank_embed d, rank_embed y'] for h_ih_r2
+  have h_pt_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) d)
+      (rank_embed (by omega : r ≤ r + 2) y')
+      (extendPoint (sig := sig) (atomMap := atomMap) (r := r + 2) p) := by
+    refine ⟨p_n, ?_⟩
+    have hpn_in_dy' : inClosedInterval d y' (extendPoint p_n) :=
+      ⟨le_trans (h_no_split ⟨n, by omega⟩) (le_of_eq hp_n),
+       le_trans (le_of_eq hp_n.symm) (ha_bwd ⟨n, by omega⟩).2⟩
+    rw [show (extendPoint (r := r + 2) p_n : ExtendedCarrier N atomMap (r + 2)) =
+            rank_embed (by omega : r ≤ r + 2) (extendPoint (r := r) p_n) from
+          (rank_embed_point (by omega : r ≤ r + 2) p_n).symm]
+    exact (rank_embed_inClosedInterval (by omega : r ≤ r + 2) d y' (extendPoint p_n)).mpr
+      hpn_in_dy'
+  -- tau_r2: n-round backward game at rank r+2 on [d,y']/[c,y] (rank-embedded)
+  have tau_r2 : ghr93_duplicator_wins N M atomMap n (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) d) (rank_embed (by omega : r ≤ r + 2) y')
+      (rank_embed (by omega : r ≤ r + 2) c) (rank_embed (by omega : r ≤ r + 2) y) :=
+    h_ih_r2
+      ((rank_embed_le (by omega : r ≤ r + 2) c y).mpr props.hcy)
+      ((rank_embed_le (by omega : r ≤ r + 2) d y').mpr props.hdy')
+      h_pt_r2 h_fwd_r2_mono
+  -- tau_r2 is now available for same_side proofs via formula transfer at rank r+2.
   -- The full winning condition assembly:
   -- The key gap: a_N ≠ a_bwd in general, so the forward winning condition
   -- doesn't directly give us the backward winning condition.
@@ -1442,12 +1559,34 @@ private theorem ghr93_case_II {sig : MonadicSignature}
         have hc_le_rtau : ∀ (k : Fin n), c ≤ resp_tau k :=
           fun k => (hresp_tau_in k).1
         -- sel_pn_ord: the ordering between tau selections and p_n/e_n.
-        -- Mathematically true from GHR93 Lemma 10 + relabeling (d as minimum);
-        -- sorry'd pending Phase 3C restructure of split-point construction.
+        -- Proof strategy (GHR93 Case II):
+        --   1. hord_big_sel_en gives: resp_tau(k) < e_n ↔ a'_big(k) < p_n
+        --   2. hform_abig_ainit gives: a'_big(k) and a_init(k) agree on rank-r formulas
+        --   3. same_side_of_pn: rank-r formula agreement + rank-r+2 type formula
+        --      transfer implies a'_big(k) and a_init(k) are on the same side of p_n
+        --      (requires char_k materialization — sorry'd here, proven in Phase 6D+)
         have sel_pn_ord : ∀ (k : Fin n),
             (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧
             (a_init k = extendPoint p_n ↔ resp_tau k = e_n) := by
-          intro k; sorry
+          intro k
+          -- From hord_big_sel_en: resp_tau k <=> a'_big k w.r.t. e_n/p_n
+          have hbig := hord_big_sel_en k
+          -- same_side_of_pn: a'_big(k) and a_init(k) have same ordering w.r.t. p_n.
+          -- This follows from rank-r formula agreement (hform_abig_ainit) combined
+          -- with U(B, sf_top) transfer through a rank-(r+2) backward game (tau_r2).
+          -- B = char_k(type of p_n) has depth r, so U(B, sf_top) has depth r+2.
+          -- tau_r2 preserves depth ≤ r+2, transferring the "exists above" witness.
+          -- The rank-r+2 backward game is constructed from h_r1_univ + h_ih_r2.
+          -- TODO(Phase 3C): Implement char_k materialization + U(B,sf_top) transfer
+          have same_side : (a'_big ⟨k.val, by omega⟩ < extendPoint p_n ↔
+              a_init k < extendPoint p_n) ∧
+              (a'_big ⟨k.val, by omega⟩ = extendPoint p_n ↔
+              a_init k = extendPoint p_n) := by
+            sorry
+          exact ⟨⟨fun h => hbig.1.mpr (same_side.1.mpr h),
+                  fun h => same_side.1.mp (hbig.1.mp h)⟩,
+                 ⟨fun h => hbig.2.mpr (same_side.2.mpr h),
+                  fun h => same_side.2.mp (hbig.2.mp h)⟩⟩
         -- pn_sel_ord: reverse direction (p_n vs sel), derived from sel_pn_ord
         -- via linear order trichotomy.
         have pn_sel_ord : ∀ (k : Fin n),
@@ -1812,11 +1951,22 @@ private theorem ghr93_case_II {sig : MonadicSignature}
           fun k => (ha_init k).1
         have hc_le_rtau : ∀ (k : Fin n), c ≤ resp_tau k :=
           fun k => (hresp_tau_in k).1
-        -- sel_pn_ord / pn_sel_ord: same as Case A (sorry'd, Phase 3C).
+        -- sel_pn_ord / pn_sel_ord: same structure as Case A.
+        -- Uses hord_big_sel_en + sorry'd same_side (char_k materialization).
         have sel_pn_ord : ∀ (k : Fin n),
             (a_init k < extendPoint p_n ↔ resp_tau k < e_n) ∧
             (a_init k = extendPoint p_n ↔ resp_tau k = e_n) := by
-          intro k; sorry
+          intro k
+          have hbig := hord_big_sel_en k
+          have same_side : (a'_big ⟨k.val, by omega⟩ < extendPoint p_n ↔
+              a_init k < extendPoint p_n) ∧
+              (a'_big ⟨k.val, by omega⟩ = extendPoint p_n ↔
+              a_init k = extendPoint p_n) := by
+            sorry
+          exact ⟨⟨fun h => hbig.1.mpr (same_side.1.mpr h),
+                  fun h => same_side.1.mp (hbig.1.mp h)⟩,
+                 ⟨fun h => hbig.2.mpr (same_side.2.mpr h),
+                  fun h => same_side.2.mp (hbig.2.mp h)⟩⟩
         have pn_sel_ord : ∀ (k : Fin n),
             (extendPoint p_n < a_init k ↔ e_n < resp_tau k) ∧
             (extendPoint p_n = a_init k ↔ e_n = resp_tau k) := by
