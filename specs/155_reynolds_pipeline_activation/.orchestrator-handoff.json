@@ -2,25 +2,40 @@
   "task_number": 155,
   "session_id": "sess_1779937857_21f022",
   "status": "partial",
-  "summary": "Phase R1: SplitPointProps restructured with delta parameter. sigma/tau now at rank r+delta on rank-embedded positions. SplitPoint.lean compiles clean; CaseAnalysis.lean has 5 expected downstream breaks.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "3C-STRICT-partial", "R1"],
+  "summary": "Deep analysis of Case II sorry site (CaseAnalysis.lean:1243). Two approaches fully analyzed: (1) sub-interval composition with B1/B2 split — ready to implement, (2) GHR93 U(B,sf_top) formula transfer — requires h_surj threading + Step 6 gap. No code changes committed (sub-interval attempt reverted per user directive).",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "3C-STRICT-partial", "R1", "R2", "R3-partial"],
   "phases_total": 15,
-  "blocking_issues": [],
+  "blocking_issues": [
+    "Case II body: user directive requires GHR93 U(B,sf_top) approach but (a) h_surj not in theorem scope, (b) Step 6 gap: witness z existence does not directly yield resp(k) < e_n",
+    "Sub-interval composition (Path A) is mathematically complete and ready to implement but user directive prohibits it"
+  ],
   "continuation_context": {
-    "next_phase": "R2",
-    "next_action": "Restructure Theorem6.lean induction to carry rank offset through delta parameter",
-    "key_file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean",
-    "phase_R1_changes": {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean",
-      "structure_change": "SplitPointProps now takes (n : Nat) (delta : Nat) instead of (n : Nat)",
-      "sigma_tau_rank": "r + delta on rank-embedded positions",
-      "ih_change": "obtain_split_point_props ih now returns backward games at r+delta",
-      "h_fwd_r1_kept": true,
-      "downstream_breaks": {
-        "CaseAnalysis.lean": [68, 1197, 3419, 4554, 4690]
+    "next_phase": "Case II implementation",
+    "next_action": "Decide between Path A (sub-interval, ready) vs Path B (GHR93 formula transfer, needs infrastructure). See handoffs/case-II-ghr93-handoff.md.",
+    "analysis_findings": {
+      "sub_interval_approach": {
+        "status": "ready_to_implement",
+        "description": "tau_left on [d,p_n]/[c,e_n] gives sel_pn_ord directly. Case B split into B1 (b_sp <= e_n, tau_left round-2) and B2 (b_sp > e_n, tau_right + monotonicity). All 4 sorry sites resolved.",
+        "lines_of_code": "~1400 (old Cycle 4 code + B1/B2 fix)",
+        "infrastructure_changes": "none"
+      },
+      "ghr93_formula_transfer": {
+        "status": "blocked",
+        "description": "Build characteristic formula B for p_n, transfer phi=U(B,sf_top) through tau at rank r+delta.",
+        "blockers": [
+          "h_surj (atomMap surjectivity) not in ghr93_case_II scope — needs threading through case theorems, inductive step, and Theorem6",
+          "Step 6 gap: witness z > resp(k) with B(z) does not directly give resp(k) < e_n (z could be different from e_n)"
+        ],
+        "infrastructure_changes": "h_surj parameter addition to ~5 theorem signatures"
       }
     },
-    "build_state": "SplitPoint.lean compiles; CaseAnalysis.lean breaks at 5 call sites (expected)"
+    "remaining_sorries": {
+      "case_II_body": "Line 1243: entire Case II proof",
+      "cases_III_IV_assembly": "Line 4564: winning condition grid dispatch",
+      "theorem6_core_ih": "Line 124: uniform-rank succ IH",
+      "theorem6_rank_varying_ih": "Line 325: rank-varying succ IH"
+    },
+    "build_state": "Full build passes. 14 sorry references across CaseAnalysis.lean."
   },
-  "next_action_hint": "Phase R2: restructure Theorem6.lean induction to carry delta parameter"
+  "next_action_hint": "Resolve the Path A vs Path B decision. If Path B, first thread h_surj through the theorem chain."
 }
