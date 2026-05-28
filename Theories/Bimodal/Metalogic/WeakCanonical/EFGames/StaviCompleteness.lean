@@ -2318,7 +2318,21 @@ private theorem nf_2var_existential_transfer {sig : MonadicSignature}
       -- The atom part transfers via h_3var_atoms.
       -- The quantifier part requires sub-interval matching at the 3-point
       -- configuration (u,x,t)/(u',x',t'), which is the Fraïssé game argument.
-      sorry
+      obtain ⟨hu_atoms, hu_quant⟩ := hu
+      refine ⟨?_, ?_⟩
+      · -- Atoms: transfer via h_3var_atoms
+        intro a; constructor
+        · intro ha'; exact (hu_atoms a).mp ((h_3var_atoms a).mpr ha')
+        · intro ha; exact (h_3var_atoms a).mp ((hu_atoms a).mpr ha)
+      · -- Quantifier: need 4-var transfer at depth j'
+        intro sub_nf
+        rw [← hu_quant sub_nf]
+        -- Now need: (∃ w, nf_eval M j' 4 (w::u::x::t) sub_nf) ↔
+        --           (∃ w', nf_eval M' j' 4 (w'::u'::x'::t') sub_nf)
+        -- This is 4-var existential transfer at depth j' for the 3-point
+        -- configuration (u,x,t)/(u',x',t'). Use zone_match on (x,t) bridge
+        -- plus the outer theorem's transfer conclusion at depth j'.
+        sorry
   · rintro ⟨u', hu'⟩
     -- Backward direction: M' → M (symmetric, using reversed hypotheses)
     have h_nf_x' := h_nf_x.symm
@@ -2390,7 +2404,17 @@ private theorem nf_2var_existential_transfer {sig : MonadicSignature}
       · intro ha'; exact (hu' a).mp ((h_3var_atoms a).mpr ha')
       · intro ha; exact (h_3var_atoms a).mp ((hu' a).mpr ha)
     | j' + 1 =>
-      sorry
+      obtain ⟨hu'_atoms, hu'_quant⟩ := hu'
+      refine ⟨?_, ?_⟩
+      · -- Atoms: transfer via h_3var_atoms
+        intro a; constructor
+        · intro ha'; exact (hu'_atoms a).mp ((h_3var_atoms a).mpr ha')
+        · intro ha; exact (h_3var_atoms a).mp ((hu'_atoms a).mpr ha)
+      · -- Quantifier: need 4-var transfer at depth j'
+        intro sub_nf
+        rw [← hu'_quant sub_nf]
+        -- 4-var existential transfer at depth j' for (u',x',t')/(u,x,t)
+        sorry
 
 /-- **GHR93 Bridge Lemma**: The 2-var depth-k NF of (x,t) is determined by the
     depth-k 1-var NFs of x and t, their ordering, and the set of depth-k 1-var
