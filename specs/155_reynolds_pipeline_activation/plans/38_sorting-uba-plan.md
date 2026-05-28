@@ -213,7 +213,14 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C-UBA: U(B,A) Witness Construction in ghr93_case_II [NOT STARTED]
+### Phase 3C-UBA: U(B,A) Witness Construction in ghr93_case_II [BLOCKED]
+
+**BLOCKER** (Phase 3C-UBA):
+- **What failed**: sel_pn_ord cannot be closed with the existing e_n (from forward game) because rank-r formula agreement between a'_big(k) and a_init(k) does not determine their ordering relative to p_n.
+- **What was tried**: (1) Direct monotonicity argument: h_mono gives a_init(k) <= p_n but a'_big(k) vs p_n is not constrained by formula agreement. (2) U(B,A) formula (std_untl (char_k nf_pn) sf_top, depth <= r): detects "B-point above exists" but cannot distinguish "below p_n" from "above p_n". (3) Modified response function: handles equality case (a_init(k) = p_n -> respond with e_n) but strict case still needs e_n > resp_tau(k).
+- **Why it's stuck**: The fundamental issue is that U(B,A) witness extraction gives a DIFFERENT e_n than the forward-game e_n. The forward-game e_n has rank-r formula agreement (needed by winning condition) but wrong ordering. The U(B,A) e_n has correct ordering but only char_k-depth agreement (insufficient for winning condition). Neither alone suffices.
+- **What is needed**: Either (a) a hybrid construction combining forward-game formula agreement with U(B,A) ordering, (b) full Proposition 12.8.18 m-tuple composition (Phase 6E) to avoid sel_pn_ord entirely, or (c) a proof that the forward-game e_n satisfies e_n > resp_tau(k_max) using structural properties not yet exploited.
+- **Prohibited workarounds**: Do NOT use sorry, def X := True, or any vacuous placeholder
 
 **Goal**: Replace the forward-game e_n construction (lines ~1241-1597 of CaseAnalysis.lean) with U(B,A) witness extraction per GHR93 pp. 115-116. This eliminates sel_pn_ord, b_resp, and the fan problem entirely.
 

@@ -1,48 +1,43 @@
 {
   "task_number": 155,
   "session_id": "sess_1779931340_a5cbb4",
-  "status": "blocked",
-  "summary": "Phase 3C BLOCKED: same_side proved mathematically false for unsorted selections. GHR93 assumes sorted a_0 < ... < a_n; resolution requires restructuring ghr93_case_II with sorting preprocessing + U(B,A) witness (~500-800 lines).",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
+  "status": "partial",
+  "summary": "Phase 3C-Sort COMPLETED: sorting wrapper + h_mono threading. Phase 3C-UBA BLOCKED: sel_pn_ord unprovable with existing e_n even after sorting; equality case (Monotone gives <= not <) breaks biconditional; modified response function proposed but needs e_n > resp_tau(k) for strict case.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort"],
   "phases_total": 14,
   "blocking_issues": [
     {
-      "phase": "3C",
-      "issue": "same_side lemma is mathematically FALSE for unsorted selections. 8+ approaches tried, all fail. Root cause: rank-r formula agreement does not determine ordering relative to a third point. GHR93 proof requires sorted selections.",
-      "root_cause": "Counterexample: let a_init(k) = extendPoint p_n (same point selected twice) and a'_big(k) be any point with same depth-r type at a different linear order position. Then a'_big(k) < p_n is possible while a_init(k) = p_n. Biconditional fails.",
-      "resolution": "Restructure ghr93_case_II: (1) Add sorting preprocessing using Tuple.sort (already imported). (2) Generalize proof so point can be at arbitrary position, not just position n. (3) With sorted selections, all a_init(k) < p_n, making sel_pn_ord trivial. (4) Use ghr93_winning_condition_perm to permute result. Complication: in extended carrier, gaps above p_n mean p_n may not be the maximum element; must handle gaps specially.",
-      "estimated_effort": "8-16 hours",
-      "files_affected": ["CaseAnalysis.lean"],
-      "approaches_tried": [
-        "phi = std_untl (char_k nf_pn) (.base Formula.top) formula transfer at depth <= r",
-        "phi AND NOT(psi) bidirectional formula",
-        "tau_r2 rank r+2 backward game direct ordering",
-        "Big game with different b-challenges",
-        "U(B,sf_top) witness construction (e_n replacement without sorting)",
-        "tau_r2 ordering with b-challenge = e_n_pt",
-        "Formula agreement at rank r+2 via tau_r2",
-        "Abstract proof that no depth-r formula distinguishes below-p_n from above-p_n"
-      ]
+      "phase": "3C-UBA",
+      "issue": "sel_pn_ord: even with sorted selections (h_mono : Monotone a_bwd), the biconditional a_init(k) < p_n <-> resp_tau(k) < e_n is unprovable because (1) rank-r formula agreement doesn't determine ordering, and (2) equality case a_init(k) = p_n gives False <-> True with existing response function.",
+      "root_cause": "Two independent issues: (a) same_side is unprovable from formula agreement alone (fundamental math impossibility documented in 9+ approaches), (b) Tuple.monotone_sort gives Monotone (<=) not StrictMono (<), allowing a_init(k) = p_n which breaks the biconditional even with U(B,A) e_n construction.",
+      "resolution_paths": {
+        "path_1_modified_response": "Replace resp_tau(k) with e_n when a_init(k) = p_n. This fixes equality case. For strict case: construct e_n from U(B,A) to guarantee e_n > resp_tau(k_max). Challenge: U(B,A) e_n has only char_k-depth agreement (not rank-r), so losing the forward-game e_n's rank-r formula agreement.",
+        "path_2_composition": "Implement full Proposition 12.8.18 (Phase 6E) to compose sub-interval strategies, avoiding sel_pn_ord entirely. Mathematically cleanest but ~500 additional lines.",
+        "path_3_degenerate_elimination": "Handle duplicate selections separately: when a_init(k) = p_n, reduce the (n+1)-round game to an n-round game (duplicate positions are redundant). Then remaining positions all have a_init(k) < p_n strictly."
+      },
+      "estimated_effort": "6-16 hours depending on path chosen"
     }
   ],
   "continuation_context": {
     "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_lines": [1593, 1973, 2188, 4273],
-    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-blocker-analysis-20260527.md",
-    "key_finding": "same_side IS MATHEMATICALLY FALSE. Two points with the same depth-r type CAN be on opposite sides of a third point. This is not a proof engineering issue; it is a fundamental mathematical impossibility. The ONLY resolution is the GHR93 approach: sort selections so all a_init(k) < p_n, then sel_pn_ord holds trivially.",
+    "sorry_lines": [1594, 1974, 2189, 2242, 4274],
+    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-sort-complete-20260527.md",
+    "what_was_done_this_session": {
+      "sorting_wrapper": "Tuple.sort + ghr93_winning_condition_perm at ghr93_inductive_step (4378-4425)",
+      "h_mono_threading": "Monotone a_bwd added to ghr93_case_II (1221) and ghr93_cases_II_III_IV (4315)",
+      "proven_properties": [
+        "h_le : a_init k <= extendPoint p_n (from h_mono)",
+        "h_tau_mono : Monotone resp_tau (from tau_sel_sel + h_mono)"
+      ]
+    },
     "what_is_built": {
+      "sorting": "Tuple.sort wrapper at ghr93_inductive_step, h_mono threaded to ghr93_case_II",
       "char_k_params": "k_nf, char_k, char_k_correct, char_k_depth threaded through 6 functions",
       "tau_r2": "rank-(r+2) backward game on [d,y']/[c,y] at CaseAnalysis.lean:1459",
       "bridge": "stavi_truth_mu_at_point at GapDetection.lean:417",
       "big_game": "hord_big_sel_en, hform_abig_ainit, hform_en_an extracted",
-      "sorting_import": "Mathlib.Data.Fin.Tuple.Sort already imported, Tuple.sort available",
-      "perm_lemma": "ghr93_winning_condition_perm available in CustomGame.lean:1591"
-    },
-    "resolution_plan": {
-      "option_a": "Sort + generalize point position. Most general but ~800 lines. Sort a_bwd, find point position after sorting, generalize Case II proof.",
-      "option_b": "Sort + partition. Partition selections into below/equal/above p_n. Handle each partition differently. Moderate scope ~500 lines.",
-      "option_c": "Verify if elements above p_n are always gaps (would simplify greatly). If yes, gap ordering has special properties that might bypass same_side."
+      "perm_lemma": "ghr93_winning_condition_perm in CustomGame.lean:1591"
     }
   },
-  "next_action_hint": "Research: verify whether elements in ExtendedCarrier strictly above extendPoint p_n (a carrier point) in [d,y'] are necessarily gaps. If yes, use gap properties for simplified resolution. If no, implement sorting approach (Option A or B). See handoff phase-3C-blocker-analysis-20260527.md for full analysis."
+  "next_action_hint": "Research which resolution path is most viable: (1) verify that modified response function with U(B,A) e_n can achieve both rank-r formula agreement AND ordering, (2) assess effort for Proposition 12.8.18 full composition, (3) try degenerate case elimination by reducing duplicate selections."
 }
