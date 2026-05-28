@@ -46,20 +46,24 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
-  -- h_r1_univ and char_k/char_k_correct do NOT depend on n, r, or specific
-  -- endpoints, so they stay in scope after reverting. Revert r so that ih_gen
-  -- is rank-polymorphic — this allows constructing a rank-(r+2) backward game
-  -- for Case II's U(B,A) transfer.
-  revert r h_enough x y x' y' hxy hx'y' h_pt h_pt_M h
+  -- h_r1_univ, k_nf, char_k, char_k_correct do NOT depend on n, r, or
+  -- specific endpoints, so they stay in scope after reverting. char_k_depth
+  -- depends on r and is reverted. Revert r so that ih_gen is rank-polymorphic
+  -- — this allows constructing a rank-(r+2) backward game for Case II's
+  -- U(B,A) transfer.
+  revert r h_enough x y x' y' hxy hx'y' h_pt h_pt_M h char_k_depth
   induction n with
   | zero =>
-    intro r x y x' y' _ hxy hx'y' h_pt _h_pt_M h
+    intro r x y x' y' _ hxy hx'y' h_pt _h_pt_M h _char_k_depth
     -- Base case: G_{1;r}(M,xy;N,x'y') → G_{0;r}(N,x'y';M,xy)
     simp only [Nat.mul_zero, Nat.add_zero] at h
     unfold ghr93_duplicator_wins at h ⊢
@@ -107,8 +111,8 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     -- Goal: ∀ (r : Nat) {x y x' y'}, ... → backward (n+1) r
     -- ih_gen is now rank-polymorphic (r was reverted before induction):
     -- ih_gen : ∀ (r₀ : Nat), 1+3*n ≤ rounds_r1 → ∀ {x₀ y₀ x₀' y₀'}, ... →
-    --          forward (1+3n) r₀ → backward n r₀
-    intro r x y x' y' h_enough hxy hx'y' h_pt h_pt_M h
+    --          forward (1+3n) r₀ → char_k_depth at r₀ → backward n r₀
+    intro r x y x' y' h_enough hxy hx'y' h_pt h_pt_M h char_k_depth
     -- Inductive step: (*)_n → (*)_{n+1}
     -- Note: 1 + 3 * (n + 1) = 4 + 3 * n
     have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
@@ -127,6 +131,11 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
     -- ih_gen at r+2 gives: forward (1+3n) (r+2) → backward n (r+2).
     -- This is passed to ghr93_inductive_step so Case II can build a rank-(r+2)
     -- tau on sub-intervals [d,y']/[c,y], preserving formulas at rank r+2.
+    -- char_k_depth at rank r+2: stavi_depth (char_k nf) + 2 ≤ r + 2
+    -- follows from char_k_depth at rank r by omega.
+    have char_k_depth_r2 : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r + 2 :=
+      fun nf_k => by have := char_k_depth nf_k; omega
     have h_ih_r2 : ∀ {x₀ y₀ : ExtendedCarrier M atomMap (r + 2)}
             {x₀' y₀' : ExtendedCarrier N atomMap (r + 2)},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
@@ -139,7 +148,7 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
           obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
             (fun _ => ⟨le_refl x₀, hle⟩)
           obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
-          exact ⟨b_M, hb_M_in⟩) hfwd
+          exact ⟨b_M, hb_M_in⟩) hfwd char_k_depth_r2
     exact ghr93_inductive_step atomMap n r hxy hx'y' h_pt h_pt_M
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd =>
         ih_gen r (by omega : 1 + 3 * n ≤ rounds_r1) hle hle' hpt' (by
@@ -147,14 +156,14 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
           obtain ⟨a'_play, _, hwin_play⟩ := hfwd (fun _ : Fin (1 + 3 * n) => x₀)
             (fun _ => ⟨le_refl x₀, hle⟩)
           obtain ⟨b_M, hb_M_in, _⟩ := hwin_play p_N hp_N
-          exact ⟨b_M, hb_M_in⟩) hfwd)
+          exact ⟨b_M, hb_M_in⟩) hfwd char_k_depth)
       h h_fwd_r1
       (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
         ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ rounds_r1)
           ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle)
           ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle')
           (h_r1_univ r' hle hle'))
-      h_ih_r2 char_k char_k_correct
+      h_ih_r2 k_nf char_k char_k_correct char_k_depth
 
 /-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
     (*)_n: If Duplicator wins G_{1+3n; r}(M, xy; N, x'y'),
@@ -193,14 +202,17 @@ theorem ghr93_forward_to_backward {sig : MonadicSignature}
                    (rank_embed (by omega : r' ≤ r' + 2) y₁)
                    (rank_embed (by omega : r' ≤ r' + 2) x₁')
                    (rank_embed (by omega : r' ≤ r' + 2) y₁'))
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y :=
   ghr93_forward_to_backward_core atomMap n (1 + 3 * n) r
-    h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h char_k char_k_correct
+    h_r1_univ (by omega) hxy hx'y' h_pt h_pt_M h k_nf char_k char_k_correct char_k_depth
 
 
 /-! ## Rank-Varying Theorem 6
@@ -252,22 +264,26 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
                    (rank_embed (by omega : r' ≤ r' + 2) y₁)
                    (rank_embed (by omega : r' ≤ r' + 2) x₁')
                    (rank_embed (by omega : r' ≤ r' + 2) y₁'))
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ghr93_duplicator_wins N M atomMap n r x' y' x y := by
   -- GHR93 Theorem 6 (rank-varying): forward at rank r+4n → backward at rank r.
   -- Proof by induction on n, with r and all position-dependent data generalized.
   -- Base (n=0): rank_embed is identity (r+0=r), use forward 1-game directly.
   -- Step (n→n+1): use ghr93_forward_to_backward at rank r, deriving its
   -- hypotheses from h via round monotonicity and the IH at rank r+4.
-  -- h_r1_univ and char_k/char_k_correct are rank-polymorphic parameters.
-  revert r x y x' y' hxy hx'y' h_pt h h_r1_univ
+  -- k_nf, char_k, char_k_correct are rank-independent. char_k_depth depends
+  -- on r and is reverted.
+  revert r x y x' y' hxy hx'y' h_pt h h_r1_univ char_k_depth
   induction n with
   | zero =>
-    intro r x y x' y' hxy hx'y' h_pt h _h_r1_univ
+    intro r x y x' y' hxy hx'y' h_pt h _h_r1_univ _char_k_depth
     -- n = 0: Forward 1-game at rank r → backward 0-game at rank r.
     simp only [Nat.mul_zero, Nat.add_zero] at h
     -- rank_embed (r ≤ r) is the identity
@@ -318,7 +334,7 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
             base_case_N_eq x' y' q p a'_resp hq_eq i]
         exact (hform_fwd _ A hA).symm⟩
   | succ n ih =>
-    intro r x y x' y' hxy hx'y' h_pt h h_r1_univ
+    intro r x y x' y' hxy hx'y' h_pt h h_r1_univ char_k_depth
     -- Inductive step: forward at rank r + 4*(n+1) with 4+3n rounds
     -- → backward at rank r with n+1 rounds.
     --
@@ -347,7 +363,7 @@ theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
     -- h_r1_univ gives games on all sub-intervals at rank r'+2 for any r'.
     -- Pass it through directly (ghr93_forward_to_backward now takes rank-universal h_r1_univ).
     exact ghr93_forward_to_backward atomMap (n + 1) r hxy hx'y' h_pt h_pt_M h_fwd
-      h_r1_univ char_k char_k_correct
+      h_r1_univ k_nf char_k char_k_correct char_k_depth
 
 
 end Bimodal.Metalogic.WeakCanonical

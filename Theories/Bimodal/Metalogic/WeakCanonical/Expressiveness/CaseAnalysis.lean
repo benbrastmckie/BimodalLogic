@@ -1211,11 +1211,14 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
                ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2) x₀ y₀ x₀' y₀' →
                ghr93_duplicator_wins N M atomMap n (r + 2) x₀' y₀' x₀ y₀)
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -4300,11 +4303,14 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
                (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
                ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2) x₀ y₀ x₀' y₀' →
                ghr93_duplicator_wins N M atomMap n (r + 2) x₀' y₀' x₀ y₀)
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier),
@@ -4315,7 +4321,8 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
             (game_tuple x' y' a_bwd b_resp)
             (game_tuple x y a'_resp b_sp) := by
   rcases isPoint_or_isGap (a_bwd ⟨n, by omega⟩) with h_pt | h_gap
-  · exact ghr93_case_II props ha_bwd h_no_split h_pt h_r1_univ h_ih_r2 char_k char_k_correct
+  · exact ghr93_case_II props ha_bwd h_no_split h_pt h_r1_univ h_ih_r2
+      k_nf char_k char_k_correct char_k_depth
   · exact ghr93_cases_III_IV props ha_bwd h_no_split h_gap hxy hx'y' h_fwd_r1 h_r1_univ
 
 /-! ### Assembly: The Inductive Step -/
@@ -4360,11 +4367,14 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
                (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
                ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r + 2) x₀ y₀ x₀' y₀' →
                ghr93_duplicator_wins N M atomMap n (r + 2) x₀' y₀' x₀ y₀)
-    (char_k : ∀ (r' : Nat), NormalForm sig r' 1 → StaviFormula)
-    (char_k_correct : ∀ (r' : Nat) (nf_k : NormalForm sig r' 1)
+    (k_nf : Nat)
+    (char_k : NormalForm sig k_nf 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k_nf 1)
         (M' : OrderedMonadicStructure sig) (t : M'.carrier),
-        stavi_temporal_truth M' atomMap t (char_k r' nf_k) ↔
-        nf_eval_nf M' r' 1 (fun _ => t) nf_k) :
+        stavi_temporal_truth M' atomMap t (char_k nf_k) ↔
+        nf_eval_nf M' k_nf 1 (fun _ => t) nf_k)
+    (char_k_depth : ∀ (nf_k : NormalForm sig k_nf 1),
+        stavi_depth (char_k nf_k) + 2 ≤ r) :
     ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
   unfold ghr93_duplicator_wins
@@ -4379,7 +4389,7 @@ theorem ghr93_inductive_step {sig : MonadicSignature}
   · -- Cases II-IV: all selections are at or above d
     push_neg at h_split
     exact ghr93_cases_II_III_IV props ha_bwd h_split hxy hx'y' h_fwd_r1 h_r1_univ h_ih_r2
-      char_k char_k_correct
+      k_nf char_k char_k_correct char_k_depth
 
 
 end Bimodal.Metalogic.WeakCanonical

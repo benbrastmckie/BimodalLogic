@@ -185,7 +185,7 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
   - Update all callers of `ghr93_forward_to_backward` to supply char_k and char_k_correct from `nf_characterizable_by_stavi`'s IH
   - `lake build` must pass (existing sorries remain, no new ones)
 
-- [ ] **3C.2: Verify stavi_temporal_truth bridge** (~0-80 lines)
+- [x] **3C.2: Verify stavi_temporal_truth bridge** (~0-80 lines) *(completed — stavi_truth_mu_at_point already exists in GapDetection.lean:417, no new code needed)*
   - Check whether `stavi_temporal_truth <-> stavi_temporal_truth_mu` at mu-points is already formalized
   - `char_k_correct` from `nf_characterizable_by_stavi` likely uses `stavi_temporal_truth` (non-mu)
   - The game's formula_agreement uses `stavi_temporal_truth_mu` (mu-relativized)
