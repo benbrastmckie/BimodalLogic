@@ -76,7 +76,7 @@ A **task model** `M = (F, I)` extends a task frame `F` with an interpretation fu
 
 Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that world-history.
 
-The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through the space of world-states where any world-state in the trajectory can transition to another in the difference between their times.
+The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
 
 ---
 
