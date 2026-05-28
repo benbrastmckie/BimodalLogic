@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames.TypeFormulas
+import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 
 /-!
 # Characteristic Formulas: X_t and Interval Type Formula A
@@ -194,6 +195,79 @@ theorem rank_type_separator {sig : MonadicSignature} {M : OrderedMonadicStructur
     -- (.neg A) holds at t (since ¬A^mu(t)) and fails at u (since A^mu(u))
     exact ⟨.neg A, by rw [stavi_depth_neg]; exact hd, hnt hd, fun h => h hu⟩
 
+/-! ## NF Profile Determines Rank Type
+
+Two positions with the same NormalForm characteristic on the mu-extended
+structure at depth 2*r have the same rank_type. This is the key finiteness
+step: since NormalForm (muSig sig) (2*r) 1 is Fintype, there are at most
+finitely many distinct rank_types. -/
+
+/-- The NF profile of a position: its NormalForm characteristic on
+    the mu-extended structure at depth 2*r. -/
+noncomputable abbrev nf_profile {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} (t : ExtendedCarrier M atomMap r) :
+    NormalForm (muSig sig) (2 * r) 1 :=
+  nf_characteristic (extendedStructureWithMu M atomMap r) (2 * r) 1 (fun _ => t)
+
+/-- Same NF profile implies same mu-relativized truth for all depth-≤r
+    StaviFormulas. Proof chain:
+    1. same nf_characteristic → same nf_eval_nf on all NFs
+    2. → same eval on all depth-≤2*r MonadicFormula (muSig sig) 1
+    3. → in particular on stavi_table_mu A (depth ≤ 2*r when stavi_depth A ≤ r)
+    4. → same stavi_temporal_truth_mu (by stavi_table_mu_correct) -/
+theorem nf_profile_determines_stavi_truth {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {t u : ExtendedCarrier M atomMap r}
+    (h_same : nf_profile t = nf_profile u)
+    (A : StaviFormula) (hA : stavi_depth A ≤ r) :
+    stavi_temporal_truth_mu M atomMap r t A ↔
+    stavi_temporal_truth_mu M atomMap r u A := by
+  -- Step 1: NF agreement on all depth-(2*r) NFs
+  have h_t_nf := nf_characteristic_satisfies
+    (extendedStructureWithMu M atomMap r) (2 * r) 1 (fun _ => t)
+  have h_u_nf := nf_characteristic_satisfies
+    (extendedStructureWithMu M atomMap r) (2 * r) 1 (fun _ => u)
+  have h_u_nf_as_t : nf_eval_nf (extendedStructureWithMu M atomMap r) (2 * r) 1
+      (fun _ => u) (nf_profile t) := h_same ▸ h_u_nf
+  have h_nf_agree := nf_agreement_from_shared_nf
+    (extendedStructureWithMu M atomMap r) (fun _ => t)
+    (extendedStructureWithMu M atomMap r) (fun _ => u)
+    (nf_profile t) h_t_nf h_u_nf_as_t
+  -- Step 2: FO depth bound for the mu-translation of A
+  have hA_fo : (stavi_table_mu atomMap A).quantifier_depth ≤ 2 * r :=
+    le_trans (stavi_table_mu_depth A)
+      (le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hA))
+  -- Step 3: Agreement on stavi_table_mu A via doets_lemma_1_1
+  have h_eval_agree := doets_lemma_1_1 (2 * r) 1 (stavi_table_mu atomMap A) hA_fo
+    (extendedStructureWithMu M atomMap r) (extendedStructureWithMu M atomMap r)
+    (fun _ => t) (fun _ => u) h_nf_agree
+  -- Step 4: Bridge from eval to stavi_temporal_truth_mu
+  exact (stavi_table_mu_correct t A).symm.trans
+    (h_eval_agree.trans (stavi_table_mu_correct u A))
+
+/-- Same NF profile implies same rank_type. -/
+theorem nf_profile_determines_rank_type {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {t u : ExtendedCarrier M atomMap r}
+    (h_same : nf_profile t = nf_profile u) :
+    rank_type M atomMap r t = rank_type M atomMap r u := by
+  ext A
+  simp only [rank_type, Set.mem_setOf_eq]
+  constructor
+  · intro ⟨hd, hA⟩
+    exact ⟨hd, (nf_profile_determines_stavi_truth h_same A hd).mp hA⟩
+  · intro ⟨hd, hA⟩
+    exact ⟨hd, (nf_profile_determines_stavi_truth h_same A hd).mpr hA⟩
+
+/-- Contrapositive: different rank_types imply different NF profiles. -/
+theorem rank_type_ne_of_nf_profile_ne {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {t u : ExtendedCarrier M atomMap r}
+    (h : rank_type M atomMap r t ≠ rank_type M atomMap r u) :
+    nf_profile t ≠ nf_profile u :=
+  fun h_eq => h (nf_profile_determines_rank_type h_eq)
+
 /-! ## Characteristic Formula X_t (GHR93 Definition 8.8)
 
 For each position t in M_r, X_t is a StaviFormula of depth ≤ r such that
@@ -201,16 +275,15 @@ X_t(u) holds iff u has the same rank-r type as t. -/
 
 /-- There exists a StaviFormula of depth ≤ r characterizing the rank-r type at t.
 
-    The mathematical argument (GHR93, finiteness of rank_type quotient):
-    1. NormalForm sig r 1 is Fintype with card N.
-    2. The number of distinct rank-r types is bounded by 2^N.
-    3. For each pair of distinct rank_types, a depth-≤r separator exists.
-    4. The conjunction of ≤ 2^N - 1 separators characterizes t's type.
+    Proof strategy: enumerate all NF profiles in the Fintype
+    NormalForm (muSig sig) (2*r) 1. For each profile, if there exists a position
+    with that profile and different rank_type from t, use rank_type_separator
+    to get a depth-≤r formula holding at t but not at that position. The
+    conjunction over all profiles characterizes rank_type(t).
 
-    NOTE: This sorry represents a genuine mathematical fact (finiteness of
-    rank_type quotient). It does NOT represent an unsound assumption.
-    Closing it requires bridging StaviFormula truth on ExtendedCarrier with
-    NormalForm evaluation on M.carrier. -/
+    The finiteness of NF profiles (Fintype on NormalForm) is the key ingredient:
+    same NF profile implies same rank_type (nf_profile_determines_rank_type),
+    so the number of distinct rank_types is bounded by |NormalForm (muSig sig) (2*r) 1|. -/
 theorem x_t_formula_exists {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t : ExtendedCarrier M atomMap r) :
@@ -218,7 +291,76 @@ theorem x_t_formula_exists {sig : MonadicSignature}
       ∀ (u : ExtendedCarrier M atomMap r),
         stavi_temporal_truth_mu M atomMap r u A ↔
         rank_type M atomMap r u = rank_type M atomMap r t := by
-  sorry
+  -- For each NF profile v, build a separator if there exists a position with that
+  -- profile and different rank_type. Otherwise use trivially-true ¬⊥.
+  -- We prove this as a chain of existence claims.
+  --
+  -- Step 1: For each v : NormalForm (muSig sig) (2*r) 1, produce a depth-≤r formula
+  -- that holds at t, and if nf_profile(u) = v with rank_type(u) ≠ rank_type(t),
+  -- fails at u.
+  have sep_exists : ∀ v : NormalForm (muSig sig) (2 * r) 1,
+      ∃ A : StaviFormula, stavi_depth A ≤ r ∧
+        stavi_temporal_truth_mu M atomMap r t A ∧
+        ∀ u : ExtendedCarrier M atomMap r,
+          nf_profile u = v → rank_type M atomMap r u ≠ rank_type M atomMap r t →
+          ¬ stavi_temporal_truth_mu M atomMap r u A := by
+    intro v
+    by_cases h_ex : ∃ w : ExtendedCarrier M atomMap r,
+        nf_profile w = v ∧ rank_type M atomMap r w ≠ rank_type M atomMap r t
+    · -- There is a position with this profile and different rank_type: use separator
+      obtain ⟨w, hw_prof, hw_ne⟩ := h_ex
+      obtain ⟨A, hd, ht, hnw⟩ := rank_type_separator hw_ne.symm
+      -- A holds at t and fails at w. Any u with same NF profile as w has same
+      -- rank_type as w (by nf_profile_determines_rank_type), so A fails at u too.
+      exact ⟨A, hd, ht, fun u hu_prof _ => by
+        have h_same : rank_type M atomMap r u = rank_type M atomMap r w :=
+          nf_profile_determines_rank_type (hu_prof.trans hw_prof.symm)
+        intro h_holds
+        exact hnw ((rank_type_eq_iff h_same _ hd).mp h_holds)⟩
+    · -- No such position: .neg (.base .bot) is trivially true
+      push_neg at h_ex
+      exact ⟨.neg (.base .bot), by simp [stavi_depth, operator_depth],
+        by simp [stavi_temporal_truth_mu, temporal_truth_mu],
+        fun u hu hu_ne => absurd (h_ex u hu) hu_ne⟩
+  -- Step 2: Choose separators for all NF profiles and take the conjunction
+  let sep : NormalForm (muSig sig) (2 * r) 1 → StaviFormula :=
+    fun v => Classical.choose (sep_exists v)
+  have sep_spec : ∀ v, stavi_depth (sep v) ≤ r ∧
+      stavi_temporal_truth_mu M atomMap r t (sep v) ∧
+      ∀ u, nf_profile u = v → rank_type M atomMap r u ≠ rank_type M atomMap r t →
+        ¬ stavi_temporal_truth_mu M atomMap r u (sep v) :=
+    fun v => Classical.choose_spec (sep_exists v)
+  let all_nfs := (Fintype.elems (α := NormalForm (muSig sig) (2 * r) 1)).val.toList
+  let formula := sf_conjList (all_nfs.map sep)
+  refine ⟨formula, ?_, ?_⟩
+  · -- Depth bound: all conjuncts have depth ≤ r
+    apply stavi_depth_sf_conjList
+    intro A hA
+    simp only [List.mem_map] at hA
+    obtain ⟨v, _, rfl⟩ := hA
+    exact (sep_spec v).1
+  · -- Correctness: formula holds at u iff rank_type(u) = rank_type(t)
+    intro u
+    rw [sf_conjList_truth_mu]
+    constructor
+    · -- Forward: if conjunction holds at u, then rank_type(u) = rank_type(t)
+      intro h_conj
+      by_contra h_ne
+      -- nf_profile(u) is in all_nfs (Fintype.elems is complete)
+      have h_in : sep (nf_profile u) ∈ all_nfs.map sep := by
+        apply List.mem_map_of_mem
+        exact Multiset.mem_toList.mpr (Fintype.complete _)
+      -- The separator for nf_profile(u) holds at u (from the conjunction)
+      have h_holds := h_conj _ h_in
+      -- But it should fail at u (by sep_spec)
+      exact (sep_spec (nf_profile u)).2.2 u rfl h_ne h_holds
+    · -- Backward: if rank_type(u) = rank_type(t), then conjunction holds at u
+      intro h_eq A hA
+      simp only [List.mem_map] at hA
+      obtain ⟨v, _, rfl⟩ := hA
+      -- sep v holds at t (by sep_spec), and rank_type(u) = rank_type(t),
+      -- so sep v holds at u (by rank_type_eq_iff)
+      exact (rank_type_eq_iff h_eq.symm _ (sep_spec v).1).mp (sep_spec v).2.1
 
 /-- The characteristic formula X_t: a single StaviFormula of depth ≤ r
     characterizing the rank-r type at position t.
@@ -282,7 +424,72 @@ theorem x_interval_formula_exists {sig : MonadicSignature}
         ∃ v : ExtendedCarrier M atomMap r,
           mu_holds v ∧ t < v ∧ v < u ∧
           rank_type M atomMap r w = rank_type M atomMap r v := by
-  sorry
+  -- For each NF profile v, if there exists a mu-point in (t, u) with that profile,
+  -- include the x_t_formula for a representative. Take the disjunction.
+  have disjunct_exists : ∀ v : NormalForm (muSig sig) (2 * r) 1,
+      ∃ A : StaviFormula, stavi_depth A ≤ r ∧
+        ∀ w : ExtendedCarrier M atomMap r,
+          stavi_temporal_truth_mu M atomMap r w A ↔
+          (∃ p : ExtendedCarrier M atomMap r,
+            mu_holds p ∧ t < p ∧ p < u ∧ nf_profile p = v ∧
+            rank_type M atomMap r w = rank_type M atomMap r p) := by
+    intro v
+    by_cases h_ex : ∃ p : ExtendedCarrier M atomMap r,
+        mu_holds p ∧ t < p ∧ p < u ∧ nf_profile p = v
+    · -- A mu-point with this profile exists in (t, u): use x_t_formula
+      obtain ⟨p, hp_mu, htp, hpu, hp_prof⟩ := h_ex
+      obtain ⟨A, hd, hcorr⟩ := x_t_formula_exists M atomMap r p
+      refine ⟨A, hd, fun w => ?_⟩
+      rw [hcorr w]
+      constructor
+      · intro h_eq
+        exact ⟨p, hp_mu, htp, hpu, hp_prof, h_eq⟩
+      · intro ⟨p', hp'_mu, htp', hp'u, hp'_prof, h_eq⟩
+        -- p and p' have the same NF profile, hence same rank_type
+        have h_same : rank_type M atomMap r p = rank_type M atomMap r p' :=
+          nf_profile_determines_rank_type (hp_prof.trans hp'_prof.symm)
+        rw [h_eq, h_same]
+    · -- No mu-point with this profile in (t, u): use ⊥
+      push_neg at h_ex
+      exact ⟨.base .bot, by simp [stavi_depth, operator_depth],
+        fun w => ⟨fun h => absurd h (by simp [stavi_temporal_truth_mu, temporal_truth_mu]),
+                  fun ⟨p, hp_mu, htp, hpu, hp_prof, _⟩ =>
+                    absurd hp_prof (h_ex p hp_mu htp hpu)⟩⟩
+  -- Choose disjuncts for each NF profile
+  let disj : NormalForm (muSig sig) (2 * r) 1 → StaviFormula :=
+    fun v => Classical.choose (disjunct_exists v)
+  have disj_spec : ∀ v, stavi_depth (disj v) ≤ r ∧
+      ∀ w, stavi_temporal_truth_mu M atomMap r w (disj v) ↔
+        (∃ p, mu_holds p ∧ t < p ∧ p < u ∧ nf_profile p = v ∧
+          rank_type M atomMap r w = rank_type M atomMap r p) :=
+    fun v => Classical.choose_spec (disjunct_exists v)
+  let all_nfs := (Fintype.elems (α := NormalForm (muSig sig) (2 * r) 1)).val.toList
+  let formula := sf_disjList (all_nfs.map disj)
+  refine ⟨formula, ?_, ?_⟩
+  · -- Depth bound
+    apply stavi_depth_sf_disjList
+    intro A hA
+    simp only [List.mem_map] at hA
+    obtain ⟨v, _, rfl⟩ := hA
+    exact (disj_spec v).1
+  · -- Correctness
+    intro w
+    rw [sf_disjList_truth_mu]
+    constructor
+    · -- Forward: some disjunct holds at w → ∃ v in interval with matching rank_type
+      intro ⟨A, hA, hAw⟩
+      simp only [List.mem_map] at hA
+      obtain ⟨v, _, rfl⟩ := hA
+      obtain ⟨p, hp_mu, htp, hpu, _, h_eq⟩ := (disj_spec v).2 w |>.mp hAw
+      exact ⟨p, hp_mu, htp, hpu, h_eq⟩
+    · -- Backward: ∃ v in interval → some disjunct holds at w
+      intro ⟨v, hv_mu, htv, hvu, h_eq⟩
+      -- nf_profile(v) is in all_nfs
+      have h_in : disj (nf_profile v) ∈ all_nfs.map disj := by
+        apply List.mem_map_of_mem
+        exact Multiset.mem_toList.mpr (Fintype.complete _)
+      exact ⟨disj (nf_profile v), h_in,
+        (disj_spec (nf_profile v)).2 w |>.mpr ⟨v, hv_mu, htv, hvu, rfl, h_eq⟩⟩
 
 /-- The interval type formula A = X_{(t,u)}: a StaviFormula of depth ≤ r
     that holds at w iff w has the same rank-r type as some mu-point

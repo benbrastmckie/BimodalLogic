@@ -129,7 +129,7 @@ Two existence sorries remain: x_t_formula_exists (line 221) and x_interval_formu
 
 ---
 
-### Phase 3: Close CharacteristicFormula Existence Sorries [NOT STARTED]
+### Phase 3: Close CharacteristicFormula Existence Sorries [COMPLETED]
 
 **Goal**: Close the two existence sorries in CharacteristicFormula.lean that gate the entire U(B,A) approach. Without these, B and A cannot be constructed for Case II, and left(B,D)/right(B,D) cannot be used for Cases III/IV.
 
@@ -152,26 +152,26 @@ The existence of x_t_formula requires showing: for each extended carrier point t
 For x_interval_formula_exists: the interval type is the set of rank_types realized in (t, u). Since rank_types are finitely many, the set of realized types is finite. The disjunction sf_disjList of x_t_formulas for each realized type characterizes the interval type.
 
 **Tasks**:
-- [ ] Task 3.1: Prove rank_type quotient finiteness (~80-120 lines)
+- [x] Task 3.1: Prove rank_type quotient finiteness (~80-120 lines) *(deviation: altered -- used nf_profile on extendedStructureWithMu at depth 2*r instead of rank_type quotient Fintype; proved nf_profile_determines_rank_type as the key bridge)*
   - Show that the image of `rank_type` on ExtendedCarrier is a subset of the power set of depth-at-most-r StaviFormulas
   - Since NormalForm sig r 1 is Fintype, and rank_type is determined by NormalForm evaluation, the number of distinct rank_types is bounded by |NormalForm sig r 1|
   - Use Fintype.ofFinset or Fintype.ofInjective on the rank_type quotient
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean`
-- [ ] Task 3.2: Close x_t_formula_exists (~60-100 lines)
+- [x] Task 3.2: Close x_t_formula_exists (~60-100 lines)
   - Construct the separating formula as a conjunction of rank_type_separator applications
   - The conjunction has stavi_depth = max of conjuncts, each <= r, so <= r
   - Prove the iff: truth at u iff rank_type u = rank_type t
   - Forward direction: if rank_type u = rank_type t, then u satisfies all the same separators, hence the conjunction
   - Backward direction: if u satisfies the conjunction, then u agrees with t on all separating formulas, hence rank_type u = rank_type t
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean` (line ~221)
-- [ ] Task 3.3: Close x_interval_formula_exists (~50-80 lines)
+- [x] Task 3.3: Close x_interval_formula_exists (~50-80 lines)
   - The interval type is the set of rank_types realized in (t, u)
   - Since rank_types are finite, enumerate the realized types
   - Build sf_disjList of x_t_formulas for each realized type
   - stavi_depth = max of disjuncts, each <= r, so <= r
   - Prove the iff: truth at w in (t, u) iff rank_type w is realized in the interval
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean` (line ~285)
-- [ ] Task 3.4: Verify sorry-free status of CharacteristicFormula.lean (~10 lines)
+- [x] Task 3.4: Verify sorry-free status of CharacteristicFormula.lean (~10 lines)
   - `#print axioms` on x_t_formula, x_interval_formula, and all downstream lemmas
   - Verify no sorryAx remains in the CharacteristicFormula module
   - **Verification command**: `lean_run_code` with `#print axioms Bimodal.Metalogic.WeakCanonical.EFGames.x_t_formula`
