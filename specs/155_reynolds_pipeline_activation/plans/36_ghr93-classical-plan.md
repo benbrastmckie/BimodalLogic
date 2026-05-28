@@ -156,9 +156,16 @@ Proved `nf_exist_sf_guarded_forward` sorry-free. Guard obligation at intermediat
 
 ---
 
-### Phase 3C: U(B,A) Transfer — Replace e_n Construction [IN PROGRESS]
+### Phase 3C: U(B,A) Transfer — Replace e_n Construction [BLOCKED]
 
 **Goal**: Replace the d-compatible forward game e_n construction with GHR93's U(B,A) transfer, resolving sel_pn_ord and b_resp vs p_n.
+
+**BLOCKER** (Phase 3C):
+- **What failed**: sel_pn_ord (`a_init k < p_n <-> resp_tau k < e_n`) cannot be derived from ANY combination of available hypotheses. Exhaustive analysis of all 6 approaches confirms this (see `phase-3C-sel-pn-ord-analysis-20260527.md`).
+- **What was tried**: (1) pivot_chain_order' — needs chain, have fan; (2) big game hord_big — gives a'_big not a_init; (3) tau at e_n_pt — gives b_tau_resp not p_n; (4) double game combination — introduces more surrogates; (5) ordering transitivity — all paths dead-end at the fan; (6) formula agreement — same type != same ordering in DLO.
+- **Why it's stuck**: The tau game relates {a_init, resp_tau} and the forward game relates {p_n, e_n}. NO game in the current construction relates ALL FOUR positions. The fan d -> {a_init k, p_n} cannot be resolved to a chain without new information.
+- **What is needed**: Replace the e_n construction so that `resp_tau k < e_n` is ALWAYS TRUE (by constructing e_n above all resp_tau). This requires the full GHR93 U(B,A) witness construction: (a) StaviFormula finiteness at each depth (not yet proven), (b) formula materialization of rank_type as a concrete StaviFormula, (c) std_untl construction with truth proof, (d) rank-(r+2) tau for formula transfer, (e) witness extraction.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Infrastructure completed** (Cycle 2):
 - `h_ih_r2` parameter added, providing forward-to-backward conversion at rank r+2 (option B from the original blocker analysis). Constructed by reverting `r` before induction in `ghr93_forward_to_backward_core`, making `ih_gen` rank-polymorphic.

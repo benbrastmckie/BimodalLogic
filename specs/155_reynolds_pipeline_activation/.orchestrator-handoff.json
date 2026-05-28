@@ -2,31 +2,50 @@
   "task_number": 155,
   "session_id": "sess_1748390400_orch155",
   "status": "partial",
-  "summary": "Cycle 2: Added h_ih_r2 parameter (rank-(r+2) forward-to-backward IH) to ghr93_case_II by reverting r in ghr93_forward_to_backward_core induction. This provides the infrastructure needed for GHR93's U(B,A) transfer approach. Build passes with no regressions. sel_pn_ord remains sorry'd pending formula materialization and e_n construction replacement.",
+  "summary": "Phase 3C BLOCKED (Cycle 3): Exhaustive analysis of 6 approaches confirms sel_pn_ord is PROVABLY UNPROVABLE from the current e_n construction. The fundamental issue is the 'fan problem': d branches to both a_init(k) and p_n with no chain between them. Resolution requires the full GHR93 U(B,A) witness construction (250-400 lines), which itself requires StaviFormula finiteness at each depth as a prerequisite.",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
-    "Phase 3C sel_pn_ord requires replacing e_n construction with U(B,A) witness. Infrastructure (h_ih_r2) is now in place. Next step: formula materialization from TypeFormulas.lean, construct rank-r+2 tau on sub-interval, implement U(B,A) transfer per GHR93 pp.443-444. Estimated 250-400 lines of changes."
+    {
+      "phase": "3C",
+      "issue": "sel_pn_ord unprovable: the fan d -> {a_init k, p_n} cannot be resolved to a chain. No combination of tau game, forward game, big game, or formula agreement hypotheses bridges this gap.",
+      "approaches_tried": [
+        "pivot_chain_order' (needs chain, have fan)",
+        "big game hord_big (gives surrogate a'_big, not a_init)",
+        "tau at e_n_pt (gives b_tau_resp, not p_n)",
+        "double game combination (more surrogates)",
+        "ordering transitivity (all paths dead-end)",
+        "formula agreement (same type != same ordering in DLO)"
+      ],
+      "resolution": "Replace e_n construction with GHR93 U(B,A) witness",
+      "prerequisites": [
+        "StaviFormula finiteness at each depth (not yet formalized)",
+        "Formula materialization: rank_type -> StaviFormula conjunction",
+        "std_untl truth proof at rank-embedded positions",
+        "Rank-(r+2) formula transfer via tau_r2",
+        "Witness extraction from std_untl semantics"
+      ],
+      "estimated_effort": "8-16 hours (250-400 lines)"
+    }
   ],
   "continuation_context": {
-    "phase_3C_status": "IN PROGRESS - infrastructure complete, core replacement pending",
-    "infrastructure_added": {
-      "h_ih_r2": "Forward-to-backward conversion at rank r+2, available inside ghr93_case_II",
-      "mechanism": "Reverted r in ghr93_forward_to_backward_core induction (Theorem6.lean), making ih_gen rank-polymorphic. ih_gen(r+2) provides the conversion.",
-      "usage": "h_ih_r2 + h_r1_univ(r) + round_mono = n-round backward game at rank r+2 on any sub-interval"
-    },
-    "phase_3C_next_step": "Use h_ih_r2 to: (1) construct rank-r+2 tau on [d,y']/[c,y], (2) materialize B=X_{p_n} as StaviFormula from TypeFormulas.lean, (3) build std_untl B sf_top at depth r+2 (within tau's preservation range), (4) show it holds at rank_embed(a_init(n-1)) witnessed by rank_embed(p_n), (5) transfer through rank-r+2 tau to resp_r2(n-1), (6) extract M-carrier witness z > resp_r2(n-1) as new e_n, (7) sel_pn_ord becomes trivial since e_n > resp_r2(k) for all k, and a_init(k) <= p_n after sorting",
-    "sorry_sites": {
-      "CaseAnalysis_1450": "sel_pn_ord Case A (Phase 3C target)",
-      "CaseAnalysis_1819": "sel_pn_ord Case B (Phase 3C target)",
-      "CaseAnalysis_2030": "b_resp vs p_n Case B grid (Phase 3C target)"
-    },
-    "key_files_to_read": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean",
-      "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-rank-r2-handoff-20260527.md"
+    "phase_3C_status": "BLOCKED - infrastructure complete, core construction requires formula materialization prerequisite",
+    "infrastructure_in_place": [
+      "h_ih_r2: rank-polymorphic forward-to-backward IH at rank r+2",
+      "h_r1_univ: universal forward game at any rank r'+2",
+      "rank_embed + rank_embed_stavi_truth_mu: formula preservation across ranks",
+      "ghr93_winning_condition_perm: selection permutation",
+      "std_untl semantics defined in TypeFormulas.lean (lines 327-332)"
     ],
-    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-rank-r2-handoff-20260527.md"
+    "sorry_sites": {
+      "CaseAnalysis_1450": "sel_pn_ord Case A - fan problem (d -> {a_init k, p_n})",
+      "CaseAnalysis_1819": "sel_pn_ord Case B - identical root cause",
+      "CaseAnalysis_2030": "b_resp vs p_n Case B - same fan structure (d -> {b_resp, p_n})",
+      "CaseAnalysis_2083": "dead code (already commented out)",
+      "CaseAnalysis_4115": "Cases III-IV assembly (separate from Phase 3C)"
+    },
+    "key_insight": "The tau game relates {a_init, resp_tau} and the forward game relates {p_n, e_n}. No game in the current construction relates ALL FOUR. The GHR93 resolution redefines e_n so that resp_tau(k) < e_n is ALWAYS true, making sel_pn_ord trivially True <-> True.",
+    "handoff_file": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-sel-pn-ord-analysis-20260527.md"
   },
-  "next_action_hint": "Read phase-3C-rank-r2-handoff-20260527.md for the detailed implementation plan. The rank-r+2 IH infrastructure is in place. Next cycle should focus on: (1) understanding TypeFormulas.lean API for formula materialization, (2) constructing std_untl formula, (3) replacing the entire e_n construction block (lines ~1227-1340) with the U(B,A) approach, (4) adapting downstream code to use the new construction."
+  "next_action_hint": "Research TypeFormulas.lean for StaviFormula finiteness infrastructure. Check if NormalForm (Fintype) can be leveraged to enumerate all inequivalent formulas at each depth. If finiteness exists, proceed with formula materialization and the U(B,A) construction. If not, first formalize StaviFormula depth-d finiteness."
 }
