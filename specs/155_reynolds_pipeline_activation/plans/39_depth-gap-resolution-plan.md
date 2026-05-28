@@ -206,7 +206,7 @@ Added sorting preprocessing at `ghr93_inductive_step` level. `Tuple.sort` + `Tup
 
 ---
 
-### Phase 3C-STRICT: Strict Case via Strategy Composition [NOT STARTED]
+### Phase 3C-STRICT: Strict Case via Strategy Composition [IN PROGRESS]
 
 **Goal**: Resolve the strict case (a_init(k) < p_n for all k < n, from sorting + injectivity or from equality case handled separately) by restructuring Case II to use full m-tuple strategy composition from Phase 6E. This eliminates sel_pn_ord entirely for the strict case.
 
