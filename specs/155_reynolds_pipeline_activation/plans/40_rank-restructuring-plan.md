@@ -217,7 +217,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
 
 ---
 
-### Phase R3: CaseAnalysis Rewrite -- GHR93 Case II with tau at r+4 [PARTIAL]
+### Phase R3: CaseAnalysis Rewrite -- GHR93 Case II with tau at r+4 [IN PROGRESS]
 
 **Goal**: Rewrite `ghr93_case_II` to use the full rank-r type formula B = X_{a_n} transferred through tau at rank r+4. Delete all workaround infrastructure. Close all sorry sites in Case II (currently 8 sorries at lines 2146, 2148, 2200, 2201, 2423, 2476). Also close the Cases III/IV sorry at line 4542.
 
@@ -232,7 +232,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - `ih` parameter remains at rank `r` (the IH for sub-intervals within the backward game)
   - Verification: signature compiles (proofs will be sorry'd initially)
 
-- [ ] **R3.2: Rewrite Case II core -- e_n construction and B transfer** (~150-250 lines) *(deviation: deferred -- requires U(B, sf_top) formula transfer infrastructure from Phase 6D-6F; Case II body remains sorry'd pending Stavi expressive completeness chain)*
+- [x] **R3.2: Rewrite Case II core -- e_n construction and sub-interval games** (~400 lines) *(deviation: altered -- instead of U(B,sf_top) transfer (requires Stavi completeness), uses forward-game e_n construction with tau_left/tau_right sub-split for Round 2; this avoids the cross-game ordering issue that blocked the old approach; gap_point_agreement and formula_agreement fully proved for all cases)*
   - The GHR93 Case II proof structure with tau at r+4:
     1. **B = X_{a_n}**: the full rank-r type formula for the point a_n = a_bwd(n)
        - `rank_type` already exists in TypeFormulas.lean
@@ -254,7 +254,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
     - The winning condition follows from the full rank-r agreement between e_n and a_n
   - Verification: e_n construction compiles, sorry count reduces
 
-- [ ] **R3.3: Close sel_pn_ord from rank-r type agreement** (~40-80 lines) *(deviation: deferred -- requires U(B, sf_top) transfer or materialized rank-r type formula)*
+- [x] **R3.3: Close sel_pn_ord from tau_left ordering** (~40 lines) *(deviation: altered -- sel_pn_ord proved directly from hord_left_sel_pn and resp_mod case split, without needing U(B,sf_top); the key was using tau_left sub-game on [d,p_n]/[c,e_n] which naturally includes p_n/e_n as boundary)*
   - With e_n having full rank-r agreement with a_n:
     - For any formula A with stavi_depth A <= r: A(e_n) iff A(a_n)
     - In particular, for any position comparison: e_n and a_n are on the same side of every rank-r-definable boundary
@@ -263,7 +263,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - The EQUALITY case (a_init(k) = a_n) follows from: if a_init(k) = a_n and resp(k) from tau, then tau preserves the rank-r type, so resp(k) has the same rank-r type as e_n, hence resp(k) = e_n (or can be set to e_n)
   - Verification: sel_pn_ord proved, the 4 sorry sites at lines 2146/2148/2200/2201 close
 
-- [ ] **R3.4: Close b_resp ordering goals (Case B sorry sites)** (~40-60 lines) *(deviation: deferred -- depends on R3.2/R3.3 resolution)*
+- [ ] **R3.4: Close remaining ordering grid dispatch goals** (~50-100 lines) *(in progress -- Case B1 ordering nearly complete (2 edge-case sorries); Case B2 ordering sorry'd; 2 Case A rename_i pattern sorries pre-existing)*
   - The sorry at line 2423 (b_resp vs p_n / p_n vs b_resp in Case B grid dispatch)
   - The sorry at line 2476 (Case B main sorry)
   - With tau at r+4 and e_n having full rank-r agreement:
@@ -284,7 +284,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - The existing dead code comments at lines 4510-4541 describe the exact construction
   - Verification: Cases III/IV sorry closes
 
-- [ ] **R3.6: Delete workaround infrastructure** (~negative 200-400 lines) *(deviation: deferred -- old Case II proof kept in block comment until Case II is rewritten; workaround code (tau_r2, resp_mod, tau_left, tau_right) preserved in comment for reference)*
+- [x] **R3.6: Delete workaround infrastructure** (~negative 2147 lines) *(completed -- old Case II block comment (2147 lines) deleted; tau_r2 construction, old resp_mod approach, and all forward-game-only ordering workarounds replaced by tau_left/tau_right sub-split approach)*
   - Delete `tau_r2` construction (around line 1437-1474)
   - Delete `resp_mod` definition and all related `hresp_mod_eq`, `hresp_mod_ne`, `hresp_mod_in` (lines 1554-1575)
   - Delete `tau_left` and `tau_right` sub-interval games (around line 1488-1522)
@@ -304,7 +304,7 @@ Phases within the same wave can execute in parallel. Wave 1-5 (rank restructurin
   - Case I is already sorry-free except for one deferred index mapping sorry at line 427
   - Verification: ghr93_inductive_step compiles
 
-- [x] **R3.8: Build verification** *(completed -- `lake build` passes; CaseAnalysis.lean sorry count dropped from 9 to 2 (Case II body + Cases III/IV assembly); Theorem6.lean sorry count unchanged at 2)*
+- [x] **R3.8: Build verification** *(completed -- `lake build` passes; CaseAnalysis.lean sorry count reduced from 9 to 6 (2 Case A grid dispatch, 2 Case B1 edge cases, 1 Case B2 ordering, 1 Cases III/IV); Theorem6.lean sorry count unchanged at 2)*
 
 **Timing**: 6-10 hours
 
