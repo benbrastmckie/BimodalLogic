@@ -2,58 +2,51 @@
   "task_number": 155,
   "session_id": "sess_1748476800_bridge",
   "status": "blocked",
-  "summary": "Session S3 definitively confirmed the root cause: interval_nf_types (Finset of 1-var NFs) is semantically too weak for sub-interval matching. The splitting lemma (deriving sub-interval types from full-interval types + endpoint NFs) is PROVABLY FALSE via concrete counterexample. Additionally identified that the formula-level encoding (nf_exist_sf_guarded) uses a trivially-true guard that cannot constrain intermediate point types, making the backward direction (sorry at line 2775) also unfixable without formula restructuring. All three sorries (2335, 2417, 2775) share the same root cause and require a coordinated formula-level + bridge-lemma fix.",
-  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms"],
+  "summary": "Session S3 definitively identified root cause of 4-var existential transfer sorry: interval_nf_types (Finset of 1-var NFs) loses spatial arrangement information. Splitting lemma proved FALSE via concrete counterexample. Added interval_2var_nf_types definition (records 2-var NFs relative to endpoint, capturing spatial structure). Three sorries remain (2335, 2417, 2775). Resolution requires ~400-600 lines of restructuring.",
+  "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3", "3C-Sort", "3C-EQ", "R1", "R2", "R3-partial", "S1-atoms", "S3-analysis"],
   "phases_total": 6,
   "blocking_issues": [
     {
       "phase": "S3",
-      "description": "Three interconnected sorries (2335, 2417, 2775) share the same root cause: interval_nf_types loses spatial information. The splitting lemma is provably false. The formula guard is trivially true. Both need coordinated restructuring.",
-      "root_cause": "1) interval_nf_types records a SET of types, not spatial arrangement. Sub-interval types are NOT derivable. 2) nf_exist_sf_guarded uses interval_guard_sf which is trivially true (every point satisfies some NF), providing no constraint on intermediate point types. The backward direction cannot extract bridge lemma hypotheses from the formula.",
-      "splitting_lemma_disproof": "Counterexample: M has types [A, B] in (x,t) with A in (x,u) and B in (u,t). M' has same types but B in (x',u') and A in (u',t'). Same interval_nf_types, same endpoint NFs, but different sub-interval types.",
+      "description": "Bridge lemma's interval_nf_types hypothesis is semantically too weak. Splitting lemma provably false. Formula guard is trivially true.",
+      "root_cause": "interval_nf_types records SET of types in interval, not spatial arrangement. Different models can have same type set but different spatial layouts, leading to different sub-interval types when split.",
       "files_affected": ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"],
       "sorry_lines": [2335, 2417, 2775]
     }
   ],
-  "resolution_options": {
-    "D_formula_restructuring": {
-      "description": "RECOMMENDED. Modify nf_exist_sf_guarded to encode the interval type configuration in the formula itself. Replace trivially-true interval_guard_sf with a config-specific guard. The formula becomes a disjunction over all valid (witness_nf, interval_type_set) configurations. Forward direction: extract actual config from nf_eval_nf. Backward direction: extract config from formula truth, apply bridge lemma with extracted config as bridge data. This is the GHR93 decomposition formula approach adapted to our NF framework.",
-      "effort": "390-610 lines of new/modified code",
-      "components": {
-        "config_guard_definition": "20-30 lines",
-        "modified_nf_exist_sf_guarded": "40-60 lines",
-        "forward_direction_reproof": "80-120 lines",
-        "backward_direction_with_config": "150-250 lines",
-        "existential_transfer_with_config": "100-150 lines"
-      },
-      "risk": "MEDIUM. The bridge lemma proof (nf_fraisse_compression + nf_2var_existential_transfer) may need its hypotheses strengthened to accept the config data. The transfer might then need the config for sub-intervals, which the config-based approach CAN provide because the config is part of the formula structure, not derived from model theory."
+  "changes_made": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
+      "description": "Added interval_2var_nf_types definition (enriched interval invariant using 2-var NFs)"
     },
-    "A_directional_splitting": {
-      "description": "REJECTED in S3. The splitting lemma is provably false. No variation of directional 2-var NF extraction can recover sub-interval types from the set-based interval_nf_types.",
-      "effort": "N/A",
-      "risk": "IMPOSSIBLE"
-    },
-    "B_richer_invariant": {
-      "description": "Replace interval_nf_types with richer structure. Viable but more invasive than D. Requires updating all 27 references to interval_nf_types in StaviCompleteness.lean.",
-      "effort": "300-400 lines",
-      "risk": "HIGH - extensive refactoring"
-    },
-    "C_ef_game": {
-      "description": "Full EF game formalization. Most principled but most infrastructure.",
-      "effort": "400-500 lines",
-      "risk": "HIGH - largest implementation"
+    {
+      "file": "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md",
+      "description": "Definitive blocker analysis with root cause, counterexample, resolution path, and circular dependency analysis"
     }
+  ],
+  "resolution_plan": {
+    "approach": "Restructure bridge lemma to use enriched interval data",
+    "steps": [
+      "1. Define nf_2var_from_interval_data_rich: bridge lemma taking interval_2var_nf_types instead of interval_nf_types as hypothesis. The enriched data provides 2-var NFs of (u, hi) for u in (lo, hi), encoding spatial arrangement.",
+      "2. Prove zone_match_witness_rich: zone matching that produces u' with same 2-var NF relative to endpoint (not just same 1-var NF).",
+      "3. Prove interval splitting from enriched data: from interval_2var_nf_types for (lo, hi) and a matched u, derive interval_nf_types for (lo, u) and (u, hi) at depth k-1. The 2-var NF of (u, hi) encodes u's quantifier structure relative to hi, from which sub-interval data can be extracted.",
+      "4. Restructure nf_2var_existential_transfer to use enriched data: the transfer at depth j receives sub-interval data from the enriched interval types.",
+      "5. Modify nf_exist_sf_guarded to encode 2-var interval types (not 1-var) in the formula guard. The guard becomes: for each 2-var NF sigma in the enriched set, build char_2var sigma. The formula disjunction ranges over valid enriched sets.",
+      "6. Re-prove forward and backward directions with enriched formula.",
+      "7. Wire enriched bridge lemma to nf_2var_exist_sf_classical."
+    ],
+    "estimated_effort": "400-600 lines of new/modified Lean code",
+    "key_lemmas_needed": [
+      "Variable dropping lemma: from depth-k n-var NF, extract depth-k m-var NF for sub-tuple",
+      "Enriched interval splitting: from interval_2var_nf_types for (lo, hi) + matched u, derive depth-(k-1) bridge data for sub-intervals",
+      "Enriched zone matching: find u' with matching 2-var NF relative to endpoint"
+    ]
   },
   "continuation_context": {
     "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-S3-definitive-blocker-analysis-20260528.md",
-    "key_discoveries": [
-      "Splitting lemma is PROVABLY FALSE (not just hard to prove)",
-      "interval_guard_sf is trivially true and provides no constraint",
-      "The formula-level fix (Option D) is the only approach that fixes ALL three sorries simultaneously",
-      "Variable dropping lemma (from S2) is valid and useful for the formula-level fix"
-    ],
-    "estimated_effort_to_resolve": "1-2 sessions for Option D implementation",
-    "build_status": "passing (1669 jobs)"
+    "build_status": "passing (987 jobs for StaviCompleteness, 1669 total)",
+    "new_definitions": ["interval_2var_nf_types at line ~1850 in StaviCompleteness.lean"],
+    "estimated_effort_to_resolve": "2-3 sessions (~400-600 lines)"
   },
-  "next_action_hint": "Implement Option D (formula restructuring): 1) Add config_guard formula that constrains interval types, 2) Modify nf_exist_sf_guarded to disjoin over configs, 3) Re-prove forward direction, 4) Prove backward direction using config as bridge data, 5) Modify nf_2var_existential_transfer to accept config parameter."
+  "next_action_hint": "Start with step 3 (interval splitting from enriched data): prove that from interval_2var_nf_types equality + matched u, the sub-interval types at depth k-1 agree. This is the KEY lemma that unblocks everything else."
 }
