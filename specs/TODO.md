@@ -42,7 +42,7 @@ technical_debt:
 
 ### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
 
-155 [PLANNED] — Reynolds pipeline: Plan v40 -- GHR93 rank restructuring. Raise sigma/tau to rank r+4 via delta parameter in SplitPointProps. Delete all workarounds (char_k, tau_r2, h_ih_r2, resp_mod, tau_left). 5 core phases (R1-R5) + 8 downstream phases. 20-35 hours.
+155 [PLANNED] — Reynolds pipeline: Plan v42 -- GHR93-aligned revision. delta=4 throughout, new Phase S2.5 for rank-varying IH, B at depth k_nf, Round 2 via tau formula preservation, n=0 boundary explicit. 6 phases, 20-35 hours.
   └─ 154, 174, 199
 
 ### Phase 2 — Post-155 Cleanup
@@ -506,7 +506,7 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 ---
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
-- **Effort**: 60 hours
+- **Effort**: 18-30 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
@@ -518,13 +518,13 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
   - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
   - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
-  - [specs/155_reynolds_pipeline_activation/reports/36_char-k-threading-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md]
-  - [155_reynolds_pipeline_activation/reports/27_team-research.md]
+  - [specs/155_reynolds_pipeline_activation/reports/40_ghr93-case-ii-step6.md]
+  - [specs/155_reynolds_pipeline_activation/reports/41_stavi-completeness-audit.md]
 - **Plan**:
-  - [155_reynolds_pipeline_activation/plans/40_rank-restructuring-plan.md]
+  - [specs/155_reynolds_pipeline_activation/plans/42_ghr93-aligned-plan.md]
 
-**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
+**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Plan v42 (GHR93-aligned): delta=4 throughout (not delta=2), new Phase S2.5 closes rank-varying IH as prerequisite, B at depth k_nf via nf_characterizable_by_stavi (not depth r), Round 2 handled via tau's formula preservation at rank r+4 (not via A formula), n=0 boundary explicit, Cases III/IV rank r+3 formulas transfer through tau at r+4. Definition of done: `bx_completeness` has no `sorryAx`, `lake build` passes.
 
 ---
 
