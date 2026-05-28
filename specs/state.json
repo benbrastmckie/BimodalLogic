@@ -338,7 +338,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -634,7 +634,24 @@
         "complexity": "complex",
         "research_integrated": true,
         "plan_version": 43,
-        "dependency_waves": [[1], [2], [3, 4], [5], [6]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/36_char-k-threading-research.md",
