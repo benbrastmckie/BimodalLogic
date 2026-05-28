@@ -199,7 +199,7 @@ In Lean, the key insight is: `stavi_n_equiv atomMap n M t N s` checks agreement 
 
 ---
 
-### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [NOT STARTED]
+### Phase 3: Case II Rewrite (GHR93 U(B, A) Construction) [BLOCKED]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly: construct e_n from U(B, A) witness transferred through tau at rank r+4, prove sel_pn_ord trivially, handle Round 2 via A's interval type property.
 

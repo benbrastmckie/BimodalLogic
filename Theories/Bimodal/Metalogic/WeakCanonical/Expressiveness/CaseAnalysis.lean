@@ -1665,8 +1665,8 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                  from hab_eq _ _ (by assumption)]
            convert sel_pn_ord ⟨_, ‹_›⟩ using 3
            <;> (congr 1; exact Fin.ext (by omega)))
-        | (sorry) -- grid dispatch: sel(i) vs p_n Fin-convert variant
-        | (sorry) -- grid dispatch: sel(i) vs p_n 8-hypothesis variant
+        | (sorry) -- grid dispatch: remaining inner-index cases (8 goals)
+        | (sorry) -- grid dispatch: unreachable (caught by first sorry)
     · -- gap_point_agreement (n+1): Case A
       intro i
       simp only [game_tuple]
@@ -2023,8 +2023,13 @@ private theorem ghr93_case_II {sig : MonadicSignature}
                      fun h => (hord_fwd_x_en.2.mp h.symm).symm⟩⟩)
           | (exact ⟨⟨fun h => absurd (lt_of_lt_of_le h hb_resp_in.1) (lt_irrefl _),
                      fun h => absurd (lt_of_lt_of_le h hb_sp.1) (lt_irrefl _)⟩,
-                    sorry⟩) -- b_resp vs x' equality direction
-          | sorry -- remaining grid dispatch cases
+                    ⟨fun h => absurd (lt_of_le_of_lt props.hxc hbc)
+                       (h ▸ (le_antisymm (le_trans props.hx'd hb_resp_in.1) (le_of_eq h.symm)) ▸
+                        not_lt.mpr (le_trans props.hx'd hb_resp_in.1)),
+                     fun h => absurd (lt_of_le_of_lt props.hxc hbc)
+                       (h ▸ lt_irrefl _)⟩⟩)
+          | (sorry) -- grid dispatch: remaining B1 inner-index cases
+          | (sorry) -- grid dispatch: B1 unreachable
       · -- gap_point_agreement (n+1): Case B1
         intro i
         simp only [game_tuple]
