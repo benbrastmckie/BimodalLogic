@@ -1,28 +1,28 @@
 {
   "task_number": 155,
-  "session_id": "sess_1748390400_orch155",
-  "status": "partial",
-  "summary": "Restructured sel_pn_ord proof in ghr93_case_II. Added 4 new infrastructure items: (1) hord_big_sel_en extracts resp_tau(k) vs e_n ordering from the big forward game, (2) hform_abig_ainit proves a'_big(k) and a_init(k) agree on rank-r formulas via big-game/tau transitivity, (3) tau_r2 constructs rank-(r+2) backward game from h_r1_univ + h_ih_r2, (4) sel_pn_ord reduced to same_side sorry (char_k materialization). Build passes, no regressions.",
+  "session_id": "sess_1779931340_a5cbb4",
+  "status": "blocked",
+  "summary": "Phase 3C same_side lemma confirmed unprovable after exhaustive 9-approach analysis; resolution requires restructuring e_n construction with GHR93 U(B,A) witness pattern and char_k threading",
   "phases_completed": ["1", "2", "3A", "4", "6A", "6C-1", "6C-2", "6C-3"],
   "phases_total": 14,
   "blocking_issues": [
     {
       "phase": "3C",
-      "issue": "same_side lemma requires char_k formula materialization (private to StaviCompleteness.lean)",
-      "resolution": "Make char_k accessible from CaseAnalysis.lean, construct U(char_k nf, sf_top), prove same_side via tau_r2 formula transfer",
-      "estimated_effort": "4-8 hours"
+      "issue": "same_side lemma at CaseAnalysis.lean lines 1585 and 1965 is unprovable from existing hypotheses",
+      "root_cause": "Fan problem: d <= a_init(k) AND d <= p_n with no chain; no single game relates all four positions {a_init(k), p_n, resp_tau(k), e_n}; rank-r formula agreement insufficient for depth r+2 discriminating formula",
+      "approaches_tried": 9,
+      "resolution": "Replace e_n construction with GHR93 U(B,A) witness. Thread char_k from nf_characterizable_by_stavi IH through 5 functions. Use tau_r2 (already constructed) for rank-(r+2) formula transfer. Critical insight: nf_characterizable_by_stavi is NOT called by ghr93_forward_to_backward, so no circularity.",
+      "estimated_effort": "6-10 hours",
+      "files_affected": ["StaviCompleteness.lean", "Theorem6.lean", "CaseAnalysis.lean"]
     }
   ],
   "continuation_context": {
     "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "sorry_lines": [1585, 1965],
-    "sorry_statement": "same_side: a'_big(k) and a_init(k) have same ordering w.r.t. p_n",
-    "available_data": {
-      "hform_abig_ainit": "rank-r formula agreement between a'_big(k) and a_init(k)",
-      "tau_r2": "rank-(r+2) backward game on [rank_embed d, rank_embed y'] to [rank_embed c, rank_embed y]",
-      "hord_big_sel_en": "resp_tau(k) < e_n iff a'_big(k) < p_n"
-    },
-    "proof_structure": "sel_pn_ord = hord_big_sel_en + same_side. same_side needs U(B, sf_top) where B = char_k(type of p_n) at depth r, giving depth r+2 formula transferable through tau_r2."
+    "sorry_lines": [1585, 1965, 2180, 2233, 4265],
+    "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-3C-same-side-analysis-20260527.md",
+    "key_insight": "The same_side approach (proving a'_big(k) and a_init(k) have same ordering w.r.t. p_n) CANNOT work with the current e_n construction. The e_n must be REDEFINED as the U(B,A) witness so that resp_tau(k) < e_n holds by construction, making sel_pn_ord trivial.",
+    "infrastructure_ready": ["h_ih_r2", "tau_r2", "h_r1_univ", "interval_guard_sf", "sf_conjList/sf_disjList", "NormalForm Fintype instances"],
+    "infrastructure_needed": ["char_k parameter in ghr93_case_II", "nf_exist_sf public access", "e_n restructuring (250-400 lines)"]
   },
-  "next_action_hint": "Make char_k accessible from CaseAnalysis.lean (remove private or add public wrapper), then construct U(char_k nf, sf_top) formula and prove same_side via tau_r2 formula transfer"
+  "next_action_hint": "Thread char_k through game theorem call chain, then restructure e_n construction in ghr93_case_II to use U(B,A) witness"
 }
