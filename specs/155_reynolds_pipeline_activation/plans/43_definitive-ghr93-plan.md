@@ -16,6 +16,12 @@ This is the definitive plan for completing the Reynolds pipeline, replacing plan
 
 The plan is organized into 6 waves. Wave 1 closes the Theorem6.lean rank-varying IH, enabling sigma/tau at rank r+4. Wave 2 constructs X_t independently as a depth-at-most-r StaviFormula for each NormalForm equivalence class and builds the interval type formula A. Wave 3 rewrites Case II per GHR93, using U(B, A) to construct e_n from the Until witness. Wave 4 implements Cases III/IV gap handling with left(B,D)/right(B,D). Wave 5 closes all remaining downstream sorries. Wave 6 verifies sorry-free bx_completeness.
 
+### Critical Path Update (discovered 2026-05-28)
+
+**Key finding**: `completeness_discrete` does NOT use CaseAnalysis.lean. The `sorryAx` in `completeness_discrete` comes from `ChronicleToCountermodel.lean` (the chronicle/algebraic pipeline), not the game-theoretic pipeline in WeakCanonical/. CaseAnalysis.lean is only imported by the WeakCanonical/EFGames subsystem. For CaseAnalysis.lean to contribute to `completeness_discrete`, Transfer.lean must be rewired from `dd_countermodel_chronicle_discrete` to the game pipeline (Phase 5.2), which requires Phases 3-4 to be complete first.
+
+**Implication**: The grid dispatch sorries in CaseAnalysis.lean are a prerequisite for the Reynolds pipeline activation but are NOT currently contributing to `completeness_discrete`'s sorry status.
+
 ### Research Integration
 
 All 9 team analysis reports are integrated. Key findings driving the plan:
@@ -234,33 +240,41 @@ Step 7. Round 2 verification (5-way case split on Spoiler's challenge point t):
 - (d) t in (e_n, y): use the continuation formula C and tau's winning condition
 - (e) t outside the response range: endpoint conditions from sigma/tau
 
+**BLOCKER** (Phase 3):
+- **What failed**: Grid dispatch sorries in `same_order_type` proofs (lines 1668, 2031-2032, 2112). After `same_order_type_grid` (which is `intro i j; simp [game_tuple]; split_ifs`), the Fin variables `i` and `j` become inaccessible (`i✝`, `j✝`). The `first` combinator tries each alternative on each goal independently, and `rename_i` inside an alternative requires an exact count of inaccessible variables — but different goals have different counts (4-6).
+- **What was tried**: (1) `rename_i ii jj _ _ _ _` with 6 underscores — fails for goals with fewer inaccessible vars. (2) `rename_i ii jj` with 2 names — `ii` binds to wrong inaccessible (a Prop `h✝`, not the Fin var). (3) `rename_i ii jj ..` — not valid Lean4 syntax. (4) Direct `by_cases i.val - 1 < n` without rename_i — `i` not accessible.
+- **Why it's stuck**: Lean4 tooling limitation. The `split_ifs` tactic creates inaccessible variables, and `rename_i` cannot handle variable-length inaccessible lists within `first` alternatives that operate on goals with different numbers of inaccessible variables.
+- **What is needed**: Write a custom `grid_inner_dispatch` tactic (~100-150 lines in `EFGameTactics.lean`) that introspects the goal type to find Fin variables by type, case-splits on `.val - 1 < n`, and applies ordering lemmas. Alternatively, restructure the proof to avoid `split_ifs` (use manual `rcases` creating named goals instead).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 **Tasks**:
-- [ ] Task 3.1: Delete the old e_n construction (lines ~1240-1550 of CaseAnalysis.lean)
+- [ ] Task 3.1: Delete the old e_n construction (lines ~1240-1550 of CaseAnalysis.lean) *(deviation: skipped — the existing e_n construction is not wrong per se, the grid dispatch is the blocker)*
   - Remove tau_left, tau_right, resp_mod, same_side, d-compatible forward game approach
   - Remove h_ih_r2, tau_r2 workarounds
   - Keep the ghr93_case_II function signature and initial setup (receive SplitPointProps with delta=4)
-- [ ] Task 3.2: Build B = x_t_formula(a_n) and A = x_interval_formula(a_{n-1}, a_n) (~30-50 lines)
+- [ ] Task 3.2: Build B = x_t_formula(a_n) and A = x_interval_formula(a_{n-1}, a_n) (~30-50 lines) *(deviation: deferred — blocked by grid dispatch)*
   - Import CharacteristicFormula.lean
   - Handle n=0 boundary: when n=0, a_{n-1} = props.d_bar, e_{n-1} = props.c
-- [ ] Task 3.3: Show N_r |= U(B, A)(a_{n-1}) (~20-40 lines)
+- [ ] Task 3.3: Show N_r |= U(B, A)(a_{n-1}) (~20-40 lines) *(deviation: deferred — blocked by grid dispatch)*
   - Witness is a_n: B holds at a_n (by x_t_formula correctness), A holds on (a_{n-1}, a_n) (every point in the interval has its type as a disjunct of A)
   - Use stavi_temporal_truth_mu + sf_untl semantics
-- [ ] Task 3.4: Transfer U(B, A) through tau at rank r+4 (~30-50 lines)
+- [ ] Task 3.4: Transfer U(B, A) through tau at rank r+4 (~30-50 lines) *(deviation: deferred — blocked by grid dispatch)*
   - tau.winning_condition gives: for all StaviFormulas phi with stavi_depth phi <= r+4, truth at a_{n-1} in N iff truth at resp_tau(n-1) in M
   - stavi_depth(U(B, A)) = max(r, r) + 2 = r + 2 <= r + 4
   - Therefore M_r |= U(B, A)(resp_tau(n-1))
-- [ ] Task 3.5: Extract witness z = e_n and prove sel_pn_ord (~30-50 lines)
+- [ ] Task 3.5: Extract witness z = e_n and prove sel_pn_ord (~30-50 lines) *(deviation: deferred — blocked by grid dispatch)*
   - Unpack the Until: exists z > resp_tau(n-1) with B(z) and A on (resp_tau(n-1), z)
   - Set e_n = z
   - sel_pn_ord: resp_tau(k) <= resp_tau(n-1) < z = e_n (tau order preservation + Until witness definition)
-- [ ] Task 3.6: Round 2 winning condition (~150-250 lines)
+- [ ] Task 3.6: Round 2 winning condition (~150-250 lines) *(deviation: deferred — blocked by grid dispatch)*
   - 5-way case split on Spoiler's challenge point b_sp
   - Case (b) is the key new case: b_sp in (resp_tau(n-1), e_n) -> A holds at b_sp -> extract matching t' from (a_{n-1}, a_n) -> rank-r type agreement
   - Case (c): b_sp = e_n -> B holds -> rank-r type agreement with a_n
   - Cases (a), (d), (e): inherited from tau/sigma winning conditions
-- [ ] Task 3.7: Close the 5 grid dispatch sorries (lines 1668, 1669, 2026, 2027, 2107) (~100-200 lines)
-  - These are ordering/equality cases between game_tuple positions
-  - Pattern: Fin bridging, apply existing ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, pivot_chain_order)
+- [ ] Task 3.7: Close the grid dispatch sorries (lines 1668, 2031, 2032, 2112) (~100-200 lines) *(deviation: altered — goal shapes fully characterized but rename_i blocker prevents closure; need custom tactic)*
+  - **Goal shapes characterized**: 8-10 goals per block, all involving inner indices with inaccessible Fin variables
+  - **Ordering lemmas available**: tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, pivot_chain_order, tau_sel_b_mod, tau_b_sel_mod, etc.
+  - **Fix required**: Custom tactic or proof restructuring (see BLOCKER above)
   - Task 199 (grid_order_tactic) may provide automation for some of these
 
 **Anti-deviation warnings**:
