@@ -2094,30 +2094,27 @@ private theorem nf_2var_from_interval_data {sig : MonadicSignature}
         · intro ha; exact (h_atom_agree a).mp ((hM_atoms a).mpr ha)
       · -- Quantifier part: for each depth-k 3-var NF sub_nf,
         -- (∃ u' in M', nf_eval M' k 3 (u', x', t') sub_nf) ↔ (quant_assgn sub_nf = true)
-        intro sub_nf
-        rw [← hM_quant sub_nf]
-        -- Goal: (∃ u', nf_eval_nf M' k 3 (Fin.cons u' (Fin.cons x' ...)) sub_nf) ↔
-        --       (∃ u,  nf_eval_nf M  k 3 (Fin.cons u  (Fin.cons x  ...)) sub_nf)
-        -- Transfer witnesses using zone-based matching + 1-var NF agreement
-        constructor
-        · -- Backward (M' → M): given u' in M', find u in M
-          rintro ⟨u', hu'⟩
-          -- u' has a unique depth-(k+1) 1-var NF tau'
-          set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
-          have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
-          -- Determine u's zone and find matching u in M
-          -- tau' must be realizable in M in the same zone
-          -- Use congr_fun on h_above_max, h_below_min, or interval types
-          -- to transfer the witness back to M
-          -- This requires showing that the depth-(k+1) type of u' is
-          -- realizable in M, and then that the depth-k 3-var NF transfers.
-          sorry
-        · -- Forward (M → M'): given u in M, find u' in M'
-          rintro ⟨u, hu⟩
-          -- u has a unique depth-(k+1) 1-var NF tau
-          set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
-          have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
-          sorry
+        --
+        -- This is the Fraïssé quantifier transfer: given u in M with some
+        -- depth-k 3-var NF at (u, x, t), find u' in M' with the same NF.
+        --
+        -- Step 1 (doable): Find u' via interval/above/below data with the same
+        -- depth-(k+1) 1-var NF tau in the same zone relative to x' and t'.
+        --
+        -- Step 2 (gap): Show the depth-k 3-var NF at (u', x', t') equals that
+        -- at (u, x, t). This requires the "Fraïssé compression" argument:
+        -- k rounds of back-and-forth matching (using the original interval data
+        -- at each round), followed by depth-0 atom checking. The compression
+        -- theorem (depth-0 agreement at n+k vars → depth-k agreement at n vars)
+        -- does NOT follow from nf_agreement_monotone (which varies depth at
+        -- fixed n) and requires new game-theoretic infrastructure.
+        --
+        -- Available for the next attempt:
+        -- • ih_result: depth-k 2-var NFs at (x,t)/(x',t') agree
+        -- • h_nf_x, h_nf_t: depth-(k+1) 1-var NFs at x/x', t/t' agree
+        -- • h_interval_*, h_above_max, h_below_min: depth-(k+1) zone data
+        -- • The five depth_decrease lemmas provide depth-k versions of all data
+        sorry
   · exact nf_characteristic_satisfies M' k 2 (Fin.cons x' fun _ => t')
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
