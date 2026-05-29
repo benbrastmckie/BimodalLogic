@@ -2,38 +2,29 @@
   "task_number": 155,
   "session_id": "sess_1780001766_2e723d",
   "status": "partial",
-  "phase": 7,
-  "phase_status": "BLOCKED",
-  "summary": "Phase 7 blocked: all approaches to sorry-free completeness_discrete require Until/Since coherence (C5) on the integer MCS chain, which reduces to succ_cofinal",
-  "blocker": {
-    "type": "mathematical_gap",
-    "location": "ChronicleToCountermodel.lean:1885 (succ_cofinal)",
-    "description": "C5 coherence for succ_discrete_f requires mapping limit domain witnesses back to integers via succ_embed_surjective, which depends on succ_cofinal. Five alternative approaches analyzed; all reduce to this dependency.",
-    "approaches_tried": [
-      "ChronicleAsPriorModel on Int (C5 still needs succ_embed_surjective)",
-      "very_good on Int structure (truth_transfer needs temporal_truth which needs C5)",
-      "Game-to-k_equiv bridge (decomposition_agreement needs very_good -> IsSuccArchimedean)",
-      "Weak chronicle without IsSuccArchimedean (chronicle_is_good needs orderIsoIntOfLinearSuccPredArch)",
-      "Bypass truth correspondence (countermodel inherently needs truth evaluation)"
-    ],
-    "unblocking_options": [
-      "Close succ_cofinal directly (genuine mathematical gap, ~1000+ lines)",
-      "Task 129 Henkin model approach (avoids gap entirely)",
-      "Direct Int-based MCS chain without limit domain (Option D, ~500-1000 lines, untested)"
-    ]
+  "workstreams": {
+    "succ_cofinal": {
+      "status": "blocked",
+      "file": "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
+      "line": 1885,
+      "analysis": "Cannot be closed with current infrastructure. Gap scenario is consistent with all temporal axioms in constant-MCS case. Requires 300-600 lines of new construction-level infrastructure using frozen guard property (adj_g_mem_limit_f). Three resolution paths: (A) direct close via construction-level proof, (B) Reynolds pipeline bypass (plan v47), (C) Henkin model (task 129).",
+      "handoff": "specs/155_reynolds_pipeline_activation/handoffs/succ-cofinal-analysis-20260529.md",
+      "recommendation": "Pursue Reynolds pipeline (B) -- it bypasses succ_cofinal entirely and is the intended resolution per plan v47."
+    },
+    "cases_III_IV": {
+      "status": "in_progress",
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
+      "line": 3359,
+      "description": "Non-degenerate winning condition assembly for ghr93_cases_III_IV. 1 sorry remains.",
+      "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-v4-20260528.md",
+      "next_action": "Close non-degenerate sorry via fresh upper sub-game approach"
+    }
   },
-  "key_finding": "C4 (neg_until_coherent) IS provable on Int chain without succ_cofinal via succ_embed_squeeze_strict. C5 (until_coherent_fwd) is NOT. The gap is between squeeze (points between known images) and surjectivity (all domain points are images).",
-  "sorry_free_infrastructure": {
-    "ghr93_forward_to_backward_discrete": "axiom-clean",
-    "no_gaps_int": "axiom-clean",
-    "ghr93_inductive_step_discrete": "axiom-clean",
-    "truth_transfer": "sorry-free",
-    "z_interval_countermodel": "sorry-free"
+  "sorry_count": {
+    "ChronicleToCountermodel.lean": 4,
+    "CaseAnalysis.lean": 1,
+    "notes": "ChronicleToCountermodel sorries are all about succ_cofinal (same issue). CaseAnalysis sorry is independent."
   },
-  "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-7-handoff-20260529T035804.md",
-  "artifacts_created": [
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-7-handoff-20260529T035804.md"
-  ],
   "build_status": "passing",
-  "next_action": "User review. Options: (1) sub-task for Option D evaluation, (2) prioritize task 129, (3) attempt succ_cofinal closure"
+  "next_action": "Continue with Reynolds pipeline (plan v47 Phases 5-8) to bypass succ_cofinal entirely. Close CaseAnalysis.lean sorry (Phase 6) first, then Transfer.lean rewiring (Phase 7), then final verification (Phase 8)."
 }
