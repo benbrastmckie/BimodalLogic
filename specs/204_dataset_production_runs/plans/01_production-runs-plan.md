@@ -99,19 +99,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Medium Production Run [NOT STARTED]
+### Phase 2: Medium Production Run [COMPLETED]
 
 **Goal**: Execute the complexity 5 medium run with ~5K formulas and validate feasibility gates.
 
 **Tasks**:
-- [ ] Execute medium run: `lake exe dataset_generator -- --max-complexity 5 --max-modal-depth 3 --max-temporal-depth 3 --max-formulas 5000 --output data/bmlogic-medium.jsonl --include-duals`
-- [ ] Monitor progress (generator reports every 100 formulas)
-- [ ] After completion, read `data/bmlogic-medium_metadata.json` for summary statistics
-- [ ] Count records by label: grep for "valid", "invalid", "timeout" in the JSONL
-- [ ] Compute feasibility metrics: timeout rate, valid fraction, category diversity
-- [ ] Evaluate gates: timeout rate <20%, valid fraction >=15% (relaxed from 30% per research), 3+ GoalCategory types
-- [ ] Spot-check 5-10 JSONL records for well-formedness (proof_trace present for valid, countermodel for invalid)
-- [ ] Record all metrics for Phase 4 reporting
+- [x] Execute medium run: `lake exe dataset_generator -- --max-complexity 5 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 5000 --output data/bmlogic-medium.jsonl --include-duals` *(deviation: altered -- reduced modal/temporal depth from 3 to 2 because exhaustive enumeration at depth 3 did not terminate within 1.5 hours; depth 2 is the CLI default)*
+- [x] Monitor progress (generator reports every 100 formulas)
+- [x] After completion, read `data/bmlogic-medium_metadata.json` for summary statistics
+- [x] Count records by label: grep for "valid", "invalid", "timeout" in the JSONL
+- [x] Compute feasibility metrics: timeout rate, valid fraction, category diversity
+- [x] Evaluate gates: timeout rate <20%, valid fraction >=15% (relaxed from 30% per research), 3+ GoalCategory types
+- [x] Spot-check 5-10 JSONL records for well-formedness (proof_trace present for valid, countermodel for invalid)
+- [x] Record all metrics for Phase 4 reporting
 
 **Timing**: 30-45 minutes (10-30 min compute + validation)
 
