@@ -4,35 +4,24 @@ import Bimodal.Automation.DataExport
 /-!
 # Benchmark Oracle: Formula Labeling via Decision Procedure
 
-This module provides a batch oracle executable that reads formula ASTs from
-a JSONL file, runs the decision procedure on each formula, and outputs
-labeled results.
+This module provides a batch oracle executable that reads formula AST JSON
+strings from a file (one per line), parses each into a `Formula`, runs the
+decision procedure, and outputs labeled results as JSONL.
 
-The oracle reads each line as a JSON record containing a `formula_ast` field,
-parses the AST into a `Formula`, labels it via `labelFormula`, and writes
-the result as a JSONL record to stdout or a file.
-
-## Formula AST JSON Format
-
-The AST follows the same schema as the production dataset:
-- `{"tag": "atom", "name": "p"}`
-- `{"tag": "bot"}`
-- `{"tag": "imp", "left": <ast>, "right": <ast>}`
-- `{"tag": "box", "child": <ast>}`
-- `{"tag": "untl", "event": <ast>, "guard": <ast>}`
-- `{"tag": "snce", "event": <ast>, "guard": <ast>}`
+The oracle uses a hand-rolled JSON parser for the formula AST schema.
 
 ## Usage
 
 ```
-lake exe benchmark_oracle -- --input data/bmlogic-bench-candidates.jsonl --output data/bmlogic-bench-validated.jsonl
+lake exe benchmark_oracle -- --input formulas.txt --output results.jsonl
 ```
+
+Where `formulas.txt` contains one JSON AST per line.
 
 ## References
 
 - Task 205 Phase 3 implementation plan
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
-- `DataExport.lean`: JSON serialization primitives
 -/
 
 set_option autoImplicit false
@@ -44,218 +33,182 @@ open Bimodal.Automation
 open Bimodal.Automation.DataExport
 
 /-!
-## Minimal JSON Parser for Formula ASTs
-
-A hand-rolled recursive-descent parser that converts JSON strings into
-`Formula` values. Only handles the specific JSON schema used for formula ASTs.
+## Simple recursive-descent JSON AST parser for Formula
 -/
 
-/-- Parser state: the remaining string to parse and current position. -/
-structure ParseState where
-  input : String
-  pos : String.Pos
-  deriving Repr
+/-- Parser state: remaining characters and position. -/
+structure PState where
+  chars : Array Char
+  pos : Nat
+  deriving Repr, Inhabited
 
-/-- Parser monad: either success with value and new state, or error. -/
-abbrev Parser (α : Type) := ParseState → Except String (α × ParseState)
+def mkPState (s : String) : PState :=
+  { chars := s.toList.toArray, pos := 0 }
 
-/-- Create a parse state from a string. -/
-def mkParseState (s : String) : ParseState :=
-  { input := s, pos := ⟨0⟩ }
+def pEof (st : PState) : Bool := st.pos ≥ st.chars.size
 
-/-- Check if the parser has reached end of input. -/
-def isEof (st : ParseState) : Bool :=
-  st.pos ≥ st.input.endPos
+def pPeek (st : PState) : Option Char :=
+  if st.pos < st.chars.size then st.chars[st.pos]? else none
 
-/-- Peek at the current character without consuming it. -/
-def peek (st : ParseState) : Option Char :=
-  if isEof st then none
-  else some (st.input.get st.pos)
+def pAdvance (st : PState) : PState :=
+  { st with pos := st.pos + 1 }
 
-/-- Consume one character and advance. -/
-def advance (st : ParseState) : ParseState :=
-  if isEof st then st
-  else { st with pos := st.input.next st.pos }
-
-/-- Skip whitespace characters. -/
-def skipWS (st : ParseState) : ParseState := Id.run do
+def pSkipWS (st : PState) : PState := Id.run do
   let mut st := st
-  while !isEof st do
-    let c := st.input.get st.pos
-    if c == ' ' || c == '\n' || c == '\r' || c == '\t' then
-      st := { st with pos := st.input.next st.pos }
-    else
-      break
+  while st.pos < st.chars.size do
+    match st.chars[st.pos]? with
+    | some ' ' | some '\n' | some '\r' | some '\t' =>
+      st := { st with pos := st.pos + 1 }
+    | _ => break
   st
 
-/-- Consume a specific character or fail. -/
-def expectChar (c : Char) (st : ParseState) : Except String ParseState :=
-  let st := skipWS st
-  match peek st with
+def pExpect (c : Char) (st : PState) : Except String PState :=
+  let st := pSkipWS st
+  match pPeek st with
   | some c' =>
-    if c == c' then .ok (advance st)
-    else .error s!"expected '{c}' but got '{c}' at position {st.pos.byteIdx}"
-  | none => .error s!"expected '{c}' but got EOF"
+    if c == c' then .ok (pAdvance st)
+    else .error s!"expected '{c}' got '{c'}' at pos {st.pos}"
+  | none => .error s!"expected '{c}' got EOF"
 
-/-- Parse a JSON string value (after the opening quote). -/
-partial def parseJsonString (st : ParseState) : Except String (String × ParseState) := do
-  let st := skipWS st
-  let st ← expectChar '"' st
-  let mut result : String := ""
+/-- Parse a JSON string value (expects opening quote). -/
+partial def pString (st : PState) : Except String (String × PState) := do
+  let st := pSkipWS st
+  let st ← pExpect '"' st
+  let mut result : List Char := []
   let mut st := st
   while true do
-    if isEof st then
-      throw "unterminated string"
-    let c := st.input.get st.pos
-    if c == '"' then
-      st := advance st
-      return (result, st)
-    else if c == '\\' then
-      st := advance st
-      if isEof st then throw "unterminated escape"
-      let escaped := st.input.get st.pos
-      st := advance st
-      match escaped with
-      | '"' => result := result.push '"'
-      | '\\' => result := result.push '\\'
-      | 'n' => result := result.push '\n'
-      | _ => result := result.push escaped
-    else
-      result := result.push c
-      st := advance st
+    if pEof st then throw "unterminated string"
+    match st.chars[st.pos]? with
+    | some '"' =>
+      st := pAdvance st
+      return (String.ofList result.reverse, st)
+    | some '\\' =>
+      st := pAdvance st
+      if pEof st then throw "unterminated escape"
+      match st.chars[st.pos]? with
+      | some c =>
+        st := pAdvance st
+        match c with
+        | '"' => result := '"' :: result
+        | '\\' => result := '\\' :: result
+        | 'n' => result := '\n' :: result
+        | _ => result := c :: result
+      | none => throw "escape at EOF"
+    | some c =>
+      result := c :: result
+      st := pAdvance st
+    | none => throw "unexpected none in string parse"
   throw "unreachable"
 
-/-- Skip a JSON value (string, number, object, array, null, true, false). -/
-partial def skipJsonValue (st : ParseState) : Except String ParseState := do
-  let st := skipWS st
-  match peek st with
+/-- Skip a JSON value without parsing it (for unknown fields). -/
+partial def pSkipValue (st : PState) : Except String PState := do
+  let st := pSkipWS st
+  match pPeek st with
   | some '"' =>
-    let (_, st) ← parseJsonString st
+    let (_, st) ← pString st
     return st
   | some '{' =>
-    let mut st := advance st  -- skip {
-    let st' := skipWS st
-    match peek st' with
-    | some '}' => return (advance st')  -- empty object
+    let mut st := pAdvance st
+    let st' := pSkipWS st
+    match pPeek st' with
+    | some '}' => return (pAdvance st')
     | _ =>
-      -- Parse key-value pairs
       while true do
-        let (_, st') ← parseJsonString st
-        let st' := skipWS st'
-        let st' ← expectChar ':' st'
-        let st' ← skipJsonValue st'
-        let st' := skipWS st'
-        match peek st' with
-        | some ',' => st := advance st'  -- more pairs
-        | some '}' => return (advance st')  -- end object
-        | _ => throw "expected ',' or '}'"
+        let (_, st') ← pString st
+        let st' := pSkipWS st'
+        let st' ← pExpect ':' st'
+        let st' ← pSkipValue st'
+        let st' := pSkipWS st'
+        match pPeek st' with
+        | some ',' => st := pAdvance st'
+        | some '}' => return (pAdvance st')
+        | _ => throw "expected , or } in object"
       throw "unreachable"
   | some '[' =>
-    let mut st := advance st  -- skip [
-    let st' := skipWS st
-    match peek st' with
-    | some ']' => return (advance st')  -- empty array
+    let mut st := pAdvance st
+    let st' := pSkipWS st
+    match pPeek st' with
+    | some ']' => return (pAdvance st')
     | _ =>
       while true do
-        let st' ← skipJsonValue st
-        let st' := skipWS st'
-        match peek st' with
-        | some ',' => st := advance st'
-        | some ']' => return (advance st')
-        | _ => throw "expected ',' or ']'"
+        let st' ← pSkipValue st
+        let st' := pSkipWS st'
+        match pPeek st' with
+        | some ',' => st := pAdvance st'
+        | some ']' => return (pAdvance st')
+        | _ => throw "expected , or ] in array"
       throw "unreachable"
   | some c =>
     if c == 'n' || c == 't' || c == 'f' || c.isDigit || c == '-' then
-      -- Skip literal (null, true, false, number)
       let mut st := st
-      while !isEof st do
-        let c := st.input.get st.pos
-        if c == ',' || c == '}' || c == ']' || c == ' ' || c == '\n' || c == '\r' then
-          break
-        st := advance st
+      while !pEof st do
+        match pPeek st with
+        | some c' =>
+          if c' == ',' || c' == '}' || c' == ']' || c' == ' ' || c' == '\n' then
+            break
+          st := pAdvance st
+        | none => break
       return st
     else
-      throw s!"unexpected character '{c}'"
+      throw s!"unexpected char '{c}'"
   | none => throw "unexpected EOF in value"
 
-/--
-Parse a formula AST from a JSON object string.
+/-- Parse a formula AST from a JSON object. -/
+partial def pFormula (st : PState) : Except String (Formula × PState) := do
+  let st := pSkipWS st
+  let st ← pExpect '{' st
 
-Expected format:
-- `{"tag": "atom", "name": "p"}`
-- `{"tag": "bot"}`
-- `{"tag": "imp", "left": <ast>, "right": <ast>}`
-- `{"tag": "box", "child": <ast>}`
-- `{"tag": "untl", "event": <ast>, "guard": <ast>}`
-- `{"tag": "snce", "event": <ast>, "guard": <ast>}`
--/
-partial def parseFormulaAst (st : ParseState) : Except String (Formula × ParseState) := do
-  let st := skipWS st
-  let st ← expectChar '{' st
-
-  -- Parse fields: we need to find "tag" first, then other fields
   let mut tag : String := ""
-  let mut fields : List (String × String) := []
+  let mut name : String := ""
   let mut subFormulas : List (String × Formula) := []
   let mut st := st
 
   while true do
-    let st' := skipWS st
-    match peek st' with
+    let st' := pSkipWS st
+    match pPeek st' with
     | some '}' =>
-      st := advance st'
+      st := pAdvance st'
       break
     | _ => pure ()
 
-    -- Parse key
-    let (key, st') ← parseJsonString st
-    let st' := skipWS st'
-    let st' ← expectChar ':' st'
-    let st' := skipWS st'
+    let (key, st') ← pString st
+    let st' := pSkipWS st'
+    let st' ← pExpect ':' st'
+    let st' := pSkipWS st'
 
     if key == "tag" then
-      let (val, st') ← parseJsonString st'
+      let (val, st') ← pString st'
       tag := val
       st := st'
     else if key == "name" then
-      let (val, st') ← parseJsonString st'
-      fields := (key, val) :: fields
+      let (val, st') ← pString st'
+      name := val
       st := st'
     else if key == "left" || key == "right" || key == "child" ||
             key == "event" || key == "guard" then
-      let (formula, st') ← parseFormulaAst st'
+      let (formula, st') ← pFormula st'
       subFormulas := (key, formula) :: subFormulas
       st := st'
     else
-      -- Skip unknown fields
-      let st' ← skipJsonValue st'
+      let st' ← pSkipValue st'
       st := st'
 
-    let st' := skipWS st
-    match peek st' with
-    | some ',' => st := advance st'
+    let st' := pSkipWS st
+    match pPeek st' with
+    | some ',' => st := pAdvance st'
     | some '}' =>
-      st := advance st'
+      st := pAdvance st'
       break
-    | _ => throw s!"expected ',' or '}}' in formula object at pos {st'.pos.byteIdx}"
+    | _ => throw s!"expected , or }} at pos {st'.pos}"
 
-  -- Construct formula from parsed tag and fields
-  let getField (name : String) : Except String Formula :=
-    match subFormulas.find? (fun (k, _) => k == name) with
+  let getField (fname : String) : Except String Formula :=
+    match subFormulas.find? (fun (k, _) => k == fname) with
     | some (_, f) => .ok f
-    | none => .error s!"missing field '{name}' for tag '{tag}'"
-
-  let getStringField (name : String) : Except String String :=
-    match fields.find? (fun (k, _) => k == name) with
-    | some (_, v) => .ok v
-    | none => .error s!"missing string field '{name}' for tag '{tag}'"
+    | none => .error s!"missing field '{fname}' for tag '{tag}'"
 
   match tag with
-  | "atom" =>
-    let name ← getStringField "name"
-    return (Formula.atom_s name, st)
-  | "bot" =>
-    return (Formula.bot, st)
+  | "atom" => return (Formula.atom_s name, st)
+  | "bot" => return (Formula.bot, st)
   | "imp" =>
     let left ← getField "left"
     let right ← getField "right"
@@ -271,35 +224,28 @@ partial def parseFormulaAst (st : ParseState) : Except String (Formula × ParseS
     let event ← getField "event"
     let guard ← getField "guard"
     return (Formula.snce event guard, st)
-  | _ =>
-    throw s!"unknown formula tag: '{tag}'"
+  | _ => throw s!"unknown tag '{tag}'"
 
-/--
-Extract the `formula_ast` field from a JSON line and parse it into a Formula.
-This is a simplified extraction that finds `"formula_ast":` in the JSON line
-and parses the AST object that follows.
--/
-def parseFormulaFromLine (line : String) : Except String Formula := do
+/-- Extract and parse the formula_ast field from a JSONL record line. -/
+def parseFormulaFromRecord (line : String) : Except String Formula := do
   -- Find "formula_ast": in the line
   let key := "\"formula_ast\":"
-  match line.findSubstr? key with
-  | none => throw "no formula_ast field found"
-  | some startIdx =>
-    let afterKey := { line with }.extract (line.next (⟨startIdx.byteIdx + key.length - 1⟩)) line.endPos
-    let st := mkParseState afterKey
-    let st := skipWS st
-    let (formula, _) ← parseFormulaAst st
-    return formula
-where
-  /-- Find a substring in a string, returning its byte position. -/
-  findSubstr? (s : String) (needle : String) : Option Nat := Id.run do
-    let sLen := s.length
-    let nLen := needle.length
-    if nLen > sLen then return none
-    for i in List.range (sLen - nLen + 1) do
-      let sub := s.extract ⟨i⟩ ⟨i + nLen⟩
-      if sub == needle then return some i
-    return none
+  let parts := line.splitOn key
+  if parts.length < 2 then
+    throw "no formula_ast field found"
+  else
+    -- Get everything after the key
+    match parts.drop 1 |>.head? with
+    | none => throw "empty after formula_ast key"
+    | some rest =>
+      let st := mkPState rest
+      let st := pSkipWS st
+      let (formula, _) ← pFormula st
+      return formula
+
+/-- Check if a string contains a substring using splitOn. -/
+def strContains (s : String) (sub : String) : Bool :=
+  (s.splitOn sub).length > 1
 
 end Bimodal.Automation.BenchmarkOracle
 
@@ -311,25 +257,19 @@ open Bimodal.Automation
 open Bimodal.Automation.BenchmarkOracle
 open Bimodal.Automation.DataExport
 
-/--
-Main entry point for the benchmark_oracle executable.
-
-Reads a JSONL file of candidate formulas, parses each formula_ast,
-runs the decision procedure, and writes labeled results.
--/
 def main (args : List String) : IO Unit := do
-  -- Parse arguments
+  let argsArr := args.toArray
   let mut inputPath := "data/bmlogic-bench-candidates.jsonl"
   let mut outputPath := "data/bmlogic-bench-validated.jsonl"
   let mut i := 0
-  while i < args.length do
-    match args.get? i with
+  while i < argsArr.size do
+    match argsArr[i]? with
     | some "--input" =>
-      match args.get? (i + 1) with
+      match argsArr[i + 1]? with
       | some p => inputPath := p; i := i + 2
       | none => i := i + 1
     | some "--output" =>
-      match args.get? (i + 1) with
+      match argsArr[i + 1]? with
       | some p => outputPath := p; i := i + 2
       | none => i := i + 1
     | _ => i := i + 1
@@ -340,12 +280,10 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Output: {outputPath}"
   IO.println ""
 
-  -- Read input file
   let contents ← IO.FS.readFile ⟨inputPath⟩
   let lines := contents.splitOn "\n" |>.filter (· ≠ "")
   IO.println s!"Read {lines.length} candidate records"
 
-  -- Process each line
   let outHandle ← IO.FS.Handle.mk ⟨outputPath⟩ .write
   let mut validCount : Nat := 0
   let mut invalidCount : Nat := 0
@@ -359,34 +297,27 @@ def main (args : List String) : IO Unit := do
     if processed % 100 == 0 then
       IO.println s!"  Progress: {processed}/{lines.length}"
 
-    -- Check if this record already has a definitive label (not "unlabeled")
-    -- If it does, pass through unchanged (just verify consistency)
-    let isUnlabeled := line.containsSubstr "\"unlabeled\""
-    let needsLabeling := isUnlabeled || line.containsSubstr "\"timeout\""
+    let isUnlabeled := strContains line "\"unlabeled\""
+    let hasTimeout := strContains line "\"label\": \"timeout\""
+    let needsLabeling := isUnlabeled || hasTimeout
 
     if !needsLabeling then
-      -- Pass through with existing label
       outHandle.putStrLn line
-      if line.containsSubstr "\"valid\"" then
+      if strContains line "\"label\": \"valid\"" then
         validCount := validCount + 1
       else
         invalidCount := invalidCount + 1
       alreadyLabeled := alreadyLabeled + 1
     else
-      -- Parse formula and run oracle
-      match parseFormulaFromLine line with
-      | .error e =>
-        -- Parse failed; write with error annotation
+      match parseFormulaFromRecord line with
+      | .error _e =>
         parseErrors := parseErrors + 1
-        -- Skip this record
       | .ok formula =>
         let labeled ← labelFormula formula
         let labelStr := match labeled.label with
           | .valid => "valid"
           | .invalid => "invalid"
           | .timeout => "timeout"
-
-        -- Build updated record: replace label, add proof/countermodel
         let traceStr := match labeled.proofTrace with
           | none => "null"
           | some pt => pt.toJson
@@ -394,9 +325,16 @@ def main (args : List String) : IO Unit := do
           | none => "null"
           | some cm => cm.toJson
 
-        -- Construct output line: keep original fields but update label/proof/countermodel
+        -- Extract id from the input line
+        let idParts := line.splitOn "\"id\": \""
+        let recordId := if idParts.length >= 2 then
+          match (idParts.drop 1 |>.head?) with
+          | some rest => (rest.splitOn "\"").head?.getD ""
+          | none => s!"oracle-{processed}"
+        else s!"oracle-{processed}"
+
         let outputLine := "{\"id\": \""
-          ++ escapeJsonString (extractField line "id")
+          ++ escapeJsonString recordId
           ++ "\", \"split\": \"benchmark\""
           ++ ", \"formula_str\": \"" ++ escapeJsonString labeled.formula.prettyPrint ++ "\""
           ++ ", \"formula_ast\": " ++ labeled.formula.toJson
@@ -425,30 +363,3 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Parse errors: {parseErrors}"
   IO.println ""
   IO.println "Done!"
-where
-  /-- Extract a simple string field value from a JSON line. -/
-  extractField (line : String) (fieldName : String) : String := Id.run do
-    let key := "\"" ++ fieldName ++ "\": \""
-    match line.findSubstr? key with
-    | none => return ""
-    | some idx =>
-      let start := idx + key.length
-      -- Find closing quote (not escaped)
-      let mut pos := start
-      while pos < line.length do
-        let c := line.get ⟨pos⟩
-        if c == '"' then
-          return line.extract ⟨start⟩ ⟨pos⟩
-        else if c == '\\' then
-          pos := pos + 2  -- skip escaped char
-        else
-          pos := pos + 1
-      return ""
-  findSubstr? (s : String) (needle : String) : Option Nat := Id.run do
-    let sLen := s.length
-    let nLen := needle.length
-    if nLen > sLen then return none
-    for i in List.range (sLen - nLen + 1) do
-      let sub := s.extract ⟨i⟩ ⟨i + nLen⟩
-      if sub == needle then return some i
-    return none

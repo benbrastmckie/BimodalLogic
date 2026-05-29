@@ -143,7 +143,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Oracle Validation [NOT STARTED]
+### Phase 3: Oracle Validation [COMPLETED]
 
 **Goal**: Run the Lean decision procedure on every candidate benchmark formula to confirm or assign ground-truth labels, then filter out timeouts and mismatches.
 

@@ -68,6 +68,13 @@ lean_exe benchmark_anchors where
   srcDir := "Theories"
   supportInterpreter := true
 
+/-- Benchmark oracle: validates formula labels via decision procedure (Task 205).
+    Run with: lake exe benchmark_oracle -- --input data/bmlogic-bench-candidates.jsonl --output data/bmlogic-bench-validated.jsonl -/
+lean_exe benchmark_oracle where
+  root := `Bimodal.Automation.BenchmarkOracle
+  srcDir := "Theories"
+  supportInterpreter := true
+
 /-- Contrastive pair generator for dual-verification training signal (Task 206).
     Run with: lake exe contrastive_generator -- --max-complexity 5 --output data/contrastive_pairs.jsonl -/
 lean_exe contrastive_generator where
