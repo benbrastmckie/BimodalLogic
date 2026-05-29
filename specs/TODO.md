@@ -172,7 +172,7 @@ technical_debt:
 
 ### 204. Run production dataset generation (medium and deep runs)
 - **Effort**: small (2-4 hours active + overnight compute)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [204_dataset_production_runs/reports/01_production-runs-research.md]
