@@ -138,7 +138,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Streaming Write and OOM Prevention [NOT STARTED]
+### Phase 3: Streaming Write and OOM Prevention [COMPLETED]
 
 **Goal**: Refactor `DatasetExport.lean` to write JSONL records one at a time (streaming) instead of accumulating all `LabeledFormula` in memory before export. This prevents OOM at 50K+ formulas and enables progress monitoring during long runs.
 

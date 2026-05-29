@@ -482,17 +482,7 @@ def main (args : List String) : IO Unit := do
   if cliArgs.includeDuals then
     IO.println s!"  After temporal duals: {formulas'.length} formulas"
 
-  -- Step 3: Label all formulas
-  IO.println s!"Labeling {formulas'.length} formulas..."
-  let labeled ← labelBatch formulas'
-
-  -- Step 4: Print statistics
-  let stats := computeBatchStats labeled
-  IO.println ""
-  IO.println (stats.display)
-  IO.println ""
-
-  -- Step 5: Ensure output directory exists
+  -- Step 3: Ensure output directory exists
   let outputPath : System.FilePath := ⟨cliArgs.output⟩
   match outputPath.parent with
   | some dir => do
@@ -501,28 +491,88 @@ def main (args : List String) : IO Unit := do
       IO.FS.createDirAll dir
   | none => pure ()
 
-  -- Step 6: Write JSONL
-  IO.println s!"Writing JSONL to {cliArgs.output}..."
-  let count ← writeDatasetJSONL outputPath labeled
-  IO.println s!"  Wrote {count} records"
+  -- Step 4: Streaming label + write pipeline
+  -- Label each formula, write JSONL line immediately, accumulate lightweight stats
+  IO.println s!"Labeling and streaming {formulas'.length} formulas to {cliArgs.output}..."
+  let handle ← IO.FS.Handle.mk outputPath .write
+  let startTime ← IO.monoMsNow
+  let mut count : Nat := 0
+  let mut validCount : Nat := 0
+  let mut invalidCount : Nat := 0
+  let mut timeoutCount : Nat := 0
+  let mut totalComplexity : Nat := 0
+  let mut totalTimeMs : Nat := 0
+  let mut categoryCounts : List (GoalCategory × Nat) := []
+  for φ in formulas' do
+    let labeled ← labelFormula φ
+    -- Write JSONL line immediately (no accumulation)
+    let splitName := assignSplit labeled.formula.prettyPrint
+    let record := labeledToRecord (count + 1) splitName labeled
+    writeRecordJSONL handle record
+    -- Update running accumulators
+    count := count + 1
+    totalComplexity := totalComplexity + labeled.metrics.complexity
+    totalTimeMs := totalTimeMs + labeled.metrics.decisionTimeMs
+    match labeled.label with
+    | .valid => validCount := validCount + 1
+    | .invalid => invalidCount := invalidCount + 1
+    | .timeout => timeoutCount := timeoutCount + 1
+    categoryCounts := incrCategoryCount categoryCounts (goalCategory labeled.formula)
+    -- Progress reporting every 1000 formulas
+    if count % 1000 == 0 then
+      let elapsed ← IO.monoMsNow
+      let elapsedSecs := (elapsed - startTime) / 1000
+      let validPct := if count > 0 then validCount * 100 / count else 0
+      IO.println s!"  Progress: {count}/{formulas'.length} labeled, {validPct}% valid, {elapsedSecs}s elapsed"
 
-  -- Step 7: Write metadata
-  let metadata := computeDatasetMetadata labeled params cliArgs.includeDuals
+  -- Step 5: Print statistics
+  let avgTimeMs := if count > 0 then totalTimeMs / count else 0
+  let avgComplexity := if count > 0 then totalComplexity / count else 0
+  IO.println ""
+  IO.println s!"Batch Statistics:"
+  IO.println s!"  Total: {count}"
+  IO.println s!"  Valid: {validCount} ({if count > 0 then validCount * 100 / count else 0}%)"
+  IO.println s!"  Invalid: {invalidCount}"
+  IO.println s!"  Timeout: {timeoutCount} ({if count > 0 then timeoutCount * 100 / count else 0}%)"
+  IO.println s!"  Avg decision time: {avgTimeMs}ms"
+  IO.println ""
+
+  -- Step 6: Write metadata from accumulators (no list scan needed)
+  let modeStr := match params.samplingMode with
+    | .exhaustive => "exhaustive"
+    | .random => "random"
+    | .hybrid => "hybrid"
+  let metadata : DatasetMetadata := {
+    totalRecords := count
+    validCount := validCount
+    invalidCount := invalidCount
+    timeoutCount := timeoutCount
+    avgComplexity := avgComplexity
+    includeDuals := cliArgs.includeDuals
+    maxComplexity := params.maxComplexity
+    samplingMode := modeStr
+  }
   writeMetadata outputPath metadata
+  IO.println s!"  Wrote {count} records to {cliArgs.output}"
   IO.println s!"  Wrote metadata file"
 
-  -- Step 8: Feasibility checks
+  -- Step 7: Feasibility checks
   IO.println ""
   IO.println "Feasibility Checks:"
-  let timeoutRate := if stats.totalCount > 0
-    then stats.timeoutCount * 100 / stats.totalCount else 0
-  let validRate := if stats.totalCount > 0
-    then stats.validCount * 100 / stats.totalCount else 0
+  let timeoutRate := if count > 0
+    then timeoutCount * 100 / count else 0
+  let validRate := if count > 0
+    then validCount * 100 / count else 0
   IO.println s!"  Timeout rate: {timeoutRate}% (target: <20%)"
   IO.println s!"  Valid fraction: {validRate}% (target: >=30%)"
-
-  -- Report diversity
-  let diversity := computeDiversity (labeled.map (·.formula))
-  IO.println s!"  Category diversity: {diversity.categoryCounts.length} categories"
+  IO.println s!"  Category diversity: {categoryCounts.length} categories"
   IO.println ""
   IO.println "Done!"
+where
+  /-- Increment category count in an association list. -/
+  incrCategoryCount (counts : List (GoalCategory × Nat)) (cat : GoalCategory)
+      : List (GoalCategory × Nat) :=
+    if counts.any (fun (k, _) => k == cat) then
+      counts.map fun (k, n) => if k == cat then (k, n + 1) else (k, n)
+    else
+      (cat, 1) :: counts

@@ -962,15 +962,29 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
   return filtered
 
 /--
+Deduplicate a list of formulas using a HashMap for O(n) instead of O(n^2).
+Uses `Formula` hash as the key since `Formula` derives `Hashable`.
+-/
+private def hashDedup (formulas : List Formula) : List Formula :=
+  let (_, result) := formulas.foldl
+    (fun (acc : Std.HashMap UInt64 Unit × List Formula) φ =>
+      let (seen, deduped) := acc
+      let h := hash φ
+      if seen.contains h then (seen, deduped)
+      else (seen.insert h (), deduped ++ [φ]))
+    ({}, [])
+  result
+
+/--
 Generate formulas according to the specified sampling mode.
 
 Combines up to three formula sources:
-1. **Exhaustive/random/hybrid enumeration** (as before)
-2. **Axiom-seeded valid formulas** (Task 210): If `validSeedCount > 0`,
+1. Exhaustive/random/hybrid enumeration (as before)
+2. Axiom-seeded valid formulas (Task 210): If `validSeedCount > 0`,
    generates guaranteed-valid formulas via axiom instantiation, necessitation,
    and modus ponens closure. These are mixed in to boost the valid fraction.
 
-All sources are deduplicated before returning.
+All sources are deduplicated using HashMap-based dedup before returning.
 -/
 partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
   -- Step 1: Generate formulas from the selected sampling mode
@@ -985,7 +999,7 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
       if remaining > 0 then do
         let randomParams := { params with maxFormulas := remaining }
         let random ← sampleRandom randomParams
-        pure ((exhaustive ++ random).eraseDups)
+        pure (hashDedup (exhaustive ++ random))
       else
         pure exhaustive
   -- Step 2: Generate axiom-seeded valid formulas if requested
@@ -993,8 +1007,8 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
     generateValidBatch params.validSeedCount params.maxComplexity params.atoms
   else
     pure []
-  -- Step 3: Combine and deduplicate all sources
-  let combined := (enumerated ++ validSeeds).eraseDups
+  -- Step 3: Combine and deduplicate all sources using HashMap
+  let combined := hashDedup (enumerated ++ validSeeds)
   return combined.take params.maxFormulas
 
 end Bimodal.Automation
