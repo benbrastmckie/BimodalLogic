@@ -1,7 +1,7 @@
 # Implementation Plan: Contrastive Pair Generation
 
 - **Task**: 206 - contrastive_pair_generation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (existing infrastructure sufficient)
 - **Research Inputs**: reports/01_contrastive-pairs.md

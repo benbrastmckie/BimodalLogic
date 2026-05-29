@@ -8,10 +8,11 @@
     {
       "project_number": 213,
       "project_name": "production_scale_dataset_validation",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "created": "2026-05-29T20:55:10Z",
-      "last_updated": "2026-05-29T20:55:10Z"
+      "last_updated": "2026-05-29T21:04:02Z",
+      "session_id": "sess_1780088631_bfd193"
     },
     {
       "project_number": 212,
@@ -1780,11 +1781,11 @@
     {
       "project_number": 206,
       "project_name": "contrastive_pair_generation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T20:49:53Z",
-      "session_id": "sess_1780087535_7a3b85",
+      "last_updated": "2026-05-29T21:07:36Z",
+      "session_id": "sess_1780088191_17e016_b",
       "artifacts": [
         {
           "path": "specs/206_contrastive_pair_generation/reports/01_contrastive-pairs.md",
@@ -1795,8 +1796,14 @@
           "path": "specs/206_contrastive_pair_generation/plans/01_contrastive-pairs.md",
           "type": "plan",
           "summary": "4-phase plan: core mutation types/functions, contrastive pair pipeline with temporal duality, JSONL export with standalone executable, integration validation. 5 hours, medium complexity."
+        },
+        {
+          "path": "specs/206_contrastive_pair_generation/summaries/01_contrastive-pairs-summary.md",
+          "type": "summary",
+          "summary": "FormulaMutator module: 7 mutation strategies, contrastive pair pipeline, JSONL export, standalone executable. Zero sorries."
         }
-      ]
+      ],
+      "completion_summary": "Implemented FormulaMutator.lean (~780 lines) with 8 MutationType variants, 7 mutation functions, contrastive pair pipeline with countermodel extraction, JSONL export, and standalone contrastive_generator executable. Lake build passes, zero sorries."
     },
     {
       "project_number": 207,

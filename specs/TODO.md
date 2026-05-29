@@ -133,7 +133,7 @@ technical_debt:
 
 ### 213. Production-scale dataset generation validation
 - **Effort**: medium (1-2 days)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: 210
 
@@ -205,11 +205,12 @@ technical_debt:
 
 ### 206. Contrastive pair generation for dual-verification training signal
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [206_contrastive_pair_generation/reports/01_contrastive-pairs.md]
 - **Plan**: [206_contrastive_pair_generation/plans/01_contrastive-pairs.md]
+- **Summary**: [206_contrastive_pair_generation/summaries/01_contrastive-pairs-summary.md]
 
 **Description**: Implement a FormulaMutator module in Automation/ that generates contrastive pairs from valid formulas. For each valid formula, apply systematic mutations (atom substitution with bot, operator weakening box->diamond/G->F, subformula deletion, depth reduction) and re-run the decision procedure to produce (valid_formula, invalid_mutation, countermodel) triples. This creates the dual-verification training signal identified as novel in task 201 research. Also implement temporal duality contrastive pairs via swap_temporal where the dual has different validity.
 
