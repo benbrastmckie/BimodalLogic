@@ -1,5 +1,5 @@
 ---
-next_project_number: 204
+next_project_number: 210
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -131,6 +131,13 @@ technical_debt:
 
 ## Tasks
 
+### 209. Document training pipeline components
+- **Effort**: medium (1-2 days)
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+
+**Description**: Document the training pipeline components in BimodalLogic repo, linking to https://github.com/benbrastmckie/BimodalHarness for the rest of the training harness. Carefully document each of the 6 Lean modules in Theories/Bimodal/Automation/ (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter (scripts/generate_dataset.py), and the executable targets (dataset_generator, dataset_validator). Explain the dual-signal architecture (proof traces as positive signal, countermodels as corrective signal), the end-to-end pipeline flow, the JSON dataset schema, and how the exported data connects to the BimodalHarness repo for value network training, policy network training, and MCTS proof search. Include the feasibility gate results and recommended next steps.
+
 ### 208. HuggingFace dataset packaging for BMLogic-Bench
 - **Effort**: small (4-6 hours)
 - **Status**: [NOT STARTED]
@@ -165,9 +172,11 @@ technical_debt:
 
 ### 204. Run production dataset generation (medium and deep runs)
 - **Effort**: small (2-4 hours active + overnight compute)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 203
+- **Research**: [204_dataset_production_runs/reports/01_production-runs-research.md]
+- **Plan**: [204_dataset_production_runs/plans/01_production-runs-plan.md]
 
 **Description**: Execute the dataset generator at production scale. Medium run: complexity 5, ~5K formulas with temporal duals (fast run, ~30 min). Deep run: complexity 7, hybrid mode, ~50K formulas with duals (overnight). Validate feasibility gates on each run (timeout rate <20%, valid fraction >=30%, PatternKey diversity). Store results in data/ directory. This produces the raw labeled dataset that downstream tasks (benchmark curation, ML training) consume.
 
