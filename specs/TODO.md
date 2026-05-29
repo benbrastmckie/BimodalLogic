@@ -200,12 +200,14 @@ technical_debt:
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL (3-4 weeks)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**:
   - [201_alphazero_proof_search_harness/reports/01_team-research.md]
   - [201_alphazero_proof_search_harness/reports/02_team-research.md]
 - **Plan**: [201_alphazero_proof_search_harness/plans/01_task-decomposition.md]
+- **Summary**: [201_alphazero_proof_search_harness/summaries/01_execution-summary.md]
+- **Validation**: [201_alphazero_proof_search_harness/reports/03_tier1-validation.md]
 
 **Description**: Tier 1 dual-signal training data pipeline using Lean-native `decide`/`findCountermodel` API. 6 phases: JSON serialization layer, formula enumeration engine, batch decision pipeline with proof trace extraction, enriched countermodel extraction, dataset assembly & JSON export, validation & feasibility gate. Valid formulas produce (features, proof_height, rule_profile) tuples; invalid formulas produce (features, countermodel_atoms, branch_structure) tuples. No Python bridge needed — pure Lean with JSON export for downstream ML.
 

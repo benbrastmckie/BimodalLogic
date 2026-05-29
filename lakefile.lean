@@ -39,3 +39,10 @@ lean_exe dataset_generator where
   root := `Bimodal.Automation.DatasetExport
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Dataset validator executable for conformance testing and feasibility gate.
+    Run with: lake exe dataset_validator -/
+lean_exe dataset_validator where
+  root := `Bimodal.Automation.DatasetValidator
+  srcDir := "Theories"
+  supportInterpreter := true
