@@ -17,11 +17,20 @@
     {
       "project_number": 210,
       "project_name": "enumerator_complexity_blowup",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T19:21:47Z",
-      "last_updated": "2026-05-29T19:25:48Z",
-      "session_id": "sess_1748563307_r210ab"
+      "last_updated": "2026-05-29T19:32:14Z",
+      "session_id": "sess_1748563307_r210ab",
+      "researched": "2026-05-29T19:32:14Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md",
+          "type": "research",
+          "summary": "Root cause analysis of enumerateAtBudget exponential blowup with 6 ranked mitigation strategies. Key finding: 651x bloat at budget 5 due to up-to-budget semantics, no memoization, and Cartesian products. Recommended fix: memoized exact-complexity enumeration plus axiom-schema-based valid formula generation."
+        }
+      ]
     },
     {
       "project_number": 209,
