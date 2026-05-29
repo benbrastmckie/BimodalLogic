@@ -1249,6 +1249,113 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature}
   exact (hform_dc _ (by calc stavi_depth _ ≤ r + 2 := untl_type_depth
                           _ ≤ r + delta := by omega)).mp h_untl_N
 
+/-- **GHR93 Case II e_n construction via U(B,A)**: Construct e_n as a bounded
+    Until witness in (c, y], with full formula agreement at depth r between
+    e_n and a_n. Also provides the A condition on (c, e_n) for Round 2.
+
+    This combines three mechanisms:
+    1. `ghr93_untl_transfer`: U(B,A)(c) in M from U(B,A)(d) in N
+    2. `h_d_compat_left`: B-point existence in (c, y] via forward game
+    3. `untl_witness_bounded`: bounded witness z ≤ y with A on (c, z)
+
+    The result e_n has:
+    - `mu_holds e_n` (carrier point)
+    - `c < e_n` and `e_n ≤ y`
+    - B(e_n): same rank-r type as a_n
+    - A on (c, e_n): all mu-points between c and e_n have rank-r type
+      matching some mu-point in (d, a_n) in N
+    - Formula agreement with a_n at depth r (from x_t_correct via B) -/
+private theorem ghr93_construct_en {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r delta : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
+    (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
+    (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
+    (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
+    (p_n : N.carrier)
+    (hp_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n)
+    (hp_n_in : inClosedInterval x' y' (extendPoint p_n))
+    (hd_lt_pn : d < extendPoint p_n)
+    (h_mono : Monotone a_bwd)
+    (resp_tau : Fin n → ExtendedCarrier M atomMap r)
+    (hresp_tau_in : ∀ i, inClosedInterval c y (resp_tau i)) :
+    ∃ (e_n : ExtendedCarrier M atomMap r),
+      c < e_n ∧ e_n ≤ y ∧ mu_holds e_n ∧
+      stavi_temporal_truth_mu M atomMap r e_n
+        (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) ∧
+      (∀ w : ExtendedCarrier M atomMap r, c < w → w < e_n → mu_holds w →
+        stavi_temporal_truth_mu M atomMap r w
+          (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
+  -- Step 1: Get U(B,A)(c) in M via ghr93_untl_transfer.
+  have h_untl_M := ghr93_untl_transfer props hd ha_bwd h_no_split p_n hp_n hd_lt_pn
+  -- Step 2: Get a B-satisfying carrier point in (c, y] using d-compatible forward game.
+  -- The d-compatible game constrains position n to map to d, ensuring c < b_pt
+  -- via the ordering d < p_n.
+  let a_pad_big : Fin (1 + 3 * n + 1) → ExtendedCarrier M atomMap r := fun i =>
+    if h : i.val < n then resp_tau ⟨i.val, h⟩
+    else if i.val = 1 + 3 * n then c
+    else c  -- fill remaining positions with c
+  have ha_pad_big : ∀ i, inClosedInterval x y (a_pad_big i) := by
+    intro i; simp only [a_pad_big]
+    split
+    · exact ⟨le_trans props.hxc (hresp_tau_in ⟨_, ‹_›⟩).1, (hresp_tau_in ⟨_, ‹_›⟩).2⟩
+    · split <;> exact props.hc_interval
+  have hpad_last : a_pad_big ⟨1 + 3 * n, by omega⟩ = c := by
+    simp [a_pad_big, show ¬(1 + 3 * n < n) from by omega]
+  obtain ⟨a'_big, _, hwin_big, hd_eq_big⟩ :=
+    props.h_d_compat_left a_pad_big ha_pad_big hpad_last
+  obtain ⟨b_pt, hb_pt_in, hcond_big⟩ := hwin_big p_n hp_n_in
+  obtain ⟨hord_big, _, hform_big⟩ := hcond_big
+  -- B(b_pt) from forward game formula agreement + x_t_self.
+  have hform_bpt : ∀ (F : StaviFormula), stavi_depth F ≤ r →
+      (stavi_temporal_truth_mu M atomMap r (extendPoint b_pt) F ↔
+       stavi_temporal_truth_mu N atomMap r (extendPoint p_n) F) := by
+    intro F hF
+    have h := hform_big ⟨(1 + 3 * n + 1) + 1, by omega⟩ F hF
+    simp only [game_tuple_b_eq] at h; exact h
+  have hB_bpt : stavi_temporal_truth_mu M atomMap r (extendPoint b_pt)
+      (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) := by
+    have hpn_is_an : extendPoint p_n = a_bwd ⟨n, by omega⟩ := hp_n.symm
+    exact (hform_bpt _ x_t_depth).mpr (hpn_is_an ▸ x_t_self)
+  -- c < b_pt from d-compat game ordering: d < p_n transfers to c < b_pt.
+  have hc_lt_bpt : c < extendPoint b_pt := by
+    have hord_cd := hord_big ⟨1 + (1 + 3 * n), by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
+    have hM_sel : game_tuple x y a_pad_big b_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
+      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
+      show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
+      have h_idx : (⟨1 + (1 + 3 * n) - 1, by omega⟩ : Fin (1 + 3 * n + 1)) =
+          ⟨1 + 3 * n, by omega⟩ := Fin.ext (by simp)
+      rw [h_idx]; exact hpad_last
+    have hN_sel : game_tuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
+      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
+        show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
+      show a'_big ⟨1 + (1 + 3 * n) - 1, _⟩ = d
+      have h1 : 1 + (1 + 3 * n) - 1 = 1 + 3 * n := by omega
+      have : a'_big ⟨1 + (1 + 3 * n) - 1, by omega⟩ = a'_big ⟨1 + 3 * n, by omega⟩ := by
+        congr 1; exact Fin.ext h1
+      rw [this]; exact hd_eq_big
+    rw [hM_sel, game_tuple_b_eq] at hord_cd
+    rw [hN_sel, game_tuple_b_eq] at hord_cd
+    exact hord_cd.1.mpr hd_lt_pn
+  -- b_pt is a B-satisfying mu-point in (c, y].
+  -- Step 3: Apply untl_witness_bounded to get e_n in (c, y].
+  have h_b_bound : ∃ z_b : ExtendedCarrier M atomMap r,
+      c < z_b ∧ z_b ≤ y ∧ mu_holds z_b ∧
+      stavi_temporal_truth_mu M atomMap r z_b
+        (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) :=
+    ⟨extendPoint b_pt, hc_lt_bpt, hb_pt_in.2, ⟨b_pt, rfl⟩, hB_bpt⟩
+  obtain ⟨e_n, hc_lt_en, he_n_le_y, hmu_en, hB_en, hA_on⟩ :=
+    untl_witness_bounded h_untl_M h_b_bound
+  exact ⟨e_n, hc_lt_en, he_n_le_y, hmu_en, hB_en, hA_on⟩
+
 set_option maxHeartbeats 1600000
 
 /-- **Case II helper**: When all selections lie in [d,y'] and a_n is a
