@@ -78,19 +78,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: JSON Serialization Layer [NOT STARTED]
+### Phase 1: JSON Serialization Layer [COMPLETED]
 
 **Goal**: Add `toJson` string builders for core types so decision results can be exported to structured JSON consumable by Python.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/DataExport.lean`
-- [ ] Implement `Formula.toJson : Formula → String` — recursive over the 6 constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce` per Formula.lean:70-85)
-- [ ] Implement `Atom.toJson : Atom → String` — serialize `base : String` and `fresh_index : Option Nat`
-- [ ] Implement `SimpleCountermodel.toJson : SimpleCountermodel → String` — serialize `trueAtoms`, `falseAtoms`, `formula` (CountermodelExtraction.lean:47-54)
-- [ ] Implement `PatternKey.toJson : PatternKey → String` — all 5 fields: `modalDepth`, `temporalDepth`, `impCount`, `complexity`, `topOperator` (SuccessPatterns.lean:95-106)
-- [ ] Implement `GoalCategory.toJson : GoalCategory → String` — 8 cases: `Atom`, `Bottom`, `Implication`, `Box`, `AllPast`, `AllFuture`, `Until`, `Since`
-- [ ] Implement proof metrics serializer: `{ "height": N, "rule_counts": {...} }` from `DerivationTree` (Derivation.lean:85-167)
-- [ ] Implement `Formula.prettyPrint : Formula → String` — human-readable notation (e.g. `□p → p`)
+- [x] Create `Theories/Bimodal/Automation/DataExport.lean`
+- [x] Implement `Formula.toJson : Formula → String` — recursive over the 6 constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce` per Formula.lean:70-85)
+- [x] Implement `Atom.toJson : Atom → String` — serialize `base : String` and `fresh_index : Option Nat`
+- [x] Implement `SimpleCountermodel.toJson : SimpleCountermodel → String` — serialize `trueAtoms`, `falseAtoms`, `formula` (CountermodelExtraction.lean:47-54)
+- [x] Implement `PatternKey.toJson : PatternKey → String` — all 5 fields: `modalDepth`, `temporalDepth`, `impCount`, `complexity`, `topOperator` (SuccessPatterns.lean:95-106)
+- [x] Implement `GoalCategory.toJson : GoalCategory → String` — 8 cases: `Atom`, `Bottom`, `Implication`, `Box`, `AllPast`, `AllFuture`, `Until`, `Since`
+- [x] Implement proof metrics serializer: `{ "height": N, "rule_counts": {...} }` from `DerivationTree` (Derivation.lean:85-167)
+- [x] Implement `Formula.prettyPrint : Formula → String` — human-readable notation (e.g. `□p → p`)
 
 **Key type surfaces**:
 ```
@@ -106,7 +106,7 @@ DerivationTree = axiom | assumption | modus_ponens | necessitation | temporal_ne
 **Depends on**: none
 
 **Verification**:
-- [ ] `lake build Bimodal.Automation.DataExport` succeeds
+- [x] `lake build Bimodal.Automation.DataExport` succeeds
 - [ ] Test JSON output for 5 representative formulas: atom (`p`), propositional (`p → q`), modal (`□p → p`), temporal (`U(p, q)`), mixed (`□U(p, q) → G(p)`)
 - [ ] Python `json.loads()` parses all outputs without error
 
