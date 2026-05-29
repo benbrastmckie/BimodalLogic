@@ -2,7 +2,7 @@
 
 - **Task**: 210 - enumerator_complexity_blowup
 - **Status**: [NOT STARTED]
-- **Effort**: 8 hours
+- **Effort**: 8 hours (critical path ~6 hours with Phases 1 and 2 parallel)
 - **Dependencies**: None (self-contained refactoring of FormulaEnumerator.lean and DatasetGenerator.lean)
 - **Research Inputs**: specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md
 - **Artifacts**: plans/01_enumerator-blowup-plan.md (this file)
@@ -55,7 +55,7 @@ This task supports the dataset generation infrastructure. It does not directly a
 | Memoized enumeration still too slow at complexity 7+ | H | L | The research shows only 43,696 distinct formulas at complexity 7 -- well within memory. Add time-cap safety net (Strategy D). |
 | Lean 4 `IO.Ref` or `HashMap` API differences cause build errors | M | M | Use `StateM (HashMap ...)` monad or `IO.Ref`. Verify API with Lean MCP tools before committing. |
 | Axiom instantiation produces formulas that are too structurally similar | M | M | Use random sub-formula substitution at varying depths. Mix axiom-generated and enumerated formulas. |
-| `eraseDups` on large exact-enumeration lists is O(n^2) | M | L | At 43K formulas (complexity 7), this takes ~1 second. Acceptable. If needed, switch to `Std.HashSet`. |
+| `eraseDups` becomes unnecessary after exact-complexity rewrite | L | H | Formulas within one exact-complexity level are structurally unique by construction; cross-level formulas differ in complexity. Replace `eraseDups` with a debug assertion in development and remove from production path. Fall back to `Std.HashSet`-based dedup if the assertion ever fires. |
 | Breaking changes to `enumerateExhaustive` API disrupt DatasetExporter | H | M | Keep the `EnumParams`-based API surface stable. Refactor internals only. |
 
 ## Implementation Phases
@@ -63,33 +63,34 @@ This task supports the dataset generation infrastructure. It does not directly a
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1 | -- |
-| 2 | 2 | 1 |
-| 3 | 3 | 1 |
-| 4 | 4 | 2, 3 |
-| 5 | 5 | 4 |
+| 1 | 1, 2 | -- |
+| 2 | 3 | 1, 2 |
+| 3 | 4 | 3 |
+| 4 | 5 | 4 |
 
-Phases within the same wave can execute in parallel.
+Phases within the same wave can execute in parallel. Phases 1 (enumeration rewrite) and 2 (axiom instantiation) are independent — they add non-overlapping functionality to FormulaEnumerator.lean and share no code dependencies. Phase 3 wires both into DatasetGenerator and therefore requires both.
 
 ---
 
-### Phase 1: Rewrite enumerateAtBudget to exact-complexity with memoization [NOT STARTED]
+### Phase 1: Rewrite enumerateAtBudget to exact-complexity with memoization [COMPLETED]
 
 **Goal**: Replace the "up to budget" enumeration with exact-complexity enumeration and add memoization to eliminate redundant computation. This directly addresses the 651x bloat at budget 5.
 
 **Tasks**:
-- [ ] Create `enumExactBudget` function that generates formulas of EXACTLY the given complexity (not "up to")
+- [x] **Task 1.1**: Create `enumExactBudget` function that generates formulas of EXACTLY the given complexity (not "up to")
   - Base case (budget=1): return `bot :: atoms.map .atom`
   - Unary case (budget=n+1, n>=1): box only -- child gets budget n, decrement modal depth
   - Binary case (budget=n+1, n>=1): distribute remaining n among left+right (each >= 1), no base case re-inclusion
-- [ ] Add memoization using `IO.Ref (Std.HashMap (Nat x Nat x Nat) (List Formula))` keyed by `(budget, maxModal, maxTemporal)`
+- [x] **Task 1.2**: Add memoization using `Std.HashMap (Nat x Nat x Nat) (List Formula)` keyed by `(budget, maxModal, maxTemporal)` *(deviation: altered -- used pure state threading via foldl instead of IO.Ref, avoids IO dependency for pure enumeration)*
   - Check cache before computing; store result after computing
-- [ ] Rewrite `enumerateAtBudget` to call `enumExactBudget` (preserve function signature for backwards compatibility)
-- [ ] Rewrite `enumerateExhaustive` to call `enumExactBudget` for each complexity level 1..maxComplexity and concatenate
+- [x] **Task 1.3**: Rewrite `enumerateAtBudget` to call `enumExactBudget` (preserve function signature for backwards compatibility)
+- [x] **Task 1.4**: Rewrite `enumerateExhaustive` to call `enumExactBudget` for each complexity level 1..maxComplexity and concatenate
   - Each level produces only exact-complexity formulas, so no cross-level duplication
-- [ ] Apply the same exact-complexity + memoization pattern to `enumHelper` (the plan-specified API)
-- [ ] Rewrite `enumerateUpToDepth` to use the memoized exact-complexity variant
-- [ ] Add a wall-clock time cap (Strategy D) as a safety net: if enumeration at any single complexity level exceeds 30 seconds, truncate and log a warning
+  - Remove `eraseDups` from the concatenated output (exact-complexity levels are disjoint by construction) *(deviation: altered -- removed eraseDups entirely rather than adding debug assertion, since exact-complexity levels are provably disjoint)*
+- [x] **Task 1.5**: Apply the same exact-complexity + memoization pattern to `enumHelper` (the plan-specified API) — created `enumExactHelper` as the core, `enumHelper` as backward-compatible wrapper
+- [x] **Task 1.6**: Rewrite `enumerateUpToDepth` to use the memoized exact-complexity variant
+- [ ] **Task 1.7**: Add a wall-clock time cap (Strategy D) as a safety net *(deviation: deferred to task Phase 4 -- will add if timing gates fail; pure enumeration functions cannot use IO.monoMsNow)*
+- [x] **Task 1.8**: Verify that `generateFormulas` still compiles and works correctly with the refactored internals
 
 **Timing**: 2 hours
 
@@ -106,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 2: Add axiom-schema instantiation for guaranteed-valid formulas [NOT STARTED]
 
-**Goal**: Create a new module that generates valid-by-construction formulas by instantiating the 42 axiom schemata with random sub-formulas. This addresses the valid fraction problem.
+**Goal**: Create a new module that generates valid-by-construction formulas by instantiating the 42 axiom schemata with random sub-formulas. This addresses the valid fraction problem. This phase is independent of Phase 1 — it adds new functions that do not call or depend on the enumeration rewrite.
 
 **Tasks**:
 - [ ] Create `instantiateAxiom : List Atom -> Nat -> IO Formula` that:
@@ -115,16 +116,17 @@ Phases within the same wave can execute in parallel.
   - Returns the resulting axiom instance (guaranteed valid)
 - [ ] Create `generateValidFromMP : Formula -> Formula -> Option Formula` that applies modus ponens: given valid phi and valid (phi -> psi), return psi
 - [ ] Create `generateValidFromNec : Formula -> Formula` that applies necessitation: given valid phi, return box(phi)
-- [ ] Create `generateValidBatch : Nat -> Nat -> List Atom -> IO (List Formula)` that:
-  - Takes a target count and maximum complexity
-  - Generates axiom instances, applies MP and necessitation closure for 1-2 rounds
-  - Filters to target complexity range
-  - Deduplicates and returns
+- [ ] Create `generateValidBatch : Nat -> Nat -> List Atom -> IO (List Formula)` using an incremental pool strategy:
+  1. **Seed pool**: Generate N axiom instances via `instantiateAxiom` (these are all valid by construction)
+  2. **Necessitation round**: For each formula in the pool, add `box(phi)` — still valid, increases modal depth
+  3. **MP round**: Scan the pool for implication pairs — for each `phi` and `phi → psi` both in the pool, add `psi`. Also scan for `phi` in the pool where `prop_k`-instantiation produces `phi → (chi → phi)` for some pool member `chi`, yielding `chi → phi` via MP
+  4. **Filter**: Discard formulas outside target complexity range, deduplicate
+  5. Repeat rounds 2-3 once more if the pool is still below the target count
 - [ ] Focus on the simplest high-yield axiom schemata first: `prop_s`, `prop_k`, `ex_falso`, `modal_t`, `modal_4`, `modal_b`, `modal_k_dist`, `peirce` (these take 1-3 formula parameters, easy to instantiate)
 
 **Timing**: 2 hours
 
-**Depends on**: 1
+**Depends on**: none (parallel with Phase 1)
 
 **Files to modify**:
 - `Theories/Bimodal/Automation/FormulaEnumerator.lean` -- add axiom instantiation functions in a new section
@@ -132,7 +134,7 @@ Phases within the same wave can execute in parallel.
 **Verification**:
 - `lake build Bimodal.Automation.FormulaEnumerator` compiles
 - `generateValidBatch 100 7 atoms` produces ~100 formulas with complexity in 3-7 range
-- All generated formulas are structurally axiom instances (valid by construction)
+- All generated formulas are structurally axiom instances or derived via MP/necessitation from axiom instances (valid by construction)
 
 ---
 
@@ -152,7 +154,7 @@ Phases within the same wave can execute in parallel.
 
 **Timing**: 1.5 hours
 
-**Depends on**: 1
+**Depends on**: 1, 2
 
 **Files to modify**:
 - `Theories/Bimodal/Automation/DatasetGenerator.lean` -- update pipeline to use new enumeration + axiom seeding
@@ -169,12 +171,13 @@ Phases within the same wave can execute in parallel.
 **Goal**: Verify that the refactored enumeration meets performance targets and the axiom seeding meets the 15% valid fraction gate.
 
 **Tasks**:
-- [ ] Create a test/benchmark script (in Lean `#eval` or a dedicated test file) that:
+- [ ] Create a compiled benchmark executable (a `main` definition in a test file under `Tests/BimodalTest/`) that:
   - Runs `enumerateExhaustive` at complexity 5, 6, and 7 with 3 atoms, modal depth 2, temporal depth 2
-  - Measures wall-clock time for each complexity level
+  - Measures wall-clock time for each complexity level using `IO.monoMsNow`
   - Reports formula counts per complexity level
   - Verifies complexity 5 produces ~1,440 distinct formulas
-- [ ] Verify timing targets:
+  - **Important**: Run via `lake env lean --run` (compiled mode), NOT `#eval` — the Lean interpreter is orders of magnitude slower than compiled code and would produce misleading timing results
+- [ ] Verify timing targets (compiled execution):
   - Complexity 5: < 5 seconds
   - Complexity 6: < 30 seconds
   - Complexity 7: < 60 seconds (or safely cap and log)
@@ -185,14 +188,14 @@ Phases within the same wave can execute in parallel.
 
 **Timing**: 1.5 hours
 
-**Depends on**: 2, 3
+**Depends on**: 3
 
 **Files to modify**:
-- `Tests/BimodalTest/` or inline `#eval` blocks -- benchmark and validation tests
+- `Tests/BimodalTest/` -- compiled benchmark and validation tests
 - `Theories/Bimodal/Automation/FormulaEnumerator.lean` -- tuning if needed
 
 **Verification**:
-- All timing gates pass (complexity 5 < 5s, complexity 6 < 30s)
+- All timing gates pass under compiled execution (complexity 5 < 5s, complexity 6 < 30s)
 - Valid fraction with axiom seeding exceeds 15%
 - `lake build` passes for the full project
 

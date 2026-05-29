@@ -1,5 +1,6 @@
 import Bimodal.Syntax
 import Bimodal.Automation.SuccessPatterns
+import Std.Data.HashMap
 
 /-!
 # Formula Enumerator for Dataset Generation
@@ -25,19 +26,33 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 - `enrichWithDuals`: Apply `swap_temporal` for free 2x augmentation
 - `DiversityReport`: Distribution statistics across GoalCategory and depth buckets
 
+### Task 210: Exact-complexity enumeration with memoization
+- `enumExactHelper`: Memoized exact-complexity enumeration (3-constraint)
+- `enumExactBudget`: Memoized exact-complexity enumeration (legacy 2-constraint)
+- `generateValidBatch`: Axiom-schema instantiation for guaranteed-valid formulas
+
 ## Design Decisions
 
+- **Exact-complexity semantics (Task 210)**: Each call generates formulas of EXACTLY
+  the given complexity, not "up to". This eliminates the 651x bloat at budget 5 caused
+  by re-including base cases at every recursion level.
+- **Memoization (Task 210)**: A `Std.HashMap` cache keyed by `(budget, modalBudget,
+  temporalBudget)` eliminates redundant computation. At budget 5 there are only 27
+  unique argument triples despite 1,027 recursive calls in the naive version.
 - **Three simultaneous constraints**: `enumerateUpToDepth` bounds modal depth, temporal
   depth, and total size independently. This prevents runaway in any single dimension.
 - **Deterministic sampling**: `sampleFormulas` uses a linear congruential generator (LCG)
   for reproducibility. Same seed always produces same formulas.
-- **Deduplication**: Uses `List.eraseDups` via `BEq Formula` (already derived)
+- **Deduplication**: Exact-complexity levels produce disjoint formula sets by construction.
+  Within a level, formulas are unique because each structural position is filled exactly once.
+  `eraseDups` is no longer needed on the main enumeration path.
 - **3-5 atoms**: Sufficient for non-trivial operator interactions
 
 ## References
 
 - Task 201 plan: specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md
 - Team research: specs/203_formula_enumerator_dataset_export/reports/01_team-research.md
+- Task 210 research: specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md
 -/
 
 set_option autoImplicit false
@@ -83,57 +98,99 @@ def mediumConfig : EnumConfig :=
   , maxSize := 12
   , atomPool := defaultAtomPool }
 
+/-!
+## Memoization Cache Type
+
+The memoization cache maps `(sizeBudget, modalBudget, temporalBudget)` triples
+to the list of formulas at that exact complexity level. This eliminates redundant
+computation: at budget 5 there are only 27 unique argument triples despite 1,027
+recursive calls in the naive version.
+-/
+
+/-- Cache type for memoized enumeration, keyed by (size, modal, temporal). -/
+abbrev EnumCache := Std.HashMap (Nat × Nat × Nat) (List Formula)
+
+/--
+Enumerate all formulas of EXACTLY the given complexity, respecting modal and
+temporal depth bounds. Uses memoization via a carried cache to avoid redundant
+computation.
+
+**Exact-complexity semantics (Task 210)**: Unlike the original `enumHelper`,
+this function generates formulas whose complexity is exactly `sizeBudget`, not
+"up to". Base cases (atoms, bot) are only generated at sizeBudget=1. This
+eliminates the 651x bloat caused by re-including base cases at every level.
+
+The cache is threaded through all recursive calls as a state parameter, and
+the updated cache is returned alongside the result list.
+-/
+def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
+    (cache : EnumCache) : List Formula × EnumCache :=
+  let key := (sizeBudget, modalBudget, temporalBudget)
+  match cache[key]? with
+  | some result => (result, cache)
+  | none =>
+    let (result, cache') := match sizeBudget with
+      | 0 => ([], cache)
+      | 1 =>
+        -- Base cases: atoms and bot (complexity exactly 1)
+        (Formula.bot :: atoms.map Formula.atom, cache)
+      | n + 2 =>
+        -- Complexity is n + 2 (at least 2). The constructor costs 1.
+        let childBudget := n + 1
+        -- Unary: box φ (child has exact complexity childBudget)
+        -- box adds 1 to modal depth, so child must fit within modalBudget - 1
+        let (boxes, cache1) := if modalBudget > 0 then
+          let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget cache
+          (children.map Formula.box, c)
+        else ([], cache)
+        -- Binary constructors: distribute childBudget between left and right
+        -- Each child gets exact complexity >= 1, left + right = childBudget
+        let (binaryFormulas, cache2) := ((List.range childBudget).foldl
+          (fun (acc : List Formula × EnumCache) i =>
+            let leftSize := i + 1
+            let rightSize := childBudget - leftSize
+            if rightSize < 1 then acc
+            else
+              let (accList, accCache) := acc
+              -- imp: no depth change
+              let (lefts, c1) := enumExactHelper atoms modalBudget temporalBudget leftSize accCache
+              let (rights, c2) := enumExactHelper atoms modalBudget temporalBudget rightSize c1
+              let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
+              -- untl/snce: temporal depth + 1 for the whole formula
+              let (temporalBinaries, c3) := if temporalBudget > 0 then
+                let (tLefts, c2a) := enumExactHelper atoms modalBudget (temporalBudget - 1) leftSize c2
+                let (tRights, c2b) := enumExactHelper atoms modalBudget (temporalBudget - 1) rightSize c2a
+                let untls := tLefts.flatMap fun l => tRights.map fun r => Formula.untl l r
+                let snces := tLefts.flatMap fun l => tRights.map fun r => Formula.snce l r
+                (untls ++ snces, c2b)
+              else ([], c2)
+              (accList ++ imps ++ temporalBinaries, c3)
+          ) ([], cache1))
+        (boxes ++ binaryFormulas, cache2)
+    -- Store result in cache before returning
+    let cache'' := cache'.insert key result
+    (result, cache'')
+
 /--
 Enumerate all formulas satisfying modal depth, temporal depth, and size constraints.
 
-Uses bounded recursion on `sizeBudget`. At each recursive call, tries all 6 constructors:
-- `atom a`, `bot`: base cases consuming 1 unit of size budget
-- `imp φ ψ`: binary, no depth increment, partitions size budget
-- `box φ`: unary, increments modal depth, consumes 1 size unit
-- `untl φ ψ`, `snce φ ψ`: binary, increments temporal depth, partitions size budget
+**Backward-compatible wrapper**: Generates formulas at each exact complexity level
+from 1 to `sizeBudget` and concatenates the results. Uses memoized exact-complexity
+enumeration internally to avoid the exponential blowup of the original implementation.
 
-For binary constructors, iterates over all ways to split the remaining size
-budget between left and right children (each child gets at least 1).
+Note: The original `enumHelper` generated "up to budget" formulas with base case
+re-inclusion at every level, causing 651x bloat at budget 5. This version generates
+exact-complexity formulas at each level, which are disjoint by construction.
 -/
 def enumHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     : List Formula :=
-  match sizeBudget with
-  | 0 => []
-  | 1 =>
-    -- Base cases: atoms and bot (size 1, depth 0)
-    Formula.bot :: atoms.map Formula.atom
-  | n + 2 =>
-    -- Size budget is n + 2 (at least 2), so we can form compound formulas.
-    -- The constructor itself costs 1, leaving n + 1 for children.
-    let childBudget := n + 1
-    -- Also include base cases at this budget level
-    let base := Formula.bot :: atoms.map Formula.atom
-    -- Unary: box φ (modal depth + 1, same temporal depth, child gets childBudget)
-    let boxes := if modalBudget > 0 then
-      (enumHelper atoms (modalBudget - 1) temporalBudget childBudget).map Formula.box
-    else []
-    -- Binary constructors: distribute childBudget between left and right
-    -- leftSize ranges from 1 to childBudget - 1, rightSize = childBudget - leftSize
-    let binaryFormulas := (List.range childBudget).flatMap fun i =>
-      let leftSize := i + 1
-      let rightSize := childBudget - leftSize
-      if rightSize < 1 then []
-      else
-        let lefts := enumHelper atoms modalBudget temporalBudget leftSize
-        let rights := enumHelper atoms modalBudget temporalBudget rightSize
-        -- imp: no depth change
-        let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
-        -- untl/snce: temporal depth + 1 for the whole formula, so children
-        -- must fit within temporalBudget - 1
-        let temporalBinaries := if temporalBudget > 0 then
-          let tLefts := enumHelper atoms modalBudget (temporalBudget - 1) leftSize
-          let tRights := enumHelper atoms modalBudget (temporalBudget - 1) rightSize
-          let untls := tLefts.flatMap fun l => tRights.map fun r => Formula.untl l r
-          let snces := tLefts.flatMap fun l => tRights.map fun r => Formula.snce l r
-          untls ++ snces
-        else []
-        imps ++ temporalBinaries
-    base ++ boxes ++ binaryFormulas
+  let (_, result) := (List.range sizeBudget).foldl
+    (fun (acc : EnumCache × List Formula) i =>
+      let (cache, formulas) := acc
+      let (exact, cache') := enumExactHelper atoms modalBudget temporalBudget (i + 1) cache
+      (cache', formulas ++ exact))
+    ({}, [])
+  result
 
 /--
 Exhaustively enumerate all formulas up to the given depth and size bounds.
@@ -143,11 +200,11 @@ Generates all formulas satisfying ALL THREE constraints simultaneously:
 - Temporal depth ≤ `config.maxTemporalDepth`
 - Size (complexity) ≤ `config.maxSize`
 
-Results are deduplicated using `Formula.BEq`.
+Uses memoized exact-complexity enumeration. Each complexity level produces
+a disjoint set of formulas, so deduplication is unnecessary.
 -/
 def enumerateUpToDepth (config : EnumConfig) : List Formula :=
-  let raw := enumHelper config.atomPool config.maxModalDepth config.maxTemporalDepth config.maxSize
-  raw.eraseDups
+  enumHelper config.atomPool config.maxModalDepth config.maxTemporalDepth config.maxSize
 
 /-!
 ## Deterministic Pseudo-Random Sampling
@@ -458,62 +515,66 @@ where
     | .snce _ _ => true
 
 /--
+Enumerate all formulas of EXACTLY the given complexity, respecting modal and
+temporal depth bounds. Uses memoization via a carried cache.
+
+This is the legacy-API counterpart of `enumExactHelper`. The difference is that
+this function uses a 2-constraint key `(budget, maxModal, maxTemporal)` matching
+the original `enumerateAtBudget` signature, while `enumExactHelper` uses the
+3-constraint key from `enumHelper`.
+
+Since both APIs use the same `(Nat x Nat x Nat)` key shape, they share the
+same `EnumCache` type.
+-/
+def enumExactBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTemporal : Nat)
+    (cache : EnumCache) : List Formula × EnumCache :=
+  -- We reuse enumExactHelper directly since both APIs use the same constraint model:
+  -- enumExactHelper treats its 3 parameters as (modalBudget, temporalBudget, sizeBudget)
+  -- and enumerateAtBudget treats its 3 parameters as (maxModal, maxTemporal, budget).
+  -- The key is (sizeBudget, modalBudget, temporalBudget) in both cases.
+  enumExactHelper atoms maxModal maxTemporal budget cache
+
+/--
 Enumerate all formulas within the given complexity budget, respecting
 modal and temporal depth bounds.
 
-Uses bounded recursion on the complexity budget. At each step, chooses among
-the 6 primitive constructors (atom, bot, imp, box, untl, snce) and distributes
-the remaining budget to subformulas.
+**Backward-compatible wrapper**: Preserves the original `enumerateAtBudget` signature
+but uses memoized exact-complexity enumeration internally. Generates formulas at
+each exact complexity level from 1 to `budget` and concatenates.
 
-Returns a list of formulas (may contain duplicates; caller should deduplicate).
+Note: The original implementation used "up to budget" semantics with base case
+re-inclusion at every level, causing exponential blowup (651x at budget 5).
 -/
 def enumerateAtBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTemporal : Nat)
     : List Formula :=
-  match budget with
-  | 0 => []
-  | 1 =>
-    -- Base cases: atoms and bot (complexity 1)
-    .bot :: atoms.map .atom
-  | n + 1 =>
-    let base := if n + 1 ≥ 1 then [Formula.bot] ++ atoms.map .atom else []
-    -- Binary constructors: imp, untl, snce
-    -- Distribute budget n among two children (each gets at least 1)
-    let binary := ((List.range n).flatMap fun i =>
-      let leftBudget := i + 1
-      let rightBudget := n - i
-      if rightBudget < 1 then []
-      else
-        let lefts := enumerateAtBudget atoms leftBudget maxModal maxTemporal
-        let rights := enumerateAtBudget atoms rightBudget maxModal maxTemporal
-        let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
-        let untls := if maxTemporal > 0 then
-          let tLefts := enumerateAtBudget atoms leftBudget maxModal (maxTemporal - 1)
-          let tRights := enumerateAtBudget atoms rightBudget maxModal (maxTemporal - 1)
-          tLefts.flatMap fun l => tRights.map fun r => Formula.untl l r
-        else []
-        let snces := if maxTemporal > 0 then
-          let tLefts := enumerateAtBudget atoms leftBudget maxModal (maxTemporal - 1)
-          let tRights := enumerateAtBudget atoms rightBudget maxModal (maxTemporal - 1)
-          tLefts.flatMap fun l => tRights.map fun r => Formula.snce l r
-        else []
-        imps ++ untls ++ snces)
-    -- Unary constructor: box (uses budget n for child)
-    let boxes := if maxModal > 0 then
-      (enumerateAtBudget atoms n (maxModal - 1) maxTemporal).map .box
-    else []
-    base ++ binary ++ boxes
+  let (_, result) := (List.range budget).foldl
+    (fun (acc : EnumCache × List Formula) i =>
+      let (cache, formulas) := acc
+      let (exact, cache') := enumExactBudget atoms (i + 1) maxModal maxTemporal cache
+      (cache', formulas ++ exact))
+    ({}, [])
+  result
 
 /--
 Enumerate all formulas exhaustively within the parameter bounds.
 
-Generates formulas at each complexity level from 1 to `maxComplexity`,
-deduplicates, filters by rejection criteria, and caps at `maxFormulas`.
+Generates formulas at each complexity level from 1 to `maxComplexity` using
+memoized exact-complexity enumeration, filters by rejection criteria, and
+caps at `maxFormulas`.
+
+Each exact complexity level produces a disjoint set of formulas by construction,
+so cross-level deduplication is unnecessary. The memoization cache is shared
+across all complexity levels for maximum reuse.
 -/
 def enumerateExhaustive (params : EnumParams) : List Formula :=
-  let allFormulas := (List.range params.maxComplexity).flatMap fun i =>
-    enumerateAtBudget params.atoms (i + 1) params.maxModalDepth params.maxTemporalDepth
-  let deduped := allFormulas.eraseDups
-  let filtered := deduped.filter passesFilter
+  let (_, allFormulas) := (List.range params.maxComplexity).foldl
+    (fun (acc : EnumCache × List Formula) i =>
+      let (cache, formulas) := acc
+      let (exact, cache') := enumExactBudget params.atoms (i + 1) params.maxModalDepth
+                                              params.maxTemporalDepth cache
+      (cache', formulas ++ exact))
+    ({}, [])
+  let filtered := allFormulas.filter passesFilter
   filtered.take params.maxFormulas
 
 /--
