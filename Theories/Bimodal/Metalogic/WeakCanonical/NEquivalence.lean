@@ -1155,7 +1155,7 @@ point `x` is whether `atomMap p ∈ M.fmcs x`.
 All properties (countability, discreteness, no endpoints, Prior-UZ/SZ)
 are inherited from `ChronicleAsPriorModel`.
 -/
-def chronicleAsMonadicStructure (M : ChronicleAsPriorModel) (sig : MonadicSignature)
+def chronicleAsMonadicStructure {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) : OrderedMonadicStructure sig where
   carrier := M.domain
   interp p x := (atomMap p) ∈ M.fmcs x
@@ -1165,7 +1165,7 @@ def chronicleAsMonadicStructure (M : ChronicleAsPriorModel) (sig : MonadicSignat
 The chronicle-as-monadic-structure is countable: its carrier is
 `M.domain` which has `Countable` by the `ChronicleAsPriorModel` fields.
 -/
-instance chronicleAsMonadicStructure_countable (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_countable {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     Countable (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_countable
@@ -1174,7 +1174,7 @@ instance chronicleAsMonadicStructure_countable (M : ChronicleAsPriorModel)
 The chronicle-as-monadic-structure has no maximum element
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_no_max (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_no_max {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     NoMaxOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_no_max
@@ -1183,7 +1183,7 @@ instance chronicleAsMonadicStructure_no_max (M : ChronicleAsPriorModel)
 The chronicle-as-monadic-structure has no minimum element
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_no_min (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_no_min {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     NoMinOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_no_min
@@ -1192,7 +1192,7 @@ instance chronicleAsMonadicStructure_no_min (M : ChronicleAsPriorModel)
 The chronicle-as-monadic-structure is discrete (has SuccOrder)
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_succ (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_succ {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     SuccOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_succ
@@ -1201,7 +1201,7 @@ instance chronicleAsMonadicStructure_succ (M : ChronicleAsPriorModel)
 The chronicle-as-monadic-structure is discrete (has PredOrder)
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_pred (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_pred {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     PredOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_pred
@@ -1210,7 +1210,7 @@ instance chronicleAsMonadicStructure_pred (M : ChronicleAsPriorModel)
 The chronicle-as-monadic-structure satisfies IsSuccArchimedean
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_succ_archimedean (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_succ_archimedean {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     IsSuccArchimedean (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_succ_archimedean
@@ -1219,7 +1219,7 @@ instance chronicleAsMonadicStructure_succ_archimedean (M : ChronicleAsPriorModel
 The chronicle-as-monadic-structure is nonempty
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_nonempty (M : ChronicleAsPriorModel)
+instance chronicleAsMonadicStructure_nonempty {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     Nonempty (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_nonempty

@@ -877,7 +877,7 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
 /--
 The chronicle prior model is good at any finite depth.
 -/
-theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
+theorem chronicle_is_good {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap) := by
   haveI : Nonempty M.domain := M.domain_nonempty
@@ -936,7 +936,7 @@ Instead, it uses:
 Once `no_gaps_discrete` is proved (via US expressive completeness over Prior
 structures), this theorem becomes sorry-free.
 -/
-theorem chronicle_is_good_direct (M : ChronicleAsPriorModel) (sig : MonadicSignature)
+theorem chronicle_is_good_direct {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
     (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap_rev) := by

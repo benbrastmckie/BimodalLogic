@@ -187,7 +187,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Rewire `countermodel_discrete` to Reynolds Pipeline [NOT STARTED]
+### Phase 4: Rewire `countermodel_discrete` to Reynolds Pipeline [PARTIAL]
 
 **Goal**: Replace the `dd_countermodel_chronicle_discrete` delegation in `countermodel_discrete` (Transfer.lean:790) with the full Reynolds pipeline: chronicle extraction -> chronicle_is_good_direct -> truth_transfer -> z_interval_countermodel.
 

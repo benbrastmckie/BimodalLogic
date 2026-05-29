@@ -73,7 +73,7 @@ The forward direction is SetMaximalConsistent.implication_property.
 The backward direction: if φ ∉ S then ¬φ ∈ S, so (φ → ψ) is derivable from ¬φ
 (ex falso pattern). If φ ∈ S and ψ ∈ S then (φ → ψ) is derivable by prop_s.
 -/
-theorem imp_iff_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) (φ ψ : Formula) :
+theorem imp_iff_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S) (φ ψ : Formula) :
     φ.imp ψ ∈ S ↔ (φ ∈ S → ψ ∈ S) := by
   constructor
   · exact SetMaximalConsistent.implication_property h_mcs
@@ -82,8 +82,8 @@ theorem imp_iff_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := Frame
     · -- φ ∈ S, ψ ∈ S. Derive φ → ψ from ψ.
       have h_ψ := h_imp h_φ
       -- prop_s: ψ → (φ → ψ), so (φ → ψ) ∈ S
-      have h_ax : DerivationTree FrameClass.Base [] (ψ.imp (φ.imp ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s ψ φ) trivial
+      have h_ax : DerivationTree fc [] (ψ.imp (φ.imp ψ)) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s ψ φ) (FrameClass.base_le fc)
       exact SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_ax) h_ψ
     · -- φ ∉ S. Then ¬φ ∈ S.
@@ -96,21 +96,21 @@ theorem imp_iff_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := Frame
       -- Use prop_k instance: (φ → (⊥ → ψ)) → ((φ → ⊥) → (φ → ψ))
       -- and ex_falso: ⊥ → ψ, then prop_s: (⊥ → ψ) → (φ → (⊥ → ψ))
       -- This gets complicated. Use closed_under_derivation instead.
-      have h_deriv : DerivationTree FrameClass.Base [φ.neg] (φ.imp ψ) := by
+      have h_deriv : DerivationTree fc [φ.neg] (φ.imp ψ) := by
         -- [φ.neg] = [φ → ⊥]. We want to derive φ → ψ.
         -- Assume φ (in context [φ.neg, φ]):
         -- From φ.neg = φ → ⊥ and φ, get ⊥ by MP
         -- From ⊥, get ψ by ex_falso
         -- By deduction theorem on φ, get [φ.neg] ⊢ φ → ψ
-        have h_step : DerivationTree FrameClass.Base [φ, φ.neg] ψ := by
-          have h_φ_assum : DerivationTree FrameClass.Base [φ, φ.neg] φ :=
+        have h_step : DerivationTree fc [φ, φ.neg] ψ := by
+          have h_φ_assum : DerivationTree fc [φ, φ.neg] φ :=
             DerivationTree.assumption _ _ (by simp)
-          have h_neg_assum : DerivationTree FrameClass.Base [φ, φ.neg] φ.neg :=
+          have h_neg_assum : DerivationTree fc [φ, φ.neg] φ.neg :=
             DerivationTree.assumption _ _ (by simp)
-          have h_bot : DerivationTree FrameClass.Base [φ, φ.neg] Formula.bot :=
+          have h_bot : DerivationTree fc [φ, φ.neg] Formula.bot :=
             DerivationTree.modus_ponens _ _ _ h_neg_assum h_φ_assum
-          have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp ψ) :=
-            DerivationTree.axiom [] _ (Axiom.ex_falso ψ) trivial
+          have h_ef : DerivationTree fc [] (Formula.bot.imp ψ) :=
+            DerivationTree.axiom [] _ (Axiom.ex_falso ψ) (FrameClass.base_le fc)
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
         -- deduction_theorem [φ.neg] φ ψ expects context φ :: [φ.neg] = [φ, φ.neg]
