@@ -127,13 +127,22 @@ Project-wide reference materials:
 
 ### architecture/
 
-Architectural Decision Records (ADRs):
+Architectural Decision Records (ADRs) and system architecture documentation:
 
 - [README.md](architecture/README.md) - ADR catalog and guidance
 - [ADR-001-Classical-Logic-Noncomputable.md](architecture/ADR-001-Classical-Logic-Noncomputable.md) - Classical logic for metalogic
 - [ADR-004-Remove-Project-Level-State-Files.md](architecture/ADR-004-Remove-Project-Level-State-Files.md) - State file architecture
+- [bfmcs-architecture.md](architecture/bfmcs-architecture.md) - BFMCS proof architecture (base completeness construction)
 
 **Audience**: Architects, maintainers
+
+### training/
+
+Training data pipeline documentation:
+
+- [pipeline.md](training/pipeline.md) - Dual-signal training data pipeline reference (all 6 Lean modules, JSON schemas, [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) integration)
+
+**Audience**: ML researchers, contributors working on neural proof search
 
 ## Quick Links by Audience
 
@@ -263,6 +272,7 @@ lake build :docs
 
 ## Related Repositories
 
+- [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) - AlphaZero-style neural proof search training
 - [Model-Checker](https://github.com/benbrastmckie/ModelChecker) - Semantic verification
 
 ---

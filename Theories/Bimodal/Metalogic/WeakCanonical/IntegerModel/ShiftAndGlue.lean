@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.ReynoldsNoGaps
 
 /-!
 # Shift-and-Glue Construction: Very-Good to Good via Reynolds Lemma 16

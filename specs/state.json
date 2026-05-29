@@ -26,11 +26,11 @@
     {
       "project_number": 210,
       "project_name": "enumerator_complexity_blowup",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-29T19:21:47Z",
-      "last_updated": "2026-05-29T19:32:14Z",
-      "session_id": "sess_1748563307_r210ab",
+      "last_updated": "2026-05-29T19:38:58Z",
+      "session_id": "sess_1748564500_p210cd",
       "researched": "2026-05-29T19:32:14Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -38,8 +38,42 @@
           "path": "specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md",
           "type": "research",
           "summary": "Root cause analysis of enumerateAtBudget exponential blowup with 6 ranked mitigation strategies. Key finding: 651x bloat at budget 5 due to up-to-budget semantics, no memoization, and Cartesian products. Recommended fix: memoized exact-complexity enumeration plus axiom-schema-based valid formula generation."
+        },
+        {
+          "path": "specs/210_enumerator_complexity_blowup/plans/01_enumerator-blowup-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan addressing enumerateAtBudget exponential blowup via exact-complexity memoized enumeration and axiom-schema instantiation for valid fraction improvement"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_enumerator-blowup-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 209,

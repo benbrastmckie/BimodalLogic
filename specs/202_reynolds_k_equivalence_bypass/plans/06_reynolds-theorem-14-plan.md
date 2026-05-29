@@ -208,7 +208,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 
 ---
 
-### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [NOT STARTED]
+### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [IN PROGRESS]
 
 **Goal**: Define the temporal formula R that detects gap-ending equivalence classes, and prove its structural properties. This establishes the setting for the model surgery argument.
 
