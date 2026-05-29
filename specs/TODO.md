@@ -1,5 +1,5 @@
 ---
-next_project_number: 200
+next_project_number: 201
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -126,6 +126,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 200. GHR93 Case II elegance rewrite (code quality)
+- **Effort**: large (20-30 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: low
+- **Description**: Rewrite ghr93_case_II for GHR93 fidelity. Proof is already sorry-free and axiom-clean (733 lines). The rewrite would replace tau_left/tau_right with a single restricted tau, but this is blocked by a structural gap between GHR93's continuous order-type preservation and the formalization's finite-position EF games. Requires enriching the game framework or finding a new approach. See task 155 Phase 5 research (7 agents, 3 plan revisions).
 
 ### 199. Grid order tactic for same_order_type dispatch
 - **Effort**: medium (4-8 hours)

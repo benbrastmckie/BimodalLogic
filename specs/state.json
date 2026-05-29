@@ -1259,9 +1259,23 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 200,
+      "project_name": "ghr93_case_ii_elegance_rewrite",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "low",
+      "topic": "code-quality",
+      "description": "Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints — which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.",
+      "dependencies": [],
+      "created": "2026-05-29T00:00:00Z",
+      "last_updated": "2026-05-29T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 200,
+  "next_project_number": 201,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
