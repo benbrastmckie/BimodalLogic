@@ -75,7 +75,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Theorem 5 -- US Expressive Completeness over Prior Structures [NOT STARTED]
+### Phase 1: Theorem 5 -- US Expressive Completeness over Prior Structures [COMPLETED]
 
 **Goal**: Prove that {U,S} is expressively complete for Prior structures. This is the foundational result enabling all subsequent phases.
 
@@ -94,7 +94,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 **IMPORTANT**: All subsequent phases (Lemmas 7-13) also use Prior-U (not Prior-UZ) in their proofs. The bridge lemma in Task 1.0 is used throughout.
 
 **Tasks**:
-- [ ] **Task 1.0**: Derive Prior-U from Prior-UZ (bridge lemma, ~60 lines)
+- [ ] **Task 1.0**: Derive Prior-U from Prior-UZ (bridge lemma, ~60 lines) *(deviation: skipped -- Prior-UZ used directly in the U'/S' falsity proofs without needing the weaker Prior-U; Reynolds' argument works equally well with Prior-UZ)*
 
   Reynolds p.440 defines Prior-U as:
   > Prior-U: U(q⁻, p) ∧ F(¬p) → U(¬p ∨ K+(¬p), p)
@@ -123,7 +123,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 
   Reference: Reynolds 1994, p.440 (Prior-U definition), p.443 (Prior-UZ implies Prior-U). Dual: `prior_SZ_implies_prior_S`.
 
-- [ ] **Task 1.1**: Define `stavi_U_false_on_prior` using Prior-U (not Prior-UZ) in `PriorExpressiveness.lean` (~80 lines)
+- [x] **Task 1.1**: Define `stavi_U_false_on_prior` using Prior-U (not Prior-UZ) in `PriorExpressiveness.lean` (~80 lines) *(deviation: altered -- named `stavi_U_false_on_prior_UZ`, uses Prior-UZ directly)*
   ```lean
   theorem stavi_U_false_on_prior {sig : MonadicSignature}
       (M : OrderedMonadicStructure sig)
@@ -144,7 +144,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 
   Reference: Reynolds 1994, p.459-462, proof of Theorem 5, U' case.
 
-- [ ] **Task 1.2**: Define `stavi_S_false_on_prior` (mirror of 1.1, ~80 lines)
+- [x] **Task 1.2**: Define `stavi_S_false_on_prior` (mirror of 1.1, ~80 lines) *(deviation: altered -- named `stavi_S_false_on_prior_SZ`)*
   ```lean
   theorem stavi_S_false_on_prior {sig : MonadicSignature}
       (M : OrderedMonadicStructure sig)
@@ -157,7 +157,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
   ```
   Reference: Reynolds 1994, p.464, "The case of S' is similar."
 
-- [ ] **Task 1.3**: Derive `flatten_stavi_correct_prior` -- the analogue of `flatten_stavi_correct` using Prior-U/S (derived from Prior-UZ/SZ) instead of `IsSuccArchimedean` (~60 lines)
+- [x] **Task 1.3**: Derive `flatten_stavi_correct_prior` -- the analogue of `flatten_stavi_correct` using Prior-U/S (derived from Prior-UZ/SZ) instead of `IsSuccArchimedean` (~60 lines) *(completed)*
   ```lean
   theorem flatten_stavi_correct_prior {sig : MonadicSignature}
       (M : OrderedMonadicStructure sig)
@@ -172,7 +172,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
   ```
   Proof by induction on sf. The existing `flatten_stavi_correct` handles all cases except U'/S' via `IsSuccArchimedean`. Here, the U' case uses `stavi_U_false_on_prior` (both sides false), and the S' case uses `stavi_S_false_on_prior`. All other cases are identical to the existing proof. Reference: Reynolds 1994, Theorem 5 combined with GHR93 Theorem 9.3.1.
 
-- [ ] **Task 1.4**: Derive `US_expressively_complete_over_prior` -- compose `stavi_expressive_completeness` with `flatten_stavi_correct_prior` (~40 lines)
+- [x] **Task 1.4**: Derive `US_expressively_complete_over_prior` -- compose `stavi_expressive_completeness` with `flatten_stavi_correct_prior` (~40 lines) *(completed; note: inherits sorryAx from stavi_expressive_completeness, pre-existing)*
   ```lean
   noncomputable def US_expressively_complete_over_prior
       {sig : MonadicSignature}
