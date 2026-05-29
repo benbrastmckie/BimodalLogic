@@ -69,15 +69,15 @@ No ROADMAP.md items are explicitly tracked for HuggingFace packaging. This task 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Directory Structure and Dataset Card [NOT STARTED]
+### Phase 1: Directory Structure and Dataset Card [COMPLETED]
 
 **Goal**: Create the `hf-dataset/` directory with symlinked data files and write the complete dataset card README.md with YAML frontmatter and prose documentation.
 
 **Tasks**:
-- [ ] Create `hf-dataset/` directory at project root
-- [ ] Create `hf-dataset/data/` subdirectory
-- [ ] Symlink (or copy) the 4 JSONL files from `data/` into `hf-dataset/data/`
-- [ ] Write `hf-dataset/README.md` with YAML frontmatter containing:
+- [x] Create `hf-dataset/` directory at project root *(completed)*
+- [x] Create `hf-dataset/data/` subdirectory *(completed)*
+- [x] Symlink (or copy) the 4 JSONL files from `data/` into `hf-dataset/data/` *(completed: symlinks to ../../data/ files)*
+- [x] Write `hf-dataset/README.md` with YAML frontmatter containing: *(completed)*
   - `language: [en]`
   - `license: cc-by-4.0`
   - `pretty_name: "BMLogic-Bench: Bimodal Logic Benchmark"`
@@ -86,7 +86,7 @@ Phases within the same wave can execute in parallel.
   - `size_categories: [10K<n<100K]`
   - 4 config entries with correct `config_name`, `data_files`, and `split` mappings
   - `bmlogic-bench` marked as `default: true`
-- [ ] Write dataset card prose sections:
+- [x] Write dataset card prose sections: *(completed: 10 sections)*
   - Dataset Summary (TM logic, benchmark purpose, LLM reasoning evaluation)
   - Dataset Details (per-config descriptions, schemas, statistics)
   - Dataset Creation (Lean 4 decision procedures, curation rationale)
@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
   - Considerations (social impact, class imbalance: ~4% valid in training vs ~47% in benchmark, synthetic data)
   - Citation Information (BibTeX entries)
   - Contributions (acknowledgements)
-- [ ] Include both BibTeX entries: pre-print `@article` for NeurIPS and `@software` for GitHub
+- [x] Include both BibTeX entries: pre-print `@article` for NeurIPS and `@software` for GitHub *(completed)*
 
 **Timing**: 1.5 hours
 
