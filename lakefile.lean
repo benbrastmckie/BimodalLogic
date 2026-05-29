@@ -53,3 +53,10 @@ lean_exe proof_extractor where
   root := `Bimodal.Automation.ProofStepExport
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Enumerator benchmark: validates complexity 5-7 feasibility gates (Task 210).
+    Run with: lake exe enum_benchmark -/
+lean_exe enum_benchmark where
+  root := `Bimodal.Automation.EnumBenchmark
+  srcDir := "Theories"
+  supportInterpreter := true
