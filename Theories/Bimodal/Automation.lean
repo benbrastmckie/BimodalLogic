@@ -9,8 +9,9 @@ import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.EnrichedCountermodel
 import Bimodal.Automation.DatasetExporter
--- DatasetExport and DatasetValidator define `main` (lean_exe targets) and must not
--- be imported through the umbrella; use them only via `lake exe` commands.
+import Bimodal.Automation.ProofStepExtractor
+-- DatasetExport, DatasetValidator, and ProofStepExport define `main` (lean_exe targets)
+-- and must not be imported through the umbrella; use them only via `lake exe` commands.
 
 /-!
 # Bimodal.Automation - Proof Automation

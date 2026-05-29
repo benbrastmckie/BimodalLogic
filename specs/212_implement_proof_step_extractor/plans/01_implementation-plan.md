@@ -70,19 +70,19 @@ No ROADMAP.md items directly addressed by this task.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Core Extraction Logic [NOT STARTED]
+### Phase 1: Core Extraction Logic [COMPLETED]
 
 **Goal**: Create `ProofStepExtractor.lean` with `ProofStep` structure, `Axiom.toName`, `extractStepSequence`, and JSON serialization.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/ProofStepExtractor.lean` with module docstring
-- [ ] Define `ProofStep` structure with fields: `theoremName`, `stepIndex`, `context`, `goal`, `rule`, `axiomName`, `subgoals`, `frameClass`
-- [ ] Implement `Axiom.toName` as a 42-case pattern match mapping each axiom constructor to its string name
-- [ ] Implement `ProofStep.toJson` serialization using the existing `Formula.toJson`, `escapeJsonString`, `listToJsonArray` helpers from `DataExport.lean`
-- [ ] Implement `Context.toJson` helper to serialize context (list of formulas) to JSON array
-- [ ] Implement `extractStepSequence` recursive function following the `walkDerivationTree` pattern: walk each `DerivationTree` node, emit a `ProofStep` record, recurse into sub-derivations, accumulate steps in order with an index counter
-- [ ] Add `import Bimodal.Automation.ProofStepExtractor` to `Theories/Bimodal/Automation.lean`
-- [ ] Verify compilation: `lake build Bimodal.Automation.ProofStepExtractor`
+- [x] Create `Theories/Bimodal/Automation/ProofStepExtractor.lean` with module docstring
+- [x] Define `ProofStep` structure with fields: `theoremName`, `stepIndex`, `context`, `goal`, `rule`, `axiomName`, `subgoals`, `frameClass`
+- [x] Implement `Axiom.toName` as a 42-case pattern match mapping each axiom constructor to its string name
+- [x] Implement `ProofStep.toJson` serialization using the existing `Formula.toJson`, `escapeJsonString`, `listToJsonArray` helpers from `DataExport.lean`
+- [x] Implement `Context.toJson` helper to serialize context (list of formulas) to JSON array *(deviation: altered -- named `contextToJson` instead of `Context.toJson` since Context is a type alias for List Formula)*
+- [x] Implement `extractStepSequence` recursive function following the `walkDerivationTree` pattern: walk each `DerivationTree` node, emit a `ProofStep` record, recurse into sub-derivations, accumulate steps in order with an index counter
+- [x] Add `import Bimodal.Automation.ProofStepExtractor` to `Theories/Bimodal/Automation.lean`
+- [x] Verify compilation: `lake build Bimodal.Automation.ProofStepExtractor`
 
 **Timing**: 2.5 hours
 
