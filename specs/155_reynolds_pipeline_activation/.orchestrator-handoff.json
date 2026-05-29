@@ -1,26 +1,54 @@
 {
-  "task_number": 155,
-  "session_id": "sess_1780001766_2e723d",
   "status": "partial",
-  "phase_completed": 5,
-  "phases_total": 8,
-  "blocked_phase": 6,
-  "summary": "Phase 6 BLOCKED: sel_gap_ord ordering between tau sub-game selections and gap position cannot be derived from available hypotheses. Added h_mono and ih parameters to ghr93_cases_III_IV signature. CaseAnalysis.lean has 1 sorry at line 3477. Build passes.",
-  "remaining_phases": [
-    "Phase 6: Cases III/IV Gap Handling (BLOCKED - sel_gap_ord)",
-    "Phase 7: Transfer.lean Rewiring",
-    "Phase 8: Final Verification"
+  "phase": 5,
+  "phase_status": "partial",
+  "session_id": "sess_1780001766_2e723d",
+  "summary": "Phase 5 GHR93 infrastructure completed (Tasks 5.0-5.5): untl_witness_bounded resolves Until containment, ghr93_untl_transfer proves U(B,A) formula transfer through tau, ghr93_construct_en provides end-to-end GHR93 e_n construction. Tasks 5.6-5.8 (old code deletion, Round 2 rewrite, final assembly) remain — require rewriting ~600 lines of Round 2 dispatch.",
+  "completed_tasks": ["5.0", "5.1", "5.1b", "5.2", "5.3", "5.4", "5.5"],
+  "remaining_tasks": ["5.6", "5.7", "5.8"],
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-ghr93-supremum-handoff-20260528.md"
   ],
-  "files_modified": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean"
-  ],
-  "build_status": "passing",
-  "sorry_delta": 0,
-  "blocker_details": {
-    "what": "sel_gap_ord: (a_init(k) < gamma_N iff resp_tau(k) < gamma_M) for k < n",
-    "why": "Tau sub-game ordering doesn't extend to external gap positions. Need structural argument via gap detection reference point or extended game.",
-    "approaches_tried": ["forward game", "pivot chain through d/c", "h_d_compat_left", "formula agreement", "h_mono"],
-    "recommended": "Research: derive resp_tau(k) <= m_M < gamma_M using gap detection internals, or restructure proof to use combined game"
+  "new_theorems": {
+    "untl_witness_bounded": {
+      "file": "CharacteristicFormula.lean",
+      "purpose": "Bounded Until witness: given U(B,A)(t) and B-point in (t, bound], produce witness in (t, bound]",
+      "axiom_clean": true
+    },
+    "ghr93_untl_transfer": {
+      "file": "CaseAnalysis.lean",
+      "purpose": "Transfer U(B,A) from d in N to c in M through tau at rank r+delta",
+      "axiom_clean": true
+    },
+    "ghr93_construct_en": {
+      "file": "CaseAnalysis.lean",
+      "purpose": "End-to-end GHR93 e_n: combines untl_transfer + forward game B-point + untl_witness_bounded",
+      "axiom_clean": true,
+      "output": "e_n with c < e_n ≤ y, mu_holds, B(e_n), A on (c, e_n)"
+    }
   },
-  "next_action": "Research sel_gap_ord blocker. Phase 7 (Transfer.lean rewiring) may be independently actionable for discrete-only completeness (Cases III/IV vacuous on Z)."
+  "metrics": {
+    "lines_added": 200,
+    "sorry_count": 0,
+    "sorry_count_file": 1,
+    "vacuous_count": 0,
+    "axiom_count": 0
+  },
+  "verification": {
+    "build_passed": true,
+    "sorry_count_new_code": 0,
+    "sorry_count_file": 1,
+    "sorry_location": "line 3211 (Cases III/IV, Phase 6 territory, unchanged)"
+  },
+  "remaining_work_for_phase_5": {
+    "task_5_6": "Delete old forward-game e_n, resp_mod, tau_left/tau_right (~500-700 lines deletion)",
+    "task_5_7": "Rewrite Round 2 with GHR93 5-way case split using resp_tau directly (~200-300 lines)",
+    "task_5_8": "Final assembly and verification",
+    "key_blocker": "Biconditional ordering (a_init(k) < p_n iff resp_tau(k) < e_n) requires tau_left or restructured Round 2. The plan's sel_pn_ord trivial chain gives one direction only.",
+    "estimated_effort": "6-10 hours for Tasks 5.6-5.8"
+  },
+  "next_phase": 5,
+  "next_action": "Continue Phase 5 Tasks 5.6-5.8: rewrite ghr93_case_II body to use ghr93_construct_en instead of forward game, then rewrite Round 2 dispatch"
 }

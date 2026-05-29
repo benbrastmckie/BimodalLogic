@@ -175,7 +175,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum Approach) [IN PROGRESS]
+### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum Approach) [PARTIAL]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly using the supremum approach. Define b = sup{t in (x,y) : M |= B(t)}, derive restricted tau on [c', b'] -> [c, b], construct e_n from U(B,A) witness with z <= b guaranteed, prove sel_pn_ord trivially, and implement Round 2 with GHR93's 5-way case split. Delete the entire forward-game e_n construction, resp_mod, tau_left, tau_right, and the 220-line-per-site prerequisite machinery.
 
@@ -257,7 +257,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`
   - **Insert after**: line 1247 (before current line 1248)
 
-- [ ] Task 5.1b: Handle n=0 boundary and degenerate case d = a_bwd(n) (~20-30 lines)
+- [x] Task 5.1b: Handle n=0 boundary and degenerate case d = a_bwd(n) (~20-30 lines) *(deviation: altered — degenerate case handled implicitly via `hd_lt_pn` precondition in `ghr93_construct_en`. The helper takes `hd_lt_pn : d < extendPoint p_n` as input, which callers provide after the degenerate case split.)*
 
   - Case split at top of proof body: `if h_degen : d = a_bwd (n, ...)` then all selections equal d = p_n (by h_no_split + h_mono). In this degenerate case: respond with all c and e_n = c. Proof is trivial (no U(B,A) needed).
   - In non-degenerate case: proceed with main GHR93 construction (d < a_bwd(n) strict). This ensures ref_N < a_bwd(n).
@@ -265,7 +265,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - **File**: CaseAnalysis.lean
   - **Risk**: Per report 45 Section 3.4, when d = p_n and n=0, U(B,A)(d) fails because the witness z > d = p_n would need p_n > p_n. The degenerate case split eliminates this.
 
-- [ ] Task 5.2: Construct restricted tau on [c', b'] -> [c, b] (~40-80 lines)
+- [x] Task 5.2: Construct restricted tau on [c', b'] -> [c, b] (~40-80 lines) *(deviation: altered — restricted tau not constructed. Instead, `ghr93_construct_en` uses `untl_witness_bounded` to bound the Until witness directly. The B-point existence in (c, y] comes from the d-compatible forward game, not from a restricted tau. This follows the plan's Rollback Approach 3: "use the existing tau on [d, y'] -> [c, y] and combine with untl_witness_bounded + bound = y.")*
 
   **Goal**: Derive a winning strategy for G_{n, r}(N, c' b'; M, c b) where b = sup{t in (x,y) : B(t)} and b' is the corresponding N-side supremum.
 
@@ -281,7 +281,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **File**: CaseAnalysis.lean
 
-- [ ] Task 5.3: Prove N_r |= U(B, A)(ref_N) -- witness is a_n (~10-20 lines)
+- [x] Task 5.3: Prove N_r |= U(B, A)(ref_N) -- witness is a_n (~10-20 lines) *(completed — embedded in `ghr93_untl_transfer` via `untl_type_holds_at_witness`)*
 
   - Apply `untl_type_holds_at_witness` with witness `a_bwd (n, by omega)` = `extendPoint p_n`
   - Need: `mu_holds (a_bwd (n, by omega))` -- from h_point (a_n is a point, hence mu_holds)
@@ -289,7 +289,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - Result: `h_untl_N : stavi_temporal_truth_mu N atomMap r ref_N (sf_untl B A)`
   - **File**: CaseAnalysis.lean
 
-- [ ] Task 5.4: Transfer U(B, A) through restricted tau. Depth r+2 <= r+delta (~40-60 lines)
+- [x] Task 5.4: Transfer U(B, A) through restricted tau. Depth r+2 <= r+delta (~40-60 lines) *(completed — `ghr93_untl_transfer` transfers U(B,A) through props.tau at rank r+delta using formula_transfer_rank_embed)*
 
   - Play restricted tau (from Task 5.2) with a_init to get resp_tau_b in [c, b]
   - For U(B,A) transfer, use `props.tau` at full rank r+delta (NOT tau_r which loses depth budget):
@@ -302,7 +302,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - **Key detail**: The transfer goes through the RESTRICTED tau (or existing tau + supremum bound). Either way, the M-side reference point ref_M is in [c, b], which means the Until witness is guaranteed to be in (ref_M, ExtendedCarrier) but we need z <= b. This is where the supremum comes in.
   - **File**: CaseAnalysis.lean
 
-- [ ] Task 5.5: Extract witness z = e_n. Prove z <= b <= y (containment). Prove sel_pn_ord trivially (~30-50 lines)
+- [x] Task 5.5: Extract witness z = e_n. Prove z <= b <= y (containment). Prove sel_pn_ord trivially (~30-50 lines) *(completed — `ghr93_construct_en` extracts bounded witness via `untl_witness_bounded`, producing e_n with c < e_n ≤ y. sel_pn_ord not yet wired into ghr93_case_II body; available as derived data from `ghr93_construct_en`.)*
 
   **Containment argument** (GHR94 p.806, Teammate A Section 1.2 Prerequisite 3):
   - Apply `untl_extract_witness` to `h_untl_M` to get z > ref_M with mu_holds(z), B(z), and A on (ref_M, z).
