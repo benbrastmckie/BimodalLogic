@@ -1,24 +1,22 @@
 {
   "status": "partial",
-  "phase": 5,
-  "phase_status": "blocked",
+  "phase": 6,
+  "phase_status": "partial",
   "session_id": "sess_1780001766_2e723d",
-  "summary": "Phase 5 (plan v47) is BLOCKED. The restricted tau approach (replacing tau_left/tau_right with a single game on [d, b'] -> [c, b] with b = sup of B-satisfying points) cannot provide the biconditional orderings required by same_order_type_of_cases. Root cause: the Lean game formalization uses finite-position orderings (n+3 positions per game), while GHR93 assumes continuous order-type preservation. The restricted tau with b >= e_n provides WEAKER orderings than tau_left (with b = e_n as endpoint). When b = e_n and b' = p_n, the restricted tau IS tau_left -- no simplification possible. Six approaches analyzed and all fail. Current ghr93_case_II is sorry-free and axiom-clean. Recommend accepting current architecture and proceeding to Phase 6.",
-  "completed_tasks": [],
-  "blocked_tasks": ["5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8"],
-  "block_reason": "Fundamental formalization gap: GHR93's single-tau argument relies on continuous order-type preservation (orderings at all points in interval), while the Lean game definition provides orderings at exactly n+3 positions. The restricted tau with supremum endpoints b >= e_n, b' >= p_n gives orderings at (a_init(k), b')/(resp(k), b), not (a_init(k), p_n)/(resp(k), e_n). Making b = e_n and b' = p_n recovers the needed orderings but reduces to tau_left, which is the current architecture. No way to eliminate tau_left/tau_right within the current game formalization.",
+  "summary": "Phase 6 PARTIAL. IH sub-game approach solves sel_gap_ord structurally. Built backward game on [x, gamma_M] x [x', gamma_N] for selection responses in [x, gamma_M]. Degenerate case (x'=gamma_N) fully structured with all-collapse proven (resp_tau = c). 2 winning condition assembly sorries remain.",
+  "completed_tasks": ["6.1-6.3 (pre-existing)", "6.4 (partial)", "6.5 (partial)"],
+  "deferred_tasks": ["6.6 (winning condition assembly, 2 sorries)"],
+  "block_reason": "Winning condition assembly requires gamma_M < y <-> gamma_N < y' ordering, which needs a right-side forward game on [gamma_M, y] x [gamma_N, y']. The degenerate case needs b_resp construction from collapsed game data.",
   "artifacts": [
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-blocker-finite-position-games-20260528.md",
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-v2-20260528.md",
     "specs/155_reynolds_pipeline_activation/plans/47_path-c-supremum-plan.md"
   ],
   "verification": {
     "build_passed": true,
-    "ghr93_case_II_axiom_clean": true,
-    "ghr93_case_II_sorry_free": true,
-    "sorry_count_in_file": 1,
-    "sorry_location": "line 3318 (ghr93_cases_III_IV, Phase 6 scope)"
+    "sorry_count_in_caseanalysis": 2,
+    "sorry_locations": ["CaseAnalysis.lean:~3359 (non-degenerate winning condition)", "CaseAnalysis.lean:~3453 (degenerate winning condition)"]
   },
-  "recommendation": "Accept that tau_left/tau_right IS the correct Lean formalization of GHR93's single-tau argument (bridging finite-position games to continuous order-type preservation). Mark Phase 5 as BLOCKED (plan v47 is infeasible). Proceed to Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean wiring). Consider plan revision to remove Phase 5 as a target.",
-  "next_phase": 6,
-  "next_action": "Proceed to Phase 6 (Cases III/IV gap handling) which is independent of Phase 5."
+  "key_achievement": "Structural solution to sel_gap_ord: IH-based backward game on [x, gamma_M] x [x', gamma_N] gives resp_sub in [x, gamma_M], so resp_sub(k) <= gamma_M by construction. This eliminates the fundamental blocker identified in the previous Phase 6 attempt.",
+  "recommendation": "Continue Phase 6 to close the 2 winning condition assembly sorries. For the non-degenerate case: case split on b_sp position, use right-side forward game for gamma < y ordering. For the degenerate case: exploit all-collapse structure (all N-positions = gamma_N, all M-responses = c).",
+  "next_action": "Close 2 winning condition assembly sorries in CaseAnalysis.lean"
 }
