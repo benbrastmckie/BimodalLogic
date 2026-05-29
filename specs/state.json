@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 201,
+      "project_name": "alphazero_proof_search_harness",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-29T03:51:11Z",
+      "last_updated": "2026-05-29T03:51:11Z"
+    },
+    {
       "project_number": 198,
       "project_name": "prove_frame_class_indicator_forcing",
       "status": "completed",
@@ -637,7 +645,7 @@
       "session_id": "sess_1779994794_96be99",
       "researched": "2026-05-28T20:47:04Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 5,
+      "resume_phase": 7,
       "plan_metadata": {
         "phases": 8,
         "total_effort_hours": 28,
@@ -1275,7 +1283,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 201,
+  "next_project_number": 202,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

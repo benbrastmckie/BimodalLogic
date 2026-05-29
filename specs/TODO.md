@@ -1,5 +1,5 @@
 ---
-next_project_number: 201
+next_project_number: 202
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -126,6 +126,14 @@ technical_debt:
 
 
 ## Tasks
+
+### 201. Set up AlphaZero-style proof search harness for bimodal logic
+- **Effort**: XL
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Set up a training harness for a value network and prediction network to follow a generator that seeks to prove theorems in the bimodal logic, using Lean for the positive signal. This should follow a modern rendition of what AlphaZero did for Go, but applied to the bimodal logic in Lean for the signal
+
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
 - **Effort**: large (20-30 hours)
