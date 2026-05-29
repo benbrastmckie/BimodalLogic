@@ -221,7 +221,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Integration Test and Documentation [NOT STARTED]
+### Phase 5: Integration Test and Documentation [COMPLETED]
 
 **Goal**: Verify the complete benchmark end-to-end: reload and validate all entries, confirm the benchmark is usable as a held-out evaluation set, and document the benchmark design.
 
