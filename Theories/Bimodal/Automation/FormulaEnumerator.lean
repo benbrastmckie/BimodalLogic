@@ -767,7 +767,9 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
     | some a => return .atom a
     | none => return .bot
   else
-    let choice ← IO.rand 0 3
+    -- 6 branches: atom(0), imp(1), box(2), all_future(3), untl(4), snce(5)
+    -- Weights: atom=1, imp=2, box=1, all_future=1, untl=1 (snce reuses untl branch)
+    let choice ← IO.rand 0 5
     match choice with
     | 0 =>
       let idx ← IO.rand 0 atoms.length
@@ -785,12 +787,32 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
       -- box
       let child ← randomSubFormula atoms (maxSize - 1)
       return .box child
+    | 3 =>
+      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, costs ~4 complexity overhead
+      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      return child.all_future
+    | 4 =>
+      -- untl: binary temporal
+      if maxSize < 3 then
+        let child ← randomSubFormula atoms (maxSize - 1)
+        return .box child
+      else
+        let leftSize ← IO.rand 1 (maxSize - 1)
+        let rightSize := maxSize - 1 - leftSize
+        let left ← randomSubFormula atoms (max 1 leftSize)
+        let right ← randomSubFormula atoms (max 1 rightSize)
+        return .untl left right
     | _ =>
-      -- atom fallback
-      let idx ← IO.rand 0 atoms.length
-      match atoms[idx]? with
-      | some a => return .atom a
-      | none => return .bot
+      -- snce: binary temporal
+      if maxSize < 3 then
+        let child ← randomSubFormula atoms (maxSize - 1)
+        return .box child
+      else
+        let leftSize ← IO.rand 1 (maxSize - 1)
+        let rightSize := maxSize - 1 - leftSize
+        let left ← randomSubFormula atoms (max 1 leftSize)
+        let right ← randomSubFormula atoms (max 1 rightSize)
+        return .snce left right
 
 /--
 Instantiate a random axiom schema with random sub-formulas.
@@ -809,7 +831,7 @@ fill the schema parameters. The result is guaranteed valid by construction.
 - `modal_k_dist(φ, ψ)`: `□(φ → ψ) → (□φ → □ψ)`
 -/
 partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formula := do
-  let schemaIdx ← IO.rand 0 7
+  let schemaIdx ← IO.rand 0 13
   match schemaIdx with
   | 0 => do
     -- prop_s: φ → (ψ → φ)
@@ -843,11 +865,36 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     -- modal_b: φ → □◇φ
     let φ ← randomSubFormula atoms maxParamSize
     return φ.imp (Formula.box φ.diamond)
-  | _ => do
+  | 7 => do
     -- modal_k_dist: □(φ → ψ) → (□φ → □ψ)
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return (φ.imp ψ).box.imp (φ.box.imp ψ.box)
+  -- Temporal axiom schemata (6 new schemata)
+  | 8 => do
+    -- serial_future: ⊤ → F(⊤)
+    return Formula.top.imp (Formula.some_future Formula.top)
+  | 9 => do
+    -- serial_past: ⊤ → P(⊤)
+    return Formula.top.imp (Formula.some_past Formula.top)
+  | 10 => do
+    -- connect_future(φ): φ → G(P(φ))
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.imp (φ.some_past.all_future)
+  | 11 => do
+    -- connect_past(φ): φ → H(F(φ))
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.imp (φ.some_future.all_past)
+  | 12 => do
+    -- right_mono_until(φ, ψ, χ): G(φ → ψ) → ((φ U χ) → (ψ U χ))
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    let χ ← randomSubFormula atoms maxParamSize
+    return (φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))
+  | _ => do
+    -- F_until_equiv(φ): F(φ) → (φ U ⊤)
+    let φ ← randomSubFormula atoms maxParamSize
+    return (Formula.some_future φ).imp (Formula.untl φ Formula.top)
 
 /--
 Apply modus ponens: given valid φ and valid (φ → ψ), return ψ.

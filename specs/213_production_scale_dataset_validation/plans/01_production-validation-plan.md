@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Temporal Axiom Seeds and Subformula Coverage [NOT STARTED]
+### Phase 2: Temporal Axiom Seeds and Subformula Coverage [COMPLETED]
 
 **Goal**: Fix the two root causes of poor validity signal: (1) `instantiateAxiom` only generates propositional/modal formulas (no temporal operators), and (2) `randomSubFormula` only produces atom/imp/box (no temporal operators). Also fix ex_falso dominance by rebalancing schema selection.
 
