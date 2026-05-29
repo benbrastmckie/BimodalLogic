@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 212,
+      "project_name": "implement_proof_step_extractor",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [],
+      "created": "2026-05-29T19:33:01Z",
+      "last_updated": "2026-05-29T19:33:01Z"
+    },
+    {
       "project_number": 211,
       "project_name": "review_revise_docs_directory",
       "status": "not_started",
@@ -1630,7 +1639,7 @@
       "last_updated": "2026-05-29T18:30:31Z"
     }
   ],
-  "next_project_number": 212,
+  "next_project_number": 213,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
