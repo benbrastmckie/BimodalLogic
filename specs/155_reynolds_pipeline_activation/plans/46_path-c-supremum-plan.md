@@ -321,7 +321,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **File**: CaseAnalysis.lean
 
-- [ ] Task 5.6: Delete old forward-game e_n construction and related machinery (~deletion of 500-700 lines)
+- [ ] Task 5.6: Delete old forward-game e_n construction and related machinery (~deletion of 500-700 lines) *(deviation: blocked — the forward game, tau_left, and tau_right CANNOT be deleted. The biconditional ordering `(a_init k < p_n iff resp_tau k < e_n)` required by `same_order_type_of_cases` is only available from tau_left's ordering data. tau_r on [d,y'] -> [c,y] does not provide orderings relative to p_n/e_n. Similarly tau_right provides orderings between b_resp and p_n/e_n that tau_r cannot. The forward game provides critical ordering data between fixed positions (x/e_n/y vs x'/p_n/y') and formula agreement at endpoints used throughout Round 2 dispatch. ghr93_construct_en returns a potentially different e_n via untl_witness_bounded without forward game ordering data. See phase-5-task56-analysis handoff for full mathematical analysis.)*
 
   **Deletion map** (from report 45 Section 4, Teammate B Section 2):
   - Lines 1257-1288: Forward-game e_n construction (a_pad_big, h_d_compat_left call) -- DELETE
@@ -348,7 +348,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   **File**: CaseAnalysis.lean
   - Also delete/simplify corresponding code in any helper files if it exists
 
-- [ ] Task 5.7: Implement Round 2 winning condition with GHR93's 5-way case split (~200-300 lines)
+- [ ] Task 5.7: Implement Round 2 winning condition with GHR93's 5-way case split (~200-300 lines) *(deviation: blocked — depends on Task 5.6 which is blocked. The current Round 2 already implements GHR93's structure via 3-way split: (A) b_sp <= c [sigma], (B1) c < b_sp <= e_n [tau_left], (B2) b_sp > e_n [tau_right]. The 5-way split requires resp_tau-based a'_resp which lacks biconditional orderings. Current structure is mathematically equivalent to GHR93's approach.)*
 
   **GHR93's Round 2 structure** (GHR94 pp.808-810):
   Given Spoiler's challenge b_sp (a carrier point in [x, y] on M-side), Duplicator responds with b_resp (carrier point in [x', y'] on N-side). The 5-way case split:
@@ -382,7 +382,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **File**: CaseAnalysis.lean
 
-- [ ] Task 5.8: Final assembly and verification (~20-40 lines)
+- [x] Task 5.8: Final assembly and verification (~20-40 lines) *(deviation: altered — verification confirms current ghr93_case_II is already sorry-free and axiom-clean. No structural changes needed since Tasks 5.6-5.7 are blocked. Build passes. Axiom check shows only propext, Classical.choice, Quot.sound. Current line count: 733 lines for ghr93_case_II (already within 400-1100 range).)*
 
   - Wire the 5-way case split into the overall ghr93_case_II structure
   - Verify all grid dispatch goals closed (same_order_type_of_cases should handle them)

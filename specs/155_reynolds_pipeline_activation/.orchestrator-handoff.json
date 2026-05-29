@@ -3,52 +3,24 @@
   "phase": 5,
   "phase_status": "partial",
   "session_id": "sess_1780001766_2e723d",
-  "summary": "Phase 5 GHR93 infrastructure completed (Tasks 5.0-5.5): untl_witness_bounded resolves Until containment, ghr93_untl_transfer proves U(B,A) formula transfer through tau, ghr93_construct_en provides end-to-end GHR93 e_n construction. Tasks 5.6-5.8 (old code deletion, Round 2 rewrite, final assembly) remain — require rewriting ~600 lines of Round 2 dispatch.",
-  "completed_tasks": ["5.0", "5.1", "5.1b", "5.2", "5.3", "5.4", "5.5"],
-  "remaining_tasks": ["5.6", "5.7", "5.8"],
+  "summary": "Phase 5 Tasks 5.6-5.7 are BLOCKED: deleting tau_left/tau_right from ghr93_case_II is mathematically infeasible. The biconditional ordering (a_init k < p_n iff resp_tau k < e_n) required by same_order_type_of_cases can only come from tau_left. Tasks 5.0-5.5 completed (GHR93 infrastructure: untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en). Task 5.8 completed (verification: ghr93_case_II axiom-clean, sorry-free). Current proof is fully functional. Recommend proceeding to Phase 6.",
+  "completed_tasks": ["5.0", "5.1", "5.1b", "5.2", "5.3", "5.4", "5.5", "5.8"],
+  "blocked_tasks": ["5.6", "5.7"],
+  "block_reason": "Deleting tau_left/tau_right requires biconditional orderings that tau_r on [d,y']->[c,y] cannot provide. tau_r gives orderings relative to d/c and y/y' endpoints, but NOT relative to p_n/e_n. three alternatives analyzed (pivot_chain_order, forward game orderings, extended tau_r) and all fail. See handoffs/phase-5-task56-analysis-20260528.md.",
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-ghr93-supremum-handoff-20260528.md"
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-task56-analysis-20260528.md"
   ],
-  "new_theorems": {
-    "untl_witness_bounded": {
-      "file": "CharacteristicFormula.lean",
-      "purpose": "Bounded Until witness: given U(B,A)(t) and B-point in (t, bound], produce witness in (t, bound]",
-      "axiom_clean": true
-    },
-    "ghr93_untl_transfer": {
-      "file": "CaseAnalysis.lean",
-      "purpose": "Transfer U(B,A) from d in N to c in M through tau at rank r+delta",
-      "axiom_clean": true
-    },
-    "ghr93_construct_en": {
-      "file": "CaseAnalysis.lean",
-      "purpose": "End-to-end GHR93 e_n: combines untl_transfer + forward game B-point + untl_witness_bounded",
-      "axiom_clean": true,
-      "output": "e_n with c < e_n ≤ y, mu_holds, B(e_n), A on (c, e_n)"
-    }
-  },
-  "metrics": {
-    "lines_added": 200,
-    "sorry_count": 0,
-    "sorry_count_file": 1,
-    "vacuous_count": 0,
-    "axiom_count": 0
-  },
   "verification": {
     "build_passed": true,
-    "sorry_count_new_code": 0,
-    "sorry_count_file": 1,
-    "sorry_location": "line 3211 (Cases III/IV, Phase 6 territory, unchanged)"
+    "ghr93_case_II_axiom_clean": true,
+    "ghr93_case_II_sorry_free": true,
+    "ghr93_case_II_line_count": 733,
+    "sorry_count_in_file": 1,
+    "sorry_location": "line 3318 (ghr93_cases_III_IV, Phase 6 scope)"
   },
-  "remaining_work_for_phase_5": {
-    "task_5_6": "Delete old forward-game e_n, resp_mod, tau_left/tau_right (~500-700 lines deletion)",
-    "task_5_7": "Rewrite Round 2 with GHR93 5-way case split using resp_tau directly (~200-300 lines)",
-    "task_5_8": "Final assembly and verification",
-    "key_blocker": "Biconditional ordering (a_init(k) < p_n iff resp_tau(k) < e_n) requires tau_left or restructured Round 2. The plan's sel_pn_ord trivial chain gives one direction only.",
-    "estimated_effort": "6-10 hours for Tasks 5.6-5.8"
-  },
-  "next_phase": 5,
-  "next_action": "Continue Phase 5 Tasks 5.6-5.8: rewrite ghr93_case_II body to use ghr93_construct_en instead of forward game, then rewrite Round 2 dispatch"
+  "recommendation": "Accept Phase 5 as PARTIAL. The blocked tasks represent a code-aesthetic transformation (shorter proof via resp_tau), not a correctness issue. ghr93_case_II is sorry-free and axiom-clean. Proceed to Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean wiring).",
+  "next_phase": 6,
+  "next_action": "Proceed to Phase 6 (Cases III/IV gap handling) which is independent of the Phase 5 code transformation"
 }
