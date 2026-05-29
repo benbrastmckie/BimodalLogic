@@ -130,20 +130,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Deep Production Run [NOT STARTED]
+### Phase 3: Deep Production Run [COMPLETED]
 
 **Goal**: Execute the complexity 7 deep run with ~50K formulas in hybrid mode and validate feasibility gates.
 
 **Tasks**:
-- [ ] Execute deep run in background: `lake exe dataset_generator -- --max-complexity 7 --max-modal-depth 3 --max-temporal-depth 3 --max-formulas 50000 --output data/bmlogic-deep.jsonl --mode hybrid --include-duals`
-- [ ] Monitor memory usage periodically during the run (if feasible)
-- [ ] If the run fails with OOM, re-run with --max-formulas 25000 and document the reduction
-- [ ] After completion, read `data/bmlogic-deep_metadata.json` for summary statistics
-- [ ] Count records by label: valid, invalid, timeout
-- [ ] Compute feasibility metrics: timeout rate, valid fraction, category diversity
-- [ ] Evaluate gates: timeout rate <20%, valid fraction >=15%, 3+ GoalCategory types
-- [ ] Spot-check 5-10 JSONL records for well-formedness
-- [ ] Record all metrics for Phase 4 reporting
+- [x] Execute deep run in background: `lake exe dataset_generator -- --max-complexity 7 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 50000 --output data/bmlogic-deep.jsonl --mode random --include-duals` *(deviation: altered -- used random mode instead of hybrid because hybrid's exhaustive component at complexity 5 does not terminate within reasonable time; also reduced depth from 3 to 2 for same reason)*
+- [x] Monitor memory usage periodically during the run (if feasible)
+- [x] If the run fails with OOM, re-run with --max-formulas 25000 and document the reduction *(no OOM -- run completed within 2 minutes at ~127MB RSS)*
+- [x] After completion, read `data/bmlogic-deep_metadata.json` for summary statistics
+- [x] Count records by label: valid, invalid, timeout
+- [x] Compute feasibility metrics: timeout rate, valid fraction, category diversity
+- [x] Evaluate gates: timeout rate <20%, valid fraction >=15%, 3+ GoalCategory types *(valid fraction 1.6% -- FAILS 15% gate; timeout 2.5% PASS; 4 categories PASS)*
+- [x] Spot-check 5-10 JSONL records for well-formedness
+- [x] Record all metrics for Phase 4 reporting
 
 **Timing**: 2-12 hours compute + 15 minutes validation
 
