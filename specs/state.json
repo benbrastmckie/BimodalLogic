@@ -8,20 +8,59 @@
     {
       "project_number": 212,
       "project_name": "implement_proof_step_extractor",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [],
       "created": "2026-05-29T19:33:01Z",
-      "last_updated": "2026-05-29T19:33:01Z"
+      "last_updated": "2026-05-29T20:30:00Z",
+      "session_id": "sess_1780083735_5vngv",
+      "researched": "2026-05-29T20:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/212_implement_proof_step_extractor/reports/01_proof-step-extractor.md",
+          "type": "report",
+          "summary": "Comprehensive research on DerivationTree structure (7 constructors), 42 axiom constructors forming 49-action space, ~108 theorem definitions in Theorems/ directory (~40-50 computable), existing walkDerivationTree traversal pattern, JSON serialization infrastructure, and ProofStepRecord schema design. Key risk: ~60% of theorems are noncomputable. Recommended phased approach starting with computable subset."
+        }
+      ]
     },
     {
       "project_number": 211,
       "project_name": "review_revise_docs_directory",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "markdown",
       "description": "Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps",
       "created": "2026-05-29T19:28:12Z",
-      "last_updated": "2026-05-29T19:28:12Z"
+      "last_updated": "2026-05-29T21:00:00Z",
+      "session_id": "sess_1780083187_bf904f",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/211_review_revise_docs_directory/reports/01_docs-review-research.md",
+          "type": "report",
+          "summary": "Comprehensive review of 41 docs/ files: 4 categories of issues — missing installation files, stale Logos/opencode references in development docs, wrong module namespaces in API_REFERENCE.md, and MODULE_ORGANIZATION.md describing a non-existent directory structure. Research/ uses kebab-case vs SCREAMING_SNAKE_CASE elsewhere. 484 code blocks lack language specifiers."
+        },
+        {
+          "path": "specs/211_review_revise_docs_directory/plans/01_docs-revision-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan: fix critical accuracy errors (paths, namespaces, versions), eliminate stale .opencode and Logos references, normalize naming to SCREAMING_SNAKE_CASE, resolve content gaps and redundancy, final consistency pass. 7 hours total."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 7,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_docs-review-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 210,

@@ -1,100 +1,85 @@
-# Module Organization for Logos
+# Module Organization for ProofChecker
 
-This document specifies the directory structure, namespace conventions, and module organization for the Logos project.
+This document specifies the directory structure, namespace conventions, and module organization for the ProofChecker project (BimodalLogic repository). The primary library is the `Bimodal` theory, residing under `Theories/Bimodal/`.
 
 ## 1. Directory Structure
 
 ```
-Logos/
-├── Logos.lean                  # Library root (re-exports Core)
-├── Logos/                      # Main source directory
-│   ├── Core/                   # Layer 0 (TM bimodal logic)
-│   │   ├── Syntax/             # Context.lean, Formula.lean
-│   │   ├── ProofSystem/        # Axioms.lean, Derivation.lean
-│   │   ├── Semantics/          # TaskFrame.lean, WorldHistory.lean, TaskModel.lean, Truth.lean, Validity.lean
-│   │   ├── Metalogic/          # Soundness.lean, Completeness.lean, DeductionTheorem.lean
-│   │   ├── Theorems/           # Combinators.lean, GeneralizedNecessitation.lean, ModalS4.lean, ModalS5.lean, Perpetuity.lean, Propositional.lean, Perpetuity/*
-│   │   ├── Automation/         # Tactics.lean, ProofSearch.lean, AesopRules.lean, README.md
-│   │   ├── Automation.lean
-│   │   ├── Core.lean
-│   │   ├── Metalogic.lean
-│   │   ├── ProofSystem.lean
-│   │   ├── Semantics.lean
-│   │   ├── Syntax.lean
-│   │   └── Theorems.lean
-│   ├── Epistemic/              # Epistemic.lean, README.md (planned extensions)
-│   ├── Explanatory/            # Explanatory.lean, README.md (planned extensions)
-│   ├── Normative/              # Normative.lean, README.md (planned extensions)
-│   ├── Lint/                   # EnvLinters.lean
-│   ├── Automation.lean         # Aggregates Core.Automation
-│   ├── Core.lean               # Aggregates Core layer
-│   ├── Epistemic.lean
-│   ├── Explanatory.lean
-│   ├── Metalogic.lean          # (alias aggregation)
-│   ├── Normative.lean
-│   ├── ProofSystem.lean
-│   ├── README.md
-│   ├── Semantics.lean
-│   ├── Syntax.lean
-│   └── Theorems.lean
-├── Archive/                    # Pedagogical examples (ModalProofs.lean, TemporalProofs.lean, BimodalProofs.lean, etc.)
-├── LogosTest/                  # Test suite mirroring Logos/Core structure
-│   ├── Core/Automation/        # Tactics tests, ProofSearch tests
-│   ├── Core/Metalogic/         # SoundnessTest, CompletenessTest, DeductionTheoremTest
-│   ├── Core/ProofSystem/       # AxiomsTest, DerivationTest
-│   ├── Core/Semantics/         # TaskFrameTest, TruthTest, etc.
-│   ├── Core/Syntax/            # ContextTest, FormulaTest
-│   ├── Core/Theorems/          # ModalS4Test, ModalS5Test, PerpetuityTest, PropositionalTest
-│   ├── Integration/            # End-to-end integration tests
-│   ├── Integration.lean
-│   └── LogosTest.lean
-├── scripts/                    # Lint and utility scripts (LintAll.lean, LintStyle.lean, RunEnvLinters.lean)
-└── docs/              # Documentation (UserGuide/, Development/, ProjectInfo/, Reference/, Research/)
+BimodalLogic/
+├── lakefile.toml               # Lake build configuration (package name: Logos)
+├── Theories/
+│   └── Bimodal/                # Main library source
+│       ├── Bimodal.lean        # Library root (re-exports all sub-modules)
+│       ├── Syntax.lean         # Aggregates Syntax/
+│       ├── ProofSystem.lean    # Aggregates ProofSystem/
+│       ├── Semantics.lean      # Aggregates Semantics/
+│       ├── Metalogic.lean      # Aggregates Metalogic/
+│       ├── Theorems.lean       # Aggregates Theorems/
+│       ├── Automation.lean     # Aggregates Automation/
+│       ├── Syntax/             # Formula types, atoms, contexts
+│       ├── ProofSystem/        # Axioms, derivation trees, inference rules
+│       ├── Semantics/          # Task frame semantics, truth evaluation
+│       ├── Metalogic/          # Soundness, completeness, decidability
+│       ├── Theorems/           # Derived theorems (perpetuity, combinators, propositional)
+│       ├── Automation/         # Proof tactics and search
+│       ├── Examples/           # Pedagogical examples
+│       ├── FrameConditions/    # Frame condition characterizations
+│       ├── Boneyard/           # Archived/experimental work
+│       └── docs/               # Theory-specific documentation
+├── Tests/
+│   └── BimodalTest/            # Test suite mirroring Theories/Bimodal/ structure
+│       ├── BimodalTest.lean    # Test root
+│       ├── Syntax/             # Syntax tests
+│       ├── ProofSystem/        # Proof system tests
+│       ├── Semantics/          # Semantic tests
+│       ├── Metalogic/          # Metalogic tests
+│       ├── Theorems/           # Theorem tests
+│       └── Automation/         # Automation tests
+└── docs/                       # Project-level documentation
 ```
 
 ## 2. Namespace Conventions
 
 ### Root Namespace
-All Logos code lives under the `Logos` namespace:
+
+All library code lives under the `Bimodal` namespace:
 
 ```lean
-namespace Logos
+namespace Bimodal
 
 -- All definitions here
 
-end Logos
+end Bimodal
 ```
 
 ### Hierarchical Namespaces
-Namespaces mirror directory structure (Core layer under `Logos.Core`):
+
+Namespaces mirror directory structure:
 
 | Directory | Namespace |
 |-----------|-----------|
-| `Logos/Core/Syntax/` | `Logos.Core.Syntax` |
-| `Logos/Core/ProofSystem/` | `Logos.Core.ProofSystem` |
-| `Logos/Core/Semantics/` | `Logos.Core.Semantics` |
-| `Logos/Core/Metalogic/` | `Logos.Core.Metalogic` |
-| `Logos/Core/Theorems/` | `Logos.Core.Theorems` |
-| `Logos/Core/Automation/` | `Logos.Core.Automation` |
-| `Logos/Epistemic/` | `Logos.Epistemic` |
-| `Logos/Explanatory/` | `Logos.Explanatory` |
-| `Logos/Normative/` | `Logos.Normative` |
-| `Logos/Lint/` | `Logos.Lint` |
+| `Theories/Bimodal/Syntax/` | `Bimodal.Syntax` |
+| `Theories/Bimodal/ProofSystem/` | `Bimodal.ProofSystem` |
+| `Theories/Bimodal/Semantics/` | `Bimodal.Semantics` |
+| `Theories/Bimodal/Metalogic/` | `Bimodal.Metalogic` |
+| `Theories/Bimodal/Theorems/` | `Bimodal.Theorems` |
+| `Theories/Bimodal/Automation/` | `Bimodal.Automation` |
 
 ### Nested Namespaces
+
 Use nested namespaces for logical grouping within a file:
 
 ```lean
--- In Logos/Syntax/Formula.lean
-namespace Logos.Syntax
+-- In Theories/Bimodal/Syntax/Formula.lean
+namespace Bimodal.Syntax
 
 inductive Formula : Type
   | atom : String → Formula
   | bot : Formula
   | imp : Formula → Formula → Formula
   | box : Formula → Formula
-  | past : Formula → Formula
-  | future : Formula → Formula
+  | all_past : Formula → Formula
+  | all_future : Formula → Formula
 
 namespace Formula
 
@@ -104,17 +89,18 @@ def complexity : Formula → Nat
   | bot => 1
   | imp φ ψ => φ.complexity + ψ.complexity + 1
   | box φ => φ.complexity + 1
-  | past φ => φ.complexity + 1
-  | future φ => φ.complexity + 1
+  | all_past φ => φ.complexity + 1
+  | all_future φ => φ.complexity + 1
 
 end Formula
 
-end Logos.Syntax
+end Bimodal.Syntax
 ```
 
 ## 3. Module Dependencies
 
 ### Layered Architecture
+
 Dependencies flow in one direction to prevent circular imports:
 
 ```
@@ -136,24 +122,24 @@ Layer 0: Syntax (no internal dependencies)
 3. **Semantics** depends on Syntax and ProofSystem.
 4. **Theorems** depends on Syntax and ProofSystem (and may use Semantics for transport lemmas where needed).
 5. **Metalogic** depends on Syntax, ProofSystem, Semantics, and Theorems infrastructure used in proofs.
-6. **Automation** (tactics, proof search) may depend on any Core module.
-7. **Extension layers** (Epistemic, Explanatory, Normative) depend on Core and should not be imported by Core.
+6. **Automation** (tactics, proof search) may depend on any module.
 
 ### Import Guidelines
 
 ```lean
--- Logos/ProofSystem/Derivation.lean
+-- Theories/Bimodal/ProofSystem/Derivation.lean
 -- Good: Only imports from Syntax (lower layer)
-import Logos.Syntax.Formula
-import Logos.Syntax.Context
-import Logos.ProofSystem.Axioms
-import Logos.ProofSystem.Rules
+import Bimodal.Syntax.Formula
+import Bimodal.Syntax.Context
+import Bimodal.ProofSystem.Axioms
+import Bimodal.ProofSystem.Rules
 
 -- Bad: Would create circular dependency
--- import Logos.Semantics.Truth  -- Semantics depends on ProofSystem!
+-- import Bimodal.Semantics.Truth  -- Semantics depends on ProofSystem!
 ```
 
 ### Detecting Circular Dependencies
+
 Lake will report circular dependencies at build time. If you encounter them:
 1. Identify the cycle by examining import chains
 2. Extract shared definitions to a lower-level module
@@ -161,7 +147,7 @@ Lake will report circular dependencies at build time. If you encounter them:
 
 ## 4. File Structure Template
 
-Every LEAN file should follow this structure:
+Every Lean file should follow this structure:
 
 ```lean
 /-!
@@ -191,10 +177,10 @@ Any important implementation details or design decisions.
 
 -- 1. Imports (ordered by: standard library, mathlib, project)
 import Init.Data.List
-import Logos.Syntax.Formula
+import Bimodal.Syntax.Formula
 
 -- 2. Namespace opening
-namespace Logos.ModuleName
+namespace Bimodal.ModuleName
 
 -- 3. Local notation (if needed)
 local notation "⊥" => Formula.bot
@@ -218,66 +204,71 @@ instance : Inhabited MyStructure where
   default := { field1 := Unit, field2 := Unit }
 
 -- 8. Namespace closing
-end Logos.ModuleName
+end Bimodal.ModuleName
 ```
 
 ## 5. Library Root File
 
-The `Logos.lean` file re-exports the Core layer via `Logos.Core`, which aggregates the public API:
+The `Bimodal.lean` file aggregates all sub-modules:
 
 ```lean
 /-!
-# Logos
+# Bimodal
 
-LEAN 4 implementation of an axiomatic proof system for the bimodal logic TM
-with task semantics.
+Lean 4 formalization of bimodal logic TM (Tense and Modality), combining S5 modal
+logic with linear temporal logic. Proven sound and complete.
 
-## Core Modules (via Logos.Core)
+## Core Modules
 
 ### Syntax
-* `Logos.Core.Syntax.Formula`
-* `Logos.Core.Syntax.Context`
+* `Bimodal.Syntax.Formula`
+* `Bimodal.Syntax.Context`
 
 ### Proof System
-* `Logos.Core.ProofSystem.Axioms`
-* `Logos.Core.ProofSystem.Derivation`
+* `Bimodal.ProofSystem.Axioms`
+* `Bimodal.ProofSystem.Derivation`
 
 ### Semantics
-* `Logos.Core.Semantics.TaskFrame`
-* `Logos.Core.Semantics.WorldHistory`
-* `Logos.Core.Semantics.TaskModel`
-* `Logos.Core.Semantics.Truth`
-* `Logos.Core.Semantics.Validity`
+* `Bimodal.Semantics.TaskFrame`
+* `Bimodal.Semantics.WorldHistory`
+* `Bimodal.Semantics.TaskModel`
+* `Bimodal.Semantics.Truth`
+* `Bimodal.Semantics.Validity`
 
 ### Metalogic
-* `Logos.Core.Metalogic.Soundness`
-* `Logos.Core.Metalogic.Completeness`
-* `Logos.Core.Metalogic.DeductionTheorem`
+* `Bimodal.Metalogic.Soundness`
+* `Bimodal.Metalogic.Completeness`
+* `Bimodal.Metalogic.DeductionTheorem`
 
 ### Theorems
-* `Logos.Core.Theorems.Perpetuity`
-* `Logos.Core.Theorems.ModalS4`
-* `Logos.Core.Theorems.ModalS5`
-* `Logos.Core.Theorems.GeneralizedNecessitation`
-* `Logos.Core.Theorems.Combinators`
-* `Logos.Core.Theorems.Propositional`
+* `Bimodal.Theorems.Perpetuity`
+* `Bimodal.Theorems.ModalS4`
+* `Bimodal.Theorems.ModalS5`
+* `Bimodal.Theorems.GeneralizedNecessitation`
+* `Bimodal.Theorems.Combinators`
+* `Bimodal.Theorems.Propositional`
 
 ### Automation
-* `Logos.Core.Automation.Tactics`
-* `Logos.Core.Automation.ProofSearch`
+* `Bimodal.Automation.Tactics`
+* `Bimodal.Automation.ProofSearch`
 -/
 
--- Library root (aggregated via Core)
-import Logos.Core
+import Bimodal.Syntax
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic
+import Bimodal.Theorems
+import Bimodal.Automation
 ```
 
 ## 6. Public API vs Internal Implementation
 
 ### Public API
+
 Definitions that users should use directly:
 
 - Marked with docstrings
-- Re-exported from `Logos.lean`
+- Re-exported from `Bimodal.lean`
 - Stable across versions
 
 ```lean
@@ -293,6 +284,7 @@ theorem soundness : Γ ⊢ φ → Γ ⊨ φ := ...
 ```
 
 ### Internal Implementation
+
 Helper functions and intermediate definitions:
 
 - May be placed in `Internal` sub-namespace
@@ -300,44 +292,24 @@ Helper functions and intermediate definitions:
 - May change between versions
 
 ```lean
-namespace Logos.Semantics.Internal
+namespace Bimodal.Semantics.Internal
 
 /-- Internal helper for canonical model construction. -/
 def extend_consistent_set (Γ : Context) : Context := ...
 
-end Logos.Semantics.Internal
-```
-
-### Access Control Pattern
-
-```lean
--- In Logos/Semantics/Canonical.lean
-namespace Logos.Semantics
-
-namespace Internal
-
--- Internal helpers
-def helper1 := ...
-def helper2 := ...
-
-end Internal
-
--- Public API uses internal helpers
-/-- Build canonical model for completeness proof. -/
-def canonical_model : TaskModel canonical_frame :=
-  { valuation := Internal.helper1 ... }
-
-end Logos.Semantics
+end Bimodal.Semantics.Internal
 ```
 
 ## 7. Module Size Guidelines
 
 ### Recommended Limits
+
 - **Lines per file**: ≤1000 lines
 - **Definitions per file**: ≤30 major definitions
 - **Nesting depth**: ≤4 namespace levels
 
 ### When to Split a Module
+
 Split a module when:
 1. It exceeds 1000 lines
 2. It has multiple independent logical sections
@@ -345,6 +317,7 @@ Split a module when:
 4. Testing becomes difficult
 
 ### How to Split
+
 1. Identify logical boundaries
 2. Create new file for extracted content
 3. Update imports in both files
@@ -352,26 +325,24 @@ Split a module when:
 
 ## 8. Examples Module Organization
 
-Pedagogical examples live in `Archive/` (not under `Examples/`). These files use only proven components and mirror Core namespaces:
+Pedagogical examples live in `Theories/Bimodal/Examples/`. These files use only proven
+components and mirror the core structure:
 
-- `Archive/ModalProofs.lean` – S5 modal logic examples
-- `Archive/TemporalProofs.lean` – Temporal reasoning examples
-- `Archive/BimodalProofs.lean` – Combined modal-temporal examples
-- Additional archived samples as maintained in `Archive/`
+- `Examples/ModalProofs.lean` - S5 modal logic examples
+- `Examples/TemporalProofs.lean` - Temporal reasoning examples
+- `Examples/BimodalProofs.lean` - Combined modal-temporal examples
 
-All examples import `Logos` (or targeted Core modules) and avoid unproven axioms.
+All examples import `Bimodal` (or targeted sub-modules) and avoid unproven axioms.
 
 ## 9. Test Module Organization
 
 See [TESTING_STANDARDS.md](TESTING_STANDARDS.md) for detailed test organization.
 
 Summary:
-- `LogosTest/Core/` mirrors `Logos/Core/` (Automation, Metalogic, ProofSystem, Semantics, Syntax, Theorems)
-- `LogosTest/Integration/` contains cross-module and end-to-end tests
-- Test files are named `<Module>Test.lean` and collected via `LogosTest.lean`/`Integration.lean`
+- `Tests/BimodalTest/` mirrors `Theories/Bimodal/` (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation)
+- Test files are named `<Module>Test.lean` and collected via `BimodalTest.lean`
 
 ## References
 
 - [LEAN Style Guide](LEAN_STYLE_GUIDE.md)
 - [Testing Standards](TESTING_STANDARDS.md)
-- [Architecture Guide](../user-guide/ARCHITECTURE.md)

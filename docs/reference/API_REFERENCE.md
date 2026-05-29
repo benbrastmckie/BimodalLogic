@@ -1,10 +1,10 @@
-# Logos API Reference
+# ProofChecker API Reference
 
 **Version**: 1.1.0
 **Last Updated**: 2026-01-11
 **Status**: Complete
 
-This document provides a centralized API reference for all Logos/Core modules, generated from inline docstrings.
+This document provides a centralized API reference for all Bimodal modules, generated from inline docstrings.
 
 ## Table of Contents
 
@@ -19,9 +19,9 @@ This document provides a centralized API reference for all Logos/Core modules, g
 
 ## Syntax
 
-### Formula (`Logos.Core.Syntax.Formula`)
+### Formula (`Bimodal.Syntax.Formula`)
 
-**Module**: `Logos/Core/Syntax/Formula.lean`
+**Module**: `Theories/Bimodal/Syntax/Formula.lean`
 
 The core syntax for bimodal logic TM (Tense and Modality), combining S5 modal logic with linear temporal logic.
 
@@ -87,9 +87,9 @@ swap_temporal (p.all_future) = p.all_past
 
 ---
 
-### Context (`Logos.Core.Syntax.Context`)
+### Context (`Bimodal.Syntax.Context`)
 
-**Module**: `Logos/Core/Syntax/Context.lean`
+**Module**: `Theories/Bimodal/Syntax/Context.lean`
 
 Formula lists for proof contexts representing assumptions in derivations.
 
@@ -119,9 +119,9 @@ Context.map Formula.box [p, q] = [□p, □q]
 
 ## Semantics
 
-### TaskFrame (`Logos.Core.Semantics.TaskFrame`)
+### TaskFrame (`Bimodal.Semantics.TaskFrame`)
 
-**Module**: `Logos/Core/Semantics/TaskFrame.lean`
+**Module**: `Theories/Bimodal/Semantics/TaskFrame.lean`
 
 Task frame structure for TM semantics, defining the fundamental semantic structures.
 
@@ -148,9 +148,9 @@ structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
 
 ---
 
-### TaskModel (`Logos.Core.Semantics.TaskModel`)
+### TaskModel (`Bimodal.Semantics.TaskModel`)
 
-**Module**: `Logos/Core/Semantics/TaskModel.lean`
+**Module**: `Theories/Bimodal/Semantics/TaskModel.lean`
 
 Task models extending task frames with valuation functions for propositional atoms.
 
@@ -166,9 +166,9 @@ structure TaskModel (F : TaskFrame T) where
 
 ---
 
-### WorldHistory (`Logos.Core.Semantics.WorldHistory`)
+### WorldHistory (`Bimodal.Semantics.WorldHistory`)
 
-**Module**: `Logos/Core/Semantics/WorldHistory.lean`
+**Module**: `Theories/Bimodal/Semantics/WorldHistory.lean`
 
 World histories representing functions from convex time intervals to world states.
 
@@ -188,9 +188,9 @@ structure WorldHistory (F : TaskFrame T) where
 
 ---
 
-### Truth (`Logos.Core.Semantics.Truth`)
+### Truth (`Bimodal.Semantics.Truth`)
 
-**Module**: `Logos/Core/Semantics/Truth.lean`
+**Module**: `Theories/Bimodal/Semantics/Truth.lean`
 
 Truth definition for formulas at world histories and times.
 
@@ -198,9 +198,9 @@ Truth definition for formulas at world histories and times.
 
 ---
 
-### Validity (`Logos.Core.Semantics.Validity`)
+### Validity (`Bimodal.Semantics.Validity`)
 
-**Module**: `Logos/Core/Semantics/Validity.lean`
+**Module**: `Theories/Bimodal/Semantics/Validity.lean`
 
 Semantic validity and consequence relations for TM logic.
 
@@ -208,9 +208,9 @@ Semantic validity and consequence relations for TM logic.
 
 ## Proof System
 
-### Axioms (`Logos.Core.ProofSystem.Axioms`)
+### Axioms (`Bimodal.ProofSystem.Axioms`)
 
-**Module**: `Logos/Core/ProofSystem/Axioms.lean`
+**Module**: `Theories/Bimodal/ProofSystem/Axioms.lean`
 
 The 14 axiom schemata for bimodal logic TM.
 
@@ -261,9 +261,9 @@ inductive Axiom : Formula → Prop where
 
 ---
 
-### Derivation (`Logos.Core.ProofSystem.Derivation`)
+### Derivation (`Bimodal.ProofSystem.Derivation`)
 
-**Module**: `Logos/Core/ProofSystem/Derivation.lean`
+**Module**: `Theories/Bimodal/ProofSystem/Derivation.lean`
 
 Derivability relation and inference rules for TM logic.
 
@@ -296,9 +296,9 @@ inductive DerivationTree : Context → Formula → Prop where
 
 ## Automation
 
-### Tactics (`Logos.Core.Automation.Tactics`)
+### Tactics (`Bimodal.Automation.Tactics`)
 
-**Module**: `Logos/Core/Automation/Tactics.lean`
+**Module**: `Theories/Bimodal/Automation/Tactics.lean`
 
 Custom tactics for modal and temporal reasoning.
 
@@ -486,7 +486,7 @@ match db'.queryPatterns φ with
 
 ### AesopRules (`Bimodal.Automation.AesopRules`)
 
-**Module**: `Logos/Core/Automation/AesopRules.lean`
+**Module**: `Theories/Bimodal/Automation/AesopRules.lean`
 
 Aesop rule registration for TM automation.
 
@@ -499,9 +499,9 @@ Aesop rule registration for TM automation.
 
 ## Theorems
 
-### Propositional (`Logos.Core.Theorems.Propositional`)
+### Propositional (`Bimodal.Theorems.Propositional`)
 
-**Module**: `Logos/Core/Theorems/Propositional.lean`
+**Module**: `Theories/Bimodal/Theorems/Propositional.lean`
 
 Key propositional theorems in Hilbert-style proof calculus.
 
@@ -524,33 +524,33 @@ Key propositional theorems in Hilbert-style proof calculus.
 
 ---
 
-### ModalS4 (`Logos.Core.Theorems.ModalS4`)
+### ModalS4 (`Bimodal.Theorems.ModalS4`)
 
-**Module**: `Logos/Core/Theorems/ModalS4.lean`
+**Module**: `Theories/Bimodal/Theorems/ModalS4.lean`
 
 S4 modal logic theorems (reflexivity + transitivity).
 
 ---
 
-### ModalS5 (`Logos.Core.Theorems.ModalS5`)
+### ModalS5 (`Bimodal.Theorems.ModalS5`)
 
-**Module**: `Logos/Core/Theorems/ModalS5.lean`
+**Module**: `Theories/Bimodal/Theorems/ModalS5.lean`
 
 S5 modal logic theorems (reflexivity + transitivity + symmetry).
 
 ---
 
-### GeneralizedNecessitation (`Logos.Core.Theorems.GeneralizedNecessitation`)
+### GeneralizedNecessitation (`Bimodal.Theorems.GeneralizedNecessitation`)
 
-**Module**: `Logos/Core/Theorems/GeneralizedNecessitation.lean`
+**Module**: `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
 
 Generalized necessitation rules for modal and temporal operators.
 
 ---
 
-### Combinators (`Logos.Core.Theorems.Combinators`)
+### Combinators (`Bimodal.Theorems.Combinators`)
 
-**Module**: `Logos/Core/Theorems/Combinators.lean`
+**Module**: `Theories/Bimodal/Theorems/Combinators.lean`
 
 Combinator infrastructure for proof construction.
 
@@ -567,9 +567,9 @@ Combinator infrastructure for proof construction.
 
 ---
 
-### Perpetuity (`Logos.Core.Theorems.Perpetuity`)
+### Perpetuity (`Bimodal.Theorems.Perpetuity`)
 
-**Module**: `Logos/Core/Theorems/Perpetuity.lean`
+**Module**: `Theories/Bimodal/Theorems/Perpetuity.lean`
 
 Perpetuity principles connecting modal and temporal operators.
 
@@ -590,9 +590,9 @@ Perpetuity principles connecting modal and temporal operators.
 
 ## Metalogic
 
-### Soundness (`Logos.Core.Metalogic.Soundness`)
+### Soundness (`Bimodal.Metalogic.Soundness`)
 
-**Module**: `Logos/Core/Metalogic/Soundness.lean`
+**Module**: `Theories/Bimodal/Metalogic/Soundness.lean`
 
 Soundness theorem: derivability implies semantic consequence.
 
@@ -600,9 +600,9 @@ Soundness theorem: derivability implies semantic consequence.
 
 ---
 
-### DeductionTheorem (`Logos.Core.Metalogic.DeductionTheorem`)
+### DeductionTheorem (`Bimodal.Metalogic.DeductionTheorem`)
 
-**Module**: `Logos/Core/Metalogic/DeductionTheorem.lean`
+**Module**: `Theories/Bimodal/Metalogic/DeductionTheorem.lean`
 
 Deduction theorem for TM logic.
 
@@ -612,9 +612,9 @@ Deduction theorem for TM logic.
 
 ---
 
-### Completeness (`Logos.Core.Metalogic.Completeness`)
+### Completeness (`Bimodal.Metalogic.Completeness`)
 
-**Module**: `Logos/Core/Metalogic/Completeness.lean`
+**Module**: `Theories/Bimodal/Metalogic/Completeness.lean`
 
 Completeness theorem: semantic consequence implies derivability.
 
@@ -627,9 +627,9 @@ Completeness theorem: semantic consequence implies derivability.
 ### Basic Proof Construction
 
 ```lean
-import Logos.Core
+import Bimodal
 
-open Logos.Core.Syntax Logos.Core.ProofSystem
+open Bimodal.Syntax Bimodal.ProofSystem
 
 -- Prove modal T axiom
 example (p : Formula) : ⊢ (p.box.imp p) := by
@@ -647,9 +647,9 @@ example (p : Formula) : ⊢ (p.box.imp p) := by
 ### Proof Search
 
 ```lean
-import Logos.Core.Automation.ProofSearch
+import Bimodal.Automation.ProofSearch
 
-open Logos.Core.Automation
+open Bimodal.Automation
 
 -- Bounded search for derivation
 def search_example : Bool :=
@@ -663,9 +663,9 @@ def heuristic_example : Bool :=
 ### Semantic Evaluation
 
 ```lean
-import Logos.Core.Semantics
+import Bimodal.Semantics
 
-open Logos.Core.Semantics
+open Bimodal.Semantics
 
 -- Define a task frame
 def example_frame : TaskFrame Int := {
@@ -685,7 +685,7 @@ def example_model : TaskModel example_frame := {
 
 ## Documentation Standards
 
-All Logos modules follow these documentation standards:
+All Bimodal modules follow these documentation standards:
 
 1. **Module Docstrings** (`/-! ... -/`): Every file has comprehensive module docstring
 2. **Declaration Docstrings** (`/-- ... -/`): All public definitions documented
@@ -698,9 +698,7 @@ All Logos modules follow these documentation standards:
 
 ## References
 
-- **Architecture Guide**: `docs/user-guide/ARCHITECTURE.md`
 - **Lean Style Guide**: `docs/development/LEAN_STYLE_GUIDE.md`
-- **Tactic Development**: `docs/project-info/TACTIC_DEVELOPMENT.md`
 - **JPL Paper**: "The Perpetuity Calculus of Agency" (task semantics specification)
 
 ---
