@@ -98,18 +98,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Henkin BFMCS on Int [NOT STARTED]
+### Phase 1: Henkin BFMCS on Int [COMPLETED]
 
 **Goal**: Build `henkin_bfmcs_discrete : BFMCS Int` from the existing `shifted_bx_fmcs` infrastructure in CanonicalModel.lean. This is the Z-native BFMCS that replaces `cantor_bfmcs_discrete` (which goes through the chronicle limit domain).
 
 **Tasks**:
-- [ ] Audit fc-parametricity of `bx_fmcs`/`shifted_bx_fmcs`/`int_chain` -- determine whether they need generalization from `FrameClass.Base` to arbitrary fc, or if `FrameClass.base_le` lifting suffices
-- [ ] If needed, generalize `fwd_succ`, `bwd_pred`, `fwd_chain`, `bwd_chain`, `int_chain` to be parametric over fc (following pattern of chronicle code which takes `fc : FrameClass` parameter)
-- [ ] Define `henkin_bfmcs_discrete (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent A) (h_box_discrete : Formula.box next_top in A) : BFMCS Int` with families := `{ fam | exists N h_N h_box_N s, box_equiv(A,N) and fam = shifted_bx_fmcs N h_N s }`
-- [ ] Prove `nonempty` (eval family is `shifted_bx_fmcs A h_mcs 0` or equivalently `bx_fmcs A h_mcs`)
-- [ ] Prove `modal_forward` using `box_stable_in_shifted_fmcs` and Modal T
-- [ ] Prove `modal_backward` using contrapositive + `bx_modal_witness_fc` (S5 diamond witness) + shifted chain construction
-- [ ] Prove `eval_family_mem`
+- [x] Audit fc-parametricity of `bx_fmcs`/`shifted_bx_fmcs`/`int_chain` -- determine whether they need generalization from `FrameClass.Base` to arbitrary fc, or if `FrameClass.base_le` lifting suffices *(completed — generalization needed; built fc-parametric `fwd_succ_fc`, `bwd_pred_fc`, `int_chain_fc`, `shifted_bx_fmcs_fc` using fc-parametric seed consistency and `mcs_to_base` for reverse propagation)*
+- [x] If needed, generalize `fwd_succ`, `bwd_pred`, `fwd_chain`, `bwd_chain`, `int_chain` to be parametric over fc (following pattern of chronicle code which takes `fc : FrameClass` parameter) *(completed)*
+- [x] Define `henkin_bfmcs_discrete (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent A) (h_box_discrete : Formula.box next_top in A) : BFMCS Int` with families := `{ fam | exists N h_N h_box_N s, box_equiv(A,N) and fam = shifted_bx_fmcs N h_N s }` *(deviation: altered — named `henkin_bfmcs` without `h_box_discrete` param, since the Z-chain doesn't need discreteness; `h_box_discrete` requirement stays at the Completeness.lean call site)*
+- [x] Prove `nonempty` (eval family is `shifted_bx_fmcs A h_mcs 0` or equivalently `bx_fmcs A h_mcs`) *(completed)*
+- [x] Prove `modal_forward` using `box_stable_in_shifted_fmcs` and Modal T *(completed)*
+- [x] Prove `modal_backward` using contrapositive + `bx_modal_witness_fc` (S5 diamond witness) + shifted chain construction *(completed)*
+- [x] Prove `eval_family_mem` *(completed)*
 
 **Timing**: 2 hours
 
