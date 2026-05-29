@@ -1,7 +1,7 @@
 # Implementation Plan: BMLogic-Bench Benchmark Curation
 
 - **Task**: 205 - Curate stratified evaluation benchmark (BMLogic-Bench)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: Task 204 (production dataset generation -- completed)
 - **Research Inputs**: specs/205_benchmark_curation/reports/01_benchmark-curation.md
@@ -75,7 +75,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Lean Axiom Instance Generator [NOT STARTED]
+### Phase 1: Lean Axiom Instance Generator [COMPLETED]
 
 **Goal**: Create a Lean module that generates concrete formula instances of all 42 BX axiom schemata with varied substitutions, labels them via the decision procedure, and exports them as JSONL.
 

@@ -60,3 +60,17 @@ lean_exe enum_benchmark where
   root := `Bimodal.Automation.EnumBenchmark
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Benchmark anchor generator: produces axiom instances for BMLogic-Bench (Task 205).
+    Run with: lake exe benchmark_anchors -- --output data/axiom-instances.jsonl -/
+lean_exe benchmark_anchors where
+  root := `Bimodal.Automation.BenchmarkAnchors
+  srcDir := "Theories"
+  supportInterpreter := true
+
+/-- Contrastive pair generator for dual-verification training signal (Task 206).
+    Run with: lake exe contrastive_generator -- --max-complexity 5 --output data/contrastive_pairs.jsonl -/
+lean_exe contrastive_generator where
+  root := `Bimodal.Automation.FormulaMutator
+  srcDir := "Theories"
+  supportInterpreter := true
