@@ -133,10 +133,11 @@ technical_debt:
 
 ### 209. Document training pipeline components
 - **Effort**: medium (1-2 days)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Research**: [specs/209_document_training_pipeline/reports/01_pipeline-components.md]
 - **Plan**: [specs/209_document_training_pipeline/plans/01_pipeline-docs.md]
+- **Summary**: [specs/209_document_training_pipeline/summaries/01_execution-summary.md]
 
 **Description**: Document the training pipeline components in BimodalLogic repo, linking to https://github.com/benbrastmckie/BimodalHarness for the rest of the training harness. Carefully document each of the 6 Lean modules in Theories/Bimodal/Automation/ (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter (scripts/generate_dataset.py), and the executable targets (dataset_generator, dataset_validator). Explain the dual-signal architecture (proof traces as positive signal, countermodels as corrective signal), the end-to-end pipeline flow, the JSON dataset schema, and how the exported data connects to the BimodalHarness repo for value network training, policy network training, and MCTS proof search. Include the feasibility gate results and recommended next steps.
 

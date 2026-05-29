@@ -60,30 +60,30 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Write TRAINING_PIPELINE.md [NOT STARTED]
+### Phase 1: Write TRAINING_PIPELINE.md [COMPLETED]
 
 **Goal**: Create the complete training pipeline reference document.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/TRAINING_PIPELINE.md`
-- [ ] Write header with title, last-updated date, and provenance (tasks 201, 203, 209)
-- [ ] Write "Overview" section: 3-4 paragraph summary of the pipeline purpose, dual-signal architecture, and relationship to BimodalHarness
-- [ ] Write "Architecture: Dual-Signal Training Data" section explaining proof traces as positive signal (policy network) and countermodels as corrective signal (value network), with EnrichedCountermodel as the richer variant
-- [ ] Write "Pipeline Flow" section with ASCII diagram showing FormulaEnumerator -> DatasetGenerator -> DatasetExport/DatasetExporter -> BimodalHarness, noting the two parallel export paths (JSONL streaming vs structured JSON)
-- [ ] Write "Module Reference" section with subsections for each of the 6 Lean modules:
-  - [ ] `DataExport.lean` -- JSON serialization primitives, Formula JSON schema (atom/bot/imp/box/untl/snce tags), RuleProfile, escaping
-  - [ ] `FormulaEnumerator.lean` -- EnumConfig vs EnumParams APIs, bounded enumeration, LCG sampling, diversity metrics, three-constraint filtering
-  - [ ] `DatasetGenerator.lean` -- labeling pipeline (decideAuto/decideOptimized), ProofTrace extraction, DifficultyMetrics and tiers, LabeledFormula structure
-  - [ ] `EnrichedCountermodel.lean` -- enriched vs simple countermodel, branch formula retention, modal/temporal formula extraction, design rationale
-  - [ ] `DatasetExporter.lean` -- structured JSON output, DatasetMetadata, stratified train/eval split, end-to-end generation functions
-  - [ ] `DatasetValidator.lean` -- conformance tests (10 valid + 20 invalid), feasibility gate criteria (6 checks), DiversityReport
-- [ ] Write "Executable Targets" section documenting `lake exe dataset_generator` (CLI flags, JSONL output, DatasetExport.lean entry point) and `lake exe dataset_validator` (conformance + feasibility gate, DatasetValidator.lean entry point)
-- [ ] Write "Python Tensor Converter" section documenting `scripts/generate_dataset.py`: input format (JSON from DatasetExporter), output format (PyTorch .pt tensors), feature vector (5-dim from PatternKey), label encoding, usage examples
-- [ ] Write "Dataset Schemas" section with JSONL record schema (from DatasetExport.lean) and structured JSON schema (from DatasetExporter.lean), including field descriptions
-- [ ] Write "BimodalHarness Integration" section: artifact-only integration, `make sync-data` rsync, Python dataclass correspondence table, SCHEMA_VERSION contract, downstream tasks (tokenizer, serializer, PyTorch Dataset, MCTS, Z3 countermodel)
-- [ ] Write "Feasibility Gate Results (Tier 1)" section: conformance test results (30/30), feasibility gate results table, root causes of gate failure (provability ratio imbalance, proof height uniformity), implications
-- [ ] Write "Recommended Next Steps" section: theorem mining or biased enumeration for provability ratio, investigate proof height extraction, EnrichedCountermodel integration into main export path, medium/deep production runs (task 204), multi-representation export (task 207), contrastive pair generation (task 206), BMLogic-Bench curation (task 205)
-- [ ] Write "Related Tasks" section linking to tasks 201, 203, 204, 205, 206, 207, 208
+- [x] Create `Theories/Bimodal/Automation/TRAINING_PIPELINE.md` *(completed)*
+- [x] Write header with title, last-updated date, and provenance (tasks 201, 203, 209) *(completed)*
+- [x] Write "Overview" section: 3-4 paragraph summary of the pipeline purpose, dual-signal architecture, and relationship to BimodalHarness *(completed)*
+- [x] Write "Architecture: Dual-Signal Training Data" section explaining proof traces as positive signal (policy network) and countermodels as corrective signal (value network), with EnrichedCountermodel as the richer variant *(completed)*
+- [x] Write "Pipeline Flow" section with ASCII diagram showing FormulaEnumerator -> DatasetGenerator -> DatasetExport/DatasetExporter -> BimodalHarness, noting the two parallel export paths (JSONL streaming vs structured JSON) *(completed)*
+- [x] Write "Module Reference" section with subsections for each of the 6 Lean modules: *(completed)*
+  - [x] `DataExport.lean` -- JSON serialization primitives, Formula JSON schema (atom/bot/imp/box/untl/snce tags), RuleProfile, escaping *(completed)*
+  - [x] `FormulaEnumerator.lean` -- EnumConfig vs EnumParams APIs, bounded enumeration, LCG sampling, diversity metrics, three-constraint filtering *(completed)*
+  - [x] `DatasetGenerator.lean` -- labeling pipeline (decideAuto/decideOptimized), ProofTrace extraction, DifficultyMetrics and tiers, LabeledFormula structure *(completed)*
+  - [x] `EnrichedCountermodel.lean` -- enriched vs simple countermodel, branch formula retention, modal/temporal formula extraction, design rationale *(completed)*
+  - [x] `DatasetExporter.lean` -- structured JSON output, DatasetMetadata, stratified train/eval split, end-to-end generation functions *(completed)*
+  - [x] `DatasetValidator.lean` -- conformance tests (10 valid + 20 invalid), feasibility gate criteria (6 checks), DiversityReport *(completed)*
+- [x] Write "Executable Targets" section documenting `lake exe dataset_generator` (CLI flags, JSONL output, DatasetExport.lean entry point) and `lake exe dataset_validator` (conformance + feasibility gate, DatasetValidator.lean entry point) *(completed)*
+- [x] Write "Python Tensor Converter" section documenting `scripts/generate_dataset.py`: input format (JSON from DatasetExporter), output format (PyTorch .pt tensors), feature vector (5-dim from PatternKey), label encoding, usage examples *(completed)*
+- [x] Write "Dataset Schemas" section with JSONL record schema (from DatasetExport.lean) and structured JSON schema (from DatasetExporter.lean), including field descriptions *(completed)*
+- [x] Write "BimodalHarness Integration" section: artifact-only integration, `make sync-data` rsync, Python dataclass correspondence table, SCHEMA_VERSION contract, downstream tasks (tokenizer, serializer, PyTorch Dataset, MCTS, Z3 countermodel) *(completed)*
+- [x] Write "Feasibility Gate Results (Tier 1)" section: conformance test results (30/30), feasibility gate results table, root causes of gate failure (provability ratio imbalance, proof height uniformity), implications *(completed)*
+- [x] Write "Recommended Next Steps" section: theorem mining or biased enumeration for provability ratio, investigate proof height extraction, EnrichedCountermodel integration into main export path, medium/deep production runs (task 204), multi-representation export (task 207), contrastive pair generation (task 206), BMLogic-Bench curation (task 205) *(completed)*
+- [x] Write "Related Tasks" section linking to tasks 201, 203, 204, 205, 206, 207, 208 *(completed)*
 
 **Timing**: 2 hours
 
@@ -102,14 +102,14 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] File exists at the specified path
-- [ ] All 6 Lean modules have dedicated subsections
-- [ ] Both executable targets documented with usage examples
-- [ ] Pipeline flow diagram included
-- [ ] JSONL and JSON schemas documented
-- [ ] BimodalHarness integration section includes sync mechanism and dataclass correspondence
-- [ ] Feasibility gate results included with concrete numbers
-- [ ] Document reads coherently as a standalone reference
+- [x] File exists at the specified path *(completed)*
+- [x] All 6 Lean modules have dedicated subsections *(completed)*
+- [x] Both executable targets documented with usage examples *(completed)*
+- [x] Pipeline flow diagram included *(completed)*
+- [x] JSONL and JSON schemas documented *(completed)*
+- [x] BimodalHarness integration section includes sync mechanism and dataclass correspondence *(completed)*
+- [x] Feasibility gate results included with concrete numbers *(completed)*
+- [x] Document reads coherently as a standalone reference *(completed)*
 
 ## Artifacts & Outputs
 

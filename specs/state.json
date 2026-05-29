@@ -8,12 +8,14 @@
     {
       "project_number": 209,
       "project_name": "document_training_pipeline",
-      "status": "planned",
+      "status": "completed",
       "task_type": "markdown",
+      "completion_summary": "Created Theories/Bimodal/Automation/TRAINING_PIPELINE.md documenting all 6 Lean pipeline modules (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter, dual-signal architecture, ASCII pipeline flow diagram, JSONL/JSON schemas, BimodalHarness integration with dataclass correspondence, Tier 1 feasibility gate results (30/30 conformance, gate FAILED on provability ratio), and recommended next steps for Tier 2.",
       "description": "Document the training pipeline components in BimodalLogic repo, linking to https://github.com/benbrastmckie/BimodalHarness for the rest of the training harness. Carefully document each of the 6 Lean modules in Theories/Bimodal/Automation/ (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter (scripts/generate_dataset.py), and the executable targets (dataset_generator, dataset_validator). Explain the dual-signal architecture (proof traces as positive signal, countermodels as corrective signal), the end-to-end pipeline flow, the JSON dataset schema, and how the exported data connects to the BimodalHarness repo for value network training, policy network training, and MCTS proof search. Include the feasibility gate results and recommended next steps",
       "created": "2026-05-29T18:48:47Z",
-      "last_updated": "2026-05-29T19:05:00Z",
+      "last_updated": "2026-05-29T19:10:00Z",
       "researched": "2026-05-29T18:55:00Z",
+      "completed": "2026-05-29T19:10:00Z",
       "session_id": "sess_1780080874_4bb40d",
       "next_artifact_number": 2,
       "artifacts": [
@@ -26,6 +28,11 @@
           "path": "specs/209_document_training_pipeline/plans/01_pipeline-docs.md",
           "type": "plan",
           "summary": "Single-phase plan for creating TRAINING_PIPELINE.md with section outline covering all 6 modules, schemas, and BimodalHarness integration"
+        },
+        {
+          "path": "specs/209_document_training_pipeline/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for task 209 implementation"
         }
       ],
       "plan_metadata": {
