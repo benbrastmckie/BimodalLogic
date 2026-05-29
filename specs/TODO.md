@@ -1,5 +1,5 @@
 ---
-next_project_number: 214
+next_project_number: 223
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -137,6 +137,14 @@ technical_debt:
 
 
 ## Tasks
+
+### 222. Consolidate data/ and hf-dataset/ into unified directory structure
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+
+**Description**: Consolidate data/ and hf-dataset/ into a unified data/ directory with appropriate subdirectories. Add README.md files following repository standards. Move extended documentation to docs/. Currently both directories exist at root with overlapping concerns — merge into one coherent structure.
+
+---
 
 ### 215. Competitive analysis and enhancement roadmap for BMLogic datasets
 - **Effort**: small (4-6 hours)

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 222,
+      "project_name": "consolidate_data_hf_dataset_directory",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Consolidate data/ and hf-dataset/ into a unified data/ directory with appropriate subdirectories. Add README.md files following repository standards. Move extended documentation to docs/. Currently both directories exist at root with overlapping concerns — merge into one coherent structure.",
+      "created": "2026-05-29T23:21:43Z",
+      "last_updated": "2026-05-29T23:21:43Z"
+    },
+    {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
       "status": "planned",
@@ -1297,7 +1306,7 @@
       "last_updated": "2026-05-29T23:18:44Z"
     }
   ],
-  "next_project_number": 222,
+  "next_project_number": 223,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
