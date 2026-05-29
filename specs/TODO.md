@@ -1,5 +1,5 @@
 ---
-next_project_number: 213
+next_project_number: 214
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -130,6 +130,16 @@ technical_debt:
 
 
 ## Tasks
+
+### 213. Production-scale dataset generation validation
+- **Effort**: medium (1-2 days)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 210
+
+**Description**: Re-run the dataset generation pipeline at complexity 5-7 (where task 204 hit a wall due to the enumerator blowup fixed in task 210) to validate that the improved enumeration and axiom seeding produce viable training datasets at production scale. Compare results against task 204's medium and deep run baselines (medium: complexity 4, 25% valid fraction; deep: complexity 7 random-only, 1.6% valid fraction). Verify timing, formula counts, valid fractions, operator diversity, and export pipeline integrity. Identify any remaining bottlenecks, parameter tuning needs (e.g., validSeedCount for the 15% valid fraction gate), or enhancements required for production readiness.
+
+---
 
 ### 212. Implement proof step extractor for BimodalHarness training data
 - **Effort**: medium (1-2 weeks)
