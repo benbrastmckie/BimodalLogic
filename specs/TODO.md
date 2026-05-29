@@ -33,7 +33,7 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [RESEARCHED] — Eliminate succ_cofinal: build restricted_tc/fuc directly on Z where IsSuccArchimedean is trivial. Option C bypasses Reynolds pipeline + Henkin chains entirely. 6-10 hours, 85% confidence.
+202 [BLOCKED] — Eliminate succ_cofinal: all 5 plan versions blocked by F-persistence through g_content under irreflexive semantics. Phase 1 done (henkin_bfmcs sorry-free on Int). Needs fundamentally different strategy (restricted MCS, reflexive conservative extension, or direct semantic truth lemma).
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -133,7 +133,7 @@ technical_debt:
 
 ### 203. Build formula enumerator, decider labeling, and JSON dataset export
 - **Effort**: large (3-4 weeks)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 201 (parent task)
 - **Research**: [203_formula_enumerator_dataset_export/reports/01_team-research.md]
@@ -142,20 +142,18 @@ technical_debt:
 **Description**: Build the Lean-side formula enumerator, decider labeling pipeline, and JSON dataset export in Automation/. Enumerate TM formulas at controlled modal/temporal depth, run the existing DecisionProcedure (decide/decideBatch) to label each as provable/unprovable with proof traces, and export the labeled dataset as JSON for downstream Python consumption. The boundary is the JSON file — everything upstream (enumeration, labeling, trace extraction, export) is pure Lean in this repo; everything downstream (tensor conversion, training) belongs in a separate harness repo. Deliverables: FormulaEnumerator.lean (bounded generation by depth/size), DatasetGenerator.lean (run decider, produce labeled tuples), JSON export with (formula, label, proof_trace, difficulty_metrics), and an evaluation benchmark of 500-1K held-out formulas. Feasibility gate: the enumerator must produce diverse non-trivial formulas (not >80% trivially propositional)
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: large (25-40 hours)
-- **Effort**: large (25-40 hours)
+- **Effort**: 8 hours
 - **Status**: [BLOCKED]
 - **Type**: lean4
 - **Priority**: CRITICAL
-- **Dependencies**: 155
+- **Dependencies**: none
 - **Research**:
   - [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/04_team-research.md]
 - **Plan**:
-  - [202_reynolds_k_equivalence_bypass/plans/01_reynolds-bypass-plan.md]
   - [202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md]
-- **Summary**: [202_reynolds_k_equivalence_bypass/summaries/01_implementation-summary.md]
-- **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. 5 phases: US expressive completeness over Prior structures, no_gaps_discrete proof (Reynolds Theorem 14), chronicle_is_good_direct via one_class, countermodel_discrete rewiring, full verification. This is the ONLY viable path -- succ_cofinal is unprovable (4 research agents confirmed). Phase 3 completed (one_class_implies_very_good, chronicle_is_good_direct). Phase 4 partial (countermodel_discrete_reynolds architecture). Phases 1-2 blocked on US expressive completeness over Prior structures.
+  - [202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md]
+- **Description**: Eliminate succ_cofinal for sorry-free completeness_discrete via Option C (direct completeness on Z). Phase 1 complete: henkin_bfmcs sorry-free on Int (426 lines, fc-parametric chain infrastructure). Plan v5 replaces blocked Phases 2-4 with enriched chain construction that preserves F-formulas across Lindenbaum extensions, BX5-based Until decomposition for FUC, and integration into completeness_discrete. The enriched seed `g_content(M) union {F(psi) | F(psi) in M} union {target}` is consistent (subset-of-M argument). No dependency on tasks 155, 174, or 199.
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL (3-4 weeks)

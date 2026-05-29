@@ -8,11 +8,11 @@
     {
       "project_number": 203,
       "project_name": "formula_enumerator_dataset_export",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-29T16:59:41Z",
-      "last_updated": "2026-05-29T17:46:30Z",
-      "session_id": "sess_1780076452_37bf8e",
+      "last_updated": "2026-05-29T17:49:40Z",
+      "session_id": "sess_1780076964_81a133",
       "researched": "2026-05-29T17:39:33Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -26,12 +26,13 @@
           "type": "plan",
           "summary": "5-phase implementation plan for formula enumerator, decider labeling pipeline, and JSONL dataset export (28 hours total)"
         }
-      ]
+      ],
+      "started": "2026-05-29T17:49:40Z"
     },
     {
       "project_number": 201,
       "project_name": "alphazero_proof_search_harness",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-29T03:51:11Z",
       "last_updated": "2026-05-29T18:15:00Z",
@@ -1364,11 +1365,11 @@
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
-      "description": "Build the Reynolds k-equivalence bypass for sorry-free completeness_discrete, eliminating succ_cofinal. Instead of proving the chronicle limit domain is Z-isomorphic (which requires the unprovable succ_cofinal), use Reynolds' approach: (1) prove the chronicle's NF profile structure matches a Z-interval structure via EF-game expressiveness (Theorem 6, already proved as ghr93_forward_to_backward_discrete), (2) transfer truth from the chronicle to a Z-model via k-equivalence, (3) build the countermodel from the Z-model. This requires: (a) a backward-game-to-k-equiv bridge theorem connecting ghr93_duplicator_wins to k_equiv (~200-300 lines), (b) Reynolds Theorem 14 showing all points in the chronicle are in one ~M-class (~300-500 lines, requires US expressive completeness over Prior structures), (c) rewiring countermodel_discrete to use this path instead of dd_countermodel_chronicle_discrete. Total estimated: 800-1500 lines. This is the ONLY viable path — 4 research agents confirmed succ_cofinal cannot be proved from temporal axioms or standard construction-level arguments (constant-MCS gap scenario is consistent). See task 155 reports 48, 49a-d for full analysis.",
+      "description": "Eliminate succ_cofinal for sorry-free completeness_discrete. Option C: build restricted_tc/buc/fuc directly on Z via enriched chain construction where F-formulas are preserved across Lindenbaum extensions. Phase 1 complete (henkin_bfmcs sorry-free on Int, 426 lines). Phases 2-4: enriched chain with F-persistence, BX5-based FUC, integration into completeness_discrete. 8 hours, 85% confidence.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T17:37:00Z",
-      "next_artifact_number": 5,
+      "last_updated": "2026-05-29T18:30:00Z",
+      "next_artifact_number": 6,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1383,17 +1384,22 @@
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md",
           "type": "plan",
-          "summary": "Plan v4: Direct completeness on Z via Henkin BFMCS, bypassing succ_cofinal entirely (4 phases, 8 hours)"
+          "summary": "Plan v4 (BLOCKED): Direct completeness on Z via Henkin BFMCS — Phase 2 blocked by F-persistence through g_content"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md",
+          "type": "plan",
+          "summary": "Plan v5: Enriched chain construction with F-persistence, BX5 deferral for FUC, bypasses succ_cofinal entirely (4 phases, 8 hours)"
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
-      "session_id": "sess_1780073922_56864f",
+      "session_id": "sess_1780075095_dfdc3e",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 4,
+        "plan_version": 5,
         "dependency_waves": [
           [
             1
