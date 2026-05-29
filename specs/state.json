@@ -1623,8 +1623,8 @@
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-30T02:00:00Z",
-      "next_artifact_number": 8,
+      "last_updated": "2026-05-29T14:17:00Z",
+      "next_artifact_number": 9,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1660,6 +1660,11 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md",
           "type": "report",
           "summary": "BFMCS bypass feasibility: cantor_bfmcs_discrete is sorry-free, sorry enters via succ_embed_surjective in coherence conditions; no viable bypass within parametric pipeline; Reynolds pipeline completion at Transfer.lean:866 is the correct path"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md",
+          "type": "report",
+          "summary": "Full dependency trace of succ_cofinal: enters both old BFMCS pipeline (via TC/FUC coherence) and Reynolds pipeline (via extract_chronicle_as_prior domain_succ_archimedean). Steps 1-7 of Reynolds already carry succ_cofinal. Alternative: no_gaps_discrete path (Reynolds Theorem 14) bypasses succ_cofinal but has its own sorry — which is exactly what task 202 aims to discharge."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",

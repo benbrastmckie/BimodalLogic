@@ -34,6 +34,9 @@ technical_debt:
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
 202 [PARTIAL] — Reynolds Theorem 14 (no-gaps): Phase 1 complete (Theorem 5: US expressive completeness over Prior structures, 395 lines, 0 sorries). Phases 2-5 (Lemmas 6-13 model surgery, Theorem 14, pipeline) not started.
+  - **Reports**:
+    - [specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
+    - [specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
