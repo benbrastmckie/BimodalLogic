@@ -133,7 +133,7 @@ technical_debt:
 
 ### 213. Production-scale dataset generation validation
 - **Effort**: medium (1-2 days)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Dependencies**: 210
 - **Research**: [specs/213_production_scale_dataset_validation/reports/01_team-research.md]
@@ -217,11 +217,12 @@ technical_debt:
 
 ### 205. Curate stratified evaluation benchmark (BMLogic-Bench)
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: 204
 - **Research**: [205_benchmark_curation/reports/01_benchmark-curation.md]
 - **Plan**: [205_benchmark_curation/plans/01_benchmark-curation.md]
+- **Summary**: [205_benchmark_curation/summaries/01_benchmark-curation-summary.md]
 
 **Description**: Curate a 500-1K held-out evaluation benchmark from the production dataset runs. Include: stratified sampling by difficulty tier (easy 20%, medium 40%, hard 30%, very hard 10%), balanced validity (~50/50), all 42 BX axiom instances as known-valid anchors, known non-theorems as known-invalid anchors, near-miss formulas (single-operator mutations of valid formulas). Design as "BMLogic-Bench" — the first benchmark for decidable non-classical logics. Validate that all ground-truth labels are correct via the decision procedure oracle.
 

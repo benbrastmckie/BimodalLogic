@@ -1,7 +1,7 @@
 # Implementation Plan: BMLogic-Bench Benchmark Curation
 
 - **Task**: 205 - Curate stratified evaluation benchmark (BMLogic-Bench)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 204 (production dataset generation -- completed)
 - **Research Inputs**: specs/205_benchmark_curation/reports/01_benchmark-curation.md
