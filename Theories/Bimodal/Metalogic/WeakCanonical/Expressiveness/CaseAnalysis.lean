@@ -3356,7 +3356,64 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     -- (D) Forward game at y/y' (for formula/gp at y-endpoints)
     --
     -- The core difficulty (sel_gap_ord) is solved: resp_sub(k) ≤ γ_M from the sub-game.
-    sorry
+    -- Infrastructure: full-interval forward game y/y' properties.
+    have h_fwd_0 := ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n + 1) hxy hx'y' props.h_fwd_n1
+    obtain ⟨_, _, hwin_0⟩ := h_fwd_0 (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
+    obtain ⟨p_0, hp_0⟩ := h_pt_sub
+    obtain ⟨_, _, ⟨hord_0, hgp_0, hform_0⟩⟩ := hwin_0 p_0 ⟨hp_0.1, le_trans hp_0.2 hγ_N_le_y'⟩
+    have hgp_yy' : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y') := by
+      have h := hgp_0 ⟨0 + 2, by omega⟩; simp only [game_tuple_y_eq] at h; exact h
+    have hform_yy' : ∀ A, stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu M atomMap r y A ↔
+         stavi_temporal_truth_mu N atomMap r y' A) := by
+      intro A hA; have h := hform_0 ⟨0 + 2, by omega⟩ A hA
+      simp only [game_tuple_y_eq] at h; exact h
+    have hord_xy : (x < y ↔ x' < y') ∧ (x = y ↔ x' = y') := by
+      have h := hord_0 ⟨0, by omega⟩ ⟨0 + 2, by omega⟩
+      simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+    -- Infrastructure: γ_N = y' → γ_M = y.
+    have hγ_eq_endpoint : (Sum.inr γ_N : ExtendedCarrier N atomMap r) = y' →
+        (Sum.inr γ_M : ExtendedCarrier M atomMap r) = y := by sorry
+    -- Infrastructure: γ_N < y' → carrier point in [γ_N, y'].
+    have h_pt_upper_of_lt : @LT.lt (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' →
+        ∃ (p : N.carrier), inClosedInterval (Sum.inr γ_N) y' (extendPoint p) := by sorry
+    -- Infrastructure: γ_N < y' → γ_M < y (from upper forward game).
+    have hγ_lt_of_lt : @LT.lt (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' →
+        @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr γ_M) y := by sorry
+    -- Case split on b_sp ≤ γ_M.
+    by_cases hb_le_γM : extendPoint b_sp ≤ (Sum.inr γ_M : ExtendedCarrier M atomMap r)
+    · -- Case A: b_sp ≤ γ_M. Use sub-game.
+      have hb_sp_sub : inClosedInterval x (Sum.inr γ_M) (extendPoint b_sp) :=
+        ⟨hb_sp_in.1, hb_le_γM⟩
+      obtain ⟨b_resp, hb_resp_in, hcond_sub⟩ := hwin_sub b_sp hb_sp_sub
+      obtain ⟨hord_sub, hgp_sub, hform_sub⟩ := hcond_sub
+      have hb_resp_xy : inClosedInterval x' y' (extendPoint b_resp) :=
+        ⟨hb_resp_in.1, le_trans hb_resp_in.2 hγ_N_le_y'⟩
+      have hb_resp_lt_γN : @extendPoint sig N atomMap r b_resp < Sum.inr γ_N :=
+        lt_of_le_of_ne hb_resp_in.2 (by simp [extendPoint])
+      have hb_sp_lt_γM : @extendPoint sig M atomMap r b_sp < Sum.inr γ_M :=
+        lt_of_le_of_ne hb_le_γM (by simp [extendPoint])
+      have hb_resp_lt_y' : @extendPoint sig N atomMap r b_resp < y' :=
+        lt_of_lt_of_le hb_resp_lt_γN hγ_N_le_y'
+      have hb_sp_lt_y : @extendPoint sig M atomMap r b_sp < y :=
+        lt_of_lt_of_le hb_sp_lt_γM hγ_M_in.2
+      refine ⟨b_resp, hb_resp_xy, ?_, ?_, ?_⟩
+      · -- same_order_type
+        sorry
+      · -- gap_point_agreement
+        sorry
+      · -- formula_agreement
+        sorry
+    · -- Case B: b_sp > γ_M. Use fresh upper sub-game.
+      push_neg at hb_le_γM
+      have hγ_M_lt_y : @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr γ_M) y :=
+        lt_of_lt_of_le hb_le_γM hb_sp_in.2
+      have hγ_N_lt_y' : @LT.lt (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' := by
+        rcases lt_or_eq_of_le hγ_N_le_y' with h_lt | h_eq
+        · exact h_lt
+        · exfalso; have h_eq_M := hγ_eq_endpoint h_eq; rw [h_eq_M] at hγ_M_lt_y
+          exact lt_irrefl _ hγ_M_lt_y
+      sorry
   case neg =>
     -- No carrier point in [x', γ_N]. Then x' = Sum.inr γ_N (degenerate).
     -- All a_bwd(k) = Sum.inr γ_N, d = Sum.inr γ_N, and c is a corresponding gap.
