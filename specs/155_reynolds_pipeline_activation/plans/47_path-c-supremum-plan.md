@@ -504,7 +504,7 @@ Case IV (a_n is a gap NOT defined on the left):
 
 ---
 
-### Phase 7: Transfer.lean Rewiring and Downstream Sorry Closure [NOT STARTED]
+### Phase 7: Transfer.lean Rewiring and Downstream Sorry Closure [PARTIAL]
 
 **Goal**: Wire Transfer.lean to use the game-theoretic pipeline (Theorem6 + CaseAnalysis) instead of the chronicle fallback (dd_countermodel_chronicle_discrete). This is the step that actually activates the Reynolds pipeline and eliminates succ_cofinal from the bx_completeness axiom chain. Also close any remaining mechanical sorries exposed by Phases 5-6.
 
@@ -525,12 +525,12 @@ completeness_discrete (Completeness.lean:308)
 ```
 
 **Tasks**:
-- [ ] Task 7.1: Analyze type-signature compatibility (~1-2 hours, no code changes)
-- [ ] Task 7.2: Add game pipeline imports to Transfer.lean (~5 lines)
-- [ ] Task 7.3: Implement reynolds_countermodel_discrete (~50-150 lines)
-- [ ] Task 7.4: Rewire countermodel_discrete to use game pipeline (~20-30 lines)
-- [ ] Task 7.5: Thread h_surj if needed (~30-60 lines)
-- [ ] Task 7.6: Close any remaining mechanical sorries (~30-50 lines)
+- [x] Task 7.1: Analyze type-signature compatibility (~1-2 hours, no code changes) *(completed -- identified that EF-game-to-k-equiv bridge is missing infrastructure)*
+- [x] Task 7.2: Add game pipeline imports to Transfer.lean (~5 lines) *(completed -- added Theorem6 and Mathlib.Data.Int.SuccPred imports)*
+- [x] Task 7.3: Implement reynolds_countermodel_discrete (~50-150 lines) *(deviation: altered -- implemented discrete-specific game pipeline (no_gaps_int, ghr93_inductive_step_discrete, ghr93_forward_to_backward_discrete) instead of full countermodel rewiring. ~250 lines of sorry-free infrastructure added. Full countermodel rewiring requires backward-game-to-k-equiv bridge.)*
+- [ ] Task 7.4: Rewire countermodel_discrete to use game pipeline (~20-30 lines) *(deviation: deferred -- requires backward-game-to-k-equiv bridge theorem not yet available)*
+- [ ] Task 7.5: Thread h_surj if needed (~30-60 lines) *(deviation: deferred -- depends on Task 7.4)*
+- [ ] Task 7.6: Close any remaining mechanical sorries (~30-50 lines) *(deviation: deferred -- depends on Task 7.4)*
 
 **Anti-deviation warnings**:
 - Do NOT modify Completeness.lean unless absolutely necessary (prefer adapter in Transfer.lean)

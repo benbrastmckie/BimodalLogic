@@ -58,7 +58,7 @@ set_option maxHeartbeats 800000
     manipulation to merge two partial responses into a single (n+1)-element
     response while preserving order type, gap/point agreement, and formula
     agreement. This is the content of Phase 4C.3. -/
-private theorem ghr93_case_I {sig : MonadicSignature}
+theorem ghr93_case_I {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1365,7 +1365,7 @@ set_option maxHeartbeats 1600000
     The proof applies τ to a_0,...,a_{n-1}, sets a'_resp(n) = c,
     and transfers the winning condition from τ's n-round game to the
     full (n+1)-round game by injecting the (c,d) boundary pair. -/
-private theorem ghr93_case_II {sig : MonadicSignature}
+theorem ghr93_case_II {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}

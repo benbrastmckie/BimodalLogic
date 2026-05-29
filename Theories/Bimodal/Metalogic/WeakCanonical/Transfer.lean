@@ -5,7 +5,9 @@ import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
+import Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import Bimodal.Semantics.Validity
+import Mathlib.Data.Int.SuccPred
 
 /-!
 # Z-Model Transfer for the Reflexive Canonical Model
@@ -466,6 +468,305 @@ theorem z_interval_countermodel {sig : MonadicSignature}
   intro h_truth_phi
   have h_tt_phi := (h_truth_corr φ s).mp h_truth_phi
   exact h_neg_truth h_tt_phi
+
+/-! ## Discrete Pipeline: No Gaps on Integers
+
+Integers have no Dedekind gaps (every downward-closed nonempty proper subset
+has a complement with a minimum). This means `RDefinableGap` is empty for any
+integer-based ordered monadic structure, which makes Cases III/IV of the
+EF-game inductive step vacuous. The discrete pipeline exploits this to
+produce sorry-free game-theoretic results for integer structures. -/
+
+/--
+Integers have no Dedekind gaps: every downward-closed nonempty proper
+subset of Z has a complement with a minimum element. This contradicts the
+`complement_no_min` field of `Gap`.
+
+Proof: given z in the cut and w outside, use `Nat.find` on the distance
+from z to locate the first integer outside the cut. All integers below it
+are in the cut (by minimality + downward-closedness), so it is the minimum
+of the complement.
+-/
+theorem no_gaps_int : IsEmpty (Gap Int) := by
+  constructor
+  intro g
+  apply g.complement_no_min
+  have ⟨w, hw⟩ : ∃ x, x ∉ g.cut := by
+    by_contra h; push_neg at h
+    exact g.proper (Set.eq_univ_iff_forall.mpr h)
+  obtain ⟨z, hz⟩ := g.nonempty
+  have hzw : z < w := by
+    rcases le_or_gt w z with h | h
+    · exact absurd (g.downward_closed z w hz h) hw
+    · exact h
+  classical
+  have hExists : ∃ d : ℕ, (z + (d : ℤ)) ∉ g.cut := ⟨(w - z).toNat, by
+    have h0 : (0 : ℤ) ≤ w - z := by omega
+    have : z + ↑(w - z).toNat = w := by rw [Int.toNat_of_nonneg h0]; omega
+    rw [this]; exact hw⟩
+  set d := Nat.find hExists
+  have hd_spec : (z + (d : ℤ)) ∉ g.cut := Nat.find_spec hExists
+  have hd_min : ∀ d' < d, (z + (d' : ℤ)) ∈ g.cut := by
+    intro d' hd'; exact not_not.mp (Nat.find_min hExists hd')
+  refine ⟨z + ↑d, hd_spec, ?_⟩
+  intro y hy
+  by_contra h_lt; push_neg at h_lt
+  have : y ∈ g.cut := by
+    by_cases hyz : y < z
+    · exact g.downward_closed z y hz (le_of_lt hyz)
+    · push_neg at hyz
+      have h0 : (0 : ℤ) ≤ y - z := by omega
+      have hyd : (y - z).toNat < d := by
+        have := Int.toNat_of_nonneg h0; omega
+      have hin := hd_min (y - z).toNat hyd
+      have heq : z + ↑(y - z).toNat = y := by
+        have := Int.toNat_of_nonneg h0; omega
+      rwa [heq] at hin
+  exact hy this
+
+/--
+If the carrier type has no Dedekind gaps, then there are no r-definable gaps
+for any rank r. An `RDefinableGap` is a subtype of `Gap M.carrier`, so if
+`Gap M.carrier` is empty, `RDefinableGap` is also empty.
+-/
+theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
+    (h_no_gaps : IsEmpty (Gap M.carrier)) :
+    IsEmpty (RDefinableGap M atomMap r) :=
+  ⟨fun ⟨g, _⟩ => h_no_gaps.elim g⟩
+
+/--
+When there are no r-definable gaps, every element of the extended carrier
+is a point.
+-/
+theorem all_points_of_no_gaps {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (RDefinableGap M atomMap r))
+    (e : ExtendedCarrier M atomMap r) : IsPoint e := by
+  cases e with
+  | inl x => exact ⟨x, rfl⟩
+  | inr g => exact False.elim (IsEmpty.false g)
+
+/-! ## Discrete Inductive Step (Sorry-Free)
+
+A version of `ghr93_inductive_step` that assumes the N-side structure has
+no gaps. Under this assumption, Cases III/IV (gap handling) are vacuous:
+every element of `ExtendedCarrier N atomMap r` is a point, so the
+`isPoint_or_isGap` dispatch always takes the Case II branch.
+
+This avoids the sorry at CaseAnalysis.lean:3318 (Cases III/IV gap handling)
+and produces a sorry-free result for discrete structures. -/
+
+/--
+Discrete version of the GHR93 inductive step. Assumes `IsEmpty (Gap N.carrier)`
+so that Cases III/IV are vacuous. Only uses Case I and Case II, both of which
+are sorry-free.
+-/
+theorem ghr93_inductive_step_discrete {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n r delta : Nat)
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hd : 2 ≤ delta)
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (h_no_gaps : IsEmpty (Gap N.carrier))
+    (ih : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n (r + delta)
+            (rank_embed (by omega : r ≤ r + delta) x₀')
+            (rank_embed (by omega : r ≤ r + delta) y₀')
+            (rank_embed (by omega : r ≤ r + delta) x₀)
+            (rank_embed (by omega : r ≤ r + delta) y₀))
+    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
+    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
+      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
+      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
+    ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
+  -- Unfold the backward game
+  unfold ghr93_duplicator_wins
+  intro a_bwd ha_bwd
+  -- Sort Spoiler's selections (same WLOG as ghr93_inductive_step)
+  let σ := Tuple.sort a_bwd
+  let a_sorted : Fin (n + 1) → ExtendedCarrier N atomMap r := a_bwd ∘ σ
+  have ha_sorted : ∀ i, inClosedInterval x' y' (a_sorted i) := fun i => ha_bwd (σ i)
+  have h_mono : Monotone a_sorted := Tuple.monotone_sort a_bwd
+  suffices h_sorted : ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
+      (∀ i, inClosedInterval x y (a'_resp i)) ∧
+      ∀ (b_sp : M.carrier), inClosedInterval x y (extendPoint b_sp) →
+        ∃ (b_resp : N.carrier), inClosedInterval x' y' (extendPoint b_resp) ∧
+          ghr93_winning_condition (n + 1)
+            (game_tuple x' y' a_sorted b_resp)
+            (game_tuple x y a'_resp b_sp) by
+    obtain ⟨a'_resp_s, ha'_in_s, hwin_s⟩ := h_sorted
+    refine ⟨a'_resp_s ∘ σ.symm, fun i => ha'_in_s (σ.symm i), ?_⟩
+    intro b_sp hb_sp
+    obtain ⟨b_resp, hb_resp_in, hcond_s⟩ := hwin_s b_sp hb_sp
+    refine ⟨b_resp, hb_resp_in, ?_⟩
+    have h_unsort_N : a_sorted ∘ σ.symm = a_bwd := by ext i; simp [a_sorted, Function.comp]
+    have h_perm := ghr93_winning_condition_perm a_sorted a'_resp_s b_resp b_sp
+      σ.symm hcond_s
+    rwa [h_unsort_N] at h_perm
+  -- Obtain split points and their properties
+  obtain ⟨c, d, props⟩ :=
+    obtain_split_point_props delta hxy hx'y' h_pt h_pt_M ih h_fwd h_fwd_r1 a_sorted ha_sorted
+  -- Construct rank-r IH via rank_down
+  have ih_r : ∀ {x₀ y₀ : ExtendedCarrier M atomMap r}
+            {x₀' y₀' : ExtendedCarrier N atomMap r},
+          x₀ ≤ y₀ → x₀' ≤ y₀' →
+          (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
+          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀ := by
+    intro x₀ y₀ x₀' y₀' hle hle' hpt' hfwd
+    exact ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+      (by omega : r + 2 ≤ r + delta) hle' hle (ih hle hle' hpt' hfwd)
+  -- Case split: does any selection fall strictly below d?
+  by_cases h_split : ∃ i : Fin (n + 1), a_sorted i < d
+  · -- Case I: at least one selection below d
+    exact ghr93_case_I props hd ha_sorted h_split
+  · -- Cases II-IV: all selections at or above d
+    push_neg at h_split
+    -- Key: since N has no gaps, a_n is always a point (Cases III/IV vacuous)
+    have h_no_r_gaps : IsEmpty (RDefinableGap N atomMap r) :=
+      no_r_definable_gaps_of_no_gaps N atomMap r h_no_gaps
+    have h_point : IsPoint (a_sorted ⟨n, by omega⟩) :=
+      all_points_of_no_gaps h_no_r_gaps _
+    exact ghr93_case_II props hd ha_sorted h_split h_point ih_r h_r1_univ h_mono
+
+/-! ## Discrete Forward-to-Backward Transfer (Sorry-Free)
+
+Theorem 6 specialized for discrete (gap-free) structures. Uses
+`ghr93_inductive_step_discrete` instead of `ghr93_inductive_step`,
+avoiding the Cases III/IV sorry. -/
+
+/--
+**GHR93 Theorem 6** (Forward-to-backward transfer, discrete version):
+If Duplicator wins the forward (1+3n)-round game at rank r, and N has no
+Dedekind gaps, then she wins the backward n-round game at rank r.
+
+This is sorry-free because the inductive step uses only Case I and Case II,
+both of which are axiom-clean.
+-/
+theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (n r : Nat)
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (h_no_gaps : IsEmpty (Gap N.carrier))
+    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
+    (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
+    ghr93_duplicator_wins N M atomMap n r x' y' x y := by
+  revert r x y x' y' hxy hx'y' h_pt h_pt_M h
+  induction n with
+  | zero =>
+    intro r x y x' y' hxy hx'y' h_pt h_pt_M h
+    simp only [Nat.mul_zero, Nat.add_zero] at h
+    unfold ghr93_duplicator_wins at h ⊢
+    intro a_bwd _ha_bwd
+    refine ⟨Fin.elim0, fun i => Fin.elim0 i, ?_⟩
+    intro b_sp hb_sp
+    obtain ⟨a'_resp, ha'_resp, hwin_fwd⟩ :=
+      h (fun _ : Fin 1 => extendPoint b_sp) (fun _ => hb_sp)
+    obtain ⟨p, hp⟩ := h_pt
+    obtain ⟨b_resp, _, hcond_fwd⟩ := hwin_fwd p hp
+    obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
+    have hgp1 := hgp_fwd ⟨1, by omega⟩
+    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+               show ¬(1 : Nat) = 1 + 1 from by omega,
+               show ¬(1 : Nat) = 1 + 2 from by omega, dite_false] at hgp1
+    obtain ⟨q, hq_eq⟩ := hgp1.1.mp ⟨b_sp, rfl⟩
+    have hq_in : inClosedInterval x' y' (extendPoint q) := by
+      have := ha'_resp ⟨0, by omega⟩
+      rwa [show extendPoint q = a'_resp ⟨0, by omega⟩ from hq_eq.symm]
+    refine ⟨q, hq_in, ?_⟩
+    rw [show a_bwd = Fin.elim0 from funext (fun i => Fin.elim0 i)]
+    refine ⟨?_, ?_, ?_⟩
+    · intro i j
+      rw [base_case_M_eq x y b_sp b_resp i, base_case_M_eq x y b_sp b_resp j,
+          base_case_N_eq x' y' q p a'_resp hq_eq i,
+          base_case_N_eq x' y' q p a'_resp hq_eq j]
+      exact ⟨(hord_fwd _ _).1.symm, (hord_fwd _ _).2.symm⟩
+    · intro i
+      rw [base_case_M_eq x y b_sp b_resp i,
+          base_case_N_eq x' y' q p a'_resp hq_eq i]
+      exact ⟨(hgp_fwd _).1.symm, (hgp_fwd _).2.symm⟩
+    · intro i A hA
+      rw [base_case_M_eq x y b_sp b_resp i,
+          base_case_N_eq x' y' q p a'_resp hq_eq i]
+      exact (hform_fwd _ A hA).symm
+  | succ n ih_gen =>
+    intro r x y x' y' hxy hx'y' h_pt h_pt_M h
+    have h_rounds : 1 + 3 * (n + 1) = 4 + 3 * n := by omega
+    rw [h_rounds] at h
+    have h_fwd_r1 := ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ 1 + 3 * (n + 1))
+      ((rank_embed_le (by omega : r ≤ r + 2) x y).mpr hxy)
+      ((rank_embed_le (by omega : r ≤ r + 2) x' y').mpr hx'y')
+      (h_r1_univ r hxy hx'y')
+    exact ghr93_inductive_step_discrete atomMap n r 2 (by omega) hxy hx'y' h_pt h_pt_M
+      h_no_gaps
+      (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd => by
+        obtain ⟨p_N, hp_N⟩ := hpt'
+        have hpt'_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀')
+            (rank_embed (by omega : r ≤ r + 2) y₀') (extendPoint p) :=
+          ⟨p_N, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀' y₀'
+            (extendPoint p_N)).mpr hp_N⟩
+        obtain ⟨a'_dum, _, hwin_fwd⟩ :=
+          hfwd (fun _ => x₀) (fun _ => ⟨le_refl _, hle⟩)
+        obtain ⟨b_M, hb_M, _⟩ := hwin_fwd p_N hp_N
+        have hpt_M_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀)
+            (rank_embed (by omega : r ≤ r + 2) y₀) (extendPoint p) :=
+          ⟨b_M, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀ y₀
+            (extendPoint b_M)).mpr hb_M⟩
+        have h_fwd_r2 := ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1))
+            ((rank_embed_le (by omega : r ≤ r + 2) x₀ y₀).mpr hle)
+            ((rank_embed_le (by omega : r ≤ r + 2) x₀' y₀').mpr hle')
+            (h_r1_univ r hle hle')
+        -- ih_gen takes h_r1_univ_for_n as first argument, then r, positions, etc.
+        have h_r1_n : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
+                   {x₁' y₁' : ExtendedCarrier N atomMap r'},
+                 x₁ ≤ y₁ → x₁' ≤ y₁' →
+                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
+                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
+                   (rank_embed (by omega : r' ≤ r' + 2) y₁') := by
+          intro r' x₁ y₁ x₁' y₁' hle₁ hle₁'
+          exact ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1))
+            ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle₁)
+            ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle₁')
+            (h_r1_univ r' hle₁ hle₁')
+        exact ih_gen h_r1_n (r + 2)
+          ((rank_embed_le (by omega : r ≤ r + 2) x₀ y₀).mpr hle)
+          ((rank_embed_le (by omega : r ≤ r + 2) x₀' y₀').mpr hle')
+          hpt'_r2 hpt_M_r2 h_fwd_r2)
+      h h_fwd_r1
+      (fun r' {x₁ y₁ x₁' y₁'} hle hle' =>
+        ghr93_duplicator_wins_round_mono (by omega : 4 + 3 * n ≤ 1 + 3 * (n + 1))
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle)
+          ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle')
+          (h_r1_univ r' hle hle'))
 
 /-! ## Main Theorem: countermodel_discrete -/
 
