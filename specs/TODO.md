@@ -130,11 +130,16 @@ technical_debt:
 
 ### 215. Competitive analysis and enhancement roadmap for BMLogic datasets
 - **Effort**: small (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Dependencies**: 214, 208
+- **Research**: [specs/215_dataset_competitive_analysis/reports/01_competitive-analysis.md]
+- **Plan**: [specs/215_dataset_competitive_analysis/plans/01_competitive-analysis-plan.md]
+- **Summary**: [specs/215_dataset_competitive_analysis/summaries/01_competitive-analysis-summary.md]
 
 **Description**: Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.
+
+**Completion**: Produced publication-ready competitive landscape report (data/competitive-landscape.md) covering 12 benchmarks across 13 dimensions; implemented cross-logic transfer splits (R5) with generate_splits.py and bmlogic-bench-splits.json; created MLCommons Croissant 1.0 metadata skeleton (data/croissant.json); updated data/README.md.
 
 ---
 

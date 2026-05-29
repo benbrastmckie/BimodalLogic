@@ -1173,11 +1173,43 @@
     {
       "project_number": 215,
       "project_name": "dataset_competitive_analysis",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "general",
       "description": "Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.",
       "created": "2026-05-29T22:40:00Z",
-      "last_updated": "2026-05-29T22:40:00Z"
+      "last_updated": "2026-05-29T23:59:00Z",
+      "completion_summary": "Produced publication-ready competitive landscape report (data/competitive-landscape.md) covering 12 benchmarks across 13 dimensions; implemented cross-logic transfer splits (R5) with generate_splits.py and bmlogic-bench-splits.json (727 records across 4 logic-fragment slices); created MLCommons Croissant 1.0 metadata skeleton (data/croissant.json) with 5 distributions and 3 record-set schemas; updated data/README.md with Competitive Position, Cross-Logic Splits, and Croissant Metadata sections.",
+      "session_id": "sess_1748549286_orchestrate215",
+      "researched": "2026-05-29T23:45:00Z",
+      "planned": "2026-05-29T23:55:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/215_dataset_competitive_analysis/reports/01_competitive-analysis.md",
+          "type": "research",
+          "summary": "Competitive landscape: BMLogic occupies unique niche (S5+LTL bimodal, dual certificates, 6 representations); LTLBench is closest competitor; top enhancements: NL paraphrase, c9 extension, Croissant metadata, LLM baselines"
+        },
+        {
+          "path": "specs/215_dataset_competitive_analysis/plans/01_competitive-analysis-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: competitive landscape report, cross-logic transfer splits, Croissant metadata skeleton, integration and documentation update (5 hours)"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2, 3], [4]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_competitive-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     }
   ],
   "next_project_number": 216,
