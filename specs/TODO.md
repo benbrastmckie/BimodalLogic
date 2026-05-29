@@ -136,15 +136,16 @@ technical_debt:
 
 ### 214. Dataset cleanup, standardization, and documentation
 - **Effort**: small (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Dependencies**: 204, 205
+- **Research**: [214_dataset_cleanup_documentation/reports/01_team-research.md]
 
 **Description**: Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format. Create a comprehensive data/README.md documenting each dataset. Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas.
 
 ### 213. Production-scale dataset generation validation
 - **Effort**: medium (1-2 days)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 210
 - **Research**: [specs/213_production_scale_dataset_validation/reports/01_team-research.md]
