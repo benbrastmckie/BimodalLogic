@@ -1743,26 +1743,50 @@
     {
       "project_number": 205,
       "project_name": "benchmark_curation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T18:30:31Z"
+      "last_updated": "2026-05-29T20:36:59Z",
+      "session_id": "sess_1780086634_1d476d",
+      "artifacts": [
+        {
+          "path": "specs/205_benchmark_curation/reports/01_benchmark-curation.md",
+          "type": "research_report",
+          "summary": "BMLogic-Bench research: 59K production records (3.7% valid, 93% trivial ex_falso), 42 BX axiom constructors for enrichment, hybrid Python+Lean pipeline with stratified sampling."
+        }
+      ]
     },
     {
       "project_number": 206,
       "project_name": "contrastive_pair_generation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T18:30:31Z"
+      "last_updated": "2026-05-29T20:36:59Z",
+      "session_id": "sess_1780086634_3ce58a",
+      "artifacts": [
+        {
+          "path": "specs/206_contrastive_pair_generation/reports/01_contrastive-pairs.md",
+          "type": "research_report",
+          "summary": "Contrastive pair research: 7 mutation strategies, existing swap_temporal/subst_formula infrastructure, decision procedure with countermodel extraction, recommended FormulaMutator.lean module."
+        }
+      ]
     },
     {
       "project_number": 207,
       "project_name": "multi_representation_export",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T18:30:31Z"
+      "last_updated": "2026-05-29T20:36:14Z",
+      "session_id": "sess_1780086634_783b73",
+      "artifacts": [
+        {
+          "path": "specs/207_multi_representation_export/reports/01_multi-repr-export.md",
+          "type": "research_report",
+          "summary": "Multi-representation export research: S-expression printer, prefix tokenizer (15-token vocab), PatternKey numeric features, optional GNN adjacency list. PatternKey already exported as JSON; adds vector variant. 4 core phases, 4-7 hours."
+        }
+      ]
     },
     {
       "project_number": 208,
