@@ -133,11 +133,12 @@ technical_debt:
 
 ### 203. Build formula enumerator, decider labeling, and JSON dataset export
 - **Effort**: large (3-4 weeks)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: 201 (parent task)
 - **Research**: [203_formula_enumerator_dataset_export/reports/01_team-research.md]
 - **Plan**: [203_formula_enumerator_dataset_export/plans/01_formula-enum-dataset.md]
+- **Summary**: [203_formula_enumerator_dataset_export/summaries/01_formula-enum-dataset-summary.md]
 
 **Description**: Build the Lean-side formula enumerator, decider labeling pipeline, and JSON dataset export in Automation/. Enumerate TM formulas at controlled modal/temporal depth, run the existing DecisionProcedure (decide/decideBatch) to label each as provable/unprovable with proof traces, and export the labeled dataset as JSON for downstream Python consumption. The boundary is the JSON file — everything upstream (enumeration, labeling, trace extraction, export) is pure Lean in this repo; everything downstream (tensor conversion, training) belongs in a separate harness repo. Deliverables: FormulaEnumerator.lean (bounded generation by depth/size), DatasetGenerator.lean (run decider, produce labeled tuples), JSON export with (formula, label, proof_trace, difficulty_metrics), and an evaluation benchmark of 500-1K held-out formulas. Feasibility gate: the enumerator must produce diverse non-trivial formulas (not >80% trivially propositional)
 
