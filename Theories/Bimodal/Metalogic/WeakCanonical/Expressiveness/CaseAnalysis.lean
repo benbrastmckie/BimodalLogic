@@ -3435,22 +3435,111 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
       · -- c = y. Since resp_tau(k) ∈ [c, y] = [y, y], resp_tau(k) = c.
         exact le_antisymm (hcy_eq ▸ (hresp_tau_in k).2) h_lower
     -- Now all resp_tau(k) = c = Sum.inr g_c.
-    -- Define a'_resp: all positions map to Sum.inr g_c (= c) for k < n, γ_M for k = n.
-    -- But we can also use g_c in place of γ_M (they both have formula agreement with γ_N).
-    -- Actually, let's just define a'_resp using resp_tau (which equals c = Sum.inr g_c).
-    let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
-      if h : i.val < n then resp_tau ⟨i.val, h⟩ else Sum.inr γ_M
-    have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
-      intro i; simp only [a'_resp]; split
-      case isTrue h =>
-        rw [hresp_tau_all_c]; exact ⟨props.hxc, props.hcy⟩
-      case isFalse _ => exact hγ_M_in
+    -- DEGENERATE KEY: x = c (sigma on {γ_N} × [x,c] has no carrier response).
+    have hxc_eq : x = c := by
+      rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, _, _, _⟩
+      · have sigma_r := ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
+            (by omega : r + 2 ≤ r + delta) props.hx'd props.hxc props.sigma
+        have h_sig_0 := ghr93_duplicator_wins_round_mono (by omega : 0 ≤ n)
+            props.hx'd props.hxc sigma_r
+        obtain ⟨_, _, hwin_sig0⟩ := h_sig_0 (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)
+        obtain ⟨b_sig, hb_sig_in, _⟩ := hwin_sig0 p_xc hp_xc
+        exact absurd (le_antisymm (hd_eq_γN ▸ hb_sig_in.2) (hx'_eq_γN ▸ hb_sig_in.1) :
+          (extendPoint b_sig : ExtendedCarrier N atomMap r) = Sum.inr γ_N) (by simp [extendPoint])
+      · exact hxc_eq
+    -- All M-responses = c = x (constant). Matches N-side all = γ_N = x'.
+    let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun _ => c
+    have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) :=
+      fun _ => ⟨le_of_eq hxc_eq, props.hcy⟩
     refine ⟨a'_resp, ha'_resp_in, ?_⟩
     intro b_sp hb_sp_in
-    -- In the degenerate case, all N-selections are Sum.inr γ_N = x' = d.
-    -- All M-responses (for k < n) are c = Sum.inr g_c.
-    -- The winning condition is relatively simple because most positions collapse.
-    sorry
+    -- b_sp ∈ [x, y] = [c, y], so tau applies directly.
+    have hb_sp_cy : inClosedInterval c y (extendPoint b_sp) := hxc_eq ▸ hb_sp_in
+    obtain ⟨b_resp, hb_resp_in, hcond_tau⟩ := hwin_tau b_sp hb_sp_cy
+    obtain ⟨hord_tau_d, hgp_tau_d, hform_tau_d⟩ := hcond_tau
+    have hb_resp_xy : inClosedInterval x' y' (extendPoint b_resp) :=
+      ⟨hx'_eq_γN ▸ (hd_eq_γN ▸ hb_resp_in.1), hb_resp_in.2⟩
+    refine ⟨b_resp, hb_resp_xy, ?_, ?_, ?_⟩
+    · -- same_order_type: All N-side selections = x' (= Sum.inr γ_N), all M-side = c (= x).
+      -- Extract tau orderings between the 3 distinct values: d/c, b_resp/b_sp, y'/y.
+      have h_tau_db : (d < extendPoint b_resp ↔ c < extendPoint b_sp) ∧
+          (d = extendPoint b_resp ↔ c = extendPoint b_sp) := by
+        have h := hord_tau_d ⟨0, by omega⟩ ⟨n + 1, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_b_eq] at h; exact h
+      have h_tau_dy : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
+        have h := hord_tau_d ⟨0, by omega⟩ ⟨n + 2, by omega⟩
+        simp only [game_tuple_zero_eq, game_tuple_y_eq] at h; exact h
+      have h_tau_by : (extendPoint b_resp < y' ↔ extendPoint b_sp < y) ∧
+          (extendPoint b_resp = y' ↔ extendPoint b_sp = y) := by
+        have h := hord_tau_d ⟨n + 1, by omega⟩ ⟨n + 2, by omega⟩
+        simp only [game_tuple_b_eq, game_tuple_y_eq] at h; exact h
+      -- Rewrite x' = d and x = c to use tau orderings directly.
+      -- For same_order_type_of_cases, we need 7 arguments with a = a'_resp (M), a' = a_bwd (N).
+      -- The issue is that a'_resp(k) = c doesn't unfold, so we use `change`.
+      -- Use same_order_type_of_cases. In the backward direction:
+      -- M of same_order_type_of_cases = N (our x'/y'/a_bwd/b_resp),
+      -- N of same_order_type_of_cases = M (our x/y/a'_resp/b_sp).
+      -- Rewrite x' = d and x = c to use tau orderings directly.
+      -- Use same_order_type_of_cases with explicit N/M swap for backward direction.
+      -- All orderings derive from tau (d=x', c=x) + sel=d/c identity.
+      have hxb : (x' < @extendPoint sig N atomMap r b_resp ↔ x < @extendPoint sig M atomMap r b_sp) ∧
+          (x' = @extendPoint sig N atomMap r b_resp ↔ x = @extendPoint sig M atomMap r b_sp) :=
+        hx'_eq_γN ▸ hxc_eq ▸ hd_eq_γN ▸ h_tau_db
+      have hxy : (x' < y' ↔ x < y) ∧ (x' = y' ↔ x = y) :=
+        hx'_eq_γN ▸ hxc_eq ▸ hd_eq_γN ▸ h_tau_dy
+      have hsel_x : ∀ k : Fin (n + 1),
+          (x' < a_bwd k ↔ x < a'_resp k) ∧ (x' = a_bwd k ↔ x = a'_resp k) := by
+        intro k; rw [ha_bwd_all_γN k, hx'_eq_γN, hxc_eq]
+        exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      have hsel_b : ∀ k : Fin (n + 1),
+          (@extendPoint sig N atomMap r b_resp < a_bwd k ↔
+           @extendPoint sig M atomMap r b_sp < a'_resp k) ∧
+          (@extendPoint sig N atomMap r b_resp = a_bwd k ↔
+           @extendPoint sig M atomMap r b_sp = a'_resp k) := by
+        intro k; rw [ha_bwd_all_γN k]
+        exact order_reverse (hd_eq_γN ▸ h_tau_db)
+      have hsel_y : ∀ k : Fin (n + 1),
+          (y' < a_bwd k ↔ y < a'_resp k) ∧ (y' = a_bwd k ↔ y = a'_resp k) := by
+        intro k; rw [ha_bwd_all_γN k]
+        exact order_reverse (hd_eq_γN ▸ h_tau_dy)
+      have hsel_sel : ∀ k k' : Fin (n + 1),
+          (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
+          (a_bwd k = a_bwd k' ↔ a'_resp k = a'_resp k') := by
+        intro k k'; rw [ha_bwd_all_γN k, ha_bwd_all_γN k']
+        exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      exact @same_order_type_of_cases sig N M atomMap r (n + 1) x' y' a_bwd b_resp x y a'_resp b_sp
+        hxb hxy h_tau_by hsel_x hsel_b hsel_y hsel_sel
+    · -- gap_point_agreement (backward: N first, M second)
+      exact gap_point_agreement_of_cases
+        (by rw [hx'_eq_γN]
+            show (IsPoint (Sum.inr γ_N) ↔ IsPoint x) ∧ (IsGap (Sum.inr γ_N) ↔ IsGap x)
+            rw [hxc_eq, hc_eq]
+            exact ⟨⟨fun ⟨_, hp⟩ => absurd hp (by simp), fun ⟨_, hp⟩ => absurd hp (by simp)⟩,
+                   ⟨fun _ => ⟨g_c, rfl⟩, fun _ => ⟨γ_N, rfl⟩⟩⟩)
+        ⟨⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp, rfl⟩⟩,
+         ⟨fun ⟨g, hg⟩ => absurd hg (by simp [extendPoint]),
+          fun ⟨g, hg⟩ => absurd hg (by simp [extendPoint])⟩⟩
+        (by have h := hgp_tau_d ⟨n + 2, by omega⟩
+            simp only [game_tuple_y_eq] at h; exact h)
+        (fun k => by rw [ha_bwd_all_γN k]
+                     show (IsPoint (Sum.inr γ_N) ↔ IsPoint c) ∧ (IsGap (Sum.inr γ_N) ↔ IsGap c)
+                     rw [hc_eq]
+                     exact ⟨⟨fun ⟨_, hp⟩ => absurd hp (by simp), fun ⟨_, hp⟩ => absurd hp (by simp)⟩,
+                            ⟨fun _ => ⟨g_c, rfl⟩, fun _ => ⟨γ_N, rfl⟩⟩⟩)
+    · -- formula_agreement
+      -- formula_agreement for backward direction (N is first struct, M is second)
+      -- hform_sel needs: N (a_bwd k) ↔ M (a'_resp k) = N γ_N ↔ M c
+      -- hgc_form gives: M g_c ↔ N γ_N. So we need (hgc_form).symm for N γ_N ↔ M g_c.
+      -- But a'_resp k = c, need to show/change to M c then rw hc_eq.
+      exact formula_agreement_of_cases
+        (fun A hA => by rw [hx'_eq_γN]; show stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A ↔ stavi_temporal_truth_mu M atomMap r x A; rw [hxc_eq, hc_eq]; exact (hgc_form A hA).symm)
+        (fun A hA => by have h := hform_tau_d ⟨n + 1, by omega⟩ A hA
+                        simp only [game_tuple_b_eq] at h; exact h)
+        (fun A hA => by have h := hform_tau_d ⟨n + 2, by omega⟩ A hA
+                        simp only [game_tuple_y_eq] at h; exact h)
+        (fun k A hA => by rw [ha_bwd_all_γN k]; show stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A ↔ stavi_temporal_truth_mu M atomMap r c A; rw [hc_eq]; exact (hgc_form A hA).symm)
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],
     split on whether a_n is a point (Case II) or gap (Cases III-IV). -/
