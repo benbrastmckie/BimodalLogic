@@ -374,7 +374,7 @@ Supports: `--max-complexity`, `--max-modal-depth`, `--max-temporal-depth`,
 `--max-formulas`, `--output`, `--mode`, `--include-duals`.
 -/
 def parseCLIArgs (args : List String) : CLIArgs :=
-  go args default
+  go args {}
 where
   go : List String → CLIArgs → CLIArgs
   | [], acc => acc
