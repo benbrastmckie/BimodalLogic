@@ -151,11 +151,14 @@ technical_debt:
 
 ### 208. HuggingFace dataset packaging for BMLogic-Bench
 - **Effort**: small (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-29
+- **Summary**: Created HuggingFace dataset packaging under hf-dataset/: dataset card README.md with YAML frontmatter for 4 configs (bmlogic-bench default/test, c5/c7 train, proof-steps train), CC BY 4.0 license, upload.py with --dry-run support, validate.py (all checks passing), requirements.txt, PUBLISHING.md guide, and symlinks to all 4 JSONL data files.
 - **Task Type**: general
 - **Dependencies**: 205, 207
 - **Research**: [208_huggingface_dataset_packaging/reports/01_huggingface-packaging.md]
 - **Plan**: [208_huggingface_dataset_packaging/plans/01_huggingface-packaging-plan.md]
+- **Summary Artifact**: [208_huggingface_dataset_packaging/summaries/01_huggingface-packaging-summary.md]
 
 **Description**: Package the BMLogic-Bench dataset for HuggingFace Datasets Hub publication. Create dataset_info.json metadata file, Python script to convert JSONL to Parquet format, dataset card (README.md) with usage examples and citation info, and train/val/test split validation. Target: one-line loading via `datasets.load_dataset("logos-labs/bmlogic-bench")`. Include dataset statistics, license, and benchmark description for the NeurIPS 2026 Datasets track submission.
 
