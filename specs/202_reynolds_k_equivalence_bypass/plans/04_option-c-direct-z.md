@@ -125,11 +125,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Restricted TC and BUC on Z [NOT STARTED]
+### Phase 2: Restricted TC and BUC on Z [BLOCKED]
 
 **Goal**: Prove sorry-free `restricted_temporally_coherent` and `restricted_backward_until_since_coherent` for `henkin_bfmcs_discrete`. These are the two "easier" coherence conditions.
 
 **Tasks**:
+**BLOCKER** (Phase 2):
+- **What failed**: Restricted TC requires F-resolution: `F(φ) ∈ chain(t) → ∃ s > t, φ ∈ chain(s)`. The plan claims F(φ) persists through g_content via `temp_future_derived`, but `temp_future_derived` gives `□φ → G(□φ)`, NOT `F(φ) → G(F(φ))`. The theorem `F(φ) → G(F(φ))` is semantically invalid under strict temporal ordering (counter-example: φ true only at time 1, then F(φ) true at time 0 but false at time 1). Without F-persistence, the schedule may resolve φ at a step where F(φ) has already been lost from the chain (replaced by G(¬φ) via Lindenbaum non-determinism).
+- **What was tried**: (1) Direct schedule-based resolution with g_content propagation — fails because F(φ) is not a G-formula and doesn't propagate through g_content. (2) BX12 bridge (F(φ) → U(φ,⊤)) to reduce TC to FUC — viable but FUC has the same fundamental issue. (3) BX5 self-accumulation to get enriched guard U(φ, ⊤∧U(φ,⊤)) — the enriched guard formula is also not a G-formula and doesn't propagate through g_content. (4) Backward G argument (if φ at all future chain points, derive G(φ)) — circular, requires forward_F which is what we're proving.
+- **Why it's stuck**: The schedule-based chain (g_content + Lindenbaum at each step) is fundamentally unable to guarantee F-resolution. This is the SAME obstacle that killed plans v2 and v3 and caused the original RootScopedChain.lean to be archived to the Boneyard. The Lindenbaum extension is non-deterministic and can introduce G(¬φ), permanently preventing φ from appearing in future chain points, even though F(φ) was in the original MCS. The chronicle construction avoids this by building F-resolution directly into the limit via the counterexample elimination process (C5 property), but mapping the limit's witnesses back to integers requires `succ_embed_surjective` (which has sorry via `succ_cofinal`).
+- **What is needed**: Either (a) a chain construction that builds in F-resolution (like the chronicle, but with a different surjectivity argument), or (b) a completely different proof strategy that doesn't require proving restricted TC/FUC for a syntactic chain construction (e.g., the Reynolds k-equivalence approach from plan v1, or reflexive completeness + conservative extension from task 129).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 - [ ] Prove `henkin_bfmcs_discrete_restricted_tc`: For each family `shifted_bx_fmcs N h_N s`:
   - Forward F direction: If `F(phi) in fam.mcs(t)`, need `exists s' > t, phi in fam.mcs(s')`. Since `fam.mcs(t) = int_chain N h_N (t - s)`, we have `F(phi) in int_chain(t-s)`. The schedule `schedule n` hits phi at some n >= |t-s|. At step n+1, `fwd_succ_resolves` places phi in the chain if `F(phi)` is still present. Use g_content propagation: `F(phi) in int_chain(k)` for all k >= t-s (since G(F(phi)) in int_chain(t-s) from the temp_future_derived axiom applied to F(phi)). At schedule hit n, `fwd_succ_resolves` gives `phi in int_chain(n+1)`. Convert back to fam coordinates: `s' = n+1+s`.
   - Backward P direction: Symmetric using `bwd_pred_resolves` and `schedule_surjective_above`
