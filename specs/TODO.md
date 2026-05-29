@@ -146,11 +146,12 @@ technical_debt:
 
 ### 213. Production-scale dataset generation validation
 - **Effort**: medium (1-2 days)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: 210
 - **Research**: [specs/213_production_scale_dataset_validation/reports/01_team-research.md]
 - **Plan**: [213_production_scale_dataset_validation/plans/01_production-validation-plan.md]
+- **Summary**: [specs/213_production_scale_dataset_validation/summaries/01_production-validation-summary.md]
 
 **Description**: Re-run the dataset generation pipeline at complexity 5-7 (where task 204 hit a wall due to the enumerator blowup fixed in task 210) to validate that the improved enumeration and axiom seeding produce viable training datasets at production scale. Compare results against task 204's medium and deep run baselines (medium: complexity 4, 25% valid fraction; deep: complexity 7 random-only, 1.6% valid fraction). Verify timing, formula counts, valid fractions, operator diversity, and export pipeline integrity. Identify any remaining bottlenecks, parameter tuning needs (e.g., validSeedCount for the 15% valid fraction gate), or enhancements required for production readiness.
 
