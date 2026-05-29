@@ -88,7 +88,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Henkin Chain FMCS Construction on Z [NOT STARTED]
+### Phase 1: Henkin Chain FMCS Construction on Z [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: Both the Henkin chain approach AND the direct succ_cofinal proof face the same fundamental mathematical obstacle: proving that F-formula witnesses are reachable from the succ-orbit. The Henkin chain requires simultaneously consistent F-witnesses (f_content(M) ∪ g_content(M) is NOT necessarily consistent since F doesn't distribute over conjunction). The succ_cofinal proof requires a well-founded measure for the "gap elimination" step, but all candidate measures (rational distance, stage count, limit_dom cardinality) fail because the limit domain has infinitely many points from unbounded stages.
+- **What was tried**:
+  1. Direct restricted_tc/fuc proofs avoiding surjectivity: F(phi) persists through the orbit via backward_G contrapositive, but we cannot prove the orbit reaches the chronicle's witness y without succ_cofinal.
+  2. Henkin chain with f_content + g_content seed: f_content ∪ g_content is NOT consistent (F doesn't distribute over conjunction; countermodel on Z with phi at 1, psi at 2 shows F(phi) ∧ F(psi) but not F(phi ∧ psi)).
+  3. Henkin chain with successor_deferral_seed: g_content ∪ {phi ∨ F(phi)} seed consistency under irreflexive semantics requires g_content(M) not being a subset of M (since G(phi) → phi is not valid). Existing sorry at SuccExistence.lean:749.
+  4. Dovetailing (one F-formula per step): F-persistence fails -- F(phi) at step n does NOT propagate to step n+1 through g_content because G(F(phi)) is not derivable from F(phi).
+  5. Direct succ_cofinal via pred(b) induction: pred(b) < b gives a "smaller" interval, but IsPredArchimedean is equivalent to IsSuccArchimedean (circular). No well-founded Nat measure found.
+  6. Stage-based induction (succ_reaches_dom_N): boundary case sorry at line 1285 -- orbit reaches max(dom(N)) but b > max(dom(N)), and the succ function in the limit domain might skip to points from later stages.
+- **Why it's stuck**: The gap scenario -- succ orbit converging to a limit L without reaching b -- is the fundamental obstacle. Under irreflexive strict temporal semantics, the constant-MCS scenario (all orbit points have identical MCS labels) evades all temporal axiom arguments (Z1, Prior-UZ, BX5/BX6). The construction-level argument (omega-chain counterexample enumeration should prevent gaps) requires deep interaction with the omega_chain_elim_result internals.
+- **What is needed**: One of: (a) A construction-level proof that the omega-chain cannot produce gaps (using properties of eliminate_potential_counterexample), (b) A proof that successor_deferral_seed is consistent under irreflexive semantics for general fc (not just FrameClass.Base), (c) The weak/reflexive completeness + conservative extension approach (task 129), or (d) A direct proof that f_content(M) ∪ g_content(M) is consistent when M has the discrete property.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Build a Henkin-style FMCS on Z that constructs an MCS at each integer by Lindenbaum extension, witnessing F-formulas and Until-formulas at each successor step. Prove forward_G and backward_H coherence for the chain.
 
