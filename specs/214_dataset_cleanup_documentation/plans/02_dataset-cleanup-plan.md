@@ -182,23 +182,23 @@ Phases are sequential because each builds on the file state established by the p
 
 ---
 
-### Phase 4: Create data/README.md [NOT STARTED]
+### Phase 4: Create data/README.md [COMPLETED]
 
 **Goal**: Write comprehensive documentation for the data/ directory in HuggingFace dataset card format, documenting the canonical c5/c7/bench/proof_steps inventory.
 
 **Tasks**:
-- [ ] Create `data/README.md` with YAML frontmatter (HuggingFace dataset card format)
-- [ ] Document each dataset with purpose, record count, and schema:
+- [x] Create `data/README.md` with YAML frontmatter (HuggingFace dataset card format) *(completed)*
+- [x] Document each dataset with purpose, record count, and schema:
   - bmlogic-bench.jsonl (727 records) -- benchmark evaluation set, 13-field schema
   - bmlogic-c5.jsonl (1,513 records) -- small training set, complexity 5, exhaustive, 14-field schema
   - bmlogic-c7.jsonl (49,904 records) -- large training set, complexity 7, exhaustive, 14-field schema
-  - proof_steps.jsonl (2,424 records) -- proof step records, 8-field schema
-- [ ] Document the three generation pipelines with regeneration commands
-- [ ] Include field-level schema tables for each dataset type (training 14-field, benchmark 13-field, proof-steps 8-field)
-- [ ] Document the metadata schema (common header + dataset-specific extensions)
-- [ ] Add a "Dataset Relationships" section explaining c5/c7/bench progression and that c5/c7 replaced medium/deep
-- [ ] Note file sizes, Git LFS tracking status, and ID scheme (sequential within each file, not globally unique)
-- [ ] Design record counts as "as of generation date" to handle future regeneration gracefully
+  - proof_steps.jsonl (2,424 records) -- proof step records, 8-field schema *(completed)*
+- [x] Document the three generation pipelines with regeneration commands *(completed)*
+- [x] Include field-level schema tables for each dataset type (training 14-field, benchmark 13-field, proof-steps 8-field) *(completed)*
+- [x] Document the metadata schema (common header + dataset-specific extensions) *(completed)*
+- [x] Add a "Dataset Relationships" section explaining c5/c7/bench progression and that c5/c7 replaced medium/deep *(completed)*
+- [x] Note file sizes, Git LFS tracking status, and ID scheme (sequential within each file, not globally unique) *(completed)*
+- [x] Design record counts as "as of generation date" to handle future regeneration gracefully *(completed)*
 
 **Timing**: 1 hour
 
