@@ -8,10 +8,10 @@
     {
       "project_number": 203,
       "project_name": "formula_enumerator_dataset_export",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-29T16:59:41Z",
-      "last_updated": "2026-05-29T17:41:00Z",
+      "last_updated": "2026-05-29T17:46:30Z",
       "session_id": "sess_1780076452_37bf8e",
       "researched": "2026-05-29T17:39:33Z",
       "next_artifact_number": 2,
@@ -20,6 +20,11 @@
           "path": "specs/203_formula_enumerator_dataset_export/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/203_formula_enumerator_dataset_export/plans/01_formula-enum-dataset.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for formula enumerator, decider labeling pipeline, and JSONL dataset export (28 hours total)"
         }
       ]
     },
@@ -51,7 +56,24 @@
         "complexity": "complex",
         "research_integrated": true,
         "plan_version": 2,
-        "dependency_waves": [[1], [2], [3, 4], [5], [6]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_team-research.md",
