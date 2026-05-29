@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Decidability.DecisionProcedure
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.FormulaEnumerator
+import Bimodal.Automation.DataExport
 
 /-!
 # Dataset Generator: Decider Integration and ProofTrace Extraction
@@ -42,6 +43,7 @@ namespace Bimodal.Automation
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Decidability
+open Bimodal.Automation.DataExport
 
 /--
 Simplified proof trace extracted from a DerivationTree.
@@ -281,14 +283,37 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       patternKey := patternKey
     }
   | .timeout =>
-    return {
-      formula := φ
-      label := .timeout
-      proofTrace := none
-      countermodel := none
-      metrics := metrics
-      patternKey := patternKey
-    }
+    -- Retry with decideOptimized (uses IDDFS first, then full tableau)
+    let retryResult := decideOptimized φ
+    match retryResult with
+    | .valid proof =>
+      let trace := extractProofTrace proof
+      return {
+        formula := φ
+        label := .valid
+        proofTrace := some trace
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+      }
+    | .invalid cm =>
+      return {
+        formula := φ
+        label := .invalid
+        proofTrace := none
+        countermodel := some cm
+        metrics := metrics
+        patternKey := patternKey
+      }
+    | .timeout =>
+      return {
+        formula := φ
+        label := .timeout
+        proofTrace := none
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+      }
 
 /--
 Label a batch of formulas with progress reporting.
@@ -356,5 +381,91 @@ def BatchStats.display (s : BatchStats) : String :=
   s!"  Invalid: {s.invalidCount}\n" ++
   s!"  Timeout: {s.timeoutCount} ({timeoutRate}%)\n" ++
   s!"  Avg decision time: {s.avgTimeMs}ms"
+
+/-!
+## JSON Serialization for Phase 3 API
+
+These methods provide direct JSON serialization on `FormulaLabel` and
+`LabeledFormula`, using the primitives from `DataExport.lean`.
+-/
+
+/--
+Serialize a `FormulaLabel` to a JSON string value.
+
+- `.valid` → `"valid"`
+- `.invalid` → `"invalid"`
+- `.timeout` → `"timeout"`
+-/
+def FormulaLabel.toJson : FormulaLabel → String
+  | .valid => "\"valid\""
+  | .invalid => "\"invalid\""
+  | .timeout => "\"timeout\""
+
+/--
+Serialize a `ProofTrace` to a JSON object string.
+
+Example:
+```json
+{"height": 2, "axioms_used": ["modal_t"], "rules_applied": ["modus_ponens"]}
+```
+-/
+def ProofTrace.toJson (pt : ProofTrace) : String :=
+  let axiomsArr := listToJsonArray (pt.axioms_used.map fun s =>
+    "\"" ++ escapeJsonString s ++ "\"")
+  let rulesArr := listToJsonArray (pt.rules_applied.map fun s =>
+    "\"" ++ escapeJsonString s ++ "\"")
+  "{\"height\": " ++ toString pt.height
+  ++ ", \"axioms_used\": " ++ axiomsArr
+  ++ ", \"rules_applied\": " ++ rulesArr
+  ++ "}"
+
+/--
+Serialize a `DifficultyMetrics` to a JSON object string.
+-/
+def DifficultyMetrics.toJson (dm : DifficultyMetrics) : String :=
+  "{\"complexity\": " ++ toString dm.complexity
+  ++ ", \"modalDepth\": " ++ toString dm.modalDepth
+  ++ ", \"temporalDepth\": " ++ toString dm.temporalDepth
+  ++ ", \"impCount\": " ++ toString dm.impCount
+  ++ ", \"atomCount\": " ++ toString dm.atomCount
+  ++ ", \"decisionTimeMs\": " ++ toString dm.decisionTimeMs
+  ++ ", \"difficultyTier\": \"" ++ escapeJsonString dm.difficultyTier ++ "\""
+  ++ "}"
+
+/--
+Serialize a `LabeledFormula` to a complete JSON object string.
+
+Produces:
+```json
+{
+  "formula": <Formula.toJson>,
+  "formula_string": "<Formula.prettyPrint>",
+  "features": <PatternKey.toJson>,
+  "decision": "valid"|"invalid"|"timeout",
+  "proof": <proofMetricsToJson> or null,
+  "countermodel": <SimpleCountermodel.toJson> or null,
+  "metrics": <DifficultyMetrics.toJson>
+}
+```
+
+For valid formulas, the `"proof"` field includes height and rule profile
+computed via `walkDerivationTree` from `DataExport.lean`. The proof trace
+(axiom names, rule names) is included separately.
+-/
+def LabeledFormula.toJson (lf : LabeledFormula) : String :=
+  let proofStr := match lf.proofTrace with
+    | none => "null"
+    | some pt => pt.toJson
+  let cmStr := match lf.countermodel with
+    | none => "null"
+    | some cm => cm.toJson
+  "{\"formula\": " ++ lf.formula.toJson
+  ++ ", \"formula_string\": \"" ++ escapeJsonString lf.formula.prettyPrint ++ "\""
+  ++ ", \"features\": " ++ lf.patternKey.toJson
+  ++ ", \"decision\": " ++ lf.label.toJson
+  ++ ", \"proof\": " ++ proofStr
+  ++ ", \"countermodel\": " ++ cmStr
+  ++ ", \"metrics\": " ++ lf.metrics.toJson
+  ++ "}"
 
 end Bimodal.Automation
