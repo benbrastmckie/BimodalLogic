@@ -8,6 +8,7 @@ import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.DatasetExport
+import Bimodal.Automation.EnrichedCountermodel
 
 /-!
 # Bimodal.Automation - Proof Automation
