@@ -133,6 +133,56 @@ def _root_.Bimodal.Syntax.Formula.prettyPrint : Formula → String
   | .untl φ ψ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
   | .snce φ ψ => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
 
+/--
+Serialize a `Formula` to an S-expression string.
+
+Canonical parenthesized prefix notation using constructor names as heads:
+- `atom a` → `(atom "p")` or `(atom "p" 3)` if `fresh_index = some 3`
+- `bot` → `bot`
+- `imp φ ψ` → `(imp <φ> <ψ>)`
+- `box φ` → `(box <φ>)`
+- `untl φ ψ` → `(untl <φ> <ψ>)`
+- `snce φ ψ` → `(snce <φ> <ψ>)`
+-/
+def _root_.Bimodal.Syntax.Formula.toSExpr : Formula → String
+  | .atom a   =>
+    let idx := match a.fresh_index with
+      | none => ""
+      | some n => " " ++ toString n
+    "(atom \"" ++ escapeJsonString a.base ++ "\"" ++ idx ++ ")"
+  | .bot      => "bot"
+  | .imp φ ψ  => "(imp " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .box φ    => "(box " ++ φ.toSExpr ++ ")"
+  | .untl φ ψ => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .snce φ ψ => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+
+/--
+Tokenize a `Formula` into a prefix-notation (Polish notation) token list.
+
+Operator tokens: `ATOM`, `BOT`, `IMP`, `BOX`, `UNTL`, `SNCE`.
+Atom base names appear as value tokens immediately after `ATOM`.
+
+Examples:
+- `p → q` → `["IMP", "ATOM", "p", "ATOM", "q"]`
+- `□p` → `["BOX", "ATOM", "p"]`
+- `U(p, q)` → `["UNTL", "ATOM", "p", "ATOM", "q"]`
+-/
+def _root_.Bimodal.Syntax.Formula.tokenize : Formula → List String
+  | .atom a   => ["ATOM", a.base]
+  | .bot      => ["BOT"]
+  | .imp φ ψ  => "IMP" :: (φ.tokenize ++ ψ.tokenize)
+  | .box φ    => "BOX" :: φ.tokenize
+  | .untl φ ψ => "UNTL" :: (φ.tokenize ++ ψ.tokenize)
+  | .snce φ ψ => "SNCE" :: (φ.tokenize ++ ψ.tokenize)
+
+/--
+Serialize a list of string tokens as a JSON array of quoted strings.
+
+Example: `["IMP", "ATOM", "p"]` → `["IMP", "ATOM", "p"]`
+-/
+def tokenListToJson (tokens : List String) : String :=
+  listToJsonArray (tokens.map fun t => "\"" ++ escapeJsonString t ++ "\"")
+
 /-!
 ## GoalCategory Serialization
 -/
@@ -169,6 +219,40 @@ def _root_.Bimodal.Automation.PatternKey.toJson (pk : PatternKey) : String :=
   ++ ", \"complexity\": " ++ toString pk.complexity
   ++ ", \"topOperator\": " ++ pk.topOperator.toJson
   ++ "}"
+
+/--
+Map a `GoalCategory` to a numeric ID for feature vector encoding.
+
+- `Atom` = 0, `Bottom` = 1, `Implication` = 2, `Box` = 3,
+  `AllPast` = 4, `AllFuture` = 5, `Until` = 6, `Since` = 7
+-/
+def _root_.Bimodal.Automation.GoalCategory.toNat : GoalCategory → Nat
+  | .Atom        => 0
+  | .Bottom      => 1
+  | .Implication => 2
+  | .Box         => 3
+  | .AllPast     => 4
+  | .AllFuture   => 5
+  | .Until       => 6
+  | .Since       => 7
+
+/--
+Extract a flat numeric feature vector from a `PatternKey`.
+
+The vector has 5 elements:
+`[modalDepth, temporalDepth, impCount, complexity, topOperator.toNat]`
+-/
+def _root_.Bimodal.Automation.PatternKey.toFeatureVector (pk : PatternKey) : List Nat :=
+  [pk.modalDepth, pk.temporalDepth, pk.impCount, pk.complexity, pk.topOperator.toNat]
+
+/--
+Serialize a `PatternKey` feature vector as a JSON array of integers.
+
+Example: `[1, 0, 1, 3, 2]` for modalDepth=1, temporalDepth=0, impCount=1,
+complexity=3, topOperator=Implication.
+-/
+def _root_.Bimodal.Automation.PatternKey.featureVectorToJson (pk : PatternKey) : String :=
+  listToJsonArray (pk.toFeatureVector.map toString)
 
 /-!
 ## SimpleCountermodel Serialization

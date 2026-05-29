@@ -1,7 +1,7 @@
 # Implementation Plan: Multi-Representation Formula Export
 
 - **Task**: 207 - Multi-representation formula export
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: Task 203 (completed)
 - **Research Inputs**: specs/207_multi_representation_export/reports/01_multi-repr-export.md
@@ -62,15 +62,15 @@ No specific ROADMAP.md items are advanced by this task. This is a dataset toolin
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: S-Expression Printer [NOT STARTED]
+### Phase 1: S-Expression Printer [COMPLETED]
 
 **Goal**: Add `Formula.toSExpr` to DataExport.lean for canonical S-expression serialization of formulas.
 
 **Tasks**:
-- [ ] Add `Formula.toSExpr : Formula -> String` as a recursive function on the 6 constructors
-- [ ] Handle `fresh_index` in atom serialization (append index when present)
-- [ ] Use `escapeJsonString` for atom base names (consistent with existing serialization)
-- [ ] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
+- [x] Add `Formula.toSExpr : Formula -> String` as a recursive function on the 6 constructors
+- [x] Handle `fresh_index` in atom serialization (append index when present)
+- [x] Use `escapeJsonString` for atom base names (consistent with existing serialization)
+- [x] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
 
 **Timing**: 0.5 hours
 
@@ -85,15 +85,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Tokenizer [NOT STARTED]
+### Phase 2: Tokenizer [COMPLETED]
 
 **Goal**: Add `Formula.tokenize` to DataExport.lean for prefix-notation token list generation.
 
 **Tasks**:
-- [ ] Add `Formula.tokenize : Formula -> List String` as a recursive function on the 6 constructors
-- [ ] Add `tokenListToJson : List String -> String` helper that wraps tokens as a JSON array of quoted strings
-- [ ] Token vocabulary: `ATOM`, `BOT`, `IMP`, `BOX`, `UNTL`, `SNCE` as operator tokens; atom base names as value tokens
-- [ ] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
+- [x] Add `Formula.tokenize : Formula -> List String` as a recursive function on the 6 constructors
+- [x] Add `tokenListToJson : List String -> String` helper that wraps tokens as a JSON array of quoted strings
+- [x] Token vocabulary: `ATOM`, `BOT`, `IMP`, `BOX`, `UNTL`, `SNCE` as operator tokens; atom base names as value tokens
+- [x] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
 
 **Timing**: 0.5 hours
 
@@ -108,15 +108,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Pattern Feature Vector [NOT STARTED]
+### Phase 3: Pattern Feature Vector [COMPLETED]
 
 **Goal**: Add `GoalCategory.toNat` and `PatternKey.toFeatureVector` to DataExport.lean for numeric feature export.
 
 **Tasks**:
-- [ ] Add `GoalCategory.toNat : GoalCategory -> Nat` mapping all 8 variants to numeric IDs (0-7)
-- [ ] Add `PatternKey.toFeatureVector : PatternKey -> List Nat` extracting the 5 numeric fields plus the `toNat`-encoded top operator
-- [ ] Add `PatternKey.featureVectorToJson : PatternKey -> String` serializing the vector as a JSON array of integers
-- [ ] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
+- [x] Add `GoalCategory.toNat : GoalCategory -> Nat` mapping all 8 variants to numeric IDs (0-7)
+- [x] Add `PatternKey.toFeatureVector : PatternKey -> List Nat` extracting the 5 numeric fields plus the `toNat`-encoded top operator
+- [x] Add `PatternKey.featureVectorToJson : PatternKey -> String` serializing the vector as a JSON array of integers
+- [x] Verify the function compiles with `lake build Bimodal.Automation.DataExport`
 
 **Timing**: 0.5 hours
 
