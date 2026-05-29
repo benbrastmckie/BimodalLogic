@@ -1,0 +1,26 @@
+{
+  "phase": 2,
+  "phase_name": "Install Git LFS and Rewrite .gitignore",
+  "started_at": "2026-05-29T00:06:00Z",
+  "last_updated": "2026-05-29T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Check if Git LFS is available and install if needed", "status": "done", "note": "Installed via nix profile install nixpkgs#git-lfs (version 3.7.1)"},
+    {"id": 2, "description": "Initialize Git LFS in the repository", "status": "done", "note": "Used --local flag since global config is read-only; git lfs install --local"},
+    {"id": 3, "description": "Track large JSONL files with Git LFS: bmlogic-c7.jsonl and proof_steps.jsonl", "status": "done"},
+    {"id": 4, "description": "Rewrite data/.gitignore to list specific intermediate filenames", "status": "done"},
+    {"id": 5, "description": "Create or update .gitattributes with LFS tracking patterns", "status": "done"},
+    {"id": 6, "description": "Verify git status shows final datasets as trackable (not ignored)", "status": "done"}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.1",
+      "description": "Initialize Git LFS with git lfs install",
+      "type": "altered",
+      "reason": "Global git config is read-only; used --local flag to initialize LFS for this repo only",
+      "annotation": "*(deviation: altered — used --local flag due to read-only global config)*"
+    }
+  ]
+}

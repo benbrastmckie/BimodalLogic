@@ -117,17 +117,17 @@ Phases are sequential because each builds on the file state established by the p
 
 ---
 
-### Phase 2: Install Git LFS and Rewrite .gitignore [NOT STARTED]
+### Phase 2: Install Git LFS and Rewrite .gitignore [COMPLETED]
 
 **Goal**: Set up Git LFS for large files and rewrite .gitignore to track final datasets while excluding only regenerable intermediates by name.
 
 **Tasks**:
-- [ ] Check if Git LFS is available (`git lfs version`) and install if needed (e.g., `nix-env -iA nixpkgs.git-lfs` or system package manager)
-- [ ] Initialize Git LFS in the repository (`git lfs install`)
-- [ ] Track large JSONL files with Git LFS: `bmlogic-c7.jsonl` (~53MB) and `proof_steps.jsonl` (~15MB)
-- [ ] Rewrite `data/.gitignore` to list specific intermediate filenames to ignore (not blanket patterns): axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl, test*.jsonl, test*_metadata.json
-- [ ] Create or update `.gitattributes` with LFS tracking patterns for large datasets
-- [ ] Verify `git status` shows final datasets as trackable (not ignored)
+- [x] Check if Git LFS is available (`git lfs version`) and install if needed (e.g., `nix-env -iA nixpkgs.git-lfs` or system package manager) *(completed: installed via nix profile, version 3.7.1)*
+- [x] Initialize Git LFS in the repository (`git lfs install`) *(deviation: altered — used --local flag due to read-only global config)*
+- [x] Track large JSONL files with Git LFS: `bmlogic-c7.jsonl` (~53MB) and `proof_steps.jsonl` (~15MB) *(completed)*
+- [x] Rewrite `data/.gitignore` to list specific intermediate filenames to ignore (not blanket patterns): axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl, test*.jsonl, test*_metadata.json *(completed)*
+- [x] Create or update `.gitattributes` with LFS tracking patterns for large datasets *(completed)*
+- [x] Verify `git status` shows final datasets as trackable (not ignored) *(completed)*
 
 **Timing**: 0.75 hours
 
