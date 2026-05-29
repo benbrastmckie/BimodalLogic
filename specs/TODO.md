@@ -128,6 +128,16 @@ technical_debt:
 
 ## Tasks
 
+### 215. Competitive analysis and enhancement roadmap for BMLogic datasets
+- **Effort**: small (4-6 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Dependencies**: 214, 208
+
+**Description**: Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.
+
+---
+
 ### 214. Dataset cleanup, standardization, and documentation
 - **Effort**: small (4-6 hours)
 - **Status**: [COMPLETED]

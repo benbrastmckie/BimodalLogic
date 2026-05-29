@@ -1169,9 +1169,18 @@
         }
       ],
       "completion_summary": "Cleaned up data/ directory: updated 4 script defaults from medium/deep to c5/c7, deleted 11 superseded/intermediate/test files, installed Git LFS for large datasets, rewrote .gitignore, enriched c5/c7 metadata with common headers, created proof_steps_metadata.json, wrote comprehensive data/README.md, and validated all dataset schemas with zero errors."
+    },
+    {
+      "project_number": 215,
+      "project_name": "dataset_competitive_analysis",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.",
+      "created": "2026-05-29T22:40:00Z",
+      "last_updated": "2026-05-29T22:40:00Z"
     }
   ],
-  "next_project_number": 215,
+  "next_project_number": 216,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
