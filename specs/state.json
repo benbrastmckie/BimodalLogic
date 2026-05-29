@@ -1801,11 +1801,11 @@
     {
       "project_number": 207,
       "project_name": "multi_representation_export",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T20:49:35Z",
-      "session_id": "sess_1780087535_9afaae",
+      "last_updated": "2026-05-29T21:02:31Z",
+      "session_id": "sess_1780088191_17e016_c",
       "artifacts": [
         {
           "path": "specs/207_multi_representation_export/reports/01_multi-repr-export.md",
@@ -1816,8 +1816,14 @@
           "path": "specs/207_multi_representation_export/plans/01_multi-repr-export.md",
           "type": "plan",
           "summary": "5-phase plan: S-expression printer, tokenizer, numeric feature vector, DatasetRecord integration, build verification. 4 hours, medium complexity."
+        },
+        {
+          "path": "specs/207_multi_representation_export/summaries/01_multi-repr-export-summary.md",
+          "type": "summary",
+          "summary": "Added toSExpr, tokenize, toFeatureVector to DataExport.lean; integrated formula_sexpr, formula_tokens, pattern_features into DatasetRecord JSONL output."
         }
-      ]
+      ],
+      "completion_summary": "Added toSExpr, tokenize, and toFeatureVector serialization to DataExport.lean. Integrated formula_sexpr, formula_tokens, pattern_features into DatasetRecord JSONL output. Lake build passes (1678 jobs). Zero sorries."
     },
     {
       "project_number": 208,

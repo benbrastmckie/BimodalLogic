@@ -1,7 +1,7 @@
 # Implementation Plan: Multi-Representation Formula Export
 
 - **Task**: 207 - Multi-representation formula export
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 203 (completed)
 - **Research Inputs**: specs/207_multi_representation_export/reports/01_multi-repr-export.md

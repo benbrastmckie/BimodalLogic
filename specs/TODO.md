@@ -194,11 +194,12 @@ technical_debt:
 
 ### 207. Multi-representation formula export
 - **Effort**: small (6-8 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [207_multi_representation_export/reports/01_multi-repr-export.md]
 - **Plan**: [207_multi_representation_export/plans/01_multi-repr-export.md]
+- **Summary**: [207_multi_representation_export/summaries/01_multi-repr-export-summary.md]
 
 **Description**: Extend DatasetExport.lean to export formulas in multiple representations simultaneously: S-expression string, token list (for transformer models), AST tree (for GNN models), and PatternKey numeric features (for value estimator). Currently only formula_str and formula_ast are exported. The multi-representation export enables different ML model architectures to consume the same dataset without Python-side preprocessing. Add S-expression printer, tokenizer, and PatternKey export to the JSONL records.
 
