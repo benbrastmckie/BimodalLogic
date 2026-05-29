@@ -504,7 +504,7 @@ Case IV (a_n is a gap NOT defined on the left):
 
 ---
 
-### Phase 7: Transfer.lean Rewiring and Downstream Sorry Closure [PARTIAL]
+### Phase 7: Transfer.lean Rewiring and Downstream Sorry Closure [BLOCKED]
 
 **Goal**: Wire Transfer.lean to use the game-theoretic pipeline (Theorem6 + CaseAnalysis) instead of the chronicle fallback (dd_countermodel_chronicle_discrete). This is the step that actually activates the Reynolds pipeline and eliminates succ_cofinal from the bx_completeness axiom chain. Also close any remaining mechanical sorries exposed by Phases 5-6.
 
