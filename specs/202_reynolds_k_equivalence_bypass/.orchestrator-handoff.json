@@ -1,12 +1,13 @@
 {
-  "status": "partial",
-  "summary": "Closed 2 of 4 sorry sites on critical path: Prior-UZ/SZ discharge in chronicle_is_good_direct eliminated via effectiveFormula approach; no_gaps_discrete (Reynolds Theorem 14 model surgery) and TaskFrame packaging remain as the 2 blocking sorry sites",
+  "status": "blocked",
+  "summary": "Exhaustive analysis of remaining sorry sites reveals two fundamentally coupled blockers: no_gaps_discrete requires ~700 lines of Reynolds model surgery (Phases 2-3), and TaskFrame packaging requires either succ_cofinal or a novel construction avoiding the box modality tension with ShiftClosed histories.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "no_gaps_discrete (GoodStructures.lean:842) requires full Reynolds model surgery (Lemmas 6-13, ~700-950 lines) or alternative proof of succ_cofinal",
-    "countermodel_discrete_reynolds packaging (Transfer.lean:1081) requires TaskFrame truth correspondence, blocked by singleton WorldState limitation"
+    "no_gaps_discrete (GoodStructures.lean:842): Requires full Reynolds model surgery argument (Lemmas 6-13, ~700 lines) which is not yet started (Phases 2-3). Cannot be bypassed without IsSuccArchimedean.",
+    "TaskFrame packaging (Transfer.lean:1081): Cannot construct TaskFrame with position-dependent atoms + ShiftClosed Omega + multi-family box quantification without succ_embed_surjective. Six alternative approaches explored and ruled out.",
+    "succ_cofinal (ChronicleToCountermodel.lean:1508): The alternative path via countermodel_discrete_enriched is blocked by this sorry. Gap elimination proof stuck at construction-level argument."
   ],
-  "continuation_context": "Phase 1 completed (PriorExpressiveness.lean, 395 lines). Phase 4 Task 4.3 completed: defined effectiveFormula and chronicle_temporal_truth_effective in Transfer.lean to prove temporal_truth corresponds to MCS membership of effective formula regardless of section property; proved chronicle_semantic_prior_UZ/SZ; made Prior-UZ/SZ explicit parameters of chronicle_is_good_direct. Remaining: (1) Prove no_gaps_discrete via Reynolds Lemmas 6-13 model surgery in ReynoldsNoGaps.lean, OR prove succ_cofinal to enable archimedean bypass. (2) Close TaskFrame packaging in Transfer.lean. See handoffs/phase-4-handoff-20260529.md for detailed analysis of approaches.",
-  "next_action_hint": "continue_implement"
+  "continuation_context": "Phase 1 completed (PriorExpressiveness.lean, 395 lines). Phase 4 Task 4.3 completed (Prior-UZ/SZ discharge in ShiftAndGlue.lean/Transfer.lean). All analysis documented in handoffs/phase-4-5-handoff-20260529b.md. The plan should be revised: either (a) commit to implementing Phases 2-3 (Reynolds model surgery, ~700 lines, 20+ hours) and finding a novel Phase 5 construction, or (b) research alternative approaches to succ_cofinal, or (c) research hybrid approaches where no_gaps_discrete enables succ_embed_surjective.",
+  "next_action_hint": "revise_plan"
 }

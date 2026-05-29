@@ -230,7 +230,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Theorem 14 + Close `no_gaps_discrete` [PARTIAL]
+### Phase 4: Theorem 14 + Close `no_gaps_discrete` [BLOCKED]
 
 **Goal**: Prove Theorem 14 (no gaps in contemporaneous equivalence classes) and close the `no_gaps_discrete` sorry in GoodStructures.lean. Also close the secondary sorries in `chronicle_is_good_direct` (semantic Prior hypothesis discharge).
 
@@ -239,6 +239,16 @@ Phases within the same wave can execute in parallel.
 **Proof Strategy**: Theorem 14 follows from `no_bad_points` (Lemma 13): if some ~M-class ended at a gap, then R would hold at points of that class, making those points bad -- contradiction. Close `no_gaps_discrete` with `theorem_14`. Discharge the semantic Prior-UZ/SZ hypotheses in `chronicle_is_good_direct` by threading the section property from the call site.
 
 **Tasks**:
+**BLOCKER** (Phase 4):
+- **What failed**: Tasks 4.1-4.2 require proving `no_gaps_discrete` (Reynolds Theorem 14). This theorem states that in a discrete Prior structure without endpoints, if two points are not contemporaneously equivalent, there must be a "clean break" at a successor boundary. Combined with `no_boundary_at_successor`, this gives a contradiction, proving `one_class`.
+- **What was tried**: 
+  1. Direct proof by well-ordering of the non-equivalent set S: requires `IsSuccArchimedean` (circular)
+  2. Using Prior-UZ/SZ to find a "first" non-equivalent point: requires expressing contemp_equiv as a temporal formula (needs Reynolds expressive completeness from Phase 2)
+  3. Bypassing via archimedean path: chronicle has `domain_succ_archimedean` field but it inherits sorry from `succ_cofinal`
+- **Why it's stuck**: The proof of `no_gaps_discrete` requires the full Reynolds model surgery argument (Phases 2-3: Lemmas 6-13, ~700 lines) which is the standard/only known proof for non-archimedean discrete Prior structures. Without Phase 2-3 complete, Phase 4 cannot proceed.
+- **What is needed**: Implement Phases 2-3 (gap formula R, R-interval properties, model surgery), then Phase 4 becomes straightforward (Theorem 14 follows from `no_bad_points` via Lemma 13).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 - [ ] **Task 4.1**: Prove `theorem_14` -- no gaps in contemporaneous equivalence on Prior structures (~60 lines)
   ```lean
   theorem theorem_14 {sig : MonadicSignature}
@@ -275,7 +285,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Chronicle-Derived TaskFrame and Pipeline Completion [NOT STARTED]
+### Phase 5: Chronicle-Derived TaskFrame and Pipeline Completion [BLOCKED]
 
 **Goal**: Build a TaskFrame whose world-histories come from the chronicle's BFMCS families, prove the full truth correspondence between `truth_at` and `temporal_truth` (including box subformulas), close the `countermodel_discrete_reynolds` sorry, rewire `completeness_discrete`, and verify the full project builds sorry-free for `completeness_discrete`.
 
@@ -339,6 +349,19 @@ The fundamental resolution is that `h_truth_corr` (the truth correspondence hypo
 The key insight: `modal_forward` and `modal_backward` in the BFMCS are sorry-free. They directly give the biconditional between "box psi in eval_family.mcs(t)" and "psi in ALL families.mcs(t)". This is exactly what makes the box case of the truth correspondence work with multi-history Omega.
 
 **Critical dependency**: The BFMCS used here is `cantor_bfmcs_discrete`, which is sorry-free (report 07 confirms this). The sorry in the old pipeline entered through the coherence conditions (`restricted_tc`, `restricted_fuc`), which are NOT needed for the TaskFrame construction -- they were needed for the old `dd_countermodel_chronicle_discrete` path. The chronicle-derived TaskFrame only needs `modal_forward`/`modal_backward` (sorry-free) and the chronicle's MCS membership (sorry-free via `chronicle_temporal_truth`).
+
+**BLOCKER** (Phase 5):
+- **What failed**: The TaskFrame packaging at Transfer.lean:1081 requires a truth correspondence between `truth_at` (TaskFrame semantics) and `temporal_truth` (monadic FO semantics). The box modality creates a fundamental mismatch.
+- **What was tried**:
+  1. **Unit WorldState / singleton Omega**: Box becomes transparent (`truth_at (.box psi) = truth_at psi`), but atoms are position-independent (cannot match position-dependent `temporal_truth`). Ruled out.
+  2. **WorldState = Z (time-encoding)**: Atoms become position-dependent (correct), but box is still transparent with singleton Omega. And task_rel constraints prevent multi-family Omega.
+  3. **WorldState = Z x FamilyIndex**: Position-dependent atoms + multi-family box. BUT `ShiftClosed` requirement forces inclusion of time-shifted histories, making box quantify over time shifts AND families (wrong).
+  4. **WorldState = FamilyIndex (constant states)**: ShiftClosed is satisfied (time-shift = identity for constant states), and box quantifies over families. BUT valuation is position-independent (same fundamental atom problem).
+  5. **Chronicle-derived TaskFrame (plan's Phase 5 design)**: Uses BFMCS families for multi-history Omega with WorldState = FMCS family. The valuation `valuation f p := (.atom p) in family(f).mcs(t)` needs to depend on time t, but TaskModel.valuation is time-independent. The parametric canonical model approach resolves this by having WorldState = MCS (which carries position information indirectly through the history's states mapping), but it requires `succ_embed_surjective` for Until/Since coherence.
+  6. **Modified Z-interval predicates**: Define Z' with box predicates matching recursive evaluation. But k-equivalence with chronicle is lost.
+- **Why it's stuck**: The fundamental tension is between three requirements: (a) position-dependent atom truth, (b) ShiftClosed Omega, (c) multi-family box quantification. The parametric canonical model approach resolves all three but requires `succ_embed_surjective` (sorry via `succ_cofinal`). No alternative construction has been found that avoids this dependency.
+- **What is needed**: EITHER (i) prove `succ_cofinal` (enabling the parametric canonical model path via `countermodel_discrete_enriched`), OR (ii) find a novel TaskFrame construction that satisfies all three requirements without `succ_embed_surjective`, OR (iii) complete Phases 2-4 (`no_gaps_discrete`) which may enable a new construction argument.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 
