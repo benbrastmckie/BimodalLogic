@@ -75,8 +75,11 @@ Project-wide research documents:
 
 - [README.md](research/README.md) - Research documentation overview
 - [BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal Logic foundations
+- [NONCOMPUTABLE.md](research/NONCOMPUTABLE.md) - The `noncomputable` keyword: comprehensive analysis
+- [DEDUCTION_THEOREM_NECESSITY.md](research/DEDUCTION_THEOREM_NECESSITY.md) - Why the deduction theorem must be noncomputable
 - [DUAL_VERIFICATION.md](research/DUAL_VERIFICATION.md) - RL training architecture design
 - [PROOF_LIBRARY_DESIGN.md](research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
+- [PROPERTY_BASED_TESTING_LEAN4.md](research/PROPERTY_BASED_TESTING_LEAN4.md) - Property-based testing research
 
 > **Theory-specific research**: See [Theories/Bimodal/docs/research/](../Theories/Bimodal/docs/research/).
 
@@ -101,6 +104,8 @@ Project-wide status and tracking:
 Developer standards, conventions, and contribution workflow:
 
 - [README.md](development/README.md) - Directory overview and reading order
+- [BENCHMARKING_GUIDE.md](development/BENCHMARKING_GUIDE.md) - Performance benchmarking and profiling guide
+- [CI_CD_PROCESS.md](development/CI_CD_PROCESS.md) - Continuous integration and deployment pipeline
 - [CONTRIBUTING.md](development/CONTRIBUTING.md) - Contribution guidelines and workflow
 - [DIRECTORY_README_STANDARD.md](development/DIRECTORY_README_STANDARD.md) - Directory-level documentation standard
 - [DOC_QUALITY_CHECKLIST.md](development/DOC_QUALITY_CHECKLIST.md) - Documentation quality assurance checklist

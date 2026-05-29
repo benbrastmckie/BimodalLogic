@@ -16,7 +16,7 @@
       "session_id": "sess_1780083735_5vngv",
       "researched": "2026-05-29T20:30:00Z",
       "completed": "2026-05-29T23:30:00Z",
-      "completion_summary": "Implemented proof step extractor with Axiom.toName (42 cases), ProofStep structure, extractStepSequence (7 constructors), theorem registry (36 computable theorems), and lake exe proof_extractor executable. Produces 2424 JSONL proof steps from 36 theorems. Zero sorries, zero axioms, build passes.",
+      "completion_summary": "Implemented proof step extractor: ProofStepExtractor.lean (310 lines) + ProofStepExport.lean (320 lines) + lake exe proof_extractor. 36 computable theorems registered, 2424 proof steps extracted as valid JSONL. 13/42 axiom names and 5/7 inference rules covered.",
       "next_artifact_number": 2,
       "artifacts": [
         {
