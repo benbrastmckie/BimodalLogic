@@ -45,6 +45,25 @@ so the derivation trees can be evaluated at runtime.
 - Principles.lean: 10 (perpetuity_1, diamond_4, modal_5, perpetuity_2,
   box_to_box_past, perpetuity_3, perpetuity_4, mb_diamond,
   box_diamond_to_future_box_diamond, box_diamond_to_past_box_diamond)
+
+## Validation Results (2026-05-29)
+
+- 36 theorems processed, 2424 proof steps extracted
+- All 2424 JSONL lines are valid JSON
+- Required fields present in all records: theorem_name, step_index,
+  context, goal, rule, axiom_name, subgoals, frame_class
+- axiom_name is non-null iff rule = "axiom" (0 violations)
+- Subgoals arity matches rule: axiom=0, modus_ponens=2, necessitation=1,
+  temporal_necessitation=1, temporal_duality=1 (all correct)
+- Step indices are monotonically ordered per theorem
+- Rule distribution: axiom (1220), modus_ponens (1184), necessitation (12),
+  temporal_duality (7), temporal_necessitation (1)
+- 13 of 42 axiom names present (prop_k, prop_s, ex_falso, modal_t,
+  modal_4, modal_b, modal_5_collapse, modal_k_dist, modal_future,
+  connect_future, connect_past, until_F, since_P)
+- 5 of 7 inference rules present (assumption/weakening absent since
+  all registered theorems derive from empty context)
+- lake build passes with no regressions (1678 jobs)
 -/
 
 namespace Bimodal.Automation.ProofStepExport

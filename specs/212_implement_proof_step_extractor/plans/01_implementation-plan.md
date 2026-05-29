@@ -161,19 +161,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: End-to-End Validation [NOT STARTED]
+### Phase 4: End-to-End Validation [COMPLETED]
 
 **Goal**: Run the full pipeline, validate JSONL output, verify step yield is in expected range, and ensure schema compatibility with BimodalHarness.
 
 **Tasks**:
-- [ ] Run `lake exe proof_extractor -- --output data/proof_steps.jsonl` and capture output
-- [ ] Verify output file is valid JSONL (each line parses as valid JSON)
-- [ ] Verify step count is within expected range (~300-800 steps)
-- [ ] Spot-check 5-10 records for correctness: verify `rule` field matches expected inference rule, `axiom_name` is non-null only when `rule = "axiom"`, `context` and `goal` are valid formula JSON, `subgoals` array length matches the rule's arity
-- [ ] Verify all 42 axiom names appear at least once across the corpus (or document which are absent and why)
-- [ ] Verify all 7 inference rule names appear in the output
-- [ ] Run `lake build` to confirm no regressions in the full project build
-- [ ] Write a brief validation summary as comments in `ProofStepExport.lean`
+- [x] Run `lake exe proof_extractor -- --output data/proof_steps.jsonl` and capture output
+- [x] Verify output file is valid JSONL (each line parses as valid JSON)
+- [x] Verify step count is within expected range (~300-800 steps) *(deviation: altered -- actual yield is 2424 steps, higher than expected because some theorems like perpetuity proofs have deep derivation trees with 100+ nodes)*
+- [x] Spot-check 5-10 records for correctness: verify `rule` field matches expected inference rule, `axiom_name` is non-null only when `rule = "axiom"`, `context` and `goal` are valid formula JSON, `subgoals` array length matches the rule's arity
+- [x] Verify all 42 axiom names appear at least once across the corpus (or document which are absent and why) *(deviation: altered -- 13 of 42 axiom names present; 29 absent because the computable standalone theorems use only propositional, S5 modal, and basic temporal axioms; BX temporal, uniformity, prior, Z1, and density axioms appear in noncomputable theorems excluded from extraction)*
+- [x] Verify all 7 inference rule names appear in the output *(deviation: altered -- 5 of 7 rules present; assumption and weakening absent because all registered theorems derive from empty context and do not use context expansion)*
+- [x] Run `lake build` to confirm no regressions in the full project build
+- [x] Write a brief validation summary as comments in `ProofStepExport.lean`
 
 **Timing**: 1 hour
 
