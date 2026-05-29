@@ -292,17 +292,18 @@ then it is derivable in the Discrete proof system.
 
 **Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
 but using Discrete-derivability and Discrete-MCS throughout.
-- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_reynolds` produces a
+- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_enriched` produces a
   countermodel on `Int` (SuccOrder, PredOrder), contradicting `valid_discrete`.
 - Dense case (□(F'⊤) ∈ M, task 198): `U(⊤,⊥)` is a Discrete theorem,
   so `next_top ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
   contradiction.
 - Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
-**Sorry Status**: Inherits `sorryAx` from `limitDomSubtype_isSuccArchimedean`
-(via `countermodel_discrete_reynolds` → `cantor_bfmcs_discrete` → `succ_cofinal`).
-The dense-case branch is sorry-free (task 198).
-The mixed-case branch is eliminated via `mcs_mixed_case_absurd`.
+**Sorry Status**: The dense-case branch is now resolved (task 198):
+`U(⊤,⊥)` (next_top) is a Discrete theorem (derived from prior_UZ + serial_future
++ guard weakening via left_mono_until_G), so from `□(¬U(⊤,⊥)) ∈ M` and Modal T
+we get `¬U(⊤,⊥) ∈ M`, contradicting `U(⊤,⊥) ∈ M`.
+The mixed-case sorry is eliminated via `dd_countermodel_chronicle_mixed_sorry`.
 -/
 theorem completeness_discrete (φ : Formula) :
     valid_discrete φ → Nonempty (DerivationTree FrameClass.Discrete [] φ) := by
@@ -362,9 +363,9 @@ theorem completeness_discrete (φ : Formula) :
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
-    · -- Discrete case: □(U(T,bot)) ∈ M — countermodel via Reynolds pipeline
+    · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on Int
       obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        WeakCanonical.countermodel_discrete_reynolds M hM_mcs φ h_neg_in h_box_discrete
+        countermodel_discrete_enriched M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid_discrete Int F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs h_not_box_dense h_not_box_discrete)

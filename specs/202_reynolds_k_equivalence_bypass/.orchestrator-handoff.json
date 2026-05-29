@@ -1,20 +1,20 @@
 {
   "status": "partial",
-  "summary": "Phase 5 completed: explicit sorry at countermodel_discrete_reynolds (Transfer.lean:866) closed by rewriting to use parametric canonical model directly (cantor_bfmcs_discrete + ParametricCanonicalTaskFrame Int). completeness_discrete rewired to use countermodel_discrete_reynolds. Full build passes with 0 errors. sorryAx remains from limitDomSubtype_isSuccArchimedean (succ_cofinal), which requires Phases 2-4 (Reynolds Theorem 14) to resolve. completeness_discrete does NOT yet have sorry-free axioms.",
-  "phases_completed": 2,
+  "summary": "Closed 2 of 3 targeted sorry sites via archimedean bypass. chronicle_is_good_direct is now sorry-free (axioms: propext, Classical.choice, Quot.sound). The chronicle domain bundles IsSuccArchimedean, so one_class_archimedean replaces the general one_class (which needed no_gaps_discrete and the full Reynolds Lemmas 6-13). The remaining sorry is countermodel_discrete_reynolds pipeline packaging (Transfer.lean:866), which requires truth_at <-> temporal_truth correspondence construction. completeness_discrete still has sorryAx from the enriched path.",
+  "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "Phases 2-4 (Reynolds Lemmas 6-13, Theorem 14) not yet implemented. These are needed to prove succ_cofinal, which would make limitDomSubtype_isSuccArchimedean sorry-free, which would make countermodel_discrete_reynolds and completeness_discrete sorry-free."
+    "countermodel_discrete_reynolds (Transfer.lean:866): pipeline packaging requires TaskModel with position-dependent atom valuation and truth_at <-> temporal_truth inductive correspondence (~150-200 lines)"
   ],
   "continuation_context": {
-    "next_phase": 2,
+    "next_phase": 5,
     "plan_path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md",
     "key_facts": [
-      "Phase 1 (Theorem 5 - US expressive completeness) completed",
-      "Phase 5 (pipeline packaging + rewiring) completed",
-      "Phases 2-4 (Reynolds Lemmas 6-13, Theorem 14) NOT started",
-      "sorryAx in completeness_discrete traces to succ_cofinal (ChronicleToCountermodel.lean:1508)",
-      "Closing succ_cofinal requires proving no_gaps_discrete via Reynolds Theorem 14"
+      "chronicle_is_good_direct is sorry-free via archimedean bypass",
+      "Phases 2-4 (Reynolds Lemmas 6-13) bypassed -- not needed for pipeline",
+      "no_gaps_discrete (GoodStructures.lean:842) still has sorry but is dead code for pipeline",
+      "countermodel_discrete_reynolds needs: Z.lo=none proof, TaskModel construction, truth correspondence",
+      "completeness_discrete currently uses countermodel_discrete_enriched (different sorry chain)"
     ]
   },
   "next_action_hint": "implement"
