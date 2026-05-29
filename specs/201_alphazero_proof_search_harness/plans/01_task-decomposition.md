@@ -231,59 +231,22 @@ DerivationTree = axiom | assumption | modus_ponens | necessitation | temporal_ne
 
 ---
 
-### Phase 5: Dataset Assembly & JSON Export [NOT STARTED]
+### Phase 5: Dataset Assembly & JSON Export [COMPLETED]
 
 **Goal**: Assemble labeled formulas into a structured JSON dataset file with metadata, statistics, and train/eval split.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/DatasetExporter.lean` (Lean IO module)
-- [ ] Define and implement the dataset JSON schema:
-  ```json
-  {
-    "metadata": {
-      "generator": "BimodalLogic/DatasetExporter",
-      "version": "1.0",
-      "config": { "maxModalDepth": 3, "maxTemporalDepth": 3, "maxSize": 12, "atomCount": 5 },
-      "statistics": { "total": 12345, "valid": 5432, "invalid": 6789, "timeout": 124 },
-      "frame_class": "Base"
-    },
-    "formulas": [
-      {
-        "id": 0,
-        "formula": { "tag": "imp", "left": { "tag": "box", "child": { "tag": "atom", "name": "p" } }, "right": { "tag": "atom", "name": "p" } },
-        "formula_string": "□p → p",
-        "features": { "modalDepth": 1, "temporalDepth": 0, "impCount": 1, "complexity": 3, "topOperator": "Implication" },
-        "decision": "valid",
-        "proof": { "height": 2, "rules": { "axiom": 1, "modus_ponens": 1, "necessitation": 0, "temporal_necessitation": 0, "temporal_duality": 0, "weakening": 0 } },
-        "countermodel": null
-      },
-      {
-        "id": 1,
-        "formula": { "tag": "atom", "name": "p" },
-        "formula_string": "p",
-        "features": { "modalDepth": 0, "temporalDepth": 0, "impCount": 0, "complexity": 1, "topOperator": "Atom" },
-        "decision": "invalid",
-        "proof": null,
-        "countermodel": {
-          "true_atoms": [],
-          "false_atoms": ["p"],
-          "branch_length": 1,
-          "modal_formulas": [],
-          "temporal_formulas": []
-        }
-      }
-    ]
-  }
-  ```
-- [ ] Implement `exportDataset (labeled : List LabeledFormula) (path : String) (split : Float := 0.8) : IO Unit` — write JSON, stratified train/eval split by decision tag
-- [ ] Implement string-builder approach for JSON (accumulate into a `String` or `Array String` then write once)
-- [ ] Implement dataset statistics computation: totals, provability ratio, proof height distribution, countermodel complexity distribution
-- [ ] Create `scripts/generate_dataset.py` — Python helper that:
+- [x] Create `Theories/Bimodal/Automation/DatasetExporter.lean` (Lean IO module)
+- [x] Define and implement the dataset JSON schema *(deviation: altered -- metadata uses `statistics` key with `BatchStats` field names (`totalCount`, `validCount`, etc.) instead of plan-specified `total`/`valid`/`invalid`/`timeout`; `frame_class` key is `frameClass` to match Lean naming)*
+- [x] Implement `exportDataset (labeled : List LabeledFormula) (path : String) (split : Float := 0.8) : IO Unit` *(deviation: altered -- split into `exportDatasetJson` for JSON assembly, `writeDataset` for IO, and `splitDataset`/`generateSplitDatasets` for the split pipeline; provides more composable API)*
+- [x] Implement string-builder approach for JSON (accumulate into a `String` or `Array String` then write once)
+- [x] Implement dataset statistics computation: totals, provability ratio, proof height distribution, countermodel complexity distribution *(deviation: altered -- uses existing `computeBatchStats` from DatasetGenerator.lean for totals/counts; proof height and countermodel distributions are available via the per-formula JSON fields)*
+- [x] Create `scripts/generate_dataset.py` — Python helper that:
   - Loads the JSON dataset
   - Converts `PatternKey` features to numpy arrays / PyTorch tensors
   - Encodes `decision` as integer labels (valid=1, invalid=0, timeout=-1)
   - Uses `proof.height` as regression target for valid formulas
-  - Exports to HuggingFace `datasets` format or simple `.pt` file
+  - Exports to simple `.pt` file *(deviation: altered -- exports to `.pt` with PyTorch fallback to `.npz` with numpy; HuggingFace `datasets` format deferred as unnecessary for Tier 1)*
 
 **Timing**: 4-5 days
 
