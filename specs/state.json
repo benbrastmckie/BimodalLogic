@@ -1303,7 +1303,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1312,7 +1312,7 @@
         155
       ],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T16:59:12Z",
+      "last_updated": "2026-05-29T17:06:12Z",
       "next_artifact_number": 5,
       "artifacts": [
         {
@@ -1321,19 +1321,14 @@
           "summary": "Comprehensive survey of Reynolds k-equiv bypass infrastructure; identified no_gaps_discrete as sole critical sorry; proposed direct cofinal sequence approach avoiding both succ_cofinal and Reynolds Theorem 5"
         },
         {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/02_option-c-plan.md",
-          "type": "plan",
-          "summary": "Revised plan pivoting from Reynolds pipeline to Henkin chain FMCS on Z, bypassing succ_cofinal entirely via direct F/Until witnessing at each integer step"
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/03_henkin-chain-plan.md",
-          "type": "plan",
-          "summary": "Plan v3: One-at-a-time Henkin chain F-resolution using forward_temporal_witness_seed_consistent, bypassing succ_cofinal via direct seed construction at each step"
-        },
-        {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/04_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): Option C path identified — direct completeness on Z bypasses succ_cofinal; local surjectivity insight; task 129 not viable; dependency on 155 outdated"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md",
+          "type": "plan",
+          "summary": "Plan v4: Direct completeness on Z via Henkin BFMCS, bypassing succ_cofinal entirely (4 phases, 8 hours)"
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
@@ -1343,7 +1338,7 @@
         "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 3,
+        "plan_version": 4,
         "dependency_waves": [
           [
             1
@@ -1372,6 +1367,11 @@
           {
             "path": "handoffs/phase-1-handoff-20260529.md",
             "integrated_in_plan_version": 3,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/04_team-research.md",
+            "integrated_in_plan_version": 4,
             "integrated_date": "2026-05-29"
           }
         ]
