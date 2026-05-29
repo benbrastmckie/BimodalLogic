@@ -128,12 +128,16 @@ technical_debt:
 ## Tasks
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: large (40-60 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: large (25-40 hours)
+- **Effort**: large (25-40 hours)
+- **Status**: [IMPLEMENTING]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: 155
-- **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. Requires: backward-game-to-k-equiv bridge (~200-300 lines), Reynolds Theorem 14 for gap elimination (~300-500 lines), countermodel_discrete rewiring. This is the ONLY viable path — succ_cofinal is unprovable by current approach (4 research agents confirmed, see task 155 reports 48-49).
+- **Research**: [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
+- **Plan**: [202_reynolds_k_equivalence_bypass/plans/01_reynolds-bypass-plan.md]
+- **Summary**: [202_reynolds_k_equivalence_bypass/summaries/01_implementation-summary.md]
+- **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. 5 phases: US expressive completeness over Prior structures, no_gaps_discrete proof (Reynolds Theorem 14), chronicle_is_good_direct via one_class, countermodel_discrete rewiring, full verification. This is the ONLY viable path -- succ_cofinal is unprovable (4 research agents confirmed). Phase 3 completed (one_class_implies_very_good, chronicle_is_good_direct). Phase 4 partial (countermodel_discrete_reynolds architecture). Phases 1-2 blocked on US expressive completeness over Prior structures.
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL
