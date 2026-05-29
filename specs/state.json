@@ -8,13 +8,15 @@
     {
       "project_number": 212,
       "project_name": "implement_proof_step_extractor",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [],
       "created": "2026-05-29T19:33:01Z",
-      "last_updated": "2026-05-29T21:15:00Z",
+      "last_updated": "2026-05-29T23:30:00Z",
       "session_id": "sess_1780083735_5vngv",
       "researched": "2026-05-29T20:30:00Z",
+      "completed": "2026-05-29T23:30:00Z",
+      "completion_summary": "Implemented proof step extractor with Axiom.toName (42 cases), ProofStep structure, extractStepSequence (7 constructors), theorem registry (36 computable theorems), and lake exe proof_extractor executable. Produces 2424 JSONL proof steps from 36 theorems. Zero sorries, zero axioms, build passes.",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -26,6 +28,11 @@
           "path": "specs/212_implement_proof_step_extractor/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "4-phase implementation plan: core extraction logic (ProofStep, Axiom.toName, extractStepSequence), theorem registry (~102 computable definitions), executable with JSONL export (lake exe proof_extractor), end-to-end validation. 8 hours total."
+        },
+        {
+          "path": "specs/212_implement_proof_step_extractor/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "All 4 phases completed. 36 theorems, 2424 proof steps, 13/42 axiom names, 5/7 rules. Zero sorries/axioms. lake build passes."
         }
       ],
       "plan_metadata": {
