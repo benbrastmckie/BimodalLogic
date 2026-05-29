@@ -5,12 +5,12 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-05-22T00:00:00Z
 task_counts:
-  active: 32
-  completed: 134
+  active: 35
+  completed: 151
   in_progress: 1
-  not_started: 29
+  not_started: 25
   abandoned: 0
-  total: 158
+  total: 186
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-26. 28 active tasks.*
+*Updated 2026-05-29. 35 active tasks.*
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
@@ -43,14 +43,10 @@ technical_debt:
 199 [NOT STARTED] — Grid order tactic: bespoke `grid_order_tac` for same_order_type dispatch with automatic Fin bridging, then apply to close Phase 3B sorry sites in CaseAnalysis.lean.
   └─ 155
 
-### Phase 1a — File Splitting
-
-174 [PLANNED] — Split oversized files (10 files > 1400 lines, including ExpressivenessGeneral.lean ~10k)
-
-### Phase 1b — Resume 155 (after task 199 grid tactic + file splitting)
+### Phase 1b — Resume 155 (after task 199 grid tactic)
 
 155 [PLANNED] — Reynolds pipeline: Plan v43 -- Definitive GHR93-faithful plan. Independent X_t construction (not via nf_characterizable_by_stavi), delta=4, general linear orders (Cases III/IV with left/right gap formulas), interval type formula A. 6 phases, 20-30 hours.
-  └─ 154, 174, 199
+  └─ 154, 199
 
 ### Phase 2 — Post-155 Cleanup
 
@@ -62,9 +58,7 @@ technical_debt:
 ### Phase 3 — Structural Refactor
 
 175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
-  └─ 174
 180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
-  └─ 174
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
   └─ 175, 180
 161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST in Phase 3)
@@ -136,69 +130,16 @@ technical_debt:
 
 ### 214. Dataset cleanup, standardization, and documentation
 - **Effort**: small (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Dependencies**: 204, 205
-- **Research**: [214_dataset_cleanup_documentation/reports/01_team-research.md]
+- **Research**:
+  - [214_dataset_cleanup_documentation/reports/01_team-research.md]
+  - [214_dataset_cleanup_documentation/reports/02_task-213-impact.md]
 - **Plan**: [214_dataset_cleanup_documentation/plans/01_dataset-cleanup-plan.md]
 
 **Description**: Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format. Create a comprehensive data/README.md documenting each dataset. Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas.
 
-### 213. Production-scale dataset generation validation
-- **Effort**: medium (1-2 days)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 210
-- **Research**: [specs/213_production_scale_dataset_validation/reports/01_team-research.md]
-- **Plan**: [213_production_scale_dataset_validation/plans/01_production-validation-plan.md]
-- **Summary**: [specs/213_production_scale_dataset_validation/summaries/01_production-validation-summary.md]
-
-**Description**: Re-run the dataset generation pipeline at complexity 5-7 (where task 204 hit a wall due to the enumerator blowup fixed in task 210) to validate that the improved enumeration and axiom seeding produce viable training datasets at production scale. Compare results against task 204's medium and deep run baselines (medium: complexity 4, 25% valid fraction; deep: complexity 7 random-only, 1.6% valid fraction). Verify timing, formula counts, valid fractions, operator diversity, and export pipeline integrity. Identify any remaining bottlenecks, parameter tuning needs (e.g., validSeedCount for the 15% valid fraction gate), or enhancements required for production readiness.
-
----
-
-### 212. Implement proof step extractor for BimodalHarness training data
-- **Effort**: medium (1-2 weeks)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Report**: [specs/212_implement_proof_step_extractor/reports/01_proof-step-extractor.md]
-- **Plan**: [specs/212_implement_proof_step_extractor/plans/01_implementation-plan.md]
-- **Summary**: [specs/212_implement_proof_step_extractor/summaries/01_implementation-summary.md]
-
-**Description**: Implement an `extractStepSequence` function in `Theories/Bimodal/Automation/` that recursively walks a `DerivationTree` and emits ordered `ProofStep` records containing `(context, goal, rule, axiom_name, subgoals)`. Compile this into a new `lake exe proof_extractor` executable targeting the ~108 theorem definitions in `Theories/Bimodal/Theorems/` that directly produce `DerivationTree` values. Output JSONL with one `ProofStep` per line, matching the `ProofStepRecord` schema expected by BimodalHarness (see BimodalHarness task 9). Each step should map to the 49-action space (42 axiom constructors + 7 inference rules). The existing `walkDerivationTree` pattern in `DataExport.lean` provides the recursive traversal template. Expected yield: ~500-1,600 step triples from the existing theorem corpus. This is a cross-repo coordination task — BimodalHarness task 9 builds the Python consumer for this data.
-
----
-
-### 211. Review and revise docs/ directory
-- **Effort**: medium (1-2 days)
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Research**: [specs/211_review_revise_docs_directory/reports/01_docs-review-research.md]
-- **Plan**: [specs/211_review_revise_docs_directory/plans/01_docs-revision-plan.md]
-- **Summary**: [specs/211_review_revise_docs_directory/summaries/01_docs-revision-summary.md]
-
-**Description**: Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps.
-
-### 210. Investigate and fix enumerateAtBudget exponential blowup at complexity 5+
-- **Effort**: medium (1-2 weeks)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 204
-- **Research**: [specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md]
-- **Plan**: [210_enumerator_complexity_blowup/plans/01_enumerator-blowup-plan.md]
-- **Summary**: [specs/210_enumerator_complexity_blowup/summaries/01_enumerator-blowup-summary.md]
-
-**Description**: Investigate and fix the exponential blowup in FormulaEnumerator.lean's enumerateAtBudget at complexity >= 5 or modal/temporal depth >= 3. This forced task 204's medium run down to complexity 4 and the deep run to pure random mode (losing systematic coverage), causing the deep run's valid fraction to drop to 1.6% (failing the 15% gate). Research the root cause of the combinatorial explosion, design a mitigation strategy (e.g., pruning redundant/isomorphic formulas, iterative deepening with budget caps, stratified enumeration that interleaves exhaustive at low complexity with targeted random at high complexity, or a hybrid approach that caps exhaustive enumeration time and falls back gracefully). The goal is to enable production runs at complexity 5-7 that achieve >= 15% valid fraction with reasonable runtime (under 2 hours for 50K formulas).
-
-### 209. Document training pipeline components
-- **Effort**: medium (1-2 days)
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Research**: [specs/209_document_training_pipeline/reports/01_pipeline-components.md]
-- **Plan**: [specs/209_document_training_pipeline/plans/01_pipeline-docs.md]
-- **Summary**: [specs/209_document_training_pipeline/summaries/01_execution-summary.md]
-
-**Description**: Document the training pipeline components in BimodalLogic repo, linking to https://github.com/benbrastmckie/BimodalHarness for the rest of the training harness. Carefully document each of the 6 Lean modules in Theories/Bimodal/Automation/ (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter (scripts/generate_dataset.py), and the executable targets (dataset_generator, dataset_validator). Explain the dual-signal architecture (proof traces as positive signal, countermodels as corrective signal), the end-to-end pipeline flow, the JSON dataset schema, and how the exported data connects to the BimodalHarness repo for value network training, policy network training, and MCTS proof search. Include the feasibility gate results and recommended next steps.
 
 ### 208. HuggingFace dataset packaging for BMLogic-Bench
 - **Effort**: small (4-6 hours)
@@ -208,62 +149,6 @@ technical_debt:
 
 **Description**: Package the BMLogic-Bench dataset for HuggingFace Datasets Hub publication. Create dataset_info.json metadata file, Python script to convert JSONL to Parquet format, dataset card (README.md) with usage examples and citation info, and train/val/test split validation. Target: one-line loading via `datasets.load_dataset("logos-labs/bmlogic-bench")`. Include dataset statistics, license, and benchmark description for the NeurIPS 2026 Datasets track submission.
 
-### 207. Multi-representation formula export
-- **Effort**: small (6-8 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 203
-- **Research**: [207_multi_representation_export/reports/01_multi-repr-export.md]
-- **Plan**: [207_multi_representation_export/plans/01_multi-repr-export.md]
-- **Summary**: [207_multi_representation_export/summaries/01_multi-repr-export-summary.md]
-
-**Description**: Extend DatasetExport.lean to export formulas in multiple representations simultaneously: S-expression string, token list (for transformer models), AST tree (for GNN models), and PatternKey numeric features (for value estimator). Currently only formula_str and formula_ast are exported. The multi-representation export enables different ML model architectures to consume the same dataset without Python-side preprocessing. Add S-expression printer, tokenizer, and PatternKey export to the JSONL records.
-
-### 206. Contrastive pair generation for dual-verification training signal
-- **Effort**: medium (8-12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 203
-- **Research**: [206_contrastive_pair_generation/reports/01_contrastive-pairs.md]
-- **Plan**: [206_contrastive_pair_generation/plans/01_contrastive-pairs.md]
-- **Summary**: [206_contrastive_pair_generation/summaries/01_contrastive-pairs-summary.md]
-
-**Description**: Implement a FormulaMutator module in Automation/ that generates contrastive pairs from valid formulas. For each valid formula, apply systematic mutations (atom substitution with bot, operator weakening box->diamond/G->F, subformula deletion, depth reduction) and re-run the decision procedure to produce (valid_formula, invalid_mutation, countermodel) triples. This creates the dual-verification training signal identified as novel in task 201 research. Also implement temporal duality contrastive pairs via swap_temporal where the dual has different validity.
-
-### 205. Curate stratified evaluation benchmark (BMLogic-Bench)
-- **Effort**: medium (8-12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 204
-- **Research**: [205_benchmark_curation/reports/01_benchmark-curation.md]
-- **Plan**: [205_benchmark_curation/plans/01_benchmark-curation.md]
-- **Summary**: [205_benchmark_curation/summaries/01_benchmark-curation-summary.md]
-
-**Description**: Curate a 500-1K held-out evaluation benchmark from the production dataset runs. Include: stratified sampling by difficulty tier (easy 20%, medium 40%, hard 30%, very hard 10%), balanced validity (~50/50), all 42 BX axiom instances as known-valid anchors, known non-theorems as known-invalid anchors, near-miss formulas (single-operator mutations of valid formulas). Design as "BMLogic-Bench" — the first benchmark for decidable non-classical logics. Validate that all ground-truth labels are correct via the decision procedure oracle.
-
-### 204. Run production dataset generation (medium and deep runs)
-- **Effort**: small (2-4 hours active + overnight compute)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 203
-- **Research**: [204_dataset_production_runs/reports/01_production-runs-research.md]
-- **Plan**: [204_dataset_production_runs/plans/01_production-runs-plan.md]
-- **Summary**: [204_dataset_production_runs/summaries/01_production-runs-summary.md]
-
-**Description**: Execute the dataset generator at production scale. Medium run: complexity 5, ~5K formulas with temporal duals (fast run, ~30 min). Deep run: complexity 7, hybrid mode, ~50K formulas with duals (overnight). Validate feasibility gates on each run (timeout rate <20%, valid fraction >=30%, PatternKey diversity). Store results in data/ directory. This produces the raw labeled dataset that downstream tasks (benchmark curation, ML training) consume.
-
-**Completion**: Executed medium run (5,136 records, complexity 4, 25% valid, 3% timeout) and deep run (53,979 records, complexity 7, 1.6% valid, 2.5% timeout). Exhaustive enumeration at complexity 5+ causes exponential blowup in enumerateAtBudget -- used complexity 4 for medium, random mode for deep. All gates pass except deep valid fraction (1.6% < 15%, expected). Reproducible script at scripts/run_dataset_generation.sh.
-
-### 203. Build formula enumerator, decider labeling, and JSON dataset export
-- **Effort**: large (3-4 weeks)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: 201 (parent task)
-- **Research**: [203_formula_enumerator_dataset_export/reports/01_team-research.md]
-- **Plan**: [203_formula_enumerator_dataset_export/plans/01_formula-enum-dataset.md]
-- **Summary**: [203_formula_enumerator_dataset_export/summaries/01_formula-enum-dataset-summary.md]
-
-**Description**: Build the Lean-side formula enumerator, decider labeling pipeline, and JSON dataset export in Automation/. Enumerate TM formulas at controlled modal/temporal depth, run the existing DecisionProcedure (decide/decideBatch) to label each as provable/unprovable with proof traces, and export the labeled dataset as JSON for downstream Python consumption. The boundary is the JSON file — everything upstream (enumeration, labeling, trace extraction, export) is pure Lean in this repo; everything downstream (tensor conversion, training) belongs in a separate harness repo. Deliverables: FormulaEnumerator.lean (bounded generation by depth/size), DatasetGenerator.lean (run decider, produce labeled tuples), JSON export with (formula, label, proof_trace, difficulty_metrics), and an evaluation benchmark of 500-1K held-out formulas. Feasibility gate: the enumerator must produce diverse non-trivial formulas (not >80% trivially propositional)
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 20 hours
@@ -280,19 +165,6 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md]
   - [202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md]
 - **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files.
-
-### 201. Set up AlphaZero-style proof search harness for bimodal logic
-- **Effort**: XL (3-4 weeks)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Research**:
-  - [201_alphazero_proof_search_harness/reports/01_team-research.md]
-  - [201_alphazero_proof_search_harness/reports/02_team-research.md]
-- **Plan**: [201_alphazero_proof_search_harness/plans/01_task-decomposition.md]
-- **Summary**: [201_alphazero_proof_search_harness/summaries/01_execution-summary.md]
-- **Validation**: [201_alphazero_proof_search_harness/reports/03_tier1-validation.md]
-
-**Description**: Tier 1 dual-signal training data pipeline using Lean-native `decide`/`findCountermodel` API. 6 phases: JSON serialization layer, formula enumeration engine, batch decision pipeline with proof trace extraction, enriched countermodel extraction, dataset assembly & JSON export, validation & feasibility gate. Valid formulas produce (features, proof_height, rule_profile) tuples; invalid formulas produce (features, countermodel_atoms, branch_structure) tuples. No Python bridge needed — pure Lean with JSON export for downstream ML.
 
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
@@ -312,20 +184,6 @@ technical_debt:
 **Description**: Create a bespoke `grid_order_tac` tactic (in `Theories/Bimodal/Automation/`) that automates the `same_order_type` grid dispatch in `ghr93_case_II` (`Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`). The problem: after `same_order_type_grid` expands to `intro i j; simp only [game_tuple]; split_ifs`, it generates ~25 ordering goals per case. Each goal has shape `(a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...)`. The available ordering lemmas (`tau_sel_y`, `tau_sel_sel`, `sel_pn_ord`, `pn_sel_ord`, `tau_d_sel`, `hord_cd_en_pn`, `pivot_chain_order`, `fwd_x_b`, `fwd_b_y`) are stated with `Fin n` but the goals use `Fin (n+1)`, causing `exact` to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via `convert ... using 3 <;> (congr 1; exact Fin.ext (by omega))`, (2) handle the `hab_eq` rewrite for p_n cases (when `¬k < n`, rewrite `a_bwd` to `extendPoint p_n` before applying `sel_pn_ord`/`pn_sel_ord`), (3) handle symmetry (y < sel goal uses `tau_sel_y.symm`), (4) fall back to `sorry` with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in `ghr93_case_II`: Case A sorry at line ~1631 and Case B sorry at line ~1940 — these are the last fallthrough goals in the `first | ... | sorry` chains inside the `same_order_type` proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.
 
 ---
-
-### 198. Prove frame-class axioms force canonical model indicator formulas
-- **Effort**: medium (4 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Dependencies**: 168, 197
-- **Research**: [specs/198_prove_frame_class_indicator_forcing/reports/01_frame-class-indicator-forcing.md]
-- **Plan**: [specs/198_prove_frame_class_indicator_forcing/plans/01_frame-class-indicator-forcing.md]
-- **Summary**: [specs/198_prove_frame_class_indicator_forcing/summaries/01_frame-class-indicator-forcing-summary.md]
-
-**Description**: Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. (1) `completeness_dense` line 285: prove that a Dense-MCS necessarily contains `□(F'⊤)`, making the non-dense branch unreachable — the density axiom `FFφ → Fφ` should force the canonical model's density indicator into every Dense-MCS. (2) `completeness_discrete` line 317: prove that a Discrete-MCS cannot contain `□(F'⊤)`, making the dense branch unreachable — the discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (`next_top = U(⊤,⊥)` and its negation `F'⊤`). Definition of done: both sorries eliminated, `lake build` passes, no new sorries.
-
-**Completion**: Eliminated both sorries. Added `dense_indicator` axiom (`neg(U(T,bot))`) to the Dense axiom set with soundness proof. Dense sorry: necessitation + theorem_in_mcs gives contradiction. Discrete sorry: 10-step derivation chain (identity -> serial_future -> prior_UZ -> guard weakening via left_mono_until_G) derives `U(T,bot)`, then Modal T extracts contradiction.
 
 ---
 
@@ -371,28 +229,6 @@ technical_debt:
 **Relationship to existing tasks**: Tasks 185-195 were created incrementally based on specific needs. This survey may confirm, refine, or supersede them. Task 195 (EF game automation) was created from a focused WeakCanonical/ scan and is likely correct but may be restructured. Tasks 185-193 (modal proof search pipeline) were designed top-down and may benefit from bottom-up validation.
 
 ---
-
-### 195. EF game automation tactics for WeakCanonical/ metalogic proofs
-- **Effort**: medium (10-15 hours)
-- **Status**: [COMPLETED]
-- **Research**: [specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md]
-- **Task Type**: lean4
-- **Priority**: high
-- **Dependencies**: none (assists 155)
-- **Plan**: [195_ef_game_automation_tactics/plans/01_ef-game-tactics.md]
-- **Summary**: [195_ef_game_automation_tactics/summaries/01_ef-game-tactics-summary.md]
-
-**Description**: Build a suite of custom tactics and simp sets targeting the repeated proof patterns in `Theories/Bimodal/Metalogic/WeakCanonical/` (32K lines across EFGames.lean, ExpressivenessGeneral.lean, and supporting files). Implement NOW to unblock the remaining Phase 1 sorries in task 155, then use for refactoring later. Four components, ranked by impact:
-
-**A) `solve_same_order_type` tactic (~600-1300 lines saved)**: Automates the N×N grid case dispatch in `same_order_type` proofs. Currently each proof is 100-220 lines of manual `intro i j; simp only [game_tuple]; split_ifs` followed by 16-25 goals dispatched via `pivot_chain_order`. The tactic takes interval bounds and sub-game order data as arguments and generates the entire grid proof. 6+ existing proof blocks would compress to 1-3 line tactic invocations.
-
-**B) `game_tuple_simp` simp set (~150-350 lines saved)**: Bundles `game_tuple_zero_eq`, `game_tuple_b_eq`, `game_tuple_y_eq`, `game_tuple_sel_eq` into a declared simp set. Replaces 75+ multi-line `simp only [game_tuple, show ... from by omega, ...]` blocks with `simp only [game_tuple_simp]`. Also includes a `game_tuple_unfold` tactic for the raw `dite` expansion when needed.
-
-**C) `pivot_order` tactic (~120-180 lines saved)**: Automates `pivot_chain_order` / `pivot_chain_order_rev` calls (63 sites). Each currently passes 4 interval bounds + 4 order witnesses manually. The tactic searches the local context for the interval structure (`SplitPointProps` or explicit bounds) and auto-fills the arguments.
-
-**D) `winning_condition_tac` tactic (~350-700 lines saved)**: Automates the 5-way `game_tuple` index split used in `formula_agreement`, `gap_point_agreement`, and `same_order_type` proofs. Takes the sub-game winning conditions as arguments and dispatches each index category to the appropriate source (forward game, sigma, tau, direct agreement).
-
-All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lean` file. No dependencies — implement immediately to assist task 155's remaining Phase 1 sorries (`same_order_type`, `h_d_unique`), then use for Phases 3-11 and post-completion refactoring. Independent of the modal proof search tactics (185-192) which target `Theorems/` derivation proofs.
 
 ---
 
@@ -528,18 +364,6 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ---
 
-### 181. Add Derivable Prop-valued wrapper alongside DerivationTree
-- **Effort**: small (3-5 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Research**: [specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md]
-- **Plan**: [181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md]
-- **Summary**: [181_derivable_prop_wrapper/summaries/01_derivable-prop-wrapper-summary.md]
-
-**Description**: Add a `Derivable` Prop-valued wrapper (`def Derivable (Γ : Context) (φ : Formula) : Prop := Nonempty (DerivationTree Γ φ)`) alongside the existing Type-valued `DerivationTree`. This enables `simp` and `aesop` integration for derivability goals (which failed on the Type-valued tree due to proof reconstruction errors) while preserving the existing computable proof tree structure for height functions, pattern matching, and the Metalogic infrastructure. Add basic `Derivable` lemmas mirroring the key `DerivationTree` constructors (modus_ponens, axiom, weakening, necessitation) and a `Derivable.ofTree` coercion. Per task 179 research report `02_mathlib-submission.md`.
-
----
-
 ### 180. Add copyright headers, universe polymorphism, and 100-char line limits
 - **Effort**: medium (6-10 hours)
 - **Status**: [NOT STARTED]
@@ -606,19 +430,6 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 
 ---
 
-### 174. Split oversized files (> 1500 lines)
-- **Effort**: medium-large (12-20 hours)
-- **Status**: [PLANNED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Dependencies**: 168
-- **Research**: [specs/174_split_oversized_files/reports/01_split-file-analysis.md]
-- **Plan**: [174_split_oversized_files/plans/01_split-file-analysis.md]
-
-**Description**: Split Lean files exceeding ~1500 lines into focused modules. Targets: `ExpressivenessGeneral.lean` (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), `Hierarchy.lean` (3845 lines — split by induction level), `SoundnessLemmas.lean` (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), `DedekindZ.lean` (2236), `ExpressiveCompleteness.lean` (2129), `SubformulaClosure.lean` (1889 in Syntax/), `Propositional.lean` (1712 in Theorems/), `Tactics.lean` (1416), `RestrictedMCS.lean` (1413), `ProofSearch.lean` (1384). Each split file should have a clear single responsibility and a module docstring.
-
----
-
 ### 170. Establish completeness theorem for TM^dc (dense + complete extension)
 - **Effort**: large
 - **Status**: [NOT STARTED]
@@ -636,17 +447,6 @@ All four components live in a new `Theories/Bimodal/Automation/EFGameTactics.lea
 - **Dependencies**: 168
 
 **Description**: Add the Complete frame class as an extension of Dense to the TM logic formalization, following the paper "The Construction of Possible Worlds" (Brast-McKie 2025). The Complete frame condition (Dedekind completeness) requires every nonempty bounded-above subset of the temporal domain to have a least upper bound. Key changes: (1) Add FrameClass.Complete to the FrameClass enum with Dense ≤ Complete in the partial order (from task 168). (2) Add the CO axiom constructor to Axiom: G(Pφ → FPφ) → (Pφ → Fφ), mapped to minFrameClass = .Complete. (3) Add CompleteTemporalFrame typeclass extending DenseTemporalFrame with ConditionallyCompleteLinearOrder from Mathlib. (4) Add ℝ instance for CompleteTemporalFrame. (5) Prove CO soundness on complete frames (paper Appendix, ~50 lines, uses sInf on the set of counterexamples). (6) Prove CO correspondence: CO is valid over a frame iff the frame is Complete (paper Theorem at line 2453, both directions). (7) Prove CO is valid on Archimedean discrete frames (paper footnote: since every Archimedean discrete ordered group is conditionally complete, CO holds vacuously). (8) Update soundness wrappers in FrameConditions/Soundness.lean. (9) Update README to document the Complete extension and the full frame class hierarchy: Base ≤ Dense ≤ Complete, Base ≤ Discrete.
-
----
-
-### 168. Parameterize DerivationTree over FrameClass (Pattern 3 refactor)
-- **Effort**: large (24 hours, 7 phases)
-- **Status**: [COMPLETED] — All 7 phases done; 6 discrete chronicle sorries resolved by task 197
-- **Task Type**: lean4
-- **Research**: [specs/168_parameterize_derivationtree_over_frameclass/reports/01_research.md]
-- **Plan**: [specs/168_parameterize_derivationtree_over_frameclass/plans/01_implementation-plan.md]
-
-**Description**: Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.
 
 ---
 

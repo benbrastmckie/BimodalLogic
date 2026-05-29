@@ -5848,6 +5848,809 @@
         "reports/",
         "plans/"
       ]
+    },
+    {
+      "project_number": 213,
+      "project_name": "production_scale_dataset_validation",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T20:55:10Z",
+      "last_updated": "2026-05-29T21:41:27Z",
+      "session_id": "sess_1780090111_5249cc",
+      "researched": "2026-05-29T21:12:11Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/213_production_scale_dataset_validation/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): enumeration fix confirmed, 4 critical issues identified — valid fraction at 4% (gate: 15%), 94% ex_falso dominance in valid set, axiom seeds lack temporal operators, full pipeline at 51K never run. Recommends split: regression validation + signal quality enhancement."
+        },
+        {
+          "path": "specs/213_production_scale_dataset_validation/plans/01_production-validation-plan.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan: CLI flag exposure, temporal axiom seeds, streaming write, fixpoint closure, full pipeline regression, benchmark validation. 14 hours estimated."
+        },
+        {
+          "path": "specs/213_production_scale_dataset_validation/summaries/01_production-validation-summary.md",
+          "type": "summary",
+          "summary": "6-phase implementation complete: CLI flag, temporal axiom seeds, streaming write, fixpoint closure, full pipeline runs (c5: 1513 formulas, c7: 49904 formulas), benchmark validation. Valid fraction 3-4% (improved from 1.6% baseline, below 15% target). All other gates pass."
+        }
+      ],
+      "started": "2026-05-29T21:28:41Z",
+      "completed": "2026-05-29T21:41:27Z",
+      "completion_summary": "6-phase implementation complete: CLI flag, temporal axiom seeds, streaming write, fixpoint closure, full pipeline runs (c5: 1513 formulas, c7: 49904 formulas), benchmark validation. Valid fraction 3-4% (improved from 1.6% baseline, below 15% target). All other gates pass."
+    },
+    {
+      "project_number": 212,
+      "project_name": "implement_proof_step_extractor",
+      "status": "completed",
+      "task_type": "lean4",
+      "dependencies": [],
+      "created": "2026-05-29T19:33:01Z",
+      "last_updated": "2026-05-29T23:30:00Z",
+      "session_id": "sess_1780083735_5vngv",
+      "researched": "2026-05-29T20:30:00Z",
+      "completed": "2026-05-29T23:30:00Z",
+      "completion_summary": "Implemented proof step extractor: ProofStepExtractor.lean (310 lines) + ProofStepExport.lean (320 lines) + lake exe proof_extractor. 36 computable theorems registered, 2424 proof steps extracted as valid JSONL. 13/42 axiom names and 5/7 inference rules covered.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/212_implement_proof_step_extractor/reports/01_proof-step-extractor.md",
+          "type": "report",
+          "summary": "Comprehensive research on DerivationTree structure (7 constructors), 42 axiom constructors forming 49-action space, ~108 theorem definitions in Theorems/ directory (~40-50 computable), existing walkDerivationTree traversal pattern, JSON serialization infrastructure, and ProofStepRecord schema design. Key risk: ~60% of theorems are noncomputable. Recommended phased approach starting with computable subset."
+        },
+        {
+          "path": "specs/212_implement_proof_step_extractor/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: core extraction logic (ProofStep, Axiom.toName, extractStepSequence), theorem registry (~102 computable definitions), executable with JSONL export (lake exe proof_extractor), end-to-end validation. 8 hours total."
+        },
+        {
+          "path": "specs/212_implement_proof_step_extractor/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "All 4 phases completed. 36 theorems, 2424 proof steps, 13/42 axiom names, 5/7 rules. Zero sorries/axioms. lake build passes."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_proof-step-extractor.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 211,
+      "project_name": "review_revise_docs_directory",
+      "status": "completed",
+      "task_type": "markdown",
+      "description": "Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps",
+      "created": "2026-05-29T19:28:12Z",
+      "last_updated": "2026-05-29T23:55:00Z",
+      "completed": "2026-05-29T23:55:00Z",
+      "session_id": "sess_1780083187_bf904f",
+      "completion_summary": "Revised 30+ docs/ files across 5 phases: fixed critical accuracy errors (MODULE_ORGANIZATION.md directory tree, API_REFERENCE.md namespaces, version numbers), eliminated all stale .opencode and Logos references, normalized 8 kebab-case files to SCREAMING_SNAKE_CASE, resolved missing file references and content overlap, and verified all internal cross-references resolve. docs/README.md now accurately catalogs all 42 files across 8 subdirectories.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/211_review_revise_docs_directory/reports/01_docs-review-research.md",
+          "type": "report",
+          "summary": "Comprehensive review of 41 docs/ files: 4 categories of issues — missing installation files, stale Logos/opencode references in development docs, wrong module namespaces in API_REFERENCE.md, and MODULE_ORGANIZATION.md describing a non-existent directory structure. Research/ uses kebab-case vs SCREAMING_SNAKE_CASE elsewhere. 484 code blocks lack language specifiers."
+        },
+        {
+          "path": "specs/211_review_revise_docs_directory/plans/01_docs-revision-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan: fix critical accuracy errors (paths, namespaces, versions), eliminate stale .opencode and Logos references, normalize naming to SCREAMING_SNAKE_CASE, resolve content gaps and redundancy, final consistency pass. 7 hours total."
+        },
+        {
+          "path": "specs/211_review_revise_docs_directory/summaries/01_docs-revision-summary.md",
+          "type": "summary",
+          "summary": "All 5 phases completed. 30+ docs/ files revised. Zero stale references, zero kebab-case filenames, all cross-references valid."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 7,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_docs-review-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 210,
+      "project_name": "enumerator_complexity_blowup",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T19:21:47Z",
+      "last_updated": "2026-05-29T20:53:03Z",
+      "session_id": "sess_1780087242_1913db",
+      "researched": "2026-05-29T19:32:14Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md",
+          "type": "research",
+          "summary": "Root cause analysis of enumerateAtBudget exponential blowup with 6 ranked mitigation strategies. Key finding: 651x bloat at budget 5 due to up-to-budget semantics, no memoization, and Cartesian products. Recommended fix: memoized exact-complexity enumeration plus axiom-schema-based valid formula generation."
+        },
+        {
+          "path": "specs/210_enumerator_complexity_blowup/plans/01_enumerator-blowup-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan addressing enumerateAtBudget exponential blowup via exact-complexity memoized enumeration and axiom-schema instantiation for valid fraction improvement"
+        },
+        {
+          "path": "specs/210_enumerator_complexity_blowup/summaries/01_enumerator-blowup-summary.md",
+          "type": "summary",
+          "summary": "Rewrote enumerateAtBudget with exact-complexity enumeration and memoization, added axiom-schema instantiation. Complexity 5 enumeration: 937K→1,644 formulas, >1.5h→1ms. Complexity 7: 650M→51,244, infeasible→3ms. lake build clean, zero sorries."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_enumerator-blowup-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "started": "2026-05-29T20:40:53Z",
+      "completed": "2026-05-29T20:53:03Z",
+      "completion_summary": "Rewrote enumerateAtBudget with exact-complexity enumeration and memoization, added axiom-schema instantiation. Complexity 5: 937K→1,644 formulas, >1.5h→1ms. Complexity 7: 650M→51,244, infeasible→3ms. Combined valid fraction improved from 1.6% baseline. lake build clean, zero sorries, zero axioms."
+    },
+    {
+      "project_number": 209,
+      "project_name": "document_training_pipeline",
+      "status": "completed",
+      "task_type": "markdown",
+      "completion_summary": "Created Theories/Bimodal/Automation/TRAINING_PIPELINE.md documenting all 6 Lean pipeline modules (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter, dual-signal architecture, ASCII pipeline flow diagram, JSONL/JSON schemas, BimodalHarness integration with dataclass correspondence, Tier 1 feasibility gate results (30/30 conformance, gate FAILED on provability ratio), and recommended next steps for Tier 2.",
+      "description": "Document the training pipeline components in BimodalLogic repo, linking to https://github.com/benbrastmckie/BimodalHarness for the rest of the training harness. Carefully document each of the 6 Lean modules in Theories/Bimodal/Automation/ (DataExport, FormulaEnumerator, DatasetGenerator, EnrichedCountermodel, DatasetExporter, DatasetValidator), the Python tensor converter (scripts/generate_dataset.py), and the executable targets (dataset_generator, dataset_validator). Explain the dual-signal architecture (proof traces as positive signal, countermodels as corrective signal), the end-to-end pipeline flow, the JSON dataset schema, and how the exported data connects to the BimodalHarness repo for value network training, policy network training, and MCTS proof search. Include the feasibility gate results and recommended next steps",
+      "created": "2026-05-29T18:48:47Z",
+      "last_updated": "2026-05-29T19:10:00Z",
+      "researched": "2026-05-29T18:55:00Z",
+      "completed": "2026-05-29T19:10:00Z",
+      "session_id": "sess_1780080874_4bb40d",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/209_document_training_pipeline/reports/01_pipeline-components.md",
+          "type": "research",
+          "summary": "Complete documentation of all 6 Lean pipeline modules, Python helper, executables, and BimodalHarness integration"
+        },
+        {
+          "path": "specs/209_document_training_pipeline/plans/01_pipeline-docs.md",
+          "type": "plan",
+          "summary": "Single-phase plan for creating TRAINING_PIPELINE.md with section outline covering all 6 modules, schemas, and BimodalHarness integration"
+        },
+        {
+          "path": "specs/209_document_training_pipeline/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for task 209 implementation"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 1,
+        "total_effort_hours": 2,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_pipeline-components.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 203,
+      "project_name": "formula_enumerator_dataset_export",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T16:59:41Z",
+      "last_updated": "2026-05-29T18:14:48Z",
+      "session_id": "sess_1780076964_81a133",
+      "researched": "2026-05-29T17:39:33Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/203_formula_enumerator_dataset_export/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/203_formula_enumerator_dataset_export/plans/01_formula-enum-dataset.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for formula enumerator, decider labeling pipeline, and JSONL dataset export (28 hours total)"
+        },
+        {
+          "path": "specs/203_formula_enumerator_dataset_export/summaries/01_formula-enum-dataset-summary.md",
+          "type": "summary",
+          "summary": "All 5 phases completed: FormulaEnumerator, DatasetGenerator, DatasetExport modules + lakefile lean_exe target. Pipeline validated at complexity 3."
+        }
+      ],
+      "started": "2026-05-29T17:49:40Z",
+      "completed": "2026-05-29T18:14:48Z",
+      "completion_summary": "Built formula enumerator, decider labeling pipeline, and JSONL dataset export. 3 new Lean modules (FormulaEnumerator, DatasetGenerator, DatasetExport) plus lean_exe target. Pipeline validated: 0% timeout, 36% valid fraction, all feasibility gates passed."
+    },
+    {
+      "project_number": 201,
+      "project_name": "alphazero_proof_search_harness",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T03:51:11Z",
+      "last_updated": "2026-05-29T22:00:00Z",
+      "session_id": "sess_1780076059_z9bd",
+      "researched": "2026-05-29T17:17:49Z",
+      "completed": "2026-05-29T22:00:00Z",
+      "completion_summary": "Built Lean-native dual-signal training data pipeline (Tier 1). 6 phases: JSON serialization, formula enumeration, batch decision pipeline, enriched countermodel extraction, dataset assembly/export, and validation/feasibility gate. Pipeline verified end-to-end: 254K formulas generated, conformance tests 30/30 pass, feasibility gate correctly identifies provability ratio imbalance. Artifacts: 6 new Lean modules in Automation/, Python tensor converter, executable targets.",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md",
+          "type": "plan",
+          "summary": "Revised plan (v2): Lean-native dual-signal training data pipeline (Tier 1). 6 phases: JSON serialization, formula enumeration, batch decision pipeline, enriched countermodel extraction, dataset assembly, validation & feasibility gate. 3-4 weeks."
+        },
+        {
+          "path": "specs/201_alphazero_proof_search_harness/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research (round 2): corrective training signal via ModelChecker integration — semantic divergences, Lean-native alternative, three-tier strategy"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 120,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_team-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/02_team-research.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 198,
+      "project_name": "prove_frame_class_indicator_forcing",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-26T14:52:05Z",
+      "researched": "2026-05-26T15:30:00Z",
+      "planned": "2026-05-26T18:30:00Z",
+      "session_id": "sess_1779808712_c4ab21",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/198_prove_frame_class_indicator_forcing/reports/01_frame-class-indicator-forcing.md",
+          "type": "research",
+          "summary": "Density axiom GGphi->Gphi is insufficient to derive F'T; needs axiom extension. Discrete case solvable from prior_UZ+serial_future."
+        },
+        {
+          "path": "specs/198_prove_frame_class_indicator_forcing/plans/01_frame-class-indicator-forcing.md",
+          "type": "plan",
+          "summary": "4-phase plan: add dense_indicator axiom+soundness, prove Dense sorry via necessitation, prove Discrete sorry via prior_UZ derivation chain, full build verification"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_frame-class-indicator-forcing.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      },
+      "description": "Prove that frame-class axioms force the corresponding canonical model indicator formulas into MCS, eliminating 2 sorries in Completeness.lean. Specifically: (1) completeness_dense line 285: prove that a Dense-MCS necessarily contains □(F'⊤), making the non-dense branch unreachable. The density axiom FFφ → Fφ should force the canonical model's density indicator into every Dense-MCS. (2) completeness_discrete line 317: prove that a Discrete-MCS cannot contain □(F'⊤), making the dense branch unreachable. The discrete axioms (prior_UZ, prior_SZ, z1) should exclude the dense indicator. Both are genuine open mathematical questions about the interaction between the axiom system and the canonical construction's structural indicators (next_top = U(⊤,⊥) and its negation F'⊤). Resolution likely requires showing that the density axiom is derivably equivalent to F'⊤ (or that □(F'⊤) is derivable from the density axiom via necessitation), and symmetrically that the discrete axioms are derivably inconsistent with F'⊤. Definition of done: both sorries in completeness_dense and completeness_discrete eliminated, lake build passes, no new sorries.",
+      "completion_summary": "Eliminated 2 sorries in completeness_dense and completeness_discrete by adding dense_indicator axiom and proving frame-class indicator derivation chains"
+    },
+    {
+      "project_number": 181,
+      "project_name": "derivable_prop_wrapper",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-20T22:25:13Z",
+      "last_updated": "2026-05-22T17:05:37Z",
+      "session_id": "sess_1779468897_2cf3b1",
+      "researched": "2026-05-22T16:01:26Z",
+      "artifacts": [
+        {
+          "path": "specs/181_derivable_prop_wrapper/reports/01_derivable-prop-wrapper.md",
+          "type": "report",
+          "summary": "Research report covering DerivationTree API surface, proposed Derivable definition with 7 core lemmas, file placement recommendation, simp/aesop integration strategy, and implementation plan in 3 phases."
+        },
+        {
+          "path": "specs/181_derivable_prop_wrapper/plans/01_derivable-prop-wrapper.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for Derivable Prop-valued wrapper with aesop/simp integration"
+        },
+        {
+          "path": "specs/181_derivable_prop_wrapper/summaries/01_derivable-prop-wrapper-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for Derivable Prop-valued wrapper"
+        }
+      ],
+      "completion_summary": "Added Derivable Prop-valued wrapper (180 lines) with 7 constructor-mirroring lemmas, aesop/simp attributes, |-! notation. Zero sorries, build passes, Consistent bridge verified."
+    },
+    {
+      "project_number": 168,
+      "project_name": "parameterize_derivationtree_over_frameclass",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-19T15:55:50Z",
+      "last_updated": "2026-05-25T22:30:00Z",
+      "session_id": "sess_1779755827_2a0c74",
+      "started": "2026-05-25T14:57:07Z",
+      "resume_phase": 5,
+      "description": "Refactor axiom system to parameterize DerivationTree over FrameClass with a partial order, so frame-class validity is enforced structurally by the type system rather than by external predicates. Currently the codebase has a single Axiom inductive with 40 constructors and ad-hoc Boolean predicates (isBase, isDenseCompatible, isDiscreteCompatible) to filter axioms by frame class. The density axiom Fφ → FFφ exists as a semantic validity but has no Axiom constructor, and FrameClass.Dense exists but nothing maps to it. Soundness theorems carry side-conditions like h_dc throughout ~60+ call sites. Key changes: (1) Add density axiom constructor to Axiom for Fφ → FFφ mapped to FrameClass.Dense. (2) Add PartialOrder on FrameClass: Base ≤ Dense, Base ≤ Discrete, Dense and Discrete incomparable. (3) Define Axiom.minFrameClass: Base for 37 base axioms, Dense for density, Discrete for prior_UZ/prior_SZ/z1. (4) Parameterize DerivationTree (fc : FrameClass) : Context → Formula → Type with axiom rule requiring ax.minFrameClass ≤ fc. (5) Add lift function for fc₁ ≤ fc₂. (6) Remove all ad-hoc predicates (isBase, isDenseCompatible, isDiscreteCompatible on Axiom and DerivationTree). (7) Update all soundness theorems to remove h_dc side-conditions. (8) Update completeness theorems to produce DerivationTree .Base/.Dense/.Discrete as appropriate. (9) Update ~123 downstream references across Metalogic/, FrameConditions/, Theorems/, Boneyard/. (10) Connect density_valid to new axiom constructor. (11) Update README: rename Serial → Base, document three axiom systems as additive extensions.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/reports/01_research.md",
+          "type": "research",
+          "summary": "Comprehensive inventory: FrameClass (3 constructors, no PartialOrder), Axiom (40 constructors, no density), DerivationTree (unparameterized, 71 live files), 3 ad-hoc predicates in 6 files, 105 h_dc refs in 5 soundness files. 47 live files need changes, 37 mechanical. 20-30h estimated across 5 phases."
+        },
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "7-phase plan: core types (density axiom, PartialOrder, parameterized DerivationTree), ProofSystem layer, Theorems mechanical, soundness refactor (collapse 3x40-case splits), Metalogic/completeness, remaining modules, documentation. 24 hours, 47 live files."
+        },
+        {
+          "path": "specs/168_parameterize_derivationtree_over_frameclass/handoffs/phase-1-handoff.md",
+          "type": "handoff",
+          "summary": "Phase 1 complete: density axiom (41 constructors), PartialOrder on FrameClass, parameterized DerivationTree with h_fc gate, lift function, new notation. Both core files compile."
+        }
+      ],
+      "researched": "2026-05-25T12:30:00Z",
+      "plan_metadata": {
+        "phases": 7,
+        "total_effort_hours": 24,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-25"
+          }
+        ]
+      },
+      "completion_summary": "DerivationTree fully parameterized over FrameClass across 50+ files. PartialOrder on FrameClass, density axiom, minFrameClass gate, lift function, ad-hoc predicate removal, soundness h_dc elimination — all complete. 6 discrete chronicle sorries resolved by task 197. lake build passes clean."
+    },
+    {
+      "project_number": 174,
+      "project_name": "split_oversized_files",
+      "status": "completed",
+      "session_id": "sess_1779810332_dc1959",
+      "task_type": "lean4",
+      "priority": "medium",
+      "description": "Split Lean files exceeding ~1500 lines into focused modules. Targets: ExpressivenessGeneral.lean (~10000 lines — split GHR93 game infrastructure, EF games, Stavi connectives into separate modules), Hierarchy.lean (3845 lines — split by induction level), SoundnessLemmas.lean (2422 lines — split after task 168 collapses 4 near-duplicate frame-class blocks), DedekindZ.lean (2236), ExpressiveCompleteness.lean (2129), SubformulaClosure.lean (1889 in Syntax/), Propositional.lean (1712 in Theorems/), Tactics.lean (1416), RestrictedMCS.lean (1413), ProofSearch.lean (1384). Each split file should have a clear single responsibility and a module docstring.",
+      "dependencies": [
+        168
+      ],
+      "created": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-05-26T18:09:52Z",
+      "topic": "formula-refactor",
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/174_split_oversized_files/reports/01_split-file-analysis.md",
+          "type": "research",
+          "summary": "File inventory (10 targets), per-file split proposals with section analysis, import impact, recommended execution order"
+        },
+        {
+          "path": "specs/174_split_oversized_files/plans/01_split-file-analysis.md",
+          "type": "plan",
+          "summary": "Revised plan (v2): 12 phases splitting 12 files into 35 modules with direct imports and principled mathematical decomposition, 46 hours"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 12,
+        "total_effort_hours": 46,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            5,
+            6,
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9,
+            10
+          ],
+          [
+            11,
+            12
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_split-file-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      },
+      "completion_summary": "Split 12 oversized Lean files (50K+ lines) into 35 focused modules with direct imports. All downstream importers updated, lake build passes (1667 jobs). Largest remaining files: GapDetection (5057 lines) and SplitPoint (4657 lines) are acceptable indivisible mathematical units."
+    },
+    {
+      "project_number": 195,
+      "project_name": "ef_game_automation_tactics",
+      "status": "completed",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "automation",
+      "description": "Build EF game automation tactics for WeakCanonical/ metalogic proofs: solve_same_order_type (N×N grid dispatch), game_tuple_simp (rewrite set), pivot_order (auto-fill interval bounds), winning_condition_tac (5-way index split). Estimated 1200-2500 line savings across 32K-line WeakCanonical directory.",
+      "dependencies": [],
+      "created": "2026-05-22T19:18:49Z",
+      "last_updated": "2026-05-22T20:09:58Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/195_ef_game_automation_tactics/reports/01_ef-game-tactics.md",
+          "type": "report",
+          "summary": "Research report: pattern analysis, tactic specifications, implementation plan for 4 EF game automation components"
+        },
+        {
+          "path": "specs/195_ef_game_automation_tactics/plans/01_ef-game-tactics.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for EF game automation tactics (game_tuple_simp, pivot_order, winning_condition_tac, same_order_type_grid)"
+        },
+        {
+          "path": "specs/195_ef_game_automation_tactics/summaries/01_ef-game-tactics-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for EF game automation tactics"
+        }
+      ],
+      "session_id": "sess_1779479262_f283a7",
+      "started": "2026-05-22T19:29:54Z",
+      "researched": "2026-05-22T19:38:51Z",
+      "completion_summary": "Created EFGameTactics.lean with 4 tactic components (simp_game_tuple, pivot_chain_order', gap_point_agreement_of_cases, same_order_type_grid). Relocated 6 private lemmas to EFGames.lean. Validated by replacing ~36 call sites in ExpressivenessGeneral.lean. Build passes."
+    },
+    {
+      "project_number": 197,
+      "project_name": "parameterize_chronicle_over_frameclass",
+      "status": "completed",
+      "completion_summary": "Parameterized BXCanonical chronicle construction and upstream Bundle/Algebraic layers over FrameClass. All 6 fc-mismatch sorries (z1, prior_UZ, prior_SZ) eliminated with proper h_fc proofs. 15 files modified across Chronicle, Bundle, Algebraic, and WeakCanonical layers. Full lake build passes (1649 jobs, 0 errors).",
+      "task_type": "lean4",
+      "created": "2026-05-25T22:35:00Z",
+      "last_updated": "2026-05-26T01:15:00Z",
+      "dependencies": [
+        168
+      ],
+      "description": "Parameterize the BXCanonical chronicle construction over FrameClass to eliminate 6 sorry workarounds introduced in task 168. Currently ChronicleConstruction.lean hardcodes SetMaximalConsistent (fc := FrameClass.Base), but the discrete completeness pipeline needs fc = FrameClass.Discrete for axioms z1, prior_UZ, prior_SZ (which have minFrameClass = .Discrete). The fix: parameterize ChronicleConstruction.lean and its downstream consumers (ChronicleToCountermodel.lean, ChronicleExtraction.lean, FrameProperties.lean) over fc, instantiating with .Base for the base/dense pipeline and .Discrete for the discrete pipeline. Affects ~70 references in ChronicleConstruction.lean plus cascading changes. Sorry locations: FrameProperties.lean:25,34,41 (z1, prior_UZ, prior_SZ), ChronicleExtraction.lean:62,73 (prior_UZ, prior_SZ), ChronicleToCountermodel.lean:1529 (z1). Definition of done: all 6 sorry entries replaced with proper h_fc proofs, lake build passes, no new sorries introduced.",
+      "session_id": "sess_1779926400_c7f2a1",
+      "researched": "2026-05-26T00:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/197_parameterize_chronicle_over_frameclass/reports/01_chronicle-fc-parameterization.md",
+          "type": "research",
+          "summary": "Complete analysis: 6 sorry locations (all fc-mismatch, Discrete<=Base=False), 12-14 files across 16K lines, 450+ mechanical replacements, 8-phase bottom-up parameterization strategy, 18-22h estimated effort."
+        },
+        {
+          "path": "specs/197_parameterize_chronicle_over_frameclass/plans/01_chronicle-fc-parameterization.md",
+          "type": "plan",
+          "summary": "8-phase bottom-up plan: parameterize Chronicle pipeline (6 files) and WeakCanonical layer (4 files) over fc, fix 6 fc-mismatch sorries, 20 hours estimated"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 8,
+        "total_effort_hours": 20,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_chronicle-fc-parameterization.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-26"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 204,
+      "project_name": "dataset_production_runs",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T18:30:31Z",
+      "last_updated": "2026-05-29T21:30:00Z",
+      "completed": "2026-05-29T21:30:00Z",
+      "completion_summary": "Executed medium (5136 records, complexity 4, 25% valid) and deep (53979 records, complexity 7, 1.6% valid) production runs. All gates pass except deep valid fraction (1.6% < 15%, expected for random sampling). 59K total records, 53 MB. Reproducible script at scripts/run_dataset_generation.sh.",
+      "session_id": "sess_1748563200_orch204",
+      "researched": "2026-05-29T12:30:00Z",
+      "planned": "2026-05-29T20:15:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/204_dataset_production_runs/reports/01_production-runs-research.md",
+          "type": "research",
+          "summary": "Complete API survey, enumeration modes, CLI interface, feasibility gate thresholds, performance benchmarks at complexity 3-5, production run recommendations, memory/scalability concerns"
+        },
+        {
+          "path": "specs/204_dataset_production_runs/plans/01_production-runs-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: build verification + script, medium run (5K formulas), deep run (50K hybrid), validation summary. 3 hours active + overnight compute."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_production-runs-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 205,
+      "project_name": "benchmark_curation",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T18:30:31Z",
+      "last_updated": "2026-05-29T21:16:36Z",
+      "session_id": "sess_1780088191_17e016_a",
+      "artifacts": [
+        {
+          "path": "specs/205_benchmark_curation/reports/01_benchmark-curation.md",
+          "type": "research_report",
+          "summary": "BMLogic-Bench research: 59K production records (3.7% valid, 93% trivial ex_falso), 42 BX axiom constructors for enrichment, hybrid Python+Lean pipeline with stratified sampling."
+        },
+        {
+          "path": "specs/205_benchmark_curation/plans/01_benchmark-curation.md",
+          "type": "plan",
+          "summary": "5-phase plan: Lean axiom instance generator, Python curation script with near-miss mutations, oracle validation, final export with metadata, integration test. 10 hours, complex."
+        },
+        {
+          "path": "specs/205_benchmark_curation/summaries/01_benchmark-curation-summary.md",
+          "type": "summary",
+          "summary": "BMLogic-Bench: 727-formula benchmark, 46.8%/53.2% valid/invalid, 42/42 axiom coverage, zero label mismatches."
+        }
+      ],
+      "completion_summary": "BMLogic-Bench benchmark: 727 formulas with 46.8%/53.2% valid/invalid split. Created BenchmarkAnchors.lean (724 axiom instances from 42 BX schemata), BenchmarkOracle.lean (JSON AST parser for validation), Python curation pipeline with near-miss mutations and stratified sampling. All checks pass, zero label mismatches, zero sorries."
+    },
+    {
+      "project_number": 206,
+      "project_name": "contrastive_pair_generation",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T18:30:31Z",
+      "last_updated": "2026-05-29T21:07:36Z",
+      "session_id": "sess_1780088191_17e016_b",
+      "artifacts": [
+        {
+          "path": "specs/206_contrastive_pair_generation/reports/01_contrastive-pairs.md",
+          "type": "research_report",
+          "summary": "Contrastive pair research: 7 mutation strategies, existing swap_temporal/subst_formula infrastructure, decision procedure with countermodel extraction, recommended FormulaMutator.lean module."
+        },
+        {
+          "path": "specs/206_contrastive_pair_generation/plans/01_contrastive-pairs.md",
+          "type": "plan",
+          "summary": "4-phase plan: core mutation types/functions, contrastive pair pipeline with temporal duality, JSONL export with standalone executable, integration validation. 5 hours, medium complexity."
+        },
+        {
+          "path": "specs/206_contrastive_pair_generation/summaries/01_contrastive-pairs-summary.md",
+          "type": "summary",
+          "summary": "FormulaMutator module: 7 mutation strategies, contrastive pair pipeline, JSONL export, standalone executable. Zero sorries."
+        }
+      ],
+      "completion_summary": "Implemented FormulaMutator.lean (~780 lines) with 8 MutationType variants, 7 mutation functions, contrastive pair pipeline with countermodel extraction, JSONL export, and standalone contrastive_generator executable. Lake build passes, zero sorries."
+    },
+    {
+      "project_number": 207,
+      "project_name": "multi_representation_export",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-29T18:30:31Z",
+      "last_updated": "2026-05-29T21:02:31Z",
+      "session_id": "sess_1780088191_17e016_c",
+      "artifacts": [
+        {
+          "path": "specs/207_multi_representation_export/reports/01_multi-repr-export.md",
+          "type": "research_report",
+          "summary": "Multi-representation export research: S-expression printer, prefix tokenizer (15-token vocab), PatternKey numeric features, optional GNN adjacency list. PatternKey already exported as JSON; adds vector variant. 4 core phases, 4-7 hours."
+        },
+        {
+          "path": "specs/207_multi_representation_export/plans/01_multi-repr-export.md",
+          "type": "plan",
+          "summary": "5-phase plan: S-expression printer, tokenizer, numeric feature vector, DatasetRecord integration, build verification. 4 hours, medium complexity."
+        },
+        {
+          "path": "specs/207_multi_representation_export/summaries/01_multi-repr-export-summary.md",
+          "type": "summary",
+          "summary": "Added toSExpr, tokenize, toFeatureVector to DataExport.lean; integrated formula_sexpr, formula_tokens, pattern_features into DatasetRecord JSONL output."
+        }
+      ],
+      "completion_summary": "Added toSExpr, tokenize, and toFeatureVector serialization to DataExport.lean. Integrated formula_sexpr, formula_tokens, pattern_features into DatasetRecord JSONL output. Lake build passes (1678 jobs). Zero sorries."
     }
   ]
 }
