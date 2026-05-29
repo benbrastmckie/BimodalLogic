@@ -130,16 +130,21 @@ technical_debt:
 
 ### 214. Dataset cleanup, standardization, and documentation
 - **Effort**: small (4-6 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Dependencies**: 204, 205
 - **Research**:
   - [214_dataset_cleanup_documentation/reports/01_team-research.md]
   - [214_dataset_cleanup_documentation/reports/02_task-213-impact.md]
-- **Plan**: [214_dataset_cleanup_documentation/plans/01_dataset-cleanup-plan.md]
+- **Plan**:
+  - [214_dataset_cleanup_documentation/plans/01_dataset-cleanup-plan.md]
+  - [214_dataset_cleanup_documentation/plans/02_dataset-cleanup-plan.md]
+
+---
 
 **Description**: Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format. Create a comprehensive data/README.md documenting each dataset. Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas.
 
+---
 
 ### 208. HuggingFace dataset packaging for BMLogic-Bench
 - **Effort**: small (4-6 hours)
@@ -149,6 +154,7 @@ technical_debt:
 
 **Description**: Package the BMLogic-Bench dataset for HuggingFace Datasets Hub publication. Create dataset_info.json metadata file, Python script to convert JSONL to Parquet format, dataset card (README.md) with usage examples and citation info, and train/val/test split validation. Target: one-line loading via `datasets.load_dataset("logos-labs/bmlogic-bench")`. Include dataset statistics, license, and benchmark description for the NeurIPS 2026 Datasets track submission.
 
+---
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 20 hours
@@ -166,6 +172,7 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md]
 - **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files.
 
+---
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
 - **Effort**: large (20-30 hours)
@@ -182,8 +189,6 @@ technical_debt:
 - **Dependencies**: 155
 
 **Description**: Create a bespoke `grid_order_tac` tactic (in `Theories/Bimodal/Automation/`) that automates the `same_order_type` grid dispatch in `ghr93_case_II` (`Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`). The problem: after `same_order_type_grid` expands to `intro i j; simp only [game_tuple]; split_ifs`, it generates ~25 ordering goals per case. Each goal has shape `(a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...)`. The available ordering lemmas (`tau_sel_y`, `tau_sel_sel`, `sel_pn_ord`, `pn_sel_ord`, `tau_d_sel`, `hord_cd_en_pn`, `pivot_chain_order`, `fwd_x_b`, `fwd_b_y`) are stated with `Fin n` but the goals use `Fin (n+1)`, causing `exact` to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via `convert ... using 3 <;> (congr 1; exact Fin.ext (by omega))`, (2) handle the `hab_eq` rewrite for p_n cases (when `¬k < n`, rewrite `a_bwd` to `extendPoint p_n` before applying `sel_pn_ord`/`pn_sel_ord`), (3) handle symmetry (y < sel goal uses `tau_sel_y.symm`), (4) fall back to `sorry` with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in `ghr93_case_II`: Case A sorry at line ~1631 and Case B sorry at line ~1940 — these are the last fallthrough goals in the `first | ... | sorry` chains inside the `same_order_type` proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.
-
----
 
 ---
 
@@ -227,8 +232,6 @@ technical_debt:
 - **`pivot_order` context-search elab tactic** (deferred from task 195 Phase 3): A full `elab` tactic in `TacticM` that auto-discovers pivot elements, interval bounds, and ordering witnesses from the local context via `getLCtx`/`isDefEq`, then applies `pivot_chain_order'`/`pivot_chain_order_rev'` with zero explicit arguments. The pair-based convenience theorems already implemented in task 195 capture ~90% of the ergonomic win (6 args instead of 8), but the remaining step to full context search (~100 lines of metaprogramming) would eliminate all manual argument assembly at ~65 call sites. Evaluate whether the maintenance cost of context-search brittleness is justified by the marginal gain.
 
 **Relationship to existing tasks**: Tasks 185-195 were created incrementally based on specific needs. This survey may confirm, refine, or supersede them. Task 195 (EF game automation) was created from a focused WeakCanonical/ scan and is likely correct but may be restructured. Tasks 185-193 (modal proof search pipeline) were designed top-down and may benefit from bottom-up validation.
-
----
 
 ---
 

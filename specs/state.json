@@ -1078,23 +1078,23 @@
     {
       "project_number": 214,
       "project_name": "dataset_cleanup_documentation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "description": "Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format (add description, version, schema_version, quality fields). Create a comprehensive data/README.md documenting each dataset (purpose, schema, record counts, generation provenance, field descriptions). Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas.",
-      "last_updated": "2026-05-29T21:46:47Z",
-      "session_id": "sess_1780090904_883f9c",
+      "last_updated": "2026-05-29T21:54:17Z",
+      "session_id": "sess_1780091412_b9f162",
       "researched": "2026-05-29T21:33:04Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
-          "path": "specs/214_dataset_cleanup_documentation/plans/01_dataset-cleanup-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan with 5 sequential phases covering file cleanup, Git LFS setup, metadata standardization, README creation, and schema validation"
-        },
-        {
           "path": "specs/214_dataset_cleanup_documentation/reports/02_task-213-impact.md",
           "type": "research",
           "summary": "Follow-up research: task 213 impact analysis on plan 214"
+        },
+        {
+          "path": "specs/214_dataset_cleanup_documentation/plans/02_dataset-cleanup-plan.md",
+          "type": "plan",
+          "summary": "Revised plan (v2) with 5 phases incorporating task 213 findings"
         }
       ],
       "memory_candidates": [
