@@ -2,7 +2,7 @@
 
 [Back to Documentation](../README.md)
 
-Developer standards, conventions, and contribution guides for the Logos project. These documents
+Developer standards, conventions, and contribution guides for the ProofChecker project. These documents
 establish coding practices, quality standards, and workflow patterns for contributors.
 
 **Audience**: Developers, contributors, documentation authors

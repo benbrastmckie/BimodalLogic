@@ -2,6 +2,13 @@
 
 Project-wide documentation hub for the ProofChecker formal verification project.
 
+> **Project Naming**: The repository is named **BimodalLogic**, the project display name is
+> **ProofChecker**, the Lake package is named **Logos** (in lakefile.toml), and the primary
+> Lean library namespace is **Bimodal** (in `Theories/Bimodal/`). These names serve different
+> purposes: the repository name reflects the GitHub URL, the display name appears in user-facing
+> documentation, the package name is used by Lake for dependency resolution, and the library
+> namespace is used in Lean import statements.
+
 ## Framework Overview
 
 ProofChecker implements TM bimodal logic (Tense and Modality) in Lean 4 with verified soundness and completeness proofs.

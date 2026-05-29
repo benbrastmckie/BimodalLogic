@@ -84,7 +84,7 @@ JSON example:
 Each theory maintains its own baseline measurements:
 
 - **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/docs/project-info/PERFORMANCE_TARGETS.md)
-- **Logos**: (planned)
+- **ProofChecker**: (planned)
 
 ## Benchmark File Organization
 

@@ -1,12 +1,12 @@
-# Logos Integration Guide
+# ProofChecker Integration Guide
 
-This document describes how to integrate Logos with the Model-Checker to create a comprehensive dual verification architecture for Logos.
+This document describes how to integrate ProofChecker (Bimodal) with the Model-Checker to create a comprehensive dual verification architecture.
 
-> **For AI-Assisted Development**: See [../../.opencode/README.md](../../.opencode/README.md) for automated research, planning, and implementation workflows that integrate with the development process described in this guide.
+> **For AI-Assisted Development**: See [.claude/CLAUDE.md](.claude/CLAUDE.md) for automated research, planning, and implementation workflows that integrate with the development process described in this guide.
 
 ## 1. Overview
 
-Logos and Model-Checker form a **dual verification architecture** providing complementary syntactic and semantic verification:
+Bimodal and Model-Checker form a **dual verification architecture** providing complementary syntactic and semantic verification:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -14,7 +14,7 @@ Logos and Model-Checker form a **dual verification architecture** providing comp
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │      ┌───────────────┐                  ┌───────────┐      │
-│      │ Logos  │◀────────────────▶│  Model-   │      │
+│      │ Bimodal│◀────────────────▶│  Model-   │      │
 │      │   (LEAN 4)    │  Formula         │  Checker  │      │
 │      │               │  Exchange        │  (Python) │      │
 │      └───────────────┘                  └───────────┘      │
@@ -39,7 +39,7 @@ Logos and Model-Checker form a **dual verification architecture** providing comp
 
 ### Export to Model-Checker
 
-Convert Logos formulas to Model-Checker format:
+Convert Bimodal formulas to Model-Checker format:
 
 ```lean
 /-- Export formula to SMT-LIB format for model checking -/
@@ -129,7 +129,7 @@ def FormulaExchange.deserialize (s : String) : Option FormulaExchange :=
 
 ### Generic Inference API
 
-Logos provides a generic inference verification API for external tools:
+ProofChecker provides a generic inference verification API for external tools:
 
 ```lean
 /-- Generic inference verification request -/
@@ -199,7 +199,7 @@ def api_check_satisfiability (Γ : Context) : IO Bool := do
 
 ### Layer 1-3 Operator Extensions
 
-Logos's layered architecture supports extensions:
+The layered architecture supports extensions:
 
 ```lean
 /-- Layer 1: Explanatory operators -/
@@ -273,7 +273,7 @@ structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
 
 ### Semantic Versioning
 
-Logos uses semantic versioning:
+ProofChecker uses semantic versioning:
 
 - **MAJOR**: Breaking API changes
 - **MINOR**: New features, backward compatible
@@ -281,7 +281,7 @@ Logos uses semantic versioning:
 
 ### Compatibility Matrix
 
-| Logos | Model-Checker |
+| Bimodal | Model-Checker |
 |--------------|---------------|
 | 0.1.x | 1.0.x, 1.1.x, 1.2.x |
 | 0.2.x | 1.2.x+ |
@@ -332,7 +332,7 @@ def handle_integration_error (e : IntegrationError) : IO Unit := do
 ### Integration Test Setup
 
 ```lean
--- LogosTest/Integration/ModelCheckerTest.lean
+-- Tests/BimodalTest/Integration/ModelCheckerTest.lean
 
 /-- Test round-trip serialization -/
 example (φ : Formula) : deserialize (serialize φ) = some φ := by
@@ -405,7 +405,7 @@ Updates integration documentation to reflect current implementation status and u
 - **`/document`**: Update integration documentation
 - **`/review`**: Analyze integration completeness and identify gaps
 
-See [AI System Overview](../../.opencode/README.md) for complete command reference and workflow details.
+See [Claude Code System](.claude/CLAUDE.md) for complete command reference and workflow details.
 
 ## References
 
@@ -413,5 +413,4 @@ See [AI System Overview](../../.opencode/README.md) for complete command referen
 - [Tutorial](TUTORIAL.md) - Getting started
 - [Examples](EXAMPLES.md) - Usage examples
 - [Versioning](../development/VERSIONING.md) - Version policy
-- [AI System Overview](../../.opencode/README.md) - Automated development workflows
-- [AI Command Reference](../../.opencode/command/README.md) - Command usage and examples
+- [Claude Code System](.claude/CLAUDE.md) - Automated development workflows

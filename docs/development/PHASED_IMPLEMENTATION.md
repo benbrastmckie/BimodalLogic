@@ -1,4 +1,4 @@
-# Phased Implementation Roadmap for Logos Layer 0
+# Phased Implementation Roadmap
 
 ## 1. Introduction
 

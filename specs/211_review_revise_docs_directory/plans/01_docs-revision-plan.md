@@ -109,21 +109,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Eliminate Stale System References [NOT STARTED]
+### Phase 2: Eliminate Stale System References [COMPLETED]
 
 **Goal**: Replace all .opencode references with .claude equivalents and update "Logos project" name references to "ProofChecker" or "BimodalLogic" throughout the documentation.
 
 **Tasks**:
-- [ ] Update INTEGRATION.md: replace 4 `.opencode/README.md` references with `.claude/` equivalents
-- [ ] Update DOC_QUALITY_CHECKLIST.md: replace 5 `.opencode/context/core/standards/` references with current .claude paths
-- [ ] Rewrite or archive MCP_INTEGRATION.md: the entire document describes OpenCode's `opencode.json` MCP configuration (16 occurrences). Add a legacy notice at the top explaining this describes the old system; rewrite the essential integration patterns for Claude Code if applicable, or reduce to a brief stub pointing to `.claude/CLAUDE.md`
-- [ ] Rewrite FEATURE_REGISTRY.md: current content (3 .opencode references) describes stale commands. Either repurpose as a Lean library feature registry or retitle and populate with current Claude Code feature tracking
-- [ ] Update CONTRIBUTING.md: replace remaining .opencode links (7 occurrences) with .claude equivalents
-- [ ] Update MAINTENANCE.md: replace 2 `.opencode/` references
-- [ ] Update IMPLEMENTATION_STATUS.md: replace 1 `.opencode` task reference
-- [ ] Replace "Logos project" name references with "ProofChecker" in: architecture/README.md, development/README.md, LEAN_STYLE_GUIDE.md, DIRECTORY_README_STANDARD.md, CONTRIBUTING.md, DOC_QUALITY_CHECKLIST.md, QUALITY_METRICS.md, VERSIONING.md, BENCHMARKING_GUIDE.md
-- [ ] Replace `Logos/` source path references with `Theories/Bimodal/` in: METAPROGRAMMING_GUIDE.md (Logos namespace references)
-- [ ] Add a project name clarification note to docs/README.md: repository = BimodalLogic, project display name = ProofChecker, Lake package = Logos, Lean library = Bimodal
+- [x] Update INTEGRATION.md: replace 4 `.opencode/README.md` references with `.claude/` equivalents *(completed)*
+- [x] Update DOC_QUALITY_CHECKLIST.md: replace 5 `.opencode/context/core/standards/` references with current .claude paths *(completed)*
+- [x] Rewrite or archive MCP_INTEGRATION.md: the entire document describes OpenCode's `opencode.json` MCP configuration (16 occurrences). Add a legacy notice at the top explaining this describes the old system; rewrite the essential integration patterns for Claude Code if applicable, or reduce to a brief stub pointing to `.claude/CLAUDE.md` *(completed)*
+- [x] Rewrite FEATURE_REGISTRY.md: current content (3 .opencode references) describes stale commands. Either repurpose as a Lean library feature registry or retitle and populate with current Claude Code feature tracking *(completed: repurposed as Lean library feature registry)*
+- [x] Update CONTRIBUTING.md: replace remaining .opencode links (7 occurrences) with .claude equivalents *(completed)*
+- [x] Update MAINTENANCE.md: replace 2 `.opencode/` references *(completed)*
+- [x] Update IMPLEMENTATION_STATUS.md: replace 1 `.opencode` task reference *(completed)*
+- [x] Replace "Logos project" name references with "ProofChecker" in: architecture/README.md, development/README.md, LEAN_STYLE_GUIDE.md, DIRECTORY_README_STANDARD.md, CONTRIBUTING.md, DOC_QUALITY_CHECKLIST.md, QUALITY_METRICS.md, VERSIONING.md, BENCHMARKING_GUIDE.md *(completed)*
+- [x] Replace `Logos/` source path references with `Theories/Bimodal/` in: METAPROGRAMMING_GUIDE.md (Logos namespace references) *(completed)*
+- [x] Add a project name clarification note to docs/README.md: repository = BimodalLogic, project display name = ProofChecker, Lake package = Logos, Lean library = Bimodal *(completed)*
 
 **Timing**: 2 hours
 

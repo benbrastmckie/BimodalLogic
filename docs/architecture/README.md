@@ -2,8 +2,8 @@
 
 [Back to Documentation](../README.md)
 
-Architectural Decision Records (ADRs) documenting significant design decisions for the Logos
-project. ADRs capture the context, decision, and consequences of architectural choices.
+Architectural Decision Records (ADRs) documenting significant design decisions for the
+ProofChecker project. ADRs capture the context, decision, and consequences of architectural choices.
 
 **Audience**: Architects, maintainers, contributors understanding design rationale
 
@@ -31,7 +31,7 @@ understand why the system is designed the way it is.
 ### ADR-001: Classical Logic for Metalogic
 
 Establishes the use of Classical logic (including `noncomputable` definitions and
-`Classical.choice`) for metalogic proofs in the Logos system. This enables:
+`Classical.choice`) for metalogic proofs in the Bimodal library. This enables:
 - Proof by contradiction
 - Law of excluded middle
 - Classical existence proofs

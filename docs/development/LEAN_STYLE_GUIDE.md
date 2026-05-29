@@ -1,6 +1,6 @@
-# LEAN Style Guide for Logos
+# LEAN Style Guide for ProofChecker
 
-This document defines coding conventions for the Logos project, adapted from Mathlib4 conventions with project-specific additions.
+This document defines coding conventions for the ProofChecker project, adapted from Mathlib4 conventions with project-specific additions.
 
 ## 1. Naming Conventions
 
@@ -282,7 +282,7 @@ import Logos.ProofSystem.Axioms
 - Use relative imports within the same package/directory
 
 ```lean
--- In Logos/Semantics/Truth.lean
+-- In Theories/Bimodal/Semantics/Truth.lean
 import Logos.Syntax.Formula        -- absolute (different package)
 import Logos.Semantics.TaskFrame   -- relative would also work
 ```
@@ -734,7 +734,7 @@ These Unicode mathematical symbols are essential to the formal notation and shou
 
 ## 10. Linting and Quality Assurance
 
-The Logos project uses a comprehensive linting system to enforce code quality standards and TM-specific conventions.
+The ProofChecker project uses a comprehensive linting system to enforce code quality standards and TM-specific conventions.
 
 ### Running Linters
 
