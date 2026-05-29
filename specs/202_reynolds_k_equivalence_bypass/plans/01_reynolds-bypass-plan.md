@@ -187,16 +187,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Rewire `countermodel_discrete` to Reynolds Pipeline [PARTIAL]
+### Phase 4: Rewire `countermodel_discrete` to Reynolds Pipeline [BLOCKED]
+
+**BLOCKER** (Phase 4):
+- **What failed**: The `h_truth_corr` discharge requires `truth_at TM ... t psi <-> temporal_truth ... s psi` for all subformulas. With `zIntervalTaskFrame` (WorldState = Unit), atom valuation is position-independent (`TM.valuation () a` is constant), but `temporal_truth ... s (atom a) = Z.interp (atomMap_fwd (atom a)) s.val` is position-dependent. These cannot be equated.
+- **What was tried**: (1) Position-tracking TaskFrame with `WorldState = Z` - fails because `time_shift` changes states, making singleton Omega NOT shift-closed. (2) Position-tracking with all-shifts Omega - fails because box is no longer transparent. (3) Weakening `h_truth_corr` to single point - fails because `truth_at ... t phi` for Until/Since unfolds recursively to other points.
+- **Why it's stuck**: Fundamental incompatibility between three requirements: (a) shift-closed Omega (needed for ShiftClosed), (b) transparent box (needed for box = identity), (c) position-dependent atom truth (needed for truth correspondence). Any two can be satisfied but not all three simultaneously with the current TaskFrame architecture.
+- **What is needed**: Either (1) restructure the countermodel to use the parametric canonical model on Z directly (requires building a BFMCS on Z with restricted coherence, which avoids `succ_embed_surjective` because Z IS succ-Archimedean), or (2) prove a "weak countermodel" theorem that only requires `NOT truth_at ... t phi` without a full truth correspondence (requires showing the specific formula phi evaluates correctly under some fixed valuation), or (3) complete Phase 1 first, which makes `chronicle_is_good` sorry-free via `orderIsoIntOfLinearSuccPredArch` (because if `no_gaps_discrete` implies the domain IS succ-Archimedean after all, the original approach works).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Replace the `dd_countermodel_chronicle_discrete` delegation in `countermodel_discrete` (Transfer.lean:790) with the full Reynolds pipeline: chronicle extraction -> chronicle_is_good_direct -> truth_transfer -> z_interval_countermodel.
 
 **Tasks**:
-- [ ] Discharge `h_truth_corr` hypothesis of `z_interval_countermodel`. This requires constructing a `TaskModel zIntervalTaskFrame` from the Z-interval's predicate interpretations and proving that `truth_at TM zIntervalOmega zIntervalHistory t psi <-> temporal_truth (Z.toOrdered sig) atomMap_fwd s psi` for all subformulas `psi` and corresponding points `t = iso(s)`. The proof strategy:
-  1. Define the `TaskModel` with atom valuation derived from Z-interval predicates
-  2. Box case: by `zIntervalBox_transparent`, `truth_at (.box psi) <-> truth_at psi`, and the Z-interval is unbounded so box quantification is over the same set
-  3. Temporal cases (Until, Since): `truth_at (untl phi psi)` quantifies over `t < s` with domain `True`, matching the quantification in `temporal_truth`
-  4. Atom/Bot/Imp cases: follow from the TaskModel definition
+- [ ] Discharge `h_truth_corr` hypothesis of `z_interval_countermodel` *(deviation: blocked -- WorldState=Unit incompatible with position-dependent predicates; see BLOCKER above)*
 - [ ] Build the complete pipeline proof in `countermodel_discrete`:
   1. Extract chronicle: `extract_chronicle_as_prior` (ChronicleExtraction.lean)
   2. Convert to monadic structure: `chronicleAsMonadicStructure` (NEquivalence.lean)
