@@ -133,7 +133,7 @@ technical_debt:
 
 ### 203. Build formula enumerator, decider labeling, and JSON dataset export
 - **Effort**: large (3-4 weeks)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Dependencies**: 201 (parent task)
 - **Research**: [203_formula_enumerator_dataset_export/reports/01_team-research.md]
@@ -157,15 +157,15 @@ technical_debt:
 - **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. 5 phases: US expressive completeness over Prior structures, no_gaps_discrete proof (Reynolds Theorem 14), chronicle_is_good_direct via one_class, countermodel_discrete rewiring, full verification. This is the ONLY viable path -- succ_cofinal is unprovable (4 research agents confirmed). Phase 3 completed (one_class_implies_very_good, chronicle_is_good_direct). Phase 4 partial (countermodel_discrete_reynolds architecture). Phases 1-2 blocked on US expressive completeness over Prior structures.
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
-- **Effort**: XL
-- **Status**: [RESEARCHED]
+- **Effort**: XL (3-4 weeks)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**:
   - [201_alphazero_proof_search_harness/reports/01_team-research.md]
   - [201_alphazero_proof_search_harness/reports/02_team-research.md]
 - **Plan**: [201_alphazero_proof_search_harness/plans/01_task-decomposition.md]
 
-**Description**: Set up a training harness for a value network and prediction network to follow a generator that seeks to prove theorems in the bimodal logic, using Lean for the positive signal. This should follow a modern rendition of what AlphaZero did for Go, but applied to the bimodal logic in Lean for the signal
+**Description**: Tier 1 dual-signal training data pipeline using Lean-native `decide`/`findCountermodel` API. 6 phases: JSON serialization layer, formula enumeration engine, batch decision pipeline with proof trace extraction, enriched countermodel extraction, dataset assembly & JSON export, validation & feasibility gate. Valid formulas produce (features, proof_height, rule_profile) tuples; invalid formulas produce (features, countermodel_atoms, branch_structure) tuples. No Python bridge needed — pure Lean with JSON export for downstream ML.
 
 
 ### 200. GHR93 Case II elegance rewrite (code quality)

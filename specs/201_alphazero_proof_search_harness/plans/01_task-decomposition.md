@@ -1,69 +1,67 @@
-# Implementation Plan: Task #201 -- AlphaZero Proof Search Task Decomposition
+# Implementation Plan: Task #201 -- Lean-Native Dual-Signal Training Data Pipeline (Tier 1)
 
 - **Task**: 201 - alphazero_proof_search_harness
-- **Status**: [NOT STARTED]
-- **Effort**: 40 hours (planning/setup effort across 6 sub-tasks; full implementation is 4-8 person-months)
-- **Dependencies**: None (completeness work is independent; the harness uses the existing axiom/rule infrastructure)
-- **Research Inputs**: specs/201_alphazero_proof_search_harness/reports/01_team-research.md
-- **Artifacts**: plans/01_task-decomposition.md (this file)
-- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Status**: [PLANNED]
+- **Effort**: 3-4 weeks (6 phases, all Lean-native)
+- **Dependencies**: None (uses existing Decidability infrastructure)
+- **Research Inputs**: [specs/201_alphazero_proof_search_harness/reports/01_team-research.md], [specs/201_alphazero_proof_search_harness/reports/02_team-research.md]
+- **Artifacts**: plans/01_task-decomposition.md (this file, revised from v1)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md
 - **Type**: lean4
-- **Lean Intent**: false
+- **Lean Intent**: true
 
 ## Overview
 
-This plan decomposes the AlphaZero-style proof search harness (task 201) into 6 concrete sub-tasks, each independently researchable, plannable, and implementable via the task system. The decomposition follows the phased approach unanimously recommended by team research: foundation infrastructure first (formula enumeration, Python-Lean bridge, benchmark), then value estimation, then policy network with expert iteration, and finally full MCTS. Each phase in this plan defines a sub-task with a seed research brief, deliverables, dependencies, effort estimate, and open questions for that sub-task's own `/research` cycle. The plan is complete when all 6 sub-tasks have been created with their seed descriptions.
+This revised plan narrows scope from the original 6-sub-task decomposition to a focused Tier 1 implementation: building a dual-signal training data pipeline entirely within Lean, using the existing `decide`/`findCountermodel` API in `Metalogic/Decidability/`. The previous plan (v1) correctly identified the phased AlphaZero architecture but deferred all implementation to future sub-tasks. This revision works through the concrete API usage required to generate labeled `(formula, proof_trace, countermodel, features)` tuples for downstream ML training.
 
 ### Research Integration
 
-The team research report (4 teammates) provided the following key findings integrated into this plan:
+Round 2 research (02_team-research.md) established three findings that reshape the plan:
 
-- The bimodal TM logic has 42 axiom constructors + 7 inference rules, yielding a finite, enumerable action space comparable to Go's branching factor (~50-200)
-- `DerivationTree.height` provides exact value-network labels (steps-to-completion)
-- The tableau decision procedure generates unlimited training data via formula enumeration
-- `SuccessPatterns.lean` already implements a shallow value function (`PatternKey -> ProofStrategy`)
-- LeanDojo-v2 + LeanProgress is the recommended harness; Nazrin GNN architecture matches the domain
-- Expert iteration (not full RL from scratch) is the right training paradigm
-- Minimum viable: CPU-only for Phases 0-1, single GPU for Phase 2, A100 for Phase 3
-- No published result shows MCTS+NN proof search working from cold start at small compute in a custom domain, but value estimators and retrieval-based approaches DO work at small scale
+1. **The Lean codebase already contains the core machinery**: `decide` (DecisionProcedure.lean:120) returns `DecisionResult φ` with three constructors: `.valid proof`, `.invalid counter`, `.timeout`. The `findCountermodel` function (CountermodelExtraction.lean:174) provides a dedicated countermodel extraction path. No Python bridge is needed for data generation.
+
+2. **SimpleCountermodel provides corrective signal at zero cost**: `extractCountermodelSimple` (CountermodelExtraction.lean:120) extracts atom-level countermodels from open saturated tableau branches. The `SimpleCountermodel` type (CountermodelExtraction.lean:47) captures `trueAtoms`, `falseAtoms`, and `formula`. While shallow (atoms only, not full task-frame structures), this is sufficient for value estimation training.
+
+3. **Feature extraction already exists**: `PatternKey.fromFormula` (SuccessPatterns.lean:115) computes `modalDepth`, `temporalDepth`, `impCount`, `complexity`, `topOperator` — exactly the input features for a value network MLP.
+
+The **dual signal** is: valid formulas produce `(features, proof_height, rule_profile)` tuples (positive signal); invalid formulas produce `(features, countermodel_atoms, branch_structure)` tuples (corrective signal). Both are first-class training data. This is novel — no published system uses structured countermodels as training signals (see 02_team-research.md §3).
 
 ### Prior Plan Reference
 
-No prior plan.
+Previous plan (01_task-decomposition.md, v1) defined 6 sub-tasks spanning the full AlphaZero pipeline (formula enumeration → Python-Lean bridge → training data → value network → policy network → MCTS). This revision replaces it with a focused Tier 1 data pipeline. The original phases 4-6 (value network, policy network, MCTS) remain valid for future sub-tasks once the data pipeline is validated.
 
 ### Roadmap Alignment
 
-This task is not on the completeness critical path. It represents a new research direction (neural proof search) that builds on the existing formalized axiom system and proof infrastructure. The ROADMAP does not currently list neural proof search items, but the harness leverages:
-- The 42 BX axiom constructors and 7 inference rules (Axioms.lean)
-- The existing `Automation/ProofSearch/` infrastructure
-- The `SuccessPatterns.lean` shallow value function
-- The `SubformulaClosure/` module for bounded formula generation
-- The tableau decision procedure in `Metalogic/Decidability/`
+Complements task 203 (formula enumerator, currently researching). This plan builds the labeling and export pipeline that consumes enumerated formulas and produces the dataset all downstream neural components require.
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Define 6 concrete sub-tasks with clear scope, deliverables, and dependencies
-- Provide seed research briefs drawn from team research findings for each sub-task
-- Identify key open questions that each sub-task's own `/research` should investigate
-- Establish a dependency graph so sub-tasks can be executed in order or in parallel where possible
+- Build a Lean module that enumerates TM formulas at controlled modal/temporal depth and size
+- Run `decide`/`findCountermodel` on each formula to produce labeled decision results
+- Extract proof traces from `DerivationTree` (height, rules applied, structure) for valid formulas
+- Extract enriched countermodel data from open tableau branches for invalid formulas
+- Compute `PatternKey` features for every formula
+- Export structured JSON for Python ML consumption
+- Validate dataset diversity, difficulty distribution, and signal quality via a feasibility gate
 
 **Non-Goals**:
-- Implementing any component of the harness in this plan (each sub-task handles its own implementation)
-- Making final architecture decisions (each sub-task's research phase will resolve open questions)
-- Building the full AlphaZero system (the phased approach means Phase 3 is only pursued if Phase 2 succeeds)
-- Modifying any existing Lean source files
+- Building a Python-Lean bridge (deferred to later sub-task)
+- Training any neural network (deferred to value network sub-task)
+- Generating full task-frame countermodels (Tier 2 — requires standalone Z3, see 02_team-research.md §4)
+- Modifying existing `Decidability/`, `SuccessPatterns`, or `Syntax/` modules
+- Handling dense frame class countermodels (inherent limitation of finite model approach)
+- Updating the ModelChecker (Tier 3, separate project)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Formula enumerator produces only trivial/redundant formulas | H | M | Phase 1 includes diversity validation; feasibility gate before investing in neural infrastructure |
-| Python-Lean bridge does not work with ProofChecker's Lean version | H | M | Phase 1 tests multiple bridge options (LeanDojo-v2, lean-interact, PyPantograph) |
-| Training corpus too small for meaningful learning | H | L | Tableau decision procedure generates unlimited data; research confirmed 10K-50K labeled formulas achievable |
-| Value network does not beat SuccessPatterns.lean baseline | M | M | Phase 2 defines clear evaluation metrics; shallow MLP is low investment; negative result is still publishable |
-| Compute requirements exceed available hardware | M | L | Phases 0-1 are CPU-only; Phase 2 needs only 1x 24GB GPU; Phase 3 (A100) is optional |
-| Lean REPL throughput too slow for online training | M | M | Pre-generate training data offline using symbolic search; use Lean only for evaluation |
+| `decide` returns `.timeout` for many valid formulas (proof extraction fails, DecisionProcedure.lean:154) | H | M | Use `decideOptimized` (line 221) which tries IDDFS first; retry timeouts with increased fuel; track timeout rate as quality metric |
+| Enumerated formulas overwhelmingly trivial (>80% propositional tautologies) | H | M | Phase 2 controls depth bounds per operator type; Phase 6 validates diversity; feasibility gate before downstream investment |
+| JSON export from Lean IO slow for large datasets | M | L | Batch writes with string builder; simple string-based JSON (no external library needed) |
+| `SimpleCountermodel` atoms too shallow for useful corrective signal | M | M | Phase 4 extracts additional branch information (all signed formulas, not just atoms); escalation to Tier 2 if insufficient |
+| Combinatorial explosion at higher formula depths | M | H | Phase 2 implements random sampling alongside exhaustive enumeration; configurable size bounds |
 
 ## Implementation Phases
 
@@ -71,331 +69,368 @@ This task is not on the completeness critical path. It represents a new research
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | 1 | 1 | -- |
-| 2 | 2, 3 | 1 |
-| 3 | 4 | 2, 3 |
-| 4 | 5 | 4 |
+| 2 | 2 | 1 |
+| 3 | 3, 4 | 2 |
+| 4 | 5 | 3, 4 |
 | 5 | 6 | 5 |
 
 Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Sub-Task -- Formula Enumerator and Evaluation Benchmark [NOT STARTED]
+### Phase 1: JSON Serialization Layer [NOT STARTED]
 
-**Goal**: Create a sub-task for building a TM formula enumerator that generates formulas at controlled modal/temporal depth, labels them via the tableau decision procedure, and produces a held-out evaluation benchmark.
+**Goal**: Add `toJson` string builders for core types so decision results can be exported to structured JSON consumable by Python.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Create `Theories/Bimodal/Automation/DataExport.lean`
+- [ ] Implement `Formula.toJson : Formula → String` — recursive over the 6 constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce` per Formula.lean:70-85)
+- [ ] Implement `Atom.toJson : Atom → String` — serialize `base : String` and `fresh_index : Option Nat`
+- [ ] Implement `SimpleCountermodel.toJson : SimpleCountermodel → String` — serialize `trueAtoms`, `falseAtoms`, `formula` (CountermodelExtraction.lean:47-54)
+- [ ] Implement `PatternKey.toJson : PatternKey → String` — all 5 fields: `modalDepth`, `temporalDepth`, `impCount`, `complexity`, `topOperator` (SuccessPatterns.lean:95-106)
+- [ ] Implement `GoalCategory.toJson : GoalCategory → String` — 8 cases: `Atom`, `Bottom`, `Implication`, `Box`, `AllPast`, `AllFuture`, `Until`, `Since`
+- [ ] Implement proof metrics serializer: `{ "height": N, "rule_counts": {...} }` from `DerivationTree` (Derivation.lean:85-167)
+- [ ] Implement `Formula.prettyPrint : Formula → String` — human-readable notation (e.g. `□p → p`)
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 3-4 weeks)
+**Key type surfaces**:
+```
+Formula      = atom Atom | bot | imp Formula Formula | box Formula | untl Formula Formula | snce Formula Formula
+Atom         = { base : String, fresh_index : Option Nat }
+SimpleCountermodel = { trueAtoms : List Atom, falseAtoms : List Atom, formula : Formula }
+PatternKey   = { modalDepth : Nat, temporalDepth : Nat, impCount : Nat, complexity : Nat, topOperator : GoalCategory }
+DerivationTree = axiom | assumption | modus_ponens | necessitation | temporal_necessitation | temporal_duality | weakening
+```
+
+**Timing**: 3-4 days
 
 **Depends on**: none
 
-**Sub-Task Seed Research Brief**:
-
-*Scope*: Build a Lean module that systematically enumerates TM formulas up to bounded modal depth (d_box), temporal depth (d_G, d_U), and formula size. Run the existing tableau decision procedure (`Metalogic/Decidability/`) on each formula to produce provability labels and proof traces. Output a structured dataset of (formula, label, proof_trace, difficulty_metrics) tuples. Separately, hold out 500-1K formulas of varying difficulty as an evaluation benchmark.
-
-*Key findings from research*:
-- The `SubformulaClosure/` module provides bounded formula generation infrastructure
-- The codebase has only ~2,519 theorem/lemma declarations but the decision procedure can generate unlimited training examples
-- For provable formulas, extract proof traces (states visited, rules applied, proof depth)
-- For unprovable formulas, extract countermodels (true negative training signal)
-- Target: 10K-50K labeled formulas for initial training corpus
-- Three `FrameClass` values (Base, Dense, Discrete) provide a natural curriculum
-
-*Deliverables*:
-1. `Theories/Bimodal/Automation/FormulaEnumerator.lean` -- bounded enumeration by depth/size
-2. `Theories/Bimodal/Automation/DatasetGenerator.lean` -- run decider, produce labeled dataset
-3. Evaluation benchmark (500-1K formulas with ground-truth provability and difficulty tier)
-4. Diversity analysis: distribution of modal/temporal depth, operator usage, provability ratio
-5. Export format: JSON or CSV for Python consumption
-
-*Feasibility gate*: If the enumerator cannot produce diverse, non-trivial formulas at scale (e.g., >80% are trivially provable via propositional reasoning alone), reassess the approach before investing in neural infrastructure.
-
-*Open questions for sub-task research*:
-- What depth/size bounds produce the best difficulty distribution?
-- How to ensure diversity (avoid generating permutations of the same formula)?
-- Should enumeration use random sampling, exhaustive up-to-depth, or grammar-based generation?
-- How to efficiently extract proof traces from the tableau procedure (not just yes/no)?
-- What difficulty metrics beyond `DerivationTree.height` are informative (e.g., branching factor, backtrack count)?
-
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] `lake build Bimodal.Automation.DataExport` succeeds
+- [ ] Test JSON output for 5 representative formulas: atom (`p`), propositional (`p → q`), modal (`□p → p`), temporal (`U(p, q)`), mixed (`□U(p, q) → G(p)`)
+- [ ] Python `json.loads()` parses all outputs without error
 
 ---
 
-### Phase 2: Sub-Task -- Python-Lean Bridge Validation [NOT STARTED]
+### Phase 2: Formula Enumeration Engine [NOT STARTED]
 
-**Goal**: Create a sub-task for validating that a Python-Lean bridge can interact with the ProofChecker project at the tactic level, send proof steps, and receive goal states.
+**Goal**: Build a bounded formula enumerator that generates diverse TM formulas at controlled depth and size.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Create `Theories/Bimodal/Automation/FormulaEnumerator.lean`
+- [ ] Define enumeration configuration:
+  ```lean
+  structure EnumConfig where
+    maxModalDepth : Nat      -- bound on box nesting
+    maxTemporalDepth : Nat   -- bound on untl/snce nesting
+    maxSize : Nat            -- total connective count
+    atomPool : List Atom     -- available atoms
+    deriving Repr
+  ```
+- [ ] Implement `enumerateUpToDepth (config : EnumConfig) : List Formula` — exhaustive generation up to bounds, producing all formulas satisfying the three constraints simultaneously
+- [ ] Implement depth/size tracking per constructor:
+  - `atom a`: modalDepth 0, temporalDepth 0, size 1
+  - `bot`: modalDepth 0, temporalDepth 0, size 1
+  - `imp φ ψ`: max(modalDepth), max(temporalDepth), size(φ) + size(ψ) + 1
+  - `box φ`: modalDepth(φ) + 1, temporalDepth(φ), size(φ) + 1
+  - `untl φ ψ` / `snce φ ψ`: modalDepth(max), temporalDepth(max) + 1, size(φ) + size(ψ) + 1
+- [ ] Implement deduplication via `Formula.BEq` (already derived, Formula.lean:85)
+- [ ] Implement `sampleFormulas (config : EnumConfig) (count seed : Nat) : List Formula` — deterministic pseudo-random sampling for large formula spaces (depth > 3)
+- [ ] Implement diversity summary: operator distribution, depth histogram, formula count per `GoalCategory`
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 2-3 weeks)
+**Design decisions**:
+- Atom pool: 3-5 atoms (`p`, `q`, `r`, `s`, `t`). Research indicates this is sufficient for non-trivial operator interactions.
+- Exhaustive mode for small bounds (depth ≤ 3): generate ALL valid formulas. Sample mode for larger spaces.
+- Leverage existing `Formula.complexity` for size and `NestingDepth` module (SubformulaClosure/NestingDepth.lean) for modal/temporal depth computation as cross-checks.
 
-**Depends on**: 1
+**Timing**: 5-7 days
 
-**Sub-Task Seed Research Brief**:
-
-*Scope*: Validate that one or more Python-Lean bridge libraries can interact with the ProofChecker project loaded. The bridge must support: (a) loading the ProofChecker environment, (b) setting up a proof state for a given formula, (c) sending individual tactic steps (axiom applications, inference rules), (d) receiving the resulting goal state, and (e) detecting proof completion or failure. This is the critical infrastructure connecting the Python ML training loop to the Lean proof engine.
-
-*Key findings from research*:
-- Three bridge options identified with different trade-offs:
-  - **LeanDojo-v2**: End-to-end training pipeline, supports local Lean 4 projects via `DynamicDatabase`, has `SFTTrainer` and `GRPOTrainer` integrated
-  - **lean-interact**: Simple REPL wrapper (`pip install lean-interact`), lightweight, easiest to get started
-  - **PyPantograph**: Rich tactic-state API with metavariable coupling, most powerful but most complex
-- Kimina Lean Server benchmarks: 0.272s per proof at 8 cores, 0.051s at 64 cores
-- LRU caching provides ~1.94x speedup on repeated imports
-- For tactic-level MCTS: 100 rollouts x 20 moves = 2,000 calls per attempt, yielding ~5 min/attempt at 8 cores
-- Mitigation: pre-generate training data offline, use Lean only for evaluation
-
-*Deliverables*:
-1. Working Python script that loads ProofChecker, opens a proof state, applies tactics, reads goals
-2. Latency benchmarks: single-tactic step time, proof-completion round-trip time
-3. Compatibility report: which bridge(s) work with Lean v4.27.0-rc1 and Mathlib v4.27.0-rc1
-4. Prototype tactic interface mapping the 42 axiom constructors + 7 rules to Python-callable actions
-5. Documentation of failure modes and error handling
-
-*Open questions for sub-task research*:
-- Does LeanDojo-v2 support Lean v4.27.0-rc1 (it may lag behind latest toolchain)?
-- What is the single-tactic-step latency for the ProofChecker project specifically (cold vs warm)?
-- Can the bridge handle the project's large import graph without timeout?
-- How to represent the AND/OR proof tree structure through the bridge API?
-- Is it feasible to run the symbolic `ProofSearch/Core.lean` search engine from Python as a data generator?
+**Depends on**: 1 (for JSON export of enumerated formulas)
 
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] `lake build Bimodal.Automation.FormulaEnumerator` succeeds
+- [ ] Config `(2, 2, 8)` with 3 atoms → at least 1,000 distinct formulas
+- [ ] Config `(3, 3, 12)` with 5 atoms → at least 10,000 distinct formulas
+- [ ] Diversity: no single `GoalCategory` accounts for >50% of formulas
+- [ ] All generated formulas well-formed by construction (no runtime checks needed)
 
 ---
 
-### Phase 3: Sub-Task -- Training Data Extraction Pipeline [NOT STARTED]
+### Phase 3: Batch Decision Pipeline [NOT STARTED]
 
-**Goal**: Create a sub-task for building a pipeline that extracts (goal_state, tactic, result) training tuples from existing proofs and from the formula enumerator, producing a structured dataset for supervised learning.
+**Goal**: Run `decide`/`findCountermodel` on enumerated formulas, collecting individual labeled results with full proof traces and countermodels.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Create `Theories/Bimodal/Automation/DatasetGenerator.lean`
+- [ ] Define labeled result structure:
+  ```lean
+  structure RuleProfile where
+    axiomCount : Nat
+    mpCount : Nat
+    necessitationCount : Nat
+    temporalNecessitationCount : Nat
+    temporalDualityCount : Nat
+    weakeningCount : Nat
+    deriving Repr
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 3-4 weeks)
+  inductive DecisionTag where
+    | valid | invalid | timeout
+    deriving Repr
 
-**Depends on**: 1
+  structure LabeledFormula where
+    formula : Formula
+    features : PatternKey
+    decision : DecisionTag
+    proofHeight : Option Nat
+    ruleProfile : Option RuleProfile
+    countermodel : Option SimpleCountermodel
+    deriving Repr
+  ```
+- [ ] Implement `walkDerivationTree` — recursively walk `DerivationTree` (7 constructors per Derivation.lean:85-167) to compute `RuleProfile`:
+  ```lean
+  -- Pattern: match on each constructor, accumulate counts
+  | .axiom _ _ _ _           => { empty with axiomCount := 1 }
+  | .modus_ponens _ _ _ d1 d2 => merge (walk d1) (walk d2) |>.incrMP
+  | .necessitation _ d       => (walk d) |>.incrNec
+  | .temporal_necessitation _ d => (walk d) |>.incrTempNec
+  | .temporal_duality _ d    => (walk d) |>.incrTempDual
+  | .weakening _ _ _ d _     => (walk d) |>.incrWeak
+  | .assumption _ _ _        => empty  -- leaf node, no rule applied
+  ```
+- [ ] Implement `labelFormula (φ : Formula) : LabeledFormula`:
+  ```lean
+  def labelFormula (φ : Formula) : LabeledFormula :=
+    let features := PatternKey.fromFormula φ    -- SuccessPatterns.lean:115
+    let result := decideAuto φ                  -- DecisionProcedure.lean:174
+    match result with
+    | .valid proof =>
+        { formula := φ, features, decision := .valid,
+          proofHeight := some proof.height,      -- Derivation.lean:223
+          ruleProfile := some (walkDerivationTree proof),
+          countermodel := none }
+    | .invalid counter =>
+        { formula := φ, features, decision := .invalid,
+          proofHeight := none, ruleProfile := none,
+          countermodel := some counter }
+    | .timeout =>
+        { formula := φ, features, decision := .timeout,
+          proofHeight := none, ruleProfile := none,
+          countermodel := none }
+  ```
+- [ ] Implement `labelBatch (formulas : List Formula) : List LabeledFormula`
+- [ ] Handle timeout-on-valid edge case (DecisionProcedure.lean:154): when tableau closes but proof extraction fails, retry with `decideOptimized` (line 221) or increased `searchDepth`
 
-**Sub-Task Seed Research Brief**:
+**Key API flow**:
+```
+φ → decideAuto φ → DecisionResult φ
+                    ├─ .valid proof  → proof.height + walkDerivationTree proof
+                    ├─ .invalid cm   → cm.trueAtoms + cm.falseAtoms
+                    └─ .timeout      → retry or flag
+                 + PatternKey.fromFormula φ → 5 structural features
+```
 
-*Scope*: Build a data pipeline with two sources: (1) LeanDojo tracing of existing proofs in `Theories/Bimodal/` to extract (goal, tactic) pairs from human-written proofs, and (2) symbolic proof search traces from the formula enumerator (Phase 1) to produce (goal_state, axiom_applied, resulting_state, proof_depth) tuples. The combined dataset provides supervised training data for both the value network (Phase 4) and the policy network (Phase 5).
+**Timing**: 5-7 days
 
-*Key findings from research*:
-- LeanDojo can trace existing Lean 4 projects to extract tactic-level proof data
-- The PACT co-training approach mines `DerivationTree` instances as self-supervised targets
-- `DerivationTree.height` provides exact value-network labels (steps-to-completion)
-- `PatternKey` features (modalDepth, temporalDepth, impCount, complexity, topOperator) are already computed by `SuccessPatterns.lean`
-- Expert iteration paradigm: generate proof attempts via search, verify with Lean, add verified (state, tactic) pairs to training data, retrain
-- Three data sources in pipeline: (1) LeanDojo traces of existing proofs, (2) tableau decider synthetic corpus, (3) expert iteration loop (future)
-
-*Deliverables*:
-1. LeanDojo tracing configuration for ProofChecker project
-2. Trace extraction script producing (goal, tactic, result) tuples in standardized format
-3. Symbolic search trace extractor: run `ProofSearch/Core.lean` or IDDFS/best-first on enumerated formulas, record search trajectories
-4. Combined dataset in PyTorch-compatible format (HuggingFace datasets or simple JSON/parquet)
-5. Dataset statistics: size, tactic distribution, proof depth distribution, difficulty tier breakdown
-6. `PatternKey` feature extractor for each goal state (connecting to `SuccessPatterns.lean`)
-
-*Open questions for sub-task research*:
-- How many usable (goal, tactic) pairs can LeanDojo extract from the existing ~2,519 declarations?
-- What is the optimal representation of goal states for neural input (raw text, AST, graph)?
-- How to handle the AND/OR structure: should each subgoal be a separate training example?
-- Should the dataset include negative examples (failed proof attempts, dead-end paths)?
-- What normalization/canonicalization of formulas improves dataset quality?
+**Depends on**: 2 (needs enumerated formulas)
 
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] `lake build Bimodal.Automation.DatasetGenerator` succeeds
+- [ ] Process 100 formulas: all `.valid` results have non-none `proofHeight` and `ruleProfile`
+- [ ] Process 100 formulas: all `.invalid` results have non-none `countermodel` with `isConsistent = true` (CountermodelExtraction.lean:97)
+- [ ] All 42 BX axiom instances → `.valid` (zero failures)
+- [ ] Timeout rate < 10% on formulas with complexity ≤ 8
 
 ---
 
-### Phase 4: Sub-Task -- Value Network (Proof-Progress Predictor) [NOT STARTED]
+### Phase 4: Enriched Countermodel Extraction [NOT STARTED]
 
-**Goal**: Create a sub-task for training a value network that predicts proof-step count from formula structure, integrated as an additive bonus to the existing `modal_search` heuristic scorer.
+**Goal**: Extend countermodel extraction beyond atom truth/falsity to capture the full saturated branch content, providing richer corrective signal.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Create `Theories/Bimodal/Automation/EnrichedCountermodel.lean`
+- [ ] Define enriched structure:
+  ```lean
+  structure EnrichedCountermodel where
+    simple : SimpleCountermodel           -- atom-level (existing)
+    branchFormulas : List SignedFormula    -- full saturated branch
+    modalFormulas : List SignedFormula     -- box/diamond entries
+    temporalFormulas : List SignedFormula  -- untl/snce/G/H entries
+    branchLength : Nat
+    deriving Repr
+  ```
+- [ ] Implement extraction by filtering `SignedFormula` list (the open branch is `Branch := List SignedFormula` per SignedFormula.lean) by top-level operator:
+  - Modal: filter where `sf.formula` matches `box _` or `imp (box _) _`
+  - Temporal: filter where `sf.formula` matches `untl _ _`, `snce _ _`, or derived G/H forms
+- [ ] Implement `EnrichedCountermodel.toJson` using Phase 1 serialization layer — serialize `SignedFormula` as `{"sign": "pos"|"neg", "formula": ...}`
+- [ ] Integrate with Phase 3: add optional `enrichedCountermodel : Option EnrichedCountermodel` field to `LabeledFormula`
+- [ ] Modify `labelFormula` to extract enriched data when decision is `.invalid`:
+  ```lean
+  -- In the .invalid branch, we need access to the open branch
+  -- Use findCountermodel path which gives us the branch directly
+  | .invalid counter =>
+      let enriched := extractEnrichedCountermodel φ counter openBranch
+      ...
+  ```
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 6-8 weeks)
+**Rationale**: `SimpleCountermodel` captures only atoms (CountermodelExtraction.lean:64-75). The saturated branch contains richer structural information: which modal/temporal formulas held or failed, and the branch's total complexity. This helps the value network learn *why* a formula is invalid — which modal or temporal subformulas are the obstruction.
 
-**Depends on**: 2, 3
+**Design note**: This requires accessing the raw `Branch` from the tableau, not just the `SimpleCountermodel`. The cleanest approach is to use `findCountermodel` (CountermodelExtraction.lean:174) which internally calls `buildTableau`, then extract both simple and enriched data from the `.hasOpen` case before the branch is discarded.
 
-**Sub-Task Seed Research Brief**:
+**Timing**: 3-4 days
 
-*Scope*: Train a value network (LeanProgress-style proof-progress predictor) that takes a proof goal state and predicts the number of steps remaining to complete the proof. The model takes `PatternKey` features as input (already computed by `SuccessPatterns.lean`) and predicts `DerivationTree.height`. Integrate the trained model as an additive bonus to the `modal_search` heuristic scorer in `Automation/ProofSearch/`. Evaluate against the `SuccessPatterns.lean` baseline on the held-out benchmark from Phase 1.
-
-*Key findings from research*:
-- **Architecture**: Start with shallow MLP over `PatternKey` features (modalDepth, temporalDepth, impCount, complexity, topOperator). This is the simplest viable architecture (1.5M-10M params, CPU-trainable). Upgrade to GNN over formula AST or transformer in later iterations if needed.
-- **Labels**: `DerivationTree.height` from successful proofs provides exact step-to-completion labels for free
-- **Baseline**: `SuccessPatterns.lean` implements a shallow handcrafted value function; the neural predictor must beat this baseline
-- **Evaluation metrics**: Nodes visited / time-to-proof on benchmark vs baseline
-- **Training**: Supervised regression on (PatternKey_features, height) pairs from the dataset (Phase 3)
-- **Integration point**: Additive bonus to `modal_search` heuristic scorer, not a replacement
-- **Hardware**: CPU-only training viable for shallow MLP; single GPU for GNN/transformer variants
-- **Publication target**: TABLEAUX 2026 or CADE 2026, "Neural guidance for decidable bimodal logic proof search"
-
-*Deliverables*:
-1. PyTorch model definition for proof-progress predictor (MLP baseline, optional GNN variant)
-2. Training script with configurable hyperparameters
-3. Trained model checkpoint with validation metrics
-4. Lean integration: `Automation/ProofSearch/NeuralScorer.lean` or Python-side scorer via bridge
-5. Evaluation report: nodes visited, time-to-proof, success rate on benchmark vs `SuccessPatterns.lean`
-6. Analysis of what the network learns (feature importance, failure modes)
-
-*Open questions for sub-task research*:
-- Is `DerivationTree.height` the right label, or should it be log(height) or a binary provable/unprovable classification?
-- Should the MLP input include formula structure beyond `PatternKey` (e.g., subformula counts, operator histograms)?
-- How to handle the AND/OR tree structure: predict per-subgoal or per-root-goal?
-- What is the right integration point: additive bonus vs multiplicative weight vs priority override?
-- How much training data is needed for the MLP to beat the handcrafted baseline?
-- Should the model be trained in Python and served via bridge, or compiled to Lean via ONNX?
+**Depends on**: 2 (pipeline structure from Phase 3)
 
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] `lake build Bimodal.Automation.EnrichedCountermodel` succeeds
+- [ ] For 10 known invalid formulas: enriched countermodel includes modal/temporal signed formulas
+- [ ] `branchLength` > `trueAtoms.length + falseAtoms.length` for non-trivial formulas
+- [ ] JSON output includes all enriched fields, parseable by Python
 
 ---
 
-### Phase 5: Sub-Task -- Policy Network and Expert Iteration [NOT STARTED]
+### Phase 5: Dataset Assembly & JSON Export [NOT STARTED]
 
-**Goal**: Create a sub-task for training a policy network (tactic predictor) via supervised fine-tuning on proof traces, with an expert iteration loop that generates new training data from search guided by the current model.
+**Goal**: Assemble labeled formulas into a structured JSON dataset file with metadata, statistics, and train/eval split.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Create `Theories/Bimodal/Automation/DatasetExporter.lean` (Lean IO module)
+- [ ] Define and implement the dataset JSON schema:
+  ```json
+  {
+    "metadata": {
+      "generator": "BimodalLogic/DatasetExporter",
+      "version": "1.0",
+      "config": { "maxModalDepth": 3, "maxTemporalDepth": 3, "maxSize": 12, "atomCount": 5 },
+      "statistics": { "total": 12345, "valid": 5432, "invalid": 6789, "timeout": 124 },
+      "frame_class": "Base"
+    },
+    "formulas": [
+      {
+        "id": 0,
+        "formula": { "tag": "imp", "left": { "tag": "box", "child": { "tag": "atom", "name": "p" } }, "right": { "tag": "atom", "name": "p" } },
+        "formula_string": "□p → p",
+        "features": { "modalDepth": 1, "temporalDepth": 0, "impCount": 1, "complexity": 3, "topOperator": "Implication" },
+        "decision": "valid",
+        "proof": { "height": 2, "rules": { "axiom": 1, "modus_ponens": 1, "necessitation": 0, "temporal_necessitation": 0, "temporal_duality": 0, "weakening": 0 } },
+        "countermodel": null
+      },
+      {
+        "id": 1,
+        "formula": { "tag": "atom", "name": "p" },
+        "formula_string": "p",
+        "features": { "modalDepth": 0, "temporalDepth": 0, "impCount": 0, "complexity": 1, "topOperator": "Atom" },
+        "decision": "invalid",
+        "proof": null,
+        "countermodel": {
+          "true_atoms": [],
+          "false_atoms": ["p"],
+          "branch_length": 1,
+          "modal_formulas": [],
+          "temporal_formulas": []
+        }
+      }
+    ]
+  }
+  ```
+- [ ] Implement `exportDataset (labeled : List LabeledFormula) (path : String) (split : Float := 0.8) : IO Unit` — write JSON, stratified train/eval split by decision tag
+- [ ] Implement string-builder approach for JSON (accumulate into a `String` or `Array String` then write once)
+- [ ] Implement dataset statistics computation: totals, provability ratio, proof height distribution, countermodel complexity distribution
+- [ ] Create `scripts/generate_dataset.py` — Python helper that:
+  - Loads the JSON dataset
+  - Converts `PatternKey` features to numpy arrays / PyTorch tensors
+  - Encodes `decision` as integer labels (valid=1, invalid=0, timeout=-1)
+  - Uses `proof.height` as regression target for valid formulas
+  - Exports to HuggingFace `datasets` format or simple `.pt` file
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 8-12 weeks)
+**Timing**: 4-5 days
 
-**Depends on**: 4
-
-**Sub-Task Seed Research Brief**:
-
-*Scope*: Train a policy network that predicts the next tactic (axiom application or inference rule) given a proof goal state. Start with supervised fine-tuning (SFT) on the proof trace dataset from Phase 3, then implement an expert iteration loop: (1) use the current policy + value network to guide best-first search, (2) verify successful proofs with Lean, (3) add verified (state, tactic) pairs to the training data, (4) retrain. Use GRPOTrainer from LeanDojo-v2 if compatible, otherwise implement a custom SFT loop.
-
-*Key findings from research*:
-- **Architecture options**:
-  - Fine-tune small LM (CodeBERT or DeepSeek-Coder-1.3B via LoRA) on (goal, tactic) pairs
-  - GNN over formula AST (Nazrin-style, 1.5M params, matches domain structure)
-  - T5-small/ByT5 transformer (Teammate A recommendation)
-- **Training paradigm**: Expert iteration, NOT full online RL
-  1. Generate proof attempts via search guided by current model
-  2. Verify successful proofs with Lean
-  3. Add verified (state, tactic) pairs to supervised training data
-  4. Fine-tune model on accumulated data
-  5. Repeat
-- **Search strategy**: Best-first search (not MCTS) guided by policy + value heads. MCTS deferred to Phase 6.
-- **LeanDojo-v2**: Provides `SFTTrainer` and `GRPOTrainer`, supports local Lean 4 projects via `DynamicDatabase`
-- **Hardware**: 1x 24GB GPU for SFT/LoRA fine-tuning, 16+ CPU cores for Lean verification
-- **Action space**: 42 axiom constructors + 7 inference rules = finite, enumerable action space. The only genuinely open-ended choice is the intermediate formula in `modus_ponens`.
-
-*Deliverables*:
-1. Policy network model definition and training script
-2. Expert iteration loop implementation (search -> verify -> retrain)
-3. Best-first search implementation guided by policy + value network
-4. Trained policy model checkpoint with evaluation metrics
-5. Evaluation: proof success rate, search efficiency, comparison to symbolic-only search
-6. Analysis: what tactics the policy learns to prioritize, modus_ponens lemma selection patterns
-
-*Open questions for sub-task research*:
-- Is LeanDojo-v2's GRPOTrainer compatible with Lean v4.27.0-rc1, or do we need a custom training loop?
-- What is the right action representation: one-hot over 49 base actions, or include formula arguments?
-- How to handle modus_ponens lemma selection (the only high-branching action)?
-- How many expert iteration rounds are needed before the model generates novel proofs?
-- Should the policy and value networks share parameters (multi-task head) or be separate?
-- What is the right search budget per formula during expert iteration (number of expansions)?
+**Depends on**: 3, 4
 
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] Export 1,000+ formulas to `data/training_dataset.json` and `data/eval_dataset.json`
+- [ ] Python `json.loads` parses both files successfully
+- [ ] `scripts/generate_dataset.py` converts to PyTorch tensors without error
+- [ ] Statistics in metadata match actual counts in `formulas` array
+- [ ] Train/eval split preserves provability ratio within ±5%
 
 ---
 
-### Phase 6: Sub-Task -- Full MCTS with AND/OR Backup [NOT STARTED]
+### Phase 6: Validation, Benchmark & Feasibility Gate [NOT STARTED]
 
-**Goal**: Create a sub-task for implementing full AlphaZero-style MCTS with AND/OR hypergraph backup, using the policy and value networks from Phase 5 as initialization.
+**Goal**: Validate dataset quality, diversity, and signal informativeness. Run a feasibility gate to determine whether to proceed to value network training or escalate to Tier 2.
 
 **Tasks**:
-- [ ] Draft sub-task description covering scope, deliverables, and constraints
-- [ ] Include seed research brief from team research findings
-- [ ] Create the sub-task via `/task` or manual task creation
-- [ ] Verify sub-task appears in TODO.md and state.json
+- [ ] Generate datasets at three depth configurations:
+  - Small: config `(2, 2, 8)` with 3 atoms — expect ~1K-5K formulas
+  - Medium: config `(3, 3, 12)` with 5 atoms — expect ~10K-50K formulas
+  - Large: config `(4, 3, 15)` with 5 atoms — expect ~50K+ (sample mode)
+- [ ] Conformance test — positive: all 42 BX axiom instances → `.valid` with proof
+- [ ] Conformance test — negative: at least 20 known non-theorems → `.invalid` with consistent countermodel
+- [ ] Compute diversity metrics:
+  - Operator distribution histogram (6 constructor types)
+  - Modal depth distribution and temporal depth distribution (independent)
+  - Provability ratio (target: 20-60% valid)
+  - Proof height distribution for valid formulas (mean, variance, max)
+  - Countermodel atom count distribution for invalid formulas
+- [ ] Compute signal quality metrics:
+  - `PatternKey` feature variance across valid vs invalid (features must discriminate)
+  - Proof height correlation with `PatternKey.complexity`
+  - Enriched countermodel `branchLength` correlation with formula complexity
+- [ ] **Feasibility gate**:
+  - **PASS** if: ≥10K distinct formulas at medium config, provability ratio in 15-70%, proof height variance > 2.0, at least 3 `GoalCategory` types each account for >10% of formulas
+  - **FAIL** if: >80% formulas are trivially propositional, or >90% same decision, or <1K distinct formulas at medium config
+- [ ] Write validation report
 
-**Timing**: 1 hour (task creation only; sub-task implementation is estimated at 12-16 weeks)
+**Timing**: 3-4 days
 
 **Depends on**: 5
 
-**Sub-Task Seed Research Brief**:
-
-*Scope*: Implement full AlphaZero-style Monte Carlo Tree Search adapted for theorem proving. This means AND/OR MCTS (not standard game-tree MCTS), where states are proof goals, actions are axiom/rule applications, and transitions produce child goals that must ALL be proved (AND-nodes). The backup operator uses a lower-confidence-bound (weakest-link) principle: a state's value equals its weakest child's value. Use the policy and value networks from Phase 5 as initialization, with PUCT for exploration-exploitation balance. This phase is only pursued if Phase 5 demonstrates that neural-guided search outperforms symbolic-only search.
-
-*Key findings from research*:
-- **AND/OR structure**: Theorem proving maps to an AND/OR hypergraph search, NOT a standard game tree. The backup operator is NOT minimax -- it uses weakest-link (lower-confidence-bound) principle.
-- **PUCT**: Standard AlphaZero UCB formula adapted for AND/OR trees
-- **Reference implementations**: Aristotle (Harmonic Team, 2025) provides the most transparent MCTS-for-Lean design; HTPS (Meta AI, NeurIPS 2022) is the foundational AND/OR proof search paper
-- **Compute requirements**: This phase requires significant compute (1x A100 80GB, 64+ CPU cores for Lean verification). DeepSeek-Prover-V1.5 used A100 GPUs + thousands of CPU cores for their MCTS approach.
-- **Online training**: MCTS generates training data from search trees; the model is updated online during search
-- **Lean verification throughput**: Kimina Lean Server at 64 cores gives 0.051s per proof; for MCTS with 100 rollouts x 20 moves = 2,000 calls, that is ~40s per attempt
-- **Contingency**: If MCTS does not outperform best-first search (Phase 5), the project still has a publishable result from Phases 4-5
-
-*Deliverables*:
-1. AND/OR MCTS implementation with PUCT exploration
-2. Weakest-link backup operator for AND-nodes
-3. Online training loop from MCTS search trees
-4. Integration with Kimina Lean Server or equivalent for high-throughput verification
-5. Evaluation: comparison to best-first search (Phase 5), symbolic search, and published baselines
-6. Full system benchmark on the evaluation set from Phase 1
-
-*Open questions for sub-task research*:
-- What is the right PUCT constant for theorem proving (vs Go/Chess)?
-- How to handle the variable branching factor (modus_ponens lemma selection)?
-- Should virtual loss be used for parallelization of MCTS rollouts?
-- How many rollouts per move are needed for theorem proving (Go uses 800, but proofs may need fewer)?
-- Is progressive widening needed to handle the large action space?
-- How to balance exploration of novel proof strategies vs exploitation of known patterns?
-- What is the right budget for online training (how often to update the networks during search)?
-
 **Verification**:
-- Sub-task created with clear description, tagged as `lean4` type
-- Seed research brief included in task description
+- [ ] All 42 BX axiom instances return `.valid` — zero failures
+- [ ] ≥20 known non-theorems return `.invalid` with consistent countermodels
+- [ ] Feasibility gate result documented with specific metrics
+- [ ] Validation report at `specs/201_alphazero_proof_search_harness/reports/03_tier1-validation.md`
 
 ---
 
 ## Testing & Validation
 
-- [ ] All 6 sub-tasks created in TODO.md and state.json
-- [ ] Each sub-task has a clear description with seed research brief
-- [ ] Dependency chain is correctly specified (sub-tasks reference their prerequisites)
-- [ ] Task types are correctly set to `lean4` for all sub-tasks
-- [ ] Feasibility gate documented for Phase 1 (formula enumerator diversity)
-- [ ] Hardware requirements documented for each sub-task
+- [ ] All new Lean modules build with `lake build`
+- [ ] JSON export parseable by Python `json.loads` for all formula types
+- [ ] Conformance: BX axioms → valid, known non-theorems → invalid
+- [ ] Dataset diversity within feasibility gate bounds
+- [ ] No modifications to existing `Decidability/`, `SuccessPatterns`, or `Syntax/` modules
+- [ ] End-to-end pipeline: `enumerateUpToDepth` → `labelBatch` → `exportDataset` produces valid JSON
 
 ## Artifacts & Outputs
 
-- `specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md` (this file)
-- 6 new sub-tasks to be created via `/task` (each with seed description from this plan)
+- `Theories/Bimodal/Automation/DataExport.lean` — JSON serialization layer
+- `Theories/Bimodal/Automation/FormulaEnumerator.lean` — Bounded formula enumeration
+- `Theories/Bimodal/Automation/DatasetGenerator.lean` — Batch decision pipeline with proof/countermodel extraction
+- `Theories/Bimodal/Automation/EnrichedCountermodel.lean` — Richer countermodel extraction from saturated branches
+- `Theories/Bimodal/Automation/DatasetExporter.lean` — JSON dataset assembly and IO
+- `scripts/generate_dataset.py` — Python tensor conversion helper
+- `data/training_dataset.json`, `data/eval_dataset.json` — Generated datasets
+- `specs/201_alphazero_proof_search_harness/reports/03_tier1-validation.md` — Validation report
 
 ## Rollback/Contingency
 
-This plan creates sub-tasks only; no code is modified. If the decomposition proves wrong after initial research rounds on the sub-tasks:
-- Sub-tasks can be individually abandoned or revised via `/revise`
-- The phased approach has explicit off-ramps: if Phase 1 (formula enumerator) fails the feasibility gate, Phases 2-6 are not pursued. If Phase 5 (policy network) does not outperform symbolic search, Phase 6 (MCTS) is not pursued.
-- Each sub-task is independently publishable (especially Phases 4 and 5), so partial completion still yields value.
+All new code lives in `Theories/Bimodal/Automation/` and `scripts/`. No existing modules are modified. Rollback = delete new files.
+
+**If feasibility gate fails**:
+- If provability ratio too high (>80% valid): add more complex temporal formulas to enumerator, increase `untl`/`snce` weighting in sampler
+- If provability ratio too low (<15% valid): reduce formula size bounds, increase atom pool, favor `imp`/`box` constructors
+- If diversity insufficient: switch to grammar-based generation with production rules weighted by operator type
+- Escalation: proceed to Tier 2 (standalone Z3 countermodel generator, ~500 LOC per 02_team-research.md §4) for richer corrective signals
+
+**If timeout rate too high**:
+- Increase `tableauFuel` (default 1000 → try 5000, 10000)
+- Use `decideOptimized` (DecisionProcedure.lean:221) which tries IDDFS before tableau
+- Track formula characteristics causing timeouts to inform enumerator bounds
+- Classify timeouts as "unknown" rather than discarding
+
+**Deferred work** (from v1 plan, still valid as future sub-tasks):
+- Python-Lean bridge validation (v1 Phase 2)
+- Value network training on this dataset (v1 Phase 4)
+- Policy network and expert iteration (v1 Phase 5)
+- Full MCTS with AND/OR backup (v1 Phase 6)

@@ -8,11 +8,11 @@
     {
       "project_number": 203,
       "project_name": "formula_enumerator_dataset_export",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "created": "2026-05-29T16:59:41Z",
-      "last_updated": "2026-05-29T17:39:33Z",
-      "session_id": "sess_1780075776_0c2472",
+      "last_updated": "2026-05-29T17:41:00Z",
+      "session_id": "sess_1780076452_37bf8e",
       "researched": "2026-05-29T17:39:33Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -26,25 +26,45 @@
     {
       "project_number": 201,
       "project_name": "alphazero_proof_search_harness",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-29T03:51:11Z",
-      "last_updated": "2026-05-29T17:17:49Z",
-      "session_id": "sess_1780074564_ce378f",
+      "last_updated": "2026-05-29T18:15:00Z",
+      "session_id": "sess_1780076059_z9bd",
       "researched": "2026-05-29T17:17:49Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md",
           "type": "plan",
-          "summary": "Task decomposition plan defining 6 sub-tasks for AlphaZero-style proof search harness"
+          "summary": "Revised plan (v2): Lean-native dual-signal training data pipeline (Tier 1). 6 phases: JSON serialization, formula enumeration, batch decision pipeline, enriched countermodel extraction, dataset assembly, validation & feasibility gate. 3-4 weeks."
         },
         {
           "path": "specs/201_alphazero_proof_search_harness/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (round 2): corrective training signal via ModelChecker integration — semantic divergences, Lean-native alternative, three-tier strategy"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 120,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [[1], [2], [3, 4], [5], [6]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_team-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/02_team-research.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 198,
