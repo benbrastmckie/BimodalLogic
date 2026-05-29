@@ -145,10 +145,11 @@ technical_debt:
 
 ### 211. Review and revise docs/ directory
 - **Effort**: medium (1-2 days)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Research**: [specs/211_review_revise_docs_directory/reports/01_docs-review-research.md]
 - **Plan**: [specs/211_review_revise_docs_directory/plans/01_docs-revision-plan.md]
+- **Summary**: [specs/211_review_revise_docs_directory/summaries/01_docs-revision-summary.md]
 
 **Description**: Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps.
 
