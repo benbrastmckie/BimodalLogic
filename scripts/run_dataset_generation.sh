@@ -2,8 +2,8 @@
 # Run production dataset generation for BMLogic training data.
 #
 # Usage:
-#   ./scripts/run_dataset_generation.sh medium    # Complexity 5, ~5K formulas (~30 min)
-#   ./scripts/run_dataset_generation.sh deep      # Complexity 7, ~50K formulas (2-12 hours)
+#   ./scripts/run_dataset_generation.sh medium    # Complexity 4, ~5K formulas (~5 min)
+#   ./scripts/run_dataset_generation.sh deep      # Complexity 7, random, ~50K formulas (~2 min)
 #   ./scripts/run_dataset_generation.sh smoke     # Quick validation run (20 formulas)
 #   ./scripts/run_dataset_generation.sh all       # Both medium and deep runs
 #
@@ -45,12 +45,14 @@ run_smoke() {
 }
 
 run_medium() {
-    echo "=== Medium Production Run (complexity 5, ~5K formulas) ==="
+    echo "=== Medium Production Run (complexity 4, ~5K formulas) ==="
     echo "Started at: $(date -Iseconds)"
+    # Note: Complexity 5+ with exhaustive mode causes exponential blowup
+    # in enumerateAtBudget. Complexity 4 with duals produces ~5K formulas.
     time lake exe dataset_generator -- \
-        --max-complexity 5 \
-        --max-modal-depth 3 \
-        --max-temporal-depth 3 \
+        --max-complexity 4 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
         --max-formulas 5000 \
         --output data/bmlogic-medium.jsonl \
         --include-duals
@@ -63,15 +65,17 @@ run_medium() {
 }
 
 run_deep() {
-    echo "=== Deep Production Run (complexity 7, hybrid, ~50K formulas) ==="
+    echo "=== Deep Production Run (complexity 7, random, ~50K formulas) ==="
     echo "Started at: $(date -Iseconds)"
+    # Note: Random mode avoids exponential blowup in exhaustive enumeration.
+    # Generates ~150K candidates, filters to ~33K unique, then duals to ~54K.
     time lake exe dataset_generator -- \
         --max-complexity 7 \
-        --max-modal-depth 3 \
-        --max-temporal-depth 3 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
         --max-formulas 50000 \
         --output data/bmlogic-deep.jsonl \
-        --mode hybrid \
+        --mode random \
         --include-duals
     echo ""
     echo "Completed at: $(date -Iseconds)"
@@ -100,8 +104,8 @@ case "${1:-help}" in
         echo "Usage: $0 {smoke|medium|deep|all}"
         echo ""
         echo "  smoke   Quick 20-formula validation run"
-        echo "  medium  Complexity 5, ~5K formulas with temporal duals"
-        echo "  deep    Complexity 7, hybrid mode, ~50K formulas with duals"
+        echo "  medium  Complexity 4, ~5K formulas with temporal duals (~5 min)"
+        echo "  deep    Complexity 7, random mode, ~50K formulas with duals (~2 min)"
         echo "  all     Run both medium and deep sequentially"
         exit 0
         ;;
