@@ -114,31 +114,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Upload and Validation Scripts [NOT STARTED]
+### Phase 2: Upload and Validation Scripts [COMPLETED]
 
 **Goal**: Create Python scripts for uploading to HuggingFace Hub and validating the packaging locally.
 
 **Tasks**:
-- [ ] Create `hf-dataset/upload.py` with:
+- [x] Create `hf-dataset/upload.py` with: *(completed)*
   - Argument parser: `--repo` (default: `logos-labs/bmlogic-bench`), `--dry-run` flag, `--token` for HF auth
   - Load each JSONL with `datasets.load_dataset("json", data_files=...)`
   - Push each config separately via `push_to_hub()` with correct `config_name` and `split`
   - Print progress and record counts for each config
   - `--dry-run` mode: load datasets and print schemas/counts without pushing
   - Error handling for authentication, network, and schema inference failures
-- [ ] Create `hf-dataset/validate.py` with:
+- [x] Create `hf-dataset/validate.py` with: *(completed)*
   - Load each JSONL file and verify record counts match expected values (727, 1513, 49904, 2424)
   - Verify field schemas match documented fields per config
   - Check for null/missing values in required fields
   - Validate YAML frontmatter in README.md parses correctly
   - Print summary table of validation results
   - Exit with non-zero code on any validation failure
-- [ ] Create `hf-dataset/requirements.txt` with pinned minimum versions:
+- [x] Create `hf-dataset/requirements.txt` with pinned minimum versions: *(completed)*
   - `datasets>=2.19.0`
   - `huggingface_hub>=0.23.0`
   - `pyarrow>=14.0.0`
   - `pyyaml>=6.0`
-- [ ] Add docstrings and usage instructions to both scripts
+- [x] Add docstrings and usage instructions to both scripts *(completed)*
 
 **Timing**: 1.5 hours
 
