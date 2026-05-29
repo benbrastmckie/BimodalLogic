@@ -2,7 +2,7 @@
 
 ## Overview
 
-This checklist provides systematic verification procedures for ensuring Logos
+This checklist provides systematic verification procedures for ensuring ProofChecker
 documentation remains accurate, consistent, and complete as implementation progresses.
 Use this checklist before major releases, after significant implementation changes, and
 quarterly for ongoing quality assurance.
@@ -18,10 +18,8 @@ systematic verification
 - Quarterly for ongoing quality assurance (recommended)
 
 **Related Documentation**:
-- [Documentation Standards](.opencode/context/core/standards/documentation-standards.md)
-- [Formal Symbol Backtick Standard](.opencode/context/core/standards/
-  documentation-standards.md#formal-symbol-backtick-standard)
 - [docs/README.md](../README.md) - Documentation navigation
+- [LEAN Style Guide](LEAN_STYLE_GUIDE.md) - Code documentation standards
 
 ---
 
@@ -36,7 +34,7 @@ These checks verify that information is consistent across all documentation file
 **Verification**:
 ```bash
 # Count tactic declarations in Tactics.lean
-TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Logos/Automation/Tactics.lean)
+TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Theories/Bimodal/Automation/Tactics.lean)
 
 # Count tactic references in TACTIC_DEVELOPMENT.md
 TACTICS_DOC=$(grep -c "^\#\#\# " docs/project-info/TACTIC_REGISTRY.md)
@@ -85,7 +83,7 @@ and implementation gaps.
 **Verification**:
 ```bash
 # Verify sorry count in Perpetuity.lean
-PERPETUITY_SORRY=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean)
+PERPETUITY_SORRY=$(grep -c "sorry" Theories/Bimodal/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
 # Check IMPLEMENTATION_STATUS.md Known Limitations section claims
@@ -110,7 +108,7 @@ and IMPLEMENTATION_STATUS.md Known Limitations section.
 **Verification**:
 ```bash
 # Count total sorry placeholders in codebase
-TOTAL_SORRY=$(find Logos -name "*.lean" -type f -exec grep -c "sorry" {} + |
+TOTAL_SORRY=$(find Theories/Bimodal -name "*.lean" -type f -exec grep -c "sorry" {} + |
               awk '{sum+=$1} END {print sum}')
 echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 
@@ -142,7 +140,7 @@ These checks verify that all required documentation exists and is comprehensive.
 **Verification**:
 ```bash
 # Check for undocumented public definitions (requires LEAN lint)
-cd /home/benjamin/Documents/Philosophy/Projects/Logos
+cd /home/benjamin/Projects/BimodalLogic
 lake lint | grep "docBlame\|docBlameThm"
 
 # Expected output: Zero docBlame warnings (100% docstring coverage)
@@ -163,7 +161,7 @@ LEAN Style Guide format.
 **Verification**:
 ```bash
 # Check for missing README.md files in main directories
-for dir in Logos/*/ LogosTest/*/ Archive/ docs/*/; do
+for dir in Theories/Bimodal/*/ Tests/BimodalTest/*/ docs/*/; do
   if [ ! -f "$dir/README.md" ]; then
     echo "Missing README.md in $dir"
   fi
@@ -237,13 +235,13 @@ These checks verify that documentation claims are accurate and verifiable.
 **Verification**:
 ```bash
 # Test status verification commands from IMPLEMENTATION_STATUS.md
-cd /home/benjamin/Documents/Philosophy/Projects/Logos
+cd /home/benjamin/Projects/BimodalLogic
 
 # Example: Verify Soundness module sorry count
-grep -c "sorry" Logos/Metalogic/Soundness.lean
+grep -c "sorry" Theories/Bimodal/Metalogic/Soundness.lean
 
 # Example: Verify Automation package completion
-ls Logos/Automation/*.lean
+ls Theories/Bimodal/Automation/*.lean
 
 # Manual verification: Run verification commands from IMPLEMENTATION_STATUS.md
 # and confirm results match documented status
@@ -267,7 +265,7 @@ verification commands.
 # (Manual process - requires LEAN environment)
 
 # For TACTIC_DEVELOPMENT.md examples:
-cd /home/benjamin/Documents/Philosophy/Projects/Logos
+cd /home/benjamin/Projects/BimodalLogic
 # Copy code examples to temporary .lean file and run:
 # lake env lean temp_example.lean
 
@@ -389,8 +387,7 @@ in backticks.
 
 **Action if Failed**: Add backticks around all formal symbols in documentation.
 
-**Reference**: [Formal Symbol Backtick Standard](.opencode/context/core/standards/
-documentation-standards.md#formal-symbol-backtick-standard)
+**Reference**: [LEAN Style Guide](LEAN_STYLE_GUIDE.md#formal-symbols)
 
 ---
 
@@ -503,9 +500,9 @@ current priorities.
 # IMPLEMENTATION_STATUS.md claims "50% complete (P1-P3 proven, P4-P6 incomplete)"
 
 # Verify P1-P3 status
-grep -A5 "theorem p1" Logos/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p2" Logos/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p3" Logos/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p1" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p2" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p3" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
 
 # Expected: P1-P2 have sorry in helpers, P3 has zero sorry
 
@@ -569,14 +566,12 @@ When adding new documentation standards:
 ## References
 
 **Documentation Standards**:
-- [Documentation Standards](.opencode/context/core/standards/documentation-standards.md)
-- [Code Standards](.opencode/context/core/standards/code-standards.md)
 - [LEAN Style Guide](LEAN_STYLE_GUIDE.md)
 - [Directory README Standard](DIRECTORY_README_STANDARD.md)
 
 **Implementation Tracking**:
 - [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) (includes Known Limitations section)
-- [TODO.md](../../TODO.md)
+- [TODO.md](../../specs/TODO.md)
 
 **Best Practices Report**:
 - Report 022: Documentation Improvement Analysis (specs/

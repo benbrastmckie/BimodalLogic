@@ -76,7 +76,7 @@ pedagogical examples. All tasks are independent and can run simultaneously.
 3. Prove `imp_trans` helper (Perpetuity.lean:88)
 4. Prove `contraposition` helper (Perpetuity.lean:139)
 5. Update ProofSystem/Derivation.lean
-6. Write tests in LogosTest/ProofSystem/AxiomsTest.lean
+6. Write tests in Tests/BimodalTest/ProofSystem/AxiomsTest.lean
 7. Update IMPLEMENTATION_STATUS.md axiom count (8 → 10)
 
 **Dependencies**: None
@@ -94,7 +94,7 @@ TemporalProofs.lean).
 1. Create `Archive/ModalProofs.lean` with S5 examples
 2. Create `Archive/TemporalProofs.lean` with temporal reasoning examples
 3. Update `Archive/Archive.lean` to re-export new modules
-4. Write tests in `LogosTest/Archive/`
+4. Write tests in `Tests/BimodalTest/Archive/`
 5. Update IMPLEMENTATION_STATUS.md Archive status (3/3 complete)
 
 **Dependencies**: None
@@ -294,7 +294,7 @@ Tasks 5, 7, 8 immediately; start Task 6 as soon as Task 2 finishes.
 **Phased Implementation**:
 
 **Phase 1** (15-20 hours): Decidability Infrastructure
-- Create Logos/Decidability/Procedures.lean
+- Create Theories/Bimodal/Decidability/Procedures.lean
 - Define satisfiability decision algorithm
 - Define validity decision algorithm via completeness
 

@@ -73,19 +73,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix Critical Accuracy Errors [IN PROGRESS]
+### Phase 1: Fix Critical Accuracy Errors [COMPLETED]
 
 **Goal**: Correct all factually wrong content that could mislead users or contributors -- wrong directory structures, module namespaces, file paths, version numbers, and broken internal links.
 
 **Tasks**:
-- [ ] Rewrite MODULE_ORGANIZATION.md Section 1 directory tree to reflect actual `Theories/Bimodal/` structure with correct subdirectories (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation, Examples) and `Tests/BimodalTest/` test layout
-- [ ] Update API_REFERENCE.md: replace all `Logos.Core.*` namespaces with `Bimodal.*` equivalents and all `Logos/Core/` paths with `Theories/Bimodal/` paths
-- [ ] Fix BASIC_INSTALLATION.md: update Lean version from "v4.14.0 or later" to "v4.27.0-rc1"
-- [ ] Fix CONTRIBUTING.md: update clone URL from `Logos.git` to the correct repository URL, fix directory structure references
-- [ ] Fix MAINTENANCE.md: correct TODO.md path from `../../TODO.md` to `../../specs/TODO.md`; remove TACTIC_REGISTRY.md from the Five-Document Model (it belongs to Theories/Bimodal/docs/project-info/, not docs/project-info/); reconcile with project-info/README.md Four-Document Model
-- [ ] Fix IMPLEMENTATION_STATUS.md: update verification commands from `Logos/Core/**/*.lean` to `Theories/Bimodal/**/*.lean`; update sorry counts to match SORRY_REGISTRY.md (9 active, not 46)
-- [ ] Fix TESTING_STANDARDS.md: update test directory structure from `Tests/Unit/Syntax/FormulaTests.lean` to `Tests/BimodalTest/Syntax/` etc.
-- [ ] Fix project-info/README.md: reconcile "Four-Document Model" with MAINTENANCE.md, clarify that TACTIC_REGISTRY.md resides in Theories/Bimodal/docs/
+- [x] Rewrite MODULE_ORGANIZATION.md Section 1 directory tree to reflect actual `Theories/Bimodal/` structure with correct subdirectories (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation, Examples) and `Tests/BimodalTest/` test layout *(completed)*
+- [x] Update API_REFERENCE.md: replace all `Logos.Core.*` namespaces with `Bimodal.*` equivalents and all `Logos/Core/` paths with `Theories/Bimodal/` paths *(completed)*
+- [x] Fix BASIC_INSTALLATION.md: update Lean version from "v4.14.0 or later" to "v4.27.0-rc1" *(completed)*
+- [x] Fix CONTRIBUTING.md: update clone URL from `Logos.git` to the correct repository URL, fix directory structure references *(completed)*
+- [x] Fix MAINTENANCE.md: correct TODO.md path from `../../TODO.md` to `../../specs/TODO.md`; remove TACTIC_REGISTRY.md from the Five-Document Model (it belongs to Theories/Bimodal/docs/project-info/, not docs/project-info/); reconcile with project-info/README.md Four-Document Model *(completed)*
+- [x] Fix IMPLEMENTATION_STATUS.md: update verification commands from `Logos/Core/**/*.lean` to `Theories/Bimodal/**/*.lean`; update sorry counts to match SORRY_REGISTRY.md (9 active, not 46) *(completed)*
+- [x] Fix TESTING_STANDARDS.md: update test directory structure from `Tests/Unit/Syntax/FormulaTests.lean` to `Tests/BimodalTest/Syntax/` etc. *(completed)*
+- [x] Fix project-info/README.md: reconcile "Four-Document Model" with MAINTENANCE.md, clarify that TACTIC_REGISTRY.md resides in Theories/Bimodal/docs/ *(completed)*
 
 **Timing**: 2 hours
 

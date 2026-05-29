@@ -58,7 +58,7 @@ Otherwise → NO README needed (rely on .lean module documentation)
 
 ## 3. Template D: LEAN Source Directory (Lightweight)
 
-**Use Case**: Top-level source directory (`Logos/`) or major submodule with multiple components
+**Use Case**: Top-level source directory (`Theories/Bimodal/`) or major submodule with multiple components
 
 **Structure**:
 ```markdown
@@ -87,13 +87,13 @@ Where to find specific functionality:
 lake build
 
 # Type-check specific file
-lake env lean Logos/Syntax/Formula.lean
+lake env lean Theories/Bimodal/Syntax/Formula.lean
 ```
 
 ## API Documentation
 
 For detailed API documentation, see:
-- Module overview: [Logos.lean](../Logos.lean)
+- Module overview: [Bimodal.lean](../Theories/Bimodal/Bimodal.lean)
 - Generated docs: Run `lake build :docs`
 - Architecture guide: [ARCHITECTURE.md](../docs/user-guide/ARCHITECTURE.md)
 
