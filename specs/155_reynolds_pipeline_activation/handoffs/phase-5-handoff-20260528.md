@@ -1,36 +1,48 @@
-# Phase 5 Handoff: Grid Dispatch Sorry Closure (Partial)
+# Phase 5 Handoff: Case II Simplification
 
 ## What Was Done
-- Analyzed all 5 grid dispatch sorries in CaseAnalysis.lean (Case A: lines 1668-1669, Case B1: 2031-2032, Case B2: 2112)
-- Identified root cause: `same_order_type_grid` macro uses hygienic `intro`, making `i` and `j` inaccessible after `<;>`. This prevents `by_cases` on sel-index bounds.
-- Discovered that `rename_i` renames from the END of inaccessible name list, and has hard errors (not failures) when count mismatches -- so `first | rename_i ... | rename_i ...` does NOT work as a fallback chain.
-- Discovered that `same_order_type_grid_uh` with `unhygienic` also does NOT propagate through `<;>`.
-- Found the WORKING approach: replace `same_order_type_grid` with its manual expansion `(intro i j; simp only [game_tuple]; split_ifs)`, keeping `i` and `j` directly accessible.
-- Applied the manual expansion approach for Case A grid dispatch. The syntax compiles but some proof terms need adjustment.
-- Wrote B2 grid dispatch from scratch (replacing bare `sorry`).
 
-## Key Decisions
-- NOT doing a full GHR93 Case II rewrite (plan's approach). Instead, closing the 5 sorries in-place using tactic infrastructure.
-- Using manual macro expansion (`intro i j; simp only [game_tuple]; split_ifs`) instead of `same_order_type_grid` at grid dispatch sites.
-- Using `by_cases hjn : j.val - 1 < n <;> (try rw [...]) <;> first | ...` pattern for handling remaining sel-index goals.
+Eliminated the `resp_mod` indirection layer from `ghr93_case_II` in CaseAnalysis.lean. This removed ~338 lines of boilerplate case splits (`heq_k`/`hne_k` on `a_init k = extendPoint p_n`) throughout the Round 2 dispatch.
 
-## Current Blockers
-- Type mismatch at line ~1739 in the `j = n` (p_n/e_n boundary) case of the grid dispatch. The `hbc` hypothesis has type `¬(extendPoint b_sp ≤ c)` in the Case B branch, but some proof terms use `hbc` as if it were `c < extendPoint b_sp`. Need to add `push_neg at hbc` or use `lt_of_not_le hbc` (now deprecated as `lt_of_not_ge`).
-- B1 and B2 grid dispatches need the same manual expansion treatment as Case A.
-- B2 dispatch needs verification of the `pivot_chain_order` arguments (sel vs b_resp through p_n/e_n chains).
+### Key Insight
 
-## Files Modified
-- `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean` -- Case A grid dispatch: replaced `same_order_type_grid` with manual expansion; added `by_cases` dispatch for sel-index goals; B2 grid dispatch framework added.
+`hord_left_sel_pn` proves `(a_init k = p_n iff resp_left k = e_n)`, which means `resp_mod k = resp_left k` for ALL k. The `resp_mod` definition (which checked whether `a_init k = p_n` and substituted `e_n`) was therefore completely redundant. Using `resp_left` directly eliminates all four-way case splits that propagated through every ordering proof.
 
-## Next Action
-1. Fix the type mismatch in Case A grid dispatch (line ~1739): adjust `hbc` usage for `¬(≤)` vs `<` form.
-2. Apply same manual expansion to Case B1 grid dispatch (currently at line ~2022).
-3. Apply same manual expansion to Case B2 grid dispatch (currently has framework but needs B2-specific orderings).
-4. Run `lake build Bimodal.Metalogic.WeakCanonical.Expressiveness.CaseAnalysis` to verify all grid dispatch sorries are closed.
-5. Proceed to Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean rewiring).
+### What Changed
 
-## Proof State
-- Case A: 90% done -- manual expansion works, `by_cases` structure correct, just need proof term fixes
-- Case B1: Not started (still has `sorry` with `same_order_type_grid` macro)
-- Case B2: Framework written, needs proof term verification
-- All other proofs in CaseAnalysis.lean compile (gap_point_agreement, formula_agreement sections are clean)
+1. **Deleted**: `resp_mod`, `hresp_mod_eq`, `hresp_mod_ne`, `hresp_mod_in`, `sel_pn_ord` (replaced by `hord_left_sel_pn`)
+2. **Simplified**: `a'_resp` now uses `resp_left` directly
+3. **Cases A, B1, B2**: All `full_sel_sel`, `full_x_sel`, `full_b_sel`, `full_y_sel`, `sel_y_ord`, gap/point agreement, and formula agreement sections simplified by removing `heq_k`/`hne_k` case analysis
+
+### What Was NOT Done (and Why)
+
+Tasks 5.1-5.4 (the full GHR93 U(B,A) rewrite) were skipped because:
+- **Until witness containment**: `untl_extract_witness` returns a witness `z > ref_M` in the FULL `ExtendedCarrier`, not guaranteed to be in `[x, y]`. This is a fundamental blocker for the pure GHR93 approach.
+- **No bridge between tau and forward game**: Without U(B,A), `sel_pn_ord` cannot be derived from tau_r alone (p_n/e_n are not in tau's game tuple). The forward game + tau_left bridge remains necessary.
+- The plan's Rollback/Contingency section anticipated this: "use forward game h_fwd_n1 for EXISTENCE and interval containment, U(B,A) only for FORMULA PROPERTIES"
+
+### Architecture After This Change
+
+```
+ghr93_case_II (lines 1196-1866):
+  Step 1: Extract p_n, define a_init (lines 1239-1247) -- UNCHANGED
+  Step 2: Project sigma/tau to rank r (lines 1248-1255) -- UNCHANGED
+  Step 3: Forward game for e_n (lines 1257-1288) -- UNCHANGED
+  Step 4: Extract formula/ordering from forward game (lines 1289-1345) -- UNCHANGED
+  Step 5: Hoist p_cy, tau formula data (lines 1346-1357) -- UNCHANGED
+  Step 6: tau_left and tau_right via IH (lines 1358-1378) -- UNCHANGED
+  Step 7: Play tau_left for resp_left, extract sel_pn_ord (lines 1392-1414) -- UNCHANGED
+  [DELETED: resp_mod definition and helpers -- was lines 1415-1439]
+  Step 8: a'_resp = resp_left + e_n, Round 2 dispatch (lines 1415-1866) -- SIMPLIFIED
+```
+
+## Next Actions
+
+Phase 6 (Cases III/IV) is the next target. The sorry at line 3146 is in `ghr93_cases_III_IV`.
+
+## Verification
+
+- `lake build` passes with zero errors
+- Only sorry in CaseAnalysis.lean is line 3146 (Cases III/IV)
+- ghr93_case_II remains sorry-free
+- Net reduction: 338 lines (3633 -> 3295)

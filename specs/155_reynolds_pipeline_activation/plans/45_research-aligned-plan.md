@@ -247,9 +247,9 @@ For x_interval_formula_exists: the interval type is the set of rank_types realiz
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite [IN PROGRESS]
+### Phase 5: GHR93-Faithful Case II Rewrite [PARTIAL]
 
-**Status**: Task 5.7 (grid dispatch patch) completed; Tasks 5.1-5.6 (GHR93 rewrite) not yet attempted. This phase is reopened to complete the architectural rewrite.
+**Status**: Tasks 5.5-5.7 completed (resp_mod elimination + grid dispatch patch, net -338 lines). Tasks 5.1-5.4 (full GHR93 U(B,A) rewrite) skipped due to Until witness containment blocker: `untl_extract_witness` returns z in full ExtendedCarrier, not guaranteed in [x,y]. The structural simplification achieved the core objective (eliminating resp_mod indirection) via a different approach.
 
 **Task 5.7 context** (completed work that will be partially superseded):
 Task 5.7 created `same_order_type_of_cases` helper in EFGameTactics.lean (line 231) and applied it at 3 grid dispatch sites (Case A line 1640, Case B1 line 1986, Case B2 line 2232). Each usage constructs ~220 lines of prerequisite ordering lemmas via `by_cases hk : k.val < n` splits. Total: ~740 lines added on top of the existing ~1170-line proof. The helper theorem itself survives the rewrite, but the prerequisite construction at each call site will be dramatically simplified once resp_mod is eliminated.
