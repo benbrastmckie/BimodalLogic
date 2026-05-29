@@ -2,18 +2,17 @@
 # Run production dataset generation for BMLogic training data.
 #
 # Usage:
-#   ./scripts/run_dataset_generation.sh medium      # Complexity 5, ~5K formulas, 2K axiom seeds
-#   ./scripts/run_dataset_generation.sh deep        # Complexity 7, exhaustive, ~50K formulas, 5K seeds
-#   ./scripts/run_dataset_generation.sh production  # Complexity 7, exhaustive, ~60K formulas, 5K seeds
+#   ./scripts/run_dataset_generation.sh c5          # Complexity 5, exhaustive, ~1.5K formulas
+#   ./scripts/run_dataset_generation.sh c7          # Complexity 7, exhaustive, ~50K formulas
 #   ./scripts/run_dataset_generation.sh smoke       # Quick validation run (20 formulas)
-#   ./scripts/run_dataset_generation.sh all         # Both medium and deep runs
+#   ./scripts/run_dataset_generation.sh all         # Both c5 and c7 runs
 #
 # Prerequisites:
 #   lake build dataset_generator
 #
 # Output:
-#   data/bmlogic-medium.jsonl + data/bmlogic-medium_metadata.json
-#   data/bmlogic-deep.jsonl   + data/bmlogic-deep_metadata.json
+#   data/bmlogic-c5.jsonl + data/bmlogic-c5_metadata.json   (complexity-5, exhaustive)
+#   data/bmlogic-c7.jsonl + data/bmlogic-c7_metadata.json   (complexity-7, exhaustive)
 #
 # Feasibility gates (per run):
 #   - Timeout rate < 20%
@@ -45,65 +44,44 @@ run_smoke() {
     echo "Smoke test files cleaned up."
 }
 
-run_medium() {
-    echo "=== Medium Production Run (complexity 5, ~5K formulas) ==="
+run_c5() {
+    echo "=== C5 Production Run (complexity 5, exhaustive, ~1.5K formulas) ==="
     echo "Started at: $(date -Iseconds)"
-    # Post-task-210: exact-complexity enumeration eliminates blowup at complexity 5.
+    # Exhaustive enumeration of all complexity-5 bimodal formulas with duals.
     time lake exe dataset_generator -- \
         --max-complexity 5 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
-        --max-formulas 5000 \
         --valid-seed-count 2000 \
-        --output data/bmlogic-medium.jsonl \
+        --output data/bmlogic-c5.jsonl \
+        --mode exhaustive \
         --include-duals
     echo ""
     echo "Completed at: $(date -Iseconds)"
     echo "Output:"
-    wc -l data/bmlogic-medium.jsonl
-    cat data/bmlogic-medium_metadata.json
+    wc -l data/bmlogic-c5.jsonl
+    cat data/bmlogic-c5_metadata.json
     echo ""
 }
 
-run_deep() {
-    echo "=== Deep Production Run (complexity 7, exhaustive, ~50K formulas) ==="
+run_c7() {
+    echo "=== C7 Production Run (complexity 7, exhaustive, ~50K formulas) ==="
     echo "Started at: $(date -Iseconds)"
-    # Post-task-210: exact-complexity enumeration enables exhaustive mode at complexity 7.
+    # Exhaustive enumeration of all complexity-7 bimodal formulas with duals.
     time lake exe dataset_generator -- \
         --max-complexity 7 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
         --max-formulas 50000 \
         --valid-seed-count 5000 \
-        --output data/bmlogic-deep.jsonl \
+        --output data/bmlogic-c7.jsonl \
         --mode exhaustive \
         --include-duals
     echo ""
     echo "Completed at: $(date -Iseconds)"
     echo "Output:"
-    wc -l data/bmlogic-deep.jsonl
-    cat data/bmlogic-deep_metadata.json
-    echo ""
-}
-
-run_production() {
-    echo "=== Production Run (complexity 7, exhaustive, ~60K formulas) ==="
-    echo "Started at: $(date -Iseconds)"
-    # Full production pipeline: complexity 7, high seed count, duals enabled.
-    time lake exe dataset_generator -- \
-        --max-complexity 7 \
-        --max-modal-depth 2 \
-        --max-temporal-depth 2 \
-        --max-formulas 60000 \
-        --valid-seed-count 5000 \
-        --output data/bmlogic-production.jsonl \
-        --mode exhaustive \
-        --include-duals
-    echo ""
-    echo "Completed at: $(date -Iseconds)"
-    echo "Output:"
-    wc -l data/bmlogic-production.jsonl
-    cat data/bmlogic-production_metadata.json
+    wc -l data/bmlogic-c7.jsonl
+    cat data/bmlogic-c7_metadata.json
     echo ""
 }
 
@@ -111,33 +89,29 @@ case "${1:-help}" in
     smoke)
         run_smoke
         ;;
-    medium)
-        run_medium
+    c5)
+        run_c5
         ;;
-    deep)
-        run_deep
-        ;;
-    production)
-        run_production
+    c7)
+        run_c7
         ;;
     all)
-        run_medium
+        run_c5
         echo ""
-        run_deep
+        run_c7
         ;;
     help|--help|-h)
-        echo "Usage: $0 {smoke|medium|deep|production|all}"
+        echo "Usage: $0 {smoke|c5|c7|all}"
         echo ""
-        echo "  smoke       Quick 20-formula validation run"
-        echo "  medium      Complexity 5, ~5K formulas with temporal duals and 2K axiom seeds"
-        echo "  deep        Complexity 7, exhaustive, ~50K formulas with 5K axiom seeds"
-        echo "  production  Complexity 7, exhaustive, ~60K formulas with 5K axiom seeds"
-        echo "  all         Run both medium and deep sequentially"
+        echo "  smoke   Quick 20-formula validation run"
+        echo "  c5      Complexity 5, exhaustive, ~1.5K formulas (bmlogic-c5.jsonl)"
+        echo "  c7      Complexity 7, exhaustive, ~50K formulas (bmlogic-c7.jsonl)"
+        echo "  all     Run both c5 and c7 sequentially"
         exit 0
         ;;
     *)
         echo "Unknown command: $1"
-        echo "Usage: $0 {smoke|medium|deep|production|all}"
+        echo "Usage: $0 {smoke|c5|c7|all}"
         exit 1
         ;;
 esac

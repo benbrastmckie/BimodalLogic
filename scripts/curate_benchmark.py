@@ -10,8 +10,8 @@ Usage:
     python scripts/curate_benchmark.py [--output PATH] [--target-size N]
 
 Inputs:
-    data/bmlogic-medium.jsonl   - Production medium-complexity dataset
-    data/bmlogic-deep.jsonl     - Production deep-complexity dataset
+    data/bmlogic-c5.jsonl       - Production complexity-5 training dataset (canonical)
+    data/bmlogic-c7.jsonl       - Production complexity-7 training dataset (canonical)
     data/axiom-instances.jsonl  - Generated axiom instances from Phase 1
 
 Output:
@@ -73,8 +73,8 @@ def load_jsonl(path: str) -> list[dict]:
 
 
 def load_pools(
-    medium_path: str = "data/bmlogic-medium.jsonl",
-    deep_path: str = "data/bmlogic-deep.jsonl",
+    medium_path: str = "data/bmlogic-c5.jsonl",
+    deep_path: str = "data/bmlogic-c7.jsonl",
     axiom_path: str = "data/axiom-instances.jsonl",
 ) -> tuple[list[dict], list[dict], list[dict]]:
     """Load all data pools: medium, deep, and axiom instances."""
@@ -549,10 +549,10 @@ def main():
                         help="Output path for candidate benchmark")
     parser.add_argument("--target-size", type=int, default=TARGET_SIZE,
                         help="Target benchmark size")
-    parser.add_argument("--medium", default="data/bmlogic-medium.jsonl",
-                        help="Path to medium production dataset")
-    parser.add_argument("--deep", default="data/bmlogic-deep.jsonl",
-                        help="Path to deep production dataset")
+    parser.add_argument("--medium", default="data/bmlogic-c5.jsonl",
+                        help="Path to complexity-5 training dataset (canonical)")
+    parser.add_argument("--deep", default="data/bmlogic-c7.jsonl",
+                        help="Path to complexity-7 training dataset (canonical)")
     parser.add_argument("--axioms", default="data/axiom-instances.jsonl",
                         help="Path to axiom instances")
     args = parser.parse_args()

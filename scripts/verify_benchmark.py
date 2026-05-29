@@ -37,8 +37,8 @@ def classify_tier(complexity: int) -> str:
 def verify_benchmark(
     bench_path: str = "data/bmlogic-bench.jsonl",
     meta_path: str = "data/bmlogic-bench_metadata.json",
-    medium_path: str = "data/bmlogic-medium.jsonl",
-    deep_path: str = "data/bmlogic-deep.jsonl",
+    medium_path: str = "data/bmlogic-c5.jsonl",
+    deep_path: str = "data/bmlogic-c7.jsonl",
 ):
     """Run all verification checks and return True if all pass."""
     print("BMLogic-Bench Independent Verification")

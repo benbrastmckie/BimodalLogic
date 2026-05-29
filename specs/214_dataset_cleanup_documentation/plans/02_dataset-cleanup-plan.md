@@ -75,19 +75,19 @@ Phases are sequential because each builds on the file state established by the p
 
 ---
 
-### Phase 1: Update Scripts and Clean Up Files [NOT STARTED]
+### Phase 1: Update Scripts and Clean Up Files [COMPLETED]
 
 **Goal**: Update all script default paths from medium/deep to c5/c7, then remove superseded datasets, intermediate pipeline artifacts, and test files.
 
 **Tasks**:
-- [ ] Update `scripts/curate_benchmark.py`: change `--medium` default from `data/bmlogic-medium.jsonl` to `data/bmlogic-c5.jsonl`, change `--deep` default from `data/bmlogic-deep.jsonl` to `data/bmlogic-c7.jsonl`, update docstring references
-- [ ] Update `scripts/validate_benchmark.py`: change `--production-medium` default to `data/bmlogic-c5.jsonl`, change `--production-deep` default to `data/bmlogic-c7.jsonl`
-- [ ] Update `scripts/verify_benchmark.py`: change `medium_path` default to `data/bmlogic-c5.jsonl`, change `deep_path` default to `data/bmlogic-c7.jsonl`
-- [ ] Update `scripts/run_dataset_generation.sh`: update output paths and comments from medium/deep to c5/c7, update complexity parameters to match c5 (max_complexity=5) and c7 (max_complexity=7) with exhaustive mode
-- [ ] Delete superseded datasets: `data/bmlogic-deep.jsonl`, `data/bmlogic-deep_metadata.json`, `data/bmlogic-medium.jsonl`, `data/bmlogic-medium_metadata.json`
-- [ ] Delete intermediate pipeline artifacts: `data/axiom-instances.jsonl`, `data/bmlogic-bench-candidates.jsonl`, `data/bmlogic-bench-validated.jsonl`
-- [ ] Delete test files: `data/test.jsonl`, `data/test_c4.jsonl`, `data/test_metadata.json`, `data/test_c4_metadata.json`
-- [ ] Verify no other scripts reference deleted filenames: `grep -r 'bmlogic-medium\|bmlogic-deep\|axiom-instances\|bench-candidates\|bench-validated\|test\.jsonl\|test_c4' scripts/`
+- [x] Update `scripts/curate_benchmark.py`: change `--medium` default from `data/bmlogic-medium.jsonl` to `data/bmlogic-c5.jsonl`, change `--deep` default from `data/bmlogic-deep.jsonl` to `data/bmlogic-c7.jsonl`, update docstring references *(completed)*
+- [x] Update `scripts/validate_benchmark.py`: change `--production-medium` default to `data/bmlogic-c5.jsonl`, change `--production-deep` default to `data/bmlogic-c7.jsonl` *(completed)*
+- [x] Update `scripts/verify_benchmark.py`: change `medium_path` default to `data/bmlogic-c5.jsonl`, change `deep_path` default to `data/bmlogic-c7.jsonl` *(completed)*
+- [x] Update `scripts/run_dataset_generation.sh`: update output paths and comments from medium/deep to c5/c7, update complexity parameters to match c5 (max_complexity=5) and c7 (max_complexity=7) with exhaustive mode *(completed)*
+- [x] Delete superseded datasets: `data/bmlogic-deep.jsonl`, `data/bmlogic-deep_metadata.json`, `data/bmlogic-medium.jsonl`, `data/bmlogic-medium_metadata.json` *(completed)*
+- [x] Delete intermediate pipeline artifacts: `data/axiom-instances.jsonl`, `data/bmlogic-bench-candidates.jsonl`, `data/bmlogic-bench-validated.jsonl` *(completed)*
+- [x] Delete test files: `data/test.jsonl`, `data/test_c4.jsonl`, `data/test_metadata.json`, `data/test_c4_metadata.json` *(completed)*
+- [x] Verify no other scripts reference deleted filenames: `grep -r 'bmlogic-medium\|bmlogic-deep\|axiom-instances\|bench-candidates\|bench-validated\|test\.jsonl\|test_c4' scripts/` *(completed)*
 
 **Timing**: 1 hour
 

@@ -37,8 +37,8 @@ def main():
     parser = argparse.ArgumentParser(description="BMLogic-Bench Validation Report")
     parser.add_argument("--input", default="data/bmlogic-bench-validated.jsonl",
                         help="Path to oracle-validated benchmark")
-    parser.add_argument("--production-medium", default="data/bmlogic-medium.jsonl")
-    parser.add_argument("--production-deep", default="data/bmlogic-deep.jsonl")
+    parser.add_argument("--production-medium", default="data/bmlogic-c5.jsonl")
+    parser.add_argument("--production-deep", default="data/bmlogic-c7.jsonl")
     args = parser.parse_args()
 
     print("BMLogic-Bench Validation Report")
