@@ -4,7 +4,8 @@ import Bimodal.Metalogic.Bundle.WitnessSeed
 /-!
 # Henkin Discrete Chain: Analysis and Infrastructure
 
-This module documents the analysis of approaches to sorry-free `completeness_discrete`.
+This module documents the analysis of approaches to sorry-free `completeness_discrete`
+and provides infrastructure lemmas for future Henkin chain constructions.
 
 ## Problem Statement
 
@@ -16,72 +17,59 @@ This module documents the analysis of approaches to sorry-free `completeness_dis
 The sorry chain: `restricted_tc/fuc` → `succ_embed_surjective` →
 `limitDomSubtype_isSuccArchimedean` → `succ_cofinal` (sorry).
 
-## Analysis of Approaches
+## Analysis of Approaches (Plans v1-v3)
 
-### Approach 1: Direct restricted_tc without surjectivity
+### Failed Approaches
 
-**Idea**: Show F(phi) at succ_embed(n) implies phi at succ_embed(n+1).
+1. **Direct restricted_tc without surjectivity** (v1): F(phi) guarantees witness y in
+   limit_dom, but y might be above the entire succ-orbit. Cannot reach y without succ_cofinal.
 
-**Result**: FAILS. F(phi) guarantees a witness y in limit_dom (from
-`limit_F_resolution`), but y might be above the entire succ-orbit.
-The backward_G contrapositive shows F(phi) persists at all orbit points,
-but cannot show the orbit REACHES y without `succ_cofinal`.
+2. **Henkin chain with all F-witnesses** (v2): `f_content(M) ∪ g_content(M)` is NOT
+   consistent. F(phi) ∧ F(psi) ≠> F(phi ∧ psi).
 
-### Approach 2: Henkin chain with all F-witnesses
+3. **Successor deferral seed** (v2): `g_content(M) ⊆ M` fails under irreflexive semantics.
 
-**Idea**: Define FMCS on Z with mcs(n+1) = Lindenbaum of
-`f_content(mcs(n)) ∪ g_content(mcs(n))`.
+4. **One-at-a-time dovetailing** (v2): F(phi) does NOT persist through g_content.
+   G(F(phi)) is not derivable from F(phi).
 
-**Result**: FAILS. `f_content(M) ∪ g_content(M)` is NOT necessarily consistent.
-F does not distribute over conjunction: F(phi) ∧ F(psi) does NOT imply
-F(phi ∧ psi). Countermodel: Z with phi only at 1, psi only at 2.
+5. **Direct succ_cofinal** (v2): Circular — inductive step requires IsPredArchimedean.
 
-### Approach 3: Successor deferral seed
+6. **Stage-based induction** (v2): constant-MCS gap scenario is consistent.
 
-**Idea**: Use `successor_deferral_seed = g_content(M) ∪ {phi ∨ F(phi) | F(phi) ∈ M}`.
+### Plan v3 Analysis (One-at-a-Time F-Resolution)
 
-**Result**: BLOCKED. Existing consistency proof at `SuccExistence.lean:742-789`
-has a sorry (g_content(M) ⊆ M fails under irreflexive semantics).
-The direct consistency proof requires showing the seed is consistent without
-assuming g_content ⊆ M.
+Plan v3 proposed resolving F-formulas one at a time using `forward_temporal_witness_seed_consistent`.
+The key obstacle: **F-formula persistence through Lindenbaum extensions is not guaranteed**.
 
-### Approach 4: One-at-a-time dovetailing
+When building `mcs(n+1)` as Lindenbaum({witness} ∪ g_content(mcs(n))):
+- F(ψ) ∈ mcs(n) means G(¬ψ) ∉ mcs(n), hence ¬ψ ∉ g_content(mcs(n))
+- But the Lindenbaum extension (via Classical.choice) may arbitrarily include G(¬ψ)
+- Once G(¬ψ) enters, it propagates forward forever (via G(G(¬ψ)) = temp_4)
+- F(ψ) is permanently lost from the chain
 
-**Idea**: Resolve F-formulas one per step, cycling through `deferralClosure(root)`.
+Augmented seed approach also fails: `{ψ} ∪ g_content(M) ∪ {F(χ)}` may be inconsistent
+(e.g., ψ = ¬χ ∧ G(¬χ) makes {ψ, F(χ)} inconsistent).
 
-**Result**: FAILS. F(phi) at step n does NOT persist to step n+1 through
-g_content alone. G(F(phi)) is not derivable from F(phi), so F(phi) drops
-out when building the successor MCS.
+## Viable Resolution Paths
 
-### Approach 5: Direct succ_cofinal proof
+1. **Task 129**: Reflexive completeness + conservative extension. Under reflexive semantics,
+   G(φ) → φ holds, making g_content(M) ⊆ M. Then F-persistence follows from the full MCS
+   containing the seed. Transfer to irreflexive via conservative extension.
 
-**Idea**: Prove succ_cofinal by induction on pred(b):
-if succ^K(a) ≥ pred(b), then succ^{K+1}(a) ≥ succ(pred(b)) = b.
+2. **Augmented seed consistency proof**: Show `{ψ} ∪ g_content(M) ∪ {F(χ) | F(χ) ∈ M}`
+   is consistent for the specific case where ψ is a deferralClosure formula. May require
+   temporal-logic-specific reasoning about F-formula interactions.
 
-**Result**: CIRCULAR. The inductive step replaces b with pred(b), which
-requires IsPredArchimedean ↔ IsSuccArchimedean.
+3. **Restricted MCS truth lemma**: Build restricted FMCS/BFMCS/truth-lemma infrastructure
+   for restricted Lindenbaum extensions. Negation completeness within deferralClosure
+   guarantees F-persistence.
 
-## Viable Paths Forward
+4. **Construction-level gap analysis**: Show the omega-chain construction cannot produce
+   gaps in the succ-orbit (direct proof of succ_cofinal).
 
-1. **Construction-level gap elimination**: Show the omega-chain construction
-   cannot produce gaps. When succ^n(a) converges to L < b, the C5
-   counterexamples at orbit points are eventually processed, adding
-   witnesses that the orbit must pass through. This requires deep
-   interaction with `omega_chain_elim_result` internals.
+## Infrastructure Lemmas
 
-2. **Prove successor_deferral_seed consistency for general fc**: The seed
-   {g_content(M) ∪ deferral disjunctions} might be consistently provable
-   using the generalized temporal K axiom (as in `forward_temporal_witness_seed`
-   but generalized to multiple disjunctions).
-
-3. **Task 129**: Weak/reflexive completeness + conservative extension.
-   Under reflexive semantics, G(phi) → phi holds, making g_content(M) ⊆ M.
-   Then the seed consistency is trivial. Conservative extension transfers
-   the result to irreflexive semantics.
-
-## Key Lemma: g_content(M) is consistent
-
-This IS provable (shown below) and is a building block for any Henkin chain approach.
+The following lemmas are sorry-free building blocks for any future approach.
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Chronicle
