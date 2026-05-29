@@ -158,15 +158,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Build Verification and Metadata Update [NOT STARTED]
+### Phase 5: Build Verification and Metadata Update [COMPLETED]
 
 **Goal**: Verify the complete project builds and update dataset metadata to document available representations.
 
 **Tasks**:
-- [ ] Run full `lake build` to verify no regressions
-- [ ] Update `datasetMetadataToJson` in DatasetExport.lean to include a `representations` field listing all available formats
-- [ ] Run `lake build` again to confirm metadata changes compile
-- [ ] Optionally run `lake exe dataset_generator -- --max-complexity 3 --max-formulas 10 --output /tmp/test_multi_repr.jsonl` to verify new fields appear in output
+- [x] Run full `lake build` to verify no regressions
+- [x] Update `datasetMetadataToJson` in DatasetExport.lean to include a `representations` field listing all available formats
+- [x] Run `lake build` again to confirm metadata changes compile
+- [ ] Optionally run `lake exe dataset_generator -- --max-complexity 3 --max-formulas 10 --output /tmp/test_multi_repr.jsonl` to verify new fields appear in output *(deviation: skipped -- optional functional test not part of compilation verification)*
 
 **Timing**: 1.5 hours
 

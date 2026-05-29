@@ -355,7 +355,15 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"include_duals\": " ++ dualStr ++ ",\n"
   ++ "  \"max_complexity\": " ++ toString m.maxComplexity ++ ",\n"
   ++ "  \"sampling_mode\": \"" ++ m.samplingMode ++ "\",\n"
-  ++ "  \"frame_class\": \"Base\"\n"
+  ++ "  \"frame_class\": \"Base\",\n"
+  ++ "  \"representations\": [\n"
+  ++ "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \"Pretty-printed unicode notation\"},\n"
+  ++ "    {\"field\": \"formula_ast\", \"format\": \"json-ast\", \"description\": \"Recursive JSON AST with tag discriminator\"},\n"
+  ++ "    {\"field\": \"formula_sexpr\", \"format\": \"s-expression\", \"description\": \"Canonical parenthesized prefix notation\"},\n"
+  ++ "    {\"field\": \"formula_tokens\", \"format\": \"token-list\", \"description\": \"Prefix-notation token list for transformers\"},\n"
+  ++ "    {\"field\": \"pattern_key\", \"format\": \"json-object\", \"description\": \"Structural pattern key with named fields\"},\n"
+  ++ "    {\"field\": \"pattern_features\", \"format\": \"numeric-vector\", \"description\": \"Flat numeric feature vector for value estimators\"}\n"
+  ++ "  ]\n"
   ++ "}"
 
 /--
