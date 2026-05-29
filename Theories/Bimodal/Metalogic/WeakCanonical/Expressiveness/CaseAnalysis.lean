@@ -3271,51 +3271,186 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
     exact ⟨⟨fun ⟨_, hp⟩ => absurd hp (by simp),
             fun ⟨_, hp⟩ => absurd hp (by simp)⟩,
            ⟨fun _ => ⟨γ_N, rfl⟩, fun _ => ⟨γ_M, rfl⟩⟩⟩
-  -- Step 5b: Construct the response function a'_resp.
-  -- Positions 0..n-1: use resp_tau. Position n: use Sum.inr γ_M.
-  let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
-    if h : i.val < n then resp_tau ⟨i.val, h⟩
-    else Sum.inr γ_M
-  -- Step 5c: All responses are in [x, y].
-  have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
-    intro i; simp only [a'_resp]
-    split
-    case isTrue h =>
-      have := hresp_tau_in ⟨i.val, h⟩
-      exact ⟨le_trans props.hxc this.1, this.2⟩
-    case isFalse _ => exact hγ_M_in
-  -- Step 5d: Handle the point challenge and winning condition.
-  refine ⟨a'_resp, ha'_resp_in, ?_⟩
-  intro b_sp hb_sp_in
-  -- Sub-goal S11.3: Point challenge + winning condition assembly.
-  -- Strategy: Use the d-compatible forward game (h_d_compat_left) to
-  -- get b_resp with cross-boundary orderings, then assemble the winning
-  -- condition from tau sub-game + gap properties + forward game.
+  -- Step 5b: Build IH-based sub-game on [x, y] × [x', y'] with n+1 rounds.
+  -- Strategy: use the full-interval forward game + IH to get a backward game
+  -- with n rounds. Then play it with a_init to get responses. The key insight
+  -- is to use the IH on [x, y] × [x', y'] itself (not a sub-interval), which
+  -- gives responses in [x, y] with all orderings relative to endpoints x,y.
+  -- The gap position's orderings come from the fact that γ_M ∈ [x, y] and
+  -- γ_N ∈ [x', y'] with the appropriate ordering correspondence.
   --
-  -- Key position mapping for game_tuple (n+1):
-  --   game_tuple x' y' a_bwd b_resp has n+1+3 = n+4 positions:
-  --     pos 0 = x', pos 1..n+1 = a_bwd(0..n), pos n+2 = b_resp, pos n+3 = y'
-  --   game_tuple x y a'_resp b_sp has n+4 positions:
-  --     pos 0 = x, pos 1..n = resp_tau(0..n-1), pos n+1 = γ_M,
-  --     pos n+2 = b_sp, pos n+3 = y
+  -- Actually: the (1+3*n)-round forward game + IH gives an n-round backward game.
+  -- But we need n+1 selections. We can use the n-round backward game for the
+  -- first n selections and handle position n (the gap) separately.
   --
-  -- Step S11.3a: Play d-compatible strategy to get b_resp and orderings.
-  -- Pad the M-selections to 1+3*n+1 elements (resp_tau padded with c),
-  -- apply h_d_compat_left, challenge with an N-point from [x', y'].
-  -- This gives formula agreement + orderings between c/d and b_sp/b_resp.
+  -- Revised approach: Use the FULL interval forward game h_fwd_n1 (n+1 rounds)
+  -- to get b_resp directly. Play h_fwd_n1 with a'_resp as M-selections,
+  -- get N-responses, and then challenge with some N-carrier point to get
+  -- the M-response b_sp_resp. But the game direction is wrong: h_fwd_n1 gives
+  -- M-selections → N-responses → N-challenge → M-response.
+  -- We need: N-selections (a_bwd) → M-responses (a'_resp) → M-challenge (b_sp) → N-response.
+  -- This is the BACKWARD direction. The IH converts forward to backward.
   --
-  -- Step S11.3b: Combine to get the full winning condition.
-  -- For each pair (i,j) of positions 0..n+3:
-  --   order:  from tau sub-game (for tau positions) + d-compat (for cross-boundary)
-  --           + gap interval membership (for gap position)
-  --   gp:     from tau sub-game (for tau positions) + S11.2 (for gap position)
-  --           + point status (for b_sp/b_resp)
-  --   form:   from tau sub-game (for tau positions) + S11.1 (for gap position)
-  --           + d-compat forward game (for b_sp/b_resp and endpoints)
+  -- Final approach: Apply IH to h_fwd_n1_ext (a (1+3*(n+1))-round forward game
+  -- reduced to (1+3*(n+1)) rounds, then IH gives (n+1)-round backward game).
+  -- But the IH parameter gives n rounds, not n+1!
   --
-  -- This mirrors the Case II assembly pattern (~200 lines) with the gap at
-  -- position n+1 replacing the point e_n from Case II.
-  sorry
+  -- The IH is for the PREVIOUS induction step: it converts (1+3*n)-round forward
+  -- to n-round backward. We need (n+1)-round backward, which would need a
+  -- (1+3*(n+1))-round forward game and an IH for n+1. We don't have that.
+  --
+  -- So we're stuck with n-round backward games. The proof MUST combine the
+  -- n-round backward game (for positions 0..n-1) with separate handling for
+  -- position n (the gap).
+  --
+  -- WORKING APPROACH: Use the IH-based sub-game on [x, γ_M] × [x', γ_N]
+  -- for the first n positions, and handle position n and b_sp separately.
+  -- For b_sp, case-split on b_sp ∈ γ_M.cut (below gap) vs b_sp ∉ γ_M.cut (above gap).
+  -- For the γ vs y ordering, case-split on γ_N = y' vs γ_N < y'.
+  --
+  -- Ordering bounds.
+  have hd_le_γN : d ≤ Sum.inr γ_N := hγ_N_eq ▸ h_no_split ⟨n, by omega⟩
+  have hx'_le_γN : x' ≤ (Sum.inr γ_N : ExtendedCarrier N atomMap r) :=
+    le_trans props.hx'd hd_le_γN
+  have hγ_N_le_y' : @LE.le (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' := by
+    have h := (ha_bwd ⟨n, by omega⟩).2
+    rw [hγ_N_eq] at h; exact h
+  -- a_init(k) ∈ [x', γ_N] for all k.
+  have ha_init_sub : ∀ k, inClosedInterval x' (Sum.inr γ_N) (a_init k) := by
+    intro k
+    exact ⟨le_trans props.hx'd (h_no_split ⟨k.val, by omega⟩), by
+      have : a_bwd ⟨k.val, by omega⟩ ≤ a_bwd ⟨n, by omega⟩ :=
+        h_mono (Fin.mk_le_mk.mpr (by omega : k.val ≤ n))
+      rw [hγ_N_eq] at this; exact this⟩
+  -- Forward game at rank r on [x, γ_M] × [x', γ_N].
+  have h_fwd_sub : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r
+      x (Sum.inr γ_M) x' (Sum.inr γ_N) :=
+    ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n)
+      hγ_M_in.1 hx'_le_γN
+      (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 2)
+        (by omega : r + 2 ≤ r + 2) hγ_M_in.1 hx'_le_γN
+        (h_r1_univ r hγ_M_in.1 hx'_le_γN))
+  -- Case split on carrier point in [x', γ_N].
+  by_cases h_pt_sub : ∃ (p : N.carrier), inClosedInterval x' (Sum.inr γ_N) (extendPoint p)
+  case pos =>
+    -- IH gives backward game on [x', γ_N] → [x, γ_M].
+    have tau_sub : ghr93_duplicator_wins N M atomMap n r
+        x' (Sum.inr γ_N) x (Sum.inr γ_M) :=
+      ih hγ_M_in.1 hx'_le_γN h_pt_sub h_fwd_sub
+    obtain ⟨resp_sub, hresp_sub_in, hwin_sub⟩ := tau_sub a_init ha_init_sub
+    -- resp_sub(k) ∈ [x, γ_M].
+    -- Define a'_resp using resp_sub.
+    let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
+      if h : i.val < n then resp_sub ⟨i.val, h⟩ else Sum.inr γ_M
+    have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
+      intro i; simp only [a'_resp]; split
+      case isTrue h =>
+        exact ⟨(hresp_sub_in ⟨i.val, h⟩).1, le_trans (hresp_sub_in ⟨i.val, h⟩).2 hγ_M_in.2⟩
+      case isFalse _ => exact hγ_M_in
+    refine ⟨a'_resp, ha'_resp_in, ?_⟩
+    intro b_sp hb_sp_in
+    -- The winning condition proof for the (n+1)-game is assembled from:
+    -- (A) Sub-game on [x', γ_N] × [x, γ_M] (for positions 0..n-1 and gap vs selections)
+    -- (B) Gap detection (γ_M_form, γ_gp) (for formula/gp at gap position)
+    -- (C) Interval containment (for y-endpoint orderings)
+    -- (D) Forward game at y/y' (for formula/gp at y-endpoints)
+    --
+    -- The core difficulty (sel_gap_ord) is solved: resp_sub(k) ≤ γ_M from the sub-game.
+    sorry
+  case neg =>
+    -- No carrier point in [x', γ_N]. Then x' = Sum.inr γ_N (degenerate).
+    -- All a_bwd(k) = Sum.inr γ_N, d = Sum.inr γ_N, and c is a corresponding gap.
+    push_neg at h_pt_sub
+    -- x' = Sum.inr γ_N: any carrier point p with x' ≤ extendPoint p ≤ Sum.inr γ_N
+    -- would satisfy h_pt_sub, contradiction. So no carrier point exists in this interval.
+    -- Since d ≤ Sum.inr γ_N and x' ≤ d, all carrier points in γ_N.cut are below x'.
+    -- This means x' is a gap ≥ Sum.inr γ_N. Combined with x' ≤ Sum.inr γ_N, x' = Sum.inr γ_N.
+    have hx'_eq_γN : x' = (Sum.inr γ_N : ExtendedCarrier N atomMap r) := by
+      by_contra h_ne
+      have hx'_lt : x' < (Sum.inr γ_N : ExtendedCarrier N atomMap r) := lt_of_le_of_ne hx'_le_γN h_ne
+      -- γ_N has a nonempty cut. Find a carrier point in [x', γ_N].
+      rcases isPoint_or_isGap x' with ⟨p_x', hp_eq⟩ | ⟨g_x', hg_eq⟩
+      · -- x' is a point. Then p_x' ∈ γ_N.cut (since x' < γ_N) and extendPoint p_x' = x' ≥ x'.
+        have : inClosedInterval x' (Sum.inr γ_N) (extendPoint p_x') :=
+          ⟨by rw [extendPoint, hp_eq], by rw [extendPoint]; exact le_of_lt (hp_eq ▸ hx'_lt)⟩
+        exact h_pt_sub p_x' this
+      · -- x' is a gap g_x'. Since x' < γ_N, g_x'.cut ⊊ γ_N.cut.
+        have h_sub : g_x'.val.cut ⊆ γ_N.val.cut := by rw [hg_eq] at hx'_lt; exact le_of_lt hx'_lt
+        have h_ne_cut : g_x'.val.cut ≠ γ_N.val.cut := by
+          intro heq; have := gap_ext g_x'.val γ_N.val heq
+          exact h_ne (by rw [hg_eq]; exact congr_arg Sum.inr (Subtype.ext this))
+        obtain ⟨m₀, hm₀_in, hm₀_not⟩ := Set.not_subset.mp (fun h => h_ne_cut
+          (Set.Subset.antisymm h_sub h))
+        have hm₀_in_interval : inClosedInterval x' (Sum.inr γ_N) (extendPoint m₀) := by
+          constructor
+          · rw [hg_eq]
+            exact le_of_lt (lt_of_not_ge (fun h => hm₀_not ((extendPoint_le_gap_iff m₀ g_x').mp h)))
+          · exact (extendPoint_le_gap_iff m₀ γ_N).mpr hm₀_in
+        exact h_pt_sub m₀ hm₀_in_interval
+    -- Now x' = Sum.inr γ_N. So d = Sum.inr γ_N and all a_bwd(k) = Sum.inr γ_N.
+    have hd_eq_γN : d = Sum.inr γ_N := le_antisymm hd_le_γN (hx'_eq_γN ▸ props.hx'd)
+    have ha_bwd_all_γN : ∀ i, a_bwd i = Sum.inr γ_N := by
+      intro i
+      have h1 : d ≤ a_bwd i := h_no_split i
+      have h2 : a_bwd i ≤ a_bwd ⟨n, by omega⟩ := h_mono (Fin.le_last i)
+      rw [hγ_N_eq] at h2; rw [hd_eq_γN] at h1
+      exact le_antisymm h2 h1
+    -- c is a gap corresponding to d = γ_N.
+    have hc_gap : IsGap c := props.hcd_gp.2.mpr ⟨γ_N, hd_eq_γN⟩
+    obtain ⟨g_c, hc_eq⟩ := hc_gap
+    -- g_c has the same formulas as γ_N (from hcd_form).
+    have hgc_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+        (stavi_temporal_truth_mu M atomMap r (Sum.inr g_c) A ↔
+         stavi_temporal_truth_mu N atomMap r (Sum.inr γ_N) A) := by
+      intro A hA; rw [← hc_eq]; rw [← hd_eq_γN]; exact props.hcd_form A hA
+    -- Use g_c as the M-gap (it has the same properties as γ_M but is at position c).
+    -- All resp_tau are at c = Sum.inr g_c (since the tau game on [d, y'] = [γ_N, y'] → [c, y]
+    -- with d = γ_N and all selections = γ_N gives all responses = c).
+    -- The tau game with all-identical selections gives all-identical responses.
+    have hresp_tau_all_c : ∀ k, resp_tau k = c := by
+      intro k
+      -- resp_tau(k) ∈ [c, y]. And from the tau ordering:
+      -- resp_tau(k) < resp_tau(k') ↔ a_init(k) < a_init(k').
+      -- Since all a_init(k) = Sum.inr γ_N (identical), the RHS is always false.
+      -- So resp_tau(k) = resp_tau(k') for all k, k'. And resp_tau(k) ∈ [c, y].
+      -- From the tau ordering at (1+k, 0): c < resp_tau(k) ↔ d < a_init(k).
+      -- d = Sum.inr γ_N = a_init(k), so d < a_init(k) is false. So c < resp_tau(k) is false.
+      -- So resp_tau(k) ≤ c. Combined with resp_tau(k) ≥ c (from [c, y]): resp_tau(k) = c.
+      have h_lower := (hresp_tau_in k).1  -- c ≤ resp_tau(k)
+      -- Need resp_tau(k) ≤ c. Use tau ordering.
+      -- Get the tau winning condition by challenging with some carrier point.
+      -- Since all a_init are identical (= Sum.inr γ_N), the tau game's orderings
+      -- force all resp_tau to be identical. But we need a carrier point in [c, y] to challenge.
+      rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, _, _, _⟩
+      · obtain ⟨b_tau, _, hcond_tau⟩ := hwin_tau p_cy hp_cy
+        obtain ⟨hord_tau, _, _⟩ := hcond_tau
+        -- From tau ordering at (0, 1+k): d < a_init(k) ↔ c < resp_tau(k).
+        have h := (hord_tau ⟨0, by omega⟩ ⟨1 + k.val, by omega⟩).1
+        simp only [game_tuple_zero_eq, game_tuple_sel_eq] at h
+        -- d < a_init(k) is d < Sum.inr γ_N = d, i.e., d < d. False.
+        have h_ainit_eq : a_init k = Sum.inr γ_N := ha_bwd_all_γN ⟨k.val, by omega⟩
+        have h_not_d : ¬(d < a_init k) := by rw [h_ainit_eq, hd_eq_γN]; exact lt_irrefl _
+        have h_not_c : ¬(c < resp_tau k) := fun h_lt => h_not_d (h.mpr h_lt)
+        exact le_antisymm (not_lt.mp h_not_c) h_lower
+      · -- c = y. Since resp_tau(k) ∈ [c, y] = [y, y], resp_tau(k) = c.
+        exact le_antisymm (hcy_eq ▸ (hresp_tau_in k).2) h_lower
+    -- Now all resp_tau(k) = c = Sum.inr g_c.
+    -- Define a'_resp: all positions map to Sum.inr g_c (= c) for k < n, γ_M for k = n.
+    -- But we can also use g_c in place of γ_M (they both have formula agreement with γ_N).
+    -- Actually, let's just define a'_resp using resp_tau (which equals c = Sum.inr g_c).
+    let a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r := fun i =>
+      if h : i.val < n then resp_tau ⟨i.val, h⟩ else Sum.inr γ_M
+    have ha'_resp_in : ∀ i, inClosedInterval x y (a'_resp i) := by
+      intro i; simp only [a'_resp]; split
+      case isTrue h =>
+        rw [hresp_tau_all_c]; exact ⟨props.hxc, props.hcy⟩
+      case isFalse _ => exact hγ_M_in
+    refine ⟨a'_resp, ha'_resp_in, ?_⟩
+    intro b_sp hb_sp_in
+    -- In the degenerate case, all N-selections are Sum.inr γ_N = x' = d.
+    -- All M-responses (for k < n) are c = Sum.inr g_c.
+    -- The winning condition is relatively simple because most positions collapse.
+    sorry
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],
     split on whether a_n is a point (Case II) or gap (Cases III-IV). -/

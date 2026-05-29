@@ -443,7 +443,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 ---
 
-### Phase 6: Cases III/IV Gap Handling (General Linear Orders) [NOT STARTED]
+### Phase 6: Cases III/IV Gap Handling (General Linear Orders) [IN PROGRESS]
 
 **Goal**: Implement left(B, D) and right(B, D) per GHR93 Definition 8.5 / Lemma 9, then use them to complete Cases III/IV, closing the sorry at CaseAnalysis.lean:3318. This phase targets the FULL GENERAL RESULT for arbitrary linear orders -- no vacuous discharge, no discrete-only shortcut.
 
