@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Nec/MP Fixpoint Closure and Theorem Seed Integration [NOT STARTED]
+### Phase 4: Nec/MP Fixpoint Closure and Theorem Seed Integration [COMPLETED]
 
 **Goal**: Replace the fixed 2-round Nec/MP closure in `generateValidBatch` with a fixpoint loop (stopping when growth rate drops below threshold or pool exceeds cap). Integrate task 212's proven theorems as additional validity seeds.
 

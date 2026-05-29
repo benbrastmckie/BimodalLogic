@@ -913,51 +913,128 @@ def generateValidFromNec (φ : Formula) : Formula :=
   Formula.box φ
 
 /--
-Generate a batch of guaranteed-valid formulas using an incremental pool strategy.
+Check if a formula matches the ex_falso pattern: `⊥ → φ`.
+-/
+private def isExFalso : Formula → Bool
+  | .imp .bot _ => true
+  | _ => false
+
+/--
+Theorem seed formulas from task 212's proven theorems.
+These are guaranteed valid and provide diverse structural patterns.
+Uses atoms p, q, r for concrete instantiation.
+-/
+private def theoremSeedFormulas : List Formula :=
+  let p := Formula.atom (Atom.mk_base "p")
+  let q := Formula.atom (Atom.mk_base "q")
+  let r := Formula.atom (Atom.mk_base "r")
+  [
+    -- Combinators (8)
+    p.imp p,                                                  -- identity
+    (q.imp r).imp ((p.imp q).imp (p.imp r)),                 -- b_combinator
+    (p.imp (q.imp r)).imp (q.imp (p.imp r)),                 -- flip
+    p.imp ((p.imp q).imp q),                                 -- app1
+    p.imp (q.imp ((p.imp (q.imp r)).imp r)),                 -- app2
+    p.imp (q.imp (p.and q)),                                 -- pairing
+    p.imp p.neg.neg,                                         -- dni
+    p.box.imp p.box.all_future,                              -- temp_future_derived
+    -- ModalS4 (2)
+    p.box.diamond.box.imp p.box,                             -- s4_box_diamond_box
+    p.diamond.imp p.box.diamond.diamond,                     -- s4_diamond_box_diamond
+    -- ModalS5 (6)
+    p.box.imp p.diamond,                                     -- t_box_to_diamond
+    (p.imp q).box.imp (p.neg.imp q.neg).neg.box,             -- box_contrapose (□(A→B) → □(¬B→¬A))
+    (p.imp q).box.imp (p.diamond.imp q.diamond),             -- k_dist_diamond
+    (p.and p.neg).box.imp Formula.bot,                       -- t_box_consistency
+    p.box.diamond.imp p.box,                                 -- s5_diamond_box (simplified half)
+    p.box.diamond.imp p,                                     -- s5_diamond_box_to_truth
+    -- TemporalDerived (5 unique — 2 duplicates removed)
+    p.imp (p.some_past.all_future),                          -- connect_future_thm
+    p.imp (p.some_future.all_past),                          -- connect_past_thm
+    p.all_future.imp ((p.all_future.imp p.all_future).all_future),  -- G_implies_G_id
+    (Formula.untl q p).imp q.some_future,                    -- until_implies_some_future
+    (Formula.snce q p).imp q.some_past,                      -- since_implies_some_past
+    -- Helpers (3)
+    p.box.imp p.all_future,                                  -- box_to_future
+    p.box.imp p.all_past,                                    -- box_to_past
+    p.box.imp p,                                             -- box_to_present (= modal_t)
+    -- Principles (10)
+    p.box.imp p.always,                                      -- perpetuity_1
+    p.diamond.diamond.imp p.diamond,                         -- diamond_4
+    p.diamond.imp p.diamond.box,                             -- modal_5
+    p.sometimes.diamond.imp p.diamond,                       -- perpetuity_2
+    p.box.imp p.all_past.box,                                -- box_to_box_past
+    p.box.imp p.always.box,                                  -- perpetuity_3
+    p.sometimes.diamond.imp p.diamond,                       -- perpetuity_4 (= perpetuity_2)
+    p.imp p.diamond.box,                                     -- mb_diamond (= modal_b)
+    p.diamond.box.imp p.diamond.box.all_future,              -- box_diamond_to_future_box_diamond
+    p.diamond.box.imp p.diamond.box.all_past                 -- box_diamond_to_past_box_diamond
+  ]
+
+/--
+Generate a batch of guaranteed-valid formulas using fixpoint Nec/MP closure.
 
 1. **Seed pool**: Generate `seedCount` axiom instances (all valid by construction)
-2. **Necessitation round**: For each pool member, add `□φ` (valid by necessitation)
-3. **MP round**: For each pair `(φ, ψ)` where `ψ = φ → χ`, add `χ` (valid by MP)
-4. **Repeat**: Run necessitation + MP rounds once more
-5. **Filter**: Keep formulas within target complexity range, deduplicate
-
-Parameters:
-- `seedCount`: Number of initial axiom instances to generate
-- `maxComplexity`: Maximum formula complexity to keep in output
-- `atoms`: Atom vocabulary for sub-formula generation
+   plus theorem seed formulas from task 212's proven theorems.
+2. **Ex_falso cap**: Limit ex_falso-pattern formulas to at most 20% of the seed pool.
+3. **Fixpoint closure**: Iterate Nec+MP rounds until no new formulas added,
+   pool exceeds 10,000, or 10 rounds completed.
+4. **Filter**: Keep formulas within target complexity range, deduplicate.
 -/
 partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     (atoms : List Atom) : IO (List Formula) := do
-  -- Phase 1: Seed pool with axiom instances
+  -- Phase 1: Seed pool with axiom instances + theorem seeds
   let maxParamSize := max 1 (maxComplexity / 3)
   let mut pool : List Formula := []
   for _ in List.range seedCount do
     let axiomInst ← instantiateAxiom atoms maxParamSize
     pool := axiomInst :: pool
+  -- Add theorem seed formulas
+  pool := pool ++ theoremSeedFormulas
   pool := pool.eraseDups
-  -- Phase 2: Necessitation round
-  let necFormulas := pool.map generateValidFromNec
-  pool := (pool ++ necFormulas).eraseDups
-  -- Phase 3: MP round
-  let mut mpResults : List Formula := []
-  for φ in pool do
-    for ψ in pool do
-      match generateValidFromMP φ ψ with
-      | some result => mpResults := result :: mpResults
-      | none => pure ()
-  pool := (pool ++ mpResults).eraseDups
-  -- Phase 4: Second necessitation round
-  let necFormulas2 := pool.map generateValidFromNec
-  pool := (pool ++ necFormulas2).eraseDups
-  -- Phase 5: Second MP round
-  let mut mpResults2 : List Formula := []
-  for φ in pool do
-    for ψ in pool do
-      match generateValidFromMP φ ψ with
-      | some result => mpResults2 := result :: mpResults2
-      | none => pure ()
-  pool := (pool ++ mpResults2).eraseDups
-  -- Phase 6: Filter by complexity range
+  -- Phase 2: Cap ex_falso instances to at most 20% of pool
+  let exFalsoCount := pool.filter isExFalso |>.length
+  let maxExFalso := pool.length / 5  -- 20%
+  if exFalsoCount > maxExFalso then
+    -- Separate ex_falso and non-ex_falso formulas
+    let nonExFalso := pool.filter (fun φ => !isExFalso φ)
+    let exFalsoOnly := pool.filter isExFalso
+    -- Keep only maxExFalso of the ex_falso formulas
+    pool := nonExFalso ++ exFalsoOnly.take maxExFalso
+    -- Generate replacement non-ex_falso axiom instances
+    let replacements := exFalsoCount - maxExFalso
+    for _ in List.range replacements do
+      let mut axiomInst ← instantiateAxiom atoms maxParamSize
+      -- Retry up to 5 times to get a non-ex_falso instance
+      let mut retries : Nat := 0
+      while isExFalso axiomInst && retries < 5 do
+        axiomInst ← instantiateAxiom atoms maxParamSize
+        retries := retries + 1
+      pool := axiomInst :: pool
+    pool := pool.eraseDups
+  -- Phase 3: Fixpoint Nec/MP closure
+  let mut round : Nat := 0
+  let mut prevSize : Nat := 0
+  while round < 10 && pool.length < 10000 do
+    prevSize := pool.length
+    -- Necessitation round: □φ for each φ in pool
+    let necFormulas := pool.map generateValidFromNec
+    pool := (pool ++ necFormulas).eraseDups
+    -- MP round: for each pair (φ, φ→ψ), add ψ
+    let mut mpResults : List Formula := []
+    for φ in pool do
+      for ψ in pool do
+        match generateValidFromMP φ ψ with
+        | some result => mpResults := result :: mpResults
+        | none => pure ()
+    pool := (pool ++ mpResults).eraseDups
+    round := round + 1
+    -- Check growth rate: stop if less than 1% growth
+    let growth := pool.length - prevSize
+    let growthRate := if prevSize > 0 then growth * 100 / prevSize else 100
+    if growthRate < 1 then
+      break
+  -- Phase 4: Filter by complexity range
   let filtered := pool.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity
   return filtered
 
