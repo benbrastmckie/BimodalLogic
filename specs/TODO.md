@@ -130,7 +130,9 @@ technical_debt:
 
 ### 214. Dataset cleanup, standardization, and documentation
 - **Effort**: small (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-29
+- **Summary**: Cleaned up data/ directory: updated 4 script defaults from medium/deep to c5/c7, deleted 11 superseded/intermediate/test files, installed Git LFS for large datasets, rewrote .gitignore, enriched c5/c7 metadata with common headers, created proof_steps_metadata.json, wrote comprehensive data/README.md, and validated all dataset schemas with zero errors.
 - **Task Type**: general
 - **Dependencies**: 204, 205
 - **Research**:
@@ -139,6 +141,7 @@ technical_debt:
 - **Plan**:
   - [214_dataset_cleanup_documentation/plans/01_dataset-cleanup-plan.md]
   - [214_dataset_cleanup_documentation/plans/02_dataset-cleanup-plan.md]
+- **Summary Artifact**: [214_dataset_cleanup_documentation/summaries/02_dataset-cleanup-summary.md]
 
 ---
 
