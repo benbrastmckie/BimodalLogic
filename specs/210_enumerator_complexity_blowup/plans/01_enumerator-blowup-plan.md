@@ -130,19 +130,16 @@ Phases within the same wave can execute in parallel. Phases 1 (enumeration rewri
 
 ---
 
-### Phase 3: Update DatasetGenerator to use improved enumeration and axiom seeding [NOT STARTED]
+### Phase 3: Update DatasetGenerator to use improved enumeration and axiom seeding [COMPLETED]
 
 **Goal**: Wire the new exact-complexity enumeration and axiom-seeded valid formulas into the labeling pipeline.
 
 **Tasks**:
-- [ ] Update `DatasetGenerator.lean` to accept a `validSeedCount : Nat` parameter controlling how many axiom-instantiated formulas to mix in
-- [ ] In the dataset generation pipeline, combine three formula sources:
-  1. Exhaustive exact-complexity enumeration (complexity 1..maxComplexity)
-  2. Random sampling (existing `sampleRandom`)
-  3. Axiom-instantiated valid formulas (`generateValidBatch`)
-- [ ] Ensure deduplication across all three sources before labeling
-- [ ] Update any configuration structures (`EnumParams`, etc.) to support the new `validSeedCount` field with a sensible default (e.g., 500)
-- [ ] Verify that `DatasetExporter.lean` and `DataExport.lean` work with the updated pipeline without changes (they consume `LabeledFormula` which is unchanged)
+- [x] **Task 3.1**: Update `DatasetGenerator.lean` to accept a `validSeedCount : Nat` parameter *(deviation: altered -- parameter added to EnumParams in FormulaEnumerator.lean since DatasetGenerator consumes formulas via generateFormulas, not directly)*
+- [x] **Task 3.2**: In the dataset generation pipeline, combine three formula sources via updated `generateFormulas`
+- [x] **Task 3.3**: Ensure deduplication across all three sources before labeling (via `eraseDups` in `generateFormulas`)
+- [x] **Task 3.4**: Update `EnumParams` to support `validSeedCount` field with default 500
+- [x] **Task 3.5**: Verify that `DatasetExporter.lean` and `DataExport.lean` work with the updated pipeline without changes
 
 **Timing**: 1.5 hours
 

@@ -479,7 +479,7 @@ def defaultAtoms : List Atom :=
 Configuration parameters for formula enumeration (legacy API).
 
 Controls complexity bounds, atom vocabulary, maximum formula count,
-and sampling strategy.
+sampling strategy, and axiom-seeded valid formula generation.
 -/
 structure EnumParams where
   /-- Maximum structural complexity (number of connectives + 1). Default 5. -/
@@ -494,6 +494,9 @@ structure EnumParams where
   maxFormulas : Nat := 5000
   /-- Sampling strategy. Default: exhaustive. -/
   samplingMode : SamplingMode := .exhaustive
+  /-- Number of axiom-instantiated valid formulas to seed into the pool (Task 210).
+      Set to 0 to disable axiom seeding. Default: 500. -/
+  validSeedCount : Nat := 500
   deriving Repr, Inhabited
 
 /--
@@ -739,27 +742,6 @@ def DiversityReport.display (r : DiversityReport) : String :=
   s!"Modal depth distribution:\n{String.intercalate "\n" modalLines}\n" ++
   s!"Temporal depth distribution:\n{String.intercalate "\n" tempLines}"
 
-/--
-Generate formulas according to the specified sampling mode (legacy API).
--/
-def generateFormulas (params : EnumParams) : IO (List Formula) := do
-  match params.samplingMode with
-  | .exhaustive => return enumerateExhaustive params
-  | .random => sampleRandom params
-  | .hybrid =>
-    -- Exhaustive for low complexity, random for higher
-    let exhaustiveParams := { params with maxComplexity := min 5 params.maxComplexity,
-                                          maxFormulas := params.maxFormulas / 2 }
-    let exhaustive := enumerateExhaustive exhaustiveParams
-    let remaining := params.maxFormulas - exhaustive.length
-    if remaining > 0 then
-      let randomParams := { params with maxFormulas := remaining }
-      let random ← sampleRandom randomParams
-      let combined := (exhaustive ++ random).eraseDups
-      return combined.take params.maxFormulas
-    else
-      return exhaustive
-
 /-!
 ## Axiom-Schema Instantiation (Task 210 Phase 2)
 
@@ -931,5 +913,41 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
   -- Phase 6: Filter by complexity range
   let filtered := pool.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity
   return filtered
+
+/--
+Generate formulas according to the specified sampling mode.
+
+Combines up to three formula sources:
+1. **Exhaustive/random/hybrid enumeration** (as before)
+2. **Axiom-seeded valid formulas** (Task 210): If `validSeedCount > 0`,
+   generates guaranteed-valid formulas via axiom instantiation, necessitation,
+   and modus ponens closure. These are mixed in to boost the valid fraction.
+
+All sources are deduplicated before returning.
+-/
+partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
+  -- Step 1: Generate formulas from the selected sampling mode
+  let enumerated ← match params.samplingMode with
+    | .exhaustive => pure (enumerateExhaustive params)
+    | .random => sampleRandom params
+    | .hybrid =>
+      let exhaustiveParams := { params with maxComplexity := min 5 params.maxComplexity,
+                                            maxFormulas := params.maxFormulas / 2 }
+      let exhaustive := enumerateExhaustive exhaustiveParams
+      let remaining := params.maxFormulas - exhaustive.length
+      if remaining > 0 then do
+        let randomParams := { params with maxFormulas := remaining }
+        let random ← sampleRandom randomParams
+        pure ((exhaustive ++ random).eraseDups)
+      else
+        pure exhaustive
+  -- Step 2: Generate axiom-seeded valid formulas if requested
+  let validSeeds ← if params.validSeedCount > 0 then
+    generateValidBatch params.validSeedCount params.maxComplexity params.atoms
+  else
+    pure []
+  -- Step 3: Combine and deduplicate all sources
+  let combined := (enumerated ++ validSeeds).eraseDups
+  return combined.take params.maxFormulas
 
 end Bimodal.Automation
