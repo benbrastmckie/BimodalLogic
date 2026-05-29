@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 210,
+      "project_name": "enumerator_complexity_blowup",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-29T19:21:47Z",
+      "last_updated": "2026-05-29T19:21:47Z"
+    },
+    {
       "project_number": 209,
       "project_name": "document_training_pipeline",
       "status": "completed",
@@ -41,7 +49,11 @@
         "complexity": "simple",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1]],
+        "dependency_waves": [
+          [
+            1
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_pipeline-components.md",
@@ -1599,7 +1611,7 @@
       "last_updated": "2026-05-29T18:30:31Z"
     }
   ],
-  "next_project_number": 210,
+  "next_project_number": 211,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 210
+next_project_number: 211
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -130,6 +130,14 @@ technical_debt:
 
 
 ## Tasks
+
+### 210. Investigate and fix enumerateAtBudget exponential blowup at complexity 5+
+- **Effort**: medium (1-2 weeks)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 204
+
+**Description**: Investigate and fix the exponential blowup in FormulaEnumerator.lean's enumerateAtBudget at complexity >= 5 or modal/temporal depth >= 3. This forced task 204's medium run down to complexity 4 and the deep run to pure random mode (losing systematic coverage), causing the deep run's valid fraction to drop to 1.6% (failing the 15% gate). Research the root cause of the combinatorial explosion, design a mitigation strategy (e.g., pruning redundant/isomorphic formulas, iterative deepening with budget caps, stratified enumeration that interleaves exhaustive at low complexity with targeted random at high complexity, or a hybrid approach that caps exhaustive enumeration time and falls back gracefully). The goal is to enable production runs at complexity 5-7 that achieve >= 15% valid fraction with reasonable runtime (under 2 hours for 50K formulas).
 
 ### 209. Document training pipeline components
 - **Effort**: medium (1-2 days)
