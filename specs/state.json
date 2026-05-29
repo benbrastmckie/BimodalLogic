@@ -6,12 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 211,
+      "project_name": "review_revise_docs_directory",
+      "status": "not_started",
+      "task_type": "markdown",
+      "description": "Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps",
+      "created": "2026-05-29T19:28:12Z",
+      "last_updated": "2026-05-29T19:28:12Z"
+    },
+    {
       "project_number": 210,
       "project_name": "enumerator_complexity_blowup",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "created": "2026-05-29T19:21:47Z",
-      "last_updated": "2026-05-29T19:21:47Z"
+      "last_updated": "2026-05-29T19:25:48Z",
+      "session_id": "sess_1748563307_r210ab"
     },
     {
       "project_number": 209,
@@ -1611,7 +1621,7 @@
       "last_updated": "2026-05-29T18:30:31Z"
     }
   ],
-  "next_project_number": 211,
+  "next_project_number": 212,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

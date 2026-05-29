@@ -1,5 +1,5 @@
 ---
-next_project_number: 211
+next_project_number: 212
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -131,9 +131,16 @@ technical_debt:
 
 ## Tasks
 
+### 211. Review and revise docs/ directory
+- **Effort**: medium (1-2 days)
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+
+**Description**: Systematically review and revise docs/ following repository documentation standards. All documentation should be accurate, follow uniform conventions in format and naming, and organize information appropriately, providing clear and concise coverage without redundancy or needless verbosity or gaps.
+
 ### 210. Investigate and fix enumerateAtBudget exponential blowup at complexity 5+
 - **Effort**: medium (1-2 weeks)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: 204
 
