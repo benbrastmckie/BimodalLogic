@@ -8,10 +8,20 @@
     {
       "project_number": 203,
       "project_name": "formula_enumerator_dataset_export",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T16:59:41Z",
-      "last_updated": "2026-05-29T16:59:41Z"
+      "last_updated": "2026-05-29T17:39:33Z",
+      "session_id": "sess_1780075776_0c2472",
+      "researched": "2026-05-29T17:39:33Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/203_formula_enumerator_dataset_export/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        }
+      ]
     },
     {
       "project_number": 201,
@@ -1308,14 +1318,14 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "planned",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Build the Reynolds k-equivalence bypass for sorry-free completeness_discrete, eliminating succ_cofinal. Instead of proving the chronicle limit domain is Z-isomorphic (which requires the unprovable succ_cofinal), use Reynolds' approach: (1) prove the chronicle's NF profile structure matches a Z-interval structure via EF-game expressiveness (Theorem 6, already proved as ghr93_forward_to_backward_discrete), (2) transfer truth from the chronicle to a Z-model via k-equivalence, (3) build the countermodel from the Z-model. This requires: (a) a backward-game-to-k-equiv bridge theorem connecting ghr93_duplicator_wins to k_equiv (~200-300 lines), (b) Reynolds Theorem 14 showing all points in the chronicle are in one ~M-class (~300-500 lines, requires US expressive completeness over Prior structures), (c) rewiring countermodel_discrete to use this path instead of dd_countermodel_chronicle_discrete. Total estimated: 800-1500 lines. This is the ONLY viable path — 4 research agents confirmed succ_cofinal cannot be proved from temporal axioms or standard construction-level arguments (constant-MCS gap scenario is consistent). See task 155 reports 48, 49a-d for full analysis.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T17:06:12Z",
+      "last_updated": "2026-05-29T17:37:00Z",
       "next_artifact_number": 5,
       "artifacts": [
         {
