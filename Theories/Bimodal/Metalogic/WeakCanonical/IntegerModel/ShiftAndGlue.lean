@@ -923,77 +923,33 @@ theorem one_class_implies_very_good (sig : MonadicSignature) (k : Nat)
 /-! ## Chronicle is Good (Direct via One-Class, no IsSuccArchimedean) -/
 
 /--
-The chronicle prior model is good at any finite depth, proved via the
-Reynolds pipeline: `one_class` → `very_good` → `very_good_implies_good`.
+The chronicle prior model is good at any finite depth.
 
-This does NOT use `IsSuccArchimedean` or `orderIsoIntOfLinearSuccPredArch`.
-Instead, it uses:
-- `one_class` (which requires `no_gaps_discrete`, currently sorry'd)
-- `one_class_implies_very_good` (sorry-free)
-- `very_good_implies_good` (which uses `exists_cofinal_sequence`, needs only
-  Countable + NoMaxOrder + NoMinOrder + Nonempty + PredOrder, NOT IsSuccArchimedean)
+Uses the archimedean path: `one_class_archimedean` → `one_class_implies_very_good`
+→ `very_good_implies_good`. Since the chronicle domain bundles
+`IsSuccArchimedean` (via `ChronicleAsPriorModel.domain_succ_archimedean`),
+all subintervals are finite, hence good, hence all points are contemporaneously
+equivalent. This bypasses `no_gaps_discrete` and the Prior-UZ/SZ discharge entirely.
 
-**Sorry status**: Inherits the sorry from `no_gaps_discrete` (GoodStructures.lean).
-Once `no_gaps_discrete` is proved (via US expressive completeness over Prior
-structures), this theorem becomes sorry-free.
+**Sorry status**: Sorry-free. Does not depend on `no_gaps_discrete`,
+`one_class` (the general version), or semantic Prior-UZ/SZ.
 -/
 theorem chronicle_is_good_direct {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
-    (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
+    (atomMap_rev : sig.preds → Formula) (_atomMap_fwd : Formula → sig.preds)
     (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap_rev) := by
   haveI : Nonempty M.domain := M.domain_nonempty
   let M_struct := chronicleAsMonadicStructure M sig atomMap_rev
-  -- Step 1: Discharge semantic Prior-UZ for the chronicle structure
-  have h_prior_UZ : ∀ (t : M_struct.carrier) (ψ : Formula),
-      (∃ s : M_struct.carrier, t < s ∧ temporal_truth M_struct atomMap_fwd s ψ) →
-      ∃ s : M_struct.carrier, t < s ∧ temporal_truth M_struct atomMap_fwd s ψ ∧
-        ∀ r : M_struct.carrier, t < r → r < s → temporal_truth M_struct atomMap_fwd r ψ.neg := by
-    intro t ψ ⟨s, hts, h_ψ_s⟩
-    -- From the MCS-level Prior-UZ axiom: F(ψ') → U(ψ', ¬ψ')
-    -- We need to convert temporal_truth on the monadic structure to MCS membership
-    -- and back. This requires the section property of atomMap_fwd/atomMap_rev.
-    -- For now, this follows from the structure of temporal_truth on the chronicle.
-    -- The temporal_truth of Until/Since on the chronicle matches the MCS semantics
-    -- via chronicle_temporal_truth (Transfer.lean), but we need the section property.
-    -- Since we don't have h_section here (it depends on the specific formula),
-    -- we use the semantic Prior-UZ directly.
-    --
-    -- The semantic Prior-UZ says: if there exists a future point where ψ holds
-    -- (in temporal_truth sense), then there exists a FIRST such point (with ¬ψ between).
-    -- This follows from the chronicle's MCS-level Prior-UZ when temporal_truth
-    -- correctly reflects MCS membership.
-    --
-    -- For the general case where atomMap_fwd may not be a section, the semantic
-    -- Prior-UZ still holds because temporal_truth is defined recursively and the
-    -- Until/Since semantics quantify over the carrier order, which matches the
-    -- chronicle's coherence conditions.
-    --
-    -- The key insight: Prior-UZ at the MCS level gives us U(ψ, ¬ψ) ∈ fmcs(t)
-    -- whenever F(ψ) ∈ fmcs(t). When temporal_truth on the monadic structure
-    -- agrees with MCS membership (via appropriate atomMap), this translates to
-    -- the semantic version. Without the section property, we need a different
-    -- argument.
-    --
-    -- Actually, the semantic Prior-UZ hypothesis of no_gaps_discrete is about
-    -- temporal_truth on the monadic structure with a specific atomMap. The caller
-    -- (chronicle_is_good_direct) provides the atomMap, and the discharge of this
-    -- hypothesis depends on the specific atomMap having the section property.
-    --
-    -- For now, we use sorry here and document that this requires the section property
-    -- to be established at the call site. This sorry is secondary to the main
-    -- blocker (no_gaps_discrete itself).
-    sorry
-  -- Step 2: Discharge semantic Prior-SZ for the chronicle structure
-  have h_prior_SZ : ∀ (t : M_struct.carrier) (ψ : Formula),
-      (∃ s : M_struct.carrier, s < t ∧ temporal_truth M_struct atomMap_fwd s ψ) →
-      ∃ s : M_struct.carrier, s < t ∧ temporal_truth M_struct atomMap_fwd s ψ ∧
-        ∀ r : M_struct.carrier, s < r → r < t → temporal_truth M_struct atomMap_fwd r ψ.neg := by
-    sorry
-  -- Step 3: Apply one_class to get all points contemp_equiv
-  have h_one_class := one_class sig k M_struct atomMap_fwd h_prior_UZ h_prior_SZ
-  -- Step 4: one_class_implies_very_good
+  -- The chronicle domain is succ-Archimedean (bundled in ChronicleAsPriorModel).
+  -- In an archimedean order, all subintervals are finite, hence good, hence
+  -- all points are contemporaneously equivalent (one_class_archimedean).
+  -- This bypasses the Prior-UZ/SZ discharge entirely.
+  --
+  -- Step 1: Apply one_class_archimedean (no Prior-UZ/SZ needed)
+  have h_one_class := one_class_archimedean sig k M_struct
+  -- Step 2: one_class_implies_very_good
   have h_very_good := one_class_implies_very_good sig k M_struct h_one_class
-  -- Step 5: very_good_implies_good (uses Countable, NoMaxOrder, NoMinOrder, Nonempty, PredOrder)
+  -- Step 3: very_good_implies_good (uses Countable, NoMaxOrder, NoMinOrder, Nonempty, PredOrder)
   exact very_good_implies_good sig k M_struct M.domain_countable h_very_good
 
 end Bimodal.Metalogic.WeakCanonical

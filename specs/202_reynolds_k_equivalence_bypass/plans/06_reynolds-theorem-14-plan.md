@@ -208,7 +208,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 
 ---
 
-### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [IN PROGRESS]
+### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [PARTIAL]
 
 **Goal**: Define the temporal formula R that detects gap-ending equivalence classes, and prove its structural properties. This establishes the setting for the model surgery argument.
 
@@ -217,7 +217,7 @@ The contradiction: U'(A,B)(t) requires B to hold up to a gap with ¬B arbitraril
 **Proof Strategy**: Define the FO formula rho(x) = "x's ~M-class ends in a gap on the right" (Reynolds p.125). Use `US_expressively_complete_over_prior` (Phase 1) to get temporal formula R equivalent to rho in any Prior structure. Then prove R-intervals are open with excluded endpoints (Lemma 7, using Prior-U), no first/last class in R-intervals (Lemma 8, using Prior-U), and elementary equivalence of classes within R-intervals (Lemma 9, using expressive completeness + Prior-U).
 
 **Tasks**:
-- [ ] **Task 2.1**: Define `rho_formula` -- the FO formula rho(x) = "x's ~M-class ends in a gap on the right" (~40 lines)
+- [ ] **Task 2.1**: Define `rho_formula` -- the FO formula rho(x) = "x's ~M-class ends in a gap on the right" (~40 lines) *(deviation: deferred -- archimedean bypass makes Phases 2-4 unnecessary for the completeness pipeline; the chronicle domain bundles IsSuccArchimedean, so one_class_archimedean suffices)*
   ```lean
   def rho_formula {sig : MonadicSignature} (epsilon : MonadicFormula sig 2) :
       MonadicFormula sig 1
