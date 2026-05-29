@@ -46,3 +46,10 @@ lean_exe dataset_validator where
   root := `Bimodal.Automation.DatasetValidator
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Proof step extractor for BimodalHarness training data.
+    Run with: lake exe proof_extractor -- --output data/proof_steps.jsonl -/
+lean_exe proof_extractor where
+  root := `Bimodal.Automation.ProofStepExport
+  srcDir := "Theories"
+  supportInterpreter := true

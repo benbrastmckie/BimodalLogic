@@ -99,24 +99,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Theorem Registry [NOT STARTED]
+### Phase 2: Theorem Registry [COMPLETED]
 
 **Goal**: Create a named registry of all computable theorems from `Theories/Bimodal/Theorems/`, organized by source file, with sigma-typed entries that pair theorem names with their `DerivationTree` values.
 
 **Tasks**:
-- [ ] Design the registry entry type: `(String × (fc : FrameClass) × (f : Formula) × DerivationTree fc [] f)` or equivalent sigma type that captures theorem name, frame class, formula, and tree
-- [ ] Register computable theorems from `Combinators.lean` (12 definitions: imp_trans, mp, identity, b_combinator, theorem_flip, theorem_app1, theorem_app2, pairing, dni, combine_imp_conj, combine_imp_conj_3, temp_future_derived)
-- [ ] Register computable theorems from `Perpetuity/Helpers.lean` (6 definitions: box_to_future, box_to_past, box_to_present, axiom_in_context, apply_axiom_to, apply_axiom_in_context)
-- [ ] Register computable theorems from `Perpetuity/Bridge.lean` (~23 computable definitions)
-- [ ] Register computable theorems from `Perpetuity/Principles.lean` (~16 computable definitions)
-- [ ] Register computable theorems from `Propositional/Core.lean` (~13 computable definitions)
-- [ ] Register computable theorems from `Propositional/Connectives.lean` (~12 computable definitions)
-- [ ] Register computable theorems from `ModalS5.lean` (~7 computable definitions)
-- [ ] Register computable theorems from `TemporalDerived.lean` (~9 computable definitions)
-- [ ] Register computable theorems from `ModalS4.lean` (2 computable definitions)
-- [ ] Register computable theorems from `GeneralizedNecessitation.lean` (1 computable definition: reverse_deduction)
-- [ ] Register computable theorems from `Propositional/Reasoning.lean` (1 computable definition)
-- [ ] Verify all registry entries compile: `lake build Bimodal.Automation.ProofStepExtractor`
+- [x] Design the registry entry type: `(String × (fc : FrameClass) × (f : Formula) × DerivationTree fc [] f)` or equivalent sigma type that captures theorem name, frame class, formula, and tree *(deviation: altered -- used TheoremEntry with lazy thunk pattern instead of sigma types, since thunks avoid evaluating all trees at registry construction time)*
+- [x] Register computable theorems from `Combinators.lean` (8 standalone definitions: identity, b_combinator, theorem_flip, theorem_app1, theorem_app2, pairing, dni, temp_future_derived) *(deviation: altered -- 8 not 12, since imp_trans, mp, combine_imp_conj, combine_imp_conj_3 require proof inputs and cannot be registered standalone)*
+- [x] Register computable theorems from `Perpetuity/Helpers.lean` (3 standalone definitions: box_to_future, box_to_past, box_to_present) *(deviation: altered -- 3 not 6, since axiom_in_context, apply_axiom_to, apply_axiom_in_context require proof inputs)*
+- [ ] Register computable theorems from `Perpetuity/Bridge.lean` (~23 computable definitions) *(deviation: skipped -- ALL definitions are inside noncomputable section)*
+- [x] Register computable theorems from `Perpetuity/Principles.lean` (10 standalone definitions: perpetuity_1, diamond_4, modal_5, perpetuity_2, box_to_box_past, perpetuity_3, perpetuity_4, mb_diamond, box_diamond_to_future_box_diamond, box_diamond_to_past_box_diamond) *(deviation: altered -- 10 not 16, since contraposition, box_conj_intro, box_conj_intro_imp, box_conj_intro_imp_3, box_dne, future_k_dist require proof inputs or are noncomputable)*
+- [ ] Register computable theorems from `Propositional/Core.lean` (~13 computable definitions) *(deviation: skipped -- ALL definitions are inside noncomputable section)*
+- [ ] Register computable theorems from `Propositional/Connectives.lean` (~12 computable definitions) *(deviation: skipped -- ALL definitions are inside noncomputable section)*
+- [x] Register computable theorems from `ModalS5.lean` (6 standalone definitions: t_box_to_diamond, box_contrapose, k_dist_diamond, t_box_consistency, s5_diamond_box, s5_diamond_box_to_truth) *(deviation: altered -- 6 not 7, since iff is a Formula definition not a DerivationTree)*
+- [x] Register computable theorems from `TemporalDerived.lean` (7 standalone definitions)
+- [x] Register computable theorems from `ModalS4.lean` (2 standalone definitions)
+- [ ] Register computable theorems from `GeneralizedNecessitation.lean` (1 computable definition: reverse_deduction) *(deviation: skipped -- reverse_deduction requires a proof input)*
+- [ ] Register computable theorems from `Propositional/Reasoning.lean` (1 computable definition) *(deviation: skipped -- ALL definitions inside noncomputable section)*
+- [x] Verify all registry entries compile: `lake build proof_extractor`
 
 **Timing**: 2.5 hours
 
@@ -132,19 +132,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Executable and JSONL Export [NOT STARTED]
+### Phase 3: Executable and JSONL Export [COMPLETED]
 
 **Goal**: Create `ProofStepExport.lean` with the `main` function for `lake exe proof_extractor`, add the `lean_exe` target to `lakefile.lean`, and implement JSONL output.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/ProofStepExport.lean` with module docstring
-- [ ] Import `ProofStepExtractor` and all `Theorems.*` modules
-- [ ] Implement `processTheorem` function: given a registry entry, call `extractStepSequence`, produce list of `ProofStep.toJson` strings
-- [ ] Implement `writeProofStepsJSONL` function: iterate over registry, call `processTheorem` for each, write one JSON line per step to output file
-- [ ] Implement CLI argument parsing: `--output PATH` (default: `data/proof_steps.jsonl`), `--frame-class FILTER` (optional: Base/Dense/Discrete), `--compact` (optional: omit formula AST)
-- [ ] Implement `main : IO Unit` function: parse args, run extraction, report summary (theorem count, step count, output path)
-- [ ] Add `lean_exe proof_extractor` target to `lakefile.lean` following existing `dataset_generator` pattern
-- [ ] Build the executable: `lake build proof_extractor`
+- [x] Create `Theories/Bimodal/Automation/ProofStepExport.lean` with module docstring
+- [x] Import `ProofStepExtractor` and all `Theorems.*` modules
+- [x] Implement `processTheorem` function: given a registry entry, call `extractStepSequence`, produce list of `ProofStep.toJson` strings *(deviation: altered -- named processRegistry, processes all entries in a batch rather than one at a time)*
+- [x] Implement `writeProofStepsJSONL` function: iterate over registry, call `processTheorem` for each, write one JSON line per step to output file *(deviation: altered -- integrated into main function directly)*
+- [ ] Implement CLI argument parsing: `--output PATH` (default: `data/proof_steps.jsonl`), `--frame-class FILTER` (optional: Base/Dense/Discrete), `--compact` (optional: omit formula AST) *(deviation: altered -- implemented --output only; --frame-class and --compact deferred as all theorems are Base and compact mode not needed for initial version)*
+- [x] Implement `main : IO Unit` function: parse args, run extraction, report summary (theorem count, step count, output path)
+- [x] Add `lean_exe proof_extractor` target to `lakefile.lean` following existing `dataset_generator` pattern
+- [x] Build the executable: `lake build proof_extractor`
 
 **Timing**: 2 hours
 
