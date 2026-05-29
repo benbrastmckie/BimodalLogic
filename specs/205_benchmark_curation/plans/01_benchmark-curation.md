@@ -177,7 +177,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Final Export and Metadata [NOT STARTED]
+### Phase 4: Final Export and Metadata [COMPLETED]
 
 **Goal**: Perform final stratified selection from the validated pool to produce the benchmark at target size and distribution, then write the benchmark file with comprehensive metadata.
 
