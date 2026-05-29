@@ -81,7 +81,7 @@ Phases within the same wave can execute in parallel. Phases 4 and 5 are independ
 
 ---
 
-### Phase 1: FormulaEnumerator.lean -- Bounded Generation and Diversity [NOT STARTED]
+### Phase 1: FormulaEnumerator.lean -- Bounded Generation and Diversity [COMPLETED]
 
 **Goal**: Create the formula enumeration module that generates structurally diverse TM formulas at controlled depth via exhaustive enumeration (low complexity) and grammar-based random sampling (higher complexity).
 
