@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.SplitPoint
 import Bimodal.Metalogic.WeakCanonical.EFGames.Composition
+import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
 import Mathlib.Data.Fin.Tuple.Sort
 
 /-!
@@ -1168,21 +1169,85 @@ private theorem ghr93_case_I {sig : MonadicSignature}
     · -- formula_agreement (n+1)
       exact formula_agreement_of_cases hform_x_R hform_b_R hform_y_R hform_sel_R
 
-/-! ### Case II: a_n is a Point
+/-! ### GHR93 U(B,A) Transfer: Formula Agreement via Characteristic Formulas
 
-When ALL of Spoiler's backward selections a_0,...,a_n lie in [d,y']
-and a_n (= d) is an actual point, Duplicator applies τ to the init
-sub-sequence a_0,...,a_{n-1} (n elements, fitting τ's n-round game
-on [d,y']/[c,y]).  For the last selection a_n = d, Duplicator responds
-with c (the corresponding split point in M).
+Helper for Case II: establish U(B,A) truth transfer through tau at rank r+delta.
+This implements the GHR93 mechanism for deriving formula agreement between
+e_n (in M) and a_n (in N) using x_t_formula, independently of the forward game.
 
-Since d = a_bwd(n) from obtain_split_point_props, and d is a point,
-the gap/point and formula agreement at the n-th position follow from
-the properties established during the split point construction.
+The d-compatible forward game (h_d_compat_left) is still used for e_n construction
+and ordering data. The U(B,A) transfer establishes the FORMULA AGREEMENT
+independently, proving the GHR93 approach works and providing infrastructure
+for the full supremum rewrite in a future phase. -/
 
-Round 2 is delegated to τ when b_sp ∈ [c,y], and to σ when b_sp ∈ [x,c).
-The winning condition is assembled from τ's winning condition at the
-init indices plus the (c,d) correspondence at the n-th index. -/
+/-- **GHR93 U(B,A) truth transfer**: Given d < a_n = p_n (non-degenerate Case II),
+    transfer U(B,A) from d in N to c in M through tau at rank r+delta.
+
+    B = x_t_formula(a_n): characteristic formula for a_n's rank-r type.
+    A = x_interval_formula(d, a_n): interval type formula.
+    U(B,A)(d) holds in N by untl_type_holds_at_witness.
+    props.tau at rank r+delta gives formula agreement at depth ≥ r+2 ≥ depth(U(B,A)).
+    Therefore U(B,A)(c) holds in M. -/
+private theorem ghr93_untl_transfer {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {n r delta : Nat}
+    {M N : OrderedMonadicStructure sig}
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    {c : ExtendedCarrier M atomMap r}
+    {d : ExtendedCarrier N atomMap r}
+    {a_bwd : Fin (n + 1) → ExtendedCarrier N atomMap r}
+    (props : SplitPointProps n delta x y x' y' c d a_bwd)
+    (hd : 2 ≤ delta)
+    (ha_bwd : ∀ i, inClosedInterval x' y' (a_bwd i))
+    (h_no_split : ∀ i : Fin (n + 1), d ≤ a_bwd i)
+    (p_n : N.carrier)
+    (hp_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n)
+    (hd_lt_pn : d < extendPoint p_n) :
+    stavi_temporal_truth_mu M atomMap r c
+      (sf_untl (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩))
+               (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
+  -- Step 1: U(B, A)(d) holds in N.
+  have hmu_an : mu_holds (a_bwd ⟨n, by omega⟩) := ⟨p_n, hp_n⟩
+  have h_untl_N : stavi_temporal_truth_mu N atomMap r d
+      (sf_untl (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩))
+               (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) :=
+    untl_type_holds_at_witness hmu_an (hp_n ▸ hd_lt_pn)
+  -- Step 2: Play props.tau at rank r+delta with rank-embedded a_init.
+  let a_init_re : Fin n → ExtendedCarrier N atomMap (r + delta) :=
+    fun k => rank_embed (by omega : r ≤ r + delta) (a_bwd ⟨k.val, by omega⟩)
+  have ha_init_re : ∀ k, inClosedInterval
+      (rank_embed (by omega : r ≤ r + delta) d)
+      (rank_embed (by omega : r ≤ r + delta) y')
+      (a_init_re k) := by
+    intro k
+    exact ⟨(rank_embed_le _ d _).mpr (h_no_split ⟨k.val, by omega⟩),
+           (rank_embed_le _ _ y').mpr (ha_bwd ⟨k.val, by omega⟩).2⟩
+  obtain ⟨resp_tau_re, _, hwin_tau_re⟩ := props.tau a_init_re ha_init_re
+  -- Step 3: Get formula agreement at the d/c position (position 0 in game_tuple).
+  -- Need a carrier point in [c, y] for Round 2.
+  have ⟨p_cy, hp_cy⟩ : ∃ (p : M.carrier), inClosedInterval c y (extendPoint p) := by
+    rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨_, hdy'_eq, _, hgap_d⟩
+    · exact ⟨p_cy, hp_cy⟩
+    · obtain ⟨g_d, hg_d⟩ := hgap_d
+      have ha_eq : a_bwd ⟨n, by omega⟩ = d :=
+        le_antisymm (hdy'_eq ▸ (ha_bwd ⟨n, by omega⟩).2) (h_no_split ⟨n, by omega⟩)
+      exact absurd ((ha_eq ▸ hp_n).symm ▸ hg_d : extendPoint p_n = Sum.inr g_d)
+        (by simp [extendPoint])
+  obtain ⟨_, _, hcond_tau_re⟩ := hwin_tau_re p_cy
+    ⟨(rank_embed_le _ c _).mpr hp_cy.1, (rank_embed_le _ _ y).mpr hp_cy.2⟩
+  obtain ⟨_, _, hform_tau_re⟩ := hcond_tau_re
+  -- Position 0 in game_tuple is the left endpoint (d / c).
+  have hform_dc : ∀ (F : StaviFormula), stavi_depth F ≤ r + delta →
+      (stavi_temporal_truth_mu N atomMap r d F ↔
+       stavi_temporal_truth_mu M atomMap r c F) := by
+    intro F hF
+    rw [← formula_transfer_rank_embed (by omega : r ≤ r + delta) d F,
+        ← formula_transfer_rank_embed (by omega : r ≤ r + delta) c F]
+    have h := hform_tau_re ⟨0, by omega⟩ F hF
+    simp only [game_tuple_zero_eq] at h; exact h
+  -- Step 4: Transfer U(B,A): depth ≤ r+2 ≤ r+delta.
+  exact (hform_dc _ (by calc stavi_depth _ ≤ r + 2 := untl_type_depth
+                          _ ≤ r + delta := by omega)).mp h_untl_N
 
 set_option maxHeartbeats 1600000
 

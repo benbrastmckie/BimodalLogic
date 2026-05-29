@@ -618,6 +618,40 @@ theorem untl_extract_witness {sig : MonadicSignature}
         stavi_temporal_truth_mu M atomMap r w A :=
   (sf_untl_truth_mu B A).mp h
 
+/-- **Bounded Until witness lemma** (GHR93 supremum approach, Teammate D Solution B).
+
+    If U(B, A)(t) holds and there exists a B-satisfying mu-point in (t, bound],
+    then there exists a valid Until witness in (t, bound]. This resolves the
+    containment problem: untl_extract_witness returns a witness in the FULL
+    ExtendedCarrier, but this lemma restricts it to (t, bound].
+
+    Proof: Let z_canon be the canonical Until witness (from U(B,A)(t)) and
+    z_b be the given B-point in (t, bound]. Case split on z_b vs z_canon:
+    - If z_b ≤ z_canon: (t, z_b) ⊆ (t, z_canon), so A holds on (t, z_b).
+      Combined with B(z_b) and mu_holds(z_b), z_b is a valid bounded witness.
+    - If z_b > z_canon: t < z_canon < z_b ≤ bound, so z_canon ∈ (t, bound].
+      z_canon already has B(z_canon), mu_holds(z_canon), and A on (t, z_canon).
+      So z_canon is itself a valid bounded witness. -/
+theorem untl_witness_bounded {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {t bound : ExtendedCarrier M atomMap r}
+    {B A : StaviFormula}
+    (h_untl : stavi_temporal_truth_mu M atomMap r t (sf_untl B A))
+    (h_bound : ∃ z_b : ExtendedCarrier M atomMap r, t < z_b ∧ z_b ≤ bound ∧
+      mu_holds z_b ∧ stavi_temporal_truth_mu M atomMap r z_b B) :
+    ∃ z : ExtendedCarrier M atomMap r, t < z ∧ z ≤ bound ∧ mu_holds z ∧
+      stavi_temporal_truth_mu M atomMap r z B ∧
+      ∀ w : ExtendedCarrier M atomMap r, t < w → w < z → mu_holds w →
+        stavi_temporal_truth_mu M atomMap r w A := by
+  obtain ⟨z_b, htz_b, hz_b_bound, hmu_z_b, hB_z_b⟩ := h_bound
+  obtain ⟨z_canon, htz_c, hmu_z_c, hB_z_c, hA_canon⟩ := untl_extract_witness h_untl
+  rcases le_or_gt z_b z_canon with h_le | h_gt
+  · -- Case 1: z_b ≤ z_canon. z_b works because (t, z_b) ⊆ (t, z_canon).
+    exact ⟨z_b, htz_b, hz_b_bound, hmu_z_b, hB_z_b,
+      fun w htw hwz hmu_w => hA_canon w htw (lt_of_lt_of_le hwz h_le) hmu_w⟩
+  · -- Case 2: z_b > z_canon. z_canon is in (t, bound] and works directly.
+    exact ⟨z_canon, htz_c, le_trans (le_of_lt h_gt) hz_b_bound, hmu_z_c, hB_z_c, hA_canon⟩
+
 /-- Transfer formula truth through rank_embed: if a StaviFormula has depth ≤ r,
     its mu-relativized truth is preserved by rank_embed. This is a convenient
     specialization of rank_embed_stavi_truth_mu. -/

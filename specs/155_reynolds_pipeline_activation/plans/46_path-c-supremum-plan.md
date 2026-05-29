@@ -175,7 +175,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum Approach) [NOT STARTED]
+### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum Approach) [IN PROGRESS]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly using the supremum approach. Define b = sup{t in (x,y) : M |= B(t)}, derive restricted tau on [c', b'] -> [c, b], construct e_n from U(B,A) witness with z <= b guaranteed, prove sel_pn_ord trivially, and implement Round 2 with GHR93's 5-way case split. Delete the entire forward-game e_n construction, resp_mod, tau_left, tau_right, and the 220-line-per-site prerequisite machinery.
 
@@ -215,7 +215,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 **Tasks**:
 
-- [ ] Task 5.0: Supremum infrastructure in ExtendedCarrier (~50-80 lines)
+- [x] Task 5.0: Supremum infrastructure in ExtendedCarrier (~50-80 lines) *(deviation: altered — implemented `untl_witness_bounded` (~30 lines) per plan rollback section, instead of full `definable_sup`. The bounded witness lemma resolves the Until containment problem without requiring supremum existence in ExtendedCarrier.)*
 
   **Goal**: Define b = sup{t in (x,y) : M |= B(t)} and prove it exists in M_r.
 
@@ -246,7 +246,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **Risk**: This is new infrastructure not present in the codebase. Mitigated by two fallback levels: (1) the `untl_witness_bounded` approach needs only a B-point existence proof, not the full supremum; (2) if even that fails, retain forward-game e_n for existence only (hybrid fallback).
 
-- [ ] Task 5.1: Import CharacteristicFormula.lean and construct B, A (~30-50 lines)
+- [x] Task 5.1: Import CharacteristicFormula.lean and construct B, A (~30-50 lines) *(deviation: altered — import added and `ghr93_untl_transfer` helper proved (U(B,A) transfer from d in N to c in M via tau at rank r+delta). B/A construction embedded in the helper. Full integration into ghr93_case_II body deferred to Tasks 5.1b-5.5.)*
 
   - Add `import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula` at line 1 of CaseAnalysis.lean
   - After Step 1 (line 1247, extracting p_n and defining a_init), add:
