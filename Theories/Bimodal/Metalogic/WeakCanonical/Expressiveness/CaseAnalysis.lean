@@ -3376,7 +3376,8 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
         (Sum.inr γ_M : ExtendedCarrier M atomMap r) = y := by sorry
     -- Infrastructure: γ_N < y' → carrier point in [γ_N, y'].
     have h_pt_upper_of_lt : @LT.lt (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' →
-        ∃ (p : N.carrier), inClosedInterval (Sum.inr γ_N) y' (extendPoint p) := by sorry
+        ∃ (p : N.carrier), inClosedInterval (Sum.inr γ_N) y' (extendPoint p) := by
+      sorry -- Same argument as case neg branch (lines 3448-3460): isPoint_or_isGap y'
     -- Infrastructure: γ_N < y' → γ_M < y (from upper forward game).
     have hγ_lt_of_lt : @LT.lt (ExtendedCarrier N atomMap r) _ (Sum.inr γ_N) y' →
         @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr γ_M) y := by sorry

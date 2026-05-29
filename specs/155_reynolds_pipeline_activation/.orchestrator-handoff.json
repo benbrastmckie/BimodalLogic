@@ -15,16 +15,17 @@
       "status": "in_progress",
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
       "line": 3359,
-      "description": "Non-degenerate winning condition assembly for ghr93_cases_III_IV. 1 sorry remains.",
-      "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-v4-20260528.md",
-      "next_action": "Close non-degenerate sorry via fresh upper sub-game approach"
+      "description": "Non-degenerate sorry decomposed into 7 sub-sorries. Infrastructure established. Key blocker: hgamma_eq_endpoint (gamma_N=y' -> gamma_M=y).",
+      "handoff": "specs/155_reynolds_pipeline_activation/handoffs/phase-6-handoff-v5-20260528.md",
+      "next_action": "Fill remaining 7 sub-sorries. Start with h_pt_upper_of_lt and hgamma_lt_of_lt (easy), then hgamma_eq_endpoint (hard, case split on hD_def), then Case A assembly (mechanical), then Case B (upper sub-game)."
     }
   },
   "sorry_count": {
     "ChronicleToCountermodel.lean": 4,
-    "CaseAnalysis.lean": 1,
-    "notes": "ChronicleToCountermodel sorries are all about succ_cofinal (same issue). CaseAnalysis sorry is independent."
+    "CaseAnalysis.lean": 7,
+    "notes": "CaseAnalysis was 1 sorry, now decomposed into 7 structured sub-sorries. Build passes cleanly. ChronicleToCountermodel sorries unchanged (succ_cofinal)."
   },
   "build_status": "passing",
-  "next_action": "Continue with Reynolds pipeline (plan v47 Phases 5-8) to bypass succ_cofinal entirely. Close CaseAnalysis.lean sorry (Phase 6) first, then Transfer.lean rewiring (Phase 7), then final verification (Phase 8)."
+  "commits": ["a0301b777"],
+  "next_action": "Continue filling CaseAnalysis.lean sub-sorries. Priority: hgamma_eq_endpoint is the critical blocker. Once filled, Case A and B are mechanical (following degenerate case template)."
 }
