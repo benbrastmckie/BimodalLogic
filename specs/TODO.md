@@ -31,6 +31,10 @@ technical_debt:
 
 **Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
 
+### Phase 1 — Discrete Completeness (independent, Option C path)
+
+202 [RESEARCHED] — Eliminate succ_cofinal: build restricted_tc/fuc directly on Z where IsSuccArchimedean is trivial. Option C bypasses Reynolds pipeline + Henkin chains entirely. 6-10 hours, 85% confidence.
+
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
 199 [NOT STARTED] — Grid order tactic: bespoke `grid_order_tac` for same_order_type dispatch with automatic Fin bridging, then apply to close Phase 3B sorry sites in CaseAnalysis.lean.
@@ -130,11 +134,13 @@ technical_debt:
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: large (25-40 hours)
 - **Effort**: large (25-40 hours)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: 155
-- **Research**: [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
+- **Research**:
+  - [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
+  - [202_reynolds_k_equivalence_bypass/reports/04_team-research.md]
 - **Plan**: [202_reynolds_k_equivalence_bypass/plans/01_reynolds-bypass-plan.md]
 - **Summary**: [202_reynolds_k_equivalence_bypass/summaries/01_implementation-summary.md]
 - **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. 5 phases: US expressive completeness over Prior structures, no_gaps_discrete proof (Reynolds Theorem 14), chronicle_is_good_direct via one_class, countermodel_discrete rewiring, full verification. This is the ONLY viable path -- succ_cofinal is unprovable (4 research agents confirmed). Phase 3 completed (one_class_implies_very_good, chronicle_is_good_direct). Phase 4 partial (countermodel_discrete_reynolds architecture). Phases 1-2 blocked on US expressive completeness over Prior structures.
