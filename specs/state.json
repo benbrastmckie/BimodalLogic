@@ -8,11 +8,20 @@
     {
       "project_number": 213,
       "project_name": "production_scale_dataset_validation",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-29T20:55:10Z",
-      "last_updated": "2026-05-29T21:04:02Z",
-      "session_id": "sess_1780088631_bfd193"
+      "last_updated": "2026-05-29T21:12:11Z",
+      "session_id": "sess_1780088631_bfd193",
+      "researched": "2026-05-29T21:12:11Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/213_production_scale_dataset_validation/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): enumeration fix confirmed, 4 critical issues identified — valid fraction at 4% (gate: 15%), 94% ex_falso dominance in valid set, axiom seeds lack temporal operators, full pipeline at 51K never run. Recommends split: regression validation + signal quality enhancement."
+        }
+      ]
     },
     {
       "project_number": 212,
