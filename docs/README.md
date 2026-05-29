@@ -34,7 +34,7 @@ For documentation specific to the bimodal logic theory, see:
 | Implementation status | [Status](../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md) |
 | Known limitations | [Limitations](../Theories/Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) |
 
-**Theory research**: [research/bimodal-logic.md](research/bimodal-logic.md) - Bimodal logic foundations and theory
+**Theory research**: [research/BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal logic foundations and theory
 
 ## Project-Wide Documentation
 
@@ -77,9 +77,9 @@ Project-wide user documentation:
 Project-wide research documents:
 
 - [README.md](research/README.md) - Research documentation overview
-- [bimodal-logic.md](research/bimodal-logic.md) - Bimodal Logic foundations
-- [dual-verification.md](research/dual-verification.md) - RL training architecture design
-- [proof-library-design.md](research/proof-library-design.md) - Theorem caching design
+- [BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal Logic foundations
+- [DUAL_VERIFICATION.md](research/DUAL_VERIFICATION.md) - RL training architecture design
+- [PROOF_LIBRARY_DESIGN.md](research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
 
 > **Theory-specific research**: See [Theories/Bimodal/docs/research/](../Theories/Bimodal/docs/research/).
 
@@ -139,7 +139,7 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 - [README.md](architecture/README.md) - ADR catalog and guidance
 - [ADR-001-Classical-Logic-Noncomputable.md](architecture/ADR-001-Classical-Logic-Noncomputable.md) - Classical logic for metalogic
 - [ADR-004-Remove-Project-Level-State-Files.md](architecture/ADR-004-Remove-Project-Level-State-Files.md) - State file architecture
-- [bfmcs-architecture.md](architecture/bfmcs-architecture.md) - BFMCS proof architecture (base completeness construction)
+- [BFMCS_ARCHITECTURE.md](architecture/BFMCS_ARCHITECTURE.md) - BFMCS proof architecture (base completeness construction)
 
 **Audience**: Architects, maintainers
 
@@ -147,7 +147,7 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 
 Training data pipeline documentation:
 
-- [pipeline.md](training/pipeline.md) - Dual-signal training data pipeline reference (all 6 Lean modules, JSON schemas, [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) integration)
+- [PIPELINE.md](training/PIPELINE.md) - Dual-signal training data pipeline reference (all 6 Lean modules, JSON schemas, [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) integration)
 
 **Audience**: ML researchers, contributors working on neural proof search
 
@@ -180,7 +180,7 @@ Training data pipeline documentation:
 ### For Researchers
 
 1. [Research Overview](research/README.md) - Research documentation index
-2. [Bimodal Logic](research/bimodal-logic.md) - Theoretical foundations
+2. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
 
 ### Quick Reference
 
@@ -193,7 +193,7 @@ Training data pipeline documentation:
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
 2. [Bimodal Architecture](../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - The complete, verified system
-3. [Bimodal Logic](research/bimodal-logic.md) - Theoretical foundations
+3. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
 
 ### I want to write proofs
 
@@ -208,7 +208,7 @@ Training data pipeline documentation:
 **Start with**:
 1. [Integration Guide](user-guide/INTEGRATION.md) - Model-Checker integration
 2. [MCP Integration](user-guide/MCP_INTEGRATION.md) - MCP server integration
-3. [Dual Verification](research/dual-verification.md) - Training architecture
+3. [Dual Verification](research/DUAL_VERIFICATION.md) - Training architecture
 
 ### I want to contribute
 

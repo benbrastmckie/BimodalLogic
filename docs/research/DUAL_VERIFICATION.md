@@ -499,7 +499,7 @@ This roadmap ensures AI systems achieve comprehensive mastery of the Logos frame
 
 - [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations of the Logos
 - [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer specifications for the Logos framework
-- [proof-library-design.md](proof-library-design.md) - Quality-aware theorem caching architecture
+- [PROOF_LIBRARY_DESIGN.md](PROOF_LIBRARY_DESIGN.md) - Quality-aware theorem caching architecture
 - [layer-extensions.md](layer-extensions.md) - Advanced Logos extensions and integration strategies
 - [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress on Logos training implementation
 

@@ -403,7 +403,7 @@ See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for cur
 
 ## Related Documentation
 
-- [dual-verification.md](dual-verification.md) - RL training architecture
+- [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) - RL training architecture
 - [layer-extensions.md](layer-extensions.md) - Layers 1-3 specifications
 - [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations
 - [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer 0 specification

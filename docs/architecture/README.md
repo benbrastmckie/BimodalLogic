@@ -26,6 +26,14 @@ understand why the system is designed the way it is.
 
 **Note**: ADR-002 and ADR-003 are reserved for future decisions or were superseded.
 
+## Specification Documents
+
+Non-ADR architectural specification documents:
+
+| Document | Description |
+|----------|-------------|
+| [BFMCS_ARCHITECTURE.md](BFMCS_ARCHITECTURE.md) | Base Finite Canonical Model Construction (BFMCS) proof architecture specification |
+
 ## ADR Details
 
 ### ADR-001: Classical Logic for Metalogic

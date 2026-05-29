@@ -155,26 +155,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Normalize File Naming Conventions [NOT STARTED]
+### Phase 3: Normalize File Naming Conventions [COMPLETED]
 
 **Goal**: Rename kebab-case files in research/ and training/ to SCREAMING_SNAKE_CASE to match the convention used across all other docs/ subdirectories. Update all cross-references.
 
 **Tasks**:
-- [ ] Rename research/ files:
+- [x] Rename research/ files:
   - `bimodal-logic.md` -> `BIMODAL_LOGIC.md`
   - `noncomputable.md` -> `NONCOMPUTABLE.md`
   - `deduction-theorem-necessity.md` -> `DEDUCTION_THEOREM_NECESSITY.md`
   - `dual-verification.md` -> `DUAL_VERIFICATION.md`
   - `proof-library-design.md` -> `PROOF_LIBRARY_DESIGN.md`
-  - `property-based-testing-lean4.md` -> `PROPERTY_BASED_TESTING_LEAN4.md`
-- [ ] Rename training/ file:
-  - `pipeline.md` -> `PIPELINE.md`
-- [ ] Rename architecture/ non-ADR file:
-  - `bfmcs-architecture.md` -> `BFMCS_ARCHITECTURE.md`
-- [ ] Update research/README.md: fix all internal links to use new filenames
-- [ ] Update docs/README.md: fix all cross-references to renamed files
-- [ ] Update architecture/README.md: add entry for BFMCS_ARCHITECTURE.md
-- [ ] Grep entire docs/ directory for old kebab-case filenames and update any remaining cross-references
+  - `property-based-testing-lean4.md` -> `PROPERTY_BASED_TESTING_LEAN4.md` *(completed)*
+- [x] Rename training/ file:
+  - `pipeline.md` -> `PIPELINE.md` *(completed)*
+- [x] Rename architecture/ non-ADR file:
+  - `bfmcs-architecture.md` -> `BFMCS_ARCHITECTURE.md` *(completed)*
+- [x] Update research/README.md: fix all internal links to use new filenames *(completed)*
+- [x] Update docs/README.md: fix all cross-references to renamed files *(completed)*
+- [x] Update architecture/README.md: add entry for BFMCS_ARCHITECTURE.md *(completed)*
+- [x] Grep entire docs/ directory for old kebab-case filenames and update any remaining cross-references *(completed)*
 
 **Timing**: 1 hour
 

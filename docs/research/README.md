@@ -17,7 +17,7 @@ Project-wide research documents applicable to ProofChecker.
 
 ### Theory Foundations
 
-#### bimodal-logic.md
+#### BIMODAL_LOGIC.md
 
 Authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal
 and linear temporal operators with **verified soundness and completeness proofs**. Includes comprehensive
@@ -30,7 +30,7 @@ operator and axiom coverage, perpetuity principles, and theoretical foundations.
 
 ### Classical Logic and Noncomputability
 
-#### noncomputable.md
+#### NONCOMPUTABLE.md
 
 Comprehensive explanation of the `noncomputable` keyword in Lean 4, covering what it means, why
 definitions become noncomputable, and the relationship between classical logic and computability
@@ -39,7 +39,7 @@ in proof systems. Analyzes ProofChecker's use of classical axioms in metalogic t
 **Status**: Complete analysis (Task 192)
 **Related**: [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md)
 
-#### deduction-theorem-necessity.md
+#### DEDUCTION_THEOREM_NECESSITY.md
 
 Detailed analysis of whether the deduction theorem MUST be noncomputable in ProofChecker.
 Evaluates alternatives and concludes that classical logic with noncomputable definitions is
@@ -51,7 +51,7 @@ necessary, expected, and appropriate for Hilbert-style proof systems.
 
 ### AI Training Architecture
 
-#### dual-verification.md
+#### DUAL_VERIFICATION.md
 
 Training architecture using dual verification combining proof-checker (syntactic verification via
 LEAN) with model-checker (semantic verification via Z3). Describes how complementary verification
@@ -59,7 +59,7 @@ systems generate unlimited training data for reinforcement learning without huma
 
 **Status**: Research vision
 
-#### proof-library-design.md
+#### PROOF_LIBRARY_DESIGN.md
 
 Theorem caching and pattern matching design enabling computational scaling through cached
 verification patterns. Supports incremental learning from simple to complex theorems.
@@ -70,7 +70,7 @@ verification patterns. Supports incremental learning from simple to complex theo
 
 ### Testing Research
 
-#### property-based-testing-lean4.md
+#### PROPERTY_BASED_TESTING_LEAN4.md
 
 Comprehensive research on property-based testing in Lean 4, covering LeanCheck framework, random
 testing, generators for custom types, and integration with ProofChecker's formula and derivation

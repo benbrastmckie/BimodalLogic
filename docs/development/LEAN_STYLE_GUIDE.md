@@ -686,8 +686,8 @@ A: Theorems (`theorem`) and proof terms (`by` blocks) can use noncomputable func
 - **Comprehensive Guide**: [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md)
 - **Architecture Decision**: [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md)
 - **Research Reports**: 
-  - [Noncomputable Keyword Explanation](../research/noncomputable.md)
-  - [Deduction Theorem Necessity Analysis](../research/deduction-theorem-necessity.md)
+  - [Noncomputable Keyword Explanation](../research/NONCOMPUTABLE.md)
+  - [Deduction Theorem Necessity Analysis](../research/DEDUCTION_THEOREM_NECESSITY.md)
 
 ---
 
