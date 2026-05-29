@@ -1869,9 +1869,16 @@
       "task_type": "general",
       "created": "2026-05-29T18:30:31Z",
       "last_updated": "2026-05-29T18:30:31Z"
+    },
+    {
+      "project_number": 214,
+      "project_name": "dataset_cleanup_documentation",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format (add description, version, schema_version, quality fields). Create a comprehensive data/README.md documenting each dataset (purpose, schema, record counts, generation provenance, field descriptions). Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas."
     }
   ],
-  "next_project_number": 214,
+  "next_project_number": 215,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
