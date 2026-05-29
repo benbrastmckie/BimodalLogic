@@ -1,7 +1,7 @@
 # Implementation Plan: Task #214 (v2)
 
 - **Task**: 214 - Dataset cleanup, standardization, and documentation
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: Task 213 (completed)
 - **Research Inputs**: specs/214_dataset_cleanup_documentation/reports/01_team-research.md, specs/214_dataset_cleanup_documentation/reports/02_task-213-impact.md
@@ -215,22 +215,22 @@ Phases are sequential because each builds on the file state established by the p
 
 ---
 
-### Phase 5: Schema Validation and Final Verification [NOT STARTED]
+### Phase 5: Schema Validation and Final Verification [COMPLETED]
 
 **Goal**: Verify all datasets have consistent field schemas matching the documented specifications and all deliverables are complete.
 
 **Tasks**:
-- [ ] Write `scripts/validate_datasets.py` that:
+- [x] Write `scripts/validate_datasets.py` that:
   - Reads first and last record of each JSONL file
   - Verifies training records (c5, c7) have 14 expected fields: id, split, formula_str, formula_ast, frame_class, label, proof_trace, countermodel, pattern_key, metrics, augmentation, formula_sexpr, formula_tokens, pattern_features
   - Verifies benchmark records have 13 expected fields
   - Verifies proof_steps records have 8 expected fields
   - Cross-checks metadata record counts against actual JSONL line counts
-  - Reports any schema inconsistencies
-- [ ] Run validation script and fix any issues found
-- [ ] Verify .gitignore correctly excludes intermediates but not finals
-- [ ] Verify Git LFS is tracking the correct files
-- [ ] Final audit: confirm data/ directory matches target structure from README
+  - Reports any schema inconsistencies *(completed)*
+- [x] Run validation script and fix any issues found *(completed: all checks passed on first run)*
+- [x] Verify .gitignore correctly excludes intermediates but not finals *(completed)*
+- [x] Verify Git LFS is tracking the correct files *(completed)*
+- [x] Final audit: confirm data/ directory matches target structure from README *(completed: exactly 10 files)*
 
 **Timing**: 0.5 hours
 
