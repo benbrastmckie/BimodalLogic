@@ -8,13 +8,20 @@
     {
       "project_number": 201,
       "project_name": "alphazero_proof_search_harness",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-29T03:51:11Z",
-      "last_updated": "2026-05-29T04:16:59Z",
-      "session_id": "sess_1780027576_cf65c3",
+      "last_updated": "2026-05-29T05:07:44Z",
+      "session_id": "sess_1780030955_63fa1f",
       "researched": "2026-05-29T04:16:59Z",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md",
+          "type": "plan",
+          "summary": "Task decomposition plan defining 6 sub-tasks for AlphaZero-style proof search harness"
+        }
+      ]
     },
     {
       "project_number": 198,

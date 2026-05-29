@@ -129,9 +129,10 @@ technical_debt:
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**: [201_alphazero_proof_search_harness/reports/01_team-research.md]
+- **Plan**: [201_alphazero_proof_search_harness/plans/01_task-decomposition.md]
 
 **Description**: Set up a training harness for a value network and prediction network to follow a generator that seeks to prove theorems in the bimodal logic, using Lean for the positive signal. This should follow a modern rendition of what AlphaZero did for Go, but applied to the bimodal logic in Lean for the signal
 
