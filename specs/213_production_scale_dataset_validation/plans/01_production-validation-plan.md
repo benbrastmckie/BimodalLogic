@@ -76,7 +76,7 @@ This task advances dataset generation infrastructure for the ML proof search har
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: CLI Flag and Run Script Update [NOT STARTED]
+### Phase 1: CLI Flag and Run Script Update [COMPLETED]
 
 **Goal**: Expose `--valid-seed-count` as a CLI parameter and update the run script for post-task-210 parameters. This is the minimal regression infrastructure needed to unblock all other phases.
 

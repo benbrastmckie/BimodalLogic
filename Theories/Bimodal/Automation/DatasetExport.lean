@@ -45,6 +45,7 @@ lake exe dataset_generator -- [OPTIONS]
   --max-modal-depth N     Maximum modal nesting (default: 2)
   --max-temporal-depth N  Maximum temporal nesting (default: 2)
   --max-formulas N        Maximum formulas to generate (default: 5000)
+  --valid-seed-count N    Number of axiom-seeded valid formulas (default: 500)
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling: exhaustive|random|hybrid (default: exhaustive)
   --include-duals         Include temporal dual augmentation
@@ -389,6 +390,7 @@ structure CLIArgs where
   output : String := "data/bmlogic.jsonl"
   mode : SamplingMode := .exhaustive
   includeDuals : Bool := false
+  validSeedCount : Nat := 500
   deriving Repr, Inhabited
 
 /--
@@ -419,6 +421,8 @@ where
     go rest { acc with mode := mode }
   | "--include-duals" :: rest, acc =>
     go rest { acc with includeDuals := true }
+  | "--valid-seed-count" :: n :: rest, acc =>
+    go rest { acc with validSeedCount := n.toNat! }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -453,6 +457,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Max modal depth: {cliArgs.maxModalDepth}"
   IO.println s!"Max temporal depth: {cliArgs.maxTemporalDepth}"
   IO.println s!"Max formulas: {cliArgs.maxFormulas}"
+  IO.println s!"Valid seed count: {cliArgs.validSeedCount}"
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"
   IO.println ""
@@ -464,6 +469,7 @@ def main (args : List String) : IO Unit := do
     maxTemporalDepth := cliArgs.maxTemporalDepth
     maxFormulas := cliArgs.maxFormulas
     samplingMode := cliArgs.mode
+    validSeedCount := cliArgs.validSeedCount
   }
   IO.println "Generating formulas..."
   let formulas ← generateFormulas params
