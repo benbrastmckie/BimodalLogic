@@ -180,16 +180,16 @@ Phases within the same wave can execute in parallel. Phases 1 (enumeration rewri
 
 ---
 
-### Phase 5: Testing, cleanup, and documentation [NOT STARTED]
+### Phase 5: Testing, cleanup, and documentation [COMPLETED]
 
 **Goal**: Ensure full project build passes, update documentation, and clean up any temporary test code.
 
 **Tasks**:
-- [ ] Run `lake build` for the full project to verify no regressions
-- [ ] Update the module docstring in FormulaEnumerator.lean to document the new exact-complexity enumeration approach and axiom instantiation
-- [ ] Add inline documentation for new functions (`enumExactBudget`, `instantiateAxiom`, `generateValidBatch`)
-- [ ] Remove any temporary `#eval` debugging blocks
-- [ ] Verify that existing imports and downstream consumers (DatasetExporter, DataExport) still compile
+- [x] **Task 5.1**: Run `lake build` for the full project -- PASS (1678 jobs, zero errors)
+- [x] **Task 5.2**: Module docstring already updated during Phase 1 with exact-complexity and memoization documentation
+- [x] **Task 5.3**: Inline documentation already present on all new functions (added during Phases 1-2)
+- [x] **Task 5.4**: No `#eval` debugging blocks to remove (none were added)
+- [x] **Task 5.5**: DatasetExporter and DataExport compile successfully with updated pipeline
 
 **Timing**: 1 hour
 
@@ -206,14 +206,14 @@ Phases within the same wave can execute in parallel. Phases 1 (enumeration rewri
 
 ## Testing & Validation
 
-- [ ] `lake build Bimodal.Automation.FormulaEnumerator` compiles at each phase
-- [ ] `lake build Bimodal.Automation.DatasetGenerator` compiles after Phase 3
-- [ ] `lake build` (full project) passes after Phase 5
-- [ ] Complexity 5 enumeration produces ~1,440 distinct formulas (down from 937K raw)
-- [ ] Complexity 5 enumeration completes in < 5 seconds (down from >1.5 hours)
-- [ ] Complexity 6-7 enumeration completes within 60 seconds each
-- [ ] Valid fraction with axiom seeding exceeds 15% at complexity 5-7
-- [ ] No regressions in existing DatasetExporter/DataExport functionality
+- [x] `lake build Bimodal.Automation.FormulaEnumerator` compiles at each phase
+- [x] `lake build Bimodal.Automation.DatasetGenerator` compiles after Phase 3
+- [x] `lake build` (full project) passes after Phase 5 (1678 jobs, zero errors)
+- [x] Complexity 5 enumeration produces 1,644 formulas (levels 1-5 combined; down from 937K raw at budget 5 alone)
+- [x] Complexity 5 enumeration completes in 1 ms compiled (down from >1.5 hours)
+- [x] Complexity 6-7 enumeration completes in 0-3 ms each (gate: 60s)
+- [ ] Valid fraction with axiom seeding exceeds 15% at complexity 5-7 *(result: 60% for axiom-only pool, 4% for combined pool with current seed ratio; adjustable via validSeedCount parameter)*
+- [x] No regressions in existing DatasetExporter/DataExport functionality
 
 ## Artifacts & Outputs
 
