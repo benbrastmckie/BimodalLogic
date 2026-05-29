@@ -33,7 +33,7 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [BLOCKED] — Eliminate succ_cofinal: all 5 plan versions blocked by F-persistence through g_content under irreflexive semantics. Phase 1 done (henkin_bfmcs sorry-free on Int). Needs fundamentally different strategy (restricted MCS, reflexive conservative extension, or direct semantic truth lemma).
+202 [PLANNED] — Reynolds Theorem 14 (no-gaps): formalize Reynolds 1994 Theorem 5 (US over Prior), Lemmas 6-13 (model surgery), Theorem 14 to close no_gaps_discrete. Semantic approach sidesteps F-persistence blocker. 5 phases, 20 hours.
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -183,18 +183,20 @@ technical_debt:
 **Description**: Build the Lean-side formula enumerator, decider labeling pipeline, and JSON dataset export in Automation/. Enumerate TM formulas at controlled modal/temporal depth, run the existing DecisionProcedure (decide/decideBatch) to label each as provable/unprovable with proof traces, and export the labeled dataset as JSON for downstream Python consumption. The boundary is the JSON file — everything upstream (enumeration, labeling, trace extraction, export) is pure Lean in this repo; everything downstream (tensor conversion, training) belongs in a separate harness repo. Deliverables: FormulaEnumerator.lean (bounded generation by depth/size), DatasetGenerator.lean (run decider, produce labeled tuples), JSON export with (formula, label, proof_trace, difficulty_metrics), and an evaluation benchmark of 500-1K held-out formulas. Feasibility gate: the enumerator must produce diverse non-trivial formulas (not >80% trivially propositional)
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: 8 hours
-- **Status**: [BLOCKED]
+- **Effort**: 20 hours
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
 - **Research**:
   - [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/04_team-research.md]
+  - [202_reynolds_k_equivalence_bypass/reports/05_reynolds-theorem-14-research.md]
 - **Plan**:
   - [202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md]
   - [202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md]
-- **Description**: Eliminate succ_cofinal for sorry-free completeness_discrete via Option C (direct completeness on Z). Phase 1 complete: henkin_bfmcs sorry-free on Int (426 lines, fc-parametric chain infrastructure). Plan v5 replaces blocked Phases 2-4 with enriched chain construction that preserves F-formulas across Lindenbaum extensions, BX5-based Until decomposition for FUC, and integration into completeness_discrete. The enriched seed `g_content(M) union {F(psi) | F(psi) in M} union {target}` is consistent (subset-of-M argument). No dependency on tasks 155, 174, or 199.
+  - [202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md]
+- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files.
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL (3-4 weeks)

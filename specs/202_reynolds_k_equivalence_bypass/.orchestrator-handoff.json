@@ -1,18 +1,12 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 blocked: plan v5 enriched chain approach is fundamentally flawed -- enriched seed can be inconsistent under irreflexive temporal semantics, and all known approaches to F-persistence through Lindenbaum extensions are dead",
-  "phases_completed": 1,
-  "phases_total": 4,
-  "blockers": [
-    "Enriched seed {target} ∪ g_content(M) ∪ {F(χ) | F(χ) ∈ M} can be inconsistent (documented in HenkinDiscreteChain.lean:27-28, SuccExistence.lean:326-331)",
-    "g_content(M) is NOT a subset of M under irreflexive (strict) temporal semantics -- G(φ) → φ is not an axiom",
-    "Lindenbaum extensions are non-deterministic and can introduce G(¬φ), permanently killing F(φ)",
-    "Family proliferation violates same-family requirement of restricted_tc",
-    "All 5 prior plan versions (v1-v5) are blocked by the same root cause: F-formula persistence through g_content-based chain construction is impossible"
-  ],
+  "status": "planned",
+  "summary": "Plan v6 created: Reynolds Theorem 5 + Lemmas 6-13 + Theorem 14 (model surgery / no-gaps). Semantic approach via Reynolds 1994 Section 6-7 sidesteps F-persistence blocker. 5 phases, 20 hours, ~1100 new lines.",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
   "continuation_context": {
-    "next_phase": 2,
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260529.md"
+    "next_phase": 1,
+    "plan_path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md"
   },
-  "next_action_hint": "research"
+  "next_action_hint": "implement"
 }
