@@ -188,7 +188,7 @@ Phases within the same wave can execute in parallel. Phases 4 and 5 are independ
 
 ---
 
-### Phase 3: DatasetExport.lean -- JSON Serialization, JSONL Streaming, and Lake Executable [NOT STARTED]
+### Phase 3: DatasetExport.lean -- JSON Serialization, JSONL Streaming, and Lake Executable [COMPLETED]
 
 **Goal**: Create the JSON export module with `ToJson` instances for all data types, a streaming JSONL writer, and a `main` function compiled as a Lake executable. This is the most infrastructure-heavy phase since no existing code imports `Lean.Data.Json`.
 

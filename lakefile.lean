@@ -32,3 +32,10 @@ lean_lib BimodalTest where
   srcDir := "Tests"
   roots := #[`BimodalTest]
   leanOptions := theoryLeanOptions
+
+/-- Dataset generator executable for ML training data.
+    Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl -/
+lean_exe dataset_generator where
+  root := `Bimodal.Automation.DatasetExport
+  srcDir := "Theories"
+  supportInterpreter := true

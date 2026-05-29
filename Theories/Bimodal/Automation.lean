@@ -7,6 +7,7 @@ import Bimodal.Automation.EFGameTactics
 import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
+import Bimodal.Automation.DatasetExport
 
 /-!
 # Bimodal.Automation - Proof Automation
