@@ -769,6 +769,218 @@ theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature}
           ((rank_embed_le (by omega : r' ≤ r' + 2) x₁' y₁').mpr hle')
           (h_r1_univ r' hle hle'))
 
+/-! ## Effective Formula and Chronicle Semantic Prior-UZ/SZ
+
+Given an `atomMap_fwd : Formula → sig.preds` and `atomMap_rev : sig.preds → Formula`,
+the "effective formula" of ψ under this atom map is obtained by replacing each
+atom/box subformula with its roundtrip through atomMap_rev ∘ atomMap_fwd.
+
+This is the formula whose MCS membership corresponds to temporal_truth of ψ
+under atomMap_fwd, even when atomMap_fwd does not have the section property.
+-/
+
+/--
+The effective formula: the formula whose MCS membership corresponds to
+temporal_truth of ψ under atomMap_fwd on the chronicle monadic structure.
+-/
+def effectiveFormula {sig : MonadicSignature} (atomMap_rev : sig.preds → Formula)
+    (atomMap_fwd : Formula → sig.preds) : Formula → Formula
+  | .atom a => atomMap_rev (atomMap_fwd (.atom a))
+  | .bot => .bot
+  | .imp φ ψ => .imp (effectiveFormula atomMap_rev atomMap_fwd φ)
+      (effectiveFormula atomMap_rev atomMap_fwd ψ)
+  | .box φ => atomMap_rev (atomMap_fwd (.box φ))
+  | .untl φ ψ => .untl (effectiveFormula atomMap_rev atomMap_fwd φ)
+      (effectiveFormula atomMap_rev atomMap_fwd ψ)
+  | .snce φ ψ => .snce (effectiveFormula atomMap_rev atomMap_fwd φ)
+      (effectiveFormula atomMap_rev atomMap_fwd ψ)
+
+/--
+temporal_truth on the chronicle monadic structure with atomMap_fwd corresponds
+to MCS membership of the effective formula, regardless of whether atomMap_fwd
+has the section property.
+
+When atomMap has the section property (atomMap_rev ∘ atomMap_fwd = id on predFormulas),
+effectiveFormula = id and this reduces to `chronicle_temporal_truth`.
+-/
+theorem chronicle_temporal_truth_effective {fc : FrameClass}
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
+    (ψ : Formula) (t : M.domain) :
+    temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
+      effectiveFormula atomMap_rev atomMap_fwd ψ ∈ M.fmcs t := by
+  revert t
+  induction ψ with
+  | atom a =>
+    intro t
+    show (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.atom a)) t ↔
+        atomMap_rev (atomMap_fwd (.atom a)) ∈ M.fmcs t
+    simp only [chronicleAsMonadicStructure]
+  | bot =>
+    intro t
+    constructor
+    · exact False.elim
+    · intro h; exact absurd h
+        (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
+  | imp φ₁ φ₂ ih₁ ih₂ =>
+    intro t
+    simp only [temporal_truth, effectiveFormula]
+    rw [ih₁ t, ih₂ t]
+    exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
+  | box φ =>
+    intro t
+    show (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
+        atomMap_rev (atomMap_fwd (.box φ)) ∈ M.fmcs t
+    simp only [chronicleAsMonadicStructure]
+  | untl φ₁ φ₂ ih₁ ih₂ =>
+    intro t
+    simp only [temporal_truth, effectiveFormula]
+    constructor
+    · -- Forward: temporal Until → effective Until ∈ fmcs
+      intro ⟨s, hts, h_phi1, h_guard⟩
+      have h₁ : effectiveFormula atomMap_rev atomMap_fwd φ₁ ∈ M.fmcs s := (ih₁ s).mp h_phi1
+      have h₂ : ∀ r, t < r → r < s → effectiveFormula atomMap_rev atomMap_fwd φ₂ ∈ M.fmcs r :=
+        fun r htr hrs => (ih₂ r).mp (h_guard r htr hrs)
+      -- By C4 backward contrapositive: if ¬U(eff φ₁, eff φ₂) ∈ fmcs(t), then for
+      -- any future s with eff φ₁ ∈ fmcs(s), there exists r ∈ (t,s) with ¬(eff φ₂) ∈ fmcs(r).
+      -- But eff φ₂ ∈ fmcs(r) for all such r, contradiction.
+      by_contra h_neg
+      have h_neg_until : (Formula.untl (effectiveFormula atomMap_rev atomMap_fwd φ₁)
+          (effectiveFormula atomMap_rev atomMap_fwd φ₂)).neg ∈ M.fmcs t := by
+        exact (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
+      obtain ⟨z, htz, hzs, h_neg_guard⟩ := M.neg_until_coherent t s hts _ _ h_neg_until h₁
+      have h_guard_z : effectiveFormula atomMap_rev atomMap_fwd φ₂ ∈ M.fmcs z := h₂ z htz hzs
+      exact absurd h_guard_z
+        (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs z) _ h_neg_guard)
+    · -- Backward: effective Until ∈ fmcs → temporal Until
+      intro h_until
+      obtain ⟨s, hts, h_phi1, h_guard⟩ := M.until_coherent_fwd t _ _ h_until
+      exact ⟨s, hts, (ih₁ s).mpr h_phi1, fun r htr hrs => (ih₂ r).mpr (h_guard r htr hrs)⟩
+  | snce φ₁ φ₂ ih₁ ih₂ =>
+    intro t
+    simp only [temporal_truth, effectiveFormula]
+    constructor
+    · -- Forward: temporal Since → effective Since ∈ fmcs
+      intro ⟨s, hst, h_phi1, h_guard⟩
+      have h₁ : effectiveFormula atomMap_rev atomMap_fwd φ₁ ∈ M.fmcs s := (ih₁ s).mp h_phi1
+      have h₂ : ∀ r, s < r → r < t → effectiveFormula atomMap_rev atomMap_fwd φ₂ ∈ M.fmcs r :=
+        fun r hsr hrt => (ih₂ r).mp (h_guard r hsr hrt)
+      by_contra h_neg
+      have h_neg_since : (Formula.snce (effectiveFormula atomMap_rev atomMap_fwd φ₁)
+          (effectiveFormula atomMap_rev atomMap_fwd φ₂)).neg ∈ M.fmcs t := by
+        exact (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
+      obtain ⟨z, hsz, hzt, h_neg_guard⟩ := M.neg_since_coherent t s hst _ _ h_neg_since h₁
+      have h_guard_z : effectiveFormula atomMap_rev atomMap_fwd φ₂ ∈ M.fmcs z := h₂ z hsz hzt
+      exact absurd h_guard_z
+        (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs z) _ h_neg_guard)
+    · -- Backward: effective Since ∈ fmcs → temporal Since
+      intro h_since
+      obtain ⟨s, hst, h_phi1, h_guard⟩ := M.since_coherent_fwd t _ _ h_since
+      exact ⟨s, hst, (ih₁ s).mpr h_phi1, fun r hsr hrt => (ih₂ r).mpr (h_guard r hsr hrt)⟩
+
+/--
+Semantic Prior-UZ holds for temporal_truth on the chronicle monadic structure
+with any atomMap. The proof uses `chronicle_temporal_truth_effective` to
+translate between temporal_truth and MCS membership of effective formulas,
+then applies the chronicle's MCS-level Prior-UZ axiom.
+-/
+theorem chronicle_semantic_prior_UZ {fc : FrameClass}
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
+    semantic_prior_UZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
+  intro t ψ ⟨s, hts, h_ψ_s⟩
+  let eff_ψ := effectiveFormula atomMap_rev atomMap_fwd ψ
+  -- Step 1: Convert temporal truth to MCS membership of effective formula
+  have h_eff_s : eff_ψ ∈ M.fmcs s :=
+    (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s).mp h_ψ_s
+  -- Step 2: Establish F(eff_ψ) ∈ fmcs(t) from the witness s
+  -- F(eff_ψ) = U(eff_ψ, top). By C4 contrapositive: if ¬F(eff_ψ) ∈ fmcs(t),
+  -- then for any s > t with eff_ψ ∈ fmcs(s), ∃r ∈ (t,s) with ¬top ∈ fmcs(r).
+  -- But ¬top = bot, which contradicts MCS consistency.
+  have h_F_eff : Formula.some_future eff_ψ ∈ M.fmcs t := by
+    by_contra h_neg
+    have h_neg_F : (Formula.some_future eff_ψ).neg ∈ M.fmcs t :=
+      (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
+    -- some_future eff_ψ = untl eff_ψ (imp bot bot)
+    -- neg of this is in fmcs(t)
+    -- By neg_until_coherent: ∃z ∈ (t,s) with ¬(imp bot bot) ∈ fmcs(z)
+    -- But ¬(imp bot bot) = ¬top = bot, contradicting MCS consistency
+    simp only [Formula.some_future] at h_neg_F
+    obtain ⟨z, htz, hzs, h_neg_top⟩ := M.neg_until_coherent t s hts _ _ h_neg_F h_eff_s
+    -- h_neg_top : (Formula.imp Formula.bot Formula.bot).neg ∈ M.fmcs z
+    -- = Formula.imp (Formula.imp Formula.bot Formula.bot) Formula.bot ∈ M.fmcs z
+    -- This means top → bot ∈ fmcs(z), i.e., ¬top ∈ fmcs(z), i.e., bot ∈ fmcs(z)
+    have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
+      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+    have h_bot : Formula.bot ∈ M.fmcs z :=
+      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+  -- Step 3: Apply MCS-level Prior-UZ: F(eff_ψ) → U(eff_ψ, ¬eff_ψ) ∈ fmcs(t)
+  have h_prior := M.prior_UZ_valid t eff_ψ
+  -- prior_UZ_valid gives: (F(eff_ψ) → U(eff_ψ, ¬eff_ψ)) ∈ fmcs(t)
+  have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ M.fmcs t :=
+    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
+  -- Step 4: C5 forward: U(eff_ψ, ¬eff_ψ) ∈ fmcs(t) → ∃s' > t, eff_ψ ∈ fmcs(s') ∧ guard
+  obtain ⟨s', hts', h_eff_s', h_guard⟩ := M.until_coherent_fwd t eff_ψ eff_ψ.neg h_until
+  -- Step 5: Convert back to temporal_truth
+  refine ⟨s', hts', ?_, ?_⟩
+  · exact (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
+  · intro r htr hrs
+    -- h_guard r gives: eff_ψ.neg ∈ fmcs(r)
+    -- Need: temporal_truth M atomMap_fwd r ψ.neg
+    -- temporal_truth r ψ.neg ↔ ¬temporal_truth r ψ (by definition of Formula.neg/temporal_truth)
+    -- eff_ψ.neg ∈ fmcs(r) ↔ ¬(eff_ψ ∈ fmcs(r)) (by MCS not_mem_iff_neg_mem)
+    -- And temporal_truth r ψ ↔ eff_ψ ∈ fmcs(r) (by chronicle_temporal_truth_effective)
+    -- ψ.neg = .imp ψ .bot, so temporal_truth t ψ.neg = (temporal_truth t ψ → False)
+    simp only [Formula.neg, temporal_truth]
+    intro h_ψ_r
+    have h_eff_r : eff_ψ ∈ M.fmcs r :=
+      (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ r).mp h_ψ_r
+    exact absurd h_eff_r
+      (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r htr hrs))
+
+/--
+Semantic Prior-SZ holds for temporal_truth on the chronicle monadic structure
+with any atomMap. Mirror of `chronicle_semantic_prior_UZ`.
+-/
+theorem chronicle_semantic_prior_SZ {fc : FrameClass}
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
+    semantic_prior_SZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
+  intro t ψ ⟨s, hst, h_ψ_s⟩
+  let eff_ψ := effectiveFormula atomMap_rev atomMap_fwd ψ
+  -- Step 1: Convert temporal truth to MCS membership of effective formula
+  have h_eff_s : eff_ψ ∈ M.fmcs s :=
+    (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s).mp h_ψ_s
+  -- Step 2: Establish P(eff_ψ) ∈ fmcs(t)
+  have h_P_eff : Formula.some_past eff_ψ ∈ M.fmcs t := by
+    by_contra h_neg
+    have h_neg_P : (Formula.some_past eff_ψ).neg ∈ M.fmcs t :=
+      (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
+    simp only [Formula.some_past] at h_neg_P
+    obtain ⟨z, hsz, hzt, h_neg_top⟩ := M.neg_since_coherent t s hst _ _ h_neg_P h_eff_s
+    have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
+      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+    have h_bot : Formula.bot ∈ M.fmcs z :=
+      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+  -- Step 3: Apply MCS-level Prior-SZ
+  have h_prior := M.prior_SZ_valid t eff_ψ
+  have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ M.fmcs t :=
+    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
+  -- Step 4: C5 forward for Since
+  obtain ⟨s', hst', h_eff_s', h_guard⟩ := M.since_coherent_fwd t eff_ψ eff_ψ.neg h_since
+  -- Step 5: Convert back
+  refine ⟨s', hst', ?_, ?_⟩
+  · exact (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
+  · intro r hsr hrt
+    simp only [Formula.neg, temporal_truth]
+    intro h_ψ_r
+    have h_eff_r : eff_ψ ∈ M.fmcs r :=
+      (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ r).mp h_ψ_r
+    exact absurd h_eff_r
+      (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r hsr hrt))
+
 /-! ## Reynolds Pipeline: countermodel_discrete_reynolds -/
 
 /--
@@ -820,7 +1032,10 @@ theorem countermodel_discrete_reynolds
   -- Step 3: Build the monadic structure from the chronicle
   let M_struct := chronicleAsMonadicStructure CM sig atomMap_rev
   -- Step 4: Prove chronicle is good via one_class path
-  have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd (operator_depth φ + 2)
+  have h_UZ := chronicle_semantic_prior_UZ CM sig atomMap_rev atomMap_fwd
+  have h_SZ := chronicle_semantic_prior_SZ CM sig atomMap_rev atomMap_fwd
+  have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
+    (operator_depth φ + 2) h_UZ h_SZ
   -- Step 5: Extract Z-interval witness and k-equivalence
   obtain ⟨Z, h_k_equiv⟩ := h_good
   -- Step 6: Prove ¬φ is temporally true at the chronicle root
