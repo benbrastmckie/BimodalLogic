@@ -760,4 +760,176 @@ def generateFormulas (params : EnumParams) : IO (List Formula) := do
     else
       return exhaustive
 
+/-!
+## Axiom-Schema Instantiation (Task 210 Phase 2)
+
+Generate valid-by-construction formulas by instantiating axiom schemata with
+random sub-formulas. This addresses the valid fraction problem: random sampling
+at high complexity produces overwhelmingly invalid formulas (1.6% at complexity 7).
+
+The strategy is:
+1. **Seed pool**: Generate axiom instances by picking random sub-formulas
+2. **Necessitation round**: For each valid formula, `box(φ)` is also valid
+3. **MP round**: For implications `φ` and `φ → ψ` both in pool, `ψ` is valid
+4. **Filter**: Discard formulas outside target complexity range, deduplicate
+-/
+
+/--
+Generate a random sub-formula of bounded complexity using IO.rand.
+Used to fill axiom schema parameters with random formulas.
+-/
+partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula := do
+  if maxSize ≤ 1 then
+    let idx ← IO.rand 0 atoms.length
+    match atoms[idx]? with
+    | some a => return .atom a
+    | none => return .bot
+  else
+    let choice ← IO.rand 0 3
+    match choice with
+    | 0 =>
+      let idx ← IO.rand 0 atoms.length
+      match atoms[idx]? with
+      | some a => return .atom a
+      | none => return .bot
+    | 1 =>
+      -- imp: split budget
+      let leftSize ← IO.rand 1 (maxSize - 1)
+      let rightSize := maxSize - 1 - leftSize
+      let left ← randomSubFormula atoms (max 1 leftSize)
+      let right ← randomSubFormula atoms (max 1 rightSize)
+      return .imp left right
+    | 2 =>
+      -- box
+      let child ← randomSubFormula atoms (maxSize - 1)
+      return .box child
+    | _ =>
+      -- atom fallback
+      let idx ← IO.rand 0 atoms.length
+      match atoms[idx]? with
+      | some a => return .atom a
+      | none => return .bot
+
+/--
+Instantiate a random axiom schema with random sub-formulas.
+
+Picks one of the 8 high-yield axiom schemata and generates random formulas to
+fill the schema parameters. The result is guaranteed valid by construction.
+
+**Supported schemata**:
+- `prop_s(φ, ψ)`: `φ → (ψ → φ)` (weakening)
+- `prop_k(φ, ψ, χ)`: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
+- `ex_falso(φ)`: `⊥ → φ`
+- `peirce(φ, ψ)`: `((φ → ψ) → φ) → φ`
+- `modal_t(φ)`: `□φ → φ` (reflexivity)
+- `modal_4(φ)`: `□φ → □□φ` (transitivity)
+- `modal_b(φ)`: `φ → □◇φ` (symmetry)
+- `modal_k_dist(φ, ψ)`: `□(φ → ψ) → (□φ → □ψ)`
+-/
+partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formula := do
+  let schemaIdx ← IO.rand 0 7
+  match schemaIdx with
+  | 0 => do
+    -- prop_s: φ → (ψ → φ)
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    return φ.imp (ψ.imp φ)
+  | 1 => do
+    -- prop_k: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    let χ ← randomSubFormula atoms maxParamSize
+    return (φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))
+  | 2 => do
+    -- ex_falso: ⊥ → φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return Formula.bot.imp φ
+  | 3 => do
+    -- peirce: ((φ → ψ) → φ) → φ
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    return ((φ.imp ψ).imp φ).imp φ
+  | 4 => do
+    -- modal_t: □φ → φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return (Formula.box φ).imp φ
+  | 5 => do
+    -- modal_4: □φ → □□φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return (Formula.box φ).imp (Formula.box (Formula.box φ))
+  | 6 => do
+    -- modal_b: φ → □◇φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.imp (Formula.box φ.diamond)
+  | _ => do
+    -- modal_k_dist: □(φ → ψ) → (□φ → □ψ)
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    return (φ.imp ψ).box.imp (φ.box.imp ψ.box)
+
+/--
+Apply modus ponens: given valid φ and valid (φ → ψ), return ψ.
+Returns `none` if the implication does not match.
+-/
+def generateValidFromMP (antecedent implication : Formula) : Option Formula :=
+  match implication with
+  | .imp lhs rhs =>
+    if lhs == antecedent then some rhs else none
+  | _ => none
+
+/--
+Apply necessitation: given valid φ, return □φ (also valid by the necessitation rule).
+-/
+def generateValidFromNec (φ : Formula) : Formula :=
+  Formula.box φ
+
+/--
+Generate a batch of guaranteed-valid formulas using an incremental pool strategy.
+
+1. **Seed pool**: Generate `seedCount` axiom instances (all valid by construction)
+2. **Necessitation round**: For each pool member, add `□φ` (valid by necessitation)
+3. **MP round**: For each pair `(φ, ψ)` where `ψ = φ → χ`, add `χ` (valid by MP)
+4. **Repeat**: Run necessitation + MP rounds once more
+5. **Filter**: Keep formulas within target complexity range, deduplicate
+
+Parameters:
+- `seedCount`: Number of initial axiom instances to generate
+- `maxComplexity`: Maximum formula complexity to keep in output
+- `atoms`: Atom vocabulary for sub-formula generation
+-/
+partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
+    (atoms : List Atom) : IO (List Formula) := do
+  -- Phase 1: Seed pool with axiom instances
+  let maxParamSize := max 1 (maxComplexity / 3)
+  let mut pool : List Formula := []
+  for _ in List.range seedCount do
+    let axiomInst ← instantiateAxiom atoms maxParamSize
+    pool := axiomInst :: pool
+  pool := pool.eraseDups
+  -- Phase 2: Necessitation round
+  let necFormulas := pool.map generateValidFromNec
+  pool := (pool ++ necFormulas).eraseDups
+  -- Phase 3: MP round
+  let mut mpResults : List Formula := []
+  for φ in pool do
+    for ψ in pool do
+      match generateValidFromMP φ ψ with
+      | some result => mpResults := result :: mpResults
+      | none => pure ()
+  pool := (pool ++ mpResults).eraseDups
+  -- Phase 4: Second necessitation round
+  let necFormulas2 := pool.map generateValidFromNec
+  pool := (pool ++ necFormulas2).eraseDups
+  -- Phase 5: Second MP round
+  let mut mpResults2 : List Formula := []
+  for φ in pool do
+    for ψ in pool do
+      match generateValidFromMP φ ψ with
+      | some result => mpResults2 := result :: mpResults2
+      | none => pure ()
+  pool := (pool ++ mpResults2).eraseDups
+  -- Phase 6: Filter by complexity range
+  let filtered := pool.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity
+  return filtered
+
 end Bimodal.Automation

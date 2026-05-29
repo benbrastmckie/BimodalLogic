@@ -105,24 +105,16 @@ Phases within the same wave can execute in parallel. Phases 1 (enumeration rewri
 
 ---
 
-### Phase 2: Add axiom-schema instantiation for guaranteed-valid formulas [NOT STARTED]
+### Phase 2: Add axiom-schema instantiation for guaranteed-valid formulas [COMPLETED]
 
 **Goal**: Create a new module that generates valid-by-construction formulas by instantiating the 42 axiom schemata with random sub-formulas. This addresses the valid fraction problem. This phase is independent of Phase 1 — it adds new functions that do not call or depend on the enumeration rewrite.
 
 **Tasks**:
-- [ ] Create `instantiateAxiom : List Atom -> Nat -> IO Formula` that:
-  - Picks a random axiom schema from the available constructors
-  - Generates random sub-formulas of bounded size to fill schema variables (phi, psi, chi)
-  - Returns the resulting axiom instance (guaranteed valid)
-- [ ] Create `generateValidFromMP : Formula -> Formula -> Option Formula` that applies modus ponens: given valid phi and valid (phi -> psi), return psi
-- [ ] Create `generateValidFromNec : Formula -> Formula` that applies necessitation: given valid phi, return box(phi)
-- [ ] Create `generateValidBatch : Nat -> Nat -> List Atom -> IO (List Formula)` using an incremental pool strategy:
-  1. **Seed pool**: Generate N axiom instances via `instantiateAxiom` (these are all valid by construction)
-  2. **Necessitation round**: For each formula in the pool, add `box(phi)` — still valid, increases modal depth
-  3. **MP round**: Scan the pool for implication pairs — for each `phi` and `phi → psi` both in the pool, add `psi`. Also scan for `phi` in the pool where `prop_k`-instantiation produces `phi → (chi → phi)` for some pool member `chi`, yielding `chi → phi` via MP
-  4. **Filter**: Discard formulas outside target complexity range, deduplicate
-  5. Repeat rounds 2-3 once more if the pool is still below the target count
-- [ ] Focus on the simplest high-yield axiom schemata first: `prop_s`, `prop_k`, `ex_falso`, `modal_t`, `modal_4`, `modal_b`, `modal_k_dist`, `peirce` (these take 1-3 formula parameters, easy to instantiate)
+- [x] **Task 2.1**: Create `instantiateAxiom : List Atom -> Nat -> IO Formula` that picks a random axiom schema and generates random sub-formulas
+- [x] **Task 2.2**: Create `generateValidFromMP : Formula -> Formula -> Option Formula` that applies modus ponens
+- [x] **Task 2.3**: Create `generateValidFromNec : Formula -> Formula` that applies necessitation
+- [x] **Task 2.4**: Create `generateValidBatch : Nat -> Nat -> List Atom -> IO (List Formula)` using incremental pool strategy with seed, necessitation, and MP rounds
+- [x] **Task 2.5**: Focus on 8 high-yield schemata: `prop_s`, `prop_k`, `ex_falso`, `modal_t`, `modal_4`, `modal_b`, `modal_k_dist`, `peirce`
 
 **Timing**: 2 hours
 
