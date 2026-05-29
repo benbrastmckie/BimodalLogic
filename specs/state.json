@@ -1070,10 +1070,10 @@
     {
       "project_number": 208,
       "project_name": "huggingface_dataset_packaging",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T23:00:00Z",
+      "last_updated": "2026-05-29T23:20:00Z",
       "session_id": "sess_1780092959_fa939f",
       "researched": "2026-05-29T23:00:00Z",
       "next_artifact_number": 2,
@@ -1082,8 +1082,28 @@
           "path": "specs/208_huggingface_dataset_packaging/reports/01_huggingface-packaging.md",
           "type": "research",
           "summary": "HuggingFace dataset packaging research: 4-config structure (bmlogic-bench default, c5/c7 train, proof-steps), JSONL upload with auto-Parquet, CC BY 4.0 license, NeurIPS 2026 Croissant requirements, full dataset card template"
+        },
+        {
+          "path": "specs/208_huggingface_dataset_packaging/plans/01_huggingface-packaging-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: dataset card with YAML frontmatter, Python upload/validation scripts, integration testing and publishing guide"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_huggingface-packaging.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 214,
