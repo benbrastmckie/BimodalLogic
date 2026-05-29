@@ -108,7 +108,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [IN PROGRESS]
+### Phase 2: Lemmas 6-9 -- Gap Formula R and R-Interval Properties [NOT STARTED]
 
 **Goal**: Define the temporal formula R that detects gap-ending equivalence classes, and prove its structural properties. This establishes the setting for the model surgery argument.
 
@@ -230,7 +230,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Theorem 14 + Close `no_gaps_discrete` [NOT STARTED]
+### Phase 4: Theorem 14 + Close `no_gaps_discrete` [PARTIAL]
 
 **Goal**: Prove Theorem 14 (no gaps in contemporaneous equivalence classes) and close the `no_gaps_discrete` sorry in GoodStructures.lean. Also close the secondary sorries in `chronicle_is_good_direct` (semantic Prior hypothesis discharge).
 
@@ -255,8 +255,7 @@ Phases within the same wave can execute in parallel.
 
 - [ ] **Task 4.2**: Replace the sorry in `no_gaps_discrete` (GoodStructures.lean:842) with a call to `theorem_14` (~30 lines)
 
-- [ ] **Task 4.3**: Close the secondary sorries in `chronicle_is_good_direct` (ShiftAndGlue.lean:985, 991) -- discharge semantic Prior-UZ/SZ for the chronicle (~80 lines)
-  Add the section property as a parameter to `chronicle_is_good_direct` and thread it from the caller in `countermodel_discrete_reynolds`. Use `chronicle_temporal_truth` to convert between MCS membership and `temporal_truth`, establishing the semantic Prior-UZ/SZ from the syntactic Prior-UZ/SZ in the MCS.
+- [x] **Task 4.3**: Close the secondary sorries in `chronicle_is_good_direct` (ShiftAndGlue.lean:985, 991) -- discharge semantic Prior-UZ/SZ for the chronicle *(deviation: altered -- instead of adding section property parameter, defined effectiveFormula and chronicle_temporal_truth_effective in Transfer.lean to prove temporal_truth corresponds to MCS membership of the effective formula for ALL formulas regardless of section property; then proved chronicle_semantic_prior_UZ/SZ using this; made Prior-UZ/SZ explicit parameters of chronicle_is_good_direct instead of internal sorry sites, discharging them at the call site in countermodel_discrete_reynolds)*
 
 - [ ] **Task 4.4**: Verify `one_class` is now sorry-free -- `#print axioms one_class` shows no `sorryAx` (~5 lines)
 
