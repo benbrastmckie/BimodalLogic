@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 203,
+      "project_name": "formula_enumerator_dataset_export",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-05-29T16:59:41Z",
+      "last_updated": "2026-05-29T16:59:41Z"
+    },
+    {
       "project_number": 201,
       "project_name": "alphazero_proof_search_harness",
       "status": "planned",
@@ -1295,7 +1303,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1304,7 +1312,7 @@
         155
       ],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T16:52:34Z",
+      "last_updated": "2026-05-29T16:59:12Z",
       "next_artifact_number": 5,
       "artifacts": [
         {
@@ -1329,7 +1337,7 @@
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
-      "session_id": "sess_1780072909_ba23c7",
+      "session_id": "sess_1780073922_56864f",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 8,
@@ -1370,7 +1378,7 @@
       }
     }
   ],
-  "next_project_number": 203,
+  "next_project_number": 204,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
