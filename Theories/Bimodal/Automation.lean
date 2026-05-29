@@ -5,6 +5,7 @@ import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
 import Bimodal.Automation.EFGameTactics
 import Bimodal.Automation.FormulaEnumerator
+import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
 
 /-!

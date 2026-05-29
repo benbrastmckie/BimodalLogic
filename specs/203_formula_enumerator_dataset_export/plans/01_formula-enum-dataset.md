@@ -123,7 +123,7 @@ Phases within the same wave can execute in parallel. Phases 4 and 5 are independ
 
 ---
 
-### Phase 2: DatasetGenerator.lean -- Decider Integration and ProofTrace Extraction [NOT STARTED]
+### Phase 2: DatasetGenerator.lean -- Decider Integration and ProofTrace Extraction [COMPLETED]
 
 **Goal**: Create the dataset generation module that runs the existing decision procedure on enumerated formulas, extracts simplified proof traces from valid results, computes difficulty metrics, and produces labeled records.
 
