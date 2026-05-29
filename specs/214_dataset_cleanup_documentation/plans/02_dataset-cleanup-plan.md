@@ -147,20 +147,20 @@ Phases are sequential because each builds on the file state established by the p
 
 ---
 
-### Phase 3: Standardize and Create Metadata [NOT STARTED]
+### Phase 3: Standardize and Create Metadata [COMPLETED]
 
 **Goal**: Enrich c5/c7 metadata with common header fields and create proof_steps_metadata.json. The `representations` array in c5/c7 metadata is accurate and should be preserved.
 
 **Tasks**:
-- [ ] Define common metadata header schema: dataset_name, version, description, generation_date, schema_version, frame_class, total_records
-- [ ] Create `scripts/standardize_metadata.py` to:
+- [x] Define common metadata header schema: dataset_name, version, description, generation_date, schema_version, frame_class, total_records *(completed)*
+- [x] Create `scripts/standardize_metadata.py` to:
   - Read each metadata file
   - Add missing common header fields (dataset_name, version, description, generation_date, schema_version)
   - Preserve ALL existing fields including accurate `representations` array in c5/c7
-  - Write back with consistent JSON formatting (sorted keys, 2-space indent)
-- [ ] Run the script to enrich `data/bmlogic-c5_metadata.json` and `data/bmlogic-c7_metadata.json`
-- [ ] Create `data/proof_steps_metadata.json` by scanning proof_steps.jsonl for statistics: total_records, theorem_count, rule_distribution, step_statistics (avg/max steps per theorem)
-- [ ] Validate that all metadata files are valid JSON with consistent field ordering
+  - Write back with consistent JSON formatting (sorted keys, 2-space indent) *(completed)*
+- [x] Run the script to enrich `data/bmlogic-c5_metadata.json` and `data/bmlogic-c7_metadata.json` *(completed: added 7 header fields, representations preserved)*
+- [x] Create `data/proof_steps_metadata.json` by scanning proof_steps.jsonl for statistics: total_records, theorem_count, rule_distribution, step_statistics (avg/max steps per theorem) *(completed: 2424 records, 36 theorems)*
+- [x] Validate that all metadata files are valid JSON with consistent field ordering *(completed)*
 
 **Timing**: 1.25 hours
 
