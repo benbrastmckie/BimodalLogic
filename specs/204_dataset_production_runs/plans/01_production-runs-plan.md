@@ -104,7 +104,7 @@ Phases within the same wave can execute in parallel.
 **Goal**: Execute the complexity 5 medium run with ~5K formulas and validate feasibility gates.
 
 **Tasks**:
-- [x] Execute medium run: `lake exe dataset_generator -- --max-complexity 5 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 5000 --output data/bmlogic-medium.jsonl --include-duals` *(deviation: altered -- reduced modal/temporal depth from 3 to 2 because exhaustive enumeration at depth 3 did not terminate within 1.5 hours; depth 2 is the CLI default)*
+- [x] Execute medium run: `lake exe dataset_generator -- --max-complexity 4 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 5000 --output data/bmlogic-medium.jsonl --include-duals` *(deviation: altered -- ran at complexity 4 (not 5) and depth 2 (not 3) because exhaustive enumeration at complexity 5+ / depth 3 did not terminate within 1.5 hours; metadata confirms max_complexity=4)*
 - [x] Monitor progress (generator reports every 100 formulas)
 - [x] After completion, read `data/bmlogic-medium_metadata.json` for summary statistics
 - [x] Count records by label: grep for "valid", "invalid", "timeout" in the JSONL
@@ -189,13 +189,13 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Smoke test passes (Phase 1): quick 20-formula run produces valid output
-- [ ] Medium run JSONL is well-formed: every line parses as valid JSON
-- [ ] Medium run feasibility gates: timeout <20%, valid >=15%, 3+ categories
-- [ ] Deep run JSONL is well-formed: every line parses as valid JSON
-- [ ] Deep run feasibility gates: timeout <20%, valid >=15%, 3+ categories
-- [ ] Both metadata files contain valid JSON with expected fields
-- [ ] data/.gitignore excludes *.jsonl and *_metadata.json from version control
+- [x] Smoke test passes (Phase 1): quick 20-formula run produces valid output
+- [x] Medium run JSONL is well-formed: every line parses as valid JSON (5136 lines, 0 errors)
+- [x] Medium run feasibility gates: timeout 3.2% (<20% PASS), valid 25.0% (>=15% PASS), 4 topOperators (>=3 PASS)
+- [x] Deep run JSONL is well-formed: every line parses as valid JSON (53979 lines, 0 errors)
+- [ ] Deep run feasibility gates: timeout 2.5% (<20% PASS), valid 1.6% (>=15% **FAIL**), 4 topOperators (>=3 PASS)
+- [x] Both metadata files contain valid JSON with expected fields
+- [x] data/.gitignore excludes *.jsonl and *_metadata.json from version control
 
 ## Artifacts & Outputs
 
