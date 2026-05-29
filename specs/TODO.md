@@ -130,7 +130,7 @@ technical_debt:
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: large (25-40 hours)
 - **Effort**: large (25-40 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: 155
