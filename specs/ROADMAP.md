@@ -20,19 +20,37 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-05-14):
+**Current state** (2026-05-29):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`countermodel_dense`): Internally sorry-free
-- **Discrete completeness**: Reynolds pipeline structurally complete (task 129 COMPLETED). 5 sorries remain in FO satisfaction foundation (task 139) and truth transfer (task 140). Chronicle fallback retained pending truth transfer.
+- **Discrete completeness**: `completeness_discrete` has sorryAx via single root sorry `succ_cofinal`. EF-game expressiveness infrastructure (ghr93_forward_to_backward_discrete) proved sorry-free by task 155. Reynolds k-equivalence bypass (task 202) is the critical path.
 - **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
 - **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142)
-- **Full `completeness`**: Blocked by 5 sorries across 2 tasks (139, 140). Tasks 141, 142 resolved — not on critical path.
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → sorry-free `completeness`. Tasks 141 and 142 resolved (mixed case eliminated via structural axiom `discrete_box_necessity`).
+**Critical path**: Task 155 (EF-game infrastructure, IN PROGRESS) → Task 202 (Reynolds k-equivalence bypass) → sorry-free `completeness_discrete`.
 
-**Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
+**Key architectural finding** (task 155, 7 research agents + 4 succ_cofinal agents, 2026-05-28/29):
+
+`succ_cofinal` is **UNPROVABLE** by the current approach. The constant-MCS gap scenario (all MCS labels identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Six mathematical strategies were evaluated (well-founded measure, stage induction, constant-MCS exclusion, frozen guard, direct construction, infrastructure audit) — all fail because the limit-domain successor is non-constructive (Classical.choose) and the construction's point-placement does not respect limit-domain predecessor ordering.
+
+**Reynolds BYPASSES succ_cofinal entirely.** His completeness proof (Reynolds 1994) never establishes that the chronicle is Z-isomorphic. Instead:
+1. Build the chronicle (countable discrete linear order with MCS labels)
+2. Prove all points are in one contemporaneous equivalence class via **Theorem 14** (gap elimination using US expressive completeness)
+3. Transfer to a Z-model via **k-equivalence** (Theorem 6 / EF games)
+4. The Z-model satisfies the same bounded-depth monadic sentences
+5. Build the countermodel from the Z-model
+
+The current architecture tries to prove the chronicle IS Z (via `IsSuccArchimedean → succ_embed_surjective`), which is the wrong approach. Task 202 implements the Reynolds bypass: connect the chronicle's formula structure to k-equivalence using the EF-game expressiveness infrastructure built in task 155.
+
+**Sorry chain** (verified by lean_verify):
+```
+succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
+  → cantor_bfmcs_discrete_restricted_tc + cantor_bfmcs_discrete_restricted_fuc
+  → countermodel_discrete_enriched → completeness_discrete
+```
+Note: `cantor_bfmcs_discrete_restricted_buc` is sorry-free (uses `succ_embed_squeeze_strict`).
 
 **Sorry summary (critical path to sorry-free `completeness`)**:
 
@@ -1350,41 +1368,37 @@ characterization.
 
 ## Recommended Priority Order
 
-### Critical Path: Chronicle (primary completeness strategy)
+### Critical Path: Reynolds K-Equivalence Bypass
 
-1. **Task 117** (NEXT): Replace Cantor iso with natural inclusion X ⊂ ℚ.
-   Eliminates the last Chronicle sorry (CE:3570). Four steps:
-   - Archive `.density` case from CE + Cantor iso pathway from
-     ChronicleToCountermodel to `Boneyard/DenseChronicle/`
-   - Define `extended_f : Rat → Set Formula` extending `limit_f` from X to
-     all of ℚ (non-domain rationals via Lindenbaum extension of g_content)
-   - Build FMCS/BFMCS on ℚ using `extended_f` (same shifted/rooted pattern)
-   - Prove forward_G/backward_H and Until/Since coherence for extended_f
-   D = ℚ as before. Existing parametric infrastructure unchanged.
-   This is the primary path to the representation theorem goal.
-2. **Task 116**: Redefine G, H, F, P in terms of U and S (Burgess 1982 alignment). After 117.
-3. **Task 112**: Systematic literature study supporting tasks 107/117 (Burgess 1982b, Venema 1993, etc.).
-4. **Task 95**: `#print axioms` audit on completeness theorem. Depends on task 117.
+1. **Task 155** (IN PROGRESS): Complete Phase 6 (Cases III/IV gap handling — 7 targeted sorries in CaseAnalysis.lean) and Phase 7 (Transfer.lean rewiring — blocked pending task 202).
+   - Phase 5 (GHR93 Case II): sorry-free, axiom-clean ✓
+   - Phase 6 (Cases III/IV): 7 decomposed sorries, mechanical but verbose
+   - Phase 7 (Transfer.lean): infrastructure built (ghr93_forward_to_backward_discrete), rewiring blocked by succ_cofinal
+   - Phase 8 (verification): pending
 
-### Secondary Path: BXCanonical (blocked, low priority)
+2. **Task 202** (CRITICAL, NEXT): Reynolds k-equivalence bypass. Build:
+   - Backward-game-to-k-equiv bridge (~200-300 lines)
+   - Reynolds Theorem 14 gap elimination via US expressive completeness (~300-500 lines)
+   - Rewire countermodel_discrete to bypass succ_cofinal entirely
+   This is the ONLY viable path to sorry-free completeness_discrete.
 
-4. **Task 109**: Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence).
-   Blocked by Lindenbaum opacity (dead ends #34-#36). The 5 critical-path sorries in
-   `RootScopedChain.lean` become dead code once task 107 succeeds. The 18
-   irreflexive-consequence sorries remain independently valuable for cleanup.
+3. **Task 95**: `#print axioms` audit on completeness theorem. After task 202.
 
-### Documentation/Cleanup (parallelizable)
+### Sorry Cleanup: Zero Sorries for Publication
 
-5. **Task 104**: Clean up superseded tasks in state.json (abandon 89,
-   update 60/87/998).
-6. **Task 105**: Update stale sorry-blocker comments in BXCanonical code.
+4. **Move dead Chronicle/BXCanonical/Bundle code to Boneyard/**: ~17 sorries eliminated by archival (succ_cofinal, Bundle/SuccRelation, Bundle/SuccExistence, Bundle/UntilSinceCoherence, BXCanonical/Frame, BXCanonical/Chronicle dead sorries). These are superseded by the Reynolds bypass.
+5. **Close remaining WeakCanonical sorries**: TruthLemma (6), StaviCompleteness (3), OrderedSum (1), GoodStructures (1) — assess which are on the Reynolds pipeline path vs. dead code.
+6. **Task 176**: Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree.
 
-### Independent Tracks
+### Post-Completeness: Structural Refactor → Publication
 
-7. **Task 68**: Dense completeness via Q canonical model (independent).
-8. **Task 82**: FMP Truth Preservation -- may need reassessment (sorries
-   archived to Boneyard, 0 remain in active tree).
-9. **Task 60**: Remove `discrete_Icc_finite_axiom` (may already be gone).
+7. **Task 175**: Naming conventions + bridge/wrapper cleanup
+8. **Task 180**: Copyright headers, universe polymorphism, line limits
+9. **Task 131**: Restructure file hierarchy
+10. **Task 161**: Final namespace rename
+11. **Task 183**: Documentation standards
+12. **Tasks 185-193**: Tactics library + codebase refactoring
+13. **Tasks 177-178**: Final documentation + publication examples
 
 ---
 
@@ -1418,4 +1432,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-05-08 (task 117 researched, 3 rounds: replace Cantor iso with natural inclusion X ⊂ ℚ. X may be discrete, dense, or mixed — doesn't matter, inclusion works regardless. Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of ℚ. D = ℚ as before. Single semantics, nothing else changes.)*
+*Last updated: 2026-05-29 (task 155 Phase 5 complete, succ_cofinal team research: 4 agents confirmed unprovable by current approach. Reynolds k-equivalence bypass (task 202) identified as only viable path. ROADMAP critical path revised from "close succ_cofinal" to "bypass via Reynolds Theorem 6 + Theorem 14 + k-equivalence transfer." EF-game infrastructure (ghr93_forward_to_backward_discrete) proved sorry-free.)*

@@ -127,6 +127,14 @@ technical_debt:
 
 ## Tasks
 
+### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
+- **Effort**: large (40-60 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: CRITICAL
+- **Dependencies**: 155
+- **Description**: Build the Reynolds k-equivalence bypass eliminating succ_cofinal. Instead of proving the chronicle is Z-isomorphic, use Reynolds' approach: EF-game expressiveness (Theorem 6, already proved) + k-equivalence transfer + Z-model countermodel. Requires: backward-game-to-k-equiv bridge (~200-300 lines), Reynolds Theorem 14 for gap elimination (~300-500 lines), countermodel_discrete rewiring. This is the ONLY viable path — succ_cofinal is unprovable by current approach (4 research agents confirmed, see task 155 reports 48-49).
+
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL
 - **Status**: [PLANNED]
