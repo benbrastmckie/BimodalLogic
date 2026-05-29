@@ -1,7 +1,7 @@
 # Implementation Plan: Contrastive Pair Generation
 
 - **Task**: 206 - contrastive_pair_generation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (existing infrastructure sufficient)
 - **Research Inputs**: reports/01_contrastive-pairs.md
@@ -77,7 +77,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Core Types and Mutation Functions [NOT STARTED]
+### Phase 1: Core Types and Mutation Functions [COMPLETED]
 
 **Goal**: Define the foundational types (`MutationType`, `ContrastivePair`) and implement all 7 mutation functions plus derived-operator recognition helpers.
 
@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Contrastive Pair Generation Pipeline [NOT STARTED]
+### Phase 2: Contrastive Pair Generation Pipeline [COMPLETED]
 
 **Goal**: Build the IO pipeline that takes labeled formulas, applies mutations, re-runs the decision procedure, and filters for truly contrastive pairs (including temporal duality from invalid formulas).
 
@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: JSON Serialization and Export [NOT STARTED]
+### Phase 3: JSON Serialization and Export [COMPLETED]
 
 **Goal**: Add JSON serialization for `MutationType` and `ContrastivePair`, implement JSONL file export, and add a standalone executable entry point.
 
@@ -163,7 +163,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Integration Validation and Build Verification [NOT STARTED]
+### Phase 4: Integration Validation and Build Verification [IN PROGRESS]
 
 **Goal**: Verify the complete module integrates correctly with the existing pipeline, passes full project build, and produces meaningful contrastive pairs.
 

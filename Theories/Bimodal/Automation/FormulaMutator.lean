@@ -117,6 +117,20 @@ def substAtom (φ : Formula) (target : Atom) (replacement : Formula) : Formula :
   | .untl ψ χ => .untl (substAtom ψ target replacement) (substAtom χ target replacement)
   | .snce ψ χ => .snce (substAtom ψ target replacement) (substAtom χ target replacement)
 
+/--
+Collect all atoms in a formula as a `List Atom` (computable version of `Formula.atoms`).
+
+Unlike `Formula.atoms` which returns a `Finset Atom` (noncomputable `toList`),
+this returns a deduplicated list suitable for runtime iteration.
+-/
+def collectAtoms : Formula → List Atom
+  | .atom a => [a]
+  | .bot => []
+  | .imp ψ χ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
+  | .box ψ => collectAtoms ψ
+  | .untl ψ χ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
+  | .snce ψ χ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
+
 /-!
 ## Derived Operator Recognition
 
@@ -172,18 +186,17 @@ Weaken G (all future) to F (some future) and H (all past) to P (some past).
 
 Recognizes the derived-operator encoding patterns and replaces them with
 their existential counterparts. Non-matching formulas are recursed into.
+
+Uses direct pattern matching on the primitive encoding rather than calling
+`matchAllFuture`/`matchAllPast` to ensure structural termination.
 -/
 def weakenAllToSome : Formula → Formula
-  | φ@(.imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot) =>
-    -- This is G(inner), weaken to F(inner)
-    match matchAllFuture φ with
-    | some innerFormula => Formula.some_future (weakenAllToSome innerFormula)
-    | none => φ  -- should not happen given the pattern match above
-  | φ@(.imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot) =>
-    -- This is H(inner), weaken to P(inner)
-    match matchAllPast φ with
-    | some innerFormula => Formula.some_past (weakenAllToSome innerFormula)
-    | none => φ  -- should not happen given the pattern match above
+  -- G(inner) = imp (untl (imp inner bot) (imp bot bot)) bot → F(inner) = untl inner (imp bot bot)
+  | .imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot =>
+    Formula.some_future (weakenAllToSome inner)
+  -- H(inner) = imp (snce (imp inner bot) (imp bot bot)) bot → P(inner) = snce inner (imp bot bot)
+  | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot =>
+    Formula.some_past (weakenAllToSome inner)
   | .imp ψ χ => .imp (weakenAllToSome ψ) (weakenAllToSome χ)
   | .box ψ => .box (weakenAllToSome ψ)
   | .untl ψ χ => .untl (weakenAllToSome ψ) (weakenAllToSome χ)
@@ -253,7 +266,7 @@ def hasBox : Formula → Bool
 Check whether a formula contains any G (all_future) patterns.
 -/
 def hasAllFuture : Formula → Bool
-  | φ@(.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => matchAllFuture φ |>.isSome
+  | .imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot => true
   | .imp ψ χ => hasAllFuture ψ || hasAllFuture χ
   | .box ψ => hasAllFuture ψ
   | .untl ψ χ => hasAllFuture ψ || hasAllFuture χ
@@ -264,7 +277,7 @@ def hasAllFuture : Formula → Bool
 Check whether a formula contains any H (all_past) patterns.
 -/
 def hasAllPast : Formula → Bool
-  | φ@(.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => matchAllPast φ |>.isSome
+  | .imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot => true
   | .imp ψ χ => hasAllPast ψ || hasAllPast χ
   | .box ψ => hasAllPast ψ
   | .untl ψ χ => hasAllPast ψ || hasAllPast χ
@@ -296,7 +309,7 @@ Returns a list of (mutated_formula, mutation_type) pairs. The mutations include:
 8. Temporal duality: if the formula contains temporal operators
 -/
 def generateMutations (φ : Formula) : List (Formula × MutationType) :=
-  let atomMutations := φ.atoms.toList.map fun a =>
+  let atomMutations := (collectAtoms φ).map fun a =>
     (mutateAtomToBot φ a, MutationType.atomSubBot a)
   let boxMutation :=
     if hasBox φ then
@@ -332,10 +345,9 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
       let m := φ.swap_temporal
       if m == φ then [] else [(m, MutationType.temporalDuality)]
     else []
-  -- Combine all mutations, dedup by mutated formula
+  -- Combine all mutations, filter out those producing same formula as original
   let allMutations := atomMutations ++ boxMutation ++ gMutation ++ hMutation
     ++ subDeletions ++ modalReduction ++ temporalReduction ++ dualityMutation
-  -- Filter out mutations that produce the same formula as the original
   allMutations.filter fun (m, _) => m != φ
 
 /-!
@@ -528,6 +540,27 @@ def MutationType.detailJson : MutationType → String
   | _ => "null"
 
 /--
+Serialize an `Option SimpleCountermodel` to a JSON string.
+-/
+private def optionCmToJson : Option SimpleCountermodel → String
+  | some cm => cm.toJson
+  | none => "null"
+
+/--
+Serialize an `Option EnrichedCountermodel` to a JSON string.
+-/
+private def optionEcmToJson : Option EnrichedCountermodel → String
+  | some ecm => ecm.toJson
+  | none => "null"
+
+/--
+Serialize an `Option ProofTrace` to a JSON string.
+-/
+private def optionPtToJson : Option ProofTrace → String
+  | some pt => pt.toJson
+  | none => "null"
+
+/--
 Serialize a `ContrastivePair` to a JSON object string.
 
 Produces the full JSON record including original formula/AST/label,
@@ -535,22 +568,19 @@ mutated formula/AST/label, countermodel, enriched countermodel,
 mutation type and detail.
 -/
 def ContrastivePair.toJson (cp : ContrastivePair) : String :=
+  let ptStr := optionPtToJson cp.originalProofTrace
+  let cmStr := optionCmToJson cp.countermodel
+  let ecmStr := optionEcmToJson cp.enrichedCountermodel
   let originalStr := "{\"formula_str\": \"" ++ escapeJsonString cp.original.prettyPrint
     ++ "\", \"formula_ast\": " ++ cp.original.toJson
     ++ ", \"label\": " ++ cp.originalLabel.toJson
-    ++ ", \"proof_trace\": " ++ match cp.originalProofTrace with
-      | some pt => pt.toJson
-      | none => "null"
+    ++ ", \"proof_trace\": " ++ ptStr
     ++ "}"
   let mutatedStr := "{\"formula_str\": \"" ++ escapeJsonString cp.mutated.prettyPrint
     ++ "\", \"formula_ast\": " ++ cp.mutated.toJson
     ++ ", \"label\": " ++ cp.mutatedLabel.toJson
-    ++ ", \"countermodel\": " ++ match cp.countermodel with
-      | some cm => cm.toJson
-      | none => "null"
-    ++ ", \"enriched_countermodel\": " ++ match cp.enrichedCountermodel with
-      | some ecm => ecm.toJson
-      | none => "null"
+    ++ ", \"countermodel\": " ++ cmStr
+    ++ ", \"enriched_countermodel\": " ++ ecmStr
     ++ "}"
   "{\"original\": " ++ originalStr
     ++ ", \"mutation\": " ++ mutatedStr
@@ -563,6 +593,13 @@ def ContrastivePair.toJson (cp : ContrastivePair) : String :=
 -/
 
 /--
+Left-pad a number string to a minimum width with zeros.
+-/
+private def padLeft (s : String) (width : Nat) : String :=
+  let padding := width - min s.length width
+  String.ofList (List.replicate padding '0') ++ s
+
+/--
 Write a list of contrastive pairs to a JSONL file.
 
 Each pair is written as a single JSON line with an auto-incrementing ID.
@@ -572,8 +609,8 @@ def writeContrastiveJSONL (pairs : List ContrastivePair)
   let handle ← IO.FS.Handle.mk path .write
   let mut idx : Nat := 1
   for cp in pairs do
-    let idStr := s!"\"contrastive-{String.mk (Nat.toDigits 10 idx |>.map fun d => Char.ofNat (d + 48))}\"".replace "\"" ""
-    let paddedId := String.mk ("0" ++ Nat.toDigits 10 idx |>.map fun d => Char.ofNat (d + 48)).toList
+    let idNum := Nat.repr idx
+    let paddedId := padLeft idNum 5
     let line := "{\"id\": \"contrastive-" ++ paddedId
       ++ "\", " ++ (cp.toJson.drop 1)  -- drop the leading '{' and prepend id
     handle.putStrLn line
@@ -644,12 +681,18 @@ def printContrastiveStats (stats : ContrastiveBatchStats) : IO Unit := do
   IO.println s!"  temporal_depth_reduction: {stats.temporalReductionCount}"
   IO.println s!"  temporal_duality: {stats.temporalDualityCount}"
 
+end Bimodal.Automation.FormulaMutator
+
 /-!
 ## Standalone Executable Entry Point
 -/
 
+open Bimodal.Syntax
+open Bimodal.Automation
+open Bimodal.Automation.FormulaMutator
+
 /--
-Parse command-line arguments for the contrastive generator.
+Configuration for the contrastive pair generator.
 -/
 structure ContrastiveConfig where
   /-- Maximum formula complexity for enumeration. -/
@@ -662,12 +705,12 @@ structure ContrastiveConfig where
   maxFormulas : Nat := 1000
   /-- Output JSONL file path. -/
   outputPath : String := "data/contrastive_pairs.jsonl"
-  deriving Repr
+  deriving Repr, Inhabited
 
 /--
 Parse CLI arguments into a `ContrastiveConfig`.
 -/
-def parseArgs (args : List String) : ContrastiveConfig :=
+def parseContrastiveArgs (args : List String) : ContrastiveConfig :=
   go args default
 where
   go : List String → ContrastiveConfig → ContrastiveConfig
@@ -694,24 +737,27 @@ Main entry point for the contrastive pair generator executable.
 5. Exports results to JSONL
 6. Prints summary statistics
 -/
-def main : IO Unit := do
-  let args ← IO.getArgs
-  let cfg := parseArgs args
+def main (args : List String) : IO Unit := do
+  let cfg := parseContrastiveArgs args
   IO.println "=== Contrastive Pair Generator ==="
   IO.println s!"Config: maxComplexity={cfg.maxComplexity}, maxModalDepth={cfg.maxModalDepth}, maxTemporalDepth={cfg.maxTemporalDepth}, maxFormulas={cfg.maxFormulas}"
   IO.println s!"Output: {cfg.outputPath}"
 
   -- Step 1: Enumerate formulas
   IO.println "\n[Step 1] Enumerating formulas..."
-  let atoms := [Atom.mk_base "p", Atom.mk_base "q"]
-  let formulas := FormulaEnumerator.enumerateFormulas atoms cfg.maxComplexity
-    cfg.maxModalDepth cfg.maxTemporalDepth
-  let formulaList := formulas.toList.take cfg.maxFormulas
-  IO.println s!"  Generated {formulaList.length} formulas"
+  let params : EnumParams := {
+    maxComplexity := cfg.maxComplexity
+    maxModalDepth := cfg.maxModalDepth
+    maxTemporalDepth := cfg.maxTemporalDepth
+    maxFormulas := cfg.maxFormulas
+    samplingMode := .exhaustive
+  }
+  let formulas ← generateFormulas params
+  IO.println s!"  Generated {formulas.length} formulas"
 
   -- Step 2: Label formulas
   IO.println "\n[Step 2] Labeling formulas with decision procedure..."
-  let labeled ← labelBatch formulaList
+  let labeled ← labelBatch formulas
   let validCount := labeled.filter (·.label == .valid) |>.length
   let invalidCount := labeled.filter (·.label == .invalid) |>.length
   let timeoutCount := labeled.filter (·.label == .timeout) |>.length
@@ -737,5 +783,3 @@ def main : IO Unit := do
   let stats := computeContrastiveStats allPairsCount contrastivePairs
   printContrastiveStats stats
   IO.println s!"\nOutput written to: {cfg.outputPath}"
-
-end Bimodal.Automation.FormulaMutator
