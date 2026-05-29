@@ -961,7 +961,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1070,10 +1070,20 @@
     {
       "project_number": 208,
       "project_name": "huggingface_dataset_packaging",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T18:30:31Z"
+      "last_updated": "2026-05-29T23:00:00Z",
+      "session_id": "sess_1780092959_fa939f",
+      "researched": "2026-05-29T23:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/208_huggingface_dataset_packaging/reports/01_huggingface-packaging.md",
+          "type": "research",
+          "summary": "HuggingFace dataset packaging research: 4-config structure (bmlogic-bench default, c5/c7 train, proof-steps), JSONL upload with auto-Parquet, CC BY 4.0 license, NeurIPS 2026 Croissant requirements, full dataset card template"
+        }
+      ]
     },
     {
       "project_number": 214,
