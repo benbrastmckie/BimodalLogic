@@ -1,26 +1,24 @@
 {
   "status": "partial",
   "phase": 5,
-  "phase_status": "partial",
+  "phase_status": "blocked",
   "session_id": "sess_1780001766_2e723d",
-  "summary": "Phase 5 Tasks 5.6-5.7 are BLOCKED: deleting tau_left/tau_right from ghr93_case_II is mathematically infeasible. The biconditional ordering (a_init k < p_n iff resp_tau k < e_n) required by same_order_type_of_cases can only come from tau_left. Tasks 5.0-5.5 completed (GHR93 infrastructure: untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en). Task 5.8 completed (verification: ghr93_case_II axiom-clean, sorry-free). Current proof is fully functional. Recommend proceeding to Phase 6.",
-  "completed_tasks": ["5.0", "5.1", "5.1b", "5.2", "5.3", "5.4", "5.5", "5.8"],
-  "blocked_tasks": ["5.6", "5.7"],
-  "block_reason": "Deleting tau_left/tau_right requires biconditional orderings that tau_r on [d,y']->[c,y] cannot provide. tau_r gives orderings relative to d/c and y/y' endpoints, but NOT relative to p_n/e_n. three alternatives analyzed (pivot_chain_order, forward game orderings, extended tau_r) and all fail. See handoffs/phase-5-task56-analysis-20260528.md.",
+  "summary": "Phase 5 (plan v47) is BLOCKED. The restricted tau approach (replacing tau_left/tau_right with a single game on [d, b'] -> [c, b] with b = sup of B-satisfying points) cannot provide the biconditional orderings required by same_order_type_of_cases. Root cause: the Lean game formalization uses finite-position orderings (n+3 positions per game), while GHR93 assumes continuous order-type preservation. The restricted tau with b >= e_n provides WEAKER orderings than tau_left (with b = e_n as endpoint). When b = e_n and b' = p_n, the restricted tau IS tau_left -- no simplification possible. Six approaches analyzed and all fail. Current ghr93_case_II is sorry-free and axiom-clean. Recommend accepting current architecture and proceeding to Phase 6.",
+  "completed_tasks": [],
+  "blocked_tasks": ["5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8"],
+  "block_reason": "Fundamental formalization gap: GHR93's single-tau argument relies on continuous order-type preservation (orderings at all points in interval), while the Lean game definition provides orderings at exactly n+3 positions. The restricted tau with supremum endpoints b >= e_n, b' >= p_n gives orderings at (a_init(k), b')/(resp(k), b), not (a_init(k), p_n)/(resp(k), e_n). Making b = e_n and b' = p_n recovers the needed orderings but reduces to tau_left, which is the current architecture. No way to eliminate tau_left/tau_right within the current game formalization.",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-task56-analysis-20260528.md"
+    "specs/155_reynolds_pipeline_activation/handoffs/phase-5-blocker-finite-position-games-20260528.md",
+    "specs/155_reynolds_pipeline_activation/plans/47_path-c-supremum-plan.md"
   ],
   "verification": {
     "build_passed": true,
     "ghr93_case_II_axiom_clean": true,
     "ghr93_case_II_sorry_free": true,
-    "ghr93_case_II_line_count": 733,
     "sorry_count_in_file": 1,
     "sorry_location": "line 3318 (ghr93_cases_III_IV, Phase 6 scope)"
   },
-  "recommendation": "Accept Phase 5 as PARTIAL. The blocked tasks represent a code-aesthetic transformation (shorter proof via resp_tau), not a correctness issue. ghr93_case_II is sorry-free and axiom-clean. Proceed to Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean wiring).",
+  "recommendation": "Accept that tau_left/tau_right IS the correct Lean formalization of GHR93's single-tau argument (bridging finite-position games to continuous order-type preservation). Mark Phase 5 as BLOCKED (plan v47 is infeasible). Proceed to Phase 6 (Cases III/IV) or Phase 7 (Transfer.lean wiring). Consider plan revision to remove Phase 5 as a target.",
   "next_phase": 6,
-  "next_action": "Proceed to Phase 6 (Cases III/IV gap handling) which is independent of the Phase 5 code transformation"
+  "next_action": "Proceed to Phase 6 (Cases III/IV gap handling) which is independent of Phase 5."
 }

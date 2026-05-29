@@ -183,7 +183,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 ---
 
-### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum + Restricted Tau) [NOT STARTED]
+### Phase 5: GHR93-Faithful Case II Rewrite (Path C: Full Supremum + Restricted Tau) [BLOCKED]
 
 **Goal**: Rewrite ghr93_case_II in CaseAnalysis.lean to follow GHR93 exactly. The FULL Path C requires TWO pieces of infrastructure that together eliminate tau_left/tau_right: (1) supremum b = sup{t in (x,y) : B(t)} for Until witness containment (z <= b), and (2) restricted tau on [d, b'] -> [c, b] via fresh IH for biconditional orderings relative to p_n/e_n. A single restricted tau replaces BOTH tau_left AND tau_right because p_n <= b' and e_n <= b are within the restricted interval's endpoints.
 
@@ -229,7 +229,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
 **Tasks**:
 
-- [ ] Task 5.0: Supremum infrastructure in ExtendedCarrier (~80-120 lines)
+- [ ] Task 5.0: Supremum infrastructure in ExtendedCarrier (~80-120 lines) *(deviation: blocked -- supremum does not help with finite-position game orderings; see BLOCKER above)*
 
   **Goal**: Define b_sup = sup{t in ExtendedCarrier : x < t < y AND B(t)} where B = x_t_formula(a_n). Define b'_sup similarly in N. Prove existence, bounding properties, and that a_n <= b'_sup and e_n <= b_sup (once e_n is constructed).
 
@@ -271,7 +271,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - Existing `ghr93_untl_transfer` and `ghr93_construct_en` already handle B/A construction internally; this task exposes them at the ghr93_case_II level
   - **File**: CaseAnalysis.lean
 
-- [ ] Task 5.2: Restricted tau on [d, b'] -> [c, b] via fresh IH (~100-150 lines, NEW -- the critical missing piece from v46)
+- [ ] Task 5.2: Restricted tau on [d, b'] -> [c, b] via fresh IH (~100-150 lines, NEW -- the critical missing piece from v46) *(deviation: blocked -- restricted tau with b >= e_n provides weaker orderings than tau_left with b = e_n; see BLOCKER above)*
 
   **Goal**: Derive a backward strategy for G_{n, r}(N, d b'; M, c b) where b = sup{t in (x,y) : B(t)} and b' = sup{t in (x',y') : N |= B(t)}.
 
@@ -327,7 +327,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **File**: CaseAnalysis.lean
 
-- [ ] Task 5.5: Delete old machinery (~-500 to -700 lines deletion)
+- [ ] Task 5.5: Delete old machinery (~-500 to -700 lines deletion) *(deviation: blocked -- cannot delete tau_left/tau_right without working replacement)*
 
   **Deletion map** (from report 45 Section 4, updated with current line numbers):
   - Lines 1440-1517: Forward-game e_n construction (a_pad_big, h_d_compat_left call, forward game extraction) -- DELETE entirely
@@ -347,7 +347,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   **File**: CaseAnalysis.lean
   - Also delete `ghr93_construct_en` helper (lines 1268-1357) if no longer called, OR keep as reusable infrastructure
 
-- [ ] Task 5.6: Rewrite Round 2 with GHR93's 5-way case split (~200-300 lines)
+- [ ] Task 5.6: Rewrite Round 2 with GHR93's 5-way case split (~200-300 lines) *(deviation: blocked -- depends on restricted tau orderings which are unavailable)*
 
   **GHR93's Round 2 structure** (GHR94 pp.808-810, report 47 Section 1.2):
   Given Spoiler's challenge b_sp (carrier point in [x, y] on M-side), respond with b_resp (carrier point in [x', y'] on N-side). The 5-way case split:
@@ -370,7 +370,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 
   **File**: CaseAnalysis.lean
 
-- [ ] Task 5.7: Grid dispatch assembly (~50-100 lines)
+- [ ] Task 5.7: Grid dispatch assembly (~50-100 lines) *(deviation: blocked -- depends on restricted tau)*
 
   - Wire `same_order_type_of_cases` at each of the 5 Round 2 cases
   - The restricted tau directly provides all 7 ordering categories that previously required tau_left:
@@ -384,7 +384,7 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
   - The `same_order_type_of_cases` helper from EFGameTactics.lean can be reused unchanged
   - **File**: CaseAnalysis.lean
 
-- [ ] Task 5.8: Final assembly and verification (~20-40 lines)
+- [ ] Task 5.8: Final assembly and verification (~20-40 lines) *(deviation: blocked -- depends on preceding tasks)*
 
   - Wire the 5-way case split into the overall ghr93_case_II structure
   - Verify all grid dispatch goals closed
@@ -409,6 +409,22 @@ Two existence sorries remained: x_t_formula_exists (line 221) and x_interval_for
 - Do NOT use `rename_i` inside `first` fallback chains (hard error on count mismatch)
 - Do NOT touch the Cases III/IV sorry at line 3318 -- it belongs to Phase 6
 - Do NOT attempt a "partial" Path C that keeps tau_left -- either build the full restricted tau or fall back to the contingency plan
+
+**BLOCKER** (Phase 5):
+- **What failed**: The restricted tau on [d, b'] -> [c, b] (with b = sup of B-satisfying points, b >= e_n) does NOT provide biconditional orderings relative to p_n and e_n. The game's `same_order_type` provides orderings only between the game's FIXED positions (endpoints d/b'/c/b, selections a_init(k)/resp(k), Round 2 pair). Since p_n and e_n are INTERIOR points of [d, b'] and [c, b] (not endpoints or selections), no orderings relative to them are available from the restricted tau's winning condition.
+- **What was tried**:
+  1. Restricted tau on [d, b'] -> [c, b] with b' >= p_n, b >= e_n: The orderings at position (1+k, n+2) give `(a_init(k) < b' iff resp(k) < b)`, NOT `(a_init(k) < p_n iff resp(k) < e_n)`. When b > e_n or b' > p_n, these orderings are WEAKER than what tau_left provides.
+  2. Restricted tau challenged with e_n_pt in Round 2: Gives `(a_init(k) < b_resp iff resp(k) < e_n)` where b_resp is Duplicator's response (some carrier point in [d, b'] with same rank-r type as p_n). But b_resp is not necessarily p_n, so this does not yield `(a_init(k) < p_n iff resp(k) < e_n)`.
+  3. Using resp_tau (from tau_r on [d, y'] -> [c, y]) as a'_resp: resp_tau(k) is in [c, y], not necessarily in [c, e_n]. The biconditional `(a_init(k) < p_n iff resp_tau(k) < e_n)` is not available because p_n/e_n are interior points of tau_r's interval.
+  4. Playing tau_r with n+1 selections (including p_n): Not possible because tau_r is an n-round game, limited to n selections.
+  5. Connecting forward game orderings to backward game: Forward game gives orderings between a'_big(k) and p_n, but a'_big(k) != a_init(k), so these cannot be substituted.
+  6. Restricted tau with b = e_n, b' = p_n: This is exactly tau_left, which is the current architecture. No simplification achieved.
+- **Why it's stuck**: The Lean formalization uses a FINITE-POSITION game where `same_order_type` applies to n+3 positions. GHR93's argument assumes order-type preservation over ALL points in the interval (a continuous/dense property), which their single tau naturally provides. In the Lean formalization, orderings at specific points (p_n, e_n) require those points to be POSITIONS in the game. The only way to make p_n/e_n into positions is to make them endpoints of a sub-game -- which is exactly what tau_left/tau_right do. The supremum does not help because making b >= e_n makes the endpoints FARTHER from p_n/e_n, providing WEAKER orderings.
+- **What is needed**: One of:
+  (a) Reformulate `same_order_type_of_cases` to accept one-directional orderings (`resp(k) <= e_n` for all k < n) instead of biconditional orderings. This would require proving that monotone selections + monotone responses + one-directional bound implies the full biconditional.
+  (b) Extend the game definition to support orderings at arbitrary interior points (not just game positions). This would be a fundamental change to CustomGame.lean.
+  (c) Accept that the Lean formalization necessarily uses tau_left/tau_right to bridge the gap between finite-position games and GHR93's continuous order-type preservation. This is the current (working, sorry-free) architecture.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Timing**: 12-18 hours (increased from v46's 10-15 to account for restricted tau construction)
 
