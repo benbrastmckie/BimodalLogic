@@ -5,6 +5,12 @@
 **Researcher**: AI Assistant  
 **Status**: Research Complete
 
+> **Reference Documents**: For practical guidance and project-specific coverage, see:
+> - [NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md) - Practical guide to noncomputable definitions in ProofChecker
+> - [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md) - Architectural decision for classical logic use
+>
+> This document contains the detailed research analysis that informed those reference documents.
+
 ---
 
 ## Executive Summary

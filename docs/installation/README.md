@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory contains installation guides for ProofChecker (Logos), a Lean 4 formalization of bimodal logic combining S5 modal operators with linear temporal operators (Until/Since).
+This directory contains installation guides for ProofChecker, a Lean 4 formalization of bimodal logic combining S5 modal operators with linear temporal operators.
 
 ## Guides
 
@@ -21,8 +21,8 @@ This directory contains installation guides for ProofChecker (Logos), a Lean 4 f
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
 
 # Clone repository
-git clone https://github.com/benbrastmckie/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/benbrastmckie/BimodalLogic.git
+cd BimodalLogic
 
 # Build project (first build downloads Mathlib cache, ~30 minutes)
 lake build

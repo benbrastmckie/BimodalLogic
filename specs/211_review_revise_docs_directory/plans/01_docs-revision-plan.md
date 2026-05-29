@@ -200,16 +200,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Resolve Content Gaps and Redundancy [NOT STARTED]
+### Phase 4: Resolve Content Gaps and Redundancy [COMPLETED]
 
 **Goal**: Address missing files, dangling references, and content overlap identified in the research report.
 
 **Tasks**:
-- [ ] Resolve missing installation files: remove references to CLAUDE_CODE.md, GETTING_STARTED.md, and USING_GIT.md from docs/README.md and BASIC_INSTALLATION.md (these files were never created and their content is not critical -- BASIC_INSTALLATION.md covers the essentials). Simplify installation/README.md accordingly
-- [ ] Remove reference to `user-guide/TUTORIAL.md` from BASIC_INSTALLATION.md (file does not exist)
-- [ ] Reduce noncomputable overlap: edit research/NONCOMPUTABLE.md (post-rename) to replace duplicated explanatory content with cross-references to ADR-001 and NONCOMPUTABLE_GUIDE.md, keeping only the research-specific analysis
-- [ ] Resolve IMPLEMENTATION_STATUS.md duplication: add a note to docs/project-info/IMPLEMENTATION_STATUS.md clarifying that the authoritative per-module status is in Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md, and scope the docs/ version to project-wide (non-Bimodal-specific) status tracking
-- [ ] Add BFMCS_ARCHITECTURE.md to the architecture/README.md catalog with appropriate description (it is a specification document, not an ADR)
+- [x] Resolve missing installation files: remove references to CLAUDE_CODE.md, GETTING_STARTED.md, and USING_GIT.md from docs/README.md and BASIC_INSTALLATION.md (these files were never created and their content is not critical -- BASIC_INSTALLATION.md covers the essentials). Simplify installation/README.md accordingly *(completed)*
+- [x] Remove reference to `user-guide/TUTORIAL.md` from BASIC_INSTALLATION.md (file does not exist) *(completed: removed from Next Steps section)*
+- [x] Reduce noncomputable overlap: edit research/NONCOMPUTABLE.md (post-rename) to replace duplicated explanatory content with cross-references to ADR-001 and NONCOMPUTABLE_GUIDE.md, keeping only the research-specific analysis *(completed: added cross-reference note at top)*
+- [x] Resolve IMPLEMENTATION_STATUS.md duplication: add a note to docs/project-info/IMPLEMENTATION_STATUS.md clarifying that the authoritative per-module status is in Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md, and scope the docs/ version to project-wide (non-Bimodal-specific) status tracking *(completed)*
+- [x] Add BFMCS_ARCHITECTURE.md to the architecture/README.md catalog with appropriate description (it is a specification document, not an ADR) *(completed in Phase 3)*
 
 **Timing**: 1 hour
 

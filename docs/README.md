@@ -52,10 +52,7 @@ This directory contains documentation applicable to **all theories**:
 Setup and configuration guides:
 
 - [README.md](installation/README.md) - Installation overview and quick start
-- [CLAUDE_CODE.md](installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
-- [BASIC_INSTALLATION.md](installation/BASIC_INSTALLATION.md) - Manual installation
-- [GETTING_STARTED.md](installation/GETTING_STARTED.md) - Terminal basics and editor setup
-- [USING_GIT.md](installation/USING_GIT.md) - Git/GitHub configuration
+- [BASIC_INSTALLATION.md](installation/BASIC_INSTALLATION.md) - Installation guide (elan, Lean, Lake, Mathlib)
 
 **Audience**: New users, contributors setting up development environment
 
@@ -156,10 +153,9 @@ Training data pipeline documentation:
 ### For New Users
 
 1. [Installation](installation/README.md) - Set up ProofChecker
-2. [Claude Code Setup](installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
-3. [Getting Started](installation/GETTING_STARTED.md) - Terminal and editor basics
-4. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Start writing proofs
-5. [TM Architecture](../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - Understand TM logic
+2. [Basic Installation](installation/BASIC_INSTALLATION.md) - Step-by-step setup guide
+3. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Start writing proofs
+4. [TM Architecture](../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - Understand TM logic
 
 ### For Contributors
 

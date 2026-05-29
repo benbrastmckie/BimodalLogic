@@ -1,17 +1,20 @@
-# Implementation Status - Bimodal (Complete) and Logos (Research)
+# Implementation Status - Project-Wide
 
 **Last Updated**: 2026-02-27
 **Project Version**: 0.1.0-mvp
 **Status**: **Bimodal Complete** - Soundness and Completeness proofs verified. ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6). Deduction theorem, property-based testing framework complete.
+
+> **Scope Note**: This file tracks project-wide implementation status. For the authoritative
+> module-by-module status of the Bimodal theory, see:
+> [Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md](../../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md)
 
 ## Implementation Overview
 
 | Theory | Status | Soundness | Completeness | Decidability |
 |--------|--------|-----------|--------------|--------------|
 | **Bimodal** | Complete | Proven | Proven | Implemented |
-| **Logos** | Research | Partial | Infrastructure | Planned |
 
-**Bimodal** is the production-ready implementation with complete metalogic (soundness, completeness, deduction theorem). **Logos** represents the research roadmap for hyperintensional extensions.
+**Bimodal** is the production-ready implementation with complete metalogic (soundness, completeness, deduction theorem).
 
 **Recent Verification** (Codebase Review - 2026-01-15):
 - Compliance Score: 95/100 (5/5 stars)
