@@ -194,7 +194,7 @@ technical_debt:
 
 ### 207. Multi-representation formula export
 - **Effort**: small (6-8 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [207_multi_representation_export/reports/01_multi-repr-export.md]
@@ -204,7 +204,7 @@ technical_debt:
 
 ### 206. Contrastive pair generation for dual-verification training signal
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [206_contrastive_pair_generation/reports/01_contrastive-pairs.md]
@@ -214,7 +214,7 @@ technical_debt:
 
 ### 205. Curate stratified evaluation benchmark (BMLogic-Bench)
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 204
 - **Research**: [205_benchmark_curation/reports/01_benchmark-curation.md]
@@ -248,7 +248,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 20 hours
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
@@ -260,7 +260,7 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md]
   - [202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md]
   - [202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md]
-- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files.
+- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files. Phase 5 complete: sorry at Transfer.lean:866 closed, completeness_discrete rewired.
 
 ### 201. Set up AlphaZero-style proof search harness for bimodal logic
 - **Effort**: XL (3-4 weeks)

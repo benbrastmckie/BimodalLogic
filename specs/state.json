@@ -1606,7 +1606,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "partial",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1759,11 +1759,11 @@
     {
       "project_number": 205,
       "project_name": "benchmark_curation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T20:50:10Z",
-      "session_id": "sess_1780087535_cd0129",
+      "last_updated": "2026-05-29T20:56:53Z",
+      "session_id": "sess_1780088191_17e016_a",
       "artifacts": [
         {
           "path": "specs/205_benchmark_curation/reports/01_benchmark-curation.md",
@@ -1780,11 +1780,11 @@
     {
       "project_number": 206,
       "project_name": "contrastive_pair_generation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T20:49:53Z",
-      "session_id": "sess_1780087535_7a3b85",
+      "last_updated": "2026-05-29T20:56:54Z",
+      "session_id": "sess_1780088191_17e016_b",
       "artifacts": [
         {
           "path": "specs/206_contrastive_pair_generation/reports/01_contrastive-pairs.md",
@@ -1801,11 +1801,11 @@
     {
       "project_number": 207,
       "project_name": "multi_representation_export",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "created": "2026-05-29T18:30:31Z",
-      "last_updated": "2026-05-29T20:49:35Z",
-      "session_id": "sess_1780087535_9afaae",
+      "last_updated": "2026-05-29T20:56:54Z",
+      "session_id": "sess_1780088191_17e016_c",
       "artifacts": [
         {
           "path": "specs/207_multi_representation_export/reports/01_multi-repr-export.md",
