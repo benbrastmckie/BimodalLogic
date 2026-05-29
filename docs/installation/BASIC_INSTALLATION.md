@@ -1,21 +1,19 @@
 # Basic Installation Guide
 
-[Back to Installation](README.md) | [Claude Code](CLAUDE_CODE.md) | [Getting Started](GETTING_STARTED.md)
+[Back to Installation](README.md)
 
 ---
 
 ## Overview
 
-This guide covers the standard installation of ProofChecker (Logos). The installation is straightforward and automated by Lake, Lean's build system.
-
-**Note**: This guide covers installation only. For editor setup (VS Code, NeoVim), see [Getting Started](GETTING_STARTED.md).
+This guide covers the standard installation of ProofChecker. The installation is straightforward and automated by Lake, Lean's build system.
 
 ## What Gets Installed
 
 | Component | Purpose |
 |-----------|---------|
 | **elan** | Lean version manager (like rustup for Rust) |
-| **Lean 4** | The theorem prover (v4.14.0+) |
+| **Lean 4** | The theorem prover (v4.27.0-rc1) |
 | **Lake** | Lean's build system (included with Lean 4) |
 | **Mathlib** | Mathematical library (auto-downloaded on first build) |
 
@@ -24,7 +22,6 @@ This guide covers the standard installation of ProofChecker (Logos). The install
 Before installing ProofChecker, ensure you have:
 
 - **Git** - For cloning the repository
-  - Not installed? See [Using Git: Installing Git](USING_GIT.md#installing-git)
 
 - **Internet connection** - Required for downloading Lean and Mathlib
 
@@ -144,7 +141,7 @@ Your PATH wasn't updated. Either:
 
 Mathlib download requires stable internet. If interrupted:
 ```bash
-rm -rf ~/.elan/toolchains/leanprover-lean4-v4.14.0/lib/lean4/library/
+rm -rf ~/.elan/toolchains/leanprover-lean4-v4.27.0-rc1/lib/lean4/library/
 lake build
 ```
 
@@ -159,9 +156,9 @@ lake build
 
 ### Wrong Lean version
 
-ProofChecker requires Lean 4.14.0+. Check and update:
+ProofChecker requires Lean v4.27.0-rc1. Check and update:
 ```bash
-lean --version  # Should show v4.14.0 or later
+lean --version  # Should show v4.27.0-rc1
 
 # Update via elan
 elan update
@@ -193,11 +190,10 @@ chmod -R u+rw ~/.elan/
 
 ## Next Steps
 
-- **[Getting Started](GETTING_STARTED.md)** - Set up your editor (VS Code or NeoVim)
-- **[Using Git](USING_GIT.md)** - Learn Git/GitHub for collaboration
-- **[Tutorial](../user-guide/TUTORIAL.md)** - Start writing proofs
-- **[Claude Code](CLAUDE_CODE.md)** - Use AI-assisted development
+- **[Contributing](../development/CONTRIBUTING.md)** - Contributing guidelines and development workflow
+- **[Module Organization](../development/MODULE_ORGANIZATION.md)** - Understand the library structure
+- **[API Reference](../reference/API_REFERENCE.md)** - Explore available modules and functions
 
 ---
 
-[Back to Installation](README.md) | [Claude Code](CLAUDE_CODE.md) | [Getting Started](GETTING_STARTED.md)
+[Back to Installation](README.md)

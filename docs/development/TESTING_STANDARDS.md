@@ -1,52 +1,45 @@
-# Testing Standards for Logos
+# Testing Standards for ProofChecker
 
-This document defines testing requirements, organization, and best practices for the Logos project.
+This document defines testing requirements, organization, and best practices for the ProofChecker project.
 
 ## 1. Test Organization Structure
 
 ```
 Tests/
-├── Unit/                          # Unit tests per module
-│   ├── Syntax/
-│   │   ├── FormulaTests.lean      # Formula construction tests
-│   │   ├── ContextTests.lean      # Context operations tests
-│   │   └── OperatorsTests.lean    # Derived operators tests
-│   ├── ProofSystem/
-│   │   ├── AxiomsTests.lean       # Axiom application tests
-│   │   ├── RulesTests.lean        # Inference rule tests
-│   │   └── DerivationTests.lean   # Derivability tests
-│   ├── Semantics/
-│   │   ├── TaskFrameTests.lean    # Task frame tests
-│   │   ├── WorldHistoryTests.lean # World history tests
-│   │   ├── TruthTests.lean        # Truth evaluation tests
-│   │   └── ValidityTests.lean     # Validity tests
-│   └── Automation/
-│       └── TacticsTests.lean      # Custom tactic tests
-├── Integration/
-│   ├── SoundnessTests.lean        # End-to-end soundness tests
-│   ├── CompletenessTests.lean     # Completeness tests
-│   └── FullWorkflowTests.lean     # Full proof workflow tests
-├── Examples/
-│   ├── PerpetuityTests.lean       # P1-P6 derivation tests
-│   ├── ModalTests.lean            # Modal logic examples as tests
-│   └── TemporalTests.lean         # Temporal logic examples as tests
-└── Metalogic/
-    ├── ConsistencyTests.lean      # TM-consistency tests
-    └── DecidabilityTests.lean     # Decision procedure tests
+└── BimodalTest/               # Test suite mirroring Theories/Bimodal/ structure
+    ├── BimodalTest.lean       # Test root
+    ├── Syntax/
+    │   ├── FormulaTest.lean   # Formula construction tests
+    │   └── ContextTest.lean   # Context operations tests
+    ├── ProofSystem/
+    │   ├── AxiomsTest.lean    # Axiom application tests
+    │   └── DerivationTest.lean # Derivability tests
+    ├── Semantics/
+    │   ├── TaskFrameTest.lean  # Task frame tests
+    │   └── TruthTest.lean      # Truth evaluation tests
+    ├── Metalogic/
+    │   ├── SoundnessTest.lean  # Soundness property tests
+    │   └── CompletenessTest.lean # Completeness tests
+    ├── Theorems/
+    │   ├── PerpetuityTest.lean # P1-P6 derivation tests
+    │   └── PropositionalTest.lean # Propositional theorem tests
+    └── Automation/
+        └── TacticsTest.lean    # Custom tactic tests
 ```
 
 ## 2. Test Types
 
 ### Unit Tests
+
 Test individual functions and definitions in isolation.
 
 ```lean
--- Tests/Unit/Syntax/FormulaTests.lean
-import Logos.Syntax.Formula
+-- Tests/BimodalTest/Syntax/FormulaTest.lean
+import Bimodal.Syntax.Formula
 
-namespace Logos.Tests.Unit.Syntax
+namespace Bimodal.Tests.Syntax
 
-open Logos.Syntax
+open Bimodal.Syntax
 
 /-- Test formula complexity calculation for atoms -/
 #guard (Formula.atom "p").complexity = 1
@@ -63,21 +56,22 @@ example : neg (Formula.atom "p") = (Formula.atom "p").imp Formula.bot := rfl
 /-- Test diamond definition -/
 example : diamond (Formula.atom "p") = neg (Formula.box (neg (Formula.atom "p"))) := rfl
 
-end Logos.Tests.Unit.Syntax
+end Bimodal.Tests.Syntax
 ```
 
 ### Example-Based Tests
+
 Test that example proofs compile and type-check.
 
 ```lean
--- Tests/Examples/PerpetuityTests.lean
-import Logos
+-- Tests/BimodalTest/Theorems/PerpetuityTest.lean
+import Bimodal
 
-namespace Logos.Tests.Examples
+namespace Bimodal.Tests.Theorems
 
-open Logos.Syntax
-open Logos.ProofSystem
-open Logos.Theorems
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems
 
 /-- Test P1: □φ → always φ is derivable -/
 example (φ : Formula) : ⊢ (φ.box.imp (always φ)) := perpetuity_1 φ
@@ -91,21 +85,22 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
   · apply Derivable.assumption; simp
   · apply Derivable.assumption; simp
 
-end Logos.Tests.Examples
+end Bimodal.Tests.Theorems
 ```
 
 ### Property Tests
+
 Test properties that should hold for all inputs.
 
 ```lean
--- Tests/Metalogic/ConsistencyTests.lean
-import Logos
+-- Tests/BimodalTest/Metalogic/SoundnessTest.lean
+import Bimodal
 
-namespace Logos.Tests.Metalogic
+namespace Bimodal.Tests.Metalogic
 
-open Logos.Syntax
-open Logos.ProofSystem
-open Logos.Semantics
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
 
 /-- Axiom MT is valid (property test) -/
 theorem test_modal_t_valid (φ : Formula) :
@@ -119,39 +114,40 @@ theorem test_soundness_empty (φ : Formula) :
 theorem test_weakening (Γ Δ : Context) (φ : Formula) (h1 : Γ ⊢ φ) (h2 : Γ ⊆ Δ) :
   Δ ⊢ φ := Derivable.weakening Γ Δ φ h1 h2
 
-end Logos.Tests.Metalogic
+end Bimodal.Tests.Metalogic
 ```
 
 ### Regression Tests
+
 Test specific bugs that were fixed.
 
 ```lean
--- Tests/Unit/ProofSystem/RegressionTests.lean
-import Logos
+-- Tests/BimodalTest/ProofSystem/RegressionTest.lean
+import Bimodal
 
-namespace Logos.Tests.Regression
+namespace Bimodal.Tests.Regression
 
-open Logos.Syntax
-open Logos.ProofSystem
+open Bimodal.Syntax
+open Bimodal.ProofSystem
 
-/-- Regression test for issue #42: Nested modal formulas -/
+/-- Regression test: Nested modal formulas -/
 example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
              (Formula.box (Formula.atom "p"))) := by
-  -- Previously failed due to incorrect box handling
   apply Derivable.axiom
   apply Axiom.modal_t
 
-end Logos.Tests.Regression
+end Bimodal.Tests.Regression
 ```
 
 ## 3. Test Naming Conventions
 
 ### File Naming
-- Unit tests: `<Module>Tests.lean` (e.g., `FormulaTests.lean`)
-- Integration tests: `<Feature>Tests.lean` (e.g., `SoundnessTests.lean`)
-- Regression tests: `RegressionTests.lean` or `Issue<Number>Tests.lean`
+
+- Test files: `<Module>Test.lean` (e.g., `FormulaTest.lean`)
+- Regression tests: `RegressionTest.lean` or included in the relevant module test file
 
 ### Test Naming
+
 - Format: `test_<feature>_<expected_behavior>`
 - Use descriptive names that explain what is being tested
 
@@ -165,22 +161,22 @@ theorem test_completeness_maximal_consistency : ...
 -- Avoid
 #guard test1
 #guard formula_test
-example my_test : ...
 ```
 
 ### Namespace Organization
-Tests live in `Logos.Tests.<Category>.<Module>`:
+
+Tests live in `Bimodal.Tests.<Category>.<Module>`:
 
 ```lean
-namespace Logos.Tests.Unit.Syntax
-namespace Logos.Tests.Integration
-namespace Logos.Tests.Examples
-namespace Logos.Tests.Metalogic
+namespace Bimodal.Tests.Syntax
+namespace Bimodal.Tests.Metalogic
+namespace Bimodal.Tests.Theorems
 ```
 
 ## 4. Coverage Requirements
 
 ### Overall Coverage Targets
+
 | Category | Target |
 |----------|--------|
 | Overall | ≥85% |
@@ -222,6 +218,7 @@ namespace Logos.Tests.Metalogic
 ## 5. CI/CD Integration
 
 ### GitHub Actions Workflow
+
 Tests run automatically on every push and PR:
 
 ```yaml
@@ -234,18 +231,20 @@ Tests run automatically on every push and PR:
 ```
 
 ### Test Execution
+
 ```bash
 # Run all tests
 lake test
 
 # Run specific test file (if supported)
-lake env lean Tests/Unit/Syntax/FormulaTests.lean
+lake env lean Tests/BimodalTest/Syntax/FormulaTest.lean
 
 # Run with verbose output
 lake test -- --verbose
 ```
 
 ### Pre-commit Checklist
+
 Before committing:
 1. Run `lake build` - ensure compilation succeeds
 2. Run `lake test` - ensure all tests pass
@@ -257,8 +256,9 @@ Before committing:
 ### RED-GREEN-REFACTOR Cycle
 
 **1. RED: Write a failing test**
+
 ```lean
--- Tests/Unit/ProofSystem/NewFeatureTests.lean
+-- Tests/BimodalTest/ProofSystem/NewFeatureTest.lean
 /-- Test new axiom X application -/
 example (φ : Formula) : ⊢ (φ.new_operator.imp φ) := by
   apply Derivable.axiom
@@ -266,14 +266,16 @@ example (φ : Formula) : ⊢ (φ.new_operator.imp φ) := by
 ```
 
 **2. GREEN: Implement minimal code to pass**
+
 ```lean
--- Logos/ProofSystem/Axioms.lean
+-- Theories/Bimodal/ProofSystem/Axioms.lean
 inductive Axiom : Formula → Prop
   | ...
   | new_axiom_x (φ : Formula) : Axiom (φ.new_operator.imp φ)
 ```
 
 **3. REFACTOR: Improve code quality**
+
 ```lean
 -- Clean up, add docstrings, optimize if needed
 /-- Axiom X: new_operator φ → φ
@@ -284,6 +286,7 @@ This axiom expresses that the new operator preserves truth.
 ```
 
 ### TDD Best Practices
+
 1. Write the test first, before implementation
 2. Write the simplest test that could possibly fail
 3. Write only enough code to make the test pass
@@ -361,12 +364,6 @@ example : ... := by
 
 -- Bad: Test doesn't test the actual functionality
 example (φ : Formula) : φ = φ := rfl  -- Tests equality, not formula behavior
-
--- Bad: Non-deterministic test
-#guard random_function () = expected_value  -- May fail randomly
-
--- Bad: Test with magic numbers
-#guard some_function 42 = 1764  -- Why 42? Why 1764?
 ```
 
 ### Better Alternatives
@@ -395,7 +392,7 @@ theorem formula_complexity_positive (φ : Formula) : φ.complexity > 0 := by
 /-!
 # Formula Tests
 
-Unit tests for the Formula type defined in Logos.Syntax.Formula.
+Unit tests for the Formula type defined in Bimodal.Syntax.Formula.
 
 ## Test Categories
 
@@ -409,7 +406,7 @@ Unit tests for the Formula type defined in Logos.Syntax.Formula.
 These tests achieve 95% coverage of Formula.lean.
 -/
 
-namespace Logos.Tests.Unit.Syntax
+namespace Bimodal.Tests.Syntax
 
 /-- Test that atom complexity is 1.
 Atoms are the simplest formulas with no subformulas. -/
@@ -417,6 +414,7 @@ Atoms are the simplest formulas with no subformulas. -/
 ```
 
 ### Test Comments
+
 - Explain what the test verifies
 - Note any edge cases being tested
 - Reference issue numbers for regression tests

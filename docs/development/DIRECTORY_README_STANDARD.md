@@ -13,8 +13,8 @@ This document establishes standards for directory-level README files in LEAN 4 p
 ### Scope
 
 **In Scope (Covered by This Standard)**:
-- LEAN source directories (`Logos/`, `Logos/Syntax/`, etc.)
-- LEAN test directories (`LogosTest/`, `LogosTest/Syntax/`, etc.)
+- LEAN source directories (`Theories/Bimodal/`, `Theories/Bimodal/Syntax/`, etc.)
+- LEAN test directories (`Tests/BimodalTest/`, `Tests/BimodalTest/Syntax/`, etc.)
 - LEAN example/archive directories (`Archive/`, `Archive/Examples/`, etc.)
 - Documentation organization directories (`docs/`, `docs/user-guide/`, etc.)
 
@@ -34,8 +34,8 @@ This standard **extends** and **complements**:
 ### Classification Rules
 
 **✓ README Required**:
-1. **Top-level LEAN source directory** (`Logos/`): Module organization overview
-2. **Test directory with 3+ subdirectories** (`LogosTest/`): Test organization and running instructions
+1. **Top-level LEAN source directory** (`Theories/Bimodal/`): Module organization overview
+2. **Test directory with 3+ subdirectories** (`Tests/BimodalTest/`): Test organization and running instructions
 3. **Example/Archive directory** (`Archive/`): Learning paths and pedagogical guidance
 4. **Multi-subdirectory documentation root** (`docs/`): Documentation navigation
 
@@ -139,11 +139,11 @@ lake test
 ### Run Specific Module Tests
 ```bash
 # Test specific module
-lake test LogosTest.Syntax
-lake test LogosTest.ProofSystem
+lake test BimodalTest.Syntax
+lake test BimodalTest.ProofSystem
 
 # Test specific file
-lake env lean LogosTest/Syntax/FormulaTest.lean
+lake env lean Tests/BimodalTest/Syntax/FormulaTest.lean
 ```
 
 ### Interpreting Output
@@ -452,7 +452,7 @@ For truth evaluation details, see `truth_at` in [Semantics/Truth.lean](Semantics
 
 **Fix**: Only create READMEs where they add genuine navigation value. For simple directories, excellent `.lean` module documentation suffices.
 
-## 9. Examples from Logos
+## 9. Examples from ProofChecker
 
 ### Good Example: Archive/README.md
 
@@ -465,11 +465,11 @@ Following Template F (Pedagogical), this README provides:
 
 **Why Good**: Navigation-focused, provides learning context, doesn't duplicate BimodalProofs.lean docstrings.
 
-### Good Example: LogosTest/README.md
+### Good Example: Tests/BimodalTest/README.md
 
 Following Template E (Test Directory), this README provides:
 - Test organization by module
-- Running tests: `lake test`, `lake test LogosTest.Syntax`
+- Running tests: `lake test`, `lake test BimodalTest.Syntax`
 - Adding new tests: file placement and naming conventions
 - Test categories: unit, integration, property-based
 - Links to TESTING_STANDARDS.md for detailed requirements
@@ -530,4 +530,4 @@ When reviewing directory README:
 
 **Version**: 1.0.0
 **Last Updated**: 2025-12-02
-**Maintained By**: Logos project
+**Maintained By**: ProofChecker project

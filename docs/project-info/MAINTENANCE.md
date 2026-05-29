@@ -6,12 +6,14 @@ This document describes the workflow for maintaining TODO.md and related project
 
 ## Related Documentation
 
-**Five-Document Model** (consolidated from four documents on 2025-12-05; expanded to five on 2025-12-26):
-- [TODO.md](../../TODO.md) - Active task tracking (active work only)
+**Four-Document Model**:
+- [TODO.md](../../specs/TODO.md) - Active task tracking (active work only)
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
 - [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) - Feature tracking and capability documentation
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
-- [TACTIC_REGISTRY.md](TACTIC_REGISTRY.md) - Custom tactic documentation and usage
+
+**Theory-Specific Documents** (in Theories/Bimodal/docs/project-info/):
+- [TACTIC_REGISTRY.md](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md) - Custom tactic documentation and usage
 
 ---
 
@@ -130,7 +132,7 @@ Update these files in order:
 | 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts, Known Limitations section |
 | 3 | FEATURE_REGISTRY.md | Add new features, update feature status |
 | 4 | SORRY_REGISTRY.md | Remove resolved items |
-| 5 | TACTIC_REGISTRY.md | Add/update custom tactics |
+| 5 | TACTIC_REGISTRY.md | Add/update custom tactics (in Theories/Bimodal/docs/) |
 | 6 | TODO.md | Remove task, update counts |
 | 7 | Git commit | Comprehensive message |
 
@@ -205,7 +207,7 @@ git diff <commit1> <commit2> -- TODO.md
 git log --all -S "Perpetuity" --oneline
 
 # Find commits that modified specific file
-git log --oneline -- Logos/Core/Theorems/Perpetuity.lean
+git log --oneline -- Theories/Bimodal/Theorems/Perpetuity.lean
 
 # View commit history with dates
 git log --all --pretty=format:"%h %ad %s" --date=short
@@ -240,19 +242,19 @@ cat specs/025_soundness_automation_implementation/summaries/004_iteration_3_fina
 
 ```bash
 # Count active sorry placeholders
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | wc -l
+grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null | wc -l
 
 # List sorry locations with context
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null
+grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null
 
 # Find sorry in specific module
-grep -n "sorry" Logos/Core/Theorems/Perpetuity.lean
+grep -n "sorry" Theories/Bimodal/Core/Theorems/Perpetuity.lean
 
 # Search commit history for sorry resolutions
 git log --all --grep="sorry" --oneline
 
 # Find when file became sorry-free
-git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
+git log --all -S "sorry" -- Theories/Bimodal/Semantics/Truth.lean
 ```
 
 ---
@@ -430,7 +432,7 @@ If SORRY_REGISTRY.md count doesn't match actual:
 
 ```bash
 # Get actual count
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | wc -l
+grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null | wc -l
 
 # Compare with registry
 grep -c "^- \*\*.*\.lean:" docs/project-info/SORRY_REGISTRY.md
@@ -649,10 +651,8 @@ These instructions are general and apply to any repository using this workflow s
 **Files Modified**:
 - docs/project-info/IMPLEMENTATION_STATUS.md
 - docs/project-info/SORRY_REGISTRY.md
-- .opencode/README.md
-- .opencode/QUICK-START.md
+- .claude/CLAUDE.md
 - docs/development/LEAN_STYLE_GUIDE.md
-- context/core/standards/docs.md
 - docs/development/CONTRIBUTING.md
 
 **Summary**: specs/007_emoji_removal/summaries/implementation-summary.md

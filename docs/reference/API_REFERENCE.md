@@ -712,6 +712,6 @@ All Bimodal modules follow these documentation standards:
   - Added strategy selection guide and heuristic configuration
 
 - **1.0.0** (2025-12-24): Initial API reference generated from docstrings
-  - Complete coverage of Logos/Core modules
+  - Complete coverage of Bimodal modules
   - Comprehensive examples and cross-references
   - Aligned with DOC_QUALITY_CHECKLIST.md standards

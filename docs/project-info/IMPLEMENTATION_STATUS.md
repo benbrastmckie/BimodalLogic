@@ -20,13 +20,10 @@
 
 ## Latest Changes (2026-01-15)
 - **Codebase review completed** (sess_1768528304_4parxt): Comprehensive analysis of Theories/Bimodal
-  - Sorry count: 46 active placeholders (26 in Completeness.lean, 3 in ProofSearch.lean, 17 elsewhere)
-  - Axiom count: 7 (5 in Completeness.lean, 2 in Examples/documentation)
-  - Build errors: 1 error in RepresentationTheorems.lean (application type mismatch)
-- **Technical debt**: 
-  - Completeness.lean: 26 sorry placeholders in canonical model construction
-  - ProofSearch.lean: 3 documentation examples for bounded search
-  - All tracked in TODO.md with clear resolution paths
+  - Sorry count: 9 active placeholders (7 in Domain/DiscreteTimeline.lean, 2 in Canonical/ConstructiveFragment.lean)
+  - Axiom count: 0 (no unproven axiom declarations)
+  - See SORRY_REGISTRY.md for current tracking
+- **Technical debt**: All tracked in SORRY_REGISTRY.md with clear resolution paths
 - **Test coverage**: 45 test files for 84 core Lean files (53.6% file coverage)
   - Property-based testing: Comprehensive coverage in BimodalTest
   - Integration tests: 8 comprehensive end-to-end test files
@@ -53,7 +50,7 @@
 
 **How to Update**:
 1. Update module status tables when implementation changes
-2. Verify sorry counts with: `grep -rn "sorry" Logos/Core/**/*.lean`
+2. Verify sorry counts with: `grep -rn "sorry" Theories/Bimodal/**/*.lean`
 3. Update Summary Table at bottom to reflect current state
 4. Update "Last Updated" date and "Project Version" if significant
 5. Cross-reference changes in SORRY_REGISTRY.md and TACTIC_REGISTRY.md when command/task updates affect sorry or tactic status (keep all three files in sync)
@@ -62,8 +59,8 @@
 ```bash
 # Verify implementation claims
 lake build && lake test
-grep -c "sorry" Logos/Core/**/*.lean
-grep -c "axiom " Logos/Core/**/*.lean
+grep -rn "sorry" Theories/Bimodal/**/*.lean | wc -l
+grep -rn "^axiom " Theories/Bimodal/**/*.lean | wc -l
 ```
 
 **Relationship to Other Files**:
@@ -104,7 +101,7 @@ The Logos hyperintensional extensions remain in research phase.
 **Planned Work**:
 - Task 151: Ensure `/task` pre-updates TODO status to [IN PROGRESS], mirrors plan status when linked, and syncs plan phase headers as phases start/block/complete. [COMPLETED]
 - Task 153: Revise `/research` and `/plan` to start tasks at [IN PROGRESS] and conclude at [RESEARCHED]/[PLANNED] with TODO/state/plan sync and lazy directory creation preserved. [COMPLETED]
-- Task 155: Optimize .opencode command subagent routing and metadata to ensure correct delegation, metadata listing of invoked subagents per command file, and routing checks without premature directory creation. [IN PROGRESS]
+- Task 155: Optimize command subagent routing and metadata to ensure correct delegation, metadata listing of invoked subagents per command file, and routing checks without premature directory creation. [COMPLETED]
 - No open System package tasks. Tasks 147–150 are completed and archived; current focus is on semantic completeness and context-reference follow-through.
 
  
@@ -115,24 +112,21 @@ All status claims in this document can be verified by inspecting the source code
 
 ```bash
 # Count sorry placeholders in Metalogic
-grep -n "sorry" Logos/Metalogic/Soundness.lean
-grep -n "sorry" Logos/Metalogic/DeductionTheorem.lean
-grep -n "sorry" Logos/Metalogic/Completeness.lean
+grep -n "sorry" Theories/Bimodal/Metalogic/Soundness.lean
+grep -n "sorry" Theories/Bimodal/Metalogic/DeductionTheorem.lean
+grep -n "sorry" Theories/Bimodal/Metalogic/Completeness.lean
 
 # Count sorry placeholders in Theorems
-grep -n "sorry" Logos/Theorems/Perpetuity.lean
+grep -n "sorry" Theories/Bimodal/Theorems/Perpetuity.lean
 
 # Verify axiom usage in Completeness
-grep -n "axiom" Logos/Metalogic/Completeness.lean
+grep -n "^axiom" Theories/Bimodal/Metalogic/Completeness.lean
 
 # Check tactic implementations
-cat Logos/Automation/Tactics.lean
+cat Theories/Bimodal/Automation/Tactics.lean
 
 # Run test suite
 lake test
-
-# Build documentation
-lake build :docs
 ```
 
 ---
@@ -144,7 +138,7 @@ lake build :docs
 **Completed Work**: Task 7 (COMPLETE - 2025-12-21): Creation of context files for the LEAN 4 ProofChecker project.
 
 **Planned Work**:
-- Task 8: Refactor `Logos/Core/Syntax/Context.lean` to improve clarity and performance.
+- Task 8: Refactor `Theories/Bimodal/Syntax/Context.lean` to improve clarity and performance.
 - Task 9: Update all references to the `Context` module after refactoring.
 
 
@@ -185,8 +179,8 @@ All syntax modules fully implemented with comprehensive tests.
 **Package Verification**:
 ```bash
 # All Syntax tests pass
-lake test LogosTest.Syntax.FormulaTest
-lake test LogosTest.Syntax.ContextTest
+lake test BimodalTest.Syntax.FormulaTest
+lake test BimodalTest.Syntax.ContextTest
 ```
 
 ---
@@ -208,7 +202,7 @@ All testing infrastructure fully implemented with property-based testing framewo
 
 **Key Components**:
 
-1. **Generators** (`LogosTest/Core/Property/Generators.lean`):
+1. **Generators** (`Tests/BimodalTest/Property/Generators.lean`):
    - Formula generator with size control (prevents infinite recursion)
    - Context generator (automatic via List)
    - TaskFrame generator (finite frames with 1-5 worlds)
@@ -267,19 +261,19 @@ instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
 
 **Documentation**:
 - Property Testing Guide: `docs/development/PROPERTY_TESTING_GUIDE.md`
-- Generator patterns and examples: `LogosTest/Core/Property/README.md`
+- Generator patterns and examples: `Tests/BimodalTest/Property/README.md`
 - Research report: `specs/174_property_based_testing/reports/research-001.md`
 
 **Package Verification**:
 ```bash
 # Run all property tests
-lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
-lake env lean LogosTest/Core/ProofSystem/DerivationPropertyTest.lean
-lake env lean LogosTest/Core/Semantics/SemanticPropertyTest.lean
-lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
+lake env lean Tests/BimodalTest/Syntax/FormulaPropertyTest.lean
+lake env lean Tests/BimodalTest/ProofSystem/DerivationPropertyTest.lean
+lake env lean Tests/BimodalTest/Semantics/SemanticPropertyTest.lean
+lake env lean Tests/BimodalTest/Metalogic/SoundnessPropertyTest.lean
 
 # Build test library
-lake build LogosTest
+lake build BimodalTest
 ```
 
 ---

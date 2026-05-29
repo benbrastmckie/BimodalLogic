@@ -133,9 +133,10 @@ technical_debt:
 
 ### 212. Implement proof step extractor for BimodalHarness training data
 - **Effort**: medium (1-2 weeks)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Report**: [specs/212_implement_proof_step_extractor/reports/01_proof-step-extractor.md]
+- **Plan**: [specs/212_implement_proof_step_extractor/plans/01_implementation-plan.md]
 
 **Description**: Implement an `extractStepSequence` function in `Theories/Bimodal/Automation/` that recursively walks a `DerivationTree` and emits ordered `ProofStep` records containing `(context, goal, rule, axiom_name, subgoals)`. Compile this into a new `lake exe proof_extractor` executable targeting the ~108 theorem definitions in `Theories/Bimodal/Theorems/` that directly produce `DerivationTree` values. Output JSONL with one `ProofStep` per line, matching the `ProofStepRecord` schema expected by BimodalHarness (see BimodalHarness task 9). Each step should map to the 49-action space (42 axiom constructors + 7 inference rules). The existing `walkDerivationTree` pattern in `DataExport.lean` provides the recursive traversal template. Expected yield: ~500-1,600 step triples from the existing theorem corpus. This is a cross-repo coordination task — BimodalHarness task 9 builds the Python consumer for this data.
 

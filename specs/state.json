@@ -8,11 +8,11 @@
     {
       "project_number": 212,
       "project_name": "implement_proof_step_extractor",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [],
       "created": "2026-05-29T19:33:01Z",
-      "last_updated": "2026-05-29T21:00:00Z",
+      "last_updated": "2026-05-29T21:15:00Z",
       "session_id": "sess_1780083735_5vngv",
       "researched": "2026-05-29T20:30:00Z",
       "next_artifact_number": 2,
@@ -21,8 +21,41 @@
           "path": "specs/212_implement_proof_step_extractor/reports/01_proof-step-extractor.md",
           "type": "report",
           "summary": "Comprehensive research on DerivationTree structure (7 constructors), 42 axiom constructors forming 49-action space, ~108 theorem definitions in Theorems/ directory (~40-50 computable), existing walkDerivationTree traversal pattern, JSON serialization infrastructure, and ProofStepRecord schema design. Key risk: ~60% of theorems are noncomputable. Recommended phased approach starting with computable subset."
+        },
+        {
+          "path": "specs/212_implement_proof_step_extractor/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: core extraction logic (ProofStep, Axiom.toName, extractStepSequence), theorem registry (~102 computable definitions), executable with JSONL export (lake exe proof_extractor), end-to-end validation. 8 hours total."
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_proof-step-extractor.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 211,

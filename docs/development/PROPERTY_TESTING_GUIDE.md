@@ -1,4 +1,4 @@
-# Property-Based Testing Guide for Logos
+# Property-Based Testing Guide for ProofChecker
 
 **Version**: 1.0  
 **Date**: 2025-12-25  
@@ -48,7 +48,7 @@ Property-based testing is a testing methodology that automatically generates tes
 
 ## Plausible Framework Overview
 
-Logos uses the [Plausible](https://github.com/leanprover-community/plausible) framework for property-based testing.
+ProofChecker uses the [Plausible](https://github.com/leanprover-community/plausible) framework for property-based testing.
 
 ### Core Type Classes
 
@@ -569,13 +569,13 @@ Property tests are integrated into the CI pipeline:
 
 ```bash
 # Build test library
-lake build LogosTest
+lake build BimodalTest
 
 # Run specific property test file
-lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
-lake env lean LogosTest/Core/ProofSystem/DerivationPropertyTest.lean
-lake env lean LogosTest/Core/Semantics/SemanticPropertyTest.lean
-lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
+lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
+lake env lean Tests/BimodalTest/Core/ProofSystem/DerivationPropertyTest.lean
+lake env lean Tests/BimodalTest/Core/Semantics/SemanticPropertyTest.lean
+lake env lean Tests/BimodalTest/Core/Metalogic/SoundnessPropertyTest.lean
 ```
 
 ### GitHub Actions Workflow
@@ -594,17 +594,17 @@ jobs:
       - name: Install Lean
         uses: leanprover/lean-action@v1
         with:
-          lean-version: 'leanprover/lean4:v4.14.0'
+          lean-version: 'leanprover/lean4:v4.27.0-rc1'
       
-      - name: Build LogosTest
-        run: lake build LogosTest
+      - name: Build BimodalTest
+        run: lake build BimodalTest
       
       - name: Run Property Tests
         run: |
-          lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
-          lake env lean LogosTest/Core/ProofSystem/DerivationPropertyTest.lean
-          lake env lean LogosTest/Core/Semantics/SemanticPropertyTest.lean
-          lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
+          lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
+          lake env lean Tests/BimodalTest/Core/ProofSystem/DerivationPropertyTest.lean
+          lake env lean Tests/BimodalTest/Core/Semantics/SemanticPropertyTest.lean
+          lake env lean Tests/BimodalTest/Core/Metalogic/SoundnessPropertyTest.lean
 ```
 
 ### Performance Monitoring
@@ -613,10 +613,10 @@ Track test execution time:
 
 ```bash
 # Time individual test files
-time lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
+time lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
 
 # Set timeout for CI (5 minutes per file)
-timeout 300 lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
+timeout 300 lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
 ```
 
 ---
@@ -709,5 +709,5 @@ Property-based testing with Plausible provides:
 
 **Resources**:
 - [Plausible Repository](https://github.com/leanprover-community/plausible)
-- [Logos Property Tests](../../LogosTest/Core/Property/)
+- [Logos Property Tests](../../Tests/BimodalTest/Core/Property/)
 - [Research Report](../../specs/174_property_based_testing/reports/research-001.md)

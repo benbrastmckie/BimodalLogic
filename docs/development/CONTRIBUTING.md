@@ -10,7 +10,7 @@ Thank you for your interest in contributing to ProofChecker! This document provi
 
 ### Prerequisites
 
-- LEAN 4 v4.14.0 or later
+- Lean 4 v4.27.0-rc1
 - Lake (included with LEAN 4)
 - Git
 - VS Code with lean4 extension (recommended)
@@ -19,11 +19,11 @@ Thank you for your interest in contributing to ProofChecker! This document provi
 
 ```bash
 # Fork the repository on GitHub, then clone your fork
-git clone https://github.com/YOUR-USERNAME/Logos.git
-cd Logos
+git clone https://github.com/YOUR-USERNAME/BimodalLogic.git
+cd BimodalLogic
 
 # Add upstream remote
-git remote add upstream https://github.com/ORIGINAL-OWNER/Logos.git
+git remote add upstream https://github.com/benbrastmckie/BimodalLogic.git
 
 # Install dependencies and build
 lake update
@@ -332,7 +332,7 @@ Include:
 ## Bug Report
 
 ### Environment
-- LEAN: v4.14.0
+- Lean: v4.27.0-rc1
 - OS: Ubuntu 22.04
 
 ### Steps to Reproduce
@@ -417,12 +417,8 @@ The meta system provides templates and patterns for extending the AI agent syste
 
 ### AI System Documentation
 
-- [AI System Overview](../../.opencode/README.md) - Complete system documentation
-- [Architecture](../../.opencode/ARCHITECTURE.md) - Detailed system architecture
-- [Quick Start](../../.opencode/QUICK-START.md) - Step-by-step usage guide
-- [Agent Catalog](../../.opencode/agent/README.md) - Primary agents and routing
-- [Command Reference](../../.opencode/command/README.md) - Command usage and examples
-- [Meta System](../../.opencode/agent/subagents/meta.md) - Extending the AI system
+- [Claude Code System](.claude/CLAUDE.md) - Complete system documentation
+- [Agent Architecture](.claude/docs/README.md) - Detailed system architecture
 
 ## References
 
@@ -430,5 +426,4 @@ The meta system provides templates and patterns for extending the AI agent syste
 - [Testing Standards](../development/TESTING_STANDARDS.md)
 - [Module Organization](../development/MODULE_ORGANIZATION.md)
 - [Quality Metrics](../development/QUALITY_METRICS.md)
-- [Tactic Development](../user-guide/TACTIC_DEVELOPMENT.md)
-- [AI System Overview](../../.opencode/README.md) - Automated development workflows
+- [Tactic Development](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md)
