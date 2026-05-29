@@ -155,7 +155,7 @@ technical_debt:
 
 ### 210. Investigate and fix enumerateAtBudget exponential blowup at complexity 5+
 - **Effort**: medium (1-2 weeks)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 204
 - **Research**: [specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md]
@@ -183,28 +183,31 @@ technical_debt:
 
 ### 207. Multi-representation formula export
 - **Effort**: small (6-8 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [207_multi_representation_export/reports/01_multi-repr-export.md]
+- **Plan**: [207_multi_representation_export/plans/01_multi-repr-export.md]
 
 **Description**: Extend DatasetExport.lean to export formulas in multiple representations simultaneously: S-expression string, token list (for transformer models), AST tree (for GNN models), and PatternKey numeric features (for value estimator). Currently only formula_str and formula_ast are exported. The multi-representation export enables different ML model architectures to consume the same dataset without Python-side preprocessing. Add S-expression printer, tokenizer, and PatternKey export to the JSONL records.
 
 ### 206. Contrastive pair generation for dual-verification training signal
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 203
 - **Research**: [206_contrastive_pair_generation/reports/01_contrastive-pairs.md]
+- **Plan**: [206_contrastive_pair_generation/plans/01_contrastive-pairs.md]
 
 **Description**: Implement a FormulaMutator module in Automation/ that generates contrastive pairs from valid formulas. For each valid formula, apply systematic mutations (atom substitution with bot, operator weakening box->diamond/G->F, subformula deletion, depth reduction) and re-run the decision procedure to produce (valid_formula, invalid_mutation, countermodel) triples. This creates the dual-verification training signal identified as novel in task 201 research. Also implement temporal duality contrastive pairs via swap_temporal where the dual has different validity.
 
 ### 205. Curate stratified evaluation benchmark (BMLogic-Bench)
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 204
 - **Research**: [205_benchmark_curation/reports/01_benchmark-curation.md]
+- **Plan**: [205_benchmark_curation/plans/01_benchmark-curation.md]
 
 **Description**: Curate a 500-1K held-out evaluation benchmark from the production dataset runs. Include: stratified sampling by difficulty tier (easy 20%, medium 40%, hard 30%, very hard 10%), balanced validity (~50/50), all 42 BX axiom instances as known-valid anchors, known non-theorems as known-invalid anchors, near-miss formulas (single-operator mutations of valid formulas). Design as "BMLogic-Bench" — the first benchmark for decidable non-classical logics. Validate that all ground-truth labels are correct via the decision procedure oracle.
 
