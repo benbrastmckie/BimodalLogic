@@ -1,16 +1,18 @@
 {
   "status": "blocked",
-  "summary": "Phase 1 completed (henkin_bfmcs sorry-free BFMCS on Int), Phase 2 blocked: schedule-based chain cannot prove restricted temporal coherence because F-persistence through g_content is not guaranteed",
+  "summary": "Phase 2 blocked: plan v5 enriched chain approach is fundamentally flawed -- enriched seed can be inconsistent under irreflexive temporal semantics, and all known approaches to F-persistence through Lindenbaum extensions are dead",
   "phases_completed": 1,
   "phases_total": 4,
   "blockers": [
-    "Schedule-based chain (g_content + Lindenbaum) cannot guarantee F-resolution: F(phi) is not a G-formula and does not propagate through g_content. Plan incorrectly claims temp_future_derived provides F(phi)->G(F(phi)); it gives Box(phi)->G(Box(phi)). F(phi)->G(F(phi)) is semantically invalid under strict temporal ordering. This is the same obstacle that killed plans v2, v3, and RootScopedChain.lean.",
-    "Restricted BUC also blocked for Henkin chain: the backward direction needs the chronicle's C4 property (counterexample elimination), which is not built into the schedule-based chain.",
-    "All three restricted coherence conditions (TC, BUC, FUC) require structural properties that only the chronicle construction provides, but the chronicle's integer mapping requires succ_embed_surjective (sorry via succ_cofinal)."
+    "Enriched seed {target} ∪ g_content(M) ∪ {F(χ) | F(χ) ∈ M} can be inconsistent (documented in HenkinDiscreteChain.lean:27-28, SuccExistence.lean:326-331)",
+    "g_content(M) is NOT a subset of M under irreflexive (strict) temporal semantics -- G(φ) → φ is not an axiom",
+    "Lindenbaum extensions are non-deterministic and can introduce G(¬φ), permanently killing F(φ)",
+    "Family proliferation violates same-family requirement of restricted_tc",
+    "All 5 prior plan versions (v1-v5) are blocked by the same root cause: F-formula persistence through g_content-based chain construction is impossible"
   ],
   "continuation_context": {
     "next_phase": 2,
     "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260529.md"
   },
-  "next_action_hint": "revise"
+  "next_action_hint": "research"
 }

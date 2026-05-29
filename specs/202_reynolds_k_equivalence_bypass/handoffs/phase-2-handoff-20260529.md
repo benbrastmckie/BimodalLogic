@@ -1,30 +1,56 @@
-# Phase 2 Handoff: Restricted TC/BUC on Z — BLOCKED
+# Phase 2 Handoff: Restricted TC Blocked (v5 Analysis)
+
+**Task**: 202 - Reynolds k-equivalence bypass
+**Phase**: 2 (Restricted TC on Z via Family Proliferation)
+**Status**: BLOCKED
+**Session**: sess_1780075095_dfdc3e
+**Date**: 2026-05-29
+**Plan**: v5 (05_option-c-direct-z-v5.md)
 
 ## Current State
-- Phase 1 COMPLETED: `henkin_bfmcs` (fc-parametric BFMCS on Int) built and verified sorry-free in `CanonicalModel.lean`
-- Phase 2 BLOCKED: Restricted temporal coherence cannot be proved for the schedule-based chain
 
-## Blocker Summary
-The schedule-based chain (`int_chain_fc`, built via `fwd_succ_fc` / `bwd_pred_fc` using g_content + Lindenbaum) cannot guarantee F-resolution because:
-1. `F(phi)` is NOT a G-formula, so it does NOT propagate through g_content
-2. The Lindenbaum extension at each step is non-deterministic and can introduce `G(neg phi)`, permanently killing any future resolution of `F(phi)`
-3. The plan's claim that `temp_future_derived` provides `F(phi) -> G(F(phi))` is incorrect: `temp_future_derived` gives `Box(phi) -> G(Box(phi))`, and `F(phi) -> G(F(phi))` is semantically invalid under strict temporal ordering
+Phase 1 (Henkin BFMCS on Int) was completed in a prior cycle. 426 lines of sorry-free code in CanonicalModel.lean including `henkin_bfmcs`, `shifted_bx_fmcs_fc`, box stability, and all BFMCS fields.
 
-This is the SAME fundamental obstacle that killed plans v2, v3, and the original RootScopedChain.lean (archived to Boneyard).
+Phase 2 attempted to prove `henkin_bfmcs_restricted_tc` using the "enriched chain" approach from plan v5. This approach is fundamentally flawed -- the enriched seed is NOT necessarily consistent.
 
-## Key Decision
-The plan v4 approach (direct completeness on Z via schedule-based chain) shares the same core limitation as all prior approaches. The ONLY working mechanism for F-resolution in this codebase is the chronicle's limit construction (counterexample elimination), which requires `succ_embed_surjective` to map witnesses back to integers.
+## Blocker Analysis (New in v5 Session)
 
-## What Works
-- `henkin_bfmcs` in CanonicalModel.lean: fc-parametric BFMCS on Int, sorry-free, all modal coherence properties (modal_forward, modal_backward, eval_family_mem) proved
-- The BFMCS families use `shifted_bx_fmcs_fc` which has correct G/H propagation and box stability
+### Root Cause: Enriched Seed Inconsistency
+Plan v5 proposed building an "enriched chain" where the Lindenbaum extension seed includes F-formulas from the current MCS to ensure F-persistence. The specific seed: `{target} ∪ g_content(M) ∪ {F(χ) | F(χ) ∈ M, χ ≠ target}`.
 
-## What Doesn't Work
-- Restricted TC for the schedule-based chain (F-resolution blocked)
-- Restricted FUC (Until forward direction, same root cause)
-- Restricted BUC cannot be proved purely axiomatically for the Henkin chain either (needs chronicle's C4 property)
+This seed can be INCONSISTENT. The analysis:
 
-## Viable Next Steps
-1. **Reflexive completeness + conservative extension (task 129)**: Under reflexive semantics, g_content(M) ⊆ M, so F-persistence follows trivially. Transfer to irreflexive via conservative extension.
-2. **Modified chain with explicit F-resolution**: Build a chain that includes witnesses for all F-formulas in deferralClosure(root) at each step. Requires proving consistency of g_content(M) ∪ {phi | F(phi) in M, phi in deferralClosure(root)}.
-3. **Abandon the schedule-based approach entirely**: Use the chronicle's `cantor_bfmcs_discrete` with its sorry-free BUC and prove TC/FUC via a different argument that doesn't need surjectivity.
+1. **f_content inconsistency** (documented in SuccExistence.lean:326-331 and HenkinDiscreteChain.lean:27-28): When both `F(A)` and `F(¬A)` are in a consistent MCS M, the set `{A} ∪ {F(¬A)}` contains formulas leading to inconsistency. More generally, the f_content approach (including formulas under F) is provably broken.
+
+2. **Plan v5's F-formula variant**: Plan v5 includes `F(χ)` formulas (not `χ` itself) in the seed. This avoids the f_content inconsistency but introduces a different problem: the consistency proof requires deriving a contradiction in M from `{target} ∪ g_content(M) ⊢ G(¬χ₁) ∨ ... ∨ G(¬χₖ)` (via temporal K) combined with F(χᵢ) ∈ M. But G does not distribute over disjunction, so no contradiction is derivable. The enriched seed with F-formulas CAN be inconsistent when the F(χ) resolution witness temporally precedes the target resolution.
+
+3. **g_content(M) ⊄ M**: Under strict temporal semantics (irreflexive G), `G(φ) → φ` is not an axiom. So g_content(M) = {φ | G(φ) ∈ M} is NOT a subset of M. This prevents the "subset of consistent set" argument.
+
+4. **Deferral disjunction variant**: Using `ψ ∨ F(ψ)` (which IS in M) instead of F(ψ) doesn't help because g_content(M) is still not in M, so `g_content(M) ∪ {ψ ∨ F(ψ) | F(ψ) ∈ M}` is not provably consistent.
+
+### Comprehensive Dead-End Summary
+ALL approaches to F-persistence through the chain are dead:
+- Plans v1-v3: F-persistence through g_content (impossible)
+- Plan v4: enriched seed (blocked at Phase 2 by F-persistence)
+- Plan v5: enriched seed with F-formulas (inconsistent seed)
+- Family proliferation: restricted_tc requires same-family witness
+- Deferral disjunctions: g_content ⊄ M under irreflexive semantics
+
+### Both Alternative Paths Also Have Sorries
+- Chronicle path: `succ_embed_surjective` → `succ_cofinal` (sorry)
+- Reynolds path: `no_gaps_discrete` (sorry)
+
+## Possible Next Steps (Research Needed)
+
+1. **Restricted MCS with finite deferralClosure**: Lindenbaum constrained to deferralClosure(root). F-persistence via negation completeness within finite closure. Major infrastructure change.
+
+2. **Reynolds Theorem 14 (no_gaps_discrete)**: Formalize the proof from Reynolds 1993. Unblocks Reynolds pipeline. May be more tractable than succ_cofinal.
+
+3. **Task 129 (reflexive completeness)**: Under reflexive G(φ) → φ, g_content(M) ⊆ M holds. Transfer via conservative extension. ~18 existing sorries.
+
+4. **Direct semantic truth lemma**: Bypass BFMCS infrastructure. Build countermodel on Z without restricted_tc.
+
+## What Exists (Reusable)
+- `henkin_bfmcs` (CanonicalModel.lean:744-793): sorry-free BFMCS on Int, fc-parametric
+- All fc-parametric chain infrastructure (500+ lines): fwd_succ_fc, bwd_pred_fc, int_chain_fc, box_stable_in_int_chain_fc
+- Phase 1 output is independently valuable for any future approach
