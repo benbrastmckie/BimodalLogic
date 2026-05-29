@@ -121,6 +121,16 @@ technical_debt:
   └─ 165
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
 
+### Dataset Enhancements (from competitive landscape analysis, task 215)
+
+218 [NOT STARTED] — Finalize Croissant metadata + HF leaderboard infrastructure
+216 [NOT STARTED] — Natural-language paraphrase augmentation for bmlogic-bench
+217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
+220 [NOT STARTED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
+221 [NOT STARTED] — Proof step dataset expansion (36 → 200+ theorems)
+219 [NOT STARTED] — LLM baseline difficulty calibration
+  └─ 216
+
 ### Meta/Tooling
 
 162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
@@ -140,6 +150,73 @@ technical_debt:
 **Description**: Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.
 
 **Completion**: Produced publication-ready competitive landscape report (data/competitive-landscape.md) covering 12 benchmarks across 13 dimensions; implemented cross-logic transfer splits (R5) with generate_splits.py and bmlogic-bench-splits.json; created MLCommons Croissant 1.0 metadata skeleton (data/croissant.json); updated data/README.md.
+
+---
+
+### 221. Proof step dataset expansion (36 → 200+ theorems)
+- **Effort**: large (2-3 weeks)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: low
+- **Topic**: dataset-enhancement
+
+**Description**: Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.
+
+---
+
+### 220. Anchor coverage expansion (14/42 → 42/42 axiom constructors)
+- **Effort**: medium (1-2 weeks)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+
+**Description**: Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.
+
+---
+
+### 219. LLM baseline difficulty calibration
+- **Effort**: medium (3-5 days)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: 216
+
+**Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from task 216).
+
+---
+
+### 218. Croissant metadata finalization + HuggingFace leaderboard
+- **Effort**: small (2-4 hours + 1-3 days for optional Space)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Priority**: high
+- **Topic**: dataset-enhancement
+
+**Description**: Finalize Croissant metadata (data/croissant.json skeleton exists) and update HuggingFace infrastructure. (a) Validate croissant.json against MLCommons 1.0 Python tooling, fix any schema issues, ensure all 4 JSONL distributions listed with correct field descriptions. (b) Update HF README task_categories to ["text-generation", "other"] with task_ids: ["formal-provability-classification"]. (c) Optional: Gradio Space for interactive formula classification demo and leaderboard submission endpoint.
+
+---
+
+### 217. Complexity tier extension to c9/c11
+- **Effort**: large (2-4 weeks, Lean oracle compute)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+
+**Description**: Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity ≤9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity ≤11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.
+
+---
+
+### 216. Natural-language paraphrase augmentation for bmlogic-bench
+- **Effort**: large (2-4 weeks, includes human review)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Priority**: high
+- **Topic**: dataset-enhancement
+
+**Description**: Add natural-language paraphrase field (nl_paraphrase) to all 727 bmlogic-bench records. Rule-based generation for formulas with modalDepth + temporalDepth ≤ 2 (~75% of benchmark); LLM-assisted with human verification for complex nesting (depth ≥ 3). Separate nl_paraphrase_method field records generation method. Backward-compatible: optional field. Acceptance: all 727 records have non-null nl_paraphrase, grammatically correct for depth ≤ 2, spot-checked for depth ≥ 3, generation code published.
 
 ---
 
