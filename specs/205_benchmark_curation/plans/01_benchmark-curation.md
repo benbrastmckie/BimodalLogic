@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Python Curation Script [NOT STARTED]
+### Phase 2: Python Curation Script [COMPLETED]
 
 **Goal**: Build the Python curation pipeline that loads production data, loads axiom instances, generates near-miss mutations, constructs valid and invalid pools, and performs stratified sampling.
 
