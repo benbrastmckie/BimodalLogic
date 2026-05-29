@@ -33,7 +33,7 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [PLANNED] — Reynolds Theorem 14 (no-gaps): formalize Reynolds 1994 Theorem 5 (US over Prior), Lemmas 6-13 (model surgery), Theorem 14 to close no_gaps_discrete. Semantic approach sidesteps F-persistence blocker. 5 phases, 20 hours.
+202 [PARTIAL] — Reynolds Theorem 14 (no-gaps): Phase 1 complete (Theorem 5: US expressive completeness over Prior structures, 395 lines, 0 sorries). Phases 2-5 (Lemmas 6-13 model surgery, Theorem 14, pipeline) not started.
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -199,7 +199,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 20 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none

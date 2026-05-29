@@ -806,11 +806,11 @@ a ~M c but NOT a ~M (succ c). This contradicts no_boundary_at_successor
    Temporal truth is preserved (induction on formula structure).
    The surgery model contradicts R holding in the chosen class.
 
-**BLOCKED**: Reynolds Theorem 5 (US expressive completeness over Prior structures
-in general) is not yet formalized. Our `US_expressively_complete_over_Z` covers
-only structures whose carrier IS ℤ, not general Prior structures.
-Resolution: formalize Reynolds Theorem 5 by showing U'(A,B) ≡ ⊥ and S'(A,B) ≡ ⊥
-in any Prior structure (via Prior-U/S), then applying GHR94 Theorem 9.3.1.
+**Reynolds Theorem 5** (US expressive completeness over Prior structures) is
+now formalized in `PriorExpressiveness.lean`: U'(A,B) ≡ ⊥ and S'(A,B) ≡ ⊥
+in any Prior structure (via Prior-UZ/SZ), composed with GHR94 Theorem 9.3.1.
+**REMAINING**: Lemmas 6-13 (gap formula R, model surgery) and Theorem 14
+are needed to close this sorry.
 
 **Semantic Prior validity hypotheses**:
 - `atomMap`: atom map for M (encodes the contemporaneous equivalence via k-types)

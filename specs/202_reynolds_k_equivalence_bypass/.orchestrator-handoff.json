@@ -1,11 +1,16 @@
 {
-  "status": "planned",
-  "summary": "Plan v6 created: Reynolds Theorem 5 + Lemmas 6-13 + Theorem 14 (model surgery / no-gaps). Semantic approach via Reynolds 1994 Section 6-7 sidesteps F-persistence blocker. 5 phases, 20 hours, ~1100 new lines.",
-  "phases_completed": 0,
+  "status": "partial",
+  "summary": "Phase 1 (Reynolds Theorem 5: US expressive completeness over Prior structures) fully implemented in PriorExpressiveness.lean (395 lines, 0 sorries). Proved stavi_U_false_on_prior_UZ, stavi_S_false_on_prior_SZ, flatten_stavi_correct_prior, and US_expressively_complete_over_prior. Phases 2-5 (Lemmas 6-13 model surgery, Theorem 14 no-gaps, pipeline packaging) not started due to extreme mathematical complexity (~950 lines of model-theoretic proof remaining).",
+  "phases_completed": 1,
   "phases_total": 5,
-  "blockers": [],
+  "blockers": [
+    "Phases 2-3 (Lemmas 6-13, model surgery) require ~950 lines of complex model-theoretic proof",
+    "Phase 4 (close no_gaps_discrete) depends on Phases 2-3",
+    "Chronicle UZ/SZ sorries require semantic Prior-UZ for chronicle structure",
+    "Pipeline packaging sorry requires TaskModel construction from Z-interval"
+  ],
   "continuation_context": {
-    "next_phase": 1,
+    "next_phase": 2,
     "plan_path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md"
   },
   "next_action_hint": "implement"
