@@ -1,16 +1,37 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-05-29T23:00:00Z",
+  "completed_at": "2026-05-30T01:00:00Z",
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 4,
+    "build_passed": true,
+    "notes": "0 sorries in modified files. chronicle_is_good_direct now sorry-free. countermodel_discrete_reynolds still has sorry (Transfer.lean:866, pipeline packaging). no_gaps_discrete (GoodStructures.lean:842) still has sorry but is no longer on critical path."
+  },
+  "requires_user_review": true,
+  "review_reason": "Phase 2 deviated: archimedean bypass closed chronicle_is_good_direct sorries but did not implement Reynolds Lemmas 6-9. Phase 5 (pipeline packaging) remains blocked. completeness_discrete still has sorryAx.",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean",
       "type": "implementation",
-      "summary": "Phase 1: Reynolds Theorem 5 (US expressive completeness over Prior structures). 395 lines, 0 sorries."
+      "summary": "Phase 1: Reynolds Theorem 5 (US expressive completeness). 395 lines, 0 sorries."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean",
+      "type": "implementation",
+      "summary": "Archimedean bypass: one_class_archimedean, very_good_of_archimedean, no_gaps_discrete_archimedean. ~110 lines, 0 sorries."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
+      "type": "implementation",
+      "summary": "Modified chronicle_is_good_direct to use one_class_archimedean. Eliminated 2 sorry sites (semantic Prior-UZ/SZ). Now sorry-free."
     }
   ],
   "partial_progress": {
-    "stage": "phase_2_starting",
-    "details": "Phase 1 complete. Starting Phase 2 (Lemmas 6-9).",
+    "stage": "phase_2_partial",
+    "details": "Phase 2 deviated from plan: instead of implementing Reynolds Lemmas 6-9 (gap formula, R-intervals), discovered archimedean bypass that closes chronicle_is_good_direct sorries directly. Phases 3-4 (model surgery, Theorem 14) no longer needed for pipeline. Phase 5 (pipeline packaging) remains.",
     "phases_completed": 1,
     "phases_total": 5
   },
@@ -18,6 +39,7 @@
     "session_id": "sess_1780082532_cfce4b",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "partial"
   }
 }

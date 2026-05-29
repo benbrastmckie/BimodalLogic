@@ -1,17 +1,21 @@
 {
   "status": "partial",
-  "summary": "Phase 1 (Reynolds Theorem 5: US expressive completeness over Prior structures) fully implemented in PriorExpressiveness.lean (395 lines, 0 sorries). Proved stavi_U_false_on_prior_UZ, stavi_S_false_on_prior_SZ, flatten_stavi_correct_prior, and US_expressively_complete_over_prior. Phases 2-5 (Lemmas 6-13 model surgery, Theorem 14 no-gaps, pipeline packaging) not started due to extreme mathematical complexity (~950 lines of model-theoretic proof remaining).",
+  "summary": "Closed 2 of 3 targeted sorry sites via archimedean bypass. chronicle_is_good_direct is now sorry-free (axioms: propext, Classical.choice, Quot.sound). The chronicle domain bundles IsSuccArchimedean, so one_class_archimedean replaces the general one_class (which needed no_gaps_discrete and the full Reynolds Lemmas 6-13). The remaining sorry is countermodel_discrete_reynolds pipeline packaging (Transfer.lean:866), which requires truth_at <-> temporal_truth correspondence construction. completeness_discrete still has sorryAx from the enriched path.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "Phases 2-3 (Lemmas 6-13, model surgery) require ~950 lines of complex model-theoretic proof",
-    "Phase 4 (close no_gaps_discrete) depends on Phases 2-3",
-    "Chronicle UZ/SZ sorries require semantic Prior-UZ for chronicle structure",
-    "Pipeline packaging sorry requires TaskModel construction from Z-interval"
+    "countermodel_discrete_reynolds (Transfer.lean:866): pipeline packaging requires TaskModel with position-dependent atom valuation and truth_at <-> temporal_truth inductive correspondence (~150-200 lines)"
   ],
   "continuation_context": {
-    "next_phase": 2,
-    "plan_path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md"
+    "next_phase": 5,
+    "plan_path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md",
+    "key_facts": [
+      "chronicle_is_good_direct is sorry-free via archimedean bypass",
+      "Phases 2-4 (Reynolds Lemmas 6-13) bypassed -- not needed for pipeline",
+      "no_gaps_discrete (GoodStructures.lean:842) still has sorry but is dead code for pipeline",
+      "countermodel_discrete_reynolds needs: Z.lo=none proof, TaskModel construction, truth correspondence",
+      "completeness_discrete currently uses countermodel_discrete_enriched (different sorry chain)"
+    ]
   },
   "next_action_hint": "implement"
 }

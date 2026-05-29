@@ -8,11 +8,11 @@
     {
       "project_number": 212,
       "project_name": "implement_proof_step_extractor",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "dependencies": [],
       "created": "2026-05-29T19:33:01Z",
-      "last_updated": "2026-05-29T20:30:00Z",
+      "last_updated": "2026-05-29T21:00:00Z",
       "session_id": "sess_1780083735_5vngv",
       "researched": "2026-05-29T20:30:00Z",
       "next_artifact_number": 2,
@@ -52,7 +52,21 @@
         "complexity": "complex",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_docs-review-research.md",
@@ -1536,7 +1550,7 @@
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T19:30:00Z",
+      "last_updated": "2026-05-30T01:00:00Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
