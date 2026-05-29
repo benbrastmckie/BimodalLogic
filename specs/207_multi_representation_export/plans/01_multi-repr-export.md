@@ -131,18 +131,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: DatasetRecord Integration [NOT STARTED]
+### Phase 4: DatasetRecord Integration [COMPLETED]
 
 **Goal**: Add the three new fields to `DatasetRecord` and wire them into the JSONL serialization and record construction.
 
 **Tasks**:
-- [ ] Add `formula_sexpr : String` field to `DatasetRecord` structure
-- [ ] Add `formula_tokens : String` field to `DatasetRecord` structure (pre-serialized JSON array)
-- [ ] Add `pattern_features : String` field to `DatasetRecord` structure (pre-serialized JSON array)
-- [ ] Update `Inhabited DatasetRecord` instance with default values for new fields
-- [ ] Update `datasetRecordToJson` to include the three new fields in the JSON output
-- [ ] Update `labeledToRecord` to compute new fields: call `toSExpr`, `tokenize` + `tokenListToJson`, and `featureVectorToJson`
-- [ ] Verify the function compiles with `lake build Bimodal.Automation.DatasetExport`
+- [x] Add `formula_sexpr : String` field to `DatasetRecord` structure
+- [x] Add `formula_tokens : String` field to `DatasetRecord` structure (pre-serialized JSON array)
+- [x] Add `pattern_features : String` field to `DatasetRecord` structure (pre-serialized JSON array)
+- [x] Update `Inhabited DatasetRecord` instance with default values for new fields
+- [x] Update `datasetRecordToJson` to include the three new fields in the JSON output
+- [x] Update `labeledToRecord` to compute new fields: call `toSExpr`, `tokenize` + `tokenListToJson`, and `featureVectorToJson`
+- [x] Verify the function compiles with `lake build Bimodal.Automation.DatasetExport`
 
 **Timing**: 1 hour
 

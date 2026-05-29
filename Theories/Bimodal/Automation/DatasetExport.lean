@@ -177,6 +177,12 @@ structure DatasetRecord where
   metrics : DifficultyMetrics
   /-- Augmentation info (None for original formulas). -/
   augmentation : Option AugmentationInfo
+  /-- S-expression representation of the formula. -/
+  formula_sexpr : String
+  /-- Prefix-notation token list as a pre-serialized JSON array. -/
+  formula_tokens : String
+  /-- Numeric feature vector from PatternKey as a pre-serialized JSON array. -/
+  pattern_features : String
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -190,7 +196,10 @@ instance : Inhabited DatasetRecord :=
      countermodel := none
      pattern_key := default
      metrics := default
-     augmentation := none }⟩
+     augmentation := none
+     formula_sexpr := ""
+     formula_tokens := "[]"
+     pattern_features := "[]" }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -216,6 +225,9 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"pattern_key\": " ++ r.pattern_key.toJson
   ++ ", \"metrics\": " ++ difficultyMetricsToJson r.metrics
   ++ ", \"augmentation\": " ++ augStr
+  ++ ", \"formula_sexpr\": \"" ++ escapeJsonString r.formula_sexpr ++ "\""
+  ++ ", \"formula_tokens\": " ++ r.formula_tokens
+  ++ ", \"pattern_features\": " ++ r.pattern_features
   ++ "}"
 
 /--
@@ -234,7 +246,10 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     countermodel := lf.countermodel
     pattern_key := lf.patternKey
     metrics := lf.metrics
-    augmentation := none }
+    augmentation := none
+    formula_sexpr := lf.formula.toSExpr
+    formula_tokens := tokenListToJson lf.formula.tokenize
+    pattern_features := lf.patternKey.featureVectorToJson }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
