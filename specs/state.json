@@ -1488,7 +1488,7 @@
         }
       ],
       "planned": "2026-05-29T12:00:00Z",
-      "completion_summary": "Added nl_paraphrase and nl_paraphrase_method fields to all 727 bmlogic-bench records using a recursive Python AST-walker (generate_paraphrases.py) with 12+ derived-operator patterns. All 727 records pass automated quality validation (100% pass rate). validate.py passes with 0 regressions. Generation script, test suite, and validation tooling published in data/scripts/.",
+      "completion_summary": "Added nl_paraphrase and nl_paraphrase_method fields to all 727 bmlogic-bench records using a recursive Python AST-walker with 12+ derived-operator patterns. 635 records tagged rule_based (modalDepth+temporalDepth<=2), 92 tagged rule_based_complex (>=3). All 727 records pass automated quality validation; validate.py passes with 0 regressions.",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 10,
