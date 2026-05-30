@@ -49,7 +49,7 @@ example : ⊢ (□p → p) := by
 
 ## References
 
-* [TACTIC_DEVELOPMENT.md](../../../docs/ProjectInfo/TACTIC_DEVELOPMENT.md)
+* [tactic-development.md](../../../docs/user-guide/tactic-development.md)
 * [Axioms.lean](../ProofSystem/Axioms.lean)
 -/
 

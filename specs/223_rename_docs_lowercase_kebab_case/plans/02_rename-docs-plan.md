@@ -109,23 +109,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update All References [NOT STARTED]
+### Phase 2: Update All References [COMPLETED]
 
 **Goal**: Systematically update all ~355 references to renamed files across the entire codebase (excluding specs/archive/).
 
 **Tasks**:
-- [ ] Update references in `Theories/Bimodal/docs/` markdown files (bulk sed substitution for all 15 old-to-new filename mappings)
-- [ ] Update references in root-level `README.md`
-- [ ] Update references in `docs/` tree (root docs/ directory)
-- [ ] Update self-references within the renamed files themselves (e.g., internal cross-refs)
-- [ ] Fix double-broken references in 14 `.lean` files that use old directory names (`UserGuide/`, `ProjectInfo/`) AND old filenames -- update both directory path and filename in one pass:
+- [x] Update references in `Theories/Bimodal/docs/` markdown files (bulk sed substitution for all 15 old-to-new filename mappings) *(completed)*
+- [x] Update references in root-level `README.md` *(completed)*
+- [x] Update references in `docs/` tree (root docs/ directory) *(completed)*
+- [x] Update self-references within the renamed files themselves (e.g., internal cross-refs) *(completed)*
+- [x] Fix double-broken references in 14 `.lean` files that use old directory names (`UserGuide/`, `ProjectInfo/`) AND old filenames -- update both directory path and filename in one pass: *(completed)*
   - `docs/UserGuide/ARCHITECTURE.md` -> `docs/user-guide/architecture.md`
   - `docs/ProjectInfo/TACTIC_DEVELOPMENT.md` -> `docs/user-guide/tactic-development.md`
   - `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` -> `docs/project-info/implementation-status.md`
   - `docs/ProjectInfo/TACTIC_REGISTRY.md` -> `docs/project-info/tactic-registry.md`
-- [ ] Update bare filename references in `.claude/context/` files (text mentions like `TACTIC_REGISTRY.md` -> `tactic-registry.md`)
-- [ ] Update references in active `specs/` task artifacts (non-archived)
-- [ ] Run comprehensive grep verification for each old filename to confirm zero remaining references (excluding specs/archive/):
+- [x] Update bare filename references in `.claude/context/` files (text mentions like `TACTIC_REGISTRY.md` -> `tactic-registry.md`) *(completed)*
+- [x] Update references in active `specs/` task artifacts (non-archived) *(completed)*
+- [x] Run comprehensive grep verification for each old filename to confirm zero remaining references (excluding specs/archive/) *(completed: zero matches found)*
   ```
   grep -rn "AXIOM_REFERENCE\|TACTIC_REFERENCE\|OPERATORS\|IMPLEMENTATION_STATUS\|TACTIC_REGISTRY\|ARCHITECTURE\|TUTORIAL\|EXAMPLES\|QUICKSTART\|TROUBLESHOOTING\|TACTIC_DEVELOPMENT\|PROOF_PATTERNS\|PERFORMANCE_TARGETS\|KNOWN_LIMITATIONS\|TEST_COVERAGE" \
     Theories/Bimodal/ docs/ README.md .claude/context/ specs/ \

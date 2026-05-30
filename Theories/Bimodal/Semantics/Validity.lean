@@ -40,7 +40,7 @@ which is implicit in the paper's use of the full universe of histories.
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) - Validity specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - Validity specification
 * [Truth.lean](Truth.lean) - Truth evaluation
 * [Context.lean](../Syntax/Context.lean) - Proof contexts
 -/

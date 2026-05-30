@@ -250,4 +250,4 @@ example (p : Formula) : ⊢ (p.imp p).box := by
 
 - [Bimodal Syntax](../../Syntax/Formula.lean) - Formula constructors
 - [Bimodal ProofSystem](../../ProofSystem/Axioms.lean) - Axiom definitions
-- [Proof Patterns](../user-guide/PROOF_PATTERNS.md) - How to use axioms
+- [Proof Patterns](../user-guide/proof-patterns.md) - How to use axioms

@@ -25,7 +25,7 @@ Before reading this guide, you should have:
 
 1. **Basic LEAN 4 Syntax**: Functions, types, inductive types, pattern matching
 2. **Bimodal Architecture**: Understanding of `Formula`, `Derivable`, `Axiom`
-   types (see `docs/user-guide/ARCHITECTURE.md`)
+   types (see `docs/user-guide/architecture.md`)
 3. **Proof System Knowledge**: Familiarity with TM axioms (MT, M4, MB, T4, TA, TL,
    MF, TF) and inference rules (MP, MK, TK, TD)
 
@@ -635,7 +635,7 @@ macro "apply_axiom" ax:ident : tactic =>
 
 ### Example 2: modal_t (elab_rules)
 
-See Section 2.5 of `TACTIC_DEVELOPMENT.md` for complete annotated implementation.
+See Section 2.5 of `tactic-development.md` for complete annotated implementation.
 
 **Summary**:
 - Uses `elab_rules` for pattern matching
@@ -711,9 +711,9 @@ elab "assumption_search" : tactic => do
 
 ### ProofChecker Documentation
 
-- [TACTIC_DEVELOPMENT.md](../user-guide/TACTIC_DEVELOPMENT.md) - Tactic patterns and Aesop
+- [tactic-development.md](../user-guide/tactic-development.md) - Tactic patterns and Aesop
   integration
-- [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - TM logic specification
+- [architecture.md](../user-guide/architecture.md) - TM logic specification
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Tactic testing requirements
 
 ### Research Reports

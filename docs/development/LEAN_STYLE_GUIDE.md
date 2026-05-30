@@ -316,7 +316,7 @@ constrained by a task relation that captures transitions between states.
 ## References
 
 * "Possible Worlds" paper - TM logic specification
-* Logos Architecture Guide - docs/user-guide/ARCHITECTURE.md
+* Logos Architecture Guide - docs/user-guide/architecture.md
 -/
 ```
 
@@ -893,4 +893,4 @@ soundness itself, creating a circular dependency that must be resolved at the fi
 
 - [Mathlib4 Style Guide](https://leanprover-community.github.io/contribute/style.html)
 - [LEAN 4 Documentation](https://lean-lang.org/documentation/)
-- [Logos Architecture](../user-guide/ARCHITECTURE.md)
+- [Logos Architecture](../user-guide/architecture.md)

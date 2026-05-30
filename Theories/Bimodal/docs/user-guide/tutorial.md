@@ -413,8 +413,8 @@ Logos supports future extensions:
 
 ### Further Reading
 
-- [Architecture Guide](ARCHITECTURE.md) - Full TM logic specification
-- [Examples](EXAMPLES.md) - More example proofs
+- [Architecture Guide](architecture.md) - Full TM logic specification
+- [Examples](examples.md) - More example proofs
 - [Contributing](../Development/CONTRIBUTING.md) - How to contribute
 - [Integration](INTEGRATION.md) - Model-Checker integration
 
@@ -423,7 +423,7 @@ Logos supports future extensions:
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md)
 - [Module Organization](../Development/MODULE_ORGANIZATION.md)
 - [Testing Standards](../Development/TESTING_STANDARDS.md)
-- [Tactic Development](TACTIC_DEVELOPMENT.md)
+- [Tactic Development](tactic-development.md)
 
 ### External Resources
 

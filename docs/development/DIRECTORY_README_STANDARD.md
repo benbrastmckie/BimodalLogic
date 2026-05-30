@@ -95,7 +95,7 @@ lake env lean Theories/Bimodal/Syntax/Formula.lean
 For detailed API documentation, see:
 - Module overview: [Bimodal.lean](../Theories/Bimodal/Bimodal.lean)
 - Generated docs: Run `lake build :docs`
-- Architecture guide: [ARCHITECTURE.md](../docs/user-guide/ARCHITECTURE.md)
+- Architecture guide: [architecture.md](../docs/user-guide/architecture.md)
 
 ## Related Documentation
 
@@ -257,9 +257,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow.
 
 ## Related Documentation
 
-- [Tutorial](../docs/user-guide/TUTORIAL.md) - Getting started guide
-- [Examples](../docs/user-guide/EXAMPLES.md) - Usage examples
-- [Architecture](../docs/user-guide/ARCHITECTURE.md) - System design
+- [Tutorial](../docs/user-guide/tutorial.md) - Getting started guide
+- [Examples](../docs/user-guide/examples.md) - Usage examples
+- [Architecture](../docs/user-guide/architecture.md) - System design
 ```
 
 **Notes**:
@@ -283,18 +283,18 @@ Documentation is organized into four categories:
 
 ### UserGuide/
 User-facing documentation for working with [project]:
-- **ARCHITECTURE.md**: System design and logic specification
-- **TUTORIAL.md**: Getting started guide
-- **EXAMPLES.md**: Usage examples and patterns
+- **architecture.md**: System design and logic specification
+- **tutorial.md**: Getting started guide
+- **examples.md**: Usage examples and patterns
 - **INTEGRATION.md**: Integration with other tools
 
 **Audience**: Users of the library, learners
 
 ### ProjectInfo/
 Project status and tactic documentation:
-- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking (includes Known Limitations section)
+- **implementation-status.md**: Module-by-module status tracking (includes Known Limitations section)
 - **SORRY_REGISTRY.md**: Technical debt tracking
-- **TACTIC_REGISTRY.md**: Custom tactic patterns
+- **tactic-registry.md**: Custom tactic patterns
 
 **Audience**: Contributors, maintainers
 
@@ -312,15 +312,15 @@ Developer standards, conventions, and contribution workflow:
 
 ### Reference/
 Reference materials:
-- **OPERATORS.md**: Formal symbols reference
+- **operators.md**: Formal symbols reference
 
 **Audience**: All users
 
 ## Quick Links
 
 Most-referenced documents:
-- [Getting Started](UserGuide/TUTORIAL.md)
-- [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md)
+- [Getting Started](UserGuide/tutorial.md)
+- [Implementation Status](ProjectInfo/implementation-status.md)
 - [Style Guide](Development/LEAN_STYLE_GUIDE.md)
 - [Testing Standards](Development/TESTING_STANDARDS.md)
 
@@ -329,8 +329,8 @@ Most-referenced documents:
 When updating documentation:
 
 1. **User-facing changes**: Update relevant UserGuide/ files first
-2. **Implementation changes**: Update ProjectInfo/IMPLEMENTATION_STATUS.md
-3. **New limitations**: Document in ProjectInfo/IMPLEMENTATION_STATUS.md Known Limitations section
+2. **Implementation changes**: Update ProjectInfo/implementation-status.md
+3. **New limitations**: Document in ProjectInfo/implementation-status.md Known Limitations section
 4. **Style changes**: Update Development/ standards files
 5. **Cross-references**: Ensure all links remain valid
 

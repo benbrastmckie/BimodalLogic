@@ -948,7 +948,7 @@ A canonical model proof for TM completeness follows these steps:
 
 The current implementation in `Completeness.lean` has the scaffolding with placeholder `sorry`s. Task 257 tracks completing these proofs.
 
-See also: [KNOWN_LIMITATIONS.md](../project-info/KNOWN_LIMITATIONS.md) for status.
+See also: [known-limitations.md](../project-info/known-limitations.md) for status.
 </details>
 
 ---
@@ -962,12 +962,12 @@ See also: [KNOWN_LIMITATIONS.md](../project-info/KNOWN_LIMITATIONS.md) for statu
   - `Bimodal/Theorems/Combinators.lean` - Proof combinators used above
 
 - **Reference Guides**:
-  - [Axiom Reference](../reference/AXIOM_REFERENCE.md) - Complete list of TM axioms
-  - [Tactic Reference](../reference/TACTIC_REFERENCE.md) - Custom tactics
-  - [Troubleshooting](TROUBLESHOOTING.md) - Common errors and solutions
+  - [Axiom Reference](../reference/axiom-reference.md) - Complete list of TM axioms
+  - [Tactic Reference](../reference/tactic-reference.md) - Custom tactics
+  - [Troubleshooting](troubleshooting.md) - Common errors and solutions
 
 ## References
 
-- [Tutorial](TUTORIAL.md) - Getting started guide
-- [Architecture](ARCHITECTURE.md) - Full TM logic specification
-- [Tactic Development](TACTIC_DEVELOPMENT.md) - Custom tactics
+- [Tutorial](tutorial.md) - Getting started guide
+- [Architecture](architecture.md) - Full TM logic specification
+- [Tactic Development](tactic-development.md) - Custom tactics

@@ -171,5 +171,5 @@ If you encounter issues not listed here:
 
 ## See Also
 
-- [Implementation Status](IMPLEMENTATION_STATUS.md) - Detailed module status
-- [Project Limitations](../../../docs/project-info/IMPLEMENTATION_STATUS.md)
+- [Implementation Status](implementation-status.md) - Detailed module status
+- [Project Limitations](../../../docs/project-info/implementation-status.md)

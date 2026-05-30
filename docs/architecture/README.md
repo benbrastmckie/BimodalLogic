@@ -32,7 +32,7 @@ Non-ADR architectural specification documents:
 
 | Document | Description |
 |----------|-------------|
-| [BFMCS_ARCHITECTURE.md](BFMCS_ARCHITECTURE.md) | Base Finite Canonical Model Construction (BFMCS) proof architecture specification |
+| [BFMCS_architecture.md](BFMCS_architecture.md) | Base Finite Canonical Model Construction (BFMCS) proof architecture specification |
 
 ## ADR Details
 

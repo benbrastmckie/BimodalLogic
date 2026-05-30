@@ -55,7 +55,7 @@ The derivation tree includes 7 inference rules:
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) - Proof system specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - Proof system specification
 * [Axioms.lean](./Axioms.lean) - Axiom schemata definitions
 -/
 

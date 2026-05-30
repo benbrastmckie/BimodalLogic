@@ -14,7 +14,7 @@ For theory-specific implementation status, see:
 
 | Theory | Status Documents |
 |--------|------------------|
-| **Bimodal** | [Implementation Status](../../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Theories/Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) |
+| **Bimodal** | [Implementation Status](../../Theories/Bimodal/docs/project-info/implementation-status.md), [Known Limitations](../../Theories/Bimodal/docs/project-info/known-limitations.md) |
 
 ## Documentation Overview
 
@@ -27,7 +27,7 @@ Module-by-module implementation status and technical debt:
 
 | Document | Description |
 |----------|-------------|
-| [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) | Module completion percentages and Known Limitations section |
+| [implementation-status.md](implementation-status.md) | Module completion percentages and Known Limitations section |
 | [SORRY_REGISTRY.md](SORRY_REGISTRY.md) | Technical debt tracking (sorry placeholders with resolution context) |
 
 ## Feature Tracking
@@ -38,7 +38,7 @@ Registry of features:
 |----------|-------------|
 | [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) | Feature tracking and capability documentation |
 
-> **Theory-specific tactics**: See [Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md)
+> **Theory-specific tactics**: See [Theories/Bimodal/docs/project-info/tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md)
 > for tactic implementation status and usage patterns.
 
 ## Workflow Documentation
@@ -54,7 +54,7 @@ Task management and documentation synchronization:
 The project uses a Four-Document Model for tracking project state:
 
 1. **[TODO.md](../../specs/TODO.md)** - Active task tracking (active work only)
-2. **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)** - Module-by-module completion tracking
+2. **[implementation-status.md](implementation-status.md)** - Module-by-module completion tracking
 3. **[FEATURE_REGISTRY.md](FEATURE_REGISTRY.md)** - Feature tracking and capabilities
 4. **[SORRY_REGISTRY.md](SORRY_REGISTRY.md)** - Technical debt tracking
 
@@ -64,8 +64,8 @@ See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating thes
 
 ### Finding Implementation Status
 
-- **Module completion**: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)
-- **Known limitations**: [IMPLEMENTATION_STATUS.md#known-limitations](IMPLEMENTATION_STATUS.md#known-limitations)
+- **Module completion**: [implementation-status.md](implementation-status.md)
+- **Known limitations**: [implementation-status.md#known-limitations](implementation-status.md#known-limitations)
 - **Sorry placeholders**: [SORRY_REGISTRY.md](SORRY_REGISTRY.md)
 
 ### Finding Capabilities

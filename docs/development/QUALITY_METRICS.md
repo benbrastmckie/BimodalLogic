@@ -110,7 +110,7 @@ For each public definition, docstring should include:
 ### Regression Policy
 
 - Regressions >2x are blocking for merge
-- Theory-specific targets in each theory's PERFORMANCE_TARGETS.md
+- Theory-specific targets in each theory's performance-targets.md
 
 ### Build Performance
 

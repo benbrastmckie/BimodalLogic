@@ -42,7 +42,7 @@ Use method syntax: `φ.all_past`, `φ.some_future`, etc.
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) - TM logic specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - TM logic specification
 * [LEAN Style Guide](../../../docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
 -/
 

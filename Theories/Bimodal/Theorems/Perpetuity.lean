@@ -68,7 +68,7 @@ compatibility with existing code.
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - TM logic specification
 * [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 * [Helpers.lean](Perpetuity/Helpers.lean) - Helper lemmas

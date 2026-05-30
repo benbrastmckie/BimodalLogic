@@ -6,7 +6,7 @@
 
 > **Scope Note**: This file tracks project-wide implementation status. For the authoritative
 > module-by-module status of the Bimodal theory, see:
-> [Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md](../../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md)
+> [Theories/Bimodal/docs/project-info/implementation-status.md](../../Theories/Bimodal/docs/project-info/implementation-status.md)
 
 ## Implementation Overview
 
@@ -56,7 +56,7 @@
 2. Verify sorry counts with: `grep -rn "sorry" Theories/Bimodal/**/*.lean`
 3. Update Summary Table at bottom to reflect current state
 4. Update "Last Updated" date and "Project Version" if significant
-5. Cross-reference changes in SORRY_REGISTRY.md and TACTIC_REGISTRY.md when command/task updates affect sorry or tactic status (keep all three files in sync)
+5. Cross-reference changes in SORRY_REGISTRY.md and tactic-registry.md when command/task updates affect sorry or tactic status (keep all three files in sync)
 
 **Verification Commands**:
 ```bash

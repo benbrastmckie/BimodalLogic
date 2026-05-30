@@ -5,7 +5,7 @@
 
 This document tracks the implemented features and capabilities of the Bimodal Lean 4 library.
 For sorry placeholder tracking, see [SORRY_REGISTRY.md](SORRY_REGISTRY.md).
-For implementation status by module, see [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+For implementation status by module, see [implementation-status.md](implementation-status.md).
 
 ## Core Logic Features
 
@@ -49,7 +49,7 @@ For implementation status by module, see [IMPLEMENTATION_STATUS.md](IMPLEMENTATI
 - **Status**: Active
 - **Description**: Custom Lean 4 tactics for TM modal-temporal reasoning.
 - **Key File**: `Theories/Bimodal/Automation/Tactics.lean`
-- **Theory-Specific Registry**: See [Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md)
+- **Theory-Specific Registry**: See [Theories/Bimodal/docs/project-info/tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md)
 
 ### Proof Search
 

@@ -67,7 +67,7 @@ Use `Derivable` from `Derivable.lean` for Prop-valued derivability.
 
 - [Parent README](../README.md)
 - [Metalogic README](../Metalogic/README.md)
-- [Axiom Reference](../docs/reference/AXIOM_REFERENCE.md)
+- [Axiom Reference](../docs/reference/axiom-reference.md)
 
 ---
 

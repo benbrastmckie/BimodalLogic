@@ -271,7 +271,7 @@ example (φ : Formula) : ⊢ complex_formula := by
 
 **Error**: `tm_auto` fails with aesop internal error.
 
-**Cause**: Known issue with aesop on `DerivationTree` goals. See [KNOWN_LIMITATIONS.md](../project-info/KNOWN_LIMITATIONS.md).
+**Cause**: Known issue with aesop on `DerivationTree` goals. See [known-limitations.md](../project-info/known-limitations.md).
 
 **Solution**: Use `modal_search` instead of `tm_auto`:
 
@@ -395,15 +395,15 @@ import Bimodal.Syntax.Formula
 
 ## Getting More Help
 
-- **Quick Start Guide**: [QUICKSTART.md](QUICKSTART.md)
-- **Proof Patterns**: [PROOF_PATTERNS.md](PROOF_PATTERNS.md)
-- **Examples with Solutions**: [EXAMPLES.md](EXAMPLES.md#7-exercises)
-- **Axiom Reference**: [AXIOM_REFERENCE.md](../reference/AXIOM_REFERENCE.md)
-- **Tactic Reference**: [TACTIC_REFERENCE.md](../reference/TACTIC_REFERENCE.md)
-- **Known Limitations**: [KNOWN_LIMITATIONS.md](../project-info/KNOWN_LIMITATIONS.md)
+- **Quick Start Guide**: [quickstart.md](quickstart.md)
+- **Proof Patterns**: [proof-patterns.md](proof-patterns.md)
+- **Examples with Solutions**: [examples.md](examples.md#7-exercises)
+- **Axiom Reference**: [axiom-reference.md](../reference/axiom-reference.md)
+- **Tactic Reference**: [tactic-reference.md](../reference/tactic-reference.md)
+- **Known Limitations**: [known-limitations.md](../project-info/known-limitations.md)
 
 ## Navigation
 
-- [Quick Start](QUICKSTART.md)
+- [Quick Start](quickstart.md)
 - [User Guide](README.md)
 - [Back to Bimodal](../../README.md)

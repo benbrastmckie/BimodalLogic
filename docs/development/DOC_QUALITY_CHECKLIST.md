@@ -29,15 +29,15 @@ These checks verify that information is consistent across all documentation file
 
 ### 1.1 Tactic Count Consistency
 
-**Check**: Tactic counts match across TACTIC_DEVELOPMENT.md and implementation files.
+**Check**: Tactic counts match across tactic-development.md and implementation files.
 
 **Verification**:
 ```bash
 # Count tactic declarations in Tactics.lean
 TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Theories/Bimodal/Automation/Tactics.lean)
 
-# Count tactic references in TACTIC_DEVELOPMENT.md
-TACTICS_DOC=$(grep -c "^\#\#\# " docs/project-info/TACTIC_REGISTRY.md)
+# Count tactic references in tactic-development.md
+TACTICS_DOC=$(grep -c "^\#\#\# " docs/project-info/tactic-registry.md)
 
 echo "Implementation: $TACTICS_IMPL tactics"
 echo "Documentation: $TACTICS_DOC tactics"
@@ -48,20 +48,20 @@ echo "Documentation: $TACTICS_DOC tactics"
 **Expected**: Tactic counts should match actual implementation state. Currently
 12 tactics declared (8 axiom stubs + 4 to be implemented).
 
-**Action if Failed**: Update TACTIC_DEVELOPMENT.md or IMPLEMENTATION_STATUS.md to
+**Action if Failed**: Update tactic-development.md or implementation-status.md to
 reflect actual implementation state.
 
 ---
 
 ### 1.2 Completion Percentage Consistency
 
-**Check**: Completion percentages consistent across IMPLEMENTATION_STATUS.md,
+**Check**: Completion percentages consistent across implementation-status.md,
 README.md.
 
 **Verification**:
 ```bash
 # Check Automation package completion percentage
-grep -n "Automation.*%" docs/project-info/IMPLEMENTATION_STATUS.md
+grep -n "Automation.*%" docs/project-info/implementation-status.md
 grep -n "Automation.*%" README.md
 grep -n "Automation.*%" README.md
 
@@ -86,13 +86,13 @@ and implementation gaps.
 PERPETUITY_SORRY=$(grep -c "sorry" Theories/Bimodal/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
-# Check IMPLEMENTATION_STATUS.md Known Limitations section claims
-grep "Perpetuity.lean.*sorry" docs/project-info/IMPLEMENTATION_STATUS.md
+# Check implementation-status.md Known Limitations section claims
+grep "Perpetuity.lean.*sorry" docs/project-info/implementation-status.md
 
 # Manual verification: Line numbers in documentation match actual source locations
 ```
 
-**Expected**: Line numbers referenced in IMPLEMENTATION_STATUS.md, TODO.md, and
+**Expected**: Line numbers referenced in implementation-status.md, TODO.md, and
 other documentation should match actual source code locations.
 
 **Action if Failed**: Update line number references in documentation to match
@@ -103,7 +103,7 @@ current source code.
 ### 1.4 Sorry Placeholder Count
 
 **Check**: Total `sorry` count matches across Sorry Placeholder Registry in TODO.md
-and IMPLEMENTATION_STATUS.md Known Limitations section.
+and implementation-status.md Known Limitations section.
 
 **Verification**:
 ```bash
@@ -115,17 +115,17 @@ echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 # Check TODO.md registry
 grep "Total:.*placeholders" TODO.md
 
-# Check IMPLEMENTATION_STATUS.md Known Limitations section
-grep "sorry.*placeholder" docs/project-info/IMPLEMENTATION_STATUS.md | wc -l
+# Check implementation-status.md Known Limitations section
+grep "sorry.*placeholder" docs/project-info/implementation-status.md | wc -l
 
 # Manual verification: Counts should match
 ```
 
-**Expected**: All three sources (codebase, TODO.md, IMPLEMENTATION_STATUS.md) show
+**Expected**: All three sources (codebase, TODO.md, implementation-status.md) show
 identical `sorry` counts. Currently 41 total placeholders.
 
 **Action if Failed**: Update TODO.md Sorry Placeholder Registry and
-IMPLEMENTATION_STATUS.md Known Limitations section to reflect current state.
+implementation-status.md Known Limitations section to reflect current state.
 
 ---
 
@@ -181,12 +181,12 @@ DIRECTORY_README_STANDARD.md format.
 
 ### 2.3 Limitations Documentation
 
-**Check**: All known limitations documented in IMPLEMENTATION_STATUS.md Known Limitations section with workarounds.
+**Check**: All known limitations documented in implementation-status.md Known Limitations section with workarounds.
 
 **Verification**:
 ```bash
-# Check IMPLEMENTATION_STATUS.md Known Limitations section has all modules with incomplete implementation
-grep -E "^### [0-9]+\." docs/project-info/IMPLEMENTATION_STATUS.md | grep -A 5 "Known Limitations"
+# Check implementation-status.md Known Limitations section has all modules with incomplete implementation
+grep -E "^### [0-9]+\." docs/project-info/implementation-status.md | grep -A 5 "Known Limitations"
 
 # Manual verification: Ensure each limitation has:
 # - Clear description
@@ -196,9 +196,9 @@ grep -E "^### [0-9]+\." docs/project-info/IMPLEMENTATION_STATUS.md | grep -A 5 "
 ```
 
 **Expected**: Every `sorry` placeholder or incomplete implementation should have
-corresponding entry in IMPLEMENTATION_STATUS.md Known Limitations section with workaround.
+corresponding entry in implementation-status.md Known Limitations section with workaround.
 
-**Action if Failed**: Add missing limitation entries to IMPLEMENTATION_STATUS.md Known Limitations section.
+**Action if Failed**: Add missing limitation entries to implementation-status.md Known Limitations section.
 
 ---
 
@@ -230,11 +230,11 @@ These checks verify that documentation claims are accurate and verifiable.
 
 ### 3.1 Status Claims Verification
 
-**Check**: Status claims in IMPLEMENTATION_STATUS.md verifiable with provided commands.
+**Check**: Status claims in implementation-status.md verifiable with provided commands.
 
 **Verification**:
 ```bash
-# Test status verification commands from IMPLEMENTATION_STATUS.md
+# Test status verification commands from implementation-status.md
 cd /home/benjamin/Projects/BimodalLogic
 
 # Example: Verify Soundness module sorry count
@@ -243,14 +243,14 @@ grep -c "sorry" Theories/Bimodal/Metalogic/Soundness.lean
 # Example: Verify Automation package completion
 ls Theories/Bimodal/Automation/*.lean
 
-# Manual verification: Run verification commands from IMPLEMENTATION_STATUS.md
+# Manual verification: Run verification commands from implementation-status.md
 # and confirm results match documented status
 ```
 
-**Expected**: All verification commands in IMPLEMENTATION_STATUS.md should produce
+**Expected**: All verification commands in implementation-status.md should produce
 results matching documented status percentages and counts.
 
-**Action if Failed**: Update IMPLEMENTATION_STATUS.md status percentages or fix
+**Action if Failed**: Update implementation-status.md status percentages or fix
 verification commands.
 
 ---
@@ -264,7 +264,7 @@ verification commands.
 # Extract code blocks from markdown and test compilation
 # (Manual process - requires LEAN environment)
 
-# For TACTIC_DEVELOPMENT.md examples:
+# For tactic-development.md examples:
 cd /home/benjamin/Projects/BimodalLogic
 # Copy code examples to temporary .lean file and run:
 # lake env lean temp_example.lean
@@ -272,8 +272,8 @@ cd /home/benjamin/Projects/BimodalLogic
 # Expected: All examples compile without errors
 ```
 
-**Expected**: All LEAN code examples in TACTIC_DEVELOPMENT.md, METAPROGRAMMING_GUIDE.md,
-and TUTORIAL.md should compile successfully.
+**Expected**: All LEAN code examples in tactic-development.md, METAPROGRAMMING_GUIDE.md,
+and tutorial.md should compile successfully.
 
 **Action if Failed**: Fix code examples to match current LEAN 4 syntax and
 Logos API.
@@ -497,7 +497,7 @@ current priorities.
 **Verification**:
 ```bash
 # Example: Verify Perpetuity module status
-# IMPLEMENTATION_STATUS.md claims "50% complete (P1-P3 proven, P4-P6 incomplete)"
+# implementation-status.md claims "50% complete (P1-P3 proven, P4-P6 incomplete)"
 
 # Verify P1-P3 status
 grep -A5 "theorem p1" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
@@ -506,14 +506,14 @@ grep -A5 "theorem p3" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
 
 # Expected: P1-P2 have sorry in helpers, P3 has zero sorry
 
-# Manual verification: Run verification commands from IMPLEMENTATION_STATUS.md
+# Manual verification: Run verification commands from implementation-status.md
 # for each module and confirm results match documentation
 ```
 
 **Expected**: Documentation status percentages should accurately reflect
 implementation state verified by source code inspection.
 
-**Action if Failed**: Update IMPLEMENTATION_STATUS.md to reflect current
+**Action if Failed**: Update implementation-status.md to reflect current
 implementation state or fix incorrect status claims.
 
 ---
@@ -532,7 +532,7 @@ implementation state or fix incorrect status claims.
 1. Run Completeness Checks (Section 2) to ensure new code is documented
 2. Run Consistency Checks (Section 1) to update counts and percentages
 3. Run Accuracy Checks (Section 3) to verify status claims
-4. Update IMPLEMENTATION_STATUS.md (including Known Limitations section) as needed
+4. Update implementation-status.md (including Known Limitations section) as needed
 
 ### Quarterly Quality Assurance
 
@@ -570,7 +570,7 @@ When adding new documentation standards:
 - [Directory README Standard](DIRECTORY_README_STANDARD.md)
 
 **Implementation Tracking**:
-- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) (includes Known Limitations section)
+- [implementation-status.md](../project-info/implementation-status.md) (includes Known Limitations section)
 - [TODO.md](../../specs/TODO.md)
 
 **Best Practices Report**:

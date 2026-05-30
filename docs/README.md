@@ -29,10 +29,10 @@ For documentation specific to the bimodal logic theory, see:
 
 | Need | Bimodal (Complete) |
 |------|-------------------|
-| Quick start | [Quick Start](../Theories/Bimodal/docs/user-guide/QUICKSTART.md) |
-| Axiom reference | [Axioms](../Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md) |
-| Implementation status | [Status](../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md) |
-| Known limitations | [Limitations](../Theories/Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) |
+| Quick start | [Quick Start](../Theories/Bimodal/docs/user-guide/quickstart.md) |
+| Axiom reference | [Axioms](../Theories/Bimodal/docs/reference/axiom-reference.md) |
+| Implementation status | [Status](../Theories/Bimodal/docs/project-info/implementation-status.md) |
+| Known limitations | [Limitations](../Theories/Bimodal/docs/project-info/known-limitations.md) |
 
 **Theory research**: [research/BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal logic foundations and theory
 
@@ -91,7 +91,7 @@ Project-wide status and tracking:
 
 - [README.md](project-info/README.md) - Directory overview
 - [FEATURE_REGISTRY.md](project-info/FEATURE_REGISTRY.md) - Feature tracking and capabilities
-- [IMPLEMENTATION_STATUS.md](project-info/IMPLEMENTATION_STATUS.md) - Module-by-module status tracking with verification commands
+- [implementation-status.md](project-info/implementation-status.md) - Module-by-module status tracking with verification commands
 - [MAINTENANCE.md](project-info/MAINTENANCE.md) - TODO management workflow
 - [SORRY_REGISTRY.md](project-info/SORRY_REGISTRY.md) - Technical debt tracking
 
@@ -141,7 +141,7 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 - [README.md](architecture/README.md) - ADR catalog and guidance
 - [ADR-001-Classical-Logic-Noncomputable.md](architecture/ADR-001-Classical-Logic-Noncomputable.md) - Classical logic for metalogic
 - [ADR-004-Remove-Project-Level-State-Files.md](architecture/ADR-004-Remove-Project-Level-State-Files.md) - State file architecture
-- [BFMCS_ARCHITECTURE.md](architecture/BFMCS_ARCHITECTURE.md) - BFMCS proof architecture (base completeness construction)
+- [BFMCS_architecture.md](architecture/BFMCS_architecture.md) - BFMCS proof architecture (base completeness construction)
 
 **Audience**: Architects, maintainers
 
@@ -159,12 +159,12 @@ Training data pipeline documentation:
 
 1. [Installation](installation/README.md) - Set up ProofChecker
 2. [Basic Installation](installation/BASIC_INSTALLATION.md) - Step-by-step setup guide
-3. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Start writing proofs
-4. [TM Architecture](../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - Understand TM logic
+3. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/tutorial.md) - Start writing proofs
+4. [TM Architecture](../Theories/Bimodal/docs/user-guide/architecture.md) - Understand TM logic
 
 ### For Contributors
 
-1. [Implementation Status](project-info/IMPLEMENTATION_STATUS.md) - What's implemented
+1. [Implementation Status](project-info/implementation-status.md) - What's implemented
 2. [Sorry Registry](project-info/SORRY_REGISTRY.md) - Technical debt tracking
 3. [Contributing Guidelines](development/CONTRIBUTING.md) - How to contribute
 4. [Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding standards
@@ -185,7 +185,7 @@ Training data pipeline documentation:
 
 ### Quick Reference
 
-- [TM Operators](../Theories/Bimodal/docs/reference/OPERATORS.md) - Symbol notation guide
+- [TM Operators](../Theories/Bimodal/docs/reference/operators.md) - Symbol notation guide
 
 ## By Use Case
 
@@ -193,16 +193,16 @@ Training data pipeline documentation:
 
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
-2. [Bimodal Architecture](../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - The complete, verified system
+2. [Bimodal Architecture](../Theories/Bimodal/docs/user-guide/architecture.md) - The complete, verified system
 3. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
 
 ### I want to write proofs
 
 **Start with Bimodal** (complete implementation):
-1. [Bimodal Quick Start](../Theories/Bimodal/docs/user-guide/QUICKSTART.md) - Get started
-2. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step guide
+1. [Bimodal Quick Start](../Theories/Bimodal/docs/user-guide/quickstart.md) - Get started
+2. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/tutorial.md) - Step-by-step guide
 3. [LEAN Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding conventions
-4. [Bimodal Examples](../Theories/Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
+4. [Bimodal Examples](../Theories/Bimodal/docs/user-guide/examples.md) - Worked examples
 
 ### I want to integrate with external tools
 
@@ -215,7 +215,7 @@ Training data pipeline documentation:
 
 **Start with**:
 1. [Contributing Guide](development/CONTRIBUTING.md) - Contribution workflow
-2. [Implementation Status](project-info/IMPLEMENTATION_STATUS.md) - What's implemented
+2. [Implementation Status](project-info/implementation-status.md) - What's implemented
 3. [Sorry Registry](project-info/SORRY_REGISTRY.md) - Technical debt tracking
 4. [TODO.md](../specs/TODO.md) - Active tasks
 
@@ -234,8 +234,8 @@ When updating documentation:
    - Architecture decisions -> architecture/
 
 3. **Implementation changes**: Update appropriate project-info/
-   - Theory status -> theory project-info/IMPLEMENTATION_STATUS.md
-   - Project status -> docs/project-info/IMPLEMENTATION_STATUS.md
+   - Theory status -> theory project-info/implementation-status.md
+   - Project status -> docs/project-info/implementation-status.md
 
 4. **Style/standard changes**: Update development/ standards files
    - Coding conventions -> LEAN_STYLE_GUIDE.md

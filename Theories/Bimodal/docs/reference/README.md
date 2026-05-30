@@ -6,8 +6,8 @@ Reference materials for the Bimodal TM logic library.
 
 | Document | Description |
 |----------|-------------|
-| [AXIOM_REFERENCE.md](AXIOM_REFERENCE.md) | Complete axiom schemas with examples |
-| [TACTIC_REFERENCE.md](TACTIC_REFERENCE.md) | Bimodal-specific tactic usage |
+| [axiom-reference.md](axiom-reference.md) | Complete axiom schemas with examples |
+| [tactic-reference.md](tactic-reference.md) | Bimodal-specific tactic usage |
 
 ## Quick Lookup
 
@@ -29,7 +29,7 @@ Reference materials for the Bimodal TM logic library.
 - MF: `□△φ ↔ △□φ`
 - TF: `□▽φ ↔ ▽□φ`
 
-See [AXIOM_REFERENCE.md](AXIOM_REFERENCE.md) for complete details.
+See [axiom-reference.md](axiom-reference.md) for complete details.
 
 ### Common Tactics
 
@@ -40,11 +40,11 @@ See [AXIOM_REFERENCE.md](AXIOM_REFERENCE.md) for complete details.
 | `modal_search` | Automated modal proof search |
 | `temporal_search` | Automated temporal proof search |
 
-See [TACTIC_REFERENCE.md](TACTIC_REFERENCE.md) for usage details.
+See [tactic-reference.md](tactic-reference.md) for usage details.
 
 ## See Also
 
-- [Project Operators Reference](../../../docs/reference/OPERATORS.md) - Symbol notation
+- [Project Operators Reference](../../../docs/reference/operators.md) - Symbol notation
 - [Project API Reference](../../../docs/reference/API_REFERENCE.md) - Full API docs
 
 ## Navigation

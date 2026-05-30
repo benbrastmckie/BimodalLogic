@@ -271,10 +271,10 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
 
 | Document | Description |
 |----------|-------------|
-| [Quick Start](docs/user-guide/QUICKSTART.md) | Get started with Bimodal proofs |
-| [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) | Common proof strategies |
-| [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
-| [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) | Custom tactic usage |
+| [Quick Start](docs/user-guide/quickstart.md) | Get started with Bimodal proofs |
+| [Proof Patterns](docs/user-guide/proof-patterns.md) | Common proof strategies |
+| [Axiom Reference](docs/reference/axiom-reference.md) | Complete axiom schemas |
+| [Tactic Reference](docs/reference/tactic-reference.md) | Custom tactic usage |
 
 ## Navigation
 

@@ -6,10 +6,10 @@ Project status and tracking for the Bimodal TM logic implementation.
 
 | Document | Description |
 |----------|-------------|
-| [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) | Module-by-module implementation status |
-| [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) | Current MVP limitations and workarounds |
-| [PERFORMANCE_TARGETS.md](PERFORMANCE_TARGETS.md) | Performance baselines and regression thresholds |
-| [TACTIC_REGISTRY.md](TACTIC_REGISTRY.md) | Available tactics and automation |
+| [implementation-status.md](implementation-status.md) | Module-by-module implementation status |
+| [known-limitations.md](known-limitations.md) | Current MVP limitations and workarounds |
+| [performance-targets.md](performance-targets.md) | Performance baselines and regression thresholds |
+| [tactic-registry.md](tactic-registry.md) | Available tactics and automation |
 
 ## Quick Status
 
@@ -30,7 +30,7 @@ Project status and tracking for the Bimodal TM logic implementation.
 
 ## See Also
 
-- [Project Implementation Status](../../../docs/project-info/IMPLEMENTATION_STATUS.md) -
+- [Project Implementation Status](../../../docs/project-info/implementation-status.md) -
   Project-wide status
 - [Sorry Registry](../../../docs/project-info/SORRY_REGISTRY.md) - Technical debt tracking
 - [Feature Registry](../../../docs/project-info/FEATURE_REGISTRY.md) - Feature tracking

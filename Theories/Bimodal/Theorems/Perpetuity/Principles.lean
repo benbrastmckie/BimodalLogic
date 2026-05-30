@@ -28,7 +28,7 @@ establish fundamental connections between modal necessity (□) and temporal ope
 
 * [Perpetuity.lean](../Perpetuity.lean) - Parent module (re-exports)
 * [Helpers.lean](Helpers.lean) - Helper lemmas
-* [ARCHITECTURE.md](../../../../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [architecture.md](../../../../docs/user-guide/architecture.md) - TM logic specification
 -/
 
 namespace Bimodal.Theorems.Perpetuity

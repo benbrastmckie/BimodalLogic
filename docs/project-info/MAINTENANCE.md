@@ -8,12 +8,12 @@ This document describes the workflow for maintaining TODO.md and related project
 
 **Four-Document Model**:
 - [TODO.md](../../specs/TODO.md) - Active task tracking (active work only)
-- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
+- [implementation-status.md](implementation-status.md) - Module-by-module completion tracking (includes Known Limitations section)
 - [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) - Feature tracking and capability documentation
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
 
 **Theory-Specific Documents** (in Theories/Bimodal/docs/project-info/):
-- [TACTIC_REGISTRY.md](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md) - Custom tactic documentation and usage
+- [tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md) - Custom tactic documentation and usage
 
 ---
 
@@ -87,7 +87,7 @@ This model provides:
 1. Create implementation summary in spec directory (if spec exists)
 
 2. Update related documentation:
-   - **IMPLEMENTATION_STATUS.md**: Update module status, sorry counts, and Known Limitations section
+   - **implementation-status.md**: Update module status, sorry counts, and Known Limitations section
    - **SORRY_REGISTRY.md**: Remove resolved placeholders
 
 3. **Remove completed task from TODO.md entirely** (don't mark as complete)
@@ -129,10 +129,10 @@ Update these files in order:
 | Order | File | Updates |
 |-------|------|---------|
 | 1 | Spec summaries | Create completion summary |
-| 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts, Known Limitations section |
+| 2 | implementation-status.md | Module %, sorry counts, Known Limitations section |
 | 3 | FEATURE_REGISTRY.md | Add new features, update feature status |
 | 4 | SORRY_REGISTRY.md | Remove resolved items |
-| 5 | TACTIC_REGISTRY.md | Add/update custom tactics (in Theories/Bimodal/docs/) |
+| 5 | tactic-registry.md | Add/update custom tactics (in Theories/Bimodal/docs/) |
 | 6 | TODO.md | Remove task, update counts |
 | 7 | Git commit | Comprehensive message |
 
@@ -140,10 +140,10 @@ Update these files in order:
 
 ```
 Is this about module completion %?
-  -> IMPLEMENTATION_STATUS.md
+  -> implementation-status.md
 
 Is this about a gap/limitation being fixed?
-  -> IMPLEMENTATION_STATUS.md Known Limitations section (remove entry)
+  -> implementation-status.md Known Limitations section (remove entry)
 
 Is this about a new feature or capability?
   -> FEATURE_REGISTRY.md (add entry with status and description)
@@ -152,7 +152,7 @@ Is this about a sorry placeholder?
   -> SORRY_REGISTRY.md (remove/move to resolved)
 
 Is this about a custom tactic?
-  -> TACTIC_REGISTRY.md (add/update tactic documentation)
+  -> tactic-registry.md (add/update tactic documentation)
 
 Is this about task status?
   -> TODO.md (remove if complete, update if partial)
@@ -169,15 +169,15 @@ After major updates, verify bidirectional links work:
 # Check registry references
 grep -l "SORRY_REGISTRY.md" TODO.md docs/project-info/*.md
 grep -l "FEATURE_REGISTRY.md" TODO.md docs/project-info/*.md
-grep -l "TACTIC_REGISTRY.md" TODO.md docs/project-info/*.md
+grep -l "tactic-registry.md" TODO.md docs/project-info/*.md
 
 # Check all core docs reference each other appropriately
-for doc in TODO.md docs/project-info/IMPLEMENTATION_STATUS.md \
+for doc in TODO.md docs/project-info/implementation-status.md \
            docs/project-info/FEATURE_REGISTRY.md \
            docs/project-info/SORRY_REGISTRY.md \
-           docs/project-info/TACTIC_REGISTRY.md; do
+           docs/project-info/tactic-registry.md; do
   echo "=== $doc ==="
-  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|FEATURE_REGISTRY|SORRY_REGISTRY|TACTIC_REGISTRY|MAINTENANCE)" "$doc"
+  grep -E "(TODO\.md|implementation-status|FEATURE_REGISTRY|SORRY_REGISTRY|tactic-registry|MAINTENANCE)" "$doc"
 done
 ```
 
@@ -267,7 +267,7 @@ git log --all -S "sorry" -- Theories/Bimodal/Semantics/Truth.lean
 
 2. Review resolution guidance and effort estimate
 
-3. Check for blockers in [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations)
+3. Check for blockers in [implementation-status.md - Known Limitations](implementation-status.md#known-limitations)
 
 4. Implement proof/function to remove sorry
 
@@ -277,7 +277,7 @@ git log --all -S "sorry" -- Theories/Bimodal/Semantics/Truth.lean
 
 7. Update SORRY_REGISTRY.md (move to Resolved section or remove)
 
-8. Update IMPLEMENTATION_STATUS.md (decrement sorry count for module)
+8. Update implementation-status.md (decrement sorry count for module)
 
 9. Commit with clear message:
    ```bash
@@ -289,7 +289,7 @@ git log --all -S "sorry" -- Theories/Bimodal/Semantics/Truth.lean
 If resolution is blocked:
 
 1. Document blocker in SORRY_REGISTRY.md entry
-2. Cross-reference to IMPLEMENTATION_STATUS.md Known Limitations section
+2. Cross-reference to implementation-status.md Known Limitations section
 3. Mark status as BLOCKED
 4. Create workaround if possible
 5. Create task in TODO.md if unblocking requires significant work
@@ -410,7 +410,7 @@ Resolve sorry at File.lean:123 - [description]
 - Implemented [proof/function]
 - [Any related changes]
 
-Updates SORRY_REGISTRY.md and IMPLEMENTATION_STATUS.md
+Updates SORRY_REGISTRY.md and implementation-status.md
 ```
 
 ### Documentation Update
@@ -579,7 +579,7 @@ When the `/review` command completes a repository analysis, it should update the
 
 ### Files to Update
 
-1. **IMPLEMENTATION_STATUS.md** - Update module completion percentages, sorry counts, and Known Limitations section
+1. **implementation-status.md** - Update module completion percentages, sorry counts, and Known Limitations section
    - Add new gaps/limitations discovered during review
    - Remove limitations that have been resolved
    - Update completion percentages based on current state
@@ -587,14 +587,14 @@ When the `/review` command completes a repository analysis, it should update the
 2. **FEATURE_REGISTRY.md** - Register new features or capabilities discovered
    - Add entries for undocumented features found in code
    - Update feature status based on implementation state
-   - Cross-reference with IMPLEMENTATION_STATUS.md
+   - Cross-reference with implementation-status.md
 
 3. **SORRY_REGISTRY.md** - Update sorry placeholder tracking
    - Add newly discovered sorry placeholders
    - Remove resolved placeholders
    - Update resolution guidance based on findings
 
-4. **TACTIC_REGISTRY.md** - Update custom tactic documentation
+4. **tactic-registry.md** - Update custom tactic documentation
    - Add newly discovered tactics
    - Update tactic descriptions and usage examples
    - Cross-reference with implementation files
@@ -649,7 +649,7 @@ These instructions are general and apply to any repository using this workflow s
 - All verification checks passed (target files, build, symbols)
 
 **Files Modified**:
-- docs/project-info/IMPLEMENTATION_STATUS.md
+- docs/project-info/implementation-status.md
 - docs/project-info/SORRY_REGISTRY.md
 - .claude/CLAUDE.md
 - docs/development/LEAN_STYLE_GUIDE.md

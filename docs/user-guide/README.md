@@ -12,7 +12,7 @@ The primary working system is **Bimodal**, which has complete soundness and comp
 
 | Theory | Status | Quick Start | Additional Guides |
 |--------|--------|-------------|-------------------|
-| **Bimodal** | Complete | [Quick Start](../../Theories/Bimodal/docs/user-guide/QUICKSTART.md) | [Tutorial](../../Theories/Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Theories/Bimodal/docs/user-guide/EXAMPLES.md), [Proof Patterns](../../Theories/Bimodal/docs/user-guide/PROOF_PATTERNS.md) |
+| **Bimodal** | Complete | [Quick Start](../../Theories/Bimodal/docs/user-guide/quickstart.md) | [Tutorial](../../Theories/Bimodal/docs/user-guide/tutorial.md), [Examples](../../Theories/Bimodal/docs/user-guide/examples.md), [Proof Patterns](../../Theories/Bimodal/docs/user-guide/proof-patterns.md) |
 
 **Recommendation**: Start with Bimodal for a production-ready modal-temporal logic implementation.
 
@@ -45,12 +45,12 @@ This directory contains integration guides applicable across all theories:
 
 **Start with Bimodal** - the complete, verified implementation:
 
-1. [Bimodal Quick Start](../../Theories/Bimodal/docs/user-guide/QUICKSTART.md) - Get started with proofs
-2. [Bimodal Tutorial](../../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step introduction
-3. [Bimodal Examples](../../Theories/Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
+1. [Bimodal Quick Start](../../Theories/Bimodal/docs/user-guide/quickstart.md) - Get started with proofs
+2. [Bimodal Tutorial](../../Theories/Bimodal/docs/user-guide/tutorial.md) - Step-by-step introduction
+3. [Bimodal Examples](../../Theories/Bimodal/docs/user-guide/examples.md) - Worked examples
 
 For advanced tactic development:
-- [Tactic Development](../../Theories/Bimodal/docs/user-guide/TACTIC_DEVELOPMENT.md) - Custom tactics for Bimodal
+- [Tactic Development](../../Theories/Bimodal/docs/user-guide/tactic-development.md) - Custom tactics for Bimodal
 
 ## Related Documentation
 

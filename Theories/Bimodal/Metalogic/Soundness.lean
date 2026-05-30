@@ -80,7 +80,7 @@ Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Den
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Soundness specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - Soundness specification
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 * [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
 * [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and swap preservation

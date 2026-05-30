@@ -16,7 +16,7 @@ This document tracks `sorry` placeholders (unproven theorems) and `axiom` declar
 2. Move resolved items to "Resolved Placeholders" section with date and summary
 3. Update "Total Active Placeholders" and "Total Resolved" counts at top
 4. Update "Last Updated" date
-5. Cross-reference changes in IMPLEMENTATION_STATUS.md
+5. Cross-reference changes in implementation-status.md
 
 **Verification Commands**:
 ```bash
@@ -33,19 +33,19 @@ echo "axiom: $(grep -rc '^axiom ' Bimodal/**/*.lean 2>/dev/null | awk -F: '{s+=$
 
 **Relationship to Other Files**:
 - **specs/TODO.md**: Active tasks that resolve items in this registry
-- **IMPLEMENTATION_STATUS.md**: Module status affected by sorry resolution
+- **implementation-status.md**: Module status affected by sorry resolution
 - **specs/**: Spec-based plans for systematic resolution
 
 **Command Integration**:
-- `/task`, `/add`, `/review`, and `/todo` now require updating this registry alongside IMPLEMENTATION_STATUS.md and TACTIC_REGISTRY.md whenever command/task updates affect sorry or tactic status; dry-run/test modes must avoid registry writes and must not create project directories for doc-only changes.
+- `/task`, `/add`, `/review`, and `/todo` now require updating this registry alongside implementation-status.md and tactic-registry.md whenever command/task updates affect sorry or tactic status; dry-run/test modes must avoid registry writes and must not create project directories for doc-only changes.
 
 ---
 
 ## Related Documentation
 
 - [TODO.md](../../specs/TODO.md) - Active tasks addressing these items
-- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (canonical sorry counts)
-- [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations) - Blockers and workarounds affecting resolution
+- [implementation-status.md](implementation-status.md) - Module-by-module completion tracking (canonical sorry counts)
+- [implementation-status.md - Known Limitations](implementation-status.md#known-limitations) - Blockers and workarounds affecting resolution
 
 ## Verification Commands
 

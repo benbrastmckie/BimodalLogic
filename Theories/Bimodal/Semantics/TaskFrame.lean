@@ -58,7 +58,7 @@ This matches the paper's specification exactly and allows for various temporal s
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Task semantics specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - Task semantics specification
 * JPL Paper app:TaskSemantics (def:frame, line 1835) - Formal task frame definition
 -/
 

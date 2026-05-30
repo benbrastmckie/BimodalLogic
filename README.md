@@ -159,14 +159,14 @@ The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (2
 
 ### Reference
 
-- [Axiom Reference](Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md) — complete axiom schemas for all 44 constructors
-- [Operator Reference](Theories/Bimodal/docs/reference/OPERATORS.md) — formal operator definitions
-- [Tactic Reference](Theories/Bimodal/docs/reference/TACTIC_REFERENCE.md) — custom proof tactics
+- [Axiom Reference](Theories/Bimodal/docs/reference/axiom-reference.md) — complete axiom schemas for all 44 constructors
+- [Operator Reference](Theories/Bimodal/docs/reference/operators.md) — formal operator definitions
+- [Tactic Reference](Theories/Bimodal/docs/reference/tactic-reference.md) — custom proof tactics
 - [Specification Document](Theories/Bimodal/latex/BimodalReference.pdf) — full formal specification
 
 ### User Guides
 
-- [Tutorial](Theories/Bimodal/docs/user-guide/TUTORIAL.md) — introduction to writing bimodal proofs
+- [Tutorial](Theories/Bimodal/docs/user-guide/tutorial.md) — introduction to writing bimodal proofs
 - [Contributing](docs/development/CONTRIBUTING.md) — contribution guidelines
 
 ### Research

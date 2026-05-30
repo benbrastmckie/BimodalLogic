@@ -6,7 +6,7 @@ _[Return to Project Overview](../../README.md)_
 
 This guide provides a comprehensive roadmap for developing an axiomatic proof system in LEAN, complete with model-theoretic semantics, metalogic, and axiom minimization utilities. The architecture is designed to support the full lifecycle from proof system definition to soundness verification and axiom optimization. Throughout this development, we integrate a domain-specific language (DSL) to enhance usability and provide intuitive interfaces for natural deduction theorem proving, semantic analysis, and axiom management.
 
-For a quick start guide and usage examples, see the [Tutorial](TUTORIAL.md) and [Examples](EXAMPLES.md).
+For a quick start guide and usage examples, see the [Tutorial](tutorial.md) and [Examples](examples.md).
 
 ## 1. Proof System Construction in LEAN
 
@@ -981,9 +981,9 @@ Logos/
 ├── Counterexamples/                      # Invalidity demonstrations
 │   └── Counterexamples.lean              # Counterexamples library root
 ├── docs/                        # User documentation
-│   ├── ARCHITECTURE.md                   # System design and TM logic specification
-│   ├── TUTORIAL.md                       # Getting started guide
-│   ├── EXAMPLES.md                       # Usage examples
+│   ├── architecture.md                   # System design and TM logic specification
+│   ├── tutorial.md                       # Getting started guide
+│   ├── examples.md                       # Usage examples
 │   ├── CONTRIBUTING.md                   # Contribution guidelines
 │   ├── INTEGRATION.md                    # Model-Checker integration
 │   └── VERSIONING.md                     # Versioning policy
@@ -1213,7 +1213,7 @@ Logos implements the Logos formal language of thought. For philosophical foundat
 
 ### Implementation Status
 
-For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
+For detailed implementation status, see [implementation-status.md](../project-info/implementation-status.md).
 
 ### 8.1 Layer 0 (Core TM)
 
@@ -1296,7 +1296,7 @@ The layered architecture provides clear development milestones:
 - Partial metalogic: Soundness (5/8 axioms proven), completeness infrastructure defined
 - **Delivers**: Verified reasoning for boolean, modal, and temporal logic
 
-For current implementation status, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
+For current implementation status, see [implementation-status.md](../project-info/implementation-status.md).
 
 **Layers 1-3 (Future Extensions)**:
 - Extended languages: Explanatory, epistemic, normative operators
@@ -1360,9 +1360,9 @@ This architecture provides a comprehensive foundation for developing a sophistic
 
 **Related Documentation:**
 - [METHODOLOGY.md](METHODOLOGY.md) - Philosophical foundations
-- [Tutorial](TUTORIAL.md) - Getting started guide
-- [Examples](EXAMPLES.md) - Modal, temporal, and bimodal examples
-- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress
+- [Tutorial](tutorial.md) - Getting started guide
+- [Examples](examples.md) - Modal, temporal, and bimodal examples
+- [implementation-status.md](../project-info/implementation-status.md) - Current progress
 - [Research/layer-extensions.md](../research/layer-extensions.md) - Layers 1-3 specifications
 - [Research/dual-verification.md](../research/dual-verification.md) - RL training architecture
 - [Research/proof-library-design.md](../research/proof-library-design.md) - Theorem caching design

@@ -32,7 +32,7 @@ This file demonstrates both available notation styles:
 ## References
 
 * [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean) - P1-P6 theorems
-* [ARCHITECTURE.md](../docs/ARCHITECTURE.md) - TM logic specification
+* [architecture.md](../docs/user-guide/architecture.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.BimodalProofs

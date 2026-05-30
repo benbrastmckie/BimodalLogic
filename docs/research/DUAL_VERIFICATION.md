@@ -272,7 +272,7 @@ Scored signals integrate into RL training through systematic tactic mastery:
 - **Phase 3**: Learn meta-tactic composition for quality optimization
 - **Phase 4**: Achieve cross-extension strategic reasoning and novel tactic discovery
 
-**Implementation Status**: See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for current progress on quality assessment metrics and TM theorem proofs.
+**Implementation Status**: See [implementation-status.md](../project-info/implementation-status.md) for current progress on quality assessment metrics and TM theorem proofs.
 
 ## Negative RL Signals from Model-Checker
 
@@ -418,7 +418,7 @@ This quality-focused approach ensures AI systems don't just learn to reason corr
 
 ## Implementation Status
 
-For current implementation progress on proof-checker and model-checker integration, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
+For current implementation progress on proof-checker and model-checker integration, see [implementation-status.md](../project-info/implementation-status.md).
 
 ## Training Roadmap for Logos Mastery
 
@@ -498,10 +498,10 @@ This roadmap ensures AI systems achieve comprehensive mastery of the Logos frame
 ## Related Documentation
 
 - [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations of the Logos
-- [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer specifications for the Logos framework
+- [architecture.md](../user-guide/architecture.md) - Layer specifications for the Logos framework
 - [PROOF_LIBRARY_DESIGN.md](PROOF_LIBRARY_DESIGN.md) - Quality-aware theorem caching architecture
 - [layer-extensions.md](layer-extensions.md) - Advanced Logos extensions and integration strategies
-- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress on Logos training implementation
+- [implementation-status.md](../project-info/implementation-status.md) - Current progress on Logos training implementation
 
 ---
 

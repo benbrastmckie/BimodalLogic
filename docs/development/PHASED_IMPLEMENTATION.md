@@ -77,7 +77,7 @@ pedagogical examples. All tasks are independent and can run simultaneously.
 4. Prove `contraposition` helper (Perpetuity.lean:139)
 5. Update ProofSystem/Derivation.lean
 6. Write tests in Tests/BimodalTest/ProofSystem/AxiomsTest.lean
-7. Update IMPLEMENTATION_STATUS.md axiom count (8 → 10)
+7. Update implementation-status.md axiom count (8 → 10)
 
 **Dependencies**: None
 
@@ -95,7 +95,7 @@ TemporalProofs.lean).
 2. Create `Archive/TemporalProofs.lean` with temporal reasoning examples
 3. Update `Archive/Archive.lean` to re-export new modules
 4. Write tests in `Tests/BimodalTest/Archive/`
-5. Update IMPLEMENTATION_STATUS.md Archive status (3/3 complete)
+5. Update implementation-status.md Archive status (3/3 complete)
 
 **Dependencies**: None
 
@@ -145,7 +145,7 @@ temporal_duality rules.
 5. Prove temporal_duality soundness with semantic duality lemma
 6. Remove all 15 `sorry` placeholders from Soundness.lean
 7. Write tests for new soundness proofs
-8. Update IMPLEMENTATION_STATUS.md Soundness status (60% → 100%)
+8. Update implementation-status.md Soundness status (60% → 100%)
 
 **Dependencies**: None (but benefits from Task 2 propositional axioms for proof
 techniques)
@@ -169,7 +169,7 @@ parallel with Tasks 5, 7, 8 once Task 2 completes.
 4. Prove P6 (`▽□φ → □△φ`) from interaction lemmas
 5. Remove all 3 `sorry` placeholders (lines 225, 252, 280)
 6. Write comprehensive tests for P4-P6
-7. Update IMPLEMENTATION_STATUS.md Perpetuity status (50% → 100%)
+7. Update implementation-status.md Perpetuity status (50% → 100%)
 
 **Dependencies**:
 - **REQUIRES**: Task 2 (Add Propositional Axioms) - P4-P6 need propositional helpers
@@ -190,19 +190,19 @@ allows incremental progress.
 - Implement `apply_axiom` (generic axiom application, 8-10 hours)
 - Implement `modal_t` (modal T axiom, 4-6 hours)
 - Write tests for Phase 1 tactics
-- Update IMPLEMENTATION_STATUS.md Automation (0% → 20%)
+- Update implementation-status.md Automation (0% → 20%)
 
 **Phase 2** (15-20 hours): Automated Search
 - Implement `tm_auto` (Aesop-based automation, 15-20 hours)
 - Integrate Phase 1 tactics into `tm_auto`
 - Write tests for `tm_auto`
-- Update IMPLEMENTATION_STATUS.md Automation (20% → 35%)
+- Update implementation-status.md Automation (20% → 35%)
 
 **Phase 3** (10-20 hours): Context Search
 - Implement `assumption_search` (premise search, 8-12 hours)
 - Write comprehensive tactic tests
-- Update documentation (TACTIC_DEVELOPMENT.md)
-- Update IMPLEMENTATION_STATUS.md Automation (35% → 50%)
+- Update documentation (tactic-development.md)
+- Update implementation-status.md Automation (35% → 50%)
 
 **Dependencies**: None (can start anytime, benefits from all proven theorems)
 
@@ -219,7 +219,7 @@ allows incremental progress.
 2. Prove `respects_task` property
 3. Remove `sorry` at line 75 (WorldHistory.lean)
 4. Add test case for universal history
-5. Update IMPLEMENTATION_STATUS.md Semantics status
+5. Update implementation-status.md Semantics status
 
 **Dependencies**: None
 
@@ -536,13 +536,13 @@ If working alone, prioritize critical path to minimize project duration:
 
 ### Logos Documentation
 
-- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Module-by-
+- [implementation-status.md](../project-info/implementation-status.md) - Module-by-
   module status tracking
-- [IMPLEMENTATION_STATUS.md - Known Limitations](../project-info/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
+- [implementation-status.md - Known Limitations](../project-info/implementation-status.md#known-limitations) - Gaps and workarounds
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 
 ### Related Guides
 
-- [TACTIC_DEVELOPMENT.md](../user-guide/TACTIC_DEVELOPMENT.md) - Tactic implementation patterns
+- [tactic-development.md](../user-guide/tactic-development.md) - Tactic implementation patterns
 - [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
   fundamentals

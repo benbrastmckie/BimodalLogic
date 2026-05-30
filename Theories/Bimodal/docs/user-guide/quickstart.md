@@ -97,10 +97,10 @@ example (A B C : Formula) : ⊢ (A.imp B).imp ((B.imp C).imp (A.imp C)) :=
 
 ## Next Steps
 
-1. **Learn proof patterns**: [PROOF_PATTERNS.md](PROOF_PATTERNS.md)
-2. **Reference axioms**: [AXIOM_REFERENCE.md](../reference/AXIOM_REFERENCE.md)
+1. **Learn proof patterns**: [proof-patterns.md](proof-patterns.md)
+2. **Reference axioms**: [axiom-reference.md](../reference/axiom-reference.md)
 3. **See examples**: [Bimodal/Examples/](../../Examples/)
-4. **General tutorial**: [TUTORIAL.md](../../../docs/user-guide/TUTORIAL.md)
+4. **General tutorial**: [tutorial.md](../../../docs/user-guide/tutorial.md)
 
 ## Troubleshooting
 
@@ -128,14 +128,14 @@ lemma or tactic.
 
 ### More Help
 
-For detailed troubleshooting with 20+ error patterns, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+For detailed troubleshooting with 20+ error patterns, see [troubleshooting.md](troubleshooting.md).
 
-For practice problems with hints and solutions, see [EXAMPLES.md](EXAMPLES.md#7-exercises).
+For practice problems with hints and solutions, see [examples.md](examples.md#7-exercises).
 
 ## Navigation
 
-- [Proof Patterns](PROOF_PATTERNS.md) - Common patterns
-- [Examples and Exercises](EXAMPLES.md) - Worked examples with solutions
-- [Troubleshooting Guide](TROUBLESHOOTING.md) - Detailed error solutions
-- [Axiom Reference](../reference/AXIOM_REFERENCE.md) - Complete axiom list
+- [Proof Patterns](proof-patterns.md) - Common patterns
+- [Examples and Exercises](examples.md) - Worked examples with solutions
+- [Troubleshooting Guide](troubleshooting.md) - Detailed error solutions
+- [Axiom Reference](../reference/axiom-reference.md) - Complete axiom list
 - [Back to User Guide](README.md)

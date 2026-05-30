@@ -25,12 +25,12 @@ Documentation is organized into four categories:
 User-facing documentation for working with Bimodal:
 
 - [README.md](user-guide/README.md) - Directory overview and reading order
-- [QUICKSTART.md](user-guide/QUICKSTART.md) - Getting started with Bimodal proofs
-- [PROOF_PATTERNS.md](user-guide/PROOF_PATTERNS.md) - Common proof patterns and strategies
-- [ARCHITECTURE.md](user-guide/ARCHITECTURE.md) - TM logic specification and system design
-- [TUTORIAL.md](user-guide/TUTORIAL.md) - Step-by-step tutorial
-- [EXAMPLES.md](user-guide/EXAMPLES.md) - Usage examples and proof patterns
-- [TACTIC_DEVELOPMENT.md](user-guide/TACTIC_DEVELOPMENT.md) - Custom tactic development
+- [quickstart.md](user-guide/quickstart.md) - Getting started with Bimodal proofs
+- [proof-patterns.md](user-guide/proof-patterns.md) - Common proof patterns and strategies
+- [architecture.md](user-guide/architecture.md) - TM logic specification and system design
+- [tutorial.md](user-guide/tutorial.md) - Step-by-step tutorial
+- [examples.md](user-guide/examples.md) - Usage examples and proof patterns
+- [tactic-development.md](user-guide/tactic-development.md) - Custom tactic development
 
 **Audience**: Users of the library, learners
 
@@ -39,9 +39,9 @@ User-facing documentation for working with Bimodal:
 Reference materials for Bimodal logic:
 
 - [README.md](reference/README.md) - Directory overview and quick lookup guide
-- [AXIOM_REFERENCE.md](reference/AXIOM_REFERENCE.md) - Complete axiom schemas with examples
-- [TACTIC_REFERENCE.md](reference/TACTIC_REFERENCE.md) - Bimodal-specific tactic usage
-- [OPERATORS.md](reference/OPERATORS.md) - TM operator reference and Unicode notation
+- [axiom-reference.md](reference/axiom-reference.md) - Complete axiom schemas with examples
+- [tactic-reference.md](reference/tactic-reference.md) - Bimodal-specific tactic usage
+- [operators.md](reference/operators.md) - TM operator reference and Unicode notation
 
 **Audience**: All users
 
@@ -65,9 +65,9 @@ Research and design documents for Bimodal proof automation:
 Bimodal-specific project status:
 
 - [README.md](project-info/README.md) - Directory overview
-- [IMPLEMENTATION_STATUS.md](project-info/IMPLEMENTATION_STATUS.md) - Bimodal module status
-- [KNOWN_LIMITATIONS.md](project-info/KNOWN_LIMITATIONS.md) - MVP limitations with workarounds
-- [TACTIC_REGISTRY.md](project-info/TACTIC_REGISTRY.md) - Tactic implementation status
+- [implementation-status.md](project-info/implementation-status.md) - Bimodal module status
+- [known-limitations.md](project-info/known-limitations.md) - MVP limitations with workarounds
+- [tactic-registry.md](project-info/tactic-registry.md) - Tactic implementation status
 
 **Audience**: Contributors, maintainers
 
@@ -75,26 +75,26 @@ Bimodal-specific project status:
 
 Most-referenced documents:
 
-- [Quick Start](user-guide/QUICKSTART.md) - Get started quickly
-- [Tutorial](user-guide/TUTORIAL.md) - Step-by-step guide
-- [Architecture](user-guide/ARCHITECTURE.md) - TM logic specification
-- [Axiom Reference](reference/AXIOM_REFERENCE.md) - Axiom schemas
-- [Operators](reference/OPERATORS.md) - Operator reference
-- [Implementation Status](project-info/IMPLEMENTATION_STATUS.md) - Current status
-- [Known Limitations](project-info/KNOWN_LIMITATIONS.md) - MVP limitations
-- [Performance Targets](project-info/PERFORMANCE_TARGETS.md) - Benchmark baselines
+- [Quick Start](user-guide/quickstart.md) - Get started quickly
+- [Tutorial](user-guide/tutorial.md) - Step-by-step guide
+- [Architecture](user-guide/architecture.md) - TM logic specification
+- [Axiom Reference](reference/axiom-reference.md) - Axiom schemas
+- [Operators](reference/operators.md) - Operator reference
+- [Implementation Status](project-info/implementation-status.md) - Current status
+- [Known Limitations](project-info/known-limitations.md) - MVP limitations
+- [Performance Targets](project-info/performance-targets.md) - Benchmark baselines
 
 ## Relationship to Project Documentation
 
 **Bimodal-Specific**:
-- [QUICKSTART](user-guide/QUICKSTART.md) - Getting started with Bimodal
-- [TUTORIAL](user-guide/TUTORIAL.md) - Step-by-step tutorial
-- [ARCHITECTURE](user-guide/ARCHITECTURE.md) - TM logic specification
-- [EXAMPLES](user-guide/EXAMPLES.md) - Usage examples
-- [TACTIC_DEVELOPMENT](user-guide/TACTIC_DEVELOPMENT.md) - Custom tactics
-- [AXIOM_REFERENCE](reference/AXIOM_REFERENCE.md) - TM axiom schemas
-- [OPERATORS](reference/OPERATORS.md) - Operator reference
-- [TACTIC_REGISTRY](project-info/TACTIC_REGISTRY.md) - Tactic status
+- [quickstart](user-guide/quickstart.md) - Getting started with Bimodal
+- [tutorial](user-guide/tutorial.md) - Step-by-step tutorial
+- [architecture](user-guide/architecture.md) - TM logic specification
+- [examples](user-guide/examples.md) - Usage examples
+- [tactic-development](user-guide/tactic-development.md) - Custom tactics
+- [axiom-reference](reference/axiom-reference.md) - TM axiom schemas
+- [operators](reference/operators.md) - Operator reference
+- [tactic-registry](project-info/tactic-registry.md) - Tactic status
 - [research/](research/) - Proof search automation research
 
 **Project-Wide** (in [docs/](../../docs/)):

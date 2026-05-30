@@ -83,7 +83,7 @@ JSON example:
 
 Each theory maintains its own baseline measurements:
 
-- **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/docs/project-info/PERFORMANCE_TARGETS.md)
+- **Bimodal**: [performance-targets.md](../../Bimodal/docs/project-info/performance-targets.md)
 - **ProofChecker**: (planned)
 
 ## Benchmark File Organization
@@ -166,7 +166,7 @@ end TheoryTest.Category.Benchmark
 
 ### Step 2: Document Baselines
 
-Add baselines to theory's `PERFORMANCE_TARGETS.md`:
+Add baselines to theory's `performance-targets.md`:
 
 ```markdown
 | Benchmark | Baseline Time | Regression Threshold |
@@ -225,4 +225,4 @@ Prioritize optimizations by:
 
 - [QUALITY_METRICS.md](QUALITY_METRICS.md) - Overall quality standards
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Testing requirements
-- [Bimodal Performance Targets](../../Bimodal/docs/project-info/PERFORMANCE_TARGETS.md) - Theory-specific baselines
+- [Bimodal Performance Targets](../../Bimodal/docs/project-info/performance-targets.md) - Theory-specific baselines

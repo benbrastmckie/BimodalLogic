@@ -27,7 +27,7 @@ This module defines the Context type used to represent assumptions in derivation
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Proof system specification
+* [architecture.md](../../../docs/user-guide/architecture.md) - Proof system specification
 * [Formula.lean](./Formula.lean) - Formula type definition
 -/
 

@@ -221,7 +221,7 @@ Classical.propDecidable
 1. ✅ Create comprehensive catalog ([NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md))
 2. ✅ Create architecture decision record (this document)
 3. ⏳ Update [LEAN_STYLE_GUIDE.md](../development/LEAN_STYLE_GUIDE.md) with noncomputable patterns
-4. ⏳ Update [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) to mention classical logic choice
+4. ⏳ Update [architecture.md](../user-guide/architecture.md) to mention classical logic choice
 
 ### Phase 3: Continuous Maintenance
 

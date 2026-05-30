@@ -132,7 +132,7 @@ Bimodal logic is a fragment of the **Logos**, a formal language of thought desig
 
 - [Bimodal Implementation](../../Theories/Bimodal/README.md) - Full implementation details
 - [Research Documentation](README.md) - Research index
-- [Architecture Guide](../../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - System architecture
+- [Architecture Guide](../../Theories/Bimodal/docs/user-guide/architecture.md) - System architecture
 
 ---
 

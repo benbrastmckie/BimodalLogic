@@ -426,4 +426,4 @@ The meta system provides templates and patterns for extending the AI agent syste
 - [Testing Standards](../development/TESTING_STANDARDS.md)
 - [Module Organization](../development/MODULE_ORGANIZATION.md)
 - [Quality Metrics](../development/QUALITY_METRICS.md)
-- [Tactic Development](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md)
+- [Tactic Development](../../Theories/Bimodal/docs/project-info/tactic-registry.md)

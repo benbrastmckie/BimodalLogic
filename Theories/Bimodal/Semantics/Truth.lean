@@ -74,7 +74,7 @@ See SoundnessLemmas.lean for details on the module hierarchy restructuring.
 
 ## References
 
-* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Truth evaluation
+* [architecture.md](../../../docs/user-guide/architecture.md) - Truth evaluation
   specification
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 * [TaskModel.lean](TaskModel.lean) - Task model structure

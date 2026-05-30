@@ -409,8 +409,8 @@ See [Claude Code System](.claude/CLAUDE.md) for complete command reference and w
 
 ## References
 
-- [Architecture Guide](ARCHITECTURE.md) - Full system design
-- [Tutorial](TUTORIAL.md) - Getting started
-- [Examples](EXAMPLES.md) - Usage examples
+- [Architecture Guide](architecture.md) - Full system design
+- [Tutorial](tutorial.md) - Getting started
+- [Examples](examples.md) - Usage examples
 - [Versioning](../development/VERSIONING.md) - Version policy
 - [Claude Code System](.claude/CLAUDE.md) - Automated development workflows

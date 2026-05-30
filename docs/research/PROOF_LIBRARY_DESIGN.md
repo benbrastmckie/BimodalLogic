@@ -2,7 +2,7 @@
 
 > **Implementation Status**: This document describes planned architecture.
 > For current implementation progress, see
-> [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
+> [implementation-status.md](../project-info/implementation-status.md).
 
 This document characterizes the proof library architecture enabling computational scaling through theorem caching, pattern matching, and fast inference lookup. The library provides instant positive RL signals from cached proofs, reduces computational overhead through theorem reuse, and supports incremental learning from simple to complex reasoning patterns.
 
@@ -399,14 +399,14 @@ The proof library exhibits favorable scaling properties supporting efficient tra
 
 ## Implementation Status
 
-See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for current progress.
+See [implementation-status.md](../project-info/implementation-status.md) for current progress.
 
 ## Related Documentation
 
 - [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) - RL training architecture
 - [layer-extensions.md](layer-extensions.md) - Layers 1-3 specifications
 - [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations
-- [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer 0 specification
+- [architecture.md](../user-guide/architecture.md) - Layer 0 specification
 
 ---
 
