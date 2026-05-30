@@ -1,5 +1,5 @@
 ---
-next_project_number: 226
+next_project_number: 227
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -143,10 +143,19 @@ technical_debt:
 
 ## Tasks
 
+### 226. Build standalone Z3 countermodel generator for negative training signal
+- **Effort**: large (20-40 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: z3
+
+**Description**: Create a standalone version of the bimodal ModelChecker Z3 infrastructure (based on /home/benjamin/Projects/Logos/ModelChecker/code/src/model_checker/theory_lib/bimodal/) within this repository, instead of in BimodalHarness as described in BimodalHarness task 19. The aim is to implement Python and Z3 infrastructure to generate countermodels as a negative training signal. There is also an opportunity for metalogic to establish at least the soundness of the Z3 implementation, so that every countermodel found guarantees a countermodel fitting the full definition defined in Lean by the semantics. The Z3 implementation need not be complete if incompleteness improves search space efficiency. Finding most countermodels quickly is more important than finding all of them slowly, which is worth flagging and investigating during research.
+
 ### 225. Archive BX pipeline to Boneyard to prevent implementation agent distraction
 - **Effort**: small (1-2 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
+- **Research**: [specs/225_archive_bx_pipeline_boneyard/reports/01_bx-pipeline-archival.md]
+- **Plan**: [specs/225_archive_bx_pipeline_boneyard/plans/01_bx-pipeline-archival.md]
 
 **Description**: Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.
 

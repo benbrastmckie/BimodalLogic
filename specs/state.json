@@ -6,13 +6,62 @@
   },
   "active_projects": [
     {
+      "project_number": 226,
+      "project_name": "build_standalone_z3_countermodel_generator",
+      "status": "not_started",
+      "task_type": "z3",
+      "created": "2026-05-30T07:32:14Z",
+      "last_updated": "2026-05-30T07:32:14Z"
+    },
+    {
       "project_number": 225,
       "project_name": "archive_bx_pipeline_boneyard",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.",
       "created": "2026-05-30T06:33:07Z",
-      "last_updated": "2026-05-30T06:33:07Z"
+      "last_updated": "2026-05-30T07:00:00Z",
+      "session_id": "sess_1748617200_orch225",
+      "researched": "2026-05-30T06:45:00Z",
+      "planned": "2026-05-30T07:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/225_archive_bx_pipeline_boneyard/reports/01_bx-pipeline-archival.md",
+          "type": "research",
+          "summary": "Complete inventory of BX pipeline (dead) vs Reynolds pipeline (active); dead code interleaved with live code prevents wholesale file moves; recommended strategy is deprecation annotations + targeted moves of 2 pure-dead files"
+        },
+        {
+          "path": "specs/225_archive_bx_pipeline_boneyard/plans/01_bx-pipeline-archival.md",
+          "type": "plan",
+          "summary": "3-phase plan: deprecation annotations on interleaved dead code, move 2 pure-dead files to Boneyard/BXPipelineGapAnalysis/, build verification. 1.5 hours."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 1.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_bx-pipeline-archival.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-30"
+          }
+        ]
+      }
     },
     {
       "project_number": 224,
@@ -1800,7 +1849,7 @@
       ]
     }
   ],
-  "next_project_number": 226,
+  "next_project_number": 227,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
