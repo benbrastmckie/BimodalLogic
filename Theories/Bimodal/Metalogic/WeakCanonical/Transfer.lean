@@ -1180,6 +1180,21 @@ theorem countermodel_discrete_reynolds
   -- (c) Prove truth_at ↔ temporal_truth correspondence
   sorry
 
+/-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
+
+The theorem `countermodel_discrete` below uses the **dead BX pipeline** path
+through `dd_countermodel_chronicle_discrete` which carries the `succ_cofinal`
+sorry (proven unprovable via the Z+Z counterexample to `no_gaps_faithful`).
+
+This theorem is retained ONLY for the general `completeness` theorem (not
+`completeness_discrete`). The discrete completeness theorem
+`completeness_discrete` uses `countermodel_discrete_enriched` instead, which
+routes through the Reynolds pipeline.
+
+**Do NOT attempt to fix the sorry in this theorem.** The correct path is the
+Reynolds pipeline via `no_gaps_discrete` (task 202).
+-/
+
 /-! ## Main Theorem: countermodel_discrete -/
 
 /--
@@ -1191,11 +1206,11 @@ there exists a countermodel on Int where φ is false.
 Delegates to `dd_countermodel_chronicle_discrete` which uses the
 parametric canonical model construction directly.
 
+**DEPRECATED** (task 225): This uses the dead BX pipeline path.
+See `countermodel_discrete_enriched` + Reynolds pipeline for the active path.
+
 **Sorry chain**: dd_countermodel_chronicle_discrete → succ_embed_surjective →
 limitDomSubtype_isSuccArchimedean → succ_cofinal (sorry).
-
-See `countermodel_discrete_reynolds` for the alternative Reynolds pipeline
-approach that avoids succ_cofinal (pending no_gaps_discrete).
 -/
 theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)

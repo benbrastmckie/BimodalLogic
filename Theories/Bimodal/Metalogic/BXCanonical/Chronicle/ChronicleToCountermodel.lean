@@ -1114,10 +1114,29 @@ private theorem succ_orbit_convex (fc : FrameClass) (A : Set Formula) (h_mcs : S
       rw [h_iter_succ] at h_ub
       exact ⟨n + 1, le_rfl, by rw [h_iter_succ]; exact (le_antisymm h_ub h_succ_le).symm⟩
 
-/-! ## IsSuccArchimedean for LimitDomSubtype
+/-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
 
-In the discrete case, `LimitDomSubtype` satisfies `IsSuccArchimedean`: for any
-`a ≤ b`, iterating `succ` from `a` eventually reaches `b`.
+The definitions below (`succ_reaches_dom_N`, `chronicle_gap_contradiction`,
+`succ_cofinal`, `limitDomSubtype_isSuccArchimedean`) are **dead code from the
+BX pipeline**. The root sorry `succ_cofinal` depends on gap elimination which
+requires `no_gaps_faithful` (ReynoldsModelSurgery.lean) -- proven FALSE via the
+Z+Z counterexample.
+
+The entire downstream chain:
+
+    succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
+      → dd_countermodel_chronicle_discrete → bx_completeness
+
+is permanently dead. The correct path to sorry-free `completeness_discrete` is
+the **Reynolds pipeline** via `no_gaps_discrete` (task 202).
+
+**Do NOT attempt to prove these definitions.** They are retained only for
+downstream compilation of the general `completeness` theorem (not
+`completeness_discrete`) which already carries a sorry.
+
+---
+
+### Original status documentation (historical)
 
 **Status**: Blocked. The sorry at `succ_cofinal` represents a genuine limitation
 of the Burgess chronicle construction under strict (irreflexive) temporal semantics.
@@ -1125,11 +1144,6 @@ The gap scenario (orbit converging to L, pred-chain from above, no limit_dom at 
 is consistent with all temporal axioms (Z1, Prior-UZ) in the constant-MCS case.
 Under strict semantics `G(φ)→φ` is not valid, so the Z1 Doets maximum principle
 cannot establish `G(Gφ→φ)` at orbit points.
-
-**Resolution**: Task 129 (weak/reflexive completeness + conservative extension)
-will provide `IsSuccArchimedean` via a Henkin canonical model where every point is
-a distinct MCS, bypassing the gap scenario entirely. Alternatively, the Reynolds
-pipeline (tasks 154-155) bypasses `succ_cofinal` entirely.
 
 ### Proof attempts below (all blocked)
 

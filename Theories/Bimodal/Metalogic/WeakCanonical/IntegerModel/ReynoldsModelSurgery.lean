@@ -286,6 +286,25 @@ theorem semantic_prior_SZ_raw {fc : FrameClass}
     exact absurd h_eff_r
       (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r hsr hrt))
 
+/-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
+
+The definitions `no_gaps_faithful` and `prior_model_is_succ_archimedean` below are
+**dead code from the BX pipeline**. `no_gaps_faithful` is provably FALSE as stated
+(Z+Z counterexample: two copies of Z with constant MCS satisfy all `PriorModelData`
+hypotheses yet have a Dedekind gap). The entire downstream chain
+
+    no_gaps_faithful → prior_model_is_succ_archimedean
+      → (ChronicleToCountermodel) succ_cofinal → limitDomSubtype_isSuccArchimedean
+      → succ_embed_surjective → dd_countermodel_chronicle_discrete → bx_completeness
+
+is permanently dead. The correct path to sorry-free `completeness_discrete` is
+the **Reynolds pipeline** via `no_gaps_discrete` (task 202).
+
+**Do NOT attempt to prove these definitions.** They are retained only for
+downstream compilation of the general `completeness` theorem (not
+`completeness_discrete`) which already carries a sorry.
+-/
+
 /-! ## No Gaps in Faithful Prior Structures (Reynolds Theorem 14) -/
 
 /--
