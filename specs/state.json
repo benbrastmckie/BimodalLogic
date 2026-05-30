@@ -17,7 +17,7 @@
       "project_number": 225,
       "project_name": "archive_bx_pipeline_boneyard",
       "status": "completed",
-      "completion_summary": "Archived BX pipeline dead code: added DEPRECATED annotations to no_gaps_faithful, prior_model_is_succ_archimedean (ReynoldsModelSurgery.lean), succ_cofinal chain (ChronicleToCountermodel.lean), and countermodel_discrete (Transfer.lean). Moved 2 pure-dead files (ChronicleNoGaps.lean, HenkinDiscreteChain.lean) to Boneyard/BXPipelineGapAnalysis/. Removed ChronicleNoGaps import from WeakCanonical.lean. Updated Boneyard README. lake build passes (1679 jobs).",
+      "completion_summary": "Archived BX pipeline dead code: added DEPRECATED annotations to 5 definitions across 3 files, moved 2 pure-dead files (ChronicleNoGaps.lean, HenkinDiscreteChain.lean) to Boneyard/BXPipelineGapAnalysis/, removed ChronicleNoGaps import from WeakCanonical.lean, updated Boneyard README. lake build passes.",
       "task_type": "lean4",
       "description": "Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.",
       "created": "2026-05-30T06:33:07Z",
