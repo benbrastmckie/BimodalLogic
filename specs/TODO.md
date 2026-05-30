@@ -152,10 +152,13 @@ technical_debt:
 
 ### 225. Archive BX pipeline to Boneyard to prevent implementation agent distraction
 - **Effort**: small (1-2 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**: [specs/225_archive_bx_pipeline_boneyard/reports/01_bx-pipeline-archival.md]
 - **Plan**: [specs/225_archive_bx_pipeline_boneyard/plans/01_bx-pipeline-archival.md]
+- **Summary**: [specs/225_archive_bx_pipeline_boneyard/summaries/01_bx-pipeline-archival-summary.md]
+
+**Completion**: Archived BX pipeline dead code: DEPRECATED annotations on 5 definitions across 3 files, moved 2 pure-dead files to Boneyard/BXPipelineGapAnalysis/, removed ChronicleNoGaps import, updated Boneyard README. lake build passes (1679 jobs).
 
 **Description**: Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.
 
