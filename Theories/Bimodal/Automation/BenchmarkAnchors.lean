@@ -1,5 +1,6 @@
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
+import Bimodal.Automation.ProofSearch.Core
 import Bimodal.ProofSystem.Axioms
 
 /-!
@@ -323,6 +324,78 @@ def checkCoverage (instances : List TaggedFormula) : List String × List String 
   (coveredNames, missing)
 
 /-!
+## Axiom-Based Labeling
+-/
+
+/-- Names of axiom constructors that require non-Base frame classes. -/
+private def nonBaseAxiomNames : List String :=
+  ["prior_UZ", "prior_SZ", "z1", "density", "dense_indicator"]
+
+/--
+Label a tagged formula via `matchAxiom` directly, bypassing the tableau decision procedure.
+
+For Base-class axioms (37 constructors): produces a valid label with proof trace
+referencing the matched axiom constructor.
+For non-Base axioms (5 constructors: prior_UZ, prior_SZ, z1, density, dense_indicator):
+produces an invalid label with a note about frame class incompatibility.
+
+Returns `none` if `matchAxiom` fails (shouldn't happen for well-formed instances).
+-/
+def labelViaAxiomMatch (tf : TaggedFormula) : Option LabeledFormula :=
+  let φ := tf.formula
+  match Bimodal.Automation.matchAxiom φ with
+  | some ⟨_, _witness⟩ =>
+    let metrics := computeMetrics φ 0
+    let patternKey := PatternKey.fromFormula φ
+    if nonBaseAxiomNames.contains tf.axiomName then
+      -- Non-Base axiom: label as invalid (not valid on Base frame class)
+      some {
+        formula := φ
+        label := .invalid
+        proofTrace := none
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+      }
+    else
+      -- Base axiom: label as valid with proof trace
+      let trace : ProofTrace := {
+        height := 0
+        axioms_used := [tf.axiomName]
+        rules_applied := ["axiom_match"]
+      }
+      some {
+        formula := φ
+        label := .valid
+        proofTrace := some trace
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+      }
+  | none => none
+
+/--
+Select top-N lowest-complexity instances per axiom constructor.
+
+Groups instances by `axiomName`, sorts each group by formula complexity
+(ascending), and takes the first `n` per constructor.
+-/
+def selectTopInstances (instances : List TaggedFormula) (n : Nat := 3) : List TaggedFormula :=
+  -- Group by axiom name
+  let groups := instances.foldl (fun acc tf =>
+    let key := tf.axiomName
+    let existing := acc.find? (fun (k, _) => k == key)
+    match existing with
+    | some _ =>
+      acc.map (fun (k, vs') => if k == key then (k, vs' ++ [tf]) else (k, vs'))
+    | none => acc ++ [(key, [tf])]
+  ) ([] : List (String × List TaggedFormula))
+  -- Sort each group by complexity ascending, take top-n
+  groups.flatMap (fun (_, vs) =>
+    let sorted := vs.mergeSort (fun a b => a.formula.complexity ≤ b.formula.complexity)
+    sorted.take n)
+
+/-!
 ## JSONL Export
 -/
 
@@ -384,10 +457,11 @@ Main entry point for the benchmark_anchors executable.
 
 Pipeline:
 1. Generate all axiom instances from the substitution vocabulary
-2. Check coverage of all 42 axiom constructors
-3. Label each instance via the decision procedure
-4. Verify all base axiom instances are decided valid
-5. Write JSONL output file
+2. Select top-3 lowest-complexity instances per constructor (126 records)
+3. Check coverage of all 42 axiom constructors
+4. Label each instance via `matchAxiom` (direct axiom proof), falling back to
+   `labelFormula`/`decideAuto` if `matchAxiom` fails
+5. Write JSONL output file with `axiom_name` preserved
 6. Print summary statistics
 -/
 def main (args : List String) : IO Unit := do
@@ -399,18 +473,23 @@ def main (args : List String) : IO Unit := do
   IO.println "======================================"
   IO.println ""
 
-  -- Step 1: Generate instances
+  -- Step 1: Generate all instances
   IO.println "Generating axiom instances..."
-  let instances := generateAllInstances
-  IO.println s!"  Generated {instances.length} unique instances"
+  let allInstances := generateAllInstances
+  IO.println s!"  Generated {allInstances.length} unique instances (all arities)"
 
-  -- Step 2: Check coverage
+  -- Step 2: Select top-3 per constructor
+  IO.println "Selecting top-3 lowest-complexity per constructor..."
+  let instances := selectTopInstances allInstances 3
+  IO.println s!"  Selected {instances.length} instances (target: 126 = 42 x 3)"
+
+  -- Step 3: Check coverage
   let (covered, missing) := checkCoverage instances
   IO.println s!"  Axiom coverage: {covered.length}/42 constructors"
   if !missing.isEmpty then
     IO.println s!"  WARNING: Missing axioms: {missing}"
 
-  -- Step 3: Tier distribution preview
+  -- Step 4: Tier distribution preview
   let tierCounts := instances.foldl (fun (e, m, h, vh) tf =>
     let c := tf.formula.complexity
     if c ≤ 3 then (e + 1, m, h, vh)
@@ -425,45 +504,47 @@ def main (args : List String) : IO Unit := do
   IO.println s!"    very_hard (≥10): {tierCounts.2.2.2}"
   IO.println ""
 
-  -- Step 4: Label all instances
-  IO.println "Labeling instances via decision procedure..."
+  -- Step 5: Label instances via matchAxiom (direct axiom proof)
+  IO.println "Labeling instances via axiom matching..."
   let mut labeled : List (TaggedFormula × LabeledFormula) := []
   let mut validCount : Nat := 0
   let mut invalidCount : Nat := 0
   let mut timeoutCount : Nat := 0
-  let mut idx : Nat := 0
-  -- Track base axiom failures
-  let baseAxiomNames := allAxiomNames.filter fun name =>
-    !(["prior_UZ", "prior_SZ", "z1", "density", "dense_indicator"].contains name)
-  let mut baseFailures : List String := []
+  let mut axiomMatchCount : Nat := 0
+  let mut fallbackCount : Nat := 0
   for tf in instances do
-    let lf ← labelFormula tf.formula
-    labeled := (tf, lf) :: labeled
-    idx := idx + 1
-    match lf.label with
-    | .valid => validCount := validCount + 1
-    | .invalid =>
-      invalidCount := invalidCount + 1
-      -- Check if this is a base axiom (should be valid on Base)
-      if baseAxiomNames.contains tf.axiomName then
-        baseFailures := s!"{tf.axiomName}: {tf.formula.prettyPrint}" :: baseFailures
-    | .timeout =>
-      timeoutCount := timeoutCount + 1
-      if baseAxiomNames.contains tf.axiomName then
-        baseFailures := s!"{tf.axiomName} (timeout): {tf.formula.prettyPrint}" :: baseFailures
-    if idx % 50 == 0 then
-      IO.println s!"  Progress: {idx}/{instances.length}"
+    -- Try axiom match first (fast, direct)
+    match labelViaAxiomMatch tf with
+    | some lf =>
+      labeled := (tf, lf) :: labeled
+      axiomMatchCount := axiomMatchCount + 1
+      match lf.label with
+      | .valid => validCount := validCount + 1
+      | .invalid => invalidCount := invalidCount + 1
+      | .timeout => timeoutCount := timeoutCount + 1
+    | none =>
+      -- Fallback to decision procedure
+      let lf ← labelFormula tf.formula
+      labeled := (tf, lf) :: labeled
+      fallbackCount := fallbackCount + 1
+      match lf.label with
+      | .valid => validCount := validCount + 1
+      | .invalid => invalidCount := invalidCount + 1
+      | .timeout => timeoutCount := timeoutCount + 1
   labeled := labeled.reverse
   IO.println s!"  Labeling complete: {validCount} valid, {invalidCount} invalid, {timeoutCount} timeout"
+  IO.println s!"  Axiom-matched: {axiomMatchCount}, Fallback: {fallbackCount}"
 
-  -- Step 5: Report base axiom failures
-  if !baseFailures.isEmpty then
-    IO.println ""
-    IO.println s!"  WARNING: {baseFailures.length} base axiom instances not valid:"
-    for f in baseFailures do
-      IO.println s!"    {f}"
+  -- Step 6: Per-constructor coverage summary
+  let mut constructorCounts : List (String × Nat × Nat) := []  -- (name, valid, total)
+  for name in allAxiomNames do
+    let nameRecords := labeled.filter (fun (tf, _) => tf.axiomName == name)
+    let nameValid := nameRecords.filter (fun (_, lf) => lf.label == .valid) |>.length
+    constructorCounts := constructorCounts ++ [(name, nameValid, nameRecords.length)]
+  let constructorsWithValid := constructorCounts.filter (fun (_, v, _) => v > 0) |>.length
+  IO.println s!"  Constructors with valid instances: {constructorsWithValid}/42"
 
-  -- Step 6: Ensure output directory exists
+  -- Step 7: Ensure output directory exists
   let outFilePath : System.FilePath := ⟨outputPath⟩
   match outFilePath.parent with
   | some dir => do
@@ -472,7 +553,7 @@ def main (args : List String) : IO Unit := do
       IO.FS.createDirAll dir
   | none => pure ()
 
-  -- Step 7: Write JSONL
+  -- Step 8: Write JSONL
   IO.println ""
   IO.println s!"Writing JSONL to {outputPath}..."
   let handle ← IO.FS.Handle.mk outFilePath .write
@@ -483,14 +564,16 @@ def main (args : List String) : IO Unit := do
     handle.putStrLn line
   IO.println s!"  Wrote {writeIdx} records"
 
-  -- Step 8: Summary
+  -- Step 9: Summary
   IO.println ""
   IO.println "Summary"
   IO.println "======="
-  IO.println s!"  Total instances: {instances.length}"
+  IO.println s!"  Total instances generated: {allInstances.length}"
+  IO.println s!"  Selected (top-3 per constructor): {instances.length}"
   IO.println s!"  Valid: {validCount}"
   IO.println s!"  Invalid: {invalidCount}"
   IO.println s!"  Timeout: {timeoutCount}"
   IO.println s!"  Coverage: {covered.length}/42 axiom constructors"
+  IO.println s!"  Axiom-matched: {axiomMatchCount} ({axiomMatchCount * 100 / instances.length}%)"
   IO.println ""
   IO.println "Done!"

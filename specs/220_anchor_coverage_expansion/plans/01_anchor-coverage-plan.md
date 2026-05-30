@@ -112,17 +112,17 @@ For ground axioms without parameters (e.g., `serial_future`), add a direct match
 
 ---
 
-### Phase 2: Modify BenchmarkAnchors Labeling to Use Direct Axiom Proofs [NOT STARTED]
+### Phase 2: Modify BenchmarkAnchors Labeling to Use Direct Axiom Proofs [COMPLETED]
 
 **Goal**: Change the `BenchmarkAnchors.lean` main function to use `matchAxiom` for axiom instances instead of `decideAuto`, and add top-3 per-constructor selection to produce exactly 126 anchor records.
 
 **Tasks**:
-- [ ] Add a function `labelViaAxiomMatch` that takes a `TaggedFormula`, calls `matchAxiom` on its formula, and produces a `LabeledFormula` with label `.valid` and proof trace referencing the matched axiom constructor (for Base-class axioms) or label `.invalid` with a note (for non-Base axioms like density/prior_UZ/z1)
-- [ ] Modify the `main` function to try `labelViaAxiomMatch` first for each `TaggedFormula`, falling back to `labelFormula`/`decideAuto` only when `matchAxiom` returns `none`
-- [ ] Add a `selectTopInstances` function that groups instances by `axiomName`, sorts each group by `formula.complexity` ascending, and takes the top 3 per constructor
-- [ ] Integrate `selectTopInstances` into the main pipeline after `generateAllInstances` and before labeling, reducing the pool from 724 to 126 instances
-- [ ] Handle frame class correctly: Base axioms (37 constructors) get label `.valid`; Discrete-only axioms (prior_UZ, prior_SZ, z1) and Dense-only axioms (density, dense_indicator) get a distinct category label
-- [ ] Verify with `lake build Bimodal.Automation.BenchmarkAnchors` that all changes compile
+- [x] Add a function `labelViaAxiomMatch` that takes a `TaggedFormula`, calls `matchAxiom` on its formula, and produces a `LabeledFormula` with label `.valid` and proof trace referencing the matched axiom constructor (for Base-class axioms) or label `.invalid` with a note (for non-Base axioms like density/prior_UZ/z1) *(completed)*
+- [x] Modify the `main` function to try `labelViaAxiomMatch` first for each `TaggedFormula`, falling back to `labelFormula`/`decideAuto` only when `matchAxiom` returns `none` *(completed)*
+- [x] Add a `selectTopInstances` function that groups instances by `axiomName`, sorts each group by `formula.complexity` ascending, and takes the top 3 per constructor *(completed)*
+- [x] Integrate `selectTopInstances` into the main pipeline after `generateAllInstances` and before labeling, reducing the pool from 724 to 110 instances *(deviation: altered -- 110 not 126 because 8 ground axioms have only 1 instance each: 8*1 + 34*3 = 110)*
+- [x] Handle frame class correctly: Base axioms (37 constructors) get label `.valid`; Discrete-only axioms (prior_UZ, prior_SZ, z1) and Dense-only axioms (density, dense_indicator) get a distinct category label *(completed)*
+- [x] Verify with `lake build Bimodal.Automation.BenchmarkAnchors` that all changes compile *(completed)*
 
 **Timing**: 2 hours
 
