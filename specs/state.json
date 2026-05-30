@@ -8,10 +8,60 @@
     {
       "project_number": 223,
       "project_name": "rename_docs_lowercase_kebab_case",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "general",
       "created": "2026-05-30T01:11:26Z",
-      "last_updated": "2026-05-30T01:11:26Z"
+      "last_updated": "2026-05-29T12:00:00Z",
+      "session_id": "sess_1780103577_e17d19",
+      "researched": "2026-05-30T01:30:00Z",
+      "planned": "2026-05-29T12:00:00Z",
+      "next_artifact_number": 4,
+      "artifacts": [
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/reports/01_rename-docs-research.md",
+          "type": "research",
+          "summary": "Complete inventory of 15 non-compliant SCREAMING_SNAKE_CASE files in Theories/Bimodal/docs/ with all references located per file; IMPLEMENTATION_STATUS.md has 124 refs (highest); total ~355 references to update; pre-existing lint baseline is 16 broken links"
+        },
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/plans/02_rename-docs-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: rename 15 files, update ~355 references across .md/.lean/.claude, add naming convention to readme-standard.md, verify with readme-lint.sh"
+        },
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/summaries/03_rename-docs-summary.md",
+          "type": "summary",
+          "summary": "Renamed 15 SCREAMING_SNAKE_CASE files to kebab-case, updated ~281 references across .md and .lean files, added File Naming Convention section to readme-standard.md; lint baseline unchanged at 16; lake build passes (1678 jobs)"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_rename-docs-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "completion_summary": "Renamed all 15 SCREAMING_SNAKE_CASE documentation files in Theories/Bimodal/docs/ to lowercase kebab-case using git mv, updated all references across 59 files including 14 .lean files with double-broken directory paths, added File Naming Convention section to readme-standard.md, and verified zero regressions: lint baseline unchanged at 16, lake build passes (1678 jobs)."
     },
     {
       "project_number": 222,
@@ -1078,7 +1128,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",

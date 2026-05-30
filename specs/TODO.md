@@ -141,8 +141,11 @@ technical_debt:
 
 ### 223. Rename documentation files to lowercase kebab-case and update all references
 - **Effort**: small (2-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
+- **Report**: [specs/223_rename_docs_lowercase_kebab_case/reports/01_rename-docs-research.md]
+- **Plan**: [specs/223_rename_docs_lowercase_kebab_case/plans/02_rename-docs-plan.md]
+- **Summary**: [specs/223_rename_docs_lowercase_kebab_case/summaries/03_rename-docs-summary.md]
 
 **Description**: Rename all documentation files created/updated by task 183 to use consistent lowercase kebab-case naming. Audit Theories/Bimodal/docs/reference/ and scripts/ for any files using camelCase, Title_Case, or other non-kebab-case conventions, rename them to lowercase kebab-case, and systematically update all references across the entire Theories/Bimodal/ tree and specs/. Ensure the documentation standard reference docs themselves prescribe lowercase kebab-case as the naming convention going forward. Verify no broken references remain after renaming using scripts/readme-lint.sh.
 
