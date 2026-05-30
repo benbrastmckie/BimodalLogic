@@ -1,23 +1,23 @@
 {
   "status": "partial",
-  "summary": "Closed h_accessible sorry in Transfer.lean, restructured no_gaps_discrete_model_surgery to consolidate 2 sorry sites into 1 (prior_implies_archimedean_of_accessible). Full model surgery (Reynolds Lemmas 6-13) still needed for the core sorry.",
+  "summary": "Critical mathematical error found: prior_implies_archimedean_of_accessible is FALSE (Z+Z with constant predicates counterexample). Pivoted all theorem signatures from h_accessible to h_surj (atom-level surjectivity). Build passes. Reynolds model surgery (500 lines) and h_surj call-site construction (50 lines) remain as sorry sites.",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    "prior_implies_archimedean_of_accessible requires Reynolds Theorem 14 full model surgery (500+ lines, Lemmas 6-13)",
-    "US_expressively_complete_over_prior requires h_surj (atom surjectivity) which mkSigFrom does not satisfy -- may need generalization",
-    "Z-interval packaging (Transfer.lean:1181) has fundamental tension between position-dependent atoms and Unit WorldState"
+    "Reynolds model surgery (Lemmas 6-13 + Theorem 14) ~500 lines: core proof that class boundaries don't end at gaps. Uses US_expressively_complete_over_prior (h_surj enables this). Main mathematical blocker.",
+    "h_surj construction at Transfer.lean call site ~50 lines: enrich atomMap_fwd with fresh atoms for non-atom predicates. Engineering task, does not affect math.",
+    "Z-interval packaging (Transfer.lean:1162) pre-existing sorry, not addressed this cycle"
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-continuation-20260530.md",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-h-surj-pivot-20260530.md",
     "next_phase": 1
   },
   "next_action_hint": "research",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-continuation-20260530.md",
-    "specs/202_reynolds_k_equivalence_bypass/plans/13_reynolds-pipeline-pivot.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-h-surj-pivot-20260530.md"
   ]
 }
