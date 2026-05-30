@@ -3,30 +3,32 @@
   "started_at": "2026-05-30T14:32:56Z",
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-class-formula-20260530.md"
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-class-formula-20260530.md",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-class-formula-analysis-20260530.md"
   ],
   "partial_progress": {
-    "stage": "phase_2_partial",
-    "details": "reynolds_model_surgery_core is now sorry-free. One sorry remains in class_temporal_formula (constructing temporal formula that detects class(a) membership). Phase 2 is PARTIAL - the proof architecture is complete but the class formula construction is sorry'd.",
+    "stage": "phase_2_blocked",
+    "details": "class_temporal_formula at GoodStructuresModelSurgery.lean:537 is UNPROVABLE as stated. Analysis of 5 approaches (direct MonadicFormula, enriched signature with class membership, enriched signature with is_a, direct predicate argument, non-constructive existence) all fail due to fundamental obstructions. Root cause: the lemma asks for a temporal formula detecting class(a) membership, but this is the WRONG intermediate lemma. Reynolds' actual argument uses right_gap_class formula + model surgery (Lemmas 7-13). Full restructuring required.",
     "phases_completed": 0,
     "phases_total": 5
   },
+  "blocked_phase": 2,
   "verification": {
     "verification_passed": false,
     "sorry_count": 1,
     "vacuous_count": 0,
-    "axiom_count": 0,
+    "axiom_count": 4,
     "build_passed": true,
-    "sorry_details": "class_temporal_formula at GoodStructuresModelSurgery.lean:527"
+    "sorry_details": "class_temporal_formula at GoodStructuresModelSurgery.lean:537 -- UNPROVABLE as stated, requires full proof restructuring"
   },
   "requires_user_review": true,
-  "review_reason": "1 sorry remains in class_temporal_formula. The proof architecture for reynolds_model_surgery_core is complete and correct (conditional on class_temporal_formula). Closing the sorry requires encoding contemp_equiv as MonadicFormula sig 1 (~200-400 lines).",
+  "review_reason": "class_temporal_formula is unprovable as stated (5 approaches analyzed, all fail). The proof architecture must be restructured to follow Reynolds' actual Theorem 14: replace class_temporal_formula + reynolds_model_surgery_core with right_gap_class_formula + full model surgery (Lemmas 7-13). Estimated 400-600 lines, 12+ hours. See handoff for full analysis.",
   "metadata": {
     "session_id": "sess_1780151044_orch202r3",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "skipped",
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-class-formula-20260530.md"
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-class-formula-analysis-20260530.md"
   }
 }

@@ -447,75 +447,93 @@ theorem complement_pred_closed {T : Type} [LinearOrder T]
 
 /-! ### Reynolds Model Surgery Core
 
-The Reynolds Theorem 14 proof is now structured as:
+**Current proof structure** (conditional on `class_temporal_formula`):
 
-1. `class_temporal_formula` (SORRY): Constructs a temporal formula R that
-   detects class(a) membership, i.e., temporal_truth M atomMap t R iff
-   contemp_equiv sig k M a t. This encodes the very_good condition as
-   a MonadicFormula sig 1 (using NormalForm Fintype), then applies
-   US_expressively_complete_over_prior. The construction requires encoding
-   contemp_equiv in the monadic FO theory of M (~200 lines).
+1. `class_temporal_formula` (SORRY -- SEE DOCSTRING): Constructs a temporal
+   formula R detecting class(a) membership. This approach appears unprovable
+   because the fixed element `a` cannot be referenced by MonadicFormula sig 1,
+   and enriched-signature workarounds are circular (require Prior-UZ for
+   class membership, which fails at gap boundaries).
 
-2. `reynolds_model_surgery_core` (SORRY-FREE): Given the class-detecting
-   formula R, the proof is elegant:
-   - R holds at a (by contemp_equiv reflexivity)
-   - If R fails at some y > a, Prior-UZ gives first transition at (c, succ(c))
-   - R at c means c in class(a); h_succ_closed gives succ(c) in class(a)
-   - succ(c) in class(a) means R at succ(c). Contradiction.
-   - Similarly downward via Prior-SZ and contemp_equiv_pred_closed.
-   - So R holds everywhere, hence all points are in class(a).
--/
+2. `reynolds_model_surgery_core` (SORRY-FREE given class_temporal_formula):
+   Given R with temporal_truth t R ↔ contemp_equiv a t, the proof uses
+   Prior-UZ/SZ first/last-transition lemmas to show R holds everywhere.
 
-/-!
-### Reynolds Model Surgery: Key Helper Lemmas
+**Correct path forward** (Reynolds 1994, Lemmas 6-13, Theorem 14):
 
-The proof of `reynolds_model_surgery_core` proceeds via two key helper
-lemmas:
+The proof should be restructured to NOT use class_temporal_formula. Instead:
+1. Define epsilon(x,y) : MonadicFormula sig 2 encoding contemp_equiv
+2. Define rho(x) : MonadicFormula sig 1 encoding "right_gap_class"
+   (x's class ends in a gap on the right), built from epsilon
+3. Get temporal formula R for rho via US_expressively_complete_over_prior
+4. Prove R-interval properties (Lemma 7): maximal R-intervals are open,
+   bounded by elements of M
+5. Prove no first/last class in R-intervals (Lemma 8)
+6. Prove class homogeneity in R-intervals (Lemma 9)
+7. Define bad intervals and prove formula propagation (Lemmas 10-11)
+8. Construct model surgery (Lemma 12): excise a maximal bad interval,
+   replace by a single representative class
+9. Prove temporal truth preservation for all formula constructors
+   (Lemma 12 continued, 13 subcases for Until/Since)
+10. Derive contradiction (Lemma 13 + Theorem 14): in the surgery model,
+    the class boundary is at a point (not a gap), contradicting R
 
-1. `class_temporal_formula`: There exists a temporal formula R such that
-   temporal_truth M atomMap t R ↔ contemp_equiv sig k M a t. This is
-   constructed by encoding the finite disjunction of k-type patterns
-   as a MonadicFormula sig 1 (using the Fintype instance on NormalForm),
-   then applying US_expressively_complete_over_prior.
-
-2. The main proof: since R detects class(a) membership, R holds at a
-   (reflexivity of contemp_equiv). If R fails at some y, Prior-UZ gives
-   a first transition at (c, succ(c)). R true at c means c ∈ class(a),
-   and h_succ_closed gives succ(c) ∈ class(a), so R true at succ(c).
-   Contradiction. Similarly downward via Prior-SZ.
-
-The key mathematical challenge is lemma 1: encoding contemp_equiv as a
-MonadicFormula. This requires showing that for fixed M, a, sig, k, the
-property "t ∈ class(a)" is definable in the monadic FO theory of M.
+Estimated effort: 400-600 lines. The current `reynolds_model_surgery_core`
+would be DELETED and replaced by this model surgery argument.
 -/
 
 /-- **Class-detecting temporal formula** (Reynolds Theorem 14, Lemma 6 adapted):
     There exists a temporal formula R that detects membership in the
     contemp_equiv class of a, on Prior structures with h_surj.
 
-    The construction works by encoding `contemp_equiv sig k M a t` as a
-    `MonadicFormula sig 1` using the finite set of realizable k-types
-    (NormalForm sig k 0 is Fintype), then applying US_expressively_complete_over_prior.
+    **STATUS: SORRY -- APPEARS UNPROVABLE AS STATED**
 
-    NOTE: The MonadicFormula encodes "t is in the same very_good class as a"
-    by checking that for all x, y between a and t (using the order), the
-    subinterval [x,y] has a k-type matching some Z-interval. Since there are
-    finitely many possible k-types, this is a finite disjunction of bounded-
-    quantifier formulas.
+    This lemma asks for a Formula R such that temporal_truth M atomMap t R
+    characterizes class(a) membership. The natural approach is to encode
+    `contemp_equiv sig k M a t` as a `MonadicFormula sig 1` and apply
+    `US_expressively_complete_over_prior`. However, this faces a fundamental
+    obstacle:
 
-    Construction: express contemp_equiv as a MonadicFormula sig 1 (encoding
-    the very_good condition as a finite disjunction of k-type patterns using
-    NormalForm Fintype), then apply US_expressively_complete_over_prior. The
-    parameter a is handled by case-splitting on a ≤ t vs t < a and encoding
-    the order constraints in the monadic formula.
+    **Problem 1 (Parameter reference)**: `contemp_equiv sig k M a t` depends
+    on the fixed element `a`, but `MonadicFormula sig 1` has only ONE free
+    variable (for `t`). The element `a` cannot be referenced in the formula.
+    The formula's semantics `eval M (fun _ => t) psi` depend only on M and t,
+    not on any specific carrier element.
 
-    The mathematical justification is that contemp_equiv is definable in the
-    monadic FO theory of M (quantifier depth proportional to k), and
-    US_expressively_complete_over_prior converts any monadic FO formula to a
-    temporal formula on Prior structures.
+    **Problem 2 (Enriched signature circularity)**: Adding class membership as
+    a new predicate to create an enriched signature fails because:
+    - `semantic_prior_UZ` for the enriched atomMap requires the first-occurrence
+      property for class membership
+    - Class membership changes at gap boundaries (not successor pairs) when
+      class(a) is proper
+    - So Prior-UZ FAILS for the enriched structure
+    - But `US_expressively_complete_over_prior` requires Prior-UZ
+    - This is circular: we need to prove class boundaries are at successor
+      pairs (Theorem 14) to use the tool that would help prove Theorem 14
 
-    Implementation: uses Classical.choice to select the formula non-
-    constructively, avoiding the ~200-line explicit formula construction. -/
+    **Problem 3 (is_a predicate)**: Adding an `is_a` predicate (true only at a)
+    to the signature also fails for the same reason: the `is_a` predicate
+    transitions at exactly one point (pred(a), a) and (a, succ(a)), which are
+    successor pairs. But Prior-UZ for compound formulas involving `is_a`
+    still requires the first-occurrence property for ALL formulas in the
+    enriched language, which may fail for formulas encoding class membership.
+
+    **Correct approach (Reynolds 1994)**: Reynolds' actual Theorem 14 does NOT
+    use a class-detecting formula. Instead, it uses a `right_gap_class` formula
+    rho(x) = "x's ~M-class ends in a gap on the right." This IS expressible
+    because ~M is defined by a monadic FO formula epsilon(x,y) with TWO free
+    variables, and rho(x) quantifies over y. The formula rho gives a temporal
+    formula R via US_expressively_complete_over_prior. The proof then proceeds
+    via Lemmas 7-13 (model surgery), NOT via the simple first-transition
+    argument in `reynolds_model_surgery_core`.
+
+    **Action needed**: Restructure to follow Reynolds' original argument:
+    1. Construct epsilon(x,y) : MonadicFormula sig 2 defining contemp_equiv
+    2. Construct rho(x) : MonadicFormula sig 1 for right_gap_class from epsilon
+    3. Apply US_expressively_complete_over_prior to get temporal formula R
+    4. Implement Lemmas 7-13 (model surgery) using R
+    This requires ~400-600 lines and a different proof architecture from the
+    current `reynolds_model_surgery_core`. -/
 private noncomputable def class_temporal_formula
     {sig : MonadicSignature} {k : Nat}
     (M : OrderedMonadicStructure sig)
