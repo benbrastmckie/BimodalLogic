@@ -283,7 +283,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 22 hours
-- **Status**: [RESEARCHING]
+- **Status**: [IMPLEMENTING]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
@@ -293,6 +293,7 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/reports/05_reynolds-theorem-14-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
+  - [202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
 - **Plan**:
   - [202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md]
 - **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close no_gaps_discrete, then derive succ_cofinal from one_class to close Path A (countermodel_discrete_enriched) for sorry-free completeness_discrete. Plan v8 (hybrid path): Phase 1 complete (Theorem 5, 395 lines), Task 4.3 complete (Prior-UZ/SZ discharge). Phases 2-3 (Reynolds model surgery), Phase 4 (Theorem 14 + close no_gaps_discrete), Phase 5 (bridge one_class to succ_cofinal). ~1100 new lines.

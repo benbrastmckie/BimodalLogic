@@ -1177,14 +1177,14 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "researching",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-30T02:15:52Z",
+      "last_updated": "2026-05-30T02:23:44Z",
       "next_artifact_number": 10,
       "artifacts": [
         {
@@ -1216,6 +1216,11 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
           "type": "plan",
           "summary": "Plan v9 revised: added Phase 0 dead code cleanup, preserved completed Phase 1, preserved Phases 2-5"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md",
+          "type": "report",
+          "summary": "Deviation analysis: Phase 2 restructuring is mathematically sound (gap_of_not_succ_archimedean sorry-free, h_surj fix genuine, pipeline connects to succ_cofinal). Phases 2-4 annotations should be PARTIAL not COMPLETED. Scaffolding should be kept."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
