@@ -1246,14 +1246,14 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry blocking sorry-free completeness_discrete. Plan v13 pivots from BX pipeline (no_gaps_faithful -- FALSE) to Reynolds pipeline: prove no_gaps_discrete in GoodStructures.lean via model surgery at OrderedMonadicStructure level, fix countermodel_discrete_reynolds packaging sorry, rewire completeness_discrete. 10 hours.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-30T17:10:15Z",
+      "last_updated": "2026-05-30T17:22:09Z",
       "next_artifact_number": 17,
       "artifacts": [
         {
@@ -1292,152 +1292,30 @@
           "summary": "Phase 2 blocker: no_gaps_prior is mathematically false (Z+Z counterexample). Three paths proposed. Path B (chronicle-level proof) chosen."
         },
         {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
-          "type": "plan",
-          "summary": "Plan v10 (superseded by v11): merged Phases 2-4 into single Phase 2 (no_gaps_prior). Blocked: no_gaps_prior is false as stated."
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md",
-          "type": "plan",
-          "summary": "Plan v11: chronicle-level proof. Bypasses no_gaps_prior (false as stated). Proves succ_cofinal directly using chronicle_temporal_truth_effective faithfulness bridge + Reynolds model surgery adapted to MCS setting. 3 phases, 12 hours, ~500 new lines."
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md",
-          "type": "plan",
-          "summary": "Plan v12: Reynolds model surgery (Lemmas 6-13, Theorem 14) at chronicle level. New file ReynoldsModelSurgery.lean (~600 lines). Phase 1 complete, Phase 2: full model surgery, Phase 3: close chronicle_gap_contradiction + verify. 14 hours."
-        },
-        {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/13_blocker-analysis-correct-path.md",
           "type": "report",
           "summary": "Blocker analysis: no_gaps_faithful is FALSE (Z+Z counterexample). Identifies Path B (Reynolds pipeline via no_gaps_discrete) as correct path. Model surgery operates at OrderedMonadicStructure level, not PriorModelData level."
         },
         {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/13_reynolds-pipeline-pivot.md",
-          "type": "plan",
-          "summary": "Plan v13: Pivots from BX pipeline (no_gaps_faithful -- FALSE) to Reynolds pipeline. Proves no_gaps_discrete via model surgery at OrderedMonadicStructure level in new GoodStructuresModelSurgery.lean (~500 lines), fixes countermodel_discrete_reynolds packaging sorry, rewires completeness_discrete. 4 phases, 10 hours."
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md",
-          "type": "plan",
-          "summary": "Plan v14: Definitive path via Reynolds model surgery (Lemmas 6-13). 5 phases: h_surj construction, model surgery core (500 lines, 13 U/S subcases), wire no_gaps_discrete, TaskFrame packaging, completeness rewiring. 18 hours."
-        },
-        {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/16_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): decomposition of model surgery into 4 sub-tasks; identified true blocker (MonadicFormula construction never attempted)"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/16_reynolds-model-surgery-v15.md",
+          "type": "plan",
+          "summary": "Plan v15: 4-phase Reynolds model surgery decomposition"
         }
       ],
       "researched": "2026-05-30T17:10:15Z",
       "planned": "2026-05-29T22:00:00Z",
-      "session_id": "sess_1780160597_res202t",
+      "session_id": "sess_1780161364_plan202",
       "plan_metadata": {
-        "phases": 5,
+        "phases": 4,
         "total_effort_hours": 18,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 14,
-        "dependency_waves": [
-          [
-            1,
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ],
-          [
-            5
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_reynolds-bypass-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/02_option-c-pivot-research.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "handoffs/phase-1-handoff-20260529.md",
-            "integrated_in_plan_version": 3,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/04_team-research.md",
-            "integrated_in_plan_version": 4,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/05_reynolds-theorem-14-research.md",
-            "integrated_in_plan_version": 6,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/07_bfmcs-bypass-research.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/08_succ-cofinal-dependency-trace.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "handoffs/phase-4-5-handoff-20260529b.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/10_succ-cofinal-elimination-analysis.md",
-            "integrated_in_plan_version": 9,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/12_deviation-analysis.md",
-            "integrated_in_plan_version": 10,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "handoffs/phase-2-blocked-20260529.md",
-            "integrated_in_plan_version": 11,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
-            "integrated_in_plan_version": 12,
-            "integrated_date": "2026-05-29"
-          },
-          {
-            "path": "reports/13_blocker-analysis-correct-path.md",
-            "integrated_in_plan_version": 13,
-            "integrated_date": "2026-05-30"
-          },
-          {
-            "path": "handoffs/phase-2-blocked-counterexample-20260530.md",
-            "integrated_in_plan_version": 13,
-            "integrated_date": "2026-05-30"
-          },
-          {
-            "path": "handoffs/phase-1-h-surj-pivot-20260530.md",
-            "integrated_in_plan_version": 14,
-            "integrated_date": "2026-05-30"
-          },
-          {
-            "path": "reports/14_model-surgery-deep-research.md",
-            "integrated_in_plan_version": 14,
-            "integrated_date": "2026-05-30"
-          },
-          {
-            "path": "reports/15_reynolds-pipeline-detailed-plan.md",
-            "integrated_in_plan_version": 14,
-            "integrated_date": "2026-05-30"
-          }
-        ]
+        "plan_version": 15
       }
     },
     {

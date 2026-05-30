@@ -1,7 +1,29 @@
 {
-  "status": "partial",
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/202_reynolds_k_equivalence_bypass/plans/16_reynolds-model-surgery-v15.md",
+      "summary": "Plan v15: 4-phase Reynolds model surgery decomposition targeting gap_prior_UZ/SZ_contradiction sorry sites via MonadicFormula construction, R-interval analysis, surgery truth preservation, and contradiction derivation"
+    }
+  ],
+  "next_steps": "Run /implement 202 to execute the plan",
   "metadata": {
-    "cycles_used": 2,
-    "final_state": "partial"
-  }
+    "session_id": "sess_1780161364_plan202",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 16,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a formalization task requires expressing a semantic property (defined as a Lean Prop) as a syntactic formula (MonadicFormula), use Classical.choice on the existence Prop rather than constructing the explicit formula term. The existence proof argues from finite type enumeration (Fintype instances on NormalFormIdx) and Boolean combination closure. This avoids De Bruijn index arithmetic and formula-lifting complexity while remaining mathematically valid. The pattern: (1) prove exists rho, forall M t, eval M t rho <-> semantic_prop M t, (2) use Classical.choice to extract rho. Applied in Reynolds Lemma 6 for right_gap_class_prop encoding.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/202_reynolds_k_equivalence_bypass/plans/16_reynolds-model-surgery-v15.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["MonadicFormula", "Classical.choice", "formula-construction", "right_gap_class", "Reynolds", "expressibility"]
+    }
+  ]
 }
