@@ -1,7 +1,7 @@
 # Implementation Plan: Task #222
 
 - **Task**: 222 - Consolidate data/ and hf-dataset/ into unified directory structure
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/222_consolidate_data_hf_dataset_directory/reports/01_consolidate-dirs-research.md
@@ -158,18 +158,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update cross-references and final validation [IN PROGRESS]
+### Phase 4: Update cross-references and final validation [COMPLETED]
 
 **Goal**: Ensure all cross-references across the repository are consistent and perform end-to-end validation.
 
 **Tasks**:
-- [ ] Search the entire codebase for references to `hf-dataset/` (excluding `data/hf-dataset/`) and update any stale paths
-- [ ] Check `data/bmlogic-bench-splits.json` for any references that need updating
-- [ ] Check `data/croissant.json` for any local path references that need updating
-- [ ] Verify `data/.gitignore` needs no changes
-- [ ] Run `lake build` to confirm no Lean source files are affected
-- [ ] Run `scripts/readme-lint.sh` if available to check for broken links
-- [ ] Verify the complete file tree under `data/` is as expected
+- [x] Search the entire codebase for references to `hf-dataset/` (excluding `data/hf-dataset/`) and update any stale paths *(completed: only data/README.md has relative hf-dataset/ references, which are correct)*
+- [x] Check `data/bmlogic-bench-splits.json` for any references that need updating *(completed: no path references found)*
+- [x] Check `data/croissant.json` for any local path references that need updating *(completed: no local path references found)*
+- [x] Verify `data/.gitignore` needs no changes *(completed: no hf-dataset references in .gitignore)*
+- [x] Run `lake build` to confirm no Lean source files are affected *(completed: Build completed successfully 1678 jobs)*
+- [x] Run `scripts/readme-lint.sh` if available to check for broken links *(deviation: skipped — script does not exist)*
+- [x] Verify the complete file tree under `data/` is as expected *(completed)*
 
 **Timing**: 30 minutes
 

@@ -150,8 +150,13 @@ technical_debt:
 **Description**: Rename all documentation files created/updated by task 183 to use consistent lowercase kebab-case naming. Audit Theories/Bimodal/docs/reference/ and scripts/ for any files using camelCase, Title_Case, or other non-kebab-case conventions, rename them to lowercase kebab-case, and systematically update all references across the entire Theories/Bimodal/ tree and specs/. Ensure the documentation standard reference docs themselves prescribe lowercase kebab-case as the naming convention going forward. Verify no broken references remain after renaming using scripts/readme-lint.sh.
 
 ### 222. Consolidate data/ and hf-dataset/ into unified directory structure
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
+- **Report**: [specs/222_consolidate_data_hf_dataset_directory/reports/01_consolidate-dirs-research.md]
+- **Plan**: [specs/222_consolidate_data_hf_dataset_directory/plans/02_consolidate-dirs-plan.md]
+- **Summary**: [specs/222_consolidate_data_hf_dataset_directory/summaries/03_consolidate-dirs-summary.md]
+
+**Completion**: Moved hf-dataset/ to data/hf-dataset/ (git mv, history preserved), recreated 4 symlinks with corrected relative paths, moved competitive-landscape.md to docs/research/, replaced data/README.md with lightweight directory README, preserved HF dataset card as data/dataset-card.md. Lake build passes.
 
 **Description**: Consolidate data/ and hf-dataset/ into a unified data/ directory with appropriate subdirectories. Add README.md files following repository standards. Move extended documentation to docs/. Currently both directories exist at root with overlapping concerns — merge into one coherent structure.
 
