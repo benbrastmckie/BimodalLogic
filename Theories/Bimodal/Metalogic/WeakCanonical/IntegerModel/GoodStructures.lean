@@ -830,16 +830,14 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
       (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
         ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
+    (h_accessible : ∀ (p : sig.preds), ∃ (f : Formula),
+      ∀ (t : M.carrier), temporal_truth M atomMap t f ↔ M.interp p t)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- Reynolds Theorem 5 (US expressive completeness) is COMPLETED in
-  -- PriorExpressiveness.lean (stavi_U_false_on_prior_UZ, stavi_S_false_on_prior_SZ,
-  -- US_expressively_complete_over_prior).
-  -- REMAINING: Reynolds Lemmas 6-13 (gap formula R, R-interval properties, model
-  -- surgery) and Theorem 14. See plans/09_reynolds-hybrid-plan.md Phases 2-4.
-  -- Once Lemmas 6-13 + Theorem 14 are formalized in ReynoldsNoGaps.lean,
-  -- this sorry is replaced by a call to theorem_14.
+  -- Proof in GoodStructuresModelSurgery.lean
+  -- The h_accessible condition is REQUIRED (theorem false without it).
+  -- See GoodStructuresModelSurgery.lean module docstring for counterexample.
   sorry
 
 /--
@@ -892,12 +890,14 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
     (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
       (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg) :
+        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
+    (h_accessible : ∀ (p : sig.preds), ∃ (f : Formula),
+      ∀ (t : M.carrier), temporal_truth M atomMap t f ↔ M.interp p t) :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
   intro a b
   by_contra h_diff
   -- By no_gaps_discrete: ∃c with a ~M c but ¬(a ~M succ c)
-  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_prior_UZ h_prior_SZ a b h_diff
+  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_prior_UZ h_prior_SZ h_accessible a b h_diff
   -- By no_boundary_at_successor: c ~M succ(c)
   have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
     no_boundary_at_successor sig k M c

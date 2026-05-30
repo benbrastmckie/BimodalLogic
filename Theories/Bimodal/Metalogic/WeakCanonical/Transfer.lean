@@ -1050,8 +1050,30 @@ theorem countermodel_discrete_reynolds
   -- Step 4: Prove chronicle is good via one_class path
   have h_UZ := chronicle_semantic_prior_UZ CM sig atomMap_rev atomMap_fwd
   have h_SZ := chronicle_semantic_prior_SZ CM sig atomMap_rev atomMap_fwd
+  -- Step 4a: Prove predicate accessibility for the chronicle
+  -- Every predicate p : sig.preds has a formula f with temporal_truth f ↔ M.interp p.
+  -- sig.preds = Finset.cons bot φ.predFormulas.
+  -- For p = ⟨f, h⟩ with f ∈ φ.predFormulas: use f directly.
+  --   temporal_truth M atomMap_fwd t f = M.interp (atomMap_fwd f) t = M.interp p t.
+  --   (since f is an atom or box formula, temporal_truth directly evaluates M.interp)
+  -- For p = ⟨bot, h⟩: use Formula.bot.
+  --   temporal_truth M atomMap_fwd t bot = False.
+  --   M.interp ⟨bot, h⟩ t = (atomMap_rev ⟨bot, h⟩) ∈ CM.fmcs t = bot ∈ CM.fmcs t = False.
+  have h_acc : ∀ (p : sig.preds), ∃ (f : Formula),
+      ∀ (t : M_struct.carrier),
+        temporal_truth M_struct atomMap_fwd t f ↔ M_struct.interp p t := by
+    intro ⟨f, hf⟩
+    -- f ∈ Finset.cons bot φ.predFormulas
+    -- For any f ∈ sig.preds (atoms, boxes, or bot), use f itself as the witnessing formula.
+    -- temporal_truth f = M.interp (atomMap_fwd f) for atoms and boxes.
+    -- For bot: temporal_truth bot = False, and M.interp (atomMap_fwd bot) = bot ∈ fmcs = False.
+    -- The key: atomMap_fwd f = ⟨f, hf⟩ when f ∈ predFormulas,
+    -- so M.interp (atomMap_fwd f) = M.interp ⟨f, hf⟩.
+    -- We need temporal_truth f ↔ M.interp ⟨f, hf⟩ for atoms and boxes.
+    -- This is a sorry for now pending careful formula case analysis.
+    exact ⟨f, fun t => by sorry⟩
   have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
-    (operator_depth φ + 2) h_UZ h_SZ
+    (operator_depth φ + 2) h_UZ h_SZ h_acc
   -- Step 5: Extract Z-interval witness and k-equivalence
   obtain ⟨Z, h_k_equiv⟩ := h_good
   -- Step 6: Prove ¬φ is temporally true at the chronicle root
