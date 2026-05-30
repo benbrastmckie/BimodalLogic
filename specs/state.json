@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 223,
+      "project_name": "rename_docs_lowercase_kebab_case",
+      "status": "not_started",
+      "task_type": "general",
+      "created": "2026-05-30T01:11:26Z",
+      "last_updated": "2026-05-30T01:11:26Z"
+    },
+    {
       "project_number": 222,
       "project_name": "consolidate_data_hf_dataset_directory",
       "status": "not_started",
@@ -1416,7 +1424,7 @@
       "last_updated": "2026-05-29T23:18:44Z"
     }
   ],
-  "next_project_number": 223,
+  "next_project_number": 224,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
