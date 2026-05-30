@@ -134,7 +134,7 @@ technical_debt:
   - **Summary**: [specs/218_croissant_metadata_hf_leaderboard/summaries/01_croissant-hf-summary.md]
 216 [COMPLETED] — Natural-language paraphrase augmentation for bmlogic-bench
 217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
-220 [NOT STARTED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
+220 [IMPLEMENTING] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 221 [NOT STARTED] — Proof step dataset expansion (36 → 200+ theorems)
 219 [NOT STARTED] — LLM baseline difficulty calibration
   └─ 216
@@ -148,11 +148,12 @@ technical_debt:
 
 ### 226. Build standalone Z3 countermodel generator for negative training signal
 - **Effort**: large (20-40 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: z3
 - **Research**:
   - [specs/226_build_standalone_z3_countermodel_generator/reports/01_team-research.md]
   - [specs/226_build_standalone_z3_countermodel_generator/reports/02_team-research.md]
+- **Plan**: [226_build_standalone_z3_countermodel_generator/plans/02_oracle-integration-plan.md]
 
 **Description**: Create a standalone version of the bimodal ModelChecker Z3 infrastructure (based on /home/benjamin/Projects/Logos/ModelChecker/code/src/model_checker/theory_lib/bimodal/) within this repository, instead of in BimodalHarness as described in BimodalHarness task 19. The aim is to implement Python and Z3 infrastructure to generate countermodels as a negative training signal. There is also an opportunity for metalogic to establish at least the soundness of the Z3 implementation, so that every countermodel found guarantees a countermodel fitting the full definition defined in Lean by the semantics. The Z3 implementation need not be complete if incompleteness improves search space efficiency. Finding most countermodels quickly is more important than finding all of them slowly, which is worth flagging and investigating during research.
 

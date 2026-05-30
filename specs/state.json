@@ -8,13 +8,20 @@
     {
       "project_number": 226,
       "project_name": "build_standalone_z3_countermodel_generator",
-      "status": "researched",
+      "status": "planned",
       "task_type": "z3",
       "created": "2026-05-30T07:32:14Z",
-      "last_updated": "2026-05-30T23:09:17Z",
-      "session_id": "sess_1780182134_5f16d1",
+      "last_updated": "2026-05-30T23:47:20Z",
+      "session_id": "sess_1780184580_20b554",
       "researched": "2026-05-30T23:09:17Z",
-      "next_artifact_number": 3
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/226_build_standalone_z3_countermodel_generator/plans/02_oracle-integration-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for oracle integration, conformance testing, and Lean bounded model soundness"
+        }
+      ]
     },
     {
       "project_number": 225,
@@ -1722,14 +1729,14 @@
     {
       "project_number": 220,
       "project_name": "anchor_coverage_expansion",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T04:44:03Z",
+      "last_updated": "2026-05-30T12:00:00Z",
       "session_id": "sess_1780115981_ccd968",
       "next_artifact_number": 2,
       "artifacts": [
