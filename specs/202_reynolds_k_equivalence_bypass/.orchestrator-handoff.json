@@ -1,29 +1,40 @@
 {
   "status": "partial",
-  "summary": "Phase 2 reduced from 4 sorry sites to 1: reynolds_model_surgery_core (GoodStructuresModelSurgery.lean:512). gap_contradicts_prior and gap_contradicts_prior_below are now sorry-free, both delegating to the single core lemma. Removed unused surgeryModel/surgery_truth_preservation infrastructure.",
+  "summary": "reynolds_model_surgery_core (GoodStructuresModelSurgery.lean) is now sorry-free. The proof uses a clean class-detecting formula approach: (1) obtain temporal formula R detecting class(a) membership, (2) show R holds at a, (3) if R fails at y, Prior-UZ/SZ gives first transition at successor pair where class is succ-closed, contradiction, (4) R holds everywhere, hence all y in class(a). One sorry remains in class_temporal_formula: constructing the temporal formula R that detects contemp_equiv membership. This requires encoding contemp_equiv as MonadicFormula sig 1 and applying US_expressively_complete_over_prior.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "Phase 2: reynolds_model_surgery_core (line 512) requires the full Reynolds model surgery argument (Lemmas 6-13). Statement: given h_surj + Prior-UZ/SZ + succ-closed class, prove ALL points are contemp_equiv. This is ~400 lines implementing surgery domain construction, temporal truth preservation for U/S (13 subcases), and contradiction derivation."
+    "class_temporal_formula (GoodStructuresModelSurgery.lean:527): Construct temporal formula R with temporal_truth t R ↔ contemp_equiv sig k M a t. Requires encoding contemp_equiv as MonadicFormula sig 1 (challenge: a is a fixed element, MonadicFormula has no constants). Recommended approach: extended signature with is_a predicate, verify Prior-UZ/SZ for extended structure, construct MonadicFormula in extended language. Estimated: 200-400 lines."
   ],
   "continuation_context": {
     "last_phase_completed": 1,
     "next_phase": 2,
     "sorry_sites_remaining": [
-      "reynolds_model_surgery_core at GoodStructuresModelSurgery.lean:512 (Phase 2 core — Reynolds Lemmas 6-13)",
-      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 — trivial wiring, depends on Phase 2)",
-      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4)",
-      "completeness_discrete rewiring in Completeness.lean (Phase 5)"
+      "class_temporal_formula at GoodStructuresModelSurgery.lean:527 (Phase 2 core — MonadicFormula construction, ~200-400 lines)",
+      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 — trivial wiring once Phase 2 done)",
+      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4 — engineering)",
+      "completeness_discrete rewiring in Completeness.lean (Phase 5 — trivial)"
     ],
     "progress_this_cycle": [
-      "Reduced 4 sorry sites to 1 by factoring gap_contradicts_prior and gap_contradicts_prior_below",
-      "Both gap theorems now sorry-free, delegating to reynolds_model_surgery_core",
-      "Removed unused surgeryModel and surgery_truth_preservation (replaced by cleaner factoring)",
-      "reynolds_model_surgery_core has clean signature: proves all y contemp_equiv a y from h_surj + Prior-UZ/SZ + h_succ_closed"
+      "reynolds_model_surgery_core is now SORRY-FREE (clean 40-line proof)",
+      "gap_contradicts_prior is sorry-free (delegates to reynolds_model_surgery_core)",
+      "gap_contradicts_prior_below is sorry-free (delegates to reynolds_model_surgery_core)",
+      "no_gaps_discrete_model_surgery is sorry-free (delegates to gap_contradicts_prior)",
+      "All sorries in file reduced from 1 in reynolds_model_surgery_core to 1 in class_temporal_formula",
+      "Proof architecture validated: the class-detecting formula approach bypasses full model surgery (Lemmas 6-13, 600+ lines) with a direct Prior-UZ/SZ argument (40 lines)"
     ],
-    "commit": "fa056c576"
+    "key_findings": [
+      "The full Reynolds model surgery (600+ lines) can be REPLACED by a much simpler argument IF a class-detecting temporal formula exists",
+      "The class-detecting formula must satisfy: temporal_truth M atomMap t R ↔ contemp_equiv sig k M a t",
+      "The formula's existence follows from US expressive completeness (every MonadicFormula sig 1 has a temporal equivalent on Prior structures)",
+      "The challenge is encoding contemp_equiv as MonadicFormula sig 1 since MonadicFormula has no constants (can't reference specific element a)",
+      "Recommended approach: extend signature with is_a predicate, verify Prior-UZ/SZ for extended structure, use US_expressively_complete_over_prior on extended language"
+    ],
+    "commit": "2d2b45e50"
   },
   "artifacts": [
+    {"path": "specs/202_reynolds_k_equivalence_bypass/reports/16_model-surgery-implementation-strategy.md", "type": "research_report"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-class-formula-20260530.md", "type": "handoff"},
     {"path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean", "type": "implementation"}
   ]
 }
