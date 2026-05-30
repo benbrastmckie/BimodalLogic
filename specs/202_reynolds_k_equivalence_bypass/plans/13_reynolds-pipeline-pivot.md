@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Reynolds Model Surgery for no_gaps_discrete (Lemmas 6-13 + Theorem 14) [BLOCKED]
+### Phase 1: Reynolds Model Surgery for no_gaps_discrete (Lemmas 6-13 + Theorem 14) [PARTIAL]
 
 **Goal**: Close the sorry at GoodStructures.lean:843 by proving `no_gaps_discrete` using
 Reynolds' model surgery argument adapted to the `OrderedMonadicStructure` level.

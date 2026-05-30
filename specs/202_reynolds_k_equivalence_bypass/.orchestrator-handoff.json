@@ -1,24 +1,24 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 blocked: no_gaps_faithful for PriorModelData is FALSE (Z+Z counterexample with constant MCS satisfies all hypotheses yet has a gap). h_fc propagation completed, resolving Prior-UZ/SZ sorry. Plan needs restructuring.",
-  "phases_completed": 1,
-  "phases_total": 3,
+  "status": "partial",
+  "summary": "Phase 1 partially completed: discovered no_gaps_discrete was FALSE as stated (missing predicate accessibility), fixed signature by adding h_accessible, built sorry-free infrastructure lemmas, but model surgery proof and h_accessible discharge remain sorry'd. Full project builds.",
+  "phases_completed": 0,
+  "phases_total": 4,
   "blockers": [
-    "no_gaps_faithful : IsEmpty (Gap M.domain) for arbitrary PriorModelData is mathematically false. Z+Z (two copies of Z, constant MCS) is a counterexample.",
-    "Plan v12 Phase 2 approach (Reynolds model surgery at PriorModelData level) cannot work because the abstract hypotheses are too weak to prevent gaps.",
-    "Need plan revision: either (A) strengthen PriorModelData, (B) prove gap elimination directly using omega-chain properties, or (C) formalize Reynolds Theorem 15 with EF games."
+    "no_gaps_discrete proof requires full Reynolds model surgery (Lemmas 6-13 + Theorem 14) - 300-500 lines of complex proof work",
+    "h_accessible proof at Transfer.lean:1074 requires formula case analysis for atoms/boxes/bot",
+    "no_gaps_discrete_model_surgery in GoodStructuresModelSurgery.lean has 2 sorry sites"
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-counterexample-20260530.md",
-    "next_phase": 2
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-blocked-signature-20260529.md",
+    "next_phase": 1
   },
-  "next_action_hint": "revise",
+  "next_action_hint": "continue",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
-    "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-counterexample-20260530.md"
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-blocked-signature-20260529.md",
+    "specs/202_reynolds_k_equivalence_bypass/plans/13_reynolds-pipeline-pivot.md"
   ]
 }

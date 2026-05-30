@@ -1,35 +1,55 @@
 {
   "status": "partial",
+  "started_at": "2026-05-29T12:00:00Z",
   "requires_user_review": true,
-  "blocked_phase": 2,
-  "review_reason": "Phase 2 blocked: no_gaps_faithful is FALSE (Z+Z counterexample). Plan v12 approach needs restructuring.",
+  "review_reason": "Phase 1 partially completed: signature fix applied, infrastructure built, but model surgery proof and h_accessible discharge still sorry'd. Critical finding: no_gaps_discrete was FALSE as stated.",
+  "blocked_phase": 1,
   "verification": {
     "verification_passed": false,
-    "sorry_count": 1,
+    "sorry_count": 3,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
     "build_output": "Build completed successfully (1680 jobs)."
   },
   "partial_progress": {
-    "stage": "phase_2_blocked",
-    "details": "Phase 2 blocked: discovered no_gaps_faithful for PriorModelData is mathematically false (Z+Z counterexample with constant MCS). h_fc propagation completed (Prior-UZ/SZ sorry resolved). Three alternative paths documented.",
-    "phases_completed": 1,
-    "phases_total": 3
+    "stage": "phase_1_partial",
+    "details": "Phase 1 partially completed. Signature of no_gaps_discrete fixed (added h_accessible). Infrastructure lemmas proved sorry-free. Main theorem and h_accessible discharge still sorry'd.",
+    "phases_completed": 0,
+    "phases_total": 4
   },
   "artifacts": [
-    "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
-    "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-counterexample-20260530.md"
+    {
+      "type": "source",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+      "summary": "New file with sorry-free helper lemmas (prior_UZ_first_transition, contemp_equiv_convex, contemp_equiv_pred_closed, class_gap_exists) and sorry'd main theorem"
+    },
+    {
+      "type": "source_modified",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
+      "summary": "Added h_accessible parameter to no_gaps_discrete and one_class"
+    },
+    {
+      "type": "source_modified",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
+      "summary": "Added h_accessible parameter to chronicle_is_good_direct"
+    },
+    {
+      "type": "source_modified",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+      "summary": "Added h_accessible proof (sorry'd) in countermodel_discrete_reynolds"
+    },
+    {
+      "type": "handoff",
+      "path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-blocked-signature-20260529.md",
+      "summary": "Detailed handoff with blocker analysis and continuation instructions"
+    }
   ],
   "metadata": {
     "session_id": "sess_1780118957_3a63e0",
     "agent_type": "lean-implementation-agent",
+    "compliance_check": "skipped",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }
