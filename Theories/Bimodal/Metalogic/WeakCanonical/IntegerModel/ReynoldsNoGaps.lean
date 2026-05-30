@@ -252,27 +252,26 @@ of Lemmas 6-13.
 -/
 
 /--
-**Reynolds Theorem 14 (no gaps in Prior structures)**: In a discrete linear order
-without endpoints satisfying Prior-UZ and Prior-SZ, there are no Dedekind gaps.
+**DEPRECATED -- MATHEMATICALLY FALSE AS STATED**
 
-This is the core content of Reynolds 1994, Theorem 14, pp.124-129.
-The proof requires the full model surgery argument (Lemmas 6-13).
+`no_gaps_prior` is mathematically incorrect without an additional faithfulness
+hypothesis. The missing hypothesis is that `temporal_truth` faithfully reflects
+the monadic structure's predicate interpretation.
 
-The hypothesis h_surj (atomMap surjective onto sig.preds) is essential:
-without it, the temporal formulas may not have enough expressive power
-to detect the gap. The US expressive completeness theorem (Theorem 5)
-requires h_surj to guarantee that every monadic FO formula has a
-temporal equivalent.
+**Counterexample**: M.carrier = Z + Z (two disjoint copies of integers), with
+M.interp p x = True for all predicates p and all points x (constant predicates).
+This satisfies SuccOrder, PredOrder, NoMaxOrder, NoMinOrder, h_surj, Prior-UZ,
+and Prior-SZ (all temporal formulas evaluate to constants because predicates are
+constant). But Z + Z has a Dedekind Gap between the two copies.
 
-**Mathematical argument**:
-Suppose for contradiction that γ is a Gap. By US expressive completeness
-(requiring h_surj), there exists a temporal formula R equivalent to the
-FO formula ρ(x) = "x's equivalence class ends at γ on the right." Since
-Prior-UZ gives first-occurrence properties, R holds at points near the gap.
-Model surgery (Lemmas 10-13) replaces the bad interval near γ with a single
-equivalence class, preserving temporal truth. In the surgery model, R holds
-at the chosen class, but its class cannot end at a gap (the gap was removed).
-Contradiction.
+**Status**: OFF the critical path. The completeness pipeline uses
+`chronicle_no_gaps` (ChronicleNoGaps.lean) instead, which proves the no-gaps
+result specifically at the `ChronicleAsPriorModel` level where faithfulness
+holds by construction (via `chronicle_temporal_truth_effective` in Transfer.lean).
+
+The downstream theorems `prior_implies_succ_archimedean` and
+`one_class_implies_succ_archimedean` remain sound -- they would work correctly
+if `no_gaps_prior` were corrected with a faithfulness hypothesis.
 -/
 theorem no_gaps_prior (sig : MonadicSignature) (k : Nat) (hk : k ≥ 1)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -282,13 +281,9 @@ theorem no_gaps_prior (sig : MonadicSignature) (k : Nat) (hk : k ≥ 1)
     (h_prior_UZ : semantic_prior_UZ M atomMap)
     (h_prior_SZ : semantic_prior_SZ M atomMap) :
     IsEmpty (Gap M.carrier) := by
-  -- Reynolds Theorem 14: model surgery argument
-  -- The proof requires formalizing Lemmas 6-13 from Reynolds 1994.
-  -- Key steps:
-  -- 1. Construct gap formula R via US_expressively_complete_over_prior (Theorem 5)
-  -- 2. Prove R-interval properties (Lemmas 7-9)
-  -- 3. Model surgery (Lemmas 10-13)
-  -- 4. Derive contradiction from R holding in surgery model
+  -- DEPRECATED: This theorem is mathematically false as stated.
+  -- See docstring above for the Z+Z counterexample.
+  -- The chronicle-level proof in ChronicleNoGaps.lean bypasses this theorem.
   sorry
 
 /--

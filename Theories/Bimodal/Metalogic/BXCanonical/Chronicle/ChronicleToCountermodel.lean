@@ -3,6 +3,7 @@ import Bimodal.Metalogic.BXCanonical.CanonicalModel
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
+import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Order.CountableDenseLinearOrder
@@ -1475,39 +1476,85 @@ private theorem z1_in_mcs (fc : FrameClass) (h_fc : FrameClass.Discrete <= fc) (
     z1_formula φ ∈ S :=
   theorem_in_mcs h_mcs (z1_derivation fc h_fc φ)
 
+/-! ## Chronicle Gap Elimination via Prior-SZ
+
+Reynolds' Theorem 14 adapted to the chronicle level. The abstract `no_gaps_prior`
+(ReynoldsNoGaps.lean) is mathematically false without a faithfulness hypothesis
+(Z+Z counterexample with constant predicates). However, the chronicle construction
+has built-in faithfulness via `chronicle_temporal_truth_effective` in Transfer.lean.
+
+The proof strategy (plan v11, Path B):
+1. Assume NOT IsSuccArchimedean. Then there exist a < b with succ^[n](a) < b for all n.
+2. The successor orbit's downward closure C = {x : ∃ n, x ≤ succ^[n](a)} is a
+   Dedekind cut: succ-closed, no max, complement has no min.
+3. Build an OrderedMonadicStructure on LimitDomSubtype with a predicate for C.
+4. Establish semantic Prior-UZ/SZ for this structure (key lemma).
+5. By US expressive completeness (PriorExpressiveness.lean), get temporal formula R
+   equivalent to "in C" on this structure.
+6. Take s ∈ C'. P(R) holds at s (past R-points in C). By semantic Prior-SZ:
+   S(R, ¬R) at s, giving "last R-point" s' < s with ¬R on (s', s).
+   But succ(s') ∈ C (succ-closed) and succ(s') ∈ (s', s), so R at succ(s').
+   Contradicts ¬R on (s', s).
+
+**Blocker**: Step 4 requires proving semantic Prior-UZ/SZ for a structure where
+the predicate is "in C" (not the MCS interpretation). The chronicle's Prior-UZ/SZ
+hold for the MCS-based interpretation, but a custom predicate may not satisfy them.
+Resolving this requires either:
+(a) Showing the cut IS expressible via MCS membership (needs omega-chain analysis), or
+(b) Full Reynolds model surgery (Lemmas 6-13) adapted to the chronicle level, or
+(c) Using the faithfulness bridge to transfer between the two structures.
+
+The lemma `chronicle_gap_contradiction` captures the core mathematical content.
+Once proved sorry-free (see ChronicleNoGaps.lean or task 202 continuation),
+`succ_cofinal` and `completeness_discrete` become sorry-free.
+-/
+
+/--
+**Core gap elimination**: If the chronicle domain is not successor-archimedean,
+derive a contradiction. This requires Reynolds' model surgery argument adapted
+to the chronicle level (Theorem 14, Lemmas 6-13).
+
+**Status**: sorry -- see blocker documentation above.
+**Resolution path**: Prove via Prior-SZ + US expressive completeness + faithfulness
+at the chronicle level (plan v11 Phase 2).
+-/
+private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
+    (a b : LimitDomSubtype fc A h_mcs) (hab : a < b)
+    (h_orbit_bounded : ∀ n : ℕ,
+      (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a < b) :
+    False := by
+  -- The proof requires showing that if the successor orbit of `a` is bounded
+  -- by `b`, the resulting Dedekind cut contradicts Prior-SZ at the chronicle level.
+  -- The cut C = {x : ∃ n, x ≤ succ^[n](a)} is succ-closed and has no max.
+  -- A distinguishing temporal formula exists by US expressive completeness
+  -- (PriorExpressiveness.lean), and the Prior-SZ "last occurrence" property
+  -- forces a contradiction at the gap boundary.
+  --
+  -- Full formalization requires:
+  -- 1. Building OrderedMonadicStructure with cut predicate
+  -- 2. Proving semantic Prior-UZ/SZ for this structure
+  -- 3. Applying US_expressively_complete_over_prior
+  -- 4. Deriving the Prior-SZ contradiction
+  sorry
+
 /--
 Succ-iterates are cofinal: for any `a < b` in `LimitDomSubtype`, there exists `n`
 such that `succ^[n](a) ≥ b`. Combined with `succ_orbit_convex`, this gives
 `IsSuccArchimedean`.
 
-### Proof strategy
-
-By contradiction: assume `succ^[n](a) < b` for all `n`. The key steps:
-
-1. All succ-iterates of `a` are below `pred(b)` (by `le_pred_iff` + succ_pred cancellation).
-2. The real-valued sequence `(succ^[n](a).val : ℝ)` is strictly increasing and bounded,
-   so it converges to some `L ≤ b.val` in `ℝ`.
-3. The first `limit_dom` point `z` at or above `L` satisfies `pred(z)` is a succ-iterate
-   (since all limit_dom below `L` are succ-iterates), so `z = succ(pred(z)) = succ^[m+1](a)`.
-   Hence `z.val ≤ L` (as a succ-iterate), giving `z.val = L`, so `L ∈ ℚ ∩ limit_dom`.
-4. Since `pred(z).val < z.val = L` and `succ^[n](a).val → L`, for large `n`:
-   `succ^[n](a).val > pred(z).val`, placing a limit_dom point between `pred(z)` and `z`.
-   This contradicts the immediate-predecessor property.
+Proof: by contradiction using `chronicle_gap_contradiction`. If succ^[n](a) < b
+for all n, then the successor orbit is bounded, creating a Dedekind cut that
+contradicts Prior-SZ at the chronicle level (Reynolds Theorem 14 at chronicle level).
 -/
 private theorem succ_cofinal (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs) (hab : a < b) :
     ∃ n, b ≤ (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a := by
-  -- ARCHIVED: The direct convergence proof attempt (329 lines) has been moved to
-  -- Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean
-  -- That approach failed: it could not bridge the gap between the omega-chain
-  -- construction and the archimedean property (constant-MCS case evades all
-  -- temporal axiom arguments: Z1, Prior-UZ, c5_strong).
-  --
-  -- CORRECT APPROACH (plan v9, Phase 5): Derive succ_cofinal from one_class
-  -- after proving no_gaps_discrete via Reynolds Theorem 14 (Lemmas 6-13).
-  -- Chain: no_gaps_discrete -> one_class -> succ_cofinal -> Path A sorry-free.
-  sorry
+  by_contra h_not_cofinal
+  push_neg at h_not_cofinal
+  exact chronicle_gap_contradiction fc A h_mcs h_discrete a b hab h_not_cofinal
 /--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 

@@ -13,6 +13,7 @@ import Bimodal.Metalogic.WeakCanonical.StaviConnectives
 import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import Bimodal.Metalogic.WeakCanonical.Transfer
+import Bimodal.Metalogic.WeakCanonical.ChronicleNoGaps
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
