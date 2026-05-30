@@ -128,7 +128,10 @@ technical_debt:
 
 ### Dataset Enhancements (from competitive landscape analysis, task 215)
 
-218 [NOT STARTED] — Finalize Croissant metadata + HF leaderboard infrastructure
+218 [COMPLETED] — Finalize Croissant metadata + HF leaderboard infrastructure
+  - **Research**: [specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md]
+  - **Plan**: [specs/218_croissant_metadata_hf_leaderboard/plans/01_croissant-hf-plan.md]
+  - **Summary**: [specs/218_croissant_metadata_hf_leaderboard/summaries/01_croissant-hf-summary.md]
 216 [COMPLETED] — Natural-language paraphrase augmentation for bmlogic-bench
 217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
 220 [NOT STARTED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)

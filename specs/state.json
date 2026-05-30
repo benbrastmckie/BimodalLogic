@@ -1566,15 +1566,18 @@
     {
       "project_number": 218,
       "project_name": "croissant_metadata_hf_leaderboard",
-      "status": "researched",
+      "status": "completed",
       "task_type": "general",
       "description": "Finalize Croissant metadata (data/croissant.json skeleton exists) and update HuggingFace infrastructure. (a) Validate croissant.json against MLCommons 1.0 Python tooling, fix any schema issues, ensure all 4 JSONL distributions listed with correct field descriptions. (b) Update HF README task_categories to [\"text-generation\", \"other\"] with task_ids: [\"formal-provability-classification\"]. (c) Optional: Gradio Space for interactive formula classification demo and leaderboard submission endpoint. Acceptance: croissant.json valid per MLCommons tooling, field descriptions match actual schema, HF README updated.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T03:10:27Z",
-      "session_id": "sess_1780110186_4e9f04",
+      "last_updated": "2026-05-30T18:00:00Z",
+      "session_id": "sess_1748618400_orch218",
+      "planned": "2026-05-30T12:00:00Z",
+      "completed": "2026-05-30T18:00:00Z",
+      "completion_summary": "Fixed all 7 schema issues in data/croissant.json (dct:conformsTo namespace, @context term mappings, nl_paraphrase fields, logos-labs URLs, SHA-256 hashes, BMLogic-Bench name, CC BY 4.0 license); updated HF README YAML frontmatter (task_categories, task_ids, mlcroissant tag); added schema synchronization documentation to data/README.md. Manual structural validation passed; mlcroissant CLI not runnable on NixOS (libstdc++ blocker).",
       "next_artifact_number": 2,
       "memory_candidates": [
         {
@@ -1622,8 +1625,28 @@
           "path": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
           "type": "research",
           "summary": "Croissant metadata analysis: found critical conformsTo namespace bug, incomplete @context, 2 missing benchmark fields, URL mismatch, license mismatch; HF leaderboard architecture documented"
+        },
+        {
+          "path": "specs/218_croissant_metadata_hf_leaderboard/plans/01_croissant-hf-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: fix croissant.json schema issues, update HF README, validate with mlcroissant, optional Gradio Space. 3 hours core."
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3], [4]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_croissant-hf-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-30"
+          }
+        ]
+      }
     },
     {
       "project_number": 219,
