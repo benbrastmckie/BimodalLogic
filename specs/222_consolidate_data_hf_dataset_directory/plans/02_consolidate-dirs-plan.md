@@ -105,15 +105,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Move competitive-landscape.md to docs/research/ [IN PROGRESS]
+### Phase 2: Move competitive-landscape.md to docs/research/ [COMPLETED]
 
 **Goal**: Relocate the misplaced research document to the appropriate documentation directory and update all references.
 
 **Tasks**:
-- [ ] Run `git mv data/competitive-landscape.md docs/research/competitive-landscape.md`
-- [ ] Update the reference in `data/README.md` from `[competitive-landscape.md](competitive-landscape.md)` to point to the new location
-- [ ] Update `docs/research/README.md` to list `competitive-landscape.md` in its file inventory
-- [ ] Search for any other references to `data/competitive-landscape.md` in the codebase and update them
+- [x] Run `git mv data/competitive-landscape.md docs/research/competitive-landscape.md` *(completed)*
+- [x] Update the reference in `data/README.md` from `[competitive-landscape.md](competitive-landscape.md)` to point to the new location *(completed)*
+- [x] Update `docs/research/README.md` to list `competitive-landscape.md` in its file inventory *(completed)*
+- [x] Search for any other references to `data/competitive-landscape.md` in the codebase and update them *(completed: also updated docs/README.md)*
 
 **Timing**: 15 minutes
 
@@ -130,7 +130,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Write new data/README.md [NOT STARTED]
+### Phase 3: Write new data/README.md [IN PROGRESS]
 
 **Goal**: Replace the current `data/README.md` (which is a HuggingFace dataset card, too long and specialized for a directory README) with a proper lightweight directory navigation document. Preserve the original as `data/dataset-card.md`.
 

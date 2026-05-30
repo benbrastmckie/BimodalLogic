@@ -49,6 +49,19 @@ necessary, expected, and appropriate for Hilbert-style proof systems.
 
 ---
 
+### Dataset and Competitive Analysis
+
+#### competitive-landscape.md
+
+Detailed competitive landscape analysis of the BMLogic-Bench dataset relative to formal reasoning
+benchmarks. Includes a 13-dimension feature comparison matrix covering 12 benchmarks, novelty
+assessment, gap analysis, and enhancement roadmap (R1–R7).
+
+**Status**: Complete analysis
+**Related**: [data/README.md](../../data/README.md), [data/dataset-card.md](../../data/dataset-card.md)
+
+---
+
 ### AI Training Architecture
 
 #### DUAL_VERIFICATION.md

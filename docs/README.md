@@ -80,6 +80,7 @@ Project-wide research documents:
 - [DUAL_VERIFICATION.md](research/DUAL_VERIFICATION.md) - RL training architecture design
 - [PROOF_LIBRARY_DESIGN.md](research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
 - [PROPERTY_BASED_TESTING_LEAN4.md](research/PROPERTY_BASED_TESTING_LEAN4.md) - Property-based testing research
+- [competitive-landscape.md](research/competitive-landscape.md) - BMLogic-Bench competitive analysis (13-dimension matrix, 12 benchmarks)
 
 > **Theory-specific research**: See [Theories/Bimodal/docs/research/](../Theories/Bimodal/docs/research/).
 
