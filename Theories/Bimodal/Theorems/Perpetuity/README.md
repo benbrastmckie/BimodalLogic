@@ -1,58 +1,65 @@
 # Perpetuity Principles
 
-Proofs of perpetuity principles P1-P6, establishing fundamental connections between modal necessity (□) and temporal operators (always △, sometimes ▽).
+Proofs of perpetuity principles P1-P6, establishing fundamental connections between
+modal necessity (□) and temporal operators (always △, sometimes ▽).
 
-## Submodules
+## Modules
 
-- **Principles.lean**: P1-P5 perpetuity principle proofs
-  - P1: `□φ → △φ` (necessary implies always)
-  - P2: `▽φ → ◇φ` (sometimes implies possible)
-  - P3: `□φ → □△φ` (necessity of perpetuity)
-  - P4: `◇▽φ → ◇φ` (possibility of occurrence)
-  - P5: `◇▽φ → △◇φ` (persistent possibility)
+| File | Description |
+|------|-------------|
+| `Principles.lean` | P1-P5 perpetuity principle proofs |
+| `Helpers.lean` | Helper lemmas for perpetuity proofs |
+| `Bridge.lean` | Bridge lemmas and P6 proof |
 
-- **Helpers.lean**: Helper lemmas for perpetuity proofs
-  - Temporal components: box_to_future, box_to_past, box_to_present
-  - Boilerplate reduction: axiom_in_context, apply_axiom_to, apply_axiom_in_context
-  - Propositional reasoning: Re-exports from Combinators.lean
+## Key Results
 
-- **Bridge.lean**: Bridge lemmas and P6 proof
-  - P6: `▽□φ → □△φ` (occurrent necessity is perpetual)
-  - Modal/temporal duality: modal_duality_neg, temporal_duality_neg
-  - Monotonicity: box_mono, diamond_mono, future_mono, past_mono, always_mono
-  - Double negation: dne, box_dne, double_contrapose
+### P1-P5 (`Principles.lean`)
+
+| Principle | Statement |
+|-----------|-----------|
+| P1 | `□φ → △φ` (necessary implies always) |
+| P2 | `▽φ → ◇φ` (sometimes implies possible) |
+| P3 | `□φ → □△φ` (necessity of perpetuity) |
+| P4 | `◇▽φ → ◇φ` (possibility of occurrence) |
+| P5 | `◇▽φ → △◇φ` (persistent possibility) |
+
+### P6 (`Bridge.lean`)
+
+| Principle | Statement |
+|-----------|-----------|
+| P6 | `▽□φ → □△φ` (occurrent necessity is perpetual) |
+
+### Helper Lemmas (`Helpers.lean`)
+
+- Temporal components: `box_to_future`, `box_to_past`, `box_to_present`
+- Propositional reasoning: Re-exports from `Combinators.lean`
+
+### Bridge Lemmas (`Bridge.lean`)
+
+- Modal/temporal duality: `modal_duality_neg`, `temporal_duality_neg`
+- Monotonicity: `box_mono`, `diamond_mono`, `future_mono`, `past_mono`, `always_mono`
+- Double negation: `dne`, `box_dne`, `double_contrapose`
 
 ## Quick Reference
 
-**Where to find specific theorems**:
+- **P1-P5**: `perpetuity_1` through `perpetuity_5` in [Principles.lean](Principles.lean)
+- **P6**: `perpetuity_6` in [Bridge.lean](Bridge.lean)
+- **Temporal Components**: `box_to_future`, `box_to_past` in [Helpers.lean](Helpers.lean)
 
-- **P1-P5 Proofs**: See `perpetuity_1` through `perpetuity_5` in [Principles.lean](Principles.lean)
-- **P6 Proof**: See `perpetuity_6` in [Bridge.lean](Bridge.lean)
-- **Temporal Components**: See `box_to_future`, `box_to_past`, `box_to_present` in [Helpers.lean](Helpers.lean)
-- **Duality Lemmas**: See `modal_duality_neg`, `temporal_duality_neg` in [Bridge.lean](Bridge.lean)
-- **Monotonicity**: See `box_mono`, `always_mono`, etc. in [Bridge.lean](Bridge.lean)
-
-## Building and Type-Checking
+## Building
 
 ```bash
-# Build perpetuity module
 lake build Bimodal.Theorems.Perpetuity
-
-# Type-check specific file
-lake env lean Bimodal/Theorems/Perpetuity/Principles.lean
-lake env lean Bimodal/Theorems/Perpetuity/Helpers.lean
-lake env lean Bimodal/Theorems/Perpetuity/Bridge.lean
 ```
-
-## API Documentation
-
-For detailed API documentation, see:
-- Module overview: [Perpetuity.lean](../../Theorems.lean) (parent module re-exports)
-- Generated docs: Run `lake build :docs`
-- Architecture guide: [ARCHITECTURE.md](../../../../docs/user-guide/ARCHITECTURE.md)
 
 ## Related Documentation
 
-- [LEAN Style Guide](../../../../docs/development/LEAN_STYLE_GUIDE.md)
-- [Module Organization](../../../../docs/development/MODULE_ORGANIZATION.md)
-- [Implementation Status](../../../../docs/project-info/IMPLEMENTATION_STATUS.md)
+- [Theorems README](../README.md)
+- [Parent README](../../README.md)
+
+---
+
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

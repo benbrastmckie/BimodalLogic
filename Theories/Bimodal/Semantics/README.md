@@ -23,8 +23,11 @@ Task frame semantics for TM bimodal logic.
 ## Related Documentation
 
 - [Parent README](../README.md)
-- [Metalogic/Soundness](../Metalogic/Soundness/README.md) - Uses semantics for soundness
+- [Metalogic Soundness](../Metalogic/README.md) - Uses semantics for soundness
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

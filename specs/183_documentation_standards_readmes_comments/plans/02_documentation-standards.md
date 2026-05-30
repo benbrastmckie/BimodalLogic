@@ -173,38 +173,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix Stale READMEs, Broken References, and File-to-Directory Corrections [NOT STARTED]
+### Phase 3: Fix Stale READMEs, Broken References, and File-to-Directory Corrections [COMPLETED]
 
 **Goal**: Update 7+ stale READMEs with correct information, rewrite the Automation README entirely, correct 3 file-to-directory reference errors, and fix all broken file references across the tree.
 
 **Tasks**:
-- [ ] **Automation README complete rewrite** (severely stale -- highest priority):
-  - Rewrite `Theories/Bimodal/Automation/README.md` entirely
-  - Document dual purpose: proof automation (AesopRules, EFGameTactics, SuccessPatterns) + ML dataset pipeline (DatasetGenerator, DatasetValidator, DatasetExporter, DatasetExport, DataExport, FormulaEnumerator, FormulaMutator, BenchmarkOracle, BenchmarkAnchors, EnumBenchmark, ProofStepExtractor, ProofStepExport, EnrichedCountermodel)
-  - Document 16 top-level files and 2 subdirectories (ProofSearch/, Tactics/)
-  - Note files that were previously top-level but are now subdirectories (Tactics.lean -> Tactics/, ProofSearch.lean -> ProofSearch/)
-- [ ] **ProofSystem README rewrite** (severely stale):
-  - Update axiom count: investigate and document schema count (21) vs. constructor count (55) distinction
-  - Add `Substitution.lean` and `LinearityDerivedFacts.lean` to file listing (now 5 files, was 3)
-  - Regenerate module inventory table
-- [ ] **Root README update** (stale):
-  - Fix axiom counts: investigate 55 constructors vs. 21 schema framing, document both with explanation
-  - Remove references to non-existent `Examples/Demo.lean`, `LogicVariants.lean`, `Metalogic/BaseCompleteness.lean`
-  - Update submodule descriptions to match current 196-file, 34-directory state
-  - Verify inference rule count against DerivationTree
-- [ ] **Metalogic README update** (stale):
-  - Change `SoundnessLemmas.lean` to `SoundnessLemmas/` directory entry in architecture diagram
-  - Add `DenseSoundness.lean` and `DiscreteSoundness.lean` to architecture tree
-  - Remove references to non-existent `Bundle/TruthLemma.lean`, `Bundle/BFMCSTruth.lean`, `Bundle/Completeness.lean`
-  - Fix "15 TM axioms" reference in soundness description
-- [ ] **File-to-directory corrections** (3 READMEs):
-  - Update `Theories/Bimodal/Syntax/README.md`: change `SubformulaClosure.lean` to `SubformulaClosure/` subdirectory entry; add missing `BigConj.lean`
-  - Update `Theories/Bimodal/Metalogic/Core/README.md`: change `RestrictedMCS.lean` to `RestrictedMCS/` subdirectory entry
-  - Update `Theories/Bimodal/Theorems/README.md`: change `Propositional.lean` to `Propositional/` subdirectory entry; remove non-existent `Discreteness.lean`; add missing `TemporalDerived.lean`
-- [ ] **Other stale README fixes**:
-  - Update `Theories/Bimodal/Metalogic/Decidability/README.md`: add FMP/ subdirectory documentation (7 files), add `FMP.lean` re-export, fix broken `../Soundness/README.md` reference
-  - Fix `Theories/Bimodal/Semantics/README.md` broken link to `../Metalogic/Soundness/README.md`
-- [ ] Run `scripts/readme-lint.sh` to verify all broken references are resolved
+- [x] **Automation README complete rewrite** (severely stale) *(completed: all 16 top-level files + 2 subdirs documented with dual-purpose framing)*
+- [x] **ProofSystem README rewrite** (severely stale) *(completed: 42 constructors / 8 layers documented, all 5 files listed)*
+- [x] **Root README update** (stale) *(completed: fixed axiom count docs, removed broken references, updated module structure)*
+- [x] **Metalogic README update** (stale) *(completed: SoundnessLemmas/ directory, DenseSoundness.lean, DiscreteSoundness.lean added)*
+- [x] **File-to-directory corrections** (3 READMEs) *(completed: SubformulaClosure/, RestrictedMCS/, Propositional/ all corrected)*
+- [x] **Other stale README fixes** *(completed: Decidability README updated with FMP/, Semantics broken link fixed)*
+- [x] Run `scripts/readme-lint.sh` to verify all broken references are resolved *(completed: 0 broken refs in Lean directories)*
 
 **Timing**: 4 hours
 

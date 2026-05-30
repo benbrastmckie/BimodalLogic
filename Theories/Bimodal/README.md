@@ -8,29 +8,6 @@ For the complete formal specification, see **BimodalReference** ([tex](latex/Bim
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 
-## Interactive Demo
-
-**[Demo.lean](Examples/Demo.lean)** provides a comprehensive tour of the Bimodal formalization, ideal for presentations and learning:
-
-| Section | Content |
-|---------|---------|
-| **Quick Tour** | Perpetuity principles P1-P6, soundness, deduction theorem, completeness |
-| **Interactive Exploration** | Step-by-step proof construction with modus ponens and necessitation |
-| **Decision Procedure** | Live `#eval` demonstrations with valid/invalid formula examples |
-| **Applications** | Meaningful examples (conservation of energy, lunar eclipses, mathematical truths) |
-
-### Key Results Demonstrated
-
-| Result | Statement | Status |
-|--------|-----------|--------|
-| Soundness | `(Γ ⊢ φ) → (Γ ⊨ φ)` | Proven |
-| Deduction Theorem | `((A :: Γ) ⊢ B) → (Γ ⊢ A → B)` | Proven |
-| Completeness | `valid φ → (⊢ φ)` | Proven |
-| Equivalence | `Nonempty (⊢ φ) ↔ valid φ` | Proven |
-| Decidability | `decide φ : DecisionResult φ` | Implemented |
-
-Run `lake build Bimodal.Examples.Demo` to verify the demo compiles.
-
 ## About Bimodal Logic
 
 Bimodal is a **complete propositional intensional logic** implementing TM (Tense and Modality) with verified metalogic.
@@ -42,9 +19,6 @@ Bimodal is a **complete propositional intensional logic** implementing TM (Tense
 | **Semantic primitives** | World-states in a Kripke-style framework |
 | **Interpretation** | Sentence letters are interpreted by sets of world-states |
 | **Logical level** | Propositional (zeroth-order) |
-
-For comparison with the Logos hyperintensional extensions (second-order with state
-primitives, research roadmap), see [bimodal-logic.md](../../docs/research/bimodal-logic.md).
 
 ## Syntax Quick Reference
 
@@ -74,33 +48,31 @@ primitives, research roadmap), see [bimodal-logic.md](../../docs/research/bimoda
 
 See BimodalReference Section 1 for complete syntax details.
 
-## Purpose
-
-This directory contains the foundational implementation of bimodal logic TM, providing the
-syntax, proof system, semantics, metalogical results, and automation for temporal-modal
-reasoning. The library is designed as an independent, reusable component that can be
-imported by other projects.
-
 ## Proof System Overview
 
-### Axiom Schemata (21 total)
+### Axiom System
 
-The axiom system is organized into three layers based on frame conditions:
+The axiom system uses the `Axiom` inductive type with **42 constructors** organized into 8 layers:
 
-| Layer | Axioms | Frame Condition |
-|-------|--------|-----------------|
-| Base (17) | See below | Linear temporal order |
-| Dense (1) | DN (`Fφ → FFφ`) | DenselyOrdered |
-| Discrete (3) | DF, F-seriality, P-seriality | SuccOrder/NoMaxOrder/NoMinOrder |
+| Layer | Constructors | Frame Class | Description |
+|-------|-------------|-------------|-------------|
+| Propositional | 4 | Base | K, S, EFQ, Peirce |
+| S5 Modal | 5 | Base | T, 4, B, 5-collapse, K-distribution |
+| BX Temporal | 22 | Base | Burgess-Xu Until/Since axioms (paired G/H forms) |
+| Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is now derived |
+| Uniformity | 5 | Base | Discrete uniformity (valid on all ordered abelian groups) |
+| Prior | 2 | Discrete | Prior-UZ/SZ for discrete well-ordering |
+| Z1 | 1 | Discrete | IsSuccArchimedean characteristic axiom |
+| Density | 2 | Dense | `Gφ → GGφ` and `¬U(⊤,⊥)` |
 
-#### Base Axioms (17)
+**Schema vs. constructor count**: The 42 constructors implement a smaller set of logical schemas.
+The "21 axiom schemata" figure counts distinct logical schemas (e.g., G-monotonicity and H-monotonicity
+count as one schema with two constructors). The `Axiom` inductive type uses 42 constructors to
+represent all paired temporal forms explicitly.
 
-| Category | Axioms | Description |
-|----------|--------|-------------|
-| Propositional | K, S, EFQ, Peirce | Classical propositional logic |
-| Modal (S5) | T (`□φ → φ`), 4 (`□φ → □□φ`), B (`φ → □◇φ`), 5 (`◇□φ → □φ`), K (`□(φ→ψ) → (□φ→□ψ)`) | Reflexive, transitive, symmetric |
-| Temporal | K (`G(φ→ψ) → (Gφ→Gψ)`), 4 (`Gφ → GGφ`), T-F (`Gφ → φ`), T-P (`Hφ → φ`), A (`φ → GPφ`), L (`△φ → GHφ`), Lin | Linear temporal structure |
-| Interaction | MF (`□φ → □Gφ`), TF (`□φ → G□φ`) | Modal-temporal bridge |
+**Frame classification**: 37 Base constructors (valid on all linear orders), 3 Discrete-only, 2 Dense-only.
+
+See [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean) for the complete definition.
 
 ### Inference Rules (7 total)
 
@@ -133,102 +105,119 @@ Properties: Nullity (reflexive at each time) and Compositionality (forward compo
 - **Modal**: `M,τ,t ⊨ □φ` iff `∀σ. R(τ,t,σ) → M,σ,t ⊨ φ`
 - **Temporal**: `M,τ,t ⊨ Gφ` iff `∀s > t. M,τ,s ⊨ φ`
 
-The interaction axioms (MF, TF) ensure coherence between modal and temporal reasoning.
+The interaction axiom MF ensures coherence between modal and temporal reasoning.
 
 See BimodalReference Section 2 for formal semantic definitions.
 
 ## Logic Variants
 
-TM logic has three variants based on frame conditions, with soundness/completeness organized accordingly:
+TM logic has three variants based on frame conditions:
 
-### TM Base (18 axioms)
+### TM Base (37 constructor axioms)
 
-The core logic valid on all linear orders. See `FrameClass.Base` in [Axioms.lean](ProofSystem/Axioms.lean).
+The core logic valid on all linear orders. See `FrameClass.Base` in [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean).
 
 - **Soundness**: `axiom_valid` - all base axioms valid on linear orders
-- **Completeness**: Documented in [BaseCompleteness.lean](Metalogic/BaseCompleteness.lean)
 - **Frame**: Linear temporal order (no additional constraints)
 
-### TM Dense (Base + 1 = 19 axioms)
+### TM Dense (Base + 2 density constructors)
 
 Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 
-- **Additional Axiom**: DN (`Fφ → FFφ`) - density
-- **Soundness**: `axiom_dense_valid` - dense-compatible axioms valid on DenselyOrdered
-- **Completeness**: `completeness_dense` in [Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
+- **Additional Axioms**: `density` (`Gφ → GGφ`) and `dense_indicator` (`¬U(⊤,⊥)`)
+- **Completeness**: `completeness_dense` in [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `DenselyOrdered D` - between any two times exists another
 
-### TM Discrete (Base + 3 = 21 axioms)
+### TM Discrete (Base + 3 discrete constructors)
 
 Extension requiring discretely ordered temporal domains. See `FrameClass.Discrete`.
 
-- **Additional Axioms**: DF (discreteness), SF/SP (seriality)
-- **Soundness**: `axiom_discrete_valid` - discrete-compatible axioms valid on SuccOrder
-- **Completeness**: `completeness_discrete` in [Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
+- **Additional Axioms**: `prior_UZ`, `prior_SZ` (Prior's axioms), `z1` (IsSuccArchimedean)
+- **Completeness**: `completeness_discrete` in [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
 
 ### Variant Incompatibility
 
-Dense and discrete extensions are **incompatible**:
-- DN requires intermediate points (DenselyOrdered)
-- DF requires immediate successors (SuccOrder)
-- No domain satisfies both (except degenerate cases)
+Dense and discrete extensions are **incompatible** on any non-degenerate domain.
 
-See [LogicVariants.lean](LogicVariants.lean) for the unified summary module.
+## Key Results Proven
 
-## Theory-Specific Documentation
+| Result | Statement | Status |
+|--------|-----------|--------|
+| Soundness | `(Γ ⊢ φ) → (Γ ⊨ φ)` | Proven |
+| Deduction Theorem | `((A :: Γ) ⊢ B) → (Γ ⊢ A → B)` | Proven |
+| Dense Completeness | `valid_dense φ → (⊢ φ)` | Proven |
+| Discrete Completeness | `valid_discrete φ → (⊢ φ)` | Proven |
+| Decidability | `decide φ : DecisionResult φ` | Implemented |
 
-For Bimodal-specific guides and references, see [docs/](docs/README.md):
+## Module Structure
 
-| Document | Description |
-|----------|-------------|
-| [Quick Start](docs/user-guide/QUICKSTART.md) | Get started with Bimodal proofs |
-| [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) | Common proof strategies |
-| [Examples](docs/user-guide/EXAMPLES.md) | Worked examples with exercises and solutions |
-| [Troubleshooting](docs/user-guide/TROUBLESHOOTING.md) | Common errors and fixes |
-| [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
-| [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) | Custom tactic usage |
-| [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | Module status |
-| [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md) | MVP limitations |
+The Bimodal library follows a layered architecture:
 
-## Submodules
+### Root Entry Point
 
-- **Syntax/**: Formula types and proof contexts
-  - `Formula` inductive type (atom, bot, imp, box, past, future)
-  - `Context` type for proof premises
-  - Derived operators (neg, top, or, and, dia, etc.)
+| File | Lines | Description |
+|------|-------|-------------|
+| `Bimodal.lean` | 86 | Top-level re-export: imports all submodules for unified access |
+| `Automation.lean` | 92 | Re-export for Automation submodule |
+| `Examples.lean` | 27 | Re-export for Examples submodule |
+| `FrameConditions.lean` | 52 | Re-export for FrameConditions submodule |
+| `Metalogic.lean` | 55 | Re-export for Metalogic submodule |
+| `ProofSystem.lean` | 73 | Re-export for ProofSystem submodule |
+| `Semantics.lean` | 86 | Re-export for Semantics submodule |
+| `Syntax.lean` | 68 | Re-export for Syntax submodule |
+| `Theorems.lean` | 74 | Re-export for Theorems submodule |
 
-- **ProofSystem/**: Axioms and derivation trees
-  - 21 TM axiom schemata organized into base (17), dense (1), and discrete (3) layers
-  - 7 inference rules as `DerivationTree` constructors
-  - Derivation trees as inductive `Type` (not `Prop`)
-  - Computable `height` function for well-founded recursion
+### Layer 0 — Foundation
 
-- **Semantics/**: Task frame semantics
-  - `TaskFrame` structure (world states, times, task relation)
-  - `WorldHistory` functions for temporal traces
-  - `TaskModel` with valuation
-  - Truth evaluation (`truth_at`) and validity (`valid`)
+| Module | File | Description |
+|--------|------|-------------|
+| Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure |
+| ProofSystem | `ProofSystem.lean` | 42 axiom constructors, 7 inference rules, derivation trees |
 
-- **Metalogic/**: Soundness, completeness, and deduction theorem
-  - `Soundness.lean` - Soundness theorem and lemmas
-  - `Completeness.lean` - Canonical model construction (infrastructure)
-  - `DeductionTheorem.lean` - Deduction theorem for TM logic
+### Layer 1 — Semantics
 
-- **Theorems/**: Key theorems and derived principles
-  - Perpetuity principles P1-P6 in `Perpetuity/`
-  - Modal S4/S5 theorems
-  - Propositional theorem combinators
-  - Generalized necessitation
+| Module | File | Description |
+|--------|------|-------------|
+| Semantics | `Semantics.lean` | Task frame structure, world histories, truth evaluation |
+| FrameConditions | `FrameConditions.lean` | Frame classes, soundness certificates |
 
-- **Automation/**: Proof tactics and automation
-  - `Tactics.lean` - Custom tactics (apply_axiom, modal_t, tm_auto)
-  - `AesopRules.lean` - Aesop rule set for TM logic
-  - `ProofSearch.lean` - Bounded proof search infrastructure
+### Layer 2 — Metalogic
 
-- **Examples/**: Pedagogical examples and proof strategies
-  - Modal, temporal, and bimodal proof demonstrations
-  - Strategy guides for different proof patterns
+| Module | File | Description |
+|--------|------|-------------|
+| Metalogic | `Metalogic.lean` | Soundness, completeness, deduction theorem, decidability |
+
+### Layer 3 — Theorems
+
+| Module | File | Description |
+|--------|------|-------------|
+| Theorems | `Theorems.lean` | Derived theorems: perpetuity, combinators, modal S4/S5 |
+
+### Layer 4 — Automation
+
+| Module | File | Description |
+|--------|------|-------------|
+| Automation | `Automation.lean` | Tactics, Aesop rules, ML dataset pipeline |
+
+### Layer 5 — Examples
+
+| Module | File | Description |
+|--------|------|-------------|
+| Examples | `Examples.lean` | Pedagogical examples and proof demonstrations |
+
+## Submodule Navigation
+
+| Submodule | README | Description |
+|-----------|--------|-------------|
+| [Syntax/](Syntax/README.md) | Yes | Formula types and proof contexts |
+| [ProofSystem/](ProofSystem/README.md) | Yes | Axioms and derivation trees |
+| [Semantics/](Semantics/README.md) | Yes | Task frame semantics |
+| [FrameConditions/](FrameConditions/README.md) | Yes | Frame classes and soundness |
+| [Metalogic/](Metalogic/README.md) | Yes | Soundness, completeness, decidability |
+| [Theorems/](Theorems/README.md) | Yes | Derived theorems |
+| [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
+| [Examples/](Examples/README.md) | Yes | Pedagogical examples |
 
 ## Quick Reference
 
@@ -236,16 +225,16 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
 
 - **Formulas**: `Syntax/Formula.lean` - Inductive formula type
 - **Contexts**: `Syntax/Context.lean` - Proof context lists
-- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom schemata
+- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom constructors (42)
 - **Derivation Trees**: `ProofSystem/Derivation.lean` - DerivationTree type
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
 - **Truth**: `Semantics/Truth.lean` - Truth evaluation
 - **Validity**: `Semantics/Validity.lean` - Semantic consequence
 - **Soundness**: `Metalogic/Soundness.lean` - Soundness theorem
-- **Completeness**: `Metalogic/Completeness.lean` - Canonical model
+- **Completeness**: `Metalogic/BXCanonical/Completeness.lean` - Canonical model
 - **Perpetuity**: `Theorems/Perpetuity.lean` - P1-P6 principles
-- **Tactics**: `Automation/Tactics.lean` - Custom tactics
+- **Tactics**: `Automation/Tactics/Commands.lean` - Custom tactics
 
 ## Building and Type-Checking
 
@@ -257,126 +246,45 @@ lake build Bimodal
 lake build
 
 # Type-check specific file
-lake env lean Bimodal/Syntax/Formula.lean
-lake env lean Bimodal/ProofSystem/Axioms.lean
-lake env lean Bimodal/Semantics/TaskFrame.lean
-
-# Interactive mode
-lake env lean --run
+lake env lean Theories/Bimodal/Syntax/Formula.lean
+lake env lean Theories/Bimodal/ProofSystem/Axioms.lean
 ```
 
-## Module Structure
-
-The Bimodal library follows a layered architecture:
-
-1. **Layer 0 (Foundation)**: Syntax and ProofSystem
-   - Define formulas and axioms
-   - Establish proof rules
-
-2. **Layer 1 (Semantics)**: Task frame semantics
-   - Define models and truth evaluation
-   - Establish validity
-
-3. **Layer 2 (Metalogic)**: Properties of the proof system
-   - Prove soundness (derivability implies validity)
-   - Establish completeness (validity implies derivability)
-
-4. **Layer 3 (Theorems)**: Derived results
-   - Perpetuity principles
-   - Modal-temporal interactions
-
-5. **Layer 4 (Automation)**: Proof automation
-   - Custom tactics for TM proofs
-   - Automated proof search
-
 ## Implementation Status
-
-Bimodal is **production-ready** with complete metalogic verification.
 
 | Layer | Component | Status |
 |-------|-----------|--------|
 | 0 | Syntax | Complete |
-| 1 | ProofSystem | Complete (21 axioms, 7 rules) |
-| 2 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
-| 3 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
-| 4 | Theorems | Complete (P1-P6 perpetuity principles) |
-| 5 | Automation | Partial |
+| 0 | ProofSystem | Complete (42 axiom constructors, 7 rules) |
+| 1 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
+| 1 | FrameConditions | Complete (Base, Dense, Discrete soundness) |
+| 2 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
+| 3 | Theorems | Complete (P1-P6 perpetuity principles, S4/S5 modal) |
+| 4 | Automation | Complete (tactics); ML pipeline active |
 
-**Key Results**: Soundness theorem, completeness theorem, deduction theorem, and decidability are all fully proven.
+**Key Results**: Soundness theorem, completeness theorem (Dense and Discrete variants),
+deduction theorem, and decidability are all fully proven.
 
-For detailed status, see [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md). For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).
+## Theory-Specific Documentation
 
-## API Documentation
+For Bimodal-specific guides and references, see [docs/](docs/README.md):
 
-For detailed API documentation:
-
-- **Module overview**: See [Bimodal.lean](Bimodal.lean) for top-level re-exports
-- **Generated docs**: Run `lake build :docs` to generate doc-gen4 documentation
-- **Architecture guide**: [ARCHITECTURE.md](../docs/user-guide/ARCHITECTURE.md)
-- **Code comments**: All public definitions have comprehensive docstrings
-
-## Development Guidelines
-
-When working on Bimodal source code:
-
-- **Follow style guide**: [LEAN_STYLE_GUIDE.md](../docs/development/LEAN_STYLE_GUIDE.md)
-- **Write tests first**: [TESTING_STANDARDS.md](../docs/development/TESTING_STANDARDS.md)
-- **Document thoroughly**: Every public definition requires docstring
-- **Run lint**: Zero `#lint` warnings required
-- **Build successfully**: `lake build` must complete without errors
-
-## Common Tasks
-
-### Adding a New Definition
-
-1. Choose appropriate module (Syntax, ProofSystem, Semantics, etc.)
-2. Write comprehensive docstring
-3. Implement definition
-4. Add to module export list
-5. Write tests in `BimodalTest/`
-6. Update documentation if significant
-
-### Proving a New Theorem
-
-1. Write theorem statement with docstring in appropriate module
-2. Sketch proof strategy in comments
-3. Implement proof using tactics or term-mode
-4. Add example usage to `Examples/`
-5. Document in relevant guide (TUTORIAL.md, EXAMPLES.md)
-
-### Adding a New Axiom
-
-1. Add axiom schema to `ProofSystem/Axioms.lean`
-2. Add case to `DerivationTree` in `ProofSystem/Derivation.lean`
-3. Update `height` function to handle new constructor
-4. Prove validity in `Metalogic/Soundness.lean`
-5. Write tests in `BimodalTest/ProofSystem/`
-6. Update ARCHITECTURE.md if significant
-
-## Related Documentation
-
-### Primary Reference
-
-- **BimodalReference** ([tex](latex/BimodalReference.tex) | [pdf](latex/BimodalReference.pdf)) - Complete formal specification
-
-### User Guides
-
-- [Quick Start](docs/user-guide/QUICKSTART.md) - Getting started with Bimodal proofs
-- [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) - Common proof strategies
-- [Examples](docs/user-guide/EXAMPLES.md) - Worked examples with solutions
-- [Troubleshooting](docs/user-guide/TROUBLESHOOTING.md) - Common errors and fixes
-
-### Reference
-
-- [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) - Complete axiom schemas
-- [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) - Custom tactic usage
-
-### Project Info
-
-- [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) - Module status
-- [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md) - MVP limitations
-- [Bimodal vs Logos](../../docs/research/bimodal-logic.md) - Theory comparison
+| Document | Description |
+|----------|-------------|
+| [Quick Start](docs/user-guide/QUICKSTART.md) | Get started with Bimodal proofs |
+| [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) | Common proof strategies |
+| [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
+| [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) | Custom tactic usage |
 
 ## Navigation
 
-- [Project Root](../) | [Theory Docs](docs/) | [Examples](Examples/) | [Tests](../BimodalTest/)
+- **Parent**: [Project Root](../../) | [Tests](../../Tests/)
+- **Docs**: [docs/](docs/README.md)
+- **Boneyard**: [Boneyard/](Boneyard/README.md) (archived code)
+
+---
+
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

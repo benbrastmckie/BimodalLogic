@@ -22,7 +22,7 @@ The Core modules provide essential infrastructure shared by both the `Bundle/` (
 | `MaximalConsistent.lean` | Complete MCS theory with Lindenbaum | **Sorry-free** |
 | `DeductionTheorem.lean` | Deduction theorem infrastructure | **Sorry-free** |
 | `MCSProperties.lean` | Essential MCS lemmas | **Sorry-free** |
-| `RestrictedMCS.lean` | MCS restricted to subformula closure | **Sorry-free** |
+| `RestrictedMCS/` | MCS restricted to subformula closure (2 files) | **Sorry-free** |
 
 ## Dependency Flowchart
 
@@ -156,4 +156,7 @@ The Core modules are prerequisites for:
 
 ---
 
-*Last updated: 2026-02-03*
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

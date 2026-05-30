@@ -1,81 +1,107 @@
 # Automation
 
-Custom tactics and proof automation for TM bimodal logic.
+Proof automation tactics and ML dataset generation pipeline for TM bimodal logic.
 
-## Submodules
+This directory serves two complementary purposes:
+1. **Proof automation**: Custom Lean 4 tactics and Aesop rule sets for TM logic proofs
+2. **ML dataset pipeline**: Formula enumeration, labeling, validation, and export for ML benchmarks
 
-- **Tactics.lean**: Custom tactics for modal and temporal reasoning
-  - `apply_axiom`: Apply TM axiom by name
-  - `modal_t`: Apply modal T axiom automatically
-  - `tm_auto`: Comprehensive TM automation with Aesop
-  - `assumption_search`: Search for formula in context
+The proof automation tools (AesopRules, EFGameTactics, SuccessPatterns) are used
+throughout the library. The ML pipeline (DatasetGenerator, FormulaEnumerator, etc.)
+produces the BMLogic benchmark datasets. Both rely on the ProofSearch/ and Tactics/
+subdirectories for their implementation infrastructure.
 
-- **AesopRules.lean**: Aesop rule set for TM logic
-  - TMLogic rule set declaration
-  - Forward chaining for proven axioms (MT, M4, MB, T4, TA)
-  - Apply rules for core inference (modus_ponens, modal_k, temporal_k)
-  - Normalization rules for derived operators
+## Modules
 
-- **ProofSearch.lean**: Bounded proof search infrastructure
-  - Depth-limited search for derivations
-  - Heuristic-guided proof search
+| File | Lines | Description |
+|------|-------|-------------|
+| `AesopRules.lean` | 276 | Aesop rule set for TM logic: TMLogic declaration, forward chaining, normalization |
+| `BenchmarkAnchors.lean` | 496 | Benchmark anchor formulas: ground-truth valid/invalid formula pairs |
+| `BenchmarkOracle.lean` | 365 | Batch oracle: reads formula JSON, runs decision procedure, outputs JSONL labels |
+| `DataExport.lean` | 383 | Core data export: JSONL serialization for formula-label pairs |
+| `DatasetExport.lean` | 578 | Dataset export pipeline: formatting, splitting, output orchestration |
+| `DatasetExporter.lean` | 342 | Dataset exporter: configurable export with format options |
+| `DatasetGenerator.lean` | 471 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
+| `DatasetValidator.lean` | 589 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
+| `EFGameTactics.lean` | 326 | EF game automation tactics for expressive completeness proofs |
+| `EnrichedCountermodel.lean` | 211 | Enriched countermodel extraction for dataset negative examples |
+| `EnumBenchmark.lean` | 196 | Enumeration benchmark: performance testing for formula enumeration |
+| `FormulaEnumerator.lean` | 1091 | Formula enumerator: depth-bounded enumeration of all TM formulas |
+| `FormulaMutator.lean` | 785 | Formula mutator: systematic mutation for dataset augmentation |
+| `ProofStepExport.lean` | 332 | Proof step export: serializes `DerivationTree` steps to JSONL |
+| `ProofStepExtractor.lean` | 329 | Proof step extractor: traverses derivation trees to extract steps |
+| `SuccessPatterns.lean` | 423 | Successful proof patterns: heuristic patterns for guided proof search |
+| `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
+| `Tactics/` | — | Tactic elaborators: `apply_axiom`, `modal_t`, `tm_auto` (Commands.lean, Helpers.lean) |
 
-- **SuccessPatterns.lean**: Successful proof patterns and examples
+## Proof Automation Components
 
-## Quick Reference
+| File | Purpose |
+|------|---------|
+| `AesopRules.lean` | `@[aesop]` rule set; use via `tm_auto` tactic |
+| `EFGameTactics.lean` | Tactics for WeakCanonical/EFGames proofs |
+| `SuccessPatterns.lean` | Heuristic proof patterns for `ProofSearch/` |
+| `Tactics/` | Tactic elaboration (`apply_axiom`, `modal_t`, `tm_auto`) |
+| `ProofSearch/` | Depth-limited proof search engine |
 
-**Where to find specific functionality**:
+## ML Dataset Pipeline
 
-- **Basic Tactics**: See `apply_axiom`, `modal_t` in [Tactics.lean](Tactics.lean)
-- **Aesop Integration**: See `tm_auto` tactic and TMLogic rule set in [AesopRules.lean](AesopRules.lean)
-- **Proof Search**: See bounded_search infrastructure in [ProofSearch.lean](ProofSearch.lean)
+The pipeline flows left-to-right:
+
+```
+FormulaEnumerator → DatasetGenerator → DatasetValidator → DatasetExport/DatasetExporter
+       |                  |                                        |
+FormulaMutator      ProofStepExtractor                     DataExport (JSONL)
+                    EnrichedCountermodel                   BenchmarkOracle
+                    BenchmarkAnchors
+```
+
+| File | Pipeline Role |
+|------|--------------|
+| `FormulaEnumerator.lean` | Step 1: enumerate TM formulas up to depth bound |
+| `FormulaMutator.lean` | Step 1b: augment via systematic formula mutation |
+| `DatasetGenerator.lean` | Step 2: label formulas using `decide` decision procedure |
+| `ProofStepExtractor.lean` | Step 2b: extract individual proof steps from derivation trees |
+| `ProofStepExport.lean` | Step 2c: serialize proof steps to JSONL |
+| `EnrichedCountermodel.lean` | Step 2d: enrich negative examples with countermodel info |
+| `BenchmarkAnchors.lean` | Step 2e: inject ground-truth anchor pairs |
+| `DatasetValidator.lean` | Step 3: validate quality and diversity metrics |
+| `BenchmarkOracle.lean` | Step 4: batch re-labeling oracle for benchmarking |
+| `EnumBenchmark.lean` | Performance testing for enumeration |
+| `DataExport.lean` | Core JSONL serialization utilities |
+| `DatasetExport.lean` | Full export pipeline orchestration |
+| `DatasetExporter.lean` | Configurable exporter (format options, splitting) |
 
 ## Usage Examples
 
 ```lean
--- Apply axiom by name
+-- Proof automation: Apply axiom by name
 example : ⊢ (Formula.box p).imp p := by
   apply_axiom  -- Finds and applies Axiom.modal_t
-
--- Modal T application (automatic)
-example (p : Formula) : [p.box] ⊢ p := by
-  modal_t
-  assumption
 
 -- Comprehensive automation with Aesop
 example : ⊢ (□p → p) := by
   tm_auto  -- Uses Aesop with TMLogic rule set
 ```
 
-## Implementation Status
-
-- `apply_axiom`: Functional (macro-based)
-- `modal_t`: Functional (elab_rules)
-- `tm_auto`: Functional with Aesop integration
-- `assumption_search`: Functional with TacticM
-- Bounded proof search: Infrastructure available
-
-## Building and Type-Checking
-
 ```bash
-# Build automation module
-lake build Bimodal.Automation
+# ML pipeline: Generate dataset
+lake run Bimodal.Automation.DatasetExporter -- output.jsonl
 
-# Type-check specific file
-lake env lean Bimodal/Automation/Tactics.lean
-lake env lean Bimodal/Automation/AesopRules.lean
-lake env lean Bimodal/Automation/ProofSearch.lean
+# Run benchmark oracle on formulas
+lake run Bimodal.Automation.BenchmarkOracle -- formulas.jsonl results.jsonl
 ```
-
-## API Documentation
-
-For detailed API documentation, see:
-- Module overview: [Automation.lean](../Automation.lean) (parent module re-exports)
-- Generated docs: Run `lake build :docs`
-- Tactic development guide: [TACTIC_DEVELOPMENT.md](../../../docs/user-guide/TACTIC_DEVELOPMENT.md)
 
 ## Related Documentation
 
-- [LEAN Style Guide](../../../docs/development/LEAN_STYLE_GUIDE.md)
-- [Tactic Development](../../../docs/user-guide/TACTIC_DEVELOPMENT.md)
-- [Implementation Status](../../../docs/project-info/IMPLEMENTATION_STATUS.md)
+- [ProofSearch README](ProofSearch/README.md)
+- [Tactics README](Tactics/README.md)
+- [Parent README](../README.md)
+- [Decidability README](../Metalogic/Decidability/README.md)
+
+---
+
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

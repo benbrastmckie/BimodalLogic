@@ -18,7 +18,7 @@ The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 ```lean
 theorem soundness : (Gamma |- phi) -> (Gamma |= phi)
 ```
-All 15 TM axioms and 7 derivation rules preserve validity.
+All 42 TM axiom constructors (covering Base, Dense, and Discrete frame classes) and 7 derivation rules preserve validity.
 
 ### BFMCS Completeness (`Bundle/`)
 ```lean
@@ -41,16 +41,24 @@ Tableau-based decision procedure returning proofs or countermodels.
 Metalogic/
 ├── README.md              # This file
 ├── Metalogic.lean         # Re-export module with docstring
+├── WeakCanonical.lean     # Re-export for WeakCanonical
 ├── Soundness.lean         # Main soundness theorem
-├── SoundnessLemmas.lean   # Supporting lemmas for soundness
+├── DenseSoundness.lean    # Dense variant soundness
+├── DiscreteSoundness.lean # Discrete variant soundness
 ├── Completeness.lean      # MCS closure properties (top-level)
 ├── Decidability.lean      # Re-export for decidability
+│
+├── SoundnessLemmas/       # Supporting lemmas for soundness
+│   ├── Core.lean
+│   ├── DenseValidity.lean
+│   └── FrameClassVariants.lean
 │
 ├── Core/                  # Foundational MCS theory
 │   ├── Core.lean
 │   ├── MaximalConsistent.lean
 │   ├── DeductionTheorem.lean
-│   └── MCSProperties.lean
+│   ├── MCSProperties.lean
+│   └── RestrictedMCS/     # MCS restricted to subformula closure
 │
 ├── Bundle/                # BFMCS completeness (primary approach)
 │   ├── FMCSDef.lean
@@ -76,7 +84,9 @@ Metalogic/
 │   ├── Correctness.lean
 │   ├── ProofExtraction.lean
 │   ├── CountermodelExtraction.lean
-│   └── DecisionProcedure.lean
+│   ├── FMP.lean           # Re-export for FMP
+│   ├── DecisionProcedure.lean
+│   └── FMP/               # Finite model property (7 files)
 │
 ├── Algebraic/             # Alternative algebraic approach
 │   ├── LindenbaumQuotient.lean
@@ -91,20 +101,21 @@ Metalogic/
 │   └── RestrictedParametricTruthLemma.lean
 │
 ├── BXCanonical/           # Burgess 1982 chronicle completeness
-│   ├── Chronicle/         # Dense countermodel construction
+│   ├── Chronicle/         # Dense chronicle construction (7 files)
+│   ├── Quasimodel/        # Quasimodel intermediate (6 files)
+│   ├── Filtration/        # Filtration for FMP (1 file)
 │   └── Completeness.lean  # Main completeness wiring
 │
 ├── WeakCanonical/         # Weak/reflexive completeness (Henkin canonical model)
+│   ├── EFGames/           # EF bisimulation games (9 files)
+│   ├── ExpressiveCompleteness/ # Expressive completeness (2 files)
+│   ├── Expressiveness/    # Separation results (5 files)
+│   ├── IntegerModel/      # Integer witness model (3 files)
+│   └── Separation/        # Separation theorem (11+ files)
 │
 ├── ConservativeExtension/ # Conservative extension results
 │
-├── Relational/            # Relational semantics (placeholder)
-│
-└── (Top-level files)
-    ├── Soundness.lean         # Main soundness theorem
-    ├── SoundnessLemmas.lean   # Supporting lemmas
-    ├── Completeness.lean      # MCS closure properties
-    └── Decidability.lean      # Re-export for decidability
+└── Relational/            # Relational semantics (placeholder)
 ```
 
 ## Module Dependency Flowchart
@@ -280,12 +291,13 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 |-----------|---------|--------|--------|
 | [Core/](Core/README.md) | MCS theory, Lindenbaum's lemma | Sorry-free | Yes |
 | [Bundle/](Bundle/README.md) | BFMCS completeness infrastructure | Sorry-free (main theorems) | Yes |
-| [BXCanonical/](BXCanonical/) | Burgess 1982 chronicle completeness | Active | No |
-| [WeakCanonical/](WeakCanonical/) | Weak/reflexive completeness (Henkin) | Active | No |
+| [BXCanonical/](BXCanonical/README.md) | Burgess 1982 chronicle completeness | Active | Yes |
+| [WeakCanonical/](WeakCanonical/README.md) | Weak/reflexive completeness (Henkin) | Active | Yes |
+| [SoundnessLemmas/](SoundnessLemmas/README.md) | Supporting soundness lemmas | Sorry-free | Yes |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
-| [ConservativeExtension/](ConservativeExtension/) | Conservative extension | Active | No |
-| [Relational/](Relational/) | Relational semantics (placeholder) | Empty | No |
+| [ConservativeExtension/](ConservativeExtension/README.md) | Conservative extension | Active | Yes |
+| [Relational/](Relational/README.md) | Relational semantics (placeholder) | Empty | Yes |
 
 ## Sorry Status
 
@@ -349,4 +361,7 @@ ls Theories/Bimodal/Metalogic/Soundness.lean
 
 ---
 
-*Last verified: 2026-03-16*
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.

@@ -22,7 +22,9 @@ This directory implements a verified decision procedure that:
 | `Correctness.lean` | Soundness proof | Sorry-free |
 | `ProofExtraction.lean` | Extract DerivationTree from closed tableau | Sorry-free |
 | `CountermodelExtraction.lean` | Extract countermodel from open branch | Sorry-free |
+| `FMP.lean` | Re-export for FMP subdirectory | Sorry-free |
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
+| `FMP/` | Finite model property proofs (7 files) | Sorry-free |
 
 ## Quick Reference
 
@@ -99,7 +101,7 @@ open Bimodal.Metalogic.Decidability
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness approach
 - [Core README](../Core/README.md) - MCS foundations
-- [Soundness README](../Soundness/README.md) - Soundness theorem
+- [FMP README](FMP/README.md) - Finite model property
 
 ## References
 
@@ -108,4 +110,7 @@ open Bimodal.Metalogic.Decidability
 
 ---
 
-*Last updated: 2026-02-03*
+*Last verified: 2026-05-29*
+
+> **Note**: This README was last verified before task 131 (module reorg) -- verify
+> file list is still current after that task completes.
