@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 224,
+      "project_name": "finite_insertion_succ_archimedean",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Research should determine whether the construction can add infinitely many points between two fixed stage-N points across all future stages, or whether the finite formula set bounds the total insertions. Related: task 202 (reynolds_k_equivalence_bypass) which currently uses Reynolds model surgery.",
+      "dependencies": [],
+      "created": "2026-05-30T05:07:42Z",
+      "last_updated": "2026-05-30T05:07:42Z"
+    },
+    {
       "project_number": 223,
       "project_name": "rename_docs_lowercase_kebab_case",
       "status": "completed",
@@ -1181,11 +1191,11 @@
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
-      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v11 (chronicle-level): proves succ_cofinal directly at the ChronicleAsPriorModel level, bypassing the abstract no_gaps_prior (mathematically false as stated). Uses chronicle_temporal_truth_effective as faithfulness bridge. 3 phases: (1) deprecate no_gaps_prior + infrastructure, (2) chronicle-level no-gaps proof, (3) close succ_cofinal + verify. 12 hours, ~500 new lines in 1 new file.",
+      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (chronicle_gap_contradiction) blocking sorry-free completeness_discrete. Plan v12 (Reynolds model surgery): formalizes the full model surgery argument (Lemmas 6-13) at the ChronicleAsPriorModel level in ReynoldsModelSurgery.lean. Phase 1 complete (Theorem 5 + infrastructure). Phase 2: Reynolds Lemmas 6-13 (~600 lines). Phase 3: close chronicle_gap_contradiction + verify. 14 hours.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T22:00:00Z",
-      "next_artifact_number": 11,
+      "last_updated": "2026-05-29T23:30:00Z",
+      "next_artifact_number": 12,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1231,6 +1241,11 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md",
           "type": "plan",
           "summary": "Plan v11: chronicle-level proof. Bypasses no_gaps_prior (false as stated). Proves succ_cofinal directly using chronicle_temporal_truth_effective faithfulness bridge + Reynolds model surgery adapted to MCS setting. 3 phases, 12 hours, ~500 new lines."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md",
+          "type": "plan",
+          "summary": "Plan v12: Reynolds model surgery (Lemmas 6-13, Theorem 14) at chronicle level. New file ReynoldsModelSurgery.lean (~600 lines). Phase 1 complete, Phase 2: full model surgery, Phase 3: close chronicle_gap_contradiction + verify. 14 hours."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
@@ -1238,10 +1253,10 @@
       "session_id": "sess_1748545200_orch202",
       "plan_metadata": {
         "phases": 3,
-        "total_effort_hours": 12,
+        "total_effort_hours": 14,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 11,
+        "plan_version": 12,
         "dependency_waves": [
           [
             1
@@ -1307,6 +1322,11 @@
           {
             "path": "handoffs/phase-2-blocked-20260529.md",
             "integrated_in_plan_version": 11,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
+            "integrated_in_plan_version": 12,
             "integrated_date": "2026-05-29"
           }
         ]
@@ -1750,7 +1770,7 @@
       ]
     }
   ],
-  "next_project_number": 224,
+  "next_project_number": 225,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

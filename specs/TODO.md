@@ -1,5 +1,5 @@
 ---
-next_project_number: 224
+next_project_number: 225
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -33,13 +33,15 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [PLANNED] — Chronicle-level proof (v11): Phase 1 complete (Theorem 5, 395 lines). Plan v10 blocked: no_gaps_prior is mathematically false (Z+Z counterexample). Plan v11 proves succ_cofinal directly at ChronicleAsPriorModel level using chronicle_temporal_truth_effective faithfulness bridge + Reynolds model surgery adapted to MCS setting. 3 phases, 12 hours, ~500 new lines.
+202 [PLANNED] — Reynolds model surgery (v12): Phase 1 complete (Theorem 5 + infrastructure). Plan v12 formalizes Reynolds Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) in new ReynoldsModelSurgery.lean (~600 lines). Closes chronicle_gap_contradiction sorry. 3 phases, 14 hours.
   - **Reports**:
     - [specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
     - [specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
     - [specs/202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
   - **Handoff**: [specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
-  - **Plan**: [specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
+  - **Plans**:
+    - [specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
+    - [specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md]
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -140,6 +142,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 224. Investigate finite insertion argument for succ_cofinal (omega-chain structural alternative to Reynolds model surgery)
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Related: task 202.
 
 ### 223. Rename documentation files to lowercase kebab-case and update all references
 - **Effort**: small (2-4 hours)
@@ -295,7 +304,7 @@ technical_debt:
 ---
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: 12 hours
+- **Effort**: 14 hours
 - **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: CRITICAL
@@ -308,9 +317,10 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
   - [202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
 - **Handoff**: [202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
-- **Plan**:
+- **Plans**:
   - [202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
-- **Description**: Plan v11 (chronicle-level proof). Phase 1 complete (Theorem 5, 395 lines). Plan v10 blocked: no_gaps_prior is mathematically false as stated (Z+Z constant-predicate counterexample satisfies all hypotheses but has a Dedekind gap). Plan v11 bypasses no_gaps_prior entirely and proves succ_cofinal directly at ChronicleAsPriorModel level using chronicle_temporal_truth_effective as faithfulness bridge + Reynolds model surgery argument adapted to the concrete MCS setting. 3 phases: (1) deprecate no_gaps_prior + create ChronicleNoGaps.lean, (2) chronicle-level no-gaps proof, (3) close succ_cofinal + verify completeness_discrete. ~500 new lines in 1 new file.
+  - [202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md]
+- **Description**: Plan v12 (Reynolds model surgery). Phase 1 complete (Theorem 5 + infrastructure). Plan v12 formalizes Reynolds Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) in new ReynoldsModelSurgery.lean (~600 lines) at the ChronicleAsPriorModel level. Phase 2: gap formula R (Lemma 6), R-interval structure (Lemma 7), class homogeneity (Lemmas 8-9), bad intervals (Lemma 10), formula propagation (Lemma 11), model surgery N = Q- u I u Q+ (Lemma 12), contradiction (Lemma 13), main theorem (Theorem 14). Phase 3: close chronicle_gap_contradiction sorry + verify completeness_discrete sorry-free.
 
 ---
 
