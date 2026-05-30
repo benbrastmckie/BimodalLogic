@@ -1,40 +1,39 @@
 {
   "status": "partial",
-  "summary": "reynolds_model_surgery_core (GoodStructuresModelSurgery.lean) is now sorry-free. The proof uses a clean class-detecting formula approach: (1) obtain temporal formula R detecting class(a) membership, (2) show R holds at a, (3) if R fails at y, Prior-UZ/SZ gives first transition at successor pair where class is succ-closed, contradiction, (4) R holds everywhere, hence all y in class(a). One sorry remains in class_temporal_formula: constructing the temporal formula R that detects contemp_equiv membership. This requires encoding contemp_equiv as MonadicFormula sig 1 and applying US_expressively_complete_over_prior.",
-  "phases_completed": 1,
+  "summary": "Proof restructured: deleted unprovable class_temporal_formula, moved sorry to reynolds_model_surgery_core with clean documentation of what Reynolds Lemmas 6-13 require. Build passes. Downstream chain (gap_contradicts_prior, gap_contradicts_prior_below, no_gaps_discrete_model_surgery) is sorry-free. 1 sorry remains at reynolds_model_surgery_core requiring ~400-600 lines of model surgery implementation.",
+  "phases_completed": 0,
   "phases_total": 5,
   "blockers": [
-    "class_temporal_formula (GoodStructuresModelSurgery.lean:527): Construct temporal formula R with temporal_truth t R ↔ contemp_equiv sig k M a t. Requires encoding contemp_equiv as MonadicFormula sig 1 (challenge: a is a fixed element, MonadicFormula has no constants). Recommended approach: extended signature with is_a predicate, verify Prior-UZ/SZ for extended structure, construct MonadicFormula in extended language. Estimated: 200-400 lines."
+    "reynolds_model_surgery_core (GoodStructuresModelSurgery.lean:485) requires Reynolds Lemmas 6-13 model surgery (~400-600 lines, 12+ hours). This is the single mathematical sorry blocking completeness_discrete."
   ],
   "continuation_context": {
-    "last_phase_completed": 1,
+    "last_phase_completed": 0,
     "next_phase": 2,
     "sorry_sites_remaining": [
-      "class_temporal_formula at GoodStructuresModelSurgery.lean:527 (Phase 2 core — MonadicFormula construction, ~200-400 lines)",
+      "reynolds_model_surgery_core at GoodStructuresModelSurgery.lean:485 (Phase 2 — requires Lemmas 6-13 model surgery)",
       "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 — trivial wiring once Phase 2 done)",
+      "h_surj construction at Transfer.lean (Phase 1 — engineering, independent)",
       "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4 — engineering)",
       "completeness_discrete rewiring in Completeness.lean (Phase 5 — trivial)"
     ],
     "progress_this_cycle": [
-      "reynolds_model_surgery_core is now SORRY-FREE (clean 40-line proof)",
-      "gap_contradicts_prior is sorry-free (delegates to reynolds_model_surgery_core)",
-      "gap_contradicts_prior_below is sorry-free (delegates to reynolds_model_surgery_core)",
-      "no_gaps_discrete_model_surgery is sorry-free (delegates to gap_contradicts_prior)",
-      "All sorries in file reduced from 1 in reynolds_model_surgery_core to 1 in class_temporal_formula",
-      "Proof architecture validated: the class-detecting formula approach bypasses full model surgery (Lemmas 6-13, 600+ lines) with a direct Prior-UZ/SZ argument (40 lines)"
+      "DELETED class_temporal_formula (unprovable — 5 approaches analyzed, all fail)",
+      "RESTRUCTURED reynolds_model_surgery_core to have sorry directly with clean documentation",
+      "File reduced from 690 to 572 lines (removed 118 lines of unprovable code)",
+      "Updated file docstring with clear architecture diagram",
+      "Updated plan v14 Phase 2 status",
+      "Build verified: passes with 1 sorry warning"
     ],
-    "key_findings": [
-      "The full Reynolds model surgery (600+ lines) can be REPLACED by a much simpler argument IF a class-detecting temporal formula exists",
-      "The class-detecting formula must satisfy: temporal_truth M atomMap t R ↔ contemp_equiv sig k M a t",
-      "The formula's existence follows from US expressive completeness (every MonadicFormula sig 1 has a temporal equivalent on Prior structures)",
-      "The challenge is encoding contemp_equiv as MonadicFormula sig 1 since MonadicFormula has no constants (can't reference specific element a)",
-      "Recommended approach: extend signature with is_a predicate, verify Prior-UZ/SZ for extended structure, use US_expressively_complete_over_prior on extended language"
-    ],
-    "commit": "2d2b45e50"
+    "key_architecture": {
+      "sorry_location": "reynolds_model_surgery_core at GoodStructuresModelSurgery.lean:485",
+      "sorry_statement": "forall y, contemp_equiv sig k M a y (given h_surj, Prior-UZ/SZ, h_succ_closed)",
+      "downstream_chain": "gap_contradicts_prior <- gap_contradicts_prior_below <- no_gaps_discrete_model_surgery (all sorry-free)",
+      "proof_approach": "Reynolds Lemmas 6-13: right_gap_class formula + R-intervals + model surgery + truth preservation"
+    }
   },
   "artifacts": [
-    {"path": "specs/202_reynolds_k_equivalence_bypass/reports/16_model-surgery-implementation-strategy.md", "type": "research_report"},
-    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-class-formula-20260530.md", "type": "handoff"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean", "type": "implementation"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean", "type": "implementation"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-restructured-20260530.md", "type": "handoff"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-class-formula-analysis-20260530.md", "type": "handoff"}
   ]
 }

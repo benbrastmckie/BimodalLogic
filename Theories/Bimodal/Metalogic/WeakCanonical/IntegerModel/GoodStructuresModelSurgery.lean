@@ -12,50 +12,56 @@ Theorem 14 adapted to the `OrderedMonadicStructure` level): in a discrete linear
 order satisfying semantic Prior-UZ/SZ, contemporaneous equivalence class boundaries
 cannot occur at Dedekind gaps.
 
-## CRITICAL FINDINGS (Task 202)
+## Architecture
 
-### Finding 1: h_accessible is INSUFFICIENT
+The proof chain is:
 
-The previous plan (Phase 1) added `h_accessible : all_predicates_accessible M atomMap`
-to `no_gaps_discrete`. While this fixes the counterexample where some predicates are
-inaccessible, it is STILL insufficient for the proof because:
+```
+reynolds_model_surgery_core (SORRY: Reynolds Lemmas 6-13, ~400-600 lines)
+  <- gap_contradicts_prior (sorry-free)
+  <- gap_contradicts_prior_below (sorry-free)
+  <- no_gaps_discrete_model_surgery (sorry-free)
+```
 
-1. The Reynolds model surgery (Lemmas 6-13) requires converting monadic FO formulas
-   to temporal formulas via `US_expressively_complete_over_prior`.
-2. `US_expressively_complete_over_prior` requires `h_surj` (atom-level surjectivity),
-   not just `h_accessible` (formula-level detectability).
-3. Moreover, `prior_implies_archimedean_of_accessible` (which used h_accessible to
-   claim IsSuccArchimedean) is **mathematically FALSE**: Z+Z with all-constant
-   predicates satisfies Prior-UZ/SZ + h_accessible but is NOT IsSuccArchimedean.
+The single sorry is at `reynolds_model_surgery_core`, which states:
+given h_surj + Prior-UZ/SZ + h_succ_closed, class(a) = whole carrier.
+This requires the full Reynolds model surgery argument (constructing a
+right_gap_class formula, analyzing R-intervals, performing domain surgery,
+and proving temporal truth preservation). See the docstring on
+`reynolds_model_surgery_core` for the detailed proof sketch.
 
-### Finding 2: h_surj IS sufficient
+## Key Hypotheses
 
-The correct hypothesis is `h_surj : ∀ p, ∃ a, atomMap (.atom a) = p`, which
-enables `US_expressively_complete_over_prior` → Reynolds model surgery → Theorem 14.
+- `h_surj : ∀ p, ∃ a, atomMap (.atom a) = p` -- atom-level surjectivity,
+  enables `US_expressively_complete_over_prior` (Reynolds Theorem 5).
+  Satisfied at the call site (Transfer.lean) by enriching atomMap with
+  fresh atoms for non-atom predicates. The previous `h_accessible`
+  hypothesis was INSUFFICIENT (Z+Z counterexample).
 
-At the call site (Transfer.lean), h_surj can be satisfied by enriching atomMap_fwd
-with fresh atoms for non-atom predicates (bot and box formulas). Since Atom is
-infinite and sig.preds is finite, this is always possible. The fresh atoms do not
-affect the section property or Prior-UZ/SZ (which hold for any atomMap).
-
-### Finding 3: The theorem is about class boundaries, not gaps
-
-Reynolds Theorem 14 does NOT claim IsSuccArchimedean. It claims that contemp_equiv
-class boundaries don't end at gaps. In Z+Z with constant predicates, ALL points
-are contemp_equiv (no class boundaries at all), so the theorem is vacuously true.
-The previous approach of proving IsSuccArchimedean was wrong.
+- `no_boundary_at_successor` (GoodStructures.lean, sorry-free) -- guarantees
+  c ~M succ(c) for ALL c, making h_succ_closed trivially true. The real
+  content of Theorem 14 is: h_surj + Prior-UZ/SZ implies one class.
 
 ## Key Results
 
+### Sorry-free infrastructure
 - `temporal_truth_neg_iff_not`: ψ.neg evaluates as ¬ψ under temporal_truth
 - `temporal_truth_neg_neg_elim`: double negation elimination for temporal_truth
 - `prior_UZ_first_transition`: first-transition lemma for Prior-UZ structures
 - `prior_SZ_last_transition`: last-transition lemma for Prior-SZ structures
 - `contemp_equiv_convex`: contemp_equiv classes are convex intervals
-- `contemp_equiv_succ_closed`: if ∀c, a ~M c → a ~M succ(c), the class is succ-closed
+- `contemp_equiv_succ_closed_of_no_boundary`: class closed under succ if no boundary
+- `contemp_equiv_pred_closed`: class closed under predecessor
+- `contemp_equiv_succ_iterate`: class closed under successor iteration
 - `class_gap_exists`: if class(a) ≠ whole order, a Gap exists
-- `gap_contradicts_prior`: succ-closed class bounded above → False (Reynolds Thm 14 upward)
-- `gap_contradicts_prior_below`: succ-closed class bounded below → False (Reynolds Thm 14 downward)
+- `cut_succ_closed`: gap's cut is closed under successor
+- `complement_pred_closed`: gap's complement is closed under predecessor
+- `gap_contradicts_prior`: succ-closed class bounded above → False
+- `gap_contradicts_prior_below`: succ-closed class bounded below → False
+- `no_gaps_discrete_model_surgery`: main theorem (sorry-free given core)
+
+### Sorry (1 remaining)
+- `reynolds_model_surgery_core`: class(a) succ-closed → class(a) = whole carrier
 
 ## References
 
@@ -344,63 +350,17 @@ def all_predicates_accessible {sig : MonadicSignature}
 
 The core argument (Reynolds 1994 Lemmas 6-13, Theorem 14):
 
-Given: class(a) succ-closed, bounded above, Prior-UZ/SZ, h_surj.
-Goal: False.
+Given: class(a) succ-closed, Prior-UZ/SZ, h_surj.
+Goal: class(a) = whole carrier (i.e., ∀ y, contemp_equiv a y).
 
-**Proof structure**:
+The sorry-free infrastructure in this section provides:
+- `cut_succ_closed`: gap's cut is closed under successor
+- `complement_upward_closed`: complement of downward-closed set is upward-closed
+- `complement_pred_closed`: complement of gap's cut is closed under predecessor
 
-1. The class of a is succ-closed and bounded above. By class_gap_exists,
-   the order is not IsSuccArchimedean.
-
-2. Define the surgery model N: an OrderedMonadicStructure on a subtype
-   of M.carrier that removes multi-class gap regions and keeps only a
-   single representative class.
-
-3. Prove temporal truth preservation between M and N for all formulas.
-
-4. Show the surgery model IS IsSuccArchimedean (the gap is removed).
-   Then one_class_archimedean gives contemp_equiv across the former gap
-   in N, which transfers back to M via truth preservation, contradiction.
-
-## Approach: k-type periodicity across the gap
-
-Rather than the full model surgery (constructing N explicitly), we use
-a more direct argument via k-type periodicity:
-
-1. The gap's cut is {x | ∃ n, x ≤ succ^[n](a)} — closed under successor.
-2. For each predicate p, h_surj gives a temporal representative.
-   Prior-UZ ensures transitions only at successor pairs.
-3. Since the cut is succ-closed, predecessor transitions within the cut
-   follow the same periodic pattern. The complement is an upper set.
-4. The key lemma (predicate_stable_across_gap): for each predicate p,
-   if we look at succ^[n](a) for large enough n, M.interp p eventually
-   agrees with M.interp p at points just above the gap.
-5. Since sig.preds is Fintype, all predicates simultaneously stabilize.
-   This gives k-type agreement across the gap, which combined with
-   ordered-sum decomposition (doets_lemma_1_4) yields contemp_equiv.
-
-## Actual formalization approach
-
-We avoid the model surgery by showing that gap existence combined with
-Prior-UZ/SZ and h_surj directly implies IsSuccArchimedean for the
-_substructure_ relevant to contemp_equiv computation. The key is that
-h_surj makes ALL predicates temporally definable, so Prior-UZ/SZ
-constrains ALL predicates (not just atoms), which is strong enough
-to force archimedeanity when combined with gap structure.
-
-The proof works by contradiction within the no_gaps_discrete_model_surgery
-framework: assume no successor boundary → class is succ-closed → if
-bounded above, gap exists → [derive contradiction using Reynolds surgery].
-
-## Helper lemmas
-
-- `cut_succ_closed`: The gap's cut from gap_of_not_succ_archimedean is
-  closed under successor.
-- `complement_pred_closed`: The complement is closed under predecessor.
-- `predicate_no_gap_transition`: No predicate can transition across the gap.
-- `all_formulas_stable_across_gap`: Via table_correctness, no temporal
-  formula transitions across the gap.
-- `gap_cross_contemp_equiv`: Points on both sides of the gap are contemp_equiv.
+The proof chain `no_gaps_discrete_model_surgery` -> `gap_contradicts_prior` /
+`gap_contradicts_prior_below` -> `reynolds_model_surgery_core` reduces the
+problem to a single sorry at `reynolds_model_surgery_core`.
 
 See Reynolds 1994, Section 7, Lemmas 6-13, Theorem 14.
 -/
@@ -447,108 +407,69 @@ theorem complement_pred_closed {T : Type} [LinearOrder T]
 
 /-! ### Reynolds Model Surgery Core
 
-**Current proof structure** (conditional on `class_temporal_formula`):
+**Reynolds Theorem 14** (Reynolds 1994, Section 7, Lemmas 6-13):
 
-1. `class_temporal_formula` (SORRY -- SEE DOCSTRING): Constructs a temporal
-   formula R detecting class(a) membership. This approach appears unprovable
-   because the fixed element `a` cannot be referenced by MonadicFormula sig 1,
-   and enriched-signature workarounds are circular (require Prior-UZ for
-   class membership, which fails at gap boundaries).
+Given a discrete Prior structure with atom-surjective atomMap (h_surj),
+if a contemp_equiv class is succ-closed, then it equals the whole carrier.
+Equivalently: class boundaries cannot occur at Dedekind gaps.
 
-2. `reynolds_model_surgery_core` (SORRY-FREE given class_temporal_formula):
-   Given R with temporal_truth t R ↔ contemp_equiv a t, the proof uses
-   Prior-UZ/SZ first/last-transition lemmas to show R holds everywhere.
+**Proof sketch** (Reynolds' original argument):
 
-**Correct path forward** (Reynolds 1994, Lemmas 6-13, Theorem 14):
+1. Construct rho(x) : MonadicFormula sig 1 encoding "right_gap_class"
+   (x's ~M-class ends in a gap on the right). This is expressible because
+   ~M is defined by a monadic FO formula epsilon(x,y) with TWO free
+   variables, and rho(x) quantifies over y.
+2. Get temporal formula R for rho via US_expressively_complete_over_prior.
+3. Prove R-interval properties (Lemma 7): maximal R-intervals are open,
+   bounded by elements of M.
+4. Prove no first/last class in R-intervals (Lemma 8).
+5. Prove class homogeneity in R-intervals (Lemma 9).
+6. Define bad intervals and prove formula propagation (Lemmas 10-11).
+7. Construct model surgery (Lemma 12): excise a maximal bad interval,
+   replace by a single representative class.
+8. Prove temporal truth preservation for all formula constructors
+   (Lemma 12 continued, 13 subcases for Until/Since).
+9. Derive contradiction (Lemma 13 + Theorem 14): in the surgery model,
+   the class boundary is at a point (not a gap), contradicting R.
 
-The proof should be restructured to NOT use class_temporal_formula. Instead:
-1. Define epsilon(x,y) : MonadicFormula sig 2 encoding contemp_equiv
-2. Define rho(x) : MonadicFormula sig 1 encoding "right_gap_class"
-   (x's class ends in a gap on the right), built from epsilon
-3. Get temporal formula R for rho via US_expressively_complete_over_prior
-4. Prove R-interval properties (Lemma 7): maximal R-intervals are open,
-   bounded by elements of M
-5. Prove no first/last class in R-intervals (Lemma 8)
-6. Prove class homogeneity in R-intervals (Lemma 9)
-7. Define bad intervals and prove formula propagation (Lemmas 10-11)
-8. Construct model surgery (Lemma 12): excise a maximal bad interval,
-   replace by a single representative class
-9. Prove temporal truth preservation for all formula constructors
-   (Lemma 12 continued, 13 subcases for Until/Since)
-10. Derive contradiction (Lemma 13 + Theorem 14): in the surgery model,
-    the class boundary is at a point (not a gap), contradicting R
+Estimated effort: 400-600 lines.
 
-Estimated effort: 400-600 lines. The current `reynolds_model_surgery_core`
-would be DELETED and replaced by this model surgery argument.
+**Historical note**: A previous version attempted to use a class-detecting
+formula (class_temporal_formula) that would find a temporal formula R with
+`temporal_truth t R <-> contemp_equiv a t`. This is UNPROVABLE because:
+- contemp_equiv depends on a fixed element `a`, but MonadicFormula sig 1
+  has only ONE free variable (for `t`) and cannot reference `a`.
+- Enriched-signature workarounds are circular (Prior-UZ for class membership
+  fails at gap boundaries, which is what Theorem 14 proves).
+The correct approach uses right_gap_class (a structural property, not
+class membership) and the full model surgery argument.
 -/
 
-/-- **Class-detecting temporal formula** (Reynolds Theorem 14, Lemma 6 adapted):
-    There exists a temporal formula R that detects membership in the
-    contemp_equiv class of a, on Prior structures with h_surj.
+/-- **Reynolds Theorem 14 core** (Reynolds 1994, Lemmas 6-13):
+    In a discrete Prior structure with atom-surjective atomMap, if class(a)
+    is succ-closed then class(a) = whole carrier.
 
-    **STATUS: SORRY -- APPEARS UNPROVABLE AS STATED**
+    **STATUS: SORRY -- requires Reynolds model surgery (Lemmas 6-13)**
 
-    This lemma asks for a Formula R such that temporal_truth M atomMap t R
-    characterizes class(a) membership. The natural approach is to encode
-    `contemp_equiv sig k M a t` as a `MonadicFormula sig 1` and apply
-    `US_expressively_complete_over_prior`. However, this faces a fundamental
-    obstacle:
+    This is the mathematical core of Reynolds Theorem 14. The proof requires
+    implementing the full model surgery argument:
 
-    **Problem 1 (Parameter reference)**: `contemp_equiv sig k M a t` depends
-    on the fixed element `a`, but `MonadicFormula sig 1` has only ONE free
-    variable (for `t`). The element `a` cannot be referenced in the formula.
-    The formula's semantics `eval M (fun _ => t) psi` depend only on M and t,
-    not on any specific carrier element.
+    1. Construct right_gap_class formula rho(x) via MonadicFormula sig 1
+    2. Convert to temporal formula R via US_expressively_complete_over_prior
+    3. Analyze R-intervals (Lemmas 7-9: open intervals, no first/last class,
+       class homogeneity)
+    4. Define bad intervals and prove formula propagation (Lemmas 10-11)
+    5. Construct surgery model N by excising a bad interval (Lemma 12)
+    6. Prove temporal truth preservation M <-> N (13 subcases for U/S)
+    7. Derive contradiction: R holds in N but class boundary is at a point
 
-    **Problem 2 (Enriched signature circularity)**: Adding class membership as
-    a new predicate to create an enriched signature fails because:
-    - `semantic_prior_UZ` for the enriched atomMap requires the first-occurrence
-      property for class membership
-    - Class membership changes at gap boundaries (not successor pairs) when
-      class(a) is proper
-    - So Prior-UZ FAILS for the enriched structure
-    - But `US_expressively_complete_over_prior` requires Prior-UZ
-    - This is circular: we need to prove class boundaries are at successor
-      pairs (Theorem 14) to use the tool that would help prove Theorem 14
+    All hypotheses (h_surj, h_prior_UZ, h_prior_SZ, h_succ_closed) are
+    needed and correct. The sorry is purely due to implementation effort
+    (~400-600 lines of Lean code for Lemmas 6-13).
 
-    **Problem 3 (is_a predicate)**: Adding an `is_a` predicate (true only at a)
-    to the signature also fails for the same reason: the `is_a` predicate
-    transitions at exactly one point (pred(a), a) and (a, succ(a)), which are
-    successor pairs. But Prior-UZ for compound formulas involving `is_a`
-    still requires the first-occurrence property for ALL formulas in the
-    enriched language, which may fail for formulas encoding class membership.
-
-    **Correct approach (Reynolds 1994)**: Reynolds' actual Theorem 14 does NOT
-    use a class-detecting formula. Instead, it uses a `right_gap_class` formula
-    rho(x) = "x's ~M-class ends in a gap on the right." This IS expressible
-    because ~M is defined by a monadic FO formula epsilon(x,y) with TWO free
-    variables, and rho(x) quantifies over y. The formula rho gives a temporal
-    formula R via US_expressively_complete_over_prior. The proof then proceeds
-    via Lemmas 7-13 (model surgery), NOT via the simple first-transition
-    argument in `reynolds_model_surgery_core`.
-
-    **Action needed**: Restructure to follow Reynolds' original argument:
-    1. Construct epsilon(x,y) : MonadicFormula sig 2 defining contemp_equiv
-    2. Construct rho(x) : MonadicFormula sig 1 for right_gap_class from epsilon
-    3. Apply US_expressively_complete_over_prior to get temporal formula R
-    4. Implement Lemmas 7-13 (model surgery) using R
-    This requires ~400-600 lines and a different proof architecture from the
-    current `reynolds_model_surgery_core`. -/
-private noncomputable def class_temporal_formula
-    {sig : MonadicSignature} {k : Nat}
-    (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
-    (h_prior_SZ : semantic_prior_SZ M atomMap)
-    (a : M.carrier) :
-    { R : Formula //
-      ∀ t : M.carrier,
-        temporal_truth M atomMap t R ↔ contemp_equiv sig k M a t } := by
-  sorry
-
+    See also: `no_boundary_at_successor` (sorry-free) guarantees that
+    h_succ_closed is trivially satisfied in practice, since c ~M succ(c)
+    for all c. The real content is: h_surj + Prior-UZ/SZ -> one class. -/
 theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -561,46 +482,7 @@ theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
     (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
       contemp_equiv sig k M a (Order.succ c)) :
     ∀ y : M.carrier, contemp_equiv sig k M a y := by
-  -- Step 1: Get temporal formula R detecting class(a) membership
-  obtain ⟨R, hR⟩ := class_temporal_formula M atomMap h_surj h_prior_UZ h_prior_SZ a
-  -- Step 2: R holds at a (since a is in its own class)
-  have h_R_a : temporal_truth M atomMap a R :=
-    (hR a).mpr ((contemp_equiv_is_equiv sig k M).refl a)
-  -- Step 3: Show R holds everywhere
-  suffices h_all : ∀ y : M.carrier, temporal_truth M atomMap y R by
-    intro y; exact (hR y).mp (h_all y)
-  intro y
-  -- Case 1: y ≥ a
-  -- Case 2: y < a
-  by_cases h_ge : a ≤ y
-  · -- Case 1: y ≥ a. Show R holds at y via Prior-UZ.
-    -- If R fails at y, then R holds at a and R.neg holds at y.
-    -- By prior_UZ_first_transition: ∃ c ≥ a with R at c and ¬R at succ(c).
-    -- R at c ↔ c ∈ class(a) (by hR).
-    -- h_succ_closed: c ∈ class(a) → succ(c) ∈ class(a).
-    -- succ(c) ∈ class(a) ↔ R at succ(c) (by hR). Contradiction.
-    by_contra h_not
-    obtain ⟨c, _, h_R_c, h_not_R_succ⟩ :=
-      prior_UZ_first_transition M atomMap h_prior_UZ a R h_R_a
-        ⟨y, lt_of_le_of_ne h_ge (fun h => h_not (h ▸ h_R_a)), h_not⟩
-    have h_class_c : contemp_equiv sig k M a c := (hR c).mp h_R_c
-    have h_class_succ : contemp_equiv sig k M a (Order.succ c) := h_succ_closed c h_class_c
-    exact h_not_R_succ ((hR (Order.succ c)).mpr h_class_succ)
-  · -- Case 2: y < a. Show R holds at y via Prior-SZ.
-    -- If R fails at y, then R holds at a and R.neg holds at y.
-    -- By prior_SZ_last_transition: ∃ c ≤ a with R at c and ¬R at pred(c).
-    -- R at c ↔ c ∈ class(a).
-    -- contemp_equiv_pred_closed: c ∈ class(a) → pred(c) ∈ class(a).
-    -- pred(c) ∈ class(a) ↔ R at pred(c). Contradiction.
-    push_neg at h_ge
-    by_contra h_not
-    obtain ⟨c, _, h_R_c, h_not_R_pred⟩ :=
-      prior_SZ_last_transition M atomMap h_prior_SZ a R h_R_a
-        ⟨y, h_ge, h_not⟩
-    have h_class_c : contemp_equiv sig k M a c := (hR c).mp h_R_c
-    have h_class_pred : contemp_equiv sig k M a (Order.pred c) :=
-      contemp_equiv_pred_closed sig k M a c h_class_c
-    exact h_not_R_pred ((hR (Order.pred c)).mpr h_class_pred)
+  sorry
 
 /-! ### Main gap contradiction theorems -/
 
