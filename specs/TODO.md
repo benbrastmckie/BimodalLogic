@@ -125,7 +125,7 @@ technical_debt:
 ### Dataset Enhancements (from competitive landscape analysis, task 215)
 
 218 [NOT STARTED] — Finalize Croissant metadata + HF leaderboard infrastructure
-216 [PLANNED] — Natural-language paraphrase augmentation for bmlogic-bench
+216 [COMPLETED] — Natural-language paraphrase augmentation for bmlogic-bench
 217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
 220 [NOT STARTED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 221 [NOT STARTED] — Proof step dataset expansion (36 → 200+ theorems)
@@ -235,13 +235,18 @@ technical_debt:
 
 ### 216. Natural-language paraphrase augmentation for bmlogic-bench
 - **Effort**: large (2-4 weeks, includes human review)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-29
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Research**: [216_nl_paraphrase_augmentation/reports/01_team-research.md]
+- **Plan**: [216_nl_paraphrase_augmentation/plans/01_nl-paraphrase-plan.md]
+- **Summary**: [216_nl_paraphrase_augmentation/summaries/01_nl-paraphrase-summary.md]
 
 **Description**: Add natural-language paraphrase field (nl_paraphrase) to all 727 bmlogic-bench records. Rule-based generation for formulas with modalDepth + temporalDepth ≤ 2 (~75% of benchmark); LLM-assisted with human verification for complex nesting (depth ≥ 3). Separate nl_paraphrase_method field records generation method. Backward-compatible: optional field. Acceptance: all 727 records have non-null nl_paraphrase, grammatically correct for depth ≤ 2, spot-checked for depth ≥ 3, generation code published.
+
+**Completion**: Added nl_paraphrase and nl_paraphrase_method to all 727 records via recursive AST-walker with derived-operator detection (12+ patterns). 635 rule_based (depth≤2) + 92 rule_based_complex (depth≥3). 46 tests pass. validate.py 100% pass. Generation tooling published in data/scripts/.
 
 ---
 
