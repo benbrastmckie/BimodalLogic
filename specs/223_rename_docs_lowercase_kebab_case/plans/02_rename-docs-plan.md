@@ -152,17 +152,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update Documentation Standards [NOT STARTED]
+### Phase 3: Update Documentation Standards [COMPLETED]
 
 **Goal**: Add a file naming convention section to `readme-standard.md` to prescribe lowercase kebab-case going forward.
 
 **Tasks**:
-- [ ] Add a "File Naming Convention" section to `Theories/Bimodal/docs/reference/readme-standard.md` containing:
+- [x] Add a "File Naming Convention" section to `Theories/Bimodal/docs/reference/readme-standard.md` containing: *(completed)*
   - Rule: All `.md` files in `Theories/Bimodal/docs/` must use lowercase kebab-case (e.g., `axiom-reference.md`, `implementation-status.md`)
   - Exception: `README.md` is excluded (universal convention)
   - Rationale: Consistency with repository-wide kebab-case convention for documentation
   - Examples: `AXIOM_REFERENCE.md` -> `axiom-reference.md`, `TACTIC_DEVELOPMENT.md` -> `tactic-development.md`
-- [ ] Review `Theories/Bimodal/docs/reference/docstring-standard.md` to confirm no filename convention section is needed (covers `.lean` files only)
+- [x] Review `Theories/Bimodal/docs/reference/docstring-standard.md` to confirm no filename convention section is needed (covers `.lean` files only) *(completed: confirmed covers .lean only)*
 
 **Timing**: 15 minutes
 

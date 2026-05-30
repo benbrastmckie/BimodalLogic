@@ -121,6 +121,50 @@ The task 131 note must accompany every "Last verified" line.
 
 ---
 
+## File Naming Convention
+
+All `.md` files in `Theories/Bimodal/docs/` must use **lowercase kebab-case**.
+
+### Rule
+
+New documentation files must be named in lowercase kebab-case:
+- Words separated by hyphens, all lowercase
+- Examples: `axiom-reference.md`, `implementation-status.md`, `proof-patterns.md`, `tactic-development.md`
+
+### Exception
+
+`README.md` is excluded from this rule. The uppercase `README.md` filename is a universal
+convention recognized by Git forges (GitHub, GitLab) and documentation tools.
+
+### Rationale
+
+Lowercase kebab-case is the repository-wide convention for documentation files. It avoids
+case-sensitivity issues across operating systems and provides consistent, readable filenames.
+
+### Migration Reference
+
+The following files were renamed from SCREAMING_SNAKE_CASE to kebab-case in task 223:
+
+| Old Name | New Name |
+|----------|----------|
+| `AXIOM_REFERENCE.md` | `axiom-reference.md` |
+| `OPERATORS.md` | `operators.md` |
+| `TACTIC_REFERENCE.md` | `tactic-reference.md` |
+| `ARCHITECTURE.md` | `architecture.md` |
+| `EXAMPLES.md` | `examples.md` |
+| `PROOF_PATTERNS.md` | `proof-patterns.md` |
+| `QUICKSTART.md` | `quickstart.md` |
+| `TACTIC_DEVELOPMENT.md` | `tactic-development.md` |
+| `TROUBLESHOOTING.md` | `troubleshooting.md` |
+| `TUTORIAL.md` | `tutorial.md` |
+| `IMPLEMENTATION_STATUS.md` | `implementation-status.md` |
+| `KNOWN_LIMITATIONS.md` | `known-limitations.md` |
+| `PERFORMANCE_TARGETS.md` | `performance-targets.md` |
+| `TACTIC_REGISTRY.md` | `tactic-registry.md` |
+| `TEST_COVERAGE.md` | `test-coverage.md` |
+
+---
+
 ## Lint Compliance
 
 A README passes the lint check (`scripts/readme-lint.sh`) when:
