@@ -130,18 +130,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Write new data/README.md [IN PROGRESS]
+### Phase 3: Write new data/README.md [COMPLETED]
 
 **Goal**: Replace the current `data/README.md` (which is a HuggingFace dataset card, too long and specialized for a directory README) with a proper lightweight directory navigation document. Preserve the original as `data/dataset-card.md`.
 
 **Tasks**:
-- [ ] Rename `data/README.md` to `data/dataset-card.md` via `git mv` (preserves the HF card content for reference)
-- [ ] Write a new `data/README.md` (~50-70 lines) following Template D from the directory README standard:
+- [x] Rename `data/README.md` to `data/dataset-card.md` via `git mv` *(completed)*
+- [x] Write a new `data/README.md` (~50-70 lines) following Template D from the directory README standard: *(completed: 103 lines with file inventory, quick reference, and navigation links)*
   - Purpose statement: canonical dataset storage for BMLogic project
   - File inventory table: list all JSONL files, metadata files, croissant.json, scripts/, hf-dataset/
   - Quick reference: key commands for dataset generation, validation
   - Links: to `hf-dataset/README.md` for HuggingFace dataset card, to `docs/research/competitive-landscape.md` for competitive analysis, to `hf-dataset/PUBLISHING.md` for publishing workflow
-- [ ] Update the reference in Phase 2 (the competitive-landscape link) to work with the new README content
+- [x] Update the reference in Phase 2 (the competitive-landscape link) to work with the new README content *(completed: dataset-card.md already has correct link from Phase 2)*
 
 **Timing**: 30 minutes
 
@@ -158,7 +158,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update cross-references and final validation [NOT STARTED]
+### Phase 4: Update cross-references and final validation [IN PROGRESS]
 
 **Goal**: Ensure all cross-references across the repository are consistent and perform end-to-end validation.
 
