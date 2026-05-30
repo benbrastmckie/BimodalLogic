@@ -1181,11 +1181,11 @@
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
-      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
+      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v11 (chronicle-level): proves succ_cofinal directly at the ChronicleAsPriorModel level, bypassing the abstract no_gaps_prior (mathematically false as stated). Uses chronicle_temporal_truth_effective as faithfulness bridge. 3 phases: (1) deprecate no_gaps_prior + infrastructure, (2) chronicle-level no-gaps proof, (3) close succ_cofinal + verify. 12 hours, ~500 new lines in 1 new file.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-30T02:31:00Z",
-      "next_artifact_number": 10,
+      "last_updated": "2026-05-29T22:00:00Z",
+      "next_artifact_number": 11,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1218,24 +1218,31 @@
           "summary": "Deviation analysis: Phase 2 restructuring is mathematically sound (gap_of_not_succ_archimedean sorry-free, h_surj fix genuine, pipeline connects to succ_cofinal). Phases 2-4 annotations should be PARTIAL not COMPLETED. Scaffolding should be kept."
         },
         {
+          "path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md",
+          "type": "handoff",
+          "summary": "Phase 2 blocker: no_gaps_prior is mathematically false (Z+Z counterexample). Three paths proposed. Path B (chronicle-level proof) chosen."
+        },
+        {
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
           "type": "plan",
-          "summary": "Plan v10: merged Phases 2-4 into single Phase 2 (no_gaps_prior), renumbered Phase 5 to Phase 3 (succ_cofinal bridge). Corrected phase annotations."
+          "summary": "Plan v10 (superseded by v11): merged Phases 2-4 into single Phase 2 (no_gaps_prior). Blocked: no_gaps_prior is false as stated."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md",
+          "type": "plan",
+          "summary": "Plan v11: chronicle-level proof. Bypasses no_gaps_prior (false as stated). Proves succ_cofinal directly using chronicle_temporal_truth_effective faithfulness bridge + Reynolds model surgery adapted to MCS setting. 3 phases, 12 hours, ~500 new lines."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
-      "planned": "2026-05-29T22:30:00Z",
-      "session_id": "sess_1780107888_5245ee",
+      "planned": "2026-05-29T22:00:00Z",
+      "session_id": "sess_1748545200_orch202",
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 20,
+        "phases": 3,
+        "total_effort_hours": 12,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 10,
+        "plan_version": 11,
         "dependency_waves": [
-          [
-            0
-          ],
           [
             1
           ],
@@ -1295,6 +1302,11 @@
           {
             "path": "reports/12_deviation-analysis.md",
             "integrated_in_plan_version": 10,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "handoffs/phase-2-blocked-20260529.md",
+            "integrated_in_plan_version": 11,
             "integrated_date": "2026-05-29"
           }
         ]
@@ -1665,23 +1677,56 @@
     {
       "project_number": 220,
       "project_name": "anchor_coverage_expansion",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T03:17:31Z",
-      "session_id": "sess_1780110186_4e9f04",
+      "last_updated": "2026-05-30T04:44:03Z",
+      "session_id": "sess_1780115981_ccd968",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md",
           "type": "research",
           "summary": "Anchor coverage: all 42 constructors already generated but decideAuto fails on 34 temporal axioms, matchAxiom covers only 13/42, axiom_name stripped by finalize script"
+        },
+        {
+          "path": "specs/220_anchor_coverage_expansion/plans/01_anchor-coverage-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: extend matchAxiom to 42 patterns, bypass decideAuto for anchors, preserve axiom_name in finalize script, validate 126+ anchor records"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_anchor-coverage-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 221,

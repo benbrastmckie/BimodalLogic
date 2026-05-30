@@ -33,11 +33,13 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [PARTIAL] — Reynolds Hybrid Path (v8): Phase 1 complete (Theorem 5, 395 lines). Task 4.3 complete (Prior-UZ/SZ discharge). Plan v8 replaces novel TaskFrame (proven impossible) with hybrid: Phases 2-4 close no_gaps_discrete via Reynolds model surgery, Phase 5 derives succ_cofinal from one_class to close Path A (countermodel_discrete_enriched). 22 hours, 5 phases.
+202 [PLANNED] — Chronicle-level proof (v11): Phase 1 complete (Theorem 5, 395 lines). Plan v10 blocked: no_gaps_prior is mathematically false (Z+Z counterexample). Plan v11 proves succ_cofinal directly at ChronicleAsPriorModel level using chronicle_temporal_truth_effective faithfulness bridge + Reynolds model surgery adapted to MCS setting. 3 phases, 12 hours, ~500 new lines.
   - **Reports**:
     - [specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
     - [specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
-  - **Plan**: [specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md]
+    - [specs/202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
+  - **Handoff**: [specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
+  - **Plan**: [specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -191,11 +193,12 @@ technical_debt:
 
 ### 220. Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 - **Effort**: medium (1-2 weeks)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Research**: [220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md]
+- **Plan**: [220_anchor_coverage_expansion/plans/01_anchor-coverage-plan.md]
 
 **Description**: Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.
 
@@ -292,7 +295,7 @@ technical_debt:
 ---
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: 22 hours
+- **Effort**: 12 hours
 - **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: CRITICAL
@@ -304,9 +307,10 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
   - [202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
+- **Handoff**: [202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
 - **Plan**:
-  - [202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md]
-- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close no_gaps_discrete, then derive succ_cofinal from one_class to close Path A (countermodel_discrete_enriched) for sorry-free completeness_discrete. Plan v8 (hybrid path): Phase 1 complete (Theorem 5, 395 lines), Task 4.3 complete (Prior-UZ/SZ discharge). Phases 2-3 (Reynolds model surgery), Phase 4 (Theorem 14 + close no_gaps_discrete), Phase 5 (bridge one_class to succ_cofinal). ~1100 new lines.
+  - [202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
+- **Description**: Plan v11 (chronicle-level proof). Phase 1 complete (Theorem 5, 395 lines). Plan v10 blocked: no_gaps_prior is mathematically false as stated (Z+Z constant-predicate counterexample satisfies all hypotheses but has a Dedekind gap). Plan v11 bypasses no_gaps_prior entirely and proves succ_cofinal directly at ChronicleAsPriorModel level using chronicle_temporal_truth_effective as faithfulness bridge + Reynolds model surgery argument adapted to the concrete MCS setting. 3 phases: (1) deprecate no_gaps_prior + create ChronicleNoGaps.lean, (2) chronicle-level no-gaps proof, (3) close succ_cofinal + verify completeness_discrete. ~500 new lines in 1 new file.
 
 ---
 
