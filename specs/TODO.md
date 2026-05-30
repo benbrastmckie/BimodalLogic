@@ -1,5 +1,5 @@
 ---
-next_project_number: 225
+next_project_number: 226
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -142,6 +142,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 225. Archive BX pipeline to Boneyard to prevent implementation agent distraction
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.
 
 ### 224. Investigate finite insertion argument for succ_cofinal (omega-chain structural alternative to Reynolds model surgery)
 - **Effort**: medium (4-8 hours)

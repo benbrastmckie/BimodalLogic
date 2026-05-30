@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 225,
+      "project_name": "archive_bx_pipeline_boneyard",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.",
+      "created": "2026-05-30T06:33:07Z",
+      "last_updated": "2026-05-30T06:33:07Z"
+    },
+    {
       "project_number": 224,
       "project_name": "finite_insertion_succ_archimedean",
       "status": "not_started",
@@ -1187,15 +1196,15 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
-      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (chronicle_gap_contradiction) blocking sorry-free completeness_discrete. Plan v12 (Reynolds model surgery): formalizes the full model surgery argument (Lemmas 6-13) at the ChronicleAsPriorModel level in ReynoldsModelSurgery.lean. Phase 1 complete (Theorem 5 + infrastructure). Phase 2: Reynolds Lemmas 6-13 (~600 lines). Phase 3: close chronicle_gap_contradiction + verify. 14 hours.",
+      "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry blocking sorry-free completeness_discrete. Plan v13 pivots from BX pipeline (no_gaps_faithful -- FALSE) to Reynolds pipeline: prove no_gaps_discrete in GoodStructures.lean via model surgery at OrderedMonadicStructure level, fix countermodel_discrete_reynolds packaging sorry, rewire completeness_discrete. 10 hours.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T23:30:00Z",
-      "next_artifact_number": 12,
+      "last_updated": "2026-05-30T00:00:00Z",
+      "next_artifact_number": 14,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1246,17 +1255,27 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md",
           "type": "plan",
           "summary": "Plan v12: Reynolds model surgery (Lemmas 6-13, Theorem 14) at chronicle level. New file ReynoldsModelSurgery.lean (~600 lines). Phase 1 complete, Phase 2: full model surgery, Phase 3: close chronicle_gap_contradiction + verify. 14 hours."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/reports/13_blocker-analysis-correct-path.md",
+          "type": "report",
+          "summary": "Blocker analysis: no_gaps_faithful is FALSE (Z+Z counterexample). Identifies Path B (Reynolds pipeline via no_gaps_discrete) as correct path. Model surgery operates at OrderedMonadicStructure level, not PriorModelData level."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/13_reynolds-pipeline-pivot.md",
+          "type": "plan",
+          "summary": "Plan v13: Pivots from BX pipeline (no_gaps_faithful -- FALSE) to Reynolds pipeline. Proves no_gaps_discrete via model surgery at OrderedMonadicStructure level in new GoodStructuresModelSurgery.lean (~500 lines), fixes countermodel_discrete_reynolds packaging sorry, rewires completeness_discrete. 4 phases, 10 hours."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
       "planned": "2026-05-29T22:00:00Z",
       "session_id": "sess_1748545200_orch202",
       "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 14,
+        "phases": 4,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 12,
+        "plan_version": 13,
         "dependency_waves": [
           [
             1
@@ -1265,7 +1284,8 @@
             2
           ],
           [
-            3
+            3,
+            4
           ]
         ],
         "reports_integrated": [
@@ -1328,6 +1348,16 @@
             "path": "literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
             "integrated_in_plan_version": 12,
             "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/13_blocker-analysis-correct-path.md",
+            "integrated_in_plan_version": 13,
+            "integrated_date": "2026-05-30"
+          },
+          {
+            "path": "handoffs/phase-2-blocked-counterexample-20260530.md",
+            "integrated_in_plan_version": 13,
+            "integrated_date": "2026-05-30"
           }
         ]
       }
@@ -1770,7 +1800,7 @@
       ]
     }
   ],
-  "next_project_number": 225,
+  "next_project_number": 226,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
