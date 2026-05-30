@@ -111,4 +111,45 @@ theorem no_gaps_discrete_archimedean (sig : MonadicSignature) (k : Nat)
   -- The premise is always false: all points are contemp_equiv in archimedean orders
   exact absurd (one_class_archimedean sig k M a b) h_diff_class
 
+/-! ## One-Class Implies Succ-Archimedean
+
+The converse of `one_class_archimedean`: if `one_class` holds (all points are
+contemporaneously equivalent) in a discrete linear order without endpoints,
+then the order is `IsSuccArchimedean`.
+
+**Mathematical argument** (Reynolds 1994, Theorem 14 contrapositive):
+Suppose ¬IsSuccArchimedean. Then ∃ a < b with succ^n(a) < b for all n.
+The orbit {succ^n(a) : n ∈ ℕ} is an infinite increasing sequence bounded by b.
+The subinterval [a, b] contains the orbit plus additional points beyond the limit.
+For k ≥ 2, such a "gapped" structure is NOT k-equivalent to any Z-interval:
+a depth-2 monadic sentence can detect that some succ-closed downward set of
+the interval is bounded above (has an upper bound) but has no maximum --
+this is impossible in a Z-interval (integer intervals are IsSuccArchimedean).
+Therefore the subinterval [a, b] is not good, contradicting `very_good`,
+contradicting `one_class`.
+
+**Status**: This theorem encapsulates the core content of Reynolds Theorem 14.
+The proof requires formalizing that a gapped discrete order has subintervals
+that are not k-equivalent to any Z-interval. This is the model surgery
+argument (Reynolds Lemmas 6-13). See plans/09_reynolds-hybrid-plan.md Phases 2-4.
+-/
+theorem one_class_implies_succ_archimedean (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap) :
+    @IsSuccArchimedean M.carrier inferInstance (inferInstance : SuccOrder M.carrier) := by
+  -- Use one_class to get contemp_equiv for all pairs, then derive archimedean.
+  -- The proof proceeds by contradiction:
+  -- If ¬IsSuccArchimedean, then ∃ a < b unreachable by successor.
+  -- one_class gives contemp_equiv a b, hence [a,b] is very_good, hence good.
+  -- But a gapped interval is not k-equiv to any Z-interval (Reynolds Theorem 14).
+  -- Contradiction.
+  --
+  -- BLOCKED: Requires formalizing that gapped discrete intervals are not
+  -- k-equivalent to Z-intervals. This is the core of Reynolds Theorem 14
+  -- (Lemmas 6-13 model surgery argument). See plan v9 Phases 2-4.
+  sorry
+
 end Bimodal.Metalogic.WeakCanonical
