@@ -1,12 +1,11 @@
 {
   "status": "partial",
-  "started_at": "2026-05-29T12:00:00Z",
+  "started_at": "2026-05-30T00:00:00Z",
   "requires_user_review": true,
-  "review_reason": "Phase 1 partially completed: signature fix applied, infrastructure built, but model surgery proof and h_accessible discharge still sorry'd. Critical finding: no_gaps_discrete was FALSE as stated.",
-  "blocked_phase": 1,
+  "review_reason": "Phase 1 ongoing: h_accessible closed, proof restructured, but prior_implies_archimedean_of_accessible (Reynolds Theorem 14 core) still sorry'd. Requires full model surgery (500+ lines) or a generalization of US_expressively_complete_over_prior.",
   "verification": {
     "verification_passed": false,
-    "sorry_count": 3,
+    "sorry_count": 1,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
@@ -14,35 +13,30 @@
   },
   "partial_progress": {
     "stage": "phase_1_partial",
-    "details": "Phase 1 partially completed. Signature of no_gaps_discrete fixed (added h_accessible). Infrastructure lemmas proved sorry-free. Main theorem and h_accessible discharge still sorry'd.",
+    "details": "h_accessible sorry closed (Transfer.lean). no_gaps_discrete_model_surgery restructured to be sorry-free, delegating to prior_implies_archimedean_of_accessible which has single sorry (Reynolds Theorem 14 core). Z-interval packaging sorry (Transfer.lean:1181) untouched.",
     "phases_completed": 0,
     "phases_total": 4
   },
   "artifacts": [
     {
-      "type": "source",
+      "type": "source_modified",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+      "summary": "Closed h_accessible sorry, added predFormulas_trans, cleaned warnings"
+    },
+    {
+      "type": "source_modified",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-      "summary": "New file with sorry-free helper lemmas (prior_UZ_first_transition, contemp_equiv_convex, contemp_equiv_pred_closed, class_gap_exists) and sorry'd main theorem"
+      "summary": "Restructured: extracted prior_implies_archimedean_of_accessible (sorry), made no_gaps_discrete_model_surgery sorry-free"
     },
     {
       "type": "source_modified",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
-      "summary": "Added h_accessible parameter to no_gaps_discrete and one_class"
-    },
-    {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
-      "summary": "Added h_accessible parameter to chronicle_is_good_direct"
-    },
-    {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-      "summary": "Added h_accessible proof (sorry'd) in countermodel_discrete_reynolds"
+      "summary": "Updated no_gaps_discrete sorry documentation"
     },
     {
       "type": "handoff",
-      "path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-blocked-signature-20260529.md",
-      "summary": "Detailed handoff with blocker analysis and continuation instructions"
+      "path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-continuation-20260530.md",
+      "summary": "Continuation handoff with blocker analysis and next steps"
     }
   ],
   "metadata": {
