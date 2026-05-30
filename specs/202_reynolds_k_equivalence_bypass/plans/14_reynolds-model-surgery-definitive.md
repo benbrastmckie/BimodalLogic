@@ -127,7 +127,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: h_surj Construction at Call Site [NOT STARTED]
+### Phase 1: h_surj Construction at Call Site [COMPLETED]
 
 **Goal**: Close the engineering sorry at Transfer.lean:1117 by constructing a
 surjective atomMap (enriched with fresh atoms for non-atom predicates).

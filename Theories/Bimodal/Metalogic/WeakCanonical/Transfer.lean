@@ -152,6 +152,154 @@ noncomputable def mkAtomMap (φ : Formula) :
     (mkSigFrom φ).preds → Formula :=
   fun p => p.val
 
+/-! ## Enriched Forward Atom Map (h_surj construction)
+
+The forward atom map `mkAtomMapFwd φ` maps formulas to predicates in `mkSigFrom φ`.
+It extends the natural embedding (which maps `f ∈ predFormulas` to `⟨f, _⟩`) with
+fresh atoms for non-atom predicates (bot and box subformulas), ensuring surjectivity:
+for every predicate p in the signature, there exists an atom a such that
+`mkAtomMapFwd φ (.atom a) = p`.
+
+This surjectivity (`mkAtomMapFwd_surj`) is required by `no_gaps_discrete` and
+`US_expressively_complete_over_prior` in the Reynolds pipeline.
+-/
+
+/-- Existence of a surjective forward atom map: since `Atom` is `Infinite` and
+`(mkSigFrom φ).preds` is `Fintype`, there exists a map `Formula → sig.preds`
+that is the identity on `predFormulas` and surjective via atoms. -/
+theorem exists_surjective_atomMapFwd (φ : Formula) :
+    ∃ (fwd : Formula → (mkSigFrom φ).preds),
+      (∀ f, (hf : f ∈ φ.predFormulas) →
+        fwd f = ⟨f, Finset.mem_cons.mpr (Or.inr hf)⟩) ∧
+      (∀ p : (mkSigFrom φ).preds, ∃ a : Atom, fwd (.atom a) = p) := by
+  classical
+  let sig := mkSigFrom φ
+  haveI : Nonempty sig.preds := mkSigFrom_nonempty φ
+  -- Since sig.preds is Fintype and Atom is Infinite, there exists an injection
+  -- from sig.preds to Atom. We use this to assign a canonical atom to each predicate.
+  -- For atom predicates ⟨.atom a, _⟩, the canonical atom is a.
+  -- For non-atom predicates, we pick fresh atoms not appearing in predFormulas.
+  --
+  -- Atoms that appear as predicate names in predFormulas:
+  let usedAtoms : Finset Atom := φ.predFormulas.biUnion fun f =>
+    match f with | .atom a => {a} | _ => ∅
+  -- The complement is infinite (Infinite Atom minus finite usedAtoms)
+  have h_compl_inf : (↑usedAtoms : Set Atom)ᶜ.Infinite :=
+    usedAtoms.finite_toSet.infinite_compl
+  -- Get an embedding ℕ ↪ complement
+  let emb := h_compl_inf.natEmbedding _
+  -- Index sig.preds by Fin n
+  let eqv : sig.preds ≃ Fin (Fintype.card sig.preds) := Fintype.equivFin sig.preds
+  -- freshFn: sig.preds → Atom, injective, all values ∉ usedAtoms
+  let freshFn : sig.preds → Atom := fun p => (emb (eqv p).val).val
+  have h_fresh_inj : Function.Injective freshFn := by
+    intro p q h
+    -- h : (emb (eqv p).val).val = (emb (eqv q).val).val
+    -- Need: p = q
+    -- Step 1: emb is injective on its domain, and Subtype.val is injective
+    have h1 : emb (eqv p).val = emb (eqv q).val := Subtype.ext h
+    have h2 : (eqv p).val = (eqv q).val := emb.injective h1
+    have h3 : eqv p = eqv q := Fin.ext h2
+    exact eqv.injective h3
+  have h_fresh_not_used : ∀ p, freshFn p ∉ usedAtoms := fun p =>
+    (emb (eqv p).val).property
+  -- If p.val = .atom a then a ∈ usedAtoms
+  have h_atom_in_used : ∀ p : sig.preds, ∀ a : Atom,
+      p.val = .atom a → a ∈ usedAtoms := by
+    intro p a ha
+    have := p.property
+    simp only [sig, mkSigFrom, Finset.mem_cons] at this
+    rcases this with h_eq | h_mem
+    · rw [ha] at h_eq; cases h_eq
+    · exact Finset.mem_biUnion.mpr ⟨.atom a, ha ▸ h_mem, Finset.mem_singleton.mpr rfl⟩
+  -- g : sig.preds → Atom
+  -- For atom predicates: return the atom name (identity).
+  -- For non-atom predicates: return freshFn p.
+  -- We define g using Classical.choice on whether the predicate is an atom.
+  let g : sig.preds → Atom := fun p =>
+    if h : ∃ a : Atom, p.val = .atom a then h.choose else freshFn p
+  have hg_atom : ∀ p a, p.val = .atom a → g p = a := by
+    intro p a ha
+    simp only [g, show (∃ b : Atom, p.val = .atom b) from ⟨a, ha⟩, dite_true]
+    have := (⟨a, ha⟩ : ∃ b : Atom, p.val = .atom b).choose_spec
+    exact Formula.atom_injective (this.symm.trans ha)
+  have hg_non_atom : ∀ p, (¬ ∃ a : Atom, p.val = .atom a) → g p = freshFn p := by
+    intro p h; simp only [g, h, dite_false]
+  have hg_inj : Function.Injective g := by
+    intro p q h_eq
+    by_cases hp : ∃ a, p.val = .atom a <;> by_cases hq : ∃ a, q.val = .atom a
+    · obtain ⟨ap, hap⟩ := hp; obtain ⟨aq, haq⟩ := hq
+      have h1 := hg_atom p ap hap; have h2 := hg_atom q aq haq
+      rw [h1, h2] at h_eq
+      exact Subtype.ext (hap ▸ haq ▸ congrArg Formula.atom h_eq)
+    · obtain ⟨ap, hap⟩ := hp
+      rw [hg_atom p ap hap, hg_non_atom q hq] at h_eq
+      exact absurd (h_eq ▸ h_atom_in_used p ap hap) (h_fresh_not_used q)
+    · obtain ⟨aq, haq⟩ := hq
+      rw [hg_non_atom p hp, hg_atom q aq haq] at h_eq
+      exact absurd (h_eq ▸ h_atom_in_used q aq haq) (h_fresh_not_used p)
+    · rw [hg_non_atom p hp, hg_non_atom q hq] at h_eq
+      exact h_fresh_inj h_eq
+  have hg_fresh_pred : ∀ p, (¬ ∃ a, p.val = .atom a) →
+      Formula.atom (g p) ∉ φ.predFormulas := by
+    intro p h_non h_mem
+    rw [hg_non_atom p h_non] at h_mem
+    exact h_fresh_not_used p
+      (Finset.mem_biUnion.mpr ⟨.atom (freshFn p), h_mem, Finset.mem_singleton.mpr rfl⟩)
+  -- fwd: left-inverse of g
+  -- For f ∈ predFormulas: return ⟨f, _⟩ (section property)
+  -- For .atom a where a = g p for some p: return p
+  -- Otherwise: default
+  let fwd : Formula → sig.preds := fun f =>
+    if h : f ∈ φ.predFormulas then
+      ⟨f, Finset.mem_cons.mpr (Or.inr h)⟩
+    else
+      match f with
+      | .atom a =>
+        if h2 : ∃ p : sig.preds, g p = a then h2.choose
+        else Classical.arbitrary sig.preds
+      | _ => Classical.arbitrary sig.preds
+  refine ⟨fwd, ?_, ?_⟩
+  · -- Section property
+    intro f hf; simp only [fwd, dif_pos hf]
+  · -- Surjectivity
+    intro p; refine ⟨g p, ?_⟩
+    by_cases h_atom : ∃ a : Atom, p.val = .atom a
+    · obtain ⟨a, ha⟩ := h_atom
+      have hg_eq := hg_atom p a ha
+      have h_mem : (Formula.atom a) ∈ φ.predFormulas := by
+        have := p.property
+        simp only [sig, mkSigFrom, Finset.mem_cons] at this
+        rcases this with h_eq | h_mem
+        · rw [ha] at h_eq; cases h_eq
+        · rwa [← ha]
+      simp only [fwd, hg_eq, dif_pos h_mem]
+      exact Subtype.ext ha.symm
+    · have h_not_pred := hg_fresh_pred p h_atom
+      simp only [fwd, dif_neg h_not_pred]
+      have h_exists : ∃ q : sig.preds, g q = g p := ⟨p, rfl⟩
+      simp only [dif_pos h_exists]
+      exact hg_inj h_exists.choose_spec
+
+/-- The enriched forward atom map. -/
+noncomputable def mkAtomMapFwd (φ : Formula) : Formula → (mkSigFrom φ).preds :=
+  (exists_surjective_atomMapFwd φ).choose
+
+/-- mkAtomMapFwd agrees with the natural embedding on predFormulas. -/
+theorem mkAtomMapFwd_on_predFormulas (φ : Formula) (f : Formula) (hf : f ∈ φ.predFormulas) :
+    mkAtomMapFwd φ f = ⟨f, Finset.mem_cons.mpr (Or.inr hf)⟩ :=
+  (exists_surjective_atomMapFwd φ).choose_spec.1 f hf
+
+/-- The section property: mkAtomMap ∘ mkAtomMapFwd = id on predFormulas. -/
+theorem mkAtomMapFwd_section (φ : Formula) (f : Formula) (hf : f ∈ φ.predFormulas) :
+    (mkAtomMap φ) (mkAtomMapFwd φ f) = f := by
+  simp only [mkAtomMap, mkAtomMapFwd_on_predFormulas φ f hf]
+
+/-- Surjectivity: every predicate in the signature is hit by some atom. -/
+theorem mkAtomMapFwd_surj (φ : Formula) :
+    ∀ p : (mkSigFrom φ).preds, ∃ a : Atom, mkAtomMapFwd φ (.atom a) = p :=
+  (exists_surjective_atomMapFwd φ).choose_spec.2
+
 /-! ## k-Equivalence Preserves Sentences (Corollary of Doets Lemma 1.1) -/
 
 /--
@@ -1079,42 +1227,20 @@ theorem countermodel_discrete_reynolds
   -- Step 2: Build signature and atom maps
   let sig := mkSigFrom φ
   let atomMap_rev := mkAtomMap φ  -- sig.preds → Formula (reverse: predicate to formula)
-  -- Forward map: Formula → sig.preds (requires formula to be in predFormulas)
-  -- For the Reynolds pipeline, we need atomMap_fwd : Formula → sig.preds
-  -- such that atomMap_rev (atomMap_fwd f) = f for all f ∈ φ.predFormulas.
-  -- Since sig.preds = {Formula.bot} ∪ φ.predFormulas and atomMap_rev is Subtype.val,
-  -- atomMap_fwd maps each formula to its corresponding predicate symbol.
-  -- For formulas NOT in φ.predFormulas, we map to the dummy bot predicate.
+  -- Forward map: Formula → sig.preds, enriched with fresh atoms for non-atom predicates.
+  -- sig.preds = Finset.cons bot φ.predFormulas contains atoms, box-formulas, and bot.
+  -- We use mkAtomMapFwd which assigns fresh atoms to non-atom predicates.
   haveI : Nonempty sig.preds := mkSigFrom_nonempty φ
   let defaultPred : sig.preds := Classical.arbitrary sig.preds
-  let atomMap_fwd : Formula → sig.preds := fun f =>
-    if h : f ∈ φ.predFormulas then
-      ⟨f, Finset.mem_cons.mpr (Or.inr h)⟩
-    else
-      defaultPred
+  let atomMap_fwd : Formula → sig.preds := mkAtomMapFwd φ
   -- Step 3: Build the monadic structure from the chronicle
   let M_struct := chronicleAsMonadicStructure CM sig atomMap_rev
   -- Step 4: Prove chronicle is good via one_class path
   have h_UZ := chronicle_semantic_prior_UZ CM sig atomMap_rev atomMap_fwd
   have h_SZ := chronicle_semantic_prior_SZ CM sig atomMap_rev atomMap_fwd
   -- Step 4a: Prove h_surj (atom-level surjectivity) for the Reynolds pipeline.
-  -- no_gaps_discrete requires h_surj : ∀ p, ∃ a, atomMap_fwd (.atom a) = p.
-  -- The current atomMap_fwd maps .atom a ∈ predFormulas to ⟨.atom a, _⟩.
-  -- For non-atom predicates (bot, .box ψ), the current atomMap_fwd maps to defaultPred,
-  -- so h_surj fails for non-atom predicates.
-  --
-  -- FIX NEEDED: Enrich atomMap_fwd with fresh atoms for non-atom predicates.
-  -- Construction: use Atom.fresh_for to pick distinct atoms for each non-atom predicate,
-  -- then extend atomMap_fwd to map these fresh atoms to the corresponding predicates.
-  -- Since Atom is Infinite and sig.preds is Fintype, this is always possible.
-  -- chronicle_semantic_prior_UZ/SZ work for ANY atomMap_fwd, so Prior-UZ/SZ are preserved.
-  -- The section property (atomMap_rev ∘ atomMap_fwd = id on predFormulas) is also preserved
-  -- since fresh atoms are NOT in predFormulas.
-  --
-  -- This is an engineering task (~50 lines) that does not affect any mathematical content.
-  -- Pending implementation.
-  have h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap_fwd (.atom a) = p := by
-    sorry -- Engineering: enrich atomMap_fwd with fresh atoms for non-atom predicates
+  have h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap_fwd (.atom a) = p :=
+    mkAtomMapFwd_surj φ
   have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
     (operator_depth φ + 2) h_surj h_UZ h_SZ
   -- Step 5: Extract Z-interval witness and k-equivalence
@@ -1130,7 +1256,8 @@ theorem countermodel_discrete_reynolds
     -- φ.neg.predFormulas = φ.predFormulas (neg doesn't add new predFormulas)
     simp only [Formula.neg, Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf | hf
-    · simp only [atomMap_fwd, dif_pos hf]; rfl
+    · -- f ∈ φ.predFormulas
+      exact mkAtomMapFwd_section φ f hf
     · exact absurd hf (Finset.notMem_empty _)
   have h_neg_root : φ.neg ∈ CM.fmcs CM.root_point := by
     rw [CM.root_point_mcs]; exact h_neg_in
