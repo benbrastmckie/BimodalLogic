@@ -1,38 +1,29 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 BLOCKED: gap_contradicts_prior and gap_contradicts_prior_below require full Reynolds model surgery (Lemmas 6-13). All alternative approaches exhaustively analyzed and confirmed to fail. prior_SZ_last_transition added sorry-free. Model surgery requires constructing new OrderedMonadicStructure with gap excised (400-600 lines, 13 truth-preservation subcases).",
+  "status": "partial",
+  "summary": "Phase 2 reduced from 4 sorry sites to 1: reynolds_model_surgery_core (GoodStructuresModelSurgery.lean:512). gap_contradicts_prior and gap_contradicts_prior_below are now sorry-free, both delegating to the single core lemma. Removed unused surgeryModel/surgery_truth_preservation infrastructure.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "Phase 2 BLOCKER: gap_contradicts_prior requires full Reynolds model surgery -- constructing OrderedMonadicStructure on Q_minus union I union Q_plus domain, proving SuccOrder/PredOrder/NoMaxOrder/NoMinOrder, and proving temporal truth preservation for 6 formula constructors (13 subcases for U/S). Estimated 400-600 lines.",
-    "Phase 2 BLOCKER: gap_contradicts_prior_below requires symmetric model surgery or Order.dual reduction. Estimated 50-600 lines.",
-    "CRITICAL FINDING: Enriched-signature approach FAILS because Prior-UZ does NOT hold for enriched structure (class membership predicate has gap-type transitions violating first-occurrence property). Direct predicate argument FAILS in Case B (report 15). ALL shortcuts fail -- model surgery is mathematically necessary."
+    "Phase 2: reynolds_model_surgery_core (line 512) requires the full Reynolds model surgery argument (Lemmas 6-13). Statement: given h_surj + Prior-UZ/SZ + succ-closed class, prove ALL points are contemp_equiv. This is ~400 lines implementing surgery domain construction, temporal truth preservation for U/S (13 subcases), and contradiction derivation."
   ],
   "continuation_context": {
     "last_phase_completed": 1,
     "next_phase": 2,
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530e.md",
     "sorry_sites_remaining": [
-      "gap_contradicts_prior at GoodStructuresModelSurgery.lean:397 (Phase 2 -- Reynolds upward model surgery)",
-      "gap_contradicts_prior_below at GoodStructuresModelSurgery.lean:436 (Phase 2 -- Reynolds downward model surgery)",
-      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 -- trivial wiring, depends on Phase 2)",
-      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4 -- TaskFrame construction)",
-      "completeness_discrete rewiring in Completeness.lean (Phase 5 -- depends on Phase 4)"
+      "reynolds_model_surgery_core at GoodStructuresModelSurgery.lean:512 (Phase 2 core — Reynolds Lemmas 6-13)",
+      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 — trivial wiring, depends on Phase 2)",
+      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4)",
+      "completeness_discrete rewiring in Completeness.lean (Phase 5)"
     ],
-    "new_infrastructure": [
-      "prior_SZ_last_transition: sorry-free, symmetric to prior_UZ_first_transition for past direction"
+    "progress_this_cycle": [
+      "Reduced 4 sorry sites to 1 by factoring gap_contradicts_prior and gap_contradicts_prior_below",
+      "Both gap theorems now sorry-free, delegating to reynolds_model_surgery_core",
+      "Removed unused surgeryModel and surgery_truth_preservation (replaced by cleaner factoring)",
+      "reynolds_model_surgery_core has clean signature: proves all y contemp_equiv a y from h_surj + Prior-UZ/SZ + h_succ_closed"
     ],
-    "model_surgery_design": {
-      "domain": "Q_minus union I union Q_plus where Q0 = maximal bad interval containing gap, I = one ~M-class in Q0",
-      "order": "inherited from M (subtype order on Q_minus union I union Q_plus)",
-      "predicates": "inherited from M (restriction to surgery domain)",
-      "truth_preservation": "by induction on formula structure, 13 subcases for U and S based on position of witness relative to Q_minus/I/Q_plus",
-      "contradiction": "R (temporal formula detecting class membership) holds in I in surgery model, but class extends past former gap location in surgery model"
-    }
+    "commit": "fa056c576"
   },
   "artifacts": [
-    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530e.md", "type": "handoff"},
-    {"path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md", "type": "plan"},
     {"path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean", "type": "implementation"}
   ]
 }

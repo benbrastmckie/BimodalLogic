@@ -1246,7 +1246,7 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
