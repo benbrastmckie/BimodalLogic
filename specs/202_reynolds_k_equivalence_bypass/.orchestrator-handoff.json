@@ -1,19 +1,20 @@
 {
-  "status": "partial",
-  "summary": "Phase 0 (dead code cleanup) completed. Added bridge theorem one_class_implies_succ_archimedean (sorry). Phases 2-5 require Reynolds Theorem 14 formalization (~1000 lines of model surgery) which exceeds single-session capacity.",
-  "phases_completed": 1,
-  "phases_total": 5,
+  "status": "blocked",
+  "summary": "Phase 2 blocked: deep mathematical analysis revealed that no_gaps_prior (ReynoldsNoGaps.lean:292) is mathematically incorrect as stated -- a constant-predicate Z+Z structure satisfies all hypotheses but has a gap. Three alternative paths identified for plan revision.",
+  "phases_completed": 2,
+  "phases_total": 4,
   "blockers": [
-    "Reynolds Theorem 14 formalization (Lemmas 6-13, model surgery): ~1000 lines of new Lean code required to prove no_gaps_discrete and one_class_implies_succ_archimedean. This is the sole remaining mathematical obstacle to sorry-free completeness_discrete."
+    "no_gaps_prior theorem is false as stated: lacks a 'faithfulness' hypothesis linking temporal_truth to predicate interpretation. Constant-predicate Z+Z counterexample disproves it.",
+    "Direct proof of succ_cofinal via succ_reaches_dom_N has two sorry'd boundary cases (ChronicleToCountermodel.lean:1285,1441) where succ(max_N_sub) enters limit_dom at an arbitrarily later stage.",
+    "Previous convergence approach (329 lines, archived in Boneyard/) also failed at the same gap."
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260529c.md",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md",
     "next_phase": 2
   },
-  "next_action_hint": "continue",
+  "next_action_hint": "revise",
   "artifacts": [
-    "Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean",
-    "Boneyard/DeadConvergenceProof/limit_dom_succ_iterates.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260529c.md"
+    "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md"
   ]
 }
