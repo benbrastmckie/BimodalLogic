@@ -1,20 +1,22 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 blocked: deep mathematical analysis revealed that no_gaps_prior (ReynoldsNoGaps.lean:292) is mathematically incorrect as stated -- a constant-predicate Z+Z structure satisfies all hypotheses but has a gap. Three alternative paths identified for plan revision.",
-  "phases_completed": 2,
-  "phases_total": 4,
+  "status": "partial",
+  "summary": "Phase 1 completed (deprecation + infrastructure), Phase 2 blocked on core model-theoretic argument requiring Reynolds model surgery or omega-chain analysis to prove chronicle_gap_contradiction",
+  "phases_completed": 1,
+  "phases_total": 3,
   "blockers": [
-    "no_gaps_prior theorem is false as stated: lacks a 'faithfulness' hypothesis linking temporal_truth to predicate interpretation. Constant-predicate Z+Z counterexample disproves it.",
-    "Direct proof of succ_cofinal via succ_reaches_dom_N has two sorry'd boundary cases (ChronicleToCountermodel.lean:1285,1441) where succ(max_N_sub) enters limit_dom at an arbitrarily later stage.",
-    "Previous convergence approach (329 lines, archived in Boneyard/) also failed at the same gap."
+    "chronicle_gap_contradiction sorry requires proving that the chronicle omega-chain construction never produces Dedekind gaps. The abstract MCS axioms (Prior-UZ, Prior-SZ, C4, C5, Z1) are provably insufficient -- the Z+Z counterexample with constant predicates satisfies all axioms but has a gap. The proof needs Reynolds Lemmas 6-13 (model surgery, ~400-600 lines) or direct omega-chain structural analysis (~200-400 lines)."
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260529T230000Z.md",
     "next_phase": 2
   },
   "next_action_hint": "revise",
   "artifacts": [
-    "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/ChronicleNoGaps.lean",
+    "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean",
+    "specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260529T230000Z.md"
   ]
 }
