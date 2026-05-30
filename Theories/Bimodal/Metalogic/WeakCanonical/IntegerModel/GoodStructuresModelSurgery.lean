@@ -347,50 +347,176 @@ The core argument (Reynolds 1994 Lemmas 6-13, Theorem 14):
 Given: class(a) succ-closed, bounded above, Prior-UZ/SZ, h_surj.
 Goal: False.
 
-**Proof outline**:
+**Proof structure**:
 
-1. The class of a is succ-closed, pred-closed, convex, and bounded above.
-   A gap exists above the class (class_gap_exists).
+1. The class of a is succ-closed and bounded above. By class_gap_exists,
+   the order is not IsSuccArchimedean.
 
-2. For EVERY temporal formula ψ, Prior-UZ ensures that if ψ transitions
-   (changes truth value going upward), the transition occurs at a
-   successor pair. Symmetrically via Prior-SZ for downward transitions.
+2. Define the surgery model N: an OrderedMonadicStructure on a subtype
+   of M.carrier that removes multi-class gap regions and keeps only a
+   single representative class.
 
-3. At any successor pair (c, succ(c)), we have c ~M succ(c) by
-   no_boundary_at_successor. So both c and succ(c) are in the SAME
-   contemp_equiv class. Therefore, class membership does not change
-   at successor pairs.
+3. Prove temporal truth preservation between M and N for all formulas.
 
-4. Now consider temporal truth restricted to the class.
-   The class is an archimedean sub-order (closed under succ/pred).
-   By very_good_of_archimedean, the class is very_good as a sub-structure.
-   So all subintervals within the class are good.
+4. Show the surgery model IS IsSuccArchimedean (the gap is removed).
+   Then one_class_archimedean gives contemp_equiv across the former gap
+   in N, which transfers back to M via truth preservation, contradiction.
 
-5. The complement above the gap is also archimedean and very_good.
-   Subintervals within the complement are good.
+## Approach: k-type periodicity across the gap
 
-6. The ONLY non-good subintervals are those spanning the gap.
-   For such intervals [x, z] (x in class, z above gap), the k-type
-   differs from all Z-interval k-types.
+Rather than the full model surgery (constructing N explicitly), we use
+a more direct argument via k-type periodicity:
 
-7. By table_correctness, temporal_truth at a point t is determined by
-   eval M (fun _ => t) (table sig atomMap ψ). By US_expressively_complete_over_prior,
-   every MonadicFormula sig 1 has a temporal equivalent.
+1. The gap's cut is {x | ∃ n, x ≤ succ^[n](a)} — closed under successor.
+2. For each predicate p, h_surj gives a temporal representative.
+   Prior-UZ ensures transitions only at successor pairs.
+3. Since the cut is succ-closed, predecessor transitions within the cut
+   follow the same periodic pattern. The complement is an upper set.
+4. The key lemma (predicate_stable_across_gap): for each predicate p,
+   if we look at succ^[n](a) for large enough n, M.interp p eventually
+   agrees with M.interp p at points just above the gap.
+5. Since sig.preds is Fintype, all predicates simultaneously stabilize.
+   This gives k-type agreement across the gap, which combined with
+   ordered-sum decomposition (doets_lemma_1_4) yields contemp_equiv.
 
-8. (Reynolds Model Surgery) Construct a new ordered structure N by
-   replacing the gap region with a single class. Show temporal truth
-   is preserved for all formulas (13 subcases for U/S). In N, the
-   class of a extends past the former gap location. This contradicts
-   the formula R (temporal equivalent of class membership) which should
-   transition at the gap but doesn't in N.
+## Actual formalization approach
 
-For the formalization, we use a more direct approach: we show that
-the temporal agreement of all formulas across the gap (forced by
-Prior-UZ/SZ ensuring transitions only at successor pairs) combined
-with h_surj (ensuring all predicates have temporal representatives)
-implies the classes on both sides of the gap have identical k-types,
-making the gap undetectable and forcing contemp_equiv across it.
+We avoid the model surgery by showing that gap existence combined with
+Prior-UZ/SZ and h_surj directly implies IsSuccArchimedean for the
+_substructure_ relevant to contemp_equiv computation. The key is that
+h_surj makes ALL predicates temporally definable, so Prior-UZ/SZ
+constrains ALL predicates (not just atoms), which is strong enough
+to force archimedeanity when combined with gap structure.
+
+The proof works by contradiction within the no_gaps_discrete_model_surgery
+framework: assume no successor boundary → class is succ-closed → if
+bounded above, gap exists → [derive contradiction using Reynolds surgery].
+
+## Helper lemmas
+
+- `cut_succ_closed`: The gap's cut from gap_of_not_succ_archimedean is
+  closed under successor.
+- `complement_pred_closed`: The complement is closed under predecessor.
+- `predicate_no_gap_transition`: No predicate can transition across the gap.
+- `all_formulas_stable_across_gap`: Via table_correctness, no temporal
+  formula transitions across the gap.
+- `gap_cross_contemp_equiv`: Points on both sides of the gap are contemp_equiv.
+
+See Reynolds 1994, Section 7, Lemmas 6-13, Theorem 14.
 -/
+
+/-! ### Gap structural lemmas -/
+
+/-- In a discrete order without max, a downward-closed set with no supremum
+    in the set is closed under successor. -/
+theorem cut_succ_closed {T : Type} [LinearOrder T] [SuccOrder T] [NoMaxOrder T]
+    (S : Set T) (h_down : ∀ x y, x ∈ S → y ≤ x → y ∈ S)
+    (h_no_sup : ¬∃ s, IsLUB S s ∧ s ∈ S) (x : T) (hx : x ∈ S) :
+    Order.succ x ∈ S := by
+  by_contra h_not
+  have h_ub : ∀ z ∈ S, z ≤ x := by
+    intro z hz
+    by_contra h_gt
+    push_neg at h_gt
+    have h_succ_le : Order.succ x ≤ z := Order.succ_le_of_lt h_gt
+    exact h_not (h_down z (Order.succ x) hz h_succ_le)
+  exact h_no_sup ⟨x, ⟨fun z hz => h_ub z hz, fun u hu => hu hx⟩, hx⟩
+
+/-- The complement of a gap's cut is closed under successor (upward-closed). -/
+theorem complement_upward_closed {T : Type} [LinearOrder T]
+    (S : Set T) (h_down : ∀ x y, x ∈ S → y ≤ x → y ∈ S)
+    (x : T) (hx : x ∉ S) (y : T) (hxy : x ≤ y) : y ∉ S := by
+  intro hy
+  exact hx (h_down y x hy hxy)
+
+/-- The complement of a gap's cut is closed under predecessor (in discrete
+    order with no max, if the cut has no sup in the cut). -/
+theorem complement_pred_closed {T : Type} [LinearOrder T]
+    [SuccOrder T] [PredOrder T] [NoMaxOrder T]
+    (S : Set T) (h_down : ∀ x y, x ∈ S → y ≤ x → y ∈ S)
+    (h_no_sup : ¬∃ s, IsLUB S s ∧ s ∈ S)
+    (h_no_min : ¬∃ m, m ∉ S ∧ ∀ y, y ∉ S → m ≤ y)
+    (x : T) (hx : x ∉ S) : Order.pred x ∉ S := by
+  intro h_pred_in
+  have h_succ_in := cut_succ_closed S h_down h_no_sup (Order.pred x) h_pred_in
+  by_cases h_min : IsMin x
+  · have : Order.pred x = x := le_antisymm (Order.pred_le x) (h_min (Order.pred_le x))
+    rw [this] at h_pred_in; exact hx h_pred_in
+  · rw [Order.succ_pred_of_not_isMin h_min] at h_succ_in
+    exact hx h_succ_in
+
+/-! ### Reynolds Model Surgery: Surgery Model Construction
+
+The surgery model replaces the multi-class gap region with a single class,
+creating an archimedean structure where temporal truth is preserved.
+
+For the formal proof, we construct the surgery model as a restriction of M
+to the surgery domain: Q₋ ∪ I ∪ Q₊, where Q₋ is below the gap region,
+I is one contemp_equiv class within it, and Q₊ is above.
+-/
+
+/-- The surgery model: restriction of M to a subset of the carrier.
+    Inherits linear order and predicate interpretation from M. -/
+noncomputable def surgeryModel {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (D : Set M.carrier) :
+    OrderedMonadicStructure sig where
+  carrier := D
+  interp p x := M.interp p x.val
+  carrier_order := inferInstance
+
+/-- Surgery model truth preservation for temporal formulas.
+    This is the core Reynolds lemma (Lemmas 6-13): temporal truth at
+    any point in the surgery domain is the same in M and in N.
+
+    The proof requires showing that U(A,B) and S(A,B) witnesses in M
+    that fall in the excised region (Q₀ \ I) can be replaced by
+    equivalent witnesses in I (via class homogeneity and formula
+    propagation in bad intervals).
+
+    SORRY: This is the mathematical core of Reynolds' model surgery.
+    It requires ~300 lines for the 13 U/S subcases plus formula
+    propagation lemmas. -/
+theorem surgery_truth_preservation {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (D : Set M.carrier)
+    (h_convex : ∀ x y z : M.carrier, x ∈ D → z ∈ D → x ≤ y → y ≤ z → y ∈ D)
+    (h_no_max : ∀ x : M.carrier, x ∈ D → ∃ y : M.carrier, y ∈ D ∧ x < y)
+    (h_no_min : ∀ x : M.carrier, x ∈ D → ∃ y : M.carrier, y ∈ D ∧ y < x)
+    (h_succ_closed : ∀ x : M.carrier, x ∈ D → Order.succ x ∈ D)
+    (h_pred_closed : ∀ x : M.carrier, x ∈ D → Order.pred x ∈ D)
+    (t : D) (ψ : Formula) :
+    temporal_truth (surgeryModel M D) atomMap t ψ ↔
+    temporal_truth M atomMap t.val ψ := by
+  induction ψ generalizing t with
+  | atom a => simp [temporal_truth, surgeryModel]
+  | bot => simp [temporal_truth]
+  | imp φ ψ ih_φ ih_ψ =>
+    simp only [temporal_truth]
+    exact Iff.intro
+      (fun h hφ => (ih_ψ t).mp (h ((ih_φ t).mpr hφ)))
+      (fun h hφ => (ih_ψ t).mpr (h ((ih_φ t).mp hφ)))
+  | box φ => simp [temporal_truth, surgeryModel]
+  | untl φ ψ ih_φ ih_ψ =>
+    -- U(φ,ψ) at t: ∃ s > t, φ at s ∧ ψ between t and s
+    -- Forward (N → M): witness s ∈ D, so s.val works in M.
+    --   Guard points between t.val and s.val that are in D satisfy ψ by IH.
+    --   Points between t.val and s.val NOT in D: need formula propagation.
+    -- Backward (M → N): witness s in M may not be in D.
+    --   Need to find replacement witness in D (class homogeneity).
+    -- Both directions require Reynolds Lemmas 9-11 (formula propagation).
+    exact sorry
+  | snce φ ψ ih_φ ih_ψ =>
+    -- S(φ,ψ) at t: symmetric to U with < instead of >.
+    -- Same structure as untl case, mirrored.
+    exact sorry
+
+/-! ### Main gap contradiction theorems -/
 
 /-- **Reynolds Theorem 14 (upward)**: succ-closed class bounded above
     contradicts Prior-UZ/SZ + h_surj (Reynolds 1994 Lemmas 6-13). -/
@@ -408,27 +534,20 @@ theorem gap_contradicts_prior (sig : MonadicSignature) (k : Nat)
     (h_bounded_above : ∃ y : M.carrier, a < y ∧ ¬ contemp_equiv sig k M a y) :
     False := by
   obtain ⟨y, hay, h_not_equiv_y⟩ := h_bounded_above
-  -- Step 1: For each predicate p, obtain its temporal representative via h_surj.
-  -- The atom `.atom (h_surj p).choose` maps to p under atomMap.
-  -- So temporal_truth M atomMap t (.atom (h_surj p).choose) = M.interp p t.
-  -- This means M.interp p has the first-transition property (via Prior-UZ).
+  -- The class of a is succ-closed and bounded above, so a gap exists.
+  -- The gap's cut = {x | ∃ n, x ≤ succ^[n](a)}.
+  -- The class of a ⊇ cut (by contemp_equiv_succ_iterate + convexity).
+  -- But class(a) ⊂ M.carrier (since ¬(a ~M y)).
+  -- We derive contradiction by showing class(a) must include y.
   --
-  -- Step 2: For each predicate p, M.interp p must be "stable" across the gap.
-  -- If M.interp p c ≠ M.interp p d for c just below and d just above the gap,
-  -- then the formula .atom (h_surj p).choose transitions between c and d.
-  -- By Prior-UZ, it transitions at a successor pair (c', succ(c')).
-  -- This successor pair is somewhere between c and d.
-  -- Since the gap has no successor pair spanning it, the transition is either
-  -- within the class or within the complement. In either case, the transition
-  -- occurs at a point where c' ~M succ(c') (no_boundary_at_successor).
+  -- Key structural fact: the gap's cut is closed under succ (cut_succ_closed).
+  -- For each predicate p, h_surj gives an atom whose temporal truth = M.interp p.
+  -- Prior-UZ ensures transitions at successor pairs. Since the cut is succ-closed,
+  -- no predicate transition spans the gap.
   --
-  -- Step 3: Show that predicate stability across the gap, combined with the
-  -- very_good property of the class and complement, forces the gap interval
-  -- to be good (k-equiv to a Z-interval), contradicting non-contemp_equiv.
-  --
-  -- This is the content of Reynolds Lemmas 7-13 (model surgery).
-  -- The full model surgery constructs a new ordered structure by excising
-  -- the gap region and proves temporal truth preservation.
+  -- Reynolds Lemmas 6-13 (model surgery) show that this predicate stability,
+  -- combined with the class structure, forces contemp_equiv across the gap.
+  -- The formal proof uses surgery_truth_preservation.
   sorry
 
 /-- **Reynolds Theorem 14 (downward)**: succ-closed class unbounded above but
@@ -447,17 +566,10 @@ theorem gap_contradicts_prior_below (sig : MonadicSignature) (k : Nat)
     (h_unbounded_above : ∀ y : M.carrier, a < y → contemp_equiv sig k M a y)
     (h_bounded_below : ∃ y : M.carrier, y < a ∧ ¬ contemp_equiv sig k M a y) :
     False := by
-  -- Symmetric to gap_contradicts_prior using Prior-SZ for the downward direction.
-  -- The class is unbounded above and bounded below, so the gap is below the class.
-  -- The argument mirrors the upward case with the roles of U and S swapped.
   obtain ⟨y, hya, h_not_equiv_y⟩ := h_bounded_below
-  -- The class is pred-closed (contemp_equiv_pred_closed) and succ-closed.
-  -- The class extends infinitely upward (h_unbounded_above) and downward via
-  -- pred-closure, but is bounded below.
-  -- The gap is below the class: the class has no minimum (pred-closure pushes
-  -- it down), but there exist points below all class members.
-  -- The argument uses Prior-SZ to show every temporal formula transition below
-  -- the class must occur at a predecessor pair, but the gap prevents this.
+  -- Symmetric to gap_contradicts_prior. The class extends infinitely upward
+  -- (h_unbounded_above) but is bounded below. The gap is below the class.
+  -- The argument uses Prior-SZ for the downward direction.
   sorry
 
 /-! ## Main Theorem -/
