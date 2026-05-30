@@ -1524,31 +1524,90 @@
     {
       "project_number": 217,
       "project_name": "complexity_tier_extension_c9_c11",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity <= 9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity <= 11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-29T23:18:44Z"
+      "last_updated": "2026-05-30T03:11:28Z",
+      "session_id": "sess_1780110186_4e9f04",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/217_complexity_tier_extension_c9_c11/reports/01_complexity-tier-research.md",
+          "type": "research",
+          "summary": "Complexity tier analysis: c9 feasible (~1.8M records), c11 requires stratified sampling (~66M projected), 14-field schema needs max_modal_depth/max_temporal_depth promotion"
+        }
+      ]
     },
     {
       "project_number": 218,
       "project_name": "croissant_metadata_hf_leaderboard",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "Finalize Croissant metadata (data/croissant.json skeleton exists) and update HuggingFace infrastructure. (a) Validate croissant.json against MLCommons 1.0 Python tooling, fix any schema issues, ensure all 4 JSONL distributions listed with correct field descriptions. (b) Update HF README task_categories to [\"text-generation\", \"other\"] with task_ids: [\"formal-provability-classification\"]. (c) Optional: Gradio Space for interactive formula classification demo and leaderboard submission endpoint. Acceptance: croissant.json valid per MLCommons tooling, field descriptions match actual schema, HF README updated.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-29T23:18:44Z"
+      "last_updated": "2026-05-30T03:10:27Z",
+      "session_id": "sess_1780110186_4e9f04",
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "MLCommons Croissant 1.0 schema requires dct:conformsTo (Dublin Core Terms namespace) NOT cr:conformsTo. The @context must include explicit term mappings for Croissant-specific terms. mlcroissant v1.1.0 (pip install mlcroissant, requires Python >= 3.10) is the validation tool.",
+          "category": "PATTERN",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.92,
+          "suggested_keywords": [
+            "croissant",
+            "mlcommons",
+            "dct:conformsTo",
+            "json-ld",
+            "dataset-metadata",
+            "mlcroissant"
+          ]
+        },
+        {
+          "content": "HuggingFace task_categories: other is a valid official category. Custom task_ids accepted under other. Adding mlcroissant to tags enables the widget on the HF dataset page.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.88,
+          "suggested_keywords": [
+            "huggingface",
+            "task_categories",
+            "task_ids",
+            "dataset-card",
+            "mlcroissant-tag"
+          ]
+        },
+        {
+          "content": "HuggingFace custom leaderboard architecture: 4 components - public leaderboard Space, private evaluator Space, private submissions dataset, public results dataset. Template: gradio-templates/leaderboard.",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "huggingface",
+            "leaderboard",
+            "gradio-space",
+            "benchmark-evaluation"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "type": "research",
+          "summary": "Croissant metadata analysis: found critical conformsTo namespace bug, incomplete @context, 2 missing benchmark fields, URL mismatch, license mismatch; HF leaderboard architecture documented"
+        }
+      ]
     },
     {
       "project_number": 219,
       "project_name": "llm_baseline_difficulty_calibration",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from R1).",
       "priority": "medium",
@@ -1557,31 +1616,93 @@
         216
       ],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-29T23:18:44Z"
+      "last_updated": "2026-05-30T03:10:58Z",
+      "session_id": "sess_1780110186_4e9f04",
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "bmlogic-bench label distribution: easy tier is 94% invalid (not 50/50). Always-predict-invalid random baseline is 53.2% overall, not 50%. Benchmark has 727 records: easy=50, medium=300, hard=262, very_hard=115.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "bmlogic-bench",
+            "label-distribution",
+            "random-baseline"
+          ]
+        },
+        {
+          "content": "Python environment: openai==2.31.0 installed, OPENAI_API_KEY set. anthropic package NOT in nix store. Ollama not running. torch==2.11.0 available.",
+          "category": "CONFIG",
+          "source_artifact": "specs/219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md",
+          "confidence": 0.92,
+          "suggested_keywords": [
+            "python-environment",
+            "openai-sdk",
+            "anthropic-api"
+          ]
+        },
+        {
+          "content": "LLM provability eval: use 4 prompt modes (direct/CoT x symbolic/NL). Parse output by extracting last occurrence of valid/invalid. Expect frontier models 50-65% on complex tiers, CoT provides 5-15% improvement.",
+          "category": "TECHNIQUE",
+          "source_artifact": "specs/219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "llm-evaluation",
+            "prompt-design",
+            "chain-of-thought"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "specs/219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md",
+          "type": "research",
+          "summary": "LLM baseline calibration: 727-record benchmark, random baseline 53.2%, 4 prompt modes, custom eval script recommended, openai SDK available"
+        }
+      ]
     },
     {
       "project_number": 220,
       "project_name": "anchor_coverage_expansion",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-29T23:18:44Z"
+      "last_updated": "2026-05-30T03:17:31Z",
+      "session_id": "sess_1780110186_4e9f04",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md",
+          "type": "research",
+          "summary": "Anchor coverage: all 42 constructors already generated but decideAuto fails on 34 temporal axioms, matchAxiom covers only 13/42, axiom_name stripped by finalize script"
+        }
+      ]
     },
     {
       "project_number": 221,
       "project_name": "proof_step_dataset_expansion",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.",
       "priority": "low",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-29T23:18:44Z"
+      "last_updated": "2026-05-30T03:11:51Z",
+      "session_id": "sess_1780110186_4e9f04",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/221_proof_step_dataset_expansion/reports/01_proof-step-research.md",
+          "type": "research",
+          "summary": "Proof step expansion: 36 theorems/2424 steps, 0.8% temporal rules, computability constraint blocks noncomputable theorems, 3 expansion strategies identified, 200+ feasible"
+        }
+      ]
     }
   ],
   "next_project_number": 224,

@@ -179,10 +179,11 @@ technical_debt:
 
 ### 221. Proof step dataset expansion (36 → 200+ theorems)
 - **Effort**: large (2-3 weeks)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: low
 - **Topic**: dataset-enhancement
+- **Research**: [221_proof_step_dataset_expansion/reports/01_proof-step-research.md]
 
 **Description**: Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.
 
@@ -190,10 +191,11 @@ technical_debt:
 
 ### 220. Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 - **Effort**: medium (1-2 weeks)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
+- **Research**: [220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md]
 
 **Description**: Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.
 
@@ -201,11 +203,12 @@ technical_debt:
 
 ### 219. LLM baseline difficulty calibration
 - **Effort**: medium (3-5 days)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: 216
+- **Research**: [219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md]
 
 **Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from task 216).
 
@@ -213,10 +216,11 @@ technical_debt:
 
 ### 218. Croissant metadata finalization + HuggingFace leaderboard
 - **Effort**: small (2-4 hours + 1-3 days for optional Space)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
+- **Research**: [218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md]
 
 **Description**: Finalize Croissant metadata (data/croissant.json skeleton exists) and update HuggingFace infrastructure. (a) Validate croissant.json against MLCommons 1.0 Python tooling, fix any schema issues, ensure all 4 JSONL distributions listed with correct field descriptions. (b) Update HF README task_categories to ["text-generation", "other"] with task_ids: ["formal-provability-classification"]. (c) Optional: Gradio Space for interactive formula classification demo and leaderboard submission endpoint.
 
@@ -224,10 +228,11 @@ technical_debt:
 
 ### 217. Complexity tier extension to c9/c11
 - **Effort**: large (2-4 weeks, Lean oracle compute)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
+- **Research**: [217_complexity_tier_extension_c9_c11/reports/01_complexity-tier-research.md]
 
 **Description**: Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity ≤9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity ≤11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.
 
