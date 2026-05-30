@@ -291,24 +291,21 @@ theorem semantic_prior_SZ_raw {fc : FrameClass}
 /--
 **No Gaps in Faithful Prior Structures** (Reynolds Theorem 14, adapted).
 
-For any `PriorModelData`, there are no Dedekind gaps. This is the gap-free
-theorem that closes the `chronicle_gap_contradiction` sorry.
+**WARNING**: This theorem as stated is FALSE. The Z+Z counterexample (two copies
+of Z with constant MCS at every point) satisfies all `PriorModelData` hypotheses
+yet has a Dedekind gap. The gap is non-definable (no temporal formula detects it),
+consistent with Reynolds Theorem 5 ("no definable gaps in Prior structures").
 
-The proof uses the faithfulness bridge (temporal_truth_effective_raw) and
-semantic Prior-UZ/SZ (semantic_prior_UZ/SZ_raw) to show that the Prior axioms
-prevent any definable boundary from occurring at a Dedekind gap. The full
-formalization follows Reynolds 1994, Lemmas 6-13, adapted to the MCS level.
+The correct approach requires either:
+(a) Strengthening `PriorModelData` with additional hypotheses (countability +
+    non-trivial MCS variation), or
+(b) Proving gap elimination directly inside `chronicle_gap_contradiction` using
+    omega-chain properties, bypassing this abstract theorem entirely.
 
-**sorry**: The core Reynolds model surgery argument (Lemmas 6-13) requires:
-1. Building the contemporaneous equivalence from MCS k-types
-2. Constructing the gap formula R via US expressive completeness
-3. R-interval properties (Lemma 7)
-4. No first/last class (Lemma 8), class homogeneity (Lemma 9)
-5. Bad interval propagation (Lemmas 10-11)
-6. Model surgery truth preservation (Lemma 12, 7 cases)
-7. Final contradiction (Lemma 13)
-Each step is 30-100 lines. Total ~400-600 lines.
-See Reynolds 1994, Sections 6-7, pp.122-129.
+See task 202 plan v12 Phase 2 BLOCKER documentation for full analysis.
+
+**sorry**: Known to be unprovable as stated. Retained for downstream compilation
+while the approach is restructured.
 -/
 noncomputable def no_gaps_faithful {fc : FrameClass}
     (M : PriorModelData fc) : IsEmpty (Gap M.domain) := by

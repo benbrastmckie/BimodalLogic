@@ -142,11 +142,43 @@ infrastructure. Centralize sorry into `chronicle_gap_contradiction`.
 
 ---
 
-### Phase 2: Reynolds Model Surgery (Lemmas 6-13, Theorem 14) [PARTIAL]
+### Phase 2: Reynolds Model Surgery (Lemmas 6-13, Theorem 14) [BLOCKED]
 
-**Goal**: Formalize Reynolds' model surgery argument at the abstract level (any
+**BLOCKER** (Phase 2):
+- **What failed**: `no_gaps_faithful : IsEmpty (Gap M.domain)` for arbitrary `PriorModelData` is FALSE.
+- **What was tried**: Attempted to prove gap elimination for any PriorModelData (domain with
+  LinearOrder, SuccOrder, PredOrder, NoMaxOrder, NoMinOrder, MCS assignment satisfying
+  Prior-UZ/SZ and C4/C5 coherence). Analyzed Reynolds 1994 Sections 6-7 and the model
+  surgery argument (Lemmas 6-13, Theorem 14).
+- **Why it's stuck**: Z+Z counterexample (two copies of Z glued together, constant MCS at
+  every point) satisfies ALL PriorModelData hypotheses yet has a Dedekind gap. Verified:
+  (1) Prior-UZ(ψ) ∈ S for all ψ (using immediate successor as U(ψ,¬ψ) witness),
+  (2) Prior-SZ(ψ) ∈ S for all ψ (symmetric), (3) C5 forward/backward satisfied (constant
+  MCS makes witnesses trivial), (4) C4 backward vacuously true (negation of Until at t
+  plus formula at s > t leads to contradiction with constant MCS). The gap between the two
+  copies is NON-definable (no temporal formula detects it), consistent with Reynolds Theorem 5
+  ("no definable gaps in Prior structures").
+- **What is needed**: The approach must be restructured. Three options:
+  (A) **Strengthen PriorModelData**: Add hypotheses that rule out Z+Z (e.g., countability
+      + an injectivity condition on the MCS assignment). Reynolds Theorem 15 uses
+      "very good" equivalence (k-type agreement on subintervals) which IS contemporaneous
+      by Lemma 17. The full Theorem 15 argument shows countable discrete Prior structures
+      are k-equivalent to Z for all k. But this doesn't directly give IsEmpty (Gap M.domain) --
+      it gives monadic FO equivalence.
+  (B) **Move gap elimination into chronicle_gap_contradiction directly**: Use omega-chain
+      properties (stage-by-stage construction, defect resolution, countability of limit domain)
+      to show the limit domain has no gaps. This bypasses the false abstract theorem entirely.
+      Estimated 400-800 lines depending on how much omega-chain machinery is needed.
+  (C) **Use Reynolds Theorem 15 with Ehrenfeucht-Fraisse**: Prove that countable discrete
+      Prior structures are order-isomorphic to Z (not just k-equivalent). This requires
+      showing that k-equivalence for all k implies isomorphism for countable discrete
+      orders, which follows from the Scott isomorphism theorem for countable structures.
+      Estimated 300-500 lines of new EF-game + Scott machinery.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Goal** (original, now known to be false for PriorModelData): ~~Formalize Reynolds' model surgery argument at the abstract level (any
 discrete Prior structure with MCS assignment and C4/C5 coherence), producing a
-reusable `no_gaps_prior_model_surgery` theorem. This theorem states: if a discrete
+reusable `no_gaps_prior_model_surgery` theorem.~~ This theorem states: if a discrete
 linear order without endpoints has an MCS assignment satisfying Prior-UZ, Prior-SZ,
 C4 forward/backward for Until/Since, and a contemporaneous equivalence relation,
 then no ~-class ends at a gap.
