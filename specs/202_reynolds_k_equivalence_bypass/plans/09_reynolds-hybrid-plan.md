@@ -104,7 +104,7 @@ Phases within the same wave can execute in parallel. Phase 1 is already COMPLETE
 
 ---
 
-### Phase 0: Dead Code Cleanup and Warning Comments [NOT STARTED]
+### Phase 0: Dead Code Cleanup and Warning Comments [COMPLETED]
 
 **Goal**: Archive dead code to `Boneyard/`, add warning comments to dead-end paths, and update stale blocker comments. This prevents implementation agents from getting distracted by dead code and wrong pipelines during Phases 2-5.
 

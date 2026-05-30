@@ -165,6 +165,11 @@ to every domain point.
 
 The root point is `⟨0, zero_mem_limit_dom A h_mcs⟩` where `limit_f = A`.
 -/
+-- NOTE: extract_chronicle_as_prior is NOT on the critical path for
+-- completeness_discrete. It is used ONLY by countermodel_discrete_reynolds
+-- (Transfer.lean:1004), which has an unsolvable sorry (see warning there).
+-- The critical path uses dd_countermodel_chronicle_discrete (Path A),
+-- which does not call this function.
 noncomputable def extract_chronicle_as_prior {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_discrete : Formula.box next_top ∈ A) : ChronicleAsPriorModel fc :=

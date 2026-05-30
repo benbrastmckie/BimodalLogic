@@ -981,6 +981,22 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     exact absurd h_eff_r
       (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r hsr hrt))
 
+/-!
+WARNING: countermodel_discrete_reynolds has an UNSOLVABLE sorry at line ~1081.
+The sorry is the Z-interval to TaskFrame packaging step. Five alternative
+constructions were explored (documented in handoffs/phase-4-5-handoff-20260529b.md)
+and ALL fail due to fundamental tension between position-dependent atoms,
+ShiftClosed Omega, and multi-family box quantification.
+
+DO NOT attempt to fix the sorry at line ~1081.
+DO NOT activate this theorem in any completeness proof.
+
+The correct path is plan v9 hybrid:
+  no_gaps_discrete -> one_class -> succ_cofinal -> dd_countermodel_chronicle_discrete
+This closes Path A (the parametric canonical model) which is sorry-free except
+for succ_cofinal. See plans/09_reynolds-hybrid-plan.md.
+-/
+
 /-! ## Reynolds Pipeline: countermodel_discrete_reynolds -/
 
 /--

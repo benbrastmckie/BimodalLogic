@@ -875,6 +875,10 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
 
 /-! ## Chronicle is Good -/
 
+-- NOTE: chronicle_is_good uses IsSuccArchimedean (via orderIsoIntOfLinearSuccPredArch)
+-- which depends on succ_cofinal (sorry). It is NOT on the critical path for
+-- completeness_discrete. The critical path goes through dd_countermodel_chronicle_discrete
+-- (Path A), not through this function.
 /--
 The chronicle prior model is good at any finite depth.
 -/
@@ -922,6 +926,10 @@ theorem one_class_implies_very_good (sig : MonadicSignature) (k : Nat)
 
 /-! ## Chronicle is Good (Direct via One-Class, no IsSuccArchimedean) -/
 
+-- NOTE: chronicle_is_good_direct avoids IsSuccArchimedean but is used ONLY by
+-- countermodel_discrete_reynolds (Transfer.lean:1004), which has an unsolvable sorry.
+-- It is NOT on the critical path for completeness_discrete.
+-- The critical path uses dd_countermodel_chronicle_discrete (Path A).
 /--
 The chronicle prior model is good at any finite depth, proved via the
 Reynolds pipeline: `one_class` → `very_good` → `very_good_implies_good`.

@@ -833,12 +833,13 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- BLOCKED: Requires Reynolds Theorem 5 (US expressive completeness over
-  -- Prior structures in general), which is not yet formalized. The proof
-  -- would: (1) define rho via k-type characterization, (2) apply Theorem 5
-  -- to get temporal formula R, (3) derive structural properties via h_prior_UZ
-  -- and h_prior_SZ (Lemmas 7-8), (4) show model surgery preserves temporal
-  -- truth (Lemma 12), (5) derive contradiction from R holding in surgery model.
+  -- Reynolds Theorem 5 (US expressive completeness) is COMPLETED in
+  -- PriorExpressiveness.lean (stavi_U_false_on_prior_UZ, stavi_S_false_on_prior_SZ,
+  -- US_expressively_complete_over_prior).
+  -- REMAINING: Reynolds Lemmas 6-13 (gap formula R, R-interval properties, model
+  -- surgery) and Theorem 14. See plans/09_reynolds-hybrid-plan.md Phases 2-4.
+  -- Once Lemmas 6-13 + Theorem 14 are formalized in ReynoldsNoGaps.lean,
+  -- this sorry is replaced by a call to theorem_14.
   sorry
 
 /--
