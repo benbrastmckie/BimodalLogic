@@ -1,22 +1,20 @@
 {
   "status": "partial",
-  "summary": "Phase 1 completed (deprecation + infrastructure), Phase 2 blocked on core model-theoretic argument requiring Reynolds model surgery or omega-chain analysis to prove chronicle_gap_contradiction",
+  "summary": "Created ReynoldsModelSurgery.lean with PriorModelData infrastructure and restructured chronicle_gap_contradiction to use it; sorry remains in no_gaps_faithful (Reynolds model surgery body) and two Prior-UZ/SZ fields (need h_fc propagation)",
   "phases_completed": 1,
   "phases_total": 3,
   "blockers": [
-    "chronicle_gap_contradiction sorry requires proving that the chronicle omega-chain construction never produces Dedekind gaps. The abstract MCS axioms (Prior-UZ, Prior-SZ, C4, C5, Z1) are provably insufficient -- the Z+Z counterexample with constant predicates satisfies all axioms but has a gap. The proof needs Reynolds Lemmas 6-13 (model surgery, ~400-600 lines) or direct omega-chain structural analysis (~200-400 lines)."
+    "no_gaps_faithful requires full Reynolds model surgery formalization (Lemmas 6-13, ~400-600 lines)",
+    "chronicle_gap_contradiction's Prior-UZ/SZ fields need h_fc : FrameClass.Discrete <= fc propagated through the function chain"
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260529T230000Z.md",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-20260529.md",
     "next_phase": 2
   },
-  "next_action_hint": "revise",
+  "next_action_hint": "continue",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/ChronicleNoGaps.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean",
     "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean",
-    "specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260529T230000Z.md"
+    "specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md"
   ]
 }
