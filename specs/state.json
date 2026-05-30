@@ -1246,15 +1246,15 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "partial",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry blocking sorry-free completeness_discrete. Plan v13 pivots from BX pipeline (no_gaps_faithful -- FALSE) to Reynolds pipeline: prove no_gaps_discrete in GoodStructures.lean via model surgery at OrderedMonadicStructure level, fix countermodel_discrete_reynolds packaging sorry, rewire completeness_discrete. 10 hours.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-30T10:00:00Z",
-      "next_artifact_number": 16,
+      "last_updated": "2026-05-30T17:10:15Z",
+      "next_artifact_number": 17,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1320,11 +1320,16 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md",
           "type": "plan",
           "summary": "Plan v14: Definitive path via Reynolds model surgery (Lemmas 6-13). 5 phases: h_surj construction, model surgery core (500 lines, 13 U/S subcases), wire no_gaps_discrete, TaskFrame packaging, completeness rewiring. 18 hours."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/reports/16_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): decomposition of model surgery into 4 sub-tasks; identified true blocker (MonadicFormula construction never attempted)"
         }
       ],
-      "researched": "2026-05-29T16:52:34Z",
+      "researched": "2026-05-30T17:10:15Z",
       "planned": "2026-05-29T22:00:00Z",
-      "session_id": "sess_1748545200_orch202",
+      "session_id": "sess_1780160597_res202t",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 18,
