@@ -70,17 +70,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Extend matchAxiom to All 42 Constructors [NOT STARTED]
+### Phase 1: Extend matchAxiom to All 42 Constructors [COMPLETED]
 
 **Goal**: Add the 29 missing pattern-match branches to `matchAxiom` in `ProofSearch/Core.lean` so it recognizes all 42 axiom constructor formulas.
 
 **Tasks**:
-- [ ] Add ground axiom patterns (0-param): `serial_future`, `serial_past`, `discrete_symm_fwd`, `discrete_symm_bwd`, `discrete_propagate_fwd`, `discrete_propagate_bwd`, `discrete_box_necessity`, `dense_indicator`
-- [ ] Add 1-param temporal patterns: `connect_past`, `F_until_equiv`, `P_since_equiv`, `z1`, `density`
-- [ ] Add 2-param temporal patterns: `self_accum_until`, `self_accum_since`, `absorb_until`, `absorb_since`, `until_F`, `since_P`, `temp_linearity`, `temp_linearity_past`
-- [ ] Add 3-param temporal patterns: `left_mono_until_G`, `left_mono_since_H`, `right_mono_until`, `right_mono_since`, `enrichment_until`, `enrichment_since`
-- [ ] Add 4-param patterns: `linear_until`, `linear_since`
-- [ ] Verify with `lake build Bimodal.Automation.ProofSearch.Core` that all patterns compile
+- [x] Add ground axiom patterns (0-param): `serial_future`, `serial_past`, `discrete_symm_fwd`, `discrete_symm_bwd`, `discrete_propagate_fwd`, `discrete_propagate_bwd`, `discrete_box_necessity`, `dense_indicator` *(completed)*
+- [x] Add 1-param temporal patterns: `connect_past`, `F_until_equiv`, `P_since_equiv`, `z1`, `density` *(completed)*
+- [x] Add 2-param temporal patterns: `self_accum_until`, `self_accum_since`, `absorb_until`, `absorb_since`, `until_F`, `since_P`, `temp_linearity`, `temp_linearity_past` *(completed)*
+- [x] Add 3-param temporal patterns: `left_mono_until_G`, `left_mono_since_H`, `right_mono_until`, `right_mono_since`, `enrichment_until`, `enrichment_since` *(completed)*
+- [x] Add 4-param patterns: `linear_until`, `linear_since` *(completed)*
+- [x] Verify with `lake build Bimodal.Automation.ProofSearch.Core` that all patterns compile *(completed)*
+- [x] **Bonus**: Fixed 5 broken existing patterns (`modal_b`, `modal_5_collapse`, `connect_future`, `prior_UZ`, `prior_SZ`) that used inconsistent half-expanded formula forms *(deviation: altered -- existing patterns were buggy, fixed as part of extension)*
+- [x] **Bonus**: Refactored `matches_axiom` to delegate to `matchAxiom` for consistency *(deviation: altered -- eliminated duplicated pattern logic)*
 
 **Timing**: 2 hours
 

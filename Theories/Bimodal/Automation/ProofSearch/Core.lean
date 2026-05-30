@@ -295,88 +295,6 @@ structure HeuristicWeights where
 -/
 
 /--
-Check if a formula matches any of the 14 TM axiom schemata (prop, modal, temporal, interaction).
-
-Returns `true` on an exact structural match, otherwise `false`.
--/
-def matches_axiom (φ : Formula) : Bool :=
-  let imp? : Formula → Option (Formula × Formula)
-    | .imp α β => some (α, β)
-    | _ => none
-  let eqf (a b : Formula) : Bool := decide (a = b)
-  match imp? φ with
-  | none => false
-  | some (lhs, rhs) =>
-    let prop_k : Bool :=
-      match lhs, rhs with
-      | .imp φ (.imp ψ χ), .imp (.imp φ' ψ') (.imp φ'' χ') =>
-          eqf φ φ' && eqf φ' φ'' && eqf ψ ψ' && eqf χ χ'
-      | _, _ => false
-    let prop_s : Bool :=
-      match lhs, rhs with
-      | φ, .imp _ φ' => eqf φ φ'
-      | _, _ => false
-    let ex_falso : Bool :=
-      match lhs with
-      | .bot => true
-      | _ => false
-    let peirce : Bool :=
-      match lhs, rhs with
-      | .imp (.imp φ _ψ) φ', φ'' => eqf φ φ' && eqf φ' φ''
-      | _, _ => false
-    let modal_k_dist : Bool :=
-      match lhs, rhs with
-      | .box (.imp φ ψ), .imp (.box φ') (.box ψ') => eqf φ φ' && eqf ψ ψ'
-      | _, _ => false
-    -- NOTE: temp_k_dist removed as axiom constructor (Task 116)
-    let modal_5_collapse : Bool :=
-      match lhs, rhs with
-      | .diamond (.box φ), .box φ' => eqf φ φ'
-      | _, _ => false
-    let modal_b : Bool :=
-      match lhs, rhs with
-      | φ, .box φ' => eqf φ' φ.diamond
-      | _, _ => false
-    -- NOTE: temp_4 removed as axiom constructor (Task 116)
-    let temp_a : Bool :=
-      match lhs, rhs with
-      | φ, .all_future (.some_past φ') => eqf φ φ'
-      | _, _ => false
-    let temp_l : Bool :=
-      match lhs, rhs with
-      -- always φ = φ.all_past.and (φ.and φ.all_future)
-      | .and (.all_past φ₁) (.and φ₂ (.all_future φ₃)), .all_future (.all_past φ') =>
-          eqf φ₁ φ₂ && eqf φ₂ φ₃ && eqf φ₃ φ'
-      | _, _ => false
-    let modal_future : Bool :=
-      match lhs, rhs with
-      | .box φ, .box (.all_future φ') => eqf φ φ'
-      | _, _ => false
-    let temp_future : Bool :=
-      match lhs, rhs with
-      | .box φ, .all_future (.box φ') => eqf φ φ'
-      | _, _ => false
-    let modal_4 : Bool :=
-      match lhs, rhs with
-      | .box φ, .box (.box φ') => eqf φ φ'
-      | _, _ => false
-    let modal_t : Bool :=
-      match lhs, rhs with
-      | .box φ, φ' => eqf φ φ'
-      | _, _ => false
-    let prior_UZ : Bool :=
-      match lhs, rhs with
-      | .imp (.all_future (.imp φ .bot)) .bot, .untl φ' (.imp φ'' .bot) => eqf φ φ' && eqf φ' φ''
-      | _, _ => false
-    let prior_SZ : Bool :=
-      match lhs, rhs with
-      | .imp (.all_past (.imp φ .bot)) .bot, .snce φ' (.imp φ'' .bot) => eqf φ φ' && eqf φ' φ''
-      | _, _ => false
-    prop_k || prop_s || ex_falso || peirce || modal_t || modal_4 || modal_b || modal_5_collapse ||
-    modal_k_dist || temp_a || temp_l || modal_future || temp_future ||
-    prior_UZ || prior_SZ
-
-/--
 Match a formula against axiom patterns, returning the Axiom witness if matched.
 
 This function enables proof term construction by returning the actual
@@ -394,7 +312,7 @@ Axiom constructor that matches the formula pattern. Now that Axiom is a Type
 - Uses a decomposition approach (like matches_axiom) to handle derived operators
 -/
 def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
-  -- First decompose into implication
+  -- Decompose into implication (all 42 axioms are implications or negations)
   match φ with
   | .imp lhs rhs =>
       -- ex_falso: ⊥ → φ
@@ -424,9 +342,9 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- modal_5_collapse: ◇□φ → □φ (◇ψ = ¬□¬ψ = (ψ.neg.box).neg)
+      -- modal_5_collapse: ◇□φ → □φ
       <|> (match lhs, rhs with
-           | .imp (.box (.imp phi .bot)) .bot, .box phi' =>
+           | .diamond (.box phi), .box phi' =>
                if phi = phi' then
                  some ⟨_, Axiom.modal_5_collapse phi⟩
                else none
@@ -440,7 +358,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- modal_future: □φ → □Fφ
+      -- modal_future: □φ → □(Gφ)
       <|> (match lhs, rhs with
            | .box phi, .box (.all_future phi') =>
                if phi = phi' then
@@ -448,17 +366,15 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_future: □φ → G□φ (derived from MF + T + Modal 4, handled in search loop)
-
-      -- modal_b: φ → □◇φ (◇φ = ¬□¬φ = (φ.neg.box).neg)
+      -- modal_b: φ → □◇φ
       <|> (match lhs, rhs with
-           | phi, .imp (.box (.imp phi' .bot)) .bot =>
+           | phi, .box (.diamond phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.modal_b phi⟩
                else none
            | _, _ => none)
 
-      -- modal_t: □φ → φ
+      -- modal_t: □φ → φ (general; must come after modal_4, modal_future)
       <|> (match lhs, rhs with
            | .box phi, phi' =>
                if phi = phi' then
@@ -467,44 +383,297 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
            | _, _ => none)
 
       -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116).
-      -- G(φ→ψ)→(Gφ→Gψ) and Gφ→GGφ are now derived theorems in TemporalDerived.lean.
 
-      -- connect_future (BX4): φ → G(Pφ) where P = some_past = ¬H¬φ = (φ.neg.all_past).neg
+      -------------------------------------------------------------------
+      -- Ground axioms (0-parameter)
+      -------------------------------------------------------------------
+
+      -- serial_future: ⊤ → F(⊤)
       <|> (match lhs, rhs with
-           | phi, .all_future (.imp (.all_past (.imp phi' .bot)) .bot) =>
+           | .imp .bot .bot, .some_future (.imp .bot .bot) =>
+               some ⟨_, Axiom.serial_future⟩
+           | _, _ => none)
+
+      -- serial_past: ⊤ → P(⊤)
+      <|> (match lhs, rhs with
+           | .imp .bot .bot, .some_past (.imp .bot .bot) =>
+               some ⟨_, Axiom.serial_past⟩
+           | _, _ => none)
+
+      -- discrete_symm_fwd: U(⊤,⊥) → S(⊤,⊥)
+      <|> (match lhs, rhs with
+           | .untl (.imp .bot .bot) .bot, .snce (.imp .bot .bot) .bot =>
+               some ⟨_, Axiom.discrete_symm_fwd⟩
+           | _, _ => none)
+
+      -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
+      <|> (match lhs, rhs with
+           | .snce (.imp .bot .bot) .bot, .untl (.imp .bot .bot) .bot =>
+               some ⟨_, Axiom.discrete_symm_bwd⟩
+           | _, _ => none)
+
+      -- discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
+      <|> (match lhs, rhs with
+           | .untl (.imp .bot .bot) .bot, .all_future (.untl (.imp .bot .bot) .bot) =>
+               some ⟨_, Axiom.discrete_propagate_fwd⟩
+           | _, _ => none)
+
+      -- discrete_propagate_bwd: U(⊤,⊥) → H(U(⊤,⊥))
+      <|> (match lhs, rhs with
+           | .untl (.imp .bot .bot) .bot, .all_past (.untl (.imp .bot .bot) .bot) =>
+               some ⟨_, Axiom.discrete_propagate_bwd⟩
+           | _, _ => none)
+
+      -- discrete_box_necessity: U(⊤,⊥) → □(U(⊤,⊥))
+      <|> (match lhs, rhs with
+           | .untl (.imp .bot .bot) .bot, .box (.untl (.imp .bot .bot) .bot) =>
+               some ⟨_, Axiom.discrete_box_necessity⟩
+           | _, _ => none)
+
+      -- dense_indicator: ¬U(⊤,⊥) = U(⊤,⊥) → ⊥
+      <|> (match lhs, rhs with
+           | .untl (.imp .bot .bot) .bot, .bot =>
+               some ⟨_, Axiom.dense_indicator⟩
+           | _, _ => none)
+
+      -------------------------------------------------------------------
+      -- 1-parameter axioms
+      -------------------------------------------------------------------
+
+      -- connect_future (BX4): φ → G(P(φ))
+      <|> (match lhs, rhs with
+           | phi, .all_future (.some_past phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.connect_future phi⟩
                else none
            | _, _ => none)
 
-      -- temp_l: △φ → G(Hφ) -- removed in BX (was derivable from interaction axioms)
+      -- connect_past (BX4'): φ → H(F(φ))
       <|> (match lhs, rhs with
-           | .imp (.imp (.all_past phi1) (.imp (.imp (.imp phi2 (.imp (.all_future phi3) .bot)) .bot) .bot)) .bot,
-             .all_future (.all_past phi') =>
-               if phi1 = phi2 ∧ phi2 = phi3 ∧ phi3 = phi' then
-                 none -- removed in BX, not a base axiom
+           | phi, .all_past (.some_future phi') =>
+               if phi = phi' then
+                 some ⟨_, Axiom.connect_past phi⟩
+               else none
+           | _, _ => none)
+
+      -- F_until_equiv (BX12): F(φ) → U(φ, ⊤)
+      <|> (match lhs, rhs with
+           | .some_future phi, .untl phi' (.imp .bot .bot) =>
+               if phi = phi' then
+                 some ⟨_, Axiom.F_until_equiv phi⟩
+               else none
+           | _, _ => none)
+
+      -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
+      <|> (match lhs, rhs with
+           | .some_past phi, .snce phi' (.imp .bot .bot) =>
+               if phi = phi' then
+                 some ⟨_, Axiom.P_since_equiv phi⟩
+               else none
+           | _, _ => none)
+
+      -- z1: G(Gφ→φ) → (F(Gφ)→Gφ)
+      <|> (match lhs, rhs with
+           | .all_future (.imp (.all_future phi) phi'),
+             .imp (.some_future (.all_future phi'')) (.all_future phi''') =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' then
+                 some ⟨_, Axiom.z1 phi⟩
+               else none
+           | _, _ => none)
+
+      -- density: GGφ → Gφ
+      <|> (match lhs, rhs with
+           | .all_future (.all_future phi), .all_future phi' =>
+               if phi = phi' then
+                 some ⟨_, Axiom.density phi⟩
+               else none
+           | _, _ => none)
+
+      -------------------------------------------------------------------
+      -- 2-parameter axioms
+      -------------------------------------------------------------------
+
+      -- self_accum_until (BX5): U(ψ,φ) → U(ψ, φ∧U(ψ,φ))
+      <|> (match lhs, rhs with
+           | .untl psi phi, .untl psi' (.and phi' (.untl psi'' phi'')) =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
+                 some ⟨_, Axiom.self_accum_until phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- self_accum_since (BX5'): S(ψ,φ) → S(ψ, φ∧S(ψ,φ))
+      <|> (match lhs, rhs with
+           | .snce psi phi, .snce psi' (.and phi' (.snce psi'' phi'')) =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
+                 some ⟨_, Axiom.self_accum_since phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- absorb_until (BX6): U(φ∧U(ψ,φ), φ) → U(ψ,φ)
+      <|> (match lhs, rhs with
+           | .untl (.and phi (.untl psi phi')) phi'', .untl psi' phi''' =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
+                 some ⟨_, Axiom.absorb_until phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- absorb_since (BX6'): S(φ∧S(ψ,φ), φ) → S(ψ,φ)
+      <|> (match lhs, rhs with
+           | .snce (.and phi (.snce psi phi')) phi'', .snce psi' phi''' =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
+                 some ⟨_, Axiom.absorb_since phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- until_F (BX10): U(ψ,φ) → F(ψ)
+      <|> (match lhs, rhs with
+           | .untl psi _phi, .some_future psi' =>
+               if psi = psi' then
+                 some ⟨_, Axiom.until_F _phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- since_P (BX10'): S(ψ,φ) → P(ψ)
+      <|> (match lhs, rhs with
+           | .snce psi _phi, .some_past psi' =>
+               if psi = psi' then
+                 some ⟨_, Axiom.since_P _phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_linearity (BX11): F(φ)∧F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
+      <|> (match lhs, rhs with
+           | .and (.some_future phi) (.some_future psi),
+             .or (.some_future (.and phi' psi'))
+               (.or (.some_future (.and phi'' (.some_future psi'')))
+                 (.some_future (.and (.some_future phi''') psi'''))) =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
+                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
+                 some ⟨_, Axiom.temp_linearity phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_linearity_past (BX11'): P(φ)∧P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
+      <|> (match lhs, rhs with
+           | .and (.some_past phi) (.some_past psi),
+             .or (.some_past (.and phi' psi'))
+               (.or (.some_past (.and phi'' (.some_past psi'')))
+                 (.some_past (.and (.some_past phi''') psi'''))) =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
+                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
+                 some ⟨_, Axiom.temp_linearity_past phi psi⟩
                else none
            | _, _ => none)
 
       -- prior_UZ: F(φ) → U(φ, ¬φ)
-      -- F(φ) = (φ.neg.all_future).neg = (.imp (.all_future (.imp phi .bot)) .bot)
-      -- U(φ, ¬φ) = .untl phi (.imp phi .bot)
       <|> (match lhs, rhs with
-           | .imp (.all_future (.imp phi1 .bot)) .bot, .untl phi2 (.imp phi3 .bot) =>
+           | .some_future phi1, .untl phi2 (.neg phi3) =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_UZ phi1⟩
                else none
            | _, _ => none)
 
       -- prior_SZ: P(φ) → S(φ, ¬φ)
-      -- P(φ) = (φ.neg.all_past).neg = (.imp (.all_past (.imp phi .bot)) .bot)
-      -- S(φ, ¬φ) = .snce phi (.imp phi .bot)
       <|> (match lhs, rhs with
-           | .imp (.all_past (.imp phi1 .bot)) .bot, .snce phi2 (.imp phi3 .bot) =>
+           | .some_past phi1, .snce phi2 (.neg phi3) =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_SZ phi1⟩
                else none
            | _, _ => none)
+
+      -------------------------------------------------------------------
+      -- 3-parameter axioms
+      -------------------------------------------------------------------
+
+      -- left_mono_until_G (BX2G): G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
+      <|> (match lhs, rhs with
+           | .all_future (.imp phi chi),
+             .imp (.untl psi phi') (.untl psi' chi') =>
+               if phi = phi' ∧ chi = chi' ∧ psi = psi' then
+                 some ⟨_, Axiom.left_mono_until_G phi chi psi⟩
+               else none
+           | _, _ => none)
+
+      -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
+      <|> (match lhs, rhs with
+           | .all_past (.imp phi chi),
+             .imp (.snce psi phi') (.snce psi' chi') =>
+               if phi = phi' ∧ chi = chi' ∧ psi = psi' then
+                 some ⟨_, Axiom.left_mono_since_H phi chi psi⟩
+               else none
+           | _, _ => none)
+
+      -- right_mono_until (BX3): G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
+      <|> (match lhs, rhs with
+           | .all_future (.imp phi psi),
+             .imp (.untl phi' chi) (.untl psi' chi') =>
+               if phi = phi' ∧ psi = psi' ∧ chi = chi' then
+                 some ⟨_, Axiom.right_mono_until phi psi chi⟩
+               else none
+           | _, _ => none)
+
+      -- right_mono_since (BX3'): H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
+      <|> (match lhs, rhs with
+           | .all_past (.imp phi psi),
+             .imp (.snce phi' chi) (.snce psi' chi') =>
+               if phi = phi' ∧ psi = psi' ∧ chi = chi' then
+                 some ⟨_, Axiom.right_mono_since phi psi chi⟩
+               else none
+           | _, _ => none)
+
+      -- enrichment_until (BX13): p∧U(ψ,φ) → U(ψ∧S(p,φ), φ)
+      <|> (match lhs, rhs with
+           | .and pp (.untl psi phi),
+             .untl (.and psi' (.snce pp' phi')) phi'' =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
+                 some ⟨_, Axiom.enrichment_until phi psi pp⟩
+               else none
+           | _, _ => none)
+
+      -- enrichment_since (BX13'): p∧S(ψ,φ) → S(ψ∧U(p,φ), φ)
+      <|> (match lhs, rhs with
+           | .and pp (.snce psi phi),
+             .snce (.and psi' (.untl pp' phi')) phi'' =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
+                 some ⟨_, Axiom.enrichment_since phi psi pp⟩
+               else none
+           | _, _ => none)
+
+      -------------------------------------------------------------------
+      -- 4-parameter axioms
+      -------------------------------------------------------------------
+
+      -- linear_until (BX7): U(ψ,φ)∧U(θ,χ) → U(ψ∧θ,φ∧χ) ∨ U(ψ∧χ,φ∧χ) ∨ U(φ∧θ,φ∧χ)
+      <|> (match lhs, rhs with
+           | .and (.untl psi phi) (.untl theta chi),
+             .or (.or (.untl (.and psi' theta') (.and phi' chi'))
+                      (.untl (.and psi'' chi'') (.and phi'' chi''')))
+                 (.untl (.and phi'''' theta'') (.and phi''''' chi'''')) =>
+               if psi = psi' ∧ psi' = psi'' ∧
+                  theta = theta' ∧ theta' = theta'' ∧
+                  phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
+                  chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
+                 some ⟨_, Axiom.linear_until phi psi chi theta⟩
+               else none
+           | _, _ => none)
+
+      -- linear_since (BX7'): S(ψ,φ)∧S(θ,χ) → S(ψ∧θ,φ∧χ) ∨ S(ψ∧χ,φ∧χ) ∨ S(φ∧θ,φ∧χ)
+      <|> (match lhs, rhs with
+           | .and (.snce psi phi) (.snce theta chi),
+             .or (.or (.snce (.and psi' theta') (.and phi' chi'))
+                      (.snce (.and psi'' chi'') (.and phi'' chi''')))
+                 (.snce (.and phi'''' theta'') (.and phi''''' chi'''')) =>
+               if psi = psi' ∧ psi' = psi'' ∧
+                  theta = theta' ∧ theta' = theta'' ∧
+                  phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
+                  chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
+                 some ⟨_, Axiom.linear_since phi psi chi theta⟩
+               else none
+           | _, _ => none)
+
+      -------------------------------------------------------------------
+      -- prop_s must be LAST (very general: φ → (ψ → φ))
+      -------------------------------------------------------------------
 
       -- prop_s: φ → (ψ → φ)
       <|> (match lhs, rhs with
@@ -515,6 +684,16 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
            | _, _ => none)
 
   | _ => none
+
+/--
+Check if a formula matches any of the 42 TM axiom schemata.
+
+Delegates to `matchAxiom` and returns `true` on match, `false` otherwise.
+Covers all axiom constructors: propositional (4), modal (5), BX temporal (22),
+interaction (1), uniformity (5), prior (2), Z1 (1), density (2).
+-/
+def matches_axiom (φ : Formula) : Bool :=
+  (matchAxiom φ).isSome
 
 /--
 Find all implications `ψ → φ` in context where the consequent matches the goal.
