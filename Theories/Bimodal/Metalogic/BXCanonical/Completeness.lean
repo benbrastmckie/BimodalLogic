@@ -220,6 +220,7 @@ already parameterized over fc. The D = Int specialization is obtained by matchin
 on the existential that returns D = Int.
 -/
 private theorem countermodel_discrete_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box Chronicle.next_top ∈ A) :
     ∃ (F : TaskFrame Int) (TM : TaskModel F)
@@ -240,10 +241,10 @@ private theorem countermodel_discrete_enriched {fc : FrameClass} (A : Set Formul
     rw [Chronicle.rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
   exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
-    (Chronicle.cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_box_discrete φ
+    (Chronicle.cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_fc h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
     (Chronicle.cantor_bfmcs_discrete_restricted_buc fc A h_mcs h_box_discrete φ)
-    (Chronicle.cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_box_discrete φ)
+    (Chronicle.cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_fc h_box_discrete φ)
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
@@ -365,7 +366,7 @@ theorem completeness_discrete (φ : Formula) :
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on Int
       obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        countermodel_discrete_enriched M hM_mcs φ h_neg_in h_box_discrete
+        countermodel_discrete_enriched M hM_mcs (le_refl _) φ h_neg_in h_box_discrete
       exact h_not_true (h_valid_discrete Int F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs h_not_box_dense h_not_box_discrete)

@@ -1121,6 +1121,13 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (f
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ :=
-  Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete FrameClass.Base A h_mcs φ h_neg_in h_box_discrete
+  -- Note: dd_countermodel_chronicle_discrete now requires h_fc : FrameClass.Discrete ≤ fc.
+  -- For fc = FrameClass.Base, this is unprovable. This path is used by the general
+  -- `completeness` theorem (not `completeness_discrete`) and already had a sorry via
+  -- no_gaps_faithful. The sorry is preserved here pending task 129 (Henkin model approach
+  -- for Base completeness). The discrete completeness theorem `completeness_discrete`
+  -- uses `countermodel_discrete_enriched` instead, which provides h_fc = le_refl.
+  Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete FrameClass.Base A h_mcs
+    sorry φ h_neg_in h_box_discrete
 
 end Bimodal.Metalogic.WeakCanonical

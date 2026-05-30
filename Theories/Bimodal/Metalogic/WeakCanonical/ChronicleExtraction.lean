@@ -180,7 +180,7 @@ noncomputable def extract_chronicle_as_prior {fc : FrameClass} (h_fc : FrameClas
     domain := LimitDomSubtype fc A h_mcs
     domain_succ := limitDomSubtype_succOrder fc A h_mcs h_discrete
     domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
-    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean fc A h_mcs h_discrete
+    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean fc A h_mcs h_fc h_discrete
     root_point := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
     fmcs := fun t => limit_f fc A h_mcs t.val
     fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property

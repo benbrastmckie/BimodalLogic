@@ -1519,15 +1519,11 @@ The proof constructs a `PriorModelData` from the chronicle's raw hypotheses,
 applies `prior_model_is_succ_archimedean` to get `IsSuccArchimedean`, then
 derives a contradiction from the bounded orbit hypothesis.
 
-**sorry chain**: `no_gaps_faithful` (ReynoldsModelSurgery.lean) contains the
-core sorry for the Reynolds model surgery argument. The Prior-UZ/SZ fields
-also use sorry because `h_fc : FrameClass.Discrete ≤ fc` is not in scope
-(it is available at the top-level callers but not threaded through this
-private helper). Both sorries are resolved simultaneously once the Reynolds
-model surgery is fully formalized and `h_fc` is propagated.
+**Prior-UZ/SZ**: Proved via `theorem_in_mcs` using `h_fc : FrameClass.Discrete ≤ fc`.
 -/
 private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs) (hab : a < b)
     (h_orbit_bounded : ∀ n : ℕ,
@@ -1543,13 +1539,12 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
     fmcs := fun t => limit_f fc A h_mcs t.val
     fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property
-    prior_UZ_valid := fun t ψ => by
-      -- Prior-UZ(ψ) ∈ fmcs(t) requires h_fc : FrameClass.Discrete ≤ fc
-      -- which is not in scope. This sorry is resolved when h_fc is propagated.
-      sorry
-    prior_SZ_valid := fun t ψ => by
-      -- Prior-SZ(ψ) ∈ fmcs(t) requires h_fc : FrameClass.Discrete ≤ fc
-      sorry
+    prior_UZ_valid := fun t ψ =>
+      theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
+        (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) h_fc)
+    prior_SZ_valid := fun t ψ =>
+      theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
+        (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) h_fc)
     until_coherent_fwd := fun t φ ψ h_until => by
       obtain ⟨y, hy, hty, hφy, h_guard⟩ :=
         limit_satisfies_c5_strong fc A h_mcs t.val t.property ψ φ h_until
@@ -1588,12 +1583,13 @@ for all n, then the successor orbit is bounded, creating a Dedekind cut that
 contradicts Prior-SZ at the chronicle level (Reynolds Theorem 14 at chronicle level).
 -/
 private theorem succ_cofinal (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (a b : LimitDomSubtype fc A h_mcs) (hab : a < b) :
     ∃ n, b ≤ (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a := by
   by_contra h_not_cofinal
   push_neg at h_not_cofinal
-  exact chronicle_gap_contradiction fc A h_mcs h_discrete a b hab h_not_cofinal
+  exact chronicle_gap_contradiction fc A h_mcs h_fc h_discrete a b hab h_not_cofinal
 /--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 
@@ -1602,6 +1598,7 @@ Uses `succ_cofinal` (which has a sorry — see section docstring above) combined
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     @IsSuccArchimedean (LimitDomSubtype fc A h_mcs)
       inferInstance
@@ -1613,7 +1610,7 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
     rcases eq_or_lt_of_le hab with rfl | hab_lt
     · exact ⟨0, rfl⟩
     · -- a < b. By succ_cofinal: ∃ n, b ≤ s^[n](a).
-      obtain ⟨n, hn⟩ := succ_cofinal fc A h_mcs h_discrete a b hab_lt
+      obtain ⟨n, hn⟩ := succ_cofinal fc A h_mcs h_fc h_discrete a b hab_lt
       -- By succ_orbit_convex: ∃ j ≤ n, s^[j](a) = b.
       exact (succ_orbit_convex fc A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
         fun j ⟨_, hj⟩ => hj
@@ -2525,12 +2522,13 @@ Since `Order.succ = limitDomSubtype_succ` (definitional equality from
 between `succ^[n](root)` and `succ_embed(n)`.
 -/
 theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
     (w : LimitDomSubtype fc A h_mcs) :
     ∃ n : ℤ, succ_embed fc A h_mcs h_discrete n = w := by
   letI succOrd := limitDomSubtype_succOrder fc A h_mcs h_discrete
   letI predOrd := limitDomSubtype_predOrder fc A h_mcs h_discrete
-  letI := limitDomSubtype_isSuccArchimedean fc A h_mcs h_discrete
+  letI := limitDomSubtype_isSuccArchimedean fc A h_mcs h_fc h_discrete
   set root : LimitDomSubtype fc A h_mcs := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
   set s := limitDomSubtype_succ fc A h_mcs h_discrete
   set p := limitDomSubtype_pred fc A h_mcs h_discrete
@@ -2850,6 +2848,7 @@ point corresponds to an embedded integer, enabling the same proof pattern as
 the dense case (which uses the Cantor isomorphism for the same purpose).
 -/
 theorem cantor_bfmcs_discrete_restricted_tc (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (h_box_discrete : Formula.box next_top ∈ A)
     (root : Formula)
     (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
@@ -2868,7 +2867,7 @@ theorem cantor_bfmcs_discrete_restricted_tc (fc : FrameClass) (A : Set Formula) 
     obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution fc N h_N
       (succ_embed fc N h_N h_discrete_N (t + offset)).val
       (succ_embed fc N h_N h_discrete_N (t + offset)).property φ h_F
-    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_discrete_N ⟨y, hy⟩
+    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_fc h_discrete_N ⟨y, hy⟩
     refine ⟨m - offset, ?_, ?_⟩
     · have h_lt' : succ_embed fc N h_N h_discrete_N (t + offset) <
           succ_embed fc N h_N h_discrete_N m := hm ▸ hlt
@@ -2884,7 +2883,7 @@ theorem cantor_bfmcs_discrete_restricted_tc (fc : FrameClass) (A : Set Formula) 
     obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution fc N h_N
       (succ_embed fc N h_N h_discrete_N (t + offset)).val
       (succ_embed fc N h_N h_discrete_N (t + offset)).property φ h_P
-    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_discrete_N ⟨y, hy⟩
+    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_fc h_discrete_N ⟨y, hy⟩
     refine ⟨m - offset, ?_, ?_⟩
     · have h_lt' : succ_embed fc N h_N h_discrete_N m <
           succ_embed fc N h_N h_discrete_N (t + offset) := hm ▸ hlt
@@ -2905,7 +2904,7 @@ any integer between t and s maps to a domain point between the source and witnes
 which is covered by the C5 guard.
 -/
 theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
+    (h_fc : FrameClass.Discrete ≤ fc) (h_box_discrete : Formula.box next_top ∈ A) (root : Formula) :
     (cantor_bfmcs_discrete fc A h_mcs h_box_discrete).restricted_forward_until_since_coherent root := by
   intro fam hfam
   obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
@@ -2921,7 +2920,7 @@ theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula)
     obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong fc N h_N
       (succ_embed fc N h_N h_discrete_N (t + offset)).val
       (succ_embed fc N h_N h_discrete_N (t + offset)).property ψ φ h_until
-    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_discrete_N ⟨y, hy⟩
+    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_fc h_discrete_N ⟨y, hy⟩
     refine ⟨m - offset, ?_, ?_, ?_⟩
     · have h_lt' : succ_embed fc N h_N h_discrete_N (t + offset) <
           succ_embed fc N h_N h_discrete_N m := hm ▸ hxty
@@ -2952,7 +2951,7 @@ theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula)
     obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong fc N h_N
       (succ_embed fc N h_N h_discrete_N (t + offset)).val
       (succ_embed fc N h_N h_discrete_N (t + offset)).property ψ φ h_since
-    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_discrete_N ⟨y, hy⟩
+    obtain ⟨m, hm⟩ := succ_embed_surjective fc N h_N h_fc h_discrete_N ⟨y, hy⟩
     refine ⟨m - offset, ?_, ?_, ?_⟩
     · have h_lt' : succ_embed fc N h_N h_discrete_N m <
           succ_embed fc N h_N h_discrete_N (t + offset) := hm ▸ hyxt
@@ -2993,6 +2992,7 @@ and `succ_embed_squeeze`/`succ_embed_squeeze_strict`. The eval family is
 so `neg(phi) in eval_family.mcs 0`.
 -/
 theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
@@ -3013,10 +3013,10 @@ theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (
     rw [rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
   exact fully_restricted_parametric_completeness_from_neg_membership
     (cantor_bfmcs_discrete fc A h_mcs h_box_discrete) φ
-    (cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_box_discrete φ
+    (cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_fc h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
     (cantor_bfmcs_discrete_restricted_buc fc A h_mcs h_box_discrete φ)
-    (cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_box_discrete φ)
+    (cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_fc h_box_discrete φ)
     φ (self_mem_subformulaClosure φ)
     (rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0)
     ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
