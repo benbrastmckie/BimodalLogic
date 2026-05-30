@@ -571,21 +571,120 @@ The proof requires the full Reynolds model surgery argument (Lemmas 6-13):
 **Estimated effort**: 400-600 lines for the full implementation.
 -/
 
-/--
+/-!
+#### Right Gap Class Infrastructure (Reynolds Lemma 6 prerequisites)
+
+The `right_gap_class_prop` predicate encodes "t's contemp_equiv class is bounded
+above and the class is succ-closed" (i.e., the upper boundary is a gap, not a
+successor-pair boundary). This is the predicate that Reynolds' Lemma 6 shows is
+expressible as a monadic FO formula, which then yields a temporal formula via
+US expressive completeness.
+
+The sorry-free infrastructure here establishes that right_gap_class_prop is:
+- Invariant within contemp_equiv classes (`right_gap_class_invariant`)
+- Preserved under successor (`right_gap_class_succ`)
+These properties are used in the proof of `gap_prior_UZ_contradiction`.
+-/
+
+/-- Right gap class property: t's contemp_equiv class is bounded above
+    and the class is succ-closed (meaning the upper boundary is a gap,
+    not a successor-pair boundary). -/
+private def right_gap_class_prop (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
+    (t : M.carrier) : Prop :=
+  (∃ b : M.carrier, t < b ∧ ¬ contemp_equiv sig k M t b) ∧
+  (∀ c : M.carrier, contemp_equiv sig k M t c →
+    contemp_equiv sig k M t (Order.succ c))
+
+/-- Right gap class is invariant within a contemp_equiv class:
+    if t ~M s and right_gap_class(t), then right_gap_class(s).
+    Proof: t and s are in the same class, so the class structure
+    (bounded above, succ-closed) is the same for both. -/
+private theorem right_gap_class_invariant (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [NoMaxOrder M.carrier]
+    (t s : M.carrier)
+    (hts : contemp_equiv sig k M t s)
+    (h_rgc : right_gap_class_prop sig k M t) :
+    right_gap_class_prop sig k M s := by
+  obtain ⟨⟨b, htb, h_nb⟩, h_sc⟩ := h_rgc
+  refine ⟨?_, ?_⟩
+  · -- s's class is bounded above
+    have h_not_sb : ¬ contemp_equiv sig k M s b := fun hsb =>
+      h_nb ((contemp_equiv_is_equiv sig k M).trans hts hsb)
+    rcases le_or_lt s b with hsb_le | hbs
+    · rcases eq_or_lt_of_le hsb_le with rfl | hsb_lt
+      · exact absurd hts h_nb
+      · exact ⟨b, hsb_lt, h_not_sb⟩
+    · -- b < s with t < b < s and t ~M s: convexity gives t ~M b, contradiction
+      exact absurd (contemp_equiv_convex sig k M t b s (le_of_lt htb) (le_of_lt hbs) hts) h_nb
+  · -- s's class is succ-closed
+    intro c hsc
+    -- t ~M s (hts), s ~M c (hsc). Need t ~M c.
+    -- trans(symm(hts), hsc) won't work directly because symm(hts) : s ~M t
+    -- and then trans(s ~M t, s ~M c) doesn't type-check.
+    -- We need: trans(t ~M s, s ~M c) but the Equivalence.trans takes (a ~M b, b ~M c).
+    -- So we need hts : t ~M s and hsc : s ~M c → trans hts hsc : t ~M c.
+    -- Wait, hts is `contemp_equiv sig k M t s` and hsc is `contemp_equiv sig k M s c`.
+    -- Equivalence.trans has type: a ~M b → b ~M c → a ~M c. So trans hts hsc works!
+    have htc := (contemp_equiv_is_equiv sig k M).trans hts hsc
+    have ht_succ_c := h_sc c htc
+    -- Now: t ~M succ(c). Need s ~M succ(c).
+    -- s ~M t (symm hts), t ~M succ(c) → s ~M succ(c)
+    exact (contemp_equiv_is_equiv sig k M).trans
+      ((contemp_equiv_is_equiv sig k M).symm hts) ht_succ_c
+
+/-- If right_gap_class(t), then right_gap_class(succ(t)).
+    Follows from right_gap_class_invariant and no_boundary_at_successor. -/
+private theorem right_gap_class_succ (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [NoMaxOrder M.carrier]
+    (t : M.carrier)
+    (h_rgc : right_gap_class_prop sig k M t) :
+    right_gap_class_prop sig k M (Order.succ t) :=
+  right_gap_class_invariant sig k M t (Order.succ t)
+    (no_boundary_at_successor sig k M t) h_rgc
+
+/-- Right gap class is preserved under predecessor.
+    Follows from right_gap_class_invariant and contemp_equiv_pred_closed. -/
+private theorem right_gap_class_pred (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    (t : M.carrier)
+    (h_rgc : right_gap_class_prop sig k M t) :
+    right_gap_class_prop sig k M (Order.pred t) := by
+  apply right_gap_class_invariant sig k M t (Order.pred t) _ h_rgc
+  -- Need: t ~M pred(t). contemp_equiv_pred_closed gives a ~M pred(c) from a ~M c.
+  -- With a = t, c = t: t ~M pred(t).
+  exact contemp_equiv_pred_closed sig k M t t ((contemp_equiv_is_equiv sig k M).refl t)
+
+/-!
+#### Reynolds Theorem 14: Gap contradiction
+
 **Reynolds Theorem 14, upward case** (Reynolds 1994, Lemmas 6-13):
 In a discrete Prior structure with h_surj, if class(a) is succ-closed and
 there exists y > a not in class(a), then False.
 
-This encapsulates the full Reynolds model surgery argument for the case
-where the class boundary is above a. The proof constructs a temporal formula
-R detecting right_gap_class, analyzes R-intervals, performs model surgery,
-proves temporal truth preservation (26 subcases for U/S), and derives
-contradiction.
+The proof requires the full Reynolds model surgery argument:
 
-**STATUS: SORRY** -- requires ~300 lines of Reynolds model surgery
-(Lemmas 6-13). See the section comment above for the detailed proof sketch.
-All hypotheses are correct and necessary.
+1. Construct temporal formula R detecting right_gap_class via
+   US_expressively_complete_over_prior (Reynolds Lemma 6)
+2. Analyze R-intervals (Lemmas 7-8)
+3. Prove class homogeneity in R-intervals (Lemma 9)
+4. Define bad intervals and prove formula propagation (Lemmas 10-11)
+5. Construct model surgery domain (Lemma 12)
+6. Prove temporal truth preservation across surgery (26 subcases for U/S)
+7. Derive contradiction (Lemma 13 + Theorem 14)
+
+**STATUS: SORRY** -- The sorry encapsulates Reynolds Lemmas 6-13
+(~300-600 lines of model surgery). The sorry-free infrastructure above
+(right_gap_class_prop, invariance, succ/pred preservation) provides the
+foundation for a future complete implementation.
+
+See the section comment above `reynolds_model_surgery_core` for the
+detailed proof sketch. All hypotheses are correct and necessary.
 -/
+
 private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]

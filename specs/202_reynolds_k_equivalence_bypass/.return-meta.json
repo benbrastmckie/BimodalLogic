@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "started_at": "2026-05-30T09:00:00Z",
+  "started_at": "2026-05-30T12:00:00Z",
   "verification": {
     "verification_passed": false,
     "sorry_count": 2,
@@ -9,16 +9,16 @@
     "build_passed": true
   },
   "requires_user_review": true,
-  "review_reason": "2 sorries remain (gap_prior_UZ_contradiction, gap_prior_SZ_contradiction) requiring Reynolds Lemmas 6-13 model surgery (~600 lines total). reynolds_model_surgery_core itself is now sorry-free.",
+  "review_reason": "2 sorries remain (gap_prior_UZ_contradiction at line 702, gap_prior_SZ_contradiction at line 728) requiring Reynolds Lemmas 6-13 model surgery (~300-600 lines). Sorry-free infrastructure added: right_gap_class_prop, right_gap_class_invariant, right_gap_class_succ, right_gap_class_pred.",
   "partial_progress": {
     "stage": "phase_2_partial",
-    "details": "Factored reynolds_model_surgery_core into clean proof structure. The theorem is sorry-free, delegating to 2 well-scoped sorry sub-lemmas.",
+    "details": "Added sorry-free right_gap_class infrastructure (4 definitions/theorems). Sorry count unchanged at 2. Build passes. Full model surgery (Lemmas 6-13) still required to close gap_prior_UZ/SZ_contradiction.",
     "phases_completed": 0,
     "phases_total": 5
   },
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530f.md"
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530g.md"
   ],
   "metadata": {
     "session_id": "sess_1780157486_orch202r4",
