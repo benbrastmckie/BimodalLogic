@@ -67,7 +67,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Gap Formula R Construction (Reynolds Lemma 6) [NOT STARTED]
+### Phase 1: Gap Formula R Construction (Reynolds Lemma 6) [BLOCKED]
 
 **Goal**: Construct a `MonadicFormula sig 1` encoding `right_gap_class_prop`, then apply `US_expressively_complete_over_prior` to obtain temporal formula R such that `temporal_truth M atomMap t R <-> right_gap_class_prop sig k M t`.
 
@@ -131,7 +131,14 @@ Phases within the same wave can execute in parallel.
   ```
   - Compose `US_expressively_complete_over_prior` specification with `right_gap_class_expressible`
 
-**Timing**: 4 hours
+**BLOCKER** (Phase 1):
+- **What failed**: Constructing `MonadicFormula sig 1` encoding `right_gap_class_prop`. The property involves `contemp_equiv sig k M t b` which is `very_good sig k (M.subinterval sig (min t b) (max t b))`. This requires expressing the k-type check of a SUBINTERVAL in terms of relativized quantifiers on the full structure.
+- **What was tried**: (1) Classical.choice with existence proof -- compiles but shifts the sorry to `right_gap_class_monadic_definable` and `right_gap_class_determined_by_type`. (2) Direct construction using NormalForm Fintype enumeration -- too complex, requires formalizing quantifier relativization (~200 lines). (3) Using `nf_characterizable_by_stavi` + `flatten_stavi` + `table` roundtrip -- only gives correctness on Prior structures, not universal correctness needed for the MonadicFormula. (4) Bypass via direct temporal formula construction -- impossible because right_gap_class_prop depends on a fixed element `a` which can't be referenced in MonadicFormula sig 1 (lines 449-456 in the file document this impossibility for class membership; right_gap_class_prop is different but still requires the monadic FO encoding of contemp_equiv).
+- **Why it's stuck**: The core issue is formalizing that `nf_eval_nf (M.subinterval sig lo hi) k 0 Fin.elim0 nf` is equivalent to a MonadicFormula with free variables for lo and hi, where quantifiers are relativized to [lo, hi]. This is standard in model theory (bounded quantifier relativization) but NOT formalized anywhere in the codebase. Formalizing it requires: (a) a `relativize` function on MonadicFormula that replaces `all` with bounded `all` and `ex` with bounded `ex`, (b) a proof that `eval M env (relativize phi lo hi)` equals `nf_eval_nf (M.subinterval sig lo hi) k n env_restricted nf`, (c) handling the interaction between De Bruijn indices and the relativization bounds.
+- **What is needed**: Either (A) formalize bounded quantifier relativization for monadic FO (~200 lines: define `relativize`, prove correctness, apply to NormalForm evaluation), or (B) find an alternative proof of `gap_prior_UZ_contradiction` that bypasses the MonadicFormula construction entirely, or (C) weaken the statement to only require correctness on Prior structures (requires reworking Phase 1's approach to use the table roundtrip, accepting that the MonadicFormula is only semantically correct on Prior structures).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Timing**: 4 hours (original estimate); actual blocked after analysis
 
 **Depends on**: none
 
