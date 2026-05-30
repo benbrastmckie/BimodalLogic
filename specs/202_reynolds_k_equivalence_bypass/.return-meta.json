@@ -1,23 +1,31 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-05-30T12:00:00Z",
+  "requires_user_review": true,
+  "review_reason": "Phase 2 (Reynolds model surgery, Lemmas 6-13) is the mathematical core requiring ~500 lines of formalization. Phase 1 complete, Phases 3-5 blocked on Phase 2.",
+  "partial_progress": {
+    "stage": "phase_2_in_progress",
+    "details": "Phase 1 complete (h_surj sorry closed). Phase 2 contradiction setup done, full model surgery (Lemmas 6-13) remaining. Handoff written.",
+    "phases_completed": 1,
+    "phases_total": 5
+  },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "notes": "2 sorry sites in no_gaps_discrete_model_surgery (the two cases a<b and b<a, both need model surgery)"
+  },
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md",
-      "summary": "Revised plan v14 integrating research reports 14-15 and 3 implementation handoffs. 5 phases: h_surj construction, Reynolds model surgery (Lemmas 6-13, 13 U/S subcases), wire no_gaps_discrete, TaskFrame packaging, completeness rewiring."
-    }
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260530b.md", "type": "handoff"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530c.md", "type": "handoff"}
   ],
-  "next_steps": "Run /implement 202 to execute the revised plan",
   "metadata": {
-    "session_id": "sess_1780118957_3a63e0",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 5,
-    "estimated_hours": 18,
-    "reports_integrated": [
-      "reports/14_model-surgery-deep-research.md",
-      "reports/15_reynolds-pipeline-detailed-plan.md",
-      "handoffs/phase-1-h-surj-pivot-20260530.md"
-    ]
+    "session_id": "sess_1780130220_orch202r2",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped"
   }
 }

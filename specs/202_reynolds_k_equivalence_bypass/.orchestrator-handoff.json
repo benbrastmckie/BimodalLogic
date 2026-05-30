@@ -1,23 +1,35 @@
 {
   "status": "partial",
-  "summary": "Critical mathematical error found: prior_implies_archimedean_of_accessible is FALSE (Z+Z with constant predicates counterexample). Pivoted all theorem signatures from h_accessible to h_surj (atom-level surjectivity). Build passes. Reynolds model surgery (500 lines) and h_surj call-site construction (50 lines) remain as sorry sites.",
-  "phases_completed": 0,
-  "phases_total": 4,
+  "summary": "Phase 1 completed (h_surj sorry closed at Transfer.lean). Phase 2 partially started (contradiction setup done, Reynolds Lemmas 6-13 model surgery core remaining -- estimated 400-500 lines). Phases 3-5 blocked on Phase 2.",
+  "phases_completed": 1,
+  "phases_total": 5,
   "blockers": [
-    "Reynolds model surgery (Lemmas 6-13 + Theorem 14) ~500 lines: core proof that class boundaries don't end at gaps. Uses US_expressively_complete_over_prior (h_surj enables this). Main mathematical blocker.",
-    "h_surj construction at Transfer.lean call site ~50 lines: enrich atomMap_fwd with fresh atoms for non-atom predicates. Engineering task, does not affect math.",
-    "Z-interval packaging (Transfer.lean:1162) pre-existing sorry, not addressed this cycle"
+    "Phase 2: Reynolds model surgery (Lemmas 6-13 + Theorem 14, ~500 lines, 8-12 hours). This is the mathematical core requiring: (a) monadic FO formula construction for right_gap_class, (b) US_expressively_complete application, (c) model surgery domain construction, (d) 13 U/S truth preservation subcases, (e) contradiction."
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-h-surj-pivot-20260530.md",
-    "next_phase": 1
+    "last_phase_completed": 1,
+    "next_phase": 2,
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530c.md",
+    "sorry_sites_closed": [
+      "h_surj at Transfer.lean (previously line 1117) -- CLOSED in Phase 1"
+    ],
+    "sorry_sites_remaining": [
+      "no_gaps_discrete_model_surgery at GoodStructuresModelSurgery.lean:315 (Phase 2 -- model surgery core)",
+      "no_gaps_discrete at GoodStructures.lean:820 (Phase 3 -- trivial wiring, depends on Phase 2)",
+      "countermodel_discrete_reynolds packaging at Transfer.lean:1289 (Phase 4 -- TaskFrame construction)",
+      "completeness_discrete rewiring in Completeness.lean (Phase 5 -- depends on Phase 4)"
+    ],
+    "key_infrastructure": {
+      "US_expressively_complete_over_prior": "PriorExpressiveness.lean:371 -- sorry-free, takes MonadicFormula sig 1",
+      "class_gap_exists": "GoodStructuresModelSurgery.lean -- sorry-free, produces Gap",
+      "prior_UZ_first_transition": "GoodStructuresModelSurgery.lean -- sorry-free",
+      "no_boundary_at_successor": "GoodStructures.lean -- sorry-free",
+      "contemp_equiv_is_equiv": "GoodStructures.lean -- sorry-free"
+    }
   },
-  "next_action_hint": "research",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-h-surj-pivot-20260530.md"
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260530b.md", "type": "handoff"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530c.md", "type": "handoff"},
+    {"path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md", "type": "plan"}
   ]
 }
