@@ -336,8 +336,9 @@ the domain is IsSuccArchimedean. By contrapositive: NOT archimedean implies
 gap exists (gap_of_not_succ_archimedean), but no_gaps_faithful says
 no gaps exist. Contradiction.
 
-Uses `gap_of_not_succ_archimedean_local` from ChronicleNoGaps.lean's
-local copy, but we reproduce the key lemma inline to avoid circular imports.
+Uses `gap_of_not_succ_archimedean_local` (previously in ChronicleNoGaps.lean,
+now moved to Boneyard/BXPipelineGapAnalysis/ by task 225). The key lemma
+is reproduced inline to avoid circular imports.
 -/
 noncomputable def prior_model_is_succ_archimedean {fc : FrameClass}
     (M : PriorModelData fc) :

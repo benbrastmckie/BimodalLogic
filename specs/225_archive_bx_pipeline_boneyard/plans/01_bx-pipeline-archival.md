@@ -89,18 +89,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Move Pure-Dead Files to Boneyard and Update Imports [NOT STARTED]
+### Phase 2: Move Pure-Dead Files to Boneyard and Update Imports [COMPLETED]
 
 **Goal**: Move the 2 files that are entirely dead code to Boneyard, remove the dangling import, and update the Boneyard README.
 
 **Tasks**:
-- [ ] Create directory `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/`
-- [ ] Move `Theories/Bimodal/Metalogic/WeakCanonical/ChronicleNoGaps.lean` (165 lines) to `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/ChronicleNoGaps.lean`
-- [ ] Move `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/HenkinDiscreteChain.lean` (121 lines) to `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean`
-- [ ] Remove the import `import Bimodal.Metalogic.WeakCanonical.ChronicleNoGaps` from `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean` (line 16)
-- [ ] Update comment references in ReynoldsModelSurgery.lean (lines 320-321) that mention "ChronicleNoGaps.lean" to note the file was moved to Boneyard
-- [ ] Add entry to `Theories/Bimodal/Boneyard/README.md` inventory table: `| BXPipelineGapAnalysis | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |`
-- [ ] Run `lake build` to verify the import removal and file moves cause no compilation errors
+- [x] Create directory `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/`
+- [x] Move `Theories/Bimodal/Metalogic/WeakCanonical/ChronicleNoGaps.lean` (165 lines) to `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/ChronicleNoGaps.lean`
+- [x] Move `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/HenkinDiscreteChain.lean` (121 lines) to `Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean`
+- [x] Remove the import `import Bimodal.Metalogic.WeakCanonical.ChronicleNoGaps` from `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean` (line 16)
+- [x] Update comment references in ReynoldsModelSurgery.lean (lines 320-321) that mention "ChronicleNoGaps.lean" to note the file was moved to Boneyard
+- [x] Add entry to `Theories/Bimodal/Boneyard/README.md` inventory table: `| BXPipelineGapAnalysis | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |`
+- [x] Run `lake build` to verify the import removal and file moves cause no compilation errors
 
 **Timing**: 30 minutes
 

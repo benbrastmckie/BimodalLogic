@@ -32,6 +32,7 @@ The Boneyard serves three roles:
 
 | Directory | Files | Lines | Archived From | Why Archived | Task |
 |-----------|------:|------:|---------------|--------------|------|
+| [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
 | [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
 | [BundleTemporalCoherence](#bundletemporalcoherence) | 0 | -- | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
 | [ChainCompleteness](#chaincompleteness) | 12 | 4,186 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
@@ -53,7 +54,7 @@ The Boneyard serves three roles:
 | [UltrafilterFrame](#ultrafilterframe) | 2 | 1,553 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4); Jonsson-Tarski prerequisite | 21 |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 96 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **36** | **~26,452** | | | |
+| **Total** | **38** | **~26,738** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -84,6 +85,16 @@ adapted to the current system without fundamental restructuring.
 - Directories: StrictSemanticsLegacy, BundleTemporalCoherence
 
 ## Subdirectory Details
+
+### BXPipelineGapAnalysis
+Two files from the dead BX pipeline gap analysis path. `ChronicleNoGaps.lean`
+(165 lines) attempted chronicle-level gap elimination using Reynolds Theorem 14
+adapted to the chronicle construction. `HenkinDiscreteChain.lean` (121 lines)
+documented analysis of Henkin chain approaches to sorry-free `completeness_discrete`.
+Both were blocked by the fundamental falsity of `no_gaps_faithful` (Z+Z
+counterexample: two copies of Z with constant MCS satisfy all `PriorModelData`
+hypotheses yet have a Dedekind gap). The correct path is the Reynolds pipeline
+via `no_gaps_discrete` (task 202).
 
 ### BundleTemporalCoherence
 Bundle-level temporal coherence code from UltrafilterChain.lean. Semantically
@@ -226,6 +237,7 @@ See subdirectory README for recovery options.
 | 132 | Consolidated root Boneyard/ into this location | 2026-05-13 |
 | 21 | UltrafilterFrame (TenseS5Algebra + UltrafilterFrame from Algebraic/) | 2026-05-20 |
 | 173 | OpenGuardInvalid (27 sorry-tainted definitions from TemporalDerived.lean) | 2026-05-20 |
+| 225 | BXPipelineGapAnalysis (ChronicleNoGaps + HenkinDiscreteChain, dead BX pipeline) | 2026-05-30 |
 
 ## Git Retrieval
 

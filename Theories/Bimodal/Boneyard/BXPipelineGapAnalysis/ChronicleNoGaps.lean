@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 
+#exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
+
 /-!
 # Chronicle-Level No-Gaps Proof (Reynolds Theorem 14 at Chronicle Level)
 

@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import Bimodal.Metalogic.Bundle.WitnessSeed
 
+#exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
+
 /-!
 # Henkin Discrete Chain: Analysis and Infrastructure
 
