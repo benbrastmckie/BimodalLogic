@@ -1,54 +1,23 @@
 {
-  "status": "partial",
-  "started_at": "2026-05-30T06:00:00Z",
-  "requires_user_review": true,
-  "review_reason": "Critical mathematical error found and corrected: prior_implies_archimedean_of_accessible is FALSE (Z+Z counterexample). Pivoted no_gaps_discrete from h_accessible to h_surj. Model surgery (500+ lines) and h_surj construction (50 lines) remain as sorry sites.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 4,
-    "build_passed": true,
-    "build_output": "Build completed successfully (1679 jobs)."
-  },
-  "partial_progress": {
-    "stage": "phase_1_h_surj_pivot",
-    "details": "Discovered prior_implies_archimedean_of_accessible is FALSE. Pivoted theorem signatures from h_accessible to h_surj. All modified files compile. Sorry sites are now correctly stated and provable (pending implementation).",
-    "phases_completed": 0,
-    "phases_total": 4
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
-      "summary": "no_gaps_discrete and one_class: replaced h_accessible with h_surj"
-    },
-    {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-      "summary": "Removed FALSE prior_implies_archimedean_of_accessible, updated no_gaps_discrete_model_surgery to h_surj"
-    },
-    {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
-      "summary": "chronicle_is_good_direct: replaced h_accessible with h_surj"
-    },
-    {
-      "type": "source_modified",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-      "summary": "countermodel_discrete_reynolds: added h_surj sorry for enriched atomMap construction"
-    },
-    {
-      "type": "handoff",
-      "path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-h-surj-pivot-20260530.md",
-      "summary": "Comprehensive handoff with counterexample, correct approach, and next steps"
+      "type": "plan",
+      "path": "specs/202_reynolds_k_equivalence_bypass/plans/14_reynolds-model-surgery-definitive.md",
+      "summary": "Revised plan v14 integrating research reports 14-15 and 3 implementation handoffs. 5 phases: h_surj construction, Reynolds model surgery (Lemmas 6-13, 13 U/S subcases), wire no_gaps_discrete, TaskFrame packaging, completeness rewiring."
     }
   ],
+  "next_steps": "Run /implement 202 to execute the revised plan",
   "metadata": {
     "session_id": "sess_1780118957_3a63e0",
-    "agent_type": "lean-implementation-agent",
-    "compliance_check": "skipped",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 5,
+    "estimated_hours": 18,
+    "reports_integrated": [
+      "reports/14_model-surgery-deep-research.md",
+      "reports/15_reynolds-pipeline-detailed-plan.md",
+      "handoffs/phase-1-h-surj-pivot-20260530.md"
+    ]
   }
 }
