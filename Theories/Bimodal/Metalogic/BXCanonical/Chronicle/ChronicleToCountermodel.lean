@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.ReynoldsModelSurgery
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Order.CountableDenseLinearOrder
@@ -1511,12 +1512,19 @@ Once proved sorry-free (see ChronicleNoGaps.lean or task 202 continuation),
 
 /--
 **Core gap elimination**: If the chronicle domain is not successor-archimedean,
-derive a contradiction. This requires Reynolds' model surgery argument adapted
-to the chronicle level (Theorem 14, Lemmas 6-13).
+derive a contradiction. Uses Reynolds' Theorem 14 (model surgery argument)
+via `prior_model_is_succ_archimedean` from ReynoldsModelSurgery.lean.
 
-**Status**: sorry -- see blocker documentation above.
-**Resolution path**: Prove via Prior-SZ + US expressive completeness + faithfulness
-at the chronicle level (plan v11 Phase 2).
+The proof constructs a `PriorModelData` from the chronicle's raw hypotheses,
+applies `prior_model_is_succ_archimedean` to get `IsSuccArchimedean`, then
+derives a contradiction from the bounded orbit hypothesis.
+
+**sorry chain**: `no_gaps_faithful` (ReynoldsModelSurgery.lean) contains the
+core sorry for the Reynolds model surgery argument. The Prior-UZ/SZ fields
+also use sorry because `h_fc : FrameClass.Discrete ≤ fc` is not in scope
+(it is available at the top-level callers but not threaded through this
+private helper). Both sorries are resolved simultaneously once the Reynolds
+model surgery is fully formalized and `h_fc` is propagated.
 -/
 private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -1525,19 +1533,50 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_orbit_bounded : ∀ n : ℕ,
       (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a < b) :
     False := by
-  -- The proof requires showing that if the successor orbit of `a` is bounded
-  -- by `b`, the resulting Dedekind cut contradicts Prior-SZ at the chronicle level.
-  -- The cut C = {x : ∃ n, x ≤ succ^[n](a)} is succ-closed and has no max.
-  -- A distinguishing temporal formula exists by US expressive completeness
-  -- (PriorExpressiveness.lean), and the Prior-SZ "last occurrence" property
-  -- forces a contradiction at the gap boundary.
-  --
-  -- Full formalization requires:
-  -- 1. Building OrderedMonadicStructure with cut predicate
-  -- 2. Proving semantic Prior-UZ/SZ for this structure
-  -- 3. Applying US_expressively_complete_over_prior
-  -- 4. Deriving the Prior-SZ contradiction
-  sorry
+  -- Construct a PriorModelData from the chronicle's raw hypotheses
+  let M : Bimodal.Metalogic.WeakCanonical.PriorModelData fc := {
+    domain := LimitDomSubtype fc A h_mcs
+    domain_lo := inferInstance
+    domain_no_max := limitDomSubtype_noMaxOrder fc A h_mcs
+    domain_no_min := limitDomSubtype_noMinOrder fc A h_mcs
+    domain_succ := limitDomSubtype_succOrder fc A h_mcs h_discrete
+    domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
+    fmcs := fun t => limit_f fc A h_mcs t.val
+    fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property
+    prior_UZ_valid := fun t ψ => by
+      -- Prior-UZ(ψ) ∈ fmcs(t) requires h_fc : FrameClass.Discrete ≤ fc
+      -- which is not in scope. This sorry is resolved when h_fc is propagated.
+      sorry
+    prior_SZ_valid := fun t ψ => by
+      -- Prior-SZ(ψ) ∈ fmcs(t) requires h_fc : FrameClass.Discrete ≤ fc
+      sorry
+    until_coherent_fwd := fun t φ ψ h_until => by
+      obtain ⟨y, hy, hty, hφy, h_guard⟩ :=
+        limit_satisfies_c5_strong fc A h_mcs t.val t.property ψ φ h_until
+      exact ⟨⟨y, hy⟩, hty, hφy, fun r htr hrs => h_guard r.val r.property htr hrs⟩
+    since_coherent_fwd := fun t φ ψ h_since => by
+      obtain ⟨y, hy, hyt, hφy, h_guard⟩ :=
+        limit_satisfies_c5'_strong fc A h_mcs t.val t.property ψ φ h_since
+      exact ⟨⟨y, hy⟩, hyt, hφy, fun r hry hrt => h_guard r.val r.property hry hrt⟩
+    neg_until_coherent := fun t s hts φ ψ h_neg_until hφs => by
+      obtain ⟨z, hz, htz, hzs, h_neg_ψ⟩ :=
+        limit_satisfies_c4 fc A h_mcs t.val s.val t.property s.property hts ψ φ h_neg_until hφs
+      exact ⟨⟨z, hz⟩, htz, hzs, h_neg_ψ⟩
+    neg_since_coherent := fun t s hst φ ψ h_neg_since hφs => by
+      obtain ⟨z, hz, hsz, hzt, h_neg_ψ⟩ :=
+        limit_satisfies_c4' fc A h_mcs t.val s.val t.property s.property hst ψ φ h_neg_since hφs
+      exact ⟨⟨z, hz⟩, hsz, hzt, h_neg_ψ⟩
+  }
+  -- Apply prior_model_is_succ_archimedean to get IsSuccArchimedean
+  have h_arch := Bimodal.Metalogic.WeakCanonical.prior_model_is_succ_archimedean M
+  -- The bounded orbit contradicts IsSuccArchimedean
+  letI : SuccOrder (LimitDomSubtype fc A h_mcs) :=
+    limitDomSubtype_succOrder fc A h_mcs h_discrete
+  -- h_arch says succ^[n](a) reaches b for some n
+  -- But h_orbit_bounded says succ^[n](a) < b for all n
+  have h_reach := h_arch.1 (le_of_lt hab)
+  obtain ⟨n, hn⟩ := h_reach
+  exact absurd (hn ▸ le_refl b) (not_le.mpr (h_orbit_bounded n))
 
 /--
 Succ-iterates are cofinal: for any `a < b` in `LimitDomSubtype`, there exists `n`
