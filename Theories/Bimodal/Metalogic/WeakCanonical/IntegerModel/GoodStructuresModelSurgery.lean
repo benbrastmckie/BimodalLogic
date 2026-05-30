@@ -17,17 +17,21 @@ cannot occur at Dedekind gaps.
 The proof chain is:
 
 ```
-reynolds_model_surgery_core (SORRY: Reynolds Lemmas 6-13, ~400-600 lines)
-  <- gap_contradicts_prior (sorry-free)
-  <- gap_contradicts_prior_below (sorry-free)
-  <- no_gaps_discrete_model_surgery (sorry-free)
+gap_prior_UZ_contradiction (SORRY: Reynolds Lemmas 6-13, upward case)
+gap_prior_SZ_contradiction (SORRY: Reynolds Lemmas 6-13, downward case)
+  <- reynolds_model_surgery_core (sorry-free given above)
+    <- gap_contradicts_prior (sorry-free)
+    <- gap_contradicts_prior_below (sorry-free)
+    <- no_gaps_discrete_model_surgery (sorry-free)
 ```
 
-The single sorry is at `reynolds_model_surgery_core`, which states:
-given h_surj + Prior-UZ/SZ + h_succ_closed, class(a) = whole carrier.
-This requires the full Reynolds model surgery argument (constructing a
-right_gap_class formula, analyzing R-intervals, performing domain surgery,
-and proving temporal truth preservation). See the docstring on
+The two sorry sites are `gap_prior_UZ_contradiction` and
+`gap_prior_SZ_contradiction`, which encapsulate the Reynolds model surgery
+argument (Lemmas 6-13) for the upward and downward cases respectively.
+Each requires constructing a gap-detecting temporal formula, performing
+domain surgery, and proving temporal truth preservation. See the section
+comment above `gap_prior_UZ_contradiction` for the detailed proof sketch
+and the docstring on
 `reynolds_model_surgery_core` for the detailed proof sketch.
 
 ## Key Hypotheses
@@ -56,12 +60,19 @@ and proving temporal truth preservation). See the docstring on
 - `class_gap_exists`: if class(a) ≠ whole order, a Gap exists
 - `cut_succ_closed`: gap's cut is closed under successor
 - `complement_pred_closed`: gap's complement is closed under predecessor
+- `class_pred_closed`: class(a) pred-closed (delegates to contemp_equiv_pred_closed)
+- `class_boundary_gap`: class boundary → NOT IsSuccArchimedean
+- `reynolds_model_surgery_core`: class(a) succ-closed → class(a) = whole carrier
+  (sorry-free given gap_prior_UZ/SZ_contradiction)
 - `gap_contradicts_prior`: succ-closed class bounded above → False
 - `gap_contradicts_prior_below`: succ-closed class bounded below → False
 - `no_gaps_discrete_model_surgery`: main theorem (sorry-free given core)
 
-### Sorry (1 remaining)
-- `reynolds_model_surgery_core`: class(a) succ-closed → class(a) = whole carrier
+### Sorry (2 remaining)
+- `gap_prior_UZ_contradiction`: class(a) bounded above with gap → False
+  (Reynolds Lemmas 6-13, upward case, ~300 lines)
+- `gap_prior_SZ_contradiction`: class(a) bounded below with gap → False
+  (Reynolds Lemmas 6-13, downward case, ~300 lines)
 
 ## References
 
@@ -445,31 +456,193 @@ The correct approach uses right_gap_class (a structural property, not
 class membership) and the full model surgery argument.
 -/
 
+/- **Reynolds Theorem 14 core** (Reynolds 1994, Lemmas 6-13):
+    In a discrete Prior structure with atom-surjective atomMap, if class(a)
+    is succ-closed then class(a) = whole carrier.
+
+    The proof requires the full model surgery argument (Lemmas 6-13).
+    See the docstring on `reynolds_model_surgery_core` below.
+
+    `no_boundary_at_successor` (sorry-free) guarantees that h_succ_closed
+    is trivially satisfied in practice, since c ~M succ(c) for all c.
+    The real content is: h_surj + Prior-UZ/SZ -> one class. -/
+
+/-! #### Helper: class(a) is pred-closed under h_succ_closed -/
+
+/--
+If class(a) is succ-closed, it is also pred-closed: for all c, a ~M c implies
+a ~M pred(c). This combines `contemp_equiv_pred_closed` with h_succ_closed.
+-/
+private theorem class_pred_closed (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    (a : M.carrier)
+    (_h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (c : M.carrier) (hac : contemp_equiv sig k M a c) :
+    contemp_equiv sig k M a (Order.pred c) :=
+  contemp_equiv_pred_closed sig k M a c hac
+
+/-! #### Helper: class(a) boundary is a Gap -/
+
+/--
+If class(a) is succ-closed, pred-closed, and proper (not the whole carrier),
+then the class boundary above `a` is a Dedekind gap.
+
+More precisely: the set `{x | contemp_equiv sig k M a x}` is:
+- Nonempty (contains a)
+- Proper (assumption)
+- Convex (by contemp_equiv_convex and equivalence)
+- Succ-closed (no max element in the class, within the upward direction)
+- Pred-closed (no min element in the class)
+
+If there exists y > a not in class(a), then the cut
+`{x | contemp_equiv sig k M a x ∧ x ≤ y_bound}` restricted to the relevant
+region forms a gap.
+-/
+private theorem class_boundary_gap (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (a : M.carrier)
+    (_h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (y : M.carrier) (_hay : a < y)
+    (h_not_equiv : ¬ contemp_equiv sig k M a y) :
+    ¬ @IsSuccArchimedean M.carrier inferInstance (inferInstance : SuccOrder M.carrier) := by
+  intro h_arch
+  exact h_not_equiv (one_class_archimedean sig k M a y)
+
+/-! #### Reynolds Model Surgery: Gap contradiction (Lemmas 6-13)
+
+The following two theorems are the mathematical core of Reynolds Theorem 14.
+They state that in a Prior structure with h_surj, if class(a) is succ-closed,
+then having a point outside class(a) (above or below) leads to contradiction.
+
+The proof requires the full Reynolds model surgery argument (Lemmas 6-13):
+
+1. **Lemma 6**: Construct temporal formula R detecting "right_gap_class"
+   (a point whose contemp_equiv class has a gap boundary on the right).
+   right_gap_class IS definable as MonadicFormula sig 1 because:
+   - contemp_equiv(x,y) = very_good(M|[x,y]) is a monadic FO sentence
+     with 2 free variables (quantifying over subintervals and Z-interval
+     k-types, all of which are in monadic FO due to finiteness of NormalForm)
+   - right_gap_class(x) = "exists y > x, NOT contemp_equiv x y" AND
+     "for all c, contemp_equiv x c -> contemp_equiv x (succ c)"
+   - Apply US_expressively_complete_over_prior to get temporal formula R
+
+2. **Lemmas 7-8**: R-interval properties. Maximal intervals where R holds
+   are open (R holds at succ(t) if R holds at t, by no_boundary_at_successor +
+   class invariance). No first/last class in R-intervals.
+
+3. **Lemma 9**: Class homogeneity in R-intervals. All classes in a maximal
+   R-interval are elementarily equivalent (same monadic FO theory). Proof:
+   if formula A differs between classes C1 and C2, construct B = "A occurs
+   in my class". B transitions at a successor pair (Prior-UZ). But the class
+   boundary is a gap. Contradiction.
+
+4. **Lemmas 10-11**: Bad intervals and formula propagation. In a maximal
+   R-interval (or R-and-L-interval), both R and L hold throughout. Formulas
+   propagate throughout bad intervals via class homogeneity.
+
+5. **Lemma 12**: Model surgery. Choose a maximal bad interval Q0 and one
+   class I inside it. Construct surgery domain Q- ∪ I ∪ Q+ (removing Q0
+   except for I). The surgery model inherits predicates and order from M.
+
+6. **Lemma 12 continued**: Temporal truth preservation M ↔ N for all
+   formula constructors. The atom/bot/imp/box cases are trivial. The U(A,B)
+   case has 7 forward subcases and 6 backward subcases. The S(A,B) case
+   mirrors U(A,B). Total: 26 subcases (13 for U, 13 for S).
+
+7. **Lemma 13 + Theorem 14**: In the surgery model N, the class containing
+   I ends at a point (not a gap), so right_gap_class is False at I in N.
+   But temporal truth preservation says R(I) in N iff R(I) in M. Since
+   R(I) is True in M (I is in a right_gap_class), R(I) should be True in N.
+   Contradiction.
+
+**Available sorry-free infrastructure** (used but not proven here):
+- `US_expressively_complete_over_prior` (PriorExpressiveness.lean)
+- `contemp_equiv_is_equiv`, `no_boundary_at_successor` (GoodStructures.lean)
+- `contemp_equiv_convex`, `contemp_equiv_pred_closed` (this file)
+- `contemp_equiv_succ_iterate`, `class_gap_exists` (this file)
+- `prior_UZ_first_transition`, `prior_SZ_last_transition` (this file)
+- `gap_of_not_succ_archimedean`, `one_class_archimedean` (ReynoldsNoGaps.lean)
+
+**Estimated effort**: 400-600 lines for the full implementation.
+-/
+
+/--
+**Reynolds Theorem 14, upward case** (Reynolds 1994, Lemmas 6-13):
+In a discrete Prior structure with h_surj, if class(a) is succ-closed and
+there exists y > a not in class(a), then False.
+
+This encapsulates the full Reynolds model surgery argument for the case
+where the class boundary is above a. The proof constructs a temporal formula
+R detecting right_gap_class, analyzes R-intervals, performs model surgery,
+proves temporal truth preservation (26 subcases for U/S), and derives
+contradiction.
+
+**STATUS: SORRY** -- requires ~300 lines of Reynolds model surgery
+(Lemmas 6-13). See the section comment above for the detailed proof sketch.
+All hypotheses are correct and necessary.
+-/
+private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (a : M.carrier)
+    (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (y : M.carrier) (hay : a < y)
+    (h_not_equiv : ¬ contemp_equiv sig k M a y) :
+    False := by
+  sorry
+
+/--
+**Reynolds Theorem 14, downward case**: Symmetric to `gap_prior_UZ_contradiction`
+using Prior-SZ for the downward direction. If class(a) is succ-closed (and hence
+pred-closed by `contemp_equiv_pred_closed`) and there exists y < a not in class(a),
+then False.
+
+**STATUS: SORRY** -- requires ~300 lines of Reynolds model surgery (dual of
+the upward case, using S(A,B) instead of U(A,B)). Can potentially be reduced
+by using Order.dual to map to the upward case.
+-/
+private theorem gap_prior_SZ_contradiction (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (a : M.carrier)
+    (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (y : M.carrier) (hya : y < a)
+    (h_not_equiv : ¬ contemp_equiv sig k M a y) :
+    False := by
+  sorry
+
+/-! #### Main theorem -/
+
 /-- **Reynolds Theorem 14 core** (Reynolds 1994, Lemmas 6-13):
     In a discrete Prior structure with atom-surjective atomMap, if class(a)
     is succ-closed then class(a) = whole carrier.
 
-    **STATUS: SORRY -- requires Reynolds model surgery (Lemmas 6-13)**
+    This theorem is sorry-free given `gap_prior_UZ_contradiction` and
+    `gap_prior_SZ_contradiction` (the two sorry sites encapsulating the
+    Reynolds model surgery for the upward and downward cases).
 
-    This is the mathematical core of Reynolds Theorem 14. The proof requires
-    implementing the full model surgery argument:
+    The proof is by contradiction + case split on whether y is above or
+    below a. The y = a case is trivial (reflexivity of contemp_equiv).
 
-    1. Construct right_gap_class formula rho(x) via MonadicFormula sig 1
-    2. Convert to temporal formula R via US_expressively_complete_over_prior
-    3. Analyze R-intervals (Lemmas 7-9: open intervals, no first/last class,
-       class homogeneity)
-    4. Define bad intervals and prove formula propagation (Lemmas 10-11)
-    5. Construct surgery model N by excising a bad interval (Lemma 12)
-    6. Prove temporal truth preservation M <-> N (13 subcases for U/S)
-    7. Derive contradiction: R holds in N but class boundary is at a point
-
-    All hypotheses (h_surj, h_prior_UZ, h_prior_SZ, h_succ_closed) are
-    needed and correct. The sorry is purely due to implementation effort
-    (~400-600 lines of Lean code for Lemmas 6-13).
-
-    See also: `no_boundary_at_successor` (sorry-free) guarantees that
-    h_succ_closed is trivially satisfied in practice, since c ~M succ(c)
-    for all c. The real content is: h_surj + Prior-UZ/SZ -> one class. -/
+    See also: `no_boundary_at_successor` guarantees that h_succ_closed
+    is trivially satisfied in practice, since c ~M succ(c) for all c. -/
 theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -482,7 +655,18 @@ theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
     (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
       contemp_equiv sig k M a (Order.succ c)) :
     ∀ y : M.carrier, contemp_equiv sig k M a y := by
-  sorry
+  intro y
+  by_contra h_not_equiv
+  -- Case split: is y above or below a?
+  rcases lt_trichotomy a y with hay | rfl | hya
+  · -- y > a: contradiction via gap_prior_UZ_contradiction
+    exact gap_prior_UZ_contradiction sig k M atomMap h_surj h_prior_UZ h_prior_SZ
+      a h_succ_closed y hay h_not_equiv
+  · -- y = a: contemp_equiv a a is reflexivity
+    exact h_not_equiv ((contemp_equiv_is_equiv sig k M).refl a)
+  · -- y < a: contradiction via gap_prior_SZ_contradiction
+    exact gap_prior_SZ_contradiction sig k M atomMap h_surj h_prior_UZ h_prior_SZ
+      a h_succ_closed y hya h_not_equiv
 
 /-! ### Main gap contradiction theorems -/
 

@@ -177,7 +177,7 @@ we can pick distinct fresh atoms for each non-atom predicate.
 
 ---
 
-### Phase 2: Reynolds Model Surgery Core (Lemmas 6-13 + Theorem 14) [PARTIAL]
+### Phase 2: Reynolds Model Surgery Core (Lemmas 6-13 + Theorem 14) [IN PROGRESS]
 *(deviation: altered -- proof restructured. class_temporal_formula DELETED (unprovable). reynolds_model_surgery_core now has sorry directly with clean documentation. Downstream chain (gap_contradicts_prior, gap_contradicts_prior_below, no_gaps_discrete_model_surgery) is sorry-free. Single sorry at reynolds_model_surgery_core requires Reynolds Lemmas 6-13 model surgery (~400-600 lines).)*
 
 **Goal**: Close the mathematical sorry at GoodStructuresModelSurgery.lean:348
