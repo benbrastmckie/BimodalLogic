@@ -33,10 +33,11 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [PARTIAL] — Reynolds Theorem 14 (no-gaps): Phase 1 complete (Theorem 5: US expressive completeness over Prior structures, 395 lines, 0 sorries). Phases 2-5 (Lemmas 6-13 model surgery, Theorem 14, pipeline) not started.
+202 [PARTIAL] — Reynolds Hybrid Path (v8): Phase 1 complete (Theorem 5, 395 lines). Task 4.3 complete (Prior-UZ/SZ discharge). Plan v8 replaces novel TaskFrame (proven impossible) with hybrid: Phases 2-4 close no_gaps_discrete via Reynolds model surgery, Phase 5 derives succ_cofinal from one_class to close Path A (countermodel_discrete_enriched). 22 hours, 5 phases.
   - **Reports**:
     - [specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
     - [specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
+  - **Plan**: [specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md]
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -265,7 +266,7 @@ technical_debt:
 ---
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: 20 hours
+- **Effort**: 22 hours
 - **Status**: [PARTIAL]
 - **Type**: lean4
 - **Priority**: CRITICAL
@@ -274,11 +275,11 @@ technical_debt:
   - [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/04_team-research.md]
   - [202_reynolds_k_equivalence_bypass/reports/05_reynolds-theorem-14-research.md]
+  - [202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
+  - [202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
 - **Plan**:
-  - [202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md]
-  - [202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md]
-  - [202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md]
-- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. ~1100 new lines across 2 new files.
+  - [202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md]
+- **Description**: Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close no_gaps_discrete, then derive succ_cofinal from one_class to close Path A (countermodel_discrete_enriched) for sorry-free completeness_discrete. Plan v8 (hybrid path): Phase 1 complete (Theorem 5, 395 lines), Task 4.3 complete (Prior-UZ/SZ discharge). Phases 2-3 (Reynolds model surgery), Phase 4 (Theorem 14 + close no_gaps_discrete), Phase 5 (bridge one_class to succ_cofinal). ~1100 new lines.
 
 ---
 
@@ -457,8 +458,10 @@ technical_debt:
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
-- **Status**: [PLANNED]
-- **Research**: [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
+- **Status**: [RESEARCHED]
+- **Research**:
+  - [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
+  - [183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md]
 - **Task Type**: lean4
 - **Dependencies**: 161
 - **Plan**: [183_documentation_standards_readmes_comments/plans/01_documentation-standards.md]

@@ -17,27 +17,55 @@
     {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         161
       ],
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-21T10:26:44Z",
+      "last_updated": "2026-05-30T00:28:21Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1779358978_e1c315",
+      "session_id": "sess_1748559600_a3d1f2",
       "researched": "2026-05-21T06:44:32Z",
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "artifacts": [
-        {
-          "path": "specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md",
-          "type": "research",
-          "summary": "Comprehensive audit: 100% module docstring coverage, 6 stale READMEs, 8 missing READMEs, 8 broken file references, outdated axiom counts, script-assisted remediation feasible"
-        },
         {
           "path": "specs/183_documentation_standards_readmes_comments/plans/01_documentation-standards.md",
           "type": "plan",
           "summary": "5-phase plan: define standards + lint scripts, create 8 missing READMEs, fix 6 stale READMEs, docstring quality pass, root navigation hub"
+        },
+        {
+          "path": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "type": "research",
+          "summary": "Delta report identifying 12 new missing-README directories (all from task 174 file splits), Automation README now severely stale (describes 4 of 16 files), axiom count grown 40->55, and revised effort estimate of 16-20 hours vs original 10 hours."
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "Task 174 (file splitting) converted 12 large .lean files into subdirectories across Theories/Bimodal/: Automation/Tactics/, Automation/ProofSearch/, Metalogic/Core/RestrictedMCS/, Metalogic/SoundnessLemmas/, Metalogic/WeakCanonical/EFGames/, Metalogic/WeakCanonical/ExpressiveCompleteness/, Metalogic/WeakCanonical/Expressiveness/, Metalogic/WeakCanonical/IntegerModel/, Metalogic/WeakCanonical/Separation/DedekindZ/, Metalogic/WeakCanonical/Separation/Hierarchy/, Syntax/SubformulaClosure/, Theorems/Propositional/. None received READMEs during that task.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "task174",
+            "file-splitting",
+            "subdirectory-creation",
+            "readme-gaps",
+            "documentation-debt"
+          ]
+        },
+        {
+          "content": "Theories/Bimodal/Automation/ has a dual purpose that the directory README does not reflect: (1) proof automation tactics and (2) ML dataset generation pipeline. As of 2026-05-29 the directory has 16 top-level files + 2 subdirectories; the README still describes only the original 4 automation files.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "automation",
+            "dataset-generation",
+            "dual-purpose",
+            "readme-stale",
+            "ML-pipeline"
+          ]
         }
       ]
     },
@@ -977,8 +1005,8 @@
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T14:17:00Z",
-      "next_artifact_number": 9,
+      "last_updated": "2026-05-29T22:30:00Z",
+      "next_artifact_number": 10,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1019,17 +1047,22 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md",
           "type": "report",
           "summary": "Full dependency trace of succ_cofinal: enters both old BFMCS pipeline (via TC/FUC coherence) and Reynolds pipeline (via extract_chronicle_as_prior domain_succ_archimedean). Steps 1-7 of Reynolds already carry succ_cofinal. Alternative: no_gaps_discrete path (Reynolds Theorem 14) bypasses succ_cofinal but has its own sorry — which is exactly what task 202 aims to discharge."
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
+          "type": "plan",
+          "summary": "Plan v8 (hybrid path): Phases 2-4 close no_gaps_discrete via Reynolds model surgery, Phase 5 derives succ_cofinal from one_class to close Path A (countermodel_discrete_enriched). Abandons novel TaskFrame construction."
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
-      "planned": "2026-05-29T19:30:00Z",
-      "session_id": "sess_1780075095_dfdc3e",
+      "planned": "2026-05-29T22:30:00Z",
+      "session_id": "sess_1748555900_orch202",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 20,
+        "total_effort_hours": 22,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 6,
+        "plan_version": 8,
         "dependency_waves": [
           [
             1
@@ -1071,6 +1104,21 @@
           {
             "path": "reports/05_reynolds-theorem-14-research.md",
             "integrated_in_plan_version": 6,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/07_bfmcs-bypass-research.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/08_succ-cofinal-dependency-trace.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "handoffs/phase-4-5-handoff-20260529b.md",
+            "integrated_in_plan_version": 8,
             "integrated_date": "2026-05-29"
           }
         ]
