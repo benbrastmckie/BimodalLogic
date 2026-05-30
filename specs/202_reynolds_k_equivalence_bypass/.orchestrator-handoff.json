@@ -1,13 +1,21 @@
 {
-  "status": "blocked",
-  "summary": "Exhaustive analysis of remaining sorry sites reveals two fundamentally coupled blockers: no_gaps_discrete requires ~700 lines of Reynolds model surgery (Phases 2-3), and TaskFrame packaging requires either succ_cofinal or a novel construction avoiding the box modality tension with ShiftClosed histories.",
+  "status": "researched",
+  "summary": "Complete succ_cofinal elimination analysis. succ_cofinal must be PROVED (not removed) -- it is on the only viable completeness pipeline (Path A via dd_countermodel_chronicle_discrete). The correct strategy (plan v8 hybrid): prove no_gaps_discrete via Reynolds Lemmas 6-13 + Theorem 14, derive one_class, then derive succ_cofinal from one_class. The alternative Reynolds pipeline (countermodel_discrete_reynolds) has an UNSOLVABLE sorry at Transfer.lean:1081 and should NOT be activated. Phase 1 (Theorem 5) is completed. Remaining: Phases 2-5 of plan v8 (~18 hours).",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "no_gaps_discrete (GoodStructures.lean:842): Requires full Reynolds model surgery argument (Lemmas 6-13, ~700 lines) which is not yet started (Phases 2-3). Cannot be bypassed without IsSuccArchimedean.",
-    "TaskFrame packaging (Transfer.lean:1081): Cannot construct TaskFrame with position-dependent atoms + ShiftClosed Omega + multi-family box quantification without succ_embed_surjective. Six alternative approaches explored and ruled out.",
-    "succ_cofinal (ChronicleToCountermodel.lean:1508): The alternative path via countermodel_discrete_enriched is blocked by this sorry. Gap elimination proof stuck at construction-level argument."
+    "no_gaps_discrete (GoodStructures.lean:842): Sole mathematical obstacle. Requires Reynolds Lemmas 6-13 (model surgery, ~800 lines). Theorem 5 prerequisite is COMPLETED in PriorExpressiveness.lean."
   ],
-  "continuation_context": "Phase 1 completed (PriorExpressiveness.lean, 395 lines). Phase 4 Task 4.3 completed (Prior-UZ/SZ discharge in ShiftAndGlue.lean/Transfer.lean). All analysis documented in handoffs/phase-4-5-handoff-20260529b.md. The plan should be revised: either (a) commit to implementing Phases 2-3 (Reynolds model surgery, ~700 lines, 20+ hours) and finding a novel Phase 5 construction, or (b) research alternative approaches to succ_cofinal, or (c) research hybrid approaches where no_gaps_discrete enables succ_embed_surjective.",
-  "next_action_hint": "revise_plan"
+  "key_findings": [
+    "succ_cofinal must NOT be removed -- it is needed by the only viable pipeline (Path A)",
+    "countermodel_discrete_reynolds (Path C) has an unsolvable sorry at Transfer.lean:1081 -- do NOT attempt to fix it",
+    "The correct path: prove no_gaps_discrete -> one_class -> derive succ_cofinal from one_class",
+    "Phase 1 (Theorem 5 / PriorExpressiveness) is COMPLETED -- stale blocker comment at GoodStructures.lean:836 should be updated",
+    "Agent confusion caused by two parallel pipelines: active Path A is deeply nested, dead Path C looks more principled"
+  ],
+  "continuation_context": "Plan v8 (hybrid) is the correct plan. Phases 2-4 implement Reynolds Lemmas 6-13 + Theorem 14 to close no_gaps_discrete. Phase 5 derives succ_cofinal from one_class. See reports/10_succ-cofinal-elimination-analysis.md for full trace and recommendations.",
+  "artifacts": [
+    "reports/10_succ-cofinal-elimination-analysis.md"
+  ],
+  "next_action_hint": "implement"
 }

@@ -17,15 +17,15 @@
     {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "dependencies": [
         161
       ],
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-30T00:37:19Z",
+      "last_updated": "2026-05-30T00:48:30Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1780101131_e9f3f4",
+      "session_id": "sess_1780102093_19b470",
       "researched": "2026-05-21T06:44:32Z",
       "next_artifact_number": 3,
       "artifacts": [
@@ -1035,14 +1035,14 @@
     {
       "project_number": 202,
       "project_name": "reynolds_k_equivalence_bypass",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Formalize Reynolds Theorem 5 (US expressive completeness over Prior structures) and Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) to close the sole remaining sorry (no_gaps_discrete) blocking sorry-free completeness_discrete. Plan v6: semantic/model-theoretic approach via Reynolds 1994 Section 6-7, sidestepping the F-persistence blocker that killed plans v1-v5. 5 phases: (1) Theorem 5 via Prior-UZ contradiction, (2) Lemmas 6-9 gap formula R and R-interval properties, (3) Lemmas 10-13 model surgery, (4) Theorem 14 + close no_gaps_discrete, (5) pipeline completion. 20 hours, ~1100 new lines across 2 new files.",
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
-      "last_updated": "2026-05-29T22:30:00Z",
+      "last_updated": "2026-05-30T00:52:56Z",
       "next_artifact_number": 10,
       "artifacts": [
         {
@@ -1056,24 +1056,9 @@
           "summary": "Team research (4 teammates): Option C path identified — direct completeness on Z bypasses succ_cofinal; local surjectivity insight; task 129 not viable; dependency on 155 outdated"
         },
         {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/04_option-c-direct-z.md",
-          "type": "plan",
-          "summary": "Plan v4 (BLOCKED): Direct completeness on Z via Henkin BFMCS — Phase 2 blocked by F-persistence through g_content"
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/05_option-c-direct-z-v5.md",
-          "type": "plan",
-          "summary": "Plan v5 (BLOCKED): Enriched chain construction with F-persistence, BX5 deferral for FUC, bypasses succ_cofinal entirely (4 phases, 8 hours)"
-        },
-        {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/05_reynolds-theorem-14-research.md",
           "type": "report",
           "summary": "Reynolds Theorem 14 formalization path: sole sorry is no_gaps_discrete, requires Theorem 5 (US over Prior), Lemmas 6-13 (model surgery), 700-1050 lines estimated"
-        },
-        {
-          "path": "specs/202_reynolds_k_equivalence_bypass/plans/06_reynolds-theorem-14-plan.md",
-          "type": "plan",
-          "summary": "Plan v6: Reynolds Theorem 5 + Lemmas 6-13 + Theorem 14 (model surgery / no-gaps). 5 phases, 20 hours, ~1100 new lines. Semantic approach sidesteps F-persistence blocker."
         },
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md",
@@ -1088,18 +1073,18 @@
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
           "type": "plan",
-          "summary": "Plan v8 (hybrid path): Phases 2-4 close no_gaps_discrete via Reynolds model surgery, Phase 5 derives succ_cofinal from one_class to close Path A (countermodel_discrete_enriched). Abandons novel TaskFrame construction."
+          "summary": "Plan v9 revised: added Phase 0 dead code cleanup, preserved completed Phase 1, preserved Phases 2-5"
         }
       ],
       "researched": "2026-05-29T16:52:34Z",
       "planned": "2026-05-29T22:30:00Z",
-      "session_id": "sess_1748555900_orch202",
+      "session_id": "sess_1780101948_cf80f2",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 22,
+        "phases": 6,
+        "total_effort_hours": 24,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 8,
+        "plan_version": 9,
         "dependency_waves": [
           [
             1
@@ -1156,6 +1141,11 @@
           {
             "path": "handoffs/phase-4-5-handoff-20260529b.md",
             "integrated_in_plan_version": 8,
+            "integrated_date": "2026-05-29"
+          },
+          {
+            "path": "reports/10_succ-cofinal-elimination-analysis.md",
+            "integrated_in_plan_version": 9,
             "integrated_date": "2026-05-29"
           }
         ]

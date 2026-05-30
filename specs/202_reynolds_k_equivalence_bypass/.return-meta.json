@@ -1,40 +1,27 @@
 {
-  "status": "partial",
-  "started_at": "2026-05-29T16:00:00Z",
-  "requires_user_review": true,
-  "blocked_phase": 4,
-  "review_reason": "Phase 4 blocked: no_gaps_discrete requires Reynolds model surgery (Phases 2-3, ~700 lines). Phase 5 blocked: TaskFrame packaging requires resolving box modality tension or proving succ_cofinal. See handoffs/phase-4-5-handoff-20260529b.md for exhaustive analysis.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 2,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
+  "status": "planned",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean",
-    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-4-5-handoff-20260529b.md"
+    {
+      "type": "plan",
+      "path": "specs/202_reynolds_k_equivalence_bypass/plans/09_reynolds-hybrid-plan.md",
+      "summary": "Plan v9 revised: added Phase 0 dead code cleanup, preserved completed Phase 1, preserved Phases 2-5"
+    }
   ],
-  "partial_progress": {
-    "stage": "phase_4_blocked",
-    "details": "Phase 1 completed (PriorExpressiveness.lean, 395 lines). Phase 4 Task 4.3 completed (Prior-UZ/SZ discharge). Phases 2-3 (Reynolds model surgery) not started -- prerequisite for Phase 4 Tasks 4.1-4.2. Phase 5 blocked by TaskFrame box modality problem. Exhaustive analysis of all known approaches documented in handoff.",
-    "phases_completed": 1,
-    "phases_total": 5
-  },
+  "next_steps": "Run /implement 202 to execute the revised plan",
   "metadata": {
-    "session_id": "sess_1748555900_orch202",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1780101948_cf80f2",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "skipped",
-    "sorry_sites_remaining": 2,
-    "remaining_sorry_locations": [
-      "GoodStructures.lean:842 (no_gaps_discrete -- needs Phases 2-3)",
-      "Transfer.lean:1081 (TaskFrame packaging -- needs succ_cofinal or novel construction)"
-    ],
-    "key_finding": "The two sorry sites are fundamentally coupled: succ_cofinal (Path A) and no_gaps_discrete+packaging (Path B) are the two independent routes to sorry-free completeness_discrete. Neither has been completed."
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 6,
+    "estimated_hours": 24,
+    "plan_version": 9,
+    "reports_integrated": [
+      {
+        "path": "reports/10_succ-cofinal-elimination-analysis.md",
+        "integrated_in_plan_version": 9,
+        "integrated_date": "2026-05-29"
+      }
+    ]
   }
 }

@@ -267,7 +267,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 22 hours
-- **Status**: [PARTIAL]
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
@@ -458,7 +458,7 @@ technical_debt:
 
 ### 183. Documentation standards: directory READMEs, module docstrings, comment conventions
 - **Effort**: large (15-25 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**:
   - [specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md]
   - [183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md]
