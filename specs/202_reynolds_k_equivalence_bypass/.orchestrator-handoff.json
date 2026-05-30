@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Complete succ_cofinal elimination analysis. succ_cofinal must be PROVED (not removed) -- it is on the only viable completeness pipeline (Path A via dd_countermodel_chronicle_discrete). The correct strategy (plan v8 hybrid): prove no_gaps_discrete via Reynolds Lemmas 6-13 + Theorem 14, derive one_class, then derive succ_cofinal from one_class. The alternative Reynolds pipeline (countermodel_discrete_reynolds) has an UNSOLVABLE sorry at Transfer.lean:1081 and should NOT be activated. Phase 1 (Theorem 5) is completed. Remaining: Phases 2-5 of plan v8 (~18 hours).",
+  "status": "partial",
+  "summary": "Phase 0 (dead code cleanup) completed. Added bridge theorem one_class_implies_succ_archimedean (sorry). Phases 2-5 require Reynolds Theorem 14 formalization (~1000 lines of model surgery) which exceeds single-session capacity.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
-    "no_gaps_discrete (GoodStructures.lean:842): Sole mathematical obstacle. Requires Reynolds Lemmas 6-13 (model surgery, ~800 lines). Theorem 5 prerequisite is COMPLETED in PriorExpressiveness.lean."
+    "Reynolds Theorem 14 formalization (Lemmas 6-13, model surgery): ~1000 lines of new Lean code required to prove no_gaps_discrete and one_class_implies_succ_archimedean. This is the sole remaining mathematical obstacle to sorry-free completeness_discrete."
   ],
-  "key_findings": [
-    "succ_cofinal must NOT be removed -- it is needed by the only viable pipeline (Path A)",
-    "countermodel_discrete_reynolds (Path C) has an unsolvable sorry at Transfer.lean:1081 -- do NOT attempt to fix it",
-    "The correct path: prove no_gaps_discrete -> one_class -> derive succ_cofinal from one_class",
-    "Phase 1 (Theorem 5 / PriorExpressiveness) is COMPLETED -- stale blocker comment at GoodStructures.lean:836 should be updated",
-    "Agent confusion caused by two parallel pipelines: active Path A is deeply nested, dead Path C looks more principled"
-  ],
-  "continuation_context": "Plan v8 (hybrid) is the correct plan. Phases 2-4 implement Reynolds Lemmas 6-13 + Theorem 14 to close no_gaps_discrete. Phase 5 derives succ_cofinal from one_class. See reports/10_succ-cofinal-elimination-analysis.md for full trace and recommendations.",
+  "continuation_context": {
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260529c.md",
+    "next_phase": 2
+  },
+  "next_action_hint": "continue",
   "artifacts": [
-    "reports/10_succ-cofinal-elimination-analysis.md"
-  ],
-  "next_action_hint": "implement"
+    "Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean",
+    "Boneyard/DeadConvergenceProof/limit_dom_succ_iterates.lean",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260529c.md"
+  ]
 }
