@@ -17,27 +17,27 @@
     {
       "project_number": 183,
       "project_name": "documentation_standards_readmes_comments",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         161
       ],
       "created": "2026-05-20T23:00:00Z",
-      "last_updated": "2026-05-30T00:28:21Z",
+      "last_updated": "2026-05-30T00:37:19Z",
       "topic": "formula-refactor",
-      "session_id": "sess_1748559600_a3d1f2",
+      "session_id": "sess_1780101131_e9f3f4",
       "researched": "2026-05-21T06:44:32Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
-          "path": "specs/183_documentation_standards_readmes_comments/plans/01_documentation-standards.md",
-          "type": "plan",
-          "summary": "5-phase plan: define standards + lint scripts, create 8 missing READMEs, fix 6 stale READMEs, docstring quality pass, root navigation hub"
-        },
-        {
           "path": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
           "type": "research",
           "summary": "Delta report identifying 12 new missing-README directories (all from task 174 file splits), Automation README now severely stale (describes 4 of 16 files), axiom count grown 40->55, and revised effort estimate of 16-20 hours vs original 10 hours."
+        },
+        {
+          "path": "specs/183_documentation_standards_readmes_comments/plans/02_documentation-standards.md",
+          "type": "plan",
+          "summary": "Revised implementation plan (v2) with 6 phases covering 20 missing READMEs, 9 stale README fixes, docstring quality pass, and cross-link navigation across 34 directories"
         }
       ],
       "memory_candidates": [
@@ -67,7 +67,44 @@
             "ML-pipeline"
           ]
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 18,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_documentation-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-21"
+          },
+          {
+            "path": "reports/02_plan-revision-delta.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      }
     },
     {
       "project_number": 180,
