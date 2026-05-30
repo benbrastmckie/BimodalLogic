@@ -1,59 +1,58 @@
 {
   "status": "partial",
-  "summary": "Factored reynolds_model_surgery_core into clean proof structure with 2 well-scoped sorry sites. reynolds_model_surgery_core is now sorry-free: it delegates by contradiction + case split to gap_prior_UZ_contradiction (upward) and gap_prior_SZ_contradiction (downward), each encapsulating the Reynolds model surgery (Lemmas 6-13). Build passes (full project, 1679 jobs). Downstream chain (gap_contradicts_prior, no_gaps_discrete_model_surgery) remains sorry-free.",
+  "summary": "Added sorry-free right_gap_class infrastructure (4 new definitions/theorems) for Reynolds model surgery. Sorry count unchanged at 2 (gap_prior_UZ/SZ_contradiction). Build passes. The right_gap_class_prop predicate, its class-invariance, succ/pred preservation are all proved. Full Reynolds Lemmas 6-13 model surgery (~300-600 lines) still required to close the sorries.",
   "phases_completed": 0,
   "phases_total": 5,
   "blockers": [
-    "gap_prior_UZ_contradiction (GoodStructuresModelSurgery.lean:603) requires Reynolds Lemmas 6-13 upward model surgery (~300 lines)",
-    "gap_prior_SZ_contradiction (GoodStructuresModelSurgery.lean:629) requires Reynolds Lemmas 6-13 downward model surgery (~300 lines, or derivable from upward via Order.dual)"
+    "gap_prior_UZ_contradiction (GoodStructuresModelSurgery.lean:702) requires Reynolds Lemmas 6-13 upward model surgery (~300-600 lines)",
+    "gap_prior_SZ_contradiction (GoodStructuresModelSurgery.lean:728) requires Reynolds Lemmas 6-13 downward model surgery (~300 lines, or derivable from upward via Order.dual)"
   ],
   "continuation_context": {
     "last_phase_completed": 0,
     "next_phase": 2,
     "sorry_sites_remaining": [
-      "gap_prior_UZ_contradiction at GoodStructuresModelSurgery.lean:603 (Phase 2 — Reynolds upward model surgery)",
-      "gap_prior_SZ_contradiction at GoodStructuresModelSurgery.lean:629 (Phase 2 — Reynolds downward model surgery)",
-      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 — trivial wiring once Phase 2 done)",
-      "h_surj construction at Transfer.lean (Phase 1 — engineering, independent)",
-      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4 — engineering)",
-      "completeness_discrete rewiring in Completeness.lean (Phase 5 — trivial)"
+      "gap_prior_UZ_contradiction at GoodStructuresModelSurgery.lean:702 (Phase 2 -- Reynolds upward model surgery)",
+      "gap_prior_SZ_contradiction at GoodStructuresModelSurgery.lean:728 (Phase 2 -- Reynolds downward model surgery)",
+      "no_gaps_discrete at GoodStructures.lean:852 (Phase 3 -- trivial wiring once Phase 2 done)",
+      "h_surj construction at Transfer.lean (Phase 1 -- engineering, independent)",
+      "countermodel_discrete_reynolds packaging at Transfer.lean (Phase 4 -- engineering)",
+      "completeness_discrete rewiring in Completeness.lean (Phase 5 -- trivial)"
     ],
     "progress_this_cycle": [
-      "FACTORED reynolds_model_surgery_core from 1 monolithic sorry to clean proof structure",
-      "reynolds_model_surgery_core is now SORRY-FREE (delegates to 2 well-scoped sub-lemmas)",
-      "Added class_pred_closed, class_boundary_gap helper lemmas",
-      "Added 80+ lines of detailed proof sketch in section comments (Reynolds Lemmas 6-13)",
-      "Updated module documentation with correct architecture diagram",
-      "Full project build verified: passes with 2 sorry warnings (expected)"
+      "Added right_gap_class_prop definition (gap-detecting predicate, sorry-free)",
+      "Proved right_gap_class_invariant (class-invariance of gap property, sorry-free)",
+      "Proved right_gap_class_succ (successor preservation, sorry-free)",
+      "Proved right_gap_class_pred (predecessor preservation, sorry-free)",
+      "Cleaned up documentation and section structure",
+      "ANALYZED why right_gap_class_definable alone is insufficient for contradiction",
+      "CONFIRMED full model surgery (Lemmas 6-13) is required -- see handoff for detailed analysis"
     ],
     "key_architecture": {
       "sorry_locations": [
-        "gap_prior_UZ_contradiction at GoodStructuresModelSurgery.lean:603",
-        "gap_prior_SZ_contradiction at GoodStructuresModelSurgery.lean:629"
+        "gap_prior_UZ_contradiction at GoodStructuresModelSurgery.lean:702",
+        "gap_prior_SZ_contradiction at GoodStructuresModelSurgery.lean:728"
       ],
       "sorry_contracts": {
         "gap_prior_UZ_contradiction": "Given sig k M [SuccOrder] [PredOrder] [NoMaxOrder] [NoMinOrder] atomMap h_surj h_prior_UZ h_prior_SZ a h_succ_closed y (hay : a < y) (h_not_equiv : not contemp_equiv a y), derive False",
         "gap_prior_SZ_contradiction": "Same but with (hya : y < a) instead of (hay : a < y)"
       },
-      "proof_approach": "Reynolds Lemmas 6-13: (1) construct MonadicFormula sig 1 for right_gap_class, (2) apply US_expressively_complete_over_prior for temporal formula R, (3) R-interval analysis, (4) class homogeneity, (5) model surgery construction, (6) 26 U/S truth preservation subcases, (7) contradiction",
+      "proof_approach": "Reynolds Lemmas 6-13: (1) construct MonadicFormula sig 1 for right_gap_class, (2) apply US_expressively_complete_over_prior for temporal formula R, (3) R-interval analysis, (4) class homogeneity, (5) model surgery construction, (6) 26 U/S truth preservation subcases, (7) contradiction from R truth in surgery model",
       "downstream_chain_sorry_free": true,
       "available_infrastructure": [
-        "US_expressively_complete_over_prior (PriorExpressiveness.lean — sorry-free)",
-        "contemp_equiv_is_equiv, no_boundary_at_successor (GoodStructures.lean — sorry-free)",
-        "contemp_equiv_convex, contemp_equiv_pred_closed, prior_UZ_first_transition (this file — sorry-free)",
-        "gap_of_not_succ_archimedean, one_class_archimedean (ReynoldsNoGaps.lean — sorry-free)"
+        "right_gap_class_prop (this file -- sorry-free, NEW)",
+        "right_gap_class_invariant (this file -- sorry-free, NEW)",
+        "right_gap_class_succ (this file -- sorry-free, NEW)",
+        "right_gap_class_pred (this file -- sorry-free, NEW)",
+        "US_expressively_complete_over_prior (PriorExpressiveness.lean -- sorry-free)",
+        "contemp_equiv_is_equiv, no_boundary_at_successor (GoodStructures.lean -- sorry-free)",
+        "contemp_equiv_convex, contemp_equiv_pred_closed, prior_UZ_first_transition (this file -- sorry-free)",
+        "gap_of_not_succ_archimedean, one_class_archimedean (ReynoldsNoGaps.lean -- sorry-free)"
       ]
     },
-    "critical_findings_from_16_cycles": [
-      "class_temporal_formula (R detecting class(a) membership) is UNPROVABLE",
-      "right_gap_class (R detecting 'class has gap boundary') IS the correct approach",
-      "right_gap_class IS expressible as MonadicFormula sig 1 (via k-type finiteness)",
-      "Direct Prior-UZ shortcut FAILS in Case B (report 15, Section A.4-A.6)",
-      "Full model surgery (Lemmas 6-13) IS mathematically required"
-    ]
+    "critical_insight": "right_gap_class_definable (getting temporal formula R for the gap property) is NECESSARY but NOT SUFFICIENT for the contradiction. R being constant (all classes end at gaps) does not itself give False. The contradiction comes from model surgery: excise a bad interval, show temporal truth is preserved in surgery model, but R changes truth value at the surgery boundary (gap becomes successor-pair boundary). This IS the Reynolds Lemmas 10-13 argument."
   },
   "artifacts": [
     {"path": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean", "type": "implementation"},
-    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530f.md", "type": "handoff"}
+    {"path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-handoff-20260530g.md", "type": "handoff"}
   ]
 }
