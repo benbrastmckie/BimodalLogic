@@ -503,9 +503,7 @@ private theorem relativize_env_lt {sig : MonadicSignature} {n : Nat}
     (env_sub : Fin n → (M.subinterval sig lo hi).carrier)
     (i : Fin n) :
     relativize_env M lo hi env_sub (i.castSucc.castSucc) = (env_sub i).val := by
-  simp [relativize_env, Fin.castSucc, Fin.val_mk]
-  have : i.val < n := i.isLt
-  rw [dif_pos this]
+  simp [relativize_env, Fin.castSucc, Fin.val_mk, i.isLt]
 
 private theorem relativize_env_lo {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
@@ -517,8 +515,9 @@ private theorem relativize_env_hi {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
     (env_sub : Fin n → (M.subinterval sig lo hi).carrier) :
     relativize_env M lo hi env_sub ⟨n + 1, by omega⟩ = hi := by
-  simp [relativize_env, dif_neg (by omega : ¬ (n + 1) < n)]
-  intro h; omega
+  simp only [relativize_env]
+  rw [dif_neg (show ¬ (n + 1 < n) from by omega)]
+  simp [show ¬ (n + 1 = n) from by omega]
 
 /--
 Key commutation lemma: `Fin.cons x (relativize_env ...)` equals
@@ -530,27 +529,24 @@ private theorem relativize_env_cons {sig : MonadicSignature} {n : Nat}
     (x_sub : (M.subinterval sig lo hi).carrier) :
     Fin.cons x_sub.val (relativize_env M lo hi env_sub) =
     relativize_env M lo hi (Fin.cons x_sub env_sub) := by
-  funext ⟨i, hi'⟩
-  simp only [relativize_env]
-  by_cases h0 : i = 0
-  · subst h0; simp [Fin.cons, dif_pos (by omega : 0 < n + 1)]
-  · have hi_pos : 0 < i := Nat.pos_of_ne_zero h0
-    simp only [Fin.cons]
-    rw [dif_neg (by omega : ¬ (i = 0))]
-    by_cases h1 : i < n + 1
-    · rw [dif_pos h1]
-      have h1' : i - 1 < n := by omega
-      simp only [relativize_env]
-      rw [dif_pos h1']
-      congr 1; ext; simp; omega
-    · rw [dif_neg h1]
-      simp only [relativize_env]
-      rw [dif_neg (by omega : ¬ (i - 1 < n))]
-      by_cases h2 : i = n + 1
-      · subst h2; simp [show i - 1 = n from by omega]
-      · have : i = n + 2 := by omega
-        subst this; simp [show i - 1 = n + 1 from by omega]
-        intro h; omega
+  funext i
+  cases i using Fin.cases with
+  | zero =>
+    simp only [Fin.cons_zero]
+    show x_sub.val = relativize_env M lo hi (Fin.cons x_sub env_sub) ⟨0, _⟩
+    simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega)]
+    simp [Fin.cons_zero]
+  | succ j =>
+    simp only [Fin.cons_succ]
+    simp only [relativize_env, Fin.val_succ]
+    by_cases h1 : j.val < n
+    · rw [dif_pos h1, dif_pos (show j.val + 1 < n + 1 from by omega)]
+      rfl
+    · rw [dif_neg h1, dif_neg (show ¬ (j.val + 1 < n + 1) from by omega)]
+      by_cases h2 : j.val = n
+      · simp [h2, show j.val + 1 = n + 1 from by omega]
+      · have : j.val + 1 ≠ n + 1 := by omega
+        simp [h2, this]
 
 /--
 Correctness of `relativize`: evaluating a relativized formula in the full
@@ -564,7 +560,7 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
     (φ : MonadicFormula sig n) :
     eval M (relativize_env M lo hi env_sub) (relativize φ) ↔
     eval (M.subinterval sig lo hi) env_sub φ := by
-  induction φ generalizing env_sub with
+  induction φ with
   | atom p i =>
     simp only [relativize, eval, OrderedMonadicStructure.subinterval]
     rw [relativize_env_lt]
@@ -579,73 +575,90 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
   | and α β ihα ihβ =>
     simp only [relativize, eval]
     exact (ihα env_sub).and (ihβ env_sub)
-  | all α ih =>
+  | @all n α ih =>
+    -- After unfolding relativize for .all: we get .all (imp guard (relativize α))
+    -- After eval of .all: ∀ x, eval(Fin.cons x env)(imp guard (relativize α))
     simp only [relativize, eval]
     constructor
-    · -- Forward: ∀ x : M.carrier, guard → relativize(α) ⟹ ∀ x_sub, α
+    · -- Forward: bounded universal on M → universal on subinterval
       intro h_all x_sub
-      -- Apply h_all with x_sub.val
-      have h_step := h_all x_sub.val
-      -- Show the guard is satisfied
+      specialize h_all x_sub.val
+      -- h_all has the form: eval of (imp guard (relativize α))
+      -- which is ¬(guard ∧ ¬(relativize α))
+      -- We need to show the guard holds and extract the body
+      have h_lo_x : lo ≤ x_sub.val := x_sub.property.1
+      have h_x_hi : x_sub.val ≤ hi := x_sub.property.2
+      -- Use eval_imp to convert
+      rw [eval_imp] at h_all
       have h_guard : eval M (Fin.cons x_sub.val (relativize_env M lo hi env_sub))
-          (.and (MonadicFormula.leq ⟨n + 1, by omega⟩ ⟨0, by omega⟩)
-                (MonadicFormula.leq ⟨0, by omega⟩ ⟨n + 2, by omega⟩)) := by
-        simp only [eval, MonadicFormula.leq, not_lt, Fin.cons]
-        constructor
+          (MonadicFormula.and
+            (MonadicFormula.leq ⟨n + 1, by omega⟩ ⟨0, by omega⟩)
+            (MonadicFormula.leq ⟨0, by omega⟩ ⟨n + 2, by omega⟩)) := by
+        simp only [eval, eval_leq]
+        -- Goal: env ⟨n+1⟩ ≤ env ⟨0⟩ ∧ env ⟨0⟩ ≤ env ⟨n+2⟩
+        -- where env = Fin.cons x_sub.val (relativize_env M lo hi env_sub)
+        -- env ⟨0⟩ = x_sub.val, env ⟨n+1⟩ = lo, env ⟨n+2⟩ = hi
+        rw [relativize_env_cons] at h_all ⊢
+        refine ⟨?_, ?_⟩
         · -- lo ≤ x_sub.val
-          show relativize_env M lo hi env_sub ⟨n, by omega⟩ ≤ x_sub.val
-          rw [relativize_env_lo]; exact x_sub.property.1
+          simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega),
+            dif_neg (show ¬ (n + 1 < n + 1) from by omega),
+            show (n + 1 = n + 1) from rfl, ite_true, Fin.cons_zero]
+          exact h_lo_x
         · -- x_sub.val ≤ hi
-          show x_sub.val ≤ relativize_env M lo hi env_sub ⟨n + 1, by omega⟩
-          rw [relativize_env_hi]; exact x_sub.property.2
-      -- Extract the body from the implication
-      have h_imp := h_step h_guard
-      -- Rewrite using relativize_env_cons to apply IH
-      rw [relativize_env_cons] at h_imp
-      exact (ih (Fin.cons x_sub env_sub)).mp h_imp
-    · -- Backward: ∀ x_sub, α ⟹ ∀ x : M.carrier, guard → relativize(α)
-      intro h_all x h_guard
-      -- Extract lo ≤ x ≤ hi from the guard
+          simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega),
+            dif_neg (show ¬ (n + 2 < n + 1) from by omega),
+            show ¬ (n + 2 = n + 1) from by omega, ite_false, Fin.cons_zero]
+          exact h_x_hi
+      have h_body := h_all h_guard
+      rw [relativize_env_cons] at h_body
+      exact (ih (Fin.cons x_sub env_sub)).mp h_body
+    · -- Backward: universal on subinterval → bounded universal on M
+      intro h_all x
+      rw [eval_imp]
+      intro h_guard
+      -- Extract lo ≤ x ∧ x ≤ hi from h_guard
       simp only [eval, MonadicFormula.leq, not_lt] at h_guard
-      have ⟨h_lo_x, h_x_hi⟩ := h_guard
-      -- Convert to Fin.cons for the env
       have h_lo : lo ≤ x := by
-        show relativize_env M lo hi env_sub ⟨n, by omega⟩ ≤ x at h_lo_x
-        rw [relativize_env_lo] at h_lo_x; exact h_lo_x
+        have := h_guard.1
+        simp [Fin.cons] at this
+        rwa [relativize_env_lo] at this
       have h_hi : x ≤ hi := by
-        show x ≤ relativize_env M lo hi env_sub ⟨n + 1, by omega⟩ at h_x_hi
-        rw [relativize_env_hi] at h_x_hi; exact h_x_hi
-      -- Form the subinterval element
+        have := h_guard.2
+        simp [Fin.cons] at this
+        rwa [relativize_env_hi] at this
       let x_sub : (M.subinterval sig lo hi).carrier := ⟨x, h_lo, h_hi⟩
-      -- Apply IH in the reverse direction
       rw [relativize_env_cons (x_sub := x_sub)]
       exact (ih (Fin.cons x_sub env_sub)).mpr (h_all x_sub)
-  | ex α ih =>
+  | @ex n α ih =>
     simp only [relativize, eval]
     constructor
-    · -- Forward: ∃ x with guard ∧ relativize(α) ⟹ ∃ x_sub, α
-      intro ⟨x, h_guard_body⟩
-      simp only [eval, MonadicFormula.leq, not_lt] at h_guard_body
-      obtain ⟨⟨h_lo_x, h_x_hi⟩, h_body⟩ := h_guard_body
+    · -- Forward: ∃ x with guard ∧ body → ∃ x_sub
+      intro ⟨x, h_guard, h_body⟩
+      simp only [eval, MonadicFormula.leq, not_lt] at h_guard
       have h_lo : lo ≤ x := by
-        show relativize_env M lo hi env_sub ⟨n, by omega⟩ ≤ x at h_lo_x
-        rw [relativize_env_lo] at h_lo_x; exact h_lo_x
+        have := h_guard.1
+        simp [Fin.cons] at this
+        rwa [relativize_env_lo] at this
       have h_hi : x ≤ hi := by
-        show x ≤ relativize_env M lo hi env_sub ⟨n + 1, by omega⟩ at h_x_hi
-        rw [relativize_env_hi] at h_x_hi; exact h_x_hi
+        have := h_guard.2
+        simp [Fin.cons] at this
+        rwa [relativize_env_hi] at this
       let x_sub : (M.subinterval sig lo hi).carrier := ⟨x, h_lo, h_hi⟩
       rw [relativize_env_cons (x_sub := x_sub)] at h_body
       exact ⟨x_sub, (ih (Fin.cons x_sub env_sub)).mp h_body⟩
-    · -- Backward: ∃ x_sub, α ⟹ ∃ x with guard ∧ relativize(α)
+    · -- Backward: ∃ x_sub → ∃ x with guard ∧ body
       intro ⟨x_sub, h_body⟩
       refine ⟨x_sub.val, ?_, ?_⟩
-      · simp only [eval, MonadicFormula.leq, not_lt]
+      · -- Guard: lo ≤ x_sub.val ∧ x_sub.val ≤ hi
+        simp only [eval, MonadicFormula.leq, not_lt]
         constructor
-        · show relativize_env M lo hi env_sub ⟨n, by omega⟩ ≤ x_sub.val
+        · simp [Fin.cons]
           rw [relativize_env_lo]; exact x_sub.property.1
-        · show x_sub.val ≤ relativize_env M lo hi env_sub ⟨n + 1, by omega⟩
+        · simp [Fin.cons]
           rw [relativize_env_hi]; exact x_sub.property.2
-      · rw [relativize_env_cons (x_sub := x_sub)]
+      · -- Body
+        rw [relativize_env_cons (x_sub := x_sub)]
         exact (ih (Fin.cons x_sub env_sub)).mpr h_body
 
 /--

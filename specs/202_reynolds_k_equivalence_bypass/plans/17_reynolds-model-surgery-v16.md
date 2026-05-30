@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Bounded Quantifier Relativization Infrastructure [IN PROGRESS]
+### Phase 0: Bounded Quantifier Relativization Infrastructure [PARTIAL]
 
 **Goal**: Build the infrastructure in MonadicFO.lean that allows expressing "formula phi holds on the subinterval [lo, hi]" as a MonadicFormula on the full structure where all quantifiers are relativized to the interval [lo, hi]. This is the missing ~200-line infrastructure identified by the Phase 1 blocker analysis.
 
@@ -94,7 +94,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
 2. **Tier 2 (fallback, ~200 lines)**: Define relativization for arbitrary `MonadicFormula sig n`, producing `MonadicFormula sig (n + 2)`. More general but requires careful De Bruijn index management. Only attempt if Tier 1 is insufficient.
 
 **Tasks**:
-- [ ] **Task 0.1**: Define `MonadicFormula.leq` -- Order comparison `x_i <= x_j` as syntactic sugar (~10 lines)
+- [x] **Task 0.1**: Define `MonadicFormula.leq` -- Order comparison `x_i <= x_j` as syntactic sugar (~10 lines) *(completed)*
   ```lean
   /-- x_i <= x_j, defined as not (x_j < x_i) -/
   def MonadicFormula.leq {sig : MonadicSignature} {n : Nat}
@@ -103,7 +103,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   ```
   - Prove `eval M env (MonadicFormula.leq i j) <-> env i <= env j`
 
-- [ ] **Task 0.2**: Define `MonadicFormula.imp` and `MonadicFormula.or` -- Boolean connectives as syntactic sugar (~10 lines)
+- [x] **Task 0.2**: Define `MonadicFormula.imp` and `MonadicFormula.or` -- Boolean connectives as syntactic sugar (~10 lines) *(completed)*
   ```lean
   /-- Implication: not alpha or beta -/
   def MonadicFormula.imp {sig : MonadicSignature} {n : Nat}
@@ -117,7 +117,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   ```
   - Prove eval lemmas for each
 
-- [ ] **Task 0.3**: Define `relativize_sentence` -- Sentence relativization to interval [lo, hi] (~40 lines)
+- [x] **Task 0.3**: Define `relativize_sentence` -- Sentence relativization to interval [lo, hi] (~40 lines) *(completed — defined as `relativize` for general n, then specialized)*
   ```lean
   /-- Relativize a sentence to the interval [var 0, var 1].
       Transforms MonadicSentence sig (= MonadicFormula sig 0) into
@@ -135,7 +135,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   - For `not alpha`, `and alpha beta`: structural recursion
   - De Bruijn management: at quantifier depth `d`, the lo/hi variables have shifted indices `d` and `d+1` (since each `all`/`ex` shifts them up by 1)
 
-- [ ] **Task 0.4**: Prove `relativize_sentence_correct` -- Correctness theorem (~60 lines)
+- [x] **Task 0.4**: Prove `relativize_sentence_correct` -- Correctness theorem (~60 lines) *(completed — proved via general `relativize_correct` with `relativize_env` and commutation lemmas)*
   ```lean
   theorem relativize_sentence_correct {sig : MonadicSignature}
       (M : OrderedMonadicStructure sig)
@@ -150,7 +150,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   - Quantifier cases: show that quantifying over `{x : M.carrier // lo <= x /\ x <= hi}` is the same as quantifying over `M.carrier` with the interval guard
   - The key lemma for quantifier cases: `(forall (x : (M.subinterval sig lo hi).carrier), P x.val) <-> (forall (x : M.carrier), lo <= x -> x <= hi -> P x)` and the existential dual
 
-- [ ] **Task 0.5**: Define `nf_to_sentence` -- Convert NormalForm evaluation to sentence evaluation (~40 lines)
+- [ ] **Task 0.5**: Define `nf_to_sentence` -- Convert NormalForm evaluation to sentence evaluation (~40 lines) *(not started — deferred to Phase 1)*
   ```lean
   /-- For each normal form index nf, construct a MonadicSentence that
       is true in M iff nf_eval_nf M k 0 Fin.elim0 nf holds.
@@ -165,7 +165,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   - Prove `nf_to_sentence_correct`: `eval M Fin.elim0 (nf_to_sentence sig k nf) <-> nf_eval_nf M k 0 Fin.elim0 nf`
   - This connects the NormalForm world (used in `very_good`/`contemp_equiv`) to the MonadicFormula world (used in `US_expressively_complete_over_prior`)
 
-- [ ] **Task 0.6**: Prove `good_as_monadic_sentence` -- Express `good sig k (M.subinterval sig lo hi)` as a MonadicFormula with 2 free vars (~30 lines)
+- [ ] **Task 0.6**: Prove `good_as_monadic_sentence` -- Express `good sig k (M.subinterval sig lo hi)` as a MonadicFormula with 2 free vars (~30 lines) *(not started — deferred to Phase 1)*
   ```lean
   /-- The property good(M.subinterval(lo, hi)) is expressible as a
       MonadicFormula sig 2 evaluated at [lo, hi]. -/
