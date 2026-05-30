@@ -1,9 +1,12 @@
 {
-  "status": "completed",
-  "summary": "Plan revised to v16 with Phase 0 relativization infrastructure",
+  "status": "partial",
+  "summary": "Phase 0 partially completed: relativization infrastructure (Tasks 0.1-0.4) is sorry-free in MonadicFO.lean. Tasks 0.5-0.6 and Phases 1-4 remain.",
   "phases_completed": 0,
   "phases_total": 5,
   "blockers": [],
-  "continuation_context": null,
+  "continuation_context": {
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260530.md",
+    "next_phase": 0
+  },
   "next_action_hint": "continue_implement"
 }
