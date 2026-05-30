@@ -178,7 +178,7 @@ we can pick distinct fresh atoms for each non-atom predicate.
 ---
 
 ### Phase 2: Reynolds Model Surgery Core (Lemmas 6-13 + Theorem 14) [IN PROGRESS]
-*(deviation: altered -- contradiction setup complete, model surgery core (Lemmas 6-13) deferred to continuation)*
+*(deviation: altered -- proof restructured into gap_contradicts_prior + gap_contradicts_prior_below helper lemmas; no_gaps_discrete_model_surgery now sorry-free; 2 core lemmas remain with sorry requiring Reynolds Lemmas 6-13)*
 
 **Goal**: Close the mathematical sorry at GoodStructuresModelSurgery.lean:348
 (`no_gaps_discrete_model_surgery`) by implementing the full Reynolds model

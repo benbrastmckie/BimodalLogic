@@ -283,35 +283,52 @@ def all_predicates_accessible {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop :=
   ∀ p : sig.preds, predicate_accessible M atomMap p
 
-/-! ## Main Theorem -/
+/-! ## Reynolds Theorem 14: Class boundaries cannot be at gaps -/
 
-/-
-**DEPRECATED -- MATHEMATICALLY FALSE**: `prior_implies_archimedean_of_accessible`
-was removed. It claimed Prior-UZ + Prior-SZ + h_accessible → IsSuccArchimedean,
-which is FALSE (Z+Z counterexample). The correct theorem is
-`no_gaps_discrete_model_surgery` below with h_surj.
--/
+/-- **Reynolds Theorem 14 (upward)**: succ-closed class bounded above
+    contradicts Prior-UZ/SZ + h_surj (Reynolds 1994 Lemmas 6-13). -/
+theorem gap_contradicts_prior (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (a : M.carrier)
+    (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (h_bounded_above : ∃ y : M.carrier, a < y ∧ ¬ contemp_equiv sig k M a y) :
+    False := by
+  sorry
+
+/-- **Reynolds Theorem 14 (downward)**: succ-closed class unbounded above but
+    bounded below contradicts Prior-UZ/SZ + h_surj (dual via Prior-SZ). -/
+theorem gap_contradicts_prior_below (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (a : M.carrier)
+    (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+      contemp_equiv sig k M a (Order.succ c))
+    (h_unbounded_above : ∀ y : M.carrier, a < y → contemp_equiv sig k M a y)
+    (h_bounded_below : ∃ y : M.carrier, y < a ∧ ¬ contemp_equiv sig k M a y) :
+    False := by
+  sorry
+
+/-! ## Main Theorem -/
 
 /--
 **Reynolds Theorem 14** (no_gaps_discrete with h_surj): In a discrete Prior
 structure with atom-surjective atomMap, contemporaneous equivalence class
 boundaries occur only at successor pairs, never at gaps.
 
-The proof proceeds by contradiction:
-1. Assume no successor boundary for class(a).
-2. The class is succ-closed, so by `class_gap_exists`, a Gap exists.
-3. The Reynolds model surgery (Lemmas 6-13) derives contradiction:
-   a. Construct temporal formula R detecting right-gap class boundaries
-      (via `US_expressively_complete_over_prior` from h_surj).
-   b. Analyze R-intervals, show classes within are elementarily equivalent.
-   c. Perform model surgery: replace a "bad" interval by one class.
-   d. Show temporal truth is preserved (13 subcases for U/S).
-   e. In the surgery model, R holds at I but I's class ends at a point
-      (not a gap). Contradiction.
-
 See Reynolds 1994, Section 7, Lemmas 6-13, Theorem 14.
 -/
-
 theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -323,95 +340,27 @@ theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) (k : Nat)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- Step 1: By contradiction, assume no successor boundary.
+  -- By contradiction, assume no successor boundary.
   by_contra h_no_boundary
   push_neg at h_no_boundary
-  -- h_no_boundary : ∀ c, contemp_equiv sig k M a c → contemp_equiv sig k M a (Order.succ c)
-  -- (push_neg converts ¬∃ c, P c ∧ ¬Q c to ∀ c, P c → Q c)
   have h_succ_closed : ∀ c, contemp_equiv sig k M a c →
       contemp_equiv sig k M a (Order.succ c) := h_no_boundary
-  -- Step 2: WLOG a < b (if b < a, use symmetry of contemp_equiv)
-  -- We need a < b for class_gap_exists. Since ¬(a ~M b) and ~M is symmetric,
-  -- we can assume a ≤ b or b ≤ a.
-  -- Note: if a = b, then a ~M a (reflexivity), contradicting h_diff_class.
-  have hab_ne : a ≠ b := fun h => h_diff_class (h ▸ (contemp_equiv_is_equiv sig k M).refl a)
-  -- Get a < b by taking a and b in the correct order
-  -- (The class is both succ-closed and pred-closed, so both directions work.)
-  -- Actually, class_gap_exists needs a < b specifically.
-  -- We can ensure this by using a and b when a < b, or b and a when b < a.
-  rcases lt_or_gt_of_ne hab_ne with hab_lt | hba_lt
-  · -- Case a < b
-    -- Step 3: Gap exists
-    have ⟨gamma⟩ := class_gap_exists sig k M a b hab_lt h_diff_class h_succ_closed
-    -- Step 4: The Reynolds model surgery argument (Lemmas 6-13)
-    -- derives contradiction from the existence of the gap + Prior-UZ/SZ + h_surj.
-    -- This is the mathematical core of the proof, requiring ~500 lines.
-    -- See Reynolds 1994, Section 7, pp.124-129.
-    --
-    -- The full argument:
-    -- (a) By US_expressively_complete_over_prior (from h_surj), construct temporal
-    --     formula R ↔ "my class ends at a gap on the right".
-    -- (b) R-intervals are open, with no first/last class (Lemmas 7-8).
-    -- (c) Classes in R-intervals are elementarily equivalent (Lemma 9).
-    -- (d) Bad intervals: both R and L hold throughout (Lemma 10).
-    -- (e) Formula propagation in bad intervals (Lemma 11).
-    -- (f) Model surgery: replace bad interval Q0 by one class I (Lemma 12).
-    --     Truth preservation for 13 subcases (7 forward + 6 backward for U,
-    --     mirror for S).
-    -- (g) In surgery model N, R holds at I (by Lemma 12) but I's class ends at
-    --     first point of Q+ (a point, not a gap). Contradiction (Lemma 13).
-    sorry
-  · -- Case b < a: use symmetry
-    have h_diff_ba : ¬ contemp_equiv sig k M b a := fun h =>
-      h_diff_class ((contemp_equiv_is_equiv sig k M).symm h)
-    -- The succ_closed property for class(b):
-    -- Since class(a) is succ-closed and pred-closed,
-    -- class(b) might not be succ-closed. We need a different approach.
-    -- Actually, we should use a and b in the correct order from the start.
-    -- The correct approach: show that the claim is equivalent for any
-    -- representative of the class. Since a ≁ b, we can find c with
-    -- a ~M c and ¬(a ~M succ(c)) or work with the original contradiction.
-    --
-    -- Simpler: from h_no_boundary, we have a ~M succ^n(a) for all n.
-    -- Also a ~M pred^n(a) for all n (by contemp_equiv_pred_closed).
-    -- Since ¬(a ~M b) with b < a:
-    -- By contemp_equiv_pred_closed applied iteratively, pred^n(a) ~M a.
-    -- If b = pred^n(a), then a ~M b, contradiction.
-    -- Otherwise, there is a gap BELOW a as well.
-    -- class_gap_exists can work in both directions.
-    --
-    -- The cleanest approach: use the fact that in a discrete linear order,
-    -- a < b or b < a. We already handle a < b above.
-    -- For b < a, we use class_gap_exists with reversed roles.
-    -- But class_gap_exists needs succ-closure of class(b), not class(a).
-    --
-    -- Actually: h_succ_closed gives succ-closure of class(a).
-    -- pred_closed gives pred-closure of class(a).
-    -- b < a and ¬(a ~M b).
-    -- The class of a contains all succ^n(a) and pred^n(a).
-    -- Since b < a and b ∉ class(a), b is below the class of a.
-    -- So there is a gap below a. This means the complement of class(a)
-    -- below a has no maximum, which is the gap property.
-    --
-    -- We can construct the gap directly from h_succ_closed and h_diff_ba.
-    -- Actually, pred-closure of class(a) gives: a ~M pred^n(a) for all n.
-    -- And ¬(a ~M b) with b < a.
-    -- By the same argument as class_gap_exists but going backward:
-    -- the class of a (going downward from a) is pred-closed and bounded below by b.
-    -- This gives a gap below a.
-    --
-    -- For now, we can apply class_gap_exists to b, a with b < a and show
-    -- ¬(b ~M a). Then we need succ_closed for class(b).
-    -- But we don't have succ_closed for class(b) directly.
-    --
-    -- Alternative: just use gap_of_not_succ_archimedean directly.
-    -- From h_succ_closed + h_diff_class, the order is NOT archimedean.
-    have h_not_arch : ¬ @IsSuccArchimedean M.carrier
-        (M.carrier_order.toPreorder) inferInstance := by
-      intro h_arch
-      exact h_diff_class (one_class_archimedean sig k M a b)
-    have ⟨gamma⟩ := gap_of_not_succ_archimedean h_not_arch
-    -- Same model surgery argument applies here.
-    sorry
+  have hab_ne : a ≠ b := fun h =>
+    h_diff_class (h ▸ (contemp_equiv_is_equiv sig k M).refl a)
+  -- Case split: is class(a) bounded above?
+  by_cases h_bdd : ∃ y : M.carrier, a < y ∧ ¬ contemp_equiv sig k M a y
+  · -- Class bounded above: apply gap_contradicts_prior
+    exact gap_contradicts_prior sig k M atomMap h_surj h_prior_UZ h_prior_SZ
+      a h_succ_closed h_bdd
+  · -- Class NOT bounded above: all y > a satisfy a ~M y
+    push_neg at h_bdd
+    -- Since class(a) is proper (¬(a ~M b)), b must be below a
+    have hba_lt : b < a := by
+      rcases lt_or_gt_of_ne hab_ne with h | h
+      · exact absurd (h_bdd b h) h_diff_class
+      · exact h
+    -- Class bounded below: apply gap_contradicts_prior_below
+    exact gap_contradicts_prior_below sig k M atomMap h_surj h_prior_UZ h_prior_SZ
+      a h_succ_closed h_bdd ⟨b, hba_lt, h_diff_class⟩
 
 end Bimodal.Metalogic.WeakCanonical
