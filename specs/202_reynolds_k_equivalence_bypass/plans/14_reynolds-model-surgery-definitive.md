@@ -177,8 +177,19 @@ we can pick distinct fresh atoms for each non-atom predicate.
 
 ---
 
-### Phase 2: Reynolds Model Surgery Core (Lemmas 6-13 + Theorem 14) [IN PROGRESS]
-*(deviation: altered -- proof restructured into gap_contradicts_prior + gap_contradicts_prior_below helper lemmas; no_gaps_discrete_model_surgery now sorry-free; 2 core lemmas remain with sorry requiring Reynolds Lemmas 6-13)*
+### Phase 2: Reynolds Model Surgery Core (Lemmas 6-13 + Theorem 14) [BLOCKED]
+*(deviation: altered -- proof restructured into gap_contradicts_prior + gap_contradicts_prior_below helper lemmas; no_gaps_discrete_model_surgery now sorry-free; 2 core lemmas remain with sorry requiring Reynolds Lemmas 6-13. prior_SZ_last_transition added sorry-free. Full model surgery (400-600 lines) required -- see blocker below.)*
+
+**BLOCKER** (Phase 2):
+- **What failed**: `gap_contradicts_prior` and `gap_contradicts_prior_below` remain sorry'd. These require the full Reynolds model surgery (Lemmas 6-13, Theorem 14) to close.
+- **What was tried**:
+  1. Direct predicate argument (report 15, Section A.4-A.6): FAILS in Case B -- predicate transitions at successor pairs in the complement are legitimate.
+  2. Enriched-signature approach (adding class membership as a new predicate): Prior-UZ does NOT hold for the enriched structure because the class membership predicate transitions at a gap (no first occurrence), which violates the first-occurrence property.
+  3. Direct first-transition argument: using any temporal formula that holds at a and fails at y, Prior-UZ gives a successor-pair transition, but this doesn't contradict class succ-closure because the transition is for a generic formula, not class membership.
+  4. All approaches converge on: the full Reynolds model surgery IS required. There is no shortcut.
+- **Why it's stuck**: The model surgery requires constructing a new `OrderedMonadicStructure` by excising the gap region (Q_minus ∪ I ∪ Q_plus construction), proving SuccOrder/PredOrder/NoMaxOrder/NoMinOrder for the new carrier, and proving temporal truth preservation for all 6 formula constructors (with 13 subcases for Until/Since). This is estimated at 400-600 lines of Lean code.
+- **What is needed**: Full implementation of Reynolds Lemmas 6-13 as outlined in Tasks 2.1-2.12 below. This is 12+ hours of implementation work requiring careful construction of the surgery domain, order inheritance, and case-by-case truth preservation.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Close the mathematical sorry at GoodStructuresModelSurgery.lean:348
 (`no_gaps_discrete_model_surgery`) by implementing the full Reynolds model
