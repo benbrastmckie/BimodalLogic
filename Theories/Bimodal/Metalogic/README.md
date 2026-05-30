@@ -354,6 +354,17 @@ grep -n "bmcs_representation" Theories/Bimodal/Metalogic/Bundle/Completeness.lea
 ls Theories/Bimodal/Metalogic/Soundness.lean
 ```
 
+## Related Documentation
+
+- [Parent README](../README.md)
+- [Core README](Core/README.md)
+- [Bundle README](Bundle/README.md)
+- [Decidability README](Decidability/README.md)
+- [BXCanonical README](BXCanonical/README.md)
+- [WeakCanonical README](WeakCanonical/README.md)
+- [SoundnessLemmas README](SoundnessLemmas/README.md)
+- [Algebraic README](Algebraic/README.md)
+
 ## References
 
 - Modal Logic, Blackburn et al., Chapters 4-5

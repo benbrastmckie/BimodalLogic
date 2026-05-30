@@ -148,21 +148,22 @@ Replace `zIntervalTaskFrame` with a richer TaskFrame where WorldState carries en
 
 **Approach 1: Use ParametricCanonicalTaskFrame directly.** The existing `dd_countermodel_chronicle_discrete` does exactly this. This is the currently active pipeline. The Reynolds pipeline (Steps 1-7) would be bypassed entirely; one proves the countermodel property differently using the parametric truth lemma.
 
-**Approach 2: Build a Z-interval-aware TaskFrame.** Define:
+**Approach 2: Build a Z-interval-aware TaskFrame.** One might try:
 ```lean
 def zIntervalTaskFrameRich : TaskFrame Int where
   WorldState := Int   -- or Set Formula
   task_rel := fun w d u => u = w + d   -- deterministic timeline
-  nullity_identity := ...   -- u = w + 0 <-> u = w
-  forward_comp := ...       -- standard
-  converse := ...           -- standard
+  ...
 ```
-Then `valuation : Int -> Atom -> Prop` (via WorldState = Int) becomes position-dependent. Histories would have `states t _ = t` (identity function on time). However, this requires:
-- Proving ShiftClosed for the resulting Omega
-- Proving the truth correspondence by induction on formula structure
-- Handling the box case: with multiple histories all mapping `states t _ = t`, box quantification reduces to universal quantification over Omega, which with a singleton Omega gives transparency.
+Then `valuation : Int -> Atom -> Prop` becomes position-dependent. However, this approach ALSO fails due to ShiftClosed constraints:
 
-This approach would make `h_truth_corr` satisfiable, but requires non-trivial construction.
+With `task_rel w d u := (u = w + d)`, `respects_task` forces `states s hs = states t ht + (s - t)`. So `states t _ = c + t` for some constant offset `c`. Different histories differ only in `c`. Time-shifting a history by Delta changes `c` to `c + Delta`. For ShiftClosed singleton Omega, we need `time_shift tau Delta = tau` for all Delta, which requires `c + Delta = c` for all Delta -- impossible for non-trivial D.
+
+With non-singleton Omega, box quantification becomes `forall sigma in Omega, truth_at sigma t phi`. For atom `p` at time `t`, history with offset `c` evaluates `v(c + t, p)`. For box-transparency, ALL histories must agree: `v(c + t, p) = v(c' + t, p)` for all c, c'. This forces `v` to be constant in its first argument, defeating position-dependence.
+
+**This is the deep structural tension**: position-dependent atoms require world states that vary with time, but ShiftClosed Omega requires histories that are invariant under time-shift, and the TaskFrame axioms link these two requirements in a way that prevents simultaneous satisfaction.
+
+The ParametricCanonical approach resolves this by having `WorldState = MCS` (informationally rich), a non-deterministic task relation (ExistsTask), and a non-singleton Omega (the full BFMCS family). The non-determinism in the task relation allows multiple world-state assignments to coexist at the same time point, making box quantification meaningful rather than transparent.
 
 ---
 
@@ -222,22 +223,24 @@ The plan (documented in report 10) is to prove `succ_cofinal` as a consequence o
 
 ## 8. Conclusions
 
-### The sorry is NOT fundamentally unsolvable, but it IS unsolvable with the current zIntervalTaskFrame
+### The sorry IS fundamentally unsolvable within ANY simple TaskFrame construction
 
-1. **The assessment "fundamentally unsolvable" is correct for the current approach** (`WorldState = Unit`). No `TaskModel` can make `h_truth_corr` true when atom truth varies by position.
+1. **The assessment "fundamentally unsolvable" is CORRECT -- and the problem is deeper than previously understood.** It is not just `WorldState = Unit` that fails. ANY TaskFrame construction that tries to directly encode the Z-interval as a deterministic timeline faces an inherent tension between:
+   - **Position-dependent atom truth** (requires world states that vary with time)
+   - **ShiftClosed Omega** (requires time-shift invariance of histories)
+   - **TaskFrame axioms** (link world states to durations via compositionality)
 
-2. **The assessment is INCORRECT as a statement about the Reynolds pipeline generally.** The mathematical content (Steps 1-7) is valid. The packaging step can be solved with a richer TaskFrame construction.
+2. **The Reynolds pipeline Steps 1-7 are mathematically correct.** The transfer from chronicle to Z-interval via k-equivalence works. The problem is exclusively in the final packaging step.
 
-3. **The practical recommendation remains unchanged**: use the parametric canonical model pipeline (`dd_countermodel_chronicle_discrete`) and prove `succ_cofinal` via `no_gaps_discrete` -> `one_class`. This is the path of least resistance because the packaging infrastructure already exists and works.
+3. **The fundamental issue is semantic**: `temporal_truth` on an `OrderedMonadicStructure` and `truth_at` on a `TaskFrame` are different semantic frameworks. The monadic structure has position-dependent predicates built in. The TaskFrame has world states with valuations, where position-dependence must be encoded through varying world states -- but this conflicts with ShiftClosed requirements.
 
-4. **If someone wanted to make the Reynolds pipeline work**, they would need to:
-   - Build a new TaskFrame with `WorldState = Int` (or `WorldState = Set Formula`)
-   - Build corresponding WorldHistory and Omega constructions
-   - Prove ShiftClosed for the new Omega
-   - Prove truth_at <-> temporal_truth by induction on formula structure
-   - Also expose `Z.lo = none, Z.hi = none` from `chronicle_is_good_direct`
-   
-   This is substantial Lean engineering but not mathematically blocked.
+4. **The ONLY known solution is the ParametricCanonical construction**, which resolves the tension by:
+   - Using `WorldState = MCS` (rich enough for position-dependent atoms)
+   - Using non-deterministic task relation (ExistsTask)
+   - Using non-singleton Omega (full BFMCS family)
+   - Never going through `temporal_truth` at all -- using the algebraic truth lemma directly
+
+5. **Practical recommendation**: The Reynolds pipeline (countermodel_discrete_reynolds) should be marked as a theoretical dead end for the packaging step. The active pipeline (`dd_countermodel_chronicle_discrete`) should be the focus. Prove `succ_cofinal` via `no_gaps_discrete` -> `one_class` to make the active pipeline sorry-free.
 
 ### Exact Goal State at the Sorry
 
