@@ -1,7 +1,7 @@
 # Implementation Plan: Task #183
 
 - **Task**: 183 - Documentation Standards: READMEs and Comments
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: None (tasks 131, 175 may cause future re-documentation; proceed independently)
 - **Research Inputs**: specs/183_documentation_standards_readmes_comments/reports/01_documentation-audit.md, specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md
@@ -98,30 +98,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Define Standards and Create Lint Scripts [NOT STARTED]
+### Phase 1: Define Standards and Create Lint Scripts [COMPLETED]
 
 **Goal**: Establish the three documentation standards (README template, module docstring quality tiers, comment conventions) as reference documents, and create shell scripts for automated README health checking.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/docs/reference/readme-standard.md` defining the README template:
-  - Required sections: title, scope description, module inventory table (file, lines, definitions), dependency diagram, cross-links to parent/sibling/child READMEs
-  - Optional sections: sorry status, architecture notes, verification commands
-  - Include "Last verified: YYYY-MM-DD" field
-  - Include note: "This README was last verified before task 131 (module reorg) -- verify file list is still current after that task"
-- [ ] Create `Theories/Bimodal/docs/reference/docstring-standard.md` defining module docstring quality tiers:
-  - Tier 1 (Minimal): Re-export aggregators -- title + 1-sentence scope (appropriate for ~5 files)
-  - Tier 2 (Standard): Main Definitions + Main Results sections (minimum for all definition-bearing files)
-  - Tier 3 (Rich): Standard + Implementation Notes or References (encouraged for complex files)
-  - Tier 4 (Extensive): Rich + proof strategy, literature references, dependency flowcharts (metalogic files)
-- [ ] Create `Theories/Bimodal/docs/reference/comment-convention.md` defining comment tag usage:
-  - NOTE: for documenting removed/refactored items (current usage is appropriate)
-  - TODO: for planned improvements (keep sparse, prefer task system)
-  - FIX: for known bugs requiring attention
-  - QUESTION: for design decisions needing discussion
-  - #check: permitted in Examples/ and Theorems/ for API demonstration; discouraged in library core
-- [ ] Create `scripts/readme-inventory.sh`: Given a directory, output a Markdown module inventory table (file, lines, definition count)
-- [ ] Create `scripts/readme-lint.sh`: Check all READMEs for broken file references, missing files in inventories, missing READMEs in Lean-containing directories, and outdated counts
-- [ ] Test both scripts against the current tree and verify output matches delta research audit findings (20 missing READMEs, broken references)
+- [x] Create `Theories/Bimodal/docs/reference/readme-standard.md` defining the README template *(completed)*
+- [x] Create `Theories/Bimodal/docs/reference/docstring-standard.md` defining module docstring quality tiers *(completed)*
+- [x] Create `Theories/Bimodal/docs/reference/comment-convention.md` defining comment tag usage *(completed)*
+- [x] Create `scripts/readme-inventory.sh`: Given a directory, output a Markdown module inventory table *(completed)*
+- [x] Create `scripts/readme-lint.sh`: Check all READMEs for broken file references, missing files in inventories, missing READMEs in Lean-containing directories *(completed)*
+- [x] Test both scripts against the current tree and verify output matches delta research audit findings (20 missing READMEs, broken references) *(completed: 20 missing READMEs detected, broken references found)*
 
 **Timing**: 2 hours
 
