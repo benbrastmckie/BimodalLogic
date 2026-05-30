@@ -1097,45 +1097,25 @@ theorem countermodel_discrete_reynolds
   -- Step 4: Prove chronicle is good via one_class path
   have h_UZ := chronicle_semantic_prior_UZ CM sig atomMap_rev atomMap_fwd
   have h_SZ := chronicle_semantic_prior_SZ CM sig atomMap_rev atomMap_fwd
-  -- Step 4a: Prove predicate accessibility for the chronicle
-  -- Every predicate p : sig.preds has a formula f with temporal_truth f ↔ M.interp p.
-  -- sig.preds = Finset.cons bot φ.predFormulas.
-  -- For p = ⟨f, h⟩ with f ∈ φ.predFormulas: use f directly.
-  --   temporal_truth M atomMap_fwd t f = M.interp (atomMap_fwd f) t = M.interp p t.
-  --   (since f is an atom or box formula, temporal_truth directly evaluates M.interp)
-  -- For p = ⟨bot, h⟩: use Formula.bot.
-  --   temporal_truth M atomMap_fwd t bot = False.
-  --   M.interp ⟨bot, h⟩ t = (atomMap_rev ⟨bot, h⟩) ∈ CM.fmcs t = bot ∈ CM.fmcs t = False.
-  have h_acc : ∀ (p : sig.preds), ∃ (f : Formula),
-      ∀ (t : M_struct.carrier),
-        temporal_truth M_struct atomMap_fwd t f ↔ M_struct.interp p t := by
-    intro ⟨f, hf⟩
-    -- Use f itself as the witnessing formula.
-    -- M_struct.interp ⟨f, hf⟩ t = f ∈ CM.fmcs t (by chronicleAsMonadicStructure definition).
-    -- We need: temporal_truth M_struct atomMap_fwd t f ↔ f ∈ CM.fmcs t.
-    -- Use f as the witnessing formula. We prove temporal_truth f ↔ M_struct.interp ⟨f, hf⟩
-    -- by applying chronicle_temporal_truth, which requires a section property.
-    -- We establish the section property using predFormulas_trans.
-    -- Special case: f = bot (vacuously true section, both sides False).
-    have h_section : ∀ g, g ∈ f.predFormulas → atomMap_rev (atomMap_fwd g) = g := by
-      intro g hg
-      -- f ∈ Finset.cons bot φ.predFormulas, so f = bot or f ∈ φ.predFormulas
-      rcases Finset.mem_cons.mp hf with rfl | hf_pred
-      · -- f = bot: bot.predFormulas = ∅, so g ∈ ∅, contradiction
-        simp [Formula.predFormulas] at hg
-      · -- f ∈ φ.predFormulas: g ∈ f.predFormulas → g ∈ φ.predFormulas by transitivity
-        have hg_pred : g ∈ φ.predFormulas := predFormulas_trans φ f hf_pred g hg
-        simp only [atomMap_fwd, dif_pos hg_pred, atomMap_rev, mkAtomMap]
-    refine ⟨f, fun t => ?_⟩
-    -- chronicle_temporal_truth gives: temporal_truth M_struct atomMap_fwd t f ↔ f ∈ CM.fmcs t
-    have h_ctt := chronicle_temporal_truth CM sig atomMap_rev atomMap_fwd f t h_section
-    -- M_struct.interp ⟨f, hf⟩ t = (atomMap_rev ⟨f, hf⟩) ∈ CM.fmcs t = f ∈ CM.fmcs t
-    -- (since atomMap_rev = mkAtomMap = fun p => p.val)
-    show temporal_truth M_struct atomMap_fwd t f ↔ M_struct.interp ⟨f, hf⟩ t
-    simp only [M_struct, chronicleAsMonadicStructure] at h_ctt ⊢
-    exact h_ctt
+  -- Step 4a: Prove h_surj (atom-level surjectivity) for the Reynolds pipeline.
+  -- no_gaps_discrete requires h_surj : ∀ p, ∃ a, atomMap_fwd (.atom a) = p.
+  -- sig.preds = {bot} ∪ φ.predFormulas. For atom predicates (.atom a ∈ predFormulas),
+  -- atomMap_fwd (.atom a) = ⟨.atom a, _⟩ directly. For non-atom predicates
+  -- (bot and .box ψ), we need fresh atoms. This is an engineering construction
+  -- that enriches the atomMap with dedicated atoms for each non-atom predicate.
+  -- The enrichment is valid because chronicle_semantic_prior_UZ/SZ work for ANY
+  -- atomMap, and the section property (atomMap_rev ∘ atomMap_fwd = id on predFormulas)
+  -- is unaffected (fresh atoms are NOT in predFormulas).
+  --
+  -- TODO: Construct surjective atomMap_fwd using fresh atoms for non-atom predicates.
+  -- This requires: (1) enumerate non-atom predicates, (2) assign distinct fresh atoms
+  -- using Atom.fresh_for, (3) extend atomMap_fwd to map fresh atoms to non-atom predicates.
+  -- Since Atom is Infinite and sig.preds is Fintype, this is always possible.
+  -- Pending implementation -- using sorry for h_surj construction.
+  have h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap_fwd (.atom a) = p := by
+    sorry -- TODO: construct surjective atomMap via fresh atoms for non-atom predicates
   have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
-    (operator_depth φ + 2) h_UZ h_SZ h_acc
+    (operator_depth φ + 2) h_surj h_UZ h_SZ
   -- Step 5: Extract Z-interval witness and k-equivalence
   obtain ⟨Z, h_k_equiv⟩ := h_good
   -- Step 6: Prove ¬φ is temporally true at the chronicle root

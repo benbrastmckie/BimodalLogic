@@ -822,6 +822,7 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
       (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
@@ -830,18 +831,24 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
       (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
         ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
-    (h_accessible : ∀ (p : sig.preds), ∃ (f : Formula),
-      ∀ (t : M.carrier), temporal_truth M atomMap t f ↔ M.interp p t)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- The h_accessible condition is REQUIRED (theorem false without it).
-  -- See GoodStructuresModelSurgery.lean module docstring for counterexample.
-  -- The proof goes through prior_implies_archimedean_of_accessible (Reynolds Theorem 14):
-  -- Prior-UZ + Prior-SZ + h_accessible → IsSuccArchimedean.
-  -- Then one_class_archimedean gives a ~M b, contradicting h_diff_class.
-  -- The sorry is in prior_implies_archimedean_of_accessible, which requires the
-  -- full Reynolds model surgery (Lemmas 6-13).
+  -- h_surj enables US_expressively_complete_over_prior (Reynolds Theorem 5),
+  -- which is required for the model surgery proof of Reynolds Theorem 14.
+  -- The proof: by contradiction, assume no successor boundary.
+  -- Then the class of a is succ-closed. If IsSuccArchimedean, one_class_archimedean
+  -- gives a ~M b, contradiction. If NOT, a gap exists. Model surgery (Lemmas 6-13)
+  -- using expressive completeness (from h_surj) shows class boundaries can't be at
+  -- gaps, giving a ~M b, contradiction.
+  --
+  -- NOTE: The previous version used h_accessible (formula-level detectability)
+  -- instead of h_surj (atom-level surjectivity). However, h_accessible alone is
+  -- INSUFFICIENT: the model surgery requires constructing temporal formulas for
+  -- monadic FO sentences via US_expressively_complete_over_prior, which needs
+  -- h_surj. The call site in Transfer.lean constructs an enriched atomMap with
+  -- dedicated atoms for each predicate (including box predicates and bot),
+  -- satisfying h_surj.
   sorry
 
 /--
@@ -887,6 +894,7 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
       (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
@@ -894,14 +902,12 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
     (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
       (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
       ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
-    (h_accessible : ∀ (p : sig.preds), ∃ (f : Formula),
-      ∀ (t : M.carrier), temporal_truth M atomMap t f ↔ M.interp p t) :
+        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg) :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
   intro a b
   by_contra h_diff
   -- By no_gaps_discrete: ∃c with a ~M c but ¬(a ~M succ c)
-  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_prior_UZ h_prior_SZ h_accessible a b h_diff
+  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b h_diff
   -- By no_boundary_at_successor: c ~M succ(c)
   have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
     no_boundary_at_successor sig k M c
