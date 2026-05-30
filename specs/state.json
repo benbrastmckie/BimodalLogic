@@ -1577,7 +1577,7 @@
       "session_id": "sess_1748618400_orch218",
       "planned": "2026-05-30T12:00:00Z",
       "completed": "2026-05-30T18:00:00Z",
-      "completion_summary": "Fixed all 7 schema issues in data/croissant.json (dct:conformsTo namespace, @context term mappings, nl_paraphrase fields, logos-labs URLs, SHA-256 hashes, BMLogic-Bench name, CC BY 4.0 license); updated HF README YAML frontmatter (task_categories, task_ids, mlcroissant tag); added schema synchronization documentation to data/README.md. Manual structural validation passed; mlcroissant CLI not runnable on NixOS (libstdc++ blocker).",
+      "completion_summary": "Fixed all 7 schema issues in data/croissant.json (critical dct:conformsTo namespace fix, @context term mappings, nl_paraphrase benchmark fields, logos-labs/bmlogic-bench URLs, SHA-256 hashes, BMLogic-Bench name, CC BY 4.0 license). Updated data/hf-dataset/README.md with task_categories, task_ids, mlcroissant tag. Updated data/README.md with Croissant section. mlcroissant CLI validation deferred (NixOS libstdc++ issue).",
       "next_artifact_number": 2,
       "memory_candidates": [
         {
@@ -1638,7 +1638,20 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2], [3], [4]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_croissant-hf-research.md",

@@ -1,16 +1,9 @@
 {
-  "status": "blocked",
-  "summary": "Phase 1 blocked: MonadicFormula construction for right_gap_class_prop requires bounded quantifier relativization infrastructure (~200 lines) not present in codebase. No code changes committed. Plan v15 Phase 1 marked BLOCKED with detailed blocker documentation and 3 alternative approaches identified.",
+  "status": "completed",
+  "summary": "Plan revised to v16 with Phase 0 relativization infrastructure",
   "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [
-    "Phase 1 requires constructing MonadicFormula sig 1 encoding right_gap_class_prop. This needs bounded quantifier relativization (expressing subinterval NF evaluation as MonadicFormula with relativized quantifiers), which is ~200 lines of new infrastructure not present in the codebase.",
-    "Alternative approach (Option C): Use Prior-structure-only correctness via table roundtrip (nf_characterizable_by_stavi -> flatten_stavi -> table). This avoids bounded quantifier relativization but requires reworking the MonadicFormula universality requirement.",
-    "All 4 phases of plan v15 depend on Phase 1 (the MonadicFormula construction). Phases 2-4 (model surgery) cannot proceed without Phase 1's results."
-  ],
-  "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-monadic-formula-blocked-20260530.md",
-    "next_phase": 1
-  },
-  "next_action_hint": "revise_plan"
+  "phases_total": 5,
+  "blockers": [],
+  "continuation_context": null,
+  "next_action_hint": "continue_implement"
 }
