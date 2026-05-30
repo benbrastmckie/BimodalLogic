@@ -1,20 +1,24 @@
 {
-  "status": "partial",
-  "summary": "Created ReynoldsModelSurgery.lean with PriorModelData infrastructure and restructured chronicle_gap_contradiction to use it; sorry remains in no_gaps_faithful (Reynolds model surgery body) and two Prior-UZ/SZ fields (need h_fc propagation)",
+  "status": "blocked",
+  "summary": "Phase 2 blocked: no_gaps_faithful for PriorModelData is FALSE (Z+Z counterexample with constant MCS satisfies all hypotheses yet has a gap). h_fc propagation completed, resolving Prior-UZ/SZ sorry. Plan needs restructuring.",
   "phases_completed": 1,
   "phases_total": 3,
   "blockers": [
-    "no_gaps_faithful requires full Reynolds model surgery formalization (Lemmas 6-13, ~400-600 lines)",
-    "chronicle_gap_contradiction's Prior-UZ/SZ fields need h_fc : FrameClass.Discrete <= fc propagated through the function chain"
+    "no_gaps_faithful : IsEmpty (Gap M.domain) for arbitrary PriorModelData is mathematically false. Z+Z (two copies of Z, constant MCS) is a counterexample.",
+    "Plan v12 Phase 2 approach (Reynolds model surgery at PriorModelData level) cannot work because the abstract hypotheses are too weak to prevent gaps.",
+    "Need plan revision: either (A) strengthen PriorModelData, (B) prove gap elimination directly using omega-chain properties, or (C) formalize Reynolds Theorem 15 with EF games."
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-partial-20260529.md",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-counterexample-20260530.md",
     "next_phase": 2
   },
-  "next_action_hint": "continue",
+  "next_action_hint": "revise",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean",
     "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
-    "specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md"
+    "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean",
+    "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-counterexample-20260530.md"
   ]
 }
