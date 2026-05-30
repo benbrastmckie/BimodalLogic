@@ -125,7 +125,7 @@ technical_debt:
 ### Dataset Enhancements (from competitive landscape analysis, task 215)
 
 218 [NOT STARTED] — Finalize Croissant metadata + HF leaderboard infrastructure
-216 [NOT STARTED] — Natural-language paraphrase augmentation for bmlogic-bench
+216 [RESEARCHED] — Natural-language paraphrase augmentation for bmlogic-bench
 217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
 220 [NOT STARTED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 221 [NOT STARTED] — Proof step dataset expansion (36 → 200+ theorems)
@@ -235,10 +235,11 @@ technical_debt:
 
 ### 216. Natural-language paraphrase augmentation for bmlogic-bench
 - **Effort**: large (2-4 weeks, includes human review)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
+- **Research**: [216_nl_paraphrase_augmentation/reports/01_team-research.md]
 
 **Description**: Add natural-language paraphrase field (nl_paraphrase) to all 727 bmlogic-bench records. Rule-based generation for formulas with modalDepth + temporalDepth ≤ 2 (~75% of benchmark); LLM-assisted with human verification for complex nesting (depth ≥ 3). Separate nl_paraphrase_method field records generation method. Backward-compatible: optional field. Acceptance: all 727 records have non-null nl_paraphrase, grammatically correct for depth ≤ 2, spot-checked for depth ≥ 3, generation code published.
 
@@ -282,7 +283,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 22 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
