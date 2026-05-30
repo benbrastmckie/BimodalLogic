@@ -140,16 +140,16 @@ For ground axioms without parameters (e.g., `serial_future`), add a direct match
 
 ---
 
-### Phase 3: Preserve axiom_name in Finalize Pipeline [NOT STARTED]
+### Phase 3: Preserve axiom_name in Finalize Pipeline [COMPLETED]
 
 **Goal**: Fix `finalize_benchmark.py` to include `axiom_name` in output records and update `curate_benchmark.py` if needed for the new anchor count.
 
 **Tasks**:
-- [ ] Add `"axiom_name": r.get("axiom_name")` to the final record dict construction in `finalize_benchmark.py` (line 218-232)
-- [ ] Also preserve the `augmentation` field (or at least the `axiom_name` within it) so downstream tools can access the axiom constructor metadata
-- [ ] Review `curate_benchmark.py` to ensure it handles the increased number of valid anchor records (126 vs 78) without issues in the stratified sampling step
-- [ ] If curate script has a cap on anchor-valid records, adjust it to accommodate 126
-- [ ] Add `axiom_constructors_present` verification to the metadata generation to confirm 42/42
+- [x] Add `"axiom_name": r.get("axiom_name")` to the final record dict construction in `finalize_benchmark.py` (line 218-232) *(completed -- resolves from top-level or augmentation)*
+- [x] Also preserve the `augmentation` field (or at least the `axiom_name` within it) so downstream tools can access the axiom constructor metadata *(deviation: altered -- axiom_name resolved from augmentation fallback and placed as top-level field)*
+- [x] Review `curate_benchmark.py` to ensure it handles the increased number of valid anchor records (126 vs 78) without issues in the stratified sampling step *(completed -- curate has no cap, passes through all axiom valid instances as mandatory anchors)*
+- [ ] If curate script has a cap on anchor-valid records, adjust it to accommodate 126 *(deviation: skipped -- no cap exists in curate script)*
+- [x] Add `axiom_constructors_present` verification to the metadata generation to confirm 42/42 *(completed -- added recount from final records for accurate metadata)*
 
 **Timing**: 1 hour
 

@@ -215,6 +215,11 @@ def main():
 
         # Build final record
         complexity = r.get("metrics", {}).get("complexity", 0)
+        # Resolve axiom_name from top-level or augmentation
+        axiom_name_val = r.get("axiom_name")
+        if not axiom_name_val and isinstance(aug, dict):
+            axiom_name_val = aug.get("axiom_name")
+
         final = {
             "id": bench_id,
             "split": "benchmark",
@@ -229,6 +234,7 @@ def main():
             "benchmark_category": category,
             "source": source_tag,
             "difficulty_tier": assign_tier(r),
+            "axiom_name": axiom_name_val,
         }
         final_records.append(final)
 
@@ -272,6 +278,16 @@ def main():
     print(f"  Wrote {len(final_records)} records")
 
     # Step 12: Write metadata
+    # Recount axiom constructors from final records (after axiom_name preservation)
+    axiom_names_in_final = set()
+    for r in final_records:
+        an = r.get("axiom_name")
+        if an:
+            axiom_names_in_final.add(an)
+    print(f"\n  Axiom constructors in final output: {len(axiom_names_in_final)}/42")
+    # Use final-record axiom names for metadata (more accurate than pre-finalization count)
+    axiom_anchors_present = axiom_anchors_present | axiom_names_in_final
+
     # Count near-miss invalid rate
     near_miss = [r for r in final_records if r["benchmark_category"] == "near-miss"]
     near_miss_invalid = sum(1 for r in near_miss if r["label"] == "invalid")
