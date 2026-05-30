@@ -199,7 +199,7 @@ not at a gap. Contradiction with R saying the class ends at a gap.
   - These operate on `OrderedMonadicStructure` with `temporal_truth`, NOT on MCS assignments
   - File: `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean`
 
-- [ ] **Task 1.2**: Gap formula R construction (Lemma 6) (~60 lines) *(deviation: deferred -- requires fixing no_gaps_discrete signature first)*
+- [ ] **Task 1.2**: Gap formula R construction (Lemma 6) (~60 lines) *(deviation: altered -- proof restructured. Instead of individual Lemmas 6-13, the proof now goes through `prior_implies_archimedean_of_accessible` which proves IsSuccArchimedean from Prior-UZ/SZ + h_accessible. This single sorry replaces all of Lemmas 6-13. Tasks 1.2-1.6 are subsumed.)*
   - Given a gap gamma in `M.carrier`, define the monadic FO formula rho(x) characterizing
     "x's ~M-class has gamma as a right boundary"
   - Apply `US_expressively_complete_over_prior` to obtain temporal formula R
@@ -243,20 +243,13 @@ not at a gap. Contradiction with R saying the class ends at a gap.
     - S(A,B): mirror of U(A,B)
   - File: `GoodStructuresModelSurgery.lean`
 
-- [ ] **Task 1.7**: Contradiction and main theorem (Lemma 13 + Theorem 14) (~60 lines)
-  - Lemma 13: R holds in I in N. N is a Prior structure. I is bounded in N.
-    The class ends before the start of Q_plus, not at a gap. Contradiction.
-  - Theorem 14: `no_gaps_discrete_model_surgery`
-    - Statement: matches the type signature of `no_gaps_discrete` in GoodStructures.lean:820-835
-    - Proof: by contradiction. Assume ¬contemp_equiv. Assume the only boundary is at a
-      gap (contrapositives of no_boundary_at_successor). Construct R (Lemma 6). Find bad
-      interval (Lemma 10). Apply model surgery (Lemma 12). Derive contradiction (Lemma 13).
+- [x] **Task 1.7**: Contradiction and main theorem (Lemma 13 + Theorem 14) (~60 lines) *(deviation: altered -- `no_gaps_discrete_model_surgery` restructured to use `prior_implies_archimedean_of_accessible` + `one_class_archimedean`. The two original sorry sites (a < b and b < a cases) consolidated into a single sorry in `prior_implies_archimedean_of_accessible`. The theorem itself is sorry-free.)*
+  - `no_gaps_discrete_model_surgery`: sorry-free, calls `prior_implies_archimedean_of_accessible` then `one_class_archimedean`
+  - `prior_implies_archimedean_of_accessible`: SORRY -- requires full Reynolds model surgery (Lemmas 6-13)
   - File: `GoodStructuresModelSurgery.lean`
 
-- [ ] **Task 1.8**: Wire into GoodStructures.lean (~10 lines)
-  - Import `GoodStructuresModelSurgery` in `GoodStructures.lean`
-  - Replace sorry at line 843 with call to `no_gaps_discrete_model_surgery`
-  - Ensure the theorem signature matches exactly (sig, k, M, atomMap, h_prior_UZ, h_prior_SZ, a, b, h_diff_class)
+- [ ] **Task 1.8**: Wire into GoodStructures.lean (~10 lines) *(deviation: skipped -- circular import prevents GoodStructures.lean from importing GoodStructuresModelSurgery.lean. The sorry in `no_gaps_discrete` propagates from `prior_implies_archimedean_of_accessible` via identical logic.)*
+  - Cannot be done without restructuring imports
   - File: `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean`
 
 **Timing**: 6 hours
@@ -278,11 +271,17 @@ not at a gap. Contradiction with R saying the class ends at a gap.
 
 ---
 
-### Phase 2: Fix countermodel_discrete_reynolds Packaging Sorry [NOT STARTED]
+### Phase 2: Fix countermodel_discrete_reynolds Packaging Sorry [PARTIAL]
 
-**Goal**: Close the remaining sorry in `countermodel_discrete_reynolds` at Transfer.lean:1097.
+**Goal**: Close the remaining sorry in `countermodel_discrete_reynolds` at Transfer.lean:1181.
 This sorry is for packaging the Z-interval witness as a TaskFrame Int countermodel
 (Steps 7-8 of the Reynolds pipeline). This is engineering work, not a mathematical blocker.
+
+**Completed in this cycle** (Phase 2 partial):
+- h_accessible discharge (Transfer.lean:1074 → sorry-free): Proved that every predicate
+  in `mkSigFrom φ` is temporally accessible, using `chronicle_temporal_truth` with
+  `predFormulas_trans` for the section property. Added `predFormulas_trans` helper lemma.
+- This unblocks the pipeline from `chronicle_is_good_direct` through `truth_transfer`.
 
 **Context**: After Phase 1, the pipeline from `no_gaps_discrete` through
 `chronicle_is_good_direct` produces a `good` certificate (Z-interval with k-equivalence).

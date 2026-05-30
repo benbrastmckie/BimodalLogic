@@ -72,6 +72,53 @@ theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormula
     simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
 
 /--
+`predFormulas` is transitively closed: if `f ∈ φ.predFormulas` and
+`g ∈ f.predFormulas`, then `g ∈ φ.predFormulas`.
+-/
+theorem predFormulas_trans (φ : Formula) :
+    ∀ f, f ∈ φ.predFormulas → ∀ g, g ∈ f.predFormulas → g ∈ φ.predFormulas := by
+  induction φ with
+  | atom a =>
+    intro f hf g hg
+    simp only [Formula.predFormulas, Finset.mem_singleton] at hf
+    subst hf
+    simp only [Formula.predFormulas, Finset.mem_singleton] at hg
+    subst hg
+    simp [Formula.predFormulas]
+  | bot =>
+    intro f hf
+    simp [Formula.predFormulas] at hf
+  | imp α β ihα ihβ =>
+    intro f hf g hg
+    simp only [Formula.predFormulas, Finset.mem_union] at hf ⊢
+    rcases hf with hf | hf
+    · exact Or.inl (ihα f hf g hg)
+    · exact Or.inr (ihβ f hf g hg)
+  | box ψ ih =>
+    intro f hf g hg
+    simp only [Formula.predFormulas, Finset.mem_union, Finset.mem_singleton] at hf ⊢
+    rcases hf with rfl | hf
+    · -- f = box ψ, g ∈ (box ψ).predFormulas = {box ψ} ∪ ψ.predFormulas
+      simp only [Formula.predFormulas, Finset.mem_union, Finset.mem_singleton] at hg
+      rcases hg with rfl | hg
+      · exact Or.inl rfl
+      · exact Or.inr hg
+    · -- f ∈ ψ.predFormulas
+      exact Or.inr (ih f hf g hg)
+  | untl α β ihα ihβ =>
+    intro f hf g hg
+    simp only [Formula.predFormulas, Finset.mem_union] at hf ⊢
+    rcases hf with hf | hf
+    · exact Or.inl (ihα f hf g hg)
+    · exact Or.inr (ihβ f hf g hg)
+  | snce α β ihα ihβ =>
+    intro f hf g hg
+    simp only [Formula.predFormulas, Finset.mem_union] at hf ⊢
+    rcases hf with hf | hf
+    · exact Or.inl (ihα f hf g hg)
+    · exact Or.inr (ihβ f hf g hg)
+
+/--
 Build a `MonadicSignature` from a formula φ. The predicate symbols
 are the atoms and box-subformulas appearing in φ, augmented with
 `Formula.bot` as a dummy element to ensure the signature is always
@@ -1063,15 +1110,30 @@ theorem countermodel_discrete_reynolds
       ∀ (t : M_struct.carrier),
         temporal_truth M_struct atomMap_fwd t f ↔ M_struct.interp p t := by
     intro ⟨f, hf⟩
-    -- f ∈ Finset.cons bot φ.predFormulas
-    -- For any f ∈ sig.preds (atoms, boxes, or bot), use f itself as the witnessing formula.
-    -- temporal_truth f = M.interp (atomMap_fwd f) for atoms and boxes.
-    -- For bot: temporal_truth bot = False, and M.interp (atomMap_fwd bot) = bot ∈ fmcs = False.
-    -- The key: atomMap_fwd f = ⟨f, hf⟩ when f ∈ predFormulas,
-    -- so M.interp (atomMap_fwd f) = M.interp ⟨f, hf⟩.
-    -- We need temporal_truth f ↔ M.interp ⟨f, hf⟩ for atoms and boxes.
-    -- This is a sorry for now pending careful formula case analysis.
-    exact ⟨f, fun t => by sorry⟩
+    -- Use f itself as the witnessing formula.
+    -- M_struct.interp ⟨f, hf⟩ t = f ∈ CM.fmcs t (by chronicleAsMonadicStructure definition).
+    -- We need: temporal_truth M_struct atomMap_fwd t f ↔ f ∈ CM.fmcs t.
+    -- Use f as the witnessing formula. We prove temporal_truth f ↔ M_struct.interp ⟨f, hf⟩
+    -- by applying chronicle_temporal_truth, which requires a section property.
+    -- We establish the section property using predFormulas_trans.
+    -- Special case: f = bot (vacuously true section, both sides False).
+    have h_section : ∀ g, g ∈ f.predFormulas → atomMap_rev (atomMap_fwd g) = g := by
+      intro g hg
+      -- f ∈ Finset.cons bot φ.predFormulas, so f = bot or f ∈ φ.predFormulas
+      rcases Finset.mem_cons.mp hf with rfl | hf_pred
+      · -- f = bot: bot.predFormulas = ∅, so g ∈ ∅, contradiction
+        simp [Formula.predFormulas] at hg
+      · -- f ∈ φ.predFormulas: g ∈ f.predFormulas → g ∈ φ.predFormulas by transitivity
+        have hg_pred : g ∈ φ.predFormulas := predFormulas_trans φ f hf_pred g hg
+        simp only [atomMap_fwd, dif_pos hg_pred, atomMap_rev, mkAtomMap]
+    refine ⟨f, fun t => ?_⟩
+    -- chronicle_temporal_truth gives: temporal_truth M_struct atomMap_fwd t f ↔ f ∈ CM.fmcs t
+    have h_ctt := chronicle_temporal_truth CM sig atomMap_rev atomMap_fwd f t h_section
+    -- M_struct.interp ⟨f, hf⟩ t = (atomMap_rev ⟨f, hf⟩) ∈ CM.fmcs t = f ∈ CM.fmcs t
+    -- (since atomMap_rev = mkAtomMap = fun p => p.val)
+    show temporal_truth M_struct atomMap_fwd t f ↔ M_struct.interp ⟨f, hf⟩ t
+    simp only [M_struct, chronicleAsMonadicStructure] at h_ctt ⊢
+    exact h_ctt
   have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
     (operator_depth φ + 2) h_UZ h_SZ h_acc
   -- Step 5: Extract Z-interval witness and k-equivalence
@@ -1087,8 +1149,8 @@ theorem countermodel_discrete_reynolds
     -- φ.neg.predFormulas = φ.predFormulas (neg doesn't add new predFormulas)
     simp only [Formula.neg, Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf | hf
-    · simp only [atomMap_fwd, dif_pos hf, mkAtomMap]; rfl
-    · exact absurd hf (Finset.not_mem_empty _)
+    · simp only [atomMap_fwd, dif_pos hf]; rfl
+    · exact absurd hf (Finset.notMem_empty _)
   have h_neg_root : φ.neg ∈ CM.fmcs CM.root_point := by
     rw [CM.root_point_mcs]; exact h_neg_in
   have h_neg_truth : temporal_truth M_struct atomMap_fwd CM.root_point φ.neg :=

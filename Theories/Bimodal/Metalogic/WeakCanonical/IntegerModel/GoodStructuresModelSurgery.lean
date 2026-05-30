@@ -271,22 +271,58 @@ def all_predicates_accessible {sig : MonadicSignature}
 /-! ## Main Theorem -/
 
 /--
-**no_gaps_discrete with accessibility**: In a discrete Prior structure where all
-predicates are temporally accessible, contemporaneous equivalence class boundaries
-occur only at successor pairs, never at gaps.
+Helper: In a discrete Prior structure with accessible predicates, if the order
+is not IsSuccArchimedean, derive False. This is the core of Reynolds Theorem 14.
 
-This is the correct version of `no_gaps_discrete` (GoodStructures.lean:820).
-The existing version is missing the `h_accessible` condition and is FALSE
-without it (see module docstring for counterexample).
+The argument: ¬IsSuccArchimedean → gap exists. The gap's cut C is closed under
+successor (proved from the Gap axioms + SuccOrder). By h_accessible, every
+predicate is detectable by a temporal formula. The model surgery argument shows
+that the gap is incompatible with Prior-UZ/SZ.
 
-**Status**: sorry'd pending the full Reynolds model surgery argument (Lemmas 6-13).
-The infrastructure (first-transition lemma, convexity, gap construction) is
-complete. The remaining work is:
-1. Use `h_accessible` + `US_expressively_complete_over_prior` to construct the
-   gap formula R (Reynolds Lemma 6)
-2. Prove R-interval properties (Lemmas 7-8)
-3. Model surgery: temporal_truth preservation under interval replacement (Lemma 12)
-4. Derive contradiction (Lemma 13 + Theorem 14)
+**Status**: sorry'd pending full Reynolds model surgery (Lemmas 6-13).
+-/
+private theorem prior_implies_archimedean_of_accessible (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (h_accessible : all_predicates_accessible M atomMap)
+    (h_not_arch : ¬ @IsSuccArchimedean M.carrier inferInstance inferInstance) :
+    False := by
+  -- If not archimedean, gap exists
+  have ⟨γ⟩ := gap_of_not_succ_archimedean h_not_arch
+  -- The gap γ has cut C that is:
+  -- - nonempty, proper, downward-closed
+  -- - no supremum in C (so C has no maximum)
+  -- - complement has no minimum
+  --
+  -- In a SuccOrder, C is closed under successor:
+  --   If x ∈ C and succ(x) ∉ C, then for all y ∉ C, x < y (downward-closed C).
+  --   So succ(x) ≤ y for all y ∉ C, making succ(x) the minimum of the complement.
+  --   But complement has no minimum, contradiction.
+  --
+  -- The full Reynolds model surgery (Lemmas 6-13) shows this gap is
+  -- incompatible with Prior-UZ/SZ + h_accessible:
+  -- 1. Construct temporal formula R detecting "in C" via US_expressively_complete
+  -- 2. R transitions at a successor pair (by Prior-UZ)
+  -- 3. But C is succ-closed, so R can't transition out of C at a successor pair
+  -- 4. Model surgery: replace interval by single class, preserving temporal truth
+  -- 5. Contradiction: R holds in the replaced class but the class ends at a
+  --    successor pair (not a gap) in the surgery model
+  sorry
+
+/--
+**no_gaps_discrete with accessibility** (Reynolds Theorem 14): In a discrete Prior
+structure where all predicates are temporally accessible, contemporaneous equivalence
+class boundaries occur only at successor pairs, never at gaps.
+
+The proof: by `prior_implies_archimedean_of_accessible`, the order is IsSuccArchimedean.
+By `one_class_archimedean`, all points are contemp_equiv. This contradicts h_diff_class.
+
+**Sorry status**: inherits sorry from `prior_implies_archimedean_of_accessible`, which
+requires the full Reynolds model surgery (Lemmas 6-13).
 -/
 theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
@@ -301,29 +337,12 @@ theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) (k : Nat)
       ¬ contemp_equiv sig k M a (Order.succ c) := by
   -- By contradiction: assume no successor boundary
   by_contra h_no_boundary
-  -- Class of a is closed under succ
-  have h_succ := contemp_equiv_succ_closed_of_no_boundary sig k M a h_no_boundary
-  -- WLOG a < b (if b < a, use symmetry)
-  rcases le_or_gt a b with hab | hab
-  · rcases eq_or_lt_of_le hab with rfl | hab_lt
-    · exact h_diff_class ((contemp_equiv_is_equiv sig k M).refl a)
-    · -- a < b: gap exists
-      have ⟨γ⟩ := class_gap_exists sig k M a b hab_lt h_diff_class h_succ
-      -- The gap contradicts Prior-UZ via the temporal accessibility of predicates.
-      -- TODO: Complete the model surgery argument.
-      -- The gap formula R detects "class ends at gap." By h_accessible,
-      -- every predicate is temporally detectable. The model surgery shows
-      -- temporal_truth is preserved when replacing a bad interval by one class,
-      -- leading to contradiction.
-      sorry
-  · -- b < a: use symmetry
-    have h_diff_sym : ¬ contemp_equiv sig k M b a := by
-      intro h; exact h_diff_class ((contemp_equiv_is_equiv sig k M).symm h)
-    -- Need to show ∃c, b ~M c ∧ ¬(b ~M succ c)
-    -- But the conclusion asks for a, not b. So we need a different approach.
-    -- Actually: the class of a is closed under pred too.
-    -- Reuse the gap argument with b < a.
-    -- Define the gap below a, symmetric argument.
-    sorry
+  -- The order must be IsSuccArchimedean (by prior_implies_archimedean_of_accessible)
+  -- If archimedean, then one_class_archimedean gives a ~M b, contradicting h_diff_class
+  have h_arch : @IsSuccArchimedean M.carrier inferInstance inferInstance := by
+    by_contra h_not_arch
+    exact prior_implies_archimedean_of_accessible sig M atomMap h_prior_UZ h_prior_SZ
+      h_accessible h_not_arch
+  exact h_diff_class (one_class_archimedean sig k M a b)
 
 end Bimodal.Metalogic.WeakCanonical

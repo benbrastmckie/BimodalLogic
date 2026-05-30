@@ -835,9 +835,13 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- Proof in GoodStructuresModelSurgery.lean
   -- The h_accessible condition is REQUIRED (theorem false without it).
   -- See GoodStructuresModelSurgery.lean module docstring for counterexample.
+  -- The proof goes through prior_implies_archimedean_of_accessible (Reynolds Theorem 14):
+  -- Prior-UZ + Prior-SZ + h_accessible → IsSuccArchimedean.
+  -- Then one_class_archimedean gives a ~M b, contradicting h_diff_class.
+  -- The sorry is in prior_implies_archimedean_of_accessible, which requires the
+  -- full Reynolds model surgery (Lemmas 6-13).
   sorry
 
 /--
