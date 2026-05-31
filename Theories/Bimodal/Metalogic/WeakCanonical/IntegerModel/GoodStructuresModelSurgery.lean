@@ -659,6 +659,101 @@ private theorem right_gap_class_pred (sig : MonadicSignature) (k : Nat)
   exact contemp_equiv_pred_closed sig k M t t ((contemp_equiv_is_equiv sig k M).refl t)
 
 /-!
+#### Good Sentence and Gap Formula Construction (Reynolds Lemma 6)
+
+Infrastructure for expressing `good`, `very_good`, `contemp_equiv`, and
+`right_gap_class_prop` as MonadicFormulas, then deriving the temporal
+formula R via `US_expressively_complete_over_prior`.
+-/
+
+/-- A NormalForm `nf` is a Z-type if some Z-interval structure satisfies it. -/
+private noncomputable def is_Z_type (sig : MonadicSignature) (k : Nat)
+    (nf : NormalForm sig k 0) : Bool :=
+  @decide (∃ Z : ZIntervalStructure sig,
+    nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf) (Classical.dec _)
+
+/-- MonadicSentence encoding `good sig k`: true in S iff S is good (k-equiv
+    to some Z-interval structure). Defined as finite disjunction over Z-types
+    of the NF-checking sentences. -/
+private noncomputable def good_sentence (sig : MonadicSignature) (k : Nat) :
+    MonadicSentence sig :=
+  MonadicFormula.listDisj
+    ((Finset.univ.toList.filter (is_Z_type sig k)).map (nf_to_sentence (k := k)))
+
+/-- `good_sentence` correctly captures `good`: eval S Fin.elim0 (good_sentence sig k) ↔ good sig k S. -/
+private theorem good_sentence_correct (sig : MonadicSignature) (k : Nat)
+    (S : OrderedMonadicStructure sig) :
+    eval S Fin.elim0 (good_sentence sig k) ↔ good sig k S := by
+  simp only [good_sentence, eval_listDisj]
+  constructor
+  · -- Forward: eval of disjunction → good
+    intro ⟨φ, hφ_mem, hφ_eval⟩
+    simp only [List.mem_map, List.mem_filter, Finset.mem_toList, Finset.mem_univ,
+      true_and] at hφ_mem
+    obtain ⟨nf, h_is_Z, rfl⟩ := hφ_mem
+    -- nf is a Z-type and S satisfies nf_to_sentence nf
+    have h_eval : nf_eval_nf S k 0 Fin.elim0 nf :=
+      (nf_to_sentence_correct S nf).mp hφ_eval
+    -- Since nf is a Z-type, there exists Z with nf_eval_nf Z k 0 Fin.elim0 nf
+    have h_z_type : ∃ Z : ZIntervalStructure sig,
+        nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf := by
+      unfold is_Z_type at h_is_Z
+      simp only [decide_eq_true_eq] at h_is_Z
+      exact h_is_Z
+    obtain ⟨Z, hZ⟩ := h_z_type
+    -- k_equiv S Z via k_type_of equality
+    refine ⟨Z, ?_⟩
+    rw [k_equiv_iff_same_type]
+    funext nf'
+    simp only [k_type_of]
+    congr 1
+    exact propext (nf_agreement_from_shared_nf S Fin.elim0
+      (Z.toOrdered sig) Fin.elim0 nf h_eval hZ nf')
+  · -- Backward: good → eval of disjunction
+    intro ⟨Z, h_k_equiv⟩
+    -- Bridge k_equiv to nf_eval_nf
+    have h_same_nf : ∀ nf : NormalForm sig k 0,
+        nf_eval_nf S k 0 Fin.elim0 nf ↔
+        nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf := by
+      intro nf
+      have h := congr_fun (k_equiv_iff_same_type sig k S (Z.toOrdered sig) |>.mp h_k_equiv) nf
+      simp [k_type_of] at h
+      exact_mod_cast h
+    -- S and Z satisfy the same NFs. Let nf_S = nf_characteristic S k 0 Fin.elim0.
+    let nf_S := nf_characteristic S k 0 Fin.elim0
+    have h_S_char := nf_characteristic_satisfies S k 0 Fin.elim0
+    -- nf_S is a Z-type since Z satisfies it too
+    have h_Z_sat : nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf_S :=
+      (h_same_nf nf_S).mp h_S_char
+    have h_is_z : is_Z_type sig k nf_S = true := by
+      unfold is_Z_type
+      simp only [decide_eq_true_eq]
+      exact ⟨Z, h_Z_sat⟩
+    -- nf_to_sentence nf_S is in the filtered list
+    have h_in_filter : nf_S ∈ Finset.univ.toList.filter (is_Z_type sig k) :=
+      List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ nf_S), h_is_z⟩
+    have h_in : nf_to_sentence nf_S ∈
+        (Finset.univ.toList.filter (is_Z_type sig k)).map (nf_to_sentence (k := k)) :=
+      List.mem_map_of_mem h_in_filter
+    exact ⟨nf_to_sentence nf_S, h_in,
+      (nf_to_sentence_correct S nf_S).mpr h_S_char⟩
+
+/-- MonadicFormula sig 2 encoding `good sig k (M.subinterval sig (var 0) (var 1))`.
+    Uses `relativize_sentence` to express good on a subinterval. -/
+private noncomputable def good_formula_relativized (sig : MonadicSignature) (k : Nat) :
+    MonadicFormula sig 2 :=
+  relativize_sentence (good_sentence sig k)
+
+/-- `good_formula_relativized` correctly captures `good` on subintervals. -/
+private theorem good_formula_relativized_correct (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) (lo hi : M.carrier) (h_le : lo ≤ hi) :
+    eval M (Fin.cons lo (Fin.cons hi Fin.elim0)) (good_formula_relativized sig k) ↔
+    good sig k (M.subinterval sig lo hi) := by
+  unfold good_formula_relativized
+  rw [relativize_sentence_correct M lo hi h_le (good_sentence sig k)]
+  exact good_sentence_correct sig k (M.subinterval sig lo hi)
+
+/-!
 #### Reynolds Theorem 14: Gap contradiction
 
 **Reynolds Theorem 14, upward case** (Reynolds 1994, Lemmas 6-13):

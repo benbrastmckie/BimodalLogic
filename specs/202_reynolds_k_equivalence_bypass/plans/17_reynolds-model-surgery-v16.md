@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Bounded Quantifier Relativization Infrastructure [IN PROGRESS]
+### Phase 0: Bounded Quantifier Relativization Infrastructure [COMPLETED]
 
 **Goal**: Build the infrastructure in MonadicFO.lean that allows expressing "formula phi holds on the subinterval [lo, hi]" as a MonadicFormula on the full structure where all quantifiers are relativized to the interval [lo, hi]. This is the missing ~200-line infrastructure identified by the Phase 1 blocker analysis.
 
@@ -165,7 +165,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   - Prove `nf_to_sentence_correct`: `eval M Fin.elim0 (nf_to_sentence sig k nf) <-> nf_eval_nf M k 0 Fin.elim0 nf`
   - This connects the NormalForm world (used in `very_good`/`contemp_equiv`) to the MonadicFormula world (used in `US_expressively_complete_over_prior`)
 
-- [ ] **Task 0.6**: Prove `good_as_monadic_sentence` -- Express `good sig k (M.subinterval sig lo hi)` as a MonadicFormula with 2 free vars (~30 lines) *(not started — deferred to Phase 1)*
+- [ ] **Task 0.6**: Prove `good_as_monadic_sentence` -- Express `good sig k (M.subinterval sig lo hi)` as a MonadicFormula with 2 free vars (~30 lines) *(deviation: deferred to task Phase 1 — requires Z-type enumeration via Classical.dec which belongs with the formula construction)*
   ```lean
   /-- The property good(M.subinterval(lo, hi)) is expressible as a
       MonadicFormula sig 2 evaluated at [lo, hi]. -/
