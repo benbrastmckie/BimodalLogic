@@ -156,11 +156,12 @@ technical_debt:
 
 ### 226. Build standalone Z3 countermodel generator for negative training signal
 - **Effort**: large (20-40 hours)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: z3
 - **Research**:
   - [specs/226_build_standalone_z3_countermodel_generator/reports/01_team-research.md]
   - [specs/226_build_standalone_z3_countermodel_generator/reports/02_team-research.md]
+  - [specs/226_build_standalone_z3_countermodel_generator/reports/03_team-research.md]
 - **Plan**: [226_build_standalone_z3_countermodel_generator/plans/02_oracle-integration-plan.md]
 
 **Description**: Create a standalone version of the bimodal ModelChecker Z3 infrastructure (based on /home/benjamin/Projects/Logos/ModelChecker/code/src/model_checker/theory_lib/bimodal/) within this repository, instead of in BimodalHarness as described in BimodalHarness task 19. The aim is to implement Python and Z3 infrastructure to generate countermodels as a negative training signal. There is also an opportunity for metalogic to establish at least the soundness of the Z3 implementation, so that every countermodel found guarantees a countermodel fitting the full definition defined in Lean by the semantics. The Z3 implementation need not be complete if incompleteness improves search space efficiency. Finding most countermodels quickly is more important than finding all of them slowly, which is worth flagging and investigating during research.
