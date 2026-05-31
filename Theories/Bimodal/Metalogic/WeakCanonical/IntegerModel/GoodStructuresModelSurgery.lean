@@ -855,7 +855,7 @@ private theorem right_gap_class_formula_correct {sig : MonadicSignature} {k : Na
         ¬ good sig k (M.subinterval sig a' b') := by
   -- Unfold the formula evaluation step by step
   unfold right_gap_class_formula
-  simp only [eval, eval_leq, not_lt]
+  simp only [eval, eval_leq]
   -- After simp: the goal should be about ∃ b, t < b ∧ ∃ b', ∃ a',
   -- (t ≤ a' ∧ a' ≤ b') ∧ b' ≤ b ∧ ¬ eval ... (good_rel_lifted ...)
   constructor
