@@ -209,7 +209,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
 
 ---
 
-### Phase 1: Gap Formula R Construction (Reynolds Lemma 6) [NOT STARTED]
+### Phase 1: Gap Formula R Construction (Reynolds Lemma 6) [BLOCKED]
 
 **Goal**: Construct a `MonadicFormula sig 1` encoding `right_gap_class_prop`, then apply `US_expressively_complete_over_prior` to obtain temporal formula R such that `temporal_truth M atomMap t R <-> right_gap_class_prop sig k M t`.
 

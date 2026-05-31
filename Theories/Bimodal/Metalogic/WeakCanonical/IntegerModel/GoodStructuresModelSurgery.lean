@@ -753,6 +753,40 @@ private theorem good_formula_relativized_correct (sig : MonadicSignature) (k : N
   rw [relativize_sentence_correct M lo hi h_le (good_sentence sig k)]
   exact good_sentence_correct sig k (M.subinterval sig lo hi)
 
+/-- Lift good_formula_relativized from MonadicFormula sig 2 to MonadicFormula sig 4,
+    keeping references to var 0 (lo) and var 1 (hi) unchanged. -/
+private noncomputable def good_rel_lifted (sig : MonadicSignature) (k : Nat) :
+    MonadicFormula sig 4 :=
+  (good_formula_relativized sig k).lift 2 |>.lift 3
+
+/-- The MonadicFormula sig 1 encoding "class(t) is bounded above and not all
+    elements above t are contemp_equiv to t". This is the first conjunct of
+    right_gap_class_prop (the second conjunct is trivially true by
+    no_boundary_at_successor).
+
+    Formula: ∃ b. (t < b ∧ ∃ b'. ∃ a'. (t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧
+                                          ¬good([a', b'])))
+
+    In De Bruijn with 1 free var (t = var 0):
+    - After ∃ b: t = var 1, b = var 0
+    - After ∃ b': t = var 2, b = var 1, b' = var 0
+    - After ∃ a': t = var 3, b = var 2, b' = var 1, a' = var 0
+    good_rel_lifted uses var 0 = a' = lo, var 1 = b' = hi -/
+private noncomputable def right_gap_class_formula (sig : MonadicSignature) (k : Nat) :
+    MonadicFormula sig 1 :=
+  -- ∃ b > t, ¬very_good [t, b]
+  -- = ∃ b, t < b ∧ ∃ b', ∃ a', t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧ ¬good [a', b']
+  .ex (.and
+    (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- t < b (var 1 < var 0)
+    (.ex (.ex (.and
+      (.and
+        (.and
+          (MonadicFormula.leq ⟨3, by omega⟩ ⟨0, by omega⟩)  -- t ≤ a'
+          (MonadicFormula.leq ⟨0, by omega⟩ ⟨1, by omega⟩)) -- a' ≤ b'
+        (MonadicFormula.leq ⟨1, by omega⟩ ⟨2, by omega⟩))   -- b' ≤ b
+      (.not (good_rel_lifted sig k))))))                     -- ¬good [a', b']
+
+
 /-!
 #### Reynolds Theorem 14: Gap contradiction
 
