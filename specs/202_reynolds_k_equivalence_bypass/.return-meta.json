@@ -1,7 +1,15 @@
 {
-  "status": "partial",
+  "status": "in_progress",
+  "started_at": "2026-05-30T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context and reading codebase"
+  },
   "metadata": {
-    "cycles_used": 5,
-    "final_state": "partial"
+    "session_id": "sess_1780191780_e5661e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

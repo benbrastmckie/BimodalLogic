@@ -33,15 +33,12 @@ technical_debt:
 
 ### Phase 1 — Discrete Completeness (independent, Option C path)
 
-202 [PLANNED] — Reynolds model surgery (v12): Phase 1 complete (Theorem 5 + infrastructure). Plan v12 formalizes Reynolds Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) in new ReynoldsModelSurgery.lean (~600 lines). Closes chronicle_gap_contradiction sorry. 3 phases, 14 hours.
+202 [PLANNED] — Reynolds model surgery (v17): Definitive 11-piece, 6-phase plan synthesizing 17+ failed cycles. Closes 2 sorry sites (gap_prior_UZ/SZ_contradiction) + 1 wiring change (no_gaps_discrete). ~700 LOC, 16 hours.
   - **Reports**:
-    - [specs/202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
-    - [specs/202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
-    - [specs/202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
-  - **Handoff**: [specs/202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
+    - [specs/202_reynolds_k_equivalence_bypass/reports/17_deep-research-synthesis.md]
+    - [specs/202_reynolds_k_equivalence_bypass/reports/16_team-research.md]
   - **Plans**:
-    - [specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
-    - [specs/202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md]
+    - [specs/202_reynolds_k_equivalence_bypass/plans/18_reynolds-model-surgery-v17.md]
 
 ### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
 
@@ -148,21 +145,24 @@ technical_debt:
 
 ### 227. Dataset pipeline automation + Croissant sync infrastructure
 - **Effort**: medium (1-2 days)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Research**: [specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md]
+- **Plan**: [227_dataset_pipeline_automation_croissant_sync/plans/01_dataset-pipeline-plan.md]
 
 **Description**: Build end-to-end automation so that every benchmark data regeneration (anchor expansion, new training data, eval runs) automatically updates all downstream artifacts. (1) Fix immediate croissant.json staleness: recompute SHA-256 hashes, update contentSize for all 5 distributions, regenerate or remove bmlogic-bench-splits.json, verify field counts match actual JSONL schemas. (2) Create a deterministic pipeline script (e.g., scripts/sync-dataset-artifacts.sh) that, given freshly regenerated data, automatically recomputes SHA-256 hashes and contentSize in croissant.json, updates record counts in metadata JSON, regenerates splits if applicable, validates croissant.json structure, updates data/README.md statistics, and commits with a structured message. (3) Update the lean-implementation-agent and general-implementation-agent definitions/context so that any task involving benchmark regeneration includes a post-implementation step that runs the sync script. Add this to agent context or plan templates so future /implement and /orchestrate runs automatically keep artifacts in sync. (4) Document the pipeline in data/README.md with a clear narrative: what each artifact is, how they relate, which script keeps them in sync, and what git history tracks. The goal is zero manual intervention — when an agent regenerates benchmark data, everything downstream updates atomically, and documentation tells the story of the dataset's evolution.
 
 ### 226. Build standalone Z3 countermodel generator for negative training signal
-- **Effort**: large (20-40 hours)
-- **Status**: [RESEARCHED]
+- **Effort**: large (18 hours)
+- **Status**: [PLANNED]
 - **Task Type**: z3
 - **Research**:
   - [specs/226_build_standalone_z3_countermodel_generator/reports/01_team-research.md]
   - [specs/226_build_standalone_z3_countermodel_generator/reports/02_team-research.md]
   - [specs/226_build_standalone_z3_countermodel_generator/reports/03_team-research.md]
-- **Plan**: [226_build_standalone_z3_countermodel_generator/plans/02_oracle-integration-plan.md]
+- **Plans**:
+  - [specs/226_build_standalone_z3_countermodel_generator/plans/02_oracle-integration-plan.md]
+  - [specs/226_build_standalone_z3_countermodel_generator/plans/04_z3-countermodel-plan.md]
 
 **Description**: Create a standalone version of the bimodal ModelChecker Z3 infrastructure (based on /home/benjamin/Projects/Logos/ModelChecker/code/src/model_checker/theory_lib/bimodal/) within this repository, instead of in BimodalHarness as described in BimodalHarness task 19. The aim is to implement Python and Z3 infrastructure to generate countermodels as a negative training signal. There is also an opportunity for metalogic to establish at least the soundness of the Z3 implementation, so that every countermodel found guarantees a countermodel fitting the full definition defined in Lean by the semantics. The Z3 implementation need not be complete if incompleteness improves search space efficiency. Finding most countermodels quickly is more important than finding all of them slowly, which is worth flagging and investigating during research.
 
