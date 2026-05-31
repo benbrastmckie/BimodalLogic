@@ -1025,6 +1025,23 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
     (y : M.carrier) (hay : a < y)
     (h_not_equiv : ¬ contemp_equiv sig k M a y) :
     False := by
+  -- === Reynolds Lemmas 6-13, upward case ===
+  -- Step 1 (Lemma 6): Construct temporal formula R detecting right_gap_class_prop
+  let R := gap_formula_R sig k atomMap h_surj
+  -- Step 2: R holds at a (a has right_gap_class_prop)
+  have h_R_at_a : temporal_truth M atomMap a R := by
+    rw [gap_formula_R_correct M atomMap h_surj h_prior_UZ h_prior_SZ,
+        right_gap_class_formula_correct M a]
+    obtain ⟨a', b', h_ta, h_ab, h_bb, h_ng⟩ :=
+      bounded_implies_right_gap_class_formula M a y hay h_not_equiv
+    exact ⟨y, hay, a', b', h_ta, h_ab, h_bb, h_ng⟩
+  -- Step 3: R fails somewhere above a
+  -- (There exists z > a such that class(z) is unbounded above,
+  --  hence no bad subinterval witness exists above z.)
+  -- Step 4: First R-to-not-R transition exists (by prior_UZ_first_transition)
+  -- Step 5: Model surgery at the transition point
+  -- Step 6: Contradiction from truth preservation
+  -- SORRY: Full Reynolds model surgery argument (Lemmas 7-13, ~400 lines)
   sorry
 
 /--
@@ -1046,12 +1063,27 @@ private theorem gap_prior_SZ_contradiction (sig : MonadicSignature) (k : Nat)
     (h_prior_UZ : semantic_prior_UZ M atomMap)
     (h_prior_SZ : semantic_prior_SZ M atomMap)
     (a : M.carrier)
-    (h_succ_closed : ∀ c, contemp_equiv sig k M a c →
+    (_h_succ_closed : ∀ c, contemp_equiv sig k M a c →
       contemp_equiv sig k M a (Order.succ c))
     (y : M.carrier) (hya : y < a)
     (h_not_equiv : ¬ contemp_equiv sig k M a y) :
     False := by
-  sorry
+  -- Reduce to the UZ case by swapping roles of a and y.
+  -- y < a and ¬ contemp_equiv a y.
+  -- Since contemp_equiv is symmetric (uses min/max), ¬ contemp_equiv y a.
+  -- By no_boundary_at_successor, class(y) is succ-closed.
+  -- So gap_prior_UZ_contradiction applies with y as the base point and a as the witness.
+  have h_not_equiv_ya : ¬ contemp_equiv sig k M y a := by
+    intro h; apply h_not_equiv
+    exact (contemp_equiv_is_equiv sig k M).symm h
+  have h_y_succ_closed : ∀ c, contemp_equiv sig k M y c →
+      contemp_equiv sig k M y (Order.succ c) := by
+    intro c hyc
+    -- y ~M c and c ~M succ(c) [by no_boundary_at_successor], so y ~M succ(c)
+    exact (contemp_equiv_is_equiv sig k M).trans hyc
+      (no_boundary_at_successor sig k M c)
+  exact gap_prior_UZ_contradiction sig k M atomMap h_surj h_prior_UZ h_prior_SZ
+    y h_y_succ_closed a hya h_not_equiv_ya
 
 /-! #### Main theorem -/
 
