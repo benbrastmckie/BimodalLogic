@@ -791,6 +791,41 @@ theorem nf_to_formula_correct {sig : MonadicSignature} {k n : Nat}
           intro x hx
           exact absurd (hq.mp ⟨x, (ih (Fin.cons x env) sub_nf).mp hx⟩) h_ne
 
+/-- Finite disjunction of a list of formulas. -/
+def MonadicFormula.listDisj {sig : MonadicSignature} {n : Nat} :
+    List (MonadicFormula sig n) → MonadicFormula sig n
+  | [] => .not MonadicFormula.trueFormula  -- False
+  | [φ] => φ
+  | φ :: rest => MonadicFormula.or φ (listDisj rest)
+
+theorem eval_listDisj {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (fs : List (MonadicFormula sig n)) :
+    eval M env (MonadicFormula.listDisj fs) ↔ ∃ φ ∈ fs, eval M env φ := by
+  induction fs with
+  | nil =>
+    simp only [MonadicFormula.listDisj, eval, eval_trueFormula, not_true, List.not_mem_nil,
+      false_and, exists_false]
+  | cons φ rest ih =>
+    cases rest with
+    | nil =>
+      simp only [MonadicFormula.listDisj, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h => ⟨φ, rfl, h⟩, fun ⟨_, heq, h⟩ => heq ▸ h⟩
+    | cons ψ rest' =>
+      simp only [MonadicFormula.listDisj]
+      rw [eval_or]
+      constructor
+      · intro h
+        rcases h with hφ | hrest
+        · exact ⟨φ, List.mem_cons.mpr (Or.inl rfl), hφ⟩
+        · obtain ⟨θ, hθ_mem, hθ_eval⟩ := ih.mp hrest
+          exact ⟨θ, List.mem_cons.mpr (Or.inr hθ_mem), hθ_eval⟩
+      · intro ⟨θ, hθ_mem, hθ_eval⟩
+        rw [List.mem_cons] at hθ_mem
+        rcases hθ_mem with rfl | hθ_rest
+        · exact Or.inl hθ_eval
+        · exact Or.inr (ih.mpr ⟨θ, hθ_rest, hθ_eval⟩)
+
 /-- Specialization: for sentences (n=0), nf_to_formula produces a MonadicSentence. -/
 noncomputable def nf_to_sentence {sig : MonadicSignature} {k : Nat}
     (nf : NormalForm sig k 0) : MonadicSentence sig :=

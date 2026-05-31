@@ -150,7 +150,7 @@ The key correctness theorem: `eval M env (relativize phi lo_idx hi_idx)` is equi
   - Quantifier cases: show that quantifying over `{x : M.carrier // lo <= x /\ x <= hi}` is the same as quantifying over `M.carrier` with the interval guard
   - The key lemma for quantifier cases: `(forall (x : (M.subinterval sig lo hi).carrier), P x.val) <-> (forall (x : M.carrier), lo <= x -> x <= hi -> P x)` and the existential dual
 
-- [ ] **Task 0.5**: Define `nf_to_sentence` -- Convert NormalForm evaluation to sentence evaluation (~40 lines) *(not started — deferred to Phase 1)*
+- [x] **Task 0.5**: Define `nf_to_sentence` -- Convert NormalForm evaluation to sentence evaluation (~40 lines) *(completed — defined as `nf_to_formula` with listConj, atom_cond_formula, quant_cond_formula; placed in NormalForm.lean)*
   ```lean
   /-- For each normal form index nf, construct a MonadicSentence that
       is true in M iff nf_eval_nf M k 0 Fin.elim0 nf holds.
