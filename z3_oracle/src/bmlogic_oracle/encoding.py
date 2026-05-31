@@ -223,12 +223,32 @@ class FrameEncoder:
             )
 
         elif isinstance(formula, Box):
-            # box(phi) is true at (sigma, t) iff phi is true at (sigma', t) for ALL histories sigma'
-            # Quantifier-free: finite conjunction over all N^M histories
-            conjuncts = [
-                self._truth_rec(formula.inner, atoms, other_sigma_idx, t)
-                for other_sigma_idx in range(len(self._histories))
-            ]
+            # box(phi) is true at (sigma, t) iff phi is true at (sigma', t) for ALL VALID histories sigma'
+            # A history is "valid" (in Omega) iff it respects the task relation:
+            #   task_rel(sigma'[t1], t2-t1, sigma'[t2]) for all t1 < t2
+            # Quantifier-free: finite conjunction over all N^M histories, with validity guard:
+            #   box(phi) = AND over sigma' of (is_valid(sigma') => truth(phi, sigma', t))
+            conjuncts = []
+            for other_sigma_idx, other_hist in enumerate(self._histories):
+                # Build "is_valid_history" condition for this history
+                validity_conditions = []
+                for tt1 in range(self.M):
+                    for tt2 in range(tt1 + 1, self.M):
+                        d = tt2 - tt1
+                        w_h = other_hist[tt1]
+                        u_h = other_hist[tt2]
+                        validity_conditions.append(self.task_rel_var(w_h, d, u_h))
+
+                phi_holds = self._truth_rec(formula.inner, atoms, other_sigma_idx, t)
+
+                if validity_conditions:
+                    # is_valid(sigma') => phi_holds: i.e., Not(is_valid) OR phi_holds
+                    is_valid = z3.And(*validity_conditions)
+                    conjuncts.append(z3.Implies(is_valid, phi_holds))
+                else:
+                    # M=1: no consecutive pairs to check, all histories are trivially valid
+                    conjuncts.append(phi_holds)
+
             return z3.And(*conjuncts) if conjuncts else z3.BoolVal(True)
 
         elif isinstance(formula, Until):

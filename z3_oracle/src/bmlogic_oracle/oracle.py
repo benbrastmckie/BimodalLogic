@@ -108,6 +108,18 @@ def _find_countermodel_at_bounds(
     falsifying_history = 0
     falsifying_time = 0
 
+    # CRITICAL: The falsifying history must RESPECT the task relation.
+    # This ensures we find countermodels in actual valid frames.
+    # History sigma=0 is (0, 0, ..., 0) -- all worlds are world 0.
+    # Add constraint: task_rel(history[t1], t2-t1, history[t2]) for all t1 < t2
+    falsifying_hist = encoder.all_histories()[falsifying_history]
+    for t1 in range(M):
+        for t2 in range(t1 + 1, M):
+            d = t2 - t1
+            w = falsifying_hist[t1]
+            u = falsifying_hist[t2]
+            solver.add(encoder.task_rel_var(w, d, u))
+
     truth_expr = encoder.truth(formula, atoms, falsifying_history, falsifying_time)
     solver.add(z3.Not(truth_expr))
 

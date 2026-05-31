@@ -205,11 +205,34 @@ def extract_countermodel(
                 atom_var = encoder.atom_var(w, t, atom_name)
                 valuation[(w, t, atom_name)] = get_bool(atom_var)
 
-    # Extract histories
+    # Extract histories -- only include those that respect the task_rel
+    # A history sigma respects task_rel when task_rel(sigma(t1), t2-t1, sigma(t2)) for all t1 < t2
     histories = []
     all_histories = list(encoder.all_histories())
-    for sigma_idx, history in enumerate(all_histories):
-        histories.append(list(history))
+    falsifying_history_in_filtered = 0  # Will be updated below
+
+    for sigma_i, history in enumerate(all_histories):
+        valid = True
+        for t1 in range(M):
+            for t2 in range(t1 + 1, M):
+                d = t2 - t1
+                w = history[t1]
+                u = history[t2]
+                if not task_rel.get((w, d, u), False):
+                    valid = False
+                    break
+            if not valid:
+                break
+        if valid:
+            if sigma_i == falsifying_history:
+                falsifying_history_in_filtered = len(histories)
+            histories.append(list(history))
+
+    # If no valid histories were found (or the falsifying history is not in them),
+    # include all histories and use the original index as fallback
+    if not histories:
+        histories = [list(h) for h in all_histories]
+        falsifying_history_in_filtered = falsifying_history
 
     worlds = list(range(N))
 
@@ -220,6 +243,6 @@ def extract_countermodel(
         task_rel=task_rel,
         histories=histories,
         valuation=valuation,
-        falsifying_history=falsifying_history,
+        falsifying_history=falsifying_history_in_filtered,
         falsifying_time=falsifying_time,
     )

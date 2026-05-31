@@ -40,8 +40,21 @@ def check_valid(encoder: FrameEncoder, formula, atoms, sigma_idx=0, t=0) -> bool
     """
     Check if formula is valid (no countermodel) at the given bounds.
     Returns True if valid (UNSAT for negation), False if countermodel found.
+
+    The falsifying history (sigma_idx) is required to RESPECT the task relation,
+    ensuring we only search in valid frames.
     """
     s = make_solver(encoder)
+
+    # Require the falsifying history to respect the task relation
+    hist = encoder.all_histories()[sigma_idx]
+    for t1 in range(encoder.M):
+        for t2 in range(t1 + 1, encoder.M):
+            d = t2 - t1
+            w = hist[t1]
+            u = hist[t2]
+            s.add(encoder.task_rel_var(w, d, u))
+
     truth_expr = encoder.truth(formula, atoms, sigma_idx, t)
     s.add(z3.Not(truth_expr))
     return s.check() == z3.unsat

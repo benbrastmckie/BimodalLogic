@@ -155,7 +155,7 @@ Phases are sequential: each phase builds on the prior phase's output.
 
 ---
 
-### Phase 3: Countermodel Extraction and Oracle API [NOT STARTED]
+### Phase 3: Countermodel Extraction and Oracle API [COMPLETED]
 
 **Goal**: Extract StructuredCountermodels from Z3 satisfying assignments and build the public oracle API with progressive deepening (N=2,M=2 through N=4,M=4).
 
