@@ -16,7 +16,28 @@
       "last_updated": "2026-05-30T17:30:00Z",
       "session_id": "sess_1748620800_res227",
       "artifacts": [
-        "specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md"
+        {
+          "path": "specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md",
+          "type": "research",
+          "summary": "Complete dataset artifact inventory, SHA-256 staleness analysis, pipeline script gap analysis, agent integration options, and croissant.json structural review"
+        }
+      ],
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "BMLogic-Bench dataset sync pattern: After benchmark regeneration (finalize_benchmark.py), three downstream artifacts require manual update: (1) croissant.json SHA-256 hash and contentSize for bmlogic-bench.jsonl, (2) bmlogic-bench-splits.json via data/scripts/generate_splits.py, (3) record count in data/hf-dataset/validate.py EXPECTED_COUNTS. No automation script exists as of task 227. mlcroissant CLI is unavailable on NixOS — use sha256sum + jq structural check instead.",
+          "category": "PATTERN",
+          "source_artifact": "specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "benchmark",
+            "croissant",
+            "sha256",
+            "sync",
+            "bmlogic-bench",
+            "dataset-pipeline"
+          ]
+        }
       ]
     },
     {
