@@ -612,4 +612,194 @@ noncomputable def normalForm_equiv_fin (sig : MonadicSignature) (k n : Nat) :
     NormalForm sig k n ≃ NormalFormIdx sig k n :=
   Fintype.equivFinOfCardEq (normalForm_card sig k n)
 
+/-! ## Normal Form to MonadicFormula Conversion
+
+Convert a `NormalForm sig k n` into a `MonadicFormula sig n` whose evaluation
+under `eval` matches `nf_eval_nf`. This bridges the normal form world (used
+in `contemp_equiv`, `good`, `very_good`) to the syntactic formula world
+(used in `US_expressively_complete_over_prior`).
+-/
+
+/-- Convert an `AtomKind` to the corresponding `MonadicFormula`. -/
+def atom_to_formula {sig : MonadicSignature} {n : Nat} :
+    AtomKind sig n → MonadicFormula sig n
+  | .pred p i => .atom p i
+  | .order i j _ => .lt i j
+
+/-- `atom_to_formula` correctly captures `atom_eval`. -/
+theorem eval_atom_to_formula {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (a : AtomKind sig n) :
+    eval M env (atom_to_formula a) ↔ atom_eval M env a := by
+  cases a with
+  | pred p i => simp [atom_to_formula, eval, atom_eval]
+  | order i j h => simp [atom_to_formula, eval, atom_eval]
+
+/-- Formula that is always true (for any number of free variables).
+    Defined as ∀ x, ¬(x < x), which holds in any linear order. -/
+def MonadicFormula.trueFormula {sig : MonadicSignature} {n : Nat} :
+    MonadicFormula sig n :=
+  .all (.not (.lt ⟨0, by omega⟩ ⟨0, by omega⟩))
+
+@[simp]
+theorem eval_trueFormula {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier) :
+    eval M env MonadicFormula.trueFormula ↔ True := by
+  simp only [MonadicFormula.trueFormula, eval, lt_irrefl, not_false_eq_true,
+    implies_true, iff_true]
+
+/-- Finite conjunction of a list of formulas. -/
+def MonadicFormula.listConj {sig : MonadicSignature} {n : Nat} :
+    List (MonadicFormula sig n) → MonadicFormula sig n
+  | [] => MonadicFormula.trueFormula
+  | [φ] => φ
+  | φ :: rest => .and φ (listConj rest)
+
+theorem eval_listConj {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (fs : List (MonadicFormula sig n)) :
+    eval M env (MonadicFormula.listConj fs) ↔ ∀ φ ∈ fs, eval M env φ := by
+  induction fs with
+  | nil => simp [MonadicFormula.listConj, eval_trueFormula]
+  | cons φ rest ih =>
+    cases rest with
+    | nil =>
+      simp only [MonadicFormula.listConj, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h _ heq => heq ▸ h, fun h => h φ rfl⟩
+    | cons ψ rest' =>
+      simp only [MonadicFormula.listConj, eval]
+      constructor
+      · intro ⟨hφ, hrest⟩ θ hθ
+        rw [List.mem_cons] at hθ
+        rcases hθ with rfl | hθ'
+        · exact hφ
+        · exact (ih.mp hrest) θ hθ'
+      · intro h
+        exact ⟨h φ (List.mem_cons.mpr (Or.inl rfl)),
+               ih.mpr (fun θ hθ => h θ (List.mem_cons.mpr (Or.inr hθ)))⟩
+
+/-- Check a single atom condition for a Bool assignment. -/
+def atom_cond_formula {sig : MonadicSignature} {n : Nat}
+    (assignment : AtomKind sig n → Bool) (a : AtomKind sig n) :
+    MonadicFormula sig n :=
+  if assignment a then atom_to_formula a else .not (atom_to_formula a)
+
+theorem eval_atom_cond {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (assignment : AtomKind sig n → Bool) (a : AtomKind sig n) :
+    eval M env (atom_cond_formula assignment a) ↔
+    (atom_eval M env a ↔ (assignment a = true)) := by
+  unfold atom_cond_formula
+  cases h : assignment a <;> simp [eval, eval_atom_to_formula]
+
+/-- Check a single quantifier condition. -/
+noncomputable def quant_cond_formula {sig : MonadicSignature} {k n : Nat}
+    (nf_to_formula_fn : NormalForm sig k (n + 1) → MonadicFormula sig (n + 1))
+    (quant_assgn : NormalForm sig k (n + 1) → Bool)
+    (sub_nf : NormalForm sig k (n + 1)) : MonadicFormula sig n :=
+  if quant_assgn sub_nf then .ex (nf_to_formula_fn sub_nf)
+  else .not (.ex (nf_to_formula_fn sub_nf))
+
+/-- Convert a `NormalForm sig k n` to a `MonadicFormula sig n`.
+    The resulting formula has quantifier depth at most `k`. -/
+noncomputable def nf_to_formula {sig : MonadicSignature} :
+    {k : Nat} → {n : Nat} → NormalForm sig k n → MonadicFormula sig n
+  | 0, _, assignment =>
+    -- Depth 0: conjunction of atom checks
+    MonadicFormula.listConj
+      (Finset.univ.toList.map (atom_cond_formula assignment))
+  | _ + 1, _, ⟨atom_assgn, quant_assgn⟩ =>
+    -- Depth k+1: atom checks AND quantifier checks
+    MonadicFormula.listConj
+      (Finset.univ.toList.map (atom_cond_formula atom_assgn) ++
+       Finset.univ.toList.map (quant_cond_formula nf_to_formula quant_assgn))
+
+/-- `nf_to_formula` correctly captures `nf_eval_nf`:
+    evaluating the formula matches the normal form evaluation. -/
+theorem nf_to_formula_correct {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (nf : NormalForm sig k n) :
+    eval M env (nf_to_formula nf) ↔ nf_eval_nf M k n env nf := by
+  induction k generalizing n env with
+  | zero =>
+    -- nf : AtomKind sig n → Bool
+    -- nf_eval_nf = ∀ a, atom_eval M env a ↔ (nf a = true)
+    simp only [nf_to_formula, nf_eval_nf]
+    rw [eval_listConj]
+    constructor
+    · intro h_all a
+      have h_in_list : atom_cond_formula nf a ∈
+          Finset.univ.toList.map (atom_cond_formula nf) :=
+        List.mem_map_of_mem (Finset.mem_toList.mpr (Finset.mem_univ a))
+      exact (eval_atom_cond M env nf a).mp (h_all _ h_in_list)
+    · intro h_all φ hφ
+      simp only [List.mem_map] at hφ
+      obtain ⟨a, _, rfl⟩ := hφ
+      exact (eval_atom_cond M env nf a).mpr (h_all a)
+  | succ k ih =>
+    -- nf : (AtomKind sig n → Bool) × (NormalForm sig k (n+1) → Bool)
+    show eval M env (MonadicFormula.listConj
+      (Finset.univ.toList.map (atom_cond_formula nf.1) ++
+       Finset.univ.toList.map (quant_cond_formula nf_to_formula nf.2))) ↔ _
+    rw [eval_listConj]
+    have atom_mem : ∀ a : AtomKind sig n,
+        atom_cond_formula nf.1 a ∈
+        (Finset.univ.toList.map (atom_cond_formula nf.1) ++
+         Finset.univ.toList.map (quant_cond_formula nf_to_formula nf.2)) :=
+      fun a => List.mem_append_left _
+        (List.mem_map_of_mem (Finset.mem_toList.mpr (Finset.mem_univ a)))
+    have quant_mem : ∀ sub_nf : NormalForm sig k (n + 1),
+        quant_cond_formula nf_to_formula nf.2 sub_nf ∈
+        (Finset.univ.toList.map (atom_cond_formula nf.1) ++
+         Finset.univ.toList.map (quant_cond_formula nf_to_formula nf.2)) :=
+      fun sub_nf => List.mem_append_right _
+        (List.mem_map_of_mem (Finset.mem_toList.mpr (Finset.mem_univ sub_nf)))
+    constructor
+    · intro h_all
+      refine ⟨fun a => ?_, fun sub_nf => ?_⟩
+      · -- Atom part
+        exact (eval_atom_cond M env nf.1 a).mp (h_all _ (atom_mem a))
+      · -- Quantifier part
+        have h := h_all _ (quant_mem sub_nf)
+        unfold quant_cond_formula at h
+        split at h
+        · rename_i h_eq
+          simp only [eval] at h
+          obtain ⟨x, hx⟩ := h
+          constructor
+          · intro _; exact h_eq
+          · intro _; exact ⟨x, (ih (Fin.cons x env) sub_nf).mp hx⟩
+        · rename_i h_ne
+          simp only [eval, not_exists] at h
+          constructor
+          · intro ⟨x, hx⟩
+            exact absurd ((ih (Fin.cons x env) sub_nf).mpr hx) (h x)
+          · intro h_eq; exact absurd h_eq h_ne
+    · intro ⟨h_atoms, h_quant⟩ φ hφ
+      simp only [List.mem_append, List.mem_map] at hφ
+      rcases hφ with ⟨a, _, rfl⟩ | ⟨sub_nf, _, rfl⟩
+      · exact (eval_atom_cond M env nf.1 a).mpr (h_atoms a)
+      · unfold quant_cond_formula
+        have hq := h_quant sub_nf
+        split
+        · rename_i h_eq
+          simp only [eval]
+          obtain ⟨x, hx⟩ := hq.mpr h_eq
+          exact ⟨x, (ih (Fin.cons x env) sub_nf).mpr hx⟩
+        · rename_i h_ne
+          simp only [eval, not_exists]
+          intro x hx
+          exact absurd (hq.mp ⟨x, (ih (Fin.cons x env) sub_nf).mp hx⟩) h_ne
+
+/-- Specialization: for sentences (n=0), nf_to_formula produces a MonadicSentence. -/
+noncomputable def nf_to_sentence {sig : MonadicSignature} {k : Nat}
+    (nf : NormalForm sig k 0) : MonadicSentence sig :=
+  nf_to_formula nf
+
+theorem nf_to_sentence_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (nf : NormalForm sig k 0) :
+    eval M Fin.elim0 (nf_to_sentence nf) ↔ nf_eval_nf M k 0 Fin.elim0 nf :=
+  nf_to_formula_correct M Fin.elim0 nf
+
 end Bimodal.Metalogic.WeakCanonical

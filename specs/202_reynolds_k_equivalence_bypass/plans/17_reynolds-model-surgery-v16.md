@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Bounded Quantifier Relativization Infrastructure [PARTIAL]
+### Phase 0: Bounded Quantifier Relativization Infrastructure [IN PROGRESS]
 
 **Goal**: Build the infrastructure in MonadicFO.lean that allows expressing "formula phi holds on the subinterval [lo, hi]" as a MonadicFormula on the full structure where all quantifiers are relativized to the interval [lo, hi]. This is the missing ~200-line infrastructure identified by the Phase 1 blocker analysis.
 
