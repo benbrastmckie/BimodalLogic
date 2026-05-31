@@ -81,26 +81,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Gap Formula Construction -- De Bruijn Fix + Formula R (Pieces 1-3) [IN PROGRESS]
+### Phase 1: Gap Formula Construction -- De Bruijn Fix + Formula R (Pieces 1-3) [COMPLETED]
 
 **Goal**: Fix the De Bruijn index blocker, prove `right_gap_class_formula_correct`, and obtain temporal formula R with `gap_formula_R_correct` connecting temporal truth to `right_gap_class_prop`.
 
 **Strategy**: Sorry-first. Stub pieces 2-3 with sorry if piece 1 proves intractable via Fix A; use Fix C (inline formula) as fallback.
 
 **Tasks**:
-- [ ] **Task 1.1**: Fix `eval_good_rel_lifted` (piece 1, ~40 lines)
+- [x] **Task 1.1**: Fix `eval_good_rel_lifted` (piece 1, ~40 lines)
   - File: `GoodStructuresModelSurgery.lean`, after line ~760
   - Fix A (preferred, ~15 lines): `unfold good_rel_lifted; rw [lift_eval, lift_eval]; congr 1; ext i; fin_cases i <;> simp [insertEnv, Fin.cons]`
   - Fix B (alternative, ~25 lines): Redefine `good_rel_lifted` using `weaken` instead of `lift`
   - Fix C (guaranteed fallback, ~40 lines): Inline the formula directly as `MonadicFormula sig 1` bypassing lift machinery
   - Success criterion: `eval_good_rel_lifted` compiles without sorry
-- [ ] **Task 1.2**: Prove `right_gap_class_formula_correct` (piece 2, ~80 lines)
+- [x] **Task 1.2**: Prove `right_gap_class_formula_correct` (piece 2, ~80 lines)
   - File: `GoodStructuresModelSurgery.lean`, after formula definition at line ~787
   - Unfold `right_gap_class_formula`, apply `eval_good_rel_lifted`, compose with `good_formula_relativized_correct`
   - Handle quantifier structure: exists b, exists a', exists b' with interval bounds
   - Note: encode only "bounded above with bad subinterval" part; succ-closed conjunct is always true by `no_boundary_at_successor`
   - Success criterion: theorem compiles without sorry
-- [ ] **Task 1.3**: Construct `gap_formula_R` and prove `gap_formula_R_correct` (piece 3, ~40 lines)
+- [x] **Task 1.3**: Construct `gap_formula_R` and prove `gap_formula_R_correct` (piece 3, ~40 lines)
   - File: `GoodStructuresModelSurgery.lean`, after task 1.2
   - Apply `US_expressively_complete_over_prior` to `right_gap_class_formula`
   - Bridge gap: formula semantic content plus `contemp_equiv_succ_closed_of_no_boundary` gives full `right_gap_class_prop`

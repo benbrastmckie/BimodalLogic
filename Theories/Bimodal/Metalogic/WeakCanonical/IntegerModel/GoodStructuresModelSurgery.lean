@@ -786,6 +786,203 @@ private noncomputable def right_gap_class_formula (sig : MonadicSignature) (k : 
         (MonadicFormula.leq ⟨1, by omega⟩ ⟨2, by omega⟩))   -- b' ≤ b
       (.not (good_rel_lifted sig k))))))                     -- ¬good [a', b']
 
+/-- `good_rel_lifted` evaluates to `good_formula_relativized` on the first two
+    variables of the 4-variable environment. Since `.lift 2 |>.lift 3` only
+    shifts variables at positions ≥ 2, vars 0 and 1 are preserved. -/
+private theorem eval_good_rel_lifted {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier) :
+    eval M env (good_rel_lifted sig k) ↔
+    eval M (Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0))
+      (good_formula_relativized sig k) := by
+  unfold good_rel_lifted
+  -- Step 1: outer lift
+  have step1 : eval M env ((good_formula_relativized sig k).lift 2 |>.lift 3) ↔
+      eval M (fun (i : Fin 3) => env i.castSucc)
+        ((good_formula_relativized sig k).lift 2) := by
+    constructor <;> intro h
+    all_goals {
+      have key := @lift_eval _ _ M (fun i => env i.castSucc) ⟨3, by omega⟩ (env ⟨3, by omega⟩)
+        ((good_formula_relativized sig k).lift 2)
+      have h_eq : insertEnv ⟨3, by omega⟩ (env ⟨3, by omega⟩)
+          (fun (i : Fin 3) => env i.castSucc) = env := by
+        funext ⟨i, hi⟩
+        simp only [insertEnv, Fin.castSucc]
+        split_ifs with h1 h2 <;> first | rfl | skip
+        · have hi3 : i = 3 := Fin.ext_iff.mp h2
+          subst hi3; rfl
+        · exfalso
+          have : i ≠ 3 := fun heq => h2 (Fin.ext heq)
+          omega
+      rw [h_eq] at key
+      first | rwa [key] | rwa [← key] }
+  -- Step 2: inner lift
+  have step2 : eval M (fun (i : Fin 3) => env i.castSucc)
+      ((good_formula_relativized sig k).lift 2) ↔
+      eval M (fun (i : Fin 2) => env i.castSucc.castSucc)
+        (good_formula_relativized sig k) := by
+    constructor <;> intro h
+    all_goals {
+      have key := @lift_eval _ _ M (fun i => env i.castSucc.castSucc) ⟨2, by omega⟩
+        (env ⟨2, by omega⟩) (good_formula_relativized sig k)
+      have h_eq : insertEnv ⟨2, by omega⟩ (env ⟨2, by omega⟩)
+          (fun (i : Fin 2) => env i.castSucc.castSucc) =
+          (fun (i : Fin 3) => env i.castSucc) := by
+        funext ⟨i, hi⟩
+        simp only [insertEnv, Fin.castSucc]
+        split_ifs with h1 h2
+        · rfl
+        · have hi2 : i = 2 := Fin.ext_iff.mp h2
+          subst hi2; rfl
+        · exfalso
+          have : i ≠ 2 := fun heq => h2 (Fin.ext heq)
+          omega
+      rw [h_eq] at key
+      first | rwa [key] | rwa [← key] }
+  -- Step 3: env agreement
+  have step3 : (fun (i : Fin 2) => env i.castSucc.castSucc) =
+      Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0) := by
+    funext i; fin_cases i <;> rfl
+  rw [step1, step2, step3]
+
+/-- `right_gap_class_formula` correctly captures the semantic content:
+    there exists b > t and a subinterval [a', b'] with t ≤ a' ≤ b' ≤ b
+    that is not good. -/
+private theorem right_gap_class_formula_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    eval M (fun _ => t) (right_gap_class_formula sig k) ↔
+    ∃ b : M.carrier, t < b ∧
+      ∃ a' b' : M.carrier, t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧
+        ¬ good sig k (M.subinterval sig a' b') := by
+  -- Unfold the formula evaluation step by step
+  unfold right_gap_class_formula
+  simp only [eval, eval_leq, not_lt]
+  -- After simp: the goal should be about ∃ b, t < b ∧ ∃ b', ∃ a',
+  -- (t ≤ a' ∧ a' ≤ b') ∧ b' ≤ b ∧ ¬ eval ... (good_rel_lifted ...)
+  constructor
+  · -- Forward
+    intro ⟨b, h_tb, b', a', ⟨⟨h_ta, h_ab⟩, h_bb⟩, h_ng⟩
+    refine ⟨b, h_tb, a', b', h_ta, h_ab, h_bb, ?_⟩
+    intro h_good
+    apply h_ng
+    rw [eval_good_rel_lifted]
+    exact (good_formula_relativized_correct sig k M a' b' h_ab).mpr h_good
+  · -- Backward
+    intro ⟨b, h_tb, a', b', h_ta, h_ab, h_bb, h_ng⟩
+    refine ⟨b, h_tb, b', a', ⟨⟨h_ta, h_ab⟩, h_bb⟩, ?_⟩
+    intro h_eval
+    apply h_ng
+    rw [eval_good_rel_lifted] at h_eval
+    exact (good_formula_relativized_correct sig k M a' b' h_ab).mp h_eval
+
+/-- The semantic content of `right_gap_class_formula` implies the first conjunct of
+    `right_gap_class_prop`: ∃ b > t, ¬ contemp_equiv t b.
+
+    If there exists a bad subinterval [a', b'] ⊂ [t, b], then [t, b] is not very good,
+    so ¬ contemp_equiv t b. -/
+private theorem right_gap_class_formula_implies_bounded {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (h : ∃ b : M.carrier, t < b ∧
+      ∃ a' b' : M.carrier, t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧
+        ¬ good sig k (M.subinterval sig a' b')) :
+    ∃ b : M.carrier, t < b ∧ ¬ contemp_equiv sig k M t b := by
+  obtain ⟨b, h_lt, a', b', h_ta, h_ab, h_bb, h_ng⟩ := h
+  refine ⟨b, h_lt, ?_⟩
+  intro h_ce
+  apply h_ng
+  -- contemp_equiv t b means very_good on [min t b, max t b] = [t, b]
+  have h_tb : t ≤ b := le_of_lt h_lt
+  simp only [contemp_equiv] at h_ce
+  rw [min_eq_left h_tb, max_eq_right h_tb] at h_ce
+  exact good_of_very_good_subinterval sig k M t b h_tb h_ce a' b' h_ta h_bb h_ab
+
+/-- Converse: ¬ contemp_equiv t b (with t < b) implies a bad subinterval exists. -/
+private theorem bounded_implies_right_gap_class_formula {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [NoMaxOrder M.carrier]
+    (t b : M.carrier) (h_lt : t < b) (h_ne : ¬ contemp_equiv sig k M t b) :
+    ∃ a' b' : M.carrier, t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧
+      ¬ good sig k (M.subinterval sig a' b') := by
+  -- contemp_equiv t b = very_good (M.subinterval t b)
+  -- ¬ very_good means ∃ x y in [t,b], x ≤ y ∧ ¬ good (subinterval x y)
+  simp only [contemp_equiv, very_good] at h_ne
+  rw [min_eq_left (le_of_lt h_lt), max_eq_right (le_of_lt h_lt)] at h_ne
+  push_neg at h_ne
+  obtain ⟨⟨x, hx_lo, hx_hi⟩, ⟨y, hy_lo, hy_hi⟩, h_xy, h_ng⟩ := h_ne
+  -- x, y are in the subinterval [t, b] with x ≤ y and ¬good on (subinterval t b).subinterval x y
+  -- (subinterval t b).subinterval x y is k_equiv to M.subinterval x y
+  have h_not_good : ¬ good sig k (M.subinterval sig x y) := by
+    intro ⟨Z, hZ⟩
+    apply h_ng
+    exact ⟨Z, (subinterval_of_subinterval_k_equiv sig k M t b
+      ⟨x, hx_lo, hx_hi⟩ ⟨y, hy_lo, hy_hi⟩).trans hZ⟩
+  exact ⟨x, y, hx_lo, h_xy, hy_hi, h_not_good⟩
+
+/-- Temporal formula R detecting `right_gap_class_prop` via
+    `US_expressively_complete_over_prior` (Reynolds Lemma 6).
+
+    Given atomMap with h_surj, this produces a temporal Formula A such that
+    `temporal_truth M atomMap t A ↔ eval M (fun _ => t) (right_gap_class_formula sig k)`
+    on any Prior structure. -/
+private noncomputable def gap_formula_R (sig : MonadicSignature) (k : Nat)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    Formula :=
+  (US_expressively_complete_over_prior atomMap h_surj
+    (right_gap_class_formula sig k)).val
+
+/-- `gap_formula_R` correctly detects `right_gap_class_prop` on Prior structures.
+
+    The proof bridges the three levels:
+    1. temporal_truth ↔ eval (right_gap_class_formula)  [by US_expressively_complete_over_prior]
+    2. eval (right_gap_class_formula) ↔ ∃ bad subinterval  [by right_gap_class_formula_correct]
+    3. ∃ bad subinterval ↔ right_gap_class_prop          [by helper lemmas]
+
+    The second conjunct of right_gap_class_prop (succ-closed) is NOT encoded in
+    the formula. It must be established separately from the hypotheses. -/
+private theorem gap_formula_R_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [NoMaxOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (gap_formula_R sig k atomMap h_surj) ↔
+    eval M (fun _ => t) (right_gap_class_formula sig k) := by
+  unfold gap_formula_R
+  exact ((US_expressively_complete_over_prior atomMap h_surj
+    (right_gap_class_formula sig k)).property M h_prior_UZ h_prior_SZ t).symm
+
+/-- Full correctness: gap_formula_R detects right_gap_class_prop when the
+    succ-closed hypothesis is known. -/
+private theorem gap_formula_R_iff_rgcp {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier)
+    (h_succ_closed : ∀ c, contemp_equiv sig k M t c →
+      contemp_equiv sig k M t (Order.succ c)) :
+    temporal_truth M atomMap t (gap_formula_R sig k atomMap h_surj) ↔
+    right_gap_class_prop sig k M t := by
+  rw [gap_formula_R_correct M atomMap h_surj h_prior_UZ h_prior_SZ,
+      right_gap_class_formula_correct M t]
+  constructor
+  · -- temporal R holds → right_gap_class_prop
+    intro ⟨b, h_tb, a', b', h_ta, h_ab, h_bb, h_ng⟩
+    refine ⟨⟨b, h_tb, fun h_ce => h_ng ?_⟩, h_succ_closed⟩
+    -- h_ce : contemp_equiv sig k M t b = very_good (subinterval (min t b) (max t b))
+    have h_le : t ≤ b := le_of_lt h_tb
+    simp only [contemp_equiv, min_eq_left h_le, max_eq_right h_le] at h_ce
+    exact good_of_very_good_subinterval sig k M t b h_le h_ce a' b' h_ta h_bb h_ab
+  · -- right_gap_class_prop → temporal R holds
+    intro ⟨⟨b, h_tb, h_ne⟩, _⟩
+    obtain ⟨a', b', h_ta, h_ab, h_bb, h_ng⟩ :=
+      bounded_implies_right_gap_class_formula M t b h_tb h_ne
+    exact ⟨b, h_tb, a', b', h_ta, h_ab, h_bb, h_ng⟩
 
 /-!
 #### Reynolds Theorem 14: Gap contradiction
