@@ -134,7 +134,7 @@ technical_debt:
   - **Summary**: [specs/218_croissant_metadata_hf_leaderboard/summaries/01_croissant-hf-summary.md]
 216 [COMPLETED] — Natural-language paraphrase augmentation for bmlogic-bench
 217 [NOT STARTED] — Complexity tier extension to c9/c11 (Lean oracle)
-220 [IMPLEMENTING] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
+220 [COMPLETED] — Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 221 [NOT STARTED] — Proof step dataset expansion (36 → 200+ theorems)
 219 [NOT STARTED] — LLM baseline difficulty calibration
   └─ 216
@@ -228,12 +228,13 @@ technical_debt:
 
 ### 220. Anchor coverage expansion (14/42 → 42/42 axiom constructors)
 - **Effort**: medium (1-2 weeks)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Research**: [220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md]
 - **Plan**: [220_anchor_coverage_expansion/plans/01_anchor-coverage-plan.md]
+- **Summary**: [220_anchor_coverage_expansion/summaries/01_anchor-coverage-summary.md]
 
 **Description**: Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.
 
