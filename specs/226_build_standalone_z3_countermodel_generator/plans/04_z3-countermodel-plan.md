@@ -113,7 +113,7 @@ Phases are sequential: each phase builds on the prior phase's output.
 
 ---
 
-### Phase 2: Quantifier-Free Frame and Truth Encoding [NOT STARTED]
+### Phase 2: Quantifier-Free Frame and Truth Encoding [COMPLETED]
 
 **Goal**: Implement the core Z3 encoding: frame constraints (nullity_identity, forward_comp, converse) and truth conditions (6 constructors) using quantifier-free finite instantiation over bounded N worlds and M time steps.
 

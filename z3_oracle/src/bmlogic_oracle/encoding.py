@@ -232,45 +232,49 @@ class FrameEncoder:
             return z3.And(*conjuncts) if conjuncts else z3.BoolVal(True)
 
         elif isinstance(formula, Until):
-            # untl(phi, psi) is true at (sigma, t) iff:
-            # exists t' >= t such that psi is true at (sigma, t') and
-            #   for all t'' in [t, t'): phi is true at (sigma, t'')
-            # Quantifier-free: finite disjunction over t' in [t, M-1]
+            # untl(event=phi, guard=psi) is true at (sigma, t) iff:
+            # Lean semantics: ∃ s > t (STRICT), truth(phi, s) ∧ ∀ r ∈ (t,s) (open interval), truth(psi, r)
+            #   - phi = formula.left = "event" (the eventual goal, holds at some STRICT future s)
+            #   - psi = formula.right = "guard" (holds strictly between t and s)
+            # Quantifier-free: finite disjunction over s in (t, M-1] (strict: s > t)
             disjuncts = []
-            for t_prime in range(t, self.M):
-                # psi at t'
-                psi_at_t_prime = self._truth_rec(formula.right, atoms, sigma_idx, t_prime)
-                # phi for all t'' in [t, t')
-                phi_conditions = [
-                    self._truth_rec(formula.left, atoms, sigma_idx, t_pp)
-                    for t_pp in range(t, t_prime)
+            for s in range(t + 1, self.M):  # s > t (strict)
+                # phi holds at s (the event)
+                phi_at_s = self._truth_rec(formula.left, atoms, sigma_idx, s)
+                # psi holds on open interval (t, s): all r with t < r < s
+                guard_conditions = [
+                    self._truth_rec(formula.right, atoms, sigma_idx, r)
+                    for r in range(t + 1, s)  # open interval (t, s)
                 ]
-                if phi_conditions:
-                    disjuncts.append(z3.And(psi_at_t_prime, *phi_conditions))
+                if guard_conditions:
+                    disjuncts.append(z3.And(phi_at_s, *guard_conditions))
                 else:
-                    # t' == t: just psi at t (vacuously true for phi condition)
-                    disjuncts.append(psi_at_t_prime)
+                    # s == t+1: open interval (t, s) is empty, guard condition is vacuously true
+                    disjuncts.append(phi_at_s)
+            # If no s > t in range (t is the last time step), Until is false
             return z3.Or(*disjuncts) if disjuncts else z3.BoolVal(False)
 
         elif isinstance(formula, Since):
-            # snce(phi, psi) is true at (sigma, t) iff:
-            # exists t' <= t such that psi is true at (sigma, t') and
-            #   for all t'' in (t', t]: phi is true at (sigma, t'')
-            # Quantifier-free: finite disjunction over t' in [0, t]
+            # snce(event=phi, guard=psi) is true at (sigma, t) iff:
+            # Lean semantics: ∃ s < t (STRICT), truth(phi, s) ∧ ∀ r ∈ (s,t) (open interval), truth(psi, r)
+            #   - phi = formula.left = "event" (the past goal, held at some STRICT past s)
+            #   - psi = formula.right = "guard" (holds strictly between s and t)
+            # Quantifier-free: finite disjunction over s in [0, t) (strict: s < t)
             disjuncts = []
-            for t_prime in range(0, t + 1):
-                # psi at t'
-                psi_at_t_prime = self._truth_rec(formula.right, atoms, sigma_idx, t_prime)
-                # phi for all t'' in (t', t]
-                phi_conditions = [
-                    self._truth_rec(formula.left, atoms, sigma_idx, t_pp)
-                    for t_pp in range(t_prime + 1, t + 1)
+            for s in range(0, t):  # s < t (strict)
+                # phi holds at s (the event)
+                phi_at_s = self._truth_rec(formula.left, atoms, sigma_idx, s)
+                # psi holds on open interval (s, t): all r with s < r < t
+                guard_conditions = [
+                    self._truth_rec(formula.right, atoms, sigma_idx, r)
+                    for r in range(s + 1, t)  # open interval (s, t)
                 ]
-                if phi_conditions:
-                    disjuncts.append(z3.And(psi_at_t_prime, *phi_conditions))
+                if guard_conditions:
+                    disjuncts.append(z3.And(phi_at_s, *guard_conditions))
                 else:
-                    # t' == t: just psi at t (vacuously true for phi condition)
-                    disjuncts.append(psi_at_t_prime)
+                    # s == t-1: open interval (s, t) is empty, guard condition is vacuously true
+                    disjuncts.append(phi_at_s)
+            # If t == 0, no s < t exists, Since is false
             return z3.Or(*disjuncts) if disjuncts else z3.BoolVal(False)
 
         else:
