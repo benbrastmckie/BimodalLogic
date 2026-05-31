@@ -83,7 +83,7 @@ Phases are sequential: each phase builds on the prior phase's output.
 
 ---
 
-### Phase 1: Package Scaffold and Formula Parser [NOT STARTED]
+### Phase 1: Package Scaffold and Formula Parser [COMPLETED]
 
 **Goal**: Create the `z3_oracle/` package structure with pyproject.toml, Z3 dependency, and a JSON formula parser that handles the 6-tag bimodal TM formula format used by bmlogic-bench.
 
