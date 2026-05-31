@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 227,
+      "project_name": "dataset_pipeline_automation_croissant_sync",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Build end-to-end automation so that every benchmark data regeneration (anchor expansion, new training data, eval runs) automatically updates all downstream artifacts. (1) Fix immediate croissant.json staleness: recompute SHA-256 hashes, update contentSize for all 5 distributions, regenerate or remove bmlogic-bench-splits.json, verify field counts match actual JSONL schemas. (2) Create a deterministic pipeline script (e.g., scripts/sync-dataset-artifacts.sh) that, given freshly regenerated bmlogic-bench.jsonl or training data, automatically recomputes SHA-256 hashes and contentSize in croissant.json, updates record counts in metadata JSON, regenerates splits if applicable, validates croissant.json structure, updates data/README.md statistics, and commits with a structured message. (3) Update the lean-implementation-agent and general-implementation-agent definitions/context so that any task involving benchmark regeneration (task_type lean4 or general with benchmark/eval/anchor keywords) includes a post-implementation step that runs the sync script. Add this to agent context or plan templates so future /implement and /orchestrate runs automatically keep artifacts in sync. (4) Document the pipeline in data/README.md with a clear narrative: what each artifact is, how they relate, which script keeps them in sync, and what git history tracks. The goal is zero manual intervention — when an agent regenerates benchmark data, everything downstream updates atomically, and documentation tells the story of the dataset's evolution.",
+      "priority": "high",
+      "created": "2026-05-31T01:10:11Z",
+      "last_updated": "2026-05-31T01:10:11Z"
+    },
+    {
       "project_number": 226,
       "project_name": "build_standalone_z3_countermodel_generator",
       "status": "planned",
@@ -1803,7 +1813,7 @@
       ]
     }
   ],
-  "next_project_number": 227,
+  "next_project_number": 228,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
