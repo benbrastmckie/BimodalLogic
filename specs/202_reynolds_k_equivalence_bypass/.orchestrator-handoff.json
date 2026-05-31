@@ -1,12 +1,14 @@
 {
   "status": "partial",
-  "summary": "Phase 0 partially completed: relativization infrastructure (Tasks 0.1-0.4) is sorry-free in MonadicFO.lean. Tasks 0.5-0.6 and Phases 1-4 remain.",
-  "phases_completed": 0,
+  "summary": "Phase 0 completed (nf_to_formula, good_sentence, good_formula_relativized sorry-free). Phase 1 blocked on De Bruijn Fin.cons/insertEnv/lift_eval correctness proof for right_gap_class_formula.",
+  "phases_completed": 1,
   "phases_total": 5,
-  "blockers": [],
+  "blockers": [
+    "Phase 1: right_gap_class_formula_correct requires eval_good_rel_lifted which needs Fin.cons/insertEnv identity for Fin 4 that current simp/omega can't close. See handoff for 4 fix options."
+  ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-0-handoff-20260530.md",
-    "next_phase": 0
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-1-handoff-20260530-v2.md",
+    "next_phase": 1
   },
   "next_action_hint": "continue_implement"
 }
