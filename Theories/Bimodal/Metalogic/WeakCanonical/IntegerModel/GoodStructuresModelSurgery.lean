@@ -1014,6 +1014,13 @@ private noncomputable def contemp_eq_body (sig : MonadicSignature) (k : Nat) :
            (MonadicFormula.leq ⟨1, by omega⟩ ⟨3, by omega⟩)))  -- d ≤ y
     (good_rel_lifted sig k)))
 
+/-- Helper: the guard condition in contemp_eq_body is equivalent to
+    min(x,y) ≤ c ∧ c ≤ d ∧ d ≤ max(x,y). -/
+private theorem contemp_guard_iff {α : Type} [LinearOrder α] (x y c d : α) :
+    ((x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y)) ↔
+    (min x y ≤ c ∧ c ≤ d ∧ d ≤ max x y) := by
+  simp only [min_le_iff, le_max_iff]
+
 /-- Correctness of `contemp_eq_body`: evaluates to `contemp_equiv`.
 
     The formula `contemp_eq_body sig k` uses `∀ d ∀ c` with guard
@@ -1022,18 +1029,116 @@ private noncomputable def contemp_eq_body (sig : MonadicSignature) (k : Nat) :
 
     The proof bridges the formula evaluation (via `eval_good_rel_lifted` and
     `good_formula_relativized_correct`) to the semantic `contemp_equiv` definition.
-
-    SORRY: The proof requires reducing nested Fin.cons lookups at De Bruijn indices
-    (e.g., `Fin.cons c (Fin.cons d (Fin.cons x (Fin.cons y Fin.elim0))) ⟨2, _⟩ = x`).
-    Lean's kernel reduction handles this but the tactic layer needs explicit guidance
-    for the `eval` goals after simp. A dedicated `fin_cons_simp` tactic or lemma set
-    would resolve this cleanly. The semantic content is correct by the variable
-    assignment in the definition of `contemp_eq_body`. -/
+    Fin.cons lookups at non-canonical indices (2, 3) are handled via `show` and
+    definitional equality rather than simp reduction. -/
 private theorem contemp_eq_body_correct (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig) (x y : M.carrier) :
     eval M (Fin.cons x (Fin.cons y Fin.elim0)) (contemp_eq_body sig k) ↔
     contemp_equiv sig k M x y := by
-  sorry
+  -- contemp_eq_body = .all (.all (imp guard (good_rel_lifted sig k)))
+  -- After two ∀ quantifiers: env4 = Fin.cons c (Fin.cons d (Fin.cons x (Fin.cons y Fin.elim0)))
+  -- with c=var0, d=var1, x=var2, y=var3.
+  --
+  -- Strategy: unfold eval to get ∀ d c, guard → good_rel_eval, then
+  -- rewrite guard using contemp_guard_iff and good_rel using eval_good_rel_lifted
+  -- + good_formula_relativized_correct. The key conversion between
+  -- very_good(M.subinterval(min x y, max x y)) and ∀ c d, min(x,y)≤c ∧ c≤d ∧ d≤max(x,y)
+  -- → good(M.subinterval c d) uses good_of_very_good_subinterval.
+  -- Strategy: Convert via a suffices that states the semantic content directly.
+  -- Then bridge between the formula eval and the semantic statement using
+  -- definitional equality of Fin.cons lookups and eval_good_rel_lifted.
+  suffices h_main : (∀ (d c : M.carrier),
+      (x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y) →
+      good sig k (M.subinterval sig c d)) ↔
+      contemp_equiv sig k M x y by
+    constructor
+    · intro h_formula
+      apply h_main.mp
+      intro d c h_guard
+      -- h_formula : eval M (Fin.cons x (Fin.cons y Fin.elim0)) (contemp_eq_body sig k)
+      -- = ∀ d', ∀ c', eval env4 (imp guard good_rel_lifted)
+      -- We need to specialize and extract the conclusion.
+      have h_spec : eval M (Fin.cons c (Fin.cons d (Fin.cons x (Fin.cons y Fin.elim0))))
+          (MonadicFormula.imp
+            (.and (.and
+              (.or (MonadicFormula.leq ⟨2, by omega⟩ ⟨0, by omega⟩)
+                   (MonadicFormula.leq ⟨3, by omega⟩ ⟨0, by omega⟩))
+              (MonadicFormula.leq ⟨0, by omega⟩ ⟨1, by omega⟩))
+              (.or (MonadicFormula.leq ⟨1, by omega⟩ ⟨2, by omega⟩)
+                   (MonadicFormula.leq ⟨1, by omega⟩ ⟨3, by omega⟩)))
+            (good_rel_lifted sig k)) := h_formula d c
+      rw [eval_imp] at h_spec
+      -- Build the eval guard from the semantic guard
+      have h_eval_guard : eval M (Fin.cons c (Fin.cons d (Fin.cons x (Fin.cons y Fin.elim0))))
+          (.and (.and
+            (.or (MonadicFormula.leq ⟨2, by omega⟩ ⟨0, by omega⟩)
+                 (MonadicFormula.leq ⟨3, by omega⟩ ⟨0, by omega⟩))
+            (MonadicFormula.leq ⟨0, by omega⟩ ⟨1, by omega⟩))
+            (.or (MonadicFormula.leq ⟨1, by omega⟩ ⟨2, by omega⟩)
+                 (MonadicFormula.leq ⟨1, by omega⟩ ⟨3, by omega⟩))) := by
+        simp only [eval, eval_leq, eval_or]
+        -- After simp, the goal has Fin.cons lookups at ⟨0,_⟩..⟨3,_⟩ which are
+        -- definitionally c,d,x,y. The goal is ((x≤c ∨ y≤c) ∧ c≤d) ∧ (d≤x ∨ d≤y)
+        -- which we provide from h_guard with ∧-reassociation.
+        exact ⟨⟨h_guard.1, h_guard.2.1⟩, h_guard.2.2⟩
+      have h_body := h_spec h_eval_guard
+      rw [eval_good_rel_lifted] at h_body
+      -- h_body now has Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0) which is
+      -- definitionally Fin.cons c (Fin.cons d Fin.elim0).
+      -- Use `show` to normalize, then apply good_formula_relativized_correct.
+      have h_body' : eval M (Fin.cons c (Fin.cons d Fin.elim0))
+          (good_formula_relativized sig k) := h_body
+      rw [good_formula_relativized_correct sig k M c d h_guard.2.1] at h_body'
+      exact h_body'
+    · intro h_ce d c
+      -- Need: eval M env4 (imp guard good_rel_lifted)
+      rw [eval_imp]
+      intro h_eval_guard
+      -- Extract semantic guard from eval guard.
+      -- After eval_imp, h_eval_guard has type:
+      --   eval M env4 (.and (.and (.or (leq 2 0) (leq 3 0)) (leq 0 1)) (.or (leq 1 2) (leq 1 3)))
+      -- which unfolds to ((env2 ≤ env0 ∨ env3 ≤ env0) ∧ env0 ≤ env1) ∧ (env1 ≤ env2 ∨ env1 ≤ env3)
+      -- By definitional equality of Fin.cons lookups, this equals
+      --   ((x ≤ c ∨ y ≤ c) ∧ c ≤ d) ∧ (d ≤ x ∨ d ≤ y).
+      -- We re-associate the ∧ to get the target form.
+      simp only [eval, eval_leq, eval_or] at h_eval_guard
+      have h_guard : (x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y) :=
+        ⟨h_eval_guard.1.1, h_eval_guard.1.2, h_eval_guard.2⟩
+      -- Need: eval M env4 (good_rel_lifted sig k)
+      -- Use eval_good_rel_lifted which gives eval on (env 0, env 1) = (c, d)
+      rw [eval_good_rel_lifted]
+      -- Goal: eval M (Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0)) (good_formula_relativized sig k)
+      -- where env 0 = c, env 1 = d definitionally.
+      -- Use `show` to normalize the env to Fin.cons c (Fin.cons d Fin.elim0)
+      show eval M (Fin.cons c (Fin.cons d Fin.elim0)) (good_formula_relativized sig k)
+      rw [good_formula_relativized_correct sig k M c d h_guard.2.1]
+      exact h_main.mpr h_ce d c h_guard
+  -- Now prove h_main: the purely semantic equivalence
+  constructor
+  · -- Forward: ∀ c d, guard → good(subinterval c d) implies contemp_equiv x y
+    intro h_all
+    -- contemp_equiv x y = very_good(M.subinterval(min x y, max x y))
+    -- = ∀ c' d' ∈ carrier, c' ≤ d' → good(sub.subinterval c' d')
+    -- By subinterval_of_subinterval_k_equiv, this reduces to good(M.subinterval c d).
+    unfold contemp_equiv very_good
+    intro ⟨c, hc_lo, hc_hi⟩ ⟨d, hd_lo, hd_hi⟩ hcd
+    -- hcd : ⟨c, _⟩ ≤ ⟨d, _⟩ i.e. c ≤ d
+    -- Need: good((M.subinterval(min x y, max x y)).subinterval ⟨c,_⟩ ⟨d,_⟩)
+    -- By subinterval_of_subinterval_k_equiv, k_equiv with M.subinterval c d.
+    let c' : (M.subinterval sig (min x y) (max x y)).carrier := ⟨c, hc_lo, hc_hi⟩
+    let d' : (M.subinterval sig (min x y) (max x y)).carrier := ⟨d, hd_lo, hd_hi⟩
+    have h_sub_equiv := subinterval_of_subinterval_k_equiv sig k M (min x y) (max x y) c' d'
+    -- h_sub_equiv : k_equiv (sub.sub c' d') (M.sub c d)
+    -- From h_all: good(M.subinterval c d) = ∃ Z, k_equiv (M.sub c d) Z.toOrdered
+    have h_guard : (x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y) :=
+      (contemp_guard_iff x y c d).mpr ⟨hc_lo, hcd, hd_hi⟩
+    obtain ⟨Z, hZ⟩ := h_all d c h_guard
+    exact ⟨Z, h_sub_equiv.trans hZ⟩
+  · -- Backward: contemp_equiv → ∀ c d, guard → good(subinterval c d)
+    intro h_ce d c h_guard
+    have h_minmax := (contemp_guard_iff x y c d).mp h_guard
+    exact good_of_very_good_subinterval sig k M (min x y) (max x y)
+      min_le_max h_ce c d h_minmax.1 h_minmax.2.2 h_guard.2.1
 
 /-- MonadicFormula sig 1 encoding "∃ y ~M x, A(y)" where A is a temporal formula.
     This is the "spread formula" used in Reynolds Lemma 9.1.
