@@ -195,7 +195,7 @@ def isAtomicBranch (b : Branch) : Bool :=
     match sf.formula with
     | .atom _ => true
     | .bot => true
-    | _ => isExpanded sf
+    | _ => isExpanded sf b
 
 /-!
 ## Termination Measure
@@ -207,7 +207,7 @@ Sum of unexpanded complexities decreases with each rule application.
 -/
 def expansionMeasure (b : Branch) : Nat :=
   b.foldl (fun acc sf =>
-    if isExpanded sf then acc
+    if isExpanded sf b then acc
     else acc + sf.formula.complexity) 0
 
 -- Note: expansion_decreases_measure theorem was archived (required technical proof)

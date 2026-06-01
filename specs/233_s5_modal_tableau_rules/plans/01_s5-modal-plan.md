@@ -134,16 +134,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Saturation.lean Expansion Update [NOT STARTED]
+### Phase 3: Saturation.lean Expansion Update [COMPLETED]
 
 **Goal**: Update `expandBranchWithFuel` and related functions to handle `RuleResult.persistent` and pass branch context
 
 **Tasks**:
-- [ ] Update `expandBranchWithFuel` (line 92) to handle `persistent` result from `expandOnce`: when `expandOnce` returns `.extended` with a branch that came from a persistent expansion, the source formula is NOT removed (this is already handled by `expandOnce` in Tableau.lean, so Saturation.lean receives the correct branch)
-- [ ] Verify that fuel still decrements on persistent expansions (persistent expansions consume fuel even though the source formula is retained, preventing infinite loops)
-- [ ] Verify `isSaturated` (line 186) works correctly: a branch is saturated when `findUnexpanded` returns `none`, which happens when all universal formulas have been fully propagated (i.e., `applyRule` returns `notApplicable` for them)
-- [ ] Verify `expansionMeasure` (line 208) accounts for persistent formulas: since `isExpanded` now checks branch context, a fully-propagated T(box A) will be marked expanded
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles
+- [x] Update `expandBranchWithFuel` (line 92) to handle `persistent` result from `expandOnce`: when `expandOnce` returns `.extended` with a branch that came from a persistent expansion, the source formula is NOT removed (this is already handled by `expandOnce` in Tableau.lean, so Saturation.lean receives the correct branch) *(deviation: altered -- no changes needed to expandBranchWithFuel itself since expandOnce returns .extended for persistent results and the branch is already correct)*
+- [x] Verify that fuel still decrements on persistent expansions (persistent expansions consume fuel even though the source formula is retained, preventing infinite loops)
+- [x] Verify `isSaturated` (line 186) works correctly: a branch is saturated when `findUnexpanded` returns `none`, which happens when all universal formulas have been fully propagated (i.e., `applyRule` returns `notApplicable` for them)
+- [x] Verify `expansionMeasure` (line 208) accounts for persistent formulas: since `isExpanded` now checks branch context, a fully-propagated T(box A) will be marked expanded
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles
 
 **Timing**: 1 hour
 
