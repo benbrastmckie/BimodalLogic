@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Decidability.DecisionProcedure
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DataExport
+import Bimodal.Automation.EnrichedCountermodel
 
 /-!
 # Dataset Generator: Decider Integration and ProofTrace Extraction
@@ -44,6 +45,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Decidability
 open Bimodal.Automation.DataExport
+open Bimodal.Automation.Enriched
 
 /--
 Simplified proof trace extracted from a DerivationTree.
@@ -94,6 +96,39 @@ inductive FormulaLabel where
   deriving Repr, DecidableEq, BEq, Inhabited
 
 /--
+Serializable summary of a `SemanticCountermodel` for JSON export.
+
+The full `SemanticCountermodel` contains non-serializable fields (the raw branch
+list and a function-valued atom valuation). This summary captures the key
+structural information: world set, time set, temporal ordering constraints,
+and the formula being refuted.
+-/
+structure SemanticCountermodelSummary where
+  /-- All world indices in the model. -/
+  worlds : List Nat
+  /-- All time indices in the model. -/
+  times : List Nat
+  /-- Temporal ordering constraints: each `(a, b)` means `a < b`. -/
+  timeConstraints : List (Nat × Nat)
+  /-- Number of worlds. -/
+  worldCount : Nat
+  /-- Number of time points. -/
+  timeCount : Nat
+  deriving Repr, Inhabited
+
+/--
+Extract a serializable summary from a `SemanticCountermodel`.
+-/
+def SemanticCountermodelSummary.fromSemanticCountermodel
+    (scm : SemanticCountermodel) : SemanticCountermodelSummary :=
+  { worlds := scm.worlds
+  , times := scm.times
+  , timeConstraints := scm.timeOrdering.constraints
+  , worldCount := scm.worlds.length
+  , timeCount := scm.times.length
+  }
+
+/--
 A fully labeled formula record combining the formula with its
 decision result, proof trace (if valid), countermodel (if invalid),
 difficulty metrics, and pattern key.
@@ -117,6 +152,10 @@ structure LabeledFormula where
   decisionMethod : String
   /-- Whether the countermodel is self-consistent (invalid formulas only). -/
   countermodelConsistent : Option Bool
+  /-- Enriched countermodel with branch structure (invalid formulas only). -/
+  enrichedCountermodel : Option EnrichedCountermodel
+  /-- Semantic countermodel summary (invalid formulas only). -/
+  semanticCountermodelSummary : Option SemanticCountermodelSummary
   deriving Repr
 
 instance : Inhabited LabeledFormula :=
@@ -128,7 +167,9 @@ instance : Inhabited LabeledFormula :=
      patternKey := default
      ruleProfile := none
      decisionMethod := "timeout"
-     countermodelConsistent := none }⟩
+     countermodelConsistent := none
+     enrichedCountermodel := none
+     semanticCountermodelSummary := none }⟩
 
 /--
 Extract axiom schema name as a string from an Axiom constructor.
@@ -257,12 +298,56 @@ where
     else "very_hard"
 
 /--
+Extract enriched and semantic countermodel data for an invalid formula.
+
+Runs `buildTableau` to obtain the raw open branch, then extracts:
+1. `EnrichedCountermodel` (full branch structure with modal/temporal subsets)
+2. `SemanticCountermodelSummary` (worlds, times, temporal ordering)
+
+If the tableau build fails (rare, since `decideAuto` already confirmed invalidity),
+returns `(none, none)`.
+-/
+def extractCountermodelData (φ : Formula) :
+    Option EnrichedCountermodel × Option SemanticCountermodelSummary :=
+  let fuel := soundFuel φ
+  match buildTableau φ fuel with
+  | none => (none, none)
+  | some (.allClosed _) => (none, none)  -- Shouldn't happen for invalid formula
+  | some (.hasOpen openBranch _hSat ord) =>
+      let ecm := extractEnrichedCountermodel φ openBranch
+      let scm := extractSemanticCountermodel φ openBranch ord
+      let summary := SemanticCountermodelSummary.fromSemanticCountermodel scm
+      (some ecm, some summary)
+
+/--
+Build a `LabeledFormula` for an invalid result, including enriched countermodel data.
+-/
+private def mkInvalidLabel (φ : Formula) (cm : SimpleCountermodel)
+    (metrics : DifficultyMetrics) (patternKey : PatternKey)
+    (method : String := "tableau_open") : LabeledFormula :=
+  let consistent := cm.isConsistent
+  let (ecm, scmSummary) := extractCountermodelData φ
+  { formula := φ
+    label := .invalid
+    proofTrace := none
+    countermodel := some cm
+    metrics := metrics
+    patternKey := patternKey
+    ruleProfile := none
+    decisionMethod := method
+    countermodelConsistent := some consistent
+    enrichedCountermodel := ecm
+    semanticCountermodelSummary := scmSummary
+  }
+
+/--
 Label a single formula by running the decision procedure.
 
 1. Measures wall-clock time using `IO.monoMsNow`
 2. Calls `decideAuto` (automatic fuel based on formula complexity)
 3. Extracts proof trace (valid), countermodel (invalid), or records timeout
 4. Computes difficulty metrics and pattern key
+5. For invalid formulas, extracts enriched and semantic countermodel data
 -/
 def labelFormula (φ : Formula) : IO LabeledFormula := do
   let startTime ← IO.monoMsNow
@@ -292,20 +377,11 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       ruleProfile := some rp
       decisionMethod := method
       countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
     }
   | .invalid cm =>
-    let consistent := cm.isConsistent
-    return {
-      formula := φ
-      label := .invalid
-      proofTrace := none
-      countermodel := some cm
-      metrics := metrics
-      patternKey := patternKey
-      ruleProfile := none
-      decisionMethod := "tableau_open"
-      countermodelConsistent := some consistent
-    }
+    return mkInvalidLabel φ cm metrics patternKey
   | .timeout =>
     -- Retry with decideOptimized (uses IDDFS first, then full tableau)
     let retryResult := decideOptimized φ
@@ -323,20 +399,11 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
         ruleProfile := some rp
         decisionMethod := "proof_search"
         countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
       }
     | .invalid cm =>
-      let consistent := cm.isConsistent
-      return {
-        formula := φ
-        label := .invalid
-        proofTrace := none
-        countermodel := some cm
-        metrics := metrics
-        patternKey := patternKey
-        ruleProfile := none
-        decisionMethod := "tableau_open"
-        countermodelConsistent := some consistent
-      }
+      return mkInvalidLabel φ cm metrics patternKey
     | .timeout =>
       return {
         formula := φ
@@ -348,6 +415,8 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
         ruleProfile := none
         decisionMethod := "timeout"
         countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
       }
 
 /--
@@ -468,24 +537,25 @@ def DifficultyMetrics.toJson (dm : DifficultyMetrics) : String :=
   ++ "}"
 
 /--
+Serialize a `SemanticCountermodelSummary` to a JSON object string.
+-/
+def SemanticCountermodelSummary.toJson (s : SemanticCountermodelSummary) : String :=
+  let worldsStr := listToJsonArray (s.worlds.map toString)
+  let timesStr := listToJsonArray (s.times.map toString)
+  let constraintsStr := listToJsonArray (s.timeConstraints.map fun (a, b) =>
+    "[" ++ toString a ++ ", " ++ toString b ++ "]")
+  "{\"worlds\": " ++ worldsStr
+  ++ ", \"times\": " ++ timesStr
+  ++ ", \"time_constraints\": " ++ constraintsStr
+  ++ ", \"world_count\": " ++ toString s.worldCount
+  ++ ", \"time_count\": " ++ toString s.timeCount
+  ++ "}"
+
+/--
 Serialize a `LabeledFormula` to a complete JSON object string.
 
-Produces:
-```json
-{
-  "formula": <Formula.toJson>,
-  "formula_string": "<Formula.prettyPrint>",
-  "features": <PatternKey.toJson>,
-  "decision": "valid"|"invalid"|"timeout",
-  "proof": <proofMetricsToJson> or null,
-  "countermodel": <SimpleCountermodel.toJson> or null,
-  "metrics": <DifficultyMetrics.toJson>
-}
-```
-
-For valid formulas, the `"proof"` field includes height and rule profile
-computed via `walkDerivationTree` from `DataExport.lean`. The proof trace
-(axiom names, rule names) is included separately.
+Includes all fields: formula, features, decision result, proof trace,
+countermodel (simple, enriched, semantic), metrics, and rule profile.
 -/
 def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   let proofStr := match lf.proofTrace with
@@ -501,6 +571,12 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     | none => "null"
     | some true => "true"
     | some false => "false"
+  let ecmStr := match lf.enrichedCountermodel with
+    | none => "null"
+    | some ecm => ecm.toJson
+  let scmStr := match lf.semanticCountermodelSummary with
+    | none => "null"
+    | some s => s.toJson
   "{\"formula\": " ++ lf.formula.toJson
   ++ ", \"formula_string\": \"" ++ escapeJsonString lf.formula.prettyPrint ++ "\""
   ++ ", \"features\": " ++ lf.patternKey.toJson
@@ -510,6 +586,8 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
   ++ ", \"countermodel_consistent\": " ++ cmConsStr
+  ++ ", \"enriched_countermodel\": " ++ ecmStr
+  ++ ", \"semantic_countermodel\": " ++ scmStr
   ++ ", \"metrics\": " ++ lf.metrics.toJson
   ++ "}"
 

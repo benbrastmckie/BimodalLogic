@@ -8,17 +8,22 @@
     {
       "project_number": 257,
       "project_name": "large_data_storage_huggingface",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-06-01T22:32:23Z",
-      "last_updated": "2026-06-01T22:38:41Z",
-      "session_id": "sess_1748817200_a7b3c1",
+      "last_updated": "2026-06-01T22:50:16Z",
+      "session_id": "sess_1748817400_b2c4d6",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md",
           "type": "research",
           "summary": "HF Hub is the clear recommendation — the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
+        },
+        {
+          "path": "specs/257_large_data_storage_huggingface/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for migrating dataset hosting from Git LFS to Hugging Face Hub"
         }
       ],
       "memory_candidates": [

@@ -194,6 +194,10 @@ structure DatasetRecord where
   rule_profile : Option RuleProfile
   /-- Whether the countermodel is self-consistent (invalid formulas only). -/
   countermodel_consistent : Option Bool
+  /-- Enriched countermodel with branch structure (invalid formulas only). -/
+  enriched_countermodel : Option Enriched.EnrichedCountermodel
+  /-- Semantic countermodel summary (invalid formulas only). -/
+  semantic_countermodel : Option SemanticCountermodelSummary
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -215,7 +219,9 @@ instance : Inhabited DatasetRecord :=
      max_temporal_depth := 0
      decision_method := "timeout"
      rule_profile := none
-     countermodel_consistent := none }⟩
+     countermodel_consistent := none
+     enriched_countermodel := none
+     semantic_countermodel := none }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -237,6 +243,12 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
     | none => "null"
     | some true => "true"
     | some false => "false"
+  let ecmStr := match r.enriched_countermodel with
+    | none => "null"
+    | some ecm => ecm.toJson
+  let scmStr := match r.semantic_countermodel with
+    | none => "null"
+    | some s => s.toJson
   "{\"id\": \"" ++ escapeJsonString r.id ++ "\""
   ++ ", \"split\": \"" ++ escapeJsonString r.split ++ "\""
   ++ ", \"formula_str\": \"" ++ escapeJsonString r.formula_str ++ "\""
@@ -248,6 +260,8 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
   ++ ", \"countermodel_consistent\": " ++ cmConsStr
+  ++ ", \"enriched_countermodel\": " ++ ecmStr
+  ++ ", \"semantic_countermodel\": " ++ scmStr
   ++ ", \"pattern_key\": " ++ r.pattern_key.toJson
   ++ ", \"metrics\": " ++ difficultyMetricsToJson r.metrics
   ++ ", \"augmentation\": " ++ augStr
@@ -282,7 +296,9 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     max_temporal_depth := lf.patternKey.temporalDepth
     decision_method := lf.decisionMethod
     rule_profile := lf.ruleProfile
-    countermodel_consistent := lf.countermodelConsistent }
+    countermodel_consistent := lf.countermodelConsistent
+    enriched_countermodel := lf.enrichedCountermodel
+    semantic_countermodel := lf.semanticCountermodelSummary }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
