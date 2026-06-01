@@ -98,9 +98,10 @@ technical_debt:
   └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur (see above)
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
   └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
-235 [PLANNED] — Implement tableau rules for primitive Until (untl) and Since (snc
+235 [COMPLETED] — Implement tableau rules for primitive Until (untl) and Since (snce) operators
   - **Research**: [specs/235_until_since_tableau_rules/reports/01_until-since-research.md]
   - **Plan**: [specs/235_until_since_tableau_rules/plans/01_until-since-plan.md]
+  - **Summary**: [specs/235_until_since_tableau_rules/summaries/01_until-since-summary.md]
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
   └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
 
@@ -337,15 +338,16 @@ technical_debt:
 
 ### 235. Until/Since tableau rules with open-guard decomposition
 - **Effort**: large (12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Topic**: tableau-training
 - **Dependencies**: 232
 - **Research**: [specs/235_until_since_tableau_rules/reports/01_until-since-research.md]
 - **Plan**: [specs/235_until_since_tableau_rules/plans/01_until-since-plan.md]
+- **Summary**: [specs/235_until_since_tableau_rules/summaries/01_until-since-summary.md]
 
-**Description**: Implement rules for primitive `untl` and `snce` — zero rules currently exist for these two constructors. `T(U(φ,ψ)) @ t` branches: event witness `T(φ) @ t_next` or guard+continue `T(ψ) @ t_next, T(U(φ,ψ)) @ t_next`. Open-guard convention (strict inequality). Eventuality tracking for loop detection. Symmetric for Since. Test against all 22 BX axioms. Files: `Tableau.lean`, `SignedFormula.lean`, `Saturation.lean`.
+**Description**: Implemented 4 Until/Since tableau rules (untlPos, untlNeg, sncePos, snceNeg) with open-guard BX decomposition, Reynolds co-decomposition for negative rules, branch helpers, asUntil?/asSince? decomposition helpers, Eventuality tracking infrastructure, and 7 passing integration tests. Full lake build: 0 errors, 1679 jobs.
 
 ---
 

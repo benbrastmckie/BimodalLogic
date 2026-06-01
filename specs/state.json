@@ -1559,7 +1559,8 @@
     {
       "project_number": 235,
       "project_name": "until_since_tableau_rules",
-      "status": "planned",
+      "status": "completed",
+      "completion_summary": "Implemented 4 Until/Since tableau rules (untlPos, untlNeg, sncePos, snceNeg) with open-guard decomposition, Reynolds co-decomposition, branch helpers, Eventuality tracking infrastructure, and 7 passing integration tests. Full lake build: 0 errors.",
       "task_type": "lean4",
       "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
       "priority": "critical",
