@@ -485,6 +485,7 @@ technical_debt:
 - **Topic**: dataset-enhancement
 - **Research**: [217_complexity_tier_extension_c9_c11/reports/01_complexity-tier-research.md]
 - **Plan**: [217_complexity_tier_extension_c9_c11/plans/01_complexity-tier-plan.md]
+- **Summary**: [217_complexity_tier_extension_c9_c11/summaries/01_complexity-tier-summary.md]
 
 **Description**: Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity ≤9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity ≤11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.
 

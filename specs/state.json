@@ -1151,6 +1151,11 @@
           "path": "specs/217_complexity_tier_extension_c9_c11/plans/01_complexity-tier-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for extending BMLogic datasets to c9 (exhaustive) and c11 (stratified), with 16-field schema, migration tooling, and very_hard+ benchmark slice"
+        },
+        {
+          "path": "specs/217_complexity_tier_extension_c9_c11/summaries/01_complexity-tier-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phases 1-3 completed (Lean schema, shell scripts, Python migration), Phases 4-5 partial (generation requires multi-hour compute)"
         }
       ]
     },
