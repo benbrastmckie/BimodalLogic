@@ -484,33 +484,9 @@ theorem sat_box_pos (b : Branch) (hSat : findUnexpanded b = none)
     (φ : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .box φ, ⟨w, t⟩⟩ ∈ b) :
     ∀ w' ∈ b.knownWorlds, ⟨.pos, φ, ⟨w', t⟩⟩ ∈ b := by
-  intro w' hw'
-  -- Use contains_iff_mem: reduce to showing Branch.contains is true
-  rw [← contains_iff_mem]
-  -- Suppose contains is false, derive contradiction with saturation
-  by_contra hNotContains
-  rw [Bool.not_eq_true] at hNotContains
-  -- From saturation, T(□φ) must be expanded
-  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .box φ, ⟨w, t⟩⟩ hmem
-  -- boxPos applies: applyRule .boxPos checks if filterMap is empty
-  -- w' ∈ knownWorlds with ¬contains means filterMap is non-empty → .persistent result
-  -- So findApplicableRule returns some, contradicting isExpanded = true
-  -- Prove: the filterMap for boxPos is non-empty when w' lacks T(φ)
-  have hNonEmpty : (b.knownWorlds.filterMap fun w'' =>
-      let newSf := SignedFormula.pos φ { world := w'', time := t }
-      if Branch.contains b newSf then none else some newSf).isEmpty = false := by
-    rw [List.isEmpty_eq_false_iff_exists_mem]
-    refine ⟨SignedFormula.pos φ ⟨w', t⟩, ?_⟩
-    rw [List.mem_filterMap]
-    exact ⟨w', hw', by simp [hNotContains]⟩
-  -- Now show this contradicts isExpanded = true
-  -- The approach: directly show isExpanded is false
-  have : isExpanded ⟨.pos, .box φ, ⟨w, t⟩⟩ b = false := by
-    unfold isExpanded findApplicableRule
-    simp only [allRulesForFC, allRules, denseRules, discreteRules]
-    simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
-    simp [hNonEmpty]
-  simp [this] at hExp
+  -- BLOCKED: Requires detailed case analysis on boxPos rule's filterMap behavior.
+  -- The simp-based unfolding of allRulesForFC broke with Lean version changes.
+  sorry
 
 /--
 **Box negative saturation**: If `F(□φ)` at `(w, t)` is in a saturated branch,

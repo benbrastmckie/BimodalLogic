@@ -95,17 +95,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Propositional and Modal Saturation Invariants [IN PROGRESS]
+### Phase 2: Prove Propositional and Modal Saturation Invariants [PARTIAL]
 
 **Goal**: Resolve 3 of the 7 saturation sorry sites: `sat_imp_neg`, `sat_box_pos`, `sat_box_neg`.
 
 **Tasks**:
-- [ ] Study `findApplicableRule`, `allRulesForFC`, `isApplicable`, `applyRule` definitions to understand the rule engine unfolding pattern
-- [ ] Prove `sat_imp_neg`: Show F(psi -> chi) cannot exist in a saturated branch because `impNeg` rule always applies, producing `.linear [T(psi), F(chi)]` (vacuity argument via contradiction with `findUnexpanded b = none`)
-- [ ] Prove `sat_box_pos`: Show T(box phi) propagates phi to all known worlds. Case split on whether `applyRule .boxPos` returns `.notApplicable` (all worlds already have T(phi)) or `.persistent` (contradicts saturation)
-- [ ] Prove `sat_box_neg`: Show F(box phi) cannot exist in a saturated branch because `boxNeg` rule always applies, producing `.linear` with fresh witness world (vacuity argument, same pattern as `sat_imp_neg`)
-- [ ] Extract any reusable helper lemmas (e.g., `rule_always_applies_for_pattern` or `saturated_implies_expanded`) into a common section
-- [ ] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
+- [x] **Task 2.1**: Study `findApplicableRule`, `allRulesForFC`, `isApplicable`, `applyRule` definitions to understand the rule engine unfolding pattern
+- [x] **Task 2.2**: Prove `sat_imp_neg`: Show F(psi -> chi) cannot exist in a saturated branch because `impNeg` rule always applies *(completed via `impNeg_not_expanded` helper)*
+- [ ] **Task 2.3**: Prove `sat_box_pos` *(deviation: deferred -- requires relating filterMap emptiness in boxPos persistent rule to branch membership; simp-based unfolding hits term size issues with the 20+ rule list and let bindings)*
+- [x] **Task 2.4**: Prove `sat_box_neg`: Show F(box phi) cannot exist in a saturated branch because `boxNeg` rule always applies *(completed via `boxNeg_not_expanded` helper)*
+- [x] **Task 2.5**: Extract reusable helper lemmas *(completed: `findUnexpanded_none_all_expanded`, `expanded_iff_no_applicable`, `contains_iff_mem`, `impNeg_not_expanded`, `impPos_not_expanded`, `boxNeg_not_expanded`)*
+- [x] **Task 2.6**: Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
+- [x] **Bonus**: Also proved `truthLemma_pos` imp case (T(ψ→χ) vacuity) using `impPos_not_expanded`
 
 **Timing**: 3 hours
 
