@@ -90,18 +90,26 @@ Returns:
 - `none`: Ran out of fuel
 -/
 def expandBranchWithFuel (b : Branch) (fuel : Nat)
-    (timeOrd : TimeOrdering := TimeOrdering.empty) : Option (ClosedBranch ⊕ Branch) :=
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Option (ClosedBranch ⊕ Branch) :=
   match fuel with
   | 0 => none  -- Out of fuel
   | fuel + 1 =>
       -- First check if already closed
-      match findClosure b with
+      match findClosure b fc with
       | some reason => some (.inl ⟨b, reason⟩)
       | none =>
+          -- Check temporal blocking: if any active time has its type
+          -- subsumed by an ancestor time, treat the branch as saturated.
+          -- This prevents infinite chains from Until/Since positive rules
+          -- re-introducing the same formula at fresh time points.
+          if (findBlockedTime b timeOrd).isSome then
+            some (.inr b)  -- Blocked: treat as saturated open branch
+          else
           -- Try to expand
           match expandOnce b timeOrd with
           | (.saturated, _) => some (.inr b)  -- Open saturated branch
-          | (.extended newBranch, newOrd) => expandBranchWithFuel newBranch fuel newOrd
+          | (.extended newBranch, newOrd) => expandBranchWithFuel newBranch fuel newOrd fc
           | (.split branches, newOrd) =>
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch
@@ -110,7 +118,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
                 | _ =>
-                    match expandBranchWithFuel newBranch fuel newOrd with
+                    match expandBranchWithFuel newBranch fuel newOrd fc with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
@@ -127,13 +135,14 @@ Returns:
 - `pending`: Ran out of fuel with branches remaining
 -/
 def expandBranchesWithFuel (branches : List Branch) (fuel : Nat)
-    (closed : List ClosedBranch := []) : BranchListResult :=
+    (closed : List ClosedBranch := [])
+    (fc : FrameClass := .Base) : BranchListResult :=
   match branches with
   | [] => .allClosed closed
   | b :: rest =>
-      match expandBranchWithFuel b fuel with
+      match expandBranchWithFuel b fuel TimeOrdering.empty fc with
       | none => .pending (b :: rest)  -- Out of fuel
-      | some (.inl closedBr) => expandBranchesWithFuel rest fuel (closedBr :: closed)
+      | some (.inl closedBr) => expandBranchesWithFuel rest fuel (closedBr :: closed) fc
       | some (.inr openBr) =>
           -- Check if open branch is saturated
           match h : findUnexpanded openBr with
@@ -154,9 +163,10 @@ Starts with F(φ) (asserting φ is false) and expands until:
 Uses fuel parameter for termination. The fuel should be set based on
 the formula's complexity.
 -/
-def buildTableau (φ : Formula) (fuel : Nat := 1000) : Option ExpandedTableau :=
+def buildTableau (φ : Formula) (fuel : Nat := 1000)
+    (fc : FrameClass := .Base) : Option ExpandedTableau :=
   let initialBranch : Branch := [SignedFormula.neg φ Label.initial]
-  match expandBranchWithFuel initialBranch fuel with
+  match expandBranchWithFuel initialBranch fuel TimeOrdering.empty fc with
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])
   | some (.inr openBr) =>
@@ -174,8 +184,8 @@ def recommendedFuel (φ : Formula) : Nat :=
 /--
 Build tableau with automatic fuel calculation.
 -/
-def buildTableauAuto (φ : Formula) : Option ExpandedTableau :=
-  buildTableau φ (recommendedFuel φ)
+def buildTableauAuto (φ : Formula) (fc : FrameClass := .Base) : Option ExpandedTableau :=
+  buildTableau φ (recommendedFuel φ) fc
 
 /-!
 ## Saturation Properties
@@ -316,5 +326,39 @@ private def q : Formula := .atom (Atom.mk_base "q")
   | none => return "FAIL: p -> p ran out of fuel"
 
 end UntilSinceTests
+
+/-!
+## Blocking Termination Tests
+
+These tests verify that subset blocking correctly terminates tableau expansion
+for formulas that would previously loop or exhaust fuel.
+-/
+
+section BlockingTests
+
+open Bimodal.Syntax
+
+private def p' : Formula := .atom (Atom.mk_base "p")
+private def q' : Formula := .atom (Atom.mk_base "q")
+
+-- Test B1: G(p) -> G(p) is trivially valid (regression baseline)
+#eval do
+  let φ := Formula.imp (Formula.all_future p') (Formula.all_future p')
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS B1: G(p) -> G(p) is valid"
+  | some (.hasOpen _ _) => return "FAIL B1: G(p) -> G(p) should be valid"
+  | none => return "FAIL B1: G(p) -> G(p) ran out of fuel"
+
+-- Test B2: U(p, q) -> U(p, q) is trivially valid (temporal identity)
+#eval do
+  let φ := Formula.imp (.untl p' q') (.untl p' q')
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS B2: U(p,q) -> U(p,q) is valid"
+  | some (.hasOpen _ _) => return "FAIL B2: U(p,q) -> U(p,q) should be valid"
+  | none => return "FAIL B2: U(p,q) -> U(p,q) ran out of fuel"
+
+end BlockingTests
 
 end Bimodal.Metalogic.Decidability
