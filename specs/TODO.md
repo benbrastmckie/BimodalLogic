@@ -40,7 +40,7 @@ technical_debt:
 
 ### Completeness
 
-202 [IMPLEMENTING] — Formalize Reynolds Theorem 5 (US expressive completeness over Pri
+202 [COMPLETED] — Formalize Reynolds Theorem 5 (US expressive completeness over Pri
 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
   └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
   └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -397,7 +397,7 @@ technical_debt:
 
 ### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
 - **Effort**: 14 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: CRITICAL
 - **Dependencies**: none
@@ -412,7 +412,8 @@ technical_debt:
 - **Plans**:
   - [202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
   - [202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md]
-- **Description**: Plan v12 (Reynolds model surgery). Phase 1 complete (Theorem 5 + infrastructure). Plan v12 formalizes Reynolds Lemmas 6-13 + Theorem 14 (model surgery / no-gaps) in new ReynoldsModelSurgery.lean (~600 lines) at the ChronicleAsPriorModel level. Phase 2: gap formula R (Lemma 6), R-interval structure (Lemma 7), class homogeneity (Lemmas 8-9), bad intervals (Lemma 10), formula propagation (Lemma 11), model surgery N = Q- u I u Q+ (Lemma 12), contradiction (Lemma 13), main theorem (Theorem 14). Phase 3: close chronicle_gap_contradiction sorry + verify completeness_discrete sorry-free.
+  - [202_reynolds_k_equivalence_bypass/plans/20_reynolds-model-surgery-v19.md]
+- **Description**: Reynolds Theorem 14 (model surgery / no-gaps) fully formalized. GoodStructuresModelSurgery.lean has 0 sorry sites. Key results: gap formula R, h_R_everywhere, invariant_formula_constant, class_spread, ordered_spread_above/below (Lemma 11 density), truth preservation by structural induction, final contradiction. Wired to completeness_discrete via ShiftAndGlue.lean (import cycle bypass). no_gaps_discrete in GoodStructures.lean retains sorry (off critical path).
 
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
