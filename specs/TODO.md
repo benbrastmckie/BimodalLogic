@@ -5,11 +5,11 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-06-01T00:00:00Z
 task_counts:
-  active: 53
+  active: 52
   completed: 162
   in_progress: 1
-  not_started: 41
-  abandoned: 0
+  not_started: 40
+  abandoned: 1
   total: 215
 technical_debt:
   sorry_count: 1
@@ -27,158 +27,129 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-06-01. 53 active tasks.*
+*Updated 2026-06-01. 52 active tasks across 6 independent tracks + documentation.*
 
-**Goal**: Sorry-free `bx_completeness` → structural refactor → tactics library → tactic-powered codebase refinement → documentation → publication-quality codebase.
+**Tracks A-E are fully independent** — work on any combination in parallel. Track F (Documentation) waits on Tracks B + C. Deferred features have no timeline pressure.
 
-### Phase 1 — Discrete Completeness (independent, Option C path)
+### Track A — Completeness (sorry-free `bx_completeness`)
 
-202 [PLANNED] — Reynolds model surgery (v17): Definitive 11-piece, 6-phase plan synthesizing 17+ failed cycles. Closes 2 sorry sites (gap_prior_UZ/SZ_contradiction) + 1 wiring change (no_gaps_discrete). ~700 LOC, 16 hours.
-  - **Reports**:
-    - [specs/202_reynolds_k_equivalence_bypass/reports/17_deep-research-synthesis.md]
-    - [specs/202_reynolds_k_equivalence_bypass/reports/16_team-research.md]
-  - **Plans**:
-    - [specs/202_reynolds_k_equivalence_bypass/plans/18_reynolds-model-surgery-v17.md]
-
-### Phase 1 — Grid Tactic (unblocks 155 Phase 3B)
-
-199 [NOT STARTED] — Grid order tactic: bespoke `grid_order_tac` for same_order_type dispatch with automatic Fin bridging, then apply to close Phase 3B sorry sites in CaseAnalysis.lean.
+202 [PLANNED] — Reynolds model surgery (v17): 11-piece, 6-phase plan. ~700 LOC, 16 hours.
+  - **Plans**: [specs/202_reynolds_k_equivalence_bypass/plans/18_reynolds-model-surgery-v17.md]
+199 [PARTIAL] — Grid order tactic for same_order_type dispatch
+155 [IMPLEMENTING] — Reynolds pipeline (GHR93-faithful, plan v43). 6 phases, 20-30 hours.
+  └─ 199
+176 [NOT STARTED] — Relocate Chronicle/, archive dead BXCanonical subtree
+  └─ 155
+95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification
   └─ 155
 
-### Phase 1b — Resume 155 (after task 199 grid tactic)
-
-155 [PLANNED] — Reynolds pipeline: Plan v43 -- Definitive GHR93-faithful plan. Independent X_t construction (not via nf_characterizable_by_stavi), delta=4, general linear orders (Cases III/IV with left/right gap formulas), interval type formula A. 6 phases, 20-30 hours.
-  └─ 154, 199
-
-### Phase 2 — Post-155 Cleanup
-
-176 [NOT STARTED] — Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree
-  └─ 155
-95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification pass
-  └─ 155
-
-### Phase 3 — Structural Refactor
+### Track B — Structural Refactor
 
 175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
 180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
   └─ 175, 180
-161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST in Phase 3)
+161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
   └─ 131
 
-### Phase 4 — Standards & Derivable Migration (after structural refactor)
+### Track C — Tactics Pipeline
 
-194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
-  └─ 161
-
-### Phase 5 — Tactics Survey (generates tactic task roadmap)
-
-196 [RESEARCHED] — Codebase-wide tactic opportunity survey (generates tasks)
-  └─ 155, 161
-
-### Phase 5a — Tactics Tier 1 (modal foundations, after structural refactor)
-
+*Tier 1 — Foundations (independent of each other):*
 185 [RESEARCHED] — Complete axiom & derived theorem coverage in modal_search
+189 [NOT STARTED] — Deduction theorem tactic
 190 [RESEARCHED] — Derived operator normalization tactic (modal_norm)
+191 [NOT STARTED] — Propositional fragment verified decision procedure
 
-### Phase 6 — Tactics Tier 2 (engineering)
-
+*Tier 2 — Engineering (depends on Tier 1):*
 186 [NOT STARTED] — Unify computable and tactic proof search systems
   └─ 185
 187 [NOT STARTED] — Backward-chaining lemma database (solve_by_elim analogue)
   └─ 185
-189 [NOT STARTED] — Deduction theorem tactic
 188 [NOT STARTED] — Weakening-aware proof search
   └─ 187
 
-### Phase 7 — Tactics Tier 3 (research-level)
-
-191 [NOT STARTED] — Propositional fragment decision procedure
+*Tier 3 — Integration (depends on Tier 2 + Track B):*
+194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
+  └─ 161
+196 [RESEARCHED] — Codebase-wide tactic opportunity survey
+  └─ 161
 192 [NOT STARTED] — Master tactic dispatch (tm_prove)
   └─ 185, 187, 190, 191, 194
 
-### Phase 8 — Tactic-Powered Codebase Refactoring
-
+*Tier 4 — Capstone:*
 193 [NOT STARTED] — Codebase-wide tactic refactoring
   └─ 192, 189
 
-### Phase 9 — Final Documentation & Examples
+### Track D — Tableau Training System
+
+*Phase T1 — Foundation:*
+232 [NOT STARTED] — Labeled branch infrastructure (world/time-indexed types)
+233 [NOT STARTED] — S5 modal tableau rules (multi-world bookkeeping)
+  └─ 232
+234 [NOT STARTED] — Temporal G/H/F/P tableau rules (time-indexed)
+  └─ 232
+235 [NOT STARTED] — Until/Since tableau rules (open-guard decomposition)
+  └─ 232
+236 [NOT STARTED] — Modal-temporal interaction rules
+  └─ 233, 234
+
+*Phase T2 — Completion:*
+237 [NOT STARTED] — Tableau termination (blocking + FMP bounds)
+  └─ 233, 234, 235
+238 [NOT STARTED] — Frame-class-aware expansion (Dense/Discrete gating)
+  └─ 233, 234, 235
+239 [NOT STARTED] — Proof extraction from closed tableaux (DerivationTree)
+  └─ 237, 238
+240 [NOT STARTED] — Countermodel extraction (semantic correctness)
+  └─ 237, 238
+
+*Phase T3 — Data Generation:*
+241 [NOT STARTED] — Tableau formula labeling (rebuild DatasetGenerator)
+  └─ 237, 238
+242 [NOT STARTED] — Tableau proof step extraction (100K+ steps)
+  └─ 239, 241
+243 [NOT STARTED] — Full axiom/rule coverage (42/42 axioms, 7/7 rules)
+  └─ 242
+244 [NOT STARTED] — Context-based proof steps (assumption/weakening)
+  └─ 242
+
+*Phase T4 — BimodalHarness Integration:*
+245 [NOT STARTED] — Cross-repository data sync pipeline
+  └─ 241
+246 [NOT STARTED] — Lean REPL tableau bridge (live queries)
+  └─ 241
+247 [NOT STARTED] — End-to-end training loop validation
+  └─ 242, 245, 246
+
+### Track E — Dataset Enhancements
+
+217 [IMPLEMENTING] — Complexity tier extension to c9/c11 (Lean oracle)
+228 [PLANNED] — Fix dataset metadata and documentation staleness
+229 [NOT STARTED] — Resolve train/benchmark formula contamination (71.2% overlap)
+219 [RESEARCHED] — LLM baseline difficulty calibration
+230 [NOT STARTED] — Benchmark refresh: splits, paraphrases, schema alignment
+  └─ 229
+231 [NOT STARTED] — Dataset regeneration automation (supersedes 227)
+  └─ 228, 230
+
+### Track F — Documentation (after Tracks B + C)
 
 177 [NOT STARTED] — Update README and all module docstrings
-  └─ 183, 193
+  └─ 131, 193
 178 [NOT STARTED] — Publication examples and demo
-  └─ 183, 193
+  └─ 131, 193
 
 ### Deferred — New Features (post-publication)
 
 169 [NOT STARTED] — Complete frame extension: axiom, typeclass, soundness, correspondence
 170 [NOT STARTED] — Completeness theorem for TM^dc (dense + complete)
   └─ 169
-127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
-128 [NOT STARTED] — Add topological open set (interior) operator
 165 [NOT STARTED] — Establish semantic finite model property (filtration)
-164 [NOT STARTED] — Prove tableau correctness (connect decide to semantic validity)
+164 [NOT STARTED] — Prove tableau correctness (capstone after 239/240)
   └─ 165, 239, 240
 125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
-
-### Tableau Training System (tasks 232-247)
-
-**Goal**: Rebuild the broken tableau decision procedure into a correct, complete system for TM bimodal logic, then use it to generate large-scale training data for the BimodalHarness neural proof search pipeline.
-
-#### Phase T1 — Tableau Foundation (independent of other phases)
-
-232 [NOT STARTED] — Labeled branch infrastructure: world/time-indexed SignedFormula and Branch types
-233 [NOT STARTED] — S5 modal tableau rules with multi-world bookkeeping
-  └─ 232
-234 [NOT STARTED] — Temporal G/H/F/P tableau rules with time-indexed branches
-  └─ 232
-235 [NOT STARTED] — Until/Since tableau rules with open-guard decomposition
-  └─ 232
-236 [NOT STARTED] — Modal-temporal interaction tableau rules
-  └─ 233, 234
-
-#### Phase T2 — Tableau Completion
-
-237 [NOT STARTED] — Tableau termination via blocking and FMP bounds
-  └─ 233, 234, 235
-238 [NOT STARTED] — Frame-class-aware tableau expansion (Dense/Discrete gating)
-  └─ 233, 234, 235
-239 [NOT STARTED] — Proof term extraction from closed tableaux (DerivationTree construction)
-  └─ 237, 238
-240 [NOT STARTED] — Countermodel extraction with semantic correctness (real branchTruthLemma)
-  └─ 237, 238
-
-#### Phase T3 — Data Generation
-
-241 [NOT STARTED] — Tableau-driven formula labeling for DatasetGenerator
-  └─ 237, 238
-242 [NOT STARTED] — Tableau-derived proof step extraction (100K+ steps)
-  └─ 239, 241
-243 [NOT STARTED] — Full axiom/rule coverage (42/42 axioms, 7/7 rules)
-  └─ 242
-244 [NOT STARTED] — Context-based proof steps for assumption/weakening training
-  └─ 242
-
-#### Phase T4 — BimodalHarness Integration
-
-245 [NOT STARTED] — Cross-repository data sync pipeline (BimodalLogic → BimodalHarness)
-  └─ 241
-246 [NOT STARTED] — Lean REPL tableau bridge for live queries
-  └─ 241
-247 [NOT STARTED] — End-to-end training loop validation
-  └─ 242, 245, 246
-
-### Dataset Enhancements (from competitive landscape analysis, task 215)
-
-228 [COMPLETED] — Fix dataset metadata and documentation staleness
-229 [NOT STARTED] — Resolve train/benchmark formula contamination (71.2% overlap)
-230 [NOT STARTED] — Benchmark refresh: splits, paraphrases, schema alignment
-  └─ 229
-231 [NOT STARTED] — Dataset regeneration automation (supersedes 227)
-  └─ 228, 230
-217 [IMPLEMENTING] — Complexity tier extension to c9/c11 (Lean oracle)
-221 [COMPLETED] — Proof step dataset expansion (36 → 310 theorems, 10063 steps)
-219 [RESEARCHED] — LLM baseline difficulty calibration
+127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
+128 [NOT STARTED] — Add topological open set (interior) operator
 
 ### Meta/Tooling
 
@@ -429,7 +400,7 @@ technical_debt:
 
 ### 227. Dataset pipeline automation + Croissant sync infrastructure
 - **Effort**: medium (1-2 days)
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED] — Superseded by task 231 (broader scope)
 - **Task Type**: general
 - **Research**: [specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md]
 - **Plan**: [227_dataset_pipeline_automation_croissant_sync/plans/01_dataset-pipeline-plan.md]
@@ -517,10 +488,10 @@ technical_debt:
 
 ### 199. Grid order tactic for same_order_type dispatch
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Priority**: high
-- **Dependencies**: 155
+- **Dependencies**: none (155 depends on this task, not the reverse)
 
 **Description**: Create a bespoke `grid_order_tac` tactic (in `Theories/Bimodal/Automation/`) that automates the `same_order_type` grid dispatch in `ghr93_case_II` (`Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`). The problem: after `same_order_type_grid` expands to `intro i j; simp only [game_tuple]; split_ifs`, it generates ~25 ordering goals per case. Each goal has shape `(a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...)`. The available ordering lemmas (`tau_sel_y`, `tau_sel_sel`, `sel_pn_ord`, `pn_sel_ord`, `tau_d_sel`, `hord_cd_en_pn`, `pivot_chain_order`, `fwd_x_b`, `fwd_b_y`) are stated with `Fin n` but the goals use `Fin (n+1)`, causing `exact` to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via `convert ... using 3 <;> (congr 1; exact Fin.ext (by omega))`, (2) handle the `hab_eq` rewrite for p_n cases (when `¬k < n`, rewrite `a_bwd` to `extendPoint p_n` before applying `sel_pn_ord`/`pn_sel_ord`), (3) handle symmetry (y < sel goal uses `tau_sel_y.symm`), (4) fall back to `sorry` with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in `ghr93_case_II`: Case A sorry at line ~1631 and Case B sorry at line ~1940 — these are the last fallthrough goals in the `first | ... | sorry` chains inside the `same_order_type` proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.
 
@@ -780,10 +751,10 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 18-30 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
-- **Dependencies**: 154
+- **Dependencies**: 199
 - **Research**:
   - [specs/155_reynolds_pipeline_activation/reports/01_team-research.md]
   - [specs/155_reynolds_pipeline_activation/reports/02_team-research.md]
