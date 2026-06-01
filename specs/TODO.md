@@ -1,5 +1,5 @@
 ---
-next_project_number: 254
+next_project_number: 258
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -39,7 +39,7 @@ technical_debt:
 
 ### Completeness
 
-256 [RESEARCHED] — Re-scope task 155 and update related task descriptions after task
+256 [PLANNED] — Re-scope task 155 and update related task descriptions after task
   └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
@@ -136,6 +136,13 @@ technical_debt:
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Type**: general
+- **Priority**: medium
+- **Description**: Investigate standard practices for storing large data objects outside git (currently using Git LFS with ~146 MB uploads). Research using Hugging Face Datasets as external data host and linking from this repository. Evaluate trade-offs between Git LFS, Hugging Face Hub, and other approaches for dataset versioning and distribution.
 
 ### 256. Re-scope task 155 and update tasks 95/224 descriptions
 - **Effort**: S
