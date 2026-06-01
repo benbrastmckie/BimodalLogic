@@ -1,7 +1,7 @@
 # Implementation Plan: Proof Step Dataset Expansion
 
 - **Task**: 221 - Proof step dataset expansion (36 to 200+ theorems)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (existing infrastructure is complete)
 - **Research Inputs**: reports/01_proof-step-research.md
@@ -70,16 +70,16 @@ No directly related ROADMAP.md items. This task supports the training data pipel
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Temporal Wrappers (G, H, GG, GGG Entries) [NOT STARTED]
+### Phase 1: Temporal Wrappers (G, H, GG, GGG Entries) [COMPLETED]
 
 **Goal**: Add G-wrapped, H-wrapped (via temporal_duality), and multi-level temporal chain entries to the theorem registry, targeting small-step-count theorems for maximum temporal ratio impact.
 
 **Tasks**:
-- [ ] Add G-wrapped entries for all 36 existing theorems using `DerivationTree.temporal_necessitation _ (existing_tree)` inline in the registry
-- [ ] Add H-wrapped entries for propositional/modal theorems (those whose formulas contain no temporal operators, so `swap_temporal` is identity) using `DerivationTree.temporal_duality _ (DerivationTree.temporal_necessitation _ tree)`
-- [ ] Add GG-double-wrapped entries for the ~12 smallest theorems (1-8 steps: identity, s4_box_diamond_box, connect_future_thm, connect_past_thm, until_implies_some_future, since_implies_some_past, until_imp_F, since_imp_P, box_to_present, mb_diamond, b_combinator, s5_diamond_box_to_truth)
-- [ ] Add GGG-triple-wrapped entries for the ~6 single-step theorems (1 step each: s4_box_diamond_box, connect_future_thm, connect_past_thm, until_imp_F, since_imp_P, box_to_present, mb_diamond)
-- [ ] Run `lake build Bimodal.Automation.ProofStepExport` to verify all new entries type-check and are computable
+- [x] Add G-wrapped entries for all 36 existing theorems using `DerivationTree.temporal_necessitation _ (existing_tree)` inline in the registry
+- [x] Add H-wrapped entries for propositional/modal theorems (those whose formulas contain no temporal operators, so `swap_temporal` is identity) using `DerivationTree.temporal_duality _ (DerivationTree.temporal_necessitation _ tree)` *(deviation: altered -- H-wrapped ALL 36 theorems, not just propositional/modal; temporal formulas produce H(swap(phi)) which is still valid)*
+- [x] Add GG-double-wrapped entries for the ~12 smallest theorems (1-8 steps: identity, s4_box_diamond_box, connect_future_thm, connect_past_thm, until_implies_some_future, since_implies_some_past, until_imp_F, since_imp_P, box_to_present, mb_diamond, b_combinator, s5_diamond_box_to_truth)
+- [x] Add GGG-triple-wrapped entries for the ~6 single-step theorems (1 step each: s4_box_diamond_box, connect_future_thm, connect_past_thm, until_imp_F, since_imp_P, box_to_present, mb_diamond)
+- [x] Run `lake build Bimodal.Automation.ProofStepExport` to verify all new entries type-check and are computable
 
 **Timing**: 2 hours
 

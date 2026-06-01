@@ -114,7 +114,9 @@ so the derivation trees can be fully evaluated at runtime.
 /--
 The complete registry of computable theorems for proof step extraction.
 
-36 entries organized by source file.
+Entries organized by category: 36 original, 36 G-wrapped, 36 H-wrapped,
+12 GG-double-wrapped, 7 GGG-triple-wrapped, plus temporal axiom
+instantiations and multi-instantiation variants.
 -/
 def theoremRegistry : List TheoremEntry := [
   -- ============================================================
@@ -249,7 +251,305 @@ def theoremRegistry : List TheoremEntry := [
 
   -- box_diamond_to_past_box_diamond : ⊢ □◇φ → H(□◇φ)
   mkEntry "box_diamond_to_past_box_diamond"
-    (Bimodal.Theorems.Perpetuity.box_diamond_to_past_box_diamond p)
+    (Bimodal.Theorems.Perpetuity.box_diamond_to_past_box_diamond p),
+
+  -- ============================================================
+  -- G-WRAPPED: temporal_necessitation applied to all 36 theorems
+  -- Each adds 1 temporal_necessitation step
+  -- ============================================================
+
+  -- Combinators G-wrapped
+  mkEntry "G_identity"
+    (DerivationTree.temporal_necessitation _ (@identity .Base p)),
+  mkEntry "G_b_combinator"
+    (DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := p) (B := q) (C := r))),
+  mkEntry "G_theorem_flip"
+    (DerivationTree.temporal_necessitation _ (@theorem_flip .Base (A := p) (B := q) (C := r))),
+  mkEntry "G_theorem_app1"
+    (DerivationTree.temporal_necessitation _ (@theorem_app1 .Base (A := p) (B := q))),
+  mkEntry "G_theorem_app2"
+    (DerivationTree.temporal_necessitation _ (@theorem_app2 .Base (A := p) (B := q) (C := r))),
+  mkEntry "G_pairing"
+    (DerivationTree.temporal_necessitation _ (@pairing .Base p q)),
+  mkEntry "G_dni"
+    (DerivationTree.temporal_necessitation _ (@dni .Base p)),
+  mkEntry "G_temp_future_derived"
+    (DerivationTree.temporal_necessitation _ (@temp_future_derived .Base p)),
+
+  -- ModalS4 G-wrapped
+  mkEntry "G_s4_box_diamond_box"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_box_diamond_box p)),
+  mkEntry "G_s4_diamond_box_diamond"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_diamond_box_diamond p)),
+
+  -- ModalS5 G-wrapped
+  mkEntry "G_t_box_to_diamond"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.t_box_to_diamond p)),
+  mkEntry "G_box_contrapose"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.box_contrapose p q)),
+  mkEntry "G_k_dist_diamond"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.k_dist_diamond p q)),
+  mkEntry "G_t_box_consistency"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.t_box_consistency p)),
+  mkEntry "G_s5_diamond_box"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box p)),
+  mkEntry "G_s5_diamond_box_to_truth"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box_to_truth p)),
+
+  -- TemporalDerived G-wrapped
+  mkEntry "G_connect_future_thm"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_future_thm p)),
+  mkEntry "G_connect_past_thm"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_past_thm p)),
+  mkEntry "G_G_implies_G_id"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.G_implies_G_id p)),
+  mkEntry "G_until_implies_some_future"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_implies_some_future p q)),
+  mkEntry "G_since_implies_some_past"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_implies_some_past p q)),
+  mkEntry "G_until_imp_F"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F p q)),
+  mkEntry "G_since_imp_P"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q)),
+
+  -- Helpers G-wrapped
+  mkEntry "G_box_to_future"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_future p)),
+  mkEntry "G_box_to_past"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_past p)),
+  mkEntry "G_box_to_present"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_present p)),
+
+  -- Principles G-wrapped
+  mkEntry "G_perpetuity_1"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_1 p)),
+  mkEntry "G_diamond_4"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.diamond_4 p)),
+  mkEntry "G_modal_5"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.modal_5 p)),
+  mkEntry "G_perpetuity_2"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_2 p)),
+  mkEntry "G_box_to_box_past"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_box_past p)),
+  mkEntry "G_perpetuity_3"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_3 p)),
+  mkEntry "G_perpetuity_4"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_4 p)),
+  mkEntry "G_mb_diamond"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p)),
+  mkEntry "G_box_diamond_to_future_box_diamond"
+    (DerivationTree.temporal_necessitation _
+      (Bimodal.Theorems.Perpetuity.box_diamond_to_future_box_diamond p)),
+  mkEntry "G_box_diamond_to_past_box_diamond"
+    (DerivationTree.temporal_necessitation _
+      (Bimodal.Theorems.Perpetuity.box_diamond_to_past_box_diamond p)),
+
+  -- ============================================================
+  -- H-WRAPPED: temporal_duality ∘ temporal_necessitation
+  -- Each adds 1 temporal_duality + 1 temporal_necessitation step
+  -- For propositional/modal formulas: ⊢ H(φ)
+  -- For temporal formulas: ⊢ H(swap_temporal(φ))
+  -- ============================================================
+
+  -- Combinators H-wrapped
+  mkEntry "H_identity"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@identity .Base p))),
+  mkEntry "H_b_combinator"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := p) (B := q) (C := r)))),
+  mkEntry "H_theorem_flip"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@theorem_flip .Base (A := p) (B := q) (C := r)))),
+  mkEntry "H_theorem_app1"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@theorem_app1 .Base (A := p) (B := q)))),
+  mkEntry "H_theorem_app2"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@theorem_app2 .Base (A := p) (B := q) (C := r)))),
+  mkEntry "H_pairing"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@pairing .Base p q))),
+  mkEntry "H_dni"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@dni .Base p))),
+  mkEntry "H_temp_future_derived"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (@temp_future_derived .Base p))),
+
+  -- ModalS4 H-wrapped
+  mkEntry "H_s4_box_diamond_box"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_box_diamond_box p))),
+  mkEntry "H_s4_diamond_box_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_diamond_box_diamond p))),
+
+  -- ModalS5 H-wrapped
+  mkEntry "H_t_box_to_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.t_box_to_diamond p))),
+  mkEntry "H_box_contrapose"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.box_contrapose p q))),
+  mkEntry "H_k_dist_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.k_dist_diamond p q))),
+  mkEntry "H_t_box_consistency"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.t_box_consistency p))),
+  mkEntry "H_s5_diamond_box"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box p))),
+  mkEntry "H_s5_diamond_box_to_truth"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box_to_truth p))),
+
+  -- TemporalDerived H-wrapped
+  mkEntry "H_connect_future_thm"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_future_thm p))),
+  mkEntry "H_connect_past_thm"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_past_thm p))),
+  mkEntry "H_G_implies_G_id"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.G_implies_G_id p))),
+  mkEntry "H_until_implies_some_future"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_implies_some_future p q))),
+  mkEntry "H_since_implies_some_past"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_implies_some_past p q))),
+  mkEntry "H_until_imp_F"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F p q))),
+  mkEntry "H_since_imp_P"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q))),
+
+  -- Helpers H-wrapped
+  mkEntry "H_box_to_future"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_future p))),
+  mkEntry "H_box_to_past"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_past p))),
+  mkEntry "H_box_to_present"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_present p))),
+
+  -- Principles H-wrapped
+  mkEntry "H_perpetuity_1"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_1 p))),
+  mkEntry "H_diamond_4"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.diamond_4 p))),
+  mkEntry "H_modal_5"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.modal_5 p))),
+  mkEntry "H_perpetuity_2"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_2 p))),
+  mkEntry "H_box_to_box_past"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_box_past p))),
+  mkEntry "H_perpetuity_3"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_3 p))),
+  mkEntry "H_perpetuity_4"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.perpetuity_4 p))),
+  mkEntry "H_mb_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p))),
+  mkEntry "H_box_diamond_to_future_box_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (Bimodal.Theorems.Perpetuity.box_diamond_to_future_box_diamond p))),
+  mkEntry "H_box_diamond_to_past_box_diamond"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (Bimodal.Theorems.Perpetuity.box_diamond_to_past_box_diamond p))),
+
+  -- ============================================================
+  -- GG-DOUBLE-WRAPPED: Two temporal_necessitation layers
+  -- Applied to ~12 smallest theorems (1-8 steps)
+  -- Each adds 2 temporal_necessitation steps
+  -- ============================================================
+
+  mkEntry "GG_identity"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (@identity .Base p))),
+  mkEntry "GG_b_combinator"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := p) (B := q) (C := r)))),
+  mkEntry "GG_s4_box_diamond_box"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_box_diamond_box p))),
+  mkEntry "GG_connect_future_thm"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_future_thm p))),
+  mkEntry "GG_connect_past_thm"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_past_thm p))),
+  mkEntry "GG_until_implies_some_future"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_implies_some_future p q))),
+  mkEntry "GG_since_implies_some_past"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_implies_some_past p q))),
+  mkEntry "GG_until_imp_F"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F p q))),
+  mkEntry "GG_since_imp_P"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q))),
+  mkEntry "GG_box_to_present"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_present p))),
+  mkEntry "GG_mb_diamond"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p))),
+  mkEntry "GG_s5_diamond_box_to_truth"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box_to_truth p))),
+
+  -- ============================================================
+  -- GGG-TRIPLE-WRAPPED: Three temporal_necessitation layers
+  -- Applied to ~7 single-step theorems (1 step each)
+  -- Each adds 3 temporal_necessitation steps (3/4 = 75% temporal)
+  -- ============================================================
+
+  mkEntry "GGG_s4_box_diamond_box"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS4.s4_box_diamond_box p)))),
+  mkEntry "GGG_connect_future_thm"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_future_thm p)))),
+  mkEntry "GGG_connect_past_thm"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_past_thm p)))),
+  mkEntry "GGG_until_imp_F"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F p q)))),
+  mkEntry "GGG_since_imp_P"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q)))),
+  mkEntry "GGG_box_to_present"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.box_to_present p)))),
+  mkEntry "GGG_mb_diamond"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p))))
 ]
 
 /-!
