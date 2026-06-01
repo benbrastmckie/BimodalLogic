@@ -138,12 +138,13 @@ technical_debt:
 
 ### 251. Optimize generateValidBatch O(n^2) MP closure bottleneck
 - **Effort**: M
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**: [251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md]
 - **Plan**: [251_optimize_generate_valid_batch_bottleneck/plans/02_implementation-plan.md]
+- **Summary**: [251_optimize_generate_valid_batch_bottleneck/summaries/02_implementation-summary.md]
 
-**Description**: Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.
+**Description**: Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Replaced List pool with HashSet+Array for O(1) dedup, replaced O(n^2) nested MP loop with O(n) implication-index HashMap lookup, added early complexity filtering. Overall complexity reduced from O(n^2 * rounds) to O(n * rounds).
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M

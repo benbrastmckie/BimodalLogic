@@ -8,14 +8,14 @@
     {
       "project_number": 251,
       "project_name": "optimize_generate_valid_batch_bottleneck",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-01T18:14:22Z",
-      "last_updated": "2026-06-01T18:45:00Z",
+      "last_updated": "2026-06-01T23:30:00Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -27,8 +27,14 @@
           "path": "specs/251_optimize_generate_valid_batch_bottleneck/plans/02_implementation-plan.md",
           "type": "plan",
           "summary": "4-phase plan: HashSet+Array pool replacement, implication-index HashMap for O(n) MP closure, early complexity filtering, integration testing. 3 hours estimated."
+        },
+        {
+          "path": "specs/251_optimize_generate_valid_batch_bottleneck/summaries/02_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation complete: HashSet+Array pool, implication-index HashMap for O(n) MP closure, early complexity filtering. All 4 phases done, lake build passes, zero sorries."
         }
       ],
+      "completion_summary": "Refactored generateValidBatch in FormulaEnumerator.lean: replaced List pool with HashSet+Array for O(1) dedup, replaced O(n^2) nested MP loop with O(n) implication-index HashMap lookup, added early complexity filtering at Nec and MP insertion points. Overall complexity reduced from O(n^2 * rounds) to O(n * rounds). Full project builds with zero errors, zero new sorries, zero new axioms.",
       "session_id": "sess_1780338786_e09d53",
       "plan_metadata": {
         "phases": 4,
