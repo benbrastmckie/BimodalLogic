@@ -549,6 +549,140 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         if newFormulas.isEmpty then (.notApplicable, timeOrd)
         else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
+  -- T(U(event, guard)) @ (w,t) → branch: event-witness at fresh future time OR guard+continue
+  -- Consumable: removed after application. Creates fresh time t' > t.
+  -- Branch 1 (event witness): T(event) @ (w, t')
+  -- Branch 2 (guard + continue): T(guard) @ (w, t'), T(U(event, guard)) @ (w, t')
+  | .untlPos, .pos, φ =>
+      match asUntil? φ with
+      | some (event, guard) =>
+        let freshTime := branch.nextTime
+        let freshLabel : Label := { world := l.world, time := freshTime }
+        let newOrd := timeOrd.addFuture l.time freshTime
+        -- Branch 1: event witness at fresh future time
+        let branch1 := [SignedFormula.pos event freshLabel]
+        -- Branch 2: guard holds at fresh time + Until continues from fresh time
+        let branch2 := [SignedFormula.pos guard freshLabel,
+                         SignedFormula.pos (.untl event guard) freshLabel]
+        -- Auto-propagate all T(GA) formulas to freshTime
+        let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+          match gsf.formula with
+          | .all_future inner =>
+            if gsf.label.time == l.time then
+              let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(FA) formulas to freshTime
+        let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
+          match fsf.formula with
+          | .some_future inner =>
+            if fsf.label.time == l.time then
+              let prop := SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(U(event', guard')) formulas to freshTime
+        let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
+          if usf.label.time == l.time then
+            let prop := SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        let autoProp := gProps ++ fNegProps ++ untlNegProps
+        (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
+      | none => (.notApplicable, timeOrd)
+  -- T(S(event, guard)) @ (w,t) → branch: event-witness at fresh past time OR guard+continue
+  -- Consumable: removed after application. Creates fresh time t' < t.
+  -- Branch 1 (event witness): T(event) @ (w, t')
+  -- Branch 2 (guard + continue): T(guard) @ (w, t'), T(S(event, guard)) @ (w, t')
+  | .sncePos, .pos, φ =>
+      match asSince? φ with
+      | some (event, guard) =>
+        let freshTime := branch.nextTime
+        let freshLabel : Label := { world := l.world, time := freshTime }
+        let newOrd := timeOrd.addPast l.time freshTime
+        -- Branch 1: event witness at fresh past time
+        let branch1 := [SignedFormula.pos event freshLabel]
+        -- Branch 2: guard holds at fresh time + Since continues from fresh time
+        let branch2 := [SignedFormula.pos guard freshLabel,
+                         SignedFormula.pos (.snce event guard) freshLabel]
+        -- Auto-propagate all T(HA) formulas to freshTime
+        let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
+          match hsf.formula with
+          | .all_past inner =>
+            if hsf.label.time == l.time then
+              let prop := SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(PA) formulas to freshTime
+        let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
+          match psf.formula with
+          | .some_past inner =>
+            if psf.label.time == l.time then
+              let prop := SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(S(event', guard')) formulas to freshTime
+        let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
+          if ssf.label.time == l.time then
+            let prop := SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        let autoProp := hProps ++ pNegProps ++ snceNegProps
+        (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
+      | none => (.notApplicable, timeOrd)
+  -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at known future times
+  -- Persistent: source formula re-included in both branches.
+  -- For each future time t' > t, branch:
+  --   Branch 1: F(event) @ (w, t'), source re-included
+  --   Branch 2: F(guard) @ (w, t'), F(U(event, guard)) @ (w, t'), source re-included
+  | .untlNeg, .neg, φ =>
+      match asUntil? φ with
+      | some (event, guard) =>
+        let futureTimes := timeOrd.futureOf l.time
+        -- Find first unprocessed future time (where decomposition hasn't been done yet)
+        let unprocessed := futureTimes.filter fun t' =>
+          let negEvent := SignedFormula.neg event { world := l.world, time := t' }
+          let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
+          !(branch.contains negEvent || branch.contains negGuard)
+        match unprocessed with
+        | [] => (.notApplicable, timeOrd)  -- All future times processed
+        | t' :: _ =>
+          let targetLabel : Label := { world := l.world, time := t' }
+          -- Branch 1: event fails at t', source formula re-included for persistence
+          let branch1 := [SignedFormula.neg event targetLabel, sf]
+          -- Branch 2: guard fails at t' AND Until propagated to t', source re-included
+          let branch2 := [SignedFormula.neg guard targetLabel,
+                           SignedFormula.neg (.untl event guard) targetLabel, sf]
+          (.branching [branch1, branch2], timeOrd)
+      | none => (.notApplicable, timeOrd)
+  -- F(S(event, guard)) @ (w,t) → Reynolds co-decomposition at known past times
+  -- Persistent: source formula re-included in both branches.
+  -- For each past time t' < t, branch:
+  --   Branch 1: F(event) @ (w, t'), source re-included
+  --   Branch 2: F(guard) @ (w, t'), F(S(event, guard)) @ (w, t'), source re-included
+  | .snceNeg, .neg, φ =>
+      match asSince? φ with
+      | some (event, guard) =>
+        let pastTimes := timeOrd.pastOf l.time
+        -- Find first unprocessed past time
+        let unprocessed := pastTimes.filter fun t' =>
+          let negEvent := SignedFormula.neg event { world := l.world, time := t' }
+          let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
+          !(branch.contains negEvent || branch.contains negGuard)
+        match unprocessed with
+        | [] => (.notApplicable, timeOrd)  -- All past times processed
+        | t' :: _ =>
+          let targetLabel : Label := { world := l.world, time := t' }
+          -- Branch 1: event fails at t', source formula re-included for persistence
+          let branch1 := [SignedFormula.neg event targetLabel, sf]
+          -- Branch 2: guard fails at t' AND Since propagated to t', source re-included
+          let branch2 := [SignedFormula.neg guard targetLabel,
+                           SignedFormula.neg (.snce event guard) targetLabel, sf]
+          (.branching [branch1, branch2], timeOrd)
+      | none => (.notApplicable, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
 /-!
@@ -569,6 +703,8 @@ def allRules : List TableauRule := [
   .allPastPos, .allPastNeg,
   .someFuturePos, .someFutureNeg,  -- Temporal F/P
   .somePastPos, .somePastNeg,
+  .untlPos, .untlNeg,             -- Until (genuine, not some_future)
+  .sncePos, .snceNeg,             -- Since (genuine, not some_past)
   .impPos,               -- Branching implication
   .andNeg, .orPos        -- Branching compound
 ]

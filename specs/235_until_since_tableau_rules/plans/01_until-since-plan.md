@@ -110,16 +110,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: T(U) and T(S) Rules (Positive Until/Since) [IN PROGRESS]
+### Phase 2: T(U) and T(S) Rules (Positive Until/Since) [COMPLETED]
 
 **Goal**: Implement the branching decomposition rules for positive Until and Since formulas. T(U(psi, phi)) at time t branches into: (1) event-witness at fresh future time, or (2) guard+continue at fresh future time. T(S) is symmetric in the past direction. Both are consumable (removed after application) and introduce fresh time points requiring auto-propagation.
 
 **Tasks**:
-- [ ] Add `untlPos` and `sncePos` constructors to `TableauRule` enum (Tableau.lean, after line ~107, before `deriving`)
-- [ ] Add `isApplicable` arms for `untlPos` and `sncePos` (Tableau.lean, around line ~240, before the catch-all):
+- [x] Add `untlPos` and `sncePos` constructors to `TableauRule` enum (Tableau.lean, after line ~107, before `deriving`) *(deviation: altered -- also added untlNeg and snceNeg constructors here since all 4 are needed for exhaustive matching)*
+- [x] Add `isApplicable` arms for `untlPos` and `sncePos` (Tableau.lean, around line ~240, before the catch-all):
   - `| .untlPos, .pos, φ => (asUntil? φ).isSome`
   - `| .sncePos, .pos, φ => (asSince? φ).isSome`
-- [ ] Implement `applyRule` arm for `untlPos` (Tableau.lean, before the catch-all `| _, _, _ =>` at line ~515):
+- [x] Implement `applyRule` arm for `untlPos` (Tableau.lean, before the catch-all `| _, _, _ =>` at line ~515):
   - Match `asUntil? φ` to get `(event, guard)`
   - Compute `freshTime := branch.nextTime`
   - Compute `freshLabel := { world := l.world, time := freshTime }`
@@ -131,10 +131,10 @@ Phases within the same wave can execute in parallel.
   - Auto-propagate F(U(event', guard')) formulas to freshTime (new: propagate negative Until to new future times)
   - Include auto-propagated formulas in BOTH branches
   - Return `(.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)`
-- [ ] Implement `applyRule` arm for `sncePos` (symmetric past version):
+- [x] Implement `applyRule` arm for `sncePos` (symmetric past version):
   - Same structure but uses `asSince?`, `addPast`, propagates T(HA), F(PA), F(S) formulas
-- [ ] Add `.untlPos, .sncePos` to `allRules` list (Tableau.lean, line ~534, after `.somePastNeg` and before `.impPos`)
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Tableau` compiles
+- [x] Add `.untlPos, .sncePos` to `allRules` list (Tableau.lean, line ~534, after `.somePastNeg` and before `.impPos`)
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Tableau` compiles
 
 **Timing**: 3 hours
 
@@ -150,16 +150,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: F(U) and F(S) Rules (Negative Until/Since) [NOT STARTED]
+### Phase 3: F(U) and F(S) Rules (Negative Until/Since) [COMPLETED]
 
 **Goal**: Implement the Reynolds co-decomposition rules for negative Until and Since formulas. F(U(psi, phi)) at time t is persistent and propagates to each known future time t' > t via branching: either F(event) @ t' or {F(guard) @ t', F(U(psi, phi)) @ t'}. This is the most complex rule because it combines persistence with per-time branching.
 
 **Tasks**:
-- [ ] Add `untlNeg` and `snceNeg` constructors to `TableauRule` enum (Tableau.lean, adjacent to untlPos/sncePos)
-- [ ] Add `isApplicable` arms for `untlNeg` and `snceNeg`:
+- [x] Add `untlNeg` and `snceNeg` constructors to `TableauRule` enum (Tableau.lean, adjacent to untlPos/sncePos) *(deviation: altered -- added in Phase 2 with untlPos/sncePos since all 4 constructors are needed together)*
+- [x] Add `isApplicable` arms for `untlNeg` and `snceNeg`:
   - `| .untlNeg, .neg, φ => (asUntil? φ).isSome`
   - `| .snceNeg, .neg, φ => (asSince? φ).isSome`
-- [ ] Implement `applyRule` arm for `untlNeg` (Reynolds co-decomposition):
+- [x] Implement `applyRule` arm for `untlNeg` (Reynolds co-decomposition):
   - Match `asUntil? φ` to get `(event, guard)`
   - Get `futureTimes := timeOrd.futureOf l.time`
   - Find first unprocessed future time t' (i.e., a future time where neither `F(event) @ t'` nor `F(guard) @ t'` already exists on the branch)
@@ -168,10 +168,10 @@ Phases within the same wave can execute in parallel.
     - Branch 1: `[SignedFormula.neg event { world := l.world, time := t' }, sf]` (event fails at t', source formula re-included for persistence)
     - Branch 2: `[SignedFormula.neg guard { world := l.world, time := t' }, SignedFormula.neg (.untl event guard) { world := l.world, time := t' }, sf]` (guard fails at t' AND Until fails from t', source re-included)
   - Note: `sf` (the source F(U) formula) is re-included in each branch so it persists through the branching removal in `expandOnce`
-- [ ] Implement `applyRule` arm for `snceNeg` (symmetric past version):
+- [x] Implement `applyRule` arm for `snceNeg` (symmetric past version):
   - Same structure but uses `asSince?`, `pastOf`, and past times
-- [ ] Add `.untlNeg, .snceNeg` to `allRules` list (after `.untlPos, .sncePos`)
-- [ ] Verify `lake build` passes
+- [x] Add `.untlNeg, .snceNeg` to `allRules` list (after `.untlPos, .sncePos`)
+- [x] Verify `lake build` passes
 
 **Timing**: 4 hours
 
