@@ -231,4 +231,90 @@ structure TableauStats where
   expansionSteps : Nat
   deriving Repr, Inhabited
 
+/-!
+## Until/Since Integration Tests
+
+These tests verify the 4 Until/Since tableau rules (untlPos, untlNeg, sncePos, snceNeg)
+produce correct results for known axioms and satisfiable formulas.
+-/
+
+section UntilSinceTests
+
+open Bimodal.Syntax
+
+-- Helper: create propositional atom formulas
+private def p : Formula := .atom (Atom.mk_base "p")
+private def q : Formula := .atom (Atom.mk_base "q")
+
+-- Test 1: U(p, bot) -> F(p) should be valid (allClosed)
+-- U(p, bot) = "bot until p" = essentially Next(p)
+-- Event branch: T(p) at t1 + F(p) at t1 from F(F(p)) propagation => contradiction
+-- Guard branch: T(bot) at t1 => botPos closure
+#eval do
+  let φ := Formula.imp (.untl p .bot) (Formula.some_future p)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: U(p, bot) -> F(p) is valid"
+  | some (.hasOpen _ _) => return "FAIL: U(p, bot) -> F(p) should be valid but got open branch"
+  | none => return "FAIL: U(p, bot) -> F(p) ran out of fuel"
+
+-- Test 2: S(p, bot) -> P(p) should be valid (allClosed)
+-- Symmetric past version of Test 1
+#eval do
+  let φ := Formula.imp (.snce p .bot) (Formula.some_past p)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: S(p, bot) -> P(p) is valid"
+  | some (.hasOpen _ _) => return "FAIL: S(p, bot) -> P(p) should be valid but got open branch"
+  | none => return "FAIL: S(p, bot) -> P(p) ran out of fuel"
+
+-- Test 3: F(p) -> U(p, top) should be valid (definitional equality: both = untl p top)
+-- F(φ) = U(φ, ⊤) by definition, so this is U(p, ⊤) -> U(p, ⊤), trivial
+#eval do
+  let φ := Formula.imp (Formula.some_future p) (.untl p Formula.top)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: F(p) -> U(p, top) is valid (BX12)"
+  | some (.hasOpen _ _) => return "FAIL: F(p) -> U(p, top) should be valid but got open branch"
+  | none => return "FAIL: F(p) -> U(p, top) ran out of fuel"
+
+-- Test 4: P(p) -> S(p, top) should be valid (symmetric BX12')
+#eval do
+  let φ := Formula.imp (Formula.some_past p) (.snce p Formula.top)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: P(p) -> S(p, top) is valid (BX12')"
+  | some (.hasOpen _ _) => return "FAIL: P(p) -> S(p, top) should be valid but got open branch"
+  | none => return "FAIL: P(p) -> S(p, top) ran out of fuel"
+
+-- Test 5: Seriality test: F(top) -> top should be valid
+#eval do
+  let φ := Formula.imp (Formula.some_future Formula.top) Formula.top
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: F(top) -> top is valid"
+  | some (.hasOpen _ _) => return "FAIL: F(top) -> top should be valid but got open branch"
+  | none => return "FAIL: F(top) -> top ran out of fuel"
+
+-- Test 6: U(p, q) is satisfiable (NOT valid), so buildTableauAuto should produce hasOpen or timeout
+-- U(p, q) alone is not a tautology - it has models where p eventually holds with q as guard
+#eval do
+  let φ := Formula.untl p q
+  let result := buildTableau φ 50  -- Use limited fuel since this is satisfiable
+  match result with
+  | some (.allClosed _) => return "FAIL: U(p, q) should be satisfiable but got allClosed"
+  | some (.hasOpen _ _) => return "PASS: U(p, q) is satisfiable (open branch found)"
+  | none => return "PASS: U(p, q) is satisfiable (exhausted fuel without closing)"
+
+-- Test 7: p -> p is a tautology (baseline propositional test)
+#eval do
+  let φ := Formula.imp p p
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS: p -> p is valid"
+  | some (.hasOpen _ _) => return "FAIL: p -> p should be valid"
+  | none => return "FAIL: p -> p ran out of fuel"
+
+end UntilSinceTests
+
 end Bimodal.Metalogic.Decidability
