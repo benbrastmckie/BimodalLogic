@@ -155,16 +155,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Full Build Verification [NOT STARTED]
+### Phase 4: Full Build Verification [COMPLETED]
 
 **Goal**: Confirm all changes integrate correctly and warning count has decreased.
 
 **Tasks**:
-- [ ] Run full `lake build` and capture warning output
-- [ ] Compare warning count against the pre-fix baseline (799 total, 638 actionable)
-- [ ] Verify no new warnings were introduced
-- [ ] Verify no `sorry` was introduced (grep for new sorry occurrences in modified files)
-- [ ] Run `scripts/run_dataset_generation.sh --dry-run` to verify script improvements work
+- [x] Run full `lake build` and capture warning output
+- [x] Compare warning count against the pre-fix baseline (799 total, 638 actionable)
+- [x] Verify no new warnings were introduced
+- [x] Verify no `sorry` was introduced (grep for new sorry occurrences in modified files)
+- [x] Run `scripts/run_dataset_generation.sh --dry-run` to verify script improvements work
 
 **Timing**: 1 hour (dominated by full build time)
 
@@ -181,13 +181,13 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build` passes with zero errors after all changes
-- [ ] Warning count decreased by at least 36
-- [ ] No new warnings introduced in modified files
-- [ ] No `sorry` introduced in any modified file
-- [ ] `bash -n scripts/run_dataset_generation.sh` passes
-- [ ] `scripts/run_dataset_generation.sh --dry-run` executes cleanly
-- [ ] All existing proofs still close (verified by successful `lake build`)
+- [x] `lake build` passes with zero errors after all changes
+- [x] Warning count decreased by at least 36
+- [x] No new warnings introduced in modified files
+- [x] No `sorry` introduced in any modified file
+- [x] `bash -n scripts/run_dataset_generation.sh` passes
+- [x] `scripts/run_dataset_generation.sh --dry-run` executes cleanly
+- [x] All existing proofs still close (verified by successful `lake build`)
 
 ## Artifacts & Outputs
 
