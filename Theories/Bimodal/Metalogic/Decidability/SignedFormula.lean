@@ -292,6 +292,49 @@ def extendMany (b : Branch) (sfs : List SignedFormula) : Branch := sfs ++ b
 def totalComplexity (b : Branch) : Nat :=
   b.foldl (fun acc sf => acc + sf.complexity) 0
 
+/--
+Collect all distinct world indices from signed formulas in the branch.
+Used by S5 modal rules to know which worlds exist for universal propagation.
+-/
+def knownWorlds (b : Branch) : List WorldIndex :=
+  (b.map (·.label.world)).eraseDups
+
+/--
+Maximum world index in the branch (0 if empty).
+Used to compute the next fresh world index.
+-/
+def maxWorld (b : Branch) : WorldIndex :=
+  b.foldl (fun acc sf => max acc sf.label.world) 0
+
+/--
+Next fresh world index (one past the maximum).
+Used by existential modal rules to introduce witness worlds.
+-/
+def nextWorld (b : Branch) : WorldIndex :=
+  b.maxWorld + 1
+
+/--
+Collect all T(□A) formulas in the branch (positive box formulas).
+These are universal modal formulas that must be propagated to every known world.
+-/
+def boxPosFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .box _ => true
+    | _, _ => false
+
+/--
+Collect all F(◇A) formulas in the branch (negative diamond formulas).
+These are universal modal formulas that must be propagated to every known world.
+F(◇A) = F(¬□¬A) means □¬A holds, so ¬A must hold at every world.
+Diamond encoding: ◇A = ¬□¬A = (.imp (.box (.imp A .bot)) .bot)
+-/
+def diamondNegFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .imp (.box (.imp _ .bot)) .bot => true
+    | _, _ => false
+
 end Branch
 
 /-!
