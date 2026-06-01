@@ -22,8 +22,11 @@ from .encoding import FrameEncoder
 
 
 # Progressive deepening schedule: (N_worlds, M_steps)
+# IMPORTANT: M >= 3 is required to ensure both past (for Since) and future (for Until)
+# time points exist when evaluating at the middle time step t = M // 2 = 1.
+# Using M=2 with t=0 causes false countermodels: Since requires s < 0 which is
+# impossible, and Until at t=1 requires s > 1 which is impossible.
 DEEPENING_SCHEDULE = [
-    (2, 2),
     (2, 3),
     (3, 3),
     (3, 4),
@@ -103,10 +106,14 @@ def _find_countermodel_at_bounds(
         solver.add(c)
 
     # Add negation of formula (we want the formula to be FALSE at some point)
-    # We quantify over a specific history and time point
-    # The formula is false at sigma=0 (first history), t=0 (first time step)
+    # We quantify over a specific history and time point.
+    # IMPORTANT: We evaluate at the middle time step (M // 2) to ensure both
+    # past time points (for Since/snce semantics) and future time points (for
+    # Until/untl semantics) are always available within the bounded frame.
+    # Evaluating at t=0 causes false countermodels for formulas like S(top,top)
+    # because Since requires ∃ s < 0, which is impossible at t=0.
     falsifying_history = 0
-    falsifying_time = 0
+    falsifying_time = M // 2  # Middle time step: ensures past AND future exist
 
     # CRITICAL: The falsifying history must RESPECT the task relation.
     # This ensures we find countermodels in actual valid frames.
@@ -119,6 +126,46 @@ def _find_countermodel_at_bounds(
             w = falsifying_hist[t1]
             u = falsifying_hist[t2]
             solver.add(encoder.task_rel_var(w, d, u))
+
+    # CRITICAL: Shift closure constraint.
+    # The bimodal TM semantics requires Omega (the history set) to be SHIFT-CLOSED:
+    # if sigma is in Omega and d >= 0, then time_shift(sigma, d) is also in Omega.
+    # For finite (cyclic) models, we enforce: if sigma is valid, then the cyclic
+    # 1-shift of sigma (sigma[1], sigma[2], ..., sigma[M-1], sigma[0]) is also valid.
+    # This prevents false countermodels for formulas valid by shift-closure arguments.
+    if M > 1:
+        all_histories = encoder.all_histories()
+        history_index = {h: i for i, h in enumerate(all_histories)}
+
+        for sigma_idx, sigma in enumerate(all_histories):
+            # Cyclic 1-shift: (sigma[1], sigma[2], ..., sigma[M-1], sigma[0])
+            shifted = sigma[1:] + sigma[:1]  # cyclic shift by 1
+            if shifted in history_index:
+                shifted_idx = history_index[shifted]
+
+                # Build is_valid(sigma) condition
+                sigma_valid_conditions = []
+                for t1 in range(M):
+                    for t2 in range(t1 + 1, M):
+                        d = t2 - t1
+                        sigma_valid_conditions.append(
+                            encoder.task_rel_var(sigma[t1], d, sigma[t2])
+                        )
+
+                # Build is_valid(shifted_sigma) condition
+                shifted_valid_conditions = []
+                for t1 in range(M):
+                    for t2 in range(t1 + 1, M):
+                        d = t2 - t1
+                        shifted_valid_conditions.append(
+                            encoder.task_rel_var(shifted[t1], d, shifted[t2])
+                        )
+
+                if sigma_valid_conditions and shifted_valid_conditions:
+                    is_valid_sigma = z3.And(*sigma_valid_conditions)
+                    is_valid_shifted = z3.And(*shifted_valid_conditions)
+                    # Shift closure: is_valid(sigma) => is_valid(shifted_sigma)
+                    solver.add(z3.Implies(is_valid_sigma, is_valid_shifted))
 
     truth_expr = encoder.truth(formula, atoms, falsifying_history, falsifying_time)
     solver.add(z3.Not(truth_expr))

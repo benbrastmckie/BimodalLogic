@@ -1105,21 +1105,26 @@
     {
       "project_number": 217,
       "project_name": "complexity_tier_extension_c9_c11",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity <= 9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity <= 11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T03:11:28Z",
-      "session_id": "sess_1780110186_4e9f04",
+      "last_updated": "2026-06-01T15:39:56Z",
+      "session_id": "sess_1780328146_1e5ea2",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/217_complexity_tier_extension_c9_c11/reports/01_complexity-tier-research.md",
           "type": "research",
           "summary": "Complexity tier analysis: c9 feasible (~1.8M records), c11 requires stratified sampling (~66M projected), 14-field schema needs max_modal_depth/max_temporal_depth promotion"
+        },
+        {
+          "path": "specs/217_complexity_tier_extension_c9_c11/plans/01_complexity-tier-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for extending BMLogic datasets to c9 (exhaustive) and c11 (stratified), with 16-field schema, migration tooling, and very_hard+ benchmark slice"
         }
       ]
     },
@@ -1184,21 +1189,26 @@
     {
       "project_number": 221,
       "project_name": "proof_step_dataset_expansion",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.",
       "priority": "low",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T03:11:51Z",
-      "session_id": "sess_1780110186_4e9f04",
+      "last_updated": "2026-06-01T15:39:33Z",
+      "session_id": "sess_1780328146_1e5ea2",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/221_proof_step_dataset_expansion/reports/01_proof-step-research.md",
           "type": "research",
           "summary": "Proof step expansion: 36 theorems/2424 steps, 0.8% temporal rules, computability constraint blocks noncomputable theorems, 3 expansion strategies identified, 200+ feasible"
+        },
+        {
+          "path": "specs/221_proof_step_dataset_expansion/plans/01_proof-step-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan expanding proof_steps.jsonl from 36 to 200+ theorems with 10%+ temporal rule coverage via G/H/GG wrapping, temporal axiom instantiation, and multi-instantiation"
         }
       ]
     }
