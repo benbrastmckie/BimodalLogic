@@ -5,8 +5,8 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-06-01T23:30:00Z
 task_counts:
-  active: 54
-  completed: 168
+  active: 48
+  completed: 174
   abandoned: 1
   total: 223
 technical_debt:
@@ -30,9 +30,9 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,219,224,229,236,237,238,248,249,250,251 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,186,192,196,217,230 | 161,185,187,190,191,194,199,229,251 | completeness, dataset-enhancement, ... |
-| 3 | 95,176,193,231,239,240,241 | 155,189,192,230,237,238 | completeness, formula-refactor, tableau-training, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,248,249,250 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,186,192,196,230 | 161,185,187,190,191,194,199,229 | completeness, dataset-enhancement, ... |
+| 3 | 95,176,193,231,239,240,241 | 155,189,192,230 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
 | 5 | 243,244,247 | 242,245,246 | tableau-training |
 
@@ -40,7 +40,6 @@ technical_debt:
 
 ### Completeness
 
-202 [COMPLETED] — Formalize Reynolds Theorem 5 (US expressive completeness over Pri
 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
   └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
   └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -64,28 +63,20 @@ technical_debt:
 
 ### Tableau Training
 
-236 [COMPLETED] — Implement cross-modal-temporal tableau rules based on modal_futur
-237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
-  └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
-    └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
-      └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-      └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-  └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
-    └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-  └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
-    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
-    └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-    └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-238 [PLANNED] — Extend tableau with frame-class-specific rules for Dense and Disc
-  - **Research**: [specs/238_frame_class_tableau_gating/reports/01_frame-class-gating.md]
-  - **Plan**: [specs/238_frame_class_tableau_gating/plans/01_implementation-plan.md]
-  └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
-  └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
-  └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
+239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
+  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
+  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
+    └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+    └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
+  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
+241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
+  └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
+    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+  └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
+    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
 
 ### Automation
 
@@ -100,8 +91,6 @@ technical_debt:
 
 ### Dataset Enhancement
 
-251 [COMPLETED] — Optimize generateValidBatch O(n^2) MP closure bottleneck in datas
-  └─ 217 [COMPLETED] — Extend exhaustive formula enumeration to complexity 9 and 11. bml
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -138,16 +127,6 @@ technical_debt:
 224 [NOT STARTED] — Investigate whether the finite insertion argument can prove IsSuc
 
 ## Tasks
-
-### 251. Optimize generateValidBatch O(n^2) MP closure bottleneck
-- **Effort**: M
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Research**: [251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md]
-- **Plan**: [251_optimize_generate_valid_batch_bottleneck/plans/02_implementation-plan.md]
-- **Summary**: [251_optimize_generate_valid_batch_bottleneck/summaries/02_implementation-summary.md]
-
-**Description**: Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Replaced List pool with HashSet+Array for O(1) dedup, replaced O(n^2) nested MP loop with O(n) implication-index HashMap lookup, added early complexity filtering. Overall complexity reduced from O(n^2 * rounds) to O(n * rounds).
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M
@@ -255,7 +234,7 @@ technical_debt:
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
-- **Dependencies**: 237, 238
+- **Dependencies**: None (237, 238 completed)
 
 **Description**: Rebuild `DatasetGenerator.lean` to use corrected tableau for reliable formula labeling. Currently uses broken tableau producing incorrect labels for modal/temporal formulas. Update `LabeledFormula` records with richer proof traces and countermodels. Validate against all 42 axiom instances and known satisfiable non-theorems. Files: `DatasetGenerator.lean`, `DataExport.lean`, `EnrichedCountermodel.lean`, `DecisionProcedure.lean`.
 
@@ -267,7 +246,7 @@ technical_debt:
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
-- **Dependencies**: 237, 238
+- **Dependencies**: None (237, 238 completed)
 
 **Description**: Replace vacuous `branchTruthLemma` (`∀ sf ∈ b, True`) with genuine truth lemma: T(φ) ∈ b implies φ true in extracted model, F(φ) ∈ b implies φ false. Extend `SimpleCountermodel` to `SemanticCountermodel` with world states, time domain, temporal ordering, valuation. Prove truth lemma by induction on formula structure using saturation. Files: `CountermodelExtraction.lean`, `Closure.lean`, potentially new `SemanticCountermodel.lean`.
 
@@ -279,47 +258,9 @@ technical_debt:
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
-- **Dependencies**: 237, 238
+- **Dependencies**: None (237, 238 completed)
 
 **Description**: Replace stub proof extraction (`"Full proof extraction not yet implemented"`) with complete backward-chaining algorithm building `DerivationTree` from closed branches. Augment expansion with proof reconstruction stack. Map closure reasons through expansion steps to axiom/rule combinations: propositional (peirce + modus_ponens), modal (necessitation + modal_k_dist), temporal (temporal_necessitation + BX axioms). Files: `ProofExtraction.lean`, `Tableau.lean`, `Saturation.lean`.
-
----
-
-### 238. Frame-class-aware tableau expansion
-- **Effort**: medium (8 hours)
-- **Status**: [PLANNED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: None (233-235 completed)
-- **Research**: [specs/238_frame_class_tableau_gating/reports/01_frame-class-gating.md]
-- **Plan**: [specs/238_frame_class_tableau_gating/plans/01_implementation-plan.md]
-
-**Description**: Add Dense and Discrete frame-class-specific rules. Dense: density rule, dense indicator (`¬U(⊤,⊥)`). Discrete: Prior rules, Z1, uniformity axioms. Parameterize `buildTableau`/`decide` by `FrameClass`, gate rules by `minFrameClass ≤ fc`. Files: `Tableau.lean`, `DecisionProcedure.lean`, `Saturation.lean`.
-
----
-
-### 237. Tableau termination via blocking and FMP bounds
-- **Effort**: medium (10-15 hours)
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: 233, 234, 235
-
-**Description**: Implement blocking strategy ensuring termination. Subset/equality blocking on time points and worlds. Relate fuel to FMP-derived size bound `f(2^|cl(φ)|)`. Replace ad-hoc `recommendedFuel` heuristic with sound bound. Prove blocking preserves completeness. Files: `Saturation.lean`, `DecisionProcedure.lean`, `FMP/`.
-
----
-
-### 236. Modal-temporal interaction tableau rules
-- **Effort**: small (4-6 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: 233, 234
-
-**Description**: Cross-modal-temporal rules based on `modal_future` axiom (`□φ → □(Gφ)`). Propagate `T(□φ)` to `T(Gφ)`, inherit temporal structure in new worlds and modal structure at new times. Test against `modal_future`, `temp_future`, and combined □/G/H/U/S formulas. Files: `Tableau.lean`, `Saturation.lean`.
 
 ---
 
@@ -380,41 +321,13 @@ technical_debt:
 
 ---
 
-### 217. Complexity tier extension to c9/c11
-- **Effort**: large (2-4 weeks, Lean oracle compute)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: dataset-enhancement
-- **Dependencies**: 251
-- **Research**: [217_complexity_tier_extension_c9_c11/reports/01_complexity-tier-research.md]
-- **Plan**: [217_complexity_tier_extension_c9_c11/plans/01_complexity-tier-plan.md]
-- **Summary**: [217_complexity_tier_extension_c9_c11/summaries/01_complexity-tier-summary.md]
-
-**Description**: Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity ≤9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity ≤11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.
-
----
-
-### 202. Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Effort**: 14 hours
-- **Status**: [COMPLETED]
+### 252. Fix linter warnings and improve generation scripts
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
 - **Type**: lean4
-- **Priority**: CRITICAL
-- **Dependencies**: none
-- **Research**:
-  - [202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md]
-  - [202_reynolds_k_equivalence_bypass/reports/04_team-research.md]
-  - [202_reynolds_k_equivalence_bypass/reports/05_reynolds-theorem-14-research.md]
-  - [202_reynolds_k_equivalence_bypass/reports/07_bfmcs-bypass-research.md]
-  - [202_reynolds_k_equivalence_bypass/reports/08_succ-cofinal-dependency-trace.md]
-  - [202_reynolds_k_equivalence_bypass/reports/12_deviation-analysis.md]
-- **Handoff**: [202_reynolds_k_equivalence_bypass/handoffs/phase-2-blocked-20260529.md]
-- **Plans**:
-  - [202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md]
-  - [202_reynolds_k_equivalence_bypass/plans/11_reynolds-model-surgery-plan.md]
-  - [202_reynolds_k_equivalence_bypass/plans/20_reynolds-model-surgery-v19.md]
-- **Description**: Reynolds Theorem 14 (model surgery / no-gaps) fully formalized. GoodStructuresModelSurgery.lean has 0 sorry sites. Key results: gap formula R, h_R_everywhere, invariant_formula_constant, class_spread, ordered_spread_above/below (Lemma 11 density), truth preservation by structural induction, final contradiction. Wired to completeness_discrete via ShiftAndGlue.lean (import cycle bypass). no_gaps_discrete in GoodStructures.lean retains sorry (off critical path).
-
+- **Priority**: medium
+- **Topic**: code-quality
+- **Description**: Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables `h_sc`, `h_mem` in `Semantics/Validity.lean` (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args `f_nesting_depth`, `p_nesting_depth`, `Formula.and` in `SubformulaClosure/TemporalFormulas.lean` (lines 565-566, 647-650, 803, 895), (3) Unused tactic `all_goals simp_wf` in `ProofSearch/Core.lean` (lines 1016, 1141), (4) Unused variable `fc` in `CountermodelExtraction.lean` (line 128), (5) Unused variables `proof`, `h` in `ProofSearch/Strategies.lean` (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
 - **Effort**: large (20-30 hours)
