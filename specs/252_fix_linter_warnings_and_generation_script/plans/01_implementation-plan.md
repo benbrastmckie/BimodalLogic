@@ -89,22 +89,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Lean Warnings in Syntax and Automation [NOT STARTED]
+### Phase 2: Fix Lean Warnings in Syntax and Automation [COMPLETED]
 
 **Goal**: Eliminate 12 warnings for unused simp arguments and no-op tactics across 2 files.
 
 **Tasks**:
-- [ ] In `Theories/Bimodal/Syntax/SubformulaClosure/TemporalFormulas.lean`:
+- [x] In `Theories/Bimodal/Syntax/SubformulaClosure/TemporalFormulas.lean`:
   - Line 565: Remove `f_nesting_depth` from `simp only [G_neg_neg_bot, Formula.all_future, f_nesting_depth]`
   - Line 566: Remove `f_nesting_depth` from `simp only [H_neg_neg_bot, Formula.all_past, f_nesting_depth]`
   - Line 647: Remove `p_nesting_depth` from `simp only [G_neg_neg_bot, Formula.all_future, p_nesting_depth]`
   - Line 650: Remove `p_nesting_depth` from `simp only [H_neg_neg_bot, Formula.all_past, p_nesting_depth]`
   - Line 803: Remove `Formula.and` from the `simp only` argument list
   - Line 895: Remove `Formula.and` from the `simp only` argument list
-- [ ] In `Theories/Bimodal/Automation/ProofSearch/Core.lean`:
+- [x] In `Theories/Bimodal/Automation/ProofSearch/Core.lean`:
   - Line 1016: Remove the `all_goals simp_wf` line from the `decreasing_by` block
   - Line 1141: Remove the `all_goals simp_wf` line from the `decreasing_by` block
-- [ ] Run `lake build` on the affected files to verify no regressions
+- [x] Run `lake build` on the affected files to verify no regressions
 
 **Timing**: 30 minutes
 

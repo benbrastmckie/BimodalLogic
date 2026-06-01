@@ -562,8 +562,8 @@ theorem max_F_depth_deferralClosure_eq (phi : Formula) :
       · simp only [P_top, Formula.some_past, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
-      · simp only [G_neg_neg_bot, Formula.all_future, f_nesting_depth]; exact Nat.zero_le _
-      · simp only [H_neg_neg_bot, Formula.all_past, f_nesting_depth]; exact Nat.zero_le _
+      · simp only [G_neg_neg_bot, Formula.all_future]; exact Nat.zero_le _
+      · simp only [H_neg_neg_bot, Formula.all_past]; exact Nat.zero_le _
       · simp only [neg_G_neg_neg_bot, Formula.neg, f_nesting_depth]
         exact le_max_of_le_right (by native_decide)
       · simp only [neg_H_neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
@@ -644,10 +644,10 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
         simp only [neg_neg_bot, Formula.neg, p_nesting_depth]
         exact Nat.zero_le _
       · -- f = G(neg neg bot): p_nesting_depth = 0
-        simp only [G_neg_neg_bot, Formula.all_future, p_nesting_depth]
+        simp only [G_neg_neg_bot, Formula.all_future]
         exact Nat.zero_le _
       · -- f = H(neg neg bot): p_nesting_depth = 0 (it's an all_past, not some_past)
-        simp only [H_neg_neg_bot, Formula.all_past, p_nesting_depth]
+        simp only [H_neg_neg_bot, Formula.all_past]
         exact Nat.zero_le _
       · -- f = neg_G_neg_neg_bot: p_nesting_depth = 0 (all_future not all_past)
         simp only [neg_G_neg_neg_bot, Formula.neg, p_nesting_depth]
@@ -800,7 +800,7 @@ theorem all_future_in_deferralClosure_cases (phi psi : Formula)
     all_goals (first
       | exact Or.inr (Or.inl h_eq)
       | (simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-          Formula.neg, Formula.top, Formula.or, Formula.and, F_top, P_top, G_neg_neg_bot,
+          Formula.neg, Formula.top, Formula.or, F_top, P_top, G_neg_neg_bot,
           H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot, neg_neg_bot,
           F_top_deferral, P_top_deferral] at h_eq; cases h_eq))
   · -- temporalBlockingSet: G(neg chi) for some chi with F(chi) in closureWithNeg
@@ -892,7 +892,7 @@ theorem all_past_in_deferralClosure_cases (phi psi : Formula)
     all_goals (first
       | exact Or.inr (Or.inl h_eq)
       | (simp only [Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
-          Formula.neg, Formula.top, Formula.or, Formula.and, F_top, P_top, G_neg_neg_bot,
+          Formula.neg, Formula.top, Formula.or, F_top, P_top, G_neg_neg_bot,
           H_neg_neg_bot, neg_G_neg_neg_bot, neg_H_neg_neg_bot, neg_neg_bot,
           F_top_deferral, P_top_deferral] at h_eq; cases h_eq))
   · -- temporalBlockingSet

@@ -1013,7 +1013,6 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
               | _ => (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp, visitsAfterMp)
 termination_by depth
 decreasing_by
-  all_goals simp_wf
   all_goals omega
 
 /--
@@ -1138,7 +1137,6 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
               (none, visited', visits')
 termination_by depth
 decreasing_by
-  all_goals simp_wf
   all_goals omega
 
 /--
