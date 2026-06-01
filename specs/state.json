@@ -6,6 +6,30 @@
   },
   "active_projects": [
     {
+      "project_number": 250,
+      "project_name": "enriched_formula_json_export",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-06-01T17:28:43Z",
+      "last_updated": "2026-06-01T17:28:43Z"
+    },
+    {
+      "project_number": 249,
+      "project_name": "expand_temporal_derived_theorems",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-06-01T17:28:43Z",
+      "last_updated": "2026-06-01T17:28:43Z"
+    },
+    {
+      "project_number": 248,
+      "project_name": "fold_direction_formula_normalization",
+      "status": "not_started",
+      "task_type": "lean4",
+      "created": "2026-06-01T17:28:43Z",
+      "last_updated": "2026-06-01T17:28:43Z"
+    },
+    {
       "project_number": 227,
       "project_name": "dataset_pipeline_automation_croissant_sync",
       "status": "abandoned",
@@ -1379,7 +1403,7 @@
     {
       "project_number": 233,
       "project_name": "s5_modal_tableau_rules",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Replace unsound identity-collapse modal rules with correct S5 rules using world indices from task 232. Implement box/diamond propagation across S5 equivalence class, witness world introduction for F(box) and T(diamond), universal refutation for F(diamond), and auto-propagation of box-formulas to new worlds.",
       "priority": "critical",
@@ -1388,7 +1412,51 @@
         232
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-01T12:00:00Z",
+      "session_id": "sess_1748788800_orch233",
+      "researched": "2026-06-01T10:30:00Z",
+      "planned": "2026-06-01T12:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md",
+          "type": "report",
+          "summary": "S5 modal rule analysis: 4 identity-collapse placeholders identified, correct existential/universal rule specifications, branch-aware applyRule design, auto-propagation mechanism, ~130 lines across 3 files"
+        },
+        {
+          "path": "specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: branch helpers, rule infrastructure with RuleResult.persistent, saturation update, full build verification. 6 hours estimated."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_s5-modal-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
     },
     {
       "project_number": 234,
@@ -1598,7 +1666,7 @@
       "last_updated": "2026-06-01T22:00:00Z"
     }
   ],
-  "next_project_number": 248,
+  "next_project_number": 251,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

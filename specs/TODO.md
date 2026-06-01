@@ -1,5 +1,5 @@
 ---
-next_project_number: 248
+next_project_number: 251
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -27,139 +27,154 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-06-01. 52 active tasks across 6 independent tracks + documentation.*
+*Updated 2026-06-01. Generated from state.json dependency graph.*
 
-**Tracks A-E are fully independent** — work on any combination in parallel. Track F (Documentation) waits on Tracks B + C. Deferred features have no timeline pressure.
+**Dependency Waves**:
+| Wave | Tasks | Blocked by | Topics |
+|------|-------|------------|--------|
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,217,219,224,229,233,234,235 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,186,192,196,230,236,237,238 | 161,185,187,190,191,194,199,229,233,234,235 | completeness, tableau-training, dataset-enhancement, ... |
+| 3 | 95,176,193,231,239,240,241 | 155,189,192,230,237,238 | completeness, formula-refactor, tableau-training, ... |
+| 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
+| 5 | 243,244,247 | 242,245,246 | tableau-training |
 
-### Track A — Completeness (sorry-free `bx_completeness`)
+**Grouped by Topic** (indented = depends on parent):
 
-202 [PLANNED] — Reynolds model surgery (v17): 11-piece, 6-phase plan. ~700 LOC, 16 hours.
-  - **Plans**: [specs/202_reynolds_k_equivalence_bypass/plans/18_reynolds-model-surgery-v17.md]
-199 [PARTIAL] — Grid order tactic for same_order_type dispatch
-155 [IMPLEMENTING] — Reynolds pipeline (GHR93-faithful, plan v43). 6 phases, 20-30 hours.
-  └─ 199
-176 [NOT STARTED] — Relocate Chronicle/, archive dead BXCanonical subtree
-  └─ 155
-95 [NOT STARTED] — Verification audit: `#print axioms` + sorry classification
-  └─ 155
+### Completeness
 
-### Track B — Structural Refactor
+202 [IMPLEMENTING] — Formalize Reynolds Theorem 5 (US expressive completeness over Pri
+95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
+155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
+  └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
+  └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
 
-175 [RESEARCHED] — Naming conventions + bridge/wrapper cleanup
-180 [NOT STARTED] — Copyright headers, universe polymorphism, 100-char line limits
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs
-  └─ 175, 180
-161 [NOT STARTED] — Rename Theories/Bimodal/ to final namespace (LAST)
-  └─ 131
+### Formula Refactor
 
-### Track C — Tactics Pipeline
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+  └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
+  └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
+175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
+176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
 
-*Tier 1 — Foundations (independent of each other):*
-185 [RESEARCHED] — Complete axiom & derived theorem coverage in modal_search
-189 [NOT STARTED] — Deduction theorem tactic
-190 [RESEARCHED] — Derived operator normalization tactic (modal_norm)
-191 [NOT STARTED] — Propositional fragment verified decision procedure
+### Frame Extensions
 
-*Tier 2 — Engineering (depends on Tier 1):*
-186 [NOT STARTED] — Unify computable and tactic proof search systems
-  └─ 185
-187 [NOT STARTED] — Backward-chaining lemma database (solve_by_elim analogue)
-  └─ 185
-188 [NOT STARTED] — Weakening-aware proof search
-  └─ 187
+127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
+128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
 
-*Tier 3 — Integration (depends on Tier 2 + Track B):*
-194 [NOT STARTED] — Migrate Nonempty (DerivationTree ...) patterns to Derivable
-  └─ 161
-196 [RESEARCHED] — Codebase-wide tactic opportunity survey
-  └─ 161
-192 [NOT STARTED] — Master tactic dispatch (tm_prove)
-  └─ 185, 187, 190, 191, 194
+### Algebraic Representation
 
-*Tier 4 — Capstone:*
-193 [NOT STARTED] — Codebase-wide tactic refactoring
-  └─ 192, 189
+125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
-### Track D — Tableau Training System
+### Tableau Training
 
-*Phase T1 — Foundation:*
-232 [COMPLETED] — Labeled branch infrastructure (world/time-indexed types)
-  - **Research**: [specs/232_labeled_branch_infrastructure/reports/01_labeled-branch-research.md]
-  - **Plan**: [specs/232_labeled_branch_infrastructure/plans/01_labeled-branch-plan.md]
-  - **Summary**: [specs/232_labeled_branch_infrastructure/summaries/01_labeled-branch-summary.md]
-233 [NOT STARTED] — S5 modal tableau rules (multi-world bookkeeping)
-  └─ 232
-234 [NOT STARTED] — Temporal G/H/F/P tableau rules (time-indexed)
-  └─ 232
-235 [NOT STARTED] — Until/Since tableau rules (open-guard decomposition)
-  └─ 232
-236 [NOT STARTED] — Modal-temporal interaction rules
-  └─ 233, 234
+233 [PLANNED] — Replace unsound identity-collapse modal rules with correct S5 rul
+  - **Research**: [specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md]
+  - **Plan**: [specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md]
+  └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur
+  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
+    └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
+      └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
+      └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
+        └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+        └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+    └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
+      └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
+    └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+      └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
+      └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
+        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+      └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
+        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc
+    └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
+    └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
+    └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
+234 [NOT STARTED] — Replace unsound identity-collapse temporal rules with correct tim
+  └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur (see above)
+  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
+  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
+235 [NOT STARTED] — Implement tableau rules for primitive Until (untl) and Since (snc
+  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
+  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
 
-*Phase T2 — Completion:*
-237 [NOT STARTED] — Tableau termination (blocking + FMP bounds)
-  └─ 233, 234, 235
-238 [NOT STARTED] — Frame-class-aware expansion (Dense/Discrete gating)
-  └─ 233, 234, 235
-239 [NOT STARTED] — Proof extraction from closed tableaux (DerivationTree)
-  └─ 237, 238
-240 [NOT STARTED] — Countermodel extraction (semantic correctness)
-  └─ 237, 238
+### Automation
 
-*Phase T3 — Data Generation:*
-241 [NOT STARTED] — Tableau formula labeling (rebuild DatasetGenerator)
-  └─ 237, 238
-242 [NOT STARTED] — Tableau proof step extraction (100K+ steps)
-  └─ 239, 241
-243 [NOT STARTED] — Full axiom/rule coverage (42/42 axioms, 7/7 rules)
-  └─ 242
-244 [NOT STARTED] — Context-based proof steps (assumption/weakening)
-  └─ 242
+199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
+  └─ 155 [IMPLEMENTING] — (completeness: Replace the chronicle fallback in Transf) (see above)
+196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
-*Phase T4 — BimodalHarness Integration:*
-245 [NOT STARTED] — Cross-repository data sync pipeline
-  └─ 241
-246 [NOT STARTED] — Lean REPL tableau bridge (live queries)
-  └─ 241
-247 [NOT STARTED] — End-to-end training loop validation
-  └─ 242, 245, 246
+### Code Quality
 
-### Track E — Dataset Enhancements
+200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
 
-217 [IMPLEMENTING] — Complexity tier extension to c9/c11 (Lean oracle)
-228 [PLANNED] — Fix dataset metadata and documentation staleness
-229 [NOT STARTED] — Resolve train/benchmark formula contamination (71.2% overlap)
-219 [RESEARCHED] — LLM baseline difficulty calibration
-230 [NOT STARTED] — Benchmark refresh: splits, paraphrases, schema alignment
-  └─ 229
-231 [NOT STARTED] — Dataset regeneration automation (supersedes 227)
-  └─ 228, 230
+### Dataset Enhancement
 
-### Track F — Documentation (after Tracks B + C)
+217 [IMPLEMENTING] — Extend exhaustive formula enumeration to complexity 9 and 11. bml
+219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
+229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
+  └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
+    └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 
-177 [NOT STARTED] — Update README and all module docstrings
-  └─ 131, 193
-178 [NOT STARTED] — Publication examples and demo
-  └─ 131, 193
+### Uncategorized
 
-### Deferred — New Features (post-publication)
-
-169 [NOT STARTED] — Complete frame extension: axiom, typeclass, soundness, correspondence
-170 [NOT STARTED] — Completeness theorem for TM^dc (dense + complete)
-  └─ 169
-165 [NOT STARTED] — Establish semantic finite model property (filtration)
-164 [NOT STARTED] — Prove tableau correctness (capstone after 239/240)
-  └─ 165, 239, 240
-125 [NOT STARTED] — Jónsson-Tarski representation theorem for TM logic
-127 [NOT STARTED] — Add time addition operator (+) for bimodal logic TM
-128 [NOT STARTED] — Add topological open set (interior) operator
-
-### Meta/Tooling
-
-162 [NOT STARTED] — Enforce strict plan compliance for formal implementation agents
-
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
+  └─ 196 [RESEARCHED] — (automation: Systematic survey of the entire Theories) (see above)
+162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
+165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
+169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
+170 [NOT STARTED] — complete_dense_extension_completeness
+179 [RESEARCHED] — research_lean4_tactics_infrastructure
+180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+185 [RESEARCHED] — complete_axiom_derived_coverage
+  └─ 186 [NOT STARTED] — unify_search_systems
+  └─ 192 [NOT STARTED] — master_tactic_dispatch
+    └─ 193 [NOT STARTED] — codebase_tactic_refactor
+      └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
+      └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
+187 [NOT STARTED] — backward_chaining_lemma_db
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+188 [NOT STARTED] — weakening_aware_search
+189 [NOT STARTED] — deduction_theorem_tactic
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+190 [RESEARCHED] — derived_operator_normalization
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+191 [NOT STARTED] — propositional_decision_procedure
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+194 [NOT STARTED] — migrate_nonempty_to_derivable
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+224 [NOT STARTED] — Investigate whether the finite insertion argument can prove IsSuc
 
 ## Tasks
+
+### 250. Add enriched formula JSON export to data pipeline
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 248
+
+**Description**: The data export pipeline (DatasetGenerator.lean, proof step extraction) currently exports formulas only in primitive representation (6 constructor tags: atom, bot, imp, box, untl, snce). BimodalHarness needs enriched representations alongside primitives for training. Add a formula_folded_json field to exported data records that contains the formula with defined operator tags (neg, top, next, prev, and, or, diamond, some_future, some_past, all_future, all_past) using the fold algorithm from Task 248. Update proof_steps.jsonl export to include both goal_json (primitive) and goal_folded_json (enriched). Update formula enumeration exports (bmlogic-c5.jsonl, bmlogic-c7.jsonl, etc.) to include both representations. The enriched representation enables BimodalHarness to train on defined-operator formulas while verifying via primitive expansion.
+
+---
+
+### 249. Expand temporal derived theorem library for training coverage
+- **Effort**: L
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: The temporal derived theorem coverage is thin — after Task 173 archived 27 definitions, only ~8 useful temporal derived rules remain in Theorems/. This creates unbalanced action space coverage for BimodalHarness training (propositional and modal rules dominate). Prove additional temporal derived theorems focusing on patterns that commonly appear in proofs: temporal distribution variants (distributing G/H over various connectives), temporal induction principles, Until/Since decomposition lemmas, future-past interaction theorems, and temporal analogues of propositional rules (temporal contraposition, temporal case analysis). Target: at least 15-20 new temporal derived theorems with empty contexts suitable for BimodalHarness Tier 1 action space integration. Each theorem should follow the existing Theorems/ style (DerivationTree construction). Prioritize theorems that provide high proof compression — patterns that replace 5+ primitive steps with a single derived rule application.
+
+---
+
+### 248. Add fold direction to formula normalization
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Task 190 (modal_norm) covers the unfold direction (defined operators → primitives) but not the fold direction (primitives → defined operators). The fold direction is needed for training data export — BimodalHarness needs formulas in enriched representation alongside primitive representation. Implement a greedy folding algorithm that pattern-matches primitive trees against defined operator patterns, starting from the highest dependency level (Level 6 sometimes → Level 1 neg/top) and working down. Key challenge: some patterns are ambiguous (e.g., imp(imp(A, bot), B) matches both or(A, B) and neg(A)→B). Document ambiguous patterns explicitly and implement conservative folding that only folds unambiguous patterns. The fold algorithm should be a Lean meta-level function that can be applied to Formula values, producing a string or JSON representation with enriched operator tags. Add simp lemmas for the fold direction where unambiguous. Include property test: unfold(fold(f)) = f for all formulas.
+
+---
 
 ### 247. End-to-end training loop validation
 - **Effort**: medium (6-10 hours)
@@ -330,12 +345,14 @@ technical_debt:
 ---
 
 ### 233. S5 modal tableau rules with multi-world bookkeeping
-- **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: medium (6 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Topic**: tableau-training
 - **Dependencies**: 232
+- **Research**: [specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md]
+- **Plan**: [specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md]
 
 **Description**: Replace unsound identity-collapse modal rules with correct S5 rules. `T(□A) @ w → T(A) @ w'` for all worlds (propagation), `F(□A) @ w → F(A) @ w_new` (witness), `T(◇A) @ w → T(A) @ w_new` (witness), `F(◇A) @ w → F(A) @ w'` for all worlds (refutation). Track global □-formula propagation set. Replace `boxPos`/`boxNeg`/`diamondPos`/`diamondNeg` at `Tableau.lean` lines 84-99. Files: `Tableau.lean`, `Saturation.lean`.
 
