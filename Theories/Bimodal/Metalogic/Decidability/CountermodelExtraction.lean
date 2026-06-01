@@ -457,6 +457,13 @@ private theorem impNeg_not_expanded (b : Branch) (ψ χ : Formula) (l : Label) :
   simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
   simp
 
+private theorem impPos_not_expanded (b : Branch) (ψ χ : Formula) (l : Label) :
+    isExpanded ⟨.pos, .imp ψ χ, l⟩ b = false := by
+  unfold isExpanded findApplicableRule
+  simp only [allRulesForFC, allRules, denseRules, discreteRules]
+  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp
+
 theorem sat_imp_neg (b : Branch) (hSat : findUnexpanded b = none)
     (ψ χ : Formula) (l : Label)
     (hmem : ⟨.neg, .imp ψ χ, l⟩ ∈ b) :
@@ -614,16 +621,11 @@ private theorem truthLemma_pos (b : Branch) (hSat : findUnexpanded b = none)
   | bot =>
     -- T(bot) cannot be in an open branch
     exact absurd hmem (sat_no_bot_pos b fc hOpen ⟨w, t⟩)
-  | imp ψ χ ih_ψ ih_χ =>
-    -- T(ψ → χ) at (w,t): the impPos rule is branching (F(ψ) | T(χ)).
-    -- In a saturated branch, the formula was consumed and one branch was chosen.
-    -- But in our setting, findUnexpanded b = none means the formula IS expanded
-    -- (it was consumed by the linear/branching rule). This case actually means
-    -- the formula should not be in the saturated branch (it would have been consumed).
-    -- The theorem is vacuously true — but to show it properly requires the same
-    -- rule-engine unfolding as sat_imp_neg. We use sorry here.
-    simp only [branchTruth]
-    sorry
+  | imp ψ χ _ih_ψ _ih_χ =>
+    -- T(ψ → χ) cannot be in a saturated branch: impPos always applies (branching).
+    exfalso
+    have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .imp ψ χ, ⟨w, t⟩⟩ hmem
+    simp [impPos_not_expanded] at hExp
   | box ψ ih =>
     -- T(□ψ) at (w,t): by sat_box_pos, T(ψ) at (w',t) for all known worlds w'.
     -- By IH, branchTruth cm w' t ψ for all w' in knownWorlds.

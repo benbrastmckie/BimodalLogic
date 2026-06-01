@@ -1,7 +1,7 @@
 # Implementation Plan: Tableau Correctness Theorems
 
 - **Task**: 164 - Prove tableau correctness theorem for decision procedure
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 14 hours
 - **Dependencies**: None (all prerequisites sorry-free)
 - **Research Inputs**: specs/164_prove_tableau_correctness/reports/01_tableau-correctness-research.md
