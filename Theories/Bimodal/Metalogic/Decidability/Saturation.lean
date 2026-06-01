@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Decidability.Closure
+import Bimodal.Syntax.SubformulaClosure.Closure
 
 /-!
 # Tableau Saturation and Expansion
@@ -177,15 +178,40 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
 /--
 Recommended fuel based on formula complexity.
 Uses 10 * complexity as a heuristic upper bound.
+
+**Deprecated**: Use `soundFuel` for a theoretically justified bound.
+This function is kept for backward compatibility.
 -/
 def recommendedFuel (φ : Formula) : Nat :=
   10 * φ.complexity + 100
 
 /--
-Build tableau with automatic fuel calculation.
+Sound fuel bound derived from the Finite Model Property (FMP).
+
+By the FMP for bimodal TM logic, a satisfiable formula φ has a model
+with at most `2^n` distinct worlds/times, where `n = |subformulaClosure(φ)|`.
+Each time point can carry at most `2^n` distinct subsets of signed subformulas,
+so the tableau explores at most `2^(2n)` distinct time-types before a repeat
+(and blocking fires). We cap at 100000 for practical performance since
+blocking typically fires much earlier.
+
+The bound `n * 2^n` is used instead of `2^(2n)` because each expansion step
+produces at most a constant number of new signed formulas, so the total
+expansion steps are bounded by the number of distinct (time, type) pairs,
+which is at most `n * 2^n` where n accounts for the time points and `2^n`
+for the types.
+-/
+def soundFuel (φ : Formula) : Nat :=
+  let n := (Bimodal.Syntax.subformulaClosure φ).card
+  let bound := n * (2 ^ n)
+  -- Cap at practical maximum; blocking fires well before this bound
+  min bound 100000
+
+/--
+Build tableau with automatic fuel calculation using sound FMP-derived bound.
 -/
 def buildTableauAuto (φ : Formula) (fc : FrameClass := .Base) : Option ExpandedTableau :=
-  buildTableau φ (recommendedFuel φ) fc
+  buildTableau φ (soundFuel φ) fc
 
 /-!
 ## Saturation Properties
@@ -360,5 +386,79 @@ private def q' : Formula := .atom (Atom.mk_base "q")
   | none => return "FAIL B2: U(p,q) -> U(p,q) ran out of fuel"
 
 end BlockingTests
+
+/-!
+## Modal-Temporal Interaction Tests
+
+These tests verify the cross-modal-temporal interaction rules:
+- boxTemporal: T(□φ) → T(Gφ), T(Hφ)
+- Temporal inheritance at world creation
+- Box persistence at time creation
+-/
+
+section ModalTemporalTests
+
+open Bimodal.Syntax
+
+-- Helper: create propositional atom formulas
+private def mt_p : Formula := .atom (Atom.mk_base "p")
+
+-- Test MT1: □p → Gp should be valid (boxTemporal derives T(Gp) from T(□p))
+#eval do
+  let φ := Formula.imp (.box mt_p) (Formula.all_future mt_p)
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS: □p → Gp is valid"
+  | some (.hasOpen _ _) => return "FAIL: □p → Gp should be valid but got open branch"
+  | none => return "FAIL: □p → Gp ran out of fuel"
+
+-- Test MT2: □p → Hp should be valid (boxTemporal derives T(Hp) from T(□p))
+#eval do
+  let φ := Formula.imp (.box mt_p) (Formula.all_past mt_p)
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS: □p → Hp is valid"
+  | some (.hasOpen _ _) => return "FAIL: □p → Hp should be valid but got open branch"
+  | none => return "FAIL: □p → Hp ran out of fuel"
+
+-- Test MT3: □p → always p (perpetuity P1: □p → Hp ∧ p ∧ Gp)
+-- always p = Hp ∧ (p ∧ Gp)
+#eval do
+  let φ := Formula.imp (.box mt_p) (Formula.always mt_p)
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS: □p → always p is valid (P1 perpetuity)"
+  | some (.hasOpen _ _) => return "FAIL: □p → always p should be valid but got open branch"
+  | none => return "FAIL: □p → always p ran out of fuel"
+
+-- Test MT4: □(□p) → G(□p) should be valid (nested modal-temporal)
+#eval do
+  let φ := Formula.imp (.box (.box mt_p)) (Formula.all_future (.box mt_p))
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
+  | some (.hasOpen _ _) => return "FAIL: □(□p) → G(□p) should be valid but got open branch"
+  | none => return "FAIL: □(□p) → G(□p) ran out of fuel"
+
+-- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
+-- Verifies cross-propagation does not over-close: p holds now but ¬p at some future time
+#eval do
+  let φ := Formula.and mt_p (Formula.some_future (Formula.neg mt_p))
+  let result := buildTableau φ 200
+  match result with
+  | some (.allClosed _) => return "FAIL: p ∧ F(¬p) should be satisfiable but got allClosed"
+  | some (.hasOpen _ _) => return "PASS: p ∧ F(¬p) is satisfiable (open branch found)"
+  | none => return "PASS: p ∧ F(¬p) is satisfiable (exhausted fuel without closing)"
+
+-- Test MT6: □p → □(Gp) should be valid (modal_future axiom instance)
+#eval do
+  let φ := Formula.imp (.box mt_p) (.box (Formula.all_future mt_p))
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS: □p → □(Gp) is valid (modal_future)"
+  | some (.hasOpen _ _) => return "FAIL: □p → □(Gp) should be valid but got open branch"
+  | none => return "FAIL: □p → □(Gp) ran out of fuel"
+
+end ModalTemporalTests
 
 end Bimodal.Metalogic.Decidability

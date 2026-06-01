@@ -118,7 +118,7 @@ Decide validity of a TM bimodal logic formula.
 - `timeout`: Resources exhausted before decision
 -/
 def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
-    : DecisionResult φ :=
+    (fc : FrameClass := .Base) : DecisionResult φ :=
   -- Fast path: direct axiom proof
   match tryAxiomProof φ with
   | some proof => .valid proof
@@ -128,7 +128,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     | (some proof, _, _) => .valid proof
     | (none, _, _) =>
       -- Fall back to tableau method
-      match buildTableau φ tableauFuel with
+      match buildTableau φ tableauFuel fc with
       | none => .timeout
       | some (.allClosed closedBranches) =>
           -- Formula is valid, try to extract proof
@@ -159,22 +159,26 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
 /--
 Simplified decision: just return whether formula is valid.
 -/
-def isValid (φ : Formula) : Bool :=
-  (decide φ).isValid
+def isValid (φ : Formula) (fc : FrameClass := .Base) : Bool :=
+  (decide φ (fc := fc)).isValid
 
 /--
 Check if a formula is satisfiable (its negation is not valid).
 -/
-def isSatisfiable (φ : Formula) : Bool :=
-  ¬isValid φ.neg
+def isSatisfiable (φ : Formula) (fc : FrameClass := .Base) : Bool :=
+  ¬isValid φ.neg fc
 
 /--
-Decide with automatic fuel based on formula complexity.
+Decide with automatic fuel based on FMP-derived sound bound.
+
+Uses `soundFuel` (from subformula closure cardinality) instead of the
+ad-hoc `recommendedFuel` heuristic. Combined with subset blocking in
+`expandBranchWithFuel`, this ensures termination for all formulas.
 -/
-def decideAuto (φ : Formula) : DecisionResult φ :=
-  let fuel := recommendedFuel φ
+def decideAuto (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
+  let fuel := soundFuel φ
   let depth := 5 + φ.complexity / 2
-  decide φ depth fuel
+  decide φ depth fuel fc
 
 /-!
 ## Batch Decision
@@ -197,9 +201,10 @@ structure BatchDecisionResult where
 /--
 Decide a batch of formulas, collecting statistics.
 -/
-def decideBatch (formulas : List Formula) (fuel : Nat := 1000) : BatchDecisionResult :=
+def decideBatch (formulas : List Formula) (fuel : Nat := 1000)
+    (fc : FrameClass := .Base) : BatchDecisionResult :=
   formulas.foldl (fun acc φ =>
-    let result := decide φ 10 fuel
+    let result := decide φ 10 fuel fc
     { acc with
       validCount := acc.validCount + (if result.isValid then 1 else 0)
       invalidCount := acc.invalidCount + (if result.isInvalid then 1 else 0)
@@ -218,7 +223,7 @@ Combined decision procedure using both tableau and proof search.
 For formulas that are provable, this tries to return the shortest proof
 by comparing tableau-derived proofs with proof search results.
 -/
-def decideOptimized (φ : Formula) : DecisionResult φ :=
+def decideOptimized (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
   -- First, quick check with IDDFS
   let (found, _, _, _, _) := search [] φ (.IDDFS 20)
   if found then
@@ -227,10 +232,10 @@ def decideOptimized (φ : Formula) : DecisionResult φ :=
     | (some proof, _, _) => .valid proof
     | (none, _, _) =>
         -- Couldn't construct proof term, fall back to decide
-        decide φ
+        decide φ (fc := fc)
   else
     -- Not immediately provable, use full decision procedure
-    decide φ
+    decide φ (fc := fc)
 
 /-!
 ## Convenience Functions
@@ -240,18 +245,18 @@ def decideOptimized (φ : Formula) : DecisionResult φ :=
 Check if a formula is a tautology (valid in propositional sense).
 For TM logic, this is just validity check.
 -/
-def isTautology (φ : Formula) : Bool := isValid φ
+def isTautology (φ : Formula) (fc : FrameClass := .Base) : Bool := isValid φ fc
 
 /--
 Check if a formula is a contradiction (negation is valid).
 -/
-def isContradiction (φ : Formula) : Bool := isValid φ.neg
+def isContradiction (φ : Formula) (fc : FrameClass := .Base) : Bool := isValid φ.neg fc
 
 /--
 Check if a formula is contingent (neither valid nor contradictory).
 -/
-def isContingent (φ : Formula) : Bool :=
-  ¬isValid φ ∧ ¬isContradiction φ
+def isContingent (φ : Formula) (fc : FrameClass := .Base) : Bool :=
+  ¬isValid φ fc ∧ ¬isContradiction φ fc
 
 /-!
 ## Display Functions

@@ -127,17 +127,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: FMP-derived fuel bound replacing ad-hoc heuristic [NOT STARTED]
+### Phase 3: FMP-derived fuel bound replacing ad-hoc heuristic [COMPLETED]
 
 **Goal**: Replace `recommendedFuel` with `soundFuel` derived from `subformulaClosure` cardinality, providing a theoretically justified termination bound.
 
 **Tasks**:
-- [ ] Import `Bimodal.Syntax.SubformulaClosure.Closure` in Saturation.lean (or SignedFormula.lean) to access the Finset-based `subformulaClosure` and its `.card`
-- [ ] Add `soundFuel : Formula -> Nat` computing `2^(2 * n)` where `n = (Syntax.subformulaClosure phi).card`, capped at a practical maximum (100000)
-- [ ] Add comment documenting the FMP justification: satisfiable formulas have models with at most `2^n` worlds, so at most `2^(2n)` distinct time-types before a repeat
-- [ ] Update `recommendedFuel` to call `soundFuel` (or rename to preserve backward compatibility and add `soundFuel` as the primary bound)
-- [ ] Update `buildTableauAuto` and `decideAuto` in DecisionProcedure.lean to use `soundFuel` instead of `recommendedFuel`
-- [ ] Verify existing tests still pass with new fuel values (blocking should fire before fuel exhaustion for all test cases)
+- [x] Import `Bimodal.Syntax.SubformulaClosure.Closure` in Saturation.lean (or SignedFormula.lean) to access the Finset-based `subformulaClosure` and its `.card`
+- [x] Add `soundFuel : Formula -> Nat` computing `2^(2 * n)` where `n = (Syntax.subformulaClosure phi).card`, capped at a practical maximum (100000) *(deviation: altered -- uses `n * 2^n` bound instead of `2^(2n)` for tighter practical bound)*
+- [x] Add comment documenting the FMP justification: satisfiable formulas have models with at most `2^n` worlds, so at most `2^(2n)` distinct time-types before a repeat
+- [x] Update `recommendedFuel` to call `soundFuel` (or rename to preserve backward compatibility and add `soundFuel` as the primary bound) *(deviation: altered -- kept recommendedFuel for backward compat, marked deprecated)*
+- [x] Update `buildTableauAuto` and `decideAuto` in DecisionProcedure.lean to use `soundFuel` instead of `recommendedFuel`
+- [x] Verify existing tests still pass with new fuel values (blocking should fire before fuel exhaustion for all test cases)
 
 **Timing**: 1.5 hours
 
