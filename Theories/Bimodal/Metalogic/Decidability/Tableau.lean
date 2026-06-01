@@ -352,45 +352,165 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         if newFormulas.isEmpty then (.notApplicable, timeOrd)
         else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
-  -- T(GA) → propagate T(A) to all known future times (universal, persistent)
-  -- Phase 4 will replace with TimeOrdering-based propagation
+  -- T(GA) @ (w,t) → propagate T(A) to all known future times (universal, persistent)
+  -- Strict inequality: G(A) at t means A holds at all t' > t
   | .allFuturePos, .pos, .all_future ψ =>
-      (.linear [SignedFormula.pos ψ l], timeOrd)
-  -- F(GA) → F(A) at fresh future time (existential, consumable)
-  -- Phase 4 will replace with fresh time introduction
+      let futureTimes := timeOrd.futureOf l.time
+      let newFormulas := futureTimes.filterMap fun t' =>
+        let newSf := SignedFormula.pos ψ { world := l.world, time := t' }
+        if branch.contains newSf then none else some newSf
+      if newFormulas.isEmpty then (.notApplicable, timeOrd)
+      else (.persistent newFormulas, timeOrd)
+  -- F(GA) @ (w,t) → F(A) at fresh future time (existential, consumable)
+  -- ¬G(A) at t means there exists t' > t where ¬A
   | .allFutureNeg, .neg, .all_future ψ =>
-      (.linear [SignedFormula.neg ψ l], timeOrd)
-  -- T(HA) → propagate T(A) to all known past times (universal, persistent)
-  -- Phase 4 will replace with TimeOrdering-based propagation
+      let freshTime := branch.nextTime
+      let freshLabel : Label := { world := l.world, time := freshTime }
+      let newOrd := timeOrd.addFuture l.time freshTime
+      -- The witness: F(A) at the fresh future time
+      let witness := SignedFormula.neg ψ freshLabel
+      -- Auto-propagate all T(GA) formulas from time t to freshTime
+      let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+        match gsf.formula with
+        | .all_future inner =>
+          -- Only propagate if freshTime is future of gsf's time
+          -- Since we only added (l.time, freshTime), check gsf is at time l.time
+          if gsf.label.time == l.time then
+            let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        | _ => none
+      -- Auto-propagate all F(FA) formulas from time t to freshTime
+      let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
+        match fsf.formula with
+        | .some_future inner =>
+          if fsf.label.time == l.time then
+            let prop := SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        | _ => none
+      (.linear (witness :: gProps ++ fNegProps), newOrd)
+  -- T(HA) @ (w,t) → propagate T(A) to all known past times (universal, persistent)
+  -- Strict inequality: H(A) at t means A holds at all t' < t
   | .allPastPos, .pos, .all_past ψ =>
-      (.linear [SignedFormula.pos ψ l], timeOrd)
-  -- F(HA) → F(A) at fresh past time (existential, consumable)
-  -- Phase 4 will replace with fresh time introduction
+      let pastTimes := timeOrd.pastOf l.time
+      let newFormulas := pastTimes.filterMap fun t' =>
+        let newSf := SignedFormula.pos ψ { world := l.world, time := t' }
+        if branch.contains newSf then none else some newSf
+      if newFormulas.isEmpty then (.notApplicable, timeOrd)
+      else (.persistent newFormulas, timeOrd)
+  -- F(HA) @ (w,t) → F(A) at fresh past time (existential, consumable)
+  -- ¬H(A) at t means there exists t' < t where ¬A
   | .allPastNeg, .neg, .all_past ψ =>
-      (.linear [SignedFormula.neg ψ l], timeOrd)
-  -- T(FA) → T(A) at fresh future time (existential, consumable)
-  -- Phase 4 will replace with fresh time introduction
+      let freshTime := branch.nextTime
+      let freshLabel : Label := { world := l.world, time := freshTime }
+      let newOrd := timeOrd.addPast l.time freshTime
+      -- The witness: F(A) at the fresh past time
+      let witness := SignedFormula.neg ψ freshLabel
+      -- Auto-propagate all T(HA) formulas from time t to freshTime
+      let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
+        match hsf.formula with
+        | .all_past inner =>
+          -- Only propagate if freshTime is past of hsf's time
+          -- Since we added (freshTime, l.time), check hsf is at time l.time
+          if hsf.label.time == l.time then
+            let prop := SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        | _ => none
+      -- Auto-propagate all F(PA) formulas from time t to freshTime
+      let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
+        match psf.formula with
+        | .some_past inner =>
+          if psf.label.time == l.time then
+            let prop := SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+            if branch.contains prop then none else some prop
+          else none
+        | _ => none
+      (.linear (witness :: hProps ++ pNegProps), newOrd)
+  -- T(FA) @ (w,t) → T(A) at fresh future time (existential, consumable)
+  -- F(A) at t means there exists t' > t where A holds
   | .someFuturePos, .pos, φ =>
       match asSomeFuture? φ with
-      | some ψ => (.linear [SignedFormula.pos ψ l], timeOrd)
+      | some ψ =>
+        let freshTime := branch.nextTime
+        let freshLabel : Label := { world := l.world, time := freshTime }
+        let newOrd := timeOrd.addFuture l.time freshTime
+        -- The witness: T(A) at the fresh future time
+        let witness := SignedFormula.pos ψ freshLabel
+        -- Auto-propagate all T(GA) formulas from time t to freshTime
+        let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+          match gsf.formula with
+          | .all_future inner =>
+            if gsf.label.time == l.time then
+              let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(FA) formulas from time t to freshTime
+        let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
+          match fsf.formula with
+          | .some_future inner =>
+            if fsf.label.time == l.time then
+              let prop := SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        (.linear (witness :: gProps ++ fNegProps), newOrd)
       | none => (.notApplicable, timeOrd)
-  -- F(FA) → propagate F(A) to all known future times (universal, persistent)
-  -- Phase 4 will replace with TimeOrdering-based propagation
+  -- F(FA) @ (w,t) → propagate F(A) to all known future times (universal, persistent)
+  -- F(FA) = ¬(FA) means at all future times, A fails
   | .someFutureNeg, .neg, φ =>
       match asSomeFuture? φ with
-      | some ψ => (.linear [SignedFormula.neg ψ l], timeOrd)
+      | some ψ =>
+        let futureTimes := timeOrd.futureOf l.time
+        let newFormulas := futureTimes.filterMap fun t' =>
+          let newSf := SignedFormula.neg ψ { world := l.world, time := t' }
+          if branch.contains newSf then none else some newSf
+        if newFormulas.isEmpty then (.notApplicable, timeOrd)
+        else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
-  -- T(PA) → T(A) at fresh past time (existential, consumable)
-  -- Phase 4 will replace with fresh time introduction
+  -- T(PA) @ (w,t) → T(A) at fresh past time (existential, consumable)
+  -- P(A) at t means there exists t' < t where A holds
   | .somePastPos, .pos, φ =>
       match asSomePast? φ with
-      | some ψ => (.linear [SignedFormula.pos ψ l], timeOrd)
+      | some ψ =>
+        let freshTime := branch.nextTime
+        let freshLabel : Label := { world := l.world, time := freshTime }
+        let newOrd := timeOrd.addPast l.time freshTime
+        -- The witness: T(A) at the fresh past time
+        let witness := SignedFormula.pos ψ freshLabel
+        -- Auto-propagate all T(HA) formulas from time t to freshTime
+        let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
+          match hsf.formula with
+          | .all_past inner =>
+            if hsf.label.time == l.time then
+              let prop := SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        -- Auto-propagate all F(PA) formulas from time t to freshTime
+        let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
+          match psf.formula with
+          | .some_past inner =>
+            if psf.label.time == l.time then
+              let prop := SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+              if branch.contains prop then none else some prop
+            else none
+          | _ => none
+        (.linear (witness :: hProps ++ pNegProps), newOrd)
       | none => (.notApplicable, timeOrd)
-  -- F(PA) → propagate F(A) to all known past times (universal, persistent)
-  -- Phase 4 will replace with TimeOrdering-based propagation
+  -- F(PA) @ (w,t) → propagate F(A) to all known past times (universal, persistent)
+  -- F(PA) = ¬(PA) means at all past times, A fails
   | .somePastNeg, .neg, φ =>
       match asSomePast? φ with
-      | some ψ => (.linear [SignedFormula.neg ψ l], timeOrd)
+      | some ψ =>
+        let pastTimes := timeOrd.pastOf l.time
+        let newFormulas := pastTimes.filterMap fun t' =>
+          let newSf := SignedFormula.neg ψ { world := l.world, time := t' }
+          if branch.contains newSf then none else some newSf
+        if newFormulas.isEmpty then (.notApplicable, timeOrd)
+        else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 

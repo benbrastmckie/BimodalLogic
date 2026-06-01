@@ -166,21 +166,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Rewrite G/H Rules and Add F/P Rules [NOT STARTED]
+### Phase 4: Rewrite G/H Rules and Add F/P Rules [COMPLETED]
 
 **Goal**: Replace the 4 identity-collapse temporal rule placeholders with correct universal/persistent G/H rules, and implement 4 new existential/consumable F/P rules, including auto-propagation logic.
 
 **Tasks**:
-- [ ] **T(GA) @ (w,t)**: Rewrite `allFuturePos` case to use `timeOrd.futureOf t` to find all known future times, propagate `T(A) @ (w, t')` for each future time `t'`, return `.persistent` (formula stays for future propagation)
-- [ ] **F(GA) @ (w,t)**: Rewrite `allFutureNeg` case to introduce fresh `t_new = branch.nextTime`, create `F(A) @ (w, t_new)`, update `timeOrd` with `addFuture t t_new`, auto-propagate all `T(GA)` and `F(FA)` from times `t'' <= t` to `t_new`, return `.linear` with updated `TimeOrdering`
-- [ ] **T(HA) @ (w,t)**: Rewrite `allPastPos` case to use `timeOrd.pastOf t` to find all known past times, propagate `T(A) @ (w, t')` for each past time `t'`, return `.persistent`
-- [ ] **F(HA) @ (w,t)**: Rewrite `allPastNeg` case to introduce fresh `t_new = branch.nextTime`, create `F(A) @ (w, t_new)`, update `timeOrd` with `addPast t t_new`, auto-propagate all `T(HA)` and `F(PA)` from times `t''` that have `t < t''` to `t_new`, return `.linear` with updated `TimeOrdering`
-- [ ] **T(FA) @ (w,t)**: Implement `someFuturePos` -- existential, create fresh `t_new = branch.nextTime`, `T(A) @ (w, t_new)`, update `timeOrd` with `addFuture t t_new`, auto-propagate all `T(GA)` and `F(FA)` to `t_new`, return `.linear`
-- [ ] **F(FA) @ (w,t)**: Implement `someFutureNeg` -- universal persistent, propagate `F(A) @ (w, t')` for all future times `t'` from `timeOrd.futureOf t`, return `.persistent`
-- [ ] **T(PA) @ (w,t)**: Implement `somePastPos` -- existential, create fresh `t_new = branch.nextTime`, `T(A) @ (w, t_new)`, update `timeOrd` with `addPast t t_new`, auto-propagate all `T(HA)` and `F(PA)` to `t_new`, return `.linear`
-- [ ] **F(PA) @ (w,t)**: Implement `somePastNeg` -- universal persistent, propagate `F(A) @ (w, t')` for all past times `t'` from `timeOrd.pastOf t`, return `.persistent`
-- [ ] Update `isApplicable` with 4 new cases for `someFuturePos`, `someFutureNeg`, `somePastPos`, `somePastNeg`
-- [ ] Update `allRules` list to include the 4 new F/P rules after the existing G/H rules
+- [x] **T(GA) @ (w,t)**: Rewrite `allFuturePos` case to use `timeOrd.futureOf t` to find all known future times, propagate `T(A) @ (w, t')` for each future time `t'`, return `.persistent` (formula stays for future propagation)
+- [x] **F(GA) @ (w,t)**: Rewrite `allFutureNeg` case to introduce fresh `t_new = branch.nextTime`, create `F(A) @ (w, t_new)`, update `timeOrd` with `addFuture t t_new`, auto-propagate all `T(GA)` and `F(FA)` from times `t'' <= t` to `t_new`, return `.linear` with updated `TimeOrdering`
+- [x] **T(HA) @ (w,t)**: Rewrite `allPastPos` case to use `timeOrd.pastOf t` to find all known past times, propagate `T(A) @ (w, t')` for each past time `t'`, return `.persistent`
+- [x] **F(HA) @ (w,t)**: Rewrite `allPastNeg` case to introduce fresh `t_new = branch.nextTime`, create `F(A) @ (w, t_new)`, update `timeOrd` with `addPast t t_new`, auto-propagate all `T(HA)` and `F(PA)` from times `t''` that have `t < t''` to `t_new`, return `.linear` with updated `TimeOrdering`
+- [x] **T(FA) @ (w,t)**: Implement `someFuturePos` -- existential, create fresh `t_new = branch.nextTime`, `T(A) @ (w, t_new)`, update `timeOrd` with `addFuture t t_new`, auto-propagate all `T(GA)` and `F(FA)` to `t_new`, return `.linear`
+- [x] **F(FA) @ (w,t)**: Implement `someFutureNeg` -- universal persistent, propagate `F(A) @ (w, t')` for all future times `t'` from `timeOrd.futureOf t`, return `.persistent`
+- [x] **T(PA) @ (w,t)**: Implement `somePastPos` -- existential, create fresh `t_new = branch.nextTime`, `T(A) @ (w, t_new)`, update `timeOrd` with `addPast t t_new`, auto-propagate all `T(HA)` and `F(PA)` to `t_new`, return `.linear`
+- [x] **F(PA) @ (w,t)**: Implement `somePastNeg` -- universal persistent, propagate `F(A) @ (w, t')` for all past times `t'` from `timeOrd.pastOf t`, return `.persistent`
+- [x] Update `isApplicable` with 4 new cases for `someFuturePos`, `someFutureNeg`, `somePastPos`, `somePastNeg` *(completed in Phase 2)*
+- [x] Update `allRules` list to include the 4 new F/P rules after the existing G/H rules *(completed in Phase 2)*
 
 **Timing**: 2.5 hours
 
