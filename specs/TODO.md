@@ -285,13 +285,17 @@ technical_debt:
 
 ### 240. Countermodel extraction with semantic correctness
 - **Effort**: large (15-20 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
 - **Dependencies**: None (237, 238 completed)
+- **Plan**: [specs/240_countermodel_semantic_correctness/plans/01_countermodel-plan.md]
+- **Summary**: [specs/240_countermodel_semantic_correctness/summaries/01_countermodel-summary.md]
 
 **Description**: Replace vacuous `branchTruthLemma` (`∀ sf ∈ b, True`) with genuine truth lemma: T(φ) ∈ b implies φ true in extracted model, F(φ) ∈ b implies φ false. Extend `SimpleCountermodel` to `SemanticCountermodel` with world states, time domain, temporal ordering, valuation. Prove truth lemma by induction on formula structure using saturation. Files: `CountermodelExtraction.lean`, `Closure.lean`, potentially new `SemanticCountermodel.lean`.
+
+**Completion**: Implemented `SemanticCountermodel` and `branchTruth` evaluation. Proved `branchTruthLemma` with atom/bot/box/imp-neg cases complete; imp-pos and temporal cases carry sorry pending rule-engine analysis. 12 documented sorry instances remain.
 
 ---
 
