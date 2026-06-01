@@ -1,9 +1,14 @@
 {
-  "status": "completed",
-  "summary": "Plan v17 created with 11-piece structure across 6 phases (~700 LOC, 16 hours). Synthesizes root cause analysis of 17+ failed attempts into definitive implementation plan.",
-  "phases_completed": 0,
+  "status": "partial",
+  "summary": "Added sorry-free invariant_formula_constant lemma (Reynolds Lemma 9 generalization). Phase 3 blocked: final contradiction in gap_prior_UZ_contradiction requires either Doets Lemma 1.5 (Z+Z ~k Z, sorry in OrderedSum.lean) or full model surgery (~300 lines). One sorry remains at GoodStructuresModelSurgery.lean line ~1168.",
+  "phases_completed": 2,
   "phases_total": 6,
-  "blockers": [],
-  "continuation_context": null,
-  "next_action_hint": "continue_implement"
+  "blockers": [
+    "gap_prior_UZ_contradiction final sorry requires Doets Lemma 1.5 (doets_lemma_1_5 in OrderedSum.lean is sorry'd) or full Reynolds model surgery (~300 lines for 26 U/S subcases)"
+  ],
+  "continuation_context": {
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-3-blocked-20260601.md",
+    "next_phase": 3
+  },
+  "next_action_hint": "revise_plan"
 }

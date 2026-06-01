@@ -588,6 +588,684 @@
   ],
   "completed_projects": [
     {
+      "project_number": 220,
+      "project_name": "anchor_coverage_expansion",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Expand benchmark anchor coverage from 14/42 to 42/42 axiom constructors, with at least 3 instances each (target: 126+ anchor records vs current 78). Ensures all TM axiom patterns are explicitly evaluated in bmlogic-bench. Uses the benchmark_anchors executable in the Lean 4 project. Overall benchmark size may grow to 800-900 records. No regression in existing record labels. Requires regenerating benchmark metadata after expansion.",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-05-29T23:18:44Z",
+      "last_updated": "2026-05-30T17:00:00Z",
+      "session_id": "sess_1780115981_ccd968",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/220_anchor_coverage_expansion/reports/01_anchor-coverage-research.md",
+          "type": "research",
+          "summary": "Anchor coverage: all 42 constructors already generated but decideAuto fails on 34 temporal axioms, matchAxiom covers only 13/42, axiom_name stripped by finalize script"
+        },
+        {
+          "path": "specs/220_anchor_coverage_expansion/plans/01_anchor-coverage-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: extend matchAxiom to 42 patterns, bypass decideAuto for anchors, preserve axiom_name in finalize script, validate 126+ anchor records"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_anchor-coverage-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "completion_summary": "Extended matchAxiom to 42/42 axiom constructors (fixed 5 broken patterns, added 29 missing). Added direct axiom-based labeling in BenchmarkAnchors. Preserved axiom_name in finalize pipeline. Benchmark regenerated: 777 records (up from 727), 110 anchor records with 100% axiom match rate, 2 label corrections.",
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 218,
+      "project_name": "croissant_metadata_hf_leaderboard",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Finalize Croissant metadata (data/croissant.json skeleton exists) and update HuggingFace infrastructure. (a) Validate croissant.json against MLCommons 1.0 Python tooling, fix any schema issues, ensure all 4 JSONL distributions listed with correct field descriptions. (b) Update HF README task_categories to [\"text-generation\", \"other\"] with task_ids: [\"formal-provability-classification\"]. (c) Optional: Gradio Space for interactive formula classification demo and leaderboard submission endpoint. Acceptance: croissant.json valid per MLCommons tooling, field descriptions match actual schema, HF README updated.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-05-29T23:18:44Z",
+      "last_updated": "2026-05-30T18:00:00Z",
+      "session_id": "sess_1748618400_orch218",
+      "planned": "2026-05-30T12:00:00Z",
+      "completed": "2026-05-30T18:00:00Z",
+      "completion_summary": "Fixed all 7 schema issues in data/croissant.json (critical dct:conformsTo namespace fix, @context term mappings, nl_paraphrase benchmark fields, logos-labs/bmlogic-bench URLs, SHA-256 hashes, BMLogic-Bench name, CC BY 4.0 license). Updated data/hf-dataset/README.md with task_categories, task_ids, mlcroissant tag. Updated data/README.md with Croissant section. mlcroissant CLI validation deferred (NixOS libstdc++ issue).",
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "MLCommons Croissant 1.0 schema requires dct:conformsTo (Dublin Core Terms namespace) NOT cr:conformsTo. The @context must include explicit term mappings for Croissant-specific terms. mlcroissant v1.1.0 (pip install mlcroissant, requires Python >= 3.10) is the validation tool.",
+          "category": "PATTERN",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.92,
+          "suggested_keywords": [
+            "croissant",
+            "mlcommons",
+            "dct:conformsTo",
+            "json-ld",
+            "dataset-metadata",
+            "mlcroissant"
+          ]
+        },
+        {
+          "content": "HuggingFace task_categories: other is a valid official category. Custom task_ids accepted under other. Adding mlcroissant to tags enables the widget on the HF dataset page.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.88,
+          "suggested_keywords": [
+            "huggingface",
+            "task_categories",
+            "task_ids",
+            "dataset-card",
+            "mlcroissant-tag"
+          ]
+        },
+        {
+          "content": "HuggingFace custom leaderboard architecture: 4 components - public leaderboard Space, private evaluator Space, private submissions dataset, public results dataset. Template: gradio-templates/leaderboard.",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "huggingface",
+            "leaderboard",
+            "gradio-space",
+            "benchmark-evaluation"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "specs/218_croissant_metadata_hf_leaderboard/reports/01_croissant-hf-research.md",
+          "type": "research",
+          "summary": "Croissant metadata analysis: found critical conformsTo namespace bug, incomplete @context, 2 missing benchmark fields, URL mismatch, license mismatch; HF leaderboard architecture documented"
+        },
+        {
+          "path": "specs/218_croissant_metadata_hf_leaderboard/plans/01_croissant-hf-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: fix croissant.json schema issues, update HF README, validate with mlcroissant, optional Gradio Space. 3 hours core."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_croissant-hf-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-30"
+          }
+        ]
+      },
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 216,
+      "project_name": "nl_paraphrase_augmentation",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Add natural-language paraphrase field (nl_paraphrase) to all 727 bmlogic-bench records. Rule-based generation for formulas with modalDepth + temporalDepth <= 2 (~75% of benchmark); LLM-assisted with human verification for complex nesting (depth >= 3). Separate nl_paraphrase_method field records generation method. Backward-compatible: optional field. Acceptance: all 727 records have non-null nl_paraphrase, grammatically correct for depth <= 2, spot-checked for depth >= 3, generation code published.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-05-29T23:18:44Z",
+      "last_updated": "2026-05-29T00:00:00Z",
+      "session_id": "sess_1780107630_7h1k3",
+      "researched": "2026-05-30T02:16:00Z",
+      "completed": "2026-05-29T00:00:00Z",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/216_nl_paraphrase_augmentation/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/216_nl_paraphrase_augmentation/plans/01_nl-paraphrase-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan: 5 phases, 10 hours, hybrid rule-based + LLM approach"
+        },
+        {
+          "path": "specs/216_nl_paraphrase_augmentation/summaries/01_nl-paraphrase-summary.md",
+          "type": "summary",
+          "summary": "All 5 phases completed: 727/727 records augmented with nl_paraphrase and nl_paraphrase_method fields; 635 rule_based (depth<=2), 92 rule_based_complex (depth>=3); 46 tests pass; validate.py and validate_paraphrases.py both 100% pass"
+        }
+      ],
+      "planned": "2026-05-29T12:00:00Z",
+      "completion_summary": "Added nl_paraphrase and nl_paraphrase_method fields to all 727 bmlogic-bench records using a recursive Python AST-walker with 12+ derived-operator patterns. 635 records tagged rule_based (modalDepth+temporalDepth<=2), 92 tagged rule_based_complex (>=3). All 727 records pass automated quality validation; validate.py passes with 0 regressions.",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 10,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_team-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 215,
+      "project_name": "dataset_competitive_analysis",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Evaluate the novelty and value of BMLogic datasets (bmlogic-bench, bmlogic-c5, bmlogic-c7, proof_steps) by comparison with nearest competitors in formal logic / modal logic / theorem proving benchmarks (e.g., FOLIO, ProofWriter, LogicNLI, PrOntoQA, FLUTE, ReClor, AR-LSAT, NaturalProofs, LeanDojo, miniF2F, INT). Assess dimensions: domain coverage (bimodal/temporal/S5 vs propositional/FOL), task format (provability + countermodel vs entailment-only), proof trace availability, formula complexity distribution, dataset scale, schema richness (multi-representation fields). Identify gaps and potential enhancements: additional complexity tiers, harder benchmark slices, cross-logic transfer sets, natural-language paraphrase augmentation, difficulty calibration against LLM baselines, Croissant metadata, leaderboard scaffolding. Produce a competitive landscape report with a feature comparison matrix and a prioritized list of enhancement opportunities.",
+      "created": "2026-05-29T22:40:00Z",
+      "last_updated": "2026-05-29T23:59:00Z",
+      "completion_summary": "Produced publication-ready competitive landscape report (data/competitive-landscape.md) covering 12 benchmarks across 13 dimensions; implemented cross-logic transfer splits (R5) with generate_splits.py and bmlogic-bench-splits.json (727 records across 4 logic-fragment slices); created MLCommons Croissant 1.0 metadata skeleton (data/croissant.json) with 5 distributions and 3 record-set schemas; updated data/README.md with Competitive Position, Cross-Logic Splits, and Croissant Metadata sections.",
+      "session_id": "sess_1748549286_orchestrate215",
+      "researched": "2026-05-29T23:45:00Z",
+      "planned": "2026-05-29T23:55:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/215_dataset_competitive_analysis/reports/01_competitive-analysis.md",
+          "type": "research",
+          "summary": "Competitive landscape: BMLogic occupies unique niche (S5+LTL bimodal, dual certificates, 6 representations); LTLBench is closest competitor; top enhancements: NL paraphrase, c9 extension, Croissant metadata, LLM baselines"
+        },
+        {
+          "path": "specs/215_dataset_competitive_analysis/plans/01_competitive-analysis-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: competitive landscape report, cross-logic transfer splits, Croissant metadata skeleton, integration and documentation update (5 hours)"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_competitive-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 214,
+      "project_name": "dataset_cleanup_documentation",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Review, clean up, and document the data/ directory. Remove intermediate pipeline artifacts (axiom-instances.jsonl, bmlogic-bench-candidates.jsonl, bmlogic-bench-validated.jsonl) and test files (test.jsonl, test_c4.jsonl, test_metadata.json, test_c4_metadata.json). Keep final datasets: bmlogic-bench.jsonl (727 benchmark formulas), bmlogic-deep.jsonl (53,979 training records), bmlogic-medium.jsonl (5,136 training records), proof_steps.jsonl (2,424 proof step records). Standardize metadata JSON schemas across all kept datasets to match the richer bmlogic-bench_metadata.json format (add description, version, schema_version, quality fields). Create a comprehensive data/README.md documenting each dataset (purpose, schema, record counts, generation provenance, field descriptions). Update .gitignore to track final datasets while excluding intermediates. Verify all kept datasets have consistent field schemas.",
+      "last_updated": "2026-05-29T22:12:00Z",
+      "session_id": "sess_1780091752_7e511e",
+      "researched": "2026-05-29T21:33:04Z",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/214_dataset_cleanup_documentation/reports/02_task-213-impact.md",
+          "type": "research",
+          "summary": "Follow-up research: task 213 impact analysis on plan 214"
+        },
+        {
+          "path": "specs/214_dataset_cleanup_documentation/plans/02_dataset-cleanup-plan.md",
+          "type": "plan",
+          "summary": "Revised plan (v2) with 5 phases incorporating task 213 findings"
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "When a task generates new dataset files with a different naming convention (e.g., bmlogic-c5.jsonl instead of bmlogic-medium.jsonl), always check whether the new files have a richer schema (more fields) than the old files before deciding to delete the old ones.",
+          "category": "PATTERN",
+          "source_artifact": "specs/214_dataset_cleanup_documentation/reports/02_task-213-impact.md",
+          "confidence": 0.75,
+          "suggested_keywords": [
+            "dataset",
+            "schema",
+            "migration",
+            "field",
+            "supersede",
+            "cleanup"
+          ]
+        },
+        {
+          "content": "When a metadata file has a representations array listing dataset fields, verify whether those fields actually exist in the JSONL records.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/214_dataset_cleanup_documentation/reports/02_task-213-impact.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "metadata",
+            "representations",
+            "jsonl",
+            "schema",
+            "accuracy",
+            "bimodal"
+          ]
+        }
+      ],
+      "completion_summary": "Cleaned up data/ directory: updated 4 script defaults from medium/deep to c5/c7, deleted 11 superseded/intermediate/test files, installed Git LFS for large datasets, rewrote .gitignore, enriched c5/c7 metadata with common headers, created proof_steps_metadata.json, wrote comprehensive data/README.md, and validated all dataset schemas with zero errors.",
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 208,
+      "project_name": "huggingface_dataset_packaging",
+      "status": "completed",
+      "task_type": "general",
+      "created": "2026-05-29T18:30:31Z",
+      "last_updated": "2026-05-29T22:35:00Z",
+      "session_id": "sess_1780092959_fa939f",
+      "researched": "2026-05-29T23:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/208_huggingface_dataset_packaging/reports/01_huggingface-packaging.md",
+          "type": "research",
+          "summary": "HuggingFace dataset packaging research: 4-config structure (bmlogic-bench default, c5/c7 train, proof-steps), JSONL upload with auto-Parquet, CC BY 4.0 license, NeurIPS 2026 Croissant requirements, full dataset card template"
+        },
+        {
+          "path": "specs/208_huggingface_dataset_packaging/plans/01_huggingface-packaging-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: dataset card with YAML frontmatter, Python upload/validation scripts, integration testing and publishing guide"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_huggingface-packaging.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "completion_summary": "Created HuggingFace dataset packaging under hf-dataset/: dataset card README.md with YAML frontmatter for 4 configs (bmlogic-bench default/test, c5/c7 train, proof-steps train), CC BY 4.0 license, upload.py with --dry-run support, validate.py (all checks passing), requirements.txt, PUBLISHING.md guide, and symlinks to all 4 JSONL data files.",
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 183,
+      "project_name": "documentation_standards_readmes_comments",
+      "status": "completed",
+      "task_type": "lean4",
+      "dependencies": [
+        161
+      ],
+      "created": "2026-05-20T23:00:00Z",
+      "last_updated": "2026-05-30T01:09:04Z",
+      "topic": "formula-refactor",
+      "session_id": "sess_1780102093_19b470",
+      "researched": "2026-05-21T06:44:32Z",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "type": "research",
+          "summary": "Delta report identifying 12 new missing-README directories (all from task 174 file splits), Automation README now severely stale (describes 4 of 16 files), axiom count grown 40->55, and revised effort estimate of 16-20 hours vs original 10 hours."
+        },
+        {
+          "path": "specs/183_documentation_standards_readmes_comments/plans/02_documentation-standards.md",
+          "type": "plan",
+          "summary": "Revised implementation plan (v2) with 6 phases covering 20 missing READMEs, 9 stale README fixes, docstring quality pass, and cross-link navigation across 34 directories"
+        },
+        {
+          "path": "specs/183_documentation_standards_readmes_comments/summaries/02_documentation-standards-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 20 READMEs created, 9 stale READMEs fixed, 3 reference standards, 2 lint scripts"
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "Task 174 (file splitting) converted 12 large .lean files into subdirectories across Theories/Bimodal/: Automation/Tactics/, Automation/ProofSearch/, Metalogic/Core/RestrictedMCS/, Metalogic/SoundnessLemmas/, Metalogic/WeakCanonical/EFGames/, Metalogic/WeakCanonical/ExpressiveCompleteness/, Metalogic/WeakCanonical/Expressiveness/, Metalogic/WeakCanonical/IntegerModel/, Metalogic/WeakCanonical/Separation/DedekindZ/, Metalogic/WeakCanonical/Separation/Hierarchy/, Syntax/SubformulaClosure/, Theorems/Propositional/. None received READMEs during that task.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "task174",
+            "file-splitting",
+            "subdirectory-creation",
+            "readme-gaps",
+            "documentation-debt"
+          ]
+        },
+        {
+          "content": "Theories/Bimodal/Automation/ has a dual purpose that the directory README does not reflect: (1) proof automation tactics and (2) ML dataset generation pipeline. As of 2026-05-29 the directory has 16 top-level files + 2 subdirectories; the README still describes only the original 4 automation files.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/reports/02_plan-revision-delta.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "automation",
+            "dataset-generation",
+            "dual-purpose",
+            "readme-stale",
+            "ML-pipeline"
+          ]
+        },
+        {
+          "content": "The Bimodal ProofSystem Axiom inductive type has 42 constructors (not 15, 21, or 55). The 21 schemas figure refers to logical schema families. The file header documents 42 constructors in 8 layers.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/summaries/02_documentation-standards-summary.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "bimodal",
+            "axiom",
+            "constructor",
+            "count",
+            "ProofSystem",
+            "42",
+            "inductive"
+          ]
+        },
+        {
+          "content": "scripts/readme-lint.sh and scripts/readme-inventory.sh are available for README health checking. readme-lint.sh detects: missing READMEs, unlisted files, broken links, missing dates. Run after structural changes.",
+          "category": "TECHNIQUE",
+          "source_artifact": "specs/183_documentation_standards_readmes_comments/summaries/02_documentation-standards-summary.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "readme",
+            "lint",
+            "inventory",
+            "scripts",
+            "documentation",
+            "health-check"
+          ]
+        }
+      ],
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 18,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_documentation-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-21"
+          },
+          {
+            "path": "reports/02_plan-revision-delta.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "completion_summary": "Established comprehensive documentation standards (3 reference docs, 2 lint scripts) for the Theories/Bimodal/ tree; created 20 missing READMEs, rewrote 9 stale READMEs with accurate file inventories and corrected axiom counts (42 constructors, not 15/21/55), and fixed all broken file references in Lean-containing directories.",
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 222,
+      "project_name": "consolidate_data_hf_dataset_directory",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Consolidate data/ and hf-dataset/ into a unified data/ directory with appropriate subdirectories. Add README.md files following repository standards. Move extended documentation to docs/. Currently both directories exist at root with overlapping concerns — merge into one coherent structure.",
+      "created": "2026-05-29T23:21:43Z",
+      "last_updated": "2026-05-29T00:00:00Z",
+      "session_id": "sess_1780104999_a6a610",
+      "researched": "2026-05-29T00:00:00Z",
+      "planned": "2026-05-29T00:00:00Z",
+      "completed": "2026-05-29T00:00:00Z",
+      "completion_summary": "Moved hf-dataset/ to data/hf-dataset/ (git mv, history preserved), recreated 4 symlinks with corrected relative paths, moved competitive-landscape.md to docs/research/, replaced data/README.md with lightweight directory README, preserved HF dataset card as data/dataset-card.md. Lake build passes.",
+      "next_artifact_number": 4,
+      "artifacts": [
+        {
+          "path": "specs/222_consolidate_data_hf_dataset_directory/reports/01_consolidate-dirs-research.md",
+          "type": "research",
+          "summary": "No data duplication between data/ and hf-dataset/: hf-dataset/data/ is 100% symlinks. hf-dataset/ is publishing tooling (upload.py, validate.py, PUBLISHING.md). Recommended: move hf-dataset/ to data/hf-dataset/, move competitive-landscape.md to docs/research/, write new lightweight data/README.md. 10-step implementation sequence with risk assessment."
+        },
+        {
+          "path": "specs/222_consolidate_data_hf_dataset_directory/plans/02_consolidate-dirs-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: move hf-dataset/ to data/hf-dataset/ with symlink/path fixes, relocate competitive-landscape.md to docs/research/, write lightweight data/README.md, cross-reference validation. 2 hours estimated."
+        },
+        {
+          "path": "specs/222_consolidate_data_hf_dataset_directory/summaries/03_consolidate-dirs-summary.md",
+          "type": "summary",
+          "summary": "4 phases completed: hf-dataset/ moved to data/hf-dataset/, 4 symlinks recreated with corrected paths, competitive-landscape.md moved to docs/research/, new lightweight data/README.md written, HF dataset card preserved as data/dataset-card.md. Lake build passes with 1678 jobs."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_consolidate-dirs-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 223,
+      "project_name": "rename_docs_lowercase_kebab_case",
+      "status": "completed",
+      "task_type": "general",
+      "created": "2026-05-30T01:11:26Z",
+      "last_updated": "2026-05-29T12:00:00Z",
+      "session_id": "sess_1780103577_e17d19",
+      "researched": "2026-05-30T01:30:00Z",
+      "planned": "2026-05-29T12:00:00Z",
+      "next_artifact_number": 4,
+      "artifacts": [
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/reports/01_rename-docs-research.md",
+          "type": "research",
+          "summary": "Complete inventory of 15 non-compliant SCREAMING_SNAKE_CASE files in Theories/Bimodal/docs/ with all references located per file; IMPLEMENTATION_STATUS.md has 124 refs (highest); total ~355 references to update; pre-existing lint baseline is 16 broken links"
+        },
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/plans/02_rename-docs-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: rename 15 files, update ~355 references across .md/.lean/.claude, add naming convention to readme-standard.md, verify with readme-lint.sh"
+        },
+        {
+          "path": "specs/223_rename_docs_lowercase_kebab_case/summaries/03_rename-docs-summary.md",
+          "type": "summary",
+          "summary": "Renamed 15 SCREAMING_SNAKE_CASE files to kebab-case, updated ~281 references across .md and .lean files, added File Naming Convention section to readme-standard.md; lint baseline unchanged at 16; lake build passes (1678 jobs)"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_rename-docs-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-29"
+          }
+        ]
+      },
+      "completion_summary": "Renamed all 15 SCREAMING_SNAKE_CASE documentation files in Theories/Bimodal/docs/ to lowercase kebab-case using git mv, updated all references across 59 files including 14 .lean files with double-broken directory paths, added File Naming Convention section to readme-standard.md, and verified zero regressions: lint baseline unchanged at 16, lake build passes (1678 jobs).",
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
+      "project_number": 225,
+      "project_name": "archive_bx_pipeline_boneyard",
+      "status": "completed",
+      "completion_summary": "Archived BX pipeline dead code: added DEPRECATED annotations to 5 definitions across 3 files, moved 2 pure-dead files (ChronicleNoGaps.lean, HenkinDiscreteChain.lean) to Boneyard/BXPipelineGapAnalysis/, removed ChronicleNoGaps import from WeakCanonical.lean, updated Boneyard README. lake build passes.",
+      "task_type": "lean4",
+      "description": "Label or archive to Boneyard/ the BX pipeline code (no_gaps_faithful, chronicle_gap_contradiction via succ_cofinal) which is mathematically false and continues to distract the implementation agent. The correct path is the Reynolds pipeline: prove no_gaps_discrete and rewire completeness_discrete. Mark BX pipeline sorry stubs as deprecated or move to Boneyard/ so agents stop attempting that path.",
+      "created": "2026-05-30T06:33:07Z",
+      "last_updated": "2026-05-30T07:00:00Z",
+      "session_id": "sess_1748617200_orch225",
+      "researched": "2026-05-30T06:45:00Z",
+      "planned": "2026-05-30T07:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/225_archive_bx_pipeline_boneyard/reports/01_bx-pipeline-archival.md",
+          "type": "research",
+          "summary": "Complete inventory of BX pipeline (dead) vs Reynolds pipeline (active); dead code interleaved with live code prevents wholesale file moves; recommended strategy is deprecation annotations + targeted moves of 2 pure-dead files"
+        },
+        {
+          "path": "specs/225_archive_bx_pipeline_boneyard/plans/01_bx-pipeline-archival.md",
+          "type": "plan",
+          "summary": "3-phase plan: deprecation annotations on interleaved dead code, move 2 pure-dead files to Boneyard/BXPipelineGapAnalysis/, build verification. 1.5 hours."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 1.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_bx-pipeline-archival.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-30"
+          }
+        ]
+      },
+      "archived": "2026-06-01T15:30:12Z"
+    },
+    {
       "project_number": 226,
       "project_name": "build_standalone_z3_countermodel_generator",
       "status": "abandoned",
