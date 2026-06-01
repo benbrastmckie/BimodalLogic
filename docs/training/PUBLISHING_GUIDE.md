@@ -61,6 +61,13 @@ huggingface-cli download logos-labs/bmlogic-bench \
     --local-dir data/
 ```
 
+> **NixOS**: `huggingface-cli` is provided by the `python3Packages.huggingface-hub`
+> Nix package — there is no standalone top-level Nix package for it. Use:
+> ```bash
+> nix-shell -p python3Packages.huggingface-hub
+> huggingface-cli download logos-labs/bmlogic-bench --repo-type dataset --local-dir data/
+> ```
+
 ### Downstream Consumer Setup
 
 If your pipeline previously used `git lfs pull` for these files:
@@ -92,6 +99,37 @@ pip install -r requirements.txt
 Installs: `datasets>=2.19.0`, `huggingface_hub>=0.23.0`, `pyarrow>=14.0.0`,
 `pyyaml>=6.0`.
 
+#### NixOS Users
+
+On NixOS the Nix store is read-only, so bare `pip install` will fail. Use one of
+the following approaches instead:
+
+**Ephemeral (nix-shell)** — no system changes required:
+
+```bash
+nix-shell -p python3Packages.datasets python3Packages.huggingface-hub \
+              python3Packages.pyarrow python3Packages.pyyaml
+# Then run the publish steps inside the shell (Steps 2-5 below).
+```
+
+**Persistent (home-manager)** — add to `home.packages` in `home.nix`:
+
+```nix
+python3Packages.datasets
+python3Packages.huggingface-hub
+python3Packages.pyarrow
+python3Packages.pyyaml
+```
+
+**Virtual environment fallback** — useful when the nixpkgs version of a package
+is older than required:
+
+```bash
+nix-shell -p python3
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
 ### Step 2 — Validate Packaging
 
 ```bash
@@ -111,6 +149,10 @@ Loads all four configs locally and prints record counts and schemas without push
 anything. Verify counts match the table in [Overview](#overview).
 
 ### Step 4 — Upload
+
+> **NixOS note**: Use the `HF_TOKEN` environment variable (shown below) rather than
+> `huggingface-cli login` to avoid keyring dependency issues common on minimal NixOS
+> installs.
 
 ```bash
 # Using an environment variable (recommended):
@@ -257,6 +299,29 @@ python upload.py --token YOUR_HF_TOKEN --max-shard-size 25MB
 
 If the datasets library prints warnings about complex nested fields, these are
 informational only. The data is still uploaded correctly.
+
+### pip install fails on NixOS
+
+On NixOS the system Python environment is read-only. A bare `pip install` will
+fail with a permission error or "externally managed environment" message.
+
+Use `nix-shell` to get all required packages without modifying your system:
+
+```bash
+nix-shell -p python3Packages.datasets python3Packages.huggingface-hub \
+              python3Packages.pyarrow python3Packages.pyyaml
+```
+
+Or create a virtual environment inside a `nix-shell`:
+
+```bash
+nix-shell -p python3
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+See [Step 1 — Install Dependencies](#step-1--install-dependencies) for the full
+NixOS setup options.
 
 ---
 

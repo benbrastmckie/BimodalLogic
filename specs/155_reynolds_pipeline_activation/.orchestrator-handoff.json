@@ -1,9 +1,11 @@
 {
-  "status": "planned",
-  "summary": "3-phase plan created. Phase 1 (4h): rewrite chronicle_gap_contradiction to construct OrderedMonadicStructure on LimitDomSubtype, prove semantic_prior_UZ/SZ, apply no_gaps_discrete_model_surgery (sorry-free), derive IsSuccArchimedean contradiction. Phase 2 (30m): verify completeness_discrete is sorry-free via #print axioms. Phase 3 (1.5h): full lake build, update docstrings and sorry-status comments.",
-  "blockers": [],
-  "continuation_context": null,
-  "next_action_hint": "implement",
+  "status": "partial",
+  "summary": "Phase 1 BLOCKED: The plan's core step (derive IsSuccArchimedean from one_class) is mathematically incorrect. The Z+Z counterexample shows one_class does not imply IsSuccArchimedean. Reynolds 1994 does NOT prove IsSuccArchimedean; instead uses k-equivalence transfer (a fundamentally different approach). Three alternative paths exist: (A) fix Reynolds pipeline sorry at Transfer.lean:1289, (B) prove IsSuccArchimedean from chronicle construction properties directly, (C) prove omega-equivalence implies isomorphism for countable structures. No code was changed.",
+  "blockers": [
+    "Plan step 'one_class -> IsSuccArchimedean' is mathematically unsound (Z+Z counterexample). Needs plan revision with a correct mathematical approach."
+  ],
+  "continuation_context": "The plan needs revision via /revise 155. The mathematical analysis in the plan file's Phase 1 BLOCKER section documents three alternative approaches (A, B, C). Approach A (fix Reynolds pipeline) is likely most tractable. Approach B requires understanding the chronicle construction deeply. Approach C requires back-and-forth model theory.",
+  "next_action_hint": "revise",
   "phases_completed": 0,
   "phases_total": 3,
   "artifacts": [

@@ -1,7 +1,7 @@
 # Implementation Plan: Update PUBLISHING_GUIDE.md for NixOS Users
 
 - **Task**: 259 - Update PUBLISHING_GUIDE.md to include details for NixOS users
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md
@@ -56,15 +56,15 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add NixOS content to PUBLISHING_GUIDE.md [NOT STARTED]
+### Phase 1: Add NixOS content to PUBLISHING_GUIDE.md [COMPLETED]
 
 **Goal**: Insert NixOS-specific instructions at all four identified locations in `docs/training/PUBLISHING_GUIDE.md`.
 
 **Tasks**:
-- [ ] Insert "NixOS Users" subsection under "Step 1 -- Install Dependencies" (after the existing `pip install` block at line 90), covering ephemeral nix-shell, persistent home-manager, and venv fallback
-- [ ] Insert NixOS note under "CLI Download" in Quick Start (after the `pip install huggingface_hub` line at line 56), noting `nix-shell -p python3Packages.huggingface-hub` provides `huggingface-cli`
-- [ ] Insert NixOS token note under "Step 4 -- Upload" (near line 116), recommending `HF_TOKEN` env-var to avoid keyring issues
-- [ ] Add "pip install fails on NixOS" entry to the Troubleshooting section (after line 259), with nix-shell and venv solutions
+- [x] Insert "NixOS Users" subsection under "Step 1 -- Install Dependencies" (after the existing `pip install` block at line 90), covering ephemeral nix-shell, persistent home-manager, and venv fallback
+- [x] Insert NixOS note under "CLI Download" in Quick Start (after the `pip install huggingface_hub` line at line 56), noting `nix-shell -p python3Packages.huggingface-hub` provides `huggingface-cli`
+- [x] Insert NixOS token note under "Step 4 -- Upload" (near line 116), recommending `HF_TOKEN` env-var to avoid keyring issues
+- [x] Add "pip install fails on NixOS" entry to the Troubleshooting section (after line 259), with nix-shell and venv solutions
 
 **Timing**: 30 minutes
 
@@ -81,10 +81,10 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Verify all four insertion points contain NixOS content
-- [ ] Verify existing guide content is not altered
-- [ ] Verify nix-shell package names match nixpkgs conventions
-- [ ] Verify Markdown formatting renders correctly (code blocks, blockquotes, headings)
+- [x] Verify all four insertion points contain NixOS content
+- [x] Verify existing guide content is not altered
+- [x] Verify nix-shell package names match nixpkgs conventions
+- [x] Verify Markdown formatting renders correctly (code blocks, blockquotes, headings)
 
 ## Artifacts & Outputs
 

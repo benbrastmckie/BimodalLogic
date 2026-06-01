@@ -8,10 +8,10 @@
     {
       "project_number": 259,
       "project_name": "publishing_guide_nixos_details",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "created": "2026-06-01T23:19:59Z",
-      "last_updated": "2026-06-01T23:26:39Z",
+      "last_updated": "2026-06-01T23:33:39Z",
       "session_id": "sess_1748819400_e5f7g9",
       "next_artifact_number": 2,
       "artifacts": [
@@ -24,8 +24,14 @@
           "path": "specs/259_publishing_guide_nixos_details/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "1-phase plan: add NixOS instructions at 4 locations in PUBLISHING_GUIDE.md"
+        },
+        {
+          "path": "specs/259_publishing_guide_nixos_details/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 1/1 phases completed, 66 lines of NixOS content added"
         }
-      ]
+      ],
+      "completion_summary": "Updated docs/training/PUBLISHING_GUIDE.md with NixOS-specific instructions at 4 locations: CLI download note, dependency install subsection (nix-shell/home-manager/venv), token management warning, and troubleshooting entry."
     },
     {
       "project_number": 258,

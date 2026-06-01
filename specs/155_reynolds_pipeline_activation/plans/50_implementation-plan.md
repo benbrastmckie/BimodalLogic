@@ -64,9 +64,19 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add Import and Construct OrderedMonadicStructure Adapter [NOT STARTED]
+### Phase 1: Add Import and Construct OrderedMonadicStructure Adapter [BLOCKED]
 
 **Goal**: Add the GoodStructuresModelSurgery import to ChronicleToCountermodel.lean and rewrite `chronicle_gap_contradiction` to construct an `OrderedMonadicStructure` on `LimitDomSubtype`, prove `semantic_prior_UZ/SZ`, apply `no_gaps_discrete_model_surgery`, and derive `IsSuccArchimedean` contradiction.
+
+**BLOCKER** (Phase 1):
+- **What failed**: The plan's core step "from one_class, derive IsSuccArchimedean" (task 1.8) is mathematically incorrect. `contemp_equiv` one_class does NOT imply `IsSuccArchimedean`.
+- **What was tried**: Extensive analysis of (1) the `one_class` theorem (GoodStructures.lean:896), (2) `one_class_implies_succ_archimedean` (ReynoldsNoGaps.lean:321, which delegates to `prior_implies_succ_archimedean` which has sorry via `no_gaps_prior`), (3) the Z+Z counterexample documented at ReynoldsNoGaps.lean:254-275, (4) Reynolds 1994 paper (Theorems 14-15), (5) k-equivalence properties for finite k.
+- **Why it's stuck**: The Z+Z order (two copies of Z concatenated) with constant MCS assignment satisfies ALL hypotheses: SuccOrder, PredOrder, NoMaxOrder, NoMinOrder, semantic_prior_UZ, semantic_prior_SZ, h_surj, AND one_class (all elements contemp_equiv because temporal_truth is constant). But Z+Z is NOT IsSuccArchimedean. The existing `one_class_implies_succ_archimedean` (ReynoldsNoGaps.lean:321) has sorry via `no_gaps_prior` (known FALSE). Reynolds 1994 does NOT prove IsSuccArchimedean; instead uses k-equivalence transfer for completeness (a fundamentally different approach from the BX pipeline which requires IsSuccArchimedean for `succ_embed_surjective`).
+- **What is needed**: One of three alternative approaches:
+  (A) Fix the Reynolds pipeline (Transfer.lean:1289 sorry) to bypass BX pipeline entirely.
+  (B) Prove IsSuccArchimedean from chronicle construction properties directly (not from one_class).
+  (C) Prove one_class at ALL k simultaneously implies IsSuccArchimedean for countable structures via back-and-forth (omega-equivalence implies isomorphism).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 - [ ] Add `import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery` to ChronicleToCountermodel.lean
