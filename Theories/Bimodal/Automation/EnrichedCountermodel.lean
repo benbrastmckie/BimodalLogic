@@ -180,6 +180,8 @@ Example output:
 def _root_.Bimodal.Metalogic.Decidability.SignedFormula.toJson (sf : SignedFormula) : String :=
   "{\"sign\": " ++ Sign.toJsonStr sf.sign
   ++ ", \"formula\": " ++ sf.formula.toJson
+  ++ ", \"label\": {\"world\": " ++ toString sf.label.world
+  ++ ", \"time\": " ++ toString sf.label.time ++ "}"
   ++ "}"
 
 /--

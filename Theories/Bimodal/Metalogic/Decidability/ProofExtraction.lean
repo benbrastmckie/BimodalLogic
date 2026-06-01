@@ -70,18 +70,18 @@ the original goal. The full tableau-to-proof extraction combines these.
 -/
 def extractFromClosureReason (reason : ClosureReason) : Option (Σ φ : Formula, ⊢ φ) :=
   match reason with
-  | .axiomNeg φ ax =>
+  | .axiomNeg φ ax _ =>
       -- The axiom itself is provable (only if base-compatible)
       if h_fc : ax.minFrameClass ≤ FrameClass.Base then
         some ⟨φ, proofFromAxiom φ ax h_fc⟩
       else
         none
-  | .contradiction _ =>
+  | .contradiction _ _ =>
       -- Contradiction means the branch is unsatisfiable
       -- The proof would need to trace back the specific contradiction
       -- For now, we don't extract a specific proof
       none
-  | .botPos =>
+  | .botPos _ =>
       -- T(⊥) is impossible, but doesn't give us a direct proof
       none
 
@@ -147,7 +147,7 @@ def extractProof (φ : Formula) (tableau : ExpandedTableau) : ProofExtractionRes
           -- Check if any closed branch gives us a direct proof
           let axiomProofs := closedBranches.filterMap fun cb =>
             match cb.reason with
-            | .axiomNeg ψ ax =>
+            | .axiomNeg ψ ax _ =>
                 if h : φ = ψ then
                   if h_fc : ax.minFrameClass ≤ FrameClass.Base then
                     some (h ▸ DerivationTree.axiom [] ψ ax h_fc)

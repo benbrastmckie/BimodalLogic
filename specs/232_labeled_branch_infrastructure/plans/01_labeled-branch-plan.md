@@ -233,7 +233,7 @@ Phases are fully sequential following the import DAG.
 
 ---
 
-### Phase 5: Downstream Files and Full Build [NOT STARTED]
+### Phase 5: Downstream Files and Full Build [COMPLETED]
 
 **Goal**: Update all remaining downstream files to compile with the new types. Run full `lake build` to verify the entire project remains sorry-free.
 

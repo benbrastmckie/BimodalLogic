@@ -135,7 +135,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
           -- Check if any closed branch gives us a direct proof
           let axiomProofs := closedBranches.filterMap fun cb =>
             match cb.reason with
-            | .axiomNeg ψ ax =>
+            | .axiomNeg ψ ax _ =>
                 if h : φ = ψ then
                   if h_fc : ax.minFrameClass ≤ FrameClass.Base then
                     some (h ▸ DerivationTree.axiom [] ψ ax h_fc)
