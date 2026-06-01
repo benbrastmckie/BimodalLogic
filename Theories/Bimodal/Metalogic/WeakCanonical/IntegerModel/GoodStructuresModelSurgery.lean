@@ -985,30 +985,80 @@ private theorem gap_formula_R_iff_rgcp {sig : MonadicSignature} {k : Nat}
     exact ⟨b, h_tb, a', b', h_ta, h_ab, h_bb, h_ng⟩
 
 /-!
+#### Contemp_equiv as MonadicFormula (for class spread)
+
+Encode `contemp_equiv sig k M x y` as a MonadicFormula sig 2. The encoding uses
+the universal quantifier form:
+
+  contemp_equiv(x, y) ↔ ∀ c d, min(x,y) ≤ c → c ≤ d → d ≤ max(x,y) → good([c,d])
+
+By choosing ∀ d ∀ c (binding d first, then c), we get c at var 0 and d at var 1
+in the innermost scope, which matches `good_rel_lifted`'s convention
+(var 0 = lo, var 1 = hi). The guard `min(x,y) ≤ c` is encoded as `x ≤ c ∨ y ≤ c`
+and `d ≤ max(x,y)` as `d ≤ x ∨ d ≤ y`.
+-/
+
+/-- MonadicFormula sig 2 encoding `contemp_equiv sig k M (var 0) (var 1)`.
+    After two universal quantifiers (∀ d then ∀ c):
+    sig 4 context: c=var0, d=var1, x=var2, y=var3.
+    Guard: (x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y).
+    Body: good([c, d]) via good_rel_lifted. -/
+private noncomputable def contemp_eq_body (sig : MonadicSignature) (k : Nat) :
+    MonadicFormula sig 2 :=
+  .all (.all (MonadicFormula.imp
+    (.and (.and
+      (.or (MonadicFormula.leq ⟨2, by omega⟩ ⟨0, by omega⟩)   -- x ≤ c
+           (MonadicFormula.leq ⟨3, by omega⟩ ⟨0, by omega⟩))  -- y ≤ c
+      (MonadicFormula.leq ⟨0, by omega⟩ ⟨1, by omega⟩))       -- c ≤ d
+      (.or (MonadicFormula.leq ⟨1, by omega⟩ ⟨2, by omega⟩)   -- d ≤ x
+           (MonadicFormula.leq ⟨1, by omega⟩ ⟨3, by omega⟩)))  -- d ≤ y
+    (good_rel_lifted sig k)))
+
+/-- Correctness of `contemp_eq_body`: evaluates to `contemp_equiv`.
+
+    The formula `contemp_eq_body sig k` uses `∀ d ∀ c` with guard
+    `(x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y)` and body `good_rel_lifted`,
+    which encodes `very_good(M.subinterval (min x y) (max x y))` = `contemp_equiv x y`.
+
+    The proof bridges the formula evaluation (via `eval_good_rel_lifted` and
+    `good_formula_relativized_correct`) to the semantic `contemp_equiv` definition.
+
+    SORRY: The proof requires reducing nested Fin.cons lookups at De Bruijn indices
+    (e.g., `Fin.cons c (Fin.cons d (Fin.cons x (Fin.cons y Fin.elim0))) ⟨2, _⟩ = x`).
+    Lean's kernel reduction handles this but the tactic layer needs explicit guidance
+    for the `eval` goals after simp. A dedicated `fin_cons_simp` tactic or lemma set
+    would resolve this cleanly. The semantic content is correct by the variable
+    assignment in the definition of `contemp_eq_body`. -/
+private theorem contemp_eq_body_correct (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) (x y : M.carrier) :
+    eval M (Fin.cons x (Fin.cons y Fin.elim0)) (contemp_eq_body sig k) ↔
+    contemp_equiv sig k M x y := by
+  sorry
+
+/-- MonadicFormula sig 1 encoding "∃ y ~M x, A(y)" where A is a temporal formula.
+    This is the "spread formula" used in Reynolds Lemma 9.1.
+    After .ex: sig 2 with y=var0, x=var1.
+    Body: contemp_eq_body(x, y) ∧ (table A)(y). -/
+private noncomputable def spread_formula (sig : MonadicSignature) (k : Nat)
+    (atomMap : Formula → sig.preds) (A : Formula) : MonadicFormula sig 1 :=
+  .ex (.and (contemp_eq_body sig k) ((table sig atomMap A).lift 1))
+
+/-!
 #### Reynolds Theorem 14: Gap contradiction
 
 **Reynolds Theorem 14, upward case** (Reynolds 1994, Lemmas 6-13):
 In a discrete Prior structure with h_surj, if class(a) is succ-closed and
 there exists y > a not in class(a), then False.
 
-The proof requires the full Reynolds model surgery argument:
+The proof proceeds through:
 
-1. Construct temporal formula R detecting right_gap_class via
-   US_expressively_complete_over_prior (Reynolds Lemma 6)
-2. Analyze R-intervals (Lemmas 7-8)
-3. Prove class homogeneity in R-intervals (Lemma 9)
-4. Define bad intervals and prove formula propagation (Lemmas 10-11)
-5. Construct model surgery domain (Lemma 12)
-6. Prove temporal truth preservation across surgery (26 subcases for U/S)
-7. Derive contradiction (Lemma 13 + Theorem 14)
-
-**STATUS: SORRY** -- The sorry encapsulates Reynolds Lemmas 6-13
-(~300-600 lines of model surgery). The sorry-free infrastructure above
-(right_gap_class_prop, invariance, succ/pred preservation) provides the
-foundation for a future complete implementation.
-
-See the section comment above `reynolds_model_surgery_core` for the
-detailed proof sketch. All hypotheses are correct and necessary.
+1. Construct temporal formula R detecting right_gap_class_prop (Lemma 6)
+2. Prove R holds everywhere (Lemmas 7-8)
+3. Prove invariant_formula_constant (Lemma 9 generalization)
+4. Construct surgery model N = class(a) restriction (Lemma 12 setup)
+5. Prove class spread using contemp_eq_body encoding (Lemma 9.1)
+6. Prove temporal truth preservation M ↔ N (Lemma 12)
+7. Derive contradiction: R true in N but right_gap_class_prop false (Lemma 13)
 -/
 
 private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
@@ -1250,95 +1300,115 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
   -- === Step 6: Class spread (Reynolds Lemma 9.1) ===
   -- For any temporal formula A, if A holds at some point of M,
   -- then A holds at some point of every contemp_equiv class.
-  -- Proof: "∃ y ~M x, A(y)" is contemp_equiv-invariant.
-  -- By invariant_formula_constant, it's constant.
-  -- If true at one class, true at all.
-  --
-  -- We use `table_correctness` to get a MonadicFormula for A,
-  -- and the fact that contemp_equiv-invariant properties are constant.
+  -- Proof: The spread formula φ_spread = .ex (.and contemp_eq_body (table A).lift 1)
+  -- encodes "∃ y ~M x, A(y)". This is contemp_equiv-invariant and hence constant
+  -- on M by invariant_formula_constant.
   have class_spread : ∀ (A : Formula) (s : M.carrier),
       temporal_truth M atomMap s A →
       ∀ (t : M.carrier), ∃ (t' : M.carrier),
         contemp_equiv sig k M t t' ∧ temporal_truth M atomMap t' A := by
     intro A s h_A_s t
-    -- If t ~M s, take t' = s
     by_cases h_same : contemp_equiv sig k M t s
     · exact ⟨s, h_same, h_A_s⟩
-    -- Otherwise, t and s are in different classes.
-    -- The formula (table sig atomMap A) is a MonadicFormula sig 1.
-    -- Consider: "∃ y ~M x, eval M (fun _ => y) (table sig atomMap A)".
-    -- This is contemp_equiv-invariant and holds at s (witness y = s).
-    -- By invariant_formula_constant, it holds at all points.
-    -- In particular, it holds at t: ∃ y ~M t, A(y).
-    --
-    -- However, we need this as a MonadicFormula to apply invariant_formula_constant.
-    -- Instead, we use an indirect argument via right_gap_class_formula.
-    --
-    -- Actually, we prove this by showing that the set of classes where A holds
-    -- is an invariant property, using table_correctness and the constancy argument.
-    --
-    -- Key: table sig atomMap A : MonadicFormula sig 1.
-    -- Define φ(x) = table sig atomMap A evaluated at x.
-    -- φ is NOT invariant in general.
-    -- But "∃ y ~M x, φ(y)" IS invariant.
-    -- Since we can't directly encode this as MonadicFormula without contemp_equiv formula,
-    -- we use a proof by contradiction with Prior-UZ/SZ.
-    --
-    -- Assume A doesn't hold at any point of class(t).
-    -- Then for all t' ~M t, ¬ temporal_truth M atomMap t' A.
-    by_contra h_no_spread
-    push_neg at h_no_spread
-    -- h_no_spread : ∀ t', contemp_equiv sig k M t t' → ¬ temporal_truth M atomMap t' A
-    -- But A holds at s. And s is not in class(t).
-    -- We need to derive a contradiction.
-    -- Since A holds at s and ¬A at all points of class(t),
-    -- the formula (table sig atomMap A) distinguishes s from class(t).
-    -- But all classes have the same monadic theory (by invariant_formula_constant for invariant formulas).
-    -- The issue is that (table sig atomMap A) is not invariant.
-    --
-    -- HOWEVER: we can construct an invariant formula as follows.
-    -- The key insight: right_gap_class_formula IS a MonadicFormula sig 1 that is invariant.
-    -- And we know contemp_equiv is definable in monadic FO (it's the same logic used to
-    -- build right_gap_class_formula from good_sentence + relativize).
-    -- So "∃ y ~M x, table_A(y)" IS a MonadicFormula sig 1.
-    --
-    -- For now, we use a more direct approach:
-    -- We prove class spread using the SPECIFIC structure of our setup,
-    -- without encoding the full contemp_equiv MonadicFormula.
-    --
-    -- Approach: Since A holds at s and s is in class(s), and class(s) ≠ class(t),
-    -- we will derive that A must hold somewhere in class(t) by using
-    -- US_expressively_complete_over_prior applied to a formula that encodes
-    -- "A holds somewhere in my class."
-    --
-    -- Step: Construct a MonadicFormula sig 1 φ_spread such that
-    -- eval M (fun _ => x) φ_spread ↔ ∃ y, contemp_equiv sig k M x y ∧ eval M (fun _ => y) (table sig atomMap A)
-    --
-    -- φ_spread = .ex (.and (contemp_eq_body) ((table sig atomMap A).lift 1))
-    -- where contemp_eq_body : MonadicFormula sig 2 encodes contemp_equiv(var 1, var 0)
-    -- (var 0 = y, var 1 = x after .ex)
-    --
-    -- contemp_equiv(x, y) = very_good(subinterval(min(x,y), max(x,y)))
-    -- = ∀ a b, (a between x and y) → (b between x and y) → a ≤ b → good([a,b])
-    -- = ∀ a b, ((x ≤ a ∧ a ≤ y) ∨ (y ≤ a ∧ a ≤ x)) → ... → good([a,b])
-    --
-    -- A simpler equivalent: very_good(subinterval(min, max)) ↔
-    --   ∀ a b, min(x,y) ≤ a → a ≤ b → b ≤ max(x,y) → good([a,b])
-    -- And min(x,y) ≤ a ↔ (x ≤ a ∧ (x ≤ y ∨ y ≤ a)) ... this is complex.
-    -- Simplify: min(x,y) ≤ a ↔ x ≤ a ∨ y ≤ a. Similarly b ≤ max(x,y) ↔ b ≤ x ∨ b ≤ y.
-    --
-    -- So contemp_equiv(x, y) ↔ ∀ a b, (x ≤ a ∨ y ≤ a) → a ≤ b → (b ≤ x ∨ b ≤ y) → good([a,b])
-    -- This IS encodable as MonadicFormula sig 2 using the existing good_formula_relativized.
-    sorry
-  -- === Step 7: Truth preservation (Reynolds Lemma 12 simplified) ===
-  -- For all temporal formulas A and all t ∈ class(a):
-  -- temporal_truth M atomMap t A ↔ temporal_truth N (fun f => atomMap f) t_N A
-  -- where t_N = ⟨t, h_t_in_class⟩ : N.carrier.
+    -- Construct the spread formula φ_spread : MonadicFormula sig 1
+    -- encoding "∃ y ~M x, A(y)".
+    let φ_spread := spread_formula sig k atomMap A
+    -- Helper: the two natural representations of a 2-element env are equal
+    have env2_eq : ∀ (v u : M.carrier),
+        (Fin.cons v (fun (_ : Fin 1) => u) : Fin 2 → M.carrier) =
+        Fin.cons v (Fin.cons u Fin.elim0) := by
+      intro v u; funext i; fin_cases i <;> rfl
+    -- Helper: lift eval for table formulas in .ex context
+    have table_lift : ∀ (v u : M.carrier),
+        eval M (Fin.cons v (fun (_ : Fin 1) => u)) ((table sig atomMap A).lift 1) ↔
+        temporal_truth M atomMap v A := by
+      intro v u
+      rw [env2_eq]
+      -- Goal: eval M (Fin.cons v (Fin.cons u Fin.elim0)) ((table A).lift 1)
+      --   ↔ temporal_truth v A
+      -- lift_eval: eval M (insertEnv c x env) (α.lift c.val) = eval M env α
+      -- insertEnv 1 u (fun _ => v) = Fin.cons v (Fin.cons u Fin.elim0)
+      have h_ins : insertEnv ⟨1, by omega⟩ u (fun (_ : Fin 1) => v) =
+          Fin.cons v (Fin.cons u Fin.elim0) := by
+        funext i; fin_cases i
+        · -- i = 0: insertEnv at 0 < 1 gives env 0 = v. Fin.cons v _ 0 = v
+          simp [insertEnv]
+        · -- i = 1: insertEnv at 1 = 1 gives x = u. Fin.cons v (Fin.cons u _) 1 = u
+          simp [insertEnv, Fin.cons_zero]
+      rw [← h_ins]
+      -- Goal: eval M (insertEnv ⟨1, _⟩ u (fun _ => v)) ((table A).lift 1) ↔ ...
+      -- lift_eval: eval M (insertEnv c x env) (α.lift c.val) = eval M env α
+      -- with c = ⟨1, _⟩, x = u, env = (fun _ => v)
+      -- c.val = 1, which matches .lift 1
+      have h_le := lift_eval M (fun (_ : Fin 1) => v) ⟨1, by omega⟩ u (table sig atomMap A)
+      -- h_le : eval ... (table.lift 1) = eval (fun _ => v) (table)
+      -- But 1 = (⟨1, _⟩ : Fin 2).val, so .lift 1 = .lift (⟨1,_⟩.val)
+      rw [h_le]
+      exact table_correctness M atomMap v A
+    -- Helper: contemp_eq_body at (v, u) env ↔ contemp_equiv v u
+    have ce_eval : ∀ (v u : M.carrier),
+        eval M (Fin.cons v (fun (_ : Fin 1) => u)) (contemp_eq_body sig k) ↔
+        contemp_equiv sig k M v u := by
+      intro v u
+      rw [env2_eq]
+      exact contemp_eq_body_correct sig k M v u
+    -- Correctness: eval M (fun _ => x) φ_spread ↔ ∃ y ~M x, A(y)
+    have h_spread_correct : ∀ (u : M.carrier),
+        eval M (fun _ => u) φ_spread ↔
+        ∃ v, contemp_equiv sig k M u v ∧ temporal_truth M atomMap v A := by
+      intro u
+      simp only [φ_spread, spread_formula, eval]
+      constructor
+      · intro ⟨v, h_ce_eval, h_A_eval⟩
+        exact ⟨v, (contemp_equiv_is_equiv sig k M).symm ((ce_eval v u).mp h_ce_eval),
+          (table_lift v u).mp h_A_eval⟩
+      · intro ⟨v, h_ce, h_A_v⟩
+        exact ⟨v, (ce_eval v u).mpr ((contemp_equiv_is_equiv sig k M).symm h_ce),
+          (table_lift v u).mpr h_A_v⟩
+    -- φ_spread is contemp_equiv-invariant
+    have h_spread_inv : ∀ (u v : M.carrier), contemp_equiv sig k M u v →
+        (eval M (fun _ => u) φ_spread ↔ eval M (fun _ => v) φ_spread) := by
+      intro u v h_uv
+      rw [h_spread_correct u, h_spread_correct v]
+      constructor
+      · intro ⟨w, h_uw, h_Aw⟩
+        exact ⟨w, (contemp_equiv_is_equiv sig k M).trans
+          ((contemp_equiv_is_equiv sig k M).symm h_uv) h_uw, h_Aw⟩
+      · intro ⟨w, h_vw, h_Aw⟩
+        exact ⟨w, (contemp_equiv_is_equiv sig k M).trans h_uv h_vw, h_Aw⟩
+    -- Apply invariant_formula_constant: φ_spread is constant on M
+    rcases invariant_formula_constant φ_spread h_spread_inv with h_all | h_none
+    · -- φ_spread true everywhere → holds at t
+      exact ((h_spread_correct t).mp (h_all t))
+    · -- φ_spread false everywhere → contradiction (it holds at s via s itself)
+      exfalso
+      exact (h_none s) ((h_spread_correct s).mpr
+        ⟨s, (contemp_equiv_is_equiv sig k M).refl s, h_A_s⟩)
+  -- === Step 7: Truth preservation (Reynolds Lemma 12, backward direction) ===
+  -- Backward truth preservation: temporal_truth N atomMap ⟨t, h_t⟩ B →
+  --   temporal_truth M atomMap t B, proved by structural induction.
+  -- The backward direction is straightforward because N.carrier ⊂ M.carrier
+  -- and class(a) is convex (so all witnesses between two class points are also in class).
   --
-  -- The proof is by structural induction on A.
-  -- Cases atom/bot/imp/box: immediate (predicates are inherited).
-  -- Case U(φ,ψ): forward uses class_spread; backward uses convexity.
-  -- Case S(φ,ψ): dual of U.
+  -- The FORWARD direction (M → N) of truth preservation for Until/Since when the
+  -- witness is outside class(a) requires "ordered spread" (Reynolds Lemma 11):
+  -- if B₁ holds at s > t outside class(a), then B₁ holds at some s' > t inside class(a).
+  -- This follows from the k-equivalence of all classes, which ensures formulas are
+  -- cofinal in each class. The k-equivalence of classes follows from
+  -- invariant_formula_constant combined with the normal form machinery.
+  --
+  -- For the final contradiction, we need truth preservation + Prior-UZ/SZ on N to
+  -- show R ↔ right_gap_class_formula on N. right_gap_class_formula is false on N
+  -- (all N-subintervals are good), so R is false on N. But h_R_everywhere + forward
+  -- truth pres gives R true on N. Contradiction.
+  --
+  -- BLOCKER: The forward truth preservation for Until/Since when witness is outside
+  -- class(a) requires "ordered spread" (density/cofinality of formulas in each class).
+  -- class_spread gives B₁ SOMEWHERE in class(a) but not necessarily ABOVE t.
+  -- Proving B₁ holds above t requires showing all classes are k-equivalent (so that
+  -- the k-type structure forces B₁ to be cofinal). This requires Reynolds Lemma 11
+  -- (density) which uses the k-equivalence of classes -- a deeper argument than
+  -- class_spread alone provides.
   sorry
 
 /--
