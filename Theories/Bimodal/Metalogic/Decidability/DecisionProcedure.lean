@@ -152,7 +152,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
                   -- Formula is valid but we couldn't extract a proof term
                   -- This is a limitation of the current implementation
                   .timeout  -- Better than lying about invalidity
-      | some (.hasOpen openBranch hSat) =>
+      | some (.hasOpen openBranch hSat _) =>
           -- Formula is invalid, extract countermodel
           .invalid (extractCountermodelSimple φ openBranch hSat)
 

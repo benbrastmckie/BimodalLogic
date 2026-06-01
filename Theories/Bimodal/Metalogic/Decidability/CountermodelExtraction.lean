@@ -125,10 +125,10 @@ def extractCountermodelSimple (φ : Formula) (b : Branch)
 Extract countermodel from an expanded tableau with an open branch.
 -/
 def extractCountermodelFromTableau (φ : Formula) (tableau : ExpandedTableau)
-    (fc : FrameClass := .Base) : Option SimpleCountermodel :=
+    (_fc : FrameClass := .Base) : Option SimpleCountermodel :=
   match tableau with
   | .allClosed _ => none  -- No countermodel, formula is valid
-  | .hasOpen openBranch hSaturated =>
+  | .hasOpen openBranch hSaturated _ =>
       some (extractCountermodelSimple φ openBranch hSaturated)
 
 /-!
@@ -176,7 +176,7 @@ def findCountermodel (φ : Formula) (fuel : Nat := 1000)
   match buildTableau φ fuel fc with
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
-  | some (.hasOpen openBranch hSat) =>
+  | some (.hasOpen openBranch hSat _) =>
       .found (extractCountermodelSimple φ openBranch hSat)
 
 end Bimodal.Metalogic.Decidability

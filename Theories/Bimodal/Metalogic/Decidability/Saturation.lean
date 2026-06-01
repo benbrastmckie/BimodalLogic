@@ -43,8 +43,10 @@ A fully expanded tableau has all branches either closed or saturated.
 inductive ExpandedTableau : Type where
   /-- All branches are closed (formula is valid). -/
   | allClosed (closedBranches : List ClosedBranch)
-  /-- At least one branch is open/saturated (formula is invalid). -/
+  /-- At least one branch is open/saturated (formula is invalid).
+      Carries the `TimeOrdering` for countermodel extraction. -/
   | hasOpen (openBranch : Branch) (saturated : findUnexpanded openBranch = none)
+      (timeOrdering : TimeOrdering)
   deriving Repr
 
 namespace ExpandedTableau
@@ -52,12 +54,12 @@ namespace ExpandedTableau
 /-- Check if the tableau shows the formula is valid. -/
 def isValid : ExpandedTableau → Bool
   | allClosed _ => true
-  | hasOpen _ _ => false
+  | hasOpen _ _ _ => false
 
 /-- Check if the tableau shows the formula is invalid. -/
 def isInvalid : ExpandedTableau → Bool
   | allClosed _ => false
-  | hasOpen _ _ => true
+  | hasOpen _ _ _ => true
 
 end ExpandedTableau
 
@@ -71,8 +73,9 @@ Result of expanding a list of branches.
 inductive BranchListResult : Type where
   /-- All branches closed. -/
   | allClosed (closedBranches : List ClosedBranch)
-  /-- Found an open saturated branch. -/
+  /-- Found an open saturated branch with its time ordering. -/
   | foundOpen (openBranch : Branch) (saturated : findUnexpanded openBranch = none)
+      (timeOrdering : TimeOrdering)
   /-- Still have branches to process. -/
   | pending (branches : List Branch)
   deriving Repr
@@ -136,7 +139,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
     (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
-    : Option (ClosedBranch ⊕ Branch) :=
+    : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
   match fuel with
   | 0 => none  -- Out of fuel
   | fuel + 1 =>
@@ -152,11 +155,11 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           -- This prevents infinite chains from Until/Since positive rules
           -- re-introducing the same formula at fresh time points.
           if (findBlockedTime b timeOrd).isSome then
-            some (.inr b)  -- Blocked: treat as saturated open branch
+            some (.inr (b, timeOrd))  -- Blocked: treat as saturated open branch
           else
           -- Try to expand
           match expandOnce b timeOrd fc with
-          | (.saturated, _) => some (.inr b)  -- Open saturated branch
+          | (.saturated, _) => some (.inr (b, timeOrd))  -- Open saturated branch
           | (.extended newBranch, newOrd) =>
               expandBranchWithFuel newBranch fuel newOrd fc tracker
           | (.split branches, newOrd) =>
@@ -192,10 +195,10 @@ def expandBranchesWithFuel (branches : List Branch) (fuel : Nat)
       match expandBranchWithFuel b fuel TimeOrdering.empty fc with
       | none => .pending (b :: rest)  -- Out of fuel
       | some (.inl closedBr) => expandBranchesWithFuel rest fuel (closedBr :: closed) fc
-      | some (.inr openBr) =>
+      | some (.inr (openBr, ord)) =>
           -- Check if open branch is saturated
           match h : findUnexpanded openBr with
-          | none => .foundOpen openBr h
+          | none => .foundOpen openBr h ord
           | some _ => .pending (openBr :: rest)  -- Not yet saturated
 
 /-!
@@ -218,9 +221,9 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   match expandBranchWithFuel initialBranch fuel TimeOrdering.empty fc with
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])
-  | some (.inr openBr) =>
+  | some (.inr (openBr, ord)) =>
       match h : findUnexpanded openBr with
-      | none => some (.hasOpen openBr h)
+      | none => some (.hasOpen openBr h ord)
       | some _ => none  -- Should be saturated but isn't
 
 /--
@@ -339,7 +342,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: U(p, bot) -> F(p) is valid"
-  | some (.hasOpen _ _) => return "FAIL: U(p, bot) -> F(p) should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: U(p, bot) -> F(p) should be valid but got open branch"
   | none => return "FAIL: U(p, bot) -> F(p) ran out of fuel"
 
 -- Test 2: S(p, bot) -> P(p) should be valid (allClosed)
@@ -349,7 +352,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: S(p, bot) -> P(p) is valid"
-  | some (.hasOpen _ _) => return "FAIL: S(p, bot) -> P(p) should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: S(p, bot) -> P(p) should be valid but got open branch"
   | none => return "FAIL: S(p, bot) -> P(p) ran out of fuel"
 
 -- Test 3: F(p) -> U(p, top) should be valid (definitional equality: both = untl p top)
@@ -359,7 +362,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: F(p) -> U(p, top) is valid (BX12)"
-  | some (.hasOpen _ _) => return "FAIL: F(p) -> U(p, top) should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: F(p) -> U(p, top) should be valid but got open branch"
   | none => return "FAIL: F(p) -> U(p, top) ran out of fuel"
 
 -- Test 4: P(p) -> S(p, top) should be valid (symmetric BX12')
@@ -368,7 +371,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: P(p) -> S(p, top) is valid (BX12')"
-  | some (.hasOpen _ _) => return "FAIL: P(p) -> S(p, top) should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: P(p) -> S(p, top) should be valid but got open branch"
   | none => return "FAIL: P(p) -> S(p, top) ran out of fuel"
 
 -- Test 5: Seriality test: F(top) -> top should be valid
@@ -377,7 +380,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: F(top) -> top is valid"
-  | some (.hasOpen _ _) => return "FAIL: F(top) -> top should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: F(top) -> top should be valid but got open branch"
   | none => return "FAIL: F(top) -> top ran out of fuel"
 
 -- Test 6: U(p, q) is satisfiable (NOT valid), so buildTableauAuto should produce hasOpen or timeout
@@ -387,7 +390,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableau φ 50  -- Use limited fuel since this is satisfiable
   match result with
   | some (.allClosed _) => return "FAIL: U(p, q) should be satisfiable but got allClosed"
-  | some (.hasOpen _ _) => return "PASS: U(p, q) is satisfiable (open branch found)"
+  | some (.hasOpen _ _ _) => return "PASS: U(p, q) is satisfiable (open branch found)"
   | none => return "PASS: U(p, q) is satisfiable (exhausted fuel without closing)"
 
 -- Test 7: p -> p is a tautology (baseline propositional test)
@@ -396,7 +399,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: p -> p is valid"
-  | some (.hasOpen _ _) => return "FAIL: p -> p should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL: p -> p should be valid"
   | none => return "FAIL: p -> p ran out of fuel"
 
 end UntilSinceTests
@@ -421,7 +424,7 @@ private def q' : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS B1: G(p) -> G(p) is valid"
-  | some (.hasOpen _ _) => return "FAIL B1: G(p) -> G(p) should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL B1: G(p) -> G(p) should be valid"
   | none => return "FAIL B1: G(p) -> G(p) ran out of fuel"
 
 -- Test B2: U(p, q) -> U(p, q) is trivially valid (temporal identity)
@@ -430,7 +433,7 @@ private def q' : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS B2: U(p,q) -> U(p,q) is valid"
-  | some (.hasOpen _ _) => return "FAIL B2: U(p,q) -> U(p,q) should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL B2: U(p,q) -> U(p,q) should be valid"
   | none => return "FAIL B2: U(p,q) -> U(p,q) ran out of fuel"
 
 -- Test B3: U(p, bot) -> F(p) is valid (eventuality: p must be witnessed)
@@ -440,7 +443,7 @@ private def q' : Formula := .atom (Atom.mk_base "q")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS B3: U(p,bot) -> F(p) is valid (eventuality witnessed)"
-  | some (.hasOpen _ _) => return "FAIL B3: U(p,bot) -> F(p) should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL B3: U(p,bot) -> F(p) should be valid"
   | none => return "FAIL B3: U(p,bot) -> F(p) ran out of fuel"
 
 end BlockingTests
@@ -467,7 +470,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → Gp is valid"
-  | some (.hasOpen _ _) => return "FAIL: □p → Gp should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: □p → Gp should be valid but got open branch"
   | none => return "FAIL: □p → Gp ran out of fuel"
 
 -- Test MT2: □p → Hp should be valid (boxTemporal derives T(Hp) from T(□p))
@@ -476,7 +479,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → Hp is valid"
-  | some (.hasOpen _ _) => return "FAIL: □p → Hp should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: □p → Hp should be valid but got open branch"
   | none => return "FAIL: □p → Hp ran out of fuel"
 
 -- Test MT3: □p → always p (perpetuity P1: □p → Hp ∧ p ∧ Gp)
@@ -488,7 +491,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → always p is valid (P1 perpetuity)"
-  | some (.hasOpen _ _) => return "INFO: □p → always p open branch (blocking refinement needed, task 237)"
+  | some (.hasOpen _ _ _) => return "INFO: □p → always p open branch (blocking refinement needed, task 237)"
   | none => return "INFO: □p → always p fuel exhausted (blocking refinement needed, task 237)"
 
 -- Test MT4: □(□p) → G(□p) should be valid (nested modal-temporal)
@@ -498,7 +501,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
-  | some (.hasOpen _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed, task 237)"
+  | some (.hasOpen _ _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed, task 237)"
   | none => return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed, task 237)"
 
 -- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
@@ -508,7 +511,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200
   match result with
   | some (.allClosed _) => return "FAIL: p ∧ F(¬p) should be satisfiable but got allClosed"
-  | some (.hasOpen _ _) => return "PASS: p ∧ F(¬p) is satisfiable (open branch found)"
+  | some (.hasOpen _ _ _) => return "PASS: p ∧ F(¬p) is satisfiable (open branch found)"
   | none => return "PASS: p ∧ F(¬p) is satisfiable (exhausted fuel without closing)"
 
 -- Test MT6: □p → □(Gp) should be valid (modal_future axiom instance)
@@ -517,7 +520,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → □(Gp) is valid (modal_future)"
-  | some (.hasOpen _ _) => return "FAIL: □p → □(Gp) should be valid but got open branch"
+  | some (.hasOpen _ _ _) => return "FAIL: □p → □(Gp) should be valid but got open branch"
   | none => return "FAIL: □p → □(Gp) ran out of fuel"
 
 end ModalTemporalTests
@@ -545,7 +548,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS E1: U(U(p,q),r) -> U(U(p,q),r) is valid"
-  | some (.hasOpen _ _) => return "FAIL E1: should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL E1: should be valid"
   | none => return "FAIL E1: ran out of fuel"
 
 -- Test E2: Combined Until/Since: S(p, bot) -> P(p) (mirrors test 2, regression)
@@ -554,7 +557,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS E2: S(p,bot) -> P(p) is valid"
-  | some (.hasOpen _ _) => return "FAIL E2: should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL E2: should be valid"
   | none => return "FAIL E2: ran out of fuel"
 
 -- Test E3: Simple propositional regression: p -> (q -> p)
@@ -563,7 +566,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS E3: p -> (q -> p) is valid"
-  | some (.hasOpen _ _) => return "FAIL E3: should be valid"
+  | some (.hasOpen _ _ _) => return "FAIL E3: should be valid"
   | none => return "FAIL E3: ran out of fuel"
 
 -- Test E4: Known satisfiable formula with blocking: U(p, q) is satisfiable
@@ -573,7 +576,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "FAIL E4: U(p,q) should be satisfiable"
-  | some (.hasOpen _ _) => return "PASS E4: U(p,q) is satisfiable (open branch with blocking)"
+  | some (.hasOpen _ _ _) => return "PASS E4: U(p,q) is satisfiable (open branch with blocking)"
   | none => return "INFO E4: U(p,q) fuel exhausted (blocking may not have fired)"
 
 -- Test E5: G(p) -> p is NOT valid (p holds at all future times does not imply p holds now)
@@ -584,7 +587,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "INFO E5: G(p) -> p is valid (reflexive reading)"
-  | some (.hasOpen _ _) => return "INFO E5: G(p) -> p is invalid (strict reading)"
+  | some (.hasOpen _ _ _) => return "INFO E5: G(p) -> p is invalid (strict reading)"
   | none => return "INFO E5: G(p) -> p ran out of fuel"
 
 end ExtendedTests
@@ -659,7 +662,8 @@ This follows from the subset relation: if τ(t) ⊆ τ(t_anc), then any
 model satisfying all formulas at t_anc also satisfies all formulas at t.
 -/
 theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
-    (h_result : expandBranchWithFuel b (soundFuel φ) = some (.inr openBranch)) :
+    (ord : TimeOrdering)
+    (h_result : expandBranchWithFuel b (soundFuel φ) = some (.inr (openBranch, ord))) :
     -- "satisfiable" here means there exists a model; we state it as
     -- the open branch having no closure reason
     findClosure openBranch = none := by
@@ -688,7 +692,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Dense
   match result with
   | some (.allClosed _) => return "PASS FC1: GGp → Gp closes under Dense"
-  | some (.hasOpen _ _) => return "INFO FC1: GGp → Gp open under Dense (may need density rule expansion)"
+  | some (.hasOpen _ _ _) => return "INFO FC1: GGp → Gp open under Dense (may need density rule expansion)"
   | none => return "INFO FC1: GGp → Gp fuel exhausted under Dense"
 
 -- Test FC2: GGp → Gp should NOT close under fc := .Base (density not valid on all frames)
@@ -697,7 +701,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200 .Base
   match result with
   | some (.allClosed _) => return "FAIL FC2: GGp → Gp should NOT close under Base"
-  | some (.hasOpen _ _) => return "PASS FC2: GGp → Gp correctly open under Base"
+  | some (.hasOpen _ _ _) => return "PASS FC2: GGp → Gp correctly open under Base"
   | none => return "PASS FC2: GGp → Gp correctly non-closing under Base (fuel exhausted)"
 
 -- Test FC3: ¬U(⊤,⊥) (dense_indicator) should close under fc := .Dense
@@ -706,7 +710,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Dense
   match result with
   | some (.allClosed _) => return "PASS FC3: ¬U(⊤,⊥) closes under Dense"
-  | some (.hasOpen _ _) => return "INFO FC3: ¬U(⊤,⊥) open under Dense (axiomNeg gating should close)"
+  | some (.hasOpen _ _ _) => return "INFO FC3: ¬U(⊤,⊥) open under Dense (axiomNeg gating should close)"
   | none => return "INFO FC3: ¬U(⊤,⊥) fuel exhausted under Dense"
 
 -- Test FC4: ¬U(⊤,⊥) should NOT close under fc := .Base
@@ -715,7 +719,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200 .Base
   match result with
   | some (.allClosed _) => return "FAIL FC4: ¬U(⊤,⊥) should NOT close under Base"
-  | some (.hasOpen _ _) => return "PASS FC4: ¬U(⊤,⊥) correctly open under Base"
+  | some (.hasOpen _ _ _) => return "PASS FC4: ¬U(⊤,⊥) correctly open under Base"
   | none => return "PASS FC4: ¬U(⊤,⊥) correctly non-closing under Base (fuel exhausted)"
 
 -- Test FC5: F(p) → U(p, ¬p) (prior_UZ axiom) should close under fc := .Discrete
@@ -724,7 +728,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Discrete
   match result with
   | some (.allClosed _) => return "PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
-  | some (.hasOpen _ _) => return "INFO FC5: F(p) → U(p, ¬p) open under Discrete (may need prior rule)"
+  | some (.hasOpen _ _ _) => return "INFO FC5: F(p) → U(p, ¬p) open under Discrete (may need prior rule)"
   | none => return "INFO FC5: F(p) → U(p, ¬p) fuel exhausted under Discrete"
 
 -- Test FC6: F(p) → U(p, ¬p) should NOT close under fc := .Base
@@ -733,7 +737,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200 .Base
   match result with
   | some (.allClosed _) => return "FAIL FC6: F(p) → U(p, ¬p) should NOT close under Base"
-  | some (.hasOpen _ _) => return "PASS FC6: F(p) → U(p, ¬p) correctly open under Base"
+  | some (.hasOpen _ _ _) => return "PASS FC6: F(p) → U(p, ¬p) correctly open under Base"
   | none => return "PASS FC6: F(p) → U(p, ¬p) correctly non-closing under Base"
 
 -- Test FC7: F(p) → U(p, ¬p) should NOT close under fc := .Dense (incomparable with Discrete)
@@ -742,7 +746,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200 .Dense
   match result with
   | some (.allClosed _) => return "FAIL FC7: F(p) → U(p, ¬p) should NOT close under Dense"
-  | some (.hasOpen _ _) => return "PASS FC7: F(p) → U(p, ¬p) correctly open under Dense"
+  | some (.hasOpen _ _ _) => return "PASS FC7: F(p) → U(p, ¬p) correctly open under Dense"
   | none => return "PASS FC7: F(p) → U(p, ¬p) correctly non-closing under Dense"
 
 -- Test FC8: Base axiom p → p should close under ALL frame classes (monotonicity)
@@ -765,7 +769,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 200 .Discrete
   match result with
   | some (.allClosed _) => return "FAIL FC9: ¬U(⊤,⊥) should NOT close under Discrete"
-  | some (.hasOpen _ _) => return "PASS FC9: ¬U(⊤,⊥) correctly open under Discrete"
+  | some (.hasOpen _ _ _) => return "PASS FC9: ¬U(⊤,⊥) correctly open under Discrete"
   | none => return "PASS FC9: ¬U(⊤,⊥) correctly non-closing under Discrete"
 
 end FrameClassGatingTests

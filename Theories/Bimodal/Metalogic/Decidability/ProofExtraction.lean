@@ -136,7 +136,7 @@ For complex proofs, the `incomplete` result is returned with a reason.
 def extractProof (φ : Formula) (tableau : ExpandedTableau)
     (_fc : FrameClass := .Base) : ProofExtractionResult φ :=
   match tableau with
-  | .hasOpen _ _ =>
+  | .hasOpen _ _ _ =>
       -- Tableau shows formula is invalid, no proof exists
       .incomplete "Formula is invalid (open branch found)"
   | .allClosed closedBranches =>
