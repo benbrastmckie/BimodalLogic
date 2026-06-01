@@ -31,7 +31,7 @@ technical_debt:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,248,249,250,252,253,254,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240,254 | completeness, tableau-training, dataset-enhancement, ... |
+| 2 | 155,164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240,256 | completeness, tableau-training, dataset-enhancement, ... |
 | 3 | 95,176,193,231,242,245,246 | 155,189,192,230,239,241 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 177,178,243,244,247 | 131,193,242,245,246 | formula-refactor, tableau-training |
 
@@ -40,10 +40,10 @@ technical_debt:
 ### Completeness
 
 254 [NOT STARTED] — Update stale metadata after task 202 completion: (1) TODO.md sorr
+256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
   └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
-256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
 
 ### Formula Refactor
 
