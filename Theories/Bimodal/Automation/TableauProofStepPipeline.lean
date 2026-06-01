@@ -262,12 +262,12 @@ def processFormula (φ : Formula) (name : String) : Option (List ProofStep) :=
 /--
 Generate a zero-padded formula name from an index with a prefix.
 -/
-def formulaName (prefix : String) (idx : Nat) : String :=
-  let digits := String.mk (Nat.toDigits 10 idx)
+def formulaName (namePrefix : String) (idx : Nat) : String :=
+  let digits := String.ofList (Nat.toDigits 10 idx)
   let padded := if digits.length < 6 then
-    String.mk (List.replicate (6 - digits.length) '0') ++ digits
+    String.ofList (List.replicate (6 - digits.length) '0') ++ digits
   else digits
-  prefix ++ padded
+  namePrefix ++ padded
 
 /-!
 ## Pipeline Strategy 1: Enumeration

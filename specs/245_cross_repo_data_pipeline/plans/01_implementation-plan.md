@@ -1,7 +1,7 @@
 # Implementation Plan: Cross-Repository Data Sync Pipeline
 
 - **Task**: 245 - Cross-repository data sync pipeline from BimodalLogic to BimodalHarness
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (both repos accessible locally; executables already built)
 - **Research Inputs**: specs/245_cross_repo_data_pipeline/reports/01_cross-repo-pipeline-research.md
@@ -131,17 +131,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Validation and Integration Testing [NOT STARTED]
+### Phase 3: Validation and Integration Testing [COMPLETED]
 
 **Goal**: Verify the export script works end-to-end and all artifacts are consistent.
 
 **Tasks**:
-- [ ] Run `./scripts/export-training-data.sh --dry-run c5` and verify output
-- [ ] Run `./scripts/export-training-data.sh --dry-run --skip-dataset` and verify proof-only mode
-- [ ] Verify `data/VERSION` file is well-formed (all fields present, parseable)
-- [ ] Run `scripts/validate_datasets.py` against existing data files to confirm they pass validation
-- [ ] Verify SYNC_PROTOCOL.md links and paths are correct
-- [ ] Check that `.gitignore` in `data/` does not exclude `VERSION` file
+- [x] Run `./scripts/export-training-data.sh --dry-run c5` and verify output *(completed: exits 0, prints dataset_generator and proof_extractor commands)*
+- [x] Run `./scripts/export-training-data.sh --dry-run --skip-dataset` and verify proof-only mode *(completed: dataset_generator commands absent)*
+- [x] Verify `data/VERSION` file is well-formed (all fields present, parseable) *(completed: all 6 required fields present)*
+- [x] Run `scripts/validate_datasets.py` against existing data files to confirm they pass validation *(completed: c5=1513, c7=49904, bench=777, proof_steps=10063 — all PASS)*
+- [x] Verify SYNC_PROTOCOL.md links and paths are correct *(completed: reviewed inline)*
+- [x] Check that `.gitignore` in `data/` does not exclude `VERSION` file *(completed: VERSION not in data/.gitignore; git log confirms it is tracked)*
 
 **Timing**: 0.5 hours
 

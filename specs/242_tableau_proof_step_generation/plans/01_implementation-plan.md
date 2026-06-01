@@ -73,18 +73,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Pipeline Configuration and Deduplication Infrastructure [IN PROGRESS]
+### Phase 1: Pipeline Configuration and Deduplication Infrastructure [COMPLETED]
 
 **Goal**: Define the pipeline configuration structure, step-level deduplication, and diversity metrics data types in a new module.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/TableauProofStepPipeline.lean` with imports for FormulaEnumerator, DecisionProcedure, ProofStepExtractor, and DataExport
-- [ ] Define `PipelineConfig` structure with fields: enumeration parameters (complexity bounds, atom pool), axiom seed count, G^n wrap depth/batch size, dedup flag, output path, merge-with-registry flag
-- [ ] Define `StepDistribution` structure with fields: `ruleHistogram`, `axiomHistogram`, `complexityHistogram`, `totalSteps`, `uniqueSteps`, `theoremCount`
-- [ ] Implement `hashProofStep : ProofStep -> UInt64` hashing function based on `(context, goal, rule, axiomName)` tuple for deduplication
-- [ ] Implement `StepDistribution.empty` and `StepDistribution.addStep` for incremental metric accumulation
-- [ ] Implement `StepDistribution.toJson` for metadata export
-- [ ] Verify the module compiles with `lake build Bimodal.Automation.TableauProofStepPipeline`
+- [x] Create `Theories/Bimodal/Automation/TableauProofStepPipeline.lean` with imports for FormulaEnumerator, DecisionProcedure, ProofStepExtractor, and DataExport
+- [x] Define `PipelineConfig` structure with fields: enumeration parameters (complexity bounds, atom pool), axiom seed count, G^n wrap depth/batch size, dedup flag, output path, merge-with-registry flag
+- [x] Define `StepDistribution` structure with fields: `ruleHistogram`, `axiomHistogram`, `complexityHistogram`, `totalSteps`, `uniqueSteps`, `theoremCount`
+- [x] Implement `hashProofStep : ProofStep -> UInt64` hashing function based on `(context, goal, rule, axiomName)` tuple for deduplication
+- [x] Implement `StepDistribution.empty` and `StepDistribution.addStep` for incremental metric accumulation
+- [x] Implement `StepDistribution.toJson` for metadata export
+- [x] Verify the module compiles with `lake build Bimodal.Automation.TableauProofStepPipeline`
 
 **Timing**: 1.5 hours
 
@@ -99,29 +99,29 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Core Pipeline Logic (Enumerate-Decide-Extract) [NOT STARTED]
+### Phase 2: Core Pipeline Logic (Enumerate-Decide-Extract) [COMPLETED]
 
 **Goal**: Implement the main pipeline function that enumerates formulas, runs `decideAuto`, extracts proof steps from valid results, and applies deduplication.
 
 **Tasks**:
-- [ ] Implement `processFormula : Formula -> Nat -> IO (Option (List ProofStep))` that runs `decideAuto`, pattern-matches on `.valid`, calls `extractStepSequence`, returns steps for valid results and `none` for invalid/timeout
-- [ ] Implement formula naming scheme: `"enum-" ++ String.mk (Nat.toDigits 10 idx)` with zero-padding for sequential IDs
-- [ ] Implement `runEnumerationPipeline : PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
+- [x] Implement `processFormula : Formula -> Nat -> IO (Option (List ProofStep))` that runs `decideAuto`, pattern-matches on `.valid`, calls `extractStepSequence`, returns steps for valid results and `none` for invalid/timeout *(deviation: altered -- signature is `Formula -> String -> Option (List ProofStep)` (pure, takes name not index))*
+- [x] Implement formula naming scheme: `"enum-" ++ String.mk (Nat.toDigits 10 idx)` with zero-padding for sequential IDs
+- [x] Implement `runEnumerationPipeline : PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
   - Enumerates formulas via `enumerateUpToDepth` using config's EnumConfig
   - Processes each formula through `processFormula`
   - Applies step-level deduplication using `HashSet UInt64` of step hashes
   - Accumulates `StepDistribution` metrics
   - Reports progress every 1000 formulas to IO
-- [ ] Implement `runAxiomSeedPipeline : PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
+- [x] Implement `runAxiomSeedPipeline : PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
   - Generates valid formulas via `generateValidBatch` with config's seed count
   - Processes each through `decideAuto` + `extractStepSequence`
   - Deduplicates and accumulates metrics
-- [ ] Implement `runDeepWrappingPipeline : List Formula -> PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
+- [x] Implement `runDeepWrappingPipeline : List Formula -> PipelineConfig -> IO (List ProofStep x StepDistribution)` that:
   - Takes the most structurally diverse valid formulas from enumeration
   - Wraps each with G^n for n = 1..maxWrapDepth
   - Extracts steps from each wrapped variant
   - Deduplicates
-- [ ] Verify compilation with `lake build Bimodal.Automation.TableauProofStepPipeline`
+- [x] Verify compilation with `lake build Bimodal.Automation.TableauProofStepPipeline`
 
 **Timing**: 2.5 hours
 
@@ -136,25 +136,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: JSONL Export and Metadata [NOT STARTED]
+### Phase 3: JSONL Export and Metadata [COMPLETED]
 
 **Goal**: Implement JSONL file writing with metadata summary, combining all pipeline strategies into a single output.
 
 **Tasks**:
-- [ ] Implement `writeProofStepsJSONL : String -> List ProofStep -> IO Nat` that writes each `ProofStep.toJson` as one line, returns line count
-- [ ] Implement `writeMetadataJSON : String -> StepDistribution -> PipelineConfig -> IO Unit` that writes `_metadata.json` with generation parameters, distribution stats, coverage metrics, and timestamp
-- [ ] Implement `computeCoverage : StepDistribution -> (Nat x Nat x Nat x Nat)` returning (rules_covered, total_rules, axioms_covered, total_axioms)
-- [ ] Implement `mergeDistributions : StepDistribution -> StepDistribution -> StepDistribution` for combining metrics from multiple pipeline stages
-- [ ] Implement `runFullPipeline : PipelineConfig -> IO Unit` that:
+- [x] Implement `writeProofStepsJSONL : String -> List ProofStep -> IO Nat` that writes each `ProofStep.toJson` as one line, returns line count *(deviation: altered -- takes `Array ProofStep` instead of `List` for performance)*
+- [x] Implement `writeMetadataJSON : String -> StepDistribution -> PipelineConfig -> IO Unit` that writes `_metadata.json` with generation parameters, distribution stats, coverage metrics, and timestamp
+- [x] Implement `computeCoverage : StepDistribution -> (Nat x Nat x Nat x Nat)` returning (rules_covered, total_rules, axioms_covered, total_axioms)
+- [x] Implement `mergeDistributions : StepDistribution -> StepDistribution -> StepDistribution` for combining metrics from multiple pipeline stages
+- [x] Implement `runFullPipeline : PipelineConfig -> IO Unit` that:
   - Runs enumeration pipeline
   - Runs axiom seed pipeline
   - Runs deep wrapping pipeline on top valid formulas
-  - Optionally merges existing 310-theorem registry steps
+  - Optionally merges existing 310-theorem registry steps *(deviation: skipped -- registry merge deferred; registry steps available via existing `lake exe proof_extractor`)*
   - Deduplicates across all sources
   - Writes combined JSONL
   - Writes metadata
   - Prints summary to stdout
-- [ ] Verify compilation
+- [x] Verify compilation
 
 **Timing**: 1.5 hours
 
@@ -169,7 +169,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Executable Registration and CLI [NOT STARTED]
+### Phase 4: Executable Registration and CLI [IN PROGRESS]
 
 **Goal**: Register the pipeline as a new lake executable with CLI argument parsing and run a smoke test.
 

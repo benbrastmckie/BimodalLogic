@@ -8,10 +8,10 @@
     {
       "project_number": 259,
       "project_name": "publishing_guide_nixos_details",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-06-01T23:19:59Z",
-      "last_updated": "2026-06-01T23:24:27Z",
+      "last_updated": "2026-06-01T23:26:39Z",
       "session_id": "sess_1748819400_e5f7g9",
       "next_artifact_number": 2,
       "artifacts": [
@@ -19,6 +19,11 @@
           "path": "specs/259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md",
           "type": "research",
           "summary": "NixOS pain points for HF publishing: no nix config in repo, pip fails on read-only store, 4 edit locations identified"
+        },
+        {
+          "path": "specs/259_publishing_guide_nixos_details/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "1-phase plan: add NixOS instructions at 4 locations in PUBLISHING_GUIDE.md"
         }
       ]
     },

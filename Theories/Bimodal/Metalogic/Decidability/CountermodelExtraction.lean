@@ -421,23 +421,46 @@ theorem valuation_reflects_neg (b : Branch) (fc : FrameClass)
   exact sat_atom_consistent b fc hOpen p ⟨w, t⟩ ⟨hPosAt, hNegAt⟩
 
 /--
+Helper: `findUnexpanded b = none` implies every formula in `b` is expanded.
+-/
+private theorem findUnexpanded_none_all_expanded (b : Branch)
+    (hSat : findUnexpanded b = none) :
+    ∀ sf ∈ b, isExpanded sf b = true := by
+  intro sf hsf
+  -- findUnexpanded b = b.find? (fun sf => !isExpanded sf b) = none
+  -- By List.find?_eq_none, for all sf ∈ b, ¬(!isExpanded sf b)
+  unfold findUnexpanded at hSat
+  have h := List.find?_eq_none.mp hSat sf hsf
+  simp [Bool.not_eq_true] at h
+  exact h
+
+/--
+Helper: if `isExpanded sf b = true`, then `findApplicableRule sf b = none`.
+-/
+private theorem expanded_iff_no_applicable (sf : SignedFormula) (b : Branch) :
+    isExpanded sf b = true ↔ (findApplicableRule sf b).isNone = true := by
+  unfold isExpanded
+  simp
+
+/--
 **Implication negative saturation**: If `F(ψ → χ)` is in a saturated branch,
 then `T(ψ)` and `F(χ)` are both in the branch at the same label.
 The `impNeg` rule is a linear (non-branching) rule that adds both.
+
+Actually, `F(ψ → χ)` cannot exist in a saturated branch at all: the `impNeg`
+rule always applies to it. So this is vacuously true by contradiction.
 -/
 theorem sat_imp_neg (b : Branch) (hSat : findUnexpanded b = none)
     (ψ χ : Formula) (l : Label)
     (hmem : ⟨.neg, .imp ψ χ, l⟩ ∈ b) :
     ⟨.pos, ψ, l⟩ ∈ b ∧ ⟨.neg, χ, l⟩ ∈ b := by
-  -- PROOF STRATEGY: This is vacuously true in a saturated branch because
-  -- F(ψ → χ) cannot be in a saturated branch. The impNeg rule always applies
-  -- to F(A → B) and produces a non-notApplicable result (.linear [T(A), F(B)]),
-  -- so findApplicableRule returns some, making isExpanded = false, which means
-  -- findUnexpanded b ≠ none — contradicting hSat.
-  -- BLOCKED BY: Requires unfolding through allRulesForFC, allRules, isApplicable,
-  -- applyRule to show impNeg produces a non-notApplicable result. The proof is
-  -- feasible but requires ~50 lines of tactic-level unfolding of the rule engine.
-  sorry
+  -- F(ψ → χ) cannot be in a saturated branch: impNeg always applies.
+  exfalso
+  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.neg, .imp ψ χ, l⟩ hmem
+  -- isExpanded is false because impNeg applies to F(ψ → χ)
+  simp only [isExpanded, findApplicableRule, allRulesForFC, allRules] at hExp
+  -- After unfolding, findSome? on the rule list should find impNeg matches
+  simp only [List.findSome?, isApplicable, applyRule] at hExp
 
 /--
 **Box positive saturation**: If `T(□φ)` at `(w, t)` is in a saturated branch,

@@ -89,3 +89,10 @@ lean_exe tableau_bridge where
   root := `Bimodal.Automation.TableauBridge
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Tableau-derived proof step pipeline for large-scale training data (Task 242).
+    Run with: lake exe tableau_proof_steps -- --max-complexity 7 --output data/tableau_proof_steps.jsonl -/
+lean_exe tableau_proof_steps where
+  root := `Bimodal.Automation.TableauProofStepPipeline
+  srcDir := "Theories"
+  supportInterpreter := true

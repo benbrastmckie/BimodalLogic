@@ -129,10 +129,11 @@ technical_debt:
 
 ### 259. Update PUBLISHING_GUIDE.md to include details for NixOS users
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Type**: general
 - **Priority**: medium
 - **Research**: [259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md]
+- **Plan**: [259_publishing_guide_nixos_details/plans/01_implementation-plan.md]
 - **Description**: Update docs/training/PUBLISHING_GUIDE.md to include details for NixOS users in parallel
 
 ### 258. Create a Hugging Face publishing guide in docs/
