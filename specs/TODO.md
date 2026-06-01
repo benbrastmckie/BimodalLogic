@@ -30,8 +30,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,217,219,224,229,236,237,238,248,249,250,251 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,186,192,196,230 | 161,185,187,190,191,194,199,229,251 | completeness, dataset-enhancement, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,217,219,224,229,236,237,238,248,249,250 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,186,192,196,230,251 | 161,185,187,190,191,194,199,217,229 | completeness, dataset-enhancement, ... |
 | 3 | 95,176,193,231,239,240,241 | 155,189,192,230,237,238 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
 | 5 | 243,244,247 | 242,245,246 | tableau-training |
@@ -98,6 +98,7 @@ technical_debt:
 ### Dataset Enhancement
 
 217 [IMPLEMENTING] — Extend exhaustive formula enumeration to complexity 9 and 11. bml
+  └─ 251 [PLANNED] — Optimize generateValidBatch O(n^2) MP closure bottleneck in datas
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
