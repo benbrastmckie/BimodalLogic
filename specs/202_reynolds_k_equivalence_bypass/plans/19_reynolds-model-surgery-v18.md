@@ -113,7 +113,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Temporal Class Spread + Bad Interval Density (Lemmas 9.1, 11) [PARTIAL]
+### Phase 3: Temporal Class Spread + Bad Interval Density (Lemmas 9.1, 11) [COMPLETED]
 
 **Goal**: Prove Reynolds Lemma 9 first part (if temporal A holds somewhere in one class, it holds somewhere in every class) and Lemma 11 (formulas true in M are true arbitrarily close to class boundaries). These are prerequisites for truth preservation.
 
@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Truth Preservation for N = I (Lemma 12 simplified) [NOT STARTED]
+### Phase 4: Truth Preservation for N = I (Lemma 12 simplified) [PARTIAL]
 
 **Goal**: Define surgery model N = M restricted to a single equivalence class I. Prove that temporal truth is preserved between M and N for all temporal formulas, for all points in I. This is the bulk of the proof.
 
@@ -205,7 +205,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Final Contradiction (Lemma 13) [NOT STARTED]
+### Phase 5: Final Contradiction (Lemma 13) [COMPLETED]
 
 **Goal**: Use truth preservation to derive contradiction, closing the `gap_prior_UZ_contradiction` sorry.
 
@@ -244,7 +244,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Wiring + Cleanup + Verification (Piece 11) [NOT STARTED]
+### Phase 6: Wiring + Cleanup + Verification (Piece 11) [BLOCKED]
 
 **Goal**: Wire `no_gaps_discrete` in GoodStructures.lean to `no_gaps_discrete_model_surgery`, verify the full build, and ensure the downstream sorry chain is eliminated.
 

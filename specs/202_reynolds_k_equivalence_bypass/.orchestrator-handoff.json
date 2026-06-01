@@ -1,14 +1,32 @@
 {
   "status": "partial",
-  "summary": "Added sorry-free invariant_formula_constant lemma (Reynolds Lemma 9 generalization). Phase 3 blocked: final contradiction in gap_prior_UZ_contradiction requires either Doets Lemma 1.5 (Z+Z ~k Z, sorry in OrderedSum.lean) or full model surgery (~300 lines). One sorry remains at GoodStructuresModelSurgery.lean line ~1168.",
-  "phases_completed": 2,
+  "summary": "Cycle 5: Closed contemp_eq_body_correct sorry (Fin.cons bookkeeping). Built complete truth preservation + Prior-UZ/SZ on N + right_gap_class_formula false on N + final contradiction chain for gap_prior_UZ_contradiction. 2 sorry sites remain at ordered spread (Reynolds Lemma 11) for Until/Since forward truth preservation. All other proof components are sorry-free. Build passes.",
+  "phases_completed": 4,
   "phases_total": 6,
   "blockers": [
-    "gap_prior_UZ_contradiction final sorry requires Doets Lemma 1.5 (doets_lemma_1_5 in OrderedSum.lean is sorry'd) or full Reynolds model surgery (~300 lines for 26 U/S subcases)"
+    {
+      "phase": 4,
+      "description": "Ordered spread (Reynolds Lemma 11): when class_spread gives temporal formula A at point s' in class(a) but s' is on wrong side of current point t, need to find A on the correct side. Requires showing class restriction to [t, inf) has same k-type as M restriction to [t, inf).",
+      "severity": "high",
+      "sorry_count": 2,
+      "lines": [1530, 1556]
+    }
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-3-blocked-20260601.md",
-    "next_phase": 3
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-5-handoff-cycle5-20260601.md",
+    "sorry_sites": [
+      {
+        "file": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+        "line": 1530,
+        "description": "Forward Until truth preservation: ordered spread upward"
+      },
+      {
+        "file": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+        "line": 1556,
+        "description": "Forward Since truth preservation: ordered spread downward"
+      }
+    ],
+    "key_insight": "The final contradiction is fully wired: R on N (from truth preservation + h_R_everywhere) implies right_gap_class_formula on N (via US_expressively_complete_over_prior), but right_gap_class_formula is false on N (all subintervals good). The sole remaining content is proving that when a temporal formula A holds at some s outside class(a), A also holds at a point in class(a) on the same side as s relative to the current point t."
   },
-  "next_action_hint": "revise_plan"
+  "next_action_hint": "continue_implement"
 }
