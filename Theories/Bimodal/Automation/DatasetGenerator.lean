@@ -111,6 +111,12 @@ structure LabeledFormula where
   metrics : DifficultyMetrics
   /-- Pattern key for structural indexing. -/
   patternKey : PatternKey
+  /-- Rule application counts from walkDerivationTree (valid formulas only). -/
+  ruleProfile : Option RuleProfile
+  /-- Which decision pipeline stage produced the result. -/
+  decisionMethod : String
+  /-- Whether the countermodel is self-consistent (invalid formulas only). -/
+  countermodelConsistent : Option Bool
   deriving Repr
 
 instance : Inhabited LabeledFormula :=
@@ -119,7 +125,10 @@ instance : Inhabited LabeledFormula :=
      proofTrace := none
      countermodel := none
      metrics := default
-     patternKey := default }⟩
+     patternKey := default
+     ruleProfile := none
+     decisionMethod := "timeout"
+     countermodelConsistent := none }⟩
 
 /--
 Extract axiom schema name as a string from an Axiom constructor.
@@ -265,6 +274,14 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
   match result with
   | .valid proof =>
     let trace := extractProofTrace proof
+    let rp := walkDerivationTree proof
+    -- Determine decision method: if proof uses only axioms, it was fast path;
+    -- otherwise it came from proof search within decideAuto
+    let method := if rp.mpCount == 0 && rp.necessitationCount == 0 &&
+                     rp.temporalNecessitationCount == 0 && rp.temporalDualityCount == 0 &&
+                     rp.weakeningCount == 0 && rp.assumptionCount == 0
+                  then "fast_path_axiom"
+                  else "proof_search"
     return {
       formula := φ
       label := .valid
@@ -272,8 +289,12 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       countermodel := none
       metrics := metrics
       patternKey := patternKey
+      ruleProfile := some rp
+      decisionMethod := method
+      countermodelConsistent := none
     }
   | .invalid cm =>
+    let consistent := cm.isConsistent
     return {
       formula := φ
       label := .invalid
@@ -281,6 +302,9 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       countermodel := some cm
       metrics := metrics
       patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "tableau_open"
+      countermodelConsistent := some consistent
     }
   | .timeout =>
     -- Retry with decideOptimized (uses IDDFS first, then full tableau)
@@ -288,6 +312,7 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
     match retryResult with
     | .valid proof =>
       let trace := extractProofTrace proof
+      let rp := walkDerivationTree proof
       return {
         formula := φ
         label := .valid
@@ -295,8 +320,12 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
         countermodel := none
         metrics := metrics
         patternKey := patternKey
+        ruleProfile := some rp
+        decisionMethod := "proof_search"
+        countermodelConsistent := none
       }
     | .invalid cm =>
+      let consistent := cm.isConsistent
       return {
         formula := φ
         label := .invalid
@@ -304,6 +333,9 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
         countermodel := some cm
         metrics := metrics
         patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := "tableau_open"
+        countermodelConsistent := some consistent
       }
     | .timeout =>
       return {
@@ -313,6 +345,9 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
         countermodel := none
         metrics := metrics
         patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := "timeout"
+        countermodelConsistent := none
       }
 
 /--
@@ -459,12 +494,22 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   let cmStr := match lf.countermodel with
     | none => "null"
     | some cm => cm.toJson
+  let rpStr := match lf.ruleProfile with
+    | none => "null"
+    | some rp => rp.toJson
+  let cmConsStr := match lf.countermodelConsistent with
+    | none => "null"
+    | some true => "true"
+    | some false => "false"
   "{\"formula\": " ++ lf.formula.toJson
   ++ ", \"formula_string\": \"" ++ escapeJsonString lf.formula.prettyPrint ++ "\""
   ++ ", \"features\": " ++ lf.patternKey.toJson
   ++ ", \"decision\": " ++ lf.label.toJson
+  ++ ", \"decision_method\": \"" ++ escapeJsonString lf.decisionMethod ++ "\""
   ++ ", \"proof\": " ++ proofStr
+  ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
+  ++ ", \"countermodel_consistent\": " ++ cmConsStr
   ++ ", \"metrics\": " ++ lf.metrics.toJson
   ++ "}"
 

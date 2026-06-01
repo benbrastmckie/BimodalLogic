@@ -188,6 +188,12 @@ structure DatasetRecord where
   max_modal_depth : Nat
   /-- Maximum temporal nesting depth of the formula. -/
   max_temporal_depth : Nat
+  /-- Which decision pipeline stage produced the result. -/
+  decision_method : String
+  /-- Rule application counts (valid formulas only). -/
+  rule_profile : Option RuleProfile
+  /-- Whether the countermodel is self-consistent (invalid formulas only). -/
+  countermodel_consistent : Option Bool
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -206,7 +212,10 @@ instance : Inhabited DatasetRecord :=
      formula_tokens := "[]"
      pattern_features := "[]"
      max_modal_depth := 0
-     max_temporal_depth := 0 }⟩
+     max_temporal_depth := 0
+     decision_method := "timeout"
+     rule_profile := none
+     countermodel_consistent := none }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -221,14 +230,24 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   let augStr := match r.augmentation with
     | none => "null"
     | some ai => augmentationInfoToJson ai
+  let rpStr := match r.rule_profile with
+    | none => "null"
+    | some rp => rp.toJson
+  let cmConsStr := match r.countermodel_consistent with
+    | none => "null"
+    | some true => "true"
+    | some false => "false"
   "{\"id\": \"" ++ escapeJsonString r.id ++ "\""
   ++ ", \"split\": \"" ++ escapeJsonString r.split ++ "\""
   ++ ", \"formula_str\": \"" ++ escapeJsonString r.formula_str ++ "\""
   ++ ", \"formula_ast\": " ++ r.formula_ast
   ++ ", \"frame_class\": \"" ++ escapeJsonString r.frame_class ++ "\""
   ++ ", \"label\": " ++ formulaLabelToJson r.label
+  ++ ", \"decision_method\": \"" ++ escapeJsonString r.decision_method ++ "\""
   ++ ", \"proof_trace\": " ++ traceStr
+  ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
+  ++ ", \"countermodel_consistent\": " ++ cmConsStr
   ++ ", \"pattern_key\": " ++ r.pattern_key.toJson
   ++ ", \"metrics\": " ++ difficultyMetricsToJson r.metrics
   ++ ", \"augmentation\": " ++ augStr
@@ -260,7 +279,10 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     formula_tokens := tokenListToJson lf.formula.tokenize
     pattern_features := lf.patternKey.featureVectorToJson
     max_modal_depth := lf.patternKey.modalDepth
-    max_temporal_depth := lf.patternKey.temporalDepth }
+    max_temporal_depth := lf.patternKey.temporalDepth
+    decision_method := lf.decisionMethod
+    rule_profile := lf.ruleProfile
+    countermodel_consistent := lf.countermodelConsistent }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
@@ -329,6 +351,8 @@ structure DatasetMetadata where
   maxComplexity : Nat
   /-- Sampling mode used. -/
   samplingMode : String
+  /-- Decision method distribution: (method_name, count). -/
+  decisionMethodDist : List (String × Nat) := []
   deriving Repr, Inhabited
 
 /--
@@ -344,6 +368,14 @@ def computeDatasetMetadata (labeled : List LabeledFormula) (params : EnumParams)
     | .random => "random"
     | .hybrid => "hybrid"
     | .stratified => "stratified"
+  -- Compute decision method distribution
+  let methodDist := labeled.foldl (fun acc lf =>
+    let method := lf.decisionMethod
+    if acc.any (fun (k, _) => k == method) then
+      acc.map fun (k, n) => if k == method then (k, n + 1) else (k, n)
+    else
+      (method, 1) :: acc
+  ) ([] : List (String × Nat))
   { totalRecords := stats.totalCount
     validCount := stats.validCount
     invalidCount := stats.invalidCount
@@ -351,13 +383,19 @@ def computeDatasetMetadata (labeled : List LabeledFormula) (params : EnumParams)
     avgComplexity := avgC
     includeDuals := includeDuals
     maxComplexity := params.maxComplexity
-    samplingMode := modeStr }
+    samplingMode := modeStr
+    decisionMethodDist := methodDist }
 
 /--
 Serialize dataset metadata to a JSON string.
 -/
 def datasetMetadataToJson (m : DatasetMetadata) : String :=
   let dualStr := if m.includeDuals then "true" else "false"
+  let methodDistStr := if m.decisionMethodDist.isEmpty then "null"
+    else
+      let entries := m.decisionMethodDist.map fun (method, count) =>
+        "\"" ++ escapeJsonString method ++ "\": " ++ toString count
+      "{" ++ String.intercalate ", " entries ++ "}"
   "{\n"
   ++ "  \"total_records\": " ++ toString m.totalRecords ++ ",\n"
   ++ "  \"valid_count\": " ++ toString m.validCount ++ ",\n"
@@ -367,6 +405,7 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"include_duals\": " ++ dualStr ++ ",\n"
   ++ "  \"max_complexity\": " ++ toString m.maxComplexity ++ ",\n"
   ++ "  \"sampling_mode\": \"" ++ m.samplingMode ++ "\",\n"
+  ++ "  \"decision_method_distribution\": " ++ methodDistStr ++ ",\n"
   ++ "  \"frame_class\": \"Base\",\n"
   ++ "  \"representations\": [\n"
   ++ "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \"Pretty-printed unicode notation\"},\n"
@@ -537,6 +576,7 @@ def main (args : List String) : IO Unit := do
   let mut totalComplexity : Nat := 0
   let mut totalTimeMs : Nat := 0
   let mut categoryCounts : List (GoalCategory × Nat) := []
+  let mut methodCounts : List (String × Nat) := []
   for φ in formulas' do
     let labeled ← labelFormula φ
     -- Write JSONL line immediately (no accumulation)
@@ -552,6 +592,7 @@ def main (args : List String) : IO Unit := do
     | .invalid => invalidCount := invalidCount + 1
     | .timeout => timeoutCount := timeoutCount + 1
     categoryCounts := incrCategoryCount categoryCounts (goalCategory labeled.formula)
+    methodCounts := incrMethodCount methodCounts labeled.decisionMethod
     -- Progress reporting every 1000 formulas
     if count % 1000 == 0 then
       let elapsed ← IO.monoMsNow
@@ -586,6 +627,7 @@ def main (args : List String) : IO Unit := do
     includeDuals := cliArgs.includeDuals
     maxComplexity := params.maxComplexity
     samplingMode := modeStr
+    decisionMethodDist := methodCounts
   }
   writeMetadata outputPath metadata
   IO.println s!"  Wrote {count} records to {cliArgs.output}"
@@ -611,3 +653,10 @@ where
       counts.map fun (k, n) => if k == cat then (k, n + 1) else (k, n)
     else
       (cat, 1) :: counts
+  /-- Increment decision method count in an association list. -/
+  incrMethodCount (counts : List (String × Nat)) (method : String)
+      : List (String × Nat) :=
+    if counts.any (fun (k, _) => k == method) then
+      counts.map fun (k, n) => if k == method then (k, n + 1) else (k, n)
+    else
+      (method, 1) :: counts
