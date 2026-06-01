@@ -1151,33 +1151,194 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
       have h_ce_sym := (contemp_equiv_is_equiv sig k M).symm h_ce
       have h_φ_pc := (h_inv c (Order.pred c) h_ce_sym).mp h_φ_c
       exact h_not_T_pc ((h_T_correct (Order.pred c)).mp h_φ_pc)
-  -- Step 5: right_gap_class_formula is contemp_equiv-invariant
-  -- and holds at every point. This means its negation is also invariant
-  -- and holds at no point.
-  -- But we need a specific formula whose constancy leads to contradiction.
+  -- === Reynolds Lemma 9.1 + 12-13: Model Surgery ===
+  -- Step 5: Construct surgery model N = restriction of M to class(a).
+  -- N is an OrderedMonadicStructure on the carrier {x | contemp_equiv sig k M a x}.
+  -- Step 6: Prove temporal truth preservation (M ↔ N at points of class(a)).
+  -- Step 7: Derive contradiction: R holds in N (truth preservation) but
+  --   right_gap_class_formula is false in N (N has only one class, no gaps).
+
+  -- === Step 5: Surgery model N ===
+  -- Define the carrier of N as the subtype of points contemp_equiv to a.
+  let classA := {x : M.carrier // contemp_equiv sig k M a x}
+  -- N inherits order from M (subtype of linearly ordered type).
+  -- Define N as an OrderedMonadicStructure.
+  let N : OrderedMonadicStructure sig := {
+    carrier := classA
+    interp := fun p x => M.interp p x.val
+    carrier_order := inferInstance
+  }
+  -- Class(a) is convex: if a ~M x and a ~M z and x ≤ y ≤ z, then a ~M y.
+  have class_convex : ∀ (x y z : M.carrier), contemp_equiv sig k M a x →
+      contemp_equiv sig k M a z → x ≤ y → y ≤ z → contemp_equiv sig k M a y := by
+    intro x y z hax haz hxy hyz
+    -- a ~M z, x ≤ y ≤ z. We need a ~M y.
+    -- By contemp_equiv_convex: a ~M z and a ≤ ... depends on ordering of a, y, z.
+    -- Use transitivity: a ~M x and a ~M z. Also x ≤ y ≤ z.
+    -- If a ≤ x: a ≤ x ≤ y ≤ z. a ~M z and a ≤ y ≤ z → a ~M y by convexity.
+    -- If x ≤ a ≤ z: then a ≤ y or y ≤ a.
+    -- General argument: a ~M z means very_good([min a z, max a z]).
+    -- [min a z, max a z] contains y (since min a z ≤ min(x,y) ≤ y and y ≤ max(x,z) ≤ max a z).
+    -- So a ~M y follows from a ~M z by sub-interval very_good property.
+    rcases le_or_gt a y with hay | hya
+    · -- a ≤ y: need a ~M y. We have a ~M z with a ≤ y ≤ z (if a ≤ z).
+      rcases le_or_gt a z with haz_le | hza
+      · exact contemp_equiv_convex sig k M a y z hay hyz haz
+      · -- z < a, but a ≤ y ≤ z < a, contradiction
+        exact absurd (lt_of_le_of_lt (le_trans hay hyz) hza) (lt_irrefl a)
+    · -- a > y: need a ~M y. We have a ~M x.
+      -- x ≤ y < a. So y ∈ [x, a].
+      -- a ~M x means contemp_equiv a x. Since y ∈ [x, a], by convexity: a ~M y.
+      rcases le_or_gt x a with hxa | hax
+      · -- x ≤ a: use contemp_equiv_convex with a ~M x (symm of hax), x ≤ y ≤ a
+        have h_sym := (contemp_equiv_is_equiv sig k M).symm hax
+        -- h_sym : contemp_equiv x a. Need contemp_equiv a y.
+        -- x ≤ y (hxy) and y ≤ a (le_of_lt hya).
+        -- contemp_equiv_convex: x ~M a, x ≤ y ≤ a → x ~M y
+        have hxy_equiv := contemp_equiv_convex sig k M x y a hxy (le_of_lt hya) h_sym
+        -- hxy_equiv : contemp_equiv x y. Need contemp_equiv a y.
+        exact (contemp_equiv_is_equiv sig k M).trans hax hxy_equiv
+      · -- a < x: but a ~M x, a < x ≤ y, so use convexity a ~M x, a ≤ y
+        -- a ≤ x (le_of_lt hax), x ≤ y (hxy). a ~M x.
+        -- a ~M z, need a ~M y. a ≤ x ≤ y ≤ z. Use a ~M z.
+        rcases le_or_gt a z with haz_le | hza
+        · exact contemp_equiv_convex sig k M a y z (le_trans (le_of_lt hax) hxy) hyz haz
+        · -- z < a, but a < x ≤ y ≤ z < a, contradiction
+          exact absurd (lt_of_le_of_lt (le_trans (le_of_lt hax) (le_trans hxy hyz)) hza)
+            (lt_irrefl a)
+  -- N has SuccOrder: class(a) is succ-closed, so succ of a class member is in the class.
+  have h_N_succ : ∀ (x : classA), contemp_equiv sig k M a (Order.succ x.val) :=
+    fun x => any_succ_closed a x.val x.property
+  -- N has PredOrder: class(a) is pred-closed.
+  have h_N_pred : ∀ (x : classA), contemp_equiv sig k M a (Order.pred x.val) :=
+    fun x => contemp_equiv_pred_closed sig k M a x.val x.property
+  -- Class(a) has no max: succ(x) > x and succ(x) is in class.
+  have h_N_no_max : ∀ (x : classA), ∃ (y : classA), x < y := by
+    intro ⟨x, hx⟩
+    exact ⟨⟨Order.succ x, h_N_succ ⟨x, hx⟩⟩,
+      Order.lt_succ_of_not_isMax (not_isMax x)⟩
+  -- Class(a) has no min: pred(x) < x and pred(x) is in class.
+  have h_N_no_min : ∀ (x : classA), ∃ (y : classA), y < x := by
+    intro ⟨x, hx⟩
+    have : ¬ IsMin x := by
+      intro h_min
+      have h_pred_eq : Order.pred x = x :=
+        le_antisymm (Order.pred_le x) (h_min (Order.pred_le x))
+      -- x is min of M.carrier, contradicting NoMinOrder
+      exact not_isMin x h_min
+    exact ⟨⟨Order.pred x, h_N_pred ⟨x, hx⟩⟩,
+      Order.pred_lt_of_not_isMin this⟩
+  -- All points in N are contemp_equiv to each other (single class).
+  have h_N_one_class : ∀ (x y : classA), contemp_equiv sig k M x.val y.val := by
+    intro ⟨x, hx⟩ ⟨y, hy⟩
+    exact (contemp_equiv_is_equiv sig k M).trans
+      ((contemp_equiv_is_equiv sig k M).symm hx) hy
+  -- N's subintervals are the same as M's subintervals (convexity of class).
+  -- Since all points in N are contemp_equiv in M, all N-subintervals are very_good.
+  have h_N_very_good : ∀ (x y : classA), x.val ≤ y.val →
+      good sig k (M.subinterval sig x.val y.val) := by
+    intro ⟨x, hx⟩ ⟨y, hy⟩ hxy
+    -- x ~M y (both in class(a)), so contemp_equiv x y
+    have hce := h_N_one_class ⟨x, hx⟩ ⟨y, hy⟩
+    -- contemp_equiv x y = very_good([min x y, max x y]) = very_good([x, y])
+    simp only [contemp_equiv, min_eq_left hxy, max_eq_right hxy] at hce
+    -- hce : very_good(M.subinterval sig x y)
+    -- Use good_of_very_good_subinterval with c = x, d = y
+    exact good_of_very_good_subinterval sig k M x y hxy hce x y
+      (le_refl x) (le_refl y) hxy
+
+  -- === Step 6: Class spread (Reynolds Lemma 9.1) ===
+  -- For any temporal formula A, if A holds at some point of M,
+  -- then A holds at some point of every contemp_equiv class.
+  -- Proof: "∃ y ~M x, A(y)" is contemp_equiv-invariant.
+  -- By invariant_formula_constant, it's constant.
+  -- If true at one class, true at all.
   --
-  -- The right_gap_class_formula holds everywhere (h_R_everywhere gives this).
-  -- This means every class is bounded above. The key is to find a
-  -- contemp_equiv-invariant formula that CANNOT hold everywhere in a Prior
-  -- structure with h_surj.
+  -- We use `table_correctness` to get a MonadicFormula for A,
+  -- and the fact that contemp_equiv-invariant properties are constant.
+  have class_spread : ∀ (A : Formula) (s : M.carrier),
+      temporal_truth M atomMap s A →
+      ∀ (t : M.carrier), ∃ (t' : M.carrier),
+        contemp_equiv sig k M t t' ∧ temporal_truth M atomMap t' A := by
+    intro A s h_A_s t
+    -- If t ~M s, take t' = s
+    by_cases h_same : contemp_equiv sig k M t s
+    · exact ⟨s, h_same, h_A_s⟩
+    -- Otherwise, t and s are in different classes.
+    -- The formula (table sig atomMap A) is a MonadicFormula sig 1.
+    -- Consider: "∃ y ~M x, eval M (fun _ => y) (table sig atomMap A)".
+    -- This is contemp_equiv-invariant and holds at s (witness y = s).
+    -- By invariant_formula_constant, it holds at all points.
+    -- In particular, it holds at t: ∃ y ~M t, A(y).
+    --
+    -- However, we need this as a MonadicFormula to apply invariant_formula_constant.
+    -- Instead, we use an indirect argument via right_gap_class_formula.
+    --
+    -- Actually, we prove this by showing that the set of classes where A holds
+    -- is an invariant property, using table_correctness and the constancy argument.
+    --
+    -- Key: table sig atomMap A : MonadicFormula sig 1.
+    -- Define φ(x) = table sig atomMap A evaluated at x.
+    -- φ is NOT invariant in general.
+    -- But "∃ y ~M x, φ(y)" IS invariant.
+    -- Since we can't directly encode this as MonadicFormula without contemp_equiv formula,
+    -- we use a proof by contradiction with Prior-UZ/SZ.
+    --
+    -- Assume A doesn't hold at any point of class(t).
+    -- Then for all t' ~M t, ¬ temporal_truth M atomMap t' A.
+    by_contra h_no_spread
+    push_neg at h_no_spread
+    -- h_no_spread : ∀ t', contemp_equiv sig k M t t' → ¬ temporal_truth M atomMap t' A
+    -- But A holds at s. And s is not in class(t).
+    -- We need to derive a contradiction.
+    -- Since A holds at s and ¬A at all points of class(t),
+    -- the formula (table sig atomMap A) distinguishes s from class(t).
+    -- But all classes have the same monadic theory (by invariant_formula_constant for invariant formulas).
+    -- The issue is that (table sig atomMap A) is not invariant.
+    --
+    -- HOWEVER: we can construct an invariant formula as follows.
+    -- The key insight: right_gap_class_formula IS a MonadicFormula sig 1 that is invariant.
+    -- And we know contemp_equiv is definable in monadic FO (it's the same logic used to
+    -- build right_gap_class_formula from good_sentence + relativize).
+    -- So "∃ y ~M x, table_A(y)" IS a MonadicFormula sig 1.
+    --
+    -- For now, we use a more direct approach:
+    -- We prove class spread using the SPECIFIC structure of our setup,
+    -- without encoding the full contemp_equiv MonadicFormula.
+    --
+    -- Approach: Since A holds at s and s is in class(s), and class(s) ≠ class(t),
+    -- we will derive that A must hold somewhere in class(t) by using
+    -- US_expressively_complete_over_prior applied to a formula that encodes
+    -- "A holds somewhere in my class."
+    --
+    -- Step: Construct a MonadicFormula sig 1 φ_spread such that
+    -- eval M (fun _ => x) φ_spread ↔ ∃ y, contemp_equiv sig k M x y ∧ eval M (fun _ => y) (table sig atomMap A)
+    --
+    -- φ_spread = .ex (.and (contemp_eq_body) ((table sig atomMap A).lift 1))
+    -- where contemp_eq_body : MonadicFormula sig 2 encodes contemp_equiv(var 1, var 0)
+    -- (var 0 = y, var 1 = x after .ex)
+    --
+    -- contemp_equiv(x, y) = very_good(subinterval(min(x,y), max(x,y)))
+    -- = ∀ a b, (a between x and y) → (b between x and y) → a ≤ b → good([a,b])
+    -- = ∀ a b, ((x ≤ a ∧ a ≤ y) ∨ (y ≤ a ∧ a ≤ x)) → ... → good([a,b])
+    --
+    -- A simpler equivalent: very_good(subinterval(min, max)) ↔
+    --   ∀ a b, min(x,y) ≤ a → a ≤ b → b ≤ max(x,y) → good([a,b])
+    -- And min(x,y) ≤ a ↔ (x ≤ a ∧ (x ≤ y ∨ y ≤ a)) ... this is complex.
+    -- Simplify: min(x,y) ≤ a ↔ x ≤ a ∨ y ≤ a. Similarly b ≤ max(x,y) ↔ b ≤ x ∨ b ≤ y.
+    --
+    -- So contemp_equiv(x, y) ↔ ∀ a b, (x ≤ a ∨ y ≤ a) → a ≤ b → (b ≤ x ∨ b ≤ y) → good([a,b])
+    -- This IS encodable as MonadicFormula sig 2 using the existing good_formula_relativized.
+    sorry
+  -- === Step 7: Truth preservation (Reynolds Lemma 12 simplified) ===
+  -- For all temporal formulas A and all t ∈ class(a):
+  -- temporal_truth M atomMap t A ↔ temporal_truth N (fun f => atomMap f) t_N A
+  -- where t_N = ⟨t, h_t_in_class⟩ : N.carrier.
   --
-  -- The contradiction comes from the combination:
-  -- (1) Every class is bounded above (right_gap_class_prop everywhere)
-  -- (2) Every class is succ-closed (no_boundary_at_successor)
-  -- (3) Class(a) is proper (h_not_equiv)
-  -- (4) All contemp_equiv-invariant formulas are constant
-  --
-  -- From (1)-(3): the carrier is NOT IsSuccArchimedean.
-  -- By class_gap_exists: a Gap exists.
-  -- By (4): any invariant formula detecting "gap structure" must be constant.
-  -- But right_gap_class_formula IS one such formula, and it's TRUE everywhere.
-  -- Its negation is FALSE everywhere (also constant). Neither leads to immediate
-  -- contradiction from constancy alone.
-  --
-  -- The final contradiction requires showing that h_R_everywhere (every class
-  -- bounded above at a gap) is incompatible with the Prior structure.
-  -- This is Reynolds' model surgery argument (Lemmas 7-13): construct a model N
-  -- by collapsing the gap, show temporal truth is preserved, derive contradiction.
+  -- The proof is by structural induction on A.
+  -- Cases atom/bot/imp/box: immediate (predicates are inherited).
+  -- Case U(φ,ψ): forward uses class_spread; backward uses convexity.
+  -- Case S(φ,ψ): dual of U.
   sorry
 
 /--
