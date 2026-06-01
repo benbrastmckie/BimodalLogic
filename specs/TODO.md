@@ -67,9 +67,10 @@ technical_debt:
 
 ### Tableau Training
 
-233 [PLANNED] — Replace unsound identity-collapse modal rules with correct S5 rul
+233 [COMPLETED] — Replace unsound identity-collapse modal rules with correct S5 rul
   - **Research**: [specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md]
   - **Plan**: [specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md]
+  - **Summary**: [specs/233_s5_modal_tableau_rules/summaries/01_s5-modal-summary.md]
   └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
     └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
@@ -360,11 +361,15 @@ technical_debt:
 
 ### 232. Labeled branch infrastructure for world/time-indexed tableau
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Topic**: tableau-training
 - **Dependencies**: none
+- **Artifacts**:
+  - [specs/232_labeled_branch_infrastructure/reports/01_labeled-branch-research.md]
+  - [specs/232_labeled_branch_infrastructure/plans/01_labeled-branch-plan.md]
+  - [specs/232_labeled_branch_infrastructure/summaries/01_labeled-branch-summary.md]
 
 **Description**: Replace flat `SignedFormula` (`{ sign, formula }` at `SignedFormula.lean:101-106`) and `Branch` (`List SignedFormula` at line 176) with world/time-indexed types. Extend `SignedFormula` with `worldIdx : Nat` and `timeIdx : Int`. Extend `Branch` with known worlds, known time points with ordering constraints, and propagation queues. Migrate 8 propositional rules (operate within same world+time). Update `Closure.lean` contradiction detection (match within same world+time). Update `Saturation.lean` expansion. Preserve sorry-free compilation. Files: `SignedFormula.lean`, `Tableau.lean`, `Closure.lean`, `Saturation.lean`, `DecisionProcedure.lean`, `ProofExtraction.lean`, `CountermodelExtraction.lean`, `Correctness.lean`.
 
