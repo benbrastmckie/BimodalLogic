@@ -109,24 +109,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Dense-specific tableau rules [NOT STARTED]
+### Phase 2: Dense-specific tableau rules [COMPLETED]
 
 **Goal**: Add tableau rules that exploit the Dense frame class axioms: a density rule for intermediate-point insertion and closure via the dense indicator axiom `neg U(top, bot)`.
 
 **Tasks**:
-- [ ] Add `TableauRule` constructors to the `inductive TableauRule` enum (Tableau.lean:67-116):
+- [x] Add `TableauRule` constructors to the `inductive TableauRule` enum (Tableau.lean:67-116):
   - `denseIndicatorClosure` -- close branch when `T(U(top, bot))` appears with `fc >= .Dense` (since `neg U(top, bot)` is a Dense axiom)
   - `densityRule` -- when `T(G(phi))` and a future witness time exists on the branch, introduce intermediate time with `T(phi)` (captures density: between any two points there is another)
-- [ ] Add `isApplicable` cases for both new rules in Tableau.lean:247+ gated by `fc : FrameClass` parameter (only applicable when `.Dense <= fc`)
-- [ ] Add `applyRule` cases in Tableau.lean:288+ for both new rules:
+- [x] Add `isApplicable` cases for both new rules in Tableau.lean:247+ gated by `fc : FrameClass` parameter (only applicable when `.Dense <= fc`)
+- [x] Add `applyRule` cases in Tableau.lean:288+ for both new rules:
   - `denseIndicatorClosure`: return `.linear []` (closure, branch will be caught by `checkAxiomNeg` after gating, or directly close here)
-  - `densityRule`: return `.extended newBranch` adding intermediate time point with the appropriate signed formulas
-- [ ] Create `allRulesForFC (fc : FrameClass) : List TableauRule` that includes Dense rules only when `.Dense <= fc`; update `findApplicableRule` to use this instead of the fixed `allRules` list
-- [ ] Add Dense-specific `#eval` tests to Saturation.lean verifying:
+  - `densityRule`: return `.persistent [witness :: gProps]` adding intermediate time point with the appropriate signed formulas *(deviation: altered -- used persistent instead of extended to keep T(G(phi)) on branch for re-propagation)*
+- [x] Create `allRulesForFC (fc : FrameClass) : List TableauRule` that includes Dense rules only when `.Dense <= fc`; update `findApplicableRule` to use this instead of the fixed `allRules` list
+- [ ] Add Dense-specific `#eval` tests to Saturation.lean verifying: *(deviation: deferred to Phase 4 -- integration tests consolidated)*
   - `buildTableau (density_axiom p) (fc := .Dense)` closes (valid on Dense)
   - `buildTableau (dense_indicator) (fc := .Dense)` closes (valid on Dense)
   - `buildTableau (dense_indicator) (fc := .Base)` does NOT close (not valid on Base)
-- [ ] Run `lake build` to verify zero errors
+- [x] Run `lake build` to verify zero errors
 
 **Timing**: 2 hours
 
@@ -143,27 +143,27 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Discrete-specific tableau rules [NOT STARTED]
+### Phase 3: Discrete-specific tableau rules [COMPLETED]
 
 **Goal**: Add tableau rules that exploit the Discrete frame class axioms: Prior-UZ/SZ decomposition rules and the Z1 backward induction rule.
 
 **Tasks**:
-- [ ] Add `TableauRule` constructors to the `inductive TableauRule` enum (Tableau.lean):
+- [x] Add `TableauRule` constructors to the `inductive TableauRule` enum (Tableau.lean):
   - `priorUZ` -- when `T(F(phi))` is on the branch with `.Discrete <= fc`, add `T(U(phi, neg phi))` (nearest future phi-point reachable by Until)
   - `priorSZ` -- when `T(P(phi))` is on the branch with `.Discrete <= fc`, add `T(S(phi, neg phi))` (nearest past phi-point reachable by Since)
   - `z1Rule` -- when `T(G(G(phi) -> phi))` and `T(F(G(phi)))` are both on the branch with `.Discrete <= fc`, add `T(G(phi))` (IsSuccArchimedean backward induction)
-- [ ] Add `isApplicable` cases for all three rules, gated by `.Discrete <= fc`
-- [ ] Add `applyRule` cases:
-  - `priorUZ`: match `T(F(phi))`, produce `.linear [T(U(phi, neg phi))]` at same label
-  - `priorSZ`: match `T(P(phi))`, produce `.linear [T(S(phi, neg phi))]` at same label
-  - `z1Rule`: search branch for matching pair `T(G(imp (G phi) phi))` and `T(F(G phi))`, produce `.linear [T(G phi)]` at same label
-- [ ] Update `allRulesForFC` to include Discrete rules when `.Discrete <= fc`
-- [ ] Add Discrete-specific `#eval` tests to Saturation.lean verifying:
+- [x] Add `isApplicable` cases for all three rules, gated by `.Discrete <= fc`
+- [x] Add `applyRule` cases:
+  - `priorUZ`: match `T(F(phi))`, produce `.persistent [T(U(phi, neg phi))]` at same label *(deviation: altered -- used persistent to keep source formula)*
+  - `priorSZ`: match `T(P(phi))`, produce `.persistent [T(S(phi, neg phi))]` at same label *(deviation: altered -- used persistent to keep source formula)*
+  - `z1Rule`: search branch for matching pair `T(G(G(phi) -> phi))` and `T(F(G(phi)))`, produce `.persistent [T(G(phi))]` at same label *(deviation: altered -- used persistent to keep source formula)*
+- [x] Update `allRulesForFC` to include Discrete rules when `.Discrete <= fc`
+- [ ] Add Discrete-specific `#eval` tests to Saturation.lean verifying: *(deviation: deferred to Phase 4 -- integration tests consolidated)*
   - `buildTableau (prior_UZ_axiom p) (fc := .Discrete)` closes (valid on Discrete)
   - `buildTableau (z1_axiom p) (fc := .Discrete)` closes (valid on Discrete)
   - `buildTableau (prior_UZ_axiom p) (fc := .Base)` does NOT close (not valid on Base)
   - `buildTableau (prior_UZ_axiom p) (fc := .Dense)` does NOT close (Dense and Discrete are incomparable)
-- [ ] Run `lake build` to verify zero errors
+- [x] Run `lake build` to verify zero errors
 
 **Timing**: 2 hours
 
