@@ -123,17 +123,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Multi-Instantiation Variants [NOT STARTED]
+### Phase 3: Multi-Instantiation Variants [COMPLETED]
 
 **Goal**: Register existing theorems with alternative formula parameters (compound formulas like `p.imp q`, `p.box`, `p.all_future`) to increase dataset variety and theorem count toward the 200+ target.
 
 **Tasks**:
-- [ ] Add multi-instantiation variants for identity: `identity (p.imp q)`, `identity p.box`, `identity p.all_future`, `identity (p.and q)`, `identity (p.or q)`
-- [ ] Add multi-instantiation variants for b_combinator with alternative atom triples
-- [ ] Add multi-instantiation variants for modal theorems (t_box_to_diamond, box_contrapose, k_dist_diamond, diamond_4, modal_5) with alternative atoms (q, r, s, compound formulas)
-- [ ] Add multi-instantiation variants for temporal theorems (connect_future_thm, connect_past_thm, G_implies_G_id) with alternative atoms
-- [ ] Add G-wrapped variants of the new multi-instantiation entries (selected subset for temporal coverage boost)
-- [ ] Run `lake build Bimodal.Automation.ProofStepExport` to verify
+- [x] Add multi-instantiation variants for identity: `identity (p.imp q)`, `identity p.box`, `identity p.all_future`, `identity (p.and q)`, `identity (p.or q)`
+- [x] Add multi-instantiation variants for b_combinator with alternative atom triples
+- [x] Add multi-instantiation variants for modal theorems (t_box_to_diamond, box_contrapose, k_dist_diamond, diamond_4, modal_5) with alternative atoms (q, r, s, compound formulas)
+- [x] Add multi-instantiation variants for temporal theorems (connect_future_thm, connect_past_thm, G_implies_G_id) with alternative atoms
+- [x] Add G-wrapped variants of the new multi-instantiation entries (selected subset for temporal coverage boost) *(deviation: altered -- also added H-wrapped and GG/GGG-wrapped axiom instantiations for stronger temporal coverage)*
+- [x] Run `lake build Bimodal.Automation.ProofStepExport` to verify
 
 **Timing**: 1.5 hours
 

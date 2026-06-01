@@ -627,7 +627,250 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX13': enrichment_since: p ∧ S(ψ,φ) → S(ψ ∧ U(p,φ), φ)
   mkEntry "enrichment_since_axiom"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_since p q r) trivial)
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_since p q r) trivial),
+
+  -- ============================================================
+  -- MULTI-INSTANTIATION VARIANTS: Existing theorems with
+  -- alternative formula parameters for dataset variety.
+  -- ============================================================
+
+  -- Identity variants with compound formulas
+  mkEntry "identity_imp"
+    (@identity .Base (p.imp q)),
+  mkEntry "identity_box"
+    (@identity .Base p.box),
+  mkEntry "identity_all_future"
+    (@identity .Base p.all_future),
+  mkEntry "identity_and"
+    (@identity .Base (p.and q)),
+  mkEntry "identity_or"
+    (@identity .Base (p.or q)),
+
+  -- b_combinator with alternative atoms
+  mkEntry "b_combinator_qrs"
+    (@b_combinator .Base (A := q) (B := r) (C := s)),
+  mkEntry "b_combinator_rsp"
+    (@b_combinator .Base (A := r) (B := s) (C := p)),
+  mkEntry "b_combinator_pqp"
+    (@b_combinator .Base (A := p) (B := q) (C := p)),
+
+  -- theorem_flip with alternative atoms
+  mkEntry "theorem_flip_qrs"
+    (@theorem_flip .Base (A := q) (B := r) (C := s)),
+
+  -- theorem_app1 with alternative atoms
+  mkEntry "theorem_app1_qr"
+    (@theorem_app1 .Base (A := q) (B := r)),
+  mkEntry "theorem_app1_rs"
+    (@theorem_app1 .Base (A := r) (B := s)),
+
+  -- pairing variants
+  mkEntry "pairing_qr"
+    (@pairing .Base q r),
+  mkEntry "pairing_rs"
+    (@pairing .Base r s),
+
+  -- dni variants
+  mkEntry "dni_q"
+    (@dni .Base q),
+  mkEntry "dni_imp"
+    (@dni .Base (p.imp q)),
+
+  -- Modal theorem variants with alternative atoms
+  mkEntry "t_box_to_diamond_q"
+    (Bimodal.Theorems.ModalS5.t_box_to_diamond q),
+  mkEntry "t_box_to_diamond_r"
+    (Bimodal.Theorems.ModalS5.t_box_to_diamond r),
+  mkEntry "t_box_to_diamond_imp"
+    (Bimodal.Theorems.ModalS5.t_box_to_diamond (p.imp q)),
+
+  mkEntry "box_contrapose_qr"
+    (Bimodal.Theorems.ModalS5.box_contrapose q r),
+  mkEntry "box_contrapose_rs"
+    (Bimodal.Theorems.ModalS5.box_contrapose r s),
+
+  mkEntry "k_dist_diamond_qr"
+    (Bimodal.Theorems.ModalS5.k_dist_diamond q r),
+  mkEntry "k_dist_diamond_rs"
+    (Bimodal.Theorems.ModalS5.k_dist_diamond r s),
+
+  mkEntry "t_box_consistency_q"
+    (Bimodal.Theorems.ModalS5.t_box_consistency q),
+
+  mkEntry "diamond_4_q"
+    (Bimodal.Theorems.Perpetuity.diamond_4 q),
+  mkEntry "diamond_4_r"
+    (Bimodal.Theorems.Perpetuity.diamond_4 r),
+
+  mkEntry "modal_5_q"
+    (Bimodal.Theorems.Perpetuity.modal_5 q),
+  mkEntry "modal_5_r"
+    (Bimodal.Theorems.Perpetuity.modal_5 r),
+
+  mkEntry "s5_diamond_box_to_truth_q"
+    (Bimodal.Theorems.ModalS5.s5_diamond_box_to_truth q),
+
+  mkEntry "mb_diamond_q"
+    (Bimodal.Theorems.Perpetuity.mb_diamond q),
+  mkEntry "mb_diamond_r"
+    (Bimodal.Theorems.Perpetuity.mb_diamond r),
+
+  -- Temporal theorem variants with alternative atoms
+  mkEntry "connect_future_thm_q"
+    (Bimodal.Theorems.TemporalDerived.connect_future_thm q),
+  mkEntry "connect_future_thm_r"
+    (Bimodal.Theorems.TemporalDerived.connect_future_thm r),
+
+  mkEntry "connect_past_thm_q"
+    (Bimodal.Theorems.TemporalDerived.connect_past_thm q),
+  mkEntry "connect_past_thm_r"
+    (Bimodal.Theorems.TemporalDerived.connect_past_thm r),
+
+  mkEntry "G_implies_G_id_q"
+    (Bimodal.Theorems.TemporalDerived.G_implies_G_id q),
+
+  mkEntry "until_imp_F_qr"
+    (Bimodal.Theorems.TemporalDerived.until_imp_F q r),
+  mkEntry "since_imp_P_qr"
+    (Bimodal.Theorems.TemporalDerived.since_imp_P q r),
+
+  mkEntry "box_to_future_q"
+    (Bimodal.Theorems.Perpetuity.box_to_future q),
+  mkEntry "box_to_past_q"
+    (Bimodal.Theorems.Perpetuity.box_to_past q),
+
+  -- Perpetuity variants
+  mkEntry "temp_future_derived_q"
+    (@temp_future_derived .Base q),
+  mkEntry "box_to_box_past_q"
+    (Bimodal.Theorems.Perpetuity.box_to_box_past q),
+
+  -- Additional temporal axiom instantiations with different formula params
+  mkEntry "self_accum_until_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until q r) trivial),
+  mkEntry "self_accum_since_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_since q r) trivial),
+  mkEntry "absorb_until_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until q r) trivial),
+  mkEntry "absorb_since_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_since q r) trivial),
+  mkEntry "temp_linearity_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity q r) trivial),
+  mkEntry "F_until_equiv_axiom_q"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv q) trivial),
+  mkEntry "P_since_equiv_axiom_q"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.P_since_equiv q) trivial),
+  mkEntry "enrichment_until_axiom_qrs"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_until q r s) trivial),
+  mkEntry "enrichment_since_axiom_qrs"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_since q r s) trivial),
+
+  -- ============================================================
+  -- G-WRAPPED MULTI-INSTANTIATION: Selected entries with
+  -- temporal_necessitation for temporal coverage boost
+  -- ============================================================
+
+  -- G-wrapped identity variants (high temporal ratio: 1/6 = 17%)
+  mkEntry "G_identity_imp"
+    (DerivationTree.temporal_necessitation _ (@identity .Base (p.imp q))),
+  mkEntry "G_identity_box"
+    (DerivationTree.temporal_necessitation _ (@identity .Base p.box)),
+  mkEntry "G_identity_all_future"
+    (DerivationTree.temporal_necessitation _ (@identity .Base p.all_future)),
+  mkEntry "G_identity_and"
+    (DerivationTree.temporal_necessitation _ (@identity .Base (p.and q))),
+  mkEntry "G_identity_or"
+    (DerivationTree.temporal_necessitation _ (@identity .Base (p.or q))),
+
+  -- G-wrapped modal variants
+  mkEntry "G_t_box_to_diamond_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.t_box_to_diamond q)),
+  mkEntry "G_diamond_4_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.diamond_4 q)),
+  mkEntry "G_modal_5_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.modal_5 q)),
+  mkEntry "G_mb_diamond_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond q)),
+  mkEntry "G_s5_diamond_box_to_truth_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.ModalS5.s5_diamond_box_to_truth q)),
+
+  -- G-wrapped temporal variants
+  mkEntry "G_connect_future_thm_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_future_thm q)),
+  mkEntry "G_connect_past_thm_q"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.connect_past_thm q)),
+  mkEntry "G_until_imp_F_qr"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F q r)),
+  mkEntry "G_since_imp_P_qr"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P q r)),
+
+  -- G-wrapped axiom instantiation variants (50% temporal ratio: 1/2)
+  mkEntry "G_serial_future_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G_serial_past_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G_self_accum_until_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial)),
+  mkEntry "G_absorb_until_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial)),
+  mkEntry "G_temp_linearity_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity p q) trivial)),
+  mkEntry "G_F_until_equiv_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),
+
+  -- H-wrapped axiom instantiation variants (2 temporal steps each)
+  mkEntry "H_serial_future_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial))),
+  mkEntry "H_serial_past_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial))),
+  mkEntry "H_self_accum_until_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial))),
+  mkEntry "H_absorb_until_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial))),
+
+  -- GG-wrapped small axiom instantiations (2 temporal steps, 3 total: 67%)
+  mkEntry "GG_serial_future_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial))),
+  mkEntry "GG_serial_past_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial))),
+  mkEntry "GG_F_until_equiv_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial))),
+  mkEntry "GG_P_since_equiv_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.P_since_equiv p) trivial))),
+
+  -- GGG-wrapped single-step axiom instantiations (3 temporal steps, 4 total: 75%)
+  mkEntry "GGG_serial_future_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _
+          (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)))),
+  mkEntry "GGG_serial_past_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.temporal_necessitation _
+          (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial))))
 ]
 
 /-!
