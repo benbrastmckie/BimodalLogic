@@ -102,17 +102,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update Documentation and Download References [NOT STARTED]
+### Phase 2: Update Documentation and Download References [PARTIAL]
 
 **Goal**: Update repository documentation to establish HF Hub as the canonical data source and provide download instructions for downstream consumers.
 
 **Tasks**:
-- [ ] Update `data/README.md` "Git LFS" section to note datasets are now hosted on HF Hub
-- [ ] Add HF Hub download instructions to `data/README.md` (huggingface-cli and Python API)
-- [ ] Add HF dataset URL and revision pinning guidance to `data/README.md`
-- [ ] Update `data/hf-dataset/PUBLISHING.md` with the actual published URL and v1.0 tag
-- [ ] Add a "Downstream Consumer Setup" section to `data/README.md` documenting how BimodalHarness (or any consumer) should download data from HF Hub instead of cloning LFS files
-- [ ] Update any references to `git lfs pull` in documentation to note HF Hub as preferred source
+- [x] Update `data/README.md` "Git LFS" section to note datasets are now hosted on HF Hub *(completed: section replaced with "Canonical Data Source: Hugging Face Hub")*
+- [x] Add HF Hub download instructions to `data/README.md` (huggingface-cli and Python API) *(completed)*
+- [x] Add HF dataset URL and revision pinning guidance to `data/README.md` *(completed)*
+- [ ] Update `data/hf-dataset/PUBLISHING.md` with the actual published URL and v1.0 tag *(deviation: deferred — URL not available until Phase 1 upload)*
+- [x] Add a "Downstream Consumer Setup" section to `data/README.md` documenting how BimodalHarness (or any consumer) should download data from HF Hub instead of cloning LFS files *(completed)*
+- [x] Update any references to `git lfs pull` in documentation to note HF Hub as preferred source *(completed)*
 
 **Timing**: 45 minutes
 
@@ -158,17 +158,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Optional History Cleanup Documentation [NOT STARTED]
+### Phase 4: Optional History Cleanup Documentation [COMPLETED]
 
 **Goal**: Document the process for removing LFS objects from git history (BFG Repo-Cleaner or git filter-repo) without executing the rewrite. This preserves the option for future cleanup while avoiding the disruptive force-push required for history rewriting.
 
 **Tasks**:
-- [ ] Add a "History Cleanup (Optional)" section to `data/README.md` documenting:
+- [x] Add a "History Cleanup (Optional)" section to `data/README.md` documenting: *(completed: added to "Canonical Data Source" section)*
   - BFG Repo-Cleaner command: `java -jar bfg.jar --strip-blobs-bigger-than 50M`
   - git-filter-repo alternative: `git filter-repo --path-glob 'data/*.jsonl' --invert-paths`
   - Warning about force-push requirement and collaborator re-clone
   - Estimated LFS storage savings (~105 MB currently)
-- [ ] Note in README that existing LFS objects will naturally become unreferenced over time and can be pruned via GitHub's LFS management UI
+- [x] Note in README that existing LFS objects will naturally become unreferenced over time and can be pruned via GitHub's LFS management UI *(completed)*
 
 **Timing**: 15 minutes
 
