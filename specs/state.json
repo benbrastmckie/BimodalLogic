@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 251,
+      "project_name": "optimize_generate_valid_batch_bottleneck",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        217
+      ],
+      "created": "2026-06-01T18:14:22Z",
+      "last_updated": "2026-06-01T18:14:22Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
       "project_number": 250,
       "project_name": "enriched_formula_json_export",
       "status": "not_started",
@@ -1536,7 +1552,7 @@
     {
       "project_number": 235,
       "project_name": "until_since_tableau_rules",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
       "priority": "critical",
@@ -1545,7 +1561,7 @@
         232
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-01T22:30:00Z"
     },
     {
       "project_number": 236,
@@ -1727,7 +1743,7 @@
       "last_updated": "2026-06-01T22:00:00Z"
     }
   ],
-  "next_project_number": 251,
+  "next_project_number": 252,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

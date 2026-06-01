@@ -1,5 +1,5 @@
 ---
-next_project_number: 251
+next_project_number: 252
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -98,7 +98,8 @@ technical_debt:
   └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur (see above)
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
   └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
-235 [NOT STARTED] — Implement tableau rules for primitive Until (untl) and Since (snc
+235 [RESEARCHED] — Implement tableau rules for primitive Until (untl) and Since (snc
+- **Research**: [specs/235_until_since_tableau_rules/reports/01_until-since-research.md]
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
   └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
 
@@ -151,6 +152,14 @@ technical_debt:
 224 [NOT STARTED] — Investigate whether the finite insertion argument can prove IsSuc
 
 ## Tasks
+
+### 251. Optimize generateValidBatch O(n^2) MP closure bottleneck
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 217
+
+**Description**: Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M
