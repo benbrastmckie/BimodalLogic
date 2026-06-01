@@ -154,7 +154,7 @@ Phases are fully sequential following the import DAG.
 
 ---
 
-### Phase 3: Closure Detection Update [NOT STARTED]
+### Phase 3: Closure Detection Update [COMPLETED]
 
 **Goal**: Update `ClosureReason` to carry labels. Update contradiction detection to match within same world+time. Re-prove all 6 monotonicity lemmas and 2 derived closure theorems.
 

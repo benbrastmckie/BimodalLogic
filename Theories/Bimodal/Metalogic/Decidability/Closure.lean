@@ -48,21 +48,21 @@ Each constructor provides evidence of the contradiction:
 - `axiomNeg`: F(axiom) is present (negating a valid axiom)
 -/
 inductive ClosureReason : Type where
-  /-- Branch contains both T(φ) and F(φ) for some formula φ. -/
-  | contradiction (φ : Formula)
-  /-- Branch contains T(⊥) (bottom asserted true). -/
-  | botPos
-  /-- Branch contains F(φ) where φ is an axiom instance. -/
-  | axiomNeg (φ : Formula) (witness : Axiom φ)
+  /-- Branch contains both T(φ) and F(φ) at the same label. -/
+  | contradiction (φ : Formula) (label : Label)
+  /-- Branch contains T(⊥) at some label. -/
+  | botPos (label : Label)
+  /-- Branch contains F(φ) where φ is an axiom instance, at some label. -/
+  | axiomNeg (φ : Formula) (witness : Axiom φ) (label : Label)
   deriving Repr
 
 namespace ClosureReason
 
 /-- Get a description of the closure reason. -/
 def describe : ClosureReason → String
-  | contradiction φ => s!"Contradiction on formula: {repr φ}"
-  | botPos => "Bottom asserted true (T(⊥))"
-  | axiomNeg φ _ => s!"Negated axiom: {repr φ}"
+  | contradiction φ l => s!"Contradiction on formula: {repr φ} at world {l.world}, time {l.time}"
+  | botPos l => s!"Bottom asserted true (T(⊥)) at world {l.world}, time {l.time}"
+  | axiomNeg φ _ l => s!"Negated axiom: {repr φ} at world {l.world}, time {l.time}"
 
 end ClosureReason
 
@@ -71,19 +71,21 @@ end ClosureReason
 -/
 
 /--
-Check if a branch contains T(⊥).
+Check if a branch contains T(⊥) at any label.
+Records the label at which T(⊥) was found.
 -/
 def checkBotPos (b : Branch) : Option ClosureReason :=
-  if b.hasBotPos then some .botPos else none
+  b.findSome? fun sf =>
+    if sf.sign == .pos && sf.formula == .bot then some (.botPos sf.label) else none
 
 /--
-Check if a branch contains a direct contradiction (both T(φ) and F(φ)).
-Returns the formula that causes the contradiction if found.
+Check if a branch contains a direct contradiction (both T(φ) and F(φ) at the same label).
+Returns the formula and label that cause the contradiction if found.
 -/
 def checkContradiction (b : Branch) : Option ClosureReason :=
   b.findSome? fun sf =>
-    if sf.isPos ∧ b.hasNeg sf.formula then
-      some (.contradiction sf.formula)
+    if sf.isPos ∧ b.hasNegAt sf.formula sf.label then
+      some (.contradiction sf.formula sf.label)
     else
       none
 
@@ -97,7 +99,7 @@ def checkAxiomNeg (b : Branch) : Option ClosureReason :=
       match matchAxiom sf.formula with
       | some ⟨φ, witness⟩ =>
           if sf.formula = φ then
-            some (.axiomNeg φ witness)
+            some (.axiomNeg φ witness sf.label)
           else
             none
       | none => none
@@ -194,12 +196,34 @@ theorem hasPos_mono (b : Branch) (x : SignedFormula) (φ : Formula) :
   exact h
 
 /--
+hasNegAt is monotonic: if `b` contains F(φ) at label `l`, then `x :: b` also does.
+-/
+theorem hasNegAt_mono (b : Branch) (x : SignedFormula) (φ : Formula) (l : Label) :
+    Branch.hasNegAt b φ l → Branch.hasNegAt (x :: b) φ l := by
+  intro h
+  simp only [Branch.hasNegAt, Branch.contains, List.any_cons] at h ⊢
+  simp only [Bool.or_eq_true]
+  right
+  exact h
+
+/--
+hasPosAt is monotonic: if `b` contains T(φ) at label `l`, then `x :: b` also does.
+-/
+theorem hasPosAt_mono (b : Branch) (x : SignedFormula) (φ : Formula) (l : Label) :
+    Branch.hasPosAt b φ l → Branch.hasPosAt (x :: b) φ l := by
+  intro h
+  simp only [Branch.hasPosAt, Branch.contains, List.any_cons] at h ⊢
+  simp only [Bool.or_eq_true]
+  right
+  exact h
+
+/--
 hasBotPos is monotonic: if `b` contains T(⊥), then `x :: b` also contains T(⊥).
 -/
 theorem hasBotPos_mono (b : Branch) (x : SignedFormula) :
     Branch.hasBotPos b → Branch.hasBotPos (x :: b) := by
   intro h
-  simp only [Branch.hasBotPos, Branch.contains, List.any_cons] at h ⊢
+  simp only [Branch.hasBotPos, List.any_cons] at h ⊢
   simp only [Bool.or_eq_true]
   right
   exact h
@@ -209,16 +233,11 @@ checkBotPos is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
 -/
 theorem checkBotPos_mono (b : Branch) (x : SignedFormula) :
     (checkBotPos b).isSome → (checkBotPos (x :: b)).isSome := by
-  simp only [checkBotPos]
   intro h
-  split_ifs with hxb
-  · rfl
-  · -- b.hasBotPos was true but (x :: b).hasBotPos is false - contradiction
-    exfalso
-    split_ifs at h with hb
-    · have := hasBotPos_mono b x hb
-      exact hxb this
-    · simp at h
+  rw [checkBotPos, List.findSome?_isSome_iff] at h
+  obtain ⟨sf, hsf_mem, hsf_cond⟩ := h
+  rw [checkBotPos, List.findSome?_isSome_iff]
+  exact ⟨sf, List.mem_cons_of_mem x hsf_mem, hsf_cond⟩
 
 /--
 checkContradiction is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
@@ -235,8 +254,9 @@ theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
   split_ifs at hreason with hcond
   -- The condition was true for b; show it's still true for x :: b
   obtain ⟨hpos, hneg⟩ := hcond
-  have hneg' : Branch.hasNeg (x :: b) sf.formula := hasNeg_mono b x sf.formula hneg
-  use ClosureReason.contradiction sf.formula
+  have hneg' : Branch.hasNegAt (x :: b) sf.formula sf.label :=
+    hasNegAt_mono b x sf.formula sf.label hneg
+  use ClosureReason.contradiction sf.formula sf.label
   split_ifs with hcond'
   · rfl
   · push_neg at hcond'
@@ -316,7 +336,7 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
           exact ⟨r', by simp [hr'']⟩
 
 /--
-If a branch has T(φ) and we add F(φ), it becomes closed.
+If a branch has T(φ) (at initial label) and we add F(φ) (at initial label), it becomes closed.
 -/
 theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     Branch.hasPos b φ → isClosed (SignedFormula.neg φ :: b) := by
@@ -326,9 +346,9 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
   cases hbot : checkBotPos (SignedFormula.neg φ :: b) with
   | some _ => rfl
   | none =>
-    -- First establish that the extended branch has F(φ) at the head
-    have hasNegPhi : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
-      simp only [Branch.hasNeg, Branch.contains, SignedFormula.neg, List.any_cons,
+    -- First establish that the extended branch has F(φ) at the head (at initial label)
+    have hasNegAtPhi : Branch.hasNegAt (SignedFormula.neg φ :: b) φ Label.initial = true := by
+      simp only [Branch.hasNegAt, Branch.contains, SignedFormula.neg, List.any_cons,
         Bool.or_eq_true]
       left
       exact @beq_self_eq_true SignedFormula _ _ (SignedFormula.neg φ)
@@ -344,11 +364,11 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
       -- witness is in b and witness = SignedFormula.pos φ
       refine ⟨witness, List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem, ?_⟩
       simp only [Option.isSome_iff_exists]
-      use ClosureReason.contradiction witness.formula
+      use ClosureReason.contradiction witness.formula witness.label
       -- Rewrite witness using hwit_eq'
       rw [hwit_eq']
-      -- Goal is: (if isPos (pos φ) ∧ hasNeg (...) φ then ... else ...) = some ...
-      simp only [SignedFormula.pos, SignedFormula.isPos, hasNegPhi, decide_true, and_self,
+      -- Goal involves checking isPos (pos φ) ∧ hasNegAt (...) φ Label.initial
+      simp only [SignedFormula.pos, SignedFormula.isPos, hasNegAtPhi, decide_true, and_self,
         ↓reduceIte]
     -- Use the fact that checkContradiction.isSome to close the goal
     simp only [Option.isSome_iff_exists] at hcontra ⊢
@@ -364,7 +384,7 @@ Count potential contradictions in a branch (for heuristic guidance).
 Counts formulas that have their negation present.
 -/
 def countPotentialContradictions (b : Branch) : Nat :=
-  b.filter (fun sf => sf.isPos ∧ b.hasNeg sf.formula) |>.length
+  b.filter (fun sf => sf.isPos ∧ b.hasNegAt sf.formula sf.label) |>.length
 
 /--
 Count negated axiom instances in a branch.
