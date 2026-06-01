@@ -131,8 +131,9 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
+      "dependencies": [165, 239, 240],
       "created": "2026-05-18T18:01:17Z",
-      "last_updated": "2026-05-18T18:01:17Z"
+      "last_updated": "2026-06-01T22:00:00Z"
     },
     {
       "project_number": 162,
@@ -1227,9 +1228,280 @@
         }
       ],
       "completion_summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass."
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_dataset_metadata_staleness",
+      "status": "planned",
+      "task_type": "general",
+      "description": "Fix all stale metadata and documentation across data/. (1) Update proof_steps_metadata.json: total_records 2424->10063, theorem_count 36->310, rule_distribution to actual (axiom:4635, modus_ponens:4325, temporal_necessitation:991, temporal_duality:63, necessitation:49), step_statistics (avg 32.5, max 327, min 1). (2) Standardize bmlogic-bench_metadata.json: rename total_count to total_records for consistency. (3) Update data/README.md: fix record counts (proof_steps 2424->10063, theorems 36->310, benchmark 727->777), update training schema table from 14 to 16 fields documenting max_modal_depth and max_temporal_depth. (4) Update data/dataset-card.md: overview table counts, proof steps statistics. (5) Resolve license inconsistency: dataset-card.md YAML says 'mit' but croissant.json says 'CC BY 4.0' — pick one and make all files consistent.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-01T20:00:00Z",
+      "last_updated": "2026-06-01T21:05:00Z",
+      "session_id": "sess_1748815200_orch228",
+      "researched": "2026-06-01T20:30:00Z",
+      "planned": "2026-06-01T21:05:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/228_fix_dataset_metadata_staleness/reports/01_metadata-staleness-audit.md",
+          "type": "research",
+          "summary": "Full audit of all stale metadata across data/: verified ground-truth values from JSONL files, catalogued all 6 files needing changes, recommended CC BY 4.0 as authoritative license, documented 16-field training schema"
+        },
+        {
+          "path": "specs/228_fix_dataset_metadata_staleness/plans/01_fix-metadata-staleness.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan: update metadata JSON files, fix documentation, cross-file verification and license standardization to CC BY 4.0"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 2,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1, 2], [3]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_metadata-staleness-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 229,
+      "project_name": "resolve_train_bench_contamination",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-c7.jsonl training data, undermining the benchmark as a held-out evaluation set. All overlapping formulas are complexity 3-7 (the c7 range). Resolution options: (A) Regenerate benchmark excluding c7 formulas, drawing from complexity>=8 and axiom instances only — truly held-out but smaller. (B) Keep overlap but add contamination_flag field and document that only non-overlapping records (224/777) are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but creates holes in exhaustive enumeration. Implement chosen approach, update all downstream artifacts (metadata, splits, paraphrases, croissant.json). Document contamination analysis and resolution in dataset card.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-01T20:00:00Z",
+      "last_updated": "2026-06-01T20:00:00Z"
+    },
+    {
+      "project_number": 230,
+      "project_name": "benchmark_refresh_splits_paraphrases_schema",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [229],
+      "created": "2026-06-01T20:00:00Z",
+      "last_updated": "2026-06-01T20:00:00Z"
+    },
+    {
+      "project_number": 231,
+      "project_name": "dataset_regeneration_automation",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. (1) Create data/scripts/sync-all.py master sync script that: (a) Scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics). (b) Updates specific fields in data/README.md: file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics (records, theorems, rule distribution, steps per theorem), cross-logic split table (records, valid rates), NL paraphrase statistics. (c) Updates specific fields in data/dataset-card.md: overview table, all record counts, proof steps section, competitive position 'primary gaps' paragraph. (d) Recomputes SHA-256 hashes and contentSize for all distributions in croissant.json. (e) Regenerates bmlogic-bench-splits.json. (f) Validates all JSONL records against declared schemas (checks field presence, types, null patterns). (g) Checks train/benchmark formula overlap and reports contamination percentage. (h) Validates metadata key consistency (total_records not total_count). (2) Idempotent and safe to run after any regeneration command (lake exe dataset_generator, lake exe proof_extractor, lake exe benchmark_oracle, finalize_benchmark.py). (3) --dry-run mode that reports what would change. (4) --commit mode that creates structured git commit. (5) CI-friendly exit codes (0=clean, 1=staleness detected, 2=validation error). (6) Update data/README.md with pipeline documentation. (7) Integrate into agent context (.claude/context/project/dataset/) so /implement for dataset tasks runs sync-all as post-implementation step. Note: supersedes task 227 (dataset_pipeline_automation_croissant_sync) with broader scope covering README/dataset-card field updates and schema validation.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [228, 230],
+      "created": "2026-06-01T20:00:00Z",
+      "last_updated": "2026-06-01T20:00:00Z"
+    },
+    {
+      "project_number": 232,
+      "project_name": "labeled_branch_infrastructure",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Replace flat SignedFormula and Branch types in Metalogic/Decidability/ with world/time-indexed types supporting proper multi-world modal and time-indexed temporal reasoning. Extend SignedFormula to carry WorldIndex and TimeIndex. Migrate all 8 propositional rules to the new infrastructure. Update Closure.lean contradiction detection to match within same world+time. Update Saturation.lean expansion to thread indices. Preserve sorry-free compilation.",
+      "priority": "critical",
+      "topic": "tableau-training",
+      "dependencies": [],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 233,
+      "project_name": "s5_modal_tableau_rules",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Replace unsound identity-collapse modal rules with correct S5 rules using world indices from task 232. Implement box/diamond propagation across S5 equivalence class, witness world introduction for F(box) and T(diamond), universal refutation for F(diamond), and auto-propagation of box-formulas to new worlds.",
+      "priority": "critical",
+      "topic": "tableau-training",
+      "dependencies": [232],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 234,
+      "project_name": "temporal_ghfp_tableau_rules",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Replace unsound identity-collapse temporal rules with correct time-indexed rules using time indices from task 232. Implement G/H/F/P expansion with strict-inequality semantics (open guard), time ordering constraint tracking, and propagation of G/H-formulas to newly created time points.",
+      "priority": "critical",
+      "topic": "tableau-training",
+      "dependencies": [232],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 235,
+      "project_name": "until_since_tableau_rules",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
+      "priority": "critical",
+      "topic": "tableau-training",
+      "dependencies": [232],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 236,
+      "project_name": "modal_temporal_interaction",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Implement cross-modal-temporal tableau rules based on modal_future axiom (box phi -> box(G phi)) and derived principles. Propagate T(box phi) to T(G phi), inherit temporal structure in new worlds and modal structure at new times. Ensure consistency of world-creation and time-creation interactions.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [233, 234],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 237,
+      "project_name": "tableau_termination_blocking",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Implement blocking strategy ensuring tableau expansion terminates for all formulas. Subset blocking: if new time/world has signed formulas that subset an ancestor, block further expansion. Relate fuel parameter to FMP-derived size bound. Replace ad-hoc fuel heuristic with sound bound from subformula closure size. Prove or argue blocking preserves completeness.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [233, 234, 235],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 238,
+      "project_name": "frame_class_tableau_gating",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Extend tableau with frame-class-specific rules for Dense and Discrete axiom layers. Dense: density rule (intermediate points), dense indicator. Discrete: Prior rules, Z1 rule, uniformity axioms. Parameterize buildTableau and decide by FrameClass. Gate rule application by minFrameClass <= fc matching the axiomatic system.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [233, 234, 235],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 239,
+      "project_name": "proof_extraction_from_tableau",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Replace stub proof extraction (returns 'Full proof extraction not yet implemented') with complete backward-chaining algorithm that builds DerivationTree terms from closed tableau branches. Map each closure reason through tableau expansion steps to specific axiom applications and inference rules. Maintain proof reconstruction stack during expansion. Handle propositional (case analysis via peirce), modal (necessitation + modal_k_dist), and temporal (BX axioms) proof fragments.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [237, 238],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 240,
+      "project_name": "countermodel_semantic_correctness",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Replace vacuous branchTruthLemma (forall sf in b, True) with genuine truth lemma: for saturated open branches, T(phi) in b implies phi true in extracted model and F(phi) in b implies phi false. Extend SimpleCountermodel to SemanticCountermodel with world states, time domain, temporal ordering, and valuation. Prove truth lemma by induction on formula structure using saturation.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [237, 238],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 241,
+      "project_name": "tableau_formula_labeling",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Rebuild DatasetGenerator.lean to use the corrected tableau for reliable formula labeling. Currently the generator uses the broken tableau producing incorrect labels for modal/temporal formulas. With correct tableau: valid formulas produce DerivationTree proofs, invalid formulas produce semantic countermodels, timeout rate drops via blocking termination. Update LabeledFormula records with richer proof traces and countermodels. Update DataExport.lean JSON serialization.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [237, 238],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 242,
+      "project_name": "tableau_proof_step_generation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Extend proof step pipeline to generate ProofStepRecord JSONL from tableau-proved formulas instead of only hand-registered theorems. Enumerate formulas via FormulaEnumerator, decide via correct tableau, extract DerivationTree for valid formulas, run extractStepSequence, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [239, 241],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 243,
+      "project_name": "full_axiom_rule_coverage",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Achieve 42/42 axiom names and 7/7 inference rules in the proof step dataset (currently 31/42 and 5/7). Missing axioms are mostly temporal BX axioms. Missing rules are assumption and weakening (absent since all registered theorems use empty context). Construct formulas whose shortest proof requires each missing axiom, generate via tableau, verify coverage. Add coverage tracking to export script.",
+      "priority": "medium",
+      "topic": "tableau-training",
+      "dependencies": [242],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 244,
+      "project_name": "context_proof_steps",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Create library of theorems with non-empty contexts to exercise assumption and weakening rules in proof step dataset. All 310 current theorems use empty context so these rules never appear. Create conditional derivations, modus ponens in context, modal/temporal reasoning in context. Register 50+ contextual theorems with G/H wrapping variants. Target: assumption >= 5% of steps, weakening >= 3%.",
+      "priority": "medium",
+      "topic": "tableau-training",
+      "dependencies": [242],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 245,
+      "project_name": "cross_repo_data_pipeline",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Build automated data synchronization from BimodalLogic to BimodalHarness. Currently BimodalHarness data/bimodal/ is empty (SYNC_DATE=not-yet-synced). Implement: export script running lake exe dataset_generator + proof_extractor with validation and VERSION file; enhanced make sync-data verifying schema compatibility and 49-action-space alignment; make verify-data running load_lean_jsonl() and load_proof_steps() validation; documentation in both repos.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [241],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 246,
+      "project_name": "lean_repl_tableau_bridge",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Enhance Lean side to support live tableau queries from BimodalHarness lean/bridge.py. Add #tableau_decide command running corrected DecisionProcedure.decide with structured JSON output, #tableau_steps for proof step extraction, #countermodel for semantic countermodel output. Enable BimodalHarness BFS and MCTS search to query Lean oracle for online training. Target <500ms per formula round-trip.",
+      "priority": "medium",
+      "topic": "tableau-training",
+      "dependencies": [241],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 247,
+      "project_name": "training_loop_validation",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Validate complete pipeline: Lean tableau -> data export -> BimodalHarness ingestion -> training -> evaluation. Generate small dataset (1000 labeled formulas, 5000 proof steps), sync to BimodalHarness, run supervised training on proof steps, run single epoch of expert iteration, evaluate on benchmark, verify action predictions align with Lean action space. Document schema mismatches and training failures. Create smoke-test-training.sh.",
+      "priority": "medium",
+      "topic": "tableau-training",
+      "dependencies": [242, 245, 246],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z"
     }
   ],
-  "next_project_number": 228,
+  "next_project_number": 248,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -1238,9 +1510,9 @@
     }
   ],
   "task_counts": {
-    "active": 16,
-    "not_started": 15,
-    "total": 143,
+    "active": 32,
+    "not_started": 31,
+    "total": 159,
     "abandoned": 75
   },
   "repository_health": {
@@ -1266,6 +1538,7 @@
     "frame-extensions",
     "algebraic-representation",
     "bilateral",
-    "agent-system"
+    "agent-system",
+    "tableau-training"
   ]
 }
