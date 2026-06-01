@@ -198,6 +198,8 @@ structure DatasetRecord where
   enriched_countermodel : Option Enriched.EnrichedCountermodel
   /-- Semantic countermodel summary (invalid formulas only). -/
   semantic_countermodel : Option SemanticCountermodelSummary
+  /-- How the proof was reconstructed (valid formulas only). -/
+  proof_reconstruction_method : Option String
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -221,7 +223,8 @@ instance : Inhabited DatasetRecord :=
      rule_profile := none
      countermodel_consistent := none
      enriched_countermodel := none
-     semantic_countermodel := none }⟩
+     semantic_countermodel := none
+     proof_reconstruction_method := none }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -249,6 +252,9 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   let scmStr := match r.semantic_countermodel with
     | none => "null"
     | some s => s.toJson
+  let reconStr := match r.proof_reconstruction_method with
+    | none => "null"
+    | some m => "\"" ++ escapeJsonString m ++ "\""
   "{\"id\": \"" ++ escapeJsonString r.id ++ "\""
   ++ ", \"split\": \"" ++ escapeJsonString r.split ++ "\""
   ++ ", \"formula_str\": \"" ++ escapeJsonString r.formula_str ++ "\""
@@ -256,6 +262,7 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"frame_class\": \"" ++ escapeJsonString r.frame_class ++ "\""
   ++ ", \"label\": " ++ formulaLabelToJson r.label
   ++ ", \"decision_method\": \"" ++ escapeJsonString r.decision_method ++ "\""
+  ++ ", \"proof_reconstruction_method\": " ++ reconStr
   ++ ", \"proof_trace\": " ++ traceStr
   ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
@@ -298,7 +305,8 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     rule_profile := lf.ruleProfile
     countermodel_consistent := lf.countermodelConsistent
     enriched_countermodel := lf.enrichedCountermodel
-    semantic_countermodel := lf.semanticCountermodelSummary }
+    semantic_countermodel := lf.semanticCountermodelSummary
+    proof_reconstruction_method := lf.proofReconstructionMethod }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=

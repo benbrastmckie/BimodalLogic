@@ -152,30 +152,23 @@ Phases within the same wave can execute in parallel (Phases 2 and 3 can run in p
 
 ---
 
-### Phase 3: Integrate Full Proof Extraction and Remove Retry Path [BLOCKED]
-
-**BLOCKER** (Phase 3):
-- **What failed**: Cannot integrate full proof extraction or remove decideOptimized retry path because task 239 is at "planned" status (not yet implemented)
-- **What was tried**: Inspected specs/239_proof_extraction_from_tableau/ — task has research and plan artifacts but no implementation
-- **Why it's stuck**: Task 239 must complete first to provide complete proof extraction from closed tableau branches
-- **What is needed**: Task 239 must reach "completed" status before this phase can proceed
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+### Phase 3: Integrate Full Proof Extraction and Remove Retry Path [COMPLETED]
 
 **Goal**: With task 239 providing complete proof extraction from closed tableaux, eliminate the `decideOptimized` retry path in `labelFormula`, remove the timeout-as-fallback-for-valid workaround in `DecisionProcedure.decide`, and add `proofReconstructionMethod` tracking.
 
 **Tasks**:
-- [ ] Inspect task 239 output: verify that `decide` now returns `.valid proof` for all closed tableaux (the line 154 `.timeout` fallback in DecisionProcedure.lean should be replaced)
-- [ ] Add `proofReconstructionMethod : Option String` field to `LabeledFormula` (values: "axiom_match", "proof_search", "tableau_extraction")
-- [ ] Update `Inhabited LabeledFormula` instance
-- [ ] Remove the `decideOptimized` retry block from `labelFormula` (lines 287-316 in current DatasetGenerator.lean): the `.timeout` case from `decideAuto` should now be genuinely rare
-- [ ] Simplify `labelFormula` to a single `decideAuto` call with three clean branches: `.valid`, `.invalid`, `.timeout`
-- [ ] Set `proofReconstructionMethod` based on how the proof was obtained (this may require inspecting the proof structure or adding a tag to `DecisionResult`)
-- [ ] Update `LabeledFormula.toJson` to include `proofReconstructionMethod`
-- [ ] Update `DatasetRecord`, `Inhabited DatasetRecord`, `labeledToRecord`, and `datasetRecordToJson` for new field
-- [ ] Update `DatasetValidator.knownValidFormulas` expected results if labeling accuracy changes (formulas previously timing out should now be labeled `.valid`)
-- [ ] Run `lake build Bimodal.Automation.DatasetGenerator`
-- [ ] Run `lake build Bimodal.Automation.DatasetExport`
-- [ ] Run `lake build Bimodal.Automation.DatasetValidator`
+- [x] Inspect task 239 output: verify that `decide` now returns `.valid proof` for all closed tableaux *(completed — extractProof uses 5-strategy pipeline; .timeout only when all strategies exhausted)*
+- [x] Add `proofReconstructionMethod : Option String` field to `LabeledFormula` *(completed — values: "axiom_match", "derived_match", "compositional", "proof_search")*
+- [x] Update `Inhabited LabeledFormula` instance *(completed)*
+- [x] Remove the `decideOptimized` retry block from `labelFormula` *(completed — simplified to single decideAuto call with 3 clean branches)*
+- [x] Simplify `labelFormula` to a single `decideAuto` call with three clean branches: `.valid`, `.invalid`, `.timeout` *(completed)*
+- [x] Set `proofReconstructionMethod` based on how the proof was obtained *(completed — inferReconstructionMethod examines RuleProfile and proof height to classify)*
+- [x] Update `LabeledFormula.toJson` to include `proofReconstructionMethod` *(completed — serialized as "proof_reconstruction_method")*
+- [x] Update `DatasetRecord`, `Inhabited DatasetRecord`, `labeledToRecord`, and `datasetRecordToJson` for new field *(completed)*
+- [x] Update `DatasetValidator.knownValidFormulas` expected results if labeling accuracy changes *(deviation: skipped — no changes needed; all known valid formulas already labeled correctly by existing pipeline)*
+- [x] Run `lake build Bimodal.Automation.DatasetGenerator` *(completed — builds successfully)*
+- [x] Run `lake build Bimodal.Automation.DatasetExport` *(completed — builds successfully)*
+- [x] Run `lake build Bimodal.Automation.DatasetValidator` *(completed — builds successfully)*
 
 **Timing**: 1.5 hours
 

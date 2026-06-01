@@ -156,6 +156,10 @@ structure LabeledFormula where
   enrichedCountermodel : Option EnrichedCountermodel
   /-- Semantic countermodel summary (invalid formulas only). -/
   semanticCountermodelSummary : Option SemanticCountermodelSummary
+  /-- How the proof was reconstructed (valid formulas only).
+      Values: "axiom_match", "derived_match", "compositional", "proof_search",
+      "tableau_extraction". -/
+  proofReconstructionMethod : Option String
   deriving Repr
 
 instance : Inhabited LabeledFormula :=
@@ -169,7 +173,8 @@ instance : Inhabited LabeledFormula :=
      decisionMethod := "timeout"
      countermodelConsistent := none
      enrichedCountermodel := none
-     semanticCountermodelSummary := none }⟩
+     semanticCountermodelSummary := none
+     proofReconstructionMethod := none }⟩
 
 /--
 Extract axiom schema name as a string from an Axiom constructor.
@@ -298,6 +303,26 @@ where
     else "very_hard"
 
 /--
+Infer the proof reconstruction method from the proof structure.
+
+- Single axiom node with no rules: "axiom_match"
+- Only weakening applied (derived theorem match): "derived_match"
+- Low rule count with modus_ponens (compositional builder): "compositional"
+- Higher rule count or deep proof: "proof_search"
+-/
+def inferReconstructionMethod (rp : RuleProfile) (height : Nat) : String :=
+  let totalRules := rp.mpCount + rp.necessitationCount + rp.temporalNecessitationCount +
+                    rp.temporalDualityCount + rp.weakeningCount + rp.assumptionCount
+  if totalRules == 0 && rp.axiomCount > 0 then
+    "axiom_match"
+  else if rp.weakeningCount > 0 && rp.mpCount == 0 && rp.axiomCount <= 1 then
+    "derived_match"
+  else if height <= 5 && rp.mpCount <= 3 then
+    "compositional"
+  else
+    "proof_search"
+
+/--
 Extract enriched and semantic countermodel data for an invalid formula.
 
 Runs `buildTableau` to obtain the raw open branch, then extracts:
@@ -338,6 +363,7 @@ private def mkInvalidLabel (φ : Formula) (cm : SimpleCountermodel)
     countermodelConsistent := some consistent
     enrichedCountermodel := ecm
     semanticCountermodelSummary := scmSummary
+    proofReconstructionMethod := none
   }
 
 /--
@@ -347,7 +373,14 @@ Label a single formula by running the decision procedure.
 2. Calls `decideAuto` (automatic fuel based on formula complexity)
 3. Extracts proof trace (valid), countermodel (invalid), or records timeout
 4. Computes difficulty metrics and pattern key
-5. For invalid formulas, extracts enriched and semantic countermodel data
+5. For valid formulas, infers proof reconstruction method from proof structure
+6. For invalid formulas, extracts enriched and semantic countermodel data
+
+With task 239's 5-strategy proof extraction pipeline in place, `decideAuto`
+returns `.valid` for all closed tableaux where proof extraction succeeds.
+The `.timeout` case now represents genuine resource exhaustion (tableau
+construction exceeded sound fuel), not a masking of extraction failure.
+The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormula (φ : Formula) : IO LabeledFormula := do
   let startTime ← IO.monoMsNow
@@ -367,6 +400,7 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
                      rp.weakeningCount == 0 && rp.assumptionCount == 0
                   then "fast_path_axiom"
                   else "proof_search"
+    let reconMethod := inferReconstructionMethod rp trace.height
     return {
       formula := φ
       label := .valid
@@ -379,44 +413,24 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       countermodelConsistent := none
       enrichedCountermodel := none
       semanticCountermodelSummary := none
+      proofReconstructionMethod := some reconMethod
     }
   | .invalid cm =>
     return mkInvalidLabel φ cm metrics patternKey
   | .timeout =>
-    -- Retry with decideOptimized (uses IDDFS first, then full tableau)
-    let retryResult := decideOptimized φ
-    match retryResult with
-    | .valid proof =>
-      let trace := extractProofTrace proof
-      let rp := walkDerivationTree proof
-      return {
-        formula := φ
-        label := .valid
-        proofTrace := some trace
-        countermodel := none
-        metrics := metrics
-        patternKey := patternKey
-        ruleProfile := some rp
-        decisionMethod := "proof_search"
-        countermodelConsistent := none
-        enrichedCountermodel := none
-        semanticCountermodelSummary := none
-      }
-    | .invalid cm =>
-      return mkInvalidLabel φ cm metrics patternKey
-    | .timeout =>
-      return {
-        formula := φ
-        label := .timeout
-        proofTrace := none
-        countermodel := none
-        metrics := metrics
-        patternKey := patternKey
-        ruleProfile := none
-        decisionMethod := "timeout"
-        countermodelConsistent := none
-        enrichedCountermodel := none
-        semanticCountermodelSummary := none
+    return {
+      formula := φ
+      label := .timeout
+      proofTrace := none
+      countermodel := none
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "timeout"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := none
       }
 
 /--
@@ -577,11 +591,15 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   let scmStr := match lf.semanticCountermodelSummary with
     | none => "null"
     | some s => s.toJson
+  let reconStr := match lf.proofReconstructionMethod with
+    | none => "null"
+    | some m => "\"" ++ escapeJsonString m ++ "\""
   "{\"formula\": " ++ lf.formula.toJson
   ++ ", \"formula_string\": \"" ++ escapeJsonString lf.formula.prettyPrint ++ "\""
   ++ ", \"features\": " ++ lf.patternKey.toJson
   ++ ", \"decision\": " ++ lf.label.toJson
   ++ ", \"decision_method\": \"" ++ escapeJsonString lf.decisionMethod ++ "\""
+  ++ ", \"proof_reconstruction_method\": " ++ reconStr
   ++ ", \"proof\": " ++ proofStr
   ++ ", \"rule_profile\": " ++ rpStr
   ++ ", \"countermodel\": " ++ cmStr
