@@ -3,14 +3,12 @@ next_project_number: 252
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-06-01T00:00:00Z
+  last_assessed: 2026-06-01T23:30:00Z
 task_counts:
-  active: 52
-  completed: 162
-  in_progress: 1
-  not_started: 40
+  active: 54
+  completed: 168
   abandoned: 1
-  total: 215
+  total: 223
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -325,7 +323,7 @@ technical_debt:
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
-- **Dependencies**: 228, 230
+- **Dependencies**: 230
 
 **Description**: Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. Create `data/scripts/sync-all.py` master sync script that: (a) scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics); (b) updates specific fields in `data/README.md` — file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics, cross-logic split table, NL paraphrase statistics; (c) updates specific fields in `data/dataset-card.md` — overview table, record counts, proof steps section, competitive position paragraph; (d) recomputes SHA-256 hashes and contentSize in `croissant.json`; (e) regenerates `bmlogic-bench-splits.json`; (f) validates all JSONL records against declared schemas; (g) checks train/benchmark formula overlap and reports contamination %; (h) validates metadata key consistency. Modes: `--dry-run` (report only), `--commit` (auto-commit). CI-friendly exit codes. Integrate into agent context for automatic post-implementation sync.
 
@@ -354,51 +352,12 @@ technical_debt:
 
 ---
 
-### 228. Fix dataset metadata and documentation staleness
-- **Effort**: small (2-3 hours)
-- **Status**: [RESEARCHED]
-- **Task Type**: general
-- **Priority**: high
-- **Topic**: dataset-enhancement
-- **Research**: [specs/228_fix_dataset_metadata_staleness/reports/01_metadata-staleness-audit.md]
-- **Plan**: [specs/228_fix_dataset_metadata_staleness/plans/01_fix-metadata-staleness.md]
-
-**Description**: Fix all stale metadata and documentation across `data/`. (1) Update `proof_steps_metadata.json`: `total_records` 2424→10063, `theorem_count` 36→310, `rule_distribution` to actual values (axiom:4635, modus_ponens:4325, temporal_necessitation:991, temporal_duality:63, necessitation:49), `step_statistics` (avg 32.5, max 327, min 1). (2) Standardize `bmlogic-bench_metadata.json`: rename `total_count` key to `total_records` for consistency with other metadata files. (3) Update `data/README.md`: fix record counts (proof_steps 2424→10063, theorems 36→310, benchmark 727→777), update training schema table from "14 fields" to "16 fields" documenting `max_modal_depth` and `max_temporal_depth`. (4) Update `data/dataset-card.md`: overview table counts, proof steps statistics. (5) Resolve license inconsistency: dataset-card.md YAML says `mit` but croissant.json says `CC BY 4.0`.
-
----
-
-### 227. Dataset pipeline automation + Croissant sync infrastructure
-- **Effort**: medium (1-2 days)
-- **Status**: [ABANDONED] — Superseded by task 231 (broader scope)
-- **Task Type**: general
-- **Research**: [specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md]
-- **Plan**: [227_dataset_pipeline_automation_croissant_sync/plans/01_dataset-pipeline-plan.md]
-
-**Description**: Build end-to-end automation so that every benchmark data regeneration (anchor expansion, new training data, eval runs) automatically updates all downstream artifacts. (1) Fix immediate croissant.json staleness: recompute SHA-256 hashes, update contentSize for all 5 distributions, regenerate or remove bmlogic-bench-splits.json, verify field counts match actual JSONL schemas. (2) Create a deterministic pipeline script (e.g., scripts/sync-dataset-artifacts.sh) that, given freshly regenerated data, automatically recomputes SHA-256 hashes and contentSize in croissant.json, updates record counts in metadata JSON, regenerates splits if applicable, validates croissant.json structure, updates data/README.md statistics, and commits with a structured message. (3) Update the lean-implementation-agent and general-implementation-agent definitions/context so that any task involving benchmark regeneration includes a post-implementation step that runs the sync script. Add this to agent context or plan templates so future /implement and /orchestrate runs automatically keep artifacts in sync. (4) Document the pipeline in data/README.md with a clear narrative: what each artifact is, how they relate, which script keeps them in sync, and what git history tracks. The goal is zero manual intervention — when an agent regenerates benchmark data, everything downstream updates atomically, and documentation tells the story of the dataset's evolution.
-
-
-
 ### 224. Investigate finite insertion argument for succ_cofinal (omega-chain structural alternative to Reynolds model surgery)
 - **Effort**: medium (4-8 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 
 **Description**: Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Related: task 202.
-
----
-
-### 221. Proof step dataset expansion (36 → 200+ theorems)
-- **Effort**: large (2-3 weeks)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: low
-- **Topic**: dataset-enhancement
-- **Research**: [221_proof_step_dataset_expansion/reports/01_proof-step-research.md]
-- **Plan**: [221_proof_step_dataset_expansion/plans/01_proof-step-plan.md]
-- **Summary**: [221_proof_step_dataset_expansion/summaries/01_proof-step-summary.md]
-
-**Description**: Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.
-
 
 ---
 

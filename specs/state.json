@@ -38,7 +38,20 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2], [3], [4]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_bottleneck-optimization-research.md",
@@ -1238,7 +1251,6 @@
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [
-        228,
         230
       ],
       "created": "2026-06-01T20:00:00Z",
@@ -1252,10 +1264,7 @@
       "description": "Implement cross-modal-temporal tableau rules based on modal_future axiom (box phi -> box(G phi)) and derived principles. Propagate T(box phi) to T(G phi), inherit temporal structure in new worlds and modal structure at new times. Ensure consistency of world-creation and time-creation interactions.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [
-        233,
-        234
-      ],
+      "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1267,11 +1276,7 @@
       "description": "Implement blocking strategy ensuring tableau expansion terminates for all formulas. Subset blocking: if new time/world has signed formulas that subset an ancestor, block further expansion. Relate fuel parameter to FMP-derived size bound. Replace ad-hoc fuel heuristic with sound bound from subformula closure size. Prove or argue blocking preserves completeness.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [
-        233,
-        234,
-        235
-      ],
+      "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1283,11 +1288,7 @@
       "description": "Extend tableau with frame-class-specific rules for Dense and Discrete axiom layers. Dense: density rule (intermediate points), dense indicator. Discrete: Prior rules, Z1 rule, uniformity axioms. Parameterize buildTableau and decide by FrameClass. Gate rule application by minFrameClass <= fc matching the axiomatic system.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [
-        233,
-        234,
-        235
-      ],
+      "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1434,14 +1435,18 @@
   ],
   "task_counts": {
     "active": 54,
-    "not_started": 44,
-    "total": 57,
-    "abandoned": 1
+    "not_started": 43,
+    "implementing": 3,
+    "researched": 6,
+    "partial": 1,
+    "planned": 1,
+    "total": 54,
+    "abandoned": 0
   },
   "repository_health": {
-    "last_assessed": "2026-06-01T15:33:38Z",
-    "todo_count": 169,
-    "fixme_count": 38,
+    "last_assessed": "2026-06-01T23:30:00Z",
+    "todo_count": 0,
+    "fixme_count": 2,
     "build_errors": 0,
     "status": "healthy"
   },

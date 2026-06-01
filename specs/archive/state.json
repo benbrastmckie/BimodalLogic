@@ -584,6 +584,14 @@
       ],
       "planned": "2026-03-23T06:13:16Z",
       "abandoned_reason": "Research-only, no implementation path identified"
+    },
+    {
+      "project_number": 227,
+      "project_name": "dataset_pipeline_automation_croissant_sync",
+      "status": "abandoned",
+      "task_type": "general",
+      "completion_summary": "Superseded by task 231 (dataset regeneration automation) which has broader scope.",
+      "archived": "2026-06-01T23:00:00Z"
     }
   ],
   "completed_projects": [
@@ -7395,6 +7403,54 @@
         }
       ],
       "completion_summary": "Added toSExpr, tokenize, and toFeatureVector serialization to DataExport.lean. Integrated formula_sexpr, formula_tokens, pattern_features into DatasetRecord JSONL output. Lake build passes (1678 jobs). Zero sorries."
+    },
+    {
+      "project_number": 221,
+      "project_name": "proof_step_dataset_expansion",
+      "status": "completed",
+      "task_type": "lean4",
+      "completion_summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass.",
+      "archived": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_dataset_metadata_staleness",
+      "status": "completed",
+      "task_type": "general",
+      "completion_summary": "Fixed all stale metadata across 6 files in data/: proof_steps_metadata.json, bmlogic-bench_metadata.json, bmlogic-c5/c7_metadata.json, data/README.md, data/dataset-card.md. CC BY 4.0 license standardized throughout.",
+      "archived": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 232,
+      "project_name": "labeled_branch_infrastructure",
+      "status": "completed",
+      "task_type": "lean4",
+      "completion_summary": "Replaced flat SignedFormula/Branch types with world/time-indexed Label infrastructure across 7 files. Zero sorries, full build passes.",
+      "archived": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 233,
+      "project_name": "s5_modal_tableau_rules",
+      "status": "completed",
+      "task_type": "lean4",
+      "completion_summary": "Replaced 4 identity-collapse modal rules with correct S5 rules. S5 validity tests pass. Zero sorries.",
+      "archived": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 234,
+      "project_name": "temporal_ghfp_tableau_rules",
+      "status": "completed",
+      "task_type": "lean4",
+      "completion_summary": "Replaced 4 unsound identity-collapse temporal rules with 8 correct time-indexed G/H/F/P rules. 13 integration tests pass. Zero sorries.",
+      "archived": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 235,
+      "project_name": "until_since_tableau_rules",
+      "status": "completed",
+      "task_type": "lean4",
+      "completion_summary": "Implemented 4 Until/Since tableau rules with Eventuality tracking. 7 integration tests pass. Zero sorries.",
+      "archived": "2026-06-01T23:00:00Z"
     }
   ]
 }
