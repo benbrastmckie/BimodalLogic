@@ -1,7 +1,7 @@
 # Implementation Plan: Proof Step Dataset Expansion
 
 - **Task**: 221 - Proof step dataset expansion (36 to 200+ theorems)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (existing infrastructure is complete)
 - **Research Inputs**: reports/01_proof-step-research.md

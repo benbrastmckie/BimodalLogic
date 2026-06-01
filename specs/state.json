@@ -1006,7 +1006,7 @@
       "dependencies": [],
       "created": "2026-05-29T06:00:00Z",
       "last_updated": "2026-05-30T20:15:00Z",
-      "next_artifact_number": 18,
+      "next_artifact_number": 20,
       "artifacts": [
         {
           "path": "specs/202_reynolds_k_equivalence_bypass/reports/01_reynolds-bypass-research.md",
@@ -1062,6 +1062,11 @@
           "path": "specs/202_reynolds_k_equivalence_bypass/plans/18_reynolds-model-surgery-v17.md",
           "type": "plan",
           "summary": "Plan v17: definitive 11-piece, 6-phase Reynolds model surgery implementation (~700 LOC, 16 hours)"
+        },
+        {
+          "path": "specs/202_reynolds_k_equivalence_bypass/plans/19_reynolds-model-surgery-v18.md",
+          "type": "plan",
+          "summary": "Plan v18: revised plan integrating Phase 3 blocker resolution via Reynolds Lemmas 9.1/11/12/13 with h_R_everywhere simplification (~200-300 LOC, 10 hours)"
         }
       ],
       "researched": "2026-05-30T17:10:15Z",
@@ -1069,10 +1074,10 @@
       "session_id": "sess_1780191780_e5661e",
       "plan_metadata": {
         "phases": 6,
-        "total_effort_hours": 16,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 17,
+        "plan_version": 18,
         "dependency_waves": [
           [
             1
@@ -1098,6 +1103,11 @@
             "path": "reports/17_deep-research-synthesis.md",
             "integrated_in_plan_version": 17,
             "integrated_date": "2026-05-30"
+          },
+          {
+            "path": ".blocker-research-findings.md",
+            "integrated_in_plan_version": 18,
+            "integrated_date": "2026-06-01"
           }
         ]
       }
@@ -1105,15 +1115,15 @@
     {
       "project_number": 217,
       "project_name": "complexity_tier_extension_c9_c11",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity <= 9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity <= 11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-06-01T15:39:56Z",
-      "session_id": "sess_1780328146_1e5ea2",
+      "last_updated": "2026-06-01T15:41:09Z",
+      "session_id": "sess_1780328452_903300",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1189,15 +1199,15 @@
     {
       "project_number": 221,
       "project_name": "proof_step_dataset_expansion",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.",
       "priority": "low",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-06-01T15:39:33Z",
-      "session_id": "sess_1780328146_1e5ea2",
+      "last_updated": "2026-06-01T15:55:46Z",
+      "session_id": "sess_1780328452_903300",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1209,8 +1219,14 @@
           "path": "specs/221_proof_step_dataset_expansion/plans/01_proof-step-plan.md",
           "type": "plan",
           "summary": "4-phase implementation plan expanding proof_steps.jsonl from 36 to 200+ theorems with 10%+ temporal rule coverage via G/H/GG wrapping, temporal axiom instantiation, and multi-instantiation"
+        },
+        {
+          "path": "specs/221_proof_step_dataset_expansion/summaries/01_proof-step-summary.md",
+          "type": "summary",
+          "summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass."
         }
-      ]
+      ],
+      "completion_summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass."
     }
   ],
   "next_project_number": 228,

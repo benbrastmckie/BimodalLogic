@@ -156,12 +156,13 @@ technical_debt:
 
 ### 221. Proof step dataset expansion (36 → 200+ theorems)
 - **Effort**: large (2-3 weeks)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: low
 - **Topic**: dataset-enhancement
 - **Research**: [221_proof_step_dataset_expansion/reports/01_proof-step-research.md]
 - **Plan**: [221_proof_step_dataset_expansion/plans/01_proof-step-plan.md]
+- **Summary**: [221_proof_step_dataset_expansion/summaries/01_proof-step-summary.md]
 
 **Description**: Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.
 
@@ -183,7 +184,7 @@ technical_debt:
 
 ### 217. Complexity tier extension to c9/c11
 - **Effort**: large (2-4 weeks, Lean oracle compute)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
