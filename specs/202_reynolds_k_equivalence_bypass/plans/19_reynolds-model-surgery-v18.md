@@ -146,11 +146,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Truth Preservation for N = I (Lemma 12 simplified) [PARTIAL]
+### Phase 4: Truth Preservation for N = I (Lemma 12 simplified) [BLOCKED]
 
 **Goal**: Define surgery model N = M restricted to a single equivalence class I. Prove that temporal truth is preserved between M and N for all temporal formulas, for all points in I. This is the bulk of the proof.
 
-**Strategy**: Define N as a subtype/substructure of M on a single class I. Prove truth preservation by structural induction on Formula. The h_R_everywhere simplification means Q- = Q+ = empty, reducing the U(A,B) case from 7 subcases (Reynolds) to 2.
+**BLOCKER** (Phase 4):
+- **What failed**: Until forward truth preservation when witness s is outside class(a). class_spread gives phi at s' in class(a) but s' may be on wrong side of t. The "ordered spread" (finding phi above t in class(a)) is unprovable by structural induction alone.
+- **What was tried**: (1) class_spread on Until(phi, top), (2) class_spread on Since(phi, top), (3) invariant_formula_constant on spread_above (NOT invariant), (4) spread_below IS invariant but only gives phi below, (5) direct Prior-UZ/SZ arguments (insufficient without Lemma 11)
+- **Why it's stuck**: spread_above(x) = exists y ~M x, y > x, phi(y) is NOT contemp_equiv-invariant (y > x doesn't transfer when x < x'). So invariant_formula_constant cannot provide directed spread. A counterexample exists: phi at s' <= t and at s outside class(a) above t, but no phi above t in class(a), consistent with all hypotheses except gap_prior_UZ_contradiction's conclusion (False).
+- **What is needed**: Reynolds Lemma 11 (density), pp.127-128. Three components: (1) Class elementary equivalence via relativized invariant formulas, (2) Lemma 11 first-part end version: B for a while at end implies B throughout, proved by C-formula transition argument with Prior-S, (3) Application to sorry sites via exfalso. Estimated ~60-100 lines.
+- **Prohibited workarounds**: Do NOT use sorry, def X := True, or any vacuous placeholder
+- **Reference**: literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md lines 686-709
+
+**Strategy**: Define N as a subtype/substructure of M on a single class I. Prove truth preservation by structural induction on Formula. The h_R_everywhere simplification means Q- = Q+ = empty, reducing the U(A,B) case from 7 subcases (Reynolds) to 2. The remaining 2 subcases require Reynolds Lemma 11 density for the "ordered spread".
 
 **Tasks**:
 - [ ] **Task 4.1**: Define surgery model N (~30 lines)
@@ -171,17 +179,17 @@ Phases within the same wave can execute in parallel.
   - File: same as Task 4.1
   - Success criterion: each case compiles without sorry
 
-- [ ] **Task 4.3**: Prove truth preservation -- U(A,B) case (~60-80 lines)
+- [ ] **Task 4.3**: Prove truth preservation -- U(A,B) case (~60-80 lines) *(deviation: blocked -- Case 2 forward requires Reynolds Lemma 11 density, not yet implemented)*
   - **Forward (M -> N)**: M satisfies U(A,B)(t) with witness s > t
-    - *Case 1*: s is in I. Since I is convex in M, all points between t and s are in I. By IH directly.
-    - *Case 2*: s is NOT in I (in another class beyond a gap). By Lemma 11 (bad interval density), A holds arbitrarily close to end of I. So there exists s' in I with s' > t and M satisfies A(s'). B holds from t to s in M, so B holds for all u in I with t < u. By IH, N satisfies B(u) and N satisfies A(s'). Hence N satisfies U(A,B)(t).
-  - **Backward (N -> M)**: N satisfies U(A,B)(t) with witness s in I. Since I is convex in M, all witnesses between t and s in N are exactly those in M between t and s that are in I. By IH, M satisfies A(s) and M satisfies B(u). Hence M satisfies U(A,B)(t).
+    - *Case 1*: s is in I. Since I is convex in M, all points between t and s are in I. By IH directly. **DONE (sorry-free)**
+    - *Case 2*: s is NOT in I (in another class beyond a gap). By Lemma 11 (bad interval density), A holds arbitrarily close to end of I. So there exists s' in I with s' > t and M satisfies A(s'). B holds from t to s in M, so B holds for all u in I with t < u. By IH, N satisfies B(u) and N satisfies A(s'). Hence N satisfies U(A,B)(t). **SORRY at line 1530**
+  - **Backward (N -> M)**: N satisfies U(A,B)(t) with witness s in I. Since I is convex in M, all witnesses between t and s in N are exactly those in M between t and s that are in I. By IH, M satisfies A(s) and M satisfies B(u). Hence M satisfies U(A,B)(t). **DONE (sorry-free)**
   - File: same as Task 4.1
   - Success criterion: both directions compile without sorry
 
-- [ ] **Task 4.4**: Prove truth preservation -- S(A,B) case (~50-70 lines)
+- [ ] **Task 4.4**: Prove truth preservation -- S(A,B) case (~50-70 lines) *(deviation: blocked -- forward case 2 requires symmetric Lemma 11 density)*
   - Mirror of U(A,B) with time reversed (using Order.pred instead of Order.succ, s < t instead of s > t)
-  - Same 2-case structure as Task 4.3
+  - Same 2-case structure as Task 4.3. **SORRY at line 1556** (symmetric blocker)
   - File: same as Task 4.1
   - Success criterion: both directions compile without sorry
 
