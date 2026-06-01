@@ -130,31 +130,18 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
       -- Fall back to tableau method
       match buildTableau φ tableauFuel fc with
       | none => .timeout
-      | some (.allClosed closedBranches) =>
-          -- Formula is valid, try to extract proof
-          -- Check if any closed branch gives us a direct proof
-          let axiomProofs := closedBranches.filterMap fun cb =>
-            match cb.reason with
-            | .axiomNeg ψ ax _ =>
-                if h : φ = ψ then
-                  if h_fc : ax.minFrameClass ≤ FrameClass.Base then
-                    some (h ▸ DerivationTree.axiom [] ψ ax h_fc)
-                  else none
-                else none
-            | _ => none
-          match axiomProofs.head? with
-          | some proof => .valid proof
-          | none =>
-              -- Try proof search again with higher depth
-              match bounded_search_with_proof [] φ (searchDepth * 2) with
-              | (some proof, _, _) => .valid proof
-              | (none, _, _) =>
-                  -- Formula is valid but we couldn't extract a proof term
-                  -- This is a limitation of the current implementation
-                  .timeout  -- Better than lying about invalidity
-      | some (.hasOpen openBranch hSat _) =>
-          -- Formula is invalid, extract countermodel
-          .invalid (extractCountermodelSimple φ openBranch hSat)
+      | some tableau =>
+          match tableau with
+          | .allClosed _ =>
+              -- Formula is valid, use full extraction pipeline
+              match extractProof φ tableau fc with
+              | .success proof => .valid proof
+              | .incomplete _ =>
+                  -- Extraction failed despite validity; genuine resource limitation
+                  .timeout
+          | .hasOpen openBranch hSat _ =>
+              -- Formula is invalid, extract countermodel
+              .invalid (extractCountermodelSimple φ openBranch hSat)
 
 /--
 Simplified decision: just return whether formula is valid.

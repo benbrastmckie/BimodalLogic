@@ -132,25 +132,185 @@ def extractCountermodelFromTableau (φ : Formula) (tableau : ExpandedTableau)
       some (extractCountermodelSimple φ openBranch hSaturated)
 
 /-!
-## Branch Truth Lemma (Partial)
+## Semantic Countermodel
+
+A `SemanticCountermodel` captures the full finite model extracted from a
+saturated open branch: world states, time domain, temporal ordering, and
+atom valuation. This is the "Layer 1" (branch model) of the two-layer
+countermodel approach, defined directly on the branch structure to avoid
+universe level issues with the full `TaskFrame`/`WorldHistory` stack.
 -/
 
 /--
-The branch truth lemma states that a saturated open branch describes
-a satisfying assignment. This is the key lemma for countermodel correctness.
+A semantic countermodel extracted from a saturated open tableau branch.
 
-For a full proof, we would need to show:
-1. If T(φ) ∈ branch, then φ is true in the extracted model
-2. If F(φ) ∈ branch, then φ is false in the extracted model
-
-This is proven by induction on formula structure, using the fact that
-the branch is saturated (all rules have been applied).
+Contains the finite world set, time set, temporal ordering constraints,
+and atom valuation. The valuation is indexed by `(WorldIndex, TimeIndex, Atom)`
+triples, matching the labeled tableau's structure.
 -/
-theorem branchTruthLemma (b : Branch) (_hSat : findUnexpanded b = none)
-    (fc : FrameClass := .Base) (_hOpen : findClosure b fc = none) :
-    ∀ sf ∈ b, True := by
-  intro _ _
-  trivial
+structure SemanticCountermodel where
+  /-- The formula being refuted. -/
+  formula : Formula
+  /-- The saturated open branch from which this model is extracted. -/
+  branch : Branch
+  /-- All world indices appearing in the branch. -/
+  worlds : List WorldIndex
+  /-- All time indices appearing in the branch. -/
+  times : List TimeIndex
+  /-- Temporal ordering constraints from the tableau expansion. -/
+  timeOrdering : TimeOrdering
+  /-- Atom valuation: true iff `T(atom p)` at `(w, t)` appears in the branch. -/
+  atomValuation : WorldIndex → TimeIndex → Atom → Bool
+
+/-!
+### Time Ordering Helpers
+-/
+
+/--
+Check whether `t1` is strictly before `t2` in the transitive closure of
+the time ordering constraints. Uses fuel-bounded reachability.
+-/
+def isTimeOrderedBefore (ord : TimeOrdering) (t1 t2 : TimeIndex)
+    (fuel : Nat := 50) : Bool :=
+  match fuel with
+  | 0 => false
+  | fuel + 1 =>
+    -- Direct edge?
+    if ord.constraints.any (fun (a, b) => a == t1 && b == t2) then true
+    else
+      -- Transitive: t1 < t_mid < t2 for some t_mid?
+      let successors := ord.futureOf t1
+      successors.any fun t_mid => isTimeOrderedBefore ord t_mid t2 fuel
+termination_by fuel
+
+/--
+Check whether `t1` is strictly after `t2` in the temporal ordering.
+-/
+def isTimeOrderedAfter (ord : TimeOrdering) (t1 t2 : TimeIndex)
+    (fuel : Nat := 50) : Bool :=
+  isTimeOrderedBefore ord t2 t1 fuel
+
+/--
+Collect all times in the model that are strictly after `t` (transitive closure).
+-/
+def futureTimes (ord : TimeOrdering) (t : TimeIndex)
+    (allTimes : List TimeIndex) : List TimeIndex :=
+  allTimes.filter fun t' => isTimeOrderedBefore ord t t'
+
+/--
+Collect all times in the model that are strictly before `t` (transitive closure).
+-/
+def pastTimes (ord : TimeOrdering) (t : TimeIndex)
+    (allTimes : List TimeIndex) : List TimeIndex :=
+  allTimes.filter fun t' => isTimeOrderedBefore ord t' t
+
+/--
+Collect all times strictly between `t1` and `t2` (exclusive on both ends).
+A time `t` is between `t1` and `t2` if `t1 < t` and `t < t2`.
+-/
+def timesBetween (ord : TimeOrdering) (t1 t2 : TimeIndex)
+    (allTimes : List TimeIndex) : List TimeIndex :=
+  allTimes.filter fun t =>
+    isTimeOrderedBefore ord t1 t && isTimeOrderedBefore ord t t2
+
+/-!
+### Branch Truth Evaluation
+
+`branchTruth` defines truth of a formula at a `(world, time)` pair in the
+semantic countermodel. This is defined by structural recursion on the formula.
+
+- `atom p`: true iff `atomValuation w t p = true`
+- `bot`: always false
+- `imp φ ψ`: `φ` true implies `ψ` true (material conditional)
+- `box φ`: `φ` true at all worlds in the model (S5 universal accessibility)
+- `untl event guard`: there exists a future time `t'` where `event` is true,
+  and `guard` is true at all times strictly between `t` and `t'`
+- `snce event guard`: there exists a past time `t'` where `event` is true,
+  and `guard` is true at all times strictly between `t'` and `t`
+-/
+
+/--
+Evaluate truth of a formula at a `(world, time)` pair in the semantic
+countermodel. Defined by structural recursion on the formula.
+-/
+def branchTruth (cm : SemanticCountermodel) (w : WorldIndex) (t : TimeIndex)
+    : Formula → Prop
+  | .atom p => cm.atomValuation w t p = true
+  | .bot => False
+  | .imp φ ψ => branchTruth cm w t φ → branchTruth cm w t ψ
+  | .box φ => ∀ w' ∈ cm.worlds, branchTruth cm w' t φ
+  | .untl event guard =>
+      ∃ t' ∈ cm.times,
+        isTimeOrderedBefore cm.timeOrdering t t' ∧
+        branchTruth cm w t' event ∧
+        ∀ t'' ∈ timesBetween cm.timeOrdering t t' cm.times,
+          branchTruth cm w t'' guard
+  | .snce event guard =>
+      ∃ t' ∈ cm.times,
+        isTimeOrderedBefore cm.timeOrdering t' t ∧
+        branchTruth cm w t' event ∧
+        ∀ t'' ∈ timesBetween cm.timeOrdering t' t cm.times,
+          branchTruth cm w t'' guard
+
+/--
+Signed truth in the semantic countermodel: positive formulas must be true,
+negative formulas must be false.
+-/
+def signedTruthInModel (cm : SemanticCountermodel) (sf : SignedFormula) : Prop :=
+  match sf.sign with
+  | .pos => branchTruth cm sf.label.world sf.label.time sf.formula
+  | .neg => ¬branchTruth cm sf.label.world sf.label.time sf.formula
+
+/-!
+### Semantic Countermodel Extraction
+-/
+
+/--
+Build the atom valuation from a branch: an atom `p` is true at `(w, t)` iff
+`T(atom p)` at label `(w, t)` appears in the branch.
+-/
+def buildAtomValuation (b : Branch) : WorldIndex → TimeIndex → Atom → Bool :=
+  fun w t p => b.hasPosAt (.atom p) ⟨w, t⟩
+
+/--
+Extract a `SemanticCountermodel` from a saturated open branch.
+
+The model's worlds and times are exactly those appearing in the branch labels.
+The atom valuation is determined by positive atom occurrences.
+The time ordering comes from the tableau expansion's `TimeOrdering`.
+-/
+def extractSemanticCountermodel (φ : Formula) (b : Branch)
+    (ord : TimeOrdering) : SemanticCountermodel :=
+  { formula := φ
+  , branch := b
+  , worlds := b.knownWorlds
+  , times := b.knownTimes
+  , timeOrdering := ord
+  , atomValuation := buildAtomValuation b
+  }
+
+/-!
+## Branch Truth Lemma
+-/
+
+/--
+The branch truth lemma: for a saturated open branch, every signed formula
+in the branch is semantically true in the extracted countermodel.
+
+- If `T(φ)` is in the branch, then `φ` is true at the formula's label in
+  the countermodel.
+- If `F(φ)` is in the branch, then `φ` is false at the formula's label in
+  the countermodel.
+
+This is the key correctness theorem for countermodel extraction: the model
+we build from the branch genuinely satisfies the branch's assertions.
+-/
+theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
+    (fc : FrameClass := .Base) (hOpen : findClosure b fc = none)
+    (cm : SemanticCountermodel)
+    (hCm : cm = extractSemanticCountermodel cm.formula b cm.timeOrdering) :
+    ∀ sf ∈ b, signedTruthInModel cm sf := by
+  sorry
 
 /-!
 ## Integration with Decision Procedure

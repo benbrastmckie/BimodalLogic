@@ -96,23 +96,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Define SemanticCountermodel and branchTruth [NOT STARTED]
+### Phase 2: Define SemanticCountermodel and branchTruth [COMPLETED]
 
 **Goal**: Define the `SemanticCountermodel` structure and a recursive `branchTruth` evaluation function that interprets formulas directly on the countermodel's world/time/valuation structure.
 
 **Tasks**:
-- [ ] Define `SemanticCountermodel` structure in `CountermodelExtraction.lean` with fields: `formula`, `branch`, `worlds : List WorldIndex`, `times : List TimeIndex`, `timeOrdering : TimeOrdering`, `atomValuation : WorldIndex -> TimeIndex -> Atom -> Bool`
-- [ ] Define `branchTruth : SemanticCountermodel -> WorldIndex -> TimeIndex -> Formula -> Prop` by recursion on formula structure:
+- [x] Define `SemanticCountermodel` structure in `CountermodelExtraction.lean` with fields: `formula`, `branch`, `worlds : List WorldIndex`, `times : List TimeIndex`, `timeOrdering : TimeOrdering`, `atomValuation : WorldIndex -> TimeIndex -> Atom -> Bool`
+- [x] Define `branchTruth : SemanticCountermodel -> WorldIndex -> TimeIndex -> Formula -> Prop` by recursion on formula structure:
   - `atom p`: `cm.atomValuation w t p = true`
   - `bot`: `False`
   - `imp phi psi`: `branchTruth cm w t phi -> branchTruth cm w t psi`
   - `box phi`: `forall w' in cm.worlds, branchTruth cm w' t phi`
   - `untl event guard`: `exists t' in cm.times, cm.timeOrdering orders t < t' AND branchTruth cm w t' event AND forall t'' between t and t', branchTruth cm w t'' guard`
   - `snce event guard`: mirror of until with past ordering
-- [ ] Define helper `isTimeOrderedBefore (cm : SemanticCountermodel) (t1 t2 : TimeIndex) : Bool` using transitive closure of `cm.timeOrdering.constraints`
-- [ ] Define `extractSemanticCountermodel : Formula -> Branch -> TimeOrdering -> SemanticCountermodel` that builds the countermodel from a saturated open branch by extracting `knownWorlds`, `knownTimes`, the `TimeOrdering`, and computing `atomValuation` from positive atom occurrences
-- [ ] Define `signedTruthInModel (cm : SemanticCountermodel) (sf : SignedFormula) : Prop` as: if `sf.sign = .pos` then `branchTruth cm sf.label.world sf.label.time sf.formula`, if `sf.sign = .neg` then `not (branchTruth cm sf.label.world sf.label.time sf.formula)`
-- [ ] Verify definitions compile with `lake build`
+- [x] Define helper `isTimeOrderedBefore (ord : TimeOrdering) (t1 t2 : TimeIndex) : Bool` using transitive closure of `ord.constraints` *(deviation: altered — standalone function instead of method on SemanticCountermodel)*
+- [x] Define `extractSemanticCountermodel : Formula -> Branch -> TimeOrdering -> SemanticCountermodel` that builds the countermodel from a saturated open branch by extracting `knownWorlds`, `knownTimes`, the `TimeOrdering`, and computing `atomValuation` from positive atom occurrences
+- [x] Define `signedTruthInModel (cm : SemanticCountermodel) (sf : SignedFormula) : Prop` as: if `sf.sign = .pos` then `branchTruth cm sf.label.world sf.label.time sf.formula`, if `sf.sign = .neg` then `not (branchTruth cm sf.label.world sf.label.time sf.formula)`
+- [x] Verify definitions compile with `lake build`
 
 **Timing**: 1.5 hours
 

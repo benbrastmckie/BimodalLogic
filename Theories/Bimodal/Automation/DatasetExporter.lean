@@ -238,7 +238,7 @@ build metadata, export JSON, write to file, and print summary.
 6. Writes to the output file
 7. Prints summary to stdout
 -/
-def generateAndExportDataset (config : EnumConfig) (outputPath : String) : IO Unit := do
+noncomputable def generateAndExportDataset (config : EnumConfig) (outputPath : String) : IO Unit := do
   -- Step 1: Enumerate
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
@@ -288,7 +288,7 @@ Generate, split into train/eval sets, and export both datasets.
 3. Exports both datasets with appropriate metadata
 4. Prints summary statistics for both splits
 -/
-def generateSplitDatasets (config : EnumConfig) (trainPath evalPath : String)
+noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPath : String)
     (trainRatio : Float := 0.8) : IO Unit := do
   -- Step 1: Enumerate
   IO.println "Enumerating formulas..."
