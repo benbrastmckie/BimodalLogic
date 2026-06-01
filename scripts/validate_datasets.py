@@ -24,11 +24,12 @@ import sys
 # Expected schemas
 # ============================================================================
 
-# Training datasets: bmlogic-c5.jsonl, bmlogic-c7.jsonl
+# Training datasets: bmlogic-c5.jsonl, bmlogic-c7.jsonl, bmlogic-c9.jsonl, bmlogic-c11.jsonl
 TRAINING_FIELDS = {
     "id", "split", "formula_str", "formula_ast", "formula_sexpr",
     "formula_tokens", "frame_class", "label", "proof_trace", "countermodel",
-    "pattern_key", "pattern_features", "metrics", "augmentation"
+    "pattern_key", "pattern_features", "metrics", "augmentation",
+    "max_modal_depth", "max_temporal_depth"
 }
 
 # Benchmark: bmlogic-bench.jsonl
@@ -49,14 +50,28 @@ DATASETS = [
         "path": "data/bmlogic-c5.jsonl",
         "metadata_path": "data/bmlogic-c5_metadata.json",
         "expected_fields": TRAINING_FIELDS,
-        "schema_name": "training-14-field",
+        "schema_name": "training-16-field",
         "metadata_count_field": "total_records",
     },
     {
         "path": "data/bmlogic-c7.jsonl",
         "metadata_path": "data/bmlogic-c7_metadata.json",
         "expected_fields": TRAINING_FIELDS,
-        "schema_name": "training-14-field",
+        "schema_name": "training-16-field",
+        "metadata_count_field": "total_records",
+    },
+    {
+        "path": "data/bmlogic-c9.jsonl",
+        "metadata_path": "data/bmlogic-c9_metadata.json",
+        "expected_fields": TRAINING_FIELDS,
+        "schema_name": "training-16-field",
+        "metadata_count_field": "total_records",
+    },
+    {
+        "path": "data/bmlogic-c11.jsonl",
+        "metadata_path": "data/bmlogic-c11_metadata.json",
+        "expected_fields": TRAINING_FIELDS,
+        "schema_name": "training-16-field",
         "metadata_count_field": "total_records",
     },
     {
@@ -218,6 +233,8 @@ def main():
         "data/bmlogic-bench.jsonl",
         "data/bmlogic-c5.jsonl",
         "data/bmlogic-c7.jsonl",
+        "data/bmlogic-c9.jsonl",
+        "data/bmlogic-c11.jsonl",
         "data/proof_steps.jsonl",
     ]
     for path in final_datasets:
@@ -255,6 +272,16 @@ def main():
     else:
         all_errors.append("  FAIL: data/bmlogic-c7.jsonl is NOT tracked by LFS")
 
+    if "data/bmlogic-c9.jsonl" in result.stdout:
+        print("  PASS: data/bmlogic-c9.jsonl is tracked by LFS")
+    else:
+        all_errors.append("  FAIL: data/bmlogic-c9.jsonl is NOT tracked by LFS")
+
+    if "data/bmlogic-c11.jsonl" in result.stdout:
+        print("  PASS: data/bmlogic-c11.jsonl is tracked by LFS")
+    else:
+        all_errors.append("  FAIL: data/bmlogic-c11.jsonl is NOT tracked by LFS")
+
     if "data/proof_steps.jsonl" in result.stdout:
         print("  PASS: data/proof_steps.jsonl is tracked by LFS")
     else:
@@ -269,6 +296,10 @@ def main():
         "bmlogic-c5_metadata.json",
         "bmlogic-c7.jsonl",
         "bmlogic-c7_metadata.json",
+        "bmlogic-c9.jsonl",
+        "bmlogic-c9_metadata.json",
+        "bmlogic-c11.jsonl",
+        "bmlogic-c11_metadata.json",
         "proof_steps.jsonl",
         "proof_steps_metadata.json",
         "README.md",

@@ -131,18 +131,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Python Schema Migration and Validation Updates [NOT STARTED]
+### Phase 3: Python Schema Migration and Validation Updates [COMPLETED]
 
 **Goal**: Create a schema migration script for c5/c7 retroactive upgrade and update the validation script for the 16-field schema.
 
 **Tasks**:
-- [ ] Create `scripts/migrate_schema_v2.py` that reads existing JSONL files and injects `max_modal_depth` and `max_temporal_depth` top-level fields extracted from `pattern_key.modalDepth` and `pattern_key.temporalDepth`
-- [ ] The migration script should write to a `.tmp` file and atomically rename to avoid data loss
-- [ ] Add `--dry-run` mode that prints sample records without modifying files
-- [ ] Update `TRAINING_FIELDS` in `scripts/validate_datasets.py` to include `max_modal_depth` and `max_temporal_depth` (16-field set)
-- [ ] Add `bmlogic-c9` and `bmlogic-c11` dataset entries to the `DATASETS` list in `validate_datasets.py`
-- [ ] Run `scripts/migrate_schema_v2.py` on `data/bmlogic-c5.jsonl` and `data/bmlogic-c7.jsonl` to retroactively add the new fields
-- [ ] Verify migration: first and last records of c5/c7 contain the two new top-level fields
+- [x] Create `scripts/migrate_schema_v2.py` that reads existing JSONL files and injects `max_modal_depth` and `max_temporal_depth` top-level fields extracted from `pattern_key.modalDepth` and `pattern_key.temporalDepth`
+- [x] The migration script should write to a `.tmp` file and atomically rename to avoid data loss
+- [x] Add `--dry-run` mode that prints sample records without modifying files
+- [x] Update `TRAINING_FIELDS` in `scripts/validate_datasets.py` to include `max_modal_depth` and `max_temporal_depth` (16-field set)
+- [x] Add `bmlogic-c9` and `bmlogic-c11` dataset entries to the `DATASETS` list in `validate_datasets.py`
+- [x] Run `scripts/migrate_schema_v2.py` on `data/bmlogic-c5.jsonl` and `data/bmlogic-c7.jsonl` to retroactively add the new fields
+- [x] Verify migration: first and last records of c5/c7 contain the two new top-level fields
 
 **Timing**: 1.5 hours
 
