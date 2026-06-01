@@ -32,8 +32,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,217,219,224,229,233,234,235 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,186,192,196,230,236,237,238 | 161,185,187,190,191,194,199,229,233,234,235 | completeness, tableau-training, dataset-enhancement, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,202,217,219,224,229,236,237,238,248,249,250,251 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,186,192,196,230 | 161,185,187,190,191,194,199,229,251 | completeness, dataset-enhancement, ... |
 | 3 | 95,176,193,231,239,240,241 | 155,189,192,230,237,238 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
 | 5 | 243,244,247 | 242,245,246 | tableau-training |
@@ -43,7 +43,6 @@ technical_debt:
 ### Completeness
 
 202 [IMPLEMENTING] — Formalize Reynolds Theorem 5 (US expressive completeness over Pri
-95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
   └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
   └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -67,43 +66,26 @@ technical_debt:
 
 ### Tableau Training
 
-233 [COMPLETED] — Replace unsound identity-collapse modal rules with correct S5 rul
-  - **Research**: [specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md]
-  - **Plan**: [specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md]
-  - **Summary**: [specs/233_s5_modal_tableau_rules/summaries/01_s5-modal-summary.md]
-  └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur
-  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
-    └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
-      └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-      └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
-        └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-        └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-    └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
-      └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-    └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
-      └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
-      └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
-        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-      └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
-        └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc
-    └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
-    └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
-    └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
-234 [COMPLETED] — Replace unsound identity-collapse temporal rules with correct time-indexed G/H/F/P rules
-  - **Research**: [specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md]
-  - **Plan**: [specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md]
-  - **Summary**: [specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md]
-  └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur (see above)
-  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
-  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
-235 [COMPLETED] — Implement tableau rules for primitive Until (untl) and Since (snce) operators
-  - **Research**: [specs/235_until_since_tableau_rules/reports/01_until-since-research.md]
-  - **Plan**: [specs/235_until_since_tableau_rules/plans/01_until-since-plan.md]
-  - **Summary**: [specs/235_until_since_tableau_rules/summaries/01_until-since-summary.md]
-  └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
-  └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
+236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur
+237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
+  └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
+    └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
+    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
+      └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+      └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+  └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
+    └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
+  └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
+    └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+    └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc
+  └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
+  └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
+  └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
 
 ### Automation
 
@@ -157,10 +139,11 @@ technical_debt:
 
 ### 251. Optimize generateValidBatch O(n^2) MP closure bottleneck
 - **Effort**: M
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 217
 - **Research**: [251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md]
+- **Plan**: [251_optimize_generate_valid_batch_bottleneck/plans/02_implementation-plan.md]
 
 **Description**: Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.
 
@@ -333,66 +316,6 @@ technical_debt:
 - **Dependencies**: 233, 234
 
 **Description**: Cross-modal-temporal rules based on `modal_future` axiom (`□φ → □(Gφ)`). Propagate `T(□φ)` to `T(Gφ)`, inherit temporal structure in new worlds and modal structure at new times. Test against `modal_future`, `temp_future`, and combined □/G/H/U/S formulas. Files: `Tableau.lean`, `Saturation.lean`.
-
----
-
-### 235. Until/Since tableau rules with open-guard decomposition
-- **Effort**: large (12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Topic**: tableau-training
-- **Dependencies**: 232
-- **Research**: [specs/235_until_since_tableau_rules/reports/01_until-since-research.md]
-- **Plan**: [specs/235_until_since_tableau_rules/plans/01_until-since-plan.md]
-- **Summary**: [specs/235_until_since_tableau_rules/summaries/01_until-since-summary.md]
-
-**Description**: Implemented 4 Until/Since tableau rules (untlPos, untlNeg, sncePos, snceNeg) with open-guard BX decomposition, Reynolds co-decomposition for negative rules, branch helpers, asUntil?/asSince? decomposition helpers, Eventuality tracking infrastructure, and 7 passing integration tests. Full lake build: 0 errors, 1679 jobs.
-
----
-
-### 234. Temporal G/H/F/P tableau rules with time-indexed branches
-- **Effort**: medium (8 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Topic**: tableau-training
-- **Dependencies**: 232
-- **Research**: [specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md]
-- **Plan**: [specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md]
-- **Summary**: [specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md]
-
-**Description**: Replace unsound identity-collapse temporal rules with correct time-indexed rules. Strict-inequality semantics: `T(GA) @ t → T(A) @ t'` for all `t' > t`, `F(GA) @ t → F(A) @ t_new` with fresh `t_new > t`. Track time ordering constraints. Auto-propagate G/H-formulas to new time points. Wire unused `asSomeFuture?`/`asSomePast?` helpers into new rules. Files: `Tableau.lean`, `Saturation.lean`.
-
----
-
-### 233. S5 modal tableau rules with multi-world bookkeeping
-- **Effort**: medium (6 hours)
-- **Status**: [PLANNED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Topic**: tableau-training
-- **Dependencies**: 232
-- **Research**: [specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md]
-- **Plan**: [specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md]
-
-**Description**: Replace unsound identity-collapse modal rules with correct S5 rules. `T(□A) @ w → T(A) @ w'` for all worlds (propagation), `F(□A) @ w → F(A) @ w_new` (witness), `T(◇A) @ w → T(A) @ w_new` (witness), `F(◇A) @ w → F(A) @ w'` for all worlds (refutation). Track global □-formula propagation set. Replace `boxPos`/`boxNeg`/`diamondPos`/`diamondNeg` at `Tableau.lean` lines 84-99. Files: `Tableau.lean`, `Saturation.lean`.
-
----
-
-### 232. Labeled branch infrastructure for world/time-indexed tableau
-- **Effort**: medium (8-12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Topic**: tableau-training
-- **Dependencies**: none
-- **Artifacts**:
-  - [specs/232_labeled_branch_infrastructure/reports/01_labeled-branch-research.md]
-  - [specs/232_labeled_branch_infrastructure/plans/01_labeled-branch-plan.md]
-  - [specs/232_labeled_branch_infrastructure/summaries/01_labeled-branch-summary.md]
-
-**Description**: Replace flat `SignedFormula` (`{ sign, formula }` at `SignedFormula.lean:101-106`) and `Branch` (`List SignedFormula` at line 176) with world/time-indexed types. Extend `SignedFormula` with `worldIdx : Nat` and `timeIdx : Int`. Extend `Branch` with known worlds, known time points with ordering constraints, and propagation queues. Migrate 8 propositional rules (operate within same world+time). Update `Closure.lean` contradiction detection (match within same world+time). Update `Saturation.lean` expansion. Preserve sorry-free compilation. Files: `SignedFormula.lean`, `Tableau.lean`, `Closure.lean`, `Saturation.lean`, `DecisionProcedure.lean`, `ProofExtraction.lean`, `CountermodelExtraction.lean`, `Correctness.lean`.
 
 ---
 

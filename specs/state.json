@@ -8,7 +8,7 @@
     {
       "project_number": 251,
       "project_name": "optimize_generate_valid_batch_bottleneck",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.",
       "priority": "high",
@@ -17,16 +17,36 @@
         217
       ],
       "created": "2026-06-01T18:14:22Z",
-      "last_updated": "2026-06-01T18:19:47Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-06-01T18:45:00Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md",
           "type": "research",
           "summary": "Detailed analysis of generateValidBatch O(n^2) bottleneck with 8 optimization strategies. Primary recommendation: implication-index HashMap for O(n) MP closure + HashSet pool for O(1) dedup + early complexity filtering. Expected 100-1000x speedup."
+        },
+        {
+          "path": "specs/251_optimize_generate_valid_batch_bottleneck/plans/02_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: HashSet+Array pool replacement, implication-index HashMap for O(n) MP closure, early complexity filtering, integration testing. 3 hours estimated."
         }
       ],
-      "session_id": "sess_1780337694_c4957f"
+      "session_id": "sess_1780338786_e09d53",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3], [4]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_bottleneck-optimization-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
     },
     {
       "project_number": 250,
@@ -51,61 +71,6 @@
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
       "last_updated": "2026-06-01T17:28:43Z"
-    },
-    {
-      "project_number": 227,
-      "project_name": "dataset_pipeline_automation_croissant_sync",
-      "status": "abandoned",
-      "task_type": "general",
-      "description": "Build end-to-end automation so that every benchmark data regeneration (anchor expansion, new training data, eval runs) automatically updates all downstream artifacts. (1) Fix immediate croissant.json staleness: recompute SHA-256 hashes, update contentSize for all 5 distributions, regenerate or remove bmlogic-bench-splits.json, verify field counts match actual JSONL schemas. (2) Create a deterministic pipeline script (e.g., scripts/sync-dataset-artifacts.sh) that, given freshly regenerated data, automatically recomputes SHA-256 hashes and contentSize in croissant.json, updates record counts in metadata JSON, regenerates splits if applicable, validates croissant.json structure, updates data/README.md statistics, writes git commit provenance to data/VERSION (BIMODAL_LOGIC_COMMIT + SYNC_DATE) for consumption by BimodalHarness, and commits with a structured message. (3) Update the lean-implementation-agent and general-implementation-agent definitions/context so that any task involving benchmark regeneration includes a post-implementation step that runs the sync script. Add this to agent context or plan templates so future /implement and /orchestrate runs automatically keep artifacts in sync. Note: benchmark regeneration is a cross-repo boundary — BimodalHarness (sibling repo) consumes data/ via rsync (make sync-data), so artifacts must be consistent before that handoff. (4) Document the pipeline in data/README.md with a clear narrative: what each artifact is, how they relate, which script keeps them in sync, what git history tracks, and how BimodalHarness consumes the data.",
-      "priority": "high",
-      "created": "2026-05-31T01:10:11Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "session_id": "sess_1748621400_plan227",
-      "artifacts": [
-        {
-          "path": "specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md",
-          "type": "research",
-          "summary": "Complete dataset artifact inventory, SHA-256 staleness analysis, pipeline script gap analysis, agent integration options, and croissant.json structural review"
-        },
-        {
-          "path": "specs/227_dataset_pipeline_automation_croissant_sync/plans/01_dataset-pipeline-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan covering immediate staleness fixes, deterministic sync script creation, agent context integration, pipeline documentation, and end-to-end validation"
-        }
-      ],
-      "next_artifact_number": 2,
-      "memory_candidates": [
-        {
-          "content": "BMLogic-Bench dataset sync pattern: After benchmark regeneration (finalize_benchmark.py), three downstream artifacts require manual update: (1) croissant.json SHA-256 hash and contentSize for bmlogic-bench.jsonl, (2) bmlogic-bench-splits.json via data/scripts/generate_splits.py, (3) record count in data/hf-dataset/validate.py EXPECTED_COUNTS. No automation script exists as of task 227. mlcroissant CLI is unavailable on NixOS — use sha256sum + jq structural check instead.",
-          "category": "PATTERN",
-          "source_artifact": "specs/227_dataset_pipeline_automation_croissant_sync/reports/01_dataset-pipeline-research.md",
-          "confidence": 0.9,
-          "suggested_keywords": [
-            "benchmark",
-            "croissant",
-            "sha256",
-            "sync",
-            "bmlogic-bench",
-            "dataset-pipeline"
-          ]
-        },
-        {
-          "content": "Dataset sync automation pattern for ML benchmark projects: after benchmark regeneration, downstream artifacts (Croissant JSON-LD metadata, cross-logic splits, HuggingFace validate.py expected counts, README statistics, VERSION provenance) require a deterministic sync script. Use Python for JSON-LD manipulation (jq is fragile for nested structures) and shell for orchestration. Make commit behavior opt-in via --commit flag. Agent integration via context file in .claude/context/project/dataset/ with planner-agent load_when ensures benchmark tasks automatically include a sync phase.",
-          "category": "WORKFLOW",
-          "source_artifact": "specs/227_dataset_pipeline_automation_croissant_sync/plans/01_dataset-pipeline-plan.md",
-          "confidence": 0.85,
-          "suggested_keywords": [
-            "dataset-sync",
-            "croissant",
-            "benchmark-pipeline",
-            "automation",
-            "agent-context",
-            "post-regeneration"
-          ]
-        }
-      ],
-      "completion_summary": "Superseded by task 231 (dataset regeneration automation) which has broader scope."
     },
     {
       "project_number": 224,
@@ -1239,90 +1204,6 @@
       ]
     },
     {
-      "project_number": 221,
-      "project_name": "proof_step_dataset_expansion",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Expand proof_steps.jsonl from 36 to 200+ theorems with better temporal rule coverage. Current rule distribution biased toward axiom application (50%) and modus_ponens (49%). Target: temporal rules (necessitation, temporal_duality, temporal_necessitation) represent at least 10% of steps. Record format backward-compatible with current 8-field schema. Uses the proof_extractor executable. Requires identifying and proving additional theorems that exercise temporal rules.",
-      "priority": "low",
-      "topic": "dataset-enhancement",
-      "dependencies": [],
-      "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-06-01T15:55:46Z",
-      "session_id": "sess_1780328452_903300",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/221_proof_step_dataset_expansion/reports/01_proof-step-research.md",
-          "type": "research",
-          "summary": "Proof step expansion: 36 theorems/2424 steps, 0.8% temporal rules, computability constraint blocks noncomputable theorems, 3 expansion strategies identified, 200+ feasible"
-        },
-        {
-          "path": "specs/221_proof_step_dataset_expansion/plans/01_proof-step-plan.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan expanding proof_steps.jsonl from 36 to 200+ theorems with 10%+ temporal rule coverage via G/H/GG wrapping, temporal axiom instantiation, and multi-instantiation"
-        },
-        {
-          "path": "specs/221_proof_step_dataset_expansion/summaries/01_proof-step-summary.md",
-          "type": "summary",
-          "summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass."
-        }
-      ],
-      "completion_summary": "Expanded proof_steps.jsonl from 36 to 310 theorems (10063 steps), achieved 11.0% temporal rule coverage (target 10%), 31/42 axiom names (target 30+). All validations pass."
-    },
-    {
-      "project_number": 228,
-      "project_name": "fix_dataset_metadata_staleness",
-      "status": "completed",
-      "completion_summary": "Fixed all stale metadata across 6 files in data/: proof_steps_metadata.json (10063 records, 310 theorems, correct rule distribution, CC BY 4.0), bmlogic-bench_metadata.json (renamed total_count->total_records, added license), bmlogic-c5/c7_metadata.json (CC BY 4.0), data/README.md and data/dataset-card.md (correct counts, 16-field training schema, cc-by-4.0 license throughout).",
-      "task_type": "general",
-      "description": "Fix all stale metadata and documentation across data/. (1) Update proof_steps_metadata.json: total_records 2424->10063, theorem_count 36->310, rule_distribution to actual (axiom:4635, modus_ponens:4325, temporal_necessitation:991, temporal_duality:63, necessitation:49), step_statistics (avg 32.5, max 327, min 1). (2) Standardize bmlogic-bench_metadata.json: rename total_count to total_records for consistency. (3) Update data/README.md: fix record counts (proof_steps 2424->10063, theorems 36->310, benchmark 727->777), update training schema table from 14 to 16 fields documenting max_modal_depth and max_temporal_depth. (4) Update data/dataset-card.md: overview table counts, proof steps statistics. (5) Resolve license inconsistency: dataset-card.md YAML says 'mit' but croissant.json says 'CC BY 4.0' — pick one and make all files consistent.",
-      "priority": "high",
-      "topic": "dataset-enhancement",
-      "dependencies": [],
-      "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-06-01T21:05:00Z",
-      "session_id": "sess_1748815200_orch228",
-      "researched": "2026-06-01T20:30:00Z",
-      "planned": "2026-06-01T21:05:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/228_fix_dataset_metadata_staleness/reports/01_metadata-staleness-audit.md",
-          "type": "research",
-          "summary": "Full audit of all stale metadata across data/: verified ground-truth values from JSONL files, catalogued all 6 files needing changes, recommended CC BY 4.0 as authoritative license, documented 16-field training schema"
-        },
-        {
-          "path": "specs/228_fix_dataset_metadata_staleness/plans/01_fix-metadata-staleness.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan: update metadata JSON files, fix documentation, cross-file verification and license standardization to CC BY 4.0"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 2,
-        "complexity": "simple",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1,
-            2
-          ],
-          [
-            3
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_metadata-staleness-audit.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      }
-    },
-    {
       "project_number": 229,
       "project_name": "resolve_train_bench_contamination",
       "status": "not_started",
@@ -1362,258 +1243,6 @@
       ],
       "created": "2026-06-01T20:00:00Z",
       "last_updated": "2026-06-01T20:00:00Z"
-    },
-    {
-      "project_number": 232,
-      "project_name": "labeled_branch_infrastructure",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Replace flat SignedFormula and Branch types in Metalogic/Decidability/ with world/time-indexed types supporting proper multi-world modal and time-indexed temporal reasoning. Extend SignedFormula to carry WorldIndex and TimeIndex. Migrate all 8 propositional rules to the new infrastructure. Update Closure.lean contradiction detection to match within same world+time. Update Saturation.lean expansion to thread indices. Preserve sorry-free compilation.",
-      "priority": "critical",
-      "topic": "tableau-training",
-      "dependencies": [],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T14:00:00Z",
-      "session_id": "sess_1748785200_orch232",
-      "researched": "2026-06-01T23:30:00Z",
-      "planned": "2026-06-02T00:00:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/232_labeled_branch_infrastructure/reports/01_labeled-branch-research.md",
-          "type": "research",
-          "summary": "Complete architecture analysis: SignedFormula/Branch types, 8 propositional rules, Closure monotonicity, Saturation threading, Label design recommendation, 6-phase migration plan, 2369-line change surface across 9 files"
-        },
-        {
-          "path": "specs/232_labeled_branch_infrastructure/plans/01_labeled-branch-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan: Label/WorldIndex/TimeIndex types, Tableau rule threading, Closure label-matching, Saturation initial branch, downstream compile-through. 6 hours estimated."
-        },
-        {
-          "path": "specs/232_labeled_branch_infrastructure/summaries/01_labeled-branch-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: 5 phases completed, 7 files modified, zero sorries"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ],
-          [
-            5
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_labeled-branch-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      },
-      "completion_summary": "Replaced flat SignedFormula/Branch types with world/time-indexed Label infrastructure (WorldIndex, TimeIndex, Label struct) across 7 files in Metalogic/Decidability and Automation. All 8 propositional rules thread labels, Closure matches within same world+time, 8 monotonicity lemmas proved. Zero sorries, full build passes."
-    },
-    {
-      "project_number": 233,
-      "project_name": "s5_modal_tableau_rules",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Replace unsound identity-collapse modal rules with correct S5 rules using world indices from task 232. Implement box/diamond propagation across S5 equivalence class, witness world introduction for F(box) and T(diamond), universal refutation for F(diamond), and auto-propagation of box-formulas to new worlds.",
-      "priority": "critical",
-      "topic": "tableau-training",
-      "dependencies": [
-        232
-      ],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "session_id": "sess_1748788800_orch233",
-      "researched": "2026-06-01T10:30:00Z",
-      "planned": "2026-06-01T12:00:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md",
-          "type": "report",
-          "summary": "S5 modal rule analysis: 4 identity-collapse placeholders identified, correct existential/universal rule specifications, branch-aware applyRule design, auto-propagation mechanism, ~130 lines across 3 files"
-        },
-        {
-          "path": "specs/233_s5_modal_tableau_rules/plans/01_s5-modal-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: branch helpers, rule infrastructure with RuleResult.persistent, saturation update, full build verification. 6 hours estimated."
-        },
-        {
-          "path": "specs/233_s5_modal_tableau_rules/summaries/01_s5-modal-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: correct S5 modal tableau rules with multi-world bookkeeping"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_s5-modal-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      },
-      "completion_summary": "Replaced 4 identity-collapse modal rules with correct S5 rules: universal rules (boxPos, diamondNeg) with persistent propagation to all known worlds, existential rules (boxNeg, diamondPos) with fresh world introduction and auto-propagation. S5 validity tests pass (T, K, 5 axioms). Zero sorries."
-    },
-    {
-      "project_number": 234,
-      "project_name": "temporal_ghfp_tableau_rules",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Replace unsound identity-collapse temporal rules with correct time-indexed rules using time indices from task 232. Implement G/H/F/P expansion with strict-inequality semantics (open guard), time ordering constraint tracking, and propagation of G/H-formulas to newly created time points.",
-      "priority": "critical",
-      "topic": "tableau-training",
-      "dependencies": [
-        232
-      ],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T23:59:00Z",
-      "session_id": "sess_1748790000_orch234",
-      "artifacts": [
-        {
-          "path": "specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md",
-          "type": "research",
-          "summary": "Complete analysis of temporal G/H/F/P tableau rule design with time ordering, auto-propagation, and change surface assessment"
-        },
-        {
-          "path": "specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan: time helpers + TimeOrdering, fix decomposition helpers + F/P constructors, thread TimeOrdering, rewrite G/H rules + add F/P rules, integration testing. 8 hours estimated."
-        },
-        {
-          "path": "specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md",
-          "type": "summary",
-          "summary": "Replaced 4 unsound identity-collapse temporal rules with 8 correct time-indexed G/H/F/P rules using TimeOrdering constraint tracking, strict-inequality semantics, and auto-propagation. Zero sorries."
-        }
-      ],
-      "planned": "2026-06-01T23:50:00Z",
-      "completion_summary": "Replaced 4 unsound identity-collapse temporal rules with 8 correct time-indexed G/H/F/P rules: 4 universal/persistent (T(GA), F(FA), T(HA), F(PA)) and 4 existential/consumable (F(GA), T(FA), F(HA), T(PA)) with TimeOrdering constraint tracking, strict-inequality semantics, auto-propagation, and fixed decomposition helpers. 13 integration tests pass. Zero sorries.",
-      "next_artifact_number": 2,
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 8,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ],
-          [
-            4
-          ],
-          [
-            5
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_temporal-ghfp-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      }
-    },
-    {
-      "project_number": 235,
-      "project_name": "until_since_tableau_rules",
-      "status": "completed",
-      "completion_summary": "Implemented 4 Until/Since tableau rules: T(U) and T(S) with branching (event-witness vs guard+continue, fresh time, auto-propagation), F(U) and F(S) with Reynolds co-decomposition (persistent per-time branching). Added Eventuality tracking structure for task 237. 7 integration tests pass including BX12/BX12'. Zero sorries.",
-      "task_type": "lean4",
-      "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
-      "priority": "critical",
-      "topic": "tableau-training",
-      "dependencies": [
-        232
-      ],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T23:30:00Z",
-      "session_id": "sess_1748795000_orch235",
-      "researched": "2026-06-01T22:30:00Z",
-      "planned": "2026-06-01T23:30:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/235_until_since_tableau_rules/reports/01_until-since-research.md",
-          "type": "research",
-          "summary": "Complete analysis of Until/Since tableau rule design: Burgess convention, open-guard semantics, Reynolds co-decomposition for F(U), eventuality tracking, pattern matching safety, 4-file change surface"
-        },
-        {
-          "path": "specs/235_until_since_tableau_rules/plans/01_until-since-plan.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan: branch helpers + Eventuality type, T(U)/T(S) branching rules, F(U)/F(S) Reynolds co-decomposition, integration testing with BX axioms. 12 hours estimated."
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 12,
-        "complexity": "complex",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_until-since-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      }
     },
     {
       "project_number": 236,
