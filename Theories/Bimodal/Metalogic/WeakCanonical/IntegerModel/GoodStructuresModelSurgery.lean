@@ -1489,32 +1489,184 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
       exfalso
       exact (h_none s) ((h_spread_correct s).mpr
         ⟨s, (contemp_equiv_is_equiv sig k M).refl s, h_A_s⟩)
-  -- === Step 7: Truth preservation (Reynolds Lemma 12, backward direction) ===
-  -- Backward truth preservation: temporal_truth N atomMap ⟨t, h_t⟩ B →
-  --   temporal_truth M atomMap t B, proved by structural induction.
-  -- The backward direction is straightforward because N.carrier ⊂ M.carrier
-  -- and class(a) is convex (so all witnesses between two class points are also in class).
-  --
-  -- The FORWARD direction (M → N) of truth preservation for Until/Since when the
-  -- witness is outside class(a) requires "ordered spread" (Reynolds Lemma 11):
-  -- if B₁ holds at s > t outside class(a), then B₁ holds at some s' > t inside class(a).
-  -- This follows from the k-equivalence of all classes, which ensures formulas are
-  -- cofinal in each class. The k-equivalence of classes follows from
-  -- invariant_formula_constant combined with the normal form machinery.
-  --
-  -- For the final contradiction, we need truth preservation + Prior-UZ/SZ on N to
-  -- show R ↔ right_gap_class_formula on N. right_gap_class_formula is false on N
-  -- (all N-subintervals are good), so R is false on N. But h_R_everywhere + forward
-  -- truth pres gives R true on N. Contradiction.
-  --
-  -- BLOCKER: The forward truth preservation for Until/Since when witness is outside
-  -- class(a) requires "ordered spread" (density/cofinality of formulas in each class).
-  -- class_spread gives B₁ SOMEWHERE in class(a) but not necessarily ABOVE t.
-  -- Proving B₁ holds above t requires showing all classes are k-equivalent (so that
-  -- the k-type structure forces B₁ to be cofinal). This requires Reynolds Lemma 11
-  -- (density) which uses the k-equivalence of classes -- a deeper argument than
-  -- class_spread alone provides.
-  sorry
+  -- === Step 7: Truth preservation (M ↔ N) by structural induction ===
+  -- Both directions simultaneously; the imp case needs both.
+  have truth_pres : ∀ (B : Formula) (t : M.carrier) (h_t : contemp_equiv sig k M a t),
+      temporal_truth M atomMap t B ↔ temporal_truth N atomMap ⟨t, h_t⟩ B := by
+    intro B
+    induction B with
+    | atom α => intro t h_t; exact Iff.rfl
+    | bot => intro t h_t; exact Iff.rfl
+    | imp φ ψ ih_φ ih_ψ =>
+      intro t h_t
+      exact ⟨fun h_M h_N_φ => (ih_ψ t h_t).mp (h_M ((ih_φ t h_t).mpr h_N_φ)),
+             fun h_N h_M_φ => (ih_ψ t h_t).mpr (h_N ((ih_φ t h_t).mp h_M_φ))⟩
+    | box φ => intro t h_t; exact Iff.rfl
+    | untl φ ψ ih_φ ih_ψ =>
+      intro t h_t
+      constructor
+      · -- Forward: M → N
+        intro ⟨s, h_ts, h_φ_s, h_ψ_between⟩
+        by_cases h_s_class : contemp_equiv sig k M a s
+        · -- s ∈ class(a): direct transfer via convexity
+          exact ⟨⟨s, h_s_class⟩, h_ts, (ih_φ s h_s_class).mp h_φ_s,
+            fun ⟨r, h_r⟩ h_tr h_rs => (ih_ψ r h_r).mp (h_ψ_between r h_tr h_rs)⟩
+        · -- s ∉ class(a): all class(a) above t are below s.
+          -- ψ holds at all intermediate M-points, including all class(a) above t.
+          -- Need φ above t in class(a): use class_spread.
+          obtain ⟨s', h_s'_class, h_φ_s'⟩ := class_spread φ s h_φ_s a
+          by_cases h_s't : t < s'
+          · -- s' > t: use it
+            have h_s'_lt_s : s' < s := by
+              by_contra h_ge; push_neg at h_ge
+              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              · exact h_s_class h_s'_class
+              · exact h_s_class (class_convex t s s' h_t h_s'_class
+                  (le_of_lt h_ts) (le_of_lt h_gt))
+            exact ⟨⟨s', h_s'_class⟩, h_s't, (ih_φ s' h_s'_class).mp h_φ_s',
+              fun ⟨r, h_r⟩ h_tr h_rs' =>
+                (ih_ψ r h_r).mp (h_ψ_between r h_tr (lt_trans h_rs' h_s'_lt_s))⟩
+          · -- s' ≤ t: ordered spread blocked. Reynolds Lemma 11 needed.
+            sorry
+      · -- Backward: N → M
+        intro ⟨⟨s, h_s⟩, h_ts, h_φ_s, h_ψ_between⟩
+        exact ⟨s, h_ts, (ih_φ s h_s).mpr h_φ_s, fun r h_tr h_rs => by
+          have h_r_class := class_convex t r s h_t h_s (le_of_lt h_tr) (le_of_lt h_rs)
+          exact (ih_ψ r h_r_class).mpr (h_ψ_between ⟨r, h_r_class⟩ h_tr h_rs)⟩
+    | snce φ ψ ih_φ ih_ψ =>
+      intro t h_t
+      constructor
+      · -- Forward: M → N (mirror of Until)
+        intro ⟨s, h_st, h_φ_s, h_ψ_between⟩
+        by_cases h_s_class : contemp_equiv sig k M a s
+        · exact ⟨⟨s, h_s_class⟩, h_st, (ih_φ s h_s_class).mp h_φ_s,
+            fun ⟨r, h_r⟩ h_sr h_rt => (ih_ψ r h_r).mp (h_ψ_between r h_sr h_rt)⟩
+        · obtain ⟨s', h_s'_class, h_φ_s'⟩ := class_spread φ s h_φ_s a
+          by_cases h_s't : s' < t
+          · have h_s_lt_s' : s < s' := by
+              by_contra h_ge; push_neg at h_ge
+              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              · exact h_s_class h_s'_class
+              · exact h_s_class (class_convex s' s t h_s'_class h_t
+                  (le_of_lt h_gt) (le_of_lt h_st))
+            exact ⟨⟨s', h_s'_class⟩, h_s't, (ih_φ s' h_s'_class).mp h_φ_s',
+              fun ⟨r, h_r⟩ h_s'r h_rt =>
+                (ih_ψ r h_r).mp (h_ψ_between r (lt_trans h_s_lt_s' h_s'r) h_rt)⟩
+          · -- s' ≥ t: ordered spread downward blocked.
+            sorry
+      · -- Backward: N → M
+        intro ⟨⟨s, h_s⟩, h_st, h_φ_s, h_ψ_between⟩
+        exact ⟨s, h_st, (ih_φ s h_s).mpr h_φ_s, fun r h_sr h_rt => by
+          have h_r_class := class_convex s r t h_s h_t (le_of_lt h_sr) (le_of_lt h_rt)
+          exact (ih_ψ r h_r_class).mpr (h_ψ_between ⟨r, h_r_class⟩ h_sr h_rt)⟩
+  -- === Step 8: Prior-UZ/SZ on N (from truth preservation) ===
+  have h_a_class : contemp_equiv sig k M a a := (contemp_equiv_is_equiv sig k M).refl a
+  have h_prior_UZ_N : semantic_prior_UZ N atomMap := by
+    intro ⟨t, h_t⟩ ψ ⟨⟨s, h_s⟩, h_ts, h_ψ_s⟩
+    -- Need first occurrence of ψ above t in N.
+    -- Transfer to M: ψ holds at s (in N) → ψ holds at s (in M).
+    have h_ψ_s_M := (truth_pres ψ s h_s).mpr h_ψ_s
+    -- Apply Prior-UZ on M
+    obtain ⟨s₀, h_ts₀, h_ψ_s₀, h_neg_between⟩ :=
+      h_prior_UZ t ψ ⟨s, h_ts, h_ψ_s_M⟩
+    -- s₀ > t, ψ(s₀), ¬ψ between t and s₀ in M.
+    -- Is s₀ in class(a)?
+    -- s₀ is between t and s (t < s₀ ≤ s since s₀ is the first occurrence).
+    -- Actually s₀ ≤ s by first-occurrence. t < s₀ ≤ s. Both t and s are in class(a).
+    -- By convexity: s₀ ∈ class(a) (since t ≤ s₀ ≤ s, both endpoints in class(a)).
+    have h_s₀_le_s : s₀ ≤ s := by
+      by_contra h_gt; push_neg at h_gt
+      -- s₀ > s. ψ.neg between t and s₀ (including at s). But ψ holds at s. Contradiction.
+      -- h_neg_between s h_ts h_gt : temporal_truth M atomMap s ψ.neg = ¬ temporal_truth M ψ
+      exact (h_neg_between s h_ts h_gt) h_ψ_s_M
+    have h_s₀_class : contemp_equiv sig k M a s₀ :=
+      class_convex t s₀ s h_t h_s (le_of_lt h_ts₀) h_s₀_le_s
+    -- Transfer s₀ to N
+    refine ⟨⟨s₀, h_s₀_class⟩, h_ts₀, (truth_pres ψ s₀ h_s₀_class).mp h_ψ_s₀, ?_⟩
+    -- ¬ψ between t and s₀ in N
+    intro ⟨r, h_r⟩ h_tr h_rs₀
+    exact (truth_pres ψ.neg r h_r).mp (h_neg_between r h_tr h_rs₀)
+  have h_prior_SZ_N : semantic_prior_SZ N atomMap := by
+    intro ⟨t, h_t⟩ ψ ⟨⟨s, h_s⟩, h_st, h_ψ_s⟩
+    have h_ψ_s_M := (truth_pres ψ s h_s).mpr h_ψ_s
+    obtain ⟨s₀, h_s₀t, h_ψ_s₀, h_neg_between⟩ :=
+      h_prior_SZ t ψ ⟨s, h_st, h_ψ_s_M⟩
+    have h_s_le_s₀ : s ≤ s₀ := by
+      by_contra h_gt; push_neg at h_gt
+      exact (h_neg_between s h_gt h_st) h_ψ_s_M
+    have h_s₀_class : contemp_equiv sig k M a s₀ :=
+      class_convex s s₀ t h_s h_t h_s_le_s₀ (le_of_lt h_s₀t)
+    refine ⟨⟨s₀, h_s₀_class⟩, h_s₀t, (truth_pres ψ s₀ h_s₀_class).mp h_ψ_s₀, ?_⟩
+    intro ⟨r, h_r⟩ h_s₀r h_rt
+    exact (truth_pres ψ.neg r h_r).mp (h_neg_between r h_s₀r h_rt)
+  -- === Step 9: R holds on N (by forward truth preservation) ===
+  have h_R_on_N : ∀ (t : M.carrier) (h_t : contemp_equiv sig k M a t),
+      temporal_truth N atomMap ⟨t, h_t⟩ R := by
+    intro t h_t
+    exact (truth_pres R t h_t).mp (h_R_everywhere t)
+  -- === Step 10: right_gap_class_formula is FALSE on N ===
+  -- All N-subintervals are good, so no bad subintervals exist.
+  -- right_gap_class_formula on N: ∃ b > t (b ∈ N), ∃ a' b' (∈ N), guard ∧ ¬good(N.sub a' b')
+  -- Since N.sub a' b' is k-equiv to M.sub a'.val b'.val (by subinterval_of_subinterval
+  -- and convexity of class(a)), and M.sub a'.val b'.val is good (h_N_very_good),
+  -- the formula is false.
+  have h_rgcf_false_N : ∀ (t : M.carrier) (h_t : contemp_equiv sig k M a t),
+      ¬ eval N (fun _ => ⟨t, h_t⟩) (right_gap_class_formula sig k) := by
+    intro t h_t h_eval
+    -- Unfold the formula evaluation on N step by step
+    simp only [right_gap_class_formula, eval, eval_leq] at h_eval
+    -- h_eval : ∃ b : N.carrier, t_N < b ∧ ∃ b' a' : N.carrier, guard ∧ ¬ eval N env4 (good_rel_lifted)
+    obtain ⟨b, h_tb, b', a', ⟨⟨h_ta', h_a'b'⟩, h_b'b⟩, h_not_good⟩ := h_eval
+    -- a', b' ∈ N.carrier = classA with a' ≤ b'.
+    -- ¬ eval N env4 (good_rel_lifted sig k)
+    -- eval_good_rel_lifted on N: eval N env4 (good_rel_lifted) ↔ eval N (Fin.cons a' (Fin.cons b' Fin.elim0)) (good_formula_relativized)
+    rw [eval_good_rel_lifted] at h_not_good
+    -- good_formula_relativized_correct on N: eval N (...) ↔ good(N.subinterval a' b')
+    -- But good_formula_relativized_correct requires a'.val ≤ b'.val (h_a'b')
+    -- Actually h_a'b' is the N-order: a' ≤ b' (subtype order = underlying order).
+    -- Need: good(N.subinterval sig a' b')
+    -- Use show to normalize the env after eval_good_rel_lifted
+    have h_eval_form : eval N (Fin.cons a' (Fin.cons b' Fin.elim0))
+        (good_formula_relativized sig k) := by
+      -- After eval_good_rel_lifted, the env has Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0)
+      -- where env 0 = a' and env 1 = b' definitionally.
+      show eval N (Fin.cons a' (Fin.cons b' Fin.elim0)) (good_formula_relativized sig k)
+      rw [good_formula_relativized_correct sig k N a' b' h_a'b']
+      -- Need: good(N.subinterval sig a' b')
+      -- N.subinterval a' b' has carrier {x : N.carrier // a' ≤ x ∧ x ≤ b'}
+      -- M.subinterval a'.val b'.val has carrier {x : M.carrier // a'.val ≤ x ∧ x ≤ b'.val}
+      -- These are isomorphic via the inclusion (convexity ensures all intermediate
+      -- M-points are in class(a)).
+      have h_M_good := h_N_very_good a' b' h_a'b'
+      -- h_M_good : good(M.subinterval sig a'.val b'.val)
+      -- Transfer: N.subinterval a' b' ≃ M.subinterval a'.val b'.val
+      obtain ⟨Z, hZ⟩ := h_M_good
+      refine ⟨Z, ?_⟩
+      -- Build k_equiv between N.subinterval a' b' and Z.toOrdered
+      -- by composing: N.sub ≃ M.sub a'.val b'.val ≃k Z.toOrdered
+      -- The first iso follows from convexity of class(a).
+      let f : (N.subinterval sig a' b').carrier ≃o (M.subinterval sig a'.val b'.val).carrier := {
+        toEquiv := {
+          toFun := fun ⟨⟨x, hx_class⟩, ha'x, hxb'⟩ => ⟨x, ha'x, hxb'⟩
+          invFun := fun ⟨x, ha'x, hxb'⟩ =>
+            ⟨⟨x, class_convex a'.val x b'.val a'.property b'.property ha'x hxb'⟩, ha'x, hxb'⟩
+          left_inv := by intro ⟨⟨_, _⟩, _, _⟩; rfl
+          right_inv := by intro ⟨_, _, _⟩; rfl
+        }
+        map_rel_iff' := by intro ⟨⟨_, _⟩, _, _⟩ ⟨⟨_, _⟩, _, _⟩; exact Iff.rfl
+      }
+      exact (k_equiv_of_iso sig k _ _ f (fun p ⟨⟨_, _⟩, _, _⟩ => Iff.rfl)).trans hZ
+    exact h_not_good h_eval_form
+  -- === Step 11: R on N ↔ right_gap_class_formula on N ===
+  -- Use US_expressively_complete_over_prior.property directly (doesn't need SuccOrder on N).
+  have h_R_iff_rgcf_N : ∀ (t : M.carrier) (h_t : contemp_equiv sig k M a t),
+      eval N (fun _ => ⟨t, h_t⟩) (right_gap_class_formula sig k) ↔
+      temporal_truth N atomMap ⟨t, h_t⟩ R := by
+    intro t h_t
+    exact (US_expressively_complete_over_prior atomMap h_surj
+      (right_gap_class_formula sig k)).property N h_prior_UZ_N h_prior_SZ_N ⟨t, h_t⟩
+  -- === Step 12: Contradiction ===
+  exact h_rgcf_false_N a h_a_class ((h_R_iff_rgcf_N a h_a_class).mpr (h_R_on_N a h_a_class))
 
 /--
 **Reynolds Theorem 14, downward case**: Symmetric to `gap_prior_UZ_contradiction`
