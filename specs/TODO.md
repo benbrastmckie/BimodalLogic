@@ -30,16 +30,18 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,241,248,249,250 | -- | completeness, formula-refactor, frame-extensions, tableau-training, ... |
-| 2 | 155,186,192,196,230 | 161,185,187,190,191,194,199,229 | completeness, dataset-enhancement, ... |
-| 3 | 95,176,193,231 | 155,189,192,230 | completeness, formula-refactor, ... |
-| 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
-| 5 | 243,244,247 | 242,245,246 | tableau-training |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,241,248,249,250,252,253,254,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,164,186,192,196,230,242,245,246 | 161,165,185,187,190,191,194,199,229,239,240,241 | completeness, tableau-training, dataset-enhancement, ... |
+| 3 | 95,176,193,231,243,244,247 | 155,189,192,230,242,245,246 | completeness, formula-refactor, tableau-training, ... |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
+254 [NOT STARTED] — Update stale metadata after task 202 completion: (1) TODO.md sorr
+256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
+95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
   └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
   └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -86,18 +88,17 @@ technical_debt:
 
 ### Code Quality
 
-252 [PLANNED] — Fix linter warnings across codebase and improve dataset generation scripts
-  - **Research**: [specs/252_fix_linter_warnings_and_generation_script/reports/01_linter-warning-research.md]
-  - **Plan**: [specs/252_fix_linter_warnings_and_generation_script/plans/01_implementation-plan.md]
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
+252 [PLANNED] — Fix linter warnings across the codebase and improve dataset gener
+255 [NOT STARTED] — Archive dead code to Boneyard/ after task 202 completed Reynolds 
 
 ### Dataset Enhancement
 
-253 [RESEARCHED] — Add progress reporting to dataset generation pipeline
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
     └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+253 [PLANNED] — Add progress reporting to the dataset generation pipeline so user
 
 ### Uncategorized
 
@@ -128,8 +129,32 @@ technical_debt:
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 224 [NOT STARTED] — Investigate whether the finite insertion argument can prove IsSuc
+248 [NOT STARTED] — fold_direction_formula_normalization
+249 [NOT STARTED] — expand_temporal_derived_theorems
+250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 256. Re-scope task 155 and update tasks 95/224 descriptions
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Type**: meta
+- **Priority**: medium
+- **Description**: Re-scope task 155 (reynolds_pipeline_activation) after task 202 completed Reynolds model surgery. chronicle_is_good_direct objective achieved. Focus on final completeness_discrete rewiring. Update task 95 description (succ_cofinal reference stale). Consider abandoning task 224 (alternative to Reynolds, now moot).
+
+### 255. Boneyard dead Reynolds code
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: low
+- **Description**: Archive dead code to Boneyard/: ReynoldsModelSurgery.lean (unprovable sorry), ReynoldsNoGaps.lean (deprecated), Transfer.lean countermodel_discrete (BX pipeline dead code). Remove stale imports.
+
+### 254. Update stale metadata post task 202
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Type**: meta
+- **Priority**: medium
+- **Description**: Update TODO.md sorry_count_note, ROADMAP.md completeness milestones, Transfer.lean stale comments — all reference pre-task-202 sorry landscape.
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M

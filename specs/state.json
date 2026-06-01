@@ -1208,7 +1208,16 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1, 2, 3], [4]],
+        "dependency_waves": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_linter-warning-research.md",
@@ -1221,25 +1230,79 @@
     {
       "project_number": 253,
       "project_name": "dataset_generation_progress_reporting",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently run_dataset_generation.sh prints \"Generating formulas...\" and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-01T21:48:00Z",
-      "last_updated": "2026-06-01T22:00:00Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-06-01T22:35:00Z",
+      "session_id": "sess_1780345824_aadd93",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/253_dataset_generation_progress_reporting/reports/01_progress-reporting-research.md",
           "type": "research",
           "summary": "Progress reporting research: identified silent generateFormulas as main gap, proposed per-complexity-level IO wrapper, generateValidBatch loop progress, enhanced labeling ETA/rate, 3-phase implementation plan"
+        },
+        {
+          "path": "specs/253_dataset_generation_progress_reporting/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: per-complexity-level IO progress wrapper for enumeration, generateValidBatch seeding/closure progress, enhanced labeling with rate/ETA. 4 hours total."
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2], [3]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_progress-reporting-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 254,
+      "project_name": "update_stale_metadata_post_202",
+      "status": "not_started",
+      "task_type": "meta",
+      "priority": "medium",
+      "topic": "completeness",
+      "description": "Update stale metadata after task 202 completion: (1) TODO.md sorry_count_note — reflect Reynolds pipeline sorry-free, succ_cofinal off Reynolds critical path; (2) ROADMAP.md — annotate task 202 completion, mark completeness milestones; (3) Transfer.lean stale comments — update lines referencing sorry-free modulo no_gaps_discrete (now sorry-free via ShiftAndGlue wiring).",
+      "dependencies": [],
+      "created": "2026-06-01T22:30:00Z"
+    },
+    {
+      "project_number": 255,
+      "project_name": "boneyard_dead_reynolds_code",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "low",
+      "topic": "code-quality",
+      "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean — sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean — deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) — deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
+      "dependencies": [],
+      "created": "2026-06-01T22:30:00Z"
+    },
+    {
+      "project_number": 256,
+      "project_name": "rescope_155_update_95_224",
+      "status": "not_started",
+      "task_type": "meta",
+      "priority": "medium",
+      "topic": "completeness",
+      "description": "Re-scope task 155 and update related task descriptions after task 202 completion: (1) Task 155 (reynolds_pipeline_activation) — chronicle_is_good_direct objective achieved by task 202. Re-scope to focus on final completeness_discrete rewiring (close countermodel_discrete_reynolds packaging sorry, replace BX pipeline path). (2) Task 95 (completeness_verification_audit) — description references succ_cofinal as root sorry, now partially obsolete. Update to reflect Reynolds pipeline availability. (3) Task 224 (finite insertion IsSuccArchimedean) — described as alternative to Reynolds model surgery, now moot. Consider abandoning.",
+      "dependencies": [],
+      "created": "2026-06-01T22:30:00Z"
     }
   ],
-  "next_project_number": 254,
+  "next_project_number": 257,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
