@@ -89,19 +89,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Temporal Inheritance at World Creation [NOT STARTED]
+### Phase 2: Temporal Inheritance at World Creation [COMPLETED]
 
 **Goal**: Augment `boxNeg` and `diamondPos` rules so that when a fresh world `w'` is created at time `t`, temporal universal formulas at time `t` from any world are also propagated to `(w', t)`. This ensures new worlds inherit the temporal structure established by box formulas via the boxTemporal rule.
 
 **Tasks**:
-- [ ] In `boxNeg` case of `applyRule`: after existing boxProps and diaProps computation, add propagation of `T(G A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
-- [ ] In `boxNeg` case: add propagation of `T(H A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
-- [ ] In `boxNeg` case: add propagation of `F(F A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
-- [ ] In `boxNeg` case: add propagation of `F(P A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
-- [ ] In `boxNeg` case: add propagation of `F(U(event, guard))` and `F(S(event, guard))` formulas at time `l.time` from any world to `(freshWorld, l.time)`
-- [ ] Apply the same augmentations to the `diamondPos` case
-- [ ] Add helper functions to `SignedFormula.lean` if needed: `allFuturePosAtTime`, `allPastPosAtTime`, `someFutureNegAtTime`, `somePastNegAtTime`, `untlNegAtTime`, `snceNegAtTime` -- each filters by time index
-- [ ] Verify compilation with `lake build Bimodal.Metalogic.Decidability.Tableau`
+- [x] In `boxNeg` case of `applyRule`: after existing boxProps and diaProps computation, add propagation of `T(G A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
+- [x] In `boxNeg` case: add propagation of `T(H A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
+- [x] In `boxNeg` case: add propagation of `F(F A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
+- [x] In `boxNeg` case: add propagation of `F(P A)` formulas at time `l.time` from any world to `(freshWorld, l.time)`
+- [x] In `boxNeg` case: add propagation of `F(U(event, guard))` and `F(S(event, guard))` formulas at time `l.time` from any world to `(freshWorld, l.time)`
+- [x] Apply the same augmentations to the `diamondPos` case
+- [x] Add helper functions to `SignedFormula.lean` if needed: `allFuturePosAtTime`, `allPastPosAtTime`, `someFutureNegAtTime`, `somePastNegAtTime`, `untlNegAtTime`, `snceNegAtTime` -- each filters by time index *(also added boxPosAtWorldTime and diamondNegAtWorldTime for Phase 3; also fixed pre-existing ordering issue with blocking code that referenced TimeOrdering before its definition)*
+- [x] Verify compilation with `lake build Bimodal.Metalogic.Decidability.Tableau`
 
 **Timing**: 1.5 hours
 

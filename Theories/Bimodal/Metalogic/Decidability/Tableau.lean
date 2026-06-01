@@ -358,7 +358,27 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
           if branch.contains prop then none else some prop
         | _ => none
-      (.linear (witness :: boxProps ++ diaProps), timeOrd)
+      -- Cross-modal-temporal: propagate temporal universals at time l.time to fresh world
+      let tempGProps := (branch.allFuturePosAtTime l.time).filterMap fun gsf =>
+        let prop := { gsf with label := { gsf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let tempHProps := (branch.allPastPosAtTime l.time).filterMap fun hsf =>
+        let prop := { hsf with label := { hsf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let tempFNegProps := (branch.someFutureNegAtTime l.time).filterMap fun fsf =>
+        let prop := { fsf with label := { fsf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let tempPNegProps := (branch.somePastNegAtTime l.time).filterMap fun psf =>
+        let prop := { psf with label := { psf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let tempUNegProps := (branch.untlNegAtTime l.time).filterMap fun usf =>
+        let prop := { usf with label := { usf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
+        let prop := { ssf with label := { ssf.label with world := freshWorld } }
+        if branch.contains prop then none else some prop
+      let temporalProps := tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
+      (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
   -- T(◇A) → T(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .diamondPos, .pos, φ =>
       match asDiamond? φ with
@@ -381,7 +401,27 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
             if branch.contains prop then none else some prop
           | _ => none
-        (.linear (witness :: boxProps ++ diaProps), timeOrd)
+        -- Cross-modal-temporal: propagate temporal universals at time l.time to fresh world
+        let tempGProps := (branch.allFuturePosAtTime l.time).filterMap fun gsf =>
+          let prop := { gsf with label := { gsf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let tempHProps := (branch.allPastPosAtTime l.time).filterMap fun hsf =>
+          let prop := { hsf with label := { hsf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let tempFNegProps := (branch.someFutureNegAtTime l.time).filterMap fun fsf =>
+          let prop := { fsf with label := { fsf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let tempPNegProps := (branch.somePastNegAtTime l.time).filterMap fun psf =>
+          let prop := { psf with label := { psf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let tempUNegProps := (branch.untlNegAtTime l.time).filterMap fun usf =>
+          let prop := { usf with label := { usf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
+          let prop := { ssf with label := { ssf.label with world := freshWorld } }
+          if branch.contains prop then none else some prop
+        let temporalProps := tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
+        (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
       | none => (.notApplicable, timeOrd)
   -- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent)
   | .diamondNeg, .neg, φ =>
