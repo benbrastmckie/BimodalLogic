@@ -1,7 +1,7 @@
 # Implementation Plan: Temporal G/H/F/P Tableau Rules (Time-Indexed)
 
 - **Task**: 234 - Temporal G/H/F/P tableau rules with time-indexed branches
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Dependencies**: Task 232 (labeled branch infrastructure, completed), Task 233 (S5 modal rules, completed)
 - **Research Inputs**: specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md
@@ -197,21 +197,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Integration Testing and Full Build Verification [NOT STARTED]
+### Phase 5: Integration Testing and Full Build Verification [COMPLETED]
 
 **Goal**: Verify correctness via `#eval` tests for G/H/F/P formulas, confirm the full project builds with zero new sorries.
 
 **Tasks**:
-- [ ] Add `#eval` test: `G p -> G p` should be VALID (propositional tautology, tests basic G rule firing)
-- [ ] Add `#eval` test: `G (p -> q) -> (G p -> G q)` should be VALID (temporal K distribution)
-- [ ] Add `#eval` test: `H (p -> q) -> (H p -> H q)` should be VALID (past temporal K)
-- [ ] Add `#eval` test: `G p -> p` should be INVALID (T-axiom fails under strict semantics -- open guard)
-- [ ] Add `#eval` test: `H p -> p` should be INVALID (past T-axiom fails under strict semantics)
-- [ ] Add `#eval` test: `p -> G p` should be INVALID (non-theorem)
-- [ ] Add `#eval` test: `F p -> F p` should be VALID (propositional tautology)
-- [ ] Run full `lake build` and confirm zero errors
-- [ ] Verify no new sorries introduced via `grep -r "sorry" Theories/Bimodal/Metalogic/Decidability/`
-- [ ] Confirm downstream modules (Closure.lean, ProofExtraction.lean, CountermodelExtraction.lean, DecisionProcedure.lean, Correctness.lean) still compile
+- [x] Add `#eval` test: `G p -> G p` should be VALID (propositional tautology, tests basic G rule firing) *(deviation: altered -- tests run via standalone lean file, not embedded #eval in Tableau.lean)*
+- [x] Add `#eval` test: `G (p -> q) -> (G p -> G q)` should be VALID (temporal K distribution)
+- [x] Add `#eval` test: `H (p -> q) -> (H p -> H q)` should be VALID (past temporal K)
+- [x] Add `#eval` test: `G p -> p` should be INVALID (T-axiom fails under strict semantics -- open guard)
+- [x] Add `#eval` test: `H p -> p` should be INVALID (past T-axiom fails under strict semantics)
+- [x] Add `#eval` test: `p -> G p` should be INVALID (non-theorem)
+- [x] Add `#eval` test: `F p -> F p` should be VALID (propositional tautology)
+- [x] Run full `lake build` and confirm zero errors
+- [x] Verify no new sorries introduced via `grep -r "sorry" Theories/Bimodal/Metalogic/Decidability/`
+- [x] Confirm downstream modules (Closure.lean, ProofExtraction.lean, CountermodelExtraction.lean, DecisionProcedure.lean, Correctness.lean) still compile
 
 **Timing**: 1 hour
 
