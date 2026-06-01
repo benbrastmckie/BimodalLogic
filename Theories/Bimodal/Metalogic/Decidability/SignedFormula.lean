@@ -398,7 +398,98 @@ def somePastNegFormulas (b : Branch) : List SignedFormula :=
     | .neg, .some_past _ => true
     | _, _ => false
 
+/--
+Collect all F(U(event, guard)) formulas in the branch (negative Until formulas)
+where guard is NOT Formula.top (i.e., not some_future).
+These are persistent formulas that must be propagated to every known future time.
+-/
+def untlNegFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl _ guard => guard != Formula.top
+    | _, _ => false
+
+/--
+Collect all F(S(event, guard)) formulas in the branch (negative Since formulas)
+where guard is NOT Formula.top (i.e., not some_past).
+These are persistent formulas that must be propagated to every known past time.
+-/
+def snceNegFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce _ guard => guard != Formula.top
+    | _, _ => false
+
+/--
+Collect all T(U(event, guard)) formulas in the branch (positive Until formulas)
+where guard is NOT Formula.top (i.e., not some_future).
+These are consumable formulas that decompose via branching.
+-/
+def untlPosFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl _ guard => guard != Formula.top
+    | _, _ => false
+
+/--
+Collect all T(S(event, guard)) formulas in the branch (positive Since formulas)
+where guard is NOT Formula.top (i.e., not some_past).
+These are consumable formulas that decompose via branching.
+-/
+def sncePosFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce _ guard => guard != Formula.top
+    | _, _ => false
+
 end Branch
+
+/-!
+## Eventuality Tracking
+-/
+
+/--
+An eventuality records a pending obligation from an Until or Since formula.
+Until eventualities require the event to be witnessed at some future time;
+Since eventualities require the event to be witnessed at some past time.
+Blocking logic (task 237) uses this to detect infinite deferral.
+-/
+structure Eventuality where
+  /-- The Until/Since formula that generated this eventuality. -/
+  formula : Formula
+  /-- The label (world, time) at which the eventuality was introduced. -/
+  label : Label
+  /-- true for Until (future-directed), false for Since (past-directed). -/
+  isUntil : Bool
+  deriving Repr, DecidableEq, BEq
+
+/--
+Tracks pending eventualities on a tableau branch.
+Provides operations to add new eventualities and mark them as fulfilled.
+-/
+structure EventualityTracker where
+  /-- List of pending eventualities. -/
+  pending : List Eventuality
+  deriving Repr
+
+namespace EventualityTracker
+
+/-- Empty tracker with no pending eventualities. -/
+def empty : EventualityTracker := { pending := [] }
+
+/-- Add a new eventuality to track. -/
+def add (tracker : EventualityTracker) (e : Eventuality) : EventualityTracker :=
+  { pending := e :: tracker.pending }
+
+/-- Remove a fulfilled eventuality (by formula and label match). -/
+def fulfill (tracker : EventualityTracker) (formula : Formula) (label : Label) : EventualityTracker :=
+  { pending := tracker.pending.filter fun e => !(e.formula == formula && e.label == label) }
+
+/-- Check if there are any pending eventualities. -/
+def hasPending (tracker : EventualityTracker) : Bool :=
+  !tracker.pending.isEmpty
+
+end EventualityTracker
 
 /-!
 ## Time Ordering Constraints

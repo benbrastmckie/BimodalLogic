@@ -205,6 +205,30 @@ def asAllPast? : Formula → Option Formula
   | .all_past φ => some φ
   | _ => none
 
+/--
+Try to decompose a formula as a genuine Until (not some_future).
+Returns `some (event, guard)` if the formula is `untl event guard` with `guard != top`.
+This filters out `some_future φ = untl φ top` which is handled by someFuturePos/someFutureNeg.
+Burgess convention: first component = event, second = guard.
+-/
+def asUntil? : Formula → Option (Formula × Formula)
+  | .untl event guard =>
+    if guard == Formula.top then none
+    else some (event, guard)
+  | _ => none
+
+/--
+Try to decompose a formula as a genuine Since (not some_past).
+Returns `some (event, guard)` if the formula is `snce event guard` with `guard != top`.
+This filters out `some_past φ = snce φ top` which is handled by somePastPos/somePastNeg.
+Burgess convention: first component = event, second = guard.
+-/
+def asSince? : Formula → Option (Formula × Formula)
+  | .snce event guard =>
+    if guard == Formula.top then none
+    else some (event, guard)
+  | _ => none
+
 /-!
 ## Rule Application
 -/
