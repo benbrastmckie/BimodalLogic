@@ -86,7 +86,8 @@ technical_debt:
 
 ### Code Quality
 
-252 [NOT STARTED] — Fix linter warnings across codebase and improve dataset generation scripts
+252 [RESEARCHED] — Fix linter warnings across codebase and improve dataset generation scripts
+  - **Research**: [specs/252_fix_linter_warnings_and_generation_script/reports/01_linter-warning-research.md]
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
 
 ### Dataset Enhancement
@@ -332,7 +333,7 @@ technical_debt:
 
 ### 252. Fix linter warnings and improve generation scripts
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: medium
 - **Topic**: code-quality
