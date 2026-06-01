@@ -155,17 +155,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Wire EventualityTracker into expansion [NOT STARTED]
+### Phase 4: Wire EventualityTracker into expansion [COMPLETED]
 
 **Goal**: Integrate the existing `EventualityTracker` types into the expansion pipeline so that Until/Since eventualities are tracked and blocking is eventuality-aware.
 
 **Tasks**:
-- [ ] Add `EventualityTracker` parameter to `expandBranchWithFuel` (default `EventualityTracker.empty`)
-- [ ] When `untlPos`/`sncePos` fires (detected by checking if the expansion produced a new time via the Until/Since rule), register the event component as a pending eventuality
-- [ ] When `T(event)` appears on the branch at a reachable time (after expansion), mark the eventuality as fulfilled
-- [ ] In the blocking check: verify that all pending eventualities at the blocked time are also present at the ancestor time (this is automatically satisfied by subset blocking, but add an explicit check for safety and future refinement)
-- [ ] Thread `EventualityTracker` through `expandBranchesWithFuel` and `buildTableau`
-- [ ] Add `#eval` test for eventuality tracking: `U(p, q)` with `q` as guard -- verify eventuality for `p` is registered and fulfilled
+- [x] Add `EventualityTracker` parameter to `expandBranchWithFuel` (default `EventualityTracker.empty`)
+- [x] When `untlPos`/`sncePos` fires (detected by checking if the expansion produced a new time via the Until/Since rule), register the event component as a pending eventuality *(deviation: altered -- uses registerEventualities to scan branch for U/S formulas each step, rather than detecting specific rule application)*
+- [x] When `T(event)` appears on the branch at a reachable time (after expansion), mark the eventuality as fulfilled
+- [x] In the blocking check: verify that all pending eventualities at the blocked time are also present at the ancestor time (this is automatically satisfied by subset blocking, but add an explicit check for safety and future refinement) *(deviation: skipped -- subset blocking automatically subsumes eventuality inheritance as noted in the research report Section 4.4)*
+- [x] Thread `EventualityTracker` through `expandBranchesWithFuel` and `buildTableau` *(deviation: altered -- only threaded through expandBranchWithFuel which is the core loop; expandBranchesWithFuel and buildTableau use default empty tracker at each branch)*
+- [x] Add `#eval` test for eventuality tracking: `U(p, q)` with `q` as guard -- verify eventuality for `p` is registered and fulfilled *(deviation: altered -- test B3 uses U(p, bot) -> F(p) which directly exercises eventuality witnessing)*
 
 **Timing**: 2.5 hours
 
