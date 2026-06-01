@@ -66,7 +66,7 @@ technical_debt:
 
 ### Tableau Training
 
-239 [RESEARCHED] — Replace stub proof extraction (returns 'Full proof extraction not
+239 [COMPLETED] — Replace stub proof extraction (returns 'Full proof extraction not
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
   └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
     └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from

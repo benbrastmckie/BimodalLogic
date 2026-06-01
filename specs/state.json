@@ -8,10 +8,11 @@
     {
       "project_number": 257,
       "project_name": "large_data_storage_huggingface",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "created": "2026-06-01T22:32:23Z",
-      "last_updated": "2026-06-01T22:32:23Z"
+      "last_updated": "2026-06-01T22:34:04Z",
+      "session_id": "sess_1748817200_a7b3c1"
     },
     {
       "project_number": 250,
@@ -164,9 +165,9 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "medium",
-      "description": "Verification pass on bx_completeness sorry status. Updated scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx chain: dd_countermodel_chronicle_discrete → succ_embed_surjective → limitDomSubtype_isSuccArchimedean → succ_cofinal (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
+      "description": "Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-05-15T21:30:00Z",
+      "last_updated": "2026-06-01T23:56:00Z",
       "related_tasks": [
         60,
         93
@@ -205,17 +206,16 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "not_started",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
-      "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
+      "description": "Close the no_gaps_discrete import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewire completeness_discrete to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing no_gaps_discrete to call no_gaps_discrete_model_surgery without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in no_gaps_discrete. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate no_gaps_discrete to no_gaps_discrete_model_surgery. (4) Rewire completeness_discrete to use the WeakCanonical path via no_gaps_discrete. (5) Verify #print axioms completeness_discrete shows no sorryAx. Definition of done: no_gaps_discrete delegates to no_gaps_discrete_model_surgery (no sorry), completeness_discrete uses WeakCanonical path (no sorry), lake build passes.",
       "dependencies": [
-        199,
-        256
+        199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-06-01T23:55:00Z",
       "next_artifact_number": 45,
       "artifacts": [
         {
@@ -502,128 +502,8 @@
       "session_id": "sess_1779994794_96be99",
       "researched": "2026-05-28T20:47:04Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 7,
-      "plan_metadata": {
-        "phases": 8,
-        "total_effort_hours": 28,
-        "complexity": "complex",
-        "research_integrated": true,
-        "plan_version": 47,
-        "dependency_waves": [
-          [
-            1,
-            2
-          ],
-          [
-            3,
-            4
-          ],
-          [
-            5
-          ],
-          [
-            6
-          ],
-          [
-            7
-          ],
-          [
-            8
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/36_char-k-threading-research.md",
-            "integrated_in_plan_version": 37,
-            "integrated_date": "2026-05-27"
-          },
-          {
-            "path": "reports/37_sorting-approach-research.md",
-            "integrated_in_plan_version": 38,
-            "integrated_date": "2026-05-27"
-          },
-          {
-            "path": "reports/38_equality-case-research.md",
-            "integrated_in_plan_version": 39,
-            "integrated_date": "2026-05-27"
-          },
-          {
-            "path": "reports/39_game-depth-restructuring.md",
-            "integrated_in_plan_version": 40,
-            "integrated_date": "2026-05-27"
-          },
-          {
-            "path": "reports/40_ghr93-case-ii-step6.md",
-            "integrated_in_plan_version": 41,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/41_stavi-completeness-audit.md",
-            "integrated_in_plan_version": 41,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/42_plan-literature-alignment.md",
-            "integrated_in_plan_version": 42,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/47_xt-complete-usage-analysis.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/47_lean-infrastructure-inventory.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/47_plan-v42-deep-review.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/46_strategic-pivot-report.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/45_semantic-vs-syntactic-B.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_literature-interval-splitting.md",
-            "integrated_in_plan_version": 43,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_team-research.md",
-            "integrated_in_plan_version": 44,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_teammate-a-findings.md",
-            "integrated_in_plan_version": 44,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_teammate-b-findings.md",
-            "integrated_in_plan_version": 44,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_teammate-c-findings.md",
-            "integrated_in_plan_version": 44,
-            "integrated_date": "2026-05-28"
-          },
-          {
-            "path": "reports/44_teammate-d-findings.md",
-            "integrated_in_plan_version": 44,
-            "integrated_date": "2026-05-28"
-          }
-        ]
-      }
+      "resume_phase": null,
+      "plan_metadata": null
     },
     {
       "project_number": 175,
@@ -1064,14 +944,29 @@
     {
       "project_number": 239,
       "project_name": "proof_extraction_from_tableau",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
+      "completion_summary": "Replaced stub proof extraction with complete 5-strategy pipeline: direct axiom match (42 schemata), derived theorem match, closure-based extraction, compositional builder (identity/weakening/prop_s/Peirce), and enhanced search (depth 10-50). Integrated into DecisionProcedure.decide, eliminating timeout workaround. Zero sorries, build passes.",
       "description": "Replace stub proof extraction (returns 'Full proof extraction not yet implemented') with complete backward-chaining algorithm that builds DerivationTree terms from closed tableau branches. Map each closure reason through tableau expansion steps to specific axiom applications and inference rules. Maintain proof reconstruction stack during expansion. Handle propositional (case analysis via peirce), modal (necessitation + modal_k_dist), and temporal (BX axioms) proof fragments.",
       "priority": "high",
       "topic": "tableau-training",
       "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:30:00Z"
+      "last_updated": "2026-06-02T01:00:00Z",
+      "session_id": "sess_1780346226_d5e721",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/239_proof_extraction_from_tableau/plans/01_proof-extraction-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: trace infrastructure, propositional extraction, modal extraction, temporal extraction, integration"
+        },
+        {
+          "path": "specs/239_proof_extraction_from_tableau/summaries/01_proof-extraction-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 5-strategy extraction pipeline replacing stub, compositional approach instead of trace-based"
+        }
+      ]
     },
     {
       "project_number": 240,
@@ -1288,14 +1183,15 @@
     {
       "project_number": 253,
       "project_name": "dataset_generation_progress_reporting",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently run_dataset_generation.sh prints \"Generating formulas...\" and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.",
+      "completion_summary": "Added 3-tier progress reporting to dataset generation: (1) per-complexity-level enumeration progress with rate/elapsed in generateFormulas, (2) seeding progress every 10% and per-round closure stats in generateValidBatch, (3) enhanced labeling progress with rate/ETA/timeout% in DatasetExport. Updated shell script help text. All progress lines use [tag] prefix format for grep-ability.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-01T21:48:00Z",
-      "last_updated": "2026-06-01T22:35:00Z",
+      "last_updated": "2026-06-02T00:00:00Z",
       "session_id": "sess_1780345824_aadd93",
       "next_artifact_number": 3,
       "artifacts": [
