@@ -95,16 +95,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Implication-Index HashMap for O(n) MP Closure [NOT STARTED]
+### Phase 2: Implication-Index HashMap for O(n) MP Closure [COMPLETED]
 
 **Goal**: Replace the O(n^2) nested MP closure loop with an O(n) implication-index lookup.
 
 **Tasks**:
-- [ ] At the start of each MP round (after Nec round), build an implication index: `mut impIndex : Std.HashMap Formula (Array Formula)` by iterating `poolArr` and, for each `.imp lhs rhs` formula, inserting `lhs -> [rhs]` (appending to existing array if key exists)
-- [ ] Replace the nested `for phi in pool do for psi in pool do match generateValidFromMP phi psi` loop with a single pass: `for phi in poolArr do match impIndex[phi]? with | some rhsArr => for rhs in rhsArr do addToPool ...`
-- [ ] Remove the `generateValidFromMP` call from the hot loop (the index lookup replaces it)
-- [ ] Ensure the snapshot pattern is correct: build impIndex from a snapshot of `poolArr` taken before the MP round, then iterate a snapshot for lookups, adding new results to the live `poolSet`/`poolArr`
-- [ ] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
+- [x] At the start of each MP round (after Nec round), build an implication index: `mut impIndex : Std.HashMap Formula (Array Formula)` by iterating `poolArr` and, for each `.imp lhs rhs` formula, inserting `lhs -> [rhs]` (appending to existing array if key exists) *(deviation: altered -- implemented in Phase 1 rewrite as single function replacement)*
+- [x] Replace the nested `for phi in pool do for psi in pool do match generateValidFromMP phi psi` loop with a single pass: `for phi in poolArr do match impIndex[phi]? with | some rhsArr => for rhs in rhsArr do addToPool ...`
+- [x] Remove the `generateValidFromMP` call from the hot loop (the index lookup replaces it)
+- [x] Ensure the snapshot pattern is correct: build impIndex from a snapshot of `poolArr` taken before the MP round, then iterate a snapshot for lookups, adding new results to the live `poolSet`/`poolArr`
+- [x] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
 
 **Timing**: 45 minutes
 
