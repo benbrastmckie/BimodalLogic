@@ -1,7 +1,7 @@
 # Implementation Plan: Task #257
 
 - **Task**: 257 - Migrate large data storage from Git LFS to Hugging Face Hub
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md
@@ -129,17 +129,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Remove LFS Tracking from .gitattributes [NOT STARTED]
+### Phase 3: Remove LFS Tracking from .gitattributes [COMPLETED]
 
 **Goal**: Stop tracking dataset files via Git LFS so future clones do not download large binary objects. Existing LFS objects remain in git history but no new LFS objects are created.
 
 **Tasks**:
-- [ ] Edit `.gitattributes` to remove the 4 LFS tracking lines for `data/*.jsonl` files
-- [ ] Run `git lfs untrack "data/bmlogic-c7.jsonl" "data/bmlogic-c9.jsonl" "data/bmlogic-c11.jsonl" "data/proof_steps.jsonl"` as an alternative to manual edit (achieves the same result)
-- [ ] Verify `.gitattributes` is empty or contains no LFS entries
-- [ ] Add `data/*.jsonl` to `.gitignore` to prevent accidentally committing large dataset files to git (they should live on HF Hub going forward)
-- [ ] Update `data/README.md` to reflect that datasets are no longer LFS-tracked
-- [ ] Update CI workflow (`.github/workflows/ci.yml`) if it references LFS checkout (currently it does not use `lfs: true`, so no change needed)
+- [x] Edit `.gitattributes` to remove the 4 LFS tracking lines for `data/*.jsonl` files *(completed)*
+- [x] Run `git lfs untrack "data/bmlogic-c7.jsonl" "data/bmlogic-c9.jsonl" "data/bmlogic-c11.jsonl" "data/proof_steps.jsonl"` as an alternative to manual edit (achieves the same result) *(completed)*
+- [x] Verify `.gitattributes` is empty or contains no LFS entries *(completed)*
+- [x] Add `data/*.jsonl` to `.gitignore` to prevent accidentally committing large dataset files to git (they should live on HF Hub going forward) *(completed)*
+- [x] Update `data/README.md` to reflect that datasets are no longer LFS-tracked *(completed)*
+- [x] Update CI workflow (`.github/workflows/ci.yml`) if it references LFS checkout (currently it does not use `lfs: true`, so no change needed) *(completed: no change needed)*
 
 **Timing**: 30 minutes
 

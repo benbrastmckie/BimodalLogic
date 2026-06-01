@@ -43,6 +43,10 @@ backup/
 backups/
 .tmp/
 
+# Large dataset files (hosted on Hugging Face Hub: logos-labs/bmlogic-bench)
+# Do not commit JSONL datasets to git — download from HF Hub instead
+data/*.jsonl
+
 # Claude Code
 .claude/output/
 
