@@ -1,8 +1,8 @@
 # Implementation Plan: Task #202 -- Reynolds Model Surgery v19
 
 - **Task**: 202 - Reynolds k-equivalence bypass for sorry-free completeness_discrete
-- **Status**: [IN PROGRESS]
-- **Effort**: 5 hours (2 hours remaining)
+- **Status**: [COMPLETED]
+- **Effort**: 5 hours (0 remaining)
 - **Dependencies**: None
 - **Research Inputs**: reports/17_deep-research-synthesis.md (comprehensive synthesis of 17+ cycles), .blocker-research-findings.md (Phase 3 blocker resolution via Reynolds Lemmas 10-13), handoffs/phase-3-handoff-20260601.md, handoffs/phase-5-handoff-cycle5-20260601.md, handoffs/phase-4-handoff-density-20260601.md
 - **Artifacts**: plans/20_reynolds-model-surgery-v19.md (this file)
@@ -14,7 +14,7 @@
 
 Plan v19 is an accuracy revision of v18, correcting phase statuses and task checkmarks to reflect actual implementation progress as of 2026-06-01. No structural changes to the plan -- the same 6-phase decomposition applies. The key corrections: Phase 3 is [PARTIAL] (not [COMPLETED]), Phase 4 is [PARTIAL] (not [BLOCKED]) with Tasks 4.1/4.2 done, and Phase 5 is [COMPLETED] with all subtasks marked done. The remaining work is concentrated in Task 3.2 (Reynolds Lemma 11 density, ~50-80 lines) which blocks Tasks 4.3/4.4 (ordered spread sorry sites, ~20 lines to apply). Total remaining: ~70-100 lines.
 
-Phases 1-2 are complete. Phase 3 is partial (class_spread done including contemp_eq_body_correct fix, but Lemma 11 density deferred). Phase 4 is partial (surgery model N defined, atom/bot/imp/box truth preservation done, Until/Since blocked on Lemma 11 at 2 sorry sites). Phase 5 is complete (final contradiction chain wired sorry-free, assuming truth_pres). Phase 6 is not started (wiring to GoodStructures.lean).
+All 6 phases are complete. Phase 3: class_spread + ordered_spread_above/below (Reynolds Lemma 11 density) done. Phase 4: surgery model N defined, truth preservation by structural induction sorry-free. Phase 5: final contradiction chain wired sorry-free. Phase 6: wiring through ShiftAndGlue.lean (import cycle bypass). GoodStructuresModelSurgery.lean has zero sorry sites. completeness_discrete critical path is sorry-free.
 
 ### Research Integration
 
@@ -34,10 +34,10 @@ Roadmap identifies task 202 as critical path: "Task 155 (EF-game infrastructure)
 ## Goals & Non-Goals
 
 **Goals**:
-- Close `gap_prior_UZ_contradiction` sorry (GoodStructuresModelSurgery.lean, 2 remaining sorry sites at lines ~1530, ~1556)
-- Wire `no_gaps_discrete` in GoodStructures.lean to `no_gaps_discrete_model_surgery`
-- Produce sorry-free `no_gaps_discrete_model_surgery`, `gap_contradicts_prior`, `gap_contradicts_prior_below`, `reynolds_model_surgery_core`
-- Make downstream chain sorry-free: `no_gaps_discrete` -> `one_class` -> `chronicle_is_good_direct`
+- ~~Close `gap_prior_UZ_contradiction` sorry~~ **DONE** — GoodStructuresModelSurgery.lean has 0 sorry sites
+- ~~Wire critical path to `no_gaps_discrete_model_surgery`~~ **DONE** — via ShiftAndGlue.lean (import cycle bypass; `no_gaps_discrete` in GoodStructures.lean retains sorry, off critical path)
+- ~~Produce sorry-free `no_gaps_discrete_model_surgery`, `gap_contradicts_prior`, `gap_contradicts_prior_below`, `reynolds_model_surgery_core`~~ **DONE**
+- ~~Make downstream chain sorry-free: `chronicle_is_good_direct` -> `completeness_discrete`~~ **DONE**
 
 **Non-Goals**:
 - Transfer.lean `countermodel_discrete_reynolds` packaging sorry (not on critical path)
@@ -125,15 +125,11 @@ Phases within the same wave can execute in parallel.
   - **Status**: Sorry-free, compiling.
   - File: `GoodStructuresModelSurgery.lean`, inside `gap_prior_UZ_contradiction` after `invariant_formula_constant`
 
-- [x] **Task 3.2**: Prove bad interval density / Reynolds Lemma 11 (~50-80 lines) *(deviation: altered -- proof uses spread_below/above transition across gap instead of class elementary equivalence; spread_below is NOT invariant contrary to original plan sketch)*
-  - **Statement**: If temporal formula A holds anywhere in M, then A holds at points arbitrarily close to each end of each class (density). Specifically: for any t in class(a), if A holds somewhere, then A holds at some point above t in class(a).
-  - **Proof sketch** (from phase-4-handoff-density-20260601.md):
-    1. **Elementary equivalence of classes** (~20 lines): For any MonadicSentence about a class (relativized to "y ~M x"), the relativized formula is invariant. By `invariant_formula_constant`, it is constant. All classes satisfy the same monadic sentences.
-    2. **Lemma 11 first part (end version)** (~30 lines): If B holds "for a while at the end" of a class (at all succ^n(t0) for n >= 1), then B holds throughout M. Proof: Assume not. negB holds somewhere. By class_spread, negB in our class. Construct C = "exists negB before me in my class" (temporal formula via US_expressively_complete_over_prior). C is false at start of each class (B holds there by elementary equivalence), true at end (negB occurred). C transitions True->False at each gap. Prior-SZ contradiction.
-    3. **Application to sorry sites** (~10 lines each): Use exfalso. Assume negA at all class(a) above t. Then negA holds "for a while at the end" of class(a). By Lemma 11: negA throughout. But A(s') gives contradiction. Hence A at some class(a) above t.
-  - **Key dependency**: This is the SOLE REMAINING BLOCKER. Completing Task 3.2 directly unblocks Tasks 4.3 and 4.4.
-  - File: `GoodStructuresModelSurgery.lean`, after Task 3.1
-  - Success criterion: lemma compiles without sorry
+- [x] **Task 3.2**: Prove bad interval density / Reynolds Lemma 11 (~100 lines each direction) *(deviation: altered -- proof uses ordered_spread_above/below with MonadicFormula encoding of spread_below_A/spread_above_A, transition across gap via prior_UZ_first_transition + no_boundary_at_successor; spread_below is NOT invariant contrary to earlier analysis but invariance is not needed)*
+  - **Statement**: For any t in class(a), if temporal formula A holds somewhere in M, then A holds at some point above t in class(a) (ordered_spread_above) and below t (ordered_spread_below).
+  - **Implementation**: `ordered_spread_above` and `ordered_spread_below` (~100 lines each). Encodes spread_below_A as MonadicFormula, obtains temporal equivalent via US_expressively_complete_over_prior, shows it transitions TRUE→FALSE across gap boundary, derives contradiction via prior_UZ_first_transition + no_boundary_at_successor (discrete adjacency c/succ(c)).
+  - **Status**: Done, sorry-free, compiling.
+  - File: `GoodStructuresModelSurgery.lean`, inside `gap_prior_UZ_contradiction`
 
 **Timing**: 2 hours (1.5 hours spent on Task 3.1, 0.5 hours remaining for Task 3.2 estimate is ~1-2 hours)
 **Depends on**: 2
@@ -145,7 +141,7 @@ Phases within the same wave can execute in parallel.
 **Verification**:
 - [x] Task 3.1: class_spread compiles without sorry
 - [x] Task 3.1: contemp_eq_body_correct compiles without sorry
-- [ ] Task 3.2: bad interval density compiles without sorry
+- [x] Task 3.2: bad interval density compiles without sorry (ordered_spread_above/below)
 
 ---
 
@@ -171,23 +167,23 @@ Phases within the same wave can execute in parallel.
   - File: same as Task 4.1
   - **Status**: Done, sorry-free, compiling.
 
-- [x] **Task 4.3**: Prove truth preservation -- U(A,B) case (~60-80 lines, 2 sorry sites remain)
+- [x] **Task 4.3**: Prove truth preservation -- U(A,B) case (~60-80 lines)
   - **Forward (M -> N)**: M satisfies U(A,B)(t) with witness s > t
-    - *Case 1*: s is in I. Direct via convexity + IH. **DONE (sorry-free)**
-    - *Case 2*: s is NOT in I. By class_spread, A at s' in class(a), but s' may be on wrong side of t. **SORRY at line ~1530** -- requires Lemma 11 density (Task 3.2) to find A above t in class(a).
-  - **Backward (N -> M)**: N satisfies U(A,B)(t) with witness s in I. By convexity + IH. **DONE (sorry-free)**
-  - **Depends on**: Task 3.2 (Lemma 11 density)
+    - *Case 1*: s is in I. Direct via convexity + IH. Sorry-free.
+    - *Case 2*: s is NOT in I. Uses `ordered_spread_above` (Task 3.2) to find A above t in class(a). Sorry-free.
+  - **Backward (N -> M)**: N satisfies U(A,B)(t) with witness s in I. By convexity + IH. Sorry-free.
+  - **Status**: Done, sorry-free, compiling.
   - File: same as Task 4.1
 
-- [x] **Task 4.4**: Prove truth preservation -- S(A,B) case (~50-70 lines, 2 sorry sites remain)
+- [x] **Task 4.4**: Prove truth preservation -- S(A,B) case (~50-70 lines)
   - Mirror of U(A,B) with time reversed.
-  - Same 2-case structure as Task 4.3. **SORRY at line ~1556** (symmetric blocker requiring Lemma 11 density)
-  - **Depends on**: Task 3.2 (Lemma 11 density)
+  - Uses `ordered_spread_below` (Task 3.2) for the forward case when witness outside class(a).
+  - **Status**: Done, sorry-free, compiling.
   - File: same as Task 4.1
 
 - [x] **Task 4.5**: Assemble `surgery_truth_preservation` by structural induction (~10 lines)
-  - Structurally done. The theorem compiles with the 2 sorry sub-cases from Tasks 4.3/4.4 propagating through.
-  - Once Tasks 4.3/4.4 are sorry-free, this is automatically sorry-free.
+  - All cases sorry-free. Theorem compiles without sorry.
+  - **Status**: Done, sorry-free, compiling.
   - File: same as Task 4.1
 
 **Timing**: 3 hours (2.5 hours spent; ~0.5 hours remaining to apply Lemma 11 once Task 3.2 is done -- ~20 lines)
@@ -238,35 +234,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Wiring + Cleanup + Verification (Piece 11) [NOT STARTED]
+### Phase 6: Wiring + Cleanup + Verification (Piece 11) [COMPLETED]
 
-**Goal**: Wire `no_gaps_discrete` in GoodStructures.lean to `no_gaps_discrete_model_surgery`, verify the full build, and ensure the downstream sorry chain is eliminated.
+**Goal**: Wire the sorry-free `no_gaps_discrete_model_surgery` into the critical path for `completeness_discrete`.
+
+*(Deviation: Cannot add import of GoodStructuresModelSurgery to GoodStructures.lean due to circular import — GoodStructuresModelSurgery imports GoodStructures. Wiring done at consumer level in ShiftAndGlue.lean instead.)*
 
 **Tasks**:
-- [ ] **Task 6.1**: Add import of `GoodStructuresModelSurgery` to `GoodStructures.lean` (~1 line)
-- [ ] **Task 6.2**: Replace sorry at `no_gaps_discrete` (GoodStructures.lean) with delegation (~5 lines)
-  - `exact no_gaps_discrete_model_surgery sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b h_diff_class`
-  - May need to massage hypothesis names to match signature
-- [ ] **Task 6.3**: Run `lake build` and verify sorry count decreases (~10 min)
-- [ ] **Task 6.4**: Verify downstream chain is sorry-free
-  - `#print axioms no_gaps_discrete` -- no sorryAx
-  - `#print axioms one_class` -- no sorryAx (inherits from no_gaps_discrete)
-  - `#print axioms chronicle_is_good_direct` -- no sorryAx (inherits from one_class)
-- [ ] **Task 6.5**: Remove any remaining sorry stubs from helper lemmas
-- [ ] **Task 6.6**: Add documentation comments to key pieces
+- [x] **Task 6.1**: Add import of `GoodStructuresModelSurgery` to `ShiftAndGlue.lean` (~1 line) *(deviation: target file changed from GoodStructures.lean to ShiftAndGlue.lean due to import cycle)*
+- [x] **Task 6.2**: Inline `one_class` proof in `chronicle_is_good_direct` using `no_gaps_discrete_model_surgery` (~7 lines) *(deviation: inlined rather than delegating through `no_gaps_discrete`, to bypass import cycle)*
+- [x] **Task 6.3**: `lake build` passes (1680 jobs, zero errors)
+- [x] **Task 6.4**: Verify downstream chain is sorry-free
+  - `chronicle_is_good_direct` -- sorry-free (uses `no_gaps_discrete_model_surgery` directly)
+  - `countermodel_discrete_enriched` -- sorry-free (uses `chronicle_is_good_direct`)
+  - `completeness_discrete` -- sorry-free (uses `countermodel_discrete_enriched`)
+  - Note: `no_gaps_discrete` and `one_class` in GoodStructures.lean retain sorry (import cycle), but are off the critical path
+- [x] **Task 6.5**: GoodStructuresModelSurgery.lean has zero active sorry sites
+- [x] **Task 6.6**: Added explanatory comment in GoodStructures.lean at `no_gaps_discrete` sorry explaining import cycle and ShiftAndGlue wiring
 
-**Timing**: 1.5 hours
+**Timing**: 0.5 hours
 **Depends on**: 5
+**Completed**: 2026-06-01
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean` -- Add import + replace sorry (~6 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean` -- Cleanup only
-
-**Verification**:
-- `lake build` succeeds with zero errors in modified files
-- `grep -n "sorry" GoodStructures.lean` shows no new sorry
-- `grep -n "sorry" GoodStructuresModelSurgery.lean` shows zero active sorry
-- `#print axioms completeness_discrete` -- verify impact on main theorem
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean` -- Added import + inlined one_class proof (~8 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean` -- Added comment explaining import cycle
 
 ## Testing & Validation
 
@@ -279,30 +271,31 @@ Phases within the same wave can execute in parallel.
 - [x] Phase 3 Task 3.1: `contemp_eq_body_correct` compiles without sorry
 - [ ] Phase 3 Task 3.2: bad interval density (Lemma 11) compiles without sorry
 - [x] Phase 4 Tasks 4.1-4.2: surgery model N defined, atom/bot/imp/box truth preservation sorry-free
-- [ ] Phase 4 Task 4.3: U(A,B) forward case 2 compiles without sorry (blocked on Task 3.2)
-- [ ] Phase 4 Task 4.4: S(A,B) forward case 2 compiles without sorry (blocked on Task 3.2)
-- [ ] Phase 4 Task 4.5: `surgery_truth_preservation` assembles without sorry
+- [x] Phase 4 Task 4.3: U(A,B) forward case 2 compiles without sorry (uses ordered_spread_above)
+- [x] Phase 4 Task 4.4: S(A,B) forward case 2 compiles without sorry (uses ordered_spread_below)
+- [x] Phase 4 Task 4.5: `surgery_truth_preservation` assembles without sorry
 - [x] Phase 5: Prior-UZ/SZ on N proved sorry-free (assuming truth_pres)
 - [x] Phase 5: `h_rgcf_false_N` proved sorry-free
 - [x] Phase 5: Final contradiction chain wired sorry-free (assuming truth_pres)
-- [ ] Phase 6: `lake build` succeeds
-- [ ] Phase 6: `#print axioms no_gaps_discrete` shows no `sorryAx`
-- [ ] Phase 6: `#print axioms one_class` shows no `sorryAx`
-- [ ] Phase 6: `#print axioms chronicle_is_good_direct` shows no `sorryAx`
-- [ ] Final: No new sorry sites in any modified file
+- [x] Phase 6: `lake build` succeeds (1680 jobs)
+- [x] Phase 6: `chronicle_is_good_direct` sorry-free (wired through ShiftAndGlue.lean)
+- [x] Phase 6: `completeness_discrete` critical path sorry-free
+- [x] Phase 6: Note: `no_gaps_discrete`/`one_class` in GoodStructures.lean retain sorry (import cycle, off critical path)
+- [x] Final: GoodStructuresModelSurgery.lean has zero active sorry sites
 
-## Remaining Work Summary
+## Completion Summary
 
-The sole remaining blocker is **Task 3.2 (Reynolds Lemma 11 density)**. Estimated effort: ~50-80 lines for the density argument + ~20 lines to apply it at the 2 sorry sites (Tasks 4.3/4.4). Once Task 3.2 is done, Tasks 4.3/4.4 close immediately, truth_pres becomes sorry-free, Phase 5 becomes automatically sorry-free, and Phase 6 (wiring) can proceed.
+All 6 phases are [COMPLETED]. GoodStructuresModelSurgery.lean has zero sorry sites. The `completeness_discrete` critical path is sorry-free via the wiring in ShiftAndGlue.lean.
 
-**Current sorry count**: 2 (lines ~1530, ~1556 in GoodStructuresModelSurgery.lean)
-**Estimated remaining effort**: 2 hours (1-2h for Lemma 11 + 0.5h for application + 0.5h for Phase 6 wiring)
+**Final sorry count in GoodStructuresModelSurgery.lean**: 0
+**Residual sorry**: `no_gaps_discrete` in GoodStructures.lean retains sorry due to import cycle (GoodStructuresModelSurgery imports GoodStructures). This is off the critical path — `chronicle_is_good_direct` uses `no_gaps_discrete_model_surgery` directly via ShiftAndGlue.lean.
 
 ## Artifacts & Outputs
 
 - `specs/202_reynolds_k_equivalence_bypass/plans/20_reynolds-model-surgery-v19.md` (this plan)
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean` (MODIFY, ~70-100 lines remaining: Task 3.2 + application)
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean` (MODIFY, +~6 lines: Phase 6 wiring)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean` (MODIFIED, 0 sorry sites)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean` (MODIFIED, +8 lines: Phase 6 wiring)
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean` (MODIFIED, import cycle comment)
 
 ## Rollback/Contingency
 
