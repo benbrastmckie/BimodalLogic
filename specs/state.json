@@ -1467,7 +1467,7 @@
     {
       "project_number": 234,
       "project_name": "temporal_ghfp_tableau_rules",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Replace unsound identity-collapse temporal rules with correct time-indexed rules using time indices from task 232. Implement G/H/F/P expansion with strict-inequality semantics (open guard), time ordering constraint tracking, and propagation of G/H-formulas to newly created time points.",
       "priority": "critical",
@@ -1476,7 +1476,7 @@
         232
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T23:30:00Z",
+      "last_updated": "2026-06-01T23:59:00Z",
       "session_id": "sess_1748790000_orch234",
       "artifacts": [
         {
@@ -1488,9 +1488,15 @@
           "path": "specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan: time helpers + TimeOrdering, fix decomposition helpers + F/P constructors, thread TimeOrdering, rewrite G/H rules + add F/P rules, integration testing. 8 hours estimated."
+        },
+        {
+          "path": "specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md",
+          "type": "summary",
+          "summary": "Replaced 4 unsound identity-collapse temporal rules with 8 correct time-indexed G/H/F/P rules using TimeOrdering constraint tracking, strict-inequality semantics, and auto-propagation. Zero sorries."
         }
       ],
       "planned": "2026-06-01T23:50:00Z",
+      "completion_summary": "Replaced 4 unsound identity-collapse temporal rules with 8 correct time-indexed G/H/F/P rules using TimeOrdering constraint tracking, strict-inequality semantics, and auto-propagation. Zero sorries.",
       "next_artifact_number": 2,
       "plan_metadata": {
         "phases": 5,

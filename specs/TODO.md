@@ -91,7 +91,10 @@ technical_debt:
     └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
     └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
     └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
-234 [NOT STARTED] — Replace unsound identity-collapse temporal rules with correct tim
+234 [COMPLETED] — Replace unsound identity-collapse temporal rules with correct time-indexed G/H/F/P rules
+  - **Research**: [specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md]
+  - **Plan**: [specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md]
+  - **Summary**: [specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md]
   └─ 236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur (see above)
   └─ 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates (see above)
   └─ 238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc (see above)
@@ -334,12 +337,15 @@ technical_debt:
 ---
 
 ### 234. Temporal G/H/F/P tableau rules with time-indexed branches
-- **Effort**: medium (10-15 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: medium (8 hours)
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Topic**: tableau-training
 - **Dependencies**: 232
+- **Research**: [specs/234_temporal_ghfp_tableau_rules/reports/01_temporal-ghfp-research.md]
+- **Plan**: [specs/234_temporal_ghfp_tableau_rules/plans/01_temporal-ghfp-plan.md]
+- **Summary**: [specs/234_temporal_ghfp_tableau_rules/summaries/01_temporal-ghfp-summary.md]
 
 **Description**: Replace unsound identity-collapse temporal rules with correct time-indexed rules. Strict-inequality semantics: `T(GA) @ t → T(A) @ t'` for all `t' > t`, `F(GA) @ t → F(A) @ t_new` with fresh `t_new > t`. Track time ordering constraints. Auto-propagate G/H-formulas to new time points. Wire unused `asSomeFuture?`/`asSomePast?` helpers into new rules. Files: `Tableau.lean`, `Saturation.lean`.
 
