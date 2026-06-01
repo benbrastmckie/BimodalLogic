@@ -1,5 +1,5 @@
 ---
-next_project_number: 253
+next_project_number: 254
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -91,6 +91,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
+253 [NOT STARTED] — Add progress reporting to dataset generation pipeline
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -320,6 +321,14 @@ technical_debt:
 **Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from task 216).
 
 ---
+
+### 253. Add progress reporting to dataset generation pipeline
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Description**: Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently `run_dataset_generation.sh` prints "Generating formulas..." and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.
 
 ### 252. Fix linter warnings and improve generation scripts
 - **Effort**: medium (4-8 hours)

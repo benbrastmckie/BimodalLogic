@@ -1188,9 +1188,23 @@
       "last_updated": "2026-06-01T20:17:00Z",
       "next_artifact_number": 1,
       "artifacts": []
+    },
+    {
+      "project_number": 253,
+      "project_name": "dataset_generation_progress_reporting",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently run_dataset_generation.sh prints \"Generating formulas...\" and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-01T21:48:00Z",
+      "last_updated": "2026-06-01T21:48:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 253,
+  "next_project_number": 254,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
