@@ -1,5 +1,5 @@
 ---
-next_project_number: 252
+next_project_number: 253
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -95,6 +95,7 @@ technical_debt:
 
 ### Code Quality
 
+252 [NOT STARTED] — Fix linter warnings across codebase and improve dataset generation scripts
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
 
 ### Dataset Enhancement

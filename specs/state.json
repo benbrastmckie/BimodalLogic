@@ -1597,9 +1597,23 @@
       ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 252,
+      "project_name": "fix_linter_warnings_and_generation_script",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables h_sc, h_mem in Semantics/Validity.lean (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args f_nesting_depth, p_nesting_depth, Formula.and in SubformulaClosure/TemporalFormulas.lean (lines 565-566, 647-650, 803, 895), (3) Unused tactic all_goals simp_wf in ProofSearch/Core.lean (lines 1016, 1141), (4) Unused variable fc in CountermodelExtraction.lean (line 128), (5) Unused variables proof, h in ProofSearch/Strategies.lean (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.",
+      "priority": "medium",
+      "topic": "code-quality",
+      "dependencies": [],
+      "created": "2026-06-01T20:17:00Z",
+      "last_updated": "2026-06-01T20:17:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 252,
+  "next_project_number": 253,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
