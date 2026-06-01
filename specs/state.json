@@ -1402,17 +1402,18 @@
     {
       "project_number": 238,
       "project_name": "frame_class_tableau_gating",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Extend tableau with frame-class-specific rules for Dense and Discrete axiom layers. Dense: density rule (intermediate points), dense indicator. Discrete: Prior rules, Z1 rule, uniformity axioms. Parameterize buildTableau and decide by FrameClass. Gate rule application by minFrameClass <= fc matching the axiomatic system.",
       "priority": "high",
       "topic": "tableau-training",
       "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-02T00:00:00Z",
+      "last_updated": "2026-06-02T01:00:00Z",
       "session_id": "sess_1780339480_9di1",
       "researched": "2026-06-01T23:50:00Z",
       "planned": "2026-06-02T00:00:00Z",
+      "completion_summary": "Threaded fc : FrameClass := .Base through the entire tableau decision pipeline (checkAxiomNeg, findClosure, expandBranchWithFuel, buildTableau, decide, etc.). Fixed correctness bug where checkAxiomNeg accepted all axioms regardless of frame class. Added 5 frame-class-specific TableauRule constructors (denseIndicatorClosure, densityRule, priorUZ, priorSZ, z1Rule) with fc-gated isApplicable and applyRule implementations. Created allRulesForFC for frame-class-aware rule selection. Added 9 integration tests verifying correct gating behavior. All existing tests compile unchanged via default parameters. Zero new sorries, zero new axioms.",
       "next_artifact_number": 2,
       "artifacts": [
         {
