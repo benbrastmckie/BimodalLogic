@@ -68,7 +68,7 @@ technical_debt:
 
 239 [RESEARCHED] — Replace stub proof extraction (returns 'Full proof extraction not
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-  └─ 241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+  └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
     └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
       └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
       └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
@@ -80,7 +80,7 @@ technical_debt:
   └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
 240 [RESEARCHED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-  └─ 241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
+  └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
 
 ### Automation
 

@@ -116,7 +116,14 @@ Phases within the same wave can execute in parallel (Phases 2 and 3 can run in p
 
 ---
 
-### Phase 2: Integrate Enriched and Semantic Countermodels from Task 240 [NOT STARTED]
+### Phase 2: Integrate Enriched and Semantic Countermodels from Task 240 [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Cannot integrate SemanticCountermodel or EnrichedCountermodel pipeline because task 240 is at "planned" status (not yet implemented)
+- **What was tried**: Inspected specs/240_countermodel_semantic_correctness/ — task has research and plan artifacts but no implementation
+- **Why it's stuck**: Task 240 must complete first to provide SemanticCountermodel type and corrected branchTruthLemma
+- **What is needed**: Task 240 must reach "completed" status before this phase can proceed
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Replace the atom-only `SimpleCountermodel` with the richer countermodel types produced by task 240. Wire `EnrichedCountermodel` (already exists in EnrichedCountermodel.lean) into the main pipeline, and integrate the new `SemanticCountermodel` type (to be created by task 240).
 
@@ -152,7 +159,14 @@ Phases within the same wave can execute in parallel (Phases 2 and 3 can run in p
 
 ---
 
-### Phase 3: Integrate Full Proof Extraction and Remove Retry Path [NOT STARTED]
+### Phase 3: Integrate Full Proof Extraction and Remove Retry Path [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: Cannot integrate full proof extraction or remove decideOptimized retry path because task 239 is at "planned" status (not yet implemented)
+- **What was tried**: Inspected specs/239_proof_extraction_from_tableau/ — task has research and plan artifacts but no implementation
+- **Why it's stuck**: Task 239 must complete first to provide complete proof extraction from closed tableau branches
+- **What is needed**: Task 239 must reach "completed" status before this phase can proceed
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: With task 239 providing complete proof extraction from closed tableaux, eliminate the `decideOptimized` retry path in `labelFormula`, remove the timeout-as-fallback-for-valid workaround in `DecisionProcedure.decide`, and add `proofReconstructionMethod` tracking.
 
