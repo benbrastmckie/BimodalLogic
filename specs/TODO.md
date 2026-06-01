@@ -78,7 +78,7 @@ technical_debt:
     └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
       └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
   └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
-240 [RESEARCHED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
+240 [COMPLETED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
   └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
 
@@ -100,7 +100,7 @@ technical_debt:
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
     └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-253 [PLANNED] — Add progress reporting to the dataset generation pipeline so user
+253 [COMPLETED] — Add progress reporting to the dataset generation pipeline so user
 
 ### Uncategorized
 
@@ -372,7 +372,7 @@ technical_debt:
 
 ### 253. Add progress reporting to dataset generation pipeline
 - **Effort**: medium (4-8 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
