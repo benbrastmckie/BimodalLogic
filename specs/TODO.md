@@ -351,12 +351,13 @@ technical_debt:
 
 ### 253. Add progress reporting to dataset generation pipeline
 - **Effort**: medium (4-8 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Description**: Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently `run_dataset_generation.sh` prints "Generating formulas..." and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.
 - **Research**: [specs/253_dataset_generation_progress_reporting/reports/01_progress-reporting-research.md]
+- **Plan**: [specs/253_dataset_generation_progress_reporting/plans/01_implementation-plan.md]
 
 ### 252. Fix linter warnings and improve generation scripts
 - **Effort**: medium (4-8 hours)
