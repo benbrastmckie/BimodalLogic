@@ -3,12 +3,12 @@ next_project_number: 259
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-06-01T23:30:00Z
+  last_assessed: 2026-06-01T23:05:59Z
 task_counts:
-  active: 49
-  completed: 175
-  abandoned: 1
-  total: 223
+  active: 48
+  completed: 181
+  abandoned: 2
+  total: 231
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -65,21 +65,15 @@ technical_debt:
 
 ### Tableau Training
 
-239 [COMPLETED] — Replace stub proof extraction (returns 'Full proof extraction not
-  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-  └─ 241 [COMPLETED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
-    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
-      └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-      └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-    └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-    └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
-      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
-240 [COMPLETED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
-  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-  └─ 241 [COMPLETED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
+242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
+  └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+  └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
+  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
+  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
 
 ### Automation
 
@@ -90,7 +84,6 @@ technical_debt:
 ### Code Quality
 
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
-252 [COMPLETED] — Fix linter warnings across the codebase and improve dataset gener
 255 [NOT STARTED] — Archive dead code to Boneyard/ after task 202 completed Reynolds 
 
 ### Dataset Enhancement
@@ -99,7 +92,6 @@ technical_debt:
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
     └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-253 [COMPLETED] — Add progress reporting to the dataset generation pipeline so user
 
 ### Uncategorized
 
@@ -129,7 +121,6 @@ technical_debt:
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-224 [NOT STARTED] — Investigate whether the finite insertion argument can prove IsSuc
 248 [NOT STARTED] — fold_direction_formula_normalization
 249 [NOT STARTED] — expand_temporal_derived_theorems
 250 [NOT STARTED] — enriched_formula_json_export
@@ -138,7 +129,7 @@ technical_debt:
 
 ### 258. Create a Hugging Face publishing guide in docs/
 - **Effort**: S
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Type**: general
 - **Priority**: medium
 - **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
@@ -152,17 +143,6 @@ technical_debt:
 - **Plan**: [257_large_data_storage_huggingface/plans/01_implementation-plan.md]
 - **Summary**: [257_large_data_storage_huggingface/summaries/01_execution-summary.md]
 - **Description**: Investigate standard practices for storing large data objects outside git (currently using Git LFS with ~146 MB uploads). Research using Hugging Face Datasets as external data host and linking from this repository. Evaluate trade-offs between Git LFS, Hugging Face Hub, and other approaches for dataset versioning and distribution.
-
-### 256. Re-scope task 155 and update tasks 95/224 descriptions
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Type**: meta
-- **Priority**: medium
-- **Description**: Re-scope task 155 (reynolds_pipeline_activation) after task 202 completed Reynolds model surgery. chronicle_is_good_direct objective achieved. Focus on final completeness_discrete rewiring. Update task 95 description (succ_cofinal reference stale). Consider abandoning task 224 (alternative to Reynolds, now moot).
-- **Artifacts**:
-  - [specs/256_rescope_155_update_95_224/reports/01_rescope-research.md]
-  - [specs/256_rescope_155_update_95_224/plans/01_implementation-plan.md]
-  - [specs/256_rescope_155_update_95_224/summaries/01_execution-summary.md]
 
 ### 255. Boneyard dead Reynolds code
 - **Effort**: S
@@ -279,53 +259,6 @@ technical_debt:
 
 ---
 
-### 241. Tableau-driven formula labeling for DatasetGenerator
-- **Effort**: medium (8-12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: None (237, 238, 239, 240 completed)
-- **Research**: [specs/241_tableau_formula_labeling/reports/01_research-findings.md]
-- **Plan**: [specs/241_tableau_formula_labeling/plans/01_tableau-labeling-plan.md]
-- **Summary**: [specs/241_tableau_formula_labeling/summaries/01_tableau-labeling-summary.md]
-
-**Description**: Rebuild `DatasetGenerator.lean` to use corrected tableau for reliable formula labeling. Currently uses broken tableau producing incorrect labels for modal/temporal formulas. Update `LabeledFormula` records with richer proof traces and countermodels. Validate against all 42 axiom instances and known satisfiable non-theorems. Files: `DatasetGenerator.lean`, `DataExport.lean`, `EnrichedCountermodel.lean`, `DecisionProcedure.lean`.
-
----
-
-### 240. Countermodel extraction with semantic correctness
-- **Effort**: large (15-20 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: None (237, 238 completed)
-- **Plan**: [specs/240_countermodel_semantic_correctness/plans/01_countermodel-plan.md]
-- **Summary**: [specs/240_countermodel_semantic_correctness/summaries/01_countermodel-summary.md]
-
-**Description**: Replace vacuous `branchTruthLemma` (`∀ sf ∈ b, True`) with genuine truth lemma: T(φ) ∈ b implies φ true in extracted model, F(φ) ∈ b implies φ false. Extend `SimpleCountermodel` to `SemanticCountermodel` with world states, time domain, temporal ordering, valuation. Prove truth lemma by induction on formula structure using saturation. Files: `CountermodelExtraction.lean`, `Closure.lean`, potentially new `SemanticCountermodel.lean`.
-
-**Completion**: Implemented `SemanticCountermodel` and `branchTruth` evaluation. Proved `branchTruthLemma` with atom/bot/box/imp-neg cases complete; imp-pos and temporal cases carry sorry pending rule-engine analysis. 12 documented sorry instances remain.
-
----
-
-### 239. Proof term extraction from closed tableaux
-- **Effort**: large (15-25 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: None (237, 238 completed)
-- **Plan**: [specs/239_proof_extraction_from_tableau/plans/01_proof-extraction-plan.md]
-- **Summary**: [specs/239_proof_extraction_from_tableau/summaries/01_proof-extraction-summary.md]
-
-**Description**: Replace stub proof extraction (`"Full proof extraction not yet implemented"`) with complete backward-chaining algorithm building `DerivationTree` from closed branches. Augment expansion with proof reconstruction stack. Map closure reasons through expansion steps to axiom/rule combinations: propositional (peirce + modus_ponens), modal (necessitation + modal_k_dist), temporal (temporal_necessitation + BX axioms). Files: `ProofExtraction.lean`, `Tableau.lean`, `Saturation.lean`.
-
-**Completion**: Replaced stub with 5-strategy extraction pipeline (axiom match, derived match, closure-based, compositional builder, enhanced search). Integrated into DecisionProcedure.decide. Zero sorries, build passes.
-
----
-
 ### 231. Dataset regeneration automation
 - **Effort**: large (2-3 days)
 - **Status**: [NOT STARTED]
@@ -361,17 +294,6 @@ technical_debt:
 
 ---
 
-### 224. Investigate finite insertion argument for succ_cofinal (omega-chain structural alternative to Reynolds model surgery)
-- **Effort**: medium (4-8 hours)
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-
-**Description**: Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Related: task 202.
-
-**Abandoned**: IsSuccArchimedean alternative is obsolete -- it addressed `succ_cofinal` on the BX chronicle path, which is being bypassed entirely. The correct path to sorry-free `completeness_discrete` is `no_gaps_discrete_model_surgery` (already sorry-free in GoodStructuresModelSurgery.lean). Task 202 confirmed the Reynolds Z-interval-to-TaskFrame pipeline is architecturally blocked, making this alternative moot regardless of approach.
-
----
-
 ### 219. LLM baseline difficulty calibration
 - **Effort**: medium (3-5 days)
 - **Status**: [RESEARCHED]
@@ -384,24 +306,6 @@ technical_debt:
 **Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from task 216).
 
 ---
-
-### 253. Add progress reporting to dataset generation pipeline
-- **Effort**: medium (4-8 hours)
-- **Status**: [COMPLETED]
-- **Type**: lean4
-- **Priority**: medium
-- **Topic**: dataset-enhancement
-- **Description**: Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently `run_dataset_generation.sh` prints "Generating formulas..." and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.
-- **Research**: [specs/253_dataset_generation_progress_reporting/reports/01_progress-reporting-research.md]
-- **Plan**: [specs/253_dataset_generation_progress_reporting/plans/01_implementation-plan.md]
-
-### 252. Fix linter warnings and improve generation scripts
-- **Effort**: medium (4-8 hours)
-- **Status**: [COMPLETED]
-- **Type**: lean4
-- **Priority**: medium
-- **Topic**: code-quality
-- **Description**: Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables `h_sc`, `h_mem` in `Semantics/Validity.lean` (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args `f_nesting_depth`, `p_nesting_depth`, `Formula.and` in `SubformulaClosure/TemporalFormulas.lean` (lines 565-566, 647-650, 803, 895), (3) Unused tactic `all_goals simp_wf` in `ProofSearch/Core.lean` (lines 1016, 1141), (4) Unused variable `fc` in `CountermodelExtraction.lean` (line 128), (5) Unused variables `proof`, `h` in `ProofSearch/Strategies.lean` (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.
 
 ### 200. GHR93 Case II elegance rewrite (code quality)
 - **Effort**: large (20-30 hours)

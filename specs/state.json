@@ -8,10 +8,11 @@
     {
       "project_number": 258,
       "project_name": "huggingface_publishing_guide",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "created": "2026-06-01T23:02:55Z",
-      "last_updated": "2026-06-01T23:02:55Z"
+      "last_updated": "2026-06-01T23:05:56Z",
+      "session_id": "sess_1748818200_d4e6f8"
     },
     {
       "project_number": 257,
@@ -1123,7 +1124,7 @@
     "abandoned": 0
   },
   "repository_health": {
-    "last_assessed": "2026-06-01T20:27:08Z",
+    "last_assessed": "2026-06-01T23:05:59Z",
     "status": "healthy"
   },
   "last_updated": "2026-04-12T12:00:00Z",
