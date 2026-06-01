@@ -1,6 +1,7 @@
 import Bimodal.Syntax
 import Bimodal.Automation.SuccessPatterns
 import Std.Data.HashMap
+import Std.Data.HashSet
 
 /-!
 # Formula Enumerator for Dataset Generation
@@ -984,28 +985,48 @@ Generate a batch of guaranteed-valid formulas using fixpoint Nec/MP closure.
 2. **Ex_falso cap**: Limit ex_falso-pattern formulas to at most 20% of the seed pool.
 3. **Fixpoint closure**: Iterate Nec+MP rounds until no new formulas added,
    pool exceeds 10,000, or 10 rounds completed.
-4. **Filter**: Keep formulas within target complexity range, deduplicate.
+   - Uses `Std.HashSet` + `Array` pool for O(1) membership/dedup (task 251).
+   - Uses implication-index `Std.HashMap` for O(n) MP closure (task 251).
+   - Uses early complexity filtering to bound pool growth (task 251).
+4. **Filter**: Keep formulas within target complexity range.
 -/
 partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     (atoms : List Atom) : IO (List Formula) := do
+  -- Pool data structure: HashSet for O(1) membership, Array for ordered iteration
+  let mut poolSet : Std.HashSet Formula := {}
+  let mut poolArr : Array Formula := #[]
+  -- Helper: insert into pool only if not already present
+  let addToPool := fun (s : Std.HashSet Formula) (a : Array Formula) (φ : Formula) =>
+    if s.contains φ then (s, a)
+    else (s.insert φ, a.push φ)
   -- Phase 1: Seed pool with axiom instances + theorem seeds
   let maxParamSize := max 1 (maxComplexity / 3)
-  let mut pool : List Formula := []
   for _ in List.range seedCount do
     let axiomInst ← instantiateAxiom atoms maxParamSize
-    pool := axiomInst :: pool
+    let (s', a') := addToPool poolSet poolArr axiomInst
+    poolSet := s'; poolArr := a'
   -- Add theorem seed formulas
-  pool := pool ++ theoremSeedFormulas
-  pool := pool.eraseDups
+  for φ in theoremSeedFormulas do
+    let (s', a') := addToPool poolSet poolArr φ
+    poolSet := s'; poolArr := a'
   -- Phase 2: Cap ex_falso instances to at most 20% of pool
-  let exFalsoCount := pool.filter isExFalso |>.length
-  let maxExFalso := pool.length / 5  -- 20%
+  let exFalsoCount := poolArr.foldl (fun acc φ => if isExFalso φ then acc + 1 else acc) 0
+  let maxExFalso := poolArr.size / 5  -- 20%
   if exFalsoCount > maxExFalso then
-    -- Separate ex_falso and non-ex_falso formulas
-    let nonExFalso := pool.filter (fun φ => !isExFalso φ)
-    let exFalsoOnly := pool.filter isExFalso
-    -- Keep only maxExFalso of the ex_falso formulas
-    pool := nonExFalso ++ exFalsoOnly.take maxExFalso
+    -- Rebuild pool keeping non-ex_falso + limited ex_falso
+    let mut newSet : Std.HashSet Formula := {}
+    let mut newArr : Array Formula := #[]
+    let mut exFalsoKept : Nat := 0
+    for φ in poolArr do
+      if isExFalso φ then
+        if exFalsoKept < maxExFalso then
+          let (s', a') := addToPool newSet newArr φ
+          newSet := s'; newArr := a'
+          exFalsoKept := exFalsoKept + 1
+      else
+        let (s', a') := addToPool newSet newArr φ
+        newSet := s'; newArr := a'
+    poolSet := newSet; poolArr := newArr
     -- Generate replacement non-ex_falso axiom instances
     let replacements := exFalsoCount - maxExFalso
     for _ in List.range replacements do
@@ -1015,32 +1036,48 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
       while isExFalso axiomInst && retries < 5 do
         axiomInst ← instantiateAxiom atoms maxParamSize
         retries := retries + 1
-      pool := axiomInst :: pool
-    pool := pool.eraseDups
+      let (s', a') := addToPool poolSet poolArr axiomInst
+      poolSet := s'; poolArr := a'
   -- Phase 3: Fixpoint Nec/MP closure
   let mut round : Nat := 0
   let mut prevSize : Nat := 0
-  while round < 10 && pool.length < 10000 do
-    prevSize := pool.length
+  while round < 10 && poolArr.size < 10000 do
+    prevSize := poolArr.size
     -- Necessitation round: □φ for each φ in pool
-    let necFormulas := pool.map generateValidFromNec
-    pool := (pool ++ necFormulas).eraseDups
-    -- MP round: for each pair (φ, φ→ψ), add ψ
-    let mut mpResults : List Formula := []
-    for φ in pool do
-      for ψ in pool do
-        match generateValidFromMP φ ψ with
-        | some result => mpResults := result :: mpResults
-        | none => pure ()
-    pool := (pool ++ mpResults).eraseDups
+    let snapshot := poolArr
+    for φ in snapshot do
+      let boxPhi := generateValidFromNec φ
+      if boxPhi.complexity ≤ maxComplexity then
+        let (s', a') := addToPool poolSet poolArr boxPhi
+        poolSet := s'; poolArr := a'
+    -- MP round: implication-index for O(n) closure
+    -- Build index: for each (lhs → rhs) in pool, map lhs ↦ [rhs, ...]
+    let mpSnapshot := poolArr
+    let mut impIndex : Std.HashMap Formula (Array Formula) := {}
+    for ψ in mpSnapshot do
+      match ψ with
+      | .imp lhs rhs =>
+        match impIndex[lhs]? with
+        | some arr => impIndex := impIndex.insert lhs (arr.push rhs)
+        | none => impIndex := impIndex.insert lhs #[rhs]
+      | _ => pure ()
+    -- Single pass: for each φ in pool, look up consequents via index
+    for φ in mpSnapshot do
+      match impIndex[φ]? with
+      | some rhsArr =>
+        for rhs in rhsArr do
+          if rhs.complexity ≤ maxComplexity then
+            let (s', a') := addToPool poolSet poolArr rhs
+            poolSet := s'; poolArr := a'
+      | none => pure ()
     round := round + 1
     -- Check growth rate: stop if less than 1% growth
-    let growth := pool.length - prevSize
+    let growth := poolArr.size - prevSize
     let growthRate := if prevSize > 0 then growth * 100 / prevSize else 100
     if growthRate < 1 then
       break
   -- Phase 4: Filter by complexity range
-  let filtered := pool.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity
+  let filtered := poolArr.toList.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity
   return filtered
 
 /--

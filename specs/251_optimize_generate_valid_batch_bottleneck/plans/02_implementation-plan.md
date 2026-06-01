@@ -68,18 +68,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Replace List Pool with HashSet + Array and Eliminate eraseDups [NOT STARTED]
+### Phase 1: Replace List Pool with HashSet + Array and Eliminate eraseDups [COMPLETED]
 
 **Goal**: Convert the pool data structure from `List Formula` to `Std.HashSet Formula` + `Array Formula`, eliminating all `eraseDups` calls.
 
 **Tasks**:
-- [ ] Add `import Std.Data.HashSet` at top of file (or verify it is available via existing `Std.Data.HashMap` import)
-- [ ] Define a local helper function `addToPool` that inserts into both `poolSet : Std.HashSet Formula` and `poolArr : Array Formula` only if the formula is not already in `poolSet`
-- [ ] Refactor Phase 1 (Seed pool, lines 993-999): replace `mut pool : List Formula` with `mut poolSet : Std.HashSet Formula` and `mut poolArr : Array Formula`; use `addToPool` for each `axiomInst` and each `theoremSeedFormulas` entry; remove `pool.eraseDups` call
-- [ ] Refactor Phase 2 (Ex-falso cap, lines 1001-1019): use `poolArr` for iteration/filtering, `poolSet` for membership; rebuild both structures after filtering; remove second `pool.eraseDups` call
-- [ ] Refactor Phase 3 stub (lines 1021-1041): convert `pool.length` references to `poolArr.size`; convert `pool.map` to `poolArr` iteration; remove all `(pool ++ ...).eraseDups` calls -- new formulas go through `addToPool` check
-- [ ] Refactor Phase 4 (Filter, lines 1043-1044): filter from `poolArr.toList` instead of `pool`
-- [ ] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
+- [x] Add `import Std.Data.HashSet` at top of file (or verify it is available via existing `Std.Data.HashMap` import)
+- [x] Define a local helper function `addToPool` that inserts into both `poolSet : Std.HashSet Formula` and `poolArr : Array Formula` only if the formula is not already in `poolSet`
+- [x] Refactor Phase 1 (Seed pool, lines 993-999): replace `mut pool : List Formula` with `mut poolSet : Std.HashSet Formula` and `mut poolArr : Array Formula`; use `addToPool` for each `axiomInst` and each `theoremSeedFormulas` entry; remove `pool.eraseDups` call
+- [x] Refactor Phase 2 (Ex-falso cap, lines 1001-1019): use `poolArr` for iteration/filtering, `poolSet` for membership; rebuild both structures after filtering; remove second `pool.eraseDups` call
+- [x] Refactor Phase 3 stub (lines 1021-1041): convert `pool.length` references to `poolArr.size`; convert `pool.map` to `poolArr` iteration; remove all `(pool ++ ...).eraseDups` calls -- new formulas go through `addToPool` check *(deviation: altered -- also implemented Phase 2 implication-index and Phase 3 complexity filtering in the same rewrite since the function is a single block)*
+- [x] Refactor Phase 4 (Filter, lines 1043-1044): filter from `poolArr.toList` instead of `pool`
+- [x] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
 
 **Timing**: 45 minutes
 
