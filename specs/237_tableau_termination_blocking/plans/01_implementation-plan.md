@@ -1,7 +1,7 @@
 # Implementation Plan: Tableau Termination via Blocking and FMP Bounds
 
 - **Task**: 237 - Implement blocking strategy ensuring tableau expansion terminates for all formulas
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None (tasks 236, 238 are independent siblings; 239, 240, 241 depend on this task)
 - **Research Inputs**: specs/237_tableau_termination_blocking/reports/01_termination-blocking.md
