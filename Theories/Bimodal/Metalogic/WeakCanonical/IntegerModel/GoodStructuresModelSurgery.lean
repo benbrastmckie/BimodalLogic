@@ -1626,8 +1626,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
         obtain ⟨y, h_ce, h_lt, h_A_y⟩ := (h_Ψ_correct _).mp h_eval
         -- y < pred(s₀), y ~M pred(s₀) ~M s₀. y ∈ class(s₀). y > t.
         have h_y_above_t := h_class_s₀_above_t y
-          ((contemp_equiv_is_equiv sig k M).trans h_pred_class_s₀
-            ((contemp_equiv_is_equiv sig k M).symm h_ce))
+          ((contemp_equiv_is_equiv sig k M).trans h_pred_class_s₀ h_ce)
         exact h_not_A_between y h_y_above_t
           (lt_trans h_lt (Order.pred_lt_of_not_isMin h_not_min_s₀)) h_A_y
       -- succ(t) < pred(s₀): succ(t) ∈ class(a), pred(s₀) < s₀, both > t.
@@ -1656,8 +1655,9 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
       exact h_not_T_sc ((h_T_correct (Order.succ c)).mp
         ((h_Ψ_correct (Order.succ c)).mpr ⟨y₀,
           (contemp_equiv_is_equiv sig k M).trans
-            (no_boundary_at_successor sig k M c)
-            ((contemp_equiv_is_equiv sig k M).symm h_ce_y₀),
+            ((contemp_equiv_is_equiv sig k M).symm
+              (no_boundary_at_successor sig k M c))
+            h_ce_y₀,
           lt_trans h_y₀_lt_c (Order.lt_succ_of_not_isMax (not_isMax c)),
           h_A_y₀⟩))
 
@@ -1689,17 +1689,16 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
         rcases eq_or_gt_of_le h_ge with rfl | h_gt
         · exact h_s₀_class hw
         · exact h_s₀_class (class_convex w s₀ t hw h_t
-            (le_of_lt h_gt) (le_of_lt hwt))
+            (le_of_lt h_gt) (le_of_lt h_s₀t))
       -- All class(s₀) members < t (by convexity + contemp_equiv_convex).
       have h_class_s₀_below_t : ∀ w, contemp_equiv sig k M s₀ w → w < t := by
         intro w hw
         by_contra h_ge; push_neg at h_ge
         -- w ≥ t. s₀ < t ≤ w. s₀ ~M w. t between s₀ and w.
         -- By contemp_equiv_convex: s₀ ~M t. Then a ~M t ~M s₀. s₀ ∈ class(a).
-        exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans
-          (contemp_equiv_convex sig k M s₀ t w (le_of_lt h_s₀t) h_ge
-            ((contemp_equiv_is_equiv sig k M).symm hw))
-          ((contemp_equiv_is_equiv sig k M).symm h_t))
+        exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans h_t
+          ((contemp_equiv_is_equiv sig k M).symm
+            (contemp_equiv_convex sig k M s₀ t w (le_of_lt h_s₀t) h_ge hw)))
       -- Construct spread_above formula: ∃ y ~M x, x < y, A(y).
       let Ψ' : MonadicFormula sig 1 :=
         .ex (.and (.and (contemp_eq_body sig k)
@@ -1728,8 +1727,8 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
       have h_T_true : temporal_truth M atomMap (Order.pred t) T_Ψ' := by
         rw [← h_T_correct]
         exact (h_Ψ_correct (Order.pred t)).mpr
-          ⟨s', (contemp_equiv_is_equiv sig k M).trans h_pred_t_class
-            ((contemp_equiv_is_equiv sig k M).symm h_s'_class),
+          ⟨s', (contemp_equiv_is_equiv sig k M).trans
+            ((contemp_equiv_is_equiv sig k M).symm h_pred_t_class) h_s'_class,
             lt_of_lt_of_le (Order.pred_lt_of_not_isMin (not_isMin t)) h_s't,
             h_φ_s'⟩
       -- T_Ψ' FALSE at succ(s₀): no A above succ(s₀) in class(s₀).
@@ -1745,19 +1744,18 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
         -- s₀ < t ≤ succ(s₀). In discrete order with SuccOrder:
         -- t ≤ succ(s₀) and s₀ < t means t = succ(s₀).
         -- Then pred(t) = s₀. pred(t) ∈ class(a). s₀ ∈ class(a). Contradiction.
-        have h_eq : s₀ = Order.pred t :=
-          le_antisymm (Order.le_of_lt_succ
-            (Order.succ_pred_of_not_isMin (not_isMin t) ▸ h_s₀t))
-            (by rwa [Order.pred_le_iff_le_succ])
-        exact h_s₀_class (h_eq ▸ h_pred_t_class)
+        -- s₀ < t ≤ succ(s₀). In discrete order: t = succ(s₀).
+        -- Then pred(t) = s₀. pred(t) ∈ class(a). s₀ ∈ class(a). Contradiction.
+        have h_t_eq : t = Order.succ s₀ :=
+          le_antisymm h_ge (Order.succ_le_of_lt h_s₀t)
+        have : Order.pred t = s₀ := by rw [h_t_eq, Order.pred_succ]
+        exact h_s₀_class (this ▸ h_pred_t_class)
       have h_T_false : ¬ temporal_truth M atomMap (Order.succ s₀) T_Ψ' := by
         rw [← h_T_correct]
         intro h_eval
         obtain ⟨y, h_ce, h_lt, h_A_y⟩ := (h_Ψ_correct _).mp h_eval
         have h_y_below_t := h_class_s₀_below_t y
-          ((contemp_equiv_is_equiv sig k M).trans
-            ((contemp_equiv_is_equiv sig k M).symm h_succ_s₀_class_s₀)
-            ((contemp_equiv_is_equiv sig k M).symm h_ce))
+          ((contemp_equiv_is_equiv sig k M).trans h_succ_s₀_class_s₀ h_ce)
         exact h_not_A_between y
           (lt_trans (Order.lt_succ_of_not_isMax h_not_max_s₀) h_lt)
           h_y_below_t h_A_y
@@ -1771,9 +1769,11 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
           ((Order.succ_pred_of_not_isMin (not_isMin t)).symm ▸
             Order.succ_le_succ h_ge)
           (Order.succ_le_of_lt h_succ_s₀_below_t)
-        exact h_s₀_class (this ▸ ((contemp_equiv_is_equiv sig k M).trans
-          h_succ_s₀_class_s₀ (this ▸ (contemp_equiv_is_equiv sig k M).symm
-            ((this ▸ h_pred_t_class : contemp_equiv sig k M a (Order.succ s₀))))))
+        -- t = succ(succ(s₀)). pred(t) = succ(s₀).
+        have h_pred_eq : Order.pred t = Order.succ s₀ := by rw [this]; exact Order.pred_succ _
+        exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans
+          (h_pred_eq ▸ h_pred_t_class)
+          ((contemp_equiv_is_equiv sig k M).symm h_succ_s₀_class_s₀))
       -- Use prior_UZ_first_transition on T_Ψ'.neg starting from succ(s₀).
       have h_Tneg_true : temporal_truth M atomMap (Order.succ s₀) T_Ψ'.neg :=
         (temporal_truth_neg_iff_not M atomMap _ _).mpr h_T_false
