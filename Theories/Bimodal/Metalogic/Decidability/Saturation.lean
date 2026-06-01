@@ -113,7 +113,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat) : Option (ClosedBranch ⊕ Br
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
-              branches.foldl tryBranch (some (.inl ⟨b, .botPos⟩))  -- Dummy initial closed
+              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))  -- Dummy initial closed
 termination_by fuel
 
 /--
@@ -154,7 +154,7 @@ Uses fuel parameter for termination. The fuel should be set based on
 the formula's complexity.
 -/
 def buildTableau (φ : Formula) (fuel : Nat := 1000) : Option ExpandedTableau :=
-  let initialBranch : Branch := [SignedFormula.neg φ]
+  let initialBranch : Branch := [SignedFormula.neg φ Label.initial]
   match expandBranchWithFuel initialBranch fuel with
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])

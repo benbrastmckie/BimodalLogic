@@ -206,7 +206,7 @@ Phases are fully sequential following the import DAG.
 
 ---
 
-### Phase 4: Saturation and Initial Branch [NOT STARTED]
+### Phase 4: Saturation and Initial Branch [COMPLETED]
 
 **Goal**: Update `buildTableau` to start with `Label.initial`. Ensure expansion loop, saturation checks, and all types compile through.
 
