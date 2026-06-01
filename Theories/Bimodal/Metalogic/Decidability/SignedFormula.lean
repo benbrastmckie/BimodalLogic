@@ -36,6 +36,60 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 
 /-!
+## World and Time Index Types
+-/
+
+/-- World index for multi-world modal reasoning in labeled tableaux. -/
+abbrev WorldIndex := Nat
+
+/-- Time index for temporal reasoning in labeled tableaux. -/
+abbrev TimeIndex := Nat
+
+/--
+A label combining world and time indices for tableau signed formulas.
+Each signed formula carries a label indicating the world and time at which
+it is asserted.
+-/
+structure Label : Type where
+  /-- The world at which the formula is evaluated. -/
+  world : WorldIndex
+  /-- The time at which the formula is evaluated. -/
+  time : TimeIndex
+  deriving Repr, DecidableEq, BEq, Hashable
+
+namespace Label
+
+/-- The initial label at world 0, time 0. -/
+def initial : Label := { world := 0, time := 0 }
+
+/-- BEq on Label decomposes to component BEq. -/
+theorem beq_eq (l1 l2 : Label) :
+    (l1 == l2) = (l1.world == l2.world && l1.time == l2.time) := by
+  cases l1; cases l2; rfl
+
+/-- BEq on Label is reflexive. -/
+theorem beq_refl (l : Label) : (l == l) = true := by
+  rw [beq_eq]
+  simp only [beq_self_eq_true, Bool.and_self]
+
+instance : ReflBEq Label where
+  rfl := beq_refl _
+
+/-- BEq on Label is injective. -/
+theorem eq_of_beq {l1 l2 : Label} (h : (l1 == l2) = true) : l1 = l2 := by
+  rw [beq_eq] at h
+  simp only [Bool.and_eq_true, beq_iff_eq] at h
+  cases l1; cases l2
+  simp only [mk.injEq]
+  exact h
+
+instance : LawfulBEq Label where
+  eq_of_beq := eq_of_beq
+  rfl := beq_refl _
+
+end Label
+
+/-!
 ## Sign Type
 -/
 
@@ -103,18 +157,20 @@ structure SignedFormula : Type where
   sign : Sign
   /-- The formula being signed. -/
   formula : Formula
+  /-- The world/time label for this assertion. -/
+  label : Label
   deriving Repr, DecidableEq, BEq, Hashable
 
 namespace SignedFormula
 
 /-- Create a positive signed formula (asserted true). -/
-def pos (φ : Formula) : SignedFormula := ⟨.pos, φ⟩
+def pos (φ : Formula) (l : Label := Label.initial) : SignedFormula := ⟨.pos, φ, l⟩
 
 /-- Create a negative signed formula (asserted false). -/
-def neg (φ : Formula) : SignedFormula := ⟨.neg, φ⟩
+def neg (φ : Formula) (l : Label := Label.initial) : SignedFormula := ⟨.neg, φ, l⟩
 
-/-- Flip the sign of a signed formula. -/
-def flip (sf : SignedFormula) : SignedFormula := ⟨sf.sign.flip, sf.formula⟩
+/-- Flip the sign of a signed formula, preserving the label. -/
+def flip (sf : SignedFormula) : SignedFormula := ⟨sf.sign.flip, sf.formula, sf.label⟩
 
 @[simp]
 theorem flip_flip (sf : SignedFormula) : sf.flip.flip = sf := by
@@ -131,7 +187,7 @@ def complexity (sf : SignedFormula) : Nat := sf.formula.complexity
 
 /-- Definitional equality for SignedFormula BEq. -/
 theorem beq_eq (sf1 sf2 : SignedFormula) :
-    (sf1 == sf2) = (sf1.sign == sf2.sign && sf1.formula == sf2.formula) := by
+    (sf1 == sf2) = (sf1.sign == sf2.sign && (sf1.formula == sf2.formula && sf1.label == sf2.label)) := by
   cases sf1; cases sf2; rfl
 
 /-- BEq on SignedFormula is reflexive. -/
@@ -146,14 +202,15 @@ instance : ReflBEq SignedFormula where
 theorem eq_of_beq {sf1 sf2 : SignedFormula} (h : (sf1 == sf2) = true) : sf1 = sf2 := by
   rw [beq_eq] at h
   simp only [Bool.and_eq_true] at h
+  obtain ⟨hs, hf, hl⟩ := h
   cases sf1 with
-  | mk s1 f1 =>
+  | mk s1 f1 l1 =>
     cases sf2 with
-    | mk s2 f2 =>
-      simp only [sign, formula] at h
-      have hs : s1 = s2 := Sign.eq_of_beq h.1
-      have hf : f1 = f2 := Formula.eq_of_beq h.2
-      subst hs hf
+    | mk s2 f2 l2 =>
+      have hs := Sign.eq_of_beq hs
+      have hf := Formula.eq_of_beq hf
+      have hl := Label.eq_of_beq hl
+      subst hs hf hl
       rfl
 
 instance : LawfulBEq SignedFormula where
@@ -184,25 +241,33 @@ def empty : Branch := []
 def contains (b : Branch) (sf : SignedFormula) : Bool :=
   b.any (· == sf)
 
-/-- Check if branch contains a positive formula. -/
+/-- Check if branch contains a positive formula at the initial label. -/
 def hasPos (b : Branch) (φ : Formula) : Bool :=
   b.contains (SignedFormula.pos φ)
 
-/-- Check if branch contains a negative formula. -/
+/-- Check if branch contains a negative formula at the initial label. -/
 def hasNeg (b : Branch) (φ : Formula) : Bool :=
   b.contains (SignedFormula.neg φ)
 
-/-- Check if branch contains T(⊥), an immediate contradiction. -/
+/-- Check if branch contains T(φ) at a specific label. -/
+def hasPosAt (b : Branch) (φ : Formula) (l : Label) : Bool :=
+  b.contains (SignedFormula.pos φ l)
+
+/-- Check if branch contains F(φ) at a specific label. -/
+def hasNegAt (b : Branch) (φ : Formula) (l : Label) : Bool :=
+  b.contains (SignedFormula.neg φ l)
+
+/-- Check if branch contains T(⊥) at any label. -/
 def hasBotPos (b : Branch) : Bool :=
-  b.contains (SignedFormula.pos .bot)
+  b.any fun sf => sf.sign == .pos && sf.formula == .bot
 
 /--
-Check if branch has a direct contradiction: both T(φ) and F(φ) for some φ.
+Check if branch has a direct contradiction: both T(φ) and F(φ) at the same label.
 Returns `some φ` if contradiction found, `none` otherwise.
 -/
 def findContradiction (b : Branch) : Option Formula :=
   b.findSome? fun sf =>
-    if sf.isPos ∧ b.hasNeg sf.formula then some sf.formula
+    if sf.isPos ∧ b.hasNegAt sf.formula sf.label then some sf.formula
     else none
 
 /-- Check if branch has any contradiction (T(⊥) or complementary pair). -/
