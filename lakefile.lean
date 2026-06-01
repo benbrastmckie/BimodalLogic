@@ -81,3 +81,11 @@ lean_exe contrastive_generator where
   root := `Bimodal.Automation.FormulaMutator
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Tableau bridge REPL for live formula queries (Task 246).
+    Run with: lake exe tableau_bridge
+    Then send JSONL requests on stdin, one per line. -/
+lean_exe tableau_bridge where
+  root := `Bimodal.Automation.TableauBridge
+  srcDir := "Theories"
+  supportInterpreter := true

@@ -8,10 +8,19 @@
     {
       "project_number": 259,
       "project_name": "publishing_guide_nixos_details",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "created": "2026-06-01T23:19:59Z",
-      "last_updated": "2026-06-01T23:19:59Z"
+      "last_updated": "2026-06-01T23:24:27Z",
+      "session_id": "sess_1748819400_e5f7g9",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md",
+          "type": "research",
+          "summary": "NixOS pain points for HF publishing: no nix config in repo, pip fails on read-only store, 4 edit locations identified"
+        }
+      ]
     },
     {
       "project_number": 258,
@@ -180,7 +189,7 @@
     {
       "project_number": 164,
       "project_name": "prove_tableau_correctness",
-      "status": "planning",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
       "dependencies": [
@@ -195,6 +204,11 @@
           "path": "specs/164_prove_tableau_correctness/reports/01_tableau-correctness-research.md",
           "type": "report",
           "summary": "Comprehensive research on tableau correctness theorems: current state, sorry sites, dependency graph, feasibility, and phased implementation plan"
+        },
+        {
+          "path": "specs/164_prove_tableau_correctness/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for tableau correctness theorems (decide_sound, decide_complete, decide_terminates)"
         }
       ]
     },
@@ -1059,7 +1073,7 @@
     {
       "project_number": 242,
       "project_name": "tableau_proof_step_generation",
-      "status": "planning",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Extend proof step pipeline to generate ProofStepRecord JSONL from tableau-proved formulas instead of only hand-registered theorems. Enumerate formulas via FormulaEnumerator, decide via correct tableau, extract DerivationTree for valid formulas, run extractStepSequence, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution.",
       "priority": "high",
@@ -1075,6 +1089,11 @@
           "path": "specs/242_tableau_proof_step_generation/reports/01_proof-step-pipeline-research.md",
           "type": "report",
           "summary": "Comprehensive research on proof step pipeline: existing infrastructure analysis, gap identification, feasibility assessment for 100K+ steps, deduplication/diversity design, and architecture recommendation"
+        },
+        {
+          "path": "specs/242_tableau_proof_step_generation/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for proof step pipeline with 5 phases, 8 hours estimated effort"
         }
       ]
     },
@@ -1109,7 +1128,7 @@
     {
       "project_number": 245,
       "project_name": "cross_repo_data_pipeline",
-      "status": "planning",
+      "status": "implementing",
       "task_type": "general",
       "description": "Build automated data synchronization from BimodalLogic to BimodalHarness. Currently BimodalHarness data/bimodal/ is empty (SYNC_DATE=not-yet-synced). Implement: export script running lake exe dataset_generator + proof_extractor with validation and VERSION file; enhanced make sync-data verifying schema compatibility and 49-action-space alignment; make verify-data running load_lean_jsonl() and load_proof_steps() validation; documentation in both repos.",
       "priority": "high",
@@ -1124,13 +1143,18 @@
           "path": "specs/245_cross_repo_data_pipeline/reports/01_cross-repo-pipeline-research.md",
           "type": "report",
           "summary": "Research on cross-repo data pipeline covering existing executables, schema analysis, BimodalHarness ingestion API, and a complete gap analysis of what needs to be built"
+        },
+        {
+          "path": "specs/245_cross_repo_data_pipeline/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for cross-repo data pipeline with 3 phases: export script, sync documentation, and validation"
         }
       ]
     },
     {
       "project_number": 246,
       "project_name": "lean_repl_tableau_bridge",
-      "status": "planning",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Enhance Lean side to support live tableau queries from BimodalHarness lean/bridge.py. Add #tableau_decide command running corrected DecisionProcedure.decide with structured JSON output, #tableau_steps for proof step extraction, #countermodel for semantic countermodel output. Enable BimodalHarness BFS and MCTS search to query Lean oracle for online training. Target <500ms per formula round-trip.",
       "priority": "medium",
@@ -1145,6 +1169,11 @@
           "path": "specs/246_lean_repl_tableau_bridge/reports/01_repl-tableau-bridge-research.md",
           "type": "report",
           "summary": "Comprehensive research on REPL tableau bridge: existing infrastructure, DecisionProcedure API, proof step and countermodel extraction, JSON serialization, formula parsing, performance analysis, protocol design, and implementation recommendations"
+        },
+        {
+          "path": "specs/246_lean_repl_tableau_bridge/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for REPL tableau bridge with 4 sequential phases: protocol types/parsers, command handlers, REPL loop/exe registration, integration testing"
         }
       ]
     },

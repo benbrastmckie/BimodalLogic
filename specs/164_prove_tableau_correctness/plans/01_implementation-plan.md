@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Propositional and Modal Saturation Invariants [NOT STARTED]
+### Phase 2: Prove Propositional and Modal Saturation Invariants [IN PROGRESS]
 
 **Goal**: Resolve 3 of the 7 saturation sorry sites: `sat_imp_neg`, `sat_box_pos`, `sat_box_neg`.
 
