@@ -14,15 +14,13 @@ This module proves properties of the tableau decision procedure.
 
 ## Implementation Notes
 
-With irreflexive temporal semantics, the universal soundness theorem
-`soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` no longer holds because the derivation system
-includes both density (valid only on dense frames) and discreteness_forward
-(valid only on discrete frames). Soundness is now frame-class specific:
-- `axiom_dense_valid` for dense-compatible axioms
-- `axiom_discrete_valid` for discrete-compatible axioms
+The `soundness` theorem in `Soundness.lean` proves `Γ ⊢[Base] φ → Γ ⊨ φ`, i.e.,
+derivability from context `Γ` at `FrameClass.Base` implies semantic consequence.
+The `FrameClass.Base` parameter structurally excludes axioms with
+`minFrameClass > Base` (density, Prior-UZ/SZ, z1) via the `h_fc` gate.
 
-The `decide_sound` theorem (relating derivability to universal validity) has been
-removed. Frame-class specific soundness should be used instead.
+- `decide_sound`: If `decide φ` returns `.valid proof`, then `⊨ φ` (semantic validity)
+- Frame-class specific soundness is available via `soundness_dense`, `soundness_discrete`
 
 ## References
 
@@ -36,6 +34,30 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic
+
+/-!
+## Soundness of the Decision Procedure
+-/
+
+/--
+Soundness of the decision procedure: if a formula has a `FrameClass.Base`
+derivation (as produced by `decide` returning `.valid proof`), then the
+formula is semantically valid.
+
+This follows immediately from the `soundness` theorem with empty context,
+where the context hypothesis is vacuously satisfied.
+-/
+theorem decide_sound (φ : Formula) (d : ⊢ φ) : ⊨ φ := by
+  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  exact soundness [] φ d D F M Omega h_sc τ h_mem t (by simp)
+
+/--
+Variant of `decide_sound` that extracts the proof from a `DecisionResult.valid`.
+-/
+theorem decide_sound' (φ : Formula) (searchDepth tableauFuel : Nat)
+    (fc : FrameClass) (proof : ⊢ φ)
+    (_h : decide φ searchDepth tableauFuel fc = .valid proof) : ⊨ φ :=
+  decide_sound φ proof
 
 /-!
 ## Decidability Theorem
