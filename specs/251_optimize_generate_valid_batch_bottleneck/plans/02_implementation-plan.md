@@ -1,7 +1,7 @@
 # Implementation Plan: Optimize generateValidBatch O(n^2) MP Closure Bottleneck
 
 - **Task**: 251 - Optimize generateValidBatch O(n^2) MP closure bottleneck
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (unblocks task 217 c9/c11 generation)
 - **Research Inputs**: specs/251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md
@@ -145,16 +145,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Integration Testing and Build Verification [NOT STARTED]
+### Phase 4: Integration Testing and Build Verification [COMPLETED]
 
 **Goal**: Verify the optimized function produces correct output and the full project builds cleanly.
 
 **Tasks**:
-- [ ] Run `lake build` (full project) to verify no downstream compilation breakage
-- [ ] Verify `#print axioms generateValidBatch` shows no `sorryAx` (if reachable from a non-partial def)
-- [ ] Verify the `hashDedup` function (lines 1050-1058) is still used by `generateFormulas` (line 1140) and not accidentally broken
-- [ ] Review the `generateFormulas` function (lines 1117-1141) to ensure it correctly calls the refactored `generateValidBatch` -- the return type `IO (List Formula)` must be preserved
-- [ ] Optionally add a timing log (`IO.println`) to `generateValidBatch` showing pool size per round and total elapsed time, for future benchmarking (can be removed or gated behind a debug flag)
+- [x] Run `lake build` (full project) to verify no downstream compilation breakage
+- [x] Verify `#print axioms generateValidBatch` shows no `sorryAx` (if reachable from a non-partial def) *(deviation: skipped -- generateValidBatch is `partial def` so #print axioms is not applicable; verified zero sorry occurrences via grep instead)*
+- [x] Verify the `hashDedup` function (lines 1050-1058) is still used by `generateFormulas` (line 1140) and not accidentally broken
+- [x] Review the `generateFormulas` function (lines 1117-1141) to ensure it correctly calls the refactored `generateValidBatch` -- the return type `IO (List Formula)` must be preserved
+- [ ] Optionally add a timing log (`IO.println`) to `generateValidBatch` showing pool size per round and total elapsed time, for future benchmarking (can be removed or gated behind a debug flag) *(deviation: skipped -- optional task, timing logs would add noise to normal pipeline runs; users can add profiling when needed)*
 
 **Timing**: 30 minutes
 
@@ -174,14 +174,14 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build Bimodal.Automation.FormulaEnumerator` passes after each phase
-- [ ] `lake build` (full project) passes after Phase 4
-- [ ] No new `sorry` or `sorryAx` introduced
-- [ ] `generateValidBatch` return type remains `IO (List Formula)`
-- [ ] `generateFormulas` function continues to call `generateValidBatch` correctly
-- [ ] All `eraseDups` calls within `generateValidBatch` are eliminated
-- [ ] The O(n^2) nested MP loop is replaced with O(n) index lookup
-- [ ] Early complexity filtering is active at both Nec and MP insertion points
+- [x] `lake build Bimodal.Automation.FormulaEnumerator` passes after each phase
+- [x] `lake build` (full project) passes after Phase 4
+- [x] No new `sorry` or `sorryAx` introduced
+- [x] `generateValidBatch` return type remains `IO (List Formula)`
+- [x] `generateFormulas` function continues to call `generateValidBatch` correctly
+- [x] All `eraseDups` calls within `generateValidBatch` are eliminated
+- [x] The O(n^2) nested MP loop is replaced with O(n) index lookup
+- [x] Early complexity filtering is active at both Nec and MP insertion points
 
 ## Artifacts & Outputs
 
