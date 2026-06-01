@@ -1,5 +1,5 @@
 ---
-next_project_number: 258
+next_project_number: 259
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -30,17 +30,16 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,229,239,240,248,249,250,252,253,255 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240 | completeness, tableau-training, dataset-enhancement, ... |
-| 3 | 95,176,193,231,242,245,246 | 155,189,192,230,239,241 | completeness, formula-refactor, tableau-training, ... |
+| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,229,248,249,250,255 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 164,186,192,196,230,242 | 161,165,185,187,190,191,194,199,229 | completeness, tableau-training, dataset-enhancement, ... |
+| 3 | 95,176,193,231,245,246 | 155,189,192,230 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 177,178,243,244,247,254 | 95,131,176,193,242,245,246 | completeness, formula-refactor, tableau-training |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-256 [COMPLETED] — Re-scope task 155 and update related task descriptions after task
-155 [NOT STARTED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
+155 [RESEARCHED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -85,7 +84,7 @@ technical_debt:
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [NOT STARTED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
+  └─ 155 [RESEARCHED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
 ### Code Quality
@@ -136,6 +135,13 @@ technical_debt:
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 258. Create a Hugging Face publishing guide in docs/
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Type**: general
+- **Priority**: medium
+- **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
 - **Effort**: M

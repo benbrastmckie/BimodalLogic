@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 258,
+      "project_name": "huggingface_publishing_guide",
+      "status": "not_started",
+      "task_type": "general",
+      "created": "2026-06-01T23:02:55Z",
+      "last_updated": "2026-06-01T23:02:55Z"
+    },
+    {
       "project_number": 257,
       "project_name": "large_data_storage_huggingface",
       "status": "implementing",
@@ -84,17 +92,6 @@
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
       "last_updated": "2026-06-01T17:28:43Z"
-    },
-    {
-      "project_number": 224,
-      "project_name": "finite_insertion_succ_archimedean",
-      "status": "abandoned",
-      "task_type": "lean4",
-      "description": "Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Research should determine whether the construction can add infinitely many points between two fixed stage-N points across all future stages, or whether the finite formula set bounds the total insertions. Related: task 202 (reynolds_k_equivalence_bypass) which currently uses Reynolds model surgery.",
-      "dependencies": [],
-      "created": "2026-05-30T05:07:42Z",
-      "last_updated": "2026-06-01T23:57:00Z",
-      "abandonment_reason": "IsSuccArchimedean alternative is obsolete -- it addressed succ_cofinal on the BX chronicle path, which is being bypassed entirely. The correct path to sorry-free completeness_discrete is no_gaps_discrete_model_surgery (already sorry-free in GoodStructuresModelSurgery.lean). Task 202 confirmed the Reynolds Z-interval-to-TaskFrame pipeline is architecturally blocked, making this alternative moot regardless of approach."
     },
     {
       "project_number": 180,
@@ -254,7 +251,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -263,8 +260,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-01T23:55:00Z",
-      "next_artifact_number": 45,
+      "last_updated": "2026-06-01T12:30:00Z",
+      "next_artifact_number": 51,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -545,10 +542,15 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/44_research-aligned-plan.md",
           "type": "plan",
           "summary": "Revised plan v44: research-aligned with CharacteristicFormula sorries as Phase 3, tactic infra as Phase 4, GHR93 Case II rewrite as Phase 5, Cases III/IV gap proofs as Phase 6"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md",
+          "type": "research",
+          "summary": "Re-scoped research (post-256): import cycle analysis, sorry chain mapping, Strategy A recommended (fix chronicle_gap_contradiction via GoodStructuresModelSurgery import)"
         }
       ],
       "session_id": "sess_1779994794_96be99",
-      "researched": "2026-05-28T20:47:04Z",
+      "researched": "2026-06-01T12:30:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
       "plan_metadata": null
@@ -990,132 +992,6 @@
       "last_updated": "2026-06-01T20:00:00Z"
     },
     {
-      "project_number": 239,
-      "project_name": "proof_extraction_from_tableau",
-      "status": "completed",
-      "task_type": "lean4",
-      "completion_summary": "Replaced stub proof extraction with complete 5-strategy pipeline: direct axiom match (42 schemata), derived theorem match, closure-based extraction, compositional builder (identity/weakening/prop_s/Peirce), and enhanced search (depth 10-50). Integrated into DecisionProcedure.decide, eliminating timeout workaround. Zero sorries, build passes.",
-      "description": "Replace stub proof extraction (returns 'Full proof extraction not yet implemented') with complete backward-chaining algorithm that builds DerivationTree terms from closed tableau branches. Map each closure reason through tableau expansion steps to specific axiom applications and inference rules. Maintain proof reconstruction stack during expansion. Handle propositional (case analysis via peirce), modal (necessitation + modal_k_dist), and temporal (BX axioms) proof fragments.",
-      "priority": "high",
-      "topic": "tableau-training",
-      "dependencies": [],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-02T01:00:00Z",
-      "session_id": "sess_1780346226_d5e721",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/239_proof_extraction_from_tableau/plans/01_proof-extraction-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan: trace infrastructure, propositional extraction, modal extraction, temporal extraction, integration"
-        },
-        {
-          "path": "specs/239_proof_extraction_from_tableau/summaries/01_proof-extraction-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: 5-strategy extraction pipeline replacing stub, compositional approach instead of trace-based"
-        }
-      ]
-    },
-    {
-      "project_number": 240,
-      "project_name": "countermodel_semantic_correctness",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Replace vacuous branchTruthLemma (forall sf in b, True) with genuine truth lemma: for saturated open branches, T(phi) in b implies phi true in extracted model and F(phi) in b implies phi false. Extend SimpleCountermodel to SemanticCountermodel with world states, time domain, temporal ordering, and valuation. Prove truth lemma by induction on formula structure using saturation.",
-      "completion_summary": "Implemented SemanticCountermodel with worlds, times, temporal ordering, and valuation. Defined branchTruth by structural recursion on Formula. Proved branchTruthLemma via truthLemma_pos/truthLemma_neg helpers: atom/bot cases fully proven; imp-neg and box cases proven using saturation invariants; imp-pos and temporal (untl/snce) cases carry sorry pending rule-engine analysis. Added findSemanticCountermodel and SemanticCountermodelResult for integration. 12 sorry instances remain, all documented with proof strategies.",
-      "priority": "high",
-      "topic": "tableau-training",
-      "dependencies": [],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T23:45:00Z",
-      "session_id": "sess_1780346226_d5e721",
-      "researched": "2026-06-02T00:15:00Z",
-      "completed": "2026-06-01T23:45:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/240_countermodel_semantic_correctness/reports/01_countermodel-semantics-research.md",
-          "type": "research",
-          "summary": "Comprehensive research: vacuous branchTruthLemma analysis, SemanticCountermodel design, truth lemma proof structure by induction on formula, saturation lemma requirements, 5-phase implementation plan, risk assessment"
-        },
-        {
-          "path": "specs/240_countermodel_semantic_correctness/plans/01_countermodel-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan: TimeOrdering threading, SemanticCountermodel definition, saturation invariants, truth lemma, integration"
-        },
-        {
-          "path": "specs/240_countermodel_semantic_correctness/summaries/01_countermodel-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: SemanticCountermodel + branchTruthLemma with 12 documented sorry instances"
-        }
-      ]
-    },
-    {
-      "project_number": 241,
-      "project_name": "tableau_formula_labeling",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Rebuild DatasetGenerator.lean to use the corrected tableau for reliable formula labeling. Currently the generator uses the broken tableau producing incorrect labels for modal/temporal formulas. With correct tableau: valid formulas produce DerivationTree proofs, invalid formulas produce semantic countermodels, timeout rate drops via blocking termination. Update LabeledFormula records with richer proof traces and countermodels. Update DataExport.lean JSON serialization.",
-      "completion_summary": "Enriched LabeledFormula with ruleProfile, decisionMethod, countermodelConsistent (Phase 1), enrichedCountermodel and semanticCountermodelSummary from task 240 (Phase 2), proofReconstructionMethod and removed decideOptimized retry path leveraging task 239 extraction pipeline (Phase 3). All JSON serialization updated in DatasetGenerator.lean and DatasetExport.lean. Full build passes.",
-      "priority": "high",
-      "topic": "tableau-training",
-      "dependencies": [
-        239,
-        240
-      ],
-      "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-02T00:15:00Z",
-      "session_id": "sess_1748825940_f2a8b1",
-      "researched": "2026-06-01T22:30:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/241_tableau_formula_labeling/reports/01_research-findings.md",
-          "type": "research",
-          "summary": "Architecture analysis of DatasetGenerator/DataExport tableau integration"
-        },
-        {
-          "path": "specs/241_tableau_formula_labeling/reports/01_tableau-labeling-research.md",
-          "type": "research",
-          "summary": "Root cause analysis: DecisionProcedure.decide mislabels valid formulas as timeout when proof extraction fails"
-        },
-        {
-          "path": "specs/241_tableau_formula_labeling/plans/01_tableau-labeling-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: enrich LabeledFormula (Phase 1), integrate countermodels from task 240 (Phase 2), integrate proof extraction from task 239 (Phase 3), full verification (Phase 4)"
-        },
-        {
-          "path": "specs/241_tableau_formula_labeling/handoffs/phase-1-handoff-20260601.md",
-          "type": "handoff",
-          "summary": "Phase 1 completion handoff: LabeledFormula enrichment, decision method tracking, JSON serialization updates"
-        },
-        {
-          "path": "specs/241_tableau_formula_labeling/summaries/01_tableau-labeling-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: all 4 phases completed, enriched labeling pipeline with countermodel and proof extraction integration"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ],
-          [
-            4
-          ]
-        ]
-      }
-    },
-    {
       "project_number": 242,
       "project_name": "tableau_proof_step_generation",
       "status": "not_started",
@@ -1203,111 +1079,6 @@
       "last_updated": "2026-06-01T22:00:00Z"
     },
     {
-      "project_number": 252,
-      "project_name": "fix_linter_warnings_and_generation_script",
-      "status": "completed",
-      "task_type": "lean4",
-      "completion_summary": "Fixed 36 linter warnings across 8 Lean files (unused binders, unused simp args, no-op tactics, unused variables) and improved run_dataset_generation.sh with signal trapping, prerequisite checking, post-run JSON validation, and --dry-run mode. Warning count reduced from 799 to 763. Zero regressions.",
-      "description": "Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables h_sc, h_mem in Semantics/Validity.lean (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args f_nesting_depth, p_nesting_depth, Formula.and in SubformulaClosure/TemporalFormulas.lean (lines 565-566, 647-650, 803, 895), (3) Unused tactic all_goals simp_wf in ProofSearch/Core.lean (lines 1016, 1141), (4) Unused variable fc in CountermodelExtraction.lean (line 128), (5) Unused variables proof, h in ProofSearch/Strategies.lean (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.",
-      "priority": "medium",
-      "topic": "code-quality",
-      "dependencies": [],
-      "created": "2026-06-01T20:17:00Z",
-      "last_updated": "2026-06-01T23:30:00Z",
-      "session_id": "sess_1780345660_6afb95",
-      "researched": "2026-06-01T20:17:00Z",
-      "planned": "2026-06-01T23:30:00Z",
-      "next_artifact_number": 3,
-      "artifacts": [
-        {
-          "path": "specs/252_fix_linter_warnings_and_generation_script/reports/01_linter-warning-research.md",
-          "type": "research",
-          "summary": "Linter warning research: 799 total warnings, 638 actionable, detailed analysis of 5 task-scoped files plus broader inventory, generation script robustness review"
-        },
-        {
-          "path": "specs/252_fix_linter_warnings_and_generation_script/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: fix unused binders (22 warnings), fix simp args and no-op tactics (8 warnings), fix remaining warnings and improve generation script, full build verification"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 4,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            4
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_linter-warning-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      }
-    },
-    {
-      "project_number": 253,
-      "project_name": "dataset_generation_progress_reporting",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently run_dataset_generation.sh prints \"Generating formulas...\" and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.",
-      "completion_summary": "Added 3-tier progress reporting to dataset generation: (1) per-complexity-level enumeration progress with rate/elapsed in generateFormulas, (2) seeding progress every 10% and per-round closure stats in generateValidBatch, (3) enhanced labeling progress with rate/ETA/timeout% in DatasetExport. Updated shell script help text. All progress lines use [tag] prefix format for grep-ability.",
-      "priority": "medium",
-      "topic": "dataset-enhancement",
-      "dependencies": [],
-      "created": "2026-06-01T21:48:00Z",
-      "last_updated": "2026-06-02T00:00:00Z",
-      "session_id": "sess_1780345824_aadd93",
-      "next_artifact_number": 3,
-      "artifacts": [
-        {
-          "path": "specs/253_dataset_generation_progress_reporting/reports/01_progress-reporting-research.md",
-          "type": "research",
-          "summary": "Progress reporting research: identified silent generateFormulas as main gap, proposed per-complexity-level IO wrapper, generateValidBatch loop progress, enhanced labeling ETA/rate, 3-phase implementation plan"
-        },
-        {
-          "path": "specs/253_dataset_generation_progress_reporting/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "3-phase plan: per-complexity-level IO progress wrapper for enumeration, generateValidBatch seeding/closure progress, enhanced labeling with rate/ETA. 4 hours total."
-        }
-      ],
-      "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 4,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_progress-reporting-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      }
-    },
-    {
       "project_number": 254,
       "project_name": "update_stale_metadata_post_202",
       "status": "not_started",
@@ -1331,64 +1102,9 @@
       "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean — sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean — deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) — deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
       "dependencies": [],
       "created": "2026-06-01T22:30:00Z"
-    },
-    {
-      "project_number": 256,
-      "project_name": "rescope_155_update_95_224",
-      "status": "completed",
-      "task_type": "meta",
-      "priority": "medium",
-      "topic": "completeness",
-      "description": "Re-scope task 155 and update related task descriptions after task 202 completion: (1) Task 155 (reynolds_pipeline_activation) — chronicle_is_good_direct objective achieved by task 202. Re-scope to focus on final completeness_discrete rewiring (close countermodel_discrete_reynolds packaging sorry, replace BX pipeline path). (2) Task 95 (completeness_verification_audit) — description references succ_cofinal as root sorry, now partially obsolete. Update to reflect Reynolds pipeline availability. (3) Task 224 (finite insertion IsSuccArchimedean) — described as alternative to Reynolds model surgery, now moot. Consider abandoning.",
-      "dependencies": [],
-      "created": "2026-06-01T22:30:00Z",
-      "last_updated": "2026-06-01T23:58:00Z",
-      "session_id": "sess_1748819400_orch256",
-      "researched": "2026-06-01T23:45:00Z",
-      "planned": "2026-06-02T00:00:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/256_rescope_155_update_95_224/reports/01_rescope-research.md",
-          "type": "research",
-          "summary": "Re-scope analysis: task 202 completed chronicle_is_good_direct; correct path is no_gaps_discrete via import-cycle fix; succ_cofinal is dead-code path; task 155 should target GoodStructuresModelSurgery.lean approach; task 95 needs description update; task 224 should be abandoned"
-        },
-        {
-          "path": "specs/256_rescope_155_update_95_224/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "3-phase plan: re-scope task 155 to no_gaps_discrete import-cycle fix, update task 95 description, abandon task 224"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 1,
-        "complexity": "simple",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_rescope-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-06-01"
-          }
-        ]
-      },
-      "completion_summary": "Re-scoped task 155 from the obsolete GHR93 game-theoretic pipeline targeting succ_cofinal to fixing the no_gaps_discrete import cycle in GoodStructures.lean by delegating to no_gaps_discrete_model_surgery. Updated task 95 description to reflect the WeakCanonical path as the correct production route, distinguishing dead-code BX chronicle path from live WeakCanonical path. Abandoned task 224 (IsSuccArchimedean alternative now obsolete). All changes to specs/state.json and specs/TODO.md only.",
-      "completed": "2026-06-01T23:58:00Z"
     }
   ],
-  "next_project_number": 258,
+  "next_project_number": 259,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
