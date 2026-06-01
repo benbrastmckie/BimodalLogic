@@ -169,12 +169,12 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Executable Registration and CLI [IN PROGRESS]
+### Phase 4: Executable Registration and CLI [COMPLETED]
 
 **Goal**: Register the pipeline as a new lake executable with CLI argument parsing and run a smoke test.
 
 **Tasks**:
-- [ ] Add `main : IO Unit` function to `TableauProofStepPipeline.lean` with CLI argument parsing:
+- [x] Add `main : IO Unit` function to `TableauProofStepPipeline.lean` with CLI argument parsing:
   - `--max-complexity N` (default: 7)
   - `--max-modal-depth N` (default: 3)
   - `--max-temporal-depth N` (default: 3)
@@ -184,10 +184,10 @@ Phases within the same wave can execute in parallel.
   - `--output PATH` (default: `data/tableau_proof_steps.jsonl`)
   - `--no-dedup` flag
   - `--no-registry` flag (skip merging hand-registered theorems)
-- [ ] Add `lean_exe tableau_proof_steps` target to `lakefile.lean` with root `Bimodal.Automation.TableauProofStepPipeline`, srcDir `Theories`, supportInterpreter true
-- [ ] Add import of `TableauProofStepPipeline` to `Theories/Bimodal/Automation.lean` (if module index file exists)
-- [ ] Run `lake build tableau_proof_steps` to verify executable builds
-- [ ] Run smoke test: `lake exe tableau_proof_steps -- --max-complexity 3 --valid-seed-count 10 --max-wrap-depth 2 --output data/test_tableau_steps.jsonl` and verify output is valid JSONL
+- [x] Add `lean_exe tableau_proof_steps` target to `lakefile.lean` with root `Bimodal.Automation.TableauProofStepPipeline`, srcDir `Theories`, supportInterpreter true
+- [x] Add import of `TableauProofStepPipeline` to `Theories/Bimodal/Automation.lean` (if module index file exists) *(deviation: skipped -- module defines `main` and should not be imported through the umbrella, consistent with other lean_exe targets)*
+- [x] Run `lake build tableau_proof_steps` to verify executable builds
+- [x] Run smoke test: `lake exe tableau_proof_steps -- --max-complexity 3 --valid-seed-count 10 --max-wrap-depth 2 --output data/test_tableau_steps.jsonl` and verify output is valid JSONL
 
 **Timing**: 1 hour
 
