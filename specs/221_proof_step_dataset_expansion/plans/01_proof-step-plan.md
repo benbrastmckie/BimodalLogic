@@ -148,21 +148,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Generate Dataset and Validate Coverage [NOT STARTED]
+### Phase 4: Generate Dataset and Validate Coverage [COMPLETED]
 
 **Goal**: Run the proof_extractor executable, generate the expanded JSONL dataset, and validate that all targets are met (200+ theorems, 10%+ temporal rule coverage, expanded axiom name coverage).
 
 **Tasks**:
-- [ ] Run `lake exe proof_extractor -- --output data/proof_steps.jsonl` to regenerate the dataset
-- [ ] Count total theorems: verify >= 200
-- [ ] Count total proof steps
-- [ ] Compute rule distribution: count axiom, modus_ponens, necessitation, temporal_duality, temporal_necessitation steps
-- [ ] Verify temporal rule percentage: (necessitation + temporal_duality + temporal_necessitation) / total >= 10%
-- [ ] Count distinct axiom names: verify >= 30 of 42
-- [ ] Verify JSONL schema compliance: all 8 fields present in every record, axiom_name non-null iff rule="axiom"
-- [ ] If temporal coverage is below 10%, add additional GGG/GGGG chains on single-step theorems and regenerate
-- [ ] Update the module docstring in `ProofStepExport.lean` with new validation results (theorem count, step count, rule distribution, axiom name coverage)
-- [ ] Run `lake build` (full project) to confirm no regressions
+- [x] Run `lake exe proof_extractor -- --output data/proof_steps.jsonl` to regenerate the dataset
+- [x] Count total theorems: verify >= 200 *(result: 310 theorems)*
+- [x] Count total proof steps *(result: 10063 steps)*
+- [x] Compute rule distribution: count axiom, modus_ponens, necessitation, temporal_duality, temporal_necessitation steps
+- [x] Verify temporal rule percentage: (necessitation + temporal_duality + temporal_necessitation) / total >= 10% *(result: 11.0%)*
+- [x] Count distinct axiom names: verify >= 30 of 42 *(result: 31/42)*
+- [x] Verify JSONL schema compliance: all 8 fields present in every record, axiom_name non-null iff rule="axiom" *(0 violations)*
+- [x] If temporal coverage is below 10%, add additional GGG/GGGG chains on single-step theorems and regenerate *(deviation: altered -- initial build had only 3.0% temporal; added deep chains at depths 4-20 via wrapG helper, reaching 11.0%)*
+- [x] Update the module docstring in `ProofStepExport.lean` with new validation results (theorem count, step count, rule distribution, axiom name coverage)
+- [x] Run `lake build` (full project) to confirm no regressions *(1679 jobs, no errors)*
 
 **Timing**: 0.5 hours
 
