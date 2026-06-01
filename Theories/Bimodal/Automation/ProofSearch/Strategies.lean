@@ -362,18 +362,18 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
+example : ∃ (_ : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
   let p := Formula.atom_s "p"
   ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial, trivial⟩
 
 /-- Example: Search with depth 2 for modus ponens application -/
 example (p q : Formula) (h1 : ⊢ p) (h2 : ⊢ (p.imp q)) :
-    ∃ (proof : ⊢ q), True :=
+    ∃ (_ : ⊢ q), True :=
   ⟨DerivationTree.modus_ponens [] p q h2 h1, trivial⟩
 
 /-- Example: Modal K search requires context transformation -/
-example (p : Formula) (h : [p.box] ⊢ p) :
-    ∃ (proof : [p.box] ⊢ p.box), True :=
+example (p : Formula) (_ : [p.box] ⊢ p) :
+    ∃ (_ : [p.box] ⊢ p.box), True :=
   ⟨DerivationTree.assumption [p.box] p.box (by simp), trivial⟩
 
 end Bimodal.Automation

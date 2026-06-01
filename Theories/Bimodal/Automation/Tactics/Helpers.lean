@@ -769,7 +769,7 @@ applies `generalized_modal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryModalK (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Check if formula is □χ
   let innerFormula ← match formula with
     | .app (.const ``Formula.box _) inner => pure inner
@@ -822,7 +822,7 @@ applies `generalized_temporal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryTemporalK (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Check if formula is Fχ
   let innerFormula ← match formula with
     | .app (.const ``Formula.all_future _) inner => pure inner

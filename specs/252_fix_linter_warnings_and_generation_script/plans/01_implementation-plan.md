@@ -120,23 +120,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix Remaining Lean Warnings and Improve Generation Script [NOT STARTED]
+### Phase 3: Fix Remaining Lean Warnings and Improve Generation Script [COMPLETED]
 
 **Goal**: Eliminate 5 remaining Lean warnings and add robustness improvements to the generation script.
 
 **Tasks**:
-- [ ] In `Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean`:
+- [x] In `Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean`:
   - Line 128: Rename parameter `fc` to `_fc` (intentionally unused scaffolding for future frame-class-aware extraction)
-- [ ] In `Theories/Bimodal/Automation/ProofSearch/Strategies.lean`:
+- [x] In `Theories/Bimodal/Automation/ProofSearch/Strategies.lean`:
   - Lines 365, 371, 376: Replace `(proof : ...)` with `(_ : ...)` in existential binders
   - Line 375: Replace `(h : [p.box] |- p)` with `(_ : [p.box] |- p)`
-- [ ] In `scripts/run_dataset_generation.sh`:
+- [x] In `Theories/Bimodal/Automation/Tactics/Helpers.lean`: *(deviation: altered -- also fixed `fc` to `_fc` in tryModalK and tryTemporalK, which the plan listed under CountermodelExtraction but the actual warnings were in Helpers.lean)*
+- [x] In `scripts/run_dataset_generation.sh`:
   - Add a `cleanup()` function that handles partial output files
   - Add `trap cleanup EXIT INT TERM` for signal handling
   - Add a `check_prereqs()` function that verifies `lake exe dataset_generator` binary exists before running
   - Add basic post-run validation: check that output files are valid JSON lines (non-empty, parseable first/last line)
   - Add a `--dry-run` option that prints commands without executing
-- [ ] Run `lake build` on the affected Lean files
+- [x] Run `lake build` on the affected Lean files
 
 **Timing**: 1.5 hours
 
