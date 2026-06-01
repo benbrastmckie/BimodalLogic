@@ -116,6 +116,22 @@ inductive TableauRule : Type where
   | sncePos
   /-- F(S(event,guard)) → Reynolds co-decomposition at known past times (persistent) -/
   | snceNeg
+  /-- Dense: close branch when T(U(⊤,⊥)) appears (since ¬U(⊤,⊥) is a Dense axiom,
+      asserting U(⊤,⊥) leads to contradiction on dense frames). Only applicable when fc >= .Dense. -/
+  | denseIndicatorClosure
+  /-- Dense: when T(G(φ)) at (w,t) and there exists a future time t' > t on the branch,
+      introduce an intermediate time t'' with t < t'' < t' and add T(φ) at (w,t'').
+      Captures density: between any two time points there is another. Only when fc >= .Dense. -/
+  | densityRule
+  /-- Discrete: when T(F(φ)) at (w,t), add T(U(φ, ¬φ)) at (w,t).
+      Captures "nearest future φ-point reachable by Until". Only when fc >= .Discrete. -/
+  | priorUZ
+  /-- Discrete: when T(P(φ)) at (w,t), add T(S(φ, ¬φ)) at (w,t).
+      Captures "nearest past φ-point reachable by Since". Only when fc >= .Discrete. -/
+  | priorSZ
+  /-- Discrete: when both T(G(G(φ) → φ)) and T(F(G(φ))) at same label,
+      add T(G(φ)). Z1 backward induction axiom. Only when fc >= .Discrete. -/
+  | z1Rule
   deriving Repr, DecidableEq
 
 /-!
@@ -247,7 +263,8 @@ def asSince? : Formula → Option (Formula × Formula)
 /--
 Check if a specific rule is applicable to a signed formula.
 -/
-def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
+def isApplicable (rule : TableauRule) (sf : SignedFormula)
+    (fc : FrameClass := .Base) : Bool :=
   match rule, sf.sign, sf.formula with
   -- Propositional rules
   | .andPos, .pos, φ => (asAnd? φ).isSome
@@ -280,6 +297,15 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   | .untlNeg, .neg, φ => (asUntil? φ).isSome
   | .sncePos, .pos, φ => (asSince? φ).isSome
   | .snceNeg, .neg, φ => (asSince? φ).isSome
+  -- Dense-specific rules (gated by fc >= .Dense)
+  | .denseIndicatorClosure, .pos, .untl (.imp .bot .bot) .bot =>
+      decide (FrameClass.Dense ≤ fc)
+  | .densityRule, .pos, .all_future _ =>
+      decide (FrameClass.Dense ≤ fc)
+  -- Discrete-specific rules (gated by fc >= .Discrete)
+  | .priorUZ, .pos, φ => decide (FrameClass.Discrete ≤ fc) && (asSomeFuture? φ).isSome
+  | .priorSZ, .pos, φ => decide (FrameClass.Discrete ≤ fc) && (asSomePast? φ).isSome
+  | .z1Rule, .pos, .all_future _ => decide (FrameClass.Discrete ≤ fc)
   | _, _, _ => false
 
 /--
@@ -755,6 +781,83 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                            SignedFormula.neg (.snce event guard) targetLabel, sf]
           (.branching [branch1, branch2], timeOrd)
       | none => (.notApplicable, timeOrd)
+  -- Dense: T(U(⊤,⊥)) closes the branch on dense frames
+  -- U(⊤,⊥) asserts "⊥ holds until ⊤" which requires an immediate successor,
+  -- but ¬U(⊤,⊥) is a Dense axiom (no immediate successors on dense frames).
+  | .denseIndicatorClosure, .pos, .untl (.imp .bot .bot) .bot =>
+      -- Close branch: T(U(top, bot)) contradicts density
+      -- Return as linear with empty list -- the closure will be detected by checkAxiomNeg
+      -- since F(¬U(top, bot)) is the dense_indicator axiom
+      (.linear [], timeOrd)
+  -- Dense: T(G(φ)) at (w,t) with known future time → introduce intermediate point
+  -- On a dense frame, for any t' > t there exists t'' with t < t'' < t', so Gφ at t gives φ at t''.
+  | .densityRule, .pos, .all_future ψ =>
+      let futureTimes := timeOrd.futureOf l.time
+      match futureTimes with
+      | [] => (.notApplicable, timeOrd)  -- No future times to interpolate
+      | t' :: _ =>
+        -- Check if we already have an intermediate time between l.time and t'
+        -- Only add if not already present (to avoid infinite loops)
+        let existingIntermediates := timeOrd.futureOf l.time |>.filter fun t'' =>
+          timeOrd.futureOf t'' |>.any (· == t')
+        if existingIntermediates.isEmpty then
+          let freshTime := branch.nextTime
+          let freshLabel : Label := { world := l.world, time := freshTime }
+          -- Add t < freshTime < t' to the ordering
+          let newOrd := (timeOrd.addFuture l.time freshTime).addFuture freshTime t'
+          -- The intermediate point gets T(ψ) from G(ψ) at l.time
+          let witness := SignedFormula.pos ψ freshLabel
+          -- Also propagate all T(G(A)) from l.time to the intermediate
+          let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+            match gsf.formula with
+            | .all_future inner =>
+              if gsf.label.time == l.time && gsf.formula != .all_future ψ then
+                let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            | _ => none
+          (.persistent (witness :: gProps), newOrd)
+        else
+          (.notApplicable, timeOrd)
+  -- Discrete: T(F(φ)) → T(U(φ, ¬φ))
+  -- On discrete frames, F(φ) implies there is a nearest φ-point reachable by Until
+  | .priorUZ, .pos, φ =>
+      match asSomeFuture? φ with
+      | some ψ =>
+        let untilFormula := Formula.untl ψ ψ.neg
+        let newSf := SignedFormula.pos untilFormula l
+        if branch.contains newSf then (.notApplicable, timeOrd)
+        else (.persistent [newSf], timeOrd)
+      | none => (.notApplicable, timeOrd)
+  -- Discrete: T(P(φ)) → T(S(φ, ¬φ))
+  -- On discrete frames, P(φ) implies there is a nearest φ-point reachable by Since
+  | .priorSZ, .pos, φ =>
+      match asSomePast? φ with
+      | some ψ =>
+        let sinceFormula := Formula.snce ψ ψ.neg
+        let newSf := SignedFormula.pos sinceFormula l
+        if branch.contains newSf then (.notApplicable, timeOrd)
+        else (.persistent [newSf], timeOrd)
+      | none => (.notApplicable, timeOrd)
+  -- Discrete: Z1 backward induction
+  -- When T(G(G(φ) → φ)) and T(F(G(φ))) both at same label, add T(G(φ))
+  | .z1Rule, .pos, .all_future φ_inner =>
+      -- Check if sf matches T(G(G(φ) → φ)) pattern
+      match φ_inner with
+      | .imp (.imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot) rhs =>
+        -- This is G(G(inner) → rhs) -- verify rhs = inner
+        if inner == rhs then
+          -- Look for T(F(G(inner))) on the branch at the same label
+          let gInner := Formula.all_future inner
+          let fgFormula := Formula.some_future gInner
+          let fgSf := SignedFormula.pos fgFormula l
+          if branch.contains fgSf then
+            let newSf := SignedFormula.pos gInner l
+            if branch.contains newSf then (.notApplicable, timeOrd)
+            else (.persistent [newSf], timeOrd)
+          else (.notApplicable, timeOrd)
+        else (.notApplicable, timeOrd)
+      | _ => (.notApplicable, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
 /-!
@@ -762,7 +865,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
 -/
 
 /--
-All tableau rules in priority order.
+All base tableau rules in priority order (frame-class independent).
 Propositional rules are tried first, then modal, then temporal.
 -/
 def allRules : List TableauRule := [
@@ -783,32 +886,63 @@ def allRules : List TableauRule := [
 ]
 
 /--
+Dense-specific rules, included only when fc >= .Dense.
+-/
+def denseRules : List TableauRule := [
+  .denseIndicatorClosure,
+  .densityRule
+]
+
+/--
+Discrete-specific rules, included only when fc >= .Discrete.
+-/
+def discreteRules : List TableauRule := [
+  .priorUZ, .priorSZ,
+  .z1Rule
+]
+
+/--
+All tableau rules for a given frame class, in priority order.
+Base rules are always included; Dense/Discrete rules are appended
+when the frame class supports them.
+-/
+def allRulesForFC (fc : FrameClass := .Base) : List TableauRule :=
+  let base := allRules
+  let dense := if decide (FrameClass.Dense ≤ fc) then denseRules else []
+  let discrete := if decide (FrameClass.Discrete ≤ fc) then discreteRules else []
+  base ++ dense ++ discrete
+
+/--
 Find a rule that applies to a signed formula.
 Returns the first applicable rule, its result, and the updated TimeOrdering.
 -/
 def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
-    (timeOrd : TimeOrdering := TimeOrdering.empty) : Option (TableauRule × RuleResult × TimeOrdering) :=
-  allRules.findSome? fun rule =>
-    let (result, newOrd) := applyRule rule sf branch timeOrd
-    match result with
-    | .notApplicable => none
-    | _ => some (rule, result, newOrd)
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Option (TableauRule × RuleResult × TimeOrdering) :=
+  (allRulesForFC fc).findSome? fun rule =>
+    if isApplicable rule sf fc then
+      let (result, newOrd) := applyRule rule sf branch timeOrd
+      match result with
+      | .notApplicable => none
+      | _ => some (rule, result, newOrd)
+    else none
 
 /--
 Check if a signed formula is fully expanded (no rules apply).
 Atoms, bot with appropriate signs, and already-reduced formulas are expanded.
 -/
 def isExpanded (sf : SignedFormula) (branch : Branch := [])
-    (timeOrd : TimeOrdering := TimeOrdering.empty) : Bool :=
-  (findApplicableRule sf branch timeOrd).isNone
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Bool :=
+  (findApplicableRule sf branch timeOrd fc).isNone
 
 /--
 Find an unexpanded formula in a branch.
 Returns the first formula that can still be expanded.
 -/
 def findUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
-    : Option SignedFormula :=
-  b.find? (fun sf => ¬isExpanded sf b timeOrd)
+    (fc : FrameClass := .Base) : Option SignedFormula :=
+  b.find? (fun sf => ¬isExpanded sf b timeOrd fc)
 
 /--
 Result of a single expansion step on a branch.
@@ -829,11 +963,11 @@ Finds the first unexpanded formula and applies the appropriate rule.
 Returns the result of the expansion together with the (possibly updated) TimeOrdering.
 -/
 def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
-    : ExpansionResult × TimeOrdering :=
-  match findUnexpanded b timeOrd with
+    (fc : FrameClass := .Base) : ExpansionResult × TimeOrdering :=
+  match findUnexpanded b timeOrd fc with
   | none => (.saturated, timeOrd)
   | some sf =>
-      match findApplicableRule sf b timeOrd with
+      match findApplicableRule sf b timeOrd fc with
       | none => (.saturated, timeOrd)  -- Shouldn't happen if findUnexpanded returned something
       | some (_, result, newOrd) =>
           match result with
@@ -853,14 +987,16 @@ def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
 /--
 Count of unexpanded formulas in a branch (termination measure).
 -/
-def countUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b timeOrd) |>.length
+def countUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Nat :=
+  b.filter (fun sf => ¬isExpanded sf b timeOrd fc) |>.length
 
 /--
 Total unexpanded complexity (alternative termination measure).
 -/
-def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b timeOrd)
+def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Nat :=
+  b.filter (fun sf => ¬isExpanded sf b timeOrd fc)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
 end Bimodal.Metalogic.Decidability
