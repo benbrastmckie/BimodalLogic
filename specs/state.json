@@ -13,9 +13,7 @@
       "description": "Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.",
       "priority": "high",
       "topic": "dataset-enhancement",
-      "dependencies": [
-        217
-      ],
+      "dependencies": [],
       "created": "2026-06-01T18:14:22Z",
       "last_updated": "2026-06-01T18:45:00Z",
       "next_artifact_number": 3,
@@ -1137,7 +1135,9 @@
       "description": "Extend exhaustive formula enumeration to complexity 9 and 11. bmlogic-c9.jsonl: exhaustive (if feasible) or stratified-sampled coverage of complexity <= 9, estimated 300K-800K records. bmlogic-c11.jsonl: stratified-sampled coverage of complexity <= 11, estimated 500K-2M records. 14-field schema compatible with c5/c7. Add very_hard+ benchmark slice with 100+ records at complexity 8-9. Add max_temporal_depth and max_modal_depth as first-class filter fields. Risk: intractable file sizes at c9 mitigated by stratified sampling.",
       "priority": "high",
       "topic": "dataset-enhancement",
-      "dependencies": [],
+      "dependencies": [
+        251
+      ],
       "created": "2026-05-29T23:18:44Z",
       "last_updated": "2026-06-01T15:41:09Z",
       "session_id": "sess_1780328452_903300",
