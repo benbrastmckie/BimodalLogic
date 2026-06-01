@@ -5,8 +5,8 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-06-01T23:30:00Z
 task_counts:
-  active: 48
-  completed: 174
+  active: 49
+  completed: 175
   abandoned: 1
   total: 223
 technical_debt:
@@ -30,9 +30,9 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,248,249,250 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,241,248,249,250 | -- | completeness, formula-refactor, frame-extensions, tableau-training, ... |
 | 2 | 155,186,192,196,230 | 161,185,187,190,191,194,199,229 | completeness, dataset-enhancement, ... |
-| 3 | 95,176,193,231,239,240,241 | 155,189,192,230 | completeness, formula-refactor, tableau-training, ... |
+| 3 | 95,176,193,231 | 155,189,192,230 | completeness, formula-refactor, ... |
 | 4 | 164,177,178,242,245,246 | 131,165,193,239,240,241 | formula-refactor, tableau-training |
 | 5 | 243,244,247 | 242,245,246 | tableau-training |
 
