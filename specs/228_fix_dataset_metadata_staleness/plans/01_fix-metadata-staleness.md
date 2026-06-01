@@ -99,23 +99,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update documentation files [NOT STARTED]
+### Phase 2: Update documentation files [COMPLETED]
 
 **Goal**: Fix all stale record counts and schema documentation in README.md and dataset-card.md.
 
 **Tasks**:
-- [ ] Update data/README.md file inventory table: bmlogic-bench.jsonl 727->777, proof_steps.jsonl 2424->10063
-- [ ] Update data/README.md: bmlogic-bench-splits.json description "4 slices, 727 records" -> "4 slices, 777 records"
-- [ ] Update data/README.md: NL paraphrase section "all 727 records" -> "all 777 records"
-- [ ] Update data/dataset-card.md YAML frontmatter: license: mit -> license: cc-by-4.0
-- [ ] Update data/dataset-card.md overview table: bmlogic-bench.jsonl 727->777, proof_steps.jsonl 2424->10063
-- [ ] Update data/dataset-card.md proof steps section: records 2424->10063, theorems 36->310
-- [ ] Update data/dataset-card.md proof steps section: rule distribution (5 values)
-- [ ] Update data/dataset-card.md proof steps section: steps per theorem (max 325->327, avg 67.3->32.5)
-- [ ] Update data/dataset-card.md: training schema table header "14 fields" -> "16 fields"
-- [ ] Update data/dataset-card.md: prose references "14-field schema" -> "16-field schema" (two occurrences)
-- [ ] Add max_modal_depth and max_temporal_depth rows to training schema table in dataset-card.md
-- [ ] Update data/dataset-card.md Croissant section body text: "license (MIT)" -> "license (CC BY 4.0)"
+- [x] Update data/README.md file inventory table: bmlogic-bench.jsonl 727->777, proof_steps.jsonl 2424->10063 *(completed)*
+- [x] Update data/README.md: bmlogic-bench-splits.json description "4 slices, 727 records" -> "4 slices, 777 records" *(completed)*
+- [x] Update data/README.md: NL paraphrase section "all 727 records" -> "all 777 records" *(completed)*
+- [x] Update data/dataset-card.md YAML frontmatter: license: mit -> license: cc-by-4.0 *(completed)*
+- [x] Update data/dataset-card.md overview table: bmlogic-bench.jsonl 727->777, proof_steps.jsonl 2424->10063 *(completed)*
+- [x] Update data/dataset-card.md proof steps section: records 2424->10063, theorems 36->310 *(completed)*
+- [x] Update data/dataset-card.md proof steps section: rule distribution (5 values) *(completed)*
+- [x] Update data/dataset-card.md proof steps section: steps per theorem (max 325->327, avg 67.3->32.5) *(completed)*
+- [x] Update data/dataset-card.md: training schema table header "14 fields" -> "16 fields" *(completed)*
+- [x] Update data/dataset-card.md: prose references "14-field schema" -> "16-field schema" (two occurrences) *(completed: updated in Dataset Relationships note and both dataset sections)*
+- [x] Add max_modal_depth and max_temporal_depth rows to training schema table in dataset-card.md *(completed)*
+- [x] Update data/dataset-card.md Croissant section body text: "license (MIT)" -> "license (CC BY 4.0)" *(completed: updated both Croissant body and metadata header table)*
 
 **Timing**: 45 minutes
 
