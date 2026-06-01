@@ -116,24 +116,24 @@ Phases within the same wave can execute in parallel (Phases 2 and 3 can run in p
 
 ---
 
-### Phase 2: Integrate Enriched and Semantic Countermodels from Task 240 [IN PROGRESS]
+### Phase 2: Integrate Enriched and Semantic Countermodels from Task 240 [COMPLETED]
 
 **Goal**: Replace the atom-only `SimpleCountermodel` with the richer countermodel types produced by task 240. Wire `EnrichedCountermodel` (already exists in EnrichedCountermodel.lean) into the main pipeline, and integrate the new `SemanticCountermodel` type (to be created by task 240).
 
 **Tasks**:
-- [ ] Inspect task 240 output: determine the exact `SemanticCountermodel` type signature and its location
-- [ ] Add `enrichedCountermodel : Option EnrichedCountermodel` field to `LabeledFormula`
-- [ ] Add `semanticCountermodel : Option SemanticCountermodel` field to `LabeledFormula` (type name from task 240)
-- [ ] Update `Inhabited LabeledFormula` instance
-- [ ] Import `Bimodal.Automation.Enriched` in DatasetGenerator.lean (for `EnrichedCountermodel`)
-- [ ] Modify `labelFormula` for `.invalid` cases: after obtaining `SimpleCountermodel`, also call `extractEnrichedCountermodel` using the open branch (this requires access to the raw branch from the tableau result)
-- [ ] Modify `labelFormula` for `.invalid` cases: if task 240 provides a `SemanticCountermodel` constructor, wire it in
-- [ ] If `labelFormula` cannot access the raw branch (because `decideAuto` returns `SimpleCountermodel`, not `Branch`): create a parallel code path using `buildTableau` directly for invalid results to extract the enriched countermodel
-- [ ] Add `EnrichedCountermodel.toJson` serialization to `LabeledFormula.toJson` (already exists in EnrichedCountermodel.lean)
-- [ ] Add `SemanticCountermodel.toJson` serialization (implement if task 240 did not provide it)
-- [ ] Update `DatasetRecord` in DatasetExport.lean: add `enriched_countermodel` and `semantic_countermodel` fields
-- [ ] Update `Inhabited DatasetRecord`, `labeledToRecord`, and `datasetRecordToJson`
-- [ ] Run `lake build Bimodal.Automation.DatasetGenerator` and `lake build Bimodal.Automation.DatasetExport`
+- [x] Inspect task 240 output: determine the exact `SemanticCountermodel` type signature and its location *(completed — SemanticCountermodel in CountermodelExtraction.lean with worlds, times, timeOrdering, atomValuation)*
+- [x] Add `enrichedCountermodel : Option EnrichedCountermodel` field to `LabeledFormula` *(completed)*
+- [x] Add `semanticCountermodel : Option SemanticCountermodel` field to `LabeledFormula` *(deviation: altered — used SemanticCountermodelSummary instead of raw SemanticCountermodel, since the full type contains non-serializable fields: raw Branch list and function-valued atomValuation)*
+- [x] Update `Inhabited LabeledFormula` instance *(completed)*
+- [x] Import `Bimodal.Automation.Enriched` in DatasetGenerator.lean (for `EnrichedCountermodel`) *(completed)*
+- [x] Modify `labelFormula` for `.invalid` cases: after obtaining `SimpleCountermodel`, also call `extractEnrichedCountermodel` using the open branch *(completed via extractCountermodelData helper + mkInvalidLabel)*
+- [x] Modify `labelFormula` for `.invalid` cases: if task 240 provides a `SemanticCountermodel` constructor, wire it in *(completed — extractSemanticCountermodel wired via extractCountermodelData)*
+- [x] If `labelFormula` cannot access the raw branch (because `decideAuto` returns `SimpleCountermodel`, not `Branch`): create a parallel code path using `buildTableau` directly for invalid results to extract the enriched countermodel *(completed — extractCountermodelData runs buildTableau separately with soundFuel)*
+- [x] Add `EnrichedCountermodel.toJson` serialization to `LabeledFormula.toJson` (already exists in EnrichedCountermodel.lean) *(completed)*
+- [x] Add `SemanticCountermodel.toJson` serialization *(completed — SemanticCountermodelSummary.toJson with worlds, times, time_constraints, world_count, time_count)*
+- [x] Update `DatasetRecord` in DatasetExport.lean: add `enriched_countermodel` and `semantic_countermodel` fields *(completed)*
+- [x] Update `Inhabited DatasetRecord`, `labeledToRecord`, and `datasetRecordToJson` *(completed)*
+- [x] Run `lake build Bimodal.Automation.DatasetGenerator` and `lake build Bimodal.Automation.DatasetExport` *(completed — both build successfully)*
 
 **Timing**: 2 hours
 
