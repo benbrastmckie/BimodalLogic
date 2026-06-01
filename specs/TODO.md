@@ -151,6 +151,9 @@ technical_debt:
 - **Type**: meta
 - **Priority**: medium
 - **Description**: Re-scope task 155 (reynolds_pipeline_activation) after task 202 completed Reynolds model surgery. chronicle_is_good_direct objective achieved. Focus on final completeness_discrete rewiring. Update task 95 description (succ_cofinal reference stale). Consider abandoning task 224 (alternative to Reynolds, now moot).
+- **Artifacts**:
+  - [specs/256_rescope_155_update_95_224/reports/01_rescope-research.md]
+  - [specs/256_rescope_155_update_95_224/plans/01_implementation-plan.md]
 
 ### 255. Boneyard dead Reynolds code
 - **Effort**: S
