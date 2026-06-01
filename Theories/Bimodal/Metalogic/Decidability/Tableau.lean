@@ -81,13 +81,13 @@ inductive TableauRule : Type where
   | negPos
   /-- F(¬A) → T(A) -/
   | negNeg
-  /-- T(□A) → T(A) at current state (S5 reflexivity) -/
+  /-- T(□A) → propagate T(A) to all known worlds (S5 universal, persistent) -/
   | boxPos
-  /-- F(□A) → F(A) (introduce witness state in S5) -/
+  /-- F(□A) → introduce fresh witness world with F(A), auto-propagate universals -/
   | boxNeg
-  /-- T(◇A) → T(A) (S5: possibility implies accessibility) -/
+  /-- T(◇A) → introduce fresh witness world with T(A), auto-propagate universals -/
   | diamondPos
-  /-- F(◇A) → F(A) at all accessible states -/
+  /-- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent) -/
   | diamondNeg
   /-- T(GA) → T(A) at current and all future times -/
   | allFuturePos
@@ -115,6 +115,9 @@ inductive RuleResult : Type where
   | linear (formulas : List SignedFormula)
   /-- Split into multiple branches (each is a list of formulas to add). -/
   | branching (branches : List (List SignedFormula))
+  /-- Universal modal rule: add formulas but do NOT remove the source formula.
+      Used for T(□A) and F(◇A) which must persist for propagation to new worlds. -/
+  | persistent (formulas : List SignedFormula)
   /-- Rule does not apply to this signed formula. -/
   | notApplicable
   deriving Repr
@@ -214,7 +217,7 @@ Returns the result of the rule application:
 - `branching [[...], [...]]`: Split into these branches
 - `notApplicable`: Rule doesn't apply
 -/
-def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
+def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) : RuleResult :=
   let l := sf.label
   match rule, sf.sign, sf.formula with
   -- T(A ∧ B) → T(A), T(B)
@@ -253,21 +256,69 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
       match asNeg? φ with
       | some ψ => .linear [SignedFormula.pos ψ l]
       | none => .notApplicable
-  -- T(□A) → T(A) (S5: reflexivity, identity-collapse placeholder for task 233)
+  -- T(□A) → propagate T(A) to all known worlds (S5 universal, persistent)
   | .boxPos, .pos, .box ψ =>
-      .linear [SignedFormula.pos ψ l]
-  -- F(□A) → F(A) (S5: witness world, identity-collapse placeholder for task 233)
+      let worlds := branch.knownWorlds
+      let newFormulas := worlds.filterMap fun w =>
+        let newSf := SignedFormula.pos ψ { world := w, time := l.time }
+        if branch.contains newSf then none else some newSf
+      if newFormulas.isEmpty then .notApplicable
+      else .persistent newFormulas
+  -- F(□A) → F(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .boxNeg, .neg, .box ψ =>
-      .linear [SignedFormula.neg ψ l]
-  -- T(◇A) → T(A) (S5: identity-collapse placeholder for task 233)
+      let freshWorld := branch.nextWorld
+      let freshLabel : Label := { world := freshWorld, time := l.time }
+      -- The witness: F(A) at the fresh world
+      let witness := SignedFormula.neg ψ freshLabel
+      -- Auto-propagate all T(□B) formulas to the fresh world
+      let boxProps := branch.boxPosFormulas.filterMap fun bsf =>
+        match bsf.formula with
+        | .box inner =>
+          let prop := SignedFormula.pos inner { world := freshWorld, time := bsf.label.time }
+          if branch.contains prop then none else some prop
+        | _ => none
+      -- Auto-propagate all F(◇B) formulas to the fresh world
+      let diaProps := branch.diamondNegFormulas.filterMap fun dsf =>
+        match dsf.formula with
+        | .imp (.box (.imp inner .bot)) .bot =>
+          let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
+          if branch.contains prop then none else some prop
+        | _ => none
+      .linear (witness :: boxProps ++ diaProps)
+  -- T(◇A) → T(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .diamondPos, .pos, φ =>
       match asDiamond? φ with
-      | some ψ => .linear [SignedFormula.pos ψ l]
+      | some ψ =>
+        let freshWorld := branch.nextWorld
+        let freshLabel : Label := { world := freshWorld, time := l.time }
+        -- The witness: T(A) at the fresh world
+        let witness := SignedFormula.pos ψ freshLabel
+        -- Auto-propagate all T(□B) formulas to the fresh world
+        let boxProps := branch.boxPosFormulas.filterMap fun bsf =>
+          match bsf.formula with
+          | .box inner =>
+            let prop := SignedFormula.pos inner { world := freshWorld, time := bsf.label.time }
+            if branch.contains prop then none else some prop
+          | _ => none
+        -- Auto-propagate all F(◇B) formulas to the fresh world
+        let diaProps := branch.diamondNegFormulas.filterMap fun dsf =>
+          match dsf.formula with
+          | .imp (.box (.imp inner .bot)) .bot =>
+            let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
+            if branch.contains prop then none else some prop
+          | _ => none
+        .linear (witness :: boxProps ++ diaProps)
       | none => .notApplicable
-  -- F(◇A) → F(A) (S5: identity-collapse placeholder for task 233)
+  -- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent)
   | .diamondNeg, .neg, φ =>
       match asDiamond? φ with
-      | some ψ => .linear [SignedFormula.neg ψ l]
+      | some ψ =>
+        let worlds := branch.knownWorlds
+        let newFormulas := worlds.filterMap fun w =>
+          let newSf := SignedFormula.neg ψ { world := w, time := l.time }
+          if branch.contains newSf then none else some newSf
+        if newFormulas.isEmpty then .notApplicable
+        else .persistent newFormulas
       | none => .notApplicable
   -- T(GA) → T(A) (temporal: identity-collapse placeholder for task 234)
   | .allFuturePos, .pos, .all_future ψ =>
@@ -307,9 +358,9 @@ def allRules : List TableauRule := [
 Find a rule that applies to a signed formula.
 Returns the first applicable rule and its result.
 -/
-def findApplicableRule (sf : SignedFormula) : Option (TableauRule × RuleResult) :=
+def findApplicableRule (sf : SignedFormula) (branch : Branch := []) : Option (TableauRule × RuleResult) :=
   allRules.findSome? fun rule =>
-    let result := applyRule rule sf
+    let result := applyRule rule sf branch
     match result with
     | .notApplicable => none
     | _ => some (rule, result)
@@ -318,15 +369,15 @@ def findApplicableRule (sf : SignedFormula) : Option (TableauRule × RuleResult)
 Check if a signed formula is fully expanded (no rules apply).
 Atoms, bot with appropriate signs, and already-reduced formulas are expanded.
 -/
-def isExpanded (sf : SignedFormula) : Bool :=
-  (findApplicableRule sf).isNone
+def isExpanded (sf : SignedFormula) (branch : Branch := []) : Bool :=
+  (findApplicableRule sf branch).isNone
 
 /--
 Find an unexpanded formula in a branch.
 Returns the first formula that can still be expanded.
 -/
 def findUnexpanded (b : Branch) : Option SignedFormula :=
-  b.find? (fun sf => ¬isExpanded sf)
+  b.find? (fun sf => ¬isExpanded sf b)
 
 /--
 Result of a single expansion step on a branch.
@@ -350,7 +401,7 @@ def expandOnce (b : Branch) : ExpansionResult :=
   match findUnexpanded b with
   | none => .saturated
   | some sf =>
-      match findApplicableRule sf with
+      match findApplicableRule sf b with
       | none => .saturated  -- Shouldn't happen if findUnexpanded returned something
       | some (_, result) =>
           match result with
@@ -362,19 +413,22 @@ def expandOnce (b : Branch) : ExpansionResult :=
               -- Remove the expanded formula from each branch and add new formulas
               let remaining := b.filter (· != sf)
               .split (branches.map fun newFormulas => newFormulas ++ remaining)
+          | .persistent formulas =>
+              -- Add new formulas but keep the source formula (universal modal rule)
+              .extended (formulas ++ b)
           | .notApplicable => .saturated  -- Shouldn't happen
 
 /--
 Count of unexpanded formulas in a branch (termination measure).
 -/
 def countUnexpanded (b : Branch) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf) |>.length
+  b.filter (fun sf => ¬isExpanded sf b) |>.length
 
 /--
 Total unexpanded complexity (alternative termination measure).
 -/
 def totalUnexpandedComplexity (b : Branch) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf)
+  b.filter (fun sf => ¬isExpanded sf b)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
 end Bimodal.Metalogic.Decidability

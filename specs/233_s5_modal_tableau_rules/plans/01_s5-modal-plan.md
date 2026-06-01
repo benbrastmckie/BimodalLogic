@@ -99,25 +99,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Tableau.lean Rule Infrastructure [NOT STARTED]
+### Phase 2: Tableau.lean Rule Infrastructure [COMPLETED]
 
 **Goal**: Add `RuleResult.persistent` constructor, change `applyRule` signature to accept branch, implement correct S5 modal rules, and update all callers
 
 **Tasks**:
-- [ ] Add `RuleResult.persistent` constructor: `| persistent (formulas : List SignedFormula)` at line 118, after the `branching` constructor
-- [ ] Change `applyRule` signature (line 217) from `def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult` to `def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) : RuleResult`
-- [ ] Replace `boxPos` rule (lines 256-258): T(box A) @ w propagates T(A) @ w' for all w' in `branch.knownWorlds`; return `.persistent` if new formulas exist, `.notApplicable` if all already present; filter out formulas already in branch to avoid loops
-- [ ] Replace `boxNeg` rule (lines 259-261): F(box A) @ w introduces F(A) @ `branch.nextWorld` (fresh world); auto-propagate all `branch.boxPosFormulas` and `branch.diamondNegFormulas` to the fresh world; return `.linear` (consumable)
-- [ ] Replace `diamondPos` rule (lines 262-266): T(diamond A) @ w introduces T(A) @ `branch.nextWorld` (fresh world); auto-propagate all universal formulas to fresh world; return `.linear` (consumable)
-- [ ] Replace `diamondNeg` rule (lines 267-271): F(diamond A) @ w propagates F(A) @ w' for all w' in `branch.knownWorlds`; return `.persistent` if new formulas exist, `.notApplicable` if all already present
-- [ ] Update `findApplicableRule` (line 310) to pass branch: `def findApplicableRule (sf : SignedFormula) (branch : Branch := []) : Option (TableauRule × RuleResult)` -- pass `branch` to `applyRule`
-- [ ] Update `isExpanded` (line 321) to accept branch: `def isExpanded (sf : SignedFormula) (branch : Branch := []) : Bool` -- uses `findApplicableRule sf branch`
-- [ ] Update `findUnexpanded` (line 328) to pass branch to `isExpanded`: `def findUnexpanded (b : Branch) : Option SignedFormula` -- calls `isExpanded sf b` for each formula
-- [ ] Update `expandOnce` (line 349) to pass branch to `findApplicableRule` and handle `.persistent`: for `persistent`, add new formulas WITHOUT removing the source formula from branch
-- [ ] Update `countUnexpanded` (line 370) to pass branch: calls `isExpanded sf b`
-- [ ] Update `totalUnexpandedComplexity` (line 376) to pass branch: calls `isExpanded sf b`
-- [ ] Update docstrings on `TableauRule` modal constructors (lines 84-91) to reflect correct S5 semantics
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Tableau` compiles
+- [x] Add `RuleResult.persistent` constructor: `| persistent (formulas : List SignedFormula)` at line 118, after the `branching` constructor
+- [x] Change `applyRule` signature (line 217) from `def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult` to `def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) : RuleResult`
+- [x] Replace `boxPos` rule (lines 256-258): T(box A) @ w propagates T(A) @ w' for all w' in `branch.knownWorlds`; return `.persistent` if new formulas exist, `.notApplicable` if all already present; filter out formulas already in branch to avoid loops
+- [x] Replace `boxNeg` rule (lines 259-261): F(box A) @ w introduces F(A) @ `branch.nextWorld` (fresh world); auto-propagate all `branch.boxPosFormulas` and `branch.diamondNegFormulas` to the fresh world; return `.linear` (consumable)
+- [x] Replace `diamondPos` rule (lines 262-266): T(diamond A) @ w introduces T(A) @ `branch.nextWorld` (fresh world); auto-propagate all universal formulas to fresh world; return `.linear` (consumable)
+- [x] Replace `diamondNeg` rule (lines 267-271): F(diamond A) @ w propagates F(A) @ w' for all w' in `branch.knownWorlds`; return `.persistent` if new formulas exist, `.notApplicable` if all already present
+- [x] Update `findApplicableRule` (line 310) to pass branch: `def findApplicableRule (sf : SignedFormula) (branch : Branch := []) : Option (TableauRule × RuleResult)` -- pass `branch` to `applyRule`
+- [x] Update `isExpanded` (line 321) to accept branch: `def isExpanded (sf : SignedFormula) (branch : Branch := []) : Bool` -- uses `findApplicableRule sf branch`
+- [x] Update `findUnexpanded` (line 328) to pass branch to `isExpanded`: `def findUnexpanded (b : Branch) : Option SignedFormula` -- calls `isExpanded sf b` for each formula
+- [x] Update `expandOnce` (line 349) to pass branch to `findApplicableRule` and handle `.persistent`: for `persistent`, add new formulas WITHOUT removing the source formula from branch
+- [x] Update `countUnexpanded` (line 370) to pass branch: calls `isExpanded sf b`
+- [x] Update `totalUnexpandedComplexity` (line 376) to pass branch: calls `isExpanded sf b`
+- [x] Update docstrings on `TableauRule` modal constructors (lines 84-91) to reflect correct S5 semantics
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Tableau` compiles
 
 **Timing**: 2.5 hours
 
