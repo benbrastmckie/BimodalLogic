@@ -8,12 +8,12 @@
     {
       "project_number": 227,
       "project_name": "dataset_pipeline_automation_croissant_sync",
-      "status": "planned",
+      "status": "abandoned",
       "task_type": "general",
       "description": "Build end-to-end automation so that every benchmark data regeneration (anchor expansion, new training data, eval runs) automatically updates all downstream artifacts. (1) Fix immediate croissant.json staleness: recompute SHA-256 hashes, update contentSize for all 5 distributions, regenerate or remove bmlogic-bench-splits.json, verify field counts match actual JSONL schemas. (2) Create a deterministic pipeline script (e.g., scripts/sync-dataset-artifacts.sh) that, given freshly regenerated data, automatically recomputes SHA-256 hashes and contentSize in croissant.json, updates record counts in metadata JSON, regenerates splits if applicable, validates croissant.json structure, updates data/README.md statistics, writes git commit provenance to data/VERSION (BIMODAL_LOGIC_COMMIT + SYNC_DATE) for consumption by BimodalHarness, and commits with a structured message. (3) Update the lean-implementation-agent and general-implementation-agent definitions/context so that any task involving benchmark regeneration includes a post-implementation step that runs the sync script. Add this to agent context or plan templates so future /implement and /orchestrate runs automatically keep artifacts in sync. Note: benchmark regeneration is a cross-repo boundary — BimodalHarness (sibling repo) consumes data/ via rsync (make sync-data), so artifacts must be consistent before that handoff. (4) Document the pipeline in data/README.md with a clear narrative: what each artifact is, how they relate, which script keeps them in sync, what git history tracks, and how BimodalHarness consumes the data.",
       "priority": "high",
       "created": "2026-05-31T01:10:11Z",
-      "last_updated": "2026-05-31T06:14:10Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "session_id": "sess_1748621400_plan227",
       "artifacts": [
         {
@@ -57,7 +57,8 @@
             "post-regeneration"
           ]
         }
-      ]
+      ],
+      "completion_summary": "Superseded by task 231 (dataset regeneration automation) which has broader scope."
     },
     {
       "project_number": 224,
@@ -131,7 +132,11 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
-      "dependencies": [165, 239, 240],
+      "dependencies": [
+        165,
+        239,
+        240
+      ],
       "created": "2026-05-18T18:01:17Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -171,12 +176,9 @@
       "status": "not_started",
       "task_type": "formal",
       "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
-      "dependencies": [
-        122,
-        163
-      ],
+      "dependencies": [],
       "created": "2026-05-11T19:35:39Z",
-      "last_updated": "2026-05-18T21:01:57Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "topic": "algebraic-representation"
     },
     {
@@ -203,11 +205,9 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
-      "dependencies": [
-        123
-      ],
+      "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
-      "last_updated": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "frame-extensions"
@@ -218,11 +218,9 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
-      "dependencies": [
-        122
-      ],
+      "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
-      "last_updated": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "frame-extensions"
@@ -236,13 +234,10 @@
       "topic": "completeness",
       "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
       "dependencies": [
-        154,
-        168,
-        174,
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-28T21:15:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 45,
       "artifacts": [
         {
@@ -659,12 +654,9 @@
       "task_type": "lean4",
       "priority": "medium",
       "description": "Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.",
-      "dependencies": [
-        168,
-        174
-      ],
+      "dependencies": [],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-22T15:25:23Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "topic": "formula-refactor",
       "session_id": "sess_1779462811_376d78",
       "researched": "2026-05-22T15:25:23Z",
@@ -700,10 +692,10 @@
       "description": "Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.",
       "dependencies": [
         131,
-        175
+        193
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "topic": "formula-refactor"
     },
     {
@@ -714,10 +706,11 @@
       "priority": "low",
       "description": "Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness-completeness-decidability on a concrete formula. Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.",
       "dependencies": [
-        131
+        131,
+        193
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-05-20T15:55:54Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "topic": "formula-refactor"
     },
     {
@@ -749,13 +742,16 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "artifacts": [
         {
           "path": "specs/186_unify_search_systems/reports/01_unify-search-seed.md",
           "type": "report",
           "summary": "Seed research: architecture comparison of TacticM vs computable search"
         }
+      ],
+      "dependencies": [
+        185
       ]
     },
     {
@@ -833,7 +829,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "artifacts": [
         {
           "path": "specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md",
@@ -841,9 +837,7 @@
           "summary": "Seed research: truth-table vs tableaux approaches for verified decision procedure"
         }
       ],
-      "dependencies": [
-        181
-      ]
+      "dependencies": []
     },
     {
       "project_number": 192,
@@ -910,11 +904,10 @@
       "topic": "automation",
       "description": "Systematic survey of the entire Theories/Bimodal/ codebase to identify all tactic and automation opportunities. Produces a ranked inventory of tactic groups with effort estimates, line savings, and dependency relationships. Output: one new task per tactic group, replacing or refining existing tasks 185-195.",
       "dependencies": [
-        155,
         161
       ],
       "created": "2026-05-22T19:21:48Z",
-      "last_updated": "2026-05-22T20:21:09Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -934,11 +927,9 @@
       "priority": "high",
       "topic": "automation",
       "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
-      "dependencies": [
-        155
-      ],
+      "dependencies": [],
       "created": "2026-05-26T22:00:00Z",
-      "last_updated": "2026-05-27T00:30:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "researched": "2026-05-27T00:00:00Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -1147,11 +1138,9 @@
       "description": "Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from R1).",
       "priority": "medium",
       "topic": "dataset-enhancement",
-      "dependencies": [
-        216
-      ],
+      "dependencies": [],
       "created": "2026-05-29T23:18:44Z",
-      "last_updated": "2026-05-30T03:10:58Z",
+      "last_updated": "2026-06-01T23:00:00Z",
       "session_id": "sess_1780110186_4e9f04",
       "next_artifact_number": 2,
       "memory_candidates": [
@@ -1233,7 +1222,7 @@
       "project_number": 228,
       "project_name": "fix_dataset_metadata_staleness",
       "status": "completed",
-      "completion_summary": "Updated 6 files: proof_steps_metadata.json (10063 records, 310 theorems, correct rule distribution, CC BY 4.0), bmlogic-bench_metadata.json (renamed total_count->total_records, added CC BY 4.0), bmlogic-c5/c7_metadata.json (CC BY 4.0), data/README.md and data/dataset-card.md (correct counts, 16-field training schema, cc-by-4.0 license throughout).",
+      "completion_summary": "Fixed all stale metadata across 6 files in data/: proof_steps_metadata.json (10063 records, 310 theorems, correct rule distribution, CC BY 4.0), bmlogic-bench_metadata.json (renamed total_count->total_records, added license), bmlogic-c5/c7_metadata.json (CC BY 4.0), data/README.md and data/dataset-card.md (correct counts, 16-field training schema, cc-by-4.0 license throughout).",
       "task_type": "general",
       "description": "Fix all stale metadata and documentation across data/. (1) Update proof_steps_metadata.json: total_records 2424->10063, theorem_count 36->310, rule_distribution to actual (axiom:4635, modus_ponens:4325, temporal_necessitation:991, temporal_duality:63, necessitation:49), step_statistics (avg 32.5, max 327, min 1). (2) Standardize bmlogic-bench_metadata.json: rename total_count to total_records for consistency. (3) Update data/README.md: fix record counts (proof_steps 2424->10063, theorems 36->310, benchmark 727->777), update training schema table from 14 to 16 fields documenting max_modal_depth and max_temporal_depth. (4) Update data/dataset-card.md: overview table counts, proof steps statistics. (5) Resolve license inconsistency: dataset-card.md YAML says 'mit' but croissant.json says 'CC BY 4.0' — pick one and make all files consistent.",
       "priority": "high",
@@ -1263,7 +1252,15 @@
         "complexity": "simple",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1, 2], [3]],
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_metadata-staleness-audit.md",
@@ -1293,7 +1290,9 @@
       "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
       "topic": "dataset-enhancement",
-      "dependencies": [229],
+      "dependencies": [
+        229
+      ],
       "created": "2026-06-01T20:00:00Z",
       "last_updated": "2026-06-01T20:00:00Z"
     },
@@ -1305,7 +1304,10 @@
       "description": "Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. (1) Create data/scripts/sync-all.py master sync script that: (a) Scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics). (b) Updates specific fields in data/README.md: file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics (records, theorems, rule distribution, steps per theorem), cross-logic split table (records, valid rates), NL paraphrase statistics. (c) Updates specific fields in data/dataset-card.md: overview table, all record counts, proof steps section, competitive position 'primary gaps' paragraph. (d) Recomputes SHA-256 hashes and contentSize for all distributions in croissant.json. (e) Regenerates bmlogic-bench-splits.json. (f) Validates all JSONL records against declared schemas (checks field presence, types, null patterns). (g) Checks train/benchmark formula overlap and reports contamination percentage. (h) Validates metadata key consistency (total_records not total_count). (2) Idempotent and safe to run after any regeneration command (lake exe dataset_generator, lake exe proof_extractor, lake exe benchmark_oracle, finalize_benchmark.py). (3) --dry-run mode that reports what would change. (4) --commit mode that creates structured git commit. (5) CI-friendly exit codes (0=clean, 1=staleness detected, 2=validation error). (6) Update data/README.md with pipeline documentation. (7) Integrate into agent context (.claude/context/project/dataset/) so /implement for dataset tasks runs sync-all as post-implementation step. Note: supersedes task 227 (dataset_pipeline_automation_croissant_sync) with broader scope covering README/dataset-card field updates and schema validation.",
       "priority": "high",
       "topic": "dataset-enhancement",
-      "dependencies": [228, 230],
+      "dependencies": [
+        228,
+        230
+      ],
       "created": "2026-06-01T20:00:00Z",
       "last_updated": "2026-06-01T20:00:00Z"
     },
@@ -1329,7 +1331,9 @@
       "description": "Replace unsound identity-collapse modal rules with correct S5 rules using world indices from task 232. Implement box/diamond propagation across S5 equivalence class, witness world introduction for F(box) and T(diamond), universal refutation for F(diamond), and auto-propagation of box-formulas to new worlds.",
       "priority": "critical",
       "topic": "tableau-training",
-      "dependencies": [232],
+      "dependencies": [
+        232
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1341,7 +1345,9 @@
       "description": "Replace unsound identity-collapse temporal rules with correct time-indexed rules using time indices from task 232. Implement G/H/F/P expansion with strict-inequality semantics (open guard), time ordering constraint tracking, and propagation of G/H-formulas to newly created time points.",
       "priority": "critical",
       "topic": "tableau-training",
-      "dependencies": [232],
+      "dependencies": [
+        232
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1353,7 +1359,9 @@
       "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
       "priority": "critical",
       "topic": "tableau-training",
-      "dependencies": [232],
+      "dependencies": [
+        232
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1365,7 +1373,10 @@
       "description": "Implement cross-modal-temporal tableau rules based on modal_future axiom (box phi -> box(G phi)) and derived principles. Propagate T(box phi) to T(G phi), inherit temporal structure in new worlds and modal structure at new times. Ensure consistency of world-creation and time-creation interactions.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [233, 234],
+      "dependencies": [
+        233,
+        234
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1377,7 +1388,11 @@
       "description": "Implement blocking strategy ensuring tableau expansion terminates for all formulas. Subset blocking: if new time/world has signed formulas that subset an ancestor, block further expansion. Relate fuel parameter to FMP-derived size bound. Replace ad-hoc fuel heuristic with sound bound from subformula closure size. Prove or argue blocking preserves completeness.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [233, 234, 235],
+      "dependencies": [
+        233,
+        234,
+        235
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1389,7 +1404,11 @@
       "description": "Extend tableau with frame-class-specific rules for Dense and Discrete axiom layers. Dense: density rule (intermediate points), dense indicator. Discrete: Prior rules, Z1 rule, uniformity axioms. Parameterize buildTableau and decide by FrameClass. Gate rule application by minFrameClass <= fc matching the axiomatic system.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [233, 234, 235],
+      "dependencies": [
+        233,
+        234,
+        235
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1401,7 +1420,10 @@
       "description": "Replace stub proof extraction (returns 'Full proof extraction not yet implemented') with complete backward-chaining algorithm that builds DerivationTree terms from closed tableau branches. Map each closure reason through tableau expansion steps to specific axiom applications and inference rules. Maintain proof reconstruction stack during expansion. Handle propositional (case analysis via peirce), modal (necessitation + modal_k_dist), and temporal (BX axioms) proof fragments.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [237, 238],
+      "dependencies": [
+        237,
+        238
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1413,7 +1435,10 @@
       "description": "Replace vacuous branchTruthLemma (forall sf in b, True) with genuine truth lemma: for saturated open branches, T(phi) in b implies phi true in extracted model and F(phi) in b implies phi false. Extend SimpleCountermodel to SemanticCountermodel with world states, time domain, temporal ordering, and valuation. Prove truth lemma by induction on formula structure using saturation.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [237, 238],
+      "dependencies": [
+        237,
+        238
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1425,7 +1450,10 @@
       "description": "Rebuild DatasetGenerator.lean to use the corrected tableau for reliable formula labeling. Currently the generator uses the broken tableau producing incorrect labels for modal/temporal formulas. With correct tableau: valid formulas produce DerivationTree proofs, invalid formulas produce semantic countermodels, timeout rate drops via blocking termination. Update LabeledFormula records with richer proof traces and countermodels. Update DataExport.lean JSON serialization.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [237, 238],
+      "dependencies": [
+        237,
+        238
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1437,7 +1465,10 @@
       "description": "Extend proof step pipeline to generate ProofStepRecord JSONL from tableau-proved formulas instead of only hand-registered theorems. Enumerate formulas via FormulaEnumerator, decide via correct tableau, extract DerivationTree for valid formulas, run extractStepSequence, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [239, 241],
+      "dependencies": [
+        239,
+        241
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1449,7 +1480,9 @@
       "description": "Achieve 42/42 axiom names and 7/7 inference rules in the proof step dataset (currently 31/42 and 5/7). Missing axioms are mostly temporal BX axioms. Missing rules are assumption and weakening (absent since all registered theorems use empty context). Construct formulas whose shortest proof requires each missing axiom, generate via tableau, verify coverage. Add coverage tracking to export script.",
       "priority": "medium",
       "topic": "tableau-training",
-      "dependencies": [242],
+      "dependencies": [
+        242
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1461,7 +1494,9 @@
       "description": "Create library of theorems with non-empty contexts to exercise assumption and weakening rules in proof step dataset. All 310 current theorems use empty context so these rules never appear. Create conditional derivations, modus ponens in context, modal/temporal reasoning in context. Register 50+ contextual theorems with G/H wrapping variants. Target: assumption >= 5% of steps, weakening >= 3%.",
       "priority": "medium",
       "topic": "tableau-training",
-      "dependencies": [242],
+      "dependencies": [
+        242
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1473,7 +1508,9 @@
       "description": "Build automated data synchronization from BimodalLogic to BimodalHarness. Currently BimodalHarness data/bimodal/ is empty (SYNC_DATE=not-yet-synced). Implement: export script running lake exe dataset_generator + proof_extractor with validation and VERSION file; enhanced make sync-data verifying schema compatibility and 49-action-space alignment; make verify-data running load_lean_jsonl() and load_proof_steps() validation; documentation in both repos.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [241],
+      "dependencies": [
+        241
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1485,7 +1522,9 @@
       "description": "Enhance Lean side to support live tableau queries from BimodalHarness lean/bridge.py. Add #tableau_decide command running corrected DecisionProcedure.decide with structured JSON output, #tableau_steps for proof step extraction, #countermodel for semantic countermodel output. Enable BimodalHarness BFS and MCTS search to query Lean oracle for online training. Target <500ms per formula round-trip.",
       "priority": "medium",
       "topic": "tableau-training",
-      "dependencies": [241],
+      "dependencies": [
+        241
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     },
@@ -1497,7 +1536,11 @@
       "description": "Validate complete pipeline: Lean tableau -> data export -> BimodalHarness ingestion -> training -> evaluation. Generate small dataset (1000 labeled formulas, 5000 proof steps), sync to BimodalHarness, run supervised training on proof steps, run single epoch of expert iteration, evaluate on benchmark, verify action predictions align with Lean action space. Document schema mismatches and training failures. Create smoke-test-training.sh.",
       "priority": "medium",
       "topic": "tableau-training",
-      "dependencies": [242, 245, 246],
+      "dependencies": [
+        242,
+        245,
+        246
+      ],
       "created": "2026-06-01T22:00:00Z",
       "last_updated": "2026-06-01T22:00:00Z"
     }
@@ -1511,10 +1554,10 @@
     }
   ],
   "task_counts": {
-    "active": 32,
-    "not_started": 31,
-    "total": 159,
-    "abandoned": 75
+    "active": 54,
+    "not_started": 44,
+    "total": 57,
+    "abandoned": 1
   },
   "repository_health": {
     "last_assessed": "2026-06-01T15:33:38Z",
