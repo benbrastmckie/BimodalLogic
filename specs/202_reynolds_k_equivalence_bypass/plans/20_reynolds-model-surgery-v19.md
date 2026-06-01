@@ -196,9 +196,9 @@ Phases within the same wave can execute in parallel.
 **Verification**:
 - [x] Task 4.1: N type-checks as OrderedMonadicStructure with all required instances
 - [x] Task 4.2: atom/bot/imp/box cases compile without sorry
-- [ ] Task 4.3: U(A,B) forward case 2 compiles without sorry
-- [ ] Task 4.4: S(A,B) forward case 2 compiles without sorry
-- [ ] Task 4.5: `surgery_truth_preservation` assembles without sorry
+- [x] Task 4.3: U(A,B) forward case 2 compiles without sorry (uses ordered_spread_above)
+- [x] Task 4.4: S(A,B) forward case 2 compiles without sorry (uses ordered_spread_below)
+- [x] Task 4.5: truth_pres assembles without sorry
 
 ---
 
@@ -269,7 +269,7 @@ Phases within the same wave can execute in parallel.
 - [x] Phase 2: `gap_prior_SZ_contradiction` reduced to UZ case sorry-free
 - [x] Phase 3 Task 3.1: temporal class spread (`class_spread`) compiles without sorry
 - [x] Phase 3 Task 3.1: `contemp_eq_body_correct` compiles without sorry
-- [ ] Phase 3 Task 3.2: bad interval density (Lemma 11) compiles without sorry
+- [x] Phase 3 Task 3.2: bad interval density (ordered_spread_above/below) compiles without sorry
 - [x] Phase 4 Tasks 4.1-4.2: surgery model N defined, atom/bot/imp/box truth preservation sorry-free
 - [x] Phase 4 Task 4.3: U(A,B) forward case 2 compiles without sorry (uses ordered_spread_above)
 - [x] Phase 4 Task 4.4: S(A,B) forward case 2 compiles without sorry (uses ordered_spread_below)
