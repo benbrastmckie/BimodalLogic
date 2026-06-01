@@ -1,2 +1,4 @@
 data/bmlogic-c7.jsonl filter=lfs diff=lfs merge=lfs -text
+data/bmlogic-c9.jsonl filter=lfs diff=lfs merge=lfs -text
+data/bmlogic-c11.jsonl filter=lfs diff=lfs merge=lfs -text
 data/proof_steps.jsonl filter=lfs diff=lfs merge=lfs -text

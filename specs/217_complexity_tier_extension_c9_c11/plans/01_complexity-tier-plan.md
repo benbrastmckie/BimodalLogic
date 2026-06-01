@@ -104,17 +104,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Shell Script and Run Configuration [NOT STARTED]
+### Phase 2: Shell Script and Run Configuration [COMPLETED]
 
 **Goal**: Add c9 and c11 run configurations to the production script, and add Git LFS tracking for large output files.
 
 **Tasks**:
-- [ ] Add `run_c9` function to `scripts/run_dataset_generation.sh` with parameters: `--max-complexity 9 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 2000000 --valid-seed-count 10000 --mode exhaustive --include-duals --output data/bmlogic-c9.jsonl`
-- [ ] Add `run_c11` function with parameters: `--max-complexity 11 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 2000000 --valid-seed-count 20000 --mode stratified --stratified-quotas 9:exhaustive,10:100000,11:300000 --include-duals --output data/bmlogic-c11.jsonl`
-- [ ] Update the `case` statement to accept `c9`, `c11`, and `all` (which now runs c5, c7, c9, c11)
-- [ ] Update help text with estimated record counts and runtime
-- [ ] Add `.gitattributes` entries for Git LFS tracking of `data/bmlogic-c9.jsonl` and `data/bmlogic-c11.jsonl`
-- [ ] Run a quick c9 smoke test at `--max-complexity 8 --max-formulas 500` to validate the pipeline end-to-end before committing to the full c9 run
+- [x] Add `run_c9` function to `scripts/run_dataset_generation.sh` with parameters: `--max-complexity 9 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 2000000 --valid-seed-count 10000 --mode exhaustive --include-duals --output data/bmlogic-c9.jsonl`
+- [x] Add `run_c11` function with parameters: `--max-complexity 11 --max-modal-depth 2 --max-temporal-depth 2 --max-formulas 2000000 --valid-seed-count 20000 --mode stratified --stratified-quotas 10:100000,11:300000 --include-duals --output data/bmlogic-c11.jsonl` *(deviation: altered -- quotas omit c1-c9 entries since they default to exhaustive; format uses numeric 0 not string "exhaustive")*
+- [x] Update the `case` statement to accept `c9`, `c11`, and `all` (which now runs c5, c7, c9, c11)
+- [x] Update help text with estimated record counts and runtime
+- [x] Add `.gitattributes` entries for Git LFS tracking of `data/bmlogic-c9.jsonl` and `data/bmlogic-c11.jsonl`
+- [x] Run a quick c9 smoke test at `--max-complexity 8 --max-formulas 500` to validate the pipeline end-to-end before committing to the full c9 run
 
 **Timing**: 1 hour
 
