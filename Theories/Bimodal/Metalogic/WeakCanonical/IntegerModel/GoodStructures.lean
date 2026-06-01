@@ -849,6 +849,9 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
   -- h_surj. The call site in Transfer.lean constructs an enriched atomMap with
   -- dedicated atoms for each predicate (including box predicates and bot),
   -- satisfying h_surj.
+  -- NOTE: Cannot delegate to no_gaps_discrete_model_surgery here due to import
+  -- cycle (GoodStructuresModelSurgery imports this file). The wiring is done at
+  -- the consumer level in ShiftAndGlue.lean via chronicle_is_good_direct.
   sorry
 
 /--

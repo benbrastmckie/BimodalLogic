@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.ReynoldsNoGaps
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
 
 /-!
 # Shift-and-Glue Construction: Very-Good to Good via Reynolds Lemma 16
@@ -955,8 +956,15 @@ theorem chronicle_is_good_direct {fc : FrameClass} (M : ChronicleAsPriorModel fc
     good sig k (chronicleAsMonadicStructure M sig atomMap_rev) := by
   haveI : Nonempty M.domain := M.domain_nonempty
   let M_struct := chronicleAsMonadicStructure M sig atomMap_rev
-  -- Step 1: Apply one_class to get all points contemp_equiv
-  have h_one_class := one_class sig k M_struct atomMap_fwd h_surj h_prior_UZ h_prior_SZ
+  -- Step 1: Apply one_class via no_gaps_discrete_model_surgery (sorry-free)
+  -- Inlined from one_class to bypass import cycle (GoodStructures ↔ GoodStructuresModelSurgery)
+  have h_one_class : ∀ (a b : M_struct.carrier), contemp_equiv sig k M_struct a b := by
+    intro a b
+    by_contra h_diff
+    obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete_model_surgery sig k M_struct atomMap_fwd
+      h_surj h_prior_UZ h_prior_SZ a b h_diff
+    exact h_not_succ ((contemp_equiv_is_equiv sig k M_struct).trans hac
+      (no_boundary_at_successor sig k M_struct c))
   -- Step 2: one_class_implies_very_good
   have h_very_good := one_class_implies_very_good sig k M_struct h_one_class
   -- Step 3: very_good_implies_good (uses Countable, NoMaxOrder, NoMinOrder, Nonempty, PredOrder)
