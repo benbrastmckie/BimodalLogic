@@ -94,12 +94,17 @@ run_c9() {
     echo "Started at: $(date -Iseconds)"
     # Exhaustive enumeration of all complexity-9 bimodal formulas with duals.
     # Capped at 2M formulas as a safety limit.
+    # NOTE: valid-seed-count reduced from 10000 to 500 because generateValidBatch
+    # uses O(pool^2) MP closure per round, making 10K seeds take hours.
+    # The valid fraction at c9 is naturally low (~5-8%); axiom seeding helps but
+    # the MP closure cost is quadratic. 500 seeds + nec/MP closure still provides
+    # meaningful valid enrichment without the compute bottleneck.
     time lake exe dataset_generator -- \
         --max-complexity 9 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
         --max-formulas 2000000 \
-        --valid-seed-count 10000 \
+        --valid-seed-count 500 \
         --output data/bmlogic-c9.jsonl \
         --mode exhaustive \
         --include-duals
@@ -116,12 +121,16 @@ run_c11() {
     echo "Started at: $(date -Iseconds)"
     # Stratified enumeration: exhaustive up to c9, sampled at c10/c11.
     # Quotas: c10 = 100K samples, c11 = 300K samples (0 = exhaustive for c1-c9).
+    # NOTE: valid-seed-count reduced from 20000 to 1000 because generateValidBatch
+    # uses O(pool^2) MP closure per round, making 20K seeds take many hours.
+    # The MP closure with 1000 seeds still provides meaningful valid enrichment
+    # without dominating total runtime.
     time lake exe dataset_generator -- \
         --max-complexity 11 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
         --max-formulas 2000000 \
-        --valid-seed-count 20000 \
+        --valid-seed-count 1000 \
         --output data/bmlogic-c11.jsonl \
         --mode stratified \
         --stratified-quotas "10:100000,11:300000" \
