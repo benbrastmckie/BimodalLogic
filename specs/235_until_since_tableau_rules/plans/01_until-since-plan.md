@@ -110,7 +110,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: T(U) and T(S) Rules (Positive Until/Since) [NOT STARTED]
+### Phase 2: T(U) and T(S) Rules (Positive Until/Since) [IN PROGRESS]
 
 **Goal**: Implement the branching decomposition rules for positive Until and Since formulas. T(U(psi, phi)) at time t branches into: (1) event-witness at fresh future time, or (2) guard+continue at fresh future time. T(S) is symmetric in the past direction. Both are consumable (removed after application) and introduce fresh time points requiring auto-propagation.
 

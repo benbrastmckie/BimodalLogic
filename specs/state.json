@@ -8,7 +8,7 @@
     {
       "project_number": 251,
       "project_name": "optimize_generate_valid_batch_bottleneck",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Optimize generateValidBatch O(n^2) MP closure bottleneck in dataset generation pipeline. Research the quadratic complexity in FormulaEnumerator.lean generateValidBatch function, identify optimization strategies (batch MP closure, incremental closure, parallelism, caching), and produce a detailed report with benchmarks and recommendations. Context: c9 generation takes 2-6 hours and c11 takes 3-8 hours primarily due to this bottleneck. Valid-seed-count was reduced from 10K to 500 as a workaround but this limits valid formula enrichment.",
       "priority": "high",
@@ -17,9 +17,16 @@
         217
       ],
       "created": "2026-06-01T18:14:22Z",
-      "last_updated": "2026-06-01T18:14:22Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-06-01T18:19:47Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/251_optimize_generate_valid_batch_bottleneck/reports/01_bottleneck-optimization-research.md",
+          "type": "research",
+          "summary": "Detailed analysis of generateValidBatch O(n^2) bottleneck with 8 optimization strategies. Primary recommendation: implication-index HashMap for O(n) MP closure + HashSet pool for O(1) dedup + early complexity filtering. Expected 100-1000x speedup."
+        }
+      ],
+      "session_id": "sess_1780337694_c4957f"
     },
     {
       "project_number": 250,
@@ -1552,7 +1559,7 @@
     {
       "project_number": 235,
       "project_name": "until_since_tableau_rules",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Implement tableau rules for primitive Until (untl) and Since (snce) operators — the core gap in the current tableau. Open-guard BX decomposition with eventuality tracking: T(U(phi,psi)) decomposes into guard+continue or event-witness branches; F(U(phi,psi)) requires universal refutation. Handle seriality, eventuality, and guard conditions. Implement blocking to prevent infinite expansion.",
       "priority": "critical",
@@ -1561,7 +1568,51 @@
         232
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:30:00Z"
+      "last_updated": "2026-06-01T23:30:00Z",
+      "session_id": "sess_1748795000_orch235",
+      "researched": "2026-06-01T22:30:00Z",
+      "planned": "2026-06-01T23:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/235_until_since_tableau_rules/reports/01_until-since-research.md",
+          "type": "research",
+          "summary": "Complete analysis of Until/Since tableau rule design: Burgess convention, open-guard semantics, Reynolds co-decomposition for F(U), eventuality tracking, pattern matching safety, 4-file change surface"
+        },
+        {
+          "path": "specs/235_until_since_tableau_rules/plans/01_until-since-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: branch helpers + Eventuality type, T(U)/T(S) branching rules, F(U)/F(S) Reynolds co-decomposition, integration testing with BX axioms. 12 hours estimated."
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 12,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_until-since-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
     },
     {
       "project_number": 236,

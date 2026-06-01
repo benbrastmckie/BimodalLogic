@@ -105,6 +105,14 @@ inductive TableauRule : Type where
   | somePastPos
   /-- F(PA) → propagate F(A) to all known past times (universal, persistent) -/
   | somePastNeg
+  /-- T(U(event,guard)) → branch: event-witness at fresh future time OR guard+continue (consumable) -/
+  | untlPos
+  /-- F(U(event,guard)) → Reynolds co-decomposition at known future times (persistent) -/
+  | untlNeg
+  /-- T(S(event,guard)) → branch: event-witness at fresh past time OR guard+continue (consumable) -/
+  | sncePos
+  /-- F(S(event,guard)) → Reynolds co-decomposition at known past times (persistent) -/
+  | snceNeg
   deriving Repr, DecidableEq
 
 /-!
@@ -262,6 +270,11 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   | .someFutureNeg, .neg, φ => (asSomeFuture? φ).isSome
   | .somePastPos, .pos, φ => (asSomePast? φ).isSome
   | .somePastNeg, .neg, φ => (asSomePast? φ).isSome
+  -- Until/Since rules (genuine, not some_future/some_past)
+  | .untlPos, .pos, φ => (asUntil? φ).isSome
+  | .untlNeg, .neg, φ => (asUntil? φ).isSome
+  | .sncePos, .pos, φ => (asSince? φ).isSome
+  | .snceNeg, .neg, φ => (asSince? φ).isSome
   | _, _, _ => false
 
 /--
