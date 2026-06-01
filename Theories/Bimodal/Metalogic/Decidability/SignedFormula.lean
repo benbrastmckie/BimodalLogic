@@ -335,7 +335,118 @@ def diamondNegFormulas (b : Branch) : List SignedFormula :=
     | .neg, .imp (.box (.imp _ .bot)) .bot => true
     | _, _ => false
 
+/--
+Collect all distinct time indices from signed formulas in the branch.
+Used by temporal rules to know which times exist for universal propagation.
+-/
+def knownTimes (b : Branch) : List TimeIndex :=
+  (b.map (·.label.time)).eraseDups
+
+/--
+Maximum time index in the branch (0 if empty).
+Used to compute the next fresh time index.
+-/
+def maxTime (b : Branch) : TimeIndex :=
+  b.foldl (fun acc sf => max acc sf.label.time) 0
+
+/--
+Next fresh time index (one past the maximum).
+Used by existential temporal rules to introduce witness times.
+-/
+def nextTime (b : Branch) : TimeIndex :=
+  b.maxTime + 1
+
+/--
+Collect all T(GA) formulas in the branch (positive all-future formulas).
+These are universal temporal formulas that must be propagated to every known future time.
+-/
+def allFuturePosFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .all_future _ => true
+    | _, _ => false
+
+/--
+Collect all F(FA) formulas in the branch (negative some-future formulas).
+These are universal temporal formulas that must be propagated to every known future time.
+F(FA) = F(¬G¬A) means G¬A holds, so ¬A must hold at every future time.
+-/
+def someFutureNegFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .some_future _ => true
+    | _, _ => false
+
+/--
+Collect all T(HA) formulas in the branch (positive all-past formulas).
+These are universal temporal formulas that must be propagated to every known past time.
+-/
+def allPastPosFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .all_past _ => true
+    | _, _ => false
+
+/--
+Collect all F(PA) formulas in the branch (negative some-past formulas).
+These are universal temporal formulas that must be propagated to every known past time.
+F(PA) = F(¬H¬A) means H¬A holds, so ¬A must hold at every past time.
+-/
+def somePastNegFormulas (b : Branch) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .some_past _ => true
+    | _, _ => false
+
 end Branch
+
+/-!
+## Time Ordering Constraints
+-/
+
+/--
+Time ordering constraints for abstract temporal order tracking.
+
+In temporal tableau rules, fresh time points are introduced by existential rules
+(F(GA), T(FA), etc.). These fresh time points have numerically larger indices
+but may represent logically earlier or later times. The TimeOrdering structure
+tracks the abstract temporal order via explicit constraint pairs.
+
+Each constraint `(a, b)` means `a` is strictly before `b` in the abstract
+temporal order (a < b).
+-/
+structure TimeOrdering : Type where
+  /-- List of ordering constraints. Each `(a, b)` means `a < b` in abstract time. -/
+  constraints : List (TimeIndex × TimeIndex)
+  deriving Repr
+
+namespace TimeOrdering
+
+/-- Empty time ordering with no constraints. -/
+def empty : TimeOrdering := { constraints := [] }
+
+/-- Initial ordering: time 0 exists implicitly, no constraints needed. -/
+def initWithTime0 : TimeOrdering := empty
+
+/-- Add a future constraint: `t_new` is strictly after `t`. -/
+def addFuture (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
+  { constraints := (t, t_new) :: ord.constraints }
+
+/-- Add a past constraint: `t_new` is strictly before `t`. -/
+def addPast (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
+  { constraints := (t_new, t) :: ord.constraints }
+
+/-- Find all times strictly after `t` (immediate successors in the ordering). -/
+def futureOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
+  ord.constraints.filterMap fun (a, b) =>
+    if a == t then some b else none
+
+/-- Find all times strictly before `t` (immediate predecessors in the ordering). -/
+def pastOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
+  ord.constraints.filterMap fun (a, b) =>
+    if b == t then some a else none
+
+end TimeOrdering
 
 /-!
 ## Subformula Closure
