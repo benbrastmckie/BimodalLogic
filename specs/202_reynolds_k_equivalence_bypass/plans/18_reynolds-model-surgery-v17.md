@@ -151,7 +151,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Surgery Model Construction (Piece 5) [NOT STARTED]
+### Phase 3: Surgery Model Construction (Piece 5) [BLOCKED]
 
 **Goal**: Define the surgery domain N by excising the "bad interval" and replacing it with one representative class I. Prove the surgery model inherits the required structure (linear order, successor/predecessor, monadic predicates) and that the representative class boundary in N is a successor pair, not a gap.
 
@@ -180,6 +180,20 @@ Phases within the same wave can execute in parallel.
 **Verification**:
 - Surgery model type-checks as `OrderedMonadicStructure sig`
 - `#check surgery_class_boundary_is_successor` shows correct type
+
+**BLOCKER** (Phase 3):
+- **What failed**: The plan assumed Phase 2 would produce R_false_somewhere and R_first_transition (Tasks 2.2, 2.3), providing a transition point c that separates the "bad interval" from Q+. In the actual implementation, R holds EVERYWHERE (h_R_everywhere, proved sorry-free). There is no transition point. The "bad interval" is the entire carrier. So N = I (a single class), Q- = Q+ = empty.
+- **What was tried**:
+  1. Direct contradiction from h_R_everywhere without model surgery -- exhaustive analysis showed this is impossible. The structure Z+Z+...+Z (copies of Z separated by gaps, all with right_gap_class_prop) is consistent without Prior axioms.
+  2. Class homogeneity argument (Reynolds Lemma 9): proved `invariant_formula_constant` -- ANY contemp_equiv-invariant MonadicFormula sig 1 is constant on M. This is sorry-free and generalizes the h_R_everywhere proof.
+  3. Cross-gap k-equivalence: attempted to show that if adjacent classes have the same k-type, the cross-gap subinterval is good. This requires Z+Z ~k Z (for the EF game), which depends on Doets Lemma 1.5 (sorry'd in OrderedSum.lean).
+  4. Direct temporal formula analysis: showed Prior-UZ/SZ are consistent with R holding everywhere (U(R, R.neg) is vacuously satisfied with s=succ(t)).
+- **Why it's stuck**: The final contradiction needs EITHER (a) full model surgery with temporal truth preservation (26 subcases for U/S), which is ~300 lines, OR (b) Doets Lemma 1.5 proving Z+Z ~k Z, which would allow a shorter argument via class homogeneity + cross-gap goodness.
+- **What is needed**: One of these approaches:
+  - (A) Prove Doets Lemma 1.5 in OrderedSum.lean (~100-200 lines, EF game argument). This would unblock a shorter proof path: class homogeneity (done) + Doets 1.5 + very_good → contemp_equiv everywhere → contradiction.
+  - (B) Implement full model surgery: define N as a subtype of M (one representative class), prove temporal truth preservation by structural induction on Formula (~300 lines), derive contradiction from R failing in N.
+  - (C) Prove Z+Z ~k Z directly as a specialized lemma (~50-100 lines, direct EF game/NF argument).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 ---
 

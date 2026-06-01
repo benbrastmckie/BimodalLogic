@@ -1035,13 +1035,149 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
     obtain ⟨a', b', h_ta, h_ab, h_bb, h_ng⟩ :=
       bounded_implies_right_gap_class_formula M a y hay h_not_equiv
     exact ⟨y, hay, a', b', h_ta, h_ab, h_bb, h_ng⟩
-  -- Step 3: R fails somewhere above a
-  -- (There exists z > a such that class(z) is unbounded above,
-  --  hence no bad subinterval witness exists above z.)
-  -- Step 4: First R-to-not-R transition exists (by prior_UZ_first_transition)
-  -- Step 5: Model surgery at the transition point
-  -- Step 6: Contradiction from truth preservation
-  -- SORRY: Full Reynolds model surgery argument (Lemmas 7-13, ~400 lines)
+  -- Step 3: R holds everywhere.
+  -- Claim: R cannot fail at any point of M.
+  -- If R fails at some z > a, prior_UZ_first_transition gives a transition point c
+  -- with R at c and ¬R at succ(c). But c ~M succ(c) by no_boundary_at_successor,
+  -- so right_gap_class_invariant gives R at c iff R at succ(c). Contradiction.
+  -- Similarly for z < a using prior_SZ_last_transition.
+  -- Helper: any class is succ-closed (by no_boundary_at_successor + transitivity)
+  have any_succ_closed : ∀ (t : M.carrier),
+      ∀ d, contemp_equiv sig k M t d → contemp_equiv sig k M t (Order.succ d) :=
+    fun t d hd => (contemp_equiv_is_equiv sig k M).trans hd
+      (no_boundary_at_successor sig k M d)
+  -- Helper: R ↔ right_gap_class_prop at any point
+  have h_R_iff_rgcp : ∀ (t : M.carrier),
+      temporal_truth M atomMap t R ↔ right_gap_class_prop sig k M t :=
+    fun t => gap_formula_R_iff_rgcp M atomMap h_surj h_prior_UZ h_prior_SZ t
+      (any_succ_closed t)
+  have h_R_everywhere : ∀ z : M.carrier, temporal_truth M atomMap z R := by
+    by_contra h_not_all
+    push_neg at h_not_all
+    obtain ⟨z, h_not_R_z⟩ := h_not_all
+    -- R at a, ¬R at z. Cases: z > a, z = a, z < a.
+    rcases lt_trichotomy a z with haz | rfl | hza
+    · -- z > a: prior_UZ_first_transition gives c with R at c, ¬R at succ(c).
+      obtain ⟨c, _, h_R_c, h_not_R_sc⟩ :=
+        prior_UZ_first_transition M atomMap h_prior_UZ a R h_R_at_a ⟨z, haz, h_not_R_z⟩
+      -- c ~M succ(c), so right_gap_class_prop is the same at both.
+      have h_ce := no_boundary_at_successor sig k M c
+      have h_rgc_c := (h_R_iff_rgcp c).mp h_R_c
+      have h_rgc_sc := right_gap_class_invariant sig k M c (Order.succ c) h_ce h_rgc_c
+      exact h_not_R_sc ((h_R_iff_rgcp (Order.succ c)).mpr h_rgc_sc)
+    · exact h_not_R_z h_R_at_a
+    · -- z < a: prior_SZ_last_transition gives c with R at c, ¬R at pred(c).
+      obtain ⟨c, _, h_R_c, h_not_R_pc⟩ :=
+        prior_SZ_last_transition M atomMap h_prior_SZ a R h_R_at_a ⟨z, hza, h_not_R_z⟩
+      -- pred(c) ~M c (need c not IsMin; if c were IsMin, pred c = c, ¬R c contradicts R c)
+      have h_not_min : ¬ IsMin c := by
+        intro h_min
+        have : Order.pred c = c := le_antisymm (Order.pred_le c) (h_min (Order.pred_le c))
+        rw [this] at h_not_R_pc; exact h_not_R_pc h_R_c
+      have h_ce : contemp_equiv sig k M (Order.pred c) c := by
+        have := no_boundary_at_successor sig k M (Order.pred c)
+        rw [Order.succ_pred_of_not_isMin h_not_min] at this; exact this
+      have h_rgc_c := (h_R_iff_rgcp c).mp h_R_c
+      have h_ce_rev := (contemp_equiv_is_equiv sig k M).symm h_ce
+      have h_rgc_pc := right_gap_class_invariant sig k M c (Order.pred c) h_ce_rev h_rgc_c
+      exact h_not_R_pc ((h_R_iff_rgcp (Order.pred c)).mpr h_rgc_pc)
+  -- Step 4: R holds everywhere → every class has the same restricted k-type.
+  -- For any MonadicFormula sig 1 φ, if φ is contemp_equiv-invariant,
+  -- then the corresponding temporal formula T_φ cannot transition
+  -- (same argument as Step 3). So φ is constant on M.
+  --
+  -- Class-restricted evaluation: for a sentence ψ and point t,
+  -- "ψ holds on class(t)" is contemp_equiv-invariant because
+  -- class(t) = class(s) when t ~M s.
+  --
+  -- Since every class-restricted sentence is constant, all classes
+  -- satisfy the same monadic FO theory. In particular, all classes
+  -- are k-equivalent as structures.
+  --
+  -- Step 5: Cross-gap subintervals are good when both sides have
+  -- the same k-type. This makes M very_good, giving contemp_equiv a y.
+  -- Contradiction with h_not_equiv.
+
+  -- For any MonadicFormula sig 1 φ, if φ(t) ↔ φ(s) whenever t ~M s,
+  -- then φ is constant on M.
+  -- Proof: same as h_R_everywhere proof but for general invariant φ.
+  have invariant_formula_constant :
+      ∀ (φ : MonadicFormula sig 1),
+      (∀ t s, contemp_equiv sig k M t s →
+        (eval M (fun _ => t) φ ↔ eval M (fun _ => s) φ)) →
+      (∀ t, eval M (fun _ => t) φ) ∨ (∀ t, ¬ eval M (fun _ => t) φ) := by
+    intro φ h_inv
+    -- Get temporal formula T_φ via US_expressively_complete_over_prior
+    let T_φ := (US_expressively_complete_over_prior atomMap h_surj φ).val
+    have h_T_correct : ∀ t, eval M (fun _ => t) φ ↔ temporal_truth M atomMap t T_φ :=
+      fun t => (US_expressively_complete_over_prior atomMap h_surj φ).property
+        M h_prior_UZ h_prior_SZ t
+    -- If φ is not constant, there exist t₁ with φ(t₁) and t₂ with ¬φ(t₂)
+    by_contra h_not_const
+    simp only [not_or, not_forall] at h_not_const
+    obtain ⟨⟨t₂, h_t₂⟩, ⟨t₁, h_t₁⟩⟩ := h_not_const
+    simp only [not_not] at h_t₁
+    -- T_φ at t₁, ¬T_φ at t₂
+    have h_T_t₁ : temporal_truth M atomMap t₁ T_φ := (h_T_correct t₁).mp h_t₁
+    have h_not_T_t₂ : ¬ temporal_truth M atomMap t₂ T_φ :=
+      fun h => h_t₂ ((h_T_correct t₂).mpr h)
+    -- Find transition point using Prior-UZ or Prior-SZ
+    rcases lt_trichotomy t₁ t₂ with h12 | rfl | h21
+    · -- t₁ < t₂: use prior_UZ_first_transition
+      obtain ⟨c, _, h_T_c, h_not_T_sc⟩ :=
+        prior_UZ_first_transition M atomMap h_prior_UZ t₁ T_φ h_T_t₁
+          ⟨t₂, h12, h_not_T_t₂⟩
+      -- c ~M succ(c)
+      have h_ce := no_boundary_at_successor sig k M c
+      -- φ(c) ↔ φ(succ(c)) by invariance
+      have h_φ_c := (h_T_correct c).mpr h_T_c
+      have h_φ_sc := (h_inv c (Order.succ c) h_ce).mp h_φ_c
+      exact h_not_T_sc ((h_T_correct (Order.succ c)).mp h_φ_sc)
+    · exact h_not_T_t₂ h_T_t₁
+    · -- t₂ < t₁: use prior_SZ_last_transition
+      obtain ⟨c, _, h_T_c, h_not_T_pc⟩ :=
+        prior_SZ_last_transition M atomMap h_prior_SZ t₁ T_φ h_T_t₁
+          ⟨t₂, h21, h_not_T_t₂⟩
+      -- pred(c) ~M c
+      have h_not_min : ¬ IsMin c := by
+        intro h_min
+        have : Order.pred c = c := le_antisymm (Order.pred_le c) (h_min (Order.pred_le c))
+        rw [this] at h_not_T_pc; exact h_not_T_pc h_T_c
+      have h_ce : contemp_equiv sig k M (Order.pred c) c := by
+        have := no_boundary_at_successor sig k M (Order.pred c)
+        rw [Order.succ_pred_of_not_isMin h_not_min] at this; exact this
+      -- φ(pred c) ↔ φ(c) by invariance (with symmetry)
+      have h_φ_c := (h_T_correct c).mpr h_T_c
+      have h_ce_sym := (contemp_equiv_is_equiv sig k M).symm h_ce
+      have h_φ_pc := (h_inv c (Order.pred c) h_ce_sym).mp h_φ_c
+      exact h_not_T_pc ((h_T_correct (Order.pred c)).mp h_φ_pc)
+  -- Step 5: right_gap_class_formula is contemp_equiv-invariant
+  -- and holds at every point. This means its negation is also invariant
+  -- and holds at no point.
+  -- But we need a specific formula whose constancy leads to contradiction.
+  --
+  -- The right_gap_class_formula holds everywhere (h_R_everywhere gives this).
+  -- This means every class is bounded above. The key is to find a
+  -- contemp_equiv-invariant formula that CANNOT hold everywhere in a Prior
+  -- structure with h_surj.
+  --
+  -- The contradiction comes from the combination:
+  -- (1) Every class is bounded above (right_gap_class_prop everywhere)
+  -- (2) Every class is succ-closed (no_boundary_at_successor)
+  -- (3) Class(a) is proper (h_not_equiv)
+  -- (4) All contemp_equiv-invariant formulas are constant
+  --
+  -- From (1)-(3): the carrier is NOT IsSuccArchimedean.
+  -- By class_gap_exists: a Gap exists.
+  -- By (4): any invariant formula detecting "gap structure" must be constant.
+  -- But right_gap_class_formula IS one such formula, and it's TRUE everywhere.
+  -- Its negation is FALSE everywhere (also constant). Neither leads to immediate
+  -- contradiction from constancy alone.
+  --
+  -- The final contradiction requires showing that h_R_everywhere (every class
+  -- bounded above at a gap) is incompatible with the Prior structure.
+  -- This is Reynolds' model surgery argument (Lemmas 7-13): construct a model N
+  -- by collapsing the gap, show temporal truth is preserved, derive contradiction.
   sorry
 
 /--
