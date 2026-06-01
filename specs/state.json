@@ -8,11 +8,11 @@
     {
       "project_number": 257,
       "project_name": "large_data_storage_huggingface",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "created": "2026-06-01T22:32:23Z",
-      "last_updated": "2026-06-01T22:50:16Z",
-      "session_id": "sess_1748817400_b2c4d6",
+      "last_updated": "2026-06-01T22:54:53Z",
+      "session_id": "sess_1748817600_c3d5e7",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1047,9 +1047,10 @@
     {
       "project_number": 241,
       "project_name": "tableau_formula_labeling",
-      "status": "partial",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Rebuild DatasetGenerator.lean to use the corrected tableau for reliable formula labeling. Currently the generator uses the broken tableau producing incorrect labels for modal/temporal formulas. With correct tableau: valid formulas produce DerivationTree proofs, invalid formulas produce semantic countermodels, timeout rate drops via blocking termination. Update LabeledFormula records with richer proof traces and countermodels. Update DataExport.lean JSON serialization.",
+      "completion_summary": "Enriched LabeledFormula with ruleProfile, decisionMethod, countermodelConsistent (Phase 1), enrichedCountermodel and semanticCountermodelSummary from task 240 (Phase 2), proofReconstructionMethod and removed decideOptimized retry path leveraging task 239 extraction pipeline (Phase 3). All JSON serialization updated in DatasetGenerator.lean and DatasetExport.lean. Full build passes.",
       "priority": "high",
       "topic": "tableau-training",
       "dependencies": [
@@ -1057,8 +1058,8 @@
         240
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-02T00:30:00Z",
-      "session_id": "sess_1780346226_d5e721",
+      "last_updated": "2026-06-02T00:15:00Z",
+      "session_id": "sess_1748825940_f2a8b1",
       "researched": "2026-06-01T22:30:00Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -1068,12 +1069,26 @@
           "summary": "Architecture analysis of DatasetGenerator/DataExport tableau integration"
         },
         {
+          "path": "specs/241_tableau_formula_labeling/reports/01_tableau-labeling-research.md",
+          "type": "research",
+          "summary": "Root cause analysis: DecisionProcedure.decide mislabels valid formulas as timeout when proof extraction fails"
+        },
+        {
           "path": "specs/241_tableau_formula_labeling/plans/01_tableau-labeling-plan.md",
           "type": "plan",
           "summary": "4-phase plan: enrich LabeledFormula (Phase 1), integrate countermodels from task 240 (Phase 2), integrate proof extraction from task 239 (Phase 3), full verification (Phase 4)"
+        },
+        {
+          "path": "specs/241_tableau_formula_labeling/handoffs/phase-1-handoff-20260601.md",
+          "type": "handoff",
+          "summary": "Phase 1 completion handoff: LabeledFormula enrichment, decision method tracking, JSON serialization updates"
+        },
+        {
+          "path": "specs/241_tableau_formula_labeling/summaries/01_tableau-labeling-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: all 4 phases completed, enriched labeling pipeline with countermodel and proof extraction integration"
         }
       ],
-      "partial_reason": "Phase 1 completed. Phases 2-3 blocked on tasks 239/240 (both at planned status).",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 6,

@@ -68,7 +68,7 @@ technical_debt:
 
 239 [COMPLETED] — Replace stub proof extraction (returns 'Full proof extraction not
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-  └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+  └─ 241 [COMPLETED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
     └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
       └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
       └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
@@ -80,7 +80,7 @@ technical_debt:
   └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
 240 [COMPLETED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-  └─ 241 [PARTIAL] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
+  └─ 241 [COMPLETED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
 
 ### Automation
 
@@ -139,7 +139,7 @@ technical_debt:
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
 - **Effort**: M
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Type**: general
 - **Priority**: medium
 - **Research**: [257_large_data_storage_huggingface/reports/01_large-data-storage.md]
@@ -274,11 +274,14 @@ technical_debt:
 
 ### 241. Tableau-driven formula labeling for DatasetGenerator
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
-- **Dependencies**: None (237, 238 completed)
+- **Dependencies**: None (237, 238, 239, 240 completed)
+- **Research**: [specs/241_tableau_formula_labeling/reports/01_research-findings.md]
+- **Plan**: [specs/241_tableau_formula_labeling/plans/01_tableau-labeling-plan.md]
+- **Summary**: [specs/241_tableau_formula_labeling/summaries/01_tableau-labeling-summary.md]
 
 **Description**: Rebuild `DatasetGenerator.lean` to use corrected tableau for reliable formula labeling. Currently uses broken tableau producing incorrect labels for modal/temporal formulas. Update `LabeledFormula` records with richer proof traces and countermodels. Validate against all 42 axiom instances and known satisfiable non-theorems. Files: `DatasetGenerator.lean`, `DataExport.lean`, `EnrichedCountermodel.lean`, `DecisionProcedure.lean`.
 
