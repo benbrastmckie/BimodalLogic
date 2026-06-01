@@ -30,8 +30,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,248,249,250,252,253,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240,256 | completeness, tableau-training, dataset-enhancement, ... |
+| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,229,239,240,248,249,250,252,253,255 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240 | completeness, tableau-training, dataset-enhancement, ... |
 | 3 | 95,176,193,231,242,245,246 | 155,189,192,230,239,241 | completeness, formula-refactor, tableau-training, ... |
 | 4 | 177,178,243,244,247,254 | 95,131,176,193,242,245,246 | completeness, formula-refactor, tableau-training |
 
@@ -39,8 +39,8 @@ technical_debt:
 
 ### Completeness
 
-256 [PLANNED] — Re-scope task 155 and update related task descriptions after task
-  └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
+256 [COMPLETED] — Re-scope task 155 and update related task descriptions after task
+155 [NOT STARTED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -85,7 +85,7 @@ technical_debt:
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [IMPLEMENTING] — (completeness: Replace the chronicle fallback in Transf) (see above)
+  └─ 155 [NOT STARTED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
 ### Code Quality
@@ -139,9 +139,10 @@ technical_debt:
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
 - **Effort**: M
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Type**: general
 - **Priority**: medium
+- **Research**: [257_large_data_storage_huggingface/reports/01_large-data-storage.md]
 - **Description**: Investigate standard practices for storing large data objects outside git (currently using Git LFS with ~146 MB uploads). Research using Hugging Face Datasets as external data host and linking from this repository. Evaluate trade-offs between Git LFS, Hugging Face Hub, and other approaches for dataset versioning and distribution.
 
 ### 256. Re-scope task 155 and update tasks 95/224 descriptions
@@ -343,10 +344,12 @@ technical_debt:
 
 ### 224. Investigate finite insertion argument for succ_cofinal (omega-chain structural alternative to Reynolds model surgery)
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 
 **Description**: Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Related: task 202.
+
+**Abandoned**: IsSuccArchimedean alternative is obsolete -- it addressed `succ_cofinal` on the BX chronicle path, which is being bypassed entirely. The correct path to sorry-free `completeness_discrete` is `no_gaps_discrete_model_surgery` (already sorry-free in GoodStructuresModelSurgery.lean). Task 202 confirmed the Reynolds Z-interval-to-TaskFrame pipeline is architecturally blocked, making this alternative moot regardless of approach.
 
 ---
 
@@ -651,26 +654,14 @@ technical_debt:
 **Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
 
 
-### 155. Activate Reynolds pipeline for sorry-free discrete completeness
-- **Effort**: 18-30 hours
-- **Status**: [IMPLEMENTING]
+### 155. Fix no_gaps_discrete import cycle for sorry-free discrete completeness
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 199
-- **Research**:
-  - [specs/155_reynolds_pipeline_activation/reports/01_team-research.md]
-  - [specs/155_reynolds_pipeline_activation/reports/02_team-research.md]
-  - [specs/155_reynolds_pipeline_activation/reports/03_post-157-status.md]
-  - [specs/155_reynolds_pipeline_activation/reports/03_team-research.md]
-  - [specs/155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
-  - [specs/155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
-  - [specs/155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md]
-  - [specs/155_reynolds_pipeline_activation/reports/40_ghr93-case-ii-step6.md]
-  - [specs/155_reynolds_pipeline_activation/reports/41_stavi-completeness-audit.md]
-- **Plan**:
-  - [specs/155_reynolds_pipeline_activation/plans/43_definitive-ghr93-plan.md]
 
-**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Plan v43 (definitive GHR93-faithful): delta=4 throughout, independent X_t construction (not via nf_characterizable_by_stavi), general linear orders with Cases III/IV using left(B,D)/right(B,D) gap formulas, interval type formula A = X_{(a_{n-1}, a_n)}. Bridge lemma deferred to separate task (NOT on bx_completeness critical path). 6 phases: (1) Theorem6 rank-varying IH, (2) X_t characteristic formula machinery, (3) Case II rewrite with U(B,A), (4) Cases III/IV gap handling, (5) Downstream sorry closure, (6) Verification. Definition of done: `bx_completeness` has no `sorryAx`, `lake build` passes.
+**Description**: Close the `no_gaps_discrete` import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewire `completeness_discrete` to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing `no_gaps_discrete` to call `no_gaps_discrete_model_surgery` without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in `no_gaps_discrete`. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate `no_gaps_discrete` to `no_gaps_discrete_model_surgery`. (4) Rewire `completeness_discrete` to use the WeakCanonical path via `no_gaps_discrete`. (5) Verify `#print axioms completeness_discrete` shows no `sorryAx`. Definition of done: `no_gaps_discrete` delegates to `no_gaps_discrete_model_surgery` (no sorry), `completeness_discrete` uses WeakCanonical path (no sorry), `lake build` passes.
 
 
 ### 131. Refactor module organization for clean APIs and documentation

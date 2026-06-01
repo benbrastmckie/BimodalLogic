@@ -160,7 +160,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Prove the Truth Lemma [NOT STARTED]
+### Phase 4: Prove the Truth Lemma [IN PROGRESS]
 
 **Goal**: State and prove the genuine `branchTruthLemma` by well-founded induction on formula complexity, using the saturation invariants from Phase 3.
 

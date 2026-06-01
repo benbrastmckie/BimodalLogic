@@ -8,11 +8,47 @@
     {
       "project_number": 257,
       "project_name": "large_data_storage_huggingface",
-      "status": "researching",
+      "status": "researched",
       "task_type": "general",
       "created": "2026-06-01T22:32:23Z",
-      "last_updated": "2026-06-01T22:34:04Z",
-      "session_id": "sess_1748817200_a7b3c1"
+      "last_updated": "2026-06-01T22:38:41Z",
+      "session_id": "sess_1748817200_a7b3c1",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md",
+          "type": "research",
+          "summary": "HF Hub is the clear recommendation — the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "BimodalLogic has a complete HF Hub publishing pipeline in data/hf-dataset/ (upload.py, validate.py, README.md dataset card, PUBLISHING.md). Target repo is logos-labs/bmlogic-bench.",
+          "category": "PATTERN",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "huggingface",
+            "dataset",
+            "upload",
+            "bmlogic-bench",
+            "logos-labs",
+            "publishing"
+          ]
+        },
+        {
+          "content": "GitHub Git LFS free tier (as of Nov 2024): 250 GiB storage + 250 GiB bandwidth per month. HF Hub public datasets: free for genuine community ML datasets. For public ML datasets, HF Hub provides CDN, dataset viewer, and Parquet conversion that Git LFS does not.",
+          "category": "INSIGHT",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "git-lfs",
+            "storage",
+            "cost",
+            "huggingface",
+            "free-tier",
+            "bandwidth"
+          ]
+        }
+      ]
     },
     {
       "project_number": 250,
@@ -1261,14 +1297,14 @@
     {
       "project_number": 256,
       "project_name": "rescope_155_update_95_224",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "priority": "medium",
       "topic": "completeness",
       "description": "Re-scope task 155 and update related task descriptions after task 202 completion: (1) Task 155 (reynolds_pipeline_activation) — chronicle_is_good_direct objective achieved by task 202. Re-scope to focus on final completeness_discrete rewiring (close countermodel_discrete_reynolds packaging sorry, replace BX pipeline path). (2) Task 95 (completeness_verification_audit) — description references succ_cofinal as root sorry, now partially obsolete. Update to reflect Reynolds pipeline availability. (3) Task 224 (finite insertion IsSuccArchimedean) — described as alternative to Reynolds model surgery, now moot. Consider abandoning.",
       "dependencies": [],
       "created": "2026-06-01T22:30:00Z",
-      "last_updated": "2026-06-02T00:00:00Z",
+      "last_updated": "2026-06-01T23:58:00Z",
       "session_id": "sess_1748819400_orch256",
       "researched": "2026-06-01T23:45:00Z",
       "planned": "2026-06-02T00:00:00Z",
@@ -1309,7 +1345,9 @@
             "integrated_date": "2026-06-01"
           }
         ]
-      }
+      },
+      "completion_summary": "Re-scoped task 155 from the obsolete GHR93 game-theoretic pipeline targeting succ_cofinal to fixing the no_gaps_discrete import cycle in GoodStructures.lean by delegating to no_gaps_discrete_model_surgery. Updated task 95 description to reflect the WeakCanonical path as the correct production route, distinguishing dead-code BX chronicle path from live WeakCanonical path. Abandoned task 224 (IsSuccArchimedean alternative now obsolete). All changes to specs/state.json and specs/TODO.md only.",
+      "completed": "2026-06-01T23:58:00Z"
     }
   ],
   "next_project_number": 258,
