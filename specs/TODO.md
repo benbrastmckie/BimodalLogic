@@ -30,20 +30,21 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,248,249,250,252,253,254,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,248,249,250,252,253,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 155,164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240,256 | completeness, tableau-training, dataset-enhancement, ... |
 | 3 | 95,176,193,231,242,245,246 | 155,189,192,230,239,241 | completeness, formula-refactor, tableau-training, ... |
-| 4 | 177,178,243,244,247 | 131,193,242,245,246 | formula-refactor, tableau-training |
+| 4 | 177,178,243,244,247,254 | 95,131,176,193,242,245,246 | completeness, formula-refactor, tableau-training |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-254 [NOT STARTED] — Update stale metadata after task 202 completion: (1) TODO.md sorr
 256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
   └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
+      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
+      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
 
 ### Formula Refactor
 
@@ -52,6 +53,7 @@ technical_debt:
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
+  └─ 254 [NOT STARTED] — (completeness: Final metadata and documentation update ) (see above)
 
 ### Frame Extensions
 
@@ -149,12 +151,13 @@ technical_debt:
 - **Priority**: low
 - **Description**: Archive dead code to Boneyard/: ReynoldsModelSurgery.lean (unprovable sorry), ReynoldsNoGaps.lean (deprecated), Transfer.lean countermodel_discrete (BX pipeline dead code). Remove stale imports.
 
-### 254. Update stale metadata post task 202
+### 254. Final metadata and documentation update after completeness pipeline stabilization
 - **Effort**: S
 - **Status**: [NOT STARTED]
 - **Type**: meta
 - **Priority**: medium
-- **Description**: Update TODO.md sorry_count_note, ROADMAP.md completeness milestones, Transfer.lean stale comments — all reference pre-task-202 sorry landscape.
+- **Dependencies**: Tasks 95, 176
+- **Description**: Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note — comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md — annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean — update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M
@@ -258,7 +261,7 @@ technical_debt:
 
 ### 241. Tableau-driven formula labeling for DatasetGenerator
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
