@@ -92,7 +92,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
-253 [NOT STARTED] — Add progress reporting to dataset generation pipeline
+253 [RESEARCHED] — Add progress reporting to dataset generation pipeline
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -325,11 +325,12 @@ technical_debt:
 
 ### 253. Add progress reporting to dataset generation pipeline
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Description**: Add progress reporting to the dataset generation pipeline so users can see what is happening during long-running generation. Currently `run_dataset_generation.sh` prints "Generating formulas..." and then goes silent for potentially hours. The Lean executable (FormulaEnumerator / generateFormulas) should emit periodic progress updates: formulas generated so far, valid formulas found, current complexity level being enumerated, elapsed time, and estimated completion. This may require changes to both the Lean code (to emit progress lines to stderr) and the shell script (to display them). Consider: per-complexity-level progress, percentage of seed pool processed, formulas/second rate, and ETA.
+- **Research**: [specs/253_dataset_generation_progress_reporting/reports/01_progress-reporting-research.md]
 
 ### 252. Fix linter warnings and improve generation scripts
 - **Effort**: medium (4-8 hours)
