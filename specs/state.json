@@ -1178,24 +1178,45 @@
     {
       "project_number": 252,
       "project_name": "fix_linter_warnings_and_generation_script",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables h_sc, h_mem in Semantics/Validity.lean (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args f_nesting_depth, p_nesting_depth, Formula.and in SubformulaClosure/TemporalFormulas.lean (lines 565-566, 647-650, 803, 895), (3) Unused tactic all_goals simp_wf in ProofSearch/Core.lean (lines 1016, 1141), (4) Unused variable fc in CountermodelExtraction.lean (line 128), (5) Unused variables proof, h in ProofSearch/Strategies.lean (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.",
       "priority": "medium",
       "topic": "code-quality",
       "dependencies": [],
       "created": "2026-06-01T20:17:00Z",
-      "last_updated": "2026-06-01T20:17:00Z",
+      "last_updated": "2026-06-01T23:30:00Z",
       "session_id": "sess_1780345660_6afb95",
       "researched": "2026-06-01T20:17:00Z",
-      "next_artifact_number": 2,
+      "planned": "2026-06-01T23:30:00Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/252_fix_linter_warnings_and_generation_script/reports/01_linter-warning-research.md",
           "type": "research",
           "summary": "Linter warning research: 799 total warnings, 638 actionable, detailed analysis of 5 task-scoped files plus broader inventory, generation script robustness review"
+        },
+        {
+          "path": "specs/252_fix_linter_warnings_and_generation_script/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: fix unused binders (22 warnings), fix simp args and no-op tactics (8 warnings), fix remaining warnings and improve generation script, full build verification"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1, 2, 3], [4]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_linter-warning-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
     },
     {
       "project_number": 253,
