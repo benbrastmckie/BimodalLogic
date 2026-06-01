@@ -120,16 +120,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Early Complexity Filtering [NOT STARTED]
+### Phase 3: Early Complexity Filtering [COMPLETED]
 
 **Goal**: Add complexity bounds checks at formula insertion points to prevent pool inflation from high-complexity formulas.
 
 **Tasks**:
-- [ ] In the Nec round: after computing `boxPhi := generateValidFromNec phi`, check `boxPhi.complexity <= maxComplexity` before calling `addToPool`; skip insertion if over the limit
-- [ ] In the MP round: after looking up `rhs` from the implication index, check `rhs.complexity <= maxComplexity` before calling `addToPool`
-- [ ] Keep the implication index built from ALL pool formulas (including those above maxComplexity that were added during seeding), so high-complexity implications still serve as derivation paths for in-range consequents
-- [ ] Update the Nec snapshot iteration to also skip formulas whose `boxPhi` would exceed maxComplexity (minor optimization to avoid unnecessary hash computations)
-- [ ] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
+- [x] In the Nec round: after computing `boxPhi := generateValidFromNec phi`, check `boxPhi.complexity <= maxComplexity` before calling `addToPool`; skip insertion if over the limit *(deviation: altered -- implemented in Phase 1 rewrite as single function replacement)*
+- [x] In the MP round: after looking up `rhs` from the implication index, check `rhs.complexity <= maxComplexity` before calling `addToPool`
+- [x] Keep the implication index built from ALL pool formulas (including those above maxComplexity that were added during seeding), so high-complexity implications still serve as derivation paths for in-range consequents
+- [x] Update the Nec snapshot iteration to also skip formulas whose `boxPhi` would exceed maxComplexity (minor optimization to avoid unnecessary hash computations)
+- [x] Verify `lake build Bimodal.Automation.FormulaEnumerator` compiles without errors
 
 **Timing**: 20 minutes
 
