@@ -283,13 +283,20 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   | _, _, _ => false
 
 /--
-Apply a tableau rule to a signed formula.
-
-Returns the result of the rule application:
-- `linear [...]`: Add these formulas to the branch
-- `branching [[...], [...]]`: Split into these branches
-- `notApplicable`: Rule doesn't apply
+Helper: collect T(□A) and F(◇A) formulas at a specific world and time,
+re-labeled to a fresh time. Used by time-creation rules to propagate
+box persistence (□φ → G(□φ)) and diamond-neg persistence.
 -/
+private def boxDiamondPersistence (branch : Branch) (w : WorldIndex) (t : TimeIndex)
+    (freshTime : TimeIndex) : List SignedFormula :=
+  let boxProps := (branch.boxPosAtWorldTime w t).filterMap fun bsf =>
+    let prop := { bsf with label := { bsf.label with time := freshTime } }
+    if branch.contains prop then none else some prop
+  let diaProps := (branch.diamondNegAtWorldTime w t).filterMap fun dsf =>
+    let prop := { dsf with label := { dsf.label with time := freshTime } }
+    if branch.contains prop then none else some prop
+  boxProps ++ diaProps
+
 def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty) : RuleResult × TimeOrdering :=
   let l := sf.label
@@ -479,7 +486,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             if branch.contains prop then none else some prop
           else none
         | _ => none
-      (.linear (witness :: gProps ++ fNegProps), newOrd)
+      -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
+      let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+      (.linear (witness :: gProps ++ fNegProps ++ modalProps), newOrd)
   -- T(HA) @ (w,t) → propagate T(A) to all known past times (universal, persistent)
   -- Strict inequality: H(A) at t means A holds at all t' < t
   | .allPastPos, .pos, .all_past ψ =>
@@ -517,7 +526,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             if branch.contains prop then none else some prop
           else none
         | _ => none
-      (.linear (witness :: hProps ++ pNegProps), newOrd)
+      -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
+      let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+      (.linear (witness :: hProps ++ pNegProps ++ modalProps), newOrd)
   -- T(FA) @ (w,t) → T(A) at fresh future time (existential, consumable)
   -- F(A) at t means there exists t' > t where A holds
   | .someFuturePos, .pos, φ =>
@@ -546,7 +557,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               if branch.contains prop then none else some prop
             else none
           | _ => none
-        (.linear (witness :: gProps ++ fNegProps), newOrd)
+        -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
+        let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+        (.linear (witness :: gProps ++ fNegProps ++ modalProps), newOrd)
       | none => (.notApplicable, timeOrd)
   -- F(FA) @ (w,t) → propagate F(A) to all known future times (universal, persistent)
   -- F(FA) = ¬(FA) means at all future times, A fails
@@ -588,7 +601,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               if branch.contains prop then none else some prop
             else none
           | _ => none
-        (.linear (witness :: hProps ++ pNegProps), newOrd)
+        -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
+        let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+        (.linear (witness :: hProps ++ pNegProps ++ modalProps), newOrd)
       | none => (.notApplicable, timeOrd)
   -- F(PA) @ (w,t) → propagate F(A) to all known past times (universal, persistent)
   -- F(PA) = ¬(PA) means at all past times, A fails
@@ -641,7 +656,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             let prop := SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
             if branch.contains prop then none else some prop
           else none
-        let autoProp := gProps ++ fNegProps ++ untlNegProps
+        -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
+        let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+        let autoProp := gProps ++ fNegProps ++ untlNegProps ++ modalProps
         (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
       | none => (.notApplicable, timeOrd)
   -- T(S(event, guard)) @ (w,t) → branch: event-witness at fresh past time OR guard+continue
@@ -683,7 +700,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             let prop := SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
             if branch.contains prop then none else some prop
           else none
-        let autoProp := hProps ++ pNegProps ++ snceNegProps
+        -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
+        let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+        let autoProp := hProps ++ pNegProps ++ snceNegProps ++ modalProps
         (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
       | none => (.notApplicable, timeOrd)
   -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at known future times

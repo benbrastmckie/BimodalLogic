@@ -117,22 +117,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Box Persistence at Time Creation [NOT STARTED]
+### Phase 3: Box Persistence at Time Creation [COMPLETED]
 
 **Goal**: Augment time-creation rules so that when a fresh time `t'` is created at world `w`, `T(box A)` and `F(diamond A)` formulas at `(w, t)` for `t` related to `t'` are also propagated to `(w, t')`. This implements the `temp_future_derived` principle: `box phi -> G(box phi)`.
 
 **Tasks**:
-- [ ] In `allFutureNeg` case: after existing gProps and fNegProps, add propagation of `T(box A)` formulas at `(w, l.time)` to `T(box A)` at `(w, freshTime)` -- box persists to future times
-- [ ] In `allFutureNeg` case: add propagation of `F(diamond A)` formulas at `(w, l.time)` to `F(diamond A)` at `(w, freshTime)`
-- [ ] Apply same augmentations to `someFuturePos` (also creates fresh future time)
-- [ ] Apply same augmentations to `untlPos` (creates fresh future time, propagation goes to both branches)
-- [ ] In `allPastNeg` case: add propagation of `T(box A)` at `(w, l.time)` to `T(box A)` at `(w, freshTime)` -- box also persists to past times (from `box phi -> H(box phi)`)
-- [ ] In `allPastNeg` case: add propagation of `F(diamond A)` at `(w, l.time)` to `F(diamond A)` at `(w, freshTime)`
-- [ ] Apply same augmentations to `somePastPos` (creates fresh past time)
-- [ ] Apply same augmentations to `sncePos` (creates fresh past time, propagation goes to both branches)
-- [ ] Add helper function `boxPosAtWorldTime` to `SignedFormula.lean` if needed: filter T(box A) by world and time
-- [ ] Add helper function `diamondNegAtWorldTime` to `SignedFormula.lean` if needed
-- [ ] Verify compilation with `lake build Bimodal.Metalogic.Decidability.Tableau`
+- [x] In `allFutureNeg` case: after existing gProps and fNegProps, add propagation of `T(box A)` formulas at `(w, l.time)` to `T(box A)` at `(w, freshTime)` -- box persists to future times
+- [x] In `allFutureNeg` case: add propagation of `F(diamond A)` formulas at `(w, l.time)` to `F(diamond A)` at `(w, freshTime)`
+- [x] Apply same augmentations to `someFuturePos` (also creates fresh future time)
+- [x] Apply same augmentations to `untlPos` (creates fresh future time, propagation goes to both branches)
+- [x] In `allPastNeg` case: add propagation of `T(box A)` at `(w, l.time)` to `T(box A)` at `(w, freshTime)` -- box also persists to past times (from `box phi -> H(box phi)`)
+- [x] In `allPastNeg` case: add propagation of `F(diamond A)` at `(w, l.time)` to `F(diamond A)` at `(w, freshTime)`
+- [x] Apply same augmentations to `somePastPos` (creates fresh past time)
+- [x] Apply same augmentations to `sncePos` (creates fresh past time, propagation goes to both branches)
+- [x] Add helper function `boxPosAtWorldTime` to `SignedFormula.lean` if needed: filter T(box A) by world and time *(completed in Phase 2)*
+- [x] Add helper function `diamondNegAtWorldTime` to `SignedFormula.lean` if needed *(completed in Phase 2)*
+- [x] Verify compilation with `lake build Bimodal.Metalogic.Decidability.Tableau` *(deviation: altered -- augmented 6 time-creation rules that create fresh times, not 8; untlNeg and snceNeg decompose at existing times so do not need box persistence; also added shared boxDiamondPersistence helper to reduce code duplication)*
 
 **Timing**: 1.5 hours
 
