@@ -70,13 +70,14 @@ theorem validity_has_decision_procedure (φ : Formula) :
 /--
 Properties of the decision result.
 -/
-theorem decide_result_exclusive (φ : Formula) (searchDepth tableauFuel : Nat) :
-    let r := decide φ searchDepth tableauFuel
+theorem decide_result_exclusive (φ : Formula) (searchDepth tableauFuel : Nat)
+    (fc : FrameClass := .Base) :
+    let r := decide φ searchDepth tableauFuel fc
     (r.isValid ∧ ¬r.isInvalid ∧ ¬r.isTimeout) ∨
     (¬r.isValid ∧ r.isInvalid ∧ ¬r.isTimeout) ∨
     (¬r.isValid ∧ ¬r.isInvalid ∧ r.isTimeout) := by
   simp only [DecisionResult.isValid, DecisionResult.isInvalid, DecisionResult.isTimeout]
-  cases decide φ searchDepth tableauFuel <;> simp
+  cases decide φ searchDepth tableauFuel fc <;> simp
 
 /-!
 ## Completeness via FMP

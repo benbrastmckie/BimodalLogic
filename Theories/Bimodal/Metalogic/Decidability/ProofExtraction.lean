@@ -133,7 +133,8 @@ This implementation provides a simplified version that works for:
 
 For complex proofs, the `incomplete` result is returned with a reason.
 -/
-def extractProof (φ : Formula) (tableau : ExpandedTableau) : ProofExtractionResult φ :=
+def extractProof (φ : Formula) (tableau : ExpandedTableau)
+    (_fc : FrameClass := .Base) : ProofExtractionResult φ :=
   match tableau with
   | .hasOpen _ _ =>
       -- Tableau shows formula is invalid, no proof exists
@@ -171,13 +172,13 @@ First attempts direct proof search (which is fast for axioms),
 then falls back to tableau method for more complex formulas.
 -/
 def findProofCombined (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
-    : Option (⊢ φ) :=
+    (fc : FrameClass := .Base) : Option (⊢ φ) :=
   -- First try direct proof search (fast for axioms)
   match bounded_search_with_proof [] φ searchDepth with
   | (some proof, _, _) => some proof
   | (none, _, _) =>
       -- Fall back to tableau method
-      match buildTableau φ tableauFuel with
+      match buildTableau φ tableauFuel fc with
       | some (.allClosed _) =>
           -- Tableau proves validity, but we need the proof term
           -- Try axiom proof extraction

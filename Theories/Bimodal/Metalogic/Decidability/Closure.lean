@@ -93,13 +93,16 @@ def checkContradiction (b : Branch) : Option ClosureReason :=
 Check if a branch contains F(axiom) for some axiom instance.
 Uses matchAxiom from ProofSearch to identify axiom patterns.
 -/
-def checkAxiomNeg (b : Branch) : Option ClosureReason :=
+def checkAxiomNeg (b : Branch) (fc : FrameClass := .Base) : Option ClosureReason :=
   b.findSome? fun sf =>
     if sf.isNeg then
       match matchAxiom sf.formula with
       | some ⟨φ, witness⟩ =>
           if sf.formula = φ then
-            some (.axiomNeg φ witness sf.label)
+            if witness.minFrameClass ≤ fc then
+              some (.axiomNeg φ witness sf.label)
+            else
+              none
           else
             none
       | none => none
@@ -110,20 +113,20 @@ def checkAxiomNeg (b : Branch) : Option ClosureReason :=
 Find a closure reason for a branch if one exists.
 Checks in order: T(⊥), contradiction, negated axiom.
 -/
-def findClosure (b : Branch) : Option ClosureReason :=
-  checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b
+def findClosure (b : Branch) (fc : FrameClass := .Base) : Option ClosureReason :=
+  checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b fc
 
 /--
 Check if a branch is closed (has any closure reason).
 -/
-def isClosed (b : Branch) : Bool :=
-  (findClosure b).isSome
+def isClosed (b : Branch) (fc : FrameClass := .Base) : Bool :=
+  (findClosure b fc).isSome
 
 /--
 Check if a branch is open (not closed).
 -/
-def isOpen (b : Branch) : Bool :=
-  ¬isClosed b
+def isOpen (b : Branch) (fc : FrameClass := .Base) : Bool :=
+  ¬isClosed b fc
 
 /-!
 ## Closure Witness Types
@@ -142,11 +145,11 @@ structure ClosedBranch where
 /--
 An open branch is a branch that has no closure reason.
 -/
-structure OpenBranch where
+structure OpenBranch (fc : FrameClass := .Base) where
   /-- The branch contents. -/
   branch : Branch
   /-- Evidence that the branch is open (no closure reason found). -/
-  notClosed : findClosure branch = none
+  notClosed : findClosure branch fc = none
 
 /--
 Classification of a branch as either closed or open.
@@ -161,8 +164,8 @@ inductive BranchStatus where
 /--
 Classify a branch as closed or open.
 -/
-def classifyBranch (b : Branch) : BranchStatus :=
-  match findClosure b with
+def classifyBranch (b : Branch) (fc : FrameClass := .Base) : BranchStatus :=
+  match findClosure b fc with
   | some reason => .closed reason
   | none => .open
 
@@ -266,8 +269,8 @@ theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
 checkAxiomNeg is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
 The axiom check is branch-independent (only depends on the formula pattern).
 -/
-theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) :
-    (checkAxiomNeg b).isSome → (checkAxiomNeg (x :: b)).isSome := by
+theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) (fc : FrameClass := .Base) :
+    (checkAxiomNeg b fc).isSome → (checkAxiomNeg (x :: b) fc).isSome := by
   intro h
   rw [checkAxiomNeg, List.findSome?_isSome_iff] at h
   obtain ⟨sf, hsf_mem, hsf_cond⟩ := h
@@ -292,15 +295,15 @@ contradiction still exists in `sf :: b`. The technical challenge is that
 `checkContradiction` checks `hasNeg b` (not `hasNeg (sf :: b)`), but since
 `hasNeg` is monotonic, any witness in `b` remains valid.
 -/
-theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
-    isClosed b → isClosed (sf :: b) := by
+theorem closed_extend_closed (b : Branch) (sf : SignedFormula) (fc : FrameClass := .Base) :
+    isClosed b fc → isClosed (sf :: b) fc := by
   intro h
   simp only [isClosed, findClosure] at h ⊢
-  -- h says: (checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b).isSome = true
+  -- h says: (checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b fc).isSome = true
   -- We analyze which of the three checks succeeded
   rw [Option.isSome_iff_exists] at h
   obtain ⟨r, hr⟩ := h
-  -- hr : checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b = some r
+  -- hr : checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b fc = some r
   rw [Option.orElse_eq_some] at hr
   rcases hr with hbot | ⟨_, hr'⟩
   · -- checkBotPos b = some r
@@ -309,7 +312,7 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     obtain ⟨r', hr'⟩ := hsome
     rw [Option.isSome_iff_exists]
     exact ⟨r', by simp [hr']⟩
-  · -- checkBotPos b = none, and (checkContradiction b <|> checkAxiomNeg b) = some r
+  · -- checkBotPos b = none, and (checkContradiction b <|> checkAxiomNeg b fc) = some r
     rw [Option.orElse_eq_some] at hr'
     rcases hr' with hcontra | ⟨_, hax⟩
     · -- checkContradiction b = some r
@@ -322,8 +325,8 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
         obtain ⟨r', hr''⟩ := hsome
         rw [Option.isSome_iff_exists]
         exact ⟨r', by simp [hr'']⟩
-    · -- checkAxiomNeg b = some r
-      have hsome : (checkAxiomNeg (sf :: b)).isSome := checkAxiomNeg_mono b sf (by simp [hax])
+    · -- checkAxiomNeg b fc = some r
+      have hsome : (checkAxiomNeg (sf :: b) fc).isSome := checkAxiomNeg_mono b sf fc (by simp [hax])
       cases hbot' : checkBotPos (sf :: b) with
       | some _ => rfl
       | none =>
@@ -338,8 +341,8 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
 /--
 If a branch has T(φ) (at initial label) and we add F(φ) (at initial label), it becomes closed.
 -/
-theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
-    Branch.hasPos b φ → isClosed (SignedFormula.neg φ :: b) := by
+theorem add_neg_causes_closure (b : Branch) (φ : Formula) (fc : FrameClass := .Base) :
+    Branch.hasPos b φ → isClosed (SignedFormula.neg φ :: b) fc := by
   intro hpos
   simp only [isClosed, findClosure]
   -- If checkBotPos succeeds, we're done. Otherwise, use checkContradiction.

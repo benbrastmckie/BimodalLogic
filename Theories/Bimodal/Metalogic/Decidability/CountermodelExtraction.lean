@@ -125,7 +125,7 @@ def extractCountermodelSimple (φ : Formula) (b : Branch)
 Extract countermodel from an expanded tableau with an open branch.
 -/
 def extractCountermodelFromTableau (φ : Formula) (tableau : ExpandedTableau)
-    : Option SimpleCountermodel :=
+    (fc : FrameClass := .Base) : Option SimpleCountermodel :=
   match tableau with
   | .allClosed _ => none  -- No countermodel, formula is valid
   | .hasOpen openBranch hSaturated =>
@@ -147,7 +147,7 @@ This is proven by induction on formula structure, using the fact that
 the branch is saturated (all rules have been applied).
 -/
 theorem branchTruthLemma (b : Branch) (_hSat : findUnexpanded b = none)
-    (_hOpen : findClosure b = none) :
+    (fc : FrameClass := .Base) (_hOpen : findClosure b fc = none) :
     ∀ sf ∈ b, True := by
   intro _ _
   trivial
@@ -171,8 +171,9 @@ inductive CountermodelResult (φ : Formula) : Type where
 /--
 Try to find a countermodel for a formula.
 -/
-def findCountermodel (φ : Formula) (fuel : Nat := 1000) : CountermodelResult φ :=
-  match buildTableau φ fuel with
+def findCountermodel (φ : Formula) (fuel : Nat := 1000)
+    (fc : FrameClass := .Base) : CountermodelResult φ :=
+  match buildTableau φ fuel fc with
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
   | some (.hasOpen openBranch hSat) =>
