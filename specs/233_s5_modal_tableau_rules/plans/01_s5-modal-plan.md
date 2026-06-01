@@ -1,7 +1,7 @@
 # Implementation Plan: S5 Modal Tableau Rules (Multi-World Bookkeeping)
 
 - **Task**: 233 - S5 modal tableau rules (multi-world bookkeeping)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: Task 232 (labeled branch infrastructure -- completed)
 - **Research Inputs**: specs/233_s5_modal_tableau_rules/reports/01_s5-modal-research.md
@@ -159,18 +159,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Full Build and Integration Verification [NOT STARTED]
+### Phase 4: Full Build and Integration Verification [COMPLETED]
 
 **Goal**: Verify full project builds and modal tableau behavior is correct
 
 **Tasks**:
-- [ ] Run `lake build` to verify full project compilation (all downstream files: ProofExtraction.lean, CountermodelExtraction.lean, DecisionProcedure.lean, Correctness.lean)
-- [ ] Fix any downstream compilation errors from signature changes (primarily `findUnexpanded` type changes if used in other files -- grep shows `CountermodelExtraction.lean:121` uses `findUnexpanded`)
-- [ ] Verify `#check @findUnexpanded` and `#check @isExpanded` have correct types
-- [ ] Verify no `sorry` introduced anywhere in the Decidability module
-- [ ] Test basic S5 validity: `buildTableauAuto (.imp (.box (.atom 0)) (.atom 0))` should return `allClosed` (T-axiom, follows from reflexivity propagation)
-- [ ] Test basic S5 invalidity: `buildTableauAuto (.imp (.atom 0) (.box (.atom 0)))` should return `hasOpen` (p does not imply box p)
-- [ ] Test K axiom: `buildTableauAuto (.imp (.box (.imp (.atom 0) (.atom 1))) (.imp (.box (.atom 0)) (.box (.atom 1))))` should return `allClosed`
+- [x] Run `lake build` to verify full project compilation (all downstream files: ProofExtraction.lean, CountermodelExtraction.lean, DecisionProcedure.lean, Correctness.lean)
+- [x] Fix any downstream compilation errors from signature changes (primarily `findUnexpanded` type changes if used in other files -- grep shows `CountermodelExtraction.lean:121` uses `findUnexpanded`) *(deviation: altered -- no downstream fixes needed, findUnexpanded signature unchanged (branch is used internally), CountermodelExtraction.lean compiled without changes)*
+- [x] Verify `#check @findUnexpanded` and `#check @isExpanded` have correct types *(deviation: skipped -- verified via successful compilation of all downstream consumers instead of interactive #check)*
+- [x] Verify no `sorry` introduced anywhere in the Decidability module
+- [x] Test basic S5 validity: `buildTableauAuto (.imp (.box p) p)` returns `allClosed` (T-axiom, correct!)
+- [x] Test basic S5 invalidity: `buildTableauAuto (.imp p (.box p))` returns `hasOpen` (p does not imply box p, correct!)
+- [x] Test K axiom: `buildTableauAuto (.imp (.box (.imp p q)) (.imp (.box p) (.box q)))` returns `allClosed` (correct!)
 
 **Timing**: 1.5 hours
 
@@ -190,13 +190,13 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build` passes with zero errors
-- [ ] No `sorry` in any Decidability module file
-- [ ] T-axiom `box p -> p` recognized as valid (closed tableau)
-- [ ] K-axiom `box (p -> q) -> (box p -> box q)` recognized as valid
-- [ ] 5-axiom `diamond p -> box (diamond p)` recognized as valid (S5-specific)
-- [ ] `p -> box p` correctly recognized as invalid (open branch)
-- [ ] Propositional formulas still work correctly (no regression)
+- [x] `lake build` passes with zero errors
+- [x] No `sorry` in any Decidability module file
+- [x] T-axiom `box p -> p` recognized as valid (closed tableau)
+- [x] K-axiom `box (p -> q) -> (box p -> box q)` recognized as valid
+- [x] 5-axiom `diamond p -> box (diamond p)` recognized as valid (S5-specific)
+- [x] `p -> box p` correctly recognized as invalid (open branch)
+- [x] Propositional formulas still work correctly (no regression)
 
 ## Artifacts & Outputs
 
