@@ -292,13 +292,17 @@ technical_debt:
 
 ### 239. Proof term extraction from closed tableaux
 - **Effort**: large (15-25 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
 - **Dependencies**: None (237, 238 completed)
+- **Plan**: [specs/239_proof_extraction_from_tableau/plans/01_proof-extraction-plan.md]
+- **Summary**: [specs/239_proof_extraction_from_tableau/summaries/01_proof-extraction-summary.md]
 
 **Description**: Replace stub proof extraction (`"Full proof extraction not yet implemented"`) with complete backward-chaining algorithm building `DerivationTree` from closed branches. Augment expansion with proof reconstruction stack. Map closure reasons through expansion steps to axiom/rule combinations: propositional (peirce + modus_ponens), modal (necessitation + modal_k_dist), temporal (temporal_necessitation + BX axioms). Files: `ProofExtraction.lean`, `Tableau.lean`, `Saturation.lean`.
+
+**Completion**: Replaced stub with 5-strategy extraction pipeline (axiom match, derived match, closure-based, compositional builder, enhanced search). Integrated into DecisionProcedure.decide. Zero sorries, build passes.
 
 ---
 
@@ -725,10 +729,10 @@ technical_debt:
 - **Status**: [NOT STARTED]
 - **Language**: lean4
 - **Priority**: medium
-- **Dependencies**: None
+- **Dependencies**: 155
 - **Created**: 2026-04-10
 
-**Description**: Verification pass on `bx_completeness` sorry status. Updated scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case `sorryAx` chain: `dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal` (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
+**Description**: Verification pass on sorry status for `completeness_discrete` and `bx_completeness`. Updated scope after task 202 completion and task 155 re-scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (`dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal`) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the `no_gaps_discrete` import cycle (GoodStructures.lean:855) by delegating to `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewiring `completeness_discrete`. Note: `succ_cofinal` remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via `no_gaps_discrete_model_surgery` (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
 
 
 ## Recommended Order

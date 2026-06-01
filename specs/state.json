@@ -41,12 +41,13 @@
     {
       "project_number": 224,
       "project_name": "finite_insertion_succ_archimedean",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "lean4",
       "description": "Investigate whether the finite insertion argument can prove IsSuccArchimedean for the chronicle limit domain, as an alternative to Reynolds model surgery (Lemmas 6-13). The conjecture: between any two points at stage N of the omega-chain, the limit domain has only finitely many additional points. Key observations: (1) each eliminate step adds at most 1 point, (2) each counterexample is processed exactly once via Nat.unpair encoding, (3) the formula closure is FINITE (subformulas of A₀), (4) each interval can generate at most O(2^|formulas|) witnesses across all stages. If true, finite insertions imply the successor chain from any point reaches any other in finitely many steps, giving IsSuccArchimedean directly without model surgery. Research should determine whether the construction can add infinitely many points between two fixed stage-N points across all future stages, or whether the finite formula set bounds the total insertions. Related: task 202 (reynolds_k_equivalence_bypass) which currently uses Reynolds model surgery.",
       "dependencies": [],
       "created": "2026-05-30T05:07:42Z",
-      "last_updated": "2026-05-30T05:07:42Z"
+      "last_updated": "2026-06-01T23:57:00Z",
+      "abandonment_reason": "IsSuccArchimedean alternative is obsolete -- it addressed succ_cofinal on the BX chronicle path, which is being bypassed entirely. The correct path to sorry-free completeness_discrete is no_gaps_discrete_model_surgery (already sorry-free in GoodStructuresModelSurgery.lean). Task 202 confirmed the Reynolds Z-interval-to-TaskFrame pipeline is architecturally blocked, making this alternative moot regardless of approach."
     },
     {
       "project_number": 180,
