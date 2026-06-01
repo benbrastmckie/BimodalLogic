@@ -144,6 +144,7 @@ technical_debt:
 - **Priority**: medium
 - **Research**: [257_large_data_storage_huggingface/reports/01_large-data-storage.md]
 - **Plan**: [257_large_data_storage_huggingface/plans/01_implementation-plan.md]
+- **Summary**: [257_large_data_storage_huggingface/summaries/01_execution-summary.md]
 - **Description**: Investigate standard practices for storing large data objects outside git (currently using Git LFS with ~146 MB uploads). Research using Hugging Face Datasets as external data host and linking from this repository. Evaluate trade-offs between Git LFS, Hugging Face Hub, and other approaches for dataset versioning and distribution.
 
 ### 256. Re-scope task 155 and update tasks 95/224 descriptions

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #257
 
 - **Task**: 257 - Migrate large data storage from Git LFS to Hugging Face Hub
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md
