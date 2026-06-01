@@ -8,10 +8,10 @@
     {
       "project_number": 258,
       "project_name": "huggingface_publishing_guide",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-06-01T23:02:55Z",
-      "last_updated": "2026-06-01T23:08:28Z",
+      "last_updated": "2026-06-01T23:11:21Z",
       "session_id": "sess_1748818200_d4e6f8",
       "next_artifact_number": 2,
       "artifacts": [
@@ -19,6 +19,11 @@
           "path": "specs/258_huggingface_publishing_guide/reports/01_publishing-guide-research.md",
           "type": "research",
           "summary": "Research report on HF publishing guide placement and structure"
+        },
+        {
+          "path": "specs/258_huggingface_publishing_guide/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: create PUBLISHING_GUIDE.md, training/README.md, update docs/README.md"
         }
       ]
     },
@@ -161,7 +166,7 @@
     {
       "project_number": 164,
       "project_name": "prove_tableau_correctness",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
       "dependencies": [
@@ -1033,7 +1038,7 @@
     {
       "project_number": 242,
       "project_name": "tableau_proof_step_generation",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Extend proof step pipeline to generate ProofStepRecord JSONL from tableau-proved formulas instead of only hand-registered theorems. Enumerate formulas via FormulaEnumerator, decide via correct tableau, extract DerivationTree for valid formulas, run extractStepSequence, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution.",
       "priority": "high",
@@ -1076,7 +1081,7 @@
     {
       "project_number": 245,
       "project_name": "cross_repo_data_pipeline",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "description": "Build automated data synchronization from BimodalLogic to BimodalHarness. Currently BimodalHarness data/bimodal/ is empty (SYNC_DATE=not-yet-synced). Implement: export script running lake exe dataset_generator + proof_extractor with validation and VERSION file; enhanced make sync-data verifying schema compatibility and 49-action-space alignment; make verify-data running load_lean_jsonl() and load_proof_steps() validation; documentation in both repos.",
       "priority": "high",
@@ -1090,7 +1095,7 @@
     {
       "project_number": 246,
       "project_name": "lean_repl_tableau_bridge",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Enhance Lean side to support live tableau queries from BimodalHarness lean/bridge.py. Add #tableau_decide command running corrected DecisionProcedure.decide with structured JSON output, #tableau_steps for proof step extraction, #countermodel for semantic countermodel output. Enable BimodalHarness BFS and MCTS search to query Lean oracle for online training. Target <500ms per formula round-trip.",
       "priority": "medium",

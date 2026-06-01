@@ -78,7 +78,7 @@ technical_debt:
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [RESEARCHED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
+  └─ 155 [PLANNED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
 ### Code Quality
@@ -129,10 +129,11 @@ technical_debt:
 
 ### 258. Create a Hugging Face publishing guide in docs/
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Type**: general
 - **Priority**: medium
 - **Research**: [258_huggingface_publishing_guide/reports/01_publishing-guide-research.md]
+- **Plan**: [258_huggingface_publishing_guide/plans/01_implementation-plan.md]
 - **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
@@ -200,7 +201,7 @@ technical_debt:
 
 ---
 
-### 246. Lean REPL tableau bridge for live queries
+### 246. Lean REPL tableau bridge for live queries [RESEARCHING]
 - **Effort**: medium (8-12 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -212,7 +213,7 @@ technical_debt:
 
 ---
 
-### 245. Cross-repository data sync pipeline
+### 245. Cross-repository data sync pipeline [RESEARCHING]
 - **Effort**: medium (6-10 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: general
@@ -248,7 +249,7 @@ technical_debt:
 
 ---
 
-### 242. Tableau-derived proof step extraction
+### 242. Tableau-derived proof step extraction [RESEARCHING]
 - **Effort**: medium (10-15 hours)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -556,7 +557,7 @@ technical_debt:
 
 **Description**: Establish the semantic finite model property for TM bimodal logic. The existing FMP in `Decidability/FMP/` is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a (possibly infinite) canonical model where φ fails, quotient worlds by agreement on the subformula closure of φ. (2) Prove the filtration lemma: truth of all subformulas is preserved in the quotient. The existing `TruthPreservation.lean` handles bot, imp, and box, but temporal operators are absent — the G/H cases were archived (they assumed the T-axiom, invalid under strict semantics) and Until/Since cases were never attempted. Until/Since are known to be problematic for naive filtration since they quantify over intermediate points; selective filtration or alternative constructions may be needed (see Blackburn/de Rijke/Venema Ch 2.3, Reynolds 2003). (3) Prove the quotient model is a valid task frame (nullity, compositionality, reflection preserved under filtration). (4) Bound the model size by `2^|cl(φ)|`. The result should be stated as: if φ is satisfiable in a task model, then φ is satisfiable in a finite task model of bounded size. This is needed for each frame class (serial, dense, discrete) to establish decidability.
 
-### 164. Prove tableau correctness theorem for decision procedure
+### 164. Prove tableau correctness theorem for decision procedure [RESEARCHING]
 - **Effort**: large
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
