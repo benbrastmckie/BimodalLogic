@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Request/Response Types and Parsers [IN PROGRESS]
+### Phase 1: Request/Response Types and Parsers [COMPLETED]
 
 **Goal**: Define the JSONL protocol types, implement request envelope parsing and response JSON formatting in a new `TableauBridge.lean` file.
 
@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Command Handlers [NOT STARTED]
+### Phase 2: Command Handlers [COMPLETED]
 
 **Goal**: Implement the three core command handlers that compose existing infrastructure into request/response flows.
 
@@ -131,7 +131,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: REPL Loop and Executable Registration [NOT STARTED]
+### Phase 3: REPL Loop and Executable Registration [COMPLETED]
 
 **Goal**: Implement the stdin/stdout REPL loop and register the `tableau_bridge` executable in `lakefile.lean`.
 
@@ -160,7 +160,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Integration Testing and Performance Validation [NOT STARTED]
+### Phase 4: Integration Testing and Performance Validation [IN PROGRESS]
 
 **Goal**: Verify all three command handlers with real formulas, validate <500ms performance target, and run full project build.
 

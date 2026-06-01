@@ -450,6 +450,13 @@ The `impNeg` rule is a linear (non-branching) rule that adds both.
 Actually, `F(ψ → χ)` cannot exist in a saturated branch at all: the `impNeg`
 rule always applies to it. So this is vacuously true by contradiction.
 -/
+private theorem impNeg_not_expanded (b : Branch) (ψ χ : Formula) (l : Label) :
+    isExpanded ⟨.neg, .imp ψ χ, l⟩ b = false := by
+  unfold isExpanded findApplicableRule
+  simp only [allRulesForFC, allRules, denseRules, discreteRules]
+  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp
+
 theorem sat_imp_neg (b : Branch) (hSat : findUnexpanded b = none)
     (ψ χ : Formula) (l : Label)
     (hmem : ⟨.neg, .imp ψ χ, l⟩ ∈ b) :
@@ -457,10 +464,7 @@ theorem sat_imp_neg (b : Branch) (hSat : findUnexpanded b = none)
   -- F(ψ → χ) cannot be in a saturated branch: impNeg always applies.
   exfalso
   have hExp := findUnexpanded_none_all_expanded b hSat ⟨.neg, .imp ψ χ, l⟩ hmem
-  -- isExpanded is false because impNeg applies to F(ψ → χ)
-  simp only [isExpanded, findApplicableRule, allRulesForFC, allRules] at hExp
-  -- After unfolding, findSome? on the rule list should find impNeg matches
-  simp only [List.findSome?, isApplicable, applyRule] at hExp
+  simp [impNeg_not_expanded] at hExp
 
 /--
 **Box positive saturation**: If `T(□φ)` at `(w, t)` is in a saturated branch,
@@ -488,17 +492,21 @@ theorem sat_box_pos (b : Branch) (hSat : findUnexpanded b = none)
 then there exists a world `w'` in `knownWorlds` such that `F(φ)` at `(w', t)`
 is in the branch. The `boxNeg` rule creates a fresh witness world.
 -/
+private theorem boxNeg_not_expanded (b : Branch) (φ : Formula) (l : Label) :
+    isExpanded ⟨.neg, .box φ, l⟩ b = false := by
+  unfold isExpanded findApplicableRule
+  simp only [allRulesForFC, allRules, denseRules, discreteRules]
+  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp
+
 theorem sat_box_neg (b : Branch) (hSat : findUnexpanded b = none)
     (φ : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.neg, .box φ, ⟨w, t⟩⟩ ∈ b) :
     ∃ w' ∈ b.knownWorlds, ⟨.neg, φ, ⟨w', t⟩⟩ ∈ b := by
-  -- PROOF STRATEGY: Vacuously true in a saturated branch. The boxNeg rule always
-  -- applies to F(□φ) and produces a .linear result (introducing a fresh witness
-  -- world), which is never .notApplicable. So findApplicableRule returns some,
-  -- making isExpanded false, contradicting hSat.
-  -- BLOCKED BY: Same as sat_imp_neg — requires unfolding the rule engine to show
-  -- boxNeg always produces a non-notApplicable result for F(□φ).
-  sorry
+  -- F(□φ) cannot be in a saturated branch: boxNeg always applies.
+  exfalso
+  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.neg, .box φ, ⟨w, t⟩⟩ hmem
+  simp [boxNeg_not_expanded] at hExp
 
 /--
 **Until positive saturation**: If `T(U(event, guard))` at `(w, t)` was in a
