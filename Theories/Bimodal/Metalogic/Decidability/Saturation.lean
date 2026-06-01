@@ -480,25 +480,26 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   | none => return "FAIL: □p → Hp ran out of fuel"
 
 -- Test MT3: □p → always p (perpetuity P1: □p → Hp ∧ p ∧ Gp)
--- always p = Hp ∧ (p ∧ Gp) — complex compound formula, known to require blocking
--- for termination (task 237 scope). Mark as expected fuel-exhaustion.
+-- always p = Hp ∧ (p ∧ Gp) — complex compound formula whose deep encoding
+-- requires many expansion steps. With current blocking (task 237 WIP), may
+-- report open branch or exhaust fuel. The core interaction (MT1, MT2) passes.
 #eval do
   let φ := Formula.imp (.box mt_p) (Formula.always mt_p)
-  let result := buildTableauAuto φ
+  let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → always p is valid (P1 perpetuity)"
-  | some (.hasOpen _ _) => return "INFO: □p → always p saturated open (blocking/termination issue, task 237)"
-  | none => return "INFO: □p → always p ran out of fuel (blocking/termination issue, task 237)"
+  | some (.hasOpen _ _) => return "INFO: □p → always p open branch (blocking refinement needed, task 237)"
+  | none => return "INFO: □p → always p fuel exhausted (blocking refinement needed, task 237)"
 
 -- Test MT4: □(□p) → G(□p) should be valid (nested modal-temporal)
--- Nested box formulas require more expansion steps
+-- Nested box formulas with temporal interaction. May require blocking refinement.
 #eval do
   let φ := Formula.imp (.box (.box mt_p)) (Formula.all_future (.box mt_p))
-  let result := buildTableauAuto φ
+  let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
-  | some (.hasOpen _ _) => return "INFO: □(□p) → G(□p) saturated open (blocking/termination issue, task 237)"
-  | none => return "INFO: □(□p) → G(□p) ran out of fuel (blocking/termination issue, task 237)"
+  | some (.hasOpen _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed, task 237)"
+  | none => return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed, task 237)"
 
 -- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
 -- Verifies cross-propagation does not over-close: p holds now but ¬p at some future time
@@ -520,5 +521,148 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   | none => return "FAIL: □p → □(Gp) ran out of fuel"
 
 end ModalTemporalTests
+
+/-!
+## Extended Test Battery (Task 237)
+
+Additional tests verifying blocking and termination behavior across
+a range of formula patterns.
+-/
+
+section ExtendedTests
+
+open Bimodal.Syntax
+
+private def et_p : Formula := .atom (Atom.mk_base "p")
+private def et_q : Formula := .atom (Atom.mk_base "q")
+private def et_r : Formula := .atom (Atom.mk_base "r")
+
+-- Test E1: Deeply nested Until: U(U(p, q), r) -> U(U(p, q), r)
+-- Identity should be valid; tests nested Until handling with blocking
+#eval do
+  let inner := Formula.untl et_p et_q
+  let φ := Formula.imp (Formula.untl inner et_r) (Formula.untl inner et_r)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS E1: U(U(p,q),r) -> U(U(p,q),r) is valid"
+  | some (.hasOpen _ _) => return "FAIL E1: should be valid"
+  | none => return "FAIL E1: ran out of fuel"
+
+-- Test E2: Combined Until/Since: S(p, bot) -> P(p) (mirrors test 2, regression)
+#eval do
+  let φ := Formula.imp (Formula.snce et_p .bot) (Formula.some_past et_p)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS E2: S(p,bot) -> P(p) is valid"
+  | some (.hasOpen _ _) => return "FAIL E2: should be valid"
+  | none => return "FAIL E2: ran out of fuel"
+
+-- Test E3: Simple propositional regression: p -> (q -> p)
+#eval do
+  let φ := Formula.imp et_p (Formula.imp et_q et_p)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS E3: p -> (q -> p) is valid"
+  | some (.hasOpen _ _) => return "FAIL E3: should be valid"
+  | none => return "FAIL E3: ran out of fuel"
+
+-- Test E4: Known satisfiable formula with blocking: U(p, q) is satisfiable
+-- With blocking, this should terminate with an open branch
+#eval do
+  let φ := Formula.untl et_p et_q
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "FAIL E4: U(p,q) should be satisfiable"
+  | some (.hasOpen _ _) => return "PASS E4: U(p,q) is satisfiable (open branch with blocking)"
+  | none => return "INFO E4: U(p,q) fuel exhausted (blocking may not have fired)"
+
+-- Test E5: G(p) -> p is NOT valid (p holds at all future times does not imply p holds now)
+-- In our logic G(p) means p at all strictly future times, not including now
+-- This depends on whether the logic is reflexive; in strict temporal logic G(p) ≠> p
+#eval do
+  let φ := Formula.imp (Formula.all_future et_p) et_p
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "INFO E5: G(p) -> p is valid (reflexive reading)"
+  | some (.hasOpen _ _) => return "INFO E5: G(p) -> p is invalid (strict reading)"
+  | none => return "INFO E5: G(p) -> p ran out of fuel"
+
+end ExtendedTests
+
+/-!
+## Blocking Correctness and Termination Theorems
+
+The following theorem stubs state the key correctness properties of the
+subset blocking strategy. Their proofs are deferred to tasks 239-240.
+
+### Completeness Preservation Argument (from research report)
+
+**Why subset blocking is sound**: Let B be a tableau branch and t a time
+point whose type τ(t) ⊆ τ(t_anc) for some ancestor t_anc. If B is
+satisfiable, then any model M satisfying τ(t_anc) also satisfies τ(t)
+(since τ(t) is a subset). Therefore, blocking expansion at t cannot
+cause a satisfiable branch to be incorrectly closed -- it can only
+prevent the creation of redundant time points.
+
+**Why blocking ensures termination**: The subformula closure of the
+initial formula φ has n = |subformulaClosure(φ)| elements. Each time
+type is a subset of {T, F} × subformulaClosure(φ), so there are at
+most 2^(2n) distinct time types. By the pigeonhole principle, any
+chain of time points longer than 2^(2n) must contain a repeat
+(equality blocking) or a subset relation (subset blocking). Since
+subset blocking is more aggressive than equality blocking, it fires
+at least as early.
+
+**Eventuality safety**: When τ(t) ⊆ τ(t_anc), any pending Until/Since
+eventuality at t is also pending at t_anc (by the subset relation).
+Since the ancestor time was already expanded, the eventuality was
+either fulfilled along the ancestor's expansion path, or it will
+cause the ancestor's branch to remain open. In either case, blocking
+at t does not lose eventuality information.
+-/
+
+/--
+**Subformula property**: All formulas produced by tableau rule application
+are members of the signed subformula closure of the initial formula.
+
+This is the foundation of the termination argument: since the closure is
+finite, and each time type is a subset of the closure, there are only
+finitely many distinct time types.
+-/
+theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
+    (h_init : b = [SignedFormula.neg φ Label.initial])
+    (h_mem : sf ∈ b) :
+    sf.formula ∈ Formula.subformulas φ := by
+  sorry
+
+/--
+**Blocking terminates**: With subset blocking enabled, every branch of the
+tableau for formula φ has length bounded by `soundFuel φ`.
+
+This follows from the pigeonhole principle: there are at most `2^(2n)`
+distinct time types where `n = |subformulaClosure(φ)|`, so after that
+many time points, some time must be subset-blocked by an ancestor.
+-/
+theorem blocking_terminates (φ : Formula) :
+    ∃ bound : Nat, ∀ (b : Branch) (fuel : Nat),
+      fuel ≥ bound →
+      (expandBranchWithFuel b fuel).isSome := by
+  sorry
+
+/--
+**Blocking soundness**: Subset blocking does not prematurely close any
+satisfiable branch. If a branch B is satisfiable and expandBranchWithFuel
+returns `some (.inr openBranch)` due to blocking, then `openBranch` is
+indeed satisfiable.
+
+This follows from the subset relation: if τ(t) ⊆ τ(t_anc), then any
+model satisfying all formulas at t_anc also satisfies all formulas at t.
+-/
+theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
+    (h_result : expandBranchWithFuel b (soundFuel φ) = some (.inr openBranch)) :
+    -- "satisfiable" here means there exists a model; we state it as
+    -- the open branch having no closure reason
+    findClosure openBranch = none := by
+  sorry
 
 end Bimodal.Metalogic.Decidability

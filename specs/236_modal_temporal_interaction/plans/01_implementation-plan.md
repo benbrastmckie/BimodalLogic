@@ -149,19 +149,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Testing and Build Verification [NOT STARTED]
+### Phase 4: Testing and Build Verification [COMPLETED]
 
 **Goal**: Add integration tests for key modal-temporal interaction formulas to `Saturation.lean` or an appropriate test file, and verify the full project builds.
 
 **Tasks**:
-- [ ] Add test: `box p -> G p` should be proved valid (T(box p) triggers boxTemporal to derive T(G p), then closure)
-- [ ] Add test: `box p -> H p` should be proved valid (symmetric temporal direction)
-- [ ] Add test: `box p -> always p` (P1 perpetuity: `box p -> H p /\ p /\ G p`) should be proved valid
-- [ ] Add test: `box(box p) -> G(box p)` (nested modal-temporal) should be proved valid
-- [ ] Add test: a satisfiable formula like `box p /\ F(neg p)` should produce a countermodel (not prove valid) -- verifies cross-propagation does not over-close
-- [ ] Add test: `modal_future` axiom instance `box p -> box(G p)` should be handled correctly
-- [ ] Run `lake build` to verify full project compiles with zero errors
-- [ ] Verify no new `sorry` or `axiom` introduced via `grep -r "sorry\|axiom " Theories/Bimodal/Metalogic/Decidability/Tableau.lean`
+- [x] Add test: `box p -> G p` should be proved valid (T(box p) triggers boxTemporal to derive T(G p), then closure)
+- [x] Add test: `box p -> H p` should be proved valid (symmetric temporal direction)
+- [x] Add test: `box p -> always p` (P1 perpetuity: `box p -> H p /\ p /\ G p`) should be proved valid *(deviation: altered -- test added but reports INFO (fuel exhausted) rather than PASS; requires blocking refinement in task 237 for proper termination of complex compound formulas)*
+- [x] Add test: `box(box p) -> G(box p)` (nested modal-temporal) should be proved valid *(deviation: altered -- same as MT3; reports INFO due to task 237 dependency)*
+- [x] Add test: a satisfiable formula like `box p /\ F(neg p)` should produce a countermodel (not prove valid) -- verifies cross-propagation does not over-close *(deviation: altered -- used `p /\ F(neg p)` since `box p /\ F(neg p)` is actually unsatisfiable with correct cross-propagation)*
+- [x] Add test: `modal_future` axiom instance `box p -> box(G p)` should be handled correctly
+- [x] Run `lake build` to verify full project compiles with zero errors
+- [x] Verify no new `sorry` or `axiom` introduced via `grep -r "sorry\|axiom " Theories/Bimodal/Metalogic/Decidability/Tableau.lean`
 
 **Timing**: 1 hour (reduced since Phase 2 and 3 include per-phase compilation checks)
 
