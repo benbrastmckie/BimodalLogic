@@ -89,14 +89,22 @@ inductive TableauRule : Type where
   | diamondPos
   /-- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent) -/
   | diamondNeg
-  /-- T(GA) → T(A) at current and all future times -/
+  /-- T(GA) → propagate T(A) to all known future times (universal, persistent) -/
   | allFuturePos
-  /-- F(GA) → F(A) at some future time -/
+  /-- F(GA) → F(A) at fresh future time (existential, consumable) -/
   | allFutureNeg
-  /-- T(HA) → T(A) at current and all past times -/
+  /-- T(HA) → propagate T(A) to all known past times (universal, persistent) -/
   | allPastPos
-  /-- F(HA) → F(A) at some past time -/
+  /-- F(HA) → F(A) at fresh past time (existential, consumable) -/
   | allPastNeg
+  /-- T(FA) → T(A) at fresh future time (existential, consumable) -/
+  | someFuturePos
+  /-- F(FA) → propagate F(A) to all known future times (universal, persistent) -/
+  | someFutureNeg
+  /-- T(PA) → T(A) at fresh past time (existential, consumable) -/
+  | somePastPos
+  /-- F(PA) → propagate F(A) to all known past times (universal, persistent) -/
+  | somePastNeg
   deriving Repr, DecidableEq
 
 /-!
@@ -162,21 +170,39 @@ def asDiamond? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as some_past (¬H¬A).
-Note: PA = A.neg.all_past.neg = ((A.imp .bot).all_past).imp .bot
+Try to decompose a formula as some_past (PA = S(A, ⊤)).
+Note: some_past A = snce A top = snce A (imp bot bot)
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomePast? : Formula → Option Formula
-  | .imp (.all_past (.imp φ .bot)) .bot => some φ
+  | .some_past φ => some φ
   | _ => none
 
 /--
-Try to decompose a formula as some_future (¬G¬A).
-Note: FA = A.neg.all_future.neg = ((A.imp .bot).all_future).imp .bot
+Try to decompose a formula as some_future (FA = U(A, ⊤)).
+Note: some_future A = untl A top = untl A (imp bot bot)
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomeFuture? : Formula → Option Formula
-  | .imp (.all_future (.imp φ .bot)) .bot => some φ
+  | .some_future φ => some φ
+  | _ => none
+
+/--
+Try to decompose a formula as all_future (GA = ¬F¬A = ¬(U(¬A, ⊤))).
+Note: all_future A = (some_future A.neg).neg
+Returns `some A` if it matches the pattern, otherwise `none`.
+-/
+def asAllFuture? : Formula → Option Formula
+  | .all_future φ => some φ
+  | _ => none
+
+/--
+Try to decompose a formula as all_past (HA = ¬P¬A = ¬(S(¬A, ⊤))).
+Note: all_past A = (some_past A.neg).neg
+Returns `some A` if it matches the pattern, otherwise `none`.
+-/
+def asAllPast? : Formula → Option Formula
+  | .all_past φ => some φ
   | _ => none
 
 /-!
@@ -202,11 +228,16 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   | .boxNeg, .neg, .box _ => true
   | .diamondPos, .pos, φ => (asDiamond? φ).isSome
   | .diamondNeg, .neg, φ => (asDiamond? φ).isSome
-  -- Temporal rules
+  -- Temporal rules (G/H universal)
   | .allFuturePos, .pos, .all_future _ => true
   | .allFutureNeg, .neg, .all_future _ => true
   | .allPastPos, .pos, .all_past _ => true
   | .allPastNeg, .neg, .all_past _ => true
+  -- Temporal rules (F/P existential)
+  | .someFuturePos, .pos, φ => (asSomeFuture? φ).isSome
+  | .someFutureNeg, .neg, φ => (asSomeFuture? φ).isSome
+  | .somePastPos, .pos, φ => (asSomePast? φ).isSome
+  | .somePastNeg, .neg, φ => (asSomePast? φ).isSome
   | _, _, _ => false
 
 /--
@@ -320,18 +351,46 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) 
         if newFormulas.isEmpty then .notApplicable
         else .persistent newFormulas
       | none => .notApplicable
-  -- T(GA) → T(A) (temporal: identity-collapse placeholder for task 234)
+  -- T(GA) → propagate T(A) to all known future times (universal, persistent)
+  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
   | .allFuturePos, .pos, .all_future ψ =>
       .linear [SignedFormula.pos ψ l]
-  -- F(GA) → F(A) (temporal: identity-collapse placeholder for task 234)
+  -- F(GA) → F(A) at fresh future time (existential, consumable)
+  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
   | .allFutureNeg, .neg, .all_future ψ =>
       .linear [SignedFormula.neg ψ l]
-  -- T(HA) → T(A) (temporal: identity-collapse placeholder for task 234)
+  -- T(HA) → propagate T(A) to all known past times (universal, persistent)
+  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
   | .allPastPos, .pos, .all_past ψ =>
       .linear [SignedFormula.pos ψ l]
-  -- F(HA) → F(A) (temporal: identity-collapse placeholder for task 234)
+  -- F(HA) → F(A) at fresh past time (existential, consumable)
+  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
   | .allPastNeg, .neg, .all_past ψ =>
       .linear [SignedFormula.neg ψ l]
+  -- T(FA) → T(A) at fresh future time (existential, consumable)
+  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  | .someFuturePos, .pos, φ =>
+      match asSomeFuture? φ with
+      | some ψ => .linear [SignedFormula.pos ψ l]
+      | none => .notApplicable
+  -- F(FA) → propagate F(A) to all known future times (universal, persistent)
+  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  | .someFutureNeg, .neg, φ =>
+      match asSomeFuture? φ with
+      | some ψ => .linear [SignedFormula.neg ψ l]
+      | none => .notApplicable
+  -- T(PA) → T(A) at fresh past time (existential, consumable)
+  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  | .somePastPos, .pos, φ =>
+      match asSomePast? φ with
+      | some ψ => .linear [SignedFormula.pos ψ l]
+      | none => .notApplicable
+  -- F(PA) → propagate F(A) to all known past times (universal, persistent)
+  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  | .somePastNeg, .neg, φ =>
+      match asSomePast? φ with
+      | some ψ => .linear [SignedFormula.neg ψ l]
+      | none => .notApplicable
   | _, _, _ => .notApplicable
 
 /-!
@@ -348,8 +407,10 @@ def allRules : List TableauRule := [
   .andPos, .orNeg,       -- Non-branching compound
   .boxPos, .boxNeg,      -- Modal
   .diamondPos, .diamondNeg,
-  .allFuturePos, .allFutureNeg,  -- Temporal
+  .allFuturePos, .allFutureNeg,  -- Temporal G/H
   .allPastPos, .allPastNeg,
+  .someFuturePos, .someFutureNeg,  -- Temporal F/P
+  .somePastPos, .somePastNeg,
   .impPos,               -- Branching implication
   .andNeg, .orPos        -- Branching compound
 ]

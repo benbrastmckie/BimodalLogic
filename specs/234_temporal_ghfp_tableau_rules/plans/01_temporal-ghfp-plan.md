@@ -110,19 +110,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Decomposition Helpers and Add F/P Rule Constructors [NOT STARTED]
+### Phase 2: Fix Decomposition Helpers and Add F/P Rule Constructors [COMPLETED]
 
 **Goal**: Fix broken `asSomeFuture?`/`asSomePast?` helpers, add `asAllFuture?`/`asAllPast?` helpers, and add 4 new F/P rule constructors to `TableauRule`.
 
 **Tasks**:
-- [ ] Rewrite `asSomeFuture?` (Tableau.lean, line ~178) to match `.some_future phi` (i.e., `.untl phi (.imp .bot .bot)`) instead of the current wrong pattern `.imp (.all_future (.imp phi .bot)) .bot`
-- [ ] Rewrite `asSomePast?` (Tableau.lean, line ~169) to match `.some_past phi` (i.e., `.snce phi (.imp .bot .bot)`) instead of the current wrong pattern `.imp (.all_past (.imp phi .bot)) .bot`
-- [ ] Add `asAllFuture? : Formula -> Option Formula` matching `.all_future phi`
-- [ ] Add `asAllPast? : Formula -> Option Formula` matching `.all_past phi`
-- [ ] Add `TableauRule.someFuturePos` constructor with docstring: `T(FA) -> T(A) at fresh future time (existential, consumable)`
-- [ ] Add `TableauRule.someFutureNeg` constructor with docstring: `F(FA) -> propagate F(A) to all future times (universal, persistent)`
-- [ ] Add `TableauRule.somePastPos` constructor with docstring: `T(PA) -> T(A) at fresh past time (existential, consumable)`
-- [ ] Add `TableauRule.somePastNeg` constructor with docstring: `F(PA) -> propagate F(A) to all past times (universal, persistent)`
+- [x] Rewrite `asSomeFuture?` (Tableau.lean, line ~178) to match `.some_future phi` (i.e., `.untl phi (.imp .bot .bot)`) instead of the current wrong pattern `.imp (.all_future (.imp phi .bot)) .bot`
+- [x] Rewrite `asSomePast?` (Tableau.lean, line ~169) to match `.some_past phi` (i.e., `.snce phi (.imp .bot .bot)`) instead of the current wrong pattern `.imp (.all_past (.imp phi .bot)) .bot`
+- [x] Add `asAllFuture? : Formula -> Option Formula` matching `.all_future phi`
+- [x] Add `asAllPast? : Formula -> Option Formula` matching `.all_past phi`
+- [x] Add `TableauRule.someFuturePos` constructor with docstring: `T(FA) -> T(A) at fresh future time (existential, consumable)`
+- [x] Add `TableauRule.someFutureNeg` constructor with docstring: `F(FA) -> propagate F(A) to all future times (universal, persistent)`
+- [x] Add `TableauRule.somePastPos` constructor with docstring: `T(PA) -> T(A) at fresh past time (existential, consumable)`
+- [x] Add `TableauRule.somePastNeg` constructor with docstring: `F(PA) -> propagate F(A) to all past times (universal, persistent)`
 
 **Timing**: 1 hour
 
