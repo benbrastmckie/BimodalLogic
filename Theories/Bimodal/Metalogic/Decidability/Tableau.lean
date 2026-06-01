@@ -248,53 +248,54 @@ Returns the result of the rule application:
 - `branching [[...], [...]]`: Split into these branches
 - `notApplicable`: Rule doesn't apply
 -/
-def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) : RuleResult :=
+def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty) : RuleResult × TimeOrdering :=
   let l := sf.label
   match rule, sf.sign, sf.formula with
   -- T(A ∧ B) → T(A), T(B)
   | .andPos, .pos, φ =>
       match asAnd? φ with
-      | some (ψ, χ) => .linear [SignedFormula.pos ψ l, SignedFormula.pos χ l]
-      | none => .notApplicable
+      | some (ψ, χ) => (.linear [SignedFormula.pos ψ l, SignedFormula.pos χ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(A ∧ B) → F(A) | F(B)
   | .andNeg, .neg, φ =>
       match asAnd? φ with
-      | some (ψ, χ) => .branching [[SignedFormula.neg ψ l], [SignedFormula.neg χ l]]
-      | none => .notApplicable
+      | some (ψ, χ) => (.branching [[SignedFormula.neg ψ l], [SignedFormula.neg χ l]], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- T(A ∨ B) → T(A) | T(B)
   | .orPos, .pos, φ =>
       match asOr? φ with
-      | some (ψ, χ) => .branching [[SignedFormula.pos ψ l], [SignedFormula.pos χ l]]
-      | none => .notApplicable
+      | some (ψ, χ) => (.branching [[SignedFormula.pos ψ l], [SignedFormula.pos χ l]], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(A ∨ B) → F(A), F(B)
   | .orNeg, .neg, φ =>
       match asOr? φ with
-      | some (ψ, χ) => .linear [SignedFormula.neg ψ l, SignedFormula.neg χ l]
-      | none => .notApplicable
+      | some (ψ, χ) => (.linear [SignedFormula.neg ψ l, SignedFormula.neg χ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- T(A → B) → F(A) | T(B)
   | .impPos, .pos, .imp ψ χ =>
-      .branching [[SignedFormula.neg ψ l], [SignedFormula.pos χ l]]
+      (.branching [[SignedFormula.neg ψ l], [SignedFormula.pos χ l]], timeOrd)
   -- F(A → B) → T(A), F(B)
   | .impNeg, .neg, .imp ψ χ =>
-      .linear [SignedFormula.pos ψ l, SignedFormula.neg χ l]
+      (.linear [SignedFormula.pos ψ l, SignedFormula.neg χ l], timeOrd)
   -- T(¬A) → F(A)
   | .negPos, .pos, φ =>
       match asNeg? φ with
-      | some ψ => .linear [SignedFormula.neg ψ l]
-      | none => .notApplicable
+      | some ψ => (.linear [SignedFormula.neg ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(¬A) → T(A)
   | .negNeg, .neg, φ =>
       match asNeg? φ with
-      | some ψ => .linear [SignedFormula.pos ψ l]
-      | none => .notApplicable
+      | some ψ => (.linear [SignedFormula.pos ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- T(□A) → propagate T(A) to all known worlds (S5 universal, persistent)
   | .boxPos, .pos, .box ψ =>
       let worlds := branch.knownWorlds
       let newFormulas := worlds.filterMap fun w =>
         let newSf := SignedFormula.pos ψ { world := w, time := l.time }
         if branch.contains newSf then none else some newSf
-      if newFormulas.isEmpty then .notApplicable
-      else .persistent newFormulas
+      if newFormulas.isEmpty then (.notApplicable, timeOrd)
+      else (.persistent newFormulas, timeOrd)
   -- F(□A) → F(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .boxNeg, .neg, .box ψ =>
       let freshWorld := branch.nextWorld
@@ -315,7 +316,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) 
           let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
           if branch.contains prop then none else some prop
         | _ => none
-      .linear (witness :: boxProps ++ diaProps)
+      (.linear (witness :: boxProps ++ diaProps), timeOrd)
   -- T(◇A) → T(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .diamondPos, .pos, φ =>
       match asDiamond? φ with
@@ -338,8 +339,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) 
             let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
             if branch.contains prop then none else some prop
           | _ => none
-        .linear (witness :: boxProps ++ diaProps)
-      | none => .notApplicable
+        (.linear (witness :: boxProps ++ diaProps), timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent)
   | .diamondNeg, .neg, φ =>
       match asDiamond? φ with
@@ -348,50 +349,50 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := []) 
         let newFormulas := worlds.filterMap fun w =>
           let newSf := SignedFormula.neg ψ { world := w, time := l.time }
           if branch.contains newSf then none else some newSf
-        if newFormulas.isEmpty then .notApplicable
-        else .persistent newFormulas
-      | none => .notApplicable
+        if newFormulas.isEmpty then (.notApplicable, timeOrd)
+        else (.persistent newFormulas, timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- T(GA) → propagate T(A) to all known future times (universal, persistent)
-  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  -- Phase 4 will replace with TimeOrdering-based propagation
   | .allFuturePos, .pos, .all_future ψ =>
-      .linear [SignedFormula.pos ψ l]
+      (.linear [SignedFormula.pos ψ l], timeOrd)
   -- F(GA) → F(A) at fresh future time (existential, consumable)
-  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  -- Phase 4 will replace with fresh time introduction
   | .allFutureNeg, .neg, .all_future ψ =>
-      .linear [SignedFormula.neg ψ l]
+      (.linear [SignedFormula.neg ψ l], timeOrd)
   -- T(HA) → propagate T(A) to all known past times (universal, persistent)
-  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  -- Phase 4 will replace with TimeOrdering-based propagation
   | .allPastPos, .pos, .all_past ψ =>
-      .linear [SignedFormula.pos ψ l]
+      (.linear [SignedFormula.pos ψ l], timeOrd)
   -- F(HA) → F(A) at fresh past time (existential, consumable)
-  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  -- Phase 4 will replace with fresh time introduction
   | .allPastNeg, .neg, .all_past ψ =>
-      .linear [SignedFormula.neg ψ l]
+      (.linear [SignedFormula.neg ψ l], timeOrd)
   -- T(FA) → T(A) at fresh future time (existential, consumable)
-  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  -- Phase 4 will replace with fresh time introduction
   | .someFuturePos, .pos, φ =>
       match asSomeFuture? φ with
-      | some ψ => .linear [SignedFormula.pos ψ l]
-      | none => .notApplicable
+      | some ψ => (.linear [SignedFormula.pos ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(FA) → propagate F(A) to all known future times (universal, persistent)
-  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  -- Phase 4 will replace with TimeOrdering-based propagation
   | .someFutureNeg, .neg, φ =>
       match asSomeFuture? φ with
-      | some ψ => .linear [SignedFormula.neg ψ l]
-      | none => .notApplicable
+      | some ψ => (.linear [SignedFormula.neg ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- T(PA) → T(A) at fresh past time (existential, consumable)
-  -- Phase 4 will add fresh time introduction; for now, identity-collapse placeholder
+  -- Phase 4 will replace with fresh time introduction
   | .somePastPos, .pos, φ =>
       match asSomePast? φ with
-      | some ψ => .linear [SignedFormula.pos ψ l]
-      | none => .notApplicable
+      | some ψ => (.linear [SignedFormula.pos ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
   -- F(PA) → propagate F(A) to all known past times (universal, persistent)
-  -- Phase 4 will add TimeOrdering-based propagation; for now, identity-collapse placeholder
+  -- Phase 4 will replace with TimeOrdering-based propagation
   | .somePastNeg, .neg, φ =>
       match asSomePast? φ with
-      | some ψ => .linear [SignedFormula.neg ψ l]
-      | none => .notApplicable
-  | _, _, _ => .notApplicable
+      | some ψ => (.linear [SignedFormula.neg ψ l], timeOrd)
+      | none => (.notApplicable, timeOrd)
+  | _, _, _ => (.notApplicable, timeOrd)
 
 /-!
 ## Branch Expansion
@@ -417,28 +418,31 @@ def allRules : List TableauRule := [
 
 /--
 Find a rule that applies to a signed formula.
-Returns the first applicable rule and its result.
+Returns the first applicable rule, its result, and the updated TimeOrdering.
 -/
-def findApplicableRule (sf : SignedFormula) (branch : Branch := []) : Option (TableauRule × RuleResult) :=
+def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty) : Option (TableauRule × RuleResult × TimeOrdering) :=
   allRules.findSome? fun rule =>
-    let result := applyRule rule sf branch
+    let (result, newOrd) := applyRule rule sf branch timeOrd
     match result with
     | .notApplicable => none
-    | _ => some (rule, result)
+    | _ => some (rule, result, newOrd)
 
 /--
 Check if a signed formula is fully expanded (no rules apply).
 Atoms, bot with appropriate signs, and already-reduced formulas are expanded.
 -/
-def isExpanded (sf : SignedFormula) (branch : Branch := []) : Bool :=
-  (findApplicableRule sf branch).isNone
+def isExpanded (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty) : Bool :=
+  (findApplicableRule sf branch timeOrd).isNone
 
 /--
 Find an unexpanded formula in a branch.
 Returns the first formula that can still be expanded.
 -/
-def findUnexpanded (b : Branch) : Option SignedFormula :=
-  b.find? (fun sf => ¬isExpanded sf b)
+def findUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    : Option SignedFormula :=
+  b.find? (fun sf => ¬isExpanded sf b timeOrd)
 
 /--
 Result of a single expansion step on a branch.
@@ -456,40 +460,41 @@ inductive ExpansionResult : Type where
 Perform a single expansion step on a branch.
 
 Finds the first unexpanded formula and applies the appropriate rule.
-Returns the result of the expansion.
+Returns the result of the expansion together with the (possibly updated) TimeOrdering.
 -/
-def expandOnce (b : Branch) : ExpansionResult :=
-  match findUnexpanded b with
-  | none => .saturated
+def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    : ExpansionResult × TimeOrdering :=
+  match findUnexpanded b timeOrd with
+  | none => (.saturated, timeOrd)
   | some sf =>
-      match findApplicableRule sf b with
-      | none => .saturated  -- Shouldn't happen if findUnexpanded returned something
-      | some (_, result) =>
+      match findApplicableRule sf b timeOrd with
+      | none => (.saturated, timeOrd)  -- Shouldn't happen if findUnexpanded returned something
+      | some (_, result, newOrd) =>
           match result with
           | .linear formulas =>
               -- Remove the expanded formula and add new ones
               let remaining := b.filter (· != sf)
-              .extended (formulas ++ remaining)
+              (.extended (formulas ++ remaining), newOrd)
           | .branching branches =>
               -- Remove the expanded formula from each branch and add new formulas
               let remaining := b.filter (· != sf)
-              .split (branches.map fun newFormulas => newFormulas ++ remaining)
+              (.split (branches.map fun newFormulas => newFormulas ++ remaining), newOrd)
           | .persistent formulas =>
               -- Add new formulas but keep the source formula (universal modal rule)
-              .extended (formulas ++ b)
-          | .notApplicable => .saturated  -- Shouldn't happen
+              (.extended (formulas ++ b), newOrd)
+          | .notApplicable => (.saturated, newOrd)  -- Shouldn't happen
 
 /--
 Count of unexpanded formulas in a branch (termination measure).
 -/
-def countUnexpanded (b : Branch) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b) |>.length
+def countUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) : Nat :=
+  b.filter (fun sf => ¬isExpanded sf b timeOrd) |>.length
 
 /--
 Total unexpanded complexity (alternative termination measure).
 -/
-def totalUnexpandedComplexity (b : Branch) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b)
+def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) : Nat :=
+  b.filter (fun sf => ¬isExpanded sf b timeOrd)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
 end Bimodal.Metalogic.Decidability

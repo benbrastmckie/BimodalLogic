@@ -89,7 +89,8 @@ Returns:
 - `some (inr openBranch)`: Branch saturated (open)
 - `none`: Ran out of fuel
 -/
-def expandBranchWithFuel (b : Branch) (fuel : Nat) : Option (ClosedBranch ⊕ Branch) :=
+def expandBranchWithFuel (b : Branch) (fuel : Nat)
+    (timeOrd : TimeOrdering := TimeOrdering.empty) : Option (ClosedBranch ⊕ Branch) :=
   match fuel with
   | 0 => none  -- Out of fuel
   | fuel + 1 =>
@@ -98,10 +99,10 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat) : Option (ClosedBranch ⊕ Br
       | some reason => some (.inl ⟨b, reason⟩)
       | none =>
           -- Try to expand
-          match expandOnce b with
-          | .saturated => some (.inr b)  -- Open saturated branch
-          | .extended newBranch => expandBranchWithFuel newBranch fuel
-          | .split branches =>
+          match expandOnce b timeOrd with
+          | (.saturated, _) => some (.inr b)  -- Open saturated branch
+          | (.extended newBranch, newOrd) => expandBranchWithFuel newBranch fuel newOrd
+          | (.split branches, newOrd) =>
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch
               -- This is a simplification - full implementation would track all branches
@@ -109,7 +110,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat) : Option (ClosedBranch ⊕ Br
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
                 | _ =>
-                    match expandBranchWithFuel newBranch fuel with
+                    match expandBranchWithFuel newBranch fuel newOrd with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open

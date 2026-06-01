@@ -138,18 +138,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Thread TimeOrdering Through Expansion [NOT STARTED]
+### Phase 3: Thread TimeOrdering Through Expansion [COMPLETED]
 
 **Goal**: Modify `applyRule`, `expandOnce`, and `expandBranchWithFuel` (in Saturation.lean) to accept and propagate a `TimeOrdering` parameter, enabling correct temporal constraint tracking.
 
 **Tasks**:
-- [ ] Add `timeOrd : TimeOrdering := TimeOrdering.empty` parameter to `applyRule` signature
-- [ ] Update `findApplicableRule` to pass `timeOrd` to `applyRule`
-- [ ] Modify `RuleResult` or `applyRule` return to include updated `TimeOrdering` when existential temporal rules create new time points. Approach: return `RuleResult x TimeOrdering` from temporal cases, or add a `.temporalLinear` variant that carries the updated ordering. Simplest: make `applyRule` return `(RuleResult, TimeOrdering)` and pass the updated ordering through expansion.
-- [ ] Update `expandOnce` (Saturation.lean, line ~400) to accept and propagate `TimeOrdering`
-- [ ] Update `expandBranchWithFuel` (Saturation.lean) to thread `TimeOrdering` through recursive calls
-- [ ] Update `buildTableau` entry point to initialize with `TimeOrdering.empty`
-- [ ] Ensure `ExpandedTableau`, `BranchListResult`, and downstream types compile
+- [x] Add `timeOrd : TimeOrdering := TimeOrdering.empty` parameter to `applyRule` signature
+- [x] Update `findApplicableRule` to pass `timeOrd` to `applyRule`
+- [x] Modify `RuleResult` or `applyRule` return to include updated `TimeOrdering` when existential temporal rules create new time points. Approach: return `RuleResult x TimeOrdering` from temporal cases, or add a `.temporalLinear` variant that carries the updated ordering. Simplest: make `applyRule` return `(RuleResult, TimeOrdering)` and pass the updated ordering through expansion. *(deviation: altered -- chose `(RuleResult, TimeOrdering)` pair approach for all rules, not just temporal)*
+- [x] Update `expandOnce` (Saturation.lean, line ~400) to accept and propagate `TimeOrdering` *(deviation: altered -- expandOnce kept in Tableau.lean, not moved to Saturation.lean)*
+- [x] Update `expandBranchWithFuel` (Saturation.lean) to thread `TimeOrdering` through recursive calls
+- [x] Update `buildTableau` entry point to initialize with `TimeOrdering.empty` *(deviation: altered -- buildTableau uses default parameter rather than explicit initialization)*
+- [x] Ensure `ExpandedTableau`, `BranchListResult`, and downstream types compile
 
 **Timing**: 2 hours
 
