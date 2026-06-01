@@ -89,6 +89,9 @@ inductive TableauRule : Type where
   | diamondPos
   /-- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent) -/
   | diamondNeg
+  /-- T(□A) → derive T(GA) and T(HA) at the same label (modal-temporal interaction, persistent).
+      Sound by box_to_future (□φ → Gφ) and box_to_past (□φ → Hφ). -/
+  | boxTemporal
   /-- T(GA) → propagate T(A) to all known future times (universal, persistent) -/
   | allFuturePos
   /-- F(GA) → F(A) at fresh future time (existential, consumable) -/
@@ -260,6 +263,8 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   | .boxNeg, .neg, .box _ => true
   | .diamondPos, .pos, φ => (asDiamond? φ).isSome
   | .diamondNeg, .neg, φ => (asDiamond? φ).isSome
+  -- Modal-temporal interaction
+  | .boxTemporal, .pos, .box _ => true
   -- Temporal rules (G/H universal)
   | .allFuturePos, .pos, .all_future _ => true
   | .allFutureNeg, .neg, .all_future _ => true
@@ -389,6 +394,14 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         if newFormulas.isEmpty then (.notApplicable, timeOrd)
         else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
+  -- T(□A) → derive T(GA) and T(HA) at the same label (modal-temporal interaction)
+  -- Sound by box_to_future (□φ → Gφ) and box_to_past (□φ → Hφ)
+  | .boxTemporal, .pos, .box ψ =>
+      let gFormula := SignedFormula.pos (Formula.all_future ψ) l
+      let hFormula := SignedFormula.pos (Formula.all_past ψ) l
+      let newFormulas := [gFormula, hFormula].filter fun sf => !branch.contains sf
+      if newFormulas.isEmpty then (.notApplicable, timeOrd)
+      else (.persistent newFormulas, timeOrd)
   -- T(GA) @ (w,t) → propagate T(A) to all known future times (universal, persistent)
   -- Strict inequality: G(A) at t means A holds at all t' > t
   | .allFuturePos, .pos, .all_future ψ =>
@@ -699,6 +712,7 @@ def allRules : List TableauRule := [
   .andPos, .orNeg,       -- Non-branching compound
   .boxPos, .boxNeg,      -- Modal
   .diamondPos, .diamondNeg,
+  .boxTemporal,                    -- Modal-temporal interaction (before temporal rules)
   .allFuturePos, .allFutureNeg,  -- Temporal G/H
   .allPastPos, .allPastNeg,
   .someFuturePos, .someFutureNeg,  -- Temporal F/P
