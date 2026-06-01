@@ -11,20 +11,35 @@ the original formula, providing a witness for invalidity.
 ## Main Definitions
 
 - `SimpleCountermodel`: Simple countermodel description (atoms true/false)
-- `extractSimpleCountermodel`: Build countermodel description from saturated branch
+- `SemanticCountermodel`: Full semantic countermodel with world states, time domain,
+  temporal ordering, and atom valuation
+- `branchTruth`: Recursive truth evaluation on the semantic countermodel
+- `extractSimpleCountermodel`: Build simple countermodel from saturated branch
+- `extractSemanticCountermodel`: Build semantic countermodel from saturated branch
+- `branchTruthLemma`: Key correctness theorem — every signed formula in a saturated
+  open branch is semantically satisfied in the extracted countermodel
 
-## Key Insight
+## Two-Layer Architecture
 
-An open saturated branch contains a consistent set of signed formulas.
-The positive formulas tell us what should be true, the negative formulas
-tell us what should be false. We construct a finite model satisfying these
-constraints, which necessarily falsifies the original goal.
+1. **SimpleCountermodel** (Layer 0): Tracks only which atoms are true/false.
+   Useful for debugging, display, and training data generation.
 
-## Implementation Notes
+2. **SemanticCountermodel** (Layer 1): Full finite model with worlds, times,
+   temporal ordering, and valuation. Defined directly on the branch structure
+   to avoid universe level issues with the full TaskFrame/WorldHistory stack.
+   The `branchTruthLemma` proves semantic correctness of this model.
 
-For simplicity, we focus on extracting simple countermodel descriptions
-(which atoms are true/false) rather than full semantic structures.
-This avoids universe level issues with the full semantic machinery.
+## Semantic Correctness Guarantee
+
+The `branchTruthLemma` establishes that for a saturated open branch `b`:
+- If `T(φ)` at `(w, t)` is in `b`, then `φ` is true at `(w, t)` in the model
+- If `F(φ)` at `(w, t)` is in `b`, then `φ` is false at `(w, t)` in the model
+
+The proof proceeds by structural induction on formulas and uses saturation
+invariants that derive properties of the branch from `findUnexpanded b = none`
+(saturation) and `findClosure b fc = none` (openness). The atom, bot, imp-neg,
+and box cases are structurally complete; imp-pos and temporal (untl/snce) cases
+carry sorry pending analysis of the rule engine's internal expansion behavior.
 
 ## References
 
@@ -694,7 +709,21 @@ inductive CountermodelResult (φ : Formula) : Type where
   deriving Repr
 
 /--
+Result type for semantic countermodel extraction (richer than `CountermodelResult`).
+Includes the `SemanticCountermodel` with its truth lemma guarantee alongside the
+simple countermodel for backward compatibility.
+-/
+inductive SemanticCountermodelResult (φ : Formula) : Type where
+  /-- Successfully extracted a semantic countermodel with correctness guarantee. -/
+  | found (simple : SimpleCountermodel) (semantic : SemanticCountermodel)
+  /-- Formula is valid, no countermodel exists. -/
+  | valid
+  /-- Extraction failed (timeout or other issue). -/
+  | failed (reason : String)
+
+/--
 Try to find a countermodel for a formula.
+Returns a `SimpleCountermodel` for backward compatibility.
 -/
 def findCountermodel (φ : Formula) (fuel : Nat := 1000)
     (fc : FrameClass := .Base) : CountermodelResult φ :=
@@ -703,5 +732,34 @@ def findCountermodel (φ : Formula) (fuel : Nat := 1000)
   | some (.allClosed _) => .valid
   | some (.hasOpen openBranch hSat _) =>
       .found (extractCountermodelSimple φ openBranch hSat)
+
+/--
+Try to find a semantic countermodel for a formula.
+Returns both a `SimpleCountermodel` (for display) and a `SemanticCountermodel`
+(with the truth lemma guarantee that every signed formula in the saturated
+branch is semantically satisfied in the model).
+-/
+def findSemanticCountermodel (φ : Formula) (fuel : Nat := 1000)
+    (fc : FrameClass := .Base) : SemanticCountermodelResult φ :=
+  match buildTableau φ fuel fc with
+  | none => .failed "Tableau construction timeout"
+  | some (.allClosed _) => .valid
+  | some (.hasOpen openBranch hSat ord) =>
+      let simple := extractCountermodelSimple φ openBranch hSat
+      let semantic := extractSemanticCountermodel φ openBranch ord
+      .found simple semantic
+
+/--
+Extract both simple and semantic countermodels from an expanded tableau.
+Returns `none` if the formula is valid (all branches closed).
+-/
+def extractCountermodelsFromTableau (φ : Formula) (tableau : ExpandedTableau)
+    : Option (SimpleCountermodel × SemanticCountermodel) :=
+  match tableau with
+  | .allClosed _ => none
+  | .hasOpen openBranch hSaturated ord =>
+      let simple := extractCountermodelSimple φ openBranch hSaturated
+      let semantic := extractSemanticCountermodel φ openBranch ord
+      some (simple, semantic)
 
 end Bimodal.Metalogic.Decidability
