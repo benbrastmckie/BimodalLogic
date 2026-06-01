@@ -64,7 +64,7 @@ technical_debt:
 
 ### Tableau Training
 
-236 [NOT STARTED] — Implement cross-modal-temporal tableau rules based on modal_futur
+236 [COMPLETED] — Implement cross-modal-temporal tableau rules based on modal_futur
 237 [NOT STARTED] — Implement blocking strategy ensuring tableau expansion terminates
   └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
     └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
@@ -312,7 +312,7 @@ technical_debt:
 
 ### 236. Modal-temporal interaction tableau rules
 - **Effort**: small (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
