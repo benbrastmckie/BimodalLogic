@@ -1232,7 +1232,8 @@
     {
       "project_number": 228,
       "project_name": "fix_dataset_metadata_staleness",
-      "status": "planned",
+      "status": "completed",
+      "completion_summary": "Updated 6 files: proof_steps_metadata.json (10063 records, 310 theorems, correct rule distribution, CC BY 4.0), bmlogic-bench_metadata.json (renamed total_count->total_records, added CC BY 4.0), bmlogic-c5/c7_metadata.json (CC BY 4.0), data/README.md and data/dataset-card.md (correct counts, 16-field training schema, cc-by-4.0 license throughout).",
       "task_type": "general",
       "description": "Fix all stale metadata and documentation across data/. (1) Update proof_steps_metadata.json: total_records 2424->10063, theorem_count 36->310, rule_distribution to actual (axiom:4635, modus_ponens:4325, temporal_necessitation:991, temporal_duality:63, necessitation:49), step_statistics (avg 32.5, max 327, min 1). (2) Standardize bmlogic-bench_metadata.json: rename total_count to total_records for consistency. (3) Update data/README.md: fix record counts (proof_steps 2424->10063, theorems 36->310, benchmark 727->777), update training schema table from 14 to 16 fields documenting max_modal_depth and max_temporal_depth. (4) Update data/dataset-card.md: overview table counts, proof steps statistics. (5) Resolve license inconsistency: dataset-card.md YAML says 'mit' but croissant.json says 'CC BY 4.0' — pick one and make all files consistent.",
       "priority": "high",

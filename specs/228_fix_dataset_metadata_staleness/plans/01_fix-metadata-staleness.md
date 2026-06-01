@@ -1,7 +1,7 @@
 # Implementation Plan: Task #228
 
 - **Task**: 228 - Fix all stale metadata and documentation across data/
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/228_fix_dataset_metadata_staleness/reports/01_metadata-staleness-audit.md
@@ -134,16 +134,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Cross-file verification and consistency check [NOT STARTED]
+### Phase 3: Cross-file verification and consistency check [COMPLETED]
 
 **Goal**: Verify all changes are internally consistent across all 6 files and no stale values remain.
 
 **Tasks**:
-- [ ] Run verification: grep for known stale values (727, 2424, "14 fields", "MIT") across all data/ files
-- [ ] Verify all JSON files are valid (python3 -m json.tool on each)
-- [ ] Verify license consistency: all files referencing license say CC BY 4.0 or cc-by-4.0
-- [ ] Verify total_records key consistency: no metadata file uses total_count
-- [ ] Run quick sanity check: wc -l on JSONL files matches metadata total_records values
+- [x] Run verification: grep for known stale values (727, 2424, "14 fields", "MIT") across all data/ files *(completed: only remaining instances are in croissant.json which is out of scope per plan non-goals)*
+- [x] Verify all JSON files are valid (python3 -m json.tool on each) *(completed: all 4 pass)*
+- [x] Verify license consistency: all files referencing license say CC BY 4.0 or cc-by-4.0 *(completed: all 4 metadata JSON + dataset-card.md YAML + body consistent)*
+- [x] Verify total_records key consistency: no metadata file uses total_count *(completed: grep confirms none)*
+- [x] Run quick sanity check: wc -l on JSONL files matches metadata total_records values *(completed: proof_steps 10063=10063, bmlogic-bench 777=777)*
 
 **Timing**: 15 minutes
 

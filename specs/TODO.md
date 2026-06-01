@@ -170,7 +170,7 @@ technical_debt:
 
 ### Dataset Enhancements (from competitive landscape analysis, task 215)
 
-228 [PLANNED] — Fix dataset metadata and documentation staleness
+228 [COMPLETED] — Fix dataset metadata and documentation staleness
 229 [NOT STARTED] — Resolve train/benchmark formula contamination (71.2% overlap)
 230 [NOT STARTED] — Benchmark refresh: splits, paraphrases, schema alignment
   └─ 229
