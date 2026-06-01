@@ -39,7 +39,7 @@ technical_debt:
 
 ### Completeness
 
-155 [RESEARCHED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
+155 [PLANNED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -129,9 +129,10 @@ technical_debt:
 
 ### 258. Create a Hugging Face publishing guide in docs/
 - **Effort**: S
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Type**: general
 - **Priority**: medium
+- **Research**: [258_huggingface_publishing_guide/reports/01_publishing-guide-research.md]
 - **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
@@ -579,10 +580,12 @@ technical_debt:
 
 ### 155. Fix no_gaps_discrete import cycle for sorry-free discrete completeness
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 199
+- **Research**: [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
+- **Plan**: [155_reynolds_pipeline_activation/plans/50_implementation-plan.md]
 
 **Description**: Close the `no_gaps_discrete` import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewire `completeness_discrete` to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing `no_gaps_discrete` to call `no_gaps_discrete_model_surgery` without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in `no_gaps_discrete`. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate `no_gaps_discrete` to `no_gaps_discrete_model_surgery`. (4) Rewire `completeness_discrete` to use the WeakCanonical path via `no_gaps_discrete`. (5) Verify `#print axioms completeness_discrete` shows no `sorryAx`. Definition of done: `no_gaps_discrete` delegates to `no_gaps_discrete_model_surgery` (no sorry), `completeness_discrete` uses WeakCanonical path (no sorry), `lake build` passes.
 

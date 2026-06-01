@@ -8,11 +8,19 @@
     {
       "project_number": 258,
       "project_name": "huggingface_publishing_guide",
-      "status": "researching",
+      "status": "researched",
       "task_type": "general",
       "created": "2026-06-01T23:02:55Z",
-      "last_updated": "2026-06-01T23:05:56Z",
-      "session_id": "sess_1748818200_d4e6f8"
+      "last_updated": "2026-06-01T23:08:28Z",
+      "session_id": "sess_1748818200_d4e6f8",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/258_huggingface_publishing_guide/reports/01_publishing-guide-research.md",
+          "type": "research",
+          "summary": "Research report on HF publishing guide placement and structure"
+        }
+      ]
     },
     {
       "project_number": 257,
@@ -252,7 +260,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -548,13 +556,43 @@
           "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md",
           "type": "research",
           "summary": "Re-scoped research (post-256): import cycle analysis, sorry chain mapping, Strategy A recommended (fix chronicle_gap_contradiction via GoodStructuresModelSurgery import)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/50_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: rewrite chronicle_gap_contradiction to use no_gaps_discrete_model_surgery, verify completeness_discrete sorry-free, documentation updates"
         }
       ],
-      "session_id": "sess_1779994794_96be99",
+      "session_id": "sess_1748820600_orch155",
       "researched": "2026-06-01T12:30:00Z",
+      "planned": "2026-06-01T13:10:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
-      "plan_metadata": null
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 50,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/50_import-cycle-research.md",
+            "integrated_in_plan_version": 50,
+            "integrated_date": "2026-06-01"
+          }
+        ]
+      }
     },
     {
       "project_number": 175,

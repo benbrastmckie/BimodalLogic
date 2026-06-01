@@ -1,10 +1,13 @@
 {
-  "status": "researched",
-  "summary": "Import cycle and sorry chain fully mapped. Strategy A recommended: add import GoodStructuresModelSurgery to ChronicleToCountermodel.lean (no cycle), rewrite chronicle_gap_contradiction to use no_gaps_discrete_model_surgery (sorry-free), making succ_cofinal and completeness_discrete sorry-free without changing completeness_discrete code. WeakCanonical path via countermodel_discrete_reynolds is permanently blocked (unsolvable TaskFrame packaging sorry).",
+  "status": "planned",
+  "summary": "3-phase plan created. Phase 1 (4h): rewrite chronicle_gap_contradiction to construct OrderedMonadicStructure on LimitDomSubtype, prove semantic_prior_UZ/SZ, apply no_gaps_discrete_model_surgery (sorry-free), derive IsSuccArchimedean contradiction. Phase 2 (30m): verify completeness_discrete is sorry-free via #print axioms. Phase 3 (1.5h): full lake build, update docstrings and sorry-status comments.",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "plan",
+  "next_action_hint": "implement",
   "phases_completed": 0,
-  "phases_total": 0,
-  "artifacts": [{"type": "report", "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md"}]
+  "phases_total": 3,
+  "artifacts": [
+    {"type": "report", "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md"},
+    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/50_implementation-plan.md"}
+  ]
 }
