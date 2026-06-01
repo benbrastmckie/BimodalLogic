@@ -39,7 +39,7 @@ technical_debt:
 
 ### Completeness
 
-256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
+256 [RESEARCHED] — Re-scope task 155 and update related task descriptions after task
   └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
@@ -91,7 +91,7 @@ technical_debt:
 ### Code Quality
 
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
-252 [PLANNED] — Fix linter warnings across the codebase and improve dataset gener
+252 [COMPLETED] — Fix linter warnings across the codebase and improve dataset gener
 255 [NOT STARTED] — Archive dead code to Boneyard/ after task 202 completed Reynolds 
 
 ### Dataset Enhancement
@@ -364,7 +364,7 @@ technical_debt:
 
 ### 252. Fix linter warnings and improve generation scripts
 - **Effort**: medium (4-8 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: medium
 - **Topic**: code-quality

@@ -1202,8 +1202,9 @@
     {
       "project_number": 252,
       "project_name": "fix_linter_warnings_and_generation_script",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
+      "completion_summary": "Fixed 36 linter warnings across 8 Lean files (unused binders, unused simp args, no-op tactics, unused variables) and improved run_dataset_generation.sh with signal trapping, prerequisite checking, post-run JSON validation, and --dry-run mode. Warning count reduced from 799 to 763. Zero regressions.",
       "description": "Fix linter warnings across the codebase and improve dataset generation scripts. Warnings to fix: (1) Unused variables h_sc, h_mem in Semantics/Validity.lean (lines 76-77, 100-101, 166-167, 184-185, 259-260), (2) Unused simp args f_nesting_depth, p_nesting_depth, Formula.and in SubformulaClosure/TemporalFormulas.lean (lines 565-566, 647-650, 803, 895), (3) Unused tactic all_goals simp_wf in ProofSearch/Core.lean (lines 1016, 1141), (4) Unused variable fc in CountermodelExtraction.lean (line 128), (5) Unused variables proof, h in ProofSearch/Strategies.lean (lines 365-376). Also review generation scripts for robustness improvements (error handling, progress reporting, interruption handling). Fix the underlying issues rather than suppressing warnings.",
       "priority": "medium",
       "topic": "code-quality",
