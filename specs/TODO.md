@@ -65,15 +65,16 @@ technical_debt:
 
 ### Tableau Training
 
-239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not
+239 [RESEARCHED] — Replace stub proof extraction (returns 'Full proof extraction not
+  - **Report**: [specs/239_proof_extraction_from_tableau/reports/01_proof-extraction-research.md]
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
   └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
     └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
     └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
     └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
+240 [RESEARCHED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
   └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
   └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
     └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
