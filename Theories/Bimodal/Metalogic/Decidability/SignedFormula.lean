@@ -442,6 +442,91 @@ def sncePosFormulas (b : Branch) : List SignedFormula :=
     | .pos, .snce _ guard => guard != Formula.top
     | _, _ => false
 
+/--
+Collect all T(GA) formulas at a specific time (across all worlds).
+Used by world-creation rules to propagate temporal universals to fresh worlds.
+-/
+def allFuturePosAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .all_future _ => sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all T(HA) formulas at a specific time (across all worlds).
+Used by world-creation rules to propagate temporal universals to fresh worlds.
+-/
+def allPastPosAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .all_past _ => sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all F(FA) formulas at a specific time (across all worlds).
+Used by world-creation rules to propagate temporal universals to fresh worlds.
+F(FA) means GA holds (negation of existential = universal).
+-/
+def someFutureNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .some_future _ => sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all F(PA) formulas at a specific time (across all worlds).
+Used by world-creation rules to propagate temporal universals to fresh worlds.
+F(PA) means HA holds (negation of existential = universal).
+-/
+def somePastNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .some_past _ => sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all F(U(event, guard)) formulas at a specific time (across all worlds),
+where guard is NOT Formula.top (i.e., not some_future).
+Used by world-creation rules to propagate Until-neg universals to fresh worlds.
+-/
+def untlNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl _ guard => guard != Formula.top && sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all F(S(event, guard)) formulas at a specific time (across all worlds),
+where guard is NOT Formula.top (i.e., not some_past).
+Used by world-creation rules to propagate Since-neg universals to fresh worlds.
+-/
+def snceNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce _ guard => guard != Formula.top && sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all T(□A) formulas at a specific world and time.
+Used by time-creation rules to propagate box formulas to fresh times.
+-/
+def boxPosAtWorldTime (b : Branch) (w : WorldIndex) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .box _ => sf.label.world == w && sf.label.time == t
+    | _, _ => false
+
+/--
+Collect all F(◇A) formulas at a specific world and time.
+Used by time-creation rules to propagate diamond-neg formulas to fresh times.
+Diamond encoding: ◇A = ¬□¬A = (.imp (.box (.imp A .bot)) .bot)
+-/
+def diamondNegAtWorldTime (b : Branch) (w : WorldIndex) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .imp (.box (.imp _ .bot)) .bot => sf.label.world == w && sf.label.time == t
+    | _, _ => false
+
 end Branch
 
 /-!
@@ -492,6 +577,50 @@ def hasPending (tracker : EventualityTracker) : Bool :=
 end EventualityTracker
 
 /-!
+## Subset Blocking for Temporal Tableau Termination
+
+Subset blocking prevents infinite temporal chains in tableau expansion.
+When a new time point t' has signed formulas that are a subset of an
+ancestor time point t, further expansion from t' is blocked. This is
+sound because any model satisfying the formulas at t also satisfies
+the (fewer) formulas at t', so the branch cannot yield new information.
+
+The "time type" of a time point is the set of formulas asserted at that
+time. Subset blocking checks: type(t') ⊆ type(t_ancestor).
+-/
+
+namespace Branch
+
+/--
+Collect all signed formulas on a branch at a given time index.
+Returns the list of signed formulas whose label has the specified time.
+-/
+def formulasAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
+  b.filter fun sf => sf.label.time == t
+
+/--
+Extract the "time type" of a time point: the set of (sign, formula) pairs
+at that time, deduplicated. This ignores the world component so that
+blocking works across worlds (though in practice blocking is per-world).
+-/
+def timeType (b : Branch) (t : TimeIndex) : List (Sign × Formula) :=
+  ((b.formulasAtTime t).map fun sf => (sf.sign, sf.formula)).eraseDups
+
+/--
+Check if the time type at `t1` is a subset of the time type at `t2`.
+That is, every (sign, formula) pair at `t1` also appears at `t2`.
+
+When `isSubsetBlocked b t_new t_anc = true`, expanding `t_new` further
+cannot produce information not already available at `t_anc`.
+-/
+def isSubsetBlocked (b : Branch) (t_new t_anc : TimeIndex) : Bool :=
+  let typeNew := b.timeType t_new
+  let typeAnc := b.timeType t_anc
+  typeNew.all fun pair => typeAnc.any fun pair' => pair == pair'
+
+end Branch
+
+/-!
 ## Time Ordering Constraints
 -/
 
@@ -538,6 +667,72 @@ def pastOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
     if b == t then some a else none
 
 end TimeOrdering
+
+/-!
+## Subset Blocking (requires TimeOrdering)
+-/
+
+/--
+Compute the transitive closure of temporal predecessors of a given time index.
+
+Starting from time `t`, follows all backward edges in the `TimeOrdering`
+constraints to find all ancestor times. Uses fuel to avoid infinite loops
+in case of malformed orderings.
+-/
+def ancestorTimes (ord : TimeOrdering) (t : TimeIndex) (fuel : Nat := 100) : List TimeIndex :=
+  match fuel with
+  | 0 => []
+  | fuel + 1 =>
+    let directPredecessors := ord.constraints.filterMap fun (a, b) =>
+      if b == t then some a else none
+    let directSuccessors := ord.constraints.filterMap fun (a, b) =>
+      if a == t then some b else none
+    let immediateAncestors := (directPredecessors ++ directSuccessors).eraseDups
+    let transitiveAncestors := immediateAncestors.flatMap fun anc =>
+      anc :: ancestorTimes ord anc fuel
+    transitiveAncestors.eraseDups
+
+/--
+Check if a given time index is temporally blocked by any ancestor time.
+
+A time `t` is blocked if there exists some ancestor time `t_anc` such that
+the time type at `t` is a subset of the time type at `t_anc`.
+When blocked, further expansion from time `t` cannot produce new information.
+-/
+def isTemporallyBlocked (b : Branch) (t : TimeIndex) (ord : TimeOrdering) : Bool :=
+  let ancestors := ancestorTimes ord t
+  ancestors.any fun t_anc => b.isSubsetBlocked t t_anc
+
+/--
+Check if ANY active time on the branch is temporally blocked.
+Returns the first blocked time found, or `none` if no time is blocked.
+-/
+def findBlockedTime (b : Branch) (ord : TimeOrdering) : Option TimeIndex :=
+  b.knownTimes.find? fun t => isTemporallyBlocked b t ord
+
+/--
+State tracking for blocking decisions during tableau expansion.
+Records which times have been blocked and the blocking ancestor.
+-/
+structure BlockingState where
+  /-- List of (blocked_time, blocking_ancestor) pairs. -/
+  blockedTimes : List (TimeIndex × TimeIndex)
+  deriving Repr
+
+namespace BlockingState
+
+/-- Empty blocking state. -/
+def empty : BlockingState := { blockedTimes := [] }
+
+/-- Record that a time has been blocked by an ancestor. -/
+def addBlocked (state : BlockingState) (t t_anc : TimeIndex) : BlockingState :=
+  { blockedTimes := (t, t_anc) :: state.blockedTimes }
+
+/-- Check if a time is already recorded as blocked. -/
+def isBlocked (state : BlockingState) (t : TimeIndex) : Bool :=
+  state.blockedTimes.any fun (blocked, _) => blocked == t
+
+end BlockingState
 
 /-!
 ## Subformula Closure
