@@ -101,20 +101,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Sync Protocol Documentation [IN PROGRESS]
+### Phase 2: Sync Protocol Documentation [COMPLETED]
 
 **Goal**: Document the complete sync workflow, schema format, and VERSION file protocol for operators of both repositories.
 
 **Tasks**:
-- [ ] Create `docs/training/SYNC_PROTOCOL.md` covering:
+- [x] Create `docs/training/SYNC_PROTOCOL.md` covering:
   - Overview of the one-way BimodalLogic -> BimodalHarness sync
   - Step-by-step instructions for running export + sync
   - `data/VERSION` field definitions and format specification
   - SCHEMA_VERSION bump protocol (when to bump, what constitutes a breaking change)
   - Schema gap documentation: proof_extractor emits 8 fields, harness expects 12; list the missing fields and recommended adapter approach
   - The 49-action space alignment (42 axiom + 7 inference) and how `action_index` maps
-  - BimodalHarness follow-up checklist (enhanced `make sync-data`, `make verify-data`, Python adapter)
-- [ ] Add brief mention of `export-training-data.sh` to `data/README.md` if it exists and is relevant
+  - BimodalHarness follow-up checklist (enhanced `make sync-data`, `make verify-data`, Python adapter) *(completed)*
+- [x] Add brief mention of `export-training-data.sh` to `data/README.md` if it exists and is relevant *(completed: added "Export for BimodalHarness Sync" section with link to SYNC_PROTOCOL.md)*
 
 **Timing**: 1 hour
 

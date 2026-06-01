@@ -13,6 +13,7 @@ dataset publishing, and training data generation.
 |---|---|
 | [PIPELINE.md](PIPELINE.md) | Dual-signal training data pipeline — all 6 Lean modules, JSON schemas, BimodalHarness integration |
 | [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) | Consumer quick-start and maintainer workflow for publishing to Hugging Face Hub |
+| [SYNC_PROTOCOL.md](SYNC_PROTOCOL.md) | Cross-repository sync: export script usage, VERSION file format, schema gap documentation |
 
 ---
 
