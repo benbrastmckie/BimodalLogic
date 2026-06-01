@@ -549,7 +549,85 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GGG_mb_diamond"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p))))
+        (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.Perpetuity.mb_diamond p)))),
+
+  -- ============================================================
+  -- TEMPORAL AXIOM INSTANTIATIONS: Direct axiom entries for
+  -- 18 Base-compatible temporal axioms not yet in dataset.
+  -- Each generates 1 axiom step with a temporal axiom name.
+  -- ============================================================
+
+  -- BX1: serial_future: ⊤ → F(⊤)
+  mkEntry "serial_future_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial),
+
+  -- BX1': serial_past: ⊤ → P(⊤)
+  mkEntry "serial_past_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial),
+
+  -- BX2G: left_mono_until_G: G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
+  mkEntry "left_mono_until_G_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.left_mono_until_G p q r) trivial),
+
+  -- BX2H: left_mono_since_H: H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
+  mkEntry "left_mono_since_H_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.left_mono_since_H p q r) trivial),
+
+  -- BX3: right_mono_until: G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
+  mkEntry "right_mono_until_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.right_mono_until p q r) trivial),
+
+  -- BX3': right_mono_since: H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
+  mkEntry "right_mono_since_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.right_mono_since p q r) trivial),
+
+  -- BX5: self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
+  mkEntry "self_accum_until_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial),
+
+  -- BX5': self_accum_since: S(ψ,φ) → S(ψ, φ ∧ S(ψ,φ))
+  mkEntry "self_accum_since_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_since p q) trivial),
+
+  -- BX6: absorb_until: U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
+  mkEntry "absorb_until_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial),
+
+  -- BX6': absorb_since: S(φ ∧ S(ψ,φ), φ) → S(ψ,φ)
+  mkEntry "absorb_since_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_since p q) trivial),
+
+  -- BX7: linear_until: U(ψ,φ) ∧ U(θ,χ) → ...
+  mkEntry "linear_until_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.linear_until p q r s) trivial),
+
+  -- BX7': linear_since: S(ψ,φ) ∧ S(θ,χ) → ...
+  mkEntry "linear_since_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.linear_since p q r s) trivial),
+
+  -- BX11: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
+  mkEntry "temp_linearity_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity p q) trivial),
+
+  -- BX11': temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
+  mkEntry "temp_linearity_past_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity_past p q) trivial),
+
+  -- BX12: F_until_equiv: F(φ) → U(φ, ⊤)
+  mkEntry "F_until_equiv_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial),
+
+  -- BX12': P_since_equiv: P(φ) → S(φ, ⊤)
+  mkEntry "P_since_equiv_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.P_since_equiv p) trivial),
+
+  -- BX13: enrichment_until: p ∧ U(ψ,φ) → U(ψ ∧ S(p,φ), φ)
+  mkEntry "enrichment_until_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_until p q r) trivial),
+
+  -- BX13': enrichment_since: p ∧ S(ψ,φ) → S(ψ ∧ U(p,φ), φ)
+  mkEntry "enrichment_since_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_since p q r) trivial)
 ]
 
 /-!

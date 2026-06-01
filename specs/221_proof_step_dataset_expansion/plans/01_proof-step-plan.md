@@ -94,21 +94,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Temporal Axiom Instantiations [NOT STARTED]
+### Phase 2: Temporal Axiom Instantiations [COMPLETED]
 
 **Goal**: Register direct axiom instantiations for the 18 Base-compatible temporal axioms that currently have zero representation in the dataset, expanding axiom name coverage from 13/42 to 31/42.
 
 **Tasks**:
-- [ ] Add `DerivationTree.axiom (fc := .Base) [] _ (Axiom.serial_future) trivial` entry and similar for `serial_past`
-- [ ] Add entries for BX2H/BX2H' (`left_mono_until_G`, `left_mono_since_H`) with 3-formula parameters (p, q, r)
-- [ ] Add entries for BX3/BX3' (`right_mono_until`, `right_mono_since`) with 3-formula parameters
-- [ ] Add entries for BX5/BX5' (`self_accum_until`, `self_accum_since`) with 2-formula parameters
-- [ ] Add entries for BX6/BX6' (`absorb_until`, `absorb_since`) with 2-formula parameters
-- [ ] Add entries for BX7/BX7' (`linear_until`, `linear_since`) with 4-formula parameters (p, q, r, s)
-- [ ] Add entries for BX11/BX11' (`temp_linearity`, `temp_linearity_past`) with 2-formula parameters
-- [ ] Add entries for BX12/BX12' (`F_until_equiv`, `P_since_equiv`) with 1-formula parameter
-- [ ] Add entries for BX13/BX13' (`enrichment_until`, `enrichment_since`) with 3-formula parameters
-- [ ] Run `lake build Bimodal.Automation.ProofStepExport` to verify all axiom entries type-check
+- [x] Add `DerivationTree.axiom (fc := .Base) [] _ (Axiom.serial_future) trivial` entry and similar for `serial_past`
+- [x] Add entries for BX2H/BX2H' (`left_mono_until_G`, `left_mono_since_H`) with 3-formula parameters (p, q, r)
+- [x] Add entries for BX3/BX3' (`right_mono_until`, `right_mono_since`) with 3-formula parameters
+- [x] Add entries for BX5/BX5' (`self_accum_until`, `self_accum_since`) with 2-formula parameters
+- [x] Add entries for BX6/BX6' (`absorb_until`, `absorb_since`) with 2-formula parameters
+- [x] Add entries for BX7/BX7' (`linear_until`, `linear_since`) with 4-formula parameters (p, q, r, s)
+- [x] Add entries for BX11/BX11' (`temp_linearity`, `temp_linearity_past`) with 2-formula parameters
+- [x] Add entries for BX12/BX12' (`F_until_equiv`, `P_since_equiv`) with 1-formula parameter
+- [x] Add entries for BX13/BX13' (`enrichment_until`, `enrichment_since`) with 3-formula parameters
+- [x] Run `lake build Bimodal.Automation.ProofStepExport` to verify all axiom entries type-check
 
 **Timing**: 1 hour
 
