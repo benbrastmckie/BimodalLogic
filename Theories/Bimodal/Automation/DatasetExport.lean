@@ -184,6 +184,10 @@ structure DatasetRecord where
   formula_tokens : String
   /-- Numeric feature vector from PatternKey as a pre-serialized JSON array. -/
   pattern_features : String
+  /-- Maximum modal nesting depth of the formula. -/
+  max_modal_depth : Nat
+  /-- Maximum temporal nesting depth of the formula. -/
+  max_temporal_depth : Nat
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -200,7 +204,9 @@ instance : Inhabited DatasetRecord :=
      augmentation := none
      formula_sexpr := ""
      formula_tokens := "[]"
-     pattern_features := "[]" }⟩
+     pattern_features := "[]"
+     max_modal_depth := 0
+     max_temporal_depth := 0 }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -229,6 +235,8 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"formula_sexpr\": \"" ++ escapeJsonString r.formula_sexpr ++ "\""
   ++ ", \"formula_tokens\": " ++ r.formula_tokens
   ++ ", \"pattern_features\": " ++ r.pattern_features
+  ++ ", \"max_modal_depth\": " ++ toString r.max_modal_depth
+  ++ ", \"max_temporal_depth\": " ++ toString r.max_temporal_depth
   ++ "}"
 
 /--
@@ -250,7 +258,9 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     augmentation := none
     formula_sexpr := lf.formula.toSExpr
     formula_tokens := tokenListToJson lf.formula.tokenize
-    pattern_features := lf.patternKey.featureVectorToJson }
+    pattern_features := lf.patternKey.featureVectorToJson
+    max_modal_depth := lf.patternKey.modalDepth
+    max_temporal_depth := lf.patternKey.temporalDepth }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
@@ -333,6 +343,7 @@ def computeDatasetMetadata (labeled : List LabeledFormula) (params : EnumParams)
     | .exhaustive => "exhaustive"
     | .random => "random"
     | .hybrid => "hybrid"
+    | .stratified => "stratified"
   { totalRecords := stats.totalCount
     validCount := stats.validCount
     invalidCount := stats.invalidCount
@@ -391,12 +402,31 @@ structure CLIArgs where
   mode : SamplingMode := .exhaustive
   includeDuals : Bool := false
   validSeedCount : Nat := 500
+  /-- Per-complexity-level quotas for stratified sampling.
+      Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
+      Format: "9:0,10:100000,11:300000" where 0 = exhaustive -/
+  stratifiedQuotas : List (Nat × Nat) := []
   deriving Repr, Inhabited
+
+/--
+Parse a stratified quotas string of the form "9:0,10:100000,11:300000".
+Each entry is complexity:maxRecords where 0 means exhaustive at that level.
+-/
+def parseQuotas (s : String) : List (Nat × Nat) :=
+  let entries := s.splitOn ","
+  entries.filterMap fun entry =>
+    let parts := entry.splitOn ":"
+    match parts with
+    | [complexityStr, quotaStr] =>
+      let complexity := complexityStr.trimAscii.toString.toNat!
+      let quota := quotaStr.trimAscii.toString.toNat!
+      some (complexity, quota)
+    | _ => none
 
 /--
 Parse CLI arguments from a list of strings.
 Supports: `--max-complexity`, `--max-modal-depth`, `--max-temporal-depth`,
-`--max-formulas`, `--output`, `--mode`, `--include-duals`.
+`--max-formulas`, `--output`, `--mode`, `--include-duals`, `--stratified-quotas`.
 -/
 def parseCLIArgs (args : List String) : CLIArgs :=
   go args {}
@@ -417,12 +447,15 @@ where
     let mode := match m with
       | "random" => SamplingMode.random
       | "hybrid" => SamplingMode.hybrid
+      | "stratified" => SamplingMode.stratified
       | _ => SamplingMode.exhaustive
     go rest { acc with mode := mode }
   | "--include-duals" :: rest, acc =>
     go rest { acc with includeDuals := true }
   | "--valid-seed-count" :: n :: rest, acc =>
     go rest { acc with validSeedCount := n.toNat! }
+  | "--stratified-quotas" :: q :: rest, acc =>
+    go rest { acc with stratifiedQuotas := parseQuotas q }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -470,6 +503,7 @@ def main (args : List String) : IO Unit := do
     maxFormulas := cliArgs.maxFormulas
     samplingMode := cliArgs.mode
     validSeedCount := cliArgs.validSeedCount
+    stratifiedQuotas := cliArgs.stratifiedQuotas
   }
   IO.println "Generating formulas..."
   let formulas ← generateFormulas params
@@ -542,6 +576,7 @@ def main (args : List String) : IO Unit := do
     | .exhaustive => "exhaustive"
     | .random => "random"
     | .hybrid => "hybrid"
+    | .stratified => "stratified"
   let metadata : DatasetMetadata := {
     totalRecords := count
     validCount := validCount

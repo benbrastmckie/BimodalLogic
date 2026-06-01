@@ -469,6 +469,7 @@ inductive SamplingMode where
   | exhaustive
   | random
   | hybrid
+  | stratified
   deriving Repr, DecidableEq, BEq, Inhabited
 
 /-- Default atoms for formula generation: p, q, r. -/
@@ -497,6 +498,10 @@ structure EnumParams where
   /-- Number of axiom-instantiated valid formulas to seed into the pool (Task 210).
       Set to 0 to disable axiom seeding. Default: 500. -/
   validSeedCount : Nat := 500
+  /-- Per-complexity-level quotas for stratified sampling.
+      Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
+      Only used when samplingMode = .stratified. -/
+  stratifiedQuotas : List (Nat × Nat) := []
   deriving Repr, Inhabited
 
 /--
@@ -1053,10 +1058,56 @@ private def hashDedup (formulas : List Formula) : List Formula :=
   result
 
 /--
+Stratified enumeration: for each complexity level, enumerate exhaustively or sample
+up to a per-level quota. Levels not in the quota list default to exhaustive.
+A quota of 0 means exhaustive enumeration at that level.
+-/
+private def enumerateStratified (params : EnumParams) : List Formula :=
+  let quotaMap := params.stratifiedQuotas.foldl
+    (fun (m : Std.HashMap Nat Nat) (k, v) => m.insert k v) {}
+  let (_, allFormulas) := (List.range params.maxComplexity).foldl
+    (fun (acc : EnumCache × List Formula) i =>
+      let level := i + 1
+      let (cache, formulas) := acc
+      let (exact, cache') := enumExactBudget params.atoms level params.maxModalDepth
+                                              params.maxTemporalDepth cache
+      let filtered := exact.filter passesFilter
+      -- Check if there's a quota for this level
+      let levelFormulas := match quotaMap[level]? with
+        | some 0 => filtered  -- 0 means exhaustive
+        | some quota =>
+          if filtered.length ≤ quota then filtered
+          else
+            -- Deterministic sampling using LCG with level as seed
+            let rng := LCGState.init (level * 12345 + 42)
+            deterministicSample filtered quota rng
+        | none => filtered  -- no quota entry = exhaustive
+      (cache', formulas ++ levelFormulas))
+    ({}, [])
+  allFormulas.take params.maxFormulas
+where
+  /-- Deterministically sample `count` elements from a list using LCG. -/
+  deterministicSample (xs : List Formula) (count : Nat) (rng : LCGState) : List Formula :=
+    let arr := xs.toArray
+    let n := arr.size
+    if n ≤ count then xs
+    else
+      -- Fisher-Yates partial shuffle: select `count` random elements
+      let (selected, _) := (List.range count).foldl
+        (fun (acc : List Formula × LCGState) _ =>
+          let (picked, r) := acc
+          let (r', idx) := r.randBound n
+          match arr[idx]? with
+          | some φ => (φ :: picked, r')
+          | none => (picked, r'))
+        ([], rng)
+      selected
+
+/--
 Generate formulas according to the specified sampling mode.
 
 Combines up to three formula sources:
-1. Exhaustive/random/hybrid enumeration (as before)
+1. Exhaustive/random/hybrid/stratified enumeration
 2. Axiom-seeded valid formulas (Task 210): If `validSeedCount > 0`,
    generates guaranteed-valid formulas via axiom instantiation, necessitation,
    and modus ponens closure. These are mixed in to boost the valid fraction.
@@ -1079,6 +1130,7 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
         pure (hashDedup (exhaustive ++ random))
       else
         pure exhaustive
+    | .stratified => pure (enumerateStratified params)
   -- Step 2: Generate axiom-seeded valid formulas if requested
   let validSeeds ← if params.validSeedCount > 0 then
     generateValidBatch params.validSeedCount params.maxComplexity params.atoms

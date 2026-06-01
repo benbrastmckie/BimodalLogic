@@ -1,7 +1,7 @@
 # Implementation Plan: Complexity Tier Extension to C9/C11
 
 - **Task**: 217 - Complexity tier extension to C9/C11
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: None (builds on existing Task 213 infrastructure)
 - **Research Inputs**: reports/01_complexity-tier-research.md
@@ -73,21 +73,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Lean Schema and Enumeration Extensions [NOT STARTED]
+### Phase 1: Lean Schema and Enumeration Extensions [COMPLETED]
 
 **Goal**: Extend `DatasetRecord` to 16 fields, add `SamplingMode.stratified`, and update CLI parsing to support stratified quotas and higher formula caps.
 
 **Tasks**:
-- [ ] Add `max_modal_depth : Nat` and `max_temporal_depth : Nat` fields to `DatasetRecord` in `DatasetExport.lean`
-- [ ] Update `datasetRecordToJson` to emit the two new top-level fields
-- [ ] Update `labeledToRecord` to populate the new fields from `PatternKey`
-- [ ] Update the `Inhabited` instance for `DatasetRecord` with default values for the new fields
-- [ ] Add `SamplingMode.stratified` constructor to the `SamplingMode` inductive in `FormulaEnumerator.lean`
-- [ ] Add `stratifiedQuotas : List (Nat × Nat)` field to `CLIArgs` (complexity-level, max-records pairs)
-- [ ] Extend `parseCLIArgs` to handle `--mode stratified` and `--stratified-quotas` flag (format: `9:exhaustive,10:100000,11:300000`)
-- [ ] Implement stratified generation logic in `generateFormulas`: exhaustive up to quota-marked levels, LCG sampling above
-- [ ] Update the `main` function's mode string serialization to handle `SamplingMode.stratified`
-- [ ] Run `lake build dataset_generator` to verify compilation
+- [x] Add `max_modal_depth : Nat` and `max_temporal_depth : Nat` fields to `DatasetRecord` in `DatasetExport.lean`
+- [x] Update `datasetRecordToJson` to emit the two new top-level fields
+- [x] Update `labeledToRecord` to populate the new fields from `PatternKey`
+- [x] Update the `Inhabited` instance for `DatasetRecord` with default values for the new fields
+- [x] Add `SamplingMode.stratified` constructor to the `SamplingMode` inductive in `FormulaEnumerator.lean`
+- [x] Add `stratifiedQuotas : List (Nat × Nat)` field to `CLIArgs` (complexity-level, max-records pairs) *(deviation: altered -- also added to `EnumParams` so it's accessible in `generateFormulas`)*
+- [x] Extend `parseCLIArgs` to handle `--mode stratified` and `--stratified-quotas` flag (format: `9:exhaustive,10:100000,11:300000`) *(deviation: altered -- format uses `9:0` for exhaustive instead of `9:exhaustive` since quotas are Nat pairs)*
+- [x] Implement stratified generation logic in `generateFormulas`: exhaustive up to quota-marked levels, LCG sampling above *(deviation: altered -- implemented as separate `enumerateStratified` function called from `generateFormulas`)*
+- [x] Update the `main` function's mode string serialization to handle `SamplingMode.stratified`
+- [x] Run `lake build dataset_generator` to verify compilation
 
 **Timing**: 2.5 hours
 
