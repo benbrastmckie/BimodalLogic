@@ -129,11 +129,12 @@ technical_debt:
 
 ### 258. Create a Hugging Face publishing guide in docs/
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Type**: general
 - **Priority**: medium
 - **Research**: [258_huggingface_publishing_guide/reports/01_publishing-guide-research.md]
 - **Plan**: [258_huggingface_publishing_guide/plans/01_implementation-plan.md]
+- **Summary**: [258_huggingface_publishing_guide/summaries/01_execution-summary.md]
 - **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face

@@ -150,7 +150,9 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 
 Training data pipeline documentation:
 
+- [README.md](training/README.md) - Directory overview and document index
 - [PIPELINE.md](training/PIPELINE.md) - Dual-signal training data pipeline reference (all 6 Lean modules, JSON schemas, [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) integration)
+- [PUBLISHING_GUIDE.md](training/PUBLISHING_GUIDE.md) - Consumer quick-start and maintainer workflow for Hugging Face Hub publishing
 
 **Audience**: ML researchers, contributors working on neural proof search
 

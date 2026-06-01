@@ -1,7 +1,7 @@
 # Implementation Plan: HF Publishing Guide in docs/
 
 - **Task**: 258 - Create a Hugging Face publishing guide in docs/
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/258_huggingface_publishing_guide/reports/01_publishing-guide-research.md
@@ -73,7 +73,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Create Publishing Guide [NOT STARTED]
+### Phase 1: Create Publishing Guide [COMPLETED]
 
 **Goal**: Create `docs/training/PUBLISHING_GUIDE.md` with comprehensive
 HF Hub publishing documentation for ML researchers.
@@ -112,7 +112,7 @@ HF Hub publishing documentation for ML researchers.
 
 ---
 
-### Phase 2: Create Training Directory Index [NOT STARTED]
+### Phase 2: Create Training Directory Index [COMPLETED]
 
 **Goal**: Create `docs/training/README.md` as a directory index listing
 all files in the training/ subdirectory.
@@ -139,7 +139,7 @@ all files in the training/ subdirectory.
 
 ---
 
-### Phase 3: Update docs/README.md Training Section [NOT STARTED]
+### Phase 3: Update docs/README.md Training Section [COMPLETED]
 
 **Goal**: Add `PUBLISHING_GUIDE.md` to the training/ section listing in
 `docs/README.md`.
