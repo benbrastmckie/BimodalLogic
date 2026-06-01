@@ -10,6 +10,14 @@
 #   ./scripts/run_dataset_generation.sh all         # All tiers: c5, c7, c9, c11
 #   ./scripts/run_dataset_generation.sh --dry-run c5  # Print commands without executing
 #
+# Progress output:
+#   The generator emits periodic progress lines to stdout with [tag] prefixes:
+#     [gen]   - Overall generation phase start/end timing
+#     [enum]  - Per-complexity-level enumeration progress (count, rate, elapsed)
+#     [valid] - Axiom seeding (every 10%) and Nec/MP closure round stats
+#     [label] - Labeling progress every 1000 formulas (rate, ETA, valid/timeout %)
+#   Use grep to filter: ./scripts/run_dataset_generation.sh c5 2>&1 | grep '^\[label\]'
+#
 # Prerequisites:
 #   lake build dataset_generator
 #
@@ -305,6 +313,13 @@ case "${1:-help}" in
         echo "  c9      Complexity 9, exhaustive, ~300K-1.8M formulas (bmlogic-c9.jsonl, est. 30min-2h)"
         echo "  c11     Complexity 11, stratified, ~500K-2M formulas (bmlogic-c11.jsonl, est. 1-4h)"
         echo "  all     Run all tiers: c5, c7, c9, c11 sequentially"
+        echo ""
+        echo "Progress output:"
+        echo "  The generator emits progress lines with [tag] prefixes:"
+        echo "    [gen]   Overall generation phase timing"
+        echo "    [enum]  Per-complexity-level enumeration (count, rate, elapsed)"
+        echo "    [valid] Axiom seeding and Nec/MP closure round stats"
+        echo "    [label] Labeling progress (rate, ETA, valid/timeout %)"
         exit 0
         ;;
     *)

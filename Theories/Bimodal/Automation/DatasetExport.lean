@@ -567,6 +567,7 @@ def main (args : List String) : IO Unit := do
   -- Step 4: Streaming label + write pipeline
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
   IO.println s!"Labeling and streaming {formulas'.length} formulas to {cliArgs.output}..."
+  IO.println s!"[label] Starting labeling of {formulas'.length} formulas..."
   let handle ← IO.FS.Handle.mk outputPath .write
   let startTime ← IO.monoMsNow
   let mut count : Nat := 0
@@ -596,9 +597,27 @@ def main (args : List String) : IO Unit := do
     -- Progress reporting every 1000 formulas
     if count % 1000 == 0 then
       let elapsed ← IO.monoMsNow
-      let elapsedSecs := (elapsed - startTime) / 1000
+      let elapsedMs := elapsed - startTime
+      let pct := if formulas'.length > 0 then count * 100 / formulas'.length else 0
       let validPct := if count > 0 then validCount * 100 / count else 0
-      IO.println s!"  Progress: {count}/{formulas'.length} labeled, {validPct}% valid, {elapsedSecs}s elapsed"
+      let timeoutPct := if count > 0 then timeoutCount * 100 / count else 0
+      let rate := if elapsedMs > 0 then count * 1000 / elapsedMs else count
+      let etaStr := if count < 100 then "calculating..."
+        else if rate > 0 then
+          let remaining := formulas'.length - count
+          let etaSecs := remaining / rate
+          let etaMin := etaSecs / 60
+          let etaSecRem := etaSecs % 60
+          s!"{etaMin}m {etaSecRem}s"
+        else "unknown"
+      IO.println s!"[label] {count}/{formulas'.length} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+
+  -- Labeling completion line
+  let labelEndMs ← IO.monoMsNow
+  let labelElapsedMs := labelEndMs - startTime
+  let labelElapsedSecs := labelElapsedMs / 1000
+  let finalRate := if labelElapsedMs > 0 then count * 1000 / labelElapsedMs else count
+  IO.println s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec)"
 
   -- Step 5: Print statistics
   let avgTimeMs := if count > 0 then totalTimeMs / count else 0
