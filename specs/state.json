@@ -1228,9 +1228,25 @@
       "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean — sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean — deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) — deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
       "dependencies": [],
       "created": "2026-06-01T22:30:00Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "dataset_generation_resumable_interruption",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Make the dataset generation pipeline resumable after interruption. Currently if run_dataset_generation.sh is interrupted (Ctrl-C, OOM kill, system restart), all progress is lost and the entire multi-hour run must restart from scratch. Implement checkpoint/resume so that: (1) During enumeration, periodically flush generated formulas to a checkpoint file so enumeration can resume from the last checkpoint. (2) During labeling, write labeled records incrementally to the output JSONL (or a partial file) so completed labels survive interruption. (3) On restart, detect partial output and resume from where labeling left off rather than re-enumerating and re-labeling everything. (4) The shell script should detect partial runs and offer to resume or restart. Consider: atomic writes to avoid corrupted partial files, a .progress metadata file tracking enumeration/labeling state, and a --resume flag. This is critical for c9 (2+ hours) and c11 (4+ hours) runs that are easily interrupted by OOM, power loss, or accidental Ctrl-C.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        253
+      ],
+      "created": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 260,
+  "next_project_number": 261,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

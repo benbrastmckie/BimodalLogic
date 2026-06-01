@@ -88,6 +88,8 @@ technical_debt:
 
 ### Dataset Enhancement
 
+260 [NOT STARTED] — Make dataset generation resumable after interruption
+  (depends on 253)
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -126,6 +128,15 @@ technical_debt:
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 260. Make dataset generation resumable after interruption
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 253
+- **Description**: Make the dataset generation pipeline resumable after interruption. Currently if `run_dataset_generation.sh` is interrupted (Ctrl-C, OOM kill, system restart), all progress is lost and the entire multi-hour run must restart from scratch. Implement checkpoint/resume so that: (1) During enumeration, periodically flush generated formulas to a checkpoint file so enumeration can resume from the last checkpoint. (2) During labeling, write labeled records incrementally to the output JSONL (or a partial file) so completed labels survive interruption. (3) On restart, detect partial output and resume from where labeling left off rather than re-enumerating and re-labeling everything. (4) The shell script should detect partial runs and offer to resume or restart. Consider: atomic writes to avoid corrupted partial files, a `.progress` metadata file tracking enumeration/labeling state, and a `--resume` flag. This is critical for c9 (2+ hours) and c11 (4+ hours) runs that are easily interrupted by OOM, power loss, or accidental Ctrl-C.
 
 ### 259. Update PUBLISHING_GUIDE.md to include details for NixOS users
 - **Effort**: S
