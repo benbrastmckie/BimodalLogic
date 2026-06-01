@@ -203,7 +203,8 @@
       "topic": "completeness",
       "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
       "dependencies": [
-        199
+        199,
+        254
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -1055,19 +1056,19 @@
     {
       "project_number": 239,
       "project_name": "proof_extraction_from_tableau",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Replace stub proof extraction (returns 'Full proof extraction not yet implemented') with complete backward-chaining algorithm that builds DerivationTree terms from closed tableau branches. Map each closure reason through tableau expansion steps to specific axiom applications and inference rules. Maintain proof reconstruction stack during expansion. Handle propositional (case analysis via peirce), modal (necessitation + modal_k_dist), and temporal (BX axioms) proof fragments.",
       "priority": "high",
       "topic": "tableau-training",
       "dependencies": [],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-01T22:30:00Z"
     },
     {
       "project_number": 240,
       "project_name": "countermodel_semantic_correctness",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Replace vacuous branchTruthLemma (forall sf in b, True) with genuine truth lemma: for saturated open branches, T(phi) in b implies phi true in extracted model and F(phi) in b implies phi false. Extend SimpleCountermodel to SemanticCountermodel with world states, time domain, temporal ordering, and valuation. Prove truth lemma by induction on formula structure using saturation.",
       "priority": "high",
@@ -1079,14 +1080,27 @@
     {
       "project_number": 241,
       "project_name": "tableau_formula_labeling",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Rebuild DatasetGenerator.lean to use the corrected tableau for reliable formula labeling. Currently the generator uses the broken tableau producing incorrect labels for modal/temporal formulas. With correct tableau: valid formulas produce DerivationTree proofs, invalid formulas produce semantic countermodels, timeout rate drops via blocking termination. Update LabeledFormula records with richer proof traces and countermodels. Update DataExport.lean JSON serialization.",
       "priority": "high",
       "topic": "tableau-training",
-      "dependencies": [],
+      "dependencies": [
+        239,
+        240
+      ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-01T22:30:00Z",
+      "session_id": "sess_1780346173_ad4948",
+      "researched": "2026-06-01T22:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/241_tableau_formula_labeling/reports/01_research-findings.md",
+          "type": "research",
+          "summary": "Architecture analysis of DatasetGenerator/DataExport tableau integration"
+        }
+      ]
     },
     {
       "project_number": 242,
@@ -1258,7 +1272,17 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2], [3]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_progress-reporting-research.md",

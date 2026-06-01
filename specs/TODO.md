@@ -30,21 +30,20 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,241,248,249,250,252,253,254,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,164,186,192,196,230,242,245,246 | 161,165,185,187,190,191,194,199,229,239,240,241 | completeness, tableau-training, dataset-enhancement, ... |
-| 3 | 95,176,193,231,243,244,247 | 155,189,192,230,242,245,246 | completeness, formula-refactor, tableau-training, ... |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,224,229,239,240,248,249,250,252,253,254,255,256 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,164,186,192,196,230,241 | 161,165,185,187,190,191,194,199,229,239,240,254 | completeness, tableau-training, dataset-enhancement, ... |
+| 3 | 95,176,193,231,242,245,246 | 155,189,192,230,239,241 | completeness, formula-refactor, tableau-training, ... |
+| 4 | 177,178,243,244,247 | 131,193,242,245,246 | formula-refactor, tableau-training |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
 254 [NOT STARTED] — Update stale metadata after task 202 completion: (1) TODO.md sorr
+  └─ 155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
+    └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
+    └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
 256 [NOT STARTED] — Re-scope task 155 and update related task descriptions after task
-95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-155 [IMPLEMENTING] — Replace the chronicle fallback in Transfer.lean with the full Rey
-  └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope: (see above)
-  └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
 
 ### Formula Refactor
 
@@ -66,20 +65,20 @@ technical_debt:
 ### Tableau Training
 
 239 [RESEARCHED] — Replace stub proof extraction (returns 'Full proof extraction not
-  - **Report**: [specs/239_proof_extraction_from_tableau/reports/01_proof-extraction-research.md]
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
-  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
-    └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-    └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+  └─ 241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
+    └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
+      └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+      └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+    └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+    └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
+      └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
 240 [RESEARCHED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu
   └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
-241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re
-  └─ 242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from (see above)
-  └─ 245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
-    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-  └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
-    └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
+  └─ 241 [RESEARCHED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
 
 ### Automation
 
