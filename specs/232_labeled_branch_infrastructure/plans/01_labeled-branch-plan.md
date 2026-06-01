@@ -113,7 +113,7 @@ Phases are fully sequential following the import DAG.
 
 ---
 
-### Phase 2: Tableau Rule Migration [NOT STARTED]
+### Phase 2: Tableau Rule Migration [COMPLETED]
 
 **Goal**: Thread labels through all 16 tableau rules in `applyRule`. Propositional rules (8) preserve the input label. Modal/temporal rules (8) also preserve labels for now (they remain identity-collapse placeholders; tasks 233/234 will replace them).
 

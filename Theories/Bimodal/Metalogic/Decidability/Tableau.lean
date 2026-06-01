@@ -215,71 +215,72 @@ Returns the result of the rule application:
 - `notApplicable`: Rule doesn't apply
 -/
 def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
+  let l := sf.label
   match rule, sf.sign, sf.formula with
   -- T(A ∧ B) → T(A), T(B)
   | .andPos, .pos, φ =>
       match asAnd? φ with
-      | some (ψ, χ) => .linear [SignedFormula.pos ψ, SignedFormula.pos χ]
+      | some (ψ, χ) => .linear [SignedFormula.pos ψ l, SignedFormula.pos χ l]
       | none => .notApplicable
   -- F(A ∧ B) → F(A) | F(B)
   | .andNeg, .neg, φ =>
       match asAnd? φ with
-      | some (ψ, χ) => .branching [[SignedFormula.neg ψ], [SignedFormula.neg χ]]
+      | some (ψ, χ) => .branching [[SignedFormula.neg ψ l], [SignedFormula.neg χ l]]
       | none => .notApplicable
   -- T(A ∨ B) → T(A) | T(B)
   | .orPos, .pos, φ =>
       match asOr? φ with
-      | some (ψ, χ) => .branching [[SignedFormula.pos ψ], [SignedFormula.pos χ]]
+      | some (ψ, χ) => .branching [[SignedFormula.pos ψ l], [SignedFormula.pos χ l]]
       | none => .notApplicable
   -- F(A ∨ B) → F(A), F(B)
   | .orNeg, .neg, φ =>
       match asOr? φ with
-      | some (ψ, χ) => .linear [SignedFormula.neg ψ, SignedFormula.neg χ]
+      | some (ψ, χ) => .linear [SignedFormula.neg ψ l, SignedFormula.neg χ l]
       | none => .notApplicable
   -- T(A → B) → F(A) | T(B)
   | .impPos, .pos, .imp ψ χ =>
-      .branching [[SignedFormula.neg ψ], [SignedFormula.pos χ]]
+      .branching [[SignedFormula.neg ψ l], [SignedFormula.pos χ l]]
   -- F(A → B) → T(A), F(B)
   | .impNeg, .neg, .imp ψ χ =>
-      .linear [SignedFormula.pos ψ, SignedFormula.neg χ]
+      .linear [SignedFormula.pos ψ l, SignedFormula.neg χ l]
   -- T(¬A) → F(A)
   | .negPos, .pos, φ =>
       match asNeg? φ with
-      | some ψ => .linear [SignedFormula.neg ψ]
+      | some ψ => .linear [SignedFormula.neg ψ l]
       | none => .notApplicable
   -- F(¬A) → T(A)
   | .negNeg, .neg, φ =>
       match asNeg? φ with
-      | some ψ => .linear [SignedFormula.pos ψ]
+      | some ψ => .linear [SignedFormula.pos ψ l]
       | none => .notApplicable
-  -- T(□A) → T(A) (S5: reflexivity gives us truth at current world)
+  -- T(□A) → T(A) (S5: reflexivity, identity-collapse placeholder for task 233)
   | .boxPos, .pos, .box ψ =>
-      .linear [SignedFormula.pos ψ]
-  -- F(□A) → F(A) (S5: introduce a witness world where A is false)
+      .linear [SignedFormula.pos ψ l]
+  -- F(□A) → F(A) (S5: witness world, identity-collapse placeholder for task 233)
   | .boxNeg, .neg, .box ψ =>
-      .linear [SignedFormula.neg ψ]
-  -- T(◇A) → T(A) (S5: if possibly A, then A at some accessible world)
+      .linear [SignedFormula.neg ψ l]
+  -- T(◇A) → T(A) (S5: identity-collapse placeholder for task 233)
   | .diamondPos, .pos, φ =>
       match asDiamond? φ with
-      | some ψ => .linear [SignedFormula.pos ψ]
+      | some ψ => .linear [SignedFormula.pos ψ l]
       | none => .notApplicable
-  -- F(◇A) → F(A) (S5: if not possibly A, then ¬A everywhere, so F(A))
+  -- F(◇A) → F(A) (S5: identity-collapse placeholder for task 233)
   | .diamondNeg, .neg, φ =>
       match asDiamond? φ with
-      | some ψ => .linear [SignedFormula.neg ψ]
+      | some ψ => .linear [SignedFormula.neg ψ l]
       | none => .notApplicable
-  -- T(GA) → T(A) (temporal: if always future A, then A now)
+  -- T(GA) → T(A) (temporal: identity-collapse placeholder for task 234)
   | .allFuturePos, .pos, .all_future ψ =>
-      .linear [SignedFormula.pos ψ]
-  -- F(GA) → F(A) (temporal: if not always future A, then ¬A at some future time)
+      .linear [SignedFormula.pos ψ l]
+  -- F(GA) → F(A) (temporal: identity-collapse placeholder for task 234)
   | .allFutureNeg, .neg, .all_future ψ =>
-      .linear [SignedFormula.neg ψ]
-  -- T(HA) → T(A) (temporal: if always past A, then A now)
+      .linear [SignedFormula.neg ψ l]
+  -- T(HA) → T(A) (temporal: identity-collapse placeholder for task 234)
   | .allPastPos, .pos, .all_past ψ =>
-      .linear [SignedFormula.pos ψ]
-  -- F(HA) → F(A) (temporal: if not always past A, then ¬A at some past time)
+      .linear [SignedFormula.pos ψ l]
+  -- F(HA) → F(A) (temporal: identity-collapse placeholder for task 234)
   | .allPastNeg, .neg, .all_past ψ =>
-      .linear [SignedFormula.neg ψ]
+      .linear [SignedFormula.neg ψ l]
   | _, _, _ => .notApplicable
 
 /-!
