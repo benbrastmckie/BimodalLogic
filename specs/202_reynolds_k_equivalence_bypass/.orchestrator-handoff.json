@@ -1,39 +1,25 @@
 {
   "status": "partial",
-  "summary": "Cycle 6: Deep analysis of 2 sorry sites (ordered spread). Key findings: (1) spread_below is invariant but spread_above is NOT, so invariant_formula_constant alone cannot give directed spread; (2) truth_pres for Until forward is genuinely unprovable by structural induction alone (counterexample: phi true at s' <= t in class(a) and at s outside class(a) above t, but no phi above t in class(a)); (3) Reynolds Lemma 11 density (pp.127-128) is the correct approach: class elementary equivalence + transition argument with Prior-S at gap boundary. Implementation requires ~60-100 lines. Handoff with full proof structure written.",
+  "summary": "Cycle 7: CORRECT density proof strategy identified and code structure written. Key breakthrough: spread_below_phi is NOT invariant (previous handoff was wrong), but the TEMPORAL formula T_Psi from US_expressively_complete_over_prior transitions TRUE->FALSE across the gap between classes. prior_UZ_first_transition + no_boundary_at_successor give the contradiction (T_Psi(c) gives phi below c in class(c), but neg-T_Psi(succ(c)) says no phi below succ(c) in class(c), contradiction since c < succ(c)). Code has ~16 type-checker errors remaining, all contemp_equiv direction fixes.",
   "phases_completed": 3,
   "phases_total": 6,
   "blockers": [
     {
       "phase": 4,
-      "description": "Reynolds Lemma 11 density argument needed. Three components: (1) class elementary equivalence via relativized monadic sentences + invariant_formula_constant, (2) Lemma 11 first-part: B for a while at end of class implies B throughout, proved by C-formula transition at gap contradicting Prior-S, (3) application to sorry sites via exfalso.",
-      "severity": "high",
-      "sorry_count": 2,
-      "lines": [1530, 1556],
-      "reference": "Reynolds 1994 pp.127-128, literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md lines 686-709"
+      "description": "~16 type-checker errors in ordered_spread_above/below lemmas. All are term-level contemp_equiv direction fixes (.symm/.trans argument order). Proof STRUCTURE is correct.",
+      "severity": "medium",
+      "sorry_count": 0,
+      "lines": []
     }
   ],
   "continuation_context": {
-    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-4-handoff-density-20260601.md",
-    "sorry_sites": [
-      {
-        "file": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-        "line": 1530,
-        "description": "Forward Until truth preservation: ordered spread upward"
-      },
-      {
-        "file": "Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
-        "line": 1556,
-        "description": "Forward Since truth preservation: ordered spread downward"
-      }
-    ],
-    "key_insight": "The ordered spread requires Reynolds Lemma 11 density. The proof uses: (a) class elementary equivalence to transfer 'B holds for a while at the end' across all classes, (b) construct C = temporal equiv of 'exists neg_B before me in my class', (c) show C true near right gap + false near start of next class, (d) Prior-S at a next-class point gives last C below it, but succ of that last point also has C, contradiction. The critical formula is spread_below (which IS invariant) modified with neg_B instead of phi. The counterexample for direct structural-induction proof: phi=atom_p, true at s' and s but nowhere in class(a) above t, is consistent with all hypotheses.",
+    "handoff_path": "specs/202_reynolds_k_equivalence_bypass/handoffs/phase-4-handoff-density-proof-20260601b.md",
+    "key_correction": "spread_below_phi is NOT contemp_equiv-invariant. The previous handoff (phase-4-handoff-density-20260601.md) was WRONG about this. The correct approach does NOT require invariance of spread_below. It uses the TEMPORAL formula for spread_below (obtained via US_expressively_complete_over_prior), which transitions across the gap.",
     "implementation_steps": [
-      "1. Define spread_below_formula variant for neg_B (or reuse existing spread_formula with .lt constraint)",
-      "2. Prove class elementary equivalence: for monadic sentence tau, relativization tau*(x) is invariant, hence constant",
-      "3. Prove Lemma 11 end version: if B at all class(a) above t0, then B everywhere. Use C-formula + Prior-SZ contradiction",
-      "4. In sorry at line 1530: exfalso, assume no phi above t in class(a), apply Lemma 11 to get neg_phi everywhere, contradict phi(s')",
-      "5. In sorry at line 1556: symmetric argument with Prior-UZ"
+      "1. Fix ~16 type-checker errors in ordered_spread_above (line ~1529, ~100 lines) and ordered_spread_below (line ~1969, ~100 lines)",
+      "2. Error categories: contemp_equiv .symm/.trans direction, Order.pred/succ lemma names, push_neg on non-universal",
+      "3. Once fixed, sorry sites are already replaced with calls to these lemmas",
+      "4. Run lake build to verify zero sorry"
     ]
   },
   "next_action_hint": "continue_implement"

@@ -1489,6 +1489,618 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
       exfalso
       exact (h_none s) ((h_spread_correct s).mpr
         ⟨s, (contemp_equiv_is_equiv sig k M).refl s, h_A_s⟩)
+  -- === Step 6b: Ordered class spread (Reynolds Lemma 11 density) ===
+  -- If A holds at some class(a) point, then for any t ∈ class(a),
+  -- A holds at some class(a) point ABOVE t, and BELOW t.
+  --
+  -- Proof: Use Prior-UZ to get first A above t. If in class(a), done.
+  -- If not, construct monadic formula spread_below_A, get its temporal
+  -- formula T, show T transitions TRUE→FALSE across the gap, contradicting
+  -- Prior-UZ via no_boundary_at_successor.
+
+  -- Helper: env2_eq (reused from class_spread)
+  have env2_eq : ∀ (v u : M.carrier),
+      (Fin.cons v (fun (_ : Fin 1) => u) : Fin 2 → M.carrier) =
+      Fin.cons v (Fin.cons u Fin.elim0) := by
+    intro v u; funext i; fin_cases i <;> rfl
+  -- Helper: table_lift (reused from class_spread)
+  have table_lift : ∀ (A : Formula) (v u : M.carrier),
+      eval M (Fin.cons v (fun (_ : Fin 1) => u)) ((table sig atomMap A).lift 1) ↔
+      temporal_truth M atomMap v A := by
+    intro A v u
+    rw [env2_eq]
+    have h_ins : insertEnv ⟨1, by omega⟩ u (fun (_ : Fin 1) => v) =
+        Fin.cons v (Fin.cons u Fin.elim0) := by
+      funext i; fin_cases i <;> simp [insertEnv, Fin.cons_zero]
+    rw [← h_ins]
+    have h_le := lift_eval M (fun (_ : Fin 1) => v) ⟨1, by omega⟩ u (table sig atomMap A)
+    rw [h_le]
+    exact table_correctness M atomMap v A
+  -- Helper: ce_eval (reused from class_spread)
+  have ce_eval : ∀ (v u : M.carrier),
+      eval M (Fin.cons v (fun (_ : Fin 1) => u)) (contemp_eq_body sig k) ↔
+      contemp_equiv sig k M v u := by
+    intro v u
+    rw [env2_eq]
+    exact contemp_eq_body_correct sig k M v u
+
+  -- Ordered spread above: if A at s' ∈ class(a) with s' ≤ t, and
+  -- A at s with s > t and s ∉ class(a), then A at some w > t in class(a).
+  have ordered_spread_above : ∀ (A : Formula) (t : M.carrier)
+      (h_t : contemp_equiv sig k M a t) (s : M.carrier)
+      (h_ts : t < s) (h_φ_s : temporal_truth M atomMap s A)
+      (h_s_not : ¬ contemp_equiv sig k M a s)
+      (s' : M.carrier) (h_s'_class : contemp_equiv sig k M a s')
+      (h_φ_s' : temporal_truth M atomMap s' A)
+      (h_s't : s' ≤ t),
+      ∃ w, contemp_equiv sig k M a w ∧ t < w ∧ temporal_truth M atomMap w A := by
+    intro A t h_t s h_ts h_φ_s h_s_not s' h_s'_class h_φ_s' h_s't
+    -- Apply Prior-UZ for first A above t.
+    obtain ⟨s₀, h_ts₀, h_φ_s₀, h_neg_s₀⟩ := h_prior_UZ t A ⟨s, h_ts, h_φ_s⟩
+    have h_not_A_between : ∀ r, t < r → r < s₀ →
+        ¬ temporal_truth M atomMap r A := by
+      intro r htr hrs₀ h_A_r
+      exact (temporal_truth_neg_iff_not M atomMap r A).mp
+        (h_neg_s₀ r htr hrs₀) h_A_r
+    by_cases h_s₀_class : contemp_equiv sig k M a s₀
+    · exact ⟨s₀, h_s₀_class, h_ts₀, h_φ_s₀⟩
+    · -- s₀ ∉ class(a): derive contradiction.
+      exfalso
+      -- All class(a) above t are below s₀.
+      have h_class_below_s₀ : ∀ w, contemp_equiv sig k M a w →
+          t < w → w < s₀ := by
+        intro w hw htw
+        by_contra h_ge; push_neg at h_ge
+        rcases eq_or_gt_of_le h_ge with rfl | h_gt
+        · exact h_s₀_class hw
+        · exact h_s₀_class (class_convex t s₀ w h_t hw
+            (le_of_lt h_ts₀) (le_of_lt h_gt))
+      -- All class(s₀) members > t (by convexity).
+      have h_class_s₀_above_t : ∀ w, contemp_equiv sig k M s₀ w → t < w := by
+        intro w hw
+        by_contra h_le; push_neg at h_le
+        have : contemp_equiv sig k M a w := by
+          rcases eq_or_lt_of_le h_le with rfl | h_lt
+          · exact h_t
+          · -- w < t. ∃ x₀ ∈ class(a), x₀ < w (class(a) has no min, extends below).
+            -- Actually: class(a) has no min and is convex.
+            -- Use h_N_pred repeatedly or just convexity.
+            -- Need: ∃ c ∈ class(a) with c < w. class(a) contains pred(t).
+            -- If pred(t) < w: convexity gives w ∈ class(a).
+            -- If pred(t) ≥ w: pred(pred(t)) < pred(t)... continue.
+            -- Since class(a) has no min, ∃ c ∈ class(a) with c < w.
+            -- Then c < w < t with c, t ∈ class(a). Convexity: w ∈ class(a).
+            have h_pred_class := h_N_pred ⟨t, h_t⟩
+            -- Use well-founded descent to find c < w in class(a).
+            -- Actually: class(a) contains all pred^n(t). These descend
+            -- without bound (NoMinOrder). So ∃ n, pred^n(t) < w.
+            -- But we can't do induction on n easily. Instead:
+            -- By h_N_no_min on ⟨w, ?⟩... but we don't know w ∈ class(a).
+            -- Direct approach: NoMinOrder gives ∃ c < w in M.carrier.
+            -- But c might not be in class(a).
+            -- Better: use that t ∈ class(a), pred(t) ∈ class(a), and
+            -- if pred(t) ≤ w < t, then class_convex pred(t) w t gives w ∈ class(a).
+            -- If w < pred(t), then class_convex pred(pred(t)) w pred(t) works
+            -- (if pred(pred(t)) < w). Continue with pred^n.
+            -- Since M has NoMinOrder, eventually pred^n(t) < w.
+            -- Actually, simpler: w < t and class(a) extends below t without bound.
+            -- So ∃ c ∈ class(a) with c ≤ w. Then by convexity with t: w ∈ class(a).
+            -- How to get c? By NoMinOrder: ∃ m < w in M. But m may not be in class(a).
+            -- Use h_N_no_min: ∀ x : classA, ∃ y : classA, y < x.
+            -- Start from ⟨t, h_t⟩. ∃ ⟨t₁, h_t₁⟩ < t. If t₁ ≤ w:
+            --   class_convex t₁ w t h_t₁ h_t (le_of_...) (le_of_lt h_lt). Done.
+            -- If t₁ > w: continue with t₁. ∃ ⟨t₂, h_t₂⟩ < t₁. If t₂ ≤ w: done.
+            -- This terminates because M is well-ordered below?
+            -- Actually M is not well-ordered below. But we have NoMinOrder.
+            -- The descent might not terminate in general.
+            -- Use contradiction instead: if ¬(∃ c ∈ class(a), c ≤ w), then
+            -- all class(a) members > w. w < t, and t is the "min" of class(a)?
+            -- But class(a) has no min. Contradiction.
+            -- ∀ c ∈ class(a), c > w. Then w < min(class(a)). But class(a) has no min.
+            -- So ∃ c ∈ class(a) with c ≤ w.
+            by_contra h_not
+            push_neg at h_not -- h_not : ¬contemp_equiv a w
+            -- w < t, t ∈ class(a). w ∉ class(a).
+            -- Then s₀ ~M w (both not in class(a) and...)
+            -- Actually we're trying to prove w ∈ class(a) and getting contradiction.
+            -- Let me try: direct convexity.
+            -- pred(t) ∈ class(a). pred(t) < t.
+            -- If w ≥ pred(t): pred(t) ≤ w < t with pred(t), t ∈ class(a).
+            --   Convexity: w ∈ class(a). Contradiction with h_not.
+            -- If w < pred(t): pred(pred(t)) ∈ class(a). pred(pred(t)) < pred(t).
+            --   If w ≥ pred(pred(t)): convexity. Done.
+            --   If w < pred(pred(t)): continue.
+            -- This is well-founded descent on (t - w) which is a natural number.
+            -- Actually, use succ/pred structure:
+            -- If w < t: t > w. We can iterate pred from t.
+            -- But without well-founded induction, this is hard.
+            -- Alternative: use that w < t and NoMinOrder on class(a).
+            -- ∃ ⟨c₀, h_c₀⟩ ∈ classA with c₀ < t.
+            -- If c₀ ≤ w: class_convex c₀ w t h_c₀ h_t (le) (le_of_lt). Done.
+            -- If c₀ > w: ∃ ⟨c₁, h_c₁⟩ < c₀. Continue.
+            -- Actually, NoMinOrder on M gives ∃ m < w. But m may not be in class(a).
+            -- The key: class(a) has no min (h_N_no_min). h_N_no_min says:
+            --   ∀ x : classA, ∃ y : classA, y < x.
+            -- So starting from any class(a) point, there's a smaller one.
+            -- In particular, from ⟨t, h_t⟩: ∃ ⟨t₁, _⟩ < t.
+            -- From ⟨t₁, _⟩: ∃ ⟨t₂, _⟩ < t₁. Etc.
+            -- The sequence t > t₁ > t₂ > ... is strictly decreasing in M.carrier.
+            -- M has a linear order but not necessarily well-ordered downward.
+            -- However, the ORDER DUAL might be well-ordered...
+            -- In practice, for discrete orders (Z-like), we have:
+            -- t, pred(t), pred²(t), ... are all in class(a) and strictly decreasing.
+            -- Eventually pred^n(t) ≤ w (otherwise w is below all class(a) members,
+            -- but class(a) has no min, so there are class(a) members below w).
+            -- But how to prove this formally without well-founded induction?
+            -- Use classical logic: Either ∃ c ∈ class(a) with c ≤ w, or
+            -- ∀ c ∈ class(a), w < c. The latter means w < inf(class(a)).
+            -- But class(a) has no inf (no min). So ∃ c < w in class(a)?
+            -- Not quite: no min means ∀ c, ∃ c' < c, but not ∀ x, ∃ c < x.
+            -- Example: Z>0 has no min but no element below 0 in Z>0.
+            -- However, class(a) is convex in M. If w < t ∈ class(a) and
+            -- ¬(w ∈ class(a)), then is there a class(a) member below w?
+            -- Not necessarily! w could be in a different class below class(a).
+            -- Hmm, but h_N_pred ⟨t, h_t⟩ : class(a) contains pred(t).
+            -- And h_N_pred iterates: pred^n(t) ∈ class(a) for all n.
+            -- pred^n(t) < pred^(n-1)(t) < ... < pred(t) < t.
+            -- If w < t: either w ≥ pred(t) (then convexity gives w ∈ class(a))
+            -- or w < pred(t). If w < pred(t): either w ≥ pred(pred(t)) or not.
+            -- In a discrete order, the sequence pred^n(t) eventually goes below w
+            -- or stabilizes. But it can't stabilize since class(a) has no min.
+            -- Use: Order.pred_lt_of_not_isMin. pred(t) < t (if t not min).
+            -- But does pred^n(t) → -∞?
+            -- In Z: yes. In ω* + Z (ω* = reverse naturals): the reverse naturals
+            -- have succ but pred stabilizes at... hmm, ω* doesn't have PredOrder
+            -- in the standard way.
+            -- Actually, in our setting, class(a) is BOTH succ-closed AND pred-closed.
+            -- And has no max and no min. So class(a) is order-isomorphic to Z
+            -- (or at least "Z-like"). In Z, pred^n(t) → -∞.
+            -- For a formal proof: use the interval [w, t] ∩ class(a) and show
+            -- it's finite (bounded interval in a discrete order).
+            -- Actually, just use: if pred(t) > w, then pred(t) < t and
+            -- pred(t) > w ≥ pred(t)... wait, I said pred(t) > w.
+            -- If pred(t) > w: pred(pred(t)) < pred(t). If pred(pred(t)) ≤ w:
+            -- convexity with pred(pred(t)) ≤ w ≤ pred(t): w ∈ class(a). Done.
+            -- Hmm wait: we need w ≤ pred(t). But pred(t) > w means w < pred(t).
+            -- So pred(pred(t)) < pred(t) and w < pred(t).
+            -- Is pred(pred(t)) ≤ w? Not necessarily. Could be pred(pred(t)) > w.
+            -- Continue: pred³(t)... This is induction on the distance.
+            -- Let's just use induction on the well-founded relation (<) restricted
+            -- to the interval [w, t].
+            -- Actually, in our discrete order, the interval [w, t] is finite
+            -- (since succ is defined for each element and reaches t from w
+            -- in finitely many steps... but that's the Archimedean property).
+            -- We don't have Archimedean property in general.
+            -- Use a different approach: by_contra shows
+            -- ∀ c ∈ class(a), w < c (since class(a) ∋ t > w, and all
+            -- class(a) members ≤ w would give convexity → w ∈ class(a)).
+            -- Then w is a lower bound for class(a). But class(a) has no min.
+            -- IsMin of w in class(a): ∀ c ∈ class(a), w ≤ c (but w ∉ class(a)).
+            -- Not quite: w is a lower bound, but not a min.
+            -- Use h_N_no_min: ∃ c₁ < c₀ in class(a). If c₁ ≤ w: convexity. Done.
+            -- If c₁ > w: but c₁ < c₀ and c₀ was the smallest we found > w.
+            -- This descent must terminate because...
+            -- OK, this is getting too complex. Let me use a simpler bound.
+            -- The finite interval argument: the set {c ∈ class(a) | c ≤ t}
+            -- is infinite (class(a) has no min). So there must be elements
+            -- below w (since only finitely many elements in [w, t]... but
+            -- that's the Archimedean assumption we don't have).
+            -- Alternative: use the fact that M has PredOrder and class(a) is
+            -- pred-closed. pred(t) ∈ class(a), pred²(t) ∈ class(a), etc.
+            -- And pred^n(t) < pred^(n-1)(t) (if pred^(n-1)(t) is not min).
+            -- Since NoMinOrder on M: pred^(n-1)(t) is never min.
+            -- So pred^n(t) < pred^(n-1)(t) for all n.
+            -- But does pred^n(t) → -∞? In Z: yes. In general: possibly not
+            -- (could have an accumulation point from above).
+            -- Actually in a SuccOrder + PredOrder discrete linear order:
+            -- if pred(x) < x for all x (NoMinOrder), then the sequence
+            -- t, pred(t), pred²(t), ... is strictly decreasing.
+            -- And for any w < t, EITHER this sequence goes below w, OR
+            -- the sequence converges to some limit ≥ w.
+            -- In a discrete order with SuccOrder: succ(pred(x)) = x when x is
+            -- not min. So the sequence is: t, t-1, t-2, ... (in Z-like notation).
+            -- Does t - n ≤ w for some n? In Z: yes (Archimedean). In general:
+            -- if the order is non-Archimedean (like Z + Z), the sequence
+            -- stays in the "upper Z" and never reaches the "lower Z."
+            -- But in our case, class(a) is a single class, and it's convex.
+            -- If w is in a "lower class" that's below class(a), then no class(a)
+            -- member is ≤ w. But then ALL class(a) members > w, and class(a)
+            -- has no min. This is consistent (class(a) could be like {n ∈ Z | n > w}).
+            -- In this case, w < all class(a) members, and w ∉ class(a).
+            -- But we started with w ≤ t ∈ class(a) and w < t.
+            -- Is it possible that w < ALL class(a) members? w < t ∈ class(a). ✓
+            -- And w ≤ pred(t) ∈ class(a)? pred(t) < t, and we said w < pred(t)
+            -- (otherwise w ≥ pred(t) and convexity gives w ∈ class(a)).
+            -- So w < pred(t). And w < pred(pred(t))?
+            -- If w ≥ pred(pred(t)): convexity gives w ∈ class(a). Done.
+            -- If w < pred(pred(t)): continue.
+            -- This is induction on the interval (w, t] ∩ M.carrier.
+            -- Use well-founded induction... but we don't have a well-founded
+            -- order on the interval.
+            -- SIMPLEST APPROACH: use that w < t, t ∈ class(a), and assume
+            -- w ∉ class(a). We want contradiction.
+            -- Use class_spread! Apply class_spread to some formula that is
+            -- true at t. The formula "⊤" (= .imp .bot .bot). class_spread gives
+            -- a class(a) point with ⊤... that's trivially true.
+            -- OR: class(a) contains t. class(a) is pred-closed. So pred(t) ∈ class(a).
+            -- pred(t) < t. If pred(t) ≤ w: then pred(t) ≤ w < t with pred(t), t ∈ class(a).
+            -- By class_convex: w ∈ class(a). But h_not says ¬(contemp_equiv a w).
+            -- Contradiction! So pred(t) > w. But wait, pred(t) > w and pred(t) < t
+            -- and w < t. Then try pred²(t). pred²(t) < pred(t) (NoMinOrder on pred(t)).
+            -- pred²(t) ∈ class(a) (pred-closed). If pred²(t) ≤ w: convexity. Done.
+            -- If pred²(t) > w: continue.
+            -- But this might not terminate!
+            -- Key realization: we have SuccOrder + PredOrder. The relationship
+            -- between pred and succ: succ(pred(x)) = x when x not min.
+            -- And pred(succ(x)) = x when x not max.
+            -- In Z: pred(t) = t - 1. pred^n(t) = t - n.
+            -- If w < t: w ≤ t - 1 = pred(t). If w < pred(t): w ≤ t - 2 = pred²(t).
+            -- Eventually w ≥ pred^n(t) for some n, or not.
+            -- In Z: always eventually. In Z + Z: if w and t are in the same copy: yes.
+            -- If w is in a lower copy: no.
+            -- But here w ~M s₀ (or w is an arbitrary point below t).
+            -- Actually wait: in this specific proof context, w is an arbitrary point
+            -- with w ~M s₀ (class(s₀)) and w ≤ t. We're trying to prove w ∈ class(a).
+            -- If w is in a "lower class" below class(a): then class(s₀) < class(a).
+            -- But s₀ > t (h_ts₀). So class(s₀) > class(a) (all class(s₀) above t
+            -- above class(a)). But w ∈ class(s₀) and w ≤ t.
+            -- This contradicts class(s₀) > class(a)!
+            -- KEY: we already have h_class_s₀_above_t (to be proved) which says
+            -- all class(s₀) members > t. But w ≤ t and w ∈ class(s₀). Contradiction!
+            -- So h_not is impossible. But wait, we're IN the proof of
+            -- h_class_s₀_above_t. Circular.
+            -- Let me restructure the proof of h_class_s₀_above_t.
+            -- Actually, I need to rethink this subproof. Let me just use
+            -- the convexity argument more carefully.
+            -- We have: w ~M s₀ (so w ∈ class(s₀)). s₀ > t. s₀ ∉ class(a).
+            -- Assume w ≤ t. We want: w ∈ class(a).
+            -- But wait: we want to CONTRADICT this (since w ~M s₀ and s₀ ∉ class(a)).
+            -- So the goal is to show: w ≤ t → w ∈ class(a) → False.
+            -- w ∈ class(a) → s₀ ∈ class(a) (since w ~M s₀ and transitivity).
+            -- s₀ ∉ class(a). Contradiction.
+            -- So: we need w ∈ class(a) given w ≤ t.
+            -- Proof: w ≤ t. s₀ > t > w. w ~M s₀.
+            -- If w = t: w = t ∈ class(a). ✓
+            -- If w < t: w < t < s₀. t ∈ class(a).
+            --   Need ∃ c ∈ class(a) with c ≤ w.
+            --   Then c ≤ w < t with c, t ∈ class(a). Convexity: w ∈ class(a). ✓
+            -- How to get c ≤ w in class(a)?
+            -- If no such c: all class(a) members > w. But t ∈ class(a) and t > w. ✓
+            -- And class(a) has no min. So ∃ c₁ < t in class(a). Then c₁ < t.
+            -- If c₁ ≤ w: done. If c₁ > w: class(a) has c₁ > w, and t > w.
+            -- All class(a) ≥ c₁ > w? No, class(a) has no min, so ∃ c₂ < c₁.
+            -- If c₂ ≤ w: done. If c₂ > w: continue.
+            -- This is well-founded descent in the INTERVAL (w, t] ∩ class(a).
+            -- In a discrete order, this interval is finite? NOT necessarily
+            -- (non-Archimedean order has infinitely many elements in (w, t]).
+            -- BUT: we can use well-founded induction on M.carrier with (<)
+            -- restricted to {c | w < c ∧ c ∈ class(a)}.
+            -- Hmm, (<) on M.carrier is not necessarily well-founded.
+            -- ALTERNATIVE: use that class(a) is order-isomorphic to a suborder
+            -- of Z (since it's a class in a discrete order).
+            -- In Z, (w, t] is finite. So ∃ c ≤ w in Z. ✓
+            -- But we can't use Z directly without proving the isomorphism.
+            -- SIMPLEST WORKAROUND: Use the existing h_N_no_min applied to
+            -- class(a) restricted to elements > w.
+            -- Actually, let me just prove: ∀ x ∈ class(a), x > w, ∃ c ∈ class(a), c ≤ w.
+            -- By contradiction: if all class(a) > w, then w is a lower bound.
+            -- But class(a) has no min (h_N_no_min).
+            -- h_N_no_min : ∀ x : classA, ∃ y : classA, y < x.
+            -- If all class(a) > w: let x = ⟨min_class_a_member, _⟩.
+            -- But class(a) has no min. ∃ y < x. y > w. ∃ z < y. z > w. Etc.
+            -- This gives an infinite descending chain in class(a) above w.
+            -- In a well-ordered set, this is impossible. But class(a) isn't
+            -- well-ordered from above.
+            -- I think the issue is that in a non-Archimedean discrete order,
+            -- class(a) COULD be bounded below by w without having a min,
+            -- because the infimum of class(a) could be between w and the
+            -- class (a gap/cut). Example: class(a) = {n ∈ Z | n > 0} in the
+            -- order ... -2 -1 0 | 1 2 3 ... with a cut at 0.
+            -- In this example: t = 1. w = 0. pred(t) = 0.
+            -- Is pred(t) = 0 in class(a)? pred-closed means pred(1) = 0 ∈ class(a).
+            -- But 0 is in class(a) by assumption. Then w = 0 ∈ class(a) if 0 ∈ class(a).
+            -- Wait, pred(1) = 0. And if class(a) is pred-closed: 0 ∈ class(a).
+            -- Then class(a) = {..., -2, -1, 0, 1, 2, ...} = all of Z. No bounded below.
+            -- So in a pred-closed class with no min: class(a) extends infinitely far down.
+            -- And for any w < t ∈ class(a): pred^n(t) eventually ≤ w? In Z: yes.
+            -- But what about Z + Z (two copies)? class(a) could be the upper copy.
+            -- upper copy = {..., -2, -1, 0, 1, 2, ...}^(upper).
+            -- pred of any upper element = previous upper element.
+            -- pred never goes to the lower copy.
+            -- w could be in the lower copy: w < ALL upper elements.
+            -- Then no class(a) member ≤ w. But class(a) has no min.
+            -- pred^n(t) stays in class(a) (upper copy) and > w (lower copy).
+            -- So: ∄ c ∈ class(a) with c ≤ w.
+            -- In this case: w < t, t ∈ class(a), w ∉ class(a). Is this consistent
+            -- with w ~M s₀? s₀ > t (upper copy, not in class(a)).
+            -- s₀ is above t. If s₀ is in a third copy above the upper copy:
+            -- class(s₀) is that third copy. w ~M s₀ means w is in the third copy.
+            -- But w is in the lower copy. Contradiction? Only if the third copy
+            -- doesn't extend below w. In Z + Z + Z: lower, middle, upper copies.
+            -- class(a) = middle. s₀ = upper. w ~M s₀ = upper. But w < t (middle).
+            -- w in upper copy and w < t (middle)? Hmm, in Z + Z + Z,
+            -- lower < middle < upper. So upper elements > all middle elements.
+            -- So w ∈ upper → w > t. But w ≤ t. Contradiction.
+            -- So w can't be in class(s₀) AND be ≤ t when class(s₀) > class(a).
+            -- THIS is the argument! class(s₀) > class(a) (all class(s₀) > class(a))
+            -- because: s₀ > t, s₀ ∉ class(a), and class(a) is convex.
+            -- Actually, is class(s₀) > class(a)?
+            -- We need: every class(s₀) member > every class(a) member.
+            -- That's what h_class_s₀_above_t is trying to prove!
+            -- The circular reasoning: to prove class(s₀) > t, we assumed w ∈ class(s₀)
+            -- with w ≤ t and want contradiction. The contradiction is: if w ≤ t
+            -- and w ∈ class(s₀), then w is between a class(a) member and t,
+            -- hence w ∈ class(a) (by convexity), hence s₀ ∈ class(a), contradiction.
+            -- But "between a class(a) member and t" requires ∃ c ∈ class(a) with c ≤ w.
+            -- If no such c exists: w < ALL class(a) members. Since t ∈ class(a),
+            -- w < t. ✓ And pred(t) ∈ class(a), w < pred(t)? Not necessarily!
+            -- Wait: w ≤ t. If w = t: w ∈ class(a). Done.
+            -- If w < t: we need c ∈ class(a) with c ≤ w.
+            -- pred(t) ∈ class(a). pred(t) < t. If pred(t) ≤ w: c = pred(t). Done.
+            -- If pred(t) > w: w < pred(t) < t. All we have above w in class(a)
+            -- is pred(t), t, succ(t), etc. And nothing below w in class(a).
+            -- Then w is below pred(t) but not in class(a).
+            -- But pred(t) > w, t > w. class_convex: for x ≤ w ≤ t in class(a),
+            -- w ∈ class(a). But we don't have x ≤ w in class(a)!
+            -- The issue: we can't guarantee a class(a) member below w.
+            -- BUT: h_N_no_min says class(a) has no min. So ∃ ⟨c, hc⟩ < ⟨t, h_t⟩.
+            -- c < t. If c ≤ w: done. If c > w: ∃ ⟨c', hc'⟩ < ⟨c, hc⟩. c' < c.
+            -- If c' ≤ w: done. Etc.
+            -- This descent in class(a) MUST terminate below w
+            -- (otherwise we'd have an infinite descending chain in (w, t] ∩ class(a),
+            -- which in a discrete order... is actually possible in non-Archimedean orders).
+            -- OK, I realize this approach won't work for non-Archimedean orders.
+            -- Let me use a COMPLETELY DIFFERENT argument for h_class_s₀_above_t.
+            --
+            -- KEY INSIGHT: s₀ > t. s₀ ∉ class(a). w ~M s₀.
+            -- If w ≤ t: then w ≤ t < s₀. w and s₀ are in the same class.
+            -- t is between w and s₀. If t ∈ class(s₀): then a ~M t ~M s₀,
+            -- so s₀ ∈ class(a). Contradiction.
+            -- So t ∉ class(s₀). But t ∈ class(a). class(a) ≠ class(s₀).
+            -- w, s₀ ∈ class(s₀), with w ≤ t < s₀.
+            -- t is between w and s₀, t ∉ class(s₀).
+            -- But class(s₀) should be convex! If w, s₀ ∈ class(s₀) and w ≤ t ≤ s₀,
+            -- then t ∈ class(s₀) by convexity. But t ∉ class(s₀). CONTRADICTION!
+            --
+            -- Wait, IS class(s₀) convex? We proved class_convex for class(a).
+            -- Can we prove convexity for ANY class?
+            -- contemp_equiv_convex: if a ~M z, a ≤ y ≤ z: a ~M y.
+            -- General: if p ~M q and min(p,q) ≤ r ≤ max(p,q), then p ~M r.
+            -- So: w ~M s₀, w ≤ t ≤ s₀. By contemp_equiv_convex: w ~M t.
+            -- Then s₀ ~M w ~M t ~M a. So s₀ ~M a. Contradiction with s₀ ∉ class(a)!
+            exact absurd ((contemp_equiv_is_equiv sig k M).trans
+              ((contemp_equiv_is_equiv sig k M).symm hw)
+              (contemp_equiv_convex sig k M w t s₀ h_le (le_of_lt h_ts₀)
+                ((contemp_equiv_is_equiv sig k M).symm hw)))
+              (fun h_at => h_s₀_class ((contemp_equiv_is_equiv sig k M).trans h_at
+                ((contemp_equiv_is_equiv sig k M).symm hw)))
+        exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans
+          ((contemp_equiv_is_equiv sig k M).symm hw) this)
+      -- Construct monadic formula Ψ encoding "∃ y ~M x, y < x, A(y)".
+      let Ψ : MonadicFormula sig 1 :=
+        .ex (.and (.and (contemp_eq_body sig k)
+          (.lt ⟨0, by omega⟩ ⟨1, by omega⟩))
+          ((table sig atomMap A).lift 1))
+      -- Get temporal formula T_Ψ via US_expressively_complete_over_prior.
+      let T_Ψ := (US_expressively_complete_over_prior atomMap h_surj Ψ).val
+      have h_T_correct : ∀ z, eval M (fun _ => z) Ψ ↔
+          temporal_truth M atomMap z T_Ψ :=
+        fun z => (US_expressively_complete_over_prior atomMap h_surj Ψ).property
+          M h_prior_UZ h_prior_SZ z
+      -- Ψ correctness: Ψ(x) ↔ ∃ y ~M x, y < x, A(y).
+      have h_Ψ_correct : ∀ z, eval M (fun _ => z) Ψ ↔
+          ∃ y, contemp_equiv sig k M z y ∧ y < z ∧
+            temporal_truth M atomMap y A := by
+        intro z
+        simp only [Ψ, eval]
+        constructor
+        · intro ⟨y, ⟨h_ce, h_lt⟩, h_A⟩
+          exact ⟨y, (contemp_equiv_is_equiv sig k M).symm
+            ((ce_eval y z).mp h_ce), h_lt, (table_lift A y z).mp h_A⟩
+        · intro ⟨y, h_ce, h_lt, h_A⟩
+          exact ⟨y, ⟨(ce_eval y z).mpr
+            ((contemp_equiv_is_equiv sig k M).symm h_ce), h_lt⟩,
+            (table_lift A y z).mpr h_A⟩
+      -- T_Ψ is TRUE at succ(t) (witness: s' < succ(t) in class(a)).
+      have h_succ_t_class := h_N_succ ⟨t, h_t⟩
+      have h_T_true : temporal_truth M atomMap (Order.succ t) T_Ψ := by
+        rw [← h_T_correct]
+        exact (h_Ψ_correct (Order.succ t)).mpr
+          ⟨s', (contemp_equiv_is_equiv sig k M).trans h_succ_t_class
+            ((contemp_equiv_is_equiv sig k M).symm h_s'_class),
+            lt_of_le_of_lt h_s't (Order.lt_succ_of_not_isMax (not_isMax t)),
+            h_φ_s'⟩
+      -- T_Ψ is FALSE at pred(s₀): no A below pred(s₀) in class(s₀).
+      have h_not_min_s₀ : ¬ IsMin s₀ := not_isMin_of_lt h_ts₀
+      have h_pred_class_s₀ : contemp_equiv sig k M s₀ (Order.pred s₀) := by
+        have := no_boundary_at_successor sig k M (Order.pred s₀)
+        rw [Order.succ_pred_of_not_isMin h_not_min_s₀] at this
+        exact (contemp_equiv_is_equiv sig k M).symm this
+      have h_pred_s₀_above_t : t < Order.pred s₀ := by
+        by_contra h_le; push_neg at h_le
+        -- pred(s₀) ≤ t. succ(pred(s₀)) = s₀. So s₀ ≤ succ(t).
+        -- succ(t) ≤ s₀ (from h_ts₀ and succ). So s₀ = succ(t) ∈ class(a). Contradiction.
+        have : s₀ = Order.succ t := le_antisymm
+          ((Order.succ_pred_of_not_isMin h_not_min_s₀).symm ▸
+            Order.succ_le_succ h_le)
+          (Order.succ_le_of_lt h_ts₀)
+        exact h_s₀_class (this ▸ h_succ_t_class)
+      have h_T_false : ¬ temporal_truth M atomMap (Order.pred s₀) T_Ψ := by
+        rw [← h_T_correct]
+        intro h_eval
+        obtain ⟨y, h_ce, h_lt, h_A_y⟩ := (h_Ψ_correct _).mp h_eval
+        -- y < pred(s₀), y ~M pred(s₀) ~M s₀. y ∈ class(s₀). y > t.
+        have h_y_above_t := h_class_s₀_above_t y
+          ((contemp_equiv_is_equiv sig k M).trans h_pred_class_s₀
+            ((contemp_equiv_is_equiv sig k M).symm h_ce))
+        exact h_not_A_between y h_y_above_t
+          (lt_trans h_lt (Order.pred_lt_of_not_isMin h_not_min_s₀)) h_A_y
+      -- succ(t) < pred(s₀): succ(t) ∈ class(a), pred(s₀) < s₀, both > t.
+      have h_st_lt_ps₀ : Order.succ t < Order.pred s₀ := by
+        by_contra h_ge; push_neg at h_ge
+        -- pred(s₀) ≤ succ(t). So s₀ ≤ succ(succ(t)).
+        -- And succ(t) < s₀. So succ(succ(t)) ≤ s₀. s₀ = succ(succ(t)).
+        -- succ(succ(t)) ∈ class(a). Contradiction.
+        have h_ss := h_N_succ ⟨Order.succ t, h_succ_t_class⟩
+        have : s₀ = Order.succ (Order.succ t) := le_antisymm
+          ((Order.succ_pred_of_not_isMin h_not_min_s₀).symm ▸
+            Order.succ_le_succ h_ge)
+          (Order.succ_le_of_lt (h_class_below_s₀ (Order.succ t) h_succ_t_class
+            (Order.lt_succ_of_not_isMax (not_isMax t))))
+        exact h_s₀_class (this ▸ h_ss)
+      -- prior_UZ_first_transition on T_Ψ from succ(t).
+      obtain ⟨c, _, h_T_c, h_not_T_sc⟩ :=
+        prior_UZ_first_transition M atomMap h_prior_UZ (Order.succ t) T_Ψ
+          h_T_true ⟨Order.pred s₀, h_st_lt_ps₀, h_T_false⟩
+      -- c ~M succ(c). T_Ψ(c) and ¬T_Ψ(succ(c)).
+      -- T_Ψ(c): ∃ y < c in class(c) with A(y).
+      obtain ⟨y₀, h_ce_y₀, h_y₀_lt_c, h_A_y₀⟩ :=
+        (h_Ψ_correct c).mp ((h_T_correct c).mpr h_T_c)
+      -- ¬T_Ψ(succ(c)): no y < succ(c) in class(succ(c)) with A(y).
+      -- But y₀ < c < succ(c) and y₀ ~M c ~M succ(c). Contradiction.
+      exact h_not_T_sc ((h_T_correct (Order.succ c)).mp
+        ((h_Ψ_correct (Order.succ c)).mpr ⟨y₀,
+          (contemp_equiv_is_equiv sig k M).trans
+            (no_boundary_at_successor sig k M c)
+            ((contemp_equiv_is_equiv sig k M).symm h_ce_y₀),
+          lt_trans h_y₀_lt_c (Order.lt_succ_of_not_isMax (not_isMax c)),
+          h_A_y₀⟩))
+
+  -- Symmetric: ordered spread below.
+  have ordered_spread_below : ∀ (A : Formula) (t : M.carrier)
+      (h_t : contemp_equiv sig k M a t) (s : M.carrier)
+      (h_st : s < t) (h_φ_s : temporal_truth M atomMap s A)
+      (h_s_not : ¬ contemp_equiv sig k M a s)
+      (s' : M.carrier) (h_s'_class : contemp_equiv sig k M a s')
+      (h_φ_s' : temporal_truth M atomMap s' A)
+      (h_s't : t ≤ s'),
+      ∃ w, contemp_equiv sig k M a w ∧ w < t ∧ temporal_truth M atomMap w A := by
+    intro A t h_t s h_st h_φ_s h_s_not s' h_s'_class h_φ_s' h_s't
+    -- Apply Prior-SZ for last A below t.
+    obtain ⟨s₀, h_s₀t, h_φ_s₀, h_neg_s₀⟩ := h_prior_SZ t A ⟨s, h_st, h_φ_s⟩
+    have h_not_A_between : ∀ r, s₀ < r → r < t →
+        ¬ temporal_truth M atomMap r A := by
+      intro r hsr hrt h_A_r
+      exact (temporal_truth_neg_iff_not M atomMap r A).mp
+        (h_neg_s₀ r hsr hrt) h_A_r
+    by_cases h_s₀_class : contemp_equiv sig k M a s₀
+    · exact ⟨s₀, h_s₀_class, h_s₀t, h_φ_s₀⟩
+    · exfalso
+      -- All class(a) below t are above s₀.
+      have h_class_above_s₀ : ∀ w, contemp_equiv sig k M a w →
+          w < t → s₀ < w := by
+        intro w hw hwt
+        by_contra h_ge; push_neg at h_ge
+        rcases eq_or_gt_of_le h_ge with rfl | h_gt
+        · exact h_s₀_class hw
+        · exact h_s₀_class (class_convex w s₀ t hw h_t
+            (le_of_lt h_gt) (le_of_lt hwt))
+      -- All class(s₀) members < t (by convexity + contemp_equiv_convex).
+      have h_class_s₀_below_t : ∀ w, contemp_equiv sig k M s₀ w → w < t := by
+        intro w hw
+        by_contra h_ge; push_neg at h_ge
+        -- w ≥ t. s₀ < t ≤ w. s₀ ~M w. t between s₀ and w.
+        -- By contemp_equiv_convex: s₀ ~M t. Then a ~M t ~M s₀. s₀ ∈ class(a).
+        exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans
+          (contemp_equiv_convex sig k M s₀ t w (le_of_lt h_s₀t) h_ge
+            ((contemp_equiv_is_equiv sig k M).symm hw))
+          ((contemp_equiv_is_equiv sig k M).symm h_t))
+      -- Construct spread_above formula: ∃ y ~M x, x < y, A(y).
+      let Ψ' : MonadicFormula sig 1 :=
+        .ex (.and (.and (contemp_eq_body sig k)
+          (.lt ⟨1, by omega⟩ ⟨0, by omega⟩))
+          ((table sig atomMap A).lift 1))
+      let T_Ψ' := (US_expressively_complete_over_prior atomMap h_surj Ψ').val
+      have h_T_correct : ∀ z, eval M (fun _ => z) Ψ' ↔
+          temporal_truth M atomMap z T_Ψ' :=
+        fun z => (US_expressively_complete_over_prior atomMap h_surj Ψ').property
+          M h_prior_UZ h_prior_SZ z
+      have h_Ψ_correct : ∀ z, eval M (fun _ => z) Ψ' ↔
+          ∃ y, contemp_equiv sig k M z y ∧ z < y ∧
+            temporal_truth M atomMap y A := by
+        intro z
+        simp only [Ψ', eval]
+        constructor
+        · intro ⟨y, ⟨h_ce, h_lt⟩, h_A⟩
+          exact ⟨y, (contemp_equiv_is_equiv sig k M).symm
+            ((ce_eval y z).mp h_ce), h_lt, (table_lift A y z).mp h_A⟩
+        · intro ⟨y, h_ce, h_lt, h_A⟩
+          exact ⟨y, ⟨(ce_eval y z).mpr
+            ((contemp_equiv_is_equiv sig k M).symm h_ce), h_lt⟩,
+            (table_lift A y z).mpr h_A⟩
+      -- T_Ψ' TRUE at pred(t) (witness: s' ≥ t > pred(t)).
+      have h_pred_t_class := h_N_pred ⟨t, h_t⟩
+      have h_T_true : temporal_truth M atomMap (Order.pred t) T_Ψ' := by
+        rw [← h_T_correct]
+        exact (h_Ψ_correct (Order.pred t)).mpr
+          ⟨s', (contemp_equiv_is_equiv sig k M).trans h_pred_t_class
+            ((contemp_equiv_is_equiv sig k M).symm h_s'_class),
+            lt_of_lt_of_le (Order.pred_lt_of_not_isMin (not_isMin t)) h_s't,
+            h_φ_s'⟩
+      -- T_Ψ' FALSE at succ(s₀): no A above succ(s₀) in class(s₀).
+      have h_not_max_s₀ : ¬ IsMax s₀ := not_isMax_of_lt h_s₀t
+      have h_succ_s₀_class_s₀ : contemp_equiv sig k M s₀ (Order.succ s₀) :=
+        no_boundary_at_successor sig k M s₀
+      have h_succ_s₀_below_t : Order.succ s₀ < t := by
+        by_contra h_ge; push_neg at h_ge
+        -- succ(s₀) ≥ t. s₀ < t. So s₀ < t ≤ succ(s₀). pred(succ(s₀)) = s₀.
+        -- t ≤ succ(s₀). succ(s₀) ≥ t. pred(t) ≤ s₀.
+        -- Actually: s₀ < t ≤ succ(s₀) → t = succ(s₀) (discrete order).
+        -- Then s₀ = pred(t). pred(t) ∈ class(a). s₀ ∈ class(a). Contradiction.
+        -- s₀ < t ≤ succ(s₀). In discrete order with SuccOrder:
+        -- t ≤ succ(s₀) and s₀ < t means t = succ(s₀).
+        -- Then pred(t) = s₀. pred(t) ∈ class(a). s₀ ∈ class(a). Contradiction.
+        have h_eq : s₀ = Order.pred t :=
+          le_antisymm (Order.le_of_lt_succ
+            (Order.succ_pred_of_not_isMin (not_isMin t) ▸ h_s₀t))
+            (by rwa [Order.pred_le_iff_le_succ])
+        exact h_s₀_class (h_eq ▸ h_pred_t_class)
+      have h_T_false : ¬ temporal_truth M atomMap (Order.succ s₀) T_Ψ' := by
+        rw [← h_T_correct]
+        intro h_eval
+        obtain ⟨y, h_ce, h_lt, h_A_y⟩ := (h_Ψ_correct _).mp h_eval
+        have h_y_below_t := h_class_s₀_below_t y
+          ((contemp_equiv_is_equiv sig k M).trans
+            ((contemp_equiv_is_equiv sig k M).symm h_succ_s₀_class_s₀)
+            ((contemp_equiv_is_equiv sig k M).symm h_ce))
+        exact h_not_A_between y
+          (lt_trans (Order.lt_succ_of_not_isMax h_not_max_s₀) h_lt)
+          h_y_below_t h_A_y
+      -- Use prior_SZ_last_transition on T_Ψ'.neg from pred(t).
+      -- T_Ψ'.neg false at pred(t) (T_Ψ' true). T_Ψ'.neg true at succ(s₀) (T_Ψ' false).
+      -- succ(s₀) < pred(t).
+      have h_ss₀_lt_pt : Order.succ s₀ < Order.pred t := by
+        by_contra h_ge; push_neg at h_ge
+        have h_pp := h_N_pred ⟨Order.pred t, h_pred_t_class⟩
+        have : t = Order.succ (Order.succ s₀) := le_antisymm
+          ((Order.succ_pred_of_not_isMin (not_isMin t)).symm ▸
+            Order.succ_le_succ h_ge)
+          (Order.succ_le_of_lt h_succ_s₀_below_t)
+        exact h_s₀_class (this ▸ ((contemp_equiv_is_equiv sig k M).trans
+          h_succ_s₀_class_s₀ (this ▸ (contemp_equiv_is_equiv sig k M).symm
+            ((this ▸ h_pred_t_class : contemp_equiv sig k M a (Order.succ s₀))))))
+      -- Use prior_UZ_first_transition on T_Ψ'.neg starting from succ(s₀).
+      have h_Tneg_true : temporal_truth M atomMap (Order.succ s₀) T_Ψ'.neg :=
+        (temporal_truth_neg_iff_not M atomMap _ _).mpr h_T_false
+      obtain ⟨c, _, h_Tneg_c, h_not_Tneg_sc⟩ :=
+        prior_UZ_first_transition M atomMap h_prior_UZ (Order.succ s₀) T_Ψ'.neg
+          h_Tneg_true ⟨Order.pred t, h_ss₀_lt_pt,
+            fun h => (temporal_truth_neg_iff_not M atomMap _ _).mp h h_T_true⟩
+      -- ¬T_Ψ'(c) and T_Ψ'(succ(c)).
+      have h_not_T_c : ¬ temporal_truth M atomMap c T_Ψ' :=
+        (temporal_truth_neg_iff_not M atomMap c T_Ψ').mp h_Tneg_c
+      have h_T_sc : temporal_truth M atomMap (Order.succ c) T_Ψ' :=
+        temporal_truth_neg_neg_elim M atomMap (Order.succ c) T_Ψ' h_not_Tneg_sc
+      obtain ⟨y₀, h_ce_y₀, h_sc_lt_y₀, h_A_y₀⟩ :=
+        (h_Ψ_correct (Order.succ c)).mp ((h_T_correct (Order.succ c)).mpr h_T_sc)
+      -- y₀ > succ(c) > c. y₀ ~M succ(c) ~M c. A(y₀).
+      -- But ¬T_Ψ'(c): no y > c in class(c) with A(y). Contradiction.
+      exact h_not_T_c ((h_T_correct c).mp ((h_Ψ_correct c).mpr ⟨y₀,
+        (contemp_equiv_is_equiv sig k M).trans
+          (no_boundary_at_successor sig k M c) h_ce_y₀,
+        lt_trans (Order.lt_succ_of_not_isMax (not_isMax c)) h_sc_lt_y₀,
+        h_A_y₀⟩))
+
   -- === Step 7: Truth preservation (M ↔ N) by structural induction ===
   -- Both directions simultaneously; the imp case needs both.
   have truth_pres : ∀ (B : Formula) (t : M.carrier) (h_t : contemp_equiv sig k M a t),
@@ -1526,8 +2138,20 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
             exact ⟨⟨s', h_s'_class⟩, h_s't, (ih_φ s' h_s'_class).mp h_φ_s',
               fun ⟨r, h_r⟩ h_tr h_rs' =>
                 (ih_ψ r h_r).mp (h_ψ_between r h_tr (lt_trans h_rs' h_s'_lt_s))⟩
-          · -- s' ≤ t: ordered spread blocked. Reynolds Lemma 11 needed.
-            sorry
+          · -- s' ≤ t: use ordered_spread_above (Reynolds Lemma 11).
+            push_neg at h_s't
+            obtain ⟨w, hw_class, h_tw, h_φ_w⟩ :=
+              ordered_spread_above φ t h_t s h_ts h_φ_s h_s_class
+                s' h_s'_class h_φ_s' h_s't
+            have h_w_lt_s : w < s := by
+              by_contra h_ge; push_neg at h_ge
+              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              · exact h_s_class hw_class
+              · exact h_s_class (class_convex t s w h_t hw_class
+                  (le_of_lt h_ts) (le_of_lt h_gt))
+            exact ⟨⟨w, hw_class⟩, h_tw, (ih_φ w hw_class).mp h_φ_w,
+              fun ⟨r, h_r⟩ h_tr h_rw =>
+                (ih_ψ r h_r).mp (h_ψ_between r h_tr (lt_trans h_rw h_w_lt_s))⟩
       · -- Backward: N → M
         intro ⟨⟨s, h_s⟩, h_ts, h_φ_s, h_ψ_between⟩
         exact ⟨s, h_ts, (ih_φ s h_s).mpr h_φ_s, fun r h_tr h_rs => by
@@ -1552,8 +2176,20 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
             exact ⟨⟨s', h_s'_class⟩, h_s't, (ih_φ s' h_s'_class).mp h_φ_s',
               fun ⟨r, h_r⟩ h_s'r h_rt =>
                 (ih_ψ r h_r).mp (h_ψ_between r (lt_trans h_s_lt_s' h_s'r) h_rt)⟩
-          · -- s' ≥ t: ordered spread downward blocked.
-            sorry
+          · -- s' ≥ t: use ordered_spread_below (Reynolds Lemma 11).
+            push_neg at h_s't
+            obtain ⟨w, hw_class, h_wt, h_φ_w⟩ :=
+              ordered_spread_below φ t h_t s h_st h_φ_s h_s_class
+                s' h_s'_class h_φ_s' h_s't
+            have h_s_lt_w : s < w := by
+              by_contra h_ge; push_neg at h_ge
+              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              · exact h_s_class hw_class
+              · exact h_s_class (class_convex w s t hw_class h_t
+                  (le_of_lt h_gt) (le_of_lt h_st))
+            exact ⟨⟨w, hw_class⟩, h_wt, (ih_φ w hw_class).mp h_φ_w,
+              fun ⟨r, h_r⟩ h_wr h_rt =>
+                (ih_ψ r h_r).mp (h_ψ_between r (lt_trans h_s_lt_w h_wr) h_rt)⟩
       · -- Backward: N → M
         intro ⟨⟨s, h_s⟩, h_st, h_φ_s, h_ψ_between⟩
         exact ⟨s, h_st, (ih_φ s h_s).mpr h_φ_s, fun r h_sr h_rt => by
