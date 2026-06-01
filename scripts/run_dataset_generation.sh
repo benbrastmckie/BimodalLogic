@@ -4,8 +4,8 @@
 # Usage:
 #   ./scripts/run_dataset_generation.sh c5          # Complexity 5, exhaustive, ~1.5K formulas
 #   ./scripts/run_dataset_generation.sh c7          # Complexity 7, exhaustive, ~50K formulas
-#   ./scripts/run_dataset_generation.sh c9          # Complexity 9, exhaustive, ~300K-1.8M formulas (2-6h)
-#   ./scripts/run_dataset_generation.sh c11         # Complexity 11, stratified, ~500K-2M formulas (3-8h)
+#   ./scripts/run_dataset_generation.sh c9          # Complexity 9, exhaustive, ~300K-1.8M formulas (30min-2h)
+#   ./scripts/run_dataset_generation.sh c11         # Complexity 11, stratified, ~500K-2M formulas (1-4h)
 #   ./scripts/run_dataset_generation.sh smoke       # Quick validation run (20 formulas)
 #   ./scripts/run_dataset_generation.sh all         # All tiers: c5, c7, c9, c11
 #
@@ -90,21 +90,19 @@ run_c7() {
 }
 
 run_c9() {
-    echo "=== C9 Production Run (complexity 9, exhaustive, ~300K-1.8M formulas, est. 2-6h) ==="
+    echo "=== C9 Production Run (complexity 9, exhaustive, ~300K-1.8M formulas, est. 30min-2h) ==="
     echo "Started at: $(date -Iseconds)"
     # Exhaustive enumeration of all complexity-9 bimodal formulas with duals.
     # Capped at 2M formulas as a safety limit.
-    # NOTE: valid-seed-count reduced from 10000 to 500 because generateValidBatch
-    # uses O(pool^2) MP closure per round, making 10K seeds take hours.
-    # The valid fraction at c9 is naturally low (~5-8%); axiom seeding helps but
-    # the MP closure cost is quadratic. 500 seeds + nec/MP closure still provides
-    # meaningful valid enrichment without the compute bottleneck.
+    # NOTE: Task 251 optimized generateValidBatch from O(n^2) to O(n) MP closure
+    # using HashMap-based implication index and HashSet pool. 5000 seeds is now
+    # feasible (pool cap is 10K; 5K seeds provide good valid enrichment).
     time lake exe dataset_generator -- \
         --max-complexity 9 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
         --max-formulas 2000000 \
-        --valid-seed-count 500 \
+        --valid-seed-count 5000 \
         --output data/bmlogic-c9.jsonl \
         --mode exhaustive \
         --include-duals
@@ -117,20 +115,19 @@ run_c9() {
 }
 
 run_c11() {
-    echo "=== C11 Production Run (complexity 11, stratified, ~500K-2M formulas, est. 3-8h) ==="
+    echo "=== C11 Production Run (complexity 11, stratified, ~500K-2M formulas, est. 1-4h) ==="
     echo "Started at: $(date -Iseconds)"
     # Stratified enumeration: exhaustive up to c9, sampled at c10/c11.
     # Quotas: c10 = 100K samples, c11 = 300K samples (0 = exhaustive for c1-c9).
-    # NOTE: valid-seed-count reduced from 20000 to 1000 because generateValidBatch
-    # uses O(pool^2) MP closure per round, making 20K seeds take many hours.
-    # The MP closure with 1000 seeds still provides meaningful valid enrichment
-    # without dominating total runtime.
+    # NOTE: Task 251 optimized generateValidBatch from O(n^2) to O(n) MP closure.
+    # 10000 seeds is now feasible with HashMap-based implication index; provides
+    # strong valid enrichment for the larger c11 formula pool.
     time lake exe dataset_generator -- \
         --max-complexity 11 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
         --max-formulas 2000000 \
-        --valid-seed-count 1000 \
+        --valid-seed-count 10000 \
         --output data/bmlogic-c11.jsonl \
         --mode stratified \
         --stratified-quotas "10:100000,11:300000" \
@@ -174,8 +171,8 @@ case "${1:-help}" in
         echo "  smoke   Quick 20-formula validation run"
         echo "  c5      Complexity 5, exhaustive, ~1.5K formulas (bmlogic-c5.jsonl)"
         echo "  c7      Complexity 7, exhaustive, ~50K formulas (bmlogic-c7.jsonl)"
-        echo "  c9      Complexity 9, exhaustive, ~300K-1.8M formulas (bmlogic-c9.jsonl, est. 2-6h)"
-        echo "  c11     Complexity 11, stratified, ~500K-2M formulas (bmlogic-c11.jsonl, est. 3-8h)"
+        echo "  c9      Complexity 9, exhaustive, ~300K-1.8M formulas (bmlogic-c9.jsonl, est. 30min-2h)"
+        echo "  c11     Complexity 11, stratified, ~500K-2M formulas (bmlogic-c11.jsonl, est. 1-4h)"
         echo "  all     Run all tiers: c5, c7, c9, c11 sequentially"
         exit 0
         ;;

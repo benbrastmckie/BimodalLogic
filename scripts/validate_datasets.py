@@ -79,7 +79,7 @@ DATASETS = [
         "metadata_path": "data/bmlogic-bench_metadata.json",
         "expected_fields": BENCHMARK_FIELDS,
         "schema_name": "benchmark-13-field",
-        "metadata_count_field": "total_count",
+        "metadata_count_field": "total_records",
     },
     {
         "path": "data/proof_steps.jsonl",
@@ -216,12 +216,24 @@ def validate_dataset(dataset: dict) -> list[str]:
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Validate dataset schemas")
+    parser.add_argument("--skip-missing", action="store_true",
+                        help="Skip missing JSONL files instead of reporting errors")
+    cli_args = parser.parse_args()
+
     print("Dataset Schema Validation")
     print("=" * 50)
 
     all_errors = []
+    skipped = []
 
     for dataset in DATASETS:
+        if cli_args.skip_missing and not os.path.exists(dataset["path"]):
+            print(f"\n--- {dataset['path']} ({dataset['schema_name']}) ---")
+            print(f"  SKIP: File not found (--skip-missing enabled)")
+            skipped.append(dataset["path"])
+            continue
         errors = validate_dataset(dataset)
         all_errors.extend(errors)
 
@@ -311,7 +323,10 @@ def main():
 
     if missing:
         for f in sorted(missing):
-            all_errors.append(f"  FAIL: Expected file missing from data/: {f}")
+            if cli_args.skip_missing:
+                print(f"  SKIP: Expected file missing from data/: {f}")
+            else:
+                all_errors.append(f"  FAIL: Expected file missing from data/: {f}")
     if unexpected:
         for f in sorted(unexpected):
             print(f"  NOTE: Unexpected file in data/ (may be regenerable artifact): {f}")
@@ -323,6 +338,8 @@ def main():
 
     # Final report
     print("\n" + "=" * 50)
+    if skipped:
+        print(f"SKIPPED: {len(skipped)} dataset(s) not yet generated: {', '.join(skipped)}")
     if all_errors:
         print(f"VALIDATION FAILED: {len(all_errors)} error(s) found:")
         for err in all_errors:

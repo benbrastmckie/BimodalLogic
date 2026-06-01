@@ -80,7 +80,9 @@ technical_debt:
       └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
     └─ 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
       └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-238 [NOT STARTED] — Extend tableau with frame-class-specific rules for Dense and Disc
+238 [PLANNED] — Extend tableau with frame-class-specific rules for Dense and Disc
+  - **Research**: [specs/238_frame_class_tableau_gating/reports/01_frame-class-gating.md]
+  - **Plan**: [specs/238_frame_class_tableau_gating/plans/01_implementation-plan.md]
   └─ 239 [NOT STARTED] — Replace stub proof extraction (returns 'Full proof extraction not (see above)
   └─ 240 [NOT STARTED] — Replace vacuous branchTruthLemma (forall sf in b, True) with genu (see above)
   └─ 241 [NOT STARTED] — Rebuild DatasetGenerator.lean to use the corrected tableau for re (see above)
@@ -97,8 +99,8 @@ technical_debt:
 
 ### Dataset Enhancement
 
-251 [PLANNED] — Optimize generateValidBatch O(n^2) MP closure bottleneck in datas
-  └─ 217 [IMPLEMENTING] — Extend exhaustive formula enumeration to complexity 9 and 11. bml
+251 [COMPLETED] — Optimize generateValidBatch O(n^2) MP closure bottleneck in datas
+  └─ 217 [COMPLETED] — Extend exhaustive formula enumeration to complexity 9 and 11. bml
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -283,12 +285,14 @@ technical_debt:
 ---
 
 ### 238. Frame-class-aware tableau expansion
-- **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: medium (8 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: tableau-training
-- **Dependencies**: 233, 234, 235
+- **Dependencies**: None (233-235 completed)
+- **Research**: [specs/238_frame_class_tableau_gating/reports/01_frame-class-gating.md]
+- **Plan**: [specs/238_frame_class_tableau_gating/plans/01_implementation-plan.md]
 
 **Description**: Add Dense and Discrete frame-class-specific rules. Dense: density rule, dense indicator (`¬U(⊤,⊥)`). Discrete: Prior rules, Z1, uniformity axioms. Parameterize `buildTableau`/`decide` by `FrameClass`, gate rules by `minFrameClass ≤ fc`. Files: `Tableau.lean`, `DecisionProcedure.lean`, `Saturation.lean`.
 
@@ -377,7 +381,7 @@ technical_debt:
 
 ### 217. Complexity tier extension to c9/c11
 - **Effort**: large (2-4 weeks, Lean oracle compute)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

@@ -165,22 +165,23 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Execute c9 exhaustive enumeration and c11 stratified sampling to produce the final dataset files.
 
-**BLOCKER** (Phase 4):
-- **What failed**: C9/C11 full dataset generation exceeds session compute budget (multi-hour runs)
-- **What was tried**: (1) C9 exhaustive with 10K seeds: enumeration completed in ~15min but `generateValidBatch` O(n^2) MP closure ran 47+ min without completing. (2) C9 with 2K seeds: same pattern, 26+ min without completing valid batch. (3) C9 with 0 seeds: enumeration at c8 takes ~11min for 5668 records; c9 enumeration estimated at 1-3 hours. (4) C11 stratified: peaked at 6.9GB RAM during c10/c11 enumeration.
-- **Why it's stuck**: `generateValidBatch` uses O(pool^2) MP closure per round (up to 10 rounds). At 10K seeds, the pool grows to thousands of formulas, making each MP round take minutes. The exhaustive enumeration at c9 itself is also extremely compute-intensive (millions of formula trees).
-- **What is needed**: Run generation commands as background jobs (2-6 hours each). Reduce valid-seed-count to 500 for c9 and 1000 for c11 to avoid the MP bottleneck. Alternatively, optimize `generateValidBatch` to use HashMap-based MP matching.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+**NOTE** (Phase 4 -- updated after Task 251):
+- Task 251 resolved the O(n^2) MP closure bottleneck by implementing HashMap-based implication index for O(n) MP closure, HashSet+Array pool for O(1) membership, and early complexity filtering.
+- Performance validation: c8 with 5000 seeds and 5000 formulas completes in ~90 seconds (was >47 minutes before optimization).
+- Valid seed counts restored: c9 uses 5000 seeds, c11 uses 10000 seeds (previously reduced to 500/1000 as workaround).
+- Full c9/c11 generation still requires background compute (estimated 30min-2h for c9, 1-4h for c11) but is no longer bottlenecked by MP closure.
+- Generation commands are ready to run via `./scripts/run_dataset_generation.sh c9` and `./scripts/run_dataset_generation.sh c11`.
 
 **Tasks**:
-- [ ] Run `./scripts/run_dataset_generation.sh c9` and capture timing and output statistics *(deviation: deferred -- requires 2-6 hour background compute; run script updated with reduced valid-seed-count)*
+- [ ] Run `./scripts/run_dataset_generation.sh c9` and capture timing and output statistics *(deviation: deferred -- requires background compute est. 30min-2h; scripts updated with 5000 seeds post-Task-251 O(n) optimization)*
 - [ ] Verify `data/bmlogic-c9.jsonl` record count is in the expected 300K-1.8M range *(deviation: deferred to full run)*
 - [ ] Verify `data/bmlogic-c9_metadata.json` is consistent with the JSONL line count *(deviation: deferred to full run)*
-- [ ] Run `./scripts/run_dataset_generation.sh c11` and capture timing and output statistics *(deviation: deferred -- requires 3-8 hour background compute; run script updated with reduced valid-seed-count)*
+- [ ] Run `./scripts/run_dataset_generation.sh c11` and capture timing and output statistics *(deviation: deferred -- requires background compute est. 1-4h; scripts updated with 10000 seeds post-Task-251 O(n) optimization)*
 - [ ] Verify `data/bmlogic-c11.jsonl` record count is in the expected 500K-2M range *(deviation: deferred to full run)*
 - [ ] Verify `data/bmlogic-c11_metadata.json` is consistent with the JSONL line count *(deviation: deferred to full run)*
 - [x] Run `python scripts/validate_datasets.py` to confirm c5 and c7 pass 16-field schema validation *(deviation: altered -- c9/c11 validation deferred since files not yet generated)*
 - [x] Smoke test: c8 exhaustive (5668 records, ~11min) and c11 stratified (100 records) both produce valid 16-field JSONL
+- [x] Performance validation post-Task-251: c8 with 5000 seeds/formulas completes in ~90s (was >47min before optimization)
 
 **Timing**: 1.5 hours (active work; compute time is 2-6 hours but runs unattended)
 
