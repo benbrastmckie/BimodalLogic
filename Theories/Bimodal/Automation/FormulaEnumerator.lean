@@ -992,6 +992,7 @@ Generate a batch of guaranteed-valid formulas using fixpoint Nec/MP closure.
 -/
 partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     (atoms : List Atom) : IO (List Formula) := do
+  let batchStartMs ← IO.monoMsNow
   -- Pool data structure: HashSet for O(1) membership, Array for ordered iteration
   let mut poolSet : Std.HashSet Formula := {}
   let mut poolArr : Array Formula := #[]
@@ -1001,10 +1002,17 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     else (s.insert φ, a.push φ)
   -- Phase 1: Seed pool with axiom instances + theorem seeds
   let maxParamSize := max 1 (maxComplexity / 3)
+  let progressInterval := max 1 (seedCount / 10)
+  let mut seedIdx : Nat := 0
   for _ in List.range seedCount do
     let axiomInst ← instantiateAxiom atoms maxParamSize
     let (s', a') := addToPool poolSet poolArr axiomInst
     poolSet := s'; poolArr := a'
+    seedIdx := seedIdx + 1
+    if seedIdx % progressInterval == 0 then
+      let elapsedMs ← IO.monoMsNow
+      let elapsedSecs := (elapsedMs - batchStartMs) / 1000
+      IO.println s!"[valid] Seeding: {seedIdx}/{seedCount} axiom instances, pool: {poolArr.size} unique, {elapsedSecs}s elapsed"
   -- Add theorem seed formulas
   for φ in theoremSeedFormulas do
     let (s', a') := addToPool poolSet poolArr φ
@@ -1074,7 +1082,11 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     -- Check growth rate: stop if less than 1% growth
     let growth := poolArr.size - prevSize
     let growthRate := if prevSize > 0 then growth * 100 / prevSize else 100
+    let closureElapsedMs ← IO.monoMsNow
+    let closureElapsedSecs := (closureElapsedMs - batchStartMs) / 1000
+    IO.println s!"[valid] Closure round {round}: pool {prevSize} -> {poolArr.size} (+{growth}, {growthRate}% growth), {closureElapsedSecs}s elapsed"
     if growthRate < 1 then
+      IO.println s!"[valid] Closure converged at round {round} ({growthRate}% growth < 1%)"
       break
   -- Phase 4: Filter by complexity range
   let filtered := poolArr.toList.filter fun φ => φ.complexity ≥ 3 && φ.complexity ≤ maxComplexity

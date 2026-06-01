@@ -109,21 +109,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Progress in generateValidBatch [NOT STARTED]
+### Phase 2: Progress in generateValidBatch [COMPLETED]
 
 **Goal**: Add progress reporting to the axiom seeding loop and fixpoint closure loop in `generateValidBatch`.
 
 **Tasks**:
-- [ ] Add seeding progress in the `for _ in List.range seedCount` loop (line ~1004):
+- [x] Add seeding progress in the `for _ in List.range seedCount` loop (line ~1004):
   - Track iteration count with a mutable counter
   - Every `max(1, seedCount / 10)` iterations, emit: `[valid] Seeding: {count}/{seedCount} axiom instances, pool: {poolSize} unique`
-- [ ] Add closure progress after each round in the `while` loop (line ~1044):
+- [x] Add closure progress after each round in the `while` loop (line ~1044):
   - After each round completes, emit: `[valid] Closure round {round}: pool {prevSize} -> {poolSize} (+{growth}, {growthRate}% growth)`
   - When breaking early due to low growth: `[valid] Closure converged at round {round} ({growthRate}% growth < 1%)`
-- [ ] Add timing to generateValidBatch:
+- [x] Add timing to generateValidBatch:
   - Capture start time at function entry with `IO.monoMsNow`
   - Print elapsed time with seeding and closure progress lines
-- [ ] Verify `lake build Bimodal.Automation.FormulaEnumerator` passes
+- [x] Verify `lake build Bimodal.Automation.FormulaEnumerator` passes
 
 **Timing**: 1 hour
 
