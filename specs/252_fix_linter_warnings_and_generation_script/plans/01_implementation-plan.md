@@ -64,15 +64,15 @@ No roadmap items directly addressed. This is a code-quality improvement task.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fix Lean Warnings in Semantics and FrameConditions [NOT STARTED]
+### Phase 1: Fix Lean Warnings in Semantics and FrameConditions [COMPLETED]
 
 **Goal**: Eliminate 22 unused-variable warnings for `h_sc`/`h_mem` binders across 3 files.
 
 **Tasks**:
-- [ ] In `Theories/Bimodal/Semantics/Validity.lean`: Replace `(h_sc : ShiftClosed Omega)` with `(_ : ShiftClosed Omega)` and `(h_mem : tau in Omega)` with `(_ : tau in Omega)` in all 5 definitions (`valid`, `semantic_consequence`, `valid_dense`, `valid_discrete`, `unsatisfiable_implies_all_fixed`)
-- [ ] In `Theories/Bimodal/FrameConditions/Validity.lean`: Apply the same anonymous binder pattern to the definition at lines 56-57
-- [ ] In `Theories/Bimodal/FrameConditions/Soundness.lean`: Apply the same anonymous binder pattern across all 5 affected locations
-- [ ] Run `lake build` on the affected files to verify no regressions
+- [x] In `Theories/Bimodal/Semantics/Validity.lean`: Replace `(h_sc : ShiftClosed Omega)` with `(_ : ShiftClosed Omega)` and `(h_mem : tau in Omega)` with `(_ : tau in Omega)` in all 5 definitions (`valid`, `semantic_consequence`, `valid_dense`, `valid_discrete`, `unsatisfiable_implies_all_fixed`)
+- [x] In `Theories/Bimodal/FrameConditions/Validity.lean`: Apply the same anonymous binder pattern to the definition at lines 56-57
+- [x] In `Theories/Bimodal/FrameConditions/Soundness.lean`: Apply the same anonymous binder pattern across all 5 affected locations
+- [x] Run `lake build` on the affected files to verify no regressions
 
 **Timing**: 45 minutes
 

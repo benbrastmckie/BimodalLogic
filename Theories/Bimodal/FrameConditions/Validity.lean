@@ -53,8 +53,8 @@ a specific temporal type D rather than quantifying over all types.
 def valid_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (φ : Formula) : Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
 
 /--

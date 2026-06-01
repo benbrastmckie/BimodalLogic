@@ -52,8 +52,8 @@ if all formulas in Γ are true, then φ is true.
 def soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     soundness Γ φ d D F M Omega h_sc τ h_mem t h_ctx
@@ -70,8 +70,8 @@ theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Frame
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   soundness_over D Γ φ d
 
@@ -85,8 +85,8 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_dense Γ φ d D F M Omega h_sc τ h_mem t h_ctx
@@ -102,8 +102,8 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
     [IsSuccArchimedean D] [IsPredArchimedean D]
     [DiscreteTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d D F M Omega h_sc τ h_mem t h_ctx
@@ -156,8 +156,8 @@ This is the concrete instantiation of soundness for the standard discrete model.
 -/
 theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Discrete Γ φ) :
     ∀ (F : TaskFrame Int) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : Int),
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Int),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d Int F M Omega h_sc τ h_mem t h_ctx

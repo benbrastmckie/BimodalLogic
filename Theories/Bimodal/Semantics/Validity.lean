@@ -73,8 +73,8 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
 
 /--
@@ -97,8 +97,8 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) →
     truth_at M Omega τ t φ
 
@@ -163,8 +163,8 @@ def valid_dense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
 
 /--
@@ -181,8 +181,8 @@ def valid_discrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
 
 namespace Validity
@@ -256,8 +256,8 @@ This is the type-specific version of explosion.
 theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
-      (τ : WorldHistory F) (h_mem : τ ∈ Omega)
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega)
       (t : D), (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ := by
   intro h_unsat F M Omega _h_sc τ h_mem t h_all
   exfalso
