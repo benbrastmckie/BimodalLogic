@@ -68,33 +68,33 @@ No ROADMAP.md items directly addressed by this task. This is a developer-experie
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Per-complexity-level progress in formula enumeration [NOT STARTED]
+### Phase 1: Per-complexity-level progress in formula enumeration [COMPLETED]
 
 **Goal**: Replace silent pure enumeration calls in `generateFormulas` with an IO wrapper that emits progress after each complexity level.
 
 **Tasks**:
-- [ ] Add `enumerateWithProgress` IO function in FormulaEnumerator.lean that:
+- [x] Add `enumerateWithProgress` IO function in FormulaEnumerator.lean that:
   - Takes `EnumParams` and iterates complexity levels 1 to `maxComplexity` in an IO loop
   - Calls `enumExactBudget` (pure) per level with shared `EnumCache`
   - Applies `passesFilter` per level
   - Emits `IO.println` progress per level: `[enum] Level {i}/{max}: {count} formulas (cumulative: {total}), {elapsed}s elapsed, {rate} formulas/sec`
   - Caps at `maxFormulas` (same as `enumerateExhaustive`)
-- [ ] Add `enumerateStratifiedWithProgress` IO function (or extend `enumerateWithProgress` with quota support) that:
+- [x] Add `enumerateStratifiedWithProgress` IO function (or extend `enumerateWithProgress` with quota support) that:
   - Mirrors `enumerateStratified` logic but with per-level IO progress
   - Applies per-level quotas from `stratifiedQuotas` with deterministic sampling
   - Emits the same progress format
-- [ ] Modify `generateFormulas` to call the IO progress wrappers instead of the pure functions:
+- [x] Modify `generateFormulas` to call the IO progress wrappers instead of the pure functions:
   - `.exhaustive` branch: call `enumerateWithProgress` instead of `pure (enumerateExhaustive params)`
   - `.stratified` branch: call `enumerateStratifiedWithProgress` instead of `pure (enumerateStratified params)`
   - `.hybrid` branch: call `enumerateWithProgress` for the exhaustive portion
   - `.random` branch: no change needed (already IO via `sampleRandom`)
-- [ ] Add start/end timing in `generateFormulas` using `IO.monoMsNow`:
+- [x] Add start/end timing in `generateFormulas` using `IO.monoMsNow`:
   - Print `[gen] Starting formula enumeration ({mode} mode, max complexity {N})...`
   - After enumeration: `[gen] Enumeration complete: {count} formulas in {elapsed}s`
   - Before valid batch: `[gen] Starting valid-seed generation ({seedCount} seeds)...`
   - After valid batch: `[gen] Valid-seed generation complete: {count} valid formulas in {elapsed}s`
   - Final: `[gen] Total: {count} unique formulas after deduplication`
-- [ ] Verify `lake build Bimodal.Automation.FormulaEnumerator` passes
+- [x] Verify `lake build Bimodal.Automation.FormulaEnumerator` passes
 
 **Timing**: 2 hours
 

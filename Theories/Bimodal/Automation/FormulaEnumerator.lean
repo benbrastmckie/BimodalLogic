@@ -1141,6 +1141,92 @@ where
       selected
 
 /--
+IO wrapper for exhaustive enumeration with per-complexity-level progress.
+
+Iterates complexity levels 1 to `maxComplexity`, calling `enumExactBudget` (pure)
+per level with shared `EnumCache`, applying `passesFilter`, and emitting progress
+after each level. Caps at `maxFormulas`.
+-/
+private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := do
+  let startMs ← IO.monoMsNow
+  let mut cache : EnumCache := {}
+  let mut allFormulas : List Formula := []
+  let mut totalCount : Nat := 0
+  for i in List.range params.maxComplexity do
+    let level := i + 1
+    let (exact, cache') := enumExactBudget params.atoms level params.maxModalDepth
+                                           params.maxTemporalDepth cache
+    cache := cache'
+    let filtered := exact.filter passesFilter
+    allFormulas := allFormulas ++ filtered
+    totalCount := totalCount + filtered.length
+    let elapsedMs ← IO.monoMsNow
+    let elapsedSecs := (elapsedMs - startMs) / 1000
+    let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
+    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.length} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    if totalCount ≥ params.maxFormulas then
+      break
+  return allFormulas.take params.maxFormulas
+
+/-- Deterministically sample `count` elements from a list using LCG.
+    Extracted as a top-level helper for reuse by both pure and IO stratified enumeration. -/
+private def deterministicSampleFormulas (xs : List Formula) (count : Nat) (rng : LCGState)
+    : List Formula :=
+  let arr := xs.toArray
+  let n := arr.size
+  if n ≤ count then xs
+  else
+    let (selected, _) := (List.range count).foldl
+      (fun (acc : List Formula × LCGState) _ =>
+        let (picked, r) := acc
+        let (r', idx) := r.randBound n
+        match arr[idx]? with
+        | some φ => (φ :: picked, r')
+        | none => (picked, r'))
+      ([], rng)
+    selected
+
+/--
+IO wrapper for stratified enumeration with per-complexity-level progress.
+
+Mirrors `enumerateStratified` logic but with per-level IO progress reporting.
+-/
+private def enumerateStratifiedWithProgress (params : EnumParams) : IO (List Formula) := do
+  let startMs ← IO.monoMsNow
+  let quotaMap := params.stratifiedQuotas.foldl
+    (fun (m : Std.HashMap Nat Nat) (k, v) => m.insert k v) {}
+  let mut cache : EnumCache := {}
+  let mut allFormulas : List Formula := []
+  let mut totalCount : Nat := 0
+  for i in List.range params.maxComplexity do
+    let level := i + 1
+    let (exact, cache') := enumExactBudget params.atoms level params.maxModalDepth
+                                           params.maxTemporalDepth cache
+    cache := cache'
+    let filtered := exact.filter passesFilter
+    let levelFormulas := match quotaMap[level]? with
+      | some 0 => filtered
+      | some quota =>
+        if filtered.length ≤ quota then filtered
+        else
+          let rng := LCGState.init (level * 12345 + 42)
+          deterministicSampleFormulas filtered quota rng
+      | none => filtered
+    allFormulas := allFormulas ++ levelFormulas
+    totalCount := totalCount + levelFormulas.length
+    let elapsedMs ← IO.monoMsNow
+    let elapsedSecs := (elapsedMs - startMs) / 1000
+    let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
+    let quotaStr := match quotaMap[level]? with
+      | some 0 => " [exhaustive]"
+      | some q => s!" [quota: {q}, from {filtered.length}]"
+      | none => " [exhaustive]"
+    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.length} formulas{quotaStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    if totalCount ≥ params.maxFormulas then
+      break
+  return allFormulas.take params.maxFormulas
+
+/--
 Generate formulas according to the specified sampling mode.
 
 Combines up to three formula sources:
@@ -1150,16 +1236,24 @@ Combines up to three formula sources:
    and modus ponens closure. These are mixed in to boost the valid fraction.
 
 All sources are deduplicated using HashMap-based dedup before returning.
+Emits progress reporting for long-running enumeration and valid-seed phases.
 -/
 partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
+  let modeStr := match params.samplingMode with
+    | .exhaustive => "exhaustive"
+    | .random => "random"
+    | .hybrid => "hybrid"
+    | .stratified => "stratified"
+  IO.println s!"[gen] Starting formula enumeration ({modeStr} mode, max complexity {params.maxComplexity})..."
   -- Step 1: Generate formulas from the selected sampling mode
+  let enumStartMs ← IO.monoMsNow
   let enumerated ← match params.samplingMode with
-    | .exhaustive => pure (enumerateExhaustive params)
+    | .exhaustive => enumerateWithProgress params
     | .random => sampleRandom params
     | .hybrid =>
       let exhaustiveParams := { params with maxComplexity := min 5 params.maxComplexity,
                                             maxFormulas := params.maxFormulas / 2 }
-      let exhaustive := enumerateExhaustive exhaustiveParams
+      let exhaustive ← enumerateWithProgress exhaustiveParams
       let remaining := params.maxFormulas - exhaustive.length
       if remaining > 0 then do
         let randomParams := { params with maxFormulas := remaining }
@@ -1167,14 +1261,24 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
         pure (hashDedup (exhaustive ++ random))
       else
         pure exhaustive
-    | .stratified => pure (enumerateStratified params)
+    | .stratified => enumerateStratifiedWithProgress params
+  let enumEndMs ← IO.monoMsNow
+  let enumElapsed := (enumEndMs - enumStartMs) / 1000
+  IO.println s!"[gen] Enumeration complete: {enumerated.length} formulas in {enumElapsed}s"
   -- Step 2: Generate axiom-seeded valid formulas if requested
-  let validSeeds ← if params.validSeedCount > 0 then
-    generateValidBatch params.validSeedCount params.maxComplexity params.atoms
+  let validSeeds ← if params.validSeedCount > 0 then do
+    IO.println s!"[gen] Starting valid-seed generation ({params.validSeedCount} seeds)..."
+    let seedStartMs ← IO.monoMsNow
+    let seeds ← generateValidBatch params.validSeedCount params.maxComplexity params.atoms
+    let seedEndMs ← IO.monoMsNow
+    let seedElapsed := (seedEndMs - seedStartMs) / 1000
+    IO.println s!"[gen] Valid-seed generation complete: {seeds.length} valid formulas in {seedElapsed}s"
+    pure seeds
   else
     pure []
   -- Step 3: Combine and deduplicate all sources using HashMap
   let combined := hashDedup (enumerated ++ validSeeds)
+  IO.println s!"[gen] Total: {combined.take params.maxFormulas |>.length} unique formulas after deduplication"
   return combined.take params.maxFormulas
 
 end Bimodal.Automation
