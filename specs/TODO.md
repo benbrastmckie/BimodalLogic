@@ -83,7 +83,10 @@ technical_debt:
 ### Track D — Tableau Training System
 
 *Phase T1 — Foundation:*
-232 [NOT STARTED] — Labeled branch infrastructure (world/time-indexed types)
+232 [COMPLETED] — Labeled branch infrastructure (world/time-indexed types)
+  - **Research**: [specs/232_labeled_branch_infrastructure/reports/01_labeled-branch-research.md]
+  - **Plan**: [specs/232_labeled_branch_infrastructure/plans/01_labeled-branch-plan.md]
+  - **Summary**: [specs/232_labeled_branch_infrastructure/summaries/01_labeled-branch-summary.md]
 233 [NOT STARTED] — S5 modal tableau rules (multi-world bookkeeping)
   └─ 232
 234 [NOT STARTED] — Temporal G/H/F/P tableau rules (time-indexed)
