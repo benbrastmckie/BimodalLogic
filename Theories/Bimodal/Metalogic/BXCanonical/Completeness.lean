@@ -293,8 +293,8 @@ then it is derivable in the Discrete proof system.
 
 **Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
 but using Discrete-derivability and Discrete-MCS throughout.
-- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_enriched` produces a
-  countermodel on `Int` (SuccOrder, PredOrder), contradicting `valid_discrete`.
+- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_reynolds` produces a
+  countermodel on `ℤ` (SuccOrder, PredOrder), contradicting `valid_discrete`.
 - Dense case (□(F'⊤) ∈ M, task 198): `U(⊤,⊥)` is a Discrete theorem,
   so `next_top ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
   contradiction.
@@ -364,10 +364,11 @@ theorem completeness_discrete (φ : Formula) :
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
-    · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on Int
-      obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        countermodel_discrete_enriched M hM_mcs (le_refl _) φ h_neg_in h_box_discrete
-      exact h_not_true (h_valid_discrete Int F TM Omega h_sc τ h_mem t)
+    · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
+      obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+        Bimodal.Metalogic.WeakCanonical.countermodel_discrete_reynolds
+          M hM_mcs φ h_neg_in h_box_discrete
+      exact h_not_true (h_valid_discrete D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs h_not_box_dense h_not_box_discrete)
 
@@ -395,39 +396,23 @@ Captured during Phase 0 of task 109 (2026-04-20).
 - `Lean.ofReduceBool`, `Lean.trustCompiler` — introduced by `native_decide` in Syntax layer
   (Formula.lean, SignedFormula.lean); these are acceptable, not sorry-related
 
-### Sorry Dependency Tree (Post-Phase 5 Rewiring)
+### Sorry Dependency Tree (Post-Task 155 Rewiring)
 
-The `sorryAx` dependency now traces through `dd_countermodel_chronicle` →
-`cantor_bfmcs` in Chronicle/ChronicleToCountermodel.lean, which uses the
-Burgess chronicle construction with a Cantor isomorphism to embed all
-rationals into the limit domain.
+**completeness_discrete** now routes through `countermodel_discrete_reynolds`
+(Transfer.lean) which uses the parametric canonical model construction via
+`cantor_bfmcs_discrete` and the restricted parametric truth lemma.
 
-**Active sorry sites** (1 total, on critical path):
-- 1 density g-value consistency in CounterexampleElimination.lean:3570 — the
-  density elimination needs `SetConsistent (fc := FrameClass.Base) (χ.g pc.x pc.y)` to find β ∉ g for
-  `lemma_2_6_splitting`. This traces to the Cantor isomorphism requiring
-  `DenselyOrdered` on the limit domain (an implementation choice — Burgess 1982
-  doesn't need density). Task 117 will remove the Cantor iso and build the model
-  directly on the limit domain, eliminating this sorry.
+The `sorryAx` dependency traces through:
+- `cantor_bfmcs_discrete_restricted_tc` → `succ_embed_surjective` →
+  `limitDomSubtype_isSuccArchimedean` (sorry)
+- `cantor_bfmcs_discrete_restricted_fuc` → `succ_embed_surjective` (same chain)
 
-**Closed sorry sites** (task 107, Phases 1-7):
-- 7 c2' sorry sites (closed via guard threading + walk restructuring)
-- 2 c4 hard case sorry sites (closed via BX6 absorption, Burgess 2.9)
-- 2 FUC sorry sites (closed via adj_g_mem_limit_f + witness_not_old)
-- NoUnivBurgessR3 hypothesis (deleted — unprovable in J₀, replaced by CUD g-values)
+**completeness** (general) routes through `countermodel_discrete` which uses the
+BX pipeline `dd_countermodel_chronicle_discrete`, carrying the same
+`succ_embed_surjective` sorry plus the `succ_cofinal` sorry.
 
-**Dead code** (no longer on critical path):
-- All sorry sites in RootScopedChain.lean (bx_bfmcs_restricted_tc/buc/fuc)
-- Dead code sorries in CanonicalModel.lean (enriched_seed_consistent, etc.)
-
-### Target State
-
-After task 117 (remove Cantor iso), `#print axioms completeness` should show:
-`{propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
-
-Current state (task 107 complete):
-`{propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
-`sorryAx` traces to: CE:3570 → limit_dom_dense → DenselyOrdered → cantor_iso → dd_countermodel_chronicle
+**Bypassed path** (task 155): `countermodel_discrete_enriched` (private) is no
+longer called by `completeness_discrete`.
 
 (The `Lean.ofReduceBool` and `Lean.trustCompiler` remain from `native_decide` in the Syntax layer
 and are not removable without changing the decidability infrastructure.)

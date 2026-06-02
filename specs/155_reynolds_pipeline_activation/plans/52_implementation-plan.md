@@ -275,7 +275,7 @@ Actually wait. Let me re-read `truth_transfer` to understand what it actually gi
 
 ---
 
-### Phase 3: Rewire completeness_discrete [NOT STARTED]
+### Phase 3: Rewire completeness_discrete [COMPLETED]
 
 **Goal**: Change `completeness_discrete` in Completeness.lean to use `countermodel_discrete_reynolds` instead of `countermodel_discrete_enriched`.
 
@@ -311,11 +311,11 @@ But `valid_discrete` requires `SuccOrder D` and `PredOrder D`. If D = Int this i
 Option (a) is simpler and matches what `countermodel_discrete_enriched` does.
 
 **Tasks**:
-- [ ] If `countermodel_discrete_reynolds` returns generic D: add `SuccOrder D` and `PredOrder D` to its existential, OR specialize its implementation to return D=Int
-- [ ] Update `completeness_discrete` discrete branch to call `countermodel_discrete_reynolds`
-- [ ] Adjust destructuring pattern to match the new existential shape
-- [ ] Update the `h_valid_discrete` application to use the returned D
-- [ ] Verify `lake build Bimodal.Metalogic.BXCanonical.Completeness` passes
+- [x] **Task 3.1**: Add `SuccOrder D`, `PredOrder D`, `IsSuccArchimedean D`, `IsPredArchimedean D` to the existential of `countermodel_discrete_reynolds`
+- [x] **Task 3.2**: Update `completeness_discrete` discrete branch to call `countermodel_discrete_reynolds`
+- [x] **Task 3.3**: Adjust destructuring pattern to match the new existential shape
+- [x] **Task 3.4**: Update the `h_valid_discrete` application to use the returned D
+- [x] **Task 3.5**: Verify `lake build Bimodal.Metalogic.BXCanonical.Completeness` passes
 
 **Timing**: 45 minutes
 

@@ -1214,7 +1214,9 @@ theorem countermodel_discrete_reynolds
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
+      (_ : Nontrivial D) (_ : SuccOrder D) (_ : PredOrder D)
+      (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
+      (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
@@ -1225,6 +1227,7 @@ theorem countermodel_discrete_reynolds
     FrameClass.Discrete A h_mcs h_box_discrete 0
   -- Package as existential with parametric canonical model
   refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
+    inferInstance, inferInstance, inferInstance, inferInstance,
     Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame ℤ,
     Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel ℤ,
     Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
