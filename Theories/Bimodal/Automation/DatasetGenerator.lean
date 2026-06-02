@@ -338,7 +338,7 @@ def extractCountermodelData (φ : Formula) :
   match buildTableau φ fuel with
   | none => (none, none)
   | some (.allClosed _) => (none, none)  -- Shouldn't happen for invalid formula
-  | some (.hasOpen openBranch _hSat ord) =>
+  | some (.hasOpen openBranch ord _hSat) =>
       let ecm := extractEnrichedCountermodel φ openBranch
       let scm := extractSemanticCountermodel φ openBranch ord
       let summary := SemanticCountermodelSummary.fromSemanticCountermodel scm

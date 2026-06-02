@@ -139,7 +139,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
               | .incomplete _ =>
                   -- Extraction failed despite validity; genuine resource limitation
                   .timeout
-          | .hasOpen openBranch hSat _ =>
+          | .hasOpen openBranch _ord hSat =>
               -- Formula is invalid, extract countermodel
               .invalid (extractCountermodelSimple φ openBranch hSat)
 

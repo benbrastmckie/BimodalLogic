@@ -45,8 +45,8 @@ inductive ExpandedTableau : Type where
   | allClosed (closedBranches : List ClosedBranch)
   /-- At least one branch is open/saturated (formula is invalid).
       Carries the `TimeOrdering` for countermodel extraction. -/
-  | hasOpen (openBranch : Branch) (saturated : findUnexpanded openBranch = none)
-      (timeOrdering : TimeOrdering)
+  | hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering)
+      (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) = none)
   deriving Repr
 
 namespace ExpandedTableau
@@ -74,8 +74,8 @@ inductive BranchListResult : Type where
   /-- All branches closed. -/
   | allClosed (closedBranches : List ClosedBranch)
   /-- Found an open saturated branch with its time ordering. -/
-  | foundOpen (openBranch : Branch) (saturated : findUnexpanded openBranch = none)
-      (timeOrdering : TimeOrdering)
+  | foundOpen (openBranch : Branch) (timeOrdering : TimeOrdering)
+      (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) = none)
   /-- Still have branches to process. -/
   | pending (branches : List Branch)
   deriving Repr
@@ -197,8 +197,8 @@ def expandBranchesWithFuel (branches : List Branch) (fuel : Nat)
       | some (.inl closedBr) => expandBranchesWithFuel rest fuel (closedBr :: closed) fc
       | some (.inr (openBr, ord)) =>
           -- Check if open branch is saturated
-          match h : findUnexpanded openBr with
-          | none => .foundOpen openBr h ord
+          match h : findUnexpanded openBr (timeOrd := ord) with
+          | none => .foundOpen openBr ord h
           | some _ => .pending (openBr :: rest)  -- Not yet saturated
 
 /-!
@@ -222,8 +222,8 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])
   | some (.inr (openBr, ord)) =>
-      match h : findUnexpanded openBr with
-      | none => some (.hasOpen openBr h ord)
+      match h : findUnexpanded openBr (timeOrd := ord) with
+      | none => some (.hasOpen openBr ord h)
       | some _ => none  -- Should be saturated but isn't
 
 /--
