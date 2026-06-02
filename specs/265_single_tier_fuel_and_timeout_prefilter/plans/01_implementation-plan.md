@@ -131,17 +131,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Full Build and Unit Verification [NOT STARTED]
+### Phase 3: Full Build and Unit Verification [COMPLETED]
 
 **Goal**: Verify the full project builds and the pre-filter produces correct results for known test cases.
 
 **Tasks**:
-- [ ] Run `lake build` for full project build verification
-- [ ] Add `#eval` tests in DatasetGenerator.lean (or a scratch file) to verify pre-filter on concrete formulas:
+- [x] Run `lake build` for full project build verification
+- [x] Add `#eval` tests in DatasetGenerator.lean (or a scratch file) to verify pre-filter on concrete formulas:
   - Positive: `U(bot,p) -> q`, `S(bot,r) -> bot`, `box(U(bot,p)) -> q`, `box(box(bot)) -> p`, `box(box(p)) -> p`, `box(p) -> (q -> p)`, `box(U(bot,p) -> q)` (box-descent)
   - Negative: `box(U(p,q)) -> bot` (non-bot event), `p -> U(bot,q)` (consequent-side bot-temporal), `box(box(p)) -> q` (p != q, not double-T)
-- [ ] Remove `#eval` tests after verification (or gate behind `-- #eval` comments)
-- [ ] Verify no regressions in existing functionality
+- [x] Remove `#eval` tests after verification (or gate behind `-- #eval` comments)
+- [x] Verify no regressions in existing functionality
 
 **Timing**: 30 minutes
 
