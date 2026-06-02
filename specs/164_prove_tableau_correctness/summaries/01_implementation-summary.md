@@ -3,7 +3,7 @@
 - **Task**: 164 - Prove tableau correctness theorem for decision procedure
 - **Status**: PARTIAL
 - **Phases Completed**: 1 fully, 2 substantially, 2 partially
-- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316, sess_1780361777_843697
+- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316, sess_1780361777_843697 (rounds 1-4)
 
 ## What Was Accomplished
 
@@ -47,6 +47,13 @@ Resolved all propositional and modal saturation sorry sites:
 
 3. **Still sorry**: `sat_untl_neg`, `sat_snce_neg` proofs. The signatures are correct and the blocker is removed. The proof strategy (case-splitting on `applyRule` result, showing the notApplicable case contradicts the filter being non-empty) is identified but not yet mechanized due to complexity of unfolding `applyRule` in Lean.
 
+**Round 4 progress:**
+- Added `@[simp]` lemmas `RuleResult.branching_ne_notApplicable`, `linear_ne_notApplicable`, `persistent_ne_notApplicable` to Tableau.lean
+- Fixed `set_option`/docstring ordering bug (`set_option` must precede docstring in Lean 4)
+- Established proof structure: `set result_pair; cases result` works for the non-notApplicable cases
+- Identified root cause for `notApplicable` case: **filter predicate form mismatch** -- `applyRule` uses `!(a||b)` but after `simp` normalization the goal has `!a && !b` (De Morgan). `generalize`/`rw`/`simp only` cannot bridge this gap because the anonymous lambdas are syntactically different
+- Recommended fix: refactor `applyRule` to use `!a && !b` natively, eliminating the mismatch at source
+
 ### Phase 5: Blocking Correctness (PARTIAL)
 
 1. **subformula_property** (sorry-free): Proved trivially -- the theorem as stated only covers the initial branch `[F(phi)]`, where the only formula is `phi` itself.
@@ -71,12 +78,13 @@ Resolved all propositional and modal saturation sorry sites:
 
 ## Sorry Site Accounting
 
-| File | Before (start) | After round 2 | After round 3 | Resolved |
-|------|----------------|----------------|----------------|----------|
-| Correctness.lean | 0 | 0 | 0 | +2 theorems |
-| CountermodelExtraction.lean | 9 | 4 | 4 | 5 |
-| Saturation.lean | 3 | 1 | 1 | 2 |
-| **Total** | **12** | **5** | **5** | **7** |
+| File | Before (start) | After round 2 | After round 3 | After round 4 | Resolved |
+|------|----------------|----------------|----------------|----------------|----------|
+| Correctness.lean | 0 | 0 | 0 | 0 | +2 theorems |
+| CountermodelExtraction.lean | 9 | 4 | 4 | 4 | 5 |
+| Saturation.lean | 3 | 1 | 1 | 1 | 2 |
+| Tableau.lean | 0 | 0 | 0 | 0 | +3 simp lemmas |
+| **Total** | **12** | **5** | **5** | **5** | **7** |
 
 ## What Remains (5 sorry sites)
 
