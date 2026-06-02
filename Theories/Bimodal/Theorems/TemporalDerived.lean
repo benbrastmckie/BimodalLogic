@@ -580,6 +580,71 @@ noncomputable def H_contrapose (φ ψ : Formula) :
 end TemporalContraposition
 
 /-!
+## Category D: Future-Past Interaction Chains (4 noncomputable theorems)
+
+These connect future and past operators by chaining BX4/BX4' (temporal
+connectedness) with G/H-distribution and temporal necessitation.
+-/
+
+section FuturePastChains
+
+/--
+`⊢ G(φ) → G(G(P(φ)))`: If φ always holds in the future, then G(P(φ)) always
+holds in the future — φ's future permanence propagates through past reflection.
+
+From `connect_future φ : ⊢ φ → G(P φ)`, temporal necessitate to get
+`G(φ → G(P φ))`, then apply G_distribution: `G φ → G(G(P φ))`.
+-/
+noncomputable def connect_future_G (φ : Formula) :
+    ⊢ φ.all_future.imp (φ.some_past.all_future).all_future :=
+  let g_cf := DerivationTree.temporal_necessitation _ (connect_future_thm φ)
+  mp g_cf (G_distribution φ (φ.some_past.all_future))
+
+/--
+`⊢ H(φ) → H(H(F(φ)))`: If φ always held in the past, then H(F(φ)) always
+held in the past — φ's past permanence propagates through future reflection.
+
+From `connect_past φ : ⊢ φ → H(F φ)`, past necessitate to get
+`H(φ → H(F φ))`, then apply H_distribution: `H φ → H(H(F φ))`.
+-/
+noncomputable def connect_past_H (φ : Formula) :
+    ⊢ φ.all_past.imp (φ.some_future.all_past).all_past :=
+  let h_cp := Bimodal.Theorems.past_necessitation _ (connect_past_thm φ)
+  mp h_cp (H_distribution φ (φ.some_future.all_past))
+
+/--
+`⊢ φ → G(H(F(P(φ))))`: Deep temporal chain combining future and past connectedness.
+
+Compose `connect_future φ : φ → G(P φ)` with
+`connect_past (P φ) : P φ → H(F(P φ))` lifted through G:
+1. Temporal necessitate `P φ → H(F(P φ))` to get `G(P φ → H(F(P φ)))`
+2. G_distribution: `G(P φ) → G(H(F(P φ)))`
+3. imp_trans with connect_future: `φ → G(H(F(P φ)))`
+-/
+noncomputable def connect_future_chain (φ : Formula) :
+    ⊢ φ.imp ((φ.some_past.some_future.all_past).all_future) :=
+  let step1 := DerivationTree.temporal_necessitation _ (connect_past_thm φ.some_past)
+  let step2 := mp step1 (G_distribution φ.some_past (φ.some_past.some_future.all_past))
+  imp_trans (connect_future_thm φ) step2
+
+/--
+`⊢ φ → H(G(P(F(φ))))`: Deep temporal chain combining past and future connectedness.
+
+Compose `connect_past φ : φ → H(F φ)` with
+`connect_future (F φ) : F φ → G(P(F φ))` lifted through H:
+1. Past necessitate `F φ → G(P(F φ))` to get `H(F φ → G(P(F φ)))`
+2. H_distribution: `H(F φ) → H(G(P(F φ)))`
+3. imp_trans with connect_past: `φ → H(G(P(F φ)))`
+-/
+noncomputable def connect_past_chain (φ : Formula) :
+    ⊢ φ.imp ((φ.some_future.some_past.all_future).all_past) :=
+  let step1 := Bimodal.Theorems.past_necessitation _ (connect_future_thm φ.some_future)
+  let step2 := mp step1 (H_distribution φ.some_future (φ.some_future.some_past.all_future))
+  imp_trans (connect_past_thm φ) step2
+
+end FuturePastChains
+
+/-!
 ## A3a/A3b: Valid Under Open Guard Semantics
 
 Burgess 1982 axioms A3a and A3b (Until-Since enrichment) ARE semantically valid under

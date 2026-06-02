@@ -130,17 +130,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Future-Past Interaction Chains (Category D) [NOT STARTED]
+### Phase 3: Future-Past Interaction Chains (Category D) [COMPLETED]
 
 **Goal**: Add 4 noncomputable theorems demonstrating deep temporal reasoning patterns by chaining BX4/BX4' (temporal connectedness) with G-distribution and temporal necessitation.
 
 **Tasks**:
-- [ ] Add `connect_future_G` : `G phi -> G(G(P phi))` -- temporal necessitate connect_future, apply G_distribution
-- [ ] Add `connect_past_H` : `H phi -> H(H(F phi))` -- mirror via duality
-- [ ] Add `connect_future_chain` : `phi -> G(H(F(P phi)))` -- compose connect_future with temporally necessitated connect_past applied to P phi, then G_distribution
-- [ ] Add `connect_past_chain` : `phi -> H(G(P(F phi)))` -- mirror via duality
-- [ ] Verify all 4 definitions compile (noncomputable expected)
-- [ ] Run `lake build Bimodal.Theorems.TemporalDerived` to confirm
+- [x] Add `connect_future_G` : `G phi -> G(G(P phi))` -- temporal necessitate connect_future, apply G_distribution
+- [x] Add `connect_past_H` : `H phi -> H(H(F phi))` -- mirror via duality
+- [x] Add `connect_future_chain` : `phi -> G(H(F(P phi)))` -- compose connect_future with temporally necessitated connect_past applied to P phi, then G_distribution
+- [x] Add `connect_past_chain` : `phi -> H(G(P(F phi)))` -- mirror via duality
+- [x] Verify all 4 definitions compile (noncomputable expected)
+- [x] Run `lake build Bimodal.Theorems.TemporalDerived` to confirm
 
 **Timing**: 1.5 hours
 
