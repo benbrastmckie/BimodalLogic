@@ -67,7 +67,7 @@ technical_debt:
 
 243 [PLANNED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
 244 [PLANNED] — Create library of theorems with non-empty contexts to exercise as
-247 [PLANNED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+247 [COMPLETED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
 
 ### Automation
 
@@ -196,15 +196,16 @@ technical_debt:
 
 ### 247. End-to-end training loop validation
 - **Effort**: medium (6-10 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Priority**: medium
 - **Topic**: tableau-training
 - **Dependencies**: 242, 245, 246
 - **Research**: [specs/247_training_loop_validation/reports/01_training-loop-validation.md]
 - **Plan**: [specs/247_training_loop_validation/plans/01_training-loop-validation.md]
+- **Summary**: [specs/247_training_loop_validation/summaries/01_training-loop-validation-summary.md]
 
-**Description**: Validate the complete pipeline: Lean tableau → data export → BimodalHarness ingestion → training → evaluation. Generate a small dataset (1000 labeled formulas, 5000 proof steps) using the corrected tableau, sync to BimodalHarness, run supervised training on proof steps, run a single epoch of expert iteration, evaluate on benchmark, verify action predictions align with the 49-action space. Document schema mismatches and training failures. Create `scripts/smoke-test-training.sh` in BimodalHarness.
+**Description**: Validated complete pipeline: Lean tableau → BimodalHarness ingestion → supervised training → expert iteration → benchmark evaluation. All 5 phases completed. Created `scripts/smoke-test-training.sh` in BimodalHarness (8/8 steps PASS in 18.8s). Key finding: action space is 82 (not 49 as documented). No context field incompatibility. Expert iteration BFS finds 16/20 proofs; eval solve rate 100%.
 
 ---
 

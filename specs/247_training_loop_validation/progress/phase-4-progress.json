@@ -1,0 +1,19 @@
+{
+  "phase": 4,
+  "phase_name": "Action Space Alignment Verification",
+  "started_at": "2026-06-02T10:45:00Z",
+  "last_updated": "2026-06-02T11:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Load trained policy network from Phase 2", "status": "done", "note": "re-trained for this phase (1 epoch, loss=1.3158)"},
+    {"id": 2, "description": "Run inference on 10 proof step goals, get predicted action distributions", "status": "done", "note": "probs shape [10, 82]"},
+    {"id": 3, "description": "Verify all predicted top-k action indices map to valid ALL_ACTIONS", "status": "done", "note": "PASS: all 50 top-5 predictions within [0, 81]"},
+    {"id": 4, "description": "Cross-reference action indices with Lean-side rule names", "status": "done", "note": "0-41=axioms, 42-48=rules, 49-81=derived theorems"},
+    {"id": 5, "description": "Verify step_to_action_index produces correct indices for 20 proof steps", "status": "done", "note": "PASS: 0 mismatches in 20 samples"},
+    {"id": 6, "description": "Document action space mapping in docs/schema-mismatches.md", "status": "done"},
+    {"id": 7, "description": "Verify no action indices outside [0, NUM_TOTAL_ACTIONS-1]", "status": "done", "note": "PASS: all 10063 action_indices in [0, 81]"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

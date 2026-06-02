@@ -1,0 +1,31 @@
+{
+  "phase": 2,
+  "phase_name": "Supervised Training on Proof Steps",
+  "started_at": "2026-06-02T10:15:00Z",
+  "last_updated": "2026-06-02T10:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Load proof steps via load_bmlogic_proof_steps()", "status": "done", "note": "10063 records, used 5000 subset"},
+    {"id": 2, "description": "Instantiate PolicyNetwork with default config", "status": "done", "note": "num_actions=82 (not 49 as plan stated)"},
+    {"id": 3, "description": "Instantiate PolicyTrainer with cross-entropy loss", "status": "done"},
+    {"id": 4, "description": "Run 1 epoch of supervised training on proof steps", "status": "done", "note": "train_loss=1.3606 (finite, positive)"},
+    {"id": 5, "description": "Verify loss is finite (not NaN/Inf)", "status": "done", "note": "PASS"},
+    {"id": 6, "description": "Verify predicted action indices are in valid range", "status": "done", "note": "top1_acc=0.75, top5_acc=0.994"},
+    {"id": 7, "description": "Log training metrics", "status": "done", "note": "initial_loss=1.3606, top1=0.75, top5=0.994, batches=71, records=4500"},
+    {"id": 8, "description": "Load labeled formulas for value network", "status": "done", "note": "1461 c5 records"},
+    {"id": 9, "description": "Instantiate ValueNetwork and ValueTrainer", "status": "done"},
+    {"id": 10, "description": "Run 1 epoch of value network training", "status": "done", "note": "train_loss=0.0125 (finite)"},
+    {"id": 11, "description": "Verify value predictions are finite", "status": "done", "note": "PASS: mae=0.0104"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.2",
+      "description": "Instantiate PolicyNetwork with output dim=49 primitive actions",
+      "type": "altered",
+      "reason": "NUM_TOTAL_ACTIONS is 82; default PolicyNetworkConfig uses 82 actions",
+      "annotation": "*(deviation: altered — PolicyNetwork uses 82 actions (not 49); internally consistent with action space)*"
+    }
+  ]
+}

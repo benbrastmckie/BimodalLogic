@@ -1,0 +1,29 @@
+{
+  "phase": 1,
+  "phase_name": "Data Ingestion Verification and Context Field Fix",
+  "started_at": "2026-06-02T10:00:00Z",
+  "last_updated": "2026-06-02T10:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Verify BimodalHarness is installed", "status": "done", "note": "pip install -e . blocked by NixOS venv; workaround: PYTHONPATH=/home/benjamin/Projects/BimodalHarness/src"},
+    {"id": 2, "description": "Verify PyTorch is importable", "status": "done", "note": "torch 2.11.0"},
+    {"id": 3, "description": "Verify data files exist and are non-empty", "status": "done", "note": "proof_steps.jsonl (10063), bmlogic-c5.jsonl (1513), bmlogic-bench-validated.jsonl (1950)"},
+    {"id": 4, "description": "Load proof steps via load_bmlogic_proof_steps()", "status": "done", "note": "10063 records loaded without errors"},
+    {"id": 5, "description": "Load labeled formulas via load_lean_jsonl()", "status": "done", "note": "1461 records loaded (52 timeout skipped)"},
+    {"id": 6, "description": "Test context field compatibility with ProofStepDataset + policy_collate_fn", "status": "done", "note": "No incompatibility found - context is tuple (empty in current dataset)"},
+    {"id": 7, "description": "Fix load_bmlogic_proof_steps() if context field fails", "status": "done", "note": "No fix needed - no incompatibility"},
+    {"id": 8, "description": "Verify action_index values in [0, 48]", "status": "done", "note": "DEVIATION: actual range is [0, 81] (82 actions total); proof steps use [0, 47], all valid"},
+    {"id": 9, "description": "Document schema mismatches in docs/schema-mismatches.md", "status": "done"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.8",
+      "description": "Verify action_index values are in range [0, 48]",
+      "type": "altered",
+      "reason": "NUM_TOTAL_ACTIONS is 82 not 49; verified range is [0, 81]; proof steps use [0, 47]",
+      "annotation": "*(deviation: altered — actual action space is 82, not 49 as plan assumed; all values valid)*"
+    }
+  ]
+}

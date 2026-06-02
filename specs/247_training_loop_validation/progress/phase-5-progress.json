@@ -1,0 +1,21 @@
+{
+  "phase": 5,
+  "phase_name": "Smoke Test Script and Documentation",
+  "started_at": "2026-06-02T11:00:00Z",
+  "last_updated": "2026-06-02T11:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create scripts/smoke-test-training.sh", "status": "done"},
+    {"id": 2, "description": "Script exits non-zero on failure, prints summary", "status": "done"},
+    {"id": 3, "description": "Script sets WANDB_DISABLED=true", "status": "done"},
+    {"id": 4, "description": "Script supports --quick flag", "status": "done"},
+    {"id": 5, "description": "Make script executable", "status": "done"},
+    {"id": 6, "description": "Create scripts/smoke_test_training.py", "status": "done"},
+    {"id": 7, "description": "Run smoke test end-to-end", "status": "done", "note": "8/8 PASS (18.8s); quick mode 6/6 PASS (27.4s)"},
+    {"id": 8, "description": "Update docs/schema-mismatches.md with final summary", "status": "done"},
+    {"id": 9, "description": "Update SYNC_PROTOCOL.md in BimodalLogic", "status": "done"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

@@ -1,0 +1,33 @@
+{
+  "phase": 3,
+  "phase_name": "Expert Iteration Smoke Run",
+  "started_at": "2026-06-02T10:30:00Z",
+  "last_updated": "2026-06-02T10:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Select 20 easy formulas from bmlogic-c5.jsonl", "status": "done", "note": "64 easy valid found, 20 selected"},
+    {"id": 2, "description": "Select 5 eval formulas from bmlogic-bench-validated.jsonl", "status": "done", "note": "5 selected (overlap-filtered)"},
+    {"id": 3, "description": "Configure ExpertIterationLoop with num_iterations=1, bfs, max_expansions=50, WANDB_DISABLED", "status": "done"},
+    {"id": 4, "description": "Run expert iteration loop for 1 iteration", "status": "done", "note": "completed in 1.5s"},
+    {"id": 5, "description": "Verify SEARCH phase finds at least 1 proof", "status": "done", "note": "PASS: 16 proofs found"},
+    {"id": 6, "description": "Verify EXTRACT phase produces ProofStepRecord objects", "status": "done", "note": "PASS: buffer grew from 903 to 919 policy records"},
+    {"id": 7, "description": "Verify ACCUMULATE phase adds records to replay buffer", "status": "done", "note": "PASS: value buffer grew from 200 to 216"},
+    {"id": 8, "description": "Verify RETRAIN phase runs PolicyTrainer without errors", "status": "done"},
+    {"id": 9, "description": "Verify EVALUATE phase reports a solve rate", "status": "done", "note": "PASS: solve_rate=1.0 (5/5)"},
+    {"id": 10, "description": "Log iteration metrics", "status": "done", "note": "16 proofs found, 5/5 eval solved, 919 policy records, 216 value records"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "load_lean_jsonl for bench formulas", "result": "failed", "reason": "bench JSONL has pattern_key with camelCase keys (modalDepth etc) that fail PatternKey.from_dict()"},
+    {"approach": "load bench formula_ast field directly as JSON dict", "result": "success"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.2",
+      "description": "Select 5 eval formulas from bmlogic-bench-validated.jsonl",
+      "type": "altered",
+      "reason": "load_lean_jsonl fails on bench format (different pattern_key camelCase); used direct JSON dict loading of formula_ast field instead. Also needed to filter 1 overlapping formula between train and eval.",
+      "annotation": "*(deviation: altered — bench file loaded via direct JSON dict; 1 overlap formula removed from eval set)*"
+    }
+  ]
+}
