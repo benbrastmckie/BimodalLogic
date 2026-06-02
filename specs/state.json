@@ -320,8 +320,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-01T12:30:00Z",
-      "next_artifact_number": 51,
+      "last_updated": "2026-06-01T23:50:00Z",
+      "next_artifact_number": 52,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -612,6 +612,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/50_implementation-plan.md",
           "type": "plan",
           "summary": "3-phase plan: rewrite chronicle_gap_contradiction to use no_gaps_discrete_model_surgery, verify completeness_discrete sorry-free, documentation updates"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/51_implementation-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v51: corrected two-case argument using gap_contradicts_prior + no_boundary_at_successor, fixing the mathematically incorrect one_class->IsSuccArchimedean step"
         }
       ],
       "session_id": "sess_1748820600_orch155",
@@ -621,10 +626,10 @@
       "resume_phase": null,
       "plan_metadata": {
         "phases": 3,
-        "total_effort_hours": 6,
+        "total_effort_hours": 5,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 50,
+        "plan_version": 51,
         "dependency_waves": [
           [
             1
@@ -640,6 +645,11 @@
           {
             "path": "reports/50_import-cycle-research.md",
             "integrated_in_plan_version": 50,
+            "integrated_date": "2026-06-01"
+          },
+          {
+            "path": "team research (3 parallel agents on Z+Z counterexample)",
+            "integrated_in_plan_version": 51,
             "integrated_date": "2026-06-01"
           }
         ]
@@ -1232,7 +1242,7 @@
     {
       "project_number": 260,
       "project_name": "dataset_generation_resumable_interruption",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Make the dataset generation pipeline resumable after interruption. Currently if run_dataset_generation.sh is interrupted (Ctrl-C, OOM kill, system restart), all progress is lost and the entire multi-hour run must restart from scratch. Implement checkpoint/resume so that: (1) During enumeration, periodically flush generated formulas to a checkpoint file so enumeration can resume from the last checkpoint. (2) During labeling, write labeled records incrementally to the output JSONL (or a partial file) so completed labels survive interruption. (3) On restart, detect partial output and resume from where labeling left off rather than re-enumerating and re-labeling everything. (4) The shell script should detect partial runs and offer to resume or restart. Consider: atomic writes to avoid corrupted partial files, a .progress metadata file tracking enumeration/labeling state, and a --resume flag. This is critical for c9 (2+ hours) and c11 (4+ hours) runs that are easily interrupted by OOM, power loss, or accidental Ctrl-C.",
       "priority": "high",
@@ -1243,7 +1253,19 @@
       "created": "2026-06-01T23:00:00Z",
       "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/260_dataset_generation_resumable_interruption/reports/01_resumable-pipeline-research.md",
+          "type": "report",
+          "summary": "Research on resumable dataset generation pipeline"
+        },
+        {
+          "path": "specs/260_dataset_generation_resumable_interruption/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for resumable dataset generation"
+        }
+      ],
+      "completion_summary": "Implemented resumable dataset generation pipeline: Lean-side --resume-from/--checkpoint-file/--use-checkpoint flags with append mode and S-expression checkpoint I/O; shell-side resume detection with interactive prompting, --resume/--no-resume flags, last-line validation. All 4 phases complete, lake build passes."
     }
   ],
   "next_project_number": 261,
