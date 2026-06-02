@@ -120,20 +120,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update dataset card documentation [NOT STARTED]
+### Phase 3: Update dataset card documentation [COMPLETED]
 
 **Goal**: Add a contamination analysis section to the dataset card explaining the overlap, its root cause, the resolution, and usage guidance for filtering.
 
 **Tasks**:
-- [ ] Add "Contamination Analysis" section to `data/dataset-card.md`:
-  - Explain the structural overlap: c7 is exhaustive up to complexity 7, so benchmark formulas in that range are necessarily duplicated
-  - Report key numbers: 553/777 (71.2%) contaminated, 224/777 (28.8%) held-out
-  - Per-split breakdown table (from research: propositional-only 72/97, modal-only 101/144, temporal-only 176/247, bimodal 162/239)
-  - Explain the `contamination_flag` field and its meaning
-  - Add usage example: filtering benchmark to held-out records only
-  - Note that axiom instances are almost entirely held-out (59/60 = 98.3%)
-- [ ] Add a brief contamination note to the "Benchmark" subsection if one exists, cross-referencing the full analysis section
-- [ ] Review the dataset card for any stale record counts or claims that need updating
+- [x] Add "Contamination Analysis" section to `data/dataset-card.md`: *(completed: full section with overview, per-split breakdown, usage example, and caveats)*
+- [x] Add contamination note to Benchmark schema section cross-referencing analysis *(completed)*
+- [x] Review and fix stale record counts (727 -> 777, 13-field -> 15-field schema, split counts updated) *(completed)*
 
 **Timing**: 30 minutes
 
