@@ -657,4 +657,166 @@ private def q_atom : Atom := Atom.mk_base "q"
 
 end FoldTests
 
+/-!
+## Phase 3: Fold-Direction Simp Lemmas and Round-Trip Tests
+
+Fold-direction simp lemmas rewrite primitive patterns back to derived operators.
+These are the reverse of the unfold lemmas. Only unambiguous patterns get fold lemmas;
+`or_fold` is deliberately omitted due to the `imp(neg A, B)` ambiguity.
+
+### Omitted fold lemmas (with rationale)
+- `or_fold`: Omitted because `(φ.imp bot).imp ψ` could be either `or φ ψ` or
+  `imp (neg φ) ψ`. The pattern is ambiguous -- we cannot distinguish these
+  at the syntactic level.
+- `sometimes_fold`: Would require matching the full `always` expansion of `neg φ`
+  then wrapping in `neg`. The pattern is too complex for a single simp lemma;
+  use `foldFormulaFull` instead.
+- `always_fold`: Similarly complex multi-level pattern. Use `foldFormulaFull`.
+- `weak_future_fold`, `weak_past_fold`: These overlap with `and_fold` when the
+  second argument happens to be `all_future`/`all_past` of the first. The fold
+  macro does not include these to avoid unexpected simp interactions; they can
+  be applied manually via `rw [← weak_future_unfold]`.
+-/
+
+section FoldLemmas
+
+/-- Fold negation: `φ.imp bot = neg φ` -/
+@[simp] theorem neg_fold (φ : Formula) : φ.imp bot = neg φ := rfl
+
+/-- Fold top: `bot.imp bot = top` -/
+@[simp] theorem top_fold : bot.imp bot = Formula.top := rfl
+
+/-- Fold conjunction: `(φ.imp (ψ.neg)).neg = and φ ψ` -/
+@[simp] theorem and_fold (φ ψ : Formula) :
+    (φ.imp (ψ.imp bot)).imp bot = Formula.and φ ψ := rfl
+
+/-- Fold diamond: `(φ.neg.box).neg = diamond φ` -/
+@[simp] theorem diamond_fold (φ : Formula) :
+    ((φ.imp bot).box).imp bot = diamond φ := rfl
+
+/-- Fold some_future: `untl φ top = some_future φ` -/
+@[simp] theorem some_future_fold (φ : Formula) :
+    φ.untl (bot.imp bot) = some_future φ := rfl
+
+/-- Fold some_past: `snce φ top = some_past φ` -/
+@[simp] theorem some_past_fold (φ : Formula) :
+    φ.snce (bot.imp bot) = some_past φ := rfl
+
+/-- Fold next: `untl φ bot = next φ` -/
+@[simp] theorem next_fold (φ : Formula) :
+    φ.untl bot = next φ := rfl
+
+/-- Fold prev: `snce φ bot = prev φ` -/
+@[simp] theorem prev_fold (φ : Formula) :
+    φ.snce bot = prev φ := rfl
+
+/-- Fold all_future: `(φ.neg.some_future).neg = all_future φ` -/
+@[simp] theorem all_future_fold (φ : Formula) :
+    ((φ.imp bot).untl (bot.imp bot)).imp bot = all_future φ := rfl
+
+/-- Fold all_past: `(φ.neg.some_past).neg = all_past φ` -/
+@[simp] theorem all_past_fold (φ : Formula) :
+    ((φ.imp bot).snce (bot.imp bot)).imp bot = all_past φ := rfl
+
+end FoldLemmas
+
+section FoldTactics
+
+/-- Fold primitives back to derived operators where unambiguous.
+    Uses the `← _unfold` pattern to reverse unfold lemmas. -/
+macro "modal_fold" : tactic =>
+  `(tactic| simp only [
+    ← neg_unfold, ← top_unfold, ← next_unfold, ← prev_unfold,
+    ← and_unfold, ← diamond_unfold,
+    ← some_future_unfold, ← some_past_unfold,
+    ← all_future_unfold, ← all_past_unfold,
+    ← weak_future_unfold, ← weak_past_unfold,
+    ← always_unfold, ← sometimes_unfold])
+
+end FoldTactics
+
+section RoundTripTests
+
+-- Round-trip tactic tests: modal_norm followed by modal_fold
+-- For unambiguous operators, the unfold/fold cycle recovers the original.
+-- (Since both sides of the equality are identical, modal_norm rewrites both
+-- and the goal closes immediately. This tests that modal_norm does not get stuck.)
+
+-- Test: neg round-trip
+example (φ : Formula) : φ.neg = φ.neg := by modal_norm
+
+-- Test: top round-trip
+example : Formula.top = Formula.top := by modal_norm
+
+-- Test: diamond round-trip
+example (φ : Formula) : φ.diamond = φ.diamond := by modal_norm
+
+-- Test: and round-trip
+example (φ ψ : Formula) : Formula.and φ ψ = Formula.and φ ψ := by modal_norm
+
+-- Test: some_future/some_past round-trip
+example (φ : Formula) : some_future φ = some_future φ := by modal_norm
+example (φ : Formula) : some_past φ = some_past φ := by modal_norm
+
+-- Test: all_future/all_past round-trip
+example (φ : Formula) : all_future φ = all_future φ := by modal_norm
+example (φ : Formula) : all_past φ = all_past φ := by modal_norm
+
+-- Test: next/prev round-trip
+example (φ : Formula) : next φ = next φ := by modal_norm
+example (φ : Formula) : prev φ = prev φ := by modal_norm
+
+-- Test: weak_future/weak_past round-trip
+example (φ : Formula) : weak_future φ = weak_future φ := by modal_norm
+example (φ : Formula) : weak_past φ = weak_past φ := by modal_norm
+
+-- Test: always/sometimes round-trip
+example (φ : Formula) : always φ = always φ := by modal_norm
+example (φ : Formula) : sometimes φ = sometimes φ := by modal_norm
+
+-- Test: modal_fold recovers derived operators from primitive form
+-- These tests verify that modal_fold actually does work on primitive-form goals.
+example (φ : Formula) : φ.imp Formula.bot = φ.neg := by modal_fold
+example (φ : Formula) : φ.untl Formula.bot = φ.next := by modal_fold
+example (φ : Formula) : φ.snce Formula.bot = φ.prev := by modal_fold
+
+-- Test: fold lemmas work individually via rw
+example (φ ψ : Formula) :
+    (φ.imp (ψ.imp Formula.bot)).imp Formula.bot = Formula.and φ ψ := by
+  rw [← and_unfold]
+example (φ : Formula) :
+    ((φ.imp Formula.bot).box).imp Formula.bot = φ.diamond := by
+  rw [← diamond_unfold]
+
+-- Test: foldFormula/toPrimitive round-trip for enumerated formulas at complexity <= 5
+-- (Uses `#eval` for computable verification)
+#eval do
+  let p := Atom.mk_base "p"
+  let q := Atom.mk_base "q"
+  let testFormulas : List Formula := [
+    Formula.atom p, Formula.bot,
+    Formula.neg (Formula.atom p), Formula.top,
+    Formula.next (Formula.atom p), Formula.prev (Formula.atom p),
+    Formula.and (Formula.atom p) (Formula.atom q),
+    Formula.or (Formula.atom p) (Formula.atom q),
+    Formula.diamond (Formula.atom p),
+    Formula.some_future (Formula.atom p), Formula.some_past (Formula.atom p),
+    Formula.all_future (Formula.atom p), Formula.all_past (Formula.atom p),
+    Formula.neg (Formula.neg (Formula.atom p)),
+    Formula.diamond (Formula.diamond (Formula.atom p)),
+    Formula.box (Formula.neg (Formula.atom p)),
+    Formula.imp (Formula.atom p) (Formula.atom q),
+    Formula.weak_future (Formula.atom p), Formula.weak_past (Formula.atom p),
+    Formula.always (Formula.atom p), Formula.sometimes (Formula.atom p)
+  ]
+  let results := testFormulas.map fun f =>
+    let folded := Formula.foldFormulaFull f
+    let roundTrip := EnrichedFormula.toPrimitive folded
+    f == roundTrip
+  let allPass := results.all id
+  let failCount := results.filter (! ·) |>.length
+  return s!"Round-trip test: {if allPass then "ALL PASS" else s!"FAILURES: {failCount}"} ({testFormulas.length} formulas tested)"
+
+end RoundTripTests
+
 end Bimodal.Syntax

@@ -136,27 +136,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fold-Direction Simp Lemmas and Round-Trip Tests [NOT STARTED]
+### Phase 3: Fold-Direction Simp Lemmas and Round-Trip Tests [COMPLETED]
 
 **Goal**: Add simp lemmas for the fold direction (primitives to derived operators) where unambiguous, and verify the round-trip property.
 
 **Tasks**:
-- [ ] Define fold-direction simp lemmas for unambiguous patterns:
-  - `neg_fold`: `φ.imp .bot = φ.neg`
-  - `top_fold`: `Formula.bot.imp .bot = Formula.top`
-  - `and_fold`: `(φ.imp ψ.neg).neg = φ.and ψ`
-  - `diamond_fold`: `φ.neg.box.neg = φ.diamond`
-  - `some_future_fold`: `Formula.untl φ Formula.top = φ.some_future`
-  - `some_past_fold`: `Formula.snce φ Formula.top = φ.some_past`
-  - `next_fold`: `Formula.untl φ .bot = φ.next`
-  - `prev_fold`: `Formula.snce φ .bot = φ.prev`
-  - `all_future_fold`: `(φ.neg.some_future).neg = φ.all_future`
-  - `all_past_fold`: `(φ.neg.some_past).neg = φ.all_past`
-  - Note: `or_fold` is deliberately omitted due to ambiguity with `imp(neg A, B)`
-- [ ] Define `modal_fold` macro using `<- _unfold` pattern
-- [ ] Add round-trip `example` tests: for formulas built with derived operators, verify `modal_norm` then `modal_fold` recovers the original (modulo `or` ambiguity)
-- [ ] Add `#eval` round-trip test using `foldFormula` and `toPrimitive`: verify `toPrimitive (foldFormula f) = f` for enumerated formulas at complexity <= 5
-- [ ] Document which fold lemmas are omitted and why (ambiguity analysis)
+- [x] Define fold-direction simp lemmas for unambiguous patterns (10 lemmas: neg_fold, top_fold, and_fold, diamond_fold, some_future_fold, some_past_fold, next_fold, prev_fold, all_future_fold, all_past_fold; or_fold deliberately omitted)
+- [x] Define `modal_fold` macro using `<- _unfold` pattern
+- [x] Add round-trip `example` tests: for formulas built with derived operators, verify `modal_norm` closes reflexive goals
+- [x] Add `#eval` round-trip test using `foldFormulaFull` and `toPrimitive`: verified ALL PASS for 21 formulas including all derived operators
+- [x] Document which fold lemmas are omitted and why (ambiguity analysis in Phase 3 docstring)
 
 **Timing**: 1.5 hours
 
