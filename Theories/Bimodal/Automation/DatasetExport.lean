@@ -1,5 +1,6 @@
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
+import Bimodal.Automation.Normalization
 
 /-!
 # Dataset Export: JSONL Streaming, CLI, and Lake Executable
@@ -182,6 +183,12 @@ structure DatasetRecord where
   formula_sexpr : String
   /-- Prefix-notation token list as a pre-serialized JSON array. -/
   formula_tokens : String
+  /-- Enriched JSON AST with derived operator tags (neg, and, or, diamond, etc.). -/
+  formula_folded_json : String
+  /-- Enriched pretty-print with derived operator notation. -/
+  formula_folded_str : String
+  /-- Enriched S-expression with derived operator tags. -/
+  formula_folded_sexpr : String
   /-- Numeric feature vector from PatternKey as a pre-serialized JSON array. -/
   pattern_features : String
   /-- Maximum modal nesting depth of the formula. -/
@@ -216,6 +223,9 @@ instance : Inhabited DatasetRecord :=
      augmentation := none
      formula_sexpr := ""
      formula_tokens := "[]"
+     formula_folded_json := "{}"
+     formula_folded_str := ""
+     formula_folded_sexpr := ""
      pattern_features := "[]"
      max_modal_depth := 0
      max_temporal_depth := 0
@@ -277,6 +287,9 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"pattern_features\": " ++ r.pattern_features
   ++ ", \"max_modal_depth\": " ++ toString r.max_modal_depth
   ++ ", \"max_temporal_depth\": " ++ toString r.max_temporal_depth
+  ++ ", \"formula_folded_json\": " ++ r.formula_folded_json
+  ++ ", \"formula_folded_str\": \"" ++ escapeJsonString r.formula_folded_str ++ "\""
+  ++ ", \"formula_folded_sexpr\": \"" ++ escapeJsonString r.formula_folded_sexpr ++ "\""
   ++ "}"
 
 /--
@@ -298,6 +311,9 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     augmentation := none
     formula_sexpr := lf.formula.toSExpr
     formula_tokens := tokenListToJson lf.formula.tokenize
+    formula_folded_json := lf.formula.toEnrichedJson
+    formula_folded_str := lf.formula.toEnrichedPretty
+    formula_folded_sexpr := lf.formula.toEnrichedSExpr
     pattern_features := lf.patternKey.featureVectorToJson
     max_modal_depth := lf.patternKey.modalDepth
     max_temporal_depth := lf.patternKey.temporalDepth
@@ -437,7 +453,10 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "    {\"field\": \"formula_sexpr\", \"format\": \"s-expression\", \"description\": \"Canonical parenthesized prefix notation\"},\n"
   ++ "    {\"field\": \"formula_tokens\", \"format\": \"token-list\", \"description\": \"Prefix-notation token list for transformers\"},\n"
   ++ "    {\"field\": \"pattern_key\", \"format\": \"json-object\", \"description\": \"Structural pattern key with named fields\"},\n"
-  ++ "    {\"field\": \"pattern_features\", \"format\": \"numeric-vector\", \"description\": \"Flat numeric feature vector for value estimators\"}\n"
+  ++ "    {\"field\": \"pattern_features\", \"format\": \"numeric-vector\", \"description\": \"Flat numeric feature vector for value estimators\"},\n"
+  ++ "    {\"field\": \"formula_folded_json\", \"format\": \"json-ast\", \"description\": \"Enriched JSON AST with derived operator tags (neg, and, or, diamond, etc.)\"},\n"
+  ++ "    {\"field\": \"formula_folded_str\", \"format\": \"human-readable\", \"description\": \"Enriched pretty-print with derived operator notation\"},\n"
+  ++ "    {\"field\": \"formula_folded_sexpr\", \"format\": \"s-expression\", \"description\": \"Enriched S-expression with derived operator tags\"}\n"
   ++ "  ]\n"
   ++ "}"
 
