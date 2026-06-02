@@ -141,7 +141,7 @@ technical_debt:
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -149,7 +149,9 @@ technical_debt:
 - **Research**:
   - [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
   - [261_dataset_quality_and_stall_diagnosis/reports/02_tableau-termination-literature.md]
-- **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
+- **Plan**:
+  - [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
+  - [261_dataset_quality_and_stall_diagnosis/plans/03_dataset-quality-fix.md]
 - **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
