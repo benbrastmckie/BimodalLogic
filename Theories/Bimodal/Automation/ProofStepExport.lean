@@ -1005,7 +1005,151 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G20_connect_future_q"    (wrapG 20 (Bimodal.Theorems.TemporalDerived.connect_future_thm q)),
   mkEntry "G20_connect_past_q"      (wrapG 20 (Bimodal.Theorems.TemporalDerived.connect_past_thm q)),
   mkEntry "G20_identity_q"          (wrapG 20 (@identity .Base q)),
-  mkEntry "G20_box_to_present_q"    (wrapG 20 (Bimodal.Theorems.Perpetuity.box_to_present q))
+  mkEntry "G20_box_to_present_q"    (wrapG 20 (Bimodal.Theorems.Perpetuity.box_to_present q)),
+
+  -- ============================================================
+  -- MISSING AXIOM COVERAGE: Direct axiom entries for the 11
+  -- previously-uncovered axioms (1 peirce, 5 uniformity,
+  -- 3 Discrete, 2 Dense).
+  -- ============================================================
+
+  -- Peirce's Law (Base): ((φ → ψ) → φ) → φ
+  mkEntry "peirce_axiom"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial),
+  mkEntry "peirce_axiom_qr"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce q r) trivial),
+  mkEntry "peirce_axiom_rs"
+    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce r s) trivial),
+
+  -- Uniformity Axioms (Discrete frame class for semantic accuracy):
+  -- These have minFrameClass = .Base (wildcard), but are semantically
+  -- about discrete structures, so we use fc := .Discrete.
+  mkEntry "discrete_symm_fwd_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_fwd trivial),
+  mkEntry "discrete_symm_bwd_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_bwd trivial),
+  mkEntry "discrete_propagate_fwd_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_propagate_fwd trivial),
+  mkEntry "discrete_propagate_bwd_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_propagate_bwd trivial),
+  mkEntry "discrete_box_necessity_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_box_necessity trivial),
+
+  -- Prior Axioms (Discrete): F(φ) → U(φ, ¬φ) and P(φ) → S(φ, ¬φ)
+  mkEntry "prior_UZ_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_UZ p) trivial),
+  mkEntry "prior_UZ_axiom_q"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_UZ q) trivial),
+  mkEntry "prior_SZ_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_SZ p) trivial),
+  mkEntry "prior_SZ_axiom_q"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_SZ q) trivial),
+
+  -- Z1 Axiom (Discrete): G(G(φ) → φ) → (F(G(φ)) → G(φ))
+  mkEntry "z1_axiom"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 p) trivial),
+  mkEntry "z1_axiom_q"
+    (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 q) trivial),
+
+  -- Density Axioms (Dense): G(G(φ)) → G(φ) and ¬U(⊤,⊥)
+  mkEntry "density_axiom"
+    (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial),
+  mkEntry "density_axiom_q"
+    (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density q) trivial),
+  mkEntry "dense_indicator_axiom"
+    (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial),
+
+  -- ============================================================
+  -- G/H-WRAPPED VARIANTS of missing axioms for multi-step diversity
+  -- ============================================================
+
+  -- G-wrapped peirce
+  mkEntry "G_peirce_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial)),
+  mkEntry "G_peirce_axiom_qr"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce q r) trivial)),
+
+  -- H-wrapped peirce (temporal_duality of temporal_necessitation)
+  mkEntry "H_peirce_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial))),
+
+  -- G-wrapped uniformity axioms (Discrete)
+  mkEntry "G_discrete_symm_fwd_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_fwd trivial)),
+  mkEntry "G_discrete_symm_bwd_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_bwd trivial)),
+  mkEntry "G_discrete_propagate_fwd_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_propagate_fwd trivial)),
+  mkEntry "G_discrete_propagate_bwd_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_propagate_bwd trivial)),
+  mkEntry "G_discrete_box_necessity_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_box_necessity trivial)),
+
+  -- G-wrapped Prior axioms (Discrete)
+  mkEntry "G_prior_UZ_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_UZ p) trivial)),
+  mkEntry "G_prior_SZ_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_SZ p) trivial)),
+
+  -- G-wrapped Z1 (Discrete)
+  mkEntry "G_z1_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 p) trivial)),
+
+  -- G-wrapped density axioms (Dense)
+  mkEntry "G_density_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial)),
+  mkEntry "G_dense_indicator_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial)),
+
+  -- H-wrapped non-Base axioms (selected)
+  mkEntry "H_discrete_symm_fwd_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_fwd trivial))),
+  mkEntry "H_prior_UZ_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_UZ p) trivial))),
+  mkEntry "H_density_axiom"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
+
+  -- GG-wrapped missing axioms (selected, for depth variety)
+  mkEntry "GG_peirce_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial))),
+  mkEntry "GG_discrete_symm_fwd_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Discrete) [] _ Axiom.discrete_symm_fwd trivial))),
+  mkEntry "GG_prior_UZ_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.prior_UZ p) trivial))),
+  mkEntry "GG_density_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
+  mkEntry "GG_z1_axiom"
+    (DerivationTree.temporal_necessitation _
+      (DerivationTree.temporal_necessitation _
+        (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 p) trivial)))
 ]
 
 /-!
