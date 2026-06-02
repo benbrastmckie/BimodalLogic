@@ -1,0 +1,19 @@
+{
+  "phase": 1,
+  "phase_name": "Schema Constants and AST Types",
+  "started_at": "2026-06-02T20:00:00Z",
+  "last_updated": "2026-06-02T20:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add 6 missing tags to VALID_ENRICHED_FORMULA_TAGS in constants.py", "status": "done"},
+    {"id": 2, "description": "Add 6 missing AST node dataclasses to formula/ast.py", "status": "done"},
+    {"id": 3, "description": "Implement to_json, from_json, tag property for each new type", "status": "done"},
+    {"id": 4, "description": "Update FormulaNode type alias and _TAG_TO_CLASS dispatch table", "status": "done"},
+    {"id": 5, "description": "Add unfold() and metric function cases for 6 new types", "status": "done"},
+    {"id": 6, "description": "Add unit tests in test_ast.py for new types", "status": "done"},
+    {"id": 7, "description": "Run test suite: pytest tests/test_formula/ tests/test_schema/ -v", "status": "done", "note": "153 passed in test_ast.py, 332 passed in test_schema/"}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
