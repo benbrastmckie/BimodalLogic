@@ -373,7 +373,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-06-02T17:00:00Z",
-      "next_artifact_number": 58,
+      "next_artifact_number": 59,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -656,7 +656,6 @@
       "planned": "2026-06-02T23:00:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
-      "next_artifact_number": 59,
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 8,
@@ -1560,9 +1559,20 @@
           ]
         }
       ]
+    },
+    {
+      "project_number": 264,
+      "project_name": "scale_dataset_timeout_bottleneck",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        263
+      ],
+      "created": "2026-06-02T17:20:00Z",
+      "last_updated": "2026-06-02T17:20:00Z"
     }
   ],
-  "next_project_number": 264,
+  "next_project_number": 265,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
