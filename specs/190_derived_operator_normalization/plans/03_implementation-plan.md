@@ -186,16 +186,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Lakefile Integration and Full Build Verification [NOT STARTED]
+### Phase 5: Lakefile Integration and Full Build Verification [COMPLETED]
 
 **Goal**: Integrate the new `Normalization.lean` into the project build and verify zero regressions.
 
 **Tasks**:
-- [ ] Add `import Bimodal.Automation.Normalization` to the appropriate aggregator file (e.g., `Theories/Bimodal/Automation/Automation.lean` or similar module root)
-- [ ] Run `lake build` to verify full project compiles with zero errors
-- [ ] Fix any import conflicts or naming collisions
-- [ ] Verify existing tests still pass
-- [ ] Run `#eval` round-trip tests at complexity 5 to confirm correctness
+- [x] Add `import Bimodal.Automation.Normalization` to `Theories/Bimodal/Automation.lean` aggregator
+- [x] Run `lake build` -- full project compiles with zero errors (1681 jobs) *(deviation: altered -- namespace changed from Bimodal.Syntax to Bimodal.Automation.Normalization to avoid naming collisions with existing some_future_unfold, some_past_unfold, diamond_unfold in SubformulaClosure; Formula extensions use _root_ prefix)*
+- [x] Fix import conflicts: resolved 3 naming collisions by changing namespace
+- [x] Verify existing tests still pass: all existing tests unaffected
+- [x] Run `#eval` round-trip tests: ALL PASS for 21 formulas
 
 **Timing**: 0.5 hours
 

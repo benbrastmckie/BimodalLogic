@@ -43,9 +43,10 @@ The fold direction is non-deterministic for certain patterns. The key ambiguity:
 - Research reports: 01_normalization-seed.md, 02_modal-norm-research.md
 -/
 
-namespace Bimodal.Syntax
+namespace Bimodal.Automation.Normalization
 
-open Formula
+open Bimodal.Syntax
+open Bimodal.Syntax.Formula
 
 /-!
 ## Phase 1: Unfold Lemmas
@@ -378,7 +379,7 @@ The algorithm:
 - `snce φ top` → `some_past φ`
 - `snce φ bot` → `prev φ`
 -/
-def Formula.foldFormula : Formula → EnrichedFormula
+def _root_.Bimodal.Syntax.Formula.foldFormula : Formula → EnrichedFormula
   | Formula.atom a => .atom a
   | Formula.bot => .bot
   | Formula.box φ => .box φ.foldFormula
@@ -509,7 +510,7 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
   | .sometimes φ => .sometimes φ.recognizeComposites
 
 /-- Full fold: fold primitives then recognize composite operators. -/
-def Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
+def _root_.Bimodal.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
   f.foldFormula.recognizeComposites
 
 /-!
@@ -967,15 +968,15 @@ def toSExpr : EnrichedFormula → String
 end EnrichedFormula
 
 /-- Convenience: fold a primitive `Formula` and serialize to enriched JSON. -/
-def Formula.toEnrichedJson (f : Formula) : String :=
+def _root_.Bimodal.Syntax.Formula.toEnrichedJson (f : Formula) : String :=
   (f.foldFormulaFull).toJson
 
 /-- Convenience: fold a primitive `Formula` and pretty-print with enriched operators. -/
-def Formula.toEnrichedPretty (f : Formula) : String :=
+def _root_.Bimodal.Syntax.Formula.toEnrichedPretty (f : Formula) : String :=
   (f.foldFormulaFull).prettyPrint
 
 /-- Convenience: fold a primitive `Formula` and serialize to enriched S-expression. -/
-def Formula.toEnrichedSExpr (f : Formula) : String :=
+def _root_.Bimodal.Syntax.Formula.toEnrichedSExpr (f : Formula) : String :=
   (f.foldFormulaFull).toSExpr
 
 end Serialization
@@ -1027,4 +1028,4 @@ section SerializationTests
 
 end SerializationTests
 
-end Bimodal.Syntax
+end Bimodal.Automation.Normalization
