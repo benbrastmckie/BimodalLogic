@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Rebuild and Validate [NOT STARTED]
+### Phase 4: Rebuild and Validate [COMPLETED]
 
 **Goal**: Rebuild the dataset generator binary with all fixes applied, run a validation pass on a subset of formulas to confirm correctness improvements, and prepare for full c9 re-run.
 

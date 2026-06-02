@@ -1,0 +1,10 @@
+{
+  "status": "implemented",
+  "summary": "Fixed persistent rule loop in tableau, added adaptive fuel caps, and box-valid fast paths",
+  "artifacts": [{"path": "specs/261_dataset_quality_and_stall_diagnosis/summaries/01_dataset-quality-stall-summary.md", "type": "summary", "summary": "Implementation summary with all 4 phases completed"}],
+  "blockers": [],
+  "continuation_context": null,
+  "phases_completed": 4,
+  "phases_total": 4,
+  "next_action_hint": "complete"
+}
