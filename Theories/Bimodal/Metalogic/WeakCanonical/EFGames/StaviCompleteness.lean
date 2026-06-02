@@ -1832,7 +1832,7 @@ gives characterization of these sub-intervals.
 -/
 
 /-- The set of depth-k 1-var NF types realized in the open interval (lo, hi). -/
-private noncomputable def interval_nf_types {sig : MonadicSignature}
+noncomputable def interval_nf_types {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 1) :=
   @Finset.filter _ (fun nf_u =>
@@ -1844,7 +1844,7 @@ private noncomputable def interval_nf_types {sig : MonadicSignature}
     u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
     This additional information captures the spatial arrangement within the interval,
     enabling the bridge lemma's sub-interval matching. -/
-private noncomputable def interval_2var_nf_types {sig : MonadicSignature}
+noncomputable def interval_2var_nf_types {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 2) :=
   @Finset.filter _ (fun nf2 =>
@@ -1854,7 +1854,7 @@ private noncomputable def interval_2var_nf_types {sig : MonadicSignature}
 /-- Depth-(k+1) 1-var NF equality implies depth-k 1-var NF equality.
     From shared depth-(k+1) NFs, nf_agreement_monotone gives depth-k agreement,
     which implies the depth-k characteristic NFs are equal. -/
-private theorem nf_char_depth_decrease {sig : MonadicSignature}
+theorem nf_char_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {a : M.carrier} {a' : M'.carrier}
     (h : nf_characteristic M (k + 1) 1 (fun _ => a) =
@@ -1883,7 +1883,7 @@ private theorem nf_char_depth_decrease {sig : MonadicSignature}
 /-- Transfer of a depth-k 1-var NF witness across models via depth-(k+1) NF agreement.
     If u in M has depth-(k+1) 1-var NF tau, and u' in M' also has tau, then u and u'
     have the same depth-k 1-var NF. -/
-private theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
+theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {u : M.carrier} {u' : M'.carrier}
     (tau : NormalForm sig (k + 1) 1)
@@ -1901,7 +1901,7 @@ private theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
 
     Key insight: each depth-k witness u has a unique depth-(k+1) NF. Transfer the
     depth-(k+1) NF to get u', then nf_agreement_monotone gives depth-k agreement. -/
-private theorem interval_nf_types_depth_decrease {sig : MonadicSignature}
+theorem interval_nf_types_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {lo hi : M.carrier} {lo' hi' : M'.carrier}
     (h : interval_nf_types M (k + 1) lo hi = interval_nf_types M' (k + 1) lo' hi') :
@@ -1939,7 +1939,7 @@ private theorem interval_nf_types_depth_decrease {sig : MonadicSignature}
 /-- Above-max types at depth k are determined by above-max types at depth k+1.
     If the sets of depth-(k+1) 1-var NFs realized above max(x,t) agree,
     then the depth-k sets also agree. -/
-private theorem above_max_depth_decrease {sig : MonadicSignature}
+theorem above_max_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
     (h : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
@@ -1968,7 +1968,7 @@ private theorem above_max_depth_decrease {sig : MonadicSignature}
 
 /-- Below-min types at depth k are determined by below-min types at depth k+1.
     Same principle as above_max_depth_decrease. -/
-private theorem below_min_depth_decrease {sig : MonadicSignature}
+theorem below_min_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
     (h : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
@@ -2003,7 +2003,7 @@ private theorem below_min_depth_decrease {sig : MonadicSignature}
     This is the key compression principle: k rounds of successful quantifier
     matching (at depths 0, ..., k-1) compress into depth-k NF agreement.
     It is a direct consequence of the structure of nf_characteristic. -/
-private theorem nf_fraisse_compression {sig : MonadicSignature}
+theorem nf_fraisse_compression {sig : MonadicSignature}
     (k n : Nat)
     (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
     (M' : OrderedMonadicStructure sig) (env_M' : Fin n → M'.carrier)
@@ -2041,7 +2041,7 @@ private theorem nf_fraisse_compression {sig : MonadicSignature}
     and the same orderings relative to x' and t'. The five zones are:
     (1) u < min(x,t), (2) u = x, (3) between x and t, (4) u = t, (5) u > max(x,t).
     Each zone's matching uses the corresponding hypothesis. -/
-private theorem zone_match_witness {sig : MonadicSignature}
+theorem zone_match_witness {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier) (u : M.carrier)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
@@ -2211,7 +2211,7 @@ private theorem zone_match_witness {sig : MonadicSignature}
     Formalizing the game strategy requires ~300-500 lines of infrastructure:
     defining game positions, proving strategy existence from the hypotheses,
     and proving that the strategy maintains the invariant at each round. -/
-private theorem nf_2var_existential_transfer {sig : MonadicSignature}
+theorem nf_2var_existential_transfer {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
@@ -2439,7 +2439,7 @@ private theorem nf_2var_existential_transfer {sig : MonadicSignature}
     This is the content of GHR93's game-theoretic composition argument
     (Proposition 7 + Lemma 11): agreement on 1-var types at all positions +
     interval type sets → Duplicator wins the EF game → same NF. -/
-private theorem nf_2var_from_interval_data {sig : MonadicSignature}
+theorem nf_2var_from_interval_data {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
@@ -2509,7 +2509,7 @@ private theorem nf_2var_from_interval_data {sig : MonadicSignature}
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
     it holds for any pair with the same data. -/
-private theorem nf_2var_transfer {sig : MonadicSignature}
+theorem nf_2var_transfer {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
     (sub_nf : NormalForm sig k 2)
