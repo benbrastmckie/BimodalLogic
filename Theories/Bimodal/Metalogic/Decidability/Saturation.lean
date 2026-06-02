@@ -160,7 +160,8 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           -- subsumed by an ancestor time, treat the branch as saturated.
           -- This prevents infinite chains from Until/Since positive rules
           -- re-introducing the same formula at fresh time points.
-          if (findBlockedTime b timeOrd).isSome then
+          -- Task 261 v3: pass tracker for eventuality-aware blocking
+          if (findBlockedTime b timeOrd tracker).isSome then
             some (.inr (b, timeOrd, applied))  -- Blocked: treat as saturated open branch
           else
           -- Try to expand, using applied set to prevent persistent rule loops (task 261)
@@ -877,7 +878,9 @@ private theorem expandBranchWithFuel_sound
       | some reason => simp [hfc] at h
       | none =>
         simp [hfc] at h
-        by_cases hblock : (findBlockedTime b timeOrd).isSome
+        -- Task 261 v3: case split on eventuality-aware blocking check
+        by_cases hblock : (findBlockedTime b timeOrd
+            (fulfillEventualities b (registerEventualities b tracker))).isSome
         · simp [hblock] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
         · simp [hblock] at h
           match hexp : expandOnceWithApplied b timeOrd fc applied with

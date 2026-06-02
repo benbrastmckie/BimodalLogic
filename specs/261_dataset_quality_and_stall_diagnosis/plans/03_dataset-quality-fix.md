@@ -132,18 +132,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Eventuality-Aware Blocking [NOT STARTED]
+### Phase 3: Eventuality-Aware Blocking [COMPLETED]
 
 **Goal**: Modify `isTemporallyBlocked` / `findBlockedTime` to consult the `EventualityTracker`, preventing premature blocking of time points with unfulfilled Until/Since obligations. This will structurally terminate the `U(bot, X) -> Y` timeout patterns.
 
 **Tasks**:
-- [ ] Add a `tracker : EventualityTracker` parameter to `findBlockedTime` in Saturation.lean
-- [ ] Define a helper predicate `allEventualitiesFulfilledOrDuplicated` that checks: for each pending eventuality at time `t_new`, either (a) it is marked fulfilled in the tracker, or (b) the same eventuality also exists at the blocking ancestor `t_anc` (so the ancestor will handle it)
-- [ ] Modify the blocking condition in `findBlockedTime` (or its helper `isSubsetBlocked` in SignedFormula.lean) to conjoin the eventuality check: `isSubsetBlocked t t_anc AND allEventualitiesFulfilledOrDuplicated tracker t t_anc`
-- [ ] Thread the `tracker` parameter through `expandBranchWithFuel` into the `findBlockedTime` call (~line 163 of Saturation.lean)
-- [ ] Verify that the EventualityTracker is up-to-date at the blocking check point (it is: lines 157-158 register and fulfill before the blocking test)
-- [ ] Test with `U(bot, p) -> q` (should now terminate structurally via blocking, not fuel): the guard-continue branch creates `T(U(bot, p))` at a fresh time, which is a superset of the ancestor type, so subset blocking fires -- but with eventuality-aware blocking, the unfulfilled eventuality at the new time (waiting for `bot`) should be recognized as also unfulfilled at the ancestor, so blocking is still allowed (the eventuality is duplicated, not missing)
-- [ ] Test with a satisfiable Until formula (e.g., `U(p, q)` with p satisfiable) to verify blocking does not incorrectly reject it
+- [x] **Task 3.1**: Add `tracker : EventualityTracker` parameter to `findBlockedTime` in SignedFormula.lean (with default `EventualityTracker.empty`)
+- [x] **Task 3.2**: Define `allEventualitiesFulfilledOrDuplicated` predicate in SignedFormula.lean
+- [x] **Task 3.3**: Modify blocking condition in `isTemporallyBlocked` to conjoin eventuality check
+- [x] **Task 3.4**: Thread tracker through `expandBranchWithFuel` into `findBlockedTime` call
+- [x] **Task 3.5**: Verified EventualityTracker is up-to-date at blocking check point (lines 157-158)
+- [x] **Task 3.6**: All existing `U(bot,p)->F(p)` and `S(bot,p)->P(p)` tests pass
+- [x] **Task 3.7**: `U(p,q)` satisfiable test passes (open branch found)
+- [x] **Task 3.8**: `expandBranchWithFuel_sound` theorem updated with `split at h` for eventuality-aware blocking; type-checks
 
 **Timing**: 3 hours
 

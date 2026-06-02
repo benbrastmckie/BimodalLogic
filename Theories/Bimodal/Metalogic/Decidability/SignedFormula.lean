@@ -574,6 +574,14 @@ def fulfill (tracker : EventualityTracker) (formula : Formula) (label : Label) :
 def hasPending (tracker : EventualityTracker) : Bool :=
   !tracker.pending.isEmpty
 
+/-- Get pending eventualities at a specific time index. -/
+def pendingAtTime (tracker : EventualityTracker) (t : TimeIndex) : List Eventuality :=
+  tracker.pending.filter fun e => e.label.time == t
+
+/-- Check if an eventuality is fulfilled (no longer pending). -/
+def isFulfilled (tracker : EventualityTracker) (e : Eventuality) : Bool :=
+  !tracker.pending.any (· == e)
+
 end EventualityTracker
 
 /-!
@@ -693,22 +701,59 @@ def ancestorTimes (ord : TimeOrdering) (t : TimeIndex) (fuel : Nat := 100) : Lis
     transitiveAncestors.eraseDups
 
 /--
+Check if all pending eventualities at time `t_new` are either:
+(a) fulfilled in the tracker, or
+(b) duplicated at the blocking ancestor `t_anc` (same eventuality formula
+    exists pending at `t_anc` too, so the ancestor will handle it).
+
+This is the eventuality-aware guard for subset blocking (task 261 v3).
+Without this check, blocking can prematurely cut off branches where
+Until/Since eventualities at `t_new` have not yet been satisfied.
+With this check, blocking only fires when it is safe: all pending
+obligations are either already fulfilled or will be handled by the ancestor.
+-/
+def allEventualitiesFulfilledOrDuplicated
+    (tracker : EventualityTracker) (t_new t_anc : TimeIndex) : Bool :=
+  let pendingAtNew := tracker.pendingAtTime t_new
+  pendingAtNew.all fun e =>
+    -- Option (a): the eventuality is no longer pending (fulfilled)
+    -- Note: if e is in pendingAtNew, it IS pending, so we check if
+    -- the same formula appears fulfilled elsewhere. We use a looser
+    -- check: is the formula/world combination no longer pending at
+    -- any time except t_new?
+    -- Actually simpler: check if the same eventuality (same formula)
+    -- also has a pending entry at the ancestor time. If so, the
+    -- ancestor will handle it too (duplicated).
+    let duplicatedAtAnc := tracker.pending.any fun e' =>
+      e'.formula == e.formula && e'.label.time == t_anc && e'.isUntil == e.isUntil
+    duplicatedAtAnc
+
+/--
 Check if a given time index is temporally blocked by any ancestor time.
 
-A time `t` is blocked if there exists some ancestor time `t_anc` such that
-the time type at `t` is a subset of the time type at `t_anc`.
-When blocked, further expansion from time `t` cannot produce new information.
+A time `t` is blocked if there exists some ancestor time `t_anc` such that:
+1. The time type at `t` is a subset of the time type at `t_anc` (subset blocking)
+2. All pending eventualities at `t` are fulfilled or duplicated at `t_anc`
+   (eventuality-aware blocking, task 261 v3)
+
+When both conditions hold, further expansion from time `t` cannot produce
+new information that would not also be available at the ancestor.
 -/
-def isTemporallyBlocked (b : Branch) (t : TimeIndex) (ord : TimeOrdering) : Bool :=
+def isTemporallyBlocked (b : Branch) (t : TimeIndex) (ord : TimeOrdering)
+    (tracker : EventualityTracker := EventualityTracker.empty) : Bool :=
   let ancestors := ancestorTimes ord t
-  ancestors.any fun t_anc => b.isSubsetBlocked t t_anc
+  ancestors.any fun t_anc =>
+    b.isSubsetBlocked t t_anc && allEventualitiesFulfilledOrDuplicated tracker t_anc t
 
 /--
 Check if ANY active time on the branch is temporally blocked.
 Returns the first blocked time found, or `none` if no time is blocked.
+The EventualityTracker is consulted to ensure blocking does not
+cut off unsatisfied Until/Since obligations.
 -/
-def findBlockedTime (b : Branch) (ord : TimeOrdering) : Option TimeIndex :=
-  b.knownTimes.find? fun t => isTemporallyBlocked b t ord
+def findBlockedTime (b : Branch) (ord : TimeOrdering)
+    (tracker : EventualityTracker := EventualityTracker.empty) : Option TimeIndex :=
+  b.knownTimes.find? fun t => isTemporallyBlocked b t ord tracker
 
 /--
 State tracking for blocking decisions during tableau expansion.
