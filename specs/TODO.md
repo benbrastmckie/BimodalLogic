@@ -73,7 +73,7 @@ technical_debt:
   └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
 246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
   └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o
+164 [COMPLETED] — Prove tableau correctness theorem connecting decision procedure o
 
 ### Automation
 
@@ -101,7 +101,7 @@ technical_debt:
   └─ 196 [RESEARCHED] — (automation: Systematic survey of the entire Theories) (see above)
 162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-  └─ 164 [NOT STARTED] — Prove tableau correctness theorem connecting decision procedure o (see above)
+  └─ 164 [COMPLETED] — Prove tableau correctness theorem connecting decision procedure o (see above)
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
