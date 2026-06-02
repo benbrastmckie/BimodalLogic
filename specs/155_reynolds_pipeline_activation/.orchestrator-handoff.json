@@ -1,23 +1,15 @@
 {
-  "status": "blocked",
-  "summary": "Phase 3 blocked: nf_exist_sf_guarded formula construction bug makes backward direction unprovable; model surgery pipeline depends on sorryAx via stavi chain, invalidating Phase 5",
-  "phases_completed": 2,
-  "phases_total": 7,
-  "blockers": [
-    "nf_exist_sf_guarded (StaviCompleteness.lean:2586) encodes only atom-compatibility, not quantifier structure of sub_nf, making backward direction (line 2787) structurally unprovable — this is a formula construction bug, not a missing proof",
-    "Model surgery pipeline (no_gaps_discrete_model_surgery) carries sorryAx via US_expressively_complete_over_prior -> stavi_expressive_completeness, so Phase 5 rewiring via model surgery cannot eliminate sorryAx",
-    "Two independent sorry chains block completeness_discrete: (1) Stavi chain (3 sorries in StaviCompleteness.lean) and (2) IsSuccArchimedean chain (6 sorries in chronicle_gap_contradiction)"
-  ],
-  "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260602.md",
-    "resume_phase": 3
-  },
+  "status": "researched",
+  "summary": "Blocker escalation: formula bug is misdiagnosis (bridge lemma sorry is root cause), Chain 2 fixable via direct IsSuccArchimedean or chronicle_gap_contradiction repair",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260602.md",
-      "type": "handoff",
-      "summary": "Detailed analysis of two sorry chains, formula bug, and three proposed fix approaches"
+      "path": "specs/155_reynolds_pipeline_activation/reports/61_blocker-escalation-research.md",
+      "type": "report",
+      "summary": "Blocker escalation research: root cause analysis of both sorry chains, three fix strategies with effort estimates"
     }
-  ],
-  "next_action_hint": "research_blocker"
+  ]
 }

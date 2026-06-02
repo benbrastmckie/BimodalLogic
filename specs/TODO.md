@@ -107,11 +107,12 @@ technical_debt:
 
 ### 266. Scale dataset generation to c7+ to find next bottleneck
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 265
+- **Research**: [266_scale_generation_c7_plus_bottleneck/reports/01_scaling-bottleneck.md]
 
 **Description**: Scale dataset generation to c7, c8, and beyond to identify the next bottleneck after the task 265 pre-filter eliminated the c6 bottleneck (18 hours to 5.7 seconds). For each complexity level: (1) run exhaustive generation, (2) record wall-clock time, formula count, timeout count/rate, and decision method distribution, (3) classify any new timeout patterns not caught by the current pre-filter, (4) identify "slow timeout" formulas (>1 second) and their structural signatures. Stop at the complexity level where exhaustive generation exceeds 1 hour or timeout patterns dominate. Produce a scaling curve and bottleneck characterization report analogous to task 264's output.
 

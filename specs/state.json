@@ -8,13 +8,21 @@
     {
       "project_number": 266,
       "project_name": "scale_generation_c7_plus_bottleneck",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         265
       ],
       "created": "2026-06-02T23:34:15Z",
-      "last_updated": "2026-06-02T23:34:15Z"
+      "last_updated": "2026-06-02T23:56:41Z",
+      "session_id": "sess_1748895300_d6f0a4",
+      "artifacts": [
+        {
+          "path": "specs/266_scale_generation_c7_plus_bottleneck/reports/01_scaling-bottleneck.md",
+          "type": "report",
+          "summary": "C7 in 33s, c8 hits wall-clock bottleneck at temporal-modal formula. Recommends wall-clock timeout cap."
+        }
+      ]
     },
     {
       "project_number": 263,
@@ -374,7 +382,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -383,7 +391,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T23:29:01Z",
+      "last_updated": "2026-06-02T23:51:18Z",
       "next_artifact_number": 61,
       "artifacts": [
         {
@@ -656,7 +664,7 @@
       "researched": "2026-06-02T22:32:53Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": null,
+      "resume_phase": 3,
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 12,
