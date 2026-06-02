@@ -655,7 +655,7 @@
         "total_effort_hours": 12,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 54,
+        "plan_version": 55,
         "dependency_waves": [
           [
             1
