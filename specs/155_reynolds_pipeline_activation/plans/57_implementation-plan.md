@@ -139,19 +139,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Verify completeness_discrete sorry chain is clear [NOT STARTED]
+### Phase 3: Verify completeness_discrete sorry chain is clear [COMPLETED]
 
 **Goal**: Confirm the full chain from `completeness_discrete` down through `succ_embed_surjective` shows no `sorryAx`.
 
 **Tasks**:
-- [ ] `lean_verify completeness_discrete` -- confirm no `sorryAx` (should show `limitDomSubtype_isSuccArchimedean_axiom` as a named axiom)
-- [ ] `lean_verify countermodel_discrete_reynolds` -- confirm no `sorryAx`
-- [ ] `lean_verify cantor_bfmcs_discrete_restricted_tc` -- confirm no `sorryAx`
-- [ ] `lean_verify cantor_bfmcs_discrete_restricted_fuc` -- confirm no `sorryAx`
-- [ ] `lean_verify succ_embed_surjective` -- confirm no `sorryAx`
-- [ ] `lake build` passes with zero errors (full project)
-- [ ] Run `grep -rn "^\s*sorry" Theories/` and verify no new sorry statements introduced
-- [ ] If any sorry remains in the chain, trace the dependency and fix it
+- [x] `#print axioms completeness_discrete` -- confirmed: shows `limitDomSubtype_isSuccArchimedean_axiom`, NO `sorryAx`
+- [x] `#print axioms countermodel_discrete_reynolds` -- confirmed: no `sorryAx`
+- [x] `#print axioms cantor_bfmcs_discrete_restricted_tc` -- confirmed: no `sorryAx`
+- [x] `#print axioms cantor_bfmcs_discrete_restricted_fuc` -- confirmed: no `sorryAx`
+- [x] `#print axioms succ_embed_surjective` -- confirmed: no `sorryAx`
+- [x] `lake build` passes with zero errors (1682 jobs)
+- [x] `grep -rn "^\s*sorry" Theories/` -- no new sorry statements introduced (all pre-existing)
+- [x] No sorry remains in the completeness_discrete chain *(deviation: altered -- used #print axioms via lake env lean instead of lean_verify MCP tool, which was unavailable)*
 
 **Timing**: 30 minutes
 
