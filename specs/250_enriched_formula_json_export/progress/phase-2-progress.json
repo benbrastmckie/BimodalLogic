@@ -1,0 +1,18 @@
+{
+  "phase": 2,
+  "phase_name": "Formula Tokenizer Extension",
+  "started_at": "2026-06-02T20:30:00Z",
+  "last_updated": "2026-06-02T21:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add 4 missing tokens to _ENRICHED_TAG_TOKENS (weak_future=29, weak_past=30, always=31, sometimes=32)", "status": "done"},
+    {"id": 2, "description": "Update _EXTENDED_VOCAB to 33 tokens total", "status": "done"},
+    {"id": 3, "description": "Rewrite _linearize() to handle all enriched tags by child structure", "status": "done"},
+    {"id": 4, "description": "Update _linearize to use instance _token_to_id map for enriched tokens", "status": "done"},
+    {"id": 5, "description": "Add tests in test_formula_encoder.py for enriched tag tokenization", "status": "done"},
+    {"id": 6, "description": "Run tokenizer tests: pytest tests/test_models/test_formula_encoder.py -v", "status": "done", "note": "47 passed, 1 warning"}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

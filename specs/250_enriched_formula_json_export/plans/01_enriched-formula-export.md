@@ -112,27 +112,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula Tokenizer Extension [NOT STARTED]
+### Phase 2: Formula Tokenizer Extension [COMPLETED]
 
 **Goal**: Extend the formula tokenizer to correctly linearize enriched JSON trees and add missing enriched tag tokens to the vocabulary.
 
 **Tasks**:
-- [ ] Add 4 missing tokens to `_ENRICHED_TAG_TOKENS` in `src/bimodal_harness/models/formula_encoder.py`: `weak_future` (29), `weak_past` (30), `always` (31), `sometimes` (32). Note: `some_future` and `some_past` are already at IDs 25-26
-- [ ] Update `_EXTENDED_VOCAB` (will now be 33 tokens total: 18 base + 15 enriched)
-- [ ] Rewrite `_linearize()` to handle enriched tags by child structure:
-  - Nullary: `bot`, `top` -- no children
-  - Unary (`child` field): `box`, `neg`, `next`, `prev`, `diamond`, `some_future`, `some_past`, `all_future`, `all_past`, `weak_future`, `weak_past`, `always`, `sometimes`
-  - Binary (`left`/`right` fields): `imp`, `and`, `or`
-  - Binary (`event`/`guard` fields): `untl`, `snce`
-  - `atom` -- name field (hash to bucket)
-  - Unknown tags -- append UNK, skip children
-- [ ] Update the `_linearize` function to use the instance `_token_to_id` map instead of the global `_TOKEN_TO_ID` when enriched tokens are active (or update the global map to include all enriched tokens)
-- [ ] Add tests in `tests/test_models/test_formula_encoder.py` for enriched tag tokenization:
-  - Test tokenizing `{"tag": "neg", "child": {"tag": "atom", "name": "p"}}` produces correct IDs
-  - Test tokenizing `{"tag": "always", "child": {"tag": "atom", "name": "q"}}` produces correct IDs
-  - Test tokenizing `{"tag": "and", "left": ..., "right": ...}` produces correct IDs
-  - Test that enriched tags do NOT map to UNK when using extended vocabulary
-- [ ] Run tokenizer tests: `cd /home/benjamin/Projects/BimodalHarness && python -m pytest tests/test_models/test_formula_encoder.py -v`
+- [x] Add 4 missing tokens to `_ENRICHED_TAG_TOKENS` in `src/bimodal_harness/models/formula_encoder.py`: `weak_future` (29), `weak_past` (30), `always` (31), `sometimes` (32). Note: `some_future` and `some_past` are already at IDs 25-26 *(completed)*
+- [x] Update `_EXTENDED_VOCAB` (will now be 33 tokens total: 18 base + 15 enriched) *(completed)*
+- [x] Rewrite `_linearize()` to handle enriched tags by child structure *(completed: added token_to_id parameter; handles all 21 tags correctly)*
+- [x] Update the `_linearize` function to use the instance `_token_to_id` map instead of the global `_TOKEN_TO_ID` when enriched tokens are active *(completed: FormulaTokenizer.tokenize() now passes self._token_to_id)*
+- [x] Add tests in `tests/test_models/test_formula_encoder.py` for enriched tag tokenization *(completed: TestEnrichedTagTokenization with 13 new tests)*
+- [x] Run tokenizer tests: `cd /home/benjamin/Projects/BimodalHarness && python -m pytest tests/test_models/test_formula_encoder.py -v` *(completed: 47 passed)*
 
 **Timing**: 1.5 hours
 
