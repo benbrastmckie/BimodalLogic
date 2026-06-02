@@ -187,7 +187,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Validate and Measure Coverage [NOT STARTED]
+### Phase 4: Validate and Measure Coverage [COMPLETED]
 
 **Goal**: Run the proof step extractor, verify assumption/weakening steps appear, and measure actual rule distribution percentages.
 
