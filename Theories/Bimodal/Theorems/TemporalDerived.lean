@@ -348,6 +348,134 @@ noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) :=
   exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.double_negation A)) h3
 
 /-!
+## Category B: Temporal Monotonicity (4 computable theorems)
+
+Monotonicity lemmas for F, P operators as single-step derived rules.
+Each wraps a single BX axiom instantiation with a named, reusable pattern.
+-/
+
+section TemporalMonotonicity
+
+/--
+`⊢ G(φ → ψ) → (F(φ) → F(ψ))`: F is monotone under G-guarded implication.
+
+Direct from BX3 (right_mono_until) with χ := ⊤:
+`G(φ → ψ) → (untl(φ, ⊤) → untl(ψ, ⊤))` = `G(φ → ψ) → (F(φ) → F(ψ))`.
+-/
+def F_mono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.some_future.imp ψ.some_future) :=
+  DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ Formula.top) trivial
+
+/--
+`⊢ H(φ → ψ) → (P(φ) → P(ψ))`: P is monotone under H-guarded implication.
+
+Direct from BX3' (right_mono_since) with χ := ⊤:
+`H(φ → ψ) → (snce(φ, ⊤) → snce(ψ, ⊤))` = `H(φ → ψ) → (P(φ) → P(ψ))`.
+-/
+def P_mono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp (φ.some_past.imp ψ.some_past) :=
+  DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ Formula.top) trivial
+
+/--
+`⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G is monotone (alias for G_distribution).
+
+This is `G_distribution` under a discoverable name. Noncomputable because
+it depends on the derived `temp_k_dist_derived`.
+-/
+noncomputable abbrev G_mono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
+  G_distribution φ ψ
+
+/--
+`⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H is monotone (alias for H_distribution).
+
+This is `H_distribution` under a discoverable name. Noncomputable because
+it depends on the derived `past_k_dist`.
+-/
+noncomputable abbrev H_mono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
+  H_distribution φ ψ
+
+end TemporalMonotonicity
+
+/-!
+## Category E: Until/Since Structural Lemmas (4 computable theorems)
+
+Monotonicity wrappers for Until/Since guard and event positions.
+Each is a single BX axiom instantiation providing a named, reusable pattern.
+-/
+
+section UntilSinceStructural
+
+/--
+`⊢ G(φ → χ) → ((ψ U φ) → (ψ U χ))`: Guard monotonicity of Until under G.
+
+Direct from BX2G (left_mono_until_G).
+-/
+def until_mono_guard (φ χ ψ : Formula) :
+    ⊢ (φ.imp χ).all_future.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) :=
+  DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ) trivial
+
+/--
+`⊢ H(φ → χ) → ((ψ S φ) → (ψ S χ))`: Guard monotonicity of Since under H.
+
+Direct from BX2H (left_mono_since_H).
+-/
+def since_mono_guard (φ χ ψ : Formula) :
+    ⊢ (φ.imp χ).all_past.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) :=
+  DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
+
+/--
+`⊢ G(φ → ψ) → ((φ U χ) → (ψ U χ))`: Event monotonicity of Until under G.
+
+Direct from BX3 (right_mono_until).
+-/
+def until_mono_event (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)) :=
+  DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ) trivial
+
+/--
+`⊢ H(φ → ψ) → ((φ S χ) → (ψ S χ))`: Event monotonicity of Since under H.
+
+Direct from BX3' (right_mono_since).
+-/
+def since_mono_event (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)) :=
+  DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ) trivial
+
+end UntilSinceStructural
+
+/-!
+## Category C3-C4: Temporal Duality Lemmas (2 computable theorems)
+
+These express the relationship between F/G and P/H duality via double negation.
+-/
+
+section TemporalDuality
+
+/--
+`⊢ F(¬φ) → ¬(G(φ))`: If ¬φ is eventually true, then φ is not always true.
+
+Since `G(φ) = ¬F(¬φ)`, we have `¬(G(φ)) = ¬¬F(¬φ)`.
+Thus `F(¬φ) → ¬(G(φ))` is `F(¬φ) → ¬¬(F(¬φ))`, which is DNI at `F(¬φ)`.
+-/
+def F_neg_G (φ : Formula) :
+    ⊢ (φ.neg.some_future).imp φ.all_future.neg :=
+  dni (φ.neg.some_future)
+
+/--
+`⊢ P(¬φ) → ¬(H(φ))`: If ¬φ was once true, then φ was not always true.
+
+Since `H(φ) = ¬P(¬φ)`, we have `¬(H(φ)) = ¬¬P(¬φ)`.
+Thus `P(¬φ) → ¬(H(φ))` is `P(¬φ) → ¬¬(P(¬φ))`, which is DNI at `P(¬φ)`.
+-/
+def P_neg_H (φ : Formula) :
+    ⊢ (φ.neg.some_past).imp φ.all_past.neg :=
+  dni (φ.neg.some_past)
+
+end TemporalDuality
+
+/-!
 ## A3a/A3b: Valid Under Open Guard Semantics
 
 Burgess 1982 axioms A3a and A3b (Until-Since enrichment) ARE semantically valid under
