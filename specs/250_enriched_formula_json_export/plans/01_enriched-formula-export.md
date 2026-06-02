@@ -138,27 +138,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Ingestion Pipeline and Record Schema [NOT STARTED]
+### Phase 3: Ingestion Pipeline and Record Schema [COMPLETED]
 
 **Goal**: Add formula_folded_* fields to TrainingRecord and ProofStepRecord, and update the ingestion pipeline to parse them from JSONL.
 
 **Tasks**:
-- [ ] Add optional fields to `TrainingRecord` in `src/bimodal_harness/schema/records.py`:
+- [x] Add optional fields to `TrainingRecord` in `src/bimodal_harness/schema/records.py`:
   - `formula_folded_json: dict[str, Any] | None = None` -- enriched JSON tree
   - `formula_folded_str: str | None = None` -- enriched pretty-print string
   - `formula_folded_sexpr: str | None = None` -- enriched S-expression
-- [ ] Add optional field to `ProofStepRecord` in `src/bimodal_harness/schema/records.py`:
+  *(completed)*
+- [x] Add optional field to `ProofStepRecord` in `src/bimodal_harness/schema/records.py`:
   - `goal_folded_json: dict[str, Any] | None = None` -- enriched goal JSON
-- [ ] Update `TrainingRecord.__post_init__` if needed (validate formula_folded_json tags against VALID_ENRICHED_FORMULA_TAGS if non-None, or skip validation for performance)
-- [ ] Update `ProofStepRecord.to_dict()` and `ProofStepRecord.from_dict()` to handle `goal_folded_json`
-- [ ] Update `lean_jsonl_to_training_record()` in `src/bimodal_harness/data/ingestion.py` to extract `formula_folded_json`, `formula_folded_str`, `formula_folded_sexpr` from JSONL dicts
-- [ ] Update `load_proof_steps()` in `src/bimodal_harness/data/ingestion.py` to extract `goal_folded_json` from proof step JSONL dicts
-- [ ] Add tests in `tests/test_schema/test_records.py` for new fields:
-  - TrainingRecord with formula_folded_json populated
-  - ProofStepRecord with goal_folded_json populated
-  - Round-trip serialization
-- [ ] Add tests in `tests/test_data/test_ingestion.py` for JSONL lines with enriched fields
-- [ ] Run full test suite: `cd /home/benjamin/Projects/BimodalHarness && python -m pytest tests/ -v`
+  *(completed)*
+- [x] Update `TrainingRecord.__post_init__` if needed *(deviation: skipped validation for performance — fields are optional and caller trusts Lean output)*
+- [x] Update `ProofStepRecord.to_dict()` and `ProofStepRecord.from_dict()` to handle `goal_folded_json` *(completed)*
+- [x] Update `lean_export_to_training_record()` in `src/bimodal_harness/data/ingestion.py` to extract `formula_folded_json`, `formula_folded_str`, `formula_folded_sexpr` from JSONL dicts *(completed: function name corrected from lean_jsonl_to_training_record)*
+- [x] Update `load_bmlogic_proof_steps()` in `src/bimodal_harness/data/ingestion.py` to extract `goal_folded_json` from proof step JSONL dicts *(completed: deviation — updated load_bmlogic_proof_steps not load_proof_steps)*
+- [x] Add tests in `tests/test_schema/test_records.py` for new fields *(completed: TestTrainingRecordEnrichedFields + TestProofStepRecordGoalFoldedJson)*
+- [x] Add tests in `tests/test_data/test_ingestion.py` for JSONL lines with enriched fields *(completed: TestEnrichedFieldIngestion with 7 tests)*
+- [x] Run full test suite: `cd /home/benjamin/Projects/BimodalHarness && python -m pytest tests/ -v` *(completed: 2278 passed, 2 skipped, 29 deselected)*
 
 **Timing**: 1.5 hours
 

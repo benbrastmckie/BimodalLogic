@@ -1,0 +1,35 @@
+{
+  "phase": 3,
+  "phase_name": "Ingestion Pipeline and Record Schema",
+  "started_at": "2026-06-02T21:00:00Z",
+  "last_updated": "2026-06-02T21:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add optional formula_folded_json, formula_folded_str, formula_folded_sexpr fields to TrainingRecord", "status": "done"},
+    {"id": 2, "description": "Add optional goal_folded_json field to ProofStepRecord", "status": "done"},
+    {"id": 3, "description": "Update ProofStepRecord.to_dict/from_dict to handle goal_folded_json", "status": "done"},
+    {"id": 4, "description": "Update lean_export_to_training_record() to extract formula_folded_* fields", "status": "done"},
+    {"id": 5, "description": "Update load_bmlogic_proof_steps() to extract goal_folded_json", "status": "done"},
+    {"id": 6, "description": "Add tests in test_records.py for new fields", "status": "done"},
+    {"id": 7, "description": "Add tests in test_ingestion.py for JSONL lines with enriched fields", "status": "done"},
+    {"id": 8, "description": "Run full test suite: pytest tests/ -v", "status": "done", "note": "2278 passed, 2 skipped, 29 deselected"}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.3",
+      "description": "Update TrainingRecord.__post_init__ to validate formula_folded_json tags",
+      "type": "skipped",
+      "reason": "Optional field, skip validation for performance; caller trusts Lean output",
+      "annotation": "*(deviation: skipped — validation skipped for performance)*"
+    },
+    {
+      "task_id": "3.6",
+      "description": "Update load_proof_steps() to extract goal_folded_json",
+      "type": "altered",
+      "reason": "Updated load_bmlogic_proof_steps() (the BimodalLogic-specific adapter) instead of load_proof_steps() (the generic one which uses ProofStepRecord.from_dict already)",
+      "annotation": "*(deviation: altered — updated load_bmlogic_proof_steps not load_proof_steps)*"
+    }
+  ]
+}
