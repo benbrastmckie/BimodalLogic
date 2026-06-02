@@ -775,9 +775,23 @@ Once the loop is fixed, the termination theorem would follow from:
 3. Fuel bound derivation from the time-type bound (requires removing the `min`
    cap in `soundFuel` or proving the cap is sufficient)
 
+3. **Exponential branching in split case** (RESOLVED, task 261 v3): In the split
+   case, each sub-branch previously received the full remaining fuel, leading to
+   O(2^fuel) worst-case work. **Fix**: Fuel is now divided among sub-branches:
+   `branchFuel = fuel / max(1, branches.length)`. The soundness proof was updated
+   to use strong induction (`Nat.strongRecOn`) to handle the reduced fuel value.
+
+4. **Eventuality-aware blocking** (RESOLVED, task 261 v3): Subset blocking could
+   prematurely cut off branches where Until/Since eventualities were unfulfilled.
+   **Fix**: `findBlockedTime` now accepts an `EventualityTracker` parameter.
+   Blocking only fires when `allEventualitiesFulfilledOrDuplicated` confirms that
+   all pending eventualities at the blocked time are either fulfilled or also
+   pending at the blocking ancestor.
+
 **Correct properties that ARE proven:**
 - `expandBranchWithFuel_sound`: Open branches returned by expansion have no
-  closure reason (`findClosure = none`)
+  closure reason (`findClosure = none`). Uses strong induction for fuel-divided
+  sub-branches.
 - `subformula_property`: Initial branch formulas are subformulas of the input
 -/
 

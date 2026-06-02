@@ -27,7 +27,9 @@ metrics, and produces labeled records.
 - **Simplified ProofTrace**: Extracts height, axiom constructor names, and rule names
   from `DerivationTree` without full serialization (dependent types make full
   serialization impractical)
-- **Base frame class only**: `decideAuto` only supports `FrameClass.Base`
+- **Frame class support**: `labelFormula` accepts `fc : FrameClass` parameter
+  (default `.Base`), enabling generation for Base, Dense, and Discrete frame classes
+  via the `--frame-class` CLI flag (task 261 v3)
 - **Wall-clock timing**: Uses `IO.monoMsNow` for decision time measurement
 - **All axiom constructors handled**: Pattern match covers all constructors in
   `Bimodal.ProofSystem.Axiom`
