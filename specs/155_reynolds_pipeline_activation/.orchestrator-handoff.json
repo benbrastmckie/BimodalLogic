@@ -1,32 +1,29 @@
 {
   "status": "blocked",
-  "summary": "Phase 2 blocked on interval-splitting problem in nf_2var_existential_transfer -- the 4-variable existential transfer at StaviCompleteness.lean lines 2347/2429 requires either building the EF game bridge (~300-500 lines) or proving an interval-splitting zone match (~200-300 lines), neither of which exists in the codebase.",
+  "summary": "Phase 2 (EF Game Bridge) blocked by a depth mismatch: depth-k NFs capture FO depth k, but rank_type requires StaviFormula agreement at FO depth 2k. The plan's Bridge A approach is mathematically impossible as specified.",
   "phases_completed": 1,
   "phases_total": 6,
   "blockers": [
     {
       "phase": 2,
-      "description": "The sorry at StaviCompleteness.lean:2347 requires a 4-variable existential transfer for a 3-point configuration (u,x,t)/(u',x',t'). Zone matching via the (x,t) bridge does not preserve sub-interval type structure (the 'interval-splitting problem'). This is the core of GHR93 Proposition 7's game composition argument, which is implemented in Composition.lean but has no bridge connecting NF hypotheses to the game world.",
-      "approaches": [
-        "A: Build EF game bridge (~300-500 lines) connecting NF hypotheses to existing game infrastructure",
-        "B: Prove interval-splitting zone match directly (~200-300 lines)",
-        "C: Restructure proof to avoid nf_2var_existential_transfer (e.g., temporal formula decomposition)"
-      ]
+      "type": "mathematical",
+      "description": "Depth mismatch: stavi_fo_depth_le_twice_depth proves StaviFormulas of depth k have FO depth up to 2k. Depth-k NFs capture FO depth k only. Bridge A (nf_char_eq_implies_rank_type_eq) cannot be proved. Three viable alternatives identified: (1) prove depth bound on char_k, (2) custom NF-game bypassing StaviFormulas, (3) plan revision.",
+      "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-depth-mismatch-handoff-20260602.md"
     }
   ],
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260602T190214Z.md"
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-depth-mismatch-handoff-20260602.md"
   },
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/summaries/60_implementation-summary.md",
+      "path": "specs/155_reynolds_pipeline_activation/summaries/61_implementation-summary.md",
       "type": "summary",
-      "summary": "Implementation summary documenting Phase 2 blocker analysis and recommended approaches"
+      "summary": "Implementation summary documenting the depth mismatch blocker and viable alternatives"
     },
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260602T190214Z.md",
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-depth-mismatch-handoff-20260602.md",
       "type": "handoff",
-      "summary": "Detailed handoff with three approaches, existing infrastructure inventory, and dependency analysis"
+      "summary": "Detailed technical analysis with three viable resolution approaches"
     }
   ],
   "next_action_hint": "revise_plan"
