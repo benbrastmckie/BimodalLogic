@@ -229,7 +229,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -238,7 +238,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T14:38:35Z",
+      "last_updated": "2026-06-02T14:44:49Z",
       "next_artifact_number": 56,
       "artifacts": [
         {
@@ -442,44 +442,14 @@
           "summary": "Tactic analysis: 2 live sorry sites; anonymous hypothesis problem from split_ifs; structured focused proofs with named hypotheses recommended"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/35_reynolds-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v35: Phase 3C rewritten (U(B,A) transfer), Phase 6 restructured (6A/6B/6C)"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/36_ghr93-classical-plan.md",
-          "type": "plan",
-          "summary": "v36 plan: GHR93 classical approach, breaks circular dependency, new Phases 6D/6E/6F"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/37_ghr93-uba-witness-plan.md",
-          "type": "plan",
-          "summary": "v37 plan: Phase 3C rewritten with char_k threading + U(B,A) witness construction per GHR93 pp.115-116, eliminating fan problem"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/38_sorting-uba-plan.md",
-          "type": "plan",
-          "summary": "v38 plan: Phase 3C split into 3C-Sort (sorting wrapper, ~30-50 lines) + 3C-UBA (U(B,A) witness replacement, ~200-350 lines). Regular tau suffices. No changes to SplitPointProps/Theorem6."
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/38_equality-case-research.md",
           "type": "research",
           "summary": "Depth-agreement gap analysis: GHR93 rank r+4(n+1) vs Lean rank r, char_k depth ~2k_nf insufficient for rank-r agreement. Four resolution paths analyzed. Equality case solvable (~20-40 lines)."
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/39_depth-gap-resolution-plan.md",
-          "type": "plan",
-          "summary": "v39 plan: Phase 3C-UBA split into 3C-EQ (equality case, ~20-40 lines) + 3C-STRICT (strategy composition via Prop 12.8.18). Depth-agreement gap resolved by avoiding sel_pn_ord entirely via composition."
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md",
           "type": "research",
           "summary": "Definitive research: game_depth unchanged, rank flattening is root cause. Fix: add delta parameter to SplitPointProps, sigma/tau at rank r+4 via rank_embed. 750-1400 lines across 5 files."
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/40_rank-restructuring-plan.md",
-          "type": "plan",
-          "summary": "v40 plan: GHR93 rank restructuring. Raise sigma/tau to rank r+4 via delta parameter in SplitPointProps. Delete all workarounds (char_k, tau_r2, h_ih_r2, resp_mod, tau_left). 5 phases (R1-R5) + 8 downstream phases. 20-35 hours."
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/40_ghr93-case-ii-step6.md",
@@ -492,24 +462,9 @@
           "summary": "Stavi completeness audit: root sorry nf_2var_from_interval_data (bridge lemma, 200-500 lines). nf_characterizable_by_stavi has no stavi_depth bound. Currently NOT on critical path but needed for U(B,A) approach."
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/41_stavi-uba-plan.md",
-          "type": "plan",
-          "summary": "v41 plan: Stavi completeness + GHR93 U(B,A) Case II. Phase S1 closes bridge lemma, S2 adds depth bound + h_surj, S3 rewrites Case II per GHR93, S4 closes downstream sorries, S5 verification. 18-30 hours."
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/42_plan-literature-alignment.md",
           "type": "research",
           "summary": "Literature alignment review of plan v41: 3 critical issues (delta=2 insufficient, A=sf_top wrong, B depth unresolved), 6 recommendations (R1-R6)"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/42_ghr93-aligned-plan.md",
-          "type": "plan",
-          "summary": "v42 plan: GHR93-aligned revision. delta=4 throughout, new Phase S2.5 for rank-varying IH, B at depth k_nf (not r), A handled semantically via tau formula preservation, n=0 boundary explicit. 6 phases (S1-S5 + S2.5), 20-35 hours."
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/43_definitive-ghr93-plan.md",
-          "type": "plan",
-          "summary": "v43 plan: Definitive GHR93-faithful plan. 6 phases: (1) Theorem6 rank-varying IH delta=4, (2) Independent X_t construction without nf_characterizable_by_stavi, (3) Case II rewrite with U(B,A) and interval type A, (4) Cases III/IV with left/right gap formulas for general linear orders, (5) Downstream sorry closure, (6) Verification. 20-30 hours."
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/44_team-research.md",
@@ -517,44 +472,19 @@
           "summary": "Team research round 7 (4 teammates): tactic engineering, GHR93 literature, formalization gap audit, strategic horizons"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/44_research-aligned-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v44: research-aligned with CharacteristicFormula sorries as Phase 3, tactic infra as Phase 4, GHR93 Case II rewrite as Phase 5, Cases III/IV gap proofs as Phase 6"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md",
           "type": "research",
           "summary": "Re-scoped research (post-256): import cycle analysis, sorry chain mapping, Strategy A recommended (fix chronicle_gap_contradiction via GoodStructuresModelSurgery import)"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/50_implementation-plan.md",
-          "type": "plan",
-          "summary": "3-phase plan: rewrite chronicle_gap_contradiction to use no_gaps_discrete_model_surgery, verify completeness_discrete sorry-free, documentation updates"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/51_implementation-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v51: corrected two-case argument using gap_contradicts_prior + no_boundary_at_successor, fixing the mathematically incorrect one_class->IsSuccArchimedean step"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/52_implementation-plan.md",
-          "type": "plan",
-          "summary": "Plan v52: close Transfer.lean:1289 sorry (Z-interval-to-TaskFrame packaging) + rewire completeness_discrete to Reynolds pipeline"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/53_implementation-plan.md",
-          "type": "plan",
-          "summary": "Plan v53: Henkin BFMCS approach -- prove restricted coherence for henkin_bfmcs, rewire completeness_discrete, bypass succ_embed entirely"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/54_implementation-plan.md",
-          "type": "plan",
-          "summary": "Plan v54: Modified Henkin chain with F-formula preservation in seed -- includes all pending F(phi) in Lindenbaum seed to prevent loss, then proves restricted_tc via schedule + persistence"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/55_team-research.md",
           "type": "research",
           "summary": "Team research round 8 (4 teammates): Reynolds model surgery as correct path, cascade through existing infrastructure, misframing diagnosis"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/55_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v56: resolve import cycle for no_gaps_discrete and rewire completeness_discrete via WeakCanonical cascade (4 phases, 6-10 hours)"
         }
       ],
       "session_id": "sess_1780411103_56599e",
@@ -564,10 +494,10 @@
       "resume_phase": null,
       "plan_metadata": {
         "phases": 4,
-        "total_effort_hours": 12,
-        "complexity": "complex",
+        "total_effort_hours": 8,
+        "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 55,
+        "plan_version": 56,
         "dependency_waves": [
           [
             1
@@ -584,24 +514,9 @@
         ],
         "reports_integrated": [
           {
-            "path": "reports/50_import-cycle-research.md",
-            "integrated_in_plan_version": 50,
-            "integrated_date": "2026-06-01"
-          },
-          {
-            "path": "team research (3 parallel agents on Z+Z counterexample)",
-            "integrated_in_plan_version": 51,
-            "integrated_date": "2026-06-01"
-          },
-          {
-            "path": "phase-1-handoff-20260601T180000Z.md (blocker analysis)",
-            "integrated_in_plan_version": 52,
-            "integrated_date": "2026-06-01"
-          },
-          {
-            "path": "plans/53 blocker (F(phi)->G(F(phi)) not a theorem)",
-            "integrated_in_plan_version": 54,
-            "integrated_date": "2026-06-01"
+            "path": "reports/55_team-research.md",
+            "integrated_in_plan_version": 56,
+            "integrated_date": "2026-06-02"
           }
         ]
       }
