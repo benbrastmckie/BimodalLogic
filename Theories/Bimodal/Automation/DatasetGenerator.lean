@@ -394,9 +394,9 @@ The `.timeout` case now represents genuine resource exhaustion (tableau
 construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
-def labelFormula (φ : Formula) : IO LabeledFormula := do
+def labelFormula (φ : Formula) (fc : FrameClass := .Base) : IO LabeledFormula := do
   let startTime ← IO.monoMsNow
-  let (result, fuelTier) := decideAutoAdaptive φ
+  let (result, fuelTier) := decideAutoAdaptive φ fc
   let endTime ← IO.monoMsNow
   let elapsed := endTime - startTime
   let metrics := computeMetrics φ elapsed

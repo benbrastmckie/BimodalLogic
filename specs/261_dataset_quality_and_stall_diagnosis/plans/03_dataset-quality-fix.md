@@ -163,20 +163,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Frame Class CLI Flag [NOT STARTED]
+### Phase 4: Frame Class CLI Flag [COMPLETED]
 
 **Goal**: Add a `--frame-class` CLI flag to the dataset generator allowing selection of `Base`, `Dense`, or `Discrete` frame classes, and thread the choice through to `labelFormula` and `decideAutoAdaptive`.
 
 **Tasks**:
-- [ ] Add `frameClass : String := "Base"` field to the CLI argument structure in DatasetExport.lean
-- [ ] Add `--frame-class` CLI flag parsing that accepts `Base`, `Dense`, `Discrete` (case-insensitive), defaulting to `Base`
-- [ ] Add a helper `parseFrameClass : String -> Option FrameClass` that maps the CLI string to `FrameClass.Base / .Dense / .Discrete`
-- [ ] Thread the parsed `FrameClass` through the main generation loop into `labelFormula`
-- [ ] Modify `labelFormula` in DatasetGenerator.lean to accept an optional `fc : FrameClass := .Base` parameter
-- [ ] Update `labelFormula` to pass `fc` to `decideAutoAdaptive` (which already accepts `fc`)
-- [ ] Update `DatasetRecord.frame_class` to use the actual frame class name instead of hardcoded `"Base"`
-- [ ] Update metadata generation to include the frame class in dataset metadata
-- [ ] Verify backward compatibility: running without `--frame-class` defaults to Base (no behavioral change)
+- [x] **Task 4.1**: Add `frameClass : String := "Base"` field to CLIArgs
+- [x] **Task 4.2**: Add `--frame-class` CLI flag parsing (case-insensitive)
+- [x] **Task 4.3**: Add `parseFrameClass` and `frameClassName` helpers *(deviation: altered -- returns FrameClass directly instead of Option FrameClass, defaults to .Base for unrecognized)*
+- [x] **Task 4.4**: Thread parsed FrameClass through main loop into `labelFormula`
+- [x] **Task 4.5**: Add `fc : FrameClass := .Base` parameter to `labelFormula` in DatasetGenerator.lean
+- [x] **Task 4.6**: Pass `fc` to `decideAutoAdaptive` in `labelFormula`
+- [x] **Task 4.7**: Update `labeledToRecord` with `fcName` parameter, replacing hardcoded "Base"
+- [x] **Task 4.8**: Update metadata with `frameClassName` field, used in `datasetMetadataToJson`
+- [x] **Task 4.9**: Backward compatible: default parameters ensure no behavioral change
 
 **Timing**: 2 hours
 

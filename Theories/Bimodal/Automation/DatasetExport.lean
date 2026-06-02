@@ -75,6 +75,7 @@ open Bimodal.Syntax
 open Bimodal.Automation
 open Bimodal.Automation.DataExport
 open Bimodal.Metalogic.Decidability
+open Bimodal.ProofSystem
 
 /-!
 ## Additional JSON Serialization
@@ -296,13 +297,13 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
 Convert a `LabeledFormula` to a `DatasetRecord` with the given ID and split.
 -/
 def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
-    : DatasetRecord :=
+    (fcName : String := "Base") : DatasetRecord :=
   let idStr := "bmlogic-" ++ String.ofList (padNat idx 5)
   { id := idStr
     split := splitName
     formula_str := lf.formula.prettyPrint
     formula_ast := lf.formula.toJson
-    frame_class := "Base"
+    frame_class := fcName
     label := lf.label
     proof_trace := lf.proofTrace
     countermodel := lf.countermodel
@@ -393,6 +394,8 @@ structure DatasetMetadata where
   samplingMode : String
   /-- Decision method distribution: (method_name, count). -/
   decisionMethodDist : List (String × Nat) := []
+  /-- Frame class used for decision (task 261 v3). -/
+  frameClassName : String := "Base"
   deriving Repr, Inhabited
 
 /--
@@ -446,7 +449,7 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"max_complexity\": " ++ toString m.maxComplexity ++ ",\n"
   ++ "  \"sampling_mode\": \"" ++ m.samplingMode ++ "\",\n"
   ++ "  \"decision_method_distribution\": " ++ methodDistStr ++ ",\n"
-  ++ "  \"frame_class\": \"Base\",\n"
+  ++ "  \"frame_class\": \"" ++ escapeJsonString m.frameClassName ++ "\",\n"
   ++ "  \"representations\": [\n"
   ++ "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \"Pretty-printed unicode notation\"},\n"
   ++ "    {\"field\": \"formula_ast\", \"format\": \"json-ast\", \"description\": \"Recursive JSON AST with tag discriminator\"},\n"
@@ -484,6 +487,9 @@ structure CLIArgs where
   mode : SamplingMode := .exhaustive
   includeDuals : Bool := false
   validSeedCount : Nat := 500
+  /-- Frame class for the decision procedure: "Base", "Dense", or "Discrete".
+      Task 261 v3: enables multi-frame-class dataset generation. -/
+  frameClass : String := "Base"
   /-- Per-complexity-level quotas for stratified sampling.
       Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
       Format: "9:0,10:100000,11:300000" where 0 = exhaustive -/
@@ -514,9 +520,29 @@ def parseQuotas (s : String) : List (Nat × Nat) :=
     | _ => none
 
 /--
+Parse a frame class string (case-insensitive) into a `FrameClass` value.
+Returns `.Base` for unrecognized strings.
+-/
+def parseFrameClass (s : String) : FrameClass :=
+  let lower := s.toLower
+  if lower == "dense" then .Dense
+  else if lower == "discrete" then .Discrete
+  else .Base
+
+/--
+Convert a `FrameClass` to its string name for JSON output.
+-/
+def frameClassName (fc : FrameClass) : String :=
+  match fc with
+  | .Base => "Base"
+  | .Dense => "Dense"
+  | .Discrete => "Discrete"
+
+/--
 Parse CLI arguments from a list of strings.
 Supports: `--max-complexity`, `--max-modal-depth`, `--max-temporal-depth`,
-`--max-formulas`, `--output`, `--mode`, `--include-duals`, `--stratified-quotas`.
+`--max-formulas`, `--output`, `--mode`, `--include-duals`, `--stratified-quotas`,
+`--frame-class`.
 -/
 def parseCLIArgs (args : List String) : CLIArgs :=
   go args {}
@@ -552,6 +578,8 @@ where
     go rest { acc with checkpointFile := some p }
   | "--use-checkpoint" :: rest, acc =>
     go rest { acc with useCheckpoint := true }
+  | "--frame-class" :: fc :: rest, acc =>
+    go rest { acc with frameClass := fc }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -786,9 +814,14 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Valid seed count: {cliArgs.validSeedCount}"
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"
+  IO.println s!"Frame class: {cliArgs.frameClass}"
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
+
+  -- Task 261 v3: parse frame class
+  let fc := parseFrameClass cliArgs.frameClass
+  let fcName := frameClassName fc
 
   -- Step 1: Determine checkpoint file path
   let checkpointPath : System.FilePath :=
@@ -866,13 +899,13 @@ def main (args : List String) : IO Unit := do
   let mut categoryCounts : List (GoalCategory × Nat) := []
   let mut methodCounts : List (String × Nat) := []
   for φ in formulasToLabel do
-    let labeled ← labelFormula φ
+    let labeled ← labelFormula φ fc
     -- Task 261 v3: slow-formula warning for post-run analysis
     if labeled.metrics.decisionTimeMs > 1000 then
       IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
     -- Write JSONL line immediately (no accumulation)
     let splitName := assignSplit labeled.formula.prettyPrint
-    let record := labeledToRecord (count + 1) splitName labeled
+    let record := labeledToRecord (count + 1) splitName labeled fcName
     writeRecordJSONL handle record
     -- Task 261 v3: flush after each record to prevent data loss on crash/kill
     handle.flush
@@ -944,6 +977,7 @@ def main (args : List String) : IO Unit := do
     maxComplexity := params.maxComplexity
     samplingMode := modeStr
     decisionMethodDist := methodCounts
+    frameClassName := fcName
   }
   writeMetadata outputPath metadata
   IO.println s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!" (appended, total: {count})" else ""}"
