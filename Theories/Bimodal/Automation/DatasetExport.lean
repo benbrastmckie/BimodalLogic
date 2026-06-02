@@ -867,10 +867,15 @@ def main (args : List String) : IO Unit := do
   let mut methodCounts : List (String × Nat) := []
   for φ in formulasToLabel do
     let labeled ← labelFormula φ
+    -- Task 261 v3: slow-formula warning for post-run analysis
+    if labeled.metrics.decisionTimeMs > 1000 then
+      IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
     -- Write JSONL line immediately (no accumulation)
     let splitName := assignSplit labeled.formula.prettyPrint
     let record := labeledToRecord (count + 1) splitName labeled
     writeRecordJSONL handle record
+    -- Task 261 v3: flush after each record to prevent data loss on crash/kill
+    handle.flush
     -- Update running accumulators
     count := count + 1
     totalComplexity := totalComplexity + labeled.metrics.complexity

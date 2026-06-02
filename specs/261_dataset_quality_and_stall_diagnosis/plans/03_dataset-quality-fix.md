@@ -108,15 +108,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Per-Record Flush and Progress Logging [NOT STARTED]
+### Phase 2: Per-Record Flush and Progress Logging [COMPLETED]
 
 **Goal**: Add `handle.flush` after each JSONL record write to prevent data loss, and add a per-formula slow-decision warning log for post-run analysis.
 
 **Tasks**:
-- [ ] Add `handle.flush` call in `writeRecordJSONL` (DatasetExport.lean line 353-354) after `handle.putStrLn`
-- [ ] Alternatively, add `handle.flush` in the main streaming loop (DatasetExport.lean ~line 873) after each `writeRecordJSONL` call -- this is preferred since it keeps `writeRecordJSONL` as a simple write and centralizes flush in the pipeline
-- [ ] Add a slow-formula warning: in the main streaming loop, after `labelFormula` returns, check if `labeled.metrics.decisionTimeMs > 1000` and emit `IO.eprintln s!"[warn] Slow formula (#{count}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"`
-- [ ] Verify the flush does not cause type errors (IO.FS.Handle.flush returns `IO Unit`)
+- [ ] **Task 2.1**: Add `handle.flush` call in `writeRecordJSONL` *(deviation: skipped -- used option 2 instead)*
+- [x] **Task 2.2**: Add `handle.flush` in main streaming loop after `writeRecordJSONL` call *(completed)*
+- [x] **Task 2.3**: Add slow-formula warning with `IO.eprintln` for formulas > 1000ms *(completed)*
+- [x] **Task 2.4**: Verify flush does not cause type errors *(completed -- `lake build` passes)*
 
 **Timing**: 1 hour
 
