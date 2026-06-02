@@ -64,10 +64,18 @@
     {
       "project_number": 250,
       "project_name": "enriched_formula_json_export",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
-      "last_updated": "2026-06-01T17:28:43Z"
+      "last_updated": "2026-06-02T20:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md",
+          "type": "research",
+          "summary": "Full pipeline analysis: task 248 covers all Lean-side wiring (DatasetRecord + ProofStep enriched fields). Task 250 scope is BimodalHarness Python updates (schema constants, AST types, tokenizer extension, ingestion) plus dataset regeneration. Blocked on task 248 implementation."
+        }
+      ]
     },
     {
       "project_number": 249,
@@ -95,7 +103,18 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_temporal-derived-theorems.md",
@@ -108,10 +127,11 @@
     {
       "project_number": 248,
       "project_name": "fold_direction_formula_normalization",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
-      "last_updated": "2026-06-02T19:00:00Z",
+      "last_updated": "2026-06-02T15:25:00Z",
+      "completion_summary": "Wired existing fold/serialization functions from Normalization.lean into DatasetRecord (3 enriched formula fields) and ProofStep (goal_folded_json). Full project builds with zero errors.",
       "session_id": "sess_1780520400_a2b3c4",
       "researched": "2026-06-02T12:00:00Z",
       "planned": "2026-06-02T19:00:00Z",
@@ -941,14 +961,14 @@
     {
       "project_number": 229,
       "project_name": "resolve_train_bench_contamination",
-      "status": "planning",
+      "status": "planned",
       "task_type": "general",
       "description": "71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-c7.jsonl training data, undermining the benchmark as a held-out evaluation set. All overlapping formulas are complexity 3-7 (the c7 range). Resolution options: (A) Regenerate benchmark excluding c7 formulas, drawing from complexity>=8 and axiom instances only — truly held-out but smaller. (B) Keep overlap but add contamination_flag field and document that only non-overlapping records (224/777) are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but creates holes in exhaustive enumeration. Implement chosen approach, update all downstream artifacts (metadata, splits, paraphrases, croissant.json). Document contamination analysis and resolution in dataset card.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-06-02T15:16:35Z",
+      "last_updated": "2026-06-02T15:19:55Z",
       "session_id": "sess_1780413374_62c437",
       "next_artifact_number": 2,
       "artifacts": [
@@ -956,6 +976,11 @@
           "path": "specs/229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md",
           "type": "research",
           "summary": "Verified 553/777 (71.2%) contamination; recommends Option B (contamination_flag) immediate fix + Option D (regenerate complexity>=8) medium-term"
+        },
+        {
+          "path": "specs/229_resolve_train_bench_contamination/plans/01_contamination-resolution.md",
+          "type": "plan",
+          "summary": "4-phase Option B contamination resolution: add contamination_flag, fix stale splits, update dataset card, sync HF"
         }
       ],
       "memory_candidates": [
@@ -1357,14 +1382,14 @@
     {
       "project_number": 262,
       "project_name": "interestingness_metrics_for_theorems",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures for theorems (e.g., Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure, not just modus ponens on axioms), semantic non-triviality (not instances of p→p or ⊥→φ), operator diversity (mixing modal and temporal operators in meaningful ways), proof depth/breadth ratio, connection to known named theorems, information content (entropy of the formula vs. tautological patterns), usefulness as a lemma (how often the formula appears as a subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension that can be evaluated by the Lean pipeline on every generated formula. (4) Propose a composite interestingness score suitable as a reward signal or filtering criterion for training networks to find non-trivial derivations. (5) Consider how these metrics interact with the proof trace — a valid formula with a deep non-obvious proof is more interesting than one closed by a single axiom application. (6) Address the spectrum from trivially valid (⊥→φ) through routine (substitution instances of axioms) to genuinely interesting (novel interactions between □, G, U, S operators).",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-02T00:30:00Z",
-      "last_updated": "2026-06-02T15:16:35Z",
+      "last_updated": "2026-06-02T15:21:17Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -1376,6 +1401,11 @@
           "path": "specs/262_interestingness_metrics_for_theorems/reports/02_deep-interestingness-survey.md",
           "type": "research",
           "summary": "Deep literature survey: 36+ sources on interestingness (Hardy, Lakatos, Schmidhuber, HR, Graffiti, FERMAT), modal logic-specific criteria (Sahlqvist, admissible rules, frame correspondence), RL reward design (AlphaProof, SPEED-RL), quality-diversity paradigms; proposes refined three-tier scoring with domain-specific bimodal bonuses"
+        },
+        {
+          "path": "specs/262_interestingness_metrics_for_theorems/plans/02_interestingness-implementation.md",
+          "type": "plan",
+          "summary": "5-phase three-tier interestingness scoring: syntactic metrics + SNT gate, proof-structural metrics, composite scoring with 7-tier classification, pipeline integration, validation"
         }
       ],
       "session_id": "sess_1780413374_62c437",

@@ -115,28 +115,33 @@ technical_debt:
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-248 [RESEARCHED] — fold_direction_formula_normalization
+248 [COMPLETED] — fold_direction_formula_normalization
   - **Report**: [specs/248_fold_direction_formula_normalization/reports/01_fold-direction-normalization.md]
-249 [RESEARCHED] — expand_temporal_derived_theorems
+  - **Plan**: [specs/248_fold_direction_formula_normalization/plans/01_fold-direction-normalization.md]
+  - **Summary**: [specs/248_fold_direction_formula_normalization/summaries/01_fold-direction-normalization-summary.md]
+249 [PLANNED] — expand_temporal_derived_theorems
   - **Report**: [specs/249_expand_temporal_derived_theorems/reports/01_temporal-derived-theorems.md]
-250 [NOT STARTED] — enriched_formula_json_export
+  - **Plan**: [specs/249_expand_temporal_derived_theorems/plans/01_temporal-derived-theorems.md]
+250 [RESEARCHED] — enriched_formula_json_export
+  - **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
 
 ## Tasks
 
 ### 262. Research interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Research**:
   - [262_interestingness_metrics_for_theorems/reports/01_interestingness-metrics.md]
   - [262_interestingness_metrics_for_theorems/reports/02_deep-interestingness-survey.md]
+- **Plan**: [262_interestingness_metrics_for_theorems/plans/02_interestingness-implementation.md]
 - **Description**: Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures (Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure), semantic non-triviality (not instances of `p→p` or `⊥→φ`), operator diversity (mixing modal and temporal operators meaningfully), proof depth/breadth ratio, connection to named theorems, information content (entropy vs. tautological patterns), usefulness as a lemma (frequency as subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension evaluable by the Lean pipeline. (4) Propose a composite interestingness score as reward signal for training networks to find non-trivial derivations. (5) Consider how metrics interact with proof traces — valid formulas with deep non-obvious proofs are more interesting than single-axiom closures. (6) Address the full spectrum from trivially valid (`⊥→φ`) through routine (axiom substitution instances) to genuinely interesting (novel `□`/`G`/`U`/`S` interactions).
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -174,9 +179,10 @@ technical_debt:
 
 ### 250. Add enriched formula JSON export to data pipeline
 - **Effort**: M
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 248
+- **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
 
 **Description**: The data export pipeline (DatasetGenerator.lean, proof step extraction) currently exports formulas only in primitive representation (6 constructor tags: atom, bot, imp, box, untl, snce). BimodalHarness needs enriched representations alongside primitives for training. Add a formula_folded_json field to exported data records that contains the formula with defined operator tags (neg, top, next, prev, and, or, diamond, some_future, some_past, all_future, all_past) using the fold algorithm from Task 248. Update proof_steps.jsonl export to include both goal_json (primitive) and goal_folded_json (enriched). Update formula enumeration exports (bmlogic-c5.jsonl, bmlogic-c7.jsonl, etc.) to include both representations. The enriched representation enables BimodalHarness to train on defined-operator formulas while verifying via primitive expansion.
 
@@ -192,11 +198,13 @@ technical_debt:
 ---
 
 ### 248. Add fold direction to formula normalization
-- **Effort**: M
-- **Status**: [NOT STARTED]
+- **Effort**: S (2 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
+- **Research**: [specs/248_fold_direction_formula_normalization/reports/01_fold-direction-normalization.md]
+- **Plan**: [specs/248_fold_direction_formula_normalization/plans/01_fold-direction-normalization.md]
 
-**Description**: Task 190 (modal_norm) covers the unfold direction (defined operators → primitives) but not the fold direction (primitives → defined operators). The fold direction is needed for training data export — BimodalHarness needs formulas in enriched representation alongside primitive representation. Implement a greedy folding algorithm that pattern-matches primitive trees against defined operator patterns, starting from the highest dependency level (Level 6 sometimes → Level 1 neg/top) and working down. Key challenge: some patterns are ambiguous (e.g., imp(imp(A, bot), B) matches both or(A, B) and neg(A)→B). Document ambiguous patterns explicitly and implement conservative folding that only folds unambiguous patterns. The fold algorithm should be a Lean meta-level function that can be applied to Formula values, producing a string or JSON representation with enriched operator tags. Add simp lemmas for the fold direction where unambiguous. Include property test: unfold(fold(f)) = f for all formulas.
+**Description**: Task 190 (modal_norm) covers the unfold direction (defined operators -> primitives) but not the fold direction (primitives -> defined operators). The fold direction is needed for training data export -- BimodalHarness needs formulas in enriched representation alongside primitive representation. The fold algorithm is already fully implemented in Normalization.lean (EnrichedFormula ADT, two-pass greedy fold, serialization). Remaining work is purely integration: add `formula_folded_json`, `formula_folded_str`, `formula_folded_sexpr` fields to DatasetRecord and `goal_folded_json` to ProofStep, wiring them to existing `Formula.toEnrichedJson` etc. functions.
 
 ---
 
@@ -270,11 +278,12 @@ technical_debt:
 
 ### 229. Resolve train/benchmark formula contamination
 - **Effort**: medium (4-6 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Research**: [229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md]
+- **Plan**: [229_resolve_train_bench_contamination/plans/01_contamination-resolution.md]
 
 **Description**: 71.2% of benchmark formulas (553/777) appear verbatim in `bmlogic-c7.jsonl` training data, undermining the benchmark as held-out evaluation. All overlap is at complexity 3-7 (the c7 range); the 224 non-overlapping records are complexity >= 8 or axiom instances. Resolution options: (A) Regenerate benchmark excluding c7 formulas — truly held-out but smaller. (B) Keep overlap but add `contamination_flag` field and document that only 224 records are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but holes in exhaustive enumeration. Implement chosen approach, update downstream artifacts, document analysis in dataset card.
 
