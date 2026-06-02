@@ -20,13 +20,30 @@ bimodal logic system.
 - `tm_auto`: Comprehensive TM automation with Aesop (Phase 5)
 - `assumption_search`: Search for formula in context (Phase 6)
 
-## Implementation Status
+## Proof Search Coverage
 
-**Phases 4-6**: Core tactics implementation with LEAN 4 metaprogramming
+The `searchProof` function uses five strategies in order:
 
-- Phase 4 ✓: `apply_axiom` (macro), `modal_t` (elab_rules)
-- Phase 5: `tm_auto` with Aesop integration
-- Phase 6: `assumption_search` with TacticM
+1. **Axiom matching** (`tryAxiomMatch`): All 42 axiom constructors across 8 layers:
+   - Propositional (4): prop_k, prop_s, ex_falso, peirce
+   - S5 Modal (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
+   - BX Temporal (22): seriality, monotonicity, connectedness, enrichment,
+     accumulation, absorption, linearity, eventuality, F/P-Until/Since equivalence
+   - Modal-Temporal (1): modal_future
+   - Uniformity (5): discrete_symm_fwd/bwd, discrete_propagate_fwd/bwd, discrete_box_necessity
+   - Discrete (3): prior_UZ, prior_SZ, z1
+   - Dense (2): density, dense_indicator
+
+2. **Derived theorem matching** (`tryDerivedMatch`): 26 empty-context derived theorems:
+   - Propositional combinators (12): identity, double_negation, raa, efq, lce_imp, rce_imp,
+     contrapose_imp, pairing, dni, b_combinator, theorem_flip, theorem_app1
+   - Modal/temporal derived (14): temp_k_dist_derived, temp_4_derived, H_distribution,
+     H_transitivity, t_box_to_diamond, k_dist_diamond, diamond_4, modal_5, box_to_future,
+     box_to_past, formula_or_comm, bi_imp, classical_merge, temp_future_derived
+
+3. **Assumption matching** (`tryAssumptionMatch`)
+4. **Modus ponens decomposition** (`tryModusPonens`)
+5. **Modal/Temporal K rules** (`tryModalK`, `tryTemporalK`)
 
 ## References
 

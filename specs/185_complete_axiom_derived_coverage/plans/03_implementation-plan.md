@@ -122,15 +122,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Integration tests and full build verification [NOT STARTED]
+### Phase 3: Integration tests and full build verification [COMPLETED]
 
 **Goal**: Add comprehensive integration tests and verify the full project builds cleanly.
 
 **Tasks**:
-- [ ] Add integration tests in `Tests/BimodalTest/Automation/EdgeCaseTest.lean` covering: (a) non-base frame class axioms, (b) derived theorems in deeper search contexts, (c) combined axiom+derived+modus ponens proofs
-- [ ] Run `lake build` for full project verification
-- [ ] Verify no regression in existing test suite
-- [ ] Update module docstring in `Tactics/Helpers.lean` to document new coverage (42 axioms, ~25 derived theorems)
+- [x] Add integration tests in `Tests/BimodalTest/Automation/EdgeCaseTest.lean` covering: (a) non-base frame class axioms, (b) derived theorems in deeper search contexts, (c) combined axiom+derived+modus ponens proofs
+- [x] Run `lake build` for full project verification
+- [x] Verify no regression in existing test suite *(deviation: altered -- EdgeCaseTest.lean had 25 pre-existing errors from removed search/matches_axiom API; two existing temporal tests needed noncomputable annotation due to tryDerivedMatch resolving via temp_4_derived instead of axiom path)*
+- [x] Update module docstring in `Tactics/Helpers.lean` to document new coverage (42 axioms, 26 derived theorems)
 
 **Timing**: 1 hour
 

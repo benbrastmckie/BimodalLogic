@@ -38,7 +38,8 @@ example : ⊢ (Formula.box q).imp (Formula.box (Formula.box q)) := by modal_sear
 example : ⊢ p.imp (Formula.box p.diamond) := by modal_search
 
 -- Temporal axioms with empty context
-example : ⊢ (Formula.all_future p).imp (Formula.all_future (Formula.all_future p)) := by temporal_search
+-- Note: Gp → GGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
+noncomputable example : ⊢ (Formula.all_future p).imp (Formula.all_future (Formula.all_future p)) := by temporal_search
 example : ⊢ p.imp (Formula.all_future (Formula.some_past p)) := by temporal_search
 
 -- Propositional axioms with empty context
@@ -116,7 +117,8 @@ example : ⊢ (Formula.box (Formula.box p)).imp (Formula.box p) := by modal_sear
 example : ⊢ (Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Formula.box p)) := by modal_search
 
 -- Deep temporal nesting with tactics
-example : ⊢ (Formula.all_future (Formula.all_future p)).imp (Formula.all_future (Formula.all_future (Formula.all_future p))) := by temporal_search
+-- Note: GGp → GGGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
+noncomputable example : ⊢ (Formula.all_future (Formula.all_future p)).imp (Formula.all_future (Formula.all_future (Formula.all_future p))) := by temporal_search
 
 /-!
 ## Section 3: Large Context Tests
@@ -319,5 +321,67 @@ Test with various atom names including longer names.
   IO.println "Section 8: Atom Name Tests - 4 tests"
   IO.println "---"
   IO.println "Total: 44 edge case tests"
+
+/-!
+## Section 9: Extended Axiom & Derived Theorem Integration Tests (Task 185)
+
+Tests verifying the full 42-axiom + 26-derived-theorem coverage in modal_search,
+including non-base frame classes, deeper search contexts, and combined strategies.
+
+Note: Tests use universally quantified Formula variables (not concrete atoms) to
+allow unification-based matching in tryAxiomMatch and tryDerivedMatch.
+-/
+
+-- 9a: Non-base frame class axioms (empty context)
+-- Prior-UZ (Discrete): F(φ) → U(φ, ¬φ)
+example (φ : Formula) : ⊢[FrameClass.Discrete] φ.some_future.imp (Formula.untl φ φ.neg) := by
+  modal_search
+
+-- Density (Dense): GGφ → Gφ
+example (φ : Formula) : ⊢[FrameClass.Dense] φ.all_future.all_future.imp φ.all_future := by
+  modal_search
+
+-- Dense indicator (Dense): ¬U(⊤,⊥)
+example : ⊢[FrameClass.Dense] (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg := by
+  modal_search
+
+-- Z1 (Discrete): G(Gφ→φ) → (FGφ→Gφ)
+example (φ : Formula) : ⊢[FrameClass.Discrete]
+    (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future) := by
+  modal_search
+
+-- 9b: Derived theorems with free variables (verify unification works)
+-- identity: A → A (derived combinator)
+example (A : Formula) : ⊢ A.imp A := by modal_search
+-- pairing: A → (B → (A ∧ B)) (derived combinator)
+example (A B : Formula) : ⊢ A.imp (B.imp (A.and B)) := by modal_search
+
+-- 9c: Combined axiom + derived theorem resolution
+-- t_box_to_diamond: □A → ◇A (derived) applied with concrete structure
+example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by modal_search
+
+-- diamond_4: ◇◇φ → ◇φ (derived)
+example (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by modal_search
+
+-- 9d: Until/Since axioms (BX temporal) with free variables
+-- connect_future: φ → G(P(φ))
+example (φ : Formula) : ⊢ φ.imp (φ.some_past.all_future) := by modal_search
+
+-- connect_past: φ → H(F(φ))
+example (φ : Formula) : ⊢ φ.imp (φ.some_future.all_past) := by modal_search
+
+-- self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
+example (φ ψ : Formula) : ⊢ (Formula.untl ψ φ).imp
+    (Formula.untl ψ (Formula.and φ (Formula.untl ψ φ))) := by modal_search
+
+-- 9e: Temporal derived theorems
+-- temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ) (derived, noncomputable)
+noncomputable example (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) := by modal_search
+
+-- 9f: Combined propositional + axiom (modus ponens with axiom result)
+-- MP(assumption, prop_s) chain: [A, B] ⊢ A is just assumption
+-- More interesting: [A.imp (B.imp A)] ⊢ A.imp (B.imp A) via assumption
+example (A B : Formula) : [A.imp (B.imp A)] ⊢ A.imp (B.imp A) := by modal_search
 
 end BimodalTest.Automation.EdgeCase
