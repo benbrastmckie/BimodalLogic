@@ -96,22 +96,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Create Python Validation Script [NOT STARTED]
+### Phase 2: Create Python Validation Script [COMPLETED]
 
 **Goal**: Create a Python script that validates the existing c5 JSONL dataset for well-formedness, complete field population, and acceptable timeout rate.
 
 **Tasks**:
-- [ ] Create `scripts/validate_c5_dataset.py` based on the validation approach from the research report
-- [ ] Implement JSONL line-by-line parsing with error detection
-- [ ] Check all 22 expected fields are present in every record
-- [ ] Verify no null metrics (complexity, modalDepth, temporalDepth, impCount, atomCount, decisionTimeMs, difficultyTier)
-- [ ] Verify decision_method is never null
-- [ ] Verify valid records have non-null proof_trace and rule_profile
-- [ ] Verify invalid records have non-null countermodel and countermodel_consistent
-- [ ] Compute and check timeout rate < 5%
-- [ ] Check specific regression formula (box(bot) -> box(r)) is labeled valid
-- [ ] Print summary with PASS/FAIL result
-- [ ] Run the script against `data/bmlogic-c5.jsonl` and confirm PASS
+- [x] Create `scripts/validate_c5_dataset.py` based on the validation approach from the research report
+- [x] Implement JSONL line-by-line parsing with error detection
+- [x] Check all 22 expected fields are present in every record *(deviation: altered -- dataset has 25 fields, not 22; all 25 validated)*
+- [x] Verify no null metrics (complexity, modalDepth, temporalDepth, impCount, atomCount, decisionTimeMs, difficultyTier)
+- [x] Verify decision_method is never null
+- [x] Verify valid records have non-null proof_trace and rule_profile
+- [x] Verify invalid records have non-null countermodel and countermodel_consistent
+- [x] Compute and check timeout rate < 5%
+- [x] Check specific regression formula (box(bot) -> box(r)) is labeled valid
+- [x] Print summary with PASS/FAIL result
+- [x] Run the script against `data/bmlogic-c5.jsonl` and confirm PASS
 
 **Timing**: 30 minutes
 
