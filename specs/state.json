@@ -1604,15 +1604,22 @@
     {
       "project_number": 265,
       "project_name": "single_tier_fuel_and_timeout_prefilter",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         264
       ],
       "created": "2026-06-02T18:30:00Z",
-      "last_updated": "2026-06-02T19:10:23Z",
-      "session_id": "sess_1748890200_a3c7f1",
-      "researched": "2026-06-02T19:10:23Z"
+      "last_updated": "2026-06-02T21:52:47Z",
+      "session_id": "sess_1748892600_b4d8e2",
+      "researched": "2026-06-02T19:10:23Z",
+      "artifacts": [
+        {
+          "path": "specs/265_single_tier_fuel_and_timeout_prefilter/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: single-tier fuel, structural pre-filter, build verification, c6 regeneration"
+        }
+      ]
     }
   ],
   "next_project_number": 266,
