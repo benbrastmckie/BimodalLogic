@@ -1,13 +1,29 @@
 {
-  "status": "completed",
-  "summary": "Closed countermodel_discrete_reynolds sorry using parametric canonical model approach. Rewired completeness_discrete to use countermodel_discrete_reynolds. Full lake build passes.",
-  "blockers": [],
-  "continuation_context": null,
-  "next_action_hint": "none",
-  "phases_completed": 4,
-  "phases_total": 4,
+  "status": "partial",
+  "summary": "Phase 1 BLOCKED: The plan's core assumption (F(phi)->G(F(phi)) derivable as 'all_future_of_some_future') is FALSE -- this formula is not a theorem of the temporal logic and is not valid on integers under strict semantics. The Henkin chain does not preserve F-formulas across Lindenbaum extension steps, so restricted_tc cannot be proved as planned. Key finding: cantor_bfmcs_discrete_restricted_buc is already sorry-free (no sorryAx), narrowing the problem to restricted_tc and restricted_fuc only.",
+  "blockers": [
+    {
+      "type": "theoretical",
+      "description": "F(phi)->G(F(phi)) is not derivable from BX axioms and is not semantically valid on integers under strict/irreflexive semantics. The Henkin chain's Lindenbaum extensions can 'lose' F-formulas by choosing G(neg(phi)) instead, permanently preventing phi from appearing.",
+      "impact": "restricted_tc and restricted_fuc cannot be proved for henkin_bfmcs as constructed",
+      "resolution_options": [
+        "A: Modify chain to preserve F-formulas from deferralClosure(root) in seed (needs consistency proof)",
+        "B: Prove IsSuccArchimedean for the specific chronicle limit domain (all points in succ/pred orbit of 0)",
+        "C: Close Reynolds model surgery sorry (gap_prior_UZ_contradiction in GoodStructuresModelSurgery.lean)",
+        "D: Hybrid approach combining sorry-free restricted_buc with a new mechanism for restricted_tc/fuc"
+      ]
+    }
+  ],
+  "continuation_context": {
+    "key_finding": "cantor_bfmcs_discrete_restricted_buc has NO sorryAx -- only restricted_tc and restricted_fuc depend on succ_embed_surjective",
+    "failed_approach": "Henkin chain F-formula propagation via G(F(phi)) -- not a theorem",
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T061716Z.md"
+  },
+  "next_action_hint": "revise plan -- the Henkin BFMCS approach needs fundamental changes. Consider Option A (modified chain with F-preservation) or Option B (prove IsSuccArchimedean for specific chronicle domain). Option A is most promising but requires proving consistency of the enlarged seed.",
+  "phases_completed": 0,
+  "phases_total": 3,
   "artifacts": [
-    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/52_implementation-plan.md"},
-    {"type": "summary", "path": "specs/155_reynolds_pipeline_activation/summaries/52_implementation-summary.md"}
+    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/53_implementation-plan.md"},
+    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T061716Z.md"}
   ]
 }
