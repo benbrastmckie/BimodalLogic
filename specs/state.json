@@ -363,7 +363,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -372,7 +372,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T22:32:53Z",
+      "last_updated": "2026-06-02T23:26:29Z",
       "next_artifact_number": 61,
       "artifacts": [
         {
@@ -616,19 +616,9 @@
           "summary": "Team research round 8 (4 teammates): Reynolds model surgery as correct path, cascade through existing infrastructure, misframing diagnosis"
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/55_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v56: resolve import cycle for no_gaps_discrete and rewire completeness_discrete via WeakCanonical cascade (4 phases, 6-10 hours)"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/56_phase2-blocker-research.md",
           "type": "research",
           "summary": "Phase 2 blocker: chronicle_gap_contradiction is dead BX code. Real sorry chain through succ_embed_surjective. Recommends omega-chain induction (Path A, 150-300 lines)."
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/56_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v57: prove succ_embed_surjective via omega-chain induction, bypassing dead succ_cofinal path (4 phases, 6-10 hours)"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/57_bypass-surjectivity-research.md",
@@ -636,51 +626,41 @@
           "summary": "Bypass surjectivity research: Paths A/C not viable. Path D (axiomatize IsSuccArchimedean, ~30 lines) recommended immediate. Path E (omega-chain induction, 300-600 lines) for long-term."
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/57_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v58: axiomatize IsSuccArchimedean for LimitDomSubtype (Path D), replacing sorry with named axiom (4 phases, 3-4 hours)"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/58_proper-fix-research.md",
           "type": "research",
           "summary": "Proper fix research: model surgery cannot prove IsSuccArchimedean (second-order). Recommends finite interval argument via successor stability. 300-500 lines."
         },
         {
-          "path": "specs/155_reynolds_pipeline_activation/plans/58_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v59: prove IsSuccArchimedean via finite interval argument and successor stability (4 phases, 6-10 hours)"
-        },
-        {
-          "path": "specs/155_reynolds_pipeline_activation/plans/59_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v60: fix 3 root sorries in StaviCompleteness.lean (4-var EF-game existential transfer) and rewire limitDomSubtype_isSuccArchimedean via model surgery (6 phases, 10-16 hours)"
-        },
-        {
           "path": "specs/155_reynolds_pipeline_activation/reports/60_team-research.md",
           "type": "research",
           "summary": "Team research round 9 (4 teammates): GHR93 Prop 7 extraction, alternative approaches, critic analysis, strategic horizons"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/60_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v63: strengthened induction approach for nf_2var_existential_transfer (GHR93 Proposition 7), 6 phases, 10-14 hours"
         }
       ],
-      "session_id": "sess_1780428000_team_research",
+      "session_id": "sess_1780429000_plan",
       "researched": "2026-06-02T22:32:53Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
       "plan_metadata": {
         "phases": 6,
-        "total_effort_hours": 13,
+        "total_effort_hours": 12,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 60,
+        "plan_version": 63,
         "dependency_waves": [
           [
-            1
-          ],
-          [
+            1,
             2
           ],
           [
-            3,
+            3
+          ],
+          [
             4
           ],
           [
@@ -692,43 +672,8 @@
         ],
         "reports_integrated": [
           {
-            "path": "reports/55_team-research.md",
-            "integrated_in_plan_version": 56,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/56_phase2-blocker-research.md",
-            "integrated_in_plan_version": 57,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/57_bypass-surjectivity-research.md",
-            "integrated_in_plan_version": 58,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/58_proper-fix-research.md",
-            "integrated_in_plan_version": 59,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/59_lit-ghr93-gaps.md",
-            "integrated_in_plan_version": 60,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/59_lit-ghr94-ch9.md",
-            "integrated_in_plan_version": 60,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/59_lit-reynolds94.md",
-            "integrated_in_plan_version": 60,
-            "integrated_date": "2026-06-02"
-          },
-          {
-            "path": "reports/59_lit-burgess-venema.md",
-            "integrated_in_plan_version": 60,
+            "path": "reports/60_team-research.md",
+            "integrated_in_plan_version": 63,
             "integrated_date": "2026-06-02"
           }
         ]
@@ -1609,14 +1554,14 @@
     {
       "project_number": 265,
       "project_name": "single_tier_fuel_and_timeout_prefilter",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "dependencies": [
         264
       ],
       "created": "2026-06-02T18:30:00Z",
-      "last_updated": "2026-06-02T21:52:47Z",
-      "session_id": "sess_1748892600_b4d8e2",
+      "last_updated": "2026-06-02T23:18:40Z",
+      "session_id": "sess_1748893800_c5e9f3",
       "researched": "2026-06-02T19:10:23Z",
       "artifacts": [
         {

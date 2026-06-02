@@ -108,7 +108,7 @@ technical_debt:
 ### 265. Simplify to single-tier fuel strategy with structural timeout pre-filter
 - **Effort**: medium (8-12 hours)
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -587,6 +587,7 @@ technical_debt:
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/51_implementation-plan.md]
   - [155_reynolds_pipeline_activation/plans/55_implementation-plan.md]
+  - [155_reynolds_pipeline_activation/plans/60_implementation-plan.md]
 
 **Description**: Close the `no_gaps_discrete` import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewire `completeness_discrete` to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing `no_gaps_discrete` to call `no_gaps_discrete_model_surgery` without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in `no_gaps_discrete`. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate `no_gaps_discrete` to `no_gaps_discrete_model_surgery`. (4) Rewire `completeness_discrete` to use the WeakCanonical path via `no_gaps_discrete`. (5) Verify `#print axioms completeness_discrete` shows no `sorryAx`. Definition of done: `no_gaps_discrete` delegates to `no_gaps_discrete_model_surgery` (no sorry), `completeness_discrete` uses WeakCanonical path (no sorry), `lake build` passes.
 
