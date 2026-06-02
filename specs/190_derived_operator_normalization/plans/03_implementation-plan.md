@@ -108,7 +108,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: EnrichedFormula ADT and Fold Algorithm [NOT STARTED]
+### Phase 2: EnrichedFormula ADT and Fold Algorithm [IN PROGRESS]
 
 **Goal**: Implement the `EnrichedFormula` inductive type and the greedy `Formula.foldFormula` function that pattern-matches primitive trees against derived operator patterns.
 

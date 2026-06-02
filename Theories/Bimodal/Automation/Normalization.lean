@@ -245,4 +245,393 @@ example (p q : Atom) : (atom p).or (atom q) =
 
 end UnfoldTests
 
+/-!
+## Phase 2: EnrichedFormula ADT and Fold Algorithm
+
+The `EnrichedFormula` type mirrors `Formula` but adds constructors for all 15
+derived operators. The `foldFormula` function performs bottom-up greedy pattern
+matching to reconstitute derived operators from their primitive expansions.
+
+### Ambiguity Analysis
+
+| Pattern | Matches | Resolution |
+|---------|---------|------------|
+| `imp φ bot` | `neg φ` | Unambiguous: always fold to `neg` |
+| `imp bot bot` | `top` (also `neg bot`) | Unambiguous: fold to `top` (special case of `neg`) |
+| `imp (imp φ bot) ψ` | `or φ ψ` OR `imp (neg φ) ψ` | AMBIGUOUS: fold to `or_` when ψ is not `bot` |
+| `imp (imp φ (imp ψ bot)) bot` | `and φ ψ` | Unambiguous after `neg` recognition |
+| `imp (box (imp φ bot)) bot` | `diamond φ` | Unambiguous after `neg` recognition |
+| `untl φ (imp bot bot)` | `some_future φ` | Unambiguous: guard is `top` |
+| `snce φ (imp bot bot)` | `some_past φ` | Unambiguous: guard is `top` |
+| `untl φ bot` | `next φ` | Unambiguous: guard is `bot` |
+| `snce φ bot` | `prev φ` | Unambiguous: guard is `bot` |
+
+Higher-level operators are recognized compositionally after folding subformulas.
+-/
+
+/--
+Enriched formula type with constructors for all derived operators.
+
+Has 21 constructors: 6 primitive (matching `Formula`) plus 15 enriched
+(one for each derived operator).
+-/
+inductive EnrichedFormula : Type where
+  /-- Propositional atom -/
+  | atom : Atom → EnrichedFormula
+  /-- Bottom (falsum) -/
+  | bot : EnrichedFormula
+  /-- Implication -/
+  | imp : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Modal necessity (box) -/
+  | box : EnrichedFormula → EnrichedFormula
+  /-- Until (temporal) -/
+  | untl : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Since (temporal) -/
+  | snce : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Negation (derived: φ → ⊥) -/
+  | neg : EnrichedFormula → EnrichedFormula
+  /-- Top/verum (derived: ⊥ → ⊥) -/
+  | top : EnrichedFormula
+  /-- Conjunction (derived: ¬(φ → ¬ψ)) -/
+  | and_ : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Disjunction (derived: ¬φ → ψ) -/
+  | or_ : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Modal possibility/diamond (derived: ¬□¬φ) -/
+  | diamond : EnrichedFormula → EnrichedFormula
+  /-- Some future / F (derived: U(φ, ⊤)) -/
+  | some_future : EnrichedFormula → EnrichedFormula
+  /-- Some past / P (derived: S(φ, ⊤)) -/
+  | some_past : EnrichedFormula → EnrichedFormula
+  /-- All future / G (derived: ¬F(¬φ)) -/
+  | all_future : EnrichedFormula → EnrichedFormula
+  /-- All past / H (derived: ¬P(¬φ)) -/
+  | all_past : EnrichedFormula → EnrichedFormula
+  /-- Next / X (derived: U(φ, ⊥)) -/
+  | next : EnrichedFormula → EnrichedFormula
+  /-- Previous / Y (derived: S(φ, ⊥)) -/
+  | prev : EnrichedFormula → EnrichedFormula
+  /-- Weak future / G' (derived: φ ∧ Gφ) -/
+  | weak_future : EnrichedFormula → EnrichedFormula
+  /-- Weak past / H' (derived: φ ∧ Hφ) -/
+  | weak_past : EnrichedFormula → EnrichedFormula
+  /-- Always / △ (derived: Hφ ∧ (φ ∧ Gφ)) -/
+  | always : EnrichedFormula → EnrichedFormula
+  /-- Sometimes / ▽ (derived: ¬△(¬φ)) -/
+  | sometimes : EnrichedFormula → EnrichedFormula
+  deriving Repr, BEq, Inhabited
+
+namespace EnrichedFormula
+
+/--
+Convert an enriched formula back to a primitive `Formula` by expanding each
+enriched constructor to its definition.
+-/
+def toPrimitive : EnrichedFormula → Formula
+  | .atom a       => Formula.atom a
+  | .bot          => Formula.bot
+  | .imp φ ψ      => Formula.imp φ.toPrimitive ψ.toPrimitive
+  | .box φ        => Formula.box φ.toPrimitive
+  | .untl φ ψ     => Formula.untl φ.toPrimitive ψ.toPrimitive
+  | .snce φ ψ     => Formula.snce φ.toPrimitive ψ.toPrimitive
+  | .neg φ        => Formula.neg φ.toPrimitive
+  | .top          => Formula.top
+  | .and_ φ ψ     => Formula.and φ.toPrimitive ψ.toPrimitive
+  | .or_ φ ψ      => Formula.or φ.toPrimitive ψ.toPrimitive
+  | .diamond φ    => Formula.diamond φ.toPrimitive
+  | .some_future φ => Formula.some_future φ.toPrimitive
+  | .some_past φ  => Formula.some_past φ.toPrimitive
+  | .all_future φ => Formula.all_future φ.toPrimitive
+  | .all_past φ   => Formula.all_past φ.toPrimitive
+  | .next φ       => Formula.next φ.toPrimitive
+  | .prev φ       => Formula.prev φ.toPrimitive
+  | .weak_future φ => Formula.weak_future φ.toPrimitive
+  | .weak_past φ  => Formula.weak_past φ.toPrimitive
+  | .always φ     => Formula.always φ.toPrimitive
+  | .sometimes φ  => Formula.sometimes φ.toPrimitive
+
+end EnrichedFormula
+
+/--
+Greedy bottom-up fold: convert a primitive `Formula` into an `EnrichedFormula`
+by pattern-matching against derived operator definitions.
+
+The algorithm:
+1. Recursively fold all subformulas first (bottom-up)
+2. At each node, attempt to match the primitive pattern against derived operators
+3. Try higher-level operators first (so compositions are recognized)
+4. For ambiguous patterns, use conservative resolution
+
+### Pattern matching order at `imp` nodes:
+- `imp bot bot` → `top`
+- `imp (imp φ (imp ψ bot)) bot` → check if it's `and_` (via neg recognition)
+- `imp (box (neg φ)) bot` → `diamond φ`
+- `imp (neg (neg φ).some_future) bot` → check for `all_future`
+- `imp (neg (neg φ).some_past) bot` → check for `all_past`
+- `imp φ bot` → `neg φ`
+- `imp (neg φ) ψ` → `or_ φ ψ` (when not further matchable)
+
+### Pattern matching order at `untl` nodes:
+- `untl φ top` → `some_future φ`
+- `untl φ bot` → `next φ`
+
+### Pattern matching order at `snce` nodes:
+- `snce φ top` → `some_past φ`
+- `snce φ bot` → `prev φ`
+-/
+def Formula.foldFormula : Formula → EnrichedFormula
+  | Formula.atom a => .atom a
+  | Formula.bot => .bot
+  | Formula.box φ => .box φ.foldFormula
+  | Formula.untl φ ψ =>
+    let φ' := φ.foldFormula
+    let ψ' := ψ.foldFormula
+    match ψ' with
+    | .top => .some_future φ'
+    | .bot => .next φ'
+    | _ => .untl φ' ψ'
+  | Formula.snce φ ψ =>
+    let φ' := φ.foldFormula
+    let ψ' := ψ.foldFormula
+    match ψ' with
+    | .top => .some_past φ'
+    | .bot => .prev φ'
+    | _ => .snce φ' ψ'
+  | Formula.imp φ ψ =>
+    let φ' := φ.foldFormula
+    let ψ' := ψ.foldFormula
+    -- Try to recognize derived operators from the folded subformulas
+    foldImp φ' ψ'
+where
+  /-- Helper: recognize derived operators at imp nodes after subformulas are folded.
+      This function examines already-folded enriched subformulas to recognize
+      higher-level derived operator patterns. -/
+  foldImp (left right : EnrichedFormula) : EnrichedFormula :=
+    match left, right with
+    -- imp bot bot → top
+    | .bot, .bot => .top
+    -- imp (box (neg φ)) bot → diamond φ
+    | .box (.neg φ), .bot => .diamond φ
+    -- imp (imp φ (neg ψ)) bot → could be and_ φ ψ
+    -- After folding, this appears as: imp (imp φ' (neg ψ')) bot
+    -- which is neg (imp φ' (neg ψ')) = and_ φ' ψ'
+    -- But we need to be careful: the inner `neg` was already folded.
+    -- Pattern: neg (imp φ (neg ψ)) = and φ ψ
+    --
+    -- imp(some_future(neg φ)) bot → all_future φ
+    | .some_future (.neg φ), .bot => .all_future φ
+    -- imp(some_past(neg φ)) bot → all_past φ
+    | .some_past (.neg φ), .bot => .all_past φ
+    -- imp (and_ (all_past φ) (and_ ψ (all_future χ))) bot where φ = neg α, ψ = neg α, χ = neg α
+    -- This is neg(always(neg α)) = sometimes α
+    -- After folding always: neg(always(neg α))
+    -- But always is recognized later, so we check for sometimes pattern:
+    -- neg (and_ (all_past φ) (and_ ψ (all_future χ))) where φ, ψ, χ are all neg of the same formula
+    -- However, this would require always to be recognized first. We handle this differently below.
+    --
+    -- General neg: imp φ bot → neg φ
+    -- After neg, check if the result forms a higher-level operator
+    | left', .bot =>
+      let negResult := EnrichedFormula.neg left'
+      -- Check for and_: neg (imp φ (neg ψ)) = and φ ψ
+      match left' with
+      | .imp φ (.neg ψ) => .and_ φ ψ
+      -- Check for weak_future: neg (imp φ (neg (all_future φ')))
+      -- where φ = φ'. This is and_ φ (all_future φ) = weak_future φ
+      | .imp φ (.neg (.all_future φ')) =>
+        if φ == φ' then .weak_future φ else .and_ φ (.all_future φ')
+      -- Check for weak_past: neg (imp φ (neg (all_past φ')))
+      | .imp φ (.neg (.all_past φ')) =>
+        if φ == φ' then .weak_past φ else .and_ φ (.all_past φ')
+      | _ => negResult
+    -- imp (neg φ) ψ → or_ φ ψ (the ambiguous case)
+    -- Conservative: always fold to or_ since this is the standard derived operator reading
+    | .neg φ, right' => .or_ φ right'
+    -- Default: keep as imp
+    | left', right' => .imp left' right'
+
+/-- Post-process fold to recognize composite operators (always, sometimes).
+    This is applied after the initial fold to catch patterns that span
+    multiple levels of the operator hierarchy. -/
+def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
+  -- and_ (all_past φ) (and_ ψ (all_future χ)) where φ = ψ = χ → always φ
+  | .and_ (.all_past φ) (.and_ ψ (.all_future χ)) =>
+    if φ == ψ && ψ == χ then .always φ
+    else .and_ (EnrichedFormula.all_past φ) (.and_ ψ (.all_future χ))
+  -- and_ (all_past φ) (weak_future ψ) where φ = ψ → always φ
+  | .and_ (.all_past φ) (.weak_future ψ) =>
+    if φ == ψ then .always φ
+    else .and_ (EnrichedFormula.all_past φ) (.weak_future ψ)
+  -- neg (always (neg φ)) → sometimes φ
+  | .neg (.always (.neg φ)) => .sometimes φ
+  -- Recurse into subformulas
+  | .imp φ ψ => .imp φ.recognizeComposites ψ.recognizeComposites
+  | .box φ => .box φ.recognizeComposites
+  | .untl φ ψ => .untl φ.recognizeComposites ψ.recognizeComposites
+  | .snce φ ψ => .snce φ.recognizeComposites ψ.recognizeComposites
+  | .neg φ => .neg φ.recognizeComposites
+  | .and_ φ ψ => .and_ φ.recognizeComposites ψ.recognizeComposites
+  | .or_ φ ψ => .or_ φ.recognizeComposites ψ.recognizeComposites
+  | .diamond φ => .diamond φ.recognizeComposites
+  | .some_future φ => .some_future φ.recognizeComposites
+  | .some_past φ => .some_past φ.recognizeComposites
+  | .all_future φ => .all_future φ.recognizeComposites
+  | .all_past φ => .all_past φ.recognizeComposites
+  | .next φ => .next φ.recognizeComposites
+  | .prev φ => .prev φ.recognizeComposites
+  | .weak_future φ => .weak_future φ.recognizeComposites
+  | .weak_past φ => .weak_past φ.recognizeComposites
+  | .always φ => .always φ.recognizeComposites
+  | .sometimes φ => .sometimes φ.recognizeComposites
+  | other => other  -- atom, bot, top
+
+/-- Full fold: fold primitives then recognize composite operators. -/
+def Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
+  f.foldFormula.recognizeComposites
+
+/-!
+## Phase 2: Fold Tests
+-/
+
+section FoldTests
+
+-- Helper: create test atoms
+private def p_atom : Atom := Atom.mk_base "p"
+private def q_atom : Atom := Atom.mk_base "q"
+
+-- Test: foldFormula on neg
+/-- `imp (atom p) bot` folds to `neg (atom p)` -/
+#eval do
+  let f := Formula.imp (Formula.atom p_atom) Formula.bot
+  let r := f.foldFormula
+  return repr r  -- should show neg (atom ...)
+
+-- Test: foldFormula on top
+/-- `imp bot bot` folds to `top` -/
+#eval do
+  let f := Formula.imp Formula.bot Formula.bot
+  let r := f.foldFormula
+  return repr r  -- should show top
+
+-- Test: foldFormula on diamond
+/-- `imp (box (imp (atom p) bot)) bot` folds to `diamond (atom p)` -/
+#eval do
+  let f := Formula.diamond (Formula.atom p_atom)  -- unfolds to the primitive
+  let r := f.foldFormula
+  return repr r  -- should show diamond (atom ...)
+
+-- Test: foldFormula on and
+/-- `imp (imp (atom p) (imp (atom q) bot)) bot` folds to `and_ (atom p) (atom q)` -/
+#eval do
+  let f := Formula.and (Formula.atom p_atom) (Formula.atom q_atom)
+  let r := f.foldFormula
+  return repr r  -- should show and_ (atom ...) (atom ...)
+
+-- Test: foldFormula on or
+/-- `imp (imp (atom p) bot) (atom q)` folds to `or_ (atom p) (atom q)` -/
+#eval do
+  let f := Formula.or (Formula.atom p_atom) (Formula.atom q_atom)
+  let r := f.foldFormula
+  return repr r  -- should show or_ (atom ...) (atom ...)
+
+-- Test: foldFormula on some_future
+/-- `untl (atom p) (imp bot bot)` folds to `some_future (atom p)` -/
+#eval do
+  let f := Formula.some_future (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show some_future (atom ...)
+
+-- Test: foldFormula on some_past
+/-- `snce (atom p) (imp bot bot)` folds to `some_past (atom p)` -/
+#eval do
+  let f := Formula.some_past (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show some_past (atom ...)
+
+-- Test: foldFormula on all_future
+/-- Tests that all_future folds correctly -/
+#eval do
+  let f := Formula.all_future (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show all_future (atom ...)
+
+-- Test: foldFormula on all_past
+#eval do
+  let f := Formula.all_past (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show all_past (atom ...)
+
+-- Test: foldFormula on next
+#eval do
+  let f := Formula.next (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show next (atom ...)
+
+-- Test: foldFormula on prev
+#eval do
+  let f := Formula.prev (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show prev (atom ...)
+
+-- Test: round-trip property: toPrimitive(foldFormula(f)) = f
+-- for formulas built with derived operators
+#eval do
+  let formulas : List Formula := [
+    Formula.neg (Formula.atom p_atom),
+    Formula.top,
+    Formula.and (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.or (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.diamond (Formula.atom p_atom),
+    Formula.some_future (Formula.atom p_atom),
+    Formula.some_past (Formula.atom p_atom),
+    Formula.all_future (Formula.atom p_atom),
+    Formula.all_past (Formula.atom p_atom),
+    Formula.next (Formula.atom p_atom),
+    Formula.prev (Formula.atom p_atom)
+  ]
+  let results := formulas.map fun f =>
+    let folded := f.foldFormula
+    let roundTrip := folded.toPrimitive
+    (f == roundTrip, repr f, repr folded)
+  return results
+
+-- Test: weak_future fold
+#eval do
+  let f := Formula.weak_future (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show weak_future (atom ...)
+
+-- Test: weak_past fold
+#eval do
+  let f := Formula.weak_past (Formula.atom p_atom)
+  let r := f.foldFormula
+  return repr r  -- should show weak_past (atom ...)
+
+-- Test: always fold (requires recognizeComposites)
+#eval do
+  let f := Formula.always (Formula.atom p_atom)
+  let r := f.foldFormulaFull
+  return repr r  -- should show always (atom ...)
+
+-- Test: sometimes fold (requires recognizeComposites)
+#eval do
+  let f := Formula.sometimes (Formula.atom p_atom)
+  let r := f.foldFormulaFull
+  return repr r  -- should show sometimes (atom ...)
+
+-- Test: full round-trip with composites
+#eval do
+  let formulas : List Formula := [
+    Formula.always (Formula.atom p_atom),
+    Formula.sometimes (Formula.atom p_atom),
+    Formula.weak_future (Formula.atom p_atom),
+    Formula.weak_past (Formula.atom p_atom)
+  ]
+  let results := formulas.map fun f =>
+    let folded := f.foldFormulaFull
+    let roundTrip := folded.toPrimitive
+    (f == roundTrip, repr folded)
+  return results
+
+end FoldTests
+
 end Bimodal.Syntax

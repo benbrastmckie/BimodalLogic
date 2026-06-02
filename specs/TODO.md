@@ -432,11 +432,12 @@ technical_debt:
 
 ### 190. Derived operator normalization tactic (modal_norm)
 - **Effort**: medium (10-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**:
   - [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
   - [specs/190_derived_operator_normalization/reports/02_modal-norm-research.md]
+- **Plan**: [specs/190_derived_operator_normalization/plans/03_implementation-plan.md]
 
 **Description**: Create a `modal_norm` tactic that unfolds all derived operators to primitive form before proof search. The Formula type has 15+ derived operators (diamond, always, sometimes, some_past, some_future, neg, and, or, iff, top, etc.) that expand to combinations of 6 primitives (bot, imp, box, all_future, all_past, untl/snce, atom). AesopRules.lean already defines `@[aesop norm unfold]` for some operators. The tactic should: (1) unfold all derived operators to primitive form, (2) optionally canonicalize negation to `imp ... bot`, (3) support selective normalization (e.g., only unfold modal operators). This significantly reduces the branching factor for proof search since search only needs to handle primitive connectives.
 
@@ -483,11 +484,12 @@ technical_debt:
 
 ### 185. Complete axiom & derived theorem coverage in modal_search
 - **Effort**: small (6-8 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**:
   - [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]
   - [specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md]
+- **Plan**: [specs/185_complete_axiom_derived_coverage/plans/03_implementation-plan.md]
 
 **Description**: Extend `tryAxiomMatch` in Tactics.lean to cover all axiom schemata (currently 12 of ~16: missing prior_UZ, prior_SZ, serial_future, serial_past, and incomplete connect_future coverage). Add a `tryDerivedMatch` function that registers derived theorems from Combinators.lean (imp_trans, identity, b_combinator, theorem_flip, dni, double_negation) and Propositional.lean (ecq, raa, efq, lce, rce, ldi, rdi, rcp) as additional apply targets in `modal_search`. Add tests for each new pattern. This is the foundational step that all subsequent tactics tasks build upon.
 

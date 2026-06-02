@@ -93,7 +93,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add tryDerivedMatch function [NOT STARTED]
+### Phase 2: Add tryDerivedMatch function [IN PROGRESS]
 
 **Goal**: Create `tryDerivedMatch` function registering ~25 empty-context derived theorems and integrate into `searchProof`.
 

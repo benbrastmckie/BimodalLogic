@@ -1,6 +1,10 @@
 import Bimodal.ProofSystem
 import Bimodal.Automation.AesopRules
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Propositional.Reasoning
+import Bimodal.Theorems.TemporalDerived
+import Bimodal.Theorems.ModalS5
+import Bimodal.Theorems.Perpetuity
 import Lean
 
 /-!
@@ -509,25 +513,6 @@ which handles the Prop vs Type issue by working with expressions directly.
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
 def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
-  -- First try derived theorems (e.g., temp_future_derived: □φ → G□φ)
-  let derivedResult ← observing? do
-    setGoals [goal]
-    let derivedExprs : List Name := [
-      ``Bimodal.Theorems.Combinators.temp_future_derived  -- □φ → G□φ (derived from MF + T + Modal 4)
-    ]
-    for derivedName in derivedExprs do
-      try
-        let derivedExpr := mkConst derivedName
-        let remainingGoals ← goal.apply derivedExpr
-        if remainingGoals.isEmpty then
-          setGoals []
-          return ()
-      catch _ =>
-        continue
-    throwError "no derived theorem matched"
-  if derivedResult.isSome then
-    return true
-
   -- Use observing? to try application without corrupting mvar state on failure
   let result ← observing? do
     setGoals [goal]
@@ -629,6 +614,66 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
 
     throwError "no axiom matched"
 
+  return result.isSome
+
+/--
+Try to prove the goal by matching against derived theorems (empty-context).
+
+Derived theorems are proven results of the form `⊢ φ` or `⊢[fc] φ` that are
+not axiom constructors but follow from the axiom system. These include
+propositional combinators, modal S5 consequences, and temporal derived rules.
+
+Unlike `tryAxiomMatch` which applies axiom constructors via `DerivationTree.axiom`,
+this function applies derived theorem constants directly via `apply`.
+
+**Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+Only empty-context theorems are registered here (no context-dependent theorems
+like `ecq : [A, ¬A] ⊢ B` which would require weakening infrastructure).
+-/
+def tryDerivedMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
+  let result ← observing? do
+    setGoals [goal]
+    let derivedExprs : List Name := [
+      -- Tier 1: Propositional combinators (12)
+      ``Bimodal.Theorems.Combinators.identity,        -- A → A
+      ``Bimodal.Theorems.Propositional.double_negation, -- ¬¬φ → φ
+      ``Bimodal.Theorems.Propositional.raa,            -- A → (¬A → B)
+      ``Bimodal.Theorems.Propositional.efq,            -- ¬A → (A → B)
+      ``Bimodal.Theorems.Propositional.lce_imp,        -- (A ∧ B) → A
+      ``Bimodal.Theorems.Propositional.rce_imp,        -- (A ∧ B) → B
+      ``Bimodal.Theorems.Propositional.contrapose_imp, -- (A → B) → (¬B → ¬A)
+      ``Bimodal.Theorems.Combinators.pairing,          -- A → (B → (A ∧ B))
+      ``Bimodal.Theorems.Combinators.dni,              -- A → ¬¬A
+      ``Bimodal.Theorems.Combinators.b_combinator,     -- (B→C) → ((A→B) → (A→C))
+      ``Bimodal.Theorems.Combinators.theorem_flip,     -- (A→(B→C)) → (B→(A→C))
+      ``Bimodal.Theorems.Combinators.theorem_app1,     -- A → ((A→B) → B)
+      -- Tier 2: Modal and temporal derived theorems (13)
+      ``Bimodal.Theorems.TemporalDerived.temp_k_dist_derived, -- G(φ→ψ) → (Gφ→Gψ)
+      ``Bimodal.Theorems.TemporalDerived.temp_4_derived,      -- Gφ → GGφ
+      ``Bimodal.Theorems.TemporalDerived.H_distribution,      -- H(φ→ψ) → (Hφ→Hψ)
+      ``Bimodal.Theorems.TemporalDerived.H_transitivity,      -- Hφ → HHφ
+      ``Bimodal.Theorems.ModalS5.t_box_to_diamond,            -- □A → ◇A
+      ``Bimodal.Theorems.ModalS5.k_dist_diamond,              -- □(A→B) → (◇A → ◇B)
+      ``Bimodal.Theorems.Perpetuity.diamond_4,                 -- ◇◇φ → ◇φ
+      ``Bimodal.Theorems.Perpetuity.modal_5,                   -- ◇φ → □◇φ
+      ``Bimodal.Theorems.Perpetuity.box_to_future,             -- □φ → Gφ
+      ``Bimodal.Theorems.Perpetuity.box_to_past,               -- □φ → Hφ
+      ``Bimodal.Theorems.TemporalDerived.formula_or_comm,      -- (A ∨ B) → (B ∨ A)
+      ``Bimodal.Theorems.Propositional.bi_imp,                 -- (A→B) → ((B→A) → (A↔B))
+      ``Bimodal.Theorems.Propositional.classical_merge,        -- (P→Q) → ((¬P→Q) → Q)
+      -- Tier 1 extra: temp_future_derived (moved from tryAxiomMatch)
+      ``Bimodal.Theorems.Combinators.temp_future_derived       -- □φ → G□φ
+    ]
+    for derivedName in derivedExprs do
+      try
+        let derivedExpr := mkConst derivedName
+        let remainingGoals ← goal.apply derivedExpr
+        if remainingGoals.isEmpty then
+          setGoals []
+          return ()
+      catch _ =>
+        continue
+    throwError "no derived theorem matched"
   return result.isSome
 
 /--
@@ -915,7 +960,8 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 Recursive proof search implementation.
 
 **Algorithm**:
-1. Check if goal matches any axiom schema
+1. Check if goal matches any axiom schema (42 constructors)
+1b. Check if goal matches any derived theorem (~25 empty-context theorems)
 2. Check if goal is in assumptions
 3. Try modus ponens decomposition (backward chaining)
 4. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
@@ -938,6 +984,10 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
 
   -- Strategy 1: Try axiom matching (cheapest)
   if ← tryAxiomMatch goal ctx formula then
+    return true
+
+  -- Strategy 1b: Try derived theorem matching
+  if ← tryDerivedMatch goal ctx formula then
     return true
 
   -- Strategy 2: Try assumption matching

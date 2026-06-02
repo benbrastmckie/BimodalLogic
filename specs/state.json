@@ -331,8 +331,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-01T23:50:00Z",
-      "next_artifact_number": 53,
+      "last_updated": "2026-06-01T23:30:00Z",
+      "next_artifact_number": 54,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -633,6 +633,11 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/52_implementation-plan.md",
           "type": "plan",
           "summary": "Plan v52: close Transfer.lean:1289 sorry (Z-interval-to-TaskFrame packaging) + rewire completeness_discrete to Reynolds pipeline"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/53_implementation-plan.md",
+          "type": "plan",
+          "summary": "Plan v53: Henkin BFMCS approach -- prove restricted coherence for henkin_bfmcs, rewire completeness_discrete, bypass succ_embed entirely"
         }
       ],
       "session_id": "sess_1748820600_orch155",
@@ -641,11 +646,11 @@
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 6,
+        "phases": 3,
+        "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 52,
+        "plan_version": 53,
         "dependency_waves": [
           [
             1
@@ -655,9 +660,6 @@
           ],
           [
             3
-          ],
-          [
-            4
           ]
         ],
         "reports_integrated": [
@@ -748,10 +750,10 @@
     {
       "project_number": 185,
       "project_name": "complete_axiom_derived_coverage",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-26T18:00:00Z",
+      "last_updated": "2026-06-01T12:00:00Z",
       "session_id": "sess_1779809662_d9784a",
       "artifacts": [
         {
@@ -763,10 +765,16 @@
           "path": "specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md",
           "type": "research",
           "summary": "Complete axiom coverage matrix (41 constructors), tryAxiomMatch gap analysis, derived theorem inventory, modal_search architecture, implementation plan"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/plans/03_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: extend tryAxiomMatch to 42 axioms, add tryDerivedMatch with 25 derived theorems, integration tests"
         }
       ],
       "researched": "2026-05-26T20:00:00Z",
-      "next_artifact_number": 3
+      "next_artifact_number": 4,
+      "planned": "2026-06-01T12:00:00Z"
     },
     {
       "project_number": 186,
@@ -835,10 +843,10 @@
     {
       "project_number": 190,
       "project_name": "derived_operator_normalization",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-26T15:38:45Z",
+      "last_updated": "2026-06-01T12:00:00Z",
       "artifacts": [
         {
           "path": "specs/190_derived_operator_normalization/reports/01_normalization-seed.md",
@@ -849,11 +857,17 @@
           "path": "specs/190_derived_operator_normalization/reports/02_modal-norm-research.md",
           "type": "research",
           "summary": "Formula type inventory, derived-to-primitive expansion table, modal_norm tactic design with code sketches, integration recommendations"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/plans/03_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: unfold lemmas, EnrichedFormula ADT + fold algorithm, simp lemmas, JSON serialization, build integration"
         }
       ],
       "session_id": "sess_1779809662_d9784a",
       "researched": "2026-05-26T20:00:00Z",
-      "next_artifact_number": 3
+      "next_artifact_number": 4,
+      "planned": "2026-06-01T12:00:00Z"
     },
     {
       "project_number": 191,
