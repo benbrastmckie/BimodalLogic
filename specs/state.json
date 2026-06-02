@@ -1015,7 +1015,7 @@
     {
       "project_number": 244,
       "project_name": "context_proof_steps",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Create library of theorems with non-empty contexts to exercise assumption and weakening rules in proof step dataset. All 310 current theorems use empty context so these rules never appear. Create conditional derivations, modus ponens in context, modal/temporal reasoning in context. Register 50+ contextual theorems with G/H wrapping variants. Target: assumption >= 5% of steps, weakening >= 3%.",
       "priority": "medium",
@@ -1024,12 +1024,20 @@
         242
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-02T18:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/244_context_proof_steps/reports/01_context-proof-steps.md",
+          "type": "research",
+          "summary": "Analysis of empty-context pattern, computability barrier, infrastructure gaps, and approach for 50+ contextual theorems"
+        }
+      ]
     },
     {
       "project_number": 247,
       "project_name": "training_loop_validation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "Validate complete pipeline: Lean tableau -> data export -> BimodalHarness ingestion -> training -> evaluation. Generate small dataset (1000 labeled formulas, 5000 proof steps), sync to BimodalHarness, run supervised training on proof steps, run single epoch of expert iteration, evaluate on benchmark, verify action predictions align with Lean action space. Document schema mismatches and training failures. Create smoke-test-training.sh.",
       "priority": "medium",
@@ -1040,7 +1048,17 @@
         246
       ],
       "created": "2026-06-01T22:00:00Z",
-      "last_updated": "2026-06-01T22:00:00Z"
+      "last_updated": "2026-06-02T14:35:52Z",
+      "session_id": "sess_1780410784_3239e2",
+      "researched": "2026-06-02T14:35:52Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "sess_1780410784_3239e2",
+          "type": "research",
+          "summary": "Research report"
+        }
+      ]
     },
     {
       "project_number": 254,

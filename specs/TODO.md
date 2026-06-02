@@ -66,8 +66,8 @@ technical_debt:
 ### Tableau Training
 
 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+244 [RESEARCHED] — Create library of theorems with non-empty contexts to exercise as
+247 [RESEARCHED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
 
 ### Automation
 
@@ -191,11 +191,12 @@ technical_debt:
 
 ### 247. End-to-end training loop validation
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Priority**: medium
 - **Topic**: tableau-training
 - **Dependencies**: 242, 245, 246
+- **Research**: [specs/247_training_loop_validation/reports/01_training-loop-validation.md]
 
 **Description**: Validate the complete pipeline: Lean tableau → data export → BimodalHarness ingestion → training → evaluation. Generate a small dataset (1000 labeled formulas, 5000 proof steps) using the corrected tableau, sync to BimodalHarness, run supervised training on proof steps, run a single epoch of expert iteration, evaluate on benchmark, verify action predictions align with the 49-action space. Document schema mismatches and training failures. Create `scripts/smoke-test-training.sh` in BimodalHarness.
 
