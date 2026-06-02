@@ -93,28 +93,28 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Structural Pre-Filter to DatasetGenerator.lean [NOT STARTED]
+### Phase 2: Add Structural Pre-Filter to DatasetGenerator.lean [COMPLETED]
 
 **Goal**: Implement `isUnsatBotTemporal` and `structuralPrefilter` functions, then integrate into `labelFormula` as a pre-filter check before `decideAutoAdaptive`.
 
 **Tasks**:
-- [ ] Add `isUnsatBotTemporal : Formula -> Bool` function before `labelFormula`:
+- [x] Add `isUnsatBotTemporal : Formula -> Bool` function before `labelFormula`:
   - `.untl .bot _` => true (U(bot,X) always false)
   - `.snce .bot _` => true (S(bot,X) always false)
   - `.box a` => recurse (box(false) = false)
   - All else => false
-- [ ] Add `structuralPrefilter : Formula -> Option Bool` function:
+- [x] Add `structuralPrefilter : Formula -> Option Bool` function:
   - `.imp antecedent _` => if `isUnsatBotTemporal antecedent` then `some true` (vacuous implication)
   - `.imp (.box (.box .bot)) _` => `some true` (unsatisfiable antecedent)
   - `.imp (.box (.box inner)) consequent` => if `inner == consequent` then `some true` (double-T)
   - `.imp (.box inner) (.imp _ rhs)` => if `inner == rhs` then `some true` (T + prop_s)
   - `.box inner` => recurse into `structuralPrefilter inner` (necessitation of valid = valid)
   - All else => `none`
-- [ ] Modify `labelFormula` (line 399) to check `structuralPrefilter phi` before calling `decideAutoAdaptive`:
+- [x] Modify `labelFormula` (line 399) to check `structuralPrefilter phi` before calling `decideAutoAdaptive`:
   - On `some true`: construct `LabeledFormula` with `label := .valid`, `proofTrace := none`, `countermodel := none`, `decisionMethod := "structural_prefilter"`, `proofReconstructionMethod := some "structural_prefilter"`, `ruleProfile := none`, and compute `metrics` with 0ms elapsed and `interestingness` with no proof data
   - On `none`: fall through to existing `decideAutoAdaptive` path (unchanged)
-- [ ] Ensure the pre-filter LabeledFormula has all required fields matching the existing valid/invalid/timeout constructors
-- [ ] Run `lake build Bimodal.Automation.DatasetGenerator` to verify compilation
+- [x] Ensure the pre-filter LabeledFormula has all required fields matching the existing valid/invalid/timeout constructors
+- [x] Run `lake build Bimodal.Automation.DatasetGenerator` to verify compilation
 
 **Timing**: 1.5 hours
 

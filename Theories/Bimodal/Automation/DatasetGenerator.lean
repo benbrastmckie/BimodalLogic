@@ -380,15 +380,64 @@ private def mkInvalidLabel (φ : Formula) (cm : SimpleCountermodel)
     proofReconstructionMethod := none
   }
 
+/-!
+### Structural Pre-Filter
+
+Detects formulas that are structurally valid due to unsatisfiable antecedents
+or tautological implication patterns, bypassing the decision procedure entirely.
+Added in task 265 to eliminate ~151 of 247 c6 timeouts.
+-/
+
+/--
+Check if a formula is structurally unsatisfiable due to bot-temporal patterns.
+
+Returns `true` only when the formula itself evaluates to false at every world/time:
+- `U(⊥, X)` is always false: "X holds until ⊥ becomes true" — ⊥ never becomes true
+- `S(⊥, X)` is always false: "X held since ⊥ was true" — ⊥ was never true
+- `□(false)` is false: necessity of falsehood is false (in non-degenerate frames)
+
+This is NOT a general "contains bot" check. The formula must itself be unsatisfiable.
+-/
+def isUnsatBotTemporal : Formula → Bool
+  | .untl .bot _ => true
+  | .snce .bot _ => true
+  | .box a => isUnsatBotTemporal a
+  | _ => false
+
+/--
+Structural pre-filter for known-valid formula patterns. Returns `some true` if the
+formula is provably valid by structural inspection, `none` if undetermined.
+
+Recognized patterns:
+1. **Bot-temporal antecedent**: `φ → ψ` where `isUnsatBotTemporal φ` — vacuously valid
+2. **Double-box-bot**: `□□⊥ → ψ` — □⊥ is false, so □□⊥ is false, implication vacuously valid
+3. **Double-box-identity**: `□□φ → φ` — valid by T axiom (reflexivity) applied twice
+4. **Box-prop**: `□φ → (ψ → φ)` — valid by T axiom + weakening
+5. **Box descent**: `□φ` where `φ` is itself structurally valid — necessitation of valid = valid
+
+Never returns `some false` (would require soundness argument for invalidity).
+-/
+def structuralPrefilter : Formula → Option Bool
+  | .imp antecedent consequent =>
+    if isUnsatBotTemporal antecedent then some true
+    else match antecedent, consequent with
+    | .box (.box .bot), _ => some true
+    | .box (.box inner), consequent => if inner == consequent then some true else none
+    | .box inner, .imp _ rhs => if inner == rhs then some true else none
+    | _, _ => none
+  | .box inner => structuralPrefilter inner
+  | _ => none
+
 /--
 Label a single formula by running the decision procedure.
 
-1. Measures wall-clock time using `IO.monoMsNow`
-2. Calls `decideAuto` (automatic fuel based on formula complexity)
-3. Extracts proof trace (valid), countermodel (invalid), or records timeout
-4. Computes difficulty metrics and pattern key
-5. For valid formulas, infers proof reconstruction method from proof structure
-6. For invalid formulas, extracts enriched and semantic countermodel data
+1. Checks the structural pre-filter for known-valid patterns (task 265)
+2. Measures wall-clock time using `IO.monoMsNow`
+3. Calls `decideAutoAdaptive` (single-tier fuel=500)
+4. Extracts proof trace (valid), countermodel (invalid), or records timeout
+5. Computes difficulty metrics and pattern key
+6. For valid formulas, infers proof reconstruction method from proof structure
+7. For invalid formulas, extracts enriched and semantic countermodel data
 
 With task 239's 5-strategy proof extraction pipeline in place, `decideAuto`
 returns `.valid` for all closed tableaux where proof extraction succeeds.
@@ -397,6 +446,31 @@ construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormula (φ : Formula) (fc : FrameClass := .Base) : IO LabeledFormula := do
+  -- Phase 1: Structural pre-filter (task 265)
+  -- Check for known-valid patterns before invoking the decision procedure
+  match structuralPrefilter φ with
+  | some true =>
+    let metrics := computeMetrics φ 0
+    let patternKey := PatternKey.fromFormula φ
+    let intResult := computeInterestingness φ none none
+    return {
+      formula := φ
+      label := .valid
+      proofTrace := none
+      countermodel := none
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "structural_prefilter"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := some "structural_prefilter"
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
+  | _ =>
+  -- Phase 2: Decision procedure (existing path)
   let startTime ← IO.monoMsNow
   let (result, fuelTier) := decideAutoAdaptive φ fc
   let endTime ← IO.monoMsNow
