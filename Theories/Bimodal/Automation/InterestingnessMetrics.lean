@@ -1,6 +1,5 @@
 import Bimodal.Syntax
 import Bimodal.Automation.DataExport
-import Bimodal.Automation.DatasetGenerator
 
 /-!
 # Interestingness Metrics for Theorems and Derivations
@@ -10,7 +9,7 @@ derivations in bimodal logic TM, organized as a three-tier scoring architecture:
 
 - **Tier 1 (Syntactic)**: Fast formula-level metrics requiring no proof trace
   (SNT gate, Operator Diversity, Statement Simplicity, Modal-Temporal Interaction)
-- **Tier 2 (Proof-Structural)**: Metrics that operate on `ProofTrace` and `RuleProfile`
+- **Tier 2 (Proof-Structural)**: Metrics that operate on `ProofData` and `RuleProfile`
   (Proof Depth Ratio, Proof Rule Diversity, Axiom Layer Diversity, Proof Richness,
   Interaction Axiom Dependency)
 - **Tier 3 (Composite)**: Weighted combination with multiplicative SNT gate and
@@ -33,8 +32,23 @@ set_option autoImplicit false
 namespace Bimodal.Automation.InterestingnessMetrics
 
 open Bimodal.Syntax
-open Bimodal.Automation
 open Bimodal.Automation.DataExport
+
+/--
+Lightweight proof data for interestingness metrics.
+
+This mirrors the fields of `ProofData` (defined in DatasetGenerator.lean)
+without creating an import dependency. The `DatasetGenerator` module constructs
+`ProofData` from `ProofData` when computing interestingness scores.
+-/
+structure ProofData where
+  /-- Maximum depth of the proof tree. -/
+  height : Nat
+  /-- Names of axiom schemata used (e.g., "modal_t", "prop_k"). -/
+  axioms_used : List String
+  /-- Names of inference rules applied (e.g., "modus_ponens", "necessitation"). -/
+  rules_applied : List String
+  deriving Repr, Inhabited
 
 /-!
 ## Tier 1: Syntactic Metrics
@@ -262,7 +276,7 @@ def modalTemporalInteraction (φ : Formula) : Bool :=
 /-!
 ## Tier 2: Proof-Structural Metrics
 
-Metrics that operate on existing `ProofTrace` and `RuleProfile` structures.
+Metrics that operate on existing `ProofData` and `RuleProfile` structures.
 -/
 
 /--
@@ -272,7 +286,7 @@ A high ratio indicates the proof is deep relative to formula size,
 suggesting non-trivial reasoning. Returns height * 100 / complexity
 (scaled to avoid Float). Returns 0 if complexity is 0.
 -/
-def proofDepthRatio (pt : ProofTrace) (φ : Formula) : Nat :=
+def proofDepthRatio (pt : ProofData) (φ : Formula) : Nat :=
   let c := φ.complexity
   if c == 0 then 0
   else pt.height * 100 / c
@@ -280,7 +294,7 @@ def proofDepthRatio (pt : ProofTrace) (φ : Formula) : Nat :=
 /--
 Proof rule diversity: count of distinct inference rules applied.
 -/
-def proofRuleDiversity (pt : ProofTrace) : Nat :=
+def proofRuleDiversity (pt : ProofData) : Nat :=
   pt.rules_applied.eraseDups.length
 
 /--
@@ -311,7 +325,7 @@ Axiom layer diversity: count of distinct axiom layers used in a proof trace.
 
 Maximum possible value is 4 (propositional, modal, temporal, interaction).
 -/
-def axiomLayerDiversity (pt : ProofTrace) : Nat :=
+def axiomLayerDiversity (pt : ProofData) : Nat :=
   let layers := pt.axioms_used.map classifyAxiomLayer |>.eraseDups
   layers.length
 
@@ -339,7 +353,7 @@ the sole bridge principle connecting modal and temporal reasoning in TM.
 
 Proofs requiring this axiom exhibit genuine cross-modal interaction.
 -/
-def interactionAxiomDependency (pt : ProofTrace) : Bool :=
+def interactionAxiomDependency (pt : ProofData) : Bool :=
   pt.axioms_used.any (· == "modal_future")
 
 /-!
@@ -469,7 +483,7 @@ Each dimension is normalized to roughly 0-1000 scale before weighting:
 - PR: raw score * 10 (already scaled by 100, cap at 1000)
 -/
 def computeInterestingness (φ : Formula)
-    (pt : Option ProofTrace) (rp : Option RuleProfile)
+    (pt : Option ProofData) (rp : Option RuleProfile)
     (weights : InterestingnessWeights := InterestingnessWeights.default)
     : InterestingnessResult :=
   -- Tier 1: Syntactic metrics

@@ -3,6 +3,7 @@ import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.EnrichedCountermodel
+import Bimodal.Automation.InterestingnessMetrics
 
 /-!
 # Dataset Generator: Decider Integration and ProofTrace Extraction
@@ -46,6 +47,7 @@ open Bimodal.ProofSystem
 open Bimodal.Metalogic.Decidability
 open Bimodal.Automation.DataExport
 open Bimodal.Automation.Enriched
+open Bimodal.Automation.InterestingnessMetrics
 
 /--
 Simplified proof trace extracted from a DerivationTree.
@@ -62,6 +64,12 @@ structure ProofTrace where
   /-- Names of inference rules applied (e.g., "modus_ponens", "necessitation"). -/
   rules_applied : List String
   deriving Repr, Inhabited
+
+/-- Convert a ProofTrace to ProofData for interestingness metrics. -/
+def ProofTrace.toProofData (pt : ProofTrace) : ProofData :=
+  { height := pt.height
+  , axioms_used := pt.axioms_used
+  , rules_applied := pt.rules_applied }
 
 /--
 Difficulty metrics for a formula, combining structural and computational measures.
@@ -160,6 +168,10 @@ structure LabeledFormula where
       Values: "axiom_match", "derived_match", "compositional", "proof_search",
       "tableau_extraction". -/
   proofReconstructionMethod : Option String
+  /-- Interestingness composite score on 0-1000 scale (None if not computed). -/
+  interestingnessScore : Option Nat := none
+  /-- Interestingness tier classification (None if not computed). -/
+  interestingnessTier : Option String := none
   deriving Repr
 
 instance : Inhabited LabeledFormula :=
@@ -400,6 +412,8 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
                   then "fast_path_axiom"
                   else fuelTier
     let reconMethod := inferReconstructionMethod rp trace.height
+    -- Compute interestingness with full proof data
+    let intResult := computeInterestingness φ (some trace.toProofData) (some rp)
     return {
       formula := φ
       label := .valid
@@ -413,10 +427,20 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       enrichedCountermodel := none
       semanticCountermodelSummary := none
       proofReconstructionMethod := some reconMethod
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
     }
   | .invalid cm =>
-    return mkInvalidLabel φ cm metrics patternKey fuelTier
+    -- Compute interestingness without proof data (syntactic metrics only)
+    let intResult := computeInterestingness φ none none
+    let base := mkInvalidLabel φ cm metrics patternKey fuelTier
+    return { base with
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
   | .timeout =>
+    -- Compute interestingness without proof data (syntactic metrics only)
+    let intResult := computeInterestingness φ none none
     return {
       formula := φ
       label := .timeout
@@ -430,6 +454,8 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       enrichedCountermodel := none
       semanticCountermodelSummary := none
       proofReconstructionMethod := none
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
       }
 
 /--
@@ -606,6 +632,12 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   ++ ", \"enriched_countermodel\": " ++ ecmStr
   ++ ", \"semantic_countermodel\": " ++ scmStr
   ++ ", \"metrics\": " ++ lf.metrics.toJson
+  ++ ", \"interestingness_score\": " ++ (match lf.interestingnessScore with
+    | none => "null"
+    | some s => toString s)
+  ++ ", \"interestingness_tier\": " ++ (match lf.interestingnessTier with
+    | none => "null"
+    | some t => "\"" ++ escapeJsonString t ++ "\"")
   ++ "}"
 
 end Bimodal.Automation

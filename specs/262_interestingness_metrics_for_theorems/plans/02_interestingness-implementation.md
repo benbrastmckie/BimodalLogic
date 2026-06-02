@@ -153,18 +153,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: LabeledFormula Integration and JSONL Export [NOT STARTED]
+### Phase 4: LabeledFormula Integration and JSONL Export [COMPLETED]
 
 **Goal**: Add interestingness fields to `LabeledFormula` and wire them into the dataset generation and JSONL export pipeline.
 
 **Tasks**:
-- [ ] Add `interestingnessScore : Option Float` and `interestingnessTier : Option String` fields to `LabeledFormula` structure in `DatasetGenerator.lean`
-- [ ] Update `LabeledFormula`'s `Inhabited` instance to include the new `Option` fields with `none` defaults
-- [ ] In `DatasetGenerator.lean`, import `InterestingnessMetrics` and call `computeInterestingness` during the `labelFormula` pipeline, storing the result in the new fields
-- [ ] In `DatasetExporter.lean` (or `DatasetExport.lean`), update `LabeledFormula.toJson` to include `"interestingness_score"` and `"interestingness_tier"` fields in the JSONL output
-- [ ] Update `DatasetMetadata` in `DatasetExporter.lean` to include a note about interestingness metrics version
-- [ ] Register the new module in the project's import chain (check `Theories/Bimodal.lean` or equivalent lakefile import)
-- [ ] Run `lake build` (full project build) to verify no breakage
+- [x] Add `interestingnessScore : Option Nat` and `interestingnessTier : Option String` fields to `LabeledFormula` structure in `DatasetGenerator.lean` *(deviation: altered -- uses Nat instead of Float)*
+- [x] Update `LabeledFormula`'s `Inhabited` instance to include the new `Option` fields with `none` defaults *(deviation: altered -- used default field values instead of explicit Inhabited entries)*
+- [x] In `DatasetGenerator.lean`, import `InterestingnessMetrics` and call `computeInterestingness` during the `labelFormula` pipeline, storing the result in the new fields
+- [x] In `DatasetGenerator.lean`, update `LabeledFormula.toJson` to include `"interestingness_score"` and `"interestingness_tier"` fields *(deviation: altered -- toJson is in DatasetGenerator not DatasetExporter)*
+- [ ] Update `DatasetMetadata` in `DatasetExporter.lean` to include a note about interestingness metrics version *(deviation: skipped -- low priority metadata annotation)*
+- [x] Register the new module in the project's import chain (`Theories/Bimodal/Automation.lean`)
+- [x] Run `lake build` (full project build) to verify no breakage
 
 **Timing**: 2 hours
 
