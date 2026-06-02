@@ -202,6 +202,74 @@ def expandBranchesWithFuel (branches : List Branch) (fuel : Nat)
           | some _ => .pending (openBr :: rest)  -- Not yet saturated
 
 /-!
+## Post-Blocking Saturation
+
+When `expandBranchWithFuel` returns a blocked open branch, the branch
+may still contain unexpanded formulas (propositional, modal, or
+persistent temporal formulas that don't create new time points).
+
+`saturateBlocked` continues expansion on such branches, rejecting any
+expansion step that would introduce new time ordering constraints.
+This ensures the branch reaches full saturation or closure without
+generating new time points that would bypass blocking.
+-/
+
+/--
+Continue expanding a blocked branch until saturated or closed,
+rejecting any expansion step that introduces new time constraints.
+Uses fuel to ensure termination.
+
+Each step either:
+- Closes the branch (new formulas create a contradiction)
+- Applies a non-time-generating rule (propositional, modal, persistent with no new times)
+- Reaches saturation (no more applicable non-time-generating rules)
+
+Since no new time points are created, the expansion terminates
+when all propositional/modal formulas are processed.
+-/
+def saturateBlocked (b : Branch) (fuel : Nat)
+    (timeOrd : TimeOrdering) (fc : FrameClass := .Base)
+    : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
+  match fuel with
+  | 0 => some (.inr (b, timeOrd))  -- Return as-is if fuel exhausted (still blocked/open)
+  | fuel + 1 =>
+      -- Check if now closed (expanding propositional formulas may create contradictions)
+      match findClosure b fc with
+      | some reason => some (.inl ⟨b, reason⟩)
+      | none =>
+          -- Try to expand
+          match expandOnce b timeOrd fc with
+          | (.saturated, _) => some (.inr (b, timeOrd))  -- Fully saturated
+          | (.extended newBranch, newOrd) =>
+              -- Only accept if no new time constraints were introduced
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+                saturateBlocked newBranch fuel timeOrd fc
+          | (.split branches, newOrd) =>
+              -- Only accept if no new time constraints were introduced
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+              -- For splits, check if ALL sub-branches close or saturate
+              let tryBranch := fun acc newBranch =>
+                match acc with
+                | some (.inr openBr) => some (.inr openBr)  -- Already found open
+                | _ =>
+                    match saturateBlocked newBranch fuel timeOrd fc with
+                    | some (.inl _) => acc  -- Sub-branch closed, continue
+                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | none => none  -- Should not happen (saturateBlocked always returns some)
+              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
+termination_by fuel
+
+-- Note: `saturateBlocked` correctness theorems (isSome, soundness) are
+-- deferred. The function is used in `buildTableau` for practical improvement
+-- of blocked-branch handling. Formal verification requires:
+-- 1. `saturateBlocked_isSome`: always returns `some` (follows from fuel=0 base case)
+-- 2. `saturateBlocked_sound`: preserves `findClosure = none` (requires precondition from caller)
+
+/-!
 ## Main Expansion Function
 -/
 
@@ -214,6 +282,10 @@ Starts with F(φ) (asserting φ is false) and expands until:
 
 Uses fuel parameter for termination. The fuel should be set based on
 the formula's complexity.
+
+When `expandBranchWithFuel` returns a blocked open branch that is not
+yet saturated, `saturateBlocked` continues expansion of non-time-generating
+rules to reach full saturation.
 -/
 def buildTableau (φ : Formula) (fuel : Nat := 1000)
     (fc : FrameClass := .Base) : Option ExpandedTableau :=
@@ -224,7 +296,16 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   | some (.inr (openBr, ord)) =>
       match h : findUnexpanded openBr (timeOrd := ord) with
       | none => some (.hasOpen openBr ord h)
-      | some _ => none  -- Should be saturated but isn't
+      | some _ =>
+          -- Branch is blocked but not fully saturated.
+          -- Continue expanding non-time-generating rules.
+          match saturateBlocked openBr fuel ord fc with
+          | some (.inl closedBr) => some (.allClosed [closedBr])
+          | some (.inr (satBr, satOrd)) =>
+              match h2 : findUnexpanded satBr (timeOrd := satOrd) with
+              | none => some (.hasOpen satBr satOrd h2)
+              | some _ => none  -- Still not saturated after post-blocking pass
+          | none => none  -- Should not happen
 
 /--
 Recommended fuel based on formula complexity.
@@ -643,36 +724,46 @@ theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
   subst h_mem
   exact Formula.self_mem_subformulas φ
 
-/--
-**Blocking terminates**: For any formula `φ`, the tableau expansion
-starting from `[F(φ)]` terminates with `soundFuel φ` fuel.
+/-!
+### Blocking termination: known issues and status
 
-This follows from the pigeonhole principle: there are at most `2^(2n)`
-distinct time types where `n = |subformulaClosure(φ)|`, so after that
-many time points, some time must be subset-blocked by an ancestor.
+The original theorem `blocking_terminates : (buildTableau φ (soundFuel φ)).isSome`
+was found to be FALSE during implementation (task 164, round 5).
 
-The proof requires:
-1. A generalized subformula property showing all formulas in expanded
-   branches remain within the subformula closure of the initial formula
-   (requires case analysis over all ~25 tableau rules).
-2. A pigeonhole argument: with bounded time types, eventually two times
-   on the same path share a type, triggering subset blocking.
-3. A fuel bound derivation from the time type bound.
+**Two independent failure modes were identified:**
 
-The previous statement quantified over ALL branches, which was over-general
-(an arbitrary branch may contain formulas outside the subformula closure).
-This version is restricted to the initial branch `[F(φ)]`.
+1. **Blocked-but-not-saturated branches** (addressed): When `expandBranchWithFuel`
+   returns a blocked open branch, the branch may contain unexpanded propositional
+   or modal formulas. The original `buildTableau` rejected such branches. This was
+   fixed by adding `saturateBlocked` to continue non-time-generating expansion
+   after blocking fires.
+
+2. **Persistent rule loops** (architectural, unresolved): Persistent rules like
+   `boxPos` (`T(□ψ)` propagates `T(ψ)` to all worlds) interact badly with
+   consumable rules like `negPos` (`T(φ → ⊥)` → `F(φ)`). When `boxPos` adds
+   `T(ψ)` and `negPos` immediately consumes it, `boxPos` no longer sees `T(ψ)`
+   in the branch and re-adds it, creating an infinite loop that exhausts fuel.
+   Counterexample: `◇p` (i.e., `(□(p → ⊥)) → ⊥`) fails with `soundFuel = 160`.
+   This affects any invalid formula containing positive box (`T(□ψ)`) where `ψ`
+   is reducible by a consumable rule.
+
+**Prerequisite for a correct termination theorem:**
+The persistent rule loop (issue 2) must be resolved first. Standard fixes include:
+  (a) Track "already expanded" persistent-rule instances in a side set
+  (b) Change `boxPos` to check for expanded descendants, not just `T(ψ)` itself
+  (c) Make persistent rule outputs immune to consumable-rule removal
+
+Once the loop is fixed, the termination theorem would follow from:
+1. Generalized subformula property (case analysis over ~25 rules in `applyRule`)
+2. Pigeonhole argument: at most `2^(2n)` distinct time types → blocking fires
+3. Fuel bound derivation from the time-type bound (requires removing the `min`
+   cap in `soundFuel` or proving the cap is sufficient)
+
+**Correct properties that ARE proven:**
+- `expandBranchWithFuel_sound`: Open branches returned by expansion have no
+  closure reason (`findClosure = none`)
+- `subformula_property`: Initial branch formulas are subformulas of the input
 -/
-theorem blocking_terminates (φ : Formula) :
-    (buildTableau φ (soundFuel φ)).isSome := by
-  -- The tableau build either closes all branches (valid) or finds an open
-  -- saturated/blocked branch (invalid). In both cases, it returns some.
-  -- Proof requires the generalized subformula property and pigeonhole
-  -- argument to show expansion always terminates within soundFuel steps.
-  -- The subformula_property above only covers the initial branch;
-  -- a generalized version tracking formulas through all rule applications
-  -- is needed as a prerequisite.
-  sorry
 
 /--
 Helper: the tryBranch step function in expandBranchWithFuel preserves the
