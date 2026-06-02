@@ -86,7 +86,8 @@ technical_debt:
   - **Summary**: [specs/262_interestingness_metrics_for_theorems/summaries/02_interestingness-implementation-summary.md]
 261 [COMPLETED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
   - **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
-  - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
+  - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/03_dataset-quality-fix.md]
+  - **Summary**: [specs/261_dataset_quality_and_stall_diagnosis/summaries/03_dataset-quality-fix-summary.md]
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma

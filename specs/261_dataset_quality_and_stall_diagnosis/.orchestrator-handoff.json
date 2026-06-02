@@ -1,10 +1,16 @@
 {
   "status": "implemented",
-  "summary": "Fixed persistent rule loop in tableau, added adaptive fuel caps, and box-valid fast paths",
-  "artifacts": [{"path": "specs/261_dataset_quality_and_stall_diagnosis/summaries/01_dataset-quality-stall-summary.md", "type": "summary", "summary": "Implementation summary with all 4 phases completed"}],
+  "summary": "All 5 phases complete: global fuel counter, per-record flush, eventuality-aware blocking, frame class CLI, integration validation. Full lake build passes (1682 jobs, 0 errors).",
+  "phases_completed": 5,
+  "phases_total": 5,
   "blockers": [],
   "continuation_context": null,
-  "phases_completed": 4,
-  "phases_total": 4,
-  "next_action_hint": "complete"
+  "artifacts": [
+    {"path": "Theories/Bimodal/Metalogic/Decidability/Saturation.lean", "type": "code", "summary": "Global fuel counter and eventuality-aware blocking"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean", "type": "code", "summary": "Eventuality-aware blocking predicate"},
+    {"path": "Theories/Bimodal/Automation/DatasetExport.lean", "type": "code", "summary": "Per-record flush, slow-formula warning, --frame-class CLI flag"},
+    {"path": "Theories/Bimodal/Automation/DatasetGenerator.lean", "type": "code", "summary": "labelFormula frame class parameter"},
+    {"path": "specs/261_dataset_quality_and_stall_diagnosis/summaries/03_dataset-quality-fix-summary.md", "type": "summary", "summary": "Implementation summary"}
+  ],
+  "next_action_hint": "none"
 }
