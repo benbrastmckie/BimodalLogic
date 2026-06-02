@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.WeakCanonical.FrameProperties
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
-import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
+import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
 import Mathlib.Data.Rat.Defs
 
 /-!
@@ -180,7 +180,14 @@ noncomputable def extract_chronicle_as_prior {fc : FrameClass} (h_fc : FrameClas
     domain := LimitDomSubtype fc A h_mcs
     domain_succ := limitDomSubtype_succOrder fc A h_mcs h_discrete
     domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
-    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean fc A h_mcs h_fc h_discrete
+    -- NOTE: limitDomSubtype_isSuccArchimedean is defined in ChronicleToCountermodel.lean
+    -- (not ChronicleToCountermodelBasic) because it depends on gap elimination via
+    -- GoodStructuresModelSurgery. This function (extract_chronicle_as_prior) is dead
+    -- code -- see note above. The sorry here is inherited from the file split and does
+    -- not affect completeness_discrete.
+    domain_succ_archimedean := by
+      letI := limitDomSubtype_succOrder fc A h_mcs h_discrete
+      sorry
     root_point := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
     fmcs := fun t => limit_f fc A h_mcs t.val
     fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property

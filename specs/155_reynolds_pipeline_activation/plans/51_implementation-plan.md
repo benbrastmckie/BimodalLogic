@@ -63,7 +63,7 @@ Plan v50 was blocked at Phase 1 because step 1.8 ("from one_class, derive IsSucc
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rewrite chronicle_gap_contradiction [BLOCKED]
+### Phase 1: Rewrite chronicle_gap_contradiction [PARTIAL]
 
 **BLOCKER** (Phase 1):
 - **What failed**: Cannot import GoodStructuresModelSurgery.lean (or GoodStructures.lean) into ChronicleToCountermodel.lean due to an import cycle.
