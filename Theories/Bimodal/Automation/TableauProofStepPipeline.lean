@@ -280,7 +280,7 @@ Streams results to avoid memory pressure. Reports progress every 1000 formulas.
 Returns accumulated steps and distribution metrics.
 -/
 partial def runEnumerationPipeline (config : PipelineConfig)
-    : IO (Array ProofStep × StepDistribution) := do
+    : IO (Array ProofStep × StepDistribution × List Formula) := do
   let enumConfig : EnumConfig :=
     { maxModalDepth := config.maxModalDepth
     , maxTemporalDepth := config.maxTemporalDepth
@@ -295,6 +295,7 @@ partial def runEnumerationPipeline (config : PipelineConfig)
   let mut allSteps : Array ProofStep := #[]
   let mut dist := StepDistribution.empty
   let mut seenHashes : Std.HashSet UInt64 := {}
+  let mut validFormulas : List Formula := []
   let mut validCount : Nat := 0
   let mut timeoutCount : Nat := 0
   let mut idx : Nat := 0
@@ -303,6 +304,7 @@ partial def runEnumerationPipeline (config : PipelineConfig)
     match processFormula φ name with
     | some steps =>
       validCount := validCount + 1
+      validFormulas := φ :: validFormulas
       for step in steps do
         dist := dist.addStep step
         if config.deduplicateSteps then
@@ -327,7 +329,7 @@ partial def runEnumerationPipeline (config : PipelineConfig)
   let endMs ← IO.monoMsNow
   IO.println s!"[enum] Complete: {formulas.length} formulas, {validCount} valid, {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
   dist := { dist with theoremCount := validCount }
-  return (allSteps, dist)
+  return (allSteps, dist, validFormulas.reverse)
 
 /-!
 ## Pipeline Strategy 2: Axiom Seeding
@@ -391,10 +393,20 @@ private def iterG : Nat → Formula → Formula
   | n + 1, φ => (iterG n φ).all_future
 
 /--
-Run the deep wrapping pipeline: take valid formulas from enumeration,
-wrap each with G^n for n = 1..maxWrapDepth, decide + extract steps.
+Wrap a derivation tree with n layers of `temporal_necessitation`.
+`wrapG 0 tree = tree`, `wrapG 3 tree = temporal_necessitation (temporal_necessitation (temporal_necessitation tree))`.
+-/
+private def wrapG {fc : FrameClass} {φ : Formula} :
+    (n : Nat) → DerivationTree fc [] φ → DerivationTree fc [] (iterG n φ)
+  | 0, tree => tree
+  | n + 1, tree => DerivationTree.temporal_necessitation _ (wrapG n tree)
 
-This multiplies step count because each G^n wrapping adds n
+/--
+Run the deep wrapping pipeline: take valid formulas, get their proofs,
+wrap each proof with G^n for n = 1..maxWrapDepth, then extract steps.
+
+Unlike re-deciding G^n(phi), this directly wraps the proof term,
+which is instant and always succeeds. Each G^n wrapping adds n
 temporal_necessitation steps on top of the original proof.
 -/
 partial def runDeepWrappingPipeline (validFormulas : List Formula)
@@ -409,12 +421,15 @@ partial def runDeepWrappingPipeline (validFormulas : List Formula)
   let mut validCount : Nat := 0
   let mut idx : Nat := 0
   for φ in batchFormulas do
-    for depth in List.range config.maxWrapDepth do
-      let n := depth + 1
-      let wrappedPhi := iterG n φ
-      let name := formulaName s!"wrap-G{n}-" idx
-      match processFormula wrappedPhi name with
-      | some steps =>
+    -- First, decide the base formula to get its proof
+    match decideAuto φ with
+    | .valid proof =>
+      -- For each wrapping depth, wrap the proof and extract steps
+      for depth in List.range config.maxWrapDepth do
+        let n := depth + 1
+        let wrappedProof := wrapG n proof
+        let name := formulaName s!"wrap-G{n}-" idx
+        let (steps, _) := extractStepSequence name "Base" 0 wrappedProof
         validCount := validCount + 1
         for step in steps do
           dist := dist.addStep step
@@ -429,7 +444,7 @@ partial def runDeepWrappingPipeline (validFormulas : List Formula)
           else
             allSteps := allSteps.push step
             dist := { dist with uniqueSteps := dist.uniqueSteps + 1 }
-      | none => pure ()
+    | _ => pure ()
     idx := idx + 1
     if idx % 100 == 0 then
       let elapsedMs ← IO.monoMsNow
@@ -497,25 +512,6 @@ def writeMetadataJSON (path : String) (dist : StepDistribution)
 -/
 
 /--
-Collect valid formulas from enumeration for use by the deep wrapping pipeline.
-
-Returns the list of formulas that were successfully decided valid.
--/
-def collectValidFormulas (config : PipelineConfig) : IO (List Formula) := do
-  let enumConfig : EnumConfig :=
-    { maxModalDepth := config.maxModalDepth
-    , maxTemporalDepth := config.maxTemporalDepth
-    , maxSize := config.maxComplexity
-    , atomPool := config.atomPool }
-  let formulas := enumerateUpToDepth enumConfig
-  let mut validFormulas : List Formula := []
-  for φ in formulas do
-    match decideAuto φ with
-    | .valid _ => validFormulas := φ :: validFormulas
-    | _ => pure ()
-  return validFormulas.reverse
-
-/--
 Run the full pipeline: enumeration + axiom seeding + deep wrapping.
 
 1. Enumerate formulas and extract proof steps from valid ones
@@ -537,14 +533,7 @@ partial def runFullPipeline (config : PipelineConfig) : IO Unit := do
 
   -- Strategy 1: Enumeration pipeline
   IO.println "--- Strategy 1: Enumeration ---"
-  let (enumSteps, enumDist) ← runEnumerationPipeline config
-  IO.println ""
-
-  -- Collect valid formulas for wrapping (reuse enumeration decisions)
-  -- We need the formulas themselves, so re-collect them
-  IO.println "--- Collecting valid formulas for wrapping ---"
-  let validFormulas ← collectValidFormulas config
-  IO.println s!"[collect] {validFormulas.length} valid formulas collected"
+  let (enumSteps, enumDist, validFormulas) ← runEnumerationPipeline config
   IO.println ""
 
   -- Build the hash set from enumeration steps for cross-source dedup
@@ -559,7 +548,9 @@ partial def runFullPipeline (config : PipelineConfig) : IO Unit := do
   IO.println ""
 
   -- Strategy 3: Deep G^n wrapping pipeline
+  -- Uses valid formulas identified during enumeration to avoid re-deciding
   IO.println "--- Strategy 3: Deep G^n Wrapping ---"
+  IO.println s!"[wrap] Using {validFormulas.length} valid formulas from enumeration"
   let (wrapSteps, wrapDist, _) ← runDeepWrappingPipeline validFormulas config seenHashes2
   IO.println ""
 

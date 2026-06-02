@@ -63,10 +63,11 @@ Plan v50 was blocked at Phase 1 because step 1.8 ("from one_class, derive IsSucc
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rewrite chronicle_gap_contradiction [PARTIAL]
+### Phase 1: Rewrite chronicle_gap_contradiction [BLOCKED]
 
-**BLOCKER** (Phase 1):
-- **What failed**: Cannot import GoodStructuresModelSurgery.lean (or GoodStructures.lean) into ChronicleToCountermodel.lean due to an import cycle.
+**BLOCKER** (Phase 1 -- updated 2026-06-01, supersedes prior blocker):
+- **What failed**: The plan's core strategy (gap_contradicts_prior + no_boundary_at_successor) is mathematically unsound. reynolds_model_surgery_core proves one_class unconditionally, making h_bounded_above unsatisfiable. The import cycle was resolved by the prior agent but the mathematical problem remains. See handoffs/phase-1-handoff-20260601T180000Z.md for full analysis.
+- **(Previous blocker, now resolved)**: Cannot import GoodStructuresModelSurgery.lean (or GoodStructures.lean) into ChronicleToCountermodel.lean due to an import cycle.
 - **Import cycle path**: `GoodStructuresModelSurgery -> NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel` (circular back to the file we need to modify). Confirmed by `lake build` error: "bad import 'Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery'".
 - **What was tried**:
   1. Direct import of GoodStructuresModelSurgery into ChronicleToCountermodel -- fails with import cycle.

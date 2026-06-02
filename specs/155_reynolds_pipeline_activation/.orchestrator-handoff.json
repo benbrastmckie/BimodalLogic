@@ -1,38 +1,28 @@
 {
   "status": "partial",
-  "summary": "Phase 1 BLOCKED by import cycle: GoodStructuresModelSurgery -> NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel. The sorry-free model surgery theorems exist but are inaccessible. Resolution requires splitting ChronicleToCountermodel into Basic/Advanced files to break the cycle.",
+  "summary": "Phase 1 BLOCKED: the plan's gap_contradicts_prior strategy is mathematically unsound. Import cycle was resolved by prior agent, but reynolds_model_surgery_core proves one_class (all elements contemp_equiv) unconditionally, making h_bounded_above unsatisfiable. The Z+Z counterexample confirms one_class does NOT imply IsSuccArchimedean. ALL model-surgery-based approaches fail for the same fundamental reason. A different proof strategy is needed.",
   "blockers": [
     {
-      "type": "import_cycle",
-      "description": "Cannot import GoodStructuresModelSurgery.lean into ChronicleToCountermodel.lean due to transitive cycle through NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel",
-      "resolution": "Split ChronicleToCountermodel.lean into ChronicleToCountermodelBasic.lean (lines 1-1100) and ChronicleToCountermodel.lean (gap elimination + countermodel). Change ChronicleExtraction to import Basic file only."
-    },
-    {
       "type": "mathematical",
-      "description": "Constant-MCS case (Case B) requires chronicle-specific proof that constant temporal_truth implies succ chain covers entire domain",
-      "resolution": "Prove by induction on omega-chain stages: constant MCS means no additional C4/C5 points beyond succ/pred chain"
+      "description": "gap_contradicts_prior requires not(contemp_equiv a b), but reynolds_model_surgery_core + no_boundary_at_successor prove contemp_equiv for ALL pairs (one_class), making h_bounded_above unsatisfiable",
+      "resolution": "Need fundamentally different approach: either (A) omega-chain induction on chronicle stages, (B) cut definability via US expressive completeness + Prior-SZ contradiction, (C) bypass IsSuccArchimedean by restructuring downstream pipeline, or (D) formalize Reynolds' actual k-equivalence transfer argument"
     }
   ],
   "continuation_context": {
     "phase": 1,
     "status": "blocked",
-    "root_cause": "import_cycle",
-    "sorry_target": "chronicle_gap_contradiction at ChronicleToCountermodel.lean:1538",
-    "sorry_free_tools": {
-      "gap_contradicts_prior": "GoodStructuresModelSurgery.lean:2087",
-      "reynolds_model_surgery_core": "GoodStructuresModelSurgery.lean:2058",
-      "no_boundary_at_successor": "GoodStructures.lean:862"
-    },
-    "cycle_path": "GoodStructuresModelSurgery -> NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel",
-    "recommended_fix": "Option A: split ChronicleToCountermodel.lean, move basic definitions to new file, update ChronicleExtraction imports",
-    "estimated_effort_hours": 3,
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T002902Z.md"
+    "root_cause": "mathematical_unsoundness",
+    "sorry_target": "chronicle_gap_contradiction at ChronicleToCountermodel.lean:489",
+    "what_works": "Import cycle resolved. GoodStructuresModelSurgery accessible. lake build passes.",
+    "what_doesnt_work": "gap_contradicts_prior, no_gaps_discrete_model_surgery, reynolds_model_surgery_core -- all prove one_class but cannot prove IsSuccArchimedean",
+    "recommended_approach": "Option D: formalize Reynolds' actual argument (Theorem 14 -> 15 -> k-equiv transfer to Z) without going through IsSuccArchimedean. This is the closest to the mathematical source and avoids the Z+Z obstruction entirely.",
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260601T180000Z.md"
   },
-  "next_action_hint": "Create task to split ChronicleToCountermodel.lean and break the import cycle, then retry implementation",
+  "next_action_hint": "Create new research task to find correct proof strategy for chronicle_gap_contradiction, focusing on Reynolds' actual transfer argument or chronicle omega-chain induction",
   "phases_completed": 0,
   "phases_total": 3,
   "artifacts": [
     {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/51_implementation-plan.md"},
-    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T002902Z.md"}
+    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260601T180000Z.md"}
   ]
 }
