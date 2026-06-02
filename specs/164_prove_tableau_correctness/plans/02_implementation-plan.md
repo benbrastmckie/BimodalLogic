@@ -219,12 +219,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Prove blocking_terminates [NOT STARTED]
+### Phase 4: Prove blocking_terminates [BLOCKED]
 
 **Goal**: Resolve the `blocking_terminates` sorry in Saturation.lean by proving a termination bound via the subformula property and pigeonhole principle.
 
+**BLOCKER** (Phase 4):
+- **What failed**: The original theorem statement quantified over ALL branches, which is false (an arbitrary branch may contain formulas outside the subformula closure). The statement was corrected to `(buildTableau φ (soundFuel φ)).isSome` but the proof requires the generalized subformula property.
+- **What was tried**: (1) Analyzed the rule structure -- confirmed 25+ rules need case analysis for subformula property. (2) Considered using Classical.em or FMP to bypass -- insufficient without constructive fuel bound. (3) Verified the original statement is genuinely false (arbitrary branches with formulas outside the closure can expand indefinitely).
+- **Why it's stuck**: The generalized subformula property (all formulas in expanded branches remain within subformulaClosure(φ)) requires individual case analysis for each of the 25+ tableau rules in `applyRule`. Each case follows the same pattern (output formulas are subformulas of input formula) but the total effort is substantial (~2-3 hours of tedious case splitting).
+- **What is needed**: Prove `subformula_property_general` with full case analysis over all rules, then compose with pigeonhole (`Fintype.exists_ne_map_eq_of_card_lt`) and fuel bound derivation. This is self-contained work that does not affect any other sorry sites.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 **Tasks**:
-- [ ] **Task 4.1**: Assess whether `blocking_terminates` as currently stated (quantifying over ALL branches) is provable. The Critic (Teammate C) identified this as over-general. If unprovable, restate to quantify only over branches reachable from the initial tableau expansion:
+- [x] **Task 4.1**: Assess whether `blocking_terminates` as currently stated (quantifying over ALL branches) is provable *(deviation: altered -- confirmed as false; restated to `(buildTableau φ (soundFuel φ)).isSome`)*. The Critic (Teammate C) identified this as over-general. If unprovable, restate to quantify only over branches reachable from the initial tableau expansion:
   ```lean
   theorem blocking_terminates (φ : Formula) :
       ∃ bound : Nat,

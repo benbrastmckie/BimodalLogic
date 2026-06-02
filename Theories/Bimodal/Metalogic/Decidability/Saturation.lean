@@ -644,19 +644,31 @@ theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
   exact Formula.self_mem_subformulas φ
 
 /--
-**Blocking terminates**: With subset blocking enabled, every branch of the
-tableau for formula φ has length bounded by `soundFuel φ`.
+**Blocking terminates**: For any formula `φ`, the tableau expansion
+starting from `[F(φ)]` terminates with `soundFuel φ` fuel.
 
 This follows from the pigeonhole principle: there are at most `2^(2n)`
 distinct time types where `n = |subformulaClosure(φ)|`, so after that
 many time points, some time must be subset-blocked by an ancestor.
+
+The proof requires:
+1. A generalized subformula property showing all formulas in expanded
+   branches remain within the subformula closure of the initial formula
+   (requires case analysis over all ~25 tableau rules).
+2. A pigeonhole argument: with bounded time types, eventually two times
+   on the same path share a type, triggering subset blocking.
+3. A fuel bound derivation from the time type bound.
+
+The previous statement quantified over ALL branches, which was over-general
+(an arbitrary branch may contain formulas outside the subformula closure).
+This version is restricted to the initial branch `[F(φ)]`.
 -/
 theorem blocking_terminates (φ : Formula) :
-    ∃ bound : Nat, ∀ (b : Branch) (fuel : Nat),
-      fuel ≥ bound →
-      (expandBranchWithFuel b fuel).isSome := by
-  -- Requires: subformula property for expanded branches (not just initial),
-  -- pigeonhole argument over time types, and fuel bound analysis.
+    (buildTableau φ (soundFuel φ)).isSome := by
+  -- The tableau build either closes all branches (valid) or finds an open
+  -- saturated/blocked branch (invalid). In both cases, it returns some.
+  -- Proof requires the generalized subformula property and pigeonhole
+  -- argument to show expansion always terminates within soundFuel steps.
   -- The subformula_property above only covers the initial branch;
   -- a generalized version tracking formulas through all rule applications
   -- is needed as a prerequisite.
