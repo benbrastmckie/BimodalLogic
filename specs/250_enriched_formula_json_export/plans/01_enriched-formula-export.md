@@ -175,30 +175,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Dataset Regeneration and Validation [NOT STARTED]
+### Phase 4: Dataset Regeneration and Validation [COMPLETED]
 
 **Goal**: Regenerate JSONL datasets from the Lean pipeline (which now includes enriched fields from task 248) and validate that BimodalHarness can ingest them correctly.
 
 **Tasks**:
-- [ ] In BimodalLogic, rebuild the dataset generator: `cd /home/benjamin/Projects/BimodalLogic && lake build dataset_generator`
-- [ ] Regenerate c5 dataset (fast, for validation): `lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic-c5.jsonl`
-- [ ] Verify enriched fields are present in output: `head -1 data/bmlogic-c5.jsonl | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('formula_folded_json','MISSING'))"`
-- [ ] In BimodalLogic, rebuild proof_extractor: `lake build proof_extractor`
-- [ ] Regenerate proof steps: `lake exe proof_extractor -- --output data/proof_steps.jsonl`
-- [ ] Verify goal_folded_json is present: `head -1 data/proof_steps.jsonl | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('goal_folded_json','MISSING'))"`
-- [ ] Test ingestion of regenerated data from BimodalHarness:
-  ```python
-  from bimodal_harness.data.ingestion import lean_jsonl_to_training_record
-  import json
-  with open("/home/benjamin/Projects/BimodalLogic/data/bmlogic-c5.jsonl") as f:
-      for line in f:
-          rec = lean_jsonl_to_training_record(json.loads(line))
-          if rec and rec.formula_folded_json:
-              print("OK:", rec.formula_folded_json.get("tag"))
-              break
-  ```
-- [ ] Update `data/dataset-card.md` and `data/hf-dataset/README.md` in BimodalLogic to document the new formula_folded_* fields
-- [ ] Optionally regenerate c7 dataset: `lake exe dataset_generator -- --max-complexity 7 --output data/bmlogic-c7.jsonl`
+- [x] In BimodalLogic, rebuild the dataset generator: `cd /home/benjamin/Projects/BimodalLogic && lake build dataset_generator` *(completed: 1454 jobs, success)*
+- [x] Regenerate c5 dataset (fast, for validation): `lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic-c5.jsonl` *(completed: 1512 records written)*
+- [x] Verify enriched fields are present in output *(completed: formula_folded_json tag: box, formula_folded_str: □□⊥)*
+- [x] In BimodalLogic, rebuild proof_extractor: `lake build proof_extractor` *(completed: 1466 jobs, success)*
+- [x] Regenerate proof steps: `lake exe proof_extractor -- --output data/proof_steps.jsonl` *(completed: 12077 steps, all rules covered)*
+- [x] Verify goal_folded_json is present *(completed: goal_folded_json tag: imp)*
+- [x] Test ingestion of regenerated data from BimodalHarness *(completed: 1473 training records, 12077 proof steps — all have enriched fields)*
+- [x] Update `data/dataset-card.md` and `data/hf-dataset/README.md` in BimodalLogic to document the new formula_folded_* fields *(completed)*
+- [ ] Optionally regenerate c7 dataset: `lake exe dataset_generator -- --max-complexity 7 --output data/bmlogic-c7.jsonl` *(deviation: deferred — c7 regeneration is optional and time-consuming; c5 validates the pipeline)*
 
 **Timing**: 1 hour (excluding dataset generation wall-clock time)
 

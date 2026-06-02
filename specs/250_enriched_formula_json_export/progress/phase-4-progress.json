@@ -1,0 +1,28 @@
+{
+  "phase": 4,
+  "phase_name": "Dataset Regeneration and Validation",
+  "started_at": "2026-06-02T21:30:00Z",
+  "last_updated": "2026-06-02T22:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Rebuild dataset_generator in BimodalLogic: lake build dataset_generator", "status": "done", "note": "1454 jobs, success"},
+    {"id": 2, "description": "Regenerate c5 dataset", "status": "done", "note": "1512 records written to data/bmlogic-c5.jsonl"},
+    {"id": 3, "description": "Verify enriched fields are present in c5 output", "status": "done", "note": "formula_folded_json tag: box, formula_folded_str: □□⊥"},
+    {"id": 4, "description": "Rebuild proof_extractor: lake build proof_extractor", "status": "done", "note": "1466 jobs, success"},
+    {"id": 5, "description": "Regenerate proof steps: lake exe proof_extractor -- --output data/proof_steps.jsonl", "status": "done", "note": "12077 steps, all rules covered"},
+    {"id": 6, "description": "Verify goal_folded_json is present in proof steps output", "status": "done", "note": "goal_folded_json tag: imp"},
+    {"id": 7, "description": "Test ingestion of regenerated data from BimodalHarness", "status": "done", "note": "1473 records + 12077 steps — all have enriched fields"},
+    {"id": 8, "description": "Update dataset-card.md and hf-dataset/README.md to document new fields", "status": "done"}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.9",
+      "description": "Optionally regenerate c7 dataset",
+      "type": "deferred",
+      "reason": "Optional task — c5 validates the pipeline fully; c7 regeneration is time-consuming",
+      "annotation": "*(deviation: deferred to optional)*"
+    }
+  ]
+}
