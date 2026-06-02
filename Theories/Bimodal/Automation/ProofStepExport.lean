@@ -6,6 +6,7 @@ import Bimodal.Theorems.ModalS5
 import Bimodal.Theorems.TemporalDerived
 import Bimodal.Theorems.Perpetuity.Helpers
 import Bimodal.Theorems.Perpetuity.Principles
+import Bimodal.Theorems.ContextualProofs
 
 /-!
 # Proof Step Export Executable
@@ -83,6 +84,7 @@ open Bimodal.Automation.DataExport
 open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Theorems.Propositional
+open Bimodal.Theorems.ContextualProofs
 
 /-!
 ## Concrete Atom Formulas
