@@ -161,20 +161,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: JSON Serialization for Enriched Formulas [NOT STARTED]
+### Phase 4: JSON Serialization for Enriched Formulas [COMPLETED]
 
 **Goal**: Provide JSON and string serialization for `EnrichedFormula` so the fold output can be exported for BimodalHarness training data.
 
 **Tasks**:
-- [ ] Implement `EnrichedFormula.toJson : EnrichedFormula -> String` using enriched constructor tags:
-  - Primitive tags: `"atom"`, `"bot"`, `"imp"`, `"box"`, `"untl"`, `"snce"`
-  - Enriched tags: `"neg"`, `"top"`, `"and"`, `"or"`, `"diamond"`, `"some_future"`, `"some_past"`, `"all_future"`, `"all_past"`, `"next"`, `"prev"`, `"weak_future"`, `"weak_past"`, `"always"`, `"sometimes"`
-  - Use same JSON structure as `Formula.toJson` (tag + child/left/right fields)
-- [ ] Implement `EnrichedFormula.prettyPrint : EnrichedFormula -> String` using standard operator notation:
-  - `neg φ` -> `"(~phi)"`, `and_ φ ψ` -> `"(phi & psi)"`, `or_ φ ψ` -> `"(phi | psi)"`, `diamond φ` -> `"<>phi"`, etc.
-- [ ] Implement `EnrichedFormula.toSExpr : EnrichedFormula -> String` for S-expression output with enriched tags
-- [ ] Implement convenience `Formula.toEnrichedJson : Formula -> String` that composes `foldFormula` then `toJson`
-- [ ] Add `#eval` tests verifying JSON output matches expected format
+- [x] Implement `EnrichedFormula.toJson : EnrichedFormula -> String` using enriched constructor tags (21 tags)
+- [x] Implement `EnrichedFormula.prettyPrint : EnrichedFormula -> String` using standard operator notation
+- [x] Implement `EnrichedFormula.toSExpr : EnrichedFormula -> String` for S-expression output with enriched tags
+- [x] Implement convenience `Formula.toEnrichedJson`, `Formula.toEnrichedPretty`, `Formula.toEnrichedSExpr`
+- [x] Add `#eval` tests verifying JSON, prettyPrint, and S-expression output
 
 **Timing**: 1 hour
 

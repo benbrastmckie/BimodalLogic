@@ -819,4 +819,212 @@ example (φ : Formula) :
 
 end RoundTripTests
 
+/-!
+## Phase 4: JSON Serialization for Enriched Formulas
+
+Provides JSON, pretty-print, and S-expression serialization for `EnrichedFormula`.
+Uses enriched operator tags (e.g., `"neg"`, `"diamond"`, `"always"`) instead of
+only primitive tags, enabling richer training data for the BimodalHarness pipeline.
+-/
+
+section Serialization
+
+/-- Escape a string for inclusion in a JSON string value. -/
+private def escapeJson (s : String) : String :=
+  s.toList.foldl (fun acc c =>
+    match c with
+    | '\\' => acc ++ "\\\\"
+    | '"'  => acc ++ "\\\""
+    | '\n' => acc ++ "\\n"
+    | c    => acc.push c
+  ) ""
+
+namespace EnrichedFormula
+
+/--
+Serialize an `EnrichedFormula` to a JSON string with enriched operator tags.
+
+The JSON schema uses a `"tag"` field for the constructor:
+- Primitives: `"atom"`, `"bot"`, `"imp"`, `"box"`, `"untl"`, `"snce"`
+- Enriched: `"neg"`, `"top"`, `"and"`, `"or"`, `"diamond"`, `"some_future"`,
+  `"some_past"`, `"all_future"`, `"all_past"`, `"next"`, `"prev"`,
+  `"weak_future"`, `"weak_past"`, `"always"`, `"sometimes"`
+
+Child fields: `"child"` for unary, `"left"`/`"right"` for binary,
+`"event"`/`"guard"` for temporal binary operators.
+-/
+def toJson : EnrichedFormula → String
+  | .atom a =>
+    let nameStr := escapeJson a.base
+    "{\"tag\": \"atom\", \"name\": \"" ++ nameStr ++ "\"}"
+  | .bot => "{\"tag\": \"bot\"}"
+  | .top => "{\"tag\": \"top\"}"
+  | .imp φ ψ =>
+    "{\"tag\": \"imp\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .box φ =>
+    "{\"tag\": \"box\", \"child\": " ++ φ.toJson ++ "}"
+  | .untl φ ψ =>
+    "{\"tag\": \"untl\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
+  | .snce φ ψ =>
+    "{\"tag\": \"snce\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
+  | .neg φ =>
+    "{\"tag\": \"neg\", \"child\": " ++ φ.toJson ++ "}"
+  | .and_ φ ψ =>
+    "{\"tag\": \"and\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .or_ φ ψ =>
+    "{\"tag\": \"or\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .diamond φ =>
+    "{\"tag\": \"diamond\", \"child\": " ++ φ.toJson ++ "}"
+  | .some_future φ =>
+    "{\"tag\": \"some_future\", \"child\": " ++ φ.toJson ++ "}"
+  | .some_past φ =>
+    "{\"tag\": \"some_past\", \"child\": " ++ φ.toJson ++ "}"
+  | .all_future φ =>
+    "{\"tag\": \"all_future\", \"child\": " ++ φ.toJson ++ "}"
+  | .all_past φ =>
+    "{\"tag\": \"all_past\", \"child\": " ++ φ.toJson ++ "}"
+  | .next φ =>
+    "{\"tag\": \"next\", \"child\": " ++ φ.toJson ++ "}"
+  | .prev φ =>
+    "{\"tag\": \"prev\", \"child\": " ++ φ.toJson ++ "}"
+  | .weak_future φ =>
+    "{\"tag\": \"weak_future\", \"child\": " ++ φ.toJson ++ "}"
+  | .weak_past φ =>
+    "{\"tag\": \"weak_past\", \"child\": " ++ φ.toJson ++ "}"
+  | .always φ =>
+    "{\"tag\": \"always\", \"child\": " ++ φ.toJson ++ "}"
+  | .sometimes φ =>
+    "{\"tag\": \"sometimes\", \"child\": " ++ φ.toJson ++ "}"
+
+/--
+Pretty-print an `EnrichedFormula` in human-readable notation.
+
+Uses standard logical notation:
+- `neg φ` → `"~φ"`, `and_ φ ψ` → `"(φ & ψ)"`, `or_ φ ψ` → `"(φ | ψ)"`
+- `diamond φ` → `"<>φ"`, `box φ` → `"[]φ"`
+- `all_future φ` → `"Gφ"`, `all_past φ` → `"Hφ"`
+- `some_future φ` → `"Fφ"`, `some_past φ` → `"Pφ"`
+- `always φ` → `"△φ"`, `sometimes φ` → `"▽φ"`
+- `weak_future φ` → `"G'φ"`, `weak_past φ` → `"H'φ"`
+- `next φ` → `"Xφ"`, `prev φ` → `"Yφ"`
+-/
+def prettyPrint : EnrichedFormula → String
+  | .atom a       => a.base
+  | .bot          => "⊥"
+  | .top          => "⊤"
+  | .imp φ ψ      => "(" ++ φ.prettyPrint ++ " → " ++ ψ.prettyPrint ++ ")"
+  | .box φ        => "□" ++ φ.prettyPrint
+  | .untl φ ψ     => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .snce φ ψ     => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .neg φ        => "~" ++ φ.prettyPrint
+  | .and_ φ ψ     => "(" ++ φ.prettyPrint ++ " & " ++ ψ.prettyPrint ++ ")"
+  | .or_ φ ψ      => "(" ++ φ.prettyPrint ++ " | " ++ ψ.prettyPrint ++ ")"
+  | .diamond φ    => "<>" ++ φ.prettyPrint
+  | .some_future φ => "F" ++ φ.prettyPrint
+  | .some_past φ  => "P" ++ φ.prettyPrint
+  | .all_future φ => "G" ++ φ.prettyPrint
+  | .all_past φ   => "H" ++ φ.prettyPrint
+  | .next φ       => "X" ++ φ.prettyPrint
+  | .prev φ       => "Y" ++ φ.prettyPrint
+  | .weak_future φ => "G'" ++ φ.prettyPrint
+  | .weak_past φ  => "H'" ++ φ.prettyPrint
+  | .always φ     => "△" ++ φ.prettyPrint
+  | .sometimes φ  => "▽" ++ φ.prettyPrint
+
+/--
+Serialize an `EnrichedFormula` to an S-expression string with enriched tags.
+
+Uses parenthesized prefix notation:
+- `(neg (atom "p"))`, `(and (atom "p") (atom "q"))`, `(diamond (atom "p"))`, etc.
+-/
+def toSExpr : EnrichedFormula → String
+  | .atom a =>
+    let idx := match a.fresh_index with
+      | none => ""
+      | some n => " " ++ toString n
+    "(atom \"" ++ escapeJson a.base ++ "\"" ++ idx ++ ")"
+  | .bot          => "bot"
+  | .top          => "top"
+  | .imp φ ψ      => "(imp " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .box φ        => "(box " ++ φ.toSExpr ++ ")"
+  | .untl φ ψ     => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .snce φ ψ     => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .neg φ        => "(neg " ++ φ.toSExpr ++ ")"
+  | .and_ φ ψ     => "(and " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .or_ φ ψ      => "(or " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .diamond φ    => "(diamond " ++ φ.toSExpr ++ ")"
+  | .some_future φ => "(some_future " ++ φ.toSExpr ++ ")"
+  | .some_past φ  => "(some_past " ++ φ.toSExpr ++ ")"
+  | .all_future φ => "(all_future " ++ φ.toSExpr ++ ")"
+  | .all_past φ   => "(all_past " ++ φ.toSExpr ++ ")"
+  | .next φ       => "(next " ++ φ.toSExpr ++ ")"
+  | .prev φ       => "(prev " ++ φ.toSExpr ++ ")"
+  | .weak_future φ => "(weak_future " ++ φ.toSExpr ++ ")"
+  | .weak_past φ  => "(weak_past " ++ φ.toSExpr ++ ")"
+  | .always φ     => "(always " ++ φ.toSExpr ++ ")"
+  | .sometimes φ  => "(sometimes " ++ φ.toSExpr ++ ")"
+
+end EnrichedFormula
+
+/-- Convenience: fold a primitive `Formula` and serialize to enriched JSON. -/
+def Formula.toEnrichedJson (f : Formula) : String :=
+  (f.foldFormulaFull).toJson
+
+/-- Convenience: fold a primitive `Formula` and pretty-print with enriched operators. -/
+def Formula.toEnrichedPretty (f : Formula) : String :=
+  (f.foldFormulaFull).prettyPrint
+
+/-- Convenience: fold a primitive `Formula` and serialize to enriched S-expression. -/
+def Formula.toEnrichedSExpr (f : Formula) : String :=
+  (f.foldFormulaFull).toSExpr
+
+end Serialization
+
+section SerializationTests
+
+-- Test: toJson on neg (atom p)
+#eval do
+  let f := EnrichedFormula.neg (.atom (Atom.mk_base "p"))
+  return f.toJson
+-- Expected: {"tag": "neg", "child": {"tag": "atom", "name": "p"}}
+
+-- Test: toJson on diamond (atom p)
+#eval do
+  let f := EnrichedFormula.diamond (.atom (Atom.mk_base "p"))
+  return f.toJson
+-- Expected: {"tag": "diamond", "child": {"tag": "atom", "name": "p"}}
+
+-- Test: toEnrichedJson on diamond formula
+#eval do
+  let f := Formula.diamond (Formula.atom (Atom.mk_base "p"))
+  return f.toEnrichedJson
+-- Expected: {"tag": "diamond", "child": {"tag": "atom", "name": "p"}}
+
+-- Test: prettyPrint on always (atom p)
+#eval do
+  let f := EnrichedFormula.always (.atom (Atom.mk_base "p"))
+  return f.prettyPrint
+-- Expected: △p
+
+-- Test: toSExpr on and_ (atom p) (atom q)
+#eval do
+  let f := EnrichedFormula.and_ (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q"))
+  return f.toSExpr
+-- Expected: (and (atom "p") (atom "q"))
+
+-- Test: toEnrichedJson on always formula (full pipeline)
+#eval do
+  let f := Formula.always (Formula.atom (Atom.mk_base "p"))
+  return f.toEnrichedJson
+-- Expected: {"tag": "always", "child": {"tag": "atom", "name": "p"}}
+
+-- Test: prettyPrint on complex formula
+#eval do
+  let f := Formula.imp (Formula.diamond (Formula.atom (Atom.mk_base "p")))
+                        (Formula.all_future (Formula.atom (Atom.mk_base "q")))
+  return (Formula.foldFormulaFull f).prettyPrint
+-- Expected: (<>p → Gq)
+
+end SerializationTests
+
 end Bimodal.Syntax
