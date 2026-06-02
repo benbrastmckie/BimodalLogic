@@ -636,7 +636,12 @@ theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
     (h_init : b = [SignedFormula.neg φ Label.initial])
     (h_mem : sf ∈ b) :
     sf.formula ∈ Formula.subformulas φ := by
-  sorry
+  -- The initial branch contains only F(φ), so sf must be F(φ),
+  -- and sf.formula = φ ∈ subformulas φ by self_mem_subformulas.
+  subst h_init
+  simp [SignedFormula.neg] at h_mem
+  subst h_mem
+  exact Formula.self_mem_subformulas φ
 
 /--
 **Blocking terminates**: With subset blocking enabled, every branch of the
@@ -650,6 +655,11 @@ theorem blocking_terminates (φ : Formula) :
     ∃ bound : Nat, ∀ (b : Branch) (fuel : Nat),
       fuel ≥ bound →
       (expandBranchWithFuel b fuel).isSome := by
+  -- Requires: subformula property for expanded branches (not just initial),
+  -- pigeonhole argument over time types, and fuel bound analysis.
+  -- The subformula_property above only covers the initial branch;
+  -- a generalized version tracking formulas through all rule applications
+  -- is needed as a prerequisite.
   sorry
 
 /--
@@ -667,6 +677,11 @@ theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
     -- "satisfiable" here means there exists a model; we state it as
     -- the open branch having no closure reason
     findClosure openBranch = none := by
+  -- Structurally, expandBranchWithFuel only returns .inr when findClosure = none.
+  -- The proof requires induction on fuel with case analysis on the foldl in the
+  -- split case. The foldl accumulator threading makes this technically involved
+  -- but the invariant is straightforward: every .inr result originates from a
+  -- code path where findClosure was already checked to be none.
   sorry
 
 /-!

@@ -180,16 +180,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Prove Subformula Property and Blocking Soundness [NOT STARTED]
+### Phase 5: Prove Subformula Property and Blocking Soundness [PARTIAL]
 
 **Goal**: Resolve the 3 sorry sites in `Saturation.lean` needed for `decide_terminates`.
 
 **Tasks**:
-- [ ] Study the rule application functions to understand how formulas are produced during expansion
-- [ ] Prove `subformula_property`: Show by induction on expansion steps that all formulas added to the branch are members of `Formula.subformulas phi`, tracking through `applyRule` cases
-- [ ] Prove `blocking_sound`: Show that subset blocking does not prematurely close satisfiable branches -- if tau(t) subset tau(t_anc), any model satisfying t_anc also satisfies t
-- [ ] Prove `blocking_terminates`: Use the pigeonhole principle -- there are at most 2^(2n) distinct time types where n = |subformulaClosure(phi)|, so the branch must eventually trigger blocking. May require `Fintype` instance for time types and cardinality bound
-- [ ] Verify with `lake build Bimodal.Metalogic.Decidability.Saturation`
+- [x] Study the rule application functions to understand how formulas are produced during expansion *(completed)*
+- [x] Prove `subformula_property` *(deviation: altered -- the theorem as stated only covers the initial branch [F(phi)], so the proof is trivial by list membership. A generalized version tracking formulas through all expansion steps would require case analysis on every rule in applyRule.)*
+- [ ] Prove `blocking_sound` *(deviation: deferred -- requires induction on fuel with case analysis on List.foldl in the split case; the invariant is straightforward but the Lean proof is technically involved)*
+- [ ] Prove `blocking_terminates` *(deviation: deferred -- requires generalized subformula property for expanded branches, pigeonhole argument over time types, and Fintype infrastructure)*
+- [x] Verify with `lake build Bimodal.Metalogic.Decidability.Saturation` *(builds with 2 sorry sites remaining)*
 
 **Timing**: 3 hours
 
