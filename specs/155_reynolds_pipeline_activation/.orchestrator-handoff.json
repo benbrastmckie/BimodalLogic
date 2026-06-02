@@ -1,15 +1,38 @@
 {
   "status": "partial",
-  "summary": "Phase 1 BLOCKED: The plan's core step (derive IsSuccArchimedean from one_class) is mathematically incorrect. The Z+Z counterexample shows one_class does not imply IsSuccArchimedean. Reynolds 1994 does NOT prove IsSuccArchimedean; instead uses k-equivalence transfer (a fundamentally different approach). Three alternative paths exist: (A) fix Reynolds pipeline sorry at Transfer.lean:1289, (B) prove IsSuccArchimedean from chronicle construction properties directly, (C) prove omega-equivalence implies isomorphism for countable structures. No code was changed.",
+  "summary": "Phase 1 BLOCKED by import cycle: GoodStructuresModelSurgery -> NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel. The sorry-free model surgery theorems exist but are inaccessible. Resolution requires splitting ChronicleToCountermodel into Basic/Advanced files to break the cycle.",
   "blockers": [
-    "Plan step 'one_class -> IsSuccArchimedean' is mathematically unsound (Z+Z counterexample). Needs plan revision with a correct mathematical approach."
+    {
+      "type": "import_cycle",
+      "description": "Cannot import GoodStructuresModelSurgery.lean into ChronicleToCountermodel.lean due to transitive cycle through NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel",
+      "resolution": "Split ChronicleToCountermodel.lean into ChronicleToCountermodelBasic.lean (lines 1-1100) and ChronicleToCountermodel.lean (gap elimination + countermodel). Change ChronicleExtraction to import Basic file only."
+    },
+    {
+      "type": "mathematical",
+      "description": "Constant-MCS case (Case B) requires chronicle-specific proof that constant temporal_truth implies succ chain covers entire domain",
+      "resolution": "Prove by induction on omega-chain stages: constant MCS means no additional C4/C5 points beyond succ/pred chain"
+    }
   ],
-  "continuation_context": "The plan needs revision via /revise 155. The mathematical analysis in the plan file's Phase 1 BLOCKER section documents three alternative approaches (A, B, C). Approach A (fix Reynolds pipeline) is likely most tractable. Approach B requires understanding the chronicle construction deeply. Approach C requires back-and-forth model theory.",
-  "next_action_hint": "revise",
+  "continuation_context": {
+    "phase": 1,
+    "status": "blocked",
+    "root_cause": "import_cycle",
+    "sorry_target": "chronicle_gap_contradiction at ChronicleToCountermodel.lean:1538",
+    "sorry_free_tools": {
+      "gap_contradicts_prior": "GoodStructuresModelSurgery.lean:2087",
+      "reynolds_model_surgery_core": "GoodStructuresModelSurgery.lean:2058",
+      "no_boundary_at_successor": "GoodStructures.lean:862"
+    },
+    "cycle_path": "GoodStructuresModelSurgery -> NEquivalence -> ChronicleExtraction -> ChronicleToCountermodel",
+    "recommended_fix": "Option A: split ChronicleToCountermodel.lean, move basic definitions to new file, update ChronicleExtraction imports",
+    "estimated_effort_hours": 3,
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T002902Z.md"
+  },
+  "next_action_hint": "Create task to split ChronicleToCountermodel.lean and break the import cycle, then retry implementation",
   "phases_completed": 0,
   "phases_total": 3,
   "artifacts": [
-    {"type": "report", "path": "specs/155_reynolds_pipeline_activation/reports/50_import-cycle-research.md"},
-    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/50_implementation-plan.md"}
+    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/51_implementation-plan.md"},
+    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T002902Z.md"}
   ]
 }
