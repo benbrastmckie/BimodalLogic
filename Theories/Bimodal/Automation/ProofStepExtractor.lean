@@ -2,6 +2,7 @@ import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Automation.DataExport
+import Bimodal.Automation.Normalization
 
 /-!
 # Proof Step Extractor for BimodalHarness Training Data
@@ -133,6 +134,7 @@ structure ProofStep where
   stepIndex : Nat
   context : List Formula
   goal : Formula
+  goal_folded_json : String
   rule : String
   axiomName : Option String
   subgoals : List Formula
@@ -175,6 +177,7 @@ def ProofStep.toJson (step : ProofStep) : String :=
   ++ ", \"step_index\": " ++ toString step.stepIndex
   ++ ", \"context\": " ++ contextToJson step.context
   ++ ", \"goal\": " ++ step.goal.toJson
+  ++ ", \"goal_folded_json\": " ++ step.goal_folded_json
   ++ ", \"rule\": \"" ++ step.rule ++ "\""
   ++ ", \"axiom_name\": " ++ axiomStr
   ++ ", \"subgoals\": " ++ listToJsonArray (step.subgoals.map Formula.toJson)
@@ -218,6 +221,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := Γ
       goal := φ
+      goal_folded_json := φ.toEnrichedJson
       rule := "axiom"
       axiomName := some h.toName
       subgoals := []
@@ -231,6 +235,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := Γ
       goal := φ
+      goal_folded_json := φ.toEnrichedJson
       rule := "assumption"
       axiomName := none
       subgoals := []
@@ -244,6 +249,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := Γ
       goal := ψ
+      goal_folded_json := ψ.toEnrichedJson
       rule := "modus_ponens"
       axiomName := none
       subgoals := [φ.imp ψ, φ]
@@ -259,6 +265,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := []
       goal := Formula.box φ
+      goal_folded_json := (Formula.box φ).toEnrichedJson
       rule := "necessitation"
       axiomName := none
       subgoals := [φ]
@@ -273,6 +280,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := []
       goal := Formula.all_future φ
+      goal_folded_json := (Formula.all_future φ).toEnrichedJson
       rule := "temporal_necessitation"
       axiomName := none
       subgoals := [φ]
@@ -287,6 +295,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := []
       goal := φ.swap_temporal
+      goal_folded_json := φ.swap_temporal.toEnrichedJson
       rule := "temporal_duality"
       axiomName := none
       subgoals := [φ]
@@ -301,6 +310,7 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       stepIndex := startIndex
       context := Δ
       goal := φ
+      goal_folded_json := φ.toEnrichedJson
       rule := "weakening"
       axiomName := none
       subgoals := [φ]

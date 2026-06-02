@@ -103,18 +103,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Enriched Goal to ProofStep and Build Verification [NOT STARTED]
+### Phase 2: Add Enriched Goal to ProofStep and Build Verification [COMPLETED]
 
 **Goal**: Add `goal_folded_json` field to ProofStep, update its JSON serialization, import Normalization, and verify the full project builds.
 
 **Tasks**:
-- [ ] Add `import Bimodal.Automation.Normalization` to ProofStepExtractor.lean (after existing imports, line 4)
-- [ ] Add `goal_folded_json : String` field to the `ProofStep` structure (after `goal` at line 135)
-- [ ] Populate `goal_folded_json` in `extractStepSequence` where ProofStep records are constructed -- set to `step.goal.toEnrichedJson`
-- [ ] Add `goal_folded_json` to `ProofStep.toJson` serialization (after the `goal` field at line 177):
+- [x] Add `import Bimodal.Automation.Normalization` to ProofStepExtractor.lean (after existing imports, line 4)
+- [x] Add `goal_folded_json : String` field to the `ProofStep` structure (after `goal` at line 135)
+- [x] Populate `goal_folded_json` in `extractStepSequence` where ProofStep records are constructed -- set to `step.goal.toEnrichedJson`
+- [x] Add `goal_folded_json` to `ProofStep.toJson` serialization (after the `goal` field at line 177):
   - `++ ", \"goal_folded_json\": " ++ step.goal_folded_json`
-- [ ] Run `lake build Bimodal.Automation.ProofStepExtractor` to verify module compiles
-- [ ] Run `lake build` to verify full project builds with no regressions
+- [x] Run `lake build Bimodal.Automation.ProofStepExtractor` to verify module compiles
+- [x] Run `lake build` to verify full project builds with no regressions
 
 **Timing**: 1 hour
 
