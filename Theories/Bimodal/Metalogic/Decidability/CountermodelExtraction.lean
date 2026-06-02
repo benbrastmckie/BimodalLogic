@@ -789,8 +789,7 @@ theorem branchTruthLemma (b : Branch) (timeOrd : TimeOrdering)
     -- sf = ⟨.pos, formula, ⟨world, time⟩⟩: show branchTruth
     exact truthLemma_pos b timeOrd hSat fc hOpen cm hCm formula world time hsf
   | neg =>
-    -- sf = ⟨.neg, formula, ⟨world, time⟩⟩: show ¬branchTruth
-    exact truthLemma_neg b hSat fc hOpen cm hCm formula world time hsf
+    exact truthLemma_neg b timeOrd hSat fc hOpen cm hCm hOrd formula world time hsf
 
 /-!
 ## Integration with Decision Procedure
