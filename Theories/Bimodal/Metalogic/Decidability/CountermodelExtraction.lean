@@ -487,13 +487,43 @@ private theorem contains_iff_mem (b : Branch) (sf : SignedFormula) :
   · intro h
     exact ⟨sf, h, beq_self_eq_true _⟩
 
+set_option maxHeartbeats 1600000 in
 theorem sat_box_pos (b : Branch) (hSat : findUnexpanded b = none)
     (φ : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .box φ, ⟨w, t⟩⟩ ∈ b) :
     ∀ w' ∈ b.knownWorlds, ⟨.pos, φ, ⟨w', t⟩⟩ ∈ b := by
-  -- BLOCKED: Requires detailed case analysis on boxPos rule's filterMap behavior.
-  -- The simp-based unfolding of allRulesForFC broke with Lean version changes.
-  sorry
+  -- T(□φ) is in a saturated branch, so it's expanded.
+  -- Being expanded means findApplicableRule returns none.
+  -- The boxPos rule is always applicable (isApplicable = true for T(□_)),
+  -- so applyRule must have returned notApplicable.
+  -- This happens iff the filterMap over knownWorlds produces an empty list,
+  -- meaning all worlds already have T(φ).
+  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .box φ, ⟨w, t⟩⟩ hmem
+  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hBoxPos := hExp (.boxPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+  simp only [isApplicable, applyRule] at hBoxPos
+  simp only [ite_true] at hBoxPos
+  -- Extract: the filterMap over knownWorlds must be empty
+  set fm := (b.knownWorlds.filterMap fun w' =>
+    if b.contains (SignedFormula.pos φ { world := w', time := t }) = true then none
+    else some (SignedFormula.pos φ { world := w', time := t })) with hfm_def
+  by_cases hfm : fm.isEmpty
+  · -- filterMap empty: every world already has T(φ)
+    intro w' hw'
+    by_contra habs
+    have hNotContains : Branch.contains b ⟨.pos, φ, ⟨w', t⟩⟩ = false := by
+      simp only [Bool.eq_false_iff]; exact fun h => habs ((contains_iff_mem b _).mp h)
+    have hmem_fm : SignedFormula.pos φ ⟨w', t⟩ ∈ fm := by
+      rw [hfm_def, List.mem_filterMap]
+      exact ⟨w', hw', by simp [SignedFormula.pos, hNotContains]⟩
+    have hnil : fm = [] := List.isEmpty_iff.mp hfm
+    rw [hnil] at hmem_fm
+    exact absurd hmem_fm (by simp)
+  · -- filterMap non-empty: applyRule returns persistent (not notApplicable),
+    -- so findApplicableRule returns some, contradicting expansion
+    simp [hfm] at hBoxPos
 
 /--
 **Box negative saturation**: If `F(□φ)` at `(w, t)` is in a saturated branch,
@@ -516,41 +546,72 @@ theorem sat_box_neg (b : Branch) (hSat : findUnexpanded b = none)
   have hExp := findUnexpanded_none_all_expanded b hSat ⟨.neg, .box φ, ⟨w, t⟩⟩ hmem
   simp [boxNeg_not_expanded] at hExp
 
+set_option maxHeartbeats 800000 in
 /--
-**Until positive saturation**: If `T(U(event, guard))` at `(w, t)` was in a
-saturated branch, then at some future time `t'`, either:
-- `T(event)` at `(w, t')` is in the branch (event witnessed), or
-- `T(guard)` at `(w, t')` and `T(U(event, guard))` at `(w, t')` are in the
-  branch (guard holds and obligation continues).
+Helper: T(U(event, guard)) is never expanded in any branch.
+If guard = top, someFuturePos applies (consumable). If guard ≠ top, untlPos applies (branching).
+Either way, the formula is consumed and removed from the branch during expansion.
 -/
+private theorem untlPos_not_expanded (b : Branch) (event guard : Formula) (l : Label) :
+    isExpanded ⟨.pos, .untl event guard, l⟩ b = false := by
+  simp only [isExpanded, Bool.eq_false_iff]
+  intro h
+  simp only [Option.isNone_iff_eq_none] at h
+  unfold findApplicableRule at h
+  rw [List.findSome?_eq_none_iff] at h
+  by_cases hg : guard = Formula.top
+  · subst hg
+    have := h (.someFuturePos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    simp [isApplicable, asSomeFuture?, Formula.top, applyRule] at this
+  · have h1 := h (.untlPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    have hg' : (guard == Formula.top) = false := by simp [beq_iff_eq, hg]
+    simp only [isApplicable, asUntil?] at h1
+    simp [hg'] at h1
+    simp [applyRule, asUntil?, hg'] at h1
+
 theorem sat_untl_pos (b : Branch) (hSat : findUnexpanded b = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .untl event guard, ⟨w, t⟩⟩ ∈ b) :
     ∃ t' ∈ b.knownTimes,
       (⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
       (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .untl event guard, ⟨w, t'⟩⟩ ∈ b) := by
-  -- PROOF STRATEGY: If guard = top, this is some_future (handled by someFuturePos
-  -- rule). If guard ≠ top, the untlPos rule applies via asUntil? returning some.
-  -- The branching result produces an event-witness branch and a guard+continue
-  -- branch. In the saturated branch we examine, one of the two alternatives holds.
-  -- BLOCKED BY: Requires analyzing the branching structure of expandOnce to track
-  -- which branch alternative was taken. The saturated branch must be one of the
-  -- child branches of the untlPos split, so either T(event) or T(guard) ∧ T(U(...))
-  -- is present. This requires tracking formula provenance through expansion.
-  sorry
+  -- T(U(event, guard)) cannot exist in a saturated branch: either someFuturePos
+  -- (guard = top) or untlPos (guard ≠ top) is a consumable rule that removes it.
+  exfalso
+  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
+  simp [untlPos_not_expanded] at hExp
 
+set_option maxHeartbeats 800000 in
 /--
-**Since positive saturation**: Mirror of `sat_untl_pos` for past-directed Since.
+Helper: T(S(event, guard)) is never expanded in any branch (mirror of untlPos).
 -/
+private theorem sncePos_not_expanded (b : Branch) (event guard : Formula) (l : Label) :
+    isExpanded ⟨.pos, .snce event guard, l⟩ b = false := by
+  simp only [isExpanded, Bool.eq_false_iff]
+  intro h
+  simp only [Option.isNone_iff_eq_none] at h
+  unfold findApplicableRule at h
+  rw [List.findSome?_eq_none_iff] at h
+  by_cases hg : guard = Formula.top
+  · subst hg
+    have := h (.somePastPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    simp [isApplicable, asSomePast?, Formula.top, applyRule, Formula.some_past] at this
+  · have h1 := h (.sncePos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    have hg' : (guard == Formula.top) = false := by simp [beq_iff_eq, hg]
+    simp only [isApplicable, asSince?] at h1
+    simp [hg'] at h1
+    simp [applyRule, asSince?, hg'] at h1
+
 theorem sat_snce_pos (b : Branch) (hSat : findUnexpanded b = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .snce event guard, ⟨w, t⟩⟩ ∈ b) :
     ∃ t' ∈ b.knownTimes,
       (⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
       (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snce event guard, ⟨w, t'⟩⟩ ∈ b) := by
-  -- PROOF STRATEGY: Mirror of sat_untl_pos for past-directed Since.
-  -- BLOCKED BY: Same as sat_untl_pos — requires branching provenance tracking.
-  sorry
+  -- T(S(event, guard)) cannot exist in a saturated branch: mirror of sat_untl_pos.
+  exfalso
+  have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
+  simp [sncePos_not_expanded] at hExp
 
 /--
 **Until negative saturation**: If `F(U(event, guard))` at `(w, t)` is in a
@@ -636,16 +697,17 @@ private theorem truthLemma_pos (b : Branch) (hSat : findUnexpanded b = none)
     simp [extractSemanticCountermodel] at hw'
     have hbox := sat_box_pos b hSat ψ w t hmem
     exact ih w' t (hbox w' hw')
-  | untl event guard ih_event ih_guard =>
-    -- T(U(event, guard)): by sat_untl_pos, there exists t' with T(event) at (w,t')
-    -- or T(guard) at (w,t') ∧ T(U(event,guard)) at (w,t').
-    -- This requires tracking temporal witnesses through the model construction.
-    simp only [branchTruth]
-    sorry
-  | snce event guard ih_event ih_guard =>
-    -- T(S(event, guard)): mirror of untl case.
-    simp only [branchTruth]
-    sorry
+  | untl event guard _ih_event _ih_guard =>
+    -- T(U(event, guard)) cannot exist in a saturated branch:
+    -- either someFuturePos (guard = top) or untlPos (guard ≠ top) consumes it.
+    exfalso
+    have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
+    simp [untlPos_not_expanded] at hExp
+  | snce event guard _ih_event _ih_guard =>
+    -- T(S(event, guard)) cannot exist in a saturated branch: mirror of untl case.
+    exfalso
+    have hExp := findUnexpanded_none_all_expanded b hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
+    simp [sncePos_not_expanded] at hExp
 
 /--
 Helper: if F(φ) at (w,t) is in the branch, then ¬branchTruth cm w t φ holds.

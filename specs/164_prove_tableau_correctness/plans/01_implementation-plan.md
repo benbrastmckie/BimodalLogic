@@ -95,14 +95,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Propositional and Modal Saturation Invariants [PARTIAL]
+### Phase 2: Prove Propositional and Modal Saturation Invariants [COMPLETED]
 
 **Goal**: Resolve 3 of the 7 saturation sorry sites: `sat_imp_neg`, `sat_box_pos`, `sat_box_neg`.
 
 **Tasks**:
 - [x] **Task 2.1**: Study `findApplicableRule`, `allRulesForFC`, `isApplicable`, `applyRule` definitions to understand the rule engine unfolding pattern
 - [x] **Task 2.2**: Prove `sat_imp_neg`: Show F(psi -> chi) cannot exist in a saturated branch because `impNeg` rule always applies *(completed via `impNeg_not_expanded` helper)*
-- [ ] **Task 2.3**: Prove `sat_box_pos` *(deviation: deferred -- requires relating filterMap emptiness in boxPos persistent rule to branch membership; simp-based unfolding hits term size issues with the 20+ rule list and let bindings)*
+- [x] **Task 2.3**: Prove `sat_box_pos` *(deviation: altered -- used List.findSome?_eq_none_iff to extract boxPos rule result individually, avoiding full rule list unfolding; proved filterMap empty implies all worlds have formula via contradiction)*
 - [x] **Task 2.4**: Prove `sat_box_neg`: Show F(box phi) cannot exist in a saturated branch because `boxNeg` rule always applies *(completed via `boxNeg_not_expanded` helper)*
 - [x] **Task 2.5**: Extract reusable helper lemmas *(completed: `findUnexpanded_none_all_expanded`, `expanded_iff_no_applicable`, `contains_iff_mem`, `impNeg_not_expanded`, `impPos_not_expanded`, `boxNeg_not_expanded`)*
 - [x] **Task 2.6**: Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
@@ -122,30 +122,30 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Temporal Saturation Invariants [NOT STARTED]
+### Phase 3: Prove Temporal Saturation Invariants [IN PROGRESS]
 
 **Goal**: Resolve the remaining 4 saturation sorry sites: `sat_untl_pos`, `sat_snce_pos`, `sat_untl_neg`, `sat_snce_neg`.
 
 **Tasks**:
-- [ ] Study the `untlPos`/`sncePos` branching rules in the rule engine: understand how `asUntil?`/`asSince?` triggers and what child branches are produced
-- [ ] Prove `sat_untl_pos`: Show that in a saturated branch containing T(U(event, guard)), either T(event) or T(guard) + T(U(event, guard)) exists at some future time. Analyze branching provenance through `expandOnce` to determine which child branch the saturated branch corresponds to
-- [ ] Prove `sat_snce_pos`: Mirror of `sat_untl_pos` for past-directed Since
-- [ ] Study the `untlNeg`/`snceNeg` persistent rules: understand how Reynolds co-decomposition propagates F(event) and F(guard) via `filterMap`
-- [ ] Prove `sat_untl_neg`: Show F(U(event, guard)) in a saturated branch implies F(event) or F(guard) at all known future times (persistent rule analysis, similar to `sat_box_pos`)
-- [ ] Prove `sat_snce_neg`: Mirror of `sat_untl_neg` for past-directed Since
-- [ ] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
+- [x] Study the `untlPos`/`sncePos` branching rules in the rule engine *(completed)*
+- [x] Prove `sat_untl_pos` *(deviation: altered -- proved vacuously; T(U(event, guard)) cannot exist in a saturated branch because either someFuturePos (guard=top) or untlPos (guard!=top) is a consumable rule that removes it)*
+- [x] Prove `sat_snce_pos` *(deviation: altered -- mirror vacuity proof via sncePos_not_expanded)*
+- [x] Study the `untlNeg`/`snceNeg` persistent rules *(completed -- identified architectural blocker: findUnexpanded uses empty TimeOrdering, but untlNeg/snceNeg persistent rules depend on timeOrd.futureOf/pastOf which returns [] for empty ordering)*
+- [ ] Prove `sat_untl_neg` *(deviation: deferred -- architecturally blocked; the untlNeg rule with empty TimeOrdering always returns notApplicable, so saturation provides no information about temporal propagation)*
+- [ ] Prove `sat_snce_neg` *(deviation: deferred -- same architectural blocker as sat_untl_neg)*
+- [x] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction` *(builds successfully with 4 sorry sites remaining)*
 
 **Timing**: 4 hours
 
 **Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean` - Replace sorry in `sat_untl_pos` (L501), `sat_snce_pos` (L514), `sat_untl_neg` (L536), `sat_snce_neg` (L550)
+- `Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean`
 
 **Verification**:
 - `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction` compiles
-- `grep -c sorry CountermodelExtraction.lean` reduces from 10 to 6
-- All 7 saturation invariants are sorry-free
+- Sorry count reduced from 9 to 4 (resolved sat_untl_pos, sat_snce_pos, truthLemma_pos untl/snce)
+- 5 of 7 saturation invariants are sorry-free; 2 (untl_neg, snce_neg) blocked
 
 ---
 
@@ -154,11 +154,11 @@ Phases within the same wave can execute in parallel.
 **Goal**: Complete the 5 remaining truth lemma sorry cases, build the semantic bridge, and prove `decide_complete`.
 
 **Tasks**:
-- [ ] Complete `truthLemma_pos` imp case (L594): Analyze whether T(A->B) persists in saturated branches or is consumed by `impPos` branching; prove using appropriate saturation invariant or direct structural argument
-- [ ] Complete `truthLemma_pos` untl case (L610): Use `sat_untl_pos` + induction hypothesis to show `branchTruth cm w t (untl event guard)` holds
-- [ ] Complete `truthLemma_pos` snce case (L614): Mirror of untl case
-- [ ] Complete `truthLemma_neg` untl case (L660): Use `sat_untl_neg` + induction hypothesis to show `not (branchTruth cm w t (untl event guard))` holds
-- [ ] Complete `truthLemma_neg` snce case (L664): Mirror of untl case
+- [x] Complete `truthLemma_pos` imp case: *(completed in Phase 2 -- proved vacuously via impPos_not_expanded)*
+- [x] Complete `truthLemma_pos` untl case: *(completed in Phase 3 -- proved vacuously via untlPos_not_expanded)*
+- [x] Complete `truthLemma_pos` snce case: *(completed in Phase 3 -- proved vacuously via sncePos_not_expanded)*
+- [ ] Complete `truthLemma_neg` untl case: *(blocked -- depends on sat_untl_neg which is architecturally blocked)*
+- [ ] Complete `truthLemma_neg` snce case: *(blocked -- depends on sat_snce_neg which is architecturally blocked)*
 - [ ] Verify `branchTruthLemma` becomes sorry-free
 - [ ] Build the semantic bridge: define a `TaskFrame Int` and `TaskModel` from the `SemanticCountermodel`, mapping `WorldIndex`/`TimeIndex` to concrete world histories and times
 - [ ] Prove `branchTruth_agrees_with_truth_at`: the bridge lemma showing `branchTruth cm w t phi <-> truth_at M Omega tau t phi` for the constructed model
