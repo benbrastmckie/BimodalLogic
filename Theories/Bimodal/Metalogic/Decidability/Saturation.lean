@@ -173,17 +173,23 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch
-              -- This is a simplification - full implementation would track all branches
+              -- Task 261 v3: divide fuel among sub-branches to bound total work
+              -- to O(fuel) instead of O(2^fuel). Each sub-branch receives
+              -- fuel/(max 1 n) where n is the number of sub-branches.
+              let branchFuel := fuel / (max 1 branches.length)
               let tryBranch := fun acc newBranch =>
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
                 | _ =>
-                    match expandBranchWithFuel newBranch fuel newOrd fc tracker applied' with
+                    match expandBranchWithFuel newBranch branchFuel newOrd fc tracker applied' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
               branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))  -- Dummy initial closed
 termination_by fuel
+decreasing_by
+  all_goals simp_wf
+  exact Nat.lt_succ_of_le (Nat.div_le_self fuel (max 1 branches.length))
 
 /--
 Expand multiple branches until all closed or one is found open.
@@ -848,10 +854,11 @@ private theorem foldl_preserves_findClosure
       (fun ob' ord' ap' h => tryBranch_inr fuel newOrd fc tracker applied' init hd ob' ord' ap' ih h_init h)
       h_result
 
-set_option maxHeartbeats 1600000 in
+set_option maxHeartbeats 3200000 in
 /--
 General soundness: if `expandBranchWithFuel` returns an open branch,
 that branch has no closure reason.
+Uses strong induction to handle the fuel-divided split case (task 261 v3).
 -/
 private theorem expandBranchWithFuel_sound
     (fuel : Nat) :
@@ -859,30 +866,35 @@ private theorem expandBranchWithFuel_sound
       (applied : AppliedSet) (openBranch : Branch) (ord : TimeOrdering) (ap : AppliedSet),
       expandBranchWithFuel b fuel timeOrd fc tracker applied = some (.inr (openBranch, ord, ap)) →
       findClosure openBranch fc = none := by
-  induction fuel with
-  | zero => intro b timeOrd fc tracker applied ob ord ap h; simp [expandBranchWithFuel] at h
-  | succ n ih =>
+  induction fuel using Nat.strongRecOn with
+  | _ n ih =>
     intro b timeOrd fc tracker applied ob ord ap h
-    rw [expandBranchWithFuel] at h
-    cases hfc : findClosure b fc with
-    | some reason => simp [hfc] at h
-    | none =>
-      simp [hfc] at h
-      by_cases hblock : (findBlockedTime b timeOrd).isSome
-      · simp [hblock] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
-      · simp [hblock] at h
-        match hexp : expandOnceWithApplied b timeOrd fc applied with
-        | ⟨.saturated, _, _⟩ =>
-          simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
-        | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
-          simp [hexp] at h
-          exact ih newBranch newOrd fc _ _ ob ord ap h
-        | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
-          simp [hexp] at h
-          exact foldl_preserves_findClosure n newOrd fc _ _ ih branches
-            (some (.inl ⟨b, .botPos Label.initial⟩))
-            (fun _ _ _ h' => by simp at h')
-            ob ord ap h
+    cases n with
+    | zero => simp [expandBranchWithFuel] at h
+    | succ k =>
+      unfold expandBranchWithFuel at h
+      cases hfc : findClosure b fc with
+      | some reason => simp [hfc] at h
+      | none =>
+        simp [hfc] at h
+        by_cases hblock : (findBlockedTime b timeOrd).isSome
+        · simp [hblock] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
+        · simp [hblock] at h
+          match hexp : expandOnceWithApplied b timeOrd fc applied with
+          | ⟨.saturated, _, _⟩ =>
+            simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
+          | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
+            simp [hexp] at h
+            exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ ob ord ap h
+          | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
+            simp [hexp] at h
+            have hbf : k / (max 1 branches.length) < k + 1 :=
+              Nat.lt_succ_of_le (Nat.div_le_self k _)
+            exact foldl_preserves_findClosure (k / (max 1 branches.length)) newOrd fc _ _
+              (ih _ hbf) branches
+              (some (.inl ⟨b, .botPos Label.initial⟩))
+              (fun _ _ _ h' => by simp at h')
+              ob ord ap h
 
 /--
 **Blocking soundness**: Subset blocking does not prematurely close any
