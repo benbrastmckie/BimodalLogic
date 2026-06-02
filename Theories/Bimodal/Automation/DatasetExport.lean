@@ -469,6 +469,14 @@ structure CLIArgs where
       Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
       Format: "9:0,10:100000,11:300000" where 0 = exhaustive -/
   stratifiedQuotas : List (Nat × Nat) := []
+  /-- Resume from formula N (skip the first N formulas and append to existing output).
+      0 means fresh start (default). -/
+  resumeFrom : Nat := 0
+  /-- Path to checkpoint file containing serialized formula list for deterministic resume.
+      Default: derived from output path by replacing .jsonl with .checkpoint -/
+  checkpointFile : Option String := none
+  /-- When set, read formulas from the checkpoint file instead of re-enumerating. -/
+  useCheckpoint : Bool := false
   deriving Repr, Inhabited
 
 /--
@@ -519,9 +527,213 @@ where
     go rest { acc with validSeedCount := n.toNat! }
   | "--stratified-quotas" :: q :: rest, acc =>
     go rest { acc with stratifiedQuotas := parseQuotas q }
+  | "--resume-from" :: n :: rest, acc =>
+    go rest { acc with resumeFrom := n.toNat! }
+  | "--checkpoint-file" :: p :: rest, acc =>
+    go rest { acc with checkpointFile := some p }
+  | "--use-checkpoint" :: rest, acc =>
+    go rest { acc with useCheckpoint := true }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
+
+/-!
+## S-Expression Parser for Checkpoint Resume
+
+Parse formulas from S-expression strings written by `Formula.toSExpr`.
+Used to read checkpoint files for deterministic resume.
+-/
+
+open Bimodal.Syntax
+open Bimodal.Automation
+open Bimodal.Automation.DatasetExport
+
+/-- Parser state for S-expression parsing using raw byte positions. -/
+structure SExprPS where
+  input : String
+  pos : String.Pos.Raw
+
+/-- Get the current character without advancing. -/
+def SExprPS.peek (st : SExprPS) : Option Char :=
+  String.Pos.Raw.get? st.input st.pos
+
+/-- Advance position by one character (using the current character's byte width). -/
+def SExprPS.advance (st : SExprPS) : SExprPS :=
+  match String.Pos.Raw.get? st.input st.pos with
+  | some c => { st with pos := ⟨st.pos.byteIdx + c.utf8Size⟩ }
+  | none => st
+
+/-- Skip whitespace characters (recursive helper). -/
+def SExprPS.skipWSAux (st : SExprPS) : (fuel : Nat) → SExprPS
+  | 0 => st
+  | fuel + 1 =>
+    match st.peek with
+    | some ' ' | some '\t' | some '\n' | some '\r' => st.advance.skipWSAux fuel
+    | _ => st
+
+/-- Skip whitespace characters. -/
+def SExprPS.skipWS (st : SExprPS) : SExprPS := st.skipWSAux 1000
+
+/-- Check if the input matches a specific string at current position. -/
+def SExprPS.matchStr (st : SExprPS) (s : String) : Bool :=
+  let chars := s.toList
+  let rec go (p : String.Pos.Raw) : List Char → Bool
+    | [] => true
+    | c :: cs =>
+      match String.Pos.Raw.get? st.input p with
+      | some c' => if c == c' then go ⟨p.byteIdx + c'.utf8Size⟩ cs else false
+      | none => false
+  go st.pos chars
+
+/-- Advance position by the byte length of a string. -/
+def SExprPS.advanceBy (st : SExprPS) (s : String) : SExprPS :=
+  { st with pos := ⟨st.pos.byteIdx + s.utf8ByteSize⟩ }
+
+/-- Parse quoted string contents (recursive helper). -/
+def parseQuotedStringAux (st : SExprPS) (acc : String) : (fuel : Nat) → Option (String × SExprPS)
+  | 0 => none
+  | fuel + 1 =>
+    match st.peek with
+    | some '"' => some (acc, st.advance)  -- skip closing quote
+    | some '\\' =>
+      let st := st.advance
+      match st.peek with
+      | some c => parseQuotedStringAux st.advance (acc.push c) fuel
+      | none => none
+    | some c => parseQuotedStringAux st.advance (acc.push c) fuel
+    | none => none
+
+/-- Parse a quoted string (e.g., "p" or "hello"). -/
+def parseQuotedStringSExpr (st : SExprPS) : Option (String × SExprPS) :=
+  match st.peek with
+  | some '"' => parseQuotedStringAux st.advance "" 10000
+  | _ => none
+
+/-- Parse a natural number (recursive helper). -/
+def parseNatSExprAux (st : SExprPS) (acc : Nat) (hasDigit : Bool) : (fuel : Nat) → Option (Nat × SExprPS)
+  | 0 => if hasDigit then some (acc, st) else none
+  | fuel + 1 =>
+    match st.peek with
+    | some c =>
+      if c.isDigit then parseNatSExprAux st.advance (acc * 10 + (c.toNat - '0'.toNat)) true fuel
+      else if hasDigit then some (acc, st)
+      else none
+    | none => if hasDigit then some (acc, st) else none
+
+/-- Parse a natural number. -/
+def parseNatSExpr (st : SExprPS) : Option (Nat × SExprPS) :=
+  parseNatSExprAux st 0 false 100
+
+/-- Parse a single formula from an S-expression string.
+    Returns the parsed formula and the remaining parser state.
+
+    Supported forms:
+    - `bot`
+    - `(atom "name")`
+    - `(atom "name" N)` (with fresh index)
+    - `(imp <φ> <ψ>)`
+    - `(box <φ>)`
+    - `(untl <φ> <ψ>)`
+    - `(snce <φ> <ψ>)` -/
+def parseSExprFormula (st : SExprPS) : (fuel : Nat) → Option (Formula × SExprPS)
+  | 0 => none
+  | fuel + 1 =>
+    let st := st.skipWS
+    match st.peek with
+    | some '(' =>
+      let st := st.advance.skipWS
+      -- Parse tag
+      if st.matchStr "atom " then
+        let st := st.advanceBy "atom "
+        let st := st.skipWS
+        match parseQuotedStringSExpr st with
+        | some (name, st) =>
+          let st := st.skipWS
+          -- Check for optional fresh index
+          match st.peek with
+          | some ')' => some (Formula.atom (Atom.mk_base name), st.advance)
+          | some c =>
+            if c.isDigit then
+              match parseNatSExpr st with
+              | some (idx, st) =>
+                let st := st.skipWS
+                match st.peek with
+                | some ')' => some (Formula.atom ⟨name, some idx⟩, st.advance)
+                | _ => none
+              | none => none
+            else none
+          | none => none
+        | none => none
+      else if st.matchStr "imp " then
+        let st := st.advanceBy "imp "
+        match parseSExprFormula st fuel with
+        | some (lhs, st) =>
+          match parseSExprFormula st fuel with
+          | some (rhs, st) =>
+            let st := st.skipWS
+            match st.peek with
+            | some ')' => some (Formula.imp lhs rhs, st.advance)
+            | _ => none
+          | none => none
+        | none => none
+      else if st.matchStr "box " then
+        let st := st.advanceBy "box "
+        match parseSExprFormula st fuel with
+        | some (child, st) =>
+          let st := st.skipWS
+          match st.peek with
+          | some ')' => some (Formula.box child, st.advance)
+          | _ => none
+        | none => none
+      else if st.matchStr "untl " then
+        let st := st.advanceBy "untl "
+        match parseSExprFormula st fuel with
+        | some (lhs, st) =>
+          match parseSExprFormula st fuel with
+          | some (rhs, st) =>
+            let st := st.skipWS
+            match st.peek with
+            | some ')' => some (Formula.untl lhs rhs, st.advance)
+            | _ => none
+          | none => none
+        | none => none
+      else if st.matchStr "snce " then
+        let st := st.advanceBy "snce "
+        match parseSExprFormula st fuel with
+        | some (lhs, st) =>
+          match parseSExprFormula st fuel with
+          | some (rhs, st) =>
+            let st := st.skipWS
+            match st.peek with
+            | some ')' => some (Formula.snce lhs rhs, st.advance)
+            | _ => none
+          | none => none
+        | none => none
+      else none
+    | some 'b' =>
+      if st.matchStr "bot" then
+        some (Formula.bot, st.advanceBy "bot")
+      else none
+    | _ => none
+
+/-- Parse a single-line S-expression into a Formula.
+    Returns `none` if parsing fails. -/
+def parseFormulaSExpr (s : String) : Option Formula :=
+  let st : SExprPS := { input := s, pos := ⟨0⟩ }
+  match parseSExprFormula st 10000 with
+  | some (φ, _) => some φ
+  | none => none
+
+/-- Enumerate formulas and optionally enrich with duals.
+    Factored out of main for reuse in checkpoint vs fresh enumeration paths. -/
+private def enumerateAndEnrich (params : EnumParams) (includeDuals : Bool) : IO (List Formula) := do
+  IO.println "Generating formulas..."
+  let formulas ← generateFormulas params
+  IO.println s!"  Generated {formulas.length} unique formulas"
+  let formulas' := if includeDuals then enrichWithDuals formulas else formulas
+  if includeDuals then
+    IO.println s!"  After temporal duals: {formulas'.length} formulas"
+  return formulas'
 
 /-!
 ## Main Entry Point
@@ -529,21 +741,20 @@ end Bimodal.Automation.DatasetExport
 The `main` function is the CLI entry point for `lake exe dataset_generator`.
 -/
 
-open Bimodal.Automation
-open Bimodal.Automation.DatasetExport
-
 /--
 Main entry point for the dataset generator executable.
 
 Pipeline:
 1. Parse CLI arguments
 2. Construct EnumParams
-3. Enumerate/sample formulas
+3. Load formulas (from checkpoint or fresh enumeration)
 4. Optionally enrich with temporal duals
-5. Label all formulas via decision procedure
-6. Write JSONL dataset file
-7. Write metadata file
-8. Print summary statistics
+5. Write checkpoint file (for future resume)
+6. Skip already-labeled formulas if resuming
+7. Label remaining formulas, write JSONL lines immediately
+8. Write metadata file
+9. Print summary statistics
+10. Clean up checkpoint on completion
 -/
 def main (args : List String) : IO Unit := do
   let cliArgs := parseCLIArgs args
@@ -556,9 +767,17 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Valid seed count: {cliArgs.validSeedCount}"
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"
+  if cliArgs.resumeFrom > 0 then
+    IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
 
-  -- Step 1: Enumerate formulas
+  -- Step 1: Determine checkpoint file path
+  let checkpointPath : System.FilePath :=
+    match cliArgs.checkpointFile with
+    | some p => ⟨p⟩
+    | none => ⟨cliArgs.output.replace ".jsonl" ".checkpoint"⟩
+
+  -- Step 1b: Load formulas (from checkpoint or fresh enumeration)
   let params : EnumParams := {
     maxComplexity := cliArgs.maxComplexity
     maxModalDepth := cliArgs.maxModalDepth
@@ -568,18 +787,26 @@ def main (args : List String) : IO Unit := do
     validSeedCount := cliArgs.validSeedCount
     stratifiedQuotas := cliArgs.stratifiedQuotas
   }
-  IO.println "Generating formulas..."
-  let formulas ← generateFormulas params
-  IO.println s!"  Generated {formulas.length} unique formulas"
+  -- When resuming, try to load from checkpoint to avoid re-enumeration non-determinism
+  let useCheckpointFile := cliArgs.useCheckpoint ||
+    (cliArgs.resumeFrom > 0 && (← checkpointPath.pathExists))
+  let formulas' ← if useCheckpointFile then do
+    IO.println s!"Loading formulas from checkpoint: {checkpointPath}..."
+    let content ← IO.FS.readFile checkpointPath
+    let lines := (content.splitOn "\n").filter (· ≠ "")
+    let parsed := lines.filterMap parseFormulaSExpr
+    if parsed.length == 0 then do
+      IO.println "  WARNING: checkpoint file empty or unparseable, falling back to re-enumeration"
+      let formulas ← enumerateAndEnrich params cliArgs.includeDuals
+      pure formulas
+    else do
+      IO.println s!"  Loaded {parsed.length} formulas from checkpoint"
+      pure parsed
+  else do
+    let formulas ← enumerateAndEnrich params cliArgs.includeDuals
+    pure formulas
 
-  -- Step 2: Optionally enrich with duals
-  let formulas' := if cliArgs.includeDuals then
-    enrichWithDuals formulas
-  else formulas
-  if cliArgs.includeDuals then
-    IO.println s!"  After temporal duals: {formulas'.length} formulas"
-
-  -- Step 3: Ensure output directory exists
+  -- Step 2: Ensure output directory exists
   let outputPath : System.FilePath := ⟨cliArgs.output⟩
   match outputPath.parent with
   | some dir => do
@@ -588,13 +815,30 @@ def main (args : List String) : IO Unit := do
       IO.FS.createDirAll dir
   | none => pure ()
 
+  -- Step 2b: Write checkpoint file on fresh runs
+  if cliArgs.resumeFrom == 0 then do
+    IO.println s!"Writing checkpoint file: {checkpointPath}..."
+    let cpHandle ← IO.FS.Handle.mk checkpointPath .write
+    for φ in formulas' do
+      cpHandle.putStrLn φ.toSExpr
+    IO.println s!"  Wrote {formulas'.length} formulas to checkpoint"
+
+  -- Step 3d: Skip already-labeled formulas when resuming
+  let formulasToLabel := if cliArgs.resumeFrom > 0 then
+    formulas'.drop cliArgs.resumeFrom
+  else formulas'
+
   -- Step 4: Streaming label + write pipeline
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
-  IO.println s!"Labeling and streaming {formulas'.length} formulas to {cliArgs.output}..."
-  IO.println s!"[label] Starting labeling of {formulas'.length} formulas..."
-  let handle ← IO.FS.Handle.mk outputPath .write
+  let totalFormulas := formulas'.length
+  if cliArgs.resumeFrom > 0 then
+    IO.println s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of {totalFormulas})..."
+  IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
+  IO.println s!"[label] Starting labeling of {formulasToLabel.length} formulas..."
+  let fileMode := if cliArgs.resumeFrom > 0 then IO.FS.Mode.append else IO.FS.Mode.write
+  let handle ← IO.FS.Handle.mk outputPath fileMode
   let startTime ← IO.monoMsNow
-  let mut count : Nat := 0
+  let mut count : Nat := cliArgs.resumeFrom
   let mut validCount : Nat := 0
   let mut invalidCount : Nat := 0
   let mut timeoutCount : Nat := 0
@@ -602,7 +846,7 @@ def main (args : List String) : IO Unit := do
   let mut totalTimeMs : Nat := 0
   let mut categoryCounts : List (GoalCategory × Nat) := []
   let mut methodCounts : List (String × Nat) := []
-  for φ in formulas' do
+  for φ in formulasToLabel do
     let labeled ← labelFormula φ
     -- Write JSONL line immediately (no accumulation)
     let splitName := assignSplit labeled.formula.prettyPrint
@@ -622,36 +866,41 @@ def main (args : List String) : IO Unit := do
     if count % 1000 == 0 then
       let elapsed ← IO.monoMsNow
       let elapsedMs := elapsed - startTime
-      let pct := if formulas'.length > 0 then count * 100 / formulas'.length else 0
-      let validPct := if count > 0 then validCount * 100 / count else 0
-      let timeoutPct := if count > 0 then timeoutCount * 100 / count else 0
-      let rate := if elapsedMs > 0 then count * 1000 / elapsedMs else count
-      let etaStr := if count < 100 then "calculating..."
+      let labeledSoFar := count - cliArgs.resumeFrom
+      let pct := if totalFormulas > 0 then count * 100 / totalFormulas else 0
+      let validPct := if labeledSoFar > 0 then validCount * 100 / labeledSoFar else 0
+      let timeoutPct := if labeledSoFar > 0 then timeoutCount * 100 / labeledSoFar else 0
+      let rate := if elapsedMs > 0 then labeledSoFar * 1000 / elapsedMs else labeledSoFar
+      let etaStr := if labeledSoFar < 100 then "calculating..."
         else if rate > 0 then
-          let remaining := formulas'.length - count
+          let remaining := totalFormulas - count
           let etaSecs := remaining / rate
           let etaMin := etaSecs / 60
           let etaSecRem := etaSecs % 60
           s!"{etaMin}m {etaSecRem}s"
         else "unknown"
-      IO.println s!"[label] {count}/{formulas'.length} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+      IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
 
   -- Labeling completion line
   let labelEndMs ← IO.monoMsNow
   let labelElapsedMs := labelEndMs - startTime
   let labelElapsedSecs := labelElapsedMs / 1000
-  let finalRate := if labelElapsedMs > 0 then count * 1000 / labelElapsedMs else count
-  IO.println s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec)"
+  let labeledThisRun := count - cliArgs.resumeFrom
+  let finalRate := if labelElapsedMs > 0 then labeledThisRun * 1000 / labelElapsedMs else labeledThisRun
+  if cliArgs.resumeFrom > 0 then
+    IO.println s!"[label] Labeling complete: {labeledThisRun} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec), total {count} of {totalFormulas}"
+  else
+    IO.println s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec)"
 
-  -- Step 5: Print statistics
-  let avgTimeMs := if count > 0 then totalTimeMs / count else 0
-  let avgComplexity := if count > 0 then totalComplexity / count else 0
+  -- Step 5: Print statistics (for this run's portion only)
+  let avgTimeMs := if labeledThisRun > 0 then totalTimeMs / labeledThisRun else 0
+  let avgComplexity := if labeledThisRun > 0 then totalComplexity / labeledThisRun else 0
   IO.println ""
-  IO.println s!"Batch Statistics:"
-  IO.println s!"  Total: {count}"
-  IO.println s!"  Valid: {validCount} ({if count > 0 then validCount * 100 / count else 0}%)"
+  IO.println s!"Batch Statistics{if cliArgs.resumeFrom > 0 then " (this run)" else ""}:"
+  IO.println s!"  Labeled: {labeledThisRun}{if cliArgs.resumeFrom > 0 then s!" (total in file: {count})" else ""}"
+  IO.println s!"  Valid: {validCount} ({if labeledThisRun > 0 then validCount * 100 / labeledThisRun else 0}%)"
   IO.println s!"  Invalid: {invalidCount}"
-  IO.println s!"  Timeout: {timeoutCount} ({if count > 0 then timeoutCount * 100 / count else 0}%)"
+  IO.println s!"  Timeout: {timeoutCount} ({if labeledThisRun > 0 then timeoutCount * 100 / labeledThisRun else 0}%)"
   IO.println s!"  Avg decision time: {avgTimeMs}ms"
   IO.println ""
 
@@ -673,16 +922,23 @@ def main (args : List String) : IO Unit := do
     decisionMethodDist := methodCounts
   }
   writeMetadata outputPath metadata
-  IO.println s!"  Wrote {count} records to {cliArgs.output}"
+  IO.println s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!" (appended, total: {count})" else ""}"
   IO.println s!"  Wrote metadata file"
+
+  -- Step 6b: Clean up checkpoint file on successful completion
+  if cliArgs.resumeFrom == 0 || count == totalFormulas then do
+    let cpExists ← checkpointPath.pathExists
+    if cpExists then do
+      IO.FS.removeFile checkpointPath
+      IO.println s!"  Cleaned up checkpoint file: {checkpointPath}"
 
   -- Step 7: Feasibility checks
   IO.println ""
   IO.println "Feasibility Checks:"
-  let timeoutRate := if count > 0
-    then timeoutCount * 100 / count else 0
-  let validRate := if count > 0
-    then validCount * 100 / count else 0
+  let timeoutRate := if labeledThisRun > 0
+    then timeoutCount * 100 / labeledThisRun else 0
+  let validRate := if labeledThisRun > 0
+    then validCount * 100 / labeledThisRun else 0
   IO.println s!"  Timeout rate: {timeoutRate}% (target: <20%)"
   IO.println s!"  Valid fraction: {validRate}% (target: >=30%)"
   IO.println s!"  Category diversity: {categoryCounts.length} categories"
