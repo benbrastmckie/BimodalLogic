@@ -332,7 +332,7 @@
       ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-06-01T23:30:00Z",
-      "next_artifact_number": 54,
+      "next_artifact_number": 55,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -638,19 +638,24 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/53_implementation-plan.md",
           "type": "plan",
           "summary": "Plan v53: Henkin BFMCS approach -- prove restricted coherence for henkin_bfmcs, rewire completeness_discrete, bypass succ_embed entirely"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/54_implementation-plan.md",
+          "type": "plan",
+          "summary": "Plan v54: Modified Henkin chain with F-formula preservation in seed -- includes all pending F(phi) in Lindenbaum seed to prevent loss, then proves restricted_tc via schedule + persistence"
         }
       ],
-      "session_id": "sess_1748820600_orch155",
+      "session_id": "sess_1748825400_orch155b",
       "researched": "2026-06-01T12:30:00Z",
-      "planned": "2026-06-01T13:10:00Z",
+      "planned": "2026-06-02T00:10:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
       "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 8,
+        "phases": 4,
+        "total_effort_hours": 12,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 53,
+        "plan_version": 54,
         "dependency_waves": [
           [
             1
@@ -660,6 +665,9 @@
           ],
           [
             3
+          ],
+          [
+            4
           ]
         ],
         "reports_integrated": [
@@ -676,6 +684,11 @@
           {
             "path": "phase-1-handoff-20260601T180000Z.md (blocker analysis)",
             "integrated_in_plan_version": 52,
+            "integrated_date": "2026-06-01"
+          },
+          {
+            "path": "plans/53 blocker (F(phi)->G(F(phi)) not a theorem)",
+            "integrated_in_plan_version": 54,
             "integrated_date": "2026-06-01"
           }
         ]
@@ -934,8 +947,9 @@
         }
       ],
       "dependencies": [
+        189,
         192,
-        189
+        196
       ]
     },
     {
