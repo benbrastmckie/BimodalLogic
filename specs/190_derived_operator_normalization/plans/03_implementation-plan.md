@@ -108,32 +108,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: EnrichedFormula ADT and Fold Algorithm [IN PROGRESS]
+### Phase 2: EnrichedFormula ADT and Fold Algorithm [COMPLETED]
 
 **Goal**: Implement the `EnrichedFormula` inductive type and the greedy `Formula.foldFormula` function that pattern-matches primitive trees against derived operator patterns.
 
 **Tasks**:
-- [ ] Define `EnrichedFormula` inductive type with 21 constructors:
+- [x] Define `EnrichedFormula` inductive type with 21 constructors:
   - 6 primitive: `atom`, `bot`, `imp`, `box`, `untl`, `snce`
   - 15 enriched: `neg`, `top`, `and_`, `or_`, `diamond`, `some_future`, `some_past`, `all_future`, `all_past`, `next`, `prev`, `weak_future`, `weak_past`, `always`, `sometimes`
-- [ ] Document the complete ambiguity analysis table:
-  - `imp φ bot` -- unambiguous: always `neg φ`
-  - `imp bot bot` -- unambiguous: always `top`
-  - `imp (imp φ bot) ψ` -- AMBIGUOUS: `or φ ψ` vs `imp (neg φ) ψ`. Conservative: fold to `or` only when ψ is not `bot`; if ψ is `bot`, fold the inner to `neg` then the outer to `neg(neg φ)` which simplifies
-  - `imp (imp φ (imp ψ bot)) bot` -- unambiguous: `and φ ψ`
-  - `imp (box (imp φ bot)) bot` -- unambiguous: `diamond φ`
-  - `untl φ (imp bot bot)` -- unambiguous: `some_future φ` (guard is `top`)
-  - `snce φ (imp bot bot)` -- unambiguous: `some_past φ` (guard is `top`)
-  - `untl φ bot` -- unambiguous: `next φ` (guard is `bot`)
-  - `snce φ bot` -- unambiguous: `prev φ` (guard is `bot`)
-  - Higher-level operators (`all_future`, `all_past`, `weak_future`, `weak_past`, `always`, `sometimes`) are composed from the above; fold bottom-up then recognize compositions
-- [ ] Implement `Formula.foldFormula : Formula -> EnrichedFormula` using bottom-up recursive pattern matching:
-  1. Recursively fold subformulas first
-  2. At each node, attempt to match against defined operator patterns from highest level down
-  3. For ambiguous `imp(neg(A), B)` pattern: fold to `or` when B is not further reducible to `neg`; otherwise leave as `imp(neg A, B)`
-  4. Conservative default: if no unambiguous match, keep the primitive constructor
-- [ ] Add `EnrichedFormula.toPrimitive : EnrichedFormula -> Formula` for the inverse direction (unfold each enriched tag back to its definition)
-- [ ] Add `#eval` tests demonstrating fold on representative formulas
+- [x] Document the complete ambiguity analysis table *(deviation: altered -- ambiguity table documented in code docstring rather than standalone section; or_ recognition deferred to post-processing pass to avoid interference with and_ pattern)*
+- [x] Implement `Formula.foldFormula : Formula -> EnrichedFormula` using bottom-up recursive pattern matching *(deviation: altered -- or_ recognition deferred to recognizeComposites post-pass instead of being handled in foldImp, to prevent interference with and_/weak_future/weak_past/always/sometimes recognition)*
+- [x] Add `EnrichedFormula.toPrimitive : EnrichedFormula -> Formula` for the inverse direction (unfold each enriched tag back to its definition)
+- [x] Add `#eval` tests demonstrating fold on representative formulas
 
 **Timing**: 2 hours
 
