@@ -156,7 +156,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Build EF Game Bridge with correct depth relationship [NOT STARTED]
+### Phase 3: Build EF Game Bridge with correct depth relationship [BLOCKED]
 
 **Goal**: Build bridge lemmas in NFGameBridge.lean connecting NF hypotheses (depth-k 1-var NFs, interval_nf_types on M.carrier) to the existing sorry-free EF game infrastructure (rank_type, decomposition_agreement, ghr93_duplicator_wins on ExtendedCarrier), using the correct depth relationship: depth-k NF -> rank_type at depth floor(k/2), game at rank floor(k/2), then game result -> depth-k NF agreement. Then refactor `nf_2var_from_interval_data` to use the bridge.
 

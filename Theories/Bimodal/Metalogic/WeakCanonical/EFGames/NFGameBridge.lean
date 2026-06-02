@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 import Bimodal.Metalogic.WeakCanonical.EFGames.GapDetection
+import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 
 /-!
 # NF-Game Bridge: Helper Lemmas
