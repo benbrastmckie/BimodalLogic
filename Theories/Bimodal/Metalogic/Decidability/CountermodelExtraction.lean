@@ -618,6 +618,118 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
 
 set_option maxHeartbeats 3200000 in
 /--
+**Some-future negative saturation**: If `F(FA)` at `(w, t)` is in a saturated
+branch, then `F(A)` is at `(w, t')` for every known future time `t'`.
+Here `F(FA) = F(U(A, ⊤))`.
+-/
+theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
+    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
+    (event : Formula) (w : WorldIndex) (t : TimeIndex)
+    (hmem : ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ ∈ b) :
+    ∀ t' ∈ timeOrd.futureOf t,
+      ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b := by
+  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat
+    ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ hmem
+  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hSFNeg := hExp (.someFutureNeg)
+    (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+  simp only [isApplicable, asSomeFuture?] at hSFNeg
+  -- Extract: applyRule must return .notApplicable
+  have hNA : (applyRule .someFutureNeg ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 =
+      .notApplicable := by
+    by_contra h
+    match hm : (applyRule .someFutureNeg ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
+    | .notApplicable => exact h hm
+    | .linear fs => rw [hm] at hSFNeg; simp at hSFNeg
+    | .branching bs => rw [hm] at hSFNeg; simp at hSFNeg
+    | .persistent fs => rw [hm] at hSFNeg; simp at hSFNeg
+  -- Unfold applyRule to get the filter structure
+  unfold applyRule at hNA
+  simp only [asSomeFuture?] at hNA
+  intro t' ht'
+  by_contra habs
+  have hNotContains : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => habs ((contains_iff_mem b _).mp h)
+  -- Show the filterMap produces a non-empty list (t' contributes to it)
+  have hFilterPred : (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
+      then none else some (SignedFormula.neg event { world := w, time := t' })) =
+      some (SignedFormula.neg event { world := w, time := t' }) := by
+    simp [SignedFormula.neg, hNotContains]
+  -- The non-empty filterMap means the result is persistent (not notApplicable)
+  have h_t'_fmap : SignedFormula.neg event { world := w, time := t' } ∈
+      (timeOrd.futureOf t).filterMap fun t'' =>
+        if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
+        then none else some (SignedFormula.neg event { world := w, time := t'' }) := by
+    rw [List.mem_filterMap]
+    exact ⟨t', ht', hFilterPred⟩
+  have hNE : ((timeOrd.futureOf t).filterMap fun t'' =>
+      if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
+      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty = false := by
+    rw [Bool.eq_false_iff]
+    intro hempty
+    have := List.isEmpty_iff.mp hempty
+    exact absurd (this ▸ h_t'_fmap) (by simp)
+  simp only [SignedFormula.neg] at hNA hNE
+  simp [hNE] at hNA
+
+set_option maxHeartbeats 3200000 in
+/--
+**Some-past negative saturation**: If `F(PA)` at `(w, t)` is in a saturated
+branch, then `F(A)` is at `(w, t')` for every known past time `t'`.
+Here `F(PA) = F(S(A, ⊤))`.
+-/
+theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
+    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
+    (event : Formula) (w : WorldIndex) (t : TimeIndex)
+    (hmem : ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ ∈ b) :
+    ∀ t' ∈ timeOrd.pastOf t,
+      ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b := by
+  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat
+    ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ hmem
+  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hSPNeg := hExp (.somePastNeg)
+    (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+  simp only [isApplicable, asSomePast?] at hSPNeg
+  have hNA : (applyRule .somePastNeg ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 =
+      .notApplicable := by
+    by_contra h
+    match hm : (applyRule .somePastNeg ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
+    | .notApplicable => exact h hm
+    | .linear fs => rw [hm] at hSPNeg; simp at hSPNeg
+    | .branching bs => rw [hm] at hSPNeg; simp at hSPNeg
+    | .persistent fs => rw [hm] at hSPNeg; simp at hSPNeg
+  unfold applyRule at hNA
+  simp only [asSomePast?] at hNA
+  intro t' ht'
+  by_contra habs
+  have hNotContains : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => habs ((contains_iff_mem b _).mp h)
+  have hFilterPred : (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
+      then none else some (SignedFormula.neg event { world := w, time := t' })) =
+      some (SignedFormula.neg event { world := w, time := t' }) := by
+    simp [SignedFormula.neg, hNotContains]
+  have h_t'_fmap : SignedFormula.neg event { world := w, time := t' } ∈
+      (timeOrd.pastOf t).filterMap fun t'' =>
+        if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
+        then none else some (SignedFormula.neg event { world := w, time := t'' }) := by
+    rw [List.mem_filterMap]
+    exact ⟨t', ht', hFilterPred⟩
+  have hNE : ((timeOrd.pastOf t).filterMap fun t'' =>
+      if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
+      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty = false := by
+    rw [Bool.eq_false_iff]
+    intro hempty
+    have := List.isEmpty_iff.mp hempty
+    exact absurd (this ▸ h_t'_fmap) (by simp)
+  simp only [SignedFormula.neg] at hNA hNE
+  simp [hNE] at hNA
+
+set_option maxHeartbeats 3200000 in
+/--
 **Until negative saturation**: If `F(U(event, guard))` at `(w, t)` is in a
 saturated branch with guard not equal to `top`, then for every known future
 time `t'`, either `F(event)` at `(w, t')` or the negated guard condition holds.
@@ -835,17 +947,43 @@ private theorem truthLemma_neg (b : Branch) (timeOrd : TimeOrdering)
       rw [hCm]; simp [extractSemanticCountermodel]; exact hw'mem
     exact this (h w' hw'_in_cm)
   | untl event guard ih_event ih_guard =>
-    -- F(U(event, guard)): need ¬ ∃ t' ∈ cm.times, isTimeOrderedBefore ... ∧ branchTruth event t' ∧ ...
-    -- BLOCKED: sat_untl_neg gives F(event) ∨ F(guard) at each direct successor,
-    -- but the Until semantics uses transitive closure (isTimeOrderedBefore). For direct
-    -- successors where only F(guard) holds, we cannot negate branchTruth event.
-    -- Requires F(U(event,guard)) propagation tracking or modified branchTruth semantics.
+    -- F(U(event, guard)): with direct-successor semantics, need to show
+    -- ¬ ∃ t' ∈ futureOf t, branchTruth event t' ∧ branchTruth guard t'
+    -- After push_neg: ∀ t' ∈ futureOf t, branchTruth event t' → ¬branchTruth guard t'
     simp only [branchTruth]
-    sorry
+    intro ⟨t', ht', he, hg_true⟩
+    -- Rewrite cm.timeOrdering to timeOrd
+    rw [hOrd] at ht'
+    by_cases hg : guard = Formula.imp Formula.bot Formula.bot
+    · -- guard = top case: F(U(event, top)) = F(some_future event)
+      -- By sat_some_future_neg: F(event) at all future times
+      subst hg
+      have hmem' : ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ ∈ b := hmem
+      have hfe := sat_some_future_neg b timeOrd hSat event w t hmem' t' ht'
+      exact ih_event w t' hfe he
+    · -- guard ≠ top case: use sat_untl_neg
+      have hguard : guard ≠ Formula.top := by
+        simp only [Formula.top]; exact hg
+      have h := sat_untl_neg b timeOrd hSat event guard w t hmem hguard t' ht'
+      cases h with
+      | inl hfe => exact ih_event w t' hfe he
+      | inr hfg => exact ih_guard w t' hfg hg_true
   | snce event guard ih_event ih_guard =>
-    -- F(S(event, guard)): mirror of untl case. Same blocker.
+    -- F(S(event, guard)): mirror of untl with pastOf
     simp only [branchTruth]
-    sorry
+    intro ⟨t', ht', he, hg_true⟩
+    rw [hOrd] at ht'
+    by_cases hg : guard = Formula.imp Formula.bot Formula.bot
+    · subst hg
+      have hmem' : ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ ∈ b := hmem
+      have hfe := sat_some_past_neg b timeOrd hSat event w t hmem' t' ht'
+      exact ih_event w t' hfe he
+    · have hguard : guard ≠ Formula.top := by
+        simp only [Formula.top]; exact hg
+      have h := sat_snce_neg b timeOrd hSat event guard w t hmem hguard t' ht'
+      cases h with
+      | inl hfe => exact ih_event w t' hfe he
+      | inr hfg => exact ih_guard w t' hfg hg_true
 
 /--
 The branch truth lemma: for a saturated open branch, every signed formula

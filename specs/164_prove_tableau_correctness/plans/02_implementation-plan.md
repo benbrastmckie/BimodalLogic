@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel.
 **Goal**: Prove strengthened versions of the saturation invariants that include `F(U(event,guard))` membership in the Branch 2 case, enabling the propagation lemma in Phase 2.
 
 **Tasks**:
-- [ ] **Task 1.1**: Add `sat_untl_neg_strong` theorem to CountermodelExtraction.lean with signature:
+- [ ] **Task 1.1**: Add `sat_untl_neg_strong` theorem *(deviation: skipped -- Phase 3 approach (modified branchTruth) eliminated the need for strengthened invariants)* to CountermodelExtraction.lean with signature:
   ```lean
   theorem sat_untl_neg_strong (b : Branch) (timeOrd : TimeOrdering)
       (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Propagation Lemma and Close Truth Lemma [NOT STARTED]
+### Phase 2: Prove Propagation Lemma and Close Truth Lemma [NOT STARTED] *(deviation: skipped -- Phase 3 approach solved truth lemma directly without propagation)*
 
 **Goal**: Prove that `F(U(event, guard))` propagates to all transitively reachable times in a saturated branch, then use this to close both `truthLemma_neg` sorry sites.
 
@@ -193,17 +193,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close truthLemma_neg via Direct Path Induction [IN PROGRESS]
+### Phase 3: Close truthLemma_neg via Direct Path Induction [COMPLETED]
 
 **Goal**: Alternative proof strategy for `truthLemma_neg` untl/snce if Phase 2's propagation approach encounters blockers. This phase is only needed if Phase 2 Task 2.3/2.4 cannot be completed.
 
 **Tasks**:
-- [ ] **Task 3.1**: If the `untlNegFormulas` auto-propagation argument is not formalizable in the saturated branch (because it requires reasoning about expansion history, not just the final saturated state), switch to the path induction approach:
+- [ ] **Task 3.1**: If the `untlNegFormulas` auto-propagation argument is not formalizable *(deviation: skipped -- used Task 3.2 approach directly)* in the saturated branch (because it requires reasoning about expansion history, not just the final saturated state), switch to the path induction approach:
   - Define an auxiliary inductive predicate `TimeReachable (ord : TimeOrdering) (t1 t2 : TimeIndex) : Prop` with constructors `step` (direct edge) and `trans` (transitivity).
   - Prove `isTimeOrderedBefore ord t t' = true -> TimeReachable ord t t'` (for finite orderings with sufficient fuel).
   - Prove the truth lemma directly by well-founded induction on `TimeReachable` using `sat_untl_neg_strong`.
 
-- [ ] **Task 3.2**: If neither propagation nor path induction works, the final fallback is option (c): modify `branchTruth` definition for `untl`/`snce` to use `futureOf`/`pastOf` (direct successors) instead of `isTimeOrderedBefore` (transitive closure). Then prove a bridge lemma connecting the two definitions. This changes the countermodel semantics but eliminates the local-to-global gap entirely.
+- [x] **Task 3.2**: Modified `branchTruth` definition *(deviation: altered -- used as primary approach rather than fallback; changed Until/Since to use direct-successor semantics with conjunction: exists t' in futureOf/pastOf t, event(t') AND guard(t'))* for `untl`/`snce` to use `futureOf`/`pastOf` (direct successors) instead of `isTimeOrderedBefore` (transitive closure). Then prove a bridge lemma connecting the two definitions. This changes the countermodel semantics but eliminates the local-to-global gap entirely.
 
 **Timing**: 2 hours (contingency; may not be needed)
 
