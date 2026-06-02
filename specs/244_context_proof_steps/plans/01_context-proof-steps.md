@@ -156,7 +156,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Register in ProofStepExport.lean [NOT STARTED]
+### Phase 3: Register in ProofStepExport.lean [COMPLETED]
 
 **Goal**: Import `ContextualProofs.lean` in `ProofStepExport.lean` and register all contextual theorems in `theoremRegistry`.
 

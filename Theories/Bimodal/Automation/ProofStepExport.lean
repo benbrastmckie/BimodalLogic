@@ -1200,7 +1200,150 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "weakened_identity"
     (DerivationTree.weakening (fc := .Base) [] [q] _
       (@identity .Base p)
-      (by intro x hx; simp at hx))
+      (by intro x hx; simp at hx)),
+
+  -- ============================================================
+  -- ContextualProofs.lean (contextual theorems)
+  -- Category A: Propositional in context
+  -- ============================================================
+
+  mkEntry "ctx_identity" (identity_in_ctx p),
+  mkEntry "ctx_mp" (mp_in_context p q),
+  mkEntry "ctx_mp_chain_2" (mp_chain_2 p q r),
+  mkEntry "ctx_mp_chain_3" (mp_chain_3 p q r s),
+  mkEntry "ctx_proj_left" (conj_proj_left p q),
+  mkEntry "ctx_proj_right" (conj_proj_right p q),
+  mkEntry "ctx_apply" (apply_in_ctx p q r),
+  mkEntry "ctx_weakened_axiom" (weakened_axiom p q),
+  mkEntry "ctx_ecq" (ecq_computable p q),
+  mkEntry "ctx_ldi" (ldi_computable p q),
+  mkEntry "ctx_rdi" (rdi_computable p q),
+  mkEntry "ctx_conj_intro" (conj_intro_ctx p q),
+
+  -- Multi-instantiation: Category A
+  mkEntry "ctx_identity_q" (identity_in_ctx q),
+  mkEntry "ctx_identity_r" (identity_in_ctx r),
+  mkEntry "ctx_mp_qr" (mp_in_context q r),
+  mkEntry "ctx_mp_rs" (mp_in_context r s),
+  mkEntry "ctx_mp_chain_2_qrs" (mp_chain_2 q r s),
+  mkEntry "ctx_apply_qrs" (apply_in_ctx q r s),
+  mkEntry "ctx_ecq_qr" (ecq_computable q r),
+  mkEntry "ctx_ecq_rs" (ecq_computable r s),
+  mkEntry "ctx_ldi_qr" (ldi_computable q r),
+  mkEntry "ctx_rdi_qr" (rdi_computable q r),
+  mkEntry "ctx_conj_intro_qr" (conj_intro_ctx q r),
+  mkEntry "ctx_conj_intro_rs" (conj_intro_ctx r s),
+
+  -- ============================================================
+  -- Category B: Modal in context
+  -- ============================================================
+
+  mkEntry "ctx_box_elim" (box_elim_ctx p),
+  mkEntry "ctx_box_4" (box_4_ctx p),
+  mkEntry "ctx_box_b" (box_b_ctx p),
+  mkEntry "ctx_box_to_diamond" (box_to_diamond_ctx p),
+  mkEntry "ctx_k_dist" (k_dist_ctx p q),
+  mkEntry "ctx_box_pair" (box_pair_ctx p q),
+  mkEntry "ctx_diamond_5" (diamond_5_ctx p),
+  mkEntry "ctx_box_to_future" (box_to_future_ctx p),
+
+  -- Multi-instantiation: Category B
+  mkEntry "ctx_box_elim_q" (box_elim_ctx q),
+  mkEntry "ctx_box_4_q" (box_4_ctx q),
+  mkEntry "ctx_box_b_q" (box_b_ctx q),
+  mkEntry "ctx_box_to_diamond_q" (box_to_diamond_ctx q),
+  mkEntry "ctx_k_dist_qr" (k_dist_ctx q r),
+  mkEntry "ctx_box_pair_qr" (box_pair_ctx q r),
+  mkEntry "ctx_box_to_future_q" (box_to_future_ctx q),
+
+  -- ============================================================
+  -- Category C: Temporal in context
+  -- ============================================================
+
+  mkEntry "ctx_temp_k" (temp_k_ctx p q),
+  mkEntry "ctx_connect_future" (connect_future_ctx p),
+  mkEntry "ctx_connect_past" (connect_past_ctx p),
+  mkEntry "ctx_box_future" (box_future_ctx p),
+  mkEntry "ctx_box_past" (box_past_ctx p),
+  mkEntry "ctx_until_F" (until_F_ctx p q),
+  mkEntry "ctx_since_P" (since_P_ctx p q),
+  mkEntry "ctx_serial_future" (serial_future_ctx p),
+
+  -- Multi-instantiation: Category C
+  mkEntry "ctx_temp_k_qr" (temp_k_ctx q r),
+  mkEntry "ctx_connect_future_q" (connect_future_ctx q),
+  mkEntry "ctx_connect_past_q" (connect_past_ctx q),
+  mkEntry "ctx_box_future_q" (box_future_ctx q),
+  mkEntry "ctx_box_past_q" (box_past_ctx q),
+  mkEntry "ctx_until_F_qr" (until_F_ctx q r),
+  mkEntry "ctx_since_P_qr" (since_P_ctx q r),
+  mkEntry "ctx_serial_future_q" (serial_future_ctx q),
+
+  -- ============================================================
+  -- Weakening variants
+  -- ============================================================
+
+  mkEntry "ctx_mp_weak" (mp_in_context_weak p q r),
+  mkEntry "ctx_mp_chain_2_weak" (mp_chain_2_weak p q r s),
+  mkEntry "ctx_ecq_weak" (ecq_computable_weak p q r),
+  mkEntry "ctx_box_elim_weak" (box_elim_ctx_weak p q),
+  mkEntry "ctx_k_dist_weak" (k_dist_ctx_weak p q r),
+  mkEntry "ctx_box_4_weak" (box_4_ctx_weak p q),
+  mkEntry "ctx_box_b_weak" (box_b_ctx_weak p q),
+  mkEntry "ctx_connect_future_weak" (connect_future_ctx_weak p q),
+  mkEntry "ctx_connect_past_weak" (connect_past_ctx_weak p q),
+  mkEntry "ctx_until_F_weak" (until_F_ctx_weak p q r),
+  mkEntry "ctx_since_P_weak" (since_P_ctx_weak p q r),
+  mkEntry "ctx_identity_weak" (identity_in_ctx_weak p q),
+  mkEntry "ctx_apply_weak" (apply_in_ctx_weak p q r s),
+  mkEntry "ctx_conj_intro_weak" (conj_intro_ctx_weak p q r),
+  mkEntry "ctx_box_pair_weak" (box_pair_ctx_weak p q r),
+  mkEntry "ctx_box_future_weak" (box_future_ctx_weak p q),
+  mkEntry "ctx_box_past_weak" (box_past_ctx_weak p q),
+  mkEntry "ctx_serial_future_weak" (serial_future_ctx_weak p q),
+
+  -- Weakening variants with alternative atoms
+  mkEntry "ctx_mp_weak_qrs" (mp_in_context_weak q r s),
+  mkEntry "ctx_box_elim_weak_qr" (box_elim_ctx_weak q r),
+  mkEntry "ctx_k_dist_weak_qrs" (k_dist_ctx_weak q r s),
+  mkEntry "ctx_identity_weak_qr" (identity_in_ctx_weak q r),
+
+  -- ============================================================
+  -- Pure weakening entries
+  -- ============================================================
+
+  mkEntry "ctx_pw_identity" (identity_weakened p q),
+  mkEntry "ctx_pw_b_combinator" (@b_combinator_weakened (A := p) (B := q) (C := r) s),
+  mkEntry "ctx_pw_dni" (dni_weakened p q),
+  mkEntry "ctx_pw_connect_future" (connect_future_weakened p q),
+  mkEntry "ctx_pw_connect_past" (connect_past_weakened p q),
+  mkEntry "ctx_pw_temp_future" (temp_future_weakened p q),
+  mkEntry "ctx_pw_pairing" (pairing_weakened p q r),
+  mkEntry "ctx_pw_modal_t" (modal_t_weakened p q),
+  mkEntry "ctx_pw_modal_4" (modal_4_weakened p q),
+  mkEntry "ctx_pw_modal_b" (modal_b_weakened p q),
+  mkEntry "ctx_pw_modal_k_dist" (modal_k_dist_weakened p q r),
+  mkEntry "ctx_pw_ex_falso" (ex_falso_weakened p q),
+  mkEntry "ctx_pw_prop_k" (prop_k_weakened p q r s),
+  mkEntry "ctx_pw_prop_s" (prop_s_weakened p q r),
+  mkEntry "ctx_pw_until_F" (until_F_weakened p q r),
+  mkEntry "ctx_pw_since_P" (since_P_weakened p q r),
+  mkEntry "ctx_pw_serial_future" (serial_future_weakened p),
+  mkEntry "ctx_pw_serial_past" (serial_past_weakened p),
+  mkEntry "ctx_pw_theorem_flip" (@theorem_flip_weakened (A := p) (B := q) (C := r) s),
+  mkEntry "ctx_pw_theorem_app1" (@theorem_app1_weakened (A := p) (B := q) r),
+
+  -- Pure weakening with alternative atoms
+  mkEntry "ctx_pw_identity_qr" (identity_weakened q r),
+  mkEntry "ctx_pw_dni_qr" (dni_weakened q r),
+  mkEntry "ctx_pw_modal_t_qr" (modal_t_weakened q r),
+  mkEntry "ctx_pw_modal_b_qr" (modal_b_weakened q r),
+  mkEntry "ctx_pw_ex_falso_qr" (ex_falso_weakened q r),
+  mkEntry "ctx_pw_pairing_qrs" (pairing_weakened q r s),
+  mkEntry "ctx_pw_connect_future_qr" (connect_future_weakened q r),
+  mkEntry "ctx_pw_connect_past_qr" (connect_past_weakened q r),
+  mkEntry "ctx_pw_serial_future_q" (serial_future_weakened q),
+  mkEntry "ctx_pw_serial_past_q" (serial_past_weakened q)
 ]
 
 /-!
