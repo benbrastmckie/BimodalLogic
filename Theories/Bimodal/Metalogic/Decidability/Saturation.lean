@@ -663,26 +663,132 @@ theorem blocking_terminates (φ : Formula) :
   sorry
 
 /--
+Helper: the tryBranch step function in expandBranchWithFuel preserves the
+invariant that any `.inr` result has `findClosure = none`.
+-/
+private theorem tryBranch_inr
+    (fuel : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
+    (tracker : EventualityTracker) (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering)))
+    (newBranch : Branch) (ob : Branch) (ord : TimeOrdering)
+    (ih : ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+            (ob' : Branch) (o' : TimeOrdering),
+            expandBranchWithFuel b' fuel t' fc' trk' = some (.inr (ob', o')) →
+            findClosure ob' fc' = none)
+    (h_acc : ∀ ob' ord', acc = some (.inr (ob', ord')) → findClosure ob' fc = none)
+    (h_result : (match acc with
+      | some (.inr openBr) => some (.inr openBr)
+      | _ =>
+          match expandBranchWithFuel newBranch fuel newOrd fc tracker with
+          | none => none
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord))) :
+    findClosure ob fc = none := by
+  cases acc with
+  | none =>
+    simp at h_result
+    split at h_result
+    · exact absurd h_result (by simp)
+    · exact absurd h_result (by simp)
+    · simp at h_result; obtain ⟨rfl, rfl⟩ := h_result
+      rename_i openBr h_exp; exact ih newBranch newOrd fc tracker ob ord h_exp
+  | some val =>
+    cases val with
+    | inr p =>
+      simp at h_result; obtain ⟨rfl, rfl⟩ := h_result
+      exact h_acc ob ord rfl
+    | inl cb =>
+      simp at h_result
+      split at h_result
+      · exact absurd h_result (by simp)
+      · exact absurd h_result (by simp [Sum.inl.injEq])
+      · simp at h_result; obtain ⟨rfl, rfl⟩ := h_result
+        rename_i openBr h_exp; exact ih newBranch newOrd fc tracker ob ord h_exp
+
+/--
+Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
+-/
+private theorem foldl_preserves_findClosure
+    (fuel : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
+    (tracker : EventualityTracker)
+    (ih : ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+            (ob' : Branch) (o' : TimeOrdering),
+            expandBranchWithFuel b' fuel t' fc' trk' = some (.inr (ob', o')) →
+            findClosure ob' fc' = none)
+    (branches : List Branch)
+    (init : Option (ClosedBranch ⊕ (Branch × TimeOrdering)))
+    (h_init : ∀ ob ord, init = some (.inr (ob, ord)) → findClosure ob fc = none)
+    (ob : Branch) (ord : TimeOrdering)
+    (h_result : branches.foldl (fun acc newBranch =>
+      match acc with
+      | some (.inr openBr) => some (.inr openBr)
+      | _ =>
+          match expandBranchWithFuel newBranch fuel newOrd fc tracker with
+          | none => none
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord))) :
+    findClosure ob fc = none := by
+  induction branches generalizing init with
+  | nil => exact h_init ob ord h_result
+  | cons hd tl ih_tl =>
+    simp only [List.foldl] at h_result
+    exact ih_tl _
+      (fun ob' ord' h => tryBranch_inr fuel newOrd fc tracker init hd ob' ord' ih h_init h)
+      h_result
+
+set_option maxHeartbeats 1600000 in
+/--
+General soundness: if `expandBranchWithFuel` returns an open branch,
+that branch has no closure reason.
+-/
+private theorem expandBranchWithFuel_sound
+    (fuel : Nat) :
+    ∀ (b : Branch) (timeOrd : TimeOrdering) (fc : FrameClass) (tracker : EventualityTracker)
+      (openBranch : Branch) (ord : TimeOrdering),
+      expandBranchWithFuel b fuel timeOrd fc tracker = some (.inr (openBranch, ord)) →
+      findClosure openBranch fc = none := by
+  induction fuel with
+  | zero => intro b timeOrd fc tracker ob ord h; simp [expandBranchWithFuel] at h
+  | succ n ih =>
+    intro b timeOrd fc tracker ob ord h
+    rw [expandBranchWithFuel] at h
+    cases hfc : findClosure b fc with
+    | some reason => simp [hfc] at h
+    | none =>
+      simp [hfc] at h
+      by_cases hblock : (findBlockedTime b timeOrd).isSome
+      · simp [hblock] at h; obtain ⟨rfl, rfl⟩ := h; exact hfc
+      · simp [hblock] at h
+        match hexp : expandOnce b timeOrd fc with
+        | ⟨.saturated, _⟩ =>
+          simp [hexp] at h; obtain ⟨rfl, rfl⟩ := h; exact hfc
+        | ⟨.extended newBranch, newOrd⟩ =>
+          simp [hexp] at h
+          exact ih newBranch newOrd fc _ ob ord h
+        | ⟨.split branches, newOrd⟩ =>
+          simp [hexp] at h
+          exact foldl_preserves_findClosure n newOrd fc _ ih branches
+            (some (.inl ⟨b, .botPos Label.initial⟩))
+            (fun _ _ h' => by simp at h')
+            ob ord h
+
+/--
 **Blocking soundness**: Subset blocking does not prematurely close any
 satisfiable branch. If a branch B is satisfiable and expandBranchWithFuel
 returns `some (.inr openBranch)` due to blocking, then `openBranch` is
 indeed satisfiable.
 
-This follows from the subset relation: if τ(t) ⊆ τ(t_anc), then any
-model satisfying all formulas at t_anc also satisfies all formulas at t.
+This follows from the structural invariant of `expandBranchWithFuel`:
+every code path that returns `.inr` (open branch) first verifies
+`findClosure = none`. The proof tracks this invariant through the
+recursive structure, including the `List.foldl` in the branch-split case.
 -/
 theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
     (ord : TimeOrdering)
     (h_result : expandBranchWithFuel b (soundFuel φ) = some (.inr (openBranch, ord))) :
     -- "satisfiable" here means there exists a model; we state it as
     -- the open branch having no closure reason
-    findClosure openBranch = none := by
-  -- Structurally, expandBranchWithFuel only returns .inr when findClosure = none.
-  -- The proof requires induction on fuel with case analysis on the foldl in the
-  -- split case. The foldl accumulator threading makes this technically involved
-  -- but the invariant is straightforward: every .inr result originates from a
-  -- code path where findClosure was already checked to be none.
-  sorry
+    findClosure openBranch = none :=
+  expandBranchWithFuel_sound (soundFuel φ) b _ _ _ openBranch ord h_result
 
 /-!
 ## Frame-Class Gating Tests (Task 238)
