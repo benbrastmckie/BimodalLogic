@@ -101,17 +101,20 @@ technical_debt:
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 257 [IMPLEMENTING] — large_data_storage_huggingface
-263 [NOT STARTED] — smoke_test_c5_dataset_generation
+263 [COMPLETED] — smoke_test_c5_dataset_generation
 
 ## Tasks
 
 ### 263. Smoke-test c5 dataset generation
 - **Effort**: small (1-2 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 261
+- specs/263_smoke_test_c5_dataset_generation/reports/01_smoke-test-c5.md: [Research report on c5 smoke testing]
+- specs/263_smoke_test_c5_dataset_generation/plans/01_smoke-test-c5.md: [Implementation plan for c5 smoke test]
+- specs/263_smoke_test_c5_dataset_generation/summaries/01_smoke-test-c5-summary.md: [Implementation summary]
 
 **Description**: Smoke-test dataset generation at c5: label a small batch of formulas at complexity 5 end-to-end using the updated decision procedure to verify that fuel bounding (task 261), per-record flush, and eventuality-aware blocking work correctly. Run the generation script or equivalent #eval test on Base frame class, confirm no stalling, confirm JSONL output is well-formed with all fields populated (no null metrics), and verify that previously-problematic formulas like (□⊥ → □r) now resolve correctly instead of timing out.
 

@@ -8,10 +8,11 @@
     {
       "project_number": 263,
       "project_name": "smoke_test_c5_dataset_generation",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-06-02T16:54:25Z",
-      "last_updated": "2026-06-02T16:54:25Z"
+      "last_updated": "2026-06-02T17:15:00Z",
+      "completion_summary": "Created Lean #eval smoke test (25 formulas, 6 sections) and Python JSONL validator (8 checks) confirming c5 dataset generation works correctly: 1,512 records, no null metrics, 2.6% timeout rate, box(bot)->box(r) resolves as valid"
     },
     {
       "project_number": 257,
@@ -362,11 +363,11 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "completed",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
-      "description": "Close the no_gaps_discrete import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewire completeness_discrete to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing no_gaps_discrete to call no_gaps_discrete_model_surgery without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in no_gaps_discrete. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate no_gaps_discrete to no_gaps_discrete_model_surgery. (4) Rewire completeness_discrete to use the WeakCanonical path via no_gaps_discrete. (5) Verify #print axioms completeness_discrete shows no sorryAx. Definition of done: no_gaps_discrete delegates to no_gaps_discrete_model_surgery (no sorry), completeness_discrete uses WeakCanonical path (no sorry), lake build passes.",
+      "description": "Prove IsSuccArchimedean for the discrete chronicle limit domain via stage induction on the omega-chain construction, eliminating the sorry chain through succ_embed_surjective. Phase 1 (import cycle resolution) is complete. The key insight is successor stability: once succ(q) = s is established at a finite stage, no further points appear between q and s in the limit.",
       "dependencies": [
         199
       ],
@@ -638,19 +639,30 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/57_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v58: axiomatize IsSuccArchimedean for LimitDomSubtype (Path D), replacing sorry with named axiom (4 phases, 3-4 hours)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/58_proper-fix-research.md",
+          "type": "research",
+          "summary": "Proper fix research: model surgery cannot prove IsSuccArchimedean (second-order). Recommends finite interval argument via successor stability. 300-500 lines."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/58_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v59: prove IsSuccArchimedean via finite interval argument and successor stability (4 phases, 6-10 hours)"
         }
       ],
       "session_id": "sess_1748899200_orchestrate",
       "researched": "2026-06-02T14:34:29Z",
-      "planned": "2026-06-02T20:30:00Z",
+      "planned": "2026-06-02T23:00:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
+      "next_artifact_number": 59,
       "plan_metadata": {
         "phases": 4,
-        "total_effort_hours": 4,
-        "complexity": "simple",
+        "total_effort_hours": 8,
+        "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 58,
+        "plan_version": 59,
         "dependency_waves": [
           [
             1
@@ -680,10 +692,14 @@
             "path": "reports/57_bypass-surjectivity-research.md",
             "integrated_in_plan_version": 58,
             "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/58_proper-fix-research.md",
+            "integrated_in_plan_version": 59,
+            "integrated_date": "2026-06-02"
           }
         ]
-      },
-      "completion_summary": "Resolved import cycle (NoGapsDiscreteProof.lean), axiomatized IsSuccArchimedean for LimitDomSubtype, completeness_discrete now sorryAx-free"
+      }
     },
     {
       "project_number": 175,
