@@ -82,7 +82,8 @@ technical_debt:
 
 ### Dataset Enhancement
 
-262 [NOT STARTED] — Research interestingness metrics for theorems and derivations
+262 [COMPLETED] — Interestingness metrics for theorems and derivations
+  - **Summary**: [specs/262_interestingness_metrics_for_theorems/summaries/02_interestingness-implementation-summary.md]
 261 [COMPLETED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
   - **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
   - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
@@ -128,9 +129,9 @@ technical_debt:
 
 ## Tasks
 
-### 262. Research interestingness metrics for theorems and derivations
+### 262. Interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -138,7 +139,8 @@ technical_debt:
   - [262_interestingness_metrics_for_theorems/reports/01_interestingness-metrics.md]
   - [262_interestingness_metrics_for_theorems/reports/02_deep-interestingness-survey.md]
 - **Plan**: [262_interestingness_metrics_for_theorems/plans/02_interestingness-implementation.md]
-- **Description**: Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures (Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure), semantic non-triviality (not instances of `p→p` or `⊥→φ`), operator diversity (mixing modal and temporal operators meaningfully), proof depth/breadth ratio, connection to named theorems, information content (entropy vs. tautological patterns), usefulness as a lemma (frequency as subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension evaluable by the Lean pipeline. (4) Propose a composite interestingness score as reward signal for training networks to find non-trivial derivations. (5) Consider how metrics interact with proof traces — valid formulas with deep non-obvious proofs are more interesting than single-axiom closures. (6) Address the full spectrum from trivially valid (`⊥→φ`) through routine (axiom substitution instances) to genuinely interesting (novel `□`/`G`/`U`/`S` interactions).
+- **Summary**: [specs/262_interestingness_metrics_for_theorems/summaries/02_interestingness-implementation-summary.md]
+- **Description**: Implemented three-tier interestingness scoring (syntactic metrics + proof-structural metrics + composite with SNT gate) in InterestingnessMetrics.lean. Integrated into LabeledFormula and JSONL export pipeline. 41-test validation suite. Zero sorries, zero axioms, full build passes.
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
