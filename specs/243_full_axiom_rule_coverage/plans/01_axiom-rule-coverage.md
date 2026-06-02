@@ -89,7 +89,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Assumption and Weakening Rule Coverage (2 rules) [NOT STARTED]
+### Phase 2: Assumption and Weakening Rule Coverage (2 rules) [COMPLETED]
 
 **Goal**: Add entries with non-empty contexts to exercise the `assumption` and `weakening` inference rules.
 

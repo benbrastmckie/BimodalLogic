@@ -1149,7 +1149,56 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GG_z1_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 p) trivial)))
+        (DerivationTree.axiom (fc := .Discrete) [] _ (Axiom.z1 p) trivial))),
+
+  -- ============================================================
+  -- ASSUMPTION AND WEAKENING RULES: Entries with non-empty
+  -- contexts to exercise the 2 missing inference rules.
+  -- ============================================================
+
+  -- Assumption: [p] ⊢ p
+  mkEntry "assume_p"
+    (DerivationTree.assumption (fc := .Base) [p] p (by simp [p])),
+
+  -- Assumption: [q] ⊢ q
+  mkEntry "assume_q"
+    (DerivationTree.assumption (fc := .Base) [q] q (by simp [q])),
+
+  -- Assumption within modus ponens: [p, p → q] ⊢ q
+  mkEntry "mp_from_assumptions"
+    (DerivationTree.modus_ponens (fc := .Base) [p, p.imp q] p q
+      (DerivationTree.assumption (fc := .Base) [p, p.imp q] (p.imp q) (by simp [p, q]))
+      (DerivationTree.assumption (fc := .Base) [p, p.imp q] p (by simp [p, q]))),
+
+  -- Assumption within modus ponens: [q, q → r] ⊢ r
+  mkEntry "mp_from_assumptions_qr"
+    (DerivationTree.modus_ponens (fc := .Base) [q, q.imp r] q r
+      (DerivationTree.assumption (fc := .Base) [q, q.imp r] (q.imp r) (by simp [q, r]))
+      (DerivationTree.assumption (fc := .Base) [q, q.imp r] q (by simp [q, r]))),
+
+  -- Weakening: [p] ⊢ p  implies  [p, q] ⊢ p
+  mkEntry "weakened_assume_p"
+    (DerivationTree.weakening (fc := .Base) [p] [p, q] p
+      (DerivationTree.assumption (fc := .Base) [p] p (by simp [p]))
+      (by intro x hx; simp [p, q] at hx ⊢; exact Or.inl hx)),
+
+  -- Weakening: [q] ⊢ q  implies  [p, q] ⊢ q
+  mkEntry "weakened_assume_q"
+    (DerivationTree.weakening (fc := .Base) [q] [p, q] q
+      (DerivationTree.assumption (fc := .Base) [q] q (by simp [q]))
+      (by intro x hx; simp [p, q] at hx ⊢; exact Or.inr hx)),
+
+  -- Weakening of axiom: [] ⊢ prop_k p q r  implies  [p] ⊢ prop_k p q r
+  mkEntry "weakened_prop_k"
+    (DerivationTree.weakening (fc := .Base) [] [p] _
+      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.prop_k p q r) trivial)
+      (by intro x hx; simp at hx)),
+
+  -- Weakening of axiom: [] ⊢ identity  implies  [q] ⊢ identity
+  mkEntry "weakened_identity"
+    (DerivationTree.weakening (fc := .Base) [] [q] _
+      (@identity .Base p)
+      (by intro x hx; simp at hx))
 ]
 
 /-!
