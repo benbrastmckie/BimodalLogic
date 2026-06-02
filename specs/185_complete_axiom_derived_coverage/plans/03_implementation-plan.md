@@ -93,18 +93,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add tryDerivedMatch function [IN PROGRESS]
+### Phase 2: Add tryDerivedMatch function [COMPLETED]
 
 **Goal**: Create `tryDerivedMatch` function registering ~25 empty-context derived theorems and integrate into `searchProof`.
 
 **Tasks**:
-- [ ] Create `tryDerivedMatch` function in `Tactics/Helpers.lean`, modeled on the existing derived theorem section (lines 513-529)
-- [ ] Register Tier 1 derived theorems (12 entries): `identity`, `double_negation`, `raa`, `efq`, `lce_imp`, `rce_imp`, `contrapose_imp`, `pairing`, `dni`, `b_combinator`, `theorem_flip`, `theorem_app1`
-- [ ] Register Tier 2 derived theorems (13 entries): `temp_k_dist_derived`, `temp_4_derived`, `H_distribution`, `H_transitivity`, `t_box_to_diamond`, `k_dist_diamond`, `diamond_4`, `modal_5`, `box_to_future`, `box_to_past`, `formula_or_comm`, `bi_imp`, `classical_merge`
-- [ ] Move existing `temp_future_derived` from inline `tryAxiomMatch` section to the new `tryDerivedMatch` function
-- [ ] Insert `tryDerivedMatch` call in `searchProof` (line 897) between Strategy 1 (axiom) and Strategy 2 (assumption)
-- [ ] Add ~25 derived theorem test examples in `Tactics/Commands.lean`
-- [ ] Verify with `lake build Bimodal.Automation.Tactics.Commands`
+- [x] Create `tryDerivedMatch` function in `Tactics/Helpers.lean`, modeled on the existing derived theorem section (lines 513-529)
+- [x] Register Tier 1 derived theorems (12 entries): `identity`, `double_negation`, `raa`, `efq`, `lce_imp`, `rce_imp`, `contrapose_imp`, `pairing`, `dni`, `b_combinator`, `theorem_flip`, `theorem_app1`
+- [x] Register Tier 2 derived theorems (13 entries): `temp_k_dist_derived`, `temp_4_derived`, `H_distribution`, `H_transitivity`, `t_box_to_diamond`, `k_dist_diamond`, `diamond_4`, `modal_5`, `box_to_future`, `box_to_past`, `formula_or_comm`, `bi_imp`, `classical_merge`
+- [x] Move existing `temp_future_derived` from inline `tryAxiomMatch` section to the new `tryDerivedMatch` function
+- [x] Insert `tryDerivedMatch` call in `searchProof` (line 897) between Strategy 1 (axiom) and Strategy 2 (assumption)
+- [x] Add ~25 derived theorem test examples in `Tactics/Commands.lean`
+- [x] Verify with `lake build Bimodal.Automation.Tactics.Commands`
 
 **Timing**: 2 hours
 

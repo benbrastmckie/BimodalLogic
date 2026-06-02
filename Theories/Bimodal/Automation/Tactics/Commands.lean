@@ -591,4 +591,120 @@ example (p : Formula) : ⊢[FrameClass.Dense] p.all_future.all_future.imp p.all_
 example : ⊢[FrameClass.Dense] (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg := by
   modal_search
 
+/-!
+### Phase 185.2 Tests: Derived Theorem Coverage (~25 derived theorems)
+
+These tests verify that `tryDerivedMatch` can resolve derived theorems
+directly via `modal_search`. Grouped by tier following the registration
+order in `tryDerivedMatch`.
+-/
+
+-- Tier 1: Propositional combinators
+
+-- Test 59: identity: A → A
+example (p : Formula) : ⊢ p.imp p := by
+  modal_search
+
+-- Test 60: double_negation: ¬¬φ → φ
+example (p : Formula) : ⊢ p.neg.neg.imp p := by
+  modal_search
+
+-- Test 61: raa: A → (¬A → B)
+example (p q : Formula) : ⊢ p.imp (p.neg.imp q) := by
+  modal_search
+
+-- Test 62: efq: ¬A → (A → B)
+example (p q : Formula) : ⊢ p.neg.imp (p.imp q) := by
+  modal_search
+
+-- Test 63: lce_imp: (A ∧ B) → A
+noncomputable example (p q : Formula) : ⊢ (p.and q).imp p := by
+  modal_search
+
+-- Test 64: rce_imp: (A ∧ B) → B
+noncomputable example (p q : Formula) : ⊢ (p.and q).imp q := by
+  modal_search
+
+-- Test 65: contrapose_imp: (A → B) → (¬B → ¬A)
+example (p q : Formula) : ⊢ (p.imp q).imp (q.neg.imp p.neg) := by
+  modal_search
+
+-- Test 66: pairing: A → (B → (A ∧ B))
+example (p q : Formula) : ⊢ p.imp (q.imp (p.and q)) := by
+  modal_search
+
+-- Test 67: dni: A → ¬¬A
+example (p : Formula) : ⊢ p.imp p.neg.neg := by
+  modal_search
+
+-- Test 68: b_combinator: (B→C) → ((A→B) → (A→C))
+example (p q r : Formula) : ⊢ (q.imp r).imp ((p.imp q).imp (p.imp r)) := by
+  modal_search
+
+-- Test 69: theorem_flip: (A→(B→C)) → (B→(A→C))
+example (p q r : Formula) : ⊢ (p.imp (q.imp r)).imp (q.imp (p.imp r)) := by
+  modal_search
+
+-- Test 70: theorem_app1: A → ((A→B) → B)
+example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by
+  modal_search
+
+-- Tier 2: Modal and temporal derived theorems
+
+-- Test 71: temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ)
+noncomputable example (p q : Formula) : ⊢ (p.imp q).all_future.imp (p.all_future.imp q.all_future) := by
+  modal_search
+
+-- Test 72: temp_4_derived: Gφ → GGφ
+noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+  modal_search
+
+-- Test 73: H_distribution: H(φ→ψ) → (Hφ→Hψ)
+noncomputable example (p q : Formula) : ⊢ (p.imp q).all_past.imp (p.all_past.imp q.all_past) := by
+  modal_search
+
+-- Test 74: H_transitivity: Hφ → HHφ
+noncomputable example (p : Formula) : ⊢ p.all_past.imp p.all_past.all_past := by
+  modal_search
+
+-- Test 75: t_box_to_diamond: □A → ◇A
+example (p : Formula) : ⊢ p.box.imp p.diamond := by
+  modal_search
+
+-- Test 76: k_dist_diamond: □(A→B) → (◇A → ◇B)
+example (p q : Formula) : ⊢ (p.imp q).box.imp (p.diamond.imp q.diamond) := by
+  modal_search
+
+-- Test 77: diamond_4: ◇◇φ → ◇φ
+example (p : Formula) : ⊢ p.diamond.diamond.imp p.diamond := by
+  modal_search
+
+-- Test 78: modal_5: ◇φ → □◇φ
+example (p : Formula) : ⊢ p.diamond.imp p.diamond.box := by
+  modal_search
+
+-- Test 79: box_to_future: □φ → Gφ
+example (p : Formula) : ⊢ p.box.imp p.all_future := by
+  modal_search
+
+-- Test 80: box_to_past: □φ → Hφ
+example (p : Formula) : ⊢ p.box.imp p.all_past := by
+  modal_search
+
+-- Test 81: formula_or_comm: (A ∨ B) → (B ∨ A)
+noncomputable example (p q : Formula) : ⊢ (p.or q).imp (q.or p) := by
+  modal_search
+
+-- Test 82: bi_imp: (A→B) → ((B→A) → ((A→B) ∧ (B→A)))
+example (p q : Formula) : ⊢ (p.imp q).imp ((q.imp p).imp ((p.imp q).and (q.imp p))) := by
+  modal_search
+
+-- Test 83: classical_merge: (P→Q) → ((¬P→Q) → Q)
+noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) := by
+  modal_search
+
+-- Test 84: temp_future_derived (migrated from tryAxiomMatch): □φ → G□φ
+example (p : Formula) : ⊢ p.box.imp p.box.all_future := by
+  modal_search
+
 end Bimodal.Automation
