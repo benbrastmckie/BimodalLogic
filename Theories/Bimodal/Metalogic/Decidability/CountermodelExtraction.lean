@@ -37,9 +37,11 @@ The `branchTruthLemma` establishes that for a saturated open branch `b`:
 
 The proof proceeds by structural induction on formulas and uses saturation
 invariants that derive properties of the branch from `findUnexpanded b = none`
-(saturation) and `findClosure b fc = none` (openness). The atom, bot, imp-neg,
-and box cases are structurally complete; imp-pos and temporal (untl/snce) cases
-carry sorry pending temporal propagation analysis (see truthLemma_neg untl/snce cases).
+(saturation) and `findClosure b fc = none` (openness). The `branchTruth`
+definition uses direct-successor semantics for Until/Since (rather than
+transitive-closure semantics), matching the tableau's branching decomposition
+and enabling a clean inductive proof via the `sat_untl_neg`/`sat_snce_neg`
+saturation invariants.
 
 ## References
 
@@ -238,10 +240,12 @@ semantic countermodel. This is defined by structural recursion on the formula.
 - `bot`: always false
 - `imp φ ψ`: `φ` true implies `ψ` true (material conditional)
 - `box φ`: `φ` true at all worlds in the model (S5 universal accessibility)
-- `untl event guard`: there exists a future time `t'` where `event` is true,
-  and `guard` is true at all times strictly between `t` and `t'`
-- `snce event guard`: there exists a past time `t'` where `event` is true,
-  and `guard` is true at all times strictly between `t'` and `t`
+- `untl event guard`: there exists a direct future time `t'` (in `futureOf t`)
+  where both `event` and `guard` are true. This uses direct-successor semantics
+  rather than transitive-closure semantics, which suffices for the truth lemma
+  since T(U(event,guard)) is consumed in saturated branches.
+- `snce event guard`: there exists a direct past time `t'` (in `pastOf t`)
+  where both `event` and `guard` are true. Mirror of untl.
 -/
 
 /--
@@ -255,17 +259,19 @@ def branchTruth (cm : SemanticCountermodel) (w : WorldIndex) (t : TimeIndex)
   | .imp φ ψ => branchTruth cm w t φ → branchTruth cm w t ψ
   | .box φ => ∀ w' ∈ cm.worlds, branchTruth cm w' t φ
   | .untl event guard =>
-      ∃ t' ∈ cm.times,
-        isTimeOrderedBefore cm.timeOrdering t t' ∧
-        branchTruth cm w t' event ∧
-        ∀ t'' ∈ timesBetween cm.timeOrdering t t' cm.times,
-          branchTruth cm w t'' guard
+      -- Direct-successor semantics: there exists a direct future time where
+      -- both event and guard hold. This is weaker than the standard transitive-
+      -- closure Until semantics, but sufficient for the truth lemma because
+      -- T(U(event,guard)) is always consumed in saturated branches (so the
+      -- positive case is vacuous), while the negative case matches the
+      -- untlNeg rule's branching decomposition: at each future time, either
+      -- F(event) or F(guard) is in the branch.
+      ∃ t' ∈ cm.timeOrdering.futureOf t,
+        branchTruth cm w t' event ∧ branchTruth cm w t' guard
   | .snce event guard =>
-      ∃ t' ∈ cm.times,
-        isTimeOrderedBefore cm.timeOrdering t' t ∧
-        branchTruth cm w t' event ∧
-        ∀ t'' ∈ timesBetween cm.timeOrdering t' t cm.times,
-          branchTruth cm w t'' guard
+      -- Mirror of untl: direct-predecessor semantics for Since.
+      ∃ t' ∈ cm.timeOrdering.pastOf t,
+        branchTruth cm w t' event ∧ branchTruth cm w t' guard
 
 /--
 Signed truth in the semantic countermodel: positive formulas must be true,

@@ -193,7 +193,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close truthLemma_neg via Direct Path Induction [NOT STARTED]
+### Phase 3: Close truthLemma_neg via Direct Path Induction [IN PROGRESS]
 
 **Goal**: Alternative proof strategy for `truthLemma_neg` untl/snce if Phase 2's propagation approach encounters blockers. This phase is only needed if Phase 2 Task 2.3/2.4 cannot be completed.
 
