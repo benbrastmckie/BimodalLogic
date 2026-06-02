@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 266,
+      "project_name": "scale_generation_c7_plus_bottleneck",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        265
+      ],
+      "created": "2026-06-02T23:34:15Z",
+      "last_updated": "2026-06-02T23:34:15Z"
+    },
+    {
       "project_number": 263,
       "project_name": "smoke_test_c5_dataset_generation",
       "status": "completed",
@@ -1578,7 +1589,7 @@
       "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
     }
   ],
-  "next_project_number": 266,
+  "next_project_number": 267,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
