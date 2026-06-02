@@ -157,22 +157,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Analyze Scaling Data and Classify Timeout Patterns [NOT STARTED]
+### Phase 4: Analyze Scaling Data and Classify Timeout Patterns [COMPLETED]
 
 **Goal**: Create an analysis script that processes all generated datasets (c5, c6, c7, c8) to produce scaling curves, timeout pattern classification, and decision method distribution tables.
 
 **Tasks**:
-- [ ] Write a Python or shell analysis script (`data/scripts/analyze_scaling.py`) that reads the JSONL files and computes:
-  - Per-level: total count, valid count, invalid count, timeout count, timeout rate
-  - Per-level: mean, median, p95, max `decisionTimeMs`
-  - Per-level: decision method distribution (counts per `adaptive_500`, `adaptive_2000`, `adaptive_10000`, `adaptive_timeout`, `fast_path_axiom`)
-  - Per-level: timeout formula classification by structural pattern (double-box, Until-bot, Since-bot, and any new patterns)
-- [ ] Run the analysis on c5, c6, c7-clean, and c8-stratified datasets
-- [ ] Identify whether the bimodal distribution (resolve at tier 1 or timeout) persists at c6/c7/c8
-- [ ] Identify any new timeout patterns not present at c5
-- [ ] Compute the scaling curve: complexity level vs timeout rate
-- [ ] Compute formulas-per-second throughput at each level
-- [ ] Identify the dominant timeout patterns at each level and whether their proportion changes
+- [x] Write a Python or shell analysis script (`data/scripts/analyze_scaling.py`) that reads the JSONL files and computes per-level stats, method distribution, timeout patterns, scaling curves, and bimodal analysis *(completed)*
+- [x] Run the analysis on c5, c6, c7-clean, and c8-stratified datasets *(completed -- CSVs exported to data/scaling_analysis/)*
+- [x] Identify whether the bimodal distribution (resolve at tier 1 or timeout) persists at c6/c7/c8 *(completed -- bimodal holds perfectly: zero tier 2 or tier 3 non-timeout formulas at any level)*
+- [x] Identify any new timeout patterns not present at c5 *(completed -- new pattern "temporal-modal-mix" (Until/Since + box nesting) emerges at c6, comprising 26% of c6 timeouts)*
+- [x] Compute the scaling curve: complexity level vs timeout rate *(completed -- c5:2.9%, c6:4.7%, c7:8.1%, c8:7.2%; real bottleneck is per-formula timeout detection cost, not rate)*
+- [x] Compute formulas-per-second throughput at each level *(completed -- ~50K/sec for non-timeout formulas; 0.0024/sec (1 per 7 min) for slow timeout formulas)*
+- [x] Identify the dominant timeout patterns at each level and whether their proportion changes *(completed -- critical finding: most timeouts detect in <1ms via fast-path, but 2-3 "slow timeouts" per level take 400-600+ seconds each, dominating total wall-clock time)*
 
 **Timing**: 2 hours
 
