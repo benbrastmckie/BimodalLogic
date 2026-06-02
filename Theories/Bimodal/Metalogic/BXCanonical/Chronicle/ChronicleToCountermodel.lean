@@ -805,28 +805,6 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
       exact (succ_orbit_convex fc A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
         fun j ⟨_, hj⟩ => hj
 
-/-- **Axiom**: The discrete chronicle limit domain is succ-archimedean.
-
-Mathematical justification: The omega-chain construction builds `limit_dom` as a
-union of finite stages starting from `{0}`. Each stage extends the domain by
-resolving C4/C5 violations, inserting points between existing ones via `next_top`.
-The successor operation ensures adjacent points are succ-linked at each finite
-stage. The limit of a chain of succ-connected finite linear orders is
-succ-connected: any two points `a ≤ b` both appear at some finite stage `N`,
-where finitely many successor steps connect them.
-
-Formal proof requires induction on the chronicle construction stages (Path E,
-estimated 300-600 lines -- deferred to a future task). This axiom replaces the
-sorry chain `succ_cofinal` -> `chronicle_gap_contradiction` which is blocked by
-the constant-MCS gap scenario (Z+Z counterexample to `no_gaps_faithful`). -/
-axiom limitDomSubtype_isSuccArchimedean_axiom (fc : FrameClass)
-    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_fc : FrameClass.Discrete ≤ fc)
-    (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    @IsSuccArchimedean (LimitDomSubtype fc A h_mcs)
-      inferInstance
-      (limitDomSubtype_succOrder fc A h_mcs h_discrete)
-
 /-! ## Collapse-Based Discrete Pipeline
 
 When U(T,bot) is present in all domain MCS's, the limit domain has an immediate
@@ -1692,7 +1670,7 @@ theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
     ∃ n : ℤ, succ_embed fc A h_mcs h_discrete n = w := by
   letI succOrd := limitDomSubtype_succOrder fc A h_mcs h_discrete
   letI predOrd := limitDomSubtype_predOrder fc A h_mcs h_discrete
-  letI := limitDomSubtype_isSuccArchimedean_axiom fc A h_mcs h_fc h_discrete
+  letI := limitDomSubtype_isSuccArchimedean fc A h_mcs h_fc h_discrete
   set root : LimitDomSubtype fc A h_mcs := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
   set s := limitDomSubtype_succ fc A h_mcs h_discrete
   set p := limitDomSubtype_pred fc A h_mcs h_discrete

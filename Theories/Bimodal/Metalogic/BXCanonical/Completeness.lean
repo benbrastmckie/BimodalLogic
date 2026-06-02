@@ -377,42 +377,25 @@ theorem completeness_discrete (φ : Formula) :
 
 /-! ## Axiom Audit
 
-### completeness_discrete (as of task 155, 2026-06-02)
+### completeness_discrete
 
 ```
 #print axioms completeness_discrete
--- depends on: [propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler,
---              Quot.sound, limitDomSubtype_isSuccArchimedean_axiom]
-```
-
-**No `sorryAx`**. The only non-standard axiom is
-`limitDomSubtype_isSuccArchimedean_axiom` (task 155), a mathematically justified
-axiom asserting `IsSuccArchimedean` for the discrete chronicle limit domain.
-See `ChronicleToCountermodel.lean` for the mathematical justification.
-
-The chain: `completeness_discrete` → `countermodel_discrete_reynolds` →
-`cantor_bfmcs_discrete_restricted_tc/fuc` → `succ_embed_surjective` →
-uses `limitDomSubtype_isSuccArchimedean_axiom` directly (no sorry).
-
-### completeness (general)
-
-```
-#print axioms completeness
 -- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool,
---              Lean.trustCompiler, Quot.sound,
---              limitDomSubtype_isSuccArchimedean_axiom]
+--              Lean.trustCompiler, Quot.sound]
 ```
 
-Still has `sorryAx` via the general `countermodel_discrete` path which uses the
-BX pipeline `dd_countermodel_chronicle_discrete`. This is separate from the
-discrete case.
+`sorryAx` traces through: `succ_embed_surjective` → `limitDomSubtype_isSuccArchimedean`
+→ `succ_cofinal` → `chronicle_gap_contradiction` [sorry].
+
+Task 155 resolved the import cycle (`no_gaps_discrete` extracted to
+`NoGapsDiscreteProof.lean`). Remaining sorry: prove `IsSuccArchimedean` for the
+discrete chronicle limit domain via stage induction on the omega-chain construction.
 
 ### Axiom Classification
 
 - `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable)
-- `limitDomSubtype_isSuccArchimedean_axiom` — named axiom with mathematical
-  justification (task 155); removable via full formal proof (Path E, future task)
-- `sorryAx` — remains in `completeness` (general), not in `completeness_discrete`
+- `sorryAx` — must be eliminated (sorry chain through `chronicle_gap_contradiction`)
 - `Lean.ofReduceBool`, `Lean.trustCompiler` — from `native_decide` in Syntax layer
   (acceptable, not sorry-related)
 -/

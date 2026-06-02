@@ -1,15 +1,10 @@
 {
-  "status": "implemented",
-  "summary": "Replaced sorry chain with limitDomSubtype_isSuccArchimedean_axiom; completeness_discrete has no sorryAx, lake build passes (1682 jobs)",
+  "status": "planned",
+  "summary": "Revised plan v60: fix 3 root sorries in StaviCompleteness.lean (4-var EF-game existential transfer) and rewire limitDomSubtype_isSuccArchimedean via model surgery (6 phases, 10-16 hours)",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "complete",
-  "phases_completed": 4,
-  "phases_total": 4,
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/155_reynolds_pipeline_activation/summaries/58_implementation-summary.md"
-    }
-  ]
+  "next_action_hint": "implement",
+  "phases_completed": 1,
+  "phases_total": 6,
+  "artifacts": [{"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/59_implementation-plan.md"}]
 }

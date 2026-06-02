@@ -367,13 +367,13 @@
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
-      "description": "Prove IsSuccArchimedean for the discrete chronicle limit domain via stage induction on the omega-chain construction, eliminating the sorry chain through succ_embed_surjective. Phase 1 (import cycle resolution) is complete. The key insight is successor stability: once succ(q) = s is established at a finite stage, no further points appear between q and s in the limit.",
+      "description": "Eliminate all sorries from completeness_discrete by fixing 3 root sorries in StaviCompleteness.lean (4-variable EF-game existential transfer, GHR93 Proposition 7) and rewiring limitDomSubtype_isSuccArchimedean to use the now-sorry-free Reynolds model surgery pipeline. Phase 1 (import cycle resolution) complete.",
       "dependencies": [
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T17:00:00Z",
-      "next_artifact_number": 59,
+      "last_updated": "2026-06-02T23:45:00Z",
+      "next_artifact_number": 60,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -649,19 +649,24 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/58_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v59: prove IsSuccArchimedean via finite interval argument and successor stability (4 phases, 6-10 hours)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/59_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v60: fix 3 root sorries in StaviCompleteness.lean (4-var EF-game existential transfer) and rewire limitDomSubtype_isSuccArchimedean via model surgery (6 phases, 10-16 hours)"
         }
       ],
       "session_id": "sess_1748899200_orchestrate",
       "researched": "2026-06-02T14:34:29Z",
-      "planned": "2026-06-02T23:00:00Z",
+      "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 8,
+        "phases": 6,
+        "total_effort_hours": 13,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 59,
+        "plan_version": 60,
         "dependency_waves": [
           [
             1
@@ -670,10 +675,14 @@
             2
           ],
           [
-            3
+            3,
+            4
           ],
           [
-            4
+            5
+          ],
+          [
+            6
           ]
         ],
         "reports_integrated": [
@@ -695,6 +704,26 @@
           {
             "path": "reports/58_proper-fix-research.md",
             "integrated_in_plan_version": 59,
+            "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/59_lit-ghr93-gaps.md",
+            "integrated_in_plan_version": 60,
+            "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/59_lit-ghr94-ch9.md",
+            "integrated_in_plan_version": 60,
+            "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/59_lit-reynolds94.md",
+            "integrated_in_plan_version": 60,
+            "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/59_lit-burgess-venema.md",
+            "integrated_in_plan_version": 60,
             "integrated_date": "2026-06-02"
           }
         ]
