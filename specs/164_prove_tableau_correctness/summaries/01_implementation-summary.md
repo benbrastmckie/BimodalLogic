@@ -3,7 +3,7 @@
 - **Task**: 164 - Prove tableau correctness theorem for decision procedure
 - **Status**: PARTIAL
 - **Phases Completed**: 1 fully, 2 substantially, 2 partially
-- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316
+- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316, sess_1780361777_843697
 
 ## What Was Accomplished
 
@@ -26,77 +26,88 @@ Resolved all propositional and modal saturation sorry sites:
 
 4. **truthLemma_pos imp case** (sorry-free): T(psi -> chi) cannot exist in a saturated branch because `impPos` always applies (branching rule). Proved via `impPos_not_expanded` helper.
 
-### Phase 3: Temporal Saturation Invariants (PARTIAL)
+### Phase 3: Temporal Saturation Invariants (PARTIAL -- Round 3 Progress)
 
-Key discovery: T(U(event, guard)) and T(S(event, guard)) CANNOT exist in a saturated branch. For any guard value, either `someFuturePos`/`somePastPos` (guard = top) or `untlPos`/`sncePos` (guard != top) is a consumable rule that removes the formula.
+**Round 2 progress:**
+- **sat_untl_pos** (sorry-free): Proved vacuously via `untlPos_not_expanded`.
+- **sat_snce_pos** (sorry-free): Proved vacuously via `sncePos_not_expanded`.
+- **truthLemma_pos untl/snce** (sorry-free): Also vacuous by same argument.
 
-1. **sat_untl_pos** (sorry-free): Proved vacuously via `untlPos_not_expanded`.
-2. **sat_snce_pos** (sorry-free): Proved vacuously via `sncePos_not_expanded`.
-3. **truthLemma_pos untl/snce** (sorry-free): Also vacuous by same argument.
-4. **sat_untl_neg**, **sat_snce_neg**: BLOCKED (see Architectural Blocker below).
-5. **truthLemma_neg untl/snce**: BLOCKED (depends on sat_untl_neg/sat_snce_neg).
+**Round 3 progress (this session):**
+
+1. **ARCHITECTURAL FIX COMPLETED**: Threaded `TimeOrdering` through `ExpandedTableau.hasOpen`.
+   - Reordered constructor fields: `hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering) (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) = none)`
+   - Updated `buildTableau` and `expandBranchesWithFuel` to pass real ordering to `findUnexpanded`
+   - Updated ALL saturation invariant signatures to accept `(timeOrd : TimeOrdering)`
+   - Updated `truthLemma_neg` to accept `(hOrd : cm.timeOrdering = timeOrd)`
+   - Updated all downstream pattern matches across 4 files
+   - **This resolves the architectural blocker** that prevented proving `sat_untl_neg` and `sat_snce_neg`
+
+2. **SIGNATURE CHANGE**: `sat_untl_neg` now quantifies over `timeOrd.futureOf t` (real future times from expansion) instead of `b.knownTimes` (all times in branch). Similarly `sat_snce_neg` quantifies over `timeOrd.pastOf t`.
+
+3. **Still sorry**: `sat_untl_neg`, `sat_snce_neg` proofs. The signatures are correct and the blocker is removed. The proof strategy (case-splitting on `applyRule` result, showing the notApplicable case contradicts the filter being non-empty) is identified but not yet mechanized due to complexity of unfolding `applyRule` in Lean.
 
 ### Phase 5: Blocking Correctness (PARTIAL)
 
 1. **subformula_property** (sorry-free): Proved trivially -- the theorem as stated only covers the initial branch `[F(phi)]`, where the only formula is `phi` itself.
 
-2. **blocking_sound** (sorry-free): If `expandBranchWithFuel` returns an open branch, that branch has `findClosure = none`. Proved via `expandBranchWithFuel_sound` with induction on fuel. Required three helper lemmas:
-   - `tryBranch_inr`: The fold step function preserves the findClosure invariant
-   - `foldl_preserves_findClosure`: `List.foldl` with tryBranch preserves the invariant
-   - `expandBranchWithFuel_sound`: Main induction on fuel handling all code paths
+2. **blocking_sound** (sorry-free): If `expandBranchWithFuel` returns an open branch, that branch has `findClosure = none`. Proved via `expandBranchWithFuel_sound` with induction on fuel.
 
-3. **blocking_terminates**: Still sorry. Requires generalized subformula property for expanded branches (not just initial), pigeonhole argument over time types, and Fintype infrastructure.
+3. **blocking_terminates**: Still sorry. Requires generalized subformula property for expanded branches, pigeonhole argument over time types, and Fintype infrastructure.
 
 ### Helper Lemmas Added
 
-**From Phase 2 (prior session)**:
-- `findUnexpanded_none_all_expanded`: Bridge from `findUnexpanded b = none` to per-formula `isExpanded`
+**From Phase 2 (prior sessions)**:
+- `findUnexpanded_none_all_expanded`: Bridge from `findUnexpanded b timeOrd = none` to per-formula `isExpanded`
 - `expanded_iff_no_applicable`: Equivalence between `isExpanded` and `findApplicableRule = none`
 - `contains_iff_mem`: Bridge between `Branch.contains` (Bool) and list membership (Prop)
-- `impNeg_not_expanded`, `impPos_not_expanded`, `boxNeg_not_expanded`: Vacuity lemmas
+- `impNeg_not_expanded`, `impPos_not_expanded`, `boxNeg_not_expanded`: Vacuity lemmas (generalized to any timeOrd)
+- `untlPos_not_expanded`, `sncePos_not_expanded`: Temporal positive vacuity (generalized)
 
-**New in this session**:
-- `untlPos_not_expanded`: T(U(event, guard)) is never expanded (either someFuturePos or untlPos applies)
-- `sncePos_not_expanded`: T(S(event, guard)) is never expanded (mirror)
+**From Phase 5 (prior sessions)**:
 - `tryBranch_inr`: Fold step preserves findClosure invariant
 - `foldl_preserves_findClosure`: Foldl preserves findClosure invariant
 - `expandBranchWithFuel_sound`: General soundness of expansion (induction on fuel)
 
 ## Sorry Site Accounting
 
-| File | Before | After | Resolved |
-|------|--------|-------|----------|
-| Correctness.lean | 0 | 0 | N/A (added 2 sorry-free theorems) |
-| CountermodelExtraction.lean | 9 | 4 | 5 |
-| Saturation.lean | 3 | 1 | 2 |
-| **Total** | **12** | **5** | **7** |
+| File | Before (start) | After round 2 | After round 3 | Resolved |
+|------|----------------|----------------|----------------|----------|
+| Correctness.lean | 0 | 0 | 0 | +2 theorems |
+| CountermodelExtraction.lean | 9 | 4 | 4 | 5 |
+| Saturation.lean | 3 | 1 | 1 | 2 |
+| **Total** | **12** | **5** | **5** | **7** |
 
 ## What Remains (5 sorry sites)
 
 ### CountermodelExtraction.lean (4 sorry sites)
 
-**Architecturally blocked** (see below):
-- `sat_untl_neg` (L636): F(U(event, guard)) Reynolds co-decomposition
-- `sat_snce_neg` (L650): F(S(event, guard)) co-decomposition (mirror)
-- `truthLemma_neg` untl (L756): depends on sat_untl_neg
-- `truthLemma_neg` snce (L760): depends on sat_snce_neg
+**Unblocked** (architectural fix complete, proofs needed):
+- `sat_untl_neg` (L634): Now quantifies over `timeOrd.futureOf t`
+- `sat_snce_neg` (L649): Now quantifies over `timeOrd.pastOf t`
+- `truthLemma_neg` untl (L758): Depends on sat_untl_neg
+- `truthLemma_neg` snce (L762): Depends on sat_snce_neg
 
 ### Saturation.lean (1 sorry site)
 
 - `blocking_terminates` (L663): Pigeonhole argument over time types
 
-## Architectural Blocker: Temporal Negative Saturation
+## Proof Strategy for sat_untl_neg
 
-The `sat_untl_neg` and `sat_snce_neg` theorems require showing that F(U(event, guard)) in a saturated branch implies F(event) or F(guard) at all known times. The proof depends on the `untlNeg`/`snceNeg` persistent rules propagating these formulas to future times.
+The proof follows the same pattern as `sat_box_pos` but for temporal rules:
 
-**Root cause**: `findUnexpanded` (which defines saturation) uses `TimeOrdering.empty` by default. With empty time ordering, `timeOrd.futureOf l.time = []`, so the `untlNeg` rule sees no future times and always returns `notApplicable`. This means the saturation condition provides no information about temporal propagation -- the temporal persistent rules are trivially satisfied without actually propagating anything.
+1. From saturation, extract `findApplicableRule = none` via `findUnexpanded_none_all_expanded`
+2. Use `List.findSome?_eq_none_iff` to extract that `untlNeg` rule's lambda returns `none`
+3. Simplify `isApplicable` (true since `guard != top` via `asUntil?`)
+4. Case-split on `applyRule .untlNeg ...` result:
+   - `notApplicable`: Means the filter `(timeOrd.futureOf t).filter (fun t'' => !(contains event || contains guard))` is `[]`. But if any `t'` lacks both `F(event)` and `F(guard)`, it passes the filter, making the list non-empty. Contradiction.
+   - `linear/branching/persistent`: Lambda returns `some(...)`, contradicting `= none`.
 
-**The gap**: The actual expansion process uses a real `TimeOrdering` that grows as new times are created. The temporal rules propagate formulas during expansion using this real ordering. But the final saturation check (`findUnexpanded b = none`) forgets the ordering. The truth lemma needs the temporal propagation that only happened under the real ordering.
+The challenge is mechanizing step 4.notApplicable: after unfolding `applyRule`, the goal contains a complex match on the filter list. The `split at hRule` tactic or manual case analysis on the filter list should work, but the syntactic form of the unfolded expression needs careful matching.
 
-**Possible fixes**:
-1. Thread the `TimeOrdering` through the saturation condition: Change `ExpandedTableau.hasOpen` to carry `findUnexpanded openBranch timeOrd = none` instead of `findUnexpanded openBranch = none`. This would make `sat_untl_neg` provable but requires changes to the `ExpandedTableau` type and all code that constructs it.
-2. Add a separate invariant: Prove that after expansion with a real `TimeOrdering`, the branch already contains all temporal propagations. This requires tracking the expansion history.
-3. Weaken the truth lemma: Only prove it for `cm.timeOrdering = TimeOrdering.empty`, which makes the temporal cases vacuously true (no ordered times means no temporal obligations). This weakens the overall completeness theorem but still works for the empty time ordering case.
+## Build Status
+
+Full `lake build` passes with no new errors. Pre-existing errors in `ChronicleToCountermodel` and Mathlib are unrelated.
 
 ## Plan Deviations
 
@@ -104,7 +115,7 @@ The `sat_untl_neg` and `sat_snce_neg` theorems require showing that F(U(event, g
 - Phase 2 Task 2.3: Altered -- used `List.findSome?_eq_none_iff` instead of simp-based unfolding
 - Phase 2 Bonus: Added truthLemma_pos imp case (not in original plan)
 - Phase 3 sat_untl_pos/sat_snce_pos: Altered -- proved vacuously (formulas can't exist in saturated branch)
-- Phase 3 sat_untl_neg/sat_snce_neg: Deferred -- architecturally blocked by empty time ordering
+- Phase 3 sat_untl_neg/sat_snce_neg: Altered -- changed conclusion from `b.knownTimes` to `timeOrd.futureOf/pastOf`; architectural fix completed but proofs still sorry
 - Phase 5 subformula_property: Altered -- theorem as stated only covers initial branch, proved trivially
 - Phase 5 blocking_sound: Completed -- full induction with foldl helper lemmas
 - Phase 5 blocking_terminates: Deferred -- needs generalized subformula property
@@ -114,18 +125,12 @@ The `sat_untl_neg` and `sat_snce_neg` theorems require showing that F(U(event, g
 The breakthrough for persistent rule proofs (Phase 2-3) was using `List.findSome?_eq_none_iff` instead of unfolding the entire 20+ rule list via `simp`. This lemma states:
 
 ```
-List.findSome? f l = none ↔ ∀ x ∈ l, f x = none
+List.findSome? f l = none <-> forall x in l, f x = none
 ```
 
 Applied to `findApplicableRule`:
 1. From `isExpanded sf b = true`, extract `findApplicableRule sf b = none`
 2. Apply `List.findSome?_eq_none_iff` to get: for every rule in the list, the lambda returns `none`
-3. Instantiate with the specific rule of interest (e.g., `.boxPos`, `.untlPos`)
+3. Instantiate with the specific rule of interest (e.g., `.boxPos`, `.untlNeg`)
 4. Since `isApplicable` is true for the target rule, `applyRule` must have returned `notApplicable`
 5. Extract the semantic consequence (e.g., filterMap is empty for persistent rules)
-
-This avoids the exponential blowup from stepping through 20+ rules sequentially.
-
-## Build Status
-
-Full `lake build` passes with no new errors. All existing sorry sites compile without issues.
