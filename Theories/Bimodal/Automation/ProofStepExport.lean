@@ -33,10 +33,10 @@ so the derivation trees can be evaluated at runtime.
 
 ## Theorem Inventory
 
-310 entries organized by category:
-- 36 original computable standalone theorems (from 7 source files)
-- 36 G-wrapped (temporal_necessitation of each original)
-- 36 H-wrapped (temporal_duality of temporal_necessitation of each original)
+334 entries organized by category:
+- 44 original computable standalone theorems (from 7 source files + 8 new TemporalDerived)
+- 44 G-wrapped (temporal_necessitation of each original)
+- 44 H-wrapped (temporal_duality of temporal_necessitation of each original)
 - 12 GG-double-wrapped (selected small theorems)
 - 7 GGG-triple-wrapped (single-step theorems)
 - 18 temporal axiom instantiations (covering all 18 Base-compatible BX axioms)
@@ -49,9 +49,10 @@ Source files for the 36 original theorems:
 - ModalS4.lean: 2 (s4_box_diamond_box, s4_diamond_box_diamond)
 - ModalS5.lean: 6 (t_box_to_diamond, box_contrapose, k_dist_diamond,
   t_box_consistency, s5_diamond_box, s5_diamond_box_to_truth)
-- TemporalDerived.lean: 7 (connect_future_thm, connect_past_thm,
+- TemporalDerived.lean: 15 (connect_future_thm, connect_past_thm,
   G_implies_G_id, until_implies_some_future, since_implies_some_past,
-  until_imp_F, since_imp_P)
+  until_imp_F, since_imp_P, F_mono, P_mono, until_mono_guard,
+  since_mono_guard, until_mono_event, since_mono_event, F_neg_G, P_neg_H)
 - Helpers.lean: 3 (box_to_future, box_to_past, box_to_present)
 - Principles.lean: 10 (perpetuity_1, diamond_4, modal_5, perpetuity_2,
   box_to_box_past, perpetuity_3, perpetuity_4, mb_diamond,
@@ -231,6 +232,35 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "since_imp_P" (Bimodal.Theorems.TemporalDerived.since_imp_P p q),
 
   -- ============================================================
+  -- TemporalDerived.lean - New Computable Theorems (8 entries)
+  -- Categories B, E, C3-C4 from Task 249
+  -- ============================================================
+
+  -- F_mono : ⊢ G(φ → ψ) → (F φ → F ψ)
+  mkEntry "F_mono" (Bimodal.Theorems.TemporalDerived.F_mono p q),
+
+  -- P_mono : ⊢ H(φ → ψ) → (P φ → P ψ)
+  mkEntry "P_mono" (Bimodal.Theorems.TemporalDerived.P_mono p q),
+
+  -- until_mono_guard : ⊢ G(φ → χ) → ((ψ U φ) → (ψ U χ))
+  mkEntry "until_mono_guard" (Bimodal.Theorems.TemporalDerived.until_mono_guard p q r),
+
+  -- since_mono_guard : ⊢ H(φ → χ) → ((ψ S φ) → (ψ S χ))
+  mkEntry "since_mono_guard" (Bimodal.Theorems.TemporalDerived.since_mono_guard p q r),
+
+  -- until_mono_event : ⊢ G(φ → ψ) → ((φ U χ) → (ψ U χ))
+  mkEntry "until_mono_event" (Bimodal.Theorems.TemporalDerived.until_mono_event p q r),
+
+  -- since_mono_event : ⊢ H(φ → ψ) → ((φ S χ) → (ψ S χ))
+  mkEntry "since_mono_event" (Bimodal.Theorems.TemporalDerived.since_mono_event p q r),
+
+  -- F_neg_G : ⊢ F(¬φ) → ¬(G φ)
+  mkEntry "F_neg_G" (Bimodal.Theorems.TemporalDerived.F_neg_G p),
+
+  -- P_neg_H : ⊢ P(¬φ) → ¬(H φ)
+  mkEntry "P_neg_H" (Bimodal.Theorems.TemporalDerived.P_neg_H p),
+
+  -- ============================================================
   -- Helpers.lean (3 entries)
   -- ============================================================
 
@@ -337,6 +367,24 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_imp_F p q)),
   mkEntry "G_since_imp_P"
     (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q)),
+
+  -- New TemporalDerived G-wrapped (Task 249)
+  mkEntry "G_F_mono"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_mono p q)),
+  mkEntry "G_P_mono"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.P_mono p q)),
+  mkEntry "G_until_mono_guard"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_mono_guard p q r)),
+  mkEntry "G_since_mono_guard"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_mono_guard p q r)),
+  mkEntry "G_until_mono_event"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_mono_event p q r)),
+  mkEntry "G_since_mono_event"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_mono_event p q r)),
+  mkEntry "G_F_neg_G"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_neg_G p)),
+  mkEntry "G_P_neg_H"
+    (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.P_neg_H p)),
 
   -- Helpers G-wrapped
   mkEntry "G_box_to_future"
@@ -453,6 +501,32 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_since_imp_P"
     (DerivationTree.temporal_duality _
       (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q))),
+
+  -- New TemporalDerived H-wrapped (Task 249)
+  mkEntry "H_F_mono"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_mono p q))),
+  mkEntry "H_P_mono"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.P_mono p q))),
+  mkEntry "H_until_mono_guard"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_mono_guard p q r))),
+  mkEntry "H_since_mono_guard"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_mono_guard p q r))),
+  mkEntry "H_until_mono_event"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.until_mono_event p q r))),
+  mkEntry "H_since_mono_event"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_mono_event p q r))),
+  mkEntry "H_F_neg_G"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_neg_G p))),
+  mkEntry "H_P_neg_H"
+    (DerivationTree.temporal_duality _
+      (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.P_neg_H p))),
 
   -- Helpers H-wrapped
   mkEntry "H_box_to_future"

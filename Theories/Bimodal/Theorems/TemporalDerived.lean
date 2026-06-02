@@ -10,6 +10,58 @@ import Bimodal.Theorems.Propositional.Connectives
 This module contains temporal theorems derived from the Burgess-Xu (BX) axiom system
 under open guard semantics `(t,s)` (task 113).
 
+## Theorem Inventory (30 total: 8 original + 2 propositional + 20 new from Task 249)
+
+### Original Temporal Theorems (8)
+- `G_distribution`, `H_distribution`: K-distribution (noncomputable, from BX3)
+- `G_transitivity`, `H_transitivity`: 4-axiom (noncomputable, from BX3+BX6)
+- `connect_future_thm`, `connect_past_thm`: Direct BX4/BX4' (computable)
+- `G_implies_G_id`: Propositional (computable)
+- `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10' (computable)
+- `until_imp_F`, `since_imp_P`: Direct BX10/BX10' (computable, duplicates of above)
+
+### Category B: Temporal Monotonicity (4 computable + 2 noncomputable aliases)
+- `F_mono`: `G(φ→ψ) → (Fφ → Fψ)` -- BX3 with χ:=⊤
+- `P_mono`: `H(φ→ψ) → (Pφ → Pψ)` -- BX3' with χ:=⊤
+- `G_mono`: Alias for `G_distribution` (noncomputable)
+- `H_mono`: Alias for `H_distribution` (noncomputable)
+
+### Category E: Until/Since Structural (4 computable)
+- `until_mono_guard`: `G(φ→χ) → (ψ U φ → ψ U χ)` -- BX2G
+- `since_mono_guard`: `H(φ→χ) → (ψ S φ → ψ S χ)` -- BX2H
+- `until_mono_event`: `G(φ→ψ) → (φ U χ → ψ U χ)` -- BX3
+- `since_mono_event`: `H(φ→ψ) → (φ S χ → ψ S χ)` -- BX3'
+
+### Category C: Temporal Duality and Contraposition (4: 2 computable, 2 noncomputable)
+- `F_neg_G`: `F(¬φ) → ¬(Gφ)` -- DNI (computable)
+- `P_neg_H`: `P(¬φ) → ¬(Hφ)` -- DNI (computable)
+- `G_contrapose`: `G(φ→ψ) → G(¬ψ→¬φ)` -- G_distribution (noncomputable)
+- `H_contrapose`: `H(φ→ψ) → H(¬ψ→¬φ)` -- H_distribution (noncomputable)
+
+### Category A: G/H Distribution Variants (4 noncomputable)
+- `G_and_intro`: `Gφ → Gψ → G(φ∧ψ)` -- pairing + G_distribution
+- `H_and_intro`: `Hφ → Hψ → H(φ∧ψ)` -- pairing + H_distribution
+- `G_imp_trans`: `G(φ→ψ) → G(ψ→χ) → G(φ→χ)` -- b_combinator + G_distribution
+- `H_imp_trans`: `H(φ→ψ) → H(ψ→χ) → H(φ→χ)` -- b_combinator + H_distribution
+
+### Category D: Future-Past Interaction Chains (4 noncomputable)
+- `connect_future_G`: `Gφ → G(G(Pφ))` -- connect_future + G_distribution
+- `connect_past_H`: `Hφ → H(H(Fφ))` -- connect_past + H_distribution
+- `connect_future_chain`: `φ → G(H(F(Pφ)))` -- deep chain
+- `connect_past_chain`: `φ → H(G(P(Fφ)))` -- deep chain
+
+### Propositional Helpers (2 noncomputable)
+- `contrapositive`: `(A→B) → (¬B→¬A)`
+- `formula_or_comm`: `(A∨B) → (B∨A)`
+
+### Computability Summary
+- **Computable** (8 unique, suitable for ProofStepExport): F_mono, P_mono,
+  until_mono_guard, since_mono_guard, until_mono_event, since_mono_event, F_neg_G, P_neg_H
+- **Noncomputable** (12): G_distribution, H_distribution, G_transitivity, H_transitivity,
+  G_mono, H_mono, G_and_intro, H_and_intro, G_imp_trans, H_imp_trans,
+  G_contrapose, H_contrapose, connect_future_G, connect_past_H,
+  connect_future_chain, connect_past_chain
+
 ## Status After Open Guard Refactoring (Task 113)
 
 BX8/BX8' (until_step/since_step) and BX9/BX9' (until_elim/since_elim) were removed
@@ -22,33 +74,13 @@ because they are not sound under open guard semantics.
 for the complete list, type signatures, and original proof attempts. Closed-guard
 originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`.
 
-Definitions removed (19 direct sorry stubs + 8 transitive dependents):
-- BX9-dependent: bot_until_bot_absurd, bot_since_bot_absurd, bot_until_elim,
-  bot_since_elim, until_imp_or, since_imp_or, bot_until_id, bot_since_id,
-  until_unfold_thm, since_unfold_thm
-- BX8-dependent: psi_imp_until, psi_imp_since, G_implies_topUntil
-- Reflexive order: refl_F, refl_P
-- Seriality: G_bot_absurd, H_bot_absurd
-- Density: density_derivable, past_density_derivable
-- Transitive dependents: or_until_imp, or_since_imp, until_unfold_wrapped,
-  since_unfold_wrapped, until_intro, since_intro, until_F_expansion,
-  since_P_expansion
-
-### Sorry-free (remaining in this file):
-- `G_distribution`: Derived from BX3 (temp_k_dist_derived)
-- `G_transitivity`: Derived from BX3 + BX6 (temp_4_derived)
-- `connect_future_thm`, `connect_past_thm`: Direct BX4/BX4'
-- `G_implies_G_id`: Propositional
-- `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
-- `until_imp_F`, `since_imp_P`: Direct BX10/BX10'
-- `contrapositive`, `formula_or_comm`: Pure propositional
-
 ## References
 
 - Burgess 1982/84: Until-Since temporal logic axiomatization
 - Task 83: BX axiom system refactor
 - Task 113: Open guard refactoring
 - Task 173: Archive of 27 sorry-tainted definitions
+- Task 249: Expand temporal derived theorem library
 -/
 
 namespace Bimodal.Theorems.TemporalDerived
