@@ -126,20 +126,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Run Full Verification and Document Results [NOT STARTED]
+### Phase 3: Run Full Verification and Document Results [COMPLETED]
 
 **Goal**: Execute both the Lean smoke test and Python validation, collect results, and confirm all smoke-test criteria are met.
 
 **Tasks**:
-- [ ] Run `lake build Tests.BimodalTest.Automation.C5SmokeTest` (or equivalent) and capture output
-- [ ] Run `python3 scripts/validate_c5_dataset.py data/bmlogic-c5.jsonl` and capture output
-- [ ] Verify all criteria are met:
+- [x] Run `lake build Tests.BimodalTest.Automation.C5SmokeTest` (or equivalent) and capture output
+- [x] Run `python3 scripts/validate_c5_dataset.py data/bmlogic-c5.jsonl` and capture output
+- [x] Verify all criteria are met:
   - No stalling (Lean test completes)
   - JSONL well-formed (no parse errors)
   - All fields populated (no null metrics)
   - Timeout rate < 5%
   - box(bot) -> box(r) resolves as valid
-- [ ] If any criterion fails, investigate and document the failure
+- [x] If any criterion fails, investigate and document the failure
 
 **Timing**: 15 minutes
 
