@@ -73,18 +73,18 @@ Plan v55 attempted a "frozen guard" approach to prove `chronicle_gap_contradicti
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Resolve import cycle and close no_gaps_discrete [NOT STARTED]
+### Phase 1: Resolve import cycle and close no_gaps_discrete [COMPLETED]
 
 **Goal**: Close the sorry at GoodStructures.lean:855 by making `no_gaps_discrete` delegate to `no_gaps_discrete_model_surgery`.
 
 **Tasks**:
-- [ ] Analyze the import cycle: GoodStructuresModelSurgery.lean imports GoodStructures.lean, so GoodStructures.lean cannot import GoodStructuresModelSurgery.lean
-- [ ] Strategy A (preferred): Extract `no_gaps_discrete` from GoodStructures.lean into a new file (e.g., `NoGapsDiscrete.lean`) that imports both GoodStructures.lean and GoodStructuresModelSurgery.lean. The new file contains the real theorem that delegates to `no_gaps_discrete_model_surgery`. Replace the sorry in GoodStructures.lean with `sorry` behind a clear docstring noting the real proof is in the new file, OR remove `no_gaps_discrete` from GoodStructures.lean entirely and have callers import the new file.
-- [ ] Strategy B (alternative): Replace the sorry at GoodStructures.lean:855 by inlining the proof from `no_gaps_discrete_model_surgery`, exactly as ShiftAndGlue.lean:960-967 does for `chronicle_is_good_direct`. Since the types match definitionally, the proof body can be copied.
-- [ ] Strategy C (if A/B fail): Move `no_gaps_discrete` and `one_class` out of GoodStructures.lean into a downstream file that already imports GoodStructuresModelSurgery.lean (e.g., ShiftAndGlue.lean or a new file). Update all callers.
-- [ ] Verify `no_gaps_discrete` (or its replacement) compiles without sorry
-- [ ] Verify `one_class` still compiles (it calls `no_gaps_discrete`)
-- [ ] `lake build` passes after the change
+- [x] Analyze the import cycle: GoodStructuresModelSurgery.lean imports GoodStructures.lean, so GoodStructures.lean cannot import GoodStructuresModelSurgery.lean *(completed)*
+- [x] Strategy A (preferred): Extract `no_gaps_discrete` from GoodStructures.lean into a new file (e.g., `NoGapsDiscrete.lean`) that imports both GoodStructures.lean and GoodStructuresModelSurgery.lean. The new file contains the real theorem that delegates to `no_gaps_discrete_model_surgery`. Replace the sorry in GoodStructures.lean with `sorry` behind a clear docstring noting the real proof is in the new file, OR remove `no_gaps_discrete` from GoodStructures.lean entirely and have callers import the new file. *(deviation: altered -- created `NoGapsDiscreteProof.lean` importing GoodStructuresModelSurgery; removed both `no_gaps_discrete` and `one_class` from GoodStructures.lean entirely rather than leaving a sorry stub; `no_gaps_discrete` delegates to `no_gaps_discrete_model_surgery` via `exact`; however `no_gaps_discrete_model_surgery` itself carries `sorryAx` transitively through the Stavi completeness chain, so `#print axioms` still shows `sorryAx`)*
+- [ ] Strategy B (alternative) *(deviation: skipped -- Strategy A succeeded)*
+- [ ] Strategy C (if A/B fail) *(deviation: skipped -- Strategy A succeeded)*
+- [x] Verify `no_gaps_discrete` (or its replacement) compiles without sorry *(completed: no explicit sorry; transitive sorryAx through Stavi remains)*
+- [x] Verify `one_class` still compiles (it calls `no_gaps_discrete`) *(completed)*
+- [x] `lake build` passes after the change *(completed: 1681 jobs, zero errors)*
 
 **Timing**: 2 hours
 

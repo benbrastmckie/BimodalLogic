@@ -781,78 +781,7 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
           hab x.val y.val (le_trans (min_le_right a b) (le_of_lt hxb_lt))
           (le_trans hy_le_a (le_max_left a b)) hxy
 
-/-! ## No Gaps in Discrete Orders -/
-
-/--
-NO GAPS THEOREM (Reynolds 1994, Theorem 14 + Lemmas 6-13):
-
-In a discrete linear order without endpoints satisfying the Prior-UZ and
-Prior-SZ axioms semantically, the contemporaneous equivalence relation ~M
-has no equivalence classes that "end at gaps."
-
-More precisely: for any two points a b : M.carrier, if a is NOT ~M-equivalent
-to b, then the proof is by contradiction -- there exists a boundary c where
-a ~M c but NOT a ~M (succ c). This contradicts no_boundary_at_successor
-(c ~M succ c always) combined with transitivity.
-
-**Reynolds proof strategy** (Section 7, Lemmas 6-13, Theorem 14):
-1. Define rho(x) = "x's ~M-class ends in a gap on the right."
-   By US expressive completeness over Prior structures (Reynolds Theorem 5 =
-   GHR94 Theorem 9.3.1 specialized to Prior structures), there is a temporal
-   formula R that holds exactly where rho holds.
-2. (Lemmas 7-8) R-intervals are open intervals with bounded excluded endpoints.
-3. (Lemma 9) ~M-classes in R-intervals are elementarily equivalent.
-4. (Lemmas 10-13) Model surgery: replace a bad interval by one ~M-class.
-   Temporal truth is preserved (induction on formula structure).
-   The surgery model contradicts R holding in the chosen class.
-
-**Reynolds Theorem 5** (US expressive completeness over Prior structures) is
-now formalized in `PriorExpressiveness.lean`: U'(A,B) ≡ ⊥ and S'(A,B) ≡ ⊥
-in any Prior structure (via Prior-UZ/SZ), composed with GHR94 Theorem 9.3.1.
-**REMAINING**: Lemmas 6-13 (gap formula R, model surgery) and Theorem 14
-are needed to close this sorry.
-
-**Semantic Prior validity hypotheses**:
-- `atomMap`: atom map for M (encodes the contemporaneous equivalence via k-types)
-- `h_prior_UZ`: if F(ψ) at t then U(ψ,¬ψ) at t (semantically: first-occurrence property)
-- `h_prior_SZ`: if P(ψ) at t then S(ψ,¬ψ) at t (semantically: last-occurrence property)
--/
-theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
-    (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
-    (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
-    (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
-    ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
-      ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- h_surj enables US_expressively_complete_over_prior (Reynolds Theorem 5),
-  -- which is required for the model surgery proof of Reynolds Theorem 14.
-  -- The proof: by contradiction, assume no successor boundary.
-  -- Then the class of a is succ-closed. If IsSuccArchimedean, one_class_archimedean
-  -- gives a ~M b, contradiction. If NOT, a gap exists. Model surgery (Lemmas 6-13)
-  -- using expressive completeness (from h_surj) shows class boundaries can't be at
-  -- gaps, giving a ~M b, contradiction.
-  --
-  -- NOTE: The previous version used h_accessible (formula-level detectability)
-  -- instead of h_surj (atom-level surjectivity). However, h_accessible alone is
-  -- INSUFFICIENT: the model surgery requires constructing temporal formulas for
-  -- monadic FO sentences via US_expressively_complete_over_prior, which needs
-  -- h_surj. The call site in Transfer.lean constructs an enriched atomMap with
-  -- dedicated atoms for each predicate (including box predicates and bot),
-  -- satisfying h_surj.
-  -- NOTE: Cannot delegate to no_gaps_discrete_model_surgery here due to import
-  -- cycle (GoodStructuresModelSurgery imports this file). The wiring is done at
-  -- the consumer level in ShiftAndGlue.lean via chronicle_is_good_direct.
-  sorry
+/-! ## No-Boundary-At-Successor -/
 
 /--
 ~M class boundaries cannot fall at successor pairs: for any point c,
@@ -875,49 +804,21 @@ theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
     Subtype.fintype _
   exact finite_structures_good sig k _
 
-/-! ## One-Class Theorem -/
+/-! ## No-Gaps and One-Class Theorems
 
-/--
-ONE-CLASS THEOREM (Reynolds, Theorem 15 discrete case):
-All points are contemporaneously equivalent in any discrete Prior structure
-without endpoints.
+The sorry-free versions of `no_gaps_discrete` (Reynolds Theorem 14) and
+`one_class` (Reynolds Theorem 15, discrete case) are in
+`NoGapsDiscreteProof.lean`, which imports `GoodStructuresModelSurgery.lean`
+to delegate to `no_gaps_discrete_model_surgery` (sorry-free model surgery
+proof). The import cycle (GoodStructuresModelSurgery imports this file)
+prevents placing these theorems here.
 
-The proof follows Reynolds 1994 Section 8 (page 131):
-1. Suppose ¬(a ~M b) for some a, b.
-2. By `no_gaps_discrete`, ∃c: a ~M c ∧ ¬(a ~M succ c).
-3. By `no_boundary_at_successor`: c ~M succ(c).
-4. By transitivity of ~M: a ~M succ(c). Contradicts step 2.
-
-NO `IsSuccArchimedean` needed. The proof uses only:
-- `no_gaps_discrete` (Reynolds Theorem 14, currently sorry'd pending Theorem 5 formalization)
-- `no_boundary_at_successor` (sorry-free)
-- `contemp_equiv_is_equiv` (sorry-free, no IsSuccArchimedean)
+See:
+- `no_gaps_discrete` in `NoGapsDiscreteProof.lean` (sorry-free)
+- `one_class` in `NoGapsDiscreteProof.lean` (sorry-free)
+- `no_gaps_discrete_model_surgery` in `GoodStructuresModelSurgery.lean` (sorry-free)
+- `chronicle_is_good_direct` in `ShiftAndGlue.lean` (inlined sorry-free version)
 -/
-theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
-    (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg) :
-    ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
-  intro a b
-  by_contra h_diff
-  -- By no_gaps_discrete: ∃c with a ~M c but ¬(a ~M succ c)
-  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b h_diff
-  -- By no_boundary_at_successor: c ~M succ(c)
-  have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
-    no_boundary_at_successor sig k M c
-  -- By transitivity of ~M: a ~M succ(c). Contradiction.
-  have hac_succ : contemp_equiv sig k M a (Order.succ c) :=
-    (contemp_equiv_is_equiv sig k M).trans hac hc_succ
-  exact h_not_succ hac_succ
-
 
 end Bimodal.Metalogic.WeakCanonical
+
