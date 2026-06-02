@@ -118,7 +118,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Weakening Variants and Multi-Instantiation [NOT STARTED]
+### Phase 2: Add Weakening Variants and Multi-Instantiation [COMPLETED]
 
 **Goal**: Create weakening variants (extra unused assumptions) and multi-instantiation variants (different atom combinations) to multiply the step count.
 
