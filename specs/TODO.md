@@ -583,6 +583,7 @@ technical_debt:
 - **Research**:
   - [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
   - [155_reynolds_pipeline_activation/reports/55_team-research.md]
+  - [155_reynolds_pipeline_activation/reports/60_team-research.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/51_implementation-plan.md]
   - [155_reynolds_pipeline_activation/plans/55_implementation-plan.md]

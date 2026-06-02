@@ -363,7 +363,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -372,8 +372,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T23:45:00Z",
-      "next_artifact_number": 60,
+      "last_updated": "2026-06-02T22:32:53Z",
+      "next_artifact_number": 61,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -654,10 +654,15 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/59_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v60: fix 3 root sorries in StaviCompleteness.lean (4-var EF-game existential transfer) and rewire limitDomSubtype_isSuccArchimedean via model surgery (6 phases, 10-16 hours)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/60_team-research.md",
+          "type": "research",
+          "summary": "Team research round 9 (4 teammates): GHR93 Prop 7 extraction, alternative approaches, critic analysis, strategic horizons"
         }
       ],
-      "session_id": "sess_1748899200_orchestrate",
-      "researched": "2026-06-02T14:34:29Z",
+      "session_id": "sess_1780428000_team_research",
+      "researched": "2026-06-02T22:32:53Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": null,
