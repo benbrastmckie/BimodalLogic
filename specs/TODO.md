@@ -65,7 +65,7 @@ technical_debt:
 
 ### Tableau Training
 
-243 [PLANNED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+243 [COMPLETED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
 244 [COMPLETED] — Create library of theorems with non-empty contexts to exercise as
 247 [COMPLETED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
 
@@ -83,7 +83,7 @@ technical_debt:
 ### Dataset Enhancement
 
 262 [NOT STARTED] — Research interestingness metrics for theorems and derivations
-261 [PLANNED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
+261 [COMPLETED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
   - **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
   - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -123,7 +123,7 @@ technical_debt:
 
 ### 262. Research interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -132,7 +132,7 @@ technical_debt:
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
