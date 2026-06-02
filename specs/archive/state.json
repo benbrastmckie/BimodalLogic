@@ -8180,6 +8180,306 @@
       },
       "completion_summary": "Re-scoped task 155 from the obsolete GHR93 game-theoretic pipeline targeting succ_cofinal to fixing the no_gaps_discrete import cycle in GoodStructures.lean by delegating to no_gaps_discrete_model_surgery. Updated task 95 description to reflect the WeakCanonical path as the correct production route, distinguishing dead-code BX chronicle path from live WeakCanonical path. Abandoned task 224 (IsSuccArchimedean alternative now obsolete). All changes to specs/state.json and specs/TODO.md only.",
       "completed": "2026-06-01T23:58:00Z"
+    },
+    {
+      "project_number": 259,
+      "project_name": "publishing_guide_nixos_details",
+      "status": "completed",
+      "task_type": "general",
+      "created": "2026-06-01T23:19:59Z",
+      "last_updated": "2026-06-01T23:33:39Z",
+      "session_id": "sess_1748819400_e5f7g9",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md",
+          "type": "research",
+          "summary": "NixOS pain points for HF publishing: no nix config in repo, pip fails on read-only store, 4 edit locations identified"
+        },
+        {
+          "path": "specs/259_publishing_guide_nixos_details/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "1-phase plan: add NixOS instructions at 4 locations in PUBLISHING_GUIDE.md"
+        },
+        {
+          "path": "specs/259_publishing_guide_nixos_details/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 1/1 phases completed, 66 lines of NixOS content added"
+        }
+      ],
+      "completion_summary": "Updated docs/training/PUBLISHING_GUIDE.md with NixOS-specific instructions at 4 locations: CLI download note, dependency install subsection (nix-shell/home-manager/venv), token management warning, and troubleshooting entry.",
+      "completed": "2026-06-01T23:33:39Z"
+    },
+    {
+      "project_number": 258,
+      "project_name": "huggingface_publishing_guide",
+      "status": "completed",
+      "task_type": "general",
+      "created": "2026-06-01T23:02:55Z",
+      "last_updated": "2026-06-01T23:15:31Z",
+      "session_id": "sess_1748818200_d4e6f8",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/258_huggingface_publishing_guide/reports/01_publishing-guide-research.md",
+          "type": "research",
+          "summary": "Research report on HF publishing guide placement and structure"
+        },
+        {
+          "path": "specs/258_huggingface_publishing_guide/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: create PUBLISHING_GUIDE.md, training/README.md, update docs/README.md"
+        },
+        {
+          "path": "specs/258_huggingface_publishing_guide/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 3/3 phases completed"
+        }
+      ],
+      "completion_summary": "Created docs/training/PUBLISHING_GUIDE.md with comprehensive HF Hub publishing guide (269 lines, 9 sections), docs/training/README.md directory index, and updated docs/README.md training section listing.",
+      "completed": "2026-06-01T23:15:31Z"
+    },
+    {
+      "project_number": 164,
+      "project_name": "prove_tableau_correctness",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current validity_decidable theorem in Theories/Bimodal/Metalogic/Decidability/Correctness.lean is trivially Classical.em — it says nothing about the tableau. The decide function in DecisionProcedure.lean implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) decide_sound: if decide phi = .valid proof then valid phi (may follow from soundness + the proof term). (2) decide_complete: if decide phi = .invalid counter then not valid phi (requires proving countermodel extraction produces a genuine semantic countermodel). (3) decide_terminates: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, sorry-free (tableau) in the README is misleading.",
+      "dependencies": [
+        165,
+        239,
+        240
+      ],
+      "created": "2026-05-18T18:01:17Z",
+      "last_updated": "2026-06-02T04:43:34Z",
+      "artifacts": [
+        {
+          "path": "specs/164_prove_tableau_correctness/reports/01_tableau-correctness-research.md",
+          "type": "report",
+          "summary": "Comprehensive research on tableau correctness theorems: current state, sorry sites, dependency graph, feasibility, and phased implementation plan"
+        },
+        {
+          "path": "specs/164_prove_tableau_correctness/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for tableau correctness theorems (decide_sound, decide_complete, decide_terminates)"
+        },
+        {
+          "path": "specs/164_prove_tableau_correctness/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: propagation lemma approach, fuel bug fix, sat_untl_neg strengthening"
+        },
+        {
+          "path": "specs/164_prove_tableau_correctness/plans/02_implementation-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v2 for 3 remaining sorry sites"
+        }
+      ],
+      "completion_summary": "All 3 sorry sites in Decidability/ module resolved. Closed truthLemma_neg untl/snce via modified branchTruth (direct-successor semantics). Proved blocking_terminates FALSE (counterexample: diamond-p exhausts fuel due to persistent rule loop), removed the sorry, added saturateBlocked to fix blocked-but-not-saturated branches. Zero sorries remain in Decidability/. lake build passes clean.",
+      "completed": "2026-06-02T04:43:34Z"
+    },
+    {
+      "project_number": 185,
+      "project_name": "complete_axiom_derived_coverage",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-06-01T13:00:00Z",
+      "session_id": "sess_1779809662_d9784a",
+      "artifacts": [
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md",
+          "type": "report",
+          "summary": "Seed research: axiom coverage gaps and derived theorem inventory"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md",
+          "type": "research",
+          "summary": "Complete axiom coverage matrix (41 constructors), tryAxiomMatch gap analysis, derived theorem inventory, modal_search architecture, implementation plan"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/plans/03_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: extend tryAxiomMatch to 42 axioms, add tryDerivedMatch with 25 derived theorems, integration tests"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/summaries/04_implementation-summary.md",
+          "type": "summary",
+          "summary": "3-phase implementation: axiom extension, derived theorem function, integration tests"
+        }
+      ],
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 4,
+      "planned": "2026-06-01T12:00:00Z",
+      "completion_summary": "Extended tryAxiomMatch from 12 to 42 axiom constructors, added tryDerivedMatch with 26 derived theorems, 69 new test examples, full lake build passes",
+      "completed": "2026-06-01T13:00:00Z"
+    },
+    {
+      "project_number": 190,
+      "project_name": "derived_operator_normalization",
+      "status": "completed",
+      "task_type": "lean4",
+      "created": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-06-01T13:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/190_derived_operator_normalization/reports/01_normalization-seed.md",
+          "type": "report",
+          "summary": "Seed research: derived operator inventory and modal_norm tactic design"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/reports/02_modal-norm-research.md",
+          "type": "research",
+          "summary": "Formula type inventory, derived-to-primitive expansion table, modal_norm tactic design with code sketches, integration recommendations"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/plans/03_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: unfold lemmas, EnrichedFormula ADT + fold algorithm, simp lemmas, JSON serialization, build integration"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/summaries/04_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for derived operator normalization (fold direction)"
+        }
+      ],
+      "session_id": "sess_1779809662_d9784a",
+      "researched": "2026-05-26T20:00:00Z",
+      "next_artifact_number": 4,
+      "planned": "2026-06-01T12:00:00Z",
+      "completion_summary": "Implemented derived operator normalization: 15 unfold/fold simp lemmas, modal_norm/modal_fold tactics, EnrichedFormula ADT with 21 constructors, greedy fold algorithm, JSON/prettyPrint/S-expression serialization, full build passes",
+      "completed": "2026-06-01T13:30:00Z"
+    },
+    {
+      "project_number": 242,
+      "project_name": "tableau_proof_step_generation",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Extend proof step pipeline to generate ProofStepRecord JSONL from tableau-proved formulas instead of only hand-registered theorems. Enumerate formulas via FormulaEnumerator, decide via correct tableau, extract DerivationTree for valid formulas, run extractStepSequence, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [
+        239,
+        241
+      ],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-01T22:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/242_tableau_proof_step_generation/reports/01_proof-step-pipeline-research.md",
+          "type": "report",
+          "summary": "Comprehensive research on proof step pipeline: existing infrastructure analysis, gap identification, feasibility assessment for 100K+ steps, deduplication/diversity design, and architecture recommendation"
+        },
+        {
+          "path": "specs/242_tableau_proof_step_generation/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for proof step pipeline with 5 phases, 8 hours estimated effort"
+        }
+      ],
+      "completion_summary": "Created TableauProofStepPipeline.lean (660 lines) connecting FormulaEnumerator, DecisionProcedure, and ProofStepExtractor into a tableau_proof_steps executable. Three strategies: exhaustive enumeration, axiom seeding, deep G^n wrapping with structural deduplication and diversity metrics. Validated at c5 with 1392 unique steps. 100K target achievable at c9+.",
+      "completed": "2026-06-01T22:00:00Z"
+    },
+    {
+      "project_number": 245,
+      "project_name": "cross_repo_data_pipeline",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Build automated data synchronization from BimodalLogic to BimodalHarness. Currently BimodalHarness data/bimodal/ is empty (SYNC_DATE=not-yet-synced). Implement: export script running lake exe dataset_generator + proof_extractor with validation and VERSION file; enhanced make sync-data verifying schema compatibility and 49-action-space alignment; make verify-data running load_lean_jsonl() and load_proof_steps() validation; documentation in both repos.",
+      "priority": "high",
+      "topic": "tableau-training",
+      "dependencies": [
+        241
+      ],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-02T00:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/245_cross_repo_data_pipeline/reports/01_cross-repo-pipeline-research.md",
+          "type": "report",
+          "summary": "Research on cross-repo data pipeline covering existing executables, schema analysis, BimodalHarness ingestion API, and a complete gap analysis of what needs to be built"
+        },
+        {
+          "path": "specs/245_cross_repo_data_pipeline/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for cross-repo data pipeline with 3 phases: export script, sync documentation, and validation"
+        },
+        {
+          "path": "specs/245_cross_repo_data_pipeline/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering export script, VERSION file, SYNC_PROTOCOL.md, dry-run verification, and schema gap documentation"
+        }
+      ],
+      "completion_summary": "Created scripts/export-training-data.sh wrapping dataset_generator and proof_extractor with --dry-run/--skip-dataset/--skip-proofs flags, JSONL validation, and data/VERSION output. Wrote docs/training/SYNC_PROTOCOL.md documenting sync workflow and schema gap.",
+      "completed": "2026-06-02T00:00:00Z"
+    },
+    {
+      "project_number": 246,
+      "project_name": "lean_repl_tableau_bridge",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Enhance Lean side to support live tableau queries from BimodalHarness lean/bridge.py. Add #tableau_decide command running corrected DecisionProcedure.decide with structured JSON output, #tableau_steps for proof step extraction, #countermodel for semantic countermodel output. Enable BimodalHarness BFS and MCTS search to query Lean oracle for online training. Target <500ms per formula round-trip.",
+      "priority": "medium",
+      "topic": "tableau-training",
+      "dependencies": [
+        241
+      ],
+      "created": "2026-06-01T22:00:00Z",
+      "last_updated": "2026-06-02T00:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/246_lean_repl_tableau_bridge/reports/01_repl-tableau-bridge-research.md",
+          "type": "report",
+          "summary": "Comprehensive research on REPL tableau bridge: existing infrastructure, DecisionProcedure API, proof step and countermodel extraction, JSON serialization, formula parsing, performance analysis, protocol design, and implementation recommendations"
+        },
+        {
+          "path": "specs/246_lean_repl_tableau_bridge/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for REPL tableau bridge with 4 sequential phases: protocol types/parsers, command handlers, REPL loop/exe registration, integration testing"
+        },
+        {
+          "path": "specs/246_lean_repl_tableau_bridge/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with test results, architecture details, and plan deviations"
+        }
+      ],
+      "completion_summary": "Implemented TableauBridge.lean (616 lines) with JSONL stdin/stdout REPL protocol, five commands (tableau_decide, tableau_steps, countermodel, ping, shutdown), registered tableau_bridge executable. All 10 integration tests pass. Sub-millisecond performance.",
+      "completed": "2026-06-02T00:00:00Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "dataset_generation_resumable_interruption",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Make the dataset generation pipeline resumable after interruption. Currently if run_dataset_generation.sh is interrupted (Ctrl-C, OOM kill, system restart), all progress is lost and the entire multi-hour run must restart from scratch. Implement checkpoint/resume so that: (1) During enumeration, periodically flush generated formulas to a checkpoint file so enumeration can resume from the last checkpoint. (2) During labeling, write labeled records incrementally to the output JSONL (or a partial file) so completed labels survive interruption. (3) On restart, detect partial output and resume from where labeling left off rather than re-enumerating and re-labeling everything. (4) The shell script should detect partial runs and offer to resume or restart. Consider: atomic writes to avoid corrupted partial files, a .progress metadata file tracking enumeration/labeling state, and a --resume flag. This is critical for c9 (2+ hours) and c11 (4+ hours) runs that are easily interrupted by OOM, power loss, or accidental Ctrl-C.",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        253
+      ],
+      "created": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-06-01T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/260_dataset_generation_resumable_interruption/reports/01_resumable-pipeline-research.md",
+          "type": "report",
+          "summary": "Research on resumable dataset generation pipeline"
+        },
+        {
+          "path": "specs/260_dataset_generation_resumable_interruption/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for resumable dataset generation"
+        }
+      ],
+      "completion_summary": "Implemented resumable dataset generation pipeline: Lean-side --resume-from/--checkpoint-file/--use-checkpoint flags with append mode and S-expression checkpoint I/O; shell-side resume detection with interactive prompting, --resume/--no-resume flags, last-line validation. All 4 phases complete, lake build passes.",
+      "completed": "2026-06-01T23:00:00Z"
+    },
+    {
+      "project_number": 155,
+      "project_name": "expressiveness_general",
+      "status": "orphan_archived",
+      "archived": "2026-06-02T14:28:54Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
     }
   ]
 }

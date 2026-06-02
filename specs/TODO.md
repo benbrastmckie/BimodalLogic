@@ -1,14 +1,14 @@
 ---
-next_project_number: 260
+next_project_number: 263
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-06-01T23:05:59Z
+  last_assessed: 2026-06-02T14:31:27Z
 task_counts:
-  active: 48
-  completed: 181
+  active: 43
+  completed: 190
   abandoned: 2
-  total: 231
+  total: 235
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
@@ -25,21 +25,21 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-06-01. Generated from state.json dependency graph.*
+*Updated 2026-06-02. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,185,187,188,189,190,191,194,199,200,219,229,248,249,250,255 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 164,186,192,196,230,242 | 161,165,185,187,190,191,194,199,229 | completeness, tableau-training, dataset-enhancement, ... |
-| 3 | 95,176,193,231,245,246 | 155,189,192,230 | completeness, formula-refactor, tableau-training, ... |
-| 4 | 177,178,243,244,247,254 | 95,131,176,193,242,245,246 | completeness, formula-refactor, tableau-training |
+| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,187,188,189,191,194,199,200,219,229,248,249,250,255,261,262 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 186,192,196,230 | 161,187,191,194,199,229 | automation, dataset-enhancement, ... |
+| 3 | 95,176,193,231 | 155,189,192,230 | completeness, formula-refactor, dataset-enhancement, ... |
+| 4 | 177,178,243,244,247,254 | 95,131,176,193 | completeness, formula-refactor, tableau-training |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-155 [PLANNED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
+155 [RESEARCHING] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -65,20 +65,14 @@ technical_debt:
 
 ### Tableau Training
 
-242 [NOT STARTED] — Extend proof step pipeline to generate ProofStepRecord JSONL from
-  └─ 243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-  └─ 244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
-  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-245 [NOT STARTED] — Build automated data synchronization from BimodalLogic to Bimodal
-  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-246 [NOT STARTED] — Enhance Lean side to support live tableau queries from BimodalHar
-  └─ 247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda (see above)
-164 [COMPLETED] — Prove tableau correctness theorem connecting decision procedure o
+243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+244 [NOT STARTED] — Create library of theorems with non-empty contexts to exercise as
+247 [NOT STARTED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
 
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [PLANNED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
+  └─ 155 [RESEARCHING] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
 ### Code Quality
@@ -90,7 +84,6 @@ technical_debt:
 
 262 [NOT STARTED] — Research interestingness metrics for theorems and derivations
 261 [NOT STARTED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
-260 [COMPLETED] — Make dataset generation resumable after interruption
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -102,24 +95,20 @@ technical_debt:
   └─ 196 [RESEARCHED] — (automation: Systematic survey of the entire Theories) (see above)
 162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-  └─ 164 [COMPLETED] — Prove tableau correctness theorem connecting decision procedure o (see above)
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-185 [RESEARCHED] — complete_axiom_derived_coverage
-  └─ 186 [NOT STARTED] — unify_search_systems
-  └─ 192 [NOT STARTED] — master_tactic_dispatch
-    └─ 193 [NOT STARTED] — codebase_tactic_refactor
-      └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
-      └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
+186 [NOT STARTED] — unify_search_systems
+192 [NOT STARTED] — master_tactic_dispatch
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor
+    └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
+    └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 187 [NOT STARTED] — backward_chaining_lemma_db
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 188 [NOT STARTED] — weakening_aware_search
 189 [NOT STARTED] — deduction_theorem_tactic
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-190 [RESEARCHED] — derived_operator_normalization
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 191 [NOT STARTED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 194 [NOT STARTED] — migrate_nonempty_to_derivable
@@ -146,35 +135,6 @@ technical_debt:
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 253
 - **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
-
-### 260. Make dataset generation resumable after interruption
-- **Effort**: medium (6-10 hours)
-- **Status**: [COMPLETED]
-- **Type**: lean4
-- **Priority**: high
-- **Topic**: dataset-enhancement
-- **Dependencies**: Task 253
-- **Description**: Make the dataset generation pipeline resumable after interruption. Currently if `run_dataset_generation.sh` is interrupted (Ctrl-C, OOM kill, system restart), all progress is lost and the entire multi-hour run must restart from scratch. Implement checkpoint/resume so that: (1) During enumeration, periodically flush generated formulas to a checkpoint file so enumeration can resume from the last checkpoint. (2) During labeling, write labeled records incrementally to the output JSONL (or a partial file) so completed labels survive interruption. (3) On restart, detect partial output and resume from where labeling left off rather than re-enumerating and re-labeling everything. (4) The shell script should detect partial runs and offer to resume or restart. Consider: atomic writes to avoid corrupted partial files, a `.progress` metadata file tracking enumeration/labeling state, and a `--resume` flag. This is critical for c9 (2+ hours) and c11 (4+ hours) runs that are easily interrupted by OOM, power loss, or accidental Ctrl-C.
-
-### 259. Update PUBLISHING_GUIDE.md to include details for NixOS users
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Type**: general
-- **Priority**: medium
-- **Research**: [259_publishing_guide_nixos_details/reports/01_nixos-publishing-research.md]
-- **Plan**: [259_publishing_guide_nixos_details/plans/01_implementation-plan.md]
-- **Summary**: [259_publishing_guide_nixos_details/summaries/01_execution-summary.md]
-- **Description**: Update docs/training/PUBLISHING_GUIDE.md to include details for NixOS users in parallel
-
-### 258. Create a Hugging Face publishing guide in docs/
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Type**: general
-- **Priority**: medium
-- **Research**: [258_huggingface_publishing_guide/reports/01_publishing-guide-research.md]
-- **Plan**: [258_huggingface_publishing_guide/plans/01_implementation-plan.md]
-- **Summary**: [258_huggingface_publishing_guide/summaries/01_execution-summary.md]
-- **Description**: Create a publishing guide in the appropriate subdirectory in docs/ if it does not exist already to explain how to publish datasets on Hugging Face Hub
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
 - **Effort**: M
@@ -241,30 +201,6 @@ technical_debt:
 
 ---
 
-### 246. Lean REPL tableau bridge for live queries [RESEARCHING]
-- **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Priority**: medium
-- **Topic**: tableau-training
-- **Dependencies**: 241
-
-**Description**: Enhance Lean to support live tableau queries from BimodalHarness's `lean/bridge.py`. Add `#tableau_decide` (structured JSON output), `#tableau_steps` (proof step JSONL extraction), `#countermodel` (semantic countermodel JSON) commands. Enable BFS/MCTS online training queries. Target <500ms per formula round-trip. Files: `Automation/`, BimodalHarness `lean/bridge.py`.
-
----
-
-### 245. Cross-repository data sync pipeline [RESEARCHING]
-- **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
-- **Task Type**: general
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: 241
-
-**Description**: Build automated BimodalLogic → BimodalHarness data sync. Implement `scripts/export-training-data.sh` (runs generators, validates output, writes `data/VERSION`), enhance `make sync-data` (schema validation, 49-action-space check, ingestion validation), add `make verify-data` target, document sync protocol. Files: BimodalLogic `scripts/`, BimodalHarness `Makefile`, `data/bimodal/`.
-
----
-
 ### 244. Context-based proof steps for assumption/weakening training
 - **Effort**: small (4-6 hours)
 - **Status**: [NOT STARTED]
@@ -286,18 +222,6 @@ technical_debt:
 - **Dependencies**: 242
 
 **Description**: Achieve 42/42 axiom names and 7/7 inference rules in proof step dataset (currently 31/42 and 5/7). For each missing axiom, construct a formula whose shortest proof requires it and generate via tableau. Add coverage tracking report and `data/coverage_report.json`. Files: `ProofStepExport.lean`, `FormulaEnumerator.lean`, `DataExport.lean`.
-
----
-
-### 242. Tableau-derived proof step extraction [RESEARCHING]
-- **Effort**: medium (10-15 hours)
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Priority**: high
-- **Topic**: tableau-training
-- **Dependencies**: 239, 241
-
-**Description**: Extend proof step pipeline to generate `ProofStepRecord` JSONL from tableau-proved formulas (not just 310 hand-registered theorems). Enumerate formulas, decide via correct tableau, extract `DerivationTree`, run `extractStepSequence`, export as JSONL. Add deduplication and diversity metrics. Target: 100K+ proof steps with balanced rule distribution. Files: `ProofStepExport.lean`, `DatasetGenerator.lean`, `FormulaEnumerator.lean`.
 
 ---
 
@@ -448,18 +372,6 @@ technical_debt:
 **Description**: Implement a verified decision procedure for the propositional fragment of TM logic. The propositional axioms (prop_k, prop_s, ex_falso, peirce) are complete for classical propositional logic. Create a `Decidable` instance for `Derivable [] p` when `p` is purely propositional (no modal/temporal operators). Two implementation approaches: (a) truth-table evaluation via BoolEval — evaluate `p` under all atom assignments, if all true then derivable; (b) analytic tableaux — more efficient for large formulas. The `decide` tactic could then close propositional derivability goals automatically. This is publishable: a verified decision procedure for classical propositional logic inside a modal logic framework.
 
 
-### 190. Derived operator normalization tactic (modal_norm)
-- **Effort**: medium (10-12 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Research**:
-  - [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
-  - [specs/190_derived_operator_normalization/reports/02_modal-norm-research.md]
-- **Plan**: [specs/190_derived_operator_normalization/plans/03_implementation-plan.md]
-
-**Description**: Create a `modal_norm` tactic that unfolds all derived operators to primitive form before proof search. The Formula type has 15+ derived operators (diamond, always, sometimes, some_past, some_future, neg, and, or, iff, top, etc.) that expand to combinations of 6 primitives (bot, imp, box, all_future, all_past, untl/snce, atom). AesopRules.lean already defines `@[aesop norm unfold]` for some operators. The tactic should: (1) unfold all derived operators to primitive form, (2) optionally canonicalize negation to `imp ... bot`, (3) support selective normalization (e.g., only unfold modal operators). This significantly reduces the branching factor for proof search since search only needs to handle primitive connectives.
-
-
 ### 189. Deduction theorem tactic
 - **Effort**: medium (10-12 hours)
 - **Status**: [NOT STARTED]
@@ -499,20 +411,6 @@ technical_debt:
 
 **Description**: Unify the two parallel proof search implementations: `modal_search` (TacticM, builds terms via `mkAppM`) and `bounded_search`/`bounded_search_with_proof` (computable, returns `Option (DerivationTree G p)`). The computable search is incomplete — `bounded_search_with_proof` has no modal K or temporal K (lines 951-955 say "would go here"). `SearchConfig` weights exist but `searchProof` ignores them (line 1028). Complete `bounded_search_with_proof` with modal K and temporal K. Make `SearchConfig` weights functional. Optionally have `modal_search` call the computable search as fallback for goals the TacticM search can't handle.
 
-
-### 185. Complete axiom & derived theorem coverage in modal_search
-- **Effort**: small (6-8 hours)
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Research**:
-  - [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]
-  - [specs/185_complete_axiom_derived_coverage/reports/02_axiom-coverage-research.md]
-- **Plan**: [specs/185_complete_axiom_derived_coverage/plans/03_implementation-plan.md]
-
-**Description**: Extend `tryAxiomMatch` in Tactics.lean to cover all axiom schemata (currently 12 of ~16: missing prior_UZ, prior_SZ, serial_future, serial_past, and incomplete connect_future coverage). Add a `tryDerivedMatch` function that registers derived theorems from Combinators.lean (imp_trans, identity, b_combinator, theorem_flip, dni, double_negation) and Propositional.lean (ecq, raa, efq, lce, rce, ldi, rdi, rcp) as additional apply targets in `modal_search`. Add tests for each new pattern. This is the foundational step that all subsequent tactics tasks build upon.
-
-
----
 
 ### 180. Add copyright headers, universe polymorphism, and 100-char line limits
 - **Effort**: medium (6-10 hours)
@@ -598,13 +496,6 @@ technical_debt:
 - **Task Type**: lean4
 
 **Description**: Establish the semantic finite model property for TM bimodal logic. The existing FMP in `Decidability/FMP/` is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a (possibly infinite) canonical model where φ fails, quotient worlds by agreement on the subformula closure of φ. (2) Prove the filtration lemma: truth of all subformulas is preserved in the quotient. The existing `TruthPreservation.lean` handles bot, imp, and box, but temporal operators are absent — the G/H cases were archived (they assumed the T-axiom, invalid under strict semantics) and Until/Since cases were never attempted. Until/Since are known to be problematic for naive filtration since they quantify over intermediate points; selective filtration or alternative constructions may be needed (see Blackburn/de Rijke/Venema Ch 2.3, Reynolds 2003). (3) Prove the quotient model is a valid task frame (nullity, compositionality, reflection preserved under filtration). (4) Bound the model size by `2^|cl(φ)|`. The result should be stated as: if φ is satisfiable in a task model, then φ is satisfiable in a finite task model of bounded size. This is needed for each frame class (serial, dense, discrete) to establish decidability.
-
-### 164. Prove tableau correctness theorem for decision procedure [RESEARCHING]
-- **Effort**: large
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-
-**Description**: Prove tableau correctness theorem connecting decision procedure output to semantic validity. The current `validity_decidable` theorem in `Theories/Bimodal/Metalogic/Decidability/Correctness.lean` is trivially `Classical.em (⊨ φ)` — it says nothing about the tableau. The `decide` function in `DecisionProcedure.lean` implements a real tableau (proof search + branch expansion + countermodel extraction), but there is no theorem linking its output to semantic validity. Needed: (1) `decide_sound`: if `decide φ = .valid proof` then `⊨ φ` (may follow from soundness + the proof term). (2) `decide_complete`: if `decide φ = .invalid counter` then `¬(⊨ φ)` (requires proving countermodel extraction produces a genuine semantic countermodel). (3) `decide_terminates`: the procedure terminates for sufficient fuel (relates to FMP size bound). Without these, "sorry-free (tableau)" in the README is misleading — the implementation exists but its correctness is unverified.
 
 ### 162. Enforce strict plan compliance for formal implementation agents
 - **Effort**: small
