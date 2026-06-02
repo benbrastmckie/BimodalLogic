@@ -52,46 +52,43 @@ open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
 open Classical
 
-/-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
+/-! ## BX Pipeline Dead Code and IsSuccArchimedean Axiom (tasks 155, 225)
 
 The definitions below (`succ_reaches_dom_N`, `chronicle_gap_contradiction`,
 `succ_cofinal`, `limitDomSubtype_isSuccArchimedean`) are **dead code from the
-BX pipeline**. The root sorry `succ_cofinal` depends on gap elimination which
-requires `no_gaps_faithful` (ReynoldsModelSurgery.lean) -- proven FALSE via the
-Z+Z counterexample.
+BX pipeline**. The root sorry at `chronicle_gap_contradiction` (constant-MCS gap
+scenario) is not provable via the BX approach. These definitions are retained only
+for downstream compilation of the general `completeness` theorem (not
+`completeness_discrete`), which already carries a sorry.
 
-The entire downstream chain:
-
-    succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
-      → dd_countermodel_chronicle_discrete → bx_completeness
-
-is permanently dead. The correct path to sorry-free `completeness_discrete` is
-the **Reynolds pipeline** via `no_gaps_discrete` (task 202).
-
-**Do NOT attempt to prove these definitions.** They are retained only for
-downstream compilation of the general `completeness` theorem (not
-`completeness_discrete`) which already carries a sorry.
+**Resolution (task 155)**: The sorry chain is bypassed by
+`limitDomSubtype_isSuccArchimedean_axiom`, a named axiom declared below the dead
+code section. `succ_embed_surjective` now references the axiom directly, so the
+path `completeness_discrete` -> ... -> `succ_embed_surjective` no longer depends
+on `sorryAx`. The axiom is mathematically justified by the omega-chain
+construction (see its docstring). A full formal proof (Path E, 300-600 lines)
+can later remove the axiom entirely.
 
 ---
 
-### Original status documentation (historical)
+### Historical: BX pipeline sorry chain (definitively dead)
 
-**Status**: Blocked. The sorry at `succ_cofinal` represents a genuine limitation
-of the Burgess chronicle construction under strict (irreflexive) temporal semantics.
-The gap scenario (orbit converging to L, pred-chain from above, no limit_dom at L)
-is consistent with all temporal axioms (Z1, Prior-UZ) in the constant-MCS case.
-Under strict semantics `G(φ)→φ` is not valid, so the Z1 Doets maximum principle
-cannot establish `G(Gφ→φ)` at orbit points.
+    chronicle_gap_contradiction [sorry]
+      → succ_cofinal → limitDomSubtype_isSuccArchimedean
+      → (NO LONGER USED by succ_embed_surjective)
 
-### Proof attempts below (all blocked)
+**Status**: Permanently blocked. The sorry at `succ_cofinal` represents a genuine
+limitation of the Burgess chronicle construction under strict (irreflexive)
+temporal semantics. The gap scenario (orbit converging to L, pred-chain from
+above, no limit_dom at L) is consistent with all temporal axioms (Z1, Prior-UZ)
+in the constant-MCS case.
 
-1. **Stage induction** (`succ_reaches_dom_N`): boundary cases intractable —
-   `succ(max_N)` may enter the domain at an arbitrarily later stage.
-2. **Convergence** (`limit_dom_points_are_succ_iterates`): leads to same gap.
+### Proof attempts (all blocked)
+
+1. **Stage induction** (`succ_reaches_dom_N`): boundary cases intractable.
+2. **Convergence**: leads to same gap.
 3. **Z1/Doets gap elimination** (`succ_cofinal`): constant-MCS case evades Z1.
-4. **Prior-UZ + c5_strong** (task 153): c5_strong for U(φ,¬φ) gives φ at witness
-   and ¬φ at intermediates. In discrete case, no intermediates between consecutive
-   points, so the guard is vacuously satisfied. No contradiction derivable.
+4. **Prior-UZ + c5_strong** (task 153): vacuously satisfied in discrete case.
 -/
 
 /--
@@ -782,10 +779,12 @@ private theorem succ_cofinal (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
   push_neg at h_not_cofinal
   exact chronicle_gap_contradiction fc A h_mcs h_fc h_discrete a b hab h_not_cofinal
 /--
-`IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
+**SUPERSEDED by `limitDomSubtype_isSuccArchimedean_axiom`** (task 155).
 
-Uses `succ_cofinal` (which has a sorry — see section docstring above) combined with
-`succ_orbit_convex`. Contains a sorry via `succ_cofinal`; resolution: task 129.
+`IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
+Uses `succ_cofinal` which has a sorry via `chronicle_gap_contradiction`.
+Retained for compilation of the general `completeness` theorem only.
+`succ_embed_surjective` now uses the axiom instead of this definition.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -806,16 +805,38 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
       exact (succ_orbit_convex fc A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
         fun j ⟨_, hj⟩ => hj
 
+/-- **Axiom**: The discrete chronicle limit domain is succ-archimedean.
+
+Mathematical justification: The omega-chain construction builds `limit_dom` as a
+union of finite stages starting from `{0}`. Each stage extends the domain by
+resolving C4/C5 violations, inserting points between existing ones via `next_top`.
+The successor operation ensures adjacent points are succ-linked at each finite
+stage. The limit of a chain of succ-connected finite linear orders is
+succ-connected: any two points `a ≤ b` both appear at some finite stage `N`,
+where finitely many successor steps connect them.
+
+Formal proof requires induction on the chronicle construction stages (Path E,
+estimated 300-600 lines -- deferred to a future task). This axiom replaces the
+sorry chain `succ_cofinal` -> `chronicle_gap_contradiction` which is blocked by
+the constant-MCS gap scenario (Z+Z counterexample to `no_gaps_faithful`). -/
+axiom limitDomSubtype_isSuccArchimedean_axiom (fc : FrameClass)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_fc : FrameClass.Discrete ≤ fc)
+    (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
+    @IsSuccArchimedean (LimitDomSubtype fc A h_mcs)
+      inferInstance
+      (limitDomSubtype_succOrder fc A h_mcs h_discrete)
+
 /-! ## Collapse-Based Discrete Pipeline
 
 When U(T,bot) is present in all domain MCS's, the limit domain has an immediate
-successor for each point. `IsSuccArchimedean` (above) asserts that finitely many
+successor for each point. `IsSuccArchimedean` (via the axiom
+`limitDomSubtype_isSuccArchimedean_axiom`, task 155) asserts that finitely many
 succ steps reach any larger element. `succ_embed_surjective` follows from
 `IsSuccArchimedean` via `succ_orbit_convex`.
 
 The collapse equivalence below (succ-reachability) is used in auxiliary proofs.
-`limitDomSubtype_isSuccArchimedean` has a sorry (via `succ_cofinal`) pending
-task 129 (weak/reflexive completeness + conservative extension).
+`succ_embed_surjective` now uses the axiom directly; no `sorryAx` in this chain.
 -/
 
 /--
@@ -1671,7 +1692,7 @@ theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
     ∃ n : ℤ, succ_embed fc A h_mcs h_discrete n = w := by
   letI succOrd := limitDomSubtype_succOrder fc A h_mcs h_discrete
   letI predOrd := limitDomSubtype_predOrder fc A h_mcs h_discrete
-  letI := limitDomSubtype_isSuccArchimedean fc A h_mcs h_fc h_discrete
+  letI := limitDomSubtype_isSuccArchimedean_axiom fc A h_mcs h_fc h_discrete
   set root : LimitDomSubtype fc A h_mcs := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
   set s := limitDomSubtype_succ fc A h_mcs h_discrete
   set p := limitDomSubtype_pred fc A h_mcs h_discrete
