@@ -1563,13 +1563,14 @@
     {
       "project_number": 264,
       "project_name": "scale_dataset_timeout_bottleneck",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         263
       ],
       "created": "2026-06-02T17:20:00Z",
-      "last_updated": "2026-06-02T17:20:00Z"
+      "last_updated": "2026-06-02T18:25:00Z",
+      "completion_summary": "Identified c=6 as timeout bottleneck: per-formula timeout detection cost (400+ sec) makes exhaustive generation impractical (~20h estimated), not the timeout rate (3-7%). Bimodal distribution holds perfectly at all levels -- zero formulas resolve at tier 2 or 3, making the 3-tier adaptive fuel strategy provably wasteful. Generated c6 (5,931 records), c7 (41), c8 (102) datasets. Primary recommendation: simplify to single-tier fuel strategy with structural pre-filter for known timeout patterns."
     }
   ],
   "next_project_number": 265,

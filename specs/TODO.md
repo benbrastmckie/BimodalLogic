@@ -107,11 +107,14 @@ technical_debt:
 
 ### 264. Scale dataset generation to find timeout bottleneck
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 263
+- specs/264_scale_dataset_timeout_bottleneck/reports/01_scaling-bottleneck.md: [Research report on scaling bottleneck]
+- specs/264_scale_dataset_timeout_bottleneck/plans/01_scaling-bottleneck.md: [Implementation plan for scaling bottleneck]
+- specs/264_scale_dataset_timeout_bottleneck/summaries/01_scaling-bottleneck-summary.md: [Bottleneck characterization report]
 
 **Description**: Systematically scale dataset generation beyond c5 (c6, c7, c8, ...) to identify the complexity threshold where timeout rates become unacceptable. At c5 the timeout rate is 2.6% (39/1512, all from double-box and Until/Since-bot patterns). Generate progressively larger datasets, measuring timeout rate, mean/median/p95 decision time, and memory usage at each complexity level. Identify which formula families hit the fuel cap first, whether the bottleneck is in the tableau saturation, eventuality checking, or countermodel extraction, and at what complexity the current adaptive fuel strategy breaks down. Produce a scaling curve (complexity vs timeout rate) and characterize the dominant timeout patterns at each level to guide future decision procedure improvements.
 
