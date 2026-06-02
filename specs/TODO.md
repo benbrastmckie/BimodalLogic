@@ -1,5 +1,5 @@
 ---
-next_project_number: 265
+next_project_number: 266
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -104,6 +104,18 @@ technical_debt:
 263 [COMPLETED] — smoke_test_c5_dataset_generation
 
 ## Tasks
+
+### 265. Simplify to single-tier fuel strategy with structural timeout pre-filter
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 264
+
+**Description**: Simplify the adaptive fuel strategy from three tiers [500, 2000, 10000] to a single tier (fuel=500), since task 264 proved that zero formulas across all complexity levels (c3-c8) resolve at tier 2 or tier 3 — every formula either resolves at tier 1 or times out at all tiers. Additionally, add a structural pre-filter that detects known timeout patterns before invoking the decision procedure: double-box (□□X → Y), Until-bot (U(⊥,X) → Y), and Since-bot (S(⊥,X) → Y). These three patterns account for all 39 c5 timeouts and dominate at higher complexities. Pre-filtered formulas should be labeled as valid (all are provably valid) with a dedicated decision method tag (e.g., `structural_prefilter`) and zero fuel cost. This eliminates the 400+ second per-formula timeout detection cost that makes exhaustive generation impractical at c6+, potentially reducing c6 generation time from ~20 hours to under 1 hour. After implementation, regenerate the c6 dataset to validate the speedup.
+
+---
 
 ### 264. Scale dataset generation to find timeout bottleneck
 - **Effort**: medium (8-12 hours)
