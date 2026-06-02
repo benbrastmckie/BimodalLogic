@@ -1604,13 +1604,15 @@
     {
       "project_number": 265,
       "project_name": "single_tier_fuel_and_timeout_prefilter",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         264
       ],
       "created": "2026-06-02T18:30:00Z",
-      "last_updated": "2026-06-02T18:30:00Z"
+      "last_updated": "2026-06-02T19:10:23Z",
+      "session_id": "sess_1748890200_a3c7f1",
+      "researched": "2026-06-02T19:10:23Z"
     }
   ],
   "next_project_number": 266,
