@@ -16,6 +16,7 @@ import BimodalTest.Automation.EdgeCaseTest
 import BimodalTest.Automation.ProofSearchBenchmark
 import BimodalTest.Automation.TacticsTest
 import BimodalTest.Automation.TacticsTest_Simple
+import BimodalTest.Automation.C5SmokeTest
 import BimodalTest.Integration.Helpers
 import BimodalTest.Integration.EndToEndTest
 import BimodalTest.Integration.ProofSystemSemanticsTest
