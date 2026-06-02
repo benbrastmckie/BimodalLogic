@@ -1,29 +1,40 @@
 {
   "status": "partial",
-  "summary": "Phase 1 BLOCKED: The plan's core assumption (F(phi)->G(F(phi)) derivable as 'all_future_of_some_future') is FALSE -- this formula is not a theorem of the temporal logic and is not valid on integers under strict semantics. The Henkin chain does not preserve F-formulas across Lindenbaum extension steps, so restricted_tc cannot be proved as planned. Key finding: cantor_bfmcs_discrete_restricted_buc is already sorry-free (no sorryAx), narrowing the problem to restricted_tc and restricted_fuc only.",
+  "summary": "Plan v54 BLOCKED: Modified Lindenbaum seed approach is mathematically impossible. Under irreflexive semantics, G(neg(F(phi))) can coexist with F(phi) in an MCS, making g_content(M) ∪ {F(phi)} inconsistent. This kills ALL seed-based F-preservation approaches (v53 and v54). The gap_contradicts_prior tool also fails in the constant-MCS case. The correct resolution path is proving chronicle_gap_contradiction via the FROZEN GUARD construction argument: when U(T,bot) at point a is processed, bot is placed in the guard, preventing interstitial domain points. This makes succ(a) = next construction point, and a well-founded argument shows succ_cofinal.",
   "blockers": [
     {
       "type": "theoretical",
-      "description": "F(phi)->G(F(phi)) is not derivable from BX axioms and is not semantically valid on integers under strict/irreflexive semantics. The Henkin chain's Lindenbaum extensions can 'lose' F-formulas by choosing G(neg(phi)) instead, permanently preventing phi from appearing.",
-      "impact": "restricted_tc and restricted_fuc cannot be proved for henkin_bfmcs as constructed",
+      "description": "Plan v54 seed approach impossible: g_content(M) ∪ {F(phi)} can be inconsistent when F(phi) ∈ M. Under irreflexive semantics, G(neg(F(phi))) ∈ M puts neg(F(phi)) in g_content(M). Also: multi-witness seed {phi_1,...,phi_m} is inconsistent (phi_1=p, phi_2=neg(p)). Also: gap_contradicts_prior fails in constant-MCS case (Z+Z counterexample: all points contemp_equiv, class = entire domain, unbounded).",
+      "impact": "No seed-modification or model-surgery approach can close the sorry. Need construction-level argument.",
       "resolution_options": [
-        "A: Modify chain to preserve F-formulas from deferralClosure(root) in seed (needs consistency proof)",
-        "B: Prove IsSuccArchimedean for the specific chronicle limit domain (all points in succ/pred orbit of 0)",
-        "C: Close Reynolds model surgery sorry (gap_prior_UZ_contradiction in GoodStructuresModelSurgery.lean)",
-        "D: Hybrid approach combining sorry-free restricted_buc with a new mechanism for restricted_tc/fuc"
+        "A: FROZEN GUARD approach -- prove chronicle_gap_contradiction via construction-level analysis of U(T,bot) processing and bot-in-guard preventing interstitial points. Most promising. Estimated 20-40 hours.",
+        "B: Henkin model (task 129) -- different proof architecture, builds IsSuccArchimedean by construction. Estimated 500-800 lines.",
+        "C: k-equivalence back-and-forth -- prove chronicle domain is isomorphic to Z via model-theoretic argument. Not formalized in codebase."
       ]
     }
   ],
   "continuation_context": {
-    "key_finding": "cantor_bfmcs_discrete_restricted_buc has NO sorryAx -- only restricted_tc and restricted_fuc depend on succ_embed_surjective",
-    "failed_approach": "Henkin chain F-formula propagation via G(F(phi)) -- not a theorem",
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T061716Z.md"
+    "key_findings": [
+      "Plan v54 seed approach mathematically impossible (orch155b analysis)",
+      "Plan v53 F(phi)->G(F(phi)) approach already known impossible (orch155 analysis)",
+      "gap_contradicts_prior fails in constant-MCS case (Z+Z counterexample, orch155 analysis)",
+      "Frozen guard is most promising: U(T,bot) processing forces succ determination (succ-cofinal-analysis-20260529)",
+      "cantor_bfmcs_discrete_restricted_buc is already sorry-free (only restricted_tc and restricted_fuc blocked)"
+    ],
+    "failed_approaches": [
+      "v50-51: IsSuccArchimedean from one_class (Z+Z counterexample)",
+      "v52: Reynolds k-equiv transfer with parametric model (still carries succ_embed sorry)",
+      "v53: F(phi)->G(F(phi)) propagation (not a theorem)",
+      "v54: Modified Lindenbaum seed with F-preservation (g_content ∪ {F(phi)} inconsistent)"
+    ],
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260601.md"
   },
-  "next_action_hint": "revise plan -- the Henkin BFMCS approach needs fundamental changes. Consider Option A (modified chain with F-preservation) or Option B (prove IsSuccArchimedean for specific chronicle domain). Option A is most promising but requires proving consistency of the enlarged seed.",
+  "next_action_hint": "Create plan v55 targeting the FROZEN GUARD approach: prove chronicle_gap_contradiction at ChronicleToCountermodel.lean:489 using construction-level analysis of U(T,bot) processing. Key theorem: adj_g_mem_limit_f (ChronicleConstruction.lean:1357) shows bot in guard prevents interstitial limit_dom points, determining succ(a). Then well-founded induction on combined measure (construction stage + domain distance) to prove succ_cofinal. This makes the entire sorry chain (succ_cofinal -> limitDomSubtype_isSuccArchimedean -> succ_embed_surjective -> restricted_tc/fuc -> completeness_discrete) sorry-free.",
   "phases_completed": 0,
-  "phases_total": 3,
+  "phases_total": 4,
   "artifacts": [
-    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/53_implementation-plan.md"},
-    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260602T061716Z.md"}
+    {"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/54_implementation-plan.md"},
+    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260601.md"},
+    {"type": "handoff", "path": "specs/155_reynolds_pipeline_activation/handoffs/succ-cofinal-analysis-20260529.md"}
   ]
 }

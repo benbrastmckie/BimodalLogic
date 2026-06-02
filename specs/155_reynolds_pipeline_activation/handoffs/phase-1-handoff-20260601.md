@@ -1,90 +1,91 @@
-# Phase 1 Handoff: Task 155
+# Phase 1 Handoff: Task 155 (v54 Analysis + Consolidated Blocker)
 
 **Date**: 2026-06-01
-**Session**: sess_1748820600_orch155
-**Status**: BLOCKED
+**Sessions**: sess_1748820600_orch155, sess_1748825400_orch155b
+**Status**: BLOCKED (plan v54 approach mathematically impossible; requires new plan)
 
 ## Summary
 
-Phase 1 of the implementation plan is blocked because the plan's core mathematical
-step -- deriving IsSuccArchimedean from one_class -- is incorrect.
+Plan v54 proposed modifying the Henkin chain's Lindenbaum seed to include F-formulas
+for persistence. After thorough analysis in session orch155b, this approach is
+**mathematically impossible**. The plan also consolidates findings from previous
+sessions (orch155, succ-cofinal-analysis-20260529).
 
-## Analysis Performed
+## v54 Analysis (Session orch155b)
 
-1. **Traced the sorry chain**: completeness_discrete -> countermodel_discrete_enriched ->
-   cantor_bfmcs_discrete_restricted_tc/fuc -> succ_embed_surjective ->
-   limitDomSubtype_isSuccArchimedean -> succ_cofinal -> chronicle_gap_contradiction ->
-   prior_model_is_succ_archimedean -> no_gaps_faithful (sorry, KNOWN FALSE)
+### Finding: `g_content(M) ∪ {F(phi)}` CAN Be Inconsistent
 
-2. **Verified import feasibility**: Adding GoodStructuresModelSurgery import to
-   ChronicleToCountermodel.lean creates no cycle (confirmed).
+Under irreflexive semantics (strict G/H), `G(neg(F(phi)))` and `F(phi)` can coexist
+in an MCS M. Semantic example:
+- phi at t+1, neg(phi) at all r > t+1
+- F(phi) at t: phi at t+1 > t (TRUE)
+- G(neg(F(phi))) at t: at all s > t, neg(F(phi)) at s (TRUE because at s = t+1,
+  F(phi) fails: no phi at any r > t+1)
 
-3. **Analyzed the plan's mathematical strategy**:
-   - Construct OrderedMonadicStructure on LimitDomSubtype: feasible (pattern exists in
-     priorModelAsMonadicStructure, ReynoldsModelSurgery.lean:107)
-   - Prove semantic_prior_UZ/SZ: feasible (semantic_prior_UZ_raw/SZ_raw exist sorry-free
-     in ReynoldsModelSurgery.lean:219/253)
-   - Apply no_gaps_discrete_model_surgery to get one_class: feasible (pattern in
-     chronicle_is_good_direct, ShiftAndGlue.lean:960-967)
-   - **BLOCKED**: Derive IsSuccArchimedean from one_class: INCORRECT
+Since `G(neg(F(phi))) ∈ M`, we have `neg(F(phi)) ∈ g_content(M)`. Combined with
+`F(phi)` in the seed, the seed contains `{F(phi), neg(F(phi))}` which derives ⊥.
 
-4. **Verified the counterexample**: Z+Z (two copies of Z concatenated) with constant
-   MCS assignment at every point. Satisfies:
-   - SuccOrder, PredOrder, NoMaxOrder, NoMinOrder
-   - semantic_prior_UZ (vacuously or via succ-witness with vacuous guard)
-   - semantic_prior_SZ (symmetrically)
-   - h_surj (atoms are infinite)
-   - one_class (temporal_truth is constant, so all elements trivially contemp_equiv)
-   - But NOT IsSuccArchimedean (gap between copies)
+This kills ALL seed-based F-preservation approaches:
+1. `g_content(M) ∪ {F(phi)}` (F-formula seed) -- inconsistent as shown
+2. `g_content(M) ∪ {phi_1, ..., phi_m}` (witness seed) -- inconsistent in multi case
+   (plan lines 260-280: phi_1 = p, phi_2 = neg(p))
+3. `g_content(M) ∪ {psi} ∪ {F(phi)}` (scheduled + preservation) -- same F-issue
 
-5. **Reviewed Reynolds 1994**: Reynolds proves Theorem 14 (class boundaries not at gaps)
-   and Theorem 15 (existence of k-equivalent Z-model). He does NOT prove IsSuccArchimedean.
-   His completeness proof (Theorem 18) uses k-equivalence transfer, not succ-embedding.
+### Why gap_contradicts_prior Doesn't Resolve Constant-MCS Case
 
-6. **Checked existing sorry-free paths**: one_class_implies_succ_archimedean
-   (ReynoldsNoGaps.lean:321) delegates to prior_implies_succ_archimedean which uses
-   no_gaps_prior (sorry, KNOWN FALSE). No sorry-free path from one_class to
-   IsSuccArchimedean exists in the codebase.
+In the constant-MCS case (same formulas at every domain point):
+- All points have identical predicate valuations
+- All points are contemp_equiv (trivially)
+- The contemp_equiv class = entire domain (unbounded)
+- gap_contradicts_prior requires bounded class; inapplicable here
+- The Z+Z counterexample demonstrates this
 
-## Key Decision Points
+### Correct Resolution Path: Frozen Guard Construction Argument
 
-The BX pipeline (completeness_discrete path) requires IsSuccArchimedean.
-The Reynolds pipeline (countermodel_discrete_reynolds path) does NOT require
-IsSuccArchimedean but has its own sorry at Transfer.lean:1289.
+The succ-cofinal-analysis-20260529 handoff identified the most promising approach:
 
-## Alternative Approaches
+When `U(T, bot)` at point `a` is processed by the chronicle construction:
+1. A guard formula (bot) is placed in g_{n+1}(a, a') where a' = next domain point
+2. By `adj_g_mem_limit_f`, bot ∈ limit_f(w) for any w between a and a'
+3. Since bot is never in any MCS, no limit_dom points exist between a and a'
+4. Therefore succ(a) = a' is determined by the construction
 
-(A) **Fix Reynolds pipeline** (Transfer.lean:1289): Requires showing Z-interval is
-unbounded and constructing TaskModel with position-dependent valuation. The research
-report says this is "architecturally unsolvable" due to S5 position-independence vs
-Reynolds position-dependence. Needs deeper investigation.
+This is a CONSTRUCTION-LEVEL argument, not a model-theoretic one. It requires:
+- Stage tracking for U(T, bot) processing
+- Successor determination theorem
+- Well-founded induction argument (combined measure on stage + distance)
+- Estimated: 300-600 lines, 20-40 hours
 
-(B) **Prove IsSuccArchimedean from chronicle construction**: The chronicle domain is
-built as a countable limit of finite structures. Each finite stage IS IsSuccArchimedean.
-The limit might preserve this, but proving it requires understanding how new points
-are inserted between existing ones and showing no "accumulation without reaching" occurs.
+## Consolidated Approach Assessment
 
-(C) **Back-and-forth argument**: Prove that k-equivalence to Z-intervals for ALL k
-implies isomorphism to Z (for countable structures). Standard model theory result
-but not formalized in this codebase.
+| Approach | Status | Estimated Effort |
+|----------|--------|-----------------|
+| v54 (modified seed) | IMPOSSIBLE (session orch155b) | N/A |
+| gap_contradicts_prior | FAILS in constant-MCS case | N/A |
+| Frozen guard construction | Most promising | 20-40 hours |
+| Reynolds k-equiv transfer | Architectural mismatch (S5) | Unknown |
+| Henkin model (task 129) | Alternative architecture | 500-800 lines |
 
 ## Immediate Next Action
 
-Run /revise 155 to create a new plan version addressing the mathematical gap.
-The revised plan should pursue approach (A), (B), or (C) based on feasibility analysis.
+Create a new plan (v55) targeting the FROZEN GUARD approach:
+1. Prove `chronicle_gap_contradiction` using construction-level analysis
+2. This makes `succ_cofinal` sorry-free
+3. Which makes `succ_embed_surjective` sorry-free
+4. Which makes `restricted_tc` and `restricted_fuc` sorry-free
+5. Which makes `completeness_discrete` sorry-free
 
-## Files Examined (no changes made)
+## Files Examined (no changes made to source)
 
-- Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+- Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean (full read)
+- Theories/Bimodal/Metalogic/BXCanonical/CanonicalChain.lean (full read)
+- Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean (full read)
+- Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean (full read)
+- Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean (key sections)
+- Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean (limit_F_resolution)
+- Theories/Bimodal/Metalogic/Bundle/WitnessSeed.lean (forward_temporal_witness_seed_consistent)
+- Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean (restricted_temporally_coherent)
+- Theories/Bimodal/Metalogic/Core/MCSProperties.lean (MCS infrastructure)
 - Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean
 - Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean
-- Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean
-- Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean
-- literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md
+- specs/155_reynolds_pipeline_activation/handoffs/succ-cofinal-analysis-20260529.md
