@@ -1,7 +1,7 @@
 # Implementation Plan: Task #265
 
 - **Task**: 265 - Simplify to single-tier fuel strategy with structural timeout pre-filter
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: Task 264 (completed), Task 263 (completed), Task 261 (completed)
 - **Research Inputs**: specs/265_single_tier_fuel_and_timeout_prefilter/reports/01_fuel-strategy-prefilter.md
@@ -67,17 +67,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Simplify `decideAutoAdaptive` to Single Tier [NOT STARTED]
+### Phase 1: Simplify `decideAutoAdaptive` to Single Tier [COMPLETED]
 
 **Goal**: Replace the three-tier adaptive fuel strategy with a single fuel=500 call, removing the `go` helper and tier list.
 
 **Tasks**:
-- [ ] Modify `decideAutoAdaptive` in `DecisionProcedure.lean` (lines 187-202):
+- [x] Modify `decideAutoAdaptive` in `DecisionProcedure.lean` (lines 187-202):
   - Remove the `where go` helper function and the `tiers` list
   - Replace with direct `decide phi depth 500 fc` call
   - Return `("adaptive_500", result)` on success, `("adaptive_timeout", .timeout)` on timeout
-- [ ] Update the doc comment (lines 174-186) to reflect single-tier strategy and reference task 264 findings
-- [ ] Run `lake build Bimodal.Metalogic.Decidability.DecisionProcedure` to verify compilation
+- [x] Update the doc comment (lines 174-186) to reflect single-tier strategy and reference task 264 findings
+- [x] Run `lake build Bimodal.Metalogic.Decidability.DecisionProcedure` to verify compilation
 
 **Timing**: 30 minutes
 

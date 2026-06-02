@@ -172,34 +172,25 @@ def decideAuto (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
   decide φ depth fuel fc
 
 /--
-Adaptive fuel strategy: try escalating fuel levels [500, 2000, 10000] before
-giving up. Returns the result and the fuel tier that succeeded (for logging).
+Single-tier fuel strategy with fuel=500. Returns the result and a tag
+indicating the fuel tier used (for logging and dataset labeling).
 
-This prevents individual formulas from consuming excessive resources while
-still giving most formulas enough fuel. The `soundFuel` bound can be very
-large for complex formulas (up to 100,000), but with the persistent rule
-loop fix (task 261), most formulas decide quickly at low fuel levels.
+Task 264 analysis across c3-c8 confirmed a strictly bimodal decision
+landscape: formulas either resolve at fuel=500 or not at all. Zero
+formulas across all complexity levels resolved at the former tiers of
+2000 or 10000, making the multi-tier escalation dead code. The remaining
+timeouts are structural patterns handled by a pre-filter in `labelFormula`.
 
 Returns `(result, fuelTierUsed)` where fuelTierUsed is:
-- `"adaptive_500"`, `"adaptive_2000"`, `"adaptive_10000"` for decided formulas
-- `"adaptive_timeout"` if all tiers exhausted
+- `"adaptive_500"` for decided formulas
+- `"adaptive_timeout"` if fuel exhausted
 -/
 def decideAutoAdaptive (φ : Formula) (fc : FrameClass := .Base)
     : DecisionResult φ × String :=
   let depth := 5 + φ.complexity / 2
-  let tiers : List (Nat × String) := [
-    (500, "adaptive_500"),
-    (2000, "adaptive_2000"),
-    (10000, "adaptive_10000")
-  ]
-  go tiers depth fc
-where
-  go : List (Nat × String) → Nat → FrameClass → DecisionResult φ × String
-  | [], _, _ => (.timeout, "adaptive_timeout")
-  | (fuel, tierName) :: rest, depth, fc =>
-    match decide φ depth fuel fc with
-    | .timeout => go rest depth fc
-    | result => (result, tierName)
+  match decide φ depth 500 fc with
+  | .timeout => (.timeout, "adaptive_timeout")
+  | result => (result, "adaptive_500")
 
 /-!
 ## Batch Decision
