@@ -13,31 +13,23 @@ import Mathlib.Data.Int.SuccPred
 /-!
 # Z-Model Transfer for the Reflexive Canonical Model
 
-The main theorem: `countermodel_discrete` — uses the Reynolds/Doets
-compression pipeline to construct a countermodel on ℤ.
+This file contains two countermodel constructions for discrete completeness:
 
-## Architecture
+1. **`countermodel_discrete_reynolds`** (active path): Uses the parametric
+   canonical model construction (`ParametricCanonicalTaskFrame` /
+   `ParametricCanonicalTaskModel` / `BFMCS`) to construct a countermodel
+   on ℤ. This is the path used by `completeness_discrete`.
 
-The proof proceeds in three layers:
+2. **`countermodel_discrete`** (deprecated BX path): Uses the dead BX
+   pipeline through `dd_countermodel_chronicle_discrete`. Retained only
+   for the general `completeness` theorem.
 
-1. **Chronicle Extraction** (ChronicleExtraction.lean):
-   Extract a `ChronicleAsPriorModel` from MCS A with `□(next_top) ∈ A`.
-   The chronicle satisfies Reynolds Corollary 3: countable, discrete
-   without endpoints, Prior-UZ/SZ valid everywhere.
-
-2. **Reynolds Compression** (IntegerModel.lean):
-   Using `chronicle_is_good`, prove that the chronicle is "good" at
-   depth k — meaning it is k-equivalent to a Z-interval structure.
-
-3. **Truth Transfer** (this file):
-   From the k-equivalence, transfer temporal truth of `¬φ` from the
-   chronicle to the Z-model via existential closure of the table formula.
-   Package the Z-model as a `TaskFrame Int` counterexample.
-
-## Pipeline Summary
-
-   extract_chronicle → chronicle_is_good → chronicle_truth_lemma
-   → truth_transfer → z_interval_to_taskframe_countermodel
+The file also provides:
+- Signature and atom map construction (`mkSigFrom`, `mkAtomMap`, `mkAtomMapFwd`)
+- Truth transfer theorem (`truth_transfer`)
+- Chronicle truth lemma (`chronicle_temporal_truth`)
+- Z-interval to TaskFrame bridge infrastructure (`zIntervalTaskFrame`, etc.)
+- No-gaps theorem for integers (`no_gaps_int`)
 
 ## References
 - Reynolds 1994, Theorem 18 (full completeness pipeline)
@@ -1262,11 +1254,11 @@ sorry (proven unprovable via the Z+Z counterexample to `no_gaps_faithful`).
 
 This theorem is retained ONLY for the general `completeness` theorem (not
 `completeness_discrete`). The discrete completeness theorem
-`completeness_discrete` uses `countermodel_discrete_enriched` instead, which
-routes through the Reynolds pipeline.
+`completeness_discrete` uses `countermodel_discrete_reynolds` instead, which
+uses the parametric canonical model construction.
 
-**Do NOT attempt to fix the sorry in this theorem.** The correct path is the
-Reynolds pipeline via `no_gaps_discrete` (task 202).
+**Do NOT attempt to fix the sorry in this theorem.** The correct path is
+`countermodel_discrete_reynolds` (task 155).
 -/
 
 /-! ## Main Theorem: countermodel_discrete -/
@@ -1281,7 +1273,7 @@ Delegates to `dd_countermodel_chronicle_discrete` which uses the
 parametric canonical model construction directly.
 
 **DEPRECATED** (task 225): This uses the dead BX pipeline path.
-See `countermodel_discrete_enriched` + Reynolds pipeline for the active path.
+See `countermodel_discrete_reynolds` for the active path (task 155).
 
 **Sorry chain**: dd_countermodel_chronicle_discrete → succ_embed_surjective →
 limitDomSubtype_isSuccArchimedean → succ_cofinal (sorry).
@@ -1299,7 +1291,7 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (f
   -- `completeness` theorem (not `completeness_discrete`) and already had a sorry via
   -- no_gaps_faithful. The sorry is preserved here pending task 129 (Henkin model approach
   -- for Base completeness). The discrete completeness theorem `completeness_discrete`
-  -- uses `countermodel_discrete_enriched` instead, which provides h_fc = le_refl.
+  -- uses `countermodel_discrete_reynolds` instead (task 155).
   Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_discrete FrameClass.Base A h_mcs
     sorry φ h_neg_in h_box_discrete
 
