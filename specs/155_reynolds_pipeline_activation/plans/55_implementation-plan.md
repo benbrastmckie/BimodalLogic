@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Wire cascade to provide IsSuccArchimedean on LimitDomSubtype [NOT STARTED]
+### Phase 2: Wire cascade to provide IsSuccArchimedean on LimitDomSubtype [BLOCKED]
 
 **Goal**: Provide `IsSuccArchimedean` on `LimitDomSubtype` via the cascade path (one_class -> very_good -> good -> Z-iso -> IsSuccArchimedean), replacing the dead `succ_cofinal` path.
 
@@ -114,9 +114,18 @@ Phases within the same wave can execute in parallel.
 - [ ] Implement the chosen approach
 - [ ] Verify `succ_embed_surjective` compiles without sorry (if approach a) OR verify the new countermodel construction compiles without sorry (if approach b)
 
-**Timing**: 3-4 hours
+**Timing**: 3-4 hours (original estimate; blocked by discovery below)
 
 **Depends on**: 1
+
+**BLOCKER** (Phase 2):
+- **What failed**: The plan assumed `no_gaps_discrete_model_surgery` and the model surgery chain are sorry-free. Investigation during Phase 1 revealed they carry `sorryAx` transitively through `StaviCompleteness.lean` (3 sorries in the 4-variable EF-game transfer and bridge lemma).
+- **What was tried**: Approach (a) -- using `gap_contradicts_prior` from GoodStructuresModelSurgery to prove `chronicle_gap_contradiction`. This would resolve the explicit sorry at ChronicleToCountermodel.lean:489 but would introduce the Stavi `sorryAx` into `completeness_discrete`.
+- **Why it's stuck**: Two independent sorry chains affect `completeness_discrete`:
+  1. `chronicle_gap_contradiction` (explicit sorry at ChronicleToCountermodel.lean:489) -> `succ_cofinal` -> `limitDomSubtype_isSuccArchimedean` -> `succ_embed_surjective` -> `restricted_tc/fuc` -> `completeness_discrete`
+  2. `nf_characterizable_by_stavi` (3 sorries in StaviCompleteness.lean) -> `US_expressively_complete_over_prior` -> model surgery chain. Using model surgery to fix chain 1 would introduce chain 2.
+- **What is needed**: Either (A) prove `chronicle_gap_contradiction` WITHOUT model surgery (requires a chronicle-specific proof that the succ-orbit covers the entire LimitDomSubtype -- a non-trivial mathematical result about the Burgess chronicle construction), or (B) complete the 3 sorries in StaviCompleteness.lean (4-variable EF-game transfer and GHR bridge lemma), or (C) completely bypass the `succ_embed_surjective` path by rewriting `cantor_bfmcs_discrete_restricted_tc` and `cantor_bfmcs_discrete_restricted_fuc` to avoid needing surjectivity.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` - rewire `limitDomSubtype_isSuccArchimedean` or bypass it
