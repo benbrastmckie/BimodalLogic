@@ -155,7 +155,7 @@ def findEnrichedCountermodel (φ : Formula) (fuel : Nat := 1000)
   match buildTableau φ fuel with
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
-  | some (.hasOpen openBranch _ _) =>
+  | some (.hasOpen openBranch _ _ _) =>
       .found (extractEnrichedCountermodel φ openBranch)
 
 /-!

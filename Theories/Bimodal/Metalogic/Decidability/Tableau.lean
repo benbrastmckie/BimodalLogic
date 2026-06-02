@@ -882,6 +882,22 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   exact nofun
 
 /-!
+## Applied-Set Tracking (Task 261)
+
+Persistent rules (boxPos, diamondNeg, allFuturePos, allPastPos, boxTemporal,
+someFutureNeg, somePastNeg, untlNeg, snceNeg) keep their source formula on the
+branch and propagate consequences. If a consumable rule later removes a propagated
+formula, the persistent rule sees it as "new" and re-adds it, creating an infinite
+loop. The `AppliedSet` tracks signed formulas that have already been produced by
+persistent rules. When a persistent rule's output formulas are ALL already in the
+applied set, the rule is treated as not applicable.
+-/
+
+/-- Set of signed formulas already produced by persistent rule applications.
+    Used to prevent infinite cycling between persistent and consumable rules. -/
+abbrev AppliedSet := Std.HashSet SignedFormula
+
+/-!
 ## Branch Expansion
 -/
 
@@ -1004,6 +1020,66 @@ def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
               -- Add new formulas but keep the source formula (universal modal rule)
               (.extended (formulas ++ b), newOrd)
           | .notApplicable => (.saturated, newOrd)  -- Shouldn't happen
+
+/--
+Find a rule applicable to a signed formula, filtering persistent rules whose
+output has already been fully produced (tracked in the applied set).
+-/
+def findApplicableRuleWithApplied (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (applied : AppliedSet := {}) : Option (TableauRule × RuleResult × TimeOrdering × List SignedFormula) :=
+  (allRulesForFC fc).findSome? fun rule =>
+    if isApplicable rule sf fc then
+      let (result, newOrd) := applyRule rule sf branch timeOrd
+      match result with
+      | .notApplicable => none
+      | .persistent formulas =>
+          -- Filter out formulas already in the applied set
+          let newFormulas := formulas.filter fun f => !applied.contains f
+          if newFormulas.isEmpty then
+            none  -- All outputs already produced; skip this rule
+          else
+            some (rule, .persistent newFormulas, newOrd, newFormulas)
+      | _ => some (rule, result, newOrd, [])
+    else none
+
+/-- Check if a signed formula is fully expanded, considering the applied set. -/
+def isExpandedWithApplied (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (applied : AppliedSet := {}) : Bool :=
+  (findApplicableRuleWithApplied sf branch timeOrd fc applied).isNone
+
+/-- Find an unexpanded formula in a branch, considering the applied set. -/
+def findUnexpandedWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (applied : AppliedSet := {}) : Option SignedFormula :=
+  b.find? (fun sf => ¬isExpandedWithApplied sf b timeOrd fc applied)
+
+/--
+Perform a single expansion step on a branch, using the applied set to prevent
+persistent rule loops. Returns `(result, newTimeOrdering, formulasToAddToAppliedSet)`.
+-/
+def expandOnceWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) (applied : AppliedSet := {})
+    : ExpansionResult × TimeOrdering × List SignedFormula :=
+  match findUnexpandedWithApplied b timeOrd fc applied with
+  | none => (.saturated, timeOrd, [])
+  | some sf =>
+      match findApplicableRuleWithApplied sf b timeOrd fc applied with
+      | none => (.saturated, timeOrd, [])
+      | some (_, result, newOrd, newApplied) =>
+          match result with
+          | .linear formulas =>
+              let remaining := b.filter (· != sf)
+              (.extended (formulas ++ remaining), newOrd, [])
+          | .branching branches =>
+              let remaining := b.filter (· != sf)
+              (.split (branches.map fun newFormulas => newFormulas ++ remaining), newOrd, [])
+          | .persistent formulas =>
+              (.extended (formulas ++ b), newOrd, newApplied)
+          | .notApplicable => (.saturated, newOrd, [])
 
 /--
 Count of unexpanded formulas in a branch (termination measure).

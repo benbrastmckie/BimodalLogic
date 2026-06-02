@@ -231,7 +231,7 @@ or `ProofExtractionResult.incomplete reason` if all strategies fail.
 def extractProof (phi : Formula) (tableau : ExpandedTableau)
     (_fc : FrameClass := .Base) : ProofExtractionResult phi :=
   match tableau with
-  | .hasOpen _ _ _ =>
+  | .hasOpen _ _ _ _ =>
       -- Tableau shows formula is invalid, no proof exists
       .incomplete "Formula is invalid (open branch found)"
   | .allClosed closedBranches =>
