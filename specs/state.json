@@ -64,10 +64,11 @@
     {
       "project_number": 250,
       "project_name": "enriched_formula_json_export",
-      "status": "implementing",
+      "status": "completed",
+      "completion_summary": "Integrated Lean's enriched formula export (21-tag schema) into BimodalHarness Python: added 6 new AST types, extended tokenizer to 33-token vocab, added formula_folded_json/str/sexpr to TrainingRecord and goal_folded_json to ProofStepRecord, updated ingestion pipeline, regenerated c5 and proof_steps datasets \u2014 all 2337 tests pass.",
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
-      "last_updated": "2026-06-02T20:30:00Z",
+      "last_updated": "2026-06-02T22:00:00Z",
       "next_artifact_number": 2,
       "planned": "2026-06-02T20:30:00Z",
       "artifacts": [
@@ -80,6 +81,11 @@
           "path": "specs/250_enriched_formula_json_export/plans/01_enriched-formula-export.md",
           "type": "plan",
           "summary": "4-phase plan: schema/AST types (21 tags), tokenizer extension (33 vocab), ingestion pipeline (folded fields), dataset regeneration"
+        },
+        {
+          "path": "specs/250_enriched_formula_json_export/summaries/01_enriched-formula-export-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 21-tag schema, 6 new AST types, 33-token vocab, enriched ingestion fields, dataset regeneration \u2014 59 new tests, 2337 total passing"
         }
       ],
       "plan_metadata": {

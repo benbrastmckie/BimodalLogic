@@ -119,10 +119,10 @@ technical_debt:
   - **Report**: [specs/248_fold_direction_formula_normalization/reports/01_fold-direction-normalization.md]
   - **Plan**: [specs/248_fold_direction_formula_normalization/plans/01_fold-direction-normalization.md]
   - **Summary**: [specs/248_fold_direction_formula_normalization/summaries/01_fold-direction-normalization-summary.md]
-249 [PLANNED] — expand_temporal_derived_theorems
+249 [COMPLETED] — expand_temporal_derived_theorems
   - **Report**: [specs/249_expand_temporal_derived_theorems/reports/01_temporal-derived-theorems.md]
   - **Plan**: [specs/249_expand_temporal_derived_theorems/plans/01_temporal-derived-theorems.md]
-250 [PLANNED] — enriched_formula_json_export
+250 [COMPLETED] — enriched_formula_json_export
   - **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
   - **Plan**: [specs/250_enriched_formula_json_export/plans/01_enriched-formula-export.md]
 
