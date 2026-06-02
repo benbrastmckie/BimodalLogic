@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Temporal Saturation Invariants [PARTIAL]
+### Phase 3: Prove Temporal Saturation Invariants [COMPLETED]
 
 **Goal**: Resolve the remaining 4 saturation sorry sites: `sat_untl_pos`, `sat_snce_pos`, `sat_untl_neg`, `sat_snce_neg`.
 
@@ -130,10 +130,10 @@ Phases within the same wave can execute in parallel.
 - [x] Study the `untlPos`/`sncePos` branching rules in the rule engine *(completed)*
 - [x] Prove `sat_untl_pos` *(deviation: altered -- proved vacuously; T(U(event, guard)) cannot exist in a saturated branch because either someFuturePos (guard=top) or untlPos (guard!=top) is a consumable rule that removes it)*
 - [x] Prove `sat_snce_pos` *(deviation: altered -- mirror vacuity proof via sncePos_not_expanded)*
-- [x] Study the `untlNeg`/`snceNeg` persistent rules *(completed -- identified architectural blocker: findUnexpanded uses empty TimeOrdering, but untlNeg/snceNeg persistent rules depend on timeOrd.futureOf/pastOf which returns [] for empty ordering)*
-- [ ] Prove `sat_untl_neg` *(deviation: deferred -- architecturally blocked; the untlNeg rule with empty TimeOrdering always returns notApplicable, so saturation provides no information about temporal propagation)*
-- [ ] Prove `sat_snce_neg` *(deviation: deferred -- same architectural blocker as sat_untl_neg)*
-- [x] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction` *(builds successfully with 4 sorry sites remaining)*
+- [x] Study the `untlNeg`/`snceNeg` persistent rules *(completed -- identified filter predicate normalization mismatch as blocker in rounds 3-4)*
+- [x] Prove `sat_untl_neg` *(completed in round 5 -- refactored filter predicates in Tableau.lean from !(a||b) to !a&&!b, then used applyRule unfold + filter list case split + RuleResult discrimination)*
+- [x] Prove `sat_snce_neg` *(completed in round 5 -- mirror of sat_untl_neg using asSince?/pastOf)*
+- [x] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction` *(builds successfully with 2 sorry sites remaining)*
 
 **Timing**: 4 hours
 
@@ -149,7 +149,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Complete Truth Lemma and Prove decide_complete [NOT STARTED]
+### Phase 4: Complete Truth Lemma and Prove decide_complete [BLOCKED]
 
 **Goal**: Complete the 5 remaining truth lemma sorry cases, build the semantic bridge, and prove `decide_complete`.
 
@@ -157,13 +157,27 @@ Phases within the same wave can execute in parallel.
 - [x] Complete `truthLemma_pos` imp case: *(completed in Phase 2 -- proved vacuously via impPos_not_expanded)*
 - [x] Complete `truthLemma_pos` untl case: *(completed in Phase 3 -- proved vacuously via untlPos_not_expanded)*
 - [x] Complete `truthLemma_pos` snce case: *(completed in Phase 3 -- proved vacuously via sncePos_not_expanded)*
-- [ ] Complete `truthLemma_neg` untl case: *(blocked -- depends on sat_untl_neg which is architecturally blocked)*
-- [ ] Complete `truthLemma_neg` snce case: *(blocked -- depends on sat_snce_neg which is architecturally blocked)*
+- [ ] Complete `truthLemma_neg` untl case: *(deviation: blocked -- sat_untl_neg proved but insufficient; truth lemma requires F(U(event,guard)) propagation tracking through the transitive closure of isTimeOrderedBefore, which the structural IH on formula cannot provide)*
+- [ ] Complete `truthLemma_neg` snce case: *(deviation: blocked -- mirror of untl blocker)*
 - [ ] Verify `branchTruthLemma` becomes sorry-free
 - [ ] Build the semantic bridge: define a `TaskFrame Int` and `TaskModel` from the `SemanticCountermodel`, mapping `WorldIndex`/`TimeIndex` to concrete world histories and times
 - [ ] Prove `branchTruth_agrees_with_truth_at`: the bridge lemma showing `branchTruth cm w t phi <-> truth_at M Omega tau t phi` for the constructed model
 - [ ] Prove `decide_complete` in `Correctness.lean`: if `decide phi = .invalid counter` then `not (valid phi)`, by constructing the semantic model and using `branchTruthLemma` to show F(phi) is satisfied
 - [ ] Verify with `lake build Bimodal.Metalogic.Decidability.Correctness`
+
+**BLOCKER** (Phase 4):
+- **What failed**: `truthLemma_neg` for `untl event guard` and `snce event guard` cases
+- **What was tried**:
+  1. Direct application of `sat_untl_neg`: gives `F(event) ∨ F(guard)` at each immediate successor `t'`, but for the case where only `F(guard)` is at a direct successor `t'`, the Until condition `branchTruth event t'` cannot be negated since `F(event)` may not be in the branch at `t'`.
+  2. For transitively reachable times, intermediate `t_1 ∈ timesBetween t t'` with `F(guard)` gives contradiction via guard-everywhere condition, but `F(event)` at `t_1` does not help since event only needs to hold at the witness `t'`.
+  3. Considered well-founded induction on `isTimeOrderedBefore` fuel parameter, but requires `F(U(event,guard))` at intermediate times for recursive application of `sat_untl_neg`.
+- **Why it's stuck**: The structural IH (`ih_event`, `ih_guard`) from `induction φ` operates on sub-formulas of `untl event guard`, but cannot be applied to `untl event guard` itself at a different time point. The `sat_untl_neg` invariant is a disjunction (`F(event) ∨ F(guard)`) that is too weak for the direct-successor case where only `F(guard)` holds. Proving the stronger invariant `F(event)` at every future time requires tracking `F(U(event,guard))` propagation through the branching expansion, which cannot be recovered from the saturated branch state alone.
+- **What is needed**: One of:
+  (a) A separate induction over the time ordering (not formula structure) with an auxiliary lemma tracking `F(U(event,guard))` membership at intermediate times
+  (b) A stronger saturation invariant proving `F(event) ∨ (F(guard) ∧ F(U(event,guard)))` at each future time (requires analyzing which branch of the untlNeg rule was taken)
+  (c) Modifying `branchTruth` for `untl` to quantify over `futureOf` (direct successors) instead of `isTimeOrderedBefore` (transitive closure), then proving a separate step-wise-to-transitive bridge lemma
+  (d) Adding `F(event)` to branch 2 of the `untlNeg` rule in `applyRule` (both disjuncts then always carry `F(event)`, making `sat_untl_neg_strong` trivial)
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Timing**: 4 hours
 

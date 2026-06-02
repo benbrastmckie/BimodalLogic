@@ -744,7 +744,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let unprocessed := futureTimes.filter fun t' =>
           let negEvent := SignedFormula.neg event { world := l.world, time := t' }
           let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
-          !(branch.contains negEvent || branch.contains negGuard)
+          !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
         | [] => (.notApplicable, timeOrd)  -- All future times processed
         | t' :: _ =>
@@ -769,7 +769,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let unprocessed := pastTimes.filter fun t' =>
           let negEvent := SignedFormula.neg event { world := l.world, time := t' }
           let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
-          !(branch.contains negEvent || branch.contains negGuard)
+          !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
         | [] => (.notApplicable, timeOrd)  -- All past times processed
         | t' :: _ =>
