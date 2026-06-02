@@ -184,23 +184,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Produce Bottleneck Characterization Report [NOT STARTED]
+### Phase 5: Produce Bottleneck Characterization Report [COMPLETED]
 
 **Goal**: Synthesize analysis results into a structured bottleneck characterization report with actionable findings.
 
 **Tasks**:
-- [ ] Write the scaling analysis results into a structured summary within the task directory
-- [ ] Include the following sections:
-  - Scaling curve table (complexity vs timeout rate, timing, throughput)
-  - Decision method distribution evolution across complexity levels
-  - Timeout pattern inventory with counts and examples at each level
-  - Bimodal distribution analysis (does tier 1 still dominate at c7/c8?)
-  - New timeout patterns discovered (if any)
-  - Countermodel extraction cost analysis (valid vs invalid formula timing comparison)
-  - Bottleneck characterization: is the wall-clock cost dominated by timeout formulas, countermodel extraction, or baseline labeling?
-  - Recommendations for decision procedure improvements
-- [ ] Archive raw scaling data (CSV or JSON) for reproducibility
-- [ ] Summarize the key finding: at what complexity level does the timeout rate become unacceptable?
+- [x] Write the scaling analysis results into a structured summary within the task directory *(completed)*
+- [x] Include sections: scaling curve, method distribution, timeout patterns, bimodal analysis, new patterns, countermodel cost, bottleneck characterization, recommendations *(completed)*
+- [x] Archive raw scaling data (CSV or JSON) for reproducibility *(completed -- data/scaling_analysis/scaling_curve.csv and timeout_patterns.csv)*
+- [x] Summarize the key finding: at what complexity level does the timeout rate become unacceptable? *(completed -- c=6 is the threshold, bottleneck is per-formula timeout detection cost not rate)*
 
 **Timing**: 2 hours
 
