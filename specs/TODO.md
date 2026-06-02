@@ -432,7 +432,7 @@ technical_debt:
 
 ### 190. Derived operator normalization tactic (modal_norm)
 - **Effort**: medium (10-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**:
   - [specs/190_derived_operator_normalization/reports/01_normalization-seed.md]
@@ -484,7 +484,7 @@ technical_debt:
 
 ### 185. Complete axiom & derived theorem coverage in modal_search
 - **Effort**: small (6-8 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Research**:
   - [specs/185_complete_axiom_derived_coverage/reports/01_axiom-coverage-seed.md]

@@ -750,10 +750,10 @@
     {
       "project_number": 185,
       "project_name": "complete_axiom_derived_coverage",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-06-01T12:00:00Z",
+      "last_updated": "2026-06-01T13:00:00Z",
       "session_id": "sess_1779809662_d9784a",
       "artifacts": [
         {
@@ -770,11 +770,17 @@
           "path": "specs/185_complete_axiom_derived_coverage/plans/03_implementation-plan.md",
           "type": "plan",
           "summary": "3-phase plan: extend tryAxiomMatch to 42 axioms, add tryDerivedMatch with 25 derived theorems, integration tests"
+        },
+        {
+          "path": "specs/185_complete_axiom_derived_coverage/summaries/04_implementation-summary.md",
+          "type": "summary",
+          "summary": "3-phase implementation: axiom extension, derived theorem function, integration tests"
         }
       ],
       "researched": "2026-05-26T20:00:00Z",
       "next_artifact_number": 4,
-      "planned": "2026-06-01T12:00:00Z"
+      "planned": "2026-06-01T12:00:00Z",
+      "completion_summary": "Extended tryAxiomMatch from 12 to 42 axiom constructors, added tryDerivedMatch with 26 derived theorems, 69 new test examples, full lake build passes"
     },
     {
       "project_number": 186,
@@ -843,10 +849,10 @@
     {
       "project_number": 190,
       "project_name": "derived_operator_normalization",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-06-01T12:00:00Z",
+      "last_updated": "2026-06-01T13:30:00Z",
       "artifacts": [
         {
           "path": "specs/190_derived_operator_normalization/reports/01_normalization-seed.md",
@@ -862,12 +868,18 @@
           "path": "specs/190_derived_operator_normalization/plans/03_implementation-plan.md",
           "type": "plan",
           "summary": "5-phase plan: unfold lemmas, EnrichedFormula ADT + fold algorithm, simp lemmas, JSON serialization, build integration"
+        },
+        {
+          "path": "specs/190_derived_operator_normalization/summaries/04_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for derived operator normalization (fold direction)"
         }
       ],
       "session_id": "sess_1779809662_d9784a",
       "researched": "2026-05-26T20:00:00Z",
       "next_artifact_number": 4,
-      "planned": "2026-06-01T12:00:00Z"
+      "planned": "2026-06-01T12:00:00Z",
+      "completion_summary": "Implemented derived operator normalization: 15 unfold/fold simp lemmas, modal_norm/modal_fold tactics, EnrichedFormula ADT with 21 constructors, greedy fold algorithm, JSON/prettyPrint/S-expression serialization, full build passes"
     },
     {
       "project_number": 191,
