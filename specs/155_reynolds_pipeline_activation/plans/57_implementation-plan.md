@@ -167,15 +167,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Documentation cleanup and summary [NOT STARTED]
+### Phase 4: Documentation cleanup and summary [COMPLETED]
 
 **Goal**: Update docstrings referencing the old sorry chain, write execution summary.
 
 **Tasks**:
-- [ ] Update the `limitDomSubtype_isSuccArchimedean` docstring (lines 785-788) to note it is now superseded by the axiom and retained only for reference
-- [ ] Update the `succ_embed_surjective` docstring (lines 813-817) to note it now uses the axiom
-- [ ] Update the audit section in Completeness.lean to reflect that `completeness_discrete` has no `sorryAx` (only the named axiom `limitDomSubtype_isSuccArchimedean_axiom`)
-- [ ] Write execution summary at `specs/155_reynolds_pipeline_activation/summaries/57_execution-summary.md`
+- [x] Update the `limitDomSubtype_isSuccArchimedean` docstring (lines 785-788) to note it is now superseded by the axiom and retained only for reference *(deviation: altered -- completed during Phase 2)*
+- [x] Update the `succ_embed_surjective` docstring (lines 813-817) to note it now uses the axiom *(deviation: altered -- completed during Phase 2)*
+- [x] Update the audit section in Completeness.lean to reflect that `completeness_discrete` has no `sorryAx` (only the named axiom `limitDomSubtype_isSuccArchimedean_axiom`)
+- [x] Write execution summary at `specs/155_reynolds_pipeline_activation/summaries/58_implementation-summary.md` *(deviation: altered -- used artifact number 58 per sequence)*
 
 **Timing**: 30 minutes
 

@@ -375,47 +375,46 @@ theorem completeness_discrete (φ : Formula) :
 #print axioms Bimodal.Metalogic.BXCanonical.completeness_dense
 #print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete
 
-/-! ## Axiom Audit (Phase 0 Results)
+/-! ## Axiom Audit
 
-Captured during Phase 0 of task 109 (2026-04-20).
+### completeness_discrete (as of task 155, 2026-06-02)
 
-### Current State (as of Phase 0)
+```
+#print axioms completeness_discrete
+-- depends on: [propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler,
+--              Quot.sound, limitDomSubtype_isSuccArchimedean_axiom]
+```
+
+**No `sorryAx`**. The only non-standard axiom is
+`limitDomSubtype_isSuccArchimedean_axiom` (task 155), a mathematically justified
+axiom asserting `IsSuccArchimedean` for the discrete chronicle limit domain.
+See `ChronicleToCountermodel.lean` for the mathematical justification.
+
+The chain: `completeness_discrete` → `countermodel_discrete_reynolds` →
+`cantor_bfmcs_discrete_restricted_tc/fuc` → `succ_embed_surjective` →
+uses `limitDomSubtype_isSuccArchimedean_axiom` directly (no sorry).
+
+### completeness (general)
 
 ```
 #print axioms completeness
--- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]
-
-#print axioms dd_countermodel
--- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]
+-- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool,
+--              Lean.trustCompiler, Quot.sound,
+--              limitDomSubtype_isSuccArchimedean_axiom]
 ```
+
+Still has `sorryAx` via the general `countermodel_discrete` path which uses the
+BX pipeline `dd_countermodel_chronicle_discrete`. This is separate from the
+discrete case.
 
 ### Axiom Classification
 
-- `propext`, `Classical.choice`, `Quot.sound` — target axioms (acceptable, standard Lean 4)
-- `sorryAx` — must be eliminated (7 critical-path sorries)
-- `Lean.ofReduceBool`, `Lean.trustCompiler` — introduced by `native_decide` in Syntax layer
-  (Formula.lean, SignedFormula.lean); these are acceptable, not sorry-related
-
-### Sorry Dependency Tree (Post-Task 155 Rewiring)
-
-**completeness_discrete** now routes through `countermodel_discrete_reynolds`
-(Transfer.lean) which uses the parametric canonical model construction via
-`cantor_bfmcs_discrete` and the restricted parametric truth lemma.
-
-The `sorryAx` dependency traces through:
-- `cantor_bfmcs_discrete_restricted_tc` → `succ_embed_surjective` →
-  `limitDomSubtype_isSuccArchimedean` (sorry)
-- `cantor_bfmcs_discrete_restricted_fuc` → `succ_embed_surjective` (same chain)
-
-**completeness** (general) routes through `countermodel_discrete` which uses the
-BX pipeline `dd_countermodel_chronicle_discrete`, carrying the same
-`succ_embed_surjective` sorry plus the `succ_cofinal` sorry.
-
-**Bypassed path** (task 155): `countermodel_discrete_enriched` (private) is no
-longer called by `completeness_discrete`.
-
-(The `Lean.ofReduceBool` and `Lean.trustCompiler` remain from `native_decide` in the Syntax layer
-and are not removable without changing the decidability infrastructure.)
+- `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable)
+- `limitDomSubtype_isSuccArchimedean_axiom` — named axiom with mathematical
+  justification (task 155); removable via full formal proof (Path E, future task)
+- `sorryAx` — remains in `completeness` (general), not in `completeness_discrete`
+- `Lean.ofReduceBool`, `Lean.trustCompiler` — from `native_decide` in Syntax layer
+  (acceptable, not sorry-related)
 -/
 
 #print axioms Bimodal.Metalogic.BXCanonical.completeness
