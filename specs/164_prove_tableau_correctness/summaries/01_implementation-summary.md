@@ -2,8 +2,8 @@
 
 - **Task**: 164 - Prove tableau correctness theorem for decision procedure
 - **Status**: PARTIAL
-- **Phases Completed**: 1 fully, 2 substantially, 2 partially
-- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316, sess_1780361777_843697 (rounds 1-4)
+- **Phases Completed**: 3 fully (1, 2, 3), 1 blocked (4), 1 partial (5), 1 not started (6)
+- **Sessions**: sess_1780355308_a08e2f_164, sess_1780359083_872316, sess_1780361777_843697 (rounds 1-5)
 
 ## What Was Accomplished
 
@@ -26,33 +26,32 @@ Resolved all propositional and modal saturation sorry sites:
 
 4. **truthLemma_pos imp case** (sorry-free): T(psi -> chi) cannot exist in a saturated branch because `impPos` always applies (branching rule). Proved via `impPos_not_expanded` helper.
 
-### Phase 3: Temporal Saturation Invariants (PARTIAL -- Round 3 Progress)
+### Phase 3: Temporal Saturation Invariants (COMPLETED -- Rounds 2-5)
 
 **Round 2 progress:**
 - **sat_untl_pos** (sorry-free): Proved vacuously via `untlPos_not_expanded`.
 - **sat_snce_pos** (sorry-free): Proved vacuously via `sncePos_not_expanded`.
 - **truthLemma_pos untl/snce** (sorry-free): Also vacuous by same argument.
 
-**Round 3 progress (this session):**
-
-1. **ARCHITECTURAL FIX COMPLETED**: Threaded `TimeOrdering` through `ExpandedTableau.hasOpen`.
-   - Reordered constructor fields: `hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering) (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) = none)`
-   - Updated `buildTableau` and `expandBranchesWithFuel` to pass real ordering to `findUnexpanded`
-   - Updated ALL saturation invariant signatures to accept `(timeOrd : TimeOrdering)`
-   - Updated `truthLemma_neg` to accept `(hOrd : cm.timeOrdering = timeOrd)`
-   - Updated all downstream pattern matches across 4 files
-   - **This resolves the architectural blocker** that prevented proving `sat_untl_neg` and `sat_snce_neg`
-
-2. **SIGNATURE CHANGE**: `sat_untl_neg` now quantifies over `timeOrd.futureOf t` (real future times from expansion) instead of `b.knownTimes` (all times in branch). Similarly `sat_snce_neg` quantifies over `timeOrd.pastOf t`.
-
-3. **Still sorry**: `sat_untl_neg`, `sat_snce_neg` proofs. The signatures are correct and the blocker is removed. The proof strategy (case-splitting on `applyRule` result, showing the notApplicable case contradicts the filter being non-empty) is identified but not yet mechanized due to complexity of unfolding `applyRule` in Lean.
+**Round 3 progress:**
+- Threaded `TimeOrdering` through `ExpandedTableau.hasOpen` (architectural fix)
+- Changed `sat_untl_neg`/`sat_snce_neg` signatures to quantify over `timeOrd.futureOf/pastOf` instead of `b.knownTimes`
 
 **Round 4 progress:**
-- Added `@[simp]` lemmas `RuleResult.branching_ne_notApplicable`, `linear_ne_notApplicable`, `persistent_ne_notApplicable` to Tableau.lean
-- Fixed `set_option`/docstring ordering bug (`set_option` must precede docstring in Lean 4)
-- Established proof structure: `set result_pair; cases result` works for the non-notApplicable cases
-- Identified root cause for `notApplicable` case: **filter predicate form mismatch** -- `applyRule` uses `!(a||b)` but after `simp` normalization the goal has `!a && !b` (De Morgan). `generalize`/`rw`/`simp only` cannot bridge this gap because the anonymous lambdas are syntactically different
-- Recommended fix: refactor `applyRule` to use `!a && !b` natively, eliminating the mismatch at source
+- Added `@[simp]` lemmas for `RuleResult` constructors
+- Identified root cause: filter predicate form mismatch (`!(a||b)` vs `!a && !b`)
+
+**Round 5 progress (COMPLETED):**
+- **FILTER PREDICATE REFACTOR**: Changed `applyRule` in Tableau.lean from `!(branch.contains negEvent || branch.contains negGuard)` to `!branch.contains negEvent && !branch.contains negGuard` at lines 747 and 772 (untlNeg and snceNeg cases). Semantically identical (De Morgan's law) but eliminates normalization mismatch.
+
+- **sat_untl_neg** (sorry-free): Proved via:
+  1. Extract `isApplicable = true` for `.untlNeg` from `findApplicableRule = none`
+  2. Extract `applyRule .untlNeg` must return `.notApplicable` (by match on RuleResult constructors: linear/branching/persistent all give `some`, contradicting `= none`)
+  3. Unfold `applyRule` + `asUntil?` to get filter/match structure
+  4. Show filter list non-empty (t' passes predicate via `hNotContainsE`, `hNotContainsG`)
+  5. Rewrite cons case in hypothesis, get `branching = notApplicable` contradiction via `simp`
+
+- **sat_snce_neg** (sorry-free): Mirror proof using `asSince?`/`pastOf`
 
 ### Phase 5: Blocking Correctness (PARTIAL)
 
@@ -78,44 +77,54 @@ Resolved all propositional and modal saturation sorry sites:
 
 ## Sorry Site Accounting
 
-| File | Before (start) | After round 2 | After round 3 | After round 4 | Resolved |
-|------|----------------|----------------|----------------|----------------|----------|
+| File | Before (start) | After round 2 | After rounds 3-4 | After round 5 | Resolved |
+|------|----------------|----------------|-------------------|----------------|----------|
 | Correctness.lean | 0 | 0 | 0 | 0 | +2 theorems |
-| CountermodelExtraction.lean | 9 | 4 | 4 | 4 | 5 |
+| CountermodelExtraction.lean | 9 | 4 | 4 | 2 | 7 |
 | Saturation.lean | 3 | 1 | 1 | 1 | 2 |
-| Tableau.lean | 0 | 0 | 0 | 0 | +3 simp lemmas |
-| **Total** | **12** | **5** | **5** | **5** | **7** |
+| Tableau.lean | 0 | 0 | 0 | 0 | +3 simp lemmas, filter refactor |
+| **Total** | **12** | **5** | **5** | **3** | **9** |
 
-## What Remains (5 sorry sites)
+## What Remains (3 sorry sites)
 
-### CountermodelExtraction.lean (4 sorry sites)
+### CountermodelExtraction.lean (2 sorry sites)
 
-**Unblocked** (architectural fix complete, proofs needed):
-- `sat_untl_neg` (L634): Now quantifies over `timeOrd.futureOf t`
-- `sat_snce_neg` (L649): Now quantifies over `timeOrd.pastOf t`
-- `truthLemma_neg` untl (L758): Depends on sat_untl_neg
-- `truthLemma_neg` snce (L762): Depends on sat_snce_neg
+**BLOCKED** (requires propagation tracking):
+- `truthLemma_neg` untl (L834): `sat_untl_neg` gives `F(event) OR F(guard)` at each immediate successor, but for direct successors with only `F(guard)`, the Until condition `branchTruth event t'` cannot be negated. The structural IH cannot be applied to `untl event guard` at a different time point. Requires F(U(event,guard)) propagation tracking through transitive closure.
+- `truthLemma_neg` snce (L838): Mirror of untl blocker.
 
 ### Saturation.lean (1 sorry site)
 
-- `blocking_terminates` (L663): Pigeonhole argument over time types
+- `blocking_terminates` (L663): Pigeonhole argument over time types (deferred)
 
-## Proof Strategy for sat_untl_neg
+## Proof Strategy for sat_untl_neg (COMPLETED in Round 5)
 
-The proof follows the same pattern as `sat_box_pos` but for temporal rules:
+The proof follows the same pattern as `sat_box_pos` but adds a crucial intermediate step:
 
 1. From saturation, extract `findApplicableRule = none` via `findUnexpanded_none_all_expanded`
-2. Use `List.findSome?_eq_none_iff` to extract that `untlNeg` rule's lambda returns `none`
-3. Simplify `isApplicable` (true since `guard != top` via `asUntil?`)
-4. Case-split on `applyRule .untlNeg ...` result:
-   - `notApplicable`: Means the filter `(timeOrd.futureOf t).filter (fun t'' => !(contains event || contains guard))` is `[]`. But if any `t'` lacks both `F(event)` and `F(guard)`, it passes the filter, making the list non-empty. Contradiction.
-   - `linear/branching/persistent`: Lambda returns `some(...)`, contradicting `= none`.
+2. Use `List.findSome?_eq_none_iff` to extract `untlNeg` rule's lambda returns `none`
+3. Simplify `isApplicable` to true (since `guard != top` via `asUntil?`)
+4. **Extract notApplicable**: Use `by_contra` + `match` on `RuleResult` to show `applyRule .untlNeg ...`.1 = .notApplicable. The non-notApplicable cases (linear/branching/persistent) would make the lambda return `some(...)`, contradicting `= none`.
+5. **Unfold applyRule**: `unfold applyRule at hNA; simp only [asUntil?, hg', ite_false, Bool.false_eq_true] at hNA`
+6. **Filter contradiction**: Show `t'` passes the filter predicate (both contains are false), so filter is non-empty (`List.exists_cons_of_ne_nil`). Rewrite cons case in hypothesis, then `simp` closes (branching.fst != notApplicable).
 
-The challenge is mechanizing step 4.notApplicable: after unfolding `applyRule`, the goal contains a complex match on the filter list. The `split at hRule` tactic or manual case analysis on the filter list should work, but the syntactic form of the unfolded expression needs careful matching.
+**Key insight (Round 5)**: The filter predicate refactor from `!(a || b)` to `!a && !b` in Tableau.lean was essential. After `simp` normalization, goals naturally contain `!a && !b` but the old definition had `!(a || b)`, creating an unbridgeable syntactic gap that blocked rounds 3-4.
+
+## truthLemma_neg untl/snce Blocker Analysis
+
+The `truthLemma_neg` untl case requires proving `¬branchTruth (untl event guard)`, i.e., for all future times `t'`, either event is false at `t'` or guard fails at some intermediate time. The `branchTruth` definition uses `isTimeOrderedBefore` (transitive closure), while `sat_untl_neg` only covers immediate successors (`futureOf`).
+
+**Problematic case**: `t'` is a direct successor with only `F(guard)` in branch (not `F(event)`). The guard fails at `t'` by IH, but `t'` is the Until witness endpoint -- guard failure at the endpoint doesn't break the Until condition (guard only needs to hold at strictly intermediate times). And event could be true at `t'`.
+
+**Possible solutions**:
+- (a) Auxiliary induction over time ordering tracking `F(U(event,guard))` membership
+- (b) Stronger saturation invariant: `F(event) OR (F(guard) AND F(U(event,guard)))` at each future time
+- (c) Modify `branchTruth` for `untl` to use `futureOf` instead of `isTimeOrderedBefore`
+- (d) Add `F(event)` to branch 2 of `untlNeg` rule
 
 ## Build Status
 
-Full `lake build` passes with no new errors. Pre-existing errors in `ChronicleToCountermodel` and Mathlib are unrelated.
+Full `lake build` passes with no new errors.
 
 ## Plan Deviations
 
@@ -123,7 +132,8 @@ Full `lake build` passes with no new errors. Pre-existing errors in `ChronicleTo
 - Phase 2 Task 2.3: Altered -- used `List.findSome?_eq_none_iff` instead of simp-based unfolding
 - Phase 2 Bonus: Added truthLemma_pos imp case (not in original plan)
 - Phase 3 sat_untl_pos/sat_snce_pos: Altered -- proved vacuously (formulas can't exist in saturated branch)
-- Phase 3 sat_untl_neg/sat_snce_neg: Altered -- changed conclusion from `b.knownTimes` to `timeOrd.futureOf/pastOf`; architectural fix completed but proofs still sorry
+- Phase 3 sat_untl_neg/sat_snce_neg: Altered -- changed conclusion from `b.knownTimes` to `timeOrd.futureOf/pastOf`; filter refactored to eliminate normalization mismatch; proofs completed in round 5
+- Phase 4 truthLemma_neg untl/snce: Blocked -- requires F(U(event,guard)) propagation tracking
 - Phase 5 subformula_property: Altered -- theorem as stated only covers initial branch, proved trivially
 - Phase 5 blocking_sound: Completed -- full induction with foldl helper lemmas
 - Phase 5 blocking_terminates: Deferred -- needs generalized subformula property
