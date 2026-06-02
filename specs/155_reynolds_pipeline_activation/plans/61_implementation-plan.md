@@ -158,6 +158,18 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 3: Build EF Game Bridge with correct depth relationship [BLOCKED]
 
+**BLOCKER** (Phase 3):
+- **What failed**: The plan's approach to fixing the 3 root sorries in StaviCompleteness.lean faces TWO distinct issues:
+  1. **Sorries 1&2 (lines 2347, 2429)**: The `nf_2var_existential_transfer` sorries require 4-var existential transfer at depth j' for 3-point configurations, which is the sub-interval splitting problem confirmed impossible by 5 sessions. The EF game bridge approach (via rank_type, decomposition_agreement, ghr93_duplicator_wins) is the correct theoretical path but requires 300-500 lines of bridge code connecting NF types on M.carrier to rank_types on ExtendedCarrier.
+  2. **Sorry 3 (line 2787)**: `nf_exist_sf_guarded_backward` has a SEPARATE structural issue. The formula `nf_exist_sf_guarded` is too weak for the backward direction: it only checks atom-compatibility (predicates at variable 0 + ordering) but does NOT encode the quantifier part of sub_nf. Two different sub_nfs with the same atom assignment produce the SAME formula, making the backward direction unprovable. This is a formula construction bug, not just a missing proof.
+- **What was tried**: Extensive analysis of the code structure, dependency tracing, and verification of axiom dependencies. Confirmed that the game infrastructure (Decomposition.lean, Composition.lean) is sorry-free and correctly implements GHR93 Lemma 11 and Proposition 7.
+- **Why it's stuck**: Two independent issues require resolution:
+  (a) Building the NF-to-game bridge (300-500 lines) to bypass `nf_2var_existential_transfer`
+  (b) Restructuring the formula construction in `nf_exist_sf_guarded` to encode quantifier information, or using a completely different proof structure for `nf_2var_existence_characterizable`
+- **What is needed**: Either (i) build the EF game bridge AND fix the formula, or (ii) restructure the proof of `nf_characterizable_by_stavi` to avoid the problematic formula construction entirely (e.g., using a non-constructive pigeonhole argument that avoids explicit formula construction for the backward direction)
+- **Additional finding**: The model surgery pipeline (no_gaps_discrete_model_surgery) depends on `US_expressively_complete_over_prior` which depends on `stavi_expressive_completeness` which carries these sorries. So the pipeline is NOT sorry-free despite Phase 1 resolving the import cycle. This invalidates the Phase 5 approach of using model surgery to prove IsSuccArchimedean.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 **Goal**: Build bridge lemmas in NFGameBridge.lean connecting NF hypotheses (depth-k 1-var NFs, interval_nf_types on M.carrier) to the existing sorry-free EF game infrastructure (rank_type, decomposition_agreement, ghr93_duplicator_wins on ExtendedCarrier), using the correct depth relationship: depth-k NF -> rank_type at depth floor(k/2), game at rank floor(k/2), then game result -> depth-k NF agreement. Then refactor `nf_2var_from_interval_data` to use the bridge.
 
 **CRITICAL INSTRUCTIONS FOR IMPLEMENTING AGENT**:
@@ -407,7 +419,15 @@ Prove that Duplicator winning implies NF agreement (Bridge B), then refactor `nf
 
 ---
 
-### Phase 5: Rewire limitDomSubtype_isSuccArchimedean to use model surgery [NOT STARTED]
+### Phase 5: Rewire limitDomSubtype_isSuccArchimedean to use model surgery [BLOCKED]
+
+**BLOCKER** (Phase 5):
+- **What failed**: The model surgery pipeline (`no_gaps_discrete_model_surgery`) depends on `US_expressively_complete_over_prior` which depends on `stavi_expressive_completeness` which carries `sorryAx`. Verified via `#print axioms`: `no_gaps_discrete_model_surgery` depends on `sorryAx`. Therefore, using model surgery to prove IsSuccArchimedean would not eliminate `sorryAx` from `completeness_discrete`.
+- **What was tried**: `#print axioms` verification of `reynolds_model_surgery_core`, `no_gaps_discrete_model_surgery`, `US_expressively_complete_over_prior`, and `stavi_expressive_completeness` — all depend on `sorryAx`.
+- **Why it's stuck**: Phase 3 (Stavi chain) must be resolved first to make the model surgery pipeline sorry-free. Only then can Phase 5 use model surgery to prove IsSuccArchimedean.
+- **What is needed**: Complete Phase 3 first, making `stavi_expressive_completeness` sorry-free, which will cascade to make `US_expressively_complete_over_prior` and `no_gaps_discrete_model_surgery` sorry-free.
+- **Alternative**: Find a proof of IsSuccArchimedean that does NOT go through model surgery (e.g., direct argument about the omega-chain structure of the limit domain). This would decouple Phases 3 and 5.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Replace the sorry-bearing definition of `limitDomSubtype_isSuccArchimedean` (ChronicleToCountermodel.lean:789) to use the now-sorry-free Reynolds model surgery pipeline instead of the dead `succ_cofinal` -> `chronicle_gap_contradiction` path.
 

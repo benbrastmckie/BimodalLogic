@@ -1,29 +1,22 @@
 {
-  "status": "partial",
-  "summary": "Phase 2 completed (11 private definitions made non-private); Phase 3 blocked on EF game bridge requiring 400-600 lines of new infrastructure to connect NF hypotheses (sig) with game world (muSig sig) across two different monadic signature systems.",
+  "status": "blocked",
+  "summary": "Phase 3 blocked: nf_exist_sf_guarded formula construction bug makes backward direction unprovable; model surgery pipeline depends on sorryAx via stavi chain, invalidating Phase 5",
   "phases_completed": 2,
   "phases_total": 7,
   "blockers": [
-    {
-      "phase": 3,
-      "description": "EF game bridge construction: connecting nf_characteristic on M.carrier (sig) to rank_type/decomposition_agreement on ExtendedCarrier (muSig sig) requires proving that depth-k NF determines nf_profile at actual points, lifting interval_nf_types to interval_types, and constructing decomposition_agreement. Estimated 400-600 lines.",
-      "root_cause": "Sub-interval splitting problem: zone matching u to u' does not preserve interval_nf_types for sub-intervals (x,u)/(x',u'). This is a structural limitation confirmed by 5+ implementation sessions. The EF game composition (GHR93 Proposition 7) is the only known resolution.",
-      "attempted_approaches": [
-        "Direct NF induction on j (inner depth) -- fails: sub-interval types needed at every depth",
-        "Mutual recursion with nf_2var_from_interval_data at lower depth -- creates circularity",
-        "Splitting zone match (finding u' preserving decomposition) -- not provable from hypotheses",
-        "Direct game embedding inside StaviCompleteness -- similar complexity to full bridge"
-      ]
-    }
+    "nf_exist_sf_guarded (StaviCompleteness.lean:2586) encodes only atom-compatibility, not quantifier structure of sub_nf, making backward direction (line 2787) structurally unprovable — this is a formula construction bug, not a missing proof",
+    "Model surgery pipeline (no_gaps_discrete_model_surgery) carries sorryAx via US_expressively_complete_over_prior -> stavi_expressive_completeness, so Phase 5 rewiring via model surgery cannot eliminate sorryAx",
+    "Two independent sorry chains block completeness_discrete: (1) Stavi chain (3 sorries in StaviCompleteness.lean) and (2) IsSuccArchimedean chain (6 sorries in chronicle_gap_contradiction)"
   ],
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-blocked-20260602T120000Z.md"
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260602.md",
+    "resume_phase": 3
   },
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/summaries/62_implementation-summary.md",
-      "type": "summary",
-      "summary": "Implementation summary with Phase 2 completion and Phase 3 blocker analysis"
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260602.md",
+      "type": "handoff",
+      "summary": "Detailed analysis of two sorry chains, formula bug, and three proposed fix approaches"
     }
   ],
   "next_action_hint": "research_blocker"
