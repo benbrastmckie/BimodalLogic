@@ -123,6 +123,10 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
   match tryAxiomProof φ with
   | some proof => .valid proof
   | none =>
+    -- Fast path: compositional proof (box-valid patterns, task 261)
+    match buildCompositionalProof φ 10 with
+    | some proof => .valid proof
+    | none =>
     -- Try proof search (fast for simple proofs)
     match bounded_search_with_proof [] φ searchDepth with
     | (some proof, _, _) => .valid proof

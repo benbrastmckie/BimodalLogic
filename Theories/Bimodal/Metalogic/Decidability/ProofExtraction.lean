@@ -151,7 +151,30 @@ def buildCompositionalProof (phi : Formula) (fuel : Nat) :
     | none =>
     -- Strategy 3: Structural decomposition
     match phi with
-    -- Identity: A -> A
+    -- Necessitation: □A where A is provable (task 261 box-valid fast path)
+    | .box inner =>
+        match buildCompositionalProof inner (fuel - 1) with
+        | some proofInner =>
+            some (DerivationTree.necessitation inner proofInner)
+        | none => none
+    -- Implication: □⊥ → X is valid, and A → B where B is provable
+    | .imp (.box .bot) rhs =>
+        -- □⊥ → X via modal_t + ex_falso + prop_k chain
+        let boxBot := Formula.box Formula.bot
+        let modalT : DerivationTree .Base [] (boxBot.imp Formula.bot) :=
+          DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
+        let exFalso : DerivationTree .Base [] (Formula.bot.imp rhs) :=
+          DerivationTree.axiom [] _ (Axiom.ex_falso rhs) trivial
+        let propS : DerivationTree .Base [] ((Formula.bot.imp rhs).imp (boxBot.imp (Formula.bot.imp rhs))) :=
+          DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp rhs) boxBot) trivial
+        let step1 : DerivationTree .Base [] (boxBot.imp (Formula.bot.imp rhs)) :=
+          DerivationTree.modus_ponens [] (Formula.bot.imp rhs) (boxBot.imp (Formula.bot.imp rhs)) propS exFalso
+        let propK : DerivationTree .Base [] ((boxBot.imp (Formula.bot.imp rhs)).imp ((boxBot.imp Formula.bot).imp (boxBot.imp rhs))) :=
+          DerivationTree.axiom [] _ (Axiom.prop_k boxBot Formula.bot rhs) trivial
+        let step2 : DerivationTree .Base [] ((boxBot.imp Formula.bot).imp (boxBot.imp rhs)) :=
+          DerivationTree.modus_ponens [] (boxBot.imp (Formula.bot.imp rhs)) ((boxBot.imp Formula.bot).imp (boxBot.imp rhs)) propK step1
+        some (DerivationTree.modus_ponens [] (boxBot.imp Formula.bot) (boxBot.imp rhs) step2 modalT)
+    -- General implication: A → B
     | .imp a b =>
         if h : a = b then
           some (h ▸ identity a)
@@ -159,18 +182,10 @@ def buildCompositionalProof (phi : Formula) (fuel : Nat) :
           -- Try: if B is provable, then A -> B is provable (by weakening via prop_s)
           match buildCompositionalProof b (fuel - 1) with
           | some proofB =>
-              -- B is provable, so A -> B via prop_s: B -> (A -> B)
               let prop_s_inst : DerivationTree .Base [] (b.imp (a.imp b)) :=
                 DerivationTree.axiom [] _ (Axiom.prop_s b a) trivial
               some (DerivationTree.modus_ponens [] b (a.imp b) prop_s_inst proofB)
-          | none =>
-              -- Try: A -> (C -> A) is an instance of prop_s (already caught by axiom match)
-              -- Try: bot -> A
-              match a with
-              | .bot =>
-                  -- bot -> B is ex_falso B (already caught by axiom match)
-                  none
-              | _ => none
+          | none => none
     | _ => none
 
 /-!
