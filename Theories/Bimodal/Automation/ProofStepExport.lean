@@ -1202,6 +1202,86 @@ def theoremRegistry : List TheoremEntry := [
 ]
 
 /-!
+## Coverage Tracking
+
+Canonical lists of all 42 axiom names and 7 inference rule names,
+plus functions to compute and print coverage after extraction.
+-/
+
+/-- All 42 canonical axiom name strings, matching `Axiom.toName` output. -/
+def allAxiomNames : List String :=
+  [ -- Layer 1: Propositional (4)
+    "prop_k", "prop_s", "ex_falso", "peirce",
+    -- Layer 2: S5 Modal (5)
+    "modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist",
+    -- Layer 3: BX Temporal (20)
+    "serial_future", "serial_past",
+    "left_mono_until_G", "left_mono_since_H",
+    "right_mono_until", "right_mono_since",
+    "connect_future", "connect_past",
+    "enrichment_until", "enrichment_since",
+    "self_accum_until", "self_accum_since",
+    "absorb_until", "absorb_since",
+    "linear_until", "linear_since",
+    "until_F", "since_P",
+    "temp_linearity", "temp_linearity_past",
+    -- Layer 3b: Additional BX Temporal (2)
+    "F_until_equiv", "P_since_equiv",
+    -- Layer 4: Modal-Temporal Interaction (1)
+    "modal_future",
+    -- Layer 5: Uniformity Axioms (5)
+    "discrete_symm_fwd", "discrete_symm_bwd",
+    "discrete_propagate_fwd", "discrete_propagate_bwd",
+    "discrete_box_necessity",
+    -- Layer 6: Prior Axioms (2)
+    "prior_UZ", "prior_SZ",
+    -- Layer 7: Z1 Axiom (1)
+    "z1",
+    -- Layer 8: Density Axioms (2)
+    "density", "dense_indicator"
+  ]
+
+/-- All 7 canonical inference rule name strings. -/
+def allRuleNames : List String :=
+  ["axiom", "assumption", "modus_ponens", "necessitation",
+   "temporal_necessitation", "temporal_duality", "weakening"]
+
+/--
+Compute and print coverage summary from extracted proof steps.
+
+Collects unique axiom names and rule names from the step list,
+compares against canonical lists, and prints the results.
+-/
+def printCoverage (steps : List ProofStep) : IO Unit := do
+  -- Collect unique axiom names (from steps where axiomName is some)
+  let axiomsSeen := steps.filterMap (·.axiomName) |>.eraseDups
+  -- Collect unique rule names
+  let rulesSeen := steps.map (·.rule) |>.eraseDups
+  -- Compute missing
+  let missingAxioms := allAxiomNames.filter (fun a => !axiomsSeen.contains a)
+  let missingRules := allRuleNames.filter (fun r => !rulesSeen.contains r)
+  IO.println ""
+  IO.println s!"Coverage Analysis:"
+  IO.println s!"  Axiom coverage: {axiomsSeen.length}/{allAxiomNames.length}"
+  IO.println s!"  Rule coverage:  {rulesSeen.length}/{allRuleNames.length}"
+  if !missingAxioms.isEmpty then
+    IO.println s!"  Missing axioms: {missingAxioms}"
+  else
+    IO.println s!"  All axioms covered!"
+  if !missingRules.isEmpty then
+    IO.println s!"  Missing rules:  {missingRules}"
+  else
+    IO.println s!"  All rules covered!"
+  -- Print rule distribution
+  IO.println ""
+  IO.println s!"  Rule distribution:"
+  for ruleName in allRuleNames do
+    let count := steps.filter (fun s => s.rule == ruleName) |>.length
+    if count > 0 then
+      let pct := (count * 1000 / steps.length + 5) / 10  -- round to nearest %
+      IO.println s!"    {ruleName}: {count} ({pct}%)"
+
+/-!
 ## Executable Main Function
 -/
 
@@ -1210,9 +1290,13 @@ Process the theorem registry and output JSONL.
 
 For each theorem entry, calls the extract thunk to get proof steps,
 then writes each step as a JSON line to the output.
+
+Returns (jsonLines, allSteps, theoremCount, totalStepCount).
 -/
-def processRegistry (entries : List TheoremEntry) : IO (List String × Nat × Nat) := do
+def processRegistry (entries : List TheoremEntry) :
+    IO (List String × List ProofStep × Nat × Nat) := do
   let mut allLines : List String := []
+  let mut allSteps : List ProofStep := []
   let mut totalSteps : Nat := 0
   let mut theoremCount : Nat := 0
   for entry in entries do
@@ -1220,11 +1304,12 @@ def processRegistry (entries : List TheoremEntry) : IO (List String × Nat × Na
       let steps := entry.extract ()
       for step in steps do
         allLines := allLines ++ [step.toJson]
+        allSteps := allSteps ++ [step]
       totalSteps := totalSteps + steps.length
       theoremCount := theoremCount + 1
     catch e =>
       IO.eprintln s!"Warning: Failed to extract steps from {entry.name}: {e.toString}"
-  return (allLines, theoremCount, totalSteps)
+  return (allLines, allSteps, theoremCount, totalSteps)
 
 /--
 Parse command-line arguments.
@@ -1263,7 +1348,7 @@ def main (args : List String) : IO Unit := do
   IO.println ""
 
   -- Process the registry
-  let (lines, theoremCount, totalSteps) ← processRegistry theoremRegistry
+  let (lines, allSteps, theoremCount, totalSteps) ← processRegistry theoremRegistry
 
   -- Ensure output directory exists
   let dir := System.FilePath.mk outputPath |>.parent
@@ -1279,3 +1364,6 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Theorems processed: {theoremCount}/{theoremRegistry.length}"
   IO.println s!"  Total proof steps: {totalSteps}"
   IO.println s!"  Output written to: {outputPath}"
+
+  -- Print coverage analysis
+  printCoverage allSteps

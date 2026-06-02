@@ -115,7 +115,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Coverage Tracking Function [NOT STARTED]
+### Phase 3: Coverage Tracking Function [COMPLETED]
 
 **Goal**: Add a coverage analysis function to `ProofStepExport.lean` that prints axiom/rule coverage after extraction.
 
