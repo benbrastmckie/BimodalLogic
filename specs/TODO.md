@@ -1,5 +1,5 @@
 ---
-next_project_number: 263
+next_project_number: 264
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -30,20 +30,17 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,155,161,162,165,169,170,175,179,180,187,188,189,191,194,199,200,219,229,248,249,250,255,261,262 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 186,192,196,230 | 161,187,191,194,199,229 | automation, dataset-enhancement, ... |
-| 3 | 95,176,193,231 | 155,189,192,230 | completeness, formula-refactor, dataset-enhancement, ... |
-| 4 | 177,178,243,244,247,254 | 95,131,176,193 | completeness, formula-refactor, tableau-training |
+| 1 | 95,125,127,128,131,161,162,165,169,170,175,176,179,180,186,187,188,189,191,194,199,200,219,230,255,257,263 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,254 | 95,161,176,187,191,194,230 | completeness, dataset-enhancement, automation |
+| 3 | 193 | 189,192,196 | -- |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-155 [RESEARCHED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
-    └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-    └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
-      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
+95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+  └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
 
 ### Formula Refactor
 
@@ -63,17 +60,13 @@ technical_debt:
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
-### Tableau Training
-
-243 [COMPLETED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-244 [COMPLETED] — Create library of theorems with non-empty contexts to exercise as
-247 [COMPLETED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
-
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [RESEARCHED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor
+    └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
+    └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 
 ### Code Quality
 
@@ -82,18 +75,9 @@ technical_debt:
 
 ### Dataset Enhancement
 
-262 [COMPLETED] — Interestingness metrics for theorems and derivations
-  - **Summary**: [specs/262_interestingness_metrics_for_theorems/summaries/02_interestingness-implementation-summary.md]
-261 [COMPLETED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
-  - **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
-  - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/03_dataset-quality-fix.md]
-  - **Summary**: [specs/261_dataset_quality_and_stall_diagnosis/summaries/03_dataset-quality-fix-summary.md]
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-229 [COMPLETED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
-  - **Plan**: [specs/229_resolve_train_bench_contamination/plans/01_contamination-resolution.md]
-  - **Summary**: [specs/229_resolve_train_bench_contamination/summaries/01_contamination-resolution-summary.md]
-  └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
-    └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
+  └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 
 ### Uncategorized
 
@@ -106,12 +90,9 @@ technical_debt:
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 186 [NOT STARTED] — unify_search_systems
-192 [NOT STARTED] — master_tactic_dispatch
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor
-    └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
-    └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 187 [NOT STARTED] — backward_chaining_lemma_db
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+  └─ 192 [NOT STARTED] — master_tactic_dispatch
+    └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 188 [NOT STARTED] — weakening_aware_search
 189 [NOT STARTED] — deduction_theorem_tactic
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
@@ -119,18 +100,22 @@ technical_debt:
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-248 [COMPLETED] — fold_direction_formula_normalization
-  - **Report**: [specs/248_fold_direction_formula_normalization/reports/01_fold-direction-normalization.md]
-  - **Plan**: [specs/248_fold_direction_formula_normalization/plans/01_fold-direction-normalization.md]
-  - **Summary**: [specs/248_fold_direction_formula_normalization/summaries/01_fold-direction-normalization-summary.md]
-249 [COMPLETED] — expand_temporal_derived_theorems
-  - **Report**: [specs/249_expand_temporal_derived_theorems/reports/01_temporal-derived-theorems.md]
-  - **Plan**: [specs/249_expand_temporal_derived_theorems/plans/01_temporal-derived-theorems.md]
-250 [COMPLETED] — enriched_formula_json_export
-  - **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
-  - **Plan**: [specs/250_enriched_formula_json_export/plans/01_enriched-formula-export.md]
+257 [IMPLEMENTING] — large_data_storage_huggingface
+263 [NOT STARTED] — smoke_test_c5_dataset_generation
 
 ## Tasks
+
+### 263. Smoke-test c5 dataset generation
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 261
+
+**Description**: Smoke-test dataset generation at c5: label a small batch of formulas at complexity 5 end-to-end using the updated decision procedure to verify that fuel bounding (task 261), per-record flush, and eventuality-aware blocking work correctly. Run the generation script or equivalent #eval test on Base frame class, confirm no stalling, confirm JSONL output is well-formed with all fields populated (no null metrics), and verify that previously-problematic formulas like (□⊥ → □r) now resolve correctly instead of timing out.
+
+---
 
 ### 262. Interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
