@@ -860,6 +860,27 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       | _ => (.notApplicable, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
+/--
+`RuleResult.branching` is never equal to `RuleResult.notApplicable`.
+-/
+@[simp] theorem RuleResult.branching_ne_notApplicable (bs : List (List SignedFormula)) :
+    RuleResult.branching bs ≠ RuleResult.notApplicable := by
+  exact nofun
+
+/--
+`RuleResult.linear` is never equal to `RuleResult.notApplicable`.
+-/
+@[simp] theorem RuleResult.linear_ne_notApplicable (fs : List SignedFormula) :
+    RuleResult.linear fs ≠ RuleResult.notApplicable := by
+  exact nofun
+
+/--
+`RuleResult.persistent` is never equal to `RuleResult.notApplicable`.
+-/
+@[simp] theorem RuleResult.persistent_ne_notApplicable (fs : List SignedFormula) :
+    RuleResult.persistent fs ≠ RuleResult.notApplicable := by
+  exact nofun
+
 /-!
 ## Branch Expansion
 -/

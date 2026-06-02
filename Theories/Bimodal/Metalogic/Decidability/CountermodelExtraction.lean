@@ -610,11 +610,11 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
   have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
   simp [sncePos_not_expanded] at hExp
 
+set_option maxHeartbeats 3200000 in
 /--
 **Until negative saturation**: If `F(U(event, guard))` at `(w, t)` is in a
 saturated branch with guard not equal to `top`, then for every known future
 time `t'`, either `F(event)` at `(w, t')` or the negated guard condition holds.
-This follows from the Reynolds co-decomposition applied by `untlNeg`.
 -/
 theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
@@ -624,15 +624,39 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
     ∀ t' ∈ timeOrd.futureOf t,
       ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
       ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  -- PROOF STRATEGY: The untlNeg rule is persistent and propagates F(event) and
-  -- F(guard) to all known future times via Reynolds co-decomposition. In a
-  -- saturated branch, either the propagated formulas are already present (done)
-  -- or the rule would apply (contradicting saturation). Similar to sat_box_pos.
-  -- BLOCKED BY: Requires relating the untlNeg persistent rule's filterMap to
-  -- branch membership and showing that if any time is missing the result,
-  -- findApplicableRule would return some.
+  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .untl event guard, ⟨w, t⟩⟩ hmem
+  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hUntlNeg := hExp (.untlNeg) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+  simp only [isApplicable, asUntil?] at hUntlNeg
+  have hg' : (guard == Formula.top) = false := by simp [hguard]
+  simp only [hg', ite_false, Option.isSome_some, ite_true] at hUntlNeg
+  -- hUntlNeg states that: the entire if-then-else expression for .untlNeg returns none.
+  -- Since isApplicable is true, this means:
+  --   (let p := applyRule ...; match p.1 with | .notApplicable => none | _ => some ...) = none
+  -- So applyRule must return .notApplicable, meaning the filter is empty (all times processed).
+  -- Extract: the unprocessed filter must be empty.
+  -- Rather than simplifying further, reason by cases on the filter list.
+  intro t' ht'
+  by_contra habs
+  push_neg at habs
+  obtain ⟨hne, hng⟩ := habs
+  have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)
+  have hNotContainsG : Branch.contains b ⟨.neg, guard, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => hng ((contains_iff_mem b _).mp h)
+  -- BLOCKED: The applyRule function's nested let/match structure prevents
+  -- direct `simp`/`rw` proof strategies. The filter predicate form mismatch
+  -- (!(a||b) vs !a&&!b after simp normalization) and the `let` bindings inside
+  -- the branching case prevent both `generalize`/`cases` and `nomatch`/`nofun`
+  -- from closing the proof.
+  -- The proof is conceptually clear: from findApplicableRule = none for untlNeg,
+  -- applyRule must return .notApplicable, meaning the filter is [], but t' passes
+  -- the filter predicate, contradiction.
   sorry
 
+set_option maxHeartbeats 3200000 in
 /--
 **Since negative saturation**: Mirror of `sat_untl_neg` for past-directed Since.
 -/
@@ -644,8 +668,28 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
     ∀ t' ∈ timeOrd.pastOf t,
       ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
       ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  -- PROOF STRATEGY: Mirror of sat_untl_neg for past-directed Since.
-  -- BLOCKED BY: Same as sat_untl_neg — requires persistent rule analysis.
+  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .snce event guard, ⟨w, t⟩⟩ hmem
+  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hSnceNeg := hExp (.snceNeg) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+  simp only [isApplicable, asSince?] at hSnceNeg
+  have hg' : (guard == Formula.top) = false := by simp [hguard]
+  simp only [hg', ite_false, Option.isSome_some, ite_true] at hSnceNeg
+  intro t' ht'
+  by_contra habs
+  push_neg at habs
+  obtain ⟨hne, hng⟩ := habs
+  have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)
+  have hNotContainsG : Branch.contains b ⟨.neg, guard, ⟨w, t'⟩⟩ = false := by
+    simp only [Bool.eq_false_iff]; exact fun h => hng ((contains_iff_mem b _).mp h)
+  have h_in_filter : t' ∈ (timeOrd.pastOf t).filter fun t'' =>
+    !(b.contains (SignedFormula.neg event { world := w, time := t'' }) ||
+      b.contains (SignedFormula.neg guard { world := w, time := t'' })) := by
+    simp only [List.mem_filter]
+    exact ⟨ht', by simp [SignedFormula.neg, hNotContainsE, hNotContainsG]⟩
+  -- BLOCKED: Same issue as sat_untl_neg. See comment there.
   sorry
 
 /-!
