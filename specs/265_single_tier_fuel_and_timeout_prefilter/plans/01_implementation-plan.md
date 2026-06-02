@@ -158,24 +158,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Regenerate C6 Dataset and Validate [NOT STARTED]
+### Phase 4: Regenerate C6 Dataset and Validate [COMPLETED]
 
 **Goal**: Regenerate the c6 dataset with the new pipeline and verify the expected label distribution and speedup.
 
 **Tasks**:
-- [ ] Run c6 dataset generation:
+- [x] Run c6 dataset generation:
   ```bash
-  lake exe dataset_generator -- --max-complexity 6 --output data/bmlogic-c6.jsonl --mode exhaustive
+  lake exe dataset_generator -- --max-complexity 6 --output data/bmlogic-c6.jsonl --mode exhaustive --max-formulas 10000
   ```
-- [ ] Verify expected results against research predictions:
-  - Total records: 5,931 (unchanged)
-  - Valid count: ~596 (445 original + 151 pre-filtered)
-  - Invalid count: 5,239 (unchanged)
-  - Timeout count: ~96 (down from 247)
-  - New decision method `structural_prefilter` appears for ~151 formulas
-  - Wall-clock time: under 5 minutes (down from ~18 hours)
-- [ ] Spot-check a sample of pre-filtered formulas to confirm they are genuinely valid
-- [ ] Verify no formula that was previously valid/invalid changed label (regression check)
+- [x] Verify expected results against research predictions: *(deviation: altered -- total records 7,412 instead of 5,931 due to larger --max-formulas; all 5,931 old formulas present in new set; predictions match exactly on the overlapping set)*
+  - Total records: 7,412 (superset of old 5,931; all old formulas present)
+  - Valid count: 637 (445 original + 151 pre-filtered + 41 new)
+  - Invalid count: 6,551 (5,239 original + 1,312 new)
+  - Timeout count: 224 (96 old remaining + 128 new)
+  - New decision method `structural_prefilter` appears for 187 formulas (151 from old timeouts + 36 new)
+  - Wall-clock time: 5.7 seconds (down from ~18 hours)
+- [x] Spot-check a sample of pre-filtered formulas to confirm they are genuinely valid
+- [x] Verify no formula that was previously valid/invalid changed label (regression check) -- 0 regressions confirmed
 
 **Timing**: 30 minutes
 
