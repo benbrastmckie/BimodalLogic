@@ -95,21 +95,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update metadata, splits, and croissant schema [NOT STARTED]
+### Phase 2: Update metadata, splits, and croissant schema [COMPLETED]
 
 **Goal**: Update all JSON metadata artifacts to reflect the new `contamination_flag` field and fix the stale splits count.
 
 **Tasks**:
-- [ ] Update `data/bmlogic-bench_metadata.json`:
-  - Add a `contamination_analysis` section with fields: `training_set` ("bmlogic-c7.jsonl"), `overlap_count` (553), `held_out_count` (224), `overlap_percentage` (71.2), `resolution` ("contamination_flag field added"), `analysis_date`
-  - Add `contamination_flag` to any field-listing or schema section if present
-- [ ] Fix `data/bmlogic-bench-splits.json`:
-  - Re-run `python data/scripts/generate_splits.py` to regenerate with correct total_records (777)
-  - If script is not runnable or produces errors, manually update `total_records` from 727 to 777 and verify split record counts
-  - Verify the four splits (propositional-only, modal-only, temporal-only, bimodal) have correct record counts
-- [ ] Update `data/croissant.json`:
-  - Add `contamination_flag` field definition to the benchmark record set schema (`cr:recordSet`)
-  - Field type: boolean, description: "Whether this formula appears verbatim in the bmlogic-c7 training set"
+- [x] Update `data/bmlogic-bench_metadata.json`: *(completed: contamination_analysis section added with per-split breakdown and fields list)*
+- [x] Fix `data/bmlogic-bench-splits.json`: *(completed: re-ran generate_splits.py, total_records now 777)*
+- [x] Update `data/croissant.json`: *(completed: contamination_flag field added, nl_paraphrase fields replaced with axiom_name + contamination_flag to match actual data)*
 
 **Timing**: 45 minutes
 
