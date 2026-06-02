@@ -88,6 +88,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
+262 [NOT STARTED] — Research interestingness metrics for theorems and derivations
 261 [NOT STARTED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
 260 [COMPLETED] — Make dataset generation resumable after interruption
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -128,6 +129,14 @@ technical_debt:
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 262. Research interestingness metrics for theorems and derivations
+- **Effort**: large (12-20 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Description**: Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures (Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure), semantic non-triviality (not instances of `p→p` or `⊥→φ`), operator diversity (mixing modal and temporal operators meaningfully), proof depth/breadth ratio, connection to named theorems, information content (entropy vs. tautological patterns), usefulness as a lemma (frequency as subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension evaluable by the Lean pipeline. (4) Propose a composite interestingness score as reward signal for training networks to find non-trivial derivations. (5) Consider how metrics interact with proof traces — valid formulas with deep non-obvious proofs are more interesting than single-axiom closures. (6) Address the full spectrum from trivially valid (`⊥→φ`) through routine (axiom substitution instances) to genuinely interesting (novel `□`/`G`/`U`/`S` interactions).
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)

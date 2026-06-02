@@ -1347,9 +1347,23 @@
       "last_updated": "2026-06-02T00:00:00Z",
       "next_artifact_number": 1,
       "artifacts": []
+    },
+    {
+      "project_number": 262,
+      "project_name": "interestingness_metrics_for_theorems",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures for theorems (e.g., Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure, not just modus ponens on axioms), semantic non-triviality (not instances of p→p or ⊥→φ), operator diversity (mixing modal and temporal operators in meaningful ways), proof depth/breadth ratio, connection to known named theorems, information content (entropy of the formula vs. tautological patterns), usefulness as a lemma (how often the formula appears as a subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension that can be evaluated by the Lean pipeline on every generated formula. (4) Propose a composite interestingness score suitable as a reward signal or filtering criterion for training networks to find non-trivial derivations. (5) Consider how these metrics interact with the proof trace — a valid formula with a deep non-obvious proof is more interesting than one closed by a single axiom application. (6) Address the spectrum from trivially valid (⊥→φ) through routine (substitution instances of axioms) to genuinely interesting (novel interactions between □, G, U, S operators).",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-02T00:30:00Z",
+      "last_updated": "2026-06-02T00:30:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 262,
+  "next_project_number": 263,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
