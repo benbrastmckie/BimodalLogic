@@ -39,7 +39,7 @@ technical_debt:
 
 ### Completeness
 
-155 [RESEARCHING] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
+155 [RESEARCHED] — Fix no_gaps_discrete import cycle for sorry-free discrete completeness
     └─ 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
@@ -72,7 +72,7 @@ technical_debt:
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [RESEARCHING] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
+  └─ 155 [RESEARCHED] — (completeness: Fix no_gaps_discrete import cycle for sorry-free) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
 
 ### Code Quality
@@ -121,7 +121,7 @@ technical_debt:
 
 ### 262. Research interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -129,7 +129,7 @@ technical_debt:
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -251,7 +251,7 @@ technical_debt:
 
 ### 229. Resolve train/benchmark formula contamination
 - **Effort**: medium (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -518,7 +518,9 @@ technical_debt:
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 199
-- **Research**: [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
+- **Research**:
+  - [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
+  - [155_reynolds_pipeline_activation/reports/55_team-research.md]
 - **Plan**: [155_reynolds_pipeline_activation/plans/51_implementation-plan.md]
 
 **Description**: Close the `no_gaps_discrete` import cycle in GoodStructures.lean (GoodStructures.lean:855) by delegating to the sorry-free `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewire `completeness_discrete` to use the WeakCanonical path instead of the BX chronicle fallback. The import cycle (GoodStructuresModelSurgery.lean imports GoodStructures.lean) prevents direct delegation; the fix requires re-routing `no_gaps_discrete` to call `no_gaps_discrete_model_surgery` without creating a circular import, likely by extracting the model-surgery logic into a shared file or reorganizing the import chain. Steps: (1) Identify the exact import cycle causing the sorry in `no_gaps_discrete`. (2) Resolve the import cycle (extract shared logic, reorganize files, or use forward declaration). (3) Delegate `no_gaps_discrete` to `no_gaps_discrete_model_surgery`. (4) Rewire `completeness_discrete` to use the WeakCanonical path via `no_gaps_discrete`. (5) Verify `#print axioms completeness_discrete` shows no `sorryAx`. Definition of done: `no_gaps_discrete` delegates to `no_gaps_discrete_model_surgery` (no sorry), `completeness_discrete` uses WeakCanonical path (no sorry), `lake build` passes.
