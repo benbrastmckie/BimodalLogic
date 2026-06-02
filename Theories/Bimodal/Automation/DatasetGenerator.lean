@@ -384,7 +384,7 @@ The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormula (φ : Formula) : IO LabeledFormula := do
   let startTime ← IO.monoMsNow
-  let result := decideAuto φ
+  let (result, fuelTier) := decideAutoAdaptive φ
   let endTime ← IO.monoMsNow
   let elapsed := endTime - startTime
   let metrics := computeMetrics φ elapsed
@@ -393,13 +393,12 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
   | .valid proof =>
     let trace := extractProofTrace proof
     let rp := walkDerivationTree proof
-    -- Determine decision method: if proof uses only axioms, it was fast path;
-    -- otherwise it came from proof search within decideAuto
+    -- Determine decision method: combine fast-path detection with fuel tier info
     let method := if rp.mpCount == 0 && rp.necessitationCount == 0 &&
                      rp.temporalNecessitationCount == 0 && rp.temporalDualityCount == 0 &&
                      rp.weakeningCount == 0 && rp.assumptionCount == 0
                   then "fast_path_axiom"
-                  else "proof_search"
+                  else fuelTier
     let reconMethod := inferReconstructionMethod rp trace.height
     return {
       formula := φ
@@ -416,7 +415,7 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       proofReconstructionMethod := some reconMethod
     }
   | .invalid cm =>
-    return mkInvalidLabel φ cm metrics patternKey
+    return mkInvalidLabel φ cm metrics patternKey fuelTier
   | .timeout =>
     return {
       formula := φ
@@ -426,7 +425,7 @@ def labelFormula (φ : Formula) : IO LabeledFormula := do
       metrics := metrics
       patternKey := patternKey
       ruleProfile := none
-      decisionMethod := "timeout"
+      decisionMethod := fuelTier
       countermodelConsistent := none
       enrichedCountermodel := none
       semanticCountermodelSummary := none

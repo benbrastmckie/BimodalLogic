@@ -167,6 +167,36 @@ def decideAuto (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
   let depth := 5 + φ.complexity / 2
   decide φ depth fuel fc
 
+/--
+Adaptive fuel strategy: try escalating fuel levels [500, 2000, 10000] before
+giving up. Returns the result and the fuel tier that succeeded (for logging).
+
+This prevents individual formulas from consuming excessive resources while
+still giving most formulas enough fuel. The `soundFuel` bound can be very
+large for complex formulas (up to 100,000), but with the persistent rule
+loop fix (task 261), most formulas decide quickly at low fuel levels.
+
+Returns `(result, fuelTierUsed)` where fuelTierUsed is:
+- `"adaptive_500"`, `"adaptive_2000"`, `"adaptive_10000"` for decided formulas
+- `"adaptive_timeout"` if all tiers exhausted
+-/
+def decideAutoAdaptive (φ : Formula) (fc : FrameClass := .Base)
+    : DecisionResult φ × String :=
+  let depth := 5 + φ.complexity / 2
+  let tiers : List (Nat × String) := [
+    (500, "adaptive_500"),
+    (2000, "adaptive_2000"),
+    (10000, "adaptive_10000")
+  ]
+  go tiers depth fc
+where
+  go : List (Nat × String) → Nat → FrameClass → DecisionResult φ × String
+  | [], _, _ => (.timeout, "adaptive_timeout")
+  | (fuel, tierName) :: rest, depth, fc =>
+    match decide φ depth fuel fc with
+    | .timeout => go rest depth fc
+    | result => (result, tierName)
+
 /-!
 ## Batch Decision
 -/

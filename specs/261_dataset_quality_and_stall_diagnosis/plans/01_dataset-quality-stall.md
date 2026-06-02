@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Adaptive Fuel Caps [NOT STARTED]
+### Phase 2: Add Adaptive Fuel Caps [COMPLETED]
 
 **Goal**: Replace the single large `soundFuel` call with an escalating adaptive fuel strategy so no individual formula consumes more than a few seconds of wall-clock time, while still giving most formulas enough fuel to decide.
 
