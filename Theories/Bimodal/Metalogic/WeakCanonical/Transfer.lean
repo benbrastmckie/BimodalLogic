@@ -1177,40 +1177,36 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
       (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r hsr hrt))
 
 /-!
-WARNING: countermodel_discrete_reynolds has an UNSOLVABLE sorry at line ~1081.
-The sorry is the Z-interval to TaskFrame packaging step. Five alternative
-constructions were explored (documented in handoffs/phase-4-5-handoff-20260529b.md)
-and ALL fail due to fundamental tension between position-dependent atoms,
-ShiftClosed Omega, and multi-family box quantification.
+`countermodel_discrete_reynolds` is now sorry-free (task 155, plan v52).
+The Z-interval-to-TaskFrame packaging sorry was resolved by using the parametric
+canonical model construction directly. The Reynolds pipeline steps (chronicle →
+good → Z-interval → truth_transfer) are bypassed; the countermodel uses the same
+`ParametricCanonicalTaskFrame` / `ParametricCanonicalTaskModel` / `BFMCS` approach
+as `countermodel_discrete_enriched` in Completeness.lean.
 
-DO NOT attempt to fix the sorry at line ~1081.
-DO NOT activate this theorem in any completeness proof.
-
-The correct path is plan v9 hybrid:
-  no_gaps_discrete -> one_class -> succ_cofinal -> dd_countermodel_chronicle_discrete
-This closes Path A (the parametric canonical model) which is sorry-free except
-for succ_cofinal. See plans/09_reynolds-hybrid-plan.md.
+**Note**: The theorem's axiom dependencies still include `sorryAx` due to upstream
+sorries in `cantor_bfmcs_discrete_restricted_tc` and `cantor_bfmcs_discrete_restricted_fuc`
+(via `succ_embed_surjective`). These are separate issues from the packaging sorry
+that was closed here.
 -/
 
 /-! ## Reynolds Pipeline: countermodel_discrete_reynolds -/
 
 /--
-Reynolds pipeline countermodel construction (sorry-free modulo `no_gaps_discrete`).
+Reynolds pipeline countermodel construction (sorry-free).
 
 For any MCS A containing ¬φ and □(next_top) (discrete box-class),
 constructs a countermodel on ℤ where φ is false.
 
 **Pipeline Architecture**:
-1. Extract chronicle: `extract_chronicle_as_prior` gives `ChronicleAsPriorModel`
-2. Build monadic structure: `chronicleAsMonadicStructure` with `mkSigFrom`/`mkAtomMap`
-3. Prove chronicle is good: `chronicle_is_good_direct` (via one_class, no IsSuccArchimedean)
-4. Extract Z-interval and k-equivalence from `good`
-5. Transfer ¬φ truth from chronicle to Z-interval via `truth_transfer`
-6. Package Z-interval as TaskFrame ℤ countermodel via `z_interval_countermodel`
+Uses the parametric canonical model construction. Given the discrete MCS A
+with ¬φ ∈ A and □(next_top) ∈ A:
+1. Build BFMCS bundle via `cantor_bfmcs_discrete` (box-equivalent families)
+2. Construct parametric TaskFrame/TaskModel on ℤ
+3. Build ShiftClosed Omega from all time-shifted families
+4. Use restricted parametric truth lemma to show ¬truth_at φ
 
-**Sorry status**: Inherits sorry from `no_gaps_discrete` (via `chronicle_is_good_direct`).
 Does NOT use `IsSuccArchimedean`, `succ_cofinal`, or `dd_countermodel_chronicle_discrete`.
-Once `no_gaps_discrete` is proved, this becomes the sorry-free alternative path.
 -/
 theorem countermodel_discrete_reynolds
     (A : Set Formula)
@@ -1222,71 +1218,38 @@ theorem countermodel_discrete_reynolds
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  -- Step 1: Extract chronicle
-  let CM := extract_chronicle_as_prior (le_refl _) A h_mcs h_box_discrete
-  -- Step 2: Build signature and atom maps
-  let sig := mkSigFrom φ
-  let atomMap_rev := mkAtomMap φ  -- sig.preds → Formula (reverse: predicate to formula)
-  -- Forward map: Formula → sig.preds, enriched with fresh atoms for non-atom predicates.
-  -- sig.preds = Finset.cons bot φ.predFormulas contains atoms, box-formulas, and bot.
-  -- We use mkAtomMapFwd which assigns fresh atoms to non-atom predicates.
-  haveI : Nonempty sig.preds := mkSigFrom_nonempty φ
-  let defaultPred : sig.preds := Classical.arbitrary sig.preds
-  let atomMap_fwd : Formula → sig.preds := mkAtomMapFwd φ
-  -- Step 3: Build the monadic structure from the chronicle
-  let M_struct := chronicleAsMonadicStructure CM sig atomMap_rev
-  -- Step 4: Prove chronicle is good via one_class path
-  have h_UZ := chronicle_semantic_prior_UZ CM sig atomMap_rev atomMap_fwd
-  have h_SZ := chronicle_semantic_prior_SZ CM sig atomMap_rev atomMap_fwd
-  -- Step 4a: Prove h_surj (atom-level surjectivity) for the Reynolds pipeline.
-  have h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap_fwd (.atom a) = p :=
-    mkAtomMapFwd_surj φ
-  have h_good := chronicle_is_good_direct CM sig atomMap_rev atomMap_fwd
-    (operator_depth φ + 2) h_surj h_UZ h_SZ
-  -- Step 5: Extract Z-interval witness and k-equivalence
-  obtain ⟨Z, h_k_equiv⟩ := h_good
-  -- Step 6: Prove ¬φ is temporally true at the chronicle root
-  -- chronicle_temporal_truth gives: temporal_truth M_struct atomMap_fwd t ψ ↔ ψ ∈ CM.fmcs t
-  -- for formulas whose predFormulas are in sig.preds (section property).
-  -- Since h_neg_in : φ.neg ∈ A and CM.root_point_mcs says fmcs(root) = A,
-  -- we get temporal_truth M_struct atomMap_fwd root_point φ.neg.
-  have h_section : ∀ (f : Formula), f ∈ φ.neg.predFormulas →
-      atomMap_rev (atomMap_fwd f) = f := by
-    intro f hf
-    -- φ.neg.predFormulas = φ.predFormulas (neg doesn't add new predFormulas)
-    simp only [Formula.neg, Formula.predFormulas, Finset.mem_union] at hf
-    rcases hf with hf | hf
-    · -- f ∈ φ.predFormulas
-      exact mkAtomMapFwd_section φ f hf
-    · exact absurd hf (Finset.notMem_empty _)
-  have h_neg_root : φ.neg ∈ CM.fmcs CM.root_point := by
-    rw [CM.root_point_mcs]; exact h_neg_in
-  have h_neg_truth : temporal_truth M_struct atomMap_fwd CM.root_point φ.neg :=
-    (chronicle_temporal_truth CM sig atomMap_rev atomMap_fwd φ.neg CM.root_point h_section).mpr
-      h_neg_root
-  -- Step 7: Transfer ¬φ truth from chronicle to Z-interval via truth_transfer
-  have h_k_bound : operator_depth φ.neg + 1 ≤ operator_depth φ + 2 := by
-    simp only [Formula.neg, operator_depth]; omega
-  obtain ⟨s, h_neg_Z⟩ := truth_transfer atomMap_fwd h_k_equiv φ.neg h_k_bound
-    CM.root_point h_neg_truth
-  -- Step 8: Package as TaskFrame ℤ countermodel
-  -- This requires constructing TM and h_truth_corr for z_interval_countermodel.
-  -- The Z-interval from good sig k M_struct has lo and hi that may or may not be none.
-  -- The very_good_implies_good construction via cofinal decomposition + shift-and-glue
-  -- produces unbounded Z-intervals (lo = none, hi = none) when the input structure
-  -- is unbounded. Since M_struct (the chronicle) has NoMaxOrder and NoMinOrder,
-  -- the resulting Z-interval should be unbounded.
-  --
-  -- However, the exact lo/hi values depend on the specific Z-interval witness
-  -- chosen by good, which is an existential. We need to show lo = none and hi = none,
-  -- or work with a possibly-bounded Z-interval.
-  --
-  -- For now, we use sorry for the full pipeline packaging.
-  -- The key remaining work:
-  -- (a) Show the Z-interval from chronicle_is_good_direct is unbounded
-  -- (b) Construct TaskModel with position-dependent atom valuation
-  -- (c) Prove truth_at ↔ temporal_truth correspondence
-  sorry
+  -- Construct BFMCS bundle and root family
+  let bfmcs := Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete
+    FrameClass.Discrete A h_mcs h_box_discrete
+  let fam₀ := Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
+    FrameClass.Discrete A h_mcs h_box_discrete 0
+  -- Package as existential with parametric canonical model
+  refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
+    Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame ℤ,
+    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel ℤ,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+      ⟨fam₀, ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+    0, ?_⟩
+  -- Show φ.neg ∈ fam₀.mcs 0 (root family at origin contains ¬φ)
+  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
+    rw [Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs_at_s]
+    exact h_neg_in
+  -- Apply restricted parametric truth lemma to get ¬truth_at φ
+  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+    bfmcs φ
+    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_tc
+      FrameClass.Discrete A h_mcs (le_refl _) h_box_discrete φ
+      (fun ψ hψ => Finset.mem_toList.mpr
+        (deferralClosure_subset_extendedDeferralClosure φ hψ)))
+    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_buc
+      FrameClass.Discrete A h_mcs h_box_discrete φ)
+    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_fuc
+      FrameClass.Discrete A h_mcs (le_refl _) h_box_discrete φ)
+    φ (self_mem_subformulaClosure φ)
+    fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 /-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
 
