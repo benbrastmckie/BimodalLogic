@@ -102,19 +102,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Noncomputable Distribution and Contraposition (Categories A, C1-C2) [NOT STARTED]
+### Phase 2: Noncomputable Distribution and Contraposition (Categories A, C1-C2) [COMPLETED]
 
 **Goal**: Add 6 noncomputable theorems that build on `G_distribution`/`H_distribution` to provide high-compression proof combinators for temporal reasoning.
 
 **Tasks**:
-- [ ] Add `G_and_intro` : `G phi -> G psi -> G(phi and psi)` -- temporal necessitate `pairing`, apply G_distribution twice
-- [ ] Add `H_and_intro` : `H phi -> H psi -> H(phi and psi)` -- mirror via duality or direct H_distribution
-- [ ] Add `G_imp_trans` : `G(phi -> psi) -> G(psi -> chi) -> G(phi -> chi)` -- temporal necessitate `b_combinator`, apply G_distribution twice
-- [ ] Add `H_imp_trans` : `H(phi -> psi) -> H(psi -> chi) -> H(phi -> chi)` -- mirror via duality
-- [ ] Add `G_contrapose` : `G(phi -> psi) -> G(neg psi -> neg phi)` -- temporal necessitate `contrapose_imp`, apply G_distribution
-- [ ] Add `H_contrapose` : `H(phi -> psi) -> H(neg psi -> neg phi)` -- mirror via duality
-- [ ] Verify all 6 definitions compile (noncomputable is expected)
-- [ ] Run `lake build Bimodal.Theorems.TemporalDerived` to confirm
+- [x] Add `G_and_intro` : `G phi -> G psi -> G(phi and psi)` -- temporal necessitate `pairing`, apply G_distribution twice
+- [x] Add `H_and_intro` : `H phi -> H psi -> H(phi and psi)` -- mirror via duality or direct H_distribution
+- [x] Add `G_imp_trans` : `G(phi -> psi) -> G(psi -> chi) -> G(phi -> chi)` -- temporal necessitate `b_combinator`, apply G_distribution twice
+- [x] Add `H_imp_trans` : `H(phi -> psi) -> H(psi -> chi) -> H(phi -> chi)` -- mirror via duality
+- [x] Add `G_contrapose` : `G(phi -> psi) -> G(neg psi -> neg phi)` -- temporal necessitate `contrapose_imp`, apply G_distribution
+- [x] Add `H_contrapose` : `H(phi -> psi) -> H(neg psi -> neg phi)` -- mirror via duality
+- [x] Verify all 6 definitions compile (noncomputable is expected)
+- [x] Run `lake build Bimodal.Theorems.TemporalDerived` to confirm
 
 **Timing**: 2 hours
 

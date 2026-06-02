@@ -476,6 +476,110 @@ def P_neg_H (φ : Formula) :
 end TemporalDuality
 
 /-!
+## Category A: G/H Distribution Variants (4 noncomputable theorems)
+
+These distribute G/H over connectives. Each replaces multiple primitive steps.
+All depend on `G_distribution` / `H_distribution` and are therefore noncomputable.
+-/
+
+section DistributionVariants
+
+/--
+`⊢ G(φ) → G(ψ) → G(φ ∧ ψ)`: G distributes into conjunction introduction.
+
+From `pairing φ ψ : ⊢ φ → ψ → φ ∧ ψ`, temporal necessitate to get
+`G(φ → ψ → φ ∧ ψ)`, then apply G_distribution twice:
+- First: `G φ → G(ψ → φ ∧ ψ)`
+- Second: `G(ψ → φ ∧ ψ) → (G ψ → G(φ ∧ ψ))`
+-/
+noncomputable def G_and_intro (φ ψ : Formula) :
+    ⊢ φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) :=
+  let g_pair := DerivationTree.temporal_necessitation _ (pairing φ ψ)
+  let step1 := mp g_pair (G_distribution φ (ψ.imp (φ.and ψ)))
+  imp_trans step1 (G_distribution ψ (φ.and ψ))
+
+/--
+`⊢ H(φ) → H(ψ) → H(φ ∧ ψ)`: H distributes into conjunction introduction.
+
+Mirror of `G_and_intro` using `H_distribution` and `past_necessitation`.
+-/
+noncomputable def H_and_intro (φ ψ : Formula) :
+    ⊢ φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past) :=
+  let h_pair := Bimodal.Theorems.past_necessitation _ (pairing φ ψ)
+  let step1 := mp h_pair (H_distribution φ (ψ.imp (φ.and ψ)))
+  imp_trans step1 (H_distribution ψ (φ.and ψ))
+
+/--
+`⊢ G(φ → ψ) → G(ψ → χ) → G(φ → χ)`: G distributes over implication transitivity.
+
+From `b_combinator : ⊢ (ψ → χ) → (φ → ψ) → (φ → χ)`, temporal necessitate to get
+`G((ψ → χ) → (φ → ψ) → (φ → χ))`, then apply G_distribution twice:
+- First: `G(ψ → χ) → G((φ → ψ) → (φ → χ))`
+- Second: `G((φ → ψ) → (φ → χ)) → (G(φ → ψ) → G(φ → χ))`
+Then flip the argument order with `theorem_flip`-style composition.
+-/
+noncomputable def G_imp_trans (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp ((ψ.imp χ).all_future.imp (φ.imp χ).all_future) :=
+  let g_b := DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
+  let step1 := mp g_b (G_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
+  let step2 := imp_trans step1 (G_distribution (φ.imp ψ) (φ.imp χ))
+  -- step2 : G(ψ → χ) → G(φ → ψ) → G(φ → χ)
+  -- Need: G(φ → ψ) → G(ψ → χ) → G(φ → χ)
+  mp step2 (@theorem_flip .Base
+    (A := (ψ.imp χ).all_future)
+    (B := (φ.imp ψ).all_future)
+    (C := (φ.imp χ).all_future))
+
+/--
+`⊢ H(φ → ψ) → H(ψ → χ) → H(φ → χ)`: H distributes over implication transitivity.
+
+Mirror of `G_imp_trans` using `H_distribution` and `past_necessitation`.
+-/
+noncomputable def H_imp_trans (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp ((ψ.imp χ).all_past.imp (φ.imp χ).all_past) :=
+  let h_b := Bimodal.Theorems.past_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
+  let step1 := mp h_b (H_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
+  let step2 := imp_trans step1 (H_distribution (φ.imp ψ) (φ.imp χ))
+  mp step2 (@theorem_flip .Base
+    (A := (ψ.imp χ).all_past)
+    (B := (φ.imp ψ).all_past)
+    (C := (φ.imp χ).all_past))
+
+end DistributionVariants
+
+/-!
+## Category C1-C2: Temporal Contraposition (2 noncomputable theorems)
+
+Contraposition lifted through temporal operators.
+-/
+
+section TemporalContraposition
+
+/--
+`⊢ G(φ → ψ) → G(¬ψ → ¬φ)`: Contraposition under G.
+
+From `contrapose_imp φ ψ : ⊢ (φ → ψ) → (¬ψ → ¬φ)`, temporal necessitate to get
+`G((φ → ψ) → (¬ψ → ¬φ))`, then apply G_distribution.
+-/
+noncomputable def G_contrapose (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (ψ.neg.imp φ.neg).all_future :=
+  let g_cp := DerivationTree.temporal_necessitation _ (contrapose_imp φ ψ)
+  mp g_cp (G_distribution (φ.imp ψ) (ψ.neg.imp φ.neg))
+
+/--
+`⊢ H(φ → ψ) → H(¬ψ → ¬φ)`: Contraposition under H.
+
+From `contrapose_imp φ ψ : ⊢ (φ → ψ) → (¬ψ → ¬φ)`, past necessitate to get
+`H((φ → ψ) → (¬ψ → ¬φ))`, then apply H_distribution.
+-/
+noncomputable def H_contrapose (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp (ψ.neg.imp φ.neg).all_past :=
+  let h_cp := Bimodal.Theorems.past_necessitation _ (contrapose_imp φ ψ)
+  mp h_cp (H_distribution (φ.imp ψ) (ψ.neg.imp φ.neg))
+
+end TemporalContraposition
+
+/-!
 ## A3a/A3b: Valid Under Open Guard Semantics
 
 Burgess 1982 axioms A3a and A3b (Until-Since enrichment) ARE semantically valid under
