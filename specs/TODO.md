@@ -89,8 +89,7 @@ technical_debt:
 ### Dataset Enhancement
 
 261 [NOT STARTED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
-260 [NOT STARTED] — Make dataset generation resumable after interruption
-  (depends on 253)
+260 [COMPLETED] — Make dataset generation resumable after interruption
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -141,7 +140,7 @@ technical_debt:
 
 ### 260. Make dataset generation resumable after interruption
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
