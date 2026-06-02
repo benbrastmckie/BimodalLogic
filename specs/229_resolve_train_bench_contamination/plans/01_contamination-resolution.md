@@ -143,22 +143,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Sync HF dataset and validate [NOT STARTED]
+### Phase 4: Sync HF dataset and validate [COMPLETED]
 
 **Goal**: Copy the updated benchmark to the HF dataset directory, update the HF README with contamination documentation, and run validation to ensure consistency.
 
 **Tasks**:
-- [ ] Copy updated `data/bmlogic-bench.jsonl` to `data/hf-dataset/data/bmlogic-bench.jsonl`
-- [ ] Update `data/hf-dataset/README.md`:
-  - Add contamination analysis section (mirroring or referencing dataset-card.md content)
-  - Ensure field documentation includes `contamination_flag`
-- [ ] Run validation if available:
-  - `python data/hf-dataset/validate.py` to check dataset consistency
-  - If validation script does not cover the new field, verify manually that all HF benchmark records have `contamination_flag`
-- [ ] Final verification pass:
-  - Confirm `data/hf-dataset/data/bmlogic-bench.jsonl` has 777 records with `contamination_flag`
-  - Confirm all JSON files parse without errors
-  - Run a quick diff between `data/bmlogic-bench.jsonl` and `data/hf-dataset/data/bmlogic-bench.jsonl` to confirm they are identical
+- [x] Copy updated `data/bmlogic-bench.jsonl` to `data/hf-dataset/data/bmlogic-bench.jsonl` *(completed: HF data files are symlinks, automatically in sync)*
+- [x] Update `data/hf-dataset/README.md`: *(completed: Contamination Analysis section added, field table updated to v1.2 with contamination_flag, stale counts fixed)*
+- [x] Run validation: *(completed: python data/hf-dataset/validate.py PASS — 777 records, all required fields non-null, contamination_flag validated)*
+- [x] Final verification pass: *(completed: 777 records, 553/224 contamination split confirmed, symlink=identical to source)*
 
 **Timing**: 30 minutes
 
