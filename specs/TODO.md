@@ -115,29 +115,35 @@ technical_debt:
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-248 [NOT STARTED] — fold_direction_formula_normalization
-249 [NOT STARTED] — expand_temporal_derived_theorems
+248 [RESEARCHED] — fold_direction_formula_normalization
+  - **Report**: [specs/248_fold_direction_formula_normalization/reports/01_fold-direction-normalization.md]
+249 [RESEARCHED] — expand_temporal_derived_theorems
+  - **Report**: [specs/249_expand_temporal_derived_theorems/reports/01_temporal-derived-theorems.md]
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
 
 ### 262. Research interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
-- **Research**: [262_interestingness_metrics_for_theorems/reports/01_interestingness-metrics.md]
+- **Research**:
+  - [262_interestingness_metrics_for_theorems/reports/01_interestingness-metrics.md]
+  - [262_interestingness_metrics_for_theorems/reports/02_deep-interestingness-survey.md]
 - **Description**: Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures (Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure), semantic non-triviality (not instances of `p→p` or `⊥→φ`), operator diversity (mixing modal and temporal operators meaningfully), proof depth/breadth ratio, connection to named theorems, information content (entropy vs. tautological patterns), usefulness as a lemma (frequency as subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension evaluable by the Lean pipeline. (4) Propose a composite interestingness score as reward signal for training networks to find non-trivial derivations. (5) Consider how metrics interact with proof traces — valid formulas with deep non-obvious proofs are more interesting than single-axiom closures. (6) Address the full spectrum from trivially valid (`⊥→φ`) through routine (axiom substitution instances) to genuinely interesting (novel `□`/`G`/`U`/`S` interactions).
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 253
-- **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
+- **Research**:
+  - [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
+  - [261_dataset_quality_and_stall_diagnosis/reports/02_tableau-termination-literature.md]
 - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
 - **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
 
