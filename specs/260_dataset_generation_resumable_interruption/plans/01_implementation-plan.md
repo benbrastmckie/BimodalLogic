@@ -126,20 +126,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Shell-Side Resume Detection and User Prompting [NOT STARTED]
+### Phase 3: Shell-Side Resume Detection and User Prompting [COMPLETED]
 
 **Goal**: Modify `run_dataset_generation.sh` to detect partial output files, prompt the user to resume or restart, and pass the appropriate flags to the Lean executable.
 
 **Tasks**:
-- [ ] Create a `detect_resume()` function that checks if the output JSONL file exists and is non-empty
-- [ ] When partial output is detected, count completed lines with `wc -l`, display the count, and prompt the user: `"Found partial output: $file ($N lines). Resume from line $N? [Y/n/restart]"`
-- [ ] Validate the last line of the partial JSONL file with `tail -1 | python3 -m json.tool`; if invalid, truncate the last line and decrement the resume count
-- [ ] Set `RESUME_FROM` variable based on user response (0 for fresh start, line count for resume)
-- [ ] Pass `--resume-from $RESUME_FROM` to the `lake exe dataset_generator` invocation in each `run_*` function
-- [ ] Also check for and pass `--use-checkpoint` when the `.checkpoint` file exists alongside the JSONL
-- [ ] On successful completion, clean up the `.checkpoint` file: `rm -f "${output_file%.jsonl}.checkpoint"`
-- [ ] Update the cleanup trap to also mention checkpoint files in the interruption message
-- [ ] Add `--resume` and `--no-resume` flags to the shell script itself for non-interactive use (CI/scripted runs)
+- [x] Create a `detect_resume()` function that checks if the output JSONL file exists and is non-empty
+- [x] When partial output is detected, count completed lines with `wc -l`, display the count, and prompt the user: `"Found partial output: $file ($N lines). Resume from line $N? [Y/n/restart]"`
+- [x] Validate the last line of the partial JSONL file with `tail -1 | python3 -m json.tool`; if invalid, truncate the last line and decrement the resume count *(deviation: altered -- implemented as separate `validate_last_line` function with dry-run guards)*
+- [x] Set `RESUME_FROM` variable based on user response (0 for fresh start, line count for resume)
+- [x] Pass `--resume-from $RESUME_FROM` to the `lake exe dataset_generator` invocation in each `run_*` function *(deviation: altered -- used RESUME_FLAGS variable containing all resume-related flags)*
+- [x] Also check for and pass `--use-checkpoint` when the `.checkpoint` file exists alongside the JSONL
+- [x] On successful completion, clean up the `.checkpoint` file: `rm -f "${output_file%.jsonl}.checkpoint"` *(deviation: altered -- implemented as `cleanup_checkpoint` function called after validation)*
+- [x] Update the cleanup trap to also mention checkpoint files in the interruption message
+- [x] Add `--resume` and `--no-resume` flags to the shell script itself for non-interactive use (CI/scripted runs)
 
 **Timing**: 1 hour
 
