@@ -1,10 +1,33 @@
 {
-  "status": "planned",
-  "summary": "Revised plan v60: fix 3 root sorries in StaviCompleteness.lean (4-var EF-game existential transfer) and rewire limitDomSubtype_isSuccArchimedean via model surgery (6 phases, 10-16 hours)",
-  "blockers": [],
-  "continuation_context": null,
-  "next_action_hint": "implement",
+  "status": "blocked",
+  "summary": "Phase 2 blocked on interval-splitting problem in nf_2var_existential_transfer -- the 4-variable existential transfer at StaviCompleteness.lean lines 2347/2429 requires either building the EF game bridge (~300-500 lines) or proving an interval-splitting zone match (~200-300 lines), neither of which exists in the codebase.",
   "phases_completed": 1,
   "phases_total": 6,
-  "artifacts": [{"type": "plan", "path": "specs/155_reynolds_pipeline_activation/plans/59_implementation-plan.md"}]
+  "blockers": [
+    {
+      "phase": 2,
+      "description": "The sorry at StaviCompleteness.lean:2347 requires a 4-variable existential transfer for a 3-point configuration (u,x,t)/(u',x',t'). Zone matching via the (x,t) bridge does not preserve sub-interval type structure (the 'interval-splitting problem'). This is the core of GHR93 Proposition 7's game composition argument, which is implemented in Composition.lean but has no bridge connecting NF hypotheses to the game world.",
+      "approaches": [
+        "A: Build EF game bridge (~300-500 lines) connecting NF hypotheses to existing game infrastructure",
+        "B: Prove interval-splitting zone match directly (~200-300 lines)",
+        "C: Restructure proof to avoid nf_2var_existential_transfer (e.g., temporal formula decomposition)"
+      ]
+    }
+  ],
+  "continuation_context": {
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260602T190214Z.md"
+  },
+  "artifacts": [
+    {
+      "path": "specs/155_reynolds_pipeline_activation/summaries/60_implementation-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting Phase 2 blocker analysis and recommended approaches"
+    },
+    {
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-2-handoff-20260602T190214Z.md",
+      "type": "handoff",
+      "summary": "Detailed handoff with three approaches, existing infrastructure inventory, and dependency analysis"
+    }
+  ],
+  "next_action_hint": "revise_plan"
 }

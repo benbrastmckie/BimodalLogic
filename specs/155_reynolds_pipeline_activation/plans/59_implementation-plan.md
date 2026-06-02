@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Sorries 1 and 2 in nf_2var_existential_transfer [NOT STARTED]
+### Phase 2: Fix Sorries 1 and 2 in nf_2var_existential_transfer [BLOCKED]
 
 **Goal**: Close the two sorry sites at StaviCompleteness.lean lines 2347 and 2429. These are the forward and backward directions of the 4-variable existential transfer at depth j' for the 3-point configuration (u,x,t)/(u',x',t').
 
@@ -140,18 +140,34 @@ What we NEED but don't have directly: interval type agreement for the 3 pairs (u
 **Approach**: Restructure `nf_2var_existential_transfer` to use induction on j (the depth parameter), making the recursive structure explicit. The code already matches on j in the proof body (line 2322: `match j`). Convert this to a proper induction.
 
 **Tasks**:
-- [ ] **Task 2.1**: Read and understand the existing proof around lines 2214-2430 thoroughly. Read `zone_match_witness` (find its definition in the same file) to understand what hypotheses it provides. Read `nf_fraisse_compression` to understand what it requires.
+**BLOCKER** (Phase 2):
+- **What failed**: The sorry at StaviCompleteness.lean line 2347 (and symmetrically 2429) requires proving a 4-variable existential transfer at depth j' for the 3-point configuration (u,x,t)/(u',x',t'). After zone_match_witness finds u' with matching depth-k 1-var NF and orderings relative to x',t', the proof needs to show that for any w with a given depth-j' 4-var NF relative to (u,x,t), there exists w' in M' with the same depth-j' 4-var NF relative to (u',x',t').
+- **What was tried**:
+  1. Direct induction on j (depth of transfer): fails because the inductive step at depth j'+1 needs 5-var transfer at depth j', which needs 6-var transfer at depth j'-1, etc. Each level increases variables while decreasing depth, and at each level zone matching within a shared interval does NOT preserve relative ordering between independently matched points.
+  2. Applying nf_2var_existential_transfer recursively for different 2-point frames (u,x), (u,t), (x,t): fails because each gives 3-var transfer for a different pair, but the 4-var NF encodes JOINT information about all variables simultaneously.
+  3. Using nf_agreement_monotone + pointwise 1-var NF agreement: fails because n-variable NF agreement requires interval type data, not just pointwise data.
+  4. Deriving sub-interval types from endpoint NFs: fails because depth-k 1-var NFs of u and x encode existential information about neighborhoods (above/below) but NOT about specific sub-intervals (x,u).
+  5. Using nf_fraisse_compression at lower depth: circular because it needs the transfer that we are trying to prove.
+  6. Merging nf_2var_from_interval_data and nf_2var_existential_transfer into a mutual induction on k: fails for the same reason - the inductive step still needs the 4-var transfer.
+- **Why it's stuck**: The core mathematical issue is the "interval-splitting problem" (documented in NFGameBridge.lean lines 30-38). When zone_match_witness places u' in the interval (x',t') with the same 1-var NF as u, the sub-interval types of (x,u)/(x',u') and (u,t)/(u',t') are NOT determined by the interval types of (x,t)/(x',t'). A type realized in (x,t) might appear only in (x,u) in M but only in (u',t') in M'. This means zone matching does not preserve the interval-splitting structure needed for recursive transfer.
+- **What is needed**: One of:
+  (A) Implement the full EF game bridge (NF hypotheses -> decomposition_agreement -> ghr93_duplicator_wins -> game composition -> NF agreement). The game composition (Composition.lean, already sorry-free) handles interval splitting via the Duplicator strategy. Estimated ~300-500 lines for the bridge lemmas.
+  (B) Prove an "interval-splitting zone match" lemma: given interval type agreement for (a,b)/(a',b') and a point w in (a,b), find w' in (a',b') with matching NF AND sub-interval type preservation. This requires a separate inductive argument. Estimated ~200-300 lines.
+  (C) Restructure the proof to use a DIFFERENT characterization of 2-var NFs that avoids the existential transfer entirely (e.g., via temporal formula decomposition).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+- [x] **Task 2.1**: Read and understand the existing proof around lines 2214-2430 thoroughly. *(completed — full analysis documented in blocker above)* Read `zone_match_witness` (find its definition in the same file) to understand what hypotheses it provides. Read `nf_fraisse_compression` to understand what it requires.
   - File: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean`
   - Read the GHR93 literature: `literature/Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps.md`, Section 8
   - Document the exact hypotheses available at the sorry site and what is needed.
 
-- [ ] **Task 2.2**: Prove a helper lemma for sub-interval type propagation from zone_match_witness. When u is in the interval (x,t) and u' is the zone-matched point in M', the interval types of (x,u)/(x',u') and (u,t)/(u',t') are determined by the interval types of (x,t)/(x',t'). Specifically:
+- [ ] **Task 2.2**: Prove a helper lemma for sub-interval type propagation from zone_match_witness. *(deviation: blocked — requires interval-splitting zone match, see blocker above)* When u is in the interval (x,t) and u' is the zone-matched point in M', the interval types of (x,u)/(x',u') and (u,t)/(u',t') are determined by the interval types of (x,t)/(x',t'). Specifically:
   - If x < u < t, then interval_nf_types M k x u is a subset of interval_nf_types M k x t (types in (x,u) are a subset of types in (x,t)), and similarly for (u,t).
   - The key property: zone_match_witness places u' so that the PARTITION of interval types at (x,t) into those in (x,u) and (u,t) is preserved.
   - This may require strengthening zone_match_witness or proving it as a consequence of the existing zone_match_witness output.
   - Estimated: 50-100 lines.
 
-- [ ] **Task 2.3**: Restructure the forward direction proof. Replace the `match j` block (lines 2322-2347) with an approach that handles the j'+1 case using the recursive transfer. The key proof obligation at line 2347 is:
+- [ ] **Task 2.3**: Restructure the forward direction proof. *(deviation: blocked — depends on Task 2.2)* Replace the `match j` block (lines 2322-2347) with an approach that handles the j'+1 case using the recursive transfer. The key proof obligation at line 2347 is:
   ```
   (exists w, nf_eval M j' 4 (w::u::x::t) sub_nf) <->
   (exists w', nf_eval M' j' 4 (w'::u'::x'::t') sub_nf)
@@ -165,10 +181,10 @@ What we NEED but don't have directly: interval type agreement for the 3 pairs (u
   The simplest approach: prove `nf_2var_existential_transfer` by induction on j (not k), with the base case j=0 already handled. For the inductive step j'+1, the 4-var transfer at depth j' follows from the IH applied to the 3-point configuration (u,x,t)/(u',x',t'). This requires showing that the IH hypotheses (bridge lemma hypotheses at depth k for this configuration) are satisfied.
   - Estimated: 100-200 lines.
 
-- [ ] **Task 2.4**: Implement the backward direction (line 2429). This is symmetric to the forward direction. The exact same argument works with M and M' swapped. The code already sets up the symmetric hypotheses (lines 2348-2366).
+- [ ] **Task 2.4**: Implement the backward direction (line 2429). *(deviation: blocked — symmetric to Task 2.3)* This is symmetric to the forward direction. The exact same argument works with M and M' swapped. The code already sets up the symmetric hypotheses (lines 2348-2366).
   - Estimated: 50-100 lines (mostly mirroring the forward direction, possibly extract a shared helper).
 
-- [ ] **Task 2.5**: Verify the fixes compile:
+- [ ] **Task 2.5**: Verify the fixes compile: *(deviation: blocked — depends on Tasks 2.3-2.4)*
   - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness` passes
   - `lean_verify nf_2var_existential_transfer` shows no `sorryAx`
   - `lean_verify nf_2var_from_interval_data` shows no `sorryAx` (depends on the fixed theorem)
