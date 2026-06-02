@@ -18,7 +18,7 @@
         {
           "path": "specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md",
           "type": "research",
-          "summary": "HF Hub is the clear recommendation \u2014 the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
+          "summary": "HF Hub is the clear recommendation — the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
         },
         {
           "path": "specs/257_large_data_storage_huggingface/plans/01_implementation-plan.md",
@@ -28,7 +28,7 @@
         {
           "path": "specs/257_large_data_storage_huggingface/summaries/01_execution-summary.md",
           "type": "summary",
-          "summary": "Implementation summary for task 257 \u2014 phases 3, 4, and partial 2 completed"
+          "summary": "Implementation summary for task 257 — phases 3, 4, and partial 2 completed"
         }
       ],
       "memory_candidates": [
@@ -65,7 +65,7 @@
       "project_number": 250,
       "project_name": "enriched_formula_json_export",
       "status": "completed",
-      "completion_summary": "Integrated Lean's enriched formula export (21-tag schema) into BimodalHarness Python: added 6 new AST types, extended tokenizer to 33-token vocab, added formula_folded_json/str/sexpr to TrainingRecord and goal_folded_json to ProofStepRecord, updated ingestion pipeline, regenerated c5 and proof_steps datasets \u2014 all 2337 tests pass.",
+      "completion_summary": "Integrated Lean's enriched formula export (21-tag schema) into BimodalHarness Python: added 6 new AST types, extended tokenizer to 33-token vocab, added formula_folded_json/str/sexpr to TrainingRecord and goal_folded_json to ProofStepRecord, updated ingestion pipeline, regenerated c5 and proof_steps datasets — all 2337 tests pass.",
       "task_type": "lean4",
       "created": "2026-06-01T17:28:43Z",
       "last_updated": "2026-06-02T22:00:00Z",
@@ -85,7 +85,7 @@
         {
           "path": "specs/250_enriched_formula_json_export/summaries/01_enriched-formula-export-summary.md",
           "type": "summary",
-          "summary": "Implementation summary: 21-tag schema, 6 new AST types, 33-token vocab, enriched ingestion fields, dataset regeneration \u2014 59 new tests, 2337 total passing"
+          "summary": "Implementation summary: 21-tag schema, 6 new AST types, 33-token vocab, enriched ingestion fields, dataset regeneration — 59 new tests, 2337 total passing"
         }
       ],
       "plan_metadata": {
@@ -289,7 +289,7 @@
       "project_name": "refactor_module_organization",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy \u2014 group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
+      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
       "created": "2026-05-13T17:05:29Z",
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
@@ -301,7 +301,7 @@
       "project_name": "jonsson_tarski_representation_bimodal_sus",
       "status": "not_started",
       "task_type": "formal",
-      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 \u2014 Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 \u2014 Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 \u2014 Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 \u2014 Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
+      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
       "dependencies": [],
       "created": "2026-05-11T19:35:39Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -330,7 +330,7 @@
       "project_name": "time_addition_operator",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add time addition operator (+) to the bimodal logic TM. \u03c6 + \u03c8 is true at (\u03c4, x) iff \u2203 y,z with x = y+z, \u03c6 true at (\u03c4,y), \u03c8 true at (\u03c4,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/\u25a1. Completeness (ternary canonical model) and decidability are open research problems \u2014 defer to later phases.",
+      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
       "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -343,7 +343,7 @@
       "project_name": "open_set_operator_dense_continuous",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete \u2124 the interior is trivial (discrete topology), but on dense \u211a and continuous \u211d it captures neighborhood-stable truth: Int(\u03c6) true at t iff \u03c6 holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(\u03c6)\u2192\u03c6, Int(\u03c6)\u2192Int(Int(\u03c6))). Phase 4: interaction with temporal operators and S5 \u25a1. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) \u2014 completeness may require non-standard techniques.",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
       "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -434,7 +434,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
           "type": "research",
-          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better \u2014 1 sorry source vs 2). Prior revert was premature."
+          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md",
@@ -529,7 +529,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/summaries/28_reynolds-bypass-summary.md",
           "type": "summary",
-          "summary": "Phase A1: Track A OrderIso bypass infeasible \u2014 succ_cofinal blocks all paths"
+          "summary": "Phase A1: Track A OrderIso bypass infeasible — succ_cofinal blocks all paths"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/29_phase3-blocker-research.md",
@@ -895,7 +895,7 @@
       "task_type": "lean4",
       "priority": "high",
       "topic": "automation",
-      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd \u27e8k, proof_n+1\u27e9 < x \u2194 resp_tau \u27e8k, proof_n\u27e9 < y) \u2227 (... = ... \u2194 ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
+      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
       "dependencies": [],
       "created": "2026-05-26T22:00:00Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -949,7 +949,7 @@
       "task_type": "lean4",
       "priority": "low",
       "topic": "code-quality",
-      "description": "Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints \u2014 which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.",
+      "description": "Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints — which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.",
       "dependencies": [],
       "created": "2026-05-29T00:00:00Z",
       "last_updated": "2026-05-29T00:00:00Z",
@@ -1017,7 +1017,7 @@
       "project_name": "resolve_train_bench_contamination",
       "status": "completed",
       "task_type": "general",
-      "description": "71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-c7.jsonl training data, undermining the benchmark as a held-out evaluation set. All overlapping formulas are complexity 3-7 (the c7 range). Resolution options: (A) Regenerate benchmark excluding c7 formulas, drawing from complexity>=8 and axiom instances only \u2014 truly held-out but smaller. (B) Keep overlap but add contamination_flag field and document that only non-overlapping records (224/777) are truly held-out. (C) Remove overlapping formulas from c7 \u2014 clean separation but creates holes in exhaustive enumeration. Implement chosen approach, update all downstream artifacts (metadata, splits, paraphrases, croissant.json). Document contamination analysis and resolution in dataset card.",
+      "description": "71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-c7.jsonl training data, undermining the benchmark as a held-out evaluation set. All overlapping formulas are complexity 3-7 (the c7 range). Resolution options: (A) Regenerate benchmark excluding c7 formulas, drawing from complexity>=8 and axiom instances only — truly held-out but smaller. (B) Keep overlap but add contamination_flag field and document that only non-overlapping records (224/777) are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but creates holes in exhaustive enumeration. Implement chosen approach, update all downstream artifacts (metadata, splits, paraphrases, croissant.json). Document contamination analysis and resolution in dataset card.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
@@ -1025,7 +1025,7 @@
       "last_updated": "2026-06-02T00:00:00Z",
       "session_id": "sess_1780413871_64590a_229",
       "next_artifact_number": 2,
-      "completion_summary": "Added contamination_flag boolean field to all 777 benchmark records (553 true, 224 false), fixed stale splits total_records (727->777), updated croissant.json schema, added Contamination Analysis section to dataset card and HF README, updated validation script.",
+      "completion_summary": "Added contamination_flag to 777 benchmark records (553 contaminated/224 clean), fixed stale splits, updated croissant schema, dataset card, and HF README with contamination analysis",
       "artifacts": [
         {
           "path": "specs/229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md",
@@ -1064,7 +1064,7 @@
       "project_name": "benchmark_refresh_splits_paraphrases_schema",
       "status": "not_started",
       "task_type": "general",
-      "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count \u2014 splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth \u2014 three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
+      "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [
@@ -1273,7 +1273,7 @@
       "task_type": "meta",
       "priority": "medium",
       "topic": "completeness",
-      "description": "Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note \u2014 comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md \u2014 annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean \u2014 update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.",
+      "description": "Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note — comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md — annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean — update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.",
       "dependencies": [
         95,
         176
@@ -1287,7 +1287,7 @@
       "task_type": "lean4",
       "priority": "low",
       "topic": "code-quality",
-      "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean \u2014 sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean \u2014 deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) \u2014 deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
+      "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean — sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean — deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) — deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
       "dependencies": [],
       "created": "2026-06-01T22:30:00Z"
     },
@@ -1295,9 +1295,9 @@
       "project_number": 261,
       "project_name": "dataset_quality_and_stall_diagnosis",
       "status": "completed",
-      "completion_summary": "Implemented all 5 v3 phases: global fuel counter for O(fuel) branch work, per-record JSONL flush, eventuality-aware blocking, --frame-class CLI flag, integration validation. Full lake build passes (1682 jobs, 0 errors).",
+      "completion_summary": "Implemented global fuel counter for branch splits, per-record flush with slow-formula warnings, eventuality-aware blocking predicate, and --frame-class CLI flag. All 5 phases complete, lake build passes.",
       "task_type": "lean4",
-      "description": "Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like (\u25a1\u22a5 \u2192 \u25a1r) at complexity 5 \u2014 these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should: (a) Identify which formula(s) cause infinite or near-infinite decision procedure runtime and why. (b) Determine whether the tableau decision procedure has algorithmic gaps (missing blocking, looping on certain formula patterns) vs. merely needing longer timeouts. (c) Propose fixes that preserve ALL cases \u2014 slow formulas should be recorded with their timing and labeled as slow/timeout rather than silently skipped. (d) Investigate the null metrics fields and fix the code paths. (e) Analyze the timeout-vs-valid mislabeling issue. (f) Recommend a strategy for making c9/c11 generation feasible (adaptive timeouts, per-formula watchdog with SIGALRM, incremental output, separate slow-formula queue).",
+      "description": "Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like (□⊥ → □r) at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should: (a) Identify which formula(s) cause infinite or near-infinite decision procedure runtime and why. (b) Determine whether the tableau decision procedure has algorithmic gaps (missing blocking, looping on certain formula patterns) vs. merely needing longer timeouts. (c) Propose fixes that preserve ALL cases — slow formulas should be recorded with their timing and labeled as slow/timeout rather than silently skipped. (d) Investigate the null metrics fields and fix the code paths. (e) Analyze the timeout-vs-valid mislabeling issue. (f) Recommend a strategy for making c9/c11 generation feasible (adaptive timeouts, per-formula watchdog with SIGALRM, incremental output, separate slow-formula queue).",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [
@@ -1427,21 +1427,20 @@
             "redundancy"
           ]
         }
-      ],
-      "completion_summary": "Fixed persistent rule loop in tableau, added adaptive fuel caps and box-valid fast paths, 4/4 phases complete"
+      ]
     },
     {
       "project_number": 262,
       "project_name": "interestingness_metrics_for_theorems",
       "status": "completed",
       "task_type": "lean4",
-      "description": "Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier \u2014 but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures for theorems (e.g., Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure, not just modus ponens on axioms), semantic non-triviality (not instances of p\u2192p or \u22a5\u2192\u03c6), operator diversity (mixing modal and temporal operators in meaningful ways), proof depth/breadth ratio, connection to known named theorems, information content (entropy of the formula vs. tautological patterns), usefulness as a lemma (how often the formula appears as a subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension that can be evaluated by the Lean pipeline on every generated formula. (4) Propose a composite interestingness score suitable as a reward signal or filtering criterion for training networks to find non-trivial derivations. (5) Consider how these metrics interact with the proof trace \u2014 a valid formula with a deep non-obvious proof is more interesting than one closed by a single axiom application. (6) Address the spectrum from trivially valid (\u22a5\u2192\u03c6) through routine (substitution instances of axioms) to genuinely interesting (novel interactions between \u25a1, G, U, S operators).",
+      "description": "Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures for theorems (e.g., Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure, not just modus ponens on axioms), semantic non-triviality (not instances of p→p or ⊥→φ), operator diversity (mixing modal and temporal operators in meaningful ways), proof depth/breadth ratio, connection to known named theorems, information content (entropy of the formula vs. tautological patterns), usefulness as a lemma (how often the formula appears as a subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension that can be evaluated by the Lean pipeline on every generated formula. (4) Propose a composite interestingness score suitable as a reward signal or filtering criterion for training networks to find non-trivial derivations. (5) Consider how these metrics interact with the proof trace — a valid formula with a deep non-obvious proof is more interesting than one closed by a single axiom application. (6) Address the spectrum from trivially valid (⊥→φ) through routine (substitution instances of axioms) to genuinely interesting (novel interactions between □, G, U, S operators).",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-02T00:30:00Z",
       "last_updated": "2026-06-02T22:30:00Z",
-      "completion_summary": "Implemented three-tier interestingness scoring (syntactic + proof-structural + composite with SNT gate), pipeline integration into LabeledFormula/JSONL export, and 41-test validation suite. Zero sorries, zero axioms, full build passes.",
+      "completion_summary": "Implemented three-tier interestingness scoring (operator diversity, semantic non-triviality, proof structure) with multiplicative SNT gate, pipeline integration in DatasetGenerator, and 41-test validation suite.",
       "next_artifact_number": 3,
       "artifacts": [
         {

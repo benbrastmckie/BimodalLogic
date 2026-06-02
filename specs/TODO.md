@@ -89,7 +89,9 @@ technical_debt:
   - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/03_dataset-quality-fix.md]
   - **Summary**: [specs/261_dataset_quality_and_stall_diagnosis/summaries/03_dataset-quality-fix-summary.md]
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
+229 [COMPLETED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
+  - **Plan**: [specs/229_resolve_train_bench_contamination/plans/01_contamination-resolution.md]
+  - **Summary**: [specs/229_resolve_train_bench_contamination/summaries/01_contamination-resolution-summary.md]
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
     └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 
@@ -145,7 +147,7 @@ technical_debt:
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -156,7 +158,10 @@ technical_debt:
 - **Plan**:
   - [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
   - [261_dataset_quality_and_stall_diagnosis/plans/03_dataset-quality-fix.md]
+- **Summary**: [specs/261_dataset_quality_and_stall_diagnosis/summaries/03_dataset-quality-fix-summary.md]
 - **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
+
+**Completion**: Implemented global fuel counter for branch splits (O(fuel) bound), per-record flush with slow-formula warnings, eventuality-aware blocking predicate, and --frame-class CLI flag. All 5 phases complete, lake build passes (1682 jobs, 0 errors).
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
 - **Effort**: M
