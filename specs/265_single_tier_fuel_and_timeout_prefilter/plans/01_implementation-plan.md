@@ -1,7 +1,7 @@
 # Implementation Plan: Task #265
 
 - **Task**: 265 - Simplify to single-tier fuel strategy with structural timeout pre-filter
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: Task 264 (completed), Task 263 (completed), Task 261 (completed)
 - **Research Inputs**: specs/265_single_tier_fuel_and_timeout_prefilter/reports/01_fuel-strategy-prefilter.md

@@ -363,7 +363,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -372,7 +372,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-02T23:26:29Z",
+      "last_updated": "2026-06-02T23:29:01Z",
       "next_artifact_number": 61,
       "artifacts": [
         {
@@ -1554,13 +1554,13 @@
     {
       "project_number": 265,
       "project_name": "single_tier_fuel_and_timeout_prefilter",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         264
       ],
       "created": "2026-06-02T18:30:00Z",
-      "last_updated": "2026-06-02T23:18:40Z",
+      "last_updated": "2026-06-02T23:31:42Z",
       "session_id": "sess_1748893800_c5e9f3",
       "researched": "2026-06-02T19:10:23Z",
       "artifacts": [
@@ -1568,8 +1568,14 @@
           "path": "specs/265_single_tier_fuel_and_timeout_prefilter/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "4-phase plan: single-tier fuel, structural pre-filter, build verification, c6 regeneration"
+        },
+        {
+          "path": "specs/265_single_tier_fuel_and_timeout_prefilter/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: single-tier fuel + structural pre-filter, c6 regenerated in 5.7s"
         }
-      ]
+      ],
+      "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
     }
   ],
   "next_project_number": 266,
