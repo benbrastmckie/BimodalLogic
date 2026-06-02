@@ -1,7 +1,7 @@
 # Implementation Plan: Task #229
 
 - **Task**: 229 - Resolve train/benchmark formula contamination
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md

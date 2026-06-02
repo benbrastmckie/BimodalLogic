@@ -122,8 +122,9 @@ technical_debt:
 249 [PLANNED] — expand_temporal_derived_theorems
   - **Report**: [specs/249_expand_temporal_derived_theorems/reports/01_temporal-derived-theorems.md]
   - **Plan**: [specs/249_expand_temporal_derived_theorems/plans/01_temporal-derived-theorems.md]
-250 [RESEARCHED] — enriched_formula_json_export
+250 [PLANNED] — enriched_formula_json_export
   - **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
+  - **Plan**: [specs/250_enriched_formula_json_export/plans/01_enriched-formula-export.md]
 
 ## Tasks
 
@@ -180,11 +181,12 @@ technical_debt:
 - **Description**: Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note — comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md — annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean — update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.
 
 ### 250. Add enriched formula JSON export to data pipeline
-- **Effort**: M
-- **Status**: [RESEARCHED]
+- **Effort**: M (5 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: Task 248
 - **Research**: [specs/250_enriched_formula_json_export/reports/01_enriched-formula-export.md]
+- **Plan**: [specs/250_enriched_formula_json_export/plans/01_enriched-formula-export.md]
 
 **Description**: The data export pipeline (DatasetGenerator.lean, proof step extraction) currently exports formulas only in primitive representation (6 constructor tags: atom, bot, imp, box, untl, snce). BimodalHarness needs enriched representations alongside primitives for training. Add a formula_folded_json field to exported data records that contains the formula with defined operator tags (neg, top, next, prev, and, or, diamond, some_future, some_past, all_future, all_past) using the fold algorithm from Task 248. Update proof_steps.jsonl export to include both goal_json (primitive) and goal_folded_json (enriched). Update formula enumeration exports (bmlogic-c5.jsonl, bmlogic-c7.jsonl, etc.) to include both representations. The enriched representation enables BimodalHarness to train on defined-operator formulas while verifying via primitive expansion.
 
@@ -280,14 +282,17 @@ technical_debt:
 
 ### 229. Resolve train/benchmark formula contamination
 - **Effort**: medium (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Research**: [229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md]
 - **Plan**: [229_resolve_train_bench_contamination/plans/01_contamination-resolution.md]
+- **Summary**: [229_resolve_train_bench_contamination/summaries/01_contamination-resolution-summary.md]
 
 **Description**: 71.2% of benchmark formulas (553/777) appear verbatim in `bmlogic-c7.jsonl` training data, undermining the benchmark as held-out evaluation. All overlap is at complexity 3-7 (the c7 range); the 224 non-overlapping records are complexity >= 8 or axiom instances. Resolution options: (A) Regenerate benchmark excluding c7 formulas — truly held-out but smaller. (B) Keep overlap but add `contamination_flag` field and document that only 224 records are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but holes in exhaustive enumeration. Implement chosen approach, update downstream artifacts, document analysis in dataset card.
+
+**Completion**: Added `contamination_flag` boolean field to all 777 benchmark records (553=true, 224=false), fixed stale splits total_records (727->777), updated croissant.json schema, added Contamination Analysis section to dataset card and HF README, updated validation script.
 
 ---
 

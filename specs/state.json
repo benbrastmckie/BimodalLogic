@@ -1009,16 +1009,17 @@
     {
       "project_number": 229,
       "project_name": "resolve_train_bench_contamination",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "description": "71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-c7.jsonl training data, undermining the benchmark as a held-out evaluation set. All overlapping formulas are complexity 3-7 (the c7 range). Resolution options: (A) Regenerate benchmark excluding c7 formulas, drawing from complexity>=8 and axiom instances only \u2014 truly held-out but smaller. (B) Keep overlap but add contamination_flag field and document that only non-overlapping records (224/777) are truly held-out. (C) Remove overlapping formulas from c7 \u2014 clean separation but creates holes in exhaustive enumeration. Implement chosen approach, update all downstream artifacts (metadata, splits, paraphrases, croissant.json). Document contamination analysis and resolution in dataset card.",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-06-02T15:19:55Z",
-      "session_id": "sess_1780413374_62c437",
+      "last_updated": "2026-06-02T00:00:00Z",
+      "session_id": "sess_1780413871_64590a_229",
       "next_artifact_number": 2,
+      "completion_summary": "Added contamination_flag boolean field to all 777 benchmark records (553 true, 224 false), fixed stale splits total_records (727->777), updated croissant.json schema, added Contamination Analysis section to dataset card and HF README, updated validation script.",
       "artifacts": [
         {
           "path": "specs/229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md",
@@ -1029,11 +1030,16 @@
           "path": "specs/229_resolve_train_bench_contamination/plans/01_contamination-resolution.md",
           "type": "plan",
           "summary": "4-phase Option B contamination resolution: add contamination_flag, fix stale splits, update dataset card, sync HF"
+        },
+        {
+          "path": "specs/229_resolve_train_bench_contamination/summaries/01_contamination-resolution-summary.md",
+          "type": "summary",
+          "summary": "All 4 phases complete: contamination_flag added to all 777 records, metadata/splits/croissant updated, dataset card and HF README updated with contamination analysis section"
         }
       ],
       "memory_candidates": [
         {
-          "content": "bmlogic-c7.jsonl is an exhaustive enumeration of all bimodal formulas up to complexity 7, starting from complexity 3. Any benchmark sampled from the complexity 3-7 range is by construction in the training set. The 777-record benchmark has 553 (71.2%) contaminated records.",
+          "content": "bmlogic-c7.jsonl is an exhaustive enumeration of all bimodal formulas up to complexity 7, starting from complexity 3. Any benchmark sampled from the complexity 3-7 range is by construction in the training set. The 777-record benchmark has 553 (71.2%) contaminated records. Use contamination_flag == false to filter to the 224 genuinely held-out records.",
           "category": "INSIGHT",
           "confidence": 0.95,
           "suggested_keywords": [
@@ -1041,18 +1047,8 @@
             "contamination",
             "benchmark",
             "training-data",
-            "exhaustive-enumeration"
-          ]
-        },
-        {
-          "content": "bmlogic-bench-splits.json has a stale total_records=727 but the benchmark contains 777 records. NL paraphrase fields have NOT yet been added to bmlogic-bench.jsonl despite the script existing.",
-          "category": "INSIGHT",
-          "confidence": 0.9,
-          "suggested_keywords": [
-            "bmlogic-bench",
-            "splits",
-            "paraphrases",
-            "stale-metadata"
+            "exhaustive-enumeration",
+            "contamination_flag"
           ]
         }
       ]
