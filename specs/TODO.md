@@ -88,6 +88,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
+261 [NOT STARTED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
 260 [NOT STARTED] — Make dataset generation resumable after interruption
   (depends on 253)
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -128,6 +129,15 @@ technical_debt:
 250 [NOT STARTED] — enriched_formula_json_export
 
 ## Tasks
+
+### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 253
+- **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
 
 ### 260. Make dataset generation resumable after interruption
 - **Effort**: medium (6-10 hours)
