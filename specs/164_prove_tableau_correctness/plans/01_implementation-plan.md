@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Temporal Saturation Invariants [IN PROGRESS]
+### Phase 3: Prove Temporal Saturation Invariants [PARTIAL]
 
 **Goal**: Resolve the remaining 4 saturation sorry sites: `sat_untl_pos`, `sat_snce_pos`, `sat_untl_neg`, `sat_snce_neg`.
 
@@ -187,7 +187,7 @@ Phases within the same wave can execute in parallel.
 **Tasks**:
 - [x] Study the rule application functions to understand how formulas are produced during expansion *(completed)*
 - [x] Prove `subformula_property` *(deviation: altered -- the theorem as stated only covers the initial branch [F(phi)], so the proof is trivial by list membership. A generalized version tracking formulas through all expansion steps would require case analysis on every rule in applyRule.)*
-- [ ] Prove `blocking_sound` *(deviation: deferred -- requires induction on fuel with case analysis on List.foldl in the split case; the invariant is straightforward but the Lean proof is technically involved)*
+- [x] Prove `blocking_sound` *(completed -- proved via expandBranchWithFuel_sound with helpers tryBranch_inr and foldl_preserves_findClosure for the List.foldl case)*
 - [ ] Prove `blocking_terminates` *(deviation: deferred -- requires generalized subformula property for expanded branches, pigeonhole argument over time types, and Fintype infrastructure)*
 - [x] Verify with `lake build Bimodal.Metalogic.Decidability.Saturation` *(builds with 2 sorry sites remaining)*
 

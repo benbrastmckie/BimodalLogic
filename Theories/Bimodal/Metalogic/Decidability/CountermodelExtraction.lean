@@ -564,7 +564,7 @@ private theorem untlPos_not_expanded (b : Branch) (event guard : Formula) (l : L
     have := h (.someFuturePos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     simp [isApplicable, asSomeFuture?, Formula.top, applyRule] at this
   · have h1 := h (.untlPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
-    have hg' : (guard == Formula.top) = false := by simp [beq_iff_eq, hg]
+    have hg' : (guard == Formula.top) = false := by simp [hg]
     simp only [isApplicable, asUntil?] at h1
     simp [hg'] at h1
     simp [applyRule, asUntil?, hg'] at h1
@@ -597,7 +597,7 @@ private theorem sncePos_not_expanded (b : Branch) (event guard : Formula) (l : L
     have := h (.somePastPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     simp [isApplicable, asSomePast?, Formula.top, applyRule, Formula.some_past] at this
   · have h1 := h (.sncePos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
-    have hg' : (guard == Formula.top) = false := by simp [beq_iff_eq, hg]
+    have hg' : (guard == Formula.top) = false := by simp [hg]
     simp only [isApplicable, asSince?] at h1
     simp [hg'] at h1
     simp [applyRule, asSince?, hg'] at h1
