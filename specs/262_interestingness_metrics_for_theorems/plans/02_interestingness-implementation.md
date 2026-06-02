@@ -69,19 +69,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Tier 1 -- Syntactic Metrics Module [NOT STARTED]
+### Phase 1: Tier 1 -- Syntactic Metrics Module [COMPLETED]
 
 **Goal**: Create `InterestingnessMetrics.lean` with all pure-formula metrics that require no proof trace.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/InterestingnessMetrics.lean` with module header and imports
-- [ ] Implement `OperatorProfile` structure with fields for each operator type (hasBox, hasDiamond, hasUntil, hasSince, hasAllFuture, hasAllPast, hasSomeFuture, hasSomePast)
-- [ ] Implement `extractOperatorProfile : Formula -> OperatorProfile` with recursive AST traversal detecting both primitive operators and derived operator patterns (e.g., `untl phi top` as `some_future`, `imp (untl (neg phi) top) bot` as `all_future`)
-- [ ] Implement `operatorDiversity : Formula -> Nat` counting distinct operator types with cross-modal bonus (+2 if both modal and temporal present) and bidirectional bonus (+1 if both future and past temporal present)
-- [ ] Implement `semanticNonTriviality : Formula -> Nat` returning 0 for trivially valid patterns (ex_falso `bot.imp _`, identity `phi.imp phi`, weakening `phi.imp (_.imp phi)`, top-implication `_.imp (bot.imp bot)`), 1 for purely propositional formulas (modalDepth=0 and temporalDepth=0), 2 for modal-only or temporal-only, 3 for genuinely bimodal
-- [ ] Implement `statementSimplicity : Formula -> Float` as `atomCount / complexity` ratio (higher = simpler statement relative to size)
-- [ ] Implement `modalTemporalInteraction : Formula -> Bool` detecting whether a formula uses both modal (box/diamond) and temporal (untl/snce or derived) operators
-- [ ] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify compilation
+- [x] Create `Theories/Bimodal/Automation/InterestingnessMetrics.lean` with module header and imports
+- [x] Implement `OperatorProfile` structure with fields for each operator type (hasBox, hasDiamond, hasUntil, hasSince, hasAllFuture, hasAllPast, hasSomeFuture, hasSomePast)
+- [x] Implement `extractOperatorProfile : Formula -> OperatorProfile` with recursive AST traversal detecting both primitive operators and derived operator patterns (e.g., `untl phi top` as `some_future`, `imp (untl (neg phi) top) bot` as `all_future`)
+- [x] Implement `operatorDiversity : Formula -> Nat` counting distinct operator types with cross-modal bonus (+2 if both modal and temporal present) and bidirectional bonus (+1 if both future and past temporal present)
+- [x] Implement `semanticNonTriviality : Formula -> Nat` returning 0 for trivially valid patterns (ex_falso `bot.imp _`, identity `phi.imp phi`, weakening `phi.imp (_.imp phi)`, top-implication `_.imp (bot.imp bot)`), 1 for purely propositional formulas (modalDepth=0 and temporalDepth=0), 2 for modal-only or temporal-only, 3 for genuinely bimodal
+- [x] Implement `statementSimplicity : Formula -> Nat` as `atomCount * 100 / complexity` ratio *(deviation: altered -- returns Nat scaled by 100 instead of Float for determinism and simplicity)*
+- [x] Implement `modalTemporalInteraction : Formula -> Bool` detecting whether a formula uses both modal (box/diamond) and temporal (untl/snce or derived) operators
+- [x] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify compilation
 
 **Timing**: 2 hours
 
@@ -98,18 +98,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Tier 2 -- Proof-Structural Metrics [NOT STARTED]
+### Phase 2: Tier 2 -- Proof-Structural Metrics [COMPLETED]
 
 **Goal**: Add proof-trace-aware metrics that operate on existing `ProofTrace` and `RuleProfile` structures.
 
 **Tasks**:
-- [ ] Add `proofDepthRatio : ProofTrace -> Formula -> Float` computing `height / complexity` (returns 0.0 if complexity is 0)
-- [ ] Add `proofRuleDiversity : ProofTrace -> Nat` counting distinct entries in `rules_applied`
-- [ ] Implement axiom layer classification: `classifyAxiomLayer : String -> String` mapping axiom names to one of 4 layers ("propositional", "modal", "temporal", "interaction") using the layer scheme from `extractAxiomName` in DatasetGenerator.lean
-- [ ] Add `axiomLayerDiversity : ProofTrace -> Nat` counting distinct axiom layers used (max 4)
-- [ ] Add `proofRichness : RuleProfile -> Formula -> Float` computing total non-axiom rule applications / complexity
-- [ ] Add `interactionAxiomDependency : ProofTrace -> Bool` returning true if `axioms_used` contains "modal_future"
-- [ ] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify
+- [x] Add `proofDepthRatio : ProofTrace -> Formula -> Nat` computing `height * 100 / complexity` *(deviation: altered -- returns Nat scaled by 100 instead of Float)*
+- [x] Add `proofRuleDiversity : ProofTrace -> Nat` counting distinct entries in `rules_applied`
+- [x] Implement axiom layer classification: `classifyAxiomLayer : String -> String` mapping axiom names to one of 4 layers ("propositional", "modal", "temporal", "interaction") using the layer scheme from `extractAxiomName` in DatasetGenerator.lean
+- [x] Add `axiomLayerDiversity : ProofTrace -> Nat` counting distinct axiom layers used (max 4)
+- [x] Add `proofRichness : RuleProfile -> Formula -> Nat` computing total non-axiom rule applications * 100 / complexity *(deviation: altered -- returns Nat scaled by 100 instead of Float)*
+- [x] Add `interactionAxiomDependency : ProofTrace -> Bool` returning true if `axioms_used` contains "modal_future"
+- [x] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify
 
 **Timing**: 1.5 hours
 
@@ -125,19 +125,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Composite Score and Tier Classification [NOT STARTED]
+### Phase 3: Composite Score and Tier Classification [COMPLETED]
 
 **Goal**: Implement the composite interestingness score combining all metrics with configurable weights, and the tier classification system.
 
 **Tasks**:
-- [ ] Define `InterestingnessWeights` structure with Float fields for each dimension (w_SNT, w_OD, w_PDR, w_PRD, w_ALD, w_IAD, w_SS) and a `default` instance with research-recommended weights
-- [ ] Define `InterestingnessTier` inductive with variants: trivial, routine, basic, moderate, notable, interesting, remarkable
-- [ ] Implement `InterestingnessTier.fromScore : Float -> InterestingnessTier` using the 7-tier score ranges from Report 02 (0.00-0.05, 0.05-0.15, 0.15-0.30, 0.30-0.50, 0.50-0.70, 0.70-0.85, 0.85-1.00)
-- [ ] Implement `InterestingnessTier.toString : InterestingnessTier -> String`
-- [ ] Define `InterestingnessResult` structure holding the composite score (Float), tier (InterestingnessTier), individual dimension scores, and the SNT gate value
-- [ ] Implement `computeInterestingness : Formula -> Option ProofTrace -> Option RuleProfile -> InterestingnessWeights -> InterestingnessResult` with multiplicative SNT gating: if SNT=0 then score=0.0, if SNT=1 then gate=0.5, if SNT>=2 then gate=1.0; composite = gate * weighted sum of normalized dimension scores
-- [ ] Implement `InterestingnessResult.toJson : InterestingnessResult -> String` for JSON serialization
-- [ ] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify
+- [x] Define `InterestingnessWeights` structure with Nat fields for each dimension (w_OD, w_PDR, w_PRD, w_ALD, w_IAD, w_SS, w_PR) and a `default` instance *(deviation: altered -- uses Nat weights instead of Float; added w_PR for proof richness; SNT gate is multiplicative, not a weight)*
+- [x] Define `InterestingnessTier` inductive with variants: trivial, routine, basic, moderate, notable, interesting, remarkable
+- [x] Implement `InterestingnessTier.fromScore : Nat -> InterestingnessTier` using the 7-tier score ranges on 0-1000 scale *(deviation: altered -- uses Nat on 0-1000 scale instead of Float 0.0-1.0)*
+- [x] Implement `InterestingnessTier.toString : InterestingnessTier -> String`
+- [x] Define `InterestingnessResult` structure holding the composite score (Nat), tier, individual dimension scores, and SNT gate value
+- [x] Implement `computeInterestingness : Formula -> Option ProofTrace -> Option RuleProfile -> InterestingnessWeights -> InterestingnessResult` with multiplicative SNT gating
+- [x] Implement `InterestingnessResult.toJson : InterestingnessResult -> String` for JSON serialization
+- [x] Run `lake build Bimodal.Automation.InterestingnessMetrics` to verify
 
 **Timing**: 2 hours
 
