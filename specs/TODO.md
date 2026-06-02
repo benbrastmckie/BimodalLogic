@@ -65,9 +65,9 @@ technical_debt:
 
 ### Tableau Training
 
-243 [NOT STARTED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
-244 [RESEARCHED] — Create library of theorems with non-empty contexts to exercise as
-247 [RESEARCHED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
+243 [PLANNED] — Achieve 42/42 axiom names and 7/7 inference rules in the proof st
+244 [PLANNED] — Create library of theorems with non-empty contexts to exercise as
+247 [PLANNED] — Validate complete pipeline: Lean tableau -> data export -> Bimoda
 
 ### Automation
 
@@ -83,7 +83,9 @@ technical_debt:
 ### Dataset Enhancement
 
 262 [NOT STARTED] — Research interestingness metrics for theorems and derivations
-261 [NOT STARTED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
+261 [PLANNED] — Research dataset quality issues: stalling, timeout mislabeling, null metrics
+  - **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
+  - **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 229 [NOT STARTED] — 71.2% of benchmark formulas (553/777) appear verbatim in bmlogic-
   └─ 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -121,19 +123,22 @@ technical_debt:
 
 ### 262. Research interestingness metrics for theorems and derivations
 - **Effort**: large (12-20 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
+- **Research**: [262_interestingness_metrics_for_theorems/reports/01_interestingness-metrics.md]
 - **Description**: Research and design deterministic interestingness metrics for theorems and derivations in bimodal logic TM, to be used as training signals for neural networks that discover interesting results. Current dataset records only classify formulas by validity, complexity, and difficulty tier — but these say nothing about whether a theorem is trivial, surprising, useful, or mathematically significant. Research should: (1) Survey existing work on automated interestingness measures (Colton/Bundy, Ganesalingam, conjecture-generation literature). (2) Define a taxonomy of interestingness dimensions: structural novelty (non-trivial proof structure), semantic non-triviality (not instances of `p→p` or `⊥→φ`), operator diversity (mixing modal and temporal operators meaningfully), proof depth/breadth ratio, connection to named theorems, information content (entropy vs. tautological patterns), usefulness as a lemma (frequency as subgoal in other proofs), surprising countermodel structure. (3) Design deterministic computable metrics for each dimension evaluable by the Lean pipeline. (4) Propose a composite interestingness score as reward signal for training networks to find non-trivial derivations. (5) Consider how metrics interact with proof traces — valid formulas with deep non-obvious proofs are more interesting than single-axiom closures. (6) Address the full spectrum from trivially valid (`⊥→φ`) through routine (axiom substitution instances) to genuinely interesting (novel `□`/`G`/`U`/`S` interactions).
 
 ### 261. Research dataset quality issues: stalling, timeout mislabeling, null metrics
 - **Effort**: medium (8-12 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 253
+- **Research**: [specs/261_dataset_quality_and_stall_diagnosis/reports/01_dataset-quality-stall.md]
+- **Plan**: [specs/261_dataset_quality_and_stall_diagnosis/plans/01_dataset-quality-stall.md]
 - **Description**: Research and improve the quality of dataset generation records, diagnose why generation stalls, and fix the decision procedure to handle all cases without getting stuck. The c9 generation run produced only 5,671 of ~1.6M enumerated formulas before stalling indefinitely on a single formula. Issues found: (1) 11.4% of labeled formulas hit timeout, including provably valid formulas like `(□⊥ → □r)` at complexity 5 — these should not timeout. (2) Some metrics fields are null for valid/timeout records, suggesting code path inconsistencies. (3) The process got stuck consuming 100% CPU with no output for 2+ hours, likely on a single formula with no per-formula time bound or watchdog. (4) Only complexity 3-6 was reached before stalling; complexity 7-9 never started. (5) Only Base frame class was processed; Dense and Discrete never ran. Research should identify which formulas cause stalling and why, determine if the tableau has algorithmic gaps vs. needing longer timeouts, and propose fixes that preserve ALL cases — slow formulas should be recorded with their timing rather than silently skipped. Also investigate null metrics fields and the timeout-vs-valid mislabeling issue.
 
 ### 257. Investigate large data storage alternatives to Git LFS using Hugging Face
@@ -191,12 +196,13 @@ technical_debt:
 
 ### 247. End-to-end training loop validation
 - **Effort**: medium (6-10 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Priority**: medium
 - **Topic**: tableau-training
 - **Dependencies**: 242, 245, 246
 - **Research**: [specs/247_training_loop_validation/reports/01_training-loop-validation.md]
+- **Plan**: [specs/247_training_loop_validation/plans/01_training-loop-validation.md]
 
 **Description**: Validate the complete pipeline: Lean tableau → data export → BimodalHarness ingestion → training → evaluation. Generate a small dataset (1000 labeled formulas, 5000 proof steps) using the corrected tableau, sync to BimodalHarness, run supervised training on proof steps, run a single epoch of expert iteration, evaluate on benchmark, verify action predictions align with the 49-action space. Document schema mismatches and training failures. Create `scripts/smoke-test-training.sh` in BimodalHarness.
 
@@ -204,23 +210,27 @@ technical_debt:
 
 ### 244. Context-based proof steps for assumption/weakening training
 - **Effort**: small (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: tableau-training
 - **Dependencies**: 242
+- **Research**: [specs/244_context_proof_steps/reports/01_context-proof-steps.md]
+- **Plan**: [specs/244_context_proof_steps/plans/01_context-proof-steps.md]
 
-**Description**: Create library of theorems with non-empty contexts to exercise `assumption` and `weakening` rules (currently 0% of 10063 steps). Create conditional derivations, modus ponens in context, modal/temporal reasoning in context. Register 50+ contextual theorems in new `Theorems/Contextual.lean` with G/H wrapping variants. Target: assumption ≥5%, weakening ≥3% of steps.
+**Description**: Create library of theorems with non-empty contexts to exercise `assumption` and `weakening` rules (currently 0% of 10063 steps). Create conditional derivations, modus ponens in context, modal/temporal reasoning in context. Register 50+ contextual theorems in new `Theorems/ContextualProofs.lean` with weakening variants and multi-instantiation. Target: assumption ≥5%, weakening ≥3% of steps.
 
 ---
 
 ### 243. Full axiom and rule coverage in proof step dataset
-- **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Effort**: medium (5 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: tableau-training
 - **Dependencies**: 242
+- **Research**: [specs/243_full_axiom_rule_coverage/reports/01_axiom-rule-coverage.md]
+- **Plan**: [specs/243_full_axiom_rule_coverage/plans/01_axiom-rule-coverage.md]
 
 **Description**: Achieve 42/42 axiom names and 7/7 inference rules in proof step dataset (currently 31/42 and 5/7). For each missing axiom, construct a formula whose shortest proof requires it and generate via tableau. Add coverage tracking report and `data/coverage_report.json`. Files: `ProofStepExport.lean`, `FormulaEnumerator.lean`, `DataExport.lean`.
 
@@ -252,10 +262,11 @@ technical_debt:
 
 ### 229. Resolve train/benchmark formula contamination
 - **Effort**: medium (4-6 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Priority**: high
 - **Topic**: dataset-enhancement
+- **Research**: [229_resolve_train_bench_contamination/reports/01_train-bench-contamination.md]
 
 **Description**: 71.2% of benchmark formulas (553/777) appear verbatim in `bmlogic-c7.jsonl` training data, undermining the benchmark as held-out evaluation. All overlap is at complexity 3-7 (the c7 range); the 224 non-overlapping records are complexity >= 8 or axiom instances. Resolution options: (A) Regenerate benchmark excluding c7 formulas — truly held-out but smaller. (B) Keep overlap but add `contamination_flag` field and document that only 224 records are truly held-out. (C) Remove overlapping formulas from c7 — clean separation but holes in exhaustive enumeration. Implement chosen approach, update downstream artifacts, document analysis in dataset card.
 
@@ -515,7 +526,7 @@ technical_debt:
 
 ### 155. Fix no_gaps_discrete import cycle for sorry-free discrete completeness
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 199
