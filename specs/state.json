@@ -8,20 +8,25 @@
     {
       "project_number": 267,
       "project_name": "dataset_pipeline_c9_optimization",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         266
       ],
       "created": "2026-06-03T04:12:28Z",
-      "last_updated": "2026-06-03T04:29:22Z",
-      "session_id": "sess_1748903400_e7g1b5",
+      "last_updated": "2026-06-03T04:52:32Z",
+      "session_id": "sess_1748905200_f8h2c6",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/267_dataset_pipeline_c9_optimization/reports/01_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): throughput analysis, stratified vs exhaustive consensus, 3-track optimization strategy, multi-frame-class opportunity"
+        },
+        {
+          "path": "specs/267_dataset_pipeline_c9_optimization/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "6-phase plan: wc-timeout reduction, multi-frame datasets, atom-permutation dedup, parallel labeling, stratified c9, scaling curve"
         }
       ]
     },
@@ -413,7 +418,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -422,7 +427,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-03T04:22:20Z",
+      "last_updated": "2026-06-03T04:46:53Z",
       "next_artifact_number": 62,
       "artifacts": [
         {
@@ -696,7 +701,7 @@
           "summary": "Team research round 10 (4 teammates): EF Game Bridge for Chain 1, BFMCS restructuring for Chain 2, critical path verification needed"
         }
       ],
-      "session_id": "sess_1780460054_7b1e12",
+      "session_id": "sess_1780461998_005bc9",
       "researched": "2026-06-03T04:22:20Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
