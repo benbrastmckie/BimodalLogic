@@ -1495,4 +1495,69 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
   IO.println s!"[gen] Total: {combined.take params.maxFormulas |>.length} unique formulas after deduplication"
   return combined.take params.maxFormulas
 
+/-!
+## Bimodal Interaction Filter and Dataset Generation (Task 272 Phase 4)
+
+Identifies and generates formulas that contain BOTH modal (box/diamond) and
+derived temporal (G/H/F/P) operators, enabling targeted generation of formulas
+that are likely to require temporal axioms in their proofs.
+-/
+
+/-- Check if a formula contains at least one box operator. -/
+private def hasBox : Formula → Bool
+  | .atom _ => false
+  | .bot => false
+  | .imp a b => hasBox a || hasBox b
+  | .box _ => true
+  | .untl a b => hasBox a || hasBox b
+  | .snce a b => hasBox a || hasBox b
+
+/-- Check if a formula contains at least one derived temporal operator pattern
+    (G, H, F, or P recognized by their primitive expansion). -/
+private def hasDerivedTemporal : Formula → Bool
+  | .atom _ => false
+  | .bot => false
+  | .box a => hasDerivedTemporal a
+  -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ) = imp(untl/snce(imp _ bot, imp bot bot), bot)
+  | .imp inner .bot =>
+    match inner with
+    | .untl (.imp _ .bot) (.imp .bot .bot) => true  -- G pattern
+    | .snce (.imp _ .bot) (.imp .bot .bot) => true  -- H pattern
+    | _ => hasDerivedTemporal inner
+  | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
+  -- Check for F/P patterns: untl/snce(φ, ⊤)
+  | .untl _ (.imp .bot .bot) => true   -- F pattern
+  | .untl a b => hasDerivedTemporal a || hasDerivedTemporal b
+  | .snce _ (.imp .bot .bot) => true   -- P pattern
+  | .snce a b => hasDerivedTemporal a || hasDerivedTemporal b
+
+/--
+Check if a formula has bimodal interaction: contains BOTH a box operator
+and at least one derived temporal operator (G/H/F/P pattern).
+-/
+def hasBimodalInteraction (φ : Formula) : Bool :=
+  hasBox φ && hasDerivedTemporal φ
+
+/--
+Generate a bimodal interaction dataset slice.
+
+Enumerates formulas at the specified complexity levels, filters to those
+containing both modal and temporal operators, and returns the filtered list
+along with diversity statistics.
+
+**Usage**: Call with complexity levels 5-7 to generate targeted bimodal
+interaction formulas for temporal axiom usage verification.
+-/
+def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
+    (complexityLevels : List Nat) : List Formula × DiversitySummary :=
+  let (_, allFormulas) := complexityLevels.foldl
+    (fun (acc : EnumCache × List Formula) level =>
+      let (cache, formulas) := acc
+      let (exact, cache') := enumExactBudget atoms level maxModal maxTemporal cache
+      let bimodal := exact.filter hasBimodalInteraction
+      (cache', formulas ++ bimodal))
+    ({}, [])
+  let summary := diversitySummary allFormulas
+  (allFormulas, summary)
+
 end Bimodal.Automation
