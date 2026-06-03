@@ -158,14 +158,54 @@ def all_past (φ : Formula) : Formula := (some_past φ.neg).neg
 Structural complexity of a formula (number of connectives + 1).
 
 Useful for well-founded recursion and proof complexity analysis.
+
+Pattern-aware cases for derived temporal operators (task 274):
+- `F(φ) = U(φ, ⊤)` → treated as overhead 1 (matching box), not 4
+- `P(φ) = S(φ, ⊤)` → treated as overhead 1 (matching box), not 4
+- `G(φ) = ¬F(¬φ) = (U(¬φ, ⊤) → ⊥)` → treated as overhead 1 (matching box), not 8
+- `H(φ) = ¬P(¬φ) = (S(¬φ, ⊤) → ⊥)` → treated as overhead 1 (matching box), not 8
+
+This enables bimodal G/H formulas to appear at c5-c7 instead of c11+.
 -/
 def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
+  -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
+  | imp (untl (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
+  -- H(φ) = imp (snce (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
+  | imp (snce (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
+  -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
+  | untl φ (imp bot bot) => 1 + φ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
+  -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
+  | snce φ (imp bot bot) => 1 + φ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
+
+/-! ### Complexity verification (task 274) -/
+
+private def p_cmplx : Formula := .atom (Atom.mk_base "p")
+private def q_cmplx : Formula := .atom (Atom.mk_base "q")
+
+-- F(atom) should be 2 (was 5)
+#eval p_cmplx.some_future.complexity  -- 2
+
+-- P(atom) should be 2 (was 5)
+#eval p_cmplx.some_past.complexity  -- 2
+
+-- G(atom) should be 2 (was 9)
+#eval p_cmplx.all_future.complexity  -- 2
+
+-- H(atom) should be 2 (was 9)
+#eval p_cmplx.all_past.complexity  -- 2
+
+-- box(G(atom)) should be 3 (was 11)
+#eval p_cmplx.all_future.box.complexity  -- 3
+
+-- Regular untl/snce still work correctly
+#eval (Formula.untl p_cmplx q_cmplx).complexity  -- 3
+#eval (Formula.snce p_cmplx q_cmplx).complexity  -- 3
 
 /-!
 ### BEq Reflexivity

@@ -85,22 +85,21 @@ Helper lemmas establishing that iter_F produces distinct formulas with
 strictly increasing complexity. These are used to prove f_nesting_boundary.
 -/
 
-/-- Complexity of some_future: F(phi) adds 4 to complexity.
+/-- Complexity of some_future: F(phi) adds 1 to complexity (task 274).
 
-`some_future phi = untl phi top` where `top = bot.imp bot`, so:
-- `complexity (some_future phi) = 1 + complexity phi + complexity top = 1 + complexity phi + 3 = 4 + complexity phi`
+With pattern-aware complexity, `some_future phi = untl phi top` is recognized
+as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_future_complexity (phi : Formula) :
-    Formula.complexity (Formula.some_future phi) = 4 + Formula.complexity phi := by
+    Formula.complexity (Formula.some_future phi) = 1 + Formula.complexity phi := by
   simp only [Formula.some_future, Formula.top, Formula.complexity]
-  omega
 
-/-- Complexity of iter_F: each F-application adds 4 to complexity.
+/-- Complexity of iter_F: each F-application adds 1 to complexity.
 
-`complexity (iter_F n phi) = 4 * n + complexity phi`
+`complexity (iter_F n phi) = n + complexity phi`
 -/
 lemma iter_F_complexity (n : Nat) (phi : Formula) :
-    Formula.complexity (iter_F n phi) = 4 * n + Formula.complexity phi := by
+    Formula.complexity (iter_F n phi) = n + Formula.complexity phi := by
   induction n with
   | zero => simp [iter_F_zero]
   | succ k ih =>
@@ -732,22 +731,21 @@ Helper lemmas establishing that iter_P produces distinct formulas with
 strictly increasing complexity. Symmetric to iter_F lemmas.
 -/
 
-/-- Complexity of some_past: P(phi) adds 4 to complexity.
+/-- Complexity of some_past: P(phi) adds 1 to complexity (task 274).
 
-`some_past phi = snce phi top` where `top = bot.imp bot`, so:
-- `complexity (some_past phi) = 1 + complexity phi + complexity top = 1 + complexity phi + 3 = 4 + complexity phi`
+With pattern-aware complexity, `some_past phi = snce phi top` is recognized
+as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_past_complexity (phi : Formula) :
-    Formula.complexity (Formula.some_past phi) = 4 + Formula.complexity phi := by
+    Formula.complexity (Formula.some_past phi) = 1 + Formula.complexity phi := by
   simp only [Formula.some_past, Formula.top, Formula.complexity]
-  omega
 
-/-- Complexity of iter_P: each P-application adds 4 to complexity.
+/-- Complexity of iter_P: each P-application adds 1 to complexity.
 
-`complexity (iter_P n phi) = 4 * n + complexity phi`
+`complexity (iter_P n phi) = n + complexity phi`
 -/
 lemma iter_P_complexity (n : Nat) (phi : Formula) :
-    Formula.complexity (iter_P n phi) = 4 * n + Formula.complexity phi := by
+    Formula.complexity (iter_P n phi) = n + Formula.complexity phi := by
   induction n with
   | zero => simp [iter_P_zero]
   | succ k ih =>

@@ -125,22 +125,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Reduce G/H Complexity Overhead [NOT STARTED]
+### Phase 3: Reduce G/H Complexity Overhead [COMPLETED]
 
 **Goal**: Add pattern-aware cases to the `Formula.complexity` function so that derived temporal operators G/H/F/P are recognized as single operators with overhead 2 (matching box) instead of their full expansion cost (4 for F/P, 8 for G/H).
 
 **Tasks**:
-- [ ] Read the `Formula.complexity` function in `Formula.lean` lines 162-168 to understand the current recursive structure
-- [ ] Add pattern-matching cases that detect derived operator expansions before the general recursive cases:
-  - `some_future`: `untl φ (imp bot bot)` (i.e., `U(phi, top)` where `top = bot -> bot`) should return `1 + φ.complexity` instead of `1 + φ.complexity + 3` (the `top` expansion cost)
-  - `some_past`: `snce φ (imp bot bot)` should return `1 + φ.complexity`
-  - `all_future`: `imp (untl (imp φ bot) (imp bot bot)) bot` should return `1 + φ.complexity`
-  - `all_past`: `imp (snce (imp φ bot) (imp bot bot)) bot` should return `1 + φ.complexity`
-- [ ] Verify the pattern matches are correct by checking against the `def some_future`, `def some_past`, `def all_future`, `def all_past` definitions in Formula.lean
-- [ ] Search for all call sites of `Formula.complexity` across the codebase to identify any code that assumes the old complexity values: `grep -rn "\.complexity" Theories/ Tests/`
-- [ ] Update any downstream code that would break with the new complexity values (e.g., if complexity is used for fuel calculation, test assertions, or enumeration bounds)
-- [ ] Verify `lake build` passes with zero errors
-- [ ] Verify that `G(atom)` now has complexity 3 (was 9), `box(G(atom))` has complexity 4 (was 11), and `F(atom)` has complexity 2 (was 5)
+- [x] Read the `Formula.complexity` function in `Formula.lean` lines 162-168 to understand the current recursive structure
+- [x] Add pattern-matching cases that detect derived operator expansions before the general recursive cases:
+  - `some_future`: `untl φ (imp bot bot)` returns `1 + φ.complexity` (was `4 + φ.complexity`)
+  - `some_past`: `snce φ (imp bot bot)` returns `1 + φ.complexity` (was `4 + φ.complexity`)
+  - `all_future`: `imp (untl (imp φ bot) (imp bot bot)) bot` returns `1 + φ.complexity` (was `8 + φ.complexity`)
+  - `all_past`: `imp (snce (imp φ bot) (imp bot bot)) bot` returns `1 + φ.complexity` (was `8 + φ.complexity`)
+- [x] Verify the pattern matches are correct by checking against the `def some_future`, `def some_past`, `def all_future`, `def all_past` definitions in Formula.lean
+- [x] Search for all call sites of `Formula.complexity` across the codebase to identify any code that assumes the old complexity values
+- [x] Update any downstream code that would break with the new complexity values — updated `some_future_complexity`, `iter_F_complexity`, `some_past_complexity`, `iter_P_complexity` lemmas in CanonicalTaskRelation.lean (4 -> 1 multiplier)
+- [x] Verify `lake build` passes with zero errors — full build passes (1684 jobs)
+- [x] Verify that `G(atom)` now has complexity 2 (was 9), `box(G(atom))` has complexity 3 (was 11), and `F(atom)` has complexity 2 (was 5) *(deviation: altered — G(atom) is 2 not 3 as planned; overhead is 1 matching box, which is strictly better than planned target of overhead 2)*
 
 **Timing**: 2 hours
 
