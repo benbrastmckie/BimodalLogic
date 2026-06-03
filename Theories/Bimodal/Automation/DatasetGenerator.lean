@@ -392,16 +392,41 @@ Added in task 265 to eliminate ~151 of 247 c6 timeouts.
 Check if a formula is structurally unsatisfiable due to bot-temporal patterns.
 
 Returns `true` only when the formula itself evaluates to false at every world/time:
-- `U(⊥, X)` is always false: "X holds until ⊥ becomes true" — ⊥ never becomes true
-- `S(⊥, X)` is always false: "X held since ⊥ was true" — ⊥ was never true
-- `□(false)` is false: necessity of falsehood is false (in non-degenerate frames)
+- `⊥` is always false (base case)
+- `U(event, X)` is always false when `event` is unsatisfiable: the event can never become
+  true, so the Until condition can never be fulfilled
+- `S(event, X)` is always false when `event` is unsatisfiable: the event was never true
+- `□(φ)` is false when `φ` is unsatisfiable (in non-degenerate frames)
+
+Recurses into Until/Since event arguments (task 270), catching patterns like
+`U(□⊥, X)`, `U(U(⊥, Y), X)`, `S(U(⊥, Y), X)`, etc.
 
 This is NOT a general "contains bot" check. The formula must itself be unsatisfiable.
 -/
 def isUnsatBotTemporal : Formula → Bool
-  | .untl .bot _ => true
-  | .snce .bot _ => true
+  | .bot => true
+  | .untl event _ => isUnsatBotTemporal event
+  | .snce event _ => isUnsatBotTemporal event
   | .box a => isUnsatBotTemporal a
+  | _ => false
+
+/--
+Check if a formula is structurally valid (a tautology by inspection).
+
+Returns `true` for patterns that are valid regardless of valuation:
+- `φ → φ` (identity/reflexivity of implication)
+- `X → valid` where `valid` is itself structurally valid (valid consequent)
+- `□(valid)` (necessitation of a valid formula is valid)
+
+Soundness: `A → B` is valid whenever `B` is valid, since `B` holds at every world/time.
+`□(valid)` is valid by necessitation. The `a == b` check uses structural (BEq) equality,
+which is sound: if two formulas are syntactically identical, `A → A` is a tautology.
+
+Added in task 270 to catch tautological consequents in the structural pre-filter.
+-/
+def isStructurallyValid : Formula → Bool
+  | .imp a b => a == b || isStructurallyValid b
+  | .box inner => isStructurallyValid inner
   | _ => false
 
 /--
@@ -410,16 +435,20 @@ formula is provably valid by structural inspection, `none` if undetermined.
 
 Recognized patterns:
 1. **Bot-temporal antecedent**: `φ → ψ` where `isUnsatBotTemporal φ` — vacuously valid
-2. **Double-box-bot**: `□□⊥ → ψ` — □⊥ is false, so □□⊥ is false, implication vacuously valid
-3. **Double-box-identity**: `□□φ → φ` — valid by T axiom (reflexivity) applied twice
-4. **Box-prop**: `□φ → (ψ → φ)` — valid by T axiom + weakening
-5. **Box descent**: `□φ` where `φ` is itself structurally valid — necessitation of valid = valid
+   (now recursive: catches `U(□⊥, X)`, `U(U(⊥, Y), X)`, etc.)
+2. **Valid consequent**: `φ → ψ` where `isStructurallyValid ψ` — tautological consequent
+   (catches `X → (p → p)`, `X → □(q → q)`, etc.)
+3. **Double-box-bot**: `□□⊥ → ψ` — □⊥ is false, so □□⊥ is false, implication vacuously valid
+4. **Double-box-identity**: `□□φ → φ` — valid by T axiom (reflexivity) applied twice
+5. **Box-prop**: `□φ → (ψ → φ)` — valid by T axiom + weakening
+6. **Box descent**: `□φ` where `φ` is itself structurally valid — necessitation of valid = valid
 
 Never returns `some false` (would require soundness argument for invalidity).
 -/
 def structuralPrefilter : Formula → Option Bool
   | .imp antecedent consequent =>
     if isUnsatBotTemporal antecedent then some true
+    else if isStructurallyValid consequent then some true
     else match antecedent, consequent with
     | .box (.box .bot), _ => some true
     | .box (.box inner), consequent => if inner == consequent then some true else none
@@ -427,6 +456,33 @@ def structuralPrefilter : Formula → Option Bool
     | _, _ => none
   | .box inner => structuralPrefilter inner
   | _ => none
+
+/-! ### Pre-filter unit tests (task 270) -/
+
+-- Test atoms for #eval tests
+private def p_test : Formula := .atom ⟨"p", none⟩
+private def q_test : Formula := .atom ⟨"q", none⟩
+
+-- isUnsatBotTemporal: recursive cases
+#eval isUnsatBotTemporal (.bot)                                   -- true  (base case)
+#eval isUnsatBotTemporal (.untl (.box .bot) p_test)               -- true  (U(□⊥, p))
+#eval isUnsatBotTemporal (.snce (.untl .bot q_test) p_test)       -- true  (S(U(⊥, q), p))
+#eval isUnsatBotTemporal (.box (.untl .bot p_test))               -- true  (□(U(⊥, p)))
+#eval isUnsatBotTemporal (.untl p_test q_test)                    -- false (U(p, q) is satisfiable)
+#eval isUnsatBotTemporal p_test                                   -- false (atom is satisfiable)
+
+-- isStructurallyValid: tautology detection
+#eval isStructurallyValid (.imp p_test p_test)                    -- true  (p → p)
+#eval isStructurallyValid (.imp q_test (.imp p_test p_test))      -- true  (q → (p → p))
+#eval isStructurallyValid (.box (.imp p_test p_test))             -- true  (□(p → p))
+#eval isStructurallyValid p_test                                  -- false (atom is not valid)
+#eval isStructurallyValid (.imp p_test q_test)                    -- false (p → q, p ≠ q)
+
+-- structuralPrefilter: integration tests
+#eval structuralPrefilter (.imp (.untl (.box .bot) p_test) q_test) -- some true (recursive unsat antecedent)
+#eval structuralPrefilter (.imp p_test (.imp q_test q_test))       -- some true (valid consequent)
+#eval structuralPrefilter (.imp p_test (.box (.imp q_test q_test)))-- some true (valid consequent under box)
+#eval structuralPrefilter (.imp p_test q_test)                     -- none  (unknown)
 
 /--
 Label a single formula by running the decision procedure.
