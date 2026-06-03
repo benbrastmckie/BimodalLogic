@@ -1,15 +1,15 @@
 {
-  "status": "researched",
-  "summary": "Blocker escalation: formula bug is misdiagnosis (bridge lemma sorry is root cause), Chain 2 fixable via direct IsSuccArchimedean or chronicle_gap_contradiction repair",
-  "phases_completed": 0,
-  "phases_total": 0,
+  "status": "planned",
+  "summary": "Revised plan v63: prove nf_2var_existential_transfer directly (Chain 1) and bypass chronicle_gap_contradiction with direct IsSuccArchimedean proof (Chain 2)",
+  "phases_completed": 2,
+  "phases_total": 6,
   "blockers": [],
   "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/reports/61_blocker-escalation-research.md",
-      "type": "report",
-      "summary": "Blocker escalation research: root cause analysis of both sorry chains, three fix strategies with effort estimates"
+      "path": "specs/155_reynolds_pipeline_activation/plans/62_revised-plan.md",
+      "type": "plan",
+      "summary": "Blocker-corrected plan replacing EF Game Bridge with direct proofs of nf_2var_existential_transfer and IsSuccArchimedean"
     }
   ]
 }

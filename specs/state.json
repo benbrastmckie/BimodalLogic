@@ -8,19 +8,24 @@
     {
       "project_number": 266,
       "project_name": "scale_generation_c7_plus_bottleneck",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         265
       ],
       "created": "2026-06-02T23:34:15Z",
-      "last_updated": "2026-06-02T23:56:41Z",
+      "last_updated": "2026-06-03T00:00:42Z",
       "session_id": "sess_1748895300_d6f0a4",
       "artifacts": [
         {
           "path": "specs/266_scale_generation_c7_plus_bottleneck/reports/01_scaling-bottleneck.md",
           "type": "report",
           "summary": "C7 in 33s, c8 hits wall-clock bottleneck at temporal-modal formula. Recommends wall-clock timeout cap."
+        },
+        {
+          "path": "specs/266_scale_generation_c7_plus_bottleneck/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: wall-clock timeout, c8 regen, c9 sampling, scaling curve"
         }
       ]
     },
