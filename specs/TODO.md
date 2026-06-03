@@ -39,7 +39,8 @@ technical_debt:
 
 ### Completeness
 
-273 [NOT STARTED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+273 [BLOCKED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+  Blocker: orbit membership (succ-reachability) is second-order, not expressible in temporal language; 6 approaches exhausted
 268 [PARTIAL] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
