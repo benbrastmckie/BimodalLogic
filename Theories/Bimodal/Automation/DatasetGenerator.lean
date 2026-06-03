@@ -446,7 +446,7 @@ construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormula (φ : Formula) (fc : FrameClass := .Base)
-    (wallclockTimeoutMs : Nat := 5000) : IO LabeledFormula := do
+    (wallclockTimeoutMs : Nat := 1000) : IO LabeledFormula := do
   -- Phase 1: Structural pre-filter (task 265)
   -- Check for known-valid patterns before invoking the decision procedure
   match structuralPrefilter φ with
@@ -638,7 +638,7 @@ Label a batch of formulas with progress reporting.
 Prints progress every 100 formulas processed.
 Returns the list of all labeled results.
 -/
-def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 5000)
+def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
     : IO (List LabeledFormula) := do
   let total := formulas.length
   let mut results : List LabeledFormula := []

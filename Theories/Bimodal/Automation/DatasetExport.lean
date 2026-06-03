@@ -50,7 +50,7 @@ lake exe dataset_generator -- [OPTIONS]
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling: exhaustive|random|hybrid (default: exhaustive)
   --include-duals         Include temporal dual augmentation
-  --wallclock-timeout N   Per-formula wall-clock timeout in ms (default: 5000)
+  --wallclock-timeout N   Per-formula wall-clock timeout in ms (default: 1000)
 ```
 
 ## Downstream Usage (Python)
@@ -504,8 +504,10 @@ structure CLIArgs where
   /-- When set, read formulas from the checkpoint file instead of re-enumerating. -/
   useCheckpoint : Bool := false
   /-- Per-formula wall-clock timeout in milliseconds (0 = no timeout).
-      Task 266: prevents runaway formulas from stalling the pipeline. -/
-  wallclockTimeoutMs : Nat := 5000
+      Task 266: prevents runaway formulas from stalling the pipeline.
+      Task 267: reduced from 5000 to 1000 — bimodal timing distribution
+      shows no formulas in the 1–5s range, so 1s captures all decidable cases. -/
+  wallclockTimeoutMs : Nat := 1000
   deriving Repr, Inhabited
 
 /--
