@@ -8,13 +8,13 @@
     {
       "project_number": 270,
       "project_name": "extend_prefilter_recursive_unsat",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         269
       ],
       "created": "2026-06-03T16:31:16Z",
-      "last_updated": "2026-06-03T16:31:16Z"
+      "last_updated": "2026-06-03T16:55:20Z"
     },
     {
       "project_number": 271,
@@ -71,15 +71,15 @@
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T15:27:16Z",
-      "last_updated": "2026-06-03T16:36:08Z",
-      "researched": "2026-06-03T15:58:54Z",
+      "last_updated": "2026-06-03T16:57:31Z",
+      "researched": "2026-06-03T16:57:31Z",
       "planned": "2026-06-03T16:05:00Z",
       "artifacts": [
         {
@@ -101,9 +101,14 @@
           "path": "specs/268_reynolds_pipeline_bridge/handoffs/phase-2-handoff-20260603.md",
           "type": "handoff",
           "summary": "Phase 2 blocker: model surgery inapplicable, alternative paths identified"
+        },
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/reports/04_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): Reynolds k-equiv vs IsSuccArchimedean over-engineering, two strategies identified"
         }
       ],
-      "next_artifact_number": 4,
+      "next_artifact_number": 5,
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 8,
@@ -132,7 +137,8 @@
           }
         ]
       },
-      "resume_phase": 2
+      "resume_phase": 2,
+      "session_id": "sess_1780501865_02b28c"
     },
     {
       "project_number": 267,

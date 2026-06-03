@@ -111,7 +111,7 @@ technical_debt:
 
 ### 270. Extend structural pre-filter with recursive unsatisfiability and consequent validity
 - **Effort**: small (2-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -167,7 +167,9 @@ technical_debt:
 - **Priority**: high
 - **Topic**: completeness
 - **Dependencies**: none
-- **Research**: [268_reynolds_pipeline_bridge/reports/01_bridge-research.md]
+- **Research**:
+  - [268_reynolds_pipeline_bridge/reports/01_bridge-research.md]
+  - [268_reynolds_pipeline_bridge/reports/04_team-research.md]
 - **Plan**: [268_reynolds_pipeline_bridge/plans/01_implementation-plan.md]
 
 **Description**: Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free.
