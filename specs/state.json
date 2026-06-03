@@ -8,14 +8,22 @@
     {
       "project_number": 267,
       "project_name": "dataset_pipeline_c9_optimization",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         266
       ],
       "created": "2026-06-03T04:12:28Z",
-      "last_updated": "2026-06-03T04:17:01Z",
-      "session_id": "sess_1748903400_e7g1b5"
+      "last_updated": "2026-06-03T04:29:22Z",
+      "session_id": "sess_1748903400_e7g1b5",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/267_dataset_pipeline_c9_optimization/reports/01_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): throughput analysis, stratified vs exhaustive consensus, 3-track optimization strategy, multi-frame-class opportunity"
+        }
+      ]
     },
     {
       "project_number": 266,
