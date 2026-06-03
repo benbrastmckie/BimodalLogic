@@ -9,6 +9,7 @@ import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.WeakCanonical.Table
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
+import Bimodal.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
 import Bimodal.Metalogic.WeakCanonical.StaviConnectives
 import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6

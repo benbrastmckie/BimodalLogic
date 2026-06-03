@@ -79,13 +79,13 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: LimitDomSubtype as OrderedMonadicStructure [NOT STARTED]
+### Phase 1: LimitDomSubtype as OrderedMonadicStructure [COMPLETED]
 
 **Goal**: Wrap the chronicle's limit domain as an `OrderedMonadicStructure` and prove it satisfies the preconditions for model surgery (`semantic_prior_UZ`, `semantic_prior_SZ`).
 
 **Tasks**:
-- [ ] Create new file `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` that imports both `ChronicleToCountermodelBasic` (for `LimitDomSubtype`, `limit_dom`, `limit_f`, `limit_satisfies_c5_strong`, `limit_satisfies_c4`) and `NoGapsDiscreteProof` (for `one_class`), plus `ShiftAndGlue` (for `very_good -> good`), and `Transfer` (for truth-transfer infrastructure)
-- [ ] Verify no import cycle: `ReynoldsBridge` imports `NoGapsDiscreteProof` (which imports `GoodStructuresModelSurgery`), and `ChronicleToCountermodelBasic` (which does NOT import `GoodStructuresModelSurgery` -- only `ChronicleToCountermodel` imports it). Check the actual import graph to confirm no cycle.
+- [x] Create new file `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` that imports both `ChronicleToCountermodelBasic` (for `LimitDomSubtype`, `limit_dom`, `limit_f`, `limit_satisfies_c5_strong`, `limit_satisfies_c4`) and `NoGapsDiscreteProof` (for `one_class`), plus `ShiftAndGlue` (for `very_good -> good`), and `Transfer` (for truth-transfer infrastructure)
+- [x] Verify no import cycle: *(deviation: altered — ReynoldsBridge imports Transfer.lean directly instead of separate imports; no cycle verified by successful build)* `ReynoldsBridge` imports `NoGapsDiscreteProof` (which imports `GoodStructuresModelSurgery`), and `ChronicleToCountermodelBasic` (which does NOT import `GoodStructuresModelSurgery` -- only `ChronicleToCountermodel` imports it). Check the actual import graph to confirm no cycle.
 - [ ] Define `chronicle_monadic_structure`: Build `OrderedMonadicStructure sig` on `LimitDomSubtype` where `sig` uses `mkSigFrom phi` (the enriched signature from Transfer.lean) and `interp p x := effectiveFormula_membership p (limit_f x.val)`. Provide `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder` instances (all already exist for `LimitDomSubtype` in the discrete case).
 - [ ] Define `chronicle_atomMap`: Use `mkAtomMapFwd phi` from Transfer.lean, mapping formulas to signature predicates.
 - [ ] Prove `chronicle_h_surj`: `forall p : sig.preds, exists a : Atom, chronicle_atomMap (.atom a) = p`. Use `mkAtomMapFwd_surj` from Transfer.lean.
@@ -113,7 +113,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Apply Reynolds Pipeline to LimitDomSubtype [NOT STARTED]
+### Phase 2: Apply Reynolds Pipeline to LimitDomSubtype [COMPLETED]
 
 **Goal**: Apply the sorry-free Reynolds pipeline (`one_class` -> `very_good` -> `good`) to the wrapped `LimitDomSubtype` structure to extract a k-equivalent Z-interval.
 
@@ -140,7 +140,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: K-Equivalence Truth Transfer and Countermodel Construction [NOT STARTED]
+### Phase 3: K-Equivalence Truth Transfer and Countermodel Construction [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: Building a `TaskModel` countermodel on Z from the k-equivalent Z-interval. The Z-interval provides predicate interpretations but not MCS sets, and the `ParametricCanonicalTaskFrame` requires MCS-based world states.
+- **What was tried**: (1) Using `zIntervalTaskFrame` from Transfer.lean -- fails because world states are constant Unit, so atom truth is time-independent, but `temporal_truth` has time-dependent atoms. (2) Building a BFMCS from the Z-interval by reconstructing MCS sets -- this requires Lindenbaum extension of partial type information. (3) Using a cofinal sequence to define FMCS directly on Z -- fails because witnesses from `limit_F_resolution` may not be in the range of the cofinal sequence. (4) Defining a custom TaskFrame with position-dependent world states -- feasible but requires significant new infrastructure.
+- **Why it's stuck**: The fundamental gap is bridging from `temporal_truth` (which uses predicate interpretations on an OrderedMonadicStructure) to `truth_at` (which uses MCS-based world states in ParametricCanonicalTaskFrame). The k-equivalence preserves monadic FO truth but does not preserve the MCS structure needed by the parametric canonical model.
+- **What is needed**: Either (a) a new `TaskFrame` construction where world states carry predicate assignments from the Z-interval, with proof of TaskFrame axioms and truth correspondence, or (b) a way to reconstruct full MCS sets at each integer from the finite predicate information in the Z-interval via Lindenbaum extension.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Goal**: Build a new `completeness_discrete` proof path that uses the k-equivalent Z-structure, transfers satisfiability via k-equivalence, and packages the result as a countermodel.
 
@@ -175,7 +182,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Dead Code Cleanup [NOT STARTED]
+### Phase 4: Dead Code Cleanup [NOT STARTED] *(deviation: deferred — blocked by Phase 3)*
 
 **Goal**: Mark the bypassed sorry chain as dead code. Do not delete yet (leave for task 176 architectural cleanup), but annotate clearly and ensure it is not on any active import path for `completeness_discrete`.
 
@@ -207,7 +214,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Build Verification and Sorry Audit [NOT STARTED]
+### Phase 5: Build Verification and Sorry Audit [NOT STARTED] *(deviation: deferred — blocked by Phase 3)*
 
 **Goal**: Full project build, axiom audit, and sorry census confirming `completeness_discrete` is sorry-free.
 
