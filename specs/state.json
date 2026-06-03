@@ -8,14 +8,14 @@
     {
       "project_number": 267,
       "project_name": "dataset_pipeline_c9_optimization",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "dependencies": [
         266
       ],
       "created": "2026-06-03T04:12:28Z",
-      "last_updated": "2026-06-03T04:52:32Z",
-      "session_id": "sess_1748905200_f8h2c6",
+      "last_updated": "2026-06-03T05:01:55Z",
+      "session_id": "sess_1748906400_g9i3d7",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -418,7 +418,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -427,7 +427,7 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-03T04:56:47Z",
+      "last_updated": "2026-06-03T05:03:54Z",
       "next_artifact_number": 62,
       "artifacts": [
         {
@@ -699,13 +699,18 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/61_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v65: 5 phases, EF Game Bridge (Chain 1) + Reynolds k-equiv bypass (Chain 2), 14-22h"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260603T051841Z.md",
+          "type": "handoff",
+          "summary": "Phase 1 handoff: both sorry chains trace to same root (nf_2var_existential_transfer). GoodStructuresModelSurgery NOT sorry-free."
         }
       ],
-      "session_id": "sess_1780461998_005bc9",
+      "session_id": "sess_1780463003_123347",
       "researched": "2026-06-03T04:22:20Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 3,
+      "resume_phase": 2,
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 18,

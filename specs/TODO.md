@@ -107,7 +107,7 @@ technical_debt:
 
 ### 267. Optimize dataset pipeline for exhaustive c9 generation and beyond
 - **Effort**: large (12-20 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -606,7 +606,7 @@ technical_debt:
 
 ### 155. Fix no_gaps_discrete import cycle for sorry-free discrete completeness
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 199
