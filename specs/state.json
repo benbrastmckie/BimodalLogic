@@ -20,13 +20,13 @@
     {
       "project_number": 271,
       "project_name": "active_until_negative_dense_countermodels",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         270
       ],
       "created": "2026-06-03T16:31:16Z",
-      "last_updated": "2026-06-03T16:31:16Z"
+      "last_updated": "2026-06-03T17:23:44Z"
     },
     {
       "project_number": 272,
@@ -72,16 +72,16 @@
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
-      "description": "Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free",
+      "description": "Strategy B: Refactor discrete completeness to use Reynolds k-equivalence bypass instead of IsSuccArchimedean. Build LimitDomSubtype as OrderedMonadicStructure, apply sorry-free one_class -> very_good -> good pipeline, extract k-equivalent Z-interval, transfer satisfiability, build countermodel on Z. Eliminates succ_embed_surjective sorry chain entirely.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T15:27:16Z",
-      "last_updated": "2026-06-03T16:57:31Z",
+      "last_updated": "2026-06-03T17:45:00Z",
       "researched": "2026-06-03T16:57:31Z",
-      "planned": "2026-06-03T16:05:00Z",
+      "planned": "2026-06-03T17:45:00Z",
       "artifacts": [
         {
           "path": "specs/268_reynolds_pipeline_bridge/reports/01_bridge-research.md",
@@ -91,7 +91,7 @@
         {
           "path": "specs/268_reynolds_pipeline_bridge/plans/01_implementation-plan.md",
           "type": "plan",
-          "summary": "4-phase plan: boneyard archive, chronicle_gap_contradiction bridge proof, sorry chain wiring, full build verification"
+          "summary": "4-phase plan (OBSOLETE): boneyard archive, chronicle_gap_contradiction bridge proof, sorry chain wiring, full build verification"
         },
         {
           "path": "specs/268_reynolds_pipeline_bridge/summaries/01_implementation-summary.md",
@@ -107,15 +107,20 @@
           "path": "specs/268_reynolds_pipeline_bridge/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): Reynolds k-equiv vs IsSuccArchimedean over-engineering, two strategies identified"
+        },
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/plans/04_strategy-b-plan.md",
+          "type": "plan",
+          "summary": "5-phase Strategy B plan: LimitDomSubtype monadic structure, Reynolds pipeline (one_class -> good), k-equiv truth transfer, dead code cleanup, build verification"
         }
       ],
       "next_artifact_number": 5,
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 8,
+        "phases": 5,
+        "total_effort_hours": 14,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
         "dependency_waves": [
           [
             1
@@ -128,6 +133,9 @@
           ],
           [
             4
+          ],
+          [
+            5
           ]
         ],
         "reports_integrated": [
@@ -135,10 +143,34 @@
             "path": "reports/01_bridge-research.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/04_team-research.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/04_teammate-a-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/04_teammate-b-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/04_teammate-c-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/04_teammate-d-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
           }
         ]
       },
-      "resume_phase": 2,
       "session_id": "sess_1780501865_02b28c"
     },
     {
