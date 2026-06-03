@@ -674,6 +674,15 @@ def pastOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
   ord.constraints.filterMap fun (a, b) =>
     if b == t then some a else none
 
+/-- Count distinct time indices appearing in the ordering constraints.
+    Each `addFuture`/`addPast` call introduces one new constraint.
+    The number of distinct time indices bounds the chain length. -/
+def timeCount (ord : TimeOrdering) : Nat :=
+  let allTimes := ord.constraints.foldl (fun acc (a, b) =>
+    let acc' := if acc.contains a then acc else a :: acc
+    if acc'.contains b then acc' else b :: acc') ([] : List TimeIndex)
+  allTimes.length
+
 end TimeOrdering
 
 /-!

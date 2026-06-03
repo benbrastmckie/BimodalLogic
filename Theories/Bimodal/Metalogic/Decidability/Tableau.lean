@@ -749,9 +749,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
         | [] =>
-          if futureTimes.isEmpty then
+          if futureTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
             -- ACTIVE: no future times exist at all — create fresh future time
             -- for Reynolds decomposition (Skolem witness for universal quantifier)
+            -- Guard: limit fresh time point creation to prevent runaway chains
+            -- (task 274). Without this guard, standalone temporal formulas create
+            -- exponential branching chains that exhaust fuel.
             let freshTime := branch.nextTime
             let freshLabel : Label := { world := l.world, time := freshTime }
             let newOrd := timeOrd.addFuture l.time freshTime
@@ -788,7 +791,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                              SignedFormula.neg (.untl event guard) freshLabel, sf] ++ autoProp
             (.branching [branch1, branch2], newOrd)
           else
-            -- All existing future times processed, no need for fresh time
+            -- All existing future times processed, or depth limit reached
             (.notApplicable, timeOrd)
         | t' :: _ =>
           let targetLabel : Label := { world := l.world, time := t' }
@@ -817,9 +820,11 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
         | [] =>
-          if pastTimes.isEmpty then
+          if pastTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
             -- ACTIVE: no past times exist at all — create fresh past time
             -- for Reynolds co-decomposition (Skolem witness for universal quantifier)
+            -- Guard: limit fresh time point creation to prevent runaway chains
+            -- (task 274). Same guard as untlNeg active case above.
             let freshTime := branch.nextTime
             let freshLabel : Label := { world := l.world, time := freshTime }
             let newOrd := timeOrd.addPast l.time freshTime
@@ -856,7 +861,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                              SignedFormula.neg (.snce event guard) freshLabel, sf] ++ autoProp
             (.branching [branch1, branch2], newOrd)
           else
-            -- All existing past times processed, no need for fresh time
+            -- All existing past times processed, or depth limit reached
             (.notApplicable, timeOrd)
         | t' :: _ =>
           let targetLabel : Label := { world := l.world, time := t' }
