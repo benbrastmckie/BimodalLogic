@@ -6,6 +6,20 @@
   },
   "active_projects": [
     {
+      "project_number": 268,
+      "project_name": "reynolds_pipeline_bridge",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free",
+      "priority": "high",
+      "topic": "completeness",
+      "dependencies": [
+        155
+      ],
+      "created": "2026-06-03T15:27:16Z",
+      "last_updated": "2026-06-03T15:27:16Z"
+    },
+    {
       "project_number": 267,
       "project_name": "dataset_pipeline_c9_optimization",
       "status": "completed",
@@ -1662,7 +1676,7 @@
       "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
     }
   ],
-  "next_project_number": 268,
+  "next_project_number": 269,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
