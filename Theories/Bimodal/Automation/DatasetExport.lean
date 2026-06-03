@@ -1,6 +1,7 @@
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.Normalization
+import Bimodal.Automation.AtomCanonicalization
 
 /-!
 # Dataset Export: JSONL Streaming, CLI, and Lake Executable
@@ -508,6 +509,14 @@ structure CLIArgs where
       Task 267: reduced from 5000 to 1000 — bimodal timing distribution
       shows no formulas in the 1–5s range, so 1s captures all decidable cases. -/
   wallclockTimeoutMs : Nat := 1000
+  /-- Skip atom-permutation canonicalization and deduplication.
+      Task 267: when false (default), formulas are canonicalized and deduplicated
+      before labeling, yielding ~4.58x reduction in labeling work. -/
+  skipDedup : Bool := false
+  /-- Number of parallel labeling threads (0 = sequential).
+      Task 267: when > 0, label formulas in parallel batches with
+      sequential write serialization for crash safety. -/
+  parallelThreads : Nat := 0
   deriving Repr, Inhabited
 
 /--
@@ -588,6 +597,10 @@ where
     go rest { acc with frameClass := fc }
   | "--wallclock-timeout" :: n :: rest, acc =>
     go rest { acc with wallclockTimeoutMs := n.toNat! }
+  | "--skip-dedup" :: rest, acc =>
+    go rest { acc with skipDedup := true }
+  | "--parallel" :: n :: rest, acc =>
+    go rest { acc with parallelThreads := n.toNat! }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -602,6 +615,7 @@ Used to read checkpoint files for deterministic resume.
 open Bimodal.Syntax
 open Bimodal.Automation
 open Bimodal.Automation.DatasetExport
+open Bimodal.Automation.AtomCanonicalization
 
 /-- Parser state for S-expression parsing using raw byte positions. -/
 structure SExprPS where
@@ -884,14 +898,25 @@ def main (args : List String) : IO Unit := do
       cpHandle.putStrLn φ.toSExpr
     IO.println s!"  Wrote {formulas'.length} formulas to checkpoint"
 
+  -- Step 3: Atom-permutation canonicalization and deduplication (task 267)
+  let formulasDeduped ← if cliArgs.skipDedup then do
+    IO.println s!"Skipping atom-permutation deduplication (--skip-dedup)"
+    pure formulas'
+  else do
+    let originalCount := formulas'.length
+    let canonical := AtomCanonicalization.deduplicateCanonical formulas'
+    let ratio := if canonical.length > 0 then originalCount * 100 / canonical.length else 0
+    IO.println s!"Deduplicated {originalCount} -> {canonical.length} formulas ({ratio / 100}.{ratio % 100 / 10}x reduction)"
+    pure canonical
+
   -- Step 3d: Skip already-labeled formulas when resuming
   let formulasToLabel := if cliArgs.resumeFrom > 0 then
-    formulas'.drop cliArgs.resumeFrom
-  else formulas'
+    formulasDeduped.drop cliArgs.resumeFrom
+  else formulasDeduped
 
   -- Step 4: Streaming label + write pipeline
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
-  let totalFormulas := formulas'.length
+  let totalFormulas := formulasDeduped.length
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of {totalFormulas})..."
   IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."

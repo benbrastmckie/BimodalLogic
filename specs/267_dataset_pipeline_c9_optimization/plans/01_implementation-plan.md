@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Atom-Permutation Canonicalization and Deduplication [IN PROGRESS]
+### Phase 3: Atom-Permutation Canonicalization and Deduplication [COMPLETED]
 
 **Goal**: Implement a canonical form for formulas under atom permutation, reducing the labeling workload by the measured 4.58x factor. Integration point is between checkpoint write (line 883) and labeling loop (line 908) in DatasetExport.lean.
 
