@@ -8,13 +8,21 @@
     {
       "project_number": 269,
       "project_name": "export_interestingness_scores_to_jsonl",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         267
       ],
       "created": "2026-06-03T15:29:59Z",
-      "last_updated": "2026-06-03T15:29:59Z"
+      "last_updated": "2026-06-03T15:54:38Z",
+      "session_id": "sess_1748995200_h0j4e8",
+      "artifacts": [
+        {
+          "path": "specs/269_export_interestingness_scores_to_jsonl/reports/01_export-fix.md",
+          "type": "report",
+          "summary": "4 edit points in DatasetExport.lean to wire interestingness through"
+        }
+      ]
     },
     {
       "project_number": 268,
