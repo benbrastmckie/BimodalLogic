@@ -731,11 +731,13 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let autoProp := hProps ++ pNegProps ++ snceNegProps ++ modalProps
         (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
       | none => (.notApplicable, timeOrd)
-  -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at known future times
+  -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at future times
   -- Persistent: source formula re-included in both branches.
-  -- For each future time t' > t, branch:
+  -- PASSIVE mode: For each known future time t' > t, branch:
   --   Branch 1: F(event) @ (w, t'), source re-included
   --   Branch 2: F(guard) @ (w, t'), F(U(event, guard)) @ (w, t'), source re-included
+  -- ACTIVE mode: When no future times exist, create a fresh future time and
+  --   perform Reynolds co-decomposition there with full auto-propagation.
   | .untlNeg, .neg, φ =>
       match asUntil? φ with
       | some (event, guard) =>
@@ -746,7 +748,48 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
           !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
-        | [] => (.notApplicable, timeOrd)  -- All future times processed
+        | [] =>
+          if futureTimes.isEmpty then
+            -- ACTIVE: no future times exist at all — create fresh future time
+            -- for Reynolds decomposition (Skolem witness for universal quantifier)
+            let freshTime := branch.nextTime
+            let freshLabel : Label := { world := l.world, time := freshTime }
+            let newOrd := timeOrd.addFuture l.time freshTime
+            -- Auto-propagate T(GA) formulas from time t to freshTime
+            let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+              match gsf.formula with
+              | .all_future inner =>
+                if gsf.label.time == l.time then
+                  let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+                  if branch.contains prop then none else some prop
+                else none
+              | _ => none
+            -- Auto-propagate F(FA) formulas from time t to freshTime
+            let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
+              match fsf.formula with
+              | .some_future inner =>
+                if fsf.label.time == l.time then
+                  let prop := SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+                  if branch.contains prop then none else some prop
+                else none
+              | _ => none
+            -- Auto-propagate OTHER F(U(event', guard')) formulas to freshTime
+            let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
+              if usf.label.time == l.time && usf != sf then
+                let prop := SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
+            let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+            let autoProp := gProps ++ fNegProps ++ untlNegProps ++ modalProps
+            -- Reynolds co-decomposition at the fresh time
+            let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
+            let branch2 := [SignedFormula.neg guard freshLabel,
+                             SignedFormula.neg (.untl event guard) freshLabel, sf] ++ autoProp
+            (.branching [branch1, branch2], newOrd)
+          else
+            -- All existing future times processed, no need for fresh time
+            (.notApplicable, timeOrd)
         | t' :: _ =>
           let targetLabel : Label := { world := l.world, time := t' }
           -- Branch 1: event fails at t', source formula re-included for persistence
@@ -756,11 +799,13 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                            SignedFormula.neg (.untl event guard) targetLabel, sf]
           (.branching [branch1, branch2], timeOrd)
       | none => (.notApplicable, timeOrd)
-  -- F(S(event, guard)) @ (w,t) → Reynolds co-decomposition at known past times
+  -- F(S(event, guard)) @ (w,t) → Reynolds co-decomposition at past times
   -- Persistent: source formula re-included in both branches.
-  -- For each past time t' < t, branch:
+  -- PASSIVE mode: For each known past time t' < t, branch:
   --   Branch 1: F(event) @ (w, t'), source re-included
   --   Branch 2: F(guard) @ (w, t'), F(S(event, guard)) @ (w, t'), source re-included
+  -- ACTIVE mode: When no past times exist, create a fresh past time and
+  --   perform Reynolds co-decomposition there with full auto-propagation.
   | .snceNeg, .neg, φ =>
       match asSince? φ with
       | some (event, guard) =>
@@ -771,7 +816,48 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
           !branch.contains negEvent && !branch.contains negGuard
         match unprocessed with
-        | [] => (.notApplicable, timeOrd)  -- All past times processed
+        | [] =>
+          if pastTimes.isEmpty then
+            -- ACTIVE: no past times exist at all — create fresh past time
+            -- for Reynolds co-decomposition (Skolem witness for universal quantifier)
+            let freshTime := branch.nextTime
+            let freshLabel : Label := { world := l.world, time := freshTime }
+            let newOrd := timeOrd.addPast l.time freshTime
+            -- Auto-propagate T(HA) formulas from time t to freshTime
+            let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
+              match hsf.formula with
+              | .all_past inner =>
+                if hsf.label.time == l.time then
+                  let prop := SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+                  if branch.contains prop then none else some prop
+                else none
+              | _ => none
+            -- Auto-propagate F(PA) formulas from time t to freshTime
+            let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
+              match psf.formula with
+              | .some_past inner =>
+                if psf.label.time == l.time then
+                  let prop := SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+                  if branch.contains prop then none else some prop
+                else none
+              | _ => none
+            -- Auto-propagate OTHER F(S(event', guard')) formulas to freshTime
+            let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
+              if ssf.label.time == l.time && ssf != sf then
+                let prop := SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
+            let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+            let autoProp := hProps ++ pNegProps ++ snceNegProps ++ modalProps
+            -- Reynolds co-decomposition at the fresh time
+            let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
+            let branch2 := [SignedFormula.neg guard freshLabel,
+                             SignedFormula.neg (.snce event guard) freshLabel, sf] ++ autoProp
+            (.branching [branch1, branch2], newOrd)
+          else
+            -- All existing past times processed, no need for fresh time
+            (.notApplicable, timeOrd)
         | t' :: _ =>
           let targetLabel : Label := { world := l.world, time := t' }
           -- Branch 1: event fails at t', source formula re-included for persistence
