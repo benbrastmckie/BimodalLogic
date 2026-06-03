@@ -111,7 +111,7 @@ technical_debt:
 
 ### 270. Extend structural pre-filter with recursive unsatisfiability and consequent validity
 - **Effort**: small (2-4 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

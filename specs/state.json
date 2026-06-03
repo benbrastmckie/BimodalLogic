@@ -8,13 +8,14 @@
     {
       "project_number": 270,
       "project_name": "extend_prefilter_recursive_unsat",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         269
       ],
       "created": "2026-06-03T16:31:16Z",
-      "last_updated": "2026-06-03T16:55:20Z"
+      "last_updated": "2026-06-03T17:09:28Z",
+      "completion_summary": "Extended structural pre-filter with recursive isUnsatBotTemporal (catches U(box(bot),X) etc.) and new isStructurallyValid function (catches p->p, X->box(q->q) etc.). All changes in DatasetGenerator.lean, lake build passes, 16 #eval tests pass."
     },
     {
       "project_number": 271,
