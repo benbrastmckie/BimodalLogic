@@ -8,13 +8,14 @@
     {
       "project_number": 267,
       "project_name": "dataset_pipeline_c9_optimization",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "dependencies": [
         266
       ],
       "created": "2026-06-03T04:12:28Z",
-      "last_updated": "2026-06-03T04:12:28Z"
+      "last_updated": "2026-06-03T04:17:01Z",
+      "session_id": "sess_1748903400_e7g1b5"
     },
     {
       "project_number": 266,
@@ -404,7 +405,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "partial",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -413,8 +414,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-03T00:37:16Z",
-      "next_artifact_number": 61,
+      "last_updated": "2026-06-03T04:22:20Z",
+      "next_artifact_number": 62,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -680,10 +681,15 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/60_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v63: strengthened induction approach for nf_2var_existential_transfer (GHR93 Proposition 7), 6 phases, 10-14 hours"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/61_team-research.md",
+          "type": "research",
+          "summary": "Team research round 10 (4 teammates): EF Game Bridge for Chain 1, BFMCS restructuring for Chain 2, critical path verification needed"
         }
       ],
-      "session_id": "sess_1780429000_plan",
-      "researched": "2026-06-02T22:32:53Z",
+      "session_id": "sess_1780460054_7b1e12",
+      "researched": "2026-06-03T04:22:20Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": 3,

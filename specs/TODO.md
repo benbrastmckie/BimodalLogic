@@ -107,7 +107,7 @@ technical_debt:
 
 ### 267. Optimize dataset pipeline for exhaustive c9 generation and beyond
 - **Effort**: large (12-20 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -612,6 +612,7 @@ technical_debt:
   - [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
   - [155_reynolds_pipeline_activation/reports/55_team-research.md]
   - [155_reynolds_pipeline_activation/reports/60_team-research.md]
+  - [155_reynolds_pipeline_activation/reports/61_team-research.md]
 - **Plan**:
   - [155_reynolds_pipeline_activation/plans/51_implementation-plan.md]
   - [155_reynolds_pipeline_activation/plans/55_implementation-plan.md]
