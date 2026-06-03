@@ -1,15 +1,27 @@
 {
-  "status": "planned",
-  "summary": "Revised plan v63: prove nf_2var_existential_transfer directly (Chain 1) and bypass chronicle_gap_contradiction with direct IsSuccArchimedean proof (Chain 2)",
+  "status": "partial",
+  "summary": "Phase 3 (Chain 1) blocked by interval splitting problem in nf_2var_existential_transfer; Phase 4 (Chain 2) approach identified but needs chronicle-specific argument for constant-MCS case",
   "phases_completed": 2,
   "phases_total": 6,
-  "blockers": [],
-  "continuation_context": null,
+  "blockers": [
+    {
+      "phase": 3,
+      "description": "nf_2var_existential_transfer requires 4-var existential transfer at depth j' for 3-point base. Zone matching cannot simultaneously match orderings with all existing reference points (interval splitting problem, 5 failed sessions documented in NFGameBridge.lean). Requires EF game bridge which the current plan rules out."
+    },
+    {
+      "phase": 4,
+      "description": "chronicle_gap_contradiction (ChronicleToCountermodel.lean:486) sorry. Old proof in comments (lines 488-762) nearly complete for Case A (different MCS) but needs k=0->k=1 fix. Case B (constant MCS) needs chronicle-specific proof."
+    }
+  ],
+  "continuation_context": {
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-4-handoff-20260603.md",
+    "resume_phase": 4
+  },
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/plans/62_revised-plan.md",
-      "type": "plan",
-      "summary": "Blocker-corrected plan replacing EF Game Bridge with direct proofs of nf_2var_existential_transfer and IsSuccArchimedean"
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-4-handoff-20260603.md",
+      "type": "handoff",
+      "summary": "Detailed analysis with blocker documentation, implementation approach for Phase 4, and key findings about both sorry chains"
     }
   ]
 }
