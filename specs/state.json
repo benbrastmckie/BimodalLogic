@@ -32,13 +32,13 @@
     {
       "project_number": 272,
       "project_name": "enumerate_derived_temporal_operators",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         271
       ],
       "created": "2026-06-03T16:31:16Z",
-      "last_updated": "2026-06-03T16:31:16Z"
+      "last_updated": "2026-06-03T20:03:00Z"
     },
     {
       "project_number": 269,
@@ -1829,9 +1829,23 @@
         }
       ],
       "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
+    },
+    {
+      "project_number": 273,
+      "project_name": "chronicle_gap_contradiction_proof",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Prove chronicle_gap_contradiction directly from the omega-chain construction of LimitDomSubtype. The lemma states: for all a b in LimitDomSubtype, if a < b then it is not the case that succ^[n] a < b for all n. This is the sole remaining sorry in the discrete completeness proof chain (ChronicleToCountermodel.lean:473). The proof should proceed by induction on the construction stages of LimitDomSubtype, showing that each C5 witness insertion fills gaps, so no bounded succ-orbit can persist to the limit. Eliminates the sorry chain: chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective → countermodel_discrete_reynolds.",
+      "priority": "high",
+      "topic": "completeness",
+      "dependencies": [],
+      "created": "2026-06-03T19:45:00Z",
+      "last_updated": "2026-06-03T19:45:00Z",
+      "artifacts": [],
+      "next_artifact_number": 1
     }
   ],
-  "next_project_number": 273,
+  "next_project_number": 274,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

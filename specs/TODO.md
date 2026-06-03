@@ -1,5 +1,5 @@
 ---
-next_project_number: 273
+next_project_number: 274
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -39,7 +39,8 @@ technical_debt:
 
 ### Completeness
 
-268 [PLANNED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+273 [NOT STARTED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+268 [PARTIAL] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
@@ -135,11 +136,13 @@ technical_debt:
 
 ### 272. Enumerate derived temporal operators to unlock bimodal proofs
 - **Effort**: medium (8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 271
+- **Research**: [specs/272_enumerate_derived_temporal_operators/reports/01_derived-temporal-ops.md]
+- **Plan**: [specs/272_enumerate_derived_temporal_operators/plans/01_derived-temporal-ops.md]
 
 **Description**: The interestingness analysis revealed that 0% of valid formulas at c5-c8 use temporal axioms in their proofs. This is not a bug — with the current enumeration bounds (raw Until/Since, modal depth 2, temporal depth 2), formulas requiring genuine bimodal reasoning like `G(p) → □G(p)` (which uses the `modal_future` axiom) are not expressible. Extend the formula enumerator in FormulaEnumerator.lean to include derived temporal operators (G = all_future, H = all_past, F = some_future, P = some_past) as first-class enumeration targets alongside the primitive Until/Since. These derived operators appear in the axiom schemas (F_until_equiv, P_since_equiv, modal_future) and are the natural building blocks for formulas that exercise bimodal interaction. After implementation, generate a targeted "bimodal interaction" dataset slice at c5-c7 using formulas containing both □ and G/H/F/P operators, and verify that valid formulas in this slice use temporal axioms (modal_future, connect_future, etc.) in their proofs.
 
