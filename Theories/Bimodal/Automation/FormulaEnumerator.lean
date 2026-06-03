@@ -144,6 +144,42 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget cache
           (children.map Formula.box, c)
         else ([], cache)
+        -- Derived unary temporal operators: F, P, G, H
+        -- These are defined in terms of untl/snce but enumerated as first-class targets.
+        -- Overhead: F/P cost 4 complexity (untl/snce + top where top = imp bot bot)
+        --           G/H cost 8 complexity (neg(F/P(neg child)))
+        -- Gated by temporalBudget > 0 (consumes 1 temporal depth).
+        let (derivedTemporal, cache1a) := if temporalBudget > 0 then
+          -- F(child): some_future child, overhead = 4, child complexity = sizeBudget - 4
+          let fOverhead := 4
+          let (fFormulas, c1) := if sizeBudget > fOverhead then
+            let childSize := sizeBudget - fOverhead
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1
+            (children.map Formula.some_future, c)
+          else ([], cache1)
+          -- P(child): some_past child, overhead = 4, child complexity = sizeBudget - 4
+          let pOverhead := 4
+          let (pFormulas, c2) := if sizeBudget > pOverhead then
+            let childSize := sizeBudget - pOverhead
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c1
+            (children.map Formula.some_past, c)
+          else ([], c1)
+          -- G(child): all_future child, overhead = 8, child complexity = sizeBudget - 8
+          let gOverhead := 8
+          let (gFormulas, c3) := if sizeBudget > gOverhead then
+            let childSize := sizeBudget - gOverhead
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c2
+            (children.map Formula.all_future, c)
+          else ([], c2)
+          -- H(child): all_past child, overhead = 8, child complexity = sizeBudget - 8
+          let hOverhead := 8
+          let (hFormulas, c4) := if sizeBudget > hOverhead then
+            let childSize := sizeBudget - hOverhead
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
+            (children.map Formula.all_past, c)
+          else ([], c3)
+          (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas, c4)
+        else ([], cache1)
         -- Binary constructors: distribute childBudget between left and right
         -- Each child gets exact complexity >= 1, left + right = childBudget
         let (binaryFormulas, cache2) := ((List.range childBudget).foldl
@@ -166,8 +202,8 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                 (untls ++ snces, c2b)
               else ([], c2)
               (accList ++ imps ++ temporalBinaries, c3)
-          ) ([], cache1))
-        (boxes ++ binaryFormulas, cache2)
+          ) ([], cache1a))
+        (boxes ++ derivedTemporal ++ binaryFormulas, cache2)
     -- Store result in cache before returning
     let cache'' := cache'.insert key result
     (result, cache'')
@@ -259,10 +295,16 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       | none => (rng', Formula.bot)
   else
     -- Count available constructor types
-    -- 0 = base (atom/bot), 1 = imp, 2 = box (if modal ok), 3 = untl (if temporal ok), 4 = snce
+    -- 0 = base (atom/bot), 1 = imp, 2 = box (if modal ok),
+    -- 3 = untl/snce (if temporal ok),
+    -- 4 = F/P (if temporal ok and sizeBudget > 4),
+    -- 5 = G/H (if temporal ok and sizeBudget > 8)
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
-    let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 2 else 0)
+    let hasDerivedFP := hasTemporal && sizeBudget > 4
+    let hasDerivedGH := hasTemporal && sizeBudget > 8
+    let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0)
+                        + (if hasDerivedFP then 1 else 0) + (if hasDerivedGH then 1 else 0)
     let (rng1, choice) := rng.randBound numChoices
     if choice == 0 then
       -- Base: atom or bot
@@ -294,7 +336,7 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       -- Unary: box
       let (rng2, child) := sampleOne atoms (modalBudget - 1) temporalBudget (sizeBudget - 1) rng1 fuel'
       (rng2, Formula.box child)
-    else if hasTemporal then
+    else if choice == 2 + (if hasModal then 1 else 0) && hasTemporal then
       -- Temporal binary: untl or snce
       let childBudget := sizeBudget - 1
       if childBudget < 2 then
@@ -314,6 +356,22 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
         let (rng5, untlOrSnce) := rng4.randBound 2
         if untlOrSnce == 0 then (rng5, Formula.untl left right)
         else (rng5, Formula.snce left right)
+    else if hasDerivedFP && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) then
+      -- Derived unary temporal: F (some_future) or P (some_past)
+      -- Overhead: 4 complexity (untl/snce + top)
+      let childSize := sizeBudget - 4
+      let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
+      let (rng3, fpChoice) := rng2.randBound 2
+      if fpChoice == 0 then (rng3, child.some_future)
+      else (rng3, child.some_past)
+    else if hasDerivedGH then
+      -- Derived unary temporal: G (all_future) or H (all_past)
+      -- Overhead: 8 complexity (neg(F/P(neg child)))
+      let childSize := sizeBudget - 8
+      let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
+      let (rng3, ghChoice) := rng2.randBound 2
+      if ghChoice == 0 then (rng3, child.all_future)
+      else (rng3, child.all_past)
     else
       -- Fallback: imp
       let childBudget := sizeBudget - 1
@@ -369,6 +427,7 @@ def sampleFormulas (config : EnumConfig) (count seed : Nat) : List Formula :=
 
 /--
 Operator distribution: count of each top-level constructor in a formula list.
+Includes both primitive constructors and recognized derived temporal operators.
 -/
 structure OperatorDistribution where
   atomCount : Nat := 0
@@ -377,17 +436,58 @@ structure OperatorDistribution where
   boxCount : Nat := 0
   untlCount : Nat := 0
   snceCount : Nat := 0
+  /-- Count of formulas matching the F (some_future) pattern: untl(φ, ⊤). -/
+  allFutureCount : Nat := 0
+  /-- Count of formulas matching the H (all_past) pattern: ¬P(¬φ). -/
+  allPastCount : Nat := 0
+  /-- Count of formulas matching the F (some_future) pattern: untl(φ, ⊤). -/
+  someFutureCount : Nat := 0
+  /-- Count of formulas matching the P (some_past) pattern: snce(φ, ⊤). -/
+  somePastCount : Nat := 0
   deriving Repr, Inhabited
 
-/-- Count the top-level operator of a formula. -/
+/-- Check if a formula matches the ⊤ pattern (imp bot bot). -/
+private def isTop : Formula → Bool
+  | .imp .bot .bot => true
+  | _ => false
+
+/-- Check if a formula matches the negation pattern (imp φ bot). -/
+private def isNeg : Formula → Bool
+  | .imp _ .bot => true
+  | _ => false
+
+/-- Count the top-level operator of a formula, recognizing derived temporal patterns.
+    Derived operators are counted in BOTH the primitive field and the derived field. -/
 def countTopOperator (dist : OperatorDistribution) (φ : Formula) : OperatorDistribution :=
   match φ with
   | .atom _ => { dist with atomCount := dist.atomCount + 1 }
   | .bot => { dist with botCount := dist.botCount + 1 }
-  | .imp _ _ => { dist with impCount := dist.impCount + 1 }
   | .box _ => { dist with boxCount := dist.boxCount + 1 }
-  | .untl _ _ => { dist with untlCount := dist.untlCount + 1 }
-  | .snce _ _ => { dist with snceCount := dist.snceCount + 1 }
+  | .untl _ rhs =>
+    let dist' := { dist with untlCount := dist.untlCount + 1 }
+    -- Check for F pattern: untl(φ, ⊤)
+    if isTop rhs then { dist' with someFutureCount := dist'.someFutureCount + 1 }
+    else dist'
+  | .snce _ rhs =>
+    let dist' := { dist with snceCount := dist.snceCount + 1 }
+    -- Check for P pattern: snce(φ, ⊤)
+    if isTop rhs then { dist' with somePastCount := dist'.somePastCount + 1 }
+    else dist'
+  | .imp inner .bot =>
+    -- Check for G pattern: ¬(F(¬φ)) = imp(untl(imp(φ, bot), imp(bot, bot)), bot)
+    -- Check for H pattern: ¬(P(¬φ)) = imp(snce(imp(φ, bot), imp(bot, bot)), bot)
+    let dist' := { dist with impCount := dist.impCount + 1 }
+    match inner with
+    | .untl negChild guard =>
+      if isNeg negChild && isTop guard then
+        { dist' with allFutureCount := dist'.allFutureCount + 1 }
+      else dist'
+    | .snce negChild guard =>
+      if isNeg negChild && isTop guard then
+        { dist' with allPastCount := dist'.allPastCount + 1 }
+      else dist'
+    | _ => dist'
+  | .imp _ _ => { dist with impCount := dist.impCount + 1 }
 
 /--
 Diversity summary for a list of formulas.
@@ -444,11 +544,17 @@ def DiversitySummary.display (s : DiversitySummary) : String :=
     s!"  atom: {s.operatorDist.atomCount}, bot: {s.operatorDist.botCount}, " ++
     s!"imp: {s.operatorDist.impCount}, box: {s.operatorDist.boxCount}, " ++
     s!"untl: {s.operatorDist.untlCount}, snce: {s.operatorDist.snceCount}"
+  let derivedLines :=
+    s!"  G (all_future): {s.operatorDist.allFutureCount}, " ++
+    s!"H (all_past): {s.operatorDist.allPastCount}, " ++
+    s!"F (some_future): {s.operatorDist.someFutureCount}, " ++
+    s!"P (some_past): {s.operatorDist.somePastCount}"
   let modalLines := s.modalDepthHist.map fun (d, n) => s!"  depth {d}: {n}"
   let tempLines := s.temporalDepthHist.map fun (d, n) => s!"  depth {d}: {n}"
   let catLines := s.categoryCount.map fun (c, n) => s!"  {repr c}: {n}"
   s!"Total formulas: {s.totalCount}\n" ++
-  s!"Operator distribution:\n{opLines}\n" ++
+  s!"Operator distribution (primitive):\n{opLines}\n" ++
+  s!"Derived temporal operators:\n{derivedLines}\n" ++
   s!"Modal depth histogram:\n{String.intercalate "\n" modalLines}\n" ++
   s!"Temporal depth histogram:\n{String.intercalate "\n" tempLines}\n" ++
   s!"GoalCategory counts:\n{String.intercalate "\n" catLines}"
@@ -601,11 +707,16 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     | some a => return .atom a
     | none => return .bot
   else
-    -- Choose constructor type: 0=atom/bot, 1=imp, 2=box, 3=untl, 4=snce
-    let maxChoice := if maxModal > 0 && maxTemporal > 0 then 4
+    -- Choose constructor type: 0=atom/bot, 1=imp, 2=box, 3=untl, 4=snce,
+    -- 5=F/P (if temporal ok and budget > 4), 6=G/H (if temporal ok and budget > 8)
+    let hasDerivedFP := maxTemporal > 0 && budget > 4
+    let hasDerivedGH := maxTemporal > 0 && budget > 8
+    let maxChoice := (if maxModal > 0 && maxTemporal > 0 then 4
                      else if maxModal > 0 then 2
                      else if maxTemporal > 0 then 4
-                     else 1
+                     else 1)
+                     + (if hasDerivedFP then 1 else 0)
+                     + (if hasDerivedGH then 1 else 0)
     let choice ← IO.rand 0 maxChoice
     match choice with
     | 0 =>
@@ -643,13 +754,40 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let left ← sampleOneRandom atoms split maxModal maxTemporal
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
         return .imp left right
-    | _ =>
+    | 4 =>
       -- Binary temporal: since
       if maxTemporal > 0 then
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
         return .snce left right
+      else
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal maxTemporal
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
+        return .imp left right
+    | 5 =>
+      -- Derived temporal: F (some_future) or P (some_past), overhead 4
+      if hasDerivedFP then
+        let childSize := budget - 4
+        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
+        let fpChoice ← IO.rand 0 1
+        if fpChoice == 0 then return child.some_future
+        else return child.some_past
+      else
+        -- Fallback to implication
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal maxTemporal
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
+        return .imp left right
+    | _ =>
+      -- Derived temporal: G (all_future) or H (all_past), overhead 8
+      if hasDerivedGH then
+        let childSize := budget - 8
+        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
+        let ghChoice ← IO.rand 0 1
+        if ghChoice == 0 then return child.all_future
+        else return child.all_past
       else
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal maxTemporal
@@ -773,9 +911,9 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
     | some a => return .atom a
     | none => return .bot
   else
-    -- 6 branches: atom(0), imp(1), box(2), all_future(3), untl(4), snce(5)
-    -- Weights: atom=1, imp=2, box=1, all_future=1, untl=1 (snce reuses untl branch)
-    let choice ← IO.rand 0 5
+    -- 9 branches: atom(0), imp(1), box(2), all_future(3), all_past(4),
+    -- some_future(5), some_past(6), untl(7), snce(8)
+    let choice ← IO.rand 0 8
     match choice with
     | 0 =>
       let idx ← IO.rand 0 atoms.length
@@ -794,10 +932,22 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
       let child ← randomSubFormula atoms (maxSize - 1)
       return .box child
     | 3 =>
-      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, costs ~4 complexity overhead
-      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, costs ~8 complexity overhead
+      let child ← randomSubFormula atoms (max 1 (maxSize - 8))
       return child.all_future
     | 4 =>
+      -- all_past (H(φ) = ¬P(¬φ)): unary temporal, costs ~8 complexity overhead
+      let child ← randomSubFormula atoms (max 1 (maxSize - 8))
+      return child.all_past
+    | 5 =>
+      -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, costs ~4 complexity overhead
+      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      return child.some_future
+    | 6 =>
+      -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, costs ~4 complexity overhead
+      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      return child.some_past
+    | 7 =>
       -- untl: binary temporal
       if maxSize < 3 then
         let child ← randomSubFormula atoms (maxSize - 1)

@@ -102,25 +102,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extend Formula Enumerator with Derived Temporal Operators [NOT STARTED]
+### Phase 2: Extend Formula Enumerator with Derived Temporal Operators [COMPLETED]
 
 **Goal**: Modify `enumExactHelper` and `sampleOne` to generate formulas using G (all_future), H (all_past), F (some_future), and P (some_past) as first-class enumeration targets alongside raw untl/snce.
 
 **Tasks**:
-- [ ] Extend `enumExactHelper` in FormulaEnumerator.lean to add derived unary temporal operators:
-  - G (all_future): unary, consumes 1 temporal depth, costs ~4 complexity (neg(untl(neg phi, top)))
-  - H (all_past): unary, consumes 1 temporal depth, costs ~4 complexity (neg(snce(neg phi, top)))
-  - F (some_future): unary, consumes 1 temporal depth, costs ~2 complexity (untl(phi, top))
-  - P (some_past): unary, consumes 1 temporal depth, costs ~2 complexity (snce(phi, top))
-  - These should be generated alongside boxes in the unary section, gated by `temporalBudget > 0`
-  - Use the actual complexity cost of each operator (F/P cost 2: untl/snce + top; G/H cost 4: neg + untl/snce + neg + top)
-- [ ] Update `sampleOne` (deterministic sampling) to include derived temporal operators as random constructor choices
-- [ ] Update `sampleOneRandom` (IO sampling) to include derived temporal operators as random constructor choices
-- [ ] Update `randomSubFormula` to include additional derived temporal branches (currently has `all_future` at choice 3 -- add `all_past`, `some_future`, `some_past`)
-- [ ] Update `OperatorDistribution` to track derived operator counts (add `allFutureCount`, `allPastCount`, `someFutureCount`, `somePastCount` fields)
-- [ ] Update `countTopOperator` to recognize derived operators by pattern matching on their primitive expansion
-- [ ] Update `DiversitySummary.display` to show derived operator counts
-- [ ] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify
+- [x] Extend `enumExactHelper` in FormulaEnumerator.lean to add derived unary temporal operators *(deviation: altered -- actual complexity overhead is F/P=4, G/H=8 due to top=imp(bot,bot) having complexity 3, not 1)*:
+  - G (all_future): unary, consumes 1 temporal depth, costs 8 complexity overhead
+  - H (all_past): unary, consumes 1 temporal depth, costs 8 complexity overhead
+  - F (some_future): unary, consumes 1 temporal depth, costs 4 complexity overhead
+  - P (some_past): unary, consumes 1 temporal depth, costs 4 complexity overhead
+  - Generated alongside boxes in the unary section, gated by `temporalBudget > 0`
+- [x] Update `sampleOne` (deterministic sampling) to include derived temporal operators as random constructor choices
+- [x] Update `sampleOneRandom` (IO sampling) to include derived temporal operators as random constructor choices
+- [x] Update `randomSubFormula` to include additional derived temporal branches (added all_past, some_future, some_past; 9 total branches now)
+- [x] Update `OperatorDistribution` to track derived operator counts (added `allFutureCount`, `allPastCount`, `someFutureCount`, `somePastCount` fields)
+- [x] Update `countTopOperator` to recognize derived operators by pattern matching on their primitive expansion
+- [x] Update `DiversitySummary.display` to show derived operator counts
+- [x] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify
 
 **Timing**: 2.5 hours
 
