@@ -1,7 +1,7 @@
 # Implementation Plan: Export Interestingness Scores to JSONL
 
 - **Task**: 269 - Export interestingness scores from DatasetRecord to JSONL output
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/269_export_interestingness_scores_to_jsonl/reports/01_export-fix.md
@@ -57,15 +57,15 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Apply 4 Edits and Build [NOT STARTED]
+### Phase 1: Apply 4 Edits and Build [COMPLETED]
 
 - **Goal:** Make all struct, instance, serialization, and mapping changes in `DatasetExport.lean`, then confirm `lake build` passes.
 - **Tasks:**
-  - [ ] Open `Theories/Bimodal/Automation/DatasetExport.lean` and locate `DatasetRecord` struct (~line 213); add `interestingness_score : Option Nat` and `interestingness_tier : Option String` after `proof_reconstruction_method`
-  - [ ] Locate the hand-written `Inhabited DatasetRecord` instance (~line 215); add `interestingness_score := none` and `interestingness_tier := none` to the default value
-  - [ ] Locate `datasetRecordToJson` (~line 268); add `let intScoreStr` and `let intTierStr` bindings (match on `Option`) and append both as JSON fields after existing fields
-  - [ ] Locate `labeledToRecord` (~line 301); add `interestingness_score := lf.interestingnessScore` and `interestingness_tier := lf.interestingnessTier` to the record body
-  - [ ] Run `lake build` and confirm zero errors
+  - [x] Open `Theories/Bimodal/Automation/DatasetExport.lean` and locate `DatasetRecord` struct (~line 213); add `interestingness_score : Option Nat` and `interestingness_tier : Option String` after `proof_reconstruction_method`
+  - [x] Locate the hand-written `Inhabited DatasetRecord` instance (~line 215); add `interestingness_score := none` and `interestingness_tier := none` to the default value
+  - [x] Locate `datasetRecordToJson` (~line 268); add `let intScoreStr` and `let intTierStr` bindings (match on `Option`) and append both as JSON fields after existing fields *(deviation: altered -- used inline match expressions instead of let bindings, consistent with existing serialization pattern in the file)*
+  - [x] Locate `labeledToRecord` (~line 301); add `interestingness_score := lf.interestingnessScore` and `interestingness_tier := lf.interestingnessTier` to the record body
+  - [x] Run `lake build` and confirm zero errors
 - **Timing:** 30 minutes
 - **Depends on:** none
 - **Files to modify:**

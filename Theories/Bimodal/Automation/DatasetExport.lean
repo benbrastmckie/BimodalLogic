@@ -210,6 +210,10 @@ structure DatasetRecord where
   semantic_countermodel : Option SemanticCountermodelSummary
   /-- How the proof was reconstructed (valid formulas only). -/
   proof_reconstruction_method : Option String
+  /-- Interestingness composite score (0-1000 scale). -/
+  interestingness_score : Option Nat := none
+  /-- Interestingness tier classification. -/
+  interestingness_tier : Option String := none
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -237,7 +241,9 @@ instance : Inhabited DatasetRecord :=
      countermodel_consistent := none
      enriched_countermodel := none
      semantic_countermodel := none
-     proof_reconstruction_method := none }⟩
+     proof_reconstruction_method := none
+     interestingness_score := none
+     interestingness_tier := none }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -293,6 +299,12 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"formula_folded_json\": " ++ r.formula_folded_json
   ++ ", \"formula_folded_str\": \"" ++ escapeJsonString r.formula_folded_str ++ "\""
   ++ ", \"formula_folded_sexpr\": \"" ++ escapeJsonString r.formula_folded_sexpr ++ "\""
+  ++ ", \"interestingness_score\": " ++ (match r.interestingness_score with
+    | none => "null"
+    | some s => toString s)
+  ++ ", \"interestingness_tier\": " ++ (match r.interestingness_tier with
+    | none => "null"
+    | some t => "\"" ++ escapeJsonString t ++ "\"")
   ++ "}"
 
 /--
@@ -325,7 +337,9 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     countermodel_consistent := lf.countermodelConsistent
     enriched_countermodel := lf.enrichedCountermodel
     semantic_countermodel := lf.semanticCountermodelSummary
-    proof_reconstruction_method := lf.proofReconstructionMethod }
+    proof_reconstruction_method := lf.proofReconstructionMethod
+    interestingness_score := lf.interestingnessScore
+    interestingness_tier := lf.interestingnessTier }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
