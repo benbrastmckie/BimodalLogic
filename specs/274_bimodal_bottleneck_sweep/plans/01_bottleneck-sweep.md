@@ -99,17 +99,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Validate Timeout Fix with c7 Dataset [NOT STARTED]
+### Phase 2: Validate Timeout Fix with c7 Dataset [COMPLETED]
 
 **Goal**: Regenerate c7 dataset to confirm the active rule fix restores acceptable timeout rates at higher complexity and re-enables feasible generation speed.
 
 **Tasks**:
-- [ ] Run c7 dataset generation using `run_dataset_generation.sh` with post-Phase-1 code
-- [ ] Compare c7 timeout rate against pre-271 baseline of 4.8% (target: under 5%)
-- [ ] Measure processing speed (target: >100 formulas/sec, pre-271 was ~1,500/sec)
-- [ ] Categorize remaining timeouts by formula pattern (modal-only, temporal-only, bimodal)
-- [ ] Verify valid rate is comparable to pre-271 baseline (~8.4%)
-- [ ] Record metrics in a brief validation log for the implementation summary
+- [x] Run c7 dataset generation using `run_dataset_generation.sh` with post-Phase-1 code — 10866 formulas in 17s
+- [x] Compare c7 timeout rate against pre-271 baseline of 4.8% (target: under 5%) — achieved 4.9% (529/10866), matching pre-271 baseline
+- [x] Measure processing speed (target: >100 formulas/sec, pre-271 was ~1,500/sec) — achieved 613 formulas/sec
+- [x] Categorize remaining timeouts by formula pattern (modal-only, temporal-only, bimodal) — 296 temporal-only (56%), 220 bimodal (42%), 11 modal-only (2%), 2 other
+- [x] Verify valid rate is comparable to pre-271 baseline (~8.4%) — achieved 11.4% (1236/10866)
+- [x] Record metrics in a brief validation log for the implementation summary
 
 **Timing**: 1 hour
 
