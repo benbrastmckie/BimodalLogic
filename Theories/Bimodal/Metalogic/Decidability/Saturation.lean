@@ -1174,6 +1174,49 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
   | some (.hasOpen _ _ _ _) => return "INFO AN5: H(p) → ¬P(¬p) open (may need active rule)"
   | none => return "INFO AN5: H(p) → ¬P(¬p) fuel exhausted"
 
+-- Fuel assessment: test representative formulas with buildTableau (fuel=500)
+-- to verify the active rule does not cause regressions or excessive fuel consumption.
+-- The active rule only fires when futureOf/pastOf is empty, so fuel impact should
+-- be minimal compared to the passive rule.
+
+-- Test AN6: buildTableau(fuel=500) on nested Until: U(U(p,q), q) → U(U(p,q), q)
+-- Tests that the active rule handles nested Until without fuel exhaustion.
+#eval do
+  let inner := Formula.untl an_p an_q
+  let outer := Formula.untl inner an_q
+  let φ := Formula.imp outer outer
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS AN6: nested Until identity valid (fuel=500)"
+  | some (.hasOpen _ _ _ _) => return "INFO AN6: nested Until identity open (fuel=500)"
+  | none => return "INFO AN6: nested Until identity timeout (fuel=500)"
+
+-- Test AN7: buildTableau(fuel=500) on U(p, q) → F(p)
+-- If U(p, q) holds (q until p), then eventually p (F(p)) must hold.
+-- This exercises both untlPos (creating future time for T(U(p,q))) and
+-- untlNeg (decomposing F(F(p)) = F(U(p, top)) at the created time).
+#eval do
+  let upq := Formula.untl an_p an_q
+  let fp := Formula.some_future an_p
+  let φ := Formula.imp upq fp
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "PASS AN7: U(p,q) → F(p) valid (fuel=500)"
+  | some (.hasOpen _ _ _ _) => return "INFO AN7: U(p,q) → F(p) open (fuel=500)"
+  | none => return "INFO AN7: U(p,q) → F(p) timeout (fuel=500)"
+
+-- Test AN8: buildTableau(fuel=500) on ¬U(p, q) is satisfiable
+-- F(U(p, q)) at t0 with no future times: active rule creates t1 and decomposes.
+-- The branch should produce a countermodel with blocking termination.
+#eval do
+  let upq := Formula.untl an_p an_q
+  let φ := Formula.neg upq  -- ¬U(p,q)
+  let result := buildTableau φ 500
+  match result with
+  | some (.allClosed _) => return "INFO AN8: ¬U(p,q) closed (unexpected)"
+  | some (.hasOpen _ _ _ _) => return "PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
+  | none => return "INFO AN8: ¬U(p,q) timeout (fuel=500)"
+
 end ActiveUntlNegTests
 
 end Bimodal.Metalogic.Decidability
