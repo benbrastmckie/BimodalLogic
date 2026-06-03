@@ -1,5 +1,5 @@
 ---
-next_project_number: 269
+next_project_number: 270
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -109,6 +109,18 @@ technical_debt:
 257 [IMPLEMENTING] — large_data_storage_huggingface
 
 ## Tasks
+
+### 269. Export interestingness scores from DatasetRecord to JSONL output
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 267
+
+**Description**: Fix the dataset export pipeline where interestingness scores are computed in `LabeledFormula` (via `computeInterestingness` in DatasetGenerator.lean) but silently dropped during conversion to `DatasetRecord` in `labeledToRecord` (DatasetExport.lean:301-328). The `LabeledFormula` struct has `interestingnessScore : Option Nat` and `interestingnessTier : Option String` fields that are populated for every formula, and `LabeledFormula.toJson` serializes them correctly. However, `DatasetRecord` lacks these fields entirely, and `labeledToRecord` does not transfer them, so the final JSONL output contains no interestingness data. Fix by: (1) adding `interestingness_score : Option Nat` and `interestingness_tier : Option String` fields to the `DatasetRecord` structure, (2) mapping them in `labeledToRecord` from `lf.interestingnessScore` and `lf.interestingnessTier`, (3) serializing them in `datasetRecordToJson`. After fixing, regenerate the c5 dataset to verify scores appear in the output and validate the distribution (expect ~84% trivial for valid propositional-only proofs, ~16% with modal axiom usage scoring higher).
+
+---
 
 ### 268. Reynolds pipeline bridge: archive divergent BX code and wire Theorem 14/15 to close IsSuccArchimedean
 - **Effort**: medium (310-620 lines new code + 200-400 lines boneyard moves)
