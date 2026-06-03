@@ -146,33 +146,32 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
         else ([], cache)
         -- Derived unary temporal operators: F, P, G, H
         -- These are defined in terms of untl/snce but enumerated as first-class targets.
-        -- Overhead: F/P cost 4 complexity (untl/snce + top where top = imp bot bot)
-        --           G/H cost 8 complexity (neg(F/P(neg child)))
+        -- Overhead: F/P/G/H all cost 1 complexity (pattern-aware complexity, task 274)
         -- Gated by temporalBudget > 0 (consumes 1 temporal depth).
         let (derivedTemporal, cache1a) := if temporalBudget > 0 then
-          -- F(child): some_future child, overhead = 4, child complexity = sizeBudget - 4
-          let fOverhead := 4
+          -- F(child): some_future child, overhead = 1, child complexity = sizeBudget - 1
+          let fOverhead := 1
           let (fFormulas, c1) := if sizeBudget > fOverhead then
             let childSize := sizeBudget - fOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1
             (children.map Formula.some_future, c)
           else ([], cache1)
-          -- P(child): some_past child, overhead = 4, child complexity = sizeBudget - 4
-          let pOverhead := 4
+          -- P(child): some_past child, overhead = 1, child complexity = sizeBudget - 1
+          let pOverhead := 1
           let (pFormulas, c2) := if sizeBudget > pOverhead then
             let childSize := sizeBudget - pOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c1
             (children.map Formula.some_past, c)
           else ([], c1)
-          -- G(child): all_future child, overhead = 8, child complexity = sizeBudget - 8
-          let gOverhead := 8
+          -- G(child): all_future child, overhead = 1, child complexity = sizeBudget - 1
+          let gOverhead := 1
           let (gFormulas, c3) := if sizeBudget > gOverhead then
             let childSize := sizeBudget - gOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c2
             (children.map Formula.all_future, c)
           else ([], c2)
-          -- H(child): all_past child, overhead = 8, child complexity = sizeBudget - 8
-          let hOverhead := 8
+          -- H(child): all_past child, overhead = 1, child complexity = sizeBudget - 1
+          let hOverhead := 1
           let (hFormulas, c4) := if sizeBudget > hOverhead then
             let childSize := sizeBudget - hOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
@@ -301,8 +300,8 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     -- 5 = G/H (if temporal ok and sizeBudget > 8)
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
-    let hasDerivedFP := hasTemporal && sizeBudget > 4
-    let hasDerivedGH := hasTemporal && sizeBudget > 8
+    let hasDerivedFP := hasTemporal && sizeBudget > 1
+    let hasDerivedGH := hasTemporal && sizeBudget > 1
     let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0)
                         + (if hasDerivedFP then 1 else 0) + (if hasDerivedGH then 1 else 0)
     let (rng1, choice) := rng.randBound numChoices
@@ -709,8 +708,8 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
   else
     -- Choose constructor type: 0=atom/bot, 1=imp, 2=box, 3=untl, 4=snce,
     -- 5=F/P (if temporal ok and budget > 4), 6=G/H (if temporal ok and budget > 8)
-    let hasDerivedFP := maxTemporal > 0 && budget > 4
-    let hasDerivedGH := maxTemporal > 0 && budget > 8
+    let hasDerivedFP := maxTemporal > 0 && budget > 1
+    let hasDerivedGH := maxTemporal > 0 && budget > 1
     let maxChoice := (if maxModal > 0 && maxTemporal > 0 then 4
                      else if maxModal > 0 then 2
                      else if maxTemporal > 0 then 4
@@ -767,9 +766,9 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
         return .imp left right
     | 5 =>
-      -- Derived temporal: F (some_future) or P (some_past), overhead 4
+      -- Derived temporal: F (some_future) or P (some_past), overhead 1 (task 274)
       if hasDerivedFP then
-        let childSize := budget - 4
+        let childSize := budget - 1
         let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
         let fpChoice ← IO.rand 0 1
         if fpChoice == 0 then return child.some_future
@@ -781,9 +780,9 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
         return .imp left right
     | _ =>
-      -- Derived temporal: G (all_future) or H (all_past), overhead 8
+      -- Derived temporal: G (all_future) or H (all_past), overhead 1 (task 274)
       if hasDerivedGH then
-        let childSize := budget - 8
+        let childSize := budget - 1
         let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
         let ghChoice ← IO.rand 0 1
         if ghChoice == 0 then return child.all_future
