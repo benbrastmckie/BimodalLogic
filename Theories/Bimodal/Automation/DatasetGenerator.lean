@@ -474,25 +474,30 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
   -- Phase 2: Decision procedure with wall-clock timeout (task 266)
   -- Spawn the pure decision procedure on a dedicated thread so we can
   -- enforce a wall-clock timeout without blocking the pipeline.
+  -- Uses graduated polling: immediate check first (zero overhead for fast
+  -- formulas), then 1ms sleeps to avoid busy-waiting on slow ones.
   let startTime ← IO.monoMsNow
   if wallclockTimeoutMs > 0 then
+    -- Spawn decision procedure on a dedicated thread and poll for completion.
+    -- Uses 1ms sleep between polls; this adds ~1ms overhead per formula but
+    -- prevents the pipeline from stalling on runaway formulas.
     let task := Task.spawn (fun _ => decideAutoAdaptive φ fc) .dedicated
     let deadline := startTime + wallclockTimeoutMs
-    -- Poll loop: check every 50ms whether the task has finished
     let mut timedOut := false
+    -- Poll loop with 1ms sleep
     repeat do
-      let finished ← IO.hasFinished task
-      if finished then break
+      let done ← IO.hasFinished task
+      if done then break
       let now ← IO.monoMsNow
       if now >= deadline then
         timedOut := true
         break
-      IO.sleep 50
+      IO.sleep 1
+    let endTime ← IO.monoMsNow
+    let elapsed := endTime - startTime
+    let metrics := computeMetrics φ elapsed
+    let patternKey := PatternKey.fromFormula φ
     if timedOut then
-      let endTime ← IO.monoMsNow
-      let elapsed := endTime - startTime
-      let metrics := computeMetrics φ elapsed
-      let patternKey := PatternKey.fromFormula φ
       let intResult := computeInterestingness φ none none
       return {
         formula := φ
@@ -512,10 +517,6 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
       }
     -- Task finished within deadline; retrieve the result
     let (result, fuelTier) ← IO.wait task
-    let endTime ← IO.monoMsNow
-    let elapsed := endTime - startTime
-    let metrics := computeMetrics φ elapsed
-    let patternKey := PatternKey.fromFormula φ
     match result with
     | .valid proof =>
       let trace := extractProofTrace proof
