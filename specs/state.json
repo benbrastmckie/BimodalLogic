@@ -71,14 +71,14 @@
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T15:27:16Z",
-      "last_updated": "2026-06-03T16:05:00Z",
+      "last_updated": "2026-06-03T16:36:08Z",
       "researched": "2026-06-03T15:58:54Z",
       "planned": "2026-06-03T16:05:00Z",
       "artifacts": [
@@ -91,9 +91,19 @@
           "path": "specs/268_reynolds_pipeline_bridge/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "4-phase plan: boneyard archive, chronicle_gap_contradiction bridge proof, sorry chain wiring, full build verification"
+        },
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 complete (boneyard), Phase 2 blocked (contemp_equiv trivially true for bounded subintervals)"
+        },
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/handoffs/phase-2-handoff-20260603.md",
+          "type": "handoff",
+          "summary": "Phase 2 blocker: model surgery inapplicable, alternative paths identified"
         }
       ],
-      "next_artifact_number": 2,
+      "next_artifact_number": 4,
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 8,
@@ -121,7 +131,8 @@
             "integrated_date": "2026-06-03"
           }
         ]
-      }
+      },
+      "resume_phase": 2
     },
     {
       "project_number": 267,
