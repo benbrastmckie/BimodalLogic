@@ -919,7 +919,11 @@ def main (args : List String) : IO Unit := do
   let totalFormulas := formulasDeduped.length
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of {totalFormulas})..."
-  IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
+  let parallelMode := cliArgs.parallelThreads > 0
+  if parallelMode then
+    IO.println s!"Labeling {formulasToLabel.length} formulas with {cliArgs.parallelThreads} parallel threads..."
+  else
+    IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
   IO.println s!"[label] Starting labeling of {formulasToLabel.length} formulas..."
   let fileMode := if cliArgs.resumeFrom > 0 then IO.FS.Mode.append else IO.FS.Mode.write
   let handle ← IO.FS.Handle.mk outputPath fileMode
@@ -932,29 +936,53 @@ def main (args : List String) : IO Unit := do
   let mut totalTimeMs : Nat := 0
   let mut categoryCounts : List (GoalCategory × Nat) := []
   let mut methodCounts : List (String × Nat) := []
-  for φ in formulasToLabel do
-    let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs
-    -- Task 261 v3: slow-formula warning for post-run analysis
-    if labeled.metrics.decisionTimeMs > 1000 then
-      IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
-    -- Write JSONL line immediately (no accumulation)
-    let splitName := assignSplit labeled.formula.prettyPrint
-    let record := labeledToRecord (count + 1) splitName labeled fcName
-    writeRecordJSONL handle record
-    -- Task 261 v3: flush after each record to prevent data loss on crash/kill
-    handle.flush
-    -- Update running accumulators
-    count := count + 1
-    totalComplexity := totalComplexity + labeled.metrics.complexity
-    totalTimeMs := totalTimeMs + labeled.metrics.decisionTimeMs
-    match labeled.label with
-    | .valid => validCount := validCount + 1
-    | .invalid => invalidCount := invalidCount + 1
-    | .timeout => timeoutCount := timeoutCount + 1
-    categoryCounts := incrCategoryCount categoryCounts (goalCategory labeled.formula)
-    methodCounts := incrMethodCount methodCounts labeled.decisionMethod
-    -- Progress reporting every 1000 formulas
-    if count % 1000 == 0 then
+
+  if parallelMode then
+    -- Task 267 Phase 4: Parallel labeling with write serialization
+    -- Process formulas in batches of `parallelThreads`, spawn each labeling
+    -- as a Task, wait for all in the batch, then write results sequentially.
+    let batchSize := cliArgs.parallelThreads
+    let formulaArr := formulasToLabel.toArray
+    let numBatches := (formulaArr.size + batchSize - 1) / batchSize
+    for batchIdx in List.range numBatches do
+      let batchStart := batchIdx * batchSize
+      let batchEnd := min (batchStart + batchSize) formulaArr.size
+      -- Spawn labeling tasks for this batch
+      let mut tasks : Array (Task (Except IO.Error LabeledFormula)) := #[]
+      for i in List.range (batchEnd - batchStart) do
+        let idx := batchStart + i
+        match formulaArr[idx]? with
+        | some φ =>
+          let task ← IO.asTask (labelFormula φ fc cliArgs.wallclockTimeoutMs) .dedicated
+          tasks := tasks.push task
+        | none => pure ()
+      -- Wait for all tasks and collect results
+      for task in tasks do
+        let result ← IO.wait task
+        match result with
+        | .error _err =>
+          -- Task failed; record as timeout
+          timeoutCount := timeoutCount + 1
+          count := count + 1
+        | .ok labeled =>
+          -- Write JSONL line (serialized: only one writer)
+          if labeled.metrics.decisionTimeMs > 1000 then
+            IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
+          let splitName := assignSplit labeled.formula.prettyPrint
+          let record := labeledToRecord (count + 1) splitName labeled fcName
+          writeRecordJSONL handle record
+          handle.flush
+          -- Update accumulators
+          count := count + 1
+          totalComplexity := totalComplexity + labeled.metrics.complexity
+          totalTimeMs := totalTimeMs + labeled.metrics.decisionTimeMs
+          match labeled.label with
+          | .valid => validCount := validCount + 1
+          | .invalid => invalidCount := invalidCount + 1
+          | .timeout => timeoutCount := timeoutCount + 1
+          categoryCounts := incrCategoryCount categoryCounts (goalCategory labeled.formula)
+          methodCounts := incrMethodCount methodCounts labeled.decisionMethod
+      -- Progress reporting after each batch
       let elapsed ← IO.monoMsNow
       let elapsedMs := elapsed - startTime
       let labeledSoFar := count - cliArgs.resumeFrom
@@ -962,15 +990,57 @@ def main (args : List String) : IO Unit := do
       let validPct := if labeledSoFar > 0 then validCount * 100 / labeledSoFar else 0
       let timeoutPct := if labeledSoFar > 0 then timeoutCount * 100 / labeledSoFar else 0
       let rate := if elapsedMs > 0 then labeledSoFar * 1000 / elapsedMs else labeledSoFar
-      let etaStr := if labeledSoFar < 100 then "calculating..."
-        else if rate > 0 then
-          let remaining := totalFormulas - count
-          let etaSecs := remaining / rate
-          let etaMin := etaSecs / 60
-          let etaSecRem := etaSecs % 60
-          s!"{etaMin}m {etaSecRem}s"
-        else "unknown"
-      IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+      if (batchIdx + 1) % 10 == 0 || batchIdx + 1 == numBatches then
+        let etaStr := if labeledSoFar < 100 then "calculating..."
+          else if rate > 0 then
+            let remaining := totalFormulas - count
+            let etaSecs := remaining / rate
+            let etaMin := etaSecs / 60
+            let etaSecRem := etaSecs % 60
+            s!"{etaMin}m {etaSecRem}s"
+          else "unknown"
+        IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+  else
+    -- Sequential labeling (original path)
+    for φ in formulasToLabel do
+      let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs
+      -- Task 261 v3: slow-formula warning for post-run analysis
+      if labeled.metrics.decisionTimeMs > 1000 then
+        IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
+      -- Write JSONL line immediately (no accumulation)
+      let splitName := assignSplit labeled.formula.prettyPrint
+      let record := labeledToRecord (count + 1) splitName labeled fcName
+      writeRecordJSONL handle record
+      -- Task 261 v3: flush after each record to prevent data loss on crash/kill
+      handle.flush
+      -- Update running accumulators
+      count := count + 1
+      totalComplexity := totalComplexity + labeled.metrics.complexity
+      totalTimeMs := totalTimeMs + labeled.metrics.decisionTimeMs
+      match labeled.label with
+      | .valid => validCount := validCount + 1
+      | .invalid => invalidCount := invalidCount + 1
+      | .timeout => timeoutCount := timeoutCount + 1
+      categoryCounts := incrCategoryCount categoryCounts (goalCategory labeled.formula)
+      methodCounts := incrMethodCount methodCounts labeled.decisionMethod
+      -- Progress reporting every 1000 formulas
+      if count % 1000 == 0 then
+        let elapsed ← IO.monoMsNow
+        let elapsedMs := elapsed - startTime
+        let labeledSoFar := count - cliArgs.resumeFrom
+        let pct := if totalFormulas > 0 then count * 100 / totalFormulas else 0
+        let validPct := if labeledSoFar > 0 then validCount * 100 / labeledSoFar else 0
+        let timeoutPct := if labeledSoFar > 0 then timeoutCount * 100 / labeledSoFar else 0
+        let rate := if elapsedMs > 0 then labeledSoFar * 1000 / elapsedMs else labeledSoFar
+        let etaStr := if labeledSoFar < 100 then "calculating..."
+          else if rate > 0 then
+            let remaining := totalFormulas - count
+            let etaSecs := remaining / rate
+            let etaMin := etaSecs / 60
+            let etaSecRem := etaSecs % 60
+            s!"{etaMin}m {etaSecRem}s"
+          else "unknown"
+        IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
 
   -- Labeling completion line
   let labelEndMs ← IO.monoMsNow
@@ -982,6 +1052,16 @@ def main (args : List String) : IO Unit := do
     IO.println s!"[label] Labeling complete: {labeledThisRun} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec), total {count} of {totalFormulas}"
   else
     IO.println s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec)"
+
+  -- Step 4b: Log peak memory usage (Linux /proc/self/status)
+  let statusContent ← IO.FS.readFile ⟨"/proc/self/status"⟩ |>.toBaseIO
+  match statusContent with
+  | .ok content =>
+    let lines := content.splitOn "\n"
+    for line in lines do
+      if line.take 7 == "VmPeak:" || line.take 6 == "VmRSS:" then
+        IO.println s!"[mem] {line.trimLeft}"
+  | .error _ => pure ()  -- Not on Linux; skip
 
   -- Step 5: Print statistics (for this run's portion only)
   let avgTimeMs := if labeledThisRun > 0 then totalTimeMs / labeledThisRun else 0
