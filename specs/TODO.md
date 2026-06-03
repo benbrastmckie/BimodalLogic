@@ -39,7 +39,7 @@ technical_debt:
 
 ### Completeness
 
-268 [NOT STARTED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+268 [PLANNED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
@@ -111,13 +111,14 @@ technical_debt:
 
 ### 269. Export interestingness scores from DatasetRecord to JSONL output
 - **Effort**: small (1-2 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 267
 - **Research**: [269_export_interestingness_scores_to_jsonl/reports/01_export-fix.md]
 - **Plan**: [269_export_interestingness_scores_to_jsonl/plans/01_implementation-plan.md]
+- **Summary**: [269_export_interestingness_scores_to_jsonl/summaries/01_export-fix-summary.md]
 
 **Description**: Fix the dataset export pipeline where interestingness scores are computed in `LabeledFormula` (via `computeInterestingness` in DatasetGenerator.lean) but silently dropped during conversion to `DatasetRecord` in `labeledToRecord` (DatasetExport.lean:301-328). The `LabeledFormula` struct has `interestingnessScore : Option Nat` and `interestingnessTier : Option String` fields that are populated for every formula, and `LabeledFormula.toJson` serializes them correctly. However, `DatasetRecord` lacks these fields entirely, and `labeledToRecord` does not transfer them, so the final JSONL output contains no interestingness data. Fix by: (1) adding `interestingness_score : Option Nat` and `interestingness_tier : Option String` fields to the `DatasetRecord` structure, (2) mapping them in `labeledToRecord` from `lf.interestingnessScore` and `lf.interestingnessTier`, (3) serializing them in `datasetRecordToJson`. After fixing, regenerate the c5 dataset to verify scores appear in the output and validate the distribution (expect ~84% trivial for valid propositional-only proofs, ~16% with modal axiom usage scoring higher).
 
@@ -125,11 +126,13 @@ technical_debt:
 
 ### 268. Reynolds pipeline bridge: archive divergent BX code and wire Theorem 14/15 to close IsSuccArchimedean
 - **Effort**: medium (310-620 lines new code + 200-400 lines boneyard moves)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
 - **Dependencies**: none
+- **Research**: [268_reynolds_pipeline_bridge/reports/01_bridge-research.md]
+- **Plan**: [268_reynolds_pipeline_bridge/plans/01_implementation-plan.md]
 
 **Description**: Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free.
 

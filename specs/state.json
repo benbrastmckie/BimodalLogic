@@ -8,13 +8,13 @@
     {
       "project_number": 269,
       "project_name": "export_interestingness_scores_to_jsonl",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         267
       ],
       "created": "2026-06-03T15:29:59Z",
-      "last_updated": "2026-06-03T15:56:48Z",
+      "last_updated": "2026-06-03T16:03:40Z",
       "session_id": "sess_1748995200_h0j4e8",
       "artifacts": [
         {
@@ -26,20 +26,69 @@
           "path": "specs/269_export_interestingness_scores_to_jsonl/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "2-phase plan: 4 edits in DatasetExport.lean + c5 validation"
+        },
+        {
+          "path": "specs/269_export_interestingness_scores_to_jsonl/summaries/01_export-fix-summary.md",
+          "type": "summary",
+          "summary": "4 edits to DatasetExport.lean, c5 regenerated with interestingness scores"
         }
-      ]
+      ],
+      "completion_summary": "Added interestingness_score and interestingness_tier fields to DatasetRecord, wired through labeledToRecord and datasetRecordToJson. Regenerated c5 dataset: 395 records with scores (range 0-366, tiers: 216 trivial, 170 routine, 5 basic, 4 moderate)."
     },
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T15:27:16Z",
-      "last_updated": "2026-06-03T15:27:16Z"
+      "last_updated": "2026-06-03T16:05:00Z",
+      "researched": "2026-06-03T15:58:54Z",
+      "planned": "2026-06-03T16:05:00Z",
+      "artifacts": [
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/reports/01_bridge-research.md",
+          "type": "report",
+          "summary": "Bridge wiring research: boneyard inventory, type signatures, h_surj analysis, implementation order"
+        },
+        {
+          "path": "specs/268_reynolds_pipeline_bridge/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: boneyard archive, chronicle_gap_contradiction bridge proof, sorry chain wiring, full build verification"
+        }
+      ],
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 8,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_bridge-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-03"
+          }
+        ]
+      }
     },
     {
       "project_number": 267,

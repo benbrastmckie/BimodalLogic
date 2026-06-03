@@ -1,7 +1,7 @@
 # Implementation Plan: Export Interestingness Scores to JSONL
 
 - **Task**: 269 - Export interestingness scores from DatasetRecord to JSONL output
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/269_export_interestingness_scores_to_jsonl/reports/01_export-fix.md
