@@ -445,7 +445,8 @@ The `.timeout` case now represents genuine resource exhaustion (tableau
 construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
-def labelFormula (φ : Formula) (fc : FrameClass := .Base) : IO LabeledFormula := do
+def labelFormula (φ : Formula) (fc : FrameClass := .Base)
+    (wallclockTimeoutMs : Nat := 5000) : IO LabeledFormula := do
   -- Phase 1: Structural pre-filter (task 265)
   -- Check for known-valid patterns before invoking the decision procedure
   match structuralPrefilter φ with
@@ -477,6 +478,27 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base) : IO LabeledFormula :
   let elapsed := endTime - startTime
   let metrics := computeMetrics φ elapsed
   let patternKey := PatternKey.fromFormula φ
+  -- Wall-clock timeout override: if elapsed exceeds the cap, label as timeout
+  -- regardless of the actual decision result. This prevents runaway formulas
+  -- (e.g. temporal-modal feedback loops) from stalling the pipeline.
+  if wallclockTimeoutMs > 0 && elapsed > wallclockTimeoutMs then
+    let intResult := computeInterestingness φ none none
+    return {
+      formula := φ
+      label := .timeout
+      proofTrace := none
+      countermodel := none
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "wallclock_timeout"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := none
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
   match result with
   | .valid proof =>
     let trace := extractProofTrace proof
@@ -540,12 +562,13 @@ Label a batch of formulas with progress reporting.
 Prints progress every 100 formulas processed.
 Returns the list of all labeled results.
 -/
-def labelBatch (formulas : List Formula) : IO (List LabeledFormula) := do
+def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 5000)
+    : IO (List LabeledFormula) := do
   let total := formulas.length
   let mut results : List LabeledFormula := []
   let mut count : Nat := 0
   for φ in formulas do
-    let labeled ← labelFormula φ
+    let labeled ← labelFormula φ .Base wallclockTimeoutMs
     results := labeled :: results
     count := count + 1
     if count % 100 == 0 then

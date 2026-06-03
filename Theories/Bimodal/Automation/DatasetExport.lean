@@ -50,6 +50,7 @@ lake exe dataset_generator -- [OPTIONS]
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling: exhaustive|random|hybrid (default: exhaustive)
   --include-duals         Include temporal dual augmentation
+  --wallclock-timeout N   Per-formula wall-clock timeout in ms (default: 5000)
 ```
 
 ## Downstream Usage (Python)
@@ -502,6 +503,9 @@ structure CLIArgs where
   checkpointFile : Option String := none
   /-- When set, read formulas from the checkpoint file instead of re-enumerating. -/
   useCheckpoint : Bool := false
+  /-- Per-formula wall-clock timeout in milliseconds (0 = no timeout).
+      Task 266: prevents runaway formulas from stalling the pipeline. -/
+  wallclockTimeoutMs : Nat := 5000
   deriving Repr, Inhabited
 
 /--
@@ -580,6 +584,8 @@ where
     go rest { acc with useCheckpoint := true }
   | "--frame-class" :: fc :: rest, acc =>
     go rest { acc with frameClass := fc }
+  | "--wallclock-timeout" :: n :: rest, acc =>
+    go rest { acc with wallclockTimeoutMs := n.toNat! }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -815,6 +821,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"
   IO.println s!"Frame class: {cliArgs.frameClass}"
+  IO.println s!"Wall-clock timeout: {cliArgs.wallclockTimeoutMs}ms"
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
@@ -899,7 +906,7 @@ def main (args : List String) : IO Unit := do
   let mut categoryCounts : List (GoalCategory × Nat) := []
   let mut methodCounts : List (String × Nat) := []
   for φ in formulasToLabel do
-    let labeled ← labelFormula φ fc
+    let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs
     -- Task 261 v3: slow-formula warning for post-run analysis
     if labeled.metrics.decisionTimeMs > 1000 then
       IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
