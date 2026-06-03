@@ -1,5 +1,5 @@
 ---
-next_project_number: 267
+next_project_number: 268
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -104,6 +104,18 @@ technical_debt:
 263 [COMPLETED] — smoke_test_c5_dataset_generation
 
 ## Tasks
+
+### 267. Optimize dataset pipeline for exhaustive c9 generation and beyond
+- **Effort**: large (12-20 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 266
+
+**Description**: Overcome the combinatorial formula count bottleneck identified in task 266 to enable exhaustive dataset generation at c9 (~1.2M formulas) and stratified generation at c10+ (~6M formulas). Build on the progression of optimizations from tasks 264-266: task 264 identified the bimodal fuel distribution and timeout patterns, task 265 eliminated the c6 bottleneck via single-tier fuel and structural pre-filter (18 hours to 5.7 seconds), and task 266 added wall-clock timeout to tame c8 slow formulas (stalled at 14min to completing in 7min for 253K formulas). The remaining bottleneck is raw formula count at c9+, not per-formula cost. Investigate and implement: (1) parallel formula labeling using Lean's Task API to utilize multiple CPU cores (currently single-threaded), (2) incremental/resumable generation with checkpoint files so interrupted runs can continue from where they left off, (3) smarter enumeration that skips provably-redundant formulas (e.g., atom-permutation equivalence classes where U(p,q)→r and U(q,p)→r are structurally identical up to renaming), (4) extend the structural pre-filter with any new timeout patterns discovered at c7-c8 (task 266 found bare temporal patterns U(X,Y)→Z dominate at c7, and temporal-modal feedback loops at c8). After implementation, generate the complete c9 exhaustive dataset and a c10 stratified sample, producing an updated scaling curve through c10.
+
+---
 
 ### 266. Scale dataset generation to c7+ to find next bottleneck
 - **Effort**: medium (8-12 hours)
