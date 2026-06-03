@@ -100,21 +100,36 @@ Phases within the same wave can execute in parallel (all sequential here due to 
 
 ---
 
-### Phase 2: Fix chronicle_gap_contradiction [NOT STARTED]
+### Phase 2: Fix chronicle_gap_contradiction [BLOCKED]
 
 **Goal**: Replace the sorry at `ChronicleToCountermodel.lean:486` with a proof using `gap_contradicts_prior` from `GoodStructuresModelSurgery.lean`.
 
 **Tasks**:
-- [ ] Uncomment the proof body at lines 488-762 of `ChronicleToCountermodel.lean`
-- [ ] Fix the k=0 bug: change the singleton monadic structure to use k>=1 (use k=1 with a signature that has one predicate tracking a distinguishing formula)
-- [ ] Build the `OrderedMonadicStructure` on `LimitDomSubtype` with singleton signature (`preds := Unit`)
-- [ ] Prove `h_surj` trivially: `intro (); exact ⟨⟨0⟩, rfl⟩`
-- [ ] Prove `semantic_prior_UZ` using `limit_satisfies_c5_strong` and `limit_satisfies_c4` combined with the Prior-UZ axiom in MCS
-- [ ] Prove `semantic_prior_SZ` symmetrically using the same approach
-- [ ] Handle the different-MCS case: pick a distinguishing formula psi, show a and b are NOT `contemp_equiv` at k=1, apply `gap_contradicts_prior` to derive False
-- [ ] Handle the constant-MCS case: prove that if `limit_f` is constant on a bounded orbit, the orbit must cover all of `LimitDomSubtype` (contradicting boundedness), OR use a chronicle-specific argument that omega-chain construction guarantees non-constant MCS values on any bounded segment
-- [ ] If the constant-MCS case proves intractable after reasonable effort (>2 hours), leave a targeted sorry with clear documentation of what remains
-- [ ] Run `lake build` to verify the file compiles
+- [ ] Uncomment the proof body at lines 488-762 of `ChronicleToCountermodel.lean` *(deviation: skipped -- model surgery approach is fundamentally blocked, see blocker below)*
+- [ ] Fix the k=0 bug: change the singleton monadic structure to use k>=1 *(deviation: skipped -- irrelevant since contemp_equiv is trivially true at ALL depths for bounded subintervals)*
+- [ ] Build the `OrderedMonadicStructure` on `LimitDomSubtype` with singleton signature *(deviation: skipped -- model surgery approach abandoned)*
+- [ ] Prove `h_surj` trivially *(deviation: skipped)*
+- [ ] Prove `semantic_prior_UZ` *(deviation: skipped -- proof infrastructure exists in commented code but is useless without viable downstream application)*
+- [ ] Prove `semantic_prior_SZ` symmetrically *(deviation: skipped)*
+- [ ] Handle the different-MCS case *(deviation: skipped -- contemp_equiv is trivially true for bounded subintervals regardless of MCS differences)*
+- [ ] Handle the constant-MCS case *(deviation: skipped -- same blocker)*
+- [ ] If the constant-MCS case proves intractable after reasonable effort (>2 hours), leave a targeted sorry with clear documentation of what remains *(deviation: altered -- the ENTIRE model surgery approach is blocked, not just the constant-MCS case)*
+- [x] Run `lake build` to verify the file compiles *(completed -- build passes with sorry)*
+
+**BLOCKER** (Phase 2):
+- **What failed**: The plan's approach of using `gap_contradicts_prior` from GoodStructuresModelSurgery.lean to replace the sorry in `chronicle_gap_contradiction`.
+- **What was tried**:
+  1. Analysis of `contemp_equiv sig k M a b` at depths k=0, k=1, k=2, and arbitrary k with singleton and multi-predicate signatures.
+  2. Analysis of `good sig k N` for bounded subintervals N = M.subinterval(c,d) where c,d have carrier {x | c <= x <= d}.
+  3. Traced through `gap_contradicts_prior` -> `reynolds_model_surgery_core` -> `gap_prior_UZ_contradiction` to understand the proof mechanism.
+  4. Examined `no_gaps_prior` (mathematically false as stated), `one_class`, and `no_gaps_discrete`.
+  5. Explored ChronicleNoGaps.lean (archived in Boneyard) for alternative approaches.
+  6. Analyzed the omega-chain construction for direct stage-induction approach.
+- **Why it's stuck**: `contemp_equiv sig k M a b` is trivially true for ALL bounded subintervals at ANY depth k with ANY MonadicSignature. This is because any bounded sub-subinterval [c,d] (which has carrier {x | c <= x <= d}, a type with min=c and max=d) is k-equivalent to a Z-interval structure (finite integer interval) of matching cardinality and predicate assignment. The proof: `finite_structures_good` shows any finite structure is good; for infinite bounded intervals, the k-type at any finite depth k is determined by local patterns up to depth k, and a sufficiently large Z-interval with matching predicate assignment realizes the same k-type. Therefore `h_bounded_above : exists y, a < y /\ not (contemp_equiv sig k M a y)` required by `gap_contradicts_prior` is NEVER satisfiable. The model surgery framework detects differences between UNBOUNDED structures (via the gap formula R and Prior-UZ/SZ transitions), not within bounded subintervals.
+- **What is needed**: A fundamentally different proof approach. Two viable paths:
+  - **Path A (omega-chain induction, ~300-600 lines)**: Prove `limitDomSubtype_isSuccArchimedean` directly by induction on the omega-chain construction stages. Show that for any a, b in limit_dom, there exists stage N where both appear in `(omega_chain_val N).dom`. At stage N, the finite domain is trivially archimedean. The key lemma: `limitDomSubtype_succ` agrees with the stage-N successor on points present at stage N.
+  - **Path B (connectivity lemma, ~200-400 lines)**: Prove that `limit_dom` is order-connected: for any a, b in limit_dom with a < b, every rational between a and b that is in limit_dom is reachable from a by succ-iteration. This follows from the fact that the omega-chain construction only adds points to existing connected components (never creates new disjoint components).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Timing**: 4 hours
 

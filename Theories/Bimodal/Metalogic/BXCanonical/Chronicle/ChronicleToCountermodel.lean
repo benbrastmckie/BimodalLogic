@@ -444,12 +444,31 @@ This case has a sorry pending resolution.
 
 /--
 **Core gap elimination**: If the chronicle domain has a bounded successor orbit,
-derive a contradiction via sorry-free model surgery.
+derive a contradiction.
 
-Uses `gap_contradicts_prior` from GoodStructuresModelSurgery.lean when a
-distinguishing formula exists between `limit_f(a.val)` and `limit_f(b.val)`.
-The constant-MCS case (where `limit_f(a.val) = limit_f(b.val)`) requires a
-chronicle-specific argument and currently has a sorry.
+**Status (task 268)**: SORRY — the model surgery approach via `gap_contradicts_prior`
+does not work. Analysis shows that `contemp_equiv sig k M` is trivially true for
+ALL bounded subintervals at ANY depth k with ANY signature, because any bounded
+sub-subinterval `[c,d]` (which has min=c and max=d) is k-equivalent to a Z-interval
+structure of matching size and predicate assignment. This means `h_bounded_above`
+(the hypothesis `∃ y, a < y ∧ ¬ contemp_equiv sig k M a y` required by
+`gap_contradicts_prior`) is NEVER satisfiable. The entire contemp_equiv framework
+only detects structural differences between UNbounded structures, not within
+bounded subintervals.
+
+**Correct approach**: Direct induction on the omega-chain construction stages.
+At each stage n, `(omega_chain_val n).dom` is a finite set of rationals. For any
+two points a, b in `limit_dom`, there exists a stage N where both appear:
+`a, b ∈ (omega_chain_val N).dom`. At stage N, the finite domain is trivially
+IsSuccArchimedean (finite discrete linear order). The key step is showing that
+the succ function on `LimitDomSubtype` agrees with the finite-stage successor
+on domain points — i.e., the C5 witness at the limit level coincides with the
+C5 witness at stage N. This requires proving that `limit_satisfies_c5_strong`
+produces the SAME witness as the stage-N C5 construction when both x and its
+successor are already in stage N's domain.
+
+Estimated effort: 300-600 lines of new proof code.
+See task 268 plan file for full blocker documentation.
 -/
 private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -459,12 +478,6 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_orbit_bounded : ∀ n : ℕ,
       (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a < b) :
     False := by
-  -- The import cycle is now broken (task 155 Step 0). The sorry-free tools
-  -- gap_contradicts_prior, no_boundary_at_successor, contemp_equiv_is_equiv
-  -- from GoodStructuresModelSurgery/GoodStructures are accessible.
-  -- The full proof requires building an OrderedMonadicStructure on LimitDomSubtype,
-  -- proving semantic_prior_UZ/SZ via the MCS bridge, and applying gap_contradicts_prior.
-  -- See plan v51 Phase 1 for the detailed strategy.
   sorry
 
 /-  OLD PROOF (blocked by import cycle, replaced above):
