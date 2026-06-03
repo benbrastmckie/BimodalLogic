@@ -92,15 +92,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build verification and regression check [NOT STARTED]
+### Phase 2: Build verification and regression check [COMPLETED]
 
 **Goal**: Verify the changes compile cleanly with `lake build`, confirm no new sorries or axiom regressions, and verify the pre-filter correctly handles the new patterns.
 
 **Tasks**:
-- [ ] Run `lake build Theories.Bimodal.Automation.DatasetGenerator` to verify the module compiles
-- [ ] Run `lake build` to verify the full project compiles cleanly
-- [ ] Verify no new `sorry` appears in `DatasetGenerator.lean` (grep check)
-- [ ] Verify no new `axiom` usage (grep check or `#print axioms` on key definitions)
+- [x] Run `lake build Theories.Bimodal.Automation.DatasetGenerator` to verify the module compiles *(deviation: altered -- used `lake build Bimodal.Automation.DatasetGenerator` per lakefile module naming)*
+- [x] Run `lake build` to verify the full project compiles cleanly
+- [x] Verify no new `sorry` appears in `DatasetGenerator.lean` (grep check)
+- [x] Verify no new `axiom` usage (grep check or `#print axioms` on key definitions)
 
 **Timing**: 30 minutes
 
