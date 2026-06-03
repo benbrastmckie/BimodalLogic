@@ -135,25 +135,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Extend Axiom Seeding with Temporal Interaction Schemata [NOT STARTED]
+### Phase 3: Extend Axiom Seeding with Temporal Interaction Schemata [COMPLETED]
 
 **Goal**: Add temporal-modal interaction axiom schemata to `instantiateAxiom` and `theoremSeedFormulas` to ensure the valid formula pool contains formulas that require temporal axioms in proofs.
 
 **Tasks**:
-- [ ] Add new axiom schemata to `instantiateAxiom`:
-  - `modal_future(phi)`: `box phi -> G(box phi)` (derived from temp_future_derived)
-  - `modal_past(phi)`: `box phi -> H(box phi)` (past dual)
+- [x] Add new axiom schemata to `instantiateAxiom` (8 new, indices 14-21):
+  - `modal_future(phi)`: `box phi -> G(box phi)`
+  - `modal_past(phi)`: `box phi -> H(box phi)`
   - `perpetuity_1(phi)`: `box phi -> always phi`
   - `perpetuity_2(phi)`: `sometimes phi -> diamond phi`
   - `G_distribution(phi, psi)`: `G(phi -> psi) -> (G phi -> G psi)`
   - `H_distribution(phi, psi)`: `H(phi -> psi) -> (H phi -> H psi)`
   - `always_to_present(phi)`: `always phi -> phi`
-  - `box_imp_weak_future(phi)`: `box phi -> weak_future phi`
-- [ ] Add new bimodal interaction seed formulas to `theoremSeedFormulas`:
-  - Formulas mixing box with G/H/F/P: `G(p) -> box(G(p))`, `box(p) -> G(box(p))`, `sometimes(box(p)) -> box(always(p))`
-  - Formulas using the newly defined release/weak_until if complexity allows
-- [ ] Increase `schemaIdx` range in `instantiateAxiom` to accommodate new schemata (currently 0..13, extend)
-- [ ] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify
+  - `present_to_sometimes(phi)`: `phi -> sometimes phi` *(deviation: altered -- replaced box_imp_weak_future with present_to_sometimes which is more fundamental and proven in Phase 1)*
+- [x] Add new bimodal interaction seed formulas to `theoremSeedFormulas` (14 new seeds) *(deviation: altered -- added proven conjunction elimination lemmas and G/H distribution instances instead of unproven release/weak_until formulas)*
+- [x] Increase `schemaIdx` range in `instantiateAxiom` to accommodate new schemata (extended from 0..13 to 0..21)
+- [x] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify
 
 **Timing**: 1.5 hours
 

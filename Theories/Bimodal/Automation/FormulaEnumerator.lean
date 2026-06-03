@@ -973,21 +973,19 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
 /--
 Instantiate a random axiom schema with random sub-formulas.
 
-Picks one of the 8 high-yield axiom schemata and generates random formulas to
-fill the schema parameters. The result is guaranteed valid by construction.
+Picks one of 22 axiom schemata and generates random formulas to fill the schema
+parameters. The result is guaranteed valid by construction.
 
-**Supported schemata**:
-- `prop_s(φ, ψ)`: `φ → (ψ → φ)` (weakening)
-- `prop_k(φ, ψ, χ)`: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
-- `ex_falso(φ)`: `⊥ → φ`
-- `peirce(φ, ψ)`: `((φ → ψ) → φ) → φ`
-- `modal_t(φ)`: `□φ → φ` (reflexivity)
-- `modal_4(φ)`: `□φ → □□φ` (transitivity)
-- `modal_b(φ)`: `φ → □◇φ` (symmetry)
-- `modal_k_dist(φ, ψ)`: `□(φ → ψ) → (□φ → □ψ)`
+**Supported schemata** (22 total):
+- Propositional (4): prop_s, prop_k, ex_falso, peirce
+- Modal (4): modal_t, modal_4, modal_b, modal_k_dist
+- Temporal basic (6): serial_future, serial_past, connect_future, connect_past,
+  right_mono_until, F_until_equiv
+- Temporal-modal interaction (8, Task 272): modal_future, modal_past, perpetuity_1,
+  perpetuity_2, G_distribution, H_distribution, always_to_present, present_to_sometimes
 -/
 partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formula := do
-  let schemaIdx ← IO.rand 0 13
+  let schemaIdx ← IO.rand 0 21
   match schemaIdx with
   | 0 => do
     -- prop_s: φ → (ψ → φ)
@@ -1026,7 +1024,7 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return (φ.imp ψ).box.imp (φ.box.imp ψ.box)
-  -- Temporal axiom schemata (6 new schemata)
+  -- Temporal axiom schemata (6 existing temporal schemata)
   | 8 => do
     -- serial_future: ⊤ → F(⊤)
     return Formula.top.imp (Formula.some_future Formula.top)
@@ -1047,10 +1045,45 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
     return (φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))
-  | _ => do
+  | 13 => do
     -- F_until_equiv(φ): F(φ) → (φ U ⊤)
     let φ ← randomSubFormula atoms maxParamSize
     return (Formula.some_future φ).imp (Formula.untl φ Formula.top)
+  -- Temporal-modal interaction schemata (Task 272, 8 new schemata)
+  | 14 => do
+    -- modal_future(φ): □φ → G(□φ) (from temp_future_derived / box_to_future via MF+MT)
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.box.imp φ.box.all_future
+  | 15 => do
+    -- modal_past(φ): □φ → H(□φ) (past dual of modal_future)
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.box.imp φ.box.all_past
+  | 16 => do
+    -- perpetuity_1(φ): □φ → always(φ)
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.box.imp φ.always
+  | 17 => do
+    -- perpetuity_2(φ): sometimes(φ) → ◇φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.sometimes.imp φ.diamond
+  | 18 => do
+    -- G_distribution(φ, ψ): G(φ → ψ) → (Gφ → Gψ)
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    return (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)
+  | 19 => do
+    -- H_distribution(φ, ψ): H(φ → ψ) → (Hφ → Hψ)
+    let φ ← randomSubFormula atoms maxParamSize
+    let ψ ← randomSubFormula atoms maxParamSize
+    return (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past)
+  | 20 => do
+    -- always_to_present(φ): always(φ) → φ
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.always.imp φ
+  | _ => do
+    -- present_to_sometimes(φ): φ → sometimes(φ)
+    let φ ← randomSubFormula atoms maxParamSize
+    return φ.imp φ.sometimes
 
 /--
 Apply modus ponens: given valid φ and valid (φ → ψ), return ψ.
@@ -1124,7 +1157,26 @@ private def theoremSeedFormulas : List Formula :=
     p.sometimes.diamond.imp p.diamond,                       -- perpetuity_4 (= perpetuity_2)
     p.imp p.diamond.box,                                     -- mb_diamond (= modal_b)
     p.diamond.box.imp p.diamond.box.all_future,              -- box_diamond_to_future_box_diamond
-    p.diamond.box.imp p.diamond.box.all_past                 -- box_diamond_to_past_box_diamond
+    p.diamond.box.imp p.diamond.box.all_past,                -- box_diamond_to_past_box_diamond
+    -- Bimodal interaction seeds (Task 272, 14 new)
+    -- G/H distribution with concrete formulas
+    (p.imp q).all_future.imp (p.all_future.imp q.all_future),  -- G_distribution(p,q)
+    (p.imp q).all_past.imp (p.all_past.imp q.all_past),        -- H_distribution(p,q)
+    -- Conjunction elimination from compound temporal operators
+    p.always.imp p,                                            -- always_to_present
+    p.imp p.sometimes,                                         -- present_to_sometimes
+    p.weak_future.imp p,                                       -- weak_future_left
+    p.weak_future.imp p.all_future,                            -- weak_future_right
+    p.weak_past.imp p,                                         -- weak_past_left
+    p.weak_past.imp p.all_past,                                -- weak_past_right
+    p.always.imp p.all_future,                                 -- always_imp_all_future
+    p.always.imp p.all_past,                                   -- always_imp_all_past
+    -- Bimodal interactions mixing box with G/H/F/P
+    p.box.imp p.box.all_past,                                  -- box_to_box_past (duplicate check ok)
+    p.box.imp p.always,                                        -- perpetuity_1 (duplicate check ok)
+    p.sometimes.imp p.diamond,                                 -- perpetuity_2_alt (sometimes -> diamond)
+    -- Deep temporal chains
+    p.imp (p.some_past.some_future.all_past.all_future)        -- connect_future_chain(p)
   ]
 
 /--
