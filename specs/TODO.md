@@ -123,7 +123,7 @@ technical_debt:
 
 ### 271. Add active Until-negative rule for dense countermodel construction
 - **Effort**: medium (8-16 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

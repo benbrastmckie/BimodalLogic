@@ -20,13 +20,14 @@
     {
       "project_number": 271,
       "project_name": "active_until_negative_dense_countermodels",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         270
       ],
       "created": "2026-06-03T16:31:16Z",
-      "last_updated": "2026-06-03T17:23:44Z"
+      "last_updated": "2026-06-03T18:31:52Z",
+      "completion_summary": "Made untlNeg and snceNeg rules active in Tableau.lean: create fresh time points when no future/past times exist, with Reynolds co-decomposition and full auto-propagation. Conservative design preserves all existing proofs. Zero regressions, 8 new tests pass, lake build succeeds (1682 jobs)."
     },
     {
       "project_number": 272,
