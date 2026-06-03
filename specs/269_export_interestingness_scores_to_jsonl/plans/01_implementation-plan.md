@@ -77,14 +77,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Regenerate c5 Dataset and Validate [NOT STARTED]
+### Phase 2: Regenerate c5 Dataset and Validate [COMPLETED]
 
 - **Goal:** Confirm that `interestingness_score` and `interestingness_tier` appear with non-null values in JSONL output for formulas that have scores computed.
 - **Tasks:**
-  - [ ] Regenerate the c5 dataset (or a small sample) using the existing generation command
-  - [ ] Spot-check the first 100 JSONL records: verify `"interestingness_score"` and `"interestingness_tier"` keys are present
-  - [ ] Confirm at least some records have non-null values (i.e., transfer is live, not always `none`)
-  - [ ] Confirm records with no interestingness computation show `null` for both fields
+  - [x] Regenerate the c5 dataset (or a small sample) using the existing generation command
+  - [x] Spot-check the first 100 JSONL records: verify `"interestingness_score"` and `"interestingness_tier"` keys are present
+  - [x] Confirm at least some records have non-null values (i.e., transfer is live, not always `none`)
+  - [x] Confirm records with no interestingness computation show `null` for both fields *(deviation: altered -- all 395 records had non-null values since interestingness is always computed during labeling)*
 - **Timing:** 30 minutes
 - **Depends on:** 1
 - **Files to modify:** None (read-only validation)
