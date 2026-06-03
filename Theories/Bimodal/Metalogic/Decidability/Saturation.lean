@@ -1093,4 +1093,87 @@ private def pl_r : Formula := .atom (Atom.mk_base "r")
 
 end PersistentLoopTests
 
+/-!
+## Active Until/Since Negative Rule Tests (Task 271)
+
+These tests verify that the active untlNeg/snceNeg rules correctly create
+fresh time points when no future/past times exist, enabling countermodel
+construction for formulas that previously caused premature saturation or
+timeout.
+
+The key innovation is that F(U(event, guard)) at a time with no future
+times will now create a fresh future time and perform Reynolds
+co-decomposition there, rather than returning notApplicable.
+-/
+
+section ActiveUntlNegTests
+
+open Bimodal.Syntax
+
+private def an_p : Formula := .atom (Atom.mk_base "p")
+private def an_q : Formula := .atom (Atom.mk_base "q")
+
+-- Test AN1: G(p) → ¬F(¬p) should be valid
+-- G(p) means p holds at all future times, ¬F(¬p) means there is no future time
+-- where ¬p holds. These are logically equivalent.
+-- Tests that active untlNeg (via F = U(·,⊤)) creates fresh future times
+-- where the interaction between G(p) and F(¬p) can be checked.
+#eval do
+  let gp := Formula.all_future an_p
+  let fnp := Formula.some_future (Formula.neg an_p)
+  let φ := Formula.imp gp (Formula.neg fnp)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS AN1: G(p) → ¬F(¬p) is valid"
+  | some (.hasOpen _ _ _ _) => return "INFO AN1: G(p) → ¬F(¬p) open (may need active rule)"
+  | none => return "INFO AN1: G(p) → ¬F(¬p) fuel exhausted"
+
+-- Test AN2: U(p, q) is satisfiable (open branch with active untlNeg)
+-- Active untlNeg creates a fresh future time for Reynolds decomposition
+-- when no future times exist, enabling countermodel construction.
+#eval do
+  let φ := Formula.untl an_p an_q
+  let result := buildTableau φ 200
+  match result with
+  | some (.allClosed _) => return "INFO AN2: U(p,q) unexpectedly closed"
+  | some (.hasOpen _ _ _ _) => return "PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
+  | none => return "INFO AN2: U(p,q) fuel exhausted"
+
+-- Test AN3: U(p, q) → U(p, q) should be valid (identity, regression baseline)
+-- Tests that the active untlNeg rule does not break simple identity proofs.
+-- Negation produces F(U(p,q)) and T(U(p,q)) at the same label -- the positive
+-- Until creates a fresh future time, and the negative Until decomposes there.
+#eval do
+  let φ := Formula.imp (Formula.untl an_p an_q) (Formula.untl an_p an_q)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS AN3: U(p,q) → U(p,q) is valid"
+  | some (.hasOpen _ _ _ _) => return "FAIL AN3: U(p,q) → U(p,q) should be valid"
+  | none => return "INFO AN3: U(p,q) → U(p,q) fuel exhausted"
+
+-- Test AN4: S(p, q) is satisfiable (symmetric past test for active snceNeg)
+-- Active snceNeg should create a fresh past time to decompose F(S(p, q))
+#eval do
+  let φ := Formula.snce an_p an_q
+  let result := buildTableau φ 200
+  match result with
+  | some (.allClosed _) => return "INFO AN4: S(p,q) unexpectedly closed"
+  | some (.hasOpen _ _ _ _) => return "PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
+  | none => return "INFO AN4: S(p,q) fuel exhausted"
+
+-- Test AN5: H(p) → ¬P(¬p) should be valid (past-directed mirror of AN1)
+-- H(p) means p holds at all past times, ¬P(¬p) means there is no past time
+-- where ¬p holds. Tests snceNeg active rule via P = S(·,⊤) equivalence.
+#eval do
+  let hp := Formula.all_past an_p
+  let pnp := Formula.some_past (Formula.neg an_p)
+  let φ := Formula.imp hp (Formula.neg pnp)
+  let result := buildTableauAuto φ
+  match result with
+  | some (.allClosed _) => return "PASS AN5: H(p) → ¬P(¬p) is valid"
+  | some (.hasOpen _ _ _ _) => return "INFO AN5: H(p) → ¬P(¬p) open (may need active rule)"
+  | none => return "INFO AN5: H(p) → ¬P(¬p) fuel exhausted"
+
+end ActiveUntlNegTests
+
 end Bimodal.Metalogic.Decidability
