@@ -78,7 +78,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Z1 Infrastructure and Helper Lemmas [NOT STARTED]
+### Phase 1: Z1 Infrastructure and Helper Lemmas [BLOCKED]
 
 **Goal**: Prove helper lemmas about Z1 in discrete MCS, the relationship between limit_f and the successor chain, and G-propagation through iterated successors. These are the building blocks for both Case A and Case B.
 
@@ -92,6 +92,13 @@ Phases within the same wave can execute in parallel.
 **Timing**: 2 hours
 
 **Depends on**: none
+
+**BLOCKER** (Phase 1):
+- **What failed**: The Z1 axiom G(Gψ→ψ) → (FGψ→Gψ) cannot be directly instantiated with a useful formula ψ because: (a) orbit membership is a second-order property not expressible in the temporal language, (b) any formula universally true at all domain points makes Z1 vacuous, (c) distinguishing formulas (Case A) don't give G(Gψ→ψ) without knowing ψ's behavior at gap points.
+- **What was tried**: (1) Z1 with next_top (vacuous, true everywhere); (2) Z1 with distinguishing formula ψ ∈ limit_f(b)\limit_f(a) (G(Gψ→ψ) unverifiable at gap boundary); (3) Prior-UZ descent creating alternating ψ-witnesses (no termination argument); (4) pred/succ cancellation descent (circular - requires IsSuccArchimedean for well-foundedness); (5) dom(N) stage argument (gives succ^K(a) ≤ b but not ≥ b due to intermediate insertions); (6) Model surgery via contemp_equiv (trivially true for bounded intervals at any EF-game depth k, confirmed by research).
+- **Why it's stuck**: The fundamental gap is that orbit membership (succ-reachability from a) is second-order and cannot be expressed as a temporal formula. The standard model-theoretic proof of Z1 → IsSuccArchimedean uses a CHOSEN valuation encoding orbit membership, but in the MCS/chronicle setting, the valuation is FIXED by limit_f. Reynolds' expressive completeness (US_expressively_complete_over_prior) could bridge this gap, but requires semantic Prior-UZ/SZ for a structure whose predicate is orbit membership, which itself requires the orbit membership to be expressible - creating circularity.
+- **What is needed**: One of: (a) A novel proof that semantic Prior-UZ/SZ holds for the orbit-cut structure directly from the chronicle construction (Boneyard approach option (a)); (b) Completion of Strategy B (ReynoldsBridge.lean:489 sorry); (c) A fundamentally different proof technique not yet identified.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- add helper lemmas in the Z1 section (after `z1_in_mcs`, before `chronicle_gap_contradiction`)

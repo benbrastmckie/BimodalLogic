@@ -443,32 +443,82 @@ This case has a sorry pending resolution.
 -/
 
 /--
+Helper: if `ψ ∈ limit_f(y)` and `x < y`, then `F(ψ) ∈ limit_f(x)`.
+More precisely, `some_future ψ ∈ limit_f(x)`.
+
+Proof by contradiction using C4. If `F(ψ) ∉ limit_f(x)`, then `¬F(ψ) = (U(ψ, ⊤)).neg
+∈ limit_f(x)`. By C4 with event `ψ` at `y` and guard `⊤`, we get `z` with
+`x < z < y` and `⊤.neg ∈ limit_f(z)`, i.e., `⊥ ∈ limit_f(z)`. But `⊥` is never in
+an MCS. Contradiction.
+-/
+private theorem limit_f_some_future_of_lt (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (x y : Rat) (hx : x ∈ limit_dom fc A h_mcs) (hy : y ∈ limit_dom fc A h_mcs)
+    (hxy : x < y) (ψ : Formula) (hψ : ψ ∈ limit_f fc A h_mcs y) :
+    Formula.some_future ψ ∈ limit_f fc A h_mcs x := by
+  by_contra h_neg
+  have h_mcs_x := limit_c0 fc A h_mcs x hx
+  have h_neg_F : (Formula.some_future ψ).neg ∈ limit_f fc A h_mcs x :=
+    (SetMaximalConsistent.negation_complete h_mcs_x _).resolve_left h_neg
+  -- some_future ψ = U(ψ, ⊤). So (some_future ψ).neg = (U(ψ, ⊤)).neg
+  -- C4 with η = ψ, ξ = ⊤: ¬U(ψ,⊤) ∈ f(x) and ψ ∈ f(y) gives z with ⊤.neg ∈ f(z)
+  -- Use change to make the types match exactly
+  set top := Formula.bot.imp Formula.bot with htop_def
+  have h_neg_until : (Formula.untl ψ top).neg ∈ limit_f fc A h_mcs x := h_neg_F
+  obtain ⟨z, hz, _, _, h_top_neg⟩ :=
+    limit_satisfies_c4 fc A h_mcs x y hx hy hxy top ψ h_neg_until hψ
+  -- ⊤.neg = (⊥ → ⊥).neg ∈ f(z). But ⊤ = ⊥ → ⊥ is in every MCS.
+  have h_mcs_z := limit_c0 fc A h_mcs z hz
+  have h_top_in : top ∈ limit_f fc A h_mcs z :=
+    theorem_in_mcs h_mcs_z (identity Formula.bot)
+  exact set_consistent_not_both h_mcs_z.1 top h_top_in h_top_neg
+
+/--
+Helper: if `ψ ∈ limit_f(y)` and `x < y`, then `G(ψ.neg) ∉ limit_f(x)`.
+Contrapositive of `limit_forward_G`: if `G(ψ.neg) ∈ limit_f(x)` and `x < y`,
+then `ψ.neg ∈ limit_f(y)`, contradicting `ψ ∈ limit_f(y)`.
+-/
+private theorem limit_f_not_G_neg_of_mem (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (x y : Rat) (hx : x ∈ limit_dom fc A h_mcs) (hy : y ∈ limit_dom fc A h_mcs)
+    (hxy : x < y) (ψ : Formula) (hψ : ψ ∈ limit_f fc A h_mcs y) :
+    Formula.all_future ψ.neg ∉ limit_f fc A h_mcs x := by
+  intro h_G_neg
+  have h_neg_y := limit_forward_G fc A h_mcs x y hx hy hxy ψ.neg h_G_neg
+  exact SetMaximalConsistent.neg_excludes (limit_c0 fc A h_mcs y hy) ψ h_neg_y hψ
+
+/--
 **Core gap elimination**: If the chronicle domain has a bounded successor orbit,
 derive a contradiction.
 
-**Status (task 268)**: SORRY — the model surgery approach via `gap_contradicts_prior`
-does not work. Analysis shows that `contemp_equiv sig k M` is trivially true for
-ALL bounded subintervals at ANY depth k with ANY signature, because any bounded
-sub-subinterval `[c,d]` (which has min=c and max=d) is k-equivalent to a Z-interval
-structure of matching size and predicate assignment. This means `h_bounded_above`
-(the hypothesis `∃ y, a < y ∧ ¬ contemp_equiv sig k M a y` required by
-`gap_contradicts_prior`) is NEVER satisfiable. The entire contemp_equiv framework
-only detects structural differences between UNbounded structures, not within
-bounded subintervals.
+**Status (task 273)**: SORRY. Extensive analysis (6 approaches tried) shows this is
+a genuinely difficult theorem requiring a novel proof technique. See plan file
+`specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md`
+for detailed blocker analysis.
 
-**Correct approach**: Direct induction on the omega-chain construction stages.
-At each stage n, `(omega_chain_val n).dom` is a finite set of rationals. For any
-two points a, b in `limit_dom`, there exists a stage N where both appear:
-`a, b ∈ (omega_chain_val N).dom`. At stage N, the finite domain is trivially
-IsSuccArchimedean (finite discrete linear order). The key step is showing that
-the succ function on `LimitDomSubtype` agrees with the finite-stage successor
-on domain points — i.e., the C5 witness at the limit level coincides with the
-C5 witness at stage N. This requires proving that `limit_satisfies_c5_strong`
-produces the SAME witness as the stage-N C5 construction when both x and its
-successor are already in stage N's domain.
+**Approaches investigated and their failure modes**:
+1. Model surgery via contemp_equiv: Trivially true for bounded intervals at any
+   EF-game depth k (confirmed by research).
+2. Stage induction via succ_reaches_dom_N: Boundary cases irresolvable (limit-level
+   successor may not appear until arbitrarily later stage).
+3. Z1 direct instantiation: Orbit membership is second-order, not expressible as
+   a temporal formula. G(Gψ→ψ) unverifiable for distinguishing formulas at gap
+   boundary points.
+4. Pred/succ cancellation descent: Circular (requires IsPredArchimedean = IsSuccArchimedean).
+5. Dom(N) stage counting: Gives succ^K(a) ≤ b but not ≥ b (orbit may advance slower
+   than dom(N) spacing due to intermediate insertions).
+6. Boneyard expressive completeness approach: Requires semantic Prior-UZ/SZ for
+   orbit-membership structure, which is the gap this theorem is trying to fill.
 
-Estimated effort: 300-600 lines of new proof code.
-See task 268 plan file for full blocker documentation.
+**Helper lemmas added**: `limit_f_some_future_of_lt` and `limit_f_not_G_neg_of_mem`
+(both sorry-free) provide F(ψ) ∈ limit_f(x) from ψ ∈ limit_f(y) when x < y, and
+the contrapositive of limit_forward_G.
+
+**What is needed**: A proof technique that either (a) expresses orbit membership
+in the temporal language (possibly using Reynolds expressive completeness with a
+different structure), (b) uses the chronicle construction's enumeration directly
+to show the orbit reaches b, or (c) bypasses chronicle_gap_contradiction entirely
+via Strategy B (completing ReynoldsBridge.lean:489).
 -/
 private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)

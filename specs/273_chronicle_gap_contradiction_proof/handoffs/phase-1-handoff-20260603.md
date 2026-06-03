@@ -1,47 +1,57 @@
-# Phase 1 Handoff: Task 273
+# Phase 1 Handoff: Z1 Infrastructure and Helper Lemmas
 
 ## Status: BLOCKED
 
-## Immediate Next Action
-A successor agent should pursue one of:
-1. **S5 orbit approach** (~300 lines): Prove `Z.interp (atomMapFwd (.box psi)) t <-> forall s, temporal_truth s psi` via k-equivalence transfer of universal sentences. Then build orbit-based Omega with predicate-carrying WorldState.
-2. **Omega-chain stage reasoning** (~300-600 lines): Prove chronicle_gap_contradiction directly by showing the limit successor function covers all domain points between a and b, using stage-level properties of the counterexample enumeration.
-3. **Plan revision**: Research a fundamentally different approach (e.g., Henkin-style model for discrete completeness, or alternative discrete axiomatization that avoids the sorry chain).
+## What was accomplished
 
-## Key Findings from Analysis
+1. **Two sorry-free helper lemmas added** to `ChronicleToCountermodel.lean`:
+   - `limit_f_some_future_of_lt`: If psi in limit_f(y) and x < y, then F(psi) in limit_f(x). Uses C4 contradiction.
+   - `limit_f_not_G_neg_of_mem`: If psi in limit_f(y) and x < y, then G(psi.neg) not in limit_f(x). Contrapositive of limit_forward_G.
 
-### Strategy B (Z-interval to TaskModel) -- BLOCKED
-The three requirements for truth correspondence are mutually exclusive:
-- Position-dependent atoms need non-Unit WorldState
-- Box transparency needs singleton Omega
-- ShiftClosed needs orbit-based Omega (non-singleton with non-Unit WorldState)
+2. **Docstring updated** on `chronicle_gap_contradiction` documenting 6 investigated approaches and their failure modes.
 
-The S5 orbit approach (option 3 from task 268) is most viable: use orbit-based Omega, accept that box is NOT transparent, and prove box correctness via S5 transfer property. This requires ~300 lines of new lemmas.
+3. **File builds** with only the original sorry remaining at `chronicle_gap_contradiction`.
 
-### Direct Proof of chronicle_gap_contradiction -- BLOCKED
-- **Model surgery fails**: `one_class` proves all points are `contemp_equiv`, so there are no bounded classes for `gap_contradicts_prior` to contradict. The gap is invisible to the k-equivalence framework.
-- **Z1 axiom fails in Case B** (constant MCS): No distinguishing formula exists when all points have identical MCS values.
-- **Omega-chain stage reasoning**: The only viable direct approach, but requires ~300-600 lines of new infrastructure about stage-level successor agreement.
+## What was tried and failed
 
-### Sorry Chain
-```
-chronicle_gap_contradiction (sorry, line 481)
-  -> succ_cofinal
-    -> limitDomSubtype_isSuccArchimedean
-      -> succ_embed_surjective
-        -> cantor_bfmcs_discrete_restricted_tc
-        -> cantor_bfmcs_discrete_restricted_fuc
-          -> countermodel_discrete_reynolds
-            -> completeness_discrete (the target)
-```
+### Approach 1: Z1 with next_top
+- Z1(next_top) is vacuous because next_top is in every MCS
+- G(next_top) already known via discrete_propagate_fwd
 
-## Key Files
-- `/home/benjamin/Projects/BimodalLogic/Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` -- sorry at line 489
-- `/home/benjamin/Projects/BimodalLogic/Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- sorry at line 481
-- `/home/benjamin/Projects/BimodalLogic/Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- completeness_discrete at line 309
-- `/home/benjamin/Projects/BimodalLogic/Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` -- countermodel_discrete_reynolds at line 1203
+### Approach 2: Z1 with distinguishing formula (Case A)
+- Pick psi in limit_f(b) minus limit_f(a)
+- Problem: G(G(psi)->psi) in limit_f(a) requires G(psi)->psi at all future points
+- G(psi)->psi fails at points where psi is false but G(psi) is true (accumulation boundary)
+- Cannot verify the Z1 hypothesis without already knowing the orbit structure
 
-## Decisions Made
-- Strategy B (Phases 1-2) is blocked; Phase 3 (direct proof) is also blocked
-- No code changes made to source files (all analysis, no implementation)
-- Plan file updated with BLOCKED status and detailed blocker documentation
+### Approach 3: Pred/succ cancellation descent  
+- succ^n(a) < b implies succ^n(a) <= pred(b) implies succ^n(a) < pred(b)
+- Same problem with pred(b) as upper bound -- circular
+
+### Approach 4: Dom(N) stage counting
+- At stage N with K+1 points in [a,b], monotonicity gives succ^K(a) <= b
+- But NOT succ^K(a) >= b -- orbit may advance slower due to intermediate insertions
+
+### Approach 5: Model surgery / contemp_equiv
+- Confirmed by research: contemp_equiv trivially true for bounded intervals at any EF depth k
+- gap_contradicts_prior inapplicable
+
+### Approach 6: Boneyard expressive completeness
+- US_expressively_complete_over_prior could express orbit membership as temporal formula
+- But requires semantic Prior-UZ/SZ for orbit-cut structure
+- Circular: the proof needs the orbit structure we're trying to establish
+
+## Root cause
+
+The fundamental gap is that orbit membership (succ-reachability from a) is a second-order property not expressible in the first-order temporal language. The standard model-theoretic proof of Z1 implies IsSuccArchimedean uses a CHOSEN valuation encoding orbit membership, but in the MCS/chronicle setting, the valuation is fixed by limit_f.
+
+## Immediate next action
+
+Three possible paths forward:
+1. Novel chronicle-specific argument: Show that semantic Prior-UZ/SZ holds for the orbit-cut structure directly from the omega-chain construction
+2. Strategy B completion: Prove ReynoldsBridge.lean:489 sorry (Z-interval to TaskModel conversion), bypassing chronicle_gap_contradiction entirely
+3. Fundamentally new technique: Perhaps using the Kamp/Stavi theorem differently, or a computational argument about the counterexample enumeration
+
+## Files modified
+- Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean (helper lemmas + docstring)
+- specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md (Phase 1 marked BLOCKED)
