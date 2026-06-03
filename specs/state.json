@@ -73,16 +73,16 @@
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Strategy B: Refactor discrete completeness to use Reynolds k-equivalence bypass instead of IsSuccArchimedean. Build LimitDomSubtype as OrderedMonadicStructure, apply sorry-free one_class -> very_good -> good pipeline, extract k-equivalent Z-interval, transfer satisfiability, build countermodel on Z. Eliminates succ_embed_surjective sorry chain entirely.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T15:27:16Z",
-      "last_updated": "2026-06-03T17:45:00Z",
+      "last_updated": "2026-06-03T19:00:00Z",
       "researched": "2026-06-03T16:57:31Z",
-      "planned": "2026-06-03T17:45:00Z",
+      "planned": "2026-06-03T19:00:00Z",
       "artifacts": [
         {
           "path": "specs/268_reynolds_pipeline_bridge/reports/01_bridge-research.md",
@@ -112,16 +112,16 @@
         {
           "path": "specs/268_reynolds_pipeline_bridge/plans/04_strategy-b-plan.md",
           "type": "plan",
-          "summary": "5-phase Strategy B plan: LimitDomSubtype monadic structure, Reynolds pipeline (one_class -> good), k-equiv truth transfer, dead code cleanup, build verification"
+          "summary": "5-phase Strategy B plan (v3): Phases 1-2 completed, Phase 3 revised with custom TaskFrame approach, dead code cleanup, build verification"
         }
       ],
       "next_artifact_number": 5,
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 14,
+        "total_effort_hours": 12,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 2,
+        "plan_version": 3,
         "dependency_waves": [
           [
             1
