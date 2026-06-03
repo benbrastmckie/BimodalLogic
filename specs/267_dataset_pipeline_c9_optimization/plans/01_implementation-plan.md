@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Multi-Frame-Class Dataset Generation [NOT STARTED]
+### Phase 2: Multi-Frame-Class Dataset Generation [COMPLETED]
 
 **Goal**: Generate Dense and Discrete frame-class variants of the c7 dataset using existing `--frame-class` CLI infrastructure. This diversifies the dataset along the most semantically meaningful axis with zero new code.
 
@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Atom-Permutation Canonicalization and Deduplication [NOT STARTED]
+### Phase 3: Atom-Permutation Canonicalization and Deduplication [IN PROGRESS]
 
 **Goal**: Implement a canonical form for formulas under atom permutation, reducing the labeling workload by the measured 4.58x factor. Integration point is between checkpoint write (line 883) and labeling loop (line 908) in DatasetExport.lean.
 
