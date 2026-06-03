@@ -1,27 +1,28 @@
 {
   "status": "partial",
-  "summary": "Phase 3 (Chain 1) blocked by interval splitting problem in nf_2var_existential_transfer; Phase 4 (Chain 2) approach identified but needs chronicle-specific argument for constant-MCS case",
-  "phases_completed": 2,
-  "phases_total": 6,
+  "summary": "Phase 1 (Path D: fix succ_reaches_dom_N boundary cases) is blocked. Exhaustive analysis shows the boundary cases at lines 236 and 392 of ChronicleToCountermodel.lean are genuinely intractable: the limit domain successor is defined over the full limit domain, and infinitely many points can be inserted between any two dom(N) points by later omega-chain stages. The model surgery approach (reynolds_model_surgery_core) proves one contemp_equiv class but cannot bridge to one Z-chain (IsSuccArchimedean). The restricted temporal coherence condition genuinely requires IsSuccArchimedean. No code changes were made. Alternative approaches: (a) Path E -- restructure cantor_bfmcs_discrete_restricted_tc/fuc to avoid succ_embed_surjective (~300-500 lines), (b) prove the omega chain produces one Z-chain (novel mathematical work), or (c) entirely different completeness proof strategy.",
+  "phases_completed": 0,
+  "phases_total": 3,
   "blockers": [
     {
-      "phase": 3,
-      "description": "nf_2var_existential_transfer requires 4-var existential transfer at depth j' for 3-point base. Zone matching cannot simultaneously match orderings with all existing reference points (interval splitting problem, 5 failed sessions documented in NFGameBridge.lean). Requires EF game bridge which the current plan rules out."
-    },
-    {
-      "phase": 4,
-      "description": "chronicle_gap_contradiction (ChronicleToCountermodel.lean:486) sorry. Old proof in comments (lines 488-762) nearly complete for Case A (different MCS) but needs k=0->k=1 fix. Case B (constant MCS) needs chronicle-specific proof."
+      "phase": 1,
+      "description": "Path D (stage induction on succ_reaches_dom_N) is intractable. Boundary cases fail because limitDomSubtype_succ operates on the full limit domain, and infinitely many points can be inserted between any two dom(N) points. The gap between 'one contemp_equiv class' (proved by model surgery) and 'one Z-chain' (needed for IsSuccArchimedean) is genuine. This blocks the entire sorry chain: chronicle_gap_contradiction -> succ_cofinal -> limitDomSubtype_isSuccArchimedean -> succ_embed_surjective -> completeness_discrete."
     }
   ],
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-4-handoff-20260603.md",
-    "resume_phase": 4
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
+    "resume_phase": 1
   },
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-3-4-handoff-20260603.md",
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
       "type": "handoff",
-      "summary": "Detailed analysis with blocker documentation, implementation approach for Phase 4, and key findings about both sorry chains"
+      "summary": "Detailed analysis of why Path D fails and what alternatives exist"
+    },
+    {
+      "path": "specs/155_reynolds_pipeline_activation/plans/64_single-chain-plan.md",
+      "type": "plan",
+      "summary": "Plan with Phase 1 marked BLOCKED and detailed blocker documentation"
     }
   ]
 }
