@@ -194,7 +194,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Interestingness-Stratified c9 Sample Generation [NOT STARTED]
+### Phase 5: Interestingness-Stratified c9 Sample Generation [COMPLETED]
 
 **Goal**: Generate a 100K-record c9 dataset with per-pattern quotas, interestingness-weighted sampling, and known-timeout-pattern exclusion. This is the primary deliverable for ML training value.
 

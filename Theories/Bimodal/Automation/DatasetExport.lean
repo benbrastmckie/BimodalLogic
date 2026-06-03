@@ -517,6 +517,11 @@ structure CLIArgs where
       Task 267: when > 0, label formulas in parallel batches with
       sequential write serialization for crash safety. -/
   parallelThreads : Nat := 0
+  /-- Stratified sample target count (0 = disabled).
+      Task 267: when > 0, enumerate all formulas, canonicalize, compute
+      pre-labeling interestingness, exclude known timeout patterns, and
+      select N formulas biased toward high interestingness. -/
+  stratifiedSample : Nat := 0
   deriving Repr, Inhabited
 
 /--
@@ -601,6 +606,8 @@ where
     go rest { acc with skipDedup := true }
   | "--parallel" :: n :: rest, acc =>
     go rest { acc with parallelThreads := n.toNat! }
+  | "--stratified-sample" :: n :: rest, acc =>
+    go rest { acc with stratifiedSample := n.toNat! }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -616,6 +623,7 @@ open Bimodal.Syntax
 open Bimodal.Automation
 open Bimodal.Automation.DatasetExport
 open Bimodal.Automation.AtomCanonicalization
+open Bimodal.Automation.InterestingnessMetrics
 
 /-- Parser state for S-expression parsing using raw byte positions. -/
 structure SExprPS where
@@ -805,6 +813,94 @@ private def enumerateAndEnrich (params : EnumParams) (includeDuals : Bool) : IO 
   return formulas'
 
 /-!
+## Stratified Sampling Helpers (Task 267)
+
+Pre-labeling interestingness estimation and timeout-pattern exclusion for
+the `--stratified-sample` pipeline.
+-/
+
+/--
+Check if a formula matches the known timeout pattern class: `U(atom, X) → U(Y, Z)`
+or `S(atom, X) → S(Y, Z)`. These patterns cause temporal-modal feedback loop
+timeouts and should be excluded from stratified sampling.
+-/
+private def isTimeoutPattern : Formula → Bool
+  | .imp (.untl (.atom _) _) (.untl _ _) => true
+  | .imp (.snce (.atom _) _) (.snce _ _) => true
+  | _ => false
+
+/--
+Compute a pre-labeling interestingness estimate for a formula.
+
+Uses purely structural metrics (no decision procedure required):
+- Semantic non-triviality (SNT): 0-3 scale
+- Operator diversity (OD): 0-11 scale with cross-modal/bidirectional bonuses
+- Complexity bonus: higher complexity → potentially more interesting
+- Modal-temporal interaction: formulas combining both modalities scored higher
+
+Returns a score on 0-100 scale. Used to stratify formulas before labeling
+so that high-interestingness formulas are over-sampled.
+-/
+private def preLabelInterestingness (φ : Formula) : Nat :=
+  let snt := InterestingnessMetrics.semanticNonTriviality φ
+  -- SNT gate: trivial formulas get 0
+  if snt == 0 then 0
+  else
+    let od := InterestingnessMetrics.operatorDiversity φ
+    -- Weighted combination: SNT × 20 + OD × 5 + complexity bonus
+    let sntScore := snt * 20  -- max 60
+    let odScore := od * 5     -- max 55
+    let complexityBonus := min 15 (φ.complexity / 2)  -- max 15
+    min 100 (sntScore + odScore + complexityBonus)
+
+/--
+Stratified sampling: select `targetCount` formulas from `candidates` with
+interestingness-weighted bias. Uses a tiered approach:
+
+- Tier 1 (interesting, score >= 60): select all (up to 50% of target)
+- Tier 2 (moderate, score 30-59): fill to 80% of target
+- Tier 3 (routine, score 1-29): fill remaining
+- Tier 0 (trivial, score 0): excluded entirely
+
+Within each tier, if the tier has more formulas than its quota, use
+deterministic sampling (LCG-based) for reproducibility.
+-/
+private def stratifiedSelect (candidates : List Formula) (targetCount : Nat)
+    : List Formula :=
+  -- Partition into tiers
+  let scored := candidates.map fun φ => (φ, preLabelInterestingness φ)
+  let tier1 := scored.filter (fun (_, s) => s >= 60) |>.map (·.1)
+  let tier2 := scored.filter (fun (_, s) => s >= 30 && s < 60) |>.map (·.1)
+  let tier3 := scored.filter (fun (_, s) => s >= 1 && s < 30) |>.map (·.1)
+  -- Tier quotas
+  let tier1Quota := targetCount / 2  -- 50%
+  let tier2Quota := (targetCount * 3) / 10  -- 30%
+  let tier3Quota := targetCount - tier1Quota - tier2Quota  -- 20%
+  -- Select from each tier
+  let sel1 := takeDeterministic tier1 tier1Quota 42
+  let sel2 := takeDeterministic tier2 tier2Quota 137
+  let sel3 := takeDeterministic tier3 tier3Quota 271
+  -- If any tier is under-populated, the deficit stays (we don't backfill)
+  sel1 ++ sel2 ++ sel3
+where
+  /-- Take up to `count` elements from a list, using LCG shuffle if oversized. -/
+  takeDeterministic (xs : List Formula) (count : Nat) (seed : Nat) : List Formula :=
+    if xs.length ≤ count then xs
+    else
+      let arr := xs.toArray
+      let n := arr.size
+      let rng := LCGState.init seed
+      let (selected, _) := (List.range count).foldl
+        (fun (acc : List Formula × LCGState) _ =>
+          let (picked, r) := acc
+          let (r', idx) := r.randBound n
+          match arr[idx]? with
+          | some φ => (φ :: picked, r')
+          | none => (picked, r'))
+        ([], rng)
+      selected
+
+/-!
 ## Main Entry Point
 
 The `main` function is the CLI entry point for `lake exe dataset_generator`.
@@ -909,14 +1005,33 @@ def main (args : List String) : IO Unit := do
     IO.println s!"Deduplicated {originalCount} -> {canonical.length} formulas ({ratio / 100}.{ratio % 100 / 10}x reduction)"
     pure canonical
 
+  -- Step 3b: Stratified sampling (task 267)
+  let formulasAfterSampling ← if cliArgs.stratifiedSample > 0 then do
+    -- Exclude known timeout patterns
+    let beforeFilter := formulasDeduped.length
+    let filtered := formulasDeduped.filter (fun φ => !isTimeoutPattern φ)
+    let excludedCount := beforeFilter - filtered.length
+    IO.println s!"Excluded {excludedCount} timeout-pattern formulas ({filtered.length} remaining)"
+    -- Apply interestingness-stratified sampling
+    let selected := stratifiedSelect filtered cliArgs.stratifiedSample
+    IO.println s!"Stratified sample: selected {selected.length} formulas (target: {cliArgs.stratifiedSample})"
+    -- Log tier distribution
+    let tier1Count := selected.filter (fun φ => preLabelInterestingness φ >= 60) |>.length
+    let tier2Count := selected.filter (fun φ => preLabelInterestingness φ >= 30 && preLabelInterestingness φ < 60) |>.length
+    let tier3Count := selected.filter (fun φ => preLabelInterestingness φ >= 1 && preLabelInterestingness φ < 30) |>.length
+    IO.println s!"  Tier 1 (interesting): {tier1Count}, Tier 2 (moderate): {tier2Count}, Tier 3 (routine): {tier3Count}"
+    pure selected
+  else
+    pure formulasDeduped
+
   -- Step 3d: Skip already-labeled formulas when resuming
   let formulasToLabel := if cliArgs.resumeFrom > 0 then
-    formulasDeduped.drop cliArgs.resumeFrom
-  else formulasDeduped
+    formulasAfterSampling.drop cliArgs.resumeFrom
+  else formulasAfterSampling
 
   -- Step 4: Streaming label + write pipeline
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
-  let totalFormulas := formulasDeduped.length
+  let totalFormulas := formulasAfterSampling.length
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of {totalFormulas})..."
   let parallelMode := cliArgs.parallelThreads > 0
