@@ -457,6 +457,33 @@ def structuralPrefilter : Formula → Option Bool
   | .box inner => structuralPrefilter inner
   | _ => none
 
+/--
+Structural pre-filter with axiom attribution (task 274).
+
+Like `structuralPrefilter`, but returns the matched axiom pattern name
+alongside the validity result. This enables temporal axiom usage tracking
+in the dataset.
+
+Returns `some (true, axiomName)` if structurally valid with identified pattern,
+`none` if undetermined.
+-/
+def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
+  | .imp antecedent consequent =>
+    if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
+    else if isStructurallyValid consequent then some (true, "structural_tautology")
+    else match antecedent, consequent with
+    | .box (.box .bot), _ => some (true, "structural_double_box_bot")
+    | .box (.box inner), consequent =>
+      if inner == consequent then some (true, "structural_modal_4") else none
+    | .box inner, .imp _ rhs =>
+      if inner == rhs then some (true, "structural_modal_t_weakening") else none
+    | _, _ => none
+  | .box inner =>
+    match structuralPrefilterWithAxiom inner with
+    | some (v, ax) => some (v, ax)
+    | none => none
+  | _ => none
+
 /-! ### Pre-filter unit tests (task 270) -/
 
 -- Test atoms for #eval tests
@@ -484,6 +511,20 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval structuralPrefilter (.imp p_test (.box (.imp q_test q_test)))-- some true (valid consequent under box)
 #eval structuralPrefilter (.imp p_test q_test)                     -- none  (unknown)
 
+-- structuralPrefilterWithAxiom: axiom attribution tests (task 274)
+#eval structuralPrefilterWithAxiom (.imp (.untl (.box .bot) p_test) q_test)
+  -- some (true, "structural_bot_temporal")
+#eval structuralPrefilterWithAxiom (.imp p_test (.imp q_test q_test))
+  -- some (true, "structural_tautology")
+#eval structuralPrefilterWithAxiom (.imp (.box (.box .bot)) q_test)
+  -- some (true, "structural_bot_temporal") — box(box(bot)) is caught by isUnsatBotTemporal first
+#eval structuralPrefilterWithAxiom (.imp (.box (.box p_test)) p_test)
+  -- some (true, "structural_modal_4")
+#eval structuralPrefilterWithAxiom (.imp (.box p_test) (.imp q_test p_test))
+  -- some (true, "structural_modal_t_weakening")
+#eval structuralPrefilterWithAxiom (.imp p_test q_test)
+  -- none (unknown)
+
 /--
 Label a single formula by running the decision procedure.
 
@@ -503,10 +544,11 @@ The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormula (φ : Formula) (fc : FrameClass := .Base)
     (wallclockTimeoutMs : Nat := 1000) : IO LabeledFormula := do
-  -- Phase 1: Structural pre-filter (task 265)
-  -- Check for known-valid patterns before invoking the decision procedure
-  match structuralPrefilter φ with
-  | some true =>
+  -- Phase 1: Structural pre-filter with axiom attribution (task 265, task 274)
+  -- Check for known-valid patterns before invoking the decision procedure.
+  -- Returns axiom pattern name alongside validity for dataset attribution.
+  match structuralPrefilterWithAxiom φ with
+  | some (true, axiomPattern) =>
     let metrics := computeMetrics φ 0
     let patternKey := PatternKey.fromFormula φ
     let intResult := computeInterestingness φ none none
@@ -522,7 +564,7 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
       countermodelConsistent := none
       enrichedCountermodel := none
       semanticCountermodelSummary := none
-      proofReconstructionMethod := some "structural_prefilter"
+      proofReconstructionMethod := some ("structural_prefilter:" ++ axiomPattern)
       interestingnessScore := some intResult.compositeScore
       interestingnessTier := some intResult.tier.toString
     }

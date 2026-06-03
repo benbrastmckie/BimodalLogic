@@ -158,20 +158,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Wire Temporal Axiom Attribution in Structural Prefilter [NOT STARTED]
+### Phase 4: Wire Temporal Axiom Attribution in Structural Prefilter [COMPLETED]
 
 **Goal**: Extend the structural prefilter to record which axiom pattern was matched when a formula is identified as structurally valid, enabling temporal axiom usage tracking in the dataset.
 
 **Tasks**:
-- [ ] Modify the `structuralPrefilter` return type from `Option Bool` to `Option (Bool × Option String)` (or add a separate `structuralPrefilterWithAxiom` function) that returns the matched axiom pattern name alongside the validity result
-- [ ] Add axiom pattern identification for known structural validity patterns:
-  - Bot-temporal antecedent (`isUnsatBotTemporal`): attribute as `"structural_bot_temporal"` (no specific axiom, just unsatisfiability)
-  - Valid consequent (`isStructurallyValid`): attribute as `"structural_tautology"`
-  - For future expansion: when temporal-specific structural patterns are added (e.g., `G(p) -> F(p)` type patterns), attribute the relevant temporal axiom (e.g., `"serial_future"`)
-- [ ] Update the `labelFormula` function in `DatasetGenerator.lean` to propagate the axiom pattern name from the prefilter result into the `LabeledFormula` record's appropriate fields (e.g., into a new `prefilterAxiom` field or into the existing `proofReconstructionMethod` with a more specific tag)
-- [ ] Ensure the axiom pattern propagates through to the JSONL export so it appears in the output dataset
-- [ ] Add `#eval` tests verifying axiom attribution for representative formulas
-- [ ] Verify `lake build` passes with zero errors
+- [x] Modify the `structuralPrefilter` return type from `Option Bool` to `Option (Bool × Option String)` (or add a separate `structuralPrefilterWithAxiom` function) that returns the matched axiom pattern name alongside the validity result — added `structuralPrefilterWithAxiom : Formula → Option (Bool × String)`
+- [x] Add axiom pattern identification for known structural validity patterns:
+  - `structural_bot_temporal`: isUnsatBotTemporal antecedent
+  - `structural_tautology`: isStructurallyValid consequent
+  - `structural_double_box_bot`: □□⊥ → ψ
+  - `structural_modal_4`: □□φ → φ
+  - `structural_modal_t_weakening`: □φ → (ψ → φ)
+- [x] Update the `labelFormula` function in `DatasetGenerator.lean` to propagate the axiom pattern name via `proofReconstructionMethod` as `"structural_prefilter:{axiomPattern}"`
+- [x] Ensure the axiom pattern propagates through to the JSONL export so it appears in the output dataset — verified: 45 bot_temporal, 1 modal_4, 1 tautology at c5
+- [x] Add `#eval` tests verifying axiom attribution for representative formulas — 6 tests pass
+- [x] Verify `lake build` passes with zero errors — full build passes (1684 jobs)
 
 **Timing**: 1.5 hours
 
