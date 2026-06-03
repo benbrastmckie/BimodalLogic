@@ -1246,7 +1246,7 @@ theorem countermodel_discrete_reynolds
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
-/-! ## DEPRECATED: BX Pipeline Dead Code (task 225)
+/-! ## DEPRECATED: BX Pipeline Dead Code (tasks 225, 268)
 
 The theorem `countermodel_discrete` below uses the **dead BX pipeline** path
 through `dd_countermodel_chronicle_discrete` which carries the `succ_cofinal`
@@ -1259,6 +1259,8 @@ uses the parametric canonical model construction.
 
 **Do NOT attempt to fix the sorry in this theorem.** The correct path is
 `countermodel_discrete_reynolds` (task 155).
+
+-- ARCHIVED: BX pipeline dead code, see task 268
 -/
 
 /-! ## Main Theorem: countermodel_discrete -/

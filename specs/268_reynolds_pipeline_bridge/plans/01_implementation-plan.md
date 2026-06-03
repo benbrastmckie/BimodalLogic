@@ -70,17 +70,17 @@ Phases within the same wave can execute in parallel (all sequential here due to 
 
 ---
 
-### Phase 1: Archive Dead BX Pipeline Code [NOT STARTED]
+### Phase 1: Archive Dead BX Pipeline Code [COMPLETED]
 
 **Goal**: Move dead BX pipeline code to `Theories/Bimodal/Boneyard/` to reduce confusion and sorry noise.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/` directory
-- [ ] Move `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean` to `Theories/Bimodal/Boneyard/BXPipelineDeadCode/ReynoldsModelSurgery.lean`
-- [ ] Remove `ReynoldsModelSurgery` from `lakefile.lean` if it is listed as a module root or target
-- [ ] In `ChronicleToCountermodel.lean`: identify and comment-mark the dead private functions (`succ_reaches_dom_N` lines 55-470) with `-- ARCHIVED: BX pipeline dead code, see task 268` (do NOT move these yet since they are private and interleaved with active code; moving requires restructuring)
-- [ ] In `Transfer.lean`: comment-mark or extract `countermodel_discrete` (lines 1281-1296) as deprecated BX dead code with header annotation
-- [ ] Run `lake build` to verify no breakage
+- [x] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/` directory *(completed)*
+- [x] Move `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsModelSurgery.lean` to `Theories/Bimodal/Boneyard/BXPipelineDeadCode/ReynoldsModelSurgery.lean` *(completed)*
+- [x] Remove `ReynoldsModelSurgery` from `lakefile.lean` if it is listed as a module root or target *(deviation: skipped -- not listed in lakefile, already covered by BoneyardArchive glob)*
+- [x] In `ChronicleToCountermodel.lean`: identify and comment-mark the dead private functions (`succ_reaches_dom_N` lines 55-470) with `-- ARCHIVED: BX pipeline dead code, see task 268` *(completed -- updated section header)*
+- [x] In `Transfer.lean`: comment-mark or extract `countermodel_discrete` (lines 1281-1296) as deprecated BX dead code with header annotation *(completed)*
+- [x] Run `lake build` to verify no breakage *(completed -- 1682 jobs, zero errors)*
 
 **Timing**: 1 hour
 

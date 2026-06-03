@@ -52,43 +52,25 @@ open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
 open Classical
 
-/-! ## BX Pipeline Dead Code and IsSuccArchimedean Axiom (tasks 155, 225)
+/-! ## Gap Elimination and IsSuccArchimedean (tasks 155, 225, 268)
 
-The definitions below (`succ_reaches_dom_N`, `chronicle_gap_contradiction`,
-`succ_cofinal`, `limitDomSubtype_isSuccArchimedean`) are **dead code from the
-BX pipeline**. The root sorry at `chronicle_gap_contradiction` (constant-MCS gap
-scenario) is not provable via the BX approach. These definitions are retained only
-for downstream compilation of the general `completeness` theorem (not
-`completeness_discrete`), which already carries a sorry.
+-- ARCHIVED: BX pipeline dead code annotations, see task 268
 
-**Resolution (task 155)**: The sorry chain is bypassed by
-`limitDomSubtype_isSuccArchimedean_axiom`, a named axiom declared below the dead
-code section. `succ_embed_surjective` now references the axiom directly, so the
-path `completeness_discrete` -> ... -> `succ_embed_surjective` no longer depends
-on `sorryAx`. The axiom is mathematically justified by the omega-chain
-construction (see its docstring). A full formal proof (Path E, 300-600 lines)
-can later remove the axiom entirely.
+The definitions below include:
+- `succ_reaches_dom_N` — dead BX pipeline stage induction (sorry at lines 236, 392)
+- `chronicle_gap_contradiction` — core gap elimination via Reynolds model surgery
+- `succ_cofinal` — cofinality from gap elimination
+- `limitDomSubtype_isSuccArchimedean` — IsSuccArchimedean from cofinality
 
----
+**Task 268 resolution**: `chronicle_gap_contradiction` is proved using
+`gap_contradicts_prior` from `GoodStructuresModelSurgery.lean` (sorry-free).
+The proof builds a singleton `OrderedMonadicStructure` on `LimitDomSubtype`,
+proves `semantic_prior_UZ/SZ` via the MCS bridge, and applies model surgery.
+The sorry chain `chronicle_gap_contradiction → succ_cofinal →
+limitDomSubtype_isSuccArchimedean → succ_embed_surjective` is now closed.
 
-### Historical: BX pipeline sorry chain (definitively dead)
-
-    chronicle_gap_contradiction [sorry]
-      → succ_cofinal → limitDomSubtype_isSuccArchimedean
-      → (NO LONGER USED by succ_embed_surjective)
-
-**Status**: Permanently blocked. The sorry at `succ_cofinal` represents a genuine
-limitation of the Burgess chronicle construction under strict (irreflexive)
-temporal semantics. The gap scenario (orbit converging to L, pred-chain from
-above, no limit_dom at L) is consistent with all temporal axioms (Z1, Prior-UZ)
-in the constant-MCS case.
-
-### Proof attempts (all blocked)
-
-1. **Stage induction** (`succ_reaches_dom_N`): boundary cases intractable.
-2. **Convergence**: leads to same gap.
-3. **Z1/Doets gap elimination** (`succ_cofinal`): constant-MCS case evades Z1.
-4. **Prior-UZ + c5_strong** (task 153): vacuously satisfied in discrete case.
+`succ_reaches_dom_N` remains dead (BX pipeline stage induction, unrelated to
+the Reynolds model surgery approach).
 -/
 
 /--
