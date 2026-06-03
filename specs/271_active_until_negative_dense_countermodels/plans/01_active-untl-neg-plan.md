@@ -142,16 +142,16 @@ For `snceNeg`, mirror with `addPast`, `allPastPosFormulas`, `somePastNegFormulas
 
 ---
 
-### Phase 2: Update sat_untl_neg and sat_snce_neg theorems [NOT STARTED]
+### Phase 2: Update sat_untl_neg and sat_snce_neg theorems [COMPLETED]
 
 **Goal**: Update the correctness theorems in `CountermodelExtraction.lean` that prove saturation invariants for the modified rules. The theorem statements may need adjustment since the active rule changes what `notApplicable` means.
 
 **Tasks**:
-- [ ] Analyze whether `sat_untl_neg` theorem statement needs to change: currently it says `forall t' in futureOf t, F(event) or F(guard) in b`. With the active rule, the branch is always either decomposed at existing times OR has created a fresh time. The statement should still hold because saturation (`findUnexpanded = none`) means the active rule did fire if there were no existing future times.
-- [ ] Read the current `sat_untl_neg` proof (lines 739-793 of CountermodelExtraction.lean) and understand how it derives `notApplicable` from saturation
-- [ ] Update the `sat_untl_neg` proof: the key change is that `applyRule .untlNeg ... = .notApplicable` now requires BOTH `unprocessed = []` and the active branch to also be `notApplicable`. With the active rule, the passive `unprocessed = []` case now returns `branching`, not `notApplicable`. This means `notApplicable` only happens when `asUntil? phi = none`, which is impossible given the hypothesis. The proof structure may simplify: since the rule always returns a non-`notApplicable` result when the formula IS an Until, saturation implies the formula was expanded, so the decomposition products are on the branch.
-- [ ] Update `sat_snce_neg` proof (lines 799-845) symmetrically
-- [ ] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
+- [x] Analyze whether `sat_untl_neg` theorem statement needs to change *(deviation: altered -- no change needed; the conservative approach preserves the proof structure since applyRule still returns notApplicable when futureOf is non-empty but all processed)*
+- [x] Read the current `sat_untl_neg` proof (lines 739-793 of CountermodelExtraction.lean) and understand how it derives `notApplicable` from saturation
+- [x] Update the `sat_untl_neg` proof *(deviation: skipped -- no update needed; proof already compiles unchanged because the active case only fires when futureOf is empty, which is orthogonal to the proof's assumption that t' is in futureOf)*
+- [x] Update `sat_snce_neg` proof (lines 799-845) symmetrically *(deviation: skipped -- same reasoning as sat_untl_neg)*
+- [x] Verify with `lake build Bimodal.Metalogic.Decidability.CountermodelExtraction`
 
 **Timing**: 3 hours
 
@@ -174,15 +174,15 @@ Possible approach: the `findUnexpandedWithApplied` saturation check with the `Ap
 
 ---
 
-### Phase 3: Verify branchTruthLemma and full build [NOT STARTED]
+### Phase 3: Verify branchTruthLemma and full build [COMPLETED]
 
 **Goal**: Ensure the `branchTruthLemma` and its helper `truthLemma_neg` still compile after the Phase 2 changes, and verify the entire project builds.
 
 **Tasks**:
-- [ ] Check `truthLemma_neg` untl/snce cases (lines 951-988 of CountermodelExtraction.lean): these call `sat_untl_neg`/`sat_snce_neg`. If the theorem signatures are unchanged, these call sites are fine. If signatures changed, update the call sites.
-- [ ] Run `lake build` for the full project
-- [ ] Fix any compilation errors in downstream files
-- [ ] Verify no sorry or axiom regressions with `lean_verify` on key theorems: `branchTruthLemma`, `sat_untl_neg`, `sat_snce_neg`, `expandBranchWithFuel_sound`
+- [x] Check `truthLemma_neg` untl/snce cases (lines 951-988 of CountermodelExtraction.lean): theorem signatures unchanged, call sites fine
+- [x] Run `lake build` for the full project -- zero errors, 1682 jobs
+- [x] Fix any compilation errors in downstream files *(deviation: skipped -- no errors to fix)*
+- [x] Verify no sorry or axiom regressions: 0 sorries in Decidability/, 0 axioms, all key theorems (branchTruthLemma, sat_untl_neg, sat_snce_neg, expandBranchWithFuel_sound) compile without sorry
 
 **Timing**: 2 hours
 
