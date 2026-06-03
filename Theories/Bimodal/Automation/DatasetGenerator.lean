@@ -471,34 +471,109 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
       interestingnessTier := some intResult.tier.toString
     }
   | _ =>
-  -- Phase 2: Decision procedure (existing path)
+  -- Phase 2: Decision procedure with wall-clock timeout (task 266)
+  -- Spawn the pure decision procedure on a dedicated thread so we can
+  -- enforce a wall-clock timeout without blocking the pipeline.
   let startTime ← IO.monoMsNow
+  if wallclockTimeoutMs > 0 then
+    let task := Task.spawn (fun _ => decideAutoAdaptive φ fc) .dedicated
+    let deadline := startTime + wallclockTimeoutMs
+    -- Poll loop: check every 50ms whether the task has finished
+    let mut timedOut := false
+    repeat do
+      let finished ← IO.hasFinished task
+      if finished then break
+      let now ← IO.monoMsNow
+      if now >= deadline then
+        timedOut := true
+        break
+      IO.sleep 50
+    if timedOut then
+      let endTime ← IO.monoMsNow
+      let elapsed := endTime - startTime
+      let metrics := computeMetrics φ elapsed
+      let patternKey := PatternKey.fromFormula φ
+      let intResult := computeInterestingness φ none none
+      return {
+        formula := φ
+        label := .timeout
+        proofTrace := none
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := "wallclock_timeout"
+        countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
+        proofReconstructionMethod := none
+        interestingnessScore := some intResult.compositeScore
+        interestingnessTier := some intResult.tier.toString
+      }
+    -- Task finished within deadline; retrieve the result
+    let (result, fuelTier) ← IO.wait task
+    let endTime ← IO.monoMsNow
+    let elapsed := endTime - startTime
+    let metrics := computeMetrics φ elapsed
+    let patternKey := PatternKey.fromFormula φ
+    match result with
+    | .valid proof =>
+      let trace := extractProofTrace proof
+      let rp := walkDerivationTree proof
+      let method := if rp.mpCount == 0 && rp.necessitationCount == 0 &&
+                       rp.temporalNecessitationCount == 0 && rp.temporalDualityCount == 0 &&
+                       rp.weakeningCount == 0 && rp.assumptionCount == 0
+                    then "fast_path_axiom"
+                    else fuelTier
+      let reconMethod := inferReconstructionMethod rp trace.height
+      let intResult := computeInterestingness φ (some trace.toProofData) (some rp)
+      return {
+        formula := φ
+        label := .valid
+        proofTrace := some trace
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+        ruleProfile := some rp
+        decisionMethod := method
+        countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
+        proofReconstructionMethod := some reconMethod
+        interestingnessScore := some intResult.compositeScore
+        interestingnessTier := some intResult.tier.toString
+      }
+    | .invalid cm =>
+      let intResult := computeInterestingness φ none none
+      let base := mkInvalidLabel φ cm metrics patternKey fuelTier
+      return { base with
+        interestingnessScore := some intResult.compositeScore
+        interestingnessTier := some intResult.tier.toString
+      }
+    | .timeout =>
+      let intResult := computeInterestingness φ none none
+      return {
+        formula := φ
+        label := .timeout
+        proofTrace := none
+        countermodel := none
+        metrics := metrics
+        patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := fuelTier
+        countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
+        proofReconstructionMethod := none
+        interestingnessScore := some intResult.compositeScore
+        interestingnessTier := some intResult.tier.toString
+      }
+  -- Fallback: no wall-clock timeout (wallclockTimeoutMs == 0), run synchronously
   let (result, fuelTier) := decideAutoAdaptive φ fc
   let endTime ← IO.monoMsNow
   let elapsed := endTime - startTime
   let metrics := computeMetrics φ elapsed
   let patternKey := PatternKey.fromFormula φ
-  -- Wall-clock timeout override: if elapsed exceeds the cap, label as timeout
-  -- regardless of the actual decision result. This prevents runaway formulas
-  -- (e.g. temporal-modal feedback loops) from stalling the pipeline.
-  if wallclockTimeoutMs > 0 && elapsed > wallclockTimeoutMs then
-    let intResult := computeInterestingness φ none none
-    return {
-      formula := φ
-      label := .timeout
-      proofTrace := none
-      countermodel := none
-      metrics := metrics
-      patternKey := patternKey
-      ruleProfile := none
-      decisionMethod := "wallclock_timeout"
-      countermodelConsistent := none
-      enrichedCountermodel := none
-      semanticCountermodelSummary := none
-      proofReconstructionMethod := none
-      interestingnessScore := some intResult.compositeScore
-      interestingnessTier := some intResult.tier.toString
-    }
   match result with
   | .valid proof =>
     let trace := extractProofTrace proof
