@@ -1899,13 +1899,14 @@
     {
       "project_number": 274,
       "project_name": "bimodal_bottleneck_sweep",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         272
       ],
       "created": "2026-06-03T21:45:00Z",
-      "last_updated": "2026-06-03T23:30:00Z",
+      "last_updated": "2026-06-04T00:30:00Z",
+      "completion_summary": "Fixed 3 bottlenecks: active untlNeg timeout regression (c5 0% restored), G/H complexity overhead (491 bimodal G/H formulas at c5, was 0), temporal axiom attribution in prefilter. All 5 phases complete, lake build passes.",
       "researched": "2026-06-03T23:00:00Z",
       "planned": "2026-06-03T23:30:00Z",
       "session_id": "sess_1748987036_e8b4c8",
