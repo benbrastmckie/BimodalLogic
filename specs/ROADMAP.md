@@ -52,6 +52,8 @@ succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
 ```
 Note: `cantor_bfmcs_discrete_restricted_buc` is sorry-free (uses `succ_embed_squeeze_strict`).
 
+**WARNING — anti-pattern**: A "direct `IsSuccArchimedean` proof" (bypassing `chronicle_gap_contradiction`) is **not how it goes in the literature and must be avoided**. Reynolds 1994 (Sections 8–9, Theorem 15) never proves `IsSuccArchimedean` for the limit domain at all. His approach is: `one_class` (all points in one contemporaneous equivalence class) → very good → good → ≡k integer structure via lexicographic sums (Lemma 16). The `one_class` theorem is already proved sorry-free in `NoGapsDiscreteProof.lean`. The formalization's `IsSuccArchimedean` dependency is an artifact of building a succ-embed into ℤ and proving surjectivity — a construction the literature avoids entirely. Any plan proposing to "directly prove `IsSuccArchimedean`" is solving a problem that should not exist.
+
 **Sorry summary (critical path to sorry-free `completeness`)**:
 
 *Discrete branch (Reynolds pipeline — tasks 139, 140)*:
