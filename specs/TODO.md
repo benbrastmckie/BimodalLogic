@@ -30,22 +30,21 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,255,257 | -- | formula-refactor, frame-extensions, algebraic-representation, ... |
-| 2 | 155,192,196,231 | 161,187,191,194,199,230 | completeness, dataset-enhancement, automation |
-| 3 | 95,176,193,268 | 155,189,192,196 | completeness, formula-refactor |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,255,257,268,269 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,192,196,231 | 161,187,191,194,230,268 | completeness, dataset-enhancement, automation |
+| 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-  └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
-  └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b (see above)
-  └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
-    └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-  └─ 268 [NOT STARTED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+268 [NOT STARTED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
+    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
+    └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
+      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
 
 ### Formula Refactor
 
@@ -68,7 +67,6 @@ technical_debt:
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 155 [IMPLEMENTING] — (completeness: Eliminate all sorries from completeness_) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor
     └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
@@ -107,6 +105,7 @@ technical_debt:
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 257 [IMPLEMENTING] — large_data_storage_huggingface
+269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
 
@@ -128,7 +127,7 @@ technical_debt:
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
-- **Dependencies**: Task 155
+- **Dependencies**: none
 
 **Description**: Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free.
 
