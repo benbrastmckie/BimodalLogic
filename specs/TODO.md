@@ -1,5 +1,5 @@
 ---
-next_project_number: 270
+next_project_number: 273
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -108,6 +108,42 @@ technical_debt:
 269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
+
+### 270. Extend structural pre-filter with recursive unsatisfiability and consequent validity
+- **Effort**: small (2-4 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 269
+
+**Description**: Fix the structural pre-filter bug where `isUnsatBotTemporal` checks for literal `.bot` as the Until/Since event but not recursively unsatisfiable events. Currently `U(□⊥, X) → Y` times out even though `□⊥` is unsatisfiable and `isUnsatBotTemporal` already handles `.box a => recurse`. The Until/Since match needs to change from `.untl .bot _ => true` to `.untl event _ => isUnsatBotTemporal event` (and similarly for Since). Additionally, add a consequent validity check: `X → valid_formula` is always valid regardless of the antecedent, catching patterns like `X → (p → p)`. Combined, these two extensions should eliminate ~22% of current timeouts as provably valid. After fixing, regenerate c5 and c7 datasets to measure the impact on timeout rates and interestingness score distribution.
+
+---
+
+### 271. Add active Until-negative rule for dense countermodel construction
+- **Effort**: medium (8-16 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 270
+
+**Description**: Address the root cause of ~60% of dataset timeouts: the `untlNeg` rule in Tableau.lean only decomposes `F(U(event, guard))` at existing future time points but never creates new intermediate times. This prevents the tableau from constructing dense countermodels needed to refute formulas like `U(p, ⊥) → U(p, p)` (which requires an intermediate time where p is false). Modify the Until-negative (`untlNeg`) and Since-negative (`snceNeg`) rules to actively create fresh intermediate time points when decomposing negated temporal operators, enabling the tableau to find countermodels for formulas that require dense temporal structure. This is soundness-critical code — the modified rules must preserve the tableau soundness invariant (open saturated branches correspond to valid countermodels). After implementation, verify with `lake build`, check sorry/axiom counts, and regenerate the c7 dataset to measure the reduction in timeout rate (target: from 4.8% to under 2%). Also verify that no previously-valid or previously-invalid formula changes label (regression check).
+
+---
+
+### 272. Enumerate derived temporal operators to unlock bimodal proofs
+- **Effort**: medium (8-12 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 271
+
+**Description**: The interestingness analysis revealed that 0% of valid formulas at c5-c8 use temporal axioms in their proofs. This is not a bug — with the current enumeration bounds (raw Until/Since, modal depth 2, temporal depth 2), formulas requiring genuine bimodal reasoning like `G(p) → □G(p)` (which uses the `modal_future` axiom) are not expressible. Extend the formula enumerator in FormulaEnumerator.lean to include derived temporal operators (G = all_future, H = all_past, F = some_future, P = some_past) as first-class enumeration targets alongside the primitive Until/Since. These derived operators appear in the axiom schemas (F_until_equiv, P_since_equiv, modal_future) and are the natural building blocks for formulas that exercise bimodal interaction. After implementation, generate a targeted "bimodal interaction" dataset slice at c5-c7 using formulas containing both □ and G/H/F/P operators, and verify that valid formulas in this slice use temporal axioms (modal_future, connect_future, etc.) in their proofs.
+
+---
 
 ### 269. Export interestingness scores from DatasetRecord to JSONL output
 - **Effort**: small (1-2 hours)

@@ -6,6 +6,39 @@
   },
   "active_projects": [
     {
+      "project_number": 270,
+      "project_name": "extend_prefilter_recursive_unsat",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        269
+      ],
+      "created": "2026-06-03T16:31:16Z",
+      "last_updated": "2026-06-03T16:31:16Z"
+    },
+    {
+      "project_number": 271,
+      "project_name": "active_until_negative_dense_countermodels",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        270
+      ],
+      "created": "2026-06-03T16:31:16Z",
+      "last_updated": "2026-06-03T16:31:16Z"
+    },
+    {
+      "project_number": 272,
+      "project_name": "enumerate_derived_temporal_operators",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        271
+      ],
+      "created": "2026-06-03T16:31:16Z",
+      "last_updated": "2026-06-03T16:31:16Z"
+    },
+    {
       "project_number": 269,
       "project_name": "export_interestingness_scores_to_jsonl",
       "status": "completed",
@@ -1747,7 +1780,7 @@
       "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
     }
   ],
-  "next_project_number": 270,
+  "next_project_number": 273,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
