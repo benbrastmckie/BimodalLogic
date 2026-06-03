@@ -692,4 +692,97 @@ A3b: `p ∧ S(q,r) → S(q ∧ U(r,p), r)` (mirror)
 See Axioms.lean for the precise Lean formulation and Soundness.lean for the validity proof.
 -/
 
+/-!
+## Tier 1: Conjunction Elimination Lemmas (Task 272)
+
+These lemmas extract components from the compound temporal operators `always`,
+`weak_future`, and `weak_past`, which are defined as conjunctions. They are
+needed by the proof system to handle formulas containing these derived operators.
+-/
+
+section ConjunctionElimination
+
+/--
+`⊢ always(φ) → φ`: Extract the present-tense component from always.
+
+Since `always φ = Hφ ∧ (φ ∧ Gφ)`, we extract the right conjunct `φ ∧ Gφ`
+and then extract the left conjunct `φ`.
+-/
+noncomputable def always_to_present (φ : Formula) :
+    ⊢ φ.always.imp φ :=
+  imp_trans (rce_imp φ.all_past (φ.and φ.all_future)) (lce_imp φ φ.all_future)
+
+/--
+`⊢ φ → sometimes(φ)`: If φ holds now, then φ holds at some time.
+
+Since `sometimes φ = ¬(always(¬φ))`, we prove the contrapositive:
+`always(¬φ) → ¬φ` and then take the contrapositive to get `¬¬φ → ¬(always(¬φ))`,
+composed with DNI to get `φ → sometimes(φ)`.
+-/
+noncomputable def present_to_sometimes (φ : Formula) :
+    ⊢ φ.imp φ.sometimes := by
+  -- sometimes φ = (φ.neg.always).neg
+  -- Need: φ → ¬(always(¬φ))
+  -- From always_to_present: always(¬φ) → ¬φ
+  -- Contrapositive: ¬¬φ → ¬(always(¬φ))
+  -- Then compose with DNI: φ → ¬¬φ
+  exact imp_trans (dni φ) (contraposition (always_to_present φ.neg))
+
+/--
+`⊢ weak_future(φ) → φ`: Extract the present-tense component from weak_future.
+
+Since `weak_future φ = φ ∧ Gφ`, this is just left conjunction elimination.
+-/
+noncomputable def weak_future_left (φ : Formula) :
+    ⊢ φ.weak_future.imp φ :=
+  lce_imp φ φ.all_future
+
+/--
+`⊢ weak_future(φ) → Gφ`: Extract the future component from weak_future.
+
+Since `weak_future φ = φ ∧ Gφ`, this is just right conjunction elimination.
+-/
+noncomputable def weak_future_right (φ : Formula) :
+    ⊢ φ.weak_future.imp φ.all_future :=
+  rce_imp φ φ.all_future
+
+/--
+`⊢ weak_past(φ) → φ`: Extract the present-tense component from weak_past.
+
+Since `weak_past φ = φ ∧ Hφ`, this is just left conjunction elimination.
+-/
+noncomputable def weak_past_left (φ : Formula) :
+    ⊢ φ.weak_past.imp φ :=
+  lce_imp φ φ.all_past
+
+/--
+`⊢ weak_past(φ) → Hφ`: Extract the past component from weak_past.
+
+Since `weak_past φ = φ ∧ Hφ`, this is just right conjunction elimination.
+-/
+noncomputable def weak_past_right (φ : Formula) :
+    ⊢ φ.weak_past.imp φ.all_past :=
+  rce_imp φ φ.all_past
+
+/--
+`⊢ always(φ) → Gφ`: Extract the future component from always.
+
+Since `always φ = Hφ ∧ (φ ∧ Gφ)`, extract the right conjunct `φ ∧ Gφ`
+and then extract the right conjunct `Gφ`.
+-/
+noncomputable def always_imp_all_future (φ : Formula) :
+    ⊢ φ.always.imp φ.all_future :=
+  imp_trans (rce_imp φ.all_past (φ.and φ.all_future)) (rce_imp φ φ.all_future)
+
+/--
+`⊢ always(φ) → Hφ`: Extract the past component from always.
+
+Since `always φ = Hφ ∧ (φ ∧ Gφ)`, this is just left conjunction elimination.
+-/
+noncomputable def always_imp_all_past (φ : Formula) :
+    ⊢ φ.always.imp φ.all_past :=
+  lce_imp φ.all_past (φ.and φ.all_future)
+
+end ConjunctionElimination
+
 end Bimodal.Theorems.TemporalDerived

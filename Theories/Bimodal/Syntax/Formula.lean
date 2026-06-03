@@ -367,6 +367,43 @@ all s < t. This is useful when the reflexive reading is needed.
 def weak_past (φ : Formula) : Formula := φ.and φ.all_past
 
 /--
+Release operator R(φ, ψ) — dual of Until.
+
+Release(φ, ψ) = ¬(¬φ U ¬ψ). In Burgess convention (untl event guard):
+`untl φ.neg ψ.neg` = "¬ψ holds until ¬φ becomes true", negating gives release.
+
+Semantically: ψ must hold at all future times until and including when φ first holds
+(and if φ never holds, ψ must hold forever).
+-/
+def release (φ ψ : Formula) : Formula := (Formula.untl φ.neg ψ.neg).neg
+
+/--
+Weak Until operator W(φ, ψ) — Until without the liveness requirement.
+
+Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). In Burgess convention:
+`untl φ ψ` = "ψ holds until φ", so weak_until adds the possibility that
+the guard ψ holds forever (the event φ may never occur).
+-/
+def weak_until (φ ψ : Formula) : Formula := (Formula.untl φ ψ).or ψ.all_future
+
+/--
+Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
+
+Trigger(φ, ψ) = ¬(¬φ S ¬ψ). In Burgess convention (snce event guard):
+`snce φ.neg ψ.neg` = "¬ψ held since ¬φ was true", negating gives trigger.
+-/
+def trigger (φ ψ : Formula) : Formula := (Formula.snce φ.neg ψ.neg).neg
+
+/--
+Weak Since operator WS(φ, ψ) — Since without the liveness requirement.
+
+Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). In Burgess convention:
+`snce φ ψ` = "ψ held since φ", so weak_since adds the possibility that
+the guard ψ held forever in the past (the event φ may never have occurred).
+-/
+def weak_since (φ ψ : Formula) : Formula := (Formula.snce φ ψ).or ψ.all_past
+
+/--
 Temporal 'sometimes' operator (▽φ, "at some time" - φ holds at some time).
 
 Following JPL paper §sec:Appendix definition:
