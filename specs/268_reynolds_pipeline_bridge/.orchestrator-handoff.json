@@ -1,18 +1,31 @@
 {
-  "status": "partial",
-  "summary": "Phases 1-2 complete (sorry-free): built LimitDomSubtype as OrderedMonadicStructure with Prior-UZ/SZ and proved limitdom_is_good (k-equiv to Z-interval). Phase 3 blocked: cannot bridge temporal_truth on Z-interval to truth_at on TaskModel without new infrastructure (MCS reconstruction from predicate interpretations or custom TaskFrame).",
+  "status": "blocked",
+  "summary": "Phase 3 blocked: plan's truth correspondence approach (h_truth_corr with WorldState=Unit) is provably impossible. truth_at atoms are position-independent with Unit WorldState, but temporal_truth on Z-interval has position-dependent atoms. Three alternative approaches analyzed (S5 orbit, chronicle_gap_contradiction, hybrid), all require 200-500 lines of new infrastructure. Plan needs revision.",
   "phases_completed": 2,
   "phases_total": 5,
   "blockers": [
-    "Phase 3: Building TaskModel countermodel from Z-interval requires bridging temporal_truth (predicate-based) to truth_at (MCS-based world states). Three possible approaches identified but all require significant new infrastructure: (1) custom TaskFrame with predicate-assignment world states, (2) Lindenbaum extension of partial predicate info to full MCS, (3) prove chronicle_gap_contradiction directly (bypasses Strategy B entirely)."
+    {
+      "phase": 3,
+      "description": "Fundamental architectural incompatibility: truth_at with WorldState=Unit has position-independent atoms, while temporal_truth on Z-interval has position-dependent atoms. The biconditional h_truth_corr is unsatisfiable.",
+      "attempted_alternatives": [
+        "Predicate-tracking WorldState + singleton Omega (fails ShiftClosed)",
+        "Orbit-based Omega (breaks box transparency, needs S5 transfer ~300 lines)",
+        "Direct chronicle_gap_contradiction proof (k-equivalence cannot express succ-orbit cofinality)"
+      ],
+      "viable_paths": [
+        "Path A: S5 orbit approach with orbit-based Omega (~300-400 new lines)",
+        "Path B: Prove chronicle_gap_contradiction directly (~200-500 new lines)",
+        "Path C: Hybrid of A + unboundedness extraction (~400-500 new lines)"
+      ]
+    }
   ],
-  "continuation_context": "ReynoldsBridge.lean has sorry-free limitdom_is_good, limitdom_root_neg_truth, Prior-UZ/SZ, effectiveFormula identity lemmas. The countermodel_discrete_reynolds_v2 theorem stub exists with a sorry. The Phase 3 blocker analysis is in handoffs/phase-1-2-handoff-20260603.md. Alternative approach: prove chronicle_gap_contradiction in ChronicleToCountermodel.lean (original sorry at line 481) to make existing countermodel_discrete_reynolds sorry-free without needing k-equiv bridge.",
+  "continuation_context": "Phases 1-2 complete and sorry-free in ReynoldsBridge.lean. The sorry at line 489 (countermodel_discrete_reynolds_v2) remains. The plan's Phase 3 approach must be redesigned. See specs/268_reynolds_pipeline_bridge/handoffs/phase-3-blocked-20260603.md for full analysis.",
   "next_action_hint": "revise_plan",
   "artifacts": [
     {
-      "path": "specs/268_reynolds_pipeline_bridge/handoffs/phase-1-2-handoff-20260603.md",
+      "path": "specs/268_reynolds_pipeline_bridge/handoffs/phase-3-blocked-20260603.md",
       "type": "handoff",
-      "summary": "Phase 1-2 completion handoff with Phase 3 blocker analysis and three resolution approaches"
+      "summary": "Detailed blocker analysis with three viable alternative paths"
     }
   ]
 }
