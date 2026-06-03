@@ -1,7 +1,7 @@
 # Implementation Plan: Task #155
 
 - **Task**: 155 - Eliminate all sorries from completeness_discrete by fixing root sorries in two chains
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14-22 hours
 - **Dependencies**: None (Phases 1 and 2 from prior plan v64 are completed)
 - **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/61_team-research.md
@@ -66,18 +66,56 @@ Plan v64 attempted direct proof of `nf_2var_existential_transfer` (Phase 3, now 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Verify critical path and confirm sorry sources [NOT STARTED]
+### Phase 1: Verify critical path and confirm sorry sources [COMPLETED]
 
 **Goal**: Run `#print axioms completeness_discrete` and trace the exact sorry chains to confirm which sorry sites block the main theorem. Verify that `GoodStructuresModelSurgery.lean` is indeed sorry-free. This verification must happen before investing 300+ lines in either chain.
 
 **Tasks**:
-- [ ] Run `lean_verify completeness_discrete` (fully qualified) to check for `sorryAx`
-- [ ] Run `lean_verify countermodel_discrete_reynolds` to check sorry chain
-- [ ] Run `lean_verify US_expressively_complete_over_prior` to confirm Chain 1 is on the critical path
-- [ ] Run `lean_verify no_gaps_discrete_model_surgery` to confirm model surgery is sorry-free
-- [ ] Run `lean_verify chronicle_is_good_direct` to confirm it is sorry-free
-- [ ] Run `lean_verify succ_embed_surjective` to confirm Chain 2 sorry source
-- [ ] Document which sorry chains actually block `completeness_discrete` and update plan if any assumptions are wrong
+- [x] Run `lean_verify completeness_discrete` (fully qualified) to check for `sorryAx` *(confirmed: sorryAx present)*
+- [x] Run `lean_verify countermodel_discrete_reynolds` to check sorry chain *(confirmed: sorryAx present)*
+- [x] Run `lean_verify US_expressively_complete_over_prior` to confirm Chain 1 is on the critical path *(confirmed: sorryAx present)*
+- [x] Run `lean_verify no_gaps_discrete_model_surgery` to confirm model surgery is sorry-free *(deviation: altered -- NOT sorry-free, carries sorryAx from Chain 1 via US_expressively_complete_over_prior)*
+- [x] Run `lean_verify chronicle_is_good_direct` to confirm it is sorry-free *(deviation: altered -- NOT sorry-free, carries sorryAx from Chain 1 via no_gaps_discrete_model_surgery)*
+- [x] Run `lean_verify succ_embed_surjective` to confirm Chain 2 sorry source *(confirmed: sorryAx present via limitDomSubtype_isSuccArchimedean)*
+- [x] Document which sorry chains actually block `completeness_discrete` and update plan if any assumptions are wrong
+
+**CRITICAL FINDING**: The plan's assumption that GoodStructuresModelSurgery.lean is sorry-free is **INCORRECT**. The sorry chain is:
+
+```
+stavi_expressive_completeness [SORRY: 3 sites in StaviCompleteness.lean]
+  -> US_expressively_complete_over_prior [sorry via above]
+    -> gap_formula_R [sorry via above]
+      -> gap_prior_UZ_contradiction [sorry via above]
+        -> reynolds_model_surgery_core [sorry via above]
+          -> no_gaps_discrete_model_surgery [sorry via above]
+            -> no_gaps_discrete [sorry via above]
+              -> one_class [sorry via above]
+                -> chronicle_is_good_direct [sorry via above]
+```
+
+This means Chain 2's "good structure" approach CANNOT bypass Chain 1's sorry. Both chains trace to the SAME root cause: the sorry in `nf_2var_existential_transfer`.
+
+Additionally, `cantor_bfmcs_discrete_restricted_buc` is sorry-free (verified). Only `_tc` and `_fuc` carry sorry via `succ_embed_surjective`.
+
+Verified axiom dependencies:
+- `completeness_discrete`: propext, **sorryAx**, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound
+- `countermodel_discrete_reynolds`: propext, **sorryAx**, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound
+- `cantor_bfmcs_discrete_restricted_tc`: propext, **sorryAx**, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound
+- `cantor_bfmcs_discrete_restricted_fuc`: propext, **sorryAx**, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound
+- `cantor_bfmcs_discrete_restricted_buc`: propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound (NO sorryAx)
+- `succ_embed_surjective`: propext, **sorryAx**, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound
+- `US_expressively_complete_over_prior`: propext, **sorryAx**, Classical.choice, Quot.sound
+- `stavi_expressive_completeness`: propext, **sorryAx**, Classical.choice, Quot.sound
+- `no_gaps_discrete_model_surgery`: propext, **sorryAx**, Classical.choice, Quot.sound
+- `chronicle_is_good_direct`: propext, **sorryAx**, Classical.choice, Quot.sound
+- `one_class`: propext, **sorryAx**, Classical.choice, Quot.sound
+- `ghr93_strategy_compose`: propext, Classical.choice, Quot.sound (sorry-free)
+- `decomposition_agreement` (as theorem): propext, Classical.choice, Quot.sound (sorry-free)
+- `nf_profile_determines_rank_type`: propext, Classical.choice, Quot.sound (sorry-free)
+- `nf_fraisse_compression`: propext, Classical.choice, Quot.sound (sorry-free)
+- `flatten_stavi_correct_prior`: propext, Classical.choice, Quot.sound (sorry-free)
+- `very_good_implies_good`: propext, Classical.choice, Quot.sound (sorry-free)
+- `one_class_implies_very_good`: propext, Classical.choice, Quot.sound (sorry-free)
 
 **Timing**: 1 hour
 
@@ -92,9 +130,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build EF Game Bridge for Chain 1 [NOT STARTED]
+### Phase 2: Build EF Game Bridge for Chain 1 [BLOCKED]
 
 **Goal**: Prove `nf_2var_existential_transfer` by building a bridge between NF hypotheses and the sorry-free EF game composition infrastructure. This eliminates the root sorry of Chain 1 (3 sorry sites in StaviCompleteness.lean).
+
+**BLOCKER** (Phase 2):
+- **What failed**: The EF Game Bridge approach requires bridging between two different type systems: (1) NF-level type agreement on `M.carrier` using `nf_characteristic`/`nf_eval_nf`/`interval_nf_types`, and (2) game-level type agreement on `ExtendedCarrier M atomMap r` using `rank_type`/`stavi_temporal_truth_mu`/`decomposition_agreement`. The bridge must connect depth-k 1-var NF equality to rank-r type equality, and interval NF types to game-level interval type sets.
+- **What was tried**: (1) Direct proof of `nf_2var_existential_transfer` by nested induction on depth j -- fails because at depth j'+1, proving 3-var NF agreement for (u,x,t)/(u',x',t') requires interval type data for all sub-intervals (u,x), (u,t), (x,t), but only (x,t) interval data is available from the hypotheses. (2) Zone matching the 4th variable w -- fails for the same reason: inserting w between two consecutive points requires sub-interval type data. (3) Induction on total (depth + variables) -- still requires sub-interval data at each step.
+- **Why it's stuck**: The fundamental obstacle is the "sub-interval splitting problem": when zone-matching adds a new point between two existing points, the interval types of the two resulting sub-intervals are NOT determined by the interval types of the parent interval. This is precisely why the Ehrenfeucht-Fraisse game approach works (its compositional structure handles sub-interval splitting natively), but building the type-level bridge between the NF world and the game world requires ~300-430 lines of careful type translation.
+- **What is needed**: A dedicated implementation session focused on building the three bridge components: (A) NF hypotheses -> decomposition_agreement (translate nf_characteristic equality to rank_type equality, interval_nf_types to game interval types), (B) decomposition_agreement -> ghr93_duplicator_wins (already sorry-free via `ghr93_decomposition_implies_game`), (C) ghr93_duplicator_wins -> NF agreement (extract formula agreement from winning strategy, translate back to nf_eval_nf). The sorry-free infrastructure exists: `ghr93_strategy_compose`, `decomposition_agreement`, `nf_profile_determines_rank_type`, `nf_fraisse_compression` are all verified sorry-free. The missing piece is the type translation layer.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **CRITICAL INSTRUCTIONS**:
 - Do NOT attempt the direct proof approach (Phase 3 of plan v64, confirmed BLOCKED after 5 sessions)
@@ -134,9 +179,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Restructure countermodel_discrete_reynolds to bypass succ_embed_surjective [NOT STARTED]
+### Phase 3: Restructure countermodel_discrete_reynolds to bypass succ_embed_surjective [BLOCKED]
 
 **Goal**: Replace the `succ_embed_surjective`-based coherence condition proofs with proofs that work through the already sorry-free Reynolds pipeline (`one_class -> good -> k_equiv to Z`). This eliminates the Chain 2 sorry dependency on `IsSuccArchimedean`.
+
+**BLOCKER** (Phase 3):
+- **What failed**: Phase 1 verification revealed that the "good structure" pipeline (`one_class` -> `chronicle_is_good_direct`) is NOT sorry-free. It carries sorryAx from Chain 1 (StaviCompleteness) through the following dependency chain: `stavi_expressive_completeness` -> `US_expressively_complete_over_prior` -> `gap_formula_R` -> `gap_prior_UZ_contradiction` -> `reynolds_model_surgery_core` -> `no_gaps_discrete_model_surgery` -> `no_gaps_discrete` -> `one_class` -> `chronicle_is_good_direct`.
+- **What was tried**: Axiom dependency verification via `#print axioms` on all pipeline components.
+- **Why it's stuck**: The "good structure" approach was designed to bypass Chain 2's `succ_embed_surjective` sorry. However, the "good structure" path itself transitively depends on Chain 1's sorry through model surgery. Fixing Phase 3 requires Chain 1 (Phase 2) to be resolved first.
+- **What is needed**: Complete Phase 2 (EF Game Bridge) first. Once Chain 1 is fixed, `US_expressively_complete_over_prior` becomes sorry-free, which cascades to make `no_gaps_discrete_model_surgery` -> `one_class` -> `chronicle_is_good_direct` sorry-free. At that point, Phase 3 can proceed as planned. Alternatively, a completely independent approach to Chain 2 (not using the "good structure" path) would need to be designed.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **CRITICAL INSTRUCTIONS**:
 - Do NOT attempt to prove `IsSuccArchimedean` for `LimitDomSubtype` (ROADMAP WARNING)
