@@ -136,13 +136,14 @@ technical_debt:
 
 ### 272. Enumerate derived temporal operators to unlock bimodal proofs
 - **Effort**: medium (8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 271
 - **Research**: [specs/272_enumerate_derived_temporal_operators/reports/01_derived-temporal-ops.md]
 - **Plan**: [specs/272_enumerate_derived_temporal_operators/plans/01_derived-temporal-ops.md]
+- **Summary**: [specs/272_enumerate_derived_temporal_operators/summaries/01_derived-temporal-ops-summary.md]
 
 **Description**: The interestingness analysis revealed that 0% of valid formulas at c5-c8 use temporal axioms in their proofs. This is not a bug — with the current enumeration bounds (raw Until/Since, modal depth 2, temporal depth 2), formulas requiring genuine bimodal reasoning like `G(p) → □G(p)` (which uses the `modal_future` axiom) are not expressible. Extend the formula enumerator in FormulaEnumerator.lean to include derived temporal operators (G = all_future, H = all_past, F = some_future, P = some_past) as first-class enumeration targets alongside the primitive Until/Since. These derived operators appear in the axiom schemas (F_until_equiv, P_since_equiv, modal_future) and are the natural building blocks for formulas that exercise bimodal interaction. After implementation, generate a targeted "bimodal interaction" dataset slice at c5-c7 using formulas containing both □ and G/H/F/P operators, and verify that valid formulas in this slice use temporal axioms (modal_future, connect_future, etc.) in their proofs.
 
