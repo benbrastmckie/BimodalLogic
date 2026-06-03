@@ -433,8 +433,8 @@
         199
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-03T05:03:54Z",
-      "next_artifact_number": 62,
+      "last_updated": "2026-06-03T06:08:17Z",
+      "next_artifact_number": 65,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -710,38 +710,54 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260603T051841Z.md",
           "type": "handoff",
           "summary": "Phase 1 handoff: both sorry chains trace to same root (nf_2var_existential_transfer). GoodStructuresModelSurgery NOT sorry-free."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/62_blocker-literature-research.md",
+          "type": "report",
+          "summary": "Deep literature-aligned research: single sorry chain (chronicle_gap_contradiction), Path D recommended (succ_reaches_dom_N stage induction, 150-300 lines)"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/64_single-chain-plan.md",
+          "type": "plan",
+          "summary": "3-phase single-chain plan v66: succ_reaches_dom_N stage induction -> wire IsSuccArchimedean -> verify completeness_discrete"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
+          "type": "handoff",
+          "summary": "Path D intractable: limit domain succ crosses all stages, contemp_equiv class != Z-chain. Alternatives: Path E bypass or novel omega-chain proof."
         }
       ],
       "session_id": "sess_1780463003_123347",
       "researched": "2026-06-03T04:22:20Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
-      "resume_phase": 2,
+      "resume_phase": 1,
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 18,
+        "phases": 3,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 65,
+        "plan_version": 66,
         "dependency_waves": [
           [
             1
           ],
           [
-            2,
+            2
+          ],
+          [
             3
-          ],
-          [
-            4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
           {
             "path": "reports/61_team-research.md",
             "integrated_in_plan_version": 65,
+            "integrated_date": "2026-06-02"
+          },
+          {
+            "path": "reports/62_blocker-literature-research.md",
+            "integrated_in_plan_version": 66,
             "integrated_date": "2026-06-02"
           }
         ]
