@@ -1,7 +1,7 @@
 # Implementation Plan: Task #271
 
 - **Task**: 271 - Add active Until-negative rule for dense countermodel construction
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 270 (extend prefilter recursive unsat)
 - **Research Inputs**: specs/271_active_until_negative_dense_countermodels/reports/01_active-untl-neg-research.md
