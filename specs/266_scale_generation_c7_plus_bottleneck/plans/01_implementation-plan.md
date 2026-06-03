@@ -1,7 +1,7 @@
 # Implementation Plan: Task #266 - Scale Dataset Generation c7+ Bottleneck
 
 - **Task**: 266 - Scale dataset generation to c7+ to find next bottleneck
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 265 (pre-filter, completed)
 - **Research Inputs**: specs/266_scale_generation_c7_plus_bottleneck/reports/01_scaling-bottleneck.md
