@@ -1834,20 +1834,81 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Prove chronicle_gap_contradiction directly from the omega-chain construction of LimitDomSubtype. The lemma states: for all a b in LimitDomSubtype, if a < b then it is not the case that succ^[n] a < b for all n. This is the sole remaining sorry in the discrete completeness proof chain (ChronicleToCountermodel.lean:473). The proof should proceed by induction on the construction stages of LimitDomSubtype, showing that each C5 witness insertion fills gaps, so no bounded succ-orbit can persist to the limit. Eliminates the sorry chain: chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective → countermodel_discrete_reynolds.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-03T19:45:00Z",
-      "artifacts": [],
-      "next_artifact_number": 1,
-      "researched": "2026-06-03T20:10:00Z"
+      "last_updated": "2026-06-03T22:15:00Z",
+      "artifacts": [
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
+          "type": "report",
+          "summary": "Initial research: sorry chain analysis, infrastructure inventory, three blocked approaches, Strategy B recommended"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/02_deep-analysis.md",
+          "type": "report",
+          "summary": "Deep analysis: S5 was never the problem, Strategy B was red herring, Z1 direct proof recommended"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan v2: Z1 infrastructure, Case A (MCS differ), Case B (MCS equal), assembly and verification"
+        }
+      ],
+      "next_artifact_number": 3,
+      "researched": "2026-06-03T20:10:00Z",
+      "planned": "2026-06-03T20:30:00Z",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 8,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_gap-contradiction-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-03"
+          },
+          {
+            "path": "reports/02_deep-analysis.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-06-03"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 274,
+      "project_name": "bimodal_bottleneck_sweep",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        272
+      ],
+      "created": "2026-06-03T21:45:00Z",
+      "last_updated": "2026-06-03T21:45:00Z"
     }
   ],
-  "next_project_number": 274,
+  "next_project_number": 275,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -110,6 +110,18 @@ technical_debt:
 
 ## Tasks
 
+### 274. Run dataset generation at increasing complexity to find new bottleneck after tasks 270-272
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 272
+
+**Description**: Tasks 270-272 delivered recursive unsatisfiability pre-filtering, active Until-negative rules for dense countermodels, and derived temporal operators (G/H/F/P) as first-class enumeration targets with 22 axiom schemata and a `hasBimodalInteraction` filter. Run `run_dataset_generation.sh` at c5, c7, and c9 to measure the combined impact: (1) what fraction of generated formulas now use derived temporal operators, (2) whether bimodal interaction formulas (containing both modal and temporal operators) actually exercise temporal axioms (modal_future, connect_future, etc.) in their proofs, (3) where the new timeout/bottleneck sits — is it still the prover, the enumerator producing uninteresting formulas, or a new pattern? Also run `generateBimodalSlice` directly at c5-c7 to test the targeted bimodal dataset path. Collect metrics on timeout rate, valid fraction, interestingness score distribution, and temporal axiom usage. Identify the next bottleneck blocking genuinely interesting bimodal proofs and propose what to fix.
+
+---
+
 ### 270. Extend structural pre-filter with recursive unsatisfiability and consequent validity
 - **Effort**: small (2-4 hours)
 - **Status**: [COMPLETED]
