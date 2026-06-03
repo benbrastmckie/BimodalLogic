@@ -98,17 +98,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Regenerate Complete C8 Dataset [NOT STARTED]
+### Phase 2: Regenerate Complete C8 Dataset [COMPLETED]
+
+**Note**: Phase 1 implementation used Task.spawn + 1ms-poll preemptive timeout instead of the planned IO.asTask approach, achieving ~930 formulas/sec throughput while preventing pipeline stalls.
 
 **Goal**: Run exhaustive c8 generation with the wall-clock timeout to produce a complete c8 dataset.
 
 **Tasks**:
-- [ ] Delete or rename the partial `data/bmlogic-c8-clean.jsonl` (147,864 records) and its checkpoint file
-- [ ] Run full c8 generation: `lake exe dataset_generator -- --max-complexity 8 --output data/bmlogic-c8-clean.jsonl --wallclock-timeout 5000`
-- [ ] Verify the output record count matches the expected ~253K formulas
-- [ ] Record generation metrics: total wall-clock time, timeout count, timeout rate, wallclock_timeout count, mean/max decision time
-- [ ] Classify c8 timeout patterns (temporal-modal feedback loops, bare temporal, etc.)
-- [ ] Identify how many formulas hit the wall-clock timeout vs. the fuel timeout
+- [x] Delete or rename the partial `data/bmlogic-c8-clean.jsonl` (147,864 records) and its checkpoint file
+- [x] Run full c8 generation: `lake exe dataset_generator -- --max-complexity 8 --output data/bmlogic-c8-clean.jsonl --wallclock-timeout 5000` *(deviation: altered -- required resume via checkpoint after first run was killed by process timeout)*
+- [x] Verify the output record count matches the expected ~253K formulas (252,900 records)
+- [x] Record generation metrics: total wall-clock time, timeout count, timeout rate, wallclock_timeout count, mean/max decision time
+- [x] Classify c8 timeout patterns (temporal-modal feedback loops, bare temporal, etc.)
+- [x] Identify how many formulas hit the wall-clock timeout vs. the fuel timeout (487 wallclock vs 19,234 fuel)
 
 **Timing**: 1 hour (including ~15 min generation time + analysis)
 
@@ -126,7 +128,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Run C9 Stratified Sample [NOT STARTED]
+### Phase 3: Run C9 Stratified Sample [IN PROGRESS]
 
 **Goal**: Generate a stratified c9 sample to characterize timeout patterns and estimate exhaustive generation feasibility at c9.
 
