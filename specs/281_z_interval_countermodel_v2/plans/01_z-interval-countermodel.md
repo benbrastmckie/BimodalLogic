@@ -141,7 +141,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 2: TaskModel Construction and Truth Correspondence [IN PROGRESS — MULTI-FAMILY]
+### Phase 2: TaskModel Construction and Truth Correspondence [COMPLETED]
 
 **Goal**: Construct a `TaskModel zIntervalTaskFrame` from the Z-interval's predicate interpretation and prove `h_truth_corr` — the correspondence between `truth_at` and `temporal_truth`.
 
@@ -211,7 +211,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 3: Complete countermodel_discrete_reynolds_v2 [NOT STARTED]
+### Phase 3: Complete countermodel_discrete_reynolds_v2 [COMPLETED]
 
 **Goal**: Assemble the full countermodel from Phases 1-2 and fill the sorry at ReynoldsBridge.lean:489.
 
@@ -245,7 +245,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 4: Wire into completeness_discrete and Verify [NOT STARTED]
+### Phase 4: Wire into completeness_discrete and Verify [COMPLETED]
 
 **Goal**: Replace the call to `countermodel_discrete_reynolds` with `countermodel_discrete_reynolds_v2` in `completeness_discrete`, verify the full build, and audit axioms.
 

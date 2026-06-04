@@ -366,7 +366,7 @@ theorem completeness_discrete (φ : Formula) :
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
       obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        Bimodal.Metalogic.WeakCanonical.countermodel_discrete_reynolds
+        Bimodal.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
           M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid_discrete D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
