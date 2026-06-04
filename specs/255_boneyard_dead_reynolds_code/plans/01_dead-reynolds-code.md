@@ -119,19 +119,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update Boneyard documentation [NOT STARTED]
+### Phase 3: Update Boneyard documentation [COMPLETED]
 
 **Goal**: Update Boneyard README and add BXPipelineDeadCode README
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/README.md` documenting:
+- [x] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/README.md` documenting:
   - ReynoldsModelSurgery.lean (already archived, task 268)
   - ReynoldsNoGapsDeprecated.lean (new, task 255)
   - Why archived: BX pipeline dead code after Reynolds model surgery completion
-- [ ] Update `Theories/Bimodal/Boneyard/README.md`:
-  - Update BXPipelineDeadCode row in Directory Inventory: files 2 (was 1), update line count, add task 255 reference
+- [x] Update `Theories/Bimodal/Boneyard/README.md`:
+  - Update BXPipelineDeadCode row in Directory Inventory: files 2 (was 1), update line count, add task 255 reference *(deviation: altered -- BXPipelineDeadCode had no existing row; added new row since task 268 never created one)*
   - Add task 255 to the Task Cross-References table
-- [ ] Run `lake build` to verify documentation changes did not affect build
+- [x] Run `lake build` to verify documentation changes did not affect build
 
 **Timing**: 20 minutes
 

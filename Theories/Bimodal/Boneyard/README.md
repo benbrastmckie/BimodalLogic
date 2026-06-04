@@ -32,6 +32,7 @@ The Boneyard serves three roles:
 
 | Directory | Files | Lines | Archived From | Why Archived | Task |
 |-----------|------:|------:|---------------|--------------|------|
+| [BXPipelineDeadCode](#bxpipelinedeadcode) | 2 | 568 | WeakCanonical/IntegerModel/ | BX pipeline dead code: deprecated Reynolds model surgery (no_gaps_faithful false) and dead ReynoldsNoGaps definitions (zero references) | 268, 255 |
 | [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
 | [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
 | [BundleTemporalCoherence](#bundletemporalcoherence) | 0 | -- | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
@@ -54,7 +55,7 @@ The Boneyard serves three roles:
 | [UltrafilterFrame](#ultrafilterframe) | 2 | 1,553 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4); Jonsson-Tarski prerequisite | 21 |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 96 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **38** | **~26,738** | | | |
+| **Total** | **40** | **~27,306** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -85,6 +86,18 @@ adapted to the current system without fundamental restructuring.
 - Directories: StrictSemanticsLegacy, BundleTemporalCoherence
 
 ## Subdirectory Details
+
+### BXPipelineDeadCode
+Two files containing dead code from the BX pipeline after Reynolds model surgery
+completion. `ReynoldsModelSurgery.lean` (407 lines, task 268) contains the
+deprecated `no_gaps_faithful` proof and `prior_model_is_succ_archimedean`
+corollary, which are mathematically false as stated (Z+Z counterexample with
+constant predicates). `ReynoldsNoGapsDeprecated.lean` (161 lines, task 255)
+contains 4 dead definitions extracted from `ReynoldsNoGaps.lean`:
+`no_gaps_discrete_archimedean`, `no_gaps_prior`, `prior_implies_succ_archimedean`,
+and `one_class_implies_succ_archimedean` -- all had zero external references.
+The completeness pipeline uses `chronicle_no_gaps` (ChronicleNoGaps.lean) and
+the Reynolds pipeline via `no_gaps_discrete` instead.
 
 ### BXPipelineGapAnalysis
 Two files from the dead BX pipeline gap analysis path. `ChronicleNoGaps.lean`
@@ -238,6 +251,8 @@ See subdirectory README for recovery options.
 | 21 | UltrafilterFrame (TenseS5Algebra + UltrafilterFrame from Algebraic/) | 2026-05-20 |
 | 173 | OpenGuardInvalid (27 sorry-tainted definitions from TemporalDerived.lean) | 2026-05-20 |
 | 225 | BXPipelineGapAnalysis (ChronicleNoGaps + HenkinDiscreteChain, dead BX pipeline) | 2026-05-30 |
+| 268 | BXPipelineDeadCode/ReynoldsModelSurgery.lean (deprecated no_gaps_faithful) | 2026-06-02 |
+| 255 | BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean (4 dead definitions from ReynoldsNoGaps.lean) | 2026-06-04 |
 
 ## Git Retrieval
 
