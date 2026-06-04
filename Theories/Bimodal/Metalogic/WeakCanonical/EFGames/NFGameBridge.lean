@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
 import Bimodal.Metalogic.WeakCanonical.EFGames.GapDetection
+import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 
 /-!
 # NF-Game Bridge: Helper Lemmas
@@ -608,5 +609,131 @@ theorem discrete_rank_type_agree {sig : MonadicSignature}
       (extendedStructureWithMu M' atomMap (k / 2))
       (fun _ => extendPoint x) (fun _ => extendPoint x')
       h_mu_nf_agree).mpr hA
+
+/-! ## Discrete: Eval Equivalence Between M and Extended Structures
+
+For discrete orders, the extended carrier collapses to M.carrier (no gaps).
+This section proves that eval on M at actual-point environments is equivalent
+to eval on the extended structures at extendPoint environments.
+These equivalences are needed for Bridge B: converting formula_agreement
+on extended structures back to eval agreement on the original structures. -/
+
+/-- For discrete orders, evaluating a sig formula on M at an actual-point
+    environment is equivalent to evaluating its lift on extendedStructure
+    at the extendPoint environment.
+
+    This is because for discrete orders, ExtendedCarrier = M.carrier (no gaps),
+    so quantifiers range over the same domain. -/
+theorem discrete_eval_lift_equiv {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    {n : Nat} (env_M : Fin n → M.carrier)
+    (phi : MonadicFormula sig n) :
+    eval M env_M phi ↔
+    eval (extendedStructure M atomMap r)
+      (fun i => extendPoint (env_M i)) phi := by
+  induction phi with
+  | atom p i =>
+    simp only [eval, extendedStructure, extendPoint]
+  | lt i j =>
+    simp only [eval]
+    exact (discrete_extendPoint_lt_iff (env_M i) (env_M j)).symm
+  | not α ih =>
+    simp only [eval]; exact (ih env_M).not
+  | and α β ihα ihβ =>
+    simp only [eval]; exact (ihα env_M).and (ihβ env_M)
+  | all α ih =>
+    simp only [eval]
+    constructor
+    · intro h e
+      obtain ⟨y, rfl⟩ := discrete_extended_is_point h_no_gaps e
+      have h1 := ih (Fin.cons y env_M)
+      have h_env : (fun i => extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := r)
+            ((Fin.cons y env_M : Fin _ → M.carrier) i)) =
+          Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+      rw [h_env] at h1
+      exact h1.mp (h y)
+    · intro h y
+      have h1 := ih (Fin.cons y env_M)
+      have h_env : (fun i => extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := r)
+            ((Fin.cons y env_M : Fin _ → M.carrier) i)) =
+          Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+      rw [h_env] at h1
+      exact h1.mpr (h (extendPoint y))
+  | ex α ih =>
+    simp only [eval]
+    constructor
+    · rintro ⟨y, hy⟩
+      have h1 := ih (Fin.cons y env_M)
+      have h_env : (fun i => extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := r)
+            ((Fin.cons y env_M : Fin _ → M.carrier) i)) =
+          Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+      rw [h_env] at h1
+      exact ⟨extendPoint y, h1.mp hy⟩
+    · rintro ⟨e, he⟩
+      obtain ⟨y, rfl⟩ := discrete_extended_is_point h_no_gaps e
+      have h1 := ih (Fin.cons y env_M)
+      have h_env : (fun i => extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := r)
+            ((Fin.cons y env_M : Fin _ → M.carrier) i)) =
+          Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+        funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+      rw [h_env] at h1
+      exact ⟨y, h1.mpr he⟩
+
+/-- For discrete orders, eval on M equals eval on extendedStructureWithMu
+    via liftSigFormula at actual-point environments. Combines
+    `discrete_eval_lift_equiv` with `liftSigFormula_eval`. -/
+theorem discrete_eval_muSig_equiv {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r n : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    (env_M : Fin n → M.carrier)
+    (phi : MonadicFormula sig n) :
+    eval M env_M phi ↔
+    eval (extendedStructureWithMu M atomMap r)
+      (fun i => extendPoint (env_M i)) (liftSigFormula phi) := by
+  rw [liftSigFormula_eval]
+  exact discrete_eval_lift_equiv h_no_gaps env_M phi
+
+/-! ## Existential Transfer from NF Agreement
+
+General fact: n-var NF agreement at depth d+1 implies (n+1)-var
+existential transfer at depth d. This follows directly from the
+quantifier part of the characteristic NF at depth d+1.
+
+This is the key lemma enabling the inductive structure of the
+Stavi completeness proof. -/
+
+/-- (n+1)-var existential transfer on sig at depth d follows from n-var
+    sig NF agreement at depth d+1. This is a GENERAL fact (not discrete-specific):
+    the quantifier part of the depth-(d+1) characteristic NF directly encodes
+    the existential transfer at depth d.
+
+    This is the key lemma for the inductive step: once we have NF agreement
+    at depth d+1 for an n-var environment, we get existential transfer at
+    depth d for all (n+1)-var NF extensions. -/
+theorem existential_transfer_from_nf {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig}
+    {d n : Nat}
+    (env_M : Fin n → M.carrier) (env_M' : Fin n → M'.carrier)
+    (h_sig_nf : ∀ nf : NormalForm sig (d + 1) n,
+      nf_eval_nf M (d + 1) n env_M nf ↔
+      nf_eval_nf M' (d + 1) n env_M' nf) :
+    ∀ chi : NormalForm sig d (n + 1),
+      (∃ w, nf_eval_nf M d (n + 1) (Fin.cons w env_M) chi) ↔
+      (∃ w', nf_eval_nf M' d (n + 1) (Fin.cons w' env_M') chi) := by
+  intro chi
+  -- The characteristic NF at depth d+1 encodes the existential transfer:
+  -- its quantifier part says (∃ x, nf_eval at depth d) ↔ (bool assignment = true)
+  have h_sig_char := nf_characteristic_satisfies M (d + 1) n env_M
+  have h_sig_M'_sat := (h_sig_nf (nf_characteristic M (d + 1) n env_M)).mp h_sig_char
+  obtain ⟨_, h_sig_quant_M⟩ := h_sig_char
+  obtain ⟨_, h_sig_quant_M'⟩ := h_sig_M'_sat
+  -- Chain: (∃ x, ..._M) ↔ (quant_assgn chi = true) ↔ (∃ x', ..._M')
+  exact (h_sig_quant_M chi).trans (h_sig_quant_M' chi).symm
 
 end Bimodal.Metalogic.WeakCanonical
