@@ -6,6 +6,73 @@
   },
   "active_projects": [
     {
+      "project_number": 275,
+      "project_name": "surface_rwt_ws_bimodal_interaction",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        274
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
+      "project_number": 276,
+      "project_name": "strong_release_trigger_operators",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        275
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
+      "project_number": 277,
+      "project_name": "tableau_rule_firing_traces",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        274
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
+      "project_number": 278,
+      "project_name": "structural_prefilter_expansion",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        274
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
+      "project_number": 279,
+      "project_name": "backward_proof_generation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        277
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
+      "project_number": 280,
+      "project_name": "contrastive_minimal_pair_generation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        275,
+        276
+      ],
+      "created": "2026-06-03T22:30:00Z",
+      "last_updated": "2026-06-03T22:30:00Z"
+    },
+    {
       "project_number": 270,
       "project_name": "extend_prefilter_recursive_unsat",
       "status": "completed",
@@ -1956,7 +2023,7 @@
       }
     }
   ],
-  "next_project_number": 275,
+  "next_project_number": 281,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

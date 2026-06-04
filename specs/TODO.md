@@ -1,5 +1,5 @@
 ---
-next_project_number: 274
+next_project_number: 281
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -81,6 +81,12 @@ technical_debt:
 
 ### Dataset Enhancement
 
+275 [NOT STARTED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+  └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
+    └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
+277 [NOT STARTED] — Instrument tableau prover with rule-firing trace certificates
+  └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set
+278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
@@ -110,6 +116,78 @@ technical_debt:
 269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
+
+### 275. Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+- **Effort**: small (2-4 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 274
+
+**Description**: Release (R), weak until (W), trigger (T), and weak since (WS) are already defined in Formula.lean but invisible to the dataset generator — `hasBimodalInteraction` only checks for F/P/G/H patterns. (1) Extend `hasDerivedTemporal` / `hasBimodalInteraction` in DatasetGenerator.lean to recognise R/W/T/WS structural patterns via subformula traversal. (2) Add complexity pattern-matching cases for R/W/T/WS in `Formula.complexity` (analogous to the F/P/G/H treatment from task 274), reducing their overhead from 5-8 to 1-2. (3) Update `FormulaEnumerator.lean` overhead constants to match. (4) Regenerate c5 dataset and verify ~3x increase in bimodal formula count. This is zero new axiom/proof work — purely surfacing existing operators in the automation layer.
+
+---
+
+### 276. Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
+- **Effort**: small (2-4 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 275
+
+**Description**: Add Strong Release `M(φ,ψ) := ψ U (ψ ∧ φ)` and Strong Trigger `ST(φ,ψ) := ψ S (ψ ∧ φ)` as derived operator definitions in Formula.lean. These complete the classical operator quartets {U, W, R, M} (future) and {S, WS, T, ST} (past) used in positive normal form LTL. (1) Add `strong_release` and `strong_trigger` definitions (one line each). (2) Add complexity pattern-matching with overhead 2. (3) Add bimodal interaction schemata (~14-20 new patterns, e.g. `□φ → G(M(φ,ψ))`, interaction with always/sometimes). (4) Update `hasBimodalInteraction` to include M/ST patterns. (5) Add axiom schemata for M/ST interactions with modal operators. (6) Verify with c5 generation that new bimodal formulas appear.
+
+---
+
+### 277. Instrument tableau prover with rule-firing trace certificates
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 274
+
+**Description**: Instrument the tableau decision procedure in Tableau.lean to emit rule-firing traces during proof search. Each trace entry records `(rule_name, formula, world_label)` identifying which axiom schema was instantiated. (1) Add a `ProofCertificate` structure to collect trace entries during tableau expansion. (2) Thread the certificate through the proof search, recording each rule application (K, T, 4, 5, temporal Until-unfolding, Since-unfolding, G-introduction, etc.). (3) Post-process traces to compute per-proof axiom multisets (which axioms, how many times each). (4) Export axiom fingerprint and tableau branching factor to JSONL output. (5) For failed proof attempts (timeouts), preserve partial traces. This enables axiom diversity scoring, proof complexity stratification, and curriculum-based training data generation. Reference: Libal & Volpe (2016) "Certification of Prefixed Tableau Proofs for Modal Logic."
+
+---
+
+### 278. Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 274
+
+**Description**: Expand the structural prefilter in DatasetGenerator.lean with additional O(n) patterns to approximately double prefilter coverage from ~5% to ~10%. New patterns: (1) Polarity/sign analysis — walk the formula tracking positive/negative occurrences; a subformula appearing only positively that is a tautology can be dropped, one appearing only negatively that is a contradiction short-circuits. (2) 2-SAT propositional skeleton — strip all modal and temporal operators, compute the propositional 2-SAT skeleton; if unsatisfiable in O(n+e), the full formula is unsatisfiable. (3) S5 reflexive shortcutting — `Box phi ∧ neg phi` as top-level conjunct is immediately unsatisfiable (strict generalization of existing modal_t_weakening). (4) Temporal loop detection — `phi U psi` co-occurring with `G(neg psi)` as top-level conjuncts is unsatisfiable. (5) Subformula subsumption — ~10 modal/temporal syntactic implication rules (e.g., `Box phi` implies `phi` under T). Add axiom attribution labels for each new pattern. Run before/after comparison at c7.
+
+---
+
+### 279. Build backward proof-first formula generation over axiom set
+- **Effort**: large (16-24 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 277
+
+**Description**: Implement a forward-chaining proof generation system that constructs derivation trees over the existing axiom schemata in ProofSystem/, then extracts the conclusion formulas as labeled training data. This bypasses exhaustive enumeration entirely — formulas are guaranteed interesting by construction because they have non-trivial proofs. (1) Write a forward-chaining combinator that starts from axiom instances and applies inference rules (modus ponens, necessitation, temporal rules) up to a configurable derivation depth N. (2) Collect `(formula, proof_tree)` pairs, where the proof tree serves as supervision signal. (3) Control complexity via derivation depth rather than formula AST size. (4) Use the rule-firing traces from task 277 to compute axiom diversity and branching metrics automatically. (5) Integrate as an alternative generation mode in DatasetGenerator.lean alongside exhaustive enumeration. (6) Compare output quality: axiom diversity, proof depth distribution, and temporal axiom usage vs. enumeration-based generation. Reference: DeepSeek-Prover-V2 subgoal decomposition pattern; SynLogic (NeurIPS 2025) parameterized generation with rule-based verifiers.
+
+---
+
+### 280. Add contrastive minimal-pair mutation pass for labeled corpus
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 275, Task 276
+
+**Description**: Implement a mutation pass over the existing labeled formula corpus to generate contrastive minimal pairs — (valid, invalid) formula pairs that differ by exactly one structural change. Given a valid formula φ, generate φ' by: (1) replacing one □ with ◇ (or vice versa), (2) replacing one temporal operator with another (U↔R, F↔G, etc.), (3) removing one conjunct, (4) flipping one implication direction, (5) swapping a derived operator (W↔M, T↔ST). Run the tableau prover on each φ'; if the validity label flips, emit the pair. These pairs are extremely high-signal for training models to discriminate fine-grained logical structure. (1) Define a set of ~10 mutation rules in a new `FormulaMutator.lean` module. (2) Apply mutations to the existing c5/c7 labeled corpus. (3) Re-label mutants via the tableau prover. (4) Export valid contrastive pairs to a new JSONL file with fields: `original_formula`, `mutated_formula`, `mutation_type`, `original_label`, `mutated_label`. (5) Measure contrastive pair yield rate per mutation type. Reference: LFC-DA (2025); contrast sets for NLP robustness.
+
+---
 
 ### 274. Run dataset generation at increasing complexity to find new bottleneck after tasks 270-272
 - **Effort**: medium (6-10 hours)
