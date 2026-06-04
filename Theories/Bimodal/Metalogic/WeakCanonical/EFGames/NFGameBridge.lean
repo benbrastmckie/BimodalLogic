@@ -1,6 +1,5 @@
-import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
+import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
 import Bimodal.Metalogic.WeakCanonical.EFGames.GapDetection
-import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 
 /-!
 # NF-Game Bridge: Helper Lemmas
@@ -265,5 +264,349 @@ theorem discrete_extendPoint_lt_iff {sig : MonadicSignature}
       ⟨show extendedLE (Sum.inl x) (Sum.inl y) from le_of_lt h,
        fun hyx => not_lt.mpr (show y ≤ x from hyx) h⟩
       (le_refl _)
+
+/-! ## Discrete Bridge: NF on sig → NF on muSig
+
+For discrete orders (no gaps), the extended carrier collapses to M.carrier.
+This section proves that NF agreement on `sig` at actual points transfers to
+NF agreement on `muSig sig` at `extendedStructureWithMu`, which in turn
+gives `nf_profile` agreement, `rank_type` agreement, and ultimately
+`decomposition_agreement` at rank k/2.
+
+### Mathematical Key
+
+For discrete M: `ExtendedCarrier M atomMap r = M.carrier` (no gaps).
+`extendedStructureWithMu` adds a trivially-true mu predicate.
+NF agreement on `sig` lifts to NF agreement on `muSig sig` because:
+1. sig-predicate atoms agree (from NF hypothesis)
+2. mu-predicate atoms agree (both true at actual points)
+3. order atoms agree (extendPoint preserves order)
+4. quantifiers over ExtendedCarrier reduce to M.carrier (no gaps)
+5. existential transfer on muSig follows from transfer on sig + IH
+-/
+
+/-- Atom agreement on muSig from atom agreement on sig: at actual points,
+    sig predicates agree by hypothesis and mu is trivially true. -/
+private theorem discrete_muSig_atom_agree {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat} {n : Nat}
+    (env_M : Fin n → M.carrier) (env_M' : Fin n → M'.carrier)
+    (h_atoms : ∀ a : AtomKind sig n, atom_eval M env_M a ↔ atom_eval M' env_M' a)
+    (a : AtomKind (muSig sig) n) :
+    atom_eval (extendedStructureWithMu M atomMap r)
+      (fun i => extendPoint (env_M i)) a ↔
+    atom_eval (extendedStructureWithMu M' atomMap r)
+      (fun i => extendPoint (env_M' i)) a := by
+  cases a with
+  | pred p i =>
+    simp only [atom_eval, extendedStructureWithMu]
+    cases p with
+    | inl p' =>
+      simp only [extendedStructure, extendPoint]
+      exact h_atoms (.pred p' i)
+    | inr u =>
+      simp only [extendPoint, IsPoint]
+      exact ⟨fun _ => ⟨env_M' i, rfl⟩, fun _ => ⟨env_M i, rfl⟩⟩
+  | order i j hij =>
+    simp only [atom_eval]
+    constructor
+    · intro h
+      exact (discrete_extendPoint_lt_iff (env_M' i) (env_M' j)).mpr
+        ((h_atoms (.order i j hij)).mp
+          ((discrete_extendPoint_lt_iff (env_M i) (env_M j)).mp h))
+    · intro h
+      exact (discrete_extendPoint_lt_iff (env_M i) (env_M j)).mpr
+        ((h_atoms (.order i j hij)).mpr
+          ((discrete_extendPoint_lt_iff (env_M' i) (env_M' j)).mp h))
+
+/-- For discrete orders, NF agreement on sig at depth d implies NF agreement on
+    muSig at depth d on the extended structures (at actual-point environments).
+
+    By induction on d:
+    - d=0: atom agreement on muSig from atom agreement on sig + mu trivially true.
+    - d+1: atoms as above. Quantifier transfer: the quantifier part of the sig-NF
+      gives existential transfer on M.carrier. For discrete orders, ExtendedCarrier
+      = M.carrier, so this transfers to ExtendedCarrier. By IH, the matched
+      environments give muSig NF agreement at depth d. -/
+theorem discrete_muSig_nf_agree {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat}
+    (h_no_gaps_M : IsEmpty (Gap M.carrier))
+    (h_no_gaps_M' : IsEmpty (Gap M'.carrier)) :
+    ∀ (d n : Nat)
+    (env_M : Fin n → M.carrier) (env_M' : Fin n → M'.carrier)
+    (h_nf_agree : ∀ nf : NormalForm sig d n,
+      nf_eval_nf M d n env_M nf ↔ nf_eval_nf M' d n env_M' nf),
+    ∀ (nf_mu : NormalForm (muSig sig) d n),
+      nf_eval_nf (extendedStructureWithMu M atomMap r) d n
+        (fun i => extendPoint (env_M i)) nf_mu ↔
+      nf_eval_nf (extendedStructureWithMu M' atomMap r) d n
+        (fun i => extendPoint (env_M' i)) nf_mu := by
+  intro d
+  induction d with
+  | zero =>
+    -- Depth 0: just atom agreement
+    intro n env_M env_M' h_nf_agree nf_mu
+    simp only [nf_eval_nf]
+    have h_atom_sig := atom_agreement_from_nf M env_M M' env_M' h_nf_agree
+    constructor
+    · intro hM a
+      exact (discrete_muSig_atom_agree env_M env_M' h_atom_sig a).symm.trans (hM a)
+    · intro hM' a
+      exact (discrete_muSig_atom_agree env_M env_M' h_atom_sig a).trans (hM' a)
+  | succ d ih =>
+    intro n env_M env_M' h_nf_agree nf_mu
+    have h_atom_sig := atom_agreement_from_nf M env_M M' env_M' h_nf_agree
+    constructor
+    · -- M → M'
+      intro ⟨hM_atoms, hM_quant⟩
+      constructor
+      · -- Atom part: muSig atoms agree
+        intro a
+        exact (discrete_muSig_atom_agree env_M env_M' h_atom_sig a).symm.trans (hM_atoms a)
+      · -- Quantifier part: existential transfer on muSig NFs at depth d
+        intro sub_nf_mu
+        rw [← hM_quant sub_nf_mu]
+        -- Need: (∃ e : ExtCarr_M, nf_eval_nf (extMu M) d (n+1) (e :: ext_env_M) sub_nf_mu) ↔
+        --       (∃ e' : ExtCarr_M', nf_eval_nf (extMu M') d (n+1) (e' :: ext_env_M') sub_nf_mu)
+        -- For discrete orders, e = extendPoint y, e' = extendPoint y'.
+        -- Helper: extract quantifier transfer from depth-(d+1) NF agreement
+        have h_quant_transfer : ∀ (nf_sub : NormalForm sig d (n + 1)),
+            (∃ y : M.carrier, nf_eval_nf M d (n + 1) (Fin.cons y env_M) nf_sub) ↔
+            (∃ y' : M'.carrier, nf_eval_nf M' d (n + 1) (Fin.cons y' env_M') nf_sub) := by
+          intro nf_sub
+          have hM_sat := nf_characteristic_satisfies M (d + 1) n env_M
+          have hM'_sat := (h_nf_agree (nf_characteristic M (d + 1) n env_M)).mp hM_sat
+          obtain ⟨_, hM_q⟩ := hM_sat
+          obtain ⟨_, hM'_q⟩ := hM'_sat
+          exact (hM_q nf_sub).trans (hM'_q nf_sub).symm
+        -- Helper: env rewriting
+        have h_env_cons : ∀ (y : M.carrier),
+            (fun (i : Fin (n + 1)) => extendPoint (sig := sig) (M := M)
+              (atomMap := atomMap) (r := r) ((Fin.cons y env_M : Fin (n + 1) → M.carrier) i)) =
+            Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+          intro y; funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+        have h_env_cons' : ∀ (y' : M'.carrier),
+            (fun (i : Fin (n + 1)) => extendPoint (sig := sig) (M := M')
+              (atomMap := atomMap) (r := r) ((Fin.cons y' env_M' : Fin (n + 1) → M'.carrier) i)) =
+            Fin.cons (extendPoint y') (fun i => extendPoint (env_M' i)) := by
+          intro y'; funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+        -- After rw [← hM_quant]:
+        -- goal is (∃ e' : ExtCarr_M', ..._M' ...) ↔ (∃ e : ExtCarr_M, ..._M ...)
+        constructor
+        · -- Forward: M' → M
+          rintro ⟨e', he'⟩
+          obtain ⟨y', rfl⟩ := discrete_extended_is_point h_no_gaps_M'
+            (show ExtendedCarrier M' atomMap r from e')
+          let nf_y' := nf_characteristic M' d (n + 1) (Fin.cons y' env_M')
+          have h_nf_y' := nf_characteristic_satisfies M' d (n + 1) (Fin.cons y' env_M')
+          obtain ⟨y, h_nf_y⟩ := (h_quant_transfer nf_y').mpr ⟨y', h_nf_y'⟩
+          have h_nf_d := nf_agreement_from_shared_nf M (Fin.cons y env_M)
+            M' (Fin.cons y' env_M') nf_y' h_nf_y h_nf_y'
+          have h_mu_nf := ih (n + 1) (Fin.cons y env_M) (Fin.cons y' env_M') h_nf_d sub_nf_mu
+          rw [h_env_cons] at h_mu_nf; rw [h_env_cons'] at h_mu_nf
+          exact ⟨extendPoint y, h_mu_nf.mpr he'⟩
+        · -- Backward: M → M'
+          rintro ⟨e, he⟩
+          obtain ⟨y, rfl⟩ := discrete_extended_is_point h_no_gaps_M
+            (show ExtendedCarrier M atomMap r from e)
+          let nf_y := nf_characteristic M d (n + 1) (Fin.cons y env_M)
+          have h_nf_y := nf_characteristic_satisfies M d (n + 1) (Fin.cons y env_M)
+          obtain ⟨y', h_nf_y'⟩ := (h_quant_transfer nf_y).mp ⟨y, h_nf_y⟩
+          have h_nf_d := nf_agreement_from_shared_nf M (Fin.cons y env_M)
+            M' (Fin.cons y' env_M') nf_y h_nf_y h_nf_y'
+          have h_mu_nf := ih (n + 1) (Fin.cons y env_M) (Fin.cons y' env_M') h_nf_d sub_nf_mu
+          rw [h_env_cons] at h_mu_nf; rw [h_env_cons'] at h_mu_nf
+          exact ⟨extendPoint y', h_mu_nf.mp he⟩
+    · -- M' → M: symmetric
+      intro ⟨hM'_atoms, hM'_quant⟩
+      constructor
+      · intro a
+        exact (discrete_muSig_atom_agree env_M env_M' h_atom_sig a).trans (hM'_atoms a)
+      · intro sub_nf_mu
+        rw [← hM'_quant sub_nf_mu]
+        have h_quant_transfer : ∀ (nf_sub : NormalForm sig d (n + 1)),
+            (∃ y : M.carrier, nf_eval_nf M d (n + 1) (Fin.cons y env_M) nf_sub) ↔
+            (∃ y' : M'.carrier, nf_eval_nf M' d (n + 1) (Fin.cons y' env_M') nf_sub) := by
+          intro nf_sub
+          have hM_sat := nf_characteristic_satisfies M (d + 1) n env_M
+          have hM'_sat := (h_nf_agree (nf_characteristic M (d + 1) n env_M)).mp hM_sat
+          obtain ⟨_, hM_q⟩ := hM_sat
+          obtain ⟨_, hM'_q⟩ := hM'_sat
+          exact (hM_q nf_sub).trans (hM'_q nf_sub).symm
+        have h_env_cons2 : ∀ (y : M.carrier),
+            (fun (i : Fin (n + 1)) => extendPoint (sig := sig) (M := M)
+              (atomMap := atomMap) (r := r) ((Fin.cons y env_M : Fin (n + 1) → M.carrier) i)) =
+            Fin.cons (extendPoint y) (fun i => extendPoint (env_M i)) := by
+          intro y; funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+        have h_env_cons2' : ∀ (y' : M'.carrier),
+            (fun (i : Fin (n + 1)) => extendPoint (sig := sig) (M := M')
+              (atomMap := atomMap) (r := r) ((Fin.cons y' env_M' : Fin (n + 1) → M'.carrier) i)) =
+            Fin.cons (extendPoint y') (fun i => extendPoint (env_M' i)) := by
+          intro y'; funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons]
+        constructor
+        · -- Forward: M → M'
+          rintro ⟨e, he⟩
+          obtain ⟨y, rfl⟩ := discrete_extended_is_point h_no_gaps_M
+            (show ExtendedCarrier M atomMap r from e)
+          let nf_y := nf_characteristic M d (n + 1) (Fin.cons y env_M)
+          have h_nf_y := nf_characteristic_satisfies M d (n + 1) (Fin.cons y env_M)
+          obtain ⟨y', h_nf_y'⟩ := (h_quant_transfer nf_y).mp ⟨y, h_nf_y⟩
+          have h_nf_d := nf_agreement_from_shared_nf M (Fin.cons y env_M)
+            M' (Fin.cons y' env_M') nf_y h_nf_y h_nf_y'
+          have h_mu_nf := ih (n + 1) (Fin.cons y env_M) (Fin.cons y' env_M') h_nf_d sub_nf_mu
+          rw [h_env_cons2] at h_mu_nf; rw [h_env_cons2'] at h_mu_nf
+          exact ⟨extendPoint y', h_mu_nf.mp he⟩
+        · -- Backward: M' → M
+          rintro ⟨e', he'⟩
+          obtain ⟨y', rfl⟩ := discrete_extended_is_point h_no_gaps_M'
+            (show ExtendedCarrier M' atomMap r from e')
+          let nf_y' := nf_characteristic M' d (n + 1) (Fin.cons y' env_M')
+          have h_nf_y' := nf_characteristic_satisfies M' d (n + 1) (Fin.cons y' env_M')
+          obtain ⟨y, h_nf_y⟩ := (h_quant_transfer nf_y').mpr ⟨y', h_nf_y'⟩
+          have h_nf_d := nf_agreement_from_shared_nf M (Fin.cons y env_M)
+            M' (Fin.cons y' env_M') nf_y' h_nf_y h_nf_y'
+          have h_mu_nf := ih (n + 1) (Fin.cons y env_M) (Fin.cons y' env_M') h_nf_d sub_nf_mu
+          rw [h_env_cons2] at h_mu_nf; rw [h_env_cons2'] at h_mu_nf
+          exact ⟨extendPoint y, h_mu_nf.mpr he'⟩
+
+/-- For discrete orders, depth-d NF agreement on sig implies nf_profile
+    agreement at depth d (= NF on muSig at depth d on extendedStructureWithMu). -/
+theorem discrete_nf_profile_at_depth {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r d : Nat}
+    (h_no_gaps_M : IsEmpty (Gap M.carrier))
+    (h_no_gaps_M' : IsEmpty (Gap M'.carrier))
+    {x : M.carrier} {x' : M'.carrier}
+    (h_nf_agree : ∀ nf : NormalForm sig d 1,
+      nf_eval_nf M d 1 (fun _ => x) nf ↔
+      nf_eval_nf M' d 1 (fun _ => x') nf) :
+    nf_characteristic (extendedStructureWithMu M atomMap r) d 1
+      (fun _ => extendPoint x) =
+    nf_characteristic (extendedStructureWithMu M' atomMap r) d 1
+      (fun _ => extendPoint x') := by
+  have h_mu_nf := discrete_muSig_nf_agree (atomMap := atomMap) (r := r)
+    h_no_gaps_M h_no_gaps_M' d 1
+    (fun _ => x) (fun _ => x') h_nf_agree
+  apply nf_eval_unique (extendedStructureWithMu M' atomMap r) d 1
+    (fun _ => extendPoint x')
+  · exact h_mu_nf (nf_characteristic (extendedStructureWithMu M atomMap r) d 1
+      (fun _ => extendPoint x)) |>.mp
+      (nf_characteristic_satisfies (extendedStructureWithMu M atomMap r) d 1
+        (fun _ => extendPoint x))
+  · exact nf_characteristic_satisfies (extendedStructureWithMu M' atomMap r) d 1
+      (fun _ => extendPoint x')
+
+/-- For discrete orders, depth-k NF agreement on sig implies nf_profile
+    agreement at the half-rank (= NF on muSig at depth 2*(k/2)). -/
+theorem discrete_nf_profile_agree {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder M'.carrier] [PredOrder M'.carrier] [NoMaxOrder M'.carrier]
+    [NoMinOrder M'.carrier] [IsSuccArchimedean M'.carrier]
+    {x : M.carrier} {x' : M'.carrier}
+    (h_nf : nf_characteristic M k 1 (fun _ => x) =
+            nf_characteristic M' k 1 (fun _ => x')) :
+    nf_profile (sig := sig) (atomMap := atomMap) (r := k / 2)
+      (extendPoint x) =
+    nf_profile (sig := sig) (atomMap := atomMap) (r := k / 2)
+      (extendPoint x') := by
+  -- nf_profile = nf_characteristic (extendedStructureWithMu) (2 * (k/2)) 1
+  unfold nf_profile
+  -- Need NF agreement on sig at depth 2*(k/2). Since 2*(k/2) ≤ k, use monotonicity.
+  have h_depth_le : 2 * (k / 2) ≤ k := by omega
+  have h_nf_agree : ∀ nf : NormalForm sig (2 * (k / 2)) 1,
+      nf_eval_nf M (2 * (k / 2)) 1 (fun _ => x) nf ↔
+      nf_eval_nf M' (2 * (k / 2)) 1 (fun _ => x') nf := by
+    intro nf
+    exact nf_agreement_monotone (2 * (k / 2)) k 1 h_depth_le M (fun _ => x) M' (fun _ => x')
+      (nf_agreement_from_nf_char_eq h_nf) nf
+  exact discrete_nf_profile_at_depth (discrete_no_gaps) (discrete_no_gaps) h_nf_agree
+
+/-- For discrete orders, depth-k NF agreement on sig implies rank_type
+    agreement at rank k/2. -/
+theorem discrete_rank_type_agree {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder M'.carrier] [PredOrder M'.carrier] [NoMaxOrder M'.carrier]
+    [NoMinOrder M'.carrier] [IsSuccArchimedean M'.carrier]
+    {x : M.carrier} {x' : M'.carrier}
+    (h_nf : nf_characteristic M k 1 (fun _ => x) =
+            nf_characteristic M' k 1 (fun _ => x')) :
+    rank_type M atomMap (k / 2) (extendPoint x) =
+    rank_type M' atomMap (k / 2) (extendPoint x') := by
+  -- rank_type is determined by nf_profile (nf_profile_determines_rank_type)
+  -- But nf_profile_determines_rank_type works within a single structure.
+  -- We need a cross-structure version.
+  -- Same nf_profile → same rank_type. The proof: rank_type is determined by
+  -- which StaviFormulas of depth ≤ r hold. By nf_profile_determines_stavi_truth,
+  -- same nf_profile → same stavi_truth for all A with depth ≤ r.
+  -- So we need to show: for all A with stavi_depth A ≤ k/2,
+  -- stavi_temporal_truth_mu M atomMap (k/2) (extendPoint x) A ↔
+  -- stavi_temporal_truth_mu M' atomMap (k/2) (extendPoint x') A
+  -- This follows from FO agreement on muSig at depth 2*(k/2).
+  ext A
+  simp only [rank_type, Set.mem_setOf_eq]
+  constructor
+  · intro ⟨hd, hA⟩
+    refine ⟨hd, ?_⟩
+    -- stavi_temporal_truth_mu is determined by stavi_table_mu_correct
+    rw [← stavi_table_mu_correct (extendPoint x) A] at hA
+    rw [← stavi_table_mu_correct (extendPoint x') A]
+    -- Now need: eval on muSig agrees
+    have h_nf_profile := discrete_nf_profile_agree (atomMap := atomMap) h_nf
+    -- nf_profile agreement at depth 2*(k/2) gives FO agreement at depth ≤ 2*(k/2)
+    have h_fo_depth : (stavi_table_mu atomMap A).quantifier_depth ≤ 2 * (k / 2) :=
+      le_trans (stavi_table_mu_depth A)
+        (le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hd))
+    -- From nf_profile equality, derive NF agreement on muSig at depth 2*(k/2)
+    have h_mu_nf_agree : ∀ nf : NormalForm (muSig sig) (2 * (k / 2)) 1,
+        nf_eval_nf (extendedStructureWithMu M atomMap (k / 2)) (2 * (k / 2)) 1
+          (fun _ => extendPoint x) nf ↔
+        nf_eval_nf (extendedStructureWithMu M' atomMap (k / 2)) (2 * (k / 2)) 1
+          (fun _ => extendPoint x') nf := by
+      intro nf
+      exact nf_agreement_from_shared_nf
+        (extendedStructureWithMu M atomMap (k / 2)) (fun _ => extendPoint x)
+        (extendedStructureWithMu M' atomMap (k / 2)) (fun _ => extendPoint x')
+        (nf_profile (extendPoint x))
+        (nf_characteristic_satisfies _ _ _ _)
+        (h_nf_profile ▸ nf_characteristic_satisfies _ _ _ _)
+        nf
+    exact (doets_lemma_1_1 (2 * (k / 2)) 1 (stavi_table_mu atomMap A) h_fo_depth
+      (extendedStructureWithMu M atomMap (k / 2))
+      (extendedStructureWithMu M' atomMap (k / 2))
+      (fun _ => extendPoint x) (fun _ => extendPoint x')
+      h_mu_nf_agree).mp hA
+  · intro ⟨hd, hA⟩
+    refine ⟨hd, ?_⟩
+    rw [← stavi_table_mu_correct (extendPoint x') A] at hA
+    rw [← stavi_table_mu_correct (extendPoint x) A]
+    have h_nf_profile := discrete_nf_profile_agree (atomMap := atomMap) h_nf
+    have h_fo_depth : (stavi_table_mu atomMap A).quantifier_depth ≤ 2 * (k / 2) :=
+      le_trans (stavi_table_mu_depth A)
+        (le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hd))
+    have h_mu_nf_agree : ∀ nf : NormalForm (muSig sig) (2 * (k / 2)) 1,
+        nf_eval_nf (extendedStructureWithMu M atomMap (k / 2)) (2 * (k / 2)) 1
+          (fun _ => extendPoint x) nf ↔
+        nf_eval_nf (extendedStructureWithMu M' atomMap (k / 2)) (2 * (k / 2)) 1
+          (fun _ => extendPoint x') nf := by
+      intro nf
+      exact nf_agreement_from_shared_nf
+        (extendedStructureWithMu M atomMap (k / 2)) (fun _ => extendPoint x)
+        (extendedStructureWithMu M' atomMap (k / 2)) (fun _ => extendPoint x')
+        (nf_profile (extendPoint x))
+        (nf_characteristic_satisfies _ _ _ _)
+        (h_nf_profile ▸ nf_characteristic_satisfies _ _ _ _)
+        nf
+    exact (doets_lemma_1_1 (2 * (k / 2)) 1 (stavi_table_mu atomMap A) h_fo_depth
+      (extendedStructureWithMu M atomMap (k / 2))
+      (extendedStructureWithMu M' atomMap (k / 2))
+      (fun _ => extendPoint x) (fun _ => extendPoint x')
+      h_mu_nf_agree).mpr hA
 
 end Bimodal.Metalogic.WeakCanonical
