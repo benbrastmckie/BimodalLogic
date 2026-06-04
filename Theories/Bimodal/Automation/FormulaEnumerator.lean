@@ -1738,4 +1738,198 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
   let summary := diversitySummary result
   (result, summary)
 
+/-!
+## Two-Phase Parallel Enumeration and Pipeline Overlap (Task 283 Phase 5)
+
+Parallelizes level-N cross-product computation across multiple cores and
+enables labeling to begin while enumeration of later levels continues.
+
+**Design**:
+- Phase A (sequential, fast): Pre-compute all sub-levels 1..(N-1) into a read-only `EnumCache`
+- Phase B (parallel): For each binary partition (leftSize + rightSize = N-1),
+  spawn an independent task that reads the immutable cache and produces cross-products
+-/
+
+/--
+Configuration for parallel enumeration.
+-/
+structure ParallelEnumConfig where
+  /-- Number of worker tasks for parallel cross-product computation. Default 8. -/
+  numWorkers : Nat := 8
+  /-- Minimum complexity level to enable parallel cross-product. Below this,
+      sequential enumeration is used (overhead of task spawning exceeds benefit). -/
+  parallelThreshold : Nat := 7
+  deriving Repr, Inhabited
+
+/--
+Notification emitted when a complexity level finishes enumeration.
+Used for pipeline overlap: downstream labeling can begin while enumeration
+of later levels continues.
+-/
+structure LevelComplete where
+  /-- The complexity level that was completed. -/
+  level : Nat
+  /-- The formulas enumerated at this level (post-filter, post-dedup). -/
+  formulas : Array Formula
+  /-- Wall-clock milliseconds elapsed for this level. -/
+  elapsedMs : Nat
+  deriving Repr, Inhabited
+
+/--
+Compute cross-product formulas for a single binary partition (leftSize, rightSize)
+reading from an immutable cache. This is the unit of work for parallel enumeration.
+
+Returns an array of formulas for all binary constructors (imp, untl, snce) at
+this partition.
+-/
+private def partitionCrossProduct (atoms : List Atom) (modalBudget temporalBudget : Nat)
+    (leftSize rightSize : Nat) (cache : EnumCache) : Array Formula :=
+  if rightSize < 1 then #[]
+  else
+    let (lefts, _) := enumExactHelper atoms modalBudget temporalBudget leftSize cache
+    let (rights, _) := enumExactHelper atoms modalBudget temporalBudget rightSize cache
+    -- Implication cross-product with structural pruning
+    let imps := lefts.foldl (fun (acc : Array Formula) l =>
+      rights.foldl (fun (acc' : Array Formula) r =>
+        let f := Formula.imp l r
+        if structurallyTrivial f then acc' else acc'.push f
+      ) acc
+    ) (Array.mkEmpty (lefts.size * rights.size))
+    -- Temporal cross-product
+    let temporal := if temporalBudget > 0 then
+      let (tLefts, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) leftSize cache
+      let (tRights, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) rightSize cache
+      let untls := tLefts.foldl (fun (acc : Array Formula) l =>
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untl l r)) acc
+      ) (Array.mkEmpty (tLefts.size * tRights.size))
+      let snces := tLefts.foldl (fun (acc : Array Formula) l =>
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
+      ) (Array.mkEmpty (tLefts.size * tRights.size))
+      untls ++ snces
+    else #[]
+    imps ++ temporal
+
+/--
+Enumerate formulas at a single complexity level using parallel cross-product
+computation. Pre-computes all sub-levels sequentially (Phase A), then spawns
+parallel tasks for each binary partition (Phase B).
+
+Falls back to sequential enumeration if the level is below `parallelThreshold`.
+-/
+private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudget level : Nat)
+    (cache : EnumCache) (config : ParallelEnumConfig) : IO (Array Formula × EnumCache) := do
+  -- Phase A: Pre-compute all sub-levels 1..(level-1) into the cache sequentially
+  -- This is fast since sub-levels are cached from previous iterations
+  let mut buildCache := cache
+  for i in List.range (level - 1) do
+    let subLevel := i + 1
+    let (_, c') := enumExactHelper atoms modalBudget temporalBudget subLevel buildCache
+    buildCache := c'
+  let immutableCache := buildCache
+  -- Check the key for this level -- it may already be cached
+  let key := (level, modalBudget, temporalBudget)
+  match immutableCache[key]? with
+  | some result => return (result, immutableCache)
+  | none =>
+  -- If below threshold, use sequential enumeration
+  if level < config.parallelThreshold then
+    let (result, cache') := enumExactHelper atoms modalBudget temporalBudget level immutableCache
+    return (result, cache')
+  else
+    -- Phase B: Parallel cross-product for binary constructors
+    let childBudget := level - 1
+    -- Generate partition list: (leftSize, rightSize) pairs
+    let partitions := (List.range childBudget).filterMap fun i =>
+      let leftSize := i + 1
+      let rightSize := childBudget - leftSize
+      if rightSize < 1 then none else some (leftSize, rightSize)
+    -- Spawn parallel tasks for each partition
+    IO.println s!"[parallel] Level {level}: spawning {partitions.length} partition tasks"
+    let mut tasks : Array (Task (Except IO.Error (Array Formula))) := #[]
+    for (leftSize, rightSize) in partitions do
+      let task ← IO.asTask (prio := .dedicated) do
+        pure (partitionCrossProduct atoms modalBudget temporalBudget leftSize rightSize immutableCache)
+      tasks := tasks.push task
+    -- Collect results from all tasks
+    let mut binaryFormulas : Array Formula := #[]
+    let mut partIdx : Nat := 0
+    for task in tasks do
+      let result ← IO.ofExcept (← IO.wait task)
+      binaryFormulas := binaryFormulas ++ result
+      partIdx := partIdx + 1
+    -- Unary: box formulas (sequential, fast)
+    let boxes := if modalBudget > 0 then
+      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget immutableCache
+      children.foldl (fun (acc : Array Formula) child =>
+        let f := Formula.box child
+        if structurallyTrivial f then acc else acc.push f
+      ) #[]
+    else #[]
+    -- Derived temporal unary operators (sequential, fast)
+    let derivedTemporal := if temporalBudget > 0 && level > 1 then
+      let childSize := level - 1
+      let (children, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize immutableCache
+      children.map Formula.some_future
+        ++ children.map Formula.some_past
+        ++ children.map Formula.all_future
+        ++ children.map Formula.all_past
+    else #[]
+    let result := boxes ++ derivedTemporal ++ binaryFormulas
+    -- Store in cache for subsequent use
+    let finalCache := immutableCache.insert key result
+    return (result, finalCache)
+
+/--
+Exhaustive enumeration with parallel cross-product computation and pipeline
+overlap. For each complexity level, spawns parallel tasks for binary partitions
+and invokes the `onLevelComplete` callback when a level finishes.
+
+**Pipeline overlap**: The callback receives completed levels immediately,
+allowing downstream processing (e.g., labeling) to begin while enumeration
+of later levels continues.
+-/
+def enumerateWithPipeline (params : EnumParams) (parallelConfig : ParallelEnumConfig)
+    (onLevelComplete : LevelComplete → IO Unit) : IO (List Formula) := do
+  let startMs ← IO.monoMsNow
+  let mut cache : EnumCache := {}
+  let mut allFormulas : Array Formula := #[]
+  let mut totalCount : Nat := 0
+  let mut canonicalSeen : Std.HashSet Formula := {}
+  for i in List.range params.maxComplexity do
+    let level := i + 1
+    let levelStartMs ← IO.monoMsNow
+    let (exact, cache') ← enumerateLevelParallel params.atoms params.maxModalDepth
+                            params.maxTemporalDepth level cache parallelConfig
+    cache := cache'
+    let filtered := exact.filter passesFilter
+    -- Apply canonical dedup if enabled
+    let rawCount := filtered.size
+    let levelFormulas ← if params.canonicalDedup then do
+      let (deduped, seen') := canonicalDedupArray filtered canonicalSeen
+      canonicalSeen := seen'
+      pure deduped
+    else
+      pure filtered
+    allFormulas := allFormulas ++ levelFormulas
+    totalCount := totalCount + levelFormulas.size
+    let levelEndMs ← IO.monoMsNow
+    let levelElapsed := levelEndMs - levelStartMs
+    let elapsedSecs := (levelEndMs - startMs) / 1000
+    let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
+    let dedupStr := if params.canonicalDedup then s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
+    IO.println s!"[parallel] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{dedupStr} (cumulative: {totalCount}), {levelElapsed}ms this level, {elapsedSecs}s total, {rate} formulas/sec"
+    -- Fire pipeline overlap callback
+    onLevelComplete { level, formulas := levelFormulas, elapsedMs := levelElapsed }
+    -- Write checkpoint if enabled
+    match params.checkpointDir with
+    | some dir =>
+      let jsonlPath := dir / "formulas.jsonl"
+      writeFormulaJSONL jsonlPath levelFormulas level
+      writeCheckpointMarker dir level totalCount (levelEndMs - startMs)
+    | none => pure ()
+    if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
+      break
+  let result := allFormulas.toList
+  if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
+
 end Bimodal.Automation
