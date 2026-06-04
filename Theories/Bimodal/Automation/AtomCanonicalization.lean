@@ -130,12 +130,12 @@ Returns only the canonical representatives, preserving the order of first
 occurrence. Uses a HashSet for O(1) membership checking.
 -/
 def deduplicateCanonical (formulas : List Formula) : List Formula :=
-  let (_, result) := formulas.foldl (fun (acc : Std.HashSet Formula × List Formula) φ =>
+  let (_, result) := formulas.foldl (fun (acc : Std.HashSet Formula × Array Formula) φ =>
     let (seen, deduped) := acc
     let canonical := canonicalize φ
     if seen.contains canonical then (seen, deduped)
-    else (seen.insert canonical, deduped ++ [canonical])
-  ) ({}, [])
-  result
+    else (seen.insert canonical, deduped.push canonical)
+  ) ({}, #[])
+  result.toList
 
 end Bimodal.Automation.AtomCanonicalization
