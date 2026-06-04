@@ -66,19 +66,19 @@ Revision of `plans/65_discrete-game-bypass.md` (plan v67), which was blocked at 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Bridge A -- NF Hypotheses to decomposition_agreement at rank k/2 (Discrete) [IN PROGRESS]
+### Phase 1: Bridge A -- NF Hypotheses to decomposition_agreement at rank k/2 (Discrete) [PARTIAL]
 
 **Goal**: For discrete orders, build the conversion from `nf_2var_existential_transfer` hypotheses (1-var NF agreement, ordering, interval_nf_types agreement) into `decomposition_agreement` on ExtendedCarrier at rank r = floor(k/2). The corrected depth chain: depth-k NF on sig --> depth-k NF on muSig (via `nf_agree_muSig_of_nf_agree_sig`) --> nf_profile agreement at depth 2*(k/2) <= k (via `nf_agreement_monotone`) --> rank_type and formula_agreement at rank k/2 --> decomposition_agreement at rank k/2.
 
 **Tasks**:
 - [x] 8 discrete infrastructure lemmas already proved and compiling: `rdefinable_gap_empty_of_no_gaps`, `discrete_extended_is_point`, `discrete_extendPoint_surj`, `discrete_extended_isPoint`, `discrete_extended_not_isGap`, `discrete_mu_trivial`, and related helpers
-- [ ] Prove `nf_agree_muSig_of_nf_agree_sig`: for discrete orders, n-var NF agreement on `sig` at depth d implies n-var NF agreement on `muSig sig` at depth d, by induction on d (generalized to n variables). Key insight: mu is trivially true (no gaps), carrier is the same via `discrete_extendPoint_surj`, predicates of `muSig sig` are `sig.preds` plus mu which is constant true. Estimated ~60-80 lines.
-- [ ] Prove `discrete_nf_profile_at_half_rank`: from depth-k NF agreement on `muSig sig`, derive nf_profile agreement at depth `2*(k/2)`. Since `2*(k/2) <= k` by `Nat.div_mul_le_self`, use `nf_agreement_monotone` to go from depth-k to depth-`2*(k/2)`. Estimated ~30 lines.
-- [ ] Prove `discrete_rank_type_from_nf_char`: same NF characteristic at depth k implies same rank_type at rank k/2. Follows from `discrete_nf_profile_at_half_rank` and `nf_profile_determines_rank_type` (or `nf_profile_determines_stavi_truth`). Estimated ~20 lines.
-- [ ] Prove `discrete_formula_agreement_from_nf`: from nf_profile agreement at rank k/2, derive formula_agreement at rank k/2 for points on ExtendedCarrier. Reuse existing `nf_profile_determines_stavi_truth`. Estimated ~20 lines.
-- [ ] Prove `discrete_interval_types_from_nf`: convert `interval_nf_types M k lo hi = interval_nf_types M' k lo' hi'` to `interval_types M atomMap (k/2) (extendPoint lo) (extendPoint hi) = interval_types N atomMap (k/2) (extendPoint lo') (extendPoint hi')` using the discrete NF-to-rank_type conversion at rank k/2. Estimated ~40 lines.
-- [ ] Prove `discrete_nf_to_decomposition_agreement`: the master theorem combining the above to produce `decomposition_agreement M N atomMap 0 (k/2) (extendPoint x) (extendPoint t) (extendPoint x') (extendPoint t')` from the hypotheses of `nf_2var_existential_transfer` plus discrete order assumptions. Estimated ~50 lines.
-- [ ] Verify intermediate lemmas compile: `lake build Bimodal.Metalogic.WeakCanonical.EFGames.NFGameBridge`
+- [x] **Task 1.2**: Prove `discrete_muSig_nf_agree` (named differently from plan): for discrete orders, n-var NF agreement on `sig` at depth d implies n-var NF agreement on `muSig sig` at depth d on `extendedStructureWithMu`. Proved by induction on d with atom agreement via `discrete_muSig_atom_agree` and quantifier transfer via the quantifier part of the sig NF. *(deviation: altered -- named `discrete_muSig_nf_agree` instead of `nf_agree_muSig_of_nf_agree_sig`; takes `IsEmpty (Gap)` instead of typeclass instances directly)*
+- [x] **Task 1.3**: Prove `discrete_nf_profile_at_depth` and `discrete_nf_profile_agree`: nf_profile agreement at depth d and at the half-rank. Uses `nf_agreement_monotone` + `discrete_muSig_nf_agree`. *(deviation: altered -- split into two lemmas for flexibility)*
+- [x] **Task 1.4**: Prove `discrete_rank_type_agree`: depth-k NF agreement implies rank_type agreement at rank k/2. Uses `stavi_table_mu_correct` + `doets_lemma_1_1` + nf_profile agreement.
+- [ ] **Task 1.5**: Prove `discrete_formula_agreement_from_nf` *(deviation: deferred to task 1.7)*
+- [ ] **Task 1.6**: Prove `discrete_interval_types_from_nf` *(deviation: deferred to task 1.7)*
+- [ ] **Task 1.7**: Prove `discrete_nf_to_decomposition_agreement` -- the master Bridge A theorem
+- [x] Verify intermediate lemmas compile: `lake build Bimodal.Metalogic.WeakCanonical.EFGames.NFGameBridge` *(completed, build succeeds)*
 
 **Timing**: 3.5 hours
 
