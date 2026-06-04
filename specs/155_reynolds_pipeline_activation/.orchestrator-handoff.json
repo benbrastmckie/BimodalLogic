@@ -1,33 +1,28 @@
 {
-  "status": "partial",
-  "summary": "Phase 0 (signature refactoring) completed: added atomMap, char_k, char_k_correct parameters to nf_2var_existential_transfer, nf_2var_from_interval_data, and nf_2var_transfer. Build passes. Phase 1 (Bridge A) BLOCKED by fundamental circularity: the EF game machinery requires formula_agreement on ALL StaviFormulas of depth <= k, which presupposes stavi_expressive_completeness (the theorem being proved). Six approaches were attempted and all fail for the same reason. Four resolution paths identified, with NF Type Game as most promising.",
+  "status": "blocked",
+  "summary": "Phase 1 blocked: added 8 discrete infrastructure lemmas to NFGameBridge.lean (compiles clean), but the core Bridge A lemma (discrete_nf_profile_from_nf_char) is blocked by a depth arithmetic obstruction. The plan claims r = k works for discrete orders (no 2x depth penalty), but analysis shows nf_profile at depth 2*k needs NF agreement at depth 2*k on extendedStructureWithMu, while we only have depth-k agreement. Three resolution paths identified: (1) depth-bounded nf_characterizable_by_stavi, (2) discrete mu-simplification lemma, (3) game at rank floor(k/2). The plan needs revision to address this depth mismatch before implementation can continue.",
   "blockers": [
-    "The EF game's formula_agreement (agreement on ALL StaviFormulas of depth <= k) is circular when used inside the proof of stavi_expressive_completeness. char_k_correct only provides agreement on char_k IMAGES, not all StaviFormulas. Converting from char_k-image agreement to full StaviFormula agreement IS expressive completeness."
+    "The 2x depth penalty (stavi_fo_depth <= 2 * stavi_depth) means rank_type at rank k requires nf_profile agreement at depth 2*k, but we only have NF agreement at depth k. For discrete orders, the mu-trivial simplification gives NF agreement at depth k on extendedStructureWithMu, not depth 2*k. The plan's claim that the 2x penalty vanishes for discrete orders requires a deeper argument than mu being trivially true.",
+    "Three resolution paths identified but none implemented: (1) prove stavi_depth of characterizing formula <= k, (2) prove discrete nf_profile at depth 2*k determined by sig NF at depth k, (3) use game at rank floor(k/2) but unclear if sufficient for all j < k"
   ],
   "continuation_context": {
-    "completed_phases": [0],
+    "completed_phases": [],
     "current_phase": 1,
-    "blocker_type": "architectural_circularity",
-    "resolution_paths": [
-      "Path A: NF Type Game -- define simplified game on NormalForm types, avoiding circularity (most promising, ~300 lines)",
-      "Path B: Mutual induction restructuring -- prove expressiveness at depth k before inductive step (major refactor)",
-      "Path C: Direct sub-interval composition -- iterated zone matching with depth induction (blocked by sub-interval splitting)",
-      "Path D: Discrete specialization -- add IsSuccArchimedean hypothesis (loses generality)"
-    ]
+    "next_steps": "Research the depth arithmetic obstruction. Recommended: investigate Path 2 (proving that for discrete orders, nf_characteristic on extendedStructureWithMu at depth 2*k is determined by nf_characteristic on M at depth k, because the mu-relativization adds depth but mu being trivially true means the added quantifiers don't increase discriminating power). This is a mathematical research question, not purely implementation."
   },
   "next_action_hint": "research",
-  "phases_completed": 1,
+  "phases_completed": 0,
   "phases_total": 5,
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/plans/66_nf-game-bridge-revised.md",
-      "type": "plan",
-      "summary": "Revised plan with Phase 0 completed, Phase 1 blocked"
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean",
+      "type": "source",
+      "summary": "8 discrete infrastructure lemmas added (rdefinable_gap_empty, discrete_extended_is_point, discrete_extendPoint_surj, discrete_mu_trivial, discrete_extended_isPoint, discrete_extended_not_isGap, discrete_inClosedInterval_iff, discrete_extendPoint_lt_iff)"
     },
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-20260604.md",
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604.md",
       "type": "handoff",
-      "summary": "Comprehensive blocker analysis with 6 attempted approaches and 4 resolution paths"
+      "summary": "Detailed analysis of depth arithmetic obstruction, three resolution paths, and immediate next action"
     }
   ]
 }
