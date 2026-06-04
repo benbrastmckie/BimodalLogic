@@ -597,8 +597,8 @@ structure EnumParams where
   maxTemporalDepth : Nat := 2
   /-- Atom vocabulary for formula generation. Default: p, q, r. -/
   atoms : List Atom := defaultAtoms
-  /-- Maximum number of formulas to generate (cap for large enumerations). Default 5000. -/
-  maxFormulas : Nat := 5000
+  /-- Maximum number of formulas to generate. 0 means no limit (truly exhaustive). Default 0. -/
+  maxFormulas : Nat := 0
   /-- Sampling strategy. Default: exhaustive. -/
   samplingMode : SamplingMode := .exhaustive
   /-- Number of axiom-instantiated valid formulas to seed into the pool (Task 210).
@@ -689,7 +689,7 @@ def enumerateExhaustive (params : EnumParams) : List Formula :=
       (cache', formulas ++ exact))
     ({}, [])
   let filtered := allFormulas.filter passesFilter
-  filtered.take params.maxFormulas
+  if params.maxFormulas == 0 then filtered else filtered.take params.maxFormulas
 
 /--
 Generate a single random formula within given bounds using IO.rand.
@@ -1334,7 +1334,7 @@ private def enumerateStratified (params : EnumParams) : List Formula :=
         | none => filtered  -- no quota entry = exhaustive
       (cache', formulas ++ levelFormulas))
     ({}, [])
-  allFormulas.take params.maxFormulas
+  if params.maxFormulas == 0 then allFormulas else allFormulas.take params.maxFormulas
 where
   /-- Deterministically sample `count` elements from a list using LCG. -/
   deterministicSample (xs : List Formula) (count : Nat) (rng : LCGState) : List Formula :=
@@ -1377,9 +1377,9 @@ private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := d
     let elapsedSecs := (elapsedMs - startMs) / 1000
     let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
     IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.length} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
-    if totalCount ≥ params.maxFormulas then
+    if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
-  return allFormulas.take params.maxFormulas
+  if params.maxFormulas == 0 then return allFormulas else return allFormulas.take params.maxFormulas
 
 /-- Deterministically sample `count` elements from a list using LCG.
     Extracted as a top-level helper for reuse by both pure and IO stratified enumeration. -/
@@ -1435,9 +1435,9 @@ private def enumerateStratifiedWithProgress (params : EnumParams) : IO (List For
       | some q => s!" [quota: {q}, from {filtered.length}]"
       | none => " [exhaustive]"
     IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.length} formulas{quotaStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
-    if totalCount ≥ params.maxFormulas then
+    if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
-  return allFormulas.take params.maxFormulas
+  if params.maxFormulas == 0 then return allFormulas else return allFormulas.take params.maxFormulas
 
 /--
 Generate formulas according to the specified sampling mode.
@@ -1491,8 +1491,9 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
     pure []
   -- Step 3: Combine and deduplicate all sources using HashMap
   let combined := hashDedup (enumerated ++ validSeeds)
-  IO.println s!"[gen] Total: {combined.take params.maxFormulas |>.length} unique formulas after deduplication"
-  return combined.take params.maxFormulas
+  let capped := if params.maxFormulas == 0 then combined else combined.take params.maxFormulas
+  IO.println s!"[gen] Total: {capped.length} unique formulas after deduplication"
+  return capped
 
 /-!
 ## Bimodal Interaction Filter and Dataset Generation (Task 272 Phase 4)

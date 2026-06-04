@@ -46,7 +46,7 @@ lake exe dataset_generator -- [OPTIONS]
   --max-complexity N      Maximum formula complexity (default: 5)
   --max-modal-depth N     Maximum modal nesting (default: 2)
   --max-temporal-depth N  Maximum temporal nesting (default: 2)
-  --max-formulas N        Maximum formulas to generate (default: 5000)
+  --max-formulas N        Maximum formulas to generate (default: 0 = no limit)
   --valid-seed-count N    Number of axiom-seeded valid formulas (default: 500)
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling: exhaustive|random|hybrid (default: exhaustive)
@@ -498,7 +498,7 @@ structure CLIArgs where
   maxComplexity : Nat := 5
   maxModalDepth : Nat := 2
   maxTemporalDepth : Nat := 2
-  maxFormulas : Nat := 5000
+  maxFormulas : Nat := 0
   output : String := "data/bmlogic.jsonl"
   mode : SamplingMode := .exhaustive
   includeDuals : Bool := false
@@ -942,7 +942,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Max complexity: {cliArgs.maxComplexity}"
   IO.println s!"Max modal depth: {cliArgs.maxModalDepth}"
   IO.println s!"Max temporal depth: {cliArgs.maxTemporalDepth}"
-  IO.println s!"Max formulas: {cliArgs.maxFormulas}"
+  IO.println s!"Max formulas: {if cliArgs.maxFormulas == 0 then "unlimited" else toString cliArgs.maxFormulas}"
   IO.println s!"Valid seed count: {cliArgs.validSeedCount}"
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"

@@ -2,12 +2,16 @@
 # Run production dataset generation for BMLogic training data.
 #
 # Usage:
+#   ./scripts/run_dataset_generation.sh c4          # Complexity 4, exhaustive, ~500 formulas
 #   ./scripts/run_dataset_generation.sh c5          # Complexity 5, exhaustive, ~1.5K formulas
-#   ./scripts/run_dataset_generation.sh c7          # Complexity 7, exhaustive, ~50K formulas
-#   ./scripts/run_dataset_generation.sh c9          # Complexity 9, exhaustive, ~300K-1.8M formulas (30min-2h)
+#   ./scripts/run_dataset_generation.sh c6          # Complexity 6, exhaustive, ~5K formulas
+#   ./scripts/run_dataset_generation.sh c7          # Complexity 7, exhaustive, ~14K formulas
+#   ./scripts/run_dataset_generation.sh c8          # Complexity 8, exhaustive, ~500K+ formulas (60-90 min)
+#   ./scripts/run_dataset_generation.sh c9          # Complexity 9, stratified, ~30K formulas (2-5 min)
 #   ./scripts/run_dataset_generation.sh c11         # Complexity 11, stratified, ~500K-2M formulas (1-4h)
+#   ./scripts/run_dataset_generation.sh c12         # Complexity 12, stratified, ~500K-2M formulas (2-6h)
 #   ./scripts/run_dataset_generation.sh smoke       # Quick validation run (20 formulas)
-#   ./scripts/run_dataset_generation.sh all         # All tiers: c5, c7, c9, c11
+#   ./scripts/run_dataset_generation.sh all         # All tiers: c4-c9, c11, c12
 #   ./scripts/run_dataset_generation.sh --dry-run c5  # Print commands without executing
 #
 # Resume support:
@@ -31,10 +35,14 @@
 #   lake build dataset_generator
 #
 # Output:
+#   data/bmlogic-c4.jsonl  + data/bmlogic-c4_metadata.json   (complexity-4, exhaustive)
 #   data/bmlogic-c5.jsonl  + data/bmlogic-c5_metadata.json   (complexity-5, exhaustive)
+#   data/bmlogic-c6.jsonl  + data/bmlogic-c6_metadata.json   (complexity-6, exhaustive)
 #   data/bmlogic-c7.jsonl  + data/bmlogic-c7_metadata.json   (complexity-7, exhaustive)
-#   data/bmlogic-c9.jsonl  + data/bmlogic-c9_metadata.json   (complexity-9, exhaustive, ~300K-1.8M)
-#   data/bmlogic-c11.jsonl + data/bmlogic-c11_metadata.json  (complexity-11, stratified, ~500K-2M)
+#   data/bmlogic-c8.jsonl  + data/bmlogic-c8_metadata.json   (complexity-8, exhaustive)
+#   data/bmlogic-c9.jsonl  + data/bmlogic-c9_metadata.json   (complexity-9, stratified)
+#   data/bmlogic-c11.jsonl + data/bmlogic-c11_metadata.json  (complexity-11, stratified)
+#   data/bmlogic-c12.jsonl + data/bmlogic-c12_metadata.json  (complexity-12, stratified)
 #
 # Feasibility gates (per run):
 #   - Timeout rate < 20%
@@ -280,7 +288,6 @@ run_smoke() {
     PARTIAL_FILES+=("data/smoke-test.jsonl")
     run_cmd lake exe dataset_generator -- \
         --max-complexity 3 \
-        --max-formulas 20 \
         --output data/smoke-test.jsonl
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -294,6 +301,37 @@ run_smoke() {
         echo "Smoke test files cleaned up."
     fi
     PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/smoke-test.jsonl/}")
+}
+
+run_c4() {
+    local output_file="data/bmlogic-c4.jsonl"
+    echo "=== C4 Production Run (complexity 4, exhaustive, ~500 formulas) ==="
+    echo "Started at: $(date -Iseconds)"
+
+    detect_resume "$output_file"
+    PARTIAL_FILES+=("$output_file")
+
+    # shellcheck disable=SC2086
+    run_cmd time lake exe dataset_generator -- \
+        --max-complexity 4 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
+        --valid-seed-count 1000 \
+        --output "$output_file" \
+        --mode exhaustive \
+        --include-duals \
+        $RESUME_FLAGS
+    if [ "$DRY_RUN" = false ]; then
+        echo ""
+        echo "Completed at: $(date -Iseconds)"
+        echo "Output:"
+        wc -l "$output_file"
+        cat data/bmlogic-c4_metadata.json
+        echo ""
+        validate_output "$output_file"
+        cleanup_checkpoint "$output_file"
+    fi
+    PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c4.jsonl/}")
 }
 
 run_c5() {
@@ -329,6 +367,37 @@ run_c5() {
     PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c5.jsonl/}")
 }
 
+run_c6() {
+    local output_file="data/bmlogic-c6.jsonl"
+    echo "=== C6 Production Run (complexity 6, exhaustive, ~5K formulas) ==="
+    echo "Started at: $(date -Iseconds)"
+
+    detect_resume "$output_file"
+    PARTIAL_FILES+=("$output_file")
+
+    # shellcheck disable=SC2086
+    run_cmd time lake exe dataset_generator -- \
+        --max-complexity 6 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
+        --valid-seed-count 3000 \
+        --output "$output_file" \
+        --mode exhaustive \
+        --include-duals \
+        $RESUME_FLAGS
+    if [ "$DRY_RUN" = false ]; then
+        echo ""
+        echo "Completed at: $(date -Iseconds)"
+        echo "Output:"
+        wc -l "$output_file"
+        cat data/bmlogic-c6_metadata.json
+        echo ""
+        validate_output "$output_file"
+        cleanup_checkpoint "$output_file"
+    fi
+    PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c6.jsonl/}")
+}
+
 run_c7() {
     local output_file="data/bmlogic-c7.jsonl"
     echo "=== C7 Production Run (complexity 7, exhaustive, ~50K formulas) ==="
@@ -344,7 +413,6 @@ run_c7() {
         --max-complexity 7 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
-        --max-formulas 50000 \
         --valid-seed-count 5000 \
         --output "$output_file" \
         --mode exhaustive \
@@ -363,29 +431,60 @@ run_c7() {
     PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c7.jsonl/}")
 }
 
+run_c8() {
+    local output_file="data/bmlogic-c8.jsonl"
+    echo "=== C8 Production Run (complexity 8, exhaustive, ~1.7M formulas, est. 60-90 min) ==="
+    echo "Started at: $(date -Iseconds)"
+
+    detect_resume "$output_file"
+    PARTIAL_FILES+=("$output_file")
+
+    # Exhaustive enumeration of all complexity-8 bimodal formulas with duals.
+    # Level 8 alone produces ~1.7M formulas. No cap (default is unlimited).
+    # shellcheck disable=SC2086
+    run_cmd time lake exe dataset_generator -- \
+        --max-complexity 8 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
+        --valid-seed-count 5000 \
+        --output "$output_file" \
+        --mode exhaustive \
+        --include-duals \
+        $RESUME_FLAGS
+    if [ "$DRY_RUN" = false ]; then
+        echo ""
+        echo "Completed at: $(date -Iseconds)"
+        echo "Output:"
+        wc -l "$output_file"
+        cat data/bmlogic-c8_metadata.json
+        echo ""
+        validate_output "$output_file"
+        cleanup_checkpoint "$output_file"
+    fi
+    PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c8.jsonl/}")
+}
+
 run_c9() {
     local output_file="data/bmlogic-c9.jsonl"
-    echo "=== C9 Production Run (complexity 9, exhaustive, ~300K-1.8M formulas, est. 30min-2h) ==="
+    echo "=== C9 Production Run (complexity 9, stratified, ~30K formulas, est. 2-5 min) ==="
     echo "Started at: $(date -Iseconds)"
 
     # Check for resume
     detect_resume "$output_file"
     PARTIAL_FILES+=("$output_file")
 
-    # Exhaustive enumeration of all complexity-9 bimodal formulas with duals.
-    # Capped at 2M formulas as a safety limit.
-    # NOTE: Task 251 optimized generateValidBatch from O(n^2) to O(n) MP closure
-    # using HashMap-based implication index and HashSet pool. 5000 seeds is now
-    # feasible (pool cap is 10K; 5K seeds provide good valid enrichment).
+    # Stratified: exhaustive up to c7, sampled at c8/c9.
+    # Exhaustive c9 is infeasible (~11M formulas at level 9 alone, >12h).
     # shellcheck disable=SC2086
     run_cmd time lake exe dataset_generator -- \
         --max-complexity 9 \
         --max-modal-depth 2 \
         --max-temporal-depth 2 \
-        --max-formulas 2000000 \
+        --max-formulas 100000 \
         --valid-seed-count 5000 \
         --output "$output_file" \
-        --mode exhaustive \
+        --mode stratified \
+        --stratified-quotas "8:30000,9:70000" \
         --include-duals \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
@@ -440,6 +539,40 @@ run_c11() {
     PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c11.jsonl/}")
 }
 
+run_c12() {
+    local output_file="data/bmlogic-c12.jsonl"
+    echo "=== C12 Production Run (complexity 12, stratified, ~500K-2M formulas, est. 2-6h) ==="
+    echo "Started at: $(date -Iseconds)"
+
+    detect_resume "$output_file"
+    PARTIAL_FILES+=("$output_file")
+
+    # Stratified enumeration: exhaustive up to c8, sampled at c9-c12.
+    # shellcheck disable=SC2086
+    run_cmd time lake exe dataset_generator -- \
+        --max-complexity 12 \
+        --max-modal-depth 2 \
+        --max-temporal-depth 2 \
+        --max-formulas 2000000 \
+        --valid-seed-count 10000 \
+        --output "$output_file" \
+        --mode stratified \
+        --stratified-quotas "9:50000,10:100000,11:300000,12:500000" \
+        --include-duals \
+        $RESUME_FLAGS
+    if [ "$DRY_RUN" = false ]; then
+        echo ""
+        echo "Completed at: $(date -Iseconds)"
+        echo "Output:"
+        wc -l "$output_file"
+        cat data/bmlogic-c12_metadata.json
+        echo ""
+        validate_output "$output_file"
+        cleanup_checkpoint "$output_file"
+    fi
+    PARTIAL_FILES=("${PARTIAL_FILES[@]/data\/bmlogic-c12.jsonl/}")
+}
+
 # --- Argument parsing ---
 
 # Parse flags before the command
@@ -475,11 +608,20 @@ case "${1:-help}" in
     smoke)
         run_smoke
         ;;
+    c4)
+        run_c4
+        ;;
     c5)
         run_c5
         ;;
+    c6)
+        run_c6
+        ;;
     c7)
         run_c7
+        ;;
+    c8)
+        run_c8
         ;;
     c9)
         run_c9
@@ -487,17 +629,28 @@ case "${1:-help}" in
     c11)
         run_c11
         ;;
+    c12)
+        run_c12
+        ;;
     all)
+        run_c4
+        echo ""
         run_c5
         echo ""
+        run_c6
+        echo ""
         run_c7
+        echo ""
+        run_c8
         echo ""
         run_c9
         echo ""
         run_c11
+        echo ""
+        run_c12
         ;;
     help|--help|-h)
-        echo "Usage: $0 [--dry-run] [--resume|--no-resume] {smoke|c5|c7|c9|c11|all}"
+        echo "Usage: $0 [--dry-run] [--resume|--no-resume] {smoke|c4|c5|c6|c7|c8|c9|c11|c12|all}"
         echo ""
         echo "Options:"
         echo "  --dry-run    Print commands without executing"
@@ -506,11 +659,15 @@ case "${1:-help}" in
         echo ""
         echo "Commands:"
         echo "  smoke   Quick 20-formula validation run"
+        echo "  c4      Complexity 4, exhaustive, ~500 formulas (bmlogic-c4.jsonl)"
         echo "  c5      Complexity 5, exhaustive, ~1.5K formulas (bmlogic-c5.jsonl)"
-        echo "  c7      Complexity 7, exhaustive, ~50K formulas (bmlogic-c7.jsonl)"
-        echo "  c9      Complexity 9, exhaustive, ~300K-1.8M formulas (bmlogic-c9.jsonl, est. 30min-2h)"
+        echo "  c6      Complexity 6, exhaustive, ~5K formulas (bmlogic-c6.jsonl)"
+        echo "  c7      Complexity 7, exhaustive, ~14K formulas (bmlogic-c7.jsonl)"
+        echo "  c8      Complexity 8, exhaustive, ~500K+ formulas (bmlogic-c8.jsonl, est. 60-90 min)"
+        echo "  c9      Complexity 9, stratified, ~30K formulas (bmlogic-c9.jsonl, est. 2-5 min)"
         echo "  c11     Complexity 11, stratified, ~500K-2M formulas (bmlogic-c11.jsonl, est. 1-4h)"
-        echo "  all     Run all tiers: c5, c7, c9, c11 sequentially"
+        echo "  c12     Complexity 12, stratified, ~500K-2M formulas (bmlogic-c12.jsonl, est. 2-6h)"
+        echo "  all     Run all tiers: c4, c5, c6, c7, c8, c9, c11, c12 sequentially"
         echo ""
         echo "Resume behavior:"
         echo "  If a run is interrupted (Ctrl+C), partial output and checkpoint files"
@@ -530,7 +687,7 @@ case "${1:-help}" in
         ;;
     *)
         echo "Unknown command: $1"
-        echo "Usage: $0 [--dry-run] [--resume|--no-resume] {smoke|c5|c7|c9|c11|all}"
+        echo "Usage: $0 [--dry-run] [--resume|--no-resume] {smoke|c4|c5|c6|c7|c8|c9|c11|c12|all}"
         exit 1
         ;;
 esac

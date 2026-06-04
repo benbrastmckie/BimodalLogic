@@ -1,5 +1,5 @@
 ---
-next_project_number: 283
+next_project_number: 284
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -116,6 +116,19 @@ technical_debt:
 269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
+
+### 283. Mitigate cross-product explosion in exhaustive formula enumeration at complexity ≥ 8
+- **Effort**: large (16-24 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 282
+- **Research**: [specs/283_enumeration_explosion_mitigation/reports/01_explosion-analysis.md]
+
+**Description**: The exhaustive formula enumerator in `FormulaEnumerator.lean` hits a combinatorial wall at complexity 8. The root cause is that `enumExactHelper` materializes the full cross-product of left × right subformulas for every binary operator (imp, untl, snce) at every complexity partition. At complexity 7, the worst partition (3,4) produces 132 × 960 ≈ 127K formulas — fast. At complexity 8, partition (4,4) produces 960 × 960 ≈ 922K formulas for `imp` alone, plus equivalent-sized cross-products for `untl` and `snce`, across all 7 partitions. The total materialized formulas at level 8 exceed 10M, taking 45+ minutes just to enumerate. Level 9 would be infeasible (hundreds of millions of cross-product entries). Research, design, and implement strategies to mitigate this explosion without losing coverage of interesting formulas. Approaches to investigate: (1) equivalence-class enumeration — generate one canonical representative per propositional/modal equivalence class instead of all syntactic variants; (2) lazy/streaming enumeration — avoid materializing full cross-products by filtering or sampling during generation; (3) symmetry breaking — skip commutativity-equivalent pairs (φ U ψ when ψ U φ already generated for commutative-up-to-semantics operators); (4) structural redundancy pruning — skip formulas containing syntactically simplifiable subexpressions (double negation, p → p subterms, box(box(φ)) under S5); (5) semantic deduplication — hash formulas by truth-table on small models to collapse semantically equivalent variants; (6) budget-aware cross-product — for partitions that produce >N cross-product entries, sample representative pairs instead of materializing all. Consult prior art on formula enumeration in SAT/SMT solvers, LTL benchmark generators (e.g. SPOT's randltl, LTLBench), and Lean/Mathlib enumeration patterns.
+
+---
 
 ### 282. Make dataset generation script default to exhaustive enumeration without formula cap
 - **Effort**: small (1-2 hours)
