@@ -472,6 +472,27 @@ noncomputable def zTaskModel_v2 {sig : MonadicSignature}
     TaskModel zTaskFrame_v2 where
   valuation w p := Z.interp (atomMap (.atom p)) w
 
+/--
+If M has NoMaxOrder/NoMinOrder and is k-equivalent (k ≥ 2) to a Z-interval,
+then every integer is in the Z-interval's carrier (the interval is unbounded).
+
+Proof sketch: the depth-2 sentence "∃x. ∀y. y ≤ x" (has maximum) is false on M
+(NoMaxOrder). By k-equivalence at k ≥ 2, it's false on the Z-interval too.
+If hi = some h, then ⟨h, _⟩ is maximal in the carrier, contradicting this.
+So hi = none. Similarly lo = none.
+-/
+theorem z_interval_carrier_contains_all
+    {sig : MonadicSignature} {k : Nat} (hk : 2 ≤ k)
+    {M : OrderedMonadicStructure sig}
+    (Z : ZIntervalStructure sig)
+    (h_equiv : k_equiv sig k M (Z.toOrdered sig))
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    [Nonempty M.carrier] (z : ℤ) :
+    Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·) := by
+  -- The proof transfers depth-2 sentences "has maximum" and "has minimum" via k-equiv.
+  -- If Z had bounded endpoints, these sentences would be true on Z but false on M.
+  sorry
+
 /-- Every history in zOmega_v2 is of the form zHistory_v2 w₀ for some w₀. -/
 theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrame_v2) :
     σ ∈ zOmega_v2 ↔ ∃ w₀, σ = zHistory_v2 w₀ := by
@@ -545,27 +566,40 @@ theorem countermodel_discrete_reynolds_v2
   obtain ⟨s, h_neg_truth_Z⟩ := truth_transfer (mkAtomMapFwd φ) h_k_equiv φ.neg h_k_bound
     ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ h_root_truth
   -- Phase 3: Package the countermodel on ℤ using zTaskFrame_v2
+  let TM := zTaskModel_v2 Z (mkAtomMapFwd φ)
+  -- Unboundedness: every integer is in the Z-interval carrier
+  have h_unbounded : ∀ z : ℤ, Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·) :=
+    z_interval_carrier_contains_all (by omega : 2 ≤ k) Z h_k_equiv
+  refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
+    inferInstance, inferInstance, inferInstance, inferInstance,
+    zTaskFrame_v2, TM, zOmega_v2, zOmega_v2_shiftClosed,
+    zHistory_v2 0, zHistory_v2_mem_omega, s.val, ?_⟩
+  -- Need: ¬truth_at TM zOmega_v2 (zHistory_v2 0) s.val φ
   --
-  -- The proof constructs:
-  -- (a) zTaskFrame_v2: TaskFrame ℤ with WorldState = ℤ, deterministic task_rel
-  -- (b) zTaskModel_v2: valuation at state w evaluates Z-interval atom predicate at w
-  -- (c) zOmega_v2: shift-closed set of all offset histories {σ_{w₀} | w₀ ∈ ℤ}
-  -- (d) zHistory_v2 0: base history with states t _ = t
+  -- The proof proceeds by establishing a truth correspondence between
+  -- truth_at TM zOmega_v2 (zHistory_v2 w₀) t ψ and
+  -- temporal_truth (Z.toOrdered sig) (mkAtomMapFwd φ) ⟨w₀+t, h_unbounded _⟩ ψ
+  -- for all formulas ψ, all offsets w₀, and all times t.
   --
-  -- The truth correspondence (truth_at ↔ temporal_truth) holds by structural induction:
-  -- - Atoms: direct (both evaluate Z.interp at the same point)
-  -- - Bot/Imp: structural
-  -- - Box: uses S5 box universality (box predicate = ∀s.temporal_truth s f),
-  --   proved via k-equivalence + chronicle box_stable_in_limit_f + Modal T
-  -- - Until/Since: witness mapping via w₀+t parameterization
+  -- The correspondence is proved by structural induction on ψ:
+  -- - Atom a: both sides equal Z.interp (mkAtomMapFwd φ (.atom a)) (w₀+t)
+  --   [truth_at uses valuation (w₀+t) a; temporal_truth uses interp at ⟨w₀+t,_⟩]
+  -- - Bot: both sides False
+  -- - Imp f₁ f₂: by IH on f₁ and f₂
+  -- - Box f: truth_at (.box f) = ∀ σ ∈ Omega, truth_at f σ t
+  --   = ∀ w₀', temporal_truth f ⟨w₀'+t,_⟩ (by IH) = ∀ s, temporal_truth f s
+  --   temporal_truth (.box f) = Z.interp (atomMap (.box f)) (w₀+t)
+  --   Need: Z.interp (atomMap (.box f)) z ↔ ∀ s, temporal_truth f s (box universality)
+  --   This uses: chronicle box constancy (box_stable_in_limit_f) + k-equiv transfer
+  -- - Until f₁ f₂: witness mapping s ↦ ⟨w₀+s, _⟩, guard mapping via r.val - w₀
+  -- - Since f₁ f₂: symmetric to Until
   --
-  -- The Z-interval must be unbounded (lo=none, hi=none) for the Until/Since witnesses
-  -- and box backward direction. This follows from the chronicle having NoMaxOrder/NoMinOrder
-  -- and k-equivalence preserving the depth-2 sentences ∃x.∀y.y≤x and ∃x.∀y.x≤y.
-  --
-  -- Both the box universality and unboundedness proofs require formalizing FO sentence
-  -- evaluation and k_equiv_preserves_sentence for specific sentences. This is the
-  -- remaining technical work.
+  -- All membership proofs in Z.intervalCarrier discharge via h_unbounded.
+  -- The box universality lemma is the deepest component, requiring:
+  --   (1) box_stable_in_limit_f for chronicle box constancy
+  --   (2) k_equiv_preserves_sentence for predicate constancy transfer (depth 1)
+  --   (3) k_equiv_preserves_sentence for ∀x.table(f)(x) transfer
+  --   (4) MCS Modal T for box→subformula implication
   sorry
 
 end Bimodal.Metalogic.WeakCanonical
