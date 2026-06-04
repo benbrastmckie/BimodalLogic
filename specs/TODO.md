@@ -119,10 +119,11 @@ technical_debt:
 
 ### 281. Complete countermodel_discrete_reynolds_v2 to bypass chronicle_gap_contradiction
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
+- **Plan**: [specs/281_z_interval_countermodel_v2/plans/01_z-interval-countermodel.md]
 
 **Description**: Complete countermodel_discrete_reynolds_v2 in ReynoldsBridge.lean to bypass chronicle_gap_contradiction. Build a BFMCS on Z directly from the Z-interval temporal_truth (derived from limitdom_is_good + truth_transfer), prove restricted temporal coherence, box uniformity, and Until/Since coherence from temporal_truth semantics, apply the restricted parametric truth lemma, and wire into completeness_discrete. This eliminates the entire sorry chain: chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective.
 
