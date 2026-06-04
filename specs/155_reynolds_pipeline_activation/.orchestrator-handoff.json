@@ -1,28 +1,33 @@
 {
   "status": "partial",
-  "summary": "Phase 1 blocked: sub-interval problem prevents all direct approaches; viable path identified through EF game bridge with char_k parameter addition",
+  "summary": "Phase 0 (signature refactoring) completed: added atomMap, char_k, char_k_correct parameters to nf_2var_existential_transfer, nf_2var_from_interval_data, and nf_2var_transfer. Build passes. Phase 1 (Bridge A) BLOCKED by fundamental circularity: the EF game machinery requires formula_agreement on ALL StaviFormulas of depth <= k, which presupposes stavi_expressive_completeness (the theorem being proved). Six approaches were attempted and all fail for the same reason. Four resolution paths identified, with NF Type Game as most promising.",
   "blockers": [
-    "nf_2var_existential_transfer lacks char_k parameter needed for NF-Game Bridge",
-    "Sub-interval types between matched inner points not derivable from outer interval data",
-    "EF game infrastructure operates on ExtendedCarrier while NF transfer operates on M.carrier"
+    "The EF game's formula_agreement (agreement on ALL StaviFormulas of depth <= k) is circular when used inside the proof of stavi_expressive_completeness. char_k_correct only provides agreement on char_k IMAGES, not all StaviFormulas. Converting from char_k-image agreement to full StaviFormula agreement IS expressive completeness."
   ],
   "continuation_context": {
-    "completed_phases": [],
+    "completed_phases": [0],
     "current_phase": 1,
-    "analysis_complete": true,
-    "implementation_path": "Add char_k/char_k_correct/atomMap params to nf_2var_existential_transfer and nf_2var_from_interval_data, then implement Bridge A (NF -> decomposition_agreement) and Bridge B (game winning condition -> NF transfer) in NFGameBridge.lean",
-    "key_insight": "char_k is available in ALL calling contexts from nf_characterizable_by_stavi IH at depth k+1, so adding it as parameter breaks no circularity",
-    "estimated_remaining_hours": 7,
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604.md"
+    "blocker_type": "architectural_circularity",
+    "resolution_paths": [
+      "Path A: NF Type Game -- define simplified game on NormalForm types, avoiding circularity (most promising, ~300 lines)",
+      "Path B: Mutual induction restructuring -- prove expressiveness at depth k before inductive step (major refactor)",
+      "Path C: Direct sub-interval composition -- iterated zone matching with depth induction (blocked by sub-interval splitting)",
+      "Path D: Discrete specialization -- add IsSuccArchimedean hypothesis (loses generality)"
+    ]
   },
-  "next_action_hint": "implement",
-  "phases_completed": 0,
-  "phases_total": 4,
+  "next_action_hint": "research",
+  "phases_completed": 1,
+  "phases_total": 5,
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604.md",
+      "path": "specs/155_reynolds_pipeline_activation/plans/66_nf-game-bridge-revised.md",
+      "type": "plan",
+      "summary": "Revised plan with Phase 0 completed, Phase 1 blocked"
+    },
+    {
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-20260604.md",
       "type": "handoff",
-      "summary": "Comprehensive analysis of sub-interval problem with 5 failed approaches and viable implementation path"
+      "summary": "Comprehensive blocker analysis with 6 attempted approaches and 4 resolution paths"
     }
   ]
 }
