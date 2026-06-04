@@ -1119,3 +1119,4 @@ theorem countermodel_discrete_reynolds_v2
         exact hguard _ h_lt h_lt2
 
 end Bimodal.Metalogic.WeakCanonical
+
