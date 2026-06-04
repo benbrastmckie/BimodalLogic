@@ -108,8 +108,9 @@ computation: at budget 5 there are only 27 unique argument triples despite 1,027
 recursive calls in the naive version.
 -/
 
-/-- Cache type for memoized enumeration, keyed by (size, modal, temporal). -/
-abbrev EnumCache := Std.HashMap (Nat × Nat × Nat) (List Formula)
+/-- Cache type for memoized enumeration, keyed by (size, modal, temporal).
+    Uses `Array Formula` for O(1) amortized push and efficient iteration. -/
+abbrev EnumCache := Std.HashMap (Nat × Nat × Nat) (Array Formula)
 
 /--
 Enumerate all formulas of EXACTLY the given complexity, respecting modal and
@@ -125,16 +126,17 @@ The cache is threaded through all recursive calls as a state parameter, and
 the updated cache is returned alongside the result list.
 -/
 def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
-    (cache : EnumCache) : List Formula × EnumCache :=
+    (cache : EnumCache) : Array Formula × EnumCache :=
   let key := (sizeBudget, modalBudget, temporalBudget)
   match cache[key]? with
   | some result => (result, cache)
   | none =>
     let (result, cache') := match sizeBudget with
-      | 0 => ([], cache)
+      | 0 => (#[], cache)
       | 1 =>
         -- Base cases: atoms and bot (complexity exactly 1)
-        (Formula.bot :: atoms.map Formula.atom, cache)
+        let base := #[Formula.bot] ++ (atoms.map Formula.atom).toArray
+        (base, cache)
       | n + 2 =>
         -- Complexity is n + 2 (at least 2). The constructor costs 1.
         let childBudget := n + 1
@@ -143,7 +145,7 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
         let (boxes, cache1) := if modalBudget > 0 then
           let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget cache
           (children.map Formula.box, c)
-        else ([], cache)
+        else (#[], cache)
         -- Derived unary temporal operators: F, P, G, H
         -- These are defined in terms of untl/snce but enumerated as first-class targets.
         -- Overhead: F/P/G/H all cost 1 complexity (pattern-aware complexity, task 274)
@@ -155,53 +157,60 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
             let childSize := sizeBudget - fOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1
             (children.map Formula.some_future, c)
-          else ([], cache1)
+          else (#[], cache1)
           -- P(child): some_past child, overhead = 1, child complexity = sizeBudget - 1
           let pOverhead := 1
           let (pFormulas, c2) := if sizeBudget > pOverhead then
             let childSize := sizeBudget - pOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c1
             (children.map Formula.some_past, c)
-          else ([], c1)
+          else (#[], c1)
           -- G(child): all_future child, overhead = 1, child complexity = sizeBudget - 1
           let gOverhead := 1
           let (gFormulas, c3) := if sizeBudget > gOverhead then
             let childSize := sizeBudget - gOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c2
             (children.map Formula.all_future, c)
-          else ([], c2)
+          else (#[], c2)
           -- H(child): all_past child, overhead = 1, child complexity = sizeBudget - 1
           let hOverhead := 1
           let (hFormulas, c4) := if sizeBudget > hOverhead then
             let childSize := sizeBudget - hOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
             (children.map Formula.all_past, c)
-          else ([], c3)
+          else (#[], c3)
           (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas, c4)
-        else ([], cache1)
+        else (#[], cache1)
         -- Binary constructors: distribute childBudget between left and right
         -- Each child gets exact complexity >= 1, left + right = childBudget
         let (binaryFormulas, cache2) := ((List.range childBudget).foldl
-          (fun (acc : List Formula × EnumCache) i =>
+          (fun (acc : Array Formula × EnumCache) i =>
             let leftSize := i + 1
             let rightSize := childBudget - leftSize
             if rightSize < 1 then acc
             else
-              let (accList, accCache) := acc
+              let (accArr, accCache) := acc
               -- imp: no depth change
               let (lefts, c1) := enumExactHelper atoms modalBudget temporalBudget leftSize accCache
               let (rights, c2) := enumExactHelper atoms modalBudget temporalBudget rightSize c1
-              let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
+              -- Cross-product for implication using Array.foldl
+              let imps := lefts.foldl (fun (acc : Array Formula) l =>
+                rights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.imp l r)) acc
+              ) (Array.mkEmpty (lefts.size * rights.size))
               -- untl/snce: temporal depth + 1 for the whole formula
               let (temporalBinaries, c3) := if temporalBudget > 0 then
                 let (tLefts, c2a) := enumExactHelper atoms modalBudget (temporalBudget - 1) leftSize c2
                 let (tRights, c2b) := enumExactHelper atoms modalBudget (temporalBudget - 1) rightSize c2a
-                let untls := tLefts.flatMap fun l => tRights.map fun r => Formula.untl l r
-                let snces := tLefts.flatMap fun l => tRights.map fun r => Formula.snce l r
+                let untls := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untl l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                let snces := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
                 (untls ++ snces, c2b)
-              else ([], c2)
-              (accList ++ imps ++ temporalBinaries, c3)
-          ) ([], cache1a))
+              else (#[], c2)
+              (accArr ++ imps ++ temporalBinaries, c3)
+          ) (#[], cache1a))
         (boxes ++ derivedTemporal ++ binaryFormulas, cache2)
     -- Store result in cache before returning
     let cache'' := cache'.insert key result
@@ -221,12 +230,12 @@ exact-complexity formulas at each level, which are disjoint by construction.
 def enumHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     : List Formula :=
   let (_, result) := (List.range sizeBudget).foldl
-    (fun (acc : EnumCache × List Formula) i =>
+    (fun (acc : EnumCache × Array Formula) i =>
       let (cache, formulas) := acc
       let (exact, cache') := enumExactHelper atoms modalBudget temporalBudget (i + 1) cache
       (cache', formulas ++ exact))
-    ({}, [])
-  result
+    ({}, #[])
+  result.toList
 
 /--
 Exhaustively enumerate all formulas up to the given depth and size bounds.
@@ -641,7 +650,7 @@ Since both APIs use the same `(Nat x Nat x Nat)` key shape, they share the
 same `EnumCache` type.
 -/
 def enumExactBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTemporal : Nat)
-    (cache : EnumCache) : List Formula × EnumCache :=
+    (cache : EnumCache) : Array Formula × EnumCache :=
   -- We reuse enumExactHelper directly since both APIs use the same constraint model:
   -- enumExactHelper treats its 3 parameters as (modalBudget, temporalBudget, sizeBudget)
   -- and enumerateAtBudget treats its 3 parameters as (maxModal, maxTemporal, budget).
@@ -662,12 +671,12 @@ re-inclusion at every level, causing exponential blowup (651x at budget 5).
 def enumerateAtBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTemporal : Nat)
     : List Formula :=
   let (_, result) := (List.range budget).foldl
-    (fun (acc : EnumCache × List Formula) i =>
+    (fun (acc : EnumCache × Array Formula) i =>
       let (cache, formulas) := acc
       let (exact, cache') := enumExactBudget atoms (i + 1) maxModal maxTemporal cache
       (cache', formulas ++ exact))
-    ({}, [])
-  result
+    ({}, #[])
+  result.toList
 
 /--
 Enumerate all formulas exhaustively within the parameter bounds.
@@ -682,13 +691,13 @@ across all complexity levels for maximum reuse.
 -/
 def enumerateExhaustive (params : EnumParams) : List Formula :=
   let (_, allFormulas) := (List.range params.maxComplexity).foldl
-    (fun (acc : EnumCache × List Formula) i =>
+    (fun (acc : EnumCache × Array Formula) i =>
       let (cache, formulas) := acc
       let (exact, cache') := enumExactBudget params.atoms (i + 1) params.maxModalDepth
                                               params.maxTemporalDepth cache
       (cache', formulas ++ exact))
-    ({}, [])
-  let filtered := allFormulas.filter passesFilter
+    ({}, #[])
+  let filtered := allFormulas.toList.filter passesFilter
   if params.maxFormulas == 0 then filtered else filtered.take params.maxFormulas
 
 /--
@@ -1299,13 +1308,13 @@ Uses `Formula` hash as the key since `Formula` derives `Hashable`.
 -/
 private def hashDedup (formulas : List Formula) : List Formula :=
   let (_, result) := formulas.foldl
-    (fun (acc : Std.HashMap UInt64 Unit × List Formula) φ =>
+    (fun (acc : Std.HashMap UInt64 Unit × Array Formula) φ =>
       let (seen, deduped) := acc
       let h := hash φ
       if seen.contains h then (seen, deduped)
-      else (seen.insert h (), deduped ++ [φ]))
-    ({}, [])
-  result
+      else (seen.insert h (), deduped.push φ))
+    ({}, #[])
+  result.toList
 
 /--
 Stratified enumeration: for each complexity level, enumerate exhaustively or sample
@@ -1316,7 +1325,7 @@ private def enumerateStratified (params : EnumParams) : List Formula :=
   let quotaMap := params.stratifiedQuotas.foldl
     (fun (m : Std.HashMap Nat Nat) (k, v) => m.insert k v) {}
   let (_, allFormulas) := (List.range params.maxComplexity).foldl
-    (fun (acc : EnumCache × List Formula) i =>
+    (fun (acc : EnumCache × Array Formula) i =>
       let level := i + 1
       let (cache, formulas) := acc
       let (exact, cache') := enumExactBudget params.atoms level params.maxModalDepth
@@ -1326,31 +1335,31 @@ private def enumerateStratified (params : EnumParams) : List Formula :=
       let levelFormulas := match quotaMap[level]? with
         | some 0 => filtered  -- 0 means exhaustive
         | some quota =>
-          if filtered.length ≤ quota then filtered
+          if filtered.size ≤ quota then filtered
           else
             -- Deterministic sampling using LCG with level as seed
             let rng := LCGState.init (level * 12345 + 42)
             deterministicSample filtered quota rng
         | none => filtered  -- no quota entry = exhaustive
       (cache', formulas ++ levelFormulas))
-    ({}, [])
-  if params.maxFormulas == 0 then allFormulas else allFormulas.take params.maxFormulas
+    ({}, #[])
+  let result := allFormulas.toList
+  if params.maxFormulas == 0 then result else result.take params.maxFormulas
 where
-  /-- Deterministically sample `count` elements from a list using LCG. -/
-  deterministicSample (xs : List Formula) (count : Nat) (rng : LCGState) : List Formula :=
-    let arr := xs.toArray
-    let n := arr.size
+  /-- Deterministically sample `count` elements from an array using LCG. -/
+  deterministicSample (xs : Array Formula) (count : Nat) (rng : LCGState) : Array Formula :=
+    let n := xs.size
     if n ≤ count then xs
     else
       -- Fisher-Yates partial shuffle: select `count` random elements
       let (selected, _) := (List.range count).foldl
-        (fun (acc : List Formula × LCGState) _ =>
+        (fun (acc : Array Formula × LCGState) _ =>
           let (picked, r) := acc
           let (r', idx) := r.randBound n
-          match arr[idx]? with
-          | some φ => (φ :: picked, r')
+          match xs[idx]? with
+          | some φ => (picked.push φ, r')
           | none => (picked, r'))
-        ([], rng)
+        (#[], rng)
       selected
 
 /--
@@ -1363,7 +1372,7 @@ after each level. Caps at `maxFormulas`.
 private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := do
   let startMs ← IO.monoMsNow
   let mut cache : EnumCache := {}
-  let mut allFormulas : List Formula := []
+  let mut allFormulas : Array Formula := #[]
   let mut totalCount : Nat := 0
   for i in List.range params.maxComplexity do
     let level := i + 1
@@ -1372,31 +1381,31 @@ private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := d
     cache := cache'
     let filtered := exact.filter passesFilter
     allFormulas := allFormulas ++ filtered
-    totalCount := totalCount + filtered.length
+    totalCount := totalCount + filtered.size
     let elapsedMs ← IO.monoMsNow
     let elapsedSecs := (elapsedMs - startMs) / 1000
     let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
-    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.length} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.size} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
     if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
-  if params.maxFormulas == 0 then return allFormulas else return allFormulas.take params.maxFormulas
+  let result := allFormulas.toList
+  if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
 
-/-- Deterministically sample `count` elements from a list using LCG.
+/-- Deterministically sample `count` elements from an array using LCG.
     Extracted as a top-level helper for reuse by both pure and IO stratified enumeration. -/
-private def deterministicSampleFormulas (xs : List Formula) (count : Nat) (rng : LCGState)
-    : List Formula :=
-  let arr := xs.toArray
-  let n := arr.size
+private def deterministicSampleFormulas (xs : Array Formula) (count : Nat) (rng : LCGState)
+    : Array Formula :=
+  let n := xs.size
   if n ≤ count then xs
   else
     let (selected, _) := (List.range count).foldl
-      (fun (acc : List Formula × LCGState) _ =>
+      (fun (acc : Array Formula × LCGState) _ =>
         let (picked, r) := acc
         let (r', idx) := r.randBound n
-        match arr[idx]? with
-        | some φ => (φ :: picked, r')
+        match xs[idx]? with
+        | some φ => (picked.push φ, r')
         | none => (picked, r'))
-      ([], rng)
+      (#[], rng)
     selected
 
 /--
@@ -1409,7 +1418,7 @@ private def enumerateStratifiedWithProgress (params : EnumParams) : IO (List For
   let quotaMap := params.stratifiedQuotas.foldl
     (fun (m : Std.HashMap Nat Nat) (k, v) => m.insert k v) {}
   let mut cache : EnumCache := {}
-  let mut allFormulas : List Formula := []
+  let mut allFormulas : Array Formula := #[]
   let mut totalCount : Nat := 0
   for i in List.range params.maxComplexity do
     let level := i + 1
@@ -1420,24 +1429,25 @@ private def enumerateStratifiedWithProgress (params : EnumParams) : IO (List For
     let levelFormulas := match quotaMap[level]? with
       | some 0 => filtered
       | some quota =>
-        if filtered.length ≤ quota then filtered
+        if filtered.size ≤ quota then filtered
         else
           let rng := LCGState.init (level * 12345 + 42)
           deterministicSampleFormulas filtered quota rng
       | none => filtered
     allFormulas := allFormulas ++ levelFormulas
-    totalCount := totalCount + levelFormulas.length
+    totalCount := totalCount + levelFormulas.size
     let elapsedMs ← IO.monoMsNow
     let elapsedSecs := (elapsedMs - startMs) / 1000
     let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
     let quotaStr := match quotaMap[level]? with
       | some 0 => " [exhaustive]"
-      | some q => s!" [quota: {q}, from {filtered.length}]"
+      | some q => s!" [quota: {q}, from {filtered.size}]"
       | none => " [exhaustive]"
-    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.length} formulas{quotaStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{quotaStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
     if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
-  if params.maxFormulas == 0 then return allFormulas else return allFormulas.take params.maxFormulas
+  let result := allFormulas.toList
+  if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
 
 /--
 Generate formulas according to the specified sampling mode.
@@ -1551,13 +1561,14 @@ interaction formulas for temporal axiom usage verification.
 def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
     (complexityLevels : List Nat) : List Formula × DiversitySummary :=
   let (_, allFormulas) := complexityLevels.foldl
-    (fun (acc : EnumCache × List Formula) level =>
+    (fun (acc : EnumCache × Array Formula) level =>
       let (cache, formulas) := acc
       let (exact, cache') := enumExactBudget atoms level maxModal maxTemporal cache
       let bimodal := exact.filter hasBimodalInteraction
       (cache', formulas ++ bimodal))
-    ({}, [])
-  let summary := diversitySummary allFormulas
-  (allFormulas, summary)
+    ({}, #[])
+  let result := allFormulas.toList
+  let summary := diversitySummary result
+  (result, summary)
 
 end Bimodal.Automation

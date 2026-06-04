@@ -36,14 +36,14 @@ def benchmarkExactComplexity (complexity : Nat) (atoms : List Atom)
   IO.println s!"--- Complexity {complexity} ---"
   let startMs ← IO.monoMsNow
   let (_, formulas) := (List.range complexity).foldl
-    (fun (acc : EnumCache × List Formula) i =>
+    (fun (acc : EnumCache × Array Formula) i =>
       let (cache, fs) := acc
       let (exact, cache') := enumExactBudget atoms (i + 1) maxModal maxTemporal cache
       (cache', fs ++ exact))
-    ({}, [])
+    ({}, #[])
   let endMs ← IO.monoMsNow
   let elapsed := endMs - startMs
-  IO.println s!"  Formulas: {formulas.length}"
+  IO.println s!"  Formulas: {formulas.size}"
   IO.println s!"  Time: {elapsed} ms"
   -- Check timing gates
   let gate := match complexity with
