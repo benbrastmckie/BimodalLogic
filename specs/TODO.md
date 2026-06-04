@@ -1,5 +1,5 @@
 ---
-next_project_number: 282
+next_project_number: 283
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -116,6 +116,18 @@ technical_debt:
 269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
+
+### 282. Make dataset generation script default to exhaustive enumeration without formula cap
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 274
+
+**Description**: The dataset generator defaults to `maxFormulas=5000` (in DatasetExport.lean:501 and FormulaEnumerator.lean:601), silently truncating exhaustive enumeration at higher complexity levels. Change the default behavior so that exhaustive mode keeps ALL enumerated formulas unless an explicit `--max-formulas N` flag is passed. (1) Change default `maxFormulas` in DatasetExport.lean and FormulaEnumerator.lean to 0 or a sentinel value meaning "no limit". (2) Update `FormulaEnumerator.lean:692` to skip the `.take` when maxFormulas is 0/unlimited. (3) Update `run_dataset_generation.sh` to remove `--max-formulas` from exhaustive tiers (c4-c8) since the default will now be unlimited. Keep `--max-formulas` only for stratified tiers (c9+) where it controls the sampling budget. (4) Add a `--max-formulas` flag description to the help text clarifying it's optional and only caps output for exhaustive mode. (5) Regenerate c4-c8 datasets to verify truly exhaustive output.
+
+---
 
 ### 281. Complete countermodel_discrete_reynolds_v2 to bypass chronicle_gap_contradiction
 - **Effort**: medium (6-10 hours)

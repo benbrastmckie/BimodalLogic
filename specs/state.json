@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 282,
+      "project_name": "exhaustive_enumeration_by_default",
+      "status": "not_started",
+      "task_type": "lean4",
+      "dependencies": [
+        274
+      ],
+      "created": "2026-06-04T07:30:00Z",
+      "last_updated": "2026-06-04T07:30:00Z"
+    },
+    {
       "project_number": 281,
       "project_name": "z_interval_countermodel_v2",
       "status": "implementing",
@@ -1651,13 +1662,14 @@
     {
       "project_number": 255,
       "project_name": "boneyard_dead_reynolds_code",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "low",
       "topic": "code-quality",
       "description": "Archive dead code to Boneyard/ after task 202 completed Reynolds model surgery: (1) ReynoldsModelSurgery.lean — sorry marked unprovable as stated, superseded by GoodStructuresModelSurgery.lean; (2) ReynoldsNoGaps.lean — deprecated no_gaps_reynolds_general (mathematically false), superseded; (3) Transfer.lean countermodel_discrete (lines 1291-1338) — deprecated BX pipeline dead code. Remove imports from ChronicleToCountermodel.lean, ShiftAndGlue.lean, GoodStructuresModelSurgery.lean as needed.",
       "dependencies": [],
-      "created": "2026-06-01T22:30:00Z"
+      "created": "2026-06-01T22:30:00Z",
+      "completion_summary": "Archived 4 dead BX pipeline definitions from ReynoldsNoGaps.lean to Boneyard, cleaned redundant ShiftAndGlue import, simplified Transfer.lean countermodel_discrete body, updated Boneyard documentation. lake build passes (zero errors, net -1 sorry)."
     },
     {
       "project_number": 261,
@@ -2052,7 +2064,7 @@
       }
     }
   ],
-  "next_project_number": 282,
+  "next_project_number": 283,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
