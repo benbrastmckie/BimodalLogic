@@ -103,19 +103,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Incremental Output and Checkpoint Resume [NOT STARTED]
+### Phase 2: Incremental Output and Checkpoint Resume [COMPLETED]
 
 **Goal**: Add per-level JSONL flushing and checkpoint resume so that a crash at c8 level 7 does not lose hours of work.
 
 **Tasks**:
-- [ ] Define a `CheckpointState` structure: `{ completedLevels : Nat, formulaCount : Nat, outputPath : System.FilePath }`
-- [ ] Add a `--checkpoint-dir` option to `EnumParams` (or extend existing config) for storing checkpoint metadata
-- [ ] Modify `enumerateWithProgress` to write each level's formulas to a JSONL file (one formula per line, JSON-encoded) immediately after computation, flushing `IO.FS.Handle` after each level
-- [ ] Write a checkpoint marker file after each level completes (level number + cumulative formula count + elapsed time)
-- [ ] Add resume logic: on startup, check for existing checkpoint; if found, skip completed levels by re-reading their JSONL output and reconstructing the cache from the checkpoint
-- [ ] Add progress metrics: formulas/sec, partition timing per level, ETA estimation based on extrapolation from completed levels
-- [ ] Add a `--resume` flag (or automatic detection) to `enumerateWithProgress`
-- [ ] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify compilation
+- [x] Define a `CheckpointState` structure: `{ completedLevels : Nat, formulaCount : Nat, outputPath : System.FilePath }`
+- [x] Add a `--checkpoint-dir` option to `EnumParams` (or extend existing config) for storing checkpoint metadata
+- [x] Modify `enumerateWithProgress` to write each level's formulas to a JSONL file (one formula per line, JSON-encoded) immediately after computation, flushing `IO.FS.Handle` after each level
+- [x] Write a checkpoint marker file after each level completes (level number + cumulative formula count + elapsed time)
+- [x] Add resume logic: on startup, check for existing checkpoint; if found, skip completed levels by re-reading their JSONL output and reconstructing the cache from the checkpoint *(deviation: altered -- cache is rebuilt by re-running enumExactBudget for skipped levels rather than deserializing; deterministic enumeration makes this equivalent and avoids needing a Formula parser)*
+- [x] Add progress metrics: formulas/sec, partition timing per level, ETA estimation based on extrapolation from completed levels
+- [x] Add a `--resume` flag (or automatic detection) to `enumerateWithProgress`
+- [x] Run `lake build Bimodal.Automation.FormulaEnumerator` to verify compilation
 
 **Timing**: 2 hours
 

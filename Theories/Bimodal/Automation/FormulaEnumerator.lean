@@ -617,6 +617,12 @@ structure EnumParams where
       Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
       Only used when samplingMode = .stratified. -/
   stratifiedQuotas : List (Nat × Nat) := []
+  /-- Optional directory for checkpoint files. When set, enables per-level JSONL
+      output and crash resume. -/
+  checkpointDir : Option System.FilePath := none
+  /-- Whether to attempt resume from existing checkpoint. When true and
+      checkpointDir is set, completed levels are skipped on restart. -/
+  resume : Bool := false
   deriving Repr, Inhabited
 
 /--
@@ -1362,30 +1368,127 @@ where
         (#[], rng)
       selected
 
+/-!
+## Checkpoint and Incremental Output (Task 283 Phase 2)
+
+Provides per-level JSONL flushing and checkpoint resume so that a crash during
+c8+ enumeration does not lose hours of work.
+-/
+
+/--
+Checkpoint state for incremental enumeration.
+Records which levels have been completed so that enumeration can resume
+after a crash.
+-/
+structure CheckpointState where
+  /-- Number of complexity levels fully completed. -/
+  completedLevels : Nat
+  /-- Cumulative formula count across completed levels. -/
+  formulaCount : Nat
+  /-- Path to the JSONL output file being written. -/
+  outputPath : System.FilePath
+  deriving Repr, Inhabited
+
+/-- Write a checkpoint marker file recording the completion of a level.
+    Format: one line per completed level with "level,formulaCount,elapsedMs". -/
+private def writeCheckpointMarker (checkpointDir : System.FilePath) (level : Nat)
+    (cumulativeCount : Nat) (elapsedMs : Nat) : IO Unit := do
+  let markerPath := checkpointDir / "checkpoint.csv"
+  let line := s!"{level},{cumulativeCount},{elapsedMs}\n"
+  -- Append to marker file
+  let h ← IO.FS.Handle.mk markerPath .append
+  h.putStr line
+  h.flush
+
+/-- Read the checkpoint marker file and return the highest completed level.
+    Returns (completedLevels, cumulativeFormulaCount) or (0, 0) if no checkpoint. -/
+private def readCheckpoint (checkpointDir : System.FilePath) : IO (Nat × Nat) := do
+  let markerPath := checkpointDir / "checkpoint.csv"
+  let fileExists ← markerPath.pathExists
+  if !fileExists then return (0, 0)
+  let content ← IO.FS.readFile markerPath
+  let lines := content.splitOn "\n" |>.filter (· ≠ "")
+  let mut maxLevel : Nat := 0
+  let mut lastCount : Nat := 0
+  for line in lines do
+    let parts := line.splitOn ","
+    match parts with
+    | [levelStr, countStr, _] =>
+      match levelStr.toNat?, countStr.toNat? with
+      | some l, some c =>
+        if l > maxLevel then
+          maxLevel := l
+          lastCount := c
+      | _, _ => pure ()
+    | _ => pure ()
+  return (maxLevel, lastCount)
+
+/-- Write formulas for a level to a JSONL file (one `repr` per line).
+    Appends to existing file so that levels accumulate incrementally. -/
+private def writeFormulaJSONL (outputPath : System.FilePath)
+    (formulas : Array Formula) (level : Nat) : IO Unit := do
+  let h ← IO.FS.Handle.mk outputPath .append
+  for φ in formulas do
+    h.putStr s!"\{\"level\":{level},\"formula\":\"{repr φ}\"}\n"
+  h.flush
+
 /--
 IO wrapper for exhaustive enumeration with per-complexity-level progress.
 
 Iterates complexity levels 1 to `maxComplexity`, calling `enumExactBudget` (pure)
 per level with shared `EnumCache`, applying `passesFilter`, and emitting progress
 after each level. Caps at `maxFormulas`.
+
+When `checkpointDir` is set, writes per-level JSONL output and checkpoint markers
+for crash resume. When `resume` is true, skips levels already recorded in the
+checkpoint file.
 -/
 private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := do
   let startMs ← IO.monoMsNow
+  -- Check for resume state
+  let (resumeLevel, resumeCount) ← match params.checkpointDir with
+    | some dir =>
+      if params.resume then do
+        let (rl, rc) ← readCheckpoint dir
+        if rl > 0 then
+          IO.println s!"[enum] Resuming from checkpoint: {rl} levels completed, {rc} formulas"
+        pure (rl, rc)
+      else pure (0, 0)
+    | none => pure (0, 0)
+  -- Ensure checkpoint directory exists if specified
+  match params.checkpointDir with
+  | some dir => IO.FS.createDirAll dir
+  | none => pure ()
   let mut cache : EnumCache := {}
   let mut allFormulas : Array Formula := #[]
-  let mut totalCount : Nat := 0
+  let mut totalCount : Nat := resumeCount
   for i in List.range params.maxComplexity do
     let level := i + 1
     let (exact, cache') := enumExactBudget params.atoms level params.maxModalDepth
                                            params.maxTemporalDepth cache
     cache := cache'
+    -- If resuming and this level is already done, just update cache and skip
+    if level ≤ resumeLevel then
+      continue
     let filtered := exact.filter passesFilter
     allFormulas := allFormulas ++ filtered
     totalCount := totalCount + filtered.size
     let elapsedMs ← IO.monoMsNow
-    let elapsedSecs := (elapsedMs - startMs) / 1000
+    let elapsed := elapsedMs - startMs
+    let elapsedSecs := elapsed / 1000
     let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
-    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.size} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    -- ETA estimation based on completed levels
+    let remainingLevels := params.maxComplexity - level
+    let avgMsPerLevel := if level > resumeLevel then elapsed / (level - resumeLevel) else 0
+    let etaSecs := remainingLevels * avgMsPerLevel / 1000
+    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {filtered.size} formulas (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec, ETA: {etaSecs}s"
+    -- Write JSONL output and checkpoint marker if checkpoint dir is set
+    match params.checkpointDir with
+    | some dir =>
+      let jsonlPath := dir / "formulas.jsonl"
+      writeFormulaJSONL jsonlPath filtered level
+      writeCheckpointMarker dir level totalCount elapsed
+    | none => pure ()
     if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
   let result := allFormulas.toList
