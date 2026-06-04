@@ -1,5 +1,5 @@
 ---
-next_project_number: 281
+next_project_number: 282
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -116,6 +116,17 @@ technical_debt:
 269 [NOT STARTED] — export_interestingness_scores_to_jsonl
 
 ## Tasks
+
+### 281. Complete countermodel_discrete_reynolds_v2 to bypass chronicle_gap_contradiction
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: completeness
+
+**Description**: Complete countermodel_discrete_reynolds_v2 in ReynoldsBridge.lean to bypass chronicle_gap_contradiction. Build a BFMCS on Z directly from the Z-interval temporal_truth (derived from limitdom_is_good + truth_transfer), prove restricted temporal coherence, box uniformity, and Until/Since coherence from temporal_truth semantics, apply the restricted parametric truth lemma, and wire into completeness_discrete. This eliminates the entire sorry chain: chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective.
+
+---
 
 ### 275. Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
 - **Effort**: small (2-4 hours)
