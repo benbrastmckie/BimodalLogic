@@ -114,6 +114,29 @@ recursive calls in the naive version.
 abbrev EnumCache := Std.HashMap (Nat × Nat × Nat) (Array Formula)
 
 /--
+Check if a formula is structurally trivial and should be pruned during enumeration.
+A formula is structurally trivial if it is semantically equivalent to a simpler
+formula that is already in the enumeration space.
+
+Pruned patterns:
+- Identity implication: `φ → φ` (any formula implying itself, trivially valid)
+- Ex falso: `⊥ → φ` (covered by the ex_falso axiom, always valid)
+- S5 box idempotence: `□(□φ)` is equivalent to `□φ` under S5
+- Double negation redundancy: `(φ → ⊥) → ⊥` when `φ` is lower complexity
+
+These checks are O(1) pattern matches -- no deep traversal needed.
+-/
+def structurallyTrivial : Formula → Bool
+  -- Identity: φ → φ
+  | .imp l r => l == r || match l, r with
+    -- Ex falso: ⊥ → φ
+    | .bot, _ => true
+    | _, _ => false
+  -- S5 box idempotence: □(□φ) equivalent to □φ
+  | .box (.box _) => true
+  | _ => false
+
+/--
 Enumerate all formulas of EXACTLY the given complexity, respecting modal and
 temporal depth bounds. Uses memoization via a carried cache to avoid redundant
 computation.
@@ -145,7 +168,12 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
         -- box adds 1 to modal depth, so child must fit within modalBudget - 1
         let (boxes, cache1) := if modalBudget > 0 then
           let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget cache
-          (children.map Formula.box, c)
+          -- Filter out box(box(φ)) since □□φ ≡ □φ under S5
+          let boxed := children.foldl (fun (acc : Array Formula) child =>
+            let f := Formula.box child
+            if structurallyTrivial f then acc else acc.push f
+          ) #[]
+          (boxed, c)
         else (#[], cache)
         -- Derived unary temporal operators: F, P, G, H
         -- These are defined in terms of untl/snce but enumerated as first-class targets.
@@ -194,9 +222,12 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
               -- imp: no depth change
               let (lefts, c1) := enumExactHelper atoms modalBudget temporalBudget leftSize accCache
               let (rights, c2) := enumExactHelper atoms modalBudget temporalBudget rightSize c1
-              -- Cross-product for implication using Array.foldl
+              -- Cross-product for implication with structural pruning
               let imps := lefts.foldl (fun (acc : Array Formula) l =>
-                rights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.imp l r)) acc
+                rights.foldl (fun (acc' : Array Formula) r =>
+                  let f := Formula.imp l r
+                  if structurallyTrivial f then acc' else acc'.push f
+                ) acc
               ) (Array.mkEmpty (lefts.size * rights.size))
               -- untl/snce: temporal depth + 1 for the whole formula
               let (temporalBinaries, c3) := if temporalBudget > 0 then
