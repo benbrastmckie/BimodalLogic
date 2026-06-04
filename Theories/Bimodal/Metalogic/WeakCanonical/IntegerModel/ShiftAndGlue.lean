@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
-import Bimodal.Metalogic.WeakCanonical.IntegerModel.ReynoldsNoGaps
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
 
 /-!
