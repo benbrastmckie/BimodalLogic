@@ -86,23 +86,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extract dead definitions from ReynoldsNoGaps.lean to Boneyard [NOT STARTED]
+### Phase 2: Extract dead definitions from ReynoldsNoGaps.lean to Boneyard [COMPLETED]
 
 **Goal**: Remove 4 dead definitions from ReynoldsNoGaps.lean and archive them
 
 **Tasks**:
-- [ ] Verify zero external references for each dead definition: `no_gaps_discrete_archimedean`, `no_gaps_prior`, `prior_implies_succ_archimedean`, `one_class_implies_succ_archimedean` (grep across Theories/ excluding Boneyard/)
-- [ ] Remove from ReynoldsNoGaps.lean:
+- [x] Verify zero external references for each dead definition: `no_gaps_discrete_archimedean`, `no_gaps_prior`, `prior_implies_succ_archimedean`, `one_class_implies_succ_archimedean` (grep across Theories/ excluding Boneyard/)
+- [x] Remove from ReynoldsNoGaps.lean:
   - `no_gaps_discrete_archimedean` (starting around line 111)
   - `no_gaps_prior` (starting around line 276)
   - `prior_implies_succ_archimedean` (starting around line 299)
   - `one_class_implies_succ_archimedean` (starting around line 321)
-- [ ] Also remove `orbit_le_succ_closed` (private helper for `gap_of_not_succ_archimedean`, starting around line 133) only if it has zero references after the dead definitions are removed -- check carefully as it may be used by the live `gap_of_not_succ_archimedean`
-- [ ] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean` containing:
+- [x] Also remove `orbit_le_succ_closed` (private helper for `gap_of_not_succ_archimedean`, starting around line 133) only if it has zero references after the dead definitions are removed -- check carefully as it may be used by the live `gap_of_not_succ_archimedean` *(deviation: altered -- orbit_le_succ_closed had zero references even before dead definition removal; removed as dead code)*
+- [x] Create `Theories/Bimodal/Boneyard/BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean` containing:
   - Module header documenting the archival (task 255)
   - The 4 extracted definitions with `#exit` after imports (they reference deleted code)
   - Comments explaining why each was deprecated
-- [ ] Run `lake build` to verify no breakage
+- [x] Run `lake build` to verify no breakage
 
 **Timing**: 30 minutes
 

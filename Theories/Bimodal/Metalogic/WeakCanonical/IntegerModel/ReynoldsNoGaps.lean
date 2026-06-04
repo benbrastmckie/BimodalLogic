@@ -1,27 +1,20 @@
-import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 
 /-!
-# Reynolds No-Gaps Theorem and Archimedean One-Class Theorem
+# Archimedean One-Class Theorem and Gap Existence
 
-This file provides the key theorems needed to close the sorry sites in the
-Reynolds completeness pipeline:
+This file provides key theorems for the Reynolds completeness pipeline:
 
-1. `one_class_archimedean`: In any discrete archimedean linear order with
+1. `very_good_of_archimedean`: In an archimedean discrete linear order, every
+   structure is very good (subintervals are finite, hence good).
+
+2. `one_class_archimedean`: In any discrete archimedean linear order with
    successor/predecessor, all points are contemporaneously equivalent.
    This does NOT require Prior-UZ/SZ -- the archimedean property suffices.
 
-2. `no_gaps_discrete_archimedean`: The archimedean specialization of
-   `no_gaps_discrete`. Since all points are equivalent, the premise
-   (a ≁ b) is vacuously false.
-
 3. `gap_of_not_succ_archimedean`: If NOT IsSuccArchimedean, there exists a Gap
    (Dedekind cut with no maximum and no minimum in complement).
-
-4. `no_gaps_prior`: In a Prior structure with sufficiently rich signature,
-   there are no gaps (Dedekind cuts). Combined with discreteness, this gives
-   IsSuccArchimedean. This is the core of Reynolds Theorem 14.
 
 ## Mathematical Content
 
@@ -31,16 +24,17 @@ In an `IsSuccArchimedean` discrete linear order:
 - Therefore every subinterval is good, hence every structure is very good
 - Therefore all points are contemporaneously equivalent
 
-For the converse (Prior => IsSuccArchimedean), the argument is:
-1. If NOT IsSuccArchimedean, there exists a Gap (Dedekind cut).
-2. In a discrete order, the Gap is defined by a successor-closed downward set.
-3. By Reynolds Theorem 5 (US expressive completeness), the Gap is detectable
-   by a temporal formula (the gap formula R).
-4. Model surgery (Reynolds Lemmas 10-13) shows the Gap leads to contradiction.
+## Archived Definitions (task 255)
+
+The following definitions were moved to
+`Boneyard/BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean`:
+- `no_gaps_discrete_archimedean` (zero external references)
+- `no_gaps_prior` (mathematically false as stated, deprecated)
+- `prior_implies_succ_archimedean` (depended on no_gaps_prior)
+- `one_class_implies_succ_archimedean` (depended on prior_implies_succ_archimedean)
 
 ## References
 
-- Reynolds 1994, Section 7, Theorem 14 (general version)
 - Reynolds 1994, Section 8, Theorem 15 (one-class theorem)
 - Doets 1989, Theorem 1.1 (finite structures are good)
 -/
@@ -100,25 +94,6 @@ theorem one_class_archimedean (sig : MonadicSignature) (k : Nat)
   obtain ⟨Z, hZ⟩ := finite_structures_good sig k (M.subinterval sig x.val y.val)
   exact ⟨Z, h_k_equiv.trans hZ⟩
 
-/--
-**Archimedean No-Gaps Theorem**: Specialization of `no_gaps_discrete` for
-archimedean orders. The premise ¬contemp_equiv a b is always false
-(by `one_class_archimedean`), so the conclusion holds vacuously.
-
-This version does NOT require Prior-UZ/SZ. It can be used in place of
-`no_gaps_discrete` wherever the underlying order is archimedean.
--/
-theorem no_gaps_discrete_archimedean (sig : MonadicSignature) (k : Nat)
-    (M : OrderedMonadicStructure sig)
-    [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    [IsSuccArchimedean M.carrier]
-    (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
-    ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
-      ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- The premise is always false: all points are contemp_equiv in archimedean orders
-  exact absurd (one_class_archimedean sig k M a b) h_diff_class
-
 /-! ## Gap Existence from Non-Archimedean
 
 If a discrete linear order without endpoints is NOT IsSuccArchimedean,
@@ -127,19 +102,6 @@ then there exists a Dedekind gap (a `Gap` in the EF game framework sense).
 The gap is constructed from the successor orbit of a point that cannot
 reach some larger point: cut = {x : ∃ n, x ≤ succ^[n] a}.
 -/
-
-/-- Helper: the successor orbit set {x : ∃ n, x ≤ succ^[n] a} is closed under
-    successor: if x ∈ orbit_le, then succ(x) ∈ orbit_le. -/
-private theorem orbit_le_succ_closed {T : Type} [LinearOrder T] [SuccOrder T]
-    [NoMaxOrder T] (a : T) :
-    ∀ x : T, (∃ n : Nat, x ≤ Order.succ^[n] a) →
-      (∃ n : Nat, Order.succ x ≤ Order.succ^[n] a) := by
-  intro x ⟨n, hx⟩
-  rcases eq_or_lt_of_le hx with hx_eq | hx_lt
-  · -- x = succ^[n] a. Then succ(x) = succ^[n+1] a.
-    exact ⟨n + 1, by rw [Function.iterate_succ']; exact le_of_eq (congrArg Order.succ hx_eq)⟩
-  · -- x < succ^[n] a. Then succ(x) ≤ succ^[n] a (by succ_le_of_lt).
-    exact ⟨n, Order.succ_le_of_lt hx_lt⟩
 
 /--
 **Gap Existence**: If a discrete linear order without endpoints is NOT
@@ -232,100 +194,5 @@ theorem gap_of_not_succ_archimedean {T : Type} [LinearOrder T]
       exact Order.succ_le_succ hn
     -- But succ^[n+1] a < m (from hm_above)
     exact not_le.mpr (hm_above (n + 1)) this
-
-/-! ## Prior-UZ/SZ Implies No Gaps (Reynolds Theorem 14)
-
-In a discrete linear order satisfying Prior-UZ and Prior-SZ, there are no
-Dedekind gaps. Combined with `gap_of_not_succ_archimedean` (contrapositive),
-this gives `IsSuccArchimedean`.
-
-The proof uses Reynolds' model surgery argument (Lemmas 6-13):
-1. (Theorem 5) US expressive completeness: gap formula R exists
-2. (Lemmas 7-8) R-intervals are open with no first/last class
-3. (Lemma 9) Classes in R-intervals are elementarily equivalent
-4. (Lemmas 10-13) Model surgery: replace bad interval by one class,
-   temporal truth is preserved, leading to contradiction
-
-**Status**: The key mathematical lemma `no_gaps_prior` encapsulates the
-Reynolds model surgery argument. It is sorry'd pending full formalization
-of Lemmas 6-13.
--/
-
-/--
-**DEPRECATED -- MATHEMATICALLY FALSE AS STATED**
-
-`no_gaps_prior` is mathematically incorrect without an additional faithfulness
-hypothesis. The missing hypothesis is that `temporal_truth` faithfully reflects
-the monadic structure's predicate interpretation.
-
-**Counterexample**: M.carrier = Z + Z (two disjoint copies of integers), with
-M.interp p x = True for all predicates p and all points x (constant predicates).
-This satisfies SuccOrder, PredOrder, NoMaxOrder, NoMinOrder, h_surj, Prior-UZ,
-and Prior-SZ (all temporal formulas evaluate to constants because predicates are
-constant). But Z + Z has a Dedekind Gap between the two copies.
-
-**Status**: OFF the critical path. The completeness pipeline uses
-`chronicle_no_gaps` (ChronicleNoGaps.lean) instead, which proves the no-gaps
-result specifically at the `ChronicleAsPriorModel` level where faithfulness
-holds by construction (via `chronicle_temporal_truth_effective` in Transfer.lean).
-
-The downstream theorems `prior_implies_succ_archimedean` and
-`one_class_implies_succ_archimedean` remain sound -- they would work correctly
-if `no_gaps_prior` were corrected with a faithfulness hypothesis.
--/
-theorem no_gaps_prior (sig : MonadicSignature) (k : Nat) (hk : k ≥ 1)
-    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
-    (h_prior_SZ : semantic_prior_SZ M atomMap) :
-    IsEmpty (Gap M.carrier) := by
-  -- DEPRECATED: This theorem is mathematically false as stated.
-  -- See docstring above for the Z+Z counterexample.
-  -- The chronicle-level proof in ChronicleNoGaps.lean bypasses this theorem.
-  sorry
-
-/--
-**Prior Implies Succ-Archimedean**: In a discrete linear order without endpoints
-satisfying Prior-UZ and Prior-SZ, the order is IsSuccArchimedean.
-
-This combines `no_gaps_prior` (no Dedekind gaps in Prior structures) with
-`gap_of_not_succ_archimedean` (NOT archimedean implies gap exists).
-
-Requires h_surj (atomMap surjective onto sig.preds) for the expressive
-completeness argument in no_gaps_prior.
--/
-theorem prior_implies_succ_archimedean (sig : MonadicSignature) (k : Nat) (hk : k ≥ 1)
-    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
-    (h_prior_SZ : semantic_prior_SZ M atomMap) :
-    @IsSuccArchimedean M.carrier inferInstance (inferInstance : SuccOrder M.carrier) := by
-  -- By contrapositive: if NOT archimedean, then gap exists.
-  -- But no_gaps_prior says no gaps. Contradiction.
-  by_contra h_not_arch
-  have ⟨γ⟩ := gap_of_not_succ_archimedean h_not_arch
-  exact (no_gaps_prior sig k hk M atomMap h_surj h_prior_UZ h_prior_SZ).elim γ
-
-/--
-**One-Class Implies Succ-Archimedean (revised)**: Derives IsSuccArchimedean from
-Prior-UZ/SZ hypotheses. Requires h_surj for the expressive completeness argument.
-
-This replaces the earlier version that lacked h_surj (which was mathematically
-incorrect: constant-predicate structures can satisfy Prior-UZ/SZ and one_class
-without being archimedean).
--/
-theorem one_class_implies_succ_archimedean (sig : MonadicSignature) (k : Nat) (hk : k ≥ 1)
-    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
-    (h_prior_SZ : semantic_prior_SZ M atomMap) :
-    @IsSuccArchimedean M.carrier inferInstance (inferInstance : SuccOrder M.carrier) :=
-  prior_implies_succ_archimedean sig k hk M atomMap h_surj h_prior_UZ h_prior_SZ
 
 end Bimodal.Metalogic.WeakCanonical
