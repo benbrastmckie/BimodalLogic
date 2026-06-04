@@ -419,6 +419,66 @@ theorem effectiveFormula_id_neg (φ : Formula) :
 
 /-! ## Phase 3: Truth Transfer and Countermodel Construction -/
 
+/-! ### Z-Interval Countermodel Infrastructure (WorldState = ℤ)
+
+A TaskFrame with `WorldState = ℤ` where the state at each time IS the time itself
+(plus an offset). This allows position-dependent atom valuation, which is necessary
+because atom predicates on the Z-interval are not constant in general.
+
+With this frame:
+- Each history is parameterized by an offset w₀, with states t _ = w₀ + t
+- Omega contains all offset histories (shift-closed)
+- Box quantification ranges over all offsets, giving S5 semantics
+-/
+
+/-- TaskFrame with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
+noncomputable def zTaskFrame_v2 : TaskFrame ℤ where
+  WorldState := ℤ
+  task_rel w d u := u = w + d
+  nullity_identity w u := by constructor <;> intro h <;> omega
+  forward_comp w u v x y _ _ h1 h2 := by rw [h2, h1, add_assoc]
+  converse w d u := by constructor <;> intro h <;> omega
+
+/-- World history with offset w₀: domain = all of ℤ, states t _ = w₀ + t. -/
+noncomputable def zHistory_v2 (w₀ : ℤ) : WorldHistory zTaskFrame_v2 where
+  domain := fun _ => True
+  convex := fun _ _ _ _ _ _ _ => trivial
+  states := fun t _ => w₀ + t
+  respects_task := fun s t _ _ _ => by show w₀ + t = (w₀ + s) + (t - s); omega
+
+/-- Omega = set of all offset histories. -/
+def zOmega_v2 : Set (WorldHistory zTaskFrame_v2) := Set.range zHistory_v2
+
+theorem zHistory_v2_mem_omega : zHistory_v2 0 ∈ zOmega_v2 := ⟨0, rfl⟩
+
+/-- Time-shifting zHistory_v2 w₀ by Δ gives zHistory_v2 (w₀ + Δ). -/
+theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
+    WorldHistory.time_shift (zHistory_v2 w₀) Δ = zHistory_v2 (w₀ + Δ) := by
+  show WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
+      (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
+    funext t _; omega
+  congr 1
+
+theorem zOmega_v2_shiftClosed : ShiftClosed zOmega_v2 := by
+  intro σ hσ Δ
+  obtain ⟨w₀, hw₀⟩ := hσ
+  rw [← hw₀, zHistory_v2_shift_eq]
+  exact ⟨w₀ + Δ, rfl⟩
+
+/-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
+noncomputable def zTaskModel_v2 {sig : MonadicSignature}
+    (Z : ZIntervalStructure sig) (atomMap : Formula → sig.preds) :
+    TaskModel zTaskFrame_v2 where
+  valuation w p := Z.interp (atomMap (.atom p)) w
+
+/-- Every history in zOmega_v2 is of the form zHistory_v2 w₀ for some w₀. -/
+theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrame_v2) :
+    σ ∈ zOmega_v2 ↔ ∃ w₀, σ = zHistory_v2 w₀ := by
+  constructor
+  · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
+  · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
+
 /--
 Temporal truth of `φ.neg` at the root point of the limitdom structure.
 
@@ -471,21 +531,41 @@ theorem countermodel_discrete_reynolds_v2
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  -- Phase 1-2: Build the good structure
+  -- Phase 1: Build the good structure (k-equivalent to Z-interval)
   let sig := mkSigFrom φ
   let M := limitdom_monadic_structure A h_mcs φ
   let k := operator_depth φ + 2
   have h_good := limitdom_is_good A h_mcs (le_refl _) h_box_discrete φ k
-  -- Phase 3: Extract Z-interval
   obtain ⟨Z, h_k_equiv⟩ := h_good
-  -- Phase 4: Transfer truth
-  -- We know: neg φ ∈ A, so effectiveFormula(neg φ) holds at root in M
-  -- By truth_transfer: effectiveFormula(neg φ) holds at some point in Z
-  -- But we need to connect effectiveFormula truth to actual φ truth.
-  -- This requires the section property (effectiveFormula = id on φ's subformulas).
-  -- The full bridge from temporal_truth on Z to truth_at on a TaskModel on ℤ
-  -- requires building a TaskModel from the Z-interval.
-  -- This is the hardest part of Strategy B.
+  -- Phase 2: Transfer temporal truth of φ.neg from chronicle to Z-interval
+  have h_root_truth := limitdom_root_neg_truth A h_mcs φ h_neg_in
+  have h_k_bound : operator_depth φ.neg + 1 ≤ k := by
+    show operator_depth (φ.imp .bot) + 1 ≤ operator_depth φ + 2
+    simp only [operator_depth]; omega
+  obtain ⟨s, h_neg_truth_Z⟩ := truth_transfer (mkAtomMapFwd φ) h_k_equiv φ.neg h_k_bound
+    ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ h_root_truth
+  -- Phase 3: Package the countermodel on ℤ using zTaskFrame_v2
+  --
+  -- The proof constructs:
+  -- (a) zTaskFrame_v2: TaskFrame ℤ with WorldState = ℤ, deterministic task_rel
+  -- (b) zTaskModel_v2: valuation at state w evaluates Z-interval atom predicate at w
+  -- (c) zOmega_v2: shift-closed set of all offset histories {σ_{w₀} | w₀ ∈ ℤ}
+  -- (d) zHistory_v2 0: base history with states t _ = t
+  --
+  -- The truth correspondence (truth_at ↔ temporal_truth) holds by structural induction:
+  -- - Atoms: direct (both evaluate Z.interp at the same point)
+  -- - Bot/Imp: structural
+  -- - Box: uses S5 box universality (box predicate = ∀s.temporal_truth s f),
+  --   proved via k-equivalence + chronicle box_stable_in_limit_f + Modal T
+  -- - Until/Since: witness mapping via w₀+t parameterization
+  --
+  -- The Z-interval must be unbounded (lo=none, hi=none) for the Until/Since witnesses
+  -- and box backward direction. This follows from the chronicle having NoMaxOrder/NoMinOrder
+  -- and k-equivalence preserving the depth-2 sentences ∃x.∀y.y≤x and ∃x.∀y.x≤y.
+  --
+  -- Both the box universality and unboundedness proofs require formalizing FO sentence
+  -- evaluation and k_equiv_preserves_sentence for specific sentences. This is the
+  -- remaining technical work.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

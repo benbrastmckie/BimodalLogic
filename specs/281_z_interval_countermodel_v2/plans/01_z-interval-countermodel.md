@@ -119,7 +119,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 1: Z-Interval Unboundedness and Box Constancy [NOT STARTED]
+### Phase 1: Z-Interval Unboundedness and Box Constancy [PARTIAL]
 
 **Goal**: Prove the Z-interval extracted from `limitdom_is_good` is unbounded (`lo = none`, `hi = none`), and that box predicates are constant on it.
 
@@ -141,7 +141,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 2: TaskModel Construction and Truth Correspondence [NOT STARTED]
+### Phase 2: TaskModel Construction and Truth Correspondence [PARTIAL]
 
 **Goal**: Construct a `TaskModel zIntervalTaskFrame` from the Z-interval's predicate interpretation and prove `h_truth_corr` — the correspondence between `truth_at` and `temporal_truth`.
 
