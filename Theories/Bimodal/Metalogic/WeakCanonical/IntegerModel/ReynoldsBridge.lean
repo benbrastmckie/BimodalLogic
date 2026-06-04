@@ -489,9 +489,74 @@ theorem z_interval_carrier_contains_all
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [Nonempty M.carrier] (z : ℤ) :
     Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·) := by
-  -- The proof transfers depth-2 sentences "has maximum" and "has minimum" via k-equiv.
-  -- If Z had bounded endpoints, these sentences would be true on Z but false on M.
-  sorry
+  -- Step 0: Transfer nonemptiness from M to Z via ∃x. ¬(x < x) (depth 1 ≤ k)
+  let nonempty_sent : MonadicSentence sig := .ex (.not (.lt 0 0))
+  have h_ne_depth : nonempty_sent.quantifier_depth ≤ k := by
+    simp [nonempty_sent, MonadicFormula.quantifier_depth]; omega
+  have h_ne_M : eval M Fin.elim0 nonempty_sent := by
+    simp only [nonempty_sent, eval, Fin.cons]
+    exact ⟨Classical.arbitrary M.carrier, lt_irrefl _⟩
+  have h_ne_Z := (k_equiv_preserves_sentence h_equiv nonempty_sent h_ne_depth).mp h_ne_M
+  simp only [nonempty_sent, eval, Fin.cons] at h_ne_Z
+  obtain ⟨z₀, _⟩ := h_ne_Z
+  -- Step 1: Transfer "no maximum" from M to Z
+  -- has_max_sent = ∃x. ∀y. ¬(x < y) = "has a maximum element"
+  let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
+  have h_max_depth : has_max_sent.quantifier_depth ≤ k := by
+    simp [has_max_sent, MonadicFormula.quantifier_depth]; omega
+  have h_no_max_M : ¬eval M Fin.elim0 has_max_sent := by
+    simp only [has_max_sent, eval, Fin.cons]
+    push_neg
+    intro x; obtain ⟨y, hxy⟩ := exists_gt x; exact ⟨y, hxy⟩
+  have h_no_max_Z : ¬eval (Z.toOrdered sig) Fin.elim0 has_max_sent :=
+    ((k_equiv_preserves_sentence h_equiv has_max_sent h_max_depth).not).mp h_no_max_M
+  -- Step 2: Transfer "no minimum" from M to Z
+  -- has_min_sent = ∃x. ∀y. ¬(y < x) = "has a minimum element"
+  let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
+  have h_min_depth : has_min_sent.quantifier_depth ≤ k := by
+    simp [has_min_sent, MonadicFormula.quantifier_depth]; omega
+  have h_no_min_M : ¬eval M Fin.elim0 has_min_sent := by
+    simp only [has_min_sent, eval, Fin.cons]
+    push_neg
+    intro x; obtain ⟨y, hyx⟩ := exists_lt x; exact ⟨y, hyx⟩
+  have h_no_min_Z : ¬eval (Z.toOrdered sig) Fin.elim0 has_min_sent :=
+    ((k_equiv_preserves_sentence h_equiv has_min_sent h_min_depth).not).mp h_no_min_M
+  -- Step 3: Derive Z.hi = none by contradiction
+  have h_hi_none : Z.hi = none := by
+    by_contra h_hi
+    obtain ⟨h_val, h_hi_eq⟩ := Option.ne_none_iff_exists'.mp h_hi
+    apply h_no_max_Z
+    simp only [has_max_sent, eval, Fin.cons]
+    -- ⟨h_val, _⟩ is maximum in Z.intervalCarrier
+    have h_lo_bound : Z.lo.elim True (· ≤ h_val) := by
+      cases hlo : Z.lo with
+      | none => simp [Option.elim]
+      | some l =>
+        simp only [Option.elim]
+        have h1 : (some l).elim True (· ≤ z₀.val) := hlo ▸ z₀.property.1
+        have h2 : (some h_val).elim True (z₀.val ≤ ·) := h_hi_eq ▸ z₀.property.2
+        simp [Option.elim] at h1 h2; omega
+    refine ⟨⟨h_val, h_lo_bound, ?_⟩, fun ⟨y, hy⟩ => ?_⟩
+    · rw [h_hi_eq]; simp [Option.elim]
+    · apply not_lt.mpr
+      have := hy.2; rw [h_hi_eq] at this; simp [Option.elim] at this; exact this
+  -- Step 4: Derive Z.lo = none by contradiction
+  have h_lo_none : Z.lo = none := by
+    by_contra h_lo
+    obtain ⟨l_val, h_lo_eq⟩ := Option.ne_none_iff_exists'.mp h_lo
+    apply h_no_min_Z
+    simp only [has_min_sent, eval, Fin.cons]
+    -- ⟨l_val, _⟩ is minimum in Z.intervalCarrier
+    have h_hi_bound : Z.hi.elim True (l_val ≤ ·) := by
+      rw [h_hi_none]; simp [Option.elim]
+    refine ⟨⟨l_val, ?_, h_hi_bound⟩, fun ⟨y, hy⟩ => ?_⟩
+    · rw [h_lo_eq]; simp [Option.elim]
+    · apply not_lt.mpr
+      have := hy.1; rw [h_lo_eq] at this; simp [Option.elim] at this; exact this
+  -- Step 5: Both bounds are none, so the membership conditions are trivially True
+  constructor
+  · rw [h_lo_none]; simp [Option.elim]
+  · rw [h_hi_none]; simp [Option.elim]
 
 /-- Every history in zOmega_v2 is of the form zHistory_v2 w₀ for some w₀. -/
 theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrame_v2) :
@@ -576,30 +641,24 @@ theorem countermodel_discrete_reynolds_v2
     zHistory_v2 0, zHistory_v2_mem_omega, s.val, ?_⟩
   -- Need: ¬truth_at TM zOmega_v2 (zHistory_v2 0) s.val φ
   --
-  -- The proof proceeds by establishing a truth correspondence between
-  -- truth_at TM zOmega_v2 (zHistory_v2 w₀) t ψ and
-  -- temporal_truth (Z.toOrdered sig) (mkAtomMapFwd φ) ⟨w₀+t, h_unbounded _⟩ ψ
-  -- for all formulas ψ, all offsets w₀, and all times t.
+  -- BLOCKER: The truth correspondence between truth_at (TM semantics with box as
+  -- universal quantification over Omega) and temporal_truth (FO semantics with box
+  -- as opaque predicate lookup) cannot be established via the Z-interval approach.
   --
-  -- The correspondence is proved by structural induction on ψ:
-  -- - Atom a: both sides equal Z.interp (mkAtomMapFwd φ (.atom a)) (w₀+t)
-  --   [truth_at uses valuation (w₀+t) a; temporal_truth uses interp at ⟨w₀+t,_⟩]
-  -- - Bot: both sides False
-  -- - Imp f₁ f₂: by IH on f₁ and f₂
-  -- - Box f: truth_at (.box f) = ∀ σ ∈ Omega, truth_at f σ t
-  --   = ∀ w₀', temporal_truth f ⟨w₀'+t,_⟩ (by IH) = ∀ s, temporal_truth f s
-  --   temporal_truth (.box f) = Z.interp (atomMap (.box f)) (w₀+t)
-  --   Need: Z.interp (atomMap (.box f)) z ↔ ∀ s, temporal_truth f s (box universality)
-  --   This uses: chronicle box constancy (box_stable_in_limit_f) + k-equiv transfer
-  -- - Until f₁ f₂: witness mapping s ↦ ⟨w₀+s, _⟩, guard mapping via r.val - w₀
-  -- - Since f₁ f₂: symmetric to Until
+  -- The obstacle: for the forward direction (truth_at → temporal_truth) at box ψ,
+  -- we need (∀ u, temporal_truth u ψ) → Z.interp(atomMap(.box ψ)) z. This fails
+  -- when .box ψ ∉ A but ψ holds everywhere on the Z-interval (which CAN happen
+  -- since the Z-interval only reflects one chronicle's MCS's, not all S5-accessible
+  -- worlds). For the backward direction, the same issue arises in reverse.
   --
-  -- All membership proofs in Z.intervalCarrier discharge via h_unbounded.
-  -- The box universality lemma is the deepest component, requiring:
-  --   (1) box_stable_in_limit_f for chronicle box constancy
-  --   (2) k_equiv_preserves_sentence for predicate constancy transfer (depth 1)
-  --   (3) k_equiv_preserves_sentence for ∀x.table(f)(x) transfer
-  --   (4) MCS Modal T for box→subformula implication
+  -- A single Z-interval lacks the multi-world structure needed for S5 box semantics.
+  -- Possible resolutions:
+  -- (1) Use the parametric canonical model (BFMCS) as in countermodel_discrete_reynolds,
+  --     but prove restricted_tc/fuc without succ_embed_surjective.
+  -- (2) Build multiple Z-intervals (one per box-equivalence class) and combine them.
+  -- (3) Prove restricted_tc/fuc for the BFMCS using k-equiv transfer instead of
+  --     succ_embed_surjective: use truth_transfer to find Z-interval witnesses
+  --     for the temporal resolution properties.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

@@ -119,14 +119,14 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 1: Z-Interval Unboundedness and Box Constancy [PARTIAL]
+### Phase 1: Z-Interval Unboundedness and Box Constancy [COMPLETED]
 
 **Goal**: Prove the Z-interval extracted from `limitdom_is_good` is unbounded (`lo = none`, `hi = none`), and that box predicates are constant on it.
 
 **Tasks**:
-- [ ] Prove `limitdom_good_unbounded`: Given `good sig k M` where M is the limitdom structure with `NoMaxOrder` and `NoMinOrder`, the extracted `Z : ZIntervalStructure sig` has `Z.lo = none` and `Z.hi = none`. Proof: a bounded Z-interval has a maximum or minimum element. The sentence `∃x. ∀y. y ≤ x` has quantifier depth 2. Since k ≥ 2 (k = operator_depth(φ) + 2 ≥ 2) and k-equivalence preserves depth-k sentences, if the Z-interval had a maximum, the limitdom would too, contradicting `NoMaxOrder`. Similarly for minimum.
-- [ ] Prove `limitdom_box_constant`: For any box formula `.box ψ` with `.box ψ ∈ φ.predFormulas`, the Z-interval predicate `Z.interp (mkAtomMapFwd φ (.box ψ))` is constant (same value at all points). Proof: on the chronicle, `cantor_bfmcs_discrete_restricted_buc` (sorry-free) establishes box uniformity. Box formulas have the same MCS membership at all chronicle points. The chronicle truth lemma gives `temporal_truth(.box ψ) ↔ .box ψ ∈ limit_f(t)` = constant. By k-equivalence, the Z-interval's box predicate matches at depth k, hence is also constant.
-- [ ] Alternative for box constancy: prove directly from the Z-interval's k-equivalence to the chronicle that the box predicate at any two points agrees, using the `k_equiv_preserves_sentence` machinery for the depth-1 sentence `∀x. interp(box_pred)(x) ↔ interp(box_pred)(0)`.
+- [x] **Task 1.1**: Prove `z_interval_carrier_contains_all` (unboundedness). *(deviation: altered -- proved via k-equiv transfer of has_max/has_min sentences at depth 2 instead of the proposed `limitdom_good_unbounded` threading approach. The theorem proves `Z.lo = none` and `Z.hi = none` by contradiction, transferring "has maximum" and "has minimum" depth-2 FO sentences from M to Z via `k_equiv_preserves_sentence`.)*
+- [ ] **Task 1.2**: Prove `limitdom_box_constant`. *(deviation: skipped -- box constancy on Z was proved inline during the box universality analysis but the full truth correspondence is blocked; see Phase 2 blocker.)*
+- [ ] **Task 1.3**: Alternative box constancy. *(deviation: skipped -- subsumed by the inline k-equiv transfer approach.)*
 
 **Timing**: 2 hours
 
@@ -141,7 +141,7 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 ---
 
-### Phase 2: TaskModel Construction and Truth Correspondence [PARTIAL]
+### Phase 2: TaskModel Construction and Truth Correspondence [BLOCKED]
 
 **Goal**: Construct a `TaskModel zIntervalTaskFrame` from the Z-interval's predicate interpretation and prove `h_truth_corr` — the correspondence between `truth_at` and `temporal_truth`.
 
@@ -181,7 +181,24 @@ The proof strategy: prove `h_truth_corr` by induction on formula complexity, wit
 
 - [ ] Handle the ShiftClosed Omega construction for `zIntervalTaskFrame_v2`. Need to define the set of all time-shifted histories and prove shift-closure. With deterministic task_rel, each history is determined by its "base state" w₀, with states t = w₀ + t. The shift by Δ produces a history with base state w₀ + Δ. Omega = {all histories with any base state} is shift-closed.
 
-**Timing**: 3 hours
+**BLOCKER** (Phase 2):
+- **What failed**: The truth correspondence between `truth_at` (TM semantics with box as universal quantification over Omega) and `temporal_truth` (FO semantics with box as opaque predicate lookup) cannot be established via the single Z-interval approach.
+- **What was tried**:
+  1. Forward direction (truth_at -> temporal_truth): Box case requires `(forall u, temporal_truth u psi) -> Z.interp(atomMap(.box psi)) z`. This is the "backward box universality". Case analysis on `.box psi in A`:
+     - `.box psi in A`: box pred constant True on Z (via k-equiv transfer), consequent holds.
+     - `.box psi notin A`: box pred constant False on Z. The antecedent `forall u, temporal_truth u psi` may be True (chronicle visits only MCS's containing psi, even though other MCS's don't). So the implication is `True -> False` = FALSE.
+  2. Backward direction (temporal_truth -> truth_at): Box case requires `Z.interp(atomMap(.box psi)) z -> forall u, temporal_truth u psi`. This is the "forward box universality". Case analysis:
+     - `.box psi in A`: both sides true (via Modal T + constancy transfer).
+     - `.box psi notin A`: box pred False on Z, so antecedent False, implication vacuously true. BUT this means the backward direction works!
+  3. However, we need the FORWARD direction (truth_at -> temporal_truth) to conclude `not truth_at phi` from `not temporal_truth phi`. The forward direction fails at the box case.
+- **Why it's stuck**: A single Z-interval encodes one chronicle's MCS memberships. The S5 box semantics in truth_at quantifies over ALL accessible worlds (shifted histories in Omega = all offsets). When `.box psi notin A` (some world has not-psi), the chronicle may still have psi everywhere, making `forall u, temporal_truth u psi` true on Z, while `Z.interp(atomMap(.box psi)) z` is False. This is a fundamental mathematical mismatch: temporal_truth treats box as predicate lookup, truth_at treats it as universal quantification, and they diverge when the box predicate is False but the subformula is True everywhere.
+- **What is needed**: One of these alternative approaches:
+  1. **Multi-world model**: Use the parametric canonical model (BFMCS) with multiple families, where box quantification ranges over all box-equivalent families. This is what `countermodel_discrete_reynolds` does, but needs `succ_embed_surjective`.
+  2. **Eliminate succ_embed_surjective in restricted_tc/fuc**: Prove `cantor_bfmcs_discrete_restricted_tc` and `cantor_bfmcs_discrete_restricted_fuc` without `succ_embed_surjective`, possibly using `truth_transfer` + k-equiv to find integer witnesses directly.
+  3. **Hybrid approach**: Use the v2 Z-interval for the temporal operators (where truth correspondence works) but handle box via a separate mechanism that accounts for the S5 multi-world structure.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Timing**: 3 hours (estimated, blocked)
 
 **Depends on**: Phase 1
 
