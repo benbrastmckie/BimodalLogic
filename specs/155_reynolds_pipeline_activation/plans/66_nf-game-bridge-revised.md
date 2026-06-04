@@ -101,9 +101,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Bridge A -- NF Hypotheses to decomposition_agreement [NOT STARTED]
+### Phase 1: Bridge A -- NF Hypotheses to decomposition_agreement [BLOCKED]
 
 **Goal**: Build the conversion from `nf_2var_existential_transfer` hypotheses (1-var NF agreement, ordering, interval_nf_types agreement) into `decomposition_agreement` on ExtendedCarrier, suitable as input to `ghr93_decomposition_implies_game`. With `char_k` now available (from Phase 0), the NF-to-StaviFormula conversion is direct.
+
+**BLOCKER** (Phase 1):
+- **What failed**: The game approach has a fundamental circularity. `decomposition_agreement` and `ghr93_duplicator_wins` both require `formula_agreement`, which demands agreement on ALL StaviFormulas of depth <= k. But NF char equality + char_k_correct only provides agreement on char_k IMAGES, not all StaviFormulas. Full StaviFormula agreement at depth k is exactly what `stavi_expressive_completeness` proves -- and we are INSIDE its proof (the sorry is in the inductive step of `nf_characterizable_by_stavi` which is called by `stavi_expressive_completeness`).
+- **What was tried**: (1) Building `decomposition_agreement` from NF data -- blocked by formula_agreement circularity. (2) Building `ghr93_duplicator_wins` directly -- same circularity. (3) Running the game at rank 0 (where formula_agreement = atom agreement) -- gives only atom agreement, not depth-k transfer. (4) Direct induction on j (the depth) -- fails at sub-interval splitting when zone matching w to w' (orderings relative to u' not determined). (5) Well-founded recursion on (k-j) -- each step adds a variable and reduces depth, terminates at depth 0, but zone matching at each step still hits sub-interval splitting.
+- **Why it's stuck**: The EF game machinery in this codebase defines `formula_agreement` as agreement on ALL StaviFormulas of bounded depth. Converting NF char equality to this full agreement is equivalent to expressive completeness itself. The game cannot be used as a tool INSIDE the proof of expressive completeness because it presupposes what we're proving.
+- **What is needed**: One of: (a) A game variant that operates on NF TYPES (NormalForm sig k 1) rather than StaviFormula types, avoiding the circularity. This would be a "type game" where winning = matching NF types + orderings, without formula_agreement. (b) A direct proof strategy that avoids the game entirely -- perhaps a strengthened zone_match that handles sub-intervals, or a proof that sub-interval types ARE determined by interval types + NF data + orderings (which would contradict the counterexample from the original handoff, so this seems unlikely). (c) A restructuring of the overall proof architecture so that expressive completeness at depth k is proven BEFORE the inductive step uses it (e.g., mutual induction on (k, expressive_completeness_at_k)).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 - [ ] Prove `nf_char_to_rank_type_eq`: if `nf_characteristic M k 1 (fun _ => x) = nf_characteristic M' k 1 (fun _ => x')` then `rank_type M atomMap k (extendPoint x) = rank_type N atomMap k (extendPoint x')`. Strategy: rank_type is a set of StaviFormulas with depth <= k true at the point; use `char_k_correct` to show NF agreement implies agreement on all char_k images, then use the fact that char_k formulas span all depth-k NFs to get agreement on all StaviFormulas of depth <= k. Use `stavi_truth_mu_at_point` to connect mu-truth to standard truth.
