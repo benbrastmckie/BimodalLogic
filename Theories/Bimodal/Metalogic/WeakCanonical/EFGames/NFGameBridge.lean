@@ -171,4 +171,99 @@ theorem nvar_nf_eq_depth_zero_from_pointwise {sig : MonadicSignature}
     (atom_agree_from_pointwise_nf env_M env_M' h_nf_points h_order)
 
 
+/-! ## Discrete Order: No Gaps Infrastructure
+
+For discrete orders (IsSuccArchimedean with SuccOrder/PredOrder/NoMaxOrder/NoMinOrder),
+`discrete_no_gaps` proves `IsEmpty (Gap M.carrier)`. This means:
+- `RDefinableGap M atomMap r` is empty (subtype of empty type)
+- `ExtendedCarrier M atomMap r` collapses to `M.carrier` (no `Sum.inr` elements)
+- `mu_holds` is trivially true for all elements (all are actual points)
+- `stavi_temporal_truth_mu` reduces to `stavi_temporal_truth` at all points
+
+These lemmas build the foundation for the discrete game bypass strategy. -/
+
+/-- If `Gap M.carrier` is empty, then `RDefinableGap M atomMap r` is empty. -/
+theorem rdefinable_gap_empty_of_no_gaps {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h : IsEmpty (Gap M.carrier)) :
+    IsEmpty (RDefinableGap M atomMap r) :=
+  ⟨fun ⟨g, _⟩ => h.elim g⟩
+
+/-- In a discrete order, every element of ExtendedCarrier is an actual point. -/
+theorem discrete_extended_is_point {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    (e : ExtendedCarrier M atomMap r) :
+    ∃ x : M.carrier, extendPoint x = e := by
+  cases e with
+  | inl x => exact ⟨x, rfl⟩
+  | inr g => exact ((rdefinable_gap_empty_of_no_gaps h_no_gaps).false g).elim
+
+/-- In a discrete order, extendPoint is surjective onto ExtendedCarrier. -/
+theorem discrete_extendPoint_surj {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier)) :
+    Function.Surjective (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := r)) :=
+  discrete_extended_is_point h_no_gaps
+
+/-- In a discrete order, mu_holds is true for all elements of ExtendedCarrier. -/
+theorem discrete_mu_trivial {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    (e : ExtendedCarrier M atomMap r) :
+    mu_holds e := by
+  obtain ⟨x, rfl⟩ := discrete_extended_is_point h_no_gaps e
+  exact mu_holds_point x
+
+/-- In a discrete order, every element of ExtendedCarrier is IsPoint. -/
+theorem discrete_extended_isPoint {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    (e : ExtendedCarrier M atomMap r) :
+    IsPoint e := by
+  obtain ⟨x, rfl⟩ := discrete_extended_is_point h_no_gaps e
+  exact ⟨x, rfl⟩
+
+/-- In a discrete order, no element of ExtendedCarrier is IsGap. -/
+theorem discrete_extended_not_isGap {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (h_no_gaps : IsEmpty (Gap M.carrier))
+    (e : ExtendedCarrier M atomMap r) :
+    ¬ IsGap e := by
+  obtain ⟨x, rfl⟩ := discrete_extended_is_point h_no_gaps e
+  intro ⟨g, hg⟩
+  exact absurd hg Sum.inl_ne_inr
+
+/-- In a discrete order, inClosedInterval on ExtendedCarrier reduces to order on M.carrier. -/
+theorem discrete_inClosedInterval_iff {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (x y z : M.carrier) :
+    inClosedInterval (extendPoint (sig := sig) (atomMap := atomMap) (r := r) x)
+      (extendPoint y) (extendPoint z) ↔ x ≤ z ∧ z ≤ y := by
+  simp only [inClosedInterval]
+  constructor
+  · intro ⟨h1, h2⟩; exact ⟨h1, h2⟩
+  · intro ⟨h1, h2⟩; exact ⟨h1, h2⟩
+
+/-- In a discrete order, strict ordering on ExtendedCarrier reduces to M.carrier ordering.
+    This is a public version of the private extendPoint_lt_iff' in TypeFormulas.lean. -/
+theorem discrete_extendPoint_lt_iff {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
+    (x y : M.carrier) :
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) x <
+    extendPoint (sig := sig) (atomMap := atomMap) (r := r) y ↔ x < y := by
+  constructor
+  · intro h
+    -- ExtendedCarrier lt for Sum.inl: reduces to lt on M.carrier
+    have h_le : (extendPoint x : ExtendedCarrier M atomMap r) ≤ extendPoint y := le_of_lt h
+    have h_ne : (extendPoint x : ExtendedCarrier M atomMap r) ≠ extendPoint y := ne_of_lt h
+    -- Both extendedLE (.inl x) (.inl y) and extendedLE (.inl y) (.inl x) reduce to ≤ on M.carrier
+    exact lt_of_le_of_ne (show x ≤ y from h_le) (fun heq => h_ne (show (extendPoint x : ExtendedCarrier M atomMap r) = extendPoint y from congrArg Sum.inl heq))
+  · intro h
+    show @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inl x) (Sum.inl y)
+    exact @lt_of_lt_of_le (ExtendedCarrier M atomMap r) _ (Sum.inl x) (Sum.inl y) (Sum.inl y)
+      ⟨show extendedLE (Sum.inl x) (Sum.inl y) from le_of_lt h,
+       fun hyx => not_lt.mpr (show y ≤ x from hyx) h⟩
+      (le_refl _)
+
 end Bimodal.Metalogic.WeakCanonical
