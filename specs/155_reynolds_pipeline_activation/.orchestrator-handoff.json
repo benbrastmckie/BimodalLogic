@@ -1,11 +1,15 @@
 {
   "status": "partial",
-  "summary": "Phase 1 Bridge A partially complete: proved 5 key lemmas (discrete_muSig_nf_agree, discrete_nf_profile_agree, discrete_rank_type_agree, etc.) establishing that NF agreement on sig implies NF/nf_profile/rank_type agreement on muSig for discrete orders. ~300 lines added to NFGameBridge.lean, build clean. Still need: interval_types conversion, decomposition_agreement assembly (Phase 1 completion), Bridge B (Phase 2), sorry replacement (Phase 3-4), verification (Phase 5).",
-  "blockers": [],
+  "summary": "Phase 1 continues making incremental progress. Added 3 new lemmas to NFGameBridge.lean (now 739 lines, all sorry-free): discrete_eval_lift_equiv, discrete_eval_muSig_equiv, and existential_transfer_from_nf. The last is a KEY general theorem showing NF agreement at depth d+1 implies existential transfer at depth d. Deep mathematical analysis confirms the game-based approach is genuinely necessary -- the sorry in nf_2var_existential_transfer involves a circular dependency (n-var NF at depth d+1 <-> (n+1)-var transfer at depth d) that only the EF game breaks. The Composition.lean ghr93_strategy_compose theorem (sorry-free) provides the composition tool for building the game. Build clean (1684 jobs).",
+  "blockers": [
+    "Building decomposition_agreement for discrete orders requires ~200-300 lines of careful matching/ordering proofs",
+    "Circular NF/transfer dependency requires game-based approach (not direct induction)",
+    "Zone matching gives rank_type matching but NOT order preservation for elements in the same zone"
+  ],
   "continuation_context": {
     "completed_phases": [],
     "current_phase": 1,
-    "next_steps": "Complete Phase 1 by proving discrete_interval_types_from_nf (convert interval_nf_types on M.carrier to interval_types on ExtendedCarrier at rank k/2) and discrete_nf_to_decomposition_agreement (master Bridge A theorem). Then proceed to Phase 2 (Bridge B: game wins at rank k/2 back to NF transfer at depth k)."
+    "next_steps": "Build decomposition_agreement at rank k/2 for discrete orders, using ghr93_strategy_compose for composing sub-interval games. For each pair of zone-matched elements, build a local game using rank_type agreement (discrete_rank_type_agree). Alternative: build ghr93_duplicator_wins directly. Then Bridge B (game -> NF transfer), sorry replacement, and hypothesis threading."
   },
   "next_action_hint": "continue",
   "phases_completed": 0,
@@ -14,12 +18,12 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean",
       "type": "code",
-      "summary": "5 Bridge A foundation lemmas: discrete_muSig_atom_agree, discrete_muSig_nf_agree, discrete_nf_profile_at_depth, discrete_nf_profile_agree, discrete_rank_type_agree"
+      "summary": "739 lines, sorry-free. 8 discrete infrastructure lemmas + 3 new: eval equivalences + existential_transfer_from_nf (general)."
     },
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-partial-20260604b.md",
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604c.md",
       "type": "handoff",
-      "summary": "Phase 1 partial handoff with technical details and continuation context"
+      "summary": "Detailed handoff with mathematical analysis and recommended approaches"
     }
   ]
 }
