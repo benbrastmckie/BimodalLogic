@@ -588,7 +588,6 @@ theorem limitdom_root_neg_truth {fc : FrameClass} (A : Set Formula)
   have h_tt_eff := (limitdom_temporal_truth_effective A h_mcs φ φ.neg
     ⟨0, zero_mem_limit_dom fc A h_mcs⟩).mpr h_eff_mem
   -- Step 3: effectiveFormula(φ.neg) = φ.neg, so temporal_truth of φ.neg
-  simp only [limitdom_effectiveFormula] at h_tt_eff
   exact h_tt_eff
 
 /--
