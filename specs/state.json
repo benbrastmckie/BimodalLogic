@@ -713,7 +713,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -722,8 +722,8 @@
         268
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-03T06:08:17Z",
-      "next_artifact_number": 65,
+      "last_updated": "2026-06-04T17:26:50Z",
+      "next_artifact_number": 66,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -1014,10 +1014,15 @@
           "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
           "type": "handoff",
           "summary": "Path D intractable: limit domain succ crosses all stages, contemp_equiv class != Z-chain. Alternatives: Path E bypass or novel omega-chain proof."
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/65_team-research.md",
+          "type": "research",
+          "summary": "Team research round 11 (4 teammates): blocker resolution paths, depth arithmetic question, mutual induction vs discrete specialization"
         }
       ],
-      "session_id": "sess_1780463003_123347",
-      "researched": "2026-06-03T04:22:20Z",
+      "session_id": "sess_1780592894_9e6fb3",
+      "researched": "2026-06-04T17:26:50Z",
       "planned": "2026-06-02T23:45:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": 1,
