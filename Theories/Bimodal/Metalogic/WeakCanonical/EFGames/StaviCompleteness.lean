@@ -2213,7 +2213,13 @@ theorem zone_match_witness {sig : MonadicSignature}
     and proving that the strategy maintains the invariant at each round. -/
 theorem nf_2var_existential_transfer {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
+    (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (N : OrderedMonadicStructure sig) (t : N.carrier),
+        stavi_temporal_truth N atomMap t (char_k nf_k) ↔
+        nf_eval_nf N k 1 (fun _ => t) nf_k)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
               nf_characteristic M' k 1 (fun _ => x'))
     (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
@@ -2441,7 +2447,13 @@ theorem nf_2var_existential_transfer {sig : MonadicSignature}
     interval type sets → Duplicator wins the EF game → same NF. -/
 theorem nf_2var_from_interval_data {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
+    (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (N : OrderedMonadicStructure sig) (t : N.carrier),
+        stavi_temporal_truth N atomMap t (char_k nf_k) ↔
+        nf_eval_nf N k 1 (fun _ => t) nf_k)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
               nf_characteristic M' k 1 (fun _ => x'))
     (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
@@ -2504,14 +2516,20 @@ theorem nf_2var_from_interval_data {sig : MonadicSignature}
   -- Use the Fraïssé compression lemma: atoms + existential transfer at each
   -- depth j < k implies depth-k NF equality.
   exact nf_fraisse_compression k 2 M (Fin.cons x fun _ => t) M' (Fin.cons x' fun _ => t')
-    h_atom_agree (nf_2var_existential_transfer k x t x' t'
+    h_atom_agree (nf_2var_existential_transfer atomMap k x t x' t' char_k char_k_correct
       h_nf_x h_nf_t h_order_xt h_interval_above h_interval_below h_above_max h_below_min)
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
     it holds for any pair with the same data. -/
 theorem nf_2var_transfer {sig : MonadicSignature}
     {M M' : OrderedMonadicStructure sig}
+    (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
+    (char_k : NormalForm sig k 1 → StaviFormula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (N : OrderedMonadicStructure sig) (t : N.carrier),
+        stavi_temporal_truth N atomMap t (char_k nf_k) ↔
+        nf_eval_nf N k 1 (fun _ => t) nf_k)
     (sub_nf : NormalForm sig k 2)
     (h_eval : nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
@@ -2531,7 +2549,7 @@ theorem nf_2var_transfer {sig : MonadicSignature}
   -- Follows from nf_2var_from_interval_data: the bridge lemma gives
   -- nf_characteristic M k 2 (x,t) = nf_characteristic M' k 2 (x',t').
   -- Combined with h_eval and nf_eval_unique, this yields the result.
-  have h_eq := nf_2var_from_interval_data k x t x' t'
+  have h_eq := nf_2var_from_interval_data atomMap k x t x' t' char_k char_k_correct
     h_nf_x h_nf_t h_order_xt h_interval_above h_interval_below h_above_max h_below_min
   -- sub_nf = nf_characteristic M k 2 (x,t) by uniqueness
   have h_sub_eq : sub_nf = nf_characteristic M k 2 (Fin.cons x (fun _ => t)) :=
