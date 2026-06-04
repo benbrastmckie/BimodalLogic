@@ -736,4 +736,184 @@ theorem existential_transfer_from_nf {sig : MonadicSignature}
   -- Chain: (∃ x, ..._M) ↔ (quant_assgn chi = true) ↔ (∃ x', ..._M')
   exact (h_sig_quant_M chi).trans (h_sig_quant_M' chi).symm
 
+/-! ## Discrete: Formula Agreement from NF
+
+For discrete orders, rank_type agreement at rank k/2 follows from depth-k
+1-var NF agreement (via `discrete_rank_type_agree`). Since rank_type is
+exactly the set of StaviFormulas of depth ≤ r that hold, rank_type equality
+implies stavi_temporal_truth_mu agreement for all formulas of depth ≤ r.
+This gives us the formula_agreement component of `ghr93_winning_condition`. -/
+
+/-- For discrete orders, two points with matching depth-k 1-var NFs agree on
+    all StaviFormulas of depth ≤ k/2 (formula agreement at rank k/2). -/
+theorem discrete_formula_agree_from_nf {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder M'.carrier] [PredOrder M'.carrier] [NoMaxOrder M'.carrier]
+    [NoMinOrder M'.carrier] [IsSuccArchimedean M'.carrier]
+    {x : M.carrier} {x' : M'.carrier}
+    (h_nf : nf_characteristic M k 1 (fun _ => x) =
+            nf_characteristic M' k 1 (fun _ => x'))
+    (A : StaviFormula) (hA : stavi_depth A ≤ k / 2) :
+    stavi_temporal_truth_mu M atomMap (k / 2) (extendPoint x) A ↔
+    stavi_temporal_truth_mu M' atomMap (k / 2) (extendPoint x') A := by
+  have h_rt := discrete_rank_type_agree (atomMap := atomMap) h_nf
+  -- rank_type equality at k/2 means: for all A with stavi_depth A ≤ k/2,
+  -- A ∈ rank_type M ↔ A ∈ rank_type M'
+  have h_mem : ∀ B : StaviFormula, stavi_depth B ≤ k / 2 →
+      (stavi_temporal_truth_mu M atomMap (k / 2) (extendPoint x) B ↔
+       stavi_temporal_truth_mu M' atomMap (k / 2) (extendPoint x') B) := by
+    intro B hB
+    have h1 : B ∈ rank_type M atomMap (k / 2) (extendPoint x) ↔
+              B ∈ rank_type M' atomMap (k / 2) (extendPoint x') := by
+      rw [h_rt]
+    simp only [rank_type, Set.mem_setOf_eq] at h1
+    exact ⟨fun hM => (h1.mp ⟨hB, hM⟩).2, fun hM' => (h1.mpr ⟨hB, hM'⟩).2⟩
+  exact h_mem A hA
+
+/-- For discrete orders, gap/point agreement is trivial: all elements of
+    ExtendedCarrier are actual points (no gaps). -/
+theorem discrete_gap_point_trivial {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat}
+    (h_no_gaps_M : IsEmpty (Gap M.carrier))
+    (h_no_gaps_M' : IsEmpty (Gap M'.carrier))
+    (x : M.carrier) (x' : M'.carrier) :
+    (IsPoint (extendPoint (sig := sig) (M := M) (atomMap := atomMap)
+      (r := r) x) ↔
+     IsPoint (extendPoint (sig := sig) (M := M') (atomMap := atomMap)
+      (r := r) x')) ∧
+    (IsGap (extendPoint (sig := sig) (M := M) (atomMap := atomMap)
+      (r := r) x) ↔
+     IsGap (extendPoint (sig := sig) (M := M') (atomMap := atomMap)
+      (r := r) x')) :=
+  ⟨⟨fun _ => ⟨x', rfl⟩, fun _ => ⟨x, rfl⟩⟩,
+   ⟨fun h => absurd h (discrete_extended_not_isGap h_no_gaps_M (extendPoint x)),
+    fun h => absurd h (discrete_extended_not_isGap h_no_gaps_M' (extendPoint x'))⟩⟩
+
+/-! ## Discrete: Game at Rank k/2 for n=0
+
+For discrete orders, we build `ghr93_duplicator_wins` at rank k/2 with
+n=0 selections directly from the hypotheses of `nf_2var_existential_transfer`.
+
+The game with n=0 has:
+- Round 1: vacuous (no selections)
+- Round 2: for any actual b' in [x',t'], find b in [x,t] with the 3-position
+  winning condition at (x, b, t) / (x', b', t').
+
+The key lemma: zone_match_witness provides b with matching 1-var NF and
+orderings. For discrete orders, `discrete_rank_type_agree` +
+`discrete_formula_agree_from_nf` convert the NF match to formula_agreement.
+`discrete_gap_point_trivial` handles gap/point status. -/
+
+/-- For discrete orders, winning condition at the 3-element game tuple
+    (x, b, t) / (x', b', t') follows from pairwise depth-k 1-var NF
+    agreement and ordering agreement. The n=0 game_tuple has indices:
+    0→x, 1→extendPoint(b), 2→t. -/
+theorem discrete_winning_condition_0 {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder M'.carrier] [PredOrder M'.carrier] [NoMaxOrder M'.carrier]
+    [NoMinOrder M'.carrier] [IsSuccArchimedean M'.carrier]
+    {x t : M.carrier} {x' t' : M'.carrier} {b : M.carrier} {b' : M'.carrier}
+    (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
+              nf_characteristic M' k 1 (fun _ => x'))
+    (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
+              nf_characteristic M' k 1 (fun _ => t'))
+    (h_nf_b : nf_characteristic M k 1 (fun _ => b) =
+              nf_characteristic M' k 1 (fun _ => b'))
+    (h_xb : (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) x <
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) x' <
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b') ∧
+            (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) x =
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) x' =
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b'))
+    (h_xt : (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) x <
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) t ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) x' <
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) t') ∧
+            (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) x =
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) t ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) x' =
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) t'))
+    (h_bt : (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b <
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) t ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b' <
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) t') ∧
+            (extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b =
+             extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) t ↔
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b' =
+             extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) t'))
+    (a : Fin 0 → ExtendedCarrier M atomMap (k / 2))
+    (a' : Fin 0 → ExtendedCarrier M' atomMap (k / 2)) :
+    ghr93_winning_condition 0
+      (game_tuple (extendPoint x) (extendPoint t) a b)
+      (game_tuple (extendPoint x') (extendPoint t') a' b') := by
+  -- Abbreviations for game_tuple rewriting
+  set tM := game_tuple (extendPoint x) (extendPoint t) a b with tM_def
+  set tN := game_tuple (extendPoint x') (extendPoint t') a' b' with tN_def
+  -- Key game_tuple equalities for the 3-element tuple (n=0: indices 0,1,2)
+  have tM0 : tM ⟨0, by omega⟩ = extendPoint x := game_tuple_zero_eq _ _ _ _
+  have tM1 : tM ⟨1, by omega⟩ = extendPoint b := game_tuple_b_eq _ _ _ _
+  have tM2 : tM ⟨2, by omega⟩ = extendPoint t := game_tuple_y_eq _ _ _ _
+  have tN0 : tN ⟨0, by omega⟩ = extendPoint x' := game_tuple_zero_eq _ _ _ _
+  have tN1 : tN ⟨1, by omega⟩ = extendPoint b' := game_tuple_b_eq _ _ _ _
+  have tN2 : tN ⟨2, by omega⟩ = extendPoint t' := game_tuple_y_eq _ _ _ _
+  refine ⟨?_, ?_, ?_⟩
+  · -- same_order_type: all pairs (i,j) from {0,1,2}
+    intro ⟨i, hi⟩ ⟨j, hj⟩
+    rw [tM_def, tN_def]
+    -- Helper to reverse order iffs on ExtendedCarrier
+    have reverse_ord :
+        ∀ {a b : ExtendedCarrier M atomMap (k / 2)} {a' b' : ExtendedCarrier M' atomMap (k / 2)},
+        (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') →
+        (b < a ↔ b' < a') ∧ (b = a ↔ b' = a') := by
+      intro a b a' b' ⟨hlt, heq⟩
+      constructor
+      · constructor
+        · intro hba
+          rcases lt_trichotomy a' b' with h1 | h1 | h1
+          · exact absurd (hlt.mpr h1) (not_lt.mpr (le_of_lt hba))
+          · exact absurd hba (not_lt.mpr (le_of_eq (heq.mpr h1)))
+          · exact h1
+        · intro hb'a'
+          rcases lt_trichotomy a b with h1 | h1 | h1
+          · exact absurd (hlt.mp h1) (not_lt.mpr (le_of_lt hb'a'))
+          · exact absurd hb'a' (not_lt.mpr (le_of_eq (heq.mp h1)))
+          · exact h1
+      · exact ⟨fun h' => (heq.mp h'.symm).symm, fun h' => (heq.mpr h'.symm).symm⟩
+    match i, hi, j, hj with
+    | 0, _, 0, _ => rw [game_tuple_zero_eq, game_tuple_zero_eq]; exact ⟨iff_of_false (lt_irrefl _) (lt_irrefl _), iff_of_true rfl rfl⟩
+    | 0, _, 1, _ => rw [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq]; exact h_xb
+    | 0, _, 2, _ => rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq]; exact h_xt
+    | 1, _, 0, _ => rw [game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq]; exact reverse_ord h_xb
+    | 1, _, 1, _ => rw [game_tuple_b_eq, game_tuple_b_eq]; exact ⟨iff_of_false (lt_irrefl _) (lt_irrefl _), iff_of_true rfl rfl⟩
+    | 1, _, 2, _ => rw [game_tuple_b_eq, game_tuple_y_eq, game_tuple_b_eq, game_tuple_y_eq]; exact h_bt
+    | 2, _, 0, _ => rw [game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq]; exact reverse_ord h_xt
+    | 2, _, 1, _ => rw [game_tuple_y_eq, game_tuple_b_eq, game_tuple_y_eq, game_tuple_b_eq]; exact reverse_ord h_bt
+    | 2, _, 2, _ => rw [game_tuple_y_eq, game_tuple_y_eq]; exact ⟨iff_of_false (lt_irrefl _) (lt_irrefl _), iff_of_true rfl rfl⟩
+  · -- gap_point_agreement: all points are actual
+    intro ⟨i, hi⟩
+    rw [tM_def, tN_def]
+    match i, hi with
+    | 0, _ => rw [game_tuple_zero_eq, game_tuple_zero_eq]
+              exact discrete_gap_point_trivial discrete_no_gaps discrete_no_gaps _ _
+    | 1, _ => rw [game_tuple_b_eq, game_tuple_b_eq]
+              exact discrete_gap_point_trivial discrete_no_gaps discrete_no_gaps _ _
+    | 2, _ => rw [game_tuple_y_eq, game_tuple_y_eq]
+              exact discrete_gap_point_trivial discrete_no_gaps discrete_no_gaps _ _
+  · -- formula_agreement: stavi_truth_mu agrees at all positions
+    intro ⟨i, hi⟩ A hA
+    rw [tM_def, tN_def]
+    match i, hi with
+    | 0, _ => rw [game_tuple_zero_eq]; exact discrete_formula_agree_from_nf h_nf_x A hA
+    | 1, _ => rw [game_tuple_b_eq]; exact discrete_formula_agree_from_nf h_nf_b A hA
+    | 2, _ => rw [game_tuple_y_eq]; exact discrete_formula_agree_from_nf h_nf_t A hA
+
 end Bimodal.Metalogic.WeakCanonical
