@@ -722,8 +722,8 @@
         268
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-06-04T18:13:55Z",
-      "next_artifact_number": 66,
+      "last_updated": "2026-06-04T19:00:00Z",
+      "next_artifact_number": 68,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -1014,19 +1014,24 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/65_discrete-game-bypass.md",
           "type": "plan",
           "summary": "Revised plan: discrete game bypass — 5 phases, 8h, eliminates completeness_discrete sorries"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/plans/67_half-rank-game-bypass.md",
+          "type": "plan",
+          "summary": "Revised plan v68: half-rank game bypass (r=k/2) — 5 phases, 10h, fixes depth arithmetic blocker"
         }
       ],
-      "session_id": "sess_1780592894_9e6fb3",
+      "session_id": "sess_1780597716_8961c0",
       "researched": "2026-06-04T17:26:50Z",
-      "planned": "2026-06-04T18:13:55Z",
+      "planned": "2026-06-04T19:00:00Z",
       "started": "2026-05-16T19:49:58Z",
       "resume_phase": 1,
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 8,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 67,
+        "plan_version": 68,
         "dependency_waves": [
           [
             1
@@ -1063,6 +1068,11 @@
           {
             "path": "reports/66_depth-arithmetic.md",
             "integrated_in_plan_version": 67,
+            "integrated_date": "2026-06-04"
+          },
+          {
+            "path": "reports/67_depth-blocker-resolution.md",
+            "integrated_in_plan_version": 68,
             "integrated_date": "2026-06-04"
           }
         ]

@@ -2,11 +2,11 @@
 
 - **Task**: 283 — Mitigate cross-product explosion in exhaustive formula enumeration at complexity ≥ 8
 - **Date**: 2026-06-04
-- **Status**: Initial analysis (pre-research)
+- **Status**: Detailed analysis with runtime observations from c8 attempt
 
 ## 1. Problem Statement
 
-The exhaustive formula enumerator (`FormulaEnumerator.lean:enumExactHelper`) becomes infeasible at complexity 8 due to a combinatorial explosion in the cross-product of binary operator subformulas. At complexity 7, exhaustive enumeration completes in under 1 second. At complexity 8, it has been running for 45+ minutes without completing. Complexity 9 exhaustive is completely infeasible.
+The exhaustive formula enumerator (`FormulaEnumerator.lean:enumExactHelper`) becomes infeasible at complexity 8 due to a combinatorial explosion in the cross-product of binary operator subformulas. At complexity 7, exhaustive enumeration completes in under 1 second and produces 77,272 labeled records in ~8 minutes total. At complexity 8, the enumeration phase alone has been running for 3h42m without completing. Complexity 9 exhaustive is completely infeasible.
 
 ## 2. Root Cause Analysis
 
@@ -27,17 +27,17 @@ let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
 
 This materializes the entire cross-product as a Lean `List Formula` in memory.
 
-### 2.2 Formula Counts Per Level
+### 2.2 Formula Counts Per Level (Observed)
 
-| Level | Formulas | Growth Factor |
-|-------|----------|---------------|
-| 3     | 132      | —             |
-| 4     | 960      | 7.3×          |
-| 5     | 6,040    | 6.3×          |
-| 6     | 39,816   | 6.6×          |
-| 7     | 259,888  | 6.5×          |
-| 8     | ~1.7M (est.) | ~6.5×     |
-| 9     | ~11M (est.) | ~6.5×      |
+| Level | Raw Enumerated | After Dedup | Growth Factor |
+|-------|----------------|-------------|---------------|
+| 3     | 132            | —           | —             |
+| 4     | 960            | 408         | 7.3×          |
+| 5     | 6,040          | 2,283       | 6.3×          |
+| 6     | 39,816         | 13,064      | 6.6×          |
+| 7     | 259,888        | 77,272      | 6.5×          |
+| 8     | ~1.7M (est.)   | ~500K (est.)| ~6.5×         |
+| 9     | ~11M (est.)    | ~3M (est.)  | ~6.5×         |
 
 ### 2.3 Cross-Product Sizes Per Partition at Level 8
 
@@ -58,101 +58,220 @@ With `untl` and `snce` adding similar counts (gated by temporal depth budget), p
 - `untl`: ~500K (smaller due to temporal depth constraint)
 - `snce`: ~500K
 - Unary (box, F, P, G, H): ~5 × 260K = ~1.3M
-- **Total: ~3M+ formulas materialized**
+- **Total: ~3M+ formulas materialized before filtering**
 
-But the *time* cost is worse than the count suggests because `List.flatMap` on Lean lists is O(n×m) with allocation pressure. Each formula is a recursive AST, so GC overhead is substantial.
+### 2.4 Why Level 7 Was Fast and Level 8 Is Not
 
-### 2.4 Why Level 7 Was Fast
+At level 7, the worst partition is (3,4) = 132 × 960 = 126,720 for `imp`. Total cross-products across all operators and partitions: ~300K. This completes in <1 second.
 
-At level 7, the worst partition is (3,4) = 132 × 960 = 126,720. The total cross-product across all partitions and operators is ~300K formulas. This fits comfortably in memory and completes in <1 second.
+At level 8, the aggregate cross-product exceeds 3M formulas — a 10× increase. But the *time* increase is far more than 10×: c7 enumeration took <1s, while c8 has exceeded 3.5 hours (>12,000× slower). The superlinear slowdown has three causes:
 
-At level 8, the (1,6) and (6,1) partitions involve 39,816 formulas on one side, and the (4,3)/(3,4) partitions are 960 × 132 — individually manageable but there are 7 partitions × 3 binary operators = 21 cross-products to materialize. The aggregate is what kills it.
+1. **List.flatMap allocation pressure**: Each cross-product materializes millions of `Formula` AST nodes on the heap. Lean's reference-counted GC must trace and free each node, creating GC pressure proportional to the square of the list sizes.
 
-### 2.5 Level 9 Projection
+2. **List append is O(n)**: `allFormulas ++ imps` copies the entire accumulated list on each partition. With millions of accumulated formulas, later appends become extremely expensive. At partition k of 21, the append copies all formulas from partitions 1..k-1.
 
-At level 9, the (1,7) partition alone would be 4 × 259,888 = 1M formulas for `imp`. The (4,4) partition would be 960 × 960 = 922K. The (3,5)/(5,3) partitions: 132 × 6,040 = 797K each. Total `imp` cross-products: ~5M. With `untl`/`snce`: ~15M+. This would require hours and tens of GB of RAM. Exhaustive c9 enumeration is infeasible.
+3. **Cache thrashing**: The memoization cache (`EnumCache`) stores all formulas at every (size, modal, temporal) triple. At c8 the cache holds hundreds of thousands of entries. HashMap lookups on large Formula ASTs (which require deep structural equality checks) become expensive.
 
-## 3. Current Workaround
+### 2.5 Level 9+ Projection
 
-For complexity 9+, the script uses **stratified sampling**: exhaustive at lower levels, random sampling at higher levels. The `--stratified-quotas` flag caps how many formulas are sampled per level. This produces usable datasets (c9: 27,797 records in 2 minutes) but is not truly exhaustive — it misses formulas.
+At level 9, the (1,7) partition produces 4 × 259,888 = 1M formulas for `imp` alone. The (4,4) partition produces 960 × 960 = 922K. The (3,5)/(5,3) partitions: 132 × 6,040 = 797K each. Total `imp` cross-products: ~5M. With `untl`/`snce`: ~15M+. This would require tens of GB of RAM and days of computation. Exhaustive c9 enumeration is completely infeasible with the current algorithm.
+
+## 3. Runtime Observations from c8 Attempt
+
+### 3.1 Timeline
+
+The c8 exhaustive run was started at 08:31 and monitored every 5-10 minutes:
+
+| Elapsed | RSS (MB) | Δ RSS | Phase |
+|---------|----------|-------|-------|
+| 5 min   | 302      | —     | Enumerating (levels 1-7 complete instantly, stuck on level 8) |
+| 13 min  | 310      | +8    | Slow accumulation |
+| 21 min  | 317      | +7    | Slow accumulation |
+| 26 min  | 321      | +4    | Slowing |
+| 34 min  | 327      | +6    | Steady |
+| 45 min  | 334      | +7    | Steady |
+| 56 min  | 372      | +38   | Acceleration — large partition starting |
+| 67 min  | 378      | +6    | In-partition work |
+| 78 min  | 383      | +5    | In-partition work |
+| 88 min  | 388      | +5    | Plateau approaching |
+| 102 min | 393      | +5    | Plateau |
+| 113 min | 777      | +384  | **Phase change** — massive allocation spike |
+| 124 min | 770      | -7    | GC reclaiming, partition completed |
+| 135 min | 764      | -6    | Declining |
+| 146 min | 760      | -4    | Plateau |
+| 157 min | 756      | -4    | Plateau |
+| 168 min | 756      | 0     | Flat — tight compute loop |
+| 179 min | 740      | -16   | Partition completed, GC drop |
+| 189 min | 740      | 0     | Flat |
+| 200 min | 740      | 0     | Flat for 30 min |
+| 211 min | 719      | -21   | Partition completed, GC drop |
+| 222 min | 717      | -2    | Flat |
+
+### 3.2 Interpretation
+
+The RSS trace reveals a **partition-by-partition execution pattern**:
+
+1. **Accumulation phase** (0-56 min): Levels 1-7 complete instantly. Level 8 begins processing binary operator partitions. RSS grows slowly (~1 MB/min) as smaller partitions (e.g., (2,5), (5,2)) are computed.
+
+2. **Spike at 113 min** (393→777 MB, +384 MB): A large partition materialized its full cross-product. This is likely the (1,6) or (6,1) partition where one side has 39,816 formulas, producing ~159K `imp` formulas that must be appended to the growing list.
+
+3. **Cyclic drops** (~30-40 min periods): After each partition completes, GC reclaims the intermediate cross-product lists. The drops at 124 min (777→770), 179 min (756→740), and 211 min (740→719) each represent one partition's cleanup.
+
+4. **30-40 minute cycles**: Each major partition takes 30-40 minutes to compute. With ~21 cross-products (7 partitions × 3 binary operators), and accounting for temporal depth constraints reducing some, the total enumeration would take approximately **10-15 hours**.
+
+### 3.3 Key Insight: The Time Is Not in Enumeration Logic
+
+The memoized `enumExactHelper` calls are cached — looking up formulas at each complexity level is O(1) after first computation. The time is spent in:
+
+1. **`List.flatMap`**: Materializing N×M formula pairs as a linked list
+2. **`List.append` (++)**: Copying the accumulated formula list on each partition (O(accumulated_length))
+3. **GC pressure**: Tracing and freeing millions of short-lived AST nodes
+
+This means the fix is not about smarter enumeration logic — it's about **avoiding full materialization of cross-products**.
 
 ## 4. Limitations of Current Approach
 
-1. **No structural deduplication**: `p → q` and `q → p` are both generated despite being trivially related by variable renaming. Under alpha-equivalence with 3 atoms (p, q, r), many formulas are equivalent up to atom permutation.
+1. **No structural deduplication**: `p → q` and `q → p` are both generated despite being trivially related by variable renaming. Under alpha-equivalence with 3 atoms (p, q, r), many formulas are equivalent up to atom permutation. With 3 atoms, up to 6× redundancy.
 
 2. **No semantic deduplication**: `p → (q → p)` and `¬q → (p → ¬q)` are syntactically different but semantically equivalent tautologies. Both are generated and labeled separately.
 
-3. **No simplification filtering**: `p → p`, `¬¬p → p`, `□□p → □p` (under S5) are generated despite being trivially reducible. These consume enumeration budget without adding training value.
+3. **No simplification filtering during enumeration**: `p → p`, `¬¬p → p`, `□□p → □p` (under S5) are generated despite being trivially reducible. These consume enumeration budget without adding training value. The `passesFilter` check happens *after* full materialization.
 
-4. **Full materialization**: The entire cross-product is built as a `List Formula` before any filtering. Even if 90% of the cross-product is redundant, all entries are allocated, appended, and then discarded by `passesFilter`.
+4. **Full materialization**: The entire cross-product is built as a `List Formula` before any filtering. Even if 90% of the cross-product would be filtered, all entries are allocated first.
 
-5. **List append is O(n)**: `allFormulas ++ imps` on Lean lists copies the left list. With millions of accumulated formulas, each append becomes expensive.
+5. **List append is O(n)**: `allFormulas ++ imps` copies the left list. With millions of accumulated formulas, later appends dominate runtime. This is the single largest contributor to the superlinear slowdown.
+
+6. **No streaming/incremental output**: The entire enumeration must complete before any formulas are written to disk. A crash or kill at 3.5 hours loses all work.
 
 ## 5. Candidate Mitigation Strategies
 
-### 5.1 Equivalence-Class Enumeration (High Impact)
+### 5.1 Array-Based Accumulation (High Impact, Easy — Do First)
 
-Generate one canonical representative per equivalence class under atom permutation (alpha-equivalence). With 3 atoms, there are at most 3! = 6 permutations, so this could reduce output by up to 6×. Implementation: define a canonical form (e.g., atoms appear in order of first occurrence), generate only formulas in canonical form.
+Replace `List Formula` with `Array Formula` throughout the enumeration pipeline. This converts O(n) append to O(1) amortized push, and O(n×m) flatMap to direct indexed iteration with push. **Estimated speedup: 5-20× at c8** based on the observation that list copying dominates runtime.
 
-### 5.2 Lazy/Streaming Enumeration (High Impact)
+This is the lowest-risk, highest-ROI change. It doesn't reduce formula count but eliminates the algorithmic inefficiency that causes the superlinear slowdown.
 
-Replace `List.flatMap` with a streaming iterator that applies `passesFilter` during cross-product generation rather than after. Formulas that fail the filter are never allocated. This doesn't reduce the number of *iterations* but eliminates most *allocations*.
+```lean
+-- Before (O(n) append, O(n×m) flatMap):
+let imps := lefts.flatMap fun l => rights.map fun r => Formula.imp l r
+accList ++ imps
 
-### 5.3 Symmetry Breaking for Commutative Operators (Medium Impact)
+-- After (O(1) amortized push):
+for l in lefts do
+  for r in rights do
+    accArray := accArray.push (Formula.imp l r)
+```
 
-For `imp`, order doesn't matter for satisfiability/validity classification (φ → ψ and ψ → φ have different truth values, so both needed). But for `untl` and `snce`, the two arguments have asymmetric roles (event vs. condition), so there's no commutativity to exploit. However, `untl(φ, ψ)` and `snce(φ, ψ)` are temporal duals — the existing `--include-duals` flag already handles this, but both are still enumerated independently.
+### 5.2 Streaming Filter During Cross-Product (High Impact, Medium)
 
-### 5.4 Structural Redundancy Pruning (Medium Impact)
+Apply `passesFilter` inside the cross-product loop rather than after materialization. Formulas that fail the filter are never allocated or stored. At c7, the dedup ratio is 306K enumerated → 77K after dedup (75% filtered). If similar ratios hold at c8, this would reduce memory by 4× and allocation count by 4×.
 
-Skip formulas containing reducible subexpressions:
-- Double negation: `¬¬φ` (equivalent to `φ` in classical logic)
-- Identity implications: `φ → φ` (always valid)
-- Vacuous box: `□⊤` (always valid under any accessibility relation)
-- S5 collapse: `□□φ` (equivalent to `□φ` under S5)
-- Temporal collapse: `GGφ` (equivalent to `Gφ`)
-- Bottom propagation: `□⊥ → anything` (antecedent unsatisfiable in S5)
+```lean
+for l in lefts do
+  for r in rights do
+    let f := Formula.imp l r
+    if passesFilter f then
+      accArray := accArray.push f
+```
 
-This could be applied *during* enumeration (reject left/right children that would create reducible pairs) rather than after.
+### 5.3 Equivalence-Class Enumeration (High Impact, Hard)
 
-### 5.5 Semantic Deduplication via Small-Model Hashing (Medium Impact)
+Generate one canonical representative per equivalence class under atom permutation (alpha-equivalence). With 3 atoms, there are at most 3! = 6 permutations, reducing output by up to 6×. Implementation: define a canonical ordering where atoms appear in order of first occurrence in a left-to-right DFS traversal. During enumeration, only generate formulas where the first atom encountered is `p`, the second is `q`, the third is `r`.
 
-Evaluate each formula on all truth assignments over a small Kripke model (e.g., 2 worlds, 2 time points) to compute a semantic hash. Formulas with the same hash are *candidates* for equivalence (not proven equivalent, but highly likely). Keep only one per hash bucket. This is cheap (2^(atoms × worlds × times) evaluations per formula) and catches most redundancies.
+**Estimated reduction**: 3-6× fewer formulas at every level, compounding across levels. A 4× reduction at each level means the c8 cross-product (4,3) drops from 960 × 132 to ~240 × 33 = 7,920 (16× smaller).
 
-### 5.6 Budget-Aware Cross-Product Sampling (Low Impact, Easy)
+### 5.4 Structural Redundancy Pruning During Enumeration (Medium Impact, Medium)
 
-For any partition where |left| × |right| > threshold, sample N representative pairs instead of materializing all. This is the simplest fix but sacrifices coverage guarantees.
+Reject formulas during cross-product generation when the pair would create a trivially reducible expression:
 
-### 5.7 Array-Based Accumulation (Performance Only)
+- **S5 idempotence**: Skip `box(box(φ))` — equivalent to `box(φ)` under S5. Don't pair a `box` child with the `box` constructor.
+- **Temporal idempotence**: Skip `G(G(φ))`, `F(F(φ))`, `H(H(φ))`, `P(P(φ))`.
+- **Identity implication**: Skip `φ → φ` — always valid. When left == right in an `imp` partition, skip.
+- **Bottom absorption**: Skip `⊥ → φ` — always valid. When left is `⊥`, skip `imp`.
+- **Negation normal form**: Skip `¬¬φ` — equivalent to `φ`. (Encoded as `(φ → ⊥) → ⊥`.)
+- **Vacuous temporal**: Skip `U(φ, ⊤)` — always true. Skip `U(⊥, φ)` — already caught by structural prefilter.
 
-Replace `List Formula` accumulation with `Array Formula` to eliminate O(n) append costs. This doesn't reduce the formula count but would significantly speed up the enumeration at all levels.
+These checks are O(1) per pair and can be applied inside the cross-product loop. Estimated 10-20% reduction in materialized formulas.
 
-## 6. Prior Art to Consult
+### 5.5 Semantic Deduplication via Small-Model Hashing (Medium Impact, Post-Processing)
 
-- **SPOT's `randltl`**: LTL formula generator with configurable operator distribution and redundancy avoidance
-- **LTLBench (2024)**: LTL benchmark generation with difficulty calibration
-- **Efficient Normalization of Linear Temporal Logic (2023)**: Canonical forms for LTL formulas
-- **SAT competition formula generators**: Techniques for generating non-trivial, non-redundant instances
-- **Propositional formula enumeration**: Knuth's approaches to canonical BDD-based enumeration
-- **SynLogic (NeurIPS 2025)**: Parameterized generation with verifiers — template-based approach that avoids full enumeration
+Evaluate each formula on all truth assignments over a small Kripke model (e.g., 2 worlds, 2 time points, 3 atoms = 2^(3×2×2) = 4096 assignments) to compute a semantic fingerprint. Formulas with identical fingerprints are candidates for semantic equivalence. Keep one representative per fingerprint bucket.
 
-## 7. Recommended Research Plan
+This is best applied as a post-processing pass after enumeration, not during it, because the Kripke evaluation requires the full formula AST. **Estimated reduction**: 30-50% at c7+ based on the high proportion of semantically equivalent formulas observed in practice.
 
-1. **Quantify redundancy**: Run the existing c5/c6 datasets through alpha-equivalence normalization and semantic hashing to measure how many formulas are redundant. This determines the ceiling for deduplication gains.
-2. **Benchmark candidate strategies**: Implement 5.1 (alpha-canonicalization) and 5.2 (streaming filter) as prototypes at c7, measure speedup and coverage loss.
-3. **Consult prior art**: Web search for formula enumeration in modal/temporal logic generators, focusing on redundancy avoidance techniques.
-4. **Design combined approach**: Most likely the solution is a combination of alpha-canonicalization (5.1) + streaming filter (5.2) + structural pruning (5.4) + Array accumulation (5.7), with semantic hashing (5.5) as a post-processing pass.
-5. **Validate at c8/c9**: Verify that the combined approach makes c8 feasible in minutes and c9 feasible in under an hour.
+### 5.6 Budget-Aware Cross-Product Sampling (Low Impact, Easy Fallback)
 
-## 8. Current c8 Status
+For any partition where |left| × |right| > threshold, sample N representative pairs using deterministic LCG rather than materializing all. This preserves the enumeration framework while bounding worst-case time. Coverage is no longer truly exhaustive but is statistically representative.
 
-As of this writing, the uncapped exhaustive c8 enumeration has been running for ~50 minutes at 99.4% CPU with 334 MB RSS. No output file has been produced (still in the `enumExactBudget` call for level 8). The process is not stuck — RSS is growing at ~1 MB/min — but completion time is uncertain. Estimated 2-3 hours total (enumeration + labeling).
+### 5.7 Incremental Output / Checkpointing (Resilience)
 
-Completed datasets (truly exhaustive, unlimited):
+Write formulas to disk incrementally during enumeration rather than accumulating the entire list in memory. This prevents total loss on crash/kill and enables monitoring of progress. Each partition's results can be flushed to a temporary file and merged at the end.
 
-| Tier | Records | Enumerated | After Dedup | Time |
-|------|---------|------------|-------------|------|
-| c4   | 408     | 1,092      | 408         | <1s  |
-| c5   | 2,283   | 7,132      | 2,283       | 5s   |
-| c6   | 13,064  | 46,948     | 13,064      | 40s  |
-| c7   | 77,272  | 306,836    | 77,272      | ~8 min |
-| c8   | running | est. ~1.7M | est. ~500K  | est. 2-3h |
+## 6. Recommended Implementation Order
+
+Based on impact, feasibility, and risk:
+
+### Phase 1: Performance (make c8 feasible in minutes)
+
+1. **Array-based accumulation (5.1)** — Convert all `List Formula` to `Array Formula` in enumExactHelper and enumerateWithProgress. Estimated 1-2 hours, 5-20× speedup. **Do this first.**
+2. **Streaming filter (5.2)** — Apply passesFilter inside cross-product loop. Estimated 1 hour, 4× memory reduction. Compose with 5.1.
+
+These two changes alone should make c8 exhaustive feasible in 10-30 minutes.
+
+### Phase 2: Redundancy elimination (reduce formula count 5-10×)
+
+3. **Structural pruning during enumeration (5.4)** — O(1) checks inside cross-product loop. Estimated 2-3 hours. 10-20% reduction.
+4. **Alpha-canonical enumeration (5.3)** — Major refactor. Estimated 4-6 hours. 3-6× reduction. This is the single biggest reduction in formula count but requires careful design.
+
+With Phase 2, c8 should produce ~50-100K formulas (vs. estimated ~500K without) and c9 exhaustive may become feasible.
+
+### Phase 3: Semantic deduplication (maximize training quality)
+
+5. **Small-model semantic hashing (5.5)** — Post-processing pass. Estimated 3-4 hours. 30-50% additional reduction.
+6. **Incremental output (5.7)** — Resilience improvement. Estimated 2 hours.
+
+### Phase 4: Scalability research
+
+7. Consult prior art on canonical enumeration in modal logic
+8. Evaluate whether backward proof generation (task 279) should replace exhaustive enumeration as the primary generation strategy for c9+
+
+## 7. Prior Art to Consult
+
+- **SPOT's `randltl`**: LTL formula generator with configurable operator distribution and redundancy avoidance. Uses DAG-based generation to avoid exponential blowup.
+- **LTLBench (2024)**: LTL benchmark generation with difficulty calibration — uses template-based generation to avoid full enumeration.
+- **Efficient Normalization of Linear Temporal Logic (2023, arxiv:2310.12613)**: Canonical forms for LTL formulas — directly applicable to alpha-canonicalization (5.3).
+- **SAT competition formula generators**: Techniques for generating non-trivial, non-redundant instances.
+- **Knuth's BDD-based enumeration**: Canonical enumeration of Boolean functions — the gold standard for avoiding redundancy in propositional enumeration.
+- **SynLogic (NeurIPS 2025)**: Parameterized generation with verifiers — template-based approach that avoids full enumeration entirely.
+- **Lean 4 Array vs List performance**: Lean 4's `Array` type is backed by a mutable array with O(1) amortized push (when uniquely owned). Converting from List to Array is the standard optimization for accumulation patterns in Lean.
+
+## 8. Completed Datasets
+
+Truly exhaustive datasets generated with unlimited enumeration (post-task-274 fixes):
+
+| Tier | Records | Enumerated | Dedup Ratio | Valid% | Timeout% | Time |
+|------|---------|------------|-------------|--------|----------|------|
+| c4   | 408     | 1,092      | 2.7×        | 5%     | 12%      | <1s  |
+| c5   | 2,283   | 7,132      | 3.1×        | 7%     | 14%      | 5s   |
+| c6   | 13,064  | 46,948     | 3.6×        | 9%     | 17%      | 40s  |
+| c7   | 77,272  | 306,836    | 4.0×        | 11%    | 21%      | ~8 min |
+| c8   | —       | est. ~1.7M | est. ~3.4×  | —      | —        | >3.7h (not complete) |
+| c9   | 27,797  | (stratified) | —         | 8%     | 14%      | 2 min (stratified) |
+
+### Observations
+
+1. **Dedup ratio increases with complexity**: 2.7× at c4 → 4.0× at c7. This suggests growing redundancy at higher levels — more formulas are syntactic variants of each other. Alpha-canonicalization (5.3) would directly address this.
+
+2. **Valid% increases with complexity**: 5% at c4 → 11% at c7. Higher complexity formulas are more likely to be valid, probably because there are more ways to construct tautologies from larger subformulas.
+
+3. **Timeout% increases with complexity**: 12% at c4 → 21% at c7. The prover struggles more with higher complexity, especially temporal formulas. This is a separate bottleneck addressed by tasks 277-278 (tableau instrumentation, prefilter expansion).
+
+4. **Growth is ~6.5× per level**: Remarkably consistent from c3 to c7. This means each additional complexity level multiplies the enumeration time by ~40× (due to the quadratic cross-product cost scaling as 6.5²).
+
+## 9. Recommendation
+
+**Immediate**: Implement Phase 1 (Array accumulation + streaming filter) to make c8 exhaustive feasible. This is a straightforward Lean 4 refactor with high confidence of success.
+
+**Short-term**: Implement alpha-canonical enumeration (Phase 2) to reduce formula count 3-6× at every level, which would make c9 exhaustive potentially feasible and dramatically improve c8 performance.
+
+**Medium-term**: The backward proof generation approach (task 279) may ultimately be more valuable than exhaustive enumeration for c9+ — generating formulas with guaranteed interesting proofs rather than enumerating all formulas and hoping some are interesting. The 8% valid rate at c9 means 92% of prover calls are wasted on invalid or trivial formulas.
