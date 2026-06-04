@@ -1,28 +1,28 @@
 {
   "status": "partial",
-  "summary": "Phase 1 (Path D: fix succ_reaches_dom_N boundary cases) is blocked. Exhaustive analysis shows the boundary cases at lines 236 and 392 of ChronicleToCountermodel.lean are genuinely intractable: the limit domain successor is defined over the full limit domain, and infinitely many points can be inserted between any two dom(N) points by later omega-chain stages. The model surgery approach (reynolds_model_surgery_core) proves one contemp_equiv class but cannot bridge to one Z-chain (IsSuccArchimedean). The restricted temporal coherence condition genuinely requires IsSuccArchimedean. No code changes were made. Alternative approaches: (a) Path E -- restructure cantor_bfmcs_discrete_restricted_tc/fuc to avoid succ_embed_surjective (~300-500 lines), (b) prove the omega chain produces one Z-chain (novel mathematical work), or (c) entirely different completeness proof strategy.",
-  "phases_completed": 0,
-  "phases_total": 3,
+  "summary": "Phase 1 blocked: sub-interval problem prevents all direct approaches; viable path identified through EF game bridge with char_k parameter addition",
   "blockers": [
-    {
-      "phase": 1,
-      "description": "Path D (stage induction on succ_reaches_dom_N) is intractable. Boundary cases fail because limitDomSubtype_succ operates on the full limit domain, and infinitely many points can be inserted between any two dom(N) points. The gap between 'one contemp_equiv class' (proved by model surgery) and 'one Z-chain' (needed for IsSuccArchimedean) is genuine. This blocks the entire sorry chain: chronicle_gap_contradiction -> succ_cofinal -> limitDomSubtype_isSuccArchimedean -> succ_embed_surjective -> completeness_discrete."
-    }
+    "nf_2var_existential_transfer lacks char_k parameter needed for NF-Game Bridge",
+    "Sub-interval types between matched inner points not derivable from outer interval data",
+    "EF game infrastructure operates on ExtendedCarrier while NF transfer operates on M.carrier"
   ],
   "continuation_context": {
-    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
-    "resume_phase": 1
+    "completed_phases": [],
+    "current_phase": 1,
+    "analysis_complete": true,
+    "implementation_path": "Add char_k/char_k_correct/atomMap params to nf_2var_existential_transfer and nf_2var_from_interval_data, then implement Bridge A (NF -> decomposition_agreement) and Bridge B (game winning condition -> NF transfer) in NFGameBridge.lean",
+    "key_insight": "char_k is available in ALL calling contexts from nf_characterizable_by_stavi IH at depth k+1, so adding it as parameter breaks no circularity",
+    "estimated_remaining_hours": 7,
+    "handoff_path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604.md"
   },
+  "next_action_hint": "implement",
+  "phases_completed": 0,
+  "phases_total": 4,
   "artifacts": [
     {
-      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md",
+      "path": "specs/155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260604.md",
       "type": "handoff",
-      "summary": "Detailed analysis of why Path D fails and what alternatives exist"
-    },
-    {
-      "path": "specs/155_reynolds_pipeline_activation/plans/64_single-chain-plan.md",
-      "type": "plan",
-      "summary": "Plan with Phase 1 marked BLOCKED and detailed blocker documentation"
+      "summary": "Comprehensive analysis of sub-interval problem with 5 failed approaches and viable implementation path"
     }
   ]
 }
