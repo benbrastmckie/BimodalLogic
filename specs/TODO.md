@@ -119,7 +119,7 @@ technical_debt:
 
 ### 283. Mitigate cross-product explosion in exhaustive formula enumeration at complexity ≥ 8
 - **Effort**: large (16-24 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

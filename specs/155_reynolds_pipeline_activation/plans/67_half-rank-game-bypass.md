@@ -1,7 +1,7 @@
 # Implementation Plan: Task #155 -- Half-Rank Game Bypass
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (all EF game infrastructure is sorry-free; Phase 0 from prior plan v66 is COMPLETED; 8 discrete infrastructure lemmas from plan v67 Phase 1 are COMPLETED)
 - **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/65_team-research.md, specs/155_reynolds_pipeline_activation/reports/66_depth-arithmetic.md, specs/155_reynolds_pipeline_activation/reports/67_depth-blocker-resolution.md
