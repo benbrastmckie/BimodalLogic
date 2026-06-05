@@ -1,7 +1,7 @@
 # Implementation Plan: Task 277 — Instrument Tableau Prover with Rule-Firing Trace Certificates
 
 - **Task**: 277 - tableau_rule_firing_traces
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md`
