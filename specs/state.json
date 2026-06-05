@@ -250,14 +250,22 @@
     {
       "project_number": 280,
       "project_name": "contrastive_minimal_pair_generation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         275,
         276
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T16:18:54Z",
+      "session_id": "sess_1780676132_88a3d2",
+      "artifacts": [
+        {
+          "path": "specs/280_contrastive_minimal_pair_generation/reports/01_research.md",
+          "type": "research",
+          "summary": "Comprehensive research report covering existing codebase analysis, mutation strategy research, and implementation pattern recommendations for contrastive minimal pair generation. Includes detailed gap analysis between existing FormulaMutator.lean and Task 280 requirements, single-occurrence mutation engine design, and integration plan with the dataset pipeline."
+        }
+      ]
     },
     {
       "project_number": 270,

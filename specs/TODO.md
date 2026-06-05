@@ -83,7 +83,7 @@ technical_debt:
 
 275 [COMPLETED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [COMPLETED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
-    └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
+    └─ 280 [RESEARCHED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [PLANNED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set
 278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
@@ -232,7 +232,7 @@ technical_debt:
 
 ### 280. Add contrastive minimal-pair mutation pass for labeled corpus
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
