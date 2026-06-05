@@ -81,13 +81,23 @@
     {
       "project_number": 275,
       "project_name": "surface_rwt_ws_bimodal_interaction",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T01:46:21Z",
+      "session_id": "sess_1780623796_a69c2e",
+      "researched": "2026-06-05T01:46:21Z",
+      "artifacts": [
+        {
+          "path": "specs/275_surface_rwt_ws_bimodal_interaction/reports/01_research.md",
+          "type": "research",
+          "summary": "Research report for task 275: surface R/W/T/WS operators in automation layer"
+        }
+      ],
+      "next_artifact_number": 1
     },
     {
       "project_number": 276,
@@ -103,13 +113,14 @@
     {
       "project_number": 277,
       "project_name": "tableau_rule_firing_traces",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T01:46:34Z",
+      "session_id": "sess_1780623979_7515c9"
     },
     {
       "project_number": 278,

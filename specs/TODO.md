@@ -81,7 +81,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
-275 [NOT STARTED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+275 [RESEARCHED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [NOT STARTED] — Instrument tableau prover with rule-firing trace certificates
@@ -119,7 +119,7 @@ technical_debt:
 
 ### 283. Mitigate cross-product explosion in exhaustive formula enumeration at complexity ≥ 8
 - **Effort**: large (16-24 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
@@ -147,23 +147,27 @@ technical_debt:
 
 ### 281. Complete countermodel_discrete_reynolds_v2 to bypass chronicle_gap_contradiction
 - **Effort**: medium (6-10 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
 - **Plan**: [specs/281_z_interval_countermodel_v2/plans/01_z-interval-countermodel.md]
+- **Summary**: [specs/281_z_interval_countermodel_v2/summaries/01_z-interval-countermodel-summary.md]
 
 **Description**: Complete countermodel_discrete_reynolds_v2 in ReynoldsBridge.lean to bypass chronicle_gap_contradiction. Build a BFMCS on Z directly from the Z-interval temporal_truth (derived from limitdom_is_good + truth_transfer), prove restricted temporal coherence, box uniformity, and Until/Since coherence from temporal_truth semantics, apply the restricted parametric truth lemma, and wire into completeness_discrete. This eliminates the entire sorry chain: chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective.
+
+**Completion**: Multi-family Z-interval countermodel fully implemented. `countermodel_discrete_reynolds_v2` is sorry-free in `ReynoldsBridge.lean`, bypassing the chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective sorry chain. Wired into `completeness_discrete`.
 
 ---
 
 ### 275. Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
 - **Effort**: small (2-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
+- **Research**: [specs/275_surface_rwt_ws_bimodal_interaction/reports/01_research.md]
 
 **Description**: Release (R), weak until (W), trigger (T), and weak since (WS) are already defined in Formula.lean but invisible to the dataset generator — `hasBimodalInteraction` only checks for F/P/G/H patterns. (1) Extend `hasDerivedTemporal` / `hasBimodalInteraction` in DatasetGenerator.lean to recognise R/W/T/WS structural patterns via subformula traversal. (2) Add complexity pattern-matching cases for R/W/T/WS in `Formula.complexity` (analogous to the F/P/G/H treatment from task 274), reducing their overhead from 5-8 to 1-2. (3) Update `FormulaEnumerator.lean` overhead constants to match. (4) Regenerate c5 dataset and verify ~3x increase in bimodal formula count. This is zero new axiom/proof work — purely surfacing existing operators in the automation layer.
 
