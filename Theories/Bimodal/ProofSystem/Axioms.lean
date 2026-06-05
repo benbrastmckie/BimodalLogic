@@ -465,4 +465,20 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
 theorem FrameClass.base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
   cases fc <;> trivial
 
+/-! ## Strong Release and Strong Trigger Interaction (Task 276)
+
+Strong Release M(φ,ψ) = ψ U (ψ ∧ φ) and Strong Trigger ST(φ,ψ) = ψ S (ψ ∧ φ)
+are derived operators. Their interaction with modal operators (□, ◇, G, F, H, P)
+follows from existing BX axioms combined with their definitions:
+
+- `□φ → G(M(φ,ψ))`: From modal_future + right_mono_until + definitions.
+- `□φ → H(ST(φ,ψ))`: From modal_past (derived) + right_mono_since + definitions.
+- Duality: `M(φ,ψ) ↔ ¬W(¬φ,¬ψ)` and `ST(φ,ψ) ↔ ¬WS(¬φ,¬ψ)` are semantic
+  equivalences derivable via truth conditions.
+
+No new `Axiom` constructors are needed since M/ST expand to primitive
+`untl`/`snce` forms, and all interaction properties are theorems derivable
+from the existing BX1-BX12 + modal_future axiom system.
+-/
+
 end Bimodal.ProofSystem

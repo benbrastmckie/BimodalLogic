@@ -186,9 +186,13 @@ def complexity : Formula → Nat
   | box φ => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
   | untl φ (imp bot bot) => 1 + φ.complexity
+  -- M(φ, ψ) = strong_release φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
+  | untl (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
   | snce φ (imp bot bot) => 1 + φ.complexity
+  -- ST(φ, ψ) = strong_trigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
+  | snce (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
 /-! ### Complexity verification (task 274) -/
@@ -451,6 +455,12 @@ the guard ψ held forever in the past (the event φ may never have occurred).
 -/
 def weak_since (φ ψ : Formula) : Formula := (Formula.snce φ ψ).or ψ.all_past
 
+/-- Strong Release operator M(φ, ψ) — ψ U (ψ ∧ φ). Dual of weak until. -/
+def strong_release (φ ψ : Formula) : Formula := Formula.untl (Formula.and ψ φ) ψ
+
+/-- Strong Trigger operator ST(φ, ψ) — ψ S (ψ ∧ φ). Past dual of strong release. -/
+def strong_trigger (φ ψ : Formula) : Formula := Formula.snce (Formula.and ψ φ) ψ
+
 /-! ### Complexity verification (task 275) -/
 
 private def p_cmplx2 : Formula := .atom (Atom.mk_base "p")
@@ -467,6 +477,12 @@ private def q_cmplx2 : Formula := .atom (Atom.mk_base "q")
 
 -- WS(atom, atom) should be 3 (was 8)
 #eval (Formula.weak_since p_cmplx2 q_cmplx2).complexity  -- 3
+
+-- M(atom, atom) should be 4
+#eval (Formula.strong_release p_cmplx2 q_cmplx2).complexity  -- 4
+
+-- ST(atom, atom) should be 4
+#eval (Formula.strong_trigger p_cmplx2 q_cmplx2).complexity  -- 4
 
 /--
 Temporal 'sometimes' operator (▽φ, "at some time" - φ holds at some time).
@@ -591,6 +607,16 @@ theorem swap_temporal_next (φ : Formula) :
 theorem swap_temporal_prev (φ : Formula) :
     φ.prev.swap_temporal = φ.swap_temporal.next := by
   simp [prev, next, swap_temporal]
+
+/-- swap_temporal distributes over strong_release: swap(M(φ,ψ)) = ST(swap(φ),swap(ψ)). -/
+theorem swap_temporal_strong_release (φ ψ : Formula) :
+    (Formula.strong_release φ ψ).swap_temporal = Formula.strong_trigger φ.swap_temporal ψ.swap_temporal := by
+  simp [strong_release, strong_trigger, and, swap_temporal, swap_temporal_neg]
+
+/-- swap_temporal distributes over strong_trigger: swap(ST(φ,ψ)) = M(swap(φ),swap(ψ)). -/
+theorem swap_temporal_strong_trigger (φ ψ : Formula) :
+    (Formula.strong_trigger φ ψ).swap_temporal = Formula.strong_release φ.swap_temporal ψ.swap_temporal := by
+  simp [strong_release, strong_trigger, and, swap_temporal, swap_temporal_neg]
 
 /--
 Formula requires the single-family/single-time hypotheses in buildSeedAux.

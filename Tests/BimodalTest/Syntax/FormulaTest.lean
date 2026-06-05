@@ -233,4 +233,40 @@ example : (p.all_future.box.imp q).temporalDepth = 1 := rfl
 -- countImplications counts structural imp constructors in the expanded def
 example : (p.all_future.box.imp q).countImplications = 4 := rfl
 
+/-! ## Strong Release and Strong Trigger Tests (Task 276) -/
+
+-- Test: strong_release construction
+example (φ ψ : Formula) : Formula.strong_release φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
+
+-- Test: strong_trigger construction
+example (φ ψ : Formula) : Formula.strong_trigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
+
+-- Test: strong_release complexity for atoms (overhead 2)
+example : (Formula.strong_release p q).complexity = 4 := rfl
+
+-- Test: strong_trigger complexity for atoms (overhead 2)
+example : (Formula.strong_trigger p q).complexity = 4 := rfl
+
+-- Test: swap_temporal on strong_release
+example (φ ψ : Formula) :
+    (Formula.strong_release φ ψ).swap_temporal = Formula.strong_trigger φ.swap_temporal ψ.swap_temporal := by
+  simp [Formula.strong_release, Formula.strong_trigger, Formula.and, Formula.swap_temporal, Formula.swap_temporal_neg]
+
+-- Test: swap_temporal on strong_trigger
+example (φ ψ : Formula) :
+    (Formula.strong_trigger φ ψ).swap_temporal = Formula.strong_release φ.swap_temporal ψ.swap_temporal := by
+  simp [Formula.strong_release, Formula.strong_trigger, Formula.and, Formula.swap_temporal, Formula.swap_temporal_neg]
+
+-- Test: strong_release modal depth
+example : (Formula.strong_release p q).modalDepth = 0 := rfl
+
+-- Test: strong_trigger modal depth
+example : (Formula.strong_trigger p q).modalDepth = 0 := rfl
+
+-- Test: strong_release temporal depth
+example : (Formula.strong_release p q).temporalDepth = 1 := rfl
+
+-- Test: strong_trigger temporal depth
+example : (Formula.strong_trigger p q).temporalDepth = 1 := rfl
+
 end BimodalTest.Syntax

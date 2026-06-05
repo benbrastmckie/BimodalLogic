@@ -285,6 +285,38 @@ H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
   · intro h ⟨s, hlt, hevent, _⟩
     exact hevent (h s hlt)
 
+/--
+Truth of strong_release: M(φ, ψ) = ψ U (ψ ∧ φ).
+True iff there exists a strictly future time where ψ ∧ φ holds,
+with ψ holding at all intermediate times.
+-/
+@[simp] theorem strong_release_iff
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
+    (Omega : Set (WorldHistory F))
+    (φ ψ : Formula) :
+    truth_at M Omega τ t (Formula.strong_release φ ψ) ↔
+      ∃ s : D, t < s ∧ truth_at M Omega τ s (Formula.and ψ φ) ∧
+        ∀ r : D, t < r → r < s → truth_at M Omega τ r ψ := by
+  simp [Formula.strong_release, Formula.and, truth_at]
+
+/--
+Truth of strong_trigger: ST(φ, ψ) = ψ S (ψ ∧ φ).
+True iff there exists a strictly past time where ψ ∧ φ held,
+with ψ holding at all intermediate times.
+-/
+@[simp] theorem strong_trigger_iff
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
+    (Omega : Set (WorldHistory F))
+    (φ ψ : Formula) :
+    truth_at M Omega τ t (Formula.strong_trigger φ ψ) ↔
+      ∃ s : D, s < t ∧ truth_at M Omega τ s (Formula.and ψ φ) ∧
+        ∀ r : D, s < r → r < t → truth_at M Omega τ r ψ := by
+  simp [Formula.strong_trigger, Formula.and, truth_at]
+
 end Truth
 
 /--

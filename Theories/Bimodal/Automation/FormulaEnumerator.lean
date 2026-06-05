@@ -251,7 +251,13 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                 let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_since l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
-                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces, c2b)
+                let strongReleases := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_release l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_trigger l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers, c2b)
               else (#[], c2)
               (accArr ++ imps ++ temporalBinaries, c3)
           ) (#[], cache1a))
@@ -442,13 +448,15 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
          let rightSize := childBudget - leftSize
          let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
          let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
-         -- Decide R, WU, T, or WS
-         let (rng5, rtwsChoice) := rng4.randBound 4
-         match rtwsChoice with
-         | 0 => (rng5, Formula.release left right)
-         | 1 => (rng5, Formula.weak_until left right)
-         | 2 => (rng5, Formula.trigger left right)
-         | _ => (rng5, Formula.weak_since left right)
+          -- Decide R, WU, T, WS, M, or ST
+          let (rng5, rtwsChoice) := rng4.randBound 6
+          match rtwsChoice with
+          | 0 => (rng5, Formula.release left right)
+          | 1 => (rng5, Formula.weak_until left right)
+          | 2 => (rng5, Formula.trigger left right)
+          | 3 => (rng5, Formula.weak_since left right)
+          | 4 => (rng5, Formula.strong_release left right)
+          | _ => (rng5, Formula.strong_trigger left right)
      else
        -- Fallback: imp
        let childBudget := sizeBudget - 1
@@ -874,12 +882,14 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 3
+        let rtwsChoice ← IO.rand 0 5
         match rtwsChoice with
         | 0 => return .release left right
         | 1 => return .weak_until left right
         | 2 => return .trigger left right
-        | _ => return .weak_since left right
+        | 3 => return .weak_since left right
+        | 4 => return .strong_release left right
+        | _ => return .strong_trigger left right
       else
         -- Fallback to implication
         let split ← IO.rand 1 (budget - 1)
@@ -897,12 +907,14 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 3
+        let rtwsChoice ← IO.rand 0 5
         match rtwsChoice with
         | 0 => return .release left right
         | 1 => return .weak_until left right
         | 2 => return .trigger left right
-        | _ => return .weak_since left right
+        | 3 => return .weak_since left right
+        | 4 => return .strong_release left right
+        | _ => return .strong_trigger left right
       else
         -- Fallback to implication
         let split ← IO.rand 1 (budget - 1)
@@ -910,17 +922,19 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
         return .imp left right
     | _ =>
-      -- Derived binary temporal: R, WU, T, WS
+      -- Derived binary temporal: R, WU, T, WS, M, ST
       if hasDerivedTemporalBinary then
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 3
+        let rtwsChoice ← IO.rand 0 5
         match rtwsChoice with
         | 0 => return .release left right
         | 1 => return .weak_until left right
         | 2 => return .trigger left right
-        | _ => return .weak_since left right
+        | 3 => return .weak_since left right
+        | 4 => return .strong_release left right
+        | _ => return .strong_trigger left right
       else
         -- Fallback to implication
         let split ← IO.rand 1 (budget - 1)
@@ -1093,7 +1107,7 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let right ← randomSubFormula atoms (max 1 rightSize)
         return .untl left right
     | 9 =>
-      -- Derived binary temporal: R, WU, T, WS
+      -- Derived binary temporal: R, WU, T, WS, M, ST
       if maxSize < 3 then
         let child ← randomSubFormula atoms (maxSize - 1)
         return .box child
@@ -1102,12 +1116,14 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let rightSize := maxSize - 1 - leftSize
         let left ← randomSubFormula atoms (max 1 leftSize)
         let right ← randomSubFormula atoms (max 1 rightSize)
-        let rtwsChoice ← IO.rand 0 3
+        let rtwsChoice ← IO.rand 0 5
         match rtwsChoice with
         | 0 => return .release left right
         | 1 => return .weak_until left right
         | 2 => return .trigger left right
-        | _ => return .weak_since left right
+        | 3 => return .weak_since left right
+        | 4 => return .strong_release left right
+        | _ => return .strong_trigger left right
     | _ =>
       -- snce: binary temporal
       if maxSize < 3 then

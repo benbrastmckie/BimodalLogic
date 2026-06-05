@@ -455,4 +455,36 @@ Test: Weak Since complexity formula (100 test cases).
   maxSize := 30
 }
 
+/--
+Property: Strong Release complexity is 2 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.strong_release φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Strong Release complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.strong_release φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/--
+Property: Strong Trigger complexity is 2 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.strong_trigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Strong Trigger complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.strong_trigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
 end BimodalTest.Syntax.FormulaPropertyTest

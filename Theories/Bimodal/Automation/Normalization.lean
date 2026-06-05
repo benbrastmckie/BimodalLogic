@@ -128,6 +128,16 @@ section UnfoldLemmas
 @[simp] theorem sometimes_unfold (φ : Formula) :
     φ.sometimes = φ.neg.always.neg := rfl
 
+/-! ### Level 7: Strong Release and Strong Trigger (depend on Level 2 operators) -/
+
+/-- Unfold strong_release: `strong_release φ ψ = untl (and ψ φ) ψ` -/
+@[simp] theorem strong_release_unfold (φ ψ : Formula) :
+    Formula.strong_release φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
+
+/-- Unfold strong_trigger: `strong_trigger φ ψ = snce (and ψ φ) ψ` -/
+@[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
+    Formula.strong_trigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
+
 end UnfoldLemmas
 
 /-!
@@ -148,7 +158,8 @@ macro "modal_norm" : tactic =>
     and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
     all_future_unfold, all_past_unfold,
     weak_future_unfold, weak_past_unfold,
-    always_unfold, sometimes_unfold])
+    always_unfold, sometimes_unfold,
+    strong_release_unfold, strong_trigger_unfold])
 
 /-- Propositional normalization only: unfolds neg, top, and, or. -/
 macro "prop_norm" : tactic =>
@@ -177,7 +188,8 @@ macro_rules
       and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
       all_future_unfold, all_past_unfold,
       weak_future_unfold, weak_past_unfold,
-      always_unfold, sometimes_unfold] at $h:ident))
+      always_unfold, sometimes_unfold,
+      strong_release_unfold, strong_trigger_unfold] at $h:ident))
 
 /-- Normalize all hypotheses and the goal. -/
 macro "modal_norm_all" : tactic =>
@@ -186,7 +198,8 @@ macro "modal_norm_all" : tactic =>
     and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
     all_future_unfold, all_past_unfold,
     weak_future_unfold, weak_past_unfold,
-    always_unfold, sometimes_unfold] at *)
+    always_unfold, sometimes_unfold,
+    strong_release_unfold, strong_trigger_unfold] at *)
 
 end NormTactics
 
@@ -212,6 +225,8 @@ section UnfoldTests
 #check @weak_past_unfold
 #check @always_unfold
 #check @sometimes_unfold
+#check @strong_release_unfold
+#check @strong_trigger_unfold
 
 -- Test: modal_norm reduces always (uses multiple unfold rounds)
 example (p : Atom) : (atom p).always =
@@ -319,6 +334,10 @@ inductive EnrichedFormula : Type where
   | always : EnrichedFormula → EnrichedFormula
   /-- Sometimes / ▽ (derived: ¬△(¬φ)) -/
   | sometimes : EnrichedFormula → EnrichedFormula
+  /-- Strong Release / M (derived: ψ U (ψ ∧ φ)) -/
+  | strong_release : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Strong Trigger / ST (derived: ψ S (ψ ∧ φ)) -/
+  | strong_trigger : EnrichedFormula → EnrichedFormula → EnrichedFormula
   deriving Repr, BEq, Inhabited
 
 namespace EnrichedFormula
@@ -349,6 +368,8 @@ def toPrimitive : EnrichedFormula → Formula
   | .weak_past φ  => Formula.weak_past φ.toPrimitive
   | .always φ     => Formula.always φ.toPrimitive
   | .sometimes φ  => Formula.sometimes φ.toPrimitive
+  | .strong_release φ ψ => Formula.strong_release φ.toPrimitive ψ.toPrimitive
+  | .strong_trigger φ ψ => Formula.strong_trigger φ.toPrimitive ψ.toPrimitive
 
 end EnrichedFormula
 
@@ -508,6 +529,8 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
   | .weak_past φ => .weak_past φ.recognizeComposites
   | .always φ => .always φ.recognizeComposites
   | .sometimes φ => .sometimes φ.recognizeComposites
+  | .strong_release φ ψ => .strong_release φ.recognizeComposites ψ.recognizeComposites
+  | .strong_trigger φ ψ => .strong_trigger φ.recognizeComposites ψ.recognizeComposites
 
 /-- Full fold: fold primitives then recognize composite operators. -/
 def _root_.Bimodal.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
@@ -732,7 +755,8 @@ macro "modal_fold" : tactic =>
     ← some_future_unfold, ← some_past_unfold,
     ← all_future_unfold, ← all_past_unfold,
     ← weak_future_unfold, ← weak_past_unfold,
-    ← always_unfold, ← sometimes_unfold])
+    ← always_unfold, ← sometimes_unfold,
+    ← strong_release_unfold, ← strong_trigger_unfold])
 
 end FoldTactics
 
@@ -896,6 +920,10 @@ def toJson : EnrichedFormula → String
     "{\"tag\": \"always\", \"child\": " ++ φ.toJson ++ "}"
   | .sometimes φ =>
     "{\"tag\": \"sometimes\", \"child\": " ++ φ.toJson ++ "}"
+  | .strong_release φ ψ =>
+    "{\"tag\": \"strong_release\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .strong_trigger φ ψ =>
+    "{\"tag\": \"strong_trigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
 
 /--
 Pretty-print an `EnrichedFormula` in human-readable notation.
@@ -931,6 +959,8 @@ def prettyPrint : EnrichedFormula → String
   | .weak_past φ  => "H'" ++ φ.prettyPrint
   | .always φ     => "△" ++ φ.prettyPrint
   | .sometimes φ  => "▽" ++ φ.prettyPrint
+  | .strong_release φ ψ => "M(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .strong_trigger φ ψ => "ST(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
 
 /--
 Serialize an `EnrichedFormula` to an S-expression string with enriched tags.
@@ -964,6 +994,8 @@ def toSExpr : EnrichedFormula → String
   | .weak_past φ  => "(weak_past " ++ φ.toSExpr ++ ")"
   | .always φ     => "(always " ++ φ.toSExpr ++ ")"
   | .sometimes φ  => "(sometimes " ++ φ.toSExpr ++ ")"
+  | .strong_release φ ψ => "(strong_release " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .strong_trigger φ ψ => "(strong_trigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
 
 end EnrichedFormula
 
