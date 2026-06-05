@@ -916,4 +916,266 @@ theorem discrete_winning_condition_0 {sig : MonadicSignature}
     | 1, _ => rw [game_tuple_b_eq]; exact discrete_formula_agree_from_nf h_nf_b A hA
     | 2, _ => rw [game_tuple_y_eq]; exact discrete_formula_agree_from_nf h_nf_t A hA
 
+/-! ## Discrete: Master Bridge A — NF Hypotheses to decomposition_agreement
+
+For discrete orders, convert the hypotheses of `nf_2var_existential_transfer`
+(1-var NF agreement at depth k, ordering, interval/above/below type agreement)
+into `decomposition_agreement` at rank k/2 with n=0.
+
+This is the "Bridge A" theorem: NF world → EF game world. Combined with the
+existing `ghr93_decomposition_implies_game` (Bridge B forward direction),
+this opens the path to the discrete game bypass strategy.
+
+### Construction
+
+1. Boundary type agreement: `discrete_rank_type_agree` gives rank-r types at
+   x/x' and t/t' from their depth-k 1-var NF equality.
+
+2. Forward direction (M→M'): for n=0, the only nontrivial condition is the
+   point challenge. Given b' in [x',t'] on M', we use `zone_match_witness`
+   (symmetric direction) to find b in M with matching 1-var NF and orderings,
+   then `discrete_winning_condition_0` gives the full winning condition for
+   the 3-element tuple (x,b,t)/(x',b',t').
+
+3. Backward direction (M'→M): symmetric, using `zone_match_witness` directly.
+
+The key insight: `zone_match_witness` already handles ALL zone cases
+(below, above, interval, equality) without requiring sub-interval splitting,
+because the discrete order has no gaps and the interval types determine
+where each point lives. -/
+
+/-- Convert a pair of `<` iffs between two linear orders (M, M') into the
+    `(<,)` and `(=,)` iff pair needed by `discrete_winning_condition_0`,
+    lifted to ExtendedCarrier via `discrete_extendPoint_lt_iff`. -/
+private theorem extendPair_iff {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    (a b : M.carrier) (a' b' : M'.carrier)
+    (h_ab_lt : (a < b ↔ a' < b')) (h_ba_lt : (b < a ↔ b' < a')) :
+    ((extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) a <
+      extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b) ↔
+     (extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) a' <
+      extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b')) ∧
+    ((extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) a =
+      extendPoint (sig := sig) (M := M) (atomMap := atomMap) (r := k / 2) b) ↔
+     (extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) a' =
+      extendPoint (sig := sig) (M := M') (atomMap := atomMap) (r := k / 2) b')) := by
+  constructor
+  · -- `<` direction: reduce to M.carrier via discrete_extendPoint_lt_iff
+    calc
+      (extendPoint a < extendPoint b) ↔ (a < b) := discrete_extendPoint_lt_iff a b
+      _ ↔ (a' < b') := h_ab_lt
+      _ ↔ (extendPoint a' < extendPoint b') := (discrete_extendPoint_lt_iff a' b').symm
+  · -- `=` direction: derive from `<` iffs via trichotomy
+    constructor
+    · intro h
+      have h_eq : a = b := Sum.inl_injective h
+      subst h_eq
+      rcases lt_trichotomy a' b' with hlt | heq | hgt
+      · have : a < a := h_ab_lt.mpr hlt
+        exact absurd this (lt_irrefl _)
+      · exact congrArg Sum.inl heq
+      · have : a < a := h_ba_lt.mpr hgt
+        exact absurd this (lt_irrefl _)
+    · intro h
+      have h_eq : a' = b' := Sum.inl_injective h
+      subst h_eq
+      rcases lt_trichotomy a b with hlt | heq | hgt
+      · have : a' < a' := h_ab_lt.mp hlt
+        exact absurd this (lt_irrefl _)
+      · exact congrArg Sum.inl heq
+      · have : a' < a' := h_ba_lt.mp hgt
+        exact absurd this (lt_irrefl _)
+
+/-- **Bridge A**: For discrete orders, the hypotheses of `nf_2var_existential_transfer`
+    imply `decomposition_agreement` at rank floor(k/2) with n=0 selections.
+
+    This is the master theorem connecting the NF-based bridge hypotheses
+    to the EF game world. Combined with `ghr93_decomposition_implies_game`,
+    this provides Duplicator's winning strategy at rank k/2, which through
+    Bridge B (Phase 2) yields the existential transfer at depth k. -/
+theorem discrete_nf_to_decomposition_agreement {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {k : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder M'.carrier] [PredOrder M'.carrier] [NoMaxOrder M'.carrier]
+    [NoMinOrder M'.carrier] [IsSuccArchimedean M'.carrier]
+    (x t : M.carrier) (x' t' : M'.carrier)
+    (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
+              nf_characteristic M' k 1 (fun _ => x'))
+    (h_nf_t : nf_characteristic M k 1 (fun _ => t) =
+              nf_characteristic M' k 1 (fun _ => t'))
+    (h_order_xt : (x < t ↔ x' < t') ∧ (t < x ↔ t' < x'))
+    (h_interval_above : t < x →
+      interval_nf_types M k t x = interval_nf_types M' k t' x')
+    (h_interval_below : x < t →
+      interval_nf_types M k x t = interval_nf_types M' k x' t')
+    (h_above_max : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u))
+    (h_below_min : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
+                   (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u)) :
+    decomposition_agreement M M' atomMap 0 (k / 2)
+      (extendPoint x) (extendPoint t) (extendPoint x') (extendPoint t') := by
+  set r := k / 2
+  let epX : ExtendedCarrier M atomMap r := extendPoint (atomMap := atomMap) (r := r) x
+  let epT : ExtendedCarrier M atomMap r := extendPoint (atomMap := atomMap) (r := r) t
+  let epX' : ExtendedCarrier M' atomMap r := extendPoint (atomMap := atomMap) (r := r) x'
+  let epT' : ExtendedCarrier M' atomMap r := extendPoint (atomMap := atomMap) (r := r) t'
+  -- Boundary type agreement via discrete_rank_type_agree
+  have h_type_x : rank_type M atomMap r (extendPoint (atomMap := atomMap) (r := r) x) =
+      rank_type M' atomMap r (extendPoint (atomMap := atomMap) (r := r) x') :=
+    discrete_rank_type_agree (atomMap := atomMap) h_nf_x
+  have h_type_t : rank_type M atomMap r (extendPoint (atomMap := atomMap) (r := r) t) =
+      rank_type M' atomMap r (extendPoint (atomMap := atomMap) (r := r) t') :=
+    discrete_rank_type_agree (atomMap := atomMap) h_nf_t
+  -- Ordering pair for x/t: needed for the winning condition
+  have h_xt_pair : ((extendPoint (atomMap := atomMap) (r := r) x : ExtendedCarrier M atomMap r) <
+                     extendPoint (atomMap := atomMap) (r := r) t ↔
+                     (extendPoint (atomMap := atomMap) (r := r) x' : ExtendedCarrier M' atomMap r) <
+                     extendPoint (atomMap := atomMap) (r := r) t') ∧
+                   ((extendPoint (atomMap := atomMap) (r := r) x : ExtendedCarrier M atomMap r) =
+                     extendPoint (atomMap := atomMap) (r := r) t ↔
+                     (extendPoint (atomMap := atomMap) (r := r) x' : ExtendedCarrier M' atomMap r) =
+                     extendPoint (atomMap := atomMap) (r := r) t') :=
+    extendPair_iff x t x' t' h_order_xt.1 h_order_xt.2
+  -- Symmetric hypotheses for M'→M direction (needed for forward point challenge)
+  have h_nf_x' : nf_characteristic M' k 1 (fun _ => x') =
+                 nf_characteristic M k 1 (fun _ => x) := h_nf_x.symm
+  have h_nf_t' : nf_characteristic M' k 1 (fun _ => t') =
+                 nf_characteristic M k 1 (fun _ => t) := h_nf_t.symm
+  have h_order_xt' : (x' < t' ↔ x < t) ∧ (t' < x' ↔ t < x) :=
+    ⟨h_order_xt.1.symm, h_order_xt.2.symm⟩
+  have h_interval_above' : t' < x' → interval_nf_types M' k t' x' = interval_nf_types M k t x :=
+    fun h' => (h_interval_above (h_order_xt.2.mpr h')).symm
+  have h_interval_below' : x' < t' → interval_nf_types M' k x' t' = interval_nf_types M k x t :=
+    fun h' => (h_interval_below (h_order_xt.1.mpr h')).symm
+  have h_above_max' : (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) =
+                      (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) :=
+    h_above_max.symm
+  have h_below_min' : (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) =
+                      (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) :=
+    h_below_min.symm
+  -- Helper: from zone_match_witness ordering + inClosedInterval on M', derive inClosedInterval on M
+  have h_zone_to_inClosed (b' : M'.carrier) (b : M.carrier)
+      (hb' : inClosedInterval (r := r) (extendPoint (atomMap := atomMap) (r := r) x')
+               (extendPoint (atomMap := atomMap) (r := r) t')
+               (extendPoint (atomMap := atomMap) (r := r) b'))
+      (h_zone_bx : (b < x ↔ b' < x')) (h_zone_xb : (x < b ↔ x' < b'))
+      (h_zone_bt : (b < t ↔ b' < t')) (h_zone_tb : (t < b ↔ t' < b')) :
+      inClosedInterval (r := r) (extendPoint (atomMap := atomMap) (r := r) x)
+        (extendPoint (atomMap := atomMap) (r := r) t)
+        (extendPoint (atomMap := atomMap) (r := r) b) := by
+    have hx'b' := (discrete_inClosedInterval_iff (sig := sig) x' t' b').mp hb' |>.1
+    have hb't' := (discrete_inClosedInterval_iff (sig := sig) x' t' b').mp hb' |>.2
+    have hx_le_b : x ≤ b := by
+      by_contra h
+      have : b < x := lt_of_not_ge h
+      exact not_lt.mpr hx'b' (h_zone_bx.mp this)
+    have hb_le_t : b ≤ t := by
+      by_contra h
+      have : t < b := lt_of_not_ge h
+      exact not_lt.mpr hb't' (h_zone_tb.mp this)
+    rw [discrete_inClosedInterval_iff]
+    exact ⟨hx_le_b, hb_le_t⟩
+  -- Forward (M→M')
+  refine ⟨h_type_x, h_type_t, ?_, ?_⟩
+  · -- Forward direction: for every a:Fin 0→ExtCarr_M, find a':Fin 0→ExtCarr_M'
+    intro a ha
+    -- a is trivial (Fin 0); a' similarly
+    let a' : Fin 0 → ExtendedCarrier M' atomMap r := fun i => i.elim0
+    have ha'_in : ∀ i, inClosedInterval (r := r)
+        (extendPoint (atomMap := atomMap) (r := r) x')
+        (extendPoint (atomMap := atomMap) (r := r) t') (a' i) :=
+      fun i => i.elim0
+    have htypes : ∀ i, rank_type M atomMap r (a i) = rank_type M' atomMap r (a' i) :=
+      fun i => i.elim0
+    have hgp : ∀ i, (IsPoint (a i) ↔ IsPoint (a' i)) ∧ (IsGap (a i) ↔ IsGap (a' i)) :=
+      fun i => i.elim0
+    have hord : ∀ i j, (a i < a j ↔ a' i < a' j) ∧ (a i = a j ↔ a' i = a' j) :=
+      fun i j => i.elim0
+    -- Point challenge: given b' in [x',t'] on M', find b in [x,t] on M
+    have hpt : ∀ (b' : M'.carrier), inClosedInterval (r := r)
+        (extendPoint (atomMap := atomMap) (r := r) x')
+        (extendPoint (atomMap := atomMap) (r := r) t')
+        (extendPoint (atomMap := atomMap) (r := r) b') →
+        ∃ (b : M.carrier), inClosedInterval (r := r)
+          (extendPoint (atomMap := atomMap) (r := r) x)
+          (extendPoint (atomMap := atomMap) (r := r) t)
+          (extendPoint (atomMap := atomMap) (r := r) b) ∧
+          ghr93_winning_condition 0
+            (game_tuple (r := r) epX epT a b) (game_tuple (r := r) epX' epT' a' b') := by
+      intro b' hb'
+      -- Use zone_match_witness in M'→M direction to find matching b
+      obtain ⟨b, h_nf_b', h_bx, h_xb, h_bt, h_tb⟩ :=
+        zone_match_witness k x' t' x t b' h_nf_x' h_nf_t' h_order_xt'
+          h_interval_above' h_interval_below' h_above_max' h_below_min'
+      have h_nf_b : nf_characteristic M k 1 (fun _ => b) = nf_characteristic M' k 1 (fun _ => b') := by
+        simpa using h_nf_b'.symm
+      have h_xb_pair := extendPair_iff (k := k) (atomMap := atomMap) x b x' b' h_xb.symm h_bx.symm
+      have h_bt_pair := extendPair_iff (k := k) (atomMap := atomMap) b t b' t' h_bt.symm h_tb.symm
+      -- b is in the interval [x,t]
+      have h_in_closed : inClosedInterval (r := r)
+          (extendPoint (atomMap := atomMap) (r := r) x)
+          (extendPoint (atomMap := atomMap) (r := r) t)
+          (extendPoint (atomMap := atomMap) (r := r) b) :=
+        h_zone_to_inClosed b' b hb' h_bx.symm h_xb.symm h_bt.symm h_tb.symm
+      -- Apply discrete_winning_condition_0 with all pairwise conditions
+      have h_win := discrete_winning_condition_0 (atomMap := atomMap) h_nf_x h_nf_t h_nf_b
+        h_xb_pair h_xt_pair h_bt_pair a a'
+      exact ⟨b, h_in_closed, h_win⟩
+    exact ⟨a', ha'_in, htypes, hgp, hord, hpt⟩
+  · -- Backward direction (M'→M): symmetric, use zone_match_witness in M→M' direction
+    intro a' ha'
+    let a : Fin 0 → ExtendedCarrier M atomMap r := fun i => i.elim0
+    have ha_in : ∀ i, inClosedInterval (r := r)
+        (extendPoint (atomMap := atomMap) (r := r) x)
+        (extendPoint (atomMap := atomMap) (r := r) t) (a i) :=
+      fun i => i.elim0
+    have htypes : ∀ i, rank_type M atomMap r (a i) = rank_type M' atomMap r (a' i) :=
+      fun i => i.elim0
+    have hgp : ∀ i, (IsPoint (a i) ↔ IsPoint (a' i)) ∧ (IsGap (a i) ↔ IsGap (a' i)) :=
+      fun i => i.elim0
+    have hord : ∀ i j, (a i < a j ↔ a' i < a' j) ∧ (a i = a j ↔ a' i = a' j) :=
+      fun i j => i.elim0
+    have hpt : ∀ (b : M.carrier), inClosedInterval (r := r)
+        (extendPoint (atomMap := atomMap) (r := r) x)
+        (extendPoint (atomMap := atomMap) (r := r) t)
+        (extendPoint (atomMap := atomMap) (r := r) b) →
+        ∃ (b' : M'.carrier), inClosedInterval (r := r)
+          (extendPoint (atomMap := atomMap) (r := r) x')
+          (extendPoint (atomMap := atomMap) (r := r) t')
+          (extendPoint (atomMap := atomMap) (r := r) b') ∧
+          ghr93_winning_condition 0
+            (game_tuple (r := r) epX epT a b) (game_tuple (r := r) epX' epT' a' b') := by
+      intro b hb
+      -- Use zone_match_witness in M→M' direction to find matching b'
+      obtain ⟨b', h_nf_b, h_bx, h_xb, h_bt, h_tb⟩ :=
+        zone_match_witness k x t x' t' b h_nf_x h_nf_t h_order_xt
+          h_interval_above h_interval_below h_above_max h_below_min
+      -- Ordering pairs for (x,b), (b,t)
+      have h_xb_pair := extendPair_iff (k := k) (atomMap := atomMap) x b x' b' h_xb h_bx
+      have h_bt_pair := extendPair_iff (k := k) (atomMap := atomMap) b t b' t' h_bt h_tb
+      -- b' is in the interval [x',t']
+      have h_in_closed' : inClosedInterval (r := r)
+          (extendPoint (atomMap := atomMap) (r := r) x')
+          (extendPoint (atomMap := atomMap) (r := r) t')
+          (extendPoint (atomMap := atomMap) (r := r) b') := by
+        have hx_le_b' : x' ≤ b' := by
+          by_contra h
+          have : b' < x' := lt_of_not_ge h
+          have hbx := (discrete_inClosedInterval_iff (sig := sig) x t b).mp hb |>.1
+          exact not_lt.mpr hbx (h_bx.mpr this)
+        have hb'_le_t' : b' ≤ t' := by
+          by_contra h
+          have : t' < b' := lt_of_not_ge h
+          have hbt := (discrete_inClosedInterval_iff (sig := sig) x t b).mp hb |>.2
+          exact not_lt.mpr hbt (h_tb.mpr this)
+        rw [discrete_inClosedInterval_iff]; exact ⟨hx_le_b', hb'_le_t'⟩
+      -- Apply discrete_winning_condition_0
+      have h_win := discrete_winning_condition_0 (atomMap := atomMap) h_nf_x h_nf_t h_nf_b
+        h_xb_pair h_xt_pair h_bt_pair a a'
+      exact ⟨b', h_in_closed', h_win⟩
+    exact ⟨a, ha_in, htypes, hgp, hord, hpt⟩
+
 end Bimodal.Metalogic.WeakCanonical
