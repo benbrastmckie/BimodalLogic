@@ -82,7 +82,7 @@ technical_debt:
 ### Dataset Enhancement
 
 275 [COMPLETED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
-  └─ 276 [RESEARCHING] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
+  └─ 276 [RESEARCHED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [PLANNED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set

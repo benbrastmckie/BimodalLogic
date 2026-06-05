@@ -147,8 +147,16 @@
         275
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T04:11:11Z",
-      "session_id": "sess_1780632398_38c2de"
+      "last_updated": "2026-06-05T04:32:03Z",
+      "session_id": "sess_1780632398_38c2de",
+      "artifacts": [
+        {
+          "path": "specs/276_strong_release_trigger_operators/reports/01_research.md",
+          "type": "research",
+          "summary": "Research report for task 276: strong release and strong trigger operators"
+        }
+      ],
+      "researched": "2026-06-05T04:32:03Z"
     },
     {
       "project_number": 277,
