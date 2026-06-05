@@ -141,31 +141,37 @@
     {
       "project_number": 276,
       "project_name": "strong_release_trigger_operators",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         275
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T04:11:11Z",
+      "session_id": "sess_1780632398_38c2de"
     },
     {
       "project_number": 277,
       "project_name": "tableau_rule_firing_traces",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T02:02:18Z",
-      "session_id": "sess_1780623979_7515c9",
+      "last_updated": "2026-06-05T04:13:47Z",
+      "session_id": "sess_1780632430_76a1f6",
       "researched": "2026-06-05T02:02:18Z",
       "artifacts": [
         {
           "path": "specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md",
           "type": "research-report",
           "summary": "Design report for rule-firing trace certificates: ProofCertificate + TraceEntry inductive types, StateT threading strategy, rule catalog for 28 tableau rules + 5 auxiliary events, JSONL export via string-based serialization mirroring DataExport.lean, partial-trace failure handling via TraceResult sum type, and 6-phase implementation roadmap."
+        },
+        {
+          "path": "specs/277_tableau_rule_firing_traces/plans/01_trace-certificates-implementation.md",
+          "type": "plan",
+          "summary": "Phased plan to instrument Tableau.lean with rule-firing trace certificates, threading a ProofCertificate via StateM without breaking the 4 existing termination/soundness proofs in Saturation.lean."
         }
       ]
     },
