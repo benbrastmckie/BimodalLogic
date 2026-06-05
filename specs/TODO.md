@@ -184,6 +184,7 @@ technical_debt:
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 275
+- **Research**: [specs/276_strong_release_trigger_operators/reports/01_research.md]
 
 **Description**: Add Strong Release `M(φ,ψ) := ψ U (ψ ∧ φ)` and Strong Trigger `ST(φ,ψ) := ψ S (ψ ∧ φ)` as derived operator definitions in Formula.lean. These complete the classical operator quartets {U, W, R, M} (future) and {S, WS, T, ST} (past) used in positive normal form LTL. (1) Add `strong_release` and `strong_trigger` definitions (one line each). (2) Add complexity pattern-matching with overhead 2. (3) Add bimodal interaction schemata (~14-20 new patterns, e.g. `□φ → G(M(φ,ψ))`, interaction with always/sometimes). (4) Update `hasBimodalInteraction` to include M/ST patterns. (5) Add axiom schemata for M/ST interactions with modal operators. (6) Verify with c5 generation that new bimodal formulas appear.
 
