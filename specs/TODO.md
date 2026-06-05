@@ -83,8 +83,8 @@ technical_debt:
 
 275 [COMPLETED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [COMPLETED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
-    └─ 280 [PLANNED] — Add contrastive minimal-pair mutation pass for labeled corpus
-277 [PLANNED] — Instrument tableau prover with rule-firing trace certificates
+    └─ 280 [IMPLEMENTING] — Add contrastive minimal-pair mutation pass for labeled corpus
+277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set
 278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -194,13 +194,14 @@ technical_debt:
 
 ### 277. Instrument tableau prover with rule-firing trace certificates
 - **Effort**: medium (6-10 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
 - **Research**: [specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md]
 - **Plan**: [specs/277_tableau_rule_firing_traces/plans/01_trace-certificates-implementation.md]
+- **Summary**: Instrumented Tableau.lean with rule-firing trace certificates. Added TraceCertificate.lean (5 inductive types, StateM monad), TraceExport.lean (string-based JSON), trace_exporter CLI executable, decideWithTrace API. All 4 existing termination/soundness proofs in Saturation.lean preserved via parallel _tracedImpl functions. Lake build passes (1686 jobs); 28/28 tests pass; 0 sorries; 0 new axioms.
 
 **Description**: Instrument the tableau decision procedure in Tableau.lean to emit rule-firing traces during proof search. Each trace entry records `(rule_name, formula, world_label)` identifying which axiom schema was instantiated. (1) Add a `ProofCertificate` structure to collect trace entries during tableau expansion. (2) Thread the certificate through the proof search, recording each rule application (K, T, 4, 5, temporal Until-unfolding, Since-unfolding, G-introduction, etc.). (3) Post-process traces to compute per-proof axiom multisets (which axioms, how many times each). (4) Export axiom fingerprint and tableau branching factor to JSONL output. (5) For failed proof attempts (timeouts), preserve partial traces. This enables axiom diversity scoring, proof complexity stratification, and curriculum-based training data generation. Reference: Libal & Volpe (2016) "Certification of Prefixed Tableau Proofs for Modal Logic."
 
@@ -232,7 +233,7 @@ technical_debt:
 
 ### 280. Add contrastive minimal-pair mutation pass for labeled corpus
 - **Effort**: medium (6-10 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement

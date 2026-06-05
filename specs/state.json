@@ -203,13 +203,13 @@
     {
       "project_number": 277,
       "project_name": "tableau_rule_firing_traces",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T15:37:11Z",
+      "last_updated": "2026-06-05T16:52:20Z",
       "session_id": "sess_1780673816_932f2f",
       "researched": "2026-06-05T02:02:18Z",
       "artifacts": [
@@ -222,8 +222,14 @@
           "path": "specs/277_tableau_rule_firing_traces/plans/01_trace-certificates-implementation.md",
           "type": "plan",
           "summary": "Phased plan to instrument Tableau.lean with rule-firing trace certificates, threading a ProofCertificate via StateM without breaking the 4 existing termination/soundness proofs in Saturation.lean."
+        },
+        {
+          "path": "specs/277_tableau_rule_firing_traces/summaries/01_trace-certificates-implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 8/8 phases complete, lake build passes (1686 jobs), 28/28 tests pass, 0 sorries, 0 new axioms, all 4 existing proofs preserved."
         }
-      ]
+      ],
+      "completion_summary": "Instrumented Tableau.lean with rule-firing trace certificates. Added TraceCertificate.lean (5 inductive types, StateM monad), TraceExport.lean (string-based JSON), trace_exporter CLI executable, decideWithTrace API. All 4 existing termination/soundness proofs in Saturation.lean preserved via parallel _tracedImpl functions. Lake build passes (1686 jobs); 28/28 tests pass; 0 sorries; 0 new axioms."
     },
     {
       "project_number": 278,
@@ -250,15 +256,15 @@
     {
       "project_number": 280,
       "project_name": "contrastive_minimal_pair_generation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "dependencies": [
         275,
         276
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T16:27:16Z",
-      "session_id": "sess_1780676662_8387b1",
+      "last_updated": "2026-06-05T16:35:53Z",
+      "session_id": "sess_1780677343_a4f654",
       "artifacts": [
         {
           "path": "specs/280_contrastive_minimal_pair_generation/reports/01_research.md",

@@ -1,7 +1,7 @@
 # Implementation Plan: Task 277 — Instrument Tableau Prover with Rule-Firing Trace Certificates
 
 - **Task**: 277 - tableau_rule_firing_traces
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md`
@@ -196,7 +196,7 @@ are covered via the `RuleResult.linear / .branching / .persistent` cases.
   - `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean` — new file (~250 LOC).
   - `Tests/BimodalTest/TraceExportTest.lean` — round-trip test (~40 LOC).
 
-### Phase 7: `lake exe trace_exporter` Executable with CLI Parser [IN PROGRESS]
+### Phase 7: `lake exe trace_exporter` Executable with CLI Parser [COMPLETED]
 
 - **Goal**: Add a CLI executable `trace_exporter` that runs `decideWithTrace` over a list of formulas (read from a file or via a small built-in enumerator) and writes one JSONL line per run. Mirror the structure of `proof_extractor` and `tableau_proof_steps` in `lakefile.lean`.
 - **Tasks**:
@@ -214,7 +214,7 @@ are covered via the `RuleResult.linear / .branching / .persistent` cases.
   - `lakefile.lean` — add `lean_exe trace_exporter` block (~6 LOC).
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — add `decideWithTraceIO` wrapper.
 
-### Phase 8: Test Suite and End-to-End Smoke Test [NOT STARTED]
+### Phase 8: Test Suite and End-to-End Smoke Test [COMPLETED]
 
 - **Goal**: Provide a comprehensive test suite in `Tests/BimodalTest/` validating the trace shape, the timeout partial-trace path, the JSONL output, the `axiomFingerprint` accuracy, and a CLI smoke test.
 - **Tasks**:

@@ -76,6 +76,37 @@ inductive MutationType where
   | temporalDepthReduction
   /-- Apply temporal duality via swap_temporal. -/
   | temporalDuality
+  -- Single-occurrence mutations (task 280)
+  /-- Swap box to diamond at a specific occurrence index. -/
+  | boxToDiamondAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap diamond to box at a specific occurrence index. -/
+  | diamondToBoxAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap until to release at a specific occurrence index. -/
+  | untilToReleaseAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap release to until at a specific occurrence index. -/
+  | releaseToUntilAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap some_future to all_future at a specific occurrence index. -/
+  | futureToGloballyAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap all_future to some_future at a specific occurrence index. -/
+  | globallyToFutureAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap some_past to all_past at a specific occurrence index. -/
+  | pastToHistoricallyAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap all_past to some_past at a specific occurrence index. -/
+  | historicallyToPastAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap weak_until to strong_release at a specific occurrence index. -/
+  | weakUntilToStrongReleaseAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap strong_release to weak_until at a specific occurrence index. -/
+  | strongReleaseToWeakUntilAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap trigger to strong_trigger at a specific occurrence index. -/
+  | triggerToStrongTriggerAtOccurrence (occurrenceIdx : Nat)
+  /-- Swap strong_trigger to trigger at a specific occurrence index. -/
+  | strongTriggerToTriggerAtOccurrence (occurrenceIdx : Nat)
+  /-- Flip implication direction at a specific occurrence index. -/
+  | flipImplicationAtOccurrence (occurrenceIdx : Nat)
+  /-- Remove left conjunct at a specific occurrence index. -/
+  | removeLeftConjunctAtOccurrence (occurrenceIdx : Nat)
+  /-- Remove right conjunct at a specific occurrence index. -/
+  | removeRightConjunctAtOccurrence (occurrenceIdx : Nat)
   deriving Repr, BEq
 
 /-- A contrastive pair linking an original formula to its mutated variant. -/
@@ -156,6 +187,163 @@ Returns `some inner` if the formula matches this pattern.
 -/
 def matchAllPast : Formula → Option Formula
   | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot => some inner
+  | _ => none
+
+/-!
+## Single-Occurrence Mutation Engine
+
+The engine applies a transformation at exactly one AST node, producing
+a list of (mutated_formula, occurrence_index) pairs. Each pair represents
+a mutant where one structural change was made.
+-/
+
+/--
+Apply a transformation at exactly one occurrence in a formula.
+
+Takes a `Formula` and a `Formula → Option Formula` transformer.
+Returns a list of (mutated_formula, occurrence_index) pairs where each
+mutant differs from the original by exactly one AST node transformation.
+
+The occurrence index is assigned sequentially in depth-first order
+to each node where `transform` returns `some`.
+-/
+def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formula) : List (Formula × Nat) :=
+  let rec go (ψ : Formula) (idx : Nat) : List (Formula × Nat) × Nat :=
+    match transform ψ with
+    | some mutated =>
+      let (childMuts, nextIdx) := match ψ with
+      | .atom _ | .bot => ([], idx + 1)
+      | .imp a b =>
+        let (m1, i1) := go a (idx + 1)
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.imp m b, i)) ++ m2.map (fun (m, i) => (.imp a m, i))
+        (wrapped, i2)
+      | .box a =>
+        let (m1, i1) := go a (idx + 1)
+        let wrapped := m1.map (fun (m, i) => (.box m, i))
+        (wrapped, i1)
+      | .untl a b =>
+        let (m1, i1) := go a (idx + 1)
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map (fun (m, i) => (.untl a m, i))
+        (wrapped, i2)
+      | .snce a b =>
+        let (m1, i1) := go a (idx + 1)
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map (fun (m, i) => (.snce a m, i))
+        (wrapped, i2)
+      ((mutated, idx) :: childMuts, nextIdx)
+    | none =>
+      let (childMuts, nextIdx) := match ψ with
+      | .atom _ | .bot => ([], idx)
+      | .imp a b =>
+        let (m1, i1) := go a idx
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.imp m b, i)) ++ m2.map (fun (m, i) => (.imp a m, i))
+        (wrapped, i2)
+      | .box a =>
+        let (m1, i1) := go a idx
+        let wrapped := m1.map (fun (m, i) => (.box m, i))
+        (wrapped, i1)
+      | .untl a b =>
+        let (m1, i1) := go a idx
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map (fun (m, i) => (.untl a m, i))
+        (wrapped, i2)
+      | .snce a b =>
+        let (m1, i1) := go a idx
+        let (m2, i2) := go b i1
+        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map (fun (m, i) => (.snce a m, i))
+        (wrapped, i2)
+      (childMuts, nextIdx)
+  go φ 0 |>.1
+
+/-!
+## Specific Single-Occurrence Mutation Transformers
+-/
+
+/-- Match `box φ` and return `diamond φ`. -/
+def trySwapBoxDiamond : Formula → Option Formula
+  | .box φ => some φ.diamond
+  | _ => none
+
+/-- Match `diamond φ` (primitive: `imp (box (imp φ bot)) bot`) and return `box φ`. -/
+def trySwapDiamondBox : Formula → Option Formula
+  | .imp (.box (.imp inner .bot)) .bot => some (.box inner)
+  | _ => none
+
+/-- Match `untl φ ψ` and return `release φ ψ`. -/
+def trySwapUntilRelease : Formula → Option Formula
+  | .untl φ ψ => some (Formula.release φ ψ)
+  | _ => none
+
+/-- Match `release φ ψ` (primitive: `imp (untl (imp φ bot) (imp ψ bot)) bot`) and return `untl φ ψ`. -/
+def trySwapReleaseUntil : Formula → Option Formula
+  | .imp (.untl (.imp inner1 .bot) (.imp inner2 .bot)) .bot =>
+    some (.untl inner1 inner2)
+  | _ => none
+
+/-- Match `some_future φ` (primitive: `untl φ top`) and return `all_future φ`. -/
+def trySwapFutureGlobally : Formula → Option Formula
+  | .untl φ (.imp .bot .bot) => some (Formula.all_future φ)
+  | _ => none
+
+/-- Match `all_future φ` (primitive: `imp (untl (imp φ bot) top) bot`) and return `some_future φ`. -/
+def trySwapGloballyFuture : Formula → Option Formula
+  | .imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot =>
+    some (Formula.some_future inner)
+  | _ => none
+
+/-- Match `some_past φ` (primitive: `snce φ top`) and return `all_past φ`. -/
+def trySwapPastHistorically : Formula → Option Formula
+  | .snce φ (.imp .bot .bot) => some (Formula.all_past φ)
+  | _ => none
+
+/-- Match `all_past φ` (primitive: `imp (snce (imp φ bot) top) bot`) and return `some_past φ`. -/
+def trySwapHistoricallyPast : Formula → Option Formula
+  | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot =>
+    some (Formula.some_past inner)
+  | _ => none
+
+/-- Match `weak_until φ ψ` and return `strong_release φ ψ`. -/
+def trySwapWeakUntilStrongRelease : Formula → Option Formula
+  | .imp (.imp (.untl φ ψ1) .bot) (.imp (.untl (.imp ψ2 .bot) (.imp .bot .bot)) .bot) =>
+    if ψ1 == ψ2 then some (Formula.strong_release φ ψ1) else none
+  | _ => none
+
+/-- Match `strong_release φ ψ` and return `weak_until φ ψ`. -/
+def trySwapStrongReleaseWeakUntil : Formula → Option Formula
+  | .untl (.imp (.imp ψ1 (.imp φ .bot)) .bot) ψ2 =>
+    if ψ1 == ψ2 then some (Formula.weak_until φ ψ1) else none
+  | _ => none
+
+/-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and return `strong_trigger φ ψ`. -/
+def trySwapTriggerStrongTrigger : Formula → Option Formula
+  | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
+    some (Formula.strong_trigger φ ψ)
+  | _ => none
+
+/-- Match `strong_trigger φ ψ` and return `trigger φ ψ`. -/
+def trySwapStrongTriggerTrigger : Formula → Option Formula
+  | .snce (.imp (.imp ψ1 (.imp φ .bot)) .bot) ψ2 =>
+    if ψ1 == ψ2 then some (Formula.trigger φ ψ1) else none
+  | _ => none
+
+/-- Match `imp φ ψ` where `ψ != bot` and return `imp ψ φ`. -/
+def tryFlipImplication : Formula → Option Formula
+  | .imp φ ψ =>
+    if ψ == .bot then none
+    else some (.imp ψ φ)
+  | _ => none
+
+/-- Match `and φ ψ` (primitive: `imp (imp φ (imp ψ bot)) bot`) and return the right conjunct `ψ`. -/
+def tryRemoveLeftConjunct : Formula → Option Formula
+  | .imp (.imp φ (.imp ψ .bot)) .bot => some ψ
+  | _ => none
+
+/-- Match `and φ ψ` (primitive: `imp (imp φ (imp ψ bot)) bot`) and return the left conjunct `φ`. -/
+def tryRemoveRightConjunct : Formula → Option Formula
+  | .imp (.imp φ (.imp ψ .bot)) .bot => some φ
   | _ => none
 
 /-!
@@ -307,7 +495,21 @@ Returns a list of (mutated_formula, mutation_type) pairs. The mutations include:
 6. Modal depth reduction: if the formula has modal depth > 0
 7. Temporal depth reduction: if the formula has temporal depth > 0
 8. Temporal duality: if the formula contains temporal operators
+9. Single-occurrence mutations: ~10 fine-grained structural changes
 -/
+
+/-- Deduplicate mutation list by formula, keeping the first occurrence. -/
+private def dedupMutations (muts : List (Formula × MutationType)) : List (Formula × MutationType) :=
+  let rec go (acc : List (Formula × MutationType)) (seen : List Formula) (rest : List (Formula × MutationType)) : List (Formula × MutationType) :=
+    match rest with
+    | [] => acc.reverse
+    | (f, mt) :: rest' =>
+      if seen.contains f then
+        go acc seen rest'
+      else
+        go ((f, mt) :: acc) (f :: seen) rest'
+  go [] [] muts
+
 def generateMutations (φ : Formula) : List (Formula × MutationType) :=
   let atomMutations := (collectAtoms φ).map fun a =>
     (mutateAtomToBot φ a, MutationType.atomSubBot a)
@@ -345,9 +547,47 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
       let m := φ.swap_temporal
       if m == φ then [] else [(m, MutationType.temporalDuality)]
     else []
+  -- Single-occurrence mutations (task 280)
+  let boxToDiamondOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapBoxDiamond).map fun (m, i) => (m, .boxToDiamondAtOccurrence i)
+  let diamondToBoxOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapDiamondBox).map fun (m, i) => (m, .diamondToBoxAtOccurrence i)
+  let untilToReleaseOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapUntilRelease).map fun (m, i) => (m, .untilToReleaseAtOccurrence i)
+  let releaseToUntilOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapReleaseUntil).map fun (m, i) => (m, .releaseToUntilAtOccurrence i)
+  let futureToGloballyOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapFutureGlobally).map fun (m, i) => (m, .futureToGloballyAtOccurrence i)
+  let globallyToFutureOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapGloballyFuture).map fun (m, i) => (m, .globallyToFutureAtOccurrence i)
+  let pastToHistoricallyOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapPastHistorically).map fun (m, i) => (m, .pastToHistoricallyAtOccurrence i)
+  let historicallyToPastOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapHistoricallyPast).map fun (m, i) => (m, .historicallyToPastAtOccurrence i)
+  let weakUntilToStrongReleaseOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapWeakUntilStrongRelease).map fun (m, i) => (m, .weakUntilToStrongReleaseAtOccurrence i)
+  let strongReleaseToWeakUntilOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapStrongReleaseWeakUntil).map fun (m, i) => (m, .strongReleaseToWeakUntilAtOccurrence i)
+  let triggerToStrongTriggerOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapTriggerStrongTrigger).map fun (m, i) => (m, .triggerToStrongTriggerAtOccurrence i)
+  let strongTriggerToTriggerOccs := dedupMutations <|
+    (mutateSingleOccurrence φ trySwapStrongTriggerTrigger).map fun (m, i) => (m, .strongTriggerToTriggerAtOccurrence i)
+  let flipImplicationOccs := dedupMutations <|
+    (mutateSingleOccurrence φ tryFlipImplication).map fun (m, i) => (m, .flipImplicationAtOccurrence i)
+  let removeLeftConjunctOccs := dedupMutations <|
+    (mutateSingleOccurrence φ tryRemoveLeftConjunct).map fun (m, i) => (m, .removeLeftConjunctAtOccurrence i)
+  let removeRightConjunctOccs := dedupMutations <|
+    (mutateSingleOccurrence φ tryRemoveRightConjunct).map fun (m, i) => (m, .removeRightConjunctAtOccurrence i)
   -- Combine all mutations, filter out those producing same formula as original
   let allMutations := atomMutations ++ boxMutation ++ gMutation ++ hMutation
     ++ subDeletions ++ modalReduction ++ temporalReduction ++ dualityMutation
+    ++ boxToDiamondOccs ++ diamondToBoxOccs
+    ++ untilToReleaseOccs ++ releaseToUntilOccs
+    ++ futureToGloballyOccs ++ globallyToFutureOccs
+    ++ pastToHistoricallyOccs ++ historicallyToPastOccs
+    ++ weakUntilToStrongReleaseOccs ++ strongReleaseToWeakUntilOccs
+    ++ triggerToStrongTriggerOccs ++ strongTriggerToTriggerOccs
+    ++ flipImplicationOccs ++ removeLeftConjunctOccs ++ removeRightConjunctOccs
   allMutations.filter fun (m, _) => m != φ
 
 /-!
@@ -355,83 +595,25 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
 -/
 
 /--
-Run the decision procedure on a mutated formula and construct a contrastive pair.
+Run the labeling pipeline on a mutated formula and construct a contrastive pair.
 
-Uses `decideAuto` (with fallback to `decideOptimized` on timeout) to classify
-the mutated formula. If the mutation is invalid, also extracts an enriched
-countermodel for richer corrective signal.
+Uses `DatasetGenerator.labelFormula` (with structural pre-filter, wall-clock
+timeout, and enriched countermodel extraction) instead of raw `decideAuto`.
 -/
 def classifyMutation (original : Formula) (originalLabel : FormulaLabel)
     (originalProofTrace : Option ProofTrace)
     (mutated : Formula) (mutationType : MutationType) : IO ContrastivePair := do
-  let result := decideAuto mutated
-  match result with
-  | .valid _ =>
-    return {
-      original := original
-      originalLabel := originalLabel
-      mutated := mutated
-      mutatedLabel := .valid
-      mutationType := mutationType
-      countermodel := none
-      enrichedCountermodel := none
-      originalProofTrace := originalProofTrace
-    }
-  | .invalid cm =>
-    -- Also try to get enriched countermodel
-    let ecm := match findEnrichedCountermodel mutated with
-      | .found e => some e
-      | _ => none
-    return {
-      original := original
-      originalLabel := originalLabel
-      mutated := mutated
-      mutatedLabel := .invalid
-      mutationType := mutationType
-      countermodel := some cm
-      enrichedCountermodel := ecm
-      originalProofTrace := originalProofTrace
-    }
-  | .timeout =>
-    -- Retry with decideOptimized
-    let retryResult := decideOptimized mutated
-    match retryResult with
-    | .valid _ =>
-      return {
-        original := original
-        originalLabel := originalLabel
-        mutated := mutated
-        mutatedLabel := .valid
-        mutationType := mutationType
-        countermodel := none
-        enrichedCountermodel := none
-        originalProofTrace := originalProofTrace
-      }
-    | .invalid cm =>
-      let ecm := match findEnrichedCountermodel mutated with
-        | .found e => some e
-        | _ => none
-      return {
-        original := original
-        originalLabel := originalLabel
-        mutated := mutated
-        mutatedLabel := .invalid
-        mutationType := mutationType
-        countermodel := some cm
-        enrichedCountermodel := ecm
-        originalProofTrace := originalProofTrace
-      }
-    | .timeout =>
-      return {
-        original := original
-        originalLabel := originalLabel
-        mutated := mutated
-        mutatedLabel := .timeout
-        mutationType := mutationType
-        countermodel := none
-        enrichedCountermodel := none
-        originalProofTrace := originalProofTrace
-      }
+  let labeled ← labelFormula mutated .Base 1000
+  return {
+    original := original
+    originalLabel := originalLabel
+    mutated := mutated
+    mutatedLabel := labeled.label
+    mutationType := mutationType
+    countermodel := labeled.countermodel
+    enrichedCountermodel := labeled.enrichedCountermodel
+    originalProofTrace := originalProofTrace
+  }
 
 /--
 Generate all contrastive pairs for a labeled formula.
@@ -512,6 +694,22 @@ def MutationType.toString : MutationType → String
   | .modalDepthReduction => "modal_depth_reduction"
   | .temporalDepthReduction => "temporal_depth_reduction"
   | .temporalDuality => "temporal_duality"
+  -- Single-occurrence mutations (task 280)
+  | .boxToDiamondAtOccurrence i => s!"box_to_diamond_at({i})"
+  | .diamondToBoxAtOccurrence i => s!"diamond_to_box_at({i})"
+  | .untilToReleaseAtOccurrence i => s!"until_to_release_at({i})"
+  | .releaseToUntilAtOccurrence i => s!"release_to_until_at({i})"
+  | .futureToGloballyAtOccurrence i => s!"future_to_globally_at({i})"
+  | .globallyToFutureAtOccurrence i => s!"globally_to_future_at({i})"
+  | .pastToHistoricallyAtOccurrence i => s!"past_to_historically_at({i})"
+  | .historicallyToPastAtOccurrence i => s!"historically_to_past_at({i})"
+  | .weakUntilToStrongReleaseAtOccurrence i => s!"weak_until_to_strong_release_at({i})"
+  | .strongReleaseToWeakUntilAtOccurrence i => s!"strong_release_to_weak_until_at({i})"
+  | .triggerToStrongTriggerAtOccurrence i => s!"trigger_to_strong_trigger_at({i})"
+  | .strongTriggerToTriggerAtOccurrence i => s!"strong_trigger_to_trigger_at({i})"
+  | .flipImplicationAtOccurrence i => s!"flip_implication_at({i})"
+  | .removeLeftConjunctAtOccurrence i => s!"remove_left_conjunct_at({i})"
+  | .removeRightConjunctAtOccurrence i => s!"remove_right_conjunct_at({i})"
 
 /--
 Convert a `MutationType` to a JSON-safe string for the mutation_type field.
@@ -525,6 +723,22 @@ def MutationType.toJson : MutationType → String
   | .modalDepthReduction => "\"modal_depth_reduction\""
   | .temporalDepthReduction => "\"temporal_depth_reduction\""
   | .temporalDuality => "\"temporal_duality\""
+  -- Single-occurrence mutations (task 280)
+  | .boxToDiamondAtOccurrence i => "\"box_to_diamond_at_" ++ toString i ++ "\""
+  | .diamondToBoxAtOccurrence i => "\"diamond_to_box_at_" ++ toString i ++ "\""
+  | .untilToReleaseAtOccurrence i => "\"until_to_release_at_" ++ toString i ++ "\""
+  | .releaseToUntilAtOccurrence i => "\"release_to_until_at_" ++ toString i ++ "\""
+  | .futureToGloballyAtOccurrence i => "\"future_to_globally_at_" ++ toString i ++ "\""
+  | .globallyToFutureAtOccurrence i => "\"globally_to_future_at_" ++ toString i ++ "\""
+  | .pastToHistoricallyAtOccurrence i => "\"past_to_historically_at_" ++ toString i ++ "\""
+  | .historicallyToPastAtOccurrence i => "\"historically_to_past_at_" ++ toString i ++ "\""
+  | .weakUntilToStrongReleaseAtOccurrence i => "\"weak_until_to_strong_release_at_" ++ toString i ++ "\""
+  | .strongReleaseToWeakUntilAtOccurrence i => "\"strong_release_to_weak_until_at_" ++ toString i ++ "\""
+  | .triggerToStrongTriggerAtOccurrence i => "\"trigger_to_strong_trigger_at_" ++ toString i ++ "\""
+  | .strongTriggerToTriggerAtOccurrence i => "\"strong_trigger_to_trigger_at_" ++ toString i ++ "\""
+  | .flipImplicationAtOccurrence i => "\"flip_implication_at_" ++ toString i ++ "\""
+  | .removeLeftConjunctAtOccurrence i => "\"remove_left_conjunct_at_" ++ toString i ++ "\""
+  | .removeRightConjunctAtOccurrence i => "\"remove_right_conjunct_at_" ++ toString i ++ "\""
 
 /--
 Produce a JSON string for the mutation_detail field.
@@ -538,6 +752,59 @@ def MutationType.detailJson : MutationType → String
     "{\"target\": \"" ++ escapeJsonString target.prettyPrint
     ++ "\", \"replacement\": \"" ++ escapeJsonString replacement.prettyPrint ++ "\"}"
   | _ => "null"
+
+/-- Map each mutation type to its high-level family string. -/
+def MutationType.mutationFamily : MutationType → String
+  | .atomSubBot _ => "atom_sub"
+  | .boxToDiamond | .boxToDiamondAtOccurrence _ | .diamondToBoxAtOccurrence _ => "modal_swap"
+  | .allFutureToSomeFuture | .allPastToSomePast => "global_weakening"
+  | .subformulaDeletion _ _ => "subformula_deletion"
+  | .modalDepthReduction => "modal_depth_reduction"
+  | .temporalDepthReduction => "temporal_depth_reduction"
+  | .temporalDuality => "temporal_duality"
+  | .untilToReleaseAtOccurrence _ | .releaseToUntilAtOccurrence _ => "temporal_swap"
+  | .futureToGloballyAtOccurrence _ | .globallyToFutureAtOccurrence _
+  | .pastToHistoricallyAtOccurrence _ | .historicallyToPastAtOccurrence _ => "temporal_swap"
+  | .weakUntilToStrongReleaseAtOccurrence _ | .strongReleaseToWeakUntilAtOccurrence _ => "derived_swap"
+  | .triggerToStrongTriggerAtOccurrence _ | .strongTriggerToTriggerAtOccurrence _ => "derived_swap"
+  | .flipImplicationAtOccurrence _ => "structural_flip"
+  | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunct_removal"
+
+/-- Return the original operator name for a single-occurrence mutation. -/
+def MutationType.originalOperator : MutationType → String
+  | .boxToDiamond | .boxToDiamondAtOccurrence _ => "box"
+  | .diamondToBoxAtOccurrence _ => "diamond"
+  | .allFutureToSomeFuture | .globallyToFutureAtOccurrence _ => "globally"
+  | .allPastToSomePast | .historicallyToPastAtOccurrence _ => "historically"
+  | .futureToGloballyAtOccurrence _ => "future"
+  | .pastToHistoricallyAtOccurrence _ => "past"
+  | .untilToReleaseAtOccurrence _ => "until"
+  | .releaseToUntilAtOccurrence _ => "release"
+  | .weakUntilToStrongReleaseAtOccurrence _ => "weak_until"
+  | .strongReleaseToWeakUntilAtOccurrence _ => "strong_release"
+  | .triggerToStrongTriggerAtOccurrence _ => "trigger"
+  | .strongTriggerToTriggerAtOccurrence _ => "strong_trigger"
+  | .flipImplicationAtOccurrence _ => "implication"
+  | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunction"
+  | _ => "unknown"
+
+/-- Return the mutated operator name for a single-occurrence mutation. -/
+def MutationType.mutatedOperator : MutationType → String
+  | .boxToDiamond | .boxToDiamondAtOccurrence _ => "diamond"
+  | .diamondToBoxAtOccurrence _ => "box"
+  | .allFutureToSomeFuture | .globallyToFutureAtOccurrence _ => "future"
+  | .allPastToSomePast | .historicallyToPastAtOccurrence _ => "past"
+  | .futureToGloballyAtOccurrence _ => "globally"
+  | .pastToHistoricallyAtOccurrence _ => "historically"
+  | .untilToReleaseAtOccurrence _ => "release"
+  | .releaseToUntilAtOccurrence _ => "until"
+  | .weakUntilToStrongReleaseAtOccurrence _ => "strong_release"
+  | .strongReleaseToWeakUntilAtOccurrence _ => "weak_until"
+  | .triggerToStrongTriggerAtOccurrence _ => "strong_trigger"
+  | .strongTriggerToTriggerAtOccurrence _ => "trigger"
+  | .flipImplicationAtOccurrence _ => "implication"
+  | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunct_removed"
+  | _ => "unknown"
 
 /--
 Serialize an `Option SimpleCountermodel` to a JSON string.
@@ -582,10 +849,27 @@ def ContrastivePair.toJson (cp : ContrastivePair) : String :=
     ++ ", \"countermodel\": " ++ cmStr
     ++ ", \"enriched_countermodel\": " ++ ecmStr
     ++ "}"
+  let occIdxStr := match cp.mutationType with
+    | .boxToDiamondAtOccurrence i | .diamondToBoxAtOccurrence i
+    | .untilToReleaseAtOccurrence i | .releaseToUntilAtOccurrence i
+    | .futureToGloballyAtOccurrence i | .globallyToFutureAtOccurrence i
+    | .pastToHistoricallyAtOccurrence i | .historicallyToPastAtOccurrence i
+    | .weakUntilToStrongReleaseAtOccurrence i | .strongReleaseToWeakUntilAtOccurrence i
+    | .triggerToStrongTriggerAtOccurrence i | .strongTriggerToTriggerAtOccurrence i
+    | .flipImplicationAtOccurrence i | .removeLeftConjunctAtOccurrence i
+    | .removeRightConjunctAtOccurrence i => toString i
+    | _ => "null"
+  let familyStr := cp.mutationType.mutationFamily
+  let origOpStr := cp.mutationType.originalOperator
+  let mutOpStr := cp.mutationType.mutatedOperator
   "{\"original\": " ++ originalStr
     ++ ", \"mutation\": " ++ mutatedStr
     ++ ", \"mutation_type\": " ++ cp.mutationType.toJson
     ++ ", \"mutation_detail\": " ++ cp.mutationType.detailJson
+    ++ ", \"occurrence_index\": " ++ occIdxStr
+    ++ ", \"mutation_family\": \"" ++ escapeJsonString familyStr ++ "\""
+    ++ ", \"original_operator\": \"" ++ escapeJsonString origOpStr ++ "\""
+    ++ ", \"mutated_operator\": \"" ++ escapeJsonString mutOpStr ++ "\""
     ++ "}"
 
 /-!
@@ -630,7 +914,7 @@ structure ContrastiveBatchStats where
   contrastiveCount : Nat
   /-- Yield rate (contrastive / total). -/
   yieldRate : Float
-  /-- Breakdown by mutation type. -/
+  /-- Breakdown by legacy mutation type. -/
   atomSubBotCount : Nat
   boxToDiamondCount : Nat
   allFutureToSomeCount : Nat
@@ -639,6 +923,12 @@ structure ContrastiveBatchStats where
   modalReductionCount : Nat
   temporalReductionCount : Nat
   temporalDualityCount : Nat
+  /-- Breakdown by single-occurrence mutation family (task 280). -/
+  modalSwapCount : Nat
+  temporalSwapCount : Nat
+  derivedSwapCount : Nat
+  structuralFlipCount : Nat
+  conjunctRemovalCount : Nat
   deriving Repr
 
 /--
@@ -661,6 +951,11 @@ def computeContrastiveStats (totalMutations : Nat) (pairs : List ContrastivePair
     modalReductionCount := pairs.filter (fun p => match p.mutationType with | .modalDepthReduction => true | _ => false) |>.length
     temporalReductionCount := pairs.filter (fun p => match p.mutationType with | .temporalDepthReduction => true | _ => false) |>.length
     temporalDualityCount := pairs.filter (fun p => match p.mutationType with | .temporalDuality => true | _ => false) |>.length
+    modalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "modal_swap") |>.length
+    temporalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "temporal_swap") |>.length
+    derivedSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "derived_swap") |>.length
+    structuralFlipCount := pairs.filter (fun p => p.mutationType.mutationFamily == "structural_flip") |>.length
+    conjunctRemovalCount := pairs.filter (fun p => p.mutationType.mutationFamily == "conjunct_removal") |>.length
   }
 
 /--
@@ -671,7 +966,7 @@ def printContrastiveStats (stats : ContrastiveBatchStats) : IO Unit := do
   IO.println s!"Total mutations attempted: {stats.totalMutations}"
   IO.println s!"Contrastive pairs found: {stats.contrastiveCount}"
   IO.println s!"Yield rate: {stats.yieldRate}%"
-  IO.println "\nBreakdown by mutation type:"
+  IO.println "\nBreakdown by legacy mutation type:"
   IO.println s!"  atom_sub_bot: {stats.atomSubBotCount}"
   IO.println s!"  box_to_diamond: {stats.boxToDiamondCount}"
   IO.println s!"  all_future_to_some: {stats.allFutureToSomeCount}"
@@ -680,6 +975,54 @@ def printContrastiveStats (stats : ContrastiveBatchStats) : IO Unit := do
   IO.println s!"  modal_depth_reduction: {stats.modalReductionCount}"
   IO.println s!"  temporal_depth_reduction: {stats.temporalReductionCount}"
   IO.println s!"  temporal_duality: {stats.temporalDualityCount}"
+  IO.println "\nBreakdown by single-occurrence mutation family:"
+  IO.println s!"  modal_swap: {stats.modalSwapCount}"
+  IO.println s!"  temporal_swap: {stats.temporalSwapCount}"
+  IO.println s!"  derived_swap: {stats.derivedSwapCount}"
+  IO.println s!"  structural_flip: {stats.structuralFlipCount}"
+  IO.println s!"  conjunct_removal: {stats.conjunctRemovalCount}"
+
+/--
+Write per-mutation-family yield statistics to a JSON summary file.
+-/
+def writeYieldSummary (stats : ContrastiveBatchStats) (path : System.FilePath) : IO Unit := do
+  let handle ← IO.FS.Handle.mk path .write
+  let json := "{\"total_mutations\": " ++ toString stats.totalMutations
+    ++ ", \"contrastive_count\": " ++ toString stats.contrastiveCount
+    ++ ", \"yield_rate\": " ++ toString stats.yieldRate
+    ++ ", \"families\": {"
+    ++ "\"atom_sub\": " ++ toString stats.atomSubBotCount
+    ++ ", \"modal_swap\": " ++ toString stats.modalSwapCount
+    ++ ", \"global_weakening\": " ++ toString (stats.allFutureToSomeCount + stats.allPastToSomeCount)
+    ++ ", \"subformula_deletion\": " ++ toString stats.subformulaDeletionCount
+    ++ ", \"modal_depth_reduction\": " ++ toString stats.modalReductionCount
+    ++ ", \"temporal_depth_reduction\": " ++ toString stats.temporalReductionCount
+    ++ ", \"temporal_duality\": " ++ toString stats.temporalDualityCount
+    ++ ", \"temporal_swap\": " ++ toString stats.temporalSwapCount
+    ++ ", \"derived_swap\": " ++ toString stats.derivedSwapCount
+    ++ ", \"structural_flip\": " ++ toString stats.structuralFlipCount
+    ++ ", \"conjunct_removal\": " ++ toString stats.conjunctRemovalCount
+    ++ "}}"
+  handle.putStrLn json
+
+/--
+Run the contrastive pair generation pipeline over a pre-labeled corpus.
+
+Takes a list of labeled formulas (e.g., from c5/c7 corpus), generates
+contrastive pairs, writes them to JSONL, and exports yield statistics
+to a separate JSON summary file.
+-/
+def runBatchContrastive (labeledFormulas : List LabeledFormula)
+    (outputPath : System.FilePath)
+    (summaryPath : System.FilePath) : IO Unit := do
+  IO.println s!"Running batch contrastive on {labeledFormulas.length} labeled formulas..."
+  let pairs ← generateBatchContrastive labeledFormulas
+  let stats := computeContrastiveStats (pairs.length + (pairs.filter (·.mutatedLabel == .timeout)).length) pairs
+  writeContrastiveJSONL pairs outputPath
+  writeYieldSummary stats summaryPath
+  printContrastiveStats stats
+  IO.println s!"Output written to: {outputPath}"
+  IO.println s!"Summary written to: {summaryPath}"
 
 end Bimodal.Automation.FormulaMutator
 
