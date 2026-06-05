@@ -239,7 +239,19 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                 let snces := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
-                (untls ++ snces, c2b)
+                let releases := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                let weakUntils := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_until l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                let triggers := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_since l r)) acc
+                ) (Array.mkEmpty (tLefts.size * tRights.size))
+                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces, c2b)
               else (#[], c2)
               (accArr ++ imps ++ temporalBinaries, c3)
           ) (#[], cache1a))
@@ -341,94 +353,119 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     -- 5 = G/H (if temporal ok and sizeBudget > 8)
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
-    let hasDerivedFP := hasTemporal && sizeBudget > 1
-    let hasDerivedGH := hasTemporal && sizeBudget > 1
-    let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0)
-                        + (if hasDerivedFP then 1 else 0) + (if hasDerivedGH then 1 else 0)
-    let (rng1, choice) := rng.randBound numChoices
-    if choice == 0 then
-      -- Base: atom or bot
-      let numBase := atoms.length + 1
-      let (rng2, idx) := rng1.randBound numBase
-      if idx == 0 then (rng2, Formula.bot)
-      else match atoms[idx - 1]? with
-        | some a => (rng2, Formula.atom a)
-        | none => (rng2, Formula.bot)
-    else if choice == 1 then
-      -- Binary: implication
-      let childBudget := sizeBudget - 1
-      if childBudget < 2 then
-        -- Not enough for two children, fall back to base
-        let (rng2, idx) := rng1.randBound (atoms.length + 1)
-        if idx == 0 then (rng2, Formula.bot)
-        else match atoms[idx - 1]? with
-          | some a => (rng2, Formula.atom a)
-          | none => (rng2, Formula.bot)
-      else
-        let maxSplit := childBudget - 1
-        let (rng2, splitIdx) := rng1.randBound maxSplit
-        let leftSize := splitIdx + 1
-        let rightSize := childBudget - leftSize
-        let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
-        let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
-        (rng4, Formula.imp left right)
-    else if choice == 2 && hasModal then
-      -- Unary: box
-      let (rng2, child) := sampleOne atoms (modalBudget - 1) temporalBudget (sizeBudget - 1) rng1 fuel'
-      (rng2, Formula.box child)
-    else if choice == 2 + (if hasModal then 1 else 0) && hasTemporal then
-      -- Temporal binary: untl or snce
-      let childBudget := sizeBudget - 1
-      if childBudget < 2 then
-        let (rng2, idx) := rng1.randBound (atoms.length + 1)
-        if idx == 0 then (rng2, Formula.bot)
-        else match atoms[idx - 1]? with
-          | some a => (rng2, Formula.atom a)
-          | none => (rng2, Formula.bot)
-      else
-        let maxSplit := childBudget - 1
-        let (rng2, splitIdx) := rng1.randBound maxSplit
-        let leftSize := splitIdx + 1
-        let rightSize := childBudget - leftSize
-        let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
-        let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
-        -- Decide untl vs snce
-        let (rng5, untlOrSnce) := rng4.randBound 2
-        if untlOrSnce == 0 then (rng5, Formula.untl left right)
-        else (rng5, Formula.snce left right)
-    else if hasDerivedFP && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) then
-      -- Derived unary temporal: F (some_future) or P (some_past)
-      -- Overhead: 4 complexity (untl/snce + top)
-      let childSize := sizeBudget - 4
-      let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
-      let (rng3, fpChoice) := rng2.randBound 2
-      if fpChoice == 0 then (rng3, child.some_future)
-      else (rng3, child.some_past)
-    else if hasDerivedGH then
-      -- Derived unary temporal: G (all_future) or H (all_past)
-      -- Overhead: 8 complexity (neg(F/P(neg child)))
-      let childSize := sizeBudget - 8
-      let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
-      let (rng3, ghChoice) := rng2.randBound 2
-      if ghChoice == 0 then (rng3, child.all_future)
-      else (rng3, child.all_past)
-    else
-      -- Fallback: imp
-      let childBudget := sizeBudget - 1
-      if childBudget < 2 then
-        let (rng2, idx) := rng1.randBound (atoms.length + 1)
-        if idx == 0 then (rng2, Formula.bot)
-        else match atoms[idx - 1]? with
-          | some a => (rng2, Formula.atom a)
-          | none => (rng2, Formula.bot)
-      else
-        let maxSplit := childBudget - 1
-        let (rng2, splitIdx) := rng1.randBound maxSplit
-        let leftSize := splitIdx + 1
-        let rightSize := childBudget - leftSize
-        let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
-        let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
-        (rng4, Formula.imp left right)
+     let hasDerivedFP := hasTemporal && sizeBudget > 1
+     let hasDerivedGH := hasTemporal && sizeBudget > 1
+     let hasDerivedTemporalBinary := hasTemporal && sizeBudget > 1
+     let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0)
+                         + (if hasDerivedFP then 1 else 0) + (if hasDerivedGH then 1 else 0)
+                         + (if hasDerivedTemporalBinary then 1 else 0)
+     let (rng1, choice) := rng.randBound numChoices
+     if choice == 0 then
+       -- Base: atom or bot
+       let numBase := atoms.length + 1
+       let (rng2, idx) := rng1.randBound numBase
+       if idx == 0 then (rng2, Formula.bot)
+       else match atoms[idx - 1]? with
+         | some a => (rng2, Formula.atom a)
+         | none => (rng2, Formula.bot)
+     else if choice == 1 then
+       -- Binary: implication
+       let childBudget := sizeBudget - 1
+       if childBudget < 2 then
+         -- Not enough for two children, fall back to base
+         let (rng2, idx) := rng1.randBound (atoms.length + 1)
+         if idx == 0 then (rng2, Formula.bot)
+         else match atoms[idx - 1]? with
+           | some a => (rng2, Formula.atom a)
+           | none => (rng2, Formula.bot)
+       else
+         let maxSplit := childBudget - 1
+         let (rng2, splitIdx) := rng1.randBound maxSplit
+         let leftSize := splitIdx + 1
+         let rightSize := childBudget - leftSize
+         let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
+         let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
+         (rng4, Formula.imp left right)
+     else if choice == 2 && hasModal then
+       -- Unary: box
+       let (rng2, child) := sampleOne atoms (modalBudget - 1) temporalBudget (sizeBudget - 1) rng1 fuel'
+       (rng2, Formula.box child)
+     else if choice == 2 + (if hasModal then 1 else 0) && hasTemporal then
+       -- Temporal binary: untl or snce
+       let childBudget := sizeBudget - 1
+       if childBudget < 2 then
+         let (rng2, idx) := rng1.randBound (atoms.length + 1)
+         if idx == 0 then (rng2, Formula.bot)
+         else match atoms[idx - 1]? with
+           | some a => (rng2, Formula.atom a)
+           | none => (rng2, Formula.bot)
+       else
+         let maxSplit := childBudget - 1
+         let (rng2, splitIdx) := rng1.randBound maxSplit
+         let leftSize := splitIdx + 1
+         let rightSize := childBudget - leftSize
+         let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
+         let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
+         -- Decide untl vs snce
+         let (rng5, untlOrSnce) := rng4.randBound 2
+         if untlOrSnce == 0 then (rng5, Formula.untl left right)
+         else (rng5, Formula.snce left right)
+     else if hasDerivedFP && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) then
+       -- Derived unary temporal: F (some_future) or P (some_past)
+       -- Overhead: 1 complexity (task 274)
+       let childSize := sizeBudget - 1
+       let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
+       let (rng3, fpChoice) := rng2.randBound 2
+       if fpChoice == 0 then (rng3, child.some_future)
+       else (rng3, child.some_past)
+     else if hasDerivedGH && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) + (if hasDerivedFP then 1 else 0) then
+       -- Derived unary temporal: G (all_future) or H (all_past)
+       -- Overhead: 1 complexity (task 274)
+       let childSize := sizeBudget - 1
+       let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
+       let (rng3, ghChoice) := rng2.randBound 2
+       if ghChoice == 0 then (rng3, child.all_future)
+       else (rng3, child.all_past)
+     else if hasDerivedTemporalBinary then
+       -- Derived binary temporal: R, WU, T, WS
+       let childBudget := sizeBudget - 1
+       if childBudget < 2 then
+         let (rng2, idx) := rng1.randBound (atoms.length + 1)
+         if idx == 0 then (rng2, Formula.bot)
+         else match atoms[idx - 1]? with
+           | some a => (rng2, Formula.atom a)
+           | none => (rng2, Formula.bot)
+       else
+         let maxSplit := childBudget - 1
+         let (rng2, splitIdx) := rng1.randBound maxSplit
+         let leftSize := splitIdx + 1
+         let rightSize := childBudget - leftSize
+         let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
+         let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
+         -- Decide R, WU, T, or WS
+         let (rng5, rtwsChoice) := rng4.randBound 4
+         match rtwsChoice with
+         | 0 => (rng5, Formula.release left right)
+         | 1 => (rng5, Formula.weak_until left right)
+         | 2 => (rng5, Formula.trigger left right)
+         | _ => (rng5, Formula.weak_since left right)
+     else
+       -- Fallback: imp
+       let childBudget := sizeBudget - 1
+       if childBudget < 2 then
+         let (rng2, idx) := rng1.randBound (atoms.length + 1)
+         if idx == 0 then (rng2, Formula.bot)
+         else match atoms[idx - 1]? with
+           | some a => (rng2, Formula.atom a)
+           | none => (rng2, Formula.bot)
+       else
+         let maxSplit := childBudget - 1
+         let (rng2, splitIdx) := rng1.randBound maxSplit
+         let leftSize := splitIdx + 1
+         let rightSize := childBudget - leftSize
+         let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
+         let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
+         (rng4, Formula.imp left right)
 
 /-- Helper: generate `remaining` candidate formulas using LCG-based random choices. -/
 private def sampleLoop (atoms : List Atom) (maxModal maxTemporal maxSize fuel : Nat)
@@ -762,12 +799,14 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     -- 5=F/P (if temporal ok and budget > 4), 6=G/H (if temporal ok and budget > 8)
     let hasDerivedFP := maxTemporal > 0 && budget > 1
     let hasDerivedGH := maxTemporal > 0 && budget > 1
+    let hasDerivedTemporalBinary := maxTemporal > 0 && budget > 1
     let maxChoice := (if maxModal > 0 && maxTemporal > 0 then 4
                      else if maxModal > 0 then 2
                      else if maxTemporal > 0 then 4
                      else 1)
                      + (if hasDerivedFP then 1 else 0)
                      + (if hasDerivedGH then 1 else 0)
+                     + (if hasDerivedTemporalBinary then 1 else 0)
     let choice ← IO.rand 0 maxChoice
     match choice with
     | 0 =>
@@ -825,6 +864,45 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let fpChoice ← IO.rand 0 1
         if fpChoice == 0 then return child.some_future
         else return child.some_past
+      else if hasDerivedGH then
+        let childSize := budget - 1
+        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
+        let ghChoice ← IO.rand 0 1
+        if ghChoice == 0 then return child.all_future
+        else return child.all_past
+      else if hasDerivedTemporalBinary then
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
+        let rtwsChoice ← IO.rand 0 3
+        match rtwsChoice with
+        | 0 => return .release left right
+        | 1 => return .weak_until left right
+        | 2 => return .trigger left right
+        | _ => return .weak_since left right
+      else
+        -- Fallback to implication
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal maxTemporal
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
+        return .imp left right
+    | 6 =>
+      if hasDerivedGH then
+        let childSize := budget - 1
+        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
+        let ghChoice ← IO.rand 0 1
+        if ghChoice == 0 then return child.all_future
+        else return child.all_past
+      else if hasDerivedTemporalBinary then
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
+        let rtwsChoice ← IO.rand 0 3
+        match rtwsChoice with
+        | 0 => return .release left right
+        | 1 => return .weak_until left right
+        | 2 => return .trigger left right
+        | _ => return .weak_since left right
       else
         -- Fallback to implication
         let split ← IO.rand 1 (budget - 1)
@@ -832,14 +910,19 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
         return .imp left right
     | _ =>
-      -- Derived temporal: G (all_future) or H (all_past), overhead 1 (task 274)
-      if hasDerivedGH then
-        let childSize := budget - 1
-        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
-        let ghChoice ← IO.rand 0 1
-        if ghChoice == 0 then return child.all_future
-        else return child.all_past
+      -- Derived binary temporal: R, WU, T, WS
+      if hasDerivedTemporalBinary then
+        let split ← IO.rand 1 (budget - 1)
+        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
+        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
+        let rtwsChoice ← IO.rand 0 3
+        match rtwsChoice with
+        | 0 => return .release left right
+        | 1 => return .weak_until left right
+        | 2 => return .trigger left right
+        | _ => return .weak_since left right
       else
+        -- Fallback to implication
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal maxTemporal
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
@@ -962,9 +1045,9 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
     | some a => return .atom a
     | none => return .bot
   else
-    -- 9 branches: atom(0), imp(1), box(2), all_future(3), all_past(4),
-    -- some_future(5), some_past(6), untl(7), snce(8)
-    let choice ← IO.rand 0 8
+    -- 10 branches: atom(0), imp(1), box(2), all_future(3), all_past(4),
+    -- some_future(5), some_past(6), untl(7), snce(8), derived_binary(9)
+    let choice ← IO.rand 0 9
     match choice with
     | 0 =>
       let idx ← IO.rand 0 atoms.length
@@ -983,20 +1066,20 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
       let child ← randomSubFormula atoms (maxSize - 1)
       return .box child
     | 3 =>
-      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, costs ~8 complexity overhead
-      let child ← randomSubFormula atoms (max 1 (maxSize - 8))
+      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, overhead 1 (task 274)
+      let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.all_future
     | 4 =>
-      -- all_past (H(φ) = ¬P(¬φ)): unary temporal, costs ~8 complexity overhead
-      let child ← randomSubFormula atoms (max 1 (maxSize - 8))
+      -- all_past (H(φ) = ¬P(¬φ)): unary temporal, overhead 1 (task 274)
+      let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.all_past
     | 5 =>
-      -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, costs ~4 complexity overhead
-      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, overhead 1 (task 274)
+      let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.some_future
     | 6 =>
-      -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, costs ~4 complexity overhead
-      let child ← randomSubFormula atoms (max 1 (maxSize - 4))
+      -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, overhead 1 (task 274)
+      let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.some_past
     | 7 =>
       -- untl: binary temporal
@@ -1009,6 +1092,22 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let left ← randomSubFormula atoms (max 1 leftSize)
         let right ← randomSubFormula atoms (max 1 rightSize)
         return .untl left right
+    | 9 =>
+      -- Derived binary temporal: R, WU, T, WS
+      if maxSize < 3 then
+        let child ← randomSubFormula atoms (maxSize - 1)
+        return .box child
+      else
+        let leftSize ← IO.rand 1 (maxSize - 1)
+        let rightSize := maxSize - 1 - leftSize
+        let left ← randomSubFormula atoms (max 1 leftSize)
+        let right ← randomSubFormula atoms (max 1 rightSize)
+        let rtwsChoice ← IO.rand 0 3
+        match rtwsChoice with
+        | 0 => return .release left right
+        | 1 => return .weak_until left right
+        | 2 => return .trigger left right
+        | _ => return .weak_since left right
     | _ =>
       -- snce: binary temporal
       if maxSize < 3 then
@@ -1695,11 +1794,16 @@ private def hasDerivedTemporal : Formula → Bool
   | .atom _ => false
   | .bot => false
   | .box a => hasDerivedTemporal a
-  -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ) = imp(untl/snce(imp _ bot, imp bot bot), bot)
+  -- Weak Until / Weak Since patterns
+  | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU pattern
+  | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS pattern
+  -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ)
   | .imp inner .bot =>
     match inner with
     | .untl (.imp _ .bot) (.imp .bot .bot) => true  -- G pattern
     | .snce (.imp _ .bot) (.imp .bot .bot) => true  -- H pattern
+    | .untl (.imp _ .bot) (.imp _ .bot) => true  -- R pattern
+    | .snce (.imp _ .bot) (.imp _ .bot) => true  -- T pattern
     | _ => hasDerivedTemporal inner
   | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
   -- Check for F/P patterns: untl/snce(φ, ⊤)
@@ -1737,6 +1841,8 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
   let result := allFormulas.toList
   let summary := diversitySummary result
   (result, summary)
+
+-- #eval (generateBimodalSlice defaultAtoms 2 2 [1, 2, 3, 4, 5]).1.length
 
 /-!
 ## Two-Phase Parallel Enumeration and Pipeline Overlap (Task 283 Phase 5)

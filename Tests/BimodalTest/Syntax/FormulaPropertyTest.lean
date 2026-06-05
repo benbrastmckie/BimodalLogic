@@ -391,4 +391,68 @@ Test: All-past complexity formula (100 test cases).
   maxSize := 50
 }
 
+/--
+Property: Release complexity is 1 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.release φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Release complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.release φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/--
+Property: Weak Until complexity is 1 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.weak_until φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Weak Until complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.weak_until φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/--
+Property: Trigger complexity is 1 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.trigger φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Trigger complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.trigger φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/--
+Property: Weak Since complexity is 1 + left + right.
+-/
+example : Testable (∀ φ ψ : Formula,
+    (Formula.weak_since φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Weak Since complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (Formula.weak_since φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
 end BimodalTest.Syntax.FormulaPropertyTest

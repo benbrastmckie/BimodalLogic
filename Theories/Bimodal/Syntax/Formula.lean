@@ -170,10 +170,18 @@ This enables bimodal G/H formulas to appear at c5-c7 instead of c11+.
 def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
+  -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
+  | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
+  -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
+  | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
   -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
   | imp (untl (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
   -- H(φ) = imp (snce (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
   | imp (snce (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
+  -- R(φ, ψ) = release φ ψ = (untl φ.neg ψ.neg).neg → 1 + φ.complexity + ψ.complexity
+  | imp (untl (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
+  -- T(φ, ψ) = trigger φ ψ = (snce φ.neg ψ.neg).neg → 1 + φ.complexity + ψ.complexity
+  | imp (snce (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
@@ -442,6 +450,23 @@ Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). In Burgess convention:
 the guard ψ held forever in the past (the event φ may never have occurred).
 -/
 def weak_since (φ ψ : Formula) : Formula := (Formula.snce φ ψ).or ψ.all_past
+
+/-! ### Complexity verification (task 275) -/
+
+private def p_cmplx2 : Formula := .atom (Atom.mk_base "p")
+private def q_cmplx2 : Formula := .atom (Atom.mk_base "q")
+
+-- R(atom, atom) should be 3 (was 9)
+#eval (Formula.release p_cmplx2 q_cmplx2).complexity  -- 3
+
+-- T(atom, atom) should be 3 (was 9)
+#eval (Formula.trigger p_cmplx2 q_cmplx2).complexity  -- 3
+
+-- WU(atom, atom) should be 3 (was 8)
+#eval (Formula.weak_until p_cmplx2 q_cmplx2).complexity  -- 3
+
+-- WS(atom, atom) should be 3 (was 8)
+#eval (Formula.weak_since p_cmplx2 q_cmplx2).complexity  -- 3
 
 /--
 Temporal 'sometimes' operator (▽φ, "at some time" - φ holds at some time).

@@ -81,7 +81,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
-275 [IMPLEMENTING] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+275 [COMPLETED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [RESEARCHED] — Instrument tableau prover with rule-firing trace certificates
@@ -169,8 +169,11 @@ technical_debt:
 - **Dependencies**: Task 274
 - **Research**: [specs/275_surface_rwt_ws_bimodal_interaction/reports/01_research.md]
 - **Plan**: [specs/275_surface_rwt_ws_bimodal_interaction/plans/01_implementation-plan.md]
+- **Summary**: [specs/275_surface_rwt_ws_bimodal_interaction/summaries/01_implementation-summary.md]
 
 **Description**: Release (R), weak until (W), trigger (T), and weak since (WS) are already defined in Formula.lean but invisible to the dataset generator — `hasBimodalInteraction` only checks for F/P/G/H patterns. (1) Extend `hasDerivedTemporal` / `hasBimodalInteraction` in DatasetGenerator.lean to recognise R/W/T/WS structural patterns via subformula traversal. (2) Add complexity pattern-matching cases for R/W/T/WS in `Formula.complexity` (analogous to the F/P/G/H treatment from task 274), reducing their overhead from 5-8 to 1-2. (3) Update `FormulaEnumerator.lean` overhead constants to match. (4) Regenerate c5 dataset and verify ~3x increase in bimodal formula count. This is zero new axiom/proof work — purely surfacing existing operators in the automation layer.
+
+**Completion**: Surfaced R/WU/T/WS operators in automation layer: complexity pattern-matching (4 cases), hasDerivedTemporal detection (4 patterns), enumerator sampling integration (4 functions), stale overhead fixes (4→1, 8→1), property tests (4 cases). C5 bimodal formulas increased from 2,616 to 6,072 (~2.3x). Build passes (1685 jobs).
 
 ---
 

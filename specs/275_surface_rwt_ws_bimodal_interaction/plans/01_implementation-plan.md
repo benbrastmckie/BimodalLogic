@@ -69,7 +69,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Formula.complexity Pattern-Matching [NOT STARTED]
+### Phase 1: Formula.complexity Pattern-Matching [COMPLETED]
 
 **Goal**: Add 4 pattern-match cases to `Formula.complexity` so R, WU, T, and WS are treated as first-class binary temporal operators with cost `1 + left + right`.
 
@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: hasDerivedTemporal / hasBimodalInteraction Extension [NOT STARTED]
+### Phase 2: hasDerivedTemporal / hasBimodalInteraction Extension [COMPLETED]
 
 **Goal**: Extend `hasDerivedTemporal` to recognize R, WU, T, and WS structural patterns so `hasBimodalInteraction` includes them.
 
@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Enumerator Sampling Integration [NOT STARTED]
+### Phase 3: Enumerator Sampling Integration [COMPLETED]
 
 **Goal**: Integrate R/WU/T/WS into all formula generation paths and fix stale overhead constants.
 
@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Testing & Dataset Validation [NOT STARTED]
+### Phase 4: Testing & Dataset Validation [COMPLETED]
 
 **Goal**: Verify correctness with property tests and confirm the ~3x bimodal formula count increase in the c5 dataset.
 
