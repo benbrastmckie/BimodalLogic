@@ -81,7 +81,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
-275 [PLANNED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+275 [IMPLEMENTING] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [RESEARCHED] — Instrument tableau prover with rule-firing trace certificates
@@ -193,6 +193,7 @@ technical_debt:
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
+- **Research**: [specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md]
 
 **Description**: Instrument the tableau decision procedure in Tableau.lean to emit rule-firing traces during proof search. Each trace entry records `(rule_name, formula, world_label)` identifying which axiom schema was instantiated. (1) Add a `ProofCertificate` structure to collect trace entries during tableau expansion. (2) Thread the certificate through the proof search, recording each rule application (K, T, 4, 5, temporal Until-unfolding, Since-unfolding, G-introduction, etc.). (3) Post-process traces to compute per-proof axiom multisets (which axioms, how many times each). (4) Export axiom fingerprint and tableau branching factor to JSONL output. (5) For failed proof attempts (timeouts), preserve partial traces. This enables axiom diversity scoring, proof complexity stratification, and curriculum-based training data generation. Reference: Libal & Volpe (2016) "Certification of Prefixed Tableau Proofs for Modal Logic."
 
