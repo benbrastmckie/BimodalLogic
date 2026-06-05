@@ -234,15 +234,15 @@
     {
       "project_number": 278,
       "project_name": "structural_prefilter_expansion",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T17:08:07Z",
+      "last_updated": "2026-06-05T17:13:38Z",
       "researched": "2026-06-05T17:08:07Z",
-      "session_id": "sess_1780679141_a01042",
+      "session_id": "sess_1780679618_b704b8",
       "artifacts": [
         {
           "path": "specs/278_structural_prefilter_expansion/reports/01_research.md",
@@ -254,14 +254,22 @@
     {
       "project_number": 279,
       "project_name": "backward_proof_generation",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         277
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T16:59:36Z",
-      "session_id": "sess_1780678758_2284ce"
+      "last_updated": "2026-06-05T17:15:39Z",
+      "session_id": "sess_1780678758_2284ce",
+      "researched": "2026-06-05T17:15:39Z",
+      "artifacts": [
+        {
+          "path": "specs/279_backward_proof_generation/reports/01_proof_first_generation.md",
+          "type": "research-report",
+          "summary": "Comprehensive 1231-line research report on building a forward-chaining proof generation system for bimodal logic TM. Analyzes existing ProofSystem (42 axiom schemata, DerivationTree inductive with 7 rules), DatasetGenerator pipeline, task 277 ProofCertificate infrastructure, and literature (DeepSeek-Prover-V2, SynLogic, FPC). Designs forward-chaining algorithm generalizing generateValidBatch with bounded depth, O(n) modus ponens via implication index, ex_falso cap, and dedup by shortest-height. Provides Lean 4 sketches for ForwardProofGenerator.lean, ProofFirstExporter.lean, ProofFirstBenchmark.lean. Recommends 3 GenerationMode variants dispatched in labelFormula, plus a new CLI executable proof_first_generator."
+        }
+      ]
     },
     {
       "project_number": 280,
