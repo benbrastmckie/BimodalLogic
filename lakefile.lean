@@ -96,3 +96,10 @@ lean_exe tableau_proof_steps where
   root := `Bimodal.Automation.TableauProofStepPipeline
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Trace certificate exporter: emits JSONL proof certificates (Task 277).
+    Run with: echo '{"command":"trace_decide","formula":{"tag":"atom","name":"p"}}' | lake exe trace_exporter -/
+lean_exe trace_exporter where
+  root := `Bimodal.Automation.TraceExporter
+  srcDir := "Theories"
+  supportInterpreter := true

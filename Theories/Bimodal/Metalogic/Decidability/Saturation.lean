@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Decidability.Closure
+import Bimodal.Metalogic.Decidability.TraceCertificate
 import Bimodal.Syntax.SubformulaClosure.Closure
 
 /-!
@@ -187,10 +188,160 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
               branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))  -- Dummy initial closed
+  termination_by fuel
+decreasing_by
+  all_goals simp_wf
+  exact Nat.lt_succ_of_le (Nat.div_le_self fuel (max 1 branches.length))
+
+/-!
+## Trace-Instrumented Expansion (Task 277)
+
+These functions mirror `expandBranchWithFuel` but additionally thread a
+`ProofCertificate` through a `StateM` layer, recording a `TraceEntry` for
+each rule firing, branch closure, blocking event, and fuel exhaustion.
+
+The original `expandBranchWithFuel` is preserved unchanged (with all four
+termination/soundness proofs intact). The `_tracedImpl` functions use a
+parallel implementation so that the existing proofs remain valid.
+-/
+
+/--
+Perform a single expansion step and record the corresponding `TraceEntry`.
+
+The `_tracedImpl` function is a pure `StateM` wrapper around
+`expandOnceWithApplied`. It does not call `applyRule` directly; instead it
+inspects the same `findUnexpandedWithApplied` / `findApplicableRuleWithApplied`
+calls to determine which rule fired (so the same `applyRule` arms are
+non-invasively covered). This preserves the existing implementation of
+`applyRule` so that all proofs of its arms continue to compile.
+
+For each expansion:
+- `findUnexpandedWithApplied` yields the source signed formula `sf`.
+- `findApplicableRuleWithApplied` yields the `TableauRule`, the `RuleResult`,
+  and the formulas added to the applied set.
+- A `TraceEntry.ruleFired` is recorded with the source's `(sign, formula, label)`,
+  the rule, the produced formulas, whether the rule is `persistent`, and a
+  `branchDepth` (the size of the current branch).
+- If the result is `.branching`, a `TraceEntry.branchCreated` is recorded for
+  each new sub-branch.
+- If `findUnexpandedWithApplied` returned `none`, no entry is recorded (the
+  branch is saturated).
+-/
+def expandOnceWithApplied_tracedImpl (b : Branch) (timeOrd : TimeOrdering)
+    (fc : FrameClass) (tracker : EventualityTracker)
+    (applied : AppliedSet) : TraceM (ExpansionResult × TimeOrdering × List SignedFormula) := do
+  let depth := b.length
+  match findUnexpandedWithApplied b timeOrd fc applied with
+  | none => return (.saturated, timeOrd, [])
+  | some sf =>
+      match findApplicableRuleWithApplied sf b timeOrd fc applied with
+      | none => return (.saturated, timeOrd, [])
+      | some (rule, result, newOrd, newApplied) =>
+          match result with
+          | .linear formulas =>
+              TraceM.recordRuleFired rule sf.sign sf.formula sf.label formulas false depth
+              let remaining := b.filter (· != sf)
+              return (.extended (formulas ++ remaining), newOrd, [])
+          | .branching branches =>
+              TraceM.recordRuleFired rule sf.sign sf.formula sf.label [] false depth
+              let remaining := b.filter (· != sf)
+              let newBranches := branches.map fun newFormulas => newFormulas ++ remaining
+              -- Record branchCreated events for each new sub-branch
+              let cert ← TraceM.getCert
+              for (newBranch, idx) in newBranches.zip (List.range newBranches.length) do
+                let branchId := depth + idx + 1
+                TraceM.record (.branchCreated cert.totalSteps depth branchId rule)
+              return (.split newBranches, newOrd, [])
+          | .persistent formulas =>
+              TraceM.recordRuleFired rule sf.sign sf.formula sf.label formulas true depth
+              return (.extended (formulas ++ b), newOrd, newApplied)
+          | .notApplicable => return (.saturated, newOrd, [])
+
+/--
+Trace-instrumented version of `expandBranchWithFuel`.
+
+Recursively expands a branch, recording:
+- A `ruleFired` entry on every expansion step.
+- A `branchCreated` entry on every split.
+- A `branchClosed` entry when a branch closes.
+- A `blockingFired` entry when subset blocking fires.
+- A `fuelExhausted` entry when fuel runs out.
+
+The recursion shape mirrors `expandBranchWithFuel` exactly (with a smaller
+`fuel` in the recursive call), so the same `termination_by fuel` measure
+applies.
+
+Returns the same `Option (ClosedBranch ⊕ ...)` shape as the original,
+plus the final `ProofCertificate` in the resulting `StateM` state.
+-/
+def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty)
+    (applied : AppliedSet := {})
+    : TraceM (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
+  match fuel with
+  | 0 =>
+      -- Fuel exhausted: record event and return none
+      let cert ← TraceM.getCert
+      TraceM.record (.fuelExhausted cert.totalSteps 0)
+      return none
+  | fuel + 1 =>
+      let depth := b.length
+      match findClosure b fc with
+      | some reason =>
+          let cert ← TraceM.getCert
+          TraceM.record (.branchClosed cert.totalSteps depth reason)
+          return some (.inl ⟨b, reason⟩)
+      | none =>
+          let tracker := registerEventualities b tracker
+          let tracker := fulfillEventualities b tracker
+          match h : findBlockedTime b timeOrd tracker with
+          | some blockedTime =>
+              -- Record blocking event (ancestorTime is the saturating time;
+              -- we use blockedTime as a placeholder since findBlockedTime
+              -- returns a single TimeIndex, not a pair).
+              let cert ← TraceM.getCert
+              TraceM.record (.blockingFired cert.totalSteps blockedTime blockedTime)
+              return some (.inr (b, timeOrd, applied))
+          | none =>
+              let (result, newOrd, newAppliedFormulas) ←
+                expandOnceWithApplied_tracedImpl b timeOrd fc tracker applied
+              match result with
+              | .saturated => return some (.inr (b, timeOrd, applied))
+              | .extended newBranch =>
+                  let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied'
+              | .split branches =>
+                  let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+                  let branchFuel := fuel / (max 1 branches.length)
+                  let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                    some (.inl ⟨b, .botPos Label.initial⟩)
+                  for newBranch in branches do
+                    match acc with
+                    | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                    | _ =>
+                        match ← expandBranchWithFuel_tracedImpl newBranch branchFuel newOrd fc tracker applied' with
+                        | none => acc := none
+                        | some (.inl _) => pure ()  -- closed; continue
+                        | some (.inr openBr) => acc := some (.inr openBr)
+                  return acc
 termination_by fuel
 decreasing_by
   all_goals simp_wf
   exact Nat.lt_succ_of_le (Nat.div_le_self fuel (max 1 branches.length))
+
+/--
+Public API: run trace-instrumented expansion and return both the result
+and the full `ProofCertificate`.
+-/
+def expandBranchWithFuel_traced (b : Branch) (fuel : Nat)
+    (fc : FrameClass := .Base)
+    (initialCert : ProofCertificate)
+    : (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) × ProofCertificate :=
+  let run := expandBranchWithFuel_tracedImpl b fuel TimeOrdering.empty fc
+  let (result, cert) := run.run initialCert
+  (result, cert)
 
 /--
 Expand multiple branches until all closed or one is found open.

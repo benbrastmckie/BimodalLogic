@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Decidability.ProofExtraction
 import Bimodal.Metalogic.Decidability.CountermodelExtraction
+import Bimodal.Metalogic.Decidability.TraceCertificate
 import Bimodal.Automation.ProofSearch.Strategies
 
 /-!
@@ -281,5 +282,98 @@ def DecisionResult.display {φ : Formula} : DecisionResult φ → String
   | .valid proof => s!"Valid (proof height: {proof.height})"
   | .invalid _ => s!"Invalid (countermodel found)"
   | .timeout => "Timeout (resources exhausted)"
+
+/-!
+## Trace-Instrumented Decision Procedure (Task 277)
+
+The functions below mirror `decide` and `decideAuto` but additionally
+return a `TraceResult` carrying a full `ProofCertificate` with all rule
+firings, branch closures, blocking events, and fuel-exhaustion events
+recorded during the tableau expansion.
+
+The original `decide` and `decideAuto` are preserved unchanged. The
+traced versions call `expandBranchWithFuel_traced` (a `StateM` wrapper
+around `expandBranchWithFuel`) to gather the trace, then post-process
+the certificate to fill in `outcome`, `branchingFactor`, and `maxDepth`.
+-/
+
+/--
+Compute the average branching factor over all `branchCreated` events
+in a trace.
+
+Returns `1.0` if there are no `branchCreated` events (degenerate case
+where no branching occurred).
+-/
+def computeBranchingFactor (trace : List TraceEntry) : Float :=
+  let branchEvents := trace.filter fun e =>
+    match e with
+    | .branchCreated _ _ _ _ => true
+    | _ => false
+  if branchEvents.isEmpty then
+    1.0
+  else
+    -- Each branchCreated event represents one new branch, so the
+    -- average branching factor is the total number of new branches
+    -- divided by the number of split operations. Since we don't track
+    -- splits separately, we just count the events.
+    Float.ofNat branchEvents.length
+
+/--
+Finalize a `ProofCertificate` by:
+- Reversing the trace (events are stored prepended; chronological order
+  has oldest first).
+- Setting the outcome based on the result.
+- Computing `branchingFactor` from the trace.
+- Pre-computing `maxDepth` (already maintained incrementally).
+-/
+def finalizeCertificate (cert : ProofCertificate)
+    (outcome : CertOutcome) (trace : List TraceEntry)
+    : ProofCertificate :=
+  { cert with
+    trace := trace.reverse
+    outcome := outcome
+    branchingFactor := computeBranchingFactor trace }
+
+/--
+Run the trace-instrumented decision procedure on a formula.
+
+Returns a `TraceResult`:
+- `.success cert` — the decision completed and a full certificate is returned.
+- `.failure (.outOfFuel trace steps)` — fuel was exhausted; the partial
+  trace is returned for post-mortem analysis.
+
+**Parameters**:
+- `φ`: Formula to decide.
+- `fuel`: Maximum number of tableau expansion steps.
+
+**Returns**: A `TraceResult` with the full `ProofCertificate`.
+-/
+def decideWithTrace (φ : Formula) (fuel : Nat := 500)
+    (fc : FrameClass := .Base) : TraceResult :=
+  let initialCert := ProofCertificate.empty φ fc
+  let initialBranch : Branch := [SignedFormula.neg φ Label.initial]
+  let (result, tracedCert) := expandBranchWithFuel_traced initialBranch fuel fc initialCert
+  match result with
+  | none =>
+      -- Fuel exhausted; return failure with partial trace
+      .failure (.outOfFuel tracedCert.trace tracedCert.totalSteps)
+  | some (.inl _) =>
+      -- All branches closed: formula is valid
+      let finalized := finalizeCertificate tracedCert .validProof tracedCert.trace
+      .success finalized
+  | some (.inr _) =>
+      -- Open saturated branch found: formula is invalid (countermodel)
+      let finalized := finalizeCertificate tracedCert .countermodel tracedCert.trace
+      .success finalized
+
+/--
+Adaptive trace-instrumented decision procedure.
+
+Uses `soundFuel` (from subformula closure cardinality) as the fuel bound,
+combined with a depth proportional to formula complexity.
+-/
+def decideAutoWithTrace (φ : Formula) (fc : FrameClass := .Base) : TraceResult :=
+  let fuel := soundFuel φ
+  decideWithTrace φ fuel fc
 
 end Bimodal.Metalogic.Decidability

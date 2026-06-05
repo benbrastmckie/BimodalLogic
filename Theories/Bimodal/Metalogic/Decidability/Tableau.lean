@@ -132,7 +132,7 @@ inductive TableauRule : Type where
   /-- Discrete: when both T(G(G(φ) → φ)) and T(F(G(φ))) at same label,
       add T(G(φ)). Z1 backward induction axiom. Only when fc >= .Discrete. -/
   | z1Rule
-  deriving Repr, DecidableEq
+  deriving Repr, DecidableEq, BEq, Hashable
 
 /-!
 ## Rule Result Type

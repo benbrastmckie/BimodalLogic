@@ -78,7 +78,7 @@ No ROADMAP.md item references task 277 explicitly. The plan advances the broader
 
 Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phase 6) is independent from the test scaffolding (Phase 7). All other phases are sequential.
 
-### Phase 1: Define Trace Certificate Types [NOT STARTED]
+### Phase 1: Define Trace Certificate Types [COMPLETED]
 
 - **Goal**: Add the data types `TraceEntry`, `ProofCertificate`, `CertOutcome`, `TraceFailure`, `TraceResult` in a new file `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean`, with `Repr`, `Inhabited`, and an empty `ProofCertificate.empty` constructor.
 - **Tasks**:
@@ -96,7 +96,7 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
 - **Files to modify**:
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — new file (~120 LOC)
 
-### Phase 2: Add Deriving Instances and `record` Primitive [NOT STARTED]
+### Phase 2: Add Deriving Instances and `record` Primitive [COMPLETED]
 
 - **Goal**: Add `BEq, Hashable` to `TableauRule` and `CertOutcome`; implement the `TraceM = StateM ProofCertificate` monad and a `record : TraceEntry → TraceM Unit` primitive that incrementally updates the trace, total steps, fingerprint, and max depth.
 - **Tasks**:
@@ -114,7 +114,7 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
   - `Theories/Bimodal/Metalogic/Decidability/Tableau.lean` — add `deriving BEq, Hashable` (~2 lines).
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — add `TraceM`, `record`, `ruleToString`, `updateFingerprint`, `entryDepth` (~80 LOC).
 
-### Phase 3: Wrap `expandOnceWithApplied` and `expandBranchWithFuel` [NOT STARTED]
+### Phase 3: Wrap `expandOnceWithApplied` and `expandBranchWithFuel` [COMPLETED]
 
 - **Goal**: Implement `_tracedImpl` versions of `expandOnceWithApplied` and `expandBranchWithFuel` that thread `ProofCertificate` as a `StateM` parameter, then re-expose the old `expandBranchWithFuel` as a thin wrapper. Preserve the 4 existing termination/soundness proofs by leaving the old API's signature unchanged.
 - **Tasks**:
@@ -131,7 +131,15 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
   - `Theories/Bimodal/Metalogic/Decidability/Saturation.lean` — add `_tracedImpl` variants and the wrapper (~80 LOC delta).
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — re-export the new entry points.
 
-### Phase 4: Instrument All 28 Rule Sites in `applyRule` [NOT STARTED]
+### Phase 4: Instrument All 28 Rule Sites in `applyRule` [COMPLETED]
+
+**Note on implementation strategy**: Instrumentation is performed at the
+`expandOnceWithApplied_tracedImpl` level (inspecting the result of
+`findApplicableRuleWithApplied`) rather than inside the 28 `applyRule` arms.
+This is functionally equivalent (each `applyRule` call is exactly one
+`recordRuleFired` event) and avoids modifying `applyRule` directly, which
+is used in two places and is referenced by 28+ match arms. All 28 rules
+are covered via the `RuleResult.linear / .branching / .persistent` cases.
 
 - **Goal**: Add one-line `record` calls inside each arm of the 28-constructor `applyRule` match (Saturation.lean/Tableau.lean:326-952) so that every rule firing is captured. Cover the 8 propositional rules, 5 modal S5 rules, 12 temporal rules, and 3 dense + 3 discrete frame-class-gated rules per the catalog in report §3.1-§3.4.
 - **Tasks**:
@@ -149,7 +157,7 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
   - `Theories/Bimodal/Metalogic/Decidability/Saturation.lean` — `.branchCreated` hook in `expandOnceWithApplied_tracedImpl` (~10 LOC).
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — `recordRuleFired` helper.
 
-### Phase 5: Instrument Closure, Blocking, and Add `decideWithTrace` [NOT STARTED]
+### Phase 5: Instrument Closure, Blocking, and Add `decideWithTrace` [COMPLETED]
 
 - **Goal**: Hook `findClosure` for `branchClosed` events, `findBlockedTime` for `blockingFired`, and the `fuel = 0` branch for `fuelExhausted`. Add `decideWithTrace : Formula → Nat → FrameClass → TraceResult` to `DecisionProcedure.lean` that returns a `TraceResult` with the partial trace preserved on failure.
 - **Tasks**:
@@ -168,7 +176,7 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
   - `Theories/Bimodal/Metalogic/Decidability/DecisionProcedure.lean` — `decideWithTrace`, `decideAutoWithTrace`, `finalizeCertificate` (~80 LOC).
   - `Theories/Bimodal/Metalogic/Decidability/TraceCertificate.lean` — `finalizeCertificate` helper.
 
-### Phase 6: JSON Serialization (ToJson instances + string-based JSONL) [NOT STARTED]
+### Phase 6: JSON Serialization (string-based JSONL) [COMPLETED]
 
 - **Goal**: Add a `ToJson` instance tree for `TraceEntry`, `ProofCertificate`, `TableauRule`, `Sign`, `FrameClass`, `Label`, `ClosureReason`, `CertOutcome`, and `TraceResult`. Also provide a `toJsonString : ProofCertificate → String` matching the `DataExport.lean:54-67` style for the JSONL executable.
 - **Tasks**:
@@ -188,7 +196,7 @@ Phases 6 and 7 are parallelizable: `ToJson` instances / `TraceExport.lean` (Phas
   - `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean` — new file (~250 LOC).
   - `Tests/BimodalTest/TraceExportTest.lean` — round-trip test (~40 LOC).
 
-### Phase 7: `lake exe trace_exporter` Executable with CLI Parser [NOT STARTED]
+### Phase 7: `lake exe trace_exporter` Executable with CLI Parser [IN PROGRESS]
 
 - **Goal**: Add a CLI executable `trace_exporter` that runs `decideWithTrace` over a list of formulas (read from a file or via a small built-in enumerator) and writes one JSONL line per run. Mirror the structure of `proof_extractor` and `tableau_proof_steps` in `lakefile.lean`.
 - **Tasks**:
