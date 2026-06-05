@@ -86,7 +86,7 @@ technical_debt:
     └─ 280 [COMPLETED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [RESEARCHED] — Build backward proof-first formula generation over axiom set
-278 [PLANNING] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
+278 [PLANNED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
@@ -209,12 +209,13 @@ technical_debt:
 
 ### 278. Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 - **Effort**: medium (6-10 hours)
-- **Status**: [RESEARCHED]
-- **Research**: [specs/278_structural_prefilter_expansion/reports/01_research.md]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
+- **Research**: [specs/278_structural_prefilter_expansion/reports/01_research.md]
+- **Plan**: [specs/278_structural_prefilter_expansion/plans/01_structural-prefilter-expansion.md]
 
 **Description**: Expand the structural prefilter in DatasetGenerator.lean with additional O(n) patterns to approximately double prefilter coverage from ~5% to ~10%. New patterns: (1) Polarity/sign analysis — walk the formula tracking positive/negative occurrences; a subformula appearing only positively that is a tautology can be dropped, one appearing only negatively that is a contradiction short-circuits. (2) 2-SAT propositional skeleton — strip all modal and temporal operators, compute the propositional 2-SAT skeleton; if unsatisfiable in O(n+e), the full formula is unsatisfiable. (3) S5 reflexive shortcutting — `Box phi ∧ neg phi` as top-level conjunct is immediately unsatisfiable (strict generalization of existing modal_t_weakening). (4) Temporal loop detection — `phi U psi` co-occurring with `G(neg psi)` as top-level conjuncts is unsatisfiable. (5) Subformula subsumption — ~10 modal/temporal syntactic implication rules (e.g., `Box phi` implies `phi` under T). Add axiom attribution labels for each new pattern. Run before/after comparison at c7.
 
