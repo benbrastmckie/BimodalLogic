@@ -260,20 +260,25 @@
     {
       "project_number": 279,
       "project_name": "backward_proof_generation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         277
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T17:15:39Z",
-      "session_id": "sess_1780678758_2284ce",
+      "last_updated": "2026-06-05T18:08:52Z",
+      "session_id": "sess_1780682388_d59e81",
       "researched": "2026-06-05T17:15:39Z",
       "artifacts": [
         {
           "path": "specs/279_backward_proof_generation/reports/01_proof_first_generation.md",
           "type": "research-report",
           "summary": "Comprehensive 1231-line research report on building a forward-chaining proof generation system for bimodal logic TM. Analyzes existing ProofSystem (42 axiom schemata, DerivationTree inductive with 7 rules), DatasetGenerator pipeline, task 277 ProofCertificate infrastructure, and literature (DeepSeek-Prover-V2, SynLogic, FPC). Designs forward-chaining algorithm generalizing generateValidBatch with bounded depth, O(n) modus ponens via implication index, ex_falso cap, and dedup by shortest-height. Provides Lean 4 sketches for ForwardProofGenerator.lean, ProofFirstExporter.lean, ProofFirstBenchmark.lean. Recommends 3 GenerationMode variants dispatched in labelFormula, plus a new CLI executable proof_first_generator."
+        },
+        {
+          "path": "specs/279_backward_proof_generation/plans/01_proof_first_generation.md",
+          "type": "plan",
+          "summary": "12-phase implementation plan for forward-chaining proof generation system. Phases: (1) extend instantiateAxiom to 42 schemata with Axiom witnesses, (2) ForwardConfig + ProofPool data structures, (3) instantiateAxiomWithProof returning DerivationTree witnesses, (4) modus ponens via O(n) implication index, (5) Nec/TempNec/TempDuality closures, (6) bounded fixpoint loop with ex_falso cap, (7) GenerationMode inductive dispatching in labelFormula, (8) ProofFirstExporter for JSONL output, (9) ProofFirstBenchmark computing 8 cross-corpus metrics, (10) CLI executable in lakefile.lean, (11) integration tests in BimodalTest/, (12) side-by-side comparison report. Total 20 hours, ~1295 LOC new + 180 LOC modified, organized into 6 dependency waves for parallel execution."
         }
       ]
     },

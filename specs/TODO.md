@@ -85,7 +85,7 @@ technical_debt:
   └─ 276 [COMPLETED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [COMPLETED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
-  └─ 279 [RESEARCHED] — Build backward proof-first formula generation over axiom set
+  └─ 279 [PLANNED] — Build backward proof-first formula generation over axiom set
 278 [PLANNED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -223,12 +223,13 @@ technical_debt:
 
 ### 279. Build backward proof-first formula generation over axiom set
 - **Effort**: large (16-24 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 277
 - **Report**: [279_backward_proof_generation/reports/01_proof_first_generation.md](../279_backward_proof_generation/reports/01_proof_first_generation.md)
+- **Plan**: [279_backward_proof_generation/plans/01_proof_first_generation.md](../279_backward_proof_generation/plans/01_proof_first_generation.md)
 
 **Description**: Implement a forward-chaining proof generation system that constructs derivation trees over the existing axiom schemata in ProofSystem/, then extracts the conclusion formulas as labeled training data. This bypasses exhaustive enumeration entirely — formulas are guaranteed interesting by construction because they have non-trivial proofs. (1) Write a forward-chaining combinator that starts from axiom instances and applies inference rules (modus ponens, necessitation, temporal rules) up to a configurable derivation depth N. (2) Collect `(formula, proof_tree)` pairs, where the proof tree serves as supervision signal. (3) Control complexity via derivation depth rather than formula AST size. (4) Use the rule-firing traces from task 277 to compute axiom diversity and branching metrics automatically. (5) Integrate as an alternative generation mode in DatasetGenerator.lean alongside exhaustive enumeration. (6) Compare output quality: axiom diversity, proof depth distribution, and temporal axiom usage vs. enumeration-based generation. Reference: DeepSeek-Prover-V2 subgoal decomposition pattern; SynLogic (NeurIPS 2025) parameterized generation with rule-based verifiers.
 

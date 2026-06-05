@@ -1,36 +1,51 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "session_id": "sess_1780682388_d59e81",
+  "agent_type": "planner-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "completed_at": "2026-06-05T11:05:00Z",
+  "task_number": 279,
+  "task_name": "backward_proof_generation",
   "artifacts": [
     {
-      "path": "specs/279_backward_proof_generation/reports/01_proof_first_generation.md",
-      "type": "research-report",
-      "summary": "Comprehensive 1231-line research report on building a forward-chaining proof generation system for bimodal logic TM. The report (1) analyzes the existing ProofSystem (42 axiom schemata, DerivationTree inductive with 7 rules, height function) in Axioms.lean and Derivation.lean, (2) examines the existing DatasetGenerator pipeline (exhaustive enumeration → decide → label with ProofTrace/RuleProfile), (3) cross-references task 277's ProofCertificate / TraceEntry infrastructure, (4) reviews literature on DeepSeek-Prover-V2 subgoal decomposition, SynLogic (NeurIPS 2025) parameterized generation, and Libal & Volpe (2016) FPC, (5) designs a forward-chaining algorithm that generalizes generateValidBatch (FormulaEnumerator.lean:1361) to track DerivationTree witnesses, with bounded depth, O(n) modus ponens via implication index, ex_falso cap, and dedup by shortest-height, (6) provides a concrete Lean 4 sketch for ForwardProofGenerator.lean, ProofFirstExporter.lean, and ProofFirstBenchmark.lean, (7) defines per-proof and per-corpus metrics (axiom diversity, proof depth distribution, temporal axiom usage), and (8) recommends architecture: 3 GenerationMode variants (exhaustive/proofFirst/hybrid) dispatched in labelFormula, with a new CLI executable proof_first_generator. Key finding: every (formula, DerivationTree) pair emitted is a theorem by construction (Lean type system IS the verifier); expected ~37x improvement in valid-formula throughput vs. exhaustive enumeration at c4."
+      "path": "specs/279_backward_proof_generation/plans/01_proof_first_generation.md",
+      "type": "plan",
+      "summary": "12-phase implementation plan for forward-chaining proof generation system. Phases: (1) extend instantiateAxiom to 42 schemata with Axiom witnesses, (2) ForwardConfig + ProofPool data structures, (3) instantiateAxiomWithProof returning DerivationTree witnesses, (4) modus ponens via O(n) implication index, (5) Nec/TempNec/TempDuality closures, (6) bounded fixpoint loop with ex_falso cap, (7) GenerationMode inductive dispatching in labelFormula, (8) ProofFirstExporter for JSONL output, (9) ProofFirstBenchmark computing 8 cross-corpus metrics, (10) CLI executable in lakefile.lean, (11) integration tests in BimodalTest/, (12) side-by-side comparison report. Total 20 hours, ~1295 LOC new + 180 LOC modified, organized into 6 dependency waves for parallel execution."
     }
   ],
-  "key_findings": [
-    "DerivationTree is the right supervision signal: 7 constructors (axiom, assumption, modus_ponens, necessitation, temporal_necessitation, temporal_duality, weakening) parameterized by FrameClass, with a computable height function. No new inductive type needed.",
-    "The existing generateValidBatch in FormulaEnumerator.lean:1361-1461 is the closest existing forward-generation code, but it discards the proof trees — task 279 must thread DerivationTree witnesses through the same fixpoint closure (MP / Nec / TempNec / TempDual).",
-    "instantiateAxiom (FormulaEnumerator.lean:1153) covers 22 schemata but the current Axiom type has 42 constructors (Axioms.lean:18-37). Extending instantiateAxiom to all 42 and returning Axiom witnesses is a necessary prerequisite.",
-    "Modus ponens explosion is solved by the implication index pattern at FormulaEnumerator.lean:1430-1448 (HashMap from Formula.lhs to Array of (rhs, proof)): O(n) per MP round instead of O(n^2).",
-    "Task 277's ProofCertificate.axiomFingerprint (TraceCertificate.lean:122) is the *tableau*-side axiom counts; task 279 produces *Hilbert*-side AxiomProfile. They are complementary views of the same formula, not duplicates.",
-    "Soundness is enforced by Lean's type system: every emitted d : DerivationTree fc [] phi carries an Axiom witness at leaves, and the only way to combine is via the 7 inference rule constructors. No separate verifier needed (SynLogic-style construction-rule guarantee, strictly stronger).",
-    "Frame class compatibility: DerivationTree.axiom's h_fc : h.minFrameClass <= fc field is decidable. Two sound options: (1) runtime decide() at instantiation time, (2) generate at .Base and lift to .Dense/.Discrete via DerivationTree.lift (Derivation.lean:190). Recommendation: filter schema list at instantiateAxiomWithProof time.",
-    "Ex_falso cap of 20% (mirroring EnumBenchmark.lean:79) is a hard requirement; the capExFalso logic at FormulaEnumerator.lean:1389-1417 is reusable.",
-    "Dedup strategy: shortest-wins (by DerivationTree.height) is recommended; one canonical proof per formula simplifies downstream training (one label per formula).",
-    "Weakening rule should NOT be applied in forward generation: it adds unused assumptions without changing the conclusion, producing log-equivalent duplicates under empty context. Skip it.",
-    "Expected performance: depth=2, seed=2000, atoms=[p,q,r] generates ~750-1000 valid theorems in ~5 seconds — ~37x more efficient per valid formula than exhaustive c4 (408 formulas, ~20 valid).",
-    "Per-corpus metrics (axiom diversity, proof depth distribution, temporal axiom usage, ex_falso dominance) are aggregations over existing LabeledFormula fields (proofTrace, ruleProfile, interestingnessScore, patternKey) — no new per-proof extractors needed."
+  "phase_count": 12,
+  "estimated_hours": 20,
+  "dependency_waves": [
+    [1, 2],
+    [3, 4, 5],
+    [6, 7],
+    [8, 9],
+    [10],
+    [11, 12]
   ],
-  "recommendations": [
-    "Reuse DerivationTree as the proof representation; do not introduce a new inductive type. The 4 existing termination/soundness proofs in Derivation.lean (height, lift, mp_height_gt_*, weakening_height_succ) are preserved unchanged.",
-    "Implement forwardGenerate in a new Theories/Bimodal/Automation/ForwardProofGenerator.lean with: (1) ForwardConfig structure, (2) ProofPool with HashSet+Array+HashMap dedup-by-shortest, (3) instantiateAxiomWithProof covering all 42 axiom constructors and returning Sigma phi, DerivationTree, (4) applyModusPonens using implication index for O(n) closure, (5) Bounded fixpoint loop over (modus_ponens, necessitation, temporal_necessitation, temporal_duality), (6) capExFalso at 20%.",
-    "Add GenerationMode inductive (exhaustive | proofFirst | hybrid) to DatasetGenerator.lean, dispatch in labelFormula. Hybrid mode runs both and merges by interestingnessTier then by proofTrace.height.",
-    "Extend instantiateAxiom in FormulaEnumerator.lean from 22 to 42 cases, returning Sigma (phi, Axiom phi) for use by the forward generator's instantiateAxiomWithProof.",
-    "Add new CLI executable lake exe proof_first_generator in lakefile.lean, mirroring dataset_generator and trace_exporter. JSONL output: one record per (formula, proof) with decisionMethod=\"proof_first\".",
-    "Per-corpus metrics in a new ProofFirstBenchmark.lean: axiom_diversity, proof_depth_distribution, temporal_axiom_usage, modal_axiom_usage, rule_profile_distribution, ex_falso_dominance, operator_diversity, generation_cost.",
-    "For frame class: filter schema list at instantiateAxiomWithProof time, not at DerivationTree.axiom construction time. This avoids runtime decide() calls and makes the type system enforce compatibility.",
-    "For the comparison methodology (task requirement #6), run both exhaustive (c4, modal 2, temporal 2, atoms 3) and proof-first (maxDepth 2, seed 500, atoms 3) modes, then emit a side-by-side JSON comparison report with the 8 cross-corpus metrics.",
-    "Defer full DerivationTree JSON serialization to a future task; the existing ProofTrace summary (height, axiom names, rule names) is sufficient for ML training.",
-    "Defer hybrid-mode + decideWithTrace integration to round 2; the core forward generator is complete without it. Round 2 adds a tableauTrace : Option ProofCertificate field to LabeledFormula."
-  ]
+  "plan_metadata": {
+    "phases": 12,
+    "total_effort_hours": 20,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "dependency_waves": [[1, 2], [3, 4, 5], [6, 7], [8, 9], [10], [11, 12]],
+    "reports_integrated": [
+      {
+        "path": "specs/279_backward_proof_generation/reports/01_proof_first_generation.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-06-05"
+      }
+    ]
+  },
+  "memory_candidates": [
+    {
+      "content": "Architectural pattern: forward-chaining proof generation in a dependently-typed proof assistant. Reuse the existing DerivationTree inductive (no new proof type); generalize the existing 'generate then drop proofs' generator (e.g., FormulaEnumerator.lean:1361) into 'generate and thread DerivationTree witnesses' by (1) extending instantiateAxiom to all 42 axiom constructors with Sigma-returning witnesses, (2) using shortest-height dedup via HashMap<Formula, Nat> for O(1) per insertion, (3) using a HashMap<Formula.lhs, Array<rhs, proof>> implication index for O(n) modus ponens closure instead of O(n^2), (4) capping ex_falso at 20% by mirroring the capExFalso logic, (5) frame class filtering at instantiation time (not at DerivationTree.axiom construction) to avoid runtime decide() calls. This pattern produces 100% valid labeled theorems (Lean type system IS the verifier) with configurable depth-based complexity control, expected ~37x improvement in valid-formula throughput vs. exhaustive enumeration.",
+      "category": "PATTERN",
+      "source_artifact": "specs/279_backward_proof_generation/plans/01_proof_first_generation.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["forward-chaining", "proof-generation", "DerivationTree", "dedup", "implication-index", "frame-class", "Lean4", "bimodal-logic"]
+    }
+  ],
+  "next_steps": "Run /implement 279 to execute the plan"
 }
