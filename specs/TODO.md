@@ -84,7 +84,7 @@ technical_debt:
 275 [PLANNED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
-277 [NOT STARTED] — Instrument tableau prover with rule-firing trace certificates
+277 [RESEARCHED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set
 278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -188,7 +188,7 @@ technical_debt:
 
 ### 277. Instrument tableau prover with rule-firing trace certificates
 - **Effort**: medium (6-10 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

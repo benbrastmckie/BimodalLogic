@@ -144,14 +144,22 @@
     {
       "project_number": 277,
       "project_name": "tableau_rule_firing_traces",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T01:46:34Z",
-      "session_id": "sess_1780623979_7515c9"
+      "last_updated": "2026-06-05T02:02:18Z",
+      "session_id": "sess_1780623979_7515c9",
+      "researched": "2026-06-05T02:02:18Z",
+      "artifacts": [
+        {
+          "path": "specs/277_tableau_rule_firing_traces/reports/01_trace-certificates-design.md",
+          "type": "research-report",
+          "summary": "Design report for rule-firing trace certificates: ProofCertificate + TraceEntry inductive types, StateT threading strategy, rule catalog for 28 tableau rules + 5 auxiliary events, JSONL export via string-based serialization mirroring DataExport.lean, partial-trace failure handling via TraceResult sum type, and 6-phase implementation roadmap."
+        }
+      ]
     },
     {
       "project_number": 278,
