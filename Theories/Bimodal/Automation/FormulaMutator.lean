@@ -338,12 +338,12 @@ def tryFlipImplication : Formula → Option Formula
 
 /-- Match `and φ ψ` (primitive: `imp (imp φ (imp ψ bot)) bot`) and return the right conjunct `ψ`. -/
 def tryRemoveLeftConjunct : Formula → Option Formula
-  | .imp (.imp φ (.imp ψ .bot)) .bot => some ψ
+  | .imp (.imp _ (.imp ψ .bot)) .bot => some ψ
   | _ => none
 
 /-- Match `and φ ψ` (primitive: `imp (imp φ (imp ψ bot)) bot`) and return the left conjunct `φ`. -/
 def tryRemoveRightConjunct : Formula → Option Formula
-  | .imp (.imp φ (.imp ψ .bot)) .bot => some φ
+  | .imp (.imp φ (.imp _ .bot)) .bot => some φ
   | _ => none
 
 /-!
@@ -497,8 +497,6 @@ Returns a list of (mutated_formula, mutation_type) pairs. The mutations include:
 8. Temporal duality: if the formula contains temporal operators
 9. Single-occurrence mutations: ~10 fine-grained structural changes
 -/
-
-/-- Deduplicate mutation list by formula, keeping the first occurrence. -/
 private def dedupMutations (muts : List (Formula × MutationType)) : List (Formula × MutationType) :=
   let rec go (acc : List (Formula × MutationType)) (seen : List Formula) (rest : List (Formula × MutationType)) : List (Formula × MutationType) :=
     match rest with
@@ -724,21 +722,23 @@ def MutationType.toJson : MutationType → String
   | .temporalDepthReduction => "\"temporal_depth_reduction\""
   | .temporalDuality => "\"temporal_duality\""
   -- Single-occurrence mutations (task 280)
-  | .boxToDiamondAtOccurrence i => "\"box_to_diamond_at_" ++ toString i ++ "\""
-  | .diamondToBoxAtOccurrence i => "\"diamond_to_box_at_" ++ toString i ++ "\""
-  | .untilToReleaseAtOccurrence i => "\"until_to_release_at_" ++ toString i ++ "\""
-  | .releaseToUntilAtOccurrence i => "\"release_to_until_at_" ++ toString i ++ "\""
-  | .futureToGloballyAtOccurrence i => "\"future_to_globally_at_" ++ toString i ++ "\""
-  | .globallyToFutureAtOccurrence i => "\"globally_to_future_at_" ++ toString i ++ "\""
-  | .pastToHistoricallyAtOccurrence i => "\"past_to_historically_at_" ++ toString i ++ "\""
-  | .historicallyToPastAtOccurrence i => "\"historically_to_past_at_" ++ toString i ++ "\""
-  | .weakUntilToStrongReleaseAtOccurrence i => "\"weak_until_to_strong_release_at_" ++ toString i ++ "\""
-  | .strongReleaseToWeakUntilAtOccurrence i => "\"strong_release_to_weak_until_at_" ++ toString i ++ "\""
-  | .triggerToStrongTriggerAtOccurrence i => "\"trigger_to_strong_trigger_at_" ++ toString i ++ "\""
-  | .strongTriggerToTriggerAtOccurrence i => "\"strong_trigger_to_trigger_at_" ++ toString i ++ "\""
-  | .flipImplicationAtOccurrence i => "\"flip_implication_at_" ++ toString i ++ "\""
-  | .removeLeftConjunctAtOccurrence i => "\"remove_left_conjunct_at_" ++ toString i ++ "\""
-  | .removeRightConjunctAtOccurrence i => "\"remove_right_conjunct_at_" ++ toString i ++ "\""
+  | .boxToDiamondAtOccurrence i => "\"box_to_diamond_at_" ++ Nat.repr i ++ "\""
+  | .diamondToBoxAtOccurrence i => "\"diamond_to_box_at_" ++ Nat.repr i ++ "\""
+  | .untilToReleaseAtOccurrence i => "\"until_to_release_at_" ++ Nat.repr i ++ "\""
+  | .releaseToUntilAtOccurrence i => "\"release_to_until_at_" ++ Nat.repr i ++ "\""
+  | .futureToGloballyAtOccurrence i => "\"future_to_globally_at_" ++ Nat.repr i ++ "\""
+  | .globallyToFutureAtOccurrence i => "\"globally_to_future_at_" ++ Nat.repr i ++ "\""
+  | .pastToHistoricallyAtOccurrence i => "\"past_to_historically_at_" ++ Nat.repr i ++ "\""
+  | .historicallyToPastAtOccurrence i => "\"historically_to_past_at_" ++ Nat.repr i ++ "\""
+  | .weakUntilToStrongReleaseAtOccurrence i => "\"weak_until_to_strong_release_at_" ++ Nat.repr i ++ "\""
+  | .strongReleaseToWeakUntilAtOccurrence i => "\"strong_release_to_weak_until_at_" ++ Nat.repr i ++ "\""
+  | .triggerToStrongTriggerAtOccurrence i => "\"trigger_to_strong_trigger_at_" ++ Nat.repr i ++ "\""
+  | .strongTriggerToTriggerAtOccurrence i => "\"strong_trigger_to_trigger_at_" ++ Nat.repr i ++ "\""
+  | .flipImplicationAtOccurrence i => "\"flip_implication_at_" ++ Nat.repr i ++ "\""
+  | .removeLeftConjunctAtOccurrence i => "\"remove_left_conjunct_at_" ++ Nat.repr i ++ "\""
+  | .removeRightConjunctAtOccurrence i => "\"remove_right_conjunct_at_" ++ Nat.repr i ++ "\""
+
+private def natToString (n : Nat) : String := Nat.repr n
 
 /--
 Produce a JSON string for the mutation_detail field.

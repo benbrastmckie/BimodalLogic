@@ -1,7 +1,7 @@
 # Implementation Plan: Task 280 — Contrastive Minimal Pair Generation
 
 - **Task**: 280 - Contrastive Minimal Pair Generation
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: Task 275 (completed), Task 276 (completed)
 - **Research Inputs**: specs/280_contrastive_minimal_pair_generation/reports/01_research.md
@@ -67,7 +67,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel. This plan is fully sequential due to wave ordering.
 
-### Phase 1: Single-Occurrence Mutation Engine and MutationType Extension [NOT STARTED]
+### Phase 1: Single-Occurrence Mutation Engine and MutationType Extension [COMPLETED]
 
 **Goal**: Establish the generic engine and extend the type system so all subsequent mutations are traceable.
 
@@ -90,7 +90,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 2: Implement Specific Mutation Functions [NOT STARTED]
+### Phase 2: Implement Specific Mutation Functions [COMPLETED]
 
 **Goal**: Implement the ~10 mutation rule transformers that operate on a single AST node.
 
@@ -119,7 +119,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 3: Pipeline Integration [NOT STARTED]
+### Phase 3: Pipeline Integration [COMPLETED]
 
 **Goal**: Wire the new mutations into the existing generation/classification pipeline and upgrade decision-procedure integration.
 
@@ -145,7 +145,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 4: JSON Export and Batch Execution [NOT STARTED]
+### Phase 4: JSON Export and Batch Execution [COMPLETED]
 
 **Goal**: Enrich exported JSONL with per-mutation metadata and run the batch pipeline over the c5/c7 corpus.
 
@@ -173,7 +173,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 5: Unit Tests and Yield Validation [NOT STARTED]
+### Phase 5: Unit Tests and Yield Validation [COMPLETED]
 
 **Goal**: Verify correctness of each mutation rule, deduplication, and yield measurement.
 

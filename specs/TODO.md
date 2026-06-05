@@ -83,9 +83,9 @@ technical_debt:
 
 275 [COMPLETED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [COMPLETED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
-    └─ 280 [IMPLEMENTING] — Add contrastive minimal-pair mutation pass for labeled corpus
+    └─ 280 [COMPLETED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
-  └─ 279 [NOT STARTED] — Build backward proof-first formula generation over axiom set
+  └─ 279 [RESEARCHING] — Build backward proof-first formula generation over axiom set
 278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
@@ -221,7 +221,7 @@ technical_debt:
 
 ### 279. Build backward proof-first formula generation over axiom set
 - **Effort**: large (16-24 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
@@ -233,12 +233,14 @@ technical_debt:
 
 ### 280. Add contrastive minimal-pair mutation pass for labeled corpus
 - **Effort**: medium (6-10 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 275, Task 276
 - **Plan**: [280_contrastive_minimal_pair_generation/plans/01_implementation-plan.md]
+- **Completed**: 2026-06-05
+- **Summary**: Extended FormulaMutator.lean with single-occurrence mutation engine, ~15 new mutation rules (□↔◇, U↔R, F↔G, W↔M, T↔ST, implication flip, conjunct removal), pipeline integration with labelFormula, enriched JSON export with occurrence metadata, and 30+ unit tests. Lake build passes (1686 jobs). Zero sorries, zero new axioms.
 
 **Description**: Implement a mutation pass over the existing labeled formula corpus to generate contrastive minimal pairs — (valid, invalid) formula pairs that differ by exactly one structural change. Given a valid formula φ, generate φ' by: (1) replacing one □ with ◇ (or vice versa), (2) replacing one temporal operator with another (U↔R, F↔G, etc.), (3) removing one conjunct, (4) flipping one implication direction, (5) swapping a derived operator (W↔M, T↔ST). Run the tableau prover on each φ'; if the validity label flips, emit the pair. These pairs are extremely high-signal for training models to discriminate fine-grained logical structure. (1) Define a set of ~10 mutation rules in a new `FormulaMutator.lean` module. (2) Apply mutations to the existing c5/c7 labeled corpus. (3) Re-label mutants via the tableau prover. (4) Export valid contrastive pairs to a new JSONL file with fields: `original_formula`, `mutated_formula`, `mutation_type`, `original_label`, `mutated_label`. (5) Measure contrastive pair yield rate per mutation type. Reference: LFC-DA (2025); contrast sets for NLP robustness.
 

@@ -245,25 +245,26 @@
     {
       "project_number": 279,
       "project_name": "backward_proof_generation",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "dependencies": [
         277
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T16:59:36Z",
+      "session_id": "sess_1780678758_2284ce"
     },
     {
       "project_number": 280,
       "project_name": "contrastive_minimal_pair_generation",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         275,
         276
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T16:35:53Z",
+      "last_updated": "2026-06-05T17:04:08Z",
       "session_id": "sess_1780677343_a4f654",
       "artifacts": [
         {
@@ -275,8 +276,14 @@
           "path": "specs/280_contrastive_minimal_pair_generation/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan with 5 phases: single-occurrence mutation engine, specific mutation rules, pipeline integration, JSON export and batch execution, and unit tests with yield validation"
+        },
+        {
+          "path": "specs/280_contrastive_minimal_pair_generation/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: All 5 phases completed. Single-occurrence mutation engine, ~15 mutation rules, pipeline integration with labelFormula, enriched JSON export, and 30+ unit tests. Lake build passes (1686 jobs)."
         }
-      ]
+      ],
+      "completion_summary": "Extended FormulaMutator.lean with single-occurrence mutation engine, ~15 new mutation rules (□↔◇, U↔R, F↔G, W↔M, T↔ST, implication flip, conjunct removal), pipeline integration with labelFormula, enriched JSON export with occurrence metadata, and 30+ unit tests. Lake build passes (1686 jobs). Zero sorries, zero new axioms."
     },
     {
       "project_number": 270,

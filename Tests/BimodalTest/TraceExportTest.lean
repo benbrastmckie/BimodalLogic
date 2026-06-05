@@ -143,7 +143,7 @@ def runTraceExportTests : IO Bool := do
     IO.println "PASS Test 9: empty axiom_fingerprint renders as '{}'"
     passed := passed + 1
   else
-    IO.println s!"FAIL Test 9: empty axiom_fingerprint not rendered as '{{}}'"
+    IO.println s!"FAIL Test 9: empty axiom_fingerprint not rendered as empty-object"
     failed := failed + 1
 
   -- Test 10: trace is a JSON array
