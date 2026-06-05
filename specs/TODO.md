@@ -86,7 +86,7 @@ technical_debt:
     └─ 280 [COMPLETED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [RESEARCHING] — Build backward proof-first formula generation over axiom set
-278 [NOT STARTED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
+278 [RESEARCHED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
@@ -209,7 +209,8 @@ technical_debt:
 
 ### 278. Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/278_structural_prefilter_expansion/reports/01_research.md]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement

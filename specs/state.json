@@ -234,13 +234,22 @@
     {
       "project_number": 278,
       "project_name": "structural_prefilter_expansion",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-03T22:30:00Z"
+      "last_updated": "2026-06-05T17:08:07Z",
+      "researched": "2026-06-05T17:08:07Z",
+      "session_id": "sess_1780679141_a01042",
+      "artifacts": [
+        {
+          "path": "specs/278_structural_prefilter_expansion/reports/01_research.md",
+          "type": "report",
+          "summary": "Research report covering all 5 requested patterns: polarity analysis, 2-SAT skeleton, S5 reflexive shortcutting, temporal loop detection, and subformula subsumption. Includes feasibility assessment, implementation roadmap, risk analysis, and c7 testing strategy."
+        }
+      ]
     },
     {
       "project_number": 279,
