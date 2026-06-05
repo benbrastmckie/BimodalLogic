@@ -1178,4 +1178,60 @@ theorem discrete_nf_to_decomposition_agreement {sig : MonadicSignature}
       exact ⟨b', h_in_closed', h_win⟩
     exact ⟨a, ha_in, htypes, hgp, hord, hpt⟩
 
+/-! ## Bridge B: Game Wins → NF Transfer at Depth k (Discrete)
+
+For discrete orders, the Duplicator's winning strategy from
+`ghr93_decomposition_implies_game` (applied to the Bridge A result) is
+used to extract NF existential transfer at all depths j < k.
+
+The key pipeline:
+1. Game win at rank r = k/2 gives formula_agreement at (x, b, t)/(x', b', t')
+2. formula_agreement → FO eval agreement on muSig at depth 2r
+3. FO agreement at depth k → NF agreement on sig at depth k
+4. By monotonicity, NF agreement at depth j < k
+5. This gives the existential transfer for all depths.
+
+The critical lemma: `game_win_to_formula_agree` extracts from
+`ghr93_winning_condition` that formula_agreement holds at a matched
+point. This is the first step of Bridge B.
+
+**Blocked**: Full Bridge B (converting game wins to existential NF transfer)
+is blocked because the game at n=0 only gives formula_agreement at
+3 specific positions (x, b, t). Converting this to 4-variable existential
+transfer requires sub-interval splitting, which is the same problem the
+original proof faces. The GHR93 composition theorem decomposes this
+recursively, but implementing that decomposition requires either:
+(a) Building the full recursive game decomposition (Phase 1 of the
+GHR93 proof), OR
+(b) A discrete-specific lemma that 1-var StaviFormula agreement at
+all interval points (not just boundary-matched ones) determines
+n-var NF agreement.
+
+Neither approach is straightforward without additional infrastructure.
+
+## Next step: Direct approach — modify nf_2var_existential_transfer
+
+Since Bridge B is blocked, the alternative is to take a direct approach:
+thread the discrete hypotheses into `nf_2var_existential_transfer` and
+use the game-based approach from within the inductive structure.
+
+`game_win_to_formula_agree` is a useful lemma for this work. -/
+
+/-- `game_win_to_formula_agree`: extract formula_agreement at a single
+    matched point from ghr93_winning_condition. -/
+theorem game_win_to_formula_agree {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r : Nat}
+    (x t : M.carrier) (x' t' : M'.carrier)
+    (a : Fin 0 → ExtendedCarrier M atomMap r)
+    (a' : Fin 0 → ExtendedCarrier M' atomMap r)
+    (b : M.carrier) (b' : M'.carrier)
+    (h_win : ghr93_winning_condition 0
+      (game_tuple (extendPoint x) (extendPoint t) a b)
+      (game_tuple (extendPoint x') (extendPoint t') a' b')) :
+    ∀ (A : StaviFormula), stavi_depth A ≤ r →
+      stavi_temporal_truth_mu M atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b) A ↔
+      stavi_temporal_truth_mu M' atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b') A :=
+  h_win.right.right (Fin.mk (0+1) (by omega))
+
 end Bimodal.Metalogic.WeakCanonical
