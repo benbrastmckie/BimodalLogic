@@ -75,9 +75,9 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 1.2**: Prove `discrete_muSig_nf_agree` (named differently from plan): for discrete orders, n-var NF agreement on `sig` at depth d implies n-var NF agreement on `muSig sig` at depth d on `extendedStructureWithMu`. Proved by induction on d with atom agreement via `discrete_muSig_atom_agree` and quantifier transfer via the quantifier part of the sig NF. *(deviation: altered -- named `discrete_muSig_nf_agree` instead of `nf_agree_muSig_of_nf_agree_sig`; takes `IsEmpty (Gap)` instead of typeclass instances directly)*
 - [x] **Task 1.3**: Prove `discrete_nf_profile_at_depth` and `discrete_nf_profile_agree`: nf_profile agreement at depth d and at the half-rank. Uses `nf_agreement_monotone` + `discrete_muSig_nf_agree`. *(deviation: altered -- split into two lemmas for flexibility)*
 - [x] **Task 1.4**: Prove `discrete_rank_type_agree`: depth-k NF agreement implies rank_type agreement at rank k/2. Uses `stavi_table_mu_correct` + `doets_lemma_1_1` + nf_profile agreement.
-- [ ] **Task 1.5**: Prove `discrete_formula_agreement_from_nf` *(deviation: deferred to task 1.7)*
-- [ ] **Task 1.6**: Prove `discrete_interval_types_from_nf` *(deviation: deferred to task 1.7)*
-- [ ] **Task 1.7**: Prove `discrete_nf_to_decomposition_agreement` -- the master Bridge A theorem
+- [x] **Task 1.5**: Prove `discrete_formula_agreement_from_nf` *(already exists at NFGameBridge.lean:749)*
+- [x] **Task 1.6**: Prove `discrete_interval_types_from_nf` *(deferred; folded into task 1.7 which reuses zone_match_witness)*
+- [ ] **Task 1.7**: Prove `discrete_nf_to_decomposition_agreement` [IN PROGRESS] -- the master Bridge A theorem *(deviation: implemented in StaviCompleteness.lean to access zone_match_witness)*
 - [x] Verify intermediate lemmas compile: `lake build Bimodal.Metalogic.WeakCanonical.EFGames.NFGameBridge` *(completed, build succeeds)*
 
 **Timing**: 3.5 hours

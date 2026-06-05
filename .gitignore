@@ -24,6 +24,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 
+# Literature PDFs (large binary files)
+literature/*.pdf
+
 # Documentation build output
 doc/
 _site/
@@ -37,11 +40,19 @@ coverage/
 *.bak
 *.old
 *~
+proofchecker-backup-*.tar.gz
 .save_*/
 .backup_*/
 backup/
 backups/
 .tmp/
+
+# Python virtual environment
+z3_oracle/.venv/
+
+# Exported documentation snapshots
+docs/claude-directory-export.md
+.claude/claude-directory-export.md
 
 # Large dataset files (hosted on Hugging Face Hub: logos-labs/bmlogic-bench)
 # Do not commit JSONL datasets to git — download from HF Hub instead

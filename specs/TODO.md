@@ -81,7 +81,7 @@ technical_debt:
 
 ### Dataset Enhancement
 
-275 [RESEARCHED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
+275 [PLANNED] — Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
   └─ 276 [NOT STARTED] — Add Strong Release (M) and Strong Trigger (ST) derived operator definitions
     └─ 280 [NOT STARTED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [NOT STARTED] — Instrument tableau prover with rule-firing trace certificates
@@ -162,12 +162,13 @@ technical_debt:
 
 ### 275. Surface R/W/T/WS operators in hasBimodalInteraction and add complexity pattern-matching
 - **Effort**: small (2-4 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
 - **Research**: [specs/275_surface_rwt_ws_bimodal_interaction/reports/01_research.md]
+- **Plan**: [specs/275_surface_rwt_ws_bimodal_interaction/plans/01_implementation-plan.md]
 
 **Description**: Release (R), weak until (W), trigger (T), and weak since (WS) are already defined in Formula.lean but invisible to the dataset generator — `hasBimodalInteraction` only checks for F/P/G/H patterns. (1) Extend `hasDerivedTemporal` / `hasBimodalInteraction` in DatasetGenerator.lean to recognise R/W/T/WS structural patterns via subformula traversal. (2) Add complexity pattern-matching cases for R/W/T/WS in `Formula.complexity` (analogous to the F/P/G/H treatment from task 274), reducing their overhead from 5-8 to 1-2. (3) Update `FormulaEnumerator.lean` overhead constants to match. (4) Regenerate c5 dataset and verify ~3x increase in bimodal formula count. This is zero new axiom/proof work — purely surfacing existing operators in the automation layer.
 
@@ -187,7 +188,7 @@ technical_debt:
 
 ### 277. Instrument tableau prover with rule-firing trace certificates
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement

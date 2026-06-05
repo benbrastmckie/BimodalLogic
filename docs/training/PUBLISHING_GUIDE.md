@@ -19,12 +19,14 @@ Face Datasets Hub.
 
 | Config | Split | Records | Purpose |
 |---|---|---|---|
-| `default` (bmlogic-bench) | `test` | 727 | Evaluation benchmark (stratified) |
-| `bmlogic-c5` | `train` | 1,513 | Training — complexity ≤ 5, exhaustive |
-| `bmlogic-c7` | `train` | 49,904 | Training — complexity ≤ 7, exhaustive |
-| `proof-steps` | `train` | 2,424 | Proof-step supervision (36 theorems) |
+| `default` (bmlogic-bench) | `test` | 777 | Evaluation benchmark (stratified) |
+| `bmlogic-c5` | `train` | 2,283 | Training — complexity ≤ 5, exhaustive |
+| `bmlogic-c6` | `train` | 13,064 | Training — complexity ≤ 6, exhaustive |
+| `bmlogic-c7` | `train` | 77,272 | Training — complexity ≤ 7, exhaustive |
+| `bmlogic-c8` | `train` | 147,864 | Training — complexity ≤ 8, partial |
+| `proof-steps` | `train` | 12,077 | Proof-step supervision (487 theorems) |
 
-All records use a 16-field JSONL schema. The `bmlogic-c7` file is ~52 MB;
+All records use a JSONL schema. The `bmlogic-c7` file is ~224 MB and `bmlogic-c8` is ~393 MB;
 plan for a multi-minute download on slower connections.
 
 ---
@@ -36,15 +38,17 @@ plan for a multi-minute download on slower connections.
 ```python
 from datasets import load_dataset
 
-# Evaluation benchmark (727 records, test split)
+# Evaluation benchmark (777 records, test split)
 ds_bench = load_dataset("logos-labs/bmlogic-bench")
 print(ds_bench)
-# DatasetDict({'test': Dataset({features: [...], num_rows: 727})})
+# DatasetDict({'test': Dataset({features: [...], num_rows: 777})})
 
 # Training sets
-ds_c5    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c5")   # 1,513
-ds_c7    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c7")   # 49,904
-ds_proof = load_dataset("logos-labs/bmlogic-bench", "proof-steps")  # 2,424
+ds_c5    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c5")   # 2,283
+ds_c6    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c6")   # 13,064
+ds_c7    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c7")   # 77,272
+ds_c8    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c8")   # 147,864
+ds_proof = load_dataset("logos-labs/bmlogic-bench", "proof-steps")  # 12,077
 
 # Pin a specific version for reproducible experiments
 ds_v1 = load_dataset("logos-labs/bmlogic-bench", revision="v1.0")
@@ -187,13 +191,17 @@ from datasets import load_dataset
 
 ds_bench = load_dataset("logos-labs/bmlogic-bench")
 ds_c5    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c5")
+ds_c6    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c6")
 ds_c7    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c7")
+ds_c8    = load_dataset("logos-labs/bmlogic-bench", "bmlogic-c8")
 ds_proof = load_dataset("logos-labs/bmlogic-bench", "proof-steps")
 
-assert len(ds_bench["test"])     == 727
-assert len(ds_c5["train"])       == 1513
-assert len(ds_c7["train"])       == 49904
-assert len(ds_proof["train"])    == 2424
+assert len(ds_bench["test"])     == 777
+assert len(ds_c5["train"])       == 2283
+assert len(ds_c6["train"])       == 13064
+assert len(ds_c7["train"])       == 77272
+assert len(ds_c8["train"])       == 147864
+assert len(ds_proof["train"])    == 12077
 print("All record counts verified.")
 ```
 

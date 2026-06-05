@@ -81,23 +81,54 @@
     {
       "project_number": 275,
       "project_name": "surface_rwt_ws_bimodal_interaction",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T01:46:21Z",
-      "session_id": "sess_1780623796_a69c2e",
+      "last_updated": "2026-06-05T01:56:56Z",
+      "session_id": "sess_1780624516_ef5213",
       "researched": "2026-06-05T01:46:21Z",
       "artifacts": [
         {
           "path": "specs/275_surface_rwt_ws_bimodal_interaction/reports/01_research.md",
           "type": "research",
           "summary": "Research report for task 275: surface R/W/T/WS operators in automation layer"
+        },
+        {
+          "path": "specs/275_surface_rwt_ws_bimodal_interaction/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for surfacing R/WU/T/WS operators in automation layer"
         }
       ],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-04"
+          }
+        ]
+      }
     },
     {
       "project_number": 276,
