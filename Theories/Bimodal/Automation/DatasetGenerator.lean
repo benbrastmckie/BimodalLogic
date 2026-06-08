@@ -1424,4 +1424,69 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println "[test] FAIL: hybrid mode did not fall through"
 
+/-! ### Phase 3 integration test (task 284): mini batch comparison -/
+
+-- Test 4: Mini batch comparison of exhaustive vs hybrid modes
+-- Uses a small representative set of formulas to verify both modes agree on labels
+#eval show IO Unit from do
+  let p := Formula.atom ⟨"p", none⟩
+  let q := Formula.atom ⟨"q", none⟩
+  let r := Formula.atom ⟨"r", none⟩
+  -- Mix of valid, invalid, and potentially timeout formulas
+  let testFormulas : List Formula := [
+    .imp p p,                              -- valid (identity)
+    .imp (.box p) p,                       -- valid (T axiom)
+    .imp (.untl p q) q.some_future,        -- valid (U->F)
+    .imp (.snce p q) q.some_past,          -- valid (S->P)
+    .imp p q,                              -- invalid
+    .imp (.untl p q) (.untl r q),          -- unknown/invalid
+    .imp p (.imp q q),                     -- valid (tautological consequent)
+    .imp (.box .bot) q                     -- valid (bot antecedent)
+  ]
+  -- Exhaustive mode
+  let mut exhaustiveResults : List (Formula × FormulaLabel × String) := []
+  for φ in testFormulas do
+    let lf ← labelFormula φ .Base 1000 .exhaustive none
+    exhaustiveResults := (φ, lf.label, lf.decisionMethod) :: exhaustiveResults
+  exhaustiveResults := exhaustiveResults.reverse
+  -- Hybrid mode with a small pool
+  let cfg : ForwardConfig := {
+    seedCount := 200
+    maxDepth := 1
+    maxPoolSize := 500
+    atoms := [⟨"p", none⟩, ⟨"q", none⟩, ⟨"r", none⟩]
+    frameClass := .Base
+  }
+  let entries ← forwardGenerate cfg
+  let mut pool : ProofPool .Base := { ProofPool.empty with cap := 500 }
+  for σ in entries do
+    pool := pool.add σ.fst σ.snd
+  let mut hybridResults : List (Formula × FormulaLabel × String) := []
+  for φ in testFormulas do
+    let lf ← labelFormula φ .Base 1000 .hybrid (some pool)
+    hybridResults := (φ, lf.label, lf.decisionMethod) :: hybridResults
+  hybridResults := hybridResults.reverse
+  -- Compare
+  IO.println s!"[test] Pool size: {pool.size}"
+  let mut allMatch := true
+  let mut prefilterHits := 0
+  let mut poolHits := 0
+  for i in List.range testFormulas.length do
+    match exhaustiveResults[i]?, hybridResults[i]? with
+    | some (φ, exLabel, exMethod), some (_, hyLabel, hyMethod) =>
+      let labelMatch := exLabel == hyLabel
+      if !labelMatch then
+        IO.println s!"[test] MISMATCH at {φ.prettyPrint}: exhaustive={repr exLabel} hybrid={repr hyLabel}"
+        allMatch := false
+      else
+        IO.println s!"[test] OK: {φ.prettyPrint} -> {repr exLabel} (ex: {exMethod}, hy: {hyMethod})"
+      if hyMethod.startsWith "structural_" then prefilterHits := prefilterHits + 1
+      if hyMethod == "proof_first" then poolHits := poolHits + 1
+    | _, _ => pure ()
+  IO.println s!"[test] Prefilter hits: {prefilterHits}, Pool hits: {poolHits}"
+  if allMatch then
+    IO.println "[test] PASS: all labels match between exhaustive and hybrid modes"
+  else
+    IO.println "[test] FAIL: label mismatch detected"
+
 end Bimodal.Automation
