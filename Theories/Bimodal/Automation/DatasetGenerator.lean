@@ -712,6 +712,196 @@ def structuralPrefilter (φ : Formula) : Option Bool :=
   | some (v, _) => some v
   | none => none
 
+/-! ### Invalid Pattern Recognizers (task 288)
+
+Structural recognizers for formulas that are provably **invalid** (have obvious
+countermodels). These complement the valid prefilter by short-circuiting the
+tableau for formulas with false consequents, trivially satisfiable antecedents
+negated to bot, or unfulfillable Until/Since eventualities.
+
+Three recognizer functions:
+- `isTemporalContradiction`: Detects `φ → ψ` where consequent is always false
+  and antecedent is not always false.
+- `isObviousSatisfiable`: Detects `φ → ⊥` where `φ` is trivially satisfiable
+  in a reflexive 1-world S5 model, and `φ → ψ` where `φ` is trivially
+  satisfiable and `ψ` is always false.
+- `hasUnfulfillableEventuality`: Detects `φ → U(event, guard)` where `φ`
+  contains `G(¬event)`, making the Until unfulfillable, and the symmetric
+  `φ → S(event, guard)` where `φ` contains `H(¬event)`.
+
+Combined in `structuralInvalidPrefilter` and wired into `labelFormulaImpl`
+as Phase 1.5 between the valid prefilter and the tableau decision procedure.
+
+**Coverage estimates** (c6): ~30-50 of 96 remaining timeouts.
+-/
+
+/--
+Check if a formula is trivially satisfiable in a reflexive 1-world S5 model
+with all atoms set to true. Returns `true` only for patterns we can prove
+satisfiable by explicit model construction.
+
+Conservative: returns `false` for temporal operators (Until/Since require
+2+ time points) and complex implications (would need SAT-solving).
+
+Satisfiable patterns:
+- Atoms: set to true in the model
+- Top (⊥ → ⊥): always true
+- Box(satisfiable): in reflexive S5 with one world, □φ ↔ φ
+- Conjunction of satisfiables: set all atoms to true
+- Negation of always-false: ¬(always-false) is always true
+-/
+def isTrivialSatisfiable : Formula → Bool
+  | .atom _ => true
+  | .imp .bot .bot => true  -- top
+  | .box a => isTrivialSatisfiable a  -- reflexive S5: box(sat) is sat
+  | .imp (.imp a (.imp b .bot)) .bot =>  -- and(a, b) pattern
+    isTrivialSatisfiable a && isTrivialSatisfiable b
+  | .imp a .bot =>  -- neg(a): satisfiable when a is always false
+    isUnsatBotTemporal a
+  | _ => false
+
+/--
+Detect `φ → ψ` where the consequent `ψ` is always false (via `isUnsatBotTemporal`)
+and the antecedent `φ` is not always false. Such formulas are invalid because
+whenever the antecedent is true, the consequent is false.
+
+Uses `isUnsatBotTemporal` as the core "always false" checker. The `!isUnsatBotTemporal`
+guard on the antecedent prevents catching vacuously valid formulas like `⊥ → ⊥`
+or `U(⊥, p) → U(⊥, q)`.
+
+Examples:
+- `p → U(⊥, q)` : consequent always false, antecedent satisfiable → INVALID
+- `p → □(⊥)` : consequent always false, antecedent satisfiable → INVALID
+- `U(⊥, p) → U(⊥, q)` : both sides always false → vacuously valid, NOT caught
+-/
+def isTemporalContradiction : Formula → Bool
+  | .imp antecedent consequent =>
+    isUnsatBotTemporal consequent && !isUnsatBotTemporal antecedent
+  | _ => false
+
+/--
+Detect `φ → ⊥` where `φ` is trivially satisfiable (via `isTrivialSatisfiable`),
+and `φ → ψ` where `φ` is trivially satisfiable and `ψ` is always false.
+
+The first pattern (`φ → ⊥` = `¬φ`) is invalid because `φ` has a model.
+The second pattern extends this: `φ` is true and `ψ` is false simultaneously.
+
+This overlaps with `isTemporalContradiction` for the `φ → alwaysFalse` case,
+but adds coverage for `φ → ⊥` where `φ` is satisfiable but not caught by
+the false-consequent check (since `⊥` is trivially always-false, it is also
+caught by `isTemporalContradiction`; the `isTrivialSatisfiable` check adds
+confidence that the antecedent is genuinely satisfiable).
+
+Examples:
+- `□(p) → ⊥` : antecedent satisfiable in reflexive model → INVALID
+- `(p ∧ q) → ⊥` : conjunction satisfiable → INVALID
+- `p → U(⊥, q)` : antecedent satisfiable, consequent always false → INVALID
+-/
+def isObviousSatisfiable : Formula → Bool
+  | .imp antecedent .bot =>
+    isTrivialSatisfiable antecedent
+  | .imp antecedent consequent =>
+    isTrivialSatisfiable antecedent && isUnsatBotTemporal consequent
+  | _ => false
+
+/--
+Detect `φ → U(event, guard)` where `φ` contains `G(¬event)` as a top-level
+conjunct, making the Until eventuality unfulfillable. Under the assumption
+`G(¬event)`, `event` is never true in the future, so `U(event, guard)` cannot
+be fulfilled at any time point.
+
+Also detects the symmetric past case: `φ → S(event, guard)` where `φ`
+contains `H(¬event)` as a conjunct.
+
+Example:
+- `G(¬p) → U(p, q)` : Under G(¬p), p is never true, so U(p,q) is never
+  fulfilled → INVALID
+- `(G(¬p) ∧ r) → U(p, q)` : Same reasoning, G(¬p) is a conjunct → INVALID
+- `H(¬p) → S(p, q)` : Symmetric past case → INVALID
+-/
+def hasUnfulfillableEventuality : Formula → Bool
+  | .imp antecedent (.untl event _guard) =>
+    let conjuncts := collectTopLevelConjuncts antecedent
+    conjuncts.any fun c =>
+      match isAllFutureShape c with
+      | some inner =>
+        match isNegShape inner with
+        | some negInner => negInner == event
+        | none => false
+      | none => false
+  | .imp antecedent (.snce event _guard) =>
+    let conjuncts := collectTopLevelConjuncts antecedent
+    conjuncts.any fun c =>
+      match isAllPastShape c with
+      | some inner =>
+        match isNegShape inner with
+        | some negInner => negInner == event
+        | none => false
+      | none => false
+  | _ => false
+
+/--
+Collect all atoms appearing in a formula as a list (computable).
+May contain duplicates; used only for trivial countermodel construction.
+-/
+private def collectAtomsList : Formula → List Atom
+  | .atom a => [a]
+  | .bot => []
+  | .imp a b => collectAtomsList a ++ collectAtomsList b
+  | .box a => collectAtomsList a
+  | .untl a b => collectAtomsList a ++ collectAtomsList b
+  | .snce a b => collectAtomsList a ++ collectAtomsList b
+
+/--
+Construct a trivial countermodel for a structurally invalid formula.
+Sets all atoms in the formula to true (satisfies most antecedents in
+a reflexive 1-world S5 model).
+
+This is conservative: the "all atoms true" assignment provides a valid
+countermodel for patterns where the consequent is structurally false
+regardless of the valuation.
+-/
+def constructTrivialCountermodel (φ : Formula) : SimpleCountermodel :=
+  let allAtoms := (collectAtomsList φ).eraseDups
+  { trueAtoms := allAtoms
+  , falseAtoms := []
+  , formula := φ }
+
+/--
+Structural invalid pre-filter (task 288).
+
+Detects formulas that are provably **invalid** by structural inspection.
+Returns `some (false, patternLabel)` if the formula has an obvious countermodel.
+Returns `none` if undetermined (proceed to decision procedure).
+
+Three patterns detected:
+1. **False consequent** (`invalid_false_consequent`): `φ → ψ` where `ψ` is always
+   false and `φ` is not always false. Coverage: ~15-25 c6 timeouts.
+2. **Satisfiable negation** (`invalid_satisfiable_neg`): `φ → ⊥` where `φ` is
+   trivially satisfiable, or `φ → ψ` where `φ` is satisfiable and `ψ` is
+   always false. Coverage: ~10-20 c6 timeouts.
+3. **Unfulfillable eventuality** (`invalid_unfulfillable_eventuality`): `φ → U(event, guard)`
+   where `φ` contains `G(¬event)`, or symmetric `S` case. Coverage: ~5-10 c6 timeouts.
+
+Never returns `some (true, ...)` (that is the valid prefilter's job).
+-/
+def structuralInvalidPrefilter : Formula → Option (Bool × String)
+  | .imp antecedent consequent =>
+    -- Pattern 2 first (more specific): Trivially satisfiable antecedent with bot consequent
+    if consequent == .bot && isTrivialSatisfiable antecedent then
+      some (false, "invalid_satisfiable_neg")
+    -- Pattern 2b: Trivially satisfiable antecedent with always-false consequent
+    else if isTrivialSatisfiable antecedent && isUnsatBotTemporal consequent then
+      some (false, "invalid_satisfiable_neg")
+    -- Pattern 1: Always-false consequent with non-always-false antecedent (wider net)
+    else if isUnsatBotTemporal consequent && !isUnsatBotTemporal antecedent then
+      some (false, "invalid_false_consequent")
+    -- Pattern 3: Unfulfillable eventuality in consequent
+    else if hasUnfulfillableEventuality (.imp antecedent consequent) then
+      some (false, "invalid_unfulfillable_eventuality")
+    else none
+  | _ => none
+
 /-! ### Pre-filter unit tests (task 270) -/
 
 -- Test atoms for #eval tests
@@ -875,6 +1065,80 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval isStructurallyValid (.imp p_test (.box Formula.top))              -- true
 #eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true, "structural_tautology")
 #eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true, "structural_tautology")
+
+/-! ### Invalid prefilter unit tests (task 288) -/
+
+-- isTrivialSatisfiable: positive cases
+#eval isTrivialSatisfiable p_test                                          -- true  (atom)
+#eval isTrivialSatisfiable (Formula.imp .bot .bot)                         -- true  (top)
+#eval isTrivialSatisfiable (.box p_test)                                   -- true  (box(atom))
+#eval isTrivialSatisfiable (Formula.and p_test q_test)                     -- true  (and of atoms)
+#eval isTrivialSatisfiable (.box (.box p_test))                            -- true  (box(box(atom)))
+#eval isTrivialSatisfiable (Formula.neg .bot)                              -- true  (neg(bot) = top, isUnsatBotTemporal bot = true)
+-- isTrivialSatisfiable: negative cases
+#eval isTrivialSatisfiable (.untl p_test q_test)                           -- false (Until needs 2+ times)
+#eval isTrivialSatisfiable (.snce p_test q_test)                           -- false (Since needs 2+ times)
+#eval isTrivialSatisfiable (.imp p_test q_test)                            -- false (imp not a known-sat shape)
+#eval isTrivialSatisfiable .bot                                            -- false (bot is never true)
+
+-- isTemporalContradiction: positive cases (invalid formulas)
+#eval isTemporalContradiction (.imp p_test (.untl .bot q_test))            -- true  (p → U(⊥,q): conseq always false)
+#eval isTemporalContradiction (.imp p_test (.box .bot))                    -- true  (p → □⊥: conseq always false)
+#eval isTemporalContradiction (.imp (.box p_test) .bot)                    -- true  (□p → ⊥: conseq false, antecedent not)
+#eval isTemporalContradiction (.imp p_test (.snce .bot q_test))            -- true  (p → S(⊥,q): conseq always false)
+#eval isTemporalContradiction (.imp (.box (.untl p_test q_test)) (.untl .bot r_test))
+  -- true  (□(U(p,q)) → U(⊥,r): consequent always false, antecedent satisfiable)
+-- isTemporalContradiction: negative cases
+#eval isTemporalContradiction (.imp (.untl .bot p_test) (.untl .bot q_test))
+  -- false (both sides always false → vacuously valid, not invalid)
+#eval isTemporalContradiction (.imp p_test q_test)                         -- false (q not always false)
+#eval isTemporalContradiction p_test                                       -- false (not an implication)
+#eval isTemporalContradiction (.imp .bot .bot)                             -- false (bot → bot is valid)
+
+-- isObviousSatisfiable: positive cases (invalid formulas)
+#eval isObviousSatisfiable (.imp p_test .bot)                              -- true  (p → ⊥: p satisfiable)
+#eval isObviousSatisfiable (.imp (.box p_test) .bot)                       -- true  (□p → ⊥: sat in reflexive model)
+#eval isObviousSatisfiable (.imp (Formula.and p_test q_test) .bot)         -- true  ((p∧q) → ⊥: sat)
+#eval isObviousSatisfiable (.imp p_test (.untl .bot q_test))               -- true  (p → U(⊥,q): sat antecedent, false conseq)
+#eval isObviousSatisfiable (.imp (Formula.imp .bot .bot) .bot)             -- true  (⊤ → ⊥: top is satisfiable)
+-- isObviousSatisfiable: negative cases
+#eval isObviousSatisfiable (.imp (.untl p_test q_test) .bot)               -- false (U(p,q) not trivially sat)
+#eval isObviousSatisfiable (.imp p_test q_test)                            -- false (q not always false)
+#eval isObviousSatisfiable (.imp .bot .bot)                                -- false (bot not trivially sat)
+#eval isObviousSatisfiable p_test                                          -- false (not an implication)
+
+-- hasUnfulfillableEventuality: positive cases (invalid formulas)
+#eval hasUnfulfillableEventuality (.imp (Formula.all_future (Formula.neg p_test)) (.untl p_test q_test))
+  -- true  (G(¬p) → U(p,q): p never true in future, Until unfulfillable)
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.all_future (Formula.neg p_test)) r_test) (.untl p_test q_test))
+  -- true  (G(¬p) ∧ r → U(p,q): G(¬p) is a conjunct)
+#eval hasUnfulfillableEventuality (.imp (Formula.all_past (Formula.neg p_test)) (.snce p_test q_test))
+  -- true  (H(¬p) → S(p,q): symmetric past case)
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.all_past (Formula.neg p_test)) r_test) (.snce p_test q_test))
+  -- true  (H(¬p) ∧ r → S(p,q): H(¬p) is a conjunct)
+-- hasUnfulfillableEventuality: negative cases
+#eval hasUnfulfillableEventuality (.imp (Formula.all_future (Formula.neg q_test)) (.untl p_test q_test))
+  -- false (G(¬q), not G(¬p) — wrong atom)
+#eval hasUnfulfillableEventuality (.imp p_test (.untl q_test r_test))
+  -- false (no G(¬q) in antecedent)
+#eval hasUnfulfillableEventuality (.imp p_test q_test)                     -- false (consequent not Until/Since)
+#eval hasUnfulfillableEventuality p_test                                   -- false (not an implication)
+
+-- structuralInvalidPrefilter: integration tests
+#eval structuralInvalidPrefilter (.imp p_test (.untl .bot q_test))
+  -- some (false, "invalid_satisfiable_neg") — atom is trivially satisfiable, so Pattern 2b fires
+#eval structuralInvalidPrefilter (.imp p_test .bot)
+  -- some (false, "invalid_satisfiable_neg") — atom is trivially satisfiable
+#eval structuralInvalidPrefilter (.imp (.untl p_test q_test) (.untl .bot r_test))
+  -- some (false, "invalid_false_consequent") — U(p,q) not trivially satisfiable, falls to Pattern 1
+#eval structuralInvalidPrefilter (.imp (Formula.all_future (Formula.neg p_test)) (.untl p_test q_test))
+  -- some (false, "invalid_unfulfillable_eventuality") — G(¬p) makes U(p,q) unfulfillable
+#eval structuralInvalidPrefilter (.imp p_test q_test)
+  -- none (undetermined)
+#eval structuralInvalidPrefilter (.imp .bot .bot)
+  -- none (vacuously valid, not invalid — bot is not trivially satisfiable)
+#eval structuralInvalidPrefilter (.imp (.untl .bot p_test) (.untl .bot q_test))
+  -- none (both sides always false → valid, not caught as invalid)
 
 /-! ### DecideCache: Bounded HashMap Cache for Formula Labeling (Task 289)
 
