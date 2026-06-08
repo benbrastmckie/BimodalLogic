@@ -22,6 +22,22 @@ metrics, and produces labeled records.
 - `LabeledFormula`: Complete labeled record with formula, label, trace, and metrics
 - `labelFormula`: Run decision procedure and produce a labeled record
 - `labelBatch`: Process multiple formulas with progress reporting
+- `GenerationMode`: Labeling mode — exhaustive, proofFirst, or hybrid (task 279/284)
+- `structuralPrefilterWithAxiom`: O(n) syntactic prefilter for known-valid patterns
+
+## Structural Prefilter Patterns
+
+The structural prefilter (tasks 270, 274, 278, 284) short-circuits the decision
+procedure for formulas matching known-valid syntactic shapes:
+
+- **Identity**: `φ → φ` (task 284)
+- **Bot-temporal**: `U(⊥, X) → Y`, `S(□⊥, X) → Y`, etc.
+- **Tautological consequent**: `X → (p → p)`, `X → □(q → q)`
+- **S5 reflexive conflict**: `□φ ∧ ¬φ → Y`
+- **Temporal loop**: `U(X, guard) ∧ G(¬guard) → Y`
+- **Subsumption**: `□φ → φ`, `Gφ → φ`, `Gφ → Fφ`, `F(Fφ) → Fφ`, etc.
+- **Temporal implication**: `U(X, Y) → F(Y)`, `S(X, Y) → P(Y)` (task 284)
+- **Box descent**: `□(valid)` where `valid` is structurally valid
 
 ## Design Decisions
 
@@ -31,6 +47,9 @@ metrics, and produces labeled records.
 - **Frame class support**: `labelFormula` accepts `fc : FrameClass` parameter
   (default `.Base`), enabling generation for Base, Dense, and Discrete frame classes
   via the `--frame-class` CLI flag (task 261 v3)
+- **Hybrid labeling**: `labelFormula` accepts `mode : GenerationMode` and optional
+  `ProofPool` parameters (task 284). In hybrid mode, formulas are checked against
+  the proof pool for O(1) lookup before falling through to the tableau.
 - **Wall-clock timing**: Uses `IO.monoMsNow` for decision time measurement
 - **All axiom constructors handled**: Pattern match covers all constructors in
   `Bimodal.ProofSystem.Axiom`
@@ -673,6 +692,7 @@ Structural pre-filter for known-valid formula patterns. Returns `some true` if t
 formula is provably valid by structural inspection, `none` if undetermined.
 
 Recognized patterns:
+0. **Identity**: `φ → φ` — always valid (task 284: catches temporal/derived operator identities)
 1. **Bot-temporal antecedent**: `φ → ψ` where `isUnsatBotTemporal φ` — vacuously valid
    (now recursive: catches `U(□⊥, X)`, `U(U(⊥, Y), X)`, etc.)
 2. **Valid consequent**: `φ → ψ` where `isStructurallyValid ψ` — tautological consequent
@@ -681,6 +701,8 @@ Recognized patterns:
 4. **Double-box-identity**: `□□φ → φ` — valid by T axiom (reflexivity) applied twice
 5. **Box-prop**: `□φ → (ψ → φ)` — valid by T axiom + weakening
 6. **Box descent**: `□φ` where `φ` is itself structurally valid — necessitation of valid = valid
+7. **Until → Future**: `U(X, Y) → F(Y)` — valid since Until guarantees eventual occurrence (task 284)
+8. **Since → Past**: `S(X, Y) → P(Y)` — valid since Since guarantees past occurrence (task 284)
 
 Never returns `some false` (would require soundness argument for invalidity).
 -/
@@ -1366,6 +1388,26 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     | none => "null"
     | some t => "\"" ++ escapeJsonString t ++ "\"")
   ++ "}"
+
+/-!
+### Task 284: Proof-Pool Hybrid Mode and Extended Prefilter
+
+**Prefilter patterns** (task 284 additions):
+- `structural_identity`: `φ → φ` for any formula φ (catches temporal/derived operator identities)
+- `structural_until_implies_future`: `U(X, Y) → F(Y)` (Until guarantees eventual occurrence)
+- `structural_since_implies_past`: `S(X, Y) → P(Y)` (Since guarantees past occurrence)
+
+**Integration test results** (mini-batch, 8 formulas):
+- 6/8 caught by structural prefilter
+- 1/8 resolved by adaptive tableau (invalid)
+- 1/8 timeout (genuinely hard: `U(p, q) → U(r, q)`)
+- 0 label regressions (exhaustive and hybrid modes agree on all labels)
+
+**CLI flags** (task 284, in DatasetExport.lean):
+- `--generation-mode exhaustive|proofFirst|hybrid` (default: exhaustive)
+- `--pool-depth N` (default: 2)
+- `--pool-seeds N` (default: 10000)
+-/
 
 /-! ### Phase 1 smoke tests (task 284): proof-pool hybrid mode -/
 

@@ -159,17 +159,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Documentation and Test Cleanup [NOT STARTED]
+### Phase 4: Documentation and Test Cleanup [COMPLETED]
 
 **Goal**: Add inline documentation, update module headers, and ensure all new code is tested.
 
 **Tasks**:
-- [ ] Add docstrings to all new CLI flags in `DatasetExport.lean`
-- [ ] Add docstrings to new prefilter patterns in `DatasetGenerator.lean` explaining the structural reasoning
-- [ ] Update the module header comment in `DatasetGenerator.lean` to mention the extended prefilter patterns
-- [ ] Verify all `#eval` tests from Phases 1 and 2 are retained and pass
-- [ ] Run `lake build` as final verification
-- [ ] Record the final timeout count and pool/prefilter hit rates as comments in `DatasetGenerator.lean` for future reference
+- [x] Add docstrings to all new CLI flags in `DatasetExport.lean` *(generationMode, poolDepth, poolSeeds fields have inline docstrings)*
+- [x] Add docstrings to new prefilter patterns in `DatasetGenerator.lean` explaining the structural reasoning *(isTemporalImplicationPattern has full docstring with proof sketches)*
+- [x] Update the module header comment in `DatasetGenerator.lean` to mention the extended prefilter patterns *(added Structural Prefilter Patterns section and Hybrid labeling design note)*
+- [x] Verify all `#eval` tests from Phases 1 and 2 are retained and pass *(11 task-284 tests + 4 integration test: all pass)*
+- [x] Run `lake build` as final verification *(737 jobs, zero new errors; pre-existing error in CanonicalTaskRelation.lean is unrelated)*
+- [x] Record the final timeout count and pool/prefilter hit rates as comments in `DatasetGenerator.lean` for future reference *(added summary comment block with integration test results and CLI flag documentation)*
 
 **Timing**: 0.5 hours
 
