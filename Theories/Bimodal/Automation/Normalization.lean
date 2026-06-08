@@ -1060,4 +1060,61 @@ section SerializationTests
 
 end SerializationTests
 
+/-!
+## Programmatic Normalization to Primitives
+
+`normalizeFormula` recursively traverses a formula and rebuilds it using only the
+6 primitive constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce`). Since every
+derived operator (`neg`, `top`, `and`, `or`, `diamond`, `always`, `sometimes`,
+`next`, `prev`, `weak_future`, `weak_past`, `all_future`, `all_past`,
+`some_future`, `some_past`, `release`, `weak_until`, `trigger`, `weak_since`,
+`strong_release`, `strong_trigger`) is a `def` abbreviation that Lean unfolds at
+elaboration time, `normalizeFormula` is definitionally the identity function.
+
+Its purpose is:
+1. **Contract documentation**: makes explicit that the decision procedure operates
+   on primitive-only formulas.
+2. **Future-proofing**: if any derived operator is ever changed from `def` to
+   `opaque` or `abbrev`, this function will still produce a correct normalization.
+3. **External formula guard**: formulas arriving from external sources (e.g., JSON
+   parsing) are guaranteed to be in primitive form after normalization.
+-/
+
+section ProgrammaticNormalization
+
+/--
+Normalize a formula to primitive constructors only.
+
+Pattern-matches on all 6 primitive constructors of `Formula` (`atom`, `bot`,
+`imp`, `box`, `untl`, `snce`) and recursively normalizes subformulas. Since
+every derived operator is a `def` abbreviation that expands to these 6
+constructors, this function is the identity by definitional equality.
+-/
+def normalizeFormula : Formula → Formula
+  | .atom a    => .atom a
+  | .bot       => .bot
+  | .imp φ ψ   => .imp (normalizeFormula φ) (normalizeFormula ψ)
+  | .box φ     => .box (normalizeFormula φ)
+  | .untl φ ψ  => .untl (normalizeFormula φ) (normalizeFormula ψ)
+  | .snce φ ψ  => .snce (normalizeFormula φ) (normalizeFormula ψ)
+
+/--
+`normalizeFormula` is the identity function.
+
+Since all derived operators are `def` abbreviations that Lean unfolds
+definitionally, `normalizeFormula` rebuilds exactly the same term. The
+proof is by structural induction on `φ` with `rfl` at each leaf and
+the inductive hypothesis at each node.
+-/
+@[simp] theorem normalizeFormula_id (φ : Formula) : normalizeFormula φ = φ := by
+  induction φ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp φ ψ ih_φ ih_ψ => simp [normalizeFormula, ih_φ, ih_ψ]
+  | box φ ih => simp [normalizeFormula, ih]
+  | untl φ ψ ih_φ ih_ψ => simp [normalizeFormula, ih_φ, ih_ψ]
+  | snce φ ψ ih_φ ih_ψ => simp [normalizeFormula, ih_φ, ih_ψ]
+
+end ProgrammaticNormalization
+
 end Bimodal.Automation.Normalization
