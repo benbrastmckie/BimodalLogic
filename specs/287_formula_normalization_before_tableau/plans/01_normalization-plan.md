@@ -91,22 +91,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Wire into decide and add tests [NOT STARTED]
+### Phase 2: Wire into decide and add tests [COMPLETED]
 
 **Goal**: Integrate `normalizeFormula` into the decision procedure entry point and add unit tests.
 
 **Tasks**:
-- [ ] Add `import Bimodal.Automation.Normalization` to `DecisionProcedure.lean` (if not already imported)
-- [ ] Insert `let phi_n := normalizeFormula phi` as the first line of `decide`, then use `phi_n` in place of `phi` for the fast-path and subsequent calls (since `phi_n` is definitionally equal to `phi`, `DecisionResult phi_n = DecisionResult phi`)
-- [ ] Verify that the `decide` function still type-checks with no changes to its return type
-- [ ] Create `Tests/BimodalTest/Automation/NormalizationTest.lean` with unit tests:
+- [x] Add `import Bimodal.Automation.Normalization` to `DecisionProcedure.lean` (if not already imported)
+- [x] Insert `let phi_n := normalizeFormula phi` as the first line of `decide`, then use `phi_n` in place of `phi` for the fast-path and subsequent calls (since `phi_n` is definitionally equal to `phi`, `DecisionResult phi_n = DecisionResult phi`) *(deviation: altered -- used `let phi := normalizeFormula phi` with shadowing plus `have h_norm` for proof transport via `h_norm triangleright proof`, because Lean 4 let-bindings create distinct types requiring explicit rewriting)*
+- [x] Verify that the `decide` function still type-checks with no changes to its return type
+- [x] Create `Tests/BimodalTest/Automation/NormalizationTest.lean` with unit tests:
   - Test `normalizeFormula` on primitive formulas (atom, bot, imp, box, untl, snce)
   - Test on derived operator formulas (neg, and, or, diamond, always, sometimes, next, prev)
   - Test on nested combinations (e.g., `always (diamond p)`)
   - Verify `normalizeFormula phi == phi` for all test cases using `decide` or `native_decide`
-- [ ] Register the test file in `lakefile.lean` if needed (check existing test registration pattern)
-- [ ] Run scoped build: `lake build Bimodal.Metalogic.Decidability.DecisionProcedure`
-- [ ] Run test build: `lake build BimodalTest`
+- [x] Register the test file in `lakefile.lean` if needed (check existing test registration pattern) *(deviation: altered -- registered in BimodalTest.lean root imports rather than lakefile.lean, since BimodalTest already has its own lean_lib entry)*
+- [x] Run scoped build: `lake build Bimodal.Metalogic.Decidability.DecisionProcedure`
+- [x] Run test build: `lake build BimodalTest`
 
 **Timing**: 1 hour
 

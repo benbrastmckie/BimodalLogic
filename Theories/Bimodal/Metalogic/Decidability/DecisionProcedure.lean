@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Decidability.ProofExtraction
 import Bimodal.Metalogic.Decidability.CountermodelExtraction
 import Bimodal.Metalogic.Decidability.TraceCertificate
 import Bimodal.Automation.ProofSearch.Strategies
+import Bimodal.Automation.Normalization
 
 /-!
 # Decision Procedure for TM Bimodal Logic
@@ -120,33 +121,41 @@ Decide validity of a TM bimodal logic formula.
 -/
 def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     (fc : FrameClass := .Base) : DecisionResult φ :=
+  -- Normalize formula to primitive constructors before decision.
+  -- normalizeFormula is definitionally the identity (all derived operators are
+  -- `def` abbreviations), so this is a no-op at runtime. It serves as a
+  -- documented normalization contract and future-proofing guard.
+  -- We use the identity theorem to cast the result back to the original type.
+  have h_norm : Automation.Normalization.normalizeFormula φ = φ :=
+    Automation.Normalization.normalizeFormula_id φ
+  let φ_n := Automation.Normalization.normalizeFormula φ
   -- Fast path: direct axiom proof
-  match tryAxiomProof φ with
-  | some proof => .valid proof
+  match tryAxiomProof φ_n with
+  | some proof => .valid (h_norm ▸ proof)
   | none =>
     -- Fast path: compositional proof (box-valid patterns, task 261)
-    match buildCompositionalProof φ 10 with
-    | some proof => .valid proof
+    match buildCompositionalProof φ_n 10 with
+    | some proof => .valid (h_norm ▸ proof)
     | none =>
     -- Try proof search (fast for simple proofs)
-    match bounded_search_with_proof [] φ searchDepth with
-    | (some proof, _, _) => .valid proof
+    match bounded_search_with_proof [] φ_n searchDepth with
+    | (some proof, _, _) => .valid (h_norm ▸ proof)
     | (none, _, _) =>
       -- Fall back to tableau method
-      match buildTableau φ tableauFuel fc with
+      match buildTableau φ_n tableauFuel fc with
       | none => .timeout
       | some tableau =>
           match tableau with
           | .allClosed _ =>
               -- Formula is valid, use full extraction pipeline
-              match extractProof φ tableau fc with
-              | .success proof => .valid proof
+              match extractProof φ_n tableau fc with
+              | .success proof => .valid (h_norm ▸ proof)
               | .incomplete _ =>
                   -- Extraction failed despite validity; genuine resource limitation
                   .timeout
           | .hasOpen openBranch _ord _applied hSat =>
               -- Formula is invalid, extract countermodel
-              .invalid (extractCountermodelSimple φ openBranch hSat)
+              .invalid (extractCountermodelSimple φ_n openBranch hSat)
 
 /--
 Simplified decision: just return whether formula is valid.
