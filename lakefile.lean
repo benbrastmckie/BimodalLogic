@@ -103,3 +103,10 @@ lean_exe trace_exporter where
   root := `Bimodal.Automation.TraceExporter
   srcDir := "Theories"
   supportInterpreter := true
+
+/-- Proof-first generator: forward-chains from axioms, emits JSONL theorems (Task 279).
+    Run with: lake exe proof_first_generator -- --max-depth 2 --seed 1000 --output data/proof_first.jsonl -/
+lean_exe proof_first_generator where
+  root := `Bimodal.Automation.ProofFirstExporter
+  srcDir := "Theories"
+  supportInterpreter := true

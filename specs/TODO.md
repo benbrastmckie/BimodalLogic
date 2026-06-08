@@ -223,7 +223,9 @@ technical_debt:
 
 ### 279. Build backward proof-first formula generation over axiom set
 - **Effort**: large (16-24 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-06-07
+- **Summary**: Forward-chaining proof generation system complete with 42-schema axiom instantiation, ProofPool with shortest-wins dedup, implication-index MP closure, unary rules, bounded fixpoint loop with ex_falso cap (≤20%), GenerationMode dispatch in DatasetGenerator, JSONL exporter + CLI executable `proof_first_generator`, 8 cross-corpus benchmark metrics, 12 integration tests passing. Proof-first achieves ~769x valid-formula throughput vs exhaustive enumeration (10,000 valid/60ms vs 13 valid/806 total). Lake build passes (1687 jobs), zero sorries.
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement

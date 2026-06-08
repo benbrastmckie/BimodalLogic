@@ -4,6 +4,7 @@ import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.EnrichedCountermodel
 import Bimodal.Automation.InterestingnessMetrics
+import Bimodal.Automation.ForwardProofGenerator
 
 /-!
 # Dataset Generator: Decider Integration and ProofTrace Extraction
@@ -103,6 +104,13 @@ inductive FormulaLabel where
   | valid
   | invalid
   | timeout
+  deriving Repr, DecidableEq, BEq, Inhabited
+
+/-- Generation mode for dataset labeling. -/
+inductive GenerationMode where
+  | exhaustive
+  | proofFirst
+  | hybrid
   deriving Repr, DecidableEq, BEq, Inhabited
 
 /--
@@ -542,7 +550,7 @@ The `.timeout` case now represents genuine resource exhaustion (tableau
 construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
-def labelFormula (φ : Formula) (fc : FrameClass := .Base)
+def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     (wallclockTimeoutMs : Nat := 1000) : IO LabeledFormula := do
   -- Phase 1: Structural pre-filter with axiom attribution (task 265, task 274)
   -- Check for known-valid patterns before invoking the decision procedure.
@@ -729,6 +737,80 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
       interestingnessScore := some intResult.compositeScore
       interestingnessTier := some intResult.tier.toString
       }
+
+/--
+Look up a formula in a proof-first pool and produce a `LabeledFormula`.
+If the formula is not in the pool, returns `.invalid` with a fallback label.
+-/
+def labelFormulaProofFirst (φ : Formula) (pool : ProofPool .Base)
+    (fc : FrameClass := .Base) : IO LabeledFormula := do
+  match pool.index[φ]? with
+  | some idx =>
+    let σ := pool.entries[idx]!
+    let d := σ.snd
+    -- Lift base derivation to the requested frame class if needed
+    let d_lifted := d.lift (FrameClass.base_le fc)
+    let trace := extractProofTrace d_lifted
+    let rp := walkDerivationTree d_lifted
+    let metrics := computeMetrics φ 0
+    let patternKey := PatternKey.fromFormula φ
+    let intResult := computeInterestingness φ (some trace.toProofData) (some rp)
+    return {
+      formula := φ
+      label := .valid
+      proofTrace := some trace
+      countermodel := none
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := some rp
+      decisionMethod := "proof_first"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := some "proof_first_compositional"
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
+  | none =>
+    let metrics := computeMetrics φ 0
+    let patternKey := PatternKey.fromFormula φ
+    let intResult := computeInterestingness φ none none
+    return {
+      formula := φ
+      label := .invalid
+      proofTrace := none
+      countermodel := none
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "proof_first_miss"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := none
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
+
+/--
+Label a single formula, dispatching on the generation mode.
+-/
+def labelFormula (φ : Formula) (fc : FrameClass := .Base)
+    (wallclockTimeoutMs : Nat := 1000)
+    (mode : GenerationMode := .exhaustive)
+    (proofFirstPool : Option (ProofPool .Base) := none) : IO LabeledFormula := do
+  match mode, proofFirstPool with
+  | .exhaustive, _ => labelFormulaImpl φ fc wallclockTimeoutMs
+  | .proofFirst, some pool => labelFormulaProofFirst φ pool fc
+  | .proofFirst, none =>
+    IO.eprintln "[warn] proofFirst mode requested but no pool provided; falling back to exhaustive"
+    labelFormulaImpl φ fc wallclockTimeoutMs
+  | .hybrid, some pool =>
+    let lf ← labelFormulaProofFirst φ pool fc
+    match lf.label with
+    | .valid => return lf
+    | _ => labelFormulaImpl φ fc wallclockTimeoutMs
+  | .hybrid, none => labelFormulaImpl φ fc wallclockTimeoutMs
 
 /--
 Label a batch of formulas with progress reporting.

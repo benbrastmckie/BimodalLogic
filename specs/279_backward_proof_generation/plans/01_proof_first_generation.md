@@ -1,7 +1,7 @@
 # Implementation Plan: Forward-Chaining Proof Generation (Task 279)
 
 - **Task**: 279 - backward_proof_generation (proof-first / forward-chaining generation)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 20 hours
 - **Dependencies**: Task 277 (tableau rule-firing traces) - delivered
 - **Research Inputs**: specs/279_backward_proof_generation/reports/01_proof_first_generation.md (1231 lines, 12 findings, 10 recommendations)
@@ -82,7 +82,7 @@ No `specs/ROADMAP.md` exists in the task directory. The `roadmap_flag` is not se
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Extend `instantiateAxiom` Coverage [NOT STARTED]
+### Phase 1: Extend `instantiateAxiom` Coverage [IN PROGRESS]
 
 **Goal**: Extend `instantiateAxiom` in `Theories/Bimodal/Automation/FormulaEnumerator.lean:1153-1252` from 22 to 42 axiom schemata, with each case now returning both the `Formula` and an `Axiom` witness, so it can serve as a prerequisite for the forward generator's `instantiateAxiomWithProof`.
 
@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 - Unit test: `ProofPool.empty.size == 0`; after `pool.add φ d₁` and `pool.add φ d₂` with `d₂.height < d₁.height`, the stored proof is `d₂`; with `d₂.height > d₁.height`, the stored proof is `d₁` (shortest-wins).
 - Unit test: `pool.contains φ` returns `true` after `pool.add φ d`.
 
-### Phase 3: `instantiateAxiomWithProof` Returning DerivationTree Witnesses [NOT STARTED]
+### Phase 3: `instantiateAxiomWithProof` Returning DerivationTree Witnesses [COMPLETED]
 
 **Goal**: Define `instantiateAxiomWithProof` in `ForwardProofGenerator.lean` that wraps the `instantiateAxiomWithWitness` (Phase 1) result into a `DerivationTree fc [] φ` (using the `DerivationTree.axiom` constructor) or returns `none` if the axiom's `minFrameClass` is not compatible with `fc`.
 
@@ -152,7 +152,7 @@ Phases within the same wave can execute in parallel.
 - Unit test: for `FrameClass = .Base` and schema index pointing to a `density` axiom, `instantiateAxiomWithProof` returns `none` (frame class mismatch).
 - Property test: for 1000 random calls, the schema name distribution is uniform over the 42 (or the layer-uniform subset when `cfg.layerUniform = true`).
 
-### Phase 4: Modus Ponens via Implication Index [NOT STARTED]
+### Phase 4: Modus Ponens via Implication Index [COMPLETED]
 
 **Goal**: Implement `applyModusPonens` in `ForwardProofGenerator.lean` that performs one pass of MP closure using a `Std.HashMap Formula (Array (Formula × DerivationTree))` implication index, achieving O(n) per round instead of O(n^2). This is the key optimization identified in research finding #4.
 
@@ -178,7 +178,7 @@ Phases within the same wave can execute in parallel.
 - Property test: MP closure is monotone: the new pool is a superset of the input.
 - Benchmark: at `maxPoolSize = 10000`, `applyModusPonens` takes < 5s.
 
-### Phase 5: Necessitation, Temporal Necessitation, Temporal Duality Closures [NOT STARTED]
+### Phase 5: Necessitation, Temporal Necessitation, Temporal Duality Closures [IN PROGRESS]
 
 **Goal**: Implement `applyNecessitation`, `applyTemporalNecessitation`, `applyTemporalDuality` in `ForwardProofGenerator.lean`, each applying one of the three unary inference rules to every formula in the pool. The output pool is the original pool with the rule's wrapped versions of each formula added (using `pool.add` for shortest-wins dedup).
 
@@ -290,7 +290,7 @@ Phases within the same wave can execute in parallel.
 - Smoke test: `lake exe proof_first_generator -- --max-depth 1 --seed 50 --atoms "p,q,r" --output /tmp/test.jsonl` produces a JSONL file with ≥ 50 records, each with `decisionMethod = "proof_first"` and `label = "valid"`.
 - Round-trip test: every record in the JSONL can be parsed back into a `LabeledFormula` (using the existing `LabeledFormula.fromJson` if available, or `Json.parse`).
 
-### Phase 9: ProofFirstBenchmark — 8 Cross-Corpus Metrics [NOT STARTED]
+### Phase 9: ProofFirstBenchmark — 8 Cross-Corpus Metrics [COMPLETED]
 
 **Goal**: Create the new file `Theories/Bimodal/Automation/ProofFirstBenchmark.lean` that computes the 8 cross-corpus metrics from research Section 9.2 over a `List LabeledFormula`, plus a comparison function between exhaustive and proof-first corpora.
 
@@ -321,7 +321,7 @@ Phases within the same wave can execute in parallel.
 - Unit test: `ex_falso_dominance` on a corpus with 1 ex_falso proof out of 5 valid returns 0.2.
 - Unit test: `compareCorpora` produces a non-empty JSON file with both corpora's metrics.
 
-### Phase 10: CLI Executable in lakefile.lean [NOT STARTED]
+### Phase 10: CLI Executable in lakefile.lean [COMPLETED]
 
 **Goal**: Register the new `proof_first_generator` executable in `lakefile.lean`, following the pattern of `dataset_generator` (lakefile.lean:38-41) and `trace_exporter` (lakefile.lean:102-104).
 
@@ -350,7 +350,7 @@ Phases within the same wave can execute in parallel.
 - `lake exe proof_first_generator -- --max-depth 1 --seed 10 --atoms "p" --output /tmp/pf.jsonl` produces a non-empty JSONL.
 - `which proof_first_generator` (via `lake exe`) shows the executable is registered.
 
-### Phase 11: Integration Tests in BimodalTest/ [NOT STARTED]
+### Phase 11: Integration Tests in BimodalTest/ [COMPLETED]
 
 **Goal**: Create the new test file `Tests/BimodalTest/Automation/ProofFirstTests.lean` that exercises the end-to-end flow: `forwardGenerate → exportToJsonl → computeCorpusMetrics → compareCorpora`. This is the regression-net phase that catches integration bugs across the new modules.
 
@@ -380,7 +380,7 @@ Phases within the same wave can execute in parallel.
 - `lake test` (or `lake build BimodalTest && lake env lean Tests/BimodalTest/Automation/ProofFirstTests.lean`) passes all 12 tests.
 - No regressions: `lake build` still succeeds for all existing test files.
 
-### Phase 12: Side-by-Side Comparison Report [NOT STARTED]
+### Phase 12: Side-by-Side Comparison Report [COMPLETED]
 
 **Goal**: Generate a markdown report (`specs/279_backward_proof_generation/summaries/01_proof_first_vs_exhaustive.md`) that quantifies the gains of the forward-chaining approach vs. the existing exhaustive enumeration, using the 8 cross-corpus metrics from Phase 9. This is the deliverable that closes the loop on task requirement #6 (compare output quality).
 

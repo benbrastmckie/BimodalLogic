@@ -2,11 +2,13 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a bimodal language with operators for tense and modality for reasoning about non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a world-history and time, where world-histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time. This approach provides natural semantic clauses for tense and modality, describing their interaction which is essential for reasoning about past and future contingency.
+This repository implements the **bimodal fragment** of the [Logos](https://logos-labs.ai/) in Lean 4, establishing soundness and completeness for a logic designed for reasoning about future contingency in non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a world-history and time, where world-histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time.
 
-The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until temporal operators.
+Whereas dynamical systems theory provides mathematical resources for modeling the evolution of both deterministic and non-deterministic systems, a bimodal logic with tense and modal operators provides inferential resources for conducting verified reasoning about such systems. By encoding the constraints on possible transitions into the logical framework itself, one can draw fast and principled inferences about past and future contingency despite incomplete information.
 
-**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
+The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until linear tense operators.
+
+**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems (under review)
 
 **Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
@@ -14,11 +16,11 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 | Metric | Count |
 |--------|-------|
-| Lean files | 210 |
-| Lines of code | ~67,227 |
-| Comment lines | ~32,997 |
+| Lean files | 246 |
+| Lines of code | ~84,547 |
+| Comment lines | ~41,584 |
 
-To get current numbers (excludes `.lake` dependencies and `Boneyard/`):
+To get current numbers (excludes `.lake` dependencies and `Boneyard/`), run:
 
 ```bash
 cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .

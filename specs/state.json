@@ -260,14 +260,14 @@
     {
       "project_number": 279,
       "project_name": "backward_proof_generation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         277
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T18:08:52Z",
-      "session_id": "sess_1780682388_d59e81",
+      "last_updated": "2026-06-08T01:36:01Z",
+      "session_id": "sess_1780881113_920e4a",
       "researched": "2026-06-05T17:15:39Z",
       "artifacts": [
         {
@@ -279,8 +279,15 @@
           "path": "specs/279_backward_proof_generation/plans/01_proof_first_generation.md",
           "type": "plan",
           "summary": "12-phase implementation plan for forward-chaining proof generation system. Phases: (1) extend instantiateAxiom to 42 schemata with Axiom witnesses, (2) ForwardConfig + ProofPool data structures, (3) instantiateAxiomWithProof returning DerivationTree witnesses, (4) modus ponens via O(n) implication index, (5) Nec/TempNec/TempDuality closures, (6) bounded fixpoint loop with ex_falso cap, (7) GenerationMode inductive dispatching in labelFormula, (8) ProofFirstExporter for JSONL output, (9) ProofFirstBenchmark computing 8 cross-corpus metrics, (10) CLI executable in lakefile.lean, (11) integration tests in BimodalTest/, (12) side-by-side comparison report. Total 20 hours, ~1295 LOC new + 180 LOC modified, organized into 6 dependency waves for parallel execution."
+        },
+        {
+          "path": "specs/279_backward_proof_generation/summaries/01_proof_first_vs_exhaustive.md",
+          "type": "summary",
+          "summary": "Side-by-side comparison report: proof-first achieves 769x valid-formula throughput improvement vs exhaustive enumeration."
         }
-      ]
+      ],
+      "started": "2026-06-08T01:12:04Z",
+      "completed": "2026-06-08T01:36:01Z"
     },
     {
       "project_number": 280,
