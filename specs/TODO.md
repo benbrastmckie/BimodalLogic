@@ -209,7 +209,9 @@ technical_debt:
 
 ### 278. Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 - **Effort**: medium (6-10 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-06-07
+- **Summary**: Implemented polarity analysis, conjunct helpers, S5 reflexive shortcutting, temporal loop detection, subsumption rules, and lightweight propositional contradiction in DatasetGenerator.lean. c7 benchmark: 44/2000 prefilter hits (2.2%), catching ~71% of valid formulas. Phase 5 (2-SAT) skipped as gap was not propositional. Build passes, no sorries, no new axioms.
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement

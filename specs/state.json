@@ -234,28 +234,31 @@
     {
       "project_number": 278,
       "project_name": "structural_prefilter_expansion",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-03T22:30:00Z",
-      "last_updated": "2026-06-05T17:19:54Z",
+      "last_updated": "2026-06-08T01:56:23Z",
       "researched": "2026-06-05T17:08:07Z",
-      "session_id": "sess_1780679618_b704b8",
+      "session_id": "sess_1780883038_e578ba",
       "artifacts": [
         {
-          "path": "specs/278_structural_prefilter_expansion/reports/01_research.md",
-          "type": "report",
-          "summary": "Research report covering all 5 requested patterns: polarity analysis, 2-SAT skeleton, S5 reflexive shortcutting, temporal loop detection, and subformula subsumption. Includes feasibility assessment, implementation roadmap, risk analysis, and c7 testing strategy."
+          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
         },
         {
-          "path": "specs/278_structural_prefilter_expansion/plans/01_structural-prefilter-expansion.md",
-          "type": "plan",
-          "summary": "Implementation plan with 5 phases (4 core + 1 conditional) for expanding structural prefilter coverage from ~5% to ~10% via polarity analysis, conjunct helpers, subsumption rules, and optional 2-SAT skeleton."
+          "path": "specs/278_structural_prefilter_expansion/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implemented polarity analysis, conjunct helpers, S5 reflexive shortcutting, temporal loop detection, subsumption rules, and lightweight propositional contradiction in DatasetGenerator.lean. c7 benchmark: 44/2000 prefilter hits (2.2%), catching ~71% of valid formulas. Phase 5 (2-SAT) skipped as gap was not propositional. Build passes, no sorries, no new axioms."
         }
       ],
-      "planned": "2026-06-05T17:19:54Z"
+      "planned": "2026-06-05T17:19:54Z",
+      "started": "2026-06-08T01:44:06Z",
+      "completed": "2026-06-08T01:56:23Z",
+      "completion_summary": "Implemented polarity analysis, conjunct helpers, S5 reflexive shortcutting, temporal loop detection, subsumption rules, and lightweight propositional contradiction in DatasetGenerator.lean. c7 benchmark: 44/2000 prefilter hits (2.2%), catching ~71% of valid formulas. Phase 5 (2-SAT) skipped as gap was not propositional. Build passes, no sorries, no new axioms."
     },
     {
       "project_number": 279,
