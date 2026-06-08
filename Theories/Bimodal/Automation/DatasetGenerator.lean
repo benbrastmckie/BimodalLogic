@@ -5,6 +5,7 @@ import Bimodal.Automation.DataExport
 import Bimodal.Automation.EnrichedCountermodel
 import Bimodal.Automation.InterestingnessMetrics
 import Bimodal.Automation.ForwardProofGenerator
+import Std.Data.HashMap
 
 /-!
 # Dataset Generator: Decider Integration and ProofTrace Extraction
@@ -874,6 +875,60 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval isStructurallyValid (.imp p_test (.box Formula.top))              -- true
 #eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true, "structural_tautology")
 #eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true, "structural_tautology")
+
+/-! ### DecideCache: Bounded HashMap Cache for Formula Labeling (Task 289)
+
+Cache for `labelFormulaImpl` results, keyed by `(Formula, FrameClass)`.
+Thread-safe via `Std.Mutex`. Uses bounded HashMap with bulk eviction:
+when entries exceed `maxSize`, the oldest half (by insertion order) is
+evicted. Cache statistics (hits, misses, evictions) are tracked for
+benchmark reporting.
+-/
+
+/--
+Cache key for the decide cache: `(Formula, FrameClass)` pair.
+Since `searchDepth` and `tableauFuel` are deterministic functions of
+the formula, the effective cache key is just `(Formula, FrameClass)`.
+-/
+structure DecideCacheKey where
+  formula : Formula
+  frameClass : FrameClass
+  deriving BEq, Hashable
+
+/--
+Bounded HashMap cache for `LabeledFormula` results.
+Stores results keyed by `DecideCacheKey`, tracks insertion order for
+FIFO eviction, and maintains hit/miss/eviction counters.
+-/
+structure DecideCache where
+  /-- The cache map from key to labeled result. -/
+  entries : Std.HashMap DecideCacheKey LabeledFormula
+  /-- Insertion order for FIFO eviction (oldest first). -/
+  accessOrder : Array DecideCacheKey
+  /-- Number of cache hits. -/
+  hits : Nat
+  /-- Number of cache misses. -/
+  misses : Nat
+  /-- Number of bulk eviction events. -/
+  evictions : Nat
+  /-- Maximum number of entries before eviction triggers. -/
+  maxSize : Nat
+  deriving Inhabited
+
+/-- Create an empty cache with the given maximum size. -/
+def DecideCache.empty (maxSize : Nat := 10000) : DecideCache :=
+  { entries := {}
+    accessOrder := #[]
+    hits := 0
+    misses := 0
+    evictions := 0
+    maxSize := maxSize }
+
+/-- Compute the cache hit rate as a percentage (0-100). -/
+def DecideCache.hitRate (c : DecideCache) : Float :=
+  let total := c.hits + c.misses
+  if total == 0 then 0.0
+  else (c.hits.toFloat / total.toFloat) * 100.0
 
 /--
 Label a single formula by running the decision procedure.

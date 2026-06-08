@@ -423,7 +423,7 @@ inductive FrameClass where
   | Base
   | Dense
   | Discrete
-  deriving Repr, DecidableEq, Inhabited
+  deriving Repr, DecidableEq, Inhabited, BEq, Hashable
 
 instance : LE FrameClass where
   le a b := match a, b with
