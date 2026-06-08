@@ -37,7 +37,7 @@ technical_debt:
 
 ### Completeness
 
-273 [PLANNING] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+273 [PLANNED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
 268 [RESEARCHED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
@@ -333,8 +333,8 @@ technical_debt:
 ---
 
 ### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
-- **Effort**: high (400-700 lines)
-- **Status**: [RESEARCHED]
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
@@ -344,9 +344,9 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/02_deep-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md]
 
-**Description**: Prove chronicle_gap_contradiction directly from the omega-chain construction of LimitDomSubtype. The lemma states: for all a b in LimitDomSubtype, if a < b then it is not the case that succ^[n] a < b for all n. This is the sole remaining sorry in the discrete completeness proof chain (ChronicleToCountermodel.lean:473). NOTE: Research (reports 03-04) revealed that chronicle_gap_contradiction is BYPASSED by countermodel_discrete_reynolds_v2 and is NOT on the critical path for completeness_discrete. The actual blocker is the GHR93 bridge lemma in StaviCompleteness.lean (3 sorry sites at lines 2353, 2435, 2805). This task should be reconceived to target the Stavi sorry or retained for mathematical completeness of the BX canonical model approach.
+**Description**: Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation. The separation method is purely combinatorial: U'(A,B) and S'(A,B) simplify to bot on Prior structures, reducing {U,S,U',S'} to {U,S}. This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free. NOTE: The original target (chronicle_gap_contradiction) is bypassed by countermodel_discrete_reynolds_v2 and is not on the critical path.
 
 ---
 
