@@ -931,6 +931,53 @@ def DecideCache.hitRate (c : DecideCache) : Float :=
   else (c.hits.toFloat / total.toFloat) * 100.0
 
 /--
+Look up a key in the cache. Returns the cached `LabeledFormula` if found
+(cache hit), or `none` (cache miss). Updates hit/miss counters.
+-/
+def DecideCache.lookup (c : DecideCache) (key : DecideCacheKey)
+    : DecideCache × Option LabeledFormula :=
+  match c.entries[key]? with
+  | some lf => ({ c with hits := c.hits + 1 }, some lf)
+  | none => ({ c with misses := c.misses + 1 }, none)
+
+/--
+Evict the oldest half of cache entries when size exceeds `maxSize`.
+Removes the first half of `accessOrder` keys from the HashMap and
+trims the `accessOrder` array accordingly.
+-/
+def DecideCache.evict (c : DecideCache) : DecideCache :=
+  if c.accessOrder.size ≤ c.maxSize then c
+  else
+    let halfSize := c.accessOrder.size / 2
+    let keysToRemove := c.accessOrder.extract 0 halfSize
+    let remainingOrder := c.accessOrder.extract halfSize c.accessOrder.size
+    let newEntries := keysToRemove.foldl (fun m k => m.erase k) c.entries
+    { c with
+      entries := newEntries
+      accessOrder := remainingOrder
+      evictions := c.evictions + 1 }
+
+/--
+Insert a key-value pair into the cache. Appends the key to `accessOrder`
+for FIFO eviction tracking. Triggers eviction if size exceeds `maxSize`.
+-/
+def DecideCache.insert (c : DecideCache) (key : DecideCacheKey) (lf : LabeledFormula)
+    : DecideCache :=
+  let c' := { c with
+    entries := c.entries.insert key lf
+    accessOrder := c.accessOrder.push key }
+  c'.evict
+
+/--
+Display cache statistics as a human-readable string.
+-/
+def DecideCache.display (c : DecideCache) : String :=
+  let total := c.hits + c.misses
+  let rateStr := if total == 0 then "N/A"
+    else s!"{(c.hits * 100 / total)}%"
+  s!"Cache: {c.hits} hits, {c.misses} misses, {rateStr} hit rate, {c.evictions} evictions, {c.entries.size} entries"
+
+/--
 Label a single formula by running the decision procedure.
 
 1. Checks the structural pre-filter for known-valid patterns (task 265)
@@ -1208,6 +1255,42 @@ def labelFormula (φ : Formula) (fc : FrameClass := .Base)
     | .valid => return lf
     | _ => labelFormulaImpl φ fc wallclockTimeoutMs
   | .hybrid, none => labelFormulaImpl φ fc wallclockTimeoutMs
+
+/--
+Label a formula with cache support. Uses a `Std.Mutex`-protected `DecideCache`
+for thread-safe access. On cache hit, returns the cached result with
+`decisionMethod` set to `"cached"` and `decisionTimeMs` set to 0.
+On cache miss, calls `labelFormula`, caches the result, and returns it.
+
+**Important**: The mutex is NOT held during the `labelFormula` call.
+Only the lookup and insert operations acquire the lock, keeping the
+critical section O(1) while the expensive decide computation runs unlocked.
+-/
+def labelFormulaWithCache (cache : Std.Mutex DecideCache) (φ : Formula)
+    (fc : FrameClass := .Base) (wallclockTimeoutMs : Nat := 1000)
+    (mode : GenerationMode := .exhaustive)
+    (proofFirstPool : Option (ProofPool .Base) := none)
+    : IO LabeledFormula := do
+  let key : DecideCacheKey := { formula := φ, frameClass := fc }
+  -- Check cache (short critical section)
+  let cached ← cache.atomically do
+    let c ← get
+    let (c', result) := c.lookup key
+    set c'
+    return result
+  match cached with
+  | some lf =>
+    -- Cache hit: return with "cached" method and zero time
+    return { lf with
+      decisionMethod := "cached"
+      metrics := { lf.metrics with decisionTimeMs := 0 } }
+  | none =>
+    -- Cache miss: compute result WITHOUT holding the mutex
+    let lf ← labelFormula φ fc wallclockTimeoutMs mode proofFirstPool
+    -- Insert result into cache (short critical section)
+    cache.atomically do
+      modify fun c => c.insert key lf
+    return lf
 
 /--
 Label a batch of formulas with progress reporting.

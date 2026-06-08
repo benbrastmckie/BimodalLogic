@@ -97,21 +97,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Implement Cache Lookup/Insert and labelFormulaWithCache [NOT STARTED]
+### Phase 2: Implement Cache Lookup/Insert and labelFormulaWithCache [COMPLETED]
 
 **Goal**: Implement the cache lookup, insert, and eviction logic, then create a `labelFormulaWithCache` wrapper that checks the Mutex-protected cache before calling `labelFormulaImpl`.
 
 **Tasks**:
-- [ ] Implement `DecideCache.lookup` method: given a `DecideCacheKey`, return `Option LabeledFormula` and increment `hits` or `misses`
-- [ ] Implement `DecideCache.insert` method: insert key-value pair, append to `accessOrder`, trigger eviction if `entries.size > maxSize`
-- [ ] Implement `DecideCache.evict` method: when size exceeds `maxSize`, remove the first half of `accessOrder` entries from the HashMap and trim `accessOrder`
-- [ ] Define `labelFormulaWithCache` function with signature:
-  ```
-  (cache : Std.Mutex DecideCache) -> (phi : Formula) -> (fc : FrameClass) -> (wallclockTimeoutMs : Nat) -> IO LabeledFormula
-  ```
-- [ ] In `labelFormulaWithCache`: use `cache.atomically` to check for a hit; on hit, update `decisionTimeMs` to 0 and `decisionMethod` to `"cached"`, return early
-- [ ] On cache miss: call `labelFormulaImpl` normally, then use `cache.atomically` to insert the result
-- [ ] Ensure cache miss path does NOT hold the mutex during the `labelFormulaImpl` call (only lock for lookup and insert, not computation)
+- [x] Implement `DecideCache.lookup` method: given a `DecideCacheKey`, return `Option LabeledFormula` and increment `hits` or `misses`
+- [x] Implement `DecideCache.insert` method: insert key-value pair, append to `accessOrder`, trigger eviction if `entries.size > maxSize`
+- [x] Implement `DecideCache.evict` method: when size exceeds `maxSize`, remove the first half of `accessOrder` entries from the HashMap and trim `accessOrder`
+- [x] Define `labelFormulaWithCache` function *(deviation: altered -- added `mode` and `proofFirstPool` parameters to forward through to `labelFormula` for hybrid mode support)*
+- [x] In `labelFormulaWithCache`: use `cache.atomically` to check for a hit; on hit, update `decisionTimeMs` to 0 and `decisionMethod` to `"cached"`, return early
+- [x] On cache miss: call `labelFormula` normally, then use `cache.atomically` to insert the result *(deviation: altered -- calls `labelFormula` instead of `labelFormulaImpl` to support all generation modes)*
+- [x] Ensure cache miss path does NOT hold the mutex during the `labelFormula` call (only lock for lookup and insert, not computation)
+- [x] Added `DecideCache.display` method for human-readable cache stats output
 
 **Timing**: 1 hour
 
