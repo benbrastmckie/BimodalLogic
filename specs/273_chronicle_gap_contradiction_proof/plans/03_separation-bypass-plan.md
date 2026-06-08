@@ -90,7 +90,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Semantic Bridge Infrastructure [NOT STARTED]
+### Phase 1: Semantic Bridge Infrastructure [IN PROGRESS]
 
 **Goal**: Build the connection between `IntStructure`/`int_truth` (used by the separation theorem) and `OrderedMonadicStructure`/`temporal_truth` (used by `US_expressively_complete_over_prior`). This is the foundational infrastructure enabling the bypass.
 

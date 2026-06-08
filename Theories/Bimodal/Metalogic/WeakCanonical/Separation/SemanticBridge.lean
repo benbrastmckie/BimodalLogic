@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
+import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Table
 
 /-!
@@ -40,50 +40,6 @@ def is_box_free : Formula → Bool
   | .box _ => false
   | .untl φ ψ => is_box_free φ && is_box_free ψ
   | .snce φ ψ => is_box_free φ && is_box_free ψ
-
-/-- S-free formulas are box-free. -/
-theorem s_free_implies_box_free (φ : Formula) (h : is_S_free φ = true) :
-    is_box_free φ = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b ih1 ih2 =>
-    simp [is_S_free] at h; simp [is_box_free, ih1 h.1, ih2 h.2]
-  | box a ih =>
-    simp [is_S_free] at h; simp [is_box_free]
-  | untl a b ih1 ih2 =>
-    simp [is_S_free] at h; simp [is_box_free, ih1 h.1, ih2 h.2]
-  | snce _ _ => simp [is_S_free] at h
-
-/-- U-free formulas are box-free. -/
-theorem u_free_implies_box_free (φ : Formula) (h : is_U_free φ = true) :
-    is_box_free φ = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b ih1 ih2 =>
-    simp [is_U_free] at h; simp [is_box_free, ih1 h.1, ih2 h.2]
-  | box a ih =>
-    simp [is_U_free] at h; simp [is_box_free]
-  | untl _ _ => simp [is_U_free] at h
-  | snce a b ih1 ih2 =>
-    simp [is_U_free] at h; simp [is_box_free, ih1 h.1, ih2 h.2]
-
-/-- Separated formulas are box-free. -/
-theorem separated_implies_box_free (φ : Formula) (h : is_syntactically_separated φ = true) :
-    is_box_free φ = true := by
-  induction φ with
-  | atom _ => rfl
-  | bot => rfl
-  | imp a b ih1 ih2 =>
-    simp [is_syntactically_separated] at h; simp [is_box_free, ih1 h.1, ih2 h.2]
-  | box _ => simp [is_syntactically_separated] at h
-  | untl a b _ _ =>
-    simp [is_syntactically_separated] at h
-    simp [is_box_free, s_free_implies_box_free a h.1, s_free_implies_box_free b h.2]
-  | snce a b _ _ =>
-    simp [is_syntactically_separated] at h
-    simp [is_box_free, u_free_implies_box_free a h.1, u_free_implies_box_free b h.2]
 
 /-! ## Core Bridge: int_truth ↔ temporal_truth on Z-carrier -/
 
@@ -137,16 +93,10 @@ theorem int_equiv_implies_temporal_equiv_Z {sig : MonadicSignature}
       ← int_truth_eq_temporal_truth_Z Z atomMap t ψ h_bf_ψ]
   exact h_equiv (z_structure_to_int Z atomMap) t
 
-/-! ## Transfer through Order Isomorphisms
-
-For Prior structures with arbitrary carriers, we transfer temporal_truth
-through an order isomorphism to Z.
--/
+/-! ## Transfer through Order Isomorphisms -/
 
 /--
-`temporal_truth` transfers through order isomorphisms: if `f : α ≃o β` is an
-order isomorphism and M, N are ordered monadic structures on α, β respectively
-with matching predicate interpretations, then temporal_truth agrees.
+`temporal_truth` transfers through order isomorphisms for box-free formulas.
 -/
 theorem temporal_truth_order_iso {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
@@ -171,37 +121,46 @@ theorem temporal_truth_order_iso {sig : MonadicSignature}
     simp only [temporal_truth]
     constructor
     · rintro ⟨s, hts, hψ₁, hψ₂⟩
-      exact ⟨f s, f.lt_iff_lt.mpr hts,
-        (ih₁ s h_bf.1).mp hψ₁,
-        fun r htr hrs => by
-          have := hψ₂ (f.symm r) (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-            (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-          rwa [ih₂ (f.symm r) h_bf.2, show f (f.symm r) = r from f.apply_symm_apply r] at this⟩
+      refine ⟨f s, f.lt_iff_lt.mpr hts, (ih₁ s h_bf.1).mp hψ₁, fun r htr hrs => ?_⟩
+      have h1 : t < f.symm r := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      have h2 : f.symm r < s := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      have := hψ₂ (f.symm r) h1 h2
+      rw [ih₂ (f.symm r) h_bf.2, show f (f.symm r) = r from f.apply_symm_apply r] at this
+      exact this
     · rintro ⟨s, hts, hψ₁, hψ₂⟩
-      exact ⟨f.symm s, by rwa [f.lt_iff_lt, f.apply_symm_apply],
-        by rwa [show f (f.symm s) = s from f.apply_symm_apply s] at hψ₁;
-           exact (ih₁ (f.symm s) h_bf.1).mpr hψ₁,
-        fun r htr hrs => by
-          have := hψ₂ (f r) (by rwa [f.lt_iff_lt]) (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-          exact (ih₂ r h_bf.2).mpr this⟩
+      have hts' : t < f.symm s := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      refine ⟨f.symm s, hts', ?_, fun r htr hrs => ?_⟩
+      · -- hψ₁ : temporal_truth N atomMap s ψ₁, need temporal_truth M atomMap (f.symm s) ψ₁
+        have := (ih₁ (f.symm s) h_bf.1).mpr
+        rw [show f (f.symm s) = s from f.apply_symm_apply s] at this
+        exact this hψ₁
+      · have hfr_gt : f t < f r := f.lt_iff_lt.mpr htr
+        have hfr_lt : f r < s := by
+          rw [← f.apply_symm_apply s]; exact f.lt_iff_lt.mpr hrs
+        have := hψ₂ (f r) hfr_gt hfr_lt
+        exact (ih₂ r h_bf.2).mpr this
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [is_box_free, Bool.and_eq_true] at h_bf
     simp only [temporal_truth]
     constructor
     · rintro ⟨s, hst, hψ₁, hψ₂⟩
-      exact ⟨f s, f.lt_iff_lt.mpr hst,
-        (ih₁ s h_bf.1).mp hψ₁,
-        fun r hsr hrt => by
-          have := hψ₂ (f.symm r) (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-            (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-          rwa [ih₂ (f.symm r) h_bf.2, show f (f.symm r) = r from f.apply_symm_apply r] at this⟩
+      refine ⟨f s, f.lt_iff_lt.mpr hst, (ih₁ s h_bf.1).mp hψ₁, fun r hsr hrt => ?_⟩
+      have h1 : f.symm r < t := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      have h2 : s < f.symm r := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      have := hψ₂ (f.symm r) h2 h1
+      have h3 := (ih₂ (f.symm r) h_bf.2).mp this
+      rwa [show f (f.symm r) = r from f.apply_symm_apply r] at h3
     · rintro ⟨s, hst, hψ₁, hψ₂⟩
-      exact ⟨f.symm s, by rwa [f.lt_iff_lt, f.apply_symm_apply],
-        by rwa [show f (f.symm s) = s from f.apply_symm_apply s] at hψ₁;
-           exact (ih₁ (f.symm s) h_bf.1).mpr hψ₁,
-        fun r hsr hrt => by
-          have := hψ₂ (f r) (by rwa [f.lt_iff_lt]) (by rwa [f.lt_iff_lt, f.apply_symm_apply])
-          exact (ih₂ r h_bf.2).mpr this⟩
+      have hst' : f.symm s < t := by rwa [← f.lt_iff_lt, f.apply_symm_apply]
+      refine ⟨f.symm s, hst', ?_, fun r hsr hrt => ?_⟩
+      · have h3 := (ih₁ (f.symm s) h_bf.1).mpr
+        rw [show f (f.symm s) = s from f.apply_symm_apply s] at h3
+        exact h3 hψ₁
+      · have hfr_lt : f r < f t := f.lt_iff_lt.mpr hrt
+        have hfr_gt : s < f r := by
+          rw [← f.apply_symm_apply s]; exact f.lt_iff_lt.mpr hsr
+        have := hψ₂ (f r) hfr_gt hfr_lt
+        exact (ih₂ r h_bf.2).mpr this
 
 /--
 Main bridge theorem: if `int_equiv φ ψ` and both are box-free, then for ANY
@@ -213,16 +172,9 @@ theorem int_equiv_implies_temporal_equiv_with_iso {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (iso : M.carrier ≃o ℤ) (t : M.carrier) :
     temporal_truth M atomMap t φ ↔ temporal_truth M atomMap t ψ := by
-  let N : OrderedMonadicStructure sig :=
-    ⟨⟨ℤ, fun p z => M.interp p (iso.symm z)⟩, inferInstance⟩
-  -- Transfer M to N (Z-carrier) via iso
   rw [temporal_truth_order_iso M atomMap iso t φ h_bf_φ,
       temporal_truth_order_iso M atomMap iso t ψ h_bf_ψ]
-  -- On N (Z-carrier), use int_equiv
   let Z : ZStructure sig := ⟨fun p z => M.interp p (iso.symm z)⟩
-  -- N = Z.toOrdered sig
-  have hN : N = Z.toOrdered sig := rfl
-  rw [hN]
   exact int_equiv_implies_temporal_equiv_Z φ ψ h_equiv h_bf_φ h_bf_ψ Z atomMap (iso t)
 
 end Bimodal.Metalogic.WeakCanonical.Separation
