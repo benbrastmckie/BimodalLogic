@@ -449,7 +449,7 @@ def hasS5ReflexiveConflict (conjuncts : List Formula) : Bool :=
 def hasUntilGuardConflict (conjuncts : List Formula) : Bool :=
   conjuncts.any fun c1 =>
     match c1 with
-    | .untl event guard =>
+    | .untl _event guard =>
       conjuncts.any fun c2 =>
         match isAllFutureShape c2 with
         | some ψ =>
@@ -463,7 +463,7 @@ def hasUntilGuardConflict (conjuncts : List Formula) : Bool :=
 def hasSinceGuardConflict (conjuncts : List Formula) : Bool :=
   conjuncts.any fun c1 =>
     match c1 with
-    | .snce event guard =>
+    | .snce _event guard =>
       conjuncts.any fun c2 =>
         match isAllPastShape c2 with
         | some ψ =>
