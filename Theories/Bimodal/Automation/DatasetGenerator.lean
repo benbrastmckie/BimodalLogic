@@ -588,6 +588,13 @@ def appearsOnlyNegatively (polarities : List (Formula × Sign)) (χ : Formula) :
 def hasBotConjunct (conjuncts : List Formula) : Bool :=
   conjuncts.any fun c => c == .bot
 
+/-- Check if any conjunct is the negation of another conjunct (e.g., `p ∧ ¬p`). -/
+def hasPropContradiction (conjuncts : List Formula) : Bool :=
+  conjuncts.any fun c1 =>
+    match isNegShape c1 with
+    | some φ => conjuncts.any fun c2 => c2 == φ
+    | none => false
+
 /--
 Structural pre-filter with axiom attribution (task 274).
 
@@ -607,6 +614,7 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
       -- Phase 1 quick wins (task 278): conjunct-level patterns
       let conjuncts := collectTopLevelConjuncts antecedent
       if hasBotConjunct conjuncts then some (true, "structural_polarity_bot_neg")
+      else if hasPropContradiction conjuncts then some (true, "structural_prop_contradiction")
       else if hasS5ReflexiveConflict conjuncts then some (true, "structural_s5_reflexive_conflict")
       else if hasUntilGuardConflict conjuncts then some (true, "structural_temporal_loop_until")
       else if hasSinceGuardConflict conjuncts then some (true, "structural_temporal_loop_since")
@@ -760,6 +768,13 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 -- hasBotConjunct
 #eval structuralPrefilterWithAxiom (.imp (Formula.and p_test Formula.bot) q_test)
   -- some (true, "structural_polarity_bot_neg")
+
+-- Phase 3 tests (task 278): lightweight propositional contradiction
+#eval hasPropContradiction [p_test, Formula.neg p_test]                    -- true
+#eval hasPropContradiction [p_test, Formula.imp p_test Formula.bot]        -- true (¬p derived as p→⊥)
+#eval hasPropContradiction [p_test, q_test]                                -- false
+#eval structuralPrefilterWithAxiom (.imp (Formula.and p_test (Formula.neg p_test)) q_test)
+  -- some (true, "structural_prop_contradiction")
 
 -- Extended tautology detection (φ → ⊤ and φ → □⊤)
 #eval isStructurallyValid (.imp p_test Formula.top)                     -- true
