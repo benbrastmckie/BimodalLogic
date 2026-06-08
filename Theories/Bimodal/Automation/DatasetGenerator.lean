@@ -1140,6 +1140,12 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval structuralInvalidPrefilter (.imp (.untl .bot p_test) (.untl .bot q_test))
   -- none (both sides always false → valid, not caught as invalid)
 
+-- structuralInvalidPrefilter: constructTrivialCountermodel test
+#eval do
+  let cm := constructTrivialCountermodel (.imp p_test (.untl .bot q_test))
+  return (cm.trueAtoms.length, cm.falseAtoms.length)
+  -- (2, 0) — both atoms p and q set to true
+
 /-! ### DecideCache: Bounded HashMap Cache for Formula Labeling (Task 289)
 
 Cache for `labelFormulaImpl` results, keyed by `(Formula, FrameClass)`.
@@ -1281,6 +1287,33 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       enrichedCountermodel := none
       semanticCountermodelSummary := none
       proofReconstructionMethod := some ("structural_prefilter:" ++ axiomPattern)
+      interestingnessScore := some intResult.compositeScore
+      interestingnessTier := some intResult.tier.toString
+    }
+  | _ =>
+  -- Phase 1.5: Structural invalid pre-filter (task 288)
+  -- Check for known-invalid patterns before invoking the decision procedure.
+  -- Catches formulas with false consequents, trivially satisfiable antecedents
+  -- negated to bot, or unfulfillable Until/Since eventualities.
+  match structuralInvalidPrefilter φ with
+  | some (false, pattern) =>
+    let metrics := computeMetrics φ 0
+    let patternKey := PatternKey.fromFormula φ
+    let cm := constructTrivialCountermodel φ
+    let intResult := computeInterestingness φ none none
+    return {
+      formula := φ
+      label := .invalid
+      proofTrace := none
+      countermodel := some cm
+      metrics := metrics
+      patternKey := patternKey
+      ruleProfile := none
+      decisionMethod := "structural_invalid_prefilter"
+      countermodelConsistent := some true
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := some ("structural_invalid_prefilter:" ++ pattern)
       interestingnessScore := some intResult.compositeScore
       interestingnessTier := some intResult.tier.toString
     }
@@ -1941,5 +1974,51 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     IO.println "[test] PASS: all labels match between exhaustive and hybrid modes"
   else
     IO.println "[test] FAIL: label mismatch detected"
+
+/-! ### Phase 1.5 integration test (task 288): invalid prefilter in labelFormulaImpl -/
+
+-- Test 5: labelFormulaImpl catches structurally invalid formulas via Phase 1.5
+#eval show IO Unit from do
+  let p := Formula.atom ⟨"p", none⟩
+  let q := Formula.atom ⟨"q", none⟩
+  let r := Formula.atom ⟨"r", none⟩
+  -- Formulas that should be caught by the invalid prefilter
+  let invalidFormulas : List (Formula × String) := [
+    (.imp p .bot, "invalid_satisfiable_neg"),           -- p → ⊥: satisfiable negation
+    (.imp p (.untl .bot q), "invalid_satisfiable_neg"), -- p → U(⊥,q): satisfiable + false consequent
+    (.imp (.box p) .bot, "invalid_satisfiable_neg"),    -- □p → ⊥: box(atom) satisfiable
+    (.imp (.untl p q) (.untl .bot r), "invalid_false_consequent"),  -- U(p,q) → U(⊥,r): false consequent
+    (.imp (Formula.all_future (Formula.neg p)) (.untl p q), "invalid_unfulfillable_eventuality")
+      -- G(¬p) → U(p,q): unfulfillable eventuality
+  ]
+  let mut allPass := true
+  for (φ, expectedPattern) in invalidFormulas do
+    let lf ← labelFormulaImpl φ .Base 1000
+    let methodOk := lf.decisionMethod == "structural_invalid_prefilter"
+    let labelOk := lf.label == .invalid
+    let patternOk := lf.proofReconstructionMethod == some ("structural_invalid_prefilter:" ++ expectedPattern)
+    if methodOk && labelOk && patternOk then
+      IO.println s!"[test] OK: {φ.prettyPrint} -> invalid via structural_invalid_prefilter:{expectedPattern}"
+    else
+      IO.println s!"[test] FAIL: {φ.prettyPrint} -> label={repr lf.label} method={lf.decisionMethod} recon={repr lf.proofReconstructionMethod}"
+      allPass := false
+  -- Verify valid formulas are NOT caught by the invalid prefilter
+  let validFormulas : List Formula := [
+    .imp p p,                              -- identity (valid)
+    .imp (.box .bot) q,                    -- bot antecedent (valid)
+    .imp (.untl .bot p) (.untl .bot q),    -- both sides always false → valid
+    .imp p (.imp q q)                      -- tautological consequent (valid)
+  ]
+  for φ in validFormulas do
+    let lf ← labelFormulaImpl φ .Base 1000
+    if lf.decisionMethod == "structural_invalid_prefilter" then
+      IO.println s!"[test] FAIL: valid formula {φ.prettyPrint} incorrectly caught by invalid prefilter (method={lf.decisionMethod})"
+      allPass := false
+    else
+      IO.println s!"[test] OK: {φ.prettyPrint} -> {repr lf.label} via {lf.decisionMethod} (not invalid prefilter)"
+  if allPass then
+    IO.println "[test] PASS: all invalid prefilter integration tests pass"
+  else
+    IO.println "[test] FAIL: some invalid prefilter integration tests failed"
 
 end Bimodal.Automation

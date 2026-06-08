@@ -95,16 +95,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Wire into labelFormulaImpl [NOT STARTED]
+### Phase 2: Wire into labelFormulaImpl [COMPLETED]
 
 **Goal**: Insert the invalid prefilter into the labeling pipeline as Phase 1.5 between the valid prefilter and the tableau.
 
 **Tasks**:
-- [ ] In `labelFormulaImpl`, after the `match structuralPrefilterWithAxiom phi` block (after line 1022), add a second match on `structuralInvalidPrefilter phi`
-- [ ] When `structuralInvalidPrefilter` returns `some (false, pattern)`, construct a `LabeledFormula` with `label := .invalid`, using `constructTrivialCountermodel`, `computeMetrics`, `PatternKey.fromFormula`, and `computeInterestingness`
-- [ ] Set `decisionMethod := "structural_invalid_prefilter"` and `proofReconstructionMethod := some ("structural_invalid_prefilter:" ++ pattern)` for dataset attribution
-- [ ] Use the existing `mkInvalidLabel` helper where applicable, or construct directly if the helper signature does not accommodate the `proofReconstructionMethod` field
-- [ ] Add integration `#eval` test: `labelFormulaImpl (Formula.imp (Formula.atom 0) (Formula.untl Formula.bot (Formula.atom 1)))` should return `label := .invalid` with `decisionMethod = "structural_invalid_prefilter"`
+- [x] In `labelFormulaImpl`, after the `match structuralPrefilterWithAxiom phi` block, add a second match on `structuralInvalidPrefilter phi`
+- [x] When `structuralInvalidPrefilter` returns `some (false, pattern)`, construct a `LabeledFormula` with `label := .invalid`, using `constructTrivialCountermodel`, `computeMetrics`, `PatternKey.fromFormula`, and `computeInterestingness`
+- [x] Set `decisionMethod := "structural_invalid_prefilter"` and `proofReconstructionMethod := some ("structural_invalid_prefilter:" ++ pattern)` for dataset attribution
+- [x] Use the existing `mkInvalidLabel` helper where applicable, or construct directly if the helper signature does not accommodate the `proofReconstructionMethod` field *(deviation: altered -- constructed directly since mkInvalidLabel runs extractCountermodelData which is unnecessary for structural prefilter results)*
+- [x] Add integration `#eval` test: `labelFormulaImpl (Formula.imp (Formula.atom 0) (Formula.untl Formula.bot (Formula.atom 1)))` should return `label := .invalid` with `decisionMethod = "structural_invalid_prefilter"`
 
 **Timing**: 1 hour
 
