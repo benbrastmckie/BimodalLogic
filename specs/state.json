@@ -2438,9 +2438,9 @@
       "project_number": 285,
       "project_name": "complete_derived_operator_enumeration",
       "description": "Complete derived operator enumeration for dataset generation: add diamond, always, sometimes, next, prev, weak_future, weak_past to the formula enumerator",
-      "status": "planned",
+      "status": "completed",
       "created": "2026-06-08T02:47:09Z",
-      "last_updated": "2026-06-08T17:00:00Z",
+      "last_updated": "2026-06-08T17:45:00Z",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "dataset-enhancement",
@@ -2453,6 +2453,8 @@
       "session_id": "sess_1780938205_d0e80f_285",
       "researched": "2026-06-08T02:47:09Z",
       "planned": "2026-06-08T17:00:00Z",
+      "started": "2026-06-08T17:00:00Z",
+      "completed": "2026-06-08T17:45:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2464,6 +2466,11 @@
           "path": "specs/285_complete_derived_operator_enumeration/plans/01_derived-operator-plan.md",
           "type": "plan",
           "summary": "3-phase implementation plan for adding 7 derived operators to the enumerator"
+        },
+        {
+          "path": "specs/285_complete_derived_operator_enumeration/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 7 derived operators added to enumerator with pattern-aware complexity"
         }
       ],
       "plan_metadata": {
@@ -2491,7 +2498,7 @@
           }
         ]
       },
-      "completion_summary": null
+      "completion_summary": "Added 7 derived operators (diamond, always, sometimes, next, prev, weak_future, weak_past) to formula enumerator with pattern-aware complexity=1. Extended hasDerivedTemporal with 7 structural patterns. Updated parallel enumeration path. c4 formula count increased from ~960 to 7,852. c5 bimodal slice increased from ~6,072 to 45,111. Build passes, zero sorries, zero new axioms."
     },
     {
       "project_number": 286,
