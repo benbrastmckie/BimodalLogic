@@ -84,6 +84,7 @@ technical_debt:
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+284 [PLANNED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
 
 ### Uncategorized
 
@@ -913,6 +914,23 @@ technical_debt:
 
 **Description**: Verification pass on sorry status for `completeness_discrete` and `bx_completeness`. Updated scope after task 202 completion and task 155 re-scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (`dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal`) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the `no_gaps_discrete` import cycle (GoodStructures.lean:855) by delegating to `no_gaps_discrete_model_surgery` (GoodStructuresModelSurgery.lean:2133), then rewiring `completeness_discrete`. Note: `succ_cofinal` remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via `no_gaps_discrete_model_surgery` (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
 
+
+### 284. Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+- **Effort**: medium (6-10 hours)
+- **Status**: [PLANNED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Tasks 265, 274, 277, 278, 279
+- **Research**: [specs/284_timeout_reduction_c5_hybrid_prefilter/reports/01_timeout_analysis_and_strategy.md]
+
+**Description**: Post-task-278 c5 regeneration produced 1,156 timeouts (19.2%) out of 6,031 formulas. The dominant timeout class is `U(atom, X) -> U(Y, Z)` and `S(atom, X) -> S(Y, Z)` — formulas that are not trivially unsatisfiable but still stall the tableau prover. This task implements a three-phase strategy to reduce timeouts without skipping formulas:
+
+- **Phase 1**: Enable proof-pool hybrid labeling. Pre-generate a theorem database via `proof_first_generator` (task 279), load it into `DatasetExport.lean`, and use `.hybrid` mode so valid formulas resolve via pool lookup (~0ms) before the tableau is invoked. Expected to catch a meaningful subset of valid timeout formulas.
+- **Phase 2**: Extend the structural prefilter (task 278) with new pattern classes for nested temporal-modal implications. Requires formal analysis of whether `U(atom, X) -> U(Y, Z)` admits a structural decidability rule. If provably valid/invalid, add O(n) syntactic checks to `structuralPrefilterWithAxiom`.
+- **Phase 3**: Add memoization/caching to the tableau prover's `expandBranchWithFuel` (root-cause fix). Cache branch expansion results keyed by `(SignedFormula, FrameClass, Fuel)` to eliminate redundant sub-branch construction for nested temporal operators. Benefits all complexity levels.
+
+After each phase, regenerate c5 and measure timeout count, decision time distribution, and prefilter coverage. Target: reduce c5 timeout rate from 19% to <10% while maintaining zero false positives.
 
 ## Recommended Order
 

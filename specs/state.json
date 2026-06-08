@@ -2299,6 +2299,26 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 284,
+      "project_name": "timeout_reduction_c5_hybrid_prefilter",
+      "description": "Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter",
+      "status": "planned",
+      "created": "2026-06-08T02:17:44Z",
+      "last_updated": "2026-06-08T02:17:44Z",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        265,
+        274,
+        277,
+        278,
+        279
+      ],
+      "artifacts": [],
+      "completion_summary": null
     }
   ],
   "next_project_number": 284,
@@ -2310,7 +2330,7 @@
     }
   ],
   "task_counts": {
-    "active": 54,
+    "active": 55,
     "not_started": 43,
     "implementing": 3,
     "researched": 6,
