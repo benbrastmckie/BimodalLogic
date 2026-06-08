@@ -28,8 +28,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,288,291 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,192,196,231,290,292,293,294 | 161,187,191,194,230,268,288,291 | completeness, dataset-enhancement, sorry-elimination, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,291,295 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,192,196,231,292,293,294 | 161,187,191,194,230,268,291 | completeness, dataset-enhancement, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
 
@@ -38,12 +38,12 @@ technical_debt:
 ### Completeness
 
 268 [RESEARCHED] — Strategy B: Refactor discrete completeness to use Reynolds k-equi
-  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
-    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness discrete by fixing 3 root
+    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [PLANNED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
+273 [PLANNING] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
 
 ### Formula Refactor
 
@@ -81,29 +81,22 @@ technical_debt:
 
 ### Automation
 
-199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
+199 [PARTIAL] — Create a bespoke grid order tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor
+  └─ 193 [NOT STARTED] — codebase tactic refactor
     └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
     └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 
 ### Code Quality
 
-200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
+200 [NOT STARTED] — Rewrite ghr93 case II in CaseAnalysis.lean for code elegance and 
 
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-288 [COMPLETED] — Add deeper invalid-pattern recognizers to structuralPrefilter. De
-  - **Report**: [specs/288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
-  - **Plan**: [specs/288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
-  - **Summary**: [specs/288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md]
-  └─ 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
-  - **Report**: [specs/290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
-  - **Plan**: [specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
-295 [NOT STARTED] — Diagnostic audit and stress-test of dataset generation pipeline
+290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 
 ### Uncategorized
 
@@ -111,23 +104,24 @@ technical_debt:
   └─ 196 [RESEARCHED] — (automation: Systematic survey of the entire Theories) (see above)
 162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
-170 [NOT STARTED] — complete_dense_extension_completeness
-179 [RESEARCHED] — research_lean4_tactics_infrastructure
-180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-186 [NOT STARTED] — unify_search_systems
-187 [NOT STARTED] — backward_chaining_lemma_db
-  └─ 192 [NOT STARTED] — master_tactic_dispatch
-    └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-188 [NOT STARTED] — weakening_aware_search
-189 [NOT STARTED] — deduction_theorem_tactic
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-191 [NOT STARTED] — propositional_decision_procedure
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-194 [NOT STARTED] — migrate_nonempty_to_derivable
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
-257 [IMPLEMENTING] — large_data_storage_huggingface
-282 [NOT STARTED] — exhaustive_enumeration_by_default
+169 [NOT STARTED] — complete frame extension setup and soundness
+170 [NOT STARTED] — complete dense extension completeness
+179 [RESEARCHED] — research lean4 tactics infrastructure
+180 [NOT STARTED] — copyright headers universe polymorphism line limits
+186 [NOT STARTED] — unify search systems
+187 [NOT STARTED] — backward chaining lemma db
+  └─ 192 [NOT STARTED] — master tactic dispatch
+    └─ 193 [NOT STARTED] — codebase tactic refactor (see above)
+188 [NOT STARTED] — weakening aware search
+189 [NOT STARTED] — deduction theorem tactic
+  └─ 193 [NOT STARTED] — codebase tactic refactor (see above)
+191 [NOT STARTED] — propositional decision procedure
+  └─ 192 [NOT STARTED] — master tactic dispatch (see above)
+194 [NOT STARTED] — migrate nonempty to derivable
+  └─ 192 [NOT STARTED] — master tactic dispatch (see above)
+257 [IMPLEMENTING] — large data storage huggingface
+282 [NOT STARTED] — exhaustive enumeration by default
+295 [PLANNED] — Diagnostic audit and stress-test of the dataset generation pipeli
 
 ## Tasks
 

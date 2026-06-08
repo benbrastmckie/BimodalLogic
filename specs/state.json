@@ -8,11 +8,11 @@
     {
       "project_number": 295,
       "project_name": "dataset_pipeline_diagnostic_audit",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements",
       "created": "2026-06-08T18:20:01Z",
-      "last_updated": "2026-06-08T18:20:01Z"
+      "last_updated": "2026-06-08T22:58:00Z"
     },
     {
       "project_number": 291,
@@ -2252,14 +2252,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-08T22:52:15Z",
+      "last_updated": "2026-06-08T23:06:05Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -2282,14 +2282,14 @@
           "summary": "GHR93 literature review: bridge lemma sorry is translation gap, bypass via integer-time separation recommended"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md",
-          "type": "plan",
-          "summary": "6-phase plan to bypass GHR93 bridge lemma sorry via GHR94 integer-time separation, making completeness_discrete sorry-free"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/03_team-research.md",
           "type": "report",
           "summary": "Team research: GHR94 separation bypass approaches, 4 teammates"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v3: separation-based bypass using existing sorry-free separation_implies_expressiveness + semantic Prior transfer lemma (5 phases, 6 hours)"
         }
       ],
       "next_artifact_number": 4,
@@ -2332,7 +2332,7 @@
           }
         ]
       },
-      "session_id": "sess_1780958697_3cf4a1"
+      "session_id": "sess_1780959514_f1df17"
     },
     {
       "project_number": 274,

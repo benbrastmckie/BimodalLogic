@@ -1,10 +1,10 @@
-# Implementation Plan: Integer-Time Separation Bypass for US Expressive Completeness
+# Implementation Plan: Separation-Based Bypass for US Expressive Completeness (v3)
 
 - **Task**: 273 - Bypass GHR93 bridge lemma sorry via GHR94 integer-time separation
 - **Status**: [NOT STARTED]
-- **Effort**: 10 hours
-- **Dependencies**: None (separation theorem is fully proved; all infrastructure exists)
-- **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md, specs/273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md
+- **Effort**: 6 hours
+- **Dependencies**: None (separation theorem and SemanticBridge are fully proved)
+- **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/03_team-research.md, specs/273_chronicle_gap_contradiction_proof/reports/03_teammate-a-findings.md, specs/273_chronicle_gap_contradiction_proof/reports/03_teammate-b-findings.md
 - **Artifacts**: plans/03_separation-bypass-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,216 +12,179 @@
 
 ## Overview
 
-The completeness theorem `completeness_discrete` carries `sorryAx` through a chain that terminates at three sorry sites in `StaviCompleteness.lean` (lines 2353, 2435, 2805). These encode the GHR93 4-variable existential transfer in EF game composition. The sorry enters `completeness_discrete` via: `countermodel_discrete_reynolds_v2` -> `limitdom_is_good` -> `no_gaps_discrete_model_surgery` -> `gap_prior_UZ_contradiction` -> `invariant_formula_constant` -> `US_expressively_complete_over_prior` -> `stavi_expressive_completeness` -> sorry.
+This plan (v3) replaces the blocked Kamp translation approach (v2 Phases 2-6) with a direct semantic transfer strategy (Approach S from team research). The key discovery from team research: `separation_implies_expressiveness` in `ExpressiveCompleteness/Theorem.lean` already implements the full GHR94 Ch 9.3.1 quantifier elimination, producing a temporal formula A correct for all Z-carrier `IntStructureFromSig` structures, sorry-free. The only missing piece is a `prior_transfer` theorem lifting Z-structure correctness to arbitrary `OrderedMonadicStructure` satisfying Prior-UZ/SZ.
 
-This plan bypasses the sorry by providing a new proof of `US_expressively_complete_over_prior` that does NOT import `StaviCompleteness.lean`. Instead, it uses the already-proved (sorry-free) separation theorem for integer time (GHR94 Chapter 10.2, in `Separation/`) combined with the fact that Stavi connectives U'(A,B) and S'(A,B) are always false on Prior structures (already proved sorry-free in `PriorExpressiveness.lean`).
-
-The key architectural change: currently `PriorExpressiveness.lean` imports `StaviCompleteness.lean` to get `stavi_expressive_completeness` (the sorry-tainted theorem). The bypass replaces this with a self-contained argument that derives `US_expressively_complete_over_prior` using:
-1. The separation theorem (`all_formulas_separable`, sorry-free in `Separation/`)
-2. A bridge between `IntStructure`/`int_truth` (separation framework) and `OrderedMonadicStructure`/`temporal_truth` (main framework)
-3. The separation-implies-expressive-completeness argument for Prior structures
-
-Definition of done: `completeness_discrete` compiles without `sorryAx` (modulo any remaining sorry sources not in this chain, such as `chronicle_gap_contradiction` if still imported via `Completeness.lean`).
+Phase 1 (SemanticBridge infrastructure) was completed in v2. This plan adds: Phase 0 (axiom audit), Phase 2 (Prior transfer lemma), Phase 3 (rewire PriorExpressiveness.lean), and Phase 4 (full build verification). The Chain B sorry (`chronicle_gap_contradiction`) is addressed via Lean's proof-term-based `#print axioms` semantics -- imports alone do not leak `sorryAx`.
 
 ### Research Integration
 
 Integrated reports:
-- `03_stavi-sorry-analysis.md` (PRIMARY): Mapped the complete sorry dependency chain from `completeness_discrete` through `US_expressively_complete_over_prior` to `stavi_expressive_completeness`. Confirmed the 3 sorry sites encode the GHR93 4-variable existential transfer. Identified the separation-based bypass as "Alternative 1" with assessment: "conceptually simpler but technically verbose" (~1000-2000 lines estimated).
-- `04_ghr93-literature-review.md`: Detailed the GHR93 composition argument and compared it with the NF approach. Recommended Alternative 1 (bypass via integer-time separation) as the primary approach: "completely avoids the bridge lemma sorry for the specific use case and uses a well-understood, purely syntactic proof technique."
+- `03_team-research.md` (PRIMARY): Identified Approach S as the cheapest path (~200-350 lines). Flagged the Prior-to-Z transfer as the critical gap. Confirmed two sorry chains (Stavi + Chronicle) reaching `completeness_discrete`.
+- `03_teammate-a-findings.md`: Confirmed `separation_implies_expressiveness` is sorry-free and implements full GHR94 Ch 9.3.1. Identified the `atomMap` direction mismatch (`sig.preds -> Atom` vs `Formula -> sig.preds`) as a bridging detail.
+- `03_teammate-b-findings.md`: Raised the valid concern that Prior structures are not necessarily Z-isomorphic. However, `US_expressively_complete_over_prior` consumers (`gap_prior_UZ_contradiction` in `GoodStructuresModelSurgery.lean`) use it on `limitdom_monadic_structure` which is a countable discrete linear order. The transfer can exploit the `Countable` + discrete structure.
 
 Key findings incorporated:
-1. The separation theorem (GHR94 Lemma 10.2.8 / Theorem 10.2.9) is fully formalized and sorry-free in `Separation/`.
-2. `flatten_stavi_correct_prior` (U'/S' always false on Prior structures) is sorry-free in `PriorExpressiveness.lean`.
-3. The bridge between `IntStructure` and `OrderedMonadicStructure` does NOT currently exist and must be built.
-4. `US_expressively_complete_over_prior` is consumed ~7 times in `GoodStructuresModelSurgery.lean`; the replacement must have the SAME type signature.
-5. The key mathematical insight: on Prior structures (which are integer-like), the separation theorem gives {U,S} separation, which combined with the standard table/induction argument gives expressive completeness WITHOUT Stavi connectives.
+1. `separation_implies_expressiveness` (GHR94 Theorem 9.3.1) is sorry-free in `ExpressiveCompleteness/Theorem.lean`.
+2. `SemanticBridge.lean` provides `int_truth_eq_temporal_truth_Z` and `int_equiv_implies_temporal_equiv_with_iso` (both sorry-free).
+3. The formula A produced by `expressiveness_inner` is box-free (separation never introduces box).
+4. `US_expressively_complete_over_prior` is consumed ~7 times in `GoodStructuresModelSurgery.lean`; the replacement must preserve the exact type signature.
+5. The actual sorry chain in `completeness_discrete` is: `countermodel_discrete_reynolds_v2` -> `limitdom_is_good` -> `no_gaps_discrete_model_surgery` -> `gap_prior_UZ_contradiction` -> `US_expressively_complete_over_prior` -> `stavi_expressive_completeness` -> sorry.
 
 ### Prior Plan Reference
 
-Prior plan `01_gap-contradiction-plan.md` targeted proving `chronicle_gap_contradiction` directly via Z1 axiom co-induction. That plan is OBSOLETE: research report 03 established that `chronicle_gap_contradiction` is NOT on the critical path for `completeness_discrete` (it is bypassed by the v2 Reynolds countermodel pipeline). The prior plan's Phase 1 was marked [BLOCKED] due to the fundamental issue that orbit membership is second-order and cannot be expressed as a temporal formula. No phases from the prior plan are reused.
+Prior plan v2 (this file, overwritten) had 6 phases. Phase 1 (SemanticBridge) was completed. Phases 2-3 (Kamp translation) were blocked: the Kamp translation requires interval splitting for 4-variable existential transfer, which reduces to the same sorry being bypassed. v3 abandons the Kamp route entirely and uses the already-proved separation theorem.
 
-Lessons from the prior plan:
-- Effort estimates were accurate for the Z1 infrastructure (2 hours estimated, Phase 1 completed but hit fundamental blocker)
-- The Z1 co-inductive approach has a genuine circularity for the chronicle setting
-- Plans in this codebase benefit from checking the actual import chain before committing to a proof strategy
+Lessons from prior plan:
+- SemanticBridge was correctly scoped and completed on schedule (~2 hours)
+- The Kamp translation approach was fundamentally blocked by the same EF game composition issue
+- Infrastructure from the blocked phases (`KampTranslation.lean` helpers) may be reusable but is not needed for Approach S
 
 ### Roadmap Alignment
 
-No ROADMAP.md found.
+ROADMAP.md item: "Reynolds k-equivalence bypass (task 202) is the critical path" -- this task advances the same goal by eliminating the `stavi_expressive_completeness` sorry from the `US_expressively_complete_over_prior` -> `gap_prior_UZ_contradiction` -> `no_gaps_discrete_model_surgery` chain.
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Prove `US_expressively_complete_over_prior` with the SAME type signature, but without importing `StaviCompleteness.lean`
-- Build a bridge between `IntStructure`/`int_truth` (separation framework) and `OrderedMonadicStructure`/`temporal_truth` (main framework)
-- Remove the `StaviCompleteness.lean` import from `PriorExpressiveness.lean`
-- Make `completeness_discrete` sorry-free through this dependency chain (the `US_expressively_complete_over_prior` -> `stavi_expressive_completeness` chain)
+- Prove `US_expressively_complete_over_prior` without importing `StaviCompleteness.lean`, using the sorry-free `separation_implies_expressiveness` + a semantic transfer lemma
+- Eliminate `sorryAx` from `completeness_discrete` through the Stavi chain (Chain A)
+- Preserve the exact type signature of `US_expressively_complete_over_prior` so downstream consumers (`GoodStructuresModelSurgery.lean`) compile unchanged
 
 **Non-Goals**:
-- Fixing the EF game composition sorry sites (lines 2353, 2435, 2805 in StaviCompleteness.lean) -- those are bypassed, not fixed
-- Proving `chronicle_gap_contradiction` (not on the critical path)
-- Modifying `GoodStructuresModelSurgery.lean` (the consumer of `US_expressively_complete_over_prior`) -- the type signature must be preserved
-- Proving Kamp's theorem in full generality (only the Prior structure case is needed)
-- Removing the dense-case sorry from `completeness_dense` (separate concern)
+- Fixing the sorry in `chronicle_gap_contradiction` (Chain B) -- this is a separate sorry in `ChronicleToCountermodel.lean` that does not affect `completeness_discrete` per `#print axioms` semantics (imports do not leak `sorryAx` into proof terms that do not reference them)
+- Fixing the 3 sorry sites in `StaviCompleteness.lean` (lines 2353, 2435, 2805) -- those are bypassed, not fixed
+- Proving `completeness_dense` sorry-free (separate concern, uses Chronicle pipeline)
+- Modifying `GoodStructuresModelSurgery.lean` or any downstream consumers
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Bridge between IntStructure and OrderedMonadicStructure is more complex than expected (different treatment of atoms, modal operators) | H | M | IntStructure uses `Atom -> Set Z`; OrderedMonadicStructure uses `MonadicSignature` with `preds`. The atomMap parameter already mediates between these. Build the bridge incrementally, starting with the simplest case. |
-| Separation theorem's `int_truth` ignores the box operator (treats it as True), but `temporal_truth` handles box substantively | M | L | `US_expressively_complete_over_prior` only concerns temporal formulas (U, S, atoms, boolean connectives). The box case is irrelevant since the output formula uses only U and S. Verify that `flatten_stavi` never produces box. |
-| Proof that "separated formula equivalent on all Prior structures" requires connecting integer-time semantics (Z) to arbitrary Prior structures | H | M | Prior structures satisfy Prior-UZ/SZ. The key fact: any Prior structure is "integer-like" for temporal truth purposes. The bridge needs to show that `int_equiv` on Z implies `temporal_truth` equivalence on Prior structures. This is the Kamp transfer step. |
-| Total effort exceeds estimate due to bridge infrastructure | M | M | The separation theorem is already proved (the hard part). The bridge is conceptually simple: embed an OrderedMonadicStructure into an IntStructure by composing the order embedding with the valuation. If the bridge grows large, factor into a separate file. |
-| Import cycle: PriorExpressiveness.lean cannot import Separation/ if Separation/ imports PriorExpressiveness.lean | H | L | Check the import graph. Separation/ currently imports only `Bimodal.Syntax.Formula` and Mathlib. PriorExpressiveness.lean currently imports StaviConnectives and StaviCompleteness. Replacing the StaviCompleteness import with Separation imports should not create a cycle. |
-| The `ChronicleToCountermodel.lean` import in `Completeness.lean` leaks `sorryAx` from `chronicle_gap_contradiction` even after fixing the Stavi chain | M | H | This is a known issue from report 03. After the Stavi chain is fixed, a simple fix suffices: either guard the import or remove it. The `completeness_discrete` proof body does not use anything from ChronicleToCountermodel.lean. Include this as Phase 6. |
+| Prior structures may not be Z-isomorphic, preventing direct use of `int_equiv_implies_temporal_equiv_with_iso` | H | M | Two fallback approaches: (1) prove that the transfer works at the `int_truth`/`temporal_truth` level without requiring Z-isomorphism by building an `IntStructureFromSig` from any `OrderedMonadicStructure`, or (2) prove that all consumers actually use `US_expressively_complete_over_prior` on Z-isomorphic structures (limitdom is countable discrete). |
+| `atomMap` direction mismatch: `separation_implies_expressiveness` uses `sig.preds -> Atom` while `US_expressively_complete_over_prior` uses `Formula -> sig.preds` | M | H | The `h_surj` hypothesis in `US_expressively_complete_over_prior` provides `forall p, exists a, atomMap (.atom a) = p`, enabling construction of the reverse map. Build a `sig.preds -> Atom` from `atomMap : Formula -> sig.preds` via `h_surj` + Classical.choice. |
+| `separation_implies_expressiveness` produces existentially quantified A and atomMap, not a definitional construction | M | M | Use `US_expressively_complete_over_Z` which existentially provides A and atomMap, then apply the transfer lemma. The existential form is sufficient since `US_expressively_complete_over_prior` also returns a Subtype. |
+| Chain B (`chronicle_gap_contradiction`) actually leaks `sorryAx` into `completeness_discrete` via proof-term references | H | L | Phase 0 axiom audit will confirm. If it leaks, Phase 3 can add import guards or move `mcs_mixed_case_absurd` to a separate module. |
+| Total effort exceeds estimate due to unforeseen type-level obstacles in the transfer | M | M | Phase 1 (completed) and Phase 0 (cheap verification) reduce uncertainty. If Phase 2 hits a wall, fall back to Approach D-discrete (discrete-only bridge lemma, ~200-400 additional lines). |
 
 ## Implementation Phases
 
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 2 | -- |
-| 2 | 3 | 1 |
-| 3 | 4 | 2, 3 |
-| 4 | 5 | 4 |
-| 5 | 6 | 5 |
+| 1 | 0 | -- |
+| 2 | 2 | 0 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
 
 Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Semantic Bridge Infrastructure [COMPLETED]
+### Phase 0: Axiom Audit and Sorry State Verification [NOT STARTED]
 
-**Goal**: Build the connection between `IntStructure`/`int_truth` (used by the separation theorem) and `OrderedMonadicStructure`/`temporal_truth` (used by `US_expressively_complete_over_prior`). This is the foundational infrastructure enabling the bypass.
+**Goal**: Run `#print axioms completeness_discrete` and related checks to establish the ground truth about which sorry chains are live. This is a prerequisite identified by the research team (Finding 3: "No live #print axioms has been run").
 
 **Tasks**:
-- [ ] Create a new file `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean` that imports both `Separation.SeparationThm` and the relevant OrderedMonadicStructure definitions
-- [ ] Define `oms_to_int_structure`: given an `OrderedMonadicStructure sig` with carrier isomorphic to Z (or any linear order), an `atomMap : Formula -> sig.preds`, construct an `IntStructure` by composing the order embedding with the predicate interpretation. For Prior structures, the carrier may not literally be Z, so use an order-isomorphism parameter
-- [ ] Prove `int_truth_matches_temporal_truth`: for any formula `φ` (using only atoms, boolean connectives, U, S -- no box), `int_truth (oms_to_int_structure M atomMap iso) (iso t) φ <-> temporal_truth M atomMap t φ`. This is a structural induction on φ. The key cases are:
-  - `atom a`: follows from the construction of `oms_to_int_structure`
-  - `bot`: trivial
-  - `imp`: follows from induction hypotheses
-  - `untl φ ψ`: requires showing the existential and universal quantifiers transfer through the isomorphism
-  - `snce φ ψ`: symmetric to `untl`
-  - `box`: not needed (output formula will not contain box)
-- [ ] Prove `int_equiv_implies_temporal_equiv`: if `int_equiv φ ψ` (over all IntStructures), then for any OrderedMonadicStructure M satisfying semantic Prior-UZ and Prior-SZ with atomMap, `temporal_truth M atomMap t φ <-> temporal_truth M atomMap t ψ`. This is the crucial transfer lemma. The proof constructs an IntStructure from M and transfers the equivalence.
+- [ ] Add temporary `#print axioms` checks to verify the current sorry state:
+  - `#print axioms Bimodal.Metalogic.WeakCanonical.US_expressively_complete_over_prior` (expected: includes `sorryAx`)
+  - `#print axioms Bimodal.Metalogic.WeakCanonical.gap_prior_UZ_contradiction` (expected: includes `sorryAx` via US_expressively_complete_over_prior)
+  - `#print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete` (expected: includes `sorryAx`)
+  - `#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.mcs_mixed_case_absurd` (expected: no `sorryAx`)
+- [ ] Use `lean_verify` or `lean_goal` to check the axiom output for each of these declarations
+- [ ] Document which sorry chains are confirmed live vs stale
+- [ ] Confirm that Chain A (Stavi -> US_expressively_complete_over_prior -> gap_prior_UZ_contradiction -> no_gaps_discrete_model_surgery -> limitdom_is_good -> countermodel_discrete_reynolds_v2 -> completeness_discrete) is the primary sorry source
+- [ ] Determine whether Chain B (`chronicle_gap_contradiction` via `ChronicleToCountermodel` import) actually affects `completeness_discrete` via `#print axioms`
 
-**Timing**: 2 hours
+**Timing**: 0.5 hours
 
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean` (new file)
+- None (read-only verification using MCP tools)
 
 **Verification**:
-- All lemmas compile without sorry
-- `lake build Bimodal.Metalogic.WeakCanonical.Separation.SemanticBridge` succeeds
-- No import cycles introduced
+- Axiom audit results documented in plan annotations or handoff
+- Clear identification of which sorry chains must be addressed by subsequent phases
 
 ---
 
-### Phase 2: Monadic FO to Temporal Formula Translation [BLOCKED]
+### Phase 1: SemanticBridge Infrastructure [COMPLETED]
 
-**BLOCKER** (Phase 2):
-- **What failed**: The Kamp translation requires expressing "∃y with specific 2-variable NF at (y,x)" as a temporal formula. This reduces to the same bridge lemma (`nf_2var_from_interval_data`) that the existing sorry encodes. All approaches to proving `US_expressively_complete_over_prior` without the sorry ultimately require this bridge lemma or an equivalent (the n-variable Fraisse game argument).
-- **What was tried**:
-  1. Direct Kamp translation by induction on MonadicFormula structure — blocked at `.ex` case which needs 2-variable to 1-variable reduction via separation, which in turn needs the bridge lemma
-  2. Classical NF characterization approach using `doets_lemma_1_1` + separation theorem — blocked because temporal distinguishability of NFs at depth k+1 requires expressing 2-var NF existence as a temporal formula
-  3. Fixing the sorry in `nf_2var_from_interval_data` directly — blocked because the 4-variable existential transfer at line 2353 requires zone matching with interval splitting (choosing u' to split interval types consistently), which is the content of the Fraisse/EF game composition argument (GHR93 Proposition 7)
-  4. Z-specific bridge lemma — blocked because even on Z, interval type SET matching does not guarantee interval SPLITTING (types may be interleaved differently in the two Z-intervals)
-- **Why it's stuck**: The fundamental issue is the "interval splitting" problem: given two intervals with the same set of NF types, a point u splitting one interval into sub-intervals with types T₁ and T₂, finding a matching point u' that splits the other interval identically. On general linear orders, this requires the Fraisse game strategy. On Z, it requires ordered interval type sequences (not just sets). The existing `interval_nf_types` infrastructure uses Finsets (sets), not sequences.
-- **What is needed**: One of:
-  (A) Prove `nf_2var_from_interval_data` via a generalized n-variable NF transfer by strong induction on depth k, with refined zone matching that includes interval splitting. Estimated 400-600 lines.
-  (B) Strengthen `interval_nf_types` to track ordered sequences (not just sets) for Z-structures, then prove the Z-specific bridge lemma and transfer via the semantic bridge. Estimated 300-500 lines.
-  (C) Prove a completely new version of Kamp's theorem using the separation theorem directly (without NFs), following GHR94 Chapter 10.3. Estimated 1000+ lines.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
-
-**Goal**: Build the translation from `MonadicFormula sig 1` (monadic first-order formulas with one free variable) to `Formula` (temporal formulas using U, S). This is the "table" translation from GHR94/Reynolds that converts first-order quantification over a linear order into temporal operators.
+**Goal**: Build the connection between `IntStructure`/`int_truth` (separation framework) and `OrderedMonadicStructure`/`temporal_truth` (completeness framework).
 
 **Tasks**:
-- [ ] Study the existing `MonadicFormula` type and `eval` function to understand the first-order formula structure. Key: `MonadicFormula sig n` has constructors for atoms (`pred`), boolean connectives, and existential quantification (`ex`). The `eval M env psi` evaluates `psi` in structure `M` with environment `env : Fin n -> M.carrier`.
-- [ ] Define `monadic_to_temporal : MonadicFormula sig 1 -> (Formula -> sig.preds) -> Formula` (or use a Subtype approach). This translation converts:
-  - Predicate application `P(x)` -> corresponding atom via `atomMap`
-  - Boolean connectives -> same boolean connectives
-  - Existential quantification `exists y, phi(x, y)` with `y > x`: `some_future (translate phi[y := current, x := free])`, and analogously for `y < x`
-  - The key insight from Kamp/GHR: the translation is by induction on quantifier depth, using the separation theorem to keep formulas separated at each step
-- [ ] Alternatively (and more practically): check if `stavi_expressive_completeness` can be replaced by a direct construction that doesn't go through the EF game bridge lemma. The existing `stavi_expressive_completeness` uses NF (Normal Form) theory which is the sorry-carrying part. A direct translation from `MonadicFormula sig 1` to `Formula` via the standard Kamp argument (quantifier elimination by induction on quantifier depth, using separation at each step) avoids NFs entirely.
-- [ ] Prove the correctness of the translation: for any `MonadicFormula sig 1` `psi` and any Prior structure M, `eval M (fun _ => t) psi <-> temporal_truth M atomMap t (translate psi)`. This is an induction on `psi`'s structure, with the key quantifier case using the separation theorem (Phase 1's bridge) and Prior-UZ/SZ.
+- [x] Created `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean`
+- [x] Proved `z_structure_to_int`: IntStructure from ZStructure + atomMap
+- [x] Proved `int_truth_eq_temporal_truth_Z`: int_truth matches temporal_truth on Z-carrier (box-free)
+- [x] Proved `int_equiv_implies_temporal_equiv_Z`: int_equiv -> temporal_truth equivalence on Z-structures
+- [x] Proved `temporal_truth_order_iso`: temporal_truth transfers through order isomorphisms (box-free)
+- [x] Proved `int_equiv_implies_temporal_equiv_with_iso`: full bridge for structures with `M.carrier ≃o Z`
 
-**Timing**: 3 hours
+**Timing**: 2 hours (completed)
 
-**Depends on**: none (can proceed in parallel with Phase 1, since the interface is known)
+**Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/KampTranslation.lean` (new file) -- or a similar name
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean` -- completed
 
 **Verification**:
-- Translation function compiles without sorry
-- Correctness theorem compiles without sorry
-- `lake build` for the new file succeeds
+- `lake build Bimodal.Metalogic.WeakCanonical.Separation.SemanticBridge` succeeds (confirmed)
 
 ---
 
-### Phase 3: Kamp's Theorem for Prior Structures [BLOCKED]
+### Phase 2: Prior Transfer Lemma [NOT STARTED]
 
-**Goal**: Prove Kamp's theorem for Prior structures: every `MonadicFormula sig 1` has a {U,S}-temporal equivalent on structures satisfying semantic Prior-UZ and Prior-SZ. This combines the monadic-to-temporal translation (Phase 2) with the semantic bridge (Phase 1).
+**Goal**: Prove that the formula A produced by `separation_implies_expressiveness` (correct for all Z-carrier `IntStructureFromSig` structures) is also correct for arbitrary `OrderedMonadicStructure sig` satisfying Prior-UZ/SZ. This is the core missing piece.
 
 **Tasks**:
-- [ ] Define and prove `kamp_prior`: for any `MonadicFormula sig 1` `psi`, there exists a `Formula` `A` such that for all Prior structures M with atomMap, `eval M (fun _ => t) psi <-> temporal_truth M atomMap t A`. This is the composition of:
-  1. The monadic-to-temporal translation from Phase 2
-  2. The separation theorem (ensuring the result uses only U and S in separated form)
-  3. The Prior structure hypothesis (ensuring U'/S' contribute nothing)
-- [ ] Ensure the output formula `A` uses only `atom`, `bot`, `imp`, `untl`, `snce` constructors (no `box`). The separation theorem guarantees this since `int_truth` treats box as True and the separation procedure never introduces box.
-- [ ] Verify that the type signature matches what `US_expressively_complete_over_prior` needs: `{ A : Formula // forall M h_UZ h_SZ t, eval M (fun _ => t) psi <-> temporal_truth M atomMap t A }`
+- [ ] Study the type signatures carefully:
+  - `separation_implies_expressiveness` returns: `exists A atomMap_fwd, forall (M : IntStructureFromSig sig) (t : Int), eval (int_to_ordered sig M) (fun _ => t) psi <-> Separation.int_truth (to_int_struct M atomMap_fwd) t A`
+  - `US_expressively_complete_over_prior` needs: `{ A : Formula // forall (M : OrderedMonadicStructure sig) (h_UZ) (h_SZ) (t : M.carrier), eval M (fun _ => t) psi <-> temporal_truth M atomMap t A }`
+  - Key difference: `atomMap_fwd : sig.preds -> Atom` (forward) vs `atomMap : Formula -> sig.preds` (backward)
+- [ ] Build the atomMap bridge: given `atomMap : Formula -> sig.preds` with `h_surj : forall p, exists a, atomMap (.atom a) = p`, construct `atomMap_fwd : sig.preds -> Atom` via Classical.choice on `h_surj`. Prove round-trip properties.
+- [ ] Prove the core transfer theorem. Two approaches to evaluate:
+  - **Approach 2a (direct IntStructureFromSig construction)**: Given any `OrderedMonadicStructure sig M` and `atomMap`, construct an `IntStructureFromSig sig` called `M_Z` such that `eval (int_to_ordered sig M_Z) (fun _ => t) psi <-> eval M (fun _ => t) psi` for all `psi` and `t` (by making `M_Z.interp p t` depend on the actual `M` truth). Then the `separation_implies_expressiveness` result for `M_Z` gives `eval M (fun _ => t) psi <-> int_truth (to_int_struct M_Z atomMap_fwd) t A`, and `int_truth_eq_temporal_truth_Z` gives the temporal_truth form. The challenge is: `int_to_ordered sig M_Z` has carrier `Int` while `M` may not have carrier `Int`, so `eval` may differ structurally.
+  - **Approach 2b (characteristic formula + reinterpretation)**: The formula A produced by `expressiveness_inner` only depends on `psi`'s structure and the separation theorem. Show that A is box-free and that `temporal_truth M atomMap t A` depends only on the local truth of atoms and the order structure of M. Since atoms are interpreted the same way (via atomMap) and the temporal operators (U, S) only depend on the order, A's truth is determined by the same data in M as in any Z-structure with matching predicates.
+  - **Approach 2c (the eval transfer for fixed t)**: For a fixed point `t : M.carrier`, construct an `IntStructureFromSig` whose predicates at integer `n` match the predicates of the `n`-th successor/predecessor of `t` in `M` (using Prior-UZ/SZ to guarantee that each point has a unique successor/predecessor). This embeds a "Z-like neighborhood" of `t` into a Z-structure. This may require `SuccOrder`/`PredOrder` and `IsSuccArchimedean` instances which are guaranteed by Prior-UZ/SZ on discrete structures.
+- [ ] Implement the chosen approach in `SemanticBridge.lean` (extend existing file) or a new file `Theories/Bimodal/Metalogic/WeakCanonical/Separation/PriorTransfer.lean`
+- [ ] Prove `US_expressively_complete_over_prior_via_separation`: the theorem with the SAME type signature as the current `US_expressively_complete_over_prior`, but using `separation_implies_expressiveness` instead of `stavi_expressive_completeness`
 
-**Timing**: 1.5 hours
+**Timing**: 2.5 hours
 
-**Depends on**: 1
+**Depends on**: 0 (to confirm sorry state and choose the right approach based on findings)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/KampTranslation.lean` (or `KampPrior.lean`)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/PriorTransfer.lean` (new file) or extend `SemanticBridge.lean`
 
 **Verification**:
-- `kamp_prior` compiles without sorry
-- Type signature matches `US_expressively_complete_over_prior`'s result type
+- New theorem compiles without sorry
+- Type signature matches `US_expressively_complete_over_prior` exactly
+- `lake build` for the new module succeeds
+- No import cycles
 
 ---
 
-### Phase 4: Replace US_expressively_complete_over_prior [NOT STARTED]
+### Phase 3: Rewire PriorExpressiveness.lean [NOT STARTED]
 
-**Goal**: Rewrite `PriorExpressiveness.lean` to prove `US_expressively_complete_over_prior` using the Kamp translation (Phase 3) instead of `stavi_expressive_completeness`. Remove the import of `StaviCompleteness.lean`.
+**Goal**: Replace the `StaviCompleteness` import in `PriorExpressiveness.lean` with the separation-based proof from Phase 2. Make `US_expressively_complete_over_prior` sorry-free.
 
 **Tasks**:
 - [ ] Modify `PriorExpressiveness.lean`:
-  - Replace `import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness` with `import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation` (or whatever file name from Phase 3)
-  - Keep the `import Bimodal.Metalogic.WeakCanonical.StaviConnectives` (still needed for `stavi_U_false_on_prior_UZ`, `stavi_S_false_on_prior_SZ`, and `flatten_stavi_correct_prior` if they remain)
-  - Actually: check whether `StaviConnectives.lean` has its own sorry. If not, it can stay. The sorry is only in `StaviCompleteness.lean`.
-- [ ] Rewrite `US_expressively_complete_over_prior` to use `kamp_prior` instead of `stavi_expressive_completeness` + `flatten_stavi_correct_prior`. The new proof:
-  ```
-  obtain ⟨A, h_A⟩ := kamp_prior atomMap h_surj psi
-  exact ⟨A, fun M h_UZ h_SZ t => h_A M h_UZ h_SZ t⟩
-  ```
-- [ ] Verify that the TYPE SIGNATURE of `US_expressively_complete_over_prior` is unchanged:
-  ```lean
-  noncomputable def US_expressively_complete_over_prior
-      {sig : MonadicSignature}
-      (atomMap : Formula -> sig.preds)
-      (h_surj : forall p : sig.preds, exists a : Atom, atomMap (.atom a) = p)
-      (psi : MonadicFormula sig 1) :
-      { A : Formula //
-        forall (M : OrderedMonadicStructure sig)
-          (_h_prior_UZ : semantic_prior_UZ M atomMap)
-          (_h_prior_SZ : semantic_prior_SZ M atomMap)
-          (t : M.carrier),
-          eval M (fun _ => t) psi <->
-          temporal_truth M atomMap t A }
-  ```
-- [ ] The existing sorry-free lemmas in PriorExpressiveness.lean (`stavi_U_false_on_prior_UZ`, `stavi_S_false_on_prior_SZ`, `flatten_stavi_correct_prior`) remain unchanged -- they do NOT depend on StaviCompleteness.lean's sorry-carrying parts. They only depend on the StaviConnectives definitions.
-- [ ] Verify that `GoodStructuresModelSurgery.lean` (which imports `PriorExpressiveness.lean` and uses `US_expressively_complete_over_prior` ~7 times) still compiles without changes.
+  - Replace `import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness` with the import for the new PriorTransfer module (or SemanticBridge extension)
+  - Keep `import Bimodal.Metalogic.WeakCanonical.StaviConnectives` (needed for `flatten_stavi_correct_prior` infrastructure, which is sorry-free and independent of StaviCompleteness)
+- [ ] Rewrite `US_expressively_complete_over_prior` to use the new separation-based proof:
+  - Replace `obtain ⟨sf, h_sf⟩ := stavi_expressive_completeness sig atomMap h_surj psi` with the new transfer-based construction
+  - Preserve the exact type signature
+- [ ] Verify downstream consumers compile without changes:
+  - `lake build Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery`
+  - Confirm `gap_prior_UZ_contradiction` still compiles
+  - Confirm `no_gaps_discrete_model_surgery` still compiles
+- [ ] Run `#print axioms US_expressively_complete_over_prior` to confirm no `sorryAx`
+- [ ] Run `#print axioms gap_prior_UZ_contradiction` to confirm no `sorryAx`
 
 **Timing**: 1.5 hours
 
-**Depends on**: 2, 3
+**Depends on**: 2
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean` -- change imports and rewrite `US_expressively_complete_over_prior`
@@ -230,70 +193,41 @@ Phases within the same wave can execute in parallel.
 - `lake build Bimodal.Metalogic.WeakCanonical.PriorExpressiveness` succeeds
 - `lake build Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery` succeeds
 - `#print axioms US_expressively_complete_over_prior` shows no `sorryAx`
-- `#print axioms gap_prior_UZ_contradiction` shows no `sorryAx` (this was the consumer)
+- `#print axioms gap_prior_UZ_contradiction` shows no `sorryAx`
 
 ---
 
-### Phase 5: Decouple Completeness.lean from ChronicleToCountermodel [NOT STARTED]
+### Phase 4: Full Build Verification and Axiom Audit [NOT STARTED]
 
-**Goal**: Remove or guard the import of `ChronicleToCountermodel.lean` from `Completeness.lean` so that `completeness_discrete` does not inherit `sorryAx` from `chronicle_gap_contradiction` (which is not on its critical path but leaks sorry through Lean's transitive import mechanism).
-
-**Tasks**:
-- [ ] Read `Completeness.lean` to confirm that `completeness_discrete` does not use anything from `ChronicleToCountermodel.lean`. Research report 03 states this but verify by checking the proof body.
-- [ ] Check if `completeness_dense` (also in Completeness.lean) uses ChronicleToCountermodel.lean content. If yes, the import cannot be removed entirely -- it would need to be moved to a separate file.
-- [ ] If `completeness_dense` uses ChronicleToCountermodel:
-  - Option A: Move `completeness_dense` to a separate file (e.g., `CompletenessDense.lean`) that imports ChronicleToCountermodel
-  - Option B: Keep the import but verify that `completeness_discrete` is sorry-free via `#print axioms`
-  - Option C: If Lean's `#print axioms` only reports axioms actually used in the proof body (not just transitively imported), the import may not matter. Verify this behavior.
-- [ ] If `completeness_dense` does NOT use ChronicleToCountermodel: remove the import entirely.
-- [ ] Verify `#print axioms completeness_discrete` after the change.
-
-**Timing**: 1 hour
-
-**Depends on**: 4
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- adjust imports
-- Possibly: create `Theories/Bimodal/Metalogic/BXCanonical/CompletenessDense.lean` if splitting is needed
-
-**Verification**:
-- `lake build Bimodal.Metalogic.BXCanonical.Completeness` succeeds
-- `#print axioms completeness_discrete` does not include `sorryAx`
-- If split was done: `completeness_dense` still compiles in the new location
-
----
-
-### Phase 6: Full Build Verification and Axiom Audit [NOT STARTED]
-
-**Goal**: Run full project build, verify `completeness_discrete` is sorry-free, audit the axiom set, and clean up any documentation.
+**Goal**: Run full project build, verify `completeness_discrete` sorry state, and confirm the Stavi sorry chain is eliminated end-to-end.
 
 **Tasks**:
-- [ ] Run `lake build` for the full project
-- [ ] Run `#print axioms completeness_discrete` and verify output is `[propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` (no `sorryAx`)
-- [ ] Verify the sorry chain is eliminated:
+- [ ] Run `lake build` for the full project (may encounter pre-existing heartbeat timeout in CanonicalTaskRelation.lean -- this is unrelated and non-blocking)
+- [ ] Run `#print axioms completeness_discrete` and compare against Phase 0 baseline:
+  - If `sorryAx` is gone: Chain A is fully eliminated, task is complete
+  - If `sorryAx` remains: identify which chain (should be Chain B via `chronicle_gap_contradiction`). If Chain B, this is expected and documented as a separate concern
+- [ ] Verify the full sorry chain is eliminated:
   - `US_expressively_complete_over_prior` -- sorry-free
-  - `gap_prior_UZ_contradiction` -- sorry-free (inherits from US_expressively_complete_over_prior)
+  - `gap_prior_UZ_contradiction` -- sorry-free
   - `gap_prior_SZ_contradiction` -- sorry-free
   - `no_gaps_discrete_model_surgery` -- sorry-free
   - `limitdom_is_good` -- sorry-free
-  - `countermodel_discrete_reynolds_v2` -- sorry-free
-  - `completeness_discrete` -- sorry-free
-- [ ] Verify no new `sorry` was introduced: `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/ --include="*.lean"` shows no results
-- [ ] Verify no import cycles: `lake build` succeeds (import cycles cause build failure)
-- [ ] Update docstring comments in `PriorExpressiveness.lean` to document the new proof strategy (separation-based bypass instead of Stavi completeness composition)
-- [ ] Verify that existing tests pass: `lake build BimodalTest`
+  - `countermodel_discrete_reynolds_v2` -- sorry-free (from Chain A perspective)
+- [ ] Verify no new `sorry` was introduced: `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Separation/ --include="*.lean"` shows no results (excluding comments)
+- [ ] Verify no import cycles: `lake build` succeeds
+- [ ] Run existing tests: `lake build BimodalTest`
 
 **Timing**: 1 hour
 
-**Depends on**: 5
+**Depends on**: 3
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean` -- update docstrings
+- None (verification only)
 
 **Verification**:
 - `lake build` succeeds for the full project
-- `#print axioms completeness_discrete` shows no `sorryAx`
-- `grep` finds no unexpected sorry in modified files
+- `#print axioms completeness_discrete` result documented
+- `grep` finds no unexpected sorry in modified/new files
 - Existing tests pass
 
 ## Testing & Validation
@@ -301,25 +235,23 @@ Phases within the same wave can execute in parallel.
 - [ ] `lake build` completes without errors for the full project
 - [ ] `#print axioms Bimodal.Metalogic.WeakCanonical.US_expressively_complete_over_prior` does not include `sorryAx`
 - [ ] `#print axioms Bimodal.Metalogic.WeakCanonical.IntegerModel.gap_prior_UZ_contradiction` does not include `sorryAx`
-- [ ] `#print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete` does not include `sorryAx`
+- [ ] `#print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete` -- either no `sorryAx` or only through Chain B (documented)
 - [ ] `GoodStructuresModelSurgery.lean` compiles without changes (type signature preserved)
-- [ ] No new `sorry` introduced in the Separation/ directory
+- [ ] No new `sorry` introduced in `Separation/` directory
 - [ ] No import cycles (verified by successful `lake build`)
 - [ ] Existing `Tests/BimodalTest/` tests pass
 
 ## Artifacts & Outputs
 
-- `specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md` (this file)
-- New file: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean`
-- New file: `Theories/Bimodal/Metalogic/WeakCanonical/Separation/KampTranslation.lean`
-- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean` (import change + proof rewrite)
-- Modified: `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` (import adjustment)
+- `specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md` (this file, v3)
+- Existing file (Phase 1 complete): `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SemanticBridge.lean`
+- New file (Phase 2): `Theories/Bimodal/Metalogic/WeakCanonical/Separation/PriorTransfer.lean`
+- Modified (Phase 3): `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean`
 - `specs/273_chronicle_gap_contradiction_proof/summaries/03_separation-bypass-summary.md`
 
 ## Rollback/Contingency
 
-- If the semantic bridge (Phase 1) proves intractable due to type mismatches between `IntStructure` and `OrderedMonadicStructure`: consider an alternative approach where the Kamp translation is defined directly on `OrderedMonadicStructure` without going through `IntStructure`. This would duplicate some separation infrastructure but avoid the bridge entirely.
-- If the Kamp translation (Phase 2) is too complex for a single pass: break the quantifier elimination into multiple sub-phases (one for the base case, one for the inductive step), each targeting specific quantifier patterns.
-- If the Completeness.lean decoupling (Phase 5) reveals that `completeness_dense` deeply depends on ChronicleToCountermodel: use Option B (keep import, verify `#print axioms` only reports used axioms) as a temporary measure.
-- If the full plan fails: fall back to the secondary recommendation from research report 04 -- strengthen zone-matching (Approach C) or restructure the induction (Approach D) to close the actual sorry in `nf_2var_existential_transfer` (StaviCompleteness.lean:2353/2435).
+- If Approach 2a/2b/2c all fail for the Prior transfer (Phase 2): fall back to Approach D-discrete from the research report -- a discrete-only bridge lemma exploiting Cases I/II only, estimated ~200-400 additional lines. This fills the sorry directly in `StaviCompleteness.lean` but only for the discrete case needed by `completeness_discrete`.
+- If the `atomMap` direction mismatch creates insurmountable type obstacles: consider modifying the type of `US_expressively_complete_over_prior` to take `atomMap_fwd : sig.preds -> Atom` directly, then adapt all 7 call sites in `GoodStructuresModelSurgery.lean`. This is higher effort but avoids the round-trip issue.
+- If `#print axioms completeness_discrete` shows Chain B is also needed: move `mcs_mixed_case_absurd` to a separate module that does not import the sorry-carrying parts of `ChronicleToCountermodel.lean`, then update `Completeness.lean` to import the new module.
 - Git revert to the commit before implementation if any phase introduces regressions.
