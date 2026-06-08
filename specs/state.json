@@ -2789,7 +2789,7 @@
     {
       "project_number": 290,
       "project_name": "improve_tableau_fuel_allocation",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "dataset-enhancement",
@@ -2797,10 +2797,28 @@
         288
       ],
       "created": "2026-06-08T03:09:30Z",
-      "last_updated": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T19:45:00Z",
       "description": "Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "session_id": "sess_1780943005_25629c_290",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md",
+          "type": "research",
+          "summary": "Research report on fuel allocation heuristic"
+        },
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for proportional fuel allocation"
+        },
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/summaries/01_fuel-allocation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: proportional fuel allocation with difficulty heuristic"
+        }
+      ],
+      "completion_summary": "Replaced uniform fuel/2 allocation at tableau branch splits with difficulty-weighted proportional allocation. Added estimateBranchDifficulty (temporal weight 3, modal weight 2, size weight 1/4) and allocateFuelProportionally with termination-safe cap. Updated expandBranchWithFuel, traced variant, and all soundness proofs (tryBranch_inr, foldl_preserves_findClosure, expandBranchWithFuel_sound). Zero sorries, zero new axioms, all proofs verified."
     }
   ],
   "next_project_number": 296,
