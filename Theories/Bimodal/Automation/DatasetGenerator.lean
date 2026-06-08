@@ -396,6 +396,125 @@ or tautological implication patterns, bypassing the decision procedure entirely.
 Added in task 265 to eliminate ~151 of 247 c6 timeouts.
 -/
 
+/- ## Phase 1 helpers (task 278): derived operator shape recognizers -/
+
+/-- Recognize derived negation shape `¬φ` = `φ → ⊥`. -/
+def isNegShape : Formula → Option Formula
+  | .imp φ .bot => some φ
+  | _ => none
+
+/-- Recognize derived `all_future` shape `G(φ) = ¬F(¬φ)`.
+    `Gφ = imp (untl (imp φ bot) (imp bot bot)) bot` -/
+def isAllFutureShape : Formula → Option Formula
+  | .imp (.untl (.imp φ .bot) (.imp .bot .bot)) .bot => some φ
+  | _ => none
+
+/-- Recognize derived `some_future` shape `F(φ) = U(φ, ⊤)`.
+    `Fφ = untl φ (imp bot bot)` -/
+def isSomeFutureShape : Formula → Option Formula
+  | .untl φ (.imp .bot .bot) => some φ
+  | _ => none
+
+/-- Recognize derived `all_past` shape `H(φ) = ¬P(¬φ)`.
+    `Hφ = imp (snce (imp φ bot) (imp bot bot)) bot` -/
+def isAllPastShape : Formula → Option Formula
+  | .imp (.snce (.imp φ .bot) (.imp .bot .bot)) .bot => some φ
+  | _ => none
+
+/-- Recognize derived `some_past` shape `P(φ) = S(φ, ⊤)`.
+    `Pφ = snce φ (imp bot bot)` -/
+def isSomePastShape : Formula → Option Formula
+  | .snce φ (.imp .bot .bot) => some φ
+  | _ => none
+
+/-- Collect top-level conjuncts by flattening derived `and` shape.
+    `and a b` = `(a.imp b.neg).neg` = `imp (imp a (imp b bot)) bot`. -/
+def collectTopLevelConjuncts : Formula → List Formula
+  | .imp (.imp a (.imp b .bot)) .bot =>
+    collectTopLevelConjuncts a ++ collectTopLevelConjuncts b
+  | φ => [φ]
+
+/-- Check if conjuncts contain both `□φ` and `¬φ` (S5 reflexive conflict). -/
+def hasS5ReflexiveConflict (conjuncts : List Formula) : Bool :=
+  conjuncts.any fun c1 =>
+    match c1 with
+    | .box φ =>
+      conjuncts.any fun c2 =>
+        match isNegShape c2 with
+        | some ψ => ψ == φ
+        | none => false
+    | _ => false
+
+/-- Check if conjuncts contain `U(event, guard)` and `G(¬guard)` (temporal loop). -/
+def hasUntilGuardConflict (conjuncts : List Formula) : Bool :=
+  conjuncts.any fun c1 =>
+    match c1 with
+    | .untl event guard =>
+      conjuncts.any fun c2 =>
+        match isAllFutureShape c2 with
+        | some ψ =>
+          match isNegShape ψ with
+          | some ng => ng == guard
+          | none => false
+        | none => false
+    | _ => false
+
+/-- Check if conjuncts contain `S(event, guard)` and `H(¬guard)` (temporal loop past). -/
+def hasSinceGuardConflict (conjuncts : List Formula) : Bool :=
+  conjuncts.any fun c1 =>
+    match c1 with
+    | .snce event guard =>
+      conjuncts.any fun c2 =>
+        match isAllPastShape c2 with
+        | some ψ =>
+          match isNegShape ψ with
+          | some ng => ng == guard
+          | none => false
+        | none => false
+    | _ => false
+
+/-- Check if `imp a c` matches a modal/temporal subsumption rule.
+    Returns the axiom label if matched, none otherwise. -/
+def isSubsumptionPattern (a c : Formula) : Option String :=
+  -- □φ → φ (modal T direct)
+  match a with
+  | .box φ =>
+    if c == φ then some "structural_subsumption_modal_t"
+    else if c == .box (.box φ) then some "structural_subsumption_modal_4"
+    else if c == .imp (.box (.imp φ .bot)) .bot then some "structural_subsumption_modal_d"
+    else none
+  | _ =>
+  -- Gφ → φ, Gφ → G(Gφ), Gφ → Fφ
+  match isAllFutureShape a with
+  | some φ =>
+    if c == φ then some "structural_subsumption_gt"
+    else if c == Formula.all_future (Formula.all_future φ) then some "structural_subsumption_g4"
+    else if c == Formula.some_future φ then some "structural_subsumption_gf"
+    else none
+  | none =>
+  -- Hφ → φ, Hφ → H(Hφ), Hφ → Pφ
+  match isAllPastShape a with
+  | some φ =>
+    if c == φ then some "structural_subsumption_ht"
+    else if c == Formula.all_past (Formula.all_past φ) then some "structural_subsumption_h4"
+    else if c == Formula.some_past φ then some "structural_subsumption_hp"
+    else none
+  | none =>
+  -- F(Fφ) → Fφ
+  match isSomeFutureShape a with
+  | some inner =>
+    match isSomeFutureShape inner with
+    | some φ => if c == Formula.some_future φ then some "structural_subsumption_ff" else none
+    | none => none
+  | none =>
+  -- P(Pφ) → Pφ
+  match isSomePastShape a with
+  | some inner =>
+    match isSomePastShape inner with
+    | some φ => if c == Formula.some_past φ then some "structural_subsumption_pp" else none
+    | none => none
+  | none => none
+
 /--
 Check if a formula is structurally unsatisfiable due to bot-temporal patterns.
 
@@ -433,9 +552,44 @@ which is sound: if two formulas are syntactically identical, `A → A` is a taut
 Added in task 270 to catch tautological consequents in the structural pre-filter.
 -/
 def isStructurallyValid : Formula → Bool
-  | .imp a b => a == b || isStructurallyValid b
+  | .imp a b => a == b || isStructurallyValid b || b == Formula.top || b == .box Formula.top
   | .box inner => isStructurallyValid inner
   | _ => false
+
+/--
+Structural pre-filter with axiom attribution (task 274).
+
+Like `structuralPrefilter`, but returns the matched axiom pattern name
+alongside the validity result. This enables temporal axiom usage tracking
+in the dataset.
+
+Returns `some (true, axiomName)` if structurally valid with identified pattern,
+`none` if undetermined.
+-/
+def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
+  | .imp antecedent consequent =>
+    if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
+    else if isStructurallyValid consequent then some (true, "structural_tautology")
+    else
+      -- Phase 1 quick wins (task 278): conjunct-level patterns
+      let conjuncts := collectTopLevelConjuncts antecedent
+      if hasS5ReflexiveConflict conjuncts then some (true, "structural_s5_reflexive_conflict")
+      else if hasUntilGuardConflict conjuncts then some (true, "structural_temporal_loop_until")
+      else if hasSinceGuardConflict conjuncts then some (true, "structural_temporal_loop_since")
+      else match isSubsumptionPattern antecedent consequent with
+      | some label => some (true, label)
+      | none => match antecedent, consequent with
+      | .box (.box .bot), _ => some (true, "structural_double_box_bot")
+      | .box (.box inner), consequent =>
+        if inner == consequent then some (true, "structural_modal_4") else none
+      | .box inner, .imp _ rhs =>
+        if inner == rhs then some (true, "structural_modal_t_weakening") else none
+      | _, _ => none
+  | .box inner =>
+    match structuralPrefilterWithAxiom inner with
+    | some (v, ax) => some (v, ax)
+    | none => none
+  | _ => none
 
 /--
 Structural pre-filter for known-valid formula patterns. Returns `some true` if the
@@ -453,44 +607,10 @@ Recognized patterns:
 
 Never returns `some false` (would require soundness argument for invalidity).
 -/
-def structuralPrefilter : Formula → Option Bool
-  | .imp antecedent consequent =>
-    if isUnsatBotTemporal antecedent then some true
-    else if isStructurallyValid consequent then some true
-    else match antecedent, consequent with
-    | .box (.box .bot), _ => some true
-    | .box (.box inner), consequent => if inner == consequent then some true else none
-    | .box inner, .imp _ rhs => if inner == rhs then some true else none
-    | _, _ => none
-  | .box inner => structuralPrefilter inner
-  | _ => none
-
-/--
-Structural pre-filter with axiom attribution (task 274).
-
-Like `structuralPrefilter`, but returns the matched axiom pattern name
-alongside the validity result. This enables temporal axiom usage tracking
-in the dataset.
-
-Returns `some (true, axiomName)` if structurally valid with identified pattern,
-`none` if undetermined.
--/
-def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
-  | .imp antecedent consequent =>
-    if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
-    else if isStructurallyValid consequent then some (true, "structural_tautology")
-    else match antecedent, consequent with
-    | .box (.box .bot), _ => some (true, "structural_double_box_bot")
-    | .box (.box inner), consequent =>
-      if inner == consequent then some (true, "structural_modal_4") else none
-    | .box inner, .imp _ rhs =>
-      if inner == rhs then some (true, "structural_modal_t_weakening") else none
-    | _, _ => none
-  | .box inner =>
-    match structuralPrefilterWithAxiom inner with
-    | some (v, ax) => some (v, ax)
-    | none => none
-  | _ => none
+def structuralPrefilter (φ : Formula) : Option Bool :=
+  match structuralPrefilterWithAxiom φ with
+  | some (v, _) => some v
+  | none => none
 
 /-! ### Pre-filter unit tests (task 270) -/
 
@@ -532,6 +652,62 @@ private def q_test : Formula := .atom ⟨"q", none⟩
   -- some (true, "structural_modal_t_weakening")
 #eval structuralPrefilterWithAxiom (.imp p_test q_test)
   -- none (unknown)
+
+-- Phase 1 tests (task 278)
+
+-- collectTopLevelConjuncts
+#eval collectTopLevelConjuncts (p_test.and q_test)
+  -- [p, q]
+#eval collectTopLevelConjuncts (p_test.and (q_test.and (.imp p_test p_test)))
+  -- [p, q, p → p]
+
+-- isAllFutureShape / isSomeFutureShape / isAllPastShape / isSomePastShape
+#eval isAllFutureShape p_test.all_future                -- some p
+#eval isSomeFutureShape p_test.some_future             -- some p
+#eval isAllPastShape p_test.all_past                   -- some p
+#eval isSomePastShape p_test.some_past                 -- some p
+
+-- S5 reflexive shortcutting
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.box p_test) (Formula.neg p_test)) q_test)
+  -- some (true, "structural_s5_reflexive_conflict")
+
+-- Temporal loop detection (until)
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.untl p_test q_test) (Formula.all_future (Formula.neg q_test))) (Formula.atom (Atom.mk_base "r")))
+  -- some (true, "structural_temporal_loop_until")
+
+-- Temporal loop detection (since)
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.snce p_test q_test) (Formula.all_past (Formula.neg q_test))) (Formula.atom (Atom.mk_base "r")))
+  -- some (true, "structural_temporal_loop_since")
+
+-- Subsumption rules
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test)
+  -- some (true, "structural_subsumption_gt")
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test)
+  -- some (true, "structural_subsumption_ht")
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test.some_future)
+  -- some (true, "structural_subsumption_gf")
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test.some_past)
+  -- some (true, "structural_subsumption_hp")
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test.all_future.all_future)
+  -- some (true, "structural_subsumption_g4")
+#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test.all_past.all_past)
+  -- some (true, "structural_subsumption_h4")
+#eval structuralPrefilterWithAxiom (.imp (p_test.some_future.some_future) p_test.some_future)
+  -- some (true, "structural_subsumption_ff")
+#eval structuralPrefilterWithAxiom (.imp (p_test.some_past.some_past) p_test.some_past)
+  -- some (true, "structural_subsumption_pp")
+#eval structuralPrefilterWithAxiom (.imp (.box p_test) p_test)
+  -- some (true, "structural_subsumption_modal_t")
+#eval structuralPrefilterWithAxiom (.imp (.box p_test) (.box (.box p_test)))
+  -- some (true, "structural_subsumption_modal_4")
+#eval structuralPrefilterWithAxiom (.imp (.box p_test) (p_test.diamond))
+  -- some (true, "structural_subsumption_modal_d")
+
+-- Extended tautology detection (φ → ⊤ and φ → □⊤)
+#eval isStructurallyValid (.imp p_test Formula.top)                     -- true
+#eval isStructurallyValid (.imp p_test (.box Formula.top))              -- true
+#eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true, "structural_tautology")
+#eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true, "structural_tautology")
 
 /--
 Label a single formula by running the decision procedure.
