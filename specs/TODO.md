@@ -86,7 +86,7 @@ technical_debt:
     └─ 280 [COMPLETED] — Add contrastive minimal-pair mutation pass for labeled corpus
 277 [COMPLETED] — Instrument tableau prover with rule-firing trace certificates
   └─ 279 [PLANNED] — Build backward proof-first formula generation over axiom set
-278 [PLANNED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
+278 [COMPLETED] — Expand structural prefilter with polarity analysis, 2-SAT skeleton, and temporal loop detection
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
