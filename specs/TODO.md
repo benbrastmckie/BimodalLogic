@@ -357,6 +357,7 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/02_deep-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
+  - [273_chronicle_gap_contradiction_proof/reports/03_team-research.md]
 - **Plan**: [273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md]
 
 **Description**: Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation. The separation method is purely combinatorial: U'(A,B) and S'(A,B) simplify to bot on Prior structures, reducing {U,S,U',S'} to {U,S}. This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free. NOTE: The original target (chronicle_gap_contradiction) is bypassed by countermodel_discrete_reynolds_v2 and is not on the critical path.

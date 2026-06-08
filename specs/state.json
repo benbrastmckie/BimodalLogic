@@ -2252,14 +2252,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-08T18:50:00Z",
+      "last_updated": "2026-06-08T22:52:15Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -2285,10 +2285,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md",
           "type": "plan",
           "summary": "6-phase plan to bypass GHR93 bridge lemma sorry via GHR94 integer-time separation, making completeness_discrete sorry-free"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/03_team-research.md",
+          "type": "report",
+          "summary": "Team research: GHR94 separation bypass approaches, 4 teammates"
         }
       ],
-      "next_artifact_number": 3,
-      "researched": "2026-06-08T17:18:52Z",
+      "next_artifact_number": 4,
+      "researched": "2026-06-08T22:52:15Z",
       "planned": "2026-06-08T17:31:35Z",
       "plan_metadata": {
         "phases": 6,
@@ -2327,7 +2332,7 @@
           }
         ]
       },
-      "session_id": "sess_1780939352_880f2b"
+      "session_id": "sess_1780958697_3cf4a1"
     },
     {
       "project_number": 274,
