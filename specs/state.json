@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 295,
+      "project_name": "dataset_pipeline_diagnostic_audit",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements",
+      "created": "2026-06-08T18:20:01Z",
+      "last_updated": "2026-06-08T18:20:01Z"
+    },
+    {
       "project_number": 291,
       "project_name": "upgrade_lean_toolchain_to_v431_and_mathlib",
       "status": "not_started",
@@ -2757,7 +2766,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 295,
+  "next_project_number": 296,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

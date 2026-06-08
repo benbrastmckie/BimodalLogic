@@ -1,5 +1,5 @@
 ---
-next_project_number: 295
+next_project_number: 296
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -23,13 +23,13 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-06-03. Generated from state.json dependency graph.*
+*Updated 2026-06-08. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,255,257,268,269 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,192,196,231 | 161,187,191,194,230,268 | completeness, dataset-enhancement, automation |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,288,291,295 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,192,196,231,290,292,293,294 | 161,187,191,194,230,268,288,291 | completeness, dataset-enhancement, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
 
@@ -37,13 +37,13 @@ technical_debt:
 
 ### Completeness
 
-273 [PLANNED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
-268 [RESEARCHED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+268 [RESEARCHED] — Strategy B: Refactor discrete completeness to use Reynolds k-equi
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
+273 [PLANNED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
 
 ### Formula Refactor
 
@@ -63,6 +63,22 @@ technical_debt:
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
+### Toolchain
+
+291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
+  └─ 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
+  └─ 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
+  └─ 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
+
+### Publication Quality
+
+292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
+293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
+
+### Sorry Elimination
+
+294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
+
 ### Automation
 
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
@@ -74,31 +90,14 @@ technical_debt:
 ### Code Quality
 
 200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
-255 [NOT STARTED] — Archive dead code to Boneyard/ after task 202 completed Reynolds 
 
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-284 [COMPLETED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
-  - **Summary**: [specs/284_timeout_reduction_c5_hybrid_prefilter/summaries/01_hybrid-prefilter-summary.md]
-285 [COMPLETED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
-289 [COMPLETED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
-  - **Summary**: [specs/289_branch_result_memoization_caching/summaries/01_memoization-summary.md]
-287 [COMPLETED] — Add formula normalization pass before tableau expansion
-  - **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
-  - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]
-  - **Summary**: [specs/287_formula_normalization_before_tableau/summaries/01_implementation-summary.md]
-  └─ 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter
-      └─ 290 [NOT STARTED] — Improve fuel allocation heuristic for imbalanced branches
-
-### cslib Integration (Tasks 291-294)
-
-291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib (critical prerequisite for all porting)
-  └─ 292 [NOT STARTED] — Add copyright headers (Apache 2.0) to all source files under Theories/Bimodal/
-  └─ 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across sorry-free modules
-  └─ 294 [NOT STARTED] — Eliminate sorry in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean
+288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter. De
+  └─ 290 [NOT STARTED] — Improve tableau fuel allocation heuristic for imbalanced branches
 
 ### Uncategorized
 
@@ -122,9 +121,17 @@ technical_debt:
 194 [NOT STARTED] — migrate_nonempty_to_derivable
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 257 [IMPLEMENTING] — large_data_storage_huggingface
-269 [NOT STARTED] — export_interestingness_scores_to_jsonl
+282 [NOT STARTED] — exhaustive_enumeration_by_default
+295 [NOT STARTED] — Diagnostic audit and stress-test of the dataset generation pipeli
 
 ## Tasks
+
+### 295. Diagnostic audit and stress-test of dataset generation pipeline
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements.
 
 ### 283. Mitigate cross-product explosion in exhaustive formula enumeration at complexity ≥ 8
 - **Effort**: large (16-24 hours)
