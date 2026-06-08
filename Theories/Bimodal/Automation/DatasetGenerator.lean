@@ -28,8 +28,10 @@ metrics, and produces labeled records.
 
 ## Structural Prefilter Patterns
 
-The structural prefilter (tasks 270, 274, 278, 284) short-circuits the decision
-procedure for formulas matching known-valid syntactic shapes:
+### Valid Prefilter (`structuralPrefilterWithAxiom`, tasks 270, 274, 278, 284)
+
+Short-circuits the decision procedure for formulas matching known-valid
+syntactic shapes:
 
 - **Identity**: `φ → φ` (task 284)
 - **Bot-temporal**: `U(⊥, X) → Y`, `S(□⊥, X) → Y`, etc.
@@ -39,6 +41,23 @@ procedure for formulas matching known-valid syntactic shapes:
 - **Subsumption**: `□φ → φ`, `Gφ → φ`, `Gφ → Fφ`, `F(Fφ) → Fφ`, etc.
 - **Temporal implication**: `U(X, Y) → F(Y)`, `S(X, Y) → P(Y)` (task 284)
 - **Box descent**: `□(valid)` where `valid` is structurally valid
+
+### Invalid Prefilter (`structuralInvalidPrefilter`, task 288)
+
+Companion to the valid prefilter. Detects formulas that are provably
+**invalid** (have obvious countermodels), inserted as Phase 1.5 in
+`labelFormulaImpl` between the valid prefilter and the tableau:
+
+- **False consequent** (`invalid_false_consequent`): `φ → ψ` where `ψ`
+  is always false and `φ` is not always false
+- **Satisfiable negation** (`invalid_satisfiable_neg`): `φ → ⊥` where
+  `φ` is trivially satisfiable, or `φ → ψ` where `φ` is satisfiable
+  and `ψ` is always false
+- **Unfulfillable eventuality** (`invalid_unfulfillable_eventuality`):
+  `φ → U(event, guard)` where `φ` contains `G(¬event)`, or the
+  symmetric `S` case with `H(¬event)`
+
+Formal soundness proofs in `PrefilterSoundness.lean`.
 
 ## Design Decisions
 
